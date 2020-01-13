@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,73 +26,79 @@
 
 
 $LANGDEFS = array(
-        'pl' => array(
-            'name' => 'Polish',
-            'orig' => 'Polski',
-            'locale' => 'pl_PL.UTF-8',
-            'charset' => 'UTF-8',
-            'html' => 'pl',
-            'money_format' => '%01.2f zł',
-            'money_format_in_words' => '%s %s %s/100',
-            'currency' => 'PLN',
-//          'mobile' => '(88[0-9]|5[01][0-9]|6[069][0-9]|7[2789][0-9])[0-9]{6}',
-            ),
-        'lt' => array(
-            'name' => 'Lithuanian',
-            'orig' => 'Litewski',
-            'locale' => 'lt_LT.UTF-8',
-            'charset' => 'UTF-8',
-            'html' => 'lt',
-            'money_format' => '%01.2f EUR',
-            'money_format_in_words' => '%s %s %s/100',
-            'currency' => 'EUR',
-//          'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
-            ),
-        'en' => array(
-            'name' => 'English',
-            'orig' => 'English',
-            'locale' => 'en_US.UTF-8',
-            'charset' => 'UTF-8',
-            'html' => 'en',
-            'money_format' => '$ %01.2f',
-            'money_format_in_words' => '%s %s %s/100',
-            'currency' => 'USD',
-//          'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
-            ),
-        'sk' => array(
-            'name' => 'Slovak',
-            'orig' => 'Slovenský',
-            'locale' => 'sk_SK.UTF-8',
-            'charset' => 'UTF-8',
-            'html' => 'sk',
-            'money_format' => '%01.2f EUR',
-            'money_format_in_words' => '%s %s %s/100',
-            'currency' => 'EUR',
-//          'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
-            ),
-        'ro' => array(
-            'name' => 'Romanian',
-            'orig' => 'Romana',
-            'locale' => 'ro_RO.UTF-8',
-            'charset' => 'UTF-8',
-            'html' => 'ro',
-            'money_format' => '%01.2f RON',
-            'money_format_in_words' => '%s %s %s/100',
-            'currency' => 'RON',
-//          'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
-            ),
-        'cs' => array(
-            'name' => 'Czech',
-            'orig' => 'Česky',
-            'locale' => 'cs_CZ.UTF-8',
-            'charset' => 'UTF-8',
-            'html' => 'cs',
-            'money_format' => '%01.2f Kč',
-            'money_format_in_words' => '%s %s %s/100',
-            'currency' => 'CZK',
-//          'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
-            ),
-        );
+    'pl_PL' => array(
+        'name' => 'Polish',
+        'orig' => 'Polski',
+        'locale' => 'pl_PL.UTF-8',
+        'charset' => 'UTF-8',
+        'html' => 'pl',
+        'money_format' => '%01.2f zł',
+        'money_format_in_words' => '%s %s %s/100',
+        'currency' => 'PLN',
+//        'mobile' => '(88[0-9]|5[01][0-9]|6[069][0-9]|7[2789][0-9])[0-9]{6}',
+    ),
+    'pl' => 'pl_PL',
+    'lt_LT' => array(
+        'name' => 'Lithuanian',
+        'orig' => 'Litewski',
+        'locale' => 'lt_LT.UTF-8',
+        'charset' => 'UTF-8',
+        'html' => 'lt',
+        'money_format' => '%01.2f EUR',
+        'money_format_in_words' => '%s %s %s/100',
+        'currency' => 'EUR',
+//        'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
+    ),
+    'lt' => 'lt_LT',
+    'en_US' => array(
+        'name' => 'English',
+        'orig' => 'English',
+        'locale' => 'en_US.UTF-8',
+        'charset' => 'UTF-8',
+        'html' => 'en',
+        'money_format' => '$ %01.2f',
+        'money_format_in_words' => '%s %s %s/100',
+        'currency' => 'USD',
+//        'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
+    ),
+    'en' => 'en_US',
+    'sk_SK' => array(
+        'name' => 'Slovak',
+        'orig' => 'Slovenský',
+        'locale' => 'sk_SK.UTF-8',
+        'charset' => 'UTF-8',
+        'html' => 'sk',
+        'money_format' => '%01.2f EUR',
+        'money_format_in_words' => '%s %s %s/100',
+        'currency' => 'EUR',
+//        'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
+    ),
+    'sk' => 'sk_SK',
+    'ro_RO' => array(
+        'name' => 'Romanian',
+        'orig' => 'Romana',
+        'locale' => 'ro_RO.UTF-8',
+        'charset' => 'UTF-8',
+        'html' => 'ro',
+        'money_format' => '%01.2f RON',
+        'money_format_in_words' => '%s %s %s/100',
+        'currency' => 'RON',
+//        'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
+    ),
+    'ro' => 'ro_RO',
+    'cs_CZ' => array(
+        'name' => 'Czech',
+        'orig' => 'Česky',
+        'locale' => 'cs_CZ.UTF-8',
+        'charset' => 'UTF-8',
+        'html' => 'cs',
+        'money_format' => '%01.2f Kč',
+        'money_format_in_words' => '%s %s %s/100',
+        'currency' => 'CZK',
+//        'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
+    ),
+    'cs' => 'cs_CZ',
+);
 
 // UI language
 if (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
@@ -104,38 +110,48 @@ if (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
 $langs = explode(',', $langs);
 
 foreach ($langs as $val) {
-    $val = substr($val, 0, 2);
-    switch ($val) {
-        case 'pl':
-        case 'lt':
-        case 'sk':
-        case 'ro':
-        case 'en':
-        case 'cs':
+    if (strlen($val) >= 5) {
+        $val = str_replace('-', '_', substr($val, 0, 5));
+        if (isset($LANGDEFS[$val])) {
             $_ui_language = $val;
-            break 2;
+            break;
+        }
+    } else {
+        $val = substr($val, 0, 2);
+        if (isset($LANGDEFS[$val]) && is_string($LANGDEFS[$val])) {
+            $_ui_language = $LANGDEFS[$val];
+            break;
+        }
     }
 }
 
 // System language
 $lang = ConfigHelper::getConfig('phpui.lang');
 if (!empty($lang)) {
-    $_language = $lang;
-} else if (!empty($_ui_language)) {
+    if (isset($LANGDEFS[$lang])) {
+        if (is_string($LANGDEFS[$lang])) {
+            $_language = $LANGDEFS[$lang];
+        } else {
+            $_language = $lang;
+        }
+    } else {
+        $_language = 'en_US';
+    }
+} else if (isset($_ui_language)) {
     $_language = $_ui_language;
 } else {
-    $_language = 'en'; // default language
+    $_language = 'en_US'; // default language
 }
 
 $_currency = $LANGDEFS[$_language]['currency'];
 
 // Use system lang for UI if any of browser langs isn't supported
 // or browser langs aren't set
-if (empty($_ui_language)) {
+if (!isset($_ui_language)) {
     $_ui_language = $_language;
 }
-$_LANG = array();
 
+$_LANG = array();
 if (@is_readable(LIB_DIR . DIRECTORY_SEPARATOR . 'locale' . DIRECTORY_SEPARATOR . $_ui_language . DIRECTORY_SEPARATOR . 'strings.php')) {
     include(LIB_DIR . DIRECTORY_SEPARATOR . 'locale' . DIRECTORY_SEPARATOR . $_ui_language . DIRECTORY_SEPARATOR . 'strings.php');
 }
@@ -159,8 +175,21 @@ function refresh_ui_language($lang)
 {
     global $_current_ui_language;
     global $_LANG;
+    global $LANGDEFS;
     if (!empty($lang)) {
-        $language = substr($lang, 0, 2);
+        if (strlen($lang) >= 5) {
+            $language = substr($lang, 0, 5);
+            if (!isset($LANGDEFS[$language])) {
+                $language = 'en_US';
+            }
+        } else {
+            $language = substr($lang, 0, 2);
+            if (isset($LANGDEFS[$language]) && is_string($LANGDEFS[$language])) {
+                $language = $LANGDEFS[$language];
+            } else {
+                $language = 'en_US';
+            }
+        }
         if ($language != $_current_ui_language) {
             $_current_ui_language = $language;
             $_LANG = array();
