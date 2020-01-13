@@ -373,9 +373,10 @@ class LMSTcpdfInvoice extends LMSInvoice
         $this->backend->Rect(8, 269, 9, 3, 'F', '', array(255, 255, 255));
         $this->backend->Text(8, 269, 'stempel');
         $this->backend->Rect(8, 272, 22, 25, 'F', '', array(255, 255, 255));
-        $this->backend->Line(8, 272, 8, 297, $line_thin);
-        $this->backend->Line(17, 272, 30, 272, $line_thin);
-        $this->backend->Line(30, 272, 30, 297, $line_thin);
+        $this->backend->Line(8, 272, 8, 295, $line_thin);
+        $this->backend->Line(8, 272, 30, 272, $line_thin);
+        $this->backend->Line(30, 272, 30, 295, $line_thin);
+        $this->backend->Line(8, 295, 30, 295, $line_thin);
         $this->backend->SetLineStyle($line_dash);
         $this->backend->Circle(19, 283, 8);
 
@@ -383,9 +384,10 @@ class LMSTcpdfInvoice extends LMSInvoice
         $this->backend->Rect(34, 269, 9, 3, 'F', '', array(255, 255, 255));
         $this->backend->Text(34, 269, 'opłata');
         $this->backend->Rect(34, 272, 26, 25, 'F', '', array(255, 255, 255));
-        $this->backend->Line(34, 272, 34, 297, $line_thin);
-        $this->backend->Line(43, 272, 60, 272, $line_thin);
-        $this->backend->Line(60, 272, 60, 297, $line_thin);
+        $this->backend->Line(34, 272, 34, 295, $line_thin);
+        $this->backend->Line(34, 272, 60, 272, $line_thin);
+        $this->backend->Line(60, 272, 60, 295, $line_thin);
+        $this->backend->Line(34, 295, 60, 295, $line_thin);
     }
 
     protected function invoice_main_form_draw()
@@ -424,10 +426,10 @@ class LMSTcpdfInvoice extends LMSInvoice
         $this->backend->Rect(66.25, 205, 135, 5, 'F', '', array(255, 255, 255));
 
         /* account */
-        $this->backend->Rect(66.5, 210.5, 131, 9, 'D', array('all' => $line_bold));
-        $this->backend->Rect(68, 211, 22, 3, 'F', '', array(255, 255, 255));
+        $this->backend->Rect(66.3, 210.5, 134.5, 9, 'D', array('all' => $line_bold));
+        $this->backend->Rect(67.5, 211, 22, 3, 'F', '', array(255, 255, 255));
         $this->backend->Text(68, 211, 'nr rachunku odbiorcy');
-        $this->backend->Rect(67, 214, 130, 5, 'F', '', array(255, 255, 255));
+        $this->backend->Rect(67, 214, 128.5, 5, 'F', '', array(255, 255, 255));
 
         /* payment/transfer */
         for ($i = 0; $i < 2; $i++) {
@@ -483,7 +485,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         $this->backend->Translate(0, 23);
         $this->backend->Text(80, 265, 'pieczęć, data i podpis(y) zleceniodawcy');
         $this->backend->StopTransform();
-        $this->backend->Line(134, 280, 210, 280, $line);
+        $this->backend->Line(134, 280, 201, 280, $line);
         $this->backend->Rect(155, 273, 20, 20, 'DF', array('all' => $line_thin));
         $this->backend->SetLineStyle($line_dash);
         $this->backend->Circle(165, 283, 8);
@@ -1117,11 +1119,14 @@ class LMSTcpdfInvoice extends LMSInvoice
             }
 
             /* draw FT-0100 form */
+//            $this->backend->StartTransform();
+//            $this->backend->TranslateY(-5);
             $this->invoice_simple_form_draw();
             $this->invoice_main_form_draw();
             /* fill FT-0100 form */
             $this->invoice_simple_form_fill();
             $this->invoice_main_form_fill();
+//            $this->backend->StopTransform();
         }
 
         $docnumber = docnumber(array(
