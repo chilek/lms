@@ -21,7 +21,7 @@
  *
  */
 
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
+define('DEFAULT_NUMBER_TEMPLATE', '%N/LMS/%Y');
 
 $numberplans = $this->GetAllByKey("SELECT * FROM numberplans ORDER BY id", 'id');
 
