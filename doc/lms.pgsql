@@ -3131,6 +3131,9 @@ BEGIN
         END IF;
         RETURN NULL;
     ELSEIF (TG_OP = 'UPDATE') THEN
+        IF OLD.value = NEW.value AND OLD.currencyvalue = NEW.currencyvalue THEN
+            RETURN NEW;
+        END IF;
         IF OLD.customerid IS NOT NULL AND OLD.customerid <> NEW.customerid THEN
             IF EXISTS (SELECT 1 FROM customerbalances WHERE customerid = OLD.customerid) THEN
                 UPDATE customerbalances SET balance = (SELECT SUM(value * currencyvalue) FROM cash WHERE customerid = OLD.customerid) WHERE customerid = OLD.customerid;
@@ -3706,6 +3709,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020011400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020011401');
 
 COMMIT;
