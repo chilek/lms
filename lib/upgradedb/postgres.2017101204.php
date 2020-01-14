@@ -44,6 +44,10 @@ $this->Execute("
 	ALTER TABLE documents ALTER COLUMN divisionid SET DEFAULT NULL;
 	ALTER TABLE documents ALTER COLUMN reference DROP NOT NULL;
 	ALTER TABLE documents ALTER COLUMN reference SET DEFAULT NULL;
+
+	ALTER TABLE documents ADD COLUMN used_reference integer DEFAULT 0 NOT NULL;
+    CREATE INDEX documents_used_reference_idx ON documents (used_reference);
+
 	ALTER TABLE documents ALTER COLUMN div_countryid DROP NOT NULL;
 	ALTER TABLE documents ALTER COLUMN div_countryid SET DEFAULT NULL;
 	ALTER TABLE cashregs ALTER COLUMN in_numberplanid DROP NOT NULL;
@@ -65,6 +69,10 @@ $this->Execute("
 	ALTER TABLE cash ALTER COLUMN taxid SET DEFAULT NULL;
 	ALTER TABLE cash ALTER COLUMN docid DROP NOT NULL;
 	ALTER TABLE cash ALTER COLUMN docid SET DEFAULT NULL;
+
+	ALTER TABLE cash ADD COLUMN used_docid integer DEFAULT 0 NOT NULL;
+    CREATE INDEX cash_used_docid_idx ON cash (used_docid);
+
 	ALTER TABLE nodegroupassignments ALTER COLUMN nodegroupid DROP DEFAULT;
 	ALTER TABLE nodegroupassignments ALTER COLUMN nodeid DROP DEFAULT;
 	ALTER TABLE numberplanassignments ALTER COLUMN planid DROP DEFAULT;
@@ -167,12 +175,17 @@ if (empty($ids)) {
     $this->Execute("UPDATE documents SET reference = NULL WHERE reference IS NOT NULL");
     $this->Execute("UPDATE cash SET docid = NULL WHERE docid IS NOT NULL");
 } else {
-    $sql_ids = implode(',', $ids);
+    foreach ($ids as $id) {
+        $DB->Execute("UPDATE cash SET used_docid = ? WHERE docid = ?", array(1, $id));
+        $DB->Execute("UPDATE documents SET used_reference = ? WHERE reference = ?", array(1, $id));
+    }
     $this->Execute("UPDATE documents SET reference = NULL
-		WHERE reference IS NOT NULL AND reference NOT IN (" . $sql_ids . ")");
+		WHERE reference IS NOT NULL AND used_reference = ?", array(0));
     $this->Execute("UPDATE cash SET docid = NULL
-		WHERE docid IS NOT NULL AND docid NOT IN (" . $sql_ids . ")");
+		WHERE docid IS NOT NULL AND used_docid = ?", array(0));
 }
+$this->Execute("ALTER TABLE cash DROP COLUMN used_docid");
+$this->Execute("ALTER TABLE documents DROP COLUMN used_reference");
 
 $this->Execute("UPDATE receiptcontents SET regid = NULL WHERE regid = 0");
 $this->Execute("DELETE FROM cashrights WHERE regid = 0");
