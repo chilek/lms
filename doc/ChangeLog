@@ -145,6 +145,7 @@ version 25-git (????-??-??):
   - enhancement: allow convert html to pdf on-fly using external commands - now puppeteer script connecting to
     google chrome working in headless mode is supported ('documents.html2pdf_command'
     should point external command accessible from server) [chilan]
+  - enhancement: added experimental support for guyanian locales [chilan]
 
 version 24.0 (2019-05-16):
 
