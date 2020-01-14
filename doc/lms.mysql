@@ -982,7 +982,6 @@ CREATE TABLE assignments (
 	commited tinyint(1) NOT NULL DEFAULT '1',
 	separatedocument tinyint(1) NOT NULL DEFAULT 0,
 	count numeric(9,3) DEFAULT 1 NOT NULL,
-    currency varchar(3),
     PRIMARY KEY (id),
 	INDEX tariffid (tariffid),
 	INDEX customerid (customerid),
