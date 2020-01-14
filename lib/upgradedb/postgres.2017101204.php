@@ -176,8 +176,8 @@ if (empty($ids)) {
     $this->Execute("UPDATE cash SET docid = NULL WHERE docid IS NOT NULL");
 } else {
     foreach ($ids as $id) {
-        $DB->Execute("UPDATE cash SET used_docid = ? WHERE docid = ?", array(1, $id));
-        $DB->Execute("UPDATE documents SET used_reference = ? WHERE reference = ?", array(1, $id));
+        $this->Execute("UPDATE cash SET used_docid = ? WHERE docid = ?", array(1, $id));
+        $this->Execute("UPDATE documents SET used_reference = ? WHERE reference = ?", array(1, $id));
     }
     $this->Execute("UPDATE documents SET reference = NULL
 		WHERE reference IS NOT NULL AND used_reference = ?", array(0));
