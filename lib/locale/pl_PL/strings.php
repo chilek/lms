@@ -891,6 +891,7 @@ $_LANG['Group \'$a\' has members and cannot be deleted!'] = 'Grupa \'$a\' posiad
 $_LANG['Group with name $a already exists!'] = 'Grupa o nazwie $a już istnieje!';
 $_LANG['Guarantee:'] = 'Gwarancja:';
 $_LANG['Guarantee period:'] = 'Okres gwarancji:';
+$_LANG['Guyana'] = 'Gujana';
 $_LANG['Has'] = 'Ma';
 $_LANG['Headers:'] = 'Nagłówki:';
 $_LANG['Helpdesk'] = 'Helpdesk';

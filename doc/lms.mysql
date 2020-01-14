@@ -3138,7 +3138,8 @@ INSERT INTO countries (name, ccode) VALUES
 ('Romania', 'ro_RO'),
 ('Slovakia', 'sk_SK'),
 ('USA', 'en_US'),
-('Czech', 'cs_CZ');
+('Czech', 'cs_CZ'),
+('Guyana', 'en_GY');
 
 INSERT INTO nastypes (name) VALUES
 ('mikrotik_snmp'),
@@ -3656,4 +3657,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020011000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020011400');

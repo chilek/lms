@@ -62,6 +62,17 @@ $LANGDEFS = array(
 //        'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
     ),
     'en' => 'en_US',
+    'en_GY' => array(
+        'name' => 'English (Guyana)',
+        'orig' => 'English (Guyana)',
+        'locale' => 'en_GY.UTF-8',
+        'charset' => 'UTF-8',
+        'html' => 'en',
+        'money_format' => '$ %01.2f',
+        'money_format_in_words' => '%s %s %s/100',
+        'currency' => 'GYD',
+//        'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
+    ),
     'sk_SK' => array(
         'name' => 'Slovak',
         'orig' => 'Slovenský',

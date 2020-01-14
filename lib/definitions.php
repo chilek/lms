@@ -963,6 +963,7 @@ $CURRENCIES = array(
     'DKK' => 'DKK',
     'EUR' => 'EUR',
     'GBP' => 'GBP',
+    'GYD' => 'GYD',
     'HKD' => 'HKO',
     'HRK' => 'HRK',
     'HUF' => 'HUF',
