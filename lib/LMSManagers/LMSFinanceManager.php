@@ -353,26 +353,100 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             $datefrom = mktime(0, 0, 0, $start_month + 1, 0, $start_year);
                         }
 
-                        $args = array(
-                            'name' => trans('Activation payment'),
-                            'value' => str_replace(',', '.', $value),
-                            'splitpayment' => $tariff['splitpayment'],
-                            'currency' => $tariff['currency'],
-                            SYSLOG::RES_TAX => intval($tariff['taxid']),
-                            'prodid' => $tariff['prodid']
-                        );
-                        $this->db->Execute('INSERT INTO liabilities (name, value, splitpayment, currency, taxid, prodid)
-                            VALUES (?, ?, ?, ?, ?, ?)', array_values($args));
-
-                        $lid = $this->db->GetLastInsertID('liabilities');
-
-                        if ($this->syslog) {
-                            $args[SYSLOG::RES_LIAB] = $lid;
-                            $args[SYSLOG::RES_CUST] = $data['customerid'];
-                            $this->syslog->AddMessage(SYSLOG::RES_LIAB, SYSLOG::OPER_ADD, $args);
+                        // check if current promotion schema tariff has only activation value defined
+                        $only_activation = true;
+                        for ($periodical_idx = 1; $periodical_idx < count($data_tariff); $periodical_idx++) {
+                            if (strpos($data_tariff[$periodical_idx], 'NULL') !== 0) {
+                                $only_activation = false;
+                                break;
+                            }
                         }
 
-                        $tariffid = 0;
+                        if ($only_activation) {
+                            $tariffid = $this->db->GetOne(
+                                'SELECT id FROM tariffs
+														   WHERE
+																name   = ? AND
+																value  = ? AND
+																currency = ?
+														   LIMIT 1',
+                                array($tariff['name'],
+                                    empty($value) || $value == 'NULL' ? 0 : str_replace(',', '.', $value),
+                                    $tariff['currency']
+                                )
+                            );
+
+                            // ... if not found clone tariff
+                            if (!$tariffid) {
+                                $args = $this->db->GetRow('SELECT
+														  name, value, splitpayment, currency, period, taxid, type,
+														  upceil, downceil, uprate, downrate,
+														  up_burst_time, up_burst_threshold, up_burst_limit, 
+														  down_burst_time, down_burst_threshold, down_burst_limit, 
+														  prodid, plimit, climit, dlimit,
+														  upceil_n, downceil_n, uprate_n, downrate_n,
+														  up_burst_time_n, up_burst_threshold_n, up_burst_limit_n, 
+														  down_burst_time_n, down_burst_threshold_n, down_burst_limit_n, 
+														  domain_limit, alias_limit, sh_limit,
+														  www_limit, ftp_limit, mail_limit, sql_limit, quota_sh_limit, quota_www_limit,
+														  quota_ftp_limit, quota_mail_limit, quota_sql_limit, authtype
+													   FROM
+														  tariffs WHERE id = ?', array($tariff['id']));
+
+                                $args = array_merge($args, array(
+                                    'name' => $tariff['name'],
+                                    'value' => str_replace(',', '.', $value),
+                                    'period' => $tariff['period']));
+
+                                $args[SYSLOG::RES_TAX] = $args['taxid'];
+                                unset($args['taxid']);
+
+                                $this->db->Execute('INSERT INTO tariffs
+												   (name, value, splitpayment, currency, period, type,
+												   upceil, downceil, uprate, downrate,
+												   up_burst_time, up_burst_threshold, up_burst_limit, 
+												   down_burst_time, down_burst_threshold, down_burst_limit, 
+												   prodid, plimit, climit, dlimit,
+												   upceil_n, downceil_n, uprate_n, downrate_n,
+												   up_burst_time_n, up_burst_threshold_n, up_burst_limit_n, 
+												   down_burst_time_n, down_burst_threshold_n, down_burst_limit_n, 
+												   domain_limit, alias_limit, sh_limit, www_limit, ftp_limit, mail_limit, sql_limit,
+												   quota_sh_limit, quota_www_limit, quota_ftp_limit, quota_mail_limit, quota_sql_limit,
+												   authtype, taxid)
+												VALUES
+												   (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+												   ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+
+                                $tariffid = $this->db->GetLastInsertId('tariffs');
+
+                                if ($this->syslog) {
+                                    $args[SYSLOG::RES_TARIFF] = $tariffid;
+                                    $this->syslog->AddMessage(SYSLOG::RES_TARIFF, SYSLOG::OPER_ADD, $args);
+                                }
+                            }
+                        } else {
+                            $args = array(
+                                'name' => trans('Activation payment'),
+                                'value' => str_replace(',', '.', $value),
+                                'splitpayment' => $tariff['splitpayment'],
+                                'currency' => $tariff['currency'],
+                                SYSLOG::RES_TAX => intval($tariff['taxid']),
+                                'prodid' => $tariff['prodid']
+                            );
+                            $this->db->Execute('INSERT INTO liabilities (name, value, splitpayment, currency, taxid, prodid)
+                                VALUES (?, ?, ?, ?, ?, ?)', array_values($args));
+
+                            $lid = $this->db->GetLastInsertID('liabilities');
+
+                            if ($this->syslog) {
+                                $args[SYSLOG::RES_LIAB] = $lid;
+                                $args[SYSLOG::RES_CUST] = $data['customerid'];
+                                $this->syslog->AddMessage(SYSLOG::RES_LIAB, SYSLOG::OPER_ADD, $args);
+                            }
+
+                            $tariffid = 0;
+                        }
+
                         $period   = DISPOSABLE;
                         $at = $datefrom;
                     } else {
