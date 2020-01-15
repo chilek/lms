@@ -98,8 +98,14 @@ $this->Execute("
 	ALTER TABLE up_help ALTER COLUMN reference SET DEFAULT NULL
 ");
 
+$this->Execute("
+	UPDATE documents SET divisionid = (CASE WHEN divisionid = 0 THEN NULL ELSE divisionid END),
+		countryid = (CASE WHEN countryid = 0 THEN NULL ELSE countryid END),
+		div_countryid = (CASE WHEN div_countryid = 0 THEN NULL ELSE div_countryid END),
+		numberplanid = (CASE WHEN numberplanid = 0 THEN NULL ELSE numberplanid END)
+");
+
 $this->Execute("UPDATE customers SET divisionid = NULL WHERE divisionid = 0");
-$this->Execute("UPDATE documents SET divisionid = NULL WHERE divisionid = 0");
 $this->Execute("DELETE FROM numberplanassignments WHERE divisionid = 0");
 $ids = $this->GetCol("SELECT id FROM divisions");
 if (empty($ids)) {
@@ -115,8 +121,6 @@ if (empty($ids)) {
     $this->Execute("DELETE FROM numberplanassignments WHERE divisionid NOT IN (" . $sql_ids . ")");
 }
 
-$this->Execute("UPDATE documents SET countryid = NULL WHERE countryid = 0");
-$this->Execute("UPDATE documents SET div_countryid = NULL WHERE div_countryid = 0");
 $ids = $this->GetCol("SELECT id FROM countries");
 if (empty($ids)) {
     $this->Execute("UPDATE documents SET countryid = NULL WHERE countryid IS NOT NULL");
@@ -139,7 +143,6 @@ if (empty($ids)) {
 		WHERE stateid IS NOT NULL AND stateid NOT IN (" . $sql_ids . ")");
 }
 
-$this->Execute("UPDATE documents SET numberplanid = NULL WHERE numberplanid = 0");
 $this->Execute("UPDATE cashregs SET in_numberplanid = NULL WHERE in_numberplanid = 0");
 $this->Execute("UPDATE cashregs SET out_numberplanid = NULL WHERE out_numberplanid = 0");
 $this->Execute("DELETE FROM numberplanassignments WHERE planid = 0");
