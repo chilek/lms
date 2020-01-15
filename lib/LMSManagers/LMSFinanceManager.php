@@ -1650,6 +1650,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 break;
         }
 
+        $join_cash = false;
+
         $where = '';
 
         if ($search!='' && $cat) {
@@ -1678,6 +1680,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     break;
                 case 'value':
                     $having = ' HAVING -SUM(cash.value) = '.str_replace(',', '.', f_round($search)).' ';
+                    $join_cash = true;
                     break;
             }
         }
@@ -1695,19 +1698,18 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         }
 
         if ($count) {
-            return $this->db->GetOne('SELECT COUNT(id) FROM (SELECT d.id
-				FROM documents d
-				JOIN invoicecontents a ON (a.docid = d.id)
-				LEFT JOIN documents d2 ON d2.reference = d.id
-				LEFT JOIN cash ON cash.docid = d.id AND cash.itemid = a.itemid
-				LEFT JOIN countries ON (countries.id = d.countryid)
-				LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
-				LEFT JOIN (
-				SELECT DISTINCT a.customerid FROM customerassignments a
-					JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
-					WHERE e.userid = lms_current_user()
-					) e ON (e.customerid = d.customerid)
-				WHERE e.customerid IS NULL AND '
+            return $this->db->GetOne('SELECT COUNT(DISTINCT id) FROM (SELECT d.id
+                FROM documents d'
+                . ($join_cash ?
+                    'JOIN invoicecontents a ON (a.docid = d.id)
+                    LEFT JOIN cash ON cash.docid = d.id AND cash.itemid = a.itemid'
+                    : '') . '
+                LEFT JOIN (
+                    SELECT DISTINCT a.customerid FROM customerassignments a
+                    JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+                    WHERE e.userid = lms_current_user()
+                ) e ON (e.customerid = d.customerid)
+                WHERE e.customerid IS NULL AND '
                 . ($proforma ? 'd.type = ' . DOC_INVOICE_PRO
                     : '(d.type = '.DOC_CNOTE.(($cat != 'cnotes') ? ' OR d.type = '.DOC_INVOICE : '').')')
                 .$where
@@ -1717,7 +1719,6 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 					AND customerid = d.customerid)' : '')
                 . (!empty($numberplan) ? ' AND d.numberplanid IN (' . implode(',', $numberplan) . ')' : '')
                 . (!empty($division) ? ' AND d.divisionid = ' . intval($division) : '')
-                . ' GROUP BY d.id '
                 . (isset($having) ? $having : '') . ') a');
         }
 
