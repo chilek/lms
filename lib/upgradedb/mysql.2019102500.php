@@ -42,19 +42,15 @@ $this->Execute("ALTER TABLE liabilities ADD COLUMN currency varchar(3)");
 $this->Execute("ALTER TABLE documents ADD COLUMN currency varchar(3)");
 $this->Execute("ALTER TABLE documents ADD COLUMN currencyvalue decimal(17,10) DEFAULT 1.0");
 
-$this->Execute("UPDATE cash SET currencyvalue = ?", array(1.0));
+$this->Execute("UPDATE cash SET currencyvalue = ?, currency = ?", array(1.0, $_currency));
 $this->Execute(
-    "UPDATE documents SET currencyvalue = ? WHERE type IN ?",
-    array(1.0, array(DOC_INVOICE, DOC_INVOICE_PRO, DOC_CNOTE, DOC_DNOTE, DOC_RECEIPT))
+    "UPDATE documents SET currencyvalue = ?, currency = ? WHERE type IN ?",
+    array(1.0, $_currency, array(DOC_INVOICE, DOC_INVOICE_PRO, DOC_CNOTE, DOC_DNOTE, DOC_RECEIPT))
 );
 
-foreach (array('cash', 'tariffs', 'assignments', 'liabilities') as $sql_table) {
+foreach (array('tariffs', 'assignments', 'liabilities') as $sql_table) {
     $this->Execute("UPDATE " . $sql_table . " SET currency = ?", array($_currency));
 }
-$this->Execute(
-    "UPDATE documents SET currency = ? WHERE type IN ?",
-    array($_currency, array(DOC_INVOICE, DOC_INVOICE_PRO, DOC_CNOTE, DOC_DNOTE, DOC_RECEIPT))
-);
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019102500', 'dbversion'));
 
