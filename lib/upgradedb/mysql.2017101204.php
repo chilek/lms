@@ -155,18 +155,46 @@ if (empty($ids)) {
     $this->Execute("DELETE FROM numberplanassignments WHERE planid NOT IN (" . $sql_ids . ")");
 }
 
+define('DOC_INVOICE', 1);
+define('DOC_RECEIPT', 2);
+define('DOC_CNOTE', 3);
+//define('DOC_CMEMO', 4);
+define('DOC_DNOTE', 5);
+define('DOC_INVOICE_PRO', 6);
+define('DOC_INVOICE_PURCHASE', 7);
+
 $this->Execute("UPDATE documents SET reference = NULL WHERE reference = 0");
 $this->Execute("UPDATE cash SET docid = NULL WHERE docid = 0");
-$ids = $this->GetCol("SELECT id FROM documents");
+$allids = $this->GetCol("SELECT id FROM documents");
 if (empty($ids)) {
     $this->Execute("UPDATE documents SET reference = NULL WHERE reference IS NOT NULL");
     $this->Execute("UPDATE cash SET docid = NULL WHERE docid IS NOT NULL");
 } else {
-    $sql_ids = implode(',', $ids);
-    $this->Execute("UPDATE documents SET reference = NULL
-		WHERE reference IS NOT NULL AND reference NOT IN (" . $sql_ids . ")");
-    $this->Execute("UPDATE cash SET docid = NULL
-		WHERE docid IS NOT NULL AND docid NOT IN (" . $sql_ids . ")");
+    $ids = $this->GetCol(
+        "SELECT id FROM documents WHERE type IN (?, ?, ?, ?, ?)",
+        array(DOC_INVOICE, DOC_RECEIPT, DOC_CNOTE, DOC_DNOTE, DOC_INVOICE_PRO)
+    );
+    $docids = $this->GetCol("SELECT DISTINCT docid FROM cash WHERE docid IS NOT NULL");
+    if (empty($docids)) {
+        $docids = array();
+    }
+    $diff = array_diff($docids, $ids);
+    if (!empty($diff)) {
+        foreach ($diff as $id) {
+            $this->Execute("UPDATE cash SET docid = NULL WHERE docid = ?", array($id));
+        }
+    }
+
+    $refids = $this->GetCol("SELECT reference FROM documents WHERE reference IS NOT NULL");
+    if (empty($refids)) {
+        $refids = array();
+    }
+    $diff = array_diff($refids, $allids);
+    if (!empty($diff)) {
+        foreach ($diff as $id) {
+            $this->Execute("UPDATE documents SET reference = NULL WHERE reference = ?", array($id));
+        }
+    }
 }
 
 $this->Execute("UPDATE receiptcontents SET regid = NULL WHERE regid = 0");
