@@ -93,6 +93,18 @@
 				    </TD>
 				</TR>
 				<TR>
+					<TD><i class="lms-ui-icon-tags"></i></TD>
+					<TD>{trans("Tags:")}</TD>
+					<TD>
+						<SELECT ID="tariff-tags" SIZE="1" NAME="tariff[tags][]"
+								{tip class="lms-ui-multiselect" text="Select tariff tags" trigger="tags"} multiple>
+							{foreach $tarifftags as $tarifftag}
+								<OPTION VALUE="{$tarifftag.id}"{if isset($tariff.tags) && isset($tariff.tags[$tarifftag.id])} selected{/if}>{$tarifftag.name}</OPTION>
+							{/foreach}
+						</SELECT>
+					</TD>
+				</TR>
+				<TR>
 					<TD>
 						<IMG src="img/calendar.gif" alt="">
 					</TD>

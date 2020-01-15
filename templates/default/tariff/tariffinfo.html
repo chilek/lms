@@ -117,6 +117,19 @@
                                 <TD>{$_SERVICETYPES[$tariff.type]}</TD>
                             </TR>
 
+                            <TR>
+                                <TD><i class="lms-ui-icon-tags"></i></TD>
+                                <TD>{trans("Tags:")}</TD>
+                                <TD>
+                                    {foreach $tariff.tags as $tarifftag}
+                                        <span class="dark tag-bar"><a href="?m=tarifftaginfo&id={$tarifftag.id}">{$tarifftag.name}</a></span>
+                                        {if !$tarifftag@last} / {/if}
+                                    {foreachelse}
+                                        -
+                                    {/foreach}
+                                </TD>
+                            </TR>
+
                             {if isset($tariff.numberplan)}
                             <TR>
                                 <TD><IMG SRC="img/money.gif" ALT=""></TD>

@@ -146,6 +146,7 @@ version 25-git (????-??-??):
     google chrome working in headless mode is supported ('documents.html2pdf_command'
     should point external command accessible from server) [chilan]
   - enhancement: added experimental support for guyanian locales [chilan]
+  - enhancement: tariff tag assignment manager from within tariff forms [chilan]
 
 version 24.0 (2019-05-16):
 

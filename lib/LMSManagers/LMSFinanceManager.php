@@ -2558,6 +2558,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         );
         if ($result) {
             $id = $this->db->GetLastInsertID('tariffs');
+
+            $tarifftag_manager = new LMSTariffTagManager($this->db, $this->auth, $this->cache, $this->syslog);
+            $tarifftag_manager->updateTariffTagsForTariff($id, $tariff['tags']);
+
             if ($this->syslog) {
                 $args[SYSLOG::RES_TARIFF] = $id;
                 $this->syslog->AddMessage(SYSLOG::RES_TARIFF, SYSLOG::OPER_ADD, $args);
@@ -2641,6 +2645,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         if ($res && $this->syslog) {
             $this->syslog->AddMessage(SYSLOG::RES_TARIFF, SYSLOG::OPER_UPDATE, $args);
         }
+
+        $tarifftag_manager = new LMSTariffTagManager($this->db, $this->auth, $this->cache, $this->syslog);
+        $tarifftag_manager->updateTariffTagsForTariff($tariff['id'], $tariff['tags']);
+
         return $res;
     }
 
@@ -2697,6 +2705,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 . ($network ? 'AND ((ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ') OR (ipaddr_pub > '
                         . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . ')) ' : '')
                 . 'GROUP BY c.id, c.lastname, c.name ORDER BY c.lastname, c.name', array($id));
+
+        $tarifftag_manager = new LMSTariffTagManager($this->db, $this->auth, $this->cache, $this->syslog);
+        $result['tags'] = $tarifftag_manager->getTariffTagsForTariff($id);
 
         $unactive = $this->db->GetAllByKey('SELECT SUM(a.count) AS count,
             SUM(CASE t.period

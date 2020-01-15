@@ -183,4 +183,49 @@ class LMSTariffTagManager extends LMSManager implements LMSTariffTagManagerInter
     {
         return $this->db->GetAll('SELECT g.id, g.name, g.description FROM tarifftags g ORDER BY g.name ASC');
     }
+
+    public function getTariffTagsForTariff($tariffid)
+    {
+        return $this->db->GetAllByKey(
+            'SELECT t.id, t.name FROM tariffassignments a
+            JOIN tarifftags t ON t.id = a.tarifftagid
+            WHERE a.tariffid = ?
+            ORDER BY t.name',
+            'id',
+            array($tariffid)
+        );
+    }
+
+    public function updateTariffTagsForTariff($tariffid, $tags)
+    {
+        $current_tags = $this->db->GetCol(
+            'SELECT tarifftagid FROM tariffassignments WHERE tariffid = ?',
+            array($tariffid)
+        );
+        if (empty($current_tags)) {
+            $current_tags = array();
+        }
+        if (empty($tags)) {
+            $tags = array();
+        }
+
+        $to_remove = array_diff($current_tags, $tags);
+        if (!empty($to_remove)) {
+            foreach ($to_remove as $id) {
+                $this->TariffassignmentDelete(array(
+                    'tarifftagid' => $id,
+                    'tariffid' => $tariffid,
+                ));
+            }
+        }
+        $to_add = array_diff($tags, $current_tags);
+        if (!empty($to_add)) {
+            foreach ($to_add as $id) {
+                $this->TariffassignmentAdd(array(
+                    'tarifftagid' => $id,
+                    'tariffid' => $tariffid,
+                ));
+            }
+        }
+    }
 }

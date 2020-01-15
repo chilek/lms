@@ -3966,6 +3966,18 @@ class LMS
         return $manager->TarifftagGetAll();
     }
 
+    public function getTariffTagsForTariff($tariffid)
+    {
+        $manager = $this->getTariffTagManager();
+        return $manager->getTariffTagsForTariff($tariffid);
+    }
+
+    public function updateTariffTagsForTariff($tariffid, $tags)
+    {
+        $manager = $this->getTariffTagManager();
+        return $manager->updateTariffTagsForTariff($tariffid, $tags);
+    }
+
     /*
      * divisions
      */

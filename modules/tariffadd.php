@@ -29,7 +29,7 @@ if (isset($_POST['tariff'])) {
     $limit = isset($_POST['limit']) ? $_POST['limit'] : array();
 
     foreach ($tariff as $key => $value) {
-        if ($key != 'authtype') {
+        if ($key != 'authtype' && $key != 'tags') {
             $tariff[$key] = trim($value);
         }
     }
@@ -256,6 +256,8 @@ if (isset($_POST['tariff'])) {
         $SESSION->redirect('?m=tariffinfo&id='.$LMS->TariffAdd($tariff));
     }
 
+    $tariff['tags'] = array_flip($tariff['tags']);
+
     $SMARTY->assign('error', $error);
 } elseif (isset($_GET['id'])) {
         $tariff = $DB->GetRow('SELECT * FROM tariffs
@@ -279,6 +281,7 @@ $layout['pagetitle'] = trans('New Subscription');
 
 $SMARTY->assign('taxeslist', $LMS->GetTaxes());
 $SMARTY->assign('tariff', $tariff);
+$SMARTY->assign('tarifftags', $LMS->TarifftagGetAll());
 $SMARTY->assign('voip_tariffs', $LMS->getVoipTariffs());
 $SMARTY->assign('voip_tariffrules', $LMS->getVoipTariffRuleGroups());
 $SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(array(
