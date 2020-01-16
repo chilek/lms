@@ -38,7 +38,8 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
     $schema = $DB->GetOne('SELECT data FROM promotionschemas WHERE id = ?', array($schemaid));
     $schema = explode(';', $schema);
 
-    $optional = $label = 0;
+    $optional = 0;
+    $label = null;
 
     if ($assignmentid) {
         $form = $form[$assignmentid];
