@@ -147,6 +147,8 @@ version 25-git (????-??-??):
     should point external command accessible from server) [chilan]
   - enhancement: added experimental support for guyanian locales [chilan]
   - enhancement: tariff tag assignment manager from within tariff forms [chilan]
+  - improvement: new 'backend' channel introduced (now supported inly for 'debtors' and 'reminder' types);
+    allows to create customer list which can be sent as mail report [chilan]
 
 version 24.0 (2019-05-16):
 
