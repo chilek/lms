@@ -995,6 +995,13 @@ if (empty($types) || in_array('debtors', $types)) {
                         );
                     }
                 }
+                if (in_array('backend', $channels)) {
+                    printf(
+                        "[backend/debtors] %s (%04d)" . PHP_EOL,
+                        $recipient_name,
+                        $row['id']
+                    );
+                }
                 if (in_array('userpanel', $channels)) {
                     printf(
                         "[userpanel/debtors] %s (%04d)" . PHP_EOL,
@@ -1159,6 +1166,14 @@ if (empty($types) || in_array('reminder', $types)) {
                             $recipient_phone
                         );
                     }
+                }
+                if (in_array('backend', $channels)) {
+                    printf(
+                        "[backend/reminder] %s (%04d)" . PHP_EOL,
+                        $row['name'],
+                        $row['id'],
+                        $row['doc_number']
+                    );
                 }
                 if (in_array('userpanel', $channels)) {
                     printf(
@@ -1824,13 +1839,6 @@ if (empty($types) || in_array('events', $types)) {
                         }
                     }
                 }
-                if (in_array('backend', $channels)) {
-                    printf(
-                        "[backend/reminder] %s (%04d)" . PHP_EOL,
-                        $recipient_name,
-                        $row['id']
-                    );
-                }
             }
 
             if ($uid && array_key_exists($uid, $users)) {
@@ -1855,14 +1863,6 @@ if (empty($types) || in_array('events', $types)) {
                             );
                         }
                     }
-                }
-                if (in_array('backend', $channels)) {
-                    printf(
-                        "[backend/reminder] %s (%04d) %s" . PHP_EOL,
-                        $row['name'],
-                        $row['id'],
-                        $row['doc_number']
-                    );
                 }
             }
 
