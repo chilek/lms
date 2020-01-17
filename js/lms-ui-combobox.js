@@ -515,6 +515,9 @@
 			$(O.altField).val('');
 			$(O.altInvalidField).val(value);
 			$valueInput.val(value);
+			$valueInput.attr('name', function() {
+				return $select.attr('name') || '';
+			});
 			$display.val(value);
 			return;
 		}

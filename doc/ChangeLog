@@ -149,6 +149,7 @@ version 25-git (????-??-??):
   - enhancement: tariff tag assignment manager from within tariff forms [chilan]
   - improvement: new 'backend' channel introduced (now supported inly for 'debtors' and 'reminder' types);
     allows to create customer list which can be sent as mail report [chilan]
+  - enhancement: promotion schema period selections are combo-boxes [chilan]
 
 version 24.0 (2019-05-16):
 

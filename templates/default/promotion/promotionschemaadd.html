@@ -2,6 +2,20 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!-- $Id$ -->
+
+<style>
+
+	#periodcont {
+		display: flex;
+	}
+
+	#periodcont .scombobox {
+		width: 10em;
+		margin-right: 0.5em;
+	}
+
+</style>
+
 <H1>{$layout.pagetitle}</H1>
 <H3>{trans("Promotion:")} {$schema.promotionname}</H3>
 <FORM method="post" name="schemaadd" action="?m=promotionschemaadd&amp;id={$schema.promotionid}">
@@ -30,19 +44,20 @@
 		<TD style="width: 1%;" class="bold">
 			{trans("Periods:")}
 		</TD>
-		<TD style="width: 98%;" id="periodcont">
-			{foreach from=$schema.periods item=period key=key}
-			<SELECT name="schema[periods][]" {tip text="Select length of the period (in months)"}>
-				{if !$key}
-				<OPTION value="0"{if !$period} selected{/if}>- {trans("unlimited")} -</OPTION>
-				{/if}
-				{foreach from=$schema.selection item=item}
-				<OPTION value="{$item}"{if $period == $item} selected{/if}>{$item}</OPTION>
-				{/foreach}
-			</SELECT>
+		<TD id="periodcont">
+			{foreach $schema.periods as $key => $period}
+				<SELECT name="schema[periods][]" {tip class="lms-ui-combobox" text="Select length of the period (in months)"}
+					data-value="{$period}">
+					{if !$key && count($schema.periods) == 1}
+						<OPTION value="0"{if !$period} selected{/if}>- {trans("unlimited")} -</OPTION>
+					{/if}
+					{foreach $schema.selection as $item}
+						<OPTION value="{$item}"{if $period == $item} selected{/if}>{$item}</OPTION>
+					{/foreach}
+				</SELECT>
 			{/foreach}
-			<A href="javascript:del_period_item()" id="perioddel"{if count($schema.periods) < 2} style="display:none"{/if}><IMG src="img/delete.gif" alt="" {tip text="Delete"}></A>
-			<A href="javascript:add_period_item()"><IMG src="img/add.gif" alt="" {tip text="Add"}></A>
+			<A href="#" id="perioddel"{if count($schema.periods) < 2} style="display:none"{/if}><IMG src="img/delete.gif" alt="" {tip text="Delete"}></A>
+			<A href="#" id="periodadd"><IMG src="img/add.gif" alt="" {tip text="Add"}></A>
 		</TD>
 	</TR>
 	<TR>
@@ -57,7 +72,7 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 100%;" class="text-right" colspan="3"> 
+		<TD style="width: 100%;" class="text-right" colspan="3">
 			<A href="javascript:document.schemaadd.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
 			<A href="?m=promotioninfo&amp;id={$schema.promotionid}">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A><BR>
 			<INPUT type="checkbox" name="schema[reuse]" value="ON" id="reuse" {if $schema.reuse} checked{/if}><label for="reuse">{trans("Display this form again, when this schema is saved")}</label>
@@ -66,32 +81,51 @@
 	</TBODY>
 </TABLE>
 </FORM>
-<SCRIPT type="text/javascript">
-<!--
-document.forms['schemaadd'].elements['schema[name]'].focus();
 
-function add_period_item() {
-	var cont = document.getElementById('periodcont'),
-		items = cont.getElementsByTagName('SELECT'),
-		last = items[items.length-1],
-		item = last.cloneNode(true),
-		del = document.getElementById('perioddel');
+<script>
 
-	if (item.options[0].value == "0")
-		item.removeChild(item.options[0]);
+	$('[name="schema[name]"]').focus();
 
-	last.parentNode.insertBefore(item, del);
-	del.style.display = items.length > 1 ? '' : 'none';
-}
+	$(function() {
+		$("#periodadd").click(function() {
+			var comboboxes = $('#periodcont').children('.scombobox');
 
-function del_period_item() {
-	var cont = document.getElementById('periodcont'),
-		items = cont.getElementsByTagName('SELECT'),
-		last = items[items.length-1];
+			if (comboboxes.length == 1) {
+				var firstSelect = $(comboboxes[0]).find('select');
+				firstSelect.find('option:first-child').remove();
+				$(comboboxes[0]).scombobox('toSelect');
+				init_comboboxes(firstSelect);
+			}
 
-	last.parentNode.removeChild(last);
-	document.getElementById('perioddel').style.display = items.length > 1 ? '' : 'none';
-}
-//-->
-</SCRIPT>
+			comboboxes = $('#periodcont').children('.scombobox');
+			var select = $(comboboxes[comboboxes.length - 1]).find('select').clone();
+			var del = $('#perioddel');
+			select.insertBefore(del);
+
+			init_comboboxes(select)
+
+			del.show();
+		});
+
+		$("#perioddel").click(function() {
+			var comboboxes = $('#periodcont .scombobox');
+			var select = $(comboboxes[0]).find('select');
+			select.prepend('<OPTION value="0">- ' + $t("unlimited") + ' -</OPTION>');
+			$(comboboxes[0]).scombobox('toSelect');
+			init_comboboxes(select);
+
+			$('#perioddel').prev().remove();
+			$('#perioddel').toggle(comboboxes.length > 2);
+		});
+
+		$('form[name="schemaadd"]').click(function() {
+			$(".scombobox-value").each(function() {
+				if ($(this).is("[name]")) {
+					$(this).closest(".scombobox").find("select").removeAttr("name");
+				}
+			});
+		});
+	});
+
+</script>
 {/block}

@@ -244,6 +244,47 @@ function init_datepickers(selector) {
 	});
 }
 
+function init_comboboxes(selector) {
+	$(selector).each(function() {
+		$(this).scombobox($.extend({ wrap: false },
+			$(this).attr('data-options') ? JSON.parse($(this).attr('data-options')) : {},
+			$(this).attr('data-alt-field') ? { altField: $(this).attr('data-alt-field') } : {},
+			$(this).attr('data-alt-invalid-field') ? { altInvalidField: $(this).attr('data-alt-invalid-field') } : {}
+		));
+		var scombobox = $(this).parent('.scombobox');
+		$('.scombobox-display', scombobox).addClass(
+			$.grep($('select', scombobox).attr('class').split(' '), function(value) {
+				return value != 'lms-ui-combobox';
+			}));
+		if ($(this).attr('data-value')) {
+			scombobox.scombobox('val', $(this).attr('data-value'));
+			$(this).removeAttr('data-value');
+		} else if ($(this).attr('data-id-value')) {
+			scombobox.scombobox('val', $(this).attr('data-id-value'));
+		}
+	});
+	if ($('.scombobox').length) {
+		// dynamicaly insert hidden input element with name as original select element
+		// the purpose is simple: we want to submit custom value to server
+		$('.scombobox').scombobox('change', function (e) {
+			var scomboboxelem = $(this).closest('.scombobox');
+			var name = scomboboxelem.find('select').attr('name');
+			$(this).attr('name', name);
+		}, 'lms-ui');
+		// hide tooltip after combo box activation because it can interfere with dropdown list
+		$('.scombobox').scombobox('click', function(e) {
+			if ($(this).is('[data-tooltip]')) {
+				$(this).removeAttr('data-tooltip').tooltip('disable');
+			}
+		}, 'lms-ui');
+		$('.scombobox').scombobox('keypress', function(e) {
+			if ($(this).is('[data-tooltip]')) {
+				$(this).removeAttr('data-tooltip').tooltip('disable');
+			}
+		}, 'lms-ui');
+	}
+}
+
 $(function() {
 	var autocomplete = "off";
 	var elementsToInitiate = 0;
@@ -506,43 +547,7 @@ $(function() {
 		}, $(this).attr('data-options') ? JSON.parse($(this).attr('data-options')) : {}));
 	});
 
-	$('.lms-ui-combobox').each(function() {
-		$(this).scombobox($.extend({ wrap: false },
-			$(this).attr('data-options') ? JSON.parse($(this).attr('data-options')) : {},
-			$(this).attr('data-alt-field') ? { altField: $(this).attr('data-alt-field') } : {},
-			$(this).attr('data-alt-invalid-field') ? { altInvalidField: $(this).attr('data-alt-invalid-field') } : {}
-		));
-		var scombobox = $(this).parent('.scombobox');
-		$('.scombobox-display', scombobox).addClass(
-			$.grep($('select', scombobox).attr('class').split(' '), function(value) {
-				return value != 'lms-ui-combobox';
-			}));
-		if ($(this).attr('data-value')) {
-			scombobox.scombobox('val', $(this).attr('data-value'));
-		} else if ($(this).attr('data-id-value')) {
-			scombobox.scombobox('val', $(this).attr('data-id-value'));
-		}
-	});
-	if ($('.scombobox').length) {
-		// dynamicaly insert hidden input element with name as original select element
-		// the purpose is simple: we want to submit custom value to server
-		$('.scombobox').scombobox('change', function (e) {
-			var scomboboxelem = $(this).closest('.scombobox');
-			var name = scomboboxelem.find('select').attr('name');
-			$(this).attr('name', name);
-		}, 'lms-ui');
-		// hide tooltip after combo box activation because it can interfere with dropdown list
-		$('.scombobox').scombobox('click', function(e) {
-			if ($(this).is('[data-tooltip]')) {
-				$(this).removeAttr('data-tooltip').tooltip('disable');
-			}
-		}, 'lms-ui');
-		$('.scombobox').scombobox('keypress', function(e) {
-			if ($(this).is('[data-tooltip]')) {
-				$(this).removeAttr('data-tooltip').tooltip('disable');
-			}
-		}, 'lms-ui');
-	}
+	init_comboboxes('.lms-ui-combobox');
 
 	var documentviews = $('.documentview');
 
