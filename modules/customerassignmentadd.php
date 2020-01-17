@@ -156,8 +156,11 @@ if (isset($_POST['assignment'])) {
     if (!empty($default_assignment_at)) {
         $a['at'] = $default_assignment_at;
     }
-    $a['count'] = 1;
 
+    $a['checkall_nodes_and_devices'] =
+        ConfigHelper::checkConfig('phpui.promotion_schema_all_terminal_check');
+
+    $a['count'] = 1;
     $a['currency'] = LMS::$default_currency;
 }
 

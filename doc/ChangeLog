@@ -150,7 +150,10 @@ version 25-git (????-??-??):
   - improvement: new 'backend' channel introduced (now supported inly for 'debtors' and 'reminder' types);
     allows to create customer list which can be sent as mail report [chilan]
   - enhancement: promotion schema period selections are combo-boxes [chilan]
-  - improvement: allow to check/uncheck all nodes and network devices in schema selection form [chilan]
+  - improvement: allow to check/uncheck all nodes and network devices in schema
+    selection form; phpui.promotion_schema_all_terminal_check configuration variable
+    controls if all customer terminals are checked by default in promotion schema
+    selection form ('false' by default) [chilan]
 
 version 24.0 (2019-05-16):
 

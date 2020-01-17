@@ -426,6 +426,9 @@ if (isset($_POST['document'])) {
     if (!empty($default_assignment_at)) {
         $document['assignment']['at'] = $default_assignment_at;
     }
+
+    $document['assignment']['checkall_nodes_and_devices'] =
+        ConfigHelper::checkConfig('phpui.promotion_schema_all_terminal_check');
 }
 
 $SMARTY->setDefaultResourceType('extendsall');
