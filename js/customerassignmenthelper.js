@@ -107,10 +107,10 @@ function CustomerAssignmentHelper(options) {
 
 	this.checkAllNodesAndDevicesHandler = function() {
 		var checkAllElem = $('#checkall_nodes_and_devices');
-		$('.lms-ui-multiselect:visible').each(function() {
+		$('.customerdevices .lms-ui-multiselect:visible').each(function() {
 			$(this).data('multiselect-object').toggleCheckAll(checkAllElem.prop('checked'));
 		});
-		$('body').on('checkall', '.lms-ui-multiselect-wrapper', function(e, data) {
+		$('body').on('checkall', '.customerdevices .lms-ui-multiselect-wrapper', function(e, data) {
 			checkAllElem.prop('checked', data.allChecked);
 		});
 	}
