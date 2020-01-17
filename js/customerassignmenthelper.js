@@ -193,6 +193,7 @@ function CustomerAssignmentHelper(options) {
 					ms.hideOption(key);
 				}
 			});
+			ms.toggleCheckAll($('#checkall_nodes_and_devices').prop('checked'));
 			ms.refreshSelection();
 		});
 	}
@@ -257,6 +258,7 @@ function CustomerAssignmentHelper(options) {
 					ms.hideOption(key);
 				}
 			});
+			ms.toggleCheckAll($('#checkall_nodes_and_devices').prop('checked'));
 		});
 	}
 
