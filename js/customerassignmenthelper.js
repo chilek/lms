@@ -63,6 +63,8 @@ function CustomerAssignmentHelper(options) {
 		$('.schema-tariff-selection').change(this.tariffSelectionHandler);
 		$('.schema-tariff-checkbox').change(this.tariffCheckboxHandler);
 
+		$('#a_checkall_nodes_and_devices').change(this.checkAllNodesAndDevicesHandler);
+
 		$('[data-restore-selector]').click(function() {
 			$($(this).attr('data-restore-selector')).val($(this).attr('data-restore-value'));
 		});
@@ -103,12 +105,18 @@ function CustomerAssignmentHelper(options) {
         return true;
 	}
 
+	this.checkAllNodesAndDevicesHandler = function() {
+		var checkAllElem = $('#checkall_nodes_and_devices');
+		$('.lms-ui-multiselect:visible').each(function() {
+			$(this).data('multiselect-object').toggleCheckAll(checkAllElem.prop('checked'));
+		});
+		$('body').on('checkall', '.lms-ui-multiselect-wrapper', function(e, data) {
+			checkAllElem.prop('checked', data.allChecked);
+		});
+	}
+
 	this.promotionSelectionHandler = function() {
-		if (parseInt($(this).val())) {
-			$('#a_location,#a_options,#a_existingassignments,#a_properties').show();
-		} else {
-			$('#a_location,#a_options,#a_existingassignments,#a_properties').hide();
-		}
+		$('#a_location,#a_checkall_nodes_and_devices,#a_options,#a_existingassignments,#a_properties').toggle(parseInt($(this).val()) != 0);
 
 		$('.promotion-table').hide();
 

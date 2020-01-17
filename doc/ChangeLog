@@ -150,6 +150,7 @@ version 25-git (????-??-??):
   - improvement: new 'backend' channel introduced (now supported inly for 'debtors' and 'reminder' types);
     allows to create customer list which can be sent as mail report [chilan]
   - enhancement: promotion schema period selections are combo-boxes [chilan]
+  - improvement: allow to check/uncheck all nodes and network devices in schema selection form [chilan]
 
 version 24.0 (2019-05-16):
 

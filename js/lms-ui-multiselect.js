@@ -52,6 +52,7 @@ function multiselect(options) {
 
 	new_element.data('multiselect-object', this)
 		.attr('style', old_element.attr('style'));
+
 	// save onchange event handler
 	var onchange = old_element.prop('onchange');
 	if (typeof(onchange) == 'function') {
@@ -189,6 +190,12 @@ function multiselect(options) {
 				value: box.val(),
 				checked: box.is(':checked')
 			});
+
+			var checkboxes = all_enabled_items.filter(':not(.exclusive)').find(':checkbox');
+			wrapper.trigger('checkall', {
+				allChecked: checkboxes.filter(':checked').length == checkboxes.length
+			});
+
 			e.stopPropagation();
 		}).mouseenter(function() {
 			$(this).addClass('active').find('input').focus().end().siblings('li').not(this).removeClass('active');
@@ -233,7 +240,13 @@ function multiselect(options) {
 				var checkbox = $('.checkall', this);
 				checkbox.prop('checked', !checkbox.prop('checked'))
 			}
+
 			checkAllElements();
+
+			wrapper.trigger('checkall', {
+				allChecked: $('.checkall', this).prop('checked')
+			});
+
 			e.stopPropagation();
 		});
 	}
@@ -412,6 +425,14 @@ function multiselect(options) {
 		$(all_items.get(index)).removeClass('selected').hide()
 			.find('input:checkbox').prop('checked', false);
 		updateCheckAll();
+	}
+
+	this.toggleCheckAll = function(checkall) {
+		if (typeof(checkall) === 'undefined') {
+			checkall = true;
+		}
+		checkall_div.find('.checkall').prop('checked', checkall);
+		checkAllElements();
 	}
 
 	this.refreshSelection = function() {
