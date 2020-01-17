@@ -181,7 +181,8 @@
 								</td>
 								<td>
 									<label>
-										<input type="checkbox" id="checkall_nodes_and_devices">
+										<input type="checkbox" id="checkall_nodes_and_devices" name="{$variable_prefix}[checkall_nodes_and_devices]"
+											value="1" {if $variables.checkall_nodes_and_devices} checked{/if}>
 										{trans("all nodes and network devices")}
 									</label>
 								</td>
