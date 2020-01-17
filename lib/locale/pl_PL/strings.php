@@ -1820,6 +1820,7 @@ $_LANG['Binds from date:'] = 'Obowiązuje od:';
 $_LANG['Binds to date:'] = 'Obowiązuje do:';
 $_LANG['Display this form again, when this tax rate is saved'] = 'wyświetl formularz ponownie po dodaniu stawki';
 $_LANG['Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar'] = 'Wprowadź datę w formacie RRRR/MM/DD (pole puste oznacza brak limitu) lub kliknij aby ją wybrać z kalendarza';
+$_LANG['Enter date in YYYY/MM/DD HH:MM format (empty field means no limit) or click to choose it from calendar'] = 'Wprowadź datę w formacie RRRR/MM/DD GG:MM (pole puste oznacza brak limitu) lub kliknij aby ją wybrać z kalendarza';
 $_LANG['Enter percentage value of tax rate'] = 'Wprowadź procentową wartość stawki podatku';
 $_LANG['Enter tax rate label'] = 'Wprowadź etykietę stawki podatku';
 $_LANG['Incorrect tax rate percentage value (0-100)!'] = 'Błędna wartość procentowa stawki podatku (0-100)!';
