@@ -63,7 +63,7 @@ function CustomerAssignmentHelper(options) {
 		$('.schema-tariff-selection').change(this.tariffSelectionHandler);
 		$('.schema-tariff-checkbox').change(this.tariffCheckboxHandler);
 
-		$('#a_checkall_nodes_and_devices').change(this.checkAllNodesAndDevicesHandler);
+		$('#a_checkall_nodes_and_devices').change(this.checkAllNodesAndDevicesHandler).trigger('change');
 
 		$('[data-restore-selector]').click(function() {
 			$($(this).attr('data-restore-selector')).val($(this).attr('data-restore-value'));
