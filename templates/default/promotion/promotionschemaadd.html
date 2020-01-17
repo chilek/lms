@@ -93,8 +93,7 @@
 			if (comboboxes.length == 1) {
 				var firstSelect = $(comboboxes[0]).find('select');
 				firstSelect.find('option:first-child').remove();
-				$(comboboxes[0]).scombobox('toSelect');
-				init_comboboxes(firstSelect);
+				$(comboboxes[0]).scombobox('fill');
 			}
 
 			comboboxes = $('#periodcont').children('.scombobox');
@@ -111,8 +110,7 @@
 			var comboboxes = $('#periodcont .scombobox');
 			var select = $(comboboxes[0]).find('select');
 			select.prepend('<OPTION value="0">- ' + $t("unlimited") + ' -</OPTION>');
-			$(comboboxes[0]).scombobox('toSelect');
-			init_comboboxes(select);
+			$(comboboxes[0]).scombobox('fill');
 
 			$('#perioddel').prev().remove();
 			$('#perioddel').toggle(comboboxes.length > 2);
