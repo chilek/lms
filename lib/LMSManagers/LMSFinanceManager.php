@@ -3887,7 +3887,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     {
         $promotions = $this->db->GetAllByKey('SELECT id, name, description,
 				(CASE WHEN datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?) THEN 1 ELSE 0 END) AS valid
-			FROM promotions WHERE disabled <> 1', 'id');
+			FROM promotions WHERE disabled <> 1 ORDER BY name', 'id');
 
         if (empty($promotions)) {
             return array();
