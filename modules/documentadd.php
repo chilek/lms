@@ -427,7 +427,7 @@ if (isset($_POST['document'])) {
         $document['assignment']['at'] = $default_assignment_at;
     }
 
-    $document['assignment']['checkall_nodes_and_devices'] =
+    $document['assignment']['check_all_terminals'] =
         ConfigHelper::checkConfig('phpui.promotion_schema_all_terminal_check');
 }
 

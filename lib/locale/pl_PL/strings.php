@@ -4539,4 +4539,4 @@ $_LANG['$a (default: $b)'] = '$a (domyślnie: $b)';
 
 $_LANG['Login form'] = 'Formularz logowania';
 
-$_LANG['all nodes and network devices'] = 'wszystkie komputery i urządzenia sieciowe';
+$_LANG['all terminals'] = 'wszystkie terminale';

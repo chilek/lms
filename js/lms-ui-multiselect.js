@@ -124,13 +124,14 @@ function multiselect(options) {
 	}
 
 	function updateCheckAll() {
-		var checkboxes = all_enabled_items.filter(':not(.exclusive)').find(':checkbox');
+		var checkboxes = all_enabled_items.filter(':not(.exclusive)').filter('.visible').find(':checkbox');
 		ul.parent().find('.checkall').prop('checked', checkboxes.filter(':checked').length == checkboxes.length);
 	}
 
 	$('option', old_element).each(function(i) {
 		var exclusive = $(this).attr('data-exclusive');
 		var class_name = (exclusive == '' ? 'exclusive' : '');
+		class_name += ' visible';
 		var li = $('<li/>').addClass(class_name).appendTo(ul);
 
 		// add elements
@@ -191,7 +192,7 @@ function multiselect(options) {
 				checked: box.is(':checked')
 			});
 
-			var checkboxes = all_enabled_items.filter(':not(.exclusive)').find(':checkbox');
+			var checkboxes = all_enabled_items.filter(':not(.exclusive)').filter('.visible').find(':checkbox');
 			wrapper.trigger('checkall', {
 				allChecked: checkboxes.filter(':checked').length == checkboxes.length
 			});
@@ -214,12 +215,17 @@ function multiselect(options) {
 		all_enabled_checkboxes.filter('.exclusive').prop('checked', false);
 		all_enabled_checkboxes.filter(':not(.exclusive)').each(function() {
 			var li = $(this).closest('li');
-			if (checked) {
-				li.addClass('selected');
+			if (li.is('.visible')) {
+				if (checked) {
+					li.addClass('selected');
+				} else {
+					li.removeClass('selected');
+				}
+				$(this).prop('checked', checked);
 			} else {
 				li.removeClass('selected');
+				$(this).prop('checked', false);
 			}
-			$(this).prop('checked', checked);
 		});
 		new_selected = multiselect.generateSelectedString();
 	}
@@ -418,11 +424,11 @@ function multiselect(options) {
 	}
 
 	this.showOption = function(index) {
-		$(all_items.get(index)).show();
+		$(all_items.get(index)).show().addClass('visible');
 	}
 
 	this.hideOption = function(index) {
-		$(all_items.get(index)).removeClass('selected').hide()
+		$(all_items.get(index)).removeClass('selected').hide().removeClass('visible')
 			.find('input:checkbox').prop('checked', false);
 		updateCheckAll();
 	}

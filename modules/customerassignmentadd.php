@@ -157,7 +157,7 @@ if (isset($_POST['assignment'])) {
         $a['at'] = $default_assignment_at;
     }
 
-    $a['checkall_nodes_and_devices'] =
+    $a['check_all_terminals'] =
         ConfigHelper::checkConfig('phpui.promotion_schema_all_terminal_check');
 
     $a['count'] = 1;
