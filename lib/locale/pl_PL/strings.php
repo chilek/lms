@@ -4060,6 +4060,7 @@ $_LANG['<!promotionassignment>- new -'] = '- nowa -';
 $_LANG['<!promotionassignment>Enter new label'] = 'Wprowadź nową etykietę';
 $_LANG['<!promotionassignment>Label'] = 'Etykieta';
 $_LANG['<!tariffselection>unlabeled_$a'] = 'bez_etykiety_$a';
+$_LANG['^unlabeled_(?<assignmentid>[0-9]+)$'] = '^bez_etykiety_(?<assignmentid>[0-9]+)$';
 $_LANG['<!tariffselection>$a:'] = '$a:';
 $_LANG['<!datepicker>Clear'] = 'Wyczyść';
 
