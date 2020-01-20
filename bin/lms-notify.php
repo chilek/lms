@@ -295,6 +295,16 @@ $plugin_manager = new LMSPluginManager();
 $LMS->setPluginManager($plugin_manager);
 $plugin_manager->executeHook('lms_initialized', $LMS);
 
+// Load plugin files and register hook callbacks
+$plugins = $plugin_manager->getAllPluginInfo(LMSPluginManager::OLD_STYLE);
+if (!empty($plugins)) {
+    foreach ($plugins as $plugin_name => $plugin) {
+        if ($plugin['enabled']) {
+            require(LIB_DIR . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $plugin_name . '.php');
+        }
+    }
+}
+
 if (!empty($mail_fname)) {
     $mail_from = qp_encode($mail_fname) . ' <' . $mail_from . '>';
 }
