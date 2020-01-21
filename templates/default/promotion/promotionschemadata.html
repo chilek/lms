@@ -148,7 +148,7 @@
 					</TD>
 					{/foreach}
 					<TD class="nobr">
-						<A class="tariff-view button-del" href="?m=promotionschemaedit&action=tariffdel&id={$schema.id}&aid={$tariff.id}"
+						<A class="tariff-view button-del" href="#" data-href="?m=promotionschemaedit&action=tariffdel&id={$schema.id}&aid={$tariff.id}"
 								{if $error && $formdata.aid == $tariff.id} style="display: none;"{/if}>
 							<IMG src="img/delete.gif" alt="{trans("Delete assignment")}" title="{trans("Delete assignment")}">
 						</A>
@@ -209,7 +209,7 @@
 										<SELECT id="promoschema-tariff-selection-tags" name="form[tags][]" class="lms-ui-multiselect"
 												{tip text="Select tariff tags"} multiple onchange="javascript:updateTariffs();"{if empty($tags)} style="display: none;"{/if}>
 											{foreach $tags as $tag}
-												<OPTION value="{$tag.id}">{$tag.name}</OPTION>
+												<OPTION value="{$tag.id}"{if isset($formdata.tags) && in_array($tag.id, $formdata.tags)} selected{/if}>{$tag.name}</OPTION>
 											{/foreach}
 										</SELECT>
 									</div>
@@ -420,6 +420,8 @@
 		});
 
 		init_multiselects('select.lms-ui-multiselect-deferred:visible');
+
+		updateTariffs();
 	});
 
 	if (getCookie('promotionschemadata') == '1') {
@@ -428,7 +430,8 @@
 
 	$('.button-del').click(function() {
 		confirmDialog($t("Are you sure, you want to delete this assignment?"), this).done(function() {
-			location.href = $(this).attr('href');
+			$('form[name="tariffs"]').attr('action', $(this).attr('data-href'));
+			document.tariffs.submit();
 		});
 		return false;
 	});

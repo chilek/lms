@@ -111,6 +111,10 @@ $layout['pagetitle'] = trans('Schema Info: $a', $schema['name']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
+$SESSION->restore('psdform', $formdata);
+$SESSION->remove('psdform');
+$SMARTY->assign('formdata', $formdata);
+
 $SMARTY->assign('tariffs', $tariffs);
 $SMARTY->assign('tags', $LMS->TarifftagGetAll());
 $SMARTY->assign('users', $users);

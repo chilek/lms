@@ -153,6 +153,7 @@ version 25-git (????-??-??):
   - improvement: allow to check/uncheck all terminals in schema selection form;
     phpui.promotion_schema_all_terminal_check configuration variable controls if all customer terminals
     are checked by default in promotion schema selection form ('false' by default) [chilan]
+  - improvement: tariff tag selections are preserved between promotion schema info form submits [chilan]
 
 version 24.0 (2019-05-16):
 
