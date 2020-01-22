@@ -1115,6 +1115,17 @@ CREATE TABLE cashimport (
 
 # --------------------------------------------------------
 #
+# Structure of table customerbalances
+#
+CREATE TABLE customerbalances (
+    customerid int(11) NOT NULL,
+    balance decimal(9,2) NOT NULL,
+    CONSTRAINT customerbalances_customerid_fkey
+        FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
 # Structure of table  cash
 #
 CREATE TABLE cash (
@@ -2656,17 +2667,6 @@ CREATE TABLE files (
 	INDEX md5sum (md5sum),
 	UNIQUE KEY files_containerid_key (containerid, md5sum),
 	FOREIGN KEY (containerid) REFERENCES filecontainers (id) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table customerbalances
-#
-CREATE TABLE customerbalances (
-    customerid int(11) NOT NULL,
-    balance decimal(9,2) NOT NULL,
-    CONSTRAINT customerbalances_customerid_fkey
-        FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------

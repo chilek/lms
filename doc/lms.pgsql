@@ -985,6 +985,15 @@ CREATE INDEX cashimport_customerid_idx ON cashimport (customerid);
 CREATE INDEX cashimport_sourcefileid_idx ON cashimport (sourcefileid);
 CREATE INDEX cashimport_sourceid_idx ON cashimport (sourceid);
 
+/* ---------------------------------------------------
+ Structure of table customerbalances
+------------------------------------------------------*/
+CREATE TABLE customerbalances (
+    customerid integer NOT NULL
+        CONSTRAINT customerbalances_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    balance numeric(9,2) NOT NULL
+);
+
 /* --------------------------------------------------------
   Structure of table "cash"
 -------------------------------------------------------- */
@@ -2604,15 +2613,6 @@ CREATE TABLE files (
 	CONSTRAINT files_containerid_key UNIQUE (containerid, md5sum)
 );
 CREATE INDEX files_md5sum_idx ON files (md5sum);
-
-/* ---------------------------------------------------
- Structure of table customerbalances
-------------------------------------------------------*/
-CREATE TABLE customerbalances (
-    customerid integer NOT NULL
-        CONSTRAINT customerbalances_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    balance numeric(9,2) NOT NULL
-);
 
 /* ---------------------------------------------------
  Structure of table "up_rights" (Userpanel)
