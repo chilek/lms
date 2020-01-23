@@ -356,7 +356,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 . $serviceidsfilter
                 . $verifieridsfilter
                 . $projectidsfilter
-                . $typeidsfilter, array($userid, $userid));
+                . $typeidsfilter, array($userid));
         }
 
         if ($result = $this->db->GetAll(
