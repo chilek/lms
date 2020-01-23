@@ -360,7 +360,7 @@ $stderr = fopen('php://stderr', 'w');
 
 define('PROGRESS_ROW_COUNT', 1000);
 define('BUILDING_BASE_ZIP_NAME', 'baza_punktow_adresowych_2018.zip');
-define('BUILDING_BASE_ZIP_URL', 'https://form.teleinfrastruktura.gov.pl/help-files/baza_punktow_adresowych_2018.zip');
+define('BUILDING_BASE_ZIP_URL', 'https://form.teleinfrastruktura.gov.pl/help-files/baza_punktow_adresowych_2019.zip');
 
 $only_unique_city_matches = isset($options['only-unique-city-matches']);
 
