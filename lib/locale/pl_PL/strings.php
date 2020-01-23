@@ -4541,3 +4541,5 @@ $_LANG['$a (default: $b)'] = '$a (domyślnie: $b)';
 $_LANG['Login form'] = 'Formularz logowania';
 
 $_LANG['all terminals'] = 'wszystkie terminale';
+
+$_LANG['with unarchived documents'] = 'z dokumentami niezarchiwizowanymi';

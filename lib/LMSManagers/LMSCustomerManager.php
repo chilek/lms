@@ -641,6 +641,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 case 72:
                     $state_conditions[] = 'c.deleted = 0';
                     break;
+                case 73:
+                    $state_conditions[] = 'EXISTS (SELECT 1 FROM documents WHERE customerid = c.id AND type < 0 AND archived = 0)';
+                    break;
                 default:
                     if ($state_item > 0 && $state_item < 50 && intval($state_item)) {
                         $customer_statuses[] = intval($state_item);
