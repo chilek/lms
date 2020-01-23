@@ -531,6 +531,18 @@ abstract class LMSDB_common implements LMSDBInterface
         $query = str_ireplace('?NOW?', $this->_driver_now(), $query);
         $query = str_ireplace('?LIKE?', $this->_driver_like(), $query);
 
+        $param_count = substr_count($query, '?');
+        $array_count = $inputarray ? count($inputarray) : 0;
+        if ($param_count != $array_count) {
+            $error = array(
+                'query' => $query,
+                'error' => "SQL query parser error: parameter count differs from passed argument count (${param_count} != ${array_count}): "
+                    . ($array_count ? var_export($inputarray, true) : ''),
+            );
+            $this->errors[] = $error;
+            writesyslog($error['error'] . ' (' . str_replace("\t", ' ', $error['query']) . ')', LOG_ERR);
+        }
+
         if ($inputarray) {
             foreach ($inputarray as $k => $v) {
                 $inputarray[$k] = $this->_quote_value($v);
