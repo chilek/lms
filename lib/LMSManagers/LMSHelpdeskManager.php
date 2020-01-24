@@ -556,10 +556,15 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
     public function GetQueueNames()
     {
-        $del = 0;
-        return $this->db->GetAll('SELECT q.id, name FROM rtqueues q'
-            . (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations') ? ' JOIN rtrights r ON r.queueid = q.id
-			WHERE r.rights <> 0 AND r.userid = ? AND q.deleted = ?' : '') . ' ORDER BY name', array(Auth::GetCurrentUser(), $del));
+        if (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations')) {
+            $join = 'JOIN rtrights r ON r.queueid = q.id WHERE r.rights <> 0 AND r.userid = ? AND q.deleted = ?';
+            $args = array(Auth::GetCurrentUser(), 0);
+        } else {
+            $join = '';
+            $args = array();
+        }
+
+        return $this->db->GetAll('SELECT q.id, name FROM rtqueues q ' . $join  . ' ORDER BY name', $args);
     }
 
     public function GetMyQueues()
