@@ -186,7 +186,7 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 				GROUP BY templateid
 			) tq ON tq.templateid = t.id
 			WHERE 1 = 1' . (empty($type) ? '' : ' AND t.type = ' . intval($type))
-            . ' ORDER BY t.name', array($queues));
+            . ' ORDER BY t.name');
     }
 
     public function GetMessageTemplatesByQueueAndType($queueid, $type)
