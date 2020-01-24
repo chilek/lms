@@ -539,7 +539,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 				WHERE cdate >= ? AND cdate < ? AND type = ? AND ' . ($planid ? 'numberplanid = ' . intval($planid) : 'numberplanid IS NULL')
                 . (!isset($numtemplate) || strpos($numtemplate, '%C') === false || empty($customerid)
                     ? '' : ' AND customerid = ' . intval($customerid)),
-            array($start, $end, $doctype, $planid)
+            array($start, $end, $doctype)
         );
 
         return $number ? ++$number : 1;
