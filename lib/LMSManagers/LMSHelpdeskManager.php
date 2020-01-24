@@ -948,8 +948,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         $this->lastmessageid = '<msg.' . $ticket['queue'] . '.' . $id . '.' . time() . '@rtsystem.' . gethostname() . '>';
 
         $this->db->Execute('INSERT INTO rtmessages (ticketid, customerid, createtime,
-				subject, body, mailfrom, phonefrom, messageid, replyto)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', array($id,
+				subject, body, mailfrom, phonefrom, messageid, replyto, headers)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($id,
             empty($ticket['customerid']) ? null : $ticket['customerid'],
             $createtime,
             $ticket['subject'],
@@ -963,8 +963,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         if ($ticket['note']) {
                     $this->db->Execute('INSERT INTO rtmessages (ticketid, customerid, createtime,
-                        subject, body, mailfrom, phonefrom, messageid, replyto, type)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)', array($id,
+                        subject, body, mailfrom, phonefrom, messageid, replyto, headers, type)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($id,
                         empty($ticket['customerid']) ? null : $ticket['customerid'],
                         $createtime,
                         $ticket['subject'],
@@ -974,6 +974,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                         isset($ticket['messageid']) ? $ticket['messageid'] : $this->lastmessageid,
                         isset($ticket['replyto']) ? $ticket['replyto'] : '',
                         isset($ticket['headers']) ? $ticket['headers'] : '',
+                        RTMESSAGE_NOTE,
                     ));
         }
 
