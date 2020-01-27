@@ -83,10 +83,12 @@ if (!empty($customers)) {
                 $args['post_street'] = $customer['post_address'];
             }
         }
-        $this->Execute(
-            "UPDATE customers SET " . implode(' = ?, ', array_keys($args)) . " = ? WHERE id = ?",
-            array_merge($args, array('id' => $customer['id']))
-        );
+        if (!empty($args)) {
+            $this->Execute(
+                "UPDATE customers SET " . implode(' = ?, ', array_keys($args)) . " = ? WHERE id = ?",
+                array_merge($args, array('id' => $customer['id']))
+            );
+        }
     }
 }
 
