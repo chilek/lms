@@ -176,7 +176,7 @@ if (empty($page)) {
 $start = ($page - 1) * $pagelimit;
 
 $logentry = $DB->GetRow('SELECT * FROM cashreglog WHERE regid = ?
-			ORDER BY time DESC LIMIT 1', array($regid, $regid));
+			ORDER BY time DESC LIMIT 1', array($regid));
 
 $layout['pagetitle'] = trans('Cash Registry: $a', $DB->GetOne('SELECT name FROM cashregs WHERE id=?', array($regid)));
 
