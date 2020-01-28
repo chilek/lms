@@ -267,10 +267,18 @@ if (empty($ids)) {
 $this->Execute("UPDATE cash SET importid = NULL WHERE importid = 0");
 $ids = $this->GetCol("SELECT id FROM cashimport");
 if (empty($ids)) {
-    $this->Execute("DELETE FROM cash WHERE importid IS NOT NULL");
+    $this->Execute("UPDATE cash SET importid = NULL WHERE importid IS NOT NULL");
 } else {
-    $sql_ids = implode(',', $ids);
-    $this->Execute("DELETE FROM cash WHERE importid IS NOT NULL AND importid NOT IN (" . $sql_ids . ")");
+    $importids = $this->GetCol("SELECT importid FROM cash WHERE importid IS NOT NULL");
+    if (empty($importids)) {
+        $importids = array();
+    }
+    $diff = array_diff($importids, $ids);
+    if (!empty($diff)) {
+        foreach ($diff as $id) {
+            $this->Execute("UPDATE cash SET importid = NULL WHERE importid = ?", array($id));
+        }
+    }
 }
 
 $ids = $this->GetCol("SELECT id FROM cashsources");
