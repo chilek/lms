@@ -53,8 +53,7 @@ if (!empty($promotion['schemas'])) {
             FROM promotionassignments
             WHERE promotionschemaid IN ('.$schemas.')
         )
-        ORDER BY t.name, t.value DESC',
-        array($promotion['id'])
+        ORDER BY t.name, t.value DESC'
     );
 }
 
