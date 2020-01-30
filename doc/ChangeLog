@@ -157,6 +157,7 @@ version 25-git (????-??-??):
   - improvement: allow to filter customers which have unarchived documents assigned [chilan]
   - improvement: phpui.customer_ten_existence_scope and phpui.customer_ssn_existence_scope configuration
     variables (both 'global' by default) control scope of customer identifier existence checks [chilan]
+  - improvement: let customer pay deadlines assign specific values [chilan]
 
 version 24.0 (2019-05-16):
 
