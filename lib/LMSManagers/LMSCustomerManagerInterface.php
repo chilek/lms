@@ -93,4 +93,8 @@ interface LMSCustomerManagerInterface
     public function getCustomerSMSOptions();
 
     public function GetCustomerAddressesWithoutEndPoints($customerid);
+
+    public function checkCustomerTenExistence($customerid, $ten, $divisionid = null);
+
+    public function checkCustomerSsnExistence($customerid, $ssn, $divisionid = null);
 }

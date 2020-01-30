@@ -685,6 +685,18 @@ class LMS
         return $manager->GetCustomerAddressesWithoutEndPoints($customerid);
     }
 
+    public function checkCustomerTenExistence($customerid, $ten, $divisionid = null)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->checkCustomerTenExistence($customerid, $ten, $divisionid);
+    }
+
+    public function checkCustomerSsnExistence($customerid, $ssn, $divisionid = null)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->checkCustomerSsnExistence($customerid, $ssn, $divisionid);
+    }
+
     /*
      * Customer groups
      */

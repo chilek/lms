@@ -1847,4 +1847,37 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             array($customerid, DEFAULT_LOCATION_ADDRESS, BILLING_ADDRESS, $customerid, DEFAULT_LOCATION_ADDRESS, BILLING_ADDRESS, $customerid)
         );
     }
+
+    public function checkCustomerTenExistence($customerid, $ten, $divisionid = null)
+    {
+        $ten = preg_replace('/- /', '', $ten);
+        if (empty($divisionid)) {
+            return $this->db->GetOne(
+                "SELECT id FROM customers WHERE id <> ? AND REPLACE(REPLACE(ten, '-', ''), ' ', '') = ?",
+                array($customerid, $ten)
+            ) > 0;
+        } else {
+            return $this->db->GetOne(
+                "SELECT id FROM customers WHERE id <> ? AND AND divisionid = ? AND REPLACE(REPLACE(ten, '-', ''), ' ', '') = ?",
+                array($customerid, $divisionid, $ten)
+            ) > 0;
+        }
+    }
+
+    public function checkCustomerSsnExistence($customerid, $ssn, $divisionid = null)
+    {
+        $ssn = preg_replace('/- /', '', $ssn);
+        if (empty($divisionid)) {
+            return $this->db->GetOne(
+                "SELECT id FROM customers WHERE id <> ? AND REPLACE(REPLACE(ssn, '-', ''), ' ', '') = ?",
+                array($customerid, $ssn)
+            ) > 0;
+        } else {
+            return $this->db->GetOne(
+                "SELECT id FROM customers WHERE id <> ? AND AND divisionid = ? AND REPLACE(REPLACE(ssn, '-', ''), ' ', '') = ?",
+                array($customerid, $divisionid, $ssn)
+            ) > 0;
+        }
+    }
+
 }

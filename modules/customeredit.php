@@ -89,10 +89,15 @@ if (!isset($_POST['xjxfun'])) {
                     $tenwarning = 1;
                 }
                 $ten_existence_check = ConfigHelper::getConfig('phpui.customer_ten_existence_check', 'none');
-                $ten_exists = $DB->GetOne(
-                    "SELECT id FROM customers WHERE id <> ? AND REPLACE(REPLACE(ten, '-', ''), ' ', '') = ?",
-                    array($_GET['id'], preg_replace('/- /', '', $customerdata['ten']))
-                ) > 0;
+                $ten_existence_scope = ConfigHelper::getConfig('phpui.customer_ten_existence_scope', 'global');
+                if (preg_match('/^(global|division)$/', $ten_existence_scope)) {
+                    $ten_existence_scope = 'global';
+                }
+                $ten_exists = $LMS->checkCustomerTenExistence(
+                    $_GET['id'],
+                    $customerdata['ten'],
+                    $ten_existence_scope == 'global' ? null : $customerdata['divisionid']
+                );
                 switch ($ten_existence_check) {
                     case 'warning':
                         if (!isset($customerdata['tenexistencewarning']) && $ten_exists) {
@@ -114,10 +119,15 @@ if (!isset($_POST['xjxfun'])) {
                     $ssnwarning = 1;
                 }
                 $ssn_existence_check = ConfigHelper::getConfig('phpui.customer_ssn_existence_check', 'none');
-                $ssn_exists = $DB->GetOne(
-                    "SELECT id FROM customers WHERE id <> ? AND REPLACE(REPLACE(ssn, '-', ''), ' ', '') = ?",
-                    array($_GET['id'], preg_replace('/- /', '', $customerdata['ssn']))
-                ) > 0;
+                $ssn_existence_scope = ConfigHelper::getConfig('phpui.customer_ssn_existence_scope', 'global');
+                if (preg_match('/^(global|division)$/', $ssn_existence_scope)) {
+                    $ssn_existence_scope = 'global';
+                }
+                $ssn_exists = $LMS->checkCustomerSsnExistence(
+                    $_GET['id'],
+                    $customerdata['ssn'],
+                    $ssn_existence_scope == 'global' ? null : $customerdata['divisionid']
+                );
                 switch ($ssn_existence_check) {
                     case 'warning':
                         if (!isset($customerdata['ssnexistencewarning']) && $ssn_exists) {
