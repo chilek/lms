@@ -190,10 +190,6 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                 }
             }
 
-            if ($id && !$this->db->GetOne('SELECT id FROM customers WHERE id = ?', array($id))) {
-                $id = null;
-            }
-
             if ($time) {
                 if (preg_match($pattern['date_regexp'], $time, $date)) {
                     $time = mktime(
@@ -219,6 +215,10 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                 compact("id", "pattern", "comment", "theline", "ln", "patterns_cnt", "error", "line", "time")
             );
             extract($hook_data);
+
+            if ($id && !$this->db->GetOne('SELECT id FROM customers WHERE id = ?', array($id))) {
+                $id = null;
+            }
 
             if (!strlen($comment)) {
                 $comment = trans('(payment without title)');
