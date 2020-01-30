@@ -155,6 +155,8 @@ version 25-git (????-??-??):
     are checked by default in promotion schema selection form ('false' by default) [chilan]
   - improvement: tariff tag selections are preserved between promotion schema info form submits [chilan]
   - improvement: allow to filter customers which have unarchived documents assigned [chilan]
+  - improvement: phpui.customer_ten_existence_scope and phpui.customer_ssn_existence_scope configuration
+    variables (both 'global' by default) control scope of customer identifier existence checks [chilan]
 
 version 24.0 (2019-05-16):
 
