@@ -4543,3 +4543,5 @@ $_LANG['Login form'] = 'Formularz logowania';
 $_LANG['all terminals'] = 'wszystkie terminale';
 
 $_LANG['with unarchived documents'] = 'z dokumentami niezarchiwizowanymi';
+
+$_LANG['Invalid deadline format!'] = 'Niepoprawny format terminu płatności!';

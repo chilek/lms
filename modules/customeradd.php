@@ -236,15 +236,19 @@ if (isset($_POST['customeradd'])) {
         $error['cutoffstop'] = trans('Incorrect date of cutoff suspending!');
     }
 
-        $hook_data = $LMS->executeHook(
-            'customeradd_validation_before_submit',
-            array(
-                'customeradd' => $customeradd,
-                'error' => $error
-            )
-        );
-        $customeradd = $hook_data['customeradd'];
-        $error = $hook_data['error'];
+    if (!preg_match('/^[0-9]+$/', $customeradd['paytime'])) {
+        $error['paytime'] = trans('Invalid deadline value!');
+    }
+
+    $hook_data = $LMS->executeHook(
+        'customeradd_validation_before_submit',
+        array(
+            'customeradd' => $customeradd,
+            'error' => $error
+        )
+    );
+    $customeradd = $hook_data['customeradd'];
+    $error = $hook_data['error'];
 
     if (!$error) {
         $customeradd['cutoffstop'] = $cutoffstop;

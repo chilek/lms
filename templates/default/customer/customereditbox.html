@@ -100,6 +100,10 @@
 		}
 	}
 
+	#paytime-cell .scombobox {
+		width: 11em;
+	}
+
 </style>
 
 <FORM name="customeredit" id="customeredit" method="post" action="?m=customeredit&id={$customerinfo.id}{if $recover}&action=recover{/if}">
@@ -368,8 +372,9 @@
 												<TD>
 													{trans("Deadline:")}
 												</TD>
-												<TD>
-													<SELECT name="customerdata[paytime]" {tip text="Select default deadline in days" trigger="paytime"}>
+												<TD id="paytime-cell">
+													<SELECT name="customerdata[paytime]" data-value="{$customerinfo.paytime}"
+															{tip class="lms-ui-combobox" text="Select default deadline in days" trigger="paytime"}>
 														<OPTION value="-1"{if $customerinfo.paytime==-1} selected{/if}>- {trans("default")} -</OPTION>
 														<OPTION value="0"{if $customerinfo.paytime==0} selected{/if}>0</OPTION>
 														<OPTION value="7"{if $customerinfo.paytime==7} selected{/if}>7</OPTION>
