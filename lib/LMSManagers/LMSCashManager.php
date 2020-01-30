@@ -177,17 +177,9 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                 if (count($uids) == 1) {
                     $id = $uids[0];
                 }
-            } elseif ($id && (!$name || !$lastname)) {
-                if ($tmp = $this->db->GetRow('SELECT id, lastname, name FROM customers WHERE '
-                    . (isset($pattern['extid']) && $pattern['extid'] ? 'ext' : '') . 'id = ?', array($id))) {
-                    if (isset($pattern['extid']) && $pattern['extid']) {
-                        $id = $tmp['id'];
-                    }
-                    $lastname = $tmp['lastname'];
-                    $name = $tmp['name'];
-                } else {
-                    $id = null;
-                }
+                $found_by_name = true;
+            } else {
+                $found_by_name = false;
             }
 
             if ($time) {
@@ -215,6 +207,19 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                 compact("id", "pattern", "comment", "theline", "ln", "patterns_cnt", "error", "line", "time")
             );
             extract($hook_data);
+
+            if (!$found_by_name && $id && (!$name || !$lastname)) {
+                if ($tmp = $this->db->GetRow('SELECT id, lastname, name FROM customers WHERE '
+                    . (isset($pattern['extid']) && $pattern['extid'] ? 'ext' : '') . 'id = ?', array($id))) {
+                    if (isset($pattern['extid']) && $pattern['extid']) {
+                        $id = $tmp['id'];
+                    }
+                    $lastname = $tmp['lastname'];
+                    $name = $tmp['name'];
+                } else {
+                    $id = null;
+                }
+            }
 
             if ($id && !$this->db->GetOne('SELECT id FROM customers WHERE id = ?', array($id))) {
                 $id = null;
