@@ -236,8 +236,8 @@ if (isset($_POST['customeradd'])) {
         $error['cutoffstop'] = trans('Incorrect date of cutoff suspending!');
     }
 
-    if (!preg_match('/^[0-9]*$/', $customeradd['paytime'])) {
-        $error['paytime'] = trans('Invalid deadline value!');
+    if (!preg_match('/^[\-]?[0-9]+$/', $customeradd['paytime'])) {
+        $error['paytime'] = trans('Invalid deadline format!');
     }
 
     $hook_data = $LMS->executeHook(
