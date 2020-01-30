@@ -108,7 +108,7 @@
 					{continue}
 					{/if}
 				{/if}
-				<TR{if $item.docid} data-published="{$item.published}" data-doctype="{$item.doctype}"
+				<TR{if $item.docid} data-published="{$item.published}" data-doctype="{$item.doctype}" data-senddate="{if $item.senddate}{$item.senddate|date_format:"%Y-%m-%d"}{else}{$item.senddate}{/if}"
 					{if $item.doctype == $smarty.const.DOC_INVOICE_PRO} class="teal"{/if}{if $item.closed && ($item.doctype == $smarty.const.DOC_INVOICE || $item.doctype == $smarty.const.DOC_CNOTE || $item.doctype == $smarty.const.DOC_DNOTE)} class="blend"{/if}{/if}>
 					<TD class="nobr">{$item.date}</TD>
 					<TD class="nobr">{$item.username|truncate:16:"...":true}</TD>
@@ -132,8 +132,8 @@
 							{if ($customerinfo.sendinvoices || $balancelist.sendinvoices) && ($item.doctype == $smarty.const.DOC_INVOICE
 								|| $item.doctype == $smarty.const.DOC_CNOTE || $item.doctype == $smarty.const.DOC_INVOICE_PRO
 								|| $item.doctype == $smarty.const.DOC_DNOTE)}
-								{button type="link" icon="mail" class="send-invoice" href="?m=invoicesend&id={$item.docid}"
-									tip="Send invoice"}
+								{button type="link" icon="{if $item.senddate}mailsended{else}mail{/if}" class="send-invoice" href="?m=invoicesend&id={$item.docid}"
+									tip="{if $item.senddate}Send invoice again{else}Send invoice{/if}"}
 							{/if}
 							{if $item.doctype == $smarty.const.DOC_INVOICE}
 								{if !$item.cancelled}
@@ -601,22 +601,43 @@
 	{/if}
 
 	$('.send-invoice').click(function(e) {
-		confirmDialog($t('Are you sure, you want to send invoice to customer \'$a\'?', '{$customerinfo.customername|escape:"javascript"|escape:"html"}'), this)
-			.done(function() {
-				var add = "";
-				var which = 0;
-				$('[form="addbalance-form"][name^="which"]:checked').each(function() {
-					which += parseInt($(this).val());
-				});
-				add += "&which=" + which;
-				if (which & {$smarty.const.DOC_ENTITY_DUPLICATE}) {
-					var duplicate_date = parseInt($('[name="duplicate-date"]').val());
-					if (duplicate_date > 0) {
-						add += "&duplicate-date=" + duplicate_date;
+		var senddate = $(this).closest('tr').attr('data-senddate');
+		console.log('senddate =', senddate)
+		if (parseInt(senddate) === 0) {
+			confirmDialog($t('Are you sure, you want to send invoice to customer \'$a\'?', '{$customerinfo.customername|escape:"javascript"|escape:"html"}'), this)
+				.done(function() {
+					var add = "";
+					var which = 0;
+					$('[form="addbalance-form"][name^="which"]:checked').each(function() {
+						which += parseInt($(this).val());
+					});
+					add += "&which=" + which;
+					if (which & {$smarty.const.DOC_ENTITY_DUPLICATE}) {
+						var duplicate_date = parseInt($('[name="duplicate-date"]').val());
+						if (duplicate_date > 0) {
+							add += "&duplicate-date=" + duplicate_date;
+						}
 					}
-				}
-				window.open($(this).attr('href') + add);
-			});
+					window.open($(this).attr('href') + add);
+				});
+		} else {
+			confirmDialog($t("Invoice was sent to customer '$a' already on $b. Are you sure, you want to send invoice again?", '{$customerinfo.customername|escape:"javascript"|escape:"html"}', senddate), this)
+			.done(function() {
+					var add = "";
+					var which = 0;
+					$('[form="addbalance-form"][name^="which"]:checked').each(function() {
+						which += parseInt($(this).val());
+					});
+					add += "&which=" + which;
+					if (which & {$smarty.const.DOC_ENTITY_DUPLICATE}) {
+						var duplicate_date = parseInt($('[name="duplicate-date"]').val());
+						if (duplicate_date > 0) {
+							add += "&duplicate-date=" + duplicate_date;
+						}
+					}
+					window.open($(this).attr('href') + add);
+				});
+		}
 		return false;
 	});
 

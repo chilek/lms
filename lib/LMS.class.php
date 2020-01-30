@@ -3115,6 +3115,18 @@ class LMS
         return $manager->isDocumentReferenced($id);
     }
 
+    public function MarkDocumentsAsSended($ids)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->MarkDocumentsAsSended($ids);
+    }
+
+    public function GetDocumentSendDate($id)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->GetDocumentSendDate($id);
+    }
+
     public function GetReceiptList(array $params)
     {
         $manager = $this->getFinanceManager();
@@ -4419,6 +4431,7 @@ class LMS
 
                     if ($status == MSG_SENT) {
                         $this->PublishDocuments($doc['id']);
+                        $this->MarkDocumentsAsSended($doc['id']);
                         $published = true;
                     }
 

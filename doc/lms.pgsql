@@ -433,6 +433,7 @@ CREATE TABLE documents (
 	adate integer DEFAULT 0 NOT NULL,
     currency varchar(3),
     currencyvalue numeric(17,10) DEFAULT 1.0,
+    senddate integer	DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
 );
 CREATE INDEX documents_cdate_idx ON documents(cdate);
@@ -3710,6 +3711,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020013100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020013101');
 
 COMMIT;

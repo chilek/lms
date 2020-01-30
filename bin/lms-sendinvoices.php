@@ -389,6 +389,8 @@ if ($backup || $archive) {
     }
 }
 
+$ignore_send_date = ConfigHelper::getConfig('sendinvoices.ignore_send_date', false);
+
 $query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctype, d.archived, n.template" . ($backup || $archive ? '' : ', m.email') . "
 		FROM documents d
 		LEFT JOIN customers c ON c.id = d.customerid"
@@ -398,6 +400,7 @@ $query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctyp
 		WHERE c.deleted = 0 AND d.cancelled = 0 AND d.type IN (?, ?, ?, ?)" . ($backup || $archive ? '' : " AND c.invoicenotice = 1")
             . ($archive ? " AND d.archived = 0" : '') . "
 			AND d.cdate >= $daystart AND d.cdate <= $dayend"
+            . ($ignore_send_date === "false" ? " AND d.senddate = 0" : "")
             . (!empty($groupnames) ? $customergroups : "")
         . " ORDER BY d.number" . (!empty($count_limit) ? " LIMIT $count_limit OFFSET $count_offset" : '');
 $docs = $DB->GetAll($query, $args);

@@ -137,7 +137,8 @@
 	{assign var=invoiceid value=$invoice.id}
 	{number number=$invoice.number template=$invoice.template time=$invoice.cdate assign=number customerid=$invoice.customerid}
 	<TR class="highlight{if $invoice.closed} blend{elseif $invoice.cancelled} cancel{/if}" data-published="{$invoice.published}"
-			data-number="{$number}" data-customername="{$invoice.name|escape:"javascript"|escape:"html"}">
+			data-number="{$number}" data-customername="{$invoice.name|escape:"javascript"|escape:"html"}"
+			data-senddate="{if $invoice.senddate}{$invoice.senddate|date_format:"%Y-%m-%d"}{else}{$invoice.senddate}{/if}">
 		<TD>
 			{$invoice.id|string_format:"%06d"}
 		</TD>
@@ -165,8 +166,8 @@
 					tip="Convert to invoice"}
 			{/if}
 			{if $invoice.sendinvoices && !$invoice.cancelled && ($invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_CNOTE || $invoice.type == $smarty.const.DOC_INVOICE_PRO)}
-				{button type="link" icon="mail" class="send-invoice" href="?m=invoicesend&id={$invoice.id}"
-					tip="Send invoice"}
+				{button type="link" icon="{if $invoice.senddate}mailsended{else}mail{/if}" class="send-invoice" href="?m=invoicesend&id={$invoice.id}"
+					tip="{if $invoice.senddate}Send invoice again{else}Send invoice{/if}"}
 			{/if}
 			{if $invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_INVOICE_PRO || $invoice.type == $smarty.const.DOC_CNOTE}
 				{if $invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_CNOTE}
@@ -420,9 +421,17 @@
 
 	$('.send-invoice').click(function () {
 		var customername = $(this).closest('tr').attr('data-customername');
-		confirmDialog($t("Are you sure, you want to send invoice to customer '$a'?", customername), this).done(function () {
-			window.open($(this).attr('href'));
-		});
+		var senddate = $(this).closest('tr').attr('data-senddate');
+		console.log('senddate =', senddate)
+		if (parseInt(senddate) === 0) {
+			confirmDialog($t("Are you sure, you want to send invoice to customer '$a'?", customername), this).done(function () {
+				window.open($(this).attr('href'));
+			});
+		} else {
+			confirmDialog($t("Invoice was sent to customer '$a' already on $b. Are you sure, you want to send invoice again?", customername, senddate), this).done(function () {
+				window.open($(this).attr('href'));
+			});
+		}
 		return false;
 	});
 

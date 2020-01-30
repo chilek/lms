@@ -23,12 +23,8 @@
 
 $this->BeginTrans();
 
-$this->Execute("INSERT INTO uiconfig (section, var, value)
-	VALUES (?, ?, ?)", array('userpanel', 'sms_credential_reminders', 'true'));
+$this->Execute("ALTER TABLE documents ADD COLUMN senddate int(11) NOT NULL DEFAULT 0");
 
-$this->Execute("INSERT INTO uiconfig (section, var, value)
-	VALUES (?, ?, ?)", array('userpanel', 'mail_credential_reminders', 'true'));
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020013101', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020013000', 'dbversion'));
 
 $this->CommitTrans();
