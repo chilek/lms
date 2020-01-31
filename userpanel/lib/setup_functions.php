@@ -54,6 +54,8 @@ function module_setup()
     $SMARTY->assign('google_recaptcha_sitekey', ConfigHelper::getConfig('userpanel.google_recaptcha_sitekey', ''));
     $SMARTY->assign('google_recaptcha_secret', ConfigHelper::getConfig('userpanel.google_recaptcha_secret', ''));
     $SMARTY->assign('timeout', intval(ConfigHelper::getConfig('userpanel.timeout')));
+    $SMARTY->assign('sms_credential_reminders', ConfigHelper::checkConfig('userpanel.sms_credential_reminders'));
+    $SMARTY->assign('mail_credential_reminders', ConfigHelper::checkConfig('userpanel.mail_credential_reminders'));
     $enabled_modules = ConfigHelper::getConfig('userpanel.enabled_modules', null, true);
     if (is_null($enabled_modules)) {
         $enabled_modules = array();
@@ -173,6 +175,31 @@ function module_submit_setup()
         $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'timeout'", array(intval($_POST['timeout'])));
     } else {
         $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'timeout', ?)", array(intval($_POST['timeout'])));
+    }
+
+    foreach (array('sms_credential_reminders', 'mail_credential_reminders') as $var) {
+        if ($DB->GetOne(
+            "SELECT 1 FROM uiconfig WHERE section = ? AND var = ?",
+            array('userpanel', $var)
+        )) {
+            $DB->Execute(
+                "UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?",
+                array(
+                    isset($_POST[$var]) ? 'true' : 'false',
+                    'userpanel',
+                    $var
+                )
+            );
+        } else {
+            $DB->Execute(
+                "INSERT INTO uiconfig (section, var, value) VALUES(?, ?, ?)",
+                array(
+                    'userpanel',
+                    $var,
+                    isset($_POST[$var]) ? 'true' : 'false'
+                )
+            );
+        }
     }
 
     if (isset($_POST['enabled_modules'])) {

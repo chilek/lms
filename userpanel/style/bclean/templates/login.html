@@ -126,37 +126,48 @@
                         <div id="login-recaptcha" class="g-recaptcha"></div>
                         {/if}
                         <button class="btn btn-lg btn-primary btn-block{if $google_recaptcha_sitekey} disabled{/if}" name="loginform[submit]" type="submit"{if $google_recaptcha_sitekey} disabled{/if}>{trans('Login')}</button>
-                        <a href="javascript:switch_form('remind');">{trans("Remind credentials")}</a>
-                    </form>
-                    <form id="remind" class="form-signin" method="post" action="{$target}" style="display:none;">
-                        <input type="hidden" name="remindform[type]" id="remindType" value="1">
-						{$sms_service = ConfigHelper::getConfig('sms.service', '', true)}
-						{if !empty($sms_service)}
-                        <ul class="nav nav-tabs">
-                            <li class="nav-item">
-                                <a id="remindMail" class="nav-link active" onclick="javascript:show_email_phone('email');">{trans('E-mail')}</a>
-                            </li>
-                            <li class="nav-item">
-                                <a id="remindPhone" class="nav-link"  onclick="javascript:show_email_phone('phone');">{trans('SMS')}</a>
-                            </li>
-                        </ul>
-                        <hr/>
-						{/if}
-                        <fieldset id="email" class="form-group">
-                            <label>{trans('E-Mail:')} <input type="text" name="remindform[email]" class="form-control"></label>
-                        </fieldset>
-                        <fieldset id="phone" class="form-group" style="display:none;">
-                            <label>{trans('Phone:')} <input type="text" name="remindform[phone]"  class="form-control"></label>
-                        </fieldset>
-                        <fieldset class="form-group">
-                            <label>{trans('SSN or TEN:')} <input type="text" name="remindform[ten]" id="inputSsnOrTen" class="form-control"></label>
-                        </fieldset>
-                        {if $google_recaptcha_sitekey}
-                        <div id="remind-recaptcha" class="g-recaptcha"></div>
+                        {if ConfigHelper::checkConfig('userpanel.sms_credential_reminders')
+                            || ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}
+                            <a href="javascript:switch_form('remind');">{trans("Remind credentials")}</a>
                         {/if}
-                        <button class="btn btn-lg btn-primary btn-block{if $google_recaptcha_sitekey} disabled{/if}" type="submit" name="remindform[submit]" value="{trans('Remind')}"{if $google_recaptcha_sitekey} disabled{/if}>{trans('Remind')}</button>
-                        <p><a href="javascript:switch_form('login');">{trans('Login form')}</a></p>
                     </form>
+                    {if ConfigHelper::checkConfig('userpanel.sms_credential_reminders')
+                        || ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}
+                        <form id="remind" class="form-signin" method="post" action="{$target}" style="display:none;">
+                            <input type="hidden" name="remindform[type]" id="remindType" value="1">
+                            {$sms_service = ConfigHelper::getConfig('sms.service', '', true)}
+                            {if !empty($sms_service) && ConfigHelper::checkConfig('userpanel.sms_credential_reminders')
+                                && ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}
+                                <ul class="nav nav-tabs">
+                                    <li class="nav-item">
+                                        <a id="remindMail" class="nav-link active" onclick="javascript:show_email_phone('email');">{trans('E-mail')}</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a id="remindPhone" class="nav-link"  onclick="javascript:show_email_phone('phone');">{trans('SMS')}</a>
+                                    </li>
+                                </ul>
+                                <hr>
+                            {/if}
+                            {if ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}
+                                <fieldset id="email" class="form-group">
+                                    <label>{trans('E-Mail:')} <input type="text" name="remindform[email]" class="form-control"></label>
+                                </fieldset>
+                            {/if}
+                            {if ConfigHelper::checkConfig('userpanel.sms_credential_reminders')}
+                                <fieldset id="phone" class="form-group" style="{if ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}display:none;{/if}">
+                                    <label>{trans('Phone:')} <input type="text" name="remindform[phone]"  class="form-control"></label>
+                                </fieldset>
+                            {/if}
+                            <fieldset class="form-group">
+                                <label>{trans('SSN or TEN:')} <input type="text" name="remindform[ten]" id="inputSsnOrTen" class="form-control"></label>
+                            </fieldset>
+                            {if $google_recaptcha_sitekey}
+                                <div id="remind-recaptcha" class="g-recaptcha"></div>
+                            {/if}
+                            <button class="btn btn-lg btn-primary btn-block{if $google_recaptcha_sitekey} disabled{/if}" type="submit" name="remindform[submit]" value="{trans('Remind')}"{if $google_recaptcha_sitekey} disabled{/if}>{trans('Remind')}</button>
+                            <p><a href="javascript:switch_form('login');">{trans('Login form')}</a></p>
+                        </form>
+                    {/if}
                 </div>
             </div>
         </div> <!-- /container -->

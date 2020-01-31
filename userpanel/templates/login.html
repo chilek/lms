@@ -78,7 +78,7 @@
 			<div class="text-center bold nobr">{if $page_header}{$page_header}{else}{trans("Virtual Customer Service")}{/if}</div>
 			<br />
 			{if $error}<div style="color: red;" class="text-center bold">{$error}</div>{else}&nbsp;{/if}
-			<br /><br />
+			<br />
 			<form id="login" method="post" action="{$target}">
 			{$auth_type=ConfigHelper::getConfig('userpanel.auth_type', 1)}
 			<table id="logindata" style="height: 100%; width: 100%;">
@@ -110,68 +110,92 @@
 						<br /><input type="submit" name="loginform[submit]" class="bold" value="{trans("Login")}"{if $google_recaptcha_sitekey} disabled{/if} />
 					</td>
 				</tr>
-				<tr>
-					<td colspan="2" class="text-center bold nobr">
-						<br /><a href="javascript:switch_form('remind');">{trans("Remind credentials")}</a>
-					</td>
-				</tr>
-			</table>
-			</form>
-			<form id="remind" method="post" action="{$target}">
-			<table id="reminddata" style="height: 100%; width: 100%; display: none;">
-				<tr>
-					<td colspan="2" class="text-center bold nobr">
-						{$sms_service = ConfigHelper::getConfig('sms.service', '', true)}
-						<input type="{if empty($sms_service)}hidden{else}radio{/if}" id="emailradio" name="remindform[type]" value="1" onclick="javascript:show_email_phone('email');" checked /><label for="emailradio">{trans("E-mail")}</label>
-						{if !empty($sms_service)}
-						<input type="radio" id="smsradio" name="remindform[type]" value="2" onclick="javascript:show_email_phone('phone');" /><label for="smsradio">{trans("SMS")}</label>
-						{/if}
-						<br />&nbsp;
-					</td>
-				</tr>
-				<tr id="email">
-					<td class="text-right bold nobr">
-						{trans("E-Mail:")}
-					</td>
-					<td class="text-left">
-						<input type="text" name="remindform[email]" style="width: 120pt;" />
-					</td>
-				</tr>
-				<tr id="phone" style="display: none;">
-					<td class="text-right bold nobr">
-						{trans("Phone:")}
-					</td>
-					<td class="text-left">
-						<input type="text" name="remindform[phone]" style="width: 120pt;" />
-					</td>
-				</tr>
-				<tr>
-					<td class="text-right bold nobr">
-						{trans("SSN or TEN:")}
-					</td>
-					<td class="text-left">
-						<input type="text" name="remindform[ten]" style="width: 120pt;" />
-					</td>
-				</tr>
-				{if !empty($google_recaptcha_sitekey)}
-				<tr>
-					<td colspan="2">
-						<div id="remind-recaptcha" class="g-recaptcha"></div>
-					</td>
-				</tr>
+				{if ConfigHelper::checkConfig('userpanel.sms_credential_reminders')
+					|| ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}
+					<tr>
+						<td colspan="2" class="text-center bold nobr">
+							<br /><a href="javascript:switch_form('remind');">{trans("Remind credentials")}</a>
+						</td>
+					</tr>
 				{/if}
-				<tr>
-					<td colspan="2" class="text-center">
-						<br /><input type="submit" name="remindform[submit]" class="bold" value="{trans("Remind")}"{if $google_recaptcha_sitekey} disabled{/if} />
-					</td>
-				</tr>
-				<tr>
-					<td colspan="2" class="text-center bold nobr">
-						<br /><a href="javascript:switch_form('login');">{trans("Login form")}</a>
-					</td>
-				</tr>
 			</table>
 			</form>
+			{if ConfigHelper::checkConfig('userpanel.sms_credential_reminders')
+				|| ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}
+				<form id="remind" method="post" action="{$target}">
+				<table id="reminddata" style="height: 100%; width: 100%; display: none;">
+					<tr>
+						<td colspan="2" class="text-center bold nobr">
+							{$sms_service = ConfigHelper::getConfig('sms.service', '', true)}
+							{if ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}
+								{if !empty($sms_service) && ConfigHelper::checkConfig('userpanel.sms_credential_reminders')}
+									<label>
+										<input type="radio" id="emailradio" name="remindform[type]" value="1"
+											   onclick="javascript:show_email_phone('email');" checked />
+										{trans("E-mail")}
+									</label>
+								{else}
+									<input type="hidden" id="emailradio" name="remindform[type]" value="1">
+								{/if}
+							{/if}
+							{if !empty($sms_service) && ConfigHelper::checkConfig('userpanel.sms_credential_reminders')}
+								{if ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}
+									<label>
+										<input type="{if !ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}hidden{else}radio{/if}"
+											   id="smsradio" name="remindform[type]" value="2" onclick="javascript:show_email_phone('phone');" />
+										{trans("SMS")}
+									</label>
+								{else}
+									<input type="hidden" id="smsradio" name="remindform[type]" value="2">
+								{/if}
+							{/if}
+							<br />&nbsp;
+						</td>
+					</tr>
+					<tr id="email">
+						<td class="text-right bold nobr">
+							{trans("E-Mail:")}
+						</td>
+						<td class="text-left">
+							<input type="text" name="remindform[email]" style="width: 120pt;" />
+						</td>
+					</tr>
+					<tr id="phone" style="display: none;">
+						<td class="text-right bold nobr">
+							{trans("Phone:")}
+						</td>
+						<td class="text-left">
+							<input type="text" name="remindform[phone]" style="width: 120pt;" />
+						</td>
+					</tr>
+					<tr>
+						<td class="text-right bold nobr">
+							{trans("SSN or TEN:")}
+						</td>
+						<td class="text-left">
+							<input type="text" name="remindform[ten]" style="width: 120pt;" />
+						</td>
+					</tr>
+					{if !empty($google_recaptcha_sitekey)}
+					<tr>
+						<td colspan="2">
+							<div id="remind-recaptcha" class="g-recaptcha"></div>
+						</td>
+					</tr>
+					{/if}
+					<tr>
+						<td colspan="2" class="text-center">
+							<br /><input type="submit" name="remindform[submit]" class="bold" value="{trans("Remind")}"{if $google_recaptcha_sitekey} disabled{/if} />
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2" class="text-center bold nobr">
+							<br /><a href="javascript:switch_form('login');">{trans("Login form")}</a>
+						</td>
+					</tr>
+				</table>
+				</form>
+			{/if}
 			{/box}
 		    </td>
     		</tr>

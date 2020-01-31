@@ -133,6 +133,24 @@
         </TR>
         <TR>
             <TD scope="col" class="nobr">
+                <label for="sms_credential_reminders">{trans("SMS credential reminders:")}</label>
+            </TD>
+            <TD scope="col">
+                <input type="checkbox" id="sms_credential_reminders" name="sms_credential_reminders" {tip text="SMS credential reminders" }
+                       value="1"{if $sms_credential_reminders} checked{/if}>
+            </TD>
+        </TR>
+        <TR>
+            <TD scope="col" class="nobr">
+                <label for="mail_credential_reminders">{trans("Mail credential reminders:")}</label>
+            </TD>
+            <TD scope="col">
+                <input type="checkbox" id="mail_credential_reminders" name="mail_credential_reminders" {tip text="Mail credential reminders" }
+                       value="1"{if $mail_credential_reminders} checked{/if}>
+            </TD>
+        </TR>
+        <TR>
+            <TD scope="col" class="nobr">
                 <label for="force_ssl">{trans("Force SSL:")}</label>
             </TD>
             <TD scope="col">

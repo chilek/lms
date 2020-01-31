@@ -3377,6 +3377,8 @@ URL: %url
 ('userpanel', 'shortcut_icon', '', '', 0),
 ('userpanel', 'timeout', '600', '', 0),
 ('userpanel', 'hide_archived_documents', 'false', '', 0),
+('userpanel', 'sms_credential_reminders', 'true', '', 0),
+('userpanel', 'mail_credential_reminders', 'true', '', 0),
 ('directories', 'userpanel_dir', 'userpanel', '', 0);
 
 INSERT INTO invprojects (name, type) VALUES ('inherited', 1);
@@ -3708,6 +3710,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020011401');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020013100');
 
 COMMIT;

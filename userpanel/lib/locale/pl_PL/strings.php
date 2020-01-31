@@ -115,3 +115,8 @@ $_LANG['Enter full or relative URL address of web browser icon'] = 'Podaj pełny
 $_LANG['Session expires after:'] = 'Sesja wygasa za:';
 
 $_LANG['Session timeout:'] = 'Czas wygasania sesji:';
+
+$_LANG['SMS credential reminders:'] = 'Przypomnienia SMS z danymi do logowania:';
+$_LANG['SMS credential reminders'] = 'Przypomnienia SMS z danymi do logowania';
+$_LANG['Mail credential reminders:'] = 'Przypomnienia mailowe z danymi do logowania:';
+$_LANG['Mail credential reminders'] = 'Przypomnienia mailowe z danymi do logowania';
