@@ -25,6 +25,6 @@ $this->BeginTrans();
 
 $this->Execute("ALTER TABLE documents ADD COLUMN senddate integer NOT NULL DEFAULT 0");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020013000', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020013101', 'dbversion'));
 
 $this->CommitTrans();
