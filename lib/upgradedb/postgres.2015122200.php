@@ -88,7 +88,7 @@ if (!empty($customers)) {
         if (!empty($args)) {
             $this->Execute(
                 "UPDATE customers SET " . implode(' = ?, ', array_keys($args)) . " = ? WHERE id = ?",
-                 array_merge($args, array('id' => $customer['id']))
+                array_merge($args, array('id' => $customer['id']))
             );
         }
     }

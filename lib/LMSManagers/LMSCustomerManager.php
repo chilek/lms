@@ -1879,5 +1879,4 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             ) > 0;
         }
     }
-
 }
