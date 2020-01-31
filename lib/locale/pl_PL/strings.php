@@ -3294,7 +3294,8 @@ $_LANG['Invoice send'] = 'Wysyłka faktury';
 $_LANG['Send invoice'] = 'Wyślij fakturę';
 $_LANG['Send invoice again'] = 'Wyślij fakturę ponownie';
 $_LANG['Are you sure, you want to send invoice to customer \'$a\'?'] = 'Jesteś pewien, że chcesz wysłać fakturę do klienta \'$a\'?';
-$_LANG['Invoice was sent to customer \'$a\' already on $b. Are you sure, you want to send invoice again?'] = 'Faktura została już wysłana do klienta \'$a\' w dniu $b. Jesteś pewien, że chcesz wysłac ponownie?';
+$_LANG['Invoice was sent to customer \'$a\' already on $b. Are you sure, you want to send invoice again?'] = 'Faktura została już wysłana do klienta \'$a\' w dniu $b. Jesteś pewien, że chcesz wysłać fakturę ponownie?';
+$_LANG['Document was sent to customer already on $a. Are you sure, you want to send document again?'] = 'Dokument został już wysłany do klienta w dniu $a. Jesteś pewien, że chcesz wysłać dokument ponownie?';
 
 $_LANG['Address type:'] = 'Typ adresu:';
 $_LANG['settlement<!addresstype>'] = 'rozliczeniowy';
@@ -4080,6 +4081,7 @@ $_LANG['limit to type'] = 'ogranicz do typu';
 $_LANG['Document attachments:'] = 'Załączniki dokumentu:';
 
 $_LANG['Document send'] = 'Wysyłka dokumentów';
+$_LANG['Send document again'] = 'Wyślij ponownie dokument';
 $_LANG['Fatal error: No documents were selected!'] = 'Błąd krytyczny: nie wybrano żadnych dokumentów!';
 $_LANG['Are you sure, you want to send document to customer?'] = 'Jesteś pewien, że chcesz wysłać dokument do klienta?';
 $_LANG['Are you sure, you want to send documents to customer?'] = 'Jesteś pewien, że chcesz wysłać dokumenty do klienta?';

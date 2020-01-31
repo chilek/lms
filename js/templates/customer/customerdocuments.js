@@ -97,9 +97,16 @@ $(function() {
 	});
 
 	$('.send-doc').click(function () {
-		confirmDialog($t("Are you sure, you want to send document to customer?"), this).done(function() {
-			window.open($(this).attr('href'));
-		});
+		var senddate = $(this).closest('div.lms-ui-tab-table-row').attr('data-senddate');
+		if (parseInt(senddate) === 0) {
+			confirmDialog($t("Are you sure, you want to send document to customer?"), this).done(function () {
+				window.open($(this).attr('href'));
+			});
+		} else {
+			confirmDialog($t("Document was sent to customer already on $a. Are you sure, you want to send document again?", senddate), this).done(function () {
+				window.open($(this).attr('href'));
+			});
+		}
 		return false;
 	});
 });
