@@ -1975,6 +1975,20 @@ if (in_array('www', $channels) && (empty($types) || in_array('messages', $types)
                 ));
             }
         }
+        if (!$debug) {
+            $DB->Execute(
+                "UPDATE messageitems
+                SET status = ?
+                WHERE messageid IN (
+                    SELECT id FROM messages WHERE type = ? AND status = ?
+                )",
+                array(
+                    MSG_SENT,
+                    MSG_WWW,
+                    MSG_NEW,
+                )
+            );
+        }
     }
 
     if (!$debug && $fh) {
