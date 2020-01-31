@@ -759,7 +759,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                         $headers['Message-ID'] = '<messageitem-' . $msgitems[$customerid][$orig_destination] . '@rtsystem.' . gethostname() . '>';
                     }
                     $result = $LMS->SendMail($destination, $headers, $body, $attachments);
-                } elseif ($message['type'] == MSG_WWW || $message['type'] == MSG_USERPANEL || $message['type'] == MSG_USERPANEL_URGENT) {
+                } elseif ($message['type'] == MSG_USERPANEL || $message['type'] == MSG_USERPANEL_URGENT) {
                     $result = MSG_SENT;
                 } else {
                     $result = $LMS->SendSMS($destination, $body, $msgitems[$customerid][$orig_destination], $sms_options);
