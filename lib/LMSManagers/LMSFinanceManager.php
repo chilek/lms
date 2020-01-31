@@ -1809,7 +1809,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         $invoicelist = $this->db->GetAll('SELECT d.id AS id, d.number, d.cdate, d.type,
 			d.customerid, d.name, d.address, d.zip, d.city, countries.name AS country, numberplans.template, d.closed,
-			d.cancelled, d.published, d.archived,
+			d.cancelled, d.published, d.archived, d.senddate,
 			-SUM(cash.value) AS value,
 			d.currency, d.currencyvalue,
 			COUNT(a.docid) AS count,
@@ -3446,6 +3446,14 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     public function isDocumentReferenced($id)
     {
         return $this->db->GetOne('SELECT id FROM documents WHERE reference = ?', array($id)) > 0;
+    }
+
+    public function MarkDocumentsAsSent($ids)
+    {
+        if (!is_array($ids)) {
+            $ids = array($ids);
+        }
+        $this->db->Execute('UPDATE documents SET senddate = ?NOW? WHERE id IN (' . implode(',', $ids) . ')');
     }
 
     public function GetReceiptList(array $params)

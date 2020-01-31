@@ -29,6 +29,6 @@ $this->Execute("INSERT INTO uiconfig (section, var, value)
 $this->Execute("INSERT INTO uiconfig (section, var, value)
 	VALUES (?, ?, ?)", array('userpanel', 'mail_credential_reminders', 'true'));
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020013100', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020013101', 'dbversion'));
 
 $this->CommitTrans();

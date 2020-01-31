@@ -251,7 +251,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 taxes.label AS tax, cash.customerid AS customerid,
                 cash.comment, docid, vusers.name AS username,
                 documents.type AS doctype, documents.closed AS closed,
-                documents.published, documents.archived, cash.importid,
+                documents.published, documents.senddate, documents.archived, cash.importid,
                 (CASE WHEN d2.id IS NULL THEN 0 ELSE 1 END) AS referenced,
                 documents.cdate, documents.number, numberplans.template
             FROM cash
@@ -267,7 +267,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             		(-ic.value * ic.count) AS value, d.currency, d.currencyvalue, NULL AS tax, d.customerid,
             		ic.description AS comment, d.id AS docid, vusers.name AS username,
             		d.type AS doctype, d.closed AS closed,
-            		d.published, 0 AS archived, NULL AS importid,
+            		d.published, d.senddate, 0 AS archived, NULL AS importid,
             		0 AS referenced,
             		d.cdate, d.number, numberplans.template
             	FROM documents d

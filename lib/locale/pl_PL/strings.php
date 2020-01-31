@@ -3292,7 +3292,9 @@ $_LANG['Choose network'] = 'Wybierz sieć';
 $_LANG['- automatic selection -'] = '- wybór automatyczny -';
 $_LANG['Invoice send'] = 'Wysyłka faktury';
 $_LANG['Send invoice'] = 'Wyślij fakturę';
+$_LANG['Send invoice again'] = 'Wyślij fakturę ponownie';
 $_LANG['Are you sure, you want to send invoice to customer \'$a\'?'] = 'Jesteś pewien, że chcesz wysłać fakturę do klienta \'$a\'?';
+$_LANG['Invoice was sent to customer \'$a\' already on $b. Are you sure, you want to send invoice again?'] = 'Faktura została już wysłana do klienta \'$a\' w dniu $b. Jesteś pewien, że chcesz wysłac ponownie?';
 
 $_LANG['Address type:'] = 'Typ adresu:';
 $_LANG['settlement<!addresstype>'] = 'rozliczeniowy';
