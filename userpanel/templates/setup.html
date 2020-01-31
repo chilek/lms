@@ -87,6 +87,15 @@
         </TR>
         <TR>
             <TD scope="col" class="nobr">
+                <label for="mail_credential_reminders">{trans("Mail credential reminders:")}</label>
+            </TD>
+            <TD scope="col">
+                <input type="checkbox" id="mail_credential_reminders" name="mail_credential_reminders" {tip text="Mail credential reminders" }
+                       value="1"{if $mail_credential_reminders} checked{/if}>
+            </TD>
+        </TR>
+        <TR class="mail-credential-reminders">
+            <TD scope="col" class="nobr">
                 <label for="reminder_mail_sender">{trans("Reminder mail sender:")}</label>
             </TD>
             <TD scope="col">
@@ -94,7 +103,7 @@
                        value="{$reminder_mail_sender}" {tip text="Enter reminder mail sender" }>
             </TD>
         </TR>
-        <TR>
+        <TR class="mail-credential-reminders">
             <TD scope="col" class="nobr">
                 <label for="reminder_mail_subject">{trans("Reminder mail subject:")}</label>
             </TD>
@@ -103,7 +112,7 @@
                        value="{$reminder_mail_subject}" {tip text="Enter reminder mail subject" }>
             </TD>
         </TR>
-        <TR>
+        <TR class="mail-credential-reminders">
             <TD scope="col" class="nobr">
                 <label for="reminder_mail_body">{trans("Reminder mail body:")}</label>
             </TD>
@@ -112,6 +121,15 @@
             </TD>
         </TR>
         <TR>
+            <TD scope="col" class="nobr">
+                <label for="sms_credential_reminders">{trans("SMS credential reminders:")}</label>
+            </TD>
+            <TD scope="col">
+                <input type="checkbox" id="sms_credential_reminders" name="sms_credential_reminders" {tip text="SMS credential reminders" }
+                       value="1"{if $sms_credential_reminders} checked{/if}>
+            </TD>
+        </TR>
+        <TR class="sms-credential-reminders">
             <TD scope="col" class="nobr">
                 <label for="reminder_sms_body">{trans("Reminder sms body:")}</label>
             </TD>
@@ -129,24 +147,6 @@
                     <OPTION value="{$typeidx}" {if $auth_type == $typeidx} selected{/if}>{$type.selection}</OPTION>
                     {/foreach}
                 </SELECT>
-            </TD>
-        </TR>
-        <TR>
-            <TD scope="col" class="nobr">
-                <label for="sms_credential_reminders">{trans("SMS credential reminders:")}</label>
-            </TD>
-            <TD scope="col">
-                <input type="checkbox" id="sms_credential_reminders" name="sms_credential_reminders" {tip text="SMS credential reminders" }
-                       value="1"{if $sms_credential_reminders} checked{/if}>
-            </TD>
-        </TR>
-        <TR>
-            <TD scope="col" class="nobr">
-                <label for="mail_credential_reminders">{trans("Mail credential reminders:")}</label>
-            </TD>
-            <TD scope="col">
-                <input type="checkbox" id="mail_credential_reminders" name="mail_credential_reminders" {tip text="Mail credential reminders" }
-                       value="1"{if $mail_credential_reminders} checked{/if}>
             </TD>
         </TR>
         <TR>
@@ -239,8 +239,8 @@
         </TFOOT>
     </table>
 </FORM>
-<script type="text/javascript">
-	<!--
+<script>
+
 	$(function () {
 		$('#userpanel-modules').sortable({
 			items: 'tbody > tr[data-module]',
@@ -272,7 +272,15 @@
 				});
 			}
 		});
+
+        $('#mail_credential_reminders').change(function() {
+            $('.mail-credential-reminders').toggle($(this).prop('checked'));
+        }).trigger('change');
+
+        $('#sms_credential_reminders').change(function() {
+            $('.sms-credential-reminders').toggle($(this).prop('checked'));
+        }).trigger('change');
 	});
-	//-->
+
 </script>
 {/block}
