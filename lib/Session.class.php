@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -31,6 +31,7 @@ class Session
     public $_version = '1.11-git';      // library version
     public $_revision = '$Revision$';   // library revision
     private $_content = array();        // session content array
+    private $_tab_content = array();    // web browser tab session content array
     private $_persistent_settings = array();    // user persistent settings
     public $_updated = false;           // indicates that content has
                         // been altered
@@ -43,6 +44,8 @@ class Session
                         // save() or save_by_ref() ?
     public $GCprob = 10;            // probality (in percent) of
                         // garbage collector procedure
+
+    private $tabId = null;
 
     public function __construct(&$DB, $timeout = 0, $settings_timeout = 0)
     {
@@ -65,6 +68,10 @@ class Session
         if (rand(1, 100) <= $this->GCprob) {
             $this->_garbageCollector();
         }
+
+        if (isset($_COOKIE['tabId'])) {
+            $this->tabId = $_COOKIE['tabId'];
+        }
     }
 
     public function close()
@@ -72,6 +79,7 @@ class Session
         $this->_saveSession();
         $this->SID = null;
         $this->_content = array();
+        $this->_tab_content = array();
     }
 
     public function finish()
@@ -96,13 +104,24 @@ class Session
             if (!empty($settings) && (!isset($settings['mtime'])
                 || time() - $settings['mtime'] < $this->settings_timeout || $force_settings_restore)) {
                 $this->_content = array_merge($this->_content, $settings);
+                if (isset($this->_content['tabs'])) {
+                    $this->_tab_content = $this->_content['tabs'];
+                    unset($this->_content['tabs']);
+                }
             }
         }
     }
 
-    public function save($variable, $content)
+    public function save($variable, $content, $tab = false)
     {
-        $this->_content[$variable] = $content;
+        if ($tab) {
+            if (!isset($this->_tab_content[$this->tabId])) {
+                $this->_tab_content[$this->tabId] = array();
+            }
+            $this->_tab_content[$this->tabId][$variable] = $content;
+        } else {
+            $this->_content[$variable] = $content;
+        }
 
         if ($variable == 'session_login') {
             $this->restore_user_settings();
@@ -115,9 +134,16 @@ class Session
         }
     }
 
-    public function save_by_ref($variable, &$content)
+    public function save_by_ref($variable, &$content, $tab = false)
     {
-        $this->_content[$variable] =& $content;
+        if ($tab) {
+            if (!isset($this->_tab_content[$this->tabId])) {
+                $this->_tab_content[$this->tabId] = array();
+            }
+            $this->_tab_content[$this->tabId][$variable] =& $content;
+        } else {
+            $this->_content[$variable] =& $content;
+        }
         if ($this->autoupdate) {
             $this->_saveSession();
         } else {
@@ -125,45 +151,69 @@ class Session
         }
     }
 
-    public function restore($variable, &$content)
+    public function restore($variable, &$content, $tab = false)
     {
-        if (isset($this->_content[$variable])) {
-            $content = $this->_content[$variable];
-        } else {
-            $content = null;
-        }
-    }
-
-    public function get($variable)
-    {
-        if (isset($this->_content[$variable])) {
-            return $this->_content[$variable];
-        } else {
-            return null;
-        }
-    }
-
-    public function remove($variable)
-    {
-        if (isset($this->_content[$variable])) {
-            unset($this->_content[$variable]);
-            if ($this->autoupdate) {
-                $this->_saveSession();
+        if ($tab) {
+            if (isset($this->_tab_content[$this->tabId][$variable])) {
+                $content = $this->_tab_content[$this->tabId][$variable];
             } else {
-                $this->_updated = true;
+                $content = null;
             }
-            return true;
         } else {
-            return false;
+            if (isset($this->_content[$variable])) {
+                $content = $this->_content[$variable];
+            } else {
+                $content = null;
+            }
         }
     }
 
-    public function is_set($variable)
+    public function get($variable, $tab = false)
     {
-        if (isset($this->_content[$variable])) {
-            return true;
+        if ($tab) {
+            if (isset($this->_tab_content[$this->tabId][$variable])) {
+                return $this->_tab_content[$this->tabId][$variable];
+            } else {
+                return null;
+            }
         } else {
-            return false;
+            if (isset($this->_content[$variable])) {
+                return $this->_content[$variable];
+            } else {
+                return null;
+            }
+        }
+    }
+
+    public function remove($variable, $tab = false)
+    {
+        if ($tab) {
+            if (isset($this->_tab_content[$this->tabId][$variable])) {
+                unset($this->_tab_content[$this->tabId][$variable]);
+            } else {
+                return false;
+            }
+        } else {
+            if (isset($this->_content[$variable])) {
+                unset($this->_content[$variable]);
+            } else {
+                return false;
+            }
+        }
+        if ($this->autoupdate) {
+            $this->_saveSession();
+        } else {
+            $this->_updated = true;
+        }
+        return true;
+    }
+
+    public function is_set($variable, $tab = true)
+    {
+        if ($tab) {
+            return isset($this->_tab_content[$this->tabId][$variable]);
+        } else {
+            return isset($this->_content[$variable]);
         }
     }
 
@@ -171,6 +221,8 @@ class Session
     {
         $this->SID = $this->makeSID();
         $this->_content = array();
+        $this->_tab_content = array();
+        $this->_content['tabs'] = $this->_tab_content;
         $this->DB->Execute(
             'INSERT INTO sessions (id, ctime, mtime, atime, vdata, content) VALUES (?, ?NOW?, ?NOW?, ?NOW?, ?, ?)',
             array($this->SID, serialize($this->makeVData()), serialize($this->_content))
@@ -211,8 +263,9 @@ class Session
             'session_twofactorauthrequirechange' => true);
 
         if ($this->autoupdate || $this->_updated) {
-            $session_content = array_intersect_key($this->_content, $session_variables);
-            $settings_content = array_diff_key($this->_content, $session_variables);
+            $content = array_merge($this->_content, array('tabs' => $this->_tab_content));
+            $session_content = array_intersect_key($content, $session_variables);
+            $settings_content = array_diff_key($content, $session_variables);
             $settings_content['mtime'] = time();
             $this->DB->Execute(
                 'UPDATE sessions SET content = ?, mtime = ?NOW? WHERE id = ?',
@@ -234,6 +287,7 @@ class Session
         }
         $this->DB->Execute('DELETE FROM sessions WHERE id = ?', array($this->SID));
         $this->_content = array();
+        $this->_tab_content = array();
         $this->SID = null;
     }
 

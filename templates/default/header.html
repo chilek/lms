@@ -44,6 +44,19 @@
 				$('#lms-ui-module-view').animate({ scrollTop: 0 });
 			});
 
+			// we use 'tabId' session storage value for identifying web browser tabs
+			// which should preserve some form data per tab
+			var lmsTabId = sessionStorage.getItem('tabId');
+			if (!lmsTabId) {
+				sessionStorage.setItem('tabId', Date.now());
+				lmsTabId = sessionStorage.getItem('tabId');
+			}
+			setCookie('tabId', lmsTabId);
+
+			$(window).focus(function() {
+				setCookie('tabId', lmsTabId);
+			});
+
 		</script>
 		<section id="lms-ui-contents" style="display: none;">
 			{include file="quicksearch-indicators-panel.html"}

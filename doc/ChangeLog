@@ -159,6 +159,7 @@ version 25-git (????-??-??):
     variables (both 'global' by default) control scope of customer identifier existence checks [chilan]
   - improvement: let customer pay deadlines assign specific values [chilan]
   - enhancement: allow to enable/disable userpanel credential reminder methods [chilan]
+  - enhancement: web browser form states can be restored between submits per browser tab [chilan]
 
 version 24.0 (2019-05-16):
 

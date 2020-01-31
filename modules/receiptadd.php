@@ -196,12 +196,12 @@ function additem(&$content, $item)
     }
 }
 
-$SESSION->restore('receiptcontents', $contents);
-$SESSION->restore('receiptcustomer', $customer);
-$SESSION->restore('receipt', $receipt);
-$SESSION->restore('receiptregid', $receipt['regid']);
-$SESSION->restore('receipttype', $receipt['type']);
-$SESSION->restore('receiptadderror', $error);
+$SESSION->restore('receiptcontents', $contents, true);
+$SESSION->restore('receiptcustomer', $customer, true);
+$SESSION->restore('receipt', $receipt, true);
+$SESSION->restore('receiptregid', $receipt['regid'], true);
+$SESSION->restore('receipttype', $receipt['type'], true);
+$SESSION->restore('receiptadderror', $error, true);
 
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 
@@ -731,10 +731,10 @@ switch ($action) {
         }
 
         if (isset($print)) {
-            $SESSION->remove('receiptcontents');
-            $SESSION->remove('receiptcustomer');
-            $SESSION->remove('receipt');
-            $SESSION->remove('receiptadderror');
+            $SESSION->remove('receiptcontents', true);
+            $SESSION->remove('receiptcustomer', true);
+            $SESSION->remove('receipt', true);
+            $SESSION->remove('receiptadderror', true);
 
             if (isset($_GET['print'])) {
                 $which = isset($_GET['which']) ? $_GET['which'] : 0;
@@ -907,8 +907,8 @@ switch ($action) {
 
             $DB->CommitTrans();
 
-            $SESSION->remove('receipt');
-            $SESSION->remove('receiptadderror');
+            $SESSION->remove('receipt', true);
+            $SESSION->remove('receiptadderror', true);
 
             if (isset($_GET['print'])) {
                 $which = isset($_GET['which']) ? $_GET['which'] : 0;
@@ -925,12 +925,12 @@ if (!isset($cashreglist)) {
     $cashreglist = $LMS->GetCashRegistries($receipt['customerid']);
 }
 
-$SESSION->save('receipt', $receipt);
-$SESSION->save('receiptregid', $receipt['regid']);
-$SESSION->save('receipttype', $receipt['type']);
-$SESSION->save('receiptcontents', isset($contents) ? $contents : null);
-$SESSION->save('receiptcustomer', isset($customer) ? $customer : null);
-$SESSION->save('receiptadderror', isset($error) ? $error : null);
+$SESSION->save('receipt', $receipt, true);
+$SESSION->save('receiptregid', $receipt['regid'], true);
+$SESSION->save('receipttype', $receipt['type'], true);
+$SESSION->save('receiptcontents', isset($contents) ? $contents : null, true);
+$SESSION->save('receiptcustomer', isset($customer) ? $customer : null, true);
+$SESSION->save('receiptadderror', isset($error) ? $error : null, true);
 
 if ($action != '') {
     $SESSION->redirect('?m=receiptadd');
