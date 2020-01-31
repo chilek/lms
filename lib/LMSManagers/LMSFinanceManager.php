@@ -3448,17 +3448,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         return $this->db->GetOne('SELECT id FROM documents WHERE reference = ?', array($id)) > 0;
     }
 
-    public function MarkDocumentsAsSended($ids)
+    public function MarkDocumentsAsSent($ids)
     {
         if (!is_array($ids)) {
             $ids = array($ids);
         }
         $this->db->Execute('UPDATE documents SET senddate = ?NOW? WHERE id IN (' . implode(',', $ids) . ')');
-    }
-
-    public function GetDocumentSendDate($id)
-    {
-        return $this->db->GetOne('SELECT senddate FROM documents WHERE id = ?', array($id));
     }
 
     public function GetReceiptList(array $params)

@@ -132,7 +132,7 @@
 							{if ($customerinfo.sendinvoices || $balancelist.sendinvoices) && ($item.doctype == $smarty.const.DOC_INVOICE
 								|| $item.doctype == $smarty.const.DOC_CNOTE || $item.doctype == $smarty.const.DOC_INVOICE_PRO
 								|| $item.doctype == $smarty.const.DOC_DNOTE)}
-								{button type="link" icon="{if $item.senddate}mailsended{else}mail{/if}" class="send-invoice" href="?m=invoicesend&id={$item.docid}"
+								{button type="link" icon="{if $item.senddate}mailsent{else}mail{/if}" class="send-invoice" href="?m=invoicesend&id={$item.docid}"
 									tip="{if $item.senddate}Send invoice again{else}Send invoice{/if}"}
 							{/if}
 							{if $item.doctype == $smarty.const.DOC_INVOICE}
@@ -602,7 +602,6 @@
 
 	$('.send-invoice').click(function(e) {
 		var senddate = $(this).closest('tr').attr('data-senddate');
-		console.log('senddate =', senddate)
 		if (parseInt(senddate) === 0) {
 			confirmDialog($t('Are you sure, you want to send invoice to customer \'$a\'?', '{$customerinfo.customername|escape:"javascript"|escape:"html"}'), this)
 				.done(function() {
