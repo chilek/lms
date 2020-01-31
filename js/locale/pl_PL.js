@@ -890,6 +890,7 @@ $_LANG['Group \'$a\' has members and cannot be deleted!'] = 'Grupa \'$a\' posiad
 $_LANG['Group with name $a already exists!'] = 'Grupa o nazwie $a już istnieje!';
 $_LANG['Guarantee:'] = 'Gwarancja:';
 $_LANG['Guarantee period:'] = 'Okres gwarancji:';
+$_LANG['Guyana'] = 'Gujana';
 $_LANG['Has'] = 'Ma';
 $_LANG['Headers:'] = 'Nagłówki:';
 $_LANG['Helpdesk'] = 'Helpdesk';
@@ -1818,6 +1819,7 @@ $_LANG['Binds from date:'] = 'Obowiązuje od:';
 $_LANG['Binds to date:'] = 'Obowiązuje do:';
 $_LANG['Display this form again, when this tax rate is saved'] = 'wyświetl formularz ponownie po dodaniu stawki';
 $_LANG['Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar'] = 'Wprowadź datę w formacie RRRR/MM/DD (pole puste oznacza brak limitu) lub kliknij aby ją wybrać z kalendarza';
+$_LANG['Enter date in YYYY/MM/DD HH:MM format (empty field means no limit) or click to choose it from calendar'] = 'Wprowadź datę w formacie RRRR/MM/DD GG:MM (pole puste oznacza brak limitu) lub kliknij aby ją wybrać z kalendarza';
 $_LANG['Enter percentage value of tax rate'] = 'Wprowadź procentową wartość stawki podatku';
 $_LANG['Enter tax rate label'] = 'Wprowadź etykietę stawki podatku';
 $_LANG['Incorrect tax rate percentage value (0-100)!'] = 'Błędna wartość procentowa stawki podatku (0-100)!';
@@ -2601,7 +2603,8 @@ $_LANG['Set notice content'] = 'Ustaw treść powiadomienia';
 $_LANG['Set notice for node'] = 'Ustaw powiadomienie dla komputera';
 $_LANG['Default service type for sending text messages.'] = 'Domyślny typ serwisu używanego do wysyłania wiadomości sms.';
 $_LANG['Sending register'] = 'Książka nadawcza';
-$_LANG['Sending register format'] = 'Szablon książki nadawczej';
+$_LANG['sending register format'] = 'szablon książki nadawczej';
+$_LANG['include customer node info'] = 'dołącz informacje o komputerach klienta';
 $_LANG['Mass'] = 'Waga';
 $_LANG['Sending number'] = 'Numer nadawczy';
 $_LANG['Charge'] = 'Opłata';
@@ -4056,6 +4059,7 @@ $_LANG['<!promotionassignment>- new -'] = '- nowa -';
 $_LANG['<!promotionassignment>Enter new label'] = 'Wprowadź nową etykietę';
 $_LANG['<!promotionassignment>Label'] = 'Etykieta';
 $_LANG['<!tariffselection>unlabeled_$a'] = 'bez_etykiety_$a';
+$_LANG['^unlabeled_(?<assignmentid>[0-9]+)$'] = '^bez_etykiety_(?<assignmentid>[0-9]+)$';
 $_LANG['<!tariffselection>$a:'] = '$a:';
 $_LANG['<!datepicker>Clear'] = 'Wyczyść';
 
@@ -4200,10 +4204,14 @@ $_LANG['<!qs>customer id'] = 'identyfikator klienta';
 $_LANG['<!qs>customer name'] = 'nazwa klienta';
 $_LANG['<!qs>address'] = 'adres';
 $_LANG['<!qs>post name'] = 'nazwa korespondencyjna';
-$_LANG['<!qs>post address'] = 'adres korespondencyjny';
 $_LANG['<!qs>location name'] = 'nazwa lokalizacji';
+$_LANG['<!qs>post address'] = 'adres korespondencyjny';
 $_LANG['<!qs>location address'] = 'adres lokalizacyjny';
 $_LANG['<!qs>email'] = 'email';
+$_LANG['<!qs>TEN'] = 'NIP';
+$_LANG['<!qs>SSN'] = 'PESEL';
+$_LANG['<!qs>additional information'] = 'informacje dodatkowe';
+$_LANG['<!qs>notes'] = 'notatki';
 
 $_LANG['<!qs>node id'] = 'identyfikator komputera';
 $_LANG['<!qs>node name'] = 'nazwa komputera';
@@ -4525,3 +4533,14 @@ $_LANG['Purpose:'] = 'Przeznaczenie:';
 $_LANG['with end-points'] = 'z punktami końcowymi';
 $_LANG['without end-points'] = 'bez punktów końcowych';
 $_LANG['indefinitely'] = 'bezterminowo';
+
+$_LANG['$a (default: $b; $c)'] = '$a (domyślnie: $b; $c)';
+$_LANG['$a (default: $b)'] = '$a (domyślnie: $b)';
+
+$_LANG['Login form'] = 'Formularz logowania';
+
+$_LANG['all terminals'] = 'wszystkie terminale';
+
+$_LANG['with unarchived documents'] = 'z dokumentami niezarchiwizowanymi';
+
+$_LANG['Invalid deadline format!'] = 'Niepoprawny format terminu płatności!';
