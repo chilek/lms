@@ -53,7 +53,7 @@ if (count($numberplanedit)) {
     if ($numberplanedit['period'] == 0) {
         $error['period'] = trans('Numbering period is required!');
     }
-    
+
     if ($numberplanedit['doctype'] && $numberplanedit['isdefault']) {
         if ($DB->GetOne(
             'SELECT 1 FROM numberplans n
@@ -121,7 +121,7 @@ if (count($numberplanedit)) {
         }
 
         $DB->CommitTrans();
-        
+
         $SESSION->redirect('?m=numberplanlist');
     } else {
         $numberplanedit['selected'] = array();
@@ -145,8 +145,8 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('numberplanedit', $numberplan);
 $SMARTY->assign('available', $DB->GetAllByKey('SELECT id, shortname AS name
-		FROM divisions WHERE status = 0 '
-        .(!empty($numberplan['selected']) ? 'OR id IN ('.implode(',', array_keys($numberplan['selected'])).')' : '')
-        .'ORDER BY shortname', 'id', array($numberplan['id'])));
+		FROM divisions WHERE status = 0'
+        . (!empty($numberplan['selected']) ? ' OR id IN ('.implode(',', array_keys($numberplan['selected'])).')' : '')
+        . ' ORDER BY shortname', 'id'));
 $SMARTY->assign('error', $error);
 $SMARTY->display('numberplan/numberplanedit.html');
