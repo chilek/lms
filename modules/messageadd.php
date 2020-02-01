@@ -750,19 +750,27 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                 );
                 flush();
 
-                if ($message['type'] == MSG_MAIL) {
-                    if (isset($message['copytosender'])) {
-                        $destination .= ',' . $message['sender'];
-                    }
-                    if (!empty($dsn_email) || !empty($mdn_email)) {
-                        $headers['X-LMS-Message-Item-Id'] = $msgitems[$customerid][$orig_destination];
-                        $headers['Message-ID'] = '<messageitem-' . $msgitems[$customerid][$orig_destination] . '@rtsystem.' . gethostname() . '>';
-                    }
-                    $result = $LMS->SendMail($destination, $headers, $body, $attachments);
-                } elseif ($message['type'] != MSG_WWW && $message['type'] != MSG_USERPANEL && $message['type'] != MSG_USERPANEL_URGENT) {
-                    $result = $LMS->SendSMS($destination, $body, $msgitems[$customerid][$orig_destination], $sms_options);
-                } elseif ($message['type'] != MSG_WWW) {
-                    $result = MSG_SENT;
+                switch ($mssage['type']) {
+                    case MSG_MAIL:
+                        if (isset($message['copytosender'])) {
+                            $destination .= ',' . $message['sender'];
+                        }
+                        if (!empty($dsn_email) || !empty($mdn_email)) {
+                            $headers['X-LMS-Message-Item-Id'] = $msgitems[$customerid][$orig_destination];
+                            $headers['Message-ID'] = '<messageitem-' . $msgitems[$customerid][$orig_destination] . '@rtsystem.' . gethostname() . '>';
+                        }
+                        $result = $LMS->SendMail($destination, $headers, $body, $attachments);
+                        break;
+                    case MSG_SMS:
+                    case MSG_ANYSMS:
+                        $result = $LMS->SendSMS($destination, $body, $msgitems[$customerid][$orig_destination], $sms_options);
+                        break;
+                    case MSG_USERPANEL:
+                    case MSG_USERPANEL_URGENT:
+                        $result = MSG_SENT;
+                        break;
+                    default:
+                        $result = MSG_NEW;
                 }
 
                 if (is_string($result)) {
