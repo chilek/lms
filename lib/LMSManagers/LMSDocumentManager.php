@@ -1152,8 +1152,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     }
 
                     if ($status == MSG_SENT) {
-                        $this->db->Execute('UPDATE documents SET published = 1 WHERE id = ?', array($doc['id']));
-                        $this->db->Execute('UPDATE documents SET senddate = ?NOW? WHERE id = ?', array($doc['id']));
+                        $this->db->Execute('UPDATE documents SET published = 1, senddate = ?NOW? WHERE id = ?', array($doc['id']));
                         $published = true;
                     }
 
