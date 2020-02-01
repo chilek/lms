@@ -163,6 +163,7 @@ version 25-git (????-??-??):
   - improvement: preventing the lms-sendinvoices.php from sending already sent (inc. manually sent) invoices
     via configuration variable (default: 'false') and highlight invoices already sent in invoice list
     and customer info [ravvar]
+  - improvement: highlight documents already sent in documents list and customer info [ravvar]
 
 version 24.0 (2019-05-16):
 

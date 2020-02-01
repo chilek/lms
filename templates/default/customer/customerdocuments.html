@@ -61,7 +61,7 @@
 			{/if}
 
 			{foreach $documents as $doc}
-			<div class="lms-ui-tab-table-row{if $doc.closed} lms-ui-document-closed{/if}{if $doc.archived} lms-ui-document-archived{/if}">
+			<div class="lms-ui-tab-table-row{if $doc.closed} lms-ui-document-closed{/if}{if $doc.archived} lms-ui-document-archived{/if}" data-senddate="{if $doc.senddate}{$item.senddate|date_format:"%Y-%m-%d"}{else}{$doc.senddate}{/if}">
 
 				<div class="lms-ui-tab-table-wrapper col-6">
 					<div class="lms-ui-tab-table-wrapper col-4">
@@ -97,8 +97,8 @@
 				<div class="lms-ui-tab-table-column buttons" style="flex-direction: column;">
 					<div class="lms-ui-tab-table-column buttons">
 						{if $customerinfo.senddocuments}
-							{button type="link" class="send-doc" icon="mail" href="?m=documentsend&id={$doc.docid}"
-								tip="Document send"}
+							{button type="link" class="send-doc" icon="{if $doc.senddate}mailsent{else}mail{/if}" href="?m=documentsend&id={$doc.docid}"
+								tip="{if $doc.senddate}Send document again{else}Document send{/if}"}
 						{/if}
 						{assign var=type value=$doc.type}
 						{button type="link" icon="save" href="?m=documentview&id={$doc.docid}&save=1" tip="Save"}

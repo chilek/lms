@@ -39,7 +39,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
         if ($list = $this->db->GetAll('SELECT c.docid, d.number, d.type, c.title, c.fromdate, c.todate,
 				c.description, n.template, d.closed,
-				d.archived, d.adate, u3.name AS ausername,
+				d.archived, d.adate, u3.name AS ausername, d.senddate,
 				d.cdate, u.name AS username, d.sdate, u2.name AS cusername,
 				d.type AS doctype, d.template AS doctemplate, reference
 			FROM documentcontents c
@@ -228,7 +228,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $list = $this->db->GetAll(
             'SELECT documentcontents.docid, d.number, d.type, title, d.cdate,
 				u.name AS username, u.lastname, fromdate, todate, description, 
-				numberplans.template, d.closed,
+				numberplans.template, d.closed, d.senddate,
 				d.archived, d.adate, d.auserid, u3.name AS ausername,
 				d.name, d.customerid, d.sdate, d.cuserid, u2.name AS cusername,
 				u2.lastname AS clastname, d.reference, i.senddocuments
@@ -1152,7 +1152,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     }
 
                     if ($status == MSG_SENT) {
-                        $this->db->Execute('UPDATE documents SET published = 1 WHERE id = ?', array($doc['id']));
+                        $this->db->Execute('UPDATE documents SET published = 1, senddate = ?NOW? WHERE id = ?', array($doc['id']));
                         $published = true;
                     }
 
