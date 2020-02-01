@@ -750,7 +750,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                 );
                 flush();
 
-                switch ($mssage['type']) {
+                switch ($message['type']) {
                     case MSG_MAIL:
                         if (isset($message['copytosender'])) {
                             $destination .= ',' . $message['sender'];
