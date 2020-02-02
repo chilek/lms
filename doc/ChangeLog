@@ -164,6 +164,10 @@ version 25-git (????-??-??):
     via configuration variable (default: 'false') and highlight invoices already sent in invoice list
     and customer info [ravvar]
   - improvement: highlight documents already sent in documents list and customer info [ravvar]
+  - enhancement: 'invoices.show_only_alternative_accounts' configuration variable ('false' by default)
+    causes presentation alternative customer bank accounts only on invoices and notes, but when
+    there are no alternative accounts defined for customer, division account is presented
+    as fallback [chilan]
 
 version 24.0 (2019-05-16):
 
