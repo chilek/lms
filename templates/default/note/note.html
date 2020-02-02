@@ -22,7 +22,34 @@
 		<TD WIDTH="50%" class="sdr valign-top">
 			<B>{trans("Note drawer:")}</B><BR>
 			<BR>
-			{$note.division_header|replace:"\n":"<BR>"}
+			{if !ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')
+				|| empty($note.bankccounts)}
+				{$accounts = array(bankaccount($note.customerid, $note.account))}
+			{else}
+				{$accounts = array()}
+			{/if}
+			{if ConfigHelper::checkConfig('invoices.show_all_accounts')
+				|| ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')}
+				{$accounts = array_merge($accounts, $note.bankaccounts)}
+			{/if}
+			{foreach $accounts as $accountidx => $account}
+				{$accounts[$accountidx] = format_bankaccount($account)}
+			{/foreach}
+			{textformat assign="account_text" wrap=5000}
+				{if $use_alert_color}<span style="color:red">{/if}{implode('<br>', $accounts)}{if $use_alert_color}</span>{/if}
+			{/textformat}
+			{$tmp = $note.division_header}
+			{$tmp = str_replace("\n", '<br>', $tmp)}
+			{$tmp = str_replace('%bankaccount', $account_text, $tmp)}
+			{$tmp = str_replace('%bankname', $note.div_bank, $tmp)}
+
+			{if ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_bankaccount', true))}
+				{textformat assign="tmp" wrap=5000}
+					{$tmp}<br>{trans('Bank account:')}<br><strong>{$account_text}</strong>
+				{/textformat}
+			{/if}
+
+			{$tmp}
 		</TD>
 		<TD WIDTH="50%" class="sdr valign-top">
 			<B>{trans("Note recipient:")}</B><BR>
@@ -34,9 +61,6 @@
 				<BR>{t a=$note.ten}TEN $a{/t}
 			{elseif $note.ssn}
 				<BR>{t a=$note.ssn}SSN $a{/t}
-			{/if}
-			{if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_bankaccount', true)))}
-				<BR><strong>{t a=$note.bankaccounts}Bank account: $a{/t}</strong>
 			{/if}
 			{if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_credentials', true)))}
 				{if $note.customerpin}

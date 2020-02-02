@@ -26,9 +26,13 @@
 
 class LMSTcpdfDebitNote extends LMSTcpdfInvoice
 {
+    private $use_alert_color;
+
     public function __construct($title, $pagesize = 'A4', $orientation = 'portrait')
     {
         parent::__construct('LMSTcpdfBackend', $title, $pagesize, $orientation);
+
+        $this->use_alert_color = ConfigHelper::checkConfig('invoices.use_alert_color');
     }
 
     public function note_date()
@@ -59,15 +63,28 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
         $drawer = '<b>' . trans('Note drawer:') . '</b><br>';
         $tmp = $this->data['division_header'];
 
-        $accounts = array(bankaccount($this->data['customerid'], $this->data['account']));
-        if (ConfigHelper::checkConfig('invoices.show_all_accounts')) {
+        if (!ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')
+            || empty($this->data['bankccounts'])) {
+            $accounts = array(bankaccount($this->data['customerid'], $this->data['account']));
+        } else {
+            $accounts = array();
+        }
+        if (ConfigHelper::checkConfig('invoices.show_all_accounts')
+            || ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')) {
             $accounts = array_merge($accounts, $this->data['bankaccounts']);
         }
         foreach ($accounts as &$account) {
             $account = format_bankaccount($account);
         }
-        $tmp = str_replace('%bankaccount', implode("\n", $accounts), $tmp);
+        $account_text = ($this->use_alert_color ? '<span style="color:red">' : '')
+            . implode("\n", $accounts)
+            . ($this->use_alert_color ? '</span>' : '');
+        $tmp = str_replace('%bankaccount', $account_text, $tmp);
         $tmp = str_replace('%bankname', $this->data['div_bank'], $tmp);
+
+        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_bankaccount', true))) {
+            $tmp .= "\n" . trans('Bank account:') . "\n" . '<B>' . $account_text . '<B>';
+        }
 
         $tmp = preg_split('/\r?\n/', $tmp);
         foreach ($tmp as $line) {
@@ -211,7 +228,13 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
     {
         $this->backend->Ln(0);
         $this->backend->SetFont('arial', 'B', 14);
+        if ($this->use_alert_color) {
+            $this->backend->SetTextColorArray(array(255, 0, 0));
+        }
         $this->backend->writeHTMLCell(0, 0, '', '', trans('To pay:') . ' ' . moneyf($this->data['value'], $this->data['currency']), 0, 1, 0, true, 'R');
+        if ($this->use_alert_color) {
+            $this->backend->SetTextColor();
+        }
 
         $this->backend->SetFont('arial', '', 10);
         $this->backend->writeHTMLCell(0, 6, '', '', trans('In words:') . ' ' . moneyf_in_words($this->data['value'], $this->data['currency']), 0, 1, 0, true, 'R');

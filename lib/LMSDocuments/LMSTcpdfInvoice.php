@@ -705,8 +705,14 @@ class LMSTcpdfInvoice extends LMSInvoice
         $seller = '<b>' . trans('Seller:') . '</b><br>';
         $tmp = $this->data['division_header'];
 
-        $accounts = array(bankaccount($this->data['customerid'], $this->data['account']));
-        if (ConfigHelper::checkConfig('invoices.show_all_accounts')) {
+        if (!ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')
+            || empty($this->data['bankccounts'])) {
+            $accounts = array(bankaccount($this->data['customerid'], $this->data['account']));
+        } else {
+            $accounts = array();
+        }
+        if (ConfigHelper::checkConfig('invoices.show_all_accounts')
+            || ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')) {
             $accounts = array_merge($accounts, $this->data['bankaccounts']);
         }
         foreach ($accounts as &$account) {
