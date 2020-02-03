@@ -3293,6 +3293,7 @@ $_LANG['- automatic selection -'] = '- wybór automatyczny -';
 $_LANG['Invoice send'] = 'Wysyłka faktury';
 $_LANG['Send invoice'] = 'Wyślij fakturę';
 $_LANG['Send invoice again'] = 'Wyślij fakturę ponownie';
+$_LANG['(already sent on $a)'] = '(już wysłane w dniu $a)';
 $_LANG['Are you sure, you want to send invoice to customer \'$a\'?'] = 'Jesteś pewien, że chcesz wysłać fakturę do klienta \'$a\'?';
 $_LANG['Invoice was sent to customer \'$a\' already on $b. Are you sure, you want to send invoice again?'] = 'Faktura została już wysłana do klienta \'$a\' w dniu $b. Jesteś pewien, że chcesz wysłać fakturę ponownie?';
 $_LANG['Document was sent to customer already on $a. Are you sure, you want to send document again?'] = 'Dokument został już wysłany do klienta w dniu $a. Jesteś pewien, że chcesz wysłać dokument ponownie?';

@@ -108,7 +108,7 @@
 					{continue}
 					{/if}
 				{/if}
-				<TR{if $item.docid} data-published="{$item.published}" data-doctype="{$item.doctype}" data-senddate="{if $item.senddate}{$item.senddate|date_format:"%Y-%m-%d"}{else}{$item.senddate}{/if}"
+				<TR{if $item.docid} data-published="{$item.published}" data-doctype="{$item.doctype}" data-senddate="{if $item.senddate}{$item.senddate|date_format:"%Y/%m/%d"}{else}{$item.senddate}{/if}"
 					{if $item.doctype == $smarty.const.DOC_INVOICE_PRO} class="teal"{/if}{if $item.closed && ($item.doctype == $smarty.const.DOC_INVOICE || $item.doctype == $smarty.const.DOC_CNOTE || $item.doctype == $smarty.const.DOC_DNOTE)} class="blend"{/if}{/if}>
 					<TD class="nobr">{$item.date}</TD>
 					<TD class="nobr">{$item.username|truncate:16:"...":true}</TD>
@@ -132,8 +132,11 @@
 							{if ($customerinfo.sendinvoices || $balancelist.sendinvoices) && ($item.doctype == $smarty.const.DOC_INVOICE
 								|| $item.doctype == $smarty.const.DOC_CNOTE || $item.doctype == $smarty.const.DOC_INVOICE_PRO
 								|| $item.doctype == $smarty.const.DOC_DNOTE)}
-								{button type="link" icon="{if $item.senddate}mailsent{else}mail{/if}" class="send-invoice" href="?m=invoicesend&id={$item.docid}"
-									tip="{if $item.senddate}Send invoice again{else}Send invoice{/if}"}
+								{textformat assign="tip" wrap=5000}
+									{if $item.senddate}{trans("Send invoice again")}<br>{t a=$item.senddate|date_format:"%Y/%m/%d"}(already sent on $a){/t}{else}{trans("Send invoice")}{/if}
+								{/textformat}
+								{button type="link" icon="{if $item.senddate}mailsent{else}mail{/if}" class="send-invoice"
+									href="?m=invoicesend&id={$item.docid}" tip=$tip}
 							{/if}
 							{if $item.doctype == $smarty.const.DOC_INVOICE}
 								{if !$item.cancelled}
