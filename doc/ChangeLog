@@ -161,8 +161,8 @@ version 25-git (????-??-??):
   - enhancement: allow to enable/disable userpanel credential reminder methods [chilan]
   - enhancement: web browser form states can be restored between submits per browser tab [chilan]
   - improvement: preventing the lms-sendinvoices.php from sending already sent (inc. manually sent) invoices
-    via configuration variable (default: 'false') and highlight invoices already sent in invoice list
-    and customer info [ravvar]
+    via configuration variable 'sendinvoices.ignore_send_date' (default: 'false')
+    and highlight invoices already sent in invoice list and customer info [ravvar]
   - improvement: highlight documents already sent in documents list and customer info [ravvar]
   - enhancement: 'invoices.show_only_alternative_accounts' configuration variable ('false' by default)
     causes presentation alternative customer bank accounts only on invoices and notes, but when
