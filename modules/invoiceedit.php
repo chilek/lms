@@ -51,10 +51,10 @@ if (isset($_GET['id']) && ($action == 'edit' || $action == 'init')) {
 
     $invoice['proforma'] = isset($_GET['proforma']) ? $action : 0;
 
-    $SESSION->remove('invoicecontents');
-    $SESSION->remove('invoice');
-    $SESSION->remove('invoicecustomer');
-    $SESSION->remove('invoiceediterror');
+    $SESSION->remove('invoicecontents', true);
+    $SESSION->remove('invoice', true);
+    $SESSION->remove('invoicecustomer', true);
+    $SESSION->remove('invoiceediterror', true);
 
     $invoicecontents = array();
     foreach ($invoice['content'] as $item) {
@@ -92,16 +92,16 @@ if (isset($_GET['id']) && ($action == 'edit' || $action == 'init')) {
     $invoicecontents = $hook_data['contents'];
     $invoice = $hook_data['invoice'];
 
-    $SESSION->save('invoicecontents', $invoicecontents);
-    $SESSION->save('invoice', $invoice);
-    $SESSION->save('invoicecustomer', $invoice['customerid']);
-    $SESSION->save('invoiceid', $invoice['id']);
+    $SESSION->save('invoicecontents', $invoicecontents, true);
+    $SESSION->save('invoice', $invoice, true);
+    $SESSION->save('invoicecustomer', $invoice['customerid'], true);
+    $SESSION->save('invoiceid', $invoice['id'], true);
 }
 
-$SESSION->restore('invoicecontents', $contents);
-$SESSION->restore('invoice', $invoice);
-$SESSION->restore('invoicecustomer', $customerid);
-$SESSION->restore('invoiceediterror', $error);
+$SESSION->restore('invoicecontents', $contents, true);
+$SESSION->restore('invoice', $invoice, true);
+$SESSION->restore('invoicecustomer', $customerid, true);
+$SESSION->restore('invoiceediterror', $error, true);
 $itemdata = r_trim($_POST);
 
 $ntempl = docnumber(array(
@@ -389,7 +389,7 @@ switch ($action) {
 
         $contents = changeContents($contents, $_POST['invoice-contents']);
 
-        $SESSION->restore('invoiceid', $invoice['id']);
+        $SESSION->restore('invoiceid', $invoice['id'], true);
         $invoice['type'] = $invoice['doctype'];
 
         if (!ConfigHelper::checkPrivilege('invoice_consent_date')) {
@@ -688,10 +688,10 @@ switch ($action) {
         break;
 }
 
-$SESSION->save('invoice', $invoice);
-$SESSION->save('invoicecontents', $contents);
-$SESSION->save('invoicecustomer', $customerid);
-$SESSION->save('invoiceediterror', $error);
+$SESSION->save('invoice', $invoice, true);
+$SESSION->save('invoicecontents', $contents, true);
+$SESSION->save('invoicecustomer', $customerid, true);
+$SESSION->save('invoiceediterror', $error, true);
 
 if ($action != '') {
     // redirect needed because we don't want to destroy contents of invoice in order of page refresh

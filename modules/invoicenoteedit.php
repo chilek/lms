@@ -54,9 +54,9 @@ if (isset($_GET['id']) && $action == 'edit') {
     }
     $cnote['invoice']['content'] = $invoice;
 
-    $SESSION->remove('cnotecontents');
-    $SESSION->remove('cnote');
-    $SESSION->remove('cnoteediterror');
+    $SESSION->remove('cnotecontents', true);
+    $SESSION->remove('cnote', true);
+    $SESSION->remove('cnoteediterror', true);
 
     $cnotecontents = array();
     foreach ($cnote['content'] as $item) {
@@ -91,7 +91,7 @@ if (isset($_GET['id']) && $action == 'edit') {
         $nitem['taxid']     = $item['taxid'];
         $cnotecontents[$item['itemid']] = $nitem;
     }
-    $SESSION->save('cnotecontents', $cnotecontents);
+    $SESSION->save('cnotecontents', $cnotecontents, true);
 
     $cnote['oldcdate'] = $cnote['cdate'];
     $cnote['oldsdate'] = $cnote['sdate'];
@@ -109,13 +109,13 @@ if (isset($_GET['id']) && $action == 'edit') {
     $cnotecontents = $hook_data['contents'];
     $cnote = $hook_data['cnote'];
 
-    $SESSION->save('cnote', $cnote);
-    $SESSION->save('cnoteid', $cnote['id']);
+    $SESSION->save('cnote', $cnote, true);
+    $SESSION->save('cnoteid', $cnote['id'], true);
 }
 
-$SESSION->restore('cnotecontents', $contents);
-$SESSION->restore('cnote', $cnote);
-$SESSION->restore('cnoteediterror', $error);
+$SESSION->restore('cnotecontents', $contents, true);
+$SESSION->restore('cnote', $cnote, true);
+$SESSION->restore('cnoteediterror', $error, true);
 $itemdata = r_trim($_POST);
 
 $ntempl = docnumber(array(
@@ -172,7 +172,7 @@ switch ($action) {
 
         $invoice = $oldcnote['invoice'];
 
-        $SESSION->restore('cnoteid', $cnote['id']);
+        $SESSION->restore('cnoteid', $cnote['id'], true);
 
         $currtime = time();
 
@@ -258,7 +258,7 @@ switch ($action) {
 
         $error = array();
 
-        $SESSION->restore('cnoteid', $cnote['id']);
+        $SESSION->restore('cnoteid', $cnote['id'], true);
         $cnote['type'] = DOC_CNOTE;
 
         $currtime = time();
@@ -657,9 +657,9 @@ switch ($action) {
         break;
 }
 
-$SESSION->save('cnote', $cnote);
-$SESSION->save('cnotecontents', $contents);
-$SESSION->save('cnoteediterror', $error);
+$SESSION->save('cnote', $cnote, true);
+$SESSION->save('cnotecontents', $contents, true);
+$SESSION->save('cnoteediterror', $error, true);
 
 if ($action != '') {
     // redirect needed because we don't want to destroy contents of invoice in order of page refresh

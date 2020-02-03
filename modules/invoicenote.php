@@ -42,9 +42,9 @@ if (isset($_GET['id']) && $action == 'init') {
         $SESSION->redirect('?m=invoicelist');
     }
 
-    $SESSION->remove('invoicecontents');
-    $SESSION->remove('cnote');
-    $SESSION->remove('cnoteerror');
+    $SESSION->remove('invoicecontents', true);
+    $SESSION->remove('cnote', true);
+    $SESSION->remove('cnoteerror', true);
 
     $taxeslist = $LMS->GetTaxes($invoice['cdate'], $invoice['cdate']);
 
@@ -119,16 +119,16 @@ if (isset($_GET['id']) && $action == 'init') {
     $invoice = $hook_data['invoice'];
     $cnote = $hook_data['cnote'];
 
-    $SESSION->save('cnote', $cnote);
-    $SESSION->save('invoice', $invoice);
-    $SESSION->save('invoiceid', $invoice['id']);
-    $SESSION->save('invoicecontents', $invoicecontents);
+    $SESSION->save('cnote', $cnote, true);
+    $SESSION->save('invoice', $invoice, true);
+    $SESSION->save('invoiceid', $invoice['id'], true);
+    $SESSION->save('invoicecontents', $invoicecontents, true);
 }
 
-$SESSION->restore('invoicecontents', $contents);
-$SESSION->restore('invoice', $invoice);
-$SESSION->restore('cnote', $cnote);
-$SESSION->restore('cnoteerror', $error);
+$SESSION->restore('invoicecontents', $contents, true);
+$SESSION->restore('invoice', $invoice, true);
+$SESSION->restore('cnote', $cnote, true);
+$SESSION->restore('cnoteerror', $error, true);
 
 $numberplanlist = $LMS->GetNumberPlans(array(
     'doctype' => DOC_CNOTE,
@@ -263,7 +263,7 @@ switch ($action) {
 
         $error = array();
 
-        $SESSION->restore('invoiceid', $invoice['id']);
+        $SESSION->restore('invoiceid', $invoice['id'], true);
 
         if (!ConfigHelper::checkPrivilege('invoice_consent_date')) {
             $cnote['cdate'] = $invoice['cdate'];
@@ -656,11 +656,11 @@ switch ($action) {
 
         $DB->CommitTrans();
 
-        $SESSION->remove('invoice');
-        $SESSION->remove('invoiceid');
-        $SESSION->remove('cnote');
-        $SESSION->remove('invoicecontents');
-        $SESSION->remove('cnoteerror');
+        $SESSION->remove('invoice', true);
+        $SESSION->remove('invoiceid', true);
+        $SESSION->remove('cnote', true);
+        $SESSION->remove('invoicecontents', true);
+        $SESSION->remove('cnoteerror', true);
 
         if (isset($_GET['print'])) {
             $which = isset($_GET['which']) ? $_GET['which'] : 0;
@@ -672,10 +672,10 @@ switch ($action) {
         break;
 }
 
-$SESSION->save('invoice', $invoice);
-$SESSION->save('cnote', $cnote);
-$SESSION->save('invoicecontents', $contents);
-$SESSION->save('cnoteerror', $error);
+$SESSION->save('invoice', $invoice, true);
+$SESSION->save('cnote', $cnote, true);
+$SESSION->save('invoicecontents', $contents, true);
+$SESSION->save('cnoteerror', $error, true);
 
 if ($action != '') {
     // redirect, to not prevent from invoice break with the refresh

@@ -47,10 +47,10 @@ function GetCustomerCovenants($customerid, $currency)
 
 $taxeslist = $LMS->GetTaxes();
 
-$SESSION->restore('invoicecontents', $contents);
-$SESSION->restore('invoicecustomer', $customer);
-$SESSION->restore('invoice', $invoice);
-$SESSION->restore('invoicenewerror', $error);
+$SESSION->restore('invoicecontents', $contents, true);
+$SESSION->restore('invoicecustomer', $customer, true);
+$SESSION->restore('invoice', $invoice, true);
+$SESSION->restore('invoicenewerror', $error, true);
 
 $itemdata = r_trim($_POST);
 
@@ -569,10 +569,10 @@ switch ($action) {
         $DB->UnLockTables();
         $DB->CommitTrans();
 
-        $SESSION->remove('invoicecontents');
-        $SESSION->remove('invoicecustomer');
-        $SESSION->remove('invoice');
-        $SESSION->remove('invoicenewerror');
+        $SESSION->remove('invoicecontents', true);
+        $SESSION->remove('invoicecustomer', true);
+        $SESSION->remove('invoice', true);
+        $SESSION->remove('invoicenewerror', true);
 
         if (isset($_GET['print'])) {
             $which = isset($_GET['which']) ? $_GET['which'] : 0;
@@ -588,10 +588,10 @@ switch ($action) {
         break;
 }
 
-$SESSION->save('invoice', $invoice);
-$SESSION->save('invoicecontents', isset($contents) ? $contents : null);
-$SESSION->save('invoicecustomer', isset($customer) ? $customer : null);
-$SESSION->save('invoicenewerror', isset($error) ? $error : null);
+$SESSION->save('invoice', $invoice, true);
+$SESSION->save('invoicecontents', isset($contents) ? $contents : null, true);
+$SESSION->save('invoicecustomer', isset($customer) ? $customer : null, true);
+$SESSION->save('invoicenewerror', isset($error) ? $error : null, true);
 
 
 if ($action) {
