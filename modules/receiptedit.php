@@ -134,10 +134,10 @@ if (isset($_GET['id'])) {
 
     $receipt['selected'] = true;
 
-    $SESSION->save('receipt', $receipt);
-    $SESSION->save('receiptcontents', $contents);
-    $SESSION->save('receiptcustomer', isset($customer) ? $customer : null);
-    $SESSION->save('receiptediterror', $error);
+    $SESSION->save('receipt', $receipt, true);
+    $SESSION->save('receiptcontents', $contents, true);
+    $SESSION->save('receiptcustomer', isset($customer) ? $customer : null, true);
+    $SESSION->save('receiptediterror', $error, true);
 }
 
 // receipt positions adding with double click protection
@@ -156,10 +156,10 @@ function additem(&$content, $item)
     }
 }
 
-$SESSION->restore('receiptcontents', $contents);
-$SESSION->restore('receiptcustomer', $customer);
-$SESSION->restore('receipt', $receipt);
-$SESSION->restore('receiptediterror', $error);
+$SESSION->restore('receiptcontents', $contents, true);
+$SESSION->restore('receiptcustomer', $customer, true);
+$SESSION->restore('receipt', $receipt, true);
+$SESSION->restore('receiptediterror', $error, true);
 
 $receipt['titlenumber'] = docnumber(array(
     'number' => $receipt['number'],
@@ -628,10 +628,10 @@ switch ($action) {
             break;
         }
 
-        $SESSION->remove('receiptcontents');
-        $SESSION->remove('receiptcustomer');
-        $SESSION->remove('receipt');
-        $SESSION->remove('receiptediterror');
+        $SESSION->remove('receiptcontents', true);
+        $SESSION->remove('receiptcustomer', true);
+        $SESSION->remove('receipt', true);
+        $SESSION->remove('receiptediterror', true);
 
         if (isset($_GET['print'])) {
             $which = isset($_GET['which']) ? $_GET['which'] : 0;
@@ -643,10 +643,10 @@ switch ($action) {
         break;
 }
 
-$SESSION->save('receipt', $receipt);
-$SESSION->save('receiptcontents', $contents);
-$SESSION->save('receiptcustomer', $customer);
-$SESSION->save('receiptediterror', $error);
+$SESSION->save('receipt', $receipt, true);
+$SESSION->save('receiptcontents', $contents, true);
+$SESSION->save('receiptcustomer', $customer, true);
+$SESSION->save('receiptediterror', $error, true);
 
 if ($action != '') {
     $SESSION->redirect('?m=receiptedit');
