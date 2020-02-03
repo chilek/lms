@@ -1720,10 +1720,9 @@ li.lms-ui-suggestion-item {
 
 .lms-ui-icon-mailsent {
 	.lms-ui-icon-mail;
-	text-stroke-width: 1px;
-	text-stroke-color: gold;
-	-webkit-text-stroke-width: 1px;
-	-webkit-text-stroke-color: gold;
+	&:before {
+		color: @blend !important;
+	}
 }
 
 .lms-ui-icon-customer {
