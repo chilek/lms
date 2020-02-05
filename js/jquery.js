@@ -102,6 +102,12 @@ $.datepicker._gotoToday = function(id) {
 	this._adjustDate(target);
 }
 
+function init_autolinker(selector) {
+	$(selector).each(function() {
+		$(this).html(Autolinker.link($(this).html(), { stripPrefix: false }));
+	});
+}
+
 function init_multiselects(selector) {
 	var multiselects = $(selector);
 	if (multiselects.length) {
@@ -315,7 +321,7 @@ function init_attachment_lists(selector) {
 		$(this).html('<img src="img/' + (elem.is(':visible')  ? 'desc' : 'asc') + '_order.gif">');
 	});
 
-	$(selector + ' .container-view,.container-edit').click(function() {
+	$(selector + ' .container-edit').click(function() {
 		var row = $(this).closest('.lms-ui-tab-table-row');
 		row.find('.container-view,.container-edit').hide();
 		row.find('.container-modify,.container-save,.container-cancel').show();
@@ -359,7 +365,9 @@ function init_attachment_lists(selector) {
 					} else {
 						row.find('.container-view,.container-edit').show();
 						row.find('.container-modify,.container-save,.container-cancel').hide();
-						row.find('.container-view').html(description.val().length ? description.val() : '---');
+						row.find('.container-view').html(
+							description.val().length ? Autolinker.link(description.val(), { stripPrefix: false }) : '---'
+						);
 					}
 				}
 			});
@@ -372,7 +380,6 @@ function init_attachment_lists(selector) {
 		});
 		return false;
 	});
-
 }
 
 $(function() {
@@ -1093,6 +1100,8 @@ $(function() {
 	});
 
 	init_titlebars('.lmsbox-titlebar');
+
+	init_autolinker('.lms-ui-autolinker');
 
 	$('.lms-ui-row-all-check').each(function() {
 		$(this).click(function() {

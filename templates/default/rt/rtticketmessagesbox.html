@@ -17,7 +17,7 @@
 	<TBODY>
 	<TR>
 		<TD style="width: 100%;" colspan="3">
-			<TABLE class="lmsbox-inner" id="messages">
+			<TABLE class="lmsbox-inner lms-ui-autolinker">
 				{counter start=0 skip=1 print=false assign=msgidx}
 				{foreach from=$ticket.messages item=message}
 				{if $message.type == $smarty.const.RTMESSAGE_REGULAR || $message.type == $smarty.const.RTMESSAGE_NOTE}
@@ -120,10 +120,8 @@
 	</TR>
 	</TBODY>
 </TABLE>
-<script type="text/javascript" src="js/Autolinker.min.js"></script>
-<script type="text/javascript">
-    var myTextEl = document.getElementById( 'messages' );
-    myTextEl.innerHTML = Autolinker.link( myTextEl.innerHTML );
+<script>
+
 	if (location.hash.length) {
 		$('tr' + location.hash).parent('thead').addClass('lms-ui-rtmessage-current')
 			.next('tbody').addClass('lms-ui-rtmessage-current');
@@ -147,4 +145,5 @@
 		});
 		return false;
 	});
+
 </script>
