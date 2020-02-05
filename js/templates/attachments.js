@@ -22,15 +22,19 @@
  *  $Id$
  */
 
-$(function() {
-	$('.toggle-file-list').click(function() {
+function init_attachment_lists(selector) {
+	if (!selector) {
+		selector = 'body';
+	}
+
+	$(selector + ' .toggle-file-list').click(function() {
 		var containerid = parseInt($(this).attr('data-container-id'));
 		var elem = $('#files-' + containerid);
 		elem.toggle();
 		$(this).html('<img src="img/' + (elem.is(':visible')  ? 'desc' : 'asc') + '_order.gif">');
 	});
 
-	$('.container-view,.container-edit').click(function() {
+	$(selector + ' .container-view,.container-edit').click(function() {
 		var row = $(this).closest('.lms-ui-tab-table-row');
 		row.find('.container-view,.container-edit').hide();
 		row.find('.container-modify,.container-save,.container-cancel').show();
@@ -38,7 +42,7 @@ $(function() {
 		description.attr('data-old-value', description.val()).removeClass('alert').focus();
 	});
 
-	$('.container-modify').keydown(function(e) {
+	$(selector + ' .container-modify').keydown(function(e) {
 		switch (e.key) {
 			case 'Enter':
 				$(this).closest('.lms-ui-tab-table-row').find('.container-save').click();
@@ -49,7 +53,7 @@ $(function() {
 		}
 	});
 
-	$('.container-cancel').click(function() {
+	$(selector + ' .container-cancel').click(function() {
 		var row = $(this).closest('.lms-ui-tab-table-row');
 		row.find('.container-view,.container-edit').show();
 		row.find('.container-modify,.container-save,.container-cancel').hide();
@@ -57,7 +61,7 @@ $(function() {
 		description.val(description.attr('data-old-value'));
 	});
 
-	$('.container-save').click(function() {
+	$(selector + ' .container-save').click(function() {
 		var row = $(this).closest('.lms-ui-tab-table-row');
 		var description = row.find('.container-modify > input');
 		if (description.attr('data-old-value') != description.val()) {
@@ -81,11 +85,15 @@ $(function() {
 		}
 	});
 
-	$('.container-del').click(function() {
+	$(selector + ' .container-del').click(function() {
 		confirmDialog($t("Are you sure you want to delete this file container?"), this).done(function() {
 			location.href = $(this).attr('href');
 		});
 		return false;
 	});
 
+}
+
+$(function() {
+	init_attachment_lists();
 });
