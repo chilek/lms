@@ -34,8 +34,8 @@
 		<tr class="dark">
 			<td width="100%" class="fall text-right" colspan="2">
 				{block name="netdevproducer-buttons"}
-				<a href="javascript:void(0);" onclick="xajax_save_producer(xajax.getFormValues('produceredit'));">{trans("Save")} <img src="img/add.gif" alt=""></a>
-				<a href="javascript:void(0);" onclick="xajax_cancel_producer();">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a>
+					{button icon="save" label="Save" onclick="xajax_save_producer(xajax.getFormValues('produceredit'));" href="javascript:void(0);"}
+					{button icon="cancel" label="Cancel" onclick="xajax_cancel_producer();" href="javascript:void(0);"}
 				{/block}
 			</td>
 		</tr>
@@ -85,15 +85,16 @@
 			<td class="nobr text-right">
 				{block name="netdevmodel-producer-buttons"}
 				{if $listdata.pid}
-				<a id="delete-producer" href="#" onclick="delproducer({$listdata.pid});"><img src="img/delete.gif" alt="{trans("Remove")}"></a>
-				<a href="javascript:void(0);" onclick="xajax_edit_producer({$listdata.pid});"><img src="img/edit.gif" alt="{trans("Edit")}"></a>
+					{button id="delete-producer" icon="delete" label="Delete" onclick="delproducer({$listdata.pid});" href="javascript:void(0);"}
+					{button icon="edit" label="Edit" onclick="xajax_edit_producer({$listdata.pid});" href="javascript:void(0);"}
+
 				{/if}
 				{/block}
 			</td>
 		</tr>
 		<tr class="lms-ui-button-panel">
 			<td colspan="2" class="fall text-right">
-				<a href="javascript:void(0);" onclick="xajax_add_producer();">{trans("Add producer")} <img src="img/add.gif" alt=""></a>
+				{button icon="add" label="Add producer" onclick="xajax_add_producer();" href="javascript:void(0);"}
 			</td>
 		</tr>
 		</tbody>
@@ -130,14 +131,16 @@
 		<tr class="dark">
 			<td width="100%" class="fall text-right" colspan="2">
 				{block name="netdevmodel-buttons"}
-				<a href="javascript:void(0);" onclick="xajax_save_model(xajax.getFormValues('modeledit'));">{trans("Save")} <img src="img/add.gif" alt=""></a>
-				<a href="javascript:void(0);" onclick="xajax_cancel_model();">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a>
+					{button icon="save" label="Save" onclick="xajax_save_model(xajax.getFormValues('modeledit'));" href="javascript:void(0);"}
+					{button icon="cancel" label="Cancel" onclick="xajax_cancel_model();" href="javascript:void(0);"}
 				{/block}
 			</td>
 		</tr>
 	</table>
     </form>
-    <br>
+	<br>
+	<div id="netdevmodel-attachements"></div>
+	<br>
 </div>
 
 
@@ -172,7 +175,7 @@
 		<td class="bold">{trans("Alternative name")}</td>
 		<td class="text-center nobr bold">{trans("Network devices")}</td>
 		<td class="text-right nobr">
-			<a href="javascript:void(0);" onclick="xajax_add_model();">{trans("Add model")} <img src="img/add.gif"></a>
+			{button icon="add" label="Add model" onclick="xajax_add_model();" href="javascript:void(0);"}
 		</td>
 	</tr>
 	{section name=modellist loop=$modellist start=$start max=$pagelimit}
@@ -181,15 +184,26 @@
 		<td class="nobr">{$model.name}</td>
 		<td>{$model.alternative_name}</td>
 		<td class="text-center nobr">{if $model.netdevcount}{$model.netdevcount}{/if}</td>
-		<td class="text-right nobr">
+		<td class="lms-ui-buttons text-right nobr">
+			{if $model.files}
+				{button class="toggle-file-list" type="link" icon="fileupload" tip="Show file list" resourceid={$model.filecontainerid}}
+			{/if}
+			{if !$model.netdevcount}
+			{button type="link" icon="delete" tip="Delete" onclick="xajax_delete_model({$model.id});"}
+			{/if}
+			{button type="link" icon="edit" tip="Edit" onclick="xajax_edit_model({$model.id});"}
+			<div id="files-{$model.filecontainerid}" style="display: none;" class="files">
+				{foreach $model.files as $file}
+					{documentview id="{$model.id}-{$file.id}" type=$file.contenttype name=$file.filename
+					url="?m=attachments&attachmentaction=viewfile&type=messageid&id={$model.filecontainerid}&fileid={$file.id}" external=true
+					text="{$file.filename} <img src=\"img/{if preg_match('/pdf/',$file.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$file.contenttype)}xls{else}view{/if}.gif\">"}
+					<br>
+				{/foreach}
+			</div>
 			{foreach $model.customlinks as $link}
 			<A {if isset($link.url)} href="{$link.url}" {/if} rel="external" {if isset($link.onclick)} onclick="{$link.onclick}"{/if}>{if isset($link.icon)}<IMG src="{$link.icon}" alt="{$link.label}" {$link.tip}>{else}{$link.label}{/if}</A>
 			{if isset($link.extra)}{$link.extra}{/if}
 			{/foreach}
-			{if !$model.netdevcount}
-			<img src="img/delete.gif" onclick="xajax_delete_model({$model.id});">
-			{/if}
-			<img src="img/edit.gif" onclick="xajax_edit_model({$model.id});">
 		</td>
 	</tr>
 	{/section}
@@ -212,12 +226,29 @@
 			<p>
 			{trans("There are no models matching to defined filter or model list is empty")}
 			</p>
-			<a href="javascript:void(0);" onclick="xajax_add_model();">{trans("Add new model")}</a>
+			{button icon="add" label="Add new model" onclick="xajax_add_model();" href="javascript:void(0);"}
 			<br>
 			<br>
 		</td>
 	</tr>
 </table>
 {/if}
+
+<script>
+	var restore = '{$restore}';
+	var attachmentresourceid = '{$attachmentresourceid}';
+	if (restore) {
+		xajax_edit_model(attachmentresourceid);
+	}
+
+	$(function () {
+		$('.toggle-file-list').click(function () {
+			var containerid = parseInt($(this).attr('data-resourceid'));
+			var elem = $('#files-' + containerid);
+			elem.toggle();
+		});
+	});
+
+</script>
 
 {/block}

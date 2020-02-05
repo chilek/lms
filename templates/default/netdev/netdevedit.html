@@ -12,7 +12,10 @@
 	{include file="netdev/netdevipbox.html"}
 {/block}
 {block name=netdevattachments}
-	{include file="attachments.html" attachmenttype="netdevid" attachmentresourceid=$netdev.id}
+	{include file="attachments.html" attachmenttype=$attachmenttype attachmentresourceid=$netdev.id}
+{/block}
+{block name=netdevmodelattachments}
+	{include file="attachments.html" attachmenttype=$attachmenttype_model attachmentresourceid=$attachmentresourceid_model}
 {/block}
 {block name=netdevmanagementurl}
 	{include file="managementurl/managementurls.html"}
@@ -29,5 +32,7 @@
 </div>
 <script type="text/javascript">
 	restoreSortable('netdevedit-sortable', '{$netdevedit_sortable_order}');
+	init_attachment_lists('#attachmentpanel-netdevmodelid');
+	init_attachment_lists('#attachmentpanel-netdevid');
 </script>
 {/block}

@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2019 LMS Developers
+ *  Copyright (C) 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -51,7 +51,7 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
                         $file_manager = new LMSFileManager($this->db, $this->auth, $this->cache, $this->syslog);
                     }
                     $file_containers = $file_manager->GetFileContainers('messageid', $message['id']);
-                    $message['files'] = $file_containers[0]['files'];
+                    $message['files'] = $file_containers['messageid'][0]['files'];
                 }
             }
             unset($message);
@@ -387,7 +387,7 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
                         $file_manager = new LMSFileManager($this->db, $this->auth, $this->cache, $this->syslog);
                     }
                     $file_containers = $file_manager->GetFileContainers('messageid', $message['id']);
-                    $message['files'] = $file_containers[0]['files'];
+                    $message['files'] = $file_containers['messageid'][0]['files'];
                 }
             }
             unset($message);

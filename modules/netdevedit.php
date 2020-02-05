@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -748,7 +748,6 @@ if (isset($netdev)) {
 } else {
     $attachmenttype = 'netdevid';
     $attachmentresourceid = $id;
-    include(MODULES_DIR . DIRECTORY_SEPARATOR . 'attachments.php');
 
     $netdev = $LMS->GetNetDev($id);
 
@@ -757,6 +756,13 @@ if (isset($netdev)) {
         $netdev['producer'] = $netdev['producerid'];
         $netdev['model'] = $netdev['modelid'];
     }
+
+    if ($netdev['model']) {
+        $attachmenttype_model = 'netdevmodelid';
+        $attachmentresourceid_model = $netdev['model'];
+    }
+
+    include(MODULES_DIR . DIRECTORY_SEPARATOR . 'attachments.php');
 
     if ($netdev['purchasetime']) {
         $netdev['purchasedate'] = date('Y/m/d', $netdev['purchasetime']);

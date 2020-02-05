@@ -690,7 +690,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 				addr.state as location_state_name, addr.state_id as location_state,
 				addr.zip as location_zip, addr.country_id as location_country,
 				addr.city as location_city_name, addr.city_id as location_city,
-				lc.ident AS city_ident,
+				lc.ident AS city_ident, fc.id AS filecontainerid,
 				addr.street AS location_street_name, addr.street_id as location_street,
 				(CASE WHEN lst.ident IS NULL
 					THEN (CASE WHEN addr.street = \'\' THEN \'99999\' ELSE \'99998\' END)
@@ -711,7 +711,8 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 				LEFT JOIN location_cities lc    ON lc.id = addr.city_id
 				LEFT JOIN location_boroughs lb  ON lb.id = lc.boroughid
 				LEFT JOIN location_districts ld ON ld.id = lb.districtid
-				LEFT JOIN location_states ls    ON ls.id = ld.stateid '
+				LEFT JOIN location_states ls    ON ls.id = ld.stateid
+                LEFT JOIN filecontainers fc ON fc.netdevid = d.id '
                 . (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : '')
                 . ($sqlord != '' ? $sqlord . ' ' . $direction : '')
                 . (isset($limit) ? ' LIMIT ' . $limit : '')
@@ -719,12 +720,6 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
         if (!$short && $netdevlist) {
             $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
-
-            $filecontainers = $this->db->GetAllByKey('SELECT fc.netdevid, '
-                . $this->db->GroupConcat("CASE WHEN fc.description = '' THEN '---' ELSE fc.description END") . ' AS descriptions
-			FROM filecontainers fc
-			WHERE fc.netdevid IS NOT NULL
-			GROUP BY fc.netdevid', 'netdevid');
 
             foreach ($netdevlist as &$netdev) {
                 $netdev['customlinks'] = array();
@@ -736,11 +731,16 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                         . $netdev['borough_ident'] . $netdev['borough_type'];
                 $netdev['simc'] = empty($netdev['city_ident']) ? null : $netdev['city_ident'];
                 $netdev['ulic'] = empty($netdev['street_ident']) ? null : $netdev['street_ident'];
-                $netdev['filecontainers'] = isset($filecontainers[$netdev['id']])
-                    ? explode(',', $filecontainers[$netdev['id']]['descriptions'])
-                    : array();
 
                 $netdev['lastonlinedate'] = lastonline_date($netdev['lastonline']);
+
+                if (!empty($netdev['filecontainerid'])) {
+                    if (!isset($file_manager)) {
+                        $file_manager = new LMSFileManager($this->db, $this->auth, $this->cache, $this->syslog);
+                    }
+                    $file_containers = $file_manager->GetFileContainers('netdevid', $netdev['id']);
+                    $netdev['files'] = $file_containers['netdevid'][0]['files'];
+                }
             }
             unset($netdev);
         }
@@ -989,6 +989,39 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         }
 
         return $result;
+    }
+
+    public function GetModelList($pid = null)
+    {
+        if (!$pid) {
+            return null;
+        }
+
+        $list = $this->db->GetAll(
+            'SELECT m.id, m.name, m.alternative_name, fc.id AS filecontainerid,
+			(SELECT COUNT(i.id) FROM netdevices i WHERE i.netdevicemodelid = m.id) AS netdevcount
+			FROM netdevicemodels m
+            LEFT JOIN filecontainers fc ON fc.netdevmodelid = m.id
+			WHERE m.netdeviceproducerid = ?
+			ORDER BY m.name ASC',
+            array($pid)
+        );
+
+        if (!empty($list)) {
+            foreach ($list as &$model) {
+                $model['customlinks'] = array();
+                if (!empty($model['filecontainerid'])) {
+                    if (!isset($file_manager)) {
+                        $file_manager = new LMSFileManager($this->db, $this->auth, $this->cache, $this->syslog);
+                    }
+                    $file_containers = $file_manager->GetFileContainers('netdevmodelid', $model['id']);
+                    $model['files'] = $file_containers['netdevmodelid'][0]['files'];
+                }
+            }
+            unset($model);
+        }
+
+        return $list;
     }
 
     public function GetRadioSectors($netdevid, $technology = 0)

@@ -4193,6 +4193,7 @@ $_LANG['Delete file container'] = 'Usuń kontener plikowy';
 $_LANG['Show file list'] = 'Pokaż listę plików';
 $_LANG['Are you sure you want to delete this file container?'] = 'Jesteś pewien, że chcesz usunąć ten kontener plikowy?';
 $_LANG['Attachments ($a):'] = 'Załączniki ($a):';
+$_LANG['Model attachments ($a):'] = 'Załączniki modelu ($a):';
 $_LANG['There are no file containers in database.'] = 'Brak kontenerów plików w bazie danych.';
 $_LANG['Cannot update file container description!'] = 'Nie można zaktualizować opisu kontenera plikowego!';
 

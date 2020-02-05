@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2019 LMS Developers
+ *  Copyright (C) 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -33,7 +33,7 @@ class LMSFileManager extends LMSManager implements LMSFileManagerInterface
             return null;
         }
 
-        $result = $this->db->GetAll('SELECT c.*, u.name AS creatorname
+        $result[$type] = $this->db->GetAll('SELECT c.*, u.name AS creatorname
 			FROM filecontainers c
 			LEFT JOIN vusers u ON u.id = c.creatorid
 			WHERE c.' . $type . ' = ?', array($id));
@@ -41,7 +41,7 @@ class LMSFileManager extends LMSManager implements LMSFileManagerInterface
             return null;
         }
 
-        foreach ($result as &$container) {
+        foreach ($result[$type] as &$container) {
             $container['description'] = wordwrap($container['description'], 120, '<br>', true);
             $container['files'] = $this->db->GetAll('SELECT * FROM files
 				WHERE containerid = ?', array($container['id']));

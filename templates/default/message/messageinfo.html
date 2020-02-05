@@ -99,7 +99,7 @@
 				{trans("Attachments:")}
 			</TD>
 			<TD>
-				{foreach $filecontainers as $container}
+				{foreach $filecontainers['messageid'] as $container}
 						{foreach $container.files as $file}
 							{documentview id="{$container.id}-{$file.id}" type=$file.contenttype name=$file.filename
 							url="?m=attachments&attachmentaction=viewfile&type=messageid&id={$container.id}&fileid={$file.id}" external=true

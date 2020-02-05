@@ -172,6 +172,9 @@ version 25-git (????-??-??):
     by Autolinker [chilan]
   - enhancement: rt.default_queue supports queue names and it is also used in new ticket
     form [chilan]
+  - enhancement: added the ability to place multiple panels of the same type in one window
+    and added the ability to add attachments to device models [ravvar]
+  - enhancement: added the ability to add attachments to device models [ravvar]
 
 version 24.0 (2019-05-16):
 

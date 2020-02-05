@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2018 LMS Developers
+ *  Copyright (C) 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -35,44 +35,46 @@ interface LMSNetDevManagerInterface
     public function NetDevLinkNode($id, $devid, $link = null);
 
     public function SetNetDevLinkType($dev1, $dev2, $link = null);
-    
+
     public function IsNetDevLink($dev1, $dev2);
-    
+
     public function NetDevLink($dev1, $dev2, $link);
-    
+
     public function NetDevUnLink($dev1, $dev2);
-    
+
     public function NetDevUpdate($data);
-    
+
     public function NetDevAdd($data);
-    
+
     public function DeleteNetDev($id);
-    
+
     public function NetDevDelLinks($id);
-    
+
     public function GetNetDev($id);
-    
+
     public function GetNotConnectedDevices($id);
-    
+
     public function GetNetDevNames();
 
     public function GetNetDevName($id);
 
     public function GetNetDevList($order = 'name,asc');
-    
+
     public function GetNetDevConnectedNames($id);
-    
+
     public function GetNetDevLinkType($dev1, $dev2);
-    
+
     public function CountNetDevLinks($id);
-    
+
     public function GetNetDevIDByNode($id);
-    
+
     public function NetDevExists($id);
 
     public function GetProducers();
 
     public function GetModels($producerid = null);
+
+    public function GetModelList($pid = null);
 
     public function GetRadioSectors($netdevid, $technology = 0);
 

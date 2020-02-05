@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -252,7 +252,7 @@ function edit_model($id)
     global $LMS;
 
     $DB = LMSDB::getInstance();
-
+    $SMARTY = LMSSmarty::getInstance();
     $obj = new xajaxResponse();
 
     $model = $DB->GetRow('SELECT * FROM netdevicemodels WHERE id = ?', array($id));
@@ -269,11 +269,18 @@ function edit_model($id)
     $obj->script("xajax.$('div_modeledit').style.display='';");
     $obj->script("removeClass(xajax.$('id_model_name'),'alert');");
     $obj->assign("id_model_action_name", "innerHTML", trans('Model edit: $a', $model['name']));
-
     $obj->assign("id_model", "value", $model['id']);
     $obj->assign("id_model_name", "value", $model['name']);
     $obj->assign("id_model_alternative_name", "value", $model['alternative_name']);
     $obj->script("xajax.$('id_model_name').focus();");
+    $SMARTY->assign('attachmenttype', "netdevmodelid");
+    $SMARTY->assign('attachmentresourceid', $model['id']);
+    $SMARTY->assign('filecontainers', $LMS->GetFileContainers("netdevmodelid", $model['id']));
+    $obj->assign('netdevmodel-attachements', "innerHTML", $SMARTY->fetch('attachments.html'));
+    $obj->call('init_titlebars', '#netdevmodel-attachements .lmsbox-titlebar');
+    $obj->call('init_attachment_lists', '#netdevmodel-attachements');
+    $obj->script('new lmsFileUpload("netdevmodelid", "upload-form-netdevmodelid")');
+    $obj->script("xajax.$('attachmentpanel-netdevmodelid').style.display='';");
 
     return $obj;
 }
@@ -422,35 +429,7 @@ $LMS->RegisterXajaxFunction(array(
     'delete_model',
 ));
 
-
-function GetModelList($pid = null)
-{
-    global $DB;
-
-    if (!$pid) {
-        return null;
-    }
-
-    $list = $DB->GetAll(
-        'SELECT m.id, m.name, m.alternative_name,
-			(SELECT COUNT(i.id) FROM netdevices i WHERE i.netdevicemodelid = m.id) AS netdevcount
-			FROM netdevicemodels m
-			WHERE m.netdeviceproducerid = ?
-			ORDER BY m.name ASC',
-        array($pid)
-    );
-
-    if (!empty($list)) {
-        foreach ($list as &$model) {
-            $model['customlinks'] = array();
-        }
-        unset($model);
-    }
-
-    return $list;
-}
-
-$modellist = GetModelList($pid);
+$modellist = $LMS->GetModelList($pid);
 
 $listdata['total'] = empty($modellist) ? 0 : count($modellist);
 
@@ -472,6 +451,14 @@ $hook_data = $LMS->executeHook(
 $producerlist = $hook_data['producerlist'];
 $producerinfo = $hook_data['producerinfo'];
 $modellist = $hook_data['modellist'];
+
+if (isset($_GET['restore']) && isset($_GET['attachmentresourceid'])) {
+    $restore = $_GET['restore'];
+    $attachmentresourceid = $_GET['attachmentresourceid'];
+    $SMARTY->assign('restore', $restore);
+    $SMARTY->assign('attachmentresourceid', $attachmentresourceid);
+}
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('xajax', $LMS->RunXajax());
 $SMARTY->assign('listdata', $listdata);

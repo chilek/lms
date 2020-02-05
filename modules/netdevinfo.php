@@ -36,9 +36,22 @@ $SMARTY->assign('xajax', $LMS->RunXajax());
 if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled by netdevxajax.inc.php
     $attachmenttype = 'netdevid';
     $attachmentresourceid = $id;
-    include(MODULES_DIR . DIRECTORY_SEPARATOR . 'attachments.php');
 
     $netdev = $LMS->GetNetDev($id);
+
+    if (preg_match('/^[0-9]+$/', $netdev['producerid'])
+        && preg_match('/^[0-9]+$/', $netdev['modelid'])) {
+        $netdev['producer'] = $netdev['producerid'];
+        $netdev['model'] = $netdev['modelid'];
+    }
+
+    if ($netdev['model']) {
+        $attachmenttype_model = 'netdevmodelid';
+        $attachmentresourceid_model = $netdev['model'];
+    }
+
+    include(MODULES_DIR . DIRECTORY_SEPARATOR . 'attachments.php');
+
     $netdevconnected = $LMS->GetNetDevConnectedNames($id);
     $netcomplist = $LMS->GetNetdevLinkedNodes($id);
     $netdevlist = $LMS->GetNotConnectedDevices($id);

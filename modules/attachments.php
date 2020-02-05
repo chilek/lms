@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -35,6 +35,7 @@ if (!preg_match('/^[a-z0-9_]+$/', $attachmenttype)) {
 
 switch ($attachmenttype) {
     case 'netdevid':
+    case 'netdevmodelid':
     case 'netnodeid':
         if (!ConfigHelper::checkPrivilege('network_management')) {
             if (isset($_GET['type'])) {
@@ -115,32 +116,36 @@ if (!preg_match('/^[0-9]+$/', $attachmentresourceid)) {
 }
 
 if (isset($_POST['upload'])) {
-    $result = handle_file_uploads('files', $error);
+    $result = handle_file_uploads($attachmenttype, $error);
     extract($result);
     $SMARTY->assign('fileupload', $fileupload);
 
     $upload = $_POST['upload'];
 
     if (!$error) {
-        if (!empty($files)) {
-            foreach ($files as &$file) {
+        if (!empty($result[$attachmenttype])) {
+            foreach ($result[$attachmenttype] as &$file) {
                 $file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
             }
             unset($file);
             $LMS->AddFileContainer(array(
                 'description' => $upload['description'],
-                'files' => $files,
+                'files' => $result[$attachmenttype],
                 'type' => $attachmenttype,
                 'resourceid' => $attachmentresourceid,
             ));
         }
 
         // deletes uploaded files
-        if (!empty($files)) {
+        if (!empty($attachmenttype)) {
             rrmdir($tmppath);
         }
 
-        $SESSION->redirect('?' . $SESSION->get('backto'));
+        if (isset($upload['restore'])) {
+            $SESSION->redirect('?' . $SESSION->get('backto').'&restore=1&attachmentresourceid='.$upload['attachmentresourceid']);
+        } else {
+            $SESSION->redirect('?' . $SESSION->get('backto'));
+        }
     }
 
     $SMARTY->assign('upload', $upload);
@@ -150,4 +155,11 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('attachmenttype', $attachmenttype);
 $SMARTY->assign('attachmentresourceid', $attachmentresourceid);
-$SMARTY->assign('filecontainers', $LMS->GetFileContainers($attachmenttype, $attachmentresourceid));
+$filecontainers = $LMS->GetFileContainers($attachmenttype, $attachmentresourceid);
+if (isset($attachmenttype_model) && isset($attachmentresourceid_model)) {
+    $SMARTY->assign('attachmenttype_model', $attachmenttype_model);
+    $SMARTY->assign('attachmentresourceid_model', $attachmentresourceid_model);
+    $filecontainers_model = $LMS->GetFileContainers($attachmenttype_model, $attachmentresourceid_model);
+    $filecontainers = array_merge($filecontainers, $filecontainers_model);
+}
+$SMARTY->assign('filecontainers', $filecontainers);

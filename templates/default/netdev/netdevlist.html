@@ -104,9 +104,9 @@
 			{else}
 				<i class="lms-ui-icon-netdevunk"></i>
 			{/if}
-			<a href="?m=netdevinfo&amp;id={$netdev.id}" name="{$netdev.id}"
-					title="{$netdev.description|replace:"\n":"<br>"|default:trans("- no description -")}{if $netdev.filecontainers}<br><br><i class='lms-ui-icon-fileupload'></i>&nbsp;{implode('<br><i class=\'lms-ui-icon-fileupload\'></i>&nbsp;', $netdev.filecontainers)}{/if}"
-					><B>{$netdev.name}</B></A><BR>
+			<A href="?m=netdevinfo&amp;id={$netdev.id}" name="{$netdev.id}"
+					title="{$netdev.description|replace:"\n":"<br>"|default:trans("- no description -")}">
+				<B>{$netdev.name}</B></A><BR>
 			{if $netdev.producer}
 				<IMG src="img/producer.gif" ALT="">
 				{$netdev.producer} {if $netdev.model}/ {$netdev.model}{/if}
@@ -145,14 +145,25 @@
 			<IMG src="img/serialnumber.gif" ALT=""> {$netdev.serialnumber}
 		</TD>
 		<TD class="lms-ui-buttons text-right nobr">
+			{if $netdev.files}
+				{button class="toggle-file-list" type="link" icon="fileupload" tip="Show file list" resourceid={$netdev.filecontainerid}}
+			{/if}
+			<div id="files-{$netdev.filecontainerid}" style="display: none;" class="files">
+				{foreach $netdev.files as $file}
+					{documentview id="{$netdev.id}-{$file.id}" type=$file.contenttype name=$file.filename
+					url="?m=attachments&attachmentaction=viewfile&type=messageid&id={$netdev.filecontainerid}&fileid={$file.id}" external=true
+					text="{$file.filename} <img src=\"img/{if preg_match('/pdf/',$file.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$file.contenttype)}xls{else}view{/if}.gif\">"}
+					<br>
+				{/foreach}
+			</div>
 			{foreach $netdev.customlinks as $link}
 			<A {if isset($link.url)} href="{$link.url}" {/if} rel="external" {if isset($link.onclick)} onclick="{$link.onclick}"{/if}>{if isset($link.icon)}<IMG src="{$link.icon}" alt="{$link.label}" {$link.tip}>{else}{$link.label}{/if}</A>
 			{if isset($link.extra)}{$link.extra}{/if}
 			{/foreach}
-			<a class="delete-netdev" href="?m=netdevdel&id={$netdev.id}&is_sure=1"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
-			<a href="?m=netdevedit&amp;id={$netdev.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
-			<a href="?m=netdevadd&amp;id={$netdev.id}&clone=1"><IMG src="img/clone.gif" alt="{trans("Clone")}" title="{trans("Clone")}"></A>
-			<a href="?m=netdevinfo&amp;id={$netdev.id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
+			{button type="link" icon="delete" class="delete-netdev" tip="Delete" href="?m=netdevdel&id={$netdev.id}&is_sure=1"}
+			{button type="link" icon="edit" tip="Edit" href="?m=netdevedit&id={$netdev.id}"}
+			{button type="link" icon="clone" tip="Clone" href="?m=netdevadd&id={$netdev.id}&clone=1"}
+			{button type="link" icon="info" tip="Info" href="?m=netdevinfo&id={$netdev.id}"}
 		</TD>
 	</TR>
 	{if $netdevlist[netdevlist.index_next].ownerid == $netdev.ownerid && $listdata.order == "owner"}{cycle print=false}{/if}
@@ -188,5 +199,14 @@
 		});
 		return false;
 	});
+
+	$(function () {
+		$('.toggle-file-list').click(function () {
+			var containerid = parseInt($(this).attr('data-resourceid'));
+			var elem = $('#files-' + containerid);
+			elem.toggle();
+		});
+	});
+
 </script>
 {/block}

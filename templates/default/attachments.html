@@ -3,24 +3,24 @@
 <link href="css/templates/attachments.css" rel="stylesheet">
 <script src="js/templates/attachments.js"></script>
 
-<form name="upload" method="post" action="?m=attachments&type={$attachmenttype}&resourceid={$attachmentresourceid}" id="upload-form">
+<form name="upload{$attachmenttype}" method="post" action="?m=attachments&type={$attachmenttype}&resourceid={$attachmentresourceid}" id="upload-form-{$attachmenttype}">
 </form>
 
-<form name="filecontainer-form" method="POST"
+<form name="filecontainer-form{$attachmenttype}" method="POST"
         action="?m=attachments&type={$attachmenttype}&resourceid={$attachmentresourceid}&attachmentaction=updatecontainer"
-        id="filecontainer-form">
+        id="filecontainer-form{$attachmenttype}">
 </form>
 
 {tab_container id="attachmentbox-{$attachmenttype}"}
     {tab_header content_id="attachmentpanel-{$attachmenttype}"}
         {tab_header_cell icon="lms-ui-icon-fileupload"}
-            <strong>{t a=$filecontainers|@count|default:"0"}Attachments ($a):{/t}</strong>
+            <strong>{t a=$filecontainers[$attachmenttype]|@count|default:"0"}{if $attachmenttype == 'netdevmodelid'}Model attachments ($a):{else}Attachments ($a):{/if}{/t}</strong>
         {/tab_header_cell}
     {/tab_header}
 
     {tab_contents id="attachmentpanel-{$attachmenttype}"}
         {tab_table}
-            {if $filecontainers}
+            {if $filecontainers[$attachmenttype]}
             <div class="lms-ui-tab-table-row header">
                 <div class="lms-ui-tab-table-wrapper col-3">
                     <div class="lms-ui-tab-table-wrapper date-creator col-2">
@@ -42,8 +42,8 @@
             </div>
             {/if}
 
-            {foreach $filecontainers as $container}
-            <div class="lms-ui-tab-table-row" data-id="{$container.id}">
+            {foreach $filecontainers[$attachmenttype] as $container}
+            <div class="lms-ui-tab-table-row" data-id="{$container.id}" data-attachementtype="{$attachmenttype}">
                 <div class="lms-ui-tab-table-wrapper col-3">
                     <div class="lms-ui-tab-table-wrapper date-creator col-2">
                         <div class="lms-ui-tab-table-column date">
@@ -93,9 +93,13 @@
             {tab_button_panel}
                 {tab_buttons}
                     {trans("Description:")}
-                    <input type="text" name="upload[description]" size="50" value="{$upload.description}" form="upload-form">
-                    {fileupload id="files" fileupload=$fileupload form="upload-form"}
-                    {button icon="add" onclick="javascript:document.upload.submit();" label="Add"}
+                    <input type="text" name="upload[description]" size="50" value="{$upload.description}" form="upload-form-{$attachmenttype}">
+                    {if $attachmenttype == 'netdevmodelid' && $filecontainers[$attachmenttype]|@count > 1}
+                        <input type="hidden" name="upload[restore]" value="1" form="upload-form-{$attachmenttype}">
+                        <input type="hidden" name="upload[attachmentresourceid]" value="{$attachmentresourceid}" form="upload-form-{$attachmenttype}">
+                    {/if}
+                {fileupload id="{$attachmenttype}" fileupload=$fileupload form="upload-form-{$attachmenttype}"}
+                    {button icon="add" onclick="javascript:document.upload{$attachmenttype}.submit();" label="Add"}
                 {/tab_buttons}
             {/tab_button_panel}
 
