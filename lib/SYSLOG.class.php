@@ -440,7 +440,7 @@ class SYSLOG
                 }
                 break;
             case 'ipaddr_pub':
-                $data['value'] = empty($data['value']) ? trans('none') : long_ip($data['value']);
+                $data['value'] = empty($data['value']) ? trans('none') : (check_ip($data['value']) ? $data['value'] : long_ip($data['value']));
                 break;
             case 'linktype':
                 $data['value'] = $LINKTYPES[$data['value']];
