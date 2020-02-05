@@ -1,7 +1,7 @@
 <!--// $Id$ //-->
 
-{css}
-{js}
+<link href="css/templates/attachments.css" rel="stylesheet">
+<script src="js/templates/attachments.js"></script>
 
 <form name="upload" method="post" action="?m=attachments&type={$attachmenttype}&resourceid={$attachmentresourceid}" id="upload-form">
 </form>
@@ -57,7 +57,7 @@
                         <span class="container-view">
                             {$container.description|default:"---"}
                         </span>
-                        <span class="container-modify">
+                        <span class="container-modify" style="display: none;">
                             <input type="text" value="{$container.description}">
                         </span>
                     </div>
