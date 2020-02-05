@@ -285,6 +285,24 @@ function init_comboboxes(selector) {
 	}
 }
 
+function init_titlebars(selector) {
+	$(selector).each(function() {
+		$(this).prop('onclick', null);
+		$(this).click(function () {
+			var elemid = $(this).attr('data-lmsbox-content');
+			showOrHide(elemid);
+			$('#' + elemid).find('.lms-ui-datatable').each(function () {
+				if (!$.fn.dataTable.isDataTable(this)) {
+					initDataTable(this);
+				}
+			});
+		});
+		$(this).find('td a,td :input, div a,div :input').click(function (e) {
+			e.stopPropagation();
+		});
+	});
+}
+
 $(function() {
 	var autocomplete = "off";
 	var elementsToInitiate = 0;
@@ -1002,21 +1020,7 @@ $(function() {
 		initDataTable(this);
 	});
 
-	$('.lmsbox-titlebar').each(function() {
-		$(this).prop('onclick', null);
-		$(this).click(function() {
-			var elemid = $(this).attr('data-lmsbox-content');
-			showOrHide(elemid);
-			$('#' + elemid).find('.lms-ui-datatable').each(function() {
-				if (!$.fn.dataTable.isDataTable(this)) {
-					initDataTable(this);
-				}
-			});
-		});
-		$(this).find('td a,td :input, div a,div :input').click(function(e) {
-			e.stopPropagation();
-		});
-	});
+	init_titlebars('.lmsbox-titlebar');
 
 	$('.lms-ui-row-all-check').each(function() {
 		$(this).click(function() {
