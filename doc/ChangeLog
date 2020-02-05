@@ -168,6 +168,8 @@ version 25-git (????-??-??):
     causes presentation alternative customer bank accounts only on invoices and notes, but when
     there are no alternative accounts defined for customer, division account is presented
     as fallback [chilan]
+  - improvement: html contents of element with lms-ui-autolinker css class is handled
+    by Autolinker [chilan]
 
 version 24.0 (2019-05-16):
 
