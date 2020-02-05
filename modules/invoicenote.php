@@ -665,7 +665,7 @@ switch ($action) {
         if (isset($_GET['print'])) {
             $which = isset($_GET['which']) ? $_GET['which'] : 0;
 
-            $SESSION->save('invoiceprint', array('invoice' => $id, 'which' => $which));
+            $SESSION->save('invoiceprint', array('invoice' => $id, 'which' => $which), true);
         }
 
         $SESSION->redirect('?m=invoicelist');

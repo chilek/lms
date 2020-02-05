@@ -319,7 +319,7 @@ if (isset($_POST['receipt'])) {
         if (isset($_GET['print'])) {
             $which = isset($_GET['which']) ? $_GET['which'] : 0;
 
-            $SESSION->save('receiptprint', array('receipt' => $rid, 'receipt2' => $rid2, 'which' => $which));
+            $SESSION->save('receiptprint', array('receipt' => $rid, 'receipt2' => $rid2, 'which' => $which), true);
         }
 
         $SESSION->redirect('?m=receiptlist&regid='.$regid.'#'.$rid);

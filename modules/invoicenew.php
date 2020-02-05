@@ -577,7 +577,7 @@ switch ($action) {
         if (isset($_GET['print'])) {
             $which = isset($_GET['which']) ? $_GET['which'] : 0;
 
-            $SESSION->save('invoiceprint', array('invoice' => $iid, 'which' => $which));
+            $SESSION->save('invoiceprint', array('invoice' => $iid, 'which' => $which), true);
         }
 
         if (isset($_POST['reuse']) || isset($_GET['print'])) {
@@ -625,9 +625,9 @@ if (!ConfigHelper::checkConfig('phpui.big_networks')) {
     $SMARTY->assign('customers', $LMS->GetCustomerNames());
 }
 
-if ($newinvoice = $SESSION->get('invoiceprint')) {
+if ($newinvoice = $SESSION->get('invoiceprint', true)) {
     $SMARTY->assign('newinvoice', $newinvoice);
-    $SESSION->remove('invoiceprint');
+    $SESSION->remove('invoiceprint', true);
 }
 
 $SMARTY->assign('covenantlist', $covenantlist);

@@ -138,9 +138,9 @@ if (!empty($cashregistries)) {
 }
 
 // prepare saved receipt to print
-if ($receipt = $SESSION->get('receiptprint')) {
+if ($receipt = $SESSION->get('receiptprint', true)) {
     $SMARTY->assign('receipt', $receipt);
-    $SESSION->remove('receiptprint');
+    $SESSION->remove('receiptprint', true);
 }
 
 $SMARTY->assign(array(

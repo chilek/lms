@@ -149,9 +149,9 @@ $listdata['direction'] = $invoicelist['direction'];
 unset($invoicelist['order']);
 unset($invoicelist['direction']);
 
-if ($invoice = $SESSION->get('invoiceprint')) {
+if ($invoice = $SESSION->get('invoiceprint', true)) {
         $SMARTY->assign('invoice', $invoice);
-        $SESSION->remove('invoiceprint');
+        $SESSION->remove('invoiceprint', true);
 }
 
 $hook_data = $LMS->ExecuteHook(

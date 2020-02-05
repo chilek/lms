@@ -182,9 +182,9 @@ $layout['pagetitle'] = trans('Cash Registry: $a', $DB->GetOne('SELECT name FROM 
 
 $SESSION->save('backto', 'm=receiptlist&regid='.$regid);
 
-if ($receipt = $SESSION->get('receiptprint')) {
+if ($receipt = $SESSION->get('receiptprint', true)) {
     $SMARTY->assign('receipt', $receipt);
-    $SESSION->remove('receiptprint');
+    $SESSION->remove('receiptprint', true);
 }
 
 $SMARTY->assign('error', $error);

@@ -636,7 +636,7 @@ switch ($action) {
         if (isset($_GET['print'])) {
             $which = isset($_GET['which']) ? $_GET['which'] : 0;
 
-            $SESSION->save('receiptprint', array('receipt' => $rid, 'which' => $which));
+            $SESSION->save('receiptprint', array('receipt' => $rid, 'which' => $which), true);
         }
 
         $SESSION->redirect('?m=receiptlist&regid='.$receipt['regid'].'#'.$rid);

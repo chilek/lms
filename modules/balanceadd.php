@@ -152,7 +152,7 @@ if (isset($addbalance['mcustomerid'])) {
                         $SESSION->save('receiptprint', array(
                             'receipt' => $rid,
                             'which' => implode(',', $which),
-                        ));
+                        ), true);
                     }
                 }
             } else {

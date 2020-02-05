@@ -681,7 +681,7 @@ switch ($action) {
             $SESSION->save('invoiceprint', array(
                 'invoice' => $invoice['id'],
                 'which' => $which
-            ));
+            ), true);
         }
 
         $SESSION->redirect('?m=invoicelist' . (isset($invoice['proforma']) && $invoice['proforma'] === 'edit' ? '&proforma=1' : ''));
