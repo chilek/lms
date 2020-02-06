@@ -900,7 +900,7 @@ $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
 $SMARTY->assign('userinfo', $LMS->GetUserInfo(Auth::GetCurrentUser()));
-$SMARTY->assign('users', $DB->GetAll('SELECT name, phone FROM vusers WHERE phone <> \'\' ORDER BY name'));
+$SMARTY->assign('users', $DB->GetAll('SELECT rname AS name, phone FROM vusers WHERE phone <> ? ORDER BY rname', array('')));
 
 $netdevices = $LMS->GetNetDevList();
 unset($netdevices['total'], $netdevices['order'], $netdevices['direction']);
