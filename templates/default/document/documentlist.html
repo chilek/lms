@@ -170,7 +170,7 @@
 	{foreach $documentlist as $doc}
 	{assign var=docid value=$doc.docid}
 	<TR class="highlight{if $doc.closed} lms-ui-document-closed{/if}{if $doc.archived} lms-ui-document-archived{/if}" data-archived="{if $doc.archived}1{else}0{/if}" data-closed="{if $doc.closed}1{else}0{/if}"
-		data-senddate="{if $doc.senddate}{$doc.senddate|date_format:"%Y/%m/%d"}{else}{$doc.senddate}{/if}">
+		data-senddate="{if $doc.senddate}{$doc.senddate|date_format:"%Y/%m/%d %H:%M"}{else}{$doc.senddate}{/if}">
 		<TD class="nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');"{if $doc.description} {tip text=$doc.description}{/if}>
 			{$doc.cdate|date_format:"%Y/%m/%d %H:%M"}{if $doc.sdate} / {$doc.sdate|date_format:"%Y/%m/%d %H:%M"}{/if}
 			{if $doc.number}<BR>
@@ -197,7 +197,7 @@
 		<TD class="text-right nobr">
 			{if $doc.senddocuments}
 				{textformat assign="tip" wrap=5000}
-					{if $doc.senddate}{trans("Send document again")}<br>{t a=$doc.senddate|date_format:"%Y/%m/%d"}(already sent on $a){/t}{else}{trans("Document send")}{/if}
+					{if $doc.senddate}{trans("Send document again")}<br>{t a=$doc.senddate|date_format:"%Y/%m/%d %H:%M"}(already sent on $a){/t}{else}{trans("Document send")}{/if}
 				{/textformat}
 				{button type="link" class="send-document" icon="{if $doc.senddate}mailsent{else}mail{/if}" href="?m=documentsend&id={$doc.docid}"
 					tip=$tip}

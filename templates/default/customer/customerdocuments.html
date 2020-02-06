@@ -62,7 +62,7 @@
 
 			{foreach $documents as $doc}
 			<div class="lms-ui-tab-table-row{if $doc.closed} lms-ui-document-closed{/if}{if $doc.archived} lms-ui-document-archived{/if}"
-				 data-senddate="{if $doc.senddate}{$doc.senddate|date_format:"%Y/%m/%d"}{else}{$doc.senddate}{/if}">
+				 data-senddate="{if $doc.senddate}{$doc.senddate|date_format:"%Y/%m/%d %H:%M"}{else}{$doc.senddate}{/if}">
 				<div class="lms-ui-tab-table-wrapper col-6">
 					<div class="lms-ui-tab-table-wrapper col-4">
 						<div class="lms-ui-tab-table-wrapper col-2">
@@ -98,7 +98,7 @@
 					<div class="lms-ui-tab-table-column buttons">
 						{if $customerinfo.senddocuments}
 							{textformat assign="tip" wrap=5000}
-								{if $doc.senddate}{trans("Send document again")}<br>{t a=$doc.senddate|date_format:"%Y/%m/%d"}(already sent on $a){/t}{else}{trans("Document send")}{/if}
+								{if $doc.senddate}{trans("Send document again")}<br>{t a=$doc.senddate|date_format:"%Y/%m/%d %H:%M"}(already sent on $a){/t}{else}{trans("Document send")}{/if}
 							{/textformat}
 							{button type="link" class="send-doc" icon="{if $doc.senddate}mailsent{else}mail{/if}" href="?m=documentsend&id={$doc.docid}"
 								tip=$tip}

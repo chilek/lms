@@ -138,7 +138,7 @@
 	{number number=$invoice.number template=$invoice.template time=$invoice.cdate assign=number customerid=$invoice.customerid}
 	<TR class="highlight{if $invoice.closed} blend{elseif $invoice.cancelled} cancel{/if}" data-published="{$invoice.published}"
 			data-number="{$number}" data-customername="{$invoice.name|escape:"javascript"|escape:"html"}"
-			data-senddate="{if $invoice.senddate}{$invoice.senddate|date_format:"%Y/%m/%d"}{else}{$invoice.senddate}{/if}">
+			data-senddate="{if $invoice.senddate}{$invoice.senddate|date_format:"%Y/%m/%d %H:%M"}{else}{$invoice.senddate}{/if}">
 		<TD>
 			{$invoice.id|string_format:"%06d"}
 		</TD>
@@ -167,7 +167,7 @@
 			{/if}
 			{if $invoice.sendinvoices && !$invoice.cancelled && ($invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_CNOTE || $invoice.type == $smarty.const.DOC_INVOICE_PRO)}
 				{textformat assign="tip" wrap=5000}
-					{if $invoice.senddate}{trans("Send invoice again")}<br>{t a=$invoice.senddate|date_format:"%Y/%m/%d"}(already sent on $a){/t}{else}{trans("Send invoice")}{/if}
+					{if $invoice.senddate}{trans("Send invoice again")}<br>{t a=$invoice.senddate|date_format:"%Y/%m/%d %H:%M"}(already sent on $a){/t}{else}{trans("Send invoice")}{/if}
 				{/textformat}
 				{button type="link" icon="{if $invoice.senddate}mailsent{else}mail{/if}" class="send-invoice" href="?m=invoicesend&id={$invoice.id}"
 					tip=$tip}
