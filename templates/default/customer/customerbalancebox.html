@@ -133,7 +133,7 @@
 								|| $item.doctype == $smarty.const.DOC_CNOTE || $item.doctype == $smarty.const.DOC_INVOICE_PRO
 								|| $item.doctype == $smarty.const.DOC_DNOTE)}
 								{textformat assign="tip" wrap=5000}
-									{if $item.senddate}{trans("Send invoice again")}<br>{t a=$item.senddate|date_format:"%Y/%m/%d %H:%M"}(already sent on $a){/t}{else}{trans("Send invoice")}{/if}
+									{if $item.senddate}{trans("Send invoice again")}<br><strong>{t a=$item.senddate|date_format:"%Y/%m/%d %H:%M"}(already sent on $a){/t}</strong>{else}{trans("Send invoice")}{/if}
 								{/textformat}
 								{button type="link" icon="{if $item.senddate}mailsent{else}mail{/if}" class="send-invoice"
 									href="?m=invoicesend&id={$item.docid}" tip=$tip}

@@ -197,7 +197,7 @@
 		<TD class="text-right nobr">
 			{if $doc.senddocuments}
 				{textformat assign="tip" wrap=5000}
-					{if $doc.senddate}{trans("Send document again")}<br>{t a=$doc.senddate|date_format:"%Y/%m/%d %H:%M"}(already sent on $a){/t}{else}{trans("Document send")}{/if}
+					{if $doc.senddate}{trans("Send document again")}<br><strong>{t a=$doc.senddate|date_format:"%Y/%m/%d %H:%M"}(already sent on $a){/t}</strong>{else}{trans("Document send")}{/if}
 				{/textformat}
 				{button type="link" class="send-document" icon="{if $doc.senddate}mailsent{else}mail{/if}" href="?m=documentsend&id={$doc.docid}"
 					tip=$tip}
