@@ -1104,7 +1104,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $type = strtolower($type);
 
         $result = $this->db->GetAll("SELECT
-                                        n.id, n.name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, nd.name as netdev_name,
+                                        n.id, n.name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, n.netdev, nd.name as netdev_name,
+                                        n.linktype, n.linktechnology, n.linkspeed,
                                         ipaddr_pub, n.authtype, inet_ntoa(ipaddr_pub) AS ip_pub,
                                         passwd, access, warning, info, n.ownerid, lastonline, n.location, n.address_id,
                                         (SELECT COUNT(*)
