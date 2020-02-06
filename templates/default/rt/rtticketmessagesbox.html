@@ -17,7 +17,7 @@
 	<TBODY>
 	<TR>
 		<TD style="width: 100%;" colspan="3">
-			<TABLE class="lmsbox-inner lms-ui-autolinker">
+			<TABLE class="lmsbox-inner">
 				{counter start=0 skip=1 print=false assign=msgidx}
 				{foreach from=$ticket.messages item=message}
 				{if $message.type == $smarty.const.RTMESSAGE_REGULAR || $message.type == $smarty.const.RTMESSAGE_NOTE}
@@ -92,7 +92,8 @@
 				</THEAD>
 				<TBODY>
 				<TR>
-					<TD colspan="4" {if $message.deleted == 1 && $message.deltime != 0} class="lucid lms-ui-rtmessage-deleted fbt" {else} class="fbt superlight{if $message.type == $smarty.const.RTMESSAGE_NOTE} blend{/if}"{/if}>
+					<TD colspan="4" {if $message.deleted == 1 && $message.deltime != 0}
+						class="lucid lms-ui-rtmessage-deleted fbt lms-ui-autolinker" {else} class="fbt superlight lms-ui-autolinker{if $message.type == $smarty.const.RTMESSAGE_NOTE} blend{/if}"{/if}>
 						{$message.body|escape|replace:"\n":'<br>'|replace:"[matched-text]":"<span class=\"lms-ui-matched-text\">"|replace:"[/matched-text]":"</span>"|message_quote}
 					</TD>
 				</TR>
@@ -107,7 +108,7 @@
 						<td width="1%" class="fbt text-right bold nobr valign-top">
 							{trans("From:")}
 						</td>
-						<td width="98%" colspan="2" class="fbt">
+						<td width="98%" colspan="2" class="fbt lms-ui-autolinker">
 							<A href="?m=userinfo&id={$message.userid}">{$message.username}</A><BR>
 							{$message.body|escape|replace:"\n":"<BR>"}
 						</td>
