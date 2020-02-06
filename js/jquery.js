@@ -637,7 +637,7 @@ $(function() {
 	$('select.lms-ui-advanced-select').each(function() {
 		$(this).on('chosen:ready', function() {
 			if (typeof($(this).attr('required')) !== 'undefined') {
-				$(this).next().toggleClass('lms-ui-error', !parseInt($(this).val()));
+				$(this).next().toggleClass('lms-ui-error', RegExp("^0?$").test($(this).val()));
 			}
 		});
 		$(this).chosen($.extend({
@@ -649,7 +649,7 @@ $(function() {
 		}, $(this).attr('data-options') ? JSON.parse($(this).attr('data-options')) : {}));
 		$(this).chosen().change(function(e, data) {
 			if (typeof($(this).attr('required')) !== 'undefined') {
-				$(this).next().toggleClass('lms-ui-error', !parseInt(data.selected));
+				$(this).next().toggleClass('lms-ui-error', RegExp("^0?$").test(data.selected));
 			}
 		});
 	});
