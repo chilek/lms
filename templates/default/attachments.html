@@ -95,7 +95,7 @@
                     {trans("Description:")}
                     <input type="text" name="upload[description]" size="50" value="{$upload.description}" form="upload-form">
                     {fileupload id="files" fileupload=$fileupload form="upload-form"}
-                    {button icon="add" onclick="javascript:document.upload.submit();" label="Add"}
+                    {button icon="add" class="container-add-button" label="Add" form="upload-form"}
                 {/tab_buttons}
             {/tab_button_panel}
 

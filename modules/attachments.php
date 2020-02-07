@@ -121,6 +121,8 @@ if (isset($_POST['upload'])) {
 
     $upload = $_POST['upload'];
 
+    header('Content-Type: application/json');
+
     if (!$error) {
         if (!empty($files)) {
             foreach ($files as &$file) {
@@ -140,10 +142,10 @@ if (isset($_POST['upload'])) {
             rrmdir($tmppath);
         }
 
-        $SESSION->redirect('?' . $SESSION->get('backto'));
+        die(json_encode(array('url' => '?' . $SESSION->get('backto'))));
     }
 
-    $SMARTY->assign('upload', $upload);
+    die('{}');
 }
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
