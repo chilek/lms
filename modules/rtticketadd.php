@@ -335,8 +335,29 @@ if (isset($_POST['ticket'])) {
 } else {
     $queuelist = $LMS->GetQueueList(array('stats' => false));
     if (!$queue && !empty($queuelist)) {
-        $firstqueue = reset($queuelist);
-        $queue = $firstqueue['id'];
+        $queue = ConfigHelper::getConfig('rt.default_queue');
+        if (preg_match('/^[0-9]+$/', $queue)) {
+            if (!$LMS->QueueExists($queue)) {
+                $queue = 0;
+            }
+        } else {
+            $queue = $LMS->GetQueueIdByName($queue);
+        }
+        if ($queue) {
+            foreach ($queuelist as $firstqueue) {
+                if ($firstqueue['id'] == $queue) {
+                    break;
+                }
+                $firstqueue = null;
+            }
+            if (!isset($firstqueue)) {
+                $queue = 0;
+            }
+        }
+        if (!$queue) {
+            $firstqueue = reset($queuelist);
+            $queue = $firstqueue['id'];
+        }
         $ticket['verifierid'] = $LMS->GetQueueVerifier($queue);
         if ($firstqueue['newticketsubject'] && $firstqueue['newticketbody']) {
             $ticket['customernotify'] = 1;
