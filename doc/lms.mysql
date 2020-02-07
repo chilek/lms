@@ -2643,6 +2643,7 @@ CREATE TABLE filecontainers (
 	netdevid int(11) DEFAULT NULL,
 	netnodeid int(11) DEFAULT NULL,
 	messageid int(11) DEFAULT NULL,
+	netdevmodelid int(11) DEFAULT NULL,
 	PRIMARY KEY (id),
 	CONSTRAINT filecontainers_creatorid_fkey
 		FOREIGN KEY (creatorid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
