@@ -1859,7 +1859,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             ) > 0;
         } else {
             return $this->db->GetOne(
-                "SELECT id FROM customers WHERE id <> ? AND AND divisionid = ? AND REPLACE(REPLACE(ten, '-', ''), ' ', '') = ?",
+                "SELECT id FROM customers WHERE id <> ? AND divisionid = ? AND REPLACE(REPLACE(ten, '-', ''), ' ', '') = ?",
                 array($customerid, $divisionid, $ten)
             ) > 0;
         }
@@ -1875,7 +1875,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             ) > 0;
         } else {
             return $this->db->GetOne(
-                "SELECT id FROM customers WHERE id <> ? AND AND divisionid = ? AND REPLACE(REPLACE(ssn, '-', ''), ' ', '') = ?",
+                "SELECT id FROM customers WHERE id <> ? AND divisionid = ? AND REPLACE(REPLACE(ssn, '-', ''), ' ', '') = ?",
                 array($customerid, $divisionid, $ssn)
             ) > 0;
         }
