@@ -187,6 +187,12 @@ try {
     die("Fatal error: cannot connect to database!" . PHP_EOL);
 }
 
+// Include required files (including sequence is important)
+
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
+
 // now it's time for script settings
 $smtp_options = array(
     'host' => ConfigHelper::getConfig($config_section . '.smtp_host'),
