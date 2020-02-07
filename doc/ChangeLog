@@ -170,6 +170,8 @@ version 25-git (????-??-??):
     as fallback [chilan]
   - improvement: html contents of element with lms-ui-autolinker css class is handled
     by Autolinker [chilan]
+  - enhancement: rt.default_queue supports queue names and it is also used in new ticket
+    form [chilan]
 
 version 24.0 (2019-05-16):
 
