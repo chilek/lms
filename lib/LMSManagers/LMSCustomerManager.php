@@ -890,7 +890,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         OR (((d.type = ' . DOC_CNOTE . ' AND tv.totalvalue < 0)
                             OR d.type IN (' . DOC_INVOICE . ',' . DOC_DNOTE . ')) AND d.cdate + d.paytime  * 86400 < ' . ($time ?: time()) . ')))
                 GROUP BY cash.customerid
-            ) b2 ON b2.customerid = c.id' : '')
+            ) b2 ON b2.customerid = c.id ' : '')
             . (!empty($customergroup) ? 'LEFT JOIN (SELECT customerassignments.customerid, COUNT(*) AS gcount
             	FROM customerassignments '
                     . (is_array($customergroup) || $customergroup > 0 ? ' WHERE customergroupid IN ('
