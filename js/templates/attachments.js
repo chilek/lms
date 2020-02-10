@@ -23,29 +23,5 @@
  */
 
 $(function() {
-	$('.container-add-button').click(function() {
-		var addbutton = $(this);
-		addbutton.closest('.lms-ui-tab-buttons').prop('disabled', true);
-		var formdata = new FormData(this.form);
-		formdata.delete(addbutton.parent().find('[type="file"]').attr('name'));
-		$.ajax($(this.form).attr('action'), {
-			type: "POST",
-			contentType: false,
-			dataType: "json",
-			data: formdata,
-			processData: false,
-			success: function(data) {
-				if (data.hasOwnProperty("url")) {
-					location.href = data.url;
-				}
-				addbutton.closest('.lms-ui-tab-buttons').prop('disabled', false);
-			},
-			error: function() {
-				addbutton.closest('.lms-ui-tab-buttons').prop('disabled', false);
-			}
-		});
-		return false;
-	});
-
 	init_attachment_lists();
 });
