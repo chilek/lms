@@ -1,7 +1,10 @@
 <!--// $Id$ //-->
 
-<link href="css/templates/attachments.css" rel="stylesheet">
-<script src="js/templates/attachments.js"></script>
+{if !isset($attachment_support_already_loaded)}
+    <link href="css/templates/attachments.css" rel="stylesheet">
+    <script src="js/templates/attachments.js"></script>
+    {$attachment_support_already_loaded = true}
+{/if}
 
 <form name="upload" method="post" action="?m=attachments&type={$attachmenttype}&resourceid={$attachmentresourceid}" id="upload-form">
 </form>
