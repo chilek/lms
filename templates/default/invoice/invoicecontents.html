@@ -306,7 +306,7 @@
 		var e = document.contents;
 		{foreach from=$tariffs item=tariff}
 		if (index == {$tariff.id}) {
-			e.name.value = '{$tariff.name|escape}';
+			e.name.value = '{$tariff.name}';
 			e.taxid.value = '{$tariff.taxid}';
 			e.valuebrutto.value = '{$tariff.value}';
 			e.prodid.value = '{$tariff.prodid}';
