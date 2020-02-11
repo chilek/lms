@@ -284,7 +284,7 @@ function edit_model($id)
             'containers' => $LMS->GetFileContainers('netdevmodelid', $model['id']),
         ),
     );
-    $SMARTY->assign('filecontainers', $filecontainers['netdevmodelid']);
+    $SMARTY->assign('filecontainers', $filecontainers);
     $SMARTY->assign('attachment_support_already_loaded', true);
     $obj->assign('netdevmodel-attachements', "innerHTML", $SMARTY->fetch('attachments.html'));
     $obj->call('init_titlebars', '#netdevmodel-attachements .lmsbox-titlebar');

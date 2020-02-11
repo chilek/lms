@@ -17,13 +17,13 @@
 {tab_container id="attachmentbox-{$attachmenttype}"}
     {tab_header content_id="attachmentpanel-{$attachmenttype}"}
         {tab_header_cell icon="lms-ui-icon-fileupload"}
-            <strong>{t a=$filecontainers.prefix b=$filecontainers.containers|@count|default:"0"}$a ($b):{/t}</strong>
+            <strong>{t a=$filecontainers[$attachmenttype].prefix b=$filecontainers[$attachmenttype].containers|@count|default:"0"}$a ($b):{/t}</strong>
         {/tab_header_cell}
     {/tab_header}
 
     {tab_contents id="attachmentpanel-{$attachmenttype}"}
         {tab_table}
-            {if $filecontainers.containers}
+            {if $filecontainers[$attachmenttype].containers}
             <div class="lms-ui-tab-table-row header">
                 <div class="lms-ui-tab-table-wrapper col-3">
                     <div class="lms-ui-tab-table-wrapper date-creator col-2">
@@ -45,8 +45,8 @@
             </div>
             {/if}
 
-            {foreach $filecontainers.containers as $container}
-            <div class="lms-ui-tab-table-row" data-id="{$container.id}" data-attachementtype="{$attachmenttype}">
+            {foreach $filecontainers[$attachmenttype].containers as $container}
+            <div class="lms-ui-tab-table-row" data-id="{$container.id}" data-attachmenttype="{$attachmenttype}">
                 <div class="lms-ui-tab-table-wrapper col-3">
                     <div class="lms-ui-tab-table-wrapper date-creator col-2">
                         <div class="lms-ui-tab-table-column date">
