@@ -137,6 +137,8 @@
 		</tr>
 	</table>
     </form>
+	<br>
+	<div id="netdevmodel-attachements"></div>
     <br>
 </div>
 
@@ -220,4 +222,11 @@
 </table>
 {/if}
 
+	<script>
+		var restore = '{$restore}';
+		var resourceid = '{$resourceid}';
+		if (resourceid) {
+			xajax_edit_model(resourceid);
+		}
+	</script>
 {/block}

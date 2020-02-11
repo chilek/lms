@@ -352,7 +352,7 @@ function init_attachment_lists(selector) {
 		var row = $(this).closest('.lms-ui-tab-table-row');
 		var description = row.find('.container-modify > input');
 		if (description.attr('data-old-value') != description.val()) {
-			var form = $('#filecontainer-form');
+			var form = $('#filecontainer-form-' + row.attr('data-attachementtype'));
 			$.ajax({
 				url: form.attr('action') + '&id=' + row.attr('data-id'),
 				type: form.attr('method'),

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -35,6 +35,7 @@ if (!preg_match('/^[a-z0-9_]+$/', $attachmenttype)) {
 
 switch ($attachmenttype) {
     case 'netdevid':
+    case 'netdevmodelid':
     case 'netnodeid':
         if (!ConfigHelper::checkPrivilege('network_management')) {
             if (isset($_GET['type'])) {
@@ -104,7 +105,11 @@ if (isset($_GET['attachmentaction'])) {
             die;
             break;
     }
-    $SESSION->redirect('?' . $SESSION->get('backto'));
+    if (isset($_GET['restore']) && !empty($_GET['restore'])) {
+        $SESSION->redirect('?' . $SESSION->get('backto').'&restore=1&resourceid=' . $_GET['resourceid']);
+    } else {
+        $SESSION->redirect('?' . $SESSION->get('backto'));
+    }
 }
 
 if (isset($_GET['resourceid'])) {
@@ -115,7 +120,9 @@ if (!preg_match('/^[0-9]+$/', $attachmentresourceid)) {
 }
 
 if (isset($_POST['upload'])) {
-    $result = handle_file_uploads('files', $error);
+    $uploaded_attachmenttype = $_POST['upload']['attachmenttype'];
+    $files = 'files-' . $uploaded_attachmenttype;
+    $result = handle_file_uploads($files, $error);
     extract($result);
     $SMARTY->assign('fileupload', $fileupload);
 
@@ -124,6 +131,7 @@ if (isset($_POST['upload'])) {
     header('Content-Type: application/json');
 
     if (!$error) {
+        $files = $result[$files];
         if (!empty($files)) {
             foreach ($files as &$file) {
                 $file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
@@ -132,7 +140,7 @@ if (isset($_POST['upload'])) {
             $LMS->AddFileContainer(array(
                 'description' => $upload['description'],
                 'files' => $files,
-                'type' => $attachmenttype,
+                'type' => $uploaded_attachmenttype,
                 'resourceid' => $attachmentresourceid,
             ));
         }
@@ -142,14 +150,14 @@ if (isset($_POST['upload'])) {
             rrmdir($tmppath);
         }
 
-        die(json_encode(array('url' => '?' . $SESSION->get('backto'))));
+        if (isset($upload['restore']) && !empty($upload['restore'])) {
+            die(json_encode(array('url' => '?' . $SESSION->get('backto').'&restore=1&resourceid=' . $attachmentresourceid)));
+        } else {
+            die(json_encode(array('url' => '?' . $SESSION->get('backto'))));
+        }
     }
 
     die('{}');
 }
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
-
-$SMARTY->assign('attachmenttype', $attachmenttype);
-$SMARTY->assign('attachmentresourceid', $attachmentresourceid);
-$SMARTY->assign('filecontainers', $LMS->GetFileContainers($attachmenttype, $attachmentresourceid));

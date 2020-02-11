@@ -746,10 +746,6 @@ if (isset($netdev)) {
         die;
     }
 } else {
-    $attachmenttype = 'netdevid';
-    $attachmentresourceid = $id;
-    include(MODULES_DIR . DIRECTORY_SEPARATOR . 'attachments.php');
-
     $netdev = $LMS->GetNetDev($id);
 
     if (preg_match('/^[0-9]+$/', $netdev['producerid'])
@@ -757,6 +753,28 @@ if (isset($netdev)) {
         $netdev['producer'] = $netdev['producerid'];
         $netdev['model'] = $netdev['modelid'];
     }
+
+    $attachmenttype = 'netdevid';
+    $attachmentresourceid = $id;
+    $SMARTY->assign('attachmenttype', $attachmenttype);
+    $SMARTY->assign('attachmentresourceid', $attachmentresourceid);
+
+    $filecontainers = array(
+        'netdevid' => array(
+            'id' => $id,
+            'prefix' => trans('Attachments of the device:'),
+            'containers' => $LMS->GetFileContainers('netdevid', $id),
+        ),
+        'netdevmodelid' => array(
+            'id' => $netdev['modelid'],
+            'prefix' => trans('Attachments of the model:'),
+            'containers' => $LMS->GetFileContainers('netdevmodelid', $netdev['model']),
+        ),
+    );
+    $SMARTY->assign('filecontainers_for_netdevice', $filecontainers['netdevid']);
+    $SMARTY->assign('filecontainers_for_netdevmodel', $filecontainers['netdevmodelid']);
+
+    include(MODULES_DIR . DIRECTORY_SEPARATOR . 'attachments.php');
 
     if ($netdev['purchasetime']) {
         $netdev['purchasedate'] = date('Y/m/d', $netdev['purchasetime']);
