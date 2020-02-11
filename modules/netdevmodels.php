@@ -280,7 +280,7 @@ function edit_model($id)
     $filecontainers = array(
         'netdevmodelid' => array(
             'id' => $model['id'],
-            'prefix' => trans('Attachments of the model:'),
+            'prefix' => trans('Model attachments'),
             'containers' => $LMS->GetFileContainers('netdevmodelid', $model['id']),
         ),
     );

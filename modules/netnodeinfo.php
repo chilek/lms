@@ -51,7 +51,7 @@ $SMARTY->assign('attachmentresourceid', $attachmentresourceid);
 $filecontainers = array(
     'netnodeid' => array(
         'id' => $id,
-        'prefix' => trans('Attachments of the node:'),
+        'prefix' => trans('Node attachments'),
         'containers' => $LMS->GetFileContainers('netnodeid', $id),
     ),
 );
