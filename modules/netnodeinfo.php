@@ -55,7 +55,7 @@ $filecontainers = array(
         'containers' => $LMS->GetFileContainers('netnodeid', $id),
     ),
 );
-$SMARTY->assign('filecontainers_for_node', $filecontainers['netnodeid']);
+$SMARTY->assign('filecontainers', $filecontainers);
 
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'attachments.php');
 

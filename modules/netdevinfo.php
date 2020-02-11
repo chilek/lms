@@ -59,8 +59,7 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
             'containers' => $LMS->GetFileContainers('netdevmodelid', $netdev['model']),
         ),
     );
-    $SMARTY->assign('filecontainers_for_netdevice', $filecontainers['netdevid']);
-    $SMARTY->assign('filecontainers_for_netdevmodel', $filecontainers['netdevmodelid']);
+    $SMARTY->assign('filecontainers', $filecontainers);
 
     include(MODULES_DIR . DIRECTORY_SEPARATOR . 'attachments.php');
 

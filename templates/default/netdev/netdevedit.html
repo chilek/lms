@@ -12,11 +12,11 @@
 	{include file="netdev/netdevipbox.html"}
 {/block}
 {block name=netdevattachments}
-	{include file="attachments.html" attachmenttype="netdevid" attachmentresourceid=$netdev.id filecontainers=$filecontainers_for_netdevice}
+	{include file="attachments.html" attachmenttype="netdevid" attachmentresourceid=$netdev.id filecontainers=$filecontainers.netdevid}
 {/block}
 {$attachment_support_already_loaded = true}
 {block name=netdevmodelattachments}
-	{include file="attachments.html" attachmenttype="netdevmodelid" attachmentresourceid=$netdev.modelid filecontainers=$filecontainers_for_netdevmodel}
+	{include file="attachments.html" attachmenttype="netdevmodelid" attachmentresourceid=$netdev.modelid filecontainers=$filecontainers.netdevmodelid}
 {/block}
 {block name=netdevmanagementurl}
 	{include file="managementurl/managementurls.html"}
