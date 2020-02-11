@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -252,6 +252,7 @@ function edit_model($id)
     global $LMS;
 
     $DB = LMSDB::getInstance();
+    $SMARTY = LMSSmarty::getInstance();
 
     $obj = new xajaxResponse();
 
@@ -266,14 +267,30 @@ function edit_model($id)
     );
     $model = $hook_data['netdevmodeldata'];
 
-    $obj->script("xajax.$('div_modeledit').style.display='';");
-    $obj->script("removeClass(xajax.$('id_model_name'),'alert');");
+    $obj->script("$('#div_modeledit').show();");
+    $obj->script("$('#id_model_name').removeClass('alert');");
     $obj->assign("id_model_action_name", "innerHTML", trans('Model edit: $a', $model['name']));
-
     $obj->assign("id_model", "value", $model['id']);
     $obj->assign("id_model_name", "value", $model['name']);
     $obj->assign("id_model_alternative_name", "value", $model['alternative_name']);
-    $obj->script("xajax.$('id_model_name').focus();");
+    $obj->script("$('#id_model_name').focus();");
+    $SMARTY->assign('restore', 1);
+    $SMARTY->assign('attachmenttype', "netdevmodelid");
+    $SMARTY->assign('attachmentresourceid', $model['id']);
+    $filecontainers = array(
+        'netdevmodelid' => array(
+            'id' => $model['id'],
+            'prefix' => trans('Attachments of the model:'),
+            'containers' => $LMS->GetFileContainers('netdevmodelid', $model['id']),
+        ),
+    );
+    $SMARTY->assign('filecontainers', $filecontainers);
+    $SMARTY->assign('attachment_support_already_loaded', true);
+    $obj->assign('netdevmodel-attachements', "innerHTML", $SMARTY->fetch('attachments.html'));
+    $obj->call('init_titlebars', '#netdevmodel-attachements .lmsbox-titlebar');
+    $obj->call('init_attachment_lists', '#netdevmodel-attachements');
+    $obj->script('new lmsFileUpload("files-netdevmodelid", "upload-form-netdevmodelid")');
+    $obj->script("$('#attachmentpanel-netdevmodelid').show();");
 
     return $obj;
 }
@@ -472,6 +489,14 @@ $hook_data = $LMS->executeHook(
 $producerlist = $hook_data['producerlist'];
 $producerinfo = $hook_data['producerinfo'];
 $modellist = $hook_data['modellist'];
+
+if (isset($_GET['restore']) && isset($_GET['resourceid'])) {
+    $restore = $_GET['restore'];
+    $resourceid = $_GET['resourceid'];
+    $SMARTY->assign('restore', $restore);
+    $SMARTY->assign('resourceid', $resourceid);
+}
+$SESSION->save('backto', 'm=netdevmodels');
 
 $SMARTY->assign('xajax', $LMS->RunXajax());
 $SMARTY->assign('listdata', $listdata);

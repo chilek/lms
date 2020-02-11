@@ -45,6 +45,18 @@ $SMARTY->assign('objectid', $result['id']);
 
 $attachmenttype = 'netnodeid';
 $attachmentresourceid = $id;
+$SMARTY->assign('attachmenttype', $attachmenttype);
+$SMARTY->assign('attachmentresourceid', $attachmentresourceid);
+
+$filecontainers = array(
+    'netnodeid' => array(
+        'id' => $id,
+        'prefix' => trans('Attachments of the node:'),
+        'containers' => $LMS->GetFileContainers('netnodeid', $id),
+    ),
+);
+$SMARTY->assign('filecontainers', $filecontainers);
+
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'attachments.php');
 
 $nlist = $DB->GetAll("SELECT * FROM netdevices WHERE netnodeid=? ORDER BY name", array($id));

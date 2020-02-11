@@ -6,24 +6,24 @@
     {$attachment_support_already_loaded = true}
 {/if}
 
-<form name="upload" method="post" action="?m=attachments&type={$attachmenttype}&resourceid={$attachmentresourceid}" id="upload-form">
+<form name="upload-{$attachmenttype}" method="post" action="?m=attachments&type={$attachmenttype}&resourceid={$attachmentresourceid}" id="upload-form-{$attachmenttype}">
 </form>
 
-<form name="filecontainer-form" method="POST"
+<form name="filecontainer-form-{$attachmenttype}" method="POST"
         action="?m=attachments&type={$attachmenttype}&resourceid={$attachmentresourceid}&attachmentaction=updatecontainer"
-        id="filecontainer-form">
+        id="filecontainer-form-{$attachmenttype}">
 </form>
 
 {tab_container id="attachmentbox-{$attachmenttype}"}
     {tab_header content_id="attachmentpanel-{$attachmenttype}"}
         {tab_header_cell icon="lms-ui-icon-fileupload"}
-            <strong>{t a=$filecontainers|@count|default:"0"}Attachments ($a):{/t}</strong>
+            <strong>{t a=$filecontainers[$attachmenttype].prefix b=$filecontainers[$attachmenttype].containers|@count|default:"0"}$a ($b):{/t}</strong>
         {/tab_header_cell}
     {/tab_header}
 
     {tab_contents id="attachmentpanel-{$attachmenttype}"}
         {tab_table}
-            {if $filecontainers}
+            {if $filecontainers[$attachmenttype].containers}
             <div class="lms-ui-tab-table-row header">
                 <div class="lms-ui-tab-table-wrapper col-3">
                     <div class="lms-ui-tab-table-wrapper date-creator col-2">
@@ -45,8 +45,8 @@
             </div>
             {/if}
 
-            {foreach $filecontainers as $container}
-            <div class="lms-ui-tab-table-row" data-id="{$container.id}">
+            {foreach $filecontainers[$attachmenttype].containers as $container}
+            <div class="lms-ui-tab-table-row" data-id="{$container.id}" data-attachmenttype="{$attachmenttype}">
                 <div class="lms-ui-tab-table-wrapper col-3">
                     <div class="lms-ui-tab-table-wrapper date-creator col-2">
                         <div class="lms-ui-tab-table-column date">
@@ -72,7 +72,7 @@
                     {button type="link" href="#" class="container-cancel" icon="cancel" tip="Cancel"}
                     {button type="link" href="?m=attachments&attachmentaction=downloadzippedcontainer&type={$attachmenttype}&id={$container.id}"
                         icon="fileupload" tip="Download file container as zip archive"}
-                    {button class="container-del" type="link" href="?m=attachments&attachmentaction=deletecontainer&type={$attachmenttype}&id={$container.id}"
+                    {button class="container-del" type="link" href="?m=attachments&attachmentaction=deletecontainer&type={$attachmenttype}&id={$container.id}{if isset($restore)}&restore=1&resourceid={$attachmentresourceid}{/if}"
                         icon="delete" tip="Delete file container"}
                     <a href="#" class="toggle-file-list" data-container-id="{$container.id}" title="{trans("Show file list")}">
                         <img src="img/asc_order.gif">
@@ -96,9 +96,14 @@
             {tab_button_panel}
                 {tab_buttons}
                     {trans("Description:")}
-                    <input type="text" name="upload[description]" size="50" value="{$upload.description}" form="upload-form">
-                    {fileupload id="files" fileupload=$fileupload form="upload-form"}
-                    {button icon="add" class="container-add-button" label="Add" form="upload-form"}
+                    <input type="text" name="upload[description]" size="50" value="{$upload.description}" form="upload-form-{$attachmenttype}">
+                    <input type="hidden" name="upload[attachmenttype]" value="{$attachmenttype}" form="upload-form-{$attachmenttype}">
+                    {* $restore is used i.e for netdevicemodels to force backto *}
+                    {if isset($restore)}
+                        <input type="hidden" name="upload[restore]" value="{$restore}" form="upload-form-{$attachmenttype}">
+                    {/if}
+                    {fileupload id="files-{$attachmenttype}" fileupload=$fileupload form="upload-form-{$attachmenttype}"}
+                    {button icon="add" class="container-add-button" label="Add" form="upload-form-{$attachmenttype}"}
                 {/tab_buttons}
             {/tab_button_panel}
 
