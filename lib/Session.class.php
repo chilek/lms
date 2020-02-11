@@ -208,7 +208,7 @@ class Session
         return true;
     }
 
-    public function is_set($variable, $tab = true)
+    public function is_set($variable, $tab = false)
     {
         if ($tab) {
             return isset($this->_tab_content[$this->tabId][$variable]);
