@@ -50,12 +50,12 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
     $filecontainers = array(
         'netdevid' => array(
             'id' => $id,
-            'prefix' => trans('Attachments of the device:'),
+            'prefix' => trans('Device attachments'),
             'containers' => $LMS->GetFileContainers('netdevid', $id),
         ),
         'netdevmodelid' => array(
             'id' => $netdev['modelid'],
-            'prefix' => trans('Attachments of the model:'),
+            'prefix' => trans('Model attachments'),
             'containers' => $LMS->GetFileContainers('netdevmodelid', $netdev['model']),
         ),
     );

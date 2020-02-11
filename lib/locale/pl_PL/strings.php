@@ -4193,9 +4193,9 @@ $_LANG['Delete file container'] = 'Usuń kontener plikowy';
 $_LANG['Show file list'] = 'Pokaż listę plików';
 $_LANG['Are you sure you want to delete this file container?'] = 'Jesteś pewien, że chcesz usunąć ten kontener plikowy?';
 $_LANG['Attachments ($a):'] = 'Załączniki ($a):';
-$_LANG['Attachments of the device:'] = 'Załączniki urządzenia:';
-$_LANG['Attachments of the model:'] = 'Załączniki modelu:';
-$_LANG['Attachments of the node:'] = 'Załączniki węzła:';
+$_LANG['Device attachments'] = 'Załączniki urządzenia';
+$_LANG['Model attachments'] = 'Załączniki modelu';
+$_LANG['Node attachments'] = 'Załączniki węzła';
 $_LANG['There are no file containers in database.'] = 'Brak kontenerów plików w bazie danych.';
 $_LANG['Cannot update file container description!'] = 'Nie można zaktualizować opisu kontenera plikowego!';
 
