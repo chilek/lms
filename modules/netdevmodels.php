@@ -439,35 +439,7 @@ $LMS->RegisterXajaxFunction(array(
     'delete_model',
 ));
 
-
-function GetModelList($pid = null)
-{
-    global $DB;
-
-    if (!$pid) {
-        return null;
-    }
-
-    $list = $DB->GetAll(
-        'SELECT m.id, m.name, m.alternative_name,
-			(SELECT COUNT(i.id) FROM netdevices i WHERE i.netdevicemodelid = m.id) AS netdevcount
-			FROM netdevicemodels m
-			WHERE m.netdeviceproducerid = ?
-			ORDER BY m.name ASC',
-        array($pid)
-    );
-
-    if (!empty($list)) {
-        foreach ($list as &$model) {
-            $model['customlinks'] = array();
-        }
-        unset($model);
-    }
-
-    return $list;
-}
-
-$modellist = GetModelList($pid);
+$modellist = $LMS->GetModelList($pid);
 
 $listdata['total'] = empty($modellist) ? 0 : count($modellist);
 

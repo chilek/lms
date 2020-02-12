@@ -174,6 +174,7 @@ version 25-git (????-??-??):
     form [chilan]
   - enhancement: added the ability to place multiple attachment panels in one window [chilan/ravvar]
   - enhancement: added the ability to add attachments to device models [chilan/ravvar]
+  - enhancement: show model files containers in models list [ravvar]
 
 version 24.0 (2019-05-16):
 
