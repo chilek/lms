@@ -1595,6 +1595,12 @@ class LMS
         return $manager->GetModels($producerid);
     }
 
+    public function GetModelList($pid = null)
+    {
+        $manager = $this->getNetDevManager();
+        return $manager->GetModelList($pid);
+    }
+
     public function GetRadioSectors($netdevid, $technology = 0)
     {
         $manager = $this->getNetDevManager();

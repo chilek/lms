@@ -991,6 +991,46 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         return $result;
     }
 
+    public function GetModelList($pid = null)
+    {
+        if (!$pid) {
+            return null;
+        }
+
+        $list = $this->db->GetAll(
+            'SELECT m.id, m.name, m.alternative_name,
+			(SELECT COUNT(i.id) FROM netdevices i WHERE i.netdevicemodelid = m.id) AS netdevcount
+			FROM netdevicemodels m
+			WHERE m.netdeviceproducerid = ?
+			ORDER BY m.name ASC',
+            array($pid)
+        );
+
+        $filecontainers = $this->db->GetAllByKey('SELECT fc.netdevmodelid
+			FROM filecontainers fc
+			WHERE fc.netdevmodelid IS NOT NULL
+			GROUP BY fc.netdevmodelid', 'netdevmodelid');
+
+        if (!empty($filecontainers)) {
+            if (!isset($file_manager)) {
+                $file_manager = new LMSFileManager($this->db, $this->auth, $this->cache, $this->syslog);
+            }
+            foreach ($filecontainers as &$filecontainer) {
+                $filecontainer = $file_manager->GetFileContainers('netdevmodelid', $filecontainer['netdevmodelid']);
+            }
+        }
+
+        if (!empty($list)) {
+            foreach ($list as &$model) {
+                $model['customlinks'] = array();
+                $model['filecontainers'] = isset($filecontainers[$model['id']]) ? $filecontainers[$model['id']] : array();
+            }
+            unset($model);
+        }
+
+        return $list;
+    }
+
     public function GetRadioSectors($netdevid, $technology = 0)
     {
         $radiosectors = $this->db->GetAll('SELECT s.*, (CASE WHEN n.computers IS NULL THEN 0 ELSE n.computers END) AS computers,
