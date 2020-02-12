@@ -370,7 +370,7 @@
 			{trans("Users:")}
 		</TD>
 		<TD style="width: 98%;">
-			<SELECT size="4" name="message[users][]" multiple class="lms-ui-multiselect" {tip text="Select users"} data-default-value="{trans("- none -")}" data-shoten-to-default-value="false">
+			<SELECT size="4" name="message[users][]" multiple class="lms-ui-multiselect" {tip text="Select users"} data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
 				{foreach $users as $user}
 				<OPTION value="{$user.phone}"{if isset($message.users) && in_array($user.phone, $message.users)} selected{/if}>{$user.name|truncate:30:"...":true}</OPTION>
 				{/foreach}
