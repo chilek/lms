@@ -44,6 +44,7 @@ if (isset($netdev)) {
     $netdev['clients'] = (empty($netdev['clients'])) ? 0 : intval($netdev['clients']);
     $netdev['ownerid'] = (empty($netdev['ownerid'])) ? 0 : intval($netdev['ownerid']);
 
+    $netdev['name'] = trim($netdev['name']);
     if ($netdev['name'] == '') {
         $error['name'] = trans('Device name is required!');
     } elseif (strlen($netdev['name']) > 60) {
@@ -190,7 +191,7 @@ if (isset($netdev)) {
         $netdev['model'] = $netdev['modelid'];
     }
 
-    $netdev['name'] = trans('$a (clone)', $netdev['name']);
+    $netdev['name'] = trans('$a (clone)', trim($netdev['name']));
     $netdev['clone'] = isset($_GET['clone']) ? $_GET['clone'] : null;
     $netdev['teryt'] = !empty($netdev['location_city']) && !empty($netdev['location_street']);
     $SMARTY->assign('netdev', $netdev);

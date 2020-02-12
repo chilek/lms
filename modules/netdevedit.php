@@ -639,6 +639,7 @@ switch ($action) {
 if (isset($netdev)) {
     $netdev['id'] = $id;
 
+    $netdev['name'] = trim($netdev['name']);
     if ($netdev['name'] == '') {
         $error['name'] = trans('Device name is required!');
     } elseif (strlen($netdev['name']) > 60) {
