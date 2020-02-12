@@ -177,6 +177,7 @@ version 25-git (????-??-??):
   - enhancement: show model files containers in models list [ravvar]
   - enhancement: show network devices files containers in devices list [ravvar]
   - enhancement: allow to send customer message quickly using icon near mail and phone contacts [chilan]
+  - enhancement: show network nodes files containers in nodes list [ravvar]
 
 version 24.0 (2019-05-16):
 

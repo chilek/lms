@@ -734,7 +734,6 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                 }
             }
 
-
             foreach ($netdevlist as &$netdev) {
                 $netdev['customlinks'] = array();
                 if (!$netdev['location'] && $netdev['ownerid']) {

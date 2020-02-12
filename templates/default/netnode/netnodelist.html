@@ -79,7 +79,7 @@
 				{/foreach}
 			</SELECT>
 		<TD class="text-right" colspan="4">
-			<A href="?m=netnodeadd"><IMG src="img/producer.gif" ALT="">{trans("Add network node:")}</A>
+			{button icon="add" label="Add network node" onclick="location.href = '?m=netnodeadd';"}
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
@@ -116,9 +116,25 @@
 		</TD>
 		<TD class="text-center">{$item.lastinspectiontime|date_format:"%x"}</TD>
 		<TD class="lms-ui-buttons text-right nobr">
-			<a class="delete-netnode" href="?m=netnodedel&id={$item.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
-			<a href="?m=netnodeedit&id={$item.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
-			<a href="?m=netnodeinfo&id={$item.id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
+			{if $item.filecontainers}
+				{foreach $item.filecontainers as $filecontainer}
+					{if $filecontainer.files}
+						{button class="models-toggle-file-list" type="link" icon="fileupload" tip="Show file list" resourceid={$filecontainer.id} label="{$filecontainer.description|default:'---'}"}
+					{/if}
+					<div id="listfiles-{$filecontainer.id}" style="display: none;" class="files">
+						{foreach $filecontainer.files as $file}
+							{documentview id="{$filecontainer.id}-{$file.id}" type=$file.contenttype name=$file.filename
+							url="?m=attachments&attachmentaction=viewfile&type=messageid&id={$item.filecontainerid}&fileid={$file.id}" external=true
+							text="{$file.filename} <img src=\"img/{if preg_match('/pdf/',$file.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$file.contenttype)}xls{else}view{/if}.gif\">"}
+							<br>
+						{/foreach}
+					</div>
+				{/foreach}
+			{/if}
+			{button type="link" icon="delete" class="delete-netnode" tip="Delete" href="?m=netnodedel&id={$item.id}"}
+			{button type="link" icon="edit" tip="Edit" href="?m=netnodeedit&id={$item.id}"}
+			{button type="link" icon="info" tip="Info" href="?m=netnodeinfo&id={$item.id}"}
+
 		</TD>
 	</TR>
 	{foreachelse}
@@ -147,6 +163,13 @@
 				location.href = $(this).attr('href');
 			});
 			return false;
+		});
+		$(function () {
+			$('.models-toggle-file-list').click(function () {
+				var containerid = parseInt($(this).attr('data-resourceid'));
+				var elem = $('#listfiles-' + containerid);
+				elem.toggle();
+			});
 		});
 	</script>
 {/block}

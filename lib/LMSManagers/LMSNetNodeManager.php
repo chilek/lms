@@ -118,12 +118,27 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
         );
 
         if (!$short && $nlist) {
+            $filecontainers = $this->db->GetAllByKey('SELECT fc.netnodeid
+			FROM filecontainers fc
+			WHERE fc.netnodeid IS NOT NULL
+			GROUP BY fc.netnodeid', 'netnodeid');
+
+            if (!empty($filecontainers)) {
+                if (!isset($file_manager)) {
+                    $file_manager = new LMSFileManager($this->db, $this->auth, $this->cache, $this->syslog);
+                }
+                foreach ($filecontainers as &$filecontainer) {
+                    $filecontainer = $file_manager->GetFileContainers('netnodeid', $filecontainer['netnodeid']);
+                }
+            }
+
             foreach ($nlist as &$netnode) {
                 $netnode['terc'] = empty($netnode['location_state_ident']) ? null
                     : $netnode['location_state_ident'] . $netnode['location_district_ident']
                     . $netnode['location_borough_ident'] . $netnode['location_borough_type'];
                 $netnode['simc'] = empty($netnode['location_city_ident']) ? null : $netnode['location_city_ident'];
                 $netnode['ulic'] = empty($netnode['location_street_ident']) ? null : $netnode['location_street_ident'];
+                $netnode['filecontainers'] = isset($filecontainers[$netnode['id']]) ? $filecontainers[$netnode['id']] : array();
             }
             unset($netnode);
         }
