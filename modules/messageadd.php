@@ -656,6 +656,9 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 
         $message['id'] = $msgid;
         $SMARTY->assign('message', $message);
+        if ($SESSION->is_set('backto')) {
+            $SMARTY->assign('backto', '?' . $SESSION->get('backto'));
+        }
         $SMARTY->display('message/messagesend.html');
 
         if ($message['type'] == MSG_MAIL) {

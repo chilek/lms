@@ -178,6 +178,7 @@ version 25-git (????-??-??):
   - enhancement: show network devices files containers in devices list [ravvar]
   - enhancement: allow to send customer message quickly using icon near mail and phone contacts [chilan]
   - enhancement: show network nodes files containers in nodes list [ravvar]
+  - improvement: allow to go back to location from which we initiated message add action [chilan]
 
 version 24.0 (2019-05-16):
 
