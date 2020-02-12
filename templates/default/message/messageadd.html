@@ -311,9 +311,9 @@
 		</TD>
 		<TD>
 			{foreach $message.emails as $email}
-			<label><INPUT type="checkbox" name="message[customermails][{$email@index}]" value="{$email.contact}"{if $message.customermails[$email@index]} checked{/if}>
-			{$email.contact}{if $email.name} ({$email.name}){/if}</label>
-			{if !$email@last}<br>{/if}
+				<label><INPUT type="checkbox" name="message[customermails][{$email@index}]" value="{$email.contact}"{if $message.customermails[$email@index]} checked{/if}>
+				{$email.contact}{if $email.name} ({$email.name}){/if}</label>
+				{if !$email@last}<br>{/if}
 			{/foreach}
 		</TD>
 	</TR>
@@ -328,9 +328,9 @@
 		</TD>
 		<TD>
 			{foreach $message.phones as $phone}
-			<label><INPUT type="checkbox" name="message[customerphones][{$phone@index}]" value="{$phone.contact}"{if $message.customerphones[$phone@index]} checked{/if}>
-			{$phone.contact}{if $phone.name} ({$phone.name}){/if}</label>
-			{if !$phone@last}<br>{/if}
+				<label><INPUT type="checkbox" name="message[customerphones][{$phone@index}]" value="{$phone.contact}"{if $message.customerphones[$phone@index]} checked{/if}>
+				{$phone.contact}{if $phone.name} ({$phone.name}){/if}</label>
+				{if !$phone@last}<br>{/if}
 			{/foreach}
 		</TD>
 	</TR>

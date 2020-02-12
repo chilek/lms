@@ -176,6 +176,7 @@ version 25-git (????-??-??):
   - enhancement: added the ability to add attachments to device models [chilan/ravvar]
   - enhancement: show model files containers in models list [ravvar]
   - enhancement: show network devices files containers in devices list [ravvar]
+  - enhancement: allow to send customer message quickly using icon near mail and phone contacts [chilan]
 
 version 24.0 (2019-05-16):
 

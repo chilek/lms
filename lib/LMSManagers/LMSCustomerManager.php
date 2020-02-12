@@ -1276,7 +1276,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
             foreach ($CUSTOMERCONTACTTYPES as $contacttype => $properties) {
                 $result[$contacttype . 's'] = $this->db->GetAll(
-                    'SELECT contact AS ' . $contacttype . ',
+                    'SELECT id, contact AS ' . $contacttype . ',
 						contact, name, type
 					FROM customercontacts
 					WHERE customerid = ? AND type & ? > 0 ORDER BY id',
@@ -1314,6 +1314,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         if ($types) {
                             $result[$ctype][$idx]['typestr'] = implode('/', $types);
                         }
+
+                        $result[$ctype][$idx]['customerid'] = $id;
                     }
                 }
             }

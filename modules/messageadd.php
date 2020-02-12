@@ -840,8 +840,10 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 		FROM customerview
 		WHERE id = ?', array($_GET['customerid']));
 
+    $contactid = isset($_GET['contactid']) ? intval($_GET['contactid']) : 0;
+
     $message['phones'] = $DB->GetAll(
-        'SELECT contact, name, type FROM customercontacts
+        'SELECT id, contact, name, type FROM customercontacts
 		WHERE customerid = ? AND (type & ?) = 0 AND (type & ?) > 0',
         array($_GET['customerid'], CONTACT_DISABLED, CONTACT_MOBILE | CONTACT_FAX | CONTACT_LANDLINE)
     );
@@ -850,13 +852,13 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
     }
     $message['customerphones'] = array();
     foreach ($message['phones'] as $idx => $phone) {
-        if ($phone['type'] & CONTACT_MOBILE) {
+        if ($phone['type'] & CONTACT_MOBILE && (!$contactid || $contactid == $phone['id'])) {
             $message['customerphones'][$idx] = $phone['contact'];
         }
     }
 
     $message['emails'] = $DB->GetAll(
-        'SELECT contact, name FROM customercontacts
+        'SELECT id, contact, name FROM customercontacts
 		WHERE customerid = ? AND (type & ?) = ?',
         array($_GET['customerid'], CONTACT_EMAIL | CONTACT_DISABLED, CONTACT_EMAIL)
     );
@@ -865,10 +867,13 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
     }
     $message['customermails'] = array();
     foreach ($message['emails'] as $idx => $email) {
-        $message['customermails'][$idx] = $email['contact'];
+        if (!$contactid || $contactid == $email['id']) {
+            $message['customermails'][$idx] = $email['contact'];
+        }
     }
 
-    $message['type'] = empty($message['emails']) ? (empty($message['phones']) ? MSG_WWW : MSG_SMS) : MSG_MAIL;
+    $message['type'] = isset($_GET['type']) ? intval($_GET['type'])
+        : (empty($message['emails']) ? (empty($message['phones']) ? MSG_WWW : MSG_SMS) : MSG_MAIL);
 
     $SMARTY->assign('message', $message);
 }
