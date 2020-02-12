@@ -187,7 +187,7 @@
 			{if $model.filecontainers}
 				{foreach $model.filecontainers as $filecontainer}
 					{if $filecontainer.files}
-						{button class="models-toggle-file-list" type="link" icon="fileupload" tip="Show file list" resourceid={$filecontainer.id} label="{$filecontainer.description}"}
+						{button class="models-toggle-file-list" type="link" icon="fileupload" tip="Show file list" resourceid={$filecontainer.id} label="{$filecontainer.description|default:'---'}"}
 					{/if}
 					<div id="listfiles-{$filecontainer.id}" style="display: none;" class="files">
 						{foreach $filecontainer.files as $file}
