@@ -457,7 +457,13 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                 $phonenumbers = preg_split('/,/', $message['phonenumber']);
             }
             if (count($message['users'])) {
-                $phonenumbers = array_merge($phonenumbers, $message['users']);
+                $user_phones = $DB->GetAllByKey('SELECT id, phone FROM users', 'id');
+                foreach ($message['users'] as $userid) {
+                    if (isset($user_phones[$userid])) {
+                        $phonenumbers[] = $user_phones[$userid]['phone'];
+                    }
+                }
+                $phonenumbers = array_unique($phonenumbers);
             }
             if (empty($phonenumbers)) {
                 $error['phonenumber'] = trans('Specified phone number is not correct!');
@@ -836,7 +842,6 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
     }
 
     $SMARTY->assign('error', $error);
-    $SMARTY->assign('message', $message);
 } else if (!empty($_GET['customerid'])) {
     $message = $DB->GetRow('SELECT id AS customerid, '
         .$DB->Concat('UPPER(lastname)', "' '", 'name').' AS customer
@@ -877,9 +882,12 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 
     $message['type'] = isset($_GET['type']) ? intval($_GET['type'])
         : (empty($message['emails']) ? (empty($message['phones']) ? MSG_WWW : MSG_SMS) : MSG_MAIL);
-
-    $SMARTY->assign('message', $message);
+} else {
+    $message['type'] = isset($_GET['type']) ? intval($_GET['type']) : MSG_MAIL;
+    $message['usergroup'] = isset($_GET['usergroupid']) ? intval($_GET['usergroupid']) : 0;
 }
+
+$SMARTY->assign('message', $message);
 
 if (isset($message['type'])) {
     switch ($message['type']) {
@@ -908,7 +916,11 @@ $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
 $SMARTY->assign('userinfo', $LMS->GetUserInfo(Auth::GetCurrentUser()));
-$SMARTY->assign('users', $DB->GetAll('SELECT rname AS name, phone FROM vusers WHERE phone <> ? ORDER BY rname', array('')));
+$SMARTY->assign('users', $DB->GetAllByKey('SELECT id, rname AS name, phone FROM vusers WHERE phone <> ? ORDER BY rname', 'id', array('')));
+
+$usergroups = $LMS->UsergroupGetList();
+unset($usergroups['total'], $usergroups['totalcount']);
+$SMARTY->assign('usergroups', $usergroups);
 
 $netdevices = $LMS->GetNetDevList();
 unset($netdevices['total'], $netdevices['order'], $netdevices['direction']);

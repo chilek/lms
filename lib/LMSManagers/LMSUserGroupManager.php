@@ -52,15 +52,19 @@ class LMSUserGroupManager extends LMSManager implements LMSUserGroupManagerInter
 
     public function UsergroupGetList()
     {
-        if ($usergrouplist = $this->db->GetAll('SELECT id, name, description,
+        if ($usergrouplist = $this->db->GetAll('SELECT u.id, u.name, u.description,
 				(SELECT COUNT(*)
 					FROM userassignments
-					WHERE usergroupid = usergroups.id
-				) AS userscount
-				FROM usergroups ORDER BY name ASC')) {
+					WHERE usergroupid = u.id
+				) AS userscount,
+				' . $this->db->GroupConcat('ua.userid') . ' AS users
+				FROM usergroups u
+				LEFT JOIN userassignments ua ON ua.usergroupid = u.id
+				GROUP BY u.id, u.name, u.description
+				ORDER BY u.name ASC')) {
             $totalcount = 0;
 
-            foreach ($usergrouplist as $idx => $row) {
+            foreach ($usergrouplist as $row) {
                 $totalcount += $row['userscount'];
             }
 

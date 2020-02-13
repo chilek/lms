@@ -4555,3 +4555,5 @@ $_LANG['with unarchived documents'] = 'z dokumentami niezarchiwizowanymi';
 $_LANG['Invalid deadline format!'] = 'Niepoprawny format terminu płatności!';
 
 $_LANG['promotion management'] = 'zarządzanie promocjami';
+
+$_LANG['user group:'] = 'grupa użytkowników:';

@@ -383,9 +383,17 @@
 			{trans("Users:")}
 		</TD>
 		<TD>
-			<SELECT size="4" name="message[users][]" multiple class="lms-ui-multiselect" {tip text="Select users"} data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
+			<select size="4" name="message[users][]" multiple class="lms-ui-multiselect" {tip text="Select users"} data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
 				{foreach $users as $user}
-				<OPTION value="{$user.phone}"{if isset($message.users) && in_array($user.phone, $message.users)} selected{/if}>{$user.name|truncate:30:"...":true}</OPTION>
+				<OPTION value="{$user.id}"{if isset($message.users) && in_array($user.id, $message.users)} selected{/if}>{$user.name|truncate:30:"...":true}</OPTION>
+				{/foreach}
+			</select>
+			<span class="bold">{trans("user group:")}</span>
+			<select name="message[usergroup]">
+				<option value="" data-users="[{implode(',', array_keys($users))}]">{trans("- all -")}</option>
+				{foreach $usergroups as $usergroup}
+					<option value="{$usergroup.id}" data-users="[{$usergroup.users}]"
+							{if $message.usergroup == $usergroup.id} selected{/if}>{$usergroup.name}</option>
 				{/foreach}
 			</select>
 		</TD>
@@ -500,6 +508,17 @@ $(function() {
 	$('[name="message[type]"]').change(function() {
 		$('#customer-filter').toggle(parseInt($(this).val()) != {$smarty.const.MSG_ANYSMS});
 	});
+
+	$('[name="message[usergroup]"]').change(function() {
+		var userms = $('#' + $('[name="message[users][]"]').first().closest('.lms-ui-multiselectlayer')
+				.attr('id').replace('-layer', '')).find('.lms-ui-multiselect').data('multiselect-object');
+		var users = JSON.parse($(this).find('option:selected').attr('data-users'));
+		$.each(users, function(index, value) {
+			users[index] = String(value);
+		});
+		userms.filterSelection(users);
+	}).change();
+
 });
 countChars(document.getElementById('smstext'));
 
