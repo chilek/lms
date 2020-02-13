@@ -181,6 +181,7 @@ version 25-git (????-??-??):
   - improvement: allow to go back to location from which we initiated message add action [chilan]
   - enhancement: filter user list in message add form by selected user group [chilan]
   - enhancement: allow to send customer data to users via sms [chilan]
+  - enhancement: allow to include customer node data in sent messages [chilan]
 
 version 24.0 (2019-05-16):
 

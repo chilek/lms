@@ -259,6 +259,37 @@ function BodyVars(&$body, $data, $eol)
     if (strpos($body, '%bankaccount') !== false) {
         $body = str_replace('%bankaccount', format_bankaccount(bankaccount($data['id'], $data['account'])), $body);
     }
+    if (isset($data['node'])) {
+        $macs = array();
+        if (!empty($data['node']['macs'])) {
+            foreach ($data['node']['macs'] as $mac) {
+                $macs[] = $mac['mac'];
+            }
+        }
+        $body = str_replace(
+            array(
+                '%node_name',
+                '%node_password',
+                '%node_ip_pub',
+                '%node_ip',
+                '%node_mac',
+            ),
+            array(
+                $data['node']['name'],
+                $data['node']['passwd'] ?: '-',
+                $data['node']['ipaddr_pub'] ? $data['node']['ip_pub'] : '-',
+                $data['node']['ipaddr'] ? $data['node']['ip'] : '-',
+                empty($macs) ? '-' : implode(', ', $macs),
+            ),
+            $body
+        );
+    } else {
+        $body = str_replace(
+            array('%node_name', '%node_password', '%node_ip_pub', '%node_ip', '%node_mac'),
+            array('-', '-', '-', '-', '-'),
+            $body
+        );
+    }
 
     if (preg_match('/%last_(?<number>[0-9]+)_in_a_table/', $body, $m)) {
         $lastN = $LMS->GetCustomerShortBalanceList($data['id'], $m['number']);
@@ -547,13 +578,15 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
             }
         } else {
             $recipient = GetRecipient($message['customerid']);
+            if (!empty($message['nodeid'])) {
+                $recipient['node'] = $LMS->GetNode($message['nodeid']);
+            }
             if ($message['type'] == MSG_ANYSMS) {
                 foreach ($phonenumbers as $phone) {
                     $recipients[]['phone'] = $phone;
                 }
                 $customer = $recipient;
             } else {
-                $recipient = GetRecipient($message['customerid']);
                 if (!empty($recipient)) {
                     switch ($message['type']) {
                         case MSG_MAIL:
@@ -800,7 +833,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                 }
 
                 if (is_string($result)) {
-                    echo " <font color=red>$result</font>";
+                    echo ' <span class="red">' . $result . '</span>';
                 } else if ($result == MSG_SENT) {
                     echo ' ['.trans('sent').']';
                 } else {
@@ -902,6 +935,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
     $message['usergroup'] = isset($_GET['usergroupid']) ? intval($_GET['usergroupid']) : 0;
     $message['tmplid'] = isset($_GET['templateid']) ? intval($_GET['templateid']) : 0;
     $SMARTY->assign('autoload_template', true);
+    $message['nodeid'] = isset($_GET['nodeid']) ? intval($_GET['nodeid']) : 0;
 } else {
     $message['type'] = isset($_GET['type']) ? intval($_GET['type']) : MSG_MAIL;
     $message['usergroup'] = isset($_GET['usergroupid']) ? intval($_GET['usergroupid']) : 0;
@@ -947,5 +981,9 @@ $SMARTY->assign('usergroups', $usergroups);
 $netdevices = $LMS->GetNetDevList();
 unset($netdevices['total'], $netdevices['order'], $netdevices['direction']);
 $SMARTY->assign('netdevices', $netdevices);
+
+if (!empty($message['customerid'])) {
+    $SMARTY->assign('nodes', $LMS->GetCustomerNodes($message['customerid']));
+}
 
 $SMARTY->display('message/messageadd.html');
