@@ -4557,3 +4557,5 @@ $_LANG['Invalid deadline format!'] = 'Niepoprawny format terminu płatności!';
 $_LANG['promotion management'] = 'zarządzanie promocjami';
 
 $_LANG['user group:'] = 'grupa użytkowników:';
+
+$_LANG['Customer data:'] = 'Dane klienta:';

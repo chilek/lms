@@ -16,7 +16,8 @@
 <p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
 </p>
-<SCRIPT>
+<script>
+
 	function checkaddr(email)
 	{
 		{literal}
@@ -28,103 +29,25 @@
 			return 0;
 	}
 
-	function typesel(elem) {
-		if(elem == 'typesms' || elem == 'typeanysms' || elem == 'typewww' || elem == 'typeuserpanel' || elem == 'typeuserpanelurgent') {
-			xjx.$('mailfrom').style.display = 'none';
-			xjx.$('mailsender').style.display = 'none';
-			xjx.$('attachment').style.display = 'none';
-			{if $message.emails}
-			xjx.$('customermails').style.display = 'none';
-			{/if}
-			{if !$message.customerid}
-			var users = xjx.$('users');
-			if (elem == 'typeanysms') {
-				xjx.$('phonenumber').style.display = '';
-				if (users) users.style.display = '';
-			} else {
-				xjx.$('phonenumber').style.display = 'none';
-				if (users) users.style.display = 'none';
-			}
-			{/if}
-			if (elem == 'typewww') {
-				xjx.$('mailbody').style.display = '';
-				xjx.$('smsbody').style.display = 'none';
-				xjx.$('charscount').style.display = 'none';
-				{if $message.phones}
-				xjx.$('customerphones').style.display = 'none';
-				{/if}
-				xajax_getMessageTemplates({$smarty.const.TMPL_WWW});
-			} else if (elem == 'typeuserpanel') {
-				xjx.$('mailbody').style.display = '';
-				xjx.$('smsbody').style.display = 'none';
-				xjx.$('charscount').style.display = 'none';
-				{if $message.phones}
-				xjx.$('customerphones').style.display = 'none';
-				{/if}
-				xajax_getMessageTemplates({$smarty.const.TMPL_USERPANEL});
-			} else if (elem == 'typeuserpanelurgent') {
-				xjx.$('mailbody').style.display = '';
-				xjx.$('smsbody').style.display = 'none';
-				xjx.$('charscount').style.display = 'none';
-				{if $message.phones}
-				xjx.$('customerphones').style.display = 'none';
-				{/if}
-				xajax_getMessageTemplates({$smarty.const.TMPL_USERPANEL_URGENT});
-			} else {
-				xjx.$('mailbody').style.display = 'none';
-				xjx.$('smsbody').style.display = '';
-				xjx.$('charscount').style.display = '';
-				{if $message.phones}
-				if (elem == 'typeanysms')
-					xjx.$('customerphones').style.display = 'none';
-				else
-					xjx.$('customerphones').style.display = '';
-				{/if}
-				xajax_getMessageTemplates({$smarty.const.TMPL_SMS});
-			}
-		} else {
-			xjx.$('mailbody').style.display = '';
-			xjx.$('mailfrom').style.display = '';
-			xjx.$('mailsender').style.display = '';
-			xjx.$('attachment').style.display = '';
-			{if $message.emails}
-			xjx.$('customermails').style.display = '';
-			{/if}
-			{if $message.phones}
-			xjx.$('customerphones').style.display = 'none';
-			{/if}
-			if (xjx.$('phonenumber') != undefined)
-				xjx.$('phonenumber').style.display = 'none';
-			xjx.$('smsbody').style.display = 'none';
-			xjx.$('charscount').style.display = 'none';
-			xajax_getMessageTemplates({$smarty.const.TMPL_MAIL});
-		}
-		xjx.$('msgtmplid').disabled = true;
-	}
-
 	function messageTemplatesReceived(templates) {
-		var elem = xjx.$('msgtmplid'), option;
-		while (elem.length > 1)
-			elem.remove(1);
-		if (templates)
+		var options = '<OPTION value="0">' + $t("- none -") + '</OPTION>';
+		if (templates) {
 			for (i = 0; i < templates.length; i++) {
-				option = document.createElement('option');
-				option.text = templates[i].name;
-				option.value = templates[i].id;
-				elem.add(option, null);
+				options += '<option value="' + templates[i].id + '">' + templates[i].name + '</option>';
 			}
-		elem.disabled = false;
+		}
+		$('#msgtmplid').html(options).prop('disabled', false);
 	}
 
 	function countChars(elem)
 	{
-		document.getElementById('charscounttext').innerHTML = elem.value.length;
+		$('#charscounttext').html(elem.value.length);
 	}
 
 	function change_message_template(tmplid) {
 		if (tmplid)
-			xajax_getMessageTemplate(tmplid, 'subject', {if $message.emails || !isset($message.customerid)}xjx.$('typemail').checked || {/if}
-				xjx.$('typewww').checked || xjx.$('typeuserpanel').checked || xjx.$('typeuserpanelurgent').checked ? 'mailbody' : 'smsbody');
+			xajax_getMessageTemplate(tmplid, 'subject', {if $message.emails || !isset($message.customerid)}$('#typemail').prop('checked') || {/if}
+				$('#typewww').prop('checked') || $('#typeuserpanel').prop('checked') || $('#typeuserpanelurgent').prop('checked') ? 'mailbody' : 'smsbody');
 	}
 
 	function messageTemplateReceived(subjectelem, subject, messageelem, message) {
@@ -152,7 +75,8 @@
 		});
 		return false;
 	}
-</SCRIPT>
+
+</script>
 <TABLE class="lmsbox">
 	<colgroup>
 		<col style="width: 1%;">
@@ -169,26 +93,25 @@
 			</TD>
 			<TD>
 				{if $message.emails || !isset($message.customerid)}
-					<INPUT type="radio" name="message[type]" id="typemail" value="{$smarty.const.MSG_MAIL}"{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} checked{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typemail"><span class="bold">{trans("email")}</span></label>
+					<INPUT type="radio" name="message[type]" id="typemail" value="{$smarty.const.MSG_MAIL}"{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} checked{/if} {tip trigger="type" text="Select message type"}><label for="typemail"><span class="bold">{trans("email")}</span></label>
 				{/if}
 				{if $message.phones || !isset($message.customerid)}
-					<INPUT type="radio" name="message[type]" id="typesms" value="{$smarty.const.MSG_SMS}"{if $message.type == $smarty.const.MSG_SMS} checked{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typesms"><span class="bold">{trans("sms")}</span></label>
+					<INPUT type="radio" name="message[type]" id="typesms" value="{$smarty.const.MSG_SMS}"{if $message.type == $smarty.const.MSG_SMS} checked{/if} {tip trigger="type" text="Select message type"}><label for="typesms"><span class="bold">{trans("sms")}</span></label>
 				{/if}
-				{if !$message.customerid}
-					<INPUT type="radio" name="message[type]" id="typeanysms" value="{$smarty.const.MSG_ANYSMS}"{if $message.type == $smarty.const.MSG_ANYSMS} checked{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typeanysms"><span class="bold">{trans("any sms")}</span></label>
-				{/if}
-				<INPUT type="radio" name="message[type]" id="typewww" value="{$smarty.const.MSG_WWW}"{if $message.type == $smarty.const.MSG_WWW} checked{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typewww"><span class="bold">{trans("www")}</span></label>
-				<INPUT type="radio" name="message[type]" id="typeuserpanel" value="{$smarty.const.MSG_USERPANEL}"{if $message.type == $smarty.const.MSG_USERPANEL} checked{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typeuserpanel"><span class="bold">{trans("userpanel")}</span></label>
-				<INPUT type="radio" name="message[type]" id="typeuserpanelurgent" value="{$smarty.const.MSG_USERPANEL_URGENT}"{if $message.type == $smarty.const.MSG_USERPANEL_URGENT} checked{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typeuserpanelurgent"><span class="bold">{trans("userpanel urgent")}</span></label>
+				<INPUT type="radio" name="message[type]" id="typeanysms" value="{$smarty.const.MSG_ANYSMS}"{if $message.type == $smarty.const.MSG_ANYSMS} checked{/if} {tip trigger="type" text="Select message type"}><label for="typeanysms"><span class="bold">{trans("any sms")}</span></label>
+				<INPUT type="radio" name="message[type]" id="typewww" value="{$smarty.const.MSG_WWW}"{if $message.type == $smarty.const.MSG_WWW} checked{/if} {tip trigger="type" text="Select message type"}><label for="typewww"><span class="bold">{trans("www")}</span></label>
+				<INPUT type="radio" name="message[type]" id="typeuserpanel" value="{$smarty.const.MSG_USERPANEL}"{if $message.type == $smarty.const.MSG_USERPANEL} checked{/if} {tip trigger="type" text="Select message type"}><label for="typeuserpanel"><span class="bold">{trans("userpanel")}</span></label>
+				<INPUT type="radio" name="message[type]" id="typeuserpanelurgent" value="{$smarty.const.MSG_USERPANEL_URGENT}"{if $message.type == $smarty.const.MSG_USERPANEL_URGENT} checked{/if} {tip trigger="type" text="Select message type"}><label for="typeuserpanelurgent"><span class="bold">{trans("userpanel urgent")}</span></label>
 			</TD>
 		</TR>
 		{if $message.customerid}
-			<TR id="customer-filter"{if $message.type == $smarty.const.MSG_ANYSMS} style="display: none;"{/if}>
+			<TR id="customer-filter">
 				<TD>
 					<IMG src="img/customer.gif" alt="">
 				</TD>
 				<TD class="bold nobr">
-					{trans("Recipient:")}
+					<span id="customer-recipient"{if $message.type == $smarty.const.MSG_ANYSMS} style="display: none;"{/if}>{trans("Recipient:")}</span>
+					<span id="customer-data"{if $message.type != $smarty.const.MSG_ANYSMS} style="display: none;"{/if}>{trans("Customer data:")}</span>
 				</TD>
 				<TD class="bold">
 					{$message.customer} ({$message.customerid|string_format:"%04d"})
@@ -373,7 +296,6 @@
 			<INPUT type="text" name="message[from]" size="40"  value="{if $message.from}{$message.from}{elseif $userinfo.name}{$userinfo.name}{/if}" {tip trigger="from" text="Enter sender name"}>
 		</TD>
 	</TR>
-{if !$message.customerid}
 	{if $users}
 	<TR ID="users"{if $message.type != $smarty.const.MSG_ANYSMS} style="display: none;"{/if}>
 		<TD>
@@ -410,7 +332,6 @@
 			<INPUT type="tel" name="message[phonenumber]" size="60" value="{$message.phonenumber}" {tip trigger="phonenumber" text="Enter phone numbers separated by commas"}>
 		</TD>
 	</TR>
-{/if}
 	<TR>
 		<TD>
 			<IMG src="img/mail.gif" alt="">
@@ -433,7 +354,7 @@
 			<SELECT name="message[tmplid]" id="msgtmplid" {tip trigger="msgtmplid" text="Select message template"} onChange="javascript:change_message_template(this.options[this.selectedIndex].value);">
 				<OPTION value="0">{trans("- none -")}</OPTION>
 				{foreach $messagetemplates as $msgtmpl}
-				<OPTION value="{$msgtmpl.id}">{$msgtmpl.name}</OPTION>
+				<OPTION value="{$msgtmpl.id}"{if $message.tmplid == $msgtmpl.id} selected{/if}>{$msgtmpl.name}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>
@@ -506,7 +427,64 @@ $(function() {
 	$('form[name="message"] [name="message[sender]"]').focus();
 
 	$('[name="message[type]"]').change(function() {
-		$('#customer-filter').toggle(parseInt($(this).val()) != {$smarty.const.MSG_ANYSMS});
+		$('#customer-filter').toggle(parseInt($(this).val()) != {$smarty.const.MSG_ANYSMS}{if $message.customerid} || true{/if});
+
+		var elem = $(this).attr('id');
+		if (elem == 'typesms' || elem == 'typeanysms' || elem == 'typewww' || elem == 'typeuserpanel' || elem == 'typeuserpanelurgent') {
+			$('#mailfrom,#mailsender,#attachment').hide();
+
+			{if $message.emails}
+			$('#customermails').hide();
+			{/if}
+
+			$('#users,#phonenumber,#customer-data').toggle(elem == 'typeanysms');
+			$('#customer-recipient').toggle(elem != 'typeanysms');
+
+			$('#mailbody').toggle(elem == 'typewww' || elem == 'typeuserpanel' || elem == 'typeuserpanelurgent');
+			$('#smsbody,#charscount').toggle(elem != 'typewww' && elem != 'typeuserpanel' && elem != 'typeuserpanelurgent');
+			if (elem == 'typewww') {
+				{if $message.phones}
+				$('#customerphones').hide();
+				{/if}
+
+				xajax_getMessageTemplates({$smarty.const.TMPL_WWW});
+			} else if (elem == 'typeuserpanel') {
+				{if $message.phones}
+				$('#customerphones').hide();
+				{/if}
+
+				xajax_getMessageTemplates({$smarty.const.TMPL_USERPANEL});
+			} else if (elem == 'typeuserpanelurgent') {
+				{if $message.phones}
+				$('#customerphones').hide();
+				{/if}
+
+				xajax_getMessageTemplates({$smarty.const.TMPL_USERPANEL_URGENT});
+			} else {
+				{if $message.phones}
+				$('#customerphones').toggle(elem != 'typeanysms');
+				{/if}
+
+				xajax_getMessageTemplates({$smarty.const.TMPL_SMS});
+			}
+		} else {
+			$('#mailbody,#mailfrom,#mailsender,#attachment').show();
+
+			{if $message.emails}
+			$('#customermails').show();
+			{/if}
+
+			{if $message.phones}
+			$('#customerphones').hide();
+			{/if}
+
+			if ($('#phonenumber').length) {
+				$('#phonenumber').hide();
+			}
+			$('#smsbody,#charscount').hide();
+			xajax_getMessageTemplates({$smarty.const.TMPL_MAIL});
+		}
+		$('#msgtmplid').prop('disabled', true);
 	});
 
 	$('[name="message[usergroup]"]').change(function() {
@@ -519,6 +497,9 @@ $(function() {
 		userms.filterSelection(users);
 	}).change();
 
+	{if isset($autoload_template) && $message.tmplid}
+	$('#msgtmplid').change();
+	{/if}
 });
 countChars(document.getElementById('smstext'));
 

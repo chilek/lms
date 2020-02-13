@@ -156,8 +156,10 @@ function GetRecipients($filter, $type = MSG_MAIL)
         . ($type == MSG_MAIL ? 'cc.email, ' : '')
         . ($type == MSG_SMS ? 'x.phone, ' : '')
         . $LMS->DB->Concat('c.lastname', "' '", 'c.name') . ' AS customername,
+        divisions.account,
 		COALESCE(b.value, 0) AS balance
 		FROM customerview c 
+		LEFT JOIN divisions ON divisions.id = c.divisionid
 		LEFT JOIN (
 			SELECT SUM(value * currencyvalue) AS value, customerid
 			FROM cash GROUP BY customerid
@@ -232,8 +234,11 @@ function GetRecipient($customerid)
 
     return $DB->GetRow('SELECT c.id, pin, '
         . $DB->Concat('c.lastname', "' '", 'c.name') . ' AS customername,
+        divisions.account,
 		COALESCE((SELECT SUM(value) FROM cash WHERE customerid = c.id), 0) AS balance
-		FROM customerview c WHERE c.id = ?', array($customerid));
+		FROM customerview c
+		LEFT JOIN divisions ON divisions.id = c.divisionid
+		WHERE c.id = ?', array($customerid));
 }
 
 function BodyVars(&$body, $data, $eol)
@@ -252,7 +257,7 @@ function BodyVars(&$body, $data, $eol)
     $body = str_replace('%cid', $data['id'], $body);
     $body = str_replace('%pin', $data['pin'], $body);
     if (strpos($body, '%bankaccount') !== false) {
-        $body = str_replace('%bankaccount', format_bankaccount(bankaccount($data['id'])), $body);
+        $body = str_replace('%bankaccount', format_bankaccount(bankaccount($data['id'], $data['account'])), $body);
     }
 
     if (preg_match('/%last_(?<number>[0-9]+)_in_a_table/', $body, $m)) {
@@ -537,29 +542,37 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                 $recipients = GetRecipients($message, $message['type']);
             } else {
                 foreach ($phonenumbers as $phone) {
-                            $recipients[]['phone'] = $phone;
+                    $recipients[]['phone'] = $phone;
                 }
             }
         } else {
             $recipient = GetRecipient($message['customerid']);
-            if (!empty($recipient)) {
-                switch ($message['type']) {
-                    case MSG_MAIL:
-                        if (empty($message['customermails'])) {
+            if ($message['type'] == MSG_ANYSMS) {
+                foreach ($phonenumbers as $phone) {
+                    $recipients[]['phone'] = $phone;
+                }
+                $customer = $recipient;
+            } else {
+                $recipient = GetRecipient($message['customerid']);
+                if (!empty($recipient)) {
+                    switch ($message['type']) {
+                        case MSG_MAIL:
+                            if (empty($message['customermails'])) {
+                                break;
+                            }
+                            $recipient['email'] = implode(',', $message['customermails']);
+                            $recipients = array($recipient);
                             break;
-                        }
-                        $recipient['email'] = implode(',', $message['customermails']);
-                        $recipients = array($recipient);
-                        break;
-                    case MSG_SMS:
-                        if (empty($message['customerphones'])) {
+                        case MSG_SMS:
+                            if (empty($message['customerphones'])) {
+                                break;
+                            }
+                            $recipient['phone'] = implode(',', $message['customerphones']);
+                            $recipients = array($recipient);
                             break;
-                        }
-                        $recipient['phone'] = implode(',', $message['customerphones']);
-                        $recipients = array($recipient);
-                        break;
-                    default:
-                        $recipients = array($recipient);
+                        default:
+                            $recipients = array($recipient);
+                    }
                 }
             }
         }
@@ -725,14 +738,18 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 
             $customerid = isset($row['id']) ? $row['id'] : 0;
 
-            if (!empty($customerid)) {
+            if (!empty($customerid) || $message['type'] == MSG_ANYSMS) {
                 $plain_body = $body;
 
-                BodyVars($body, $row, $eol);
+                if ($message['type'] == MSG_ANYSMS && isset($customer)) {
+                    BodyVars($body, $customer, $eol);
+                } else {
+                    BodyVars($body, $row, $eol);
+                }
 
                 if (strcmp($plain_body, $body) != 0) {
                     $DB->Execute('UPDATE messageitems SET body = ?
-                    WHERE messageid = ? AND customerid = ?', array($body, $msgid, $customerid));
+                    WHERE messageid = ? AND customerid = ?', array($body, $msgid, $customerid ?: null));
                 }
             }
 
@@ -882,9 +899,14 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 
     $message['type'] = isset($_GET['type']) ? intval($_GET['type'])
         : (empty($message['emails']) ? (empty($message['phones']) ? MSG_WWW : MSG_SMS) : MSG_MAIL);
+    $message['usergroup'] = isset($_GET['usergroupid']) ? intval($_GET['usergroupid']) : 0;
+    $message['tmplid'] = isset($_GET['templateid']) ? intval($_GET['templateid']) : 0;
+    $SMARTY->assign('autoload_template', true);
 } else {
     $message['type'] = isset($_GET['type']) ? intval($_GET['type']) : MSG_MAIL;
     $message['usergroup'] = isset($_GET['usergroupid']) ? intval($_GET['usergroupid']) : 0;
+    $message['tmplid'] = isset($_GET['templateid']) ? intval($_GET['templateid']) : 0;
+    $SMARTY->assign('autoload_template', true);
 }
 
 $SMARTY->assign('message', $message);
