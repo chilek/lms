@@ -337,6 +337,7 @@
 			<IMG src="img/access.gif" width="16" alt=""> {trans("Status:")}
 		</TD>
 		<TD style="width: 99%;">
+			<input type="hidden" name="s[]" value="0">
 			<SELECT SIZE="1" name="s[]" class="lms-ui-multiselect" multiple data-default-value="{trans("- all -")}">
 				{foreach $_CSTATUSES as $statusidx => $status}
 				<OPTION VALUE="{$statusidx}">{$status.plurallabel}</OPTION>
