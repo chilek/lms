@@ -1718,7 +1718,13 @@ $_LANG['Enter message body.<br><br>'
     . '<strong>%pin</strong> - customer pin,<br>'
     . '<strong>%bankaccount</strong> - bank account for payments,<br>'
     . '<strong>%services</strong> - customer service summary,<br>'
-    . '<strong>%last_N_in_a_table</strong> - last N operation in customer financial history (N means number).<br>'] =
+    . '<strong>%last_N_in_a_table</strong> - last N operation in customer financial history (N means number).<br><br>'
+    . 'Substitution/variables supported while customer node is selected:<br>'
+    . '<strong>%node_name</strong> - customer node name,<br>'
+    . '<strong>%node_password</strong> - customer node password,<br>'
+    . '<strong>%node_ip</strong> - customer node ip address,<br>'
+    . '<strong>%node_ip_pub</strong> - customer node public ip address,<br>'
+    . '<strong>%node_mac</strong> - customer node mac addresses.<br>'] =
     'Wprowadź treść wiadomości.<br><br>'
     . 'Obsługiwane podstawienia/zmienne:<br>'
     . '<strong>%customer</strong> - imię i nazwisko lub nazwa klienta,<br>'
@@ -1727,7 +1733,13 @@ $_LANG['Enter message body.<br><br>'
     . '<strong>%pin</strong> - pin klienta,<br>'
     . '<strong>%bankaccount</strong> - konto bankowe do płatności,<br>'
     . '<strong>%services</strong> - podsumowanie usług klienta,<br>'
-    . '<strong>%last_N_in_a_table</strong> - ostatnie N operacji w historii finansowej klienta (N oznacza liczbę).<br>';
+    . '<strong>%last_N_in_a_table</strong> - ostatnie N operacji w historii finansowej klienta (N oznacza liczbę).<br><br>'
+    . 'Obsługiwane podstawienia/zmienne gdy wybrano komputer kliencki:<br>'
+    . '<strong>%node_name</strong> - nazwa komputera klienckiego,<br>'
+    . '<strong>%node_password</strong> - hasło komputera klienckiego,<br>'
+    . '<strong>%node_ip</strong> - adres ip komputera klienckiego,<br>'
+    . '<strong>%node_ip_pub</strong> - publiczny adres ip komputera klienckiego,<br>'
+    . '<strong>%node_mac</strong> - adresy mac komputera klienckiego.<br>';
 $_LANG['Useful Links:'] = 'Użyteczne linki:';
 $_LANG['User'] = 'Użytkownik';
 $_LANG['User:'] = 'Użytkownik:';
