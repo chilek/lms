@@ -2,7 +2,15 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-{$xajax}
+
+<style>
+
+	#customer-filter {
+		border: 0;
+	}
+
+</style>
+	{$xajax}
 <H1>{$layout.pagetitle}</H1>
 <FORM name="message" id="message" method="post" action="?m=messageadd" enctype="multipart/form-data">
 <p style="display: none;">
@@ -146,161 +154,166 @@
 	}
 </SCRIPT>
 <TABLE class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 98%;">
+	</colgroup>
     <THEAD>
-{if $message.customerid}
-	<TR>
-		<TD style="width: 1%;">
-			<IMG src="img/customer.gif" alt="">
-		</TD>
-		<TD style="width: 1%;" class="bold nobr">
-			{trans("Recipient:")}
-		</TD>
-		<TD style="width: 98%;" class="bold">
-			{$message.customer} ({$message.customerid|string_format:"%04d"})
-			<INPUT type="hidden" name="message[customerid]" value="{$message.customerid}">
-		</TD>
-	</TR>
-{else}
-	<TR>
-		<TD style="width: 1%;">
-			<IMG src="img/group.gif" alt="">
-		</TD>
-		<TD style="width: 1%;" class="bold nobr">
-			{trans("Recipients:")}
-		</TD>
-		<TD style="width: 98%;">
-			<TABLE width="100%">
-				<COLGROUP>
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 93%;">
-				</COLGROUP>
-				<TR>
-					<TD class="nobr" rowspan="3">{trans("Status:")}</TD>
-					<TD rowspan="3">
-						<SELECT name="message[group]" {tip trigger="group" text="Select recipients group"}>
-							<option value="0"{if !$message.group} selected{/if}>{trans("- all customers -")}</option>
-							{foreach $_CSTATUSES as $statusidx => $status}
-							<option value="{$statusidx}"{if $message.group == $statusidx} selected{/if}>{$status.plurallabel}</option>
-							{/foreach}
-							<option value="50"{if $message.group == "50"} selected{/if}>{trans("deleted<!plural>")}</option>
-							<option value="51"{if $message.group == "51"} selected{/if}>{trans("with disconnected nodes")}</option>
-							<option value="52"{if $message.group == "52"} selected{/if}>{trans("in debt")}</option>
-							<option value="61"{if $message.group == "61"} selected{/if}>{trans("in debt (expired)")}</option>
-							<option value="57"{if $message.group == "57"} selected{/if}>{trans("in debt above 100%")}</option>
-							<option value="62"{if $message.group == "62"} selected{/if}>{trans("in debt above 100% (expired)")}</option>
-							<option value="58"{if $message.group == "58"} selected{/if}>{trans("in debt above 200%")}</option>
-							<option value="63"{if $message.group == "63"} selected{/if}>{trans("in debt above 200% (expired)")}</option>
-							<option value="53"{if $message.group == "53"} selected{/if}>{trans("not in debt")}</option>
-							<option value="60"{if $message.group == "60"} selected{/if}>{trans("not in debt (expired)")}</option>
-							<option value="59"{if $message.group == "59"} selected{/if}>{trans("opened documents")}</option>
-						</SELECT>
-					</TD>
-					<TD class="nobr">{trans("Group:")}</TD>
-					<TD class="multiselect">
-						<SELECT name="message[customergroup][]" multiple class="lms-ui-multiselect" {tip trigger="customergroup" text="Select customers group"} data-default-value="{trans("- all groups -")}">
-							{foreach $customergroups as $customergroup}
-							<option value="{$customergroup.id}"{if isset($message.customergroup) && in_array($customergroup.id, $message.customergroup)} selected{/if}>{$customergroup.name|truncate:"30":"...":true}</option>
-							{/foreach}
-						</SELECT>
-					</TD>
-					<TD class="nobr">{trans("Network:")}</TD>
-					<TD>
-						<SELECT name="message[network]" {tip trigger="network" text="Select IP network"}>
-							<option value="0">{trans("- all networks -")}</option>
-							{section name="networks" loop=$networks}
-							<option value="{$networks[networks].id}"{if $message.network == $networks[networks].id} selected{/if}>{$networks[networks].name|truncate:"30":"...":true}</option>
-							{/section}
-						</SELECT>
-					</TD>
-					<TD class="nobr">{trans("Tariff type:")}</TD>
-					<TD>
-						<SELECT name="message[tarifftype]" {tip trigger="network" text="Select tariff type"}>
-							<option value="0">{trans("- all -")}</option>
-							{foreach $_SERVICETYPES as $key => $type}
-							<option value="{$key}"{if $message.tarifftype == $key} selected{/if}>{$type}</option>
-							{/foreach}
-						</SELECT>
-					</TD>
-				</TR>
-				<TR>
-					<TD class="nobr">{trans("Nodes Group:<!short>")}</TD>
-					<TD>
-						<SELECT size="1" name="message[nodegroup]" {tip trigger="nodegroup" text="Select nodes group"}>
-							<OPTION value="" {if !$listdata.nodegroup} selected{/if}>{trans("- all groups -")}</OPTION>
-							{foreach from=$nodegroups item=nodegroup}
-							<OPTION value="{$nodegroup.id}" {if $message.nodegroup == $nodegroup.id} selected{/if}>{$nodegroup.name|truncate:30:"...":true}</OPTION>
-							{/foreach}
-						</SELECT>
-					</TD>
-					<TD class="nobr">{trans("Link type:")}</TD>
-					<TD>
-						<SELECT size="1" name="message[linktype]" {tip trigger="linktype" text="Select link type"}>
-							<OPTION value="">{trans("- all -")}</OPTION>
-							<OPTION value="0">{trans("wire")}</OPTION>
-							<OPTION value="1">{trans("wireless")}</OPTION>
-							<OPTION value="2">{trans("fiber")}</OPTION>
-						</SELECT>
-					</TD>
-					<TD class="nobr" colspan="2">
-						<label>
-							<INPUT type="checkbox" name="message[consent]" value="1" {tip text="Check if customer consent to messages delivery via e-mail or sms is required" trigger="consent"}{if $message.consent} checked{/if}>
-							{trans("consent required")}
-						</label>
-					</TD>
-				</TR>
-				<TR>
-					<TD class="nobr">
-						<label for="netdev">
-							{trans("Network device:")}
-						</label>
-					</TD>
-					<TD colspan="7" class="nobr">
-						<SELECT name="message[netdev]" id="netdev" class="lms-ui-advanced-select" {tip trigger="netdev" text="Select network device"}>
-							<option value="">{trans("- none -")}</option>
-							{foreach $netdevices as $netdev}
-							<option value="{$netdev.id}"{if isset($message.netdev) && $netdev.id == $message.netdev} selected{/if}>{$netdev.name}</option>
-							{/foreach}
-						</SELECT>
-						<label>
-							<input type="checkbox" name="message[wholesubtree]" value="1"{if isset($message.wholesubtree)} checked{/if}>
-							{trans("whole subtree")}
-						</label>
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-{/if}
+		<TR>
+			<TD>
+				<IMG src="img/mailsms.gif" alt="">
+			</TD>
+			<TD class="bold nobr">
+				{trans("Type:")}
+			</TD>
+			<TD>
+				{if $message.emails || !isset($message.customerid)}
+					<INPUT type="radio" name="message[type]" id="typemail" value="{$smarty.const.MSG_MAIL}"{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} checked{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typemail"><span class="bold">{trans("email")}</span></label>
+				{/if}
+				{if $message.phones || !isset($message.customerid)}
+					<INPUT type="radio" name="message[type]" id="typesms" value="{$smarty.const.MSG_SMS}"{if $message.type == $smarty.const.MSG_SMS} checked{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typesms"><span class="bold">{trans("sms")}</span></label>
+				{/if}
+				{if !$message.customerid}
+					<INPUT type="radio" name="message[type]" id="typeanysms" value="{$smarty.const.MSG_ANYSMS}"{if $message.type == $smarty.const.MSG_ANYSMS} checked{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typeanysms"><span class="bold">{trans("any sms")}</span></label>
+				{/if}
+				<INPUT type="radio" name="message[type]" id="typewww" value="{$smarty.const.MSG_WWW}"{if $message.type == $smarty.const.MSG_WWW} checked{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typewww"><span class="bold">{trans("www")}</span></label>
+				<INPUT type="radio" name="message[type]" id="typeuserpanel" value="{$smarty.const.MSG_USERPANEL}"{if $message.type == $smarty.const.MSG_USERPANEL} checked{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typeuserpanel"><span class="bold">{trans("userpanel")}</span></label>
+				<INPUT type="radio" name="message[type]" id="typeuserpanelurgent" value="{$smarty.const.MSG_USERPANEL_URGENT}"{if $message.type == $smarty.const.MSG_USERPANEL_URGENT} checked{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typeuserpanelurgent"><span class="bold">{trans("userpanel urgent")}</span></label>
+			</TD>
+		</TR>
+		{if $message.customerid}
+			<TR id="customer-filter"{if $message.type == $smarty.const.MSG_ANYSMS} style="display: none;"{/if}>
+				<TD>
+					<IMG src="img/customer.gif" alt="">
+				</TD>
+				<TD class="bold nobr">
+					{trans("Recipient:")}
+				</TD>
+				<TD class="bold">
+					{$message.customer} ({$message.customerid|string_format:"%04d"})
+					<INPUT type="hidden" name="message[customerid]" value="{$message.customerid}">
+				</TD>
+			</TR>
+		{else}
+			<TR id="customer-filter"{if $message.type == $smarty.const.MSG_ANYSMS} style="display: none;"{/if}>
+				<TD>
+					<IMG src="img/group.gif" alt="">
+				</TD>
+				<TD class="bold nobr">
+					{trans("Recipients:")}
+				</TD>
+				<TD>
+					<TABLE width="100%">
+						<COLGROUP>
+							<COL style="width: 1%;">
+							<COL style="width: 1%;">
+							<COL style="width: 1%;">
+							<COL style="width: 1%;">
+							<COL style="width: 1%;">
+							<COL style="width: 1%;">
+							<COL style="width: 1%;">
+							<COL style="width: 93%;">
+						</COLGROUP>
+						<TR>
+							<TD class="nobr" rowspan="3">{trans("Status:")}</TD>
+							<TD rowspan="3">
+								<SELECT name="message[group]" {tip trigger="group" text="Select recipients group"}>
+									<option value="0"{if !$message.group} selected{/if}>{trans("- all customers -")}</option>
+									{foreach $_CSTATUSES as $statusidx => $status}
+										<option value="{$statusidx}"{if $message.group == $statusidx} selected{/if}>{$status.plurallabel}</option>
+									{/foreach}
+									<option value="50"{if $message.group == "50"} selected{/if}>{trans("deleted<!plural>")}</option>
+									<option value="51"{if $message.group == "51"} selected{/if}>{trans("with disconnected nodes")}</option>
+									<option value="52"{if $message.group == "52"} selected{/if}>{trans("in debt")}</option>
+									<option value="61"{if $message.group == "61"} selected{/if}>{trans("in debt (expired)")}</option>
+									<option value="57"{if $message.group == "57"} selected{/if}>{trans("in debt above 100%")}</option>
+									<option value="62"{if $message.group == "62"} selected{/if}>{trans("in debt above 100% (expired)")}</option>
+									<option value="58"{if $message.group == "58"} selected{/if}>{trans("in debt above 200%")}</option>
+									<option value="63"{if $message.group == "63"} selected{/if}>{trans("in debt above 200% (expired)")}</option>
+									<option value="53"{if $message.group == "53"} selected{/if}>{trans("not in debt")}</option>
+									<option value="60"{if $message.group == "60"} selected{/if}>{trans("not in debt (expired)")}</option>
+									<option value="59"{if $message.group == "59"} selected{/if}>{trans("opened documents")}</option>
+								</SELECT>
+							</TD>
+							<TD class="nobr">{trans("Group:")}</TD>
+							<TD class="multiselect">
+								<SELECT name="message[customergroup][]" multiple class="lms-ui-multiselect" {tip trigger="customergroup" text="Select customers group"} data-default-value="{trans("- all groups -")}">
+									{foreach $customergroups as $customergroup}
+										<option value="{$customergroup.id}"{if isset($message.customergroup) && in_array($customergroup.id, $message.customergroup)} selected{/if}>{$customergroup.name|truncate:"30":"...":true}</option>
+									{/foreach}
+								</SELECT>
+							</TD>
+							<TD class="nobr">{trans("Network:")}</TD>
+							<TD>
+								<SELECT name="message[network]" {tip trigger="network" text="Select IP network"}>
+									<option value="0">{trans("- all networks -")}</option>
+									{section name="networks" loop=$networks}
+										<option value="{$networks[networks].id}"{if $message.network == $networks[networks].id} selected{/if}>{$networks[networks].name|truncate:"30":"...":true}</option>
+									{/section}
+								</SELECT>
+							</TD>
+							<TD class="nobr">{trans("Tariff type:")}</TD>
+							<TD>
+								<SELECT name="message[tarifftype]" {tip trigger="network" text="Select tariff type"}>
+									<option value="0">{trans("- all -")}</option>
+									{foreach $_SERVICETYPES as $key => $type}
+										<option value="{$key}"{if $message.tarifftype == $key} selected{/if}>{$type}</option>
+									{/foreach}
+								</SELECT>
+							</TD>
+						</TR>
+						<TR>
+							<TD class="nobr">{trans("Nodes Group:<!short>")}</TD>
+							<TD>
+								<SELECT size="1" name="message[nodegroup]" {tip trigger="nodegroup" text="Select nodes group"}>
+									<OPTION value="" {if !$listdata.nodegroup} selected{/if}>{trans("- all groups -")}</OPTION>
+									{foreach from=$nodegroups item=nodegroup}
+										<OPTION value="{$nodegroup.id}" {if $message.nodegroup == $nodegroup.id} selected{/if}>{$nodegroup.name|truncate:30:"...":true}</OPTION>
+									{/foreach}
+								</SELECT>
+							</TD>
+							<TD class="nobr">{trans("Link type:")}</TD>
+							<TD>
+								<SELECT size="1" name="message[linktype]" {tip trigger="linktype" text="Select link type"}>
+									<OPTION value="">{trans("- all -")}</OPTION>
+									<OPTION value="0">{trans("wire")}</OPTION>
+									<OPTION value="1">{trans("wireless")}</OPTION>
+									<OPTION value="2">{trans("fiber")}</OPTION>
+								</SELECT>
+							</TD>
+							<TD class="nobr" colspan="2">
+								<label>
+									<INPUT type="checkbox" name="message[consent]" value="1" {tip text="Check if customer consent to messages delivery via e-mail or sms is required" trigger="consent"}{if $message.consent} checked{/if}>
+									{trans("consent required")}
+								</label>
+							</TD>
+						</TR>
+						<TR>
+							<TD class="nobr">
+								<label for="netdev">
+									{trans("Network device:")}
+								</label>
+							</TD>
+							<TD colspan="7" class="nobr">
+								<SELECT name="message[netdev]" id="netdev" class="lms-ui-advanced-select" {tip trigger="netdev" text="Select network device"}>
+									<option value="">{trans("- none -")}</option>
+									{foreach $netdevices as $netdev}
+										<option value="{$netdev.id}"{if isset($message.netdev) && $netdev.id == $message.netdev} selected{/if}>{$netdev.name}</option>
+									{/foreach}
+								</SELECT>
+								<label>
+									<input type="checkbox" name="message[wholesubtree]" value="1"{if isset($message.wholesubtree)} checked{/if}>
+									{trans("whole subtree")}
+								</label>
+							</TD>
+						</TR>
+					</TABLE>
+				</TD>
+			</TR>
+		{/if}
     </THEAD>
     <TBODY>
-	<TR>
-		<TD style="width: 1%;">
-			<IMG src="img/mailsms.gif" alt="">
-		</TD>
-		<TD style="width: 1%;" class="bold nobr">
-			{trans("Type:")}
-		</TD>
-		<TD style="width: 98%;">
-			{if $message.emails || !isset($message.customerid)}
-			<INPUT type="radio" name="message[type]" id="typemail" value="{$smarty.const.MSG_MAIL}"{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} checked{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typemail"><span class="bold">{trans("email")}</span></label>
-			{/if}
-			{if $message.phones || !isset($message.customerid)}
-			<INPUT type="radio" name="message[type]" id="typesms" value="{$smarty.const.MSG_SMS}"{if $message.type == $smarty.const.MSG_SMS} checked{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typesms"><span class="bold">{trans("sms")}</span></label>
-			{/if}
-			{if !$message.customerid}
-			<INPUT type="radio" name="message[type]" id="typeanysms" value="{$smarty.const.MSG_ANYSMS}"{if $message.type == $smarty.const.MSG_ANYSMS} checked{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typeanysms"><span class="bold">{trans("any sms")}</span></label>
-			{/if}
-			<INPUT type="radio" name="message[type]" id="typewww" value="{$smarty.const.MSG_WWW}"{if $message.type == $smarty.const.MSG_WWW} checked{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typewww"><span class="bold">{trans("www")}</span></label>
-			<INPUT type="radio" name="message[type]" id="typeuserpanel" value="{$smarty.const.MSG_USERPANEL}"{if $message.type == $smarty.const.MSG_USERPANEL} checked{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typeuserpanel"><span class="bold">{trans("userpanel")}</span></label>
-			<INPUT type="radio" name="message[type]" id="typeuserpanelurgent" value="{$smarty.const.MSG_USERPANEL_URGENT}"{if $message.type == $smarty.const.MSG_USERPANEL_URGENT} checked{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typeuserpanelurgent"><span class="bold">{trans("userpanel urgent")}</span></label>
-		</TD>
-	</TR>
 	{if $message.emails}
 	<TR id="customermails"{if $message.type != $smarty.const.MSG_MAIL} style="display: none;"{/if}>
 		<TD>
@@ -336,13 +349,13 @@
 	</TR>
 	{/if}
 	<TR ID="mailsender"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
-		<TD style="width: 1%;">
+		<TD>
 			<IMG src="img/email.gif" alt="">
 		</TD>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			{trans("Sender E-mail:")}
 		</TD>
-		<TD style="width: 98%;">
+		<TD>
 			<INPUT type="email" name="message[sender]" size="40" value="{if $message.sender}{$message.sender}{elseif $userinfo.email}{$userinfo.email}{/if}" {tip trigger="sender" text="Enter sender e-mail address"}>
 			<label {tip trigger="copytosender" text="Check if you want do send message copy to sender"}>
 			<input type="checkbox" name="message[copytosender]"{if ConfigHelper::checkConfig('phpui.send_message_to_sender_checkbox')} checked{/if}>
@@ -350,26 +363,26 @@
 		</TD>
 	</TR>
 	<TR ID="mailfrom"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
-		<TD style="width: 1%;">
+		<TD>
 			<IMG src="img/users.gif" alt="">
 		</TD>
-		<TD style="width: 1%;" class="bold">
+		<TD class="bold">
 			{trans("Sender:")}
 		</TD>
-		<TD style="width: 98%;">
+		<TD>
 			<INPUT type="text" name="message[from]" size="40"  value="{if $message.from}{$message.from}{elseif $userinfo.name}{$userinfo.name}{/if}" {tip trigger="from" text="Enter sender name"}>
 		</TD>
 	</TR>
 {if !$message.customerid}
 	{if $users}
 	<TR ID="users"{if $message.type != $smarty.const.MSG_ANYSMS} style="display: none;"{/if}>
-		<TD style="width: 1%;">
+		<TD>
 			<IMG src="img/users.gif" alt="">
 		</TD>
-		<TD style="width: 1%;" class="bold">
+		<TD class="bold">
 			{trans("Users:")}
 		</TD>
-		<TD style="width: 98%;">
+		<TD>
 			<SELECT size="4" name="message[users][]" multiple class="lms-ui-multiselect" {tip text="Select users"} data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
 				{foreach $users as $user}
 				<OPTION value="{$user.phone}"{if isset($message.users) && in_array($user.phone, $message.users)} selected{/if}>{$user.name|truncate:30:"...":true}</OPTION>
@@ -379,36 +392,36 @@
 	</TR>
 	{/if}
 	<TR ID="phonenumber"{if $message.type != $smarty.const.MSG_ANYSMS} style="display: none;"{/if}>
-		<TD style="width: 1%;">
+		<TD>
 			<IMG src="img/sms.gif" alt="">
 		</TD>
-		<TD style="width: 1%;" class="bold">
+		<TD class="bold">
 			{trans("Phone number:")}
 		</TD>
-		<TD style="width: 98%;">
+		<TD>
 			<INPUT type="tel" name="message[phonenumber]" size="60" value="{$message.phonenumber}" {tip trigger="phonenumber" text="Enter phone numbers separated by commas"}>
 		</TD>
 	</TR>
 {/if}
 	<TR>
-		<TD style="width: 1%;">
+		<TD>
 			<IMG src="img/mail.gif" alt="">
 		</TD>
-		<TD style="width: 1%;" class="bold">
+		<TD class="bold">
 			{trans("Subject:")}
 		</TD>
-		<TD style="width: 98%;">
+		<TD>
 			<INPUT type="text" name="message[subject]" id="subject" size="60" value="{$message.subject}" {tip trigger="subject" text="Enter message subject"}>
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;">
+		<TD>
 			<IMG src="img/docum.gif" alt="">
 		</TD>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			{trans("Message template:")}
 		</TD>
-		<TD style="width: 98%;">
+		<TD>
 			<SELECT name="message[tmplid]" id="msgtmplid" {tip trigger="msgtmplid" text="Select message template"} onChange="javascript:change_message_template(this.options[this.selectedIndex].value);">
 				<OPTION value="0">{trans("- none -")}</OPTION>
 				{foreach $messagetemplates as $msgtmpl}
@@ -418,35 +431,35 @@
 		</TD>
 	</TR>
 	<TR ID="mailbody"{if $message.type > $smarty.const.MSG_MAIL && $message.type < $smarty.const.MSG_WWW} style="display: none"{/if}>
-		<TD style="width: 1%;">
+		<TD>
 			<IMG src="img/edit.gif" alt="">
 		</TD>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			{trans("Message body:")}
 		</TD>
-		<TD style="width: 98%;">
+		<TD>
 			<TEXTAREA name="message[mailbody]" cols="80" rows="20" {tip class="lms-ui-wysiwyg-editor" text="Enter message body.<br><br>Supported substitutions/variables:<br><strong>%customer</strong> - customer first name and last name or name,<br><strong>%balance</strong> - customer balance,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer pin,<br><strong>%bankaccount</strong> - bank account for payments,<br><strong>%services</strong> - customer service summary,<br><strong>%last_N_in_a_table</strong> - last N operation in customer financial history (N means number).<br>" trigger="mailbody"}{if isset($message.wysiwyg.mailbody)} data-wysiwyg="{$message.wysiwyg.mailbody}"{/if}>{$message.body}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR ID="smsbody"{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} style="display: none"{/if}>
-		<TD style="width: 1%;">
+		<TD>
 			<IMG src="img/edit.gif" alt="">
 		</TD>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			{trans("Message body:")}
 		</TD>
-		<TD style="width: 98%;">
+		<TD>
 			<TEXTAREA name="message[smsbody]" id="smstext" cols="60" rows="5" onkeydown="countChars(this)" onkeyup="countChars(this)" {tip text="Enter message body.<br><br>Supported substitutions/variables:<br><strong>%customer</strong> - customer first name and last name or name,<br><strong>%balance</strong> - customer balance,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer pin,<br><strong>%bankaccount</strong> - bank account for payments,<br><strong>%services</strong> - customer service summary,<br><strong>%last_N_in_a_table</strong> - last N operation in customer financial history (N means number).<br>" trigger="smsbody"}>{$message.body}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;">
+		<TD>
 			&nbsp;
 		</TD>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			&nbsp;
 		</TD>
-		<TD style="width: 98%;">
+		<TD>
 			<input type="radio" name="message[tmploper]" id="msgtmplradionone" value="1" onClick="javascript:document.getElementById('msgtmplname').style.display='none';" checked><label for="msgtmplradionone">{trans("no operation on message template")}</label><br>
 			<input type="radio" name="message[tmploper]" id="msgtmplradioupdate" value="2" onClick="javascript:document.getElementById('msgtmplname').style.display='none';"><label for="msgtmplradioupdate">{trans("message template update")}</label><br>
 			<input type="radio" name="message[tmploper]" id="msgtmplradionew" value="3" onClick="javascript:document.getElementById('msgtmplname').style.display='';"><label for="msgtmplradionew">{trans("message template creation")}</label>
@@ -454,20 +467,20 @@
 		</TD>
 	</TR>
 	<TR id="charscount"{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} style="display: none"{/if}>
-		<TD style="width: 1%;"></TD>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD></TD>
+		<TD class="bold nobr">
 			{trans("Characters:")}
 		</TD>
-		<TD style="width: 98%;" id="charscounttext">0</TD>
+		<TD id="charscounttext">0</TD>
 	</TR>
 	<TR id="attachment"{if $message.type > $smarty.const.MSG_MAIL} style="display: none"{/if}>
-		<TD style="width: 1%;">
+		<TD>
 			<IMG src="img/attach.gif" alt="">
 		</TD>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			{trans("Attachments:")}
 		</TD>
-		<TD style="width: 98%;">
+		<TD>
 			{fileupload id="files" fileupload=$fileupload form="message"}
 		</TD>
 	</TR>
@@ -480,8 +493,13 @@
 </TABLE>
 </FORM>
 <SCRIPT>
+
 $(function() {
 	$('form[name="message"] [name="message[sender]"]').focus();
+
+	$('[name="message[type]"]').change(function() {
+		$('#customer-filter').toggle(parseInt($(this).val()) != {$smarty.const.MSG_ANYSMS});
+	});
 });
 countChars(document.getElementById('smstext'));
 
