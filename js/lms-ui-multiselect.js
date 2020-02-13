@@ -391,7 +391,7 @@ function multiselect(options) {
 
 	this.updateSelection = function(idArray) {
 		var selected = [];
-		$('input:checkbox', div).each(function() {
+		$('input:checkbox:not(.checkall)', div).each(function() {
 			var text = $(this).siblings('span').html();
 			if (idArray == null || idArray.indexOf($(this).val()) != -1) {
 				$(this).prop('checked', true).parent().addClass('selected');
@@ -405,7 +405,7 @@ function multiselect(options) {
 
 	this.filterSelection = function(idArray) {
 		var selected = [];
-		$('input:checkbox', div).each(function() {
+		$('input:checkbox:not(.checkall)', div).each(function() {
 			var text = $(this).siblings('span').html();
 			if (idArray == null || idArray.indexOf($(this).val()) != -1) {
 				$(this).parent().show();
