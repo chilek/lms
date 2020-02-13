@@ -7,7 +7,7 @@
   <link href="{ConfigHelper::getConfig('userpanel.shortcut_icon', 'img/lms-net.gif')}" rel="shortcut icon">
   <script type="text/javascript" src="style/default/common.js"></script>
   <script type="text/javascript" src="img/common.js"></script>
-  {include file="jquery.html" language=$_ui_language}
+  {include file="jquery.html" language=$LANGDEFS.$_ui_language.html lms_language=$_ui_language}
   <link type="text/css" rel="stylesheet" href="{stylefile}" />
   {$hint_mode = ConfigHelper::getConfig('userpanel.hint')}
 {if $hint_mode != 'classic' && $hint_mode != 'none'}
