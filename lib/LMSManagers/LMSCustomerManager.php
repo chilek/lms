@@ -489,13 +489,13 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     {
         extract($params);
 
-        if (isset($order) && is_null($order)) {
+        if (!isset($order) || empty($order)) {
             $order = 'customername,asc';
         }
-        if (isset($sqlskey) && is_null($sqlskey)) {
+        if (!isset($sqlskey) || empty($sqlskey)) {
             $sqlskey = 'AND';
         }
-        if (isset($count) && is_null($count)) {
+        if (!isset($count)) {
             $count = false;
         }
 
