@@ -284,7 +284,7 @@ if (isset($_POST['nodedata'])) {
 
         $nodeid = $LMS->NodeAdd($nodedata);
 
-        if (count($nodedata['nodegroup']) > 0) {
+        if (is_array($nodedata['nodegroup']) && count($nodedata['nodegroup'])) {
             foreach ($nodedata['nodegroup'] as $nodegroupid) {
                 $DB->Execute('INSERT INTO nodegroupassignments (nodeid, nodegroupid)
 					VALUES (?, ?)', array($nodeid, intval($nodegroupid)));
