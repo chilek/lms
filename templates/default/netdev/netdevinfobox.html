@@ -349,7 +349,7 @@
 	        <TD WIDTH="100%" COLSPAN="2" ALIGN="RIGHT">
 {/if}
 			{block name="netdevinfobox-buttons"}
-			<a href="?m=netdevadd&id={$netdev.id}">{trans("Clone")} <img src="img/clone.gif" alt="{trans("Clone")}"</a>
+			<a href="?m=netdevadd&id={$netdev.id}&clone=1">{trans("Clone")} <img src="img/clone.gif" alt="{trans("Clone")}"</a>
 			<A href="javascript:void(0);" onclick="javascript:openSelectWindow('?m=choosenetdevreplace&id={$netdev.id}', 'Replace netdev', 600, 290, 1, 1);">{trans("Replace")} <img src="img/alias.gif" ALT="{trans("Replace")}"></A>
 			<A href="?m=netdevedit&id={$netdev.id}" ACCESSKEY="E">{trans("Edit")} <IMG src="img/edit.gif" ALT="{trans("Edit")}"></A>
 			<A id="delete-netdev" href="?m=netdevdel&id={$netdev.id}&is_sure=1" data-name="{$netdev.name}">{trans("Delete")} <img src="img/delete.gif" ALT=""></A>
