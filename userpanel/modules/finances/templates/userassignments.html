@@ -23,11 +23,11 @@
 	<tr class="dark">
 		<td><strong>{if ConfigHelper::checkConfig('userpanel.show_tariffname')}{$assignment.name}{/if}</strong></td>
 		<td class="nobr" align="right">
-			{moneyf($assignment.value, $assignment.currency)}
+			{moneyf($assignment.discounted_value, $assignment.currency)}
 			{if !isset($total_real_value[$assignment.currency])}
 				{$total_real_value[$assignment.currency] = 0}
 			{/if}
-			{$total_real_value[$assignment.currency] = $total_real_value[$assignment.currency] + $assignment.value}
+			{$total_real_value[$assignment.currency] = $total_real_value[$assignment.currency] + $assignment.discounted_value}
 		</td>
 		<td class="nobr" align="right">
 			{if $assignment.pdiscount > 0}
