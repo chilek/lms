@@ -28,11 +28,11 @@
 				<tr>
 					<td>{$assignment.name}</td>
 					<td class="text-right text-nowrap">
-						{moneyf($assignment.discounted_value, $assignment.currency)}
+						{moneyf($assignment.real_disc_value, $assignment.currency)}
 						{if !isset($total_real_value[$assignment.currency])}
 							{$total_real_value[$assignment.currency] = 0}
 						{/if}
-						{$total_real_value[$assignment.currency] = $total_real_value[$assignment.currency] + $assignment.discounted_value}
+						{$total_real_value[$assignment.currency] = $total_real_value[$assignment.currency] + $assignment.real_disc_value}
 					</td>
 					<td class="text-right text-nowrap">
 						{if $assignment.pdiscount > 0}
