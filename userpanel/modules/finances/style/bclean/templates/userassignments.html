@@ -29,10 +29,10 @@
 					<td>{$assignment.name}</td>
 					<td class="text-right text-nowrap">
 						{moneyf($assignment.real_disc_value, $assignment.currency)}
-						{if !isset($total_real_disc_value[$assignment.currency])}
-							{$total_real_disc_value[$assignment.currency] = 0}
+						{if !isset($total_real_value[$assignment.currency])}
+							{$total_real_value[$assignment.currency] = 0}
 						{/if}
-						{$total_real_disc_value[$assignment.currency] = $total_real_disc_value[$assignment.currency] + $assignment.real_disc_value}
+						{$total_real_value[$assignment.currency] = $total_real_value[$assignment.currency] + $assignment.real_disc_value}
 					</td>
 					<td class="text-right text-nowrap">
 						{if $assignment.pdiscount > 0}
@@ -40,6 +40,10 @@
 						{else}
 							{if $assignment.vdiscount > 0}
 								{moneyf($assignment.vdiscount, $assignment.currency)}
+								{if !isset($total_real_disc_value[$assignment.currency])}
+									{$total_real_disc_value[$assignment.currency] = 0}
+								{/if}
+								{$total_real_disc_value[$assignment.currency] = $total_real_disc_value[$assignment.currency] + $assignment.vdiscount}
 							{else}
 								-
 							{/if}
@@ -77,13 +81,13 @@
 			<tr class="bg-primary text-white">
 				<td>{trans("Total:")}</td>
 				<td class="text-right">
-					{foreach $total_real_disc_value as $currency => $total_value}
+					{foreach $total_real_value as $currency => $total_value}
 						{if !$total_value@first}<br>{/if}
 						{moneyf($total_value, $currency)}
 					{/foreach}
 				</td>
 				<td class="text-right">
-					(-)
+					({foreach $total_real_disc_value as $currency => $total_disc_value}{if !$total_disc_value@first}<br>{/if}{moneyf($total_disc_value, $currency)}{foreachelse}-{/foreach})
 				</td>
 				<td>&nbsp;</td>
 				{if $show_speeds}
