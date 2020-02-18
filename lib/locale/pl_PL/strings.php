@@ -4571,3 +4571,11 @@ $_LANG['promotion management'] = 'zarządzanie promocjami';
 $_LANG['user group:'] = 'grupa użytkowników:';
 
 $_LANG['Customer data:'] = 'Dane klienta:';
+
+$_LANG['<!ticket-event>none'] = 'brak';
+$_LANG['<!ticket-event>new'] = 'nowe';
+$_LANG['<!ticket-event>assign'] = 'przypisz';
+$_LANG['<!ticket-event>Ticket:'] = 'Zgłoszenie:';
+$_LANG['Ticket identifier invalid format!'] = 'Niepoprawny format identyfikatora zgłoszenia!';
+$_LANG['Nonexistent ticket!'] = 'Nieistniejące zgłoszenie!';
+$_LANG['Ticket access denied!'] = 'Odmowa dostępu do zgłoszenia!';

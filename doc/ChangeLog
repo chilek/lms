@@ -182,6 +182,8 @@ version 25-git (????-??-??):
   - enhancement: filter user list in message add form by selected user group [chilan]
   - enhancement: allow to send customer data to users via sms [chilan]
   - enhancement: allow to include customer node data in sent messages [chilan]
+  - enhancement: allow to clone time table event with ticket identifier assigned to original
+    event [chilan]
 
 version 24.0 (2019-05-16):
 

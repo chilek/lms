@@ -144,9 +144,23 @@
 						{/box_row}
 {/if}
 
-{if $layout.module == 'eventadd' && empty($event.ticketid)}
-						{box_row icon="img/ticket.gif" label="Create ticket" labelid="helpdesk-on"}
-							<input type="checkbox" id="helpdesk-on" name="event[helpdesk]" value="1"{if !empty($event['helpdesk'])} checked{/if}>
+{if $layout.module == 'eventadd'}
+						{box_row icon="img/ticket.gif" label="<!ticket-event>Ticket:"}
+							<label for="helpdesk-none">
+								<input type="radio" class="helpdesk-assign-selection" id="helpdesk-none" name="event[helpdesk]" value="none"{if $event['helpdesk'] == 'none'} checked{/if}>
+								{trans("<!ticket-event>none")}
+							</label>
+							<label for="helpdesk-new">
+								<input type="radio" class="helpdesk-assign-selection" id="helpdesk-new" name="event[helpdesk]" value="new"{if $event['helpdesk'] == 'new'} checked{/if}>
+								{trans("<!ticket-event>new")}
+							</label>
+							<label for="helpdesk-assign">
+								<input type="radio" class="helpdesk-assign-selection" id="helpdesk-assign" name="event[helpdesk]" value="assign"{if $event['helpdesk'] == 'assign'} checked{/if}>
+								{trans("<!ticket-event>assign")}
+							</label>
+							&nbsp;
+							<input type="text" name="event[ticketid]" id="ticketid" value="{if !empty($event.ticketid)}{$event.ticketid}{/if}"
+								   {if !isset($event.helpdesk) || $event.helpdesk != 'assign'}style="display: none;"{/if} {tip trigger="ticketid"}>
 						{/box_row}
 {/if}
 
@@ -165,7 +179,7 @@
 				{button icon="cancel" onclick="location.href='?m=eventlist{if isset($backid)}#{$backid}{/if}';" label="Cancel"}
 			{/box_buttons}
 		{/box_container}
-        <div id="row"{if $layout.module == 'eventedit' || empty($event.helpdesk)} style="display:none;"}{/if}>
+        <div id="row"{if $layout.module == 'eventedit' || $event.helpdesk == 'none' || $event.helpdesk == 'assign'} style="display:none;"}{/if}>
 		{include file="rt/rtticketmodify.html"}
         </div>
 	</form>
@@ -200,6 +214,11 @@
 				{else}
 				$('#ticketid').toggle();
 				{/if}
+			});
+
+			$('.helpdesk-assign-selection').change(function() {
+				$('#row').toggle($(this).val() == 'new');
+				$('#ticketid').toggle($(this).val() == 'assign');
 			});
 		});
 
