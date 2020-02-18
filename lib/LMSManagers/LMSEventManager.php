@@ -198,6 +198,11 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 			LEFT JOIN vusers ON (vusers.id = userid)
 			WHERE e.id = ?', array($id));
 
+        if (!empty($event['customerid']) && empty($event['node_location'])) {
+            $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache);
+            $event['node_location'] = $customer_manager->getAddressForCustomerStuff($event['customerid']);
+        }
+
         $event['wholedays'] = $event['endtime'] == 86400;
         $event['helpdesk'] = !empty($event['ticketid']);
         $event['userlist'] = $this->db->GetCol('SELECT userid AS id
@@ -380,8 +385,19 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             )
         );
         $list2 = array();
+        $customerstuffaddresses = array();
         if ($list) {
             foreach ($list as $idx => $row) {
+                if (!empty($row['nodeid']) && empty($row['nodelocation'])) {
+                    if (!isset($customer_manager)) {
+                        $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache);
+                    }
+                    if (!isset($customerstuffaddresses[$row['customerid']])) {
+                        $customerstuffaddresses[$row['customerid']] = $customer_manager->getAddressForCustomerStuff($row['customerid']);
+                    }
+                    $row['nodelocation'] = $customerstuffaddresses[$row['customerid']];
+                }
+
                 $row['userlist'] = $this->db->GetAll(
                     'SELECT userid AS id, vusers.name
 					FROM eventassignments, vusers
