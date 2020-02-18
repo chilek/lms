@@ -214,7 +214,7 @@
 				</SELECT>
 			{/box_row}
 
-			{box_row icon="img/report.gif" label="Priority"}
+			{box_row icon="img/report.gif" label="Priority:"}
 				<SELECT size="1" name="ticket[priority]" {tip text="Set ticket priority" trigger="priority"}>
 					{foreach $_RT_PRIORITIES as $priorityidx => $priority}
 					<OPTION value="{$priorityidx}"{if $ticket.priority == $priorityidx}selected {/if}>{$priority}</OPTION>
