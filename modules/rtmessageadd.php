@@ -654,7 +654,10 @@ if (!is_array($message['ticketid'])) {
             $contact['checked'] = isset($message['contacts'][$contactidx]) ? 1 : 0;
         }
         unset($contact);
+    } elseif (!empty($contacts) && ConfigHelper::checkConfig('phpui.helpdesk_customer_notify')) {
+        $message['smsnotify'] = true;
     }
+
     $SMARTY->assign('queuelist', $LMS->LimitQueuesToUserpanelEnabled($LMS->GetQueueList(array('stats' => false)), $message['queueid']));
     $SMARTY->assign('messagetemplates', $LMS->GetMessageTemplatesByQueueAndType($queue['id'], RTMESSAGE_REGULAR));
 } else {
