@@ -1150,8 +1150,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         $allow_empty_categories = ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories');
 
         $ticket = $this->db->GetRow(
-            'SELECT owner, queueid, cause, t.state, subject, customerid, requestor, source, priority,
-				' . $this->db->GroupConcat('c.categoryid') . ' AS categories, t.address_id, va.location, t.nodeid, t.invprojectid, 
+            'SELECT owner, queueid, cause, t.state, subject, customerid, requestor, requestor_userid, requestor_mail, requestor_phone,
+                source, priority, ' . $this->db->GroupConcat('c.categoryid') . ' AS categories, t.address_id, va.location, t.nodeid, t.invprojectid,
 				n.name AS node_name, n.location AS node_location, t.netnodeid, t.netdevid, t.verifierid, t.verifier_rtime, t.deadline,
                 t.service, t.type, t.parentid
 			FROM rttickets t
@@ -1492,6 +1492,24 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $props['requestor'] = '';
         } else {
             $props['requestor'] = $ticket['requestor'];
+        }
+
+        if (isset($props['requestor_userid']) && empty($props['requestor_userid'])) {
+            $props['requestor_userid'] = null;
+        } else {
+            $props['requestor_userid'] = $ticket['requestor_userid'];
+        }
+
+        if (isset($props['requestor_phone']) && empty($props['requestor_phone'])) {
+            $props['requestor_phone'] = null;
+        } else {
+            $props['requestor_phone'] = $ticket['requestor_phone'];
+        }
+
+        if (isset($props['requestor_mail']) && empty($props['requestor_mail'])) {
+            $props['requestor_mail'] = null;
+        } else {
+            $props['requestor_mail'] = $ticket['requestor_mail'];
         }
 
         if ($type) {
