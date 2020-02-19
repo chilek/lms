@@ -633,15 +633,17 @@ if (!is_array($message['ticketid'])) {
         );
     }
     if (!empty($message['customerid'])) {
-        $customercontacts = $LMS->GetCustomerContacts($message['customerid'], CONTACT_MOBILE | CONTACT_NOTIFICATIONS);
+        $customercontacts = $LMS->GetCustomerContacts($message['customerid'], CONTACT_MOBILE);
         if (empty($customercontacts)) {
             $customercontacts = array();
         }
         foreach ($customercontacts as &$customercontact) {
-            $customercontact['checked'] = empty($contacts) ? 1 : 0;
+            if (($customercontact['type'] & (CONTACT_NOTIFICATIONS | CONTACT_DISABLED)) == CONTACT_NOTIFICATIONS) {
+                $customercontact['checked'] = empty($contacts) ? 1 : 0;
+                $contacts[] = $customercontact;
+            }
         }
         unset($customercontact);
-        $contacts = array_merge($contacts, $customercontacts);
     }
 
     if (isset($_POST['message'])) {
