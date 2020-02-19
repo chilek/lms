@@ -652,7 +652,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             }
         }
         if (!empty($customer_statuses)) {
-            $state_conditions[] = '(c.status = ' . implode(' AND c.status = ', $customer_statuses) . ')';
+            $state_conditions[] = '(c.status = ' . implode(' AND c.status = ', $customer_statuses) . ' AND c.deleted = 0)';
         }
 
         if (isset($assignments)) {
