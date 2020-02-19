@@ -105,6 +105,8 @@
 				editor.setContent(body.html());
 			}
 			$("#{$operation}-template-text-body").text(body.text());
+		} else if (parseInt($('#template-type').val())) {
+			$("#{$operation}-template-type").val($('#template-type').val());
 		}
 
 		{$operation}_template_dialog.open();
