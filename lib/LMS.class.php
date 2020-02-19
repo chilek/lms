@@ -1984,10 +1984,10 @@ class LMS
         return $manager->DetermineSenderEmail($queue_email, $ticket_email, $user_email, $forced_order);
     }
 
-    public function GetTicketPhoneFrom($ticketid)
+    public function GetTicketRequestorPhone($ticketid)
     {
         $manager = $this->getHelpdeskManager();
-        return $manager->GetTicketPhoneFrom($ticketid);
+        return $manager->GetTicketRequestorPhone($ticketid);
     }
 
     public function CheckTicketAccess($ticketid)

@@ -35,6 +35,8 @@ if (empty($categories)) {
     $categories = array();
 }
 
+$contacts = array();
+
 if (isset($_POST['message'])) {
     $message = $_POST['message'];
 
@@ -343,12 +345,24 @@ if (isset($_POST['message'])) {
 
             // customer notification via sms when we reply to ticket message created from customer sms
             if (isset($message['smsnotify']) && !empty($service)) {
+                $phones = array();
                 if ($group_reply) {
-                    $message['phonefrom'] = $LMS->GetTicketPhoneFrom($ticketid);
+                    $phone = $LMS->GetTicketRequestorPhone($ticketid);
+                    if (!empty($phone)) {
+                        $phones[] = $phone;
+                    }
+                } else {
+                    if (isset($message['contacts'])) {
+                        foreach ($message['contacts'] as $phone) {
+                            $phones[] = $phone;
+                        }
+                    }
                 }
-                if (!empty($message['phonefrom'])) {
+                if (!empty($phones)) {
                     $sms_body = preg_replace('/\r?\n/', ' ', $message['body']);
-                    $LMS->SendSMS($message['phonefrom'], $sms_body);
+                    foreach ($phones as $phone) {
+                        $LMS->SendSMS($phone, $sms_body);
+                    }
                 }
             }
 
@@ -602,6 +616,43 @@ if (!is_array($message['ticketid'])) {
             $message['state'] = RT_OPEN;
         }
     }
+
+    // collect phone numbers from ticket, message to which you reply and customer mobile phone contacts
+    if (!empty($ticket['requestor_phone'])) {
+        $contacts[] = array(
+            'contact' => $ticket['requestor_phone'],
+            'name' => trans('from ticket'),
+            'checked' => 1,
+        );
+    }
+    if (isset($message['phonefrom']) && !empty($message['phonefrom'])) {
+        $contacts[] = array(
+            'contact' => $message['phonefrom'],
+            'name' => trans('from message'),
+            'checked' => empty($contacts) ? 1 : 0,
+        );
+    }
+    if (!empty($message['customerid'])) {
+        $customercontacts = $LMS->GetCustomerContacts($message['customerid'], CONTACT_MOBILE | CONTACT_NOTIFICATIONS);
+        if (empty($customercontacts)) {
+            $customercontacts = array();
+        }
+        foreach ($customercontacts as &$customercontact) {
+            $customercontact['checked'] = empty($contacts) ? 1 : 0;
+        }
+        unset($customercontact);
+        $contacts = array_merge($contacts, $customercontacts);
+    }
+
+    if (isset($_POST['message'])) {
+        if (!isset($message['contacts'])) {
+            $message['contacts'] = array();
+        }
+        foreach ($contacts as $contactidx => &$contact) {
+            $contact['checked'] = isset($message['contacts'][$contactidx]) ? 1 : 0;
+        }
+        unset($contact);
+    }
     $SMARTY->assign('queuelist', $LMS->LimitQueuesToUserpanelEnabled($LMS->GetQueueList(array('stats' => false)), $message['queueid']));
     $SMARTY->assign('messagetemplates', $LMS->GetMessageTemplatesByQueueAndType($queue['id'], RTMESSAGE_REGULAR));
 } else {
@@ -611,6 +662,7 @@ if (!is_array($message['ticketid'])) {
 $SMARTY->assign('citing', isset($_GET['citing']) || ConfigHelper::checkConfig('phpui.helpdesk_reply_body'));
 $SMARTY->assign('userlist', $LMS->GetUserNames());
 $SMARTY->assign('categories', $categories);
+$SMARTY->assign('contacts', $contacts);
 $SMARTY->assign('message', $message);
 
 $SMARTY->display('rt/rtmessageadd.html');

@@ -4579,3 +4579,6 @@ $_LANG['<!ticket-event>Ticket:'] = 'Zgłoszenie:';
 $_LANG['Ticket identifier invalid format!'] = 'Niepoprawny format identyfikatora zgłoszenia!';
 $_LANG['Nonexistent ticket!'] = 'Nieistniejące zgłoszenie!';
 $_LANG['Ticket access denied!'] = 'Odmowa dostępu do zgłoszenia!';
+
+$_LANG['from ticket'] = 'ze zgłoszenia';
+$_LANG['from message'] = 'z wiadomości';

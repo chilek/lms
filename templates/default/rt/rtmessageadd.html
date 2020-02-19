@@ -24,6 +24,11 @@
 		min-width: 14em;
 	}
 
+	#smsnotify-contacts .lms-ui-box-row-field {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
 </style>
 <H1>{$layout.pagetitle}</H1>
 <FORM method="POST" name="message" id="message-form" action="?m=rtmessageadd">
@@ -92,11 +97,23 @@
 				<INPUT type="checkbox" name="message[customernotify]" id="customernotify" value="1"{if isset($message.customernotify)} checked{/if}>
 			{/box_row}
 
-{if $message.phonefrom || $group_action}
+{if !empty($contacts) || $group_action}
 			{box_row icon="img/phone.gif" label="Notify customer via SMS:" labelid="smsnotify"}
 				<INPUT type="checkbox" name="message[smsnotify]" id="smsnotify" value="1"{if $message.smsnotify} checked{/if}>
 				<input type="hidden" name="message[phonefrom]" value="{if $group_action}-1{else}{$message.phonefrom}{/if}">
 			{/box_row}
+
+			{if !$group_action}
+				{box_row id="smsnotify-contacts" visible=!empty($message.smsnotify)}
+					{foreach $contacts as $contact}
+						<label>
+							<input type="checkbox" name="message[contacts][{$contact@index}]" value="{$contact.contact}"
+								{if $contact.checked} checked{/if}>
+							{$contact.contact}{if $contact.name} ({$contact.name}){/if}
+						</label>
+					{/foreach}
+				{/box_row}
+			{/if}
 {/if}
 
 			{box_row icon="img/dead.gif" label="Status:"}
@@ -261,6 +278,10 @@
 			$('#customernotify-row').show();
 		}
 		{/if}
+
+		$('#smsnotify').change(function() {
+			$('#smsnotify-contacts').toggle($(this).prop('checked'));
+		});
 
 		$('[name="message[category_change]"]').change(function() {
 			if (parseInt($(this).val())) {

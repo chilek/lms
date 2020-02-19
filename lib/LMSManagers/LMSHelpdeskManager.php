@@ -1909,14 +1909,23 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         return $mailfrom;
     }
 
-    public function GetTicketPhoneFrom($ticketid)
+    public function GetTicketRequestorPhone($ticketid)
     {
-        return $this->db->GetOne(
-            'SELECT phonefrom FROM rtmessages
-			WHERE ticketid = ? AND phonefrom <> ?
-			LIMIT 1',
+        $phone = $this->db->GetOne(
+            'SELECT requestor_phone FROM rttickets
+			WHERE id = ? AND requestor_phone <> ?',
             array($ticketid, '')
         );
+        if (empty($phone)) {
+            return $this->db->GetOne(
+                'SELECT phonefrom FROM rtmessages
+                    WHERE ticketid = ? AND phonefrom <> ?
+                    LIMIT 1',
+                array($ticketid, '')
+            );
+        } else {
+            return $phone;
+        }
     }
 
     public function CheckTicketAccess($ticketid)

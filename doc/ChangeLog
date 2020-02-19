@@ -184,6 +184,8 @@ version 25-git (????-??-??):
   - enhancement: allow to include customer node data in sent messages [chilan]
   - enhancement: allow to clone time table event with ticket identifier assigned to original
     event [chilan]
+  - enhancement: helpdesk ticket, message and customer phone contacts can be selected during
+    new message creation [chilan]
 
 version 24.0 (2019-05-16):
 
