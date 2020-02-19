@@ -262,6 +262,7 @@ if (($fh = fopen($message_file, "r")) != null) {
     $tid = $LMS->TicketAdd(array(
         'queue' => $queueid,
         'requestor' => $requestor,
+        'requestor_phone' => empty($phone) ? null : $phone,
         'subject' => trans('SMS from $a', (empty($phone) ? trans("unknown") : $formatted_phone)),
         'customerid' => !empty($customer['cid']) ? $customer['cid'] : 0,
         'body' => $message,
