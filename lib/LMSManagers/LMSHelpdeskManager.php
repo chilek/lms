@@ -1170,7 +1170,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 							)'
                         : '')
                     . ')
-			GROUP BY owner, queueid, cause, t.state, subject, customerid, requestor, source, priority, t.address_id, t.nodeid, va.location,
+			GROUP BY owner, queueid, cause, t.state, subject, customerid, requestor, requestor_userid, requestor_mail,
+			    requestor_phone, source, priority, t.address_id, t.nodeid, va.location,
 				t.nodeid, t.invprojectid, n.name, n.location, t.netnodeid, t.netdevid, t.verifierid, t.verifier_rtime,
                 t.deadline, t.service, t.type, t.parentid',
             array($ticketid, Auth::GetCurrentUser())
