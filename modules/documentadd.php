@@ -353,14 +353,14 @@ if (isset($_POST['document'])) {
                 $selected_assignment['at'] = $at;
                 $selected_assignment['commited'] = isset($document['closed']) ? 1 : 0;
 
-                if (is_array($selected_assignment['stariffid'][$schemaid])) {
+                if (is_array($selected_assignment['sassignmentid'][$schemaid])) {
                     $modifiedvalues = $selected_assignment['values'][$schemaid];
                     $counts = $selected_assignment['counts'][$schemaid];
                     $copy_a = $selected_assignment;
                     $snodes = $selected_assignment['snodes'][$schemaid];
                     $sphones = $selected_assignment['sphones'][$schemaid];
 
-                    foreach ($selected_assignment['stariffid'][$schemaid] as $label => $v) {
+                    foreach ($selected_assignment['sassignmentid'][$schemaid] as $label => $v) {
                         if (!$v) {
                             continue;
                         }

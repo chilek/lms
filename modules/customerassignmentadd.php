@@ -87,14 +87,14 @@ if (isset($_POST['assignment'])) {
 
         $LMS->UpdateExistingAssignments($a);
 
-        if (is_array($a['stariffid'][$schemaid])) {
+        if (is_array($a['sassignmentid'][$schemaid])) {
             $modifiedvalues = $a['values'][$schemaid];
             $counts = $a['counts'][$schemaid];
             $copy_a = $a;
             $snodes = $a['snodes'][$schemaid];
             $sphones = $a['sphones'][$schemaid];
 
-            foreach ($a['stariffid'][$schemaid] as $label => $v) {
+            foreach ($a['sassignmentid'][$schemaid] as $label => $v) {
                 if (!$v) {
                     continue;
                 }

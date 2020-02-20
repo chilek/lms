@@ -208,11 +208,11 @@
 																	<tr class="schema-tariff-container-row">
 																		<td>
 																			<label>
-																				<input class="schema-tariff-checkbox" type="checkbox" name="{$variable_prefix}[stariffid][{$schemaid}][{$label}]"
+																				<input class="schema-tariff-checkbox" type="checkbox" name="{$variable_prefix}[sassignmentid][{$schemaid}][{$label}]"
 																						value="{$item.single.tariffid}" data-label="{$label}"
 																						data-tarifftype="{$item.single.type}"
 																						data-assignment-id="{$item.single.assignmentid}"
-																						{if isset($variables.stariffid[$schemaid][$label]) || !$item.single.optional} checked{/if}
+																						{if isset($variables.sassignmentid[$schemaid][$label]) || !$item.single.optional} checked{/if}
 																				{if !$item.single.optional} disabled data-mandatory="1"{/if}
 																				data-tariffaccess="{$item.single.authtype}">
 																				{if $promotion_show_period_values}
@@ -230,7 +230,7 @@
 																		</td>
 																		<td>
 																			<table class="single-assignment" data-assignment-id="{$item.single.assignmentid}"
-																					{if !isset($variables.stariffid[$schemaid][$label]) && $item.single.optional}style="display: none;"{/if}>
+																					{if !isset($variables.sassignmentid[$schemaid][$label]) && $item.single.optional}style="display: none;"{/if}>
 																				<tr>
 																					{foreach $item.single.periods as $period}
 																					<td>{$period.label}</td>
@@ -265,14 +265,14 @@
 																<table>
 																	<tr class="schema-tariff-container-row">
 																		<td>
-																			<select class="schema-tariff-selection" name="{$variable_prefix}[stariffid][{$schemaid}][{$label}]" data-label="{$label}">
+																			<select class="schema-tariff-selection" name="{$variable_prefix}[sassignmentid][{$schemaid}][{$label}]" data-label="{$label}">
 																				{if !$item.selection.required}
 																				<option value="0" data-tariffaccess="-1" data-tarifftype="0">{trans("- none -")}</option>
 																				{/if}
 																				{foreach $item.selection.items as $item}
 																				<option value="{$item.assignmentid}" data-tariffaccess="{$item.authtype}"
 																						data-tarifftype="{$item.type}" data-assignment-id="{$item.assignmentid}"
-																						{if in_array($item.tariffid, (array)$variables.stariffid[$schemaid])} selected{/if}
+																						{if in_array($item.assignmentid, (array)$variables.sassignmentid[$schemaid])} selected{/if}
 																					>{if $promotion_show_period_values}{t a=$item.tariff b=moneyf($item.value, $item.currency) c=implode(' / ', $item.periodvalues)}$a (default: $b; $c){/t}{else}{t a=$item.tariff b=moneyf($item.value, $item.currency)}$a (default: $b){/t}{/if}</option>
 																				{/foreach}
 																			</select>
@@ -286,7 +286,7 @@
 																		<td>
 																			{foreach $item.selection.items as $item}
 																			<table class="single-assignment" data-assignment-id="{$item.assignmentid}"
-																					{if !in_array($item.tariffid, (array)$variables.stariffid[$schemaid])}style="display: none;"{/if}>
+																					{if !in_array($item.assignmentid, (array)$variables.sassignmentid[$schemaid])}style="display: none;"{/if}>
 																				<tr>
 																					{foreach $item.periods as $period}
 																						<td>{$period.label}</td>
@@ -296,10 +296,10 @@
 																					{foreach $item.periods as $key => $period}
 																						<td>
 																							{if $period.modifiable}
-																								{textformat assign="elemid"}value-{$schemaid}-{iconv('UTF-8', 'ASCII//TRANSLIT', preg_replace('/[ _]/', '-', $label))}-{$item.tariffid}-{$key}{/textformat}
+																								{textformat assign="elemid"}value-{$schemaid}-{iconv('UTF-8', 'ASCII//TRANSLIT', preg_replace('/[ _]/', '-', $label))}-{$item.assignmentid}-{$key}{/textformat}
 																								<input id="{$elemid}"
-																										type="text" name="{$variable_prefix}[values][{$schemaid}][{$label}][{$item.tariffid}][{$key}]"
-																										value="{if isset($variables.values[$schemaid][$label][$item.tariffid][$key])}{$variables.values[$schemaid][$label][$item.tariffid][$key]}{else}{$period.value}{/if}"
+																										type="text" name="{$variable_prefix}[values][{$schemaid}][{$label}][{$item.assignmentid}][{$key}]"
+																										value="{if isset($variables.values[$schemaid][$label][$item.assignmentid][$key])}{$variables.values[$schemaid][$label][$item.assignmentid][$key]}{else}{$period.value}{/if}"
 																										{tip trigger=$elemid}>
 																								<i class="lms-ui-icon-restore" data-restore-selector="#{$elemid}" data-restore-value="{$period.value}"></i>
 																							{else}

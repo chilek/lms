@@ -316,7 +316,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 					                     	promotionassignments a
 						                    JOIN promotionschemas s ON (s.id = a.promotionschemaid)
 						                    JOIN tariffs t ON (t.id = a.tariffid)
-					                     WHERE a.promotionschemaid = ? AND a.id = ?', array($data['schemaid'], $data['promotionassignmentid']));
+					                     WHERE a.id = ?', array($data['promotionassignmentid']));
             $data['tariffid'] = $tariff['id'];
 
             $data_schema = explode(';', $tariff['sdata']);
@@ -1341,46 +1341,35 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     public function CheckSchemaModifiedValues($data)
     {
         $schemaid = $data['schemaid'];
-        $stariffs = $data['stariffid'][$schemaid];
+        $sassignments = $data['sassignmentid'][$schemaid];
         $values = $data['values'][$schemaid];
 
         if (is_array($values)) {
-            foreach ($values as $label => &$tariffs) {
-                if (!isset($stariffs[$label]) || empty($stariffs[$label])) {
+            foreach ($values as $label => &$assignments) {
+                if (!isset($sassignments[$label]) || empty($sassignments[$label])) {
                     unset($values[$label]);
                     continue;
                 }
-                foreach ($tariffs as $tariffid => &$periods) {
-                    if (!in_array($tariffid, $stariffs)) {
-                        unset($values[$label][$tariffid]);
+                foreach ($assignments as $assignmentid => &$periods) {
+                    if (!in_array($assignmentid, $sassignments)) {
+                        unset($values[$label][$assignmentid]);
                         continue;
                     }
                 }
                 unset($periods);
             }
-            unset($tariffs);
+            unset($assignments);
 
             $userid = Auth::GetCurrentUser();
 
-            foreach ($values as $label => $tariffs) {
-                foreach ($tariffs as $tariffid => $periods) {
-                    $label = strval($label);
-                    $unlabeled_regexp = trans('^unlabeled_(?<assignmentid>[0-9]+)$');
-                    if (preg_match('/' . $unlabeled_regexp . '/', $label, $m)) {
-                        $a_data = $this->db->GetOne(
-                            'SELECT data
-                            FROM promotionassignments
-                            WHERE promotionschemaid = ? AND id = ?',
-                            array($schemaid, $m['assignmentid'])
-                        );
-                    } else {
-                        $a_data = $this->db->GetOne(
-                            'SELECT data
-                            FROM promotionassignments
-                            WHERE promotionschemaid = ? AND tariffid = ? AND label = ?',
-                            array($schemaid, $tariffid, $label)
-                        );
-                    }
+            foreach ($values as $assignments) {
+                foreach ($assignments as $assignmentid => $periods) {
+                    $a_data = $this->db->GetOne(
+                        'SELECT data
+                        FROM promotionassignments
+                        WHERE id = ?',
+                        array($assignmentid)
+                    );
                     $a_periods = explode(';', $a_data);
                     $allowed_period_indexes = array();
                     foreach ($a_periods as $a_period_idx => $a_period) {
