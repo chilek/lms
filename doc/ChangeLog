@@ -186,6 +186,8 @@ version 25-git (????-??-??):
     event [chilan]
   - enhancement: helpdesk ticket, message and customer phone contacts can be selected during
     new message creation [chilan]
+  - improvement: separate liability and payments columns as replacement
+    for %last_N_in_a_table symbol [chilan]
 
 version 24.0 (2019-05-16):
 
