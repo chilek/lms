@@ -273,14 +273,14 @@ if (isset($_POST['assignment'])) {
             true
         );
         if (preg_match('/^(error|warning)$/', $node_multi_tariff_restriction) && !empty($restricted_nodes)) {
-            foreach ($restricted_nodes as $idx => $nodeid) {
+            foreach ($restricted_nodes as $nodeid) {
                 if ($node_multi_tariff_restriction == 'error') {
-                    $error['assignment[nodes][' . $idx . ']'] = trans('This item is already bound with another assignment!');
+                    $error['assignment[nodes][' . $nodeid . ']'] = trans('This item is already bound with another assignment!');
                 } else {
-                    if (!isset($a['node_warns'][$idx])) {
-                        $error['assignment[nodes][' . $idx . ']'] = trans('This item is already bound with another assignment!');
+                    if (!isset($a['node_warns'][$nodeid])) {
+                        $error['assignment[nodes][' . $nodeid . ']'] = trans('This item is already bound with another assignment!');
                     }
-                    $a['node_warns'][$idx] = 1;
+                    $a['node_warns'][$nodeid] = $nodeid;
                 }
             }
         }
