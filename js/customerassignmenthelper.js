@@ -73,7 +73,7 @@ function CustomerAssignmentHelper(options) {
 	this.validate = function(e) {
 		var schemaid = $('#promotion-select').val();
 		var tariffs = {};
-		$('[name^="' + helper.variablePrefix + '[stariffid][' + schemaid + ']"]').each(function () {
+		$('[name^="' + helper.variablePrefix + '[sassignmentid][' + schemaid + ']"]').each(function () {
 			if ($(this).is('.schema-tariff-selection') || $(this).prop('checked')) {
 				if ($(this).val() > 0) {
 					tariffs[$(this).attr('data-label')] = $(this).val();
