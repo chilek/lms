@@ -309,15 +309,15 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $commited = (!isset($data['commited']) || $data['commited'] ? 1 : 0);
 
         // Create assignments according to promotion schema
-        if (!empty($data['promotiontariffid']) && !empty($data['schemaid'])) {
-            $data['tariffid'] = $data['promotiontariffid'];
+        if (!empty($data['promotionassignmentid']) && !empty($data['schemaid'])) {
             $tariff = $this->db->GetRow('SELECT a.data, s.data AS sdata, t.name, t.value, t.currency, t.period,
                                          	t.id, t.prodid, t.taxid, t.splitpayment
 					                     FROM
 					                     	promotionassignments a
 						                    JOIN promotionschemas s ON (s.id = a.promotionschemaid)
 						                    JOIN tariffs t ON (t.id = a.tariffid)
-					                     WHERE a.promotionschemaid = ? AND a.tariffid = ?', array($data['schemaid'], $data['promotiontariffid']));
+					                     WHERE a.promotionschemaid = ? AND a.id = ?', array($data['schemaid'], $data['promotionassignmentid']));
+            $data['tariffid'] = $tariff['id'];
 
             $data_schema = explode(';', $tariff['sdata']);
             $data_tariff = explode(';', $tariff['data']);
@@ -1255,11 +1255,11 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 // promotion schema
                 case -2:
                     $schemaid = isset($a['schemaid']) ? intval($a['schemaid']) : 0;
-                    $a['promotiontariffid'] = $a['stariffid'][$schemaid];
+                    $a['promotionassignmentid'] = $a['stariffid'][$schemaid];
 
                     $values = $a['values'][$schemaid];
                     $counts = $a['counts'][$schemaid];
-                    foreach ($a['promotiontariffid'] as $label => $tariffid) {
+                    foreach ($a['promotionassignmentid'] as $label => $tariffid) {
                         if (empty($tariffid)) {
                             continue;
                         }

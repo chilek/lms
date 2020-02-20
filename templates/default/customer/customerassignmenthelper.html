@@ -270,7 +270,7 @@
 																				<option value="0" data-tariffaccess="-1" data-tarifftype="0">{trans("- none -")}</option>
 																				{/if}
 																				{foreach $item.selection.items as $item}
-																				<option value="{$item.tariffid}" data-tariffaccess="{$item.authtype}"
+																				<option value="{$item.assignmentid}" data-tariffaccess="{$item.authtype}"
 																						data-tarifftype="{$item.type}" data-assignment-id="{$item.assignmentid}"
 																						{if in_array($item.tariffid, (array)$variables.stariffid[$schemaid])} selected{/if}
 																					>{if $promotion_show_period_values}{t a=$item.tariff b=moneyf($item.value, $item.currency) c=implode(' / ', $item.periodvalues)}$a (default: $b; $c){/t}{else}{t a=$item.tariff b=moneyf($item.value, $item.currency)}$a (default: $b){/t}{/if}</option>
