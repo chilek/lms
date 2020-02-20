@@ -639,7 +639,7 @@ if (!is_array($message['ticketid'])) {
         }
         foreach ($customercontacts as &$customercontact) {
             if (($customercontact['type'] & (CONTACT_NOTIFICATIONS | CONTACT_DISABLED)) == CONTACT_NOTIFICATIONS) {
-                $customercontact['checked'] = empty($contacts) ? 1 : 0;
+                $customercontact['checked'] = 0;
                 $contacts[] = $customercontact;
             }
         }
