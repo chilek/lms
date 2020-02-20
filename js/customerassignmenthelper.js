@@ -193,7 +193,9 @@ function CustomerAssignmentHelper(options) {
 					ms.hideOption(key);
 				}
 			});
-			ms.toggleCheckAll($('#check_all_terminals').prop('checked'));
+			if ($('#check_all_terminals').prop('checked')) {
+				ms.toggleCheckAll(true);
+			}
 			ms.refreshSelection();
 		});
 	}
@@ -258,7 +260,9 @@ function CustomerAssignmentHelper(options) {
 					ms.hideOption(key);
 				}
 			});
-			ms.toggleCheckAll($('#check_all_terminals').prop('checked'));
+			if ($('#check_all_terminals').prop('checked')) {
+				ms.toggleCheckAll(true);
+			}
 		});
 	}
 
