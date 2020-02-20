@@ -264,9 +264,18 @@ class Session
         }
     }
 
+    private function validPIN()
+    {
+        $string = $this->passwd;
+        for ($i = 0; $i < strlen($this->pin_allowed_characters); $i++) {
+            $string = str_replace($this->pin_allowed_characters[$i], '', $string);
+        }
+        return !strlen($string);
+    }
+
     private function GetCustomerIDByPhoneAndPIN()
     {
-        if (!preg_match('/^[' . $this->pin_allowed_characters . ']+$/', $this->passwd)) {
+        if (!$this->validPIN()) {
             return null;
         }
 
@@ -288,7 +297,7 @@ class Session
 
     private function GetCustomerIDByIDAndPIN()
     {
-        if (!preg_match('/^[' . $this->pin_allowed_characters . ']+$/', $this->passwd) || !preg_match('/^[0-9]+$/', $this->login)) {
+        if (!$this->validPIN() || !preg_match('/^[0-9]+$/', $this->login)) {
             return null;
         }
 
@@ -307,7 +316,7 @@ class Session
 
     private function GetCustomerIDByDocumentAndPIN()
     {
-        if (!preg_match('/^[' . $this->pin_allowed_characters . ']+$/', $this->passwd)) {
+        if (!$this->validPIN()) {
             return null;
         }
 
@@ -330,7 +339,7 @@ class Session
 
     private function GetCustomerIDByEmailAndPIN()
     {
-        if (!preg_match('/^[' . $this->pin_allowed_characters . ']+$/', $this->passwd)) {
+        if (!$this->validPIN()) {
             return null;
         }
 

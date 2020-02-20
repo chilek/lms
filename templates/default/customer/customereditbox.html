@@ -13,7 +13,7 @@
 		if (document.customeredit.elements['customerdata[pin]'].value != '') {
 			confirmDialog($t("Are you sure, you want to generate new PIN?"), $('#randomize')).done(function () {
 				document.customeredit.elements['customerdata[pin]'].value =
-						generate_random_string({$pin_min_size} +Math.floor(Math.random() * {($pin_max_size-$pin_min_size)+1}), '{$pin_allowed_characters}');
+						generate_random_string({$pin_min_size} +Math.floor(Math.random() * {($pin_max_size-$pin_min_size)+1}), '{str_replace("'", "\'", $pin_allowed_characters)}');
 			});
 		}
 	}
@@ -550,7 +550,7 @@
 		$('form[name="customeredit"] [name="customerdata[lastname]"]').focus();
 
 		$('[name="customerdata[pin]"]').change(function() {
-			if (validate_random_string(this.value, {$pin_min_size}, {$pin_max_size}, '{$pin_allowed_characters}')) {
+			if (validate_random_string(this.value, {$pin_min_size}, {$pin_max_size}, '{str_replace("'", "\'", $pin_allowed_characters)}')) {
 				this.setCustomValidity('');
 			} else {
 				this.setCustomValidity('{$pin_tip}');

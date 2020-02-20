@@ -16,7 +16,7 @@
 <!--
 	function randomize() {
 		document.customeradd.elements['customeradd[pin]'].value =
-			generate_random_string({$pin_min_size} + Math.floor(Math.random() * {($pin_max_size-$pin_min_size)+1}), '{$pin_allowed_characters}');
+			generate_random_string({$pin_min_size} + Math.floor(Math.random() * {($pin_max_size-$pin_min_size)+1}), '{str_replace("'", "\'", $pin_allowed_characters)}');
 	}
 //-->
 </SCRIPT>
@@ -558,7 +558,7 @@
 		$('form[name="customeradd"] [name="customeradd[lastname]"]').focus();
 
 		$('[name="customeradd[pin]"]').change(function() {
-			if (validate_random_string(this.value, {$pin_min_size}, {$pin_max_size}, '{$pin_allowed_characters}')) {
+			if (validate_random_string(this.value, {$pin_min_size}, {$pin_max_size}, '{str_replace("'", "\'", $pin_allowed_characters)}')) {
 				this.setCustomValidity('');
 			} else {
 				this.setCustomValidity('{$pin_tip}');
