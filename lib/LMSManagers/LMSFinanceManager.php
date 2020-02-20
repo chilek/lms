@@ -4152,10 +4152,19 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         return $docid;
     }
 
-    public function CheckNodeTariffRestrictions($aid, $nodes)
+    public function CheckNodeTariffRestrictions($aid, $nodes, $datefrom, $dateto)
     {
-        $nodeassigns = $this->db->GetCol('SELECT nodeid FROM nodeassignments WHERE nodeid IN ('
-            . implode(', ', $nodes) . ')' . (empty($aid) ? '' : ' AND assignmentid <> ' . intval($aid)));
+        $nodeassigns = $this->db->GetCol(
+            'SELECT DISTINCT na.nodeid FROM nodeassignments na
+            JOIN nodes n ON n.id = na.nodeid
+            JOIN netdevices nd ON nd.id = n.netdev AND n.ownerid IS NULL
+            JOIN assignments a ON a.id = na.assignmentid
+            WHERE (n.ownerid = a.customerid OR nd.ownerid = a.customerid) AND na.nodeid IN ('
+            . implode(', ', $nodes) . ')' . (empty($aid) ? '' : ' AND na.assignmentid <> ' . intval($aid))
+            . ' AND ((a.datefrom <= ? AND (a.dateto = 0 OR ? = 0 OR a.dateto >= ?))
+                    OR ((a.datefrom <= ? OR ? = 0) AND (a.dateto = 0 OR a.dateto >= ?)))',
+            array($datefrom, $dateto, $datefrom, $dateto, $dateto, $dateto)
+        );
         $result = array();
         if (!empty($nodeassigns)) {
             foreach ($nodes as $idx => $nodeid) {

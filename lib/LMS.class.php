@@ -3175,10 +3175,10 @@ class LMS
         return $manager->GetDocumentLastReference($docid);
     }
 
-    public function CheckNodeTariffRestrictions($aid, $nodes)
+    public function CheckNodeTariffRestrictions($aid, $nodes, $datefrom, $dateto)
     {
         $manager = $this->getFinanceManager();
-        return $manager->CheckNodeTariffRestrictions($aid, $nodes);
+        return $manager->CheckNodeTariffRestrictions($aid, $nodes, $datefrom, $dateto);
     }
 
     public function getCurrencyValue($currency, $date = null)

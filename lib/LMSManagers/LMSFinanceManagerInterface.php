@@ -150,7 +150,7 @@ interface LMSFinanceManagerInterface
 
     public function GetDocumentLastReference($docid);
 
-    public function CheckNodeTariffRestrictions($aid, $nodes);
+    public function CheckNodeTariffRestrictions($aid, $nodes, $datefrom, $dateto);
 
     public function getCurrencyValue($currency, $date = null);
 }
