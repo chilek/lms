@@ -652,7 +652,7 @@
 						{foreach $customernodes as $customernode}
 						<span data-tariffaccess="{$customernode.authtype}" class="global-node-checkbox">
 							<label>
-								<input type="checkbox" name="{$variable_prefix}[nodes][{$customernode.id}]" value="{$customernode.id}"{if isset((array)$variables.nodes[$customernode.id])} checked{/if}>
+								<input type="checkbox" name="{$variable_prefix}[nodes][{$customernode.id}]" value="{$customernode.id}"{if isset($variables.nodes[$customernode.id])} checked{/if}>
 								<span class="bold">{$customernode.name}</span> ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}
 							</label>
 							{if isset($variables.node_warns[$customernode.id])}
@@ -677,7 +677,7 @@
 						{foreach $customernetdevnodes as $customernode}
 						<span data-tariffaccess="{$customernode.authtype}" class="global-node-checkbox">
 							<label>
-								<input type="checkbox" name="{$variable_prefix}[nodes][{$customernode.id}]" value="{$customernode.id}"{if isset((array)$variables.nodes[$customernode.id])} checked{/if}>
+								<input type="checkbox" name="{$variable_prefix}[nodes][{$customernode.id}]" value="{$customernode.id}"{if isset($variables.nodes[$customernode.id])} checked{/if}>
 								<span class="bold">{$customernode.name}</span> {if !empty($customernode.netdev_name)} / {$customernode.netdev_name}{/if}  ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}
 							</label>
 							{if isset($variables.node_warns[$customernode.id])}
