@@ -549,7 +549,9 @@ $SMARTY->assign('tags', $LMS->TarifftagGetAll());
 
 $SMARTY->assign('tariffs', $LMS->GetTariffs($a['tariffid']));
 $SMARTY->assign('taxeslist', $LMS->GetTaxes());
-$a['nodes'] = array_flip($a['nodes']);
+if (is_array($a['nodes'])) {
+    $a['nodes'] = array_flip($a['nodes']);
+}
 $SMARTY->assign('assignment', $a);
 $SMARTY->assign('assignments', $LMS->GetCustomerAssignments($customer['id'], true, false));
 $SMARTY->assign('customerinfo', $customer);
