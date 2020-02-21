@@ -625,6 +625,12 @@ class LMS
         return $manager->getCustomerShortBalanceList($customerid, $limit, $order);
     }
 
+    public function getLastNInTable($body, $customerid, $eol)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->getLastNInTable($body, $customerid, $eol);
+    }
+
     public function CustomerStats()
     {
         $manager = $this->getCustomerManager();
@@ -4252,30 +4258,7 @@ class LMS
             list ($now_y, $now_m) = explode('/', strftime("%Y/%m", time()));
             $body = preg_replace('/%lastday/', strftime("%d", mktime(12, 0, 0, $now_m + 1, 0, $now_y)), $body);
 
-            if (preg_match('/%last_(?<number>[0-9]+)_in_a_table/', $body, $m)) {
-                $lastN = $this->GetCustomerShortBalanceList($doc['customerid'], $m['number']);
-                if (empty($lastN)) {
-                    $lN = '';
-                } else {
-                    // ok, now we are going to rise up system's load
-                    $lN = '------------+----------------+----------------+----------------+------------------------------------------------------------------------------<eol>';
-                    foreach ($lastN as $row_s) {
-                        $op_time = strftime("%Y/%m/%d ", $row_s['time']);
-                        if ($row_s['value'] < 0) {
-                            $op_liability = sprintf("%9.2f %s ", $row_s['value'], $row_s['currency']);
-                            $op_payment = '              ';
-                        } else {
-                            $op_liability = '              ';
-                            $op_payment = sprintf("%9.2f %s ", $row_s['value'], $row_s['currency']);
-                        }
-                        $op_after = sprintf("%9.2f %s ", $row_s['after'], LMS::$currency);
-                        $for_what = sprintf(" %-52s", $row_s['comment']);
-                        $lN = $lN . "$op_time | $op_liability | $op_payment | $op_after | $for_what<eol>";
-                    }
-                    $lN .= '------------+----------------+----------------+----------------+------------------------------------------------------------------------------<eol>';
-                }
-                $body = preg_replace('/%last_[0-9]+_in_a_table/', $lN, $body);
-            }
+            $body = $this->getLastNInTable($body, $doc['customerid'], '<eol>');
 
             $mailto = array();
             $mailto_qp_encoded = array();

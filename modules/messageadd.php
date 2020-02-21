@@ -291,30 +291,7 @@ function BodyVars(&$body, $data, $eol)
         );
     }
 
-    if (preg_match('/%last_(?<number>[0-9]+)_in_a_table/', $body, $m)) {
-        $lastN = $LMS->GetCustomerShortBalanceList($data['id'], $m['number']);
-        if (empty($lastN)) {
-            $lN = '';
-        } else {
-            // ok, now we are going to rise up system's load
-            $lN = '------------+----------------+----------------+----------------+------------------------------------------------------------------------------' . $eol;
-            foreach ($lastN as $row_s) {
-                $op_time = strftime("%Y/%m/%d ", $row_s['time']);
-                if ($row_s['value'] < 0) {
-                    $op_liability = sprintf("%9.2f %s ", $row_s['value'], $row_s['currency']);
-                    $op_payment = '              ';
-                } else {
-                    $op_liability = '              ';
-                    $op_payment = sprintf("%9.2f %s ", $row_s['value'], $row_s['currency']);
-                }
-                $op_after = sprintf("%9.2f %s ", $row_s['after'], LMS::$currency);
-                $for_what = sprintf(" %-52s", $row_s['comment']);
-                $lN .= $op_time . '|' . $op_liability . '|' . $op_payment . '|' . $op_after . '|' . $for_what . $eol;
-            }
-            $lN .= '------------+----------------+----------------+----------------+------------------------------------------------------------------------------' . $eol;
-        }
-        $body = preg_replace('/%last_[0-9]+_in_a_table/', $lN, $body);
-    }
+    $body = $LMS->getLastNInTable($body, $data['id'], $eol);
 
     if (strpos($body, '%services') !== false) {
         $services = $data['services'];
