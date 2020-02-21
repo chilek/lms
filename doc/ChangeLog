@@ -188,6 +188,8 @@ version 25-git (????-??-??):
     new message creation [chilan]
   - improvement: separate liability and payments columns as replacement
     for %last_N_in_a_table symbol [chilan]
+  - enhancement: if phpui.promotion_allow_modify_values_for_privileged_user is set to 'true
+    ('false' by default), user can modify any promotion schema period values [chilan]
 
 version 24.0 (2019-05-16):
 

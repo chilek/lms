@@ -1340,6 +1340,11 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function CheckSchemaModifiedValues($data)
     {
+        if (ConfigHelper::checkConfig('phpui.promotion_allow_modify_values_for_privileged_user')
+            && ConfigHelper::checkPrivilege('promotion_management')) {
+            return true;
+        }
+
         $schemaid = $data['schemaid'];
         $sassignments = $data['sassignmentid'][$schemaid];
         $values = $data['values'][$schemaid];
@@ -4032,6 +4037,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             $period['modifiable'] = in_array($userid, $users);
                         } else {
                             $period['modifiable'] = false;
+                        }
+                        if (ConfigHelper::checkConfig('phpui.promotion_allow_modify_values_for_privileged_user')
+                            && ConfigHelper::checkPrivilege('promotion_management')) {
+                            $period['modifiable'] = $props[0] != 'NULL';
                         }
                         $periods[] = $period;
                     }
