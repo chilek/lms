@@ -80,6 +80,11 @@ function CustomerAssignmentHelper(options) {
 				}
 			}
 		});
+		var location_select = $('#location-select');
+		if (!location_select.val().length && $('option:not([value=""])', location_select).length > 1) {
+			confirm($t('No location has been selected!'));
+			return false;
+		}
 		if ($.isEmptyObject(tariffs)) {
 			return confirm($t('No nodes has been selected for assignment, by at least one is recommended! Are you sure you want to continue despite of this?'));
 		}
@@ -269,6 +274,10 @@ function CustomerAssignmentHelper(options) {
     this.locationSelectionHandler = function() {
 		$('.schema-tariff-selection').trigger('change');
 		$('.schema-tariff-checkbox').trigger('change');
+
+		var location_select = $('#location-select');
+		location_select.toggleClass('lms-ui-error', !location_select.val().length)
+			.attr('title', location_select.attr('data-tooltip')).removeAttr('data-tooltip');
 	}
 
 	this.updateDevices = function() {
@@ -400,6 +409,7 @@ function CustomerAssignmentHelper(options) {
 					td.html(html).appendTo(this);
 				});
 
+				var location_count = 0;
 				options = '<option value="">' + $t('- all -') + '</option>';
 				if (data.locations) {
 					options += '<optgroup label="' + $t("with end-points") + '">';
@@ -407,6 +417,7 @@ function CustomerAssignmentHelper(options) {
 						options += '<option value="' + value + '"' +
 							(("location" in selected) && selected.location == value ? ' selected' : '') + '>' +
 							value + '</option>';
+						location_count++;
 					});
 					options += '</optgroup>';
 				}
@@ -416,11 +427,12 @@ function CustomerAssignmentHelper(options) {
 						options += '<option value="' + value.location + '"' +
 							(("location" in selected) && selected.location == value.location ? ' selected' : '') + '>' +
 							value.location + '</option>';
+						location_count++;
 					});
 					options += '</optgroup>';
 				}
 
-				$('#location-select').html(options);
+				$('#location-select').toggleClass('lms-ui-error', location_count > 1).html(options);
 
 				options = '<option value="-1">' + $t('none') + '</option>';
 				if (data.addresses) {

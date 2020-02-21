@@ -4584,3 +4584,5 @@ $_LANG['Ticket access denied!'] = 'Odmowa dostępu do zgłoszenia!';
 
 $_LANG['from ticket'] = 'ze zgłoszenia';
 $_LANG['from message'] = 'z wiadomości';
+
+$_LANG['No location has been selected!'] = 'Nie wybrano lokalizacji!';

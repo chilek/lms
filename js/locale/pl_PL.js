@@ -159,6 +159,9 @@ $_LANG['Cost limit:'] = 'Limit kosztów:';
 $_LANG['Callee:'] = 'Dokąd:';
 $_LANG['Unit size<!voip>'] = 'Rozmiar jednostki';
 $_LANG['Start call:'] = 'Dokąd:';
+
+$_LANG['billing'] = 'billing';
+
 $_LANG['purchase invoice'] = 'faktura zakupu';
 $_LANG['pro-forma invoice'] = 'faktura pro-forma';
 $_LANG['$a ($b addresses)'] = '$a ($b adresów)';
@@ -1717,7 +1720,13 @@ $_LANG['Enter message body.<br><br>'
     + '<strong>%pin</strong> - customer pin,<br>'
     + '<strong>%bankaccount</strong> - bank account for payments,<br>'
     + '<strong>%services</strong> - customer service summary,<br>'
-    + '<strong>%last_N_in_a_table</strong> - last N operation in customer financial history (N means number).<br>'] =
+    + '<strong>%last_N_in_a_table</strong> - last N operation in customer financial history (N means number).<br><br>'
+    + 'Substitution/variables supported while customer node is selected:<br>'
+    + '<strong>%node_name</strong> - customer node name,<br>'
+    + '<strong>%node_password</strong> - customer node password,<br>'
+    + '<strong>%node_ip</strong> - customer node ip address,<br>'
+    + '<strong>%node_ip_pub</strong> - customer node public ip address,<br>'
+    + '<strong>%node_mac</strong> - customer node mac addresses.<br>'] =
     'Wprowadź treść wiadomości.<br><br>'
     + 'Obsługiwane podstawienia/zmienne:<br>'
     + '<strong>%customer</strong> - imię i nazwisko lub nazwa klienta,<br>'
@@ -1726,7 +1735,13 @@ $_LANG['Enter message body.<br><br>'
     + '<strong>%pin</strong> - pin klienta,<br>'
     + '<strong>%bankaccount</strong> - konto bankowe do płatności,<br>'
     + '<strong>%services</strong> - podsumowanie usług klienta,<br>'
-    + '<strong>%last_N_in_a_table</strong> - ostatnie N operacji w historii finansowej klienta (N oznacza liczbę).<br>';
+    + '<strong>%last_N_in_a_table</strong> - ostatnie N operacji w historii finansowej klienta (N oznacza liczbę).<br><br>'
+    + 'Obsługiwane podstawienia/zmienne gdy wybrano komputer kliencki:<br>'
+    + '<strong>%node_name</strong> - nazwa komputera klienckiego,<br>'
+    + '<strong>%node_password</strong> - hasło komputera klienckiego,<br>'
+    + '<strong>%node_ip</strong> - adres ip komputera klienckiego,<br>'
+    + '<strong>%node_ip_pub</strong> - publiczny adres ip komputera klienckiego,<br>'
+    + '<strong>%node_mac</strong> - adresy mac komputera klienckiego.<br>';
 $_LANG['Useful Links:'] = 'Użyteczne linki:';
 $_LANG['User'] = 'Użytkownik';
 $_LANG['User:'] = 'Użytkownik:';
@@ -3286,12 +3301,15 @@ $_LANG['access denied<!syslog>'] = 'odmowa dostępu';
 $_LANG['log in failed<!syslog>'] = 'logowanie niepowodzeniem';
 $_LANG['log in<!syslog>'] = 'zalogowanie';
 $_LANG['log out<!syslog>'] = 'wylogowanie';
+$_LANG['document attachment<!syslog>'] = 'załącznik dokumentu';
+$_LANG['document content<!syslog>'] = 'zawartość dokumentu';
 
 $_LANG['Choose network'] = 'Wybierz sieć';
 $_LANG['- automatic selection -'] = '- wybór automatyczny -';
 $_LANG['Invoice send'] = 'Wysyłka faktury';
 $_LANG['Send invoice'] = 'Wyślij fakturę';
 $_LANG['Send invoice again'] = 'Wyślij fakturę ponownie';
+$_LANG['(already sent on $a)'] = '(już wysłane w dniu $a)';
 $_LANG['Are you sure, you want to send invoice to customer \'$a\'?'] = 'Jesteś pewien, że chcesz wysłać fakturę do klienta \'$a\'?';
 $_LANG['Invoice was sent to customer \'$a\' already on $b. Are you sure, you want to send invoice again?'] = 'Faktura została już wysłana do klienta \'$a\' w dniu $b. Jesteś pewien, że chcesz wysłać fakturę ponownie?';
 $_LANG['Document was sent to customer already on $a. Are you sure, you want to send document again?'] = 'Dokument został już wysłany do klienta w dniu $a. Jesteś pewien, że chcesz wysłać dokument ponownie?';
@@ -4025,7 +4043,7 @@ $_LANG['Default categories'] = 'Domyślne kategorie';
 
 $_LANG['Category $a has been added to ticket.'] = 'Kategoria $a została dodana do zgłoszenia.';
 $_LANG['Category $a has been removed from ticket.'] = 'Kategoria $a została usunięta ze zgłoszenia.';
-$_LANG['Add network node:'] = 'Dodaj węzeł sieciowy:';
+$_LANG['Add network node'] = 'Dodaj węzeł sieciowy';
 
 $_LANG['New device'] = 'Nowe urządzenie';
 
@@ -4191,6 +4209,9 @@ $_LANG['Delete file container'] = 'Usuń kontener plikowy';
 $_LANG['Show file list'] = 'Pokaż listę plików';
 $_LANG['Are you sure you want to delete this file container?'] = 'Jesteś pewien, że chcesz usunąć ten kontener plikowy?';
 $_LANG['Attachments ($a):'] = 'Załączniki ($a):';
+$_LANG['Device attachments'] = 'Załączniki urządzenia';
+$_LANG['Model attachments'] = 'Załączniki modelu';
+$_LANG['Node attachments'] = 'Załączniki węzła';
 $_LANG['There are no file containers in database.'] = 'Brak kontenerów plików w bazie danych.';
 $_LANG['Cannot update file container description!'] = 'Nie można zaktualizować opisu kontenera plikowego!';
 
@@ -4548,3 +4569,22 @@ $_LANG['all terminals'] = 'wszystkie terminale';
 $_LANG['with unarchived documents'] = 'z dokumentami niezarchiwizowanymi';
 
 $_LANG['Invalid deadline format!'] = 'Niepoprawny format terminu płatności!';
+
+$_LANG['promotion management'] = 'zarządzanie promocjami';
+
+$_LANG['user group:'] = 'grupa użytkowników:';
+
+$_LANG['Customer data:'] = 'Dane klienta:';
+
+$_LANG['<!ticket-event>none'] = 'brak';
+$_LANG['<!ticket-event>new'] = 'nowe';
+$_LANG['<!ticket-event>assign'] = 'przypisz';
+$_LANG['<!ticket-event>Ticket:'] = 'Zgłoszenie:';
+$_LANG['Ticket identifier invalid format!'] = 'Niepoprawny format identyfikatora zgłoszenia!';
+$_LANG['Nonexistent ticket!'] = 'Nieistniejące zgłoszenie!';
+$_LANG['Ticket access denied!'] = 'Odmowa dostępu do zgłoszenia!';
+
+$_LANG['from ticket'] = 'ze zgłoszenia';
+$_LANG['from message'] = 'z wiadomości';
+
+$_LANG['No location has been selected!'] = 'Nie wybrano lokalizacji!';
