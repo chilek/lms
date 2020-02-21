@@ -211,8 +211,8 @@ if (isset($_POST['document'])) {
             include($template_dir . DIRECTORY_SEPARATOR . 'info.php');
         }
 
-        foreach ($customerlist as $gencust) {
-            if (!is_array($gencust)) {
+        foreach ($customerlist as $idx => $gencust) {
+            if (!preg_match('/^[0-9]+$/', $idx) || !is_array($gencust) || empty($gencust)) {
                 continue;
             }
 
