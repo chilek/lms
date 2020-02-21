@@ -2998,6 +2998,12 @@ class LMS
         return $manager->SendDocuments($docs, $type, $params);
     }
 
+    public function DeleteDocument($docid)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->DeleteDocument($docid);
+    }
+
     /*
      *  Location
      */

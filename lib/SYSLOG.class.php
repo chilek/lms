@@ -82,6 +82,8 @@ class SYSLOG
     const RES_EVENTASSIGN = 54;
     const RES_ADDRESS = 55;
     const RES_TICKET = 56;
+    const RES_DOCATTACH = 57;
+    const RES_DOCCONTENT = 58;
 
     const OPER_ADD = 1;
     const OPER_DELETE = 2;
@@ -151,6 +153,8 @@ class SYSLOG
         self::RES_EVENTASSIGN => 'event assignment<!syslog>',
         self::RES_ADDRESS => 'address<!syslog>',
         self::RES_TICKET => 'ticket<!syslog>',
+        self::RES_DOCATTACH => 'document attachment<!syslog>',
+        self::RES_DOCCONTENT => 'document content<!syslog>',
     );
     private static $resource_keys = array(
         self::RES_USER => 'userid',
@@ -209,6 +213,8 @@ class SYSLOG
         self::RES_EVENTASSIGN => 'eventassignmentid',
         self::RES_ADDRESS => 'address_id',
         self::RES_TICKET => 'ticketid',
+        self::RES_DOCATTACH => 'documentattachmentid',
+        self::RES_DOCCONTENT => 'documentcontentid',
     );
     private static $operations = array(
         self::OPER_ADD => 'addition<!syslog>',

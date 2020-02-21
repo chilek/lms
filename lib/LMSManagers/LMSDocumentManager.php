@@ -1164,4 +1164,57 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             }
         }
     }
+
+    public function DeleteDocument($docid)
+    {
+        $document = $this->db->GetRow(
+            'SELECT d.id, d.type, d.customerid FROM documents d
+			JOIN docrights r ON (r.doctype = d.type)
+			WHERE d.id = ? AND r.userid = ? AND (r.rights & ?) > 0',
+            array($docid, Auth::GetCurrentUser(), DOCRIGHT_DELETE)
+        );
+        if (!$document) {
+            return false;
+        }
+
+        $attachments = $this->db->GetAll('SELECT id, md5sum FROM documentattachments
+			WHERE docid = ?', array($docid));
+        foreach ($attachments as $attachment) {
+            $md5sum = $attachment['md5sum'];
+            if ($this->db->GetOne('SELECT COUNT(*) FROM documentattachments WHERE md5sum = ?', array((string)$md5sum)) == 1) {
+                $filename_pdf = DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum, 0, 2) . DIRECTORY_SEPARATOR . $md5sum . '.pdf';
+                if (file_exists($filename_pdf)) {
+                    @unlink($filename_pdf);
+                }
+
+                if (!isset($file_manager)) {
+                    $file_manager = new LMSFileManager($this->db, $this->auth, $this->cache, $this->syslog);
+                }
+                if (!$file_manager->FileExists($md5sum)) {
+                    @unlink(DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum, 0, 2) . DIRECTORY_SEPARATOR . $md5sum);
+                }
+            }
+        }
+
+        $this->db->Execute('DELETE FROM documents WHERE id = ?', array($docid));
+        if ($this->syslog) {
+            $args = array(
+                SYSLOG::RES_DOC => $docid,
+                SYSLOG::RES_CUST => $document['customerid'],
+                'type' => $document['type'],
+            );
+            $this->syslog->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_DELETE, $args);
+
+            foreach ($attachments as $attachment) {
+                $args = array(
+                    SYSLOG::RES_DOCATTACH => $attachment['id'],
+                    SYSLOG::RES_DOC => $docid,
+                    'md5sum' => $attachment['md5sum'],
+                );
+                $this->syslog->AddMessage(SYSLOG::RES_DOCATTACH, SYSLOG::OPER_DELETE, $args);
+            }
+        }
+
+        return true;
+    }
 }

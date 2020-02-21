@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -25,54 +25,19 @@
  */
 
 if (isset($_POST['marks'])) {
-    foreach ($_POST['marks'] as $id => $mark) {
-        $docid = $DB->GetCol(
-            'SELECT d.id FROM documents d
-			JOIN docrights r ON (r.doctype = d.type)
-			WHERE d.id = ? AND r.userid = ? AND (r.rights & 16) = 16',
-            array($id, Auth::GetCurrentUser())
-        );
-        if (!$docid) {
-            continue;
-        }
-
-        $md5sums = $DB->GetCol('SELECT md5sum FROM documentattachments
-			WHERE docid = ?', array($id));
-        foreach ($md5sums as $md5sum) {
-            if ($DB->GetOne('SELECT COUNT(*) FROM documentattachments WHERE md5sum = ?', array((string)$md5sum)) == 1) {
-                $filename_pdf = DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum, 0, 2) . DIRECTORY_SEPARATOR . $md5sum.'.pdf';
-                if (file_exists($filename_pdf)) {
-                    @unlink($filename_pdf);
-                }
-                if (!$LMS->FileExists($md5sum)) {
-                    @unlink(DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum, 0, 2) . DIRECTORY_SEPARATOR . $md5sum);
-                }
-            }
-        }
-
-        $DB->Execute('DELETE FROM documents WHERE id = ?', array($id));
-    }
+    $docids = Utils::filterIntegers(array_keys($_POST['marks']));
 } elseif (isset($_GET['id'])) {
-    $docid = $DB->GetOne(
-        'SELECT d.id FROM documents d
-		JOIN docrights r ON (r.doctype = d.type)
-		WHERE d.id = ? AND r.userid = ? AND (r.rights & 16) = 16',
-        array($_GET['id'], Auth::GetCurrentUser())
-    );
-    if (!$docid) {
-        $SMARTY->display('noaccess.html');
-        die;
+    if (preg_match('/^[0-9]+$/', $_GET['id'])) {
+        $docids = array($_GET['id']);
     }
+}
 
-    $md5sums = $DB->GetCol('SELECT md5sum FROM documentattachments
-		WHERE docid = ?', array($_GET['id']));
-    foreach ($md5sums as $md5sum) {
-        if ($DB->GetOne('SELECT COUNT(*) FROM documentattachments WHERE md5sum = ?', array((string)$md5sum)) == 1) {
-            @unlink(DOC_DIR.'/'.substr($md5sum, 0, 2).'/'.$md5sum);
+if (!empty($docids)) {
+    foreach ($docids as $id) {
+        if (!$LMS->DeleteDocument($id)) {
+            access_denied();
         }
     }
-
-    $DB->Execute('DELETE FROM documents WHERE id = ?', array($_GET['id']));
 }
 
 $SESSION->redirect('?'.$SESSION->get('backto'));

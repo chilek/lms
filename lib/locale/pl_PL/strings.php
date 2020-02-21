@@ -3299,6 +3299,8 @@ $_LANG['access denied<!syslog>'] = 'odmowa dostępu';
 $_LANG['log in failed<!syslog>'] = 'logowanie niepowodzeniem';
 $_LANG['log in<!syslog>'] = 'zalogowanie';
 $_LANG['log out<!syslog>'] = 'wylogowanie';
+$_LANG['document attachment<!syslog>'] = 'załącznik dokumentu';
+$_LANG['document content<!syslog>'] = 'zawartość dokumentu';
 
 $_LANG['Choose network'] = 'Wybierz sieć';
 $_LANG['- automatic selection -'] = '- wybór automatyczny -';

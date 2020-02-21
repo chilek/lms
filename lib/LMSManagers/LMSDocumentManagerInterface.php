@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2019 LMS Developers
+ *  Copyright (C) 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -61,4 +61,6 @@ interface LMSDocumentManagerInterface
     public function GetDocumentFullContents($id);
 
     public function SendDocuments($docs, $type, $params);
+
+    public function DeleteDocument($docid);
 }
