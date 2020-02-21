@@ -352,7 +352,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 $lN = '';
             } else {
                 // ok, now we are going to rise up system's load
-                $lN = '-----------+--------------+--------------+--------------+----------------------------------------------------' . $eol;
+                $lN = '-----------+--------------+--------------+--------------+------------------------------------------------------------------------------' . $eol;
                 foreach ($lastN as $row_s) {
                     $op_time = strftime("%Y/%m/%d ", $row_s['time']);
                     if ($row_s['value'] < 0) {
@@ -366,7 +366,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     $for_what = sprintf(" %-52s", $row_s['comment']);
                     $lN .= $op_time . '|' . $op_liability . '|' . $op_payment . '|' . $op_after . '|' . $for_what . $eol;
                 }
-                $lN .= '-----------+--------------+--------------+--------------+----------------------------------------------------' . $eol;
+                $lN .= '-----------+--------------+--------------+--------------+------------------------------------------------------------------------------' . $eol;
             }
             $body = preg_replace('/%last_[0-9]+_in_a_table/', $lN, $body);
         }
