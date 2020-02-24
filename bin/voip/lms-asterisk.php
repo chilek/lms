@@ -138,7 +138,6 @@ $ext_outgoing_config_file = ConfigHelper::getConfig($config_section . '.ext_outg
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'unstrip.php');
 
 $records = $DB->GetAll("SELECT * FROM voip_emergency_numbers");
 $boroughs = array();

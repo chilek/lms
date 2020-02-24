@@ -26,7 +26,8 @@
 
 // Include required files (including sequence is important)
 
-require_once(LIB_DIR.'/unstrip.php');
+$_SERVER['REMOTE_ADDR'] = str_replace("::ffff:", "", $_SERVER['REMOTE_ADDR']);
+
 require_once(LIB_DIR.'/definitions.php');
 require_once(LIB_DIR.'/checkip.php');
 require_once(LIB_DIR.'/common.php');
