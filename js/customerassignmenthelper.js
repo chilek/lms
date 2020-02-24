@@ -276,7 +276,7 @@ function CustomerAssignmentHelper(options) {
 		$('.schema-tariff-checkbox').trigger('change');
 
 		var location_select = $('#location-select');
-		location_select.toggleClass('lms-ui-error', !location_select.val().length)
+		location_select.toggleClass('lms-ui-error', !location_select.val().length && $('option:not([value=""])', location_select).length > 1)
 			.attr('title', location_select.attr('data-tooltip')).removeAttr('data-tooltip');
 	}
 
