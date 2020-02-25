@@ -33,7 +33,7 @@ if (isset($_GET['ticketid']) && !empty($_GET['ticketid'])) {
     $eventticketid = intval($_GET['ticketid']);
 }
 
-if (isset($_POST['event']['helpdesk']) == 1 && isset($_POST['ticket'])) {
+if (isset($_POST['event']['helpdesk']) && isset($_POST['ticket'])) {
     $ticket = $_POST['ticket'];
 }
 
@@ -370,7 +370,7 @@ if (isset($_POST['event'])) {
     }
 }
 
-if ($event['helpdesk'] == 'new') {
+if (isset($event['helpdesk'])) {
     $netnodelist = $LMS->GetNetNodeList(array(), 'name');
     unset($netnodelist['total']);
     unset($netnodelist['order']);
@@ -392,6 +392,7 @@ if ($event['helpdesk'] == 'new') {
     $queuelist = $LMS->GetQueueList(array('stats' => false));
 
     if (isset($_POST['event'])) {
+        $queue = $ticket['queue'];
         foreach ($categories as &$category) {
             $category['checked'] = isset($event['categories'][$category['id']]) || count($categories) == 1;
         }
@@ -410,8 +411,29 @@ if ($event['helpdesk'] == 'new') {
         }
 
         if (!empty($queuelist)) {
-            $firstqueue = reset($queuelist);
-            $queue = $firstqueue['id'];
+            $queue = ConfigHelper::getConfig('rt.default_queue');
+            if (preg_match('/^[0-9]+$/', $queue)) {
+                if (!$LMS->QueueExists($queue)) {
+                    $queue = 0;
+                }
+            } else {
+                $queue = $LMS->GetQueueIdByName($queue);
+            }
+            if ($queue) {
+                foreach ($queuelist as $firstqueue) {
+                    if ($firstqueue['id'] == $queue) {
+                        break;
+                    }
+                    $firstqueue = null;
+                }
+                if (!isset($firstqueue)) {
+                    $queue = 0;
+                }
+            }
+            if (!$queue) {
+                $firstqueue = reset($queuelist);
+                $queue = $firstqueue['id'];
+            }
             if ($firstqueue['newticketsubject'] && $firstqueue['newticketbody']) {
                 $ticket['customernotify'] = 1;
             }
@@ -426,6 +448,7 @@ if ($event['helpdesk'] == 'new') {
         }
     }
 
+    $SMARTY->assign('queue', $queue);
     $SMARTY->assign('queuelist', $queuelist);
     $SMARTY->assign('categories', $categories);
     $SMARTY->assign('ticket', $ticket);
