@@ -40,7 +40,9 @@
 					{/box_row}
 
 					{box_row icon="img/info.gif" label="Description:"}
-						<TEXTAREA name="event[description]" class="lms-ui-wysiwyg-editor" cols="50" rows="5" {tip text="Enter additional information (optional)"}{if isset($event.wysiwyg.description)} data-wysiwyg="{$event.wysiwyg.description}"{/if}>{$event.description}</TEXTAREA>
+						<TEXTAREA name="event[description]" id="description" cols="50" rows="5"
+								{tip text="Enter additional information (optional)" class="lms-ui-wysiwyg-editor" trigger="description"}
+								{if isset($event.wysiwyg.description)} data-wysiwyg="{$event.wysiwyg.description}"{/if}>{$event.description}</TEXTAREA>
 					{/box_row}
 
 					{/block}

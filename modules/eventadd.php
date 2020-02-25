@@ -29,7 +29,7 @@ include(MODULES_DIR . DIRECTORY_SEPARATOR . 'eventxajax.inc.php');
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'rtticketxajax.inc.php');
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
-if (isset($_GET['ticketid']) && !empty($_GET['ticketid'])) {
+if (isset($_GET['ticketid']) && !empty($_GET['ticketid']) && intval($_GET['ticketid'])) {
     $eventticketid = intval($_GET['ticketid']);
 }
 
@@ -134,6 +134,9 @@ if (isset($_POST['event'])) {
         case 'new':
             if (!count($ticket['categories'])) {
                 $error['categories'] = trans('You have to select category!');
+            }
+            if (empty($event['description'])) {
+                $error['description'] = trans('If ticket is assigned to event being created, empty description is not allowed!');
             }
             break;
         case 'assign':
@@ -349,6 +352,7 @@ if (isset($_POST['event'])) {
     }
 } else {
     if (isset($_GET['id']) && intval($_GET['id'])) {
+        // new event initialization during existing event clone
         $event = $LMS->GetEvent($_GET['id']);
         if (!empty($event['ticketid'])) {
             $event['helpdesk'] = 'assign';
@@ -364,95 +368,97 @@ if (isset($_POST['event'])) {
         $event['overlapwarned'] = 0;
         $event['wholedays'] = false;
         $event['date'] = isset($event['date']) ? $event['date'] : $SESSION->get('edate');
+
+        if (isset($eventticketid)) {
+            $event['helpdesk'] = 'assign';
+        }
     }
     if (!isset($eventticketid)) {
         $event['helpdesk'] = ConfigHelper::checkConfig('phpui.default_event_ticket_assignment') ? 'new' : 'none';
     }
 }
 
-if (isset($event['helpdesk'])) {
-    $netnodelist = $LMS->GetNetNodeList(array(), 'name');
-    unset($netnodelist['total']);
-    unset($netnodelist['order']);
-    unset($netnodelist['direction']);
+$netnodelist = $LMS->GetNetNodeList(array(), 'name');
+unset($netnodelist['total']);
+unset($netnodelist['order']);
+unset($netnodelist['direction']);
 
-    if (isset($ticket['netnodeid']) && !empty($ticket['netnodeid'])) {
-        $search = array('netnode' => $ticket['netnodeid']);
-    } else {
-        $search = array();
+if (isset($ticket['netnodeid']) && !empty($ticket['netnodeid'])) {
+    $search = array('netnode' => $ticket['netnodeid']);
+} else {
+    $search = array();
+}
+$netdevlist = $LMS->GetNetDevList('name', $search);
+unset($netdevlist['total']);
+unset($netdevlist['order']);
+unset($netdevlist['direction']);
+
+$invprojectlist = $LMS->GetProjects('name', array());
+
+$categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
+$queuelist = $LMS->GetQueueList(array('stats' => false));
+
+$queue = null;
+if (isset($_POST['event'])) {
+    $queue = $ticket['queue'];
+    foreach ($categories as &$category) {
+        $category['checked'] = isset($ticket['categories'][$category['id']]) || count($categories) == 1;
     }
-    $netdevlist = $LMS->GetNetDevList('name', $search);
-    unset($netdevlist['total']);
-    unset($netdevlist['order']);
-    unset($netdevlist['direction']);
+    unset($category);
 
-    $invprojectlist = $LMS->GetProjects('name', array());
+    if (isset($event['customernotify'])) {
+        $ticket['customernotify'] = 1;
+    }
+} else {
+    if (isset($eventticketid)) {
+        $ticket = $LMS->GetTicketContents($eventticketid);
+        $event['address_id'] = $ticket['address_id'];
+        $event['nodeid'] = $ticket['nodeid'];
+    } else {
+        $ticket = array();
+    }
 
-    $categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
-    $queuelist = $LMS->GetQueueList(array('stats' => false));
-
-    if (isset($_POST['event'])) {
-        $queue = $ticket['queue'];
-        foreach ($categories as &$category) {
-            $category['checked'] = isset($event['categories'][$category['id']]) || count($categories) == 1;
+    if (!empty($queuelist)) {
+        $queue = ConfigHelper::getConfig('rt.default_queue');
+        if (preg_match('/^[0-9]+$/', $queue)) {
+            if (!$LMS->QueueExists($queue)) {
+                $queue = 0;
+            }
+        } else {
+            $queue = $LMS->GetQueueIdByName($queue);
         }
-        unset($category);
-
-        if (isset($event['customernotify'])) {
+        if ($queue) {
+            foreach ($queuelist as $firstqueue) {
+                if ($firstqueue['id'] == $queue) {
+                    break;
+                }
+                $firstqueue = null;
+            }
+            if (!isset($firstqueue)) {
+                $queue = 0;
+            }
+        }
+        if (!$queue) {
+            $firstqueue = reset($queuelist);
+            $queue = $firstqueue['id'];
+        }
+        if ($firstqueue['newticketsubject'] && $firstqueue['newticketbody']) {
             $ticket['customernotify'] = 1;
         }
-    } else {
-        if (isset($eventticketid)) {
-            $ticket = $LMS->GetTicketContents($eventticketid);
-            $event['address_id'] = $ticket['address_id'];
-            $event['nodeid'] = $ticket['nodeid'];
-        } else {
-            $ticket = array();
-        }
 
-        if (!empty($queuelist)) {
-            $queue = ConfigHelper::getConfig('rt.default_queue');
-            if (preg_match('/^[0-9]+$/', $queue)) {
-                if (!$LMS->QueueExists($queue)) {
-                    $queue = 0;
-                }
-            } else {
-                $queue = $LMS->GetQueueIdByName($queue);
+        $queuecategories = $LMS->GetQueueCategories($queue);
+        foreach ($categories as &$category) {
+            if (isset($queuecategories[$category['id']]) || count($categories) == 1) {
+                $category['checked'] = 1;
             }
-            if ($queue) {
-                foreach ($queuelist as $firstqueue) {
-                    if ($firstqueue['id'] == $queue) {
-                        break;
-                    }
-                    $firstqueue = null;
-                }
-                if (!isset($firstqueue)) {
-                    $queue = 0;
-                }
-            }
-            if (!$queue) {
-                $firstqueue = reset($queuelist);
-                $queue = $firstqueue['id'];
-            }
-            if ($firstqueue['newticketsubject'] && $firstqueue['newticketbody']) {
-                $ticket['customernotify'] = 1;
-            }
-
-            $queuecategories = $LMS->GetQueueCategories($queue);
-            foreach ($categories as &$category) {
-                if (isset($queuecategories[$category['id']]) || count($categories) == 1) {
-                    $category['checked'] = 1;
-                }
-            }
-            unset($category);
         }
+        unset($category);
     }
+}
 
-    $SMARTY->assign('queue', $queue);
-    $SMARTY->assign('queuelist', $queuelist);
-    $SMARTY->assign('categories', $categories);
-    $SMARTY->assign('ticket', $ticket);
-} elseif (isset($eventticketid)) {
+$SMARTY->assign('queue', $queue);
+
+if (isset($eventticketid)) {
     $event['ticketid'] = $eventticketid;
     $event['ticket'] = $LMS->GetTicketContents($eventticketid);
     $event['customerid'] = $event['ticket']['customerid'];
@@ -485,7 +491,7 @@ $usergroups = $DB->GetAll('SELECT id, name FROM usergroups');
 if (!isset($event['usergroup'])) {
     $event['usergroup'] = -2;
 }
-    //$SESSION->restore('eventgid', $event['usergroup']);
+//$SESSION->restore('eventgid', $event['usergroup']);
 
 if (!ConfigHelper::checkConfig('phpui.big_networks')) {
     $SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
@@ -496,6 +502,8 @@ $SMARTY->assign('userlist', $userlist);
 $SMARTY->assign('usergroups', $usergroups);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('event', $event);
+$SMARTY->assign('queuelist', $queuelist);
+$SMARTY->assign('categories', $categories);
 $SMARTY->assign('netnodelist', $netnodelist);
 $SMARTY->assign('netdevlist', $netdevlist);
 $SMARTY->assign('invprojectlist', $invprojectlist);
