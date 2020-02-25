@@ -209,7 +209,7 @@
 																		<td>
 																			<label>
 																				<input class="schema-tariff-checkbox" type="checkbox" name="{$variable_prefix}[sassignmentid][{$schemaid}][{$label}]"
-																						value="{$item.single.tariffid}" data-label="{$label}"
+																						value="{$item.single.assignmentid}" data-label="{$label}"
 																						data-tarifftype="{$item.single.type}"
 																						data-assignment-id="{$item.single.assignmentid}"
 																						{if isset($variables.sassignmentid[$schemaid][$label]) || !$item.single.optional} checked{/if}
@@ -240,9 +240,9 @@
 																					{foreach $item.single.periods as $key => $period}
 																					<td>
 																						{if $period.modifiable}
-																							{textformat assign="elemid"}value-{$schemaid}-{iconv('UTF-8', 'ASCII//TRANSLIT', preg_replace('/[ _]/', '-', $label))}-{$item.single.tariffid}-{$key}{/textformat}
-																							<input id="{$elemid}" type="text" name="{$variable_prefix}[values][{$schemaid}][{$label}][{$item.single.tariffid}][{$key}]"
-																									value="{if isset($variables.values[$schemaid][$label][$item.single.tariffid][$key])}{$variables.values[$schemaid][$label][$item.single.tariffid][$key]}{else}{$period.value}{/if}"
+																							{textformat assign="elemid"}value-{$schemaid}-{iconv('UTF-8', 'ASCII//TRANSLIT', preg_replace('/[ _]/', '-', $label))}-{$item.single.assignmentid}-{$key}{/textformat}
+																							<input id="{$elemid}" type="text" name="{$variable_prefix}[values][{$schemaid}][{$label}][{$item.single.assignmentid}][{$key}]"
+																									value="{if isset($variables.values[$schemaid][$label][$item.single.assignmentid][$key])}{$variables.values[$schemaid][$label][$item.single.assignmentid][$key]}{else}{$period.value}{/if}"
 																									{tip trigger=$elemid}>
 																							<i class="lms-ui-icon-restore" data-restore-selector="#{$elemid}" data-restore-value="{$period.value}"></i>
 																						{else}
