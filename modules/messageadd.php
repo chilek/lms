@@ -195,7 +195,7 @@ function GetRecipients($filter, $type = MSG_MAIL)
         .'WHERE deleted = ' . $deleted
         . ($consent ? ' AND c.mailingnotice = 1' : '')
         . ($type == MSG_WWW ? ' AND c.id IN (SELECT DISTINCT ownerid FROM nodes)' : '')
-        .($group!=0 ? ' AND status = '.$group : '')
+        .($group!=0 ? ' AND c.status = '.$group : '')
         .($network ? ' AND c.id IN (SELECT ownerid FROM vnodes WHERE 
 			(netid = ' . $net['id'] . ' AND ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ')
 			OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
