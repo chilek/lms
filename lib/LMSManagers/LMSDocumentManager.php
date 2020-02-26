@@ -1217,4 +1217,14 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
         return true;
     }
+
+    public function CopyDocumentPermissions($src_userid, $dst_userid)
+    {
+        $this->db->Execute('DELETE FROM docrights WHERE userid = ?', array($dst_userid));
+        return $this->db->Execute(
+            'INSERT INTO docrights (userid, doctype, rights)
+            (SELECT ?, doctype, rights FROM docrights WHERE userid = ?)',
+            array($dst_userid, $src_userid)
+        );
+    }
 }

@@ -63,4 +63,6 @@ interface LMSDocumentManagerInterface
     public function SendDocuments($docs, $type, $params);
 
     public function DeleteDocument($docid);
+
+    public function CopyDocumentPermissions($src_userid, $dst_userid);
 }

@@ -2025,9 +2025,21 @@ class LMS
         return $manager->GetRTSmtpOptions();
     }
 
-        /*
-         *  LMS-UI configuration
-         */
+    public function CopyQueuePermissions($src_userid, $dst_userid)
+    {
+        $manager = $this->getHelpdeskManager();
+        return $manager->CopyQueuePermissions($src_userid, $dst_userid);
+    }
+
+    public function CopyCategoryPermissions($src_userid, $dst_userid)
+    {
+        $manager = $this->getHelpdeskManager();
+        return $manager->CopyCategoryPermissions($src_userid, $dst_userid);
+    }
+
+    /*
+     *  LMS-UI configuration
+     */
 
     public function GetConfigOptionId($var, $section)
     {
@@ -3004,6 +3016,12 @@ class LMS
         return $manager->DeleteDocument($docid);
     }
 
+    public function CopyDocumentPermissions($src_userid, $dst_userid)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->CopyDocumentPermissions($src_userid, $dst_userid);
+    }
+
     /*
      *  Location
      */
@@ -3197,6 +3215,12 @@ class LMS
     {
         $manager = $this->getFinanceManager();
         return $manager->getCurrencyValue($currency, $date);
+    }
+
+    public function CopyCashRegistryPermissions($src_userid, $dst_userid)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->CopyCashRegistryPermissions($src_userid, $dst_userid);
     }
 
     /**
@@ -4443,6 +4467,35 @@ class LMS
                         }
                         usleep($delay);
                     }
+                }
+            }
+        }
+    }
+
+    public function CopyPermissions($src_userid, $dst_userid, $permissions = null)
+    {
+        if (!isset($permissions)) {
+            $this->CopyQueuePermissions($src_userid, $dst_userid);
+            $this->CopyCategoryPermissions($src_userid, $dst_userid);
+            $this->CopyDocumentPermissions($src_userid, $dst_userid);
+            $this->CopyCashRegistryPermissions($src_userid, $dst_userid);
+        } else {
+            if (empty($permissions)) {
+                return;
+            }
+            foreach ($permissions as $permission) {
+                switch ($permission) {
+                    case 'helpdesk-queues':
+                        $this->CopyQueuePermissions($src_userid, $dst_userid);
+                        break;
+                    case 'helpdesk-categories':
+                        $this->CopyCategoryPermissions($src_userid, $dst_userid);
+                        break;
+                    case 'documents':
+                        $this->CopyDocumentPermissions($src_userid, $dst_userid);
+                        break;
+                    case 'cash-registries':
+                        $this->CopyCashRegistryPermissions($src_userid, $dst_userid);
                 }
             }
         }

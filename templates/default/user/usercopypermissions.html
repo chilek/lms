@@ -1,0 +1,19 @@
+<style>
+
+    #other-resources {
+        margin-top: 0.5em;
+        margin-bottom: 0.5em;
+    }
+
+</style>
+
+<fieldset id="other-resources">
+    <legend>{trans("other resources")}</legend>
+    {foreach $user_copy_permissions as $permission}
+        <label>
+            <input type="checkbox" name="{$form_variable_prefix}[copy-permissions][{$permission.name}]" value="{$permission@index}"
+                    {if isset($variables['copy-permissions'][$permission.name])} checked{/if}>
+            {$permission.label}
+        </label>
+    {/foreach}
+</fieldset>

@@ -4208,4 +4208,14 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             return null;
         }
     }
+
+    public function CopyCashRegistryPermissions($src_userid, $dst_userid)
+    {
+        $this->db->Execute('DELETE FROM cashrights WHERE userid = ?', array($dst_userid));
+        return $this->db->Execute(
+            'INSERT INTO cashrights (userid, regid, rights)
+            (SELECT ?, regid, rights FROM cashrights WHERE userid = ?)',
+            array($dst_userid, $src_userid)
+        );
+    }
 }

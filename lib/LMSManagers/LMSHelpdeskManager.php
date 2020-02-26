@@ -2046,4 +2046,24 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         return $options;
     }
+
+    public function CopyQueuePermissions($src_userid, $dst_userid)
+    {
+        $this->db->Execute('DELETE FROM rtrights WHERE userid = ?', array($dst_userid));
+        return $this->db->Execute(
+            'INSERT INTO rtrights (userid, queueid, rights)
+            (SELECT ?, queueid, rights FROM rtrights WHERE userid = ?)',
+            array($dst_userid, $src_userid)
+        );
+    }
+
+    public function CopyCategoryPermissions($src_userid, $dst_userid)
+    {
+        $this->db->Execute('DELETE FROM rtcategoryusers WHERE userid = ?', array($dst_userid));
+        return $this->db->Execute(
+            'INSERT INTO rtcategoryusers (userid, categoryid)
+            (SELECT ?, categoryid FROM rtcategoryusers WHERE userid = ?)',
+            array($dst_userid, $src_userid)
+        );
+    }
 }

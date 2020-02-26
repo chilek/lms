@@ -191,6 +191,7 @@ version 25-git (????-??-??):
   - enhancement: if phpui.promotion_allow_modify_values_for_privileged_user is set to 'true
     ('false' by default), user can modify any promotion schema period values [chilan]
   - improvement: location selection is required when there are more than one location in list [chilan]
+  - enhancement: copy other resource permissions is possible from user add and edit forms [chilan]
 
 version 24.0 (2019-05-16):
 

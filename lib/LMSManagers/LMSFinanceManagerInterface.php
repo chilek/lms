@@ -153,4 +153,6 @@ interface LMSFinanceManagerInterface
     public function CheckNodeTariffRestrictions($aid, $nodes, $datefrom, $dateto);
 
     public function getCurrencyValue($currency, $date = null);
+
+    public function CopyCashRegistryPermissions($src_userid, $dst_userid);
 }

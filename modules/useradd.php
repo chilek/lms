@@ -5,7 +5,7 @@ use PragmaRX\Google2FA\Google2FA;
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -30,6 +30,8 @@ if (isset($_GET['fromuser'])) {
     header('Content-Type: application/json');
     die(json_encode($LMS->GetUserRights($_GET['fromuser'])));
 }
+
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'usercopypermissions.php');
 
 $acl = isset($_POST['acl']) ? $_POST['acl'] : array();
 $useradd = isset($_POST['useradd']) ? $_POST['useradd'] : array();
@@ -133,6 +135,10 @@ if (count($useradd)) {
         $useradd['accessfrom'] = $accessfrom;
         $useradd['accessto'] = $accessto;
         $id = $LMS->UserAdd($useradd);
+
+        if (isset($useradd['copy-permissions']) && !empty($useradd['src_userid'])) {
+            $LMS->CopyPermissions($useradd['src_userid'], $id, array_flip($useradd['copy-permissions']));
+        }
 
         if (isset($_POST['selected'])) {
             foreach ($_POST['selected'] as $idx => $name) {

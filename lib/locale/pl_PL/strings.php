@@ -4588,3 +4588,9 @@ $_LANG['from message'] = 'z wiadomości';
 $_LANG['No location has been selected!'] = 'Nie wybrano lokalizacji!';
 
 $_LANG['If ticket is assigned to event being created, empty description is not allowed!'] = 'W przypadku, gdy zgłoszenie jest przypisane do tworzonego zdarzenia, puste pole opisu nie jest dozwolone!';
+
+$_LANG['other resources'] = 'inne zasoby';
+$_LANG['helpdesk queues'] = 'kolejki helpdesk';
+$_LANG['helpdesk categories'] = 'kategorie helpdesk';
+$_LANG['cash registries'] = 'rejestry kasowe';
+$_LANG['promotion tariffs'] = 'taryfy promocji';

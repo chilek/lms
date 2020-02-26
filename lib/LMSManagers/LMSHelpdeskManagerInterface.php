@@ -132,4 +132,8 @@ interface LMSHelpdeskManagerInterface
     public function IsTicketLoop($ticketid, $parentid);
 
     public function GetRTSmtpOptions();
+
+    public function CopyQueuePermissions($src_userid, $dst_userid);
+
+    public function CopyCategoryPermissions($src_userid, $dst_userid);
 }

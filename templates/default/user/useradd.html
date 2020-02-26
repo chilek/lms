@@ -177,12 +177,14 @@
 							{button icon="clone" id="copy-rights" label="Copy rights"}
 							&nbsp;{trans("of selected user:")}
 							&nbsp;
-							<select id="from-user">
+							<select id="from-user" name="useradd[src_userid]">
 								<option value="">{trans("<!access-rights>- empty -")}</option>
 								{foreach $users as $user}
-									<option value="{$user.id}">{$user.rname} ({$user.login})</option>
+									<option value="{$user.id}"
+											{if isset($useradd.src_userid) && $useradd.src_userid == $user.id} selected{/if}>{$user.rname} ({$user.login})</option>
 								{/foreach}
 							</select>
+							{include file="user/usercopypermissions.html" form_variable_prefix="useradd" variables=$useradd}
 						</td>
 					</tr>
 					<tr id="user-rights">
