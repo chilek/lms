@@ -45,7 +45,7 @@ if (!$taxrate['validto']) {
 
 $taxrateedit = isset($_POST['taxrateedit']) ? $_POST['taxrateedit'] : null;
 
-if (count($taxrateedit)) {
+if (is_array($taxrateedit) && count($taxrateedit)) {
     foreach ($taxrateedit as $idx => $key) {
         $taxrateedit[$idx] = trim($key);
     }
