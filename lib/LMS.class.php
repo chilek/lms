@@ -58,7 +58,7 @@ class LMS
     protected $finance_manager;
     protected $event_manager;
     protected $document_manager;
-    protected $massage_manager;
+    protected $message_manager;
     protected $config_manager;
     protected $user_group_manager;
     protected $division_manager;
