@@ -262,6 +262,183 @@ switch ($type) {
         }
         break;
 
+    case 'transgus':
+        $division = intval($_POST['division']);
+        $phonecontacts = isset($_POST['phonecontacts']);
+
+        $customers = $DB->GetCol(
+            'SELECT id FROM customers
+                WHERE deleted = 0 AND divisionid = ? AND type = ? AND status = ? AND name <> ?',
+            array($division, CTYPES_PRIVATE, CSTATUS_CONNECTED, '')
+        );
+
+        $division = $LMS->GetDivision($division);
+
+        $content = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+        $content .= "<Operator>\n";
+        $content .= "\t<Jednostka>\n";
+        $content .= "\t\t<dataStanNa>" . date('d-m-Y') . "</dataStanNa>\n";
+        $content .= "\t\t<Nazwa>" . htmlspecialchars($division['name']) . "</Nazwa>\n";
+        $content .= "\t\t<Regon>" . $division['regon'] . "</Regon>\n";
+        $content .= "\t\t<Abonenci>\n";
+
+        $state_ident_by_ids = $DB->GetAllByKey('SELECT id, ident FROM location_states', 'id');
+        if (empty($state_ident_by_ids)) {
+            $state_ident_by_ids = array();
+        }
+
+        $city_idents_by_ids = $DB->GetAllByKey(
+            'SELECT lc.id, lc.ident AS city_ident, lc.name AS city_name,
+                lb.ident AS borough_ident, lb.name AS borough_name, lb.type AS borough_type,
+                ld.ident AS district_ident, ld.name AS district_name
+            FROM location_cities lc
+            JOIN location_boroughs lb ON lb.id = lc.boroughid
+            JOIN location_districts ld ON ld.id = lb.districtid
+            ORDER BY lc.id',
+            'id'
+        );
+
+        $street_ident_by_ids = $DB->GetAllByKey(
+            'SELECT id, ident FROM location_streets
+            ORDER BY id',
+            'id'
+        );
+
+        foreach ($customers as $customerid) {
+            $customer = $LMS->GetCustomer($customerid);
+            $content .= "\t\t\t<Abonent>\n";
+            $content .= "\t\t\t\t<Nazwisko>" . htmlspecialchars($customer['lastname']) . "</Nazwisko>\n";
+            $content .= "\t\t\t\t<Imie>" . htmlspecialchars($customer['name']) . "</Imie>\n";
+            if (preg_match('/^[0-9]{11}$/', $customer['ssn'])) {
+                $content .= "\t\t\t\t<Pesel>" . $customer['ssn'] . "</Pesel>\n";
+            }
+
+            if ($phonecontacts && !empty($customer['phones'])) {
+                $phones = array();
+                foreach ($customer['phones'] as $phone) {
+                    if (!($phone['type'] & CONTACT_DISABLED)) {
+                        $phones[] = $phone['phone'];
+                    }
+                }
+                $content .= "\t\t\t\t<NrTel>" . implode(', ', $phones) . "</NrTel>\n";
+            }
+
+            $locations = '';
+
+            foreach ($customer['addresses'] as $address) {
+                if (empty($address['location_city_name'])
+                    || ($address['location_address_type'] != BILLING_ADDRESS
+                        && $address['location_address_type'] != POSTAL_ADDRESS)) {
+                    continue;
+                }
+
+                switch ($address['location_address_type']) {
+                    case BILLING_ADDRESS:
+                        $location_content = "\t\t\t\t<AdresZamieszkania>\n";
+                        break;
+                    case POSTAL_ADDRESS:
+                        $location_content = "\t\t\t\t<AdresKoresp>\n";
+                        break;
+                }
+
+                $location_content .= "\t\t\t\t\t<Województwo>\n";
+                $location_content .= "\t\t\t\t\t\t<NazwaWojew>"
+                    . htmlspecialchars($address['location_state_name'] ?: trans('(undefined)'))
+                    . "</NazwaWojew>\n";
+                if (isset($state_ident_by_ids[$address['location_state']])) {
+                    $location_content .= "\t\t\t\t\t\t<KodWojew>"
+                        . $state_ident_by_ids[$address['location_state']]['ident']
+                        . "</KodWojew>\n";
+                }
+                $location_content .= "\t\t\t\t\t</Województwo>\n";
+
+                $teryt_city = isset($city_idents_by_ids[$address['location_city']])
+                    ? $city_idents_by_ids[$address['location_city']] : null;
+
+                $location_content .= "\t\t\t\t\t<Powiat>\n";
+                $location_content .= "\t\t\t\t\t\t<NazwaPowiatu>"
+                    . htmlspecialchars($teryt_city ? $teryt_city['district_name'] : trans('(undefined)'))
+                    . "</NazwaPowiatu>\n";
+                if ($teryt_city) {
+                    $location_content .= "\t\t\t\t\t\t<KodPowiatu>"
+                        . $teryt_city['district_ident']
+                        . "</KodPowiatu>\n";
+                }
+                $location_content .= "\t\t\t\t\t</Powiat>\n";
+
+                $location_content .= "\t\t\t\t\t<Gmina>\n";
+                $location_content .= "\t\t\t\t\t\t<NazwaGminy>"
+                    . htmlspecialchars($teryt_city ? $teryt_city['borough_name'] : trans('(undefined)'))
+                    . "</NazwaGminy>\n";
+                if ($teryt_city) {
+                    $location_content .= "\t\t\t\t\t\t<KodGminy>"
+                        . $teryt_city['borough_ident'] . $teryt_city['borough_type']
+                        . "</KodGminy>\n";
+                }
+                $location_content .= "\t\t\t\t\t</Gmina>\n";
+
+                $location_content .= "\t\t\t\t\t<Miejscowosc>\n";
+                $location_content .= "\t\t\t\t\t\t<NazwaMiejscowosci>"
+                    . htmlspecialchars($address['location_city_name'])
+                    . "</NazwaMiejscowosci>\n";
+                if ($teryt_city) {
+                    $location_content .= "\t\t\t\t\t\t<KodMiejscowosci>"
+                        . $teryt_city['city_ident']
+                        . "</KodMiejscowosci>\n";
+                }
+                $location_content .= "\t\t\t\t\t</Miejscowosc>\n";
+
+                if (!empty($address['location_street_name'])) {
+                    $location_content .= "\t\t\t\t\t<Ulica>\n";
+                    $location_content .= "\t\t\t\t\t\t<NazwaUlicy>"
+                        . htmlspecialchars($address['location_street_name'])
+                        . "</NazwaUlicy>\n";
+                    if (!empty($address['location_street']) && isset($street_ident_by_ids[$address['location_street']])) {
+                        $location_content .= "\t\t\t\t\t\t<KodUlicy>"
+                            . $street_ident_by_ids[$address['location_street']]['ident']
+                            . "</KodUlicy>\n";
+                    }
+                    $location_content .= "\t\t\t\t\t</Ulica>\n";
+                }
+
+                if (!empty($address['location_house'])) {
+                    $location_content .= "\t\t\t\t\t<NumerDomu>" . $address['location_house'] . "</NumerDomu>\n";
+                    if (!empty($address['location_flat'])) {
+                        $location_content .= "\t\t\t\t\t<NumerLokalu>" . $address['location_flat'] . "</NumerLokalu>\n";
+                    }
+                } else {
+                    $location_content .= "\t\t\t\t\t<NumerDomu>" . trans('(undefined)') . "</NumerDomu>\n";
+                }
+
+                switch ($address['location_address_type']) {
+                    case BILLING_ADDRESS:
+                        $locations = $location_content . "\t\t\t\t</AdresZamieszkania>\n" . $locations;
+                        break;
+                    case POSTAL_ADDRESS:
+                        $locations = $locations . $location_content . "\t\t\t\t</AdresKoresp>\n";
+                        break;
+                }
+            }
+
+            $content .= $locations;
+
+            $content .= "\t\t\t</Abonent>\n";
+        }
+
+        $content .= "\t\t</Abonenci>\n";
+        $content .= "\t</Jednostka>\n";
+        $content .= "</Operator>\n";
+
+        $attachment_name = strftime('TRANSGUS-%Y-%m-%d-%H-%M-%S.xml');
+
+        header('Content-Type: text/xml');
+        header('Content-Disposition: attachment; filename="' . $attachment_name . '"');
+        header('Pragma: public');
+
+        echo $content;
+
+        break;
+
     default:
         /*******************************************************/
 

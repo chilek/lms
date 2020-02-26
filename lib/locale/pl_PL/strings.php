@@ -24,6 +24,10 @@
  *  $Id$
  */
 
+$_LANG['Generate XML report'] = 'Generuj raport XML';
+$_LANG['Phone contacts:'] = 'Telefony kontaktowe:';
+$_LANG['(undefined)'] = '(nieokreślone)';
+
 $_LANG['Networks don\'t have the same mask!'] = 'Sieci nie posiadają tej samej maski!';
 $_LANG['Source address $a ($b) collides with destination address $c ($d)!'] = 'Adres źródłowy $a ($b) koliduje z adresem docelowym $c ($d)!';
 $_LANG['with compacting'] = 'z porządkowaniem';
