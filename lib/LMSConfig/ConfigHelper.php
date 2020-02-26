@@ -114,7 +114,7 @@ class ConfigHelper
             return false;
         }
 
-        trigger_error('Incorrect option value: '.$value);
+        Utils::triggerError('Incorrect option value: ' . $value, E_USER_NOTICE, 15);
     }
 
     public static function variableExists($name)

@@ -167,4 +167,16 @@ class Utils
     {
         return substr_count(sprintf("%b", $entities), '1');
     }
+
+    public static function triggerError($error_msg, $error_type = E_USER_NOTICE, $context = 1)
+    {
+        $stack = debug_backtrace();
+        for ($i = 0; $i < $context; $i++) {
+            if (false === ($frame = next($stack))) {
+                break;
+            }
+            $error_msg .= ", from " . $frame['function'] . ':' . $frame['file'] . ' line ' . $frame['line'];
+        }
+        return trigger_error($error_msg, $error_type);
+    }
 }
