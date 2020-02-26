@@ -220,13 +220,15 @@ if (isset($_POST['document'])) {
                     )
         );
 
-        foreach ($documentedit['attachments'] as $attachmentid => $attachment) {
-            if ($attachment['deleted']) {
-                $md5sum = $document['attachments'][$attachmentid]['md5sum'];
-                if ($DB->GetOne('SELECT COUNT(*) FROM documentattachments WHERE md5sum = ?', array($md5sum)) <= 1) {
-                    @unlink(DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum, 0, 2) . DIRECTORY_SEPARATOR . $md5sum);
+        if (isset($documentedit['attachments']) && is_array($documentedit['attachments'])) {
+            foreach ($documentedit['attachments'] as $attachmentid => $attachment) {
+                if ($attachment['deleted']) {
+                    $md5sum = $document['attachments'][$attachmentid]['md5sum'];
+                    if ($DB->GetOne('SELECT COUNT(*) FROM documentattachments WHERE md5sum = ?', array($md5sum)) <= 1) {
+                        @unlink(DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum, 0, 2) . DIRECTORY_SEPARATOR . $md5sum);
+                    }
+                    $DB->Execute('DELETE FROM documentattachments WHERE id = ?', array($attachmentid));
                 }
-                $DB->Execute('DELETE FROM documentattachments WHERE id = ?', array($attachmentid));
             }
         }
 
