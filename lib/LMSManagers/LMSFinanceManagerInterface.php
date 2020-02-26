@@ -155,4 +155,6 @@ interface LMSFinanceManagerInterface
     public function getCurrencyValue($currency, $date = null);
 
     public function CopyCashRegistryPermissions($src_userid, $dst_userid);
+
+    public function CopyPromotionTariffPermissions($src_userid, $dst_userid);
 }

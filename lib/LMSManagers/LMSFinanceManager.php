@@ -4218,4 +4218,55 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             array($dst_userid, $src_userid)
         );
     }
+
+    public function CopyPromotionTariffPermissions($src_userid, $dst_userid)
+    {
+        $assigns = $this->db->GetAll('SELECT id, data, 0 AS changed FROM promotionassignments');
+        if (empty($assigns)) {
+            return 0;
+        }
+
+        foreach ($assigns as &$assign) {
+            $assign['changed'] = intval($assign['changed']);
+            $periods = explode(';', $assign['data']);
+            foreach ($periods as &$period) {
+                $cols = explode(':', $period);
+                if (count($cols) == 3 && !empty($cols[2])) {
+                    $users = array_flip(explode(',', $cols[2]));
+                    if (isset($users[$src_userid])) {
+                        if (!isset($users[$dst_userid])) {
+                            $users[$dst_userid] = count($users);
+                            $assign['changed'] = 1;
+                        }
+                    } elseif (isset($users[$dst_userid])) {
+                        unset($users[$dst_userid]);
+                        $assign['changed'] = 1;
+                    }
+                    if ($assign['changed']) {
+                        $cols[2] = implode(',', array_keys($users));
+                        $period = implode(':', $cols);
+                    }
+                }
+            }
+            unset($period);
+            if ($assign['changed']) {
+                $assign['data'] = implode(';', $periods);
+            }
+        }
+        unset($assign);
+
+        $change_count = 0;
+        foreach ($assigns as $assign) {
+            if ($assign['changed']) {
+                if ($this->db->Execute(
+                    'UPDATE promotionassignments SET data = ? WHERE id = ?',
+                    array($assign['data'], $assign['id'])
+                )) {
+                    $change_count++;
+                }
+            }
+        }
+
+        return $change_count;
+    }
 }

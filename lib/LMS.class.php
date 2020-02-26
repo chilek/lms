@@ -3223,6 +3223,12 @@ class LMS
         return $manager->CopyCashRegistryPermissions($src_userid, $dst_userid);
     }
 
+    public function CopyPromotionTariffPermissions($src_userid, $dst_userid)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->CopyPromotionTariffPermissions($src_userid, $dst_userid);
+    }
+
     /**
      * VoIP functions
      */
@@ -4479,6 +4485,7 @@ class LMS
             $this->CopyCategoryPermissions($src_userid, $dst_userid);
             $this->CopyDocumentPermissions($src_userid, $dst_userid);
             $this->CopyCashRegistryPermissions($src_userid, $dst_userid);
+            $this->CopyPromotionTariffPermissions($src_userid, $dst_userid);
         } else {
             if (empty($permissions)) {
                 return;
@@ -4496,6 +4503,10 @@ class LMS
                         break;
                     case 'cash-registries':
                         $this->CopyCashRegistryPermissions($src_userid, $dst_userid);
+                        break;
+                    case 'promotion-tariffs':
+                        $this->CopyPromotionTariffPermissions($src_userid, $dst_userid);
+                        break;
                 }
             }
         }
