@@ -138,6 +138,14 @@ if (count($useradd)) {
 
         if (isset($useradd['copy-permissions']) && !empty($useradd['src_userid'])) {
             $LMS->CopyPermissions($useradd['src_userid'], $id, array_flip($useradd['copy-permissions']));
+            $LMS->executeHook(
+                'user_modify_copy_permissions',
+                array(
+                    'src-userid' => $useradd['src_userid'],
+                    'dst-userid' => $id,
+                    'copy-permissions' => $useradd['copy-permissions'],
+                )
+            );
         }
 
         if (isset($_POST['selected'])) {

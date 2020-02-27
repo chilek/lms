@@ -132,6 +132,14 @@ if ($userinfo) {
 
         if (isset($userinfo['copy-permissions']) && !empty($userinfo['src_userid'])) {
             $LMS->CopyPermissions($userinfo['src_userid'], $userinfo['id'], array_flip($userinfo['copy-permissions']));
+            $LMS->executeHook(
+                'user_modify_copy_permissions',
+                array(
+                    'src-userid' => $userinfo['src_userid'],
+                    'dst-userid' => $userinfo['id'],
+                    'copy-permissions' => $userinfo['copy-permissions'],
+                )
+            );
         }
 
         if ($SYSLOG) {

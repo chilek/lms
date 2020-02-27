@@ -193,6 +193,8 @@ version 25-git (????-??-??):
   - improvement: location selection is required when there are more than one location in list [chilan]
   - enhancement: copy other resource permissions is possible from user add and edit forms [chilan]
   - enhancement: TransGUS report support added [chilan]
+  - enhancement: new plugins hooks 'user_modify_copy_permissions' and 'user_copy_permissions_prepare'
+    were introduced and they allow plugins to extend copy of user permissions to other resources [chilan]
 
 version 24.0 (2019-05-16):
 

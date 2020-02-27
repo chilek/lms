@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$SMARTY->assign('user_copy_permissions', array(
+$user_copy_permissions = array(
     0 => array(
         'name' => 'helpdesk-queues',
         'label' => trans("helpdesk queues"),
@@ -45,4 +45,14 @@ $SMARTY->assign('user_copy_permissions', array(
         'name' => 'promotion-tariffs',
         'label' => trans("promotion tariffs"),
     ),
-));
+);
+
+$hook_data = $LMS->executeHook(
+    'user_copy_permissions_prepare',
+    array(
+        'user_copy_permissions' => $user_copy_permissions,
+    )
+);
+$user_copy_permissions = $hook_data['user_copy_permissions'];
+
+$SMARTY->assign('user_copy_permissions', $user_copy_permissions);
