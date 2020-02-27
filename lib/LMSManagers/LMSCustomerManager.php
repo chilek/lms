@@ -204,21 +204,21 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             }
             return $this->db->GetOne(
                 'SELECT SUM(value * currencyvalue) FROM cash
-				LEFT JOIN documents d ON d.id = cash.docid
-				LEFT JOIN customers c ON c.id = cash.customerid
-				LEFT JOIN divisions ON divisions.id = c.divisionid
-				WHERE c.id = ? AND ((cash.docid IS NULL AND ((cash.type <> 0 AND cash.time < ' . $totime . ')
+				LEFT JOIN documents doc ON doc.id = cash.docid
+				LEFT JOIN customers cust ON cust.id = cash.customerid
+				LEFT JOIN divisions ON divisions.id = cust.divisionid
+				WHERE cust.id = ? AND ((cash.docid IS NULL AND ((cash.type <> 0 AND cash.time < ' . $totime . ')
 					OR (cash.type = 0 AND cash.time +
-						(CASE c.paytime WHEN -1
+						(CASE cust.paytime WHEN -1
 							THEN
 								(CASE WHEN divisions.inv_paytime IS NULL
 									THEN ' . $deadline . '
 									ELSE divisions.inv_paytime
 								END)
-							ELSE c.paytime
+							ELSE cust.paytime
 						END) * 86400 < ' . $totime . ')))
-						OR (cash.docid IS NOT NULL AND ((d.type IN (?, ?) AND cash.time < ' . $totime . '
-							OR (d.type IN (?, ?) AND d.cdate + (d.paytime + 0) * 86400 < ' . $totime . ')))))',
+						OR (cash.docid IS NOT NULL AND ((doc.type IN (?, ?) AND cash.time < ' . $totime . '
+							OR (doc.type IN (?, ?) AND doc.cdate + (doc.paytime + 0) * 86400 < ' . $totime . ')))))',
                 array($id, DOC_RECEIPT, DOC_CNOTE, DOC_INVOICE, DOC_DNOTE)
             );
         } else {
