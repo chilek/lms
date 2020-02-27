@@ -1403,80 +1403,98 @@
 {/if}
 
 {if $printmenu == "customer"}
-       <FORM method="POST" name="printtransgus" id="printtransgus" action="?m=customerprint&type=transgus">
-               <INPUT type="submit" class="hiddenbtn">
-               <TABLE class="lmsbox">
-                       <COLGROUP>
-                               <COL style="width: 1%;">
-                               <COL style="width: 99%;">
-                       </COLGROUP>
-                       <THEAD>
-                       <TR>
-                               <TH scope="col">
-                                       <IMG src="img/customer.gif" alt="">
-                               </TH>
-                               <TH scope="col" class="bold nobr">
-                                       {trans("TransGUS:")}
-                               </TH>
-                       </TR>
-                       </THEAD>
-                       <TBODY>
-                       <TR>
-                               <TD class="container" style="width: 100%;" colspan="2">
-                                       <TABLE width="100%" cellpadding="3">
-                                               <COLGROUP>
-                                                       <COL style="width: 1%;">
-                                                       <COL style="width: 1%;">
-                                                       <COL style="width: 98%;">
-                                               </COLGROUP>
-                                               <TR>
-                                                       <TD class="nobr"><IMG src="img/division.gif" alt=""></TD>
-                                                       <TD class="bold nobr">{trans("Division")}:</TD>
-                                                       <TD class="nobr">
-                                                               <SELECT size="1" name="division" {tip text="Select division"}>
-                                                                       <OPTION value="0">{trans("- none -")}</OPTION>
-                                                                       {foreach $divisions as $item}
-                                                                               <OPTION value="{$item.id}">{$item.shortname}</OPTION>
-                                                                       {/foreach}
-                                                               </SELECT>
-                                                       </TD>
-                                               </TR>
-                                               <TR>
-                                                       <TD class="nobr"><IMG src="img/phone.gif" alt=""></TD>
-                                                       <TD class="bold nobr">
-                                                               <label for="transgus-phonecontacts">
-                                                                       {trans("Phone contacts:")}
-                                                               </label>
-                                                       </TD>
-                                                       <TD class="nobr">
-                                                               <input type="checkbox" id="transgus-phonecontacts" name="phonecontacts" value="1">
-                                                       </TD>
-                                               </TR>
-                                       </TABLE>
-                               </TD>
-                       </TR>
-                       <TR>
-                               <TD style="width: 100%;" class="text-right" colspan="2">
-                                       <A id="transgus-submit" href="#">{trans("Generate XML report")} <IMG src="img/print.gif" alt="" style="margin: 0px 2px;"></A>
-                               </TD>
-                       </TR>
-                       </TBODY>
-               </TABLE>
-       </FORM>
+	<FORM method="POST" name="printtransgus" id="printtransgus" action="?m=customerprint&type=transgus">
+		<INPUT type="submit" class="hiddenbtn">
+		<TABLE class="lmsbox">
+			<COLGROUP>
+				<COL style="width: 1%;">
+				<COL style="width: 99%;">
+			</COLGROUP>
+			<THEAD>
+			<TR>
+				<TH scope="col">
+					<IMG src="img/customer.gif" alt="">
+				</TH>
+				<TH scope="col" class="bold nobr">
+					{trans("TransGUS:")}
+				</TH>
+			</TR>
+			</THEAD>
+			<TBODY>
+			<TR>
+				<TD class="container" style="width: 100%;" colspan="2">
+					<TABLE width="100%" cellpadding="3">
+						<COLGROUP>
+							<COL style="width: 1%;">
+							<COL style="width: 1%;">
+							<COL style="width: 98%;">
+						</COLGROUP>
+						<TR>
+							<TD class="nobr"><IMG src="img/division.gif" alt=""></TD>
+							<TD class="bold nobr">{trans("Division")}:</TD>
+							<TD class="nobr">
+								<SELECT size="1" name="division" {tip text="Select division"}>
+									<OPTION value="0">{trans("- none -")}</OPTION>
+									{foreach $divisions as $item}
+										<OPTION value="{$item.id}">{$item.shortname}</OPTION>
+									{/foreach}
+								</SELECT>
+							</TD>
+						</TR>
+						<TR>
+							<TD>
+								<IMG src="img/group.gif" alt="">
+							</TD>
+							<TD class="bold nobr">
+								{trans("Group:")}
+							</TD>
+							<TD class="nobr">
+								<SELECT size="4" name="customergroups[]" class="lms-ui-multiselect"
+										multiple {tip text="Select group"}
+										data-default-value="{trans("- all groups -")}">
+									{foreach $customergroups as $customergroup}
+										<OPTION value="{$customergroup.id}">{$customergroup.name|truncate:30:"...":true}</OPTION>
+									{/foreach}
+								</SELECT>
+							</TD>
+						</TR>
+						<TR>
+							<TD class="nobr"><IMG src="img/phone.gif" alt=""></TD>
+							<TD class="bold nobr">
+								<label for="transgus-phonecontacts">
+									{trans("Phone contacts:")}
+								</label>
+							</TD>
+							<TD class="nobr">
+								<input type="checkbox" id="transgus-phonecontacts" name="phonecontacts" value="1">
+							</TD>
+						</TR>
+					</TABLE>
+				</TD>
+			</TR>
+			<TR>
+				<TD style="width: 100%;" class="text-right" colspan="2">
+					<A id="transgus-submit" href="#">{trans("Generate XML report")}
+						<IMG src="img/print.gif" alt="" style="margin: 0px 2px;"></A>
+				</TD>
+			</TR>
+			</TBODY>
+		</TABLE>
+	</FORM>
 
-       <script>
+	<script>
 
-       $(function() {
-               $("#transgus-submit").click(function() {
-                       if ($('form[name="printtransgus"] select[name="division"]').val() == '0') {
-                               alertDialog($t("Division not selected!"), this);
-                               return;
-                       }
-                       javascript:document.printtransgus.submit();
-               });
-       });
+		$(function () {
+			$("#transgus-submit").click(function () {
+				if ($('form[name="printtransgus"] select[name="division"]').val() == '0') {
+					alertDialog($t("Division not selected!"), this);
+					return;
+				}
+				javascript:document.printtransgus.submit();
+			});
+		});
 
-       </script>
+	</script>
 
 {/if}
 

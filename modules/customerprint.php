@@ -265,10 +265,17 @@ switch ($type) {
     case 'transgus':
         $division = intval($_POST['division']);
         $phonecontacts = isset($_POST['phonecontacts']);
+        if (isset($_POST['customergroups'])) {
+            $customergroups = Utils::filterIntegers($_POST['customergroups']);
+        } else {
+            $customergroups = array();
+        }
 
         $customers = $DB->GetCol(
-            'SELECT id FROM customers
-                WHERE deleted = 0 AND divisionid = ? AND type = ? AND status = ? AND name <> ?',
+            'SELECT c.id FROM customers c
+                WHERE c.deleted = 0 AND c.divisionid = ? AND c.type = ? AND c.status = ? AND c.name <> ?
+                    ' . (empty($customergroups) ? '' : ' AND c.id IN (SELECT DISTINCT ca.customerid FROM customerassignments ca
+                        WHERE ca.customergroupid IN (' . implode(',', $customergroups) . '))'),
             array($division, CTYPES_PRIVATE, CSTATUS_CONNECTED, '')
         );
 
