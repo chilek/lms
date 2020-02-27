@@ -31,7 +31,7 @@ if (isset($_GET['fromuser'])) {
     die(json_encode($LMS->GetUserRights($_GET['fromuser'])));
 }
 
-include(MODULES_DIR . DIRECTORY_SEPARATOR . 'usercopypermissions.php');
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'usercopypermissions.inc.php');
 
 $acl = isset($_POST['acl']) ? $_POST['acl'] : array();
 $useradd = isset($_POST['useradd']) ? $_POST['useradd'] : array();

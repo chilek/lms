@@ -46,7 +46,7 @@ if (isset($_GET['forcepasswdchange'])) {
     $SESSION->redirect($_SERVER['HTTP_REFERER']);
 }
 
-include(MODULES_DIR . DIRECTORY_SEPARATOR . 'usercopypermissions.php');
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'usercopypermissions.inc.php');
 
 $userinfo = isset($_POST['userinfo']) ? $_POST['userinfo'] : false;
 
