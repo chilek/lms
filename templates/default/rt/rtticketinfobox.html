@@ -349,7 +349,7 @@
 			<A id="print-anchor" href="?m=rtticketprint&id={$ticket.ticketid}"><IMG src="img/print.gif" alt=""> {trans("Print")}</A>
 			<br>
 			{if $ticket.owner != $layout.logid}
-			<A href="?m=rtticketedit&amp;id={$ticket.ticketid}&amp;action=assign"><IMG src="img/users.gif" alt=""> {trans("Assign to me")}</A>
+			<A id="ticket-assign-to-me" href="?m=rtticketedit&id={$ticket.ticketid}&action=assign"><IMG src="img/users.gif" alt=""> {trans("Assign to me")}</A>
 			{/if}
 			{if $ticket.state != $smarty.const.RT_RESOLVED}
 				{if (ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events')) && !empty($ticket['openeventcount'])}
@@ -435,26 +435,52 @@
 {/if}
 
 <script>
-	$('#delete-rtticket').click(function() {
-		var name = $(this).attr('data-name');
-		confirmDialog($t("Are you sure, you want to remove ticket '$a'?", name), this).done(function() {
-			location.href = $(this).attr('href');
+
+	$(function() {
+		$('#delete-rtticket').click(function () {
+			var name = $(this).attr('data-name');
+			confirmDialog($t("Are you sure, you want to remove ticket '$a'?", name), this).done(function () {
+				location.href = $(this).attr('href');
+			});
+			return false;
 		});
-		return false;
-	});
-	$('#restore-rtticket').click(function() {
-		var name = $(this).attr('data-name');
-		confirmDialog($t("Are you sure, you want to restore ticket $a?", name), this).done(function() {
-			location.href = $(this).attr('href');
+		$('#restore-rtticket').click(function () {
+			var name = $(this).attr('data-name');
+			confirmDialog($t("Are you sure, you want to restore ticket $a?", name), this).done(function () {
+				location.href = $(this).attr('href');
+			});
+			return false;
 		});
-		return false;
-	});
-	$('#remove-rtticket').click(function() {
-		var name = $(this).attr('data-name');
-		confirmDialog($t("Are you sure, you want to restore ticket $a?", name), this).done(function() {
-			location.href = $(this).attr('href');
+		$('#remove-rtticket').click(function () {
+			var name = $(this).attr('data-name');
+			confirmDialog($t("Are you sure, you want to restore ticket $a?", name), this).done(function () {
+				location.href = $(this).attr('href');
+			});
+			return false;
 		});
-		return false;
+
+		$('#ticket-assign-to-me').click(function() {
+			var link = $(this);
+			$.ajax(
+				link.attr('href') + '&check-conflict=1',
+				{
+					async: true,
+					method: "GET",
+					dataType: "json",
+					success: function(data) {
+						if (data) {
+							confirmDialog($t("Ticket has already been assigned to other user in mean-time. Are you sure you want to re-assign ticket to you?"), link).done(function() {
+								location.href = link.attr('href');
+							});
+						} else {
+							location.href = link.attr('href');
+						}
+					}
+				}
+			);
+			return false;
+		});
 	});
+
 </script>
 

@@ -2066,4 +2066,13 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             array($dst_userid, $src_userid)
         );
     }
+
+    public function TicketIsAssigned($ticketid)
+    {
+        return $this->db->Execute(
+            'SELECT 1 FROM rttickets
+            WHERE id = ? AND owner = ?',
+            array($ticketid, Auth::GetCurrentUser())
+        ) > 0;
+    }
 }

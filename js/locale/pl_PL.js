@@ -23,6 +23,10 @@
  *  $Id$
  */
 
+$_LANG['Generate XML report'] = 'Generuj raport XML';
+$_LANG['Phone contacts:'] = 'Telefony kontaktowe:';
+$_LANG['(undefined)'] = '(nieokreślone)';
+
 $_LANG['Networks don\'t have the same mask!'] = 'Sieci nie posiadają tej samej maski!';
 $_LANG['Source address $a ($b) collides with destination address $c ($d)!'] = 'Adres źródłowy $a ($b) koliduje z adresem docelowym $c ($d)!';
 $_LANG['with compacting'] = 'z porządkowaniem';
@@ -4588,3 +4592,13 @@ $_LANG['from ticket'] = 'ze zgłoszenia';
 $_LANG['from message'] = 'z wiadomości';
 
 $_LANG['No location has been selected!'] = 'Nie wybrano lokalizacji!';
+
+$_LANG['If ticket is assigned to event being created, empty description is not allowed!'] = 'W przypadku, gdy zgłoszenie jest przypisane do tworzonego zdarzenia, puste pole opisu nie jest dozwolone!';
+
+$_LANG['other resources'] = 'inne zasoby';
+$_LANG['helpdesk queues'] = 'kolejki helpdesk';
+$_LANG['helpdesk categories'] = 'kategorie helpdesk';
+$_LANG['cash registries'] = 'rejestry kasowe';
+$_LANG['promotion tariffs'] = 'taryfy promocji';
+
+$_LANG['Ticket has already been assigned to other user in mean-time. Are you sure you want to re-assign ticket to you?'] = 'Zgłoszenie zostało już przypisane w międzyczasie do innego użytkownika. Jesteś pewien, że chcesz je przypisać na nowo do siebie?';

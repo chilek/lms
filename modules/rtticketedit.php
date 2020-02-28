@@ -104,6 +104,10 @@ if ($id && !isset($_POST['ticket'])) {
                 $SESSION->redirect('?m=rtticketview&id=' . $id);
                 break;
             case 'assign':
+                if (isset($_GET['check-conflict'])) {
+                    header('Content-Type: application/json');
+                    die(json_encode($LMS->TicketIsAssigned($id)));
+                }
                 $LMS->TicketChange($id, array('owner' => Auth::GetCurrentUser()));
                 $SESSION->redirect('?m=rtticketview&id=' . $id);
                 break;

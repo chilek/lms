@@ -4598,3 +4598,5 @@ $_LANG['helpdesk queues'] = 'kolejki helpdesk';
 $_LANG['helpdesk categories'] = 'kategorie helpdesk';
 $_LANG['cash registries'] = 'rejestry kasowe';
 $_LANG['promotion tariffs'] = 'taryfy promocji';
+
+$_LANG['Ticket has already been assigned to other user in mean-time. Are you sure you want to re-assign ticket to you?'] = 'Zgłoszenie zostało już przypisane w międzyczasie do innego użytkownika. Jesteś pewien, że chcesz je przypisać na nowo do siebie?';

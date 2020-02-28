@@ -195,6 +195,7 @@ version 25-git (????-??-??):
   - enhancement: TransGUS report support added [chilan]
   - enhancement: new plugins hooks 'user_modify_copy_permissions' and 'user_copy_permissions_prepare'
     were introduced and they allow plugins to extend copy of user permissions to other resources [chilan]
+  - enhancement: implemented ticket assignment conflict detection [chilan]
 
 version 24.0 (2019-05-16):
 

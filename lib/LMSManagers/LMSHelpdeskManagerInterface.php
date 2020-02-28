@@ -136,4 +136,6 @@ interface LMSHelpdeskManagerInterface
     public function CopyQueuePermissions($src_userid, $dst_userid);
 
     public function CopyCategoryPermissions($src_userid, $dst_userid);
+
+    public function TicketIsAssigned($ticketid);
 }

@@ -2037,6 +2037,11 @@ class LMS
         return $manager->CopyCategoryPermissions($src_userid, $dst_userid);
     }
 
+    public function TicketIsAssigned($ticketid)
+    {
+        $manager = $this->getHelpdeskManager();
+        return $manager->TicketIsAssigned($ticketid);
+    }
     /*
      *  LMS-UI configuration
      */

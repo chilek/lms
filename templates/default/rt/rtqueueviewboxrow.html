@@ -102,7 +102,7 @@
 			</a>
 		{/if}
 		{if !$ticket.ownerid}
-			<A href="#" onclick="location.href = '?m=rtqueueview&ticketid={$ticket.id}&action=assign' + get_backid(this);">
+			<A href="?m=rtqueueview&ticketid={$ticket.id}&action=assign" class="ticket-assign-to-me">
 				<img src="img/users.gif" alt="" title="{trans("Assign to me")}">
 			</A>
 		{/if}
