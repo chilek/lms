@@ -2071,7 +2071,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     {
         return $this->db->Execute(
             'SELECT 1 FROM rttickets
-            WHERE id = ? AND owner = ?',
+            WHERE id = ? AND owner <> ?',
             array($ticketid, Auth::GetCurrentUser())
         ) > 0;
     }
