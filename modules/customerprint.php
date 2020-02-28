@@ -272,10 +272,10 @@ switch ($type) {
         }
 
         $customers = $DB->GetCol(
-            'SELECT c.id FROM customers c
+            'SELECT DISTINCT c.id FROM customers c
+                ' . (empty($customergroups) ? '' : 'JOIN customerassignments ca ON ca.customerid = c.id') . '
                 WHERE c.deleted = 0 AND c.divisionid = ? AND c.type = ? AND c.status = ? AND c.name <> ?
-                    ' . (empty($customergroups) ? '' : ' AND c.id IN (SELECT DISTINCT ca.customerid FROM customerassignments ca
-                        WHERE ca.customergroupid IN (' . implode(',', $customergroups) . '))'),
+                    ' . (empty($customergroups) ? '' : ' AND ca.customergroupid IN (' . implode(',', $customergroups) . ')'),
             array($division, CTYPES_PRIVATE, CSTATUS_CONNECTED, '')
         );
 
