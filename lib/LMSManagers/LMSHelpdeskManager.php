@@ -1272,7 +1272,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $props['invprojectid'] = $ticket['invprojectid'];
         }
 
-        if (array_key_exists('verifierid', $props)) {
+        if (array_key_exists('netdevid', $props)) {
             if ($ticket['netdevid'] != $props['netdevid']) {
                 $netdev_manager = new LMSNetDevManager($this->db, $this->auth, $this->cache, $this->syslog);
                 if (isset($props['netdevid'])) {
