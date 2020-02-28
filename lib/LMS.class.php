@@ -29,6 +29,7 @@
 
 class LMS
 {
+    const SOFTWARE_NAME = 'LMS';
 
     public $DB;   // database object
     public $AUTH;   // object from Session.class.php (session management)

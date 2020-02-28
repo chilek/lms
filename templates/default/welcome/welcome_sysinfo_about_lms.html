@@ -7,14 +7,14 @@
     <thead >
         <tr onclick="showOrHide('welcome_sysinfo_about_lms-{$layout.module}');">
             <td class="text-center bold nobr" colspan="2">
-                <img src="img/logo-ico.png" alt=""> {trans("About LMS:")}
+                <img src="img/logo-ico.png" alt=""> {t a=LMS::SOFTWARE_NAME}About $a:{/t}
             </td>
         </tr>
     </thead>
     <tbody id="welcome_sysinfo_about_lms-{$layout.module}" style="display:none;">
         <tr>
             <td class="text-right bold">
-                <a href="http://www.lms.org.pl" rel="external">{trans("LMS version:")}</a>
+                <a href="http://www.lms.org.pl" rel="external">{t a=LMS::SOFTWARE_NAME}$a version:{/t}</a>
             </td>
             <td>
                 {$layout.lmsv}{if $layout.lmsvr} ({$layout.lmsvr}){/if}

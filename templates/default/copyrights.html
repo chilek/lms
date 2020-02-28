@@ -2,7 +2,7 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-<H1 class="text-center">{trans("LMS version")} {$layout.lmsv} ({$layout.lmsvr})</H1>
+<H1 class="text-center">{t a=LMS::SOFTWARE_NAME}$a version{/t} {$layout.lmsv} ({$layout.lmsvr})</H1>
 <P class="text-center bold">Copyright &copy; 2001-{$smarty.now|date_format:'%Y'} LMS Developers</P>
 
 <P class="txt">{trans("This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License Version 2 as published by the Free Software Foundation.")}</P>
