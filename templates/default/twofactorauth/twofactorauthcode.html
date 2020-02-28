@@ -9,7 +9,7 @@
 	{include file="jquery.html" language=$LANGDEFS.$_ui_language.html lms_language=$_ui_language}
     <link href="{ConfigHelper::getConfig('phpui.style', 'css/style.css')}" rel="stylesheet" type="text/css">
     <link href="img/lms-net.gif" rel="shortcut icon">
-    <title>::: {trans("Welcome to LMS")} {$layout.lmsv} :::</title>
+    <title>::: {t a=LMS::SOFTWARE_NAME}Welcome to $a{/t} {$layout.lmsv} :::</title>
 	<style>
 		body {
 			justify-content: center;
