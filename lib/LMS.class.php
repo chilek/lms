@@ -30,6 +30,8 @@
 class LMS
 {
     const SOFTWARE_NAME = 'LMS';
+    const SOFTWARE_VERSION = '25-git';
+    const SOFTWARE_REVISION = '$Format:%cI$'; // %H for last commit checksum
 
     public $DB;   // database object
     public $AUTH;   // object from Session.class.php (session management)
@@ -37,8 +39,6 @@ class LMS
     public $cache;  // internal cache
     public $hooks = array(); // registered plugin hooks
     public $xajax;  // xajax object
-    public $_version = '25-git'; // class version
-    public $_revision = '$Format:%cI$'; // %H for last commit checksum
     public static $currency = null;
     public static $default_currency = null;
     private $mail_object = null;
@@ -77,11 +77,16 @@ class LMS
 
         $this->cache = new LMSCache();
 
-        if (preg_match('/.+Format:.+/', $this->_revision)) {
-            $this->_revision = '';
-        }
-
         self::$lms = $this;
+    }
+
+    public static function getSoftwareRevision()
+    {
+        if (preg_match('/.+Format:.+/', self::SOFTWARE_REVISION)) {
+            return '';
+        } else {
+            return self::SOFTWARE_REVISION;
+        }
     }
 
     public function _postinit()
@@ -2178,7 +2183,7 @@ class LMS
             $lastcheck = 0;
         }
         if ($lastcheck + ConfigHelper::getConfig('phpui.check_for_updates_period') < $time) {
-            list($v, ) = explode(' ', $this->_version);
+            list($v, ) = explode(' ', self::SOFTWARE_VERSION);
 
             if ($content = fetch_url('http://register.lms.org.pl/update.php?uiid=' . $uiid . '&v=' . $v)) {
                 if ($lastcheck == 0) {
@@ -2263,7 +2268,7 @@ class LMS
                 }
             }
 
-            $headers['X-Mailer'] = 'LMS-' . $this->_version;
+            $headers['X-Mailer'] = 'LMS-' . self::SOFTWARE_VERSION;
             if (!ConfigHelper::checkConfig('mail.hide_sensitive_headers')) {
                 if (!empty($_SERVER['REMOTE_ADDR'])) {
                     $headers['X-Remote-IP'] = $_SERVER['REMOTE_ADDR'];
@@ -2370,7 +2375,7 @@ class LMS
                 )
             );
 
-            $this->mail_object->XMailer = 'LMS-' . $this->_version;
+            $this->mail_object->XMailer = 'LMS-' . self::SOFTWARE_VERSION;
             if (!ConfigHelper::checkConfig('mail.hide_sensitive_headers')) {
                 if (!empty($_SERVER['REMOTE_ADDR'])) {
                     $this->mail_object->addCustomHeader('X-Remote-IP: '.$_SERVER['REMOTE_ADDR']);

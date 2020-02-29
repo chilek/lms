@@ -227,8 +227,8 @@ $SMARTY->debugging = ConfigHelper::checkConfig('phpui.smarty_debug');
 require_once(USERPANEL_LIB_DIR . DIRECTORY_SEPARATOR . 'smarty_addons.php');
 
 $layout['lmsdbv'] = $DB->GetVersion();
-$layout['lmsv'] = $LMS->_version;
-$layout['lmsvr'] = $LMS->_revision;
+$layout['lmsv'] = LMS::SOFTWARE_VERSION;
+$layout['lmsvr'] = LMS::getSoftwareRevision();
 $layout['smarty_version'] = SMARTY_VERSION;
 $layout['hostname'] = hostname();
 $layout['dberrors'] =& $DB->GetErrors();

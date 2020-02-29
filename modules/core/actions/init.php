@@ -53,8 +53,8 @@ $layout['logname'] = $AUTH->logname;
 $layout['lmsdbv'] = $DB->GetVersion();
 $layout['smarty_version'] = $SMARTY->_version;
 $layout['hostname'] = hostname();
-$layout['lmsv'] = '1.11-git';
-$layout['lmsvr'] = $LMS->_revision;
+$layout['lmsv'] = LMS::SOFTWARE_VERSION;
+$layout['lmsvr'] = LMS::getSoftwareRevision();
 $layout['dberrors'] =& $DB->GetErrors();
 $layout['popup'] = isset($_GET['popup']) ? true : false;
 

@@ -35,7 +35,7 @@ if (ConfigHelper::checkConfig('privileges.superuser')) {
     $content = $LMS->CheckUpdates();
 
     if (isset($content['newer_version'])) {
-        list($v, ) = preg_split('/\s+/', $LMS->_version);
+        list($v, ) = preg_split('/\s+/', LMS::SOFTWARE_VERSION);
 
         if (version_compare($content['newer_version'], $v) > 0) {
             $SMARTY->assign('newer_version', $content['newer_version']);
