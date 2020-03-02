@@ -1390,6 +1390,24 @@ foreach ($assigns as $assign) {
     }
 }
 
+// invoice auto-closes
+if ($check_invoices) {
+    $DB->Execute(
+        "UPDATE documents SET closed = 1
+		WHERE customerid IN (
+			SELECT c.customerid
+			FROM cash c
+			WHERE c.time <= ?NOW?
+				" . (!empty($groupnames) ? $customergroups : '') . "
+			GROUP BY c.customerid
+			HAVING SUM(c.value * c.currencyvalue) >= 0
+		) AND type IN (?, ?, ?)
+			AND cdate <= ?NOW?
+			AND closed = 0",
+        array(DOC_INVOICE, DOC_CNOTE, DOC_DNOTE)
+    );
+}
+
 if ($delete_old_assignments_after_days) {
     // delete old assignments
     $DB->Execute(
