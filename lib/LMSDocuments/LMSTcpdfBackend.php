@@ -54,7 +54,7 @@ class LMSTcpdfBackend extends LMSTCPDF
         $this->setLanguageArray($l);
 
         /* disable font subsetting to improve performance */
-        $this->setFontSubsetting(false);
+        $this->setFontSubsetting(true);
 
         $this->AppendPage();
     }
