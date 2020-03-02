@@ -26,6 +26,8 @@
 
 class LMSTcpdfInvoice extends LMSInvoice
 {
+    const TCPDF_FONT = 'liberationsans';
+
     private $use_alert_color;
 
     public function __construct($title, $pagesize = 'A4', $orientation = 'portrait')
@@ -48,7 +50,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         $this->backend->SetTextColor(0);
         $this->backend->SetDrawColor(0, 0, 0);
         $this->backend->SetLineWidth(0.1);
-        $this->backend->SetFont('liberationsans', 'B', 7);
+        $this->backend->SetFont(self::TCPDF_FONT, 'B', 7);
 
         $margins = $this->backend->getMargins();
         $table_width = $this->backend->getPageWidth() - ($margins['left'] + $margins['right']);
@@ -160,7 +162,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         }
 
         $this->backend->Ln();
-        $this->backend->SetFont('liberationsans', '', 7);
+        $this->backend->SetFont(self::TCPDF_FONT, '', 7);
 
         /* invoice correction data */
         if (isset($this->data['invoice'])) {
@@ -201,13 +203,13 @@ class LMSTcpdfInvoice extends LMSInvoice
                 }
             }
 
-            $this->backend->SetFont('liberationsans', 'B', 8);
+            $this->backend->SetFont(self::TCPDF_FONT, 'B', 8);
             $this->backend->Cell($sum, 5, trans('Total:'), 0, 0, 'R', 0, '', 1);
-            $this->backend->SetFont('liberationsans', '', 8);
+            $this->backend->SetFont(self::TCPDF_FONT, '', 8);
             $this->backend->Cell($h_width['totalbase'], 5, sprintf('%01.2f', $this->data['invoice']['totalbase']), 1, 0, 'R', 0, '', 1);
-            $this->backend->SetFont('liberationsans', 'B', 8);
+            $this->backend->SetFont(self::TCPDF_FONT, 'B', 8);
             $this->backend->Cell($h_width['taxlabel'], 5, 'x', 1, 0, 'C', 0, '', 1);
-            $this->backend->SetFont('liberationsans', '', 8);
+            $this->backend->SetFont(self::TCPDF_FONT, '', 8);
             $this->backend->Cell($h_width['totaltax'], 5, sprintf('%01.2f', $this->data['invoice']['totaltax']), 1, 0, 'R', 0, '', 1);
             $this->backend->Cell($h_width['total'], 5, sprintf('%01.2f', $this->data['invoice']['total']), 1, 0, 'R', 0, '', 1);
             $this->backend->Ln();
@@ -216,9 +218,9 @@ class LMSTcpdfInvoice extends LMSInvoice
             if ($this->data['invoice']['taxest']) {
                 $i = 1;
                 foreach ($this->data['invoice']['taxest'] as $item) {
-                    $this->backend->SetFont('liberationsans', 'B', 8);
+                    $this->backend->SetFont(self::TCPDF_FONT, 'B', 8);
                     $this->backend->Cell($sum, 5, trans('in it:'), 0, 0, 'R', 0, '', 1);
-                    $this->backend->SetFont('liberationsans', '', 8);
+                    $this->backend->SetFont(self::TCPDF_FONT, '', 8);
                     $this->backend->Cell($h_width['totalbase'], 5, sprintf('%01.2f', $item['base']), 1, 0, 'R', 0, '', 1);
                     $this->backend->Cell($h_width['taxlabel'], 5, $item['taxlabel'], 1, 0, 'C', 0, '', 1);
                     $this->backend->Cell($h_width['totaltax'], 5, sprintf('%01.2f', $item['tax']), 1, 0, 'R', 0, '', 1);
@@ -269,13 +271,13 @@ class LMSTcpdfInvoice extends LMSInvoice
             }
         }
 
-        $this->backend->SetFont('liberationsans', 'B', 8);
+        $this->backend->SetFont(self::TCPDF_FONT, 'B', 8);
         $this->backend->Cell($sum, 5, trans('Total:'), 0, 0, 'R', 0, '', 1);
-        $this->backend->SetFont('liberationsans', '', 8);
+        $this->backend->SetFont(self::TCPDF_FONT, '', 8);
         $this->backend->Cell($h_width['totalbase'], 5, sprintf('%01.2f', $this->data['totalbase']), 1, 0, 'R', 0, '', 1);
-        $this->backend->SetFont('liberationsans', 'B', 8);
+        $this->backend->SetFont(self::TCPDF_FONT, 'B', 8);
         $this->backend->Cell($h_width['taxlabel'], 5, 'x', 1, 0, 'C', 0, '', 1);
-        $this->backend->SetFont('liberationsans', '', 8);
+        $this->backend->SetFont(self::TCPDF_FONT, '', 8);
         $this->backend->Cell($h_width['totaltax'], 5, sprintf('%01.2f', $this->data['totaltax']), 1, 0, 'R', 0, '', 1);
         $this->backend->Cell($h_width['total'], 5, sprintf('%01.2f', $this->data['total']), 1, 0, 'R', 0, '', 1);
         $this->backend->Ln();
@@ -284,9 +286,9 @@ class LMSTcpdfInvoice extends LMSInvoice
         if ($this->data['taxest']) {
             $i = 1;
             foreach ($this->data['taxest'] as $item) {
-                $this->backend->SetFont('liberationsans', 'B', 8);
+                $this->backend->SetFont(self::TCPDF_FONT, 'B', 8);
                 $this->backend->Cell($sum, 5, trans('in it:'), 0, 0, 'R', 0, '', 1);
-                $this->backend->SetFont('liberationsans', '', 8);
+                $this->backend->SetFont(self::TCPDF_FONT, '', 8);
                 $this->backend->Cell($h_width['totalbase'], 5, sprintf('%01.2f', $item['base']), 1, 0, 'R', 0, '', 1);
                 $this->backend->Cell($h_width['taxlabel'], 5, $item['taxlabel'], 1, 0, 'C', 0, '', 1);
                 $this->backend->Cell($h_width['totaltax'], 5, sprintf('%01.2f', $item['tax']), 1, 0, 'R', 0, '', 1);
@@ -303,13 +305,13 @@ class LMSTcpdfInvoice extends LMSInvoice
             $totalbase = $this->data['totalbase'] - $this->data['invoice']['totalbase'];
             $totaltax = $this->data['totaltax'] - $this->data['invoice']['totaltax'];
 
-            $this->backend->SetFont('liberationsans', 'B', 8);
+            $this->backend->SetFont(self::TCPDF_FONT, 'B', 8);
             $this->backend->Cell($sum, 5, trans('Difference value:'), 0, 0, 'R', 0, '', 1);
-            $this->backend->SetFont('liberationsans', '', 8);
+            $this->backend->SetFont(self::TCPDF_FONT, '', 8);
             $this->backend->Cell($h_width['totalbase'], 5, sprintf('%01.2f', $totalbase), 1, 0, 'R', 0, '', 1);
-            $this->backend->SetFont('liberationsans', 'B', 8);
+            $this->backend->SetFont(self::TCPDF_FONT, 'B', 8);
             $this->backend->Cell($h_width['taxlabel'], 5, 'x', 1, 0, 'C', 0, '', 1);
-            $this->backend->SetFont('liberationsans', '', 8);
+            $this->backend->SetFont(self::TCPDF_FONT, '', 8);
             $this->backend->Cell($h_width['totaltax'], 5, sprintf('%01.2f', $totaltax), 1, 0, 'R', 0, '', 1);
             $this->backend->Cell($h_width['total'], 5, sprintf('%01.2f', $total), 1, 0, 'R', 0, '', 1);
             $this->backend->Ln();
@@ -324,7 +326,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         $line_light = array('width' => 0.25, 'cap' => 'butt', 'join' => 'miter', 'dash' => '3, 5', 'phase' => 10, 'color' => array(245, 200, 200));
 
         $this->backend->setColor('text', 255, 0, 0);
-        $this->backend->SetFont('liberationsans', '', 8);
+        $this->backend->SetFont(self::TCPDF_FONT, '', 8);
         $this->backend->setFontStretching(120);
 
         $this->backend->StartTransform();
@@ -332,7 +334,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         $this->backend->Text(1, 1, 'Pokwitowanie dla zleceniodawcy');
         $this->backend->StopTransform();
 
-        $this->backend->SetFont('liberationsans', '', 6);
+        $this->backend->SetFont(self::TCPDF_FONT, '', 6);
         $this->backend->setFontStretching(100);
 
         /* draw simple form */
@@ -398,7 +400,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         $line_dash = array('width' => 0.25, 'cap' => 'butt', 'join' => 'miter', 'dash' => '3, 3', 'phase' => 10, 'color' => array(255, 0, 0));
 
         $this->backend->setColor('text', 255, 0, 0);
-        $this->backend->SetFont('liberationsans', '', 8);
+        $this->backend->SetFont(self::TCPDF_FONT, '', 8);
         $this->backend->setFontStretching(120);
 
         $this->backend->StartTransform();
@@ -411,7 +413,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         $this->backend->Text(10, 202, 'odcinek dla banku zleceniodawcy');
         $this->backend->StopTransform();
 
-        $this->backend->SetFont('liberationsans', '', 6);
+        $this->backend->SetFont(self::TCPDF_FONT, '', 6);
         $this->backend->setFontStretching(100);
 
         /* draw main form */
@@ -435,12 +437,12 @@ class LMSTcpdfInvoice extends LMSInvoice
         for ($i = 0; $i < 2; $i++) {
             $this->backend->Rect(105 + ($i * 5.5), 223, 5, 5, 'DF', array('all' => $line_thin));
         }
-        $this->backend->SetFont('liberationsans', '', 12);
+        $this->backend->SetFont(self::TCPDF_FONT, '', 12);
         $this->backend->Text(104.5, 223, 'W');
         $this->backend->Text(110.5, 223, 'P');
 
         /* currency */
-        $this->backend->SetFont('liberationsans', '', 6);
+        $this->backend->SetFont(self::TCPDF_FONT, '', 6);
         $this->backend->Rect(121, 220, 10, 3, 'F', '', array(255, 255, 255));
         $this->backend->Text(121, 220, 'waluta');
         for ($i = 0; $i < 3; $i++) {
@@ -503,9 +505,9 @@ class LMSTcpdfInvoice extends LMSInvoice
     {
         /* set font style & color */
         if (mb_strlen($this->data['division_shortname']) > 25) {
-            $this->backend->SetFont('liberationsans', '', floor(235 / mb_strlen($this->data['division_shortname'])));
+            $this->backend->SetFont(self::TCPDF_FONT, '', floor(235 / mb_strlen($this->data['division_shortname'])));
         } else {
-            $this->backend->SetFont('liberationsans', '', 9);
+            $this->backend->SetFont(self::TCPDF_FONT, '', 9);
         }
         $this->backend->setColor('text', 0, 0, 0);
 
@@ -515,7 +517,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         $this->backend->Text(7, 209, $this->data['division_zip'] . ' ' . $this->data['division_city']);
 
         /* account */
-        $this->backend->SetFont('liberationsans', 'B', 9);
+        $this->backend->SetFont(self::TCPDF_FONT, 'B', 9);
         if (count($this->data['bankaccounts']) == 1) {
             $account = $this->data['bankaccounts'][0];
         } else {
@@ -524,7 +526,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         $this->backend->Text(7, 219, $account);
 
         /* customer name */
-        $this->backend->SetFont('liberationsans', '', 9);
+        $this->backend->SetFont(self::TCPDF_FONT, '', 9);
         /* if customer name lenght > 26 chars then cut string */
         if (mb_strlen($this->data['name']) > 26) {
             $this->backend->Text(7, 228, mb_substr($this->data['name'], 0, 26));
@@ -542,7 +544,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         } else {
             /* title */
             $this->backend->Text(7, 249, trans('Payment for invoice No. $a', null));
-            $this->backend->SetFont('liberationsans', 'B', 10);
+            $this->backend->SetFont(self::TCPDF_FONT, 'B', 10);
             $this->backend->Text(7, 253, docnumber(array(
                 'number' => $this->data['number'],
                 'template' => $this->data['template'],
@@ -553,14 +555,14 @@ class LMSTcpdfInvoice extends LMSInvoice
             $value = $this->data['value'];
         }
         /* amount */
-        $this->backend->SetFont('liberationsans', 'B', 10);
+        $this->backend->SetFont(self::TCPDF_FONT, 'B', 10);
         $this->backend->Text(7, 263, moneyf($value, $this->data['currency']));
     }
 
     protected function invoice_main_form_fill()
     {
         /* set font style & color */
-        $this->backend->SetFont('liberationsans', '', 9);
+        $this->backend->SetFont(self::TCPDF_FONT, '', 9);
         $this->backend->setColor('text', 0, 0, 0);
 
         /* division name */
@@ -568,7 +570,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         $this->backend->Text(67, 206, $this->data['division_address'] . ', ' . $this->data['division_zip'] . ' ' . $this->data['division_city']);
 
         /* account */
-        $this->backend->SetFont('liberationsans', 'B', 9);
+        $this->backend->SetFont(self::TCPDF_FONT, 'B', 9);
         if (count($this->data['bankaccounts']) == 1) {
             $account = $this->data['bankaccounts'][0];
         } else {
@@ -577,7 +579,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         $this->backend->Text(67, 215, format_bankaccount($account));
 
         /* currency */
-        $this->backend->SetFont('liberationsans', 'B', 10);
+        $this->backend->SetFont(self::TCPDF_FONT, 'B', 10);
         $this->backend->setFontSpacing(2.2);
         $this->backend->Text(120, 223.5, 'PLN');
         $this->backend->setFontSpacing(0);
@@ -592,7 +594,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         $this->backend->Text(67, 233, moneyf_in_words($value, $this->data['currency']));
 
         /* customer name */
-        $this->backend->SetFont('liberationsans', '', 9);
+        $this->backend->SetFont(self::TCPDF_FONT, '', 9);
         /* if customer name lenght > 70 chars then stretch font */
         if (mb_strlen($this->data['name']) > 70) {
             $this->backend->setFontStretching(85);
@@ -629,17 +631,17 @@ class LMSTcpdfInvoice extends LMSInvoice
 
         if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false))) {
             /* title */
-            $this->backend->SetFont('liberationsans', '', 9);
+            $this->backend->SetFont(self::TCPDF_FONT, '', 9);
             $this->backend->MultiCell(135 - 60, 10, trans('Payment for liabilities'), 0, 'R', false, 1, 66.25 + 60, 261, true, 0, false, true, 10, 'M');
         } else {
             /* title */
-            $this->backend->SetFont('liberationsans', 'B', 9);
+            $this->backend->SetFont(self::TCPDF_FONT, 'B', 9);
             $this->backend->MultiCell(135 - 60, 10, trans('Payment for invoice No. $a', $barcode), 0, 'R', false, 1, 66.25 + 60, 261, true, 0, false, true, 10, 'M');
         }
 
         /* deadline */
         $paytype = $this->data['paytype'];
-        $this->backend->SetFont('liberationsans', '', 6);
+        $this->backend->SetFont(self::TCPDF_FONT, '', 6);
         if ($paytype != 8) {
             $this->backend->StartTransform();
             $this->backend->Translate(0, 13);
@@ -651,8 +653,8 @@ class LMSTcpdfInvoice extends LMSInvoice
 
     protected function invoice_date()
     {
-        //$this->backend->SetFont('liberationsans', '', 8);
-        $this->backend->SetFont('liberationsans', '', 8);
+        //$this->backend->SetFont(self::TCPDF_FONT, '', 8);
+        $this->backend->SetFont(self::TCPDF_FONT, '', 8);
         $this->backend->writeHTMLCell(0, 0, '', 10, trans('Settlement date:') . ' <b>' . date("d.m.Y", $this->data['cdate']) . '</b>', 0, 1, 0, true, 'R');
         if (!ConfigHelper::checkConfig('invoices.hide_sale_date')) {
             $this->backend->writeHTMLCell(0, 0, '', '', trans('Sale date:') . ' <b>' . date("d.m.Y", $this->data['sdate']) . '</b>', 0, 1, 0, true, 'R');
@@ -662,7 +664,7 @@ class LMSTcpdfInvoice extends LMSInvoice
     protected function invoice_title()
     {
         $this->backend->SetY(29);
-        $this->backend->SetFont('liberationsans', 'B', 16);
+        $this->backend->SetFont(self::TCPDF_FONT, 'B', 16);
         $docnumber = docnumber(array(
             'number' => $this->data['number'],
             'template' => $this->data['template'],
@@ -679,7 +681,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         $this->backend->Write(0, $title, '', 0, 'C', true, 0, false, false, 0);
 
         if (isset($this->data['invoice'])) {
-            $this->backend->SetFont('liberationsans', 'B', 12);
+            $this->backend->SetFont(self::TCPDF_FONT, 'B', 12);
             $docnumber = docnumber(array(
                 'number' => $this->data['invoice']['number'],
                 'template' => $this->data['invoice']['template'],
@@ -689,11 +691,11 @@ class LMSTcpdfInvoice extends LMSInvoice
             $this->backend->Write(0, trans('for Invoice No. $a', $docnumber), '', 0, 'C', true, 0, false, false, 0);
         }
 
-        //$this->backend->SetFont('liberationsans', '', 16);
+        //$this->backend->SetFont(self::TCPDF_FONT, '', 16);
         //$this->backend->Write(0, $this->data['type'], '', 0, 'C', true, 0, false, false, 0);
 
         if ($this->data['type'] == DOC_ENTITY_DUPLICATE) {
-            $this->backend->SetFont('liberationsans', '', 10);
+            $this->backend->SetFont(self::TCPDF_FONT, '', 10);
             $title = trans('DUPLICATE, draw-up date:') . ' ' . date('d.m.Y', $this->data['duplicate-date']
                 ? $this->data['duplicate-date'] : time());
             $this->backend->Write(0, $title, '', 0, 'C', true, 0, false, false, 0);
@@ -702,7 +704,7 @@ class LMSTcpdfInvoice extends LMSInvoice
 
     protected function invoice_seller()
     {
-        $this->backend->SetFont('liberationsans', '', 8);
+        $this->backend->SetFont(self::TCPDF_FONT, '', 8);
         $seller = '<b>' . trans('Seller:') . '</b><br>';
         $tmp = $this->data['division_header'];
 
@@ -758,7 +760,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_customerid', true))) {
             $buyer .= '<b>' . trans('Customer No.:') . ' ' . $this->data['customerid'] . '</b><br>';
         }
-        $this->backend->SetFont('liberationsans', '', 8);
+        $this->backend->SetFont(self::TCPDF_FONT, '', 8);
         $this->backend->writeHTMLCell(80, '', '', '', $buyer, 0, 1, 0, true, 'L');
 
         $y = $this->backend->GetY();
@@ -785,7 +787,7 @@ class LMSTcpdfInvoice extends LMSInvoice
                 $postbox .= ', ' . trans($this->data['post_country']) . '<br>';
             }
 
-            $this->backend->SetFont('liberationsans', 'B', 10);
+            $this->backend->SetFont(self::TCPDF_FONT, 'B', 10);
             $this->backend->writeHTMLCell(80, '', 125, 50, $postbox, 0, 1, 0, true, 'L');
         }
 
@@ -793,7 +795,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             $pin = '<b>' . trans('Customer ID: $a', sprintf('%04d', $this->data['customerid'])) . '</b><br>';
             $pin .= '<b>PIN: ' . (strlen($this->data['customerpin']) < 4 ? sprintf('%04d', $this->data['customerpin']) : $this->data['customerpin']) . '</b><br>';
 
-            $this->backend->SetFont('liberationsans', 'B', 8);
+            $this->backend->SetFont(self::TCPDF_FONT, 'B', 8);
             $this->backend->writeHTMLCell('', '', 125, $oldy + round(($y - $oldy) / 2), $pin, 0, 1, 0, true, 'L');
         }
 
@@ -806,7 +808,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             return 0;
         }
 
-        $this->backend->SetFont('liberationsans', '', 8);
+        $this->backend->SetFont(self::TCPDF_FONT, '', 8);
 
         $this->backend->writeHTMLCell(80, '', '', '', '<b>' . trans('Recipient:') . '</b>', 0, 1, 0, true, 'L');
 
@@ -834,7 +836,7 @@ class LMSTcpdfInvoice extends LMSInvoice
     protected function invoice_to_pay()
     {
         $this->backend->Ln(-9);
-        $this->backend->SetFont('liberationsans', 'B', 14);
+        $this->backend->SetFont(self::TCPDF_FONT, 'B', 14);
         if (isset($this->data['rebate'])) {
             $this->backend->writeHTMLCell(0, 0, '', '', trans('To repay:') . ' ' . moneyf($this->data['value'], $this->data['currency']), 0, 1, 0, true, 'L');
         } else {
@@ -847,7 +849,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             }
         }
 
-        $this->backend->SetFont('liberationsans', '', 8);
+        $this->backend->SetFont(self::TCPDF_FONT, '', 8);
         if (!ConfigHelper::checkConfig('invoices.hide_in_words')) {
             $this->backend->writeHTMLCell(0, 5, '', '', trans('In words:') . ' ' . moneyf_in_words($this->data['value'], $this->data['currency']), 0, 1, 0, true, 'L');
         }
@@ -855,7 +857,7 @@ class LMSTcpdfInvoice extends LMSInvoice
 
     protected function invoice_balance()
     {
-        $this->backend->SetFont('liberationsans', 'B', 9);
+        $this->backend->SetFont(self::TCPDF_FONT, 'B', 9);
 
         $balance = $this->data['customerbalance'];
         if ($balance > 0) {
@@ -892,7 +894,7 @@ class LMSTcpdfInvoice extends LMSInvoice
 
     protected function invoice_dates()
     {
-        $this->backend->SetFont('liberationsans', '', 8);
+        $this->backend->SetFont(self::TCPDF_FONT, '', 8);
         if ($this->data['paytype'] != 8) {
             if ($this->use_alert_color) {
                     $this->backend->SetTextColorArray(array(255, 0, 0));
@@ -913,7 +915,7 @@ class LMSTcpdfInvoice extends LMSInvoice
     protected function invoice_expositor()
     {
         $expositor = isset($this->data['user']) ? $this->data['user'] : $this->data['division_author'];
-        $this->backend->SetFont('liberationsans', '', 8);
+        $this->backend->SetFont(self::TCPDF_FONT, '', 8);
         if (!ConfigHelper::checkConfig('invoices.hide_expositor')) {
             $this->backend->writeHTMLCell(0, 0, '', '', trans('Expositor:') . ' <b>' . (empty($expositor) ? trans('system') : $expositor) . '</b>', 0, 1, 0, true, 'R');
         }
@@ -936,7 +938,7 @@ class LMSTcpdfInvoice extends LMSInvoice
     {
         if (!empty($this->data['division_footer'])) {
             //$this->backend->Ln(145);
-            //$this->backend->SetFont('liberationsans', 'B', 10);
+            //$this->backend->SetFont(self::TCPDF_FONT, 'B', 10);
             //$this->backend->Write(0, trans('Notes:'), '', 0, 'L', true, 0, false, false, 0);
             $tmp = $this->data['division_footer'];
 
@@ -950,7 +952,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             $tmp = str_replace('%bankaccount', implode("\n", $accounts), $tmp);
             $tmp = str_replace('%bankname', $this->data['div_bank'], $tmp);
 
-            $this->backend->SetFont('liberationsans', '', 8);
+            $this->backend->SetFont(self::TCPDF_FONT, '', 8);
             //$h = $this->backend->getStringHeight(0, $tmp);
             $tmp = mb_ereg_replace('\r?\n', '<br>', $tmp);
             if (ConfigHelper::checkConfig('invoices.qr2pay') && !isset($this->data['rebate'])) {
@@ -980,7 +982,7 @@ class LMSTcpdfInvoice extends LMSInvoice
 
             $this->backend->setTextColorArray(array(128, 128, 128));
             $this->backend->StartTransform();
-            $this->backend->SetFont('liberationsans', '', 40);
+            $this->backend->SetFont(self::TCPDF_FONT, '', 40);
             $this->backend->Rotate(45, 10, 210);
             $this->backend->Translate(30, 0);
             $this->backend->SetXY(10, 210);
@@ -1000,7 +1002,7 @@ class LMSTcpdfInvoice extends LMSInvoice
 
             $this->backend->setTextColorArray(array(128, 128, 128));
             $this->backend->StartTransform();
-            $this->backend->SetFont('liberationsans', '', 40);
+            $this->backend->SetFont(self::TCPDF_FONT, '', 40);
             $this->backend->Rotate(45, 10, 210);
             $this->backend->Translate(30, 0);
             $this->backend->SetXY(10, 210);
@@ -1024,7 +1026,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             'customerid' => $this->data['customerid'],
         ));
 
-        $this->backend->SetFont('liberationsans', '', 7);
+        $this->backend->SetFont(self::TCPDF_FONT, '', 7);
         $this->backend->writeHTMLCell(150, 0, '', '', trans("&nbsp; <BR> Scan and Pay <BR> You can make a transfer simply and quickly using your phone. <BR> To make a transfer, please scan QRcode on you smartphone in your bank's application."), 0, 1, 0, true, 'R');
         $tmp = '|PL|'.bankaccount($this->data['customerid'], $this->data['account']).'|'.str_pad($this->data['value'] * 100, 6, 0, STR_PAD_LEFT).'|'.$this->data['division_name'].'|' . trans('QR Payment for Internet Invoice no.').' '.$docnumber.'|||';
         $style['position'] = 'R';
