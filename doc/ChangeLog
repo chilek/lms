@@ -197,6 +197,7 @@ version 25-git (????-??-??):
     were introduced and they allow plugins to extend copy of user permissions to other resources [chilan]
   - enhancement: implemented ticket assignment conflict detection [chilan]
   - improvement: switched to liberation sans unicode true type font for tcpdf generated documents [chilan]
+  - enhancement: added document memo text fields defined for customers and copied to documents [chilan]
 
 version 24.0 (2019-05-16):
 

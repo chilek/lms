@@ -471,6 +471,19 @@
 	{/if}
 </TABLE>
 
+{if $invoice.memo}
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR>
+		<TD WIDTH="100%" COLSPAN="2">
+			<strong>{trans("Memo:")}</strong><BR>
+			<BLOCKQUOTE>
+				{$invoice.memo}
+			</BLOCKQUOTE>
+		</TD>
+	</TR>
+</TABLE>
+{/if}
+
 <!-- The Other Page of Invoice customerbalancelist + customerpin -->
 <!-- insert page break here and buy auto-duplex printer :p -->
 

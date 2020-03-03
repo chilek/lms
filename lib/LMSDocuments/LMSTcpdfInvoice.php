@@ -965,6 +965,22 @@ class LMSTcpdfInvoice extends LMSInvoice
         }
     }
 
+    protected function invoice_memo()
+    {
+        if (!empty($this->data['memo'])) {
+            $tmp = $this->data['memo'];
+
+            $tmp = mb_ereg_replace('\r?\n', '<br>', $tmp);
+            if (ConfigHelper::checkConfig('invoices.qr2pay') && !isset($this->data['rebate'])) {
+                $width = 150;
+            } else {
+                $width = 0;
+            }
+            $this->backend->Ln(5);
+            $this->backend->writeHTMLCell($width, 0, '', '', $tmp, 0, 1, 0, true, 'C');
+        }
+    }
+
     public function invoice_header_image()
     {
         $image_path = ConfigHelper::getConfig('invoices.header_image', '', true);
@@ -1056,6 +1072,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         }
         $this->invoice_comment();
         $this->invoice_footnote();
+        $this->invoice_memo();
 
         $docnumber = docnumber(array(
             'number' => $this->data['number'],
@@ -1121,6 +1138,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         }
         $this->invoice_comment();
         $this->invoice_footnote();
+        $this->invoice_memo();
         if (($this->data['customerbalance'] < 0 || ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.always_show_form', true)))
             && !isset($this->data['rebate'])) {
             if ($this->backend->GetY() > 180) {

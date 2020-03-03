@@ -1104,6 +1104,16 @@ class LMSEzpdfInvoice extends LMSInvoice
                 $y = $this->backend->text_wrap($x, $y, $width, $font_size, $line, 'left');
             }
         }
+        return $y;
+    }
+
+    protected function invoice_memo($x, $y)
+    {
+        if (empty($this->data['memo'])) {
+            return $y;
+        } else {
+            return $y - $this->backend->text_align_left($x, $y, 10, trans('Memo:') . ' ' . $this->data['memo']);
+        }
     }
 
     protected function invoice_header_image($x, $y)
@@ -1188,7 +1198,11 @@ class LMSEzpdfInvoice extends LMSInvoice
         $top = $this->invoice_comment(30, $top);
 
         $this->backend->check_page_length($top);
-        $this->invoice_footnote(30, $top, 530, 10);
+        $top = $this->invoice_footnote(30, $top, 530, 10);
+
+        $this->backend->check_page_length($top);
+        $this->invoice_memo(30, $top);
+
         $page = $this->backend->ezStopPageNumbers(1, 1, $page);
 
         if (!$this->data['disable_protection'] && $this->data['protection_password']) {
@@ -1224,7 +1238,9 @@ class LMSEzpdfInvoice extends LMSInvoice
         }
 
         $top = $this->invoice_comment(470, $top);
-        $this->invoice_footnote(470, $top, 90, 8);
+        $top = $this->invoice_footnote(470, $top, 90, 8);
+        $this->invoice_memo(30, $top);
+
         $return = $this->new_invoice_data(30, $top, 430, 6, 1);
         $top = $return[2] + 5 - 40;
         $this->invoice_expositor(430, $top);
