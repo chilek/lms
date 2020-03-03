@@ -550,6 +550,7 @@ switch ($action) {
             'comment' => ($invoice['comment'] ? $invoice['comment'] : null),
             'currency' => $invoice['currency'],
             'currencyvalue' => $invoice['currencyvalue'],
+            'memo' => $use_current_customer_data ? (empty($customer['documentmemo']) ? null : $customer['documentmemo']) : $invoice['memo'],
         );
 
         $args['type'] = $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE;
@@ -571,7 +572,7 @@ switch ($action) {
 				name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ?, countryid = ?, divisionid = ?,
 				div_name = ?, div_shortname = ?, div_address = ?, div_city = ?, div_zip = ?, div_countryid = ?,
 				div_ten = ?, div_regon = ?, div_bank = ?, div_account = ?, div_inv_header = ?, div_inv_footer = ?,
-				div_inv_author = ?, div_inv_cplace = ?, comment = ?, currency = ?, currencyvalue = ?,
+				div_inv_author = ?, div_inv_cplace = ?, comment = ?, currency = ?, currencyvalue = ?, memo = ?,
 				type = ?, number = ?, fullnumber = ?, numberplanid = ?
 				WHERE id = ?', array_values($args));
         if ($SYSLOG) {

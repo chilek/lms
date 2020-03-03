@@ -1926,6 +1926,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'post_address_id' => $invoice['invoice']['post_address_id'],
             'currency' => isset($invoice['invoice']['currency']) ? $invoice['invoice']['currency'] : LMS::$currency,
             'currencyvalue' => isset($invoice['invoice']['currencyvalue']) ? $invoice['invoice']['currencyvalue'] : 1.0,
+            'memo' => isset($invoice['customer']['documentmemo']) && !empty($invoice['customer']['documentmemo'])
+                ? $invoice['customer']['documentmemo'] : null,
         );
 
         $this->db->Execute('INSERT INTO documents (number, numberplanid, type,
@@ -1933,8 +1935,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			ten, ssn, zip, city, countryid, divisionid,
 			div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 			div_bank, div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
-			comment, recipient_address_id, post_address_id, currency, currencyvalue)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			comment, recipient_address_id, post_address_id, currency, currencyvalue, memo)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
         $iid = $this->db->GetLastInsertID('documents');
         if ($this->syslog) {
             unset($args[SYSLOG::RES_USER]);
@@ -2099,7 +2101,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				    END)
 				    ELSE NULL
 				END) AS lang,
-				d.currency, d.currencyvalue
+				d.currency, d.currencyvalue, d.memo
 				FROM documents d
 				JOIN customeraddressview c ON (c.id = d.customerid)
 				LEFT JOIN countries cn ON (cn.id = d.countryid)

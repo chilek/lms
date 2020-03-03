@@ -535,6 +535,7 @@ switch ($action) {
             'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
             'currency' => $cnote['currency'],
             'currencyvalue' => $cnote['currencyvalue'],
+            'memo' => $use_current_customer_data ? (empty($customer['documentmemo']) ? null : $customer['documentmemo']) : $cnote['memo'],
         );
         $args['number'] = $cnote['number'];
         if ($cnote['numberplanid']) {
@@ -554,7 +555,7 @@ switch ($action) {
 				name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ?, countryid = ?, reason = ?, divisionid = ?,
 				div_name = ?, div_shortname = ?, div_address = ?, div_city = ?, div_zip = ?, div_countryid = ?,
 				div_ten = ?, div_regon = ?, div_bank = ?, div_account = ?, div_inv_header = ?, div_inv_footer = ?,
-				div_inv_author = ?, div_inv_cplace = ?, currency = ?, currencyvalue = ?,
+				div_inv_author = ?, div_inv_cplace = ?, currency = ?, currencyvalue = ?, memo = ?,
 				number = ?, fullnumber = ?, numberplanid = ?
 				WHERE id = ?', array_values($args));
         if ($SYSLOG) {

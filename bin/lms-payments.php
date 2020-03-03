@@ -1041,7 +1041,8 @@ foreach ($assigns as $assign) {
                 $itemid = 0;
                 $numbers[$assign['invoice']][$plan]++;
 
-                $customer = $DB->GetRow("SELECT lastname, name, address, street, city, zip, postoffice, ssn, ten, countryid, divisionid, paytime
+                $customer = $DB->GetRow("SELECT lastname, name, address, street, city, zip, postoffice, ssn, ten,
+                            countryid, divisionid, paytime, documentmemo
 						FROM customeraddressview WHERE id = $cid");
 
                 if (!isset($divisions[$customer['divisionid']])) {
@@ -1082,8 +1083,8 @@ foreach ($assigns as $assign) {
 					customerid, name, address, zip, city, ten, ssn, cdate, sdate, paytime, paytype,
 					div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 					div_bank, div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
-					recipient_address_id, currency, currencyvalue)
-					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+					recipient_address_id, currency, currencyvalue, memo)
+					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     array(
                         $numbers[$assign['invoice']][$plan], $plan ? $plan : null,
                         $assign['invoice'],
@@ -1113,6 +1114,7 @@ foreach ($assigns as $assign) {
                         $recipient_address_id,
                         $currency,
                         $currencyvalues[$currency],
+                        empty($customer['documentmemo']) ? null : $customer['documentmemo'],
                     )
                 );
 
