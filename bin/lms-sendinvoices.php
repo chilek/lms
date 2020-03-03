@@ -343,6 +343,7 @@ $AUTH = null;
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
 $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
+LMS::$currency = $_currency;
 
 $plugin_manager = new LMSPluginManager();
 $LMS->setPluginManager($plugin_manager);
