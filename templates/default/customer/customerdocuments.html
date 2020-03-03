@@ -44,9 +44,12 @@
 						</div>
 					</div>
 
-					<div class="lms-ui-tab-table-wrapper col-2">
+					<div class="lms-ui-tab-table-wrapper col-3">
 						<div class="lms-ui-tab-table-column title">
 							{trans("Title:")}
+						</div>
+						<div class="lms-ui-tab-table-column description">
+							{trans("Description:")}
 						</div>
 						<div class="lms-ui-tab-table-column period">
 							{trans("Period:")}
@@ -84,9 +87,16 @@
 						</div>
 					</div>
 
-					<div class="lms-ui-tab-table-wrapper col-2">
+					<div class="lms-ui-tab-table-wrapper col-3">
 						<div class="lms-ui-tab-table-column title" onclick="window.open('?m=documentview&id={$doc.docid}');">
 							{$doc.title|truncate:40:"...":true}
+						</div>
+						<div class="lms-ui-tab-table-column description">
+							{if $doc.description}
+								{$doc.description|replace:"\n":'<br>'}
+							{else}
+								&ndash;
+							{/if}
 						</div>
 						<div class="lms-ui-tab-table-column period" onclick="window.open('?m=documentview&id={$doc.docid}');">
 							{if $doc.fromdate}{trans("from")} {$doc.fromdate|date_format:"%Y/%m/%d"}{/if}
