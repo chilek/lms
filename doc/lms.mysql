@@ -440,6 +440,7 @@ CREATE TABLE customers (
   divisionid int(11)   	DEFAULT NULL,
   paytime smallint	NOT NULL DEFAULT '-1',
   paytype smallint  DEFAULT NULL,
+  documentmemo text DEFAULT NULL,
   PRIMARY KEY  (id),
   INDEX name (lastname, name),
   CONSTRAINT customers_creatorid_fkey
@@ -562,6 +563,7 @@ CREATE TABLE documents (
     currency varchar(3),
     currencyvalue decimal(17,10) DEFAULT 1.0,
 	senddate int(11) NOT NULL DEFAULT '0',
+	memo text DEFAULT NULL,
     PRIMARY KEY (id),
 	INDEX cdate (cdate),
 	INDEX numberplanid (numberplanid),
@@ -3664,4 +3666,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020020500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020030300');

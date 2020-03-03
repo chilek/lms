@@ -298,6 +298,7 @@ CREATE TABLE customers (
 		CONSTRAINT customers_divisionid_fkey REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE,
     paytime smallint 	DEFAULT -1 NOT NULL,
     paytype smallint 	DEFAULT NULL,
+    documentmemo text   DEFAULT NULL,
 	PRIMARY KEY (id)
 );
 
@@ -434,6 +435,7 @@ CREATE TABLE documents (
     currency varchar(3),
     currencyvalue numeric(17,10) DEFAULT 1.0,
     senddate integer	DEFAULT 0 NOT NULL,
+    memo text           DEFAULT NULL,
 	PRIMARY KEY (id)
 );
 CREATE INDEX documents_cdate_idx ON documents(cdate);
@@ -3713,6 +3715,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020020500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020030300');
 
 COMMIT;
