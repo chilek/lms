@@ -275,7 +275,7 @@ switch ($type) {
             'SELECT DISTINCT c.id FROM customers c
                 ' . (empty($customergroups) ? '' : 'JOIN customerassignments ca ON ca.customerid = c.id') . '
                 WHERE c.deleted = 0 AND c.divisionid = ? AND c.type = ? AND c.status = ? AND c.name <> ?
-                    ' . (empty($customergroups) ? '' : ' AND ca.customergroupid IN (' . implode(',', $customergroups) . ')'),
+                    ' . (empty($customergroups) ? '' : ' AND ca.customergroupid IN (' . implode(',', $customergroups) . ') ORDER BY lastname, name ASC'),
             array($division, CTYPES_PRIVATE, CSTATUS_CONNECTED, '')
         );
 
