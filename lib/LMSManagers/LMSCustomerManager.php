@@ -436,6 +436,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'info'           => $customeradd['info'],
             'notes'          => $customeradd['notes'],
             'message'        => $customeradd['message'],
+            'documentmemo'   => empty($customeradd['documentmemo']) ? null : $customeradd['documentmemo'],
             'pin'            => $customeradd['pin'],
             'regon'          => $customeradd['regon'],
             'rbename'        => $customeradd['rbename'],
@@ -453,11 +454,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         if ($this->db->Execute('INSERT INTO customers (extid, name, lastname, type,
                         ten, ssn, status, creationdate,
-                        creatorid, info, notes, message, pin, regon, rbename, rbe,
+                        creatorid, info, notes, message, documentmemo, pin, regon, rbename, rbe,
                         icn, cutoffstop, consentdate, einvoice, divisionid, paytime, paytype,
                         invoicenotice, mailingnotice)
                     VALUES (?, ?, ' . ($capitalize_customer_names ? 'UPPER(?)' : '?') . ', ?, ?, ?, ?, ?NOW?,
-                        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))
+                        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))
         ) {
             $id = $this->db->GetLastInsertID('customers');
 
@@ -1388,6 +1389,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'lastname'       => $customerdata['lastname'],
             'name'           => $customerdata['name'],
             'message'        => $customerdata['message'],
+            'documentmemo'   => empty($customerdata['documentmemo']) ? null : $customerdata['documentmemo'],
             'pin'            => $customerdata['pin'],
             'regon'          => $customerdata['regon'],
             'icn'            => $customerdata['icn'],
@@ -1441,7 +1443,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $res = $this->db->Execute('UPDATE customers SET extid=?, status=?, type=?,
                                ten=?, ssn=?, moddate=?NOW?, modid=?,
                                info=?, notes=?, lastname=' . ($capitalize_customer_names ? 'UPPER(?)' : '?') . ', name=?,
-                               deleted=0, message=?, pin=?, regon=?, icn=?, rbename=?, rbe=?,
+                               deleted=0, message=?, documentmemo=?, pin=?, regon=?, icn=?, rbename=?, rbe=?,
                                cutoffstop=?, consentdate=?, einvoice=?, invoicenotice=?, mailingnotice=?,
                                divisionid=?, paytime=?, paytype=?
                                WHERE id=?', array_values($args));

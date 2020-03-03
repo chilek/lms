@@ -494,6 +494,16 @@
 								</TR>
 								<TR>
 									<TD>
+										<i class="lms-ui-icon-memo"></i>
+									</TD>
+									<TD>
+										<TEXTAREA name="customerdata[documentmemo]" class="lms-ui-wysiwyg-editor"
+												  COLS="60" ROWS="10" {tip text="Enter document memo (optional)"}
+												{if isset($customerinfo.wysiwyg.documentmemo)} data-wysiwyg="{$customerinfo.wysiwyg.documentmemo}"{/if}>{$customerinfo.documentmemo|escape}</TEXTAREA>
+									</TD>
+								</TR>
+								<TR>
+									<TD>
 										<IMG src="img/money.gif" alt="">
 									</TD>
 									<TD>

@@ -400,6 +400,22 @@
 						</TD>
 					</TR>
 					{/if}
+					{if $customerinfo.documentmemo}
+					<TR>
+						<TD>
+							<i class="lms-ui-icon-memo"></i>
+						</TD>
+						<TD COLSPAN="2">
+							<TABLE WIDTH="100%" CELLPADDING="5">
+								<TR>
+									<TD class="fall superlight lms-ui-autolinker">
+										{$customerinfo.documentmemo|replace:"\n":"<BR>"}
+									</TD>
+								</TR>
+							</TABLE>
+						</TD>
+					</TR>
+					{/if}
 					{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 					<TR>
 						<TD WIDTH="1%">

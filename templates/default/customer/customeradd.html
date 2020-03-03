@@ -516,6 +516,16 @@
 						<TEXTAREA rows="10" cols="60" name="customeradd[notes]" class="lms-ui-wysiwyg-editor" {tip text="Enter notes (optional)"}{if isset($customeradd.wysiwyg.notes)} data-wysiwyg="{$customeradd.wysiwyg.notes}"{/if}>{$customeradd.notes|escape}</TEXTAREA>
 					</TD>
 				</TR>
+				<TR>
+					<TD>
+						<i class="lms-ui-icon-memo"></i>
+					</TD>
+					<TD>
+						<TEXTAREA name="customeradd[documentmemo]" class="lms-ui-wysiwyg-editor"
+								  COLS="60" ROWS="10" {tip text="Enter document memo (optional)"}
+								{if isset($customeradd.wysiwyg.documentmemo)} data-wysiwyg="{$customeradd.wysiwyg.documentmemo}"{/if}>{$customeradd.documentmemo|escape}</TEXTAREA>
+					</TD>
+				</TR>
 				{/block}
 			</TABLE>
 			</div>
