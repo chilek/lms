@@ -172,11 +172,15 @@
 
 			{box_buttons}
 				{if $layout.module == 'eventadd'}
-				<label {tip text="Display this form again, when this event is saved"}>
-					<INPUT type="checkbox" name="event[reuse]"{if $event.reuse} checked{/if}>
-					{trans("Reuse")}
-				</label>
+					<label {tip text="Display this form again, when this event is saved"}>
+						<INPUT type="checkbox" name="event[reuse]"{if $event.reuse} checked{/if}>
+						{trans("Reuse")}
+					</label>
 				{/if}
+				<label>
+					<input type="checkbox" name="event[close]"{if $event.close} checked{/if} value="1">
+					{trans("close event")}
+				</label>
 				{button type="submit" icon="save" accesskey="s" label="Submit"}
 				{button icon="cancel" onclick="location.href='?m=eventlist{if isset($backid)}#{$backid}{/if}';" label="Cancel"}
 			{/box_buttons}

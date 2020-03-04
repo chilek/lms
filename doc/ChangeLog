@@ -200,6 +200,7 @@ version 25-git (????-??-??):
   - enhancement: added document memo text fields defined for customers and copied to documents;
    '﻿phpui.default_customer_document_memo' configuration variable controls customer default document memo
    field value (empty by default) [chilan]
+  - improvement: allow to quickly close newly created or edited time table event [chilan]
 
 version 24.0 (2019-05-16):
 

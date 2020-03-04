@@ -41,6 +41,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             'endtime' => $event['endtime'],
             SYSLOG::RES_USER => Auth::GetCurrentUser(),
             'private' => $event['private'],
+            'closed' => isset($event['close']) ? 1 : 0,
             SYSLOG::RES_CUST => empty($event['custid']) ? null : $event['custid'],
             'type' => $event['type'],
             SYSLOG::RES_ADDRESS => $event['address_id'],
@@ -52,8 +53,8 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 
         $this->db->Execute(
             'INSERT INTO events (title, description, date, begintime, enddate,
-				endtime, userid, creationdate, private, customerid, type, address_id, nodeid, ticketid)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?, ?)',
+				endtime, userid, creationdate, private, closed, customerid, type, address_id, nodeid, ticketid)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?, ?, ?)',
             array_values($args)
         );
 
@@ -95,6 +96,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             'endtime' => $event['endtime'],
             'private' => $event['private'],
             'note' => $event['note'],
+            'closed' => isset($event['close']) ? 1 : 0,
             SYSLOG::RES_CUST => empty($event['custid']) ? null : $event['custid'],
             'type' => $event['type'],
             SYSLOG::RES_ADDRESS => $event['address_id'],
@@ -109,7 +111,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 
         $this->db->Execute(
             'UPDATE events SET title=?, description=?, date=?, begintime=?, enddate=?, endtime=?, private=?,
-				note=?, customerid=?, type=?, address_id=?, nodeid=?, ticketid=?, moddate = ?, moduserid = ? WHERE id=?',
+				note=?, closed = ?, customerid=?, type=?, address_id=?, nodeid=?, ticketid=?, moddate = ?, moduserid = ? WHERE id=?',
             array_values($args)
         );
 
