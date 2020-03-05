@@ -98,7 +98,9 @@ if ($from && $to && $from > $to) {
 }
 
 if (isset($_POST['advances'])) {
-    $a = 1;
+    $a = intval($_POST['advances']);
+} elseif ($SESSION->is_set('rla')) {
+    $SESSION->restore('rla', $a);
 } else {
     $a = 0;
 }

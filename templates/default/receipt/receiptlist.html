@@ -93,6 +93,7 @@
 				<B>{trans("Period:")}</B>&nbsp;
 				{trans("from")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
 				{trans("to")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
+				<input type="hidden" name="advances" value="0">
 				<INPUT type="checkbox" id="advances" name="advances" value="1"{if $listdata.advances} checked{/if}><label for="advances">{trans("not settled adv. only")}</label>&nbsp;
 				<A href="javascript: filter();">&raquo;&raquo;&raquo;</A>
 		</TD>
