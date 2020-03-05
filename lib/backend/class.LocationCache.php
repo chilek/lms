@@ -193,10 +193,12 @@ class LocationCache
                     $this->streets = $this->DB->getAllByKey('SELECT id, ' . $this->DB->Concat('cityid', "'|'", 'ident') . ' AS cityid_ident,
 						ident FROM location_streets', 'cityid_ident');
 
-                    foreach ($this->city_with_sections_by_id as $city_id => &$city) {
-                        $city['streets'] = $this->DB->getAllByKey('SELECT id, ' . $this->DB->Concat('cityid', "'|'", 'ident') . ' AS cityid_ident,
-							ident FROM location_streets WHERE cityid IN (' . implode(',', $this->city_with_sections_by_id[$city_id]['citysections'])
-                            . ')', 'ident');
+                    if (!empty($this->city_with_sections_by_id)) {
+                        foreach ($this->city_with_sections_by_id as $city_id => &$city) {
+                            $city['streets'] = $this->DB->getAllByKey('SELECT id, ' . $this->DB->Concat('cityid', "'|'", 'ident') . ' AS cityid_ident,
+								ident FROM location_streets WHERE cityid IN (' . implode(',', $this->city_with_sections_by_id[$city_id]['citysections'])
+                                . ')', 'ident');
+                        }
                     }
                     unset($city);
 
