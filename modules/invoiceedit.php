@@ -73,6 +73,7 @@ if (isset($_GET['id']) && ($action == 'edit' || $action == 'init')) {
             's_valuebrutto' => str_replace(',', '.', $item['total']),
             'tax' => isset($taxeslist[$item['taxid']]) ? $taxeslist[$item['taxid']]['label'] : '',
             'taxid' => $item['taxid'],
+            'taxcategory' => $item['taxcategory'],
         );
     }
 
@@ -619,6 +620,7 @@ switch ($action) {
                     'itemid' => $itemid,
                     'value' => str_replace(',', '.', $item['valuebrutto']),
                     SYSLOG::RES_TAX => $item['taxid'],
+                    'taxcategory' => $item['taxcategory'],
                     'prodid' => $item['prodid'],
                     'content' => $item['jm'],
                     'count' => str_replace(',', '.', $item['count']),
@@ -628,8 +630,8 @@ switch ($action) {
                     SYSLOG::RES_TARIFF => empty($item['tariffid']) ? null : $item['tariffid'],
                 );
                 $DB->Execute('INSERT INTO invoicecontents (docid, itemid, value,
-					taxid, prodid, content, count, pdiscount, vdiscount, description, tariffid)
-					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+					taxid, taxcategory, prodid, content, count, pdiscount, vdiscount, description, tariffid)
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
                 if ($SYSLOG) {
                     $args[SYSLOG::RES_CUST] = $customer['id'];
                     $SYSLOG->AddMessage(SYSLOG::RES_INVOICECONT, SYSLOG::OPER_ADD, $args);

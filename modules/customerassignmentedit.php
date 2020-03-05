@@ -322,13 +322,14 @@ if (isset($_POST['assignment'])) {
                 $args = array(
                     'value' => str_replace(',', '.', $a['value']),
                     'splitpayment' => isset($a['splitpayment']) ? 1 : 0,
+                    'taxcategory' => $a['taxcategory'],
                     'currency' => $a['currency'],
                     'name' => $a['name'],
                     SYSLOG::RES_TAX => intval($a['taxid']),
                     'prodid' => $a['prodid'],
                     SYSLOG::RES_LIAB => $a['liabilityid']
                 );
-                $DB->Execute('UPDATE liabilities SET value=?, splitpayment=?, currency=?, name=?, taxid=?, prodid=? WHERE id=?', array_values($args));
+                $DB->Execute('UPDATE liabilities SET value=?, splitpayment=?, taxcategory=?, currency=?, name=?, taxid=?, prodid=? WHERE id=?', array_values($args));
                 if ($SYSLOG) {
                     $args[SYSLOG::RES_CUST] = $customer['id'];
                     $SYSLOG->AddMessage(SYSLOG::RES_LIAB, SYSLOG::OPER_UPDATE, $args);
@@ -339,12 +340,13 @@ if (isset($_POST['assignment'])) {
                 'name' => $a['name'],
                 'value' => $a['value'],
                 'splitpayment' => isset($a['splitpayment']) ? 1 : 0,
+                'taxcategory' => $a['taxcategory'],
                 'currency' => $a['currency'],
                 SYSLOG::RES_TAX => intval($a['taxid']),
                 'prodid' => $a['prodid']
             );
-            $DB->Execute('INSERT INTO liabilities (name, value, splitpayment, currency, taxid, prodid)
-				VALUES (?, ?, ?, ?, ?, ?)', array_values($args));
+            $DB->Execute('INSERT INTO liabilities (name, value, splitpayment, taxcategory, currency, taxid, prodid)
+				VALUES (?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
             $a['liabilityid'] = $DB->GetLastInsertID('liabilities');
 
@@ -457,6 +459,7 @@ if (isset($_POST['assignment'])) {
 				a.at, a.count, a.datefrom, a.dateto, a.numberplanid, a.paytype,
 				a.invoice, a.separatedocument,
 				(CASE WHEN liabilityid IS NULL THEN tariffs.splitpayment ELSE liabilities.splitpayment END) AS splitpayment,
+				(CASE WHEN liabilityid IS NULL THEN tariffs.taxcategory ELSE liabilities.taxcategory END) AS taxcategory,
 				a.settlement, a.pdiscount, a.vdiscount, a.attribute, a.liabilityid,
 				(CASE WHEN liabilityid IS NULL THEN tariffs.name ELSE liabilities.name END) AS name,
 				liabilities.value AS value, liabilities.currency AS currency,

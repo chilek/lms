@@ -485,6 +485,20 @@
 								</TD>
 							</TR>
 
+							<TR id="a_taxcategory" style="display: none;">
+								<TD>
+									<IMG src="img/tax.gif" alt="">
+								</TD>
+								<TD class="bold">
+									<label for="taxcategory">
+										{trans("Tax category:")}
+									</label>
+								</TD>
+								<TD>
+									{tax_category_selection id="taxcategory" elementname=$variable_prefix|cat:"[taxcategory]" selected=$variables.taxcategory}
+								</TD>
+							</TR>
+
 							<TR id="a_productid" style="display: none;">
 								<TD>
 									<IMG src="img/class.gif" alt="">

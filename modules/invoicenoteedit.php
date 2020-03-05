@@ -89,6 +89,7 @@ if (isset($_GET['id']) && $action == 'edit') {
         }
         $nitem['tax']       = isset($taxeslist[$item['taxid']]) ? $taxeslist[$item['taxid']]['label'] : '';
         $nitem['taxid']     = $item['taxid'];
+        $nitem['taxcategory'] = $item['taxcategory'];
         $cnotecontents[$item['itemid']] = $nitem;
     }
     $SESSION->save('cnotecontents', $cnotecontents, true);
@@ -287,6 +288,7 @@ switch ($action) {
 
         foreach ($contents as $idx => $item) {
             $contents[$idx]['taxid'] = isset($newcontents['taxid'][$idx]) ? $newcontents['taxid'][$idx] : $item['taxid'];
+            $contents[$idx]['taxcategory'] = isset($newcontents['taxcategory'][$idx]) ? $newcontents['taxcategory'][$idx] : $item['taxcategory'];
             $contents[$idx]['prodid'] = isset($newcontents['prodid'][$idx]) ? $newcontents['prodid'][$idx] : $item['prodid'];
             $contents[$idx]['content'] = isset($newcontents['content'][$idx]) ? $newcontents['content'][$idx] : $item['content'];
             $contents[$idx]['count'] = isset($newcontents['count'][$idx]) ? $newcontents['count'][$idx] : $item['count'];
@@ -429,6 +431,7 @@ switch ($action) {
         if (!empty($error)) {
             foreach ($contents as $idx => $item) {
                 $contents[$idx]['taxid'] = $newcontents['taxid'][$idx];
+                $contents[$idx]['taxcategory'] = $newcontents['taxcategory'][$idx];
                 $contents[$idx]['prodid'] = $newcontents['prodid'][$idx];
                 $contents[$idx]['content'] = $newcontents['content'][$idx];
                 $contents[$idx]['count'] = $newcontents['count'][$idx];
@@ -589,6 +592,7 @@ switch ($action) {
                     'itemid' => $itemid,
                     'value' => str_replace(',', '.', $item['valuebrutto']),
                     SYSLOG::RES_TAX => $item['taxid'],
+                    'taxcategory' => $item['taxcategory'],
                     'prodid' => $item['prodid'],
                     'content' => $item['content'],
                     'count' => $item['count'],
@@ -598,8 +602,8 @@ switch ($action) {
                     SYSLOG::RES_TARIFF => empty($item['tariffid']) ? null : $item['tariffid'],
                 );
                 $DB->Execute('INSERT INTO invoicecontents (docid, itemid, value,
-					taxid, prodid, content, count, pdiscount, vdiscount, description, tariffid)
-					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+					taxid, taxcategory, prodid, content, count, pdiscount, vdiscount, description, tariffid)
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
                 if ($SYSLOG) {
                     $args[SYSLOG::RES_CUST] = $cnote['customerid'];
                     $SYSLOG->AddMessage(SYSLOG::RES_INVOICECONT, SYSLOG::OPER_ADD, $args);

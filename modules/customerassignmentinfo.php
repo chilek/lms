@@ -28,7 +28,8 @@ $a = $DB->GetRow('SELECT a.invoice, a.settlement,
         a.numberplanid, a.paytype, n.template, n.period, a.attribute,
         d.number AS docnumber, d.type AS doctype, d.cdate,
         n2.template AS numtemplate, a.customerid, a.separatedocument,
-        (CASE WHEN l.splitpayment IS NULL THEN t.splitpayment ELSE l.splitpayment END) AS splitpayment
+        (CASE WHEN l.splitpayment IS NULL THEN t.splitpayment ELSE l.splitpayment END) AS splitpayment,
+        (CASE WHEN l.taxcategory IS NULL THEN t.taxcategory ELSE l.taxcategory END) AS taxcategory
     FROM assignments a
     LEFT JOIN numberplans n ON (n.id = a.numberplanid)
     LEFT JOIN documents d ON d.id = a.docid

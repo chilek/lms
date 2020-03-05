@@ -26,7 +26,8 @@
     <TABLE class="lmsbox lms-ui-background-cycle invoice-contents">
         <COLGROUP>
             <COL style="width: 1%;">
-            <COL style="width: 92%;">
+            <COL style="width: 91%;">
+            <COL style="width: 1%;">
             <COL style="width: 1%;">
             <COL style="width: 1%;">
             <COL style="width: 1%;">
@@ -42,6 +43,9 @@
             </TD>
             <TD>
                 {trans("Name of product, commodity or service:")}
+            </TD>
+            <TD>
+                {trans("Tax category:")}
             </TD>
             <TD class="nobr">
                 {trans("Product ID:")}
@@ -88,6 +92,17 @@
             <TD class="invoice-contents-sortable-handler">
                 <INPUT TYPE="text" class="invoice-contents-field-edit" NAME="invoice-contents[{$posuid}][name]" SIZE="40" style="width: 300px; display: none;" value="{htmlspecialchars($item.name)}" {tip text="Enter description"}>
                 <span class="invoice-contents-field-value">{$item.name}</span>
+            </TD>
+            <TD class="nobr">
+                {tax_category_selection class="invoice-contents-field-edit" elementname="invoice-contents["|cat:$posuid|cat:"][taxcategory]"
+                    selected=$item.taxcategory visible=false tip="Select tax category"}
+                <span class="invoice-contents-field-value"{if $item.taxcategory} title="{$_TAX_CATEGORIES[$item.taxcategory].description}"{/if}>
+                    {if $item.taxcategory}
+                        {$_TAX_CATEGORIES[$item.taxcategory].label}
+                    {else}
+                        {trans("- none -")}
+                    {/if}
+                </span>
             </TD>
             <TD class="nobr">
                 <INPUT TYPE="text" class="invoice-contents-field-edit" NAME="invoice-contents[{$posuid}][prodid]" SIZE="6" value="{$item.prodid}" style="display: none;">
@@ -167,14 +182,14 @@
         </TR>
         {foreachelse}
         <TR>
-            <TD COLSPAN="9" class="empty-table">
+            <TD COLSPAN="10" class="empty-table">
                 <p>{trans("Invoice have no items. Use form below for items addition.")}</p>
             </TD>
         </TR>
         {/foreach}
         {if $contents}
         <TR>
-            <TD COLSPAN="5" class="bold text-right">
+            <TD COLSPAN="6" class="bold text-right">
                 {trans("Total:")}
             </TD>
             <TD class="bold text-right nobr">
@@ -203,7 +218,7 @@
             <TD class="bold nobr">
                 {counter}.
             </TD>
-            <TD class="nobr">
+            <TD class="nobr" id="tariff-selection">
                 {block name="`$layout.module`-tariff-selection"}
                 <INPUT TYPE="text" NAME="name" SIZE="40" style="width:300px" {tip text="Enter description or select tariff from the list"}><BR>
                 <SELECT SIZE="1" NAME="ttariffid" style="width: 300px" onchange="setItem(document.contents.ttariffid.value)" {tip text="Enter description or select tariff from the list"}>
@@ -215,6 +230,9 @@
                     {/foreach}
                 </SELECT>
                 {/block}
+            </TD>
+            <TD class="nobr">
+                {tax_category_selection elementname="taxcategory" tip="Select tax category"}
             </TD>
             <TD class="text-right">
                 <INPUT TYPE="text" NAME="prodid" SIZE="6">
@@ -240,6 +258,7 @@
                     <OPTION value="{$tax.id}"{if $tax.value == $default_taxrate} selected{/if}>{$tax.label}</OPTION>
                     {/foreach}
                 </SELECT>
+                <br>
             </TD>
             <TD class="text-right nobr">
                 <INPUT TYPE="text" NAME="valuebrutto" SIZE="6" {tip text="Enter unitary value without discount"}>
@@ -251,7 +270,7 @@
         {/if}
         {/block}
         <TR class="lms-ui-button-panel">
-            <TD COLSPAN="9" class="text-right">
+            <TD COLSPAN="10" class="text-right">
                 <TABLE width="100%">
                     <TR>
                         <TD class="text-left nobr">
@@ -311,6 +330,7 @@
 			e.valuebrutto.value = '{$tariff.value}';
 			e.prodid.value = '{$tariff.prodid}';
 			e.tariffid.value = '{$tariff.id}';
+			$(e.taxcategory).val({$tariff.taxcategory});
 			e.count.value = 1;
 			return;
 		}

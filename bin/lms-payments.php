@@ -416,6 +416,7 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 		a.period, a.at, a.suspended, a.settlement, a.datefrom, a.dateto, a.pdiscount, a.vdiscount,
 		a.invoice, a.separatedocument,
 		(CASE WHEN c.type = ? THEN 0 ELSE (CASE WHEN a.liabilityid IS NULL THEN t.splitpayment ELSE l.splitpayment END) END) AS splitpayment,
+		(CASE WHEN a.liabilityid IS NULL THEN t.taxcategory ELSE l.taxcategory END) AS taxcategory,
 		t.description AS description, a.id AS assignmentid,
 		c.divisionid, c.paytype, a.paytype AS a_paytype, a.numberplanid, a.attribute,
 		d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
@@ -465,7 +466,9 @@ $billing_invoice_description = ConfigHelper::getConfig('payments.billing_invoice
 $query = "SELECT
 			a.id, a.tariffid, a.customerid, a.period, a.at, a.suspended, a.settlement, a.datefrom,
 			0 AS pdiscount, 0 AS vdiscount, a.invoice, a.separatedocument,
-			(CASE WHEN c.type = ? THEN 0 ELSE t.splitpayment END) AS splitpayment, t.description AS description, a.id AS assignmentid,
+			(CASE WHEN c.type = ? THEN 0 ELSE t.splitpayment END) AS splitpayment,
+			t.taxcategory AS taxcategory,
+			t.description AS description, a.id AS assignmentid,
 			c.divisionid, c.paytype, a.paytype AS a_paytype, a.numberplanid, a.attribute,
 			d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
 			t.type AS tarifftype, t.taxid AS taxid, '' as prodid, voipcost.value, t.currency, voipphones.phones,
@@ -1184,15 +1187,23 @@ foreach ($assigns as $assign) {
                         );
                     } else {
                         $DB->Execute(
-                            "INSERT INTO invoicecontents (docid, value, taxid, prodid, 
-                            content, count, description, tariffid, itemid, pdiscount, vdiscount) 
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                            array($invoices[$cid], str_replace(',', '.', $val / $assign['count']), $assign['taxid'], $assign['prodid'], $unit_name, $assign['count'],
+                            "INSERT INTO invoicecontents (docid, value, taxid, taxcategory, prodid,
+                            content, count, description, tariffid, itemid, pdiscount, vdiscount)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                            array(
+                                $invoices[$cid],
+                                str_replace(',', '.', $val / $assign['count']),
+                                $assign['taxid'],
+                                $assign['taxcategory'],
+                                $assign['prodid'],
+                                $unit_name,
+                                $assign['count'],
                                 $desc,
                                 empty($assign['tariffid']) ? null : $assign['tariffid'],
                                 $itemid,
                                 $assign['pdiscount'],
-                                $assign['vdiscount'])
+                                $assign['vdiscount']
+                            )
                         );
                     }
                     if ($assign['invoice'] == DOC_INVOICE || $assign['invoice'] == DOC_DNOTE || $proforma_generates_commitment) {
@@ -1335,14 +1346,23 @@ foreach ($assigns as $assign) {
                             );
                         } else {
                             $DB->Execute(
-                                "INSERT INTO invoicecontents (docid, value, taxid, prodid,
+                                "INSERT INTO invoicecontents (docid, value, taxid, taxcategory, prodid,
 								content, count, description, tariffid, itemid, pdiscount, vdiscount)
-								VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                                array($invoices[$cid], str_replace(',', '.', $value / $assign['count']), $assign['taxid'], $assign['prodid'], $unit_name, $assign['count'],
-                                $sdesc, empty($assign['tariffid']) ? null : $assign['tariffid'],
-                                $itemid,
-                                $assign['pdiscount'],
-                                $assign['vdiscount'])
+								VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                                array(
+                                    $invoices[$cid],
+                                    str_replace(',', '.', $value / $assign['count']),
+                                    $assign['taxid'],
+                                    $assign['taxcategory'],
+                                    $assign['prodid'],
+                                    $unit_name,
+                                    $assign['count'],
+                                    $sdesc,
+                                    empty($assign['tariffid']) ? null : $assign['tariffid'],
+                                    $itemid,
+                                    $assign['pdiscount'],
+                                    $assign['vdiscount']
+                                )
                             );
                         }
                         if ($assign['invoice'] == DOC_INVOICE || $assign['invoice'] == DOC_DNOTE || $proforma_generates_commitment) {

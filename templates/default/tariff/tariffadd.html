@@ -66,6 +66,20 @@
 					</td>
 				</tr>
 
+				<tr>
+					<TD>
+						<IMG SRC="img/tax.gif" ALT="">
+					</TD>
+					<TD class="bold nobr">
+						<label for="taxcategory">
+							{trans("Tax category:")}
+						</label>
+					</TD>
+					<td>
+						{tax_category_selection id="taxcategory" name="tariff[taxcategory]" selected=$tariff.taxcategory}
+					</td>
+				</tr>
+
 				<TR>
 				    <TD WIDTH="1%">
 					<IMG SRC="img/tax.gif" ALT="">

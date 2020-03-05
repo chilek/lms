@@ -397,6 +397,7 @@ CREATE TABLE documents (
 	paytime smallint	DEFAULT 0 NOT NULL,
 	paytype smallint	DEFAULT NULL,
 	splitpayment smallint NOT NULL DEFAULT 0,
+    taxcategory smallint DEFAULT 0 NOT NULL,
 	closed smallint		DEFAULT 0 NOT NULL,
 	reference integer	DEFAULT NULL
 		CONSTRAINT documents_reference_fkey REFERENCES documents (id) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -704,6 +705,7 @@ CREATE TABLE tariffs (
 	type smallint		DEFAULT 1 NOT NULL,
 	value numeric(9,2) 	DEFAULT 0 NOT NULL,
     splitpayment smallint NOT NULL DEFAULT 0,
+    taxcategory smallint DEFAULT 0 NOT NULL,
 	period smallint 	DEFAULT NULL,
 	taxid integer 		NOT NULL
 		CONSTRAINT tariffs_taxid_fkey REFERENCES taxes (id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -824,6 +826,7 @@ CREATE TABLE liabilities (
 	id integer DEFAULT nextval('liabilities_id_seq'::text) NOT NULL,
 	value numeric(9,2)  	DEFAULT 0 NOT NULL,
     splitpayment smallint NOT NULL DEFAULT 0,
+    taxcategory smallint DEFAULT 0 NOT NULL,
 	currency varchar(3),
 	name text           	DEFAULT '' NOT NULL,
 	taxid integer       	NOT NULL
@@ -3715,6 +3718,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020030300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020030500');
 
 COMMIT;

@@ -531,6 +531,7 @@ CREATE TABLE documents (
 	paytime smallint NOT NULL DEFAULT '0',
 	paytype smallint DEFAULT NULL,
 	splitpayment smallint NOT NULL DEFAULT 0,
+    taxcategory smallint DEFAULT 0 NOT NULL,
 	closed tinyint(1) NOT NULL DEFAULT '0',
 	reference int(11) DEFAULT NULL,
 	reason varchar(255) NOT NULL DEFAULT '',
@@ -836,6 +837,7 @@ CREATE TABLE tariffs (
 	type tinyint 		NOT NULL DEFAULT '1',
 	value decimal(9,2) 	NOT NULL DEFAULT '0',
     splitpayment smallint NOT NULL DEFAULT 0,
+    taxcategory smallint DEFAULT 0 NOT NULL,
 	taxid int(11) 	NOT NULL,
 	numberplanid integer DEFAULT NULL,
 	period smallint   DEFAULT NULL,
@@ -950,6 +952,7 @@ CREATE TABLE liabilities (
 	id int(11)              NOT NULL auto_increment,
 	value decimal(9,2)      NOT NULL DEFAULT '0',
     splitpayment smallint NOT NULL DEFAULT 0,
+    taxcategory smallint DEFAULT 0 NOT NULL,
 	currency varchar(3),
 	name text               NOT NULL DEFAULT '',
 	taxid int(11)           NOT NULL,
@@ -3666,4 +3669,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020030300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020030500');

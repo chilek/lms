@@ -215,7 +215,8 @@
 <TABLE class="lmsbox lms-ui-background-cycle">
 	<COLGROUP>
 		<COL style="width: 1%;">
-		<COL style="width: 92%;">
+		<COL style="width: 91%;">
+		<COL style="width: 1%;">
 		<COL style="width: 1%;">
 		<COL style="width: 1%;">
 		<COL style="width: 1%;">
@@ -231,6 +232,9 @@
 		</TD>
 		<TD>
 			{trans("Name of product, commodity or service:")}
+		</TD>
+		<TD>
+			{trans("Tax category:")}
 		</TD>
 		<TD class="nobr">
 			{trans("Product ID:")}
@@ -272,6 +276,29 @@
 				{/if}
 				{if isset($item.name_custom_contents)}
 					{$item.name_custom_contents}
+				{/if}
+			</TD>
+			<TD>
+				{if $refdoc.closed}
+					{if $item.taxcategory}
+						<span {tip text=$_TAX_CATEGORIES[$item.taxcategory].description}>
+							{$_TAX_CATEGORIES[$item.taxcategory].label}
+						</span>
+					{else}
+						{trans("- none -")}
+					{/if}
+				{elseif $item.deleted}
+					<INPUT TYPE="hidden" VALUE="{$item.taxcategory}" NAME="taxcategory[{$itemid}]">
+					{if $item.taxcategory}
+						<span {tip text=$_TAX_CATEGORIES[$item.taxcategory].description}>
+							{$_TAX_CATEGORIES[$item.taxcategory].label}
+						</span>
+					{else}
+						{trans("- none -")}
+					{/if}
+				{else}
+					{tax_category_selection elementname="taxcategory["|cat:$itemid|cat:"]" selected=$item.taxcategory
+						tip="Select tax category"}
 				{/if}
 			</TD>
 			<TD class="nobr">
@@ -359,7 +386,7 @@
 	{/foreach}
 	{if $contents}
 		<TR>
-			<TD COLSPAN="5" class="bold text-right">
+			<TD COLSPAN="6" class="bold text-right">
 				{trans("Total:")}
 			</TD>
 			<TD class="bold nobr text-right">
@@ -381,7 +408,7 @@
 		<input type="hidden" id="s-valuebrutto" value="0">
 	{/if}
 	<TR class="lms-ui-button-panel">
-		<TD COLSPAN="9" class="text-right">
+		<TD COLSPAN="10" class="text-right">
 			{$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
 			<label>
 				<INPUT type="checkbox" name="which[{$smarty.const.DOC_ENTITY_ORIGINAL}]"

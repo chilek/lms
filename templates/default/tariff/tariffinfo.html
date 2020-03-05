@@ -108,6 +108,17 @@
                             </TR>
                             <TR>
                                 <TD><IMG SRC="img/tax.gif" ALT=""></TD>
+                                <TD>{trans("Tax category:")}</TD>
+                                <TD>
+                                    {if $tariff.taxcategory}
+                                        <span {tip text=$_TAX_CATEGORIES[$tariff.taxcategory].description}>{$_TAX_CATEGORIES[$tariff.taxcategory].label}</span>
+                                    {else}
+                                        {trans("- none -")}
+                                    {/if}
+                                </TD>
+                            </TR>
+                            <TR>
+                                <TD><IMG SRC="img/tax.gif" ALT=""></TD>
                                 <TD>{trans("Tax:")}</TD>
                                 <TD>{$tariff.tax}</TD>
                             </TR>

@@ -97,6 +97,7 @@ switch ($action) {
                     's_valuebrutto' => str_replace(',', '.', $item['total']),
                     'tax' => isset($taxeslist[$item['taxid']]) ? $taxeslist[$item['taxid']]['label'] : '',
                     'taxid' => $item['taxid'],
+                    'taxcategory' => $item['taxcategory'],
                 );
             }
 
@@ -252,6 +253,7 @@ switch ($action) {
                 $itemdata['cashid'] = $id;
                 $itemdata['name'] = $cash['comment'];
                 $itemdata['taxid'] = $cash['taxid'];
+                $itemdata['taxcategory'] = 0;
                 $itemdata['tax'] = isset($taxeslist[$itemdata['taxid']]) ? $taxeslist[$itemdata['taxid']]['label'] : '';
                 $itemdata['discount'] = 0;
                 $itemdata['pdiscount'] = 0;

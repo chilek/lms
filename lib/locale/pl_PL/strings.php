@@ -4605,3 +4605,6 @@ $_LANG['Enter document memo (optional)'] = 'Wprowadź notatkę widoczną na doku
 $_LANG['Memo:'] = 'Notatka:';
 
 $_LANG['close event'] = 'zamknij zdarzenie';
+
+$_LANG['Tax category:'] = 'Kategoria podatkowa:';
+$_LANG['Select tax category'] = 'Wybierz kategorię podatkową';

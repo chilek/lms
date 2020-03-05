@@ -68,6 +68,7 @@ if (isset($_GET['id']) && $action == 'init') {
         $nitem['s_valuebrutto'] = str_replace(',', '.', $item['total']);
         $nitem['tax']       = isset($taxeslist[$item['taxid']]) ? $taxeslist[$item['taxid']]['label'] : 0;
         $nitem['taxid']     = $item['taxid'];
+        $nitem['taxcategory'] = $item['taxcategory'];
         $nitem['itemid']    = $item['itemid'];
         $nitem['deleted'] = empty($item['total']);
         $invoicecontents[$nitem['itemid']] = $nitem;
@@ -279,6 +280,7 @@ switch ($action) {
         foreach ($contents as $item) {
             $idx = $item['itemid'];
             $contents[$idx]['taxid'] = isset($newcontents['taxid'][$idx]) ? $newcontents['taxid'][$idx] : $item['taxid'];
+            $contents[$idx]['taxcategory'] = isset($newcontents['taxcategory'][$idx]) ? $newcontents['taxcategory'][$idx] : $item['taxcategory'];
             $contents[$idx]['prodid'] = isset($newcontents['prodid'][$idx]) ? $newcontents['prodid'][$idx] : $item['prodid'];
             $contents[$idx]['content'] = isset($newcontents['content'][$idx]) ? $newcontents['content'][$idx] : $item['content'];
             $contents[$idx]['count'] = isset($newcontents['count'][$idx]) ? $newcontents['count'][$idx] : $item['count'];
@@ -445,6 +447,7 @@ switch ($action) {
             foreach ($contents as $item) {
                 $idx = $item['itemid'];
                 $contents[$idx]['taxid'] = $newcontents['taxid'][$idx];
+                $contents[$idx]['taxid'] = $newcontents['taxcategory'][$idx];
                 $contents[$idx]['prodid'] = $newcontents['prodid'][$idx];
                 $contents[$idx]['content'] = $newcontents['content'][$idx];
                 $contents[$idx]['count'] = $newcontents['count'][$idx];
@@ -609,6 +612,7 @@ switch ($action) {
                 'itemid' => $idx,
                 'value' => $item['valuebrutto'],
                 SYSLOG::RES_TAX => $item['taxid'],
+                'taxcategory' => $item['taxcategory'],
                 'prodid' => $item['prodid'],
                 'content' => $item['content'],
                 'count' => $item['count'],
@@ -617,8 +621,8 @@ switch ($action) {
                 'description' => $item['name'],
                 SYSLOG::RES_TARIFF => empty($item['tariffid']) ? null : $item['tariffid'],
             );
-            $DB->Execute('INSERT INTO invoicecontents (docid, itemid, value, taxid, prodid, content, count, pdiscount, vdiscount, description, tariffid)
-					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+            $DB->Execute('INSERT INTO invoicecontents (docid, itemid, value, taxid, taxcategory, prodid, content, count, pdiscount, vdiscount, description, tariffid)
+					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
             if ($SYSLOG) {
                 $args[SYSLOG::RES_CUST] = $invoice['customerid'];

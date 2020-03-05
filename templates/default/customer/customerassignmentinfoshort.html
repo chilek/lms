@@ -53,9 +53,20 @@
 		<TD>{if $assignment.separatedocument}{trans("yes")}{else}{trans("no")}{/if}</TD>
 	</TR>
 	<TR>
-		<TD><IMG src="img/options.gif" ALT=""></TD>
+		<TD><IMG src="img/tax.gif" ALT=""></TD>
 		<TD class="nobr">{trans("split payment")}:</TD>
 		<TD>{if $assignment.splitpayment}{trans("yes")}{else}{trans("no")}{/if}</TD>
+	</TR>
+	<TR>
+		<TD><IMG src="img/tax.gif" ALT=""></TD>
+		<TD class="nobr">{trans("Tax category:")}</TD>
+		<TD>
+			{if $assignment.taxcategory}
+				<span {tip text=$_TAX_CATEGORIES[$assignment.taxcategory].description}>{$_TAX_CATEGORIES[$assignment.taxcategory].label}</span>
+			{else}
+				{trans("- none -")}
+			{/if}
+		</TD>
 	</TR>
 	<TR>
 		<TD><IMG src="img/options.gif" ALT=""></TD>
