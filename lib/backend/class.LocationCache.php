@@ -199,8 +199,8 @@ class LocationCache
 								ident FROM location_streets WHERE cityid IN (' . implode(',', $this->city_with_sections_by_id[$city_id]['citysections'])
                                 . ')', 'ident');
                         }
+                        unset($city);
                     }
-                    unset($city);
 
                     $this->streets_loaded = true;
                 }
