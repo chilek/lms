@@ -37,7 +37,8 @@ class LMSProjectManager extends LMSManager implements LMSProjectManagerInterface
                 "DELETE FROM invprojects WHERE type <> ? AND id NOT IN
 				(SELECT DISTINCT invprojectid FROM netdevices WHERE invprojectid IS NOT NULL
 					UNION SELECT DISTINCT invprojectid FROM vnodes WHERE invprojectid IS NOT NULL
-					UNION SELECT DISTINCT invprojectid FROM netnodes WHERE invprojectid IS NOT NULL)",
+					UNION SELECT DISTINCT invprojectid FROM netnodes WHERE invprojectid IS NOT NULL
+					UNION SELECT DISTINCT invprojectid FROM rttickets WHERE invprojectid IS NOT NULL)",
                 array(INV_PROJECT_SYSTEM)
             );
         }
