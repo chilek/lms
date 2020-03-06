@@ -203,6 +203,8 @@ version 25-git (????-??-??):
   - improvement: allow to quickly close newly created or edited time table event [chilan]
   - enhancement: implemented tax category selection for tariffs, tariffless liabilities
     and invoice content [chilan]
+  - enhancement: phpui.tax_category_required allows to force tax category selection requirement
+    ('false' by default) [chilan]
 
 version 24.0 (2019-05-16):
 
