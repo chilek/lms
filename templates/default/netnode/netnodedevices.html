@@ -7,8 +7,10 @@
 	<THEAD>
 	<TR class="hand lmsbox-titlebar" data-lmsbox-content="devicenodepanel">
 		<TD class="bold nobr">
-			<IMG SRC="img/node.gif" ALT="">{t a=$netdevlist|@count}Assigned net devices ($a):{/t}</td>
-		</TD>
+			<IMG SRC="img/node.gif" ALT="">
+			{if empty($netdevlist)}{$count = 0}{else}{$count = count($netdevlist)}{/if}
+			{t a=$count}Assigned net devices ($a):{/t}
+		</td>
 		<td class="text-right nobr">
 			<a href="#" onclick="javascript:netDevForNetNodeChooseWin('{$objectid}')">
 				<IMG SRC="img/netdev.gif" ALT=""> {trans("Add devices to node")}
