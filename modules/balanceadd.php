@@ -61,12 +61,10 @@ if (!isset($addbalance['type'])) {
         $addbalance['type'] = 1;
 }
 
-if (!empty($addbalance['sourceid'])) {
-    if (!$addbalance['type']) {
-        $addbalance['sourceid'] = null;
-    }
-    $SESSION->save('addsource', $addbalance['sourceid']);
+if (!$addbalance['type']) {
+    $addbalance['sourceid'] = null;
 }
+$SESSION->save('addsource', $addbalance['sourceid']);
 
 if ($addbalance['type'] == 0) {
     $addbalance['value'] *= -1;
