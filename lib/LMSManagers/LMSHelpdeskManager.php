@@ -1253,21 +1253,25 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $props['netnodeid'] = $ticket['netnodeid'];
         }
 
-        if ($ticket['invprojectid'] != $props['invprojectid']) {
-            $project_manager = new LMSProjectManager($this->db, $this->auth, $this->cache, $this->syslog);
-            if (isset($props['invprojectid'])) {
-                $notes[] = trans(
-                    'Ticket\'s investment project has been changed from $a to $b.',
-                    $project_manager->GetProjectName($ticket['invprojectid']),
-                    $project_manager->GetProjectName($props['invprojectid'])
-                );
+        if (array_key_exists('invprojectid', $props)) {
+            if ($ticket['invprojectid'] != $props['invprojectid']) {
+                $project_manager = new LMSProjectManager($this->db, $this->auth, $this->cache, $this->syslog);
+                if (isset($props['invprojectid'])) {
+                    $notes[] = trans(
+                        'Ticket\'s investment project has been changed from $a to $b.',
+                        $project_manager->GetProjectName($ticket['invprojectid']),
+                        $project_manager->GetProjectName($props['invprojectid'])
+                    );
+                } else {
+                    $notes[] = trans(
+                        'Ticket has been unassigned from investment project $a.',
+                        $project_manager->GetProjectName($ticket['invprojectid'])
+                    );
+                }
+                $type = $type | RTMESSAGE_INVPROJECT_CHANGE;
             } else {
-                $notes[] = trans(
-                    'Ticket has been unassigned from investment project $a.',
-                    $project_manager->GetProjectName($ticket['invprojectid'])
-                );
+                $props['invprojectid'] = $ticket['invprojectid'];
             }
-            $type = $type | RTMESSAGE_INVPROJECT_CHANGE;
         } else {
             $props['invprojectid'] = $ticket['invprojectid'];
         }
