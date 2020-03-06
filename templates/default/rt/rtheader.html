@@ -5,7 +5,7 @@
     </TD>
     <TD class="bold">
         {trans("Ticket's state:")}
-        <br><a href="?m={$layout.module}{if isset($filter.custid)}&id={$filter.custid}{/if}{if !empty($filter.ids)}&id[]={implode('&id[]=', $filter.ids)}{/if}{if $filter.state == -1}&s=-1{elseif !empty($filter.state)}&s[]={implode('&s[]=', $filter.state)}{/if}&o=priority{if $filter.direction == "asc" && $filter.order == "priority"},desc{/if}">{trans("Priority:")}</a> {if $filter.order == "priority"}<i class="lms-ui-icon-{if $filter.direction == 'desc'}descending{else}ascending{/if}"></i>{/if}
+        <br><a href="?m={$layout.module}{if isset($filter.custid)}&id={$filter.custid}{/if}{if !empty($filter.ids)}&id[]={implode('&id[]=', $filter.ids)}{/if}{if $filter.state == -1}&s=-1{elseif !empty($filter.state) && is_array($filter.state)}&s[]={implode('&s[]=', $filter.state)}{/if}&o=priority{if $filter.direction == "asc" && $filter.order == "priority"},desc{/if}">{trans("Priority:")}</a> {if $filter.order == "priority"}<i class="lms-ui-icon-{if $filter.direction == 'desc'}descending{else}ascending{/if}"></i>{/if}
     </TD>
     <TD class="bold nobr">
         <a href="?m={$layout.module}{if isset($filter.custid)}&id={$filter.custid}{/if}{if !empty($filter.ids)}&id[]={implode('&id[]=', $filter.ids)}{/if}{if $filter.state == -1}&s=-1{elseif !empty($filter.state)}&s[]={implode('&s[]=', $filter.state)}{/if}&o=ticketid{if $filter.direction == "asc" && $filter.order == "ticketid"},desc{/if}">{trans("ID:")}</a>{if $filter.order == "ticketid"}<i class="lms-ui-icon-{if $filter.direction == 'desc'}descending{else}ascending{/if}"></i>{/if}
