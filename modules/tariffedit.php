@@ -261,6 +261,11 @@ if (isset($_POST['tariff'])) {
         $error['currency'] = trans('Invalid currency selection!');
     }
 
+    if (ConfigHelper::checkConfig('phpui.tax_category_required')
+        && empty($tariff['taxcategory'])) {
+        $error['taxcategory'] = trans('Tax category selection is required!');
+    }
+
     if (!$error) {
         $LMS->TariffUpdate($tariff);
         $SESSION->redirect('?m=tariffinfo&id='.$tariff['id']);

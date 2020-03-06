@@ -279,6 +279,12 @@ switch ($action) {
 
         foreach ($contents as $item) {
             $idx = $item['itemid'];
+
+            if (ConfigHelper::checkConfig('phpui.tax_category_required')
+                && (!isset($newcontents['taxcategory'][$idx]) || empty($newcontents['taxcategory'][$idx]))) {
+                $error['taxcategory[' . $idx . ']'] = trans('Tax category selection is required!');
+            }
+
             $contents[$idx]['taxid'] = isset($newcontents['taxid'][$idx]) ? $newcontents['taxid'][$idx] : $item['taxid'];
             $contents[$idx]['taxcategory'] = isset($newcontents['taxcategory'][$idx]) ? $newcontents['taxcategory'][$idx] : $item['taxcategory'];
             $contents[$idx]['prodid'] = isset($newcontents['prodid'][$idx]) ? $newcontents['prodid'][$idx] : $item['prodid'];
@@ -682,7 +688,7 @@ $SESSION->save('cnote', $cnote, true);
 $SESSION->save('invoicecontents', $contents, true);
 $SESSION->save('cnoteerror', $error, true);
 
-if ($action != '') {
+if ($action && !$error) {
     // redirect, to not prevent from invoice break with the refresh
     $SESSION->redirect('?m=invoicenote');
 }

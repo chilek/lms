@@ -85,17 +85,24 @@
 			{/if}
 			{$valuebrutto = round($valuebrutto, 2)}
 			{$valuenetto = round(($valuebrutto * 100) / (100 + $taxeslist[$item.taxid].value), 2)}
+            {if isset($error.posuid)}
+                {$row = $itemdata}
+            {else}
+                {$row = $item}
+            {/if}
 
             <TD class="bold invoice-contents-position-counter invoice-contents-sortable-handler">
                 {counter}.
             </TD>
             <TD class="invoice-contents-sortable-handler">
-                <INPUT TYPE="text" class="invoice-contents-field-edit" NAME="invoice-contents[{$posuid}][name]" SIZE="40" style="width: 300px; display: none;" value="{htmlspecialchars($item.name)}" {tip text="Enter description"}>
+                <INPUT TYPE="text" class="invoice-contents-field-edit" NAME="invoice-contents[{$posuid}][name]" SIZE="40" style="width: 300px; display: none;"
+                       value="{htmlspecialchars($row.name)}" data-old-value="{htmlspecialchars($item.name)}"
+                       {tip text="Enter description"}>
                 <span class="invoice-contents-field-value">{$item.name}</span>
             </TD>
             <TD class="nobr">
                 {tax_category_selection class="invoice-contents-field-edit" elementname="invoice-contents["|cat:$posuid|cat:"][taxcategory]"
-                    selected=$item.taxcategory visible=false tip="Select tax category"}
+                    selected=$row.taxcategory visible=false tip="Select tax category" data_old_value=$item.taxcategory}
                 <span class="invoice-contents-field-value"{if $item.taxcategory} title="{$_TAX_CATEGORIES[$item.taxcategory].description}"{/if}>
                     {if $item.taxcategory}
                         {$_TAX_CATEGORIES[$item.taxcategory].label}
@@ -105,57 +112,67 @@
                 </span>
             </TD>
             <TD class="nobr">
-                <INPUT TYPE="text" class="invoice-contents-field-edit" NAME="invoice-contents[{$posuid}][prodid]" SIZE="6" value="{$item.prodid}" style="display: none;">
+                <INPUT TYPE="text" class="invoice-contents-field-edit" NAME="invoice-contents[{$posuid}][prodid]" SIZE="6"
+                       value="{$row.prodid}" data-old-value="{$item.prodid}" style="display: none;">
                 <span class="invoice-contents-field-value">{$item.prodid}</span>
             </TD>
             <TD class="text-right">
-                <INPUT TYPE="text" class="invoice-contents-field-edit" NAME="invoice-contents[{$posuid}][count]" SIZE="3" VALUE="{$item.count}" style="display: none;">
-                <INPUT TYPE="text" class="invoice-contents-field-edit" NAME="invoice-contents[{$posuid}][jm]" SIZE="3" VALUE="{$item.jm}" style="display: none;">
+                <INPUT TYPE="text" class="invoice-contents-field-edit" NAME="invoice-contents[{$posuid}][count]" SIZE="3"
+                       VALUE="{$row.count}" data-old-value="{$item.count}" style="display: none;">
+                <INPUT TYPE="text" class="invoice-contents-field-edit" NAME="invoice-contents[{$posuid}][jm]" SIZE="3"
+                       VALUE="{$row.jm}" data-old-value="{$item.jm}" style="display: none;">
                 <span class="invoice-contents-field-value nobr">
-			{$item.count|string_format:"%.3f"}<BR>
-			{$item.jm}
-			</span>
+                    {$item.count|string_format:"%.3f"}<BR>
+                    {$item.jm}
+                </span>
             </TD>
             <TD class="text-right">
-                <INPUT TYPE="text" class="invoice-contents-field-edit" NAME="invoice-contents[{$posuid}][discount]" value="{if $item.pdiscount != 0}{$item.pdiscount}{else}{if $item.vdiscount != 0}{$item.vdiscount}{/if}{/if}" SIZE="6" {tip text="Enter discount percentage or amount"} style="display: none;">
-                <SELECT class="invoice-contents-field-edit" name="invoice-contents[{$posuid}][discount_type]" style="display: none">
-                    <OPTION value="{$smarty.const.DISCOUNT_PERCENTAGE}"{if $item.pdiscount != 0} selected{/if}>{$_DISCOUNTTYPES[$smarty.const.DISCOUNT_PERCENTAGE]}</OPTION>
-                    <OPTION value="{$smarty.const.DISCOUNT_AMOUNT}"{if $item.vdiscount != 0} selected{/if}>{$_DISCOUNTTYPES[$smarty.const.DISCOUNT_AMOUNT]}</OPTION>
+                <INPUT TYPE="text" class="invoice-contents-field-edit" NAME="invoice-contents[{$posuid}][discount]"
+                       value="{if $row.pdiscount != 0}{$row.pdiscount}{else}{if $row.vdiscount != 0}{$row.vdiscount}{/if}{/if}"
+                       data-old-value="{if $item.pdiscount != 0}{$item.pdiscount}{else}{if $item.vdiscount != 0}{$item.vdiscount}{/if}{/if}"
+                       SIZE="6" {tip text="Enter discount percentage or amount"} style="display: none;">
+                <SELECT class="invoice-contents-field-edit" name="invoice-contents[{$posuid}][discount_type]"
+                        data-old-value="{if $item.pdiscount != 0}{$smarty.const.DISCOUNT_PERCENTAGE}{else}{if $item.vdiscount != 0}{$smarty.const.DISCOUNT_AMOUNT}{/if}{/if}" style="display: none">
+                    <OPTION value="{$smarty.const.DISCOUNT_PERCENTAGE}"{if $row.pdiscount != 0} selected{/if}>{$_DISCOUNTTYPES[$smarty.const.DISCOUNT_PERCENTAGE]}</OPTION>
+                    <OPTION value="{$smarty.const.DISCOUNT_AMOUNT}"{if $row.vdiscount != 0} selected{/if}>{$_DISCOUNTTYPES[$smarty.const.DISCOUNT_AMOUNT]}</OPTION>
                 </SELECT>
                 <span class="invoice-contents-field-value nobr">
-				{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%01.2f %%"}{else}{if $item.vdiscount != 0}{$item.vdiscount|string_format:"%01.2f"}{/if}{/if}
-			</span>
+					{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%01.2f %%"}{else}{if $item.vdiscount != 0}{$item.vdiscount|string_format:"%01.2f"}{/if}{/if}
+				</span>
             </TD>
             <TD class="text-right">
 				<INPUT TYPE="text" class="invoice-contents-field-edit" NAME="invoice-contents[{$posuid}][valuenetto]"
-					value="{$valuenetto}" SIZE="6" {tip text="Enter unitary value without discount"} style="display: none;">
+					value="{$row.valuenetto}" data-old-value="{$valuenetto}" SIZE="6"
+                    {tip text="Enter unitary value without discount"} style="display: none;">
 				<span class="invoice-contents-field-value nobr">
-				{$item.valuenetto|string_format:"%01.2f"}
+				    {$item.valuenetto|string_format:"%01.2f"}
 				</span>
 				{if isset($item.valuenetto_custom_contents)}
 					{$item.valuenetto_custom_contents}
 				{/if}
 				<span class="invoice-contents-field-value nobr">
-				<BR>
-				{$item.s_valuenetto|string_format:"%01.2f"}
+				    <BR>
+				    {$item.s_valuenetto|string_format:"%01.2f"}
 				</span>
 				{if isset($item.s_valuenetto_custom_contents)}
 					{$item.s_valuenetto_custom_contents}
 				{/if}
             </TD>
             <TD class="text-right nobr">
-                <SELECT size="1" class="invoice-contents-field-edit" name="invoice-contents[{$posuid}][taxid]" {tip text="Select Tax rate"} style="display: none;">
+                <SELECT size="1" class="invoice-contents-field-edit" name="invoice-contents[{$posuid}][taxid]"
+                        data-old-value="{$item.taxid}" {tip text="Select Tax rate"} style="display: none;">
                     {foreach $taxeslist as $tax}
-                    <OPTION value="{$tax.id}"{if $tax.label == $item.tax} selected{/if}>{$tax.label}</OPTION>
+                        <OPTION value="{$tax.id}"{if $tax.id == $row.taxid} selected{/if}>{$tax.label}</OPTION>
                     {/foreach}
                 </SELECT>
                 <span class="invoice-contents-field-value">
-				{$item.tax}
-			</span>
+                    {$item.tax}
+                </span>
             </TD>
             <TD class="text-right">
 				<INPUT TYPE="text" class="invoice-contents-field-edit" NAME="invoice-contents[{$posuid}][valuebrutto]" SIZE="6"
-					value="{$valuebrutto}" {tip text="Enter unitary value without discount"} style="display: none;">
+					value="{$row.valuebrutto}" data-old-value="{$valuebrutto}"
+                    {tip text="Enter unitary value without discount"} style="display: none;">
 				<span class="invoice-contents-field-value nobr">
 				{$item.valuebrutto|string_format:"%01.2f"}
 				</span>
@@ -220,7 +237,9 @@
             </TD>
             <TD class="nobr" id="tariff-selection">
                 {block name="`$layout.module`-tariff-selection"}
-                <INPUT TYPE="text" NAME="name" SIZE="40" style="width:300px" {tip text="Enter description or select tariff from the list"}><BR>
+                <INPUT TYPE="text" NAME="name" SIZE="40" style="width:300px" value="{if isset($itemdata) && !isset($error.posuid)}{$itemdata.name}{/if}"
+                        {tip text="Enter description or select tariff from the list"}>
+                <BR>
                 <SELECT SIZE="1" NAME="ttariffid" style="width: 300px" onchange="setItem(document.contents.ttariffid.value)" {tip text="Enter description or select tariff from the list"}>
                     <OPTION value="0">-</OPTION>
                     {foreach $tariffs as $tariff}
@@ -232,7 +251,13 @@
                 {/block}
             </TD>
             <TD class="nobr">
-                {tax_category_selection elementname="taxcategory" tip="Select tax category"}
+                {if isset($itemdata) && !isset($error.posuid)}
+                    {$taxcategory = $itemdata.taxcategory}
+                {else}
+                    {$taxcategory = 0}
+                {/if}
+                {tax_category_selection elementname="taxcategory" tip="Select tax category"
+                    selected=$taxcategory}
             </TD>
             <TD class="text-right">
                 <INPUT TYPE="text" NAME="prodid" SIZE="6">
@@ -242,7 +267,8 @@
                 <INPUT TYPE="text" NAME="jm" SIZE="3" VALUE="{trans(ConfigHelper::getConfig('payments.default_unit_name'))}">
             </TD>
             <TD class="text-right">
-                <INPUT TYPE="text" NAME="discount" SIZE="6" {tip text="Enter discount percentage or amount"}>
+                <INPUT TYPE="text" NAME="discount" SIZE="6" {tip text="Enter discount percentage or amount"}
+                    value="{if isset($itemdata) && !isset($error.posuid)}{$itemdata.discount}{/if}">
                 <SELECT name="discount_type">
                     {foreach from=$_DISCOUNTTYPES item=item key=key}
                     <OPTION value="{$key}">{$item}</OPTION>
@@ -250,7 +276,8 @@
                 </SELECT>
             </TD>
             <TD class="text-right nobr">
-                <INPUT TYPE="text" NAME="valuenetto" SIZE="6" {tip text="Enter unitary value without discount"}>
+                <INPUT TYPE="text" NAME="valuenetto" SIZE="6" {tip text="Enter unitary value without discount"}
+                    value="{if isset($itemdata) && !isset($error.posuid)}{$itemdata.valuenetto}{/if}">
             </TD>
             <TD class="text-right nobr">
                 <SELECT size="1" name="taxid" {tip text="Select Tax rate"}>
@@ -261,7 +288,8 @@
                 <br>
             </TD>
             <TD class="text-right nobr">
-                <INPUT TYPE="text" NAME="valuebrutto" SIZE="6" {tip text="Enter unitary value without discount"}>
+                <INPUT TYPE="text" NAME="valuebrutto" SIZE="6" {tip text="Enter unitary value without discount"}
+                   value="{if isset($itemdata) && !isset($error.posuid)}{$itemdata.valuebrutto}{/if}">
             </TD>
             <TD>
                 <A HREF="javascript:addItem();"><IMG SRC="img/save.gif" ALT="" {tip text="Add item"}></A>
@@ -357,9 +385,9 @@
 	function editItem(posuid, elem) {
 		var item = $('#invoice-contents-position-' + posuid);
 		item.find('.invoice-contents-field-edit').each(function() {
-			if (!$(this).is(':visible')) {
-				$(this).attr('data-old-value', $(this).val());
-			}
+			// if (!$(this).is(':visible')) {
+			// 	$(this).attr('data-old-value', $(this).val());
+			// }
 		}).toggle();
 		if (elem) {
 		    elem.focus();
@@ -444,6 +472,10 @@
                     break;
             }
 		});
+
+        {if isset($error.posuid)}
+        editItem({$error.posuid});
+        {/if}
 	});
 
     $('.customer-alert').click(function() {
