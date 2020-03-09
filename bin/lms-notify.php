@@ -265,6 +265,7 @@ foreach (array(
     $notifications[$type]['rule'] = ConfigHelper::getConfig($config_section . '.' . $type . '_rule', "ipset add $type %i\n");
     $notifications[$type]['footer'] = ConfigHelper::getConfig($config_section . '.' . $type . '_footer', '', true);
     $notifications[$type]['deleted_customers'] = ConfigHelper::checkConfig($config_section . '.' . $type . '_deleted_customers', true);
+    $notifications[$type]['aggregate_documents'] = ConfigHelper::checkConfig($config_section . '.' . $type . '_aggregate_documents');
 }
 
 if (in_array('mail', $channels) && empty($mail_from)) {
@@ -384,7 +385,7 @@ function parse_customer_data($data, $row)
         $data = preg_replace("/\%abonament/", empty($saldo) ? '0' : implode(', ', $saldo), $data);
     }
 
-    $data = $this->getLastNInTable($data, $row['id'], '<eol>');
+    $data = $this->getLastNInTable($data, $row['id'], '<eol>', $row['aggregate_documents']);
 
     // invoices, debit notes
     $data = preg_replace("/\%invoice/", $row['doc_number'], $data);
@@ -687,6 +688,7 @@ if (empty($types) || in_array('documents', $types)) {
         $notifications['documents']['customers'] = array();
         foreach ($customers as $row) {
             $notifications['documents']['customers'][] = $row['id'];
+            $row['aggregate_documents'] = $notifications['documents']['aggregate_documents'];
             $message = parse_customer_data($notifications['documents']['message'], $row);
             $subject = parse_customer_data($notifications['documents']['subject'], $row);
 
@@ -817,6 +819,7 @@ if (empty($types) || in_array('contracts', $types)) {
         $notifications['contracts']['customers'] = array();
         foreach ($customers as $row) {
             $notifications['contracts']['customers'][] = $row['id'];
+            $row['aggregate_documents'] = $notifications['contacts']['aggregate_documents'];
             $message = parse_customer_data($notifications['contracts']['message'], $row);
             $subject = parse_customer_data($notifications['contracts']['subject'], $row);
 
@@ -964,6 +967,7 @@ if (empty($types) || in_array('debtors', $types)) {
         $notifications['debtors']['customers'] = array();
         foreach ($customers as $row) {
             $notifications['debtors']['customers'][] = $row['id'];
+            $row['aggregate_documents'] = $notifications['debtors']['aggregate_documents'];
             $message = parse_customer_data($notifications['debtors']['message'], $row);
             $subject = parse_customer_data($notifications['debtors']['subject'], $row);
 
@@ -1136,6 +1140,7 @@ if (empty($types) || in_array('reminder', $types)) {
                 'customerid' => $row['id'],
             ));
 
+            $row['aggregate_documents'] = $notifications['reminder']['aggregate_documents'];
             $message = parse_customer_data($notifications['reminder']['message'], $row);
             $subject = parse_customer_data($notifications['reminder']['subject'], $row);
 
@@ -1294,6 +1299,7 @@ if (empty($types) || in_array('income', $types)) {
         foreach ($incomes as $row) {
             $notifications['income']['customers'][] = $row['id'];
 
+            $row['aggregate_documents'] = $notifications['income']['aggregate_documents'];
             $message = parse_customer_data($notifications['income']['message'], $row);
             $subject = parse_customer_data($notifications['income']['subject'], $row);
 
@@ -1431,6 +1437,7 @@ if (empty($types) || in_array('invoices', $types)) {
                 'customerid' => $row['id'],
             ));
 
+            $row['aggregate_documents'] = $notifications['invoices']['aggregate_documents'];
             $message = parse_customer_data($notifications['invoices']['message'], $row);
             $subject = parse_customer_data($notifications['invoices']['subject'], $row);
 
@@ -1565,6 +1572,7 @@ if (empty($types) || in_array('notes', $types)) {
                 'customerid' => $row['id'],
             ));
 
+            $row['aggregate_documents'] = $notifications['notes']['aggregate_documents'];
             $message = parse_customer_data($notifications['notes']['message'], $row);
             $subject = parse_customer_data($notifications['notes']['subject'], $row);
 
@@ -1682,6 +1690,7 @@ if (empty($types) || in_array('warnings', $types)) {
         $notifications['warnings']['customers'] = array();
         foreach ($customers as $row) {
             $notifications['warnings']['customers'][] = $row['id'];
+            $row['aggregate_documents'] = $notifications['warnings']['aggregate_documents'];
             $message = parse_customer_data($row['message'], $row);
             $subject = parse_customer_data($notifications['warnings']['subject'], $row);
 

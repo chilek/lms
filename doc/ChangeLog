@@ -205,6 +205,8 @@ version 25-git (????-??-??):
     and invoice content [chilan]
   - enhancement: phpui.tax_category_required allows to force tax category selection requirement
     ('false' by default) [chilan]
+  - enhancement: aggregate documents support for send invoices, notifies and send message customer balance
+    history lists [chilan]
 
 version 24.0 (2019-05-16):
 

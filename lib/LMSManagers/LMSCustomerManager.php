@@ -314,15 +314,27 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         return $result;
     }
 
-    public function GetCustomerShortBalanceList($customerid, $limit = 10, $order = 'DESC')
+    public function GetCustomerShortBalanceList($customerid, $limit = 10, $order = 'DESC', $aggregate_documents = false)
     {
-        $result = $this->db->GetAll('SELECT comment, value, currency, currencyvalue, time FROM cash
-				WHERE customerid = ?
-				ORDER BY time ' . $order . '
-				LIMIT ?', array($customerid, intval($limit)));
+        $result = $this->db->GetAll('SELECT cash.comment, cash.value, cash.currency, cash.currencyvalue,
+                    cash.time, cash.docid, d.type AS doctype, d.number, np.template, d.cdate
+                FROM cash
+                LEFT JOIN documents d ON d.id = cash.docid
+                LEFT JOIN numberplans np ON np.id = d.numberplanid
+                               WHERE cash.customerid = ?
+                               ORDER BY cash.time ' . $order
+                . (empty($limit) ? '' : ' LIMIT ' . intval($limit)), array($customerid));
 
         if (empty($result)) {
             return null;
+        }
+
+        if ($aggregate_documents) {
+            $result['list'] = $result;
+            $result['customerid'] = $customerid;
+            $finance_manager = new LMSFinanceManager($this->db, $this->auth, $this->cache, $this->syslog);
+            $result = $finance_manager->AggregateDocuments($result);
+            $result = $result['list'];
         }
 
         $balance = $this->getCustomerBalance($customerid);
@@ -344,10 +356,15 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         return $result;
     }
 
-    public function getLastNInTable($body, $customerid, $eol)
+    public function getLastNInTable($body, $customerid, $eol, $aggregate_documents = false)
     {
         if (preg_match('/%last_(?<number>[0-9]+)_in_a_table/', $body, $m)) {
-            $lastN = $this->GetCustomerShortBalanceList($customerid, $m['number']);
+            if ($aggregate_documents) {
+                $lastN = $this->GetCustomerShortBalanceList($customerid, 0, 'DESC', $aggregate_documents);
+                $lastN = array_slice($lastN, 0, $m['number']);
+            } else {
+                $lastN = $this->GetCustomerShortBalanceList($customerid, $m['number'], 'DESC', $aggregate_documents);
+            }
             if (empty($lastN)) {
                 $lN = '';
             } else {

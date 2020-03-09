@@ -56,6 +56,7 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
     $reply_email = ConfigHelper::getConfig('sendinvoices.reply_email', '', true);
     $add_message = ConfigHelper::checkConfig('sendinvoices.add_message');
     $message_attachments = ConfigHelper::checkConfig('sendinvoices.message_attachments');
+    $aggregate_documents = ConfigHelper::checkConfig('sendinvoices.aggregate_documents');
     $dsn_email = ConfigHelper::getConfig('sendinvoices.dsn_email', '', true);
     $mdn_email = ConfigHelper::getConfig('sendinvoices.mdn_email', '', true);
 
@@ -138,6 +139,7 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
                 'test',
                 'add_message',
                 'message_attachments',
+                'aggregate_documents',
                 'which',
                 'duplicate_date',
                 'smtp_options'

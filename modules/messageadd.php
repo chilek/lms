@@ -291,7 +291,7 @@ function BodyVars(&$body, $data, $eol)
         );
     }
 
-    $body = $LMS->getLastNInTable($body, $data['id'], $eol);
+    $body = $LMS->getLastNInTable($body, $data['id'], $eol, ConfigHelper::checkConfig('phpui.aggregate_documents'));
 
     if (strpos($body, '%services') !== false) {
         $services = $data['services'];
