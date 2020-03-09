@@ -198,7 +198,7 @@ version 25-git (????-??-??):
   - enhancement: implemented ticket assignment conflict detection [chilan]
   - improvement: switched to liberation sans unicode true type font for tcpdf generated documents [chilan]
   - enhancement: added document memo text fields defined for customers and copied to documents;
-   '﻿phpui.default_customer_document_memo' configuration variable controls customer default document memo
+   'phpui.default_customer_document_memo' configuration variable controls customer default document memo
    field value (empty by default) [chilan]
   - improvement: allow to quickly close newly created or edited time table event [chilan]
   - enhancement: implemented tax category selection for tariffs, tariffless liabilities
@@ -209,7 +209,8 @@ version 25-git (????-??-??):
     history lists [chilan]
   - enhancement: if phpui.teryt_required is set to 'true' ('false' by default) then customer,
     network device and network node addresses should be checked as 'territ' [chilan]
-
+  - enhancement: JPK-V7M support added [chilan]
+  
 version 24.0 (2019-05-16):
 
   - enhancement: script automating the installation of LMS + PostgreSQL in the Centos 7
