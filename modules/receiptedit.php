@@ -560,21 +560,25 @@ switch ($action) {
             // delete old receipt content and assignments
             if ($SYSLOG) {
                 $items = $DB->GetAll('SELECT itemid, regid FROM receiptcontents WHERE docid = ?', array($receipt['id']));
-                foreach ($items as $item) {
-                    $args = array(
-                        SYSLOG::RES_DOC => $receipt['id'],
-                        SYSLOG::RES_CASHREG => $item['regid'],
-                        'itemid' => $item['itemid'],
-                    );
-                    $SYSLOG->AddMessage(SYSLOG::RES_RECEIPTCONT, SYSLOG::OPER_DELETE, $args);
+                if (!empty($items)) {
+                    foreach ($items as $item) {
+                        $args = array(
+                            SYSLOG::RES_DOC => $receipt['id'],
+                            SYSLOG::RES_CASHREG => $item['regid'],
+                            'itemid' => $item['itemid'],
+                        );
+                        $SYSLOG->AddMessage(SYSLOG::RES_RECEIPTCONT, SYSLOG::OPER_DELETE, $args);
+                    }
                 }
                 $items = $DB->GetCol('SELECT id FROM cash WHERE docid = ?', array($receipt['id']));
-                foreach ($items as $item) {
-                    $args = array(
-                        SYSLOG::RES_CASH => $item,
-                        SYSLOG::RES_DOC => $receipt['id'],
-                    );
-                    $SYSLOG->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
+                if (!empty($items)) {
+                    foreach ($items as $item) {
+                        $args = array(
+                            SYSLOG::RES_CASH => $item,
+                            SYSLOG::RES_DOC => $receipt['id'],
+                        );
+                        $SYSLOG->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
+                    }
                 }
             }
             $DB->Execute('DELETE FROM receiptcontents WHERE docid = ?', array($receipt['id']));
