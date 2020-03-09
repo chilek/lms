@@ -129,7 +129,7 @@ if (!empty($_POST['division'])) {
 
 $layout['pagetitle'] = trans('Edit Division: $a', $olddiv['shortname']);
 
-if ($_language == 'pl') {
+if ($_language == 'pl_PL') {
     require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'tax_office_codes.php');
 }
 
