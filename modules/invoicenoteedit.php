@@ -521,7 +521,7 @@ switch ($action) {
             'div_address' => ($division['address'] ? $division['address'] : ''),
             'div_city' => ($division['city'] ? $division['city'] : ''),
             'div_zip' => ($division['zip'] ? $division['zip'] : ''),
-            'div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY) => ($division['countryid'] ? $division['countryid'] : 0),
+            'div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY) => ($division['countryid'] ? $division['countryid'] : null),
             'div_ten'=> ($division['ten'] ? $division['ten'] : ''),
             'div_regon' => ($division['regon'] ? $division['regon'] : ''),
             'div_bank' => $division['bank'] ?: null,
