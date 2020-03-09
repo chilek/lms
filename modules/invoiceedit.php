@@ -181,7 +181,7 @@ switch ($action) {
             }
         }
 
-        $itemdata['discount'] = str_replace(',', '.', $itemdata['discount']);
+        $itemdata['discount'] = (!empty($itemdata['discount']) ? str_replace(',', '.', $itemdata['discount']) : 0);
         $itemdata['pdiscount'] = 0;
         $itemdata['vdiscount'] = 0;
         if (preg_match('/^[0-9]+(\.[0-9]+)*$/', $itemdata['discount'])) {
