@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -52,7 +52,7 @@ foreach ($short_to_longs as $short => $long) {
 if (array_key_exists('version', $options)) {
     print <<<EOF
 lms-cashimport-mail.php
-(C) 2001-2017 LMS Developers
+(C) 2001-2020 LMS Developers
 
 EOF;
     exit(0);
@@ -61,7 +61,7 @@ EOF;
 if (array_key_exists('help', $options)) {
     print <<<EOF
 lms-cashimport-mail.php
-(C) 2001-2017 LMS Developers
+(C) 2001-2020 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
@@ -79,7 +79,7 @@ $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
     print <<<EOF
 lms-cashimport-mail.php
-(C) 2001-2017 LMS Developers
+(C) 2001-2020 LMS Developers
 
 EOF;
 }
@@ -296,6 +296,20 @@ foreach ($posts as $postid) {
             $import_file = 'php://stdout';
         } else {
             $import_file = $file['name'];
+            if (file_exists($import_file)) {
+                if (preg_match('/^(?<name>.+)\.(?<extension>[^\.]+)$/', $import_file, $m)) {
+                    $name = $m['name'];
+                    $extension = $m['extension'];
+                } else {
+                    $name = $import_file;
+                    $extension = '';
+                }
+                $nr = 1;
+                while (file_exists($name . '_' . $nr . (empty($extension) ? '' : '.' . $extension))) {
+                    $nr++;
+                }
+                $import_file = $name . '_' . $nr . (empty($extension) ? '' : '.' . $extension);
+            }
         }
         $fh = fopen($import_file, "w");
         if (empty($fh)) {
