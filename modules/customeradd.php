@@ -216,6 +216,13 @@ if (isset($_POST['customeradd'])) {
             $customeradd['addresses'][ $k ]['show'] = true;
         }
 
+        if (!ConfigHelper::checkPrivilege('full_access') && ConfigHelper::checkConfig('phpui.teryt_required')
+            && !empty($v['location_city_name']) && ($v['location_country_id'] == 2 || empty($v['location_country_id']))
+            && (!isset($v['teryt']) || empty($v['location_city']))) {
+            $error['customeradd[addresses][' . $k . '][teryt]'] = trans('TERRIT address is required!');
+            $customeradd['addresses'][ $k ]['show'] = true;
+        }
+
         if ($v['location_zip'] && !check_zip($v['location_zip'])) {
             $error['customeradd[addresses][' . $k . '][location_zip]'] = trans('Incorrect ZIP code!');
             $customeradd['addresses'][ $k ]['show'] = true;

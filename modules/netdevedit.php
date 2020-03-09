@@ -678,6 +678,13 @@ if (isset($netdev)) {
         }
     }
 
+    if (empty($netdev['ownerid']) && !ConfigHelper::checkPrivilege('full_access')
+        && ConfigHelper::checkConfig('phpui.teryt_required')
+        && !empty($netdev['location_city_name']) && ($netdev['location_country_id'] == 2 || empty($netdev['location_country_id']))
+        && (!isset($netdev['teryt']) || empty($netdev['location_city']))) {
+        $error['netdev[teryt]'] = trans('TERRIT address is required!');
+    }
+
     $hook_data = $LMS->executeHook(
         'netdevedit_validation_before_submit',
         array(

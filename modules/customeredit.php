@@ -77,6 +77,13 @@ if (!isset($_POST['xjxfun'])) {
                     $customerdata['addresses'][ $k ]['show'] = true;
                 }
 
+                if (!ConfigHelper::checkPrivilege('full_access') && ConfigHelper::checkConfig('phpui.teryt_required')
+                    && !empty($v['location_city_name']) && ($v['location_country_id'] == 2 || empty($v['location_country_id']))
+                    && (!isset($v['teryt']) || empty($v['location_city']))) {
+                    $error['customerdata[addresses][' . $k . '][teryt]'] = trans('TERRIT address is required!');
+                    $customerdata['addresses'][ $k ]['show'] = true;
+                }
+
                 if ($v['location_zip'] && !check_zip($v['location_zip'])) {
                     $error['customerdata[addresses][' . $k . '][location_zip]'] = trans('Incorrect ZIP code!');
                     $customerdata['addresses'][ $k ]['show'] = true;
