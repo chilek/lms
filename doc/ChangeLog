@@ -207,6 +207,8 @@ version 25-git (????-??-??):
     ('false' by default) [chilan]
   - enhancement: aggregate documents support for send invoices, notifies and send message customer balance
     history lists [chilan]
+  - enhancement: if phpui.teryt_required is set to 'true' ('false' by default) then customer,
+    network device and network node addresses should be checked as 'territ' [chilan]
 
 version 24.0 (2019-05-16):
 
