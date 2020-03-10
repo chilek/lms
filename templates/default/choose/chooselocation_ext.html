@@ -224,6 +224,8 @@ function submit_location() {
 
         location_box.find( "input[data-address='city']"        ).val( tmp );
         location_box.find( "input[data-address='city-hidden']" ).val( city.value );
+        // automatically preselect 'Poland' country when we submit territized location
+        location_box.find( "select[data-address='country']").val(2);
     }
 
     // SET STREET
