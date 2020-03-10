@@ -447,7 +447,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 $jpk_data .= "\t\t<OsobaNiefizyczna>\n";
                 $jpk_data .= "\t\t\t<NIP>" . preg_replace('/[\s\-]/', '', $division['ten']) . "</NIP>\n";
                 $jpk_data .= "\t\t\t<PelnaNazwa>" . htmlspecialchars($division['name']) . "</PelnaNazwa>\n";
-                $jpk_data .= "\t\t\t<Email>biuro@ten.net.pl</Email>\n";
+                $jpk_data .= "\t\t\t<Email>" . $division['email'] . "</Email>\n";
                 $jpk_data .= "\t\t</OsobaNiefizyczna>\n";
                 $jpk_data .= "\t</Podmiot1>\n";
             }
