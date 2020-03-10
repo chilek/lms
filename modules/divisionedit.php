@@ -111,6 +111,12 @@ if (!empty($_POST['division'])) {
         $error['tax_office_code'] = trans('Invalid format of Tax Office Code!');
     }
 
+    if (!ConfigHelper::checkPrivilege('full_access') && ConfigHelper::checkConfig('phpui.teryt_required')
+        && !empty($division['location_city_name']) && ($division['location_country_id'] == 2 || empty($division['location_country_id']))
+        && (!isset($division['teryt']) || empty($division['location_city']))) {
+        $error['division[teryt]'] = trans('TERRIT address is required!');
+    }
+
     if (!$error) {
         $LMS->UpdateDivision($division);
 
