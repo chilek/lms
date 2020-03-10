@@ -210,7 +210,8 @@ version 25-git (????-??-??):
   - enhancement: if phpui.teryt_required is set to 'true' ('false' by default) then customer,
     network device and network node addresses should be checked as 'territ' [chilan]
   - enhancement: JPK-V7M support added [chilan]
-  
+  - enhancement: added email property to divisions [chilan]
+
 version 24.0 (2019-05-16):
 
   - enhancement: script automating the installation of LMS + PostgreSQL in the Centos 7
