@@ -91,6 +91,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
             'inv_cplace'      => $division['inv_cplace'],
             'inv_paytime'     => $division['inv_paytime'],
             'inv_paytype'     => $division['inv_paytype'] ? $division['inv_paytype'] : null,
+            'email'           => empty($division['email']) ? null : $division['email'],
             'description'     => $division['description'],
             'tax_office_code' => $division['tax_office_code'],
             'address_id'      => ($address_id >= 0 ? $address_id : null)
@@ -98,8 +99,8 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
 
         $this->db->Execute('INSERT INTO divisions (name, shortname,
 			ten, regon, rbe, rbename, telecomnumber, bank, account, inv_header, inv_footer, inv_author,
-			inv_cplace, inv_paytime, inv_paytype, description, tax_office_code, address_id)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			inv_cplace, inv_paytime, inv_paytype, email, description, tax_office_code, address_id)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
         $divisionid = $this->db->GetLastInsertID('divisions');
 
@@ -159,6 +160,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
             'inv_cplace'  => $division['inv_cplace'],
             'inv_paytime' => $division['inv_paytime'],
             'inv_paytype' => $division['inv_paytype'] ? $division['inv_paytype'] : null,
+            'email'           => empty($division['email']) ? null : $division['email'],
             'description' => $division['description'],
             'status'      => !empty($division['status']) ? 1 : 0,
             'tax_office_code' => $division['tax_office_code'],
@@ -168,7 +170,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
         $this->db->Execute('UPDATE divisions SET name=?, shortname=?,
 			ten=?, regon=?, rbe=?, rbename=?, telecomnumber=?, bank=?, account=?, inv_header=?,
 			inv_footer=?, inv_author=?, inv_cplace=?, inv_paytime=?,
-			inv_paytype=?, description=?, status=?, tax_office_code = ?
+			inv_paytype=?, email=?, description=?, status=?, tax_office_code = ?
 			WHERE id=?', array_values($args));
 
         $lm = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);

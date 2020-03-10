@@ -103,6 +103,10 @@ if (!empty($_POST['division'])) {
         $error['account'] = trans('Wrong account number!');
     }
 
+    if ($division['email'] != '' && !check_email($division['email'])) {
+        $error['email'] = trans('E-mail isn\'t correct!');
+    }
+
     if ($division['inv_paytime'] == '') {
         $division['inv_paytime'] = null;
     }
