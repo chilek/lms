@@ -453,7 +453,7 @@ switch ($action) {
             foreach ($contents as $item) {
                 $idx = $item['itemid'];
                 $contents[$idx]['taxid'] = $newcontents['taxid'][$idx];
-                $contents[$idx]['taxid'] = $newcontents['taxcategory'][$idx];
+                $contents[$idx]['taxcategory'] = $newcontents['taxcategory'][$idx];
                 $contents[$idx]['prodid'] = $newcontents['prodid'][$idx];
                 $contents[$idx]['content'] = $newcontents['content'][$idx];
                 $contents[$idx]['count'] = $newcontents['count'][$idx];
