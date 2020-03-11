@@ -48,9 +48,9 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
             'containers' => $LMS->GetFileContainers('netdevid', $id),
         ),
         'netdevmodelid' => array(
-            'id' => $netdev['modelid'],
+            'id' => intval($netdev['modelid']),
             'prefix' => trans('Model attachments'),
-            'containers' => $LMS->GetFileContainers('netdevmodelid', $netdev['model']),
+            'containers' => $LMS->GetFileContainers('netdevmodelid', intval($netdev['modelid'])),
         ),
     );
     $SMARTY->assign('filecontainers', $filecontainers);
