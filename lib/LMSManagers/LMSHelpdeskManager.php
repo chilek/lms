@@ -1180,13 +1180,17 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         $type = 0;
         $notes = array();
 
-        if ($ticket['owner'] != $props['owner']) {
-            if (isset($props['owner'])) {
-                $notes[] = trans('Ticket has been assigned to user $a.', $LMS->GetUserName($props['owner']));
+        if (array_key_exists('owner', $props)) {
+            if ($ticket['owner'] != $props['owner']) {
+                if (isset($props['owner'])) {
+                    $notes[] = trans('Ticket has been assigned to user $a.', $LMS->GetUserName($props['owner']));
+                } else {
+                    $notes[] = trans('Ticket has been unassigned from user $a.', $LMS->GetUserName($ticket['owner']));
+                }
+                $type = $type | RTMESSAGE_OWNER_CHANGE;
             } else {
-                $notes[] = trans('Ticket has been unassigned from user $a.', $LMS->GetUserName($ticket['owner']));
+                $props['owner'] = $ticket['owner'];
             }
-            $type = $type | RTMESSAGE_OWNER_CHANGE;
         } else {
             $props['owner'] = $ticket['owner'];
         }
