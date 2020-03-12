@@ -1156,13 +1156,15 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                         n.linktype, n.linktechnology, n.linkspeed,
                                         ipaddr_pub, n.authtype, inet_ntoa(ipaddr_pub) AS ip_pub,
                                         passwd, access, warning, info, n.ownerid, lastonline, n.location, n.address_id,
+                                        (CASE WHEN addr.city_id IS NOT NULL THEN 1 ELSE 0 END) AS teryt,
                                         (SELECT COUNT(*)
                                         FROM nodegroupassignments
                                         WHERE nodeid = n.id) AS gcount,
                                         n.netid, net.name AS netname
                                      FROM
                                         vnodes n
-                                        JOIN networks net ON net.id = n.netid
+                                     LEFT JOIN addresses addr ON addr.id = n.address_id
+                                     JOIN networks net ON net.id = n.netid
                                         " . ($type == 'netdev' ? '' : 'LEFT ') . "JOIN netdevices nd ON n.netdev = nd.id
                                      WHERE
                                         " . ($type == 'netdev' ? 'nd.ownerid = ? AND n.ownerid IS NULL' : 'n.ownerid = ?') . "

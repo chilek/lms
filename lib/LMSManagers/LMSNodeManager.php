@@ -220,6 +220,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 				inet_ntoa(n.ipaddr) AS ip, inet_ntoa(n.ipaddr_pub) AS ip_pub,
 				lc.name AS city_name,
 				(CASE WHEN ls.name2 IS NOT NULL THEN ' . $this->db->Concat('ls.name2', "' '", 'ls.name') . ' ELSE ls.name END) AS street_name,
+				(CASE WHEN addr.city_id IS NOT NULL THEN 1 ELSE 0 END) AS teryt,
 				lt.name AS street_type,
 				lb.name AS borough_name, lb.type AS borough_type,
 				ld.name AS district_name, lst.name AS state_name,

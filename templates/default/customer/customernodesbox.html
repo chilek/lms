@@ -91,7 +91,13 @@
 										{if !$assignment.commited} lms-ui-assignment-not-commited{/if}">{$assignment.name}</span></a>{if !$assignment@last}, {/if}{/foreach})
 							{/if}
 							{if $node.location}<BR>
-								<span class="nobr">{$node.location|truncate:60:"...":true}</span>
+								<span class="nobr">
+									{if $node.teryt}
+										{t a=$node.location|truncate:60:"...":true}$a (TERRIT){/t}
+									{else}
+										{$node.location|truncate:60:"...":true}
+									{/if}
+								</span>
 							{/if}
 							{if $node.info}<BR>
 								<span class="nobr">{$node.info|truncate:60:"...":true}</span>

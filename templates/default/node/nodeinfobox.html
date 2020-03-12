@@ -160,7 +160,12 @@
 									</td>
 									<td class="cell-flex">
                                         <div>
-										{if $nodeinfo.location_name}{$nodeinfo.location_name} ,{/if}{$nodeinfo.location}
+										{if $nodeinfo.teryt}
+											{if $nodeinfo.location_name}{$nodeinfo.location_name} ,{/if}
+											{t a=$nodeinfo.location}$a (TERRIT){/t}
+										{else}
+											{if $nodeinfo.location_name}{$nodeinfo.location_name} ,{/if}{$nodeinfo.location}
+										{/if}
                                         </div>
 									</td>
 								</tr>

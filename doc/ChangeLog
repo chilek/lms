@@ -208,9 +208,10 @@ version 25-git (????-??-??):
   - enhancement: aggregate documents support for send invoices, notifies and send message customer balance
     history lists [chilan]
   - enhancement: if phpui.teryt_required is set to 'true' ('false' by default) then customer,
-    network device and network node addresses should be checked as 'territ' [chilan]
+    network device, network node and customer node addresses should be checked as 'territ' [chilan]
   - enhancement: JPK-V7M support added [chilan]
   - enhancement: added email property to divisions [chilan]
+  - improvement: show territ address flag near node location info [chilan]
 
 version 24.0 (2019-05-16):
 
