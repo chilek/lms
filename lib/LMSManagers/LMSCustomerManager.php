@@ -1737,21 +1737,28 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     public function getAddressForCustomerStuff($customer_id)
     {
         $addresses = $this->db->GetAllByKey('SELECT
-                                                ca.type, addr.location
+                                                ca.type, addr.location,
+                                                (CASE WHEN addr.city_id IS NOT NULL THEN 1 ELSE 0 END) AS teryt
                                              FROM customer_addresses ca
                                                 LEFT JOIN vaddresses addr ON ca.address_id = addr.id
                                              WHERE
                                                 ca.customer_id = ?', 'type', array($customer_id));
 
+        $address = null;
+
         if (isset($addresses[DEFAULT_LOCATION_ADDRESS])) {
-            return $addresses[DEFAULT_LOCATION_ADDRESS]['location'];
+            $address = $addresses[DEFAULT_LOCATION_ADDRESS];
         }
 
         if (isset($addresses[BILLING_ADDRESS])) {
-            return $addresses[BILLING_ADDRESS]['location'];
+            $address = $addresses[BILLING_ADDRESS];
         }
 
-        return null;
+        if (isset($address)) {
+            $address = (empty($address['teryt']) ? $address['location'] : trans('$a (TERRIT)', $address['location']));
+        }
+
+        return $address;
     }
 
     public function getFullAddressForCustomerStuff($customer_id)
