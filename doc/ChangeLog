@@ -212,6 +212,8 @@ version 25-git (????-??-??):
   - enhancement: JPK-V7M support added [chilan]
   - enhancement: added email property to divisions [chilan]
   - improvement: show territ address flag near node location info [chilan]
+  - improvement: force default location address or billing address of customer as pre-selected customer
+    assigned resources [chilan]
 
 version 24.0 (2019-05-16):
 

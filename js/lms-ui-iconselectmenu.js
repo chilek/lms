@@ -131,7 +131,8 @@ LmsUiIconSelectMenu.prototype._appendAddressList = function( address_list ) {
 		}
 		return 0;
 	});
-    $.each( addresses, function() {
+    var html = '<option value="-1" data-style="background-image: url()">---</option>';
+	$.each( addresses, function() {
         switch ( this.location_address_type ) {
             case "0": icon = "img/post.gif";     break; // postal address
             case "1": icon = "img/customer.gif"; break; // billing address
@@ -143,20 +144,18 @@ LmsUiIconSelectMenu.prototype._appendAddressList = function( address_list ) {
                 icon = "";
         }
 
-        $( select_id ).append( $('<option>', {
-            value: this.address_id,
-            text: this.location,
-            'data-style': "background-image: url(" + icon + ")"
-        } ));
+        html += '<option value="' + this.address_id  + '" data-style="background-image: url(' + icon + ')"' +
+            (this.hasOwnProperty('default_address') ? ' selected' : '') + '>' +
+            this.location + '</option>';
     });
+    $( select_id ).html(html);
 }
 
 /*!
  * \brief Clear select.
  */
 LmsUiIconSelectMenu.prototype._clearList = function() {
-    $( this.select_id ).empty()
-                       .append( $('<option>', {value: -1, text: "---", 'data-style': "background-image: url()"}) );
+    $( this.select_id ).html('<option value="-1" data-style="background-image: url()">---</option>');
 
     this.refresh();
 }

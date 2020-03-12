@@ -50,12 +50,22 @@ switch (strtolower($_GET['action'])) {
             } elseif ($v['teryt']) {
                 $v['location'] = trans('$a (TERRIT)', $v['location']);
             }
-            if ($v['location_address_type'] == BILLING_ADDRESS || empty($v['location_name'])) {
+            if ($v['location_address_type'] == BILLING_ADDRESS) {
+                $default_address = $k;
+                continue;
+            } elseif (empty($v['location_name'])) {
                 continue;
             }
             $v['location'] = $v['location_name'] . ', ' . $v['location'];
+
+            if ($v['location_address_type'] == DEFAULT_LOCATION_ADDRESS) {
+                $default_address = $k;
+            }
         }
         unset($v);
+        if (isset($default_address)) {
+            $caddr[$default_address]['default_address'] = true;
+        }
 
         die(json_encode($caddr));
     break;
