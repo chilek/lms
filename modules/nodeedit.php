@@ -239,6 +239,11 @@ if (isset($_POST['nodeedit'])) {
         $error['access'] = trans('Node owner is not connected!');
     }
 
+    if (!ConfigHelper::checkPrivilege('full_access') && ConfigHelper::checkConfig('phpui.teryt_required')
+        && !empty($nodeedit['address_id']) && !$LMS->isTerritAddress($nodeedit['address_id'])) {
+        $error['address_id'] = trans('TERRIT address is required!');
+    }
+
     if ($nodeedit['invprojectid'] == '-1') { // nowy projekt
         if (!strlen(trim($nodeedit['projectname']))) {
             $error['projectname'] = trans('Project name is required');

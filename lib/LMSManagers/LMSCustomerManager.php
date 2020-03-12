@@ -1772,6 +1772,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         return null;
     }
 
+    public function isTerritAddress($address_id)
+    {
+        return $this->db->GetOne('SELECT id FROM addresses WHERE city_id IS NOT NULL AND street_id IS NOT NULL') > 0;
+    }
+
     public function GetCustomerContacts($id, $mask = null)
     {
         $contacts = $this->db->GetAll(

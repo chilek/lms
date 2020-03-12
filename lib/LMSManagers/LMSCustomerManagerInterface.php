@@ -86,6 +86,8 @@ interface LMSCustomerManagerInterface
 
     public function getFullAddressForCustomerStuff($customer_id);
 
+    public function isTerritAddress($address_id);
+
     public function GetCustomerContacts($id, $mask = null);
 
     public function GetCustomerDivision($id);
