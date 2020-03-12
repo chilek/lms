@@ -339,7 +339,6 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             } else {
                 $jpk_data .= "<JPK xmlns=\"http://crd.gov.pl/wzor/2020/02/25/9142/\""
                     . " xmlns:etd=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2018/08/24/eD/DefinicjeTypy/\">\n";
-
             }
         }
 
@@ -379,7 +378,6 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 $jpk_data .= "\t\t<Miesiac>" . strftime('%m', $datefrom) . "</Miesiac>\n";
             }
             $tns = '';
-
         } else {
             if ($jpk_fa_version == 2) {
                 $jpk_data .= "\t\t<KodFormularza kodSystemowy=\"JPK_FA (2)\" wersjaSchemy=\"1-0\">JPK_FA</KodFormularza>\n";
