@@ -649,6 +649,12 @@ class LMS
         return $manager->checkCustomerAddress($a_id, $c_id);
     }
 
+    public function determineDefaultCustomerAddress(array &$caddr)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->determineDefaultCustomerAddress($caddr);
+    }
+
     public function getCustomerAddresses($id, $hide_deleted = false)
     {
         $manager = $this->getCustomerManager();

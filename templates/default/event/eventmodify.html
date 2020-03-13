@@ -83,7 +83,7 @@
 
 					{box_row icon="img/home.gif" label="Location:"}
 						{if !isset($event.ticketid) || empty($event.ticket.address_id)}
-							<select id="customer_addresses" name="event[address_id]" {tip trigger="address_id"}> </select>
+							{include file="customer/customeraddresses.html" id="customer_addresses" name="event[address_id]" trigger="address_id"}
 						{else}
 							{t a=$event.ticket.location}$a (location cannot be changed as it is assigned to ticket){/t}
 						{/if}
@@ -237,27 +237,21 @@
 			{/if}
 		}
 
+		{if intval($event.customerid)}
+			{if $event.address_id}
+				$('#customer_addresses').val( {$event.address_id} );
+			{elseif !empty($addresses) && count($addresses) == 1}
+				$('#customer_addresses').val($('#customer_addresses option:last-child').val());
+			{/if}
+		{/if}
+
 		var customer_addresses = new LmsUiIconSelectMenu("#customer_addresses", {
 			change: function (event, ui) {
 				xajax_select_location($('[name="event[custid]"]').val(), $(this).val());
 			}
 		});
 
-		getCustomerAddresses( {intval($event.customerid)}, function (addresses) {
-			customer_addresses.setAddressList(addresses);
-
-			{if intval($event.customerid)}
-			{if $event.address_id}
-			$('#customer_addresses').val( {$event.address_id} );
-			{else}
-			if (Object.keys(addresses).length == 1) {
-				$('#customer_addresses').val($('#customer_addresses option:last-child').val());
-			}
-			{/if}
-			{/if}
-
-			customer_addresses.init();
-		});
+		customer_addresses.init();
 
 		//initCustomerSelection('{$event.customerid}', '{$ticket.address_id}');
 

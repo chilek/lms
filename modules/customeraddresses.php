@@ -34,51 +34,11 @@ switch (strtolower($_GET['action'])) {
      */
     case 'getcustomeraddresses':
         if (empty($_GET['id'])) {
-            return 0;
+            die;
         }
 
-        $caddr = $LMS->getCustomerAddresses((int) $_GET['id'], true);
-
-        if (!$caddr) {
-            die(json_encode(array()));
-        }
-
-        foreach ($caddr as $k => &$v) {
-            if (empty($v['location'])) {
-                unset($caddr[$k]);
-                continue;
-            } elseif ($v['teryt']) {
-                $v['location'] = trans('$a (TERRIT)', $v['location']);
-            }
-
-            switch ($v['location_address_type']) {
-                case BILLING_ADDRESS:
-                    $billing_address = $k;
-                    break;
-                case LOCATION_ADDRESS:
-                    if (isset($location_address)) {
-                        $location_address = 0;
-                        break;
-                    }
-                    $location_address = $k;
-                    break;
-                case DEFAULT_LOCATION_ADDRESS:
-                    $default_location_address = $k;
-                    break;
-            }
-
-            $v['location'] = (empty($v['location_name']) ? '' : $v['location_name'] . ', ') . $v['location'];
-        }
-        unset($v);
-
-        if (isset($default_location_address)) {
-            $caddr[$default_location_address]['default_address'] = true;
-        } elseif (isset($location_address) && !empty($location_address)) {
-            $caddr[$location_address]['default_address'] = true;
-        } else {
-            $caddr[$billing_address]['default_address'] = true;
-        }
-
+        $caddr = $LMS->getCustomerAddresses(intval($_GET['id']), true);
+        $LMS->determineDefaultCustomerAddress($caddr);
         die(json_encode($caddr));
     break;
 

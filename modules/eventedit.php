@@ -212,10 +212,15 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $usergroups = $DB->GetAll('SELECT id, name FROM usergroups');
 
 if (isset($event['customerid']) || intval($event['customerid'])) {
-    $SMARTY->assign('nodes', $LMS->GetNodeLocations(
-        $event['customerid'],
-        isset($event['address_id']) && intval($event['address_id']) > 0 ? $event['address_id'] : null
-    ));
+    $addresses = $LMS->getCustomerAddresses($event['customerid']);
+    $address_id = $LMS->determineDefaultCustomerAddress($addresses);
+    if (isset($event['address_id']) && intval($event['address_id']) > 0) {
+        $nodes = $LMS->GetNodeLocations($event['customerid'], $event['address_id']);
+    } else {
+        $nodes = $LMS->GetNodeLocations($event['customerid'], $address_id);
+    }
+    $SMARTY->assign('addresses', $addresses);
+    $SMARTY->assign('nodes', $nodes);
 }
 
 if (!isset($event['usergroup'])) {

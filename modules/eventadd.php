@@ -470,10 +470,15 @@ if (isset($_GET['customerid'])) {
 }
 if (isset($event['customerid']) && !empty($event['customerid'])) {
     $event['customername'] = $LMS->GetCustomerName($event['customerid']);
-    $SMARTY->assign('nodes', $LMS->GetNodeLocations(
-        $event['customerid'],
-        isset($event['address_id']) && intval($event['address_id']) > 0 ? $event['address_id'] : null
-    ));
+    $addresses = $LMS->getCustomerAddresses($event['customerid']);
+    $address_id = $LMS->determineDefaultCustomerAddress($addresses);
+    if (isset($event['address_id']) && intval($event['address_id']) > 0) {
+        $nodes = $LMS->GetNodeLocations($event['customerid'], $event['address_id']);
+    } else {
+        $nodes = $LMS->GetNodeLocations($event['customerid'], $address_id);
+    }
+    $SMARTY->assign('addresses', $addresses);
+    $SMARTY->assign('nodes', $nodes);
 }
 
 if (isset($_GET['day']) && isset($_GET['month']) && isset($_GET['year'])) {

@@ -1664,6 +1664,52 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         }
     }
 
+    public function determineDefaultCustomerAddress(array &$caddr)
+    {
+        if (empty($caddr)) {
+            return null;
+        }
+
+        foreach ($caddr as $k => &$v) {
+            if (empty($v['location'])) {
+                unset($caddr[$k]);
+                continue;
+            } elseif ($v['teryt']) {
+                $v['location'] = trans('$a (TERRIT)', $v['location']);
+            }
+
+            switch ($v['location_address_type']) {
+                case BILLING_ADDRESS:
+                    $billing_address = $k;
+                    break;
+                case LOCATION_ADDRESS:
+                    if (isset($location_address)) {
+                        $location_address = 0;
+                        break;
+                    }
+                    $location_address = $k;
+                    break;
+                case DEFAULT_LOCATION_ADDRESS:
+                    $default_location_address = $k;
+                    break;
+            }
+
+            $v['location'] = (empty($v['location_name']) ? '' : $v['location_name'] . ', ') . $v['location'];
+        }
+        unset($v);
+
+        if (isset($default_location_address)) {
+            $caddr[$default_location_address]['default_address'] = true;
+            return $default_location_address;
+        } elseif (isset($location_address) && !empty($location_address)) {
+            $caddr[$location_address]['default_address'] = true;
+            return $location_address;
+        } else {
+            $caddr[$billing_address]['default_address'] = true;
+            return $billing_address;
+        }
+    }
+
     /**
      * Returns all customer addresses.
      *
@@ -1691,7 +1737,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                           LEFT JOIN vaddresses addr       ON addr.id = ca.address_id
                                        WHERE
                                           cv.id = ?' .
-                                          (($hide_deleted) ? ' AND cv.deleted != 1' : ''),
+                                          (($hide_deleted) ? ' AND cv.deleted != 1' : '')
+                                            . ' ORDER BY LOWER(addr.city), LOWER(addr.street)',
             'address_id',
             array( $id )
         );
