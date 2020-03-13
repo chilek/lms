@@ -50,21 +50,33 @@ switch (strtolower($_GET['action'])) {
             } elseif ($v['teryt']) {
                 $v['location'] = trans('$a (TERRIT)', $v['location']);
             }
-            if ($v['location_address_type'] == BILLING_ADDRESS) {
-                $default_address = $k;
-                continue;
-            } elseif (empty($v['location_name'])) {
-                continue;
-            }
-            $v['location'] = $v['location_name'] . ', ' . $v['location'];
 
-            if ($v['location_address_type'] == DEFAULT_LOCATION_ADDRESS) {
-                $default_address = $k;
+            switch ($v['location_address_type']) {
+                case BILLING_ADDRESS:
+                    $billing_address = $k;
+                    break;
+                case LOCATION_ADDRESS:
+                    if (isset($location_address)) {
+                        $location_address = 0;
+                        break;
+                    }
+                    $location_address = $k;
+                    break;
+                case DEFAULT_LOCATION_ADDRESS:
+                    $default_location_address = $k;
+                    break;
             }
+
+            $v['location'] = (empty($v['location_name']) ? '' : $v['location_name'] . ', ') . $v['location'];
         }
         unset($v);
-        if (isset($default_address)) {
-            $caddr[$default_address]['default_address'] = true;
+
+        if (isset($default_location_address)) {
+            $caddr[$default_location_address]['default_address'] = true;
+        } elseif (isset($location_address) && !empty($location_address)) {
+            $caddr[$location_address]['default_address'] = true;
+        } else {
+            $caddr[$billing_address]['default_address'] = true;
         }
 
         die(json_encode($caddr));
