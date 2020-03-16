@@ -124,7 +124,7 @@ $access_table = array(
     ),
     'project_management' => array(
         'label' => trans('investment project management'),
-        'allow_regexp' => '^invproject(add|del|edit)$',
+        'allow_regexp' => '^invproject(add|del|edit|list)$',
     ),
     'daemon_management' => array(
         'label' => trans('daemon management and configuration'),
