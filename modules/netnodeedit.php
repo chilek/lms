@@ -141,6 +141,10 @@ if (isset($netnodedata)) {
         echo json_encode($error);
         die;
     }
+
+    if (!empty($netnodedata['ownerid'])) {
+        $netnodedata['address_id'] = $netnodedata['customer_address_id'];
+    }
 } else {
     $netnodedata = $LMS->GetNetNode($id);
 

@@ -110,10 +110,16 @@
 		</TD>
 		<TD>
 			{if $netdev.location}
-			{if $netdev.location_name}{$netdev.location_name}, {/if}{$netdev.location}{if $netdev.borough_name} ({$netdev.state_name} / {$netdev.district_name} / {$_BOROUGHTYPES[$netdev.borough_type]} {$netdev.borough_name}){/if}
+				{if $netdev.location_name}{$netdev.location_name}, {/if}{$netdev.location}
+				{if $netdev.borough_name}
+					({$netdev.state_name} / {$netdev.district_name} / {$_BOROUGHTYPES[$netdev.borough_type]} {$netdev.borough_name})
+				{/if}
 			{else}
-			{$netdev.netnode.location}{if $netdev.netnode.location_borough_name} ({$netdev.netnode.location_state_name} / {$netdev.netnode.location_district_name} / {$_BOROUGHTYPES[$netdev.netnode.location_borough_type]} {$netdev.netnode.location_borough_name}){/if}
-			{trans("(from network node)")}
+				{$netdev.netnode.location}
+				{if $netdev.netnode.location_borough_name}
+					({$netdev.netnode.location_state_name} / {$netdev.netnode.location_district_name} / {$_BOROUGHTYPES[$netdev.netnode.location_borough_type]} {$netdev.netnode.location_borough_name})
+				{/if}
+				{trans("(from network node)")}
 			{/if}
 		</TD>
 	</TR>

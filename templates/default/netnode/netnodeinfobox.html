@@ -62,7 +62,10 @@
 		</TD>
 		<TD WIDTH="1%" class="nobr bold">{trans("Location:")}</TD>
 		<TD WIDTH="98%">
-			{$nodeinfo.location}{if $nodeinfo.borough_name} ({$nodeinfo.state_name} / {$nodeinfo.district_name} / {$_BOROUGHTYPES[$nodeinfo.borough_type]} {$nodeinfo.borough_name}){/if}
+			{if $nodeinfo.location_name}{$nodeinfo.location_name}, {/if}{$nodeinfo.location}
+			{if $nodeinfo.location_borough_name}
+				({$nodeinfo.location_state_name} / {$nodeinfo.location_district_name} / {$_BOROUGHTYPES[$nodeinfo.location_borough_type]} {$nodeinfo.location_borough_name})
+			{/if}
 		</TD>
 	</TR>
 	{/if}

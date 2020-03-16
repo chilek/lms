@@ -287,7 +287,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
             $this->db->Execute(
                 'UPDATE netnodes SET address_id = ? WHERE id = ?',
                 array(
-                    ($netnodedata['address_id'] >= 0 ? $netnodedata['address_id'] : null),
+                    ($netnodedata['customer_address_id'] >= 0 ? $netnodedata['customer_address_id'] : null),
                     $netnodedata['id']
                 )
             );
@@ -333,6 +333,10 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 				LEFT JOIN location_districts ld ON ld.id = lb.districtid
 				LEFT JOIN location_states ls ON ls.id = ld.stateid
 			WHERE n.id=?", array($id));
+
+        if (!empty($result['location_city'])) {
+            $result['teryt'] = 1;
+        }
 
         // if location is empty and owner is set then heirdom address from owner
         if (!$result['location'] && $result['ownerid']) {

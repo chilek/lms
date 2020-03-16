@@ -87,7 +87,7 @@
 			{/box_row}
 
 			{box_row id="location_select" icon="img/home.gif" label="Location:"}
-				{if $netnode.ownerid && $netnode.address_id}
+				{if $netnode.ownerid && $netnode.address_id > 0}
 					{$selected_address_id = $netnode.address_id}
 				{else}
 					{$selected_address_id = null}

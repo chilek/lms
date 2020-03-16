@@ -125,6 +125,10 @@ if (isset($netnodedata)) {
         die;
     }
 
+    if (!empty($netnodedata['ownerid'])) {
+        $netnodedata['address_id'] = $netnodedata['customer_address_id'];
+    }
+
     $SMARTY->assign('error', $error);
 } else {
     $netnodedata = array();

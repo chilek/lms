@@ -753,6 +753,10 @@ if (isset($netdev)) {
         echo json_encode($error);
         die;
     }
+
+    if (!empty($netdev['ownerid'])) {
+        $netdev['address_id'] = $netdev['customer_address_id'];
+    }
 } else {
     $netdev = $LMS->GetNetDev($id);
 

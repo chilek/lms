@@ -187,6 +187,10 @@ if (isset($netdev)) {
         die;
     }
 
+    if (!empty($netdev['ownerid'])) {
+        $netdev['address_id'] = $netdev['customer_address_id'];
+    }
+
     $SMARTY->assign('error', $error);
     $SMARTY->assign('netdev', $netdev);
 } elseif (isset($_GET['id'])) {

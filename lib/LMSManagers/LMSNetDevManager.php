@@ -353,9 +353,9 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             $this->db->Execute(
                 'UPDATE netdevices SET address_id = ? WHERE id = ?',
                 array(
-                                    ($data['customer_address_id'] >= 0 ? $data['customer_address_id'] : null),
-                                    $data['id']
-                                    )
+                    ($data['customer_address_id'] >= 0 ? $data['customer_address_id'] : null),
+                    $data['id']
+                )
             );
         } else {
             if (!$data['address_id'] || $data['address_id'] && $this->db->GetOne('SELECT 1 FROM customer_addresses WHERE address_id = ?', array($data['address_id']))) {
