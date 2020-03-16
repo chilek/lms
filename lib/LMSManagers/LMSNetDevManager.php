@@ -427,7 +427,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             'netnodeid'        => $data['netnodeid'],
             'status'           => empty($data['status']) ? 0 : $data['status'],
             'netdevicemodelid' => null,
-            'address_id'       => ($data['address_id'] >= 0 ? $data['address_id'] : null),
+            'address_id'       => ($data['customer_address_id'] >= 0 ? $data['customer_address_id'] : null),
             'ownerid'          => !empty($data['ownerid'])  ? $data['ownerid']    : null
         );
 
