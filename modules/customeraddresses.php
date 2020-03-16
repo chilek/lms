@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -40,57 +40,6 @@ switch (strtolower($_GET['action'])) {
         $caddr = $LMS->getCustomerAddresses(intval($_GET['id']), true);
         $LMS->determineDefaultCustomerAddress($caddr);
         die(json_encode($caddr));
-    break;
-
-    /*!
-     * \brief Returns single address by id.
-     *
-     * \param  int  $_GET['id'] customer id
-     * \return json
-     */
-    case 'getsingleaddress':
-        if (empty($_GET['id'])) {
-            return 0;
-        }
-
-        $addr = $DB->GetAllByKey(
-            'SELECT
-                                 id as address_id, name as location_name,
-                                 state as location_state_name, state_id as location_state,
-                                 city as location_city_name, city_id as location_city,
-                                 street as location_street_name, street_id as location_street,
-                                 house as location_house, zip as location_zip, postoffice AS location_postoffice,
-                                 country_id as location_country_id, flat as location_flat,
-                                 -1 as location_address_type
-                             FROM addresses
-                             WHERE id = ?',
-            'address_id',
-            array((int) $_GET['id'])
-        );
-
-        if (!$addr) {
-            die(json_encode(array()));
-        }
-
-        foreach ($addr as $k => $v) {
-            // generate address as single string
-            $location = location_str(array(
-                'city_name'      => $v['location_city_name'],
-                'postoffice'     => $v['location_postoffice'],
-                'street_name'    => $v['location_street_name'],
-                'location_house' => $v['location_house'],
-                'location_flat'  => $v['location_flat']
-            ));
-
-            if (strlen($location)) {
-                $addr[$k]['location'] = (empty($v['location_name']) ? '' : $v['location_name'] . ', ')
-                    . (empty($v['location_zip']) ? '' : $v['location_zip'] . ' ') . $location;
-            } else {
-                $addr[$k]['location'] = trans('undefined');
-            }
-        }
-
-        die(json_encode($addr));
     break;
 
     /*!

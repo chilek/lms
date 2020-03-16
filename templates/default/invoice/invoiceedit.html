@@ -141,7 +141,13 @@
 	<tr>
 		<td class="bold">{trans("Recipient address:")}</td>
 		<td>
-			<select id="customer_addresses" name="invoice[recipient_address_id]"></select>
+			{if $invoice.customerid && $invoice.recipient_address_id }
+				{$selected_address_id = $invoice.recipient_address_id}
+			{else}
+				{$selected_address_id = null}
+			{/if}
+			{include file="customer/customeraddresses.html" id="customer_addresses" name="invoice[recipient_address_id]"
+				trigger="address_id" selected_address_id=$selected_address_id preselection=false}
 		</td>
 	</tr>
     <tr>
@@ -189,41 +195,23 @@
      */
     function customer_change() {
         getCustomerAddresses($("#ownerid_input").val(), function(addresses) {
-            {if $invoice.customerid && $invoice.recipient_address_id }
-            customer_addresses.setAddressList( recipient_addr );
-            $( '#customer_addresses' ).val( {$invoice.recipient_address_id} );
+            {if $invoice.customerid && isset($invoice.recipient_address) }
+				customer_addresses.setAddressList( recipient_addr, false );
+				$( '#customer_addresses' ).val( {$invoice.recipient_address_id} );
             {else}
-            customer_addresses.setAddressList();
+	            customer_addresses.setAddressList();
             {/if}
 
-            customer_addresses.appendAddressList( addresses );
+            customer_addresses.appendAddressList( addresses, false );
             customer_addresses.refresh();
         });
         isSplitPaymentSuggested();
     }
 
-{if $invoice.customerid && $invoice.recipient_address_id }
-    getSingleAddress({intval($invoice.recipient_address_id)}, function(addresses) {
-        recipient_addr = addresses;
-        $.each( recipient_addr, function( i, v ) {
-            recipient_addr[i]['location_address_type'] = "{$smarty.const.RECIPIENT_ADDRESS}";
-        });
-        customer_addresses.setAddressList( recipient_addr );
-
-        getCustomerAddresses( {intval($invoice.customerid)}, function(addresses) {
-            customer_addresses.appendAddressList( addresses );
-            $( '#customer_addresses' ).val( {$invoice.recipient_address_id} );
-            customer_addresses.init();
-        });
-   });
-{else}
-    customer_addresses.setAddressList();
-
-    getCustomerAddresses( {intval($invoice.customerid)}, function(addresses) {
-        customer_addresses.appendAddressList( addresses );
-        customer_addresses.init();
-    });
+{if $invoice.customerid && isset($invoice.recipient_address)}
+	recipient_addr = [ JSON.parse(Base64.decode('{$invoice.recipient_address}')) ];
 {/if}
+    customer_addresses.init();
 
 	$(function() {
 		$('form[name="setcustomer"] [name="invoice[number]"]').focus();

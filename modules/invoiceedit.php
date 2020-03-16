@@ -287,6 +287,7 @@ switch ($action) {
         $zip = $invoice['zip'];
         $city = $invoice['city'];
         $countryid = $invoice['countryid'];
+        $recipient_address = $invoice['recipient_address'];
 
         unset($invoice);
         unset($error);
@@ -313,6 +314,7 @@ switch ($action) {
         $invoice['zip'] = $zip;
         $invoice['city'] = $city;
         $invoice['countryid'] = $countryid;
+        $invoice['recipient_address'] = $recipient_address;
 
         $currtime = time();
 
@@ -771,6 +773,18 @@ $hook_data = $LMS->ExecuteHook('invoiceedit_before_display', $hook_data);
 $customer = $hook_data['customer'];
 $contents = $hook_data['contents'];
 $invoice = $hook_data['invoice'];
+
+if (isset($customer)) {
+    $addresses = $LMS->getCustomerAddresses($customer['id']);
+    if (isset($invoice['recipient_address'])) {
+        $addresses = array_replace(
+            array($invoice['recipient_address']['address_id'] => $invoice['recipient_address']),
+            $addresses
+        );
+        $invoice['recipient_address'] = base64_encode(json_encode($invoice['recipient_address']));
+    }
+    $SMARTY->assign('addresses', $addresses);
+}
 
 $SMARTY->assign('customer', $customer);
 $SMARTY->assign('contents', $contents);

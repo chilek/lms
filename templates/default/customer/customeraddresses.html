@@ -1,20 +1,23 @@
 <select id="{$id}" name="{$name}" {tip trigger=$trigger}>
     <option value="-1" data-style="background-image: url()">---</option>
-    {foreach $addresses as $address_id => $address}
-        {if $address.location_address_type == $smarty.const.POSTAL_ADDRESS}
-            {$icon = "img/post.gif"}
-        {elseif $address.location_address_type == $smarty.const.BILLING_ADDRESS}
-            {$icon = "img/customer.gif"}
-        {elseif $address.location_address_type == $smarty.const.LOCATION_ADDRESS}
-            {$icon = "img/location.png"}
-        {elseif $address.location_address_type == $smarty.const.DEFAULT_LOCATION_ADDRESS}
-            {$icon = "img/pin_blue.png"}
-        {elseif $address.location_address_type == $smarty.const.RECIPIENT_ADDRESS}
-            {$icon = "img/info3.gif"}
-        {else}
-            {$icon = ""}
-        {/if}
-        <option value="{$address_id}" data-style="background-image: url({$icon})"
-                {if isset($address.default_address)} selected{/if}>{$address.location}</option>
-    {/foreach}
+    {if isset($addresses) && !empty($addresses)}
+        {foreach $addresses as $address_id => $address}
+            {if $address.location_address_type == $smarty.const.POSTAL_ADDRESS}
+                {$icon = "img/post.gif"}
+            {elseif $address.location_address_type == $smarty.const.BILLING_ADDRESS}
+                {$icon = "img/customer.gif"}
+            {elseif $address.location_address_type == $smarty.const.LOCATION_ADDRESS}
+                {$icon = "img/location.png"}
+            {elseif $address.location_address_type == $smarty.const.DEFAULT_LOCATION_ADDRESS}
+                {$icon = "img/pin_blue.png"}
+            {elseif $address.location_address_type == $smarty.const.RECIPIENT_ADDRESS}
+                {$icon = "img/info3.gif"}
+            {else}
+                {$icon = ""}
+            {/if}
+            <option value="{$address_id}" data-style="background-image: url({$icon})"
+                    {if (isset($selected_address_id) && $selected_address_id == $address_id)
+                        || (!isset($selected_address_id) && (!isset($preselection) || $preselection) && isset($address.default_address))} selected{/if}>{$address.location}</option>
+        {/foreach}
+    {/if}
 </select>

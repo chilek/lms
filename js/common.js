@@ -692,28 +692,11 @@ window.onafterprint  = LMS_afterPrintEvent;
  * \return false    if id is incorrect
  */
 function getCustomerAddresses( id, on_success ) {
-    return _getAddressList( 'customeraddresses', id, on_success );
-}
-
-/*!
- * \brief Returns single address by id.
- *
- * \param  int   id address id
- * \return json     address data
- * \return false    if id is incorrect
- */
-function getSingleAddress( address_id, on_success ) {
-    return _getAddressList( 'singleaddress', address_id, on_success );
-}
-
-function _getAddressList( action, v, on_success ) {
-    action = action.toLowerCase();
-
     var addresses = [];
     var async = typeof on_success === 'function';
 
     // test to check if 'id' is integer
-    if ( Math.floor(v) != v || !$.isNumeric(v) ) {
+    if ( Math.floor(id) != id || !$.isNumeric(id) ) {
         if (async) {
             on_success(addresses);
         }
@@ -721,28 +704,15 @@ function _getAddressList( action, v, on_success ) {
     }
 
     // check id value
-    if ( v <= 0 ) {
+    if ( id <= 0 ) {
         if (async) {
             on_success(addresses);
         }
         return addresses;
     }
 
-    var url;
-
-    switch ( action ) {
-        case 'customeraddresses':
-            url = "?m=customeraddresses&action=getcustomeraddresses&api=1&id=" + v;
-        break;
-
-        case 'singleaddress':
-            url = "?m=customeraddresses&action=getsingleaddress&api=1&id=" + v;
-        break;
-    }
-
-
     $.ajax({
-        url    : url,
+        url    : "?m=customeraddresses&action=getcustomeraddresses&api=1&id=" + id,
         dataType: "json",
         async  : async
     }).done(function(data) {

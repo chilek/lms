@@ -2090,8 +2090,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				d.div_inv_header AS division_header, d.div_inv_footer AS division_footer,
 				d.div_inv_author AS division_author, d.div_inv_cplace AS division_cplace,
 				d.recipient_address_id, d.post_address_id,
-				a.city as rec_city, a.zip as rec_zip, a.postoffice AS rec_postoffice,
+				a.state AS rec_state, a.state_id AS rec_state_id,
+				a.city as rec_city, a.city_id AS rec_city_id,
+				a.street AS rec_street, a.street_id AS rec_street_id,
+				a.zip as rec_zip, a.postoffice AS rec_postoffice,
 				a.name as rec_name, a.address AS rec_address,
+				a.house AS rec_house, a.flat AS rec_flat, a.country_id AS rec_country_id,
 				c.pin AS customerpin, c.divisionid AS current_divisionid,
 				c.street, c.building, c.apartment,
 				(CASE WHEN d.post_address_id IS NULL THEN c.post_street ELSE a2.street END) AS post_street,
@@ -2121,6 +2125,40 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				LEFT JOIN vaddresses a2 ON d.post_address_id = a2.id
 				LEFT JOIN countries cp ON (d.post_address_id IS NOT NULL AND cp.id = a2.country_id) OR (d.post_address_id IS NULL AND cp.id = c.post_countryid)
 				WHERE d.id = ? AND (d.type = ? OR d.type = ? OR d.type = ?)', array($invoiceid, DOC_INVOICE, DOC_CNOTE, DOC_INVOICE_PRO))) {
+            if (!empty($result['recipient_address_id'])) {
+                $result['recipient_address'] = array(
+                    'address_id' => $result['recipient_address_id'],
+                    'location_name' => $result['rec_name'],
+                    'location_state_name' => $result['rec_state'],
+                    'location_state' => $result['rec_state_id'],
+                    'location_city_name' => $result['rec_city'],
+                    'location_city' => $result['rec_city_id'],
+                    'location_street_name' => $result['rec_street'],
+                    'location_street' => $result['rec_street_id'],
+                    'location_house' => $result['rec_house'],
+                    'location_zip' => $result['rec_zip'],
+                    'location_postoffice' => $result['rec_postoffice'],
+                    'location_country_id' => $result['rec_country_id'],
+                    'location_flat' => $result['rec_flat'],
+                    'location_address_type' => RECIPIENT_ADDRESS,
+                );
+                // generate address as single string
+                $recipient_location = location_str(array(
+                    'city_name'      => $result['recipient_address']['location_city_name'],
+                    'postoffice'     => $result['recipient_address']['location_postoffice'],
+                    'street_name'    => $result['recipient_address']['location_street_name'],
+                    'location_house' => $result['recipient_address']['location_house'],
+                    'location_flat'  => $result['recipient_address']['location_flat']
+                ));
+
+                if (strlen($recipient_location)) {
+                    $result['recipient_address']['location'] = (empty($result['recipient_address']['location_name']) ? '' : $result['recipient_address']['location_name'] . ', ')
+                        . (empty($result['recipient_address']['location_zip']) ? '' : $result['recipient_address']['location_zip'] . ' ') . $recipient_location;
+                } else {
+                    $result['recipient_address']['location'] = trans('undefined');
+                }
+            }
+
             $result['bankaccounts'] = $this->db->GetCol(
                 'SELECT contact FROM customercontacts
 				WHERE customerid = ? AND (type & ?) = ?',
