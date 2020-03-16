@@ -205,7 +205,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
     {
         $addr_id = $this->db->GetOne('SELECT address_id FROM netnodes WHERE id = ?', array($id));
 
-        if (!empty($addr_id)) {
+        if (!empty($addr_id) && !$this->db->GetOne('SELECT 1 FROM customer_addresses WHERE address_id = ?', array($addr_id))) {
             $this->db->Execute('DELETE FROM addresses WHERE id = ?', array($addr_id));
         }
 
