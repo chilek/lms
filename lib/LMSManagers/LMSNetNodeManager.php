@@ -287,7 +287,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
             $this->db->Execute(
                 'UPDATE netnodes SET address_id = ? WHERE id = ?',
                 array(
-                    ($netnodedata['customer_address_id'] >= 0 ? $netnodedata['customer_address_id'] : null),
+                    ($netnodedata['address_id'] >= 0 ? $netnodedata['address_id'] : null),
                     $netnodedata['id']
                 )
             );
