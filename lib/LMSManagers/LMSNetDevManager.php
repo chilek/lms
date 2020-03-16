@@ -826,6 +826,10 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 				LEFT JOIN location_states ls       ON (ls.id = ld.stateid)
 			WHERE d.id = ?', array($id));
 
+        if (!empty($result['location_city'])) {
+            $result['teryt'] = 1;
+        }
+
         // if location is empty and owner is set then heirdom address from owner
         if (!$result['location'] && $result['ownerid']) {
             global $LMS;
