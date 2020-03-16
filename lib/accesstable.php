@@ -122,6 +122,10 @@ $access_table = array(
         'label' => trans('timetable management'),
         'allow_regexp' => '^(event(list|edit|add|del|info|print|search|note|schedule)|choosecustomer)$',
     ),
+    'project_management' => array(
+        'label' => trans('investment project management'),
+        'allow_regexp' => '^invproject(add|del|edit)$',
+    ),
     'daemon_management' => array(
         'label' => trans('daemon management and configuration'),
         'allow_regexp' => '^((daemoninstance|daemonconfig)(list|edit|add|del|view))$',

@@ -4611,3 +4611,5 @@ $_LANG['Select tax category'] = 'Wybierz kategorię podatkową';
 $_LANG['Tax category selection is required!'] = 'Wymagany wybór kategorii podatkowej!';
 
 $_LANG['TERRIT address is required!'] = 'Wymagany adres zgodny z TERYT!';
+
+$_LANG['investment project management'] = 'zarządzanie projektami inwestycyjnymi';
