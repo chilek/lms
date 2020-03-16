@@ -217,7 +217,7 @@
 
 	getCustomerAddresses( {intval($netnode.ownerid)}, function(addresses) {
 		customer_addresses.setAddressList( addresses );
-		{if $netdev.address_id && $netdev.ownerid}
+		{if $netnode.address_id && $netnode.ownerid}
 		$( '#customer_addresses' ).val( {$netdev.address_id} );
 		{/if}
 			customer_addresses.init();
