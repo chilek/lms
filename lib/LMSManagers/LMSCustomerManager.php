@@ -1795,9 +1795,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         if (isset($addresses[DEFAULT_LOCATION_ADDRESS])) {
             $address = $addresses[DEFAULT_LOCATION_ADDRESS];
-        }
-
-        if (isset($addresses[BILLING_ADDRESS])) {
+        } elseif (isset($addresses[BILLING_ADDRESS])) {
             $address = $addresses[BILLING_ADDRESS];
         }
 
