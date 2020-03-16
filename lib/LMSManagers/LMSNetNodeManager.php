@@ -172,7 +172,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
             'info'        => $netnodedata['info'],
             'admcontact' => empty($netnodedata['admcontact']) ? null : $netnodedata['admcontact'],
             'lastinspectiontime' => empty($netnodedata['lastinspectiontime']) ? null : $netnodedata['lastinspectiontime'],
-            'address_id'       => ($netnodedata['address_id'] >= 0 ? $netnodedata['address_id'] : null),
+            'address_id'       => !empty($netnodedata['ownerid']) && $netnodedata['customer_address_id'] > 0 ? $netnodedata['customer_address_id'] : null,
             'ownerid'          => !empty($netnodedata['ownerid']) && !empty($netnodedata['ownership']) ? $netnodedata['ownerid'] : null
         );
 
@@ -186,11 +186,9 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 
             $address_id = $LMS->InsertAddress($netnodedata);
 
-            if ($address_id >= 0) {
+            if (!empty($address_id)) {
                 $this->db->Execute('UPDATE netnodes SET address_id = ? WHERE id = ?', array($address_id, $id));
             }
-        } else if ($netnodedata['address_id'] && $netnodedata['address_id'] >= 0) {
-            $this->db->Execute('UPDATE netnodes SET address_id = ? WHERE id = ?', array($netnodedata['address_id'], $id));
         }
 
         return $id;
