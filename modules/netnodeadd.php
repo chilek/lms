@@ -140,6 +140,12 @@ if (isset($netnodedata)) {
 
 $layout['pagetitle'] = trans('New Net Device Node');
 
+if (!empty($netnodedata['ownerid'])) {
+    $addresses = $LMS->getCustomerAddresses($netnodedata['ownerid']);
+    $LMS->determineDefaultCustomerAddress($addresses);
+    $SMARTY->assign('addresses', $addresses);
+}
+
 $SMARTY->assign('netnode', $netnodedata);
 $SMARTY->assign('divisions', $LMS->GetDivisions());
 $SMARTY->assign('NNprojects', $LMS->GetProjects());

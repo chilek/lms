@@ -159,6 +159,12 @@ if (!ConfigHelper::checkConfig('phpui.big_networks')) {
     $SMARTY->assign('customers', $LMS->GetCustomerNames());
 }
 
+if (!empty($netnodedata['ownerid'])) {
+    $addresses = $LMS->getCustomerAddresses($netnodedata['ownerid']);
+    $LMS->determineDefaultCustomerAddress($addresses);
+    $SMARTY->assign('addresses', $addresses);
+}
+
 $SMARTY->assign('error', $error);
 $SMARTY->assign('netnode', $netnodedata);
 $SMARTY->assign('objectid', $netnodedata['id']);

@@ -87,7 +87,13 @@
 			{/box_row}
 
 			{box_row id="location_select" icon="img/home.gif" label="Location:"}
-				<select id="customer_addresses" name="netnode[address_id]" {tip trigger="address_id"}></select>
+				{if $netnode.ownerid && $netnode.address_id}
+					{$selected_address_id = $netnode.address_id}
+				{else}
+					{$selected_address_id = null}
+				{/if}
+				{include file="customer/customeraddresses.html" id="customer_addresses" name="netnode[customer_address_id]"
+					trigger="address_id" selected_address_id=$selected_address_id}
 			{/box_row}
 
 			{box_row id="location_box" icon="img/home.gif" label="Location:"}
@@ -182,6 +188,7 @@
 <script>
 
 	var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
+
 	$('[name="netnode[name]"]').focus();
 
 	$('#ownership').change(function() {
@@ -205,8 +212,6 @@
 		$(hide_selectors.join(',')).hide();
 	}).change();
 
-	var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
-
 	function customerChanged() {
 		$('#ownership').change();
 
@@ -215,14 +220,7 @@
 		});
 	};
 
-	getCustomerAddresses( {intval($netnode.ownerid)}, function(addresses) {
-		customer_addresses.setAddressList( addresses );
-		{if $netnode.address_id && $netnode.ownerid}
-		$( '#customer_addresses' ).val( {$netdev.address_id} );
-		{/if}
-			customer_addresses.init();
-			customer_addresses.refresh();
-		});
+	customer_addresses.init();
 
 	/*
 	 * \brief Update address location update. Require google API key.
