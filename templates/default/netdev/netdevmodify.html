@@ -68,7 +68,13 @@
 				{/box_row}
 
 				{box_row id="location_select" icon="img/home.gif" label="Location:"}
-					<select id="customer_addresses" name="netdev[customer_address_id]" {tip trigger="address_id" }></select>
+					{if $netdev.address_id && $netdev.ownerid}
+						{$selected_address_id = $netdev.address_id}
+					{else}
+						{$selected_address_id = null}
+					{/if}
+					{include file="customer/customeraddresses.html" id="customer_addresses" name="netdev[customer_address_id]"
+						trigger="address_id" selected_address_id=$selected_address_id}
 				{/box_row}
 
 				{box_row id="location_box" icon="img/home.gif" label="Location:"}
@@ -314,14 +320,6 @@
 
 	updateLocationBoxesDisplay({intval($netdev.ownerid)});
 
-	getCustomerAddresses({intval($netdev.ownerid)},
-		function (addresses) {
-			customer_addresses.setAddressList(addresses);
-			{if $netdev.address_id && $netdev.ownerid}
-			$('#customer_addresses').val({$netdev.address_id});
-			{/if}
-			customer_addresses.init();
-		}
-	);
+	customer_addresses.init();
 
 </script>

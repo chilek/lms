@@ -868,6 +868,12 @@ switch ($edit) {
             $SMARTY->assign('channels', $DB->GetAll('SELECT id, name FROM ewx_channels ORDER BY name'));
         }
 
+        if (!empty($netdev['ownerid'])) {
+            $addresses = $LMS->getCustomerAddresses($netdev['ownerid']);
+            $LMS->determineDefaultCustomerAddress($addresses);
+            $SMARTY->assign('addresses', $addresses);
+        }
+
         $SMARTY->assign('netdevedit_sortable_order', $SESSION->get_persistent_setting('netdevedit-sortable-order'));
         $SMARTY->display('netdev/netdevedit.html');
         break;

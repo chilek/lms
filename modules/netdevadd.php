@@ -221,6 +221,12 @@ $SMARTY->assign('NNnodes', $LMS->GetNetNodes());
 $SMARTY->assign('producers', $LMS->GetProducers());
 $SMARTY->assign('models', $LMS->GetModels());
 
+if (!empty($netdev['ownerid'])) {
+    $addresses = $LMS->getCustomerAddresses($netdev['ownerid']);
+    $LMS->determineDefaultCustomerAddress($addresses);
+    $SMARTY->assign('addresses', $addresses);
+}
+
 if (ConfigHelper::checkConfig('phpui.ewx_support')) {
     $SMARTY->assign('channels', $DB->GetAll('SELECT id, name FROM ewx_channels ORDER BY name'));
 }
