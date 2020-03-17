@@ -90,18 +90,6 @@ var customer_addresses = new LmsUiIconSelectMenu("#customer_addresses", {
 	}
 });
 
-function initCustomerSelection(customerid, address_id) {
-	getCustomerAddresses(customerid, function (addresses) {
-		customer_addresses.setAddressList(addresses);
-
-		if (customerid) {
-			if (address_id) {
-				$('#customer_addresses').val(address_id);
-			} else if (Object.keys(addresses).length == 1) {
-				$('#customer_addresses').val($('#customer_addresses option:last-child').val());
-			}
-		}
-
-		customer_addresses.init();
-	});
+function initCustomerSelection() {
+	customer_addresses.init();
 }

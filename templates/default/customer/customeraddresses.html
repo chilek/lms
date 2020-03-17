@@ -1,4 +1,7 @@
-<select id="{$id}" name="{$name}" {tip trigger=$trigger}>
+{if !isset($class)}
+    {$class = ""}
+{/if}
+<select id="{$id}" name="{$name}" {tip trigger=$trigger} class="{$class}">
     <option value="-1" data-style="background-image: url()">---</option>
     {if isset($addresses) && !empty($addresses)}
         {foreach $addresses as $address_id => $address}

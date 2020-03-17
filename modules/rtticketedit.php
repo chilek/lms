@@ -568,6 +568,12 @@ $hook_data = $LMS->executeHook(
 );
 $ticket = $hook_data['ticket'];
 
+if (!empty($ticket['customerid'])) {
+    $addresses = $LMS->getCustomerAddresses($ticket['customerid']);
+    $LMS->determineDefaultCustomerAddress($addresses);
+    $SMARTY->assign('addresses', $addresses);
+}
+
 $SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('customerid', $ticket['customerid']);
 $SMARTY->assign('queuelist', $queuelist);

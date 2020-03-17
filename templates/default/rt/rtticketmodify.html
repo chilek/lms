@@ -224,8 +224,18 @@
 
 {if $layout.module != 'eventadd'}
 			{box_row icon="img/home.gif" label="Location:"}
-				<select id="customer_addresses" name="ticket[address_id]"{if $address_id_warning} class="lms-ui-error"{/if} {tip trigger="address_id"}>
-				</select>
+				{if $ticket.address_id > 0 && $customerid}
+					{$selected_address_id = $ticket.address_id}
+				{else}
+					{$selected_address_id = null}
+				{/if}
+				{if $address_id_warning}
+					{$class = "lms-ui-error"}
+				{else}
+					{$class = ""}
+				{/if}
+				{include file="customer/customeraddresses.html" id="customer_addresses" name="ticket[address_id]"
+					trigger="address_id" selected_address_id=$selected_address_id class=$class}
 				<input type="hidden" name="address_id_warning" value="{if $address_id_warning}1{else}0{/if}">
 			{/box_row}
 {/if}
