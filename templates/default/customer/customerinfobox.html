@@ -109,7 +109,7 @@
 							{foreach $customerinfo.addresses as $v}
 								{if $v.location_address_type == $smarty.const.POSTAL_ADDRESS}
 								<tr>
-									<td style="width: 1%;"><img src="img/post.gif" alt="" title="{trans('postal address')}"></td>
+									<td style="width: 1%;"><i class="lms-ui-icon-mail fa-fw" title="{trans('postal address')}"></i></td>
 									<td style="width: 99%;">
 										<span title="{trans('postal address')}">{if $v.location_name}{$v.location_name}, {/if}{if $v.teryt}{t a=$v.location}$a (TERRIT){/t}{else}{$v.location}{/if}
 											<a href="https://www.google.com/maps/place/{$v.location}" title="{trans("Google Maps")}"><i class="lms-ui-icon-location"></i></a>
@@ -124,15 +124,15 @@
 								{if $v.location_address_type != $smarty.const.BILLING_ADDRESS && $v.location_address_type != $smarty.const.POSTAL_ADDRESS}
 								<tr>
 									{if $v.location_address_type == $smarty.const.DEFAULT_LOCATION_ADDRESS}
-										{$icon  = 'img/pin_blue.png'}
+										{$icon  = 'lms-ui-icon-default-customer-location fa-fw'}
 										{$title = trans('default location address')}
 									{else}
-										{$icon  = 'img/location.png'}
+										{$icon  = 'lms-ui-icon-customer-location fa-fw'}
 										{$title = trans('location/recipient address')}
 									{/if}
 
 									<td style="width: 1%;">
-										<img src="{$icon}" alt="" title="{$title}">
+										<i class="{$icon}" alt="" title="{$title}"></i>
 									</td>
 									<td style="width: 99%;">
 										<span title="{$title}">{if $v.location_name}{$v.location_name}, {/if}{if $v.teryt}{t a=$v.location}$a (TERRIT){/t}{else}{$v.location}{/if}

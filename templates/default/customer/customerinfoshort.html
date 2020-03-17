@@ -28,7 +28,7 @@
 	</TR>
 	<TR>
 		<TD WIDTH="1%" >
-			<IMG SRC="img/home.gif" ALT="">
+			<i class="lms-ui-icon-home fa-fw"></i>
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
 			{if $customerinfo.postoffice && $customerinfo.postoffice != $customerinfo.city && $customerinfo.street}{$customerinfo.city}, {/if}{$customerinfo.address}<BR>
@@ -38,11 +38,11 @@
 {if $customerinfo.post_name != "" || $customerinfo.post_address != ""}
 	<TR>
 		<TD WIDTH="1%" >
-			<IMG SRC="img/post.gif" ALT="">
+			<i class="lms-ui-icon-mail fa-fw"></i>
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
 			{if $customerinfo.post_name != ""}{$customerinfo.post_name}{/if}
-			{if $customerinfo.post_address != ""}<BR>
+			{if $customerinfo.post_address != ""}{if $customerinfo.post_name != ""}<BR>{/if}
 				{if $customerinfo.post_postoffice && $customerinfo.post_postoffice != $customerinfo.post_city && $customerinfo.post_street}{$customerinfo.post_city}, {/if}
 				{$customerinfo.post_address}
 			{/if}

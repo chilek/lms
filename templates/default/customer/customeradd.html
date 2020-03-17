@@ -242,7 +242,7 @@
 				</tr>
 
 				<tr>
-					<td class="valign-top"><img src="img/post.gif" alt="" title="{trans('postal address')}"></td>
+					<td class="valign-top"><i class="lms-ui-icon-mail fa-fw" title="{trans('postal address')}"></i></td>
 					<td>
 						{$addr_found = 0}
 						{foreach $customeradd.addresses as $v}
@@ -279,9 +279,9 @@
 				<tr>
 					<td class="valign-top">
 						{if $v.location_address_type == $smarty.const.DEFAULT_LOCATION_ADDRESS}
-							<img src="img/pin_blue.png" alt="" title="{trans('default location address')}" class="location-box-image">
+							<i class="lms-ui-icon-default-customer-location fa-fw location-box-image" title="{trans('default location address')}"></i>
 						{else}
-							<img src="img/location.png" alt="" title="{trans('location/recipient address')}" class="location-box-image">
+							<i class="lms-ui-icon-customer-location fa-fw location-box-image" title="{trans('location/recipient address')}"></i>
 						{/if}
 					</td>
 					<td>

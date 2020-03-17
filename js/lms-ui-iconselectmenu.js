@@ -26,8 +26,9 @@ $.widget( "custom.iconselectmenu", $.ui.selectmenu, {
 	_renderItem: function( ul, item ) {
 	    var li = $('<li' + (item.disabled ? ' class="ui-state-disabled"' : '') +
             '>');
-	    var wrapper = '<div>' + (item.element.attr("data-style") ? '<span style="' + item.element.attr("data-style") +
-            '" class="ui-icon ' + item.element.attr("data-class") + '"></span>' : '') + item.label + '</div>';
+	    var wrapper = '<div>' + (item.element.attr("data-icon") ? '<i class="' +
+            (item.element.attr("data-class") ? item.element.attr("data-class") : '') +
+            ' ' + item.element.attr("data-icon") + '"></i>' : '') + item.label + '</div>';
 
         return li.append(wrapper).appendTo(ul);
     }

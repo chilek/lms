@@ -6,19 +6,19 @@
     {if isset($addresses) && !empty($addresses)}
         {foreach $addresses as $address_id => $address}
             {if $address.location_address_type == $smarty.const.POSTAL_ADDRESS}
-                {$icon = "img/post.gif"}
+                {$icon = "lms-ui-icon-mail fa-fw"}
             {elseif $address.location_address_type == $smarty.const.BILLING_ADDRESS}
-                {$icon = "img/customer.gif"}
+                {$icon = "lms-ui-icon-home fa-fw"}
             {elseif $address.location_address_type == $smarty.const.LOCATION_ADDRESS}
-                {$icon = "img/location.png"}
+                {$icon = "lms-ui-icon-customer-location fa-fw"}
             {elseif $address.location_address_type == $smarty.const.DEFAULT_LOCATION_ADDRESS}
-                {$icon = "img/pin_blue.png"}
+                {$icon = "lms-ui-icon-default-customer-location fa-fw"}
             {elseif $address.location_address_type == $smarty.const.RECIPIENT_ADDRESS}
-                {$icon = "img/info3.gif"}
+                {$icon = "lms-ui-icon-document fa-fw"}
             {else}
                 {$icon = ""}
             {/if}
-            <option value="{$address_id}" data-style="background-image: url({$icon})"
+            <option value="{$address_id}" data-icon="{$icon}"
                     {if (isset($selected_address_id) && $selected_address_id == $address_id)
                         || (!isset($selected_address_id) && (!isset($preselection) || $preselection) && isset($address.default_address))} selected{/if}>{$address.location}</option>
         {/foreach}

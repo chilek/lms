@@ -1,7 +1,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -22,13 +22,13 @@
  *  $Id$
  */
 
-var _lms_ui_address_ico     = 'img/location.png';
-var _lms_ui_address_def_ico = 'img/pin_blue.png';
-
 /*!
  * \brief File used by function.location_box_expandable.php smarty plugin.
  */
 $(function() {
+    var customer_location_icon = 'lms-ui-icon-customer-location fa-fw';
+    var default_customer_location_icon = 'lms-ui-icon-default-customer-location fa-fw';
+
     var counter = -1;
 
     /*!
@@ -201,8 +201,8 @@ $(function() {
 
         row_content += '<tr>';
         row_content += '<td class="valign-top">';
-        row_content += '<img src="' + _lms_ui_address_ico + '" alt="" class="location-box-image" title="' +
-			$t('location/recipient address') + '" id="' + uid + '">';
+        row_content += '<i class="' + customer_location_icon + ' location-box-image" title="' +
+			$t('location/recipient address') + '" id="' + uid + '"></i>';
         row_content += '</td>';
         row_content += '<td>' + data + '</td></tr>';
 
@@ -247,7 +247,7 @@ $(function() {
         var address_type = box.find('input[data-address="address_type"]');
         if (address_type.val() == 3) {
             $('.location-box-image', box.closest('tr'))
-                .attr('src', _lms_ui_address_ico)
+                .attr('class', customer_location_icon + ' location-box-image')
                 .tooltip().tooltip('destroy')
                 .attr('title', $t('location/recipient address'))
                 .tooltip();
@@ -292,7 +292,7 @@ $(function() {
 
         // set all image source as default
         $( $('.location-box-image') ).each(function() {
-            $(this).attr('src', _lms_ui_address_ico)                          // change icon source
+            $(this).attr('class', customer_location_icon + ' location-box-image')                     // change icon source
                    .tooltip().tooltip('destroy')                              // can't destroy or update not initialized tooltip
                    .attr('title', $t('location/recipient address'))     // update title
                    .tooltip();                                                // init tooltip
@@ -315,7 +315,7 @@ $(function() {
 
             box.closest('tr')
                .find('.location-box-image')
-               .attr('src', _lms_ui_address_def_ico)                          // change icon source
+               .attr('class', default_customer_location_icon + ' location-box-image')                      // change icon source
                .tooltip().tooltip('destroy')                                  // can't destroy or update not initialized tooltip
                .attr('title', $t('default location address'))           // update icon title
                .tooltip();                                                    // init tooltip

@@ -1037,6 +1037,25 @@ li.lms-ui-suggestion-item {
 	text-align: center;
 }
 
+.lms-ui-icon-map-pin {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-map-pin;
+	}
+}
+
+.lms-ui-icon-customer-location {
+	.lms-ui-icon-map-pin;
+	color: red;
+}
+
+.lms-ui-icon-default-customer-location {
+	.lms-ui-icon-map-pin;
+	color: blue;
+}
+
 .lms-ui-icon-sticky-note,
 .lms-ui-icon-memo {
 	.fa-icon;
@@ -3134,6 +3153,9 @@ table.dataTable {
 	.ui-state-active:hover {
 		color: white;
 		background-color: #4a90d9 !important;
+	}
+	[class*="lms-ui-icon"] {
+		padding-right: 0.5em;
 	}
 }
 

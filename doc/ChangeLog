@@ -215,6 +215,7 @@ version 25-git (????-??-??):
   - improvement: force default location address or single location address or billing address of customer
     as pre-selected customer assigned resources [chilan]
   - improvement: new user permission - investment project management [chilan]
+  - improvement: replaced customer address selection icons by font awesome icons [chilan]
 
 version 24.0 (2019-05-16):
 
