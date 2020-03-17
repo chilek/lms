@@ -2,7 +2,7 @@
     {$class = ""}
 {/if}
 <select id="{$id}" name="{$name}" {tip trigger=$trigger} class="{$class}">
-    <option value="-1" data-style="background-image: url()">---</option>
+    <option value="-1">---</option>
     {if isset($addresses) && !empty($addresses)}
         {foreach $addresses as $address_id => $address}
             {if $address.location_address_type == $smarty.const.POSTAL_ADDRESS}
