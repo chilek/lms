@@ -24,20 +24,12 @@
 
 $.widget( "custom.iconselectmenu", $.ui.selectmenu, {
 	_renderItem: function( ul, item ) {
-        var li = $( "<li>" ),
-        wrapper = $( "<div>", { text: item.label } );
+	    var li = $('<li' + (item.disabled ? ' class="ui-state-disabled"' : '') +
+            '>');
+	    var wrapper = '<div>' + (item.element.attr("data-style") ? '<span style="' + item.element.attr("data-style") +
+            '" class="ui-icon ' + item.element.attr("data-class") + '"></span>' : '') + item.label + '</div>';
 
-        if ( item.disabled ) {
-            li.addClass( "ui-state-disabled" );
-        }
-
-        $( "<span>", {
-            style: item.element.attr( "data-style" ),
-            "class": "ui-icon " + item.element.attr( "data-class" )
-        })
-        .appendTo( wrapper );
-
-        return li.append( wrapper ).appendTo( ul );
+        return li.append(wrapper).appendTo(ul);
     }
 });
 
@@ -131,7 +123,7 @@ LmsUiIconSelectMenu.prototype._appendAddressList = function( address_list ) {
 		}
 		return 0;
 	});
-    var html = '<option value="-1" data-style="background-image: url()">---</option>';
+    var html = '<option value="-1">---</option>';
 	$.each( addresses, function() {
         switch ( this.location_address_type ) {
             case "0": icon = "img/post.gif";     break; // postal address
