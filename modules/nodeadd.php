@@ -387,6 +387,12 @@ $nodedata = $hook_data['nodeadd'];
 
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
+if (!empty($nodedata['ownerid'])) {
+    $addresses = $LMS->getCustomerAddresses($nodedata['ownerid']);
+    $LMS->determineDefaultCustomerAddress($addresses);
+    $SMARTY->assign('addresses', $addresses);
+}
+
 $SMARTY->assign('networks', $LMS->GetNetworks(true));
 $SMARTY->assign('netdevices', $LMS->GetNetDevNames());
 $SMARTY->assign('error', $error);

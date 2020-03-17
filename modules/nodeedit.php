@@ -360,6 +360,12 @@ $nodeinfo = $hook_data['nodeedit'];
 
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
+if (!empty($nodeinfo['ownerid'])) {
+    $addresses = $LMS->getCustomerAddresses($nodeinfo['ownerid']);
+    $LMS->determineDefaultCustomerAddress($addresses);
+    $SMARTY->assign('addresses', $addresses);
+}
+
 $nprojects = $LMS->GetProjects();
 $SMARTY->assign('NNprojects', $nprojects);
 

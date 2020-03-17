@@ -315,7 +315,13 @@
 										{trans("Location:")}
 									</td>
 									<td>
-										<select id="customer_addresses" name="nodeedit[address_id]" {tip trigger="address_id"}></select>
+										{if $nodeinfo.address_id && $nodeinfo.ownerid}
+											{$selected_address_id = $nodeinfo.address_id}
+										{else}
+											{$selected_address_id = null}
+										{/if}
+										{include file="customer/customeraddresses.html" id="customer_addresses" name="nodeedit[address_id]"
+											trigger="address_id" selected_address_id=$selected_address_id}
 									</td>
 								</tr>
 
@@ -647,12 +653,6 @@
         });
     }
 
-    getCustomerAddresses( {intval($nodeinfo.ownerid)}, function(addresses) {
-        customer_addresses.setAddressList( addresses );
-        {if $nodeinfo.address_id && $nodeinfo.ownerid}
-        $( '#customer_addresses' ).val( {$nodeinfo.address_id} );
-        {/if}
-        customer_addresses.init();
-    });
+    customer_addresses.init();
 
 </script>
