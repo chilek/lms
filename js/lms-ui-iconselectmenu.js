@@ -127,17 +127,17 @@ LmsUiIconSelectMenu.prototype._appendAddressList = function( address_list ) {
     var html = '<option value="-1">---</option>';
 	$.each( addresses, function() {
         switch ( this.location_address_type ) {
-            case "0": icon = "img/post.gif";     break; // postal address
-            case "1": icon = "img/customer.gif"; break; // billing address
-            case "2": icon = "img/location.png"; break; // location/recipient address
-            case "3": icon = "img/pin_blue.png"; break; // default location address
-            case "4": icon = "img/info3.gif";    break; // invoice address
+            case "0": icon = "lms-ui-icon-mail fa-fw";     break; // postal address
+            case "1": icon = "lms-ui-icon-home fa-fw"; break; // billing address
+            case "2": icon = "lms-ui-icon-customer-location fa-fw"; break; // location/recipient address
+            case "3": icon = "lms-ui-icon-default-customer-location fa-fw"; break; // default location address
+            case "4": icon = "lms-ui-icon-document fa-fw";    break; // invoice address
 
             default:
                 icon = "";
         }
 
-        html += '<option value="' + this.address_id  + '" data-style="background-image: url(' + icon + ')"' +
+        html += '<option value="' + this.address_id  + '" data-icon="' + icon + '"' +
             (this.hasOwnProperty('default_address') ? ' selected' : '') + '>' +
             this.location + '</option>';
     });

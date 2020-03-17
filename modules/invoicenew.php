@@ -706,6 +706,11 @@ $customer = $hook_data['customer'];
 $contents = $hook_data['contents'];
 $invoice = $hook_data['invoice'];
 
+if (isset($customer)) {
+    $addresses = $LMS->getCustomerAddresses($customer['id']);
+    $SMARTY->assign('addresses', $addresses);
+}
+
 $SMARTY->assign('customer', $customer);
 $SMARTY->assign('contents', $contents);
 $SMARTY->assign('invoice', $invoice);
