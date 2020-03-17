@@ -375,22 +375,24 @@ if ($customer_netdevices) {
             $nodeids = array();
         }
 
-        foreach ($customer_netlinks as &$customer_netlink) {
-            if ($customer_netlink['src'] == $netdevid) {
-                $next_netdevid = $customer_netlink['dst'];
-            } else if ($customer_netlink['dst'] == $netdevid) {
-                $next_netdevid = $customer_netlink['src'];
-            } else {
-                continue;
+        if (!empty($customer_netlinks)) {
+            foreach ($customer_netlinks as &$customer_netlink) {
+                if ($customer_netlink['src'] == $netdevid) {
+                    $next_netdevid = $customer_netlink['dst'];
+                } else if ($customer_netlink['dst'] == $netdevid) {
+                    $next_netdevid = $customer_netlink['src'];
+                } else {
+                    continue;
+                }
+                $nodeids = array_merge($nodeids, find_nodes_for_netdev(
+                    $customerid,
+                    $next_netdevid,
+                    $customer_nodes,
+                    $customer_netlinks
+                ));
             }
-            $nodeids = array_merge($nodeids, find_nodes_for_netdev(
-                $customerid,
-                $next_netdevid,
-                $customer_nodes,
-                $customer_netlinks
-            ));
+            unset($customer_netlink);
         }
-        unset($customer_netlink);
 
         return $nodeids;
     }
