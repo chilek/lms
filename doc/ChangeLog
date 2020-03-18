@@ -217,6 +217,7 @@ version 25-git (????-??-??):
   - improvement: new user permission - investment project management [chilan]
   - improvement: replaced customer address selection icons by font awesome icons [chilan]
   - enhancement: added uke income service type report [chilan]
+  - enhancement: added 'clone' action button on configuration variable list [chilan]
 
 version 24.0 (2019-05-16):
 

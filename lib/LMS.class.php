@@ -2082,6 +2082,12 @@ class LMS
         return $manager->CheckOption($option, $value, $type);
     }
 
+    public function GetConfigVariable($config_id)
+    {
+        $manager = $this->getConfigManager();
+        return $manager->GetConfigVariable($config_id);
+    }
+
     /*
      *  Miscalenous
      */

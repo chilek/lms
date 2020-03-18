@@ -38,7 +38,7 @@ if (count($config)) {
     if (!($config['var'] || $config['value'] || $config['description'])) {
         $SESSION->redirect('?m=configlist');
     }
-    
+
     if ($config['var']=='') {
         $error['var'] = trans('Option name is required!');
     } elseif (strlen($config['var'])>64) {
@@ -64,7 +64,7 @@ if (count($config)) {
     if ($msg = $LMS->CheckOption($option, $config['value'], $config['type'])) {
         $error['value'] = $msg;
     }
-    
+
     if (!isset($config['disabled'])) {
         $config['disabled'] = 0;
     }
@@ -97,6 +97,10 @@ if (count($config)) {
         unset($config['description']);
         unset($config['disabled']);
     }
+} elseif (isset($_GET['id'])) {
+    $config = $LMS->GetConfigVariable($_GET['id']);
+    unset($config['id']);
+    $config['section'] = trans('$a-clone', $config['section']);
 }
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);

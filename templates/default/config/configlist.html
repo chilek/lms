@@ -61,6 +61,7 @@
 		</TD>
 		<TD class="text-right nobr">
 			<A href="?m=configedit&id={$config.id}&statuschange=1"><IMG src="img/wait.gif" alt="{if $config.disabled}{trans("Enable")}{else}{trans("Disable")}{/if}" title="{if $config.disabled}{trans("Enable")}{else}{trans("Disable")}{/if}"></A>
+			<a href="?m=configadd&id={$config.id}" title="{trans("Clone")}"><img src="img/clone.gif"></a>
 			<A class="delete-config" data-user="{$config.userid}" href="?m=configdel&id={$config.id}{if !$config.userid}&globalconf=1{/if}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 			<A href="?m={if $config.userid}configedituser{else}configedit{/if}&id={$config.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 		</TD>

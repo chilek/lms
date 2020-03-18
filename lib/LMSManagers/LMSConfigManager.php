@@ -27,8 +27,6 @@
 /**
  * LMSConfigManager
  *
- * @author Maciej Lew <maciej.lew.1987@gmail.com>
- * @author Tomasz Chiliński <tomasz.chilinski@chilan.com>
  */
 class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
 {
@@ -192,5 +190,13 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                 break;
         }
         return null;
+    }
+
+    public function GetConfigVariable($config_id)
+    {
+        return $this->db->GetRow(
+            'SELECT * FROM uiconfig WHERE id = ?',
+            array($config_id)
+        );
     }
 }

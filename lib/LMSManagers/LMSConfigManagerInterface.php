@@ -27,15 +27,16 @@
 /**
  * LMSConfigManagerInterface
  *
- * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
 interface LMSConfigManagerInterface
 {
     public function GetConfigSections();
-    
+
     public function GetConfigOptionId($var, $section);
 
     public function GetConfigDefaultType($option);
-    
+
     public function CheckOption($option, $value, $type);
+
+    public function GetConfigVariable($config_id);
 }
