@@ -216,6 +216,7 @@ version 25-git (????-??-??):
     as pre-selected customer assigned resources [chilan]
   - improvement: new user permission - investment project management [chilan]
   - improvement: replaced customer address selection icons by font awesome icons [chilan]
+  - enhancement: added uke income service type report [chilan]
 
 version 24.0 (2019-05-16):
 
