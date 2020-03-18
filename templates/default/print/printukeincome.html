@@ -19,7 +19,11 @@
 			{trans("No.")}
 		</TD>
 		<TD WIDTH="30" CLASS="HEAD nobr" ALIGN="CENTER">
-			{trans("<!uke-income>Link technology")}
+			{if isset($linktechnologies)}
+				{trans("<!uke-income>Link technology")}
+			{else}
+				{trans("<!uke-income>Service type")}
+			{/if}
 		</TD>
 		<TD WIDTH="30" CLASS="HEAD nobr" ALIGN="CENTER">
 			{trans("<!uke-income>Bussiness customers")}
@@ -53,8 +57,12 @@
 			{counter}.
 		</TD>
 		<TD ALIGN="CENTER">
-			{if $row.technology}
-				{$linktechnologies[$row.technology]}
+			{if $row.type}
+				{if isset($linktechnologies)}
+					{$linktechnologies[$row.type]}
+				{else}
+					{$_SERVICETYPES[$row.type]}
+				{/if}
 			{else}
 				{trans("<!uke-income>other")}
 			{/if}
@@ -83,7 +91,7 @@
 		</TD>
 		{/if}
 	</TR>
-	{if isset($bandwidth_linktechnologies) && isset($bandwidth_linktechnologies[$row.technology])}
+	{if isset($bandwidth_variation) && isset($bandwidth_variation[$row.type])}
 	<TR class="{cycle}">
 		<TD ALIGN="CENTER">
 			&nbsp;
@@ -99,7 +107,7 @@
 					</tr>
 				</thead>
 				<tbody>
-				{foreach $bandwidth_linktechnologies[$row.technology] as $label => $stats}
+				{foreach $bandwidth_variation[$row.type] as $label => $stats}
 					<tr>
 						<td class="text-center">{$label}</td>
 						<td class="text-center">{$stats.bussiness}</td>

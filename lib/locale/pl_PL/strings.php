@@ -24,6 +24,10 @@
  *  $Id$
  */
 
+$_LANG['link technologies'] = 'technologie łącza';
+$_LANG['service types'] = 'typy usług';
+$_LANG['<!uke-income>Service type'] = 'Typ usługi';
+
 $_LANG['Generate XML report'] = 'Generuj raport XML';
 $_LANG['Phone contacts:'] = 'Telefony kontaktowe:';
 $_LANG['(undefined)'] = '(nieokreślone)';

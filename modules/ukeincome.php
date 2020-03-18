@@ -43,6 +43,8 @@ if ($to) {
     $unixto = mktime(23, 59, 59); //today
 }
 
+$type = isset($_POST['type']) && $_POST['type'] == 'linktechnologies' ? 'linktechnologies' : 'servicetypes';
+
 if (isset($_POST['brutto'])) {
     $value_formula = 'cash.value';
 } else {
@@ -52,7 +54,7 @@ if (isset($_POST['brutto'])) {
 $bandwidths = isset($_POST['bandwidths']);
 
 $income = $DB->GetAll('
-	SELECT cash.linktechnology AS technology,
+	SELECT ' . ($type == 'linktechnologies' ? 'cash.linktechnology' : 'tf.type') . ' AS type,
 		COUNT(DISTINCT CASE WHEN c.type = 0 THEN c.id ELSE null END) AS privatecount,
 		COUNT(DISTINCT CASE WHEN c.type = 1 THEN c.id ELSE null END) AS bussinesscount,
 		COUNT(DISTINCT c.id) AS totalcount,
@@ -60,11 +62,20 @@ $income = $DB->GetAll('
 		SUM(CASE WHEN c.type = 1 THEN ' . $value_formula . ' ELSE 0 END) * -1 AS bussinessincome,
 		SUM(' . $value_formula . ') * -1 AS totalincome
 	FROM cash
+	' . ($type == 'linktechnologies' ? '' :
+        'JOIN documents d ON d.id = cash.docid
+	    JOIN invoicecontents ic ON ic.docid = d.id
+	    LEFT JOIN tariffs tf ON tf.id = ic.tariffid'
+    ) . '
 	JOIN customers c ON c.id = cash.customerid
 	JOIN taxes t ON t.id = cash.taxid
 	WHERE cash.type = 0 AND time >= ? AND time <= ?
-	GROUP BY cash.linktechnology
-	ORDER BY cash.linktechnology', array($unixfrom, $unixto));
+	' . ($type == 'linktechnologies' ?
+        'GROUP BY cash.linktechnology
+	    ORDER BY cash.linktechnology' :
+        'GROUP BY tf.type
+        ORDER BY tf.type'
+    ), array($unixfrom, $unixto));
 
 if ($bandwidths) {
     $bandwidth_intervals = array(
@@ -118,10 +129,11 @@ if ($bandwidths) {
         ),
     );
 
-    $bandwidth_linktechnologies = array();
+    $bandwidth_variation = array();
 
-    $customer_links = $DB->GetAll('
-        SELECT cash.linktechnology, t.downceil, t.upceil,
+    $customer_links = $DB->GetAll(
+        'SELECT ' . ($type == 'linktechnologies' ? 'cash.linktechnology' : 't.type') . ' AS type,
+            t.downceil, t.upceil,
             SUM(CASE WHEN c.type = 0 THEN ROUND(ic.count) ELSE 0 END) AS private,
             SUM(CASE WHEN c.type = 1 THEN ROUND(ic.count) ELSE 0 END) AS bussiness,
             COUNT(*) AS total
@@ -129,19 +141,21 @@ if ($bandwidths) {
         JOIN customers c ON c.id = cash.customerid
         JOIN invoicecontents ic ON ic.docid = cash.docid AND ic.itemid = cash.itemid
         JOIN tariffs t ON t.id = ic.tariffid
-        WHERE t.type = ? AND cash.linktechnology IS NOT NULL
+        WHERE ' . ($type == 'linktechnologies' ? 't.type = ' . SERVICE_INTERNET . ' AND cash.linktechnology IS NOT NULL' : '') . '
             AND t.downceil > 0 AND t.upceil > 0
             AND cash.time >= ? AND cash.time <= ?
-        GROUP BY cash.linktechnology, t.downceil, t.upceil
-        ORDER BY cash.linktechnology', array(SERVICE_INTERNET, $unixfrom, $unixto));
+        GROUP BY ' . ($type == 'linktechnologies' ? 'cash.linktechnology' : 't.type') . ', t.downceil, t.upceil
+        ORDER BY ' . ($type == 'linktechnologies' ? 'cash.linktechnology' : 't.type'),
+        array($unixfrom, $unixto)
+    );
     if (!empty($customer_links)) {
         foreach ($customer_links as $customer_link) {
-            $linktechnology = $customer_link['linktechnology'];
-            if (!isset($bandwidth_linktechnologies[$linktechnology])) {
-                $bandwidth_linktechnologies[$linktechnology] = $bandwidth_intervals;
+            $bandwidth_type = $customer_link['type'];
+            if (!isset($bandwidth_variation[$bandwidth_type])) {
+                $bandwidth_variation[$bandwidth_type] = $bandwidth_intervals;
             }
             $downceil = intval($customer_link['downceil']);
-            foreach ($bandwidth_linktechnologies[$linktechnology] as $label => &$bandwidth_interval) {
+            foreach ($bandwidth_variation[$bandwidth_type] as $label => &$bandwidth_interval) {
                 if ($downceil >= $bandwidth_interval['min']
                     && (!isset($bandwidth_interval['max']) || $downceil <= $bandwidth_interval['max'])) {
                     $bandwidth_interval['total'] += $customer_link['total'];
@@ -153,18 +167,20 @@ if ($bandwidths) {
             unset($bandwidth_interval);
         }
     }
-    $SMARTY->assign('bandwidth_linktechnologies', $bandwidth_linktechnologies);
+    $SMARTY->assign('bandwidth_variation', $bandwidth_variation);
 }
 
-$linktechnologies = array();
-foreach ($LINKTECHNOLOGIES as $linktype => $technologies) {
-    foreach ($technologies as $techid => $techlabel) {
-        $linktechnologies[$techid] = trans('<!link>$a ($b)', $techlabel, $LINKTYPES[$linktype]);
+if ($type == 'linktechnologies') {
+    $linktechnologies = array();
+    foreach ($LINKTECHNOLOGIES as $linktype => $technologies) {
+        foreach ($technologies as $techid => $techlabel) {
+            $linktechnologies[$techid] = trans('<!link>$a ($b)', $techlabel, $LINKTYPES[$linktype]);
+        }
     }
+    $SMARTY->assign('linktechnologies', $linktechnologies);
 }
 
 $layout['pagetitle'] = trans('UKE income report for period $a - $b', $from, $to);
 
 $SMARTY->assign('income', $income);
-$SMARTY->assign('linktechnologies', $linktechnologies);
 $SMARTY->display('print/printukeincome.html');
