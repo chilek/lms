@@ -131,11 +131,11 @@
 	<TR>
 		<TD CLASS="HEADGREY" COLSPAN="2" ALIGN="RIGHT"><B>{trans("Total:")}</B></TD>
 		<TD CLASS="HEADGREY" ALIGN="CENTER" NOWRAP><B>{sum array=$income column="bussinesscount"}</B></TD>
-		<TD CLASS="HEADGREY" ALIGN="CENTER" NOWRAP><B>{sum array=$income column="bussinessincome" string_format=$LANGDEFS.$_language.money_format}</B></TD>
+		<TD CLASS="HEADGREY" ALIGN="CENTER" NOWRAP><B>{sum array=$income column="bussinessincome" assign="bussinessincome"}{moneyf($bussinessincome)}</B></TD>
 		<TD CLASS="HEADGREY" ALIGN="CENTER" NOWRAP><B>{sum array=$income column="privatecount"}</B></TD>
-		<TD CLASS="HEADGREY" ALIGN="CENTER" NOWRAP><B>{sum array=$income column="privateincome" string_format=$LANGDEFS.$_language.money_format}</B></TD>
+		<TD CLASS="HEADGREY" ALIGN="CENTER" NOWRAP><B>{sum array=$income column="privateincome" assign="privateincome"}{moneyf($privateincome)}</B></TD>
 		<TD CLASS="HEADGREY" ALIGN="CENTER" NOWRAP><B>{sum array=$income column="totalcount"}</B></TD>
-		<TD CLASS="HEADGREY" ALIGN="CENTER" NOWRAP><B>{sum array=$income column="totalincome" string_format=$LANGDEFS.$_language.money_format}</B></TD>
+		<TD CLASS="HEADGREY" ALIGN="CENTER" NOWRAP><B>{sum array=$income column="totalincome" assign="totalincome"}{moneyf($totalincome)}</B></TD>
 	</TR>
 	{/if}
 </TABLE>
