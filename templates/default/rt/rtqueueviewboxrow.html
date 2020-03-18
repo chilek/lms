@@ -66,8 +66,8 @@
 		{/if}
 	</TD>
 	<TD class="nobr text-center">
-		{if $ticket.deadline && $ticket.state != $smarty.const.RT_RESOLVED}
-			{if $ticket.deadline_diff < 0}
+		{if $ticket.deadline}
+			{if $ticket.deadline_diff < 0 && $ticket.state != $smarty.const.RT_RESOLVED}
 				<span class="lms-ui-important-box" {tip text="{$ticket.deadline_days} {trans("days")} {$ticket.deadline_hours} {trans("<!rt>hours")}"}>{trans("<!rt>Expired")}</span>
 			{else}
 				{$ticket.deadline_days} {trans("days")} {$ticket.deadline_hours} {trans("<!rt>hours")}
