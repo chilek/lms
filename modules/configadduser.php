@@ -81,7 +81,6 @@ if (count($userconfig)) {
             'configid' => $config['id']
         );
 
-        $DB = LMSDB::getInstance();
         $DB->Execute(
             'INSERT INTO uiconfig (section, var, value, description, disabled, type, userid, configid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
             array_values($args)

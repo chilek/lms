@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2016 LMS Developers
+ *  Copyright (C) 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -198,5 +198,40 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
             'SELECT * FROM uiconfig WHERE id = ?',
             array($config_id)
         );
+    }
+
+    public function CloneConfigSection($section, $new_section, $userid = null)
+    {
+        if (empty($userid)) {
+            $this->db->Execute(
+                'INSERT INTO uiconfig (section, var, value, description, disabled, type)
+                (SELECT ?, var, value, description, disabled, type FROM uiconfig WHERE section = ?)',
+                array($new_section, $section)
+            );
+        } else {
+            $variables = $this->db->GetAll(
+                'SELECT id, var, value, description, disabled, type FROM uiconfig
+                WHERE section = ?',
+                array($section)
+            );
+            if (!empty($variables)) {
+                foreach ($variables as $variable) {
+                    $this->db->Execute(
+                        'INSERT INTO uiconfig (secton, var, value, description, disabled, type, configid, userid)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                        array(
+                            $new_section,
+                            $variable['var'],
+                            $variable['value'],
+                            $variable['description'],
+                            $variable['disabled'],
+                            $variable['type'],
+                            $variable['id'],
+                            $userid
+                        )
+                    );
+                }
+            }
+        }
     }
 }

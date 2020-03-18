@@ -878,25 +878,27 @@ $(function() {
 							selectValues.push(value);
 						});
 						if (selectValues.length > 1) {
-							content = '<select><option value="">'  + $t('- any -') + '</option>';
+							content = '<select' + ($(th).attr('data-filter-id') ? ' id="' + $(th).attr('data-filter-id') + '"' : '') +
+								'><option value="">'  + $t('- any -') + '</option>';
 							selectValues.sort().forEach(function(value, index) {
 								content += '<option value="' + value + '">' + value + '</option>';
 							});
 							content += '</select>';
 						}
 					} else {
-						content = '<input type="search" placeholder="' + $t('Search') + '">';
+						content = '<input type="search" placeholder="' + $t('Search') + '"' +
+							($(th).attr('data-filter-id') ? ' id="' + $(th).attr('data-filter-id') + '"' : '') + '>';
 					}
 				} else {
 					content = '';
 				}
 				$(th).html(content);
 			});
-			$('thead input', elem).on('keyup change search', function() {
+			$('thead .search-row input', elem).on('keyup change search', function() {
 				$(elem).DataTable().column($(this).parent().index() + ':visible')
 					.search(this.value.length ? this.value : '', true).draw();
 			});
-			$('thead select', elem).on('change', function() {
+			$('thead .search-row select', elem).on('change', function() {
 				var value = this.value;
 				$(elem).DataTable().column($(this).parent().index() + ':visible')
 					.search(value.length ? '^' + value + '$' : '', true).draw();

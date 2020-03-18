@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -2086,6 +2086,12 @@ class LMS
     {
         $manager = $this->getConfigManager();
         return $manager->GetConfigVariable($config_id);
+    }
+
+    public function CloneConfigSection($section, $new_section, $userid = null)
+    {
+        $manager = $this->getConfigManager();
+        return $manager->CloneConfigSection($section, $new_section, $userid);
     }
 
     /*
