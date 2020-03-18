@@ -3108,7 +3108,6 @@ $_LANG['Days:'] = 'Dni:';
 $_LANG['UKE SIIS report'] = 'Raport UKE SIIS';
 $_LANG['Allows you to prepare SIIS v4 report for UKE'] = 'Wygenerowanie raportu SIIS w wersji 4 do UKE';
 $_LANG['UKE income report'] = 'Raport przychodów UKE';
-$_LANG['<!uke-income>other'] = 'inna';
 $_LANG['<!uke-income>Link technology'] = 'Technologia łącza';
 $_LANG['<!uke-income>Bussiness customers'] = 'Klienci biznesowi';
 $_LANG['<!uke-income>Bussiness income'] = 'Przychód biznesowy';
