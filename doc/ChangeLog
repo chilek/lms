@@ -219,6 +219,7 @@ version 25-git (????-??-??):
   - enhancement: added uke income service type report [chilan]
   - enhancement: added 'clone' action button on configuration variable list - single
     variables and whole configuration sections can be cloned [chilan]
+  - enhancement: implemented multi configuration option delete [chilan]
 
 version 24.0 (2019-05-16):
 

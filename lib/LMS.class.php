@@ -2094,6 +2094,12 @@ class LMS
         return $manager->CloneConfigSection($section, $new_section, $userid);
     }
 
+    public function DeleteConfigOption($id, $global = true)
+    {
+        $manager = $this->getConfigManager();
+        return $manager->DeleteConfigOption($id, $global);
+    }
+
     /*
      *  Miscalenous
      */

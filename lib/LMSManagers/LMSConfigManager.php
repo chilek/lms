@@ -252,4 +252,33 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
             }
         }
     }
+
+    public function DeleteConfigOption($id, $global = true)
+    {
+        if ($global) {
+            if ($this->syslog) {
+                $local_options = $this->db->GetAll('SELECT id, userid FROM uiconfig WHERE configid = ?', array($id));
+            }
+
+            $this->db->Execute('DELETE FROM uiconfig WHERE configid = ?', array($id));
+
+            if ($this->syslog && !empty($local_options)) {
+                foreach ($local_options as $local_option) {
+                    $args = array(
+                        SYSLOG::RES_UICONF => $local_option['id'],
+                        SYSLOG::RES_USER => $local_option['userid'],
+                        'ref_' . SYSLOG::getResourceKey(SYSLOG::RES_UICONF) => $id
+                    );
+                    $this->syslog->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_DELETE, $args);
+                }
+            }
+        }
+
+        $this->db->Execute('DELETE FROM uiconfig WHERE id = ?', array($id));
+
+        if ($this->syslog) {
+            $args = array(SYSLOG::RES_UICONF => $id);
+            $this->syslog->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_DELETE, $args);
+        }
+    }
 }
