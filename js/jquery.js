@@ -797,6 +797,12 @@ $(function() {
 		}
 
 		function checkElements(checkbox) {
+			// reorder all checkboxes list when it is contained in lms-ui-datatable
+			if ($(checkbox).closest('.lms-ui-datatable').length) {
+				checkboxes = tbody.parent().find(':checkbox');
+				allcheckboxes = checkboxes.filter('.lms-ui-multi-check');
+			}
+
 			var i = allcheckboxes.index(allcheckboxes.filter('[data-prev-checked]:visible')),
 				j = allcheckboxes.index(checkbox);
 			if (i > -1) {
