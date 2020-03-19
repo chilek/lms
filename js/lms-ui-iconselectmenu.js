@@ -148,7 +148,7 @@ LmsUiIconSelectMenu.prototype._appendAddressList = function( address_list ) {
  * \brief Clear select.
  */
 LmsUiIconSelectMenu.prototype._clearList = function() {
-    $( this.select_id ).html('<option value="-1" data-style="background-image: url()">---</option>');
+    $( this.select_id ).html('<option value="-1">---</option>');
 
     this.refresh();
 }
