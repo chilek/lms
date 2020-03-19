@@ -32,7 +32,7 @@ interface LMSConfigManagerInterface
 {
     public function GetConfigSections();
 
-    public function GetConfigOptionId($var, $section);
+    public function ConfigOptionExists($params);
 
     public function GetConfigDefaultType($option);
 
@@ -43,4 +43,6 @@ interface LMSConfigManagerInterface
     public function CloneConfigSection($section, $new_section, $userid = null);
 
     public function DeleteConfigOption($id, $global = true);
+
+    public function toggleConfigOption($id);
 }

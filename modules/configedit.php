@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,20 +24,6 @@
  *  $Id$
  */
 
-function ConfigOptionExists($params)
-{
-    extract($params);
-    $DB = LMSDB::getInstance();
-    if (isset($section)) {
-        return $DB->GetOne(
-            'SELECT id FROM uiconfig WHERE section = ? AND var = ?',
-            array($section, $variable)
-        );
-    } else {
-        return $DB->GetOne('SELECT id FROM uiconfig WHERE id = ?', array($id));
-    }
-}
-
 if (isset($_GET['s']) && isset($_GET['v'])) {
     $params = array(
         'section' => $_GET['s'],
@@ -47,21 +33,12 @@ if (isset($_GET['s']) && isset($_GET['v'])) {
     $params['id'] = $_GET['id'];
 }
 
-$id = ConfigOptionExists($params);
-if (empty($id)) {
+if (!($id = $LMS->ConfigOptionExists($params))) {
     $SESSION->redirect('?m=configlist');
 }
 
 if (isset($_GET['statuschange'])) {
-    if ($SYSLOG) {
-        $disabled = $DB->GetOne('SELECT disabled FROM uiconfig WHERE id = ?', array($id));
-        $args = array(
-            SYSLOG::RES_UICONF => $id,
-            'disabled' => $disabled ? 0 : 1
-        );
-        $SYSLOG->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_UPDATE, $args);
-    }
-    $DB->Execute('UPDATE uiconfig SET disabled = CASE disabled WHEN 0 THEN 1 ELSE 0 END WHERE id = ?', array($id));
+    $LMS->toggleConfigOption($id);
     $SESSION->redirect('?m=configlist');
 }
 
@@ -97,7 +74,7 @@ if (isset($_POST['config'])) {
     }
 
     if (($cfg['var']!=$config['var'] || $cfg['section']!=$config['section'])
-        && $LMS->GetConfigOptionId($cfg['var'], $cfg['section'])
+        && $LMS->ConfigOptionExists(array('section' => $cfg['section'], 'variable' => $cfg['var']))
     ) {
         $error['var'] = trans('Option exists!');
     }

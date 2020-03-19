@@ -117,10 +117,19 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
         return $sections;
     }
 
-    public function GetConfigOptionId($var, $section)
+    public function ConfigOptionExists($params)
     {
-        return $this->db->GetOne('SELECT id FROM uiconfig WHERE section = ? AND var = ?', array($section, $var));
+        extract($params);
+        if (isset($section)) {
+            return $this->db->GetOne(
+                'SELECT id FROM uiconfig WHERE section = ? AND var = ?',
+                array($section, $variable)
+            );
+        } else {
+            return $this->db->GetOne('SELECT id FROM uiconfig WHERE id = ?', array($id));
+        }
     }
+
 
     public function GetConfigDefaultType($option)
     {
@@ -280,5 +289,21 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
             $args = array(SYSLOG::RES_UICONF => $id);
             $this->syslog->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_DELETE, $args);
         }
+    }
+
+    public function toggleConfigOption($id)
+    {
+        if ($this->syslog) {
+            $disabled = $this->db->GetOne('SELECT disabled FROM uiconfig WHERE id = ?', array($id));
+            $args = array(
+                SYSLOG::RES_UICONF => $id,
+                'disabled' => $disabled ? 0 : 1
+            );
+            $this->syslog->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_UPDATE, $args);
+        }
+        $this->db->Execute(
+            'UPDATE uiconfig SET disabled = CASE disabled WHEN 0 THEN 1 ELSE 0 END WHERE id = ?',
+            array($id)
+        );
     }
 }

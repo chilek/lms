@@ -45,7 +45,7 @@ if (count($config)) {
         $error['var'] = trans('Option name is too long (max.64 characters)!');
     } elseif (!preg_match('/^[a-z0-9_-]+$/', $config['var'])) {
         $error['var'] = trans('Option name contains forbidden characters!');
-    } elseif ($LMS->GetConfigOptionId($config['var'], $config['section'])) {
+    } elseif ($LMS->ConfigOptionExists(array('section' => $config['section'], 'variable' => $config['var']))) {
         $error['var'] = trans('Option exists!');
     }
 

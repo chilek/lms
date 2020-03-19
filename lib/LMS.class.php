@@ -2064,10 +2064,10 @@ class LMS
      *  LMS-UI configuration
      */
 
-    public function GetConfigOptionId($var, $section)
+    public function ConfigOptionExists($params)
     {
         $manager = $this->getConfigManager();
-        return $manager->GetConfigOptionId($var, $section);
+        return $manager->ConfigOptionExists($params);
     }
 
     public function GetConfigDefaultType($option)
@@ -2098,6 +2098,12 @@ class LMS
     {
         $manager = $this->getConfigManager();
         return $manager->DeleteConfigOption($id, $global);
+    }
+
+    public function toggleConfigOption($id)
+    {
+        $manager = $this->getConfigManager();
+        return $manager->toggleConfigOption($id);
     }
 
     /*
