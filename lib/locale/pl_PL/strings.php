@@ -4619,3 +4619,5 @@ $_LANG['TERRIT address is required!'] = 'Wymagany adres zgodny z TERYT!';
 $_LANG['investment project management'] = 'zarządzanie projektami inwestycyjnymi';
 
 $_LANG['Clone section to new one with specified name'] = 'Kopiuj sekcję pod nową nazwą, którą określiłeś';
+$_LANG['Enter new section name'] = 'Wprowadz nazwę nowej sekcji';
+$_LANG['Section with specified name already exist!'] = 'Sekcja o podanej nazwie już istnieje!';

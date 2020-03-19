@@ -62,7 +62,7 @@
 			<div id="command-buttons">
 				<A class="configadd">{trans("Add option")} <IMG src="img/save.gif" alt=""></A>
 				<div id="section-clone" style="display: none;">
-					<input type="text" id="section-name" value="">
+					<input type="text" id="section-name" {tip text="Enter new section name"}>
 					{button type="link" icon="clone" id="section-clone-button" tip="Clone section to new one with specified name"}
 				</div>
 			</div>
@@ -157,6 +157,10 @@
 			}
 			if (!section_name.match(/^[a-z0-9_-]+$/)) {
 				alertDialog($t("Section name contains forbidden characters!"), this);
+				return false;
+			}
+			if (['{implode("','", $sections)}'].indexOf(section_name) >= 0) {
+				alertDialog($t("Section with specified name already exist!"), this);
 				return false;
 			}
 
