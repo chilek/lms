@@ -64,7 +64,7 @@ $income = $DB->GetAll('
 	FROM cash
 	' . ($type == 'linktechnologies' ? '' :
         'JOIN documents d ON d.id = cash.docid
-	    JOIN invoicecontents ic ON ic.docid = d.id
+	    JOIN invoicecontents ic ON ic.docid = d.id AND ic.itemid = cash.itemid
 	    LEFT JOIN tariffs tf ON tf.id = ic.tariffid'
     ) . '
 	JOIN customers c ON c.id = cash.customerid
