@@ -203,11 +203,24 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
     public function CloneConfigSection($section, $new_section, $userid = null)
     {
         if (empty($userid)) {
-            $this->db->Execute(
-                'INSERT INTO uiconfig (section, var, value, description, disabled, type)
-                (SELECT ?, var, value, description, disabled, type FROM uiconfig WHERE section = ?)',
-                array($new_section, $section)
+            $variables = $this->db->GetAll(
+                'SELECT var, value, description, disabled, type FROM uiconfig WHERE section = ?',
+                array($section)
             );
+            if (!empty($variables)) {
+                foreach ($variables as $variable) {
+                    $args = array_merge(array('section' => $new_section), $variable);
+                    $this->db->Execute(
+                        'INSERT INTO uiconfig (section, var, value, description, disabled, type)
+                        VALUES (?, ?, ?, ?, ?, ?)',
+                        array_values($args)
+                    );
+                    if ($this->syslog) {
+                        $args[SYSLOG::RES_UICONF] = $this->db->GetLastInsertID('uiconfig');
+                        $this->syslog->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_ADD, $args);
+                    }
+                }
+            }
         } else {
             $variables = $this->db->GetAll(
                 'SELECT id, var, value, description, disabled, type FROM uiconfig
@@ -216,20 +229,25 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
             );
             if (!empty($variables)) {
                 foreach ($variables as $variable) {
-                    $this->db->Execute(
-                        'INSERT INTO uiconfig (secton, var, value, description, disabled, type, configid, userid)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-                        array(
-                            $new_section,
-                            $variable['var'],
-                            $variable['value'],
-                            $variable['description'],
-                            $variable['disabled'],
-                            $variable['type'],
-                            $variable['id'],
-                            $userid
-                        )
+                    $args = array(
+                        'section' => $new_section,
+                        'var' => $variable['var'],
+                        'value' => $variable['value'],
+                        'description' => $variable['description'],
+                        'disabled' => $variable['disabled'],
+                        'type' => $variable['type'],
+                        'ref_' . SYSLOG::getResourceKey(SYSLOG::RES_UICONF) => $variable['id'],
+                        'ref_' . SYSLOG::getResourceKey(SYSLOG::RES_USER) => $userid,
                     );
+                    $this->db->Execute(
+                        'INSERT INTO uiconfig (section, var, value, description, disabled, type, configid, userid)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                        array_values($args)
+                    );
+                    if ($this->syslog) {
+                        $args[SYSLOG::RES_UICONF] = $this->db->GetLastInsertID('uiconfig');
+                        $this->syslog->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_ADD, $args);
+                    }
                 }
             }
         }
