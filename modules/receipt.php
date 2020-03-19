@@ -134,7 +134,9 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached' && count($_POST['marks']
         $ids = $LMS->GetDocumentsForBalanceRecords($ids, array(DOC_RECEIPT));
     }
 
-    sort($ids);
+    if (!empty($ids)) {
+        sort($ids);
+    }
 
     $layout['pagetitle'] = trans('Cash Receipts');
 
