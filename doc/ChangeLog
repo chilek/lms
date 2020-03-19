@@ -220,6 +220,8 @@ version 25-git (????-??-??):
   - enhancement: added 'clone' action button on configuration variable list - single
     variables and whole configuration sections can be cloned [chilan]
   - enhancement: implemented multi configuration option delete [chilan]
+  - improvement: additional status filter 'no connections' introduced on network device list
+    (helpfull for UKE report preparations) [chilan]
 
 version 24.0 (2019-05-16):
 
