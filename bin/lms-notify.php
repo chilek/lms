@@ -385,7 +385,7 @@ function parse_customer_data($data, $row)
         $data = preg_replace("/\%abonament/", empty($saldo) ? '0' : implode(', ', $saldo), $data);
     }
 
-    $data = $this->getLastNInTable($data, $row['id'], '<eol>', $row['aggregate_documents']);
+    $data = $LMS->getLastNInTable($data, $row['id'], '<eol>', $row['aggregate_documents']);
 
     // invoices, debit notes
     $data = preg_replace("/\%invoice/", $row['doc_number'], $data);
