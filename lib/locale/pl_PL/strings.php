@@ -4624,3 +4624,5 @@ $_LANG['Section with specified name already exist!'] = 'Sekcja o podanej nazwie 
 
 $_LANG['No option has been selected!'] = 'Żadne opcje nie zostały zaznaczone!';
 $_LANG['Are you sure, you want to delete all selected options from database?'] = 'Jesteś pewien, że chcesz usunąć wszystkie wybrane opcje z bazy danych?';
+
+$_LANG['no connections'] = 'bez połączeń';
