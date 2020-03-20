@@ -133,7 +133,11 @@ include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 $SYSLOG = SYSLOG::getInstance();
 */
 
-$ih = @imap_open("{" . ConfigHelper::getConfig('dsn-handler.server') . "}INBOX", ConfigHelper::getConfig('dsn-handler.username'), ConfigHelper::getConfig('dsn-handler.password'));
+$ih = @imap_open(
+    '{' . ConfigHelper::getConfig('dsn-handler.server') . '}' . ConfigHelper::getConfig('dsn-handler.folder', 'INBOX'),
+    ConfigHelper::getConfig('dsn-handler.username'),
+    ConfigHelper::getConfig('dsn-handler.password')
+);
 if (!$ih) {
     die("Cannot connect to mail server!" . PHP_EOL);
 }
