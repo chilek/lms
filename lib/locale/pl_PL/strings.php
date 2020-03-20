@@ -4628,3 +4628,6 @@ $_LANG['Are you sure, you want to delete all selected options from database?'] =
 $_LANG['no connections'] = 'bez połączeń';
 
 $_LANG['Phone number validation failed!'] = 'Weryfikacja poprawności numeru telefonu nie powiodła się!';
+
+$_LANG['Choose ticket type'] = 'Wybierz rodzaj zgłoszenia';
+$_LANG['Choose service type'] = 'Wybierz typ usługi';
