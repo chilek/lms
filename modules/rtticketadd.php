@@ -130,9 +130,11 @@ if (isset($_POST['ticket'])) {
     $ticket = $hook_data['ticket'];
     $error = $hook_data['error'];
 
-    if (!$error) {
+    if (!empty($ticket['categories'])) {
         $ticket['categories'] = array_flip($ticket['categories']);
+    }
 
+    if (!$error) {
         if (!$ticket['customerid']) {
             if ($ticket['requestor_name'] == '' && $ticket['requestor_phone'] == '' && $ticket['requestor_mail'] == '') {
                 $userinfo = $LMS->GetUserInfo(Auth::GetCurrentUser());
@@ -331,7 +333,7 @@ if (isset($_POST['ticket'])) {
     $queuelist = $LMS->GetQueueList(array('stats' => false));
 
     foreach ($categories as &$category) {
-        $category['checked'] = in_array($category['id'], $ticket['categories']) || count($categories) == 1;
+        $category['checked'] = isset($ticket['categories'][$category['id']]) || count($categories) == 1;
     }
     unset($category);
 } else {

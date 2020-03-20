@@ -122,6 +122,8 @@ if (isset($_POST['message'])) {
     $error = $hook_data['error'];
 
     if (!$error) {
+        $message['categories'] = array_flip($message['categories']);
+
         $user = $LMS->GetUserInfo(Auth::GetCurrentUser());
 
         $attachments = null;
@@ -487,6 +489,10 @@ if (isset($_POST['message'])) {
             $SESSION->redirect('?' . $backto);
         }
     }
+
+    if (!empty($message['categories'])) {
+        $message['categories'] = array_flip($message['categories']);
+    }
 } else {
     if ($_GET['ticketid']) {
         if (is_array($_GET['ticketid'])) {
@@ -588,12 +594,10 @@ if (isset($_POST['message'])) {
 
 $SMARTY->assign('error', $error);
 
-$ncategories = array();
-foreach ($categories as $category) {
+foreach ($categories as &$category) {
     $category['checked'] = isset($message['categories'][$category['id']]);
-    $ncategories[] = $category;
 }
-$categories = $ncategories;
+unset($category);
 
 $hook_data = $LMS->executeHook(
     'rtmessageadd_before_display',

@@ -237,12 +237,7 @@
 			{/box_row}
 
 			{box_row id="categories" icon="img/queue.gif" label="Categories:" class="categories"}
-				{foreach $categories as $category}
-					<label class="nobr">
-						<INPUT type="checkbox" name="message[categories][{$category.id}]" value="1" {if $category.checked > 0}checked{/if} {tip trigger="categories"}>
-						{$category.name}
-					</label>
-				{/foreach}
+				{include file="rt/rtcategoryselection.html" name_prefix="message[categories]" categories=$categories}
 			{/box_row}
 
 		{/box_panel}
