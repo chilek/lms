@@ -668,6 +668,7 @@ $(function() {
 			no_results_text: $t('No results match'),
 			placeholder_text_single: $t('Select an Option'),
 			placeholder_text_multiple: $t('Select Some Options'),
+			display_selected_options: false,
 			search_contains: true,
 			disable_search_threshold: 5,
 			inherit_select_classes: true
