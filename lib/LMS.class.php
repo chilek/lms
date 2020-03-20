@@ -2536,6 +2536,13 @@ class LMS
         $number = preg_replace('/[^0-9]/', '', $number);
         $number = preg_replace('/^0+/', '', $number);
 
+        $phone_number_validation_pattern = isset($sms_options['phone_number_validation_pattern'])
+            ? $sms_options['phone_number_validation_pattern']
+            : ConfigHelper::getConfig('sms.phone_number_validation_pattern', '', true);
+        if (!empty($phone_number_validation_pattern) && !preg_match('/' . $phone_number_validation_pattern . '/', $number)) {
+            return trans('Phone number validation failed!');
+        }
+
         // add prefix to the number if needed
         if ($prefix && substr($number, 0, strlen($prefix)) != $prefix) {
             $number = $prefix . $number;

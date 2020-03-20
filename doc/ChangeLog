@@ -222,6 +222,8 @@ version 25-git (????-??-??):
   - enhancement: implemented multi configuration option delete [chilan]
   - improvement: additional status filter 'no connections' introduced on network device list
     (helpfull for UKE report preparations) [chilan]
+  - enhancement: 'sms.phone_number_validation_pattern' configuration variable specifies
+    mobile number pattern which is treated as correct [chilan]
 
 version 24.0 (2019-05-16):
 
