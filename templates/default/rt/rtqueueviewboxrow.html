@@ -109,6 +109,7 @@
 		<A href="?m=rtticketprint&id={$ticket.id}" target="_BLANK">
 			<img src="img/print.gif" alt="" title="{trans("Print")}">
 		</A>
+		{button type="link" icon="clone" href="?m=rtticketadd&ticketid={$ticket.id}" tip="Clone"}
 		{if $ticket.deleted == 1 && $ticket.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
 			<A class="restore-ticket" href="?m=rtrestore&id={$ticket.id}&taction=restore">
 				<img src="img/reload.gif" alt="" title="{trans("Restore<!RT>")}">

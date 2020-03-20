@@ -333,7 +333,7 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD class="buttons" colspan="3" style="line-height: 180%;">
+		<TD class="lms-ui-box-buttons" colspan="3" style="line-height: 180%;">
 			<label>
 				<input type="checkbox" id="messages-chkbox">
 				{trans("Messages")}
@@ -346,33 +346,39 @@
 				<input type="checkbox" id="history-chkbox">
 				{trans("History<!rt>")}
 			</label>
-			<A id="print-anchor" href="?m=rtticketprint&id={$ticket.ticketid}"><IMG src="img/print.gif" alt=""> {trans("Print")}</A>
+			{button id="print-anchor" icon="print" label="Print" href="?m=rtticketprint&id={$ticket.ticketid}"}
+
 			<br>
+
 			{if $ticket.owner != $layout.logid}
-			<A id="ticket-assign-to-me" href="?m=rtticketedit&id={$ticket.ticketid}&action=assign"><IMG src="img/users.gif" alt=""> {trans("Assign to me")}</A>
+			{button id="ticket-assign-to-me" icon="user" label="Assign to me" href="?m=rtticketedit&id={$ticket.ticketid}&action=assign"}
 			{/if}
 			{if $ticket.state != $smarty.const.RT_RESOLVED}
 				{if (ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events')) && !empty($ticket['openeventcount'])}
-				<span class="blend"><i class="lms-ui-icon-status-resolved"></i>{trans("Ticket have open assigned events!")}</A></span>
+					<span class="blend"><i class="lms-ui-icon-status-resolved"></i>{trans("Ticket have open assigned events!")}</A></span>
 				{else}
 					{if empty($ticket['verifier_rtime']) && $ticket['verifierid'] != Auth::GetCurrentUser() && $ticket['verifierid']}
-					<A href="?m=rtticketedit&amp;id={$ticket.ticketid}&amp;action=verify"><i class="lms-ui-icon-verifier"></i> {trans("Transfer ticket to verifier")}</A>
+						{button icon="verifier" label="Transfer ticket to verifier" href="?m=rtticketedit&id={$ticket.ticketid}&action=verify"}
 					{else}
 						{if !empty($ticket['verifier_rtime']) && $ticket['verifierid'] != Auth::GetCurrentUser()}
-						<i class="lms-ui-icon-verifier"></i><span style="color: {$_RT_STATES[$smarty.const.RT_VERIFIED].color}"> {trans("Ticket has been transferred to verifier")}</span>
+							<i class="lms-ui-icon-verifier"></i><span style="color: {$_RT_STATES[$smarty.const.RT_VERIFIED].color}"> {trans("Ticket has been transferred to verifier")}</span>
 						{else}
-						<A href="?m=rtticketedit&amp;id={$ticket.ticketid}&amp;action=resolve"><i class="lms-ui-icon-status-resolved"></i>{trans("Resolve")}</A>
+							{button icon="status-resolved" label="Resolve" href="?m=rtticketedit&id={$ticket.ticketid}&action=resolve"}
 						{/if}
 					{/if}
 				{/if}
 			{/if}
+			{button icon="clone" label="Clone" href="?m=rtticketadd&ticketid={$ticket.ticketid}"}
 			{if $ticket.deleted == 1 && $ticket.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
-			<a id="restore-rtticket" href="?m=rtrestore&id={$ticket.ticketid}&taction=restore" data-name="{$ticket.ticketid|string_format:"%06d"}"><i class="lms-ui-icon-restore"></i>{trans("Restore<!RT>")}</a>
-			<a id="remove-rtticket" href="?m=rtticketdel&id={$ticket.ticketid}&taction=delperm" data-name="{$ticket.ticketid|string_format:"%06d"}"><img src="img/delete.gif" alt="" title="{trans("Delete permanently")}"> {trans("Delete permanently")}</a>
+				{button id="restore-rtticket" icon="restore" label="Restore<!RT>" href="?m=rtrestore&id={$ticket.ticketid}&taction=restore"}
+				<a id="restore-rtticket" data-name="{$ticket.ticketid|string_format:"%06d"}">
+				{button id="remove-rtticket" icon="delete" label="Delete permanently" href="?m=rtticketdel&id={$ticket.ticketid}&taction=delperm"}
+				<a id="remove-rtticket" data-name="{$ticket.ticketid|string_format:"%06d"}">
 			{else}
-			<a id="delete-rtticket" href="?m=rtticketdel&id={$ticket.ticketid}&taction=delete" data-name="{$ticket.ticketid|string_format:"%06d"}"><img src="img/delete.gif" alt="" title="{trans("Delete")}">{trans("Delete")}</a>
+				{button id="delete-rtticket" icon="delete" label="Delete" href="?m=rtticketdel&id={$ticket.ticketid}&taction=delete"}
+				<a id="delete-rtticket" data-name="{$ticket.ticketid|string_format:"%06d"}">
 			{/if}
-			<A href="?m=rtticketedit&amp;id={$ticket.ticketid}"><IMG src="img/edit.gif" alt=""> {trans("Edit")}</A>
+			{button icon="edit" label="Edit" href="?m=rtticketedit&id={$ticket.ticketid}"}
 		</TD>
 	</TR>
 	</TBODY>

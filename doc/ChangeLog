@@ -226,6 +226,7 @@ version 25-git (????-??-??):
     mobile number pattern which is treated as correct [chilan]
   - improvement: rt.ticket_service_required and rt.ticket_type_required introduced allow to
     make ticket service and ticket type selection mandatory [interduo]
+  - enhancement: implemented helpdesk ticket cloning [chilan]
 
 version 24.0 (2019-05-16):
 
