@@ -1,0 +1,8 @@
+{if !isset($id)}
+    {$id = "categories"}
+{/if}
+<select id="{$id}" name="{$name_prefix}[]" multiple class="lms-ui-advanced-select">
+    {foreach $categories as $category}
+        <option value="{$category.id}"{if $category.checked > 0} selected{/if}>{$category.name}</option>
+    {/foreach}
+</select>

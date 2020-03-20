@@ -344,6 +344,8 @@ if (isset($_POST['ticket'])) {
     $ticketedit = $hook_data['ticketedit'];
     $error = $hook_data['error'];
 
+    $ticketedit['categories'] = array_flip($ticketedit['categories']);
+
     if (!$error) {
         // setting status and the ticket owner
         $props = array(
@@ -516,12 +518,10 @@ if (isset($_POST['ticket'])) {
     $ticketedit['categorywarn'] = 0;
 }
 
-$ncategories = array();
-foreach ($categories as $category) {
+foreach ($categories as &$category) {
     $category['checked'] = isset($ticketedit['categories'][$category['id']]);
-    $ncategories[] = $category;
 }
-$categories = $ncategories;
+unset($category);
 
 $layout['pagetitle'] = trans('Ticket Edit: $a', sprintf("%06d", $ticket['ticketid']));
 

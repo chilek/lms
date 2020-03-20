@@ -227,6 +227,8 @@ version 25-git (????-??-??):
   - improvement: rt.ticket_service_required and rt.ticket_type_required introduced allow to
     make ticket service and ticket type selection mandatory [interduo]
   - enhancement: implemented helpdesk ticket cloning [chilan]
+  - improvement: switched helpdesk ticket category selection to modern ui control
+    based on lms-ui-advanced-select [chilan]
 
 version 24.0 (2019-05-16):
 

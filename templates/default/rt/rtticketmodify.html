@@ -117,12 +117,7 @@
 				{if ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories')}
 				<input type="hidden" name="ticket[categorywarn]" value="{$ticket.categorywarn}">
 				{/if}
-				{foreach $categories as $category}
-					<label class="nobr">
-						<INPUT type="checkbox" name="ticket[categories][{$category.id}]" value="1" {if $category.checked > 0}checked{/if} {tip trigger="categories"}>
-						{$category.name}
-					</label>
-				{/foreach}
+				{include file="rt/rtcategoryselection.html" categories=$categories name_prefix="ticket[categories]"}
 			{/box_row}
 
 			{box_row icon="img/mail.gif" label="Notify users:" labelid="notify"}

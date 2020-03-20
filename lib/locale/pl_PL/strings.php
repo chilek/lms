@@ -4223,6 +4223,7 @@ $_LANG['Cannot update file container description!'] = 'Nie można zaktualizować
 
 $_LANG['No results match'] = 'Brak dopasowań';
 $_LANG['Select an Option'] = 'Wybierz opcję';
+$_LANG['Select Some Options'] = 'Wybierz kilka opcji';
 
 $_LANG['resolve ticket'] = 'rozwiąż zgłoszenie';
 

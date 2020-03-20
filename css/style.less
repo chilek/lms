@@ -3434,6 +3434,32 @@ table.dataTable {
 	}
 }
 
+.chosen-container-multi {
+	.chosen-choices {
+		color: black;
+		background-color: @lucid;
+		background-image: none;
+		line-height: normal;
+		border-radius: unset;
+		div {
+			b {
+				background-position-x: 6px;
+				background-position-y: -2px;
+			}
+		}
+		li.search-choice {
+			background-color: @light;
+			background-image: none;
+			font-weight: bold;
+			border: 1px solid @darkbrown;
+		}
+	}
+	&.lms-ui-error .chosen-single {
+		color: @error-text;
+		background-color: @error-background;
+	}
+}
+
 div.lms-ui-filter-container {
 	display: flex;
 	justify-content: space-between;
