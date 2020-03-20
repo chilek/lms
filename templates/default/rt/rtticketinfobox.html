@@ -358,27 +358,24 @@
 					<span class="blend"><i class="lms-ui-icon-status-resolved"></i>{trans("Ticket have open assigned events!")}</A></span>
 				{else}
 					{if empty($ticket['verifier_rtime']) && $ticket['verifierid'] != Auth::GetCurrentUser() && $ticket['verifierid']}
-						{button icon="verifier" label="Transfer ticket to verifier" href="?m=rtticketedit&id={$ticket.ticketid}&action=verify"}
+						{button icon="verifier" label="Transfer ticket to verifier" onclick="location.href='?m=rtticketedit&id={$ticket.ticketid}&action=verify';"}
 					{else}
 						{if !empty($ticket['verifier_rtime']) && $ticket['verifierid'] != Auth::GetCurrentUser()}
 							<i class="lms-ui-icon-verifier"></i><span style="color: {$_RT_STATES[$smarty.const.RT_VERIFIED].color}"> {trans("Ticket has been transferred to verifier")}</span>
 						{else}
-							{button icon="status-resolved" label="Resolve" href="?m=rtticketedit&id={$ticket.ticketid}&action=resolve"}
+							{button icon="status-resolved" label="Resolve" onclick="location.href='?m=rtticketedit&id={$ticket.ticketid}&action=resolve';"}
 						{/if}
 					{/if}
 				{/if}
 			{/if}
-			{button icon="clone" label="Clone" href="?m=rtticketadd&ticketid={$ticket.ticketid}"}
+			{button icon="clone" label="Clone" onclick="location.href='?m=rtticketadd&ticketid={$ticket.ticketid}';"}
 			{if $ticket.deleted == 1 && $ticket.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
 				{button id="restore-rtticket" icon="restore" label="Restore<!RT>" href="?m=rtrestore&id={$ticket.ticketid}&taction=restore"}
-				<a id="restore-rtticket" data-name="{$ticket.ticketid|string_format:"%06d"}">
 				{button id="remove-rtticket" icon="delete" label="Delete permanently" href="?m=rtticketdel&id={$ticket.ticketid}&taction=delperm"}
-				<a id="remove-rtticket" data-name="{$ticket.ticketid|string_format:"%06d"}">
 			{else}
 				{button id="delete-rtticket" icon="delete" label="Delete" href="?m=rtticketdel&id={$ticket.ticketid}&taction=delete"}
-				<a id="delete-rtticket" data-name="{$ticket.ticketid|string_format:"%06d"}">
 			{/if}
-			{button icon="edit" label="Edit" href="?m=rtticketedit&id={$ticket.ticketid}"}
+			{button icon="edit" label="Edit" onclick="location.href='?m=rtticketedit&id={$ticket.ticketid}';"}
 		</TD>
 	</TR>
 	</TBODY>
@@ -444,22 +441,19 @@
 
 	$(function() {
 		$('#delete-rtticket').click(function () {
-			var name = $(this).attr('data-name');
-			confirmDialog($t("Are you sure, you want to remove ticket '$a'?", name), this).done(function () {
+			confirmDialog($t("Are you sure, you want to remove ticket '$a'?", sprintf("%06d", {$ticket.ticketid})), this).done(function () {
 				location.href = $(this).attr('href');
 			});
 			return false;
 		});
 		$('#restore-rtticket').click(function () {
-			var name = $(this).attr('data-name');
-			confirmDialog($t("Are you sure, you want to restore ticket $a?", name), this).done(function () {
+			confirmDialog($t("Are you sure, you want to restore ticket $a?", sprintf("%06d", {$ticket.ticketid})), this).done(function () {
 				location.href = $(this).attr('href');
 			});
 			return false;
 		});
 		$('#remove-rtticket').click(function () {
-			var name = $(this).attr('data-name');
-			confirmDialog($t("Are you sure, you want to restore ticket $a?", name), this).done(function () {
+			confirmDialog($t("Are you sure, you want to permanently remove ticket $a?", sprintf("%06d", {$ticket.ticketid})), this).done(function () {
 				location.href = $(this).attr('href');
 			});
 			return false;

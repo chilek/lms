@@ -57,9 +57,7 @@ function smarty_function_button(array $params, Smarty_Internal_Template $templat
     // optional - form id
     $form = isset($params['form']) ? $params['form'] : null;
 
-    return '<' . ($type == 'link'
-                ? 'a' . ($href ? ' href="' . $href . '"' : '')
-                : 'button type="' . $type . '"' . ($href ? ' onclick="location.href=\'' . $href . '\';"' : ''))
+    return '<' . ($type == 'link' ? 'a' . ($href ? ' href="' . $href . '"' : '') : 'button href="' . $href. '" type="' . $type . '"')
             . ' class="' . ($type == 'link' ? '' : 'lms-ui-button') . ($icon && !$custom_icon ? ' lms-ui-button-' . $icon : '')
             . ($class ? ' ' . $class : '') . '"'
             . ($id ? ' id="' . $id . '"' : '') . ($onclick ? ' onclick="' . $onclick . '"' : '')
