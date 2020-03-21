@@ -1,8 +1,19 @@
 {if !isset($id)}
     {$id = "categories"}
 {/if}
-<select id="{$id}" name="{$name_prefix}[]" multiple class="lms-ui-advanced-select">
+
+{if count($categories) > intval(ConfigHelper::getConfig('rt.category_selection_checkbox_limit', 0, true))}
+    <select id="{$id}" name="{$name_prefix}[]" multiple {tip class="lms-ui-advanced-select" trigger=$id}>
+        {foreach $categories as $category}
+            <option value="{$category.id}"{if $category.checked > 0} selected{/if}>{$category.name}</option>
+        {/foreach}
+    </select>
+{else}
     {foreach $categories as $category}
-        <option value="{$category.id}"{if $category.checked > 0} selected{/if}>{$category.name}</option>
+        <label class="nobr">
+            <INPUT type="checkbox" name="{$name_prefix}[{$category.id}]" value="{$category.id}"
+                   {if $category.checked > 0}checked{/if} {tip trigger=$id}>
+            {$category.name}
+        </label>
     {/foreach}
-</select>
+{/if}
