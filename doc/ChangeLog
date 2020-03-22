@@ -232,6 +232,7 @@ version 25-git (????-??-??):
   - improvement: rt.category_selection_checkbox_limit configuration variable controls
     switching between old-style and new-style look of category selection ('0' by default
     what mens new-style is always used) [chilan]
+  - improvement: smscenter.pl unicode message support added [chilan]
 
 version 24.0 (2019-05-16):
 
