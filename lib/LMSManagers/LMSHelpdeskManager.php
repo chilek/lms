@@ -69,6 +69,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
      *          array() of integer values or single integer value,
      *      netnodeids - ticket network nodes (default: null = any),
      *          array() of integer values or single integer value,
+     *          -1 - without netnode set,
+     *          -2 - with netnode set,
      *      deadline - ticket deadline (default: null = any),
      *          1 - with deadline set,
      *          -1 - without deadline set,
@@ -191,8 +193,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         if (empty($netnodeids)) {
                         $netnodeidsfilter = '';
         } elseif (is_array($netnodeids) && in_array(-1, $netnodeids)) {
-            $netnodeidsfilter = ' AND t.netnodeid IS NULL ';
-        } elseif (is_array($netnodeids)) {
+            $netnodeidsfilter = ' AND t.netnodeid IS NULL';
+	} elseif (is_array($netnodeids) && in_array(-2, $netnodeids)) {
+    	    $netnodeidsfilter = ' AND t.netnodeid IS NOT NULL';
+	} elseif (is_array($netnodeids)) {
             $netnodeidsfilter = ' AND t.netnodeid IN (' . implode(',', $netnodeids) . ')';
         } else {
             $netnodeidsfilter = ' AND t.netnodeid = '.$netnodeids;

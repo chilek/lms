@@ -137,6 +137,7 @@ $_LANG['Ticket service has been set to $a.'] = 'Usługa, którego dotyczy zgłos
 $_LANG['Verifier:'] = 'Weryfikator:';
 $_LANG['<!rt>Verifier:'] = 'Weryfikator:';
 $_LANG['Unassigned'] = 'Nieprzypisany';
+$_LANG['Assigned'] = 'Przypisany';
 $_LANG['Requestor:'] = 'Zgłaszający';
 $_LANG['documents'] = 'dokumenty';
 $_LANG['Administrative contact:'] = 'Kontakt administracyjny:';
