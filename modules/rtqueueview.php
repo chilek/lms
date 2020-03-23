@@ -126,11 +126,16 @@ if (isset($_GET['ts'])) {
 if (isset($_GET['vids'])) {
     if (is_array($_GET['vids'])) {
         $filter['verifierids'] = Utils::filterIntegers($_GET['vids']);
-    } elseif (intval($_GET['vids'])) {
+        if (count($filter['verifierids']) == 1 && reset($filter['verifierids']) <= 0) {
+            $filter['verifierids'] = intval(reset($filter['verifierids']));
+        }
+    } elseif (intval($_GET['vids']) > 0) {
         $filter['verifierids'] = Utils::filterIntegers(array($_GET['vids']));
-    } elseif ($_GET['vids'] == 'all') {
-        $filter['verifierids'] = null;
+    } else {
+        $filter['verifierids'] = intval($_GET['vids']);
     }
+} elseif (!isset($filter['verifierids'])) {
+    $filter['verifierids'] = 'all';
 }
 
 // project id's
