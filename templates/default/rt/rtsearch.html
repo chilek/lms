@@ -177,13 +177,7 @@
 			{trans("Categories:")}
 		</TD>
 		<TD class="nobr">
-			{foreach $categories as $category}
-			<label>
-				<INPUT type="checkbox" name="search[categories][{$category.id}]" value="1"{if $category.checked > 0} checked{/if}>
-				{$category.name}
-			</label>
-			{if !$category@last}<br>{/if}
-			{/foreach}
+			{include file="rt/rtcategoryselection.html" name_prefix="search[categories]" categories=$categories}
 		</TD>
 	</TR>
 	{if ConfigHelper::checkPrivilege('helpdesk_advanced_operations')}
