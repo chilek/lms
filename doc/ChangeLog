@@ -236,6 +236,8 @@ version 25-git (????-??-??):
   - enhancement: new backend script 'lms-proforma-transform.php' allows to periodically
     transform pro forma invoices to regular invoices (if related conditions
     are met) [chilan]
+  - improvement: lms-teryt.php uses the same method of explicit node address determination
+    as webui [chilan]
 
 version 24.0 (2019-05-16):
 

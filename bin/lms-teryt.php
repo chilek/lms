@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -59,7 +59,7 @@ foreach ($short_to_longs as $short => $long) {
 if (array_key_exists('version', $options)) {
     print <<<EOF
 lms-teryt.php
-(C) 2001-2019 LMS Developers
+(C) 2001-2020 LMS Developers
 
 EOF;
     exit(0);
@@ -68,7 +68,7 @@ EOF;
 if (array_key_exists('help', $options)) {
     print <<<EOF
 lms-teryt.php
-(C) 2001-2019 LMS Developers
+(C) 2001-2020 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini alternate config file (default: /etc/lms/lms.ini);
 -h, --help                         print this help and exit;
@@ -92,7 +92,7 @@ $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
     print <<<EOF
 lms-teryt.php
-(C) 2001-2019 LMS Developers
+(C) 2001-2020 LMS Developers
 
 EOF;
 }
@@ -329,30 +329,6 @@ function getNames($city_id, $street_id)
             array($city_id, $street_id)
         );
     }
-}
-
-function GetDefaultCustomerTerytAddress($customerid)
-{
-    global $LMS;
-
-    $addresses = $LMS->getCustomerAddresses($customerid);
-    if (count($addresses) == 1) {
-        $address = reset($addresses);
-        if (empty($address['teryt'])) {
-            return null;
-        } else {
-            return $address;
-        }
-    }
-
-    foreach ($addresses as $address) {
-        if ($address['location_address_type'] == DEFAULT_LOCATION_ADDRESS
-            && !empty($address['teryt'])) {
-            return $address;
-        }
-    }
-
-    return null;
 }
 
 ini_set('memory_limit', '512M');
@@ -1532,10 +1508,15 @@ if (isset($options['explicit-node-locations'])) {
 		ORDER BY id');
     if (!empty($nodes)) {
         foreach ($nodes as $node) {
-            $address = GetDefaultCustomerTerytAddress($node['ownerid']);
-            if (empty($address)) {
+            $addresses = $LMS->getCustomerAddresses($node['ownerid']);
+            if (empty($addresses)) {
                 continue;
             }
+            $address_id = $LMS->determineDefaultCustomerAddress($addresses, true);
+            if (empty($address_id) || empty($addresses[$address_id]['teryt'])) {
+                continue;
+            }
+            $address = $addresses[$address_id];
 
             if (!$quiet) {
                 printf(
