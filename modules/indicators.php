@@ -101,7 +101,7 @@ switch ($action) {
                 $ticket = reset($tickets);
                 $redirect = '?m=rtticketview&id=' . $ticket['id'];
             } else {
-                $redirect = '?m=rtqueueview&id=all&catid=all&priority=all&deadline=-2&owner=' . Auth::GetCurrentUser() . '&rights=' . RT_RIGHT_INDICATOR;
+                $redirect = '?m=rtqueueview&id=all&catid=all&priority=all&d=-2&owner=' . Auth::GetCurrentUser() . '&rights=' . RT_RIGHT_INDICATOR;
             }
         }
         break;
@@ -113,7 +113,7 @@ switch ($action) {
                 $ticket = reset($tickets);
                 $redirect = '?m=rtticketview&id=' . $ticket['id'];
             } else {
-                $redirect = '?m=rtqueueview&id=all&catid=all&priority=all&deadline=-2&owner=' . Auth::GetCurrentUser() . '&rights=' . RT_RIGHT_INDICATOR;
+                $redirect = '?m=rtqueueview&id=all&catid=all&priority=all&d=-2&owner=' . Auth::GetCurrentUser() . '&rights=' . RT_RIGHT_INDICATOR;
             }
         }
         break;
