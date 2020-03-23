@@ -44,7 +44,7 @@ switch ($action) {
                 $event = reset($events);
                 $redirect = '?m=eventinfo&id=' . $event['id'];
             } else {
-                $redirect = '?m=eventlist&u=all&a[]=' . Auth::GetCurrentUser() . '&type=all&closed=all&privacy=all';
+                $redirect = '?m=eventlist&persistent-filter=-1&u=all&a[]=' . Auth::GetCurrentUser() . '&type=all&closed=all&privacy=all';
             }
         }
         break;
@@ -58,7 +58,7 @@ switch ($action) {
                 $ticket = reset($tickets);
                 $redirect = '?m=rtticketview&id=' . $ticket['id'] . (empty($ticket['firstunread']) ? '' : '#rtmessage-' . $ticket['firstunread']);
             } else {
-                $redirect = '?m=rtqueueview&id=all&catid=all&priority=' . RT_PRIORITY_CRITICAL . '&ownerid=-1&s=-1&unread=-1'
+                $redirect = '?m=rtqueueview&persistent-filter=-1&id=all&catid=all&priority=' . RT_PRIORITY_CRITICAL . '&ownerid=-1&s=-1&unread=-1'
                     . '&rights=' . RT_RIGHT_INDICATOR . '&o=lastmodified';
             }
         }
@@ -73,7 +73,7 @@ switch ($action) {
                 $ticket = reset($tickets);
                 $redirect = '?m=rtticketview&id=' . $ticket['id'] . (empty($ticket['firstunread']) ? '' : '#rtmessage-' . $ticket['firstunread']);
             } else {
-                $redirect = '?m=rtqueueview&id=all&catid=all&priority=' . RT_PRIORITY_URGENT . '&ownerid=-1&s=-1&unread=-1'
+                $redirect = '?m=rtqueueview&persistent-filter=-1&id=all&catid=all&priority=' . RT_PRIORITY_URGENT . '&ownerid=-1&s=-1&unread=-1'
                     . '&rights=' . RT_RIGHT_INDICATOR . '&o=lastmodified';
             }
         }
@@ -88,7 +88,7 @@ switch ($action) {
                 $ticket = reset($tickets);
                 $redirect = '?m=rtticketview&id=' . $ticket['id'] . (empty($ticket['firstunread']) ? '' : '#rtmessage-' . $ticket['firstunread']);
             } else {
-                $redirect = '?m=rtqueueview&id=all&catid=all&priority=all&ownerid=-1&s=-1&unread=1'
+                $redirect = '?m=rtqueueview&persistent-filter=-1&id=all&catid=all&priority=all&ownerid=-1&s=-1&unread=1'
                     . '&rights=' . RT_RIGHT_INDICATOR . '&o=lastmodified';
             }
         }
@@ -101,7 +101,7 @@ switch ($action) {
                 $ticket = reset($tickets);
                 $redirect = '?m=rtticketview&id=' . $ticket['id'];
             } else {
-                $redirect = '?m=rtqueueview&id=all&catid=all&priority=all&d=-2&owner=' . Auth::GetCurrentUser() . '&rights=' . RT_RIGHT_INDICATOR;
+                $redirect = '?m=rtqueueview&persistent-filter=-1&id=all&catid=all&priority=all&d=-2&owner=' . Auth::GetCurrentUser() . '&rights=' . RT_RIGHT_INDICATOR;
             }
         }
         break;
@@ -113,7 +113,7 @@ switch ($action) {
                 $ticket = reset($tickets);
                 $redirect = '?m=rtticketview&id=' . $ticket['id'];
             } else {
-                $redirect = '?m=rtqueueview&id=all&catid=all&priority=all&d=-2&owner=' . Auth::GetCurrentUser() . '&rights=' . RT_RIGHT_INDICATOR;
+                $redirect = '?m=rtqueueview&persistent-filter=-1&id=all&catid=all&priority=all&d=-2&owner=' . Auth::GetCurrentUser() . '&rights=' . RT_RIGHT_INDICATOR;
             }
         }
         break;
