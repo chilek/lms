@@ -141,7 +141,7 @@ if ($bandwidths) {
         JOIN customers c ON c.id = cash.customerid
         JOIN invoicecontents ic ON ic.docid = cash.docid AND ic.itemid = cash.itemid
         JOIN tariffs t ON t.id = ic.tariffid
-        WHERE ' . ($type == 'linktechnologies' ? 't.type = ' . SERVICE_INTERNET . ' AND cash.linktechnology IS NOT NULL' : '') . '
+        WHERE ' . ($type == 'linktechnologies' ? 't.type = ' . SERVICE_INTERNET . ' AND cash.linktechnology IS NOT NULL' : '1=1') . '
             AND t.downceil > 0 AND t.upceil > 0
             AND cash.time >= ? AND cash.time <= ?
         GROUP BY ' . ($type == 'linktechnologies' ? 'cash.linktechnology' : 't.type') . ', t.downceil, t.upceil
