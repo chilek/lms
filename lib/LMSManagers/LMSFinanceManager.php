@@ -1813,7 +1813,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $invoicelist = $this->db->GetAll('SELECT d.id AS id, d.number, d.cdate, d.type,
 			d.customerid, d.name, d.address, d.zip, d.city, countries.name AS country, numberplans.template, d.closed,
 			d.cancelled, d.published, d.archived, d.senddate,
-			-SUM(cash.value) AS value,
+			SUM(a.value * a.count) AS value,
 			d.currency, d.currencyvalue,
 			COUNT(a.docid) AS count,
 			i.sendinvoices,
