@@ -4342,11 +4342,16 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     public function transformProformaInvoice($docid)
     {
         static $document_manager = null;
+        static $location_manager = null;
         static $currencyvalues = array();
         static $numplans = array();
 
         if (!isset($document_manager)) {
             $document_manager = new LMSDocumentManager($this->db, $this->auth, $this->cache, $this->syslog);
+        }
+
+        if (!isset($location_manager)) {
+            $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
         }
 
         $proforma = $this->GetInvoiceContent($docid);
@@ -4432,19 +4437,22 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         ));
         $args[SYSLOG::RES_NUMPLAN] = $numplanid;
 
+        $args['recipient_address_id'] = empty($proforma['recipient_address_id']) ? null :
+            $location_manager->CopyAddress($proforma['recipient_address_id']);
+
         $this->db->Execute(
             'INSERT INTO documents (cdate, sdate, paytime, paytype, splitpayment, customerid,
                 name, address, ten, ssn, zip, city, countryid, divisionid,
                 div_name, div_shortname, div_address, div_city, div_zip, div_countryid,
                 div_ten, div_regon, div_bank, div_account, div_inv_header, div_inv_footer,
                 div_inv_author, div_inv_cplace, comment, currency, currencyvalue, memo,
-                type, number, fullnumber, numberplanid)
+                type, number, fullnumber, numberplanid, recipient_address_id)
                 VALUES (?, ?, ?, ?, ?, ?,
                     ?, ?, ?, ?, ?, ?, ?, ?,
                     ?, ?, ?, ?, ?, ?,
                     ?, ?, ?, ?, ?, ?,
                     ?, ?, ?, ?, ?, ?,
-                    ?, ?, ?, ?)',
+                    ?, ?, ?, ?, ?)',
             array_values($args)
         );
         $invoiceid = $args[SYSLOG::RES_DOC] = $this->db->GetLastInsertID('documents');
