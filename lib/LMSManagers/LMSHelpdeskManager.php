@@ -191,15 +191,15 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         }
 
         if (empty($netnodeids)) {
-                        $netnodeidsfilter = '';
+            $netnodeidsfilter = '';
         } elseif (is_array($netnodeids) && in_array(-1, $netnodeids)) {
             $netnodeidsfilter = ' AND t.netnodeid IS NULL';
-	} elseif (is_array($netnodeids) && in_array(-2, $netnodeids)) {
-    	    $netnodeidsfilter = ' AND t.netnodeid IS NOT NULL';
-	} elseif (is_array($netnodeids)) {
+        } elseif (is_array($netnodeids) && in_array(-2, $netnodeids)) {
+            $netnodeidsfilter = ' AND t.netnodeid IS NOT NULL';
+        } elseif (is_array($netnodeids)) {
             $netnodeidsfilter = ' AND t.netnodeid IN (' . implode(',', $netnodeids) . ')';
         } else {
-            $netnodeidsfilter = ' AND t.netnodeid = '.$netnodeids;
+            $netnodeidsfilter = ' AND t.netnodeid = ' . $netnodeids;
         }
 
         if (empty($serviceids)) {
