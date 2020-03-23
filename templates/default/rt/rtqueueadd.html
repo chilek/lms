@@ -236,12 +236,7 @@
 							<table>
 								<tr>
 									<td>
-										{foreach $categories as $category}
-										<label>
-											<input class="categorycheckbox" type="checkbox" name="queue[categories][{$category.id}]" value="1"{if isset($category.checked)} checked{/if}>
-											{$category.name}
-										</label>
-										{/foreach}
+										{include file="rt/rtcategoryselection.html" id="categories" name_prefix="queue[categories]" categories=$categories}
 									</td>
 								</tr>
 							</table>
@@ -259,27 +254,27 @@
 	</TR>
     </TBODY>
 </TABLE></FORM>
-<SCRIPT type="text/javascript">
-<!--
-$(function() {
-	$('form[name="queue"] [name="queue[name]"]').focus();
+<script>
 
-	for (var i = 0; i < {count($_RT_RIGHTS)}; i++) {
-		$('input:checkbox[name="allbox[' + Math.pow(2, i) + ']"]').click(function() {
-			$('input:checkbox[name*="queue[users]"][value="' + $(this).attr('data-value') + '"]').prop('checked', this.checked);
+	$(function() {
+		$('form[name="queue"] [name="queue[name]"]').focus();
+
+		for (var i = 0; i < {count($_RT_RIGHTS)}; i++) {
+			$('input:checkbox[name="allbox[' + Math.pow(2, i) + ']"]').click(function() {
+				$('input:checkbox[name*="queue[users]"][value="' + $(this).attr('data-value') + '"]').prop('checked', this.checked);
+			});
+		}
+
+		$('#checkall').click(function() {
+			$('#categories option').attr('selected', $(this).prop('checked')).trigger('chosen:updated');
 		});
-	}
 
-	$('#checkall').click(function() {
-		$('input.categorycheckbox').prop('checked', $(this).prop('checked'));
+		var categories = $('#categories option');
+		$('#checkall').prop('checked', categories.length == categories.filter(':selected').length);
+		$('#categories').change(function() {
+			$('#checkall').prop('checked', categories.length == categories.filter(':selected').length);
+		});
 	});
 
-	var categorycheckbox = $('input.categorycheckbox');
-	$('#checkall').prop('checked', categorycheckbox.length == categorycheckbox.filter(':checked').length);
-	categorycheckbox.click(function() {
-		$('#checkall').prop('checked', categorycheckbox.length == categorycheckbox.filter(':checked').length);
-	});
-});
-//-->
-</SCRIPT>
+</script>
 {/block}

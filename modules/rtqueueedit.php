@@ -37,7 +37,7 @@ if (isset($_POST['queue'])) {
     $queue = $_POST['queue'];
 
     $queue['id'] = $_GET['id'];
-    
+
     if ($queue['name'] == '') {
         $error['name'] = trans('Queue name must be defined!');
     }
@@ -72,6 +72,7 @@ if (isset($_POST['queue'])) {
 
     $categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
     if (isset($queue['categories'])) {
+        $queue['categories'] = array_flip($queue['categories']);
         foreach ($categories as &$category) {
             if (isset($queue['categories'][$category['id']])) {
                 $category['checked'] = 1;
@@ -96,7 +97,7 @@ if (isset($_POST['queue'])) {
         );
 
         $DB->Execute('DELETE FROM rtrights WHERE queueid=?', array($queue['id']));
-        
+
         if ($queue['rights']) {
             foreach ($queue['rights'] as $right) {
                 if ($right['rights']) {
