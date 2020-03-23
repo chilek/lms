@@ -58,8 +58,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
      *          array() of integer values or single integer value
      *      priority - ticket priorities (default: null = any),
      *          array() of integer values or single integer value
-     *      owner - ticket owner (default: null = any), -1 = any, 0 = without owner, -2 = with any owner,
+     *      owner - ticket owner (default: null = any),
      *          array() or single integer value
+     *          -1 = without owner,
+     *          -2 = with,
      *      catids - ticket categories (default: null = any, -1 = without category),
      *          array() of integer values or single integer value
      *      removed - ticket removal flag (default: null = any),
@@ -251,10 +253,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         }
 
         switch ($owner) {
-            case '-1':
-                $ownerfilter = '';
+            case '-2':
+                $ownerfilter = ' AND t.owner IS NOT NULL';
                 break;
-            case '0':
+            case '-1':
                 $ownerfilter = ' AND t.owner IS NULL';
                 break;
             default:

@@ -65,12 +65,13 @@
             </SELECT>
             </label>
             <label class="nobr">
-            <input type="hidden" name="owner" value="-1">
             {trans("Owner:")}
-            <SELECT size="1" name="owner[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect" data-default-value="{trans("- all -")}">
-                <OPTION value="0" data-exclusive{if !is_array($filter.owner) && $filter.owner == 0} selected{/if}>- {trans("no owner")} -</OPTION>
+            <SELECT size="1" name="owner[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect" data-default-value="{trans("No filter")}">
+                <option value="" data-exclusive{if is_array($filter.owner) && in_array(-1, $filter.owner)} selected{/if}>{trans("No filter")}</option>
+                <option value="-1" data-exclusive{if is_array($filter.owner) && in_array(-1, $filter.owner)} selected{/if}>{trans("no owner")}</option>
+                <option value="-2" data-exclusive{if is_array($filter.owner) && in_array(-2, $filter.owner)} selected{/if}>{trans("with owner")}</option>
                 {foreach $users as $user}
-                <OPTION value="{$user.id}"{if is_array($filter.owner) && in_array($user.id, $filter.owner)}} SELECTED{/if}>{$user.rname|truncate:40:"...":true}</OPTION>
+                <option value="{$user.id}"{if is_array($filter.owner) && in_array($user.id, $filter.owner)}} selected{/if}>{$user.name|truncate:40:"...":true}</OPTION>
                 {/foreach}
             </SELECT>
             </label>
