@@ -31,8 +31,8 @@
 	</TD>
 	<TD class="nobr valign-middle">
 		<span class="bold">{$ticket.subject|escape|truncate:"100":"..."|default:"&nbsp;"}</span>
-		{foreach $ticket.categories as $ticketcategory}
-		<span {if $ticketcategory.style != ''} style="{$ticketcategory.style}"{else} style="{$_CATEGORY_DEFAULT_STYLE}"{/if}>{$ticketcategory.name}</span>
+		{foreach $ticket.categories as $tc}
+		<span style="{if $tc.style != ''}{$tc.style}{else}{$_CATEGORY_DEFAULT_STYLE}{/if}"><a href="/?m=rtqueueview&persistent-filter=-1&catid={$tc.categoryid}&s=-1&priority=all&unread=-1&o=lastmodified,desc">{$tc.name}</a></span>
 		{/foreach}
 		{if $ticket.customerid}
 			<br>
