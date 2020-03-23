@@ -1512,7 +1512,7 @@ if (isset($options['explicit-node-locations'])) {
             if (empty($addresses)) {
                 continue;
             }
-            $address_id = $LMS->determineDefaultCustomerAddress($addresses, true);
+            $address_id = $LMS->determineDefaultCustomerAddress($addresses);
             if (empty($address_id) || empty($addresses[$address_id]['teryt'])) {
                 continue;
             }
