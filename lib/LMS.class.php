@@ -3294,6 +3294,12 @@ class LMS
         return $manager->CopyPromotionTariffPermissions($src_userid, $dst_userid);
     }
 
+    public function transformProformaInvoice($docid)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->transformProformaInvoice($docid);
+    }
+
     /**
      * VoIP functions
      */

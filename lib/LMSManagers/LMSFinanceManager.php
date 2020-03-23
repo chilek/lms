@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2018 LMS Developers
+ *  Copyright (C) 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -3227,6 +3227,18 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function PreserveProforma($docid)
     {
+        $this->db->Execute('UPDATE documents SET closed = 1 WHERE id = ?', array($docid));
+
+        if ($this->syslog) {
+            $customerid = $this->db->GetOne('SELECT customerid FROM documents WHERE id = ?', array($docid));
+            $args = array(
+                SYSLOG::RES_DOC => $docid,
+                SYSLOG::RES_CUST => $customerid,
+                'closed' => 1,
+            );
+            $this->syslog->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args);
+        }
+
         $rows = $this->db->GetAll('SELECT cash.id, cash.customerid, cash.importid,
 						i.sourceid, i.sourcefileid
 					FROM cash
@@ -3238,19 +3250,19 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 $this->db->Execute('DELETE FROM cash WHERE id = ?', array($row['id']));
                 if ($this->syslog) {
                     $args = array(
-                    SYSLOG::RES_CASH => $row['id'],
-                    SYSLOG::RES_CUST => $row['customerid'],
+                        SYSLOG::RES_CASH => $row['id'],
+                        SYSLOG::RES_CUST => $row['customerid'],
                     );
                     $this->syslog->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
                 }
                 if (!empty($row['importid'])) {
                     if ($this->syslog) {
                         $args = array(
-                        SYSLOG::RES_CASHIMPORT => $row['importid'],
-                        SYSLOG::RES_CUST => $row['customerid'],
-                        SYSLOG::RES_CASHSOURCE => $row['sourceid'],
-                        SYSLOG::RES_SOURCEFILE => $row['sourcefileid'],
-                        'closed' => 0,
+                            SYSLOG::RES_CASHIMPORT => $row['importid'],
+                            SYSLOG::RES_CUST => $row['customerid'],
+                            SYSLOG::RES_CASHSOURCE => $row['sourceid'],
+                            SYSLOG::RES_SOURCEFILE => $row['sourcefileid'],
+                            'closed' => 0,
                         );
                         $this->syslog->AddMessage(SYSLOG::RES_CASHIMPORT, SYSLOG::OPER_UPDATE, $args);
                     }
@@ -4325,5 +4337,172 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         }
 
         return $change_count;
+    }
+
+    public function transformProformaInvoice($docid)
+    {
+        static $document_manager = null;
+        static $currencyvalues = array();
+        static $numplans = array();
+
+        if (!isset($document_manager)) {
+            $document_manager = new LMSDocumentManager($this->db, $this->auth, $this->cache, $this->syslog);
+        }
+
+        $proforma = $this->GetInvoiceContent($docid);
+
+        if (!isset($currencyvalues[$proforma['currency']])) {
+            $currencyvalues[$proforma['currency']] = $this->getCurrencyValue($proforma['currency']);
+            if (!isset($currencyvalues[$proforma['currency']])) {
+                return 'Unable to determine currency value for new document and currency ' . $proforma['currency'] . '.';
+            }
+        }
+
+        if (!isset($numplans[$proforma['divisionid']])) {
+            $numplan = $this->db->GetOne(
+                'SELECT n.id
+                FROM numberplans n
+                LEFT JOIN numberplanassignments a ON (a.planid = n.id)
+                WHERE isdefault = 1 AND doctype = ? AND a.divisionid = ?',
+                array(DOC_INVOICE, $proforma['divisionid'])
+            );
+            $numplans[$proforma['divisionid']] = $numplan ?: null;
+        }
+        $numplanid = $numplans[$proforma['divisionid']];
+
+        $this->db->BeginTrans();
+        $tables = array('documents', 'cash', 'invoicecontents', 'numberplans', 'divisions', 'vdivisions',
+            'customerview', 'customercontacts', 'netdevices', 'nodes',
+            'logtransactions', 'logmessages', 'logmessagekeys', 'logmessagedata');
+        if (ConfigHelper::getConfig('database.type') == 'postgres') {
+            $tables = array_merge($tables, array('customers', 'customer_addresses'));
+        } else {
+            $tables = array_merge($tables, array('customers cv', 'customer_addresses ca'));
+        }
+        $this->db->LockTables($tables);
+
+        $currtime = time();
+
+        $args = array(
+            'cdate' => $currtime,
+            'sdate' => $currtime,
+            'paytime' => $proforma['paytime'],
+            'paytype' => $proforma['paytype'],
+            'splitpayment' => empty($proforma['splitpayment']) ? 0 : 1,
+            SYSLOG::RES_CUST => $proforma['customerid'],
+            'name' => $proforma['name'],
+            'address' => $proforma['address'],
+            'ten' => $proforma ['ten'],
+            'ssn' => $proforma['ssn'],
+            'zip' => $proforma['zip'],
+            'city' => $proforma['city'],
+            SYSLOG::RES_COUNTRY => $proforma['countryid'],
+            SYSLOG::RES_DIV => $proforma['divisionid'],
+            'div_name' => $proforma['div_name'] ?: '',
+            'div_shortname' => $proforma['div_shortname'] ?: '',
+            'div_address' => $proforma['div_address'] ?: '',
+            'div_city' => $proforma['div_city'] ?: '',
+            'div_zip' => $proforma['div_zip'] ?: '',
+            'div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY) => $proforma['div_countryid'] ?: null,
+            'div_ten'=> $proforma['div_ten'] ?: '',
+            'div_regon' => $proforma['div_regon'] ?: '',
+            'div_bank' => $proforma['div_bank'] ?: null,
+            'div_account' => $proforma['div_account'] ?: '',
+            'div_inv_header' => $proforma['div_inv_header'] ?: '',
+            'div_inv_footer' => $proforma['div_inv_footer'] ?: '',
+            'div_inv_author' => $proforma['div_inv_author'] ?: '',
+            'div_inv_cplace' => $proforma['div_inv_cplace'] ?: '',
+            'comment' => $proforma['comment'] ?: null,
+            'currency' => $proforma['currency'],
+            'currencyvalue' => $currencyvalues[$proforma['currencyvalue']],
+            'memo' => $proforma['memo'],
+            'type' => DOC_INVOICE,
+            'number' => $document_manager->GetNewDocumentNumber(array(
+                'doctype' => DOC_INVOICE,
+                'planid' => $numplanid,
+                'cdate' => $currtime,
+                'customerid' => $proforma['customerid'],
+            )),
+        );
+        $args['fullnumber'] = docnumber(array(
+            'number' => $args['number'],
+            'template' => $this->db->GetOne('SELECT template FROM numberplans WHERE id = ?', array($numplanid)),
+            'cdate' => $currtime,
+            'customerid' => $proforma['customerid'],
+        ));
+        $args[SYSLOG::RES_NUMPLAN] = $numplanid;
+
+        $this->db->Execute(
+            'INSERT INTO documents (cdate, sdate, paytime, paytype, splitpayment, customerid,
+                name, address, ten, ssn, zip, city, countryid, divisionid,
+                div_name, div_shortname, div_address, div_city, div_zip, div_countryid,
+                div_ten, div_regon, div_bank, div_account, div_inv_header, div_inv_footer,
+                div_inv_author, div_inv_cplace, comment, currency, currencyvalue, memo,
+                type, number, fullnumber, numberplanid)
+                VALUES (?, ?, ?, ?, ?, ?,
+                    ?, ?, ?, ?, ?, ?, ?, ?,
+                    ?, ?, ?, ?, ?, ?,
+                    ?, ?, ?, ?, ?, ?,
+                    ?, ?, ?, ?, ?, ?,
+                    ?, ?, ?, ?)',
+            array_values($args)
+        );
+        $invoiceid = $args[SYSLOG::RES_DOC] = $this->db->GetLastInsertID('documents');
+        if ($this->syslog) {
+            $this->syslog->AddMessage(
+                SYSLOG::RES_DOC,
+                SYSLOG::OPER_ADD,
+                $args,
+                array('div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY))
+            );
+        }
+
+        foreach ($proforma['content'] as $idx => $item) {
+            $args = array(
+                SYSLOG::RES_DOC => $invoiceid,
+                'itemid' => $item['itemid'],
+                'value' => str_replace(',', '.', $item['value']),
+                SYSLOG::RES_TAX => $item['taxid'],
+                'taxcategory' => $item['taxcategory'],
+                'prodid' => $item['prodid'],
+                'content' => $item['content'],
+                'count' => str_replace(',', '.', $item['count']),
+                'pdiscount' => str_replace(',', '.', $item['pdiscount']),
+                'vdiscount' => str_replace(',', '.', $item['vdiscount']),
+                'description' => $item['description'],
+                SYSLOG::RES_TARIFF => $item['tariffid'] ?: null,
+            );
+            $this->db->Execute('INSERT INTO invoicecontents (docid, itemid, value,
+					taxid, taxcategory, prodid, content, count, pdiscount, vdiscount, description, tariffid)
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+            if ($this->syslog) {
+                $args[SYSLOG::RES_CUST] = $proforma['customerid'];
+                $this->syslog->AddMessage(SYSLOG::RES_INVOICECONT, SYSLOG::OPER_ADD, $args);
+            }
+
+            $this->AddBalance(array(
+                'time' => $currtime,
+                'value' => $item['value'] * $item['count']*-1,
+                'currency' => $proforma['currency'],
+                'currencyvalue' => $currencyvalues[$proforma['currencyvalue']],
+                'taxid' => $item['taxid'],
+                'customerid' => $proforma['customerid'],
+                'comment' => $item['description'],
+                'docid' => $invoiceid,
+                'itemid' => $item['itemid'],
+            ));
+        }
+
+        if (ConfigHelper::checkConfig('phpui.default_preserve_proforma_invoice')) {
+            $this->PreserveProforma($docid);
+        } else {
+            $this->DeleteArchiveTradeDocument($docid);
+            $this->InvoiceDelete($docid);
+        }
+
+        $this->db->UnLockTables();
+        $this->db->CommitTrans();
+
+        return intval($invoiceid);
     }
 }

@@ -233,6 +233,9 @@ version 25-git (????-??-??):
     switching between old-style and new-style look of category selection ('0' by default
     what mens new-style is always used) [chilan]
   - improvement: smscenter.pl unicode message support added [chilan]
+  - enhancement: new backend script 'lms-proforma-transform.php' allows to periodically
+    transform pro forma invoices to regular invoices (if related conditions
+    are met) [chilan]
 
 version 24.0 (2019-05-16):
 
