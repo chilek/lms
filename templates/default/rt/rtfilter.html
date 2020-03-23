@@ -123,6 +123,7 @@
                 <select name="nnids[]" size="1" multiple data-default-value="{trans("No filter")}" class="lms-ui-multiselect" {tip text="Select network node (optional)"} onchange="document.filter.submit();">
                     <option value="all" data-exclusive{if is_array($filter.netnodeids) && in_array(null, $filter.netnodeids)} selected{/if}>{trans("No filter")}</option>
                     <option value="-1" data-exclusive{if is_array($filter.netnodeids) && in_array(-1, $filter.netnodeids)} selected{/if}>{trans("Unassigned")}</option>
+                    <option value="-2" data-exclusive{if is_array($filter.netnodeids) && in_array(-2, $filter.netnodeids)} selected{/if}>{trans("Assigned")}</option>
                     {foreach $netnodelist as $idx => $netnode}
                     <option value="{$netnode.id}" {if is_array($filter.netnodeids) && in_array($netnode.id, $filter.netnodeids)} selected{/if}>{$netnode.name}</OPTION>
                     {/foreach}
