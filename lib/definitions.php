@@ -112,7 +112,7 @@ $CONFIG_TYPES = array(
     CONFIG_TYPE_DATE_FORMAT => trans('date format'),
 );
 
-$CATEGORY_DEFAULT_STYLE = 'border: 1px black solid; color: black; background: #FFFFFF; padding: 2px; height: 40px;';
+$CATEGORY_DEFAULT_STYLE = 'border: 1px black solid; color: black; background: #FFFFFF; padding: 1px; text-decoration: none;';
 
 // Helpdesk ticket status
 define('RT_NEW', 0);
