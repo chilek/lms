@@ -235,7 +235,7 @@ foreach ($customers as $customer) {
 
     if (empty($documents)) {
         if (!$quiet) {
-            print 'CID=' . $customerid . ': no proforma invoices!' . PHP_EOL;
+            print 'CID=' . $customerid . ': no proforma invoices to transform!' . PHP_EOL;
         }
         continue;
     }
@@ -246,7 +246,7 @@ foreach ($customers as $customer) {
     }
     if ($balance < 0 || empty($documents)) {
         if (!$quiet) {
-            print 'CID=' . $customerid . ': no proforma invoices!' . PHP_EOL;
+            print 'CID=' . $customerid . ': no proforma invoices to transform (no new payments?)!' . PHP_EOL;
         }
         continue;
     }
