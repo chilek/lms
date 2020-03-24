@@ -238,6 +238,7 @@ version 25-git (????-??-??):
     are met) [chilan]
   - improvement: lms-teryt.php uses the same method of explicit node address determination
     as webui [chilan]
+  - improvement: customer can be filtered by active assignments with pro forma flag [chilan]
 
 version 24.0 (2019-05-16):
 

@@ -3770,6 +3770,7 @@ $_LANG['closed<!plural:event>'] = 'zamknięte';
 $_LANG['Assignments:'] = 'Zobowiązania:';
 $_LANG['suspended'] = 'zawieszone';
 $_LANG['active, with invoice'] = 'aktywne, z fakturą';
+$_LANG['active, with pro forma'] = 'aktywne, z pro forma';
 $_LANG['without end date'] = 'bez daty zakończenia';
 $_LANG['with end date'] = 'z datą zakończenia';
 $_LANG['with end date:'] = 'z datą zakończenia:';
