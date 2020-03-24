@@ -187,11 +187,12 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 	}
 
 	/********************************************************
-	Insert the highlighted suggestion into the input box, and 
+	Insert the highlighted suggestion into the input box, and
 	remove the suggestion dropdown.
 	********************************************************/
 	this.useSuggestion = function() {
 		if (this.highlighted > -1 && this.div.style.display != 'none') {
+			var submit_data = this.suggestions[this.highlighted];
 			this.elem.value = this.suggestions[this.highlighted].name;
 			var gotothisuri = this.suggestions[this.highlighted].action;
 			this.hideDiv();
@@ -207,7 +208,7 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 				location.href = gotothisuri;
 			}
 			if (this.onsubmit !== undefined) {
-				(this.onsubmit)();
+				(this.onsubmit)(submit_data);
 			}
 		}
 	};
@@ -215,7 +216,7 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 	/********************************************************
 	Display the dropdown. Pretty straightforward.
 	********************************************************/
-	this.showDiv = function() {	
+	this.showDiv = function() {
 		this.div.style.visibility = 'hidden';
 		this.div.style.display = 'block';
 
@@ -311,7 +312,7 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 			name_elem.innerHTML = name.length > AUTOSUGGEST_MAX_LENGTH ?
 				name.substring(0, AUTOSUGGEST_MAX_LENGTH) + " ..." : name;
 
-			if (action && !me.autosubmit) {
+			if (action && !me.autosubmit && !me.onsubmit) {
 				var a = $('<a href="' + action + '"/>').get(0);
 				a.appendChild(name_elem);
 				a.appendChild(desc_elem);

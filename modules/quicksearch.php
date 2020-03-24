@@ -675,7 +675,10 @@ switch ($mode) {
                         $description = trans('First/last name') . ': ' . $row['lastname'];
                     }
 
-                    $result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
+                    $result[$row['id']] = array_merge(
+                        compact('name', 'name_class', 'description', 'description_class', 'action'),
+                        array('id' => $row['id'])
+                    );
                 }
             }
             $hook_data = array(

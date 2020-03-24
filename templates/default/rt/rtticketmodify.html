@@ -13,6 +13,31 @@
 		align-items: flex-start !important;
 	}
 
+	.ticket-list-container .lms-ui-box-row-field {
+		flex-direction: column !important;
+		align-items: flex-start !important;
+	}
+
+	.ticket-list-container ul {
+		display: inline;
+		list-style: none;
+		padding: 0;
+	}
+
+	.ticket-list-container li .ticket-unlink {
+		visibility: hidden;
+/*
+		margin-left: -1.5em;
+ */
+		margin-top: 0.1em;
+		padding-right: 0.4em;
+	}
+
+	.ticket-list-container li:hover .ticket-unlink {
+		 visibility: visible;
+		 cursor: pointer;
+	}
+
 </style>
 
 {box_container id="ticket"}
@@ -282,13 +307,19 @@
 				<input type="TEXT" name="ticket[parentid]" value="{$ticket.parentid}" {tip text="Enter ID of parent ticket" trigger="parentid"}>
 			{/box_row}
 
-			{if $ticket.relatedtickets}
-			{box_row icon="lms-ui-icon-relatedticket" label="Related tickets:"}
-				{foreach $ticket.relatedtickets as $i}
-					<A href="?m=rtticketview&id={$i.id}">{t a=$i.id|string_format:"%06d"}$a{/t}</A><A id="unlink-rtticket" href="?m=rtticketedit&id={$i.id}&action=unlink" data-name="{$i.id|string_format:"%06d"}">{trans("Unlink")}</A>
-				{/foreach}
+			{box_row class="ticket-list-container" icon="lms-ui-icon-relatedticket" label="Related tickets:"}
+				<input type="text" class="ticket-suggestion" {tip text="Enter ticket identifier or ticket subject part"}>
+				<ul class="ticket-list"{if !$ticket.relatedtickets} style="display: none;"{/if}>
+					{if $ticket.relatedtickets}
+						{foreach $ticket.relatedtickets as $i}
+							<li data-ticket-id="{$i.id}">
+								<input type="hidden" name="ticket[relatedtickets][{$i.id}]" value="{$i.id}">
+								<i class="lms-ui-icon-delete ticket-unlink"></i>#{$i.id|string_format:"%06d"} <A href="?m=rtticketview&id={$i.id}">{$i.subject}</A>
+							</li>
+						{/foreach}
+					{/if}
+				</ul>
 			{/box_row}
-			{/if}
 			{/block}
 {/box_panel}
 	{/box_contents}
@@ -331,13 +362,31 @@
 			$('[name="ticket[subject]"]').val(Base64.decode(selected.attr('data-subject')));
 			$($(this).attr('data-target')).val(Base64.decode(selected.attr('data-message')));
 		});
+
+		$('.ticket-list-container').each(function() {
+			var ticket_list = $(this).find('.ticket-list');
+			var ticket_suggestion = $(this).find('.ticket-suggestion');
+			new AutoSuggest($(this).closest('form')[0], ticket_suggestion[0],
+					'?m=quicksearch&ajax=1&mode=ticket&what=', 0, function(data) {
+				ticket_suggestion.val('');
+				var html = '<li data-ticket-id="' + data.id + '">' +
+					'<input type="hidden" name="ticket[relatedtickets][' + data.id + ']" value="' + data.id + '">' +
+					'<i class="lms-ui-icon-delete ticket-unlink"></i>' +
+					sprintf("#%06d", data.id) + ' <a href="?m=rtticketview&id=' + data.id + '">' +
+					data.name + '</a></li>';
+				ticket_list.append(html).show();
+			});
+		});
+
+		$('.ticket-list-container').on('click', '.ticket-unlink', function() {
+			var list_elem = $(this).closest('li');
+			confirmDialog($t("Are you sure, you want to unlink ticket '$a'?", sprintf("#%06d", parseInt(list_elem.attr('data-ticket-id')))), this).done(function() {
+				var ticket_list = $(this).closest('.ticket-list');
+				list_elem.remove();
+				ticket_list.toggle(ticket_list.find('li').length > 0);
+			});
+			return false;
+		});
 	});
 
-	$('#unlink-rtticket').click(function() {
-		var name = $(this).attr('data-name');
-		confirmDialog($t("Are you sure, you want to unlink ticket '$a'?", name), this).done(function() {
-			location.href = $(this).attr('href');
-		});
-		return false;
-	});
 </script>

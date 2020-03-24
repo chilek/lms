@@ -45,6 +45,7 @@ $_LANG['There is no assigned parent ticket.'] = 'Nie ma przypisanego zgłoszenia
 $_LANG['Are you sure, you want to unlink ticket \'$a\'?'] = 'Czy jesteś pewien, że chcesz odwiązać zgłoszenie \'$a\'?';
 $_LANG['Cannot link ticket because of related ticket loop!'] = 'Nie można powiązać zgłoszenia z powodu pętli powiązań!';
 $_LANG['Ticket parent ID has been set to $a.'] = 'ID zgłoszenia nadrzędnego zostało ustawione na $a.';
+$_LANG['Ticket parent ID has been removed.'] = 'ID zgłoszenia nadrzędnego zostało usunięte.';
 $_LANG['Ticket does not exist'] = 'Zgłoszenie nie istnieje';
 $_LANG['Unlink'] = 'Odwiąż';
 $_LANG['Parent ticket:'] = 'Zgłoszenie nadrzędne:';
@@ -4634,3 +4635,5 @@ $_LANG['Phone number validation failed!'] = 'Weryfikacja poprawności numeru tel
 
 $_LANG['Choose ticket type'] = 'Wybierz rodzaj zgłoszenia';
 $_LANG['Choose service type'] = 'Wybierz typ usługi';
+
+$_LANG['Enter ticket identifier or ticket subject part'] = 'Wprowadź identyfikator zgłoszenia lub fragment tematu zgłoszenia';

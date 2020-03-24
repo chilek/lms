@@ -949,10 +949,16 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             isset($ticket['service']) && !empty($ticket['service']) ? $ticket['service'] : SERVICE_OTHER,
             isset($ticket['type']) && !empty($ticket['type']) ? $ticket['type'] : RT_TYPE_OTHER,
             isset($ticket['invprojectid']) && !empty($ticket['invprojectid']) ? $ticket['invprojectid'] : null,
-            empty($ticketedit['parentid']) ? null : $ticketedit['parentid'],
+            empty($ticket['parentid']) ? null : $ticket['parentid'],
         ));
 
         $id = $this->db->GetLastInsertID('rttickets');
+
+        if (!empty($ticket['parentid']) && !empty($ticket['relatedtickets'])) {
+            foreach (array_values($ticket['relatedtickets']) as $tid) {
+                $this->updateTicketParentID($tid, $ticket['parentid']);
+            }
+        }
 
         $this->lastmessageid = '<msg.' . $ticket['queue'] . '.' . $id . '.' . time() . '@rtsystem.' . gethostname() . '>';
 
@@ -971,24 +977,23 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         ));
 
         if ($ticket['note']) {
-                    $this->db->Execute('INSERT INTO rtmessages (ticketid, customerid, createtime,
+            $this->db->Execute('INSERT INTO rtmessages (ticketid, customerid, createtime,
                         subject, body, mailfrom, phonefrom, messageid, replyto, headers, type)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($id,
-                        empty($ticket['customerid']) ? null : $ticket['customerid'],
-                        $createtime,
-                        $ticket['subject'],
-                        preg_replace("/\r/", "", $ticket['note']),
-                        empty($ticket['mailfrom']) ? '' : $ticket['mailfrom'],
-                        empty($ticket['phonefrom']) ? '' : $ticket['phonefrom'],
-                        isset($ticket['messageid']) ? $ticket['messageid'] : $this->lastmessageid,
-                        isset($ticket['replyto']) ? $ticket['replyto'] : '',
-                        isset($ticket['headers']) ? $ticket['headers'] : '',
-                        RTMESSAGE_NOTE,
-                    ));
+                empty($ticket['customerid']) ? null : $ticket['customerid'],
+                $createtime,
+                $ticket['subject'],
+                preg_replace("/\r/", "", $ticket['note']),
+                empty($ticket['mailfrom']) ? '' : $ticket['mailfrom'],
+                empty($ticket['phonefrom']) ? '' : $ticket['phonefrom'],
+                isset($ticket['messageid']) ? $ticket['messageid'] : $this->lastmessageid,
+                isset($ticket['replyto']) ? $ticket['replyto'] : '',
+                isset($ticket['headers']) ? $ticket['headers'] : '',
+                RTMESSAGE_NOTE,
+            ));
         }
 
-                $msgid = $this->db->GetLastInsertID('rtmessages');
-
+        $msgid = $this->db->GetLastInsertID('rtmessages');
 
         if (!empty($ticket['categories'])) {
             foreach (array_keys($ticket['categories']) as $catid) {
@@ -1069,6 +1074,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 return $elem['name'];
         }, $ticket['categories']);
 
+        $ticket['relatedtickets'] = $this->GetRelatedTickets($id);
+
         if (!$short) {
             $ticket['messages'] = $this->db->GetAll(
                 '(SELECT rtmessages.id AS id, phonefrom, mailfrom, subject, body, createtime, '
@@ -1145,6 +1152,21 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         } else {
             return null;
         }
+    }
+
+    protected function updateTicketParentID($ticketid, $parentid = null)
+    {
+        $notes = array();
+        if ($parentid) {
+            $note = trans('Ticket parent ID has been set to $a.', $parentid);
+            $type = RTMESSAGE_PARENT_CHANGE;
+        } else {
+            $note = trans('Ticket parent ID has been removed.');
+            $type = RTMESSAGE_PARENT_CHANGE;
+        }
+        $this->db->Execute('INSERT INTO rtmessages (userid, ticketid, type, body, createtime)
+            VALUES(?, ?, ?, ?, ?NOW?)', array(Auth::GetCurrentUser(), $ticketid, $type, $note));
+        $this->db->Execute('UPDATE rttickets SET parentid = ? WHERE id = ?', array($parentid, $ticketid));
     }
 
     public function TicketChange($ticketid, array $props)
@@ -1356,9 +1378,16 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $props['type'] = $ticket['type'];
         }
 
-        if ($ticket['parentid'] != $props['parentid'] && isset($props['parentid'])) {
-            $notes[] = trans('Ticket parent ID has been set to $a.', $props['parentid']);
-            $type = $type | RTMESSAGE_PARENT_CHANGE;
+        if (array_key_exists('parentid', $props)) {
+            if (isset($props['parentid']) && $ticket['parentid'] != $props['parentid']) {
+                $notes[] = trans('Ticket parent ID has been set to $a.', $props['parentid']);
+                $type = $type | RTMESSAGE_PARENT_CHANGE;
+            } elseif (!isset($props['parentid']) && !empty($ticket['parentid'])) {
+                $notes[] = trans('Ticket parent ID has been removed.');
+                $type = $type | RTMESSAGE_PARENT_CHANGE;
+            } else {
+                $props['parentid'] = $ticket['parentid'];
+            }
         } else {
             $props['parentid'] = $ticket['parentid'];
         }
@@ -1586,6 +1615,33 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 if (!empty($note)) {
                     $this->db->Execute('INSERT INTO rtmessages (userid, ticketid, type, body, createtime)
 						VALUES(?, ?, ?, ?, ?)', array(Auth::GetCurrentUser(), $ticketid, $type, $note, $modtime));
+                }
+            }
+        }
+
+        // update ticket relations
+        $relatedtickets = $this->getRelatedTickets($ticketid);
+        if (empty($relatedtickets)) {
+            $relatedtickets = array();
+        }
+        if (empty($props['relatedtickets'])) {
+            $props['relatedtickets'] = array();
+        }
+        $relations_to_remove = array_diff(array_keys($relatedtickets), array_values($props['relatedtickets']));
+        if (!empty($relations_to_remove)) {
+            foreach ($relations_to_remove as $tid) {
+                $this->updateTicketParentID($tid);
+            }
+        }
+        if (!empty($props['parentid'])) {
+            if ($props['parentid'] != $ticket['parentid']) {
+                $relations_to_add = array_values($props['relatedtickets']);
+            } else {
+                $relations_to_add = array_diff(array_values($props['relatedtickets']), array_keys($relatedtickets));
+            }
+            if (!empty($relations_to_add)) {
+                foreach ($relations_to_add as $tid) {
+                    $this->updateTicketParentID($tid, $props['parentid']);
                 }
             }
         }
@@ -1988,9 +2044,13 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         }
     }
 
-    public function GetRelatedTicketIds($ticketid)
+    public function GetRelatedTickets($ticketid)
     {
-        return $this->db->GetAll('SELECT id FROM rttickets WHERE parentid = ?', array($ticketid));
+        return $this->db->GetAllByKey(
+            'SELECT id, subject FROM rttickets WHERE id <> ? AND parentid = (SELECT parentid FROM rttickets WHERE id = ?) ORDER BY id',
+            'id',
+            array($ticketid, $ticketid)
+        );
     }
 
     public function GetTicketParentID($ticketid)

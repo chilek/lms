@@ -321,7 +321,7 @@
 								</TD>
 								<TD>
 									{foreach $ticket.relatedtickets as $i}
-									<A href="?m=rtticketview&amp;id={$i.id}">{t a=$i.id|string_format:"%06d"}$a{/t}</A><br>
+										#{$i.id|string_format:"%06d"} <a href="?m=rtticketview&id={$i.id}">{$i.subject}</a><br>
 									{/foreach}
 								</TD>
 							</TR>

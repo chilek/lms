@@ -37,7 +37,7 @@ if (!$LMS->CheckTicketAccess($id)) {
 //$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $ticket = $LMS->GetTicketContents($id);
-$ticket['relatedtickets'] = $LMS->GetRelatedTicketIds($id);
+$ticket['relatedtickets'] = $LMS->GetRelatedTickets($id);
 $ticket['message'] = $DB->GetOne(
     'SELECT body FROM rtmessages
 		    WHERE ticketid = ?
