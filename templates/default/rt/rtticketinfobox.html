@@ -368,14 +368,14 @@
 					{/if}
 				{/if}
 			{/if}
-			{button icon="clone" label="Clone" onclick="location.href='?m=rtticketadd&ticketid={$ticket.ticketid}';"}
+			{button type="link-button" icon="clone" label="Clone" href="?m=rtticketadd&ticketid={$ticket.ticketid}"}
 			{if $ticket.deleted == 1 && $ticket.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
 				{button id="restore-rtticket" icon="restore" label="Restore<!RT>" href="?m=rtrestore&id={$ticket.ticketid}&taction=restore"}
 				{button id="remove-rtticket" icon="delete" label="Delete permanently" href="?m=rtticketdel&id={$ticket.ticketid}&taction=delperm"}
 			{else}
 				{button id="delete-rtticket" icon="delete" label="Delete" href="?m=rtticketdel&id={$ticket.ticketid}&taction=delete"}
 			{/if}
-			{button icon="edit" label="Edit" onclick="location.href='?m=rtticketedit&id={$ticket.ticketid}';"}
+			{button type="link-button" icon="edit" label="Edit" href="?m=rtticketedit&id={$ticket.ticketid}"}
 		</TD>
 	</TR>
 	</TBODY>

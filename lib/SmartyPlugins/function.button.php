@@ -57,8 +57,9 @@ function smarty_function_button(array $params, Smarty_Internal_Template $templat
     // optional - form id
     $form = isset($params['form']) ? $params['form'] : null;
 
-    return '<' . ($type == 'link' ? 'a' : 'button type="' . $type . '"') . ($href ? ' href="' . $href . '"' : '')
-            . ' class="' . ($type == 'link' ? '' : 'lms-ui-button') . ($icon && !$custom_icon ? ' lms-ui-button-' . $icon : '')
+    return '<' . ($type == 'link' || $type == 'link-button' ? 'a' : 'button type="' . $type . '"') . ($href ? ' href="' . $href . '"' : '')
+            . ' class="' . ($type == 'link' ? '' : ($type == 'link-button' ? 'lms-ui-link-button ' : '') . 'lms-ui-button')
+            . ($icon && !$custom_icon ? ' lms-ui-button-' . $icon : '')
             . ($class ? ' ' . $class : '') . '"'
             . ($id ? ' id="' . $id . '"' : '') . ($onclick ? ' onclick="' . $onclick . '"' : '')
             . ($form ? ' form="' . $form . '"' : '')
@@ -70,5 +71,5 @@ function smarty_function_button(array $params, Smarty_Internal_Template $templat
             . ($accesskey ? ' accesskey="' . $accesskey . '"' : '') . '>'
             . ($icon ? '<i' . ($custom_icon ? ' class="' . $icon . '"' : '') . '></i>' : '')
             . ($label ? '<span class="lms-ui-label">' . $label . '</span>' : '') . '
-		</' . ($type == 'link' ? 'a' : 'button') . '>';
+		</' . ($type == 'link' || $type == 'link-button' ? 'a' : 'button') . '>';
 }
