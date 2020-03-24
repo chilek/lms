@@ -94,6 +94,7 @@
 	{/if}
     </THEAD>
     <TBODY>
+	{$nlist = array_slice($nlist, $start, $pagelimit)}
 	{foreach $nlist as $item}
 	<TR class="highlight" data-target-url="?m=netnodeinfo&id={$item.id}" data-name="{$item.name}">
 		<TD class="valign-top">
