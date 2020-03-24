@@ -121,12 +121,6 @@ if ($id && !isset($_POST['ticket'])) {
                 $SESSION->redirect('?m=rtqueueview'
                     . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
                 break;
-/*
-            case 'unlink':
-                $LMS->TicketChange($id, array('parentid' => null));
-                $SESSION->redirect('?m=rtticketedit&id=' . $id);
-                break;
-*/
             case 'resolve':
                 $LMS->TicketChange($id, array('state' => RT_RESOLVED));
 
@@ -515,6 +509,10 @@ if (isset($_POST['ticket'])) {
     $ticket['requestor_phone'] = $ticketedit['requestor_phone'];
     $ticket['parentid'] = $ticketedit['parentid'];
     $ticket['categorywarn'] = $ticketedit['categorywarn'];
+
+    if (!empty($ticketedit['relatedtickets'])) {
+        $ticket['relatedtickets'] = $LMS->getSelectedRelatedTickets($ticketedit['relatedtickets']);
+    }
 } else {
     $ticketedit['categories'] = $ticket['categories'];
 

@@ -127,6 +127,8 @@ interface LMSHelpdeskManagerInterface
 
     public function GetRelatedTickets($ticketid);
 
+    public function getSelectedRelatedTickets(array $ticketids);
+
     public function GetTicketParentID($ticketid);
 
     public function IsTicketLoop($ticketid, $parentid);

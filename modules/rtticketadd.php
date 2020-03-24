@@ -336,6 +336,10 @@ if (isset($_POST['ticket'])) {
         $category['checked'] = isset($ticket['categories'][$category['id']]) || count($categories) == 1;
     }
     unset($category);
+
+    if (!empty($ticket['relatedtickets'])) {
+        $ticket['relatedtickets'] = $LMS->getSelectedRelatedTickets($ticket['relatedtickets']);
+    }
 } else {
     $queuelist = $LMS->GetQueueList(array('stats' => false));
     if (!$queue && !empty($queuelist)) {

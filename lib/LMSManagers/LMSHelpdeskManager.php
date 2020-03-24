@@ -2053,6 +2053,15 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         );
     }
 
+    public function getSelectedRelatedTickets(array $ticketids)
+    {
+        return $this->db->GetAllByKey(
+            'SELECT id, subject FROM rttickets WHERE id IN ? ORDER BY id',
+            'id',
+            array($ticketids)
+        );
+    }
+
     public function GetTicketParentID($ticketid)
     {
         if (!empty($ticketid)) {

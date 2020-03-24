@@ -2025,6 +2025,12 @@ class LMS
         return $manager->GetRelatedTickets($ticketid);
     }
 
+    public function getSelectedRelatedTickets(array $ticketids)
+    {
+        $manager = $this->getHelpdeskManager();
+        return $manager->getSelectedRelatedTickets($ticketids);
+    }
+
     public function GetTicketParentID($ticketid)
     {
         $manager = $this->getHelpdeskManager();
