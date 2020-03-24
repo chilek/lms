@@ -94,8 +94,8 @@
 	{/if}
     </THEAD>
     <TBODY>
-	{$nlist = array_slice($nlist, $start, $pagelimit)}
-	{foreach $nlist as $item}
+	{$nlist2 = array_slice($nlist, $start, $pagelimit)}
+	{foreach $nlist2 as $item}
 	<TR class="highlight" data-target-url="?m=netnodeinfo&id={$item.id}" data-name="{$item.name}">
 		<TD class="valign-top">
 			<IMG src="img/netnode.png" ALT=""> <a name="{$item.id}"><span class="bold">{$item.name}</span></A><BR>
