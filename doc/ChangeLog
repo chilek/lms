@@ -240,6 +240,7 @@ version 25-git (????-??-??):
     as webui [chilan]
   - improvement: customer can be filtered by active assignments with pro forma flag [chilan]
   - improvement: redesigned related and parent ticket selection user interface [chilan]
+  - improvement: redesigned ticket event assignment selection [chilan]
 
 version 24.0 (2019-05-16):
 

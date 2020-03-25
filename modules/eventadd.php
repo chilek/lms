@@ -132,7 +132,7 @@ if (isset($_POST['event'])) {
 
     switch ($event['helpdesk']) {
         case 'new':
-            if (!count($ticket['categories'])) {
+            if (!is_array($ticket['categories']) || !count($ticket['categories'])) {
                 $error['categories'] = trans('You have to select category!');
             }
             if (empty($event['description'])) {
@@ -349,6 +349,17 @@ if (isset($_POST['event'])) {
         unset($event['title']);
         unset($event['description']);
         unset($event['categories']);
+    } else {
+        if (!empty($event['ticketid'])) {
+            $event['ticket_subject'] = $LMS->GetTicketSubject($event['ticketid']);
+        }
+        if (!empty($ticket['relatedtickets'])) {
+            $ticket['relatedtickets'] = $LMS->getTickets($ticket['relatedtickets']);
+        }
+        if (!empty($ticket['parentid'])) {
+            $ticket['parent'] = $LMS->GetTicketContents($ticket['parentid'], true);
+        }
+        $SMARTY->assign('ticket', $ticket);
     }
 } else {
     if (isset($_GET['id']) && intval($_GET['id'])) {

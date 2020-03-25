@@ -1113,6 +1113,11 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         return $ticket;
     }
 
+    public function GetTicketSubject($id)
+    {
+        return $this->db->GetOne('SELECT subject FROM rttickets WHERE id = ?', array($id));
+    }
+
     public function GetMessage($id)
     {
         if ($message = $this->db->GetRow('SELECT * FROM rtmessages WHERE id=?', array($id))) {
@@ -2063,11 +2068,12 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     public function GetChildTickets($ticketid)
     {
         return $this->db->GetAll(
-		'SELECT id, subject FROM rttickets WHERE parentid = ? ORDER BY id', array($ticketid)
-	);
+            'SELECT id, subject FROM rttickets WHERE parentid = ? ORDER BY id',
+            array($ticketid)
+        );
     }
 
-    public function getSelectedRelatedTickets(array $ticketids)
+    public function getTickets(array $ticketids)
     {
         return $this->db->GetAllByKey(
             'SELECT id, subject FROM rttickets WHERE id IN ? ORDER BY id',

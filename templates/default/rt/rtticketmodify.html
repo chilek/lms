@@ -13,7 +13,8 @@
 		align-items: flex-start !important;
 	}
 
-	.ticket-list-container .lms-ui-box-row-field {
+	.ticket-list-container {
+		display: flex;
 		align-items: flex-start !important;
 	}
 
@@ -22,7 +23,7 @@
 		list-style: none;
 		padding: 0;
 		margin-block-start: 0;
-		margin-block-end: 0.5em;
+		margin-block-end: 0;
 	}
 
 	.ticket-list-container li .ticket-unlink {
@@ -312,35 +313,40 @@
 				</SELECT>
 			{/box_row}
 
-			{box_row id="parent-ticket" class="ticket-list-container" icon="lms-ui-icon-parentticket" label="Parent ticket:"}
-				<div class="ticket-suggestion-container">
-					{button type="link" class="ticket-suggestion-button" icon="edit" href="#"}
-					<input type="text" id="parentid" class="ticket-suggestion" {tip text="Enter ID of parent ticket" trigger="parentid"}>
+			{box_row icon="lms-ui-icon-parentticket" label="Parent ticket:"}
+				<div id="parent-ticket" class="ticket-list-container">
+					<div class="ticket-suggestion-container">
+						{button type="link" class="ticket-suggestion-button" icon="edit" href="#"}
+						<input type="text" id="parentid" class="ticket-suggestion" {tip text="Enter ID of parent ticket" trigger="parentid"}>
+					</div>
+					<ul class="ticket-list"{if !$ticket.parent} style="display: none;"{/if}>
+						{if $ticket.parent}
+							<li data-ticket-id="{$ticket.parent.ticketid}">
+								<input type="hidden" name="ticket[parentid]" value="{$ticket.parent.ticketid}">
+								<i class="lms-ui-icon-delete ticket-unlink"></i>#{$ticket.parent.ticketid|string_format:"%06d"} <A href="?m=rtticketview&id={$ticket.parent.ticketid}">{$ticket.parent.subject}</A>
+							</li>
+						{/if}
+					</ul>
 				</div>
-				<ul class="ticket-list"{if !$ticket.parent} style="display: none;"{/if}>
-					{if $ticket.parent}
-						<li data-ticket-id="{$ticket.parent.ticketid}">
-							<input type="hidden" name="ticket[parentid]" value="{$ticket.parent.ticketid}">
-							<i class="lms-ui-icon-delete ticket-unlink"></i>#{$ticket.parent.ticketid|string_format:"%06d"} <A href="?m=rtticketview&id={$ticket.parent.ticketid}">{$ticket.parent.subject}</A>
-						</li>
-					{/if}
 			{/box_row}
 
-			{box_row id="related-tickets" class="ticket-list-container" icon="lms-ui-icon-relatedticket" label="Related tickets:"}
-				<div class="ticket-suggestion-container">
-					{button type="link" class="ticket-suggestion-button" icon="edit" href="#"}
-					<input type="text" class="ticket-suggestion" {tip text="Enter ticket identifier or ticket subject part"}>
+			{box_row icon="lms-ui-icon-relatedticket" label="Related tickets:"}
+				<div id="related-tickets" class="ticket-list-container">
+					<div class="ticket-suggestion-container">
+						{button type="link" class="ticket-suggestion-button" icon="edit" href="#"}
+						<input type="text" class="ticket-suggestion" {tip text="Enter ticket identifier or ticket subject part"}>
+					</div>
+					<ul class="ticket-list"{if !$ticket.relatedtickets} style="display: none;"{/if}>
+						{if $ticket.relatedtickets}
+							{foreach $ticket.relatedtickets as $i}
+								<li data-ticket-id="{$i.id}">
+									<input type="hidden" name="ticket[relatedtickets][{$i.id}]" value="{$i.id}">
+									<i class="lms-ui-icon-delete ticket-unlink"></i>#{$i.id|string_format:"%06d"} <A href="?m=rtticketview&id={$i.id}">{$i.subject}</A>
+								</li>
+							{/foreach}
+						{/if}
+					</ul>
 				</div>
-				<ul class="ticket-list"{if !$ticket.relatedtickets} style="display: none;"{/if}>
-					{if $ticket.relatedtickets}
-						{foreach $ticket.relatedtickets as $i}
-							<li data-ticket-id="{$i.id}">
-								<input type="hidden" name="ticket[relatedtickets][{$i.id}]" value="{$i.id}">
-								<i class="lms-ui-icon-delete ticket-unlink"></i>#{$i.id|string_format:"%06d"} <A href="?m=rtticketview&id={$i.id}">{$i.subject}</A>
-							</li>
-						{/foreach}
-					{/if}
-				</ul>
 			{/box_row}
 			{/block}
 {/box_panel}
@@ -357,6 +363,51 @@
 
 <script src="js/templates/rt/rtticketmodify.js"></script>
 <script>
+
+	function initTicketQuickSearch(selector, field_name_pattern, single) {
+		if (typeof(single) === 'undefined') {
+			single = false;
+		}
+		var ticket_list_container = $(selector);
+		if (!ticket_list_container.length) {
+			return;
+		}
+		var ticket_list = ticket_list_container.find('.ticket-list');
+		var ticket_suggestion = ticket_list_container.find('.ticket-suggestion');
+		new AutoSuggest(
+				ticket_list_container.closest('form')[0], ticket_suggestion[0],
+				'?m=quicksearch&ajax=1&mode=ticket&what=', 0,
+				function (data) {
+					ticket_suggestion.val('');
+					var html = '<li data-ticket-id="' + data.id + '">' +
+							'<input type="hidden" name="' + field_name_pattern.replace('%id%', data.id) + '" value="' + data.id + '">' +
+							'<i class="lms-ui-icon-delete ticket-unlink"></i>' +
+							sprintf("#%06d", data.id) + ' <a href="?m=rtticketview&id=' + data.id + '">' +
+							data.name + '</a></li>';
+					if (single) {
+						ticket_list.html(html).show();
+					} else {
+						ticket_list.append(html).show();
+					}
+				},
+				function (suggestions) {
+					var result = [];
+					var ticketids = [];
+					$('li[data-ticket-id]').each(function () {
+						ticketids.push($(this).attr('data-ticket-id'));
+					});
+					{if isset($ticket.ticketid)}
+					ticketids.push('{$ticket.ticketid}');
+					{/if}
+					$.each(suggestions, function (key, suggestion) {
+						if (ticketids.indexOf(suggestion.id) == -1) {
+							result.push(suggestion);
+						}
+					});
+					return result;
+				}
+		);
+	}
 
 	$(function() {
 		$('#resolve').change(function() {
@@ -385,47 +436,8 @@
 			$($(this).attr('data-target')).val(Base64.decode(selected.attr('data-message')));
 		});
 
-		function initTicketQuickSearch(selector, single = false) {
-			var ticket_list_container = $(selector);
-			var ticket_list = ticket_list_container.find('.ticket-list');
-			var ticket_suggestion = ticket_list_container.find('.ticket-suggestion');
-			new AutoSuggest(
-					ticket_list_container.closest('form')[0], ticket_suggestion[0],
-					'?m=quicksearch&ajax=1&mode=ticket&what=', 0,
-					function (data) {
-						ticket_suggestion.val('');
-						var html = '<li data-ticket-id="' + data.id + '">' +
-								'<input type="hidden" name="ticket[parentid]" value="' + data.id + '">' +
-								'<i class="lms-ui-icon-delete ticket-unlink"></i>' +
-								sprintf("#%06d", data.id) + ' <a href="?m=rtticketview&id=' + data.id + '">' +
-								data.name + '</a></li>';
-						if (single) {
-							ticket_list.html(html).show();
-						} else {
-							ticket_list.append(html).show();
-						}
-					},
-					function (suggestions) {
-						var result = [];
-						var ticketids = [];
-						$('li[data-ticket-id]').each(function () {
-							ticketids.push($(this).attr('data-ticket-id'));
-						});
-						{if isset($ticket.ticketid)}
-							ticketids.push('{$ticket.ticketid}');
-						{/if}
-						$.each(suggestions, function (key, suggestion) {
-							if (ticketids.indexOf(suggestion.id) == -1) {
-								result.push(suggestion);
-							}
-						});
-						return result;
-					}
-			);
-		}
-
-		initTicketQuickSearch('#parent-ticket', true);
-		initTicketQuickSearch('#related-tickets');
+		initTicketQuickSearch('#parent-ticket', 'ticket[parentid]', true);
+		initTicketQuickSearch('#related-tickets', 'ticket[relatedtickets][%id%]');
 
 		$('.ticket-list-container').on('click', '.ticket-unlink', function () {
 			var list_elem = $(this).closest('li');
@@ -433,13 +445,20 @@
 			list_elem.remove();
 			ticket_list.toggle(ticket_list.find('li').length > 0);
 		}).find('.ticket-suggestion-container a').click(function() {
-			$(this).hide().next().show().focus().closest('.lms-ui-box-row-field').css('flex-direction', 'column')
-				.find('ul').css('margin-block-start', '0.5em');
+			console.log('click');
+			$(this).hide().next().show().focus().closest('.ticket-list-container').css('flex-direction', 'column')
+				.find('ul').css({
+					'margin-block-start': '0.5em',
+					'margin-block-end': '0.5em'
+				});
 		}).end().find('.ticket-suggestion-container input').focusout(function() {
-			$(this).hide().prev().show().closest('.lms-ui-box-row-field').css('flex-direction', 'row')
-				.find('ul').css('margin-block-start', '0');
+			console.log('focusout');
+			$(this).hide().prev().show().closest('.ticket-list-container').css('flex-direction', 'row')
+				.find('ul').css({
+					'margin-block-start': '0',
+					'margin-block-end': '0'
+				});
 		});
-
 	});
 
 </script>

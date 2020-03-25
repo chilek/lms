@@ -187,7 +187,7 @@ if (isset($_POST['event'])) {
         $event['begintime'] = $begintime;
         $event['enddate'] = $enddate;
         $event['endtime'] = $endtime;
-        $event['helpdesk'] = isset($event['helpdesk']) ? $event['ticketid'] : null;
+        $event['helpdesk'] = $event['ticketid'] ?: null;
         $LMS->EventUpdate($event);
 
         $hook_data = $LMS->executeHook(
@@ -200,6 +200,10 @@ if (isset($_POST['event'])) {
 
         $SESSION->redirect('?m=eventlist'
             . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
+    } else {
+        if (!empty($event['ticketid'])) {
+            $event['ticket_subject'] = $LMS->GetTicketSubject($event['ticketid']);
+        }
     }
 } else {
     $event['overlapwarned'] = 0;

@@ -18,17 +18,21 @@
 			align-items: flex-start !important;
 		}
 
+		#eventadd-ticket,
+		#eventedit-ticket {
+			display: flex;
+		}
+
 	</style>
 	<P class="text-center">
 	<FORM method="POST" action="?m={$layout.module}" name="event" id="event">
 		<INPUT type="hidden" name="event[id]" value="{$event.id}">
-		<INPUT type="hidden" name="event[ticketid]" value="{$event.ticketid}">
 		<INPUT type="hidden" name="event[overlapwarned]" value="{$event.overlapwarned}">
 		<INPUT type="submit" class="hiddenbtn">
 
 		{box_container id="event"}
 			{box_header icon="img/calendar.gif" label="Title:"}
-				<INPUT type="text" name="event[title]" id="event[title]" value="{$event.title}" size="50" required {tip text="Enter event title" trigger="title"}>
+				<INPUT type="text" name="event[title]" id="event[title]" value="{$event.title}" size="50" {tip text="Enter event title" trigger="title"}>
 			{/box_header}
 
 			{box_contents}
@@ -138,12 +142,24 @@
 							<TEXTAREA name="event[note]" cols="50" rows="5" {tip text="Enter note (optional)"}>{$event.note}</TEXTAREA>
 						{/box_row}
 
-						{box_row icon="img/ticket.gif" label="Assign ticket" labelid="helpdesk-on"}
-							<input type="checkbox" id="helpdesk-on" name="event[helpdesk]" value="1"
-									{if isset($event.helpdesk) && $event.helpdesk} checked{/if}>
-							<input type="text" name="event[ticketid]" id="ticketid" value="{$event.ticketid}"
-									{if !isset($event.helpdesk) || !$event.helpdesk}style="display: none;"{/if} {tip trigger="ticketid"}>
+						{box_row icon="img/ticket.gif" label="Assign ticket"}
+							<input type="hidden" name="event[ticketid]" value="0">
+							<div id="eventedit-ticket" class="ticket-list-container">
+								<div class="ticket-suggestion-container">
+									{button type="link" class="ticket-suggestion-button" icon="edit" href="#"}
+									<input type="text" id="ticketid" class="ticket-suggestion" {tip trigger="ticketid"}>
+								</div>
+								<ul class="ticket-list"{if empty($event.ticketid)} style="display: none;"{/if}>
+									{if $event.ticketid}
+										<li data-ticket-id="{$event.ticketid}">
+											<input type="hidden" name="event[ticketid]" value="{$event.ticketid}">
+											<i class="lms-ui-icon-delete ticket-unlink"></i>#{$event.ticketid|string_format:"%06d"} <A href="?m=rtticketview&id={$event.ticketid}">{$event.ticket_subject}</A>
+										</li>
+									{/if}
+								</ul>
+							</div>
 						{/box_row}
+
 {/if}
 
 {if $layout.module == 'eventadd'}
@@ -161,8 +177,21 @@
 								{trans("<!ticket-event>assign")}
 							</label>
 							&nbsp;
-							<input type="text" name="event[ticketid]" id="ticketid" value="{if !empty($event.ticketid)}{$event.ticketid}{/if}"
-								   {if !isset($event.helpdesk) || $event.helpdesk != 'assign'}style="display: none;"{/if} {tip trigger="ticketid"}>
+							<input type="hidden" name="event[ticketid]" value="0">
+							<div id="eventadd-ticket" class="ticket-list-container"{if !isset($event.helpdesk) || $event.helpdesk != 'assign'} style="display: none;"{/if}>
+								<div class="ticket-suggestion-container">
+									{button type="link" class="ticket-suggestion-button" icon="edit" href="#"}
+									<input type="text" id="ticketid" class="ticket-suggestion" {tip trigger="ticketid"}>
+								</div>
+								<ul class="ticket-list"{if empty($event.ticketid)} style="display: none;"{/if}>
+									{if $event.ticketid}
+										<li data-ticket-id="{$event.ticketid}">
+											<input type="hidden" name="event[ticketid]" value="{$event.ticketid}">
+											<i class="lms-ui-icon-delete ticket-unlink"></i>#{$event.ticketid|string_format:"%06d"} <A href="?m=rtticketview&id={$event.ticketid}">{$event.ticket_subject}</A>
+										</li>
+									{/if}
+								</ul>
+							</div>
 						{/box_row}
 {/if}
 
@@ -185,14 +214,14 @@
 				{button icon="cancel" onclick="location.href='?m=eventlist{if isset($backid)}#{$backid}{/if}';" label="Cancel"}
 			{/box_buttons}
 		{/box_container}
-        <div id="row"{if $layout.module == 'eventedit' || $event.helpdesk == 'none' || $event.helpdesk == 'assign'} style="display:none;"}{/if}>
+        <div id="row"{if $layout.module == 'eventedit' || $event.helpdesk == 'none' || $event.helpdesk == 'assign'} style="display:none;"{/if}>
 		{include file="rt/rtticketmodify.html"}
         </div>
 	</form>
 	<script type="text/javascript" src="js/lms-ui-event-time-slider.js"></script>
 	<SCRIPT>
 
-		$(function () {
+		$(function() {
 			$('[name="event[title]"]').focus();
 
 			$('[name="event[rtqueue]"]').change(function () {
@@ -214,18 +243,18 @@
 				$('#customernotify-row').show();
 			}
 
-			$('#helpdesk-on').change(function () {
-				{if $layout.module == 'eventadd'}
-				$('#row').toggle();
-				{else}
-				$('#ticketid').toggle();
-				{/if}
-			});
-
 			$('.helpdesk-assign-selection').change(function() {
 				$('#row').toggle($(this).val() == 'new');
-				$('#ticketid').toggle($(this).val() == 'assign');
+				var ifAssign = $(this).val() == 'assign'
+				var ticket_list_container = $('#eventadd-ticket,#eventedit-ticket');
+				ticket_list_container.toggle(ifAssign);
+				if (ifAssign && !ticket_list_container.find('li').length) {
+					ticket_list_container.find('.ticket-suggestion-button').click();
+				}
 			});
+
+			initTicketQuickSearch('#eventadd-ticket', 'event[ticketid]', true);
+			initTicketQuickSearch('#eventedit-ticket', 'event[ticketid]', true);
 		});
 
 		function update_user_selection(users) {
