@@ -408,7 +408,6 @@
 
 			$('#parent-ticket').on('click', '.ticket-unlink', function () {
 				$(this).closest('li').remove();
-				return false;
 			});
 		})();
 
@@ -448,12 +447,9 @@
 
 			$('#related-tickets').on('click', '.ticket-unlink', function () {
 				var list_elem = $(this).closest('li');
-				confirmDialog($t("Are you sure, you want to unlink ticket '$a'?", sprintf("#%06d", parseInt(list_elem.attr('data-ticket-id')))), this).done(function () {
-					var ticket_list = $(this).closest('.ticket-list');
-					list_elem.remove();
-					ticket_list.toggle(ticket_list.find('li').length > 0);
-				});
-				return false;
+				var ticket_list = $(this).closest('.ticket-list');
+				list_elem.remove();
+				ticket_list.toggle(ticket_list.find('li').length > 0);
 			});
 		})();
 	});
