@@ -243,15 +243,30 @@
 				$('#customernotify-row').show();
 			}
 
+			function updateTicketRequirements(assign_type) {
+				{if ConfigHelper::checkConfig('rt.ticket_service_required')}
+					$('#ticket-service').attr('required', function() {
+						return assign_type == 'new' ? '' : null;
+					});
+				{/if}
+				{if ConfigHelper::checkConfig('rt.ticket_type_required')}
+					$('#ticket-type').attr('required', function() {
+						return assign_type == 'new' ? '' : null;
+					});
+				{/if}
+			}
+
 			$('.helpdesk-assign-selection').change(function() {
-				$('#row').toggle($(this).val() == 'new');
-				var ifAssign = $(this).val() == 'assign'
+				var assign_type = $(this).val();
+				$('#row').toggle(assign_type == 'new');
+				updateTicketRequirements(assign_type)
 				var ticket_list_container = $('#eventadd-ticket,#eventedit-ticket');
-				ticket_list_container.toggle(ifAssign);
-				if (ifAssign && !ticket_list_container.find('li').length) {
+				ticket_list_container.toggle(assign_type == 'assign');
+				if (assign_type == 'assign' && !ticket_list_container.find('li').length) {
 					ticket_list_container.find('.ticket-suggestion-button').click();
 				}
 			});
+			updateTicketRequirements($('.helpdesk-assign-selection').val());
 
 			initTicketQuickSearch('#eventadd-ticket', 'event[ticketid]', true);
 			initTicketQuickSearch('#eventedit-ticket', 'event[ticketid]', true);

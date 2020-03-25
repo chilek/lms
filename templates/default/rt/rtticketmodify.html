@@ -56,7 +56,7 @@
 			<INPUT type="text" size="50" name="ticket[subject]" value="{$ticket.subject|escape}" {tip text="Enter subject" trigger="subject"}>
 		{/box_header}
 		{box_header icon="img/service-type.png" label="Service type:"}
-			<SELECT name="ticket[service]" {if ConfigHelper::checkConfig('rt.ticket_service_required')}required {tip text="Choose service type" trigger="service"}>
+			<SELECT name="ticket[service]" id="ticket-service" {if ConfigHelper::checkConfig('rt.ticket_service_required')}required {tip text="Choose service type" trigger="service"}>
 					<OPTION value="" selected hidden>{trans("select")}</OPTION>{else}>{/if}
 				{foreach $_SERVICETYPES as $key => $service}
 					<OPTION value="{$key}"{if $key == $ticket.service} selected{/if}>{$service}</OPTION>
@@ -64,7 +64,7 @@
 			</SELECT>
 		{/box_header}
 		{box_header icon="img/ticket-type.png" label="Ticket type:"}
-			<SELECT name="ticket[type]" {if ConfigHelper::checkConfig('rt.ticket_type_required')}required {tip text="Choose ticket type" trigger="type"}>
+			<SELECT name="ticket[type]" id="ticket-type" {if ConfigHelper::checkConfig('rt.ticket_type_required')}required {tip text="Choose ticket type" trigger="type"}>
 					<OPTION value="" selected hidden>{trans("select")}</OPTION>{else}>{/if}
 				{foreach $_RT_TYPES as $key => $type}
 					<OPTION value="{$key}"{if $key == $ticket.type} selected{/if}>{$type.label}</OPTION>
@@ -445,14 +445,12 @@
 			list_elem.remove();
 			ticket_list.toggle(ticket_list.find('li').length > 0);
 		}).find('.ticket-suggestion-container a').click(function() {
-			console.log('click');
 			$(this).hide().next().show().focus().closest('.ticket-list-container').css('flex-direction', 'column')
 				.find('ul').css({
 					'margin-block-start': '0.5em',
 					'margin-block-end': '0.5em'
 				});
 		}).end().find('.ticket-suggestion-container input').focusout(function() {
-			console.log('focusout');
 			$(this).hide().prev().show().closest('.ticket-list-container').css('flex-direction', 'row')
 				.find('ul').css({
 					'margin-block-start': '0',
