@@ -314,9 +314,7 @@
 
 			{box_row id="parent-ticket" class="ticket-list-container" icon="lms-ui-icon-parentticket" label="Parent ticket:"}
 				<div class="ticket-suggestion-container">
-					<a class="ticket-suggestion-button">
-						<i class="lms-ui-icon-edit"></i>
-					</a>
+					{button type="link" class="ticket-suggestion-button" icon="edit" href="#"}
 					<input type="text" id="parentid" class="ticket-suggestion" {tip text="Enter ID of parent ticket" trigger="parentid"}>
 				</div>
 				<ul class="ticket-list"{if !$ticket.parent} style="display: none;"{/if}>
@@ -330,9 +328,7 @@
 
 			{box_row id="related-tickets" class="ticket-list-container" icon="lms-ui-icon-relatedticket" label="Related tickets:"}
 				<div class="ticket-suggestion-container">
-					<a class="ticket-suggestion-button">
-						<i class="lms-ui-icon-edit"></i>
-					</a>
+					{button type="link" class="ticket-suggestion-button" icon="edit" href="#"}
 					<input type="text" class="ticket-suggestion" {tip text="Enter ticket identifier or ticket subject part"}>
 				</div>
 				<ul class="ticket-list"{if !$ticket.relatedtickets} style="display: none;"{/if}>
