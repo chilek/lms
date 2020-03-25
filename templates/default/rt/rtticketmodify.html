@@ -385,12 +385,12 @@
 			$($(this).attr('data-target')).val(Base64.decode(selected.attr('data-message')));
 		});
 
-		(function() {
-			var parent_ticket = $('#parent-ticket');
-			var ticket_list = parent_ticket.find('.ticket-list');
-			var ticket_suggestion = parent_ticket.find('.ticket-suggestion');
+		function initTicketQuickSearch(selector, single = false) {
+			var ticket_list_container = $(selector);
+			var ticket_list = ticket_list_container.find('.ticket-list');
+			var ticket_suggestion = ticket_list_container.find('.ticket-suggestion');
 			new AutoSuggest(
-					parent_ticket.closest('form')[0], ticket_suggestion[0],
+					ticket_list_container.closest('form')[0], ticket_suggestion[0],
 					'?m=quicksearch&ajax=1&mode=ticket&what=', 0,
 					function (data) {
 						ticket_suggestion.val('');
@@ -399,7 +399,11 @@
 								'<i class="lms-ui-icon-delete ticket-unlink"></i>' +
 								sprintf("#%06d", data.id) + ' <a href="?m=rtticketview&id=' + data.id + '">' +
 								data.name + '</a></li>';
-						ticket_list.html(html).show();
+						if (single) {
+							ticket_list.html(html).show();
+						} else {
+							ticket_list.append(html).show();
+						}
 					},
 					function (suggestions) {
 						var result = [];
@@ -418,42 +422,10 @@
 						return result;
 					}
 			);
-		})();
+		}
 
-		(function() {
-			var related_tickets = $('#related-tickets');
-			var ticket_list = related_tickets.find('.ticket-list');
-			var ticket_suggestion = related_tickets.find('.ticket-suggestion');
-			new AutoSuggest(
-					related_tickets.closest('form')[0], ticket_suggestion[0],
-					'?m=quicksearch&ajax=1&mode=ticket&what=', 0,
-					function (data) {
-						ticket_suggestion.val('');
-						var html = '<li data-ticket-id="' + data.id + '">' +
-								'<input type="hidden" name="ticket[relatedtickets][' + data.id + ']" value="' + data.id + '">' +
-								'<i class="lms-ui-icon-delete ticket-unlink"></i>' +
-								sprintf("#%06d", data.id) + ' <a href="?m=rtticketview&id=' + data.id + '">' +
-								data.name + '</a></li>';
-						ticket_list.append(html).show();
-					},
-					function (suggestions) {
-						var result = [];
-						var ticketids = [];
-						$('li[data-ticket-id]').each(function () {
-							ticketids.push($(this).attr('data-ticket-id'));
-						});
-						{if isset($ticket.ticketid)}
-							ticketids.push('{$ticket.ticketid}');
-						{/if}
-						$.each(suggestions, function (key, suggestion) {
-							if (ticketids.indexOf(suggestion.id) == -1) {
-								result.push(suggestion);
-							}
-						});
-						return result;
-					}
-			);
-		})();
+		initTicketQuickSearch('#parent-ticket', true);
+		initTicketQuickSearch('#related-tickets');
 
 		$('.ticket-list-container').on('click', '.ticket-unlink', function () {
 			var list_elem = $(this).closest('li');
