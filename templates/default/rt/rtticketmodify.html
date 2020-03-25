@@ -14,7 +14,6 @@
 	}
 
 	.ticket-list-container .lms-ui-box-row-field {
-		flex-direction: column !important;
 		align-items: flex-start !important;
 	}
 
@@ -22,7 +21,7 @@
 		display: inline;
 		list-style: none;
 		padding: 0;
-		margin-block-start: 0.5em;
+		margin-block-start: 0;
 		margin-block-end: 0.5em;
 	}
 
@@ -38,6 +37,14 @@
 	.ticket-list-container li:hover .ticket-unlink {
 		 visibility: visible;
 		 cursor: pointer;
+	}
+
+	.ticket-suggestion-container .ticket-suggestion-button {
+		cursor: pointer;
+	}
+
+	.ticket-suggestion-container .ticket-suggestion:not(:focus) {
+		display: none;
 	}
 
 </style>
@@ -306,7 +313,12 @@
 			{/box_row}
 
 			{box_row id="parent-ticket" class="ticket-list-container" icon="lms-ui-icon-parentticket" label="Parent ticket:"}
-				<input type="text" id="parentid" class="ticket-suggestion" {tip text="Enter ID of parent ticket" trigger="parentid"}>
+				<div class="ticket-suggestion-container">
+					<a class="ticket-suggestion-button">
+						<i class="lms-ui-icon-edit"></i>
+					</a>
+					<input type="text" id="parentid" class="ticket-suggestion" {tip text="Enter ID of parent ticket" trigger="parentid"}>
+				</div>
 				<ul class="ticket-list"{if !$ticket.parent} style="display: none;"{/if}>
 					{if $ticket.parent}
 						<li data-ticket-id="{$ticket.parent.ticketid}">
@@ -317,7 +329,12 @@
 			{/box_row}
 
 			{box_row id="related-tickets" class="ticket-list-container" icon="lms-ui-icon-relatedticket" label="Related tickets:"}
-				<input type="text" class="ticket-suggestion" {tip text="Enter ticket identifier or ticket subject part"}>
+				<div class="ticket-suggestion-container">
+					<a class="ticket-suggestion-button">
+						<i class="lms-ui-icon-edit"></i>
+					</a>
+					<input type="text" class="ticket-suggestion" {tip text="Enter ticket identifier or ticket subject part"}>
+				</div>
 				<ul class="ticket-list"{if !$ticket.relatedtickets} style="display: none;"{/if}>
 					{if $ticket.relatedtickets}
 						{foreach $ticket.relatedtickets as $i}
@@ -405,13 +422,6 @@
 						return result;
 					}
 			);
-
-			$('#parent-ticket').on('click', '.ticket-unlink', function () {
-				var list_elem = $(this).closest('li');
-				var ticket_list = $(this).closest('.ticket-list');
-				list_elem.remove();
-				ticket_list.toggle(ticket_list.find('li').length > 0);
-			});
 		})();
 
 		(function() {
@@ -447,14 +457,21 @@
 						return result;
 					}
 			);
-
-			$('#related-tickets').on('click', '.ticket-unlink', function () {
-				var list_elem = $(this).closest('li');
-				var ticket_list = $(this).closest('.ticket-list');
-				list_elem.remove();
-				ticket_list.toggle(ticket_list.find('li').length > 0);
-			});
 		})();
+
+		$('.ticket-list-container').on('click', '.ticket-unlink', function () {
+			var list_elem = $(this).closest('li');
+			var ticket_list = $(this).closest('.ticket-list');
+			list_elem.remove();
+			ticket_list.toggle(ticket_list.find('li').length > 0);
+		}).find('.ticket-suggestion-container a').click(function() {
+			$(this).hide().next().show().focus().closest('.lms-ui-box-row-field').css('flex-direction', 'column')
+				.find('ul').css('margin-block-start', '0.5em');
+		}).end().find('.ticket-suggestion-container input').focusout(function() {
+			$(this).hide().prev().show().closest('.lms-ui-box-row-field').css('flex-direction', 'row')
+				.find('ul').css('margin-block-start', '0');
+		});
+
 	});
 
 </script>
