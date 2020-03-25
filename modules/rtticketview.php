@@ -46,7 +46,6 @@ if (!empty($ticket['relatedtickets'])) {
     }
 }
 
-
 if (!empty($ticket['parentid'])) {
     $parentticket = true;
     if ($LMS->CheckTicketAccess($ticket['parentid'])) {
