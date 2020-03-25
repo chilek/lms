@@ -165,15 +165,15 @@
 {if $layout.module == 'eventadd'}
 						{box_row icon="img/ticket.gif" label="<!ticket-event>Ticket:"}
 							<label for="helpdesk-none">
-								<input type="radio" class="helpdesk-assign-selection" id="helpdesk-none" name="event[helpdesk]" value="none"{if $event['helpdesk'] == 'none'} checked{/if}>
+								<input type="radio" class="helpdesk-assign-selection" id="helpdesk-none" name="event[helpdesk]" value="none"{if $event.helpdesk == 'none'} checked{/if}>
 								{trans("<!ticket-event>none")}
 							</label>
 							<label for="helpdesk-new">
-								<input type="radio" class="helpdesk-assign-selection" id="helpdesk-new" name="event[helpdesk]" value="new"{if $event['helpdesk'] == 'new'} checked{/if}>
+								<input type="radio" class="helpdesk-assign-selection" id="helpdesk-new" name="event[helpdesk]" value="new"{if $event.helpdesk == 'new'} checked{/if}>
 								{trans("<!ticket-event>new")}
 							</label>
 							<label for="helpdesk-assign">
-								<input type="radio" class="helpdesk-assign-selection" id="helpdesk-assign" name="event[helpdesk]" value="assign"{if $event['helpdesk'] == 'assign'} checked{/if}>
+								<input type="radio" class="helpdesk-assign-selection" id="helpdesk-assign" name="event[helpdesk]" value="assign"{if $event.helpdesk == 'assign'} checked{/if}>
 								{trans("<!ticket-event>assign")}
 							</label>
 							&nbsp;
@@ -266,7 +266,9 @@
 					ticket_list_container.find('.ticket-suggestion-button').click();
 				}
 			});
-			updateTicketRequirements($('.helpdesk-assign-selection').val());
+			{if isset($event.helpdesk)}
+				updateTicketRequirements('{$event.helpdesk}');
+			{/if}
 
 			initTicketQuickSearch('#eventadd-ticket', 'event[ticketid]', true);
 			initTicketQuickSearch('#eventedit-ticket', 'event[ticketid]', true);
