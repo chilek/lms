@@ -310,7 +310,7 @@
 									<i class="lms-ui-icon-content lms-ui-icon-parentticket"></i>{trans("Parent ticket:")}
 								</TD>
 								<TD>
-									<A href="?m=rtticketview&amp;id={$ticket.parentid}">{t a=$ticket.parentid|string_format:"%06d"}$a{/t}</A>
+									#{$ticket.parent.ticketid|string_format:"%06d"} <a href="?m=rtticketview&id={$ticket.parent.ticketid}">{$ticket.parent.subject}</a><br>
 								</TD>
 							</TR>
 							{/if}

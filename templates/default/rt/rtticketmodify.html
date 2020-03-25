@@ -311,7 +311,7 @@
 					{if $ticket.parent}
 						<li data-ticket-id="{$ticket.parent.ticketid}">
 							<input type="hidden" name="ticket[parentid]" value="{$ticket.parent.ticketid}">
-							#{$ticket.parent.ticketid|string_format:"%06d"} <A href="?m=rtticketview&id={$ticket.parent.ticketid}">{$ticket.parent.subject}</A>
+							<i class="lms-ui-icon-delete ticket-unlink"></i>#{$ticket.parent.ticketid|string_format:"%06d"} <A href="?m=rtticketview&id={$ticket.parent.ticketid}">{$ticket.parent.subject}</A>
 						</li>
 					{/if}
 			{/box_row}
@@ -382,6 +382,7 @@
 					function (data) {
 						ticket_suggestion.val('');
 						var html = '<li data-ticket-id="' + data.id + '">' +
+								'<i class="lms-ui-icon-delete ticket-unlink"></i>' +
 								'<input type="hidden" name="ticket[parentid]" value="' + data.id + '">' +
 								sprintf("#%06d", data.id) + ' <a href="?m=rtticketview&id=' + data.id + '">' +
 								data.name + '</a></li>';
@@ -404,6 +405,11 @@
 						return result;
 					}
 			);
+
+			$('#parent-ticket').on('click', '.ticket-unlink', function () {
+				$(this).closest('li').remove();
+				return false;
+			});
 		})();
 
 		(function() {
