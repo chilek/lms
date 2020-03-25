@@ -62,6 +62,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
      *          array() or single integer value
      *          -1 = without owner,
      *          -2 = with,
+     *          all = filter off
      *      catids - ticket categories (default: null = any, -1 = without category),
      *          array() of integer values or single integer value
      *      removed - ticket removal flag (default: null = any),
@@ -258,7 +259,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 break;
             case '-1':
                 $ownerfilter = ' AND t.owner IS NULL';
-                break;
+		break;
+	    case 'all':
+                $ownerfilter = '';
+		break;
             default:
                 if (is_array($owner)) {
                     $ownerfilter = ' AND t.owner IN (' . implode(',', $owner) . ') ';

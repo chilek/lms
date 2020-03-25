@@ -66,6 +66,7 @@
             </label>
             <label class="nobr">
             {trans("Owner:")}
+	    <input type="hidden" name="owner" value="all">
             <SELECT size="1" name="owner[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect" data-default-value="{trans("No filter")}">
                 <option value="" data-exclusive{if is_array($filter.owner) && in_array(-1, $filter.owner)} selected{/if}>{trans("No filter")}</option>
                 <option value="-1" data-exclusive{if is_array($filter.owner) && in_array(-1, $filter.owner)} selected{/if}>{trans("no owner")}</option>
