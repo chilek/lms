@@ -32,7 +32,7 @@
 
 		{box_container id="event"}
 			{box_header icon="img/calendar.gif" label="Title:"}
-				<INPUT type="text" name="event[title]" id="event[title]" value="{$event.title}" size="50" {tip text="Enter event title" trigger="title"}>
+				<INPUT type="text" name="event[title]" id="event[title]" value="{$event.title}" required size="50" {tip text="Enter event title" trigger="title"}>
 			{/box_header}
 
 			{box_contents}
