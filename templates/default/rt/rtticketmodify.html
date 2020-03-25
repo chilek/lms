@@ -407,7 +407,10 @@
 			);
 
 			$('#parent-ticket').on('click', '.ticket-unlink', function () {
-				$(this).closest('li').remove();
+				var list_elem = $(this).closest('li');
+				var ticket_list = $(this).closest('.ticket-list');
+				list_elem.remove();
+				ticket_list.toggle(ticket_list.find('li').length > 0);
 			});
 		})();
 
