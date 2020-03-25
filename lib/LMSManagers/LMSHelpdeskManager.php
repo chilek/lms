@@ -1074,6 +1074,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 return $elem['name'];
         }, $ticket['categories']);
 
+        $ticket['parent'] = $this->db->GetRow('SELECT id AS ticketid, subject FROM rttickets WHERE id = ?', array($ticket['parentid']));
         $ticket['relatedtickets'] = $this->GetRelatedTickets($id);
 
         if (!$short) {

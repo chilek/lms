@@ -340,6 +340,9 @@ if (isset($_POST['ticket'])) {
     if (!empty($ticket['relatedtickets'])) {
         $ticket['relatedtickets'] = $LMS->getSelectedRelatedTickets($ticket['relatedtickets']);
     }
+    if (!empty($ticket['parentid'])) {
+        $ticket['parent'] = $LMS->GetTicketContents($ticket['parentid'], true);
+    }
 } else {
     $queuelist = $LMS->GetQueueList(array('stats' => false));
     if (!$queue && !empty($queuelist)) {

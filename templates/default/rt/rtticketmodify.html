@@ -22,6 +22,8 @@
 		display: inline;
 		list-style: none;
 		padding: 0;
+		margin-block-start: 0.5em;
+		margin-block-end: 0.5em;
 	}
 
 	.ticket-list-container li .ticket-unlink {
@@ -303,11 +305,18 @@
 				</SELECT>
 			{/box_row}
 
-			{box_row icon="lms-ui-icon-parentticket" label="Parent ticket:"}
-				<input type="TEXT" name="ticket[parentid]" value="{$ticket.parentid}" {tip text="Enter ID of parent ticket" trigger="parentid"}>
+			{box_row id="parent-ticket" class="ticket-list-container" icon="lms-ui-icon-parentticket" label="Parent ticket:"}
+				<input type="text" id="parentid" class="ticket-suggestion" {tip text="Enter ID of parent ticket" trigger="parentid"}>
+				<ul class="ticket-list"{if !$ticket.parent} style="display: none;"{/if}>
+					{if $ticket.parent}
+						<li data-ticket-id="{$ticket.parent.ticketid}">
+							<input type="hidden" name="ticket[parentid]" value="{$ticket.parent.ticketid}">
+							#{$ticket.parent.ticketid|string_format:"%06d"} <A href="?m=rtticketview&id={$ticket.parent.ticketid}">{$ticket.parent.subject}</A>
+						</li>
+					{/if}
 			{/box_row}
 
-			{box_row class="ticket-list-container" icon="lms-ui-icon-relatedticket" label="Related tickets:"}
+			{box_row id="related-tickets" class="ticket-list-container" icon="lms-ui-icon-relatedticket" label="Related tickets:"}
 				<input type="text" class="ticket-suggestion" {tip text="Enter ticket identifier or ticket subject part"}>
 				<ul class="ticket-list"{if !$ticket.relatedtickets} style="display: none;"{/if}>
 					{if $ticket.relatedtickets}
@@ -363,30 +372,84 @@
 			$($(this).attr('data-target')).val(Base64.decode(selected.attr('data-message')));
 		});
 
-		$('.ticket-list-container').each(function() {
-			var ticket_list = $(this).find('.ticket-list');
-			var ticket_suggestion = $(this).find('.ticket-suggestion');
-			new AutoSuggest($(this).closest('form')[0], ticket_suggestion[0],
-					'?m=quicksearch&ajax=1&mode=ticket&what=', 0, function(data) {
-				ticket_suggestion.val('');
-				var html = '<li data-ticket-id="' + data.id + '">' +
-					'<input type="hidden" name="ticket[relatedtickets][' + data.id + ']" value="' + data.id + '">' +
-					'<i class="lms-ui-icon-delete ticket-unlink"></i>' +
-					sprintf("#%06d", data.id) + ' <a href="?m=rtticketview&id=' + data.id + '">' +
-					data.name + '</a></li>';
-				ticket_list.append(html).show();
-			});
-		});
+		(function() {
+			var parent_ticket = $('#parent-ticket');
+			var ticket_list = parent_ticket.find('.ticket-list');
+			var ticket_suggestion = parent_ticket.find('.ticket-suggestion');
+			new AutoSuggest(
+					parent_ticket.closest('form')[0], ticket_suggestion[0],
+					'?m=quicksearch&ajax=1&mode=ticket&what=', 0,
+					function (data) {
+						ticket_suggestion.val('');
+						var html = '<li data-ticket-id="' + data.id + '">' +
+								'<input type="hidden" name="ticket[parentid]" value="' + data.id + '">' +
+								sprintf("#%06d", data.id) + ' <a href="?m=rtticketview&id=' + data.id + '">' +
+								data.name + '</a></li>';
+						ticket_list.html(html).show();
+					},
+					function (suggestions) {
+						var result = [];
+						var ticketids = [];
+						$('li[data-ticket-id]').each(function () {
+							ticketids.push($(this).attr('data-ticket-id'));
+						});
+						{if isset($ticket.ticketid)}
+							ticketids.push('{$ticket.ticketid}');
+						{/if}
+						$.each(suggestions, function (key, suggestion) {
+							if (ticketids.indexOf(suggestion.id) == -1) {
+								result.push(suggestion);
+							}
+						});
+						return result;
+					}
+			);
+		})();
 
-		$('.ticket-list-container').on('click', '.ticket-unlink', function() {
-			var list_elem = $(this).closest('li');
-			confirmDialog($t("Are you sure, you want to unlink ticket '$a'?", sprintf("#%06d", parseInt(list_elem.attr('data-ticket-id')))), this).done(function() {
-				var ticket_list = $(this).closest('.ticket-list');
-				list_elem.remove();
-				ticket_list.toggle(ticket_list.find('li').length > 0);
+		(function() {
+			var related_tickets = $('#related-tickets');
+			var ticket_list = related_tickets.find('.ticket-list');
+			var ticket_suggestion = related_tickets.find('.ticket-suggestion');
+			new AutoSuggest(
+					related_tickets.closest('form')[0], ticket_suggestion[0],
+					'?m=quicksearch&ajax=1&mode=ticket&what=', 0,
+					function (data) {
+						ticket_suggestion.val('');
+						var html = '<li data-ticket-id="' + data.id + '">' +
+								'<input type="hidden" name="ticket[relatedtickets][' + data.id + ']" value="' + data.id + '">' +
+								'<i class="lms-ui-icon-delete ticket-unlink"></i>' +
+								sprintf("#%06d", data.id) + ' <a href="?m=rtticketview&id=' + data.id + '">' +
+								data.name + '</a></li>';
+						ticket_list.append(html).show();
+					},
+					function (suggestions) {
+						var result = [];
+						var ticketids = [];
+						$('li[data-ticket-id]').each(function () {
+							ticketids.push($(this).attr('data-ticket-id'));
+						});
+						{if isset($ticket.ticketid)}
+							ticketids.push('{$ticket.ticketid}');
+						{/if}
+						$.each(suggestions, function (key, suggestion) {
+							if (ticketids.indexOf(suggestion.id) == -1) {
+								result.push(suggestion);
+							}
+						});
+						return result;
+					}
+			);
+
+			$('#related-tickets').on('click', '.ticket-unlink', function () {
+				var list_elem = $(this).closest('li');
+				confirmDialog($t("Are you sure, you want to unlink ticket '$a'?", sprintf("#%06d", parseInt(list_elem.attr('data-ticket-id')))), this).done(function () {
+					var ticket_list = $(this).closest('.ticket-list');
+					list_elem.remove();
+					ticket_list.toggle(ticket_list.find('li').length > 0);
+				});
+				return false;
 			});
-			return false;
-		});
+		})();
 	});
 
 </script>

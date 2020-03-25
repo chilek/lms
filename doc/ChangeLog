@@ -239,7 +239,7 @@ version 25-git (????-??-??):
   - improvement: lms-teryt.php uses the same method of explicit node address determination
     as webui [chilan]
   - improvement: customer can be filtered by active assignments with pro forma flag [chilan]
-  - improvement: redesigned related ticket selection user interface [chilan]
+  - improvement: redesigned related and parent ticket selection user interface [chilan]
 
 version 24.0 (2019-05-16):
 

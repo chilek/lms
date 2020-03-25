@@ -8,7 +8,7 @@ Licensed under GNU Lesser General Public License (LGPL).
 Modified by kondi for LMS project (mailto:lms@kondi.net).
 *******************************************************/
 
-function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
+function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 
 	//The 'me' variable allow you to access the AutoSuggest object
 	//from the elem's event handlers defined below.
@@ -27,7 +27,8 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 	this.form = form;
 	this.uri = uri;
 	this.autosubmit = (autosubmit == 1 || autosubmit == 'true');
-	this.onsubmit = onsubmit;
+	this.onSubmit = onSubmit;
+	this.onLoad = onLoad;
 
 	//Arrow to store a subset of eligible suggestions that match the user's input
 	this.suggestions = [];
@@ -51,7 +52,7 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 	var KEYRIGHT = 39;
 	var KEYDN = 40;
 
-	//The browsers' own autocomplete feature can be problematic, since it will 
+	//The browsers' own autocomplete feature can be problematic, since it will
 	//be making suggestions from the users' past input.
 	//Setting this attribute should turn it off.
 	elem.setAttribute("autocomplete","off");
@@ -117,7 +118,7 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 
 				me.changeHighlight(key);
 			break;
-			
+
 			case KEYLEFT:
 				if (suggest == 'left' && me.highlighted == -1 && me.highlighted < (me.suggestions.length - 1)) {
 					me.highlighted++;
@@ -128,7 +129,7 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 					me.changeHighlight(key);
 				}
 			break;
-			
+
 			case KEYRIGHT:
 				if (suggest == 'right' && me.highlighted == -1 && me.highlighted < (me.suggestions.length - 1)) {
 					me.highlighted++;
@@ -207,8 +208,8 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 			if (this.autosubmit) {
 				location.href = gotothisuri;
 			}
-			if (this.onsubmit !== undefined) {
-				(this.onsubmit)(submit_data);
+			if (this.onSubmit !== undefined) {
+				(this.onSubmit)(submit_data);
 			}
 		}
 	};
@@ -312,7 +313,7 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 			name_elem.innerHTML = name.length > AUTOSUGGEST_MAX_LENGTH ?
 				name.substring(0, AUTOSUGGEST_MAX_LENGTH) + " ..." : name;
 
-			if (action && !me.autosubmit && !me.onsubmit) {
+			if (action && !me.autosubmit && !me.onSubmit) {
 				var a = $('<a href="' + action + '"/>').get(0);
 				a.appendChild(name_elem);
 				a.appendChild(desc_elem);
@@ -398,11 +399,17 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 					me.suggestions.push(elem);
 				}
 			});
+			if (this.onLoad) {
+				var suggestions = (this.onLoad)(this.suggestions);
+				if (typeof(suggestions) === 'object') {
+					this.suggestions = suggestions;
+				}
+			}
 		}
 	};
 
 	/********************************************************
-	Helper function to determine the keycode pressed in a 
+	Helper function to determine the keycode pressed in a
 	browser-independent manner.
 	********************************************************/
 	this.getKeyCode = function(ev) {
@@ -428,7 +435,7 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 	};
 
 	/********************************************************
-	Helper function to cancel an event in a 
+	Helper function to cancel an event in a
 	browser-independent manner.
 	(Returning false helps too).
 	********************************************************/
