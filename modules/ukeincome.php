@@ -52,6 +52,7 @@ if (isset($_POST['brutto'])) {
 }
 
 $bandwidths = isset($_POST['bandwidths']);
+$division = intval($_POST['division']);
 
 $income = $DB->GetAll('
 	SELECT ' . ($type == 'linktechnologies' ? 'cash.linktechnology' : 'tf.type') . ' AS type,
@@ -62,18 +63,19 @@ $income = $DB->GetAll('
 		SUM(CASE WHEN c.type = 1 THEN ' . $value_formula . ' ELSE 0 END) * -1 AS bussinessincome,
 		SUM(' . $value_formula . ') * -1 AS totalincome
 	FROM cash
-	' . ($type == 'linktechnologies' ? '' :
-        'JOIN documents d ON d.id = cash.docid
-	    JOIN invoicecontents ic ON ic.docid = d.id AND ic.itemid = cash.itemid
-	    LEFT JOIN tariffs tf ON tf.id = ic.tariffid'
-    ) . '
+    LEFT JOIN documents d ON d.id = cash.docid
+    LEFT JOIN invoicecontents ic ON ic.docid = d.id AND ic.itemid = cash.itemid
+    LEFT JOIN tariffs tf ON tf.id = ic.tariffid
 	JOIN customers c ON c.id = cash.customerid
 	JOIN taxes t ON t.id = cash.taxid
-	WHERE cash.type = 0 AND time >= ? AND time <= ?
-	' . ($type == 'linktechnologies' ?
-        'GROUP BY cash.linktechnology
+	WHERE cash.type = 0 AND time >= ? AND time <= ?'
+    . ($division ? ' AND ((cash.docid IS NOT NULL AND d.divisionid = ' . $division . ')
+            OR (cash.docid IS NULL AND c.divisionid = ' . $division . '))' : '')
+    . ($type == 'linktechnologies' ?
+        ' GROUP BY cash.linktechnology
 	    ORDER BY cash.linktechnology' :
-        'GROUP BY tf.type
+        ' AND cash.docid IS NOT NULL
+        GROUP BY tf.type
         ORDER BY tf.type'
     ), array($unixfrom, $unixto));
 

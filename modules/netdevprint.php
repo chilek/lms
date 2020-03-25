@@ -54,6 +54,7 @@ switch ($type) {
     default:
         $layout['pagetitle'] = trans('Reports');
 
+        $SMARTY->assign('divisions', $LMS->GetDivisions());
         $SMARTY->assign('invprojects', $LMS->GetProjects());
         $SMARTY->assign('printmenu', 'netdev');
         $SMARTY->assign('linktypes', $LINKTYPES);

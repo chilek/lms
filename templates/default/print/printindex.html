@@ -1643,6 +1643,22 @@
 			</td>
 		</tr>
 		<tr>
+			<td>
+				<img src="img/division.gif" alt="">
+			</td>
+			<td class="bold nobr">
+				{trans("Division:")}
+			</td>
+			<td>
+				<select name="division"	{tip text="Select division"}>
+					<option value="">{trans("- all -")}</option>
+					{foreach $divisions as $division}
+						<option value="{$division.id}">{$division.shortname}</option>
+					{/foreach}
+				</select>
+			</td>
+		</tr>
+		<tr>
 			<TD>
 				<IMG src="img/calendar.gif" alt="">
 			</TD>
