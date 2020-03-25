@@ -2019,10 +2019,17 @@ class LMS
         $manager = $this->getHelpdeskManager();
         return $manager->CheckTicketAccess($ticketid);
     }
+
     public function GetRelatedTickets($ticketid)
     {
         $manager = $this->getHelpdeskManager();
         return $manager->GetRelatedTickets($ticketid);
+    }
+
+    public function GetChildTickets($ticketid)
+    {
+        $manager = $this->getHelpdeskManager();
+	return $manager->GetChildTickets($ticketid);
     }
 
     public function getSelectedRelatedTickets(array $ticketids)

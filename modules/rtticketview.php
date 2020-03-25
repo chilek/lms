@@ -36,6 +36,8 @@ if (!$LMS->CheckTicketAccess($id)) {
 
 $ticket = $LMS->GetTicketContents($id);
 
+$ticket['childtickets'] = $LMS->GetChildTickets($id);
+
 if (!empty($ticket['relatedtickets'])) {
     foreach ($ticket['relatedtickets'] as $rticket) {
         if ($LMS->CheckTicketAccess($rticket['id'])) {
@@ -43,6 +45,7 @@ if (!empty($ticket['relatedtickets'])) {
         }
     }
 }
+
 
 if (!empty($ticket['parentid'])) {
     $parentticket = true;
