@@ -215,7 +215,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $usergroups = $DB->GetAll('SELECT id, name FROM usergroups');
 
-if (isset($event['customerid']) || intval($event['customerid'])) {
+if (isset($event['customerid']) && intval($event['customerid'])) {
     $addresses = $LMS->getCustomerAddresses($event['customerid']);
     $address_id = $LMS->determineDefaultCustomerAddress($addresses);
     if (isset($event['address_id']) && intval($event['address_id']) > 0) {
