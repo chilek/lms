@@ -252,10 +252,10 @@
 				var assign_type = $(this).val();
 				$('#row').toggle(assign_type == 'new');
 				updateTicketRequirements(assign_type)
-				var ticket_list_container = $('#eventadd-ticket,#eventedit-ticket');
-				ticket_list_container.toggle(assign_type == 'assign');
-				if (assign_type == 'assign' && !ticket_list_container.find('li').length) {
-					ticket_list_container.find('.ticket-suggestion-button').click();
+				var list_container = $('#eventadd-ticket,#eventedit-ticket');
+				list_container.toggle(assign_type == 'assign');
+				if (assign_type == 'assign' && !list_container.find('li').length) {
+					list_container.find('.lms-ui-item-suggestion-button').click();
 				}
 			});
 			{if isset($event.helpdesk)}
