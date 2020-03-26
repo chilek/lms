@@ -22,7 +22,7 @@
 			{trans("Current password:")}
 		</TD>
 		<TD class="nobr">
-			<input type="password" name="password[currentpasswd]" {tip text="Enter current password" trigger="currentpasswd"}>
+			<input type="password" name="password[currentpasswd]" {tip text="Enter current password" trigger="currentpasswd"} autocomplete="off">
 		</TD>
 	</TR>
 	{/if}
@@ -31,7 +31,7 @@
 			{trans("New password:")}
 		</TD>
 		<TD class="nobr">
-			<input type="password" name="password[passwd]" {tip text="Enter password" trigger="passwd"}>
+			<input type="password" name="password[passwd]" {tip text="Enter password" trigger="passwd"} autocomplete="off">
 		</TD>
 	</TR>
 	<TR>
@@ -39,7 +39,7 @@
 			{trans("Repeat password:")}
 		</TD>
 		<TD class="nobr">
-			<input type="password" name="password[confirm]" {tip text="Confirm password" trigger="passwd"}>
+			<input type="password" name="password[confirm]" {tip text="Confirm password" trigger="passwd"} autocomplete="off">
 		</TD>
 	</TR>
 	<TR>
