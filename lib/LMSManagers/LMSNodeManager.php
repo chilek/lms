@@ -293,6 +293,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
      *          6 = not connected to any network device,
      *          7 = with warning,
      *          8 = without gps coords,
+     *          9 = without radio sector (if wireless link)
      *      network - network id (default: null = any), single integer value
      *      customergroup - customer group id (default: null = any), single integer value
      *      nodegroup - node group id (default: null = any), single integer value
@@ -502,6 +503,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 . ($status == 6 ? ' AND n.netdev IS NULL' : '')
                 . ($status == 7 ? ' AND n.warning = 1' : '')
                 . ($status == 8 ? ' AND (n.latitude IS NULL OR n.longitude IS NULL)' : '')
+                . ($status == 9 ? ' AND (n.linktype = ' . LINKTYPE_WIRELESS . ' AND n.linkradiosector IS NULL)' : '')
                 . ($customergroup ? ' AND customergroupid = ' . intval($customergroup) : '')
                 . ($nodegroup ? ' AND nodegroupid = ' . intval($nodegroup) : '')
                 . (!empty($searchargs) ? $searchargs : '')

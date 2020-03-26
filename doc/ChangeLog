@@ -241,6 +241,7 @@ version 25-git (????-??-??):
   - improvement: customer can be filtered by active assignments with pro forma flag [chilan]
   - improvement: redesigned related and parent ticket selection user interface [chilan]
   - improvement: redesigned ticket event assignment selection [chilan]
+  - enhancement: filtering nodes by 'without radio sector' cryterion [chilan]
 
 version 24.0 (2019-05-16):
 
