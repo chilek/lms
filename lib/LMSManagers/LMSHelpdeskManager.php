@@ -87,6 +87,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
      *          1 - unread tickets,
      *      verifierids - ticket verifier (default: null = any/none)
      *          array() of integer values,
+     *          all - filter is off
+     *          -1 - without verifier set
+     *          -2 - with verifier set
      *      projectids - ticket investment projects (default: null = any/none)
      *          array() of integer values,
      *      count - count records only or return selected record interval
@@ -221,12 +224,23 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $typeidsfilter = ' AND t.type = '.$typeids;
         }
 
-        if (empty($verifierids)) {
-            $verifieridsfilter = '';
-        } elseif (is_array($verifierids)) {
-            $verifieridsfilter = ' AND t.verifierid IN (' . implode(',', $verifierids) . ')';
-        } else {
-            $verifieridsfilter = ' AND t.verifierid = '.$verifierids;
+	switch ($verifierids) {
+            case '-2':
+                $verifieridsfilter = ' AND t.verifierid IS NOT NULL';
+                break;
+            case '-1':
+                $verifieridsfilter = ' AND t.verifierid IS NULL';
+                break;
+            case 'all':
+                $verifieridsfilter = '';
+                break;
+            default:
+                if (is_array($verifierids) && !empty($verifierids)) {
+                    $verifieridsfilter = ' AND t.verifierid IN (' . implode(',', $verifierids) . ') ';
+                } else {
+                    $verifieridsfilter = '';
+                }
+                break;
         }
 
         if (empty($projectids)) {

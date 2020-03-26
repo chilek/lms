@@ -80,6 +80,9 @@
                 {trans("Verifier:")}
                 <input type="hidden" name="vids" value="all">
                 <SELECT size="1" name="vids[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect" data-default-value="{trans("No filter")}" >
+                    <option value="all" data-exclusive{if !is_array($filter.verifierids) && $filter.verifierids == "all"} selected{/if}>{trans("No filter")}</option>
+                    <option value="-1" data-exclusive{if !is_array($filter.verifierids) && $filter.verifierids == -1} selected{/if}>{trans("Unassigned")}</option>
+                    <option value="-2" data-exclusive{if !is_array($filter.verifierids) && $filter.verifierids == -2} selected{/if}>{trans("Assigned")}</option>
                 {foreach $users as $user}
                     <OPTION{if !$user.access} disabled{/if} value="{$user.id}"{if is_array($filter.verifierids) && in_array($user.id, $filter.verifierids)} SELECTED{/if}>{$user.name|truncate:40:"...":true}</OPTION>
                 {/foreach}
