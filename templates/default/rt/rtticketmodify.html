@@ -439,7 +439,7 @@
 		initTicketQuickSearch('#parent-ticket', 'ticket[parentid]', true);
 		initTicketQuickSearch('#related-tickets', 'ticket[relatedtickets][%id%]');
 
-		$('.ticket-list-container').on('click', '.ticket-unlink', function () {
+		$('.ticket-list-container').on('click', '.ticket-unlink', function() {
 			var list_elem = $(this).closest('li');
 			var ticket_list = $(this).closest('.ticket-list');
 			list_elem.remove();
@@ -451,11 +451,14 @@
 					'margin-block-end': '0.5em'
 				});
 		}).end().find('.ticket-suggestion-container input').focusout(function() {
-			$(this).hide().prev().show().closest('.ticket-list-container').css('flex-direction', 'row')
-				.find('ul').css({
+			var button = this;
+			setTimeout(function() {
+				$(button).hide().prev().show().closest('.ticket-list-container').css('flex-direction', 'row')
+						.find('ul').css({
 					'margin-block-start': '0',
 					'margin-block-end': '0'
 				});
+			}, 300);
 		});
 	});
 
