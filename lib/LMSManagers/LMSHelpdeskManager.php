@@ -224,7 +224,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $typeidsfilter = ' AND t.type = '.$typeids;
         }
 
-	switch ($verifierids) {
+        switch ($verifierids) {
             case '-2':
                 $verifieridsfilter = ' AND t.verifierid IS NOT NULL';
                 break;
