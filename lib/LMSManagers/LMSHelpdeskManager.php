@@ -1491,26 +1491,17 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $type = $type | RTMESSAGE_CATEGORY_CHANGE;
         }
 
-        if (isset($props['address_id'])) {
-            if ($ticket['address_id'] != $props['address_id'] && !empty($ticket['customerid'])) {
+        if (array_key_exists('address_id', $props)) {
+            if (isset($props['address_id']) && $ticket['address_id'] != $props['address_id']) {
                 $type = $type | RTMESSAGE_LOCATION_CHANGE;
-                $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
-                $locations = $customer_manager->getCustomerAddresses($ticket['customerid']);
-                $props['location'] = $locations[$props['address_id']]['location'];
-                if (empty($ticket['address_id'])) {
-                    $notes[] = trans(
-                        'Ticket\'s location has been changed to $a.',
-                        $props['location']
-                    );
-                } else {
-                    $notes[] = trans(
-                        'Ticket\'s location has been changed from $a to $b.',
-                        $ticket['location'],
-                        $props['location']
-                    );
-                }
+                $notes[] = trans('Ticket\'s location has been changed from $a to $b.', $ticket['location'], $props['location']);
+            } elseif (!isset($props['address_id']) && !empty($ticket['address_id'])) {
+                $type = $type | RTMESSAGE_LOCATION_CHANGE;
+                $notes[] = trans('Ticket\'s location $a has been removed.', $ticket['location']);
+            } else {
+                $props['address_id'] = $ticket['address_id'];
             }
-        } elseif (array_key_exists('address_id', $props)) {
+        } else {
             $props['address_id'] = null;
             if (!empty($ticket['location'])) {
                 $notes[] = trans('Ticket\'s location $a has been removed.', $ticket['location']);
