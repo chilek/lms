@@ -162,8 +162,9 @@
 
 {/if}
 
-{if $layout.module == 'eventadd' && empty($event.ticketid)}
+{if $layout.module == 'eventadd'}
 						{box_row icon="img/ticket.gif" label="<!ticket-event>Ticket:"}
+						{if empty($event.ticketid)}
 							<label for="helpdesk-none">
 								<input type="radio" class="helpdesk-assign-selection" id="helpdesk-none" name="event[helpdesk]" value="none"{if $event.helpdesk == 'none'} checked{/if}>
 								{trans("<!ticket-event>none")}
@@ -192,15 +193,13 @@
 									{/if}
 								</ul>
 							</div>
-						{/box_row}
 						{else}
-							{box_row icon="img/ticket.gif" label="<!ticket-event>Ticket:"}
 							<label for="request">
 								#{$event.ticketid|string_format:"%06d"} <A href="?m=rtticketview&id={$event.ticketid}">{$event.ticket.subject}</A>
 							</label>
-							{/box_row}
 						{/if}
-
+						{/box_row}
+{/if}
 					{/block}
 				{/box_panel}
 			{/box_contents}
