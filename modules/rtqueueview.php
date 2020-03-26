@@ -168,7 +168,7 @@ if (isset($_GET['owner'])) {
         $filter['owner'] = intval($_GET['owner']);
     }
 } elseif (!isset($filter['owner'])) {
-    $filter['owner'] = -1;
+    $filter['owner'] = 'all';
 }
 
 // removed or not?
