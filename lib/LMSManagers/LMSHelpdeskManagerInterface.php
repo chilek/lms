@@ -93,8 +93,6 @@ interface LMSHelpdeskManagerInterface
 
     public function GetTicketContents($id, $short = false);
 
-    public function GetTicketSubject($id);
-
     public function GetMessage($id);
 
     public function GetFirstMessage($ticketid);
@@ -131,7 +129,7 @@ interface LMSHelpdeskManagerInterface
 
     public function GetChildTickets($ticketid);
 
-    public function getTickets(array $ticketids);
+    public function getTickets($ticketids);
 
     public function GetTicketParentID($ticketid);
 

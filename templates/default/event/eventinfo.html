@@ -243,13 +243,13 @@
 {if isset($event.ticketid)}
 	<TR>
 		<TD>
-                                    <IMG src="img/helpdesk.png" alt="">
+			<IMG src="img/helpdesk.png" alt="">
 		</TD>
 		<TD class="bold">
-                                    {trans("Helpdesk assignment:")}
-                                </TD>
+			{trans("Helpdesk assignment:")}
+		</TD>
 		<TD>
-                                        <a href="?m=rtticketview&id={$event.ticketid}">#{$event.ticketid}</a>
+			#{$event.ticketid|string_format:"%06d"} <a href="?m=rtticketview&id={$event.ticketid}">{$event.ticket.name}</a>
 		</TD>
 	</TR>
 {/if}

@@ -208,7 +208,7 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 			if (this.autosubmit) {
 				location.href = gotothisuri;
 			}
-			if (this.onSubmit !== undefined) {
+			if (this.onSubmit) {
 				(this.onSubmit)(submit_data);
 			}
 		}

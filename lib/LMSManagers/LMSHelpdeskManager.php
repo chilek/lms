@@ -1080,7 +1080,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 return $elem['name'];
         }, $ticket['categories']);
 
-        $ticket['parent'] = $this->db->GetRow('SELECT id AS ticketid, subject FROM rttickets WHERE id = ?', array($ticket['parentid']));
+        $ticket['parent'] = $this->getTickets($ticket['parentid']);
         $ticket['relatedtickets'] = $this->GetRelatedTickets($id);
 
         if (!$short) {
@@ -1111,11 +1111,6 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $ticket['node_location'] = $customer_manager->getAddressForCustomerStuff($ticket['customerid']);
         }
         return $ticket;
-    }
-
-    public function GetTicketSubject($id)
-    {
-        return $this->db->GetOne('SELECT subject FROM rttickets WHERE id = ?', array($id));
     }
 
     public function GetMessage($id)
@@ -2059,7 +2054,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     public function GetRelatedTickets($ticketid)
     {
         return $this->db->GetAllByKey(
-            'SELECT id, subject FROM rttickets WHERE id <> ? AND parentid = (SELECT parentid FROM rttickets WHERE id = ?) ORDER BY id',
+            'SELECT id, subject AS name FROM rttickets WHERE id <> ? AND parentid = (SELECT parentid FROM rttickets WHERE id = ?) ORDER BY id',
             'id',
             array($ticketid, $ticketid)
         );
@@ -2073,13 +2068,20 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         );
     }
 
-    public function getTickets(array $ticketids)
+    public function getTickets($ticketids)
     {
-        return $this->db->GetAllByKey(
-            'SELECT id, subject FROM rttickets WHERE id IN ? ORDER BY id',
-            'id',
-            array($ticketids)
-        );
+        if (is_array($ticketids)) {
+            return $this->db->GetAllByKey(
+                'SELECT id, subject AS name FROM rttickets WHERE id IN ? ORDER BY id',
+                'id',
+                array($ticketids)
+            );
+        } else {
+            return $this->db->GetRow(
+                'SELECT id, subject AS name FROM rttickets WHERE id = ?',
+                array($ticketids)
+            );
+        }
     }
 
     public function GetTicketParentID($ticketid)

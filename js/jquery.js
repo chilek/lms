@@ -1,7 +1,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -404,6 +404,68 @@ function init_attachment_lists(selector) {
 		});
 		return false;
 	});
+}
+
+function initQuickSearch(options) {
+	$.extend({
+		single: false,
+		field_name_pattern: 'list',
+		item_content: function(item) {
+			if (item.hasOwnProperty('name')) {
+				return sprintf('#%06d', item.id) + ' <a href="?m=list&id=' + item.id + '">' + item.name + '</a>';
+			} else {
+				return '<a href="?m=list&id=' + item.id + '">' + sprintf('#%06d', item.id) + '</a>';
+			}
+		},
+		excluded_elements: [],
+		conflict_lists: []
+	}, options);
+	if (!options.hasOwnProperty('selector') || !options.hasOwnProperty('ajax')) {
+		return;
+	}
+	var list_container = $(options.selector);
+	if (!list_container.length) {
+		return;
+	}
+	var list = list_container.find('.lms-ui-list');
+	var list_suggestion = list_container.find('.lms-ui-list-suggestion');
+	new AutoSuggest(
+		list_container.closest('form')[0], list_suggestion[0], options.ajax, 0,
+		function (data) {
+			list_suggestion.val('');
+			var html = '<li data-item-id="' + data.id + '">' +
+				'<input type="hidden" name="' + options.field_name_pattern.replace('%id%', data.id) + '" value="' + data.id + '">' +
+				'<i class="lms-ui-icon-delete lms-ui-list-unlink"></i>' + (options.item_content)(data) + '</li>';
+			if (options.single) {
+				list.html(html).show();
+			} else {
+				list.append(html).show();
+			}
+		},
+		function (suggestions) {
+			var result = [];
+			var itemids = [];
+
+			list.find('li[data-item-id]').each(function () {
+				itemids.push($(this).attr('data-item-id'));
+			});
+			$(options.conflict_lists).each(function(key, list) {
+				$(list).find('li[data-item-id]').each(function () {
+					itemids.push($(this).attr('data-item-id'));
+				});
+			});
+
+			itemids = itemids.concat(options.excluded_elements);
+
+			$.each(suggestions, function (key, suggestion) {
+				if (itemids.indexOf(suggestion.id) == -1) {
+					result.push(suggestion);
+				}
+			});
+
+			return result;
+		}
+	);
 }
 
 $(function() {
@@ -1484,6 +1546,54 @@ $(function() {
 		$('[autocomplete="off"]').attr('autocomplete', 'new-password');
 	}
 */
+
+	$(document).click(function(e) {
+		if ($(e.target).is('.lms-ui-button') || $(e.target).closest('.lms-ui-suggestion-item').length) {
+			return;
+		}
+		var list_container = $(e.target).closest('.lms-ui-list-container');
+
+		if (list_container.length) {
+			$('.lms-ui-list-suggestion-container input').each(function() {
+				if (!$(this).closest('.lms-ui-list-container').is(list_container)) {
+					// hide search input
+					$(this).hide().prev().show().closest('.lms-ui-list-container').css('flex-direction', 'row')
+						.find('ul').css({
+							'margin-block-start': '0',
+							'margin-block-end': '0'
+						});
+				}
+			});
+
+			if ($(e.target).is('.lms-ui-list-unlink')) {
+				var unlink_button = $(e.target);
+				var list_elem = $(unlink_button).closest('li');
+				var list = $(unlink_button).closest('.lms-ui-list');
+				list_elem.remove();
+				list.toggle(list.find('li').length > 0);
+				list_container.find('.lms-ui-list-suggestion').focus();
+			}
+			return;
+		}
+		$('.lms-ui-list-suggestion-container input').each(function() {
+			// hide search input
+			$(this).hide().prev().show().closest('.lms-ui-list-container').css('flex-direction', 'row')
+				.find('ul').css({
+					'margin-block-start': '0',
+					'margin-block-end': '0'
+				});
+		});
+	});
+
+	$('.lms-ui-list-suggestion-container a').click(function() {
+		// show search input
+		$(this).hide().next().show().focus().closest('.lms-ui-list-container').css('flex-direction', 'column')
+			.find('ul').css({
+				'margin-block-start': '0.5em',
+				'margin-block-end': '0.5em'
+			});
+	});
+
 });
 
 function restoreStringSortable(sortable, value) {

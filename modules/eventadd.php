@@ -351,13 +351,13 @@ if (isset($_POST['event'])) {
         unset($event['categories']);
     } else {
         if (!empty($event['ticketid'])) {
-            $event['ticket_subject'] = $LMS->GetTicketSubject($event['ticketid']);
+            $event['ticket'] = $LMS->getTickets($event['ticketid']);
         }
         if (!empty($ticket['relatedtickets'])) {
             $ticket['relatedtickets'] = $LMS->getTickets($ticket['relatedtickets']);
         }
         if (!empty($ticket['parentid'])) {
-            $ticket['parent'] = $LMS->GetTicketContents($ticket['parentid'], true);
+            $ticket['parent'] = $LMS->getTickets($ticket['parentid']);
         }
         $SMARTY->assign('ticket', $ticket);
     }
@@ -471,7 +471,7 @@ $SMARTY->assign('queue', $queue);
 
 if (isset($eventticketid)) {
     $event['ticketid'] = $eventticketid;
-    $event['ticket'] = $LMS->GetTicketContents($eventticketid);
+    $event['ticket'] = $LMS->getTickets($eventticketid);
     $event['customerid'] = $event['ticket']['customerid'];
     $event['customername'] = $event['ticket']['customername'];
 }

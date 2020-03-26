@@ -1936,12 +1936,6 @@ class LMS
         return $manager->GetQueueCategories($queueid);
     }
 
-    public function GetTicketSubject($id)
-    {
-        $manager = $this->getHelpdeskManager();
-        return $manager->GetTicketSubject($id);
-    }
-
     public function GetMessage($id)
     {
         $manager = $this->getHelpdeskManager();
@@ -2038,7 +2032,7 @@ class LMS
         return $manager->GetChildTickets($ticketid);
     }
 
-    public function getTickets(array $ticketids)
+    public function getTickets($ticketids)
     {
         $manager = $this->getHelpdeskManager();
         return $manager->getTickets($ticketids);

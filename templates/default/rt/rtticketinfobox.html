@@ -310,7 +310,7 @@
 									<i class="lms-ui-icon-content lms-ui-icon-parentticket"></i>{trans("Parent ticket:")}
 								</TD>
 								<TD>
-									#{$ticket.parent.ticketid|string_format:"%06d"} <a href="?m=rtticketview&id={$ticket.parent.ticketid}">{$ticket.parent.subject}</a><br>
+									#{$ticket.parent.id|string_format:"%06d"} <a href="?m=rtticketview&id={$ticket.parent.id}">{$ticket.parent.name}</a><br>
 								</TD>
 							</TR>
 							{/if}
@@ -333,7 +333,7 @@
 								</TD>
 								<TD>
 									{foreach $ticket.relatedtickets as $i}
-										#{$i.id|string_format:"%06d"} <a href="?m=rtticketview&id={$i.id}">{$i.subject}</a><br>
+										#{$i.id|string_format:"%06d"} <a href="?m=rtticketview&id={$i.id}">{$i.name}</a><br>
 									{/foreach}
 								</TD>
 							</TR>

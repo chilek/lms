@@ -205,6 +205,11 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             $event['node_location'] = $customer_manager->getAddressForCustomerStuff($event['customerid']);
         }
 
+        if (!empty($event['ticketid'])) {
+            $helpdesk_manager = new LMSHelpdeskManager($this->db, $this->auth, $this->cache);
+            $event['ticket'] = $helpdesk_manager->getTickets($event['ticketid']);
+        }
+
         $event['wholedays'] = $event['endtime'] == 86400;
         $event['helpdesk'] = !empty($event['ticketid']);
         $event['userlist'] = $this->db->GetCol('SELECT userid AS id

@@ -514,7 +514,7 @@ if (isset($_POST['ticket'])) {
         $ticket['relatedtickets'] = $LMS->getTickets($ticketedit['relatedtickets']);
     }
     if (!empty($ticketedit['parentid'])) {
-        $ticket['parent'] = $LMS->GetTicketContents($ticketedit['parentid'], true);
+        $ticket['parent'] = $LMS->getTickets($ticketedit['parentid']);
     }
 } else {
     $ticketedit['categories'] = $ticket['categories'];

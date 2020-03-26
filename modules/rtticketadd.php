@@ -341,7 +341,7 @@ if (isset($_POST['ticket'])) {
         $ticket['relatedtickets'] = $LMS->getTickets($ticket['relatedtickets']);
     }
     if (!empty($ticket['parentid'])) {
-        $ticket['parent'] = $LMS->GetTicketContents($ticket['parentid'], true);
+        $ticket['parent'] = $LMS->getTickets($ticket['parentid']);
     }
 } else {
     $queuelist = $LMS->GetQueueList(array('stats' => false));

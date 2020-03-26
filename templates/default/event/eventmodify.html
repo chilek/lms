@@ -137,30 +137,29 @@
 						{/foreach}
 					{/box_row}
 
-{if $layout.module == 'eventedit'}
+					{function event_ticket_item_content}
+						{capture name="item_content_result" assign="item_content_result"}
+							{sprintf("#%06d", $item.id)}
+							<a href="?m=rtticketview&id={$item.id}">{$item.name}</a>
+						{/capture}
+					{/function}
+
+					{if $layout.module == 'eventedit'}
 						{box_row icon="img/note.gif" label="Note:"}
 							<TEXTAREA name="event[note]" cols="50" rows="5" {tip text="Enter note (optional)"}>{$event.note}</TEXTAREA>
 						{/box_row}
 
 						{box_row icon="img/ticket.gif" label="Assign ticket"}
 							<input type="hidden" name="event[ticketid]" value="0">
-							<div id="eventedit-ticket" class="ticket-list-container">
-								<div class="ticket-suggestion-container">
-									{button type="link" class="ticket-suggestion-button" icon="edit" href="#"}
-									<input type="text" id="ticketid" class="ticket-suggestion" {tip trigger="ticketid"}>
-								</div>
-								<ul class="ticket-list"{if empty($event.ticketid)} style="display: none;"{/if}>
-									{if $event.ticketid}
-										<li data-ticket-id="{$event.ticketid}">
-											<input type="hidden" name="event[ticketid]" value="{$event.ticketid}">
-											<i class="lms-ui-icon-delete ticket-unlink"></i>#{$event.ticketid|string_format:"%06d"} <A href="?m=rtticketview&id={$event.ticketid}">{$event.ticket_subject}</A>
-										</li>
-									{/if}
-								</ul>
-							</div>
+							{if empty($event.ticketid)}
+								{$visible = false}
+							{else}
+								{$visible = true}
+							{/if}
+							{list id="eventedit-ticket" tipid="ticketid" tip="Test" items=$event.ticket
+								field_name_pattern="event[ticketid]" item_content="event_ticket_item_content" visible=$visible}
 						{/box_row}
-
-{/if}
+					{/if}
 
 {if $layout.module == 'eventadd'}
 						{box_row icon="img/ticket.gif" label="<!ticket-event>Ticket:"}
@@ -178,20 +177,13 @@
 							</label>
 							&nbsp;
 							<input type="hidden" name="event[ticketid]" value="0">
-							<div id="eventadd-ticket" class="ticket-list-container"{if !isset($event.helpdesk) || $event.helpdesk != 'assign'} style="display: none;"{/if}>
-								<div class="ticket-suggestion-container">
-									{button type="link" class="ticket-suggestion-button" icon="edit" href="#"}
-									<input type="text" id="ticketid" class="ticket-suggestion" {tip trigger="ticketid"}>
-								</div>
-								<ul class="ticket-list"{if empty($event.ticketid)} style="display: none;"{/if}>
-									{if $event.ticketid}
-										<li data-ticket-id="{$event.ticketid}">
-											<input type="hidden" name="event[ticketid]" value="{$event.ticketid}">
-											<i class="lms-ui-icon-delete ticket-unlink"></i>#{$event.ticketid|string_format:"%06d"} <A href="?m=rtticketview&id={$event.ticketid}">{$event.ticket_subject}</A>
-										</li>
-									{/if}
-								</ul>
-							</div>
+							{if !isset($event.helpdesk) || $event.helpdesk != 'assign'}
+								{$visible = false}
+							{else}
+								{$visible = true}
+							{/if}
+							{list id="eventadd-ticket" tipid="ticketid" tip="Test" items=$event.ticket
+								field_name_pattern="event[ticketid]" item_content="event_ticket_item_content" visible=$visible}
 						{/box_row}
 {/if}
 
@@ -270,8 +262,26 @@
 				updateTicketRequirements('{$event.helpdesk}');
 			{/if}
 
-			initTicketQuickSearch('#eventadd-ticket', 'event[ticketid]', true);
-			initTicketQuickSearch('#eventedit-ticket', 'event[ticketid]', true);
+			initQuickSearch({
+				selector: '#eventadd-ticket',
+				field_name_pattern: 'event[ticketid]',
+				single: true,
+				ajax: '?m=quicksearch&ajax=1&mode=ticket&what=',
+				item_content: function(item) {
+					return sprintf("#%06d", item.id) + ' <a href="?m=rtticketview&id=' + item.id + '">' +
+							item.name + '</a>';
+				}
+			});
+			initQuickSearch({
+				selector: '#eventedit-ticket',
+				field_name_pattern: 'event[ticketid]',
+				single: true,
+				ajax: '?m=quicksearch&ajax=1&mode=ticket&what=',
+				item_content: function(item) {
+					return sprintf("#%06d", item.id) + ' <a href="?m=rtticketview&id=' + item.id + '">' +
+							item.name + '</a>';
+				}
+			});
 		});
 
 		function update_user_selection(users) {

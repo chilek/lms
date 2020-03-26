@@ -13,41 +13,6 @@
 		align-items: flex-start !important;
 	}
 
-	.ticket-list-container {
-		display: flex;
-		align-items: flex-start !important;
-	}
-
-	.ticket-list-container ul {
-		display: inline;
-		list-style: none;
-		padding: 0;
-		margin-block-start: 0;
-		margin-block-end: 0;
-	}
-
-	.ticket-list-container li .ticket-unlink {
-		visibility: hidden;
-/*
-		margin-left: -1.5em;
- */
-		margin-top: 0.1em;
-		padding-right: 0.4em;
-	}
-
-	.ticket-list-container li:hover .ticket-unlink {
-		 visibility: visible;
-		 cursor: pointer;
-	}
-
-	.ticket-suggestion-container .ticket-suggestion-button {
-		cursor: pointer;
-	}
-
-	.ticket-suggestion-container .ticket-suggestion:not(:focus) {
-		display: none;
-	}
-
 </style>
 
 {box_container id="ticket"}
@@ -313,40 +278,21 @@
 				</SELECT>
 			{/box_row}
 
+			{function ticket_item_content}
+				{capture name="item_content_result" assign="item_content_result"}
+					{sprintf("#%06d", $item.id)}
+					<a href="?m=rtticketview&id={$item.id}">{$item.name}</a>
+				{/capture}
+			{/function}
+
 			{box_row icon="lms-ui-icon-parentticket" label="Parent ticket:"}
-				<div id="parent-ticket" class="ticket-list-container">
-					<div class="ticket-suggestion-container">
-						{button type="link" class="ticket-suggestion-button" icon="edit" href="#"}
-						<input type="text" id="parentid" class="ticket-suggestion" {tip text="Enter ID of parent ticket" trigger="parentid"}>
-					</div>
-					<ul class="ticket-list"{if !$ticket.parent} style="display: none;"{/if}>
-						{if $ticket.parent}
-							<li data-ticket-id="{$ticket.parent.ticketid}">
-								<input type="hidden" name="ticket[parentid]" value="{$ticket.parent.ticketid}">
-								<i class="lms-ui-icon-delete ticket-unlink"></i>#{$ticket.parent.ticketid|string_format:"%06d"} <A href="?m=rtticketview&id={$ticket.parent.ticketid}">{$ticket.parent.subject}</A>
-							</li>
-						{/if}
-					</ul>
-				</div>
+				{list id="parent-ticket" tipid="parentid" tip="Enter ID of parent ticket" items=$ticket.parent
+					field_name_pattern="ticket[parentid]" item_content="ticket_item_content"}
 			{/box_row}
 
 			{box_row icon="lms-ui-icon-relatedticket" label="Related tickets:"}
-				<div id="related-tickets" class="ticket-list-container">
-					<div class="ticket-suggestion-container">
-						{button type="link" class="ticket-suggestion-button" icon="edit" href="#"}
-						<input type="text" class="ticket-suggestion" {tip text="Enter ticket identifier or ticket subject part"}>
-					</div>
-					<ul class="ticket-list"{if !$ticket.relatedtickets} style="display: none;"{/if}>
-						{if $ticket.relatedtickets}
-							{foreach $ticket.relatedtickets as $i}
-								<li data-ticket-id="{$i.id}">
-									<input type="hidden" name="ticket[relatedtickets][{$i.id}]" value="{$i.id}">
-									<i class="lms-ui-icon-delete ticket-unlink"></i>#{$i.id|string_format:"%06d"} <A href="?m=rtticketview&id={$i.id}">{$i.subject}</A>
-								</li>
-							{/foreach}
-						{/if}
-					</ul>
-				</div>
+				{list id="related-tickets" tipid="related-tickets-id" tip="Enter ticket identifier or ticket subject part"
+					items=$ticket.relatedtickets field_name_pattern="ticket[relatedtickets][%id%]" item_content="ticket_item_content"}
 			{/box_row}
 			{/block}
 {/box_panel}
@@ -363,51 +309,6 @@
 
 <script src="js/templates/rt/rtticketmodify.js"></script>
 <script>
-
-	function initTicketQuickSearch(selector, field_name_pattern, single) {
-		if (typeof(single) === 'undefined') {
-			single = false;
-		}
-		var ticket_list_container = $(selector);
-		if (!ticket_list_container.length) {
-			return;
-		}
-		var ticket_list = ticket_list_container.find('.ticket-list');
-		var ticket_suggestion = ticket_list_container.find('.ticket-suggestion');
-		new AutoSuggest(
-				ticket_list_container.closest('form')[0], ticket_suggestion[0],
-				'?m=quicksearch&ajax=1&mode=ticket&what=', 0,
-				function (data) {
-					ticket_suggestion.val('');
-					var html = '<li data-ticket-id="' + data.id + '">' +
-							'<input type="hidden" name="' + field_name_pattern.replace('%id%', data.id) + '" value="' + data.id + '">' +
-							'<i class="lms-ui-icon-delete ticket-unlink"></i>' +
-							sprintf("#%06d", data.id) + ' <a href="?m=rtticketview&id=' + data.id + '">' +
-							data.name + '</a></li>';
-					if (single) {
-						ticket_list.html(html).show();
-					} else {
-						ticket_list.append(html).show();
-					}
-				},
-				function (suggestions) {
-					var result = [];
-					var ticketids = [];
-					$('li[data-ticket-id]').each(function () {
-						ticketids.push($(this).attr('data-ticket-id'));
-					});
-					{if isset($ticket.ticketid)}
-					ticketids.push('{$ticket.ticketid}');
-					{/if}
-					$.each(suggestions, function (key, suggestion) {
-						if (ticketids.indexOf(suggestion.id) == -1) {
-							result.push(suggestion);
-						}
-					});
-					return result;
-				}
-		);
-	}
 
 	$(function() {
 		$('#resolve').change(function() {
@@ -436,29 +337,28 @@
 			$($(this).attr('data-target')).val(Base64.decode(selected.attr('data-message')));
 		});
 
-		initTicketQuickSearch('#parent-ticket', 'ticket[parentid]', true);
-		initTicketQuickSearch('#related-tickets', 'ticket[relatedtickets][%id%]');
-
-		$('.ticket-list-container').on('click', '.ticket-unlink', function() {
-			var list_elem = $(this).closest('li');
-			var ticket_list = $(this).closest('.ticket-list');
-			list_elem.remove();
-			ticket_list.toggle(ticket_list.find('li').length > 0);
-		}).find('.ticket-suggestion-container a').click(function() {
-			$(this).hide().next().show().focus().closest('.ticket-list-container').css('flex-direction', 'column')
-				.find('ul').css({
-					'margin-block-start': '0.5em',
-					'margin-block-end': '0.5em'
-				});
-		}).end().find('.ticket-suggestion-container input').focusout(function() {
-			var button = this;
-			setTimeout(function() {
-				$(button).hide().prev().show().closest('.ticket-list-container').css('flex-direction', 'row')
-						.find('ul').css({
-					'margin-block-start': '0',
-					'margin-block-end': '0'
-				});
-			}, 300);
+		initQuickSearch({
+			selector: '#parent-ticket',
+			field_name_pattern: 'ticket[parentid]',
+			single: true,
+			ajax: '?m=quicksearch&ajax=1&mode=ticket&what=',
+			item_content: function(item) {
+				return sprintf("#%06d", item.id) + ' <a href="?m=rtticketview&id=' + item.id + '">' +
+					item.name + '</a>';
+			},
+			excluded_elements: [ {if isset($ticket.ticketid)}'{$ticket.ticketid}'{/if} ],
+			conflict_lists: [ '#related-tickets' ]
+		});
+		initQuickSearch({
+			selector: '#related-tickets',
+			field_name_pattern: 'ticket[relatedtickets][%id%]',
+			ajax: '?m=quicksearch&ajax=1&mode=ticket&what=',
+			item_content: function(item) {
+				return sprintf("#%06d", item.id) + ' <a href="?m=rtticketview&id=' + item.id + '">' +
+						item.name + '</a>';
+			},
+			excluded_elements: [ {if isset($ticket.ticketid)}'{$ticket.ticketid}'{/if} ],
+			conflict_lists: [ '#parent-ticket' ]
 		});
 	});
 

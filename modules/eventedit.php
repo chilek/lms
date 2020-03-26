@@ -55,7 +55,7 @@ if (isset($_GET['action'])) {
 if (isset($_GET['id'])) {
     $event = $LMS->GetEvent($_GET['id']);
     if (!empty($event['ticketid'])) {
-        $event['ticket'] = $LMS->GetTicketContents($event['ticketid'], true);
+        $event['ticket'] = $LMS->getTickets($event['ticketid']);
     }
 
     if (empty($event['enddate'])) {
@@ -202,7 +202,7 @@ if (isset($_POST['event'])) {
             . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
     } else {
         if (!empty($event['ticketid'])) {
-            $event['ticket_subject'] = $LMS->GetTicketSubject($event['ticketid']);
+            $event['ticket'] = $LMS->getTickets($event['ticketid']);
         }
     }
 } else {
