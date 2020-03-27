@@ -1196,13 +1196,18 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         $allow_empty_categories = ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories');
 
+        $userid = Auth::GetCurrentUser();
+
         $ticket = $this->db->GetRow(
             'SELECT owner, queueid, cause, t.state, subject, customerid, requestor, requestor_userid, requestor_mail, requestor_phone,
                 source, priority, ' . $this->db->GroupConcat('c.categoryid') . ' AS categories, t.address_id, va.location, t.nodeid, t.invprojectid,
 				n.name AS node_name, n.location AS node_location, t.netnodeid, t.netdevid, t.verifierid, t.verifier_rtime, t.deadline,
                 t.service, t.type, t.parentid
 			FROM rttickets t
-			LEFT JOIN rtticketcategories c ON c.ticketid = t.id
+			LEFT JOIN (
+			    SELECT ticketid, tc.categoryid FROM rtticketcategories tc
+			    JOIN rtcategoryusers cu ON cu.categoryid = tc.categoryid AND cu.userid = ?
+			) c ON c.ticketid = t.id
 			LEFT JOIN vaddresses va ON va.id = t.address_id
 			LEFT JOIN vnodes n ON n.id = t.nodeid
 			WHERE t.id=?
@@ -1221,7 +1226,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			    requestor_phone, source, priority, t.address_id, t.nodeid, va.location,
 				t.nodeid, t.invprojectid, n.name, n.location, t.netnodeid, t.netdevid, t.verifierid, t.verifier_rtime,
                 t.deadline, t.service, t.type, t.parentid',
-            array($ticketid, Auth::GetCurrentUser())
+            array($userid, $ticketid, $userid)
         );
 
         $type = 0;
