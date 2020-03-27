@@ -337,7 +337,7 @@
 			$($(this).attr('data-target')).val(Base64.decode(selected.attr('data-message')));
 		});
 
-		initQuickSearch({
+		initListQuickSearch({
 			selector: '#parent-ticket',
 			field_name_pattern: 'ticket[parentid]',
 			single: true,
@@ -349,7 +349,7 @@
 			excluded_elements: [ {if isset($ticket.ticketid)}'{$ticket.ticketid}'{/if} ],
 			conflict_lists: [ '#related-tickets' ]
 		});
-		initQuickSearch({
+		initListQuickSearch({
 			selector: '#related-tickets',
 			field_name_pattern: 'ticket[relatedtickets][%id%]',
 			ajax: '?m=quicksearch&ajax=1&mode=ticket&what=',
