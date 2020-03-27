@@ -542,8 +542,8 @@ function tariffSelectionHandler() {
 	}
 
 	if (tarifftype == assignment_settings.phoneTariffType) {
-		$('#a_phones,#a_checkall').show();
-		$('#a_nodes,#a_netdevnodes').hide();
+		$('#a_phones,#a_nodes,#a_checkall').show();
+		$('#a_netdevnodes').hide();
 	} else {
 		$('#a_phones').hide();
 		if (val == -1 || val == -2) {
