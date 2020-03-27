@@ -30,9 +30,9 @@
             "type": "package",
             "package": {
                 "name": "ccampbell/mousetrap",
-                "version": "1.6.2",
+                "version": "1.6.5",
                 "dist": {
-                    "url": "https://github.com/ccampbell/mousetrap/archive/1.6.2.zip",
+                    "url": "https://github.com/ccampbell/mousetrap/archive/1.6.5.zip",
                     "type": "zip"
                 }
             }
@@ -63,11 +63,11 @@
             "type": "package",
             "package": {
                 "name": "fortawesome/font-awesome",
-                "version": "5.3.1",
+                "version": "5.13.0",
                 "source": {
                     "url": "https://github.com/FortAwesome/Font-Awesome.git",
                     "type": "git",
-                    "reference": "5.3.1"
+                    "reference": "5.13.0"
                 }
             }
         }
