@@ -64,7 +64,7 @@ try {
 
     switch ($_GET['searchtype']) {
         case RegonConstantsInterface::SEARCH_TYPE_NIP:
-            $gusReports = $gus->getByNip($sessionId, $_GET['searchdata']);
+            $gusReports = $gus->getByNip($sessionId, preg_replace('/[^a-z0-9]/i', '', $_GET['searchdata']));
             break;
         case RegonConstantsInterface::SEARCH_TYPE_REGON:
             $gusReports = $gus->getByRegon($sessionId, $_GET['searchdata']);
