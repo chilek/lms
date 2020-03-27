@@ -1576,6 +1576,14 @@ $(function() {
 			return;
 		}
 		$('.lms-ui-list-suggestion-container input').each(function() {
+			$(this).keypress(function(e) {
+				console.log('document.keypress:', e);
+				if (e.key == 'Enter') {
+					e.preventDefault();
+					e.stopPropagation();
+				}
+			});
+
 			// hide search input
 			$(this).hide().prev().show().closest('.lms-ui-list-container').css('flex-direction', 'row')
 				.find('ul').css({
