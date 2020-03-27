@@ -28,7 +28,7 @@
 			<B>{trans("Name:")}</B>
 		</TD>
 		<TD width="98%">
-			<INPUT type="text" name="config[var]" value="{$config.var}" {tip text="Enter option name" trigger="var" bold=1}>&nbsp;
+			<INPUT type="text" name="config[var]" value="{$config.var}" size="30" {tip text="Enter option name" trigger="var" bold=1}>&nbsp;
 			<B>{trans("Section:")}</B>
 			<SELECT size="1" name="config[section]" {tip class="lms-ui-combobox" text="Select section" trigger="section"}
 				{if !in_array($config.section, $sections)} data-value="{$config.section}"{/if}>
