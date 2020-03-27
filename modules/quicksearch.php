@@ -991,12 +991,13 @@ switch ($mode) {
                     $description_class = '';
                     $action = '';
                     $tip = $documentation;
-                    $result[$i] = compact('name', 'name_class', 'description', 'description_class', 'action', 'section', 'tip');
+                    $result[$section . '.' . $variable] = compact('name', 'name_class', 'description', 'description_class', 'action', 'section', 'tip');
                     $i++;
                 }
             }
 
             if (!empty($result)) {
+                ksort($result);
                 echo json_encode(array_values(array_slice(
                     $result,
                     0,
