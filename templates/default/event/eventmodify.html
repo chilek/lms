@@ -257,7 +257,7 @@
 				updateTicketRequirements('{$event.helpdesk}');
 			{/if}
 
-			initQuickSearch({
+			initListQuickSearch({
 				selector: '#eventadd-ticket',
 				field_name_pattern: 'event[ticketid]',
 				single: true,
@@ -267,7 +267,7 @@
 							item.name + '</a>';
 				}
 			});
-			initQuickSearch({
+			initListQuickSearch({
 				selector: '#eventedit-ticket',
 				field_name_pattern: 'event[ticketid]',
 				single: true,

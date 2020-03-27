@@ -406,7 +406,7 @@ function init_attachment_lists(selector) {
 	});
 }
 
-function initQuickSearch(options) {
+function initListQuickSearch(options) {
 	$.extend({
 		single: false,
 		field_name_pattern: 'list',

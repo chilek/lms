@@ -968,7 +968,49 @@ switch ($mode) {
             $target = '?m=customerinfo&id=' . $cid;
         }
         break;
+
+    case 'config':
+        if (isset($_GET['ajax'])) {
+            header('Content-type: application/json');
+
+            $markdown_documentation = ConfigHelper::LoadMarkdownDocumentation();
+            if (empty($markdown_documentation)) {
+                die;
+            }
+
+            $i = 1;
+            $result = array();
+            foreach ($markdown_documentation as $section => $variables) {
+                foreach ($variables as $variable => $documentation) {
+                    if (strpos($variable, $search) === false) {
+                        continue;
+                    }
+                    $name = $variable;
+                    $name_class = '';
+                    $description = trans('Section:') . ' ' . $section;
+                    $description_class = '';
+                    $action = '';
+                    $tip = $documentation;
+                    $result[$i] = compact('name', 'name_class', 'description', 'description_class', 'action', 'section', 'tip');
+                    $i++;
+                }
+            }
+
+            if (!empty($result)) {
+                echo json_encode(array_values(array_slice(
+                    $result,
+                    0,
+                    intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))
+                )));
+            }
+            $SESSION->close();
+            $DB->Destroy();
+            die;
+        }
+
+        break;
 }
+
 
 $quicksearch = $LMS->executeHook(
     'quicksearch_after_submit',

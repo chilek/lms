@@ -248,6 +248,8 @@ version 25-git (????-??-??):
   - enhancement: 'phpui.markdown_documentation_file' configuration variable can point to
     markdown configuration variable documentation file
     ('<sys-dir>/doc/Zmienne-konfiguracyjne-LMS-Plus.md' by default) [chilan]
+  - enhancement: implemented configuration variable suggestions with documentation displayed
+    in tooltip [chilan]
 
 version 24.0 (2019-05-16):
 

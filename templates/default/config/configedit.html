@@ -12,9 +12,13 @@
 		align-items: center;
 	}
 
+	.config-var-suggestion {
+		z-index: 9999 !important;
+	}
+
 </style>
 
-<FORM method="POST" action="?m=configedit&id={$config.id}" name="config">
+<FORM method="POST" id="configedit" action="?m=configedit&id={$config.id}" name="config">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
     <THEAD>
@@ -98,8 +102,11 @@
     </TBODY>
 </TABLE>
 </FORM>
-	{include file="/config/configusers.html"}
-<SCRIPT>
+
+{include file="config/configusers.html"}
+
+<script>
+
 	$(function() {
 		$('form[name="config"] [name="config[var]"]').focus();
 
@@ -108,14 +115,27 @@
 				ifShow: $(this).val() == '{$smarty.const.CONFIG_TYPE_RICHTEXT}'
 			});
 		});
+
+		$('#delete-config').click(function() {
+			var name = $(this).attr('data-name');
+			confirmDialog($t("Are you sure, you want to delete option '$a' from database?\n\nThis action will remove this option for all users.", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+
+		new AutoSuggest({
+			form: '#configedit',
+			elem: '[name="config[var]"]',
+			uri: '?m=quicksearch&ajax=1&mode=config&what=',
+			class: 'config-var-suggestion',
+			onSubmit: function (data) {
+				$('[name="config[var]"]').val(data.name);
+				$('[name="config[section]"]').parent('.scombobox').scombobox('val', data.section);
+			}
+		});
+
 	});
 
-	$('#delete-config').click(function() {
-		var name = $(this).attr('data-name');
-		confirmDialog($t("Are you sure, you want to delete option '$a' from database?\n\nThis action will remove this option for all users.", name), this).done(function() {
-			location.href = $(this).attr('href');
-		});
-		return false;
-	});
-</SCRIPT>
+</script>
 {/block}

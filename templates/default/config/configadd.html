@@ -4,13 +4,19 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <style>
+
 	.lmsbox thead td:last-child {
 		display: flex;
 		justify-content: flex-start;
 		align-items: center;
 	}
+
+	.config-var-suggestion {
+		z-index: 9999 !important;
+	}
+
 </style>
-<FORM method="POST" action="?m=configadd" name="config">
+<FORM method="POST" id="configadd" action="?m=configadd" name="config">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
     <THEAD>
@@ -94,8 +100,8 @@
     </TBODY>
 </TABLE>
 </P>
-<SCRIPT type="text/javascript">
-<!--
+<script>
+
 	$(function() {
 		$('form[name="config"] [name="config[var]"]').focus();
 
@@ -104,7 +110,18 @@
 				ifShow: $(this).val() == '{$smarty.const.CONFIG_TYPE_RICHTEXT}'
 			});
 		});
+
+		new AutoSuggest({
+			form: '#configadd',
+			elem: '[name="config[var]"]',
+			uri: '?m=quicksearch&ajax=1&mode=config&what=',
+			class: 'config-var-suggestion',
+			onSubmit: function (data) {
+				$('[name="config[var]"]').val(data.name);
+				$('[name="config[section]"]').parent('.scombobox').scombobox('val', data.section);
+			}
+		});
 	});
-//-->
-</SCRIPT>
+
+</script>
 {/block}
