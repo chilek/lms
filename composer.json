@@ -40,6 +40,17 @@
         {
             "type": "package",
             "package": {
+                "name": "westonganger/input-autogrow",
+                "version": "1.1.1",
+                "dist": {
+                    "url": "https://github.com/westonganger/input-autogrow/archive/v1.1.1.zip",
+                    "type": "zip"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
                 "name": "ivkremer/jquery-simple-combobox",
                 "version": "1.1.29",
                 "dist": {
@@ -84,6 +95,7 @@
         "harvesthq/chosen": "^1.8",
         "tinymce/tinymce": "^4",
         "ccampbell/mousetrap": "^1",
+        "westonganger/input-autogrow": "^1",
         "ivkremer/jquery-simple-combobox": "^1",
 		"fortawesome/font-awesome": "^5",
         "html2text/html2text": "^4",

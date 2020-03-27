@@ -406,6 +406,13 @@ function init_attachment_lists(selector) {
 	});
 }
 
+function initAutoGrow(selector) {
+	$(selector).inputAutogrow({
+		minWidth: 200,
+		maxWidth: 500
+	});
+}
+
 function initListQuickSearch(options) {
 	$.extend({
 		single: false,
@@ -1601,6 +1608,7 @@ $(function() {
 			});
 	});
 
+	initAutoGrow('.lms-ui-autogrow');
 });
 
 function restoreStringSortable(sortable, value) {
