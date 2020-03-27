@@ -245,6 +245,9 @@ version 25-git (????-??-??):
   - improvement: 'phpui.copy_ticket_summary_to_assigned_event' ('false' by default) controls
     if assigned ficket properties are copied to newly created event [chilan]
   - improvement: show location type icon in location selection button [chilan]
+  - enhancement: 'phpui.markdown_documentation_file' configuration variable can point to
+    markdown configuration variable documentation file
+    ('<sys-dir>/doc/Zmienne-konfiguracyjne-LMS-Plus.md' by default) [chilan]
 
 version 24.0 (2019-05-16):
 

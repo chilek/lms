@@ -191,15 +191,14 @@ function GetConfigList()
         LEFT JOIN users u on c.userid = u.id           
         WHERE section != \'userpanel\'');
 
-    $md_dir = SYS_DIR . DIRECTORY_SEPARATOR . 'doc' . DIRECTORY_SEPARATOR . 'configuration-variables';
-
     if ($config) {
+        $markdown_documentation = ConfigHelper::LoadMarkdownDocumentation();
+
         foreach ($config as $idx => &$item) {
-            $filename = $md_dir . DIRECTORY_SEPARATOR . $item['section'] . '.' . $item['var'];
-            if (file_exists($filename)) {
-                $item['description'] = file_get_contents($filename);
+            if (isset($markdown_documentation[$item['section']][$item['var']])) {
+                $item['description'] = $markdown_documentation[$item['section']][$item['var']];
             } else if (isset($configuration_variables[$item['section']][$item['var']])) {
-                    $item['description'] = trans($configuration_variables[$item['section']][$item['var']]);
+                $item['description'] = trans($configuration_variables[$item['section']][$item['var']]);
             } else {
                 $item['description'] = trans('Unknown option. No description.');
             }
@@ -207,10 +206,10 @@ function GetConfigList()
             if (!empty($item['usercomment'])) {
                 $item['usercomment'] = str_replace("\n", '<br>', $item['usercomment']);
             }
-        } //end: foreach
-
+        }
         unset($item);
     }
+
     return $config;
 }
 

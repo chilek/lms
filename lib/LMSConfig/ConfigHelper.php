@@ -58,7 +58,7 @@ class ConfigHelper
 
         return $value == '' && !$allow_empty_value ? $default : $value;
     }
-    
+
     /**
      * Checks if config variable exists
      *
@@ -72,7 +72,7 @@ class ConfigHelper
         if (empty($variable_name)) {
             return false;
         }
-        
+
         if ($section_name === 'privileges') {
             $value = self::getConfig($name);
             return $value;
@@ -85,10 +85,10 @@ class ConfigHelper
         if (!LMSConfig::getConfig()->getSection($section_name)->hasVariable($variable_name)) {
             return false;
         }
-        
+
         return self::checkValue(LMSConfig::getConfig()->getSection($section_name)->getVariable($variable_name)->getValue());
     }
-    
+
     /**
      * Determines if value equals true or false
      *
@@ -149,5 +149,65 @@ class ConfigHelper
             return preg_match('/^hide_/', $privilege) ? false : true;
         }
         return self::checkConfig("privileges.$privilege");
+    }
+
+    public static function LoadMarkdownDocumentation()
+    {
+        $result = array();
+
+        $markdown_documentation_file = self::getConfig(
+            'phpui.markdown_documentation_file',
+            SYS_DIR . DIRECTORY_SEPARATOR . 'doc' . DIRECTORY_SEPARATOR . 'Zmienne-konfiguracyjne-LMS-Plus.md'
+        );
+        if (empty($markdown_documentation_file) || !file_exists($markdown_documentation_file)) {
+            return $result;
+        }
+
+        $content = file($markdown_documentation_file);
+        if (empty($content)) {
+            return $result;
+        }
+
+        $parser = new Parsedown();
+
+        $variable = null;
+        $buffer = '';
+        foreach ($content as $line) {
+            if (preg_match('/^##\s+(?<variable>.+)\r?\n/', $line, $m)) {
+                if ($variable && $buffer) {
+                    $buffer = $parser->Text($buffer);
+                    list ($section, $var) = explode('.', $variable);
+                    if (!isset($result[$section])) {
+                        $result[$section] = array();
+                    }
+                    $result[$section][$var] = $buffer;
+                }
+                $variable = $m['variable'];
+                $buffer = '';
+            } elseif (preg_match('/^\*\*\*/', $line)) {
+                if ($variable && $buffer) {
+                    $buffer = $parser->Text($buffer);
+                    list ($section, $var) = explode('.', $variable);
+                    if (!isset($result[$section])) {
+                        $result[$section] = array();
+                    }
+                    $result[$section][$var] = $buffer;
+                }
+                $variable = null;
+                $buffer = '';
+            } elseif ($variable) {
+                $buffer .= $line;
+            }
+        }
+        if ($variable && $buffer) {
+            $buffer = $parser->Text($buffer);
+            list ($section, $var) = explode('.', $variable);
+            if (!isset($result[$section])) {
+                $result[$section] = array();
+            }
+            $result[$section][$var] = $buffer;
+        }
+
+        return $result;
     }
 }
