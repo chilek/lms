@@ -168,14 +168,11 @@ class ConfigHelper
             return $result;
         }
 
-        $parser = new Parsedown();
-
         $variable = null;
         $buffer = '';
         foreach ($content as $line) {
             if (preg_match('/^##\s+(?<variable>.+)\r?\n/', $line, $m)) {
                 if ($variable && $buffer) {
-                    $buffer = $parser->Text($buffer);
                     list ($section, $var) = explode('.', $variable);
                     if (!isset($result[$section])) {
                         $result[$section] = array();
@@ -186,7 +183,6 @@ class ConfigHelper
                 $buffer = '';
             } elseif (preg_match('/^\*\*\*/', $line)) {
                 if ($variable && $buffer) {
-                    $buffer = $parser->Text($buffer);
                     list ($section, $var) = explode('.', $variable);
                     if (!isset($result[$section])) {
                         $result[$section] = array();

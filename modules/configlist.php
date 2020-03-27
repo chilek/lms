@@ -194,9 +194,11 @@ function GetConfigList()
     if ($config) {
         $markdown_documentation = ConfigHelper::LoadMarkdownDocumentation();
 
+        $parser = new Parsedown();
+
         foreach ($config as $idx => &$item) {
             if (isset($markdown_documentation[$item['section']][$item['var']])) {
-                $item['description'] = $markdown_documentation[$item['section']][$item['var']];
+                $item['description'] = $parser->Text($markdown_documentation[$item['section']][$item['var']]);
             } else if (isset($configuration_variables[$item['section']][$item['var']])) {
                 $item['description'] = trans($configuration_variables[$item['section']][$item['var']]);
             } else {

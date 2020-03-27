@@ -978,10 +978,19 @@ switch ($mode) {
                 die;
             }
 
+            $parser = new Parsedown();
+
+            $quicksearch_limit = intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15));
             $i = 1;
             $result = array();
             foreach ($markdown_documentation as $section => $variables) {
+                if ($i > $quicksearch_limit) {
+                    break;
+                }
                 foreach ($variables as $variable => $documentation) {
+                    if ($i > $quicksearch_limit) {
+                        break;
+                    }
                     if (strpos($variable, $search) === false) {
                         continue;
                     }
@@ -990,7 +999,7 @@ switch ($mode) {
                     $description = trans('Section:') . ' ' . $section;
                     $description_class = '';
                     $action = '';
-                    $tip = $documentation;
+                    $tip = $parser->Text($documentation);
                     $result[$section . '.' . $variable] = compact('name', 'name_class', 'description', 'description_class', 'action', 'section', 'tip');
                     $i++;
                 }
@@ -998,12 +1007,9 @@ switch ($mode) {
 
             if (!empty($result)) {
                 ksort($result);
-                echo json_encode(array_values(array_slice(
-                    $result,
-                    0,
-                    intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))
-                )));
+                echo json_encode(array_values($result));
             }
+
             $SESSION->close();
             $DB->Destroy();
             die;
