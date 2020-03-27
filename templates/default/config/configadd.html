@@ -119,6 +119,9 @@
 			onSubmit: function (data) {
 				$('[name="config[var]"]').val(data.name);
 				$('[name="config[section]"]').parent('.scombobox').scombobox('val', data.section);
+			},
+			onLoad: function() {
+				$('[name="config[var]"]').tooltip('destroy');
 			}
 		});
 	});
