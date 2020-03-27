@@ -134,7 +134,7 @@
 				$('[name="config[section]"]').parent('.scombobox').scombobox('val', data.section);
 			},
 			onLoad: function() {
-				$('[name="config[var]"]').tooltip('destroy');
+				$('[name="config[var]"]:ui-tooltip').tooltip('destroy');
 			}
 		});
 
