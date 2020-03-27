@@ -62,6 +62,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
      *          array() or single integer value
      *          -1 = without owner,
      *          -2 = with,
+     *          -3 = without owner or owner set to current user,
      *          all = filter off
      *      catids - ticket categories (default: null = any, -1 = without category),
      *          array() of integer values or single integer value
@@ -268,6 +269,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         }
 
         switch ($owner) {
+	    case '-3':
+		$ownerfilter = ' AND (t.owner IS NULL OR t.owner = '. Auth::GetCurrentUser() .')';
+		break;
             case '-2':
                 $ownerfilter = ' AND t.owner IS NOT NULL';
                 break;
@@ -389,7 +393,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				CASE WHEN customerid IS NULL THEN t.requestor ELSE '
                 . $this->db->Concat('c.lastname', "' '", 'c.name') . ' END AS requestor,
 				t.createtime AS createtime, u.name AS creatorname, t.deleted, t.deltime, t.deluserid,
-				t.modtime AS lastmodified,
+				t.modtime AS lastmodified, vi.name AS verifiername,
 				eventcountopened, eventcountclosed, delcount, tc2.categories, t.netnodeid, nn.name AS netnode_name, t.netdevid, nd.name AS netdev_name, vb.location as netnode_location, t.service, t.type,
 				(CASE WHEN t.state <> ' . RT_RESOLVED . ' AND (lv.ticketid IS NULL OR lv.vdate < t.modtime) THEN 1 ELSE 0 END) AS unread,
 				(CASE WHEN t.state <> ' . RT_RESOLVED . ' THEN m3.firstunread ELSE 0 END) as firstunread
@@ -1939,21 +1943,16 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     public function GetIndicatorStats()
     {
         $result = array(
-            'events' => 0,
             'critical' => 0,
             'urgent' => 0,
             'unread' => 0,
             'expired' => 0,
-            'expired2' => 0,
+            'verify' => 0,
+            'remaining' => 0,
+            'events' => 0,
         );
 
-        if (ConfigHelper::CheckPrivilege('timetable_management')) {
-            $event_manager = new LMSEventManager($this->db, $this->auth, $this->cache, $this->syslog);
-            $result['events'] = $event_manager->GetEventList(array('userid' => Auth::GetCurrentUser(),
-                'forward' => 1, 'closed' => 0, 'count' => true));
-        }
-
-        if (ConfigHelper::checkPrivilege('helpdesk_operation') || ConfigHelper::checkPrivilege('helpdesk_adninistration')) {
+        if (ConfigHelper::checkPrivilege('helpdesk_operation') || ConfigHelper::checkPrivilege('helpdesk_administration')) {
             $result['critical'] = $this->GetQueueContents(array('count' => true, 'priority' => RT_PRIORITY_CRITICAL,
                 'state' => -1, 'rights' => RT_RIGHT_INDICATOR));
             $result['urgent'] = $this->GetQueueContents(array('count' => true, 'priority' => RT_PRIORITY_URGENT,
@@ -1962,8 +1961,16 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 'rights' => RT_RIGHT_INDICATOR));
             $result['expired'] = $this->GetQueueContents(array('count' => true, 'state' => -1, 'deadline' => -2,
                 'owner' => Auth::GetCurrentUser(), 'rights' => RT_RIGHT_INDICATOR));
-            $result['expired2'] = $this->GetQueueContents(array('count' => true, 'state' => -1, 'deadline' => -2,
-                'verifierids' => Auth::GetCurrentUser(), 'rights' => RT_RIGHT_INDICATOR));
+            $result['verify'] = $this->GetQueueContents(array('count' => true, 'state' => 7,
+                'verifier' => Auth::GetCurrentUser(), 'rights' => RT_RIGHT_INDICATOR));
+            $result['remaining'] = $this->GetQueueContents(array('count' => true, 'state' => -1, 'owner' => -3,
+                'rights' => RT_RIGHT_INDICATOR));
+        }
+
+	if (ConfigHelper::CheckPrivilege('timetable_management')) {
+            $event_manager = new LMSEventManager($this->db, $this->auth, $this->cache, $this->syslog);
+            $result['events'] = $event_manager->GetEventList(array('userid' => Auth::GetCurrentUser(),
+                'forward' => 1, 'closed' => 0, 'count' => true));
         }
 
         return $result;

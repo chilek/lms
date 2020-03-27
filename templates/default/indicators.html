@@ -16,9 +16,13 @@
     <span class="lms-ui-indicator-counter">0</span>
     <i class="lms-ui-indicator-icon lms-ui-icon-deadline"></i>
 </a>
-<a href="?m=indicators&action=expired2" class="lms-ui-indicator" title="{trans("<!rt>Verifier expired tickets")}" id="indicator-expired2" style="display:none;">
+<a href="?m=indicators&action=verify" class="lms-ui-indicator" title="{trans("<!rt>Tickets waiting for my verify")}" id="indicator-verify" style="display:none;">
     <span class="lms-ui-indicator-counter">0</span>
     <i class="lms-ui-indicator-icon lms-ui-icon-verifier"></i>
+</a>
+<a href="?m=indicators&action=remaining" class="lms-ui-indicator" title="{trans("<!rt>Tickets remaining")}" id="indicator-remaining" style="display:none;">
+    <span class="lms-ui-indicator-counter">0</span>
+    <i class="lms-ui-indicator-icon lms-ui-icon-helpdesk"></i>
 </a>
 {/if}
 {if ConfigHelper::CheckPrivilege('timetable_management')}

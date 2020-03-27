@@ -71,6 +71,7 @@
                 <option value="all" data-exclusive{if !is_array($filter.owner) && $filter.owner == "all"} selected{/if}>{trans("No filter")}</option>
                 <option value="-1" data-exclusive{if !is_array($filter.owner) && $filter.owner == -1} selected{/if}>{trans("no owner")}</option>
                 <option value="-2" data-exclusive{if !is_array($filter.owner) && $filter.owner == -2} selected{/if}>{trans("with owner")}</option>
+                <option value="-3" data-exclusive{if !is_array($filter.owner) && $filter.owner == -3} selected{/if}>{trans("no owner or logged user")}</option>
                 {foreach $users as $user}
                 <option value="{$user.id}"{if is_array($filter.owner) && in_array($user.id, $filter.owner)}} selected{/if}>{$user.name|truncate:40:"...":true}</OPTION>
                 {/foreach}

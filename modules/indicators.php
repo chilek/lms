@@ -88,15 +88,27 @@ switch ($action) {
             }
         }
         break;
-    case 'expired2':
+    case 'verify':
         if (ConfigHelper::CheckPrivilege('helpdesk_administration') || ConfigHelper::CheckPrivilege('helpdesk_operation')) {
-            $count = $LMS->GetQueueContents(array('count' => true, 'state' => -1, 'deadline' => -2, 'verifier' => Auth::GetCurrentUser(), 'rights' => RT_RIGHT_INDICATOR));
+            $count = $LMS->GetQueueContents(array('count' => true, 'state' => 7, 'verifier' => Auth::GetCurrentUser(), 'rights' => RT_RIGHT_INDICATOR));
             if ($count == 1) {
-                $tickets = $LMS->GetQueueContents(array('count' => false, 'state' => -1, 'deadline' => -2, 'verifier' => Auth::GetCurrentUser(), 'rights' => RT_RIGHT_INDICATOR));
+                $tickets = $LMS->GetQueueContents(array('count' => false, 'state' => 7, 'verifier' => Auth::GetCurrentUser(), 'rights' => RT_RIGHT_INDICATOR));
                 $ticket = reset($tickets);
                 $redirect = '?m=rtticketview&id=' . $ticket['id'];
             } else {
-                $redirect = '?m=rtqueueview&persistent-filter=-1&d=-2&vids=' . Auth::GetCurrentUser() . '&rights=' . RT_RIGHT_INDICATOR;
+                $redirect = '?m=rtqueueview&persistent-filter=-1&vids=' . Auth::GetCurrentUser() . '&rights=' . RT_RIGHT_INDICATOR;
+            }
+        }
+	break;
+    case 'remaining':
+        if (ConfigHelper::CheckPrivilege('helpdesk_administration') || ConfigHelper::CheckPrivilege('helpdesk_operation')) {
+            $count = $LMS->GetQueueContents(array('count' => true, 'state' => -1, 'owner' => -3, 'rights' => RT_RIGHT_INDICATOR));
+            if ($count == 1) {
+                $tickets = $LMS->GetQueueContents(array('count' => false, 'state' => -1, 'owner' => -3, 'rights' => RT_RIGHT_INDICATOR));
+                $ticket = reset($tickets);
+                $redirect = '?m=rtticketview&id=' . $ticket['id'];
+            } else {
+                $redirect = '?m=rtqueueview&persistent-filter=-1&owner=-3&rights=' . RT_RIGHT_INDICATOR;
             }
         }
         break;
