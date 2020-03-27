@@ -151,13 +151,8 @@
 
 						{box_row icon="img/ticket.gif" label="Assign ticket"}
 							<input type="hidden" name="event[ticketid]" value="0">
-							{if empty($event.ticketid)}
-								{$visible = false}
-							{else}
-								{$visible = true}
-							{/if}
 							{list id="eventedit-ticket" tipid="ticketid" tip="Test" items=$event.ticket
-								field_name_pattern="event[ticketid]" item_content="event_ticket_item_content" visible=$visible}
+								field_name_pattern="event[ticketid]" item_content="event_ticket_item_content"}
 						{/box_row}
 					{/if}
 
