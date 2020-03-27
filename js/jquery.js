@@ -1577,7 +1577,6 @@ $(function() {
 		}
 		$('.lms-ui-list-suggestion-container input').each(function() {
 			$(this).keypress(function(e) {
-				console.log('document.keypress:', e);
 				if (e.key == 'Enter') {
 					e.preventDefault();
 					e.stopPropagation();
