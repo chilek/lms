@@ -244,6 +244,7 @@ version 25-git (????-??-??):
   - enhancement: filtering nodes by 'without radio sector' cryterion [chilan]
   - improvement: 'phpui.copy_ticket_summary_to_assigned_event' ('false' by default) controls
     if assigned ficket properties are copied to newly created event [chilan]
+  - improvement: show location type icon in location selection button [chilan]
 
 version 24.0 (2019-05-16):
 

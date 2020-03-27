@@ -31,6 +31,17 @@ $.widget( "custom.iconselectmenu", $.ui.selectmenu, {
             ' ' + item.element.attr("data-icon") + '"></i>' : '') + item.label + '</div>';
 
         return li.append(wrapper).appendTo(ul);
+    },
+    _renderButtonItem: function(item) {
+        var buttonItem = $("<span>", {
+            "class": "ui-selectmenu-text"
+        });
+        this._setText(buttonItem, item.label);
+        buttonItem.html('<i class="' + item.element.attr('data-icon') + '"></i> ' + buttonItem.html());
+
+        buttonItem.css("background-color", item.value);
+
+        return buttonItem;
     }
 });
 
