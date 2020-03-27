@@ -1499,7 +1499,13 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         if (array_key_exists('address_id', $props)) {
             if (isset($props['address_id']) && $ticket['address_id'] != $props['address_id']) {
                 $type = $type | RTMESSAGE_LOCATION_CHANGE;
-                $notes[] = trans('Ticket\'s location has been changed from $a to $b.', $ticket['location'], $props['location']);
+                $address = $LMS->GetAddress($props['address_id']);
+                $props['location'] = $address['location'];
+                if (empty($ticket['address_id'])) {
+                    $notes[] = trans('Ticket\'s location has been changed to $a.', $props['location']);
+                } else {
+                    $notes[] = trans('Ticket\'s location has been changed from $a to $b.', $ticket['location'], $props['location']);
+                }
             } elseif (!isset($props['address_id']) && !empty($ticket['address_id'])) {
                 $type = $type | RTMESSAGE_LOCATION_CHANGE;
                 $notes[] = trans('Ticket\'s location $a has been removed.', $ticket['location']);

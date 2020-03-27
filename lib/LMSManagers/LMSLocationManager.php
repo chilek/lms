@@ -354,7 +354,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
     {
         return $this->db->GetRow('SELECT a.*, ls.name AS state_name,
 				ld.name AS district_name, lb.name AS borough_name,
-				lc.name AS city_name FROM addresses a
+				lc.name AS city_name FROM vaddresses a
 			LEFT JOIN location_cities lc ON lc.id = a.city_id
 			LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
 			LEFT JOIN location_districts ld ON ld.id = lb.districtid
