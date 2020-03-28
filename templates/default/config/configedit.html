@@ -12,7 +12,7 @@
 		align-items: center;
 	}
 
-	.lmsbox thead tr:nth-child(n+1) {
+	#configedit-lmsbox thead tr:nth-child(n+1) {
 		border-top: 0;
 	}
 
@@ -28,7 +28,7 @@
 
 <FORM method="POST" id="configedit" action="?m=configedit&id={$config.id}" name="config">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE class="lmsbox">
+<TABLE class="lmsbox" id="configedit-lmsbox">
 	<colgroup>
 		<col style="width: 100%;">
 	</colgroup>
