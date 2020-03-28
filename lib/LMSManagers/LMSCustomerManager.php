@@ -979,16 +979,16 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                             WHEN ' . QUARTERLY . ' THEN 1/3.0
                                             ELSE 1
                                         END
-                                    ) * (
-                                        CASE a.period
-                                            WHEN ' . YEARLY . ' THEN 12.0
-                                            WHEN ' . HALFYEARLY . ' THEN 6.0
-                                            WHEN ' . QUARTERLY . ' THEN 3.0
-                                            WHEN ' . WEEKLY . ' THEN 1/4.0
-                                            WHEN ' . DAILY . ' THEN 1/30.0
-                                            ELSE 1
-                                        END
                                     )
+                                ELSE 1
+                            END
+                        ) * (
+                            CASE a.period
+                                WHEN ' . YEARLY . ' THEN 12.0
+                                WHEN ' . HALFYEARLY . ' THEN 6.0
+                                WHEN ' . QUARTERLY . ' THEN 3.0
+                                WHEN ' . WEEKLY . ' THEN 1/4.0
+                                WHEN ' . DAILY . ' THEN 1/30.0
                                 ELSE 1
                             END
                         )
