@@ -20,102 +20,155 @@
 		z-index: 9999 !important;
 	}
 
+	.documentation-label {
+		text-decoration: underline;
+	}
+
 </style>
 
 <FORM method="POST" id="configedit" action="?m=configedit&id={$config.id}" name="config">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
 	<colgroup>
-		<col style="width: 1%;">
-		<col style="width: 1%;">
-		<col style="width: 98%;">
+		<col style="width: 100%;">
 	</colgroup>
     <THEAD>
 		<TR>
 			<TD>
-				<img src="img/settings.gif" alt="">
-			</TD>
-			<TD class="bold"width="1%">
-				{trans("Section:")}
-			</TD>
-			<td>
-				<SELECT size="1" name="config[section]" size="30" {tip class="lms-ui-combobox" text="Select section" trigger="section"}
-						{if !in_array($config.section, $sections)} data-value="{$config.section}"{/if}>
-					{foreach $sections as $section}
-						<OPTION value="{$section}"{if $config.section == $section} selected{/if}>{$section}</OPTION>
-					{/foreach}
-				</SELECT>
-			</td>
-		</TR>
-		<TR>
-			<TD>
-				<img src="img/settings.gif" alt="">
-			</TD>
-			<TD class="bold"width="1%">
-				{trans("Name:")}
-			</TD>
-			<TD>
-				<INPUT type="text" name="config[var]" value="{$config.var}"
-						{tip class="lms-ui-autogrow" text="Enter option name" trigger="var" bold=1}>
+				<table>
+					<colgroup>
+						<col style="width: 1%;">
+						<col style="width: 1%;">
+						<col style="width: 98%;">
+					</colgroup>
+					<tbody>
+						<TR>
+							<TD>
+								<img src="img/settings.gif" alt="">
+							</TD>
+							<TD class="bold"width="1%">
+								{trans("Section:")}
+							</TD>
+							<td>
+								<SELECT size="1" name="config[section]" size="30" {tip class="lms-ui-combobox" text="Select section" trigger="section"}
+										{if !in_array($config.section, $sections)} data-value="{$config.section}"{/if}>
+									{foreach $sections as $section}
+										<OPTION value="{$section}"{if $config.section == $section} selected{/if}>{$section}</OPTION>
+									{/foreach}
+								</SELECT>
+							</td>
+						</TR>
+						<TR>
+							<TD>
+								<img src="img/settings.gif" alt="">
+							</TD>
+							<TD class="bold"width="1%">
+								{trans("Name:")}
+							</TD>
+							<TD>
+								<INPUT type="text" name="config[var]" value="{$config.var}"
+										{tip class="lms-ui-autogrow" text="Enter option name" trigger="var" bold=1}>
+							</TD>
+						</TR>
+					</tbody>
+				</table>
 			</TD>
 		</TR>
     </THEAD>
     <TBODY>
 		<TR>
-			<TD>
-				<img src="img/producer.gif" alt="">
-			</TD>
-			<TD class="bold">
-				{trans("Value:")}
-			</TD>
-			<TD>
-				<TEXTAREA rows="5" cols="50" name="config[value]" {tip class="lms-ui-wysiwyg-editor" text="Enter option value" trigger="value"} data-wysiwyg="{if $config.type == $smarty.const.CONFIG_TYPE_RICHTEXT || (isset($config.wysiwyg.value) && ConfigHelper::checkValue($config.wywiwyg.value))}true{else}false{/if}">{$config.value}</TEXTAREA>
+			<TD class="lmsbox-panels">
+				<div class="lmsbox-panel">
+					<table>
+						<colgroup>
+							<col style="width: 1%;">
+							<col style="width: 1%;">
+							<col style="width: 98%;">
+						</colgroup>
+						<tbody>
+							<TR>
+								<TD>
+									<img src="img/producer.gif" alt="">
+								</TD>
+								<TD class="bold">
+									{trans("Value:")}
+								</TD>
+								<TD>
+									<TEXTAREA rows="5" cols="50" name="config[value]" {tip class="lms-ui-wysiwyg-editor" text="Enter option value" trigger="value"} data-wysiwyg="{if $config.type == $smarty.const.CONFIG_TYPE_RICHTEXT || (isset($config.wysiwyg.value) && ConfigHelper::checkValue($config.wywiwyg.value))}true{else}false{/if}">{$config.value}</TEXTAREA>
+								</TD>
+							</TR>
+							<TR>
+								<TD>
+									<img src="img/info1.gif" alt="">
+								</TD>
+								<TD class="bold">
+									{trans("Comment:")}
+								</TD>
+								<TD>
+									<TEXTAREA rows="5" cols="50" name="config[description]" {tip text="Enter description (optional)" trigger="description"}>{$config.description}</TEXTAREA>
+								</TD>
+							</TR>
+							<TR>
+								<TD>
+									<img src="img/wait.gif" alt="">
+								</TD>
+								<TD class="bold">
+									{trans("Status:")}
+								</TD>
+								<TD>
+									<INPUT type="checkbox" value="1" id="disabled" name="config[disabled]" {if $config.disabled}CHECKED{/if} {tip text="You can turn it off"}><label for="disabled"> {trans("Off")}</label>
+								</TD>
+							</TR>
+							{if ConfigHelper::checkPrivilege('superuser')}
+							<TR>
+								<TD>
+									<img src="img/desc.gif" alt="">
+								</TD>
+								<TD class="bold">
+									{trans("Type:")}
+								</TD>
+								<TD>
+									<SELECT size="1" name="config[type]" {tip text="Select config type" trigger="type"}>
+										{foreach $_CONFIG_TYPES as $key => $type}
+											<OPTION value="{$key}"{if $config.type == $key} selected{/if}>{$type}</OPTION>
+										{/foreach}
+									</SELECT>
+								</TD>
+							</TR>
+							{/if}
+						</tbody>
+					</table>
+				</div>
+				<div class="lmsbox-panel">
+					<table>
+						<colgroup>
+							<col style="width: 1%;">
+							<col style="width: 99%;">
+						</colgroup>
+						<tbody>
+						<tr>
+							<td>
+								<i class="lms-ui-icon-help"></i>
+							</td>
+							<td class="bold documentation-label">
+								{trans("Documentation:")}
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2" id="documentation">
+								{$config.documentation}
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
 			</TD>
 		</TR>
 		<TR>
-			<TD>
-				<img src="img/info1.gif" alt="">
-			</TD>
-			<TD class="bold">
-				{trans("Comment:")}
-			</TD>
-			<TD>
-				<TEXTAREA rows="5" cols="50" name="config[description]" {tip text="Enter description (optional)" trigger="description"}>{$config.description}</TEXTAREA>
-			</TD>
-		</TR>
-		<TR>
-			<TD>
-				<img src="img/wait.gif" alt="">
-			</TD>
-			<TD class="bold">
-				{trans("Status:")}
-			</TD>
-			<TD>
-				<INPUT type="checkbox" value="1" id="disabled" name="config[disabled]" {if $config.disabled}CHECKED{/if} {tip text="You can turn it off"}><label for="disabled"> {trans("Off")}</label>
-			</TD>
-		</TR>
-		{if ConfigHelper::checkPrivilege('superuser')}
-		<TR>
-			<TD>
-				<img src="img/desc.gif" alt="">
-			</TD>
-			<TD class="bold">
-				{trans("Type:")}
-			</TD>
-			<TD>
-				<SELECT size="1" name="config[type]" {tip text="Select config type" trigger="type"}>
-					{foreach $_CONFIG_TYPES as $key => $type}
-						<OPTION value="{$key}"{if $config.type == $key} selected{/if}>{$type}</OPTION>
-					{/foreach}
-				</SELECT>
-			</TD>
-		</TR>
-		{/if}
-		<TR>
-			<TD align="right" colspan="3">
-				<A href="javascript:document.config.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></A>
-				<A id="delete-config" href="?m=configdel&id={$config.id}&globalconf=1" data-name="{$config.section}.{$config.var}">{trans("Delete")} <img src="img/delete.gif" alt=""></A>
-				<A href="?m=configlist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></A>
+			<TD class="lms-ui-box-buttons">
+				{button type="submit" onclick="document.config.submit();" icon="save" label="Submit"}
+				{button id="delete-config" href="?m=configdel&id={$config.id}&globalconf=1" icon="delete" label="Delete"}
+				{button type="link-button" href="?m=configlist" icon="cancel" label="Cancel"}
 			</TD>
 		</TR>
     </TBODY>
@@ -136,7 +189,7 @@
 		});
 
 		$('#delete-config').click(function() {
-			var name = $(this).attr('data-name');
+			var name = '{$config.section}.{$config.var}';
 			confirmDialog($t("Are you sure, you want to delete option '$a' from database?\n\nThis action will remove this option for all users.", name), this).done(function() {
 				location.href = $(this).attr('href');
 			});
@@ -161,6 +214,22 @@
 			}
 		});
 
+		$('[name="config[var]"]').change(function() {
+			var section = $('[name="config[section]"]').scombobox('val');
+			var variable = $('[name="config[var]"]').val();
+			if (section.length < 3 || variable.length < 3 ||
+					!section.match(/^[a-z0-9_-]+$/) || !variable.match(/^[a-z0-9_-]+$/)) {
+				return;
+			}
+			$.ajax('?m=configinfo&variable=' + $('[name="config[section]"]').scombobox('val') + '.' + variable, {
+				async: true,
+				method: 'POST',
+				dataType: 'html',
+				success: function(data) {
+					$('#documentation').html(data);
+				}
+			});
+		});
 	});
 
 </script>

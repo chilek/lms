@@ -178,7 +178,6 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 
 		default:
 			if (this.value != me.inputText && (me.emptyValue || this.value.length > 0)) {
-				console.log('onkeyup');
 				clearTimeout(me.timer);
 				me.timer = setTimeout(function(){ me.HTTPpreload(); }, me.request_delay);
 			} else {

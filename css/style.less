@@ -1452,6 +1452,7 @@ li.lms-ui-suggestion-item {
 	}
 }
 
+.lms-ui-icon-help,
 .lms-ui-icon-info,
 .lms-ui-icon-details {
 	.fa-icon;
@@ -2724,6 +2725,29 @@ table.lmsbox.lms-ui-background-cycle > tbody > tr {
 		}
 		&:nth-child(odd) {
 			background-image: repeating-linear-gradient(145deg, transparent, transparent 10px, @red-lucid 10px, @red-lucid 20px);
+		}
+	}
+}
+
+table.lmsbox {
+	.lmsbox-panels {
+		width: 100%;
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-start;
+		align-items: flex-start;
+		flex-wrap: wrap;
+
+		> .lmsbox-panel {
+			flex-grow: 1;
+			&:last-child {
+				margin-right: 2em;
+			}
+			@media screen and (min-width: 470px) {
+				&:last-child {
+					margin-right: 7em;
+				}
+			}
 		}
 	}
 }

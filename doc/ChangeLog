@@ -253,6 +253,8 @@ version 25-git (????-??-??):
   - enhancement: lms-ui-autogrow css class allow to make input fields auto-adjusting to their
     content [chilan]
   - devel: bumped fontawesome to 5.13.0, mousetrap to 1.6.5 [chilan]
+  - enhancement: configuration variable documentation presentation in config add end edit
+    forms [chilan]
 
 version 24.0 (2019-05-16):
 

@@ -4640,3 +4640,5 @@ $_LANG['Choose service type'] = 'Wybierz typ usługi';
 $_LANG['Enter ticket identifier or ticket subject part'] = 'Wprowadź identyfikator zgłoszenia lub fragment tematu zgłoszenia';
 
 $_LANG['without radio sector'] = 'bez sektora radiowego';
+
+$_LANG['Documentation:'] = 'Dokumentacja:';

@@ -97,6 +97,9 @@ if (count($config)) {
         unset($config['description']);
         unset($config['disabled']);
     }
+
+    $markdown_parser = new Parsedown();
+    $config['documentation'] = $markdown_parser->Text(ConfigHelper::LoadMarkdownDocumentation($option));
 } elseif (isset($_GET['id'])) {
     $config = $LMS->GetConfigVariable($_GET['id']);
     unset($config['id']);
