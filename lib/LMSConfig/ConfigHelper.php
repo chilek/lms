@@ -196,7 +196,6 @@ class ConfigHelper
             }
         }
         if ($variable && $buffer) {
-            $buffer = $parser->Text($buffer);
             list ($section, $var) = explode('.', $variable);
             if (!isset($result[$section])) {
                 $result[$section] = array();
