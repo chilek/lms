@@ -961,26 +961,41 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 WHERE time < ' . $time . ' GROUP BY customerid) b ON b.customerid = c.id'
                 : 'LEFT JOIN customerbalances b ON b.customerid = c.id')
             . '
-            LEFT JOIN (SELECT a.customerid,
-                SUM((CASE a.suspended
-                WHEN 0 THEN (((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount)
-                ELSE ((((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount) * ' . $suspension_percentage . ' / 100) END)
-                * (CASE t.period
-                WHEN ' . MONTHLY . ' THEN 1
-                WHEN ' . YEARLY . ' THEN 1/12.0
-                WHEN ' . HALFYEARLY . ' THEN 1/6.0
-                WHEN ' . QUARTERLY . ' THEN 1/3.0
-                ELSE (CASE a.period
-                    WHEN ' . MONTHLY . ' THEN 1
-                    WHEN ' . YEARLY . ' THEN 1/12.0
-                    WHEN ' . HALFYEARLY . ' THEN 1/6.0
-                    WHEN ' . QUARTERLY . ' THEN 1/3.0
-                    ELSE 0 END)
-                END)
-                ) AS value
+            LEFT JOIN (
+                SELECT a.customerid,
+                    SUM(
+                        (
+                            CASE a.suspended
+                                WHEN 0 THEN (((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount)
+                                ELSE ((((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount) * ' . $suspension_percentage . ' / 100)
+                            END
+                        ) * (
+                            CASE
+                                WHEN a.period <> ' . DISPOSABLE . ' AND t.period > 0 AND t.period <> a.period THEN
+                                    (
+                                        CASE t.period
+                                            WHEN ' . YEARLY . ' THEN 1/12.0
+                                            WHEN ' . HALFYEARLY . ' THEN 1/6.0
+                                            WHEN ' . QUARTERLY . ' THEN 1/3.0
+                                            ELSE 1
+                                        END
+                                    ) * (
+                                        CASE a.period
+                                            WHEN ' . YEARLY . ' THEN 12.0
+                                            WHEN ' . HALFYEARLY . ' THEN 6.0
+                                            WHEN ' . QUARTERLY . ' THEN 3.0
+                                            WHEN ' . WEEKLY . ' THEN 1/4.0
+                                            WHEN ' . DAILY . ' THEN 1/30.0
+                                            ELSE 1
+                                        END
+                                    )
+                                ELSE 1
+                            END
+                        )
+                    ) AS value
                     FROM assignments a
                     LEFT JOIN tariffs t ON (t.id = a.tariffid)
-                    LEFT JOIN liabilities l ON (l.id = a.liabilityid AND a.period != ' . DISPOSABLE . ')
+                    LEFT JOIN liabilities l ON (l.id = a.liabilityid AND a.period <> ' . DISPOSABLE . ')
                     WHERE a.commited = 1 AND a.datefrom <= ?NOW? AND (a.dateto > ?NOW? OR a.dateto = 0)
                     GROUP BY a.customerid
                 ) t ON (t.customerid = c.id)
