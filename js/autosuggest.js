@@ -20,6 +20,7 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 		this.autosubmit = form.hasOwnProperty('autosubmit') && (form.autosubmit == 1 || form.autosubmit == 'true');
 		this.onSubmit = form.hasOwnProperty('onSubmit') ? form.onSubmit : null;
 		this.onLoad = form.hasOwnProperty('onLoad') ? form.onLoad : null;
+		this.onAjax = form.hasOwnProperty('onAjax') ? form.onAjax : '';
 		this.class = form.hasOwnProperty('class') ? form.class : '';
 	} else {
 		//A reference to the element we're binding the list to.
@@ -397,9 +398,13 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 	}
 
 	this.HTTPpreload = function() {
-		xmlhttp=me.setXMLHTTP();
+		var uri = this.uri + encodeURIComponent(this.elem.value);
+		xmlhttp = me.setXMLHTTP();
 		xmlhttp.onreadystatechange = this.HTTPloaded;
-		xmlhttp.open("GET", this.uri + encodeURIComponent(this.elem.value), true);
+		if (this.onAjax) {
+			uri = this.onAjax(uri);
+		}
+		xmlhttp.open("GET", uri, true);
 		xmlhttp.send(null);
 	}
 

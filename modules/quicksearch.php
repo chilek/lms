@@ -978,7 +978,7 @@ switch ($mode) {
                 die;
             }
 
-            $parser = new Parsedown();
+            $markdown_parser = new Parsedown();
 
             $quicksearch_limit = intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15));
             $i = 1;
@@ -986,6 +986,9 @@ switch ($mode) {
             foreach ($markdown_documentation as $section => $variables) {
                 if ($i > $quicksearch_limit) {
                     break;
+                }
+                if (isset($_GET['section']) && !empty($_GET['section']) && $section != $_GET['section']) {
+                    continue;
                 }
                 foreach ($variables as $variable => $documentation) {
                     if ($i > $quicksearch_limit) {
@@ -999,7 +1002,7 @@ switch ($mode) {
                     $description = trans('Section:') . ' ' . $section;
                     $description_class = '';
                     $action = '';
-                    $tip = $parser->Text($documentation);
+                    $tip = $markdown_parser->Text($documentation);
                     $result[$section . '.' . $variable] = compact('name', 'name_class', 'description', 'description_class', 'action', 'section', 'tip');
                     $i++;
                 }
