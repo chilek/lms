@@ -1053,30 +1053,30 @@ if ($netnodes) {
 
         if ($netnode['ownership'] < 2) {
             $data = array(
-            'ww_id' => $netnode['id'],
-            'ww_ownership' => $NETELEMENTOWNERSHIPS[$netnode['ownership']],
-            'ww_coowner' => $netnode['coowner'],
-            'ww_coloc' => '',
-            'ww_state' => isset($netnode['area_woj']) ? $netnode['area_woj']
-                : "LMS netdevinfo ID's:" . implode(' ', $netnode['netdevices']) . "," . implode(',', array_fill(0, 9, '')),
-            'ww_district' => isset($netnode['area_pow']) ? $netnode['area_pow'] : '',
-            'ww_borough' => isset($netnode['area_gmi']) ? $netnode['area_gmi'] : '',
-            'ww_terc' => isset($netnode['area_terc']) ? $netnode['area_terc'] : '',
-            'ww_city' => isset($netnode['area_city']) ? $netnode['area_city'] : $netnode['location_city_name'],
-            'ww_simc' => isset($netnode['area_simc']) ? $netnode['area_simc'] : '',
-            'ww_street' => isset($netnode['address_ulica']) ? ((!empty($netnode['address_cecha']) && $netnode['address_cecha'] != 'inne'
-                ? $netnode['address_cecha'] . ' ' : '') . $netnode['address_ulica']) : $netnode['location_street_name'],
-            'ww_ulic' => isset($netnode['address_symul']) ? $netnode['address_symul'] : '',
-            'ww_house' => $netnode['address_budynek'],
-            'ww_zip' => $netnode['location_zip'],
-            'ww_latitude' =>  isset($netnode['latitude']) ? $netnode['latitude'] : '',
-            'ww_longitude' => isset($netnode['longitude']) ? $netnode['longitude'] : '',
-            'ww_objtype' => $NETELEMENTTYPES[$netnode['type']],
-            'ww_uip' => $netnode['uip'] ? 'Tak' : 'Nie',
-            'ww_miar' => $netnode['miar'] ? 'Tak' : 'Nie',
-            'ww_eu' => $netnode['invproject'] ? 'Tak' : 'Nie',
-            'ww_invproject' => $netnode['invproject'],
-            'ww_invstatus' => $netnode['invproject'] ? $NETELEMENTSTATUSES[$netnode['status']] : '',
+                'ww_id' => $netnode['id'],
+                'ww_ownership' => $NETELEMENTOWNERSHIPS[$netnode['ownership']],
+                'ww_coowner' => $netnode['coowner'],
+                'ww_coloc' => '',
+                'ww_state' => isset($netnode['area_woj']) ? $netnode['area_woj']
+                    : "LMS netdevinfo ID's:" . implode(' ', $netnode['netdevices']) . "," . implode(',', array_fill(0, 9, '')),
+                'ww_district' => isset($netnode['area_pow']) ? $netnode['area_pow'] : '',
+                'ww_borough' => isset($netnode['area_gmi']) ? $netnode['area_gmi'] : '',
+                'ww_terc' => isset($netnode['area_terc']) ? $netnode['area_terc'] : '',
+                'ww_city' => isset($netnode['area_city']) ? $netnode['area_city'] : $netnode['location_city_name'],
+                'ww_simc' => isset($netnode['area_simc']) ? $netnode['area_simc'] : '',
+                'ww_street' => isset($netnode['address_ulica']) ? ((!empty($netnode['address_cecha']) && $netnode['address_cecha'] != 'inne'
+                    ? $netnode['address_cecha'] . ' ' : '') . $netnode['address_ulica']) : $netnode['location_street_name'],
+                'ww_ulic' => isset($netnode['address_symul']) ? $netnode['address_symul'] : '',
+                'ww_house' => str_replace(' ', '', $netnode['address_budynek']),
+                'ww_zip' => $netnode['location_zip'],
+                'ww_latitude' =>  isset($netnode['latitude']) ? $netnode['latitude'] : '',
+                'ww_longitude' => isset($netnode['longitude']) ? $netnode['longitude'] : '',
+                'ww_objtype' => $NETELEMENTTYPES[$netnode['type']],
+                'ww_uip' => $netnode['uip'] ? 'Tak' : 'Nie',
+                'ww_miar' => $netnode['miar'] ? 'Tak' : 'Nie',
+                'ww_eu' => $netnode['invproject'] ? 'Tak' : 'Nie',
+                'ww_invproject' => $netnode['invproject'],
+                'ww_invstatus' => $netnode['invproject'] ? $NETELEMENTSTATUSES[$netnode['status']] : '',
             );
 
             if (in_array('ww', $sheets)) {
@@ -1084,25 +1084,25 @@ if ($netnodes) {
             }
         } else {
             $data = array(
-            'wo_id' => $netnode['id'],
-            'wo_agreement' => 'Umowa o dostęp do sieci telekomunikacyjnej',
-            'wo_coowner' => $netnode['coowner'],
-            'wo_state' => isset($netnode['area_woj']) ? $netnode['area_woj']
-                : "LMS netdevinfo ID's:" . implode(' ', $netnode['netdevices']) . "," . implode(',', array_fill(0, 9, '')),
-            'wo_district' => isset($netnode['area_pow']) ? $netnode['area_pow'] : '',
-            'wo_borough' => isset($netnode['area_gmi']) ? $netnode['area_gmi'] : '',
-            'wo_terc' => isset($netnode['area_terc']) ? $netnode['area_terc'] : '',
-            'wo_city' => isset($netnode['area_city']) ? $netnode['area_city'] : $netnode['location_city_name'],
-            'wo_simc' => isset($netnode['area_simc']) ? $netnode['area_simc'] : '',
-            'wo_street' => isset($netnode['address_ulica']) ? ((!empty($netnode['address_cecha']) && $netnode['address_cecha'] != 'inne'
-                ? $netnode['address_cecha'] . ' ' : '') . $netnode['address_ulica']) : $netnode['location_street_name'],
-            'wo_ulic' => isset($netnode['address_symul']) ? $netnode['address_symul'] : '',
-            'wo_house' => $netnode['address_budynek'],
-            'wo_zip' => $netnode['location_zip'],
-            'wo_latitude' =>  isset($netnode['latitude']) ? $netnode['latitude'] : '',
-            'wo_longitude' => isset($netnode['longitude']) ? $netnode['longitude'] : '',
-            'wo_objtype' => $NETELEMENTTYPES[$netnode['type']],
-            'wo_invproject' => $netnode['invproject'],
+                'wo_id' => $netnode['id'],
+                'wo_agreement' => 'Umowa o dostęp do sieci telekomunikacyjnej',
+                'wo_coowner' => $netnode['coowner'],
+                'wo_state' => isset($netnode['area_woj']) ? $netnode['area_woj']
+                    : "LMS netdevinfo ID's:" . implode(' ', $netnode['netdevices']) . "," . implode(',', array_fill(0, 9, '')),
+                'wo_district' => isset($netnode['area_pow']) ? $netnode['area_pow'] : '',
+                'wo_borough' => isset($netnode['area_gmi']) ? $netnode['area_gmi'] : '',
+                'wo_terc' => isset($netnode['area_terc']) ? $netnode['area_terc'] : '',
+                'wo_city' => isset($netnode['area_city']) ? $netnode['area_city'] : $netnode['location_city_name'],
+                'wo_simc' => isset($netnode['area_simc']) ? $netnode['area_simc'] : '',
+                'wo_street' => isset($netnode['address_ulica']) ? ((!empty($netnode['address_cecha']) && $netnode['address_cecha'] != 'inne'
+                    ? $netnode['address_cecha'] . ' ' : '') . $netnode['address_ulica']) : $netnode['location_street_name'],
+                'wo_ulic' => isset($netnode['address_symul']) ? $netnode['address_symul'] : '',
+                'wo_house' => str_replace(' ', '', $netnode['address_budynek']),
+                'wo_zip' => $netnode['location_zip'],
+                'wo_latitude' =>  isset($netnode['latitude']) ? $netnode['latitude'] : '',
+                'wo_longitude' => isset($netnode['longitude']) ? $netnode['longitude'] : '',
+                'wo_objtype' => $NETELEMENTTYPES[$netnode['type']],
+                'wo_invproject' => $netnode['invproject'],
             );
 
             if (in_array('wo', $sheets)) {
@@ -1607,16 +1607,16 @@ if ($netnodes) {
                         'zas_city' => isset($teryt['area_city']) ? $teryt['area_city'] : $range['location_city_name'],
                         'zas_simc' => isset($teryt['area_simc']) ? $teryt['area_simc'] : '',
                         'zas_street' => isset($teryt['address_ulica']) ? ((!empty($teryt['address_cecha']) && $teryt['address_cecha'] != 'inne'
-                        ? $teryt['address_cecha'] . ' ' : '') . $teryt['address_ulica']) : $range['location_street_name'],
-                    'zas_ulic' => $teryt['address_symul'],
-                    'zas_house' => $teryt['address_budynek'],
-                    'zas_zip' => $teryt['location_zip'],
-                    'zas_latitude' => !strlen($netrange['latitude']) && !strlen($netnode['latitude'])
-                        ? '' : str_replace(',', '.', sprintf('%.6f', !strlen($netrange['latitude']) ? $netnode['latitude'] : $netrange['latitude'])),
-                    'zas_longitude' => !strlen($netrange['longitude']) && !strlen($netnode['longitude'])
-                        ? '' : str_replace(',', '.', sprintf('%.6f', !strlen($netrange['longitude']) ? $netnode['longitude'] : $netrange['longitude'])),
-                    'zas_tech' => $technology,
-                    'zas_ltech' => $linktechnology,
+                            ? $teryt['address_cecha'] . ' ' : '') . $teryt['address_ulica']) : $range['location_street_name'],
+                        'zas_ulic' => $teryt['address_symul'],
+                        'zas_house' => str_replace(' ', '', $teryt['address_budynek']),
+                        'zas_zip' => $teryt['location_zip'],
+                        'zas_latitude' => !strlen($netrange['latitude']) && !strlen($netnode['latitude'])
+                            ? '' : str_replace(',', '.', sprintf('%.6f', !strlen($netrange['latitude']) ? $netnode['latitude'] : $netrange['latitude'])),
+                        'zas_longitude' => !strlen($netrange['longitude']) && !strlen($netnode['longitude'])
+                            ? '' : str_replace(',', '.', sprintf('%.6f', !strlen($netrange['longitude']) ? $netnode['longitude'] : $netrange['longitude'])),
+                        'zas_tech' => $technology,
+                        'zas_ltech' => $linktechnology,
                     );
 
                     $allservices = array();
@@ -1759,25 +1759,25 @@ if ($netnodes) {
                 'zas_city' => isset($netnode['area_city']) ? $netnode['area_city'] : $range['location_city_name'],
                 'zas_simc' => isset($netnode['area_simc']) ? $netnode['area_simc'] : '',
                 'zas_street' => isset($netnode['address_ulica']) ? ((!empty($netnode['address_cecha']) && $netnode['address_cecha'] != 'inne'
-                ? $netnode['address_cecha'] . ' ' : '') . $netnode['address_ulica']) : $range['location_street_name'],
-            'zas_ulic' => isset($netnode['address_symul']) ? $netnode['address_symul'] : '',
-            'zas_house' => $netnode['address_budynek'],
-            'zas_zip' => $netnode['location_zip'],
-            'zas_latitude' => $netnode['latitude'],
-            'zas_longitude' => $netnode['longitude'],
-            'zas_tech' => $range_technology,
-            'zas_ltech' => $range_linktechnology,
-            'zas_phonepots' => 'Nie',
-            'zas_phonevoip' => 'Nie',
-            'zas_phonemobile' => 'Nie',
-            'zas_internetstationary' => 'Tak',
-            'zas_internetmobile' => 'Nie',
-            'zas_tv' => 'Nie',
-            'zas_other' => '',
-            'zas_stationarymaxspeed' => $range_maxdownstream,
-            'zas_mobilemaxspeed' => 0,
-            'zas_invproject' => '',
-            'zas_invstatus' => '',
+                    ? $netnode['address_cecha'] . ' ' : '') . $netnode['address_ulica']) : $range['location_street_name'],
+                'zas_ulic' => isset($netnode['address_symul']) ? $netnode['address_symul'] : '',
+                'zas_house' => str_replace(' ', '', $netnode['address_budynek']),
+                'zas_zip' => $netnode['location_zip'],
+                'zas_latitude' => $netnode['latitude'],
+                'zas_longitude' => $netnode['longitude'],
+                'zas_tech' => $range_technology,
+                'zas_ltech' => $range_linktechnology,
+                'zas_phonepots' => 'Nie',
+                'zas_phonevoip' => 'Nie',
+                'zas_phonemobile' => 'Nie',
+                'zas_internetstationary' => 'Tak',
+                'zas_internetmobile' => 'Nie',
+                'zas_tv' => 'Nie',
+                'zas_other' => '',
+                'zas_stationarymaxspeed' => $range_maxdownstream,
+                'zas_mobilemaxspeed' => 0,
+                'zas_invproject' => '',
+                'zas_invstatus' => '',
             );
 
             $customers[ strtolower($data['zas_city'] . '|' . $data['zas_street'] . '|' . $data['zas_house']) ] = 1;
@@ -1947,7 +1947,7 @@ if ($max_range > 0) {
                             'zas_simc' => sprintf("%07d", $b['city_ident']),
                             'zas_street' => $b['street'],
                             'zas_ulic' => sprintf("%05d", $b['street_ident']),
-                            'zas_house' => $b['house'],
+                            'zas_house' => str_replace(' ', '', $b['house']),
                             'zas_zip' => $node['location_zip'],
                             'zas_latitude' => $b[1],
                             'zas_longitude' => $b[0],
