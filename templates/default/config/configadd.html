@@ -192,7 +192,7 @@
 		new AutoSuggest({
 			form: '#configadd',
 			elem: '[name="config[var]"]',
-			uri: '?m=quicksearch&ajax=1&mode=config&what=',
+			uri: '?m=quicksearch&ajax=1&api=1&mode=config&what=',
 			emptyValue: true,
 			class: 'config-var-suggestion',
 			onSubmit: function (data) {
@@ -214,7 +214,7 @@
 					!section.match(/^[a-z0-9_-]+$/) || !variable.match(/^[a-z0-9_-]+$/)) {
 				return;
 			}
-			$.ajax('?m=configinfo&variable=' + $('[name="config[section]"]').scombobox('val') + '.' + variable, {
+			$.ajax('?m=configinfo&api=1&variable=' + $('[name="config[section]"]').scombobox('val') + '.' + variable, {
 				async: true,
 				method: 'POST',
 				dataType: 'html',

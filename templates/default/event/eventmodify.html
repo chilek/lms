@@ -261,7 +261,7 @@
 				selector: '#eventadd-ticket',
 				field_name_pattern: 'event[ticketid]',
 				single: true,
-				ajax: '?m=quicksearch&ajax=1&mode=ticket&what=',
+				ajax: '?m=quicksearch&api=1&ajax=1&mode=ticket&what=',
 				item_content: function(item) {
 					return sprintf("#%06d", item.id) + ' <a href="?m=rtticketview&id=' + item.id + '">' +
 							item.name + '</a>';
@@ -271,7 +271,7 @@
 				selector: '#eventedit-ticket',
 				field_name_pattern: 'event[ticketid]',
 				single: true,
-				ajax: '?m=quicksearch&ajax=1&mode=ticket&what=',
+				ajax: '?m=quicksearch&api=1&ajax=1&mode=ticket&what=',
 				item_content: function(item) {
 					return sprintf("#%06d", item.id) + ' <a href="?m=rtticketview&id=' + item.id + '">' +
 							item.name + '</a>';

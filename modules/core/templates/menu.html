@@ -31,37 +31,37 @@
 		{/foreach}
 		{handle name="menu-menuend"}
 		<div id="autosuggest"><ul></ul></div>
-		<form method="get" action="?m=quicksearch" id="customerform" name="customerform">
+		<form method="get" action="?m=quicksearch&api=1" id="customerform" name="customerform">
 		<tr>
 			<td>
 				<div class="tip" {tip text="<B>Enter customer ID, first/lastname, telephone or part of customer email address and press Enter</B>"}>
 					<br>&nbsp;&nbsp;<img src="img/customer.gif" alt="*">&nbsp;<input type="text" id="customerinput" name="what" value="" size="15"><input type="hidden" name="m" value="quicksearch"><input type="hidden" name="mode" value="customer">
 				<script>
-					new AutoSuggest(document.getElementById('customerform'),document.getElementById('customerinput'),'?m=quicksearch&ajax=1&mode=customer&what=',1);
+					new AutoSuggest(document.getElementById('customerform'),document.getElementById('customerinput'),'?m=quicksearch&api=1&ajax=1&mode=customer&what=',1);
 				</script>
 				</div>
 			</td>
 		</tr>
 		</form>
-		<form method="get" action="?m=quicksearch" id="nodeform" name="nodeform">
+		<form method="get" action="?m=quicksearch&api=1" id="nodeform" name="nodeform">
 		<tr>
 			<td>
 				<div class="tip" {tip text="<B>Enter node ID, name, IP address or MAC address and press Enter</B>"}>
 					&nbsp;&nbsp;<img src="img/node.gif" alt="*">&nbsp;<input type="text" id="nodeinput" name="what" value="" size="15"><input type="hidden" name="m" value="quicksearch"><input type="hidden" name="mode" value="node">
 				<script>
-					new AutoSuggest(document.getElementById('nodeform'),document.getElementById('nodeinput'),'?m=quicksearch&ajax=1&mode=node&what=',1);
+					new AutoSuggest(document.getElementById('nodeform'),document.getElementById('nodeinput'),'?m=quicksearch&api=1&ajax=1&mode=node&what=',1);
 				</script>
 				</div>
 			</td>
 		</tr>
 		</form>
-		<form method="get" action="?m=quicksearch" id="rtform" name="rtform">
+		<form method="get" action="?m=quicksearch&api=1" id="rtform" name="rtform">
 		<tr>
 			<td>
 				<div class="tip" {tip text="<B>Enter request tracker ID or customer name and press Enter</B>"}>
 					&nbsp;&nbsp;<img src="img/ticket.gif" alt="*">&nbsp;<input type="text" id="rtinput" name="what" value="" size="15"><input type="hidden" name="m" value="quicksearch"><input type="hidden" name="mode" value="ticket">
 				<script>
-					new AutoSuggest(document.getElementById('rtform'),document.getElementById('rtinput'),'?m=quicksearch&ajax=1&mode=ticket&what=',1);
+					new AutoSuggest(document.getElementById('rtform'),document.getElementById('rtinput'),'?m=quicksearch&api=1&ajax=1&mode=ticket&what=',1);
 				</script>
 				</div>
 			</td>
@@ -77,7 +77,7 @@
 	<script type="text/javascript">
 		var clickMenu1 = new ClickShowHideMenu('click-menu1');
 		clickMenu1.init();
-	</script>				
+	</script>
 	</td>
 	<td width="99%" style="padding: 10pt; vertical-align: top;">
 {/if}

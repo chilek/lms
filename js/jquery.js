@@ -1498,7 +1498,7 @@ $(function() {
 
 	qs_fields.each(function(index, field) {
 		new AutoSuggest($(field).closest('form').get(0), $(field).find('input').get(0),
-			'?m=quicksearch&ajax=1&mode=' + $(field).attr('data-mode') + '&what=', lmsSettings.quickSearchAutoSubmit);
+			'?m=quicksearch&api=1&ajax=1&mode=' + $(field).attr('data-mode') + '&what=', lmsSettings.quickSearchAutoSubmit);
 	});
 
 	qs_fields.find('input').on('click', function() {

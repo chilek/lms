@@ -341,7 +341,7 @@
 			selector: '#parent-ticket',
 			field_name_pattern: 'ticket[parentid]',
 			single: true,
-			ajax: '?m=quicksearch&ajax=1&mode=ticket&what=',
+			ajax: '?m=quicksearch&api=1&ajax=1&mode=ticket&what=',
 			item_content: function(item) {
 				return sprintf("#%06d", item.id) + ' <a href="?m=rtticketview&id=' + item.id + '">' +
 					item.name + '</a>';
@@ -352,7 +352,7 @@
 		initListQuickSearch({
 			selector: '#related-tickets',
 			field_name_pattern: 'ticket[relatedtickets][%id%]',
-			ajax: '?m=quicksearch&ajax=1&mode=ticket&what=',
+			ajax: '?m=quicksearch&api=1&ajax=1&mode=ticket&what=',
 			item_content: function(item) {
 				return sprintf("#%06d", item.id) + ' <a href="?m=rtticketview&id=' + item.id + '">' +
 						item.name + '</a>';
