@@ -971,25 +971,23 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                             END
                         ) * (
                             CASE
-                                WHEN a.period <> ' . DISPOSABLE . ' AND t.period > 0 AND t.period <> a.period THEN
-                                    (
-                                        CASE t.period
-                                            WHEN ' . YEARLY . ' THEN 1/12.0
-                                            WHEN ' . HALFYEARLY . ' THEN 1/6.0
-                                            WHEN ' . QUARTERLY . ' THEN 1/3.0
-                                            ELSE 1
-                                        END
-                                    )
-                                ELSE 1
-                            END
-                        ) * (
-                            CASE a.period
-                                WHEN ' . YEARLY . ' THEN 12.0
-                                WHEN ' . HALFYEARLY . ' THEN 6.0
-                                WHEN ' . QUARTERLY . ' THEN 3.0
-                                WHEN ' . WEEKLY . ' THEN 1/4.0
-                                WHEN ' . DAILY . ' THEN 1/30.0
-                                ELSE 1
+                                WHEN a.period <> ' . DISPOSABLE . ' AND t.period > 0 AND t.period <> a.period THEN (
+                                    CASE t.period
+                                        WHEN ' . YEARLY . ' THEN 1/12.0
+                                        WHEN ' . HALFYEARLY . ' THEN 1/6.0
+                                        WHEN ' . QUARTERLY . ' THEN 1/3.0
+                                        ELSE 1
+                                    END
+                                ) ELSE (
+                                    CASE a.period
+                                        WHEN ' . YEARLY . ' THEN 1/12.0
+                                        WHEN ' . HALFYEARLY . ' THEN 1/6.0
+                                        WHEN ' . QUARTERLY . ' THEN 1/3.0
+                                        WHEN ' . WEEKLY . ' THEN 4.0
+                                        WHEN ' . DAILY . ' THEN 30.0
+                                        ELSE 1
+                                    END
+                                )
                             END
                         )
                     ) AS value

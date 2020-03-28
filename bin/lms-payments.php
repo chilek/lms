@@ -993,18 +993,18 @@ foreach ($assigns as $assign) {
             } elseif ($assign['t_period'] == QUARTERLY) {
                 $val = $val / 3.0;
             }
-        }
 
-        if ($assign['period'] == YEARLY) {
-            $val = $val * 12.0;
-        } elseif ($assign['period'] == HALFYEARLY) {
-            $val = $val * 6.0;
-        } elseif ($assign['period'] == QUARTERLY) {
-            $val = $val * 3.0;
-        } elseif ($assign['period'] == WEEKLY) {
-            $val = $val / 4.0;
-        } elseif ($assign['period'] == DAILY) {
-            $val = $val / 30.0;
+            if ($assign['period'] == YEARLY) {
+                $val = $val * 12.0;
+            } elseif ($assign['period'] == HALFYEARLY) {
+                $val = $val * 6.0;
+            } elseif ($assign['period'] == QUARTERLY) {
+                $val = $val * 3.0;
+            } elseif ($assign['period'] == WEEKLY) {
+                $val = $val / 4.0;
+            } elseif ($assign['period'] == DAILY) {
+                $val = $val / 30.0;
+            }
         }
 
         $val = str_replace(',', '.', sprintf("%.2f", $val));
