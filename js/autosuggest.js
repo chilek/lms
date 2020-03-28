@@ -22,6 +22,7 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 		this.onLoad = form.hasOwnProperty('onLoad') ? form.onLoad : null;
 		this.onAjax = form.hasOwnProperty('onAjax') ? form.onAjax : '';
 		this.class = form.hasOwnProperty('class') ? form.class : '';
+		this.emptyValue = form.hasOwnProperty('emptyValue') && (form.emptyValue == 1 || form.emptyValue || form.emptyValue == 'true')
 	} else {
 		//A reference to the element we're binding the list to.
 		this.elem = elem;
@@ -165,18 +166,19 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 	********************************************************/
 	this.elem.onkeyup = function(ev) {
 		var key = me.getKeyCode(ev);
-		switch(key) {
-		//The control keys were already handled by onkeydown, so do nothing.
-		case ENT:
-		case RET:
-		case TAB:
-		case ESC:
-		case KEYUP:
-		case KEYDN:
-			return;
-		default:
+		switch (key) {
+			//The control keys were already handled by onkeydown, so do nothing.
+			case ENT:
+			case RET:
+			case TAB:
+			case ESC:
+			case KEYUP:
+			case KEYDN:
+				return;
 
-			if (this.value != me.inputText && this.value.length > 0) {
+		default:
+			if (this.value != me.inputText && (me.emptyValue || this.value.length > 0)) {
+				console.log('onkeyup');
 				clearTimeout(me.timer);
 				me.timer = setTimeout(function(){ me.HTTPpreload(); }, me.request_delay);
 			} else {

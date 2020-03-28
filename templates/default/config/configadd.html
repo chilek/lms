@@ -136,6 +136,7 @@
 			form: '#configadd',
 			elem: '[name="config[var]"]',
 			uri: '?m=quicksearch&ajax=1&mode=config&what=',
+			emptyValue: true,
 			class: 'config-var-suggestion',
 			onSubmit: function (data) {
 				$('[name="config[var]"]').val(data.name);

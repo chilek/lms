@@ -73,7 +73,7 @@ if (!empty($_POST['qs'])) {
         }
     }
     $search = urldecode(trim($search));
-} elseif (!empty($_GET['what'])) {
+} else {
     $search = urldecode(trim($_GET['what']));
     $mode = $_GET['mode'];
 }
@@ -87,6 +87,10 @@ if (isset($qs_properties[$mode])) {
 
 switch ($mode) {
     case 'customer':
+        if (empty($search)) {
+            die;
+        }
+
         if (isset($_GET['ajax'])) { // support for AutoSuggest
             $candidates = $DB->GetAll("SELECT c.id, cc.contact AS email, full_address AS address,
 				post_name, post_full_address AS post_address, deleted,
@@ -223,6 +227,10 @@ switch ($mode) {
         break;
 
     case 'customerext':
+        if (empty($search)) {
+            die;
+        }
+
         if (isset($_GET['ajax'])) { // support for AutoSuggest
             $candidates = $DB->GetAll("SELECT c.id, cc.contact AS email, full_address AS address,
 				post_name, post_full_address AS post_address, deleted, c.status,
@@ -272,6 +280,10 @@ switch ($mode) {
         break;
 
     case 'phone':
+        if (empty($search)) {
+            die;
+        }
+
         if (isset($_GET['ajax'])) { // support for AutoSuggest
             $where = array();
             if (empty($properties) || isset($properties['contact'])) {
@@ -356,6 +368,10 @@ switch ($mode) {
 
 
     case 'node':
+        if (empty($search)) {
+            die;
+        }
+
         if (isset($_GET['ajax'])) { // support for AutoSuggest
         // Build different query for each database engine,
             // MySQL is slow here when vnodes view is used
@@ -484,6 +500,10 @@ switch ($mode) {
         break;
 
     case 'netnode':
+        if (empty($search)) {
+            die;
+        }
+
         if (isset($_GET['ajax'])) { // support for AutoSuggest
             $candidates = $DB->GetAll("SELECT id, name FROM netnodes
                                 WHERE ".(preg_match('/^[0-9]+$/', $search) ? 'id = '.intval($search).' OR ' : '')."
@@ -536,6 +556,10 @@ switch ($mode) {
         break;
 
     case 'netdevice':
+        if (empty($search)) {
+            die;
+        }
+
         if (isset($_GET['ajax'])) { // support for AutoSuggest
             $candidates = $DB->GetAll("SELECT id, name, serialnumber FROM netdevices
 				WHERE "
@@ -600,6 +624,10 @@ switch ($mode) {
         break;
 
     case 'ticket':
+        if (empty($search)) {
+            die;
+        }
+
         if (isset($_GET['ajax'])) { // support for AutoSuggest
             $categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
             foreach ($categories as $category) {
@@ -710,6 +738,10 @@ switch ($mode) {
         }
         break;
     case 'wireless':
+        if (empty($search)) {
+            die;
+        }
+
         if (isset($_GET['ajax'])) { // support for AutoSuggest
             $candidates = $DB->GetAll("SELECT id, name, type, netdev FROM netradiosectors
                                 WHERE " . (preg_match('/^[0-9]+$/', $search) ? 'id = ' . intval($search) . ' OR ' : '') . "
@@ -761,6 +793,10 @@ switch ($mode) {
         }
         break;
     case 'network':
+        if (empty($search)) {
+            die;
+        }
+
         if (isset($_GET['ajax'])) { // support for AutoSuggest
             $candidates = $DB->GetAll("SELECT id, name, address FROM networks
                                 WHERE " . (preg_match('/^[0-9]+$/', $search) ? 'id = ' . intval($search) . ' OR ' : '') . "
@@ -819,6 +855,10 @@ switch ($mode) {
 
         break;
     case 'account':
+        if (empty($search)) {
+            die;
+        }
+
         $ac = explode('@', $search);
 
         if (isset($_GET['ajax'])) { // support for AutoSuggest
@@ -885,6 +925,10 @@ switch ($mode) {
         break;
 
     case 'document':
+        if (empty($search)) {
+            die;
+        }
+
         if (isset($_GET['ajax'])) {
             $candidates = $DB->GetAll("SELECT d.id, d.type, d.fullnumber,
 					d.customerid AS cid, d.name AS customername
@@ -994,7 +1038,7 @@ switch ($mode) {
                     if ($i > $quicksearch_limit) {
                         break;
                     }
-                    if (strpos($variable, $search) === false) {
+                    if (!empty($search) && strpos($variable, $search) === false) {
                         continue;
                     }
                     $name = $variable;
