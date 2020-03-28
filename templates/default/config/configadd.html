@@ -139,7 +139,7 @@
 			emptyValue: true,
 			class: 'config-var-suggestion',
 			onSubmit: function (data) {
-				$('[name="config[var]"]').val(data.name);
+				$('[name="config[var]"]').val(data.name).trigger('autogrow');
 				$('[name="config[section]"]').scombobox('val', data.section);
 			},
 			onLoad: function() {
