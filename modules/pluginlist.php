@@ -27,7 +27,7 @@
 $layout['pagetitle'] = trans('Plugin List');
 
 $plugins_config = ConfigHelper::getConfig('phpui.plugins', null, true);
-if (is_null($plugins_config)) {
+if (is_null($plugins_config) && ConfigHelper::checkPrivilege('full_access')) {
     $DB->Execute(
         "INSERT INTO uiconfig (section, var, value) VALUES (?, ?, ?)",
         array('phpui', 'plugins', '')
