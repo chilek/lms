@@ -1045,7 +1045,7 @@ switch ($mode) {
                     $description_class = '';
                     $action = '';
                     $tip = ConfigHelper::MarkdownToHtml($documentation);
-                    $result[$section . '.' . $variable] = compact('name', 'name_class', 'description', 'description_class', 'action', 'section', 'tip');
+                    $result[$variable . '.' . $section] = compact('name', 'name_class', 'description', 'description_class', 'action', 'section', 'tip');
                     $i++;
                 }
             }
