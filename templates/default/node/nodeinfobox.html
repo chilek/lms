@@ -467,8 +467,9 @@
 	<tr>
 		<td style="width: 100%;" colspan="3" class="lms-ui-box-buttons">
 			{block name="nodeinfobox-buttons"}
-				{button id="clone-button" icon="clone" label="Clone" onclick="location.href = '?m=nodeadd&ownerid={$nodeinfo.ownerid}&premac[]={implode('&premac[]=', $macs)}&prename={t a=$nodeinfo.name}$a_clone{/t}{if $nodeinfo.address_id}&pre_address_id={$nodeinfo.address_id}{/if}';"}
-				{button id="edit-button" icon="edit" label="Edit" onclick="location.href = '?m=nodeedit&id={$nodeinfo.id}';"}
+				{button type="link-button" id="clone-button" icon="clone" label="Clone"
+					href="?m=nodeadd&ownerid={$nodeinfo.ownerid}&premac[]={implode('&premac[]=', $macs)}&prename={t a=$nodeinfo.name}$a_clone{/t}{if $nodeinfo.address_id}&pre_address_id={$nodeinfo.address_id}{/if}"}
+				{button type="link-button" id="edit-button" icon="edit" label="Edit" href="?m=nodeedit&id={$nodeinfo.id}"}
 				{button id="delete-node" icon="delete" label="Delete" onclick="javascript:delete_node('{$nodeinfo.id}', '{$nodeinfo.name}');"}
 			{/block}
 		</td>

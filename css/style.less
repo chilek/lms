@@ -2561,9 +2561,9 @@ table.lmsbox {
 				background-position: left 0.5em;
 				background-size: 3px 1px;
 				background-repeat: repeat-x;
-				padding: 1em 0.5em 0.25em 0.5em;
-				.lms-ui-button {
-					margin-bottom: 0.25em;
+				padding: 1em 0.5em 0.5em 0.5em;
+				& > *:not(:first-child) {
+					margin-left: 0.3em;
 				}
 			}
 		}
@@ -3726,14 +3726,17 @@ div.lms-ui-wysiwyg-editor {
 		}
 	}
 	.lms-ui-box-buttons {
-		align-self: flex-end;
-		display: inline-flex;
+		align-self: stretch;
 		flex-direction: row;
 		justify-content: flex-end;
 		align-items: center;
-		padding-right: 0.75em;
-		& > * {
-			margin: 0.25em;
+		background-image: linear-gradient(to right, black 33%, rgba(255,255,255,0) 0%);
+		background-position: left 0.5em;
+		background-size: 3px 1px;
+		background-repeat: repeat-x;
+		padding: 1em 0.5em 0.5em 0.5em;
+		& > *:not(:first-child) {
+			margin-left: 0.3em;
 		}
 	}
 }

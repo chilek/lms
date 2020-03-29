@@ -237,13 +237,13 @@
 						{button label="Disconnect" icon="connected" onclick="location.href = '?m=useraccess&id={$userinfo.id}&access=0';"}
 					{/if}
 				{/if}
-				{button label="Edit" icon="edit" onclick="location.href = '?m=useredit&id={$userinfo.id}';"}
+				{button type="link-button" label="Edit" icon="edit" href="?m=useredit&id={$userinfo.id}"}
 				{button label="Delete" icon="delete" id="delete-user" href="?m=userdel&id={$userinfo.id}"}
 				{if $layout.logid ne $userinfo.id}
 					{button label="Force password change" icon="password" onclick="location.href = '?m=useredit&id={$userinfo.id}&forcepasswdchange=1';"}
 				{/if}
-				{button label="Change password" icon="password" onclick="location.href = '?m=userpasswd&id={$userinfo.id}';"}
-				{button label="User list" icon="list" onclick="location.href = '?m=userlist';"}
+				{button type="link-button" label="Change password" icon="password" href="?m=userpasswd&id={$userinfo.id}"}
+				{button type="link-button" label="User list" icon="list" href="?m=userlist"}
 			</TD>
 		</TR>
 	</TBODY>
