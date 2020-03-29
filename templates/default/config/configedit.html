@@ -180,6 +180,21 @@
 <script>
 
 	$(function() {
+		function getDocumentation(section, variable) {
+			if (section.length < 3 || variable.length < 3 ||
+					!section.match(/^[a-z0-9_-]+$/) || !variable.match(/^[a-z0-9_-]+$/)) {
+				return;
+			}
+			$.ajax('?m=configinfo&api=1&variable=' + $('[name="config[section]"]').scombobox('val') + '.' + variable, {
+				async: true,
+				method: 'POST',
+				dataType: 'html',
+				success: function(data) {
+					$('#documentation').html(data);
+				}
+			});
+		}
+
 		$('form[name="config"] [name="config[var]"]').focus();
 
 		$('[name="config[type]"]').change(function() {
@@ -205,6 +220,7 @@
 			onSubmit: function (data) {
 				$('[name="config[var]"]').val(data.name).trigger('autogrow');
 				$('[name="config[section]"]').scombobox('val', data.section);
+				getDocumentation(data.section, data.name);
 			},
 			onLoad: function() {
 				$('[name="config[var]"]:ui-tooltip').tooltip('destroy');
@@ -217,18 +233,7 @@
 		$('[name="config[var]"]').change(function() {
 			var section = $('[name="config[section]"]').scombobox('val');
 			var variable = $('[name="config[var]"]').val();
-			if (section.length < 3 || variable.length < 3 ||
-					!section.match(/^[a-z0-9_-]+$/) || !variable.match(/^[a-z0-9_-]+$/)) {
-				return;
-			}
-			$.ajax('?m=configinfo&api=1&variable=' + $('[name="config[section]"]').scombobox('val') + '.' + variable, {
-				async: true,
-				method: 'POST',
-				dataType: 'html',
-				success: function(data) {
-					$('#documentation').html(data);
-				}
-			});
+			getDocumentation(section, variable);
 		});
 	});
 
