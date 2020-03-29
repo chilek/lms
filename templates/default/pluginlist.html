@@ -36,28 +36,30 @@
 	{cycle values="light,lucid" print=false}
 	{foreach $plugins as $name => $plugin}
 	<TR class="highlight {cycle}{if !$plugin.enabled} blend{/if}">
-		<TD onClick="javascript:togglePlugin('{$name}', {if $plugin.enabled}false{else}true{/if});">
+		<TD{if ConfigHelper::checkPrivilege('full_access')} onClick="javascript:togglePlugin('{$name}', {if $plugin.enabled}false{else}true{/if});"{/if}>
 			<span class="bold nobr">{if $plugin.fullname}{$plugin.fullname}{else}{$name}{/if}</span><br>
 			{$plugin.description}
 		</TD>
-		<TD onClick="javascript:togglePlugin('{$name}', {if $plugin.enabled}false{else}true{/if});">
+		<TD{if ConfigHelper::checkPrivilege('full_access')} onClick="javascript:togglePlugin('{$name}', {if $plugin.enabled}false{else}true{/if});"{/if}>
 			{$plugin.author}
 		</TD>
-		<TD class="text-center" onClick="javascript:togglePlugin('{$name}', {if $plugin.enabled}false{else}true{/if});">
+		<TD class="text-center"{if ConfigHelper::checkPrivilege('full_access')} onClick="javascript:togglePlugin('{$name}', {if $plugin.enabled}false{else}true{/if});"{/if}>
 			{if $plugin.new_style}{trans("yes")}{else}{trans("no")}{/if}
 		</TD>
-		<TD class="text-center" onClick="javascript:togglePlugin('{$name}', {if $plugin.enabled}false{else}true{/if});">
+		<TD class="text-center"{if ConfigHelper::checkPrivilege('full_access')} onClick="javascript:togglePlugin('{$name}', {if $plugin.enabled}false{else}true{/if});"{/if}>
 			{if $plugin.dbcurrschversion}{$plugin.dbcurrschversion}{else}{if $plugin.new_style}-{/if}{/if}<br>
 			{if $plugin.dbschversion}{$plugin.dbschversion}{else}{if $plugin.new_style}-{/if}{/if}
 		</TD>
-		<TD class="text-center" onClick="javascript:togglePlugin('{$name}', {if $plugin.enabled}false{else}true{/if});">
+		<TD class="text-center"{if ConfigHelper::checkPrivilege('full_access')} onClick="javascript:togglePlugin('{$name}', {if $plugin.enabled}false{else}true{/if});"{/if}>
 			{if $plugin.priority == LMSPluginManager::LAST_PRIORITY}{trans("minimal")}{else}{$plugin.priority}{/if}
 		</TD>
 		<TD class="text-right">
-			{if $plugin.enabled}
-			<a onclick="javascript:togglePlugin('{$name}', false);"><img src="img/access.gif" alt="{trans("Disable")}" title="{trans("Disable")}"></a>
-			{else}
-			<a onclick="javascript:togglePlugin('{$name}', true);"><img src="img/noaccess.gif" alt="{trans("Enable")}" title="{trans("Enable")}"></a>
+			{if ConfigHelper::checkPrivilege('full_access')}
+				{if $plugin.enabled}
+				<a onclick="javascript:togglePlugin('{$name}', false);"><img src="img/access.gif" alt="{trans("Disable")}" title="{trans("Disable")}"></a>
+				{else}
+				<a onclick="javascript:togglePlugin('{$name}', true);"><img src="img/noaccess.gif" alt="{trans("Enable")}" title="{trans("Enable")}"></a>
+				{/if}
 			{/if}
 		</TD>
 	</TR>
