@@ -1022,8 +1022,6 @@ switch ($mode) {
                 die;
             }
 
-            $markdown_parser = new Parsedown();
-
             $quicksearch_limit = intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15));
             $i = 1;
             $result = array();
@@ -1046,7 +1044,7 @@ switch ($mode) {
                     $description = trans('Section:') . ' ' . $section;
                     $description_class = '';
                     $action = '';
-                    $tip = $markdown_parser->Text($documentation);
+                    $tip = ConfigHelper::MarkdownToHtml($documentation);
                     $result[$section . '.' . $variable] = compact('name', 'name_class', 'description', 'description_class', 'action', 'section', 'tip');
                     $i++;
                 }

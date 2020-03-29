@@ -226,4 +226,13 @@ class ConfigHelper
 
         return $result;
     }
+
+    public static function MarkdownToHtml($markdown)
+    {
+        static $markdown_parser = null;
+        if (!isset($markdown_parser)) {
+            $markdown_parser = new Parsedown();
+        }
+        return $markdown_parser->Text($markdown);
+    }
 }

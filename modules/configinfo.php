@@ -35,5 +35,4 @@ if (empty($description)) {
     die;
 }
 
-$markdown_parser = new Parsedown();
-die($markdown_parser->Text($description));
+die(ConfigHelper::MarkdownToHtml($description));
