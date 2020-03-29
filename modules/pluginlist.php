@@ -27,14 +27,14 @@
 $layout['pagetitle'] = trans('Plugin List');
 
 $plugins_config = ConfigHelper::getConfig('phpui.plugins', null, true);
-if (is_null($plugins_config) && ConfigHelper::checkPrivilege('full_access')) {
+if (is_null($plugins_config)) {
     $DB->Execute(
         "INSERT INTO uiconfig (section, var, value) VALUES (?, ?, ?)",
         array('phpui', 'plugins', '')
     );
 }
 
-if (isset($_POST['plugins'])) {
+if (isset($_POST['plugins']) && ConfigHelper::checkPrivilege('full_access')) {
     $postdata = $_POST['plugins'];
     $plugin_manager->enablePlugin($postdata['name'], $postdata['toggle'] ? true : false);
     $SESSION->redirect('?m=pluginlist');
