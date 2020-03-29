@@ -122,7 +122,7 @@
     </TFOOT>
 </TABLE>
 </FORM>
-{if $error.lines}
+{if !empty($error)}
 <TABLE class="lmsbox">
     <THEAD>
 	<TR>
@@ -134,40 +134,54 @@
     <TBODY>
 	<TR>
 		<TD width="100%">
-			<TABLE class="lmsbox-inner">
-                            <THEAD>
-                                <TR>
-				    <TD width="1%"><B>{trans("Line:")}</B></TD>
-				    <TD width="99%"><B>{trans("Content:")}</B></TD>
-				</TR>
-                            </THEAD>
-                            <TBODY>
-				{cycle name=err values="light,lucid" print=false}
-				{foreach $error.lines as $key => $item}
-				<TR class="{cycle name=err}">
-				    <TD class="nobr">{$key}. <img src="img/{if is_array($item)}clone{else}warningon{/if}.gif"></TD>
-				    <TD>
-				    {if is_array($item)}
-				    <TABLE width="100%" class="red">
-					{if $item.date}<TR><TD width="1%">{trans("Date:")}</TD><TD width="99%">{$item.date|date_format:"%Y/%m/%d"}</TD></TR>{/if}
-					{if $item.customer}<TR><TD width="1%">{trans("Customer:")}</TD><TD width="99%">
-					    {$item.customer}{if $item.customerid} ({$item.customerid|string_format:"%04d"}){/if}</TD></TR>{/if}
-					{if $item.value}<TR><TD width="1%">{trans("Value:")}</TD><TD width="99%">{$item.value|money_format}</TD></TR>{/if}
-					{if $item.comment}<TR><TD width="1%">{trans("Description:")}</TD><TD width="99%">{$item.comment}</TD></TR>{/if}
-				    </TABLE>
-				    {else}
-				    {$item}
-				    {/if}
-				    </TD>
-				</TR>
-				{/foreach}
-                            </TBODY>
+			<TABLE class="lmsbox-inner lms-ui-background-cycle">
+				<colgroup>
+					<col style="width: 1%;">
+					<col style="width: 99%;">
+				</colgroup>
+				<THEAD>
+					<TR>
+						<TD class="bold">{trans("Line:")}</TD>
+						<TD class="bold">{trans("Content:")}</TD>
+					</TR>
+				</THEAD>
+				<TBODY>
+					{foreach $error as $filename => $file}
+						{if (empty($file.lines))}
+							{continue}
+						{/if}
+						{$lines = $file.lines}
+						<tr class="lms-ui-distinguished-row" >
+							<td colspan="2">
+								{t a=$filename}File $a:{/t}
+							</td>
+						</tr>
+						{foreach $lines as $key => $item}
+						<TR>
+							<TD class="nobr">{$key}. <img src="img/{if is_array($item)}clone{else}warningon{/if}.gif"></TD>
+							<TD>
+								{if is_array($item)}
+									<TABLE width="100%" class="red">
+										{if $item.date}<TR><TD width="1%">{trans("Date:")}</TD><TD width="99%">{$item.date|date_format:"%Y/%m/%d"}</TD></TR>{/if}
+										{if $item.customer}<TR><TD width="1%">{trans("Customer:")}</TD><TD width="99%">
+											{$item.customer}{if $item.customerid} ({$item.customerid|string_format:"%04d"}){/if}</TD></TR>{/if}
+										{if $item.value}<TR><TD width="1%">{trans("Value:")}</TD><TD width="99%">{$item.value|money_format}</TD></TR>{/if}
+										{if $item.comment}<TR><TD width="1%">{trans("Description:")}</TD><TD width="99%">{$item.comment}</TD></TR>{/if}
+									</TABLE>
+								{else}
+									{$item}
+								{/if}
+							</TD>
+						</TR>
+						{/foreach}
+					{/foreach}
+				</TBODY>
 			</TABLE>
 		</TD>
 	</TR>
 </TABLE>
 {/if}
-<FORM name="parser" enctype="multipart/form-data" method="post" action="?m=cashimportparser">
+<FORM name="parser" id="parser" enctype="multipart/form-data" method="post" action="?m=cashimportparser">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
 	<COLGROUP>
@@ -177,18 +191,18 @@
     <THEAD>
 	<TR>
 		<TD colspan="2" class="bold">
-			{trans("Import from file:")}
+			{trans("Import from files:")}
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	<TR>
-		<TD class="bold nobr">
+		<TD class="bold nobr valign-top">
 			<IMG src="img/attach.gif" alt="">
-			{trans("Import file:")}
+			{trans("Import files:")}
 		</TD>
 		<TD class="nobr">
-			<INPUT name="file" type="file" size="70" {tip text="Enter path to file or click 'Browse' button" trigger="file"}>
+			{fileupload id="files" fileupload=$fileupload form="parser"}
 		</TD>
 	</TR>
 	<TR>

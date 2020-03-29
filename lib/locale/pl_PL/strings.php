@@ -931,7 +931,7 @@ $_LANG['ID:'] = 'ID:';
 $_LANG['IM:'] = 'GG:';
 $_LANG['Import'] = 'Import';
 $_LANG['Import cash operations'] = 'Import operacji kasowych';
-$_LANG['Import file:'] = 'Plik importu:';
+$_LANG['Import files:'] = 'Pliki importu:';
 $_LANG['If you have any questions or doubts, contact with our Customer Service Representative. Prepare your Customer ID, please.'] = 'W przypadku pytań lub niejasności prosimy o kontakt z biurem obsługi klienta. Prosimy zapamiętać swój identyfikator klienta.';
 $_LANG['Income:'] = 'Przychód:';
 $_LANG['Incorrect charging end time!'] = 'Błędnie podany czas końca naliczania!';
@@ -3912,7 +3912,10 @@ $_LANG['AJAX: Error during persistent setting save on server:'] = 'AJAX: Błąd 
 $_LANG['Enter street'] = 'Podaj ulicę';
 $_LANG['- any -'] = '- dowolne -';
 
-$_LANG['Import from file:'] = 'Import z pliku:';
+$_LANG['Import from files:'] = 'Import z plików:';
+$_LANG['Non plain text file detected!'] = 'Wykryto plik nietekstowy!';
+$_LANG['No files selected!'] = 'Nie wybrano żadnego pliku!';
+$_LANG['File $a:'] = 'Plik $a:';
 
 $_LANG['Document has been published already! Are you sure you want to edit it despite this?'] = 'Dokument został już upubliczniony! Jesteś pewien, że mimo tego chcesz go edytować?';
 $_LANG['Document has been published already! Are you sure you want to remove it despite this?'] = 'Dokument został już upubliczniony! Jesteś pewien, że mimo tego chcesz go usunąć?';

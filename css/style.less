@@ -2619,17 +2619,24 @@ table.lmsbox {
 	}
 }
 
-table.lmsbox > thead {
-	text-align: left;
-}
-
 table.lmsbox {
+	> thead {
+		text-align: left;
+	}
 	&,
 	&-inner {
 		& > tfoot {
 			background-color: @light;
 		}
 		&.lms-ui-background-cycle > tbody > tr {
+			&.lms-ui-distinguished-row {
+				font-weight: bold;
+				background-color: @dark !important;
+				border-top-width: 1pt;
+				border-top-style: solid;
+				border-bottom-width: 1pt !important;
+				border-bottom-style: solid !important;
+			}
 			&.highlight:hover {
 				background-color: @highlight !important;
 			}
