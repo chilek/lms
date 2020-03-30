@@ -62,8 +62,7 @@ include(MODULES_DIR . DIRECTORY_SEPARATOR . 'attachments.php');
 $nlist = $DB->GetAll("SELECT * FROM netdevices WHERE netnodeid=? ORDER BY name", array($id));
 $SMARTY->assign('netdevlist', $nlist);
 
-$queue = $LMS->GetQueueContents(array('ids' => null, 'order' => null, 'state' => null, 'priority' => null,
-    'owner' => -1, 'catids' => null, 'removed' => null, 'netdevids' => null, 'netnodeids' => $id));
+$queue = $LMS->GetQueueContents(array('removed' => 0, 'netnodeids' => $id));
 $total = $queue['total'];
 unset($queue['total']);
 unset($queue['state']);
