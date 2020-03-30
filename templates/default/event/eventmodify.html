@@ -202,7 +202,9 @@
 			{/box_buttons}
 		{/box_container}
         <div id="row"{if $layout.module == 'eventedit' || $event.helpdesk == 'none' || $event.helpdesk == 'assign'} style="display:none;"{/if}>
-		{include file="rt/rtticketmodify.html"}
+			{if $layout.module == 'eventadd'}
+				{include file="rt/rtticketmodify.html"}
+			{/if}
         </div>
 	</form>
 	<script type="text/javascript" src="js/lms-ui-event-time-slider.js"></script>
