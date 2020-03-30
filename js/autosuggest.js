@@ -219,10 +219,10 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 			//Same applies to Enter key.
 			this.form.onsubmit = function () { return false; };
 			setTimeout(function() {
-				$(me.form).submit(function() {
+				me.form.onsubmit = function() {
 					return true;
-				});
-			},10);
+				}
+			}, 10);
 			//Go to search results.
 			if (this.autosubmit) {
 				location.href = gotothisuri;
