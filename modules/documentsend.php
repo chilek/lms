@@ -53,6 +53,7 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
     $notify_email = ConfigHelper::getConfig('documents.notify_email', '', true);
     $reply_email = ConfigHelper::getConfig('documents.reply_email', '', true);
     $add_message = ConfigHelper::checkConfig('documents.add_message');
+    $message_attachments = ConfigHelper::checkConfig('documents.message_attachments');
     $dsn_email = ConfigHelper::getConfig('documents.dsn_email', '', true);
     $mdn_email = ConfigHelper::getConfig('documents.mdn_email', '', true);
 
@@ -103,6 +104,7 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
                 'quiet',
                 'test',
                 'add_message',
+                'message_attachments',
                 'smtp_options'
             ));
         }

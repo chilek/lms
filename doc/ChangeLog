@@ -256,6 +256,8 @@ version 25-git (????-??-??):
   - enhancement: configuration variable documentation presentation in config add end edit
     forms [chilan]
   - enhancement: allow to load multiple cash source files at once [chilan]
+  - enhancement: optionally add sent document attachments to message for archive purpose
+    ('documents.message_attachments' introduced with 'false' as default value) [chilan]
 
 version 24.0 (2019-05-16):
 

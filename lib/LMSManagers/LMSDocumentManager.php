@@ -1108,6 +1108,26 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                         array($subject, $body, MSG_MAIL, Auth::GetCurrentUser())
                     );
                     $msgid = $this->db->GetLastInsertID('messages');
+
+                    if ($message_attachments) {
+                        if (!empty($files)) {
+                            foreach ($files as &$file) {
+                                $file['name'] = $file['filename'];
+                                $file['type'] = $file['content_type'];
+                            }
+                            unset($file);
+                            if (!isset($file_manager)) {
+                                $file_manager = new LMSFileManager($this->db, $this->auth, $this->cache, $this->syslog);
+                            }
+                            $file_manager->AddFileContainer(array(
+                                'description' => 'message-' . $msgid,
+                                'files' => $files,
+                                'type' => 'messageid',
+                                'resourceid' => $msgid,
+                            ));
+                        }
+                    }
+
                     foreach (explode(',', $custemail) as $email) {
                         $this->db->Execute(
                             'INSERT INTO messageitems (messageid, customerid, destination, lastdate, status)
