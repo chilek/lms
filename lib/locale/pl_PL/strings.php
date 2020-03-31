@@ -4647,3 +4647,6 @@ $_LANG['Enter ticket identifier or ticket subject part'] = 'Wprowadź identyfika
 $_LANG['without radio sector'] = 'bez sektora radiowego';
 
 $_LANG['Documentation:'] = 'Dokumentacja:';
+
+$_LANG['New setting'] = 'Nowe ustawienie';
+$_LANG['Allows you to add new configuration setting'] = 'Dodanie nowego ustawienia konfiguracyjnego';

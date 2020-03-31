@@ -258,6 +258,7 @@ version 25-git (????-??-??):
   - enhancement: allow to load multiple cash source files at once [chilan]
   - enhancement: optionally add sent document attachments to message for archive purpose
     ('documents.message_attachments' introduced with 'false' as default value) [chilan]
+  - improvement: new menu subitem 'New setting' in configuration menu [chilan]
 
 version 24.0 (2019-05-16):
 
