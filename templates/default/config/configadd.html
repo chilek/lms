@@ -98,7 +98,9 @@
 									{trans("Value:")}
 								</TD>
 								<TD width="98%">
-									<TEXTAREA rows="5" cols="50" name="config[value]" {tip class="lms-ui-wysiwyg-editor" text="Enter option value" trigger="value"} data-wysiwyg="{if $config.type == $smarty.const.CONFIG_TYPE_RICHTEXT || ConfigHelper::checkValue($config.wysiwyg.value)}true{else}false{/if}">{$config.value}</TEXTAREA>
+									<TEXTAREA rows="5" cols="50" name="config[value]" {tip class="lms-ui-wysiwyg-editor" text="Enter option value" trigger="value"}
+										data-wysiwyg="{if $config.type == $smarty.const.CONFIG_TYPE_RICHTEXT || (isset($config.wysiwyg.value) && ConfigHelper::checkValue($config.wysiwyg.value))}true{else}false{/if}"
+										>{$config.value}</TEXTAREA>
 								</TD>
 							</TR>
 							<TR>
