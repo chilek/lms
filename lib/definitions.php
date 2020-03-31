@@ -505,6 +505,9 @@ define('DOC_PROTOCOL', -3);
 define('DOC_ORDER', -4);
 define('DOC_SHEET', -5);
 define('DOC_BREACH', -6);
+define('DOC_PAYMENTBOOK', -7);
+define('DOC_PAYMENTSUMMONS', -8);
+define('DOC_PAYMENTPRESUMMONS', -9);
 define('DOC_OTHER', -128);
 define('DOC_BILLING', -10);
 define('DOC_PRICELIST', -11);
@@ -529,9 +532,9 @@ $DOCTYPES = array(
     DOC_ORDER       =>  trans('order'),
     DOC_SHEET       =>  trans('customer sheet'), // karta klienta
     DOC_BREACH      =>  trans('contract termination'),
-    -7  =>      trans('payments book'), // ksiazeczka oplat
-    -8  =>      trans('payment summons'), // wezwanie do zapłaty
-    -9  =>      trans('payment pre-summons'), // przedsądowe wezw. do zapłaty
+    DOC_PAYMENTBOOK  => trans('payments book'), // ksiazeczka oplat
+    DOC_PAYMENTSUMMONS  => trans('payment summons'), // wezwanie do zapłaty
+    DOC_PAYMENTPRESUMMONS  => trans('payment pre-summons'), // przedsądowe wezw. do zapłaty
     DOC_PRICELIST       =>  trans('price-list'), // cennik
     DOC_PROMOTION       =>  trans('promotion'), // promocja
     DOC_WARRANTY       =>  trans('warranty'), // gwarancja
@@ -615,6 +618,7 @@ define('SERVICE_HOSTING', 2);
 define('SERVICE_SERVICE', 3);
 define('SERVICE_PHONE', 4);
 define('SERVICE_TV', 5);
+define('SERVICE_TRANSMISSION', 6);
 
 // VoIP call types
 define('CALL_INCOMING', 1);
@@ -646,6 +650,7 @@ $SERVICETYPES = array(
     SERVICE_SERVICE => ConfigHelper::getConfig('tarifftypes.service', trans('service')),
     SERVICE_PHONE => ConfigHelper::getConfig('tarifftypes.phone', trans('phone')),
     SERVICE_TV => ConfigHelper::getConfig('tarifftypes.tv', trans('tv')),
+    SERVICE_TRANSMISSION => ConfigHelper::getConfig('tarifftypes.transmission', trans('transmission')),
 );
 
 $PAYTYPES = array(
