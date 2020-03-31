@@ -35,6 +35,25 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 	}
 	this.class = 'suggestion_list ' + this.class;
 
+	this.my_at_map = {
+		left: {
+			my: 'right top',
+			at: 'left top'
+		},
+		right: {
+			my: 'left top',
+			at: 'right top'
+		},
+		top: {
+			my: 'left bottom',
+			at: 'left top'
+		},
+		bottom: {
+			my: 'left top',
+			at: 'left bottom'
+		}
+	}
+
 	this.request_delay = 250; // time in milliseconds
 
 	if (/autosuggest-(left|top|right|bottom)/i.exec(this.elem.className) !== null) {
@@ -237,30 +256,7 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 	Display the dropdown. Pretty straightforward.
 	********************************************************/
 	this.showDiv = function() {
-		this.div.style.visibility = 'hidden';
-		this.div.style.display = 'block';
-
-		var x = parseInt( this.div.style.left );
-		var y = parseInt( this.div.style.top );
-
-		switch (this.placement) {
-			case 'left':
-				x -= this.div.offsetWidth;
-				break;
-			case 'right':
-				x += this.elem.offsetWidth;
-				break;
-			case 'top':
-				y -= this.div.offsetHeight;
-				break;
-			default: // bottom
-				y += this.elem.offsetHeight;
-				break;
-		}
-
-		this.div.style.left = x + "px";
-		this.div.style.top = y + "px";
-		this.div.style.visibility = 'visible';
+		$(this.div).show().position($.extend(this.my_at_map[this.placement], { of: this.elem } ));
 	};
 
 	/********************************************************
