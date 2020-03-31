@@ -303,7 +303,7 @@ if (isset($_POST['assignment'])) {
         $DB->BeginTrans();
 
         if ($a['liabilityid']) {
-            if ($a['tariffid']) {
+            if ($a['tariffid'] > 0) {
                 $DB->Execute(
                     'UPDATE assignments SET tariffid = ?, liabilityid = NULL WHERE id = ?',
                     array($a['tariffid'], $a['id'])
