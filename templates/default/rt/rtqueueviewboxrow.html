@@ -12,7 +12,7 @@
 	</TD>
 	<TD class="text-center" style="background:transparent; color:{$_RT_STATES[$ticket.state].color};">
 		<span class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$ticket.id}">
-			{$_RT_STATES[$ticket.state].label}<br>{if $ticket.priority != 0}<span {if $ticket.state != $smarty.const.RT_RESOLVED}style="color:black"{/if}>{$_RT_PRIORITIES[$ticket.priority]}</span>{/if}{if !empty($ticket.verifiername && $ticket.state == 7)}({$ticket.verifiername}){/if}
+			{$_RT_STATES[$ticket.state].label}<br>{if $ticket.priority != 0}<span {if $ticket.state != $smarty.const.RT_RESOLVED}style="color:black"{/if}>{$_RT_PRIORITIES[$ticket.priority]}</span>{/if}{if !empty($ticket.verifiername) && !empty($ticket.state) && $ticket.state == $smarty.const.RT_VERIFIED}({$ticket.verifiername}){/if}
 		</span>
 	</TD>
 	<TD class="nobr">
