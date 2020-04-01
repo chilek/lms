@@ -30,9 +30,9 @@ if (!isset($_GET['variable'])) {
     die;
 }
 
-$description = ConfigHelper::LoadMarkdownDocumentation($_GET['variable']);
+$description = Utils::LoadMarkdownDocumentation($_GET['variable']);
 if (empty($description)) {
     die;
 }
 
-die(ConfigHelper::MarkdownToHtml($description));
+die(Utils::MarkdownToHtml($description));

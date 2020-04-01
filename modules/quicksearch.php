@@ -1017,7 +1017,7 @@ switch ($mode) {
         if (isset($_GET['ajax'])) {
             header('Content-type: application/json');
 
-            $markdown_documentation = ConfigHelper::LoadMarkdownDocumentation();
+            $markdown_documentation = Utils::LoadMarkdownDocumentation();
             if (empty($markdown_documentation)) {
                 die;
             }
@@ -1044,7 +1044,7 @@ switch ($mode) {
                     $description = trans('Section:') . ' ' . $section;
                     $description_class = '';
                     $action = '';
-                    $tip = ConfigHelper::MarkdownToHtml($documentation);
+                    $tip = Utils::MarkdownToHtml($documentation);
                     $result[$variable . '.' . $section] = compact('name', 'name_class', 'description', 'description_class', 'action', 'section', 'tip');
                     $i++;
                 }

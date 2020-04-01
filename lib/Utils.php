@@ -3,7 +3,7 @@
 /**
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -178,5 +178,90 @@ class Utils
             $error_msg .= ", from " . $frame['function'] . ':' . $frame['file'] . ' line ' . $frame['line'];
         }
         return trigger_error($error_msg, $error_type);
+    }
+
+    public static function LoadMarkdownDocumentation($variable_name = null)
+    {
+        $markdown_documentation_file = self::getConfig(
+            'phpui.markdown_documentation_file',
+            SYS_DIR . DIRECTORY_SEPARATOR . 'doc' . DIRECTORY_SEPARATOR . 'Zmienne-konfiguracyjne-LMS-Plus.md'
+        );
+
+        if (isset($variable_name)) {
+            $content = file_get_contents($markdown_documentation_file);
+            if (($startpos = strpos($content, '## ' . $variable_name)) === false) {
+                return null;
+            }
+            $endpos = strpos($content, '## ', $startpos + 1);
+            if ($endpos === false) {
+                $chunk = substr($content, $startpos);
+            } else {
+                $chunk = substr($content, $startpos, $endpos - $startpos);
+            }
+            $lines = explode("\n", $chunk);
+            array_shift($lines);
+            foreach ($lines as &$line) {
+                $line = trim($line);
+            }
+            unset($line);
+            return implode("\n", $lines);
+        }
+
+        $result = array();
+
+        if (empty($markdown_documentation_file) || !file_exists($markdown_documentation_file)) {
+            return $result;
+        }
+
+        $content = file($markdown_documentation_file);
+        if (empty($content)) {
+            return $result;
+        }
+
+        $variable = null;
+        $buffer = '';
+        foreach ($content as $line) {
+            if (preg_match('/^##\s+(?<variable>.+)\r?\n/', $line, $m)) {
+                if ($variable && $buffer) {
+                    list ($section, $var) = explode('.', $variable);
+                    if (!isset($result[$section])) {
+                        $result[$section] = array();
+                    }
+                    $result[$section][$var] = $buffer;
+                }
+                $variable = $m['variable'];
+                $buffer = '';
+            } elseif (preg_match('/^\*\*\*/', $line)) {
+                if ($variable && $buffer) {
+                    list ($section, $var) = explode('.', $variable);
+                    if (!isset($result[$section])) {
+                        $result[$section] = array();
+                    }
+                    $result[$section][$var] = $buffer;
+                }
+                $variable = null;
+                $buffer = '';
+            } elseif ($variable) {
+                $buffer .= $line;
+            }
+        }
+        if ($variable && $buffer) {
+            list ($section, $var) = explode('.', $variable);
+            if (!isset($result[$section])) {
+                $result[$section] = array();
+            }
+            $result[$section][$var] = $buffer;
+        }
+
+        return $result;
+    }
+
+    public static function MarkdownToHtml($markdown)
+    {
+        static $markdown_parser = null;
+        if (!isset($markdown_parser)) {
+            $markdown_parser = new Parsedown();
+        }
+        return $markdown_parser->Text($markdown);
     }
 }

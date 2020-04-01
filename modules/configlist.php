@@ -192,11 +192,11 @@ function GetConfigList()
         WHERE section != \'userpanel\'');
 
     if ($config) {
-        $markdown_documentation = ConfigHelper::LoadMarkdownDocumentation();
+        $markdown_documentation = Utils::LoadMarkdownDocumentation();
 
         foreach ($config as $idx => &$item) {
             if (isset($markdown_documentation[$item['section']][$item['var']])) {
-                $item['description'] = ConfigHelper::MarkdownToHtml($markdown_documentation[$item['section']][$item['var']]);
+                $item['description'] = Utils::MarkdownToHtml($markdown_documentation[$item['section']][$item['var']]);
             } else if (isset($configuration_variables[$item['section']][$item['var']])) {
                 $item['description'] = trans($configuration_variables[$item['section']][$item['var']]);
             } else {

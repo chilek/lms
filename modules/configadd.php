@@ -98,7 +98,7 @@ if (count($config)) {
         unset($config['disabled']);
     }
 
-    $config['documentation'] = ConfigHelper::MarkdownToHtml(ConfigHelper::LoadMarkdownDocumentation($option));
+    $config['documentation'] = Utils::MarkdownToHtml(Utils::LoadMarkdownDocumentation($option));
 } elseif (isset($_GET['id'])) {
     $config = $LMS->GetConfigVariable($_GET['id']);
     unset($config['id']);

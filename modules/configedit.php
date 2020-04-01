@@ -150,7 +150,7 @@ $layout['pagetitle'] = trans('Option Edit: $a', $option);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$config['documentation'] = ConfigHelper::MarkdownToHtml(ConfigHelper::LoadMarkdownDocumentation($option));
+$config['documentation'] = Utils::MarkdownToHtml(Utils::LoadMarkdownDocumentation($option));
 
 $SMARTY->assign('sections', $LMS->GetConfigSections());
 $SMARTY->assign('error', $error);
