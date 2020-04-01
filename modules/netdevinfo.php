@@ -38,7 +38,12 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
     if (!empty($netdev['ownerid'])) {
         $assignments = $LMS->GetCustomerAssignments($netdev['ownerid'], true, false);
         $assignments = $LMS->GetNetDevCustomerAssignments($assignments);
-        $SMARTY->assign('assignments', $assignments);
+        $SMARTY->assign(array(
+            'assignments' => $assignments,
+            'customerinfo' => array(
+                'id' => $netdev['ownerid'],
+            )
+        ));
     }
     $attachmenttype = 'netdevid';
     $attachmentresourceid = $id;
