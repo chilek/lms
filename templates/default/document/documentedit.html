@@ -151,6 +151,7 @@
 		</TD>
 	</TR>
 *}
+	{if !$document.closed && ($document.docrights & $smarty.const.DOCRIGHT_CONFIRM)}
 	<TR>
 		<TD>
 			<IMG src="img/confirm.gif" ALT="">
@@ -162,6 +163,7 @@
 			<INPUT type="checkbox" name="document[closed]" id="closed" value="1" {if $document.closed} checked{/if}>
 		</TD>
 	</TR>
+	{/if}
 	{if $document.closed && ($document.docrights & $smarty.const.DOCRIGHT_ARCHIVE)}
 	<TR>
 		<TD>
