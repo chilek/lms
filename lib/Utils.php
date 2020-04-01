@@ -182,7 +182,7 @@ class Utils
 
     public static function LoadMarkdownDocumentation($variable_name = null)
     {
-        $markdown_documentation_file = self::getConfig(
+        $markdown_documentation_file = ConfigHelper::getConfig(
             'phpui.markdown_documentation_file',
             SYS_DIR . DIRECTORY_SEPARATOR . 'doc' . DIRECTORY_SEPARATOR . 'Zmienne-konfiguracyjne-LMS-Plus.md'
         );
