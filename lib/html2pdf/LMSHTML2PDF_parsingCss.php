@@ -40,9 +40,9 @@ class LMSHTML2PDF_parsingCss extends HTML2PDF_parsingCss
         $style = $b.$i;
 
         if ($this->_defaultFont) {
-            if ($family=='helvetica') {
-                $family='arial';
-            } elseif ($family=='symbol' || $family=='zapfdingbats') {
+            if ($family == 'helvetica') {
+                $family = 'liberationsans';
+            } elseif ($family == 'symbol' || $family == 'zapfdingbats') {
                 $style='';
             }
 
@@ -52,9 +52,9 @@ class LMSHTML2PDF_parsingCss extends HTML2PDF_parsingCss
             }
         }
 
-        if ($family=='helvetica') {
-            $family='arial';
-        } elseif ($family=='symbol' || $family=='zapfdingbats') {
+        if ($family == 'helvetica') {
+            $family = 'liberationsans';
+        } elseif ($family == 'symbol' || $family == 'zapfdingbats') {
             $style='';
         }
 
