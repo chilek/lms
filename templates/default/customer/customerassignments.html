@@ -15,7 +15,7 @@
 
 	{tab_header content_id="customerassignmentpanel"}
 		{tab_header_cell icon="lms-ui-icon-assignment"}
-			<strong>{trans("Customer Liabilities:")}</strong>
+			<strong>{if isset($tab_label)}{$tab_label}{else}{trans("Customer Liabilities:")}{/if}</strong>
 			<label id="assignment_type_filter">
 				{trans("Type:")}
 				<select id="assignment_type">

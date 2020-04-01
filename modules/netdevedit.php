@@ -798,6 +798,12 @@ if (isset($netdev)) {
 
 $netdev['id'] = $id;
 
+if (!empty($netdev['ownerid'])) {
+    $assignments = $LMS->GetCustomerAssignments($netdev['ownerid'], true, false);
+    $assignments = $LMS->GetNetDevCustomerAssignments($assignments);
+    $SMARTY->assign('assignments', $assignments);
+}
+
 $netdevips       = $LMS->GetNetDevIPs($id);
 if ($netdev['ports'] > $netdev['takenports']) {
     $nodelist        = $LMS->GetUnlinkedNodes();

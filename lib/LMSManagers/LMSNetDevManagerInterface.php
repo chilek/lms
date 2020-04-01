@@ -91,4 +91,6 @@ interface LMSNetDevManagerInterface
     public function DeleteManagementUrl($type, $id);
 
     public function updateManagementUrl($type, $id, array $url);
+
+    public function getNetDevCustomerAssignments(array $assignments);
 }

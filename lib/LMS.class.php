@@ -1673,6 +1673,12 @@ class LMS
         return $manager->updateManagementUrl($type, $id, $url);
     }
 
+    public function getNetDevCustomerAssignments(array $assignments)
+    {
+        $manager = $this->getNetDevManager();
+        return $manager->getNetDevCustomerAssignments($assignments);
+    }
+
     public function GetNetNode($id)
     {
         $manager = $this->getNetNodeManager();

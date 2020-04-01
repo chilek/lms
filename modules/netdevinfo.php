@@ -35,7 +35,11 @@ $SMARTY->assign('xajax', $LMS->RunXajax());
 
 if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled by netdevxajax.inc.php
     $netdev = $LMS->GetNetDev($id);
-
+    if (!empty($netdev['ownerid'])) {
+        $assignments = $LMS->GetCustomerAssignments($netdev['ownerid'], true, false);
+        $assignments = $LMS->GetNetDevCustomerAssignments($assignments);
+        $SMARTY->assign('assignments', $assignments);
+    }
     $attachmenttype = 'netdevid';
     $attachmentresourceid = $id;
     $SMARTY->assign('attachmenttype', $attachmenttype);

@@ -261,6 +261,8 @@ version 25-git (????-??-??):
   - improvement: new menu subitem 'New setting' in configuration menu [chilan]
   - improvement: investment project and type are multiple selections on network node
     list [chilan]
+  - enhancement: added network device assignments tab in network device info
+    and edit views [chilan]
 
 version 24.0 (2019-05-16):
 

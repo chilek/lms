@@ -1250,4 +1250,28 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
         return $res;
     }
+
+    public function getNetDevCustomerAssignments(array $assignments)
+    {
+        if (empty($assignments)) {
+            return $assignments;
+        }
+
+        $netdev_assignments = array();
+
+        foreach ($assignments as $assignment) {
+            if (!isset($assignment['nodes'])) {
+                continue;
+            }
+            foreach ($assignment['nodes'] as $node) {
+                if (empty($node['netdev_ownerid'])) {
+                    continue;
+                }
+                $netdev_assignments[] = $assignment;
+                break;
+            }
+        }
+
+        return $netdev_assignments;
+    }
 }

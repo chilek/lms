@@ -512,6 +512,7 @@ $_LANG['Customer ID:'] = 'ID klienta:';
 $_LANG['Customer Info: $a'] = 'Informacje o kliencie: $a';
 $_LANG['Node Edit: $a'] = 'Edycja komputera: $a';
 $_LANG['Customer Liabilities:'] = 'Zobowiązania klienta:';
+$_LANG['Network Device Liabilities:'] = 'Zobowiązania urządzenia sieciowego:';
 $_LANG['customer name'] = 'nazwisko klienta';
 $_LANG['Customer name'] = 'Nazwisko klienta';
 $_LANG['Customer No.: $a'] = 'Numer klienta: $a';
