@@ -317,6 +317,7 @@ define('RT_TYPE_STOP', 7);
 define('RT_TYPE_REMOVE', 8);
 define('RT_TYPE_OTHER', 9);
 define('RT_TYPE_CONF', 10);
+define('RT_TYPE_PAYMENT', 11);
 
 
 $RT_TYPES = array(
@@ -369,6 +370,11 @@ $RT_TYPES = array(
         'label' => trans('Deinstalation'),
         'class' => 'lms-ui-rt-ticket-type-remove',
         'name' => 'RT_TYPE_REMOVE'
+    ),
+    RT_TYPE_PAYMENT => array(
+        'label' => trans('Payment'),
+        'class' => 'lms-ui-rt-ticket-type-payment',
+        'name' => 'RT_TYPE_PAYMENT'
     ),
 );
 

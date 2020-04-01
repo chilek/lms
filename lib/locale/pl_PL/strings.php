@@ -1353,6 +1353,7 @@ $_LANG['Password is too long (max.32 characters)!'] = 'Hasło jest za długie (m
 $_LANG['Passwords does not match!'] = 'Hasła nie pasują do siebie!';
 $_LANG['Path to file was not specified: $a'] = 'Ścieżka do pliku nie została określona: $a';
 $_LANG['Payment:'] = 'Płatność:';
+$_LANG['Payment'] = 'Płatność';
 $_LANG['Payment day:'] = 'Dzień zapłaty:';
 $_LANG['Payment Edit: $a'] = 'Edycja płatności: $a';
 $_LANG['Payment for invoice No. $a'] = 'Zapłata za fakturę nr $a';
