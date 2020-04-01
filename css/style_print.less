@@ -1,11 +1,13 @@
+@fonts: LiberationSans, sans-serif;
+
 BODY {
 	font-size: 8pt;
-	font-family: Arial, Helvetica;
+	font-family: @fonts;
 	padding: 0pt;
 	background-color: #FFFFFF;
 	&.landscape {
 		font-size: 8pt;
-		font-family: Arial, Helvetica;
+		font-family: @fonts;
 		padding: 0pt;
 		background-color: #FFFFFF;
 		size: landscape;
@@ -109,25 +111,25 @@ A		{ text-decoration: none; }
 
 P {
 	font-size: 8pt;
-	font-family: Arial, Helvetica;
+	font-family: @fonts;
 	&.nor {
 		font-size: 8pt;
-		font-family: Arial, Helvetica;
+		font-family: @fonts;
 	}
 	&.txt {
 		font-size: 8pt;
-		font-family: Arial, Helvetica;
+		font-family: @fonts;
 		text-align: justify;
 	}
 	&.separated {
 		font-size: 8pt;
-		font-family: Arial, Helvetica;
+		font-family: @fonts;
 		margin-top: 5;
 		margin-bottom: 5;
 	}
 }
 
-H1		{ font-size: 14pt; font-family: Arial, Helvetica; }
+H1		{ font-size: 14pt; font-family: @fonts; }
 
 .shdf		{ font-size: 20pt; font-weight: bold; }
 .hdf		{ font-size: 14pt; }

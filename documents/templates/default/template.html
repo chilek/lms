@@ -3,12 +3,12 @@
 <title>{trans("Contract")}</title>
 <STYLE type="text/css">
 <!--
-BODY		{ font-size: 12pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
+BODY		{ font-size: 12pt; font-family: LiberationSans, sans-serif; }
 H1		{ font-size: 14pt; text-align: center; }
 H2		{ font-size: 12pt; text-align: center; color: red;}
-TD		{ font-size: 12pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
+TD		{ font-size: 12pt; font-family: LiberationSans, sans-serif; }
 TABLE		{ border-collapse: collapse; }
-P		{ font-size: 12pt; font-family: Tahoma, Verdana, Arial, Helvetica; text-align: center; }
+P		{ font-size: 12pt; font-family: LiberationSans, sans-serif; text-align: center; }
 -->
 </STYLE>
 <meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_language.charset}">
@@ -26,7 +26,7 @@ przez: {$layout.logname} a: </p>
 	<TD>{$customerinfo.customername}</TD>
     </TR>
     <TR>
-	<TD VALIGN="TOP">Adres:</TD> 
+	<TD VALIGN="TOP">Adres:</TD>
 	<TD>{$customerinfo.address}<br>{$customerinfo.zip} {$customerinfo.city}</TD>
     </TR>
     <TR>
@@ -40,14 +40,14 @@ przez: {$layout.logname} a: </p>
 <TABLE BORDER="0" WIDTH="100%">
     <TR>
 	<TD VALIGN="top">&sect;1.</TD>
-	<TD VALIGN="top">Na mocy niniejszej umowy Usługodawca zobowiązuje się do świadczenia 
+	<TD VALIGN="top">Na mocy niniejszej umowy Usługodawca zobowiązuje się do świadczenia
 	    usług zgodnych ze specyfikacją &sect;8 w następującej lokalizacji:
 	    {$customerinfo.address} {$customerinfo.zip} {$customerinfo.city}
 	</TD>
     </TR>
     <TR>
 	<TD VALIGN="top">&sect;2.</TD>
-	<TD VALIGN="top">Usługobiorca zobowiązuje się do opłacania abonamentu ustalonego 
+	<TD VALIGN="top">Usługobiorca zobowiązuje się do opłacania abonamentu ustalonego
 	    przez strony w &sect;8 umowy.
 	</TD>
     </TR>
@@ -59,13 +59,13 @@ przez: {$layout.logname} a: </p>
     </TR>
     <TR>
 	<TD VALIGN="top">&sect;4.</TD>
-	<TD VALIGN="top">W sprawach nie uregulowanych niniejszą umową 
+	<TD VALIGN="top">W sprawach nie uregulowanych niniejszą umową
 	    zastosowanie mają przepisy Kodeksu Cywilnego.
 	</TD>
     </TR>
     <TR>
 	<TD VALIGN="top">&sect;5.</TD>
-	<TD VALIGN="top">Wszelkie zmiany warunków umowy wymagają dla swej 
+	<TD VALIGN="top">Wszelkie zmiany warunków umowy wymagają dla swej
 	    ważności formy pisemnej.
 	</TD>
     </TR>
@@ -77,9 +77,9 @@ przez: {$layout.logname} a: </p>
     </TR>
     <TR>
 	<TD VALIGN="top">&sect;7.</TD>
-	<TD VALIGN="top">Usługobiorca oświadcza, że wszystkie podane dane osobowe są zgodne z prawdą i wyraża zgodę na ich przetwarzanie dla celów 
-	    realizacji niniejszej umowy. Usługodawca gwarantuje zachowanie poufności danych osobowych zawartych w niniejszej 
-	    umowie z wyjątkiem sytuacji przewidzianych przepisami prawa zgodnie z ustawą z dnia 29 sierpnia 1997 roku o ochronie 
+	<TD VALIGN="top">Usługobiorca oświadcza, że wszystkie podane dane osobowe są zgodne z prawdą i wyraża zgodę na ich przetwarzanie dla celów
+	    realizacji niniejszej umowy. Usługodawca gwarantuje zachowanie poufności danych osobowych zawartych w niniejszej
+	    umowie z wyjątkiem sytuacji przewidzianych przepisami prawa zgodnie z ustawą z dnia 29 sierpnia 1997 roku o ochronie
 	    danych osobowych (Dz. U. Nr 133, poz. 883).
 	</TD>
     </TR>
@@ -87,7 +87,7 @@ przez: {$layout.logname} a: </p>
 	<TD VALIGN="top">&sect;8.</TD>
 	<TD VALIGN="top">
 SPECYFIKACJA USŁUGI <br>
-Strony uzgodniły obowiązujące opłaty za następujące usługi: 
+Strony uzgodniły obowiązujące opłaty za następujące usługi:
 
 <TABLE cellpadding="3" cellspacing="0" border="1">
     <TR>
@@ -115,13 +115,13 @@ Strony uzgodniły obowiązujące opłaty za następujące usługi:
     </TR>
 </TABLE>
 
-	
+
 	</TD>
     </TR>
     <TR>
 	<TD VALIGN="top">&sect;9.</TD>
 	<TD VALIGN="top">PODŁĄCZONE URZĄDZENIA<br>
-	    Usługodawca zobowiązuje się do zapewnienia dostępu do sieci 
+	    Usługodawca zobowiązuje się do zapewnienia dostępu do sieci
 	    internet następującym komputerom/urządzeniom końcowym przy użyciu
 	    następujących adresów:
 <TABLE cellpadding="3" cellspacing="0" border="1">
@@ -181,14 +181,14 @@ Strony uzgodniły obowiązujące opłaty za następujące usługi:
 	</TD>
     </TR>
     {/foreach}
-</TABLE>	
+</TABLE>
 
 	</TD>
     </TR>
 {/if}
     <TR>
 	<TD VALIGN="top">&sect;10.</TD>
-	<TD VALIGN="top">W kontaktach z Biurem Obsługi Klienta Usługobiorca 
+	<TD VALIGN="top">W kontaktach z Biurem Obsługi Klienta Usługobiorca
 	    zobowiązany jest do podawania Identyfikatora Użytkownika: {$customerinfo.id|string_format:"%04d"}
 	    oraz numeru PIN: {$customerinfo.pin}
 	</TD>
@@ -199,7 +199,7 @@ Strony uzgodniły obowiązujące opłaty za następujące usługi:
 	<TD VALIGN="top">{$document.notes}</TD>
     </TR>
 {/if}
-    
+
 </TABLE>
 
 <BR><BR>
