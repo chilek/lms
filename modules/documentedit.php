@@ -49,15 +49,19 @@ if (isset($_GET['action'])) {
 
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'document.inc.php');
 
-$document = $DB->GetRow('SELECT documents.id AS id, closed,
+$document = $DB->GetRow(
+    'SELECT documents.id AS id, closed,
 		archived, adate, auserid,
 		type, number, numberplans.template,
-		cdate, sdate, cuserid, numberplanid, title, fromdate, todate, description, divisionid, documents.customerid
+		cdate, sdate, cuserid, numberplanid, title, fromdate, todate, description, divisionid, documents.customerid,
+		r.rights AS docrights
 	FROM documents
 	JOIN docrights r ON (r.doctype = documents.type)
 	LEFT JOIN documentcontents ON (documents.id = docid)
 	LEFT JOIN numberplans ON (numberplanid = numberplans.id)
-	WHERE documents.id = ? AND r.userid = ? AND (r.rights & 8) = 8', array($_GET['id'], $userid));
+	WHERE documents.id = ? AND r.userid = ? AND (r.rights & ?) > 0',
+    array($_GET['id'], $userid, DOCRIGHT_EDIT)
+);
 if (empty($document)) {
     $SMARTY->display('noaccess.html');
     die;
@@ -273,13 +277,16 @@ if (isset($_POST['document'])) {
     }
 }
 
-$rights = $DB->GetCol('SELECT doctype FROM docrights
-	WHERE userid = ? AND (rights & 2) = 2', array($userid));
+$rights = $DB->GetCol(
+    'SELECT doctype FROM docrights
+	WHERE userid = ? AND (rights & ?) > 0',
+    array($userid, DOCRIGHT_CREATE)
+);
 
 if (!$rights || !$DB->GetOne(
     'SELECT 1 FROM docrights
-	WHERE userid = ? AND doctype = ? AND (rights & 8) = 8',
-    array($userid, $document['type'])
+	WHERE userid = ? AND doctype = ? AND (rights & ?) > 0',
+    array($userid, $document['type'], DOCRIGHT_EDIT)
 )) {
         $SMARTY->display('noaccess.html');
         die;

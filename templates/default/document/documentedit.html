@@ -162,7 +162,8 @@
 			<INPUT type="checkbox" name="document[closed]" id="closed" value="1" {if $document.closed} checked{/if}>
 		</TD>
 	</TR>
-	<TR{if !$document.closed} style="display: none;"{/if}>
+	{if $document.closed && ($document.docrights & $smarty.const.DOCRIGHT_ARCHIVE)}
+	<TR>
 		<TD>
 			<IMG src="img/db.gif" ALT="">
 		</TD>
@@ -173,6 +174,7 @@
 			<INPUT type="checkbox" name="document[archived]" id="archived" value="1" {if $document.archived} checked{/if}>
 		</TD>
 	</TR>
+	{/if}
 	<TR>
 		<TD colspan="3" class="buttons">
 			<A href="javascript: document.documentedit.submit();">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
