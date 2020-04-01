@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -32,46 +32,46 @@ if ($api) {
     $layout['pagetitle'] = trans('Network Device Nodes');
 
     if (!isset($_GET['o'])) {
-        $SESSION->restore('ndlo', $o);
+        $SESSION->restore('nnlo', $o);
     } else {
         $o = $_GET['o'];
     }
-    $SESSION->save('ndlo', $o);
+    $SESSION->save('nnlo', $o);
 
     if (!isset($_GET['t'])) {
-        $SESSION->restore('ndft', $t);
+        $SESSION->restore('nnft', $t);
     } else {
         $t = $_GET['t'];
     }
-    $SESSION->save('ndft', $t);
+    $SESSION->save('nnft', $t);
 
     if (!isset($_GET['s'])) {
-        $SESSION->restore('ndfs', $s);
+        $SESSION->restore('nnfs', $s);
     } else {
         $s = $_GET['s'];
     }
-    $SESSION->save('ndfs', $s);
+    $SESSION->save('nnfs', $s);
 
     if (!isset($_GET['p'])) {
-        $SESSION->restore('ndfp', $p);
+        $SESSION->restore('nnfp', $p);
     } else {
         $p = $_GET['p'];
     }
-    $SESSION->save('ndfp', $p);
+    $SESSION->save('nnfp', $p);
 
     if (!isset($_GET['w'])) {
-        $SESSION->restore('ndfw', $w);
+        $SESSION->restore('nnfw', $w);
     } else {
         $w = $_GET['w'];
     }
-    $SESSION->save('ndfw', $w);
+    $SESSION->save('nnfw', $w);
 
     if (!isset($_GET['d'])) {
-        $SESSION->restore('ndfd', $d);
+        $SESSION->restore('nnfd', $d);
     } else {
         $d = $_GET['d'];
     }
-    $SESSION->save('ndfd', $d);
+    $SESSION->save('nnfd', $d);
 
     $search = array(
         'status' => $s,
@@ -99,22 +99,23 @@ if ($api) {
     header('Content-Type: application/json');
     echo json_encode(array_values($nlist));
 } else {
-    if (!isset($_GET['page'])) {
-        $SESSION->restore('ndlp', $_GET['page']);
+    $total = $listdata['total'];
+
+    $limit = intval(ConfigHelper::getConfig('phpui.nodelist_pagelimit', $total));
+    if ($SESSION->is_set('nnlp') && !isset($_GET['page'])) {
+        $SESSION->restore('nnlp', $_GET['page']);
     }
+    $page = !isset($_GET['page']) ? 1 : intval($_GET['page']);
+    $offset = ($page - 1) * $pagelimit;
 
-    $page = (!$_GET['page'] ? 1 : $_GET['page']);
-    $pagelimit = ConfigHelper::getConfig('phpui.nodelist_pagelimit', $listdata['total']);
-    $start = ($page - 1) * $pagelimit;
+    $pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
 
-    $SESSION->save('ndlp', $page);
+    $SESSION->save('nnlp', $page);
 
     $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-    $SMARTY->assign('page', $page);
-    $SMARTY->assign('pagelimit', $pagelimit);
-    $SMARTY->assign('start', $start);
     $SMARTY->assign('nlist', $nlist);
+    $SMARTY->assign('pagination', $pagination);
     $SMARTY->assign('listdata', $listdata);
     $SMARTY->assign('divisions', $LMS->GetDivisions());
     $SMARTY->assign('NNprojects', $LMS->GetProjects());

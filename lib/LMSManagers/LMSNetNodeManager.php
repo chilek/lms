@@ -56,10 +56,18 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 
         $where = array();
         foreach ($search as $key => $value) {
-            $val = intval($value);
+            if (is_array($value)) {
+                $val = Utils::filterIntegers($value);
+            } else {
+                $val = intval($value);
+            }
             switch ($key) {
                 case 'type':
-                    if ($val != -1) {
+                    if (is_array($val)) {
+                        if (!in_array(-1, $val)) {
+                            $where[] = 'n.type IN (' . implode(',', $val) . ')';
+                        }
+                    } elseif ($val != -1) {
                         $where[] = 'n.type = ' . $val;
                     }
                     break;
@@ -69,7 +77,13 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
                     }
                     break;
                 case 'invprojectid':
-                    if ($val == -2) {
+                    if (is_array($val)) {
+                        if (in_array(-2, $val)) {
+                            $where[] = 'n.invprojectid IS NULL';
+                        } else {
+                            $where[] = 'n.invprojectid IN (' . implode(',', $val) . ')';
+                        }
+                    } elseif ($val == -2) {
                         $where[] = 'n.invprojectid IS NULL';
                     } elseif ($val != -1) {
                         $where[] = 'n.invprojectid = ' . $val;

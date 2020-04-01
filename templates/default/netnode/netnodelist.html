@@ -18,21 +18,28 @@
     <THEAD>
 	<TR {tip text="Click on column name to change sorting order"}>
 		<TD>
-			<IMG src="img/netnode.png" ALT="">&nbsp;<A href="?m=netnodelist&o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order == "name"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<IMG src="img/producer.gif" ALT="">&nbsp;<A href="?m=netnodelist&o=type{if $listdata.direction == "asc" && $listdata.order == "type"},desc{/if}">{trans("Type:")}</A> {if $listdata.order == "type"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} /
-			<A href="?m=netnodelist&o=status{if $listdata.direction == "asc" && $listdata.order == "status"},desc{/if}">{trans("Status:")}</A> {if $listdata.order == "status"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<IMG src="img/netnode.png" ALT="">&nbsp;<A href="?m=netnodelist&o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}"><B>{trans("Name:")}</B></A>
+			{if $listdata.order == "name"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<IMG src="img/producer.gif" ALT="">&nbsp;<A href="?m=netnodelist&o=type{if $listdata.direction == "asc" && $listdata.order == "type"},desc{/if}">{trans("Type:")}</A>
+			{if $listdata.order == "type"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} /
+			<A href="?m=netnodelist&o=status{if $listdata.direction == "asc" && $listdata.order == "status"},desc{/if}">{trans("Status:")}</A>
+			{if $listdata.order == "status"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="text-center">
-			<A href="?m=netnodelist&o=location{if $listdata.direction == "asc" && $listdata.order == "location"},desc{/if}">{trans("Location:")}</A> {if $listdata.order == "location"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=netnodelist&o=location{if $listdata.direction == "asc" && $listdata.order == "location"},desc{/if}">{trans("Location:")}</A>
+			{if $listdata.order == "location"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="text-center">
-		   	<A href="?m=netnodelist&o=invprojectid{if $listdata.direction == "asc" && $listdata.order == "invprojectid"},desc{/if}">{trans("Project:")}</A> {if $listdata.order == "invprojectid"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=netnodelist&o=invprojectid{if $listdata.direction == "asc" && $listdata.order == "invprojectid"},desc{/if}">{trans("Project:")}</A>
+			{if $listdata.order == "invprojectid"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="text-center">
-			<A href="?m=netnodelist&o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">ID:</A> {if $listdata.order == "id"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=netnodelist&o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">ID:</A>
+			{if $listdata.order == "id"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="text-center">
-			<A href="?m=netnodelist&o=lastinspectiontime{if $listdata.direction == "asc" && $listdata.order == "lastinspectiontime"},desc{/if}">{trans("Last inspection:")}</A> {if $listdata.order == "lastinspectiontime"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=netnodelist&o=lastinspectiontime{if $listdata.direction == "asc" && $listdata.order == "lastinspectiontime"},desc{/if}">{trans("Last inspection:")}</A>
+			{if $listdata.order == "lastinspectiontime"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="nobr">
 		</TD>
@@ -50,10 +57,11 @@
 			</SELECT>
 			{/if}
 			{trans("Type:")}
-			<SELECT SIZE="1" NAME="t" ONCHANGE="document.choosefilter.submit();">
-				<OPTION VALUE="-1" {if $listdata.type==-1} SELECTED {/if} >- {trans("all")} -</OPTION>
+			<input type="hidden" name="t" value="-1">
+			<SELECT SIZE="1" NAME="t[]" ONCHANGE="document.choosefilter.submit();" multiple class="lms-ui-multiselect" data-default-value="- {trans("all")} -">
+				<option value="-1"{if is_array($listdata.type) && in_array(-1, $listdata.type)} selected{/if} data-exclusive>- {trans("all")} -</option>
 				{foreach $_NETELEMENTTYPES as $idx => $type}
-					<OPTION VALUE="{$idx}"{if $listdata.type == $idx} SELECTED{/if} >{$type}</OPTION>
+					<OPTION VALUE="{$idx}"{if is_array($listdata.type) && in_array($idx, $listdata.type)} selected{/if}>{$type}</OPTION>
 				{/foreach}
 			</SELECT>
 			{trans("Status")}:
@@ -64,11 +72,11 @@
 				{/foreach}
 			</SELECT>
 			{trans("Project:")}
-			<SELECT SIZE="1" NAME="p" ONCHANGE="document.choosefilter.submit();">
-				<OPTION VALUE="-1"{if $listdata.invprojectid == -1} selected{/if}>- {trans("all")} -</OPTION>
-				<OPTION VALUE="-2"{if $listdata.invprojectid == -2} selected{/if}>- {trans("without project")} -</OPTION>
+			<input type="hidden" name="p" value="-1">
+			<SELECT SIZE="1" NAME="p[]" ONCHANGE="document.choosefilter.submit();" multiple class="lms-ui-multiselect" data-default-value="- {trans("all")} -">
+				<OPTION VALUE="-2"{if is_array($listdata.invprojectid) && in_array(-2, $listdata.invprojectid)} selected{/if} data-exclusive>- {trans("without project")} -</OPTION>
 				{foreach $NNprojects as $project}
-				<OPTION VALUE="{$project.id}"{if ($listdata.invprojectid == $project.id)} selected{/if}>{$project.name}</OPTION>
+				<OPTION VALUE="{$project.id}"{if is_array($listdata.invprojectid) && in_array($project.id, $listdata.invprojectid)} selected{/if}>{$project.name}</OPTION>
 				{/foreach}
 			</SELECT>
 			{trans("Ownership:")}
@@ -82,15 +90,12 @@
 			{button icon="add" label="Add network node" onclick="location.href = '?m=netnodeadd';"}
 		</TD>
 	</TR>
-	{if $listdata.total != 0}
-	<TR>
-		<TD class="lms-ui-pagination" colspan="5">
-			{include file="scroller.html" loop=$nlist}
-		</TD>
-		<TD class="lms-ui-pagination text-right bold">
-				{trans("Total:")} {$listdata.total|default:"0"}
-		</TD>
-	</TR>
+	{if $pagination->getTotal() != 0}
+		<TR>
+			<TD class="lms-ui-pagination" COLSPAN="6">
+				{include file="pagination.html"}
+			</TD>
+		</TR>
 	{/if}
     </THEAD>
     <TBODY>
@@ -145,16 +150,16 @@
 		</TD>
 	{/foreach}
 	</TBODY>
-	<TR>
-		<TD class="lms-ui-pagination" colspan="5">
-			{if $listdata.total != 0}
-			{include file="scroller.html" loop=$nlist}
-			{/if}
-		</TD>
-		<TD class="lms-ui-pagination text-right bold">
-			{trans("Total:")} {$listdata.total|default:"0"}
-		</TD>
-	</TR>
+	{if $pagination->getTotal() != 0}
+		<TR>
+			<TD class="lms-ui-pagination" COLSPAN="5">
+				{include file="pagination.html"}
+			</TD>
+			<TD class="lms-ui-pagination text-right bold">
+				{trans("Total:")} {$listdata.total|default:"0"}
+			</TD>
+		</TR>
+	{/if}
 </TABLE>
 </FORM>
 	<script>
