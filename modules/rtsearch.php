@@ -71,7 +71,7 @@ function RTSearch($search, $order = 'createtime,desc')
 
     $op = !empty($search['operator']) && $search['operator'] == 'OR' ? $op = ' OR ' : $op = ' AND ';
 
-    if (!empty($search['owner'])) {
+    if (!empty($search['owner']) && intval($search['owner'])) {
         $where[] = 'owner = '.intval($search['owner']);
     }
     if (!empty($search['custid'])) {
