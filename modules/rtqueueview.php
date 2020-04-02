@@ -240,6 +240,10 @@ if (isset($_GET['unread'])) {
     $filter['unread'] = -1;
 }
 
+if (!is_array($_GET['parent']) && !empty($_GET['parent'])) {
+    $filter['parent'] = intval($_GET['parent']);
+}
+
 if (isset($_GET['rights'])) {
     $filter['rights'] = $_GET['rights'];
 } else {
@@ -294,6 +298,7 @@ unset($queue['deadline']);
 unset($queue['service']);
 unset($queue['type']);
 unset($queue['unread']);
+unset($queue['parent']);
 unset($queue['rights']);
 unset($queue['verifier']);
 unset($queue['netnode']);
