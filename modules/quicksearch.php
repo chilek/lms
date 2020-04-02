@@ -683,6 +683,9 @@ switch ($mode) {
                         case RT_WAITING:
                             $name_classes[] = 'lms-ui-suggestion-ticket-state-waiting';
                             break;
+                        case RT_VERIFIED:
+                            $name_classes[] = 'lms-ui-suggestion-ticket-state-verified';
+                            break;
                     }
                     $name_class = implode(' ', $name_classes);
 
