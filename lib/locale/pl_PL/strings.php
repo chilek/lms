@@ -49,6 +49,7 @@ $_LANG['Ticket parent ID has been removed.'] = 'ID zgłoszenia nadrzędnego zost
 $_LANG['Ticket does not exist'] = 'Zgłoszenie nie istnieje';
 $_LANG['Unlink'] = 'Odwiąż';
 $_LANG['Parent ticket:'] = 'Zgłoszenie nadrzędne:';
+$_LANG['show only parent tickets'] = 'pokaż tylko zgłoszenia nadrzędne';
 $_LANG['Enter ID of parent ticket'] = 'Wprowadź ID zgłoszenia narzędnego';
 $_LANG['There is no related tickets'] = 'Brak powiązanych zgłoszeń';
 $_LANG['Related tickets:'] = 'Powiązane zgłoszenia:';

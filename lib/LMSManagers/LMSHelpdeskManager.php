@@ -86,6 +86,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
      *      unread - ticket unread flag (default: null or < 0 = any),
      *          0 - read tickets,
      *          1 - unread tickets,
+     *      parent - ticket parentid
+     *      	null (default: null = any),
+     *      	1 - show only parent tickets
      *      verifierids - ticket verifier (default: null = any/none)
      *          array() of integer values,
      *          all - filter is off
@@ -111,7 +114,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     {
         extract($params);
         foreach (array('ids', 'state', 'priority', 'owner', 'catids', 'removed', 'netdevids', 'netnodeids', 'deadline',
-            'serviceids', 'typeids', 'unread', 'verifierids') as $var) {
+            'serviceids', 'typeids', 'unread', 'parent','verifierids') as $var) {
             if (!isset($$var)) {
                 $$var = null;
             }
@@ -323,7 +326,16 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         } else {
             $unreadfilter = '';
         }
-
+	if (!is_array($parent) && !empty($parent)) {
+	    switch ($parent) {
+                case '1':
+                    $parentfilter = ' AND t.parentid IS NULL';
+                    break;
+                default:
+                    $parentfilter = '';
+                    break;
+        }
+	}
         $userid = Auth::GetCurrentUser();
 
         $user_permission_checks = ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks');
@@ -374,6 +386,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 . (is_array($catids) ? ' AND tc.categoryid IN (' . implode(',', $catids) . ')'
                     : ($catids > 0 ? ' AND tc.categoryid = ' . $catids : ($catids == -1 ? ' AND tc.ticketid IS NULL' : '')))
                 . $unreadfilter
+                . $parentfilter
                 . $statefilter
                 . $priorityfilter
                 . $ownerfilter
@@ -458,6 +471,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             . (is_array($catids) ? ' AND tc.categoryid IN (' . implode(',', $catids) . ')'
                 : ($catids > 0 ? ' AND tc.categoryid = ' . $catids : ($catids == -1 ? ' AND tc.ticketid IS NULL' : '')))
             . $unreadfilter
+            . $parentfilter
             . $statefilter
             . $priorityfilter
             . $ownerfilter
