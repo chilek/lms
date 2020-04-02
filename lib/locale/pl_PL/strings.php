@@ -124,6 +124,7 @@ $_LANG['Ticket have open assigned events!'] = 'Zgłoszenie posiada otwarte zdarz
 $_LANG['Comment:'] = 'Komentarz:';
 $_LANG['Enter invoice comment'] = 'Wprowadz komenarz do faktury';
 $_LANG['<!rt>Expired'] = 'Przeterminowany';
+$_LANG['<!rt>less than 7 days to deadline'] = 'mniej niż 7 dni do terminu ostatecznego';
 $_LANG['<!rt>Owned expired tickets'] = 'Moje przeterminowane zgłoszenia (właściciel)';
 $_LANG['<!rt>Tickets waiting for my verification'] = 'Zgłoszenia oczekujące na moją weryfikację';
 $_LANG['<!rt>Without deadline'] = 'Bez terminu ostatecznego';
