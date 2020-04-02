@@ -130,9 +130,10 @@ $filter['forward'] = ConfigHelper::getConfig('phpui.timetable_days_forward');
 $eventlist = $LMS->GetEventList($filter);
 
 if (ConfigHelper::checkConfig('phpui.timetable_overdue_events')) {
-    $filter['forward'] = -1;
-    $filter['closed'] = 0;
-    $overdue_events = $LMS->GetEventList($filter);
+    $params['forward'] = -1;
+    $params['closed'] = 0;
+    $params['type'] = 0;
+    $overdue_events = $LMS->GetEventList($params);
 }
 
 // create calendars
