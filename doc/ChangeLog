@@ -265,8 +265,7 @@ version 25-git (????-??-??):
     and edit views and node assignments tab in node info and edit view [chilan]
   - improvement: added overdue events in another menu item and few fixes with
     overdue [interduo]
-  - improvement: improvement: new filter - allow to show only parent tickets
-  [interduo]
+  - improvement: new filter on ticket list - allows to show only parent tickets [interduo]
 
 version 24.0 (2019-05-16):
 
