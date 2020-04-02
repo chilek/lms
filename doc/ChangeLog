@@ -264,7 +264,7 @@ version 25-git (????-??-??):
   - enhancement: added network device assignments tab in network device info
     and edit views [chilan]
   - improvement: added overdue events in another menu item and few fixes with
-  overdue [interduo]
+    overdue [interduo]
 
 version 24.0 (2019-05-16):
 
