@@ -310,10 +310,8 @@
 		var assignment_types = [];
 		var documents = [];
 		var tab_elem = $('#{$tab_id}.lms-ui-tab-container');
-		console.log(tab_elem[0]);
 		tab_elem.find('.lms-ui-tab-table-row[data-tariff-type]').each(function () {
 			var tariff_type = $(this).attr('data-tariff-type');
-			console.log('tariff_type', tariff_type);
 			var document = $(this).attr('data-document');
 			if (tariff_type.length && assignment_types.indexOf(tariff_type) == -1) {
 				assignment_types.push(tariff_type);
