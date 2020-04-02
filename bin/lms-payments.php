@@ -338,6 +338,9 @@ function get_period($period)
 }
 
 $plans = array();
+$periods = array(
+	0 => YEARLY,
+);
 $query = "SELECT n.id, n.period, doctype, COALESCE(a.divisionid, 0) AS divid, isdefault 
 		FROM numberplans n 
 		LEFT JOIN numberplanassignments a ON (a.planid = n.id) 
@@ -844,6 +847,9 @@ if (!empty($node_assignments)) {
 }
 
 $suspended = 0;
+$numbers = array();
+$customernumbers = array();
+$numbertemplates = array();
 $invoices = array();
 $currencies = array();
 $doctypes = array();
@@ -1031,18 +1037,39 @@ foreach ($assigns as $assign) {
             if ($invoices[$cid] == 0 || $doctypes[$cid] != $assign['invoice'] || $paytypes[$cid] != $inv_paytype
                 || $numberplans[$cid] != $plan || $assign['recipient_address_id'] != $addresses[$cid]
                 || $currencies[$cid] != $currency) {
-                if (!isset($numbers[$assign['invoice']][$plan])) {
-                    $period = get_period($periods[$plan]);
-                    $numbers[$assign['invoice']][$plan] = (($number = $DB->GetOne(
-                        "SELECT MAX(number) AS number FROM documents 
-							WHERE cdate >= ? AND cdate <= ? AND type = ? AND numberplanid = ?",
-                        array($period['start'], $period['end'], $assign['invoice'], $plan)
-                    )) != 0 ? $number : 0);
+                if (!array_key_exists($plan, $numbertemplates)) {
                     $numbertemplates[$plan] = $DB->GetOne("SELECT template FROM numberplans WHERE id = ?", array($plan));
+                }
+                $customernumber = !empty($numbertemplates[$plan]) && strpos($numbertemplates[$plan], '%C') !== false;
+                if (($customernumber && !isset($customernumbers[$assign['invoice']][$plan][$cid]))
+                    || (!$customernumber && !isset($numbers[$assign['invoice']][$plan]))) {
+                    $period = get_period($periods[$plan]);
+                    $query = "SELECT MAX(number) AS number FROM documents
+                        WHERE cdate >= ? AND cdate <= ? AND type = ? AND numberplanid "
+                        . ($plan ? '= ' . $plan : 'IS NULL');
+                    if ($customernumber) {
+                        $query .= ' AND customerid = ' . $cid;
+                    }
+                    $maxnumber = (($number = $DB->GetOne(
+                        $query,
+                        array($period['start'], $period['end'], $assign['invoice'])
+                    )) != 0 ? $number : 0);
+                    if ($customernumber) {
+                        $customernumbers[$assign['invoice']][$plan][$cid] = $newnumber = $maxnumber + 1;
+                    } else {
+                        $numbers[$assign['invoice']][$plan] = $newnumber = $maxnumber + 1;
+                    }
+                } else {
+                    if ($customernumber) {
+                        $newnumber = $customernumbers[$assign['invoice']][$plan][$cid] + 1;
+                        $customernumbers[$assign['invoice']][$plan][$cid] = $newnumber;
+                    } else {
+                        $newnumber = $numbers[$assign['invoice']][$plan] + 1;
+                        $numbers[$assign['invoice']][$plan] = $newnumber;
+                    }
                 }
 
                 $itemid = 0;
-                $numbers[$assign['invoice']][$plan]++;
 
                 $customer = $DB->GetRow("SELECT lastname, name, address, street, city, zip, postoffice, ssn, ten,
                             countryid, divisionid, paytime, documentmemo
@@ -1063,7 +1090,7 @@ foreach ($assigns as $assign) {
                 }
 
                 $fullnumber = docnumber(array(
-                    'number' => $numbers[$assign['invoice']][$plan],
+                    'number' => $newnumber,
                     'template' => $numbertemplates[$plan],
                     'cdate' => $currtime,
                     'customerid' => $cid,
@@ -1089,7 +1116,8 @@ foreach ($assigns as $assign) {
 					recipient_address_id, currency, currencyvalue, memo)
 					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     array(
-                        $numbers[$assign['invoice']][$plan], $plan ? $plan : null,
+                        $newnumber,
+                        $plan ? $plan : null,
                         $assign['invoice'],
                         $customer['countryid'] ? $customer['countryid'] : null,
                         $customer['divisionid'], $cid,
