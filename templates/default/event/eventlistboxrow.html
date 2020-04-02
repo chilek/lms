@@ -7,9 +7,9 @@
         {if $event.endtime == 86400}
             {trans("whole day")}
         {else}
-            {($day + $event.begintime)|date_format:"%H:%M"}
+            {($event.date + $event.begintime)|date_format:"%H:%M"}
             {if $event.begintime != $event.endtime}
-                - {($day + $event.endtime)|date_format:"%H:%M"}
+                - {($event.date + $event.endtime)|date_format:"%H:%M"}
             {/if}
             {if $event.multiday}<br>{trans("multi day")}{/if}
         {/if}
