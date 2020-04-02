@@ -978,7 +978,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         return $nodes;
     }
 
-    public function GetNodeCustomerAssignments(array $assignments)
+    public function GetNodeCustomerAssignments($assignments)
     {
         if (empty($assignments)) {
             return $assignments;

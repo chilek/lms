@@ -92,5 +92,5 @@ interface LMSNetDevManagerInterface
 
     public function updateManagementUrl($type, $id, array $url);
 
-    public function getNetDevCustomerAssignments(array $assignments);
+    public function getNetDevCustomerAssignments($assignments);
 }
