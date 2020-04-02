@@ -727,6 +727,12 @@ $menu = array(
                     'prio' => 11,
                 ),
                 array(
+                    'name' => trans('Overdue events'),
+                    'link' => '?m=eventlist&overdue_events_only=1',
+                    'tip' => trans('Overdue events'),
+                    'prio' => 12,
+                ),
+                array(
                     'name' => trans('New Event'),
                     'link' => '?m=eventadd',
                     'tip' => trans('New Event Addition'),

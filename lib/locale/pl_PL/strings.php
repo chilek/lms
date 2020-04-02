@@ -115,6 +115,7 @@ $_LANG['Modification'] = 'Modyfikacja';
 $_LANG['Start service'] = 'Uruchomienie usługi';
 $_LANG['Hold service'] = 'Wstrzymanie usługi';
 $_LANG['Overdue events'] = 'Zaległe zdarzenia';
+$_LANG['Overdue events assigned to me'] = 'Zaległe zdarzenia przypisane do mnie';
 $_LANG['Copy'] = 'Kopiuj';
 $_LANG['Only verifier can change this'] = 'Tylko weryfikator może to zmienić';
 $_LANG['<!rt>hours'] = 'godzin';
