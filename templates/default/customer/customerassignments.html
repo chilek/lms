@@ -1,58 +1,64 @@
 <!--// $Id$ //-->
 
 {css}
-{js}
 
 {assign var=today value=$smarty.now|date_format:"%x 00:00:00"}{assign var=today value=$today|date_format:"%s"}
 
 {$speed_unit_type = ConfigHelper::getConfig('phpui.speed_unit_type', 1000)}
 {$speed_unit_aggregation_threshold = ConfigHelper::getConfig('phpui.speed_unit_aggregation_threshold', 5)}
 
-<form method="post" name="customerassignments" id="customerassignments-form" action="?m=customerassignmentdel">
+{if !isset($tab_id)}
+	{$tab_id = "customerassignments"}
+{/if}
+{if !isset($content_id)}
+	{$content_id = "customerassignmentpanel"}
+{/if}
+
+<form method="post" name="{$tab_id}" id="{$tab_id}-form" action="?m=customerassignmentdel">
 </form>
 
-{tab_container id="customerassignments"}
+{tab_container id=$tab_id}
 
-	{tab_header content_id="customerassignmentpanel"}
+	{tab_header content_id=$content_id}
 		{tab_header_cell icon="lms-ui-icon-assignment"}
 			<strong>{if isset($tab_label)}{$tab_label}{else}{trans("Customer Liabilities:")}{/if}</strong>
-			<label id="assignment_type_filter">
+			<label class="assignment-type-filter">
 				{trans("Type:")}
-				<select id="assignment_type">
+				<select class="assignment-type">
 					<option value="">{trans("- all -")}</option>
 				</select>
 			</label>
-			<label id="document_filter">
+			<label class="document-filter">
 				{trans("Document")}
-				<select id="document">
+				<select class="document">
 					<option value="">{trans("- all -")}</option>
 				</select>
 			</label>
-			<label id="expired_filter">
+			<label class="expired-filter">
 				{trans("<!assignment>Expired")}
-				<input type="checkbox" id="expired" value="1"{if $expired} checked{/if}>
+				<input type="checkbox" class="expired" value="1"{if $expired} checked{/if}>
 			</label>
-			<label id="commited_filter">
+			<label class="commited-filter">
 				{trans("<!assignment>Commited")}
-				<input type="checkbox" id="commited" value="1"{if $commited} checked{/if}>
+				<input type="checkbox" class="commited" value="1"{if $commited} checked{/if}>
 			</label>
-			<a id="clear_filter" class="lms-ui-button-delete" href="#"><i></i><a>
+			<a class="clear-filter lms-ui-button-delete" href="#"><i></i><a>
 		{/tab_header_cell}
 		{tab_header_cell}
 			{if !$customerinfo.deleted}
 				<A href="?m=customerassignmentadd&id={$customerinfo.id}">{trans("New Liability")} &raquo;</A>
 				<input type="hidden" value="{$customerinfo.id}">
-				<A id="delete-all-assignments" href="#">{trans("Delete all")} &raquo;</A>
+				<A class="delete-all-assignments" href="#">{trans("Delete all")} &raquo;</A>
 			{/if}
 		{/tab_header_cell}
 	{/tab_header}
 
-	{tab_contents id="customerassignmentpanel"}
+	{tab_contents id=$content_id class="assignmentpanel"}
 
 		{tab_table}
 
 			{if $assignments}
-			{block name="customerassignments-list-header"}
+			{block name=$tab_id|cat:"-list-header"}
 			<div class="lms-ui-tab-table-row header">
 				<div class="lms-ui-tab-table-wrapper col-8">
 					<div class="lms-ui-tab-table-wrapper col-4">
@@ -104,7 +110,7 @@
 			{/if}
 
 			{foreach $assignments as $a}
-			{block name="customerassignments-list-row"}
+			{block name=$tab_id|cat:"-list-row"}
 			<div class="lms-ui-tab-table-row
 				{if ($a.dateto < $today && $a.dateto) || ($a.liabilityid && $a.at < $today && $a.at > 365)} blend{elseif ($a.datefrom > $today && $a.datefrom && $a.period) && !($a.suspended)} alertblend{elseif ($a.suspended)}suspended{/if}
 				{if !$a.commited} lms-ui-assignment-not-commited{/if}"
@@ -214,13 +220,13 @@
 					{button type="link" icon="delete" class="delete-assignment" href="?m=customerassignmentdel&id={$a.id}"
 						tip="Delete customer's liability"}
 					{button type="link" icon="edit" href="?m=customerassignmentedit&id={$a.id}" tip="Edit"}
-					<input type="checkbox" name="customerassignments[{$a.id}]" form="customerassignments-form"
+					<input type="checkbox" name="{$tab_id}[{$a.id}]" form="{$tab_id}-form"
 							value="{$a.id}" class="lms-ui-multi-check">
 				</div>
 			</div>
 			{/block}
 			{foreachelse}
-			{block name="customerassignments-list-empty-row"}
+			{block name=$tab_id|cat:"-list-empty-row"}
 			<div class="lms-ui-tab-empty-table">
 				{trans("That customer hasn't got any assigned subscriptions.")}
 			</div>
@@ -228,7 +234,7 @@
 			{/foreach}
 
 			{if $assignments}
-			{block name="customerassignments-list-footer"}
+			{block name=$tab_id|cat:"-list-footer"}
 				<div class="lms-ui-tab-table-row footer">
 					<div class="lms-ui-tab-table-wrapper col-8">
 						<div class="lms-ui-tab-table-wrapper col-4">
@@ -236,9 +242,9 @@
 								<strong>{trans("Total:")}</strong>
 							</div>
 							<div class="lms-ui-tab-table-wrapper col-2">
-								<div class="lms-ui-tab-table-column value" id="total-value">
+								<div class="lms-ui-tab-table-column value total-value">
 								</div>
-								<div class="lms-ui-tab-table-column discount" id="total-disc-value">
+								<div class="lms-ui-tab-table-column discount total-disc-value">
 								</div>
 							</div>
 							<div class="lms-ui-tab-table-column accounting">
@@ -248,9 +254,9 @@
 
 						<div class="lms-ui-tab-table-wrapper col-4">
 							<div class="lms-ui-tab-table-wrapper col-2">
-								<div class="lms-ui-tab-table-column downceil" id="total-downceil">
+								<div class="lms-ui-tab-table-column downceil total-downceil">
 								</div>
-								<div class="lms-ui-tab-table-column upceil" id="total-upceil">
+								<div class="lms-ui-tab-table-column upceil total-upceil">
 								</div>
 							</div>
 							<div class="lms-ui-tab-table-wrapper col-2">
@@ -277,7 +283,7 @@
 			{tab_buttons}
 			{/tab_buttons}
 			{tab_buttons}
-				{button id="delete-assignments" icon="delete" label="Delete"}
+				{button class="delete-assignments" icon="delete" label="Delete"}
 				<label>
 					{trans("Check All")}
 					<INPUT TYPE="checkbox" class="lms-ui-multi-check-all" VALUE="1">
@@ -291,149 +297,177 @@
 
 <SCRIPT>
 
-	var tariff_types = [];
-	{foreach $_SERVICETYPES as $type => $name}
-	tariff_types[{$type}] = '{$name}';
-	{/foreach}
+	if (typeof(tariff_types) === 'undefined') {
+		var tariff_types = [];
+		{foreach $_SERVICETYPES as $type => $name}
+		tariff_types[{$type}] = '{$name}';
+		{/foreach}
 
-	var money_format = '%01.2f %s';
-
-	var assignment_types = [];
-	var documents = [];
-	$('.lms-ui-tab-table-row[data-tariff-type]').each(function() {
-		var tariff_type = $(this).attr('data-tariff-type');
-		var document = $(this).attr('data-document');
-		if (tariff_type.length && assignment_types.indexOf(tariff_type) == -1) {
-			assignment_types.push(tariff_type);
-		}
-		if (document.length && documents.indexOf(document) == -1) {
-			documents.push(document);
-		}
-	});
-	documents.sort();
-
-	var selected_type = getCookie('customerassignment_tariff_type_{$customerinfo.id}');
-	var selected_document = getCookie('customerassignment_document_{$customerinfo.id}');
-	var expired_checked = getCookie('customerassignment_expired_{$customerinfo.id}');
-	var commited_checked = getCookie('customerassignment_commited_{$customerinfo.id}');
-
-	$.each(assignment_types, function(key, value) {
-		$('#assignment_type').append('<option value="' + value + '"'
-			+ (parseInt(selected_type) == value ? ' selected' : '') + '>' + tariff_types[value] + '</option>');
-	});
-	if (assignment_types.length <= 1) {
-		$('#assignment_type_filter').hide();
-	}
-	$.each(documents, function(key, value) {
-		$('#document').append('<option value="' + value + '"'
-			+ (selected_document && selected_document.length && selected_document == value ? ' selected' : '') + '>'
-			+ value + '</option>');
-	});
-	if (documents.length <= 1) {
-		$('#document_filter').hide();
-	}
-	$('#expired').prop('checked', {if $expired}true{else}parseInt(expired_checked) == 1{/if});
-	$('#commited').prop('checked', {if $commited}true{else}commited_checked === null ? true : (parseInt(commited_checked) == 1){/if});
-
-/*
-	if (assignment_types.length <= 1 && documents.length <= 1) {
-		$('#clear_filter').hide();
-	}
-*/
-
-	function updateAssignments() {
-		var selected_type = $('#assignment_type').val();
-		var selected_document = $('#document').val();
-		var expired_checked = $('#expired').prop('checked');
-		var commited_checked = $('#commited').prop('checked');
-		var selector = '';
-		if (selected_type.length) {
-			selector += '[data-tariff-type="' + selected_type + '"]';
-		}
-		if (selected_document.length) {
-			selector += '[data-document="' + selected_document + '"]';
-		}
-		if (!expired_checked) {
-			selector += '[data-expired="0"]';
-		}
-		if (commited_checked) {
-			selector += '[data-commited="1"]';
-		}
-		if (!selector.length) {
-			selector = '[data-tariff-type]';
-		}
-
-		var backgrounds = ['lucid', 'light'];
-		$('.lms-ui-tab-table-row[data-tariff-type]').hide().removeClass(backgrounds.join(' '));
-		$('.lms-ui-tab-table-row' + selector).show().each(function(key) {
-			$(this).addClass(backgrounds[key & 1]);
-		});
-
-		var total_downceil = 0;
-		var total_upceil = 0;
-		var total_value = {};
-		var total_disc_value = {};
-		$('.lms-ui-tab-table-row' + selector).each(function() {
-			total_downceil += parseInt($(this).attr('data-downceil'));
-			total_upceil += parseInt($(this).attr('data-upceil'));
-			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-			var currency = $(this).attr('data-currency');
-			if (!total_value.hasOwnProperty(currency)) {
-				total_value[currency] = 0;
-			}
-			total_value[currency] += parseFloat($(this).attr('data-value'));
-			if (!total_disc_value.hasOwnProperty(currency)) {
-				total_disc_value[currency] = 0;
-			}
-			total_disc_value[currency] += parseFloat($(this).attr('data-disc-value'));
-			{/if}
-		});
-
-		$('#total-downceil').html(total_downceil ? convert_to_units(total_downceil * {$speed_unit_type}, {$speed_unit_aggregation_threshold}, {$speed_unit_type}) + '/s' : '-');
-		$('#total-upceil').html(total_upceil ? convert_to_units(total_upceil * {$speed_unit_type}, {$speed_unit_aggregation_threshold}, {$speed_unit_type}) + '/s' : '-');
-		{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-		var html = '';
-		$.each(total_value, function(currency, value) {
-			if (html.length) {
-				html += '<br>';
-			}
-			html += sprintf(money_format, value, currency);
-		});
-		$('#total-value').html(html);
-		var html = '';
-		$.each(total_disc_value, function(currency, value) {
-			if (html.length) {
-				html += '<br>';
-			}
-			html += sprintf(money_format, value, currency);
-		});
-		$('#total-disc-value').html('(' + html + ')');
-		{/if}
-
-		if ($('.lms-ui-tab-table-row[data-tariff-type]').length) {
-			$('.lms-ui-tab-table-row[data-tariff-type]').closest('.lms-ui-tab-contents').get(0).updateCheckAll();
-		}
-
-		setCookie('customerassignment_tariff_type_{$customerinfo.id}', selected_type);
-		setCookie('customerassignment_document_{$customerinfo.id}', selected_document);
-		setCookie('customerassignment_expired_{$customerinfo.id}', expired_checked ? 1 : 0);
-		setCookie('customerassignment_commited_{$customerinfo.id}', commited_checked ? 1 : 0);
+		var money_format = '%01.2f %s';
 	}
 
 	$(function() {
+		var assignment_types = [];
+		var documents = [];
+		var tab_elem = $('#{$tab_id}.lms-ui-tab-container');
+		console.log(tab_elem[0]);
+		tab_elem.find('.lms-ui-tab-table-row[data-tariff-type]').each(function () {
+			var tariff_type = $(this).attr('data-tariff-type');
+			console.log('tariff_type', tariff_type);
+			var document = $(this).attr('data-document');
+			if (tariff_type.length && assignment_types.indexOf(tariff_type) == -1) {
+				assignment_types.push(tariff_type);
+			}
+			if (document.length && documents.indexOf(document) == -1) {
+				documents.push(document);
+			}
+		});
+		documents.sort();
+
+		var selected_type = getCookie('{$tab_id}_tariff_type_{$customerinfo.id}');
+		var selected_document = getCookie('{$tab_id}_document_{$customerinfo.id}');
+		var expired_checked = getCookie('{$tab_id}_expired_{$customerinfo.id}');
+		var commited_checked = getCookie('{$tab_id}_commited_{$customerinfo.id}');
+
+		$.each(assignment_types, function (key, value) {
+			tab_elem.find('.assignment-type').append('<option value="' + value + '"'
+					+ (parseInt(selected_type) == value ? ' selected' : '') + '>' + tariff_types[value] + '</option>');
+		});
+		if (assignment_types.length <= 1) {
+			tab_elem.find('.assignment-type-filter').hide();
+		}
+		$.each(documents, function (key, value) {
+			tab_elem.find('.document').append('<option value="' + value + '"'
+					+ (selected_document && selected_document.length && selected_document == value ? ' selected' : '') + '>'
+					+ value + '</option>');
+		});
+		if (documents.length <= 1) {
+			tab_elem.find('.document-filter').hide();
+		}
+		tab_elem.find('.expired').prop('checked', {if $expired}true{else}parseInt(expired_checked) == 1{/if});
+		tab_elem.find('.commited').prop('checked', {if $commited}true{else}commited_checked === null ? true : (parseInt(commited_checked) == 1){/if});
+
+		/*
+            if (assignment_types.length <= 1 && documents.length <= 1) {
+                tab_elem.find('.clear-filter').hide();
+            }
+        */
+
+		function updateAssignments() {
+			var selected_type = tab_elem.find('.assignment-type').val();
+			var selected_document = tab_elem.find('.document').val();
+			var expired_checked = tab_elem.find('.expired').prop('checked');
+			var commited_checked = tab_elem.find('.commited').prop('checked');
+			var selector = '';
+			if (selected_type.length) {
+				selector += '[data-tariff-type="' + selected_type + '"]';
+			}
+			if (selected_document.length) {
+				selector += '[data-document="' + selected_document + '"]';
+			}
+			if (!expired_checked) {
+				selector += '[data-expired="0"]';
+			}
+			if (commited_checked) {
+				selector += '[data-commited="1"]';
+			}
+			if (!selector.length) {
+				selector = '[data-tariff-type]';
+			}
+
+			var backgrounds = ['lucid', 'light'];
+			tab_elem.find('.lms-ui-tab-table-row[data-tariff-type]').hide().removeClass(backgrounds.join(' '));
+			tab_elem.find('.lms-ui-tab-table-row' + selector).show().each(function (key) {
+				$(this).addClass(backgrounds[key & 1]);
+			});
+
+			var total_downceil = 0;
+			var total_upceil = 0;
+			var total_value = {};
+			var total_disc_value = {};
+			tab_elem.find('.lms-ui-tab-table-row' + selector).each(function () {
+				total_downceil += parseInt($(this).attr('data-downceil'));
+				total_upceil += parseInt($(this).attr('data-upceil'));
+				{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+				var currency = $(this).attr('data-currency');
+				if (!total_value.hasOwnProperty(currency)) {
+					total_value[currency] = 0;
+				}
+				total_value[currency] += parseFloat($(this).attr('data-value'));
+				if (!total_disc_value.hasOwnProperty(currency)) {
+					total_disc_value[currency] = 0;
+				}
+				total_disc_value[currency] += parseFloat($(this).attr('data-disc-value'));
+				{/if}
+			});
+
+			tab_elem.find('.total-downceil').html(total_downceil ? convert_to_units(total_downceil * {$speed_unit_type}, {$speed_unit_aggregation_threshold}, {$speed_unit_type}) + '/s' : '-');
+			tab_elem.find('.total-upceil').html(total_upceil ? convert_to_units(total_upceil * {$speed_unit_type}, {$speed_unit_aggregation_threshold}, {$speed_unit_type}) + '/s' : '-');
+			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+			var html = '';
+			$.each(total_value, function (currency, value) {
+				if (html.length) {
+					html += '<br>';
+				}
+				html += sprintf(money_format, value, currency);
+			});
+			$('#total-value').html(html);
+			var html = '';
+			$.each(total_disc_value, function (currency, value) {
+				if (html.length) {
+					html += '<br>';
+				}
+				html += sprintf(money_format, value, currency);
+			});
+			tab_elem.find('.total-disc-value').html('(' + (html.length ? html : '-') + ')');
+			{/if}
+
+			if (tab_elem.find('.lms-ui-tab-table-row[data-tariff-type]').length) {
+				tab_elem.find('.lms-ui-tab-table-row[data-tariff-type]').closest('.lms-ui-tab-contents').get(0).updateCheckAll();
+			}
+
+			setCookie('{$tab_id}_tariff_type_{$customerinfo.id}', selected_type);
+			setCookie('{$tab_id}_document_{$customerinfo.id}', selected_document);
+			setCookie('{$tab_id}_expired_{$customerinfo.id}', expired_checked ? 1 : 0);
+			setCookie('{$tab_id}_commited_{$customerinfo.id}', commited_checked ? 1 : 0);
+		}
+
 		// don't allow to trigger click event on title bar
-		$('#expired_filter,#commited_filter').click(function(e) {
+		tab_elem.find('.expired-filter,.commited-filter').click(function(e) {
 			e.stopPropagation();
 		});
-		$('#assignment_type').change(updateAssignments).trigger('change');
-		$('#document').change(updateAssignments);
-		$('#expired').change(updateAssignments);
-		$('#commited').change(updateAssignments);
-		$('#clear_filter').click(function() {
-			$('#document').val('');
-			$('#assignment_type').val('');
-			$('#expired').prop('checked', false);
-			$('#commited').prop('checked', true).trigger('change');
+		tab_elem.find('.assignment-type').change(updateAssignments).trigger('change');
+		tab_elem.find('.document').change(updateAssignments);
+		tab_elem.find('.expired').change(updateAssignments);
+		tab_elem.find('.commited').change(updateAssignments);
+		tab_elem.find('.clear-filter').click(function() {
+			tab_elem.find('.document').val('');
+			tab_elem.find('.assignment-type').val('');
+			tab_elem.find('.expired').prop('checked', false);
+			tab_elem.find('.commited').prop('checked', true).trigger('change');
+			return false;
+		});
+
+		tab_elem.find('.delete-assignment').click(function() {
+			confirmDialog($t('Are you sure, you want to delete this liability?'), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+
+		tab_elem.find('.delete-assignments').click(function() {
+			if ($(this).closest('.lms-ui-tab-contents.lms-ui-multi-check').find('input:checked').length) {
+				confirmDialog($t("Are you sure, you want to delete selected liabilities?"), this).done(function () {
+					$('form[name=customerassignments]').submit();
+				});
+			}
+		});
+
+		tab_elem.find('.delete-all-assignments').click(function() {
+			confirmDialog($t("Are you sure, you want to delete all liabilities?"), this)
+					.done(function () {
+						location.href = '?m=customerassignmentdel&cid=' + $(this).prev().val();
+					});
 			return false;
 		});
 	});

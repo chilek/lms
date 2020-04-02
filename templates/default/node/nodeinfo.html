@@ -11,6 +11,9 @@
 {block name="nodesessions"}
 	{include file="node/nodesessions.html"}
 {/block}
+{block name="nodeassignments"}
+	{include file="customer/customerassignments.html" tab_label=trans("Node Liabilities:") assignments=$nodeassignments tab_id="nodeassignments" content_id="nodeassignmentpanel"}
+{/block}
 {block name="managementurls"}
 	{include file="managementurl/managementurls.html"}
 {/block}

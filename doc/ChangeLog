@@ -262,7 +262,7 @@ version 25-git (????-??-??):
   - improvement: investment project and type are multiple selections on network node
     list [chilan]
   - enhancement: added network device assignments tab in network device info
-    and edit views [chilan]
+    and edit views and node assignments tab in node info and edit view [chilan]
   - improvement: added overdue events in another menu item and few fixes with
     overdue [interduo]
 

@@ -1064,6 +1064,12 @@ class LMS
         return $manager->GetNodeLocations($customerid, $address_id);
     }
 
+    public function getNodeCustomerAssignments(array $assignments)
+    {
+        $manager = $this->getNodeManager();
+        return $manager->getNodeCustomerAssignments($assignments);
+    }
+
     /*
      *  Tarrifs and finances
      */

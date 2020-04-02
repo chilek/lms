@@ -977,4 +977,28 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 
         return $nodes;
     }
+
+    public function GetNodeCustomerAssignments(array $assignments)
+    {
+        if (empty($assignments)) {
+            return $assignments;
+        }
+
+        $node_assignments = array();
+
+        foreach ($assignments as $assignment) {
+            if (!isset($assignment['nodes'])) {
+                continue;
+            }
+            foreach ($assignment['nodes'] as $node) {
+                if (!empty($node['netdev_name'])) {
+                    continue;
+                }
+                $node_assignments[] = $assignment;
+                break;
+            }
+        }
+
+        return $node_assignments;
+    }
 }
