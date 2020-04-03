@@ -306,7 +306,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     $deadlinefilter = ' AND t.deadline < ?NOW?';
                     break;
                 case '-3':
-                    $deadlinefilter = ' AND t.deadline > ?NOW? - 7 * 86400';
+                    $deadlinefilter = ' AND t.deadline > ?NOW? AND t.deadline - 7 * 86400 < ?NOW?';
                     break;
                 default:
                     $deadlinefilter = '';
