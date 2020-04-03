@@ -111,10 +111,11 @@
             {trans("<!rt>Deadline:")}
             <SELECT size="1" name="d" OnChange="document.filter.submit();">
                 <OPTION value=""{if $filter.deadline == ""} SELECTED{/if}>{trans("all")}</OPTION>
-                <OPTION value="1"{if $filter.deadline == "1"} SELECTED{/if}>{trans("<!rt>With deadline")}</OPTION>
                 <OPTION value="-1"{if $filter.deadline == "-1"} SELECTED{/if}>{trans("<!rt>Without deadline")}</OPTION>
-                <OPTION value="-2"{if $filter.deadline == "-2"} SELECTED{/if}>{trans("<!rt>Expired")}</OPTION>
+                <OPTION value="1"{if $filter.deadline == "1"} SELECTED{/if}>{trans("<!rt>With deadline")}</OPTION>
+                <OPTION value="-4"{if $filter.deadline == "-4"} SELECTED{/if}>{trans("<!rt>Not expired")}</OPTION>
                 <OPTION value="-3"{if $filter.deadline == "-3"} SELECTED{/if}>{trans("<!rt>less than 7 days to deadline")}</OPTION>
+                <OPTION value="-2"{if $filter.deadline == "-2"} SELECTED{/if}>{trans("<!rt>Expired")}</OPTION>
             </SELECT>
             </label>
             <label class="nobr">
