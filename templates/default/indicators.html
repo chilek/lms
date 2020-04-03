@@ -1,34 +1,34 @@
 {block name=indicatorcontents}
 {if ConfigHelper::CheckPrivilege('helpdesk_administration') || ConfigHelper::CheckPrivilege('helpdesk_operation')}
 <a href="?m=indicators&action=critical" class="lms-ui-indicator" title="{trans("Critical tickets")}" id="indicator-critical" style="display: none;">
-    <span class="lms-ui-indicator-counter">0</span>
     <i class="fa-2x lms-ui-indicator-icon lms-ui-icon-critical"></i>
+    <span class="lms-ui-indicator-counter">0</span>
 </a>
 <a href="?m=indicators&action=urgent" class="lms-ui-indicator" title="{trans("Urgent tickets")}" id="indicator-urgent" style="display: none;">
-    <span class="lms-ui-indicator-counter">0</span>
     <i class="lms-ui-indicator-icon lms-ui-icon-urgent"></i>
+    <span class="lms-ui-indicator-counter">0</span>
 </a>
 <a href="?m=indicators&action=unread" class="lms-ui-indicator" title="{trans("Unread tickets")}" id="indicator-unread" style="display: none;">
-    <span class="lms-ui-indicator-counter">0</span>
     <i class="lms-ui-indicator-icon lms-ui-icon-unread"></i>
+    <span class="lms-ui-indicator-counter">0</span>
 </a>
 <a href="?m=indicators&action=expired" class="lms-ui-indicator" title="{trans("<!rt>Owned expired tickets")}" id="indicator-expired" style="display:none;">
-    <span class="lms-ui-indicator-counter">0</span>
     <i class="lms-ui-indicator-icon lms-ui-icon-deadline"></i>
+    <span class="lms-ui-indicator-counter">0</span>
 </a>
 <a href="?m=indicators&action=verify" class="lms-ui-indicator" title="{trans("<!rt>Tickets waiting for my verification")}" id="indicator-verify" style="display:none;">
-    <span class="lms-ui-indicator-counter">0</span>
     <i class="lms-ui-indicator-icon lms-ui-icon-verifier"></i>
+    <span class="lms-ui-indicator-counter">0</span>
 </a>
 <a href="?m=indicators&action=remaining" class="lms-ui-indicator" title="{trans("<!rt>Tickets remaining")}" id="indicator-remaining" style="display:none;">
-    <span class="lms-ui-indicator-counter">0</span>
     <i class="lms-ui-indicator-icon lms-ui-icon-helpdesk"></i>
+    <span class="lms-ui-indicator-counter">0</span>
 </a>
 {/if}
 {if ConfigHelper::CheckPrivilege('timetable_management')}
 <a href="?m=indicators&action=events" class="lms-ui-indicator" title="{trans("Today's events assigned to you")}" id="indicator-events" style="display: none;">
-    <span class="lms-ui-indicator-counter">0</span>
     <i class="lms-ui-indicator-icon lms-ui-icon-timetable"></i>
+    <span class="lms-ui-indicator-counter">0</span>
 </a>
 {/if}
 <script>
