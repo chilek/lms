@@ -1963,7 +1963,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             'unread' => 0,
             'expired' => 0,
             'verify' => 0,
-            'remaining' => 0,
+            'left' => 0,
             'events' => 0,
         );
 
@@ -1978,7 +1978,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 'owner' => Auth::GetCurrentUser(), 'rights' => RT_RIGHT_INDICATOR));
             $result['verify'] = $this->GetQueueContents(array('count' => true, 'state' => 7,
                 'verifier' => Auth::GetCurrentUser(), 'rights' => RT_RIGHT_INDICATOR));
-            $result['remaining'] = $this->GetQueueContents(array('count' => true, 'state' => -1, 'owner' => -3,
+            $result['left'] = $this->GetQueueContents(array('count' => true, 'state' => -1, 'owner' => -3,
                 'rights' => RT_RIGHT_INDICATOR));
         }
 

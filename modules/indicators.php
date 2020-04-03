@@ -100,7 +100,7 @@ switch ($action) {
             }
         }
 	break;
-    case 'remaining':
+    case 'left':
         if (ConfigHelper::CheckPrivilege('helpdesk_administration') || ConfigHelper::CheckPrivilege('helpdesk_operation')) {
             $count = $LMS->GetQueueContents(array('count' => true, 'state' => -1, 'owner' => -3, 'rights' => RT_RIGHT_INDICATOR));
             if ($count == 1) {
