@@ -80,6 +80,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
      *          -1 - without deadline set,
      *          -2 - with expired deadline,
      *          -3 - less than 7 days to deadline,
+     *          -4 - with not expired deadline
      *      serviceids - ticket services (default: null = any),
      *          array() of integer values or single integer value,
      *      typeids - ticket types (default: null = any),
@@ -306,7 +307,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     $deadlinefilter = ' AND t.deadline < ?NOW?';
                     break;
                 case '-3':
-                    $deadlinefilter = ' AND t.deadline > ?NOW? - 7 * 86400';
+                    $deadlinefilter = ' AND t.deadline > ?NOW? AND t.deadline - 7 * 86400 < ?NOW?';
+                    break;
+                case '-4':
+                    $deadlinefilter = ' AND t.deadline IS NOT NULL AND t.deadline > ?NOW?';
                     break;
                 default:
                     $deadlinefilter = '';
