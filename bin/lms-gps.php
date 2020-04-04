@@ -175,7 +175,11 @@ if (empty($sources)) {
     $sources['google'] = true;
 }
 
-$google_api_key = ConfigHelper::getConfig('phpui.googlemaps_api_key', '', true);
+$google_api_key = ConfigHelper::getConfig(
+    'google.geocode_api_key',
+    ConfigHelper::getConfig('phpui.googlemaps_api_key', '', true),
+    true
+);
 
 $lc = new LocationCache('full');
 

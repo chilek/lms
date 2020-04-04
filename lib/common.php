@@ -1465,13 +1465,18 @@ function trim_rec($data)
 
 function geocode($location)
 {
-    $api_key = ConfigHelper::getConfig('phpui.googlemaps_api_key', '', true);
+    $api_key = ConfigHelper::getConfig(
+        'google.geocode_api_key',
+        ConfigHelper::getConfig('phpui.googlemaps_api_key', '', true),
+        true
+    );
     $address = urlencode($location);
     $link = "https://maps.googleapis.com/maps/api/geocode/json?address=" . $address . "&sensor=false"
         . (empty($api_key) ? '' : '&key=' . $api_key);
     if (($res = @file_get_contents($link)) === false) {
         return null;
     }
+
     $page = json_decode($res, true);
     $latitude = str_replace(',', '.', $page["results"][0]["geometry"]["location"]["lat"]);
     $longitude = str_replace(',', '.', $page["results"][0]["geometry"]["location"]["lng"]);
@@ -1479,6 +1484,7 @@ function geocode($location)
     $accuracy = $page["results"][0]["geometry"]["location_type"];
     return array(
         'status' => $status,
+        'error' => isset($page['error_message']) ? $page['error_message'] : '',
         'accuracy' => $accuracy,
         'latitude' => $latitude,
         'longitude' => $longitude,

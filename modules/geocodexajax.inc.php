@@ -72,6 +72,8 @@ function get_gps_coordinates($location, $latitude_selector, $longitude_selector)
 
     $found = false;
 
+    $error = null;
+
     foreach ($providers as $provider) {
         if ($provider == 'google') {
             $location_string = (isset($address['state_name']) && !empty($address['state_name']) ? $address['state_name'] . ', ' : '')
@@ -101,6 +103,8 @@ function get_gps_coordinates($location, $latitude_selector, $longitude_selector)
 						});');
                     break;
                 }
+            } else {
+                $error = $geocode['status'] . ': ' . $geocode['error'];
             }
         } elseif ($provider == 'siis' && isset($address) && isset($address['city_id'])
             && !empty($address['city_id']) && $DB->GetOne('SELECT id FROM location_buildings LIMIT 1')) {
@@ -129,9 +133,9 @@ function get_gps_coordinates($location, $latitude_selector, $longitude_selector)
     if (!$found) {
         $result->script('
 			$("' . $latitude_selector . '").addClass("lms-ui-warning").removeAttr("data-tooltip").attr("title",
-				$t("Unable to determine gps coordinates!"));
+				$t("Unable to determine gps coordinates!") + "' . ($error ? '<br>' . $error : '') . '");
 			$("' . $longitude_selector . '").addClass("lms-ui-warning").removeAttr("data-tooltip").attr("title",
-				$t("Unable to determine gps coordinates!"));
+				$t("Unable to determine gps coordinates!") + "' . ($error ? '<br>' . $error : '') . '");
 		');
     }
 
