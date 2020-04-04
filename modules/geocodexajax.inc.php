@@ -84,6 +84,10 @@ function get_gps_coordinates($location, $latitude_selector, $longitude_selector)
             . (isset($location['house']) && mb_strlen($location['house']) ? ' ' . $location['house'] : '')
             . (isset($location['flat']) && mb_strlen($location['flat']) ? '/' . $location['flat'] : '');
             $geocode = geocode($location_string);
+            if (!isset($geocode['status'])) {
+                continue;
+            }
+
             if ($geocode['status'] == 'OK') {
                 $found = true;
                 if ($geocode['accuracy'] == 'ROOFTOP') {
