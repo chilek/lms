@@ -266,6 +266,8 @@ version 25-git (????-??-??):
   - improvement: added overdue events in another menu item and few fixes with
     overdue [interduo]
   - improvement: new filter on ticket list - allows to show only parent tickets [interduo]
+  - improvement: separate configuration variables used as api key for google maps and geocode
+    apis (respectively 'google.maps_api_key' and 'google.geocode_api_key') [chilan]
 
 version 24.0 (2019-05-16):
 
