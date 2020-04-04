@@ -3160,6 +3160,7 @@ $_LANG['You haven\\\'t selected any nodes!'] = 'Nie wybrałeś żadnego komputer
 $_LANG['Your balance on date of invoice issue: $a $b'] = 'Saldo w dniu wystawienia faktury: $a $b';
 $_LANG['Balance includes current invoice'] = 'Saldo uwzględnia również bieżącą fakturę.';
 $_LANG['Your balance before invoice issue:'] = 'Saldo przed wystawieniem faktury:';
+$_LANG['Your balance without unexpired invoices: $a $b'] = 'Saldo bez nieprzeterminowanych faktur: $a $b';
 
 $_LANG['Remove management URL'] = 'Usuń adres URL do zarządzania';
 $_LANG['Edit management URL'] = 'Edytuj adres URL do zarządzania';

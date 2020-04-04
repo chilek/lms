@@ -436,6 +436,27 @@
 		</TD>
 	</TR>
 	{/if}
+	{if ConfigHelper::checkConfig('invoices.show_expired_balance')}
+	{$lms = LMS::getInstance()}
+	{$customerbalance = $lms->getCustomerBalance($invoice.customerid, $invoice.cdate + 1, true)}
+	<TR>
+		<TD WIDTH="100%" COLSPAN="2">
+			{if $customerbalance > 0}
+				{$comment = trans('(excess payment)')}
+			{elseif $customerbalance < 0}
+				{$comment = trans('(underpayment)')}
+			{else}
+				{$comment = ''}
+			{/if}
+
+			<span style="font-weight: bold">
+			{if $use_alert_color}<span style="color: red;">{/if}
+					{trans('Your balance without unexpired invoices: $a $b', moneyf($customerbalance / $invoice.currencyvalue, $invoice.currency), $comment)}
+					{if $use_alert_color}</span>{/if}
+		</span>
+		</TD>
+	</TR>
+	{/if}
 	<TR>
 		<TD WIDTH="100%" COLSPAN="2">
 			<B>{trans("Cautions:")}</B><BR>

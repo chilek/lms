@@ -203,7 +203,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 $totime = time();
             }
             return $this->db->GetOne(
-                'SELECT SUM(value * currencyvalue) FROM cash
+                'SELECT SUM(value * cash.currencyvalue) FROM cash
 				LEFT JOIN documents doc ON doc.id = cash.docid
 				LEFT JOIN customers cust ON cust.id = cash.customerid
 				LEFT JOIN divisions ON divisions.id = cust.divisionid

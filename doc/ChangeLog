@@ -268,6 +268,8 @@ version 25-git (????-??-??):
   - improvement: new filter on ticket list - allows to show only parent tickets [interduo]
   - improvement: separate configuration variables used as api key for google maps and geocode
     apis (respectively 'google.maps_api_key' and 'google.geocode_api_key') [chilan]
+  - enhancement: 'invoices.show_expired_balance' configuration variable controls if balance
+    without unexpired invoices is presented on invoice [chilan]
 
 version 24.0 (2019-05-16):
 

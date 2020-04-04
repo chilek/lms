@@ -855,11 +855,17 @@ class LMSTcpdfInvoice extends LMSInvoice
         }
     }
 
-    protected function invoice_balance()
+    protected function invoice_balance($expired = false)
     {
         $this->backend->SetFont(self::TCPDF_FONT, 'B', 9);
 
-        $balance = $this->data['customerbalance'];
+        if ($expired) {
+            $lms = LMS::getInstance();
+            $balance = $lms->getCustomerBalance($this->data['customerid'], $this->data['cdate'] + 1, true);
+        } else {
+            $balance = $this->data['customerbalance'];
+        }
+
         if ($balance > 0) {
             $comment = trans('(excess payment)');
         } elseif ($balance < 0) {
@@ -876,7 +882,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             '',
             '',
             trans(
-                'Your balance on date of invoice issue: $a $b',
+                $expired ? 'Your balance without unexpired invoices: $a $b' : 'Your balance on date of invoice issue: $a $b',
                 moneyf($balance / $this->data['currencyvalue'], $this->data['currency']),
                 $comment
             ),
@@ -889,7 +895,9 @@ class LMSTcpdfInvoice extends LMSInvoice
         if ($this->use_alert_color) {
             $this->backend->SetTextColor();
         }
-        $this->backend->writeHTMLCell(0, 0, '', '', trans('Balance includes current invoice'), 0, 1, 0, true, 'L');
+        if (!$expired) {
+            $this->backend->writeHTMLCell(0, 0, '', '', trans('Balance includes current invoice'), 0, 1, 0, true, 'L');
+        }
     }
 
     protected function invoice_dates()
@@ -1067,6 +1075,9 @@ class LMSTcpdfInvoice extends LMSInvoice
         if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_balance', true))) {
             $this->invoice_balance();
         }
+        if (ConfigHelper::checkConfig('invoices.show_expired_balance')) {
+            $this->invoice_balance(true);
+        }
         if (ConfigHelper::checkConfig('invoices.qr2pay') && !isset($this->data['rebate'])) {
             $this->invoice_qr2pay_code();
         }
@@ -1132,6 +1143,9 @@ class LMSTcpdfInvoice extends LMSInvoice
         $this->invoice_expositor();
         if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_balance', true))) {
             $this->invoice_balance();
+        }
+        if (ConfigHelper::checkConfig('invoices.show_expired_balance')) {
+            $this->invoice_balance(true);
         }
         if (ConfigHelper::checkConfig('invoices.qr2pay') && !isset($this->data['rebate'])) {
             $this->invoice_qr2pay_code();
