@@ -23,29 +23,30 @@
  */
 
 $_LANG.trans = function() {
-	if ($_LANG.hasOwnProperty(arguments[0])) {
-		var text = $_LANG[arguments[0]];
-		var start = 0;
-		var argn;
-		var replace;
-		while ((start = text.indexOf('$', start)) != -1) {
-			argn = text.charCodeAt(start + 1) - 96;
-			if (argn >= 0 && argn <= arguments.length) {
-				if (typeof(arguments[argn]) == 'number') {
-					replace = arguments[argn].toString();
-				} else {
-					replace = arguments[argn];
-				}
-				text = text.replace(text.substr(start, 2), replace);
-				start += replace.length;
-			} else {
-				start += 2;
-			}
-		}
-		return text;
-	} else {
-		return '';
+	var text = arguments[0];
+	if ($_LANG.hasOwnProperty(text)) {
+		text = $_LANG[text];
 	}
+
+	var start = 0;
+	var argn;
+	var replace;
+
+	while ((start = text.indexOf('$', start)) != -1) {
+		argn = text.charCodeAt(start + 1) - 96;
+		if (argn >= 0 && argn <= arguments.length) {
+			if (typeof(arguments[argn]) == 'number') {
+				replace = arguments[argn].toString();
+			} else {
+				replace = arguments[argn];
+			}
+			text = text.replace(text.substr(start, 2), replace);
+			start += replace.length;
+		} else {
+			start += 2;
+		}
+	}
+	return text;
 }
 
 var trans = $_LANG.trans,
