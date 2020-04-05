@@ -44,9 +44,9 @@ function smarty_function_location_box_expandable($params, $template)
     }
 
     echo '<div class="location-box-expandable"'
-        . ' data-node-use-counter="' . $params['data']['node_use_counter'] . '"'
-        . ' data-netdev-use-counter="' . $params['data']['netdev_use_counter'] . '"'
-        . ' data-netnode-use-counter="' . $params['data']['netnode_use_counter'] . '">';
+        . ' data-node-use-counter="' . (isset($params['data']['node_use_counter']) ? $params['data']['node_use_counter'] : '0') . '"'
+        . ' data-netdev-use-counter="' . (isset($params['data']['netdev_use_counter']) ? $params['data']['netdev_use_counter'] : '0') . '"'
+        . ' data-netnode-use-counter="' . (isset($params['data']['netnode_use_counter']) ? $params['data']['netnode_use_counter'] : '0') . '">';
 
     $uid = uniqid();
     $location_str = $params['data']['location_address_type'] == BILLING_ADDRESS ? ''
