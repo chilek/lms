@@ -43,11 +43,17 @@ function smarty_function_location_box_expandable($params, $template)
         $params['data']['prefix'] = 'address';
     }
 
-    echo '<div class="location-box-expandable">';
+    echo '<div class="location-box-expandable"'
+        . ' data-node-use-counter="' . $params['data']['node_use_counter'] . '"'
+        . ' data-netdev-use-counter="' . $params['data']['netdev_use_counter'] . '"'
+        . ' data-netnode-use-counter="' . $params['data']['netnode_use_counter'] . '">';
 
     $uid = uniqid();
     $location_str = $params['data']['location_address_type'] == BILLING_ADDRESS ? ''
         : (empty($params['data']['location_name']) ? '' : $params['data']['location_name'] . ', ');
+    if ($params['data']['teryt']) {
+        $params['data']['location'] = trans('$a (TERRIT)', $params['data']['location']);
+    }
     $location_str .= $params['data']['location'] ? $params['data']['location'] : '...';
 
     $title = '';
@@ -86,8 +92,23 @@ function smarty_function_location_box_expandable($params, $template)
         echo '&nbsp;&nbsp;<span class="lms-ui-button delete-location-box"><img src="img/delete.gif" alt="">' . trans('Delete') . '</span>';
     }
 
+    static $usage_messages = array(
+        'node_use_counter' => 'assigned to <strong>$a</strong> nodes',
+        'netdev_use_counter' => 'assigned to <strong>$a</strong> network devices',
+        'netnode_use_counter' => 'assigned to <strong>$a</strong> network nodes',
+    );
     if (isset($params['data']['use_counter'])) {
-        echo '<div style="position: absolute; right: 0; top: 7px;">' . trans('assigned to <b>$a</b> nodes', $params['data']['use_counter']) . '</div>';
+        echo '<div style="position: absolute; right: 0; top: 7px;">';
+        $usages = array();
+        foreach (array('node_use_counter', 'netdev_use_counter', 'netnode_use_counter') as $field_name) {
+            if (!empty($params['data'][$field_name])) {
+                $usages[] = trans($usage_messages[$field_name], $params['data'][$field_name]);
+            }
+        }
+        if (!empty($usages)) {
+            echo implode(', ', $usages);
+        }
+        echo '</div>';
     }
 
     echo '</div>';

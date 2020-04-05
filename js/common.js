@@ -737,22 +737,14 @@ function getCustomerAddresses( id, on_success ) {
  * \param string latitude_id id of longitude input
  */
 function location_str(data) {
-	city = data.city;
-	street = data.street;
-	house = data.house;
-	flat = data.flat;
-	if (data.hasOwnProperty('zip'))
-		zip = data.zip;
-	else
-		zip = null;
-	if (data.hasOwnProperty('postoffice'))
-		postoffice = data.postoffice;
-	else
-		postoffice = null;
-	if (data.hasOwnProperty('state'))
-		state = data.state;
-	else
-		state = null;
+	var city = data.city;
+	var street = data.street;
+	var house = data.house;
+	var flat = data.flat;
+	var zip = data.hasOwnProperty('zip') ? data.zip : null;
+	var postoffice = data.hasOwnProperty('postoffice') ? data.postoffice : null;
+	var state = data.hasOwnProperty('state') ? data.state : null;
+	var teryt = data.hasOwnProperty('teryt') && data.teryt;
 
 	var location = '';
 
@@ -773,8 +765,9 @@ function location_str(data) {
 	}
 	if (street.length) {
 		location += street;
-	} else
+	} else {
 		location += city;
+	}
 
 	if (location.length) {
 		if (house.length && flat.length) {
@@ -782,6 +775,10 @@ function location_str(data) {
 		} else if (house.length) {
 			location += " " + house;
 		}
+	}
+
+	if (teryt) {
+		location = $t('$a (TERRIT)', location);
 	}
 
 	return location;

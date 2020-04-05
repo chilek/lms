@@ -270,6 +270,8 @@ version 25-git (????-??-??):
     apis (respectively 'google.maps_api_key' and 'google.geocode_api_key') [chilan]
   - enhancement: 'invoices.show_expired_balance' configuration variable controls if balance
     without unexpired invoices is presented on invoice [chilan]
+  - enhancement: additional confirmation is required during customer address clear
+    or delete if it is assigned to some nodes, network devices and network nodes [chilan]
 
 version 24.0 (2019-05-16):
 

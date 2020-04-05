@@ -94,7 +94,8 @@ $(function() {
             house: house,
             flat: flat,
             zip: zip,
-            postoffice: postoffice
+            postoffice: postoffice,
+            teryt: teryt
         });
         location = (address_type == 1 || !location_name.length ? '' : location_name + ', ') + (location.length > 0 ? location : '...');
 
@@ -216,7 +217,28 @@ $(function() {
      */
 	$('body').on('click', '.delete-location-box', function () {
 		confirmDialog($t('Are you sure that you want to remove address?'), this).done(function () {
-			getLocationBox(this).closest('tr').remove();
+			var location_box = getLocationBox(this);
+			var node_use_counter = parseInt(location_box.attr('data-node-use-counter'));
+            var netdev_use_counter = parseInt(location_box.attr('data-netdev-use-counter'));
+            var netnode_use_counter = parseInt(location_box.attr('data-netnode-use-counter'));
+			if (node_use_counter || netdev_use_counter || netnode_use_counter) {
+			    var msg = $t('Address is used by the following resources:');
+			    msg += '<br><br><ul>';
+			    if (node_use_counter) {
+			        msg += '<li>' + $t('assigned to <strong>$a</strong> nodes', node_use_counter) + '</li>';
+                }
+                if (netdev_use_counter) {
+                    msg += '<li>' + $t('assigned to <strong>$a</strong> network devices', netdev_use_counter) + '</li>';
+                }
+                if (netnode_use_counter) {
+                    msg += '<li>' + $t('assigned to <strong>$a</strong> network nodes', netnode_use_counter) + '</li>';
+                }
+                msg += '</ul><br>';
+                msg += $t('Do you confirm?');
+                confirmDialog(msg, this).done(function () {
+                    location_box.closest('tr').remove();
+                });
+            }
 		});
 	});
 
@@ -226,46 +248,72 @@ $(function() {
     $('body').on('click', '.clear-location-box', function() {
         var box = getLocationBox(this);
 
-        // find all inputs and clear values
-        $( box.find('input') ).each(function( index ) {
-            switch ( $(this).attr('type') ) {
-                case 'checkbox':
-                    $(this).prop('checked', false);
-                break;
+        function clearLocationBox() {
+            // find all inputs and clear values
+            $( box.find('input') ).each(function( index ) {
+                switch ( $(this).attr('type') ) {
+                    case 'checkbox':
+                        $(this).prop('checked', false);
+                        break;
 
-                case 'text':
-                case 'hidden':
-                    if (!$(this).is('[data-address="address_type"]')) {
-                        $(this).val('')
-                           .removeAttr('readonly');
-                    }
-                break;
+                    case 'text':
+                    case 'hidden':
+                        if (!$(this).is('[data-address="address_type"]')) {
+                            $(this).val('')
+                                .removeAttr('readonly');
+                        }
+                        break;
+                }
+            });
+
+            // clear state of location image if it was default location so far
+            var address_type = box.find('input[data-address="address_type"]');
+            if (address_type.val() == 3) {
+                $('.location-box-image', box.closest('tr'))
+                    .attr('class', customer_location_icon + ' location-box-image')
+                    .tooltip().tooltip('destroy')
+                    .attr('title', $t('location/recipient address'))
+                    .tooltip();
+                address_type.val(2)
+                    .closest('tr')
+                    .find('.address-full')
+                    .tooltip().tooltip('destroy')
+                    .attr('title', $t('location/recipient address'))
+                    .tooltip();
             }
-        });
 
-        // clear state of location image if it was default location so far
-        var address_type = box.find('input[data-address="address_type"]');
-        if (address_type.val() == 3) {
-            $('.location-box-image', box.closest('tr'))
-                .attr('class', customer_location_icon + ' location-box-image')
-                .tooltip().tooltip('destroy')
-                .attr('title', $t('location/recipient address'))
-                .tooltip();
-            address_type.val(2)
-                .closest('tr')
-                .find('.address-full')
-                .tooltip().tooltip('destroy')
-                .attr('title', $t('location/recipient address'))
-                .tooltip();
+            // clear location address text
+            box.find('.address-full').text('...');
+
+            // choose first option for each select inside location box
+            $( box.find('select') ).each(function() {
+                $(this).val( $(this).find('option:first').val() );
+            });
         }
 
-        // clear location address text
-        box.find('.address-full').text('...');
-
-        // choose first option for each select inside location box
-        $( box.find('select') ).each(function() {
-            $(this).val( $(this).find('option:first').val() );
-        });
+        var node_use_counter = parseInt(box.attr('data-node-use-counter'));
+        var netdev_use_counter = parseInt(box.attr('data-netdev-use-counter'));
+        var netnode_use_counter = parseInt(box.attr('data-netnode-use-counter'));
+        if (node_use_counter || netdev_use_counter || netnode_use_counter) {
+            var msg = $t('Address is used by the following resources:');
+            msg += '<br><br><ul>';
+            if (node_use_counter) {
+                msg += '<li>' + $t('assigned to <strong>$a</strong> nodes', node_use_counter) + '</li>';
+            }
+            if (netdev_use_counter) {
+                msg += '<li>' + $t('assigned to <strong>$a</strong> network devices', netdev_use_counter) + '</li>';
+            }
+            if (netnode_use_counter) {
+                msg += '<li>' + $t('assigned to <strong>$a</strong> network nodes', netnode_use_counter) + '</li>';
+            }
+            msg += '</ul><br>';
+            msg += $t('Do you confirm?');
+            confirmDialog(msg, this).done(function () {
+                clearLocationBox();
+            });
+        } else {
+            clearLocationBox();
+        }
     });
 
     /*!

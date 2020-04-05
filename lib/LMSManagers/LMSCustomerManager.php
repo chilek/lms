@@ -1748,7 +1748,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                           addr.street as location_street_name, addr.street_id as location_street,
                                           addr.house as location_house, addr.zip as location_zip, addr.postoffice AS location_postoffice,
                                           addr.country_id as location_country_id, addr.flat as location_flat,
-                                          ca.type as location_address_type, addr.location, 0 AS use_counter,
+                                          ca.type as location_address_type, addr.location,
+                                          0 AS use_counter, 0 AS node_use_counter, 0 AS netdev_use_counter, 0 AS netnode_use_counter,
                                           (CASE WHEN addr.city_id is not null THEN 1 ELSE 0 END) as teryt
                                        FROM
                                           customers cv
@@ -1766,24 +1767,38 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             return array();
         }
 
-        $node_addresses = $this->db->GetAllByKey('SELECT address_id, COUNT(*) AS used FROM nodes
+        $node_addresses = $this->db->GetAllByKey('SELECT address_id, 1 AS resourcetype, COUNT(*) AS used FROM nodes
 			WHERE ownerid = ? AND address_id IS NOT NULL
-			GROUP BY address_id', 'address_id', array($id));
+			GROUP BY address_id, resourcetype', 'address_id', array($id));
         if (empty($node_addresses)) {
             $node_addresses = array();
         }
 
-        $netdev_addresses = $this->db->GetAllByKey('SELECT address_id, COUNT(*) AS used FROM netdevices
+        $netdev_addresses = $this->db->GetAllByKey('SELECT address_id, 2 AS resourcetype, COUNT(*) AS used FROM netdevices
 			WHERE ownerid = ? AND address_id IS NOT NULL
-			GROUP BY address_id', 'address_id', array($id));
+			GROUP BY address_id, resourcetype', 'address_id', array($id));
         if (empty($netdev_addresses)) {
             $netdev_addresses = array();
         }
 
-        foreach (array($node_addresses, $netdev_addresses) as $addresses) {
+        $netnode_addresses = $this->db->GetAllByKey('SELECT address_id, 3 AS resourcetype, COUNT(*) AS used FROM netnodes
+			WHERE ownerid = ? AND address_id IS NOT NULL
+			GROUP BY address_id, resourcetype', 'address_id', array($id));
+        if (empty($netdev_addresses)) {
+            $netnode_addresses = array();
+        }
+
+        static $resource_type_map = array(
+            1 => 'node_use_counter',
+            2 => 'netdev_use_counter',
+            3 => 'netnode_use_counter',
+        );
+
+        foreach (array($node_addresses, $netdev_addresses, $netnode_addresses) as $addresses) {
             foreach ($addresses as $address_id => $address) {
-                if (isset($data[$address_id])) {
+                if (isset($data[$address_id]) && !empty($address['used'])) {
                     $data[$address_id]['use_counter'] += $address['used'];
+                    $data[$address_id][$resource_type_map[$address['resourcetype']]] += $address['used'];
                 }
             }
         }
