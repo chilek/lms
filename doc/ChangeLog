@@ -275,7 +275,8 @@ version 25-git (????-??-??):
   - enhancement: 'cashimport.use_file_date' set to 'true' ('false' by default) enables imported
     file datetime usage to force source file uniqueness [chilan]
   - enhancement: customer consents can be managed in lib/definitions.php file [chilan]
-  - improvement: new position netto and brutto values are cleanup from special characters [chilan]
+  - improvement: newly created invoice new position netto and brutto values are cleanup
+    from special characters [chilan]
 
 version 24.0 (2019-05-16):
 
