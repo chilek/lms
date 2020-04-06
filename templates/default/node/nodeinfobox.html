@@ -15,38 +15,25 @@
         flex-wrap: wrap;
 	}
 
-	.node-data {
-		width: 100%;
-		display: flex;
-		flex-direction: row;
-		justify-content: flex-start;
-		align-items: flex-start;
-		flex-wrap: wrap;
-	}
-
-	.node-data > div {
-		flex-grow: 1;
-	}
-
 	@media screen and (max-width: 400px) {
 		.tab-beautify tr td:nth-child(2) {
 			white-space: normal;
 		}
 
 		.cell-flex > div {
-			max-width: 165px;
+			max-width: 145px;
 			white-space: normal;
 		}
 
 		.cell-flex > span {
-			max-width: 165px;
+			max-width: 145px;
 			white-space: normal;
 		}
 
-		#node-right-panel {
-			margin-right: -5em;
+		.cell-flex {
+			width: 145px;
+			white-space: normal;
 		}
-
 	}
 
 </style>
@@ -54,21 +41,19 @@
 <table class="lmsbox">
     <thead>
 		<tr>
-			<td style="width: 1%;">
+			<td style="width: 99%;" colspan="3">
 				<img src="img/node.gif" alt="">
-			</td>
-			<td style="width: 99%;" colspan="2">
 				<span class="bold">{$nodeinfo.name} ({$nodeinfo.id|string_format:"%04d"})</span>
 			</td>
 		</tr>
     </thead>
     <tbody>
 		<tr>
-			<td width="100%" colspan="3" class="container">
+			<td colspan="3" class="container">
 				<table style="width: 100%;" cellpadding="0">
 					<tr>
-						<td class="tab-beautify node-data">
-							<div id="node-left-panel">
+						<td class="tab-beautify lmsbox-panels">
+							<div class="lmsbox-panel">
 								<table>
 								<colgroup>
 									<col style="width: 1%;">
@@ -326,8 +311,8 @@
 								{/block}
 							</table>
 							</div>
-							<div id="node-right-panel">
-								<table id="nodeinfo">
+							<div class="lmsbox-panel">
+								<table id="nodeinfo" class="tab-beautify">
 							{block name="nodeinfobox-rightcolumn"}
                                 <colgroup>
                                     <col style="width: 1%;">
@@ -380,7 +365,7 @@
 									<td>
 										{trans("GPS longitude:")}
 									</td>
-									<td class="nobr">
+									<td class="cell-flex">
 										{if $nodeinfo.longitude}{$nodeinfo.longitude}{else}{/if}
 										<input type="hidden" ID="longitude" name="longitude" value="{$nodeinfo.longitude}">
 									</td>
@@ -392,7 +377,7 @@
 									<td>
 										<span class="bold">{trans("GPS latitude:")}</span>
 									</td>
-									<td class="nobr">
+									<td class="cell-flex">
 										{if $nodeinfo.latitude}{$nodeinfo.latitude}{else}{/if}
 										<input type="hidden" ID="latitude" name="latitude" value="{$nodeinfo.latitude}">
 									</td>
@@ -400,7 +385,7 @@
 								<tr>
 									<td colspan="2">
 									</td>
-									<td>
+									<td class="cell-flex">
 										<a href="?m=netdevmap&nodeid={$nodeinfo.id}"><img src="img/network.gif" alt=""> {trans("Show on map")} &raquo;&raquo;&raquo;</a>
 									</td>
 								</tr>
@@ -451,7 +436,8 @@
 										{trans("Modified:")}
 									</td>
 									<td class="cell-flex">
-										<div>{$nodeinfo.createdby}, {$nodeinfo.creationdateh}<br>
+										<div>
+											{$nodeinfo.createdby}, {$nodeinfo.creationdateh}<br>
 											{if $nodeinfo.moddate}{$nodeinfo.modifiedby}, {$nodeinfo.moddateh}{else}-{/if}
 										</div>
 									</td>

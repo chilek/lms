@@ -8,23 +8,6 @@
         white-space: nowrap;
     }
 
-	.node-data {
-		width: 100%;
-		display: flex;
-		flex-direction: row;
-		justify-content: flex-start;
-		align-items: flex-start;
-		flex-wrap: wrap;
-	}
-
-	.node-data > div {
-		flex-grow: 1;
-	}
-
-	#node-right-panel {
-		margin-right: 2em;
-	}
-
 	.cell-flex {
 		display: flex;
 		flex-wrap: wrap;
@@ -53,7 +36,6 @@
         }
     }
 
-
 </style>
 
 {include file="google-maps.html"}
@@ -77,8 +59,8 @@
 			<TABLE style="width: 100%;" CELLPADDING="0">
 				{block name="nodeaddbox-tablebody"}
 				<TR>
-					<TD class="node-data">
-						<div id="node-left-panel">
+					<TD class="lmsbox-panels">
+						<div class="lmsbox-panel">
 							<TABLE>
 							{block name="nodeaddbox-leftcolumn"}
 							<TR>
@@ -299,7 +281,7 @@
 							{/block}
 							</TABLE>
 						</div>
-						<div id="node-right-panel">
+						<div class="lmsbox-panel">
 							<TABLE>
 							{block name="nodeaddbox-rightcolumn"}
 							<tr>

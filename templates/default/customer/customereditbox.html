@@ -20,66 +20,6 @@
 </SCRIPT>
 <style>
 
-	.customer-header {
-		width: 100%;
-		display: flex;
-		flex-direction: row;
-		justify-content: flex-start;
-		align-items: center;
-		flex-wrap: wrap;
-	}
-
-	.customer-header-left-panel {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: flex-start;
-		flex-wrap: wrap;
-		flex-basis: 420px;
-		padding-left: 0.5em;
-        padding-right: 0.5em;
-	}
-
-	.customer-header-right-panel {
-		display: flex;
-		padding-left: 0.5em;
-		padding-right: 0.5em;
-	}
-
-	.customer-header label{
-		padding-right: 0.5em;
-	}
-
-    .customer-header label > *:not(:first-child){
-        padding-right: 0.5em;
-    }
-	.customer-header-row {
-		display: flex;
-		min-width: 100%;
-		padding-bottom: 0.5em;
-	}
-
-	.customer-header-row input{
-		flex-grow: 1;
-	}
-
-	.customer-data {
-		width: 100%;
-		display: flex;
-		flex-direction: row;
-		justify-content: flex-start;
-		align-items: flex-start;
-		flex-wrap: wrap;
-	}
-
-	.customer-data > div {
-		flex-grow: 1;
-	}
-
-	#customer-right-panel {
-		margin-right: 2em;
-	}
-
 	.cell-flex {
 		display: flex;
 		flex-wrap: wrap;
@@ -113,419 +53,432 @@
 <TABLE class="lmsbox">
 	<THEAD>
 	<TR>
-		<TD style="width: 100%;">
-			<div class="customer-header">
-				<div class="customer-header-left-panel">
-					<div class="customer-header-row">
-						<label for="customerdata[lastname]"><strong>{trans("Name/Surname:")}</strong></label>
-						<INPUT type="text" name="customerdata[lastname]" value="{$customerinfo.lastname|escape}" required {tip text="Enter first/lastname of customer" trigger="lastname" bold=1}>
-					</div>
-					<div class="customer-header-row">
-						<label for="customerdata[name]"><strong>{trans("First name:")}</strong></label>
-						<INPUT type="text" name="customerdata[name]" value="{$customerinfo.name|escape}" {tip text="Enter first name of customer (optional)" trigger="name" bold=1}>
-					</div>
-				</div>
-				<div class="customer-header-right-panel">
-					<label for="customerdata[extid]"><strong>{trans("External system identifier:")}</strong>
-					<input type="text" maxlength="20" name="customerdata[extid]" value="{$customerinfo.extid}" {tip text="Enter customer identifier in external system (optional)" trigger="extid"}></label>
-				</div>
+		<TD class="lmsbox-panels">
+			<div class="lmsbox-panel">
+				<table>
+					<colgroup>
+						<col style="width: 1%;">
+						<col style="width: 99%;">
+					</colgroup>
+					<tr>
+						<td>
+							<label for="customerdata[lastname]"><strong>{trans("Name/Surname:")}</strong></label>
+						</td>
+						<td>
+							<INPUT type="text" name="customerdata[lastname]" value="{$customerinfo.lastname|escape}" required {tip text="Enter first/lastname of customer" trigger="lastname" bold=1}>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<label for="customerdata[name]"><strong>{trans("First name:")}</strong></label>
+						</td>
+						<td>
+							<INPUT type="text" name="customerdata[name]" value="{$customerinfo.name|escape}" {tip text="Enter first name of customer (optional)" trigger="name" bold=1}>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="lmsbox-panel">
+				<table>
+					<tr>
+						<td>
+							<label for="customerdata[extid]"><strong>{trans("External system identifier:")}</strong>
+								<input type="text" maxlength="20" name="customerdata[extid]" value="{$customerinfo.extid}" {tip text="Enter customer identifier in external system (optional)" trigger="extid"}>
+							</label>
+						</td>
+					</tr>
+				</table>
 			</div>
 		</TD>
 	</TR>
 	</THEAD>
 	<TBODY>
 	<TR>
-		<TD style="width: 100%;" class="container">
-			<TABLE width="100%" cellpadding="0">
-				<TR>
-					<TD class="customer-data">
-						<div id="customer-left-panel">
-							<TABLE>
-								<COLGROUP>
-									<COL style="width: 1%;">
-									<COL style="width: 99%;">
-								</COLGROUP>
-								{block name="customereditbox-leftcolumn"}
-								<TR>
-									<TD>
-										<IMG src="img/{$_CSTATUSES[$customerinfo.status].img}" alt="">
-									</TD>
-									<TD>
-										<SELECT size="1" name="customerdata[status]" {tip text="Select customer state" trigger="status"}>
-											{foreach $_CSTATUSES as $statusidx => $status}
-											<OPTION value="{$statusidx}"{if $customerinfo.status == $statusidx} selected{/if}>{$status.singularlabel}</OPTION>
-											{/foreach}
-										</SELECT>
-									</TD>
-								</TR>
-								{if $divisions}
-								<TR>
-									<TD>
-										<IMG src="img/division.gif" alt="">
-									</TD>
-									<TD>
-										<SELECT size="1" name="customerdata[divisionid]" {tip text="Select division" trigger="divisionid"}>
-											{foreach from=$divisions item=item}
-											{if !$item.status || $item.id == $customerinfo.divisionid}
-											<OPTION value="{$item.id}"{if $customerinfo.divisionid == $item.id} SELECTED{/if}>{$item.shortname}</OPTION>
-											{/if}
-											{/foreach}
-										</SELECT>
-									</TD>
-								</TR>
-								{/if}
-								<TR>
-									<TD>
-										<IMG src="img/folder.gif" alt="">
-									</TD>
-									<TD>
-										<INPUT type="radio" name="customerdata[type]" value="{$smarty.const.CTYPES_PRIVATE}" id="private" {tip text="Select legal personality type" trigger="type"}{if $customerinfo.type == $smarty.const.CTYPES_PRIVATE} CHECKED{/if}><label for="private">{assign var='type' value=$smarty.const.CTYPES_PRIVATE}{$_CTYPES.$type}</label>
-										<INPUT type="radio" name="customerdata[type]" value="{$smarty.const.CTYPES_COMPANY}" id="company" {tip text="Select legal personality type" trigger="type"}{if $customerinfo.type == $smarty.const.CTYPES_COMPANY} CHECKED{/if}><label for="company">{assign var='type' value=$smarty.const.CTYPES_COMPANY}{$_CTYPES.$type}</label>
-									</TD>
-								</TR>
-
-								{$addr_counter = 0}
-
-								<tr>
-									<td class="valign-top"><i class="lms-ui-icon-home fa-fw" title="{trans('billing address')}"></i></td>
-									<td>
-										{foreach $customerinfo.addresses as $v}
-											{if $v.location_address_type == $smarty.const.BILLING_ADDRESS}
-												{$v.prefix = "customerdata[addresses]["|cat:$addr_counter|cat:"]"}
-												{$addr_counter = $addr_counter + 1}
-												{$v.hide_name=true}
-												{location_box_expandable data=$v}
-											{/if}
-										{/foreach}
-									</td>
-									<script type="text/javascript">
-							/*
-										var formid = $('form[name="customeredit"]').get(0);
-										new AutoSuggest(formid, $('input[name="customerdata[addresses][0][location_street_name]"]').get(0),
-											'?m=customeradd&ajax=1&mode=street&what=', 0);
-										new AutoSuggest(formid, $('input[name="customerdata[addresses][0][location_city_name]"]').get(0),
-											'?m=customeradd&ajax=1&mode=city&what=', 0);
-										new AutoSuggest(formid, $('input[name="customerdata[addresses][0][location_zip]"]').get(0),
-											'?m=customeradd&ajax=1&mode=zip&what=', 0);
-							*/
-									</script>
-								</tr>
-
-								<tr>
-									<td class="valign-top"><i class="lms-ui-icon-mail fa-fw" alt="" title="{trans('postal address')}"></i></td>
-									<td>
-										{$postal_addr = 0}
-										{foreach $customerinfo.addresses as $v}
-											{if $v.location_address_type == $smarty.const.POSTAL_ADDRESS}
-												{$v.prefix = "customerdata[addresses]["|cat:$addr_counter|cat:"]"}
-												{$addr_counter = $addr_counter + 1}
-												{$postal_addr = 1}
-												{location_box_expandable data=$v}
-											{/if}
-										{/foreach}
-
-										{* if postal address is not set *}
-										{if $postal_addr == 0}
-											{$tmp['location_address_type'] = $smarty.const.POSTAL_ADDRESS}
-											{$tmp['prefix'] = "customerdata[addresses]["|cat:$addr_counter|cat:"]"}
-											{$addr_counter = $addr_counter + 1}
-											{location_box_expandable data=$tmp}
-										{/if}
-									</td>
-									<script type="text/javascript">
-							/*
-										new AutoSuggest(formid, $('input[name="customerdata[addresses][1][location_street_name]"]').get(0),
-											'?m=customeradd&ajax=1&mode=street&what=', 0);
-										new AutoSuggest(formid, $('input[name="customerdata[addresses][1][location_city_name]"]').get(0),
-											'?m=customeradd&ajax=1&mode=city&what=', 0);
-										new AutoSuggest(formid, $('input[name="customerdata[addresses][1][location_zip]"]').get(0),
-											'?m=customeradd&ajax=1&mode=zip&what=', 0);
-							*/
-									</script>
-								</tr>
-
-								{foreach $customerinfo.addresses as $v}
-									{if $v.location_address_type != $smarty.const.BILLING_ADDRESS && $v.location_address_type != $smarty.const.POSTAL_ADDRESS }
-									<tr>
-										<td class="valign-top">
-											{if $v.location_address_type == $smarty.const.DEFAULT_LOCATION_ADDRESS}
-												<i class="lms-ui-icon-default-customer-location fa-fw location-box-image" title="{trans('default location address')}"></i>
-											{else}
-												<i class="lms-ui-icon-customer-location fa-fw location-box-image" title="{trans('location/recipient address')}"></i>
-											{/if}
-										</td>
-										<td>
-											{$v.prefix = "customerdata[addresses]["|cat:$addr_counter|cat:"]"}
-											{$address_idx = $addr_counter}
-											{$v.default_type = 1}
-											{$v.clear_button = 1}
-											{$addr_counter = $addr_counter + 1}
-											{location_box_expandable data=$v}
-										</td>
-										<script type="text/javascript">
-							/*
-											new AutoSuggest(formid, $('input[name="customerdata[addresses][{$address_idx}][location_street_name]"]').get(0),
-												'?m=customeradd&ajax=1&mode=street&what=', 0);
-											new AutoSuggest(formid, $('input[name="customerdata[addresses][{$address_idx}][location_city_name]"]').get(0),
-												'?m=customeradd&ajax=1&mode=city&what=', 0);
-											new AutoSuggest(formid, $('input[name="customerdata[addresses][{$address_idx}][location_zip]"]').get(0),
-												'?m=customeradd&ajax=1&mode=zip&what=', 0);
-							*/
-										</script>
-									</tr>
-									{/if}
+		<TD class="lmsbox-panels">
+			<div class="lmsbox-panel">
+				<TABLE>
+					<COLGROUP>
+						<COL style="width: 1%;">
+						<COL style="width: 99%;">
+					</COLGROUP>
+					{block name="customereditbox-leftcolumn"}
+					<TR>
+						<TD>
+							<IMG src="img/{$_CSTATUSES[$customerinfo.status].img}" alt="">
+						</TD>
+						<TD>
+							<SELECT size="1" name="customerdata[status]" {tip text="Select customer state" trigger="status"}>
+								{foreach $_CSTATUSES as $statusidx => $status}
+								<OPTION value="{$statusidx}"{if $customerinfo.status == $statusidx} selected{/if}>{$status.singularlabel}</OPTION>
 								{/foreach}
+							</SELECT>
+						</TD>
+					</TR>
+					{if $divisions}
+					<TR>
+						<TD>
+							<IMG src="img/division.gif" alt="">
+						</TD>
+						<TD>
+							<SELECT size="1" name="customerdata[divisionid]" {tip text="Select division" trigger="divisionid"}>
+								{foreach from=$divisions item=item}
+								{if !$item.status || $item.id == $customerinfo.divisionid}
+								<OPTION value="{$item.id}"{if $customerinfo.divisionid == $item.id} SELECTED{/if}>{$item.shortname}</OPTION>
+								{/if}
+								{/foreach}
+							</SELECT>
+						</TD>
+					</TR>
+					{/if}
+					<TR>
+						<TD>
+							<IMG src="img/folder.gif" alt="">
+						</TD>
+						<TD>
+							<INPUT type="radio" name="customerdata[type]" value="{$smarty.const.CTYPES_PRIVATE}" id="private" {tip text="Select legal personality type" trigger="type"}{if $customerinfo.type == $smarty.const.CTYPES_PRIVATE} CHECKED{/if}><label for="private">{assign var='type' value=$smarty.const.CTYPES_PRIVATE}{$_CTYPES.$type}</label>
+							<INPUT type="radio" name="customerdata[type]" value="{$smarty.const.CTYPES_COMPANY}" id="company" {tip text="Select legal personality type" trigger="type"}{if $customerinfo.type == $smarty.const.CTYPES_COMPANY} CHECKED{/if}><label for="company">{assign var='type' value=$smarty.const.CTYPES_COMPANY}{$_CTYPES.$type}</label>
+						</TD>
+					</TR>
 
-								<tr>
-									<td></td>
-									<td>
-										<span class="lms-ui-button locbox-addnew" data-prefix="customerdata">{trans('Add address')} &raquo;&raquo;&raquo;</span><br><br>
-									</td>
-								</tr>
+					{$addr_counter = 0}
 
-								{include file="customer/customercontacts.html" customerinfo=$customerinfo formelemprefix="customerdata"}
-								<TR>
-									<TD>
-										<IMG src="img/pin.gif" alt="">
-									</TD>
-									<TD>
-										<INPUT type="text" required name="customerdata[pin]" size="{$pin_max_size}" value="{if $customerinfo.pin}{$customerinfo.pin}{/if}" {tip text=$pin_tip trigger="pin"}>&nbsp;
-										<A id="randomize" href="javascript:randomize()" {tip text="Generate PIN"}>&raquo;&raquo;&raquo;</A>
-									</TD>
-								</TR>
-								<TR>
-									<TD class="valign-top">
-										<IMG src="img/serialnumber.gif" alt="">
-									</TD>
-									<TD class="cell-flex">
-										<div>
-										<TABLE width="100%">
-											<COLGROUP>
-												<COL style="width: 1%;">
-												<COL style="width: 99%;">
-											</COLGROUP>
-											<TR>
-												<TD>{trans("ICN")}:</TD>
-												<TD>
-													{if $customerinfo.icnwarning}
-													<INPUT type="hidden" name="customerdata[icnwarning]" value="1">
-													{/if}
-													<INPUT type="text" value="{$customerinfo.icn}" name="customerdata[icn]" size="30" {tip text="Enter Identity Card Number (optional)" trigger="icn"}>
-												</TD>
-											</TR>
-											<TR>
-												<TD>{trans("SSN")}:</TD>
-												<TD>
-													<INPUT type="text" name="customerdata[ssn]" value="{$customerinfo.ssn}" size="30" {tip text="Enter Social Security Number (optional)" trigger="ssn"}>
-													{if $customerinfo.ssnwarning}
-													<INPUT type="hidden" name="customerdata[ssnwarning]" value="1">
-													{/if}
-													{if $customerinfo.ssnexistencewarning}
-													<INPUT type="hidden" name="customerdata[ssnexistencewarning]" value="1">
-													{/if}
-												</TD>
-											</TR>
-											<TR>
-												<TD>{trans("TEN")}:</TD>
-												<TD>
-													<INPUT type="text" name="customerdata[ten]" value="{$customerinfo.ten}" size="30" {tip text="Enter Tax Exempt Number (optional)" trigger="ten"}>
-													{if $customerinfo.tenwarning}
-													<INPUT type="hidden" name="customerdata[tenwarning]" value="1">
-													{/if}
-													{if $customerinfo.tenexistencewarning}
-													<INPUT type="hidden" name="customerdata[tenexistencewarning]" value="1">
-													{/if}
-													<a class="gusapi-button" data-type="{\GusApi\RegonConstantsInterface::SEARCH_TYPE_NIP}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
-												</TD>
-											</TR>
-											<TR>
-												<TD>{trans("REGON")}:</TD>
-												<TD>
-													<INPUT type="text" value="{$customerinfo.regon}" name="customerdata[regon]" size="30" {tip text="Enter Business Registration Number (optional)" trigger="regon"}>
-													<a class="gusapi-button" data-type="{\GusApi\RegonConstantsInterface::SEARCH_TYPE_REGON}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
-												</TD>
-											</TR>
-											<TR>
-												<TD>{trans("RBE Name:")}</TD>
-												<TD>
-													<TEXTAREA name="customerdata[rbename]" cols="45" rows="4" {tip text="Enter National Court Register / Register of Business Entities Name (optional)" trigger="rbename"}>{$customerinfo.rbename|escape}</TEXTAREA>
-												</TD>
-											</TR>
-											<TR>
-												<TD>{trans("RBE")}:</TD>
-												<TD>
-													<INPUT type="text" value="{$customerinfo.rbe}" name="customerdata[rbe]" size="30" {tip text="Enter National Court Register / Register of Business Entities Number (optional)" trigger="rbe"}>
-													<a class="gusapi-button" data-type="{\GusApi\RegonConstantsInterface::SEARCH_TYPE_KRS}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
-												</TD>
-											</TR>
-										</TABLE>
-										</div>
-									</TD>
-								</TR>
-								<TR>
-									<TD class="valign-top">
-										<IMG src="img/options.gif" alt="">
-									</TD>
-									<TD>
-										<TABLE>
-											<TR>
-												<TD>
-													{trans("Deadline:")}
-												</TD>
-												<TD id="paytime-cell">
-													<SELECT name="customerdata[paytime]" data-value="{$customerinfo.paytime}"
-															{tip class="lms-ui-combobox" text="Select default deadline in days" trigger="paytime"}>
-														<OPTION value="-1"{if $customerinfo.paytime==-1} selected{/if}>- {trans("default")} -</OPTION>
-														<OPTION value="0"{if $customerinfo.paytime==0} selected{/if}>0</OPTION>
-														<OPTION value="7"{if $customerinfo.paytime==7} selected{/if}>7</OPTION>
-														<OPTION value="10"{if $customerinfo.paytime==10} selected{/if}>10</OPTION>
-														<OPTION value="14"{if $customerinfo.paytime==14} selected{/if}>14</OPTION>
-														<OPTION value="21"{if $customerinfo.paytime==21} selected{/if}>21</OPTION>
-														<OPTION value="30"{if $customerinfo.paytime==30} selected{/if}>30</OPTION>
-														<OPTION value="60"{if $customerinfo.paytime==60} selected{/if}>60</OPTION>
-														<OPTION value="90"{if $customerinfo.paytime==90} selected{/if}>90</OPTION>
-													</SELECT>
-												</TD>
-											</TR>
-											<TR>
-												<TD>
-													{trans("Payment type:")}
-												</TD>
-												<TD>
-													<SELECT name="customerdata[paytype]" {tip text="Select default invoices payment type" trigger="paytype"}>
-														<OPTION value=""{if !$customerinfo.paytype} selected{/if}>- {trans("default")} -</OPTION>
-														{foreach from=$_PAYTYPES item=item key=key}
-														<OPTION value="{$key}"{if $customerinfo.paytype==$key} selected{/if}>{$item}</OPTION>
-														{/foreach}
-													</SELECT>
-												</TD>
-											</TR>
-											<TR>
-												<TD>
-													{trans("Cutoff suspending:")}
-												</TD>
-												<TD>
-													<label>
-														<input type="checkbox" name="customerdata[cutoffstopindefinitely]" value="1" onchange="$('#cutoffstop').css('display', this.checked ? 'none' : '');"{if $customerinfo.cutoffstopindefinitely} checked{/if}>
-														{trans("indefinitely")}
-													</label>&nbsp;
-													<INPUT type="text" name="customerdata[cutoffstop]" id="cutoffstop" {if $customerinfo.cutoffstopindefinitely}style="display: none;"{elseif $customerinfo.cutoffstop}value="{$customerinfo.cutoffstop}"{/if} size="10" {tip class="lms-ui-date" text="Select date of cutoff suspending (optional)" trigger="cutoffstop"}>
-												</TD>
-											</TR>
-										</TABLE>
-									</TD>
-								</TR>
-								<TR>
-									<TD class="valign-top">
-										<IMG src="img/options.gif" alt="">
-									</TD>
-									<TD>
-										<TABLE cellpadding="0">
-											{block name="customereditbox-options"}
-											<TR>
-												<TD>
-													<label for="chkconsent">{trans("Consent to personal data processing:")}</label>
-												</TD>
-												<TD>
-													<INPUT type="checkbox" name="customerdata[consentdate]" id="chkconsent" value="{$smarty.now}"{if $customerinfo.consentdate} checked{/if}>
-												</TD>
-											</TR>
-											<TR>
-												<TD>
-													<label for="chkeinvoice">{trans("Cancellation of a traditional invoice (agreement on an electronic invoice):")}</label>
-												</TD>
-												<TD>
-													<INPUT type="checkbox" name="customerdata[einvoice]" id="chkeinvoice" value="1"{if $customerinfo.einvoice} checked{/if}>
-												</TD>
-											</TR>
-											<TR {tip text="Consent to invoices delivery via e-mail:" trigger="invoicenotice"}>
-												<TD>
-													<label for="chkinvoicenotice">{trans("Consent to invoices delivery via e-mail:")}</label>
-												</TD>
-												<TD>
-													<INPUT type="checkbox" name="customerdata[invoicenotice]" id="chkinvoicenotice" value="1"{if $customerinfo.invoicenotice} checked{/if}>
-												</TD>
-											</TR>
-											<TR>
-												<TD>
-													<label for="chkmailingnotice">{trans("Consent to messages delivery via e-mail or sms:")}</label>
-												</TD>
-												<TD>
-													<INPUT type="checkbox" name="customerdata[mailingnotice]" id="chkmailingnotice" value="1"{if $customerinfo.mailingnotice} checked{/if}>
-												</TD>
-											</TR>
-											{/block}
-										</TABLE>
-									</TD>
-								</TR>
-								{/block}
-							</TABLE>
-						</div>
-						<div id="customer-right-panel">
-							<TABLE>
+					<tr>
+						<td class="valign-top"><i class="lms-ui-icon-home fa-fw" title="{trans('billing address')}"></i></td>
+						<td>
+							{foreach $customerinfo.addresses as $v}
+								{if $v.location_address_type == $smarty.const.BILLING_ADDRESS}
+									{$v.prefix = "customerdata[addresses]["|cat:$addr_counter|cat:"]"}
+									{$addr_counter = $addr_counter + 1}
+									{$v.hide_name=true}
+									{location_box_expandable data=$v}
+								{/if}
+							{/foreach}
+						</td>
+						<script type="text/javascript">
+				/*
+							var formid = $('form[name="customeredit"]').get(0);
+							new AutoSuggest(formid, $('input[name="customerdata[addresses][0][location_street_name]"]').get(0),
+								'?m=customeradd&ajax=1&mode=street&what=', 0);
+							new AutoSuggest(formid, $('input[name="customerdata[addresses][0][location_city_name]"]').get(0),
+								'?m=customeradd&ajax=1&mode=city&what=', 0);
+							new AutoSuggest(formid, $('input[name="customerdata[addresses][0][location_zip]"]').get(0),
+								'?m=customeradd&ajax=1&mode=zip&what=', 0);
+				*/
+						</script>
+					</tr>
+
+					<tr>
+						<td class="valign-top"><i class="lms-ui-icon-mail fa-fw" alt="" title="{trans('postal address')}"></i></td>
+						<td>
+							{$postal_addr = 0}
+							{foreach $customerinfo.addresses as $v}
+								{if $v.location_address_type == $smarty.const.POSTAL_ADDRESS}
+									{$v.prefix = "customerdata[addresses]["|cat:$addr_counter|cat:"]"}
+									{$addr_counter = $addr_counter + 1}
+									{$postal_addr = 1}
+									{location_box_expandable data=$v}
+								{/if}
+							{/foreach}
+
+							{* if postal address is not set *}
+							{if $postal_addr == 0}
+								{$tmp['location_address_type'] = $smarty.const.POSTAL_ADDRESS}
+								{$tmp['prefix'] = "customerdata[addresses]["|cat:$addr_counter|cat:"]"}
+								{$addr_counter = $addr_counter + 1}
+								{location_box_expandable data=$tmp}
+							{/if}
+						</td>
+						<script type="text/javascript">
+				/*
+							new AutoSuggest(formid, $('input[name="customerdata[addresses][1][location_street_name]"]').get(0),
+								'?m=customeradd&ajax=1&mode=street&what=', 0);
+							new AutoSuggest(formid, $('input[name="customerdata[addresses][1][location_city_name]"]').get(0),
+								'?m=customeradd&ajax=1&mode=city&what=', 0);
+							new AutoSuggest(formid, $('input[name="customerdata[addresses][1][location_zip]"]').get(0),
+								'?m=customeradd&ajax=1&mode=zip&what=', 0);
+				*/
+						</script>
+					</tr>
+
+					{foreach $customerinfo.addresses as $v}
+						{if $v.location_address_type != $smarty.const.BILLING_ADDRESS && $v.location_address_type != $smarty.const.POSTAL_ADDRESS }
+						<tr>
+							<td class="valign-top">
+								{if $v.location_address_type == $smarty.const.DEFAULT_LOCATION_ADDRESS}
+									<i class="lms-ui-icon-default-customer-location fa-fw location-box-image" title="{trans('default location address')}"></i>
+								{else}
+									<i class="lms-ui-icon-customer-location fa-fw location-box-image" title="{trans('location/recipient address')}"></i>
+								{/if}
+							</td>
+							<td>
+								{$v.prefix = "customerdata[addresses]["|cat:$addr_counter|cat:"]"}
+								{$address_idx = $addr_counter}
+								{$v.default_type = 1}
+								{$v.clear_button = 1}
+								{$addr_counter = $addr_counter + 1}
+								{location_box_expandable data=$v}
+							</td>
+							<script type="text/javascript">
+				/*
+								new AutoSuggest(formid, $('input[name="customerdata[addresses][{$address_idx}][location_street_name]"]').get(0),
+									'?m=customeradd&ajax=1&mode=street&what=', 0);
+								new AutoSuggest(formid, $('input[name="customerdata[addresses][{$address_idx}][location_city_name]"]').get(0),
+									'?m=customeradd&ajax=1&mode=city&what=', 0);
+								new AutoSuggest(formid, $('input[name="customerdata[addresses][{$address_idx}][location_zip]"]').get(0),
+									'?m=customeradd&ajax=1&mode=zip&what=', 0);
+				*/
+							</script>
+						</tr>
+						{/if}
+					{/foreach}
+
+					<tr>
+						<td></td>
+						<td>
+							<span class="lms-ui-button locbox-addnew" data-prefix="customerdata">{trans('Add address')} &raquo;&raquo;&raquo;</span><br><br>
+						</td>
+					</tr>
+
+					{include file="customer/customercontacts.html" customerinfo=$customerinfo formelemprefix="customerdata"}
+					<TR>
+						<TD>
+							<IMG src="img/pin.gif" alt="">
+						</TD>
+						<TD>
+							<INPUT type="text" required name="customerdata[pin]" size="{$pin_max_size}" value="{if $customerinfo.pin}{$customerinfo.pin}{/if}" {tip text=$pin_tip trigger="pin"}>&nbsp;
+							<A id="randomize" href="javascript:randomize()" {tip text="Generate PIN"}>&raquo;&raquo;&raquo;</A>
+						</TD>
+					</TR>
+					<TR>
+						<TD class="valign-top">
+							<IMG src="img/serialnumber.gif" alt="">
+						</TD>
+						<TD class="cell-flex">
+							<div>
+							<TABLE width="100%">
 								<COLGROUP>
 									<COL style="width: 1%;">
 									<COL style="width: 99%;">
 								</COLGROUP>
-								{block name="customereditbox-rightcolumn"}
+								<TR>
+									<TD>{trans("ICN")}:</TD>
+									<TD>
+										{if $customerinfo.icnwarning}
+										<INPUT type="hidden" name="customerdata[icnwarning]" value="1">
+										{/if}
+										<INPUT type="text" value="{$customerinfo.icn}" name="customerdata[icn]" size="30" {tip text="Enter Identity Card Number (optional)" trigger="icn"}>
+									</TD>
+								</TR>
+								<TR>
+									<TD>{trans("SSN")}:</TD>
+									<TD>
+										<INPUT type="text" name="customerdata[ssn]" value="{$customerinfo.ssn}" size="30" {tip text="Enter Social Security Number (optional)" trigger="ssn"}>
+										{if $customerinfo.ssnwarning}
+										<INPUT type="hidden" name="customerdata[ssnwarning]" value="1">
+										{/if}
+										{if $customerinfo.ssnexistencewarning}
+										<INPUT type="hidden" name="customerdata[ssnexistencewarning]" value="1">
+										{/if}
+									</TD>
+								</TR>
+								<TR>
+									<TD>{trans("TEN")}:</TD>
+									<TD>
+										<INPUT type="text" name="customerdata[ten]" value="{$customerinfo.ten}" size="30" {tip text="Enter Tax Exempt Number (optional)" trigger="ten"}>
+										{if $customerinfo.tenwarning}
+										<INPUT type="hidden" name="customerdata[tenwarning]" value="1">
+										{/if}
+										{if $customerinfo.tenexistencewarning}
+										<INPUT type="hidden" name="customerdata[tenexistencewarning]" value="1">
+										{/if}
+										<a class="gusapi-button" data-type="{\GusApi\RegonConstantsInterface::SEARCH_TYPE_NIP}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
+									</TD>
+								</TR>
+								<TR>
+									<TD>{trans("REGON")}:</TD>
+									<TD>
+										<INPUT type="text" value="{$customerinfo.regon}" name="customerdata[regon]" size="30" {tip text="Enter Business Registration Number (optional)" trigger="regon"}>
+										<a class="gusapi-button" data-type="{\GusApi\RegonConstantsInterface::SEARCH_TYPE_REGON}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
+									</TD>
+								</TR>
+								<TR>
+									<TD>{trans("RBE Name:")}</TD>
+									<TD>
+										<TEXTAREA name="customerdata[rbename]" cols="45" rows="4" {tip text="Enter National Court Register / Register of Business Entities Name (optional)" trigger="rbename"}>{$customerinfo.rbename|escape}</TEXTAREA>
+									</TD>
+								</TR>
+								<TR>
+									<TD>{trans("RBE")}:</TD>
+									<TD>
+										<INPUT type="text" value="{$customerinfo.rbe}" name="customerdata[rbe]" size="30" {tip text="Enter National Court Register / Register of Business Entities Number (optional)" trigger="rbe"}>
+										<a class="gusapi-button" data-type="{\GusApi\RegonConstantsInterface::SEARCH_TYPE_KRS}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
+									</TD>
+								</TR>
+							</TABLE>
+							</div>
+						</TD>
+					</TR>
+					<TR>
+						<TD class="valign-top">
+							<IMG src="img/options.gif" alt="">
+						</TD>
+						<TD>
+							<TABLE>
 								<TR>
 									<TD>
-										<IMG src="img/info1.gif" alt="">
+										{trans("Deadline:")}
 									</TD>
-									<TD>
-										<TEXTAREA name="customerdata[info]" class="lms-ui-wysiwyg-editor" COLS="60" ROWS="10" {tip text="Enter additional information (optional)"}{if isset($customerinfo.wysiwyg.info)} data-wysiwyg="{$customerinfo.wysiwyg.info}"{/if}>{$customerinfo.info|escape}</TEXTAREA>
+									<TD id="paytime-cell">
+										<SELECT name="customerdata[paytime]" data-value="{$customerinfo.paytime}"
+												{tip class="lms-ui-combobox" text="Select default deadline in days" trigger="paytime"}>
+											<OPTION value="-1"{if $customerinfo.paytime==-1} selected{/if}>- {trans("default")} -</OPTION>
+											<OPTION value="0"{if $customerinfo.paytime==0} selected{/if}>0</OPTION>
+											<OPTION value="7"{if $customerinfo.paytime==7} selected{/if}>7</OPTION>
+											<OPTION value="10"{if $customerinfo.paytime==10} selected{/if}>10</OPTION>
+											<OPTION value="14"{if $customerinfo.paytime==14} selected{/if}>14</OPTION>
+											<OPTION value="21"{if $customerinfo.paytime==21} selected{/if}>21</OPTION>
+											<OPTION value="30"{if $customerinfo.paytime==30} selected{/if}>30</OPTION>
+											<OPTION value="60"{if $customerinfo.paytime==60} selected{/if}>60</OPTION>
+											<OPTION value="90"{if $customerinfo.paytime==90} selected{/if}>90</OPTION>
+										</SELECT>
 									</TD>
 								</TR>
 								<TR>
 									<TD>
-										<IMG src="img/warningon.gif" alt="">
+										{trans("Payment type:")}
 									</TD>
 									<TD>
-										<TEXTAREA name="customerdata[message]" class="lms-ui-wysiwyg-editor" COLS="60" ROWS="10" {tip text="Enter notice contents (optional)"}{if isset($customerinfo.wysiwyg.message)} data-wysiwyg="{$customerinfo.wysiwyg.message}"{/if}>{$customerinfo.message|escape}</TEXTAREA>
-									</TD>
-								</TR>
-								<TR>
-									<TD>
-										<IMG src="img/note.gif" alt="">
-									</TD>
-									<TD>
-										<TEXTAREA name="customerdata[notes]" class="lms-ui-wysiwyg-editor" COLS="60" ROWS="10" {tip text="Enter notes (optional)"}{if isset($customerinfo.wysiwyg.notes)} data-wysiwyg="{$customerinfo.wysiwyg.notes}"{/if}>{$customerinfo.notes|escape}</TEXTAREA>
+										<SELECT name="customerdata[paytype]" {tip text="Select default invoices payment type" trigger="paytype"}>
+											<OPTION value=""{if !$customerinfo.paytype} selected{/if}>- {trans("default")} -</OPTION>
+											{foreach from=$_PAYTYPES item=item key=key}
+											<OPTION value="{$key}"{if $customerinfo.paytype==$key} selected{/if}>{$item}</OPTION>
+											{/foreach}
+										</SELECT>
 									</TD>
 								</TR>
 								<TR>
 									<TD>
-										<i class="lms-ui-icon-memo"></i>
+										{trans("Cutoff suspending:")}
 									</TD>
 									<TD>
-										<TEXTAREA name="customerdata[documentmemo]" class="lms-ui-wysiwyg-editor"
-												  COLS="60" ROWS="10" {tip text="Enter document memo (optional)"}
-												{if isset($customerinfo.wysiwyg.documentmemo)} data-wysiwyg="{$customerinfo.wysiwyg.documentmemo}"{/if}>{$customerinfo.documentmemo|escape}</TEXTAREA>
+										<label>
+											<input type="checkbox" name="customerdata[cutoffstopindefinitely]" value="1" onchange="$('#cutoffstop').css('display', this.checked ? 'none' : '');"{if $customerinfo.cutoffstopindefinitely} checked{/if}>
+											{trans("indefinitely")}
+										</label>&nbsp;
+										<INPUT type="text" name="customerdata[cutoffstop]" id="cutoffstop" {if $customerinfo.cutoffstopindefinitely}style="display: none;"{elseif $customerinfo.cutoffstop}value="{$customerinfo.cutoffstop}"{/if} size="10" {tip class="lms-ui-date" text="Select date of cutoff suspending (optional)" trigger="cutoffstop"}>
+									</TD>
+								</TR>
+							</TABLE>
+						</TD>
+					</TR>
+					<TR>
+						<TD class="valign-top">
+							<IMG src="img/options.gif" alt="">
+						</TD>
+						<TD>
+							<TABLE cellpadding="0">
+								{block name="customereditbox-options"}
+								<TR>
+									<TD>
+										<label for="chkconsent">{trans("Consent to personal data processing:")}</label>
+									</TD>
+									<TD>
+										<INPUT type="checkbox" name="customerdata[consentdate]" id="chkconsent" value="{$smarty.now}"{if $customerinfo.consentdate} checked{/if}>
 									</TD>
 								</TR>
 								<TR>
 									<TD>
-										<IMG src="img/money.gif" alt="">
+										<label for="chkeinvoice">{trans("Cancellation of a traditional invoice (agreement on an electronic invoice):")}</label>
 									</TD>
 									<TD>
-										<span class="bold">{trans("Balance:")}</span>
-										{if $customerinfo.balance < 0}<span class="lms-ui-error">{$customerinfo.balance|money_format}</span>{else}{$customerinfo.balance|money_format}{/if}
+										<INPUT type="checkbox" name="customerdata[einvoice]" id="chkeinvoice" value="1"{if $customerinfo.einvoice} checked{/if}>
+									</TD>
+								</TR>
+								<TR {tip text="Consent to invoices delivery via e-mail:" trigger="invoicenotice"}>
+									<TD>
+										<label for="chkinvoicenotice">{trans("Consent to invoices delivery via e-mail:")}</label>
+									</TD>
+									<TD>
+										<INPUT type="checkbox" name="customerdata[invoicenotice]" id="chkinvoicenotice" value="1"{if $customerinfo.invoicenotice} checked{/if}>
 									</TD>
 								</TR>
 								<TR>
 									<TD>
-										<IMG src="img/users.gif" alt="">
+										<label for="chkmailingnotice">{trans("Consent to messages delivery via e-mail or sms:")}</label>
 									</TD>
 									<TD>
-										<span class="bold">{trans("Created:")}</span> {$customerinfo.createdby}, {$customerinfo.creationdateh}<BR>
-										<span class="bold">{trans("Modified:")}</span> {if $customerinfo.moddate}{$customerinfo.modifiedby}, {$customerinfo.moddateh}{else}-{/if}
+										<INPUT type="checkbox" name="customerdata[mailingnotice]" id="chkmailingnotice" value="1"{if $customerinfo.mailingnotice} checked{/if}>
 									</TD>
 								</TR>
 								{/block}
 							</TABLE>
-						</div>
-					</TD>
-				</TR>
-			</TABLE>
+						</TD>
+					</TR>
+					{/block}
+				</TABLE>
+			</div>
+			<div class="lmsbox-panel">
+				<TABLE>
+					<COLGROUP>
+						<COL style="width: 1%;">
+						<COL style="width: 99%;">
+					</COLGROUP>
+					{block name="customereditbox-rightcolumn"}
+					<TR>
+						<TD>
+							<IMG src="img/info1.gif" alt="">
+						</TD>
+						<TD>
+							<TEXTAREA name="customerdata[info]" class="lms-ui-wysiwyg-editor" COLS="60" ROWS="10" {tip text="Enter additional information (optional)"}{if isset($customerinfo.wysiwyg.info)} data-wysiwyg="{$customerinfo.wysiwyg.info}"{/if}>{$customerinfo.info|escape}</TEXTAREA>
+						</TD>
+					</TR>
+					<TR>
+						<TD>
+							<IMG src="img/warningon.gif" alt="">
+						</TD>
+						<TD>
+							<TEXTAREA name="customerdata[message]" class="lms-ui-wysiwyg-editor" COLS="60" ROWS="10" {tip text="Enter notice contents (optional)"}{if isset($customerinfo.wysiwyg.message)} data-wysiwyg="{$customerinfo.wysiwyg.message}"{/if}>{$customerinfo.message|escape}</TEXTAREA>
+						</TD>
+					</TR>
+					<TR>
+						<TD>
+							<IMG src="img/note.gif" alt="">
+						</TD>
+						<TD>
+							<TEXTAREA name="customerdata[notes]" class="lms-ui-wysiwyg-editor" COLS="60" ROWS="10" {tip text="Enter notes (optional)"}{if isset($customerinfo.wysiwyg.notes)} data-wysiwyg="{$customerinfo.wysiwyg.notes}"{/if}>{$customerinfo.notes|escape}</TEXTAREA>
+						</TD>
+					</TR>
+					<TR>
+						<TD>
+							<i class="lms-ui-icon-memo"></i>
+						</TD>
+						<TD>
+							<TEXTAREA name="customerdata[documentmemo]" class="lms-ui-wysiwyg-editor"
+									  COLS="60" ROWS="10" {tip text="Enter document memo (optional)"}
+									{if isset($customerinfo.wysiwyg.documentmemo)} data-wysiwyg="{$customerinfo.wysiwyg.documentmemo}"{/if}>{$customerinfo.documentmemo|escape}</TEXTAREA>
+						</TD>
+					</TR>
+					<TR>
+						<TD>
+							<IMG src="img/money.gif" alt="">
+						</TD>
+						<TD>
+							<span class="bold">{trans("Balance:")}</span>
+							{if $customerinfo.balance < 0}<span class="lms-ui-error">{$customerinfo.balance|money_format}</span>{else}{$customerinfo.balance|money_format}{/if}
+						</TD>
+					</TR>
+					<TR>
+						<TD>
+							<IMG src="img/users.gif" alt="">
+						</TD>
+						<TD>
+							<span class="bold">{trans("Created:")}</span> {$customerinfo.createdby}, {$customerinfo.creationdateh}<BR>
+							<span class="bold">{trans("Modified:")}</span> {if $customerinfo.moddate}{$customerinfo.modifiedby}, {$customerinfo.moddateh}{else}-{/if}
+						</TD>
+					</TR>
+					{/block}
+				</TABLE>
+			</div>
 		</TD>
 	</TR>
 	<TR>
