@@ -49,7 +49,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
      * @param array $file Import file information
      * @return array Invalid import file rows
      */
-    public function CashImportParseFile($filename, $contents, $patterns, $quiet = true)
+    public function CashImportParseFile($filename, $contents, $patterns, $quiet = true, $filemtime = null)
     {
         global $LMS;
 
@@ -260,7 +260,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                     if (!$sourcefileid) {
                         $args = array(
                             'name' => $filename,
-                            'idate' => time(),
+                            'idate' => isset($filemtime) ? $filemtime : time(),
                             SYSLOG::RES_USER => Auth::GetCurrentUser(),
                         );
                         $this->db->Execute('INSERT INTO sourcefiles (name, idate, userid)
