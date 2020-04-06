@@ -50,7 +50,7 @@ $consent_name_to_type_map = array(
     'invoicenotice' => CCONSENT_INVOICENOTICE,
 );
 
-$consents = $this->GetAll('SELECT id AS customerid, consentdate, einvoice, mailingnotice, invoicenotice FROM customers');
+$consents = $this->GetAll('SELECT id AS customerid, ' . implode(', ', array_keys($consent_name_to_type_map)) . ' FROM customers');
 if (!empty($consents)) {
     $records = array();
     foreach ($consents as $consent) {
@@ -69,10 +69,9 @@ $this->Execute("DROP VIEW customeraddressview");
 $this->Execute("DROP VIEW contractorview");
 $this->Execute("DROP VIEW customerview");
 
-$this->Execute("ALTER TABLE customers DROP COLUMN consentdate");
-$this->Execute("ALTER TABLE customers DROP COLUMN einvoice");
-$this->Execute("ALTER TABLE customers DROP COLUMN mailingnotice");
-$this->Execute("ALTER TABLE customers DROP COLUMN invoicenotice");
+foreach (array_keys($consent_name_to_type_map) as $field_name) {
+    $this->Execute("ALTER TABLE customers DROP COLUMN " . $file_name);
+}
 
 $this->Execute("
     CREATE VIEW customerview AS
