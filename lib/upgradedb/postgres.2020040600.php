@@ -69,7 +69,7 @@ $this->Execute("
 ");
 
 foreach (array_keys($consent_name_to_type_map) as $field_name) {
-    $this->Execute("ALTER TABLE customers DROP COLUMN " . $file_name);
+    $this->Execute("ALTER TABLE customers DROP COLUMN " . $field_name);
 }
 
 $this->Execute("
