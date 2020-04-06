@@ -74,7 +74,7 @@
                                     <SELECT size="1" name="queue[verifierid]" {tip text="Select user" trigger="verifierid"}>
                                         <OPTION value="">- {trans("select user")} -</OPTION>
 										{foreach $userlist as $user}
-										<OPTION value="{$user.id}" {if $user.id == $queue.verifier.id} selected{/if}>{$user.name}</OPTION>
+										<OPTION value="{$user.id}" {if $user.id == $queue.verifier.id} selected{/if}>{$user.rname} ({$user.login})</OPTION>
 										{/foreach}
 									</SELECT>
 								</TD>
@@ -105,7 +105,7 @@
 											{foreach from=$queue.rights item=right}
 											<TR class="highlight {cycle} lms-ui-row-all-check">
 												<TD>
-													<A href="?m=userinfo&id={$right.id}" class="nobr">{$right.name}</A>
+													<A href="?m=userinfo&id={$right.id}" class="nobr">{$right.rname} ({$right.login})</A>
 													<INPUT type="hidden" name="queue[usernames][{$right.id}]" value="{$right.name}">
 												</TD>
 												{foreach $_RT_RIGHTS as $rightvalue => $label}

@@ -145,7 +145,7 @@ if (isset($_POST['queue'])) {
     unset($category);
 }
 
-$userlist = $LMS->getUserList();
+$userlist = $LMS->getUserNamesIndexedById();
 unset($userlist['total']);
 
 $layout['pagetitle'] = trans('Queue Edit: $a', $queue['name']);

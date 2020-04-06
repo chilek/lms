@@ -65,7 +65,7 @@
 			{foreach from=$category.owners item=user}
 			<TR class="highlight {cycle}"  >
 			    <TD>
-				<A href="?m=userinfo&amp;id={$user.id}">{$user.name}</A>
+				<A href="?m=userinfo&amp;id={$user.id}">{$user.rname} ({$user.login})</A>
 			    </TD>
 			    <TD class="text-center">
 				    <INPUT type="checkbox" name="category[users][{$user.id}]" class="lms-ui-multi-check" value="1" {if $user.owner > 0}CHECKED{/if}>
@@ -79,9 +79,9 @@
 				<TD class="text-center">
                                         <INPUT TYPE="checkbox" NAME="allbox" id="allbox" class="lms-ui-multi-check-all">
                                 </TD>
-                        </TR> 
+                        </TR>
                         </TBODY>
-		</TABLE>			
+		</TABLE>
 	    </TD>
 	</TR>
 	<TR>
