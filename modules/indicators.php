@@ -99,7 +99,7 @@ switch ($action) {
                 $redirect = '?m=rtqueueview&persistent-filter=-1&vids=' . Auth::GetCurrentUser() . '&rights=' . RT_RIGHT_INDICATOR;
             }
         }
-	break;
+        break;
     case 'left':
         if (ConfigHelper::CheckPrivilege('helpdesk_administration') || ConfigHelper::CheckPrivilege('helpdesk_operation')) {
             $count = $LMS->GetQueueContents(array('count' => true, 'state' => -1, 'owner' => -3, 'rights' => RT_RIGHT_INDICATOR));

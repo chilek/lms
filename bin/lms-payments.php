@@ -339,7 +339,7 @@ function get_period($period)
 
 $plans = array();
 $periods = array(
-	0 => YEARLY,
+    0 => YEARLY,
 );
 $query = "SELECT n.id, n.period, doctype, COALESCE(a.divisionid, 0) AS divid, isdefault 
 		FROM numberplans n 

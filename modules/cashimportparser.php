@@ -29,7 +29,6 @@ check_file_uploads();
 include(ConfigHelper::getConfig('phpui.import_config', 'cashimportcfg.php'));
 
 if (isset($_POST['fileupload'])) {
-
     $result = handle_file_uploads('files', $error);
     extract($result);
     $SMARTY->assign('fileupload', $fileupload);

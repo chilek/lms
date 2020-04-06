@@ -92,8 +92,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
      *          0 - read tickets,
      *          1 - unread tickets,
      *      parent - ticket parentid
-     *      	null (default: null = any),
-     *      	1 - show only parent tickets
+     *          null (default: null = any),
+     *          1 - show only parent tickets
      *      verifierids - ticket verifier (default: null = any/none)
      *          array() of integer values,
      *          all - filter is off
@@ -277,9 +277,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         }
 
         switch ($owner) {
-	    case '-3':
-		$ownerfilter = ' AND (t.owner IS NULL OR t.owner = '. Auth::GetCurrentUser() .')';
-		break;
+            case '-3':
+                $ownerfilter = ' AND (t.owner IS NULL OR t.owner = '. Auth::GetCurrentUser() .')';
+                break;
             case '-2':
                 $ownerfilter = ' AND t.owner IS NOT NULL';
                 break;
@@ -337,16 +337,16 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         } else {
             $unreadfilter = '';
         }
-	if (!is_array($parent) && !empty($parent)) {
-	    switch ($parent) {
+        if (!is_array($parent) && !empty($parent)) {
+            switch ($parent) {
                 case '1':
                     $parentfilter = ' AND t.parentid IS NULL';
                     break;
                 default:
                     $parentfilter = '';
                     break;
+            }
         }
-	}
         $userid = Auth::GetCurrentUser();
 
         $user_permission_checks = ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks');
@@ -1989,7 +1989,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 'rights' => RT_RIGHT_INDICATOR));
         }
 
-	if (ConfigHelper::CheckPrivilege('timetable_management')) {
+        if (ConfigHelper::CheckPrivilege('timetable_management')) {
             $event_manager = new LMSEventManager($this->db, $this->auth, $this->cache, $this->syslog);
             $result['events'] = $event_manager->GetEventList(array('userid' => Auth::GetCurrentUser(),
                 'forward' => 1, 'closed' => 0, 'count' => true));
