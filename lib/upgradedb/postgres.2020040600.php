@@ -43,7 +43,7 @@ $this->Execute("
 $consent_name_to_type_map = array(
     'consentdate' => CCONSENT_DATE,
     'einvoice' => CCONSENT_EINVOICE,
-    'mailingnotce' => CCONSENT_MAILINGNOTICE,
+    'mailingnotice' => CCONSENT_MAILINGNOTICE,
     'invoicenotice' => CCONSENT_INVOICENOTICE,
 );
 
@@ -72,7 +72,7 @@ $this->Execute("
     ALTER TABLE customers DROP COLUMN consentdate;
     ALTER TABLE customers DROP COLUMN einvoice;
     ALTER TABLE customers DROP COLUMN mailingnotice;
-    ALTER TABLE customers DROP COLUMN invoicenotice;    
+    ALTER TABLE customers DROP COLUMN invoicenotice;
 ");
 
 $this->Execute("
@@ -108,10 +108,10 @@ $this->Execute("
     
     CREATE VIEW contractorview AS
         SELECT c.*,
-            (CASE WHEN cc1.type IS NULL THEN 0 ELSE cc1.cdate END) AS consentdate, 
-            (CASE WHEN cc2.type IS NULL THEN 0 ELSE 1 END) AS invoicenotice, 
-            (CASE WHEN cc3.type IS NULL THEN 0 ELSE 1 END) AS mailingnotice, 
-            (CASE WHEN cc4.type IS NULL THEN 0 ELSE 1 END) AS einvoice, 
+            (CASE WHEN cc1.type IS NULL THEN 0 ELSE cc1.cdate END) AS consentdate,
+            (CASE WHEN cc2.type IS NULL THEN 0 ELSE 1 END) AS invoicenotice,
+            (CASE WHEN cc3.type IS NULL THEN 0 ELSE 1 END) AS mailingnotice,
+            (CASE WHEN cc4.type IS NULL THEN 0 ELSE 1 END) AS einvoice,
             a1.country_id as countryid, a1.zip as zip, a1.city as city, a1.street as street,
             a1.house as building, a1.flat as apartment, a2.country_id as post_countryid,
             a2.zip as post_zip, a2.city as post_city, a2.street as post_street,
@@ -133,10 +133,10 @@ $this->Execute("
     
     CREATE VIEW customeraddressview AS
         SELECT c.*,
-            (CASE WHEN cc1.type IS NULL THEN 0 ELSE cc1.cdate END) AS consentdate, 
-            (CASE WHEN cc2.type IS NULL THEN 0 ELSE 1 END) AS invoicenotice, 
-            (CASE WHEN cc3.type IS NULL THEN 0 ELSE 1 END) AS mailingnotice, 
-            (CASE WHEN cc4.type IS NULL THEN 0 ELSE 1 END) AS einvoice, 
+            (CASE WHEN cc1.type IS NULL THEN 0 ELSE cc1.cdate END) AS consentdate,
+            (CASE WHEN cc2.type IS NULL THEN 0 ELSE 1 END) AS invoicenotice,
+            (CASE WHEN cc3.type IS NULL THEN 0 ELSE 1 END) AS mailingnotice,
+            (CASE WHEN cc4.type IS NULL THEN 0 ELSE 1 END) AS einvoice,
             a1.country_id as countryid, a1.zip as zip, a1.city as city, a1.street as street,
             a1.house as building, a1.flat as apartment, a2.country_id as post_countryid,
             a2.zip as post_zip, a2.city as post_city, a2.street as post_street,
