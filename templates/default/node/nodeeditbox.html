@@ -13,19 +13,6 @@
 		flex-wrap: wrap;
 	}
 
-	.node-data {
-		width: 100%;
-		display: flex;
-		flex-direction: row;
-		justify-content: flex-start;
-		align-items: flex-start;
-		flex-wrap: wrap;
-	}
-
-	.node-data > div {
-		flex-grow: 1;
-	}
-
 	#netdev {
 		max-width: 250px;
 	}
@@ -56,7 +43,7 @@
 		}
 
 		.ui-selectmenu-button.ui-button {
-			width: 14em;
+			min-width: 12em;
 			white-space: normal;
 		}
 	}
@@ -71,10 +58,8 @@
 <table class="lmsbox">
     <thead>
 		<tr>
-			<td style="width: 1%;">
+			<td style="width: 99%;" COLSPAN="3">
 				<img src="img/node.gif" alt="">
-			</td>
-			<td style="width: 99%;" COLSPAN="2">
 				<input type="text" name="nodeedit[name]" value="{$nodeinfo.name}" maxlength="32" size="30" required {tip text="Enter node name" trigger="name" bold=1}>
 				<span class="bold">({$nodeinfo.id|string_format:"%04d"})</span>
 			</td>
@@ -85,8 +70,8 @@
 			<td style="width: 100%;" colspan="3" class="container">
 				<table style="width: 100%;" cellpadding="0">
 					<tr>
-						<td class="tab-beautify node-data">
-							<div id="node-left-panel">
+						<td class="tab-beautify lmsbox-panels">
+							<div class="lmsbox-panel">
 								<table style="width: 100%;" cellpadding="3">
 								<colgroup>
 									<col style="width: 1%;">
@@ -363,7 +348,7 @@
 								</tr>
 							</table>
 							</div>
-							<div id="node-right-panel">
+							<div class="lmsbox-panel">
 								<table width="100%" class="tab-beautify">
 								<colgroup>
 									<col style="width: 1%;">
