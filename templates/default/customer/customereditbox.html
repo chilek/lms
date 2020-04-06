@@ -377,40 +377,20 @@
 						</TD>
 						<TD>
 							<TABLE cellpadding="0">
-								{block name="customereditbox-options"}
+							{block name="customereditbox-options"}
+								{foreach $_CCONSENTS as $type => $consent}
 								<TR>
 									<TD>
-										<label for="chkconsent">{trans("Consent to personal data processing:")}</label>
+										<label for="chkconsent{$type}">{$consent.label}</label>
 									</TD>
 									<TD>
-										<INPUT type="checkbox" name="customerdata[consentdate]" id="chkconsent" value="{$smarty.now}"{if $customerinfo.consentdate} checked{/if}>
+										<INPUT type="checkbox" name="customerdata[consents][{$type}]" id="chkconsent{$type}"
+											   value="{$smarty.now}"{if isset($customerinfo.consents[$type])} checked{/if}
+												{tip trigger="chkconsent"|cat:$type}>
 									</TD>
 								</TR>
-								<TR>
-									<TD>
-										<label for="chkeinvoice">{trans("Cancellation of a traditional invoice (agreement on an electronic invoice):")}</label>
-									</TD>
-									<TD>
-										<INPUT type="checkbox" name="customerdata[einvoice]" id="chkeinvoice" value="1"{if $customerinfo.einvoice} checked{/if}>
-									</TD>
-								</TR>
-								<TR {tip text="Consent to invoices delivery via e-mail:" trigger="invoicenotice"}>
-									<TD>
-										<label for="chkinvoicenotice">{trans("Consent to invoices delivery via e-mail:")}</label>
-									</TD>
-									<TD>
-										<INPUT type="checkbox" name="customerdata[invoicenotice]" id="chkinvoicenotice" value="1"{if $customerinfo.invoicenotice} checked{/if}>
-									</TD>
-								</TR>
-								<TR>
-									<TD>
-										<label for="chkmailingnotice">{trans("Consent to messages delivery via e-mail or sms:")}</label>
-									</TD>
-									<TD>
-										<INPUT type="checkbox" name="customerdata[mailingnotice]" id="chkmailingnotice" value="1"{if $customerinfo.mailingnotice} checked{/if}>
-									</TD>
-								</TR>
-								{/block}
+								{/foreach}
+							{/block}
 							</TABLE>
 						</TD>
 					</TR>
@@ -503,7 +483,7 @@
 	function init_email_validators() {
 		$('[name^="customerdata[emails]"][value="16"]').off('click').click(function() {
 			var checked = $(this).prop('checked');
-			if (!$('#chkinvoicenotice').prop('checked') && checked) {
+			if (!$('#chkconsent{$smarty.const.CCONSENT_INVOICENOTICE}').prop('checked') && checked) {
 				alertDialog($t("Customer has not checked \'electronic invoice\' consent and you are trying to mark this mail contact for invoice sending!"), this);
 			}
 		});

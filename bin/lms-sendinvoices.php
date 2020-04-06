@@ -369,7 +369,7 @@ if ($backup || $archive) {
         } else {
             $count = intval($DB->GetOne("SELECT COUNT(*)
 				FROM documents d
-				LEFT JOIN customers c ON c.id = d.customerid
+				LEFT JOIN customeraddressview c ON c.id = d.customerid
 				JOIN (SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
 					FROM customercontacts
 					WHERE (type & ?) = ?
@@ -395,7 +395,7 @@ $ignore_send_date = ConfigHelper::checkConfig('sendinvoices.ignore_send_date');
 
 $query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctype, d.archived, d.senddate, n.template" . ($backup || $archive ? '' : ', m.email') . "
 		FROM documents d
-		LEFT JOIN customers c ON c.id = d.customerid"
+		LEFT JOIN customeraddressview c ON c.id = d.customerid"
         . ($backup || $archive ? '' : " JOIN (SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
 				FROM customercontacts WHERE (type & ?) = ? GROUP BY customerid) m ON m.customerid = c.id")
         . " LEFT JOIN numberplans n ON n.id = d.numberplanid 

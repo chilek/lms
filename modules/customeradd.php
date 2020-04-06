@@ -229,8 +229,8 @@ if (isset($_POST['customeradd'])) {
         }
     }
 
-    if (isset($customeradd['invoicenotice']) && !$emaileinvoice) {
-        $error['invoicenotice'] = trans('If the customer wants to receive an electronic invoice must be checked e-mail address to which to send e-invoices');
+    if (isset($customeradd['consents'][CCONSENT_INVOICENOTICE]) && !$emaileinvoice) {
+        $error['chkconsent' . CCONSENT_INVOICENOTICE] = trans('If the customer wants to receive an electronic invoice must be checked e-mail address to which to send e-invoices');
     }
 
     if (isset($customeradd['cutoffstopindefinitely'])) {
@@ -260,8 +260,12 @@ if (isset($_POST['customeradd'])) {
     if (!$error) {
         $customeradd['cutoffstop'] = $cutoffstop;
 
-        if (!isset($customeradd['consentdate'])) {
-            $customeradd['consentdate'] = 0;
+        if (!isset($customeradd['consents'])) {
+            $customeradd['consents'] = array();
+        }
+
+        if (!isset($customeradd['consents'][CCONSENT_DATE])) {
+            $customeradd['consents'][CCONSENT_DATE] = 0;
         }
         if (!isset($customeradd['divisionid'])) {
             $customeradd['divisionid'] = 0;

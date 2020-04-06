@@ -2044,7 +2044,7 @@ if (isset($_GET['l']) && sprintf('%d', $_GET['l']) > 0 && sprintf('%d', $_GET['l
         $customeradd['cutoffstop'] = 0;
         $customeradd['divisionid'] = 1;
         $customeradd['countryid'] = 0;
-        $customeradd['consentdate'] = 0;
+        $customeradd['consents'] = array();
         $customeradd['paytime'] = -1;
         $customeradd['extid'] = 0;
 
@@ -2092,7 +2092,7 @@ if (isset($_GET['l']) && sprintf('%d', $_GET['l']) > 0 && sprintf('%d', $_GET['l
         }
         $startip ++;
     }
-    
+
     echo ' [OK]<BR>';
     echo '<B>'.trans('Generating network hardware and connections...').'</B>';
     flush();
@@ -2199,7 +2199,7 @@ if (isset($_GET['l']) && sprintf('%d', $_GET['l']) > 0 && sprintf('%d', $_GET['l
                 }
             }
         }
-    
+
         echo ' [OK]';
     }
 

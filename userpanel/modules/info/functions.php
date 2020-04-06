@@ -31,10 +31,20 @@ function module_main()
     global $LMS,$SMARTY,$SESSION;
 
     if (!empty($_GET['consent'])) {
-        $LMS->DB->Execute(
-            'UPDATE customers SET consentdate = ?NOW? WHERE id = ?',
-            array($SESSION->id)
-        );
+        if ($LMS->DB->GetOne(
+            'SELECT customerid FROM customerconsents WHERE customerid = ? AND type = ?',
+            array($SESSION->id, CCONSENT_DATE)
+        )) {
+            $LMS->DB->Execute(
+                'UPDATE customerconsents SET cdate = ?NOW? WHERE customer = ? AND type = ?',
+                array($SESSION->id, CCONSENT_DATE)
+            );
+        } else {
+            $LMS->DB->Execute(
+                'INSERT INTO customerconsents (customerid, type, cdate) VALUES (?, ?, ?NOW?)',
+                array($SESSION->id, CCONSENT_DATE)
+            );
+        }
     }
 
     $userinfo = $LMS->GetCustomer($SESSION->id);

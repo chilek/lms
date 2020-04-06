@@ -83,6 +83,31 @@ $CSTATUSES = array(
     ),
 );
 
+// customer consents
+define('CCONSENT_DATE', 1);
+define('CCONSENT_INVOICENOTICE', 2);
+define('CCONSENT_MAILINGNOTICE', 3);
+define('CCONSENT_EINVOICE', 4);
+
+$CCONSENTS = array(
+    CCONSENT_DATE => array(
+        'label' => trans('Consent to personal data processing'),
+        'type' => 'date',
+    ),
+    CCONSENT_EINVOICE => array(
+        'label' => trans('Cancellation of a traditional invoice (agreement on an electronic invoice)'),
+        'type' => 'boolean',
+    ),
+    CCONSENT_INVOICENOTICE => array(
+        'label' => trans('Consent to invoices delivery via e-mail'),
+        'type' => 'boolean',
+    ),
+    CCONSENT_MAILINGNOTICE => array(
+        'label' => trans('Consent to messages delivery via e-mail or sms'),
+        'type' => 'boolean',
+    ),
+);
+
 // Config types
 define('CONFIG_TYPE_AUTO', 0);
 define('CONFIG_TYPE_BOOLEAN', 1);
@@ -1070,6 +1095,7 @@ if (isset($SMARTY)) {
     $SMARTY->assign('_NETWORK_INTERFACE_TYPES', $NETWORK_INTERFACE_TYPES);
     $SMARTY->assign('_CTYPES', $CTYPES);
     $SMARTY->assign('_CSTATUSES', $CSTATUSES);
+    $SMARTY->assign('_CCONSENTS', $CCONSENTS);
     $SMARTY->assign('_MESSAGETEMPLATES', $MESSAGETEMPLATES);
     $SMARTY->assign('_ACCOUNTTYPES', $ACCOUNTTYPES);
     $SMARTY->assign('_DOCTYPES', $DOCTYPES);

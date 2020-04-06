@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -1389,7 +1389,7 @@ if (empty($types) || in_array('invoices', $types)) {
         d.number, n.template, d.cdate, d.paytime, m.email, x.phone, divisions.account,
         COALESCE(ca.balance, 0) AS balance, v.value, v.currency
         FROM documents d
-        JOIN customers c ON (c.id = d.customerid)
+        JOIN customeraddressview c ON (c.id = d.customerid)
         LEFT JOIN divisions ON divisions.id = c.divisionid
         LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
             FROM customercontacts
@@ -1527,7 +1527,7 @@ if (empty($types) || in_array('notes', $types)) {
         d.number, n.template, d.cdate, m.email, x.phone, divisions.account,
         COALESCE(ca.balance, 0) AS balance, v.value, v.currency
         FROM documents d
-        JOIN customers c ON (c.id = d.customerid)
+        JOIN customeraddressview c ON (c.id = d.customerid)
         LEFT JOIN divisions ON divisions.id = c.divisionid
         LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
             FROM customercontacts

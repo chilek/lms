@@ -559,6 +559,12 @@ class LMS
         return $manager->getCustomerStatus($id);
     }
 
+    public function getCustomerConsents($id)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->getCustomerConsents($id);
+    }
+
     public function GetCustomer($id, $short = false)
     {
         $manager = $this->getCustomerManager();

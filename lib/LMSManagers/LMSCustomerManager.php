@@ -307,7 +307,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         }
 
         $result['sendinvoices'] = ($this->db->GetOne('SELECT 1 FROM customercontacts cc
-			JOIN customers c ON c.id = cc.customerid 
+			JOIN customeraddressview c ON c.id = cc.customerid 
 			WHERE c.id = ? AND invoicenotice = 1 AND cc.type & ? = ?
 			LIMIT 1', array($id, CONTACT_INVOICES | CONTACT_DISABLED, CONTACT_INVOICES)) > 0);
 
@@ -426,6 +426,50 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         return $result;
     }
 
+    private function updateCustomerConsents($customerid, $current_consents, $new_consents)
+    {
+        $consents_to_remove = array_diff($current_consents, $new_consents);
+        $consents_to_add = array_diff($new_consents, $current_consents);
+
+        $userid = Auth::GetCurrentUser();
+
+        if (!empty($consents_to_remove)) {
+            $this->db->Execute(
+                'DELETE FROM customerconsents WHERE customerid = ? AND type IN ?',
+                array($customerid, $consents_to_remove)
+            );
+            if ($this->syslog) {
+                foreach ($consents_to_remove as $type) {
+                    $args = array(
+                        SYSLOG::RES_USER => $userid,
+                        SYSLOG::RES_CUST => $customerid,
+                        'type' => $type,
+                    );
+                    $this->syslog->AddMessage(SYSLOG::RES_CUSTCONSENT, SYSLOG::OPER_DELETE, $args);
+                }
+            }
+        }
+        if (!empty($consents_to_add)) {
+            $records = array();
+            $now = time();
+            foreach ($consents_to_add as $consent) {
+                $records[] = '(' . $customerid . ',' . $consent . ',' . $now . ')';
+                if ($this->syslog) {
+                    $args = array(
+                        SYSLOG::RES_USER => $userid,
+                        SYSLOG::RES_CUST => $customerid,
+                        'type' => $type,
+                        'cdate' => $now,
+                    );
+                    $this->syslog->AddMessage(SYSLOG::RES_CUSTCONSENT, SYSLOG::OPER_ADD, $args);
+                }
+            }
+            if (!empty($records)) {
+                $this->db->Execute('INSERT INTO customerconsents (customerid, type, cdate) VALUES ' . implode(',', $records));
+            }
+        }
+    }
+
     /**
      * Adds customer
      *
@@ -460,22 +504,17 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'rbe'            => $customeradd['rbe'],
             'icn'            => $customeradd['icn'],
             'cutoffstop'     => $customeradd['cutoffstop'],
-            'consentdate'    => $customeradd['consentdate'],
-            'einvoice'       => $customeradd['einvoice'],
             SYSLOG::RES_DIV  => empty($customeradd['divisionid']) ? null : $customeradd['divisionid'],
             'paytime'        => $customeradd['paytime'],
             'paytype'        => !empty($customeradd['paytype']) ? $customeradd['paytype'] : null,
-            'invoicenotice'  => $customeradd['invoicenotice'],
-            'mailingnotice'  => $customeradd['mailingnotice'],
         );
 
         if ($this->db->Execute('INSERT INTO customers (extid, name, lastname, type,
                         ten, ssn, status, creationdate,
                         creatorid, info, notes, message, documentmemo, pin, regon, rbename, rbe,
-                        icn, cutoffstop, consentdate, einvoice, divisionid, paytime, paytype,
-                        invoicenotice, mailingnotice)
+                        icn, cutoffstop, divisionid, paytime, paytype)
                     VALUES (?, ?, ' . ($capitalize_customer_names ? 'UPPER(?)' : '?') . ', ?, ?, ?, ?, ?NOW?,
-                        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))
+                        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))
         ) {
             $id = $this->db->GetLastInsertID('customers');
 
@@ -494,6 +533,13 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 unset($args[SYSLOG::RES_USER]);
                 $this->syslog->AddMessage(SYSLOG::RES_CUST, SYSLOG::OPER_ADD, $args);
             }
+
+            // update customer consents
+            $this->updateCustomerConsents(
+                $id,
+                array(),
+                array_keys($customeradd['consents'])
+            );
 
             if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.add_customer_group_required', false))) {
                 $gargs = array(
@@ -1281,6 +1327,15 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             ' . ($count ? ' LIMIT ' . $count : ''), array($id));
     }
 
+    public function getCustomerConsents($id)
+    {
+        $result = $this->db->GetAllByKey('SELECT cdate, type FROM customerconsents WHERE customerid = ?', 'type', array($id));
+        if (empty($result)) {
+            return array();
+        }
+        return $result;
+    }
+
     /**
      * Returns customer data
      *
@@ -1339,6 +1394,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     $result['post_stateid'] = $cstate['id'];
                     $result['post_cstate'] = $cstate['name'];
                 }
+                $result['consents'] = $this->getCustomerConsents($id);
             }
             $result['balance'] = $this->getCustomerBalance($result['id']);
             $result['bankaccount'] = bankaccount($result['id'], $result['account']);
@@ -1434,10 +1490,6 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'rbename'        => $customerdata['rbename'],
             'rbe'            => $customerdata['rbe'],
             'cutoffstop'     => $customerdata['cutoffstop'],
-            'consentdate'    => $customerdata['consentdate'],
-            'einvoice'       => $customerdata['einvoice'],
-            'invoicenotice'  => $customerdata['invoicenotice'],
-            'mailingnotice'  => $customerdata['mailingnotice'],
             SYSLOG::RES_DIV  => empty($customerdata['divisionid']) ? null : $customerdata['divisionid'],
             'paytime'        => $customerdata['paytime'],
             'paytype'        => $customerdata['paytype'] ? $customerdata['paytype'] : null,
@@ -1482,8 +1534,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                ten=?, ssn=?, moddate=?NOW?, modid=?,
                                info=?, notes=?, lastname=' . ($capitalize_customer_names ? 'UPPER(?)' : '?') . ', name=?,
                                deleted=0, message=?, documentmemo=?, pin=?, regon=?, icn=?, rbename=?, rbe=?,
-                               cutoffstop=?, consentdate=?, einvoice=?, invoicenotice=?, mailingnotice=?,
-                               divisionid=?, paytime=?, paytype=?
+                               cutoffstop=?, divisionid=?, paytime=?, paytype=?
                                WHERE id=?', array_values($args));
 
         if ($res) {
@@ -1492,6 +1543,13 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 $args['deleted'] = 0;
                 $this->syslog->AddMessage(SYSLOG::RES_CUST, SYSLOG::OPER_UPDATE, $args);
             }
+
+            // update customer consents
+            $this->updateCustomerConsents(
+                $customerdata['id'],
+                array_keys($this->getCustomerConsents($customerdata['id'])),
+                array_keys($customerdata['consents'])
+            );
         }
 
         return $res;

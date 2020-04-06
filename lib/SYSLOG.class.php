@@ -84,6 +84,7 @@ class SYSLOG
     const RES_TICKET = 56;
     const RES_DOCATTACH = 57;
     const RES_DOCCONTENT = 58;
+    const RES_CUSTCONSENT = 59;
 
     const OPER_ADD = 1;
     const OPER_DELETE = 2;
@@ -155,6 +156,7 @@ class SYSLOG
         self::RES_TICKET => 'ticket<!syslog>',
         self::RES_DOCATTACH => 'document attachment<!syslog>',
         self::RES_DOCCONTENT => 'document content<!syslog>',
+        self::RES_CUSTCONSENT => 'customer consent<!syslog>',
     );
     private static $resource_keys = array(
         self::RES_USER => 'userid',
@@ -215,6 +217,7 @@ class SYSLOG
         self::RES_TICKET => 'ticketid',
         self::RES_DOCATTACH => 'documentattachmentid',
         self::RES_DOCCONTENT => 'documentcontentid',
+        self::RES_CUSTCONSENT => 'customerconsentid',
     );
     private static $operations = array(
         self::OPER_ADD => 'addition<!syslog>',
@@ -465,7 +468,11 @@ class SYSLOG
                 }
                 break;
             default:
-                $data['value'] = $data['value'];
+                if (strpos($data['name'], 'chkconsent') === 0) {
+                    $data['value'] = !empty($data['value']) ? $data['value'] = date('Y.m.d', $data['value']) : $data['value'];
+                } else {
+                    $data['value'] = $data['value'];
+                }
         }
         if ($data['resource'] != self::RES_USER && strlen($data['value']) > 50) {
             $data['value'] = substr($data['value'], 0, 50) . '...';

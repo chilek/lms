@@ -291,10 +291,6 @@ CREATE TABLE customers (
 	message text		DEFAULT '' NOT NULL,
 	pin varchar(255)		DEFAULT 0 NOT NULL,
 	cutoffstop integer	DEFAULT 0 NOT NULL,
-	consentdate integer	DEFAULT 0 NOT NULL,
-	einvoice smallint 	DEFAULT NULL,
-	invoicenotice smallint 	DEFAULT NULL,
-	mailingnotice smallint 	DEFAULT NULL,
 	divisionid integer	DEFAULT NULL
 		CONSTRAINT customers_divisionid_fkey REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE,
     paytime smallint 	DEFAULT -1 NOT NULL,
@@ -302,8 +298,17 @@ CREATE TABLE customers (
     documentmemo text   DEFAULT NULL,
 	PRIMARY KEY (id)
 );
-
 CREATE INDEX customers_lastname_idx ON customers (lastname, name);
+
+CREATE TABLE customerconsents (
+    customerid integer NOT NULL
+        CONSTRAINT customerconsents_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    cdate integer DEFAULT 0 NOT NULL,
+    type smallint NOT NULL,
+    CONSTRAINT customerconsents_ukey UNIQUE (customerid, type)
+);
+CREATE INDEX customerconsents_cdate_idx ON customerconsents (cdate);
+CREATE INDEX customerconsents_type_idx ON customerconsents (type);
 
 /* --------------------------------------------------------
   Structure of table "numberplans"
@@ -2757,6 +2762,10 @@ CREATE VIEW vnetworks AS
 
 CREATE VIEW customerview AS
     SELECT c.*,
+        (CASE WHEN cc1.type IS NULL THEN 0 ELSE cc1.cdate END) AS consentdate,
+        (CASE WHEN cc2.type IS NULL THEN 0 ELSE 1 END) AS invoicenotice,
+        (CASE WHEN cc3.type IS NULL THEN 0 ELSE 1 END) AS mailingnotice,
+        (CASE WHEN cc4.type IS NULL THEN 0 ELSE 1 END) AS einvoice,
         a1.country_id as countryid, a1.zip as zip, a1.city as city,
         a1.street as street,a1.house as building, a1.flat as apartment,
         a2.country_id as post_countryid, a2.zip as post_zip,
@@ -2771,6 +2780,10 @@ CREATE VIEW customerview AS
         LEFT JOIN vaddresses a1 ON ca1.address_id = a1.id
         LEFT JOIN customer_addresses ca2 ON c.id = ca2.customer_id AND ca2.type = 0
         LEFT JOIN vaddresses a2 ON ca2.address_id = a2.id
+        LEFT JOIN customerconsents cc1 ON cc1.customerid = c.id AND cc1.type = 1
+        LEFT JOIN customerconsents cc2 ON cc2.customerid = c.id AND cc2.type = 2
+        LEFT JOIN customerconsents cc3 ON cc3.customerid = c.id AND cc3.type = 3
+        LEFT JOIN customerconsents cc4 ON cc4.customerid = c.id AND cc4.type = 4
     WHERE NOT EXISTS (
         SELECT 1 FROM customerassignments a
         JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
@@ -2779,6 +2792,10 @@ CREATE VIEW customerview AS
 
 CREATE VIEW contractorview AS
     SELECT c.*,
+        (CASE WHEN cc1.type IS NULL THEN 0 ELSE cc1.cdate END) AS consentdate,
+        (CASE WHEN cc2.type IS NULL THEN 0 ELSE 1 END) AS invoicenotice,
+        (CASE WHEN cc3.type IS NULL THEN 0 ELSE 1 END) AS mailingnotice,
+        (CASE WHEN cc4.type IS NULL THEN 0 ELSE 1 END) AS einvoice,
         a1.country_id as countryid, a1.zip as zip, a1.city as city, a1.street as street,
         a1.house as building, a1.flat as apartment, a2.country_id as post_countryid,
         a2.zip as post_zip, a2.city as post_city, a2.street as post_street,
@@ -2792,10 +2809,18 @@ CREATE VIEW contractorview AS
         LEFT JOIN vaddresses a1 ON ca1.address_id = a1.id
         LEFT JOIN customer_addresses ca2 ON c.id = ca2.customer_id AND ca2.type = 0
         LEFT JOIN vaddresses a2 ON ca2.address_id = a2.id
+        LEFT JOIN customerconsents cc1 ON cc1.customerid = c.id AND cc1.type = 1
+        LEFT JOIN customerconsents cc2 ON cc2.customerid = c.id AND cc2.type = 2
+        LEFT JOIN customerconsents cc3 ON cc3.customerid = c.id AND cc3.type = 3
+        LEFT JOIN customerconsents cc4 ON cc4.customerid = c.id AND cc4.type = 4
     WHERE c.type = 2;
 
 CREATE VIEW customeraddressview AS
     SELECT c.*,
+        (CASE WHEN cc1.type IS NULL THEN 0 ELSE cc1.cdate END) AS consentdate,
+        (CASE WHEN cc2.type IS NULL THEN 0 ELSE 1 END) AS invoicenotice,
+        (CASE WHEN cc3.type IS NULL THEN 0 ELSE 1 END) AS mailingnotice,
+        (CASE WHEN cc4.type IS NULL THEN 0 ELSE 1 END) AS einvoice,
         a1.country_id as countryid, a1.zip as zip, a1.city as city, a1.street as street,
         a1.house as building, a1.flat as apartment, a2.country_id as post_countryid,
         a2.zip as post_zip, a2.city as post_city, a2.street as post_street,
@@ -2809,6 +2834,10 @@ CREATE VIEW customeraddressview AS
         LEFT JOIN vaddresses a1 ON ca1.address_id = a1.id
         LEFT JOIN customer_addresses ca2 ON c.id = ca2.customer_id AND ca2.type = 0
         LEFT JOIN vaddresses a2 ON ca2.address_id = a2.id
+        LEFT JOIN customerconsents cc1 ON cc1.customerid = c.id AND cc1.type = 1
+        LEFT JOIN customerconsents cc2 ON cc2.customerid = c.id AND cc2.type = 2
+        LEFT JOIN customerconsents cc3 ON cc3.customerid = c.id AND cc3.type = 3
+        LEFT JOIN customerconsents cc4 ON cc4.customerid = c.id AND cc4.type = 4
     WHERE c.type < 2;
 
 CREATE OR REPLACE FUNCTION int2txt(bigint) RETURNS text AS $$
@@ -3719,6 +3748,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020031000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020040600');
 
 COMMIT;

@@ -292,38 +292,24 @@
 								<TD WIDTH="99%">
 									<TABLE cellpadding="2">
 									{block name="customerinfobox-options"}
+										{foreach $_CCONSENTS as $type => $consent}
 										<TR>
 											<TD>
-												{trans("Consent to personal data processing:")}
+												{$consent.label}
 											</TD>
 											<TD>
-												{if $customerinfo.consentdate}{$customerinfo.consentdate}{else}{trans("no")}{/if}
+												{if isset($customerinfo.consents[$type])}
+													{if $consent.type == 'date'}
+														{$customerinfo.consents[$type]['cdate']|date_format:"Y/m/d"}
+													{else}
+														{trans("yes")}
+													{/if}
+												{else}
+													{trans("no")}
+												{/if}
 											</TD>
 										</TR>
-										<TR>
-											<TD>
-												{trans("Cancellation of a traditional invoice (agreement on an electronic invoice):")}
-											</TD>
-											<TD>
-												{if $customerinfo.einvoice}{trans("yes")}{else}{trans("no")}{/if}
-											</TD>
-										</TR>
-										<TR>
-											<TD>
-												{trans("Consent to invoices delivery via e-mail:")}
-											</TD>
-											<TD>
-												{if $customerinfo.invoicenotice}{trans("yes")}{else}{trans("no")}{/if}
-											</TD>
-										</TR>
-										<TR>
-											<TD>
-												{trans("Consent to messages delivery via e-mail or sms:")}
-											</TD>
-											<TD>
-												{if $customerinfo.mailingnotice}{trans("yes")}{else}{trans("no")}{/if}
-											</TD>
-										</TR>
+										{/foreach}
 									{/block}
 									</TABLE>
 								</TD>

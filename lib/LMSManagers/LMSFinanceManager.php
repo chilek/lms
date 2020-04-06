@@ -1831,7 +1831,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			LEFT JOIN countries ON (countries.id = d.countryid)
 			LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
 			LEFT JOIN (
-			SELECT DISTINCT c.id AS customerid, 1 AS sendinvoices FROM customers c
+			SELECT DISTINCT c.id AS customerid, 1 AS sendinvoices FROM customeraddressview c
 				JOIN customercontacts cc ON cc.customerid = c.id
 				WHERE invoicenotice = 1 AND cc.type & ' . (CONTACT_INVOICES | CONTACT_DISABLED) . ' = ' . CONTACT_INVOICES . '
 			) i ON i.customerid = d.customerid

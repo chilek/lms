@@ -70,6 +70,8 @@ interface LMSCustomerManagerInterface
 
     public function GetCustomerNetworks($id, $count = null);
 
+    public function getCustomerConsents($id);
+
     public function GetCustomer($id, $short = false);
 
     public function customerUpdate($customerdata);

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -185,8 +185,8 @@ if (!isset($_POST['xjxfun'])) {
                 }
             }
 
-            if (isset($customerdata['invoicenotice']) && !$emaileinvoice) {
-                $error['invoicenotice'] = trans('If the customer wants to receive an electronic invoice must be checked e-mail address to which to send e-invoices');
+            if (isset($customerdata['consents'][CCONSENT_INVOICENOTICE]) && !$emaileinvoice) {
+                $error['chkconsent' . CCONSENT_INVOICENOTICE] = trans('If the customer wants to receive an electronic invoice must be checked e-mail address to which to send e-invoices');
             }
 
             if (isset($customerdata['cutoffstopindefinitely'])) {
@@ -211,18 +211,22 @@ if (!isset($_POST['xjxfun'])) {
                 )
             );
 
-                $customerdata = $hook_data['customerdata'];
-                $error = $hook_data['error'];
+            $customerdata = $hook_data['customerdata'];
+            $error = $hook_data['error'];
 
             if (!$error) {
                 $customerdata['cutoffstop'] = $cutoffstop;
 
-                if (!isset($customerdata['consentdate'])) {
-                    $customerdata['consentdate'] = 0;
+                if (!isset($customerdata['consents'])) {
+                    $customerdata['consents'] = array();
+                }
+
+                if (!isset($customerdata['consents'][CCONSENT_DATE])) {
+                    $customerdata['consents'][CCONSENT_DATE] = 0;
                 } else {
-                    $consent = $DB->GetOne('SELECT consentdate FROM customers WHERE id = ?', array($customerdata['id']));
+                    $consent = $DB->GetOne('SELECT consentdate FROM customeraddressview WHERE id = ?', array($customerdata['id']));
                     if ($consent) {
-                        $customerdata['consentdate'] = $consent;
+                        $customerdata['consents'][CCONSENT_DATE] = $consent;
                     }
                 }
 
