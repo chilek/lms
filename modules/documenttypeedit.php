@@ -37,9 +37,9 @@ if (isset($_POST['rights'])) {
 
     if (!$error) {
         $DB->BeginTrans();
-        
+
         $DB->Execute('DELETE FROM docrights WHERE doctype = ?', array($id));
-        
+
         foreach ($rights as $idx => $user) {
             $DB->Execute(
                 'INSERT INTO docrights (userid, doctype, rights)
@@ -51,14 +51,14 @@ if (isset($_POST['rights'])) {
                 )
             );
         }
-        
+
         $DB->CommitTrans();
-        
+
         $SESSION->redirect('?m=documenttypes');
     } else {
-        $users = $DB->GetAllByKey('SELECT id, name FROM vusers
-			WHERE deleted = 0 ORDER BY name', 'id');
-    
+        $users = $DB->GetAllByKey('SELECT id, name, rname, login FROM vusers
+			WHERE deleted = 0 ORDER BY rname', 'id');
+
         foreach ($users as $idx => $user) {
             if (!empty($rights[$idx])) {
                 $rights[$idx]['rights'] = array_sum($rights[$idx]);
@@ -67,11 +67,11 @@ if (isset($_POST['rights'])) {
         }
     }
 } else {
-    $rights = $DB->GetAllByKey('SELECT u.id, u.name, d.rights
+    $rights = $DB->GetAllByKey('SELECT u.id, u.name, u.rname, u.login, d.rights
 		FROM vusers u
 		LEFT JOIN docrights d ON (u.id = d.userid AND d.doctype = ?)
 		WHERE u.deleted = 0
-		ORDER BY u.name', 'id', array($id));
+		ORDER BY u.rname', 'id', array($id));
 }
 
 $type = array(

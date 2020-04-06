@@ -47,7 +47,7 @@
 				{foreach $documenttype.rights as $userid => $userrights}
 				<TR class="highlight lms-ui-row-all-check">
 					<TD>
-						<A href="?m=userinfo&id={$userid}">{$userrights.name}</A>
+						<A href="?m=userinfo&id={$userid}">{$userrights.rname} ({$userrights.login})</A>
 					</TD>
 					{foreach $_DOCRIGHTS as $right => $label}
 					<TD class="text-center nobr">
