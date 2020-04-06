@@ -28,7 +28,7 @@
 						<SELECT size="1" name="a[]" OnChange="document.filter.submit();" class="lms-ui-multiselect lms-ui-multiselect-filter" multiple data-default-value="{trans("- all -")}">
 							<OPTION value="-1" {if is_array($filter.userid) && in_array('-1', $filter.userid)} selected{/if}>- {trans("unassigned")} -</OPTION>
 							{foreach $userlist as $user}
-								<OPTION value="{$user.id}"{if is_array($filter.userid) && in_array($user.id, $filter.userid)} SELECTED{/if}{if !$user.access} disabled{/if}>{$user.rname|truncate:40:"...":true}</OPTION>
+								<OPTION value="{$user.id}"{if is_array($filter.userid) && in_array($user.id, $filter.userid)} SELECTED{/if}{if !$user.access} disabled{/if}>{$user.rname|truncate:40:"...":true} ({$user.login})</OPTION>
 							{/foreach}
 						</SELECT>
 						{trans("Privacy:")}
