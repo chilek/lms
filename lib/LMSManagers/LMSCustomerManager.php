@@ -426,7 +426,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         return $result;
     }
 
-    private function updateCustomerConsents($customerid, $current_consents, $new_consents)
+    public function updateCustomerConsents($customerid, $current_consents, $new_consents)
     {
         $consents_to_remove = array_diff($current_consents, $new_consents);
         $consents_to_add = array_diff($new_consents, $current_consents);

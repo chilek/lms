@@ -649,6 +649,12 @@ class LMS
         return $manager->customerStats();
     }
 
+    public function updateCustomerConsents($customerid, $current_consents, $new_consents)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->updateCustomerConsents($customerid, $current_consents, $new_consents);
+    }
+
     public function checkCustomerAddress($a_id, $c_id)
     {
         $manager = $this->getCustomerManager();

@@ -60,6 +60,8 @@ interface LMSCustomerManagerInterface
 
     public function customerStats();
 
+    public function updateCustomerConsents($customerid, $current_consents, $new_consents);
+
     public function customerAdd($customeradd);
 
     public function getCustomerList($params);
