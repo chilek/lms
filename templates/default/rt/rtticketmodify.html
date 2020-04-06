@@ -55,7 +55,7 @@
 						<option value="">{trans("<!person>- none -")}</option>
 						<option value="0"{if $ticket.requestor_userid == '0'} selected{/if}>{trans("- indicated person -")}</option>
 						{foreach $userlist as $user}
-							<option value="{$user.id}"{if $ticket.requestor_userid == $user.id} selected{/if}>{$user.rname}</option>
+							<option value="{$user.id}"{if $ticket.requestor_userid == $user.id} selected{/if}>{$user.rname} ({$user.login})</option>
 						{/foreach}
 					</SELECT>
 				</div>
@@ -134,7 +134,7 @@
 						{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
 						|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
 						|| $user.id == $ticket.owner}
-							<OPTION value="{$user.id}"{if !$user.access} class="blend"{/if}{if $user.id == $ticket.owner} selected{/if}>{$user.rname}</OPTION>
+							<OPTION value="{$user.id}"{if !$user.access} class="blend"{/if}{if $user.id == $ticket.owner} selected{/if}>{$user.rname} ({$user.login})</OPTION>
 						{/if}
 					{/foreach}
 				</SELECT>
@@ -153,7 +153,7 @@
 							{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
 							|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
 							|| $user.id == $ticket.verifierid}
-								<OPTION value="{$user.id}"{if $user.id == $ticket.verifierid} selected{/if}{if !$user.access} class="blend"{/if}>{$user.rname}</OPTION>
+								<OPTION value="{$user.id}"{if $user.id == $ticket.verifierid} selected{/if}{if !$user.access} class="blend"{/if}>{$user.rname} ({$user.login})</OPTION>
 							{/if}
 						{/foreach}
 					</SELECT>

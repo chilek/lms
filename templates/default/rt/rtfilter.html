@@ -76,7 +76,7 @@
                         {if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
                             || (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
                             || (is_array($filter.owner) && in_array($user.id, $filter.owner))}
-                            <OPTION{if !$user.access} disabled{/if} value="{$user.id}"{if is_array($filter.owner) && in_array($user.id, $filter.owner)}} selected{/if}>{$user.rname|truncate:40:"...":true}</OPTION>
+                            <OPTION{if !$user.access} disabled{/if} value="{$user.id}"{if is_array($filter.owner) && in_array($user.id, $filter.owner)}} selected{/if}>{$user.rname|truncate:40:"...":true} ({$user.login})</OPTION>
                         {/if}
                     {/foreach}
                 </SELECT>
@@ -92,7 +92,7 @@
                         {if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
                             || (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
                             || (is_array($filter.verifierids) && in_array($user.id, $filter.verifierids))}
-                            <OPTION{if !$user.access} disabled{/if} value="{$user.id}"{if is_array($filter.verifierids) && in_array($user.id, $filter.verifierids)} SELECTED{/if}>{$user.rname|truncate:40:"...":true}</OPTION>
+                            <OPTION{if !$user.access} disabled{/if} value="{$user.id}"{if is_array($filter.verifierids) && in_array($user.id, $filter.verifierids)} SELECTED{/if}>{$user.rname|truncate:40:"...":true} ({$user.login})</OPTION>
                         {/if}
                     {/foreach}
                 </SELECT>
