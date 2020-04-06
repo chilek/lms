@@ -458,7 +458,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     $args = array(
                         SYSLOG::RES_USER => $userid,
                         SYSLOG::RES_CUST => $customerid,
-                        'type' => $type,
+                        'type' => $consent,
                         'cdate' => $now,
                     );
                     $this->syslog->AddMessage(SYSLOG::RES_CUSTCONSENT, SYSLOG::OPER_ADD, $args);

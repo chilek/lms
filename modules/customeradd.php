@@ -264,9 +264,6 @@ if (isset($_POST['customeradd'])) {
             $customeradd['consents'] = array();
         }
 
-        if (!isset($customeradd['consents'][CCONSENT_DATE])) {
-            $customeradd['consents'][CCONSENT_DATE] = 0;
-        }
         if (!isset($customeradd['divisionid'])) {
             $customeradd['divisionid'] = 0;
         }

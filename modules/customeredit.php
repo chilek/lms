@@ -221,9 +221,7 @@ if (!isset($_POST['xjxfun'])) {
                     $customerdata['consents'] = array();
                 }
 
-                if (!isset($customerdata['consents'][CCONSENT_DATE])) {
-                    $customerdata['consents'][CCONSENT_DATE] = 0;
-                } else {
+                if (isset($customerdata['consents'][CCONSENT_DATE])) {
                     $consent = $DB->GetOne('SELECT consentdate FROM customeraddressview WHERE id = ?', array($customerdata['id']));
                     if ($consent) {
                         $customerdata['consents'][CCONSENT_DATE] = $consent;

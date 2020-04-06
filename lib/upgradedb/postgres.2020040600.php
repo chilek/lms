@@ -40,13 +40,20 @@ $this->Execute("
     CREATE INDEX customerconsents_type_idx ON customerconsents (type);
 ");
 
+$consent_name_to_type_map = array(
+    'consentdate' => CCONSENT_DATE,
+    'einvoice' => CCONSENT_EINVOICE,
+    'mailingnotce' => CCONSENT_MAILINGNOTICE,
+    'invoicenotice' => CCONSENT_INVOICENOTICE,
+);
+
 $consents = $this->GetAll('SELECT id AS customerid, consentdate, einvoice, mailingnotice, invoicenotice FROM customers');
 if (!empty($consents)) {
     $records = array();
     foreach ($consents as $consent) {
-        foreach (array('consentdate', 'einvoice', 'mailingnotce', 'invoicenotice') as $type) {
-            if (!empty($consent[$type])) {
-                $records[] = '(' . $consent['customerid'] . ',' . ($type == 'consentdate' ? $consent['consentdate'] : 0) . ',' . CCONSENT_DATE . ')';
+        foreach ($consent_name_to_type_map as $consent_name => $consent_type) {
+            if (!empty($consent[$consent_name])) {
+                $records[] = '(' . $consent['customerid'] . ',' . ($consent_name == 'consentdate' ? $consent['consentdate'] : 0) . ',' . $consent_name_to_type_map[$consent_name] . ')';
             }
         }
     }
