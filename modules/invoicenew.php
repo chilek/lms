@@ -45,6 +45,23 @@ function GetCustomerCovenants($customerid, $currency)
 			ORDER BY time', array($customerid, $currency));
 }
 
+function cleanUpValue($value)
+{
+    return strlen($value) ? preg_replace(
+        array(
+            '/(\d{1,3})\s+(\d{3})/',
+            '/^(\d+(?:[\.,]\d+)?)\s*[^\d].*$/',
+            '/,/',
+        ),
+        array(
+            '$1$2',
+            '$1',
+            '.',
+        ),
+        $value
+    ) : $value;
+}
+
 $taxeslist = $LMS->GetTaxes();
 
 $SESSION->restore('invoicecontents', $contents, true);
@@ -197,9 +214,11 @@ switch ($action) {
             $error[str_replace('%variable', 'valuenetto', $error_index)] = trans('Field cannot be empty!');
             $error[str_replace('%variable', 'valuebrutto', $error_index)] = trans('Field cannot be empty!');
         } else {
+            $itemdata['valuenetto'] = cleanUpValue($itemdata['valuenetto']);
             if (strlen($itemdata['valuenetto']) && !preg_match('/^[0-9]+([\.,][0-9]+)*$/', $itemdata['valuenetto'])) {
                 $error[str_replace('%variable', 'valuenetto', $error_index)] = trans('Invalid format!');
             }
+            $itemdata['valuebrutto'] = cleanUpValue($itemdata['valuebrutto']);
             if (strlen($itemdata['valuebrutto']) && !preg_match('/^[0-9]+([\.,][0-9]+)*$/', $itemdata['valuebrutto'])) {
                 $error[str_replace('%variable', 'valuebrutto', $error_index)] = trans('Invalid format!');
             }
