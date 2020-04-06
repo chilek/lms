@@ -33,7 +33,7 @@ $this->Execute("
         customerid integer NOT NULL
             CONSTRAINT customerconsents_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
         cdate integer DEFAULT 0 NOT NULL,
-        type smallint NOT NULL,    
+        type smallint NOT NULL,
         CONSTRAINT customerconsents_ukey UNIQUE (customerid, type)
     );
     CREATE INDEX customerconsents_cdate_idx ON customerconsents (cdate);

@@ -34,7 +34,7 @@ $this->Execute("
     CREATE TABLE customerconsents (
         customerid int(11) NOT NULL,
         cdate int(11) DEFAULT 0 NOT NULL,
-        type smallint NOT NULL
+        type smallint NOT NULL,
         CONSTRAINT customerconsents_customerid_fkey
             FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
         KEY customerconsents_cdate_idx (cdate),
