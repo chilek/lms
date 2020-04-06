@@ -272,6 +272,8 @@ version 25-git (????-??-??):
     without unexpired invoices is presented on invoice [chilan]
   - enhancement: additional confirmation is required during customer address clear
     or delete if it is assigned to some nodes, network devices and network nodes [chilan]
+  - enhancement: 'cashimport.use_file_date' set to 'true' ('false' by default) enables imported
+    file datetime usage to force source file uniqueness [chilan]
 
 version 24.0 (2019-05-16):
 
