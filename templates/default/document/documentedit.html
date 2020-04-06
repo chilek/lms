@@ -151,7 +151,7 @@
 		</TD>
 	</TR>
 *}
-	{if $document.docrights && $smarty.const.DOCRIGHT_CONFIRM}
+	{if (!$document.closed && ($document.docrights & $smarty.const.DOCRIGHT_CONFIRM)) || ConfigHelper::checkPrivilege('full_access')}
 	<TR>
 		<TD>
 			<IMG src="img/confirm.gif" ALT="">
