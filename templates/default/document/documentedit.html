@@ -151,7 +151,7 @@
 		</TD>
 	</TR>
 *}
-	{if !$document.closed && ($document.docrights & $smarty.const.DOCRIGHT_CONFIRM)}
+	{if $document.docrights && $smarty.const.DOCRIGHT_CONFIRM}
 	<TR>
 		<TD>
 			<IMG src="img/confirm.gif" ALT="">
@@ -164,7 +164,7 @@
 		</TD>
 	</TR>
 	{/if}
-	{if $document.closed && ($document.docrights & $smarty.const.DOCRIGHT_ARCHIVE)}
+	{if !empty($document.closed) && ($document.docrights && $smarty.const.DOCRIGHT_ARCHIVE)}
 	<TR>
 		<TD>
 			<IMG src="img/db.gif" ALT="">
