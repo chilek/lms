@@ -693,10 +693,17 @@ if (empty($types) || in_array('documents', $types)) {
             $subject = parse_customer_data($notifications['documents']['subject'], $row);
 
             $recipient_name = $row['lastname'] . ' ' . $row['name'];
-            $recipient_mails = ($debug_email ? explode(',', $debug_email) :
-                (!empty($row['email']) ? explode(',', trim($row['email'])) : null));
-            $recipient_phones = ($debug_phone ? explode(',', $debug_phone) :
-                (!empty($row['phone']) ? explode(',', trim($row['phone'])) : null));
+
+            if (empty($row['email'])) {
+                $recipient_mails = null;
+            } else {
+                $recipient_mails = explode(',', $debug_email ?: trim($row['email']));
+            }
+            if (!empty($row['phone'])) {
+                $recipient_phones = null;
+            } else {
+                $recipient_phones = explode(',', $debug_phone ?: trim($row['phone']));
+            }
 
             if (!$quiet) {
                 if (in_array('mail', $channels) && !empty($recipient_mails)) {
@@ -824,10 +831,17 @@ if (empty($types) || in_array('contracts', $types)) {
             $subject = parse_customer_data($notifications['contracts']['subject'], $row);
 
             $recipient_name = $row['lastname'] . ' ' . $row['name'];
-            $recipient_mails = ($debug_email ? explode(',', $debug_email) :
-                (!empty($row['email']) ? explode(',', trim($row['email'])) : null));
-            $recipient_phones = ($debug_phone ? explode(',', $debug_phone) :
-                (!empty($row['phone']) ? explode(',', trim($row['phone'])) : null));
+
+            if (empty($row['email'])) {
+                $recipient_mails = null;
+            } else {
+                $recipient_mails = explode(',', $debug_email ?: trim($row['email']));
+            }
+            if (!empty($row['phone'])) {
+                $recipient_phones = null;
+            } else {
+                $recipient_phones = explode(',', $debug_phone ?: trim($row['phone']));
+            }
 
             if (!$quiet) {
                 if (in_array('mail', $channels) && !empty($recipient_mails)) {
@@ -972,10 +986,17 @@ if (empty($types) || in_array('debtors', $types)) {
             $subject = parse_customer_data($notifications['debtors']['subject'], $row);
 
             $recipient_name = $row['lastname'] . ' ' . $row['name'];
-            $recipient_mails = ($debug_email ? explode(',', $debug_email) :
-                (!empty($row['email']) ? explode(',', trim($row['email'])) : null));
-            $recipient_phones = ($debug_phone ? explode(',', $debug_phone) :
-                (!empty($row['phone']) ? explode(',', trim($row['phone'])) : null));
+
+            if (empty($row['email'])) {
+                $recipient_mails = null;
+            } else {
+                $recipient_mails = explode(',', $debug_email ?: trim($row['email']));
+            }
+            if (!empty($row['phone'])) {
+                $recipient_phones = null;
+            } else {
+                $recipient_phones = explode(',', $debug_phone ?: trim($row['phone']));
+            }
 
             if (!$quiet) {
                 if (in_array('mail', $channels) && !empty($recipient_mails)) {
@@ -1144,10 +1165,16 @@ if (empty($types) || in_array('reminder', $types)) {
             $message = parse_customer_data($notifications['reminder']['message'], $row);
             $subject = parse_customer_data($notifications['reminder']['subject'], $row);
 
-            $recipient_mails = ($debug_email ? explode(',', $debug_email) :
-                (!empty($row['email']) ? explode(',', trim($row['email'])) : null));
-            $recipient_phones = ($debug_phone ? explode(',', $debug_phone) :
-                (!empty($row['phone']) ? explode(',', trim($row['phone'])) : null));
+            if (empty($row['email'])) {
+                $recipient_mails = null;
+            } else {
+                $recipient_mails = explode(',', $debug_email ?: trim($row['email']));
+            }
+            if (!empty($row['phone'])) {
+                $recipient_phones = null;
+            } else {
+                $recipient_phones = explode(',', $debug_phone ?: trim($row['phone']));
+            }
 
             if (!$quiet) {
                 if (in_array('mail', $channels) && !empty($recipient_mails)) {
@@ -1303,10 +1330,16 @@ if (empty($types) || in_array('income', $types)) {
             $message = parse_customer_data($notifications['income']['message'], $row);
             $subject = parse_customer_data($notifications['income']['subject'], $row);
 
-            $recipient_mails = ($debug_email ? explode(',', $debug_email) :
-                (!empty($row['email']) ? explode(',', trim($row['email'])) : null));
-            $recipient_phones = ($debug_phone ? explode(',', $debug_phone) :
-                (!empty($row['phone']) ? explode(',', trim($row['phone'])) : null));
+            if (empty($row['email'])) {
+                $recipient_mails = null;
+            } else {
+                $recipient_mails = explode(',', $debug_email ?: trim($row['email']));
+            }
+            if (!empty($row['phone'])) {
+                $recipient_phones = null;
+            } else {
+                $recipient_phones = explode(',', $debug_phone ?: trim($row['phone']));
+            }
 
             if (!$quiet) {
                 if (in_array('mail', $channels) && !empty($recipient_mails)) {
@@ -1441,10 +1474,16 @@ if (empty($types) || in_array('invoices', $types)) {
             $message = parse_customer_data($notifications['invoices']['message'], $row);
             $subject = parse_customer_data($notifications['invoices']['subject'], $row);
 
-            $recipient_mails = ($debug_email ? explode(',', $debug_email) :
-                (!empty($row['email']) ? explode(',', trim($row['email'])) : null));
-            $recipient_phones = ($debug_phone ? explode(',', $debug_phone) :
-                (!empty($row['phone']) ? explode(',', trim($row['phone'])) : null));
+            if (empty($row['email'])) {
+                $recipient_mails = null;
+            } else {
+                $recipient_mails = explode(',', $debug_email ?: trim($row['email']));
+            }
+            if (!empty($row['phone'])) {
+                $recipient_phones = null;
+            } else {
+                $recipient_phones = explode(',', $debug_phone ?: trim($row['phone']));
+            }
 
             if (!$quiet) {
                 if (in_array('mail', $channels) && !empty($recipient_mails)) {
@@ -1576,10 +1615,16 @@ if (empty($types) || in_array('notes', $types)) {
             $message = parse_customer_data($notifications['notes']['message'], $row);
             $subject = parse_customer_data($notifications['notes']['subject'], $row);
 
-            $recipient_mails = ($debug_email ? explode(',', $debug_email) :
-                (!empty($row['email']) ? explode(',', trim($row['email'])) : null));
-            $recipient_phones = ($debug_phone ? explode(',', $debug_phone) :
-                (!empty($row['phone']) ? explode(',', trim($row['phone'])) : null));
+            if (empty($row['email'])) {
+                $recipient_mails = null;
+            } else {
+                $recipient_mails = explode(',', $debug_email ?: trim($row['email']));
+            }
+            if (!empty($row['phone'])) {
+                $recipient_phones = null;
+            } else {
+                $recipient_phones = explode(',', $debug_phone ?: trim($row['phone']));
+            }
 
             if (!$quiet) {
                 if (in_array('mail', $channels) && !empty($recipient_mails)) {
@@ -1694,10 +1739,16 @@ if (empty($types) || in_array('warnings', $types)) {
             $message = parse_customer_data($row['message'], $row);
             $subject = parse_customer_data($notifications['warnings']['subject'], $row);
 
-            $recipient_mails = ($debug_email ? explode(',', $debug_email) :
-                (!empty($row['email']) ? explode(',', trim($row['email'])) : null));
-            $recipient_phones = ($debug_phone ? explode(',', $debug_phone) :
-                (!empty($row['phone']) ? explode(',', trim($row['phone'])) : null));
+            if (empty($row['email'])) {
+                $recipient_mails = null;
+            } else {
+                $recipient_mails = explode(',', $debug_email ?: trim($row['email']));
+            }
+            if (!empty($row['phone'])) {
+                $recipient_phones = null;
+            } else {
+                $recipient_phones = explode(',', $debug_phone ?: trim($row['phone']));
+            }
 
             if (!$quiet) {
                 if (in_array('mail', $channels) && !empty($recipient_mails)) {
