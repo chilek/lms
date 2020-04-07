@@ -1799,7 +1799,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 'SELECT DISTINCT email
 			FROM users, rtrights
 			WHERE users.id=userid AND queueid = ? AND email != \'\'
-				AND (rtrights.rights & ' . RT_RIGHT_NOTICE . ') > 0 AND deleted = 0'
+				AND (rtrights.rights & ' . RT_RIGHT_NOTICE . ') > 0 AND deleted = 0 AND access = 1'
                 . (!isset($args['user']) || $notify_author ? '' : ' AND users.id <> ?')
                 . ' AND (ntype & ?) > 0',
                 array_values($args)
@@ -1809,7 +1809,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                         'SELECT DISTINCT email
 					FROM users, rtrights
 					WHERE users.id=userid AND queueid = ? AND email != \'\'
-						AND (rtrights.rights & ' . RT_RIGHT_NOTICE . ') > 0 AND deleted = 0
+						AND (rtrights.rights & ' . RT_RIGHT_NOTICE . ') > 0 AND deleted = 0 AND access = 1
 						AND (ntype & ?) > 0',
                         array($params['oldqueue'], MSG_MAIL)
                     );
@@ -1842,7 +1842,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 'SELECT DISTINCT phone
 			FROM users, rtrights
 				WHERE users.id=userid AND queueid = ? AND phone != \'\'
-					AND (rtrights.rights & ' . RT_RIGHT_NOTICE . ') > 0 AND deleted = 0'
+					AND (rtrights.rights & ' . RT_RIGHT_NOTICE . ') > 0 AND deleted = 0 AND access = 1'
                     . (!isset($args['user']) || $notify_author ? '' : ' AND users.id <> ?')
                     . ' AND (ntype & ?) > 0',
                 array_values($args)
@@ -1852,7 +1852,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                         'SELECT DISTINCT phone
 					FROM users, rtrights
 					WHERE users.id=userid AND queueid = ? AND phone != \'\'
-						AND (rtrights.rights & ' . RT_RIGHT_NOTICE . ') > 0 AND deleted = 0
+						AND (rtrights.rights & ' . RT_RIGHT_NOTICE . ') > 0 AND deleted = 0 AND access = 1
 						AND (ntype & ?) > 0',
                         array($params['oldqueue'], MSG_SMS)
                     );

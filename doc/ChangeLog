@@ -277,7 +277,7 @@ version 25-git (????-??-??):
   - enhancement: customer consents can be managed in lib/definitions.php file [chilan]
   - improvement: newly created invoice new position netto and brutto values are cleanup
     from special characters [chilan]
-  - improvement: added action buttons to (event,rtticket)infoshort [interduo]
+  - improvement: don't send helpdesk notifications to disabled users [chilan]
 
 version 24.0 (2019-05-16):
 
