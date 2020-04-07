@@ -102,5 +102,13 @@
 		</TD>
 	</TR>
 	{/if}
+	<TR>
+		<TD colspan="2">
+	        {if $ticket.state != $smarty.const.RT_RESOLVED}
+                    {button icon="lms-ui-icon-message" label="New Message" onclick="window.location.href = '?m=rtmessageadd&ticketid={$event.ticketid}';"}
+                    {button icon="lms-ui-icon-note" label="New Note" onclick="window.location.href = '?m=rtnoteadd&ticketid={$event.ticketid}';"}
+                {/if}
+		</TD>
+	</TR>
 	</TBODY>
 </TABLE>
