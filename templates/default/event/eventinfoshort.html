@@ -246,8 +246,8 @@
             <TD>
                 <a href="?m=rtticketview&id={$event.ticketid}">#{$event.ticketid}</a>
 		{if $event.ticket.state != $smarty.const.RT_RESOLVED}
-		    <br>{button icon="lms-ui-icon-message" label="New Message" onclick="window.location.href = '?m=rtmessageadd&ticketid={$event.ticketid}';"}
-		    <br>{button icon="lms-ui-icon-note" label="New Note" onclick="window.location.href = '?m=rtnoteadd&ticketid={$event.ticketid}';"}
+		    <br>{button type="link-button" icon="lms-ui-icon-message" label="New Message" href="?m=rtmessageadd&ticketid={$event.ticketid}"}
+		    <br>{button type="link-button" icon="lms-ui-icon-note" label="New Note" href="?m=rtnoteadd&ticketid={$event.ticketid}"}
 		{/if}
             </TD>
         </TR>
