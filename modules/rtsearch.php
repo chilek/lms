@@ -297,9 +297,7 @@ if (isset($search) || isset($_GET['s'])) {
     if (!isset($search['categories'])) {
         $search['catids'] = null;
     } else {
-        foreach ($search['categories'] as $catid => $val) {
-            $search['catids'][] = $catid;
-        }
+        $search['catids'] = $search['categories'];
     }
 
     if (!$error) {
