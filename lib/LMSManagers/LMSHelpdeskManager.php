@@ -2123,7 +2123,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             );
         } else {
             return $this->db->GetRow(
-                'SELECT id,state, subject AS name FROM rttickets WHERE id = ?',
+                'SELECT id, state, subject AS name FROM rttickets WHERE id = ?',
                 array($ticketids)
             );
         }
