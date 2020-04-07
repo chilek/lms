@@ -120,7 +120,7 @@ $access_table = array(
     ),
     'timetable_management' => array(
         'label' => trans('timetable management'),
-        'allow_regexp' => '^(event(list|edit|add|del|info|print|search|note|schedule)|choosecustomer)$',
+        'allow_regexp' => '^(event(list|edit|add|del|info(short)?|print|search|note|schedule)|choosecustomer)$',
     ),
     'project_management' => array(
         'label' => trans('investment project management'),
