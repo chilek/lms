@@ -46,13 +46,14 @@
 						<div class="container">
 							{foreach $doc.attachments as $docattach}
 								<div class="row">
-									<div class="col-md-auto btn btn-primary"
-										   href="?m=info&f=docview&id={$doc.id}&attachmentid={$docattach.id}" target="_blank">
-										{if $docattach.main}
-											{trans("View")}
-										{else}
-											{$docattach.filename}
-										{/if}
+									<div class="col-md-auto">
+										<a class="btn btn-primary" href="?m=info&f=docview&id={$doc.id}&attachmentid={$docattach.id}" target="_blank">
+											{if $docattach.main}
+												{trans("View")}
+											{else}
+												{$docattach.filename}
+											{/if}
+										</a>
 									</div>
 								</div>
 								{if !$doc.closed && $docattach.main}
