@@ -244,13 +244,17 @@
                 {trans("Helpdesk assignment:")}
             </TD>
             <TD>
-                <a href="?m=rtticketview&id={$event.ticketid}">#{$event.ticketid}</a>
-		{if $event.ticket.state != $smarty.const.RT_RESOLVED}
-		    <br>{button type="link-button" icon="lms-ui-icon-message" label="New Message" href="?m=rtmessageadd&ticketid={$event.ticketid}"}
-		    <br>{button type="link-button" icon="lms-ui-icon-note" label="New Note" href="?m=rtnoteadd&ticketid={$event.ticketid}"}
-		{/if}
+		    <a href="?m=rtticketview&id={$event.ticketid}">#{$event.ticketid}</a> ({$_RT_STATES[$event.ticket.state].label})
             </TD>
         </TR>
+	{if $event.ticket.state != $smarty.const.RT_RESOLVED}
+	<TR>
+		<TD colspan="3">
+                    {button type="link-button" icon="lms-ui-icon-message" label="New Message" href="?m=rtmessageadd&ticketid={$event.ticketid}"}
+                    {button type="link-button" icon="lms-ui-icon-note" label="New Note" href="?m=rtnoteadd&ticketid={$event.ticketid}"}
+		</TD>
+	</TR>
+        {/if}
     {/if}
     <TR>
         <TD class="text-right" colspan="3">
