@@ -280,6 +280,7 @@ version 25-git (????-??-??):
   - improvement: don't send helpdesk notifications to disabled users [chilan]
   - improvement: 'rt.subject_max_length' specifies maximum allowed helpdesk ticket subject
     length ('50' by default) [chilan]
+  - improvement: numberplan template substitution symbols are described in tooltip [chilan]
 
 version 24.0 (2019-05-16):
 

@@ -1914,7 +1914,21 @@ $_LANG['Add plan'] = 'Dodaj plan';
 $_LANG['cash receipt'] = 'dokument kasowy';
 $_LANG['Check box to make this plan a default for selected document type'] = 'Zaznacz pole, jeśli ten plan ma być domyślny dla wybranego typu dokumentów';
 $_LANG['Display this form again, when this numbering plan is saved'] = 'Wyświetl ten formularz ponownie po dodaniu planu numeracyjnego';
-$_LANG['Enter number template'] = 'Wprowadź szablon numeru';
+$_LANG[
+    'Enter number template<br><br>'
+    . 'Supported substitution symbols:<br>'
+    . '<strong>%N</strong> - document number,<br>'
+    . '<strong>%m</strong> - month number (always two digits),<br>'
+    . '<strong>%Y</strong> - year number (always four digits),<br>'
+    . '<strong>%C</strong> - customer id; if this symbol is present then customer dedicated numbering applies.<br><br>'
+    . 'Other symbols can be used which are described in PHP <strong>strftime<strong> function documentation.'
+] = 'Wprowadź szablon numeru<br><br>'
+    . 'Obsługiwane symbole podstawień:<br>'
+    . '<strong>%N</strong> - numer dokumentu,<br>'
+    . '<strong>%m</strong> - numer miesiąca (zawsze dwie cyfry),<br>'
+    . '<strong>%Y</strong> - numer roku (zawsze cztery cyfry),<br>'
+    . '<strong>%C</strong> - identyfikator klienta; w przypadku użycia tego symbolu zastosowanie ma indywidualna numeracja dla każdego klienta oddzielnie.<br><br>'
+    . 'Można użyć innych symboli opisanych w dokumentacji funkcji PHP <strong>strftime</strong>.';
 $_LANG['invoice'] = 'faktura';
 $_LANG['Main Information:'] = 'Informacje Podstawowe:';
 $_LANG['New Numbering Plan'] = 'Nowy plan numeracyjny';

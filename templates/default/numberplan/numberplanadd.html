@@ -15,7 +15,8 @@
 			<B>{trans("Template:")}</B>
 		</TD>
 		<TD width="98%">
-			<INPUT type="text" name="numberplanadd[template]" value="{$numberplanadd.template|escape}" {tip text="Enter number template" trigger="template" bold=1}>
+			<INPUT type="text" name="numberplanadd[template]" value="{$numberplanadd.template|escape}"
+					{tip text="Enter number template<br><br>Supported substitution symbols:<br><strong>%N</strong> - document number,<br><strong>%m</strong> - month number (always two digits),<br><strong>%Y</strong> - year number (always four digits),<br><strong>%C</strong> - customer id; if this symbol is present then customer dedicated numbering applies.<br><br>Other symbols can be used which are described in PHP <strong>strftime<strong> function documentation." trigger="template"}>
 		</TD>
 	</TR>
     </THEAD>
