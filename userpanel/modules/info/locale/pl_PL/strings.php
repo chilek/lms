@@ -153,3 +153,4 @@ $_LANG['awaits for signed document scan submission'] = 'oczekuje na przesłanie 
 $_LANG['Submit scan'] = 'Prześlij skan';
 $_LANG['Document submission'] = 'Przesłanie skanu podpisanego dokumentu';
 $_LANG['Select scan file:'] = 'Wybierz plik ze skanem:';
+$_LANG['awaits for operator signed document scan review'] = 'oczekuje na przejrzenie przez operatora skanu podpisanego dokumentu';

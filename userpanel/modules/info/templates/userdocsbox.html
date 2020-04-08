@@ -38,9 +38,13 @@
 				{if $docattach.main}{trans("View")}{else}{$docattach.filename}{/if} {img src="view.gif" alt="View"}
 			</a>
 			<br>
-			{if !$doc.closed && $docattach.main && $doc.confirmdate != -1}
+			{if !$doc.closed && $docattach.main}
 				<span class="awaits-scan">
-					{trans("awaits for signed document scan submission")}
+					{if $doc.confirmdate == -1}
+						{trans("awaits for operator signed document scan review")}
+					{else}
+						{trans("awaits for signed document scan submission")}
+					{/if}
 				</span>
 				<br>
 			{/if}
