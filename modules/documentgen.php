@@ -204,7 +204,7 @@ if (isset($_POST['document'])) {
 
         $numtemplate = $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($document['numberplanid']));
         // number template has got %C special symbol which means customer id substitution
-        $customernumtemplate = strpos($numtemplate, '%C') !== false;
+        $customernumtemplate = preg_match('/%[0-9]*C/', $numtemplate);
 
         if ($document['templ']) {
             // read template information

@@ -388,7 +388,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     'SELECT MAX(number) AS max 
 					FROM documents
 					LEFT JOIN numberplans ON (numberplanid = numberplans.id)
-					WHERE numberplanid = ? AND ' . (strpos($item['template'], '%C') === false || empty($customerid)
+					WHERE numberplanid = ? AND ' . (!preg_match('/%[0-9]*C/', $item['template']) || empty($customerid)
                         ? '' : 'customerid = ' . intval($customerid) . ' AND ')
                     . ($doctype ? 'numberplanid IN (' . implode(',', array_keys($list)) . ') AND ' : '')
                     . ' cdate >= (CASE period
@@ -523,7 +523,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 $number = $this->db->GetOne(
                     'SELECT MAX(number) FROM documents
 					WHERE type = ? AND ' . ($planid ? 'numberplanid = ' . intval($planid) : 'numberplanid IS NULL')
-                    . (!isset($numtemplate) || strpos($numtemplate, '%C') === false || empty($customerid)
+                    . (!isset($numtemplate) || !preg_match('/%[0-9]*C/', $numtemplate) || empty($customerid)
                         ? '' : ' AND customerid = ' . intval($customerid)),
                     array($doctype)
                 );
@@ -537,7 +537,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 				SELECT MAX(number) 
 				FROM documents 
 				WHERE cdate >= ? AND cdate < ? AND type = ? AND ' . ($planid ? 'numberplanid = ' . intval($planid) : 'numberplanid IS NULL')
-                . (!isset($numtemplate) || strpos($numtemplate, '%C') === false || empty($customerid)
+                . (!isset($numtemplate) || !preg_match('/%[0-9]*C/', $numtemplate) || empty($customerid)
                     ? '' : ' AND customerid = ' . intval($customerid)),
             array($start, $end, $doctype)
         );
@@ -647,7 +647,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 return $this->db->GetOne(
                     'SELECT id FROM documents
 					WHERE type = ? AND number = ? AND numberplanid = ?'
-                    . (!isset($numtemplate) || strpos($numtemplate, '%C') === false || empty($customerid)
+                    . (!isset($numtemplate) || !preg_match('/%[0-9]*C/', $numtemplate) || empty($customerid)
                         ? '' : ' AND customerid = ' . intval($customerid)),
                     array($doctype, $number, $planid)
                 );
@@ -657,7 +657,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         return $this->db->GetOne(
             'SELECT id FROM documents
 			WHERE cdate >= ? AND cdate < ? AND type = ? AND number = ? AND numberplanid = ?'
-            . (!isset($numtemplate) || strpos($numtemplate, '%C') === false || empty($customerid)
+            . (!isset($numtemplate) || !preg_match('/%[0-9]*C/', $numtemplate) || empty($customerid)
                 ? '' : ' AND customerid = ' . intval($customerid)),
             array($start, $end, $doctype, $number, $planid)
         );

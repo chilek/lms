@@ -1040,7 +1040,7 @@ foreach ($assigns as $assign) {
                 if (!array_key_exists($plan, $numbertemplates)) {
                     $numbertemplates[$plan] = $DB->GetOne("SELECT template FROM numberplans WHERE id = ?", array($plan));
                 }
-                $customernumber = !empty($numbertemplates[$plan]) && strpos($numbertemplates[$plan], '%C') !== false;
+                $customernumber = !empty($numbertemplates[$plan]) && preg_match('/%[0-9]*C/', $numbertemplates[$plan]);
                 if (($customernumber && !isset($customernumbers[$assign['invoice']][$plan][$cid]))
                     || (!$customernumber && !isset($numbers[$assign['invoice']][$plan]))) {
                     $period = get_period($periods[$plan]);
