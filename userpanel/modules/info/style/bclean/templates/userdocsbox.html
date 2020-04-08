@@ -2,13 +2,60 @@
 
 <style>
 
+	#file-status {
+		margin-top: 1em;
+	}
+
 	.awaits-scan {
-		margin-bottom: 0;
+		margin-bottom: 0.5em;
 		margin-top: 0.5em;
 		margin-left: 2em;
 	}
 
+	.document-attachment:not(:last-child) {
+		margin-bottom: 0.6em;
+	}
+
 </style>
+
+<div class="modal fade" id="newscan-dialog" tabindex="-1" role="dialog" aria-labelledby="newscan-dialog" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">{trans("Document submission")}</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form method="post" action="?m=info" name="newscan" enctype="multipart/form-data">
+					<div class="form-group">
+						<label for="scans" class="font-weight-bold">{trans("Select scan file:")}</label>
+						<input type="file" name="files[]" id="scans" {userpaneltip class="form-control-file" text="Enter path to file or click 'Browse' button" trigger="files"} multiple />
+						<input type="hidden" id="post_max_size" value="{$post_max_size.bytes}">
+						<input type="hidden" id="upload_max_filesize" value="{$upload_max_filesize.bytes}">
+						<div id="file-status" class="alert alert-danger"{if !isset($error.files)} style="display: none;"{/if}>
+							{if isset($error.files)}
+								{$error.files}
+							{/if}
+						</div>
+						<small class="form-text">
+							{t a=$post_max_size.text}Maximum total file size: $a{/t}
+						</small>
+						<small class="form-text">
+							{t a=$upload_max_filesize.text}Maximum single file size: $a{/t}
+						</small>
+						<input type="hidden" name="documentid" value="{if isset($documentid)}{$documentid}{else}0{/if}">
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-danger submit-button" formnovalidate accesskey="S">{trans("<!helpdesk>Submit")}</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">{trans("Close")}</button>
+			</div>
+		</div>
+	</div>
+</div>
 
 <div class="table-responsive">
 	<table class="table table-sm table-hover table-bordered table-striped table-condensed">
@@ -42,10 +89,10 @@
 					{/if}
 				</td>
 				<td>
-					{if $doc.closed || ($doc.confirmdate > 0 && $doc.confirmdate >= $smarty.now)}
+					{if $doc.closed || ($doc.confirmdate > 0 && $doc.confirmdate >= $smarty.now) || $doc.confirmdate == -1}
 						<div class="container">
 							{foreach $doc.attachments as $docattach}
-								<div class="row">
+								<div class="row document-attachment">
 									<div class="col-md-auto">
 										<a class="btn btn-primary" href="?m=info&f=docview&id={$doc.id}&attachmentid={$docattach.id}" target="_blank">
 											{if $docattach.main}
@@ -54,9 +101,14 @@
 												{$docattach.filename}
 											{/if}
 										</a>
+										{if !$doc.closed && $docattach.main && $doc.confirmdate != -1}
+											<a class="btn btn-primary" href="#" data-toggle="modal" data-target="#newscan-dialog" data-document-id="{$doc.id}">
+												{trans("Submit scan")}
+											</a>
+										{/if}
 									</div>
 								</div>
-								{if !$doc.closed && $docattach.main}
+								{if !$doc.closed && $docattach.main && $doc.confirmdate != -1}
 									<div class="row">
 										<div class="awaits-scan col-md-auto alert alert-warning">
 											{trans("awaits for signed document scan submission")}
@@ -79,4 +131,54 @@
 		{/foreach}
 	</table>
 </div>
+
+<script>
+
+	$(function() {
+		{if isset($error.files)}
+		$('[href="#userdocsbox"]').tab('show');
+		$('#newscan-dialog').modal('show');
+		{/if}
+
+		function check_file_sizes() {
+			var scans = $('#scans').get(0);
+			$('#file-status').hide().text();
+			if (scans.files.length) {
+				var error = '';
+				var post_max_size = parseInt($('#post_max_size').val());
+				var upload_max_filesize = parseInt($('#upload_max_filesize').val());
+				var total_size = 0;
+				$.each(scans.files, function (index, file) {
+					if (upload_max_filesize && file.size > upload_max_filesize) {
+						error = '{trans("One from files is too large!")}';
+					}
+					total_size += file.size;
+				});
+				if (post_max_size && total_size > post_max_size) {
+					error = '{trans("Total file size is too large!")}';
+				}
+				if (error.length) {
+					$('#file-status').text(error).show();
+					return false;
+				}
+			}
+			return true;
+		}
+
+		$('#scans').change(function() {
+			check_file_sizes();
+		});
+
+		$('#newscan-dialog .submit-button').click(function() {
+			if (check_file_sizes()) {
+				document.newscan.submit();
+			}
+		});
+
+		$('[data-target="#newscan-dialog"]').click(function() {
+			$('[name="documentid"]').val($(this).attr('data-document-id'));
+		});
+	});
+
+</script>
 {/box}

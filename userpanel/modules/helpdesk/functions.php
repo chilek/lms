@@ -112,24 +112,17 @@ function module_main()
         foreach ($_FILES['files']['name'] as $fileidx => $filename) {
             if (!empty($filename)) {
                 if (is_uploaded_file($_FILES['files']['tmp_name'][$fileidx]) && $_FILES['files']['size'][$fileidx]) {
-                    $filecontents = '';
-                    $fd = fopen($_FILES['files']['tmp_name'][$fileidx], 'r');
-                    if ($fd) {
-                        while (!feof($fd)) {
-                            $filecontents .= fread($fd, 256);
-                        }
-                        fclose($fd);
-                    }
+                    $filecontents = file_get_contents($_FILES['files']['tmp_name'][$fileidx]);
                     $files[] = array(
-                    'name' => $filename,
-                    'tmp_name' => $_FILES['files']['tmp_name'][$fileidx],
-                    'type' => $_FILES['files']['type'][$fileidx],
-                    'contents' => &$filecontents,
+                        'name' => $filename,
+                        'tmp_name' => $_FILES['files']['tmp_name'][$fileidx],
+                        'type' => $_FILES['files']['type'][$fileidx],
+                        'contents' => &$filecontents,
                     );
                     $attachments[] = array(
-                    'content_type' => $_FILES['files']['type'][$fileidx],
-                    'filename' => $filename,
-                    'data' => &$filecontents,
+                        'content_type' => $_FILES['files']['type'][$fileidx],
+                        'filename' => $filename,
+                        'data' => &$filecontents,
                     );
                 } else { // upload errors
                     if (isset($error['files'])) {

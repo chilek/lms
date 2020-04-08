@@ -161,40 +161,16 @@ if (isset($_POST['document'])) {
     if (!$error && !empty($attachments)) {
         foreach ($attachments as $attachment) {
             $attachment['tmpname'] = $tmppath . DIRECTORY_SEPARATOR . $attachment['name'];
+            $attachment['filename'] = $attachment['name'];
             $attachment['md5sum'] = md5_file($attachment['tmpname']);
             $files[] = $attachment;
         }
     }
 
     if (!$error) {
-        foreach ($files as &$file) {
-            $file['path'] = DOC_DIR . DIRECTORY_SEPARATOR . substr($file['md5sum'], 0, 2);
-            $file['newfile'] = $file['path'] . DIRECTORY_SEPARATOR . $file['md5sum'];
-
-            // If we have a file with specified md5sum, we assume
-            // it's here because of some error. We can replace it with
-            // the new document file
-            // why? document attachment can be shared between different documents.
-            // we should rather use the other message digest in such case!
-            if ($DB->GetOne('SELECT docid FROM documentattachments WHERE md5sum = ?', array($file['md5sum']))
-                && (filesize($file['newfile']) != filesize($file['tmpname'])
-                    || hash_file('sha256', $file['newfile']) != hash_file('sha256', $file['tmpname']))) {
-                $error['files'] = trans('Specified file exists in database!');
-                break;
-            }
-        }
-        unset($file);
-        if (!$error) {
-            foreach ($files as $file) {
-                @mkdir($file['path'], 0700);
-                if (!file_exists($file['newfile']) && !@rename($file['tmpname'], $file['newfile'])) {
-                    $error['files'] = trans('Can\'t save file in "$a" directory!', $file['path']);
-                    break;
-                }
-            }
-            if (!empty($tmppath)) {
-                rrmdir($tmppath);
-            }
+        $error = $LMS->AddDocumentFileAttachments($files);
+        if (empty($error) && !empty($tmppath)) {
+            rrmdir($tmppath);
         }
     }
 
@@ -250,20 +226,7 @@ if (isset($_POST['document'])) {
             }
         }
 
-        foreach ($files as $file) {
-            if (!$DB->GetOne(
-                'SELECT id FROM documentattachments WHERE docid = ? AND md5sum = ?',
-                array($documentedit['id'], $file['md5sum'])
-            )) {
-                $DB->Execute('INSERT INTO documentattachments (docid, filename, contenttype, md5sum, main)
-					VALUES (?, ?, ?, ?, ?)', array($documentedit['id'],
-                    $file['name'],
-                    $file['type'],
-                    $file['md5sum'],
-                    0,
-                ));
-            }
-        }
+        $LMS->AddDocumentAttachments($documentedit['id'], $files);
 
         $DB->CommitTrans();
 

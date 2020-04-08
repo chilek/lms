@@ -28,7 +28,10 @@ require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
 
 function module_main()
 {
-    global $LMS,$SMARTY,$SESSION;
+    global $SESSION;
+
+    $LMS = LMS::getInstance();
+    $SMARTY = LMSSmarty::getInstance();
 
     if (!empty($_GET['consent'])) {
         if ($LMS->DB->GetOne(
@@ -44,6 +47,64 @@ function module_main()
                 'INSERT INTO customerconsents (customerid, type, cdate) VALUES (?, ?, ?NOW?)',
                 array($SESSION->id, CCONSENT_DATE)
             );
+        }
+    }
+
+    if (isset($_POST['documentid']) && ($documentid = intval($_POST['documentid'])) > 0) {
+        if ($LMS->DB->GetOne(
+            'SELECT 1 FROM documents WHERE id = ? AND customerid = ? AND closed = 0 AND confirmdate > 0 AND confirmdate > ?NOW?',
+            array($documentid, $SESSION->id)
+        )) {
+            $files = array();
+            $error = null;
+
+            if (isset($_FILES['files'])) {
+                foreach ($_FILES['files']['name'] as $fileidx => $filename) {
+                    if (!empty($filename)) {
+                        if (is_uploaded_file($_FILES['files']['tmp_name'][$fileidx]) && $_FILES['files']['size'][$fileidx]) {
+                            $files[] = array(
+                                'tmpname' => null,
+                                'filename' => $filename,
+                                'name' => $_FILES['files']['tmp_name'][$fileidx],
+                                'type' => $_FILES['files']['type'][$fileidx],
+                                'md5sum' => md5($_FILES['files']['tmp_name'][$fileidx]),
+                            );
+                        } else { // upload errors
+                            if (isset($error['files'])) {
+                                $error['files'] .= "\n";
+                            } else {
+                                $error['files'] = '';
+                            }
+                            switch ($_FILES['files']['error'][$fileidx]) {
+                                case 1:
+                                case 2:
+                                    $error['files'] .= trans('File is too large: $a', $filename);
+                                    break;
+                                case 3:
+                                    $error['files'] .= trans('File upload has finished prematurely: $a', $filename);
+                                    break;
+                                case 4:
+                                    $error['files'] .= trans('Path to file was not specified: $a', $filename);
+                                    break;
+                                default:
+                                    $error['files'] .= trans('Problem during file upload: $a', $filename);
+                                    break;
+                            }
+                        }
+                    }
+                }
+                if (!$error) {
+                    $error = $LMS->AddDocumentFileAttachments($files);
+                    if (!$error) {
+                        $LMS->AddDocumentAttachments($documentid, $files);
+                        $LMS->AddDocumentScans($documentid, $files);
+                    } else {
+                        $SMARTY->assign('error', $error);
+                    }
+                } else {
+                    $SMARTY->assign('error', $error);
+                }
+            }
         }
     }
 
@@ -73,6 +134,29 @@ function module_main()
         'fieldname',
         array($SESSION->id)
     );
+
+    $unit_multipliers = array(
+        'K' => 1024,
+        'M' => 1024 * 1024,
+        'G' => 1024 * 1024 * 1024,
+        'T' => 1024 * 1024 * 1024 * 1024,
+    );
+    foreach (array('post_max_size', 'upload_max_filesize') as $var) {
+        preg_match('/^(?<number>[0-9]+)(?<unit>[kKmMgGtT]?)$/', ini_get($var), $m);
+        $unit_multiplier = isset($m['unit']) ? $unit_multipliers[strtoupper($m['unit'])] : 1;
+        if ($var == 'post_max_size') {
+            $unit_multiplier *= 1/1.33;
+        }
+        if (empty($m['number'])) {
+            $val['bytes'] = 0;
+            $val['text'] = trans('(unlimited)');
+        } else {
+            $val['bytes'] = round($m['number'] * $unit_multiplier);
+            $res = setunits($val['bytes']);
+            $val['text'] = round($res[0]) . ' ' . $res[1];
+        }
+        $SMARTY->assign($var, $val);
+    }
 
     $SMARTY->assign('userinfo', $userinfo);
     $SMARTY->assign('usernodes', $usernodes);

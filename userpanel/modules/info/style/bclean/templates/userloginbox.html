@@ -63,13 +63,13 @@
 </div>
 <script>
 	$(function() {
-		$('[data-toggle="modal"]').click(function() {
+		$('#updatepinbtn').click(function() {
 			$($(this).attr('data-target')).find('.alert').remove();
 		});
 
 		{if $error.oldpin || $error.pin || $error.pin2}
 		$('#updatepinbox').modal('show');
-		{elseif isset($error)}
+		{elseif isset($error) && !isset($error.files)}
 		$('#updateuserinfobox').modal('show');
 		{/if}
 		});

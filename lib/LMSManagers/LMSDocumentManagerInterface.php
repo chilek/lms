@@ -56,6 +56,10 @@ interface LMSDocumentManagerInterface
 
     public function AddDocumentFileAttachments(array $files);
 
+    public function AddDocumentAttachments($documentid, array $files);
+
+    public function AddDocumentScans($documentid, array $files);
+
     public function DocumentAttachmentExists($md5sum);
 
     public function GetDocumentFullContents($id);

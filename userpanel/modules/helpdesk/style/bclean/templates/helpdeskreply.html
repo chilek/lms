@@ -1,4 +1,14 @@
 {include file="header.html"}
+
+<style>
+
+	#file-status {
+		margin-top: 1em;
+		margin-bottom: 0;
+	}
+
+</style>
+
 <h3><a class="btn btn-secondary" href="?m=helpdesk">{trans("Back")}</a> {trans($title)}</h3>
 <form method="post" id="newmessage" action="?m=helpdesk&id={$ticket.id}" name="helpdesk" enctype="multipart/form-data">
     {box title="Message"}
@@ -28,9 +38,13 @@
 				</th>
 				<td>
 					<input type="file" name="files[]" id="attachments" {userpaneltip class="form-control-file" text="Enter path to file or click 'Browse' button" trigger="files"} multiple />
-					<div id="file-status" class="alert" style="display: none;"></div>
 					<input type="hidden" id="post_max_size" value="{$post_max_size.bytes}">
 					<input type="hidden" id="upload_max_filesize" value="{$upload_max_filesize.bytes}">
+					<div id="file-status" class="alert alert-danger"{if !isset($error.files)} style="display: none;"{/if}>
+						{if isset($error.files)}
+							{$error.files}
+						{/if}
+					</div>
 					<small class="form-text">
 						{t a=$post_max_size.text}Maximum total file size: $a{/t}
 					</small>
@@ -88,14 +102,4 @@
 	});
 
 </script>
-
-<style>
-
-	#file-status {
-		margin-top: 1em;
-		margin-bottom: 0;
-	}
-
-</style>
-
 {include file="footer.html"}

@@ -3094,6 +3094,18 @@ class LMS
         return $manager->AddDocumentFileAttachments($files);
     }
 
+    public function AddDocumentAttachments($documentid, array $files)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->AddDocumentAttachments($documentid, $files);
+    }
+
+    public function AddDocumentScans($documentid, array $files)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->AddDocumentScans($documentid, $files);
+    }
+
     public function DocumentAttachmentExists($md5sum)
     {
         $manager = $this->getDocumentManager();

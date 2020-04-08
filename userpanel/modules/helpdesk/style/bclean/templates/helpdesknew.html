@@ -1,3 +1,12 @@
+<style>
+
+	#file-status {
+		margin-top: 1em;
+		margin-bottom: 0;
+	}
+
+</style>
+
 <button type="button" class="btn btn-danger mb-1" data-toggle="modal" data-target="#newrequest" accesskey="N">
 	{trans("New Request")}
 </button>
@@ -41,7 +50,11 @@
 						<input type="file" name="files[]" id="attachments" {userpaneltip class="form-control-file" text="Enter path to file or click 'Browse' button" trigger="files"} multiple />
 						<input type="hidden" id="post_max_size" value="{$post_max_size.bytes}">
 						<input type="hidden" id="upload_max_filesize" value="{$upload_max_filesize.bytes}">
-						<div id="file-status" class="alert alert-danger" style="display: none;"></div>
+						<div id="file-status" class="alert alert-danger"{if !isset($error.files)} style="display: none;"{/if}>
+							{if isset($error.files)}
+								{$error.files}
+							{/if}
+						</div>
 						<small class="form-text">
 							{t a=$post_max_size.text}Maximum total file size: $a{/t}
 						</small>
@@ -104,11 +117,3 @@
 	});
 
 </script>
-
-<style>
-
-	#file-status {
-		margin-bottom: 0;
-	}
-
-</style>

@@ -194,10 +194,11 @@ if (isset($_POST['document'])) {
                 fclose($fh);
 
                 $files[] = array(
-                    'md5sum' => md5_file($file),
-                    'type' => $engine['content_type'],
-                    'name' => $engine['output'],
                     'tmpname' => $file,
+                    'filename' => $engine['output'],
+                    'name' => $engine['output'],
+                    'type' => $engine['content_type'],
+                    'md5sum' => md5_file($file),
                     'main' => true,
                 );
             } else if (empty($error)) {
@@ -225,11 +226,12 @@ if (isset($_POST['document'])) {
                 $filename = $template_dir . DIRECTORY_SEPARATOR . $filename;
             }
             $files[] = array(
-            'tmpname' => null,
-            'name' => $filename,
-            'type' => mime_content_type($filename),
-            'md5sum' => md5_file($filename),
-            'main' => false,
+                'tmpname' => null,
+                'filename' => basename($filename),
+                'name' => $filename,
+                'type' => mime_content_type($filename),
+                'md5sum' => md5_file($filename),
+                'main' => false,
             );
         }
     }
@@ -325,15 +327,7 @@ if (isset($_POST['document'])) {
                 $document['description']
         ));
 
-        foreach ($files as $file) {
-            $DB->Execute('INSERT INTO documentattachments (docid, filename, contenttype, md5sum, main)
-				VALUES (?, ?, ?, ?, ?)', array($docid,
-                    basename($file['name']),
-                    $file['type'],
-                    $file['md5sum'],
-                    $file['main'] ? 1 : 0,
-            ));
-        }
+        $LMS->AddDocumentAttachments($docid, $files);
 
         // template post-action
         if (!empty($engine['post-action']) && file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates'

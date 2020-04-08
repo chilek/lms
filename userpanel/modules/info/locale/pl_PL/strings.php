@@ -150,3 +150,6 @@ $_LANG['MAC address'] = 'Adres MAC';
 $_LANG['IP address'] = 'Adres IP';
 
 $_LANG['awaits for signed document scan submission'] = 'oczekuje na przesłanie skanu podpisanego dokumentu';
+$_LANG['Submit scan'] = 'Prześlij skan';
+$_LANG['Document submission'] = 'Przesłanie skanu podpisanego dokumentu';
+$_LANG['Select scan file:'] = 'Wybierz plik ze skanem:';
