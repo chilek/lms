@@ -29,7 +29,9 @@
 			<strong>{trans("Subject:")}</strong>
 		</td>
 		<td width="98%">
-			<input style="width:99%;" type="text" name="helpdesk[subject]" value="{$helpdesk.subject}" {userpaneltip text="Enter request subject" trigger="subject"} />
+			<input style="width:99%;" type="text" name="helpdesk[subject]" value="{$helpdesk.subject}"
+					maxlength="{ConfigHelper::getConfig('rt.subject_max_length', 50)}"
+					{userpaneltip text="Enter request subject" trigger="subject"} />
 		</td>
 	</tr>
 	<tr class="light">

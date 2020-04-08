@@ -278,6 +278,8 @@ version 25-git (????-??-??):
   - improvement: newly created invoice new position netto and brutto values are cleanup
     from special characters [chilan]
   - improvement: don't send helpdesk notifications to disabled users [chilan]
+  - improvement: 'rt.subject_max_length' specifies maximum allowed helpdesk ticket subject
+    length ('50' by default) [chilan]
 
 version 24.0 (2019-05-16):
 

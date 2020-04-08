@@ -64,10 +64,6 @@ if (isset($_POST['ticket'])) {
         $error['deadline'] = trans('Ticket deadline could not be set in past!');
     }
 
-    if ($ticket['subject']=='' && $ticket['body']=='' && !$ticket['custid']) {
-        $SESSION->redirect('?m=rtticketadd&id='.$queue);
-    }
-
     if (empty($ticket['categories']) && (!$allow_empty_categories || (empty($ticket['categorywarn']) && $empty_category_warning))) {
         if ($allow_empty_categories) {
             $ticket['categorywarn'] = 1;
@@ -83,6 +79,8 @@ if (isset($_POST['ticket'])) {
 
     if ($ticket['subject'] == '') {
         $error['subject'] = trans('Ticket must have its title!');
+    } elseif (mb_strlen($ticket['subject']) > ConfigHelper::getConfig('rt.subject_max_length')) {
+        $error['subject'] = trans('Ticket subject can contain maximum $a characters!', ConfigHelper::getConfig('rt.subject_max_length'));
     }
 
     if ($ticket['body'] == '') {

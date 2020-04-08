@@ -300,6 +300,8 @@ if (isset($_POST['ticket'])) {
 
     if ($ticketedit['subject'] == '') {
         $error['subject'] = trans('Ticket must have its title!');
+    } elseif (mb_strlen($ticketedit['subject']) > ConfigHelper::getConfig('rt.subject_max_length')) {
+        $error['subject'] = trans('Ticket subject can contain maximum $a characters!', ConfigHelper::getConfig('rt.subject_max_length'));
     }
 
     if (ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events')) {

@@ -18,7 +18,8 @@
 {box_container id="ticket"}
 	{box_header multi_row=true}
 		{box_header icon="img/ticket.gif" label="Subject:"}
-			<INPUT type="text" size="50" name="ticket[subject]" value="{$ticket.subject|escape}" {tip text="Enter subject" trigger="subject"}>
+			<INPUT type="text" size="50" name="ticket[subject]" maxlength="{ConfigHelper::getConfig('rt.subject_max_length', 50)}"
+				   value="{$ticket.subject|escape}" {tip text="Enter subject" trigger="subject"}>
 		{/box_header}
 		{box_header icon="img/service-type.png" label="Service type:"}
 			<SELECT name="ticket[service]" id="ticket-service" {if ConfigHelper::checkConfig('rt.ticket_service_required')}required {tip text="Choose service type" trigger="service"}>

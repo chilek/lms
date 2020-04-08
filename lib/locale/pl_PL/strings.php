@@ -4668,3 +4668,5 @@ $_LANG['Documentation:'] = 'Dokumentacja:';
 
 $_LANG['New setting'] = 'Nowe ustawienie';
 $_LANG['Allows you to add new configuration setting'] = 'Dodanie nowego ustawienia konfiguracyjnego';
+
+$_LANG['Ticket subject can contain maximum $a characters!'] = 'Temat zgłoszenia może zawierać maksymalnie $a znaków!';
