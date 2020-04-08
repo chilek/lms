@@ -228,7 +228,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $list = $this->db->GetAll(
             'SELECT documentcontents.docid, d.number, d.type, title, d.cdate,
 				u.name AS username, u.lastname, fromdate, todate, description, 
-				numberplans.template, d.closed, d.senddate,
+				numberplans.template, d.closed, d.confirmdate, d.senddate,
 				d.archived, d.adate, d.auserid, u3.name AS ausername,
 				d.name, d.customerid, d.sdate, d.cuserid, u2.name AS cusername,
 				u2.lastname AS clastname, d.reference, i.senddocuments
@@ -674,7 +674,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
         $docs = $this->db->GetAllByKey(
             'SELECT d.id, d.customerid, dc.fromdate AS datefrom,
-					d.reference, d.commitflags
+					d.reference, d.commitflags, d.confirmdate, d.closed
 				FROM documents d
 				JOIN documentcontents dc ON dc.docid = d.id
 				JOIN docrights r ON r.doctype = d.type
@@ -692,9 +692,16 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
         foreach ($docs as $docid => $doc) {
             $this->db->Execute(
-                'UPDATE documents SET sdate=?NOW?, cuserid=?, closed=1,
- 				adate = ?, auserid = ? WHERE id=?',
-                array($userid, 0, null, $docid)
+                'UPDATE documents SET sdate = ?NOW?, cuserid = ?, closed = ?, confirmdate = ?,
+                adate = ?, auserid = ? WHERE id = ?',
+                array(
+                    $userid,
+                    $doc['confirmdate'] == -1 || $doc['closed'] == 2 ? 2 : 1,
+                    $doc['confirmdate'] == -1 && !$doc['closed'] ? 0 : $doc['confirmdate'],
+                    0,
+                    null,
+                    $docid
+                )
             );
 
             $args = array(
@@ -730,7 +737,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             'SELECT d.id
 				FROM documents d
 				' . ($userid ? ' JOIN docrights r ON r.doctype = d.type' : '') . '
-				WHERE d.closed = 1 AND d.archived = 0 AND d.id IN (' . implode(',', $ids) . ')
+				WHERE d.closed > 0 AND d.archived = 0 AND d.id IN (' . implode(',', $ids) . ')
 					' . ($userid ? ' AND r.userid = ' . $userid . ' AND (r.rights & ' . DOCRIGHT_ARCHIVE . ') > 0' : '')
         );
         if (empty($docs)) {

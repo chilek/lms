@@ -51,12 +51,13 @@ function module_main()
     $usernodes = $LMS->GetCustomerNodes($SESSION->id);
     //$balancelist = $LMS->GetCustomerBalanceList($SESSION->id);
     $documents = $LMS->DB->GetAll('SELECT d.id, d.number, d.type, c.title, c.fromdate, c.todate, 
-		c.description, n.template, d.closed, d.cdate
+		    c.description, n.template, d.closed, d.cdate, d.confirmdate
 		FROM documentcontents c
 		JOIN documents d ON (c.docid = d.id)
 		LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 		WHERE d.customerid = ?'
-            . (ConfigHelper::checkConfig('userpanel.show_confirmed_documents_only') ? ' AND d.closed = 1': '')
+            . (ConfigHelper::checkConfig('userpanel.show_confirmed_documents_only')
+                ? ' AND (d.closed > 0 OR d.confirmdate >= ?NOW? OR d.confirmdate = -1)': '')
             . (ConfigHelper::checkConfig('userpanel.hide_archived_documents') ? ' AND d.archived = 0': '')
             . ' ORDER BY cdate', array($SESSION->id));
 

@@ -35,6 +35,7 @@ if (isset($_POST['document'])) {
 
     $oldfromdate = $document['fromdate'];
     $oldtodate = $document['todate'];
+    $oldconfirmdate = $document['confirmdate'];
 
     $document['customerid'] = isset($_POST['customerid']) ? intval($_POST['customerid']) : intval($_POST['customer']);
 
@@ -101,6 +102,17 @@ if (isset($_POST['document'])) {
 
     if ($document['fromdate'] > $document['todate'] && $document['todate'] != 0) {
         $error['todate'] = trans('Start date can\'t be greater than end date!');
+    }
+
+    if ($document['confirmdate'] && !isset($document['closed'])) {
+        $date = explode('/', $document['confirmdate']);
+        if (checkdate($date[1], $date[2], $date[0])) {
+            $document['confirmdate'] = mktime(0, 0, 0, $date[1], $date[2], $date[0]);
+        } else {
+            $error['confirmdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+        }
+    } else {
+        $document['confirmdate'] = 0;
     }
 
     // validate tariff selection list when promotions are active only
@@ -260,18 +272,19 @@ if (isset($_POST['document'])) {
         }
 
         $DB->Execute(
-            'INSERT INTO documents (type, number, numberplanid, cdate, sdate, cuserid,
+            'INSERT INTO documents (type, number, numberplanid, cdate, sdate, cuserid, confirmdate,
 			customerid, userid, name, address, zip, city, ten, ssn, divisionid, 
 			div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 			div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, closed, fullnumber,
 			reference, template, commitflags)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             array($document['type'],
                 $document['number'],
                 empty($document['numberplanid']) ? null : $document['numberplanid'],
                 $time,
                 isset($document['closed']) ? $time : 0,
                 isset($document['closed']) ? Auth::GetCurrentUser() : null,
+                isset($document['closed']) ? 0 : $document['confirmdate'] + 86399,
                 $document['customerid'],
                 Auth::GetCurrentUser(),
                 trim($customer['lastname'] . ' ' . $customer['name']),
@@ -394,6 +407,7 @@ if (isset($_POST['document'])) {
     } else {
         $document['fromdate'] = $oldfromdate;
         $document['todate'] = $oldtodate;
+        $document['confirmdate'] = $oldconfirmdate;
         if (isset($autonumber)) {
             $document['number'] = '';
         }
