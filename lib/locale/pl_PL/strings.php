@@ -3672,6 +3672,7 @@ $_LANG['Email address is required!'] = 'Adres email jest wymagany!';
 $_LANG['Select document status'] = 'Wybierz status dokumentu';
 $_LANG['confirmed'] = 'zatwierdzony';
 $_LANG['unconfirmed'] = 'niezatwierdzony';
+$_LANG['confirmed (customer signed scan)'] = 'zatwierdzony (skan z podpisem klienta)';
 
 $_LANG['Customer ID and PIN'] = 'ID klienta i PIN';
 $_LANG['Phone number and PIN'] = 'Numer telefonu i PIN';

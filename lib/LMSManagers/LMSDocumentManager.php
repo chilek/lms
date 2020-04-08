@@ -38,7 +38,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         }
 
         if ($list = $this->db->GetAll('SELECT c.docid, d.number, d.type, c.title, c.fromdate, c.todate,
-				c.description, n.template, d.closed,
+				c.description, n.template, d.closed, d.confirmdate,
 				d.archived, d.adate, u3.name AS ausername, d.senddate,
 				d.cdate, u.name AS username, d.sdate, u2.name AS cusername,
 				d.type AS doctype, d.template AS doctemplate, reference
