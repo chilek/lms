@@ -935,8 +935,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         $this->db->Execute(
             'INSERT INTO rtmessages (ticketid, createtime, subject, body, userid, customerid, mailfrom,
-			inreplyto, messageid, replyto, headers, type)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			inreplyto, messageid, replyto, headers, type, phonefrom)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             array(
                 $message['ticketid'],
                 $createtime,
@@ -951,6 +951,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     (isset($message['headers']['Reply-To']) ? $message['headers']['Reply-To'] : ''),
                 $headers,
                 isset($message['type']) ? $message['type'] : RTMESSAGE_REGULAR,
+		isset($message['phonefrom']) ? $message['phonefrom'] : '',
             )
         );
         $msgid = $this->db->GetLastInsertID('rtmessages');
