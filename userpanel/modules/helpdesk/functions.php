@@ -177,8 +177,8 @@ function module_main()
 
         if ($ticket['subject'] == '') {
             $ticket['subject'] = trans("No subject");
-        } elseif (mb_strlen($ticket['subject']) > ConfigHelper::getConfig('rt.subject_max_length')) {
-            $error['subject'] = trans('Ticket subject can contain maximum $a characters!', ConfigHelper::getConfig('rt.subject_max_length'));
+        } elseif (mb_strlen($ticket['subject']) > ConfigHelper::getConfig('rt.subject_max_length', 50)) {
+            $error['subject'] = trans('Ticket subject can contain maximum $a characters!', ConfigHelper::getConfig('rt.subject_max_length', 50));
         }
 
         if ($ticket['body'] == '') {
