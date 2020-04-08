@@ -1,5 +1,15 @@
 {box title="Your documents"}
 
+<style>
+
+	.awaits-scan {
+		margin-bottom: 0;
+		margin-top: 0.5em;
+		margin-left: 2em;
+	}
+
+</style>
+
 <div class="table-responsive">
 	<table class="table table-sm table-hover table-bordered table-striped table-condensed">
 		{if $documents}
@@ -12,7 +22,7 @@
 			</thead>
 		{/if}
 		{foreach $documents as $doc}
-			<tr class="align-middle p-2 {if !$doc.closed}text-muted{/if}">
+			<tr class="align-middle p-2 {if !$doc.closed && ($doc.confirmdate <= 0 || $doc.confirmdate < $smarty.now)}text-muted{/if}">
 				<td>{number number=$doc.number template=$doc.template time=$doc.cdate}</td>
 				<td>{assign var=type value=$doc.type}{$_DOCTYPES.$type}</td>
 				<td>{$doc.cdate|date_format:"%d.%m.%Y"}</td>
@@ -32,16 +42,28 @@
 					{/if}
 				</td>
 				<td>
-					{if $doc.closed}
-						{foreach $doc.attachments as $docattach}
-							<a href="?m=info&f=docview&id={$doc.id}&attachmentid={$docattach.id}" target="_blank">
-								{if $docattach.main}
-									<span class="tag tag-primary">{trans("View")}</span><br>
-								{else}
-									<span class="tag tag-info">{$docattach.filename}</span>
+					{if $doc.closed || ($doc.confirmdate > 0 && $doc.confirmdate >= $smarty.now)}
+						<div class="container">
+							{foreach $doc.attachments as $docattach}
+								<div class="row">
+									<div class="col-md-auto btn btn-primary"
+										   href="?m=info&f=docview&id={$doc.id}&attachmentid={$docattach.id}" target="_blank">
+										{if $docattach.main}
+											{trans("View")}
+										{else}
+											{$docattach.filename}
+										{/if}
+									</div>
+								</div>
+								{if !$doc.closed && $docattach.main}
+									<div class="row">
+										<div class="awaits-scan col-md-auto alert alert-warning">
+											{trans("awaits for signed document scan submission")}
+										</div>
+									</div>
 								{/if}
-							</a>
-						{/foreach}
+							{/foreach}
+						</div>
 					{else}
 						{trans("not approved")}
 					{/if}

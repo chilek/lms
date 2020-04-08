@@ -80,9 +80,13 @@ if (!empty($_GET['id'])) {
         } else {
             header('Content-Type: '.$doc['contenttype']);
 
-            if (!preg_match('/^text/i', $doc['contenttype']) || !empty($_GET['save'])) {
+            if (!preg_match('/(^text|pdf)/i', $doc['contenttype']) || !empty($_GET['save'])) {
                 header('Content-Disposition: attachment; filename='.$doc['filename']);
                 header('Pragma: public');
+            } else {
+                header('Content-Disposition: inline; filename="' . $doc['filename'] . '"');
+                header('Content-Transfer-Encoding: binary');
+                header('Content-Length: ' . filesize($filename) . ' bytes');
             }
 
             readfile($filename);

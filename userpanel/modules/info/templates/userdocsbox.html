@@ -1,5 +1,13 @@
 <!--// $Id$ //-->
 {box title="Your documents"}
+<style>
+
+	.awaits-scan {
+		margin-left: 2em;
+	}
+
+</style>
+
 <table style="width: 100%;" cellpadding="3">
 	{if $documents}
 	<tr class="darkest">
@@ -12,7 +20,8 @@
 	{/if}
 	{cycle values="light,lucid" print=false name=doc}
 	{foreach from=$documents item=doc}
-	<tr class="{cycle name=doc}{if !$doc.closed} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<tr class="{cycle name=doc}{if !$doc.closed && ($doc.confirmdate <= 0 || $doc.confirmdate < $smarty.now)} blend{/if}"
+			onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<td class="nobr"><strong>{number number=$doc.number template=$doc.template time=$doc.cdate}</strong></td>
 		<td class="nobr">{assign var=type value=$doc.type}{$_DOCTYPES.$type}</td>
 		<td class="nobr">{$doc.cdate|date_format:"%d.%m.%Y"}</td>
@@ -23,12 +32,18 @@
 		{/if}
 		</td>
 		<td class="nobr" align="right">
-		{if $doc.closed}
+		{if $doc.closed || ($doc.confirmdate > 0 && $doc.confirmdate >= $smarty.now)}
 			{foreach $doc.attachments as $docattach}
 			<a href="?m=info&f=docview&id={$doc.id}&attachmentid={$docattach.id}" target="_blank">
 				{if $docattach.main}{trans("View")}{else}{$docattach.filename}{/if} {img src="view.gif" alt="View"}
 			</a>
 			<br>
+			{if $docattach.main}
+				<span class="awaits-scan">
+					{trans("awaits for signed document scan submission")}
+				</span>
+				<br>
+			{/if}
 			{/foreach}
 		{else}
 			{trans("not approved")}
