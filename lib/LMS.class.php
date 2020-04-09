@@ -2520,7 +2520,7 @@ class LMS
             }
 
             foreach (explode(",", $recipients) as $recipient) {
-                $this->mail_object->addAddress($recipient);
+                $this->mail_object->addAddress($recipient, isset($headers['Recipient-Name']) ? $headers['Recipient-Name'] : '');
             }
 
             if (isset($headers['X-Priority']) && intval($headers['X-Priority'])) {
