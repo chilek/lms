@@ -38,21 +38,45 @@
 			<TD class="nobr" colspan="2">
 				<fieldset>
 					<legend class="bold">
-						{trans("Signed document scan operator notifications")}
+						{trans("Document notification sender properties")}
 					</legend>
 					<table>
 						<TR>
 							<TD class="nobr">
-								<label for="signed_document_scan_operator_notification_mail_sender">{trans("Mail sender:")}</label>
+								<label for="document_notification_mail_sender_name">{trans("Sender name:")}</label>
 							</TD>
 							<TD>
 								<INPUT type="text" size="50"
-										name="moduleconfig[signed_document_scan_operator_notification_mail_sender]"
-										id="signed_document_scan_operator_notification_mail_sender"
-										value="{$moduleconfig.signed_document_scan_operator_notification_mail_sender}"
-									{tip text="Enter signed document scan operator notification mail sender"}>
+									   name="moduleconfig[document_notification_mail_sender_name]"
+									   id="document_notification_mail_sender_name"
+									   value="{$moduleconfig.document_notification_mail_sender_name}"
+										{tip text="Enter document notification mail sender name"}>
 							</TD>
 						</TR>
+						<TR>
+							<TD class="nobr">
+								<label for="document_notification_mail_sender_address">{trans("Sender mail address:")}</label>
+							</TD>
+							<TD>
+								<INPUT type="text" size="50"
+									   name="moduleconfig[document_notification_mail_sender_address]"
+									   id="document_notification_mail_sender_address"
+									   value="{$moduleconfig.document_notification_mail_sender_address}"
+										{tip text="Enter document notification mail sender name"}>
+							</TD>
+						</TR>
+					</table>
+				</fieldset>
+			</TD>
+		</TR>
+
+		<TR>
+			<TD class="nobr" colspan="2">
+				<fieldset>
+					<legend class="bold">
+						{trans("Signed document scan operator notifications")}
+					</legend>
+					<table>
 						<TR>
 							<TD class="nobr">
 								<label for="signed_document_scan_operator_notification_mail_recipient">{trans("Mail recipient:")}</label>

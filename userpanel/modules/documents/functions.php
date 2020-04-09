@@ -90,13 +90,14 @@ function module_main()
                     if (!$error) {
                         $attachmentids = $LMS->AddDocumentScans($documentid, $files);
                         if ($attachmentids) {
-                            $mail_sender = ConfigHelper::getConfig('userpanel.signed_document_scan_operator_notification_mail_sender', ConfigHelper::getConfig('mail.smtp_username'));
+                            $mail_sender_name = ConfigHelper::getConfig('userpanel.document_notification_mail_sender_name', '', true);
+                            $mail_sender_address = ConfigHelper::getConfig('userpanel.document_notification_mail_sender_address', ConfigHelper::getConfig('mail.smtp_username'));
                             $mail_recipient = ConfigHelper::getConfig('userpanel.signed_document_scan_operator_notification_mail_recipient');
                             $mail_format = ConfigHelper::getConfig('userpanel.signed_document_scan_operator_notification_mail_format', 'text');
                             $mail_subject = ConfigHelper::getConfig('userpanel.signed_document_scan_operator_notification_mail_subject');
                             $mail_body = ConfigHelper::getConfig('userpanel.signed_document_scan_operator_notification_mail_body');
 
-                            if (!empty($mail_sender)) {
+                            if (!empty($mail_sender_address)) {
                                 $customerinfo = $LMS->GetCustomer($SESSION->id);
 
                                 if (!empty($mail_recipient) && !empty($mail_subject) && !empty($mail_body)) {
@@ -122,7 +123,7 @@ function module_main()
                                         )
                                     );
                                     $LMS->SendMail($mail_recipient, array(
-                                        'From' => $mail_sender,
+                                        'From' => ($mail_sender_name ? '"' . $mail_sender_name . '" ' : '') . '<' . $mail_sender_address . '>',
                                         'To' => $mail_recipient,
                                         'Subject' => $mail_subject,
                                         'X-LMS-Format' => $mail_format,
@@ -159,7 +160,7 @@ function module_main()
                                         foreach ($mail_recipients as $mail_recipient) {
                                             if (($mail_recipient['type'] & (CONTACT_NOTIFICATIONS | CONTACT_DISABLED)) == CONTACT_NOTIFICATIONS) {
                                                 $LMS->SendMail($mail_recipient['contact'], array(
-                                                    'From' => $mail_sender,
+                                                    'From' => ($mail_sender_name ? '"' . $mail_sender_name . '" ' : '') . '<' . $mail_sender_address . '>',
                                                     'Recipient-Name' => $customerinfo['customername'],
                                                     'Subject' => $mail_subject,
                                                     'X-LMS-Format' => $mail_format,
@@ -241,8 +242,10 @@ if (defined('USERPANEL_SETUPMODE')) {
                 'hide_documentbox' => ConfigHelper::getConfig('userpanel.hide_documentbox'),
                 'show_confirmed_documents_only' => ConfigHelper::checkConfig('userpanel.show_confirmed_documents_only'),
                 'hide_archived_documents' => ConfigHelper::checkConfig('userpanel.hide_archived_documents'),
-                'signed_document_scan_operator_notification_mail_sender' =>
-                    ConfigHelper::getConfig('userpanel.signed_document_scan_operator_notification_mail_sender', '', true),
+                'document_notification_mail_sender_name' =>
+                    ConfigHelper::getConfig('userpanel.document_notification_mail_sender_name', '', true),
+                'document_notification_mail_sender_address' =>
+                    ConfigHelper::getConfig('userpanel.document_notification_mail_sender_address', '', true),
                 'signed_document_scan_operator_notification_mail_recipient' =>
                     ConfigHelper::getConfig('userpanel.signed_document_scan_operator_notification_mail_recipient', '', true),
                 'signed_document_scan_operator_notification_mail_format' =>
@@ -281,7 +284,8 @@ if (defined('USERPANEL_SETUPMODE')) {
             'hide_documentbox' => CONFIG_TYPE_BOOLEAN,
             'show_confirmed_documents_only' => CONFIG_TYPE_BOOLEAN,
             'hide_archived_documents' => CONFIG_TYPE_BOOLEAN,
-            'signed_document_scan_operator_notification_mail_sender' => CONFIG_TYPE_RICHTEXT,
+            'document_notification_mail_sender_name' => CONFIG_TYPE_RICHTEXT,
+            'document_notification_mail_sender_address' => CONFIG_TYPE_RICHTEXT,
             'signed_document_scan_operator_notification_mail_recipient' => CONFIG_TYPE_RICHTEXT,
             'signed_document_scan_operator_notification_mail_format' => CONFIG_TYPE_NONE,
             'signed_document_scan_operator_notification_mail_subject' => CONFIG_TYPE_RICHTEXT,
