@@ -154,12 +154,19 @@ function module_main()
                                             ),
                                         )
                                     );
-                                    $LMS->SendMail($mail_recipient, array(
-                                        'From' => $mail_sender,
-                                        'To' => $mail_recipient,
-                                        'Subject' => $mail_subject,
-                                        'X-LMS-Format' => $mail_format,
-                                    ), $mail_body);
+                                    $mail_recipients = $LMS->GetCustomerContacts($customerinfo['id'], CONTACT_EMAIL);
+                                    if (!empty($mail_recipients)) {
+                                        foreach ($mail_recipients as $mail_recipient) {
+                                            if (($mail_recipient['type'] & (CONTACT_NOTIFICATIONS | CONTACT_DISABLED)) == CONTACT_NOTIFICATIONS) {
+                                                $LMS->SendMail($mail_recipient['contact'], array(
+                                                    'From' => $mail_sender,
+                                                    'Recipient-Name' => $customerinfo['customername'],
+                                                    'Subject' => $mail_subject,
+                                                    'X-LMS-Format' => $mail_format,
+                                                ), $mail_body);
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
