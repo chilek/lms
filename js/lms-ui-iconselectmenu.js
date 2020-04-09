@@ -77,12 +77,16 @@ LmsUiIconSelectMenu.prototype.init = function() {
  *
  * \param address_list
  */
-LmsUiIconSelectMenu.prototype.setAddressList = function( address_list ) {
+LmsUiIconSelectMenu.prototype.setAddressList = function( address_list, preselection ) {
     // clear addresses list
     this._clearList();
 
+    if (typeof(preselection) === 'undefined') {
+        preselection = true;
+    }
+
     // insert new addresses
-    this.appendAddressList( address_list );
+    this.appendAddressList( address_list, preselection );
 }
 
 /*!
@@ -90,9 +94,13 @@ LmsUiIconSelectMenu.prototype.setAddressList = function( address_list ) {
  *
  * \param address_list
  */
-LmsUiIconSelectMenu.prototype.appendAddressList = function( address_list ) {
+LmsUiIconSelectMenu.prototype.appendAddressList = function( address_list, preselection ) {
+    if (typeof(preselection) === 'undefined') {
+        preselection = true;
+    }
+
     // append addresses
-    this._appendAddressList( address_list );
+    this._appendAddressList( address_list, preselection );
 
     // refresh list
     this.refresh();
@@ -101,7 +109,7 @@ LmsUiIconSelectMenu.prototype.appendAddressList = function( address_list ) {
 /*!
  * \brief Pseudo private method for append address list to current select.
  */
-LmsUiIconSelectMenu.prototype._appendAddressList = function( address_list ) {
+LmsUiIconSelectMenu.prototype._appendAddressList = function( address_list, preselection ) {
     var icon;
     var select_id = this.select_id; // can't use 'this' inside of each
 
@@ -149,7 +157,7 @@ LmsUiIconSelectMenu.prototype._appendAddressList = function( address_list ) {
         }
 
         html += '<option value="' + this.address_id  + '" data-icon="' + icon + '"' +
-            (this.hasOwnProperty('default_address') ? ' selected' : '') + '>' +
+            (preselection && this.hasOwnProperty('default_address') ? ' selected' : '') + '>' +
             this.location + '</option>';
     });
     $( select_id ).html(html);
