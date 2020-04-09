@@ -50,84 +50,9 @@ function module_main()
         }
     }
 
-    if (isset($_POST['documentid']) && ($documentid = intval($_POST['documentid'])) > 0) {
-        if ($LMS->DB->GetOne(
-            'SELECT 1 FROM documents WHERE id = ? AND customerid = ? AND closed = 0 AND confirmdate > 0 AND confirmdate > ?NOW?',
-            array($documentid, $SESSION->id)
-        )) {
-            $files = array();
-            $error = null;
-
-            if (isset($_FILES['files'])) {
-                foreach ($_FILES['files']['name'] as $fileidx => $filename) {
-                    if (!empty($filename)) {
-                        if (is_uploaded_file($_FILES['files']['tmp_name'][$fileidx]) && $_FILES['files']['size'][$fileidx]) {
-                            $files[] = array(
-                                'tmpname' => null,
-                                'filename' => $filename,
-                                'name' => $_FILES['files']['tmp_name'][$fileidx],
-                                'type' => $_FILES['files']['type'][$fileidx],
-                                'md5sum' => md5($_FILES['files']['tmp_name'][$fileidx]),
-                            );
-                        } else { // upload errors
-                            if (isset($error['files'])) {
-                                $error['files'] .= "\n";
-                            } else {
-                                $error['files'] = '';
-                            }
-                            switch ($_FILES['files']['error'][$fileidx]) {
-                                case 1:
-                                case 2:
-                                    $error['files'] .= trans('File is too large: $a', $filename);
-                                    break;
-                                case 3:
-                                    $error['files'] .= trans('File upload has finished prematurely: $a', $filename);
-                                    break;
-                                case 4:
-                                    $error['files'] .= trans('Path to file was not specified: $a', $filename);
-                                    break;
-                                default:
-                                    $error['files'] .= trans('Problem during file upload: $a', $filename);
-                                    break;
-                            }
-                        }
-                    }
-                }
-                if (!$error) {
-                    $error = $LMS->AddDocumentFileAttachments($files);
-                    if (!$error) {
-                        $LMS->AddDocumentAttachments($documentid, $files);
-                        $LMS->AddDocumentScans($documentid, $files);
-                    } else {
-                        $SMARTY->assign('error', $error);
-                    }
-                } else {
-                    $SMARTY->assign('error', $error);
-                }
-            }
-        }
-    }
-
     $userinfo = $LMS->GetCustomer($SESSION->id);
     $usernodes = $LMS->GetCustomerNodes($SESSION->id);
     //$balancelist = $LMS->GetCustomerBalanceList($SESSION->id);
-    $documents = $LMS->DB->GetAll('SELECT d.id, d.number, d.type, c.title, c.fromdate, c.todate, 
-		    c.description, n.template, d.closed, d.cdate, d.confirmdate
-		FROM documentcontents c
-		JOIN documents d ON (c.docid = d.id)
-		LEFT JOIN numberplans n ON (d.numberplanid = n.id)
-		WHERE d.customerid = ?'
-            . (ConfigHelper::checkConfig('userpanel.show_confirmed_documents_only')
-                ? ' AND (d.closed > 0 OR d.confirmdate >= ?NOW? OR d.confirmdate = -1)': '')
-            . (ConfigHelper::checkConfig('userpanel.hide_archived_documents') ? ' AND d.archived = 0': '')
-            . ' ORDER BY cdate', array($SESSION->id));
-
-    if (!empty($documents)) {
-        foreach ($documents as &$doc) {
-            $doc['attachments'] = $LMS->DB->GetAllBykey('SELECT * FROM documentattachments WHERE docid = ?
-				ORDER BY main DESC, filename', 'id', array($doc['id']));
-        }
-    }
 
     $fields_changed = $LMS->DB->GetAllByKey(
         'SELECT id, fieldname, fieldvalue FROM up_info_changes WHERE customerid = ?',
@@ -161,7 +86,6 @@ function module_main()
     $SMARTY->assign('userinfo', $userinfo);
     $SMARTY->assign('usernodes', $usernodes);
     //$SMARTY->assign('balancelist',$balancelist);
-    $SMARTY->assign('documents', $documents);
     $SMARTY->assign('fields_changed', $fields_changed);
     $SMARTY->display('module:info.html');
 }
