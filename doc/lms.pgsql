@@ -3406,6 +3406,17 @@ URL: %url
 ('userpanel', 'change_confirmation_mail_body', '', '', 0),
 ('userpanel', 'change_rejection_mail_subject', '', '', 0),
 ('userpanel', 'change_rejection_mail_body', '', '', 0),
+('userpanel', 'signed_document_scan_operator_notification_mail_sender', '', '', 0),
+('userpanel', 'signed_document_scan_operator_notification_mail_recipient', '', '', 0),
+('userpanel', 'signed_document_scan_operator_notification_mail_format', 'text', '', 0),
+('userpanel', 'signed_document_scan_operator_notification_mail_subject', '', '', 0),
+('userpanel', 'signed_document_scan_operator_notification_mail_body', '', '', 0),
+('userpanel', 'signed_document_scan_customer_notification_mail_format', 'text', '', 0),
+('userpanel', 'signed_document_scan_customer_notification_mail_subject', '', '', 0),
+('userpanel', 'signed_document_scan_customer_notification_mail_body', '', '', 0),
+('userpanel', 'document_approval_customer_notification_mail_format', 'text', '', 0),
+('userpanel', 'document_approval_customer_notification_mail_subject', '', '', 0),
+('userpanel', 'document_approval_customer_notification_mail_body', '', '', 0),
 ('userpanel', 'google_recaptcha_sitekey', '', '', 0),
 ('userpanel', 'google_recaptcha_secret', '', '', 0),
 ('userpanel', 'allow_reopen_tickets_newer_than', '0', '', 0),
@@ -3750,6 +3761,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020040900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020040901');
 
 COMMIT;

@@ -932,12 +932,14 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
     public function AddDocumentAttachments($documentid, array $files)
     {
+        $attachmentids = array();
+
         foreach ($files as $file) {
             if (!$this->db->GetOne(
                 'SELECT id FROM documentattachments WHERE docid = ? AND md5sum = ?',
                 array($documentid, $file['md5sum'])
             )) {
-                $this->db->Execute(
+                if ($this->db->Execute(
                     'INSERT INTO documentattachments (docid, filename, contenttype, md5sum, type, cdate)
 					VALUES (?, ?, ?, ?, ?, ?NOW?)',
                     array(
@@ -947,16 +949,20 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                         $file['md5sum'],
                         isset($file['attachmenttype']) ? $file['attachmenttype'] : 0,
                     )
-                );
+                )) {
+                    $attachmentids[] = $this->db->GetLastInsertID('documentattachments');
+                }
             }
         }
+
+        return $attachmentids;
     }
 
     public function AddDocumentScans($documentid, array $files)
     {
-        $this->AddDocumentAttachments($documentid, $files);
+        $this->db->Execute('UPDATE documents SET confirmdate = ? WHERE id = ?', array(-1, $documentid));
 
-        return $this->db->Execute('UPDATE documents SET confirmdate = ? WHERE id = ?', array(-1, $documentid));
+        return $this->AddDocumentAttachments($documentid, $files);
     }
 
     public function DocumentAttachmentExists($md5sum)

@@ -45,3 +45,15 @@ $_LANG['Submit scan'] = 'Prześlij skan';
 $_LANG['Document submission'] = 'Przesłanie skanu podpisanego dokumentu';
 $_LANG['Select scan file:'] = 'Wybierz plik ze skanem:';
 $_LANG['awaits for operator signed document scan review'] = 'oczekuje na przejrzenie przez operatora skanu podpisanego dokumentu';
+
+$_LANG['Signed document scan operator notifications'] = 'Powiadomienia operatora o skanie podpisanego dokumentu';
+$_LANG['Enter signed document scan operator notification mail sender'] = 'Wprowadź nadawcę listu z powiadomieniem operatora o skanie podpisanego dokumentu';
+$_LANG['Enter signed document scan operator notification mail recipient'] = 'Wprowadź odbiorcę listu z powiadomieniem operatora o skanie podpisanego dokumentu';
+$_LANG['Enter signed document scan operator notification mail subject'] = 'Wprowadź temat listu z powiadomieniem operatora o skanie podpisanego dokumentu';
+$_LANG['Enter signed document scan operator notification mail body'] = 'Wprowadź treść listu z powiadomieniem operatora o skanie podpisanego dokumentu';
+$_LANG['Signed document scan customer notifications'] = 'Powiadomienia klienta o skanie podpisanego dokumentu';
+$_LANG['Enter signed document scan customer notification mail subject'] = 'Wprowadź temat listu z powiadomieniem klienta o skanie podpisanego dokumentu';
+$_LANG['Enter signed document scan customer notification mail body'] = 'Wprowadź treść listu z powiadomieniem klienta o skanie podpisanego dokumentu';
+$_LANG['Document approval customer notifications'] = 'Powiadomienia klienta o zatwierdzeniu dokumentu';
+$_LANG['Enter document approval customer notification mail subject'] = 'Wprowadź temat listu z powiadomieniem klienta o skanie podpisanego dokumentu';
+$_LANG['Enter document approval customer notification mail body'] = 'Wprowadź treść listu z powiadomieniem klienta o skanie podpisanego dokumentu';

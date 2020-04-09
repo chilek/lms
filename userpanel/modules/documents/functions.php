@@ -24,6 +24,16 @@
  *  $Id$
  */
 
+function parse_notification_mail($string, $data)
+{
+    $customerinfo = $data['customerinfo'];
+    $string = str_replace('%cid%', $customerinfo['id'], $string);
+    $string = str_replace('%customername%', $customerinfo['customername'], $string);
+    $document = $data['document'];
+    $string = str_replace('%docid%', $document['id'], $string);
+    return $string;
+}
+
 function module_main()
 {
     global $SESSION;
@@ -78,8 +88,81 @@ function module_main()
                 if (!$error) {
                     $error = $LMS->AddDocumentFileAttachments($files);
                     if (!$error) {
-                        $LMS->AddDocumentAttachments($documentid, $files);
-                        $LMS->AddDocumentScans($documentid, $files);
+                        $attachmentids = $LMS->AddDocumentScans($documentid, $files);
+                        if ($attachmentids) {
+                            $mail_sender = ConfigHelper::getConfig('userpanel.signed_document_scan_operator_notification_mail_sender', ConfigHelper::getConfig('mail.smtp_username'));
+                            $mail_recipient = ConfigHelper::getConfig('userpanel.signed_document_scan_operator_notification_mail_recipient');
+                            $mail_format = ConfigHelper::getConfig('userpanel.signed_document_scan_operator_notification_mail_format', 'text');
+                            $mail_subject = ConfigHelper::getConfig('userpanel.signed_document_scan_operator_notification_mail_subject');
+                            $mail_body = ConfigHelper::getConfig('userpanel.signed_document_scan_operator_notification_mail_body');
+
+                            if (!empty($mail_sender)) {
+                                $customerinfo = $LMS->GetCustomer($SESSION->id);
+
+                                if (!empty($mail_recipient) && !empty($mail_subject) && !empty($mail_body)) {
+                                    // operator notification
+                                    $mail_subject = parse_notification_mail(
+                                        $mail_subject,
+                                        array(
+                                            'customerinfo' => $customerinfo,
+                                            'document' => array(
+                                                'id' => $documentid,
+                                                'attachmentids' => $attachmentids,
+                                            ),
+                                        )
+                                    );
+                                    $mail_body = parse_notification_mail(
+                                        $mail_body,
+                                        array(
+                                            'customerinfo' => $customerinfo,
+                                            'document' => array(
+                                                'id' => $documentid,
+                                                'attachmentids' => $attachmentids,
+                                            ),
+                                        )
+                                    );
+                                    $LMS->SendMail($mail_recipient, array(
+                                        'From' => $mail_sender,
+                                        'To' => $mail_recipient,
+                                        'Subject' => $mail_subject,
+                                        'X-LMS-Format' => $mail_format,
+                                    ), $mail_body);
+                                }
+
+                                $mail_format = ConfigHelper::getConfig('userpanel.signed_document_scan_customer_notification_mail_format', 'text');
+                                $mail_subject = ConfigHelper::getConfig('userpanel.signed_document_scan_customer_notification_mail_subject');
+                                $mail_body = ConfigHelper::getConfig('userpanel.signed_document_scan_customer_notification_mail_body');
+                                if (!empty($mail_recipient) && !empty($mail_subject) && !empty($mail_body)) {
+                                    // customer notification
+                                    $mail_subject = parse_notification_mail(
+                                        $mail_subject,
+                                        array(
+                                            'customerinfo' => $customerinfo,
+                                            'document' => array(
+                                                'id' => $documentid,
+                                                'attachmentids' => $attachmentids,
+                                            ),
+                                        )
+                                    );
+                                    $mail_body = parse_notification_mail(
+                                        $mail_body,
+                                        array(
+                                            'customerinfo' => $customerinfo,
+                                            'document' => array(
+                                                'id' => $documentid,
+                                                'attachmentids' => $attachmentids,
+                                            ),
+                                        )
+                                    );
+                                    $LMS->SendMail($mail_recipient, array(
+                                        'From' => $mail_sender,
+                                        'To' => $mail_recipient,
+                                        'Subject' => $mail_subject,
+                                        'X-LMS-Format' => $mail_format,
+                                    ), $mail_body);
+                                }
+                            }
+                        }
                     } else {
                         $SMARTY->assign('error', $error);
                     }
@@ -145,33 +228,89 @@ if (defined('USERPANEL_SETUPMODE')) {
     {
         $SMARTY = LMSSmarty::getInstance();
 
-        $SMARTY->assign('hide_documentbox', ConfigHelper::getConfig('userpanel.hide_documentbox'));
-        $SMARTY->assign('show_confirmed_documents_only', ConfigHelper::checkConfig('userpanel.show_confirmed_documents_only'));
-        $SMARTY->assign('hide_archived_documents', ConfigHelper::checkConfig('userpanel.hide_archived_documents'));
+        $SMARTY->assign(
+            'moduleconfig',
+            array(
+                'hide_documentbox' => ConfigHelper::getConfig('userpanel.hide_documentbox'),
+                'show_confirmed_documents_only' => ConfigHelper::checkConfig('userpanel.show_confirmed_documents_only'),
+                'hide_archived_documents' => ConfigHelper::checkConfig('userpanel.hide_archived_documents'),
+                'signed_document_scan_operator_notification_mail_sender' =>
+                    ConfigHelper::getConfig('userpanel.signed_document_scan_operator_notification_mail_sender', '', true),
+                'signed_document_scan_operator_notification_mail_recipient' =>
+                    ConfigHelper::getConfig('userpanel.signed_document_scan_operator_notification_mail_recipient', '', true),
+                'signed_document_scan_operator_notification_mail_format' =>
+                    ConfigHelper::getConfig('userpanel.signed_document_scan_operator_notification_mail_format', 'text'),
+                'signed_document_scan_operator_notification_mail_subject' =>
+                    ConfigHelper::getConfig('userpanel.signed_document_scan_operator_notification_mail_subject', '', true),
+                'signed_document_scan_operator_notification_mail_body' =>
+                    ConfigHelper::getConfig('userpanel.signed_document_scan_operator_notification_mail_body', '', true),
+                'signed_document_scan_customer_notification_mail_format' =>
+                    ConfigHelper::getConfig('userpanel.signed_document_scan_customer_notification_mail_format', 'text'),
+                'signed_document_scan_customer_notification_mail_subject' =>
+                    ConfigHelper::getConfig('userpanel.signed_document_scan_customer_notification_mail_subject', '', true),
+                'signed_document_scan_customer_notification_mail_body' =>
+                    ConfigHelper::getConfig('userpanel.signed_document_scan_customer_notification_mail_body', '', true),
+                'document_approval_customer_notification_mail_format' =>
+                    ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_format', 'text'),
+                'document_approval_customer_notification_mail_subject' =>
+                    ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_subject', '', true),
+                'document_approval_customer_notification_mail_body' =>
+                    ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_body', '', true),
+            )
+        );
 
         $SMARTY->display('module:documents:setup.html');
     }
 
     function module_submit_setup()
     {
+        if (!isset($_POST['moduleconfig'])) {
+            die;
+        }
+
         $DB = LMSDB::getInstance();
 
-        $DB->Execute(
-            'UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
-            array(isset($_POST['hide_documentbox']) ? 1 : 0, 'userpanel', 'hide_documentbox')
+        $variables = array(
+            'hide_documentbox' => CONFIG_TYPE_BOOLEAN,
+            'show_confirmed_documents_only' => CONFIG_TYPE_BOOLEAN,
+            'hide_archived_documents' => CONFIG_TYPE_BOOLEAN,
+            'signed_document_scan_operator_notification_mail_sender' => CONFIG_TYPE_RICHTEXT,
+            'signed_document_scan_operator_notification_mail_recipient' => CONFIG_TYPE_RICHTEXT,
+            'signed_document_scan_operator_notification_mail_format' => CONFIG_TYPE_NONE,
+            'signed_document_scan_operator_notification_mail_subject' => CONFIG_TYPE_RICHTEXT,
+            'signed_document_scan_operator_notification_mail_body' => CONFIG_TYPE_RICHTEXT,
+            'signed_document_scan_customer_notification_mail_format' => CONFIG_TYPE_NONE,
+            'signed_document_scan_customer_notification_mail_subject' => CONFIG_TYPE_RICHTEXT,
+            'signed_document_scan_customer_notification_mail_body' => CONFIG_TYPE_RICHTEXT,
+            'document_approval_customer_notification_mail_format' => CONFIG_TYPE_NONE,
+            'document_approval_customer_notification_mail_subject' => CONFIG_TYPE_RICHTEXT,
+            'document_approval_customer_notification_mail_body' => CONFIG_TYPE_RICHTEXT,
         );
-        $DB->Execute(
-            'UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
-            array(isset($_POST['show_confirmed_documents_only']) ? 'true' : 'false', 'userpanel', 'show_confirmed_documents_only')
-        );
-        $DB->Execute(
-            'UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
-            array(
-                isset($_POST['hide_archived_documents']) ? 'true' : 'false',
-                'userpanel',
-                'hide_archived_documents'
-            )
-        );
+
+        $moduleconfig = $_POST['moduleconfig'];
+
+        foreach ($variables as $variable => $type) {
+            switch ($type) {
+                case CONFIG_TYPE_BOOLEAN:
+                    $value = isset($moduleconfig[$variable]) ? 1 : 0;
+                    break;
+                case CONFIG_TYPE_RICHTEXT:
+                    $value = $moduleconfig[$variable];
+                    break;
+                case CONFIG_TYPE_NONE:
+                    $mail_format = str_replace('_mail_format', '_mail_body', $variable);
+                    if (isset($moduleconfig['wysiwyg'][$mail_format]) && $moduleconfig['wysiwyg'][$mail_format] == 'true') {
+                        $value = 'html';
+                    } else {
+                        $value = 'text';
+                    }
+                    break;
+            }
+            $DB->Execute(
+                'UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
+                array($value, 'userpanel', $variable,)
+            );
+        }
 
         header('Location: ?m=userpanel&module=documents');
     }
