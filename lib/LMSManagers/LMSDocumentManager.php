@@ -742,7 +742,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 array(
                     $userid,
                     empty($doc['customerawaits']) ? 1 : 2,
-                    empty($doc['customerawaits']) ? 0 : $doc['confirmdate'],
+                    $doc['customerawaits'] ? 0 : $doc['confirmdate'],
                     0,
                     null,
                     $docid
