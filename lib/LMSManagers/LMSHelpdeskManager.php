@@ -289,12 +289,16 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             case 'all':
                 $ownerfilter = '';
                 break;
-            default:
-                if (is_array($owner) && !empty($owner)) {
-                    $ownerfilter = ' AND t.owner IN (' . implode(',', $owner) . ') ';
-                } else {
-                    $ownerfilter = '';
-                }
+	    default:
+		if (!empty($owner)) {
+                    if (is_array($owner)) {
+                        $ownerfilter = ' AND t.owner IN (' . implode(',', $owner) . ') ';
+                    } else {
+			    $ownerfilter = ' AND t.owner = '. $owner;
+		    }
+		} else {
+		    $ownerfilter = '';
+		}
                 break;
         }
 
