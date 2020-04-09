@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2019 LMS Developers
+ *  Copyright (C) 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -399,5 +399,75 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
         $result['direction'] = $direction;
 
         return $result;
+    }
+
+    public function addMessage(array $params)
+    {
+        $result = array();
+
+        $this->db->Execute('INSERT INTO messages (type, cdate, subject, body, userid, sender, contenttype)
+			VALUES (?, ?NOW?, ?, ?, ?, ?, ?)', array(
+            $params['type'],
+            $params['subject'],
+            $params['body'],
+            isset($params['userid']) ? $params['userid'] : Auth::GetCurrentUser(),
+            $params['type'] == MSG_MAIL && isset($params['sender']) ? '"' . $params['sender']['name'] . '" <' . $params['sender']['mail'] . '>' : '',
+            $params['contenttype'],
+        ));
+
+        $result['id'] = $msgid  = $this->db->GetLastInsertID('messages');
+
+        $msgitems = array();
+
+        foreach ($params['recipients'] as &$row) {
+            switch ($params['type']) {
+                case MSG_MAIL:
+                    $row['destination'] = explode(',', $row['email']);
+                    break;
+                case MSG_WWW:
+                    $row['destination'] = array(trans('www'));
+                    break;
+                case MSG_USERPANEL:
+                    $row['destination'] = array(trans('userpanel'));
+                    break;
+                case MSG_USERPANEL_URGENT:
+                    $row['destination'] = array(trans('userpanel urgent'));
+                    break;
+                default:
+                    $row['destination'] = explode(',', $row['phone']);
+            }
+
+            $customerid = isset($row['id']) ? $row['id'] : 0;
+            foreach ($row['destination'] as $destination) {
+                $this->db->Execute(
+                    'INSERT INTO messageitems (messageid, customerid,
+					destination, status)
+					VALUES (?, ?, ?, ?)',
+                    array($msgid, empty($customerid) ? null : $customerid, $destination, MSG_NEW)
+                );
+                if (!isset($msgitems[$customerid])) {
+                    $msgitems[$customerid] = array();
+                }
+                $msgitems[$customerid][$destination] = $this->db->GetLastInsertID('messageitems');
+            }
+        }
+        unset($row);
+
+        $result['items'] = $msgitems;
+
+        return $result;
+    }
+
+    public function updateMessageItems(array $params)
+    {
+        if (!strcmp($params['original_body'], $params['real_body'])) {
+            return $this->db->Execute(
+                'UPDATE messageitems SET body = ?
+                WHERE messageid = ? AND customerid '
+                . (isset($params['customerid']) && !empty($params['customerid']) ? '= ' . intval($params['customerid']) : 'IS NULL'),
+                array($params['real_body'], $params['messageid'])
+            );
+        }
+        return 0;
     }
 }

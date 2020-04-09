@@ -633,43 +633,19 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 
         $DB->BeginTrans();
 
-        $DB->Execute('INSERT INTO messages (type, cdate, subject, body, userid, sender, contenttype)
-			VALUES (?, ?NOW?, ?, ?, ?, ?, ?)', array(
-                $message['type'],
-                $message['subject'],
-                $message['body'],
-                Auth::GetCurrentUser(),
-                $message['type'] == MSG_MAIL ? '"' . $message['from'] . '" <' . $message['sender'] . '>' : '',
-                $message['contenttype'],
-            ));
-
-        $msgid = $DB->GetLastInsertID('messages');
-
-        foreach ($recipients as $key => $row) {
-            if ($message['type'] == MSG_MAIL) {
-                $recipients[$key]['destination'] = explode(',', $row['email']);
-            } elseif ($message['type'] == MSG_WWW) {
-                $recipients[$key]['destination'] = array(trans('www'));
-            } elseif ($message['type'] == MSG_USERPANEL) {
-                $recipients[$key]['destination'] = array(trans('userpanel'));
-            } elseif ($message['type'] == MSG_USERPANEL_URGENT) {
-                $recipients[$key]['destination'] = array(trans('userpanel urgent'));
-            } else {
-                $recipients[$key]['destination'] = explode(',', $row['phone']);
-            }
-
-            $customerid = isset($row['id']) ? $row['id'] : 0;
-            foreach ($recipients[$key]['destination'] as $destination) {
-                $DB->Execute('INSERT INTO messageitems (messageid, customerid,
-					destination, status)
-					VALUES (?, ?, ?, ?)', array($msgid, empty($customerid) ? null : $customerid, $destination, MSG_NEW));
-                $msgitemid = $DB->GetLastInsertID('messageitems');
-                if (!isset($msgitems[$customerid])) {
-                    $msgitems[$customerid] = array();
-                }
-                $msgitems[$customerid][$destination] = $msgitemid;
-            }
-        }
+        $result = $LMS->addMessage(array(
+            'type' => $message['type'],
+            'subject' => $message['subject'],
+            'body' => $message['body'],
+            'sender' => array(
+                'name' => $message['from'],
+                'mail' => $message['sender'],
+            ),
+            'contenttye' => $message['contenttype'],
+            'recipients' => $recipients,
+        ));
+        $msgid = $result['id'];
+        $msgitems = $result['items'];
 
         if ($message['type'] == MSG_MAIL) {
             if (!empty($files)) {
@@ -763,10 +739,12 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                     BodyVars($body, $row, $eol);
                 }
 
-                if (strcmp($plain_body, $body) != 0) {
-                    $DB->Execute('UPDATE messageitems SET body = ?
-                    WHERE messageid = ? AND customerid = ?', array($body, $msgid, $customerid ?: null));
-                }
+                $LMS->updateMessageItems(array(
+                    'messageid' => $msgid,
+                    'original_body' => $plain_body,
+                    'real_body' => $body,
+                    'customerid' => $customerid ?: null,
+                ));
             }
 
             foreach ($row['destination'] as $destination) {

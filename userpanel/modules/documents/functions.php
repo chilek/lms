@@ -90,6 +90,8 @@ function module_main()
                     if (!$error) {
                         $attachmentids = $LMS->AddDocumentScans($documentid, $files);
                         if ($attachmentids) {
+                            $mail_dsn = ConfigHelper::getConfig('userpanel.document_notification_mail_dsn_address', '', true);
+                            $mail_mdn = ConfigHelper::getConfig('userpanel.document_notification_mail_mdn_address', '', true);
                             $mail_sender_name = ConfigHelper::getConfig('userpanel.document_notification_mail_sender_name', '', true);
                             $mail_sender_address = ConfigHelper::getConfig('userpanel.document_notification_mail_sender_address', ConfigHelper::getConfig('mail.smtp_username'));
                             $mail_recipient = ConfigHelper::getConfig('userpanel.signed_document_scan_operator_notification_mail_recipient');
@@ -155,16 +157,52 @@ function module_main()
                                             ),
                                         )
                                     );
-                                    $mail_recipients = $LMS->GetCustomerContacts($customerinfo['id'], CONTACT_EMAIL);
+                                    $mail_recipients = $LMS->GetCustomerContacts($SESSION->id, CONTACT_EMAIL);
                                     if (!empty($mail_recipients)) {
+                                        $destinations = array();
                                         foreach ($mail_recipients as $mail_recipient) {
                                             if (($mail_recipient['type'] & (CONTACT_NOTIFICATIONS | CONTACT_DISABLED)) == CONTACT_NOTIFICATIONS) {
-                                                $LMS->SendMail($mail_recipient['contact'], array(
-                                                    'From' => ($mail_sender_name ? '"' . $mail_sender_name . '" ' : '') . '<' . $mail_sender_address . '>',
-                                                    'Recipient-Name' => $customerinfo['customername'],
-                                                    'Subject' => $mail_subject,
-                                                    'X-LMS-Format' => $mail_format,
-                                                ), $mail_body);
+                                                $destinations[] = $mail_recipient['contact'];
+                                            }
+                                        }
+                                        if (!empty($destinations)) {
+                                            $recipients = array(
+                                                array(
+                                                    'id' => $SESSION->id,
+                                                    'email' => implode(',', $destinations),
+                                                )
+                                            );
+                                            $sender = ($mail_sender_name ? '"' . $mail_sender_name . '" ' : '') . '<' . $mail_sender_address . '>';
+                                            $message = $LMS->addMessage(array(
+                                                'type' => MSG_MAIL,
+                                                'subject' => $mail_subject,
+                                                'body' => $mail_body,
+                                                'sender' => array(
+                                                    'name' => $mail_sender_name,
+                                                    'mail' => $mail_sender_address,
+                                                ),
+                                                'contenttype' => $mail_format == 'text' ? 'text/plain' : 'text/html',
+                                                'recipients' => $recipients,
+                                            ));
+                                            $headers = array(
+                                                'From' => $sender,
+                                                'Recipient-Name' => $customerinfo['customername'],
+                                                'Subject' => $mail_subject,
+                                                'X-LMS-Format' => $mail_format,
+                                            );
+                                            if (!empty($mail_mdn)) {
+                                                $headers['Return-Receipt-To'] = $mail_mdn;
+                                                $headers['Disposition-Notification-To'] = $mail_mdn;
+                                            }
+                                            if (!empty($mail_dsn)) {
+                                                $headers['Delivery-Status-Notification-To'] = true;
+                                            }
+                                            foreach ($destinations as $destination) {
+                                                if (!empty($mail_dsn) || !empty($mail_mdn)) {
+                                                    $headers['X-LMS-Message-Item-Id'] = $message['items'][$SESSION->id][$destination];
+                                                    $headers['Message-ID'] = '<messageitem-' . $message['items'][$SESSION->id][$destination] . '@rtsystem.' . gethostname() . '>';
+                                                }
+                                                $LMS->SendMail($destination, $headers, $mail_body);
                                             }
                                         }
                                     }
@@ -242,6 +280,10 @@ if (defined('USERPANEL_SETUPMODE')) {
                 'hide_documentbox' => ConfigHelper::getConfig('userpanel.hide_documentbox'),
                 'show_confirmed_documents_only' => ConfigHelper::checkConfig('userpanel.show_confirmed_documents_only'),
                 'hide_archived_documents' => ConfigHelper::checkConfig('userpanel.hide_archived_documents'),
+                'document_notification_mail_dsn_address' =>
+                    ConfigHelper::getConfig('userpanel.document_notification_mail_dsn_address', '', true),
+                'document_notification_mail_mdn_address' =>
+                    ConfigHelper::getConfig('userpanel.document_notification_mail_mdn_address', '', true),
                 'document_notification_mail_sender_name' =>
                     ConfigHelper::getConfig('userpanel.document_notification_mail_sender_name', '', true),
                 'document_notification_mail_sender_address' =>
@@ -284,6 +326,8 @@ if (defined('USERPANEL_SETUPMODE')) {
             'hide_documentbox' => CONFIG_TYPE_BOOLEAN,
             'show_confirmed_documents_only' => CONFIG_TYPE_BOOLEAN,
             'hide_archived_documents' => CONFIG_TYPE_BOOLEAN,
+            'document_notification_mail_dsn_address' => CONFIG_TYPE_RICHTEXT,
+            'document_notification_mail_mdn_address' => CONFIG_TYPE_RICHTEXT,
             'document_notification_mail_sender_name' => CONFIG_TYPE_RICHTEXT,
             'document_notification_mail_sender_address' => CONFIG_TYPE_RICHTEXT,
             'signed_document_scan_operator_notification_mail_recipient' => CONFIG_TYPE_RICHTEXT,

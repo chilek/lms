@@ -3523,7 +3523,19 @@ class LMS
         return $manager->GetMessageList($params);
     }
 
-        /**
+    public function addMessage(array $params)
+    {
+        $manager = $this->getMessageManager();
+        return $manager->addMessage($params);
+    }
+
+    public function updateMessageItems(array $params)
+    {
+        $manager = $this->getMessageManager();
+        return $manager->updateMessageItems($params);
+    }
+
+    /**
      * Returns user manager
      *
      * @return \LMSUserManagerInterface User manager

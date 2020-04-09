@@ -38,9 +38,33 @@
 			<TD class="nobr" colspan="2">
 				<fieldset>
 					<legend class="bold">
-						{trans("Document notification sender properties")}
+						{trans("Document notification general parameters")}
 					</legend>
 					<table>
+						<TR>
+							<TD class="nobr">
+								<label for="document_notification_mail_dsn_address">{trans("DSN address:")}</label>
+							</TD>
+							<TD>
+								<INPUT type="text" size="50"
+									   name="moduleconfig[document_notification_mail_dsn_address]"
+									   id="document_notification_mail_dsn_address"
+									   value="{$moduleconfig.document_notification_mail_dsn_address}"
+										{tip text="Enter document notification mail DSN (Delivery Status Notification) address"}>
+							</TD>
+						</TR>
+						<TR>
+							<TD class="nobr">
+								<label for="document_notification_mail_mdn_address">{trans("MDN address:")}</label>
+							</TD>
+							<TD>
+								<INPUT type="text" size="50"
+									   name="moduleconfig[document_notification_mail_mdn_address]"
+									   id="document_notification_mail_mdn_address"
+									   value="{$moduleconfig.document_notification_mail_mdn_address}"
+										{tip text="Enter document notification mail MDN (Message Delivery Notification) address"}>
+							</TD>
+						</TR>
 						<TR>
 							<TD class="nobr">
 								<label for="document_notification_mail_sender_name">{trans("Sender name:")}</label>

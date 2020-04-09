@@ -46,7 +46,7 @@ $_LANG['Document submission'] = 'Przesłanie skanu podpisanego dokumentu';
 $_LANG['Select scan file:'] = 'Wybierz plik ze skanem:';
 $_LANG['awaits for operator signed document scan review'] = 'oczekuje na przejrzenie przez operatora skanu podpisanego dokumentu';
 
-$_LANG['Document notification sender properties'] = 'Właściwości nadawcy dla powiadomień o dokuemntach';
+$_LANG['Document notification general parameters'] = 'Ogólne parametry powiadomień o dokumentach';
 $_LANG['Enter document notification mail sender name'] = 'Wprowadź nazwę nadawcy listu z powiadomieniem o dokumencie';
 $_LANG['Enter document notification mail sender address'] = 'Wprowadź adres nadawcy listu z powiadomieniem o dokumencie';
 
@@ -63,3 +63,9 @@ $_LANG['Enter document approval customer notification mail body'] = 'Wprowadź t
 
 $_LANG['Sender name:'] = 'Nazwa nadawcy:';
 $_LANG['Sender mail address:'] = 'Adres mail nadawcy:';
+
+$_LANG['DSN address:'] = 'Adres DSN:';
+$_LANG['Enter document notification mail DSN (Delivery Status Notification) address'] = 'Podaj adres email DSN (powiadomień o statusie dostarczenia) powiadomienia o dokumencie';
+
+$_LANG['MDN address:'] = 'Adres MDN:';
+$_LANG['Enter document notification mail MDN (Message Delivery Notification) address'] = 'Podaj adres email MDN (powiadomień o odebraniu wiadomości) powiadomienia o dokumencie';
