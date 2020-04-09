@@ -1525,7 +1525,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			SUM(CASE WHEN a.contenttype = ? THEN 1 ELSE 0 END) AS html,
 			SUM(CASE WHEN a.contenttype = ? THEN 1 ELSE 0 END) AS pdf
 		FROM documents d
-		LEFT JOIN documentattachments a ON a.docid = d.id AND a.main = ?
+		LEFT JOIN documentattachments a ON a.docid = d.id AND a.type = ?
 		WHERE d.id IN (' . implode(',', $ids) . ')',
             array('text/html', 'application/pdf', 1)
         );

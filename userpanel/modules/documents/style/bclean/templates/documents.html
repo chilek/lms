@@ -97,20 +97,20 @@
 								<div class="row document-attachment">
 									<div class="col-md-auto">
 										<a class="btn btn-primary" href="?m=documents&f=docview&id={$doc.id}&attachmentid={$docattach.id}" target="_blank">
-											{if $docattach.main}
+											{if $docattach.type == 1}
 												{trans("View")}
 											{else}
 												{$docattach.filename}
 											{/if}
 										</a>
-										{if !$doc.closed && $docattach.main && $doc.confirmdate != -1}
+										{if !$doc.closed && $docattach.type == 1 && $doc.confirmdate != -1}
 											<a class="btn btn-primary" href="#" data-toggle="modal" data-target="#newscan-dialog" data-document-id="{$doc.id}">
 												{trans("Submit scan")}
 											</a>
 										{/if}
 									</div>
 								</div>
-								{if !$doc.closed && $docattach.main}
+								{if !$doc.closed && $docattach.type == 1}
 									<div class="row">
 										<div class="awaits-scan col-md-auto alert alert-warning">
 											{if $doc.confirmdate == -1}

@@ -142,6 +142,7 @@
 						<OPTION value="0"{if $filter.status == 0} selected{/if}>{trans("unconfirmed")}</OPTION>
 						<OPTION value="1"{if $filter.status == 1} selected{/if}>{trans("confirmed")}</OPTION>
 						<OPTION value="2"{if $filter.status == 2} selected{/if}>{trans("review (signed document scan)")}</OPTION>
+						<OPTION value="3"{if $filter.status == 3} selected{/if}>{trans("waiting for signed document scan")}</OPTION>
 					</SELECT>
 
 					{trans("Archived:")}

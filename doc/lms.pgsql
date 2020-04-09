@@ -481,7 +481,8 @@ CREATE TABLE documentattachments (
 	filename varchar(255) NOT NULL,
 	contenttype varchar(255) NOT NULL,
 	md5sum varchar(32) NOT NULL,
-	main smallint DEFAULT 1 NOT NULL,
+	type smallint DEFAULT 1 NOT NULL,
+	cdate integer NOT NULL DEFAULT 0,
 	PRIMARY KEY (id),
 	UNIQUE (docid, md5sum)
 );
@@ -3749,6 +3750,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020040800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020040900');
 
 COMMIT;

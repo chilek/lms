@@ -199,7 +199,7 @@ if (isset($_POST['document'])) {
                     'name' => $engine['output'],
                     'type' => $engine['content_type'],
                     'md5sum' => md5_file($file),
-                    'main' => true,
+                    'attachmenttype' => 1,
                 );
             } else if (empty($error)) {
                 $error['templ'] = trans('Problem during file generation!');
@@ -215,7 +215,7 @@ if (isset($_POST['document'])) {
         foreach ($attachments as $attachment) {
             $attachment['tmpname'] = $tmppath . DIRECTORY_SEPARATOR . $attachment['name'];
             $attachment['md5sum'] = md5_file($attachment['tmpname']);
-            $attachment['main'] = false;
+            $attachment['attachmenttype'] = 0;
             $files[] = $attachment;
         }
     }
@@ -231,7 +231,7 @@ if (isset($_POST['document'])) {
                 'name' => $filename,
                 'type' => mime_content_type($filename),
                 'md5sum' => md5_file($filename),
-                'main' => false,
+                'attachmenttype' => 0,
             );
         }
     }

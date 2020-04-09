@@ -4,16 +4,15 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 {$xajax}
-<script type="text/javascript">
-<!--
-	function setnumberplans() {
-		reset_login_timeout();
-		xajax_GetNumberPlans(document.forms['documentedit'].elements['document[type]'].value,
-			document.forms['documentedit'].elements['document[numberplanid]'].value,
-			{$document.customerid});
+
+<style>
+
+	.docattachrow a:nth-child(2) {
+		margin-left: 0.5em;
 	}
-//-->
-</script>
+
+</style>
+
 <P><FORM name="documentedit" method="POST" id="documentedit-form" action="?m=documentedit&id={$document.id}" enctype="multipart/form-data">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" name="customerid" value="{$document.customerid}">
@@ -129,24 +128,19 @@
 			{trans("Attached files:")}
 		</TD>
 		<TD class="nobr">
-			<script type="text/javascript">
-			<!--
-				$(function() {
-					$('.docattach').on('click', function() {
-						var elem = $(this);
-						elem.toggleClass('blend crossed');
-						elem.html('<img src="img/' + (elem.hasClass('blend') ? 'cancel' : 'delete') + '.gif"> ' + elem.attr('data-filename'));
-						elem.siblings('input').val(+ elem.hasClass('blend'));
-						return false;
-					});
-				});
-			//-->
-			</script>
 			{foreach $document.attachments as $docattach}
-			<div>
-				<a href="#" class="docattach{if $document.attachments[$docattach.id].deleted} blend crossed{/if}" data-filename="{$docattach.filename}">
-					<img src="img/{if $document.attachments[$docattach.id].deleted}cancel{else}delete{/if}.gif"> {$docattach.filename}
+			<div class="docattachrow{if $docattach.type <= 0} docattach{if $document.attachments[$docattach.id].deleted} blend crossed{/if}{/if}">
+				<a href="#">
+					<i class="fa-fw lms-ui-icon-{if $document.attachments[$docattach.id].deleted}cancel{else}delete{/if}"
+							{if $docattach.type == 1} style="visibility: hidden;"{/if}></i>
 				</a>
+				{$class = ""}
+				{if $document.attachments[$docattach.id].deleted}
+					{$class = "blend"}
+				{/if}
+				{documentview id="{$document.id}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
+					url="?m=documentview&id={$document.id}&attachmentid={$docattach.id}" external=true class=$class
+					text="{$docattach.filename} <img src=\"img/{if preg_match('/pdf/',$docattach.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)}xls{else}view{/if}.gif\">"}
 				<input type="hidden" name="document[attachments][{$docattach.id}][deleted]" value="{$document.attachments[$docattach.id].deleted}">
 			</div>
 			{/foreach}
@@ -206,10 +200,26 @@
     </TBODY>
 </TABLE>
 </FORM></P>
-<SCRIPT>
+
+<script>
+
+	function setnumberplans() {
+		reset_login_timeout();
+		xajax_GetNumberPlans(document.forms['documentedit'].elements['document[type]'].value,
+				document.forms['documentedit'].elements['document[numberplanid]'].value,
+				{$document.customerid});
+	}
 
 	$(function() {
 		$('form[name="documentedit"] [name="document[title]"]').focus();
+
+		$('.docattach').on('click', function() {
+			var elem = $(this);
+			elem.toggleClass('blend crossed').find('.lms-ui-button-view').toggleClass('blend')
+			elem.find('i').toggleClass('lms-ui-icon-delete').toggleClass('lms-ui-icon-cancel');
+			elem.find('input').val(+ elem.hasClass('blend'));
+			return false;
+		});
 
 		$('#closed').change(function() {
 			if ($('#archived').prop('checked') && !$(this).prop('checked')) {
@@ -221,5 +231,5 @@
 		});
 	});
 
-</SCRIPT>
+</script>
 {/block}

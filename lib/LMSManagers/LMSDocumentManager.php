@@ -53,7 +53,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 			ORDER BY cdate', array(Auth::GetCurrentUser(), $customerid))) {
             foreach ($list as &$doc) {
                 $doc['attachments'] = $this->db->GetAll('SELECT * FROM documentattachments
-					WHERE docid = ? ORDER BY main DESC, filename', array($doc['docid']));
+					WHERE docid = ? ORDER BY type DESC, filename', array($doc['docid']));
                 if (!empty($doc['reference'])) {
                     $doc['reference'] = $this->db->GetRow('SELECT id, type, fullnumber, cdate FROM documents
 						WHERE id = ?', array($doc['reference']));
@@ -188,6 +188,23 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 $datefield = 'd.cdate';
         }
 
+        switch ($status) {
+            case 0:
+                $status_sql = ' AND d.closed = 0 AND d.confirmdate >= 0 AND (d.confirmdate = 0 OR d.confirmdate < ?NOW?)';
+                break;
+            case 1:
+                $status_sql = ' AND d.closed = 1';
+                break;
+            case 2:
+                $status_sql = ' AND d.closed = 0 AND d.confirmdate = -1';
+                break;
+            case 3:
+                $status_sql = ' AND d.closed = 0 AND d.confirmdate > 0 AND d.confirmdate > ?NOW?';
+                break;
+            default:
+                $status_sql = '';
+        }
+
         if ($count) {
             return $this->db->GetOne(
                 'SELECT COUNT(documentcontents.docid)
@@ -219,7 +236,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     . ($numberplan ? ' AND d.numberplanid = ' . intval($numberplan) : '')
                     .($from ? ' AND ' . $datefield . ' >= '.intval($from) : '')
                     .($to ? ' AND ' . $datefield . ' <= '.intval($to) : '')
-                    . ($status == -1 ? '' : ($status == 2 ? ' AND (d.closed = 0 OR d.confirmdate = -1)': ' AND d.closed = ' . intval($status)))
+                    . $status_sql
                     . ($archived == -1 ? '' : ' AND d.archived = ' . intval($archived)),
                 array(Auth::GetCurrentUser())
             );
@@ -261,7 +278,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             . ($numberplan ? ' AND d.numberplanid = ' . intval($numberplan) : '')
             .($from ? ' AND ' . $datefield . ' >= '.intval($from) : '')
             .($to ? ' AND ' . $datefield . ' <= '.intval($to) : '')
-            . ($status == -1 ? '' : ($status == 2 ? ' AND (d.closed = 0 OR d.confirmdate = -1)': ' AND d.closed = ' . intval($status)))
+            . $status_sql
             . ($archived == -1 ? '' : ' AND d.archived = ' . intval($archived))
             .$sqlord
             . (isset($limit) ? ' LIMIT ' . $limit : '')
@@ -273,8 +290,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             $list = array();
         } else {
             foreach ($list as &$document) {
-                $document['attachments'] = $this->db->GetAll('SELECT id, filename, md5sum, contenttype, main
-				FROM documentattachments WHERE docid = ? ORDER BY main DESC, filename', array($document['docid']));
+                $document['attachments'] = $this->db->GetAll('SELECT id, filename, md5sum, contenttype, type, type AS main, cdate
+				    FROM documentattachments WHERE docid = ? ORDER BY type DESC, filename', array($document['docid']));
                 if (!empty($document['reference'])) {
                     $document['reference'] = $this->db->GetRow('SELECT id, type, fullnumber, cdate FROM documents
 					WHERE id = ?', array($document['reference']));
@@ -831,8 +848,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
         if (empty($error)
             && !$this->db->Execute(
-                'INSERT INTO documentattachments (docid, filename, contenttype, md5sum, main)
-				VALUES (?, ?, ?, ?, ?)',
+                'INSERT INTO documentattachments (docid, filename, contenttype, md5sum, type, cdate)
+				VALUES (?, ?, ?, ?, ?, ?NOW?)',
                 array($docid, $file['filename'], $file['content-type'], $file['md5sum'], 1)
             )) {
             $error = trans('Cannot create database record for archived document!');
@@ -843,10 +860,10 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
     public function GetArchiveDocument($docid)
     {
-        $document = $this->db->GetRow('SELECT d.type AS doctype, filename, contenttype, md5sum
+        $document = $this->db->GetRow('SELECT d.type AS doctype, filename, contenttype, md5sum, a.cdate
 			FROM documents d
 			JOIN documentattachments a ON a.docid = d.id
-			WHERE docid = ? AND main = ?', array($docid, 1));
+			WHERE docid = ? AND type = ?', array($docid, 1));
 
         $filename = DOC_DIR . DIRECTORY_SEPARATOR . substr($document['md5sum'], 0, 2)
             . DIRECTORY_SEPARATOR . $document['md5sum'];
@@ -921,14 +938,14 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 array($documentid, $file['md5sum'])
             )) {
                 $this->db->Execute(
-                    'INSERT INTO documentattachments (docid, filename, contenttype, md5sum, main)
-					VALUES (?, ?, ?, ?, ?)',
+                    'INSERT INTO documentattachments (docid, filename, contenttype, md5sum, type, cdate)
+					VALUES (?, ?, ?, ?, ?, ?NOW?)',
                     array(
                         $documentid,
                         $file['filename'],
                         $file['type'],
                         $file['md5sum'],
-                        0,
+                        isset($file['attachmenttype']) ? $file['attachmenttype'] : 0,
                     )
                 );
             }
@@ -974,8 +991,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 date('Y/m/d', $document['cdate'])
             );
 
-            $document['attachments'] = $this->db->GetAllByKey('SELECT * FROM documentattachments WHERE docid = ?
-				ORDER BY main DESC', 'id', array($id));
+            $document['attachments'] = $this->db->GetAllByKey('SELECT *, type AS main FROM documentattachments WHERE docid = ?
+				ORDER BY type DESC', 'id', array($id));
 
             foreach ($document['attachments'] as &$attachment) {
                 $filename = DOC_DIR . DIRECTORY_SEPARATOR . substr($attachment['md5sum'], 0, 2)

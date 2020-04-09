@@ -68,7 +68,7 @@ if (empty($document)) {
 }
 
 $document['attachments'] = $DB->GetAllByKey('SELECT *, 0 AS deleted FROM documentattachments
-	WHERE docid = ? AND main = 0', 'id', array($_GET['id']));
+	WHERE docid = ? ORDER BY type DESC', 'id', array($_GET['id']));
 
 if (isset($_POST['document'])) {
     $documentedit = $_POST['document'];
@@ -216,7 +216,7 @@ if (isset($_POST['document'])) {
 
         if (isset($documentedit['attachments']) && is_array($documentedit['attachments'])) {
             foreach ($documentedit['attachments'] as $attachmentid => $attachment) {
-                if ($attachment['deleted']) {
+                if ($attachment['deleted'] && $document['attachments'][$attachmentid]['type'] < 1) {
                     $md5sum = $document['attachments'][$attachmentid]['md5sum'];
                     if ($DB->GetOne('SELECT COUNT(*) FROM documentattachments WHERE md5sum = ?', array($md5sum)) <= 1) {
                         @unlink(DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum, 0, 2) . DIRECTORY_SEPARATOR . $md5sum);

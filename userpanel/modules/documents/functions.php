@@ -49,6 +49,7 @@ function module_main()
                                 'name' => $_FILES['files']['tmp_name'][$fileidx],
                                 'type' => $_FILES['files']['type'][$fileidx],
                                 'md5sum' => md5($_FILES['files']['tmp_name'][$fileidx]),
+                                'attachmenttype' => -1,
                             );
                         } else { // upload errors
                             if (isset($error['files'])) {
@@ -103,7 +104,7 @@ function module_main()
     if (!empty($documents)) {
         foreach ($documents as &$doc) {
             $doc['attachments'] = $LMS->DB->GetAllBykey('SELECT * FROM documentattachments WHERE docid = ?
-				ORDER BY main DESC, filename', 'id', array($doc['id']));
+				ORDER BY type DESC, filename', 'id', array($doc['id']));
         }
     }
 

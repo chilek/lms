@@ -146,7 +146,7 @@ if (!empty($_POST['marks'])) {
 	JOIN docrights r ON (r.doctype = d.type)
 	WHERE d.id = ? AND r.userid = ? AND (r.rights & 1) = 1', array($_GET['id'], Auth::GetCurrentUser()))) {
     $docattachments = $DB->GetAllByKey('SELECT * FROM documentattachments WHERE docid = ?
-		ORDER BY main DESC', 'id', array($_GET['id']));
+		ORDER BY type DESC', 'id', array($_GET['id']));
     $attachmentid = intval($_GET['attachmentid']);
     if ($attachmentid) {
         $docattach = $docattachments[$attachmentid];

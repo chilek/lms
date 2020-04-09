@@ -1,9 +1,9 @@
 <?php
 
-/*
+/**
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -33,8 +33,12 @@ if (!empty($_GET['id'])) {
 		LEFT JOIN divisions ds ON (ds.id = d.divisionid)
 		WHERE d.id = ?', array(intval($_GET['id'])));
 
+    if ($doc['customerid'] != $SESSION->id) {
+        die;
+    }
+
     $docattachments = $LMS->DB->GetAllByKey('SELECT * FROM documentattachments WHERE docid = ?
-		ORDER BY main DESC, filename', 'id', array($_GET['id']));
+		ORDER BY type DESC, filename', 'id', array($_GET['id']));
     $attachmentid = intval($_GET['attachmentid']);
     if ($attachmentid) {
         $docattach = $docattachments[$attachmentid];
@@ -44,10 +48,6 @@ if (!empty($_GET['id'])) {
     $doc['md5sum'] = $docattach['md5sum'];
     $doc['filename'] = $docattach['filename'];
     $doc['contenttype'] = $docattach['contenttype'];
-
-    if ($doc['customerid'] != $SESSION->id) {
-        die;
-    }
 
     $docnumber = docnumber(array(
         'number' => $doc['number'],
