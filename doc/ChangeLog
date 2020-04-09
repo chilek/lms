@@ -283,6 +283,9 @@ version 25-git (????-??-??):
   - improvement: numberplan template substitution symbols are described in tooltip [chilan]
   - improvement/devel: userpanel document management feature separated to dedicated userpanel
     module [chilan]
+  - enhancement: customer can send signed document scans through userpanel [chilan]
+  - enhancement: operator can approve contract with document scan attached and thus
+    activate services related with contract [chilan]
 
 version 24.0 (2019-05-16):
 
