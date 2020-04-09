@@ -703,7 +703,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             return;
         }
 
-        $document_manager = new LMSFinanceManager($this->db, $this->auth, $this->cache, $this->syslog);
+        $finance_manager = new LMSFinanceManager($this->db, $this->auth, $this->cache, $this->syslog);
 
         $this->db->BeginTrans();
 
@@ -730,7 +730,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     'reference_document_limit' => $doc['commitflags'] & 16 ? 1 : null,
                 ),
             );
-            $document_manager->UpdateExistingAssignments($args);
+            $finance_manager->UpdateExistingAssignments($args);
 
             $this->db->Execute(
                 'UPDATE assignments SET commited = 1 WHERE docid = ? AND commited = 0',
