@@ -27,6 +27,23 @@
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'invoicexajax.inc.php');
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'invoiceajax.inc.php');
 
+function cleanUpValue($value)
+{
+    return strlen($value) ? preg_replace(
+        array(
+            '/(\d{1,3})\s+(\d{3})/',
+            '/^(\d+(?:[\.,]\d+)?)(\s*[^\d].*)?$/',
+            '/,/',
+        ),
+        array(
+            '$1$2',
+            '$1',
+            '.',
+        ),
+        $value
+    ) : $value;
+}
+
 $taxeslist = $LMS->GetTaxes();
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 
@@ -163,9 +180,7 @@ switch ($action) {
             $error[str_replace('%variable', 'name', $error_index)] = trans('Field cannot be empty!');
         }
 
-        if (!strlen($itemdata['count'])) {
-            $error[str_replace('%variable', 'count', $error_index)] = trans('Field cannot be empty!');
-        } elseif (!preg_match('/^[0-9]+([\.,][0-9]+)*$/', $itemdata['count'])) {
+        if (strlen($itemdata['count']) && !preg_match('/^[0-9]+([\.,][0-9]+)*$/', $itemdata['count'])) {
             $error[str_replace('%variable', 'count', $error_index)] = trans('Invalid format!');
         }
 
@@ -173,9 +188,11 @@ switch ($action) {
             $error[str_replace('%variable', 'valuenetto', $error_index)] = trans('Field cannot be empty!');
             $error[str_replace('%variable', 'valuebrutto', $error_index)] = trans('Field cannot be empty!');
         } else {
+            $itemdata['valuenetto'] = cleanUpValue($itemdata['valuenetto']);
             if (strlen($itemdata['valuenetto']) && !preg_match('/^[0-9]+([\.,][0-9]+)*$/', $itemdata['valuenetto'])) {
                 $error[str_replace('%variable', 'valuenetto', $error_index)] = trans('Invalid format!');
             }
+            $itemdata['valuebrutto'] = cleanUpValue($itemdata['valuebrutto']);
             if (strlen($itemdata['valuebrutto']) && !preg_match('/^[0-9]+([\.,][0-9]+)*$/', $itemdata['valuebrutto'])) {
                 $error[str_replace('%variable', 'valuebrutto', $error_index)] = trans('Invalid format!');
             }

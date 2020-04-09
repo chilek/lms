@@ -263,7 +263,7 @@
                 <INPUT TYPE="text" NAME="prodid" SIZE="6">
             </TD>
             <TD class="text-right">
-                <INPUT TYPE="text" NAME="count" SIZE="3" VALUE="{$itemdata.count}">
+                <INPUT TYPE="text" NAME="count" SIZE="3" VALUE="{if $itemdata.count}{$itemdata.count}{else}1{/if}">
                 <INPUT TYPE="text" NAME="jm" SIZE="3" VALUE="{trans(ConfigHelper::getConfig('payments.default_unit_name'))}">
             </TD>
             <TD class="text-right">

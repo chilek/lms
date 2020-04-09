@@ -50,7 +50,7 @@ function cleanUpValue($value)
     return strlen($value) ? preg_replace(
         array(
             '/(\d{1,3})\s+(\d{3})/',
-            '/^(\d+(?:[\.,]\d+)?)\s*[^\d].*$/',
+            '/^(\d+(?:[\.,]\d+)?)(\s*[^\d].*)?$/',
             '/,/',
         ),
         array(
@@ -204,9 +204,7 @@ switch ($action) {
             $error[str_replace('%variable', 'name', $error_index)] = trans('Field cannot be empty!');
         }
 
-        if (!strlen($itemdata['count'])) {
-            $error[str_replace('%variable', 'count', $error_index)] = trans('Field cannot be empty!');
-        } elseif (!preg_match('/^[0-9]+([\.,][0-9]+)*$/', $itemdata['count'])) {
+        if (strlen($itemdata['count']) && !preg_match('/^[0-9]+([\.,][0-9]+)*$/', $itemdata['count'])) {
             $error[str_replace('%variable', 'count', $error_index)] = trans('Invalid format!');
         }
 
