@@ -186,8 +186,9 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
     public function GetEvent($id)
     {
         $event = $this->db->GetRow('SELECT e.id AS id, title, description, note, userid, e.creationdate,
-			customerid, date, begintime, enddate, endtime, private, closed, e.type, '
-            . $this->db->Concat('UPPER(c.lastname)', "' '", 'c.name') . ' AS customername,
+			e.customerid, date, begintime, enddate, endtime, private, closed, e.type, '
+	    . $this->db->Concat('UPPER(c.lastname)', "' '", 'c.name') . ' AS customername,
+			nn.id AS netnode_id, nn.name AS netnode_name, vd.address AS netnode_location,
 			vusers.name AS username, e.moddate, e.moduserid, e.closeddate, e.closeduserid,
 			e.address_id, va.location, e.nodeid, n.name AS node_name, n.location AS node_location, '
             . $this->db->Concat('c.city', "', '", 'c.address') . ' AS customerlocation,
@@ -198,6 +199,9 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 			LEFT JOIN vnodes n ON (e.nodeid = n.id)
 			LEFT JOIN customerview c ON (c.id = customerid)
 			LEFT JOIN vusers ON (vusers.id = userid)
+			LEFT JOIN rttickets as rtt ON (rtt.id = e.ticketid)
+			LEFT JOIN netnodes as nn ON (nn.id = rtt.netnodeid)
+			LEFT JOIN vaddresses as vd ON (vd.id = nn.address_id)
 			WHERE e.id = ?', array($id));
 
         if (!empty($event['customerid']) && empty($event['node_location'])) {
