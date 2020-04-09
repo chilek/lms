@@ -187,7 +187,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
     {
         $event = $this->db->GetRow('SELECT e.id AS id, title, description, note, userid, e.creationdate,
 			e.customerid, date, begintime, enddate, endtime, private, closed, e.type, '
-	    . $this->db->Concat('UPPER(c.lastname)', "' '", 'c.name') . ' AS customername,
+            . $this->db->Concat('UPPER(c.lastname)', "' '", 'c.name') . ' AS customername,
 			nn.id AS netnode_id, nn.name AS netnode_name, vd.address AS netnode_location,
 			vusers.name AS username, e.moddate, e.moduserid, e.closeddate, e.closeduserid,
 			e.address_id, va.location, e.nodeid, n.name AS node_name, n.location AS node_location, '
