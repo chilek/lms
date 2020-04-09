@@ -38,8 +38,6 @@ if (isset($_GET['cityid']) && !empty($_GET['cityid'])) {
     $params['cityid'] = $_GET['cityid'];
     if (isset($_GET['streetid']) && !empty($_GET['streetid'])) {
         $params['streetid'] = $_GET['streetid'];
-    } else {
-        die;
     }
 } elseif (isset($_GET['city']) && !empty($_GET['city'])) {
     $params['city'] = $_GET['city'];
