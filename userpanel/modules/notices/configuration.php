@@ -49,7 +49,7 @@ $USERPANEL->registerCallback('notices', function ($db, $smarty, $mod_dir) use ($
     $old_module_dir = $module_dir;
     $module_dir = $mod_dir;
 
-    $html = $smarty->fetch('module:callback-handler.html');
+    $html = $smarty->fetch('module:notices-callback-handler.html');
 
     $module_dir = $old_module_dir;
 

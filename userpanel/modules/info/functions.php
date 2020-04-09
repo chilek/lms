@@ -685,10 +685,7 @@ if (defined('USERPANEL_SETUPMODE')) {
         global $SMARTY, $LMS;
 
         $SMARTY->assign('hide_nodesbox', ConfigHelper::getConfig('userpanel.hide_nodesbox'));
-        $SMARTY->assign('hide_documentbox', ConfigHelper::getConfig('userpanel.hide_documentbox'));
         $SMARTY->assign('consent_text', ConfigHelper::getConfig('userpanel.data_consent_text'));
-        $SMARTY->assign('show_confirmed_documents_only', ConfigHelper::checkConfig('userpanel.show_confirmed_documents_only'));
-        $SMARTY->assign('hide_archived_documents', ConfigHelper::checkConfig('userpanel.hide_archived_documents'));
         $SMARTY->assign('pin_changes', ConfigHelper::checkConfig('userpanel.pin_changes'));
         $SMARTY->assign('change_notification_mail_sender', ConfigHelper::getConfig('userpanel.change_notification_mail_sender'));
         $SMARTY->assign('change_notification_mail_recipient', ConfigHelper::getConfig('userpanel.change_notification_mail_recipient'));
@@ -712,23 +709,7 @@ if (defined('USERPANEL_SETUPMODE')) {
         );
         $DB->Execute(
             'UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
-            array(isset($_POST['hide_documentbox']) ? 1 : 0, 'userpanel', 'hide_documentbox')
-        );
-        $DB->Execute(
-            'UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
             array($_POST['consent_text'], 'userpanel', 'data_consent_text')
-        );
-        $DB->Execute(
-            'UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
-            array(isset($_POST['show_confirmed_documents_only']) ? 'true' : 'false', 'userpanel', 'show_confirmed_documents_only')
-        );
-        $DB->Execute(
-            'UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
-            array(
-                isset($_POST['hide_archived_documents']) ? 'true' : 'false',
-                'userpanel',
-                'hide_archived_documents'
-            )
         );
         $DB->Execute(
             'UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',

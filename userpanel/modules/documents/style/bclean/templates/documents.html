@@ -1,3 +1,5 @@
+{include file="header.html"}
+
 {box title="Your documents"}
 
 <style>
@@ -28,7 +30,7 @@
 				</button>
 			</div>
 			<div class="modal-body">
-				<form method="post" action="?m=info" name="newscan" enctype="multipart/form-data">
+				<form method="post" action="?m=documents" name="newscan" enctype="multipart/form-data">
 					<div class="form-group">
 						<label for="scans" class="font-weight-bold">{trans("Select scan file:")}</label>
 						<input type="file" name="files[]" id="scans" {userpaneltip class="form-control-file" text="Enter path to file or click 'Browse' button" trigger="files"} multiple />
@@ -94,7 +96,7 @@
 							{foreach $doc.attachments as $docattach}
 								<div class="row document-attachment">
 									<div class="col-md-auto">
-										<a class="btn btn-primary" href="?m=info&f=docview&id={$doc.id}&attachmentid={$docattach.id}" target="_blank">
+										<a class="btn btn-primary" href="?m=documents&f=docview&id={$doc.id}&attachmentid={$docattach.id}" target="_blank">
 											{if $docattach.main}
 												{trans("View")}
 											{else}
@@ -186,3 +188,5 @@
 
 </script>
 {/box}
+
+{include file="footer.html"}

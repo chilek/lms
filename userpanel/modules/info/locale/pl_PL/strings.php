@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -78,17 +78,11 @@ $_LANG['Don\'t show customer document box if he hasn\'t any documents'] = 'Jeśl
 $_LANG['Text of data processing agreement:'] = 'Tekst zgody na przetwarzanie danych:';
 $_LANG['Enter text of agreement for personal data processing'] = 'Wprowadź tekst zgody na przetwarzanie danych osobowych';
 $_LANG['Personal data processing agreement'] = 'Zgoda na przetwarzanie danych osobowych';
-$_LANG['Your documents'] = 'Twoje dokumenty';
-$_LANG['No such documents on your account.'] = 'Nie ma żadnych dokumentów na Twoim koncie.';
 $_LANG['not approved'] = 'niezatwierdzony';
 $_LANG['indefinitely'] = 'bezterminowo';
 $_LANG['Bank accounts:'] = 'Konta bankowe:';
 $_LANG['Phones:'] = 'Telefony:';
 $_LANG['Postal address:'] = 'Adres korespondencyjny:';
-$_LANG['Show confirmed documents only:'] = 'Pokaż wyłącznie dokumenty zatwierdzone:';
-$_LANG['Show only documents which are confirmed'] = 'Pokaż wyłącznie dokumenty, które zostały zatwierdzone';
-$_LANG['Hide archived documents:'] = 'Ukryj dokumenty zarchiwizowane:';
-$_LANG['Hide archived documents'] = 'Ukryj dokumenty zarchiwizowane';
 $_LANG['Company data'] = 'Dane firmy';
 $_LANG['Personal data'] = 'Dane osobowe';
 $_LANG['Company name'] = 'Nazwa firmy';
@@ -148,9 +142,3 @@ $_LANG['IP address'] = 'Adres IP';
 $_LANG['Device description'] = 'Opis urządzenia';
 $_LANG['MAC address'] = 'Adres MAC';
 $_LANG['IP address'] = 'Adres IP';
-
-$_LANG['awaits for signed document scan submission'] = 'oczekuje na przesłanie skanu podpisanego dokumentu';
-$_LANG['Submit scan'] = 'Prześlij skan';
-$_LANG['Document submission'] = 'Przesłanie skanu podpisanego dokumentu';
-$_LANG['Select scan file:'] = 'Wybierz plik ze skanem:';
-$_LANG['awaits for operator signed document scan review'] = 'oczekuje na przejrzenie przez operatora skanu podpisanego dokumentu';

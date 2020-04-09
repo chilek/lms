@@ -1,5 +1,11 @@
-<!--// $Id$ //-->
+{include file="header.html"}
+<table width="100%" cellpadding="10">
+	<tr>
+		<td>
+		<!--// $Id$ //-->
+
 {box title="Your documents"}
+
 <style>
 
 	.awaits-scan {
@@ -19,7 +25,7 @@
 	</tr>
 	{/if}
 	{cycle values="light,lucid" print=false name=doc}
-	{foreach from=$documents item=doc}
+	{foreach $documents as $doc}
 	<tr class="{cycle name=doc}{if !$doc.closed && ($doc.confirmdate <= 0 || $doc.confirmdate < $smarty.now)} blend{/if}"
 			onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<td class="nobr"><strong>{number number=$doc.number template=$doc.template time=$doc.cdate}</strong></td>
@@ -64,4 +70,10 @@
 	</tr>
 	{/foreach}
 </table>
+
 {/box}
+
+		</td>
+	</tr>
+</table>
+{include file="footer.html"}

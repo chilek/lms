@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2019 LMS Developers
+ *  Copyright (C) 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -219,7 +219,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     . ($numberplan ? ' AND d.numberplanid = ' . intval($numberplan) : '')
                     .($from ? ' AND ' . $datefield . ' >= '.intval($from) : '')
                     .($to ? ' AND ' . $datefield . ' <= '.intval($to) : '')
-                    .($status == -1 ? '' : ' AND d.closed = ' . intval($status))
+                    . ($status == -1 ? '' : ($status == 2 ? ' AND (d.closed = 0 OR d.confirmdate = -1)': ' AND d.closed = ' . intval($status)))
                     . ($archived == -1 ? '' : ' AND d.archived = ' . intval($archived)),
                 array(Auth::GetCurrentUser())
             );
@@ -261,7 +261,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             . ($numberplan ? ' AND d.numberplanid = ' . intval($numberplan) : '')
             .($from ? ' AND ' . $datefield . ' >= '.intval($from) : '')
             .($to ? ' AND ' . $datefield . ' <= '.intval($to) : '')
-            .($status == -1 ? '' : ' AND d.closed = ' . intval($status))
+            . ($status == -1 ? '' : ($status == 2 ? ' AND (d.closed = 0 OR d.confirmdate = -1)': ' AND d.closed = ' . intval($status)))
             . ($archived == -1 ? '' : ' AND d.archived = ' . intval($archived))
             .$sqlord
             . (isset($limit) ? ' LIMIT ' . $limit : '')
