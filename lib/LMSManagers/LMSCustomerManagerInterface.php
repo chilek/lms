@@ -107,4 +107,6 @@ interface LMSCustomerManagerInterface
     public function checkCustomerTenExistence($customerid, $ten, $divisionid = null);
 
     public function checkCustomerSsnExistence($customerid, $ssn, $divisionid = null);
+
+    public function checkCustomerConsent($customerid, $consent);
 }

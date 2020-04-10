@@ -2089,4 +2089,13 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             ) > 0;
         }
     }
+
+    public function checkCustomerConsent($customerid, $consent)
+    {
+        return $this->db->GetOne(
+            'SELECT type FROM customercontents
+                WHERE customerid = ? AND type = ?',
+            array($customerid, $consent)
+        ) == $consent;
+    }
 }

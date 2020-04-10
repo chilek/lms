@@ -733,6 +733,12 @@ class LMS
         return $manager->checkCustomerSsnExistence($customerid, $ssn, $divisionid);
     }
 
+    public function checkCustomerConsent($customerid, $consent)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->checkCustomerConsent($customerid, $consent);
+    }
+
     /*
      * Customer groups
      */
