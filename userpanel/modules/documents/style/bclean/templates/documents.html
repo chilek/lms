@@ -221,6 +221,7 @@
 		});
 
 		$('[data-target="#authcode-dialog"]').click(function() {
+			$('#authcode-dialog .submit-button').attr('disabled', 'disabled');
 			$('#authcode-dialog .documentid').val($(this).attr('data-document-id'));
 			$.ajax({
 				method: "POST",

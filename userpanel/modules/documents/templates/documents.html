@@ -1,8 +1,204 @@
 {include file="header.html"}
+
+<style>
+
+	#file-status {
+		margin-top: 1em;
+		color: red;
+	}
+
+	#authcode-status {
+		margin: 1em 1em 1em 1em;
+	}
+
+	.authcode-error {
+		color: red;
+	}
+
+	.authcode-alert {
+		color: blue;
+	}
+
+</style>
+
 <table width="100%" cellpadding="10">
 	<tr>
 		<td>
-		<!--// $Id$ //-->
+
+{if $op == 'authcode'}
+	{box title="Authorization"}
+		<form id="authcode-dialog" method="post" action="?m=documents&smsauth=1&check=1" name="authcode">
+		<table width="100%" cellpadding="3" class="light">
+			<colgroup>
+				<col style="width: 1%;">
+				<col style="width: 1%;">
+				<col style="width: 98%;">
+			</colgroup>
+			<tbody>
+				<tr class="light">
+					<td>
+						{img src="passwd.gif"}
+					</td>
+					<td>
+						<label for="authcode" class="font-weight-bold">{trans("Enter code:")}</label>
+					</td>
+					<td>
+						<input type=text" name="authcode" id="authcode" autocomplete="off" size="50"
+				   			placeholder="{trans("... which you received on your mobile phone")}"
+							{userpaneltip trigger="authcode"} />
+						<input type="hidden" class="documentid" value="{if isset($documentid)}{$documentid}{else}0{/if}">
+						<div id="authcode-status" style="display: none;"></div>
+					</td>
+				</tr>
+				<tr class="light">
+					<td colspan="3" align="right">
+						<a class="submit-button" href="#" accesskey="S">{trans("<!helpdesk>Submit")} {img src="save.gif" alt="<!helpdesk>Submit"}</a>
+						<a href="?m=documents">{trans("Cancel")} {img src="cancel.gif" alt=""}</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		</form>
+
+		<script>
+
+			$(function() {
+				$('#authcode').focus();
+				$('#authcode-dialog .submit-button').attr('disabled', 'disabled');
+
+				$.ajax({
+					method: "POST",
+					url: '?m=documents&smsauth=1&send=1',
+					success: function (data) {
+						if (data.length) {
+							$('#authcode-status').removeClass('authcode-alert').addClass('authcode-error').html(data).show();
+						} else {
+							$('#authcode-status').removeClass('authcode-error').addClass('authcode-alert')
+								.html("{trans("Authorization code has been sent to you mobile phone.")}").show();
+						}
+						$('#authcode-dialog .submit-button').removeAttr('disabled');
+					}
+				});
+
+				$('#authcode-dialog').submit(function(e) {
+					$(this).find('.submit-button').attr('disabled', 'disabled');
+					$.ajax({
+						method: "POST",
+						url: $(this).attr('action'),
+						data: {
+							code: $('#authcode').val(),
+							documentid: parseInt($('#authcode-dialog .documentid').val())
+						},
+						success: function(data) {
+							if (data.length) {
+								$('#authcode-status').removeClass('authcode-alert').addClass('authcode-error').html(data).show();
+							} else {
+								$('#authcode-status').removeClass('authcode-error').addClass('authcode-alert')
+									.html("{trans("Authorization code is valid! Document has been confirmed and your services will be activated in a few moments.")}").show();
+								$('#authcode').remove();
+								$('[for="authcode"]').remove();
+								$('#authcode-dialog .submit-button').remove();
+							}
+							$('#authcode-dialog .submit-button').removeAttr('disabled');
+						}
+					});
+					e.preventDefault();
+				}).find('.submit-button').click(function() {
+					$('#authcode-dialog .submit-button').attr('disabled', 'disabled');
+					$('#authcode-dialog').submit();
+				});
+			});
+
+		</script>
+	{/box}
+{/if}
+
+{if $op == 'scans'}
+	{box title="Document submission"}
+		<form id="newscan-dialog" method="post" action="?m=documents&op=scans" name="newscan" enctype="multipart/form-data">
+		<table width="100%" cellpadding="3" class="light">
+			<colgroup>
+				<col style="width: 1%;">
+				<col style="width: 1%;">
+				<col style="width: 98%;">
+			</colgroup>
+				<tbody>
+					<tr class="light">
+						<td>
+							{img src="attach.gif" alt=""}
+						</td>
+						<td>
+							<label for="scans"><strong>{trans("Select scan file:")}</strong></label>
+						</td>
+						<td>
+							<input type="file" name="files[]" id="scans" {userpaneltip text="Enter path to file or click 'Browse' button" trigger="files"} multiple />
+							<div id="file-status" style="display: none;">
+								{if isset($error.files)}
+									{$error.files}
+								{/if}
+							</div>
+							<br>
+							<input type="hidden" id="post_max_size" value="{$post_max_size.bytes}">
+							{t a=$post_max_size.text}Maximum total file size: $a{/t}
+							<br>
+							<input type="hidden" id="upload_max_filesize" value="{$upload_max_filesize.bytes}">
+							{t a=$upload_max_filesize.text}Maximum single file size: $a{/t}
+
+							<input type="hidden" name="documentid" value="{if isset($documentid)}{$documentid}{else}0{/if}">
+						</td>
+					</tr>
+					<tr class="light">
+						<td colspan="3" align="right">
+							<a class="submit-button" accesskey="S">{trans("<!helpdesk>Submit")} {img src="save.gif" alt="<!helpdesk>Submit"}</a>
+							<a href="?m=documents">{trans("Cancel")} {img src="cancel.gif" alt=""}</a>
+						</td>
+					</tr>
+				</tbody>
+		</table>
+		</form>
+
+		<script>
+
+			$(function() {
+				function check_file_sizes() {
+					var attachments = $('#scans').get(0);
+					$('#file-status').hide().text();
+					if (attachments.files.length) {
+						var error = '';
+						var post_max_size = parseInt($('#post_max_size').val());
+						var upload_max_filesize = parseInt($('#upload_max_filesize').val());
+						var total_size = 0;
+						$.each(attachments.files, function (index, file) {
+							if (upload_max_filesize && file.size > upload_max_filesize) {
+								error = '{trans("One from files is too large!")}';
+							}
+							total_size += file.size;
+						});
+						if (post_max_size && total_size > post_max_size) {
+							error = '{trans("Total file size is too large!")}';
+						}
+						if (error.length) {
+							$('#file-status').text(error).show();
+							return false;
+						}
+					}
+					return true;
+				}
+
+				$('#scans').change(function() {
+					check_file_sizes();
+				});
+
+				$('#newscan-dialog .submit-button').click(function() {
+					if (check_file_sizes()) {
+						document.newscan.submit();
+					}
+				});
+			});
+
+		</script>
+	{/box}
+{/if}
 
 {box title="Your documents"}
 
@@ -40,11 +236,21 @@
 		<td class="nobr" align="right">
 		{if $doc.closed || ($doc.confirmdate > 0 && $doc.confirmdate >= $smarty.now) || $doc.confirmdate == -1}
 			{foreach $doc.attachments as $docattach}
-			<a href="?m=info&f=docview&id={$doc.id}&attachmentid={$docattach.id}" target="_blank">
+			<a href="?m=documents&f=docview&id={$doc.id}&attachmentid={$docattach.id}" target="_blank">
 				{if $docattach.type == 1}{trans("View")}{else}{$docattach.filename}{/if} {img src="view.gif" alt="View"}
 			</a>
-			<br>
+			{if !$doc.closed && $docattach.type == 1 && $doc.confirmdate != -1}
+				<a href="?m=documents&op=scans&documentid={$doc.id}">
+					{trans("Submit scan")} {img src="attach.gif"}
+				</a>
+				{if $sms_active}
+					<a href="?m=documents&op=authcode&documentid={$doc.id}">
+						{trans("Confirm")} {img src="save.gif"}
+					</a>
+				{/if}
+			{/if}
 			{if !$doc.closed && $docattach.type == 1}
+				<br>
 				<span class="awaits-scan">
 					{if $doc.confirmdate == -1}
 						{trans("awaits for operator signed document scan review")}
@@ -76,4 +282,5 @@
 		</td>
 	</tr>
 </table>
+
 {include file="footer.html"}

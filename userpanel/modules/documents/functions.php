@@ -288,6 +288,7 @@ function module_main()
                 }
             }
         }
+        $op = '';
     }
 
     $documents = $DB->GetAll('SELECT d.id, d.number, d.type, c.title, c.fromdate, c.todate, 
@@ -332,6 +333,8 @@ function module_main()
     }
 
     $SMARTY->assign('documents', $documents);
+    $SMARTY->assign('documentid', $_GET['documentid']);
+    $SMARTY->assign('op', $_GET['op']);
     $SMARTY->display('module:documents.html');
 }
 
