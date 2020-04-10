@@ -332,6 +332,8 @@ if (isset($_POST['customeradd'])) {
     $customeradd['divisionid'] = intval(ConfigHelper::getConfig('phpui.default_divisionid'));
 
     $customeradd['documentmemo'] = ConfigHelper::getConfig('phpui.default_customer_document_memo', '', true);
+
+    $customeradd['consents'] = Utils::getDefaultCustomerConsents();
 }
 
 if (!isset($customeradd['cutoffstopindefinitely'])) {

@@ -92,18 +92,22 @@ define('CCONSENT_EINVOICE', 4);
 $CCONSENTS = array(
     CCONSENT_DATE => array(
         'label' => trans('Consent to personal data processing'),
+        'name' => 'data_processing',
         'type' => 'date',
     ),
     CCONSENT_EINVOICE => array(
         'label' => trans('Cancellation of a traditional invoice (agreement on an electronic invoice)'),
+        'name' => 'electronic_invoice',
         'type' => 'boolean',
     ),
     CCONSENT_INVOICENOTICE => array(
         'label' => trans('Consent to invoices delivery via e-mail'),
+        'name' => 'invoice_notice',
         'type' => 'boolean',
     ),
     CCONSENT_MAILINGNOTICE => array(
         'label' => trans('Consent to messages delivery via e-mail or sms'),
+        'name' => 'mailing_notice',
         'type' => 'boolean',
     ),
 );

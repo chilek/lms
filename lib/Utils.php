@@ -264,4 +264,23 @@ class Utils
         }
         return $markdown_parser->Text($markdown);
     }
+
+    public static function getDefaultCustomerConsents()
+    {
+        global $CCONSENTS;
+
+        $result = array();
+
+        $value = ConfigHelper::getConfig('phpui.default_customer_consents', 'data_processing', true);
+        if (!empty($value)) {
+            $values = array_flip(preg_split('/\s*(\r?\n|[,;])\s*/', $value));
+            foreach ($CCONSENTS as $consent_id => $consent) {
+                if (isset($values[$consent['name']])) {
+                    $result[$consent_id] = $consent_id;
+                }
+            }
+        }
+
+        return $result;
+    }
 }
