@@ -89,6 +89,18 @@
 										{tip text="Enter document notification mail sender name"}>
 							</TD>
 						</TR>
+						<TR>
+							<TD class="nobr">
+								<label for="document_notification_mail_reply_address">{trans("Reply address:")}</label>
+							</TD>
+							<TD>
+								<INPUT type="text" size="50"
+									   name="moduleconfig[document_notification_mail_reply_address]"
+									   id="document_notification_mail_reply_address"
+									   value="{$moduleconfig.document_notification_mail_reply_address}"
+										{tip text="Enter document notification mail reply address"}>
+							</TD>
+						</TR>
 					</table>
 				</fieldset>
 			</TD>
@@ -216,12 +228,13 @@
 				</fieldset>
 			</TD>
 		</TR>
-
+		<tr>
+			<TD style="width: 100%;" class="lms-ui-box-buttons">
+				{button type="submit" icon="submit" label="Submit"}
+				{button icon="cancel" label="Cancel" onclick="location.href = '?m=userpanel';"}
+			</TD>
+		</tr>
 	</TABLE>
-	<p align="right">
-		<A HREF="javascript:document.moduleconfig.submit();" ACCESSKEY="S">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
-		<A HREF="?m=userpanel">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A>
-	</p>
 	</FORM>
     </TD></TR>
 </TABLE>

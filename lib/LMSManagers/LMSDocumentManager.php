@@ -728,6 +728,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $mail_mdn = ConfigHelper::getConfig('userpanel.document_notification_mail_mdn_address', '', true);
         $mail_sender_name = ConfigHelper::getConfig('userpanel.document_notification_mail_sender_name', '', true);
         $mail_sender_address = ConfigHelper::getConfig('userpanel.document_notification_mail_sender_address', ConfigHelper::getConfig('mail.smtp_username'));
+        $mail_reply_address = ConfigHelper::getConfig('userpanel.document_notification_mail_reply_address', '', true);
         $mail_format = ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_format', 'text');
         $mail_subject = ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_subject');
         $mail_body = ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_body');
@@ -833,6 +834,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                             'Subject' => $mail_subject,
                             'X-LMS-Format' => $mail_format,
                         );
+                        if (!empty($mail_reply_address) && $mail_reply_address != $mail_sender_address) {
+                            $headers['Reply-To'] = $mail_reply_address;
+                        }
                         if (!empty($mail_mdn)) {
                             $headers['Return-Receipt-To'] = $mail_mdn;
                             $headers['Disposition-Notification-To'] = $mail_mdn;

@@ -3408,6 +3408,7 @@ URL: %url
 ('userpanel', 'change_rejection_mail_body', '', '', 0),
 ('userpanel', 'document_notification_mail_dsn_address', '', '', 0),
 ('userpanel', 'document_notification_mail_mdn_address', '', '', 0),
+('userpanel', 'document_notification_mail_reply_address', '', '', 0),
 ('userpanel', 'document_notification_mail_sender_name', '', '', 0),
 ('userpanel', 'document_notification_mail_sender_address', '', '', 0),
 ('userpanel', 'signed_document_scan_operator_notification_mail_recipient', '', '', 0),
@@ -3764,6 +3765,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020040903');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020041000');
 
 COMMIT;

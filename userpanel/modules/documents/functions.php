@@ -94,6 +94,7 @@ function module_main()
                             $mail_mdn = ConfigHelper::getConfig('userpanel.document_notification_mail_mdn_address', '', true);
                             $mail_sender_name = ConfigHelper::getConfig('userpanel.document_notification_mail_sender_name', '', true);
                             $mail_sender_address = ConfigHelper::getConfig('userpanel.document_notification_mail_sender_address', ConfigHelper::getConfig('mail.smtp_username'));
+                            $mail_reply_address = ConfigHelper::getConfig('userpanel.document_notification_mail_reply_address', '', true);
                             $mail_recipient = ConfigHelper::getConfig('userpanel.signed_document_scan_operator_notification_mail_recipient');
                             $mail_format = ConfigHelper::getConfig('userpanel.signed_document_scan_operator_notification_mail_format', 'text');
                             $mail_subject = ConfigHelper::getConfig('userpanel.signed_document_scan_operator_notification_mail_subject');
@@ -190,6 +191,9 @@ function module_main()
                                                 'Subject' => $mail_subject,
                                                 'X-LMS-Format' => $mail_format,
                                             );
+                                            if (!empty($mail_reply_address) && $mail_reply_address != $mail_sender_address) {
+                                                $headers['Reply-To'] = $mail_reply_address;
+                                            }
                                             if (!empty($mail_mdn)) {
                                                 $headers['Return-Receipt-To'] = $mail_mdn;
                                                 $headers['Disposition-Notification-To'] = $mail_mdn;
@@ -288,6 +292,8 @@ if (defined('USERPANEL_SETUPMODE')) {
                     ConfigHelper::getConfig('userpanel.document_notification_mail_sender_name', '', true),
                 'document_notification_mail_sender_address' =>
                     ConfigHelper::getConfig('userpanel.document_notification_mail_sender_address', '', true),
+                'document_notification_mail_reply_address' =>
+                    ConfigHelper::getConfig('userpanel.document_notification_mail_reply_address', '', true),
                 'signed_document_scan_operator_notification_mail_recipient' =>
                     ConfigHelper::getConfig('userpanel.signed_document_scan_operator_notification_mail_recipient', '', true),
                 'signed_document_scan_operator_notification_mail_format' =>
@@ -330,6 +336,7 @@ if (defined('USERPANEL_SETUPMODE')) {
             'document_notification_mail_mdn_address' => CONFIG_TYPE_RICHTEXT,
             'document_notification_mail_sender_name' => CONFIG_TYPE_RICHTEXT,
             'document_notification_mail_sender_address' => CONFIG_TYPE_RICHTEXT,
+            'document_notification_mail_reply_address' => CONFIG_TYPE_RICHTEXT,
             'signed_document_scan_operator_notification_mail_recipient' => CONFIG_TYPE_RICHTEXT,
             'signed_document_scan_operator_notification_mail_format' => CONFIG_TYPE_NONE,
             'signed_document_scan_operator_notification_mail_subject' => CONFIG_TYPE_RICHTEXT,

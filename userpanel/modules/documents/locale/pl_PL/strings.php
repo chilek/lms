@@ -69,3 +69,6 @@ $_LANG['Enter document notification mail DSN (Delivery Status Notification) addr
 
 $_LANG['MDN address:'] = 'Adres MDN:';
 $_LANG['Enter document notification mail MDN (Message Delivery Notification) address'] = 'Podaj adres email MDN (powiadomień o odebraniu wiadomości) powiadomienia o dokumencie';
+
+$_LANG['Reply address:'] = 'Adres do odpowiedzi:';
+$_LANG['Enter document notification mail reply address'] = 'Podaj adres do odpowiedzi na powiadomienia o dokumencie';
