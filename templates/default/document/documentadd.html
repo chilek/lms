@@ -93,12 +93,12 @@
 			<IMG src="img/calendar.gif" alt="">
 		</TD>
 		<TD class="bold">
-			{trans("Wait for signed document scan till:")}
+			{trans("Wait for customer action till:")}
 		</TD>
 		<TD>
 			<INPUT type="TEXT" name="document[confirmdate]" id="confirmdate" value="{if $document.confirmdate}{$document.confirmdate}{/if}"
 					placeholder="{trans("yyyy/mm/dd")}"
-					{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format we wait for signed document scan till (optional)" trigger="confirmdate"} size="10">
+					{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format we wait for customer action till (optional)" trigger="confirmdate"} size="10">
 		</TD>
 	</TR>
 	<TR>

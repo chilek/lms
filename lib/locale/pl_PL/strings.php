@@ -1887,7 +1887,6 @@ $_LANG['Enter document number (leave this field empty to obtain next number)'] =
 $_LANG['Enter document title'] = 'Wprowadź tytuł dokumentu';
 $_LANG['Enter end date in YYYY/MM/DD format (optional)'] = 'Wprowadź datę końcową w formacie RRRR/MM/DD (opcjonalnie)';
 $_LANG['Enter start date in YYYY/MM/DD format (optional)'] = 'Wprowadź datę początkową w formacie RRRR/MM/DD (opcjonalnie)';
-$_LANG['Enter date in YYYY/MM/DD format we wait for signed document scan till (optional)'] = 'Wprowadź datę w formacie RRRR/MM/DD, do kiedy będziemy oczekiwać na skan podpisanego dokumentu (opcjonalnie)';
 $_LANG['File:'] = 'Plik:';
 $_LANG['from'] = 'od';
 $_LANG['New Document'] = 'Nowy dokument';
@@ -4689,6 +4688,7 @@ $_LANG['Allows you to add new configuration setting'] = 'Dodanie nowego ustawien
 
 $_LANG['Ticket subject can contain maximum $a characters!'] = 'Temat zgłoszenia może zawierać maksymalnie $a znaków!';
 
-$_LANG['Wait for signed document scan till:'] = 'Oczekuj na skan podpisanego dokumentu do:';
+$_LANG['Wait for customer action till:'] = 'Oczekuj na działanie klienta do:';
+$_LANG['Enter date in YYYY/MM/DD format we wait for customer action till (optional)'] = 'Wprowadź datę w formacie RRRR/MM/DD, do kiedy będziemy oczekiwać na działanie klienta (opcjonalnie)';
 $_LANG['Warning! Customer submitted signed document scan. Consider to review it and then possibly confirm.'] = 'Uwaga! Klient przesłał skan podpisanego dokumentu. Rozważ ich przejrzenie i ewentualnie zatwierdzenie.';
-$_LANG['Warning! Submission time limit of signed document scan by customer is expired!'] = 'Uwaga! Upłynął termin przesłania przez klienta skanu podpisanego dokuentu!';
+$_LANG['Warning! Warning! Customer action time limit is expired is expired!'] = 'Uwaga! Upłynął termin przeznaczony na działanie klienta!';
