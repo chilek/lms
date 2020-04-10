@@ -232,8 +232,14 @@
 				{else}
 					{$class = ""}
 				{/if}
+				{if $layout.module == 'rtticketedit'}
+					{$preselection = false}
+				{else}
+					{$preselection = true}
+				{/if}
 				{include file="customer/customeraddresses.html" id="customer_addresses" name="ticket[address_id]"
-					trigger="address_id" selected_address_id=$selected_address_id class=$class}
+					trigger="address_id" selected_address_id=$selected_address_id class=$class
+					preselection=$preselection}
 				<input type="hidden" name="address_id_warning" value="{if $address_id_warning}1{else}0{/if}">
 			{/box_row}
 {/if}
