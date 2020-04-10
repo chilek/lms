@@ -27,30 +27,30 @@
     <tr>
 	{foreach $modules as $menuitem}
 	{if $menuitem@first}
-	    <td style="vertical-align: top;" width="1px">
+	    <td style="vertical-align: top; width: 1px; white-space: nowrap;">
     	    <img src="style/default/{if $menuitem.selected}tabs_begin_sel.gif{else}tabs_begin_notsel.gif{/if}" alt=""/>
 	</td>
 	{else}
 	    {if $menuitem.selected}
-	    <td style="vertical-align: top;" width="1px">
+	    <td style="vertical-align: top; width: 1px; white-space: nowrap;">
     	    <img src="style/default/tabs_begin_tab_sel.gif" alt=""/>
 	    </td>
 	    {else}
 	    {if $display_spacer}
-	    <td style="vertical-align: top;" width="1px">
+	    <td style="vertical-align: top; width: 1px; white-space: nowrap;">
     	    <img src="style/default/tabs_spacer_notsel.gif" alt=""/>
 	    </td>
 	    {/if}
 	    {/if}
 	{/if}
-        <td style="vertical-align: top; background-image: url(style/default/{if $menuitem.selected}tabs_tab_sel.gif{else}tabs_tab_notsel.gif{/if}); background-repeat: repeat-x; padding-top: 2px;" width="1px">
+        <td style="vertical-align: top; background-image: url(style/default/{if $menuitem.selected}tabs_tab_sel.gif{else}tabs_tab_notsel.gif{/if}); background-repeat: repeat-x; padding-top: 2px; width: 1px; white-space: nowrap;">
     	    <a href="?m={$menuitem.module}" {userpaneltip text=$menuitem.tip} class="{if $menuitem.selected}tabsel{else}tabnotsel{/if} nobr">
 				{if $menuitem.icon}<i class="{$menuitem.icon}"></i>{/if}
 				{$menuitem.name|replace:" ":"&nbsp;"}
 			</a>
         </td>
 	{if $menuitem@last}
-	    <td style="vertical-align: top;" width="1px">
+	    <td style="vertical-align: top; width: 1px; white-space: nowrap;">
 	{if $menuitem.selected}
     	    <img src="style/default/tabs_end_sel.gif" alt=''/>
 	{else}
@@ -59,7 +59,7 @@
     	    </td>
 	{else}
 	{if $menuitem.selected}
-	    <td style="vertical-align: top;" width="1px">
+	    <td style="vertical-align: top; width: 1px; white-space: nowrap;">
     	    <img src="style/default/tabs_end_tab_sel.gif" alt=''/>
         </td>
 	{/if}
