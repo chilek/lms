@@ -273,7 +273,7 @@ class Utils
 
         $value = ConfigHelper::getConfig('phpui.default_customer_consents', 'data_processing', true);
         if (!empty($value)) {
-            $values = array_flip(preg_split('/\s*(\r?\n|[,;])\s*/', $value));
+            $values = array_flip(preg_split('/[\s\.,;]+/', $value, -1, PREG_SPLIT_NO_EMPTY));
             foreach ($CCONSENTS as $consent_id => $consent) {
                 if (isset($values[$consent['name']])) {
                     $result[$consent_id] = $consent_id;
