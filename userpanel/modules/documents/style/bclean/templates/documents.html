@@ -226,6 +226,9 @@
 			$.ajax({
 				method: "POST",
 				url: '?m=documents&smsauth=1&send=1',
+				data: {
+					documentid: parseInt($('#authcode-dialog .documentid').val())
+				},
 				success: function (data) {
 					if (data.length) {
 						$('#authcode-dialog .alert').removeClass('alert-primary').addClass('alert-danger').html(data).show();

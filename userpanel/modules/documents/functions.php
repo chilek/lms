@@ -28,6 +28,8 @@ function module_main()
 {
     global $SESSION;
 
+    $op = isset($_GET['op']) ? $_GET['op'] : '';
+
     $DB = LMSDB::getInstance();
     $LMS = LMS::getInstance();
     $SMARTY = LMSSmarty::getInstance();
@@ -55,240 +57,234 @@ function module_main()
     $sms_active = $sms_active && isset($sms_recipients);
     $SMARTY->assign('sms_active', $sms_active);
 
-    if (isset($_GET['smsauth'])) {
-        if ($sms_active) {
-            if (isset($_GET['send'])) {
-                if (!isset($_SESSION['session_smsauthcode']) || time() - $_SESSION['session_smsauthcode_timestamp'] > 60) {
-                    $_SESSION['session_smsauthcode'] = $sms_authcode = strval(rand(10000000, 99999999));
-                    $_SESSION['session_smsauthcode_timestamp'] = time();
-                    $sms_body = str_replace('%password%', $sms_authcode, $sms_onetime_password_body);
-                    $error = array();
-                    foreach ($sms_recipients as $sms_recipient) {
-                        $res = $LMS->SendSMS($sms_recipient, $sms_body, null, $sms_options);
-                        if (is_string($res)) {
-                            $error[] = $res;
-                        }
-                    }
-                    if ($error) {
-                        echo implode('<br>', $error);
-                    }
-                    die;
-                } else {
-                    if (isset($_SESSION['session_smsauthcode'])) {
-                        echo trans('Your previous authorization code is still valid. Please wait a minute until it expires.');
-                    } else {
-                        unset($_SESSION['session_smsauthcode'], $_SESSION['session_smsauthcode_timestamp']);
-                    }
-                    die;
-                }
-            } elseif (isset($_GET['check'])) {
-                if (isset($_SESSION['session_smsauthcode']) && time() - $_SESSION['session_smsauthcode_timestamp'] < 5 * 60) {
-                    if ($_POST['code'] == $_SESSION['session_smsauthcode']) {
-                        unset($_SESSION['session_smsauthcode'], $_SESSION['session_smsauthcode_timestamp']);
-
-                        // commit customer document only if it's owned by this customer
-                        // and is prepared for customer action
-                        $documentid = intval($_POST['documentid']);
-                        if ($DB->GetOne(
-                            'SELECT id FROM documents
-                            WHERE id = ? AND customerid = ? AND closed = 0 AND confirmdate > ?NOW?',
-                            array($documentid, $SESSION->id)
-                        )) {
-                            $LMS->CommitDocuments(array($documentid));
-                        }
-
-                        die;
-                    } else {
-                        echo trans('Authorization code you entered is invalid!');
-                    }
-                    die;
-                } else {
-                    echo trans('Your authorization code has expired! Try again in a moment.');
-                    die;
-                }
-            }
-        }
-    } elseif (isset($_POST['documentid']) && ($documentid = intval($_POST['documentid'])) > 0) {
-        if ($DB->GetOne(
-            'SELECT 1 FROM documents WHERE id = ? AND customerid = ? AND closed = 0 AND confirmdate > 0 AND confirmdate > ?NOW?',
+    if (isset($_POST['documentid'])) {
+        $documentid = intval($_POST['documentid']);
+        if ($documentid && $DB->GetOne(
+            'SELECT id FROM documents
+            WHERE id = ? AND customerid = ? AND closed = 0 AND confirmdate > ?NOW?',
             array($documentid, $SESSION->id)
         )) {
-            $files = array();
-            $error = null;
-
-            if (isset($_FILES['files'])) {
-                foreach ($_FILES['files']['name'] as $fileidx => $filename) {
-                    if (!empty($filename)) {
-                        if (is_uploaded_file($_FILES['files']['tmp_name'][$fileidx]) && $_FILES['files']['size'][$fileidx]) {
-                            $files[] = array(
-                                'tmpname' => null,
-                                'filename' => $filename,
-                                'name' => $_FILES['files']['tmp_name'][$fileidx],
-                                'type' => $_FILES['files']['type'][$fileidx],
-                                'md5sum' => md5($_FILES['files']['tmp_name'][$fileidx]),
-                                'attachmenttype' => -1,
-                            );
-                        } else { // upload errors
-                            if (isset($error['files'])) {
-                                $error['files'] .= "\n";
+            if (isset($_GET['smsauth'])) {
+                if ($sms_active) {
+                    if (isset($_GET['send'])) {
+                        if (!isset($_SESSION['session_smsauthcode']) || time() - $_SESSION['session_smsauthcode_timestamp'] > 60) {
+                            $_SESSION['session_smsauthcode'] = $sms_authcode = strval(rand(10000000, 99999999));
+                            $_SESSION['session_smsauthcode_timestamp'] = time();
+                            $sms_body = str_replace('%password%', $sms_authcode, $sms_onetime_password_body);
+                            $error = array();
+                            foreach ($sms_recipients as $sms_recipient) {
+                                $res = $LMS->SendSMS($sms_recipient, $sms_body, null, $sms_options);
+                                if (is_string($res)) {
+                                    $error[] = $res;
+                                }
+                            }
+                            if ($error) {
+                                echo implode('<br>', $error);
+                            }
+                        } else {
+                            if (isset($_SESSION['session_smsauthcode'])) {
+                                echo trans('Your previous authorization code is still valid. Please wait a minute until it expires.');
                             } else {
-                                $error['files'] = '';
+                                unset($_SESSION['session_smsauthcode'], $_SESSION['session_smsauthcode_timestamp']);
                             }
-                            switch ($_FILES['files']['error'][$fileidx]) {
-                                case 1:
-                                case 2:
-                                    $error['files'] .= trans('File is too large: $a', $filename);
-                                    break;
-                                case 3:
-                                    $error['files'] .= trans('File upload has finished prematurely: $a', $filename);
-                                    break;
-                                case 4:
-                                    $error['files'] .= trans('Path to file was not specified: $a', $filename);
-                                    break;
-                                default:
-                                    $error['files'] .= trans('Problem during file upload: $a', $filename);
-                                    break;
+                        }
+                    } elseif (isset($_GET['check'])) {
+                        if (isset($_SESSION['session_smsauthcode']) && time() - $_SESSION['session_smsauthcode_timestamp'] < 5 * 60) {
+                            if ($_POST['code'] == $_SESSION['session_smsauthcode']) {
+                                unset($_SESSION['session_smsauthcode'], $_SESSION['session_smsauthcode_timestamp']);
+
+                                // commit customer document only if it's owned by this customer
+                                // and is prepared for customer action
+                                $LMS->CommitDocuments(array($documentid));
+                            } else {
+                                echo trans('Authorization code you entered is invalid!');
                             }
+                        } else {
+                            echo trans('Your authorization code has expired! Try again in a moment.');
                         }
                     }
                 }
-                if (!$error) {
-                    $error = $LMS->AddDocumentFileAttachments($files);
-                    if (!$error) {
-                        $attachmentids = $LMS->AddDocumentScans($documentid, $files);
-                        if ($attachmentids) {
-                            $mail_dsn = ConfigHelper::getConfig('userpanel.document_notification_mail_dsn_address', '', true);
-                            $mail_mdn = ConfigHelper::getConfig('userpanel.document_notification_mail_mdn_address', '', true);
-                            $mail_sender_name = ConfigHelper::getConfig('userpanel.document_notification_mail_sender_name', '', true);
-                            $mail_sender_address = ConfigHelper::getConfig('userpanel.document_notification_mail_sender_address', ConfigHelper::getConfig('mail.smtp_username'));
-                            $mail_reply_address = ConfigHelper::getConfig('userpanel.document_notification_mail_reply_address', '', true);
-                            $mail_recipient = ConfigHelper::getConfig('userpanel.signed_document_scan_operator_notification_mail_recipient');
-                            $mail_format = ConfigHelper::getConfig('userpanel.signed_document_scan_operator_notification_mail_format', 'text');
-                            $mail_subject = ConfigHelper::getConfig('userpanel.signed_document_scan_operator_notification_mail_subject');
-                            $mail_body = ConfigHelper::getConfig('userpanel.signed_document_scan_operator_notification_mail_body');
+                die;
+            } else {
+                $files = array();
+                $error = null;
 
-                            if (!empty($mail_sender_address)) {
-                                $customerinfo = $LMS->GetCustomer($SESSION->id);
-
-                                if (!empty($mail_recipient) && !empty($mail_subject) && !empty($mail_body)) {
-                                    // operator notification
-                                    $mail_subject = $LMS->customerNotificationReplaceSymbols(
-                                        $mail_subject,
-                                        array(
-                                            'customerinfo' => $customerinfo,
-                                            'document' => array(
-                                                'id' => $documentid,
-                                                'attachmentids' => $attachmentids,
-                                            ),
-                                        )
-                                    );
-                                    $mail_body = $LMS->customerNotificationReplaceSymbols(
-                                        $mail_body,
-                                        array(
-                                            'customerinfo' => $customerinfo,
-                                            'document' => array(
-                                                'id' => $documentid,
-                                                'attachmentids' => $attachmentids,
-                                            ),
-                                        )
-                                    );
-                                    $LMS->SendMail($mail_recipient, array(
-                                        'From' => ($mail_sender_name ? '"' . $mail_sender_name . '" ' : '') . '<' . $mail_sender_address . '>',
-                                        'To' => $mail_recipient,
-                                        'Subject' => $mail_subject,
-                                        'X-LMS-Format' => $mail_format,
-                                    ), $mail_body);
+                if (isset($_FILES['files'])) {
+                    foreach ($_FILES['files']['name'] as $fileidx => $filename) {
+                        if (!empty($filename)) {
+                            if (is_uploaded_file($_FILES['files']['tmp_name'][$fileidx]) && $_FILES['files']['size'][$fileidx]) {
+                                $files[] = array(
+                                    'tmpname' => null,
+                                    'filename' => $filename,
+                                    'name' => $_FILES['files']['tmp_name'][$fileidx],
+                                    'type' => $_FILES['files']['type'][$fileidx],
+                                    'md5sum' => md5($_FILES['files']['tmp_name'][$fileidx]),
+                                    'attachmenttype' => -1,
+                                );
+                            } else { // upload errors
+                                if (isset($error['files'])) {
+                                    $error['files'] .= "\n";
+                                } else {
+                                    $error['files'] = '';
                                 }
+                                switch ($_FILES['files']['error'][$fileidx]) {
+                                    case 1:
+                                    case 2:
+                                        $error['files'] .= trans('File is too large: $a', $filename);
+                                        break;
+                                    case 3:
+                                        $error['files'] .= trans('File upload has finished prematurely: $a', $filename);
+                                        break;
+                                    case 4:
+                                        $error['files'] .= trans('Path to file was not specified: $a', $filename);
+                                        break;
+                                    default:
+                                        $error['files'] .= trans('Problem during file upload: $a', $filename);
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                    if (!$error) {
+                        $error = $LMS->AddDocumentFileAttachments($files);
+                        if (!$error) {
+                            $attachmentids = $LMS->AddDocumentScans($documentid, $files);
+                            if ($attachmentids) {
+                                $mail_dsn = ConfigHelper::getConfig('userpanel.document_notification_mail_dsn_address', '', true);
+                                $mail_mdn = ConfigHelper::getConfig('userpanel.document_notification_mail_mdn_address', '', true);
+                                $mail_sender_name = ConfigHelper::getConfig('userpanel.document_notification_mail_sender_name', '', true);
+                                $mail_sender_address = ConfigHelper::getConfig('userpanel.document_notification_mail_sender_address', ConfigHelper::getConfig('mail.smtp_username'));
+                                $mail_reply_address = ConfigHelper::getConfig('userpanel.document_notification_mail_reply_address', '', true);
+                                $mail_recipient = ConfigHelper::getConfig('userpanel.signed_document_scan_operator_notification_mail_recipient');
+                                $mail_format = ConfigHelper::getConfig('userpanel.signed_document_scan_operator_notification_mail_format', 'text');
+                                $mail_subject = ConfigHelper::getConfig('userpanel.signed_document_scan_operator_notification_mail_subject');
+                                $mail_body = ConfigHelper::getConfig('userpanel.signed_document_scan_operator_notification_mail_body');
 
-                                $mail_format = ConfigHelper::getConfig('userpanel.signed_document_scan_customer_notification_mail_format', 'text');
-                                $mail_subject = ConfigHelper::getConfig('userpanel.signed_document_scan_customer_notification_mail_subject');
-                                $mail_body = ConfigHelper::getConfig('userpanel.signed_document_scan_customer_notification_mail_body');
-                                if (!empty($mail_recipient) && !empty($mail_subject) && !empty($mail_body)) {
-                                    // customer notification
-                                    $mail_subject = $LMS->customerNotificationReplaceSymbols(
-                                        $mail_subject,
-                                        array(
-                                            'customerinfo' => $customerinfo,
-                                            'document' => array(
-                                                'id' => $documentid,
-                                                'attachmentids' => $attachmentids,
-                                            ),
-                                        )
-                                    );
-                                    $mail_body = $LMS->customerNotificationReplaceSymbols(
-                                        $mail_body,
-                                        array(
-                                            'customerinfo' => $customerinfo,
-                                            'document' => array(
-                                                'id' => $documentid,
-                                                'attachmentids' => $attachmentids,
-                                            ),
-                                        )
-                                    );
-                                    $mail_recipients = $LMS->GetCustomerContacts($SESSION->id, CONTACT_EMAIL);
-                                    if (!empty($mail_recipients)) {
-                                        $destinations = array();
-                                        foreach ($mail_recipients as $mail_recipient) {
-                                            if (($mail_recipient['type'] & (CONTACT_NOTIFICATIONS | CONTACT_DISABLED)) == CONTACT_NOTIFICATIONS) {
-                                                $destinations[] = $mail_recipient['contact'];
-                                            }
-                                        }
-                                        if (!empty($destinations)) {
-                                            $recipients = array(
-                                                array(
-                                                    'id' => $SESSION->id,
-                                                    'email' => implode(',', $destinations),
-                                                )
-                                            );
-                                            $sender = ($mail_sender_name ? '"' . $mail_sender_name . '" ' : '') . '<' . $mail_sender_address . '>';
-                                            $message = $LMS->addMessage(array(
-                                                'type' => MSG_MAIL,
-                                                'subject' => $mail_subject,
-                                                'body' => $mail_body,
-                                                'sender' => array(
-                                                    'name' => $mail_sender_name,
-                                                    'mail' => $mail_sender_address,
+                                if (!empty($mail_sender_address)) {
+                                    $customerinfo = $LMS->GetCustomer($SESSION->id);
+
+                                    if (!empty($mail_recipient) && !empty($mail_subject) && !empty($mail_body)) {
+                                        // operator notification
+                                        $mail_subject = $LMS->customerNotificationReplaceSymbols(
+                                            $mail_subject,
+                                            array(
+                                                'customerinfo' => $customerinfo,
+                                                'document' => array(
+                                                    'id' => $documentid,
+                                                    'attachmentids' => $attachmentids,
                                                 ),
-                                                'contenttype' => $mail_format == 'text' ? 'text/plain' : 'text/html',
-                                                'recipients' => $recipients,
-                                            ));
-                                            $headers = array(
-                                                'From' => $sender,
-                                                'Recipient-Name' => $customerinfo['customername'],
-                                                'Subject' => $mail_subject,
-                                                'X-LMS-Format' => $mail_format,
-                                            );
-                                            if (!empty($mail_reply_address) && $mail_reply_address != $mail_sender_address) {
-                                                $headers['Reply-To'] = $mail_reply_address;
-                                            }
-                                            if (!empty($mail_mdn)) {
-                                                $headers['Return-Receipt-To'] = $mail_mdn;
-                                                $headers['Disposition-Notification-To'] = $mail_mdn;
-                                            }
-                                            if (!empty($mail_dsn)) {
-                                                $headers['Delivery-Status-Notification-To'] = true;
-                                            }
-                                            foreach ($destinations as $destination) {
-                                                if (!empty($mail_dsn) || !empty($mail_mdn)) {
-                                                    $headers['X-LMS-Message-Item-Id'] = $message['items'][$SESSION->id][$destination];
-                                                    $headers['Message-ID'] = '<messageitem-' . $message['items'][$SESSION->id][$destination] . '@rtsystem.' . gethostname() . '>';
+                                            )
+                                        );
+                                        $mail_body = $LMS->customerNotificationReplaceSymbols(
+                                            $mail_body,
+                                            array(
+                                                'customerinfo' => $customerinfo,
+                                                'document' => array(
+                                                    'id' => $documentid,
+                                                    'attachmentids' => $attachmentids,
+                                                ),
+                                            )
+                                        );
+                                        $LMS->SendMail($mail_recipient, array(
+                                            'From' => ($mail_sender_name ? '"' . $mail_sender_name . '" ' : '') . '<' . $mail_sender_address . '>',
+                                            'To' => $mail_recipient,
+                                            'Subject' => $mail_subject,
+                                            'X-LMS-Format' => $mail_format,
+                                        ), $mail_body);
+                                    }
+
+                                    $mail_format = ConfigHelper::getConfig('userpanel.signed_document_scan_customer_notification_mail_format', 'text');
+                                    $mail_subject = ConfigHelper::getConfig('userpanel.signed_document_scan_customer_notification_mail_subject');
+                                    $mail_body = ConfigHelper::getConfig('userpanel.signed_document_scan_customer_notification_mail_body');
+                                    if (!empty($mail_recipient) && !empty($mail_subject) && !empty($mail_body)) {
+                                        // customer notification
+                                        $mail_subject = $LMS->customerNotificationReplaceSymbols(
+                                            $mail_subject,
+                                            array(
+                                                'customerinfo' => $customerinfo,
+                                                'document' => array(
+                                                    'id' => $documentid,
+                                                    'attachmentids' => $attachmentids,
+                                                ),
+                                            )
+                                        );
+                                        $mail_body = $LMS->customerNotificationReplaceSymbols(
+                                            $mail_body,
+                                            array(
+                                                'customerinfo' => $customerinfo,
+                                                'document' => array(
+                                                    'id' => $documentid,
+                                                    'attachmentids' => $attachmentids,
+                                                ),
+                                            )
+                                        );
+                                        $mail_recipients = $LMS->GetCustomerContacts($SESSION->id, CONTACT_EMAIL);
+                                        if (!empty($mail_recipients)) {
+                                            $destinations = array();
+                                            foreach ($mail_recipients as $mail_recipient) {
+                                                if (($mail_recipient['type'] & (CONTACT_NOTIFICATIONS | CONTACT_DISABLED)) == CONTACT_NOTIFICATIONS) {
+                                                    $destinations[] = $mail_recipient['contact'];
                                                 }
-                                                $LMS->SendMail($destination, $headers, $mail_body);
+                                            }
+                                            if (!empty($destinations)) {
+                                                $recipients = array(
+                                                    array(
+                                                        'id' => $SESSION->id,
+                                                        'email' => implode(',', $destinations),
+                                                    )
+                                                );
+                                                $sender = ($mail_sender_name ? '"' . $mail_sender_name . '" ' : '') . '<' . $mail_sender_address . '>';
+                                                $message = $LMS->addMessage(array(
+                                                    'type' => MSG_MAIL,
+                                                    'subject' => $mail_subject,
+                                                    'body' => $mail_body,
+                                                    'sender' => array(
+                                                        'name' => $mail_sender_name,
+                                                        'mail' => $mail_sender_address,
+                                                    ),
+                                                    'contenttype' => $mail_format == 'text' ? 'text/plain' : 'text/html',
+                                                    'recipients' => $recipients,
+                                                ));
+                                                $headers = array(
+                                                    'From' => $sender,
+                                                    'Recipient-Name' => $customerinfo['customername'],
+                                                    'Subject' => $mail_subject,
+                                                    'X-LMS-Format' => $mail_format,
+                                                );
+                                                if (!empty($mail_reply_address) && $mail_reply_address != $mail_sender_address) {
+                                                    $headers['Reply-To'] = $mail_reply_address;
+                                                }
+                                                if (!empty($mail_mdn)) {
+                                                    $headers['Return-Receipt-To'] = $mail_mdn;
+                                                    $headers['Disposition-Notification-To'] = $mail_mdn;
+                                                }
+                                                if (!empty($mail_dsn)) {
+                                                    $headers['Delivery-Status-Notification-To'] = true;
+                                                }
+                                                foreach ($destinations as $destination) {
+                                                    if (!empty($mail_dsn) || !empty($mail_mdn)) {
+                                                        $headers['X-LMS-Message-Item-Id'] = $message['items'][$SESSION->id][$destination];
+                                                        $headers['Message-ID'] = '<messageitem-' . $message['items'][$SESSION->id][$destination] . '@rtsystem.' . gethostname() . '>';
+                                                    }
+                                                    $LMS->SendMail($destination, $headers, $mail_body);
+                                                }
                                             }
                                         }
                                     }
                                 }
                             }
+                        } else {
+                            $SMARTY->assign('error', $error);
                         }
                     } else {
                         $SMARTY->assign('error', $error);
                     }
-                } else {
-                    $SMARTY->assign('error', $error);
                 }
+                $op = '';
             }
         }
-        $op = '';
+    } else {
+        $documentid = 0;
     }
 
     $documents = $DB->GetAll('SELECT d.id, d.number, d.type, c.title, c.fromdate, c.todate, 
@@ -333,8 +329,8 @@ function module_main()
     }
 
     $SMARTY->assign('documents', $documents);
-    $SMARTY->assign('documentid', $_GET['documentid']);
-    $SMARTY->assign('op', $_GET['op']);
+    $SMARTY->assign('documentid', $documentid);
+    $SMARTY->assign('op', $op);
     $SMARTY->display('module:documents.html');
 }
 
