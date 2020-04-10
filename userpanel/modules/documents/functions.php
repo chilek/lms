@@ -45,7 +45,9 @@ function module_main()
     }
 
     $sms_options = $LMS->getCustomerSMSOptions();
-    $sms_active = !empty($sms_options) && isset($sms_options['service']) && !empty($sms_options['service']);
+    $sms_onetime_password_body = ConfigHelper::getConfig('userpanel.document_approval_customer_onetime_password_sms_body', '', true);
+    $sms_active = !empty($sms_options) && isset($sms_options['service']) && !empty($sms_options['service'])
+        && !empty($sms_onetime_password_body);
     if (!$sms_active) {
         $sms_service = ConfigHelper::getConfig('sms.service', '', true);
         $sms_active = !empty($sms_service);
@@ -59,7 +61,7 @@ function module_main()
                 if (!isset($_SESSION['session_smsauthcode']) || time() - $_SESSION['session_smsauthcode_timestamp'] > 60) {
                     $_SESSION['session_smsauthcode'] = $sms_authcode = strval(rand(10000000, 99999999));
                     $_SESSION['session_smsauthcode_timestamp'] = time();
-                    $sms_body = 'Hasło jednorazowe: ' . $sms_authcode;
+                    $sms_body = str_replace('%password%', $sms_authcode, $sms_onetime_password_body);
                     $error = array();
                     foreach ($sms_recipients as $sms_recipient) {
                         $res = $LMS->SendSMS($sms_recipient, $sms_body, null, $sms_options);
@@ -379,6 +381,8 @@ if (defined('USERPANEL_SETUPMODE')) {
                     ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_subject', '', true),
                 'document_approval_customer_notification_mail_body' =>
                     ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_body', '', true),
+                'document_approval_customer_onetime_password_sms_body' =>
+                    ConfigHelper::getConfig('userpanel.document_approval_customer_onetime_password_sms_body', '', true),
             )
         );
 
@@ -412,6 +416,7 @@ if (defined('USERPANEL_SETUPMODE')) {
             'document_approval_customer_notification_mail_format' => CONFIG_TYPE_NONE,
             'document_approval_customer_notification_mail_subject' => CONFIG_TYPE_RICHTEXT,
             'document_approval_customer_notification_mail_body' => CONFIG_TYPE_RICHTEXT,
+            'document_approval_customer_onetime_password_sms_body' => CONFIG_TYPE_RICHTEXT,
         );
 
         $moduleconfig = $_POST['moduleconfig'];

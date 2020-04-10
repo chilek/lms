@@ -73,7 +73,7 @@ $_LANG['Enter document notification mail MDN (Message Delivery Notification) add
 $_LANG['Reply address:'] = 'Adres do odpowiedzi:';
 $_LANG['Enter document notification mail reply address'] = 'Podaj adres do odpowiedzi na powiadomienia o dokumencie';
 
-$_LANG['One-time authorization code'] = 'Jednorazowy kod autoryzacyjny';
+$_LANG['Authorization'] = 'Autoryzacja';
 $_LANG['Enter code:'] = 'Wprowadź kod:';
 $_LANG['... which you received on your mobile phone'] = '... który otrzymałeś w Twoim telefonie komórkowym';
 
@@ -82,3 +82,6 @@ $_LANG['Your authorization code has expired! Try again in a moment.'] = 'Wygasł
 $_LANG['Authorization code you entered is invalid!'] = 'Podałeś niepoprawny kod autoryzacyjny!';
 $_LANG['Authorization code has been sent to you mobile phone.'] = 'Kod autoryzacyjny został wysłany na Twój telefon komórkowy.';
 $_LANG['Authorization code is valid! Document has been confirmed and your services will be activated in a few moments.'] = 'Kod autoryzacyjny poprawny! Dokument został zatwierdzony, a Twoje usługi zostaną aktywowane za parę chwil.';
+
+$_LANG['Enter document approval customer one-time password sms body'] = 'Wprowadź treść SMS-a zawierającego hasło jednorazowe wysyłane do klienta';
+$_LANG['One-time password SMS body:'] = 'Treść SMS-a z hasłem jednorazowym:';

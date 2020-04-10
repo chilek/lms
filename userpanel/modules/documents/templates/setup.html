@@ -6,29 +6,33 @@
     <TR CLASS="light"><TD CLASS="fall">
 	<FORM NAME="moduleconfig" METHOD="POST" ACTION="?m=userpanel&module=documents&f=submit_setup">
 	<TABLE WIDTH="100%">
+		<colgroup>
+			<col style="width: 1%;">
+			<col style="width: 99%;">
+		</colgroup>
 		<TR>
-			<TD WIDTH="1%" NOWRAP>
+			<TD class="nobr">
 				<label for="hide_documentbox">{trans("Hide customer document box")}</label>
 			</TD>
-			<TD WIDTH="99%" NOWRAP>
+			<TD class="nobr">
 				<INPUT type="checkbox" NAME="moduleconfig[hide_documentbox]" ID="hide_documentbox" value="1"
 						{if $moduleconfig.hide_documentbox} checked{/if} {tip text="Don't show customer document box"}>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH="1%" NOWRAP>
+			<TD class="nobr">
 				<label for="show_confirmed_documents_only">{trans("Show confirmed documents only:")}</label>
 			</TD>
-			<TD WIDTH="99%" NOWRAP>
+			<TD class="nobr">
 				<INPUT type="checkbox" NAME="moduleconfig[show_confirmed_documents_only]" ID="show_confirmed_documents_only" value="1"
 						{if $moduleconfig.show_confirmed_documents_only} checked{/if} {tip text="Show only documents which are confirmed"}>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH="1%" NOWRAP>
+			<TD class="nobr">
 				<label for="hide_archived_documents">{trans("Hide archived documents:")}</label>
 			</TD>
-			<TD WIDTH="99%" NOWRAP>
+			<TD class="nobr">
 				<INPUT type="checkbox" NAME="moduleconfig[hide_archived_documents]" ID="hide_archived_documents" value="1"
 						{if $moduleconfig.hide_archived_documents} checked{/if} {tip text="Hide archived documents"}>
 			</TD>
@@ -228,6 +232,19 @@
 				</fieldset>
 			</TD>
 		</TR>
+
+		<TR>
+			<TD class="nobr">
+				<label for="document_approval_customer_onetime_password_sms_body">{trans("One-time password SMS body:")}</label>
+			</TD>
+			<TD class="nobr">
+				<TEXTAREA name="moduleconfig[document_approval_customer_onetime_password_sms_body]"
+						  id="document_approval_customer_onetime_password_sms_body"
+						  cols="60" rows="7" {tip text="Enter document approval customer one-time password sms body"}
+					>{$moduleconfig.document_approval_customer_onetime_password_sms_body}</TEXTAREA>
+			</TD>
+		</TR>
+
 		<tr>
 			<TD colspan="2" class="lms-ui-box-buttons">
 				{button type="submit" icon="submit" label="Submit"}
