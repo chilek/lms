@@ -85,3 +85,5 @@ $_LANG['Authorization code is valid! Document has been confirmed and your servic
 
 $_LANG['Enter document approval customer one-time password sms body'] = 'Wprowadź treść SMS-a zawierającego hasło jednorazowe wysyłane do klienta';
 $_LANG['One-time password SMS body:'] = 'Treść SMS-a z hasłem jednorazowym:';
+
+$_LANG['awaits for your approval'] = 'oczekuje na zatwierdzenie przez Ciebie';

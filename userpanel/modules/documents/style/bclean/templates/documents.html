@@ -11,7 +11,7 @@
 	.awaits-scan {
 		margin-bottom: 0.5em;
 		margin-top: 0.5em;
-		margin-left: 2em;
+		margin-left: 1em;
 	}
 
 	.document-attachment:not(:last-child) {
@@ -154,6 +154,11 @@
 												{trans("awaits for signed document scan submission")}
 											{/if}
 										</div>
+										{if $sms_active && $doc.confirmdate != -1}
+											<div class="awaits-scan col-md-auto alert alert-warning">
+												{trans("awaits for your approval")}
+											</div>
+										{/if}
 									</div>
 								{/if}
 							{/foreach}

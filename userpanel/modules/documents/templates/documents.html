@@ -259,6 +259,11 @@
 					{/if}
 				</span>
 				<br>
+				{if $sms_active && $doc.confirmdate != -1}
+					<span class="awaits-scan">
+						{trans("awaits for your approval")}
+					</span>
+				{/if}
 			{/if}
 			{/foreach}
 		{else}
