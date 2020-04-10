@@ -704,17 +704,16 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 					d.reference, d.commitflags, d.confirmdate, d.closed,
 					(CASE WHEN d.confirmdate = -1 AND a.customerdocuments IS NOT NULL THEN 1 ELSE 0 END) AS customerawaits
 				FROM documents d
-				JOIN documentcontents dc ON dc.docid = d.id
-				JOIN docrights r ON r.doctype = d.type
+                JOIN documentcontents dc ON dc.docid = d.id
+				LEFT JOIN docrights r ON r.doctype = d.type
 				LEFT JOIN (
                     SELECT da.docid, COUNT(*) AS customerdocuments
                     FROM documentattachments da
                     WHERE da.type = -1
                     GROUP BY da.docid
 				) a ON a.docid = d.id
-				WHERE d.closed = 0 AND d.type < 0 AND d.id IN (' . implode(',', $ids) . ') AND r.userid = ? AND (r.rights & ' . DOCRIGHT_CONFIRM . ') > 0',
-            'id',
-            array($userid)
+				WHERE d.closed = 0 AND d.type < 0 AND d.id IN (' . implode(',', $ids) . ')' . ($userid ? ' AND r.userid = ' . intval($userid) . ' AND (r.rights & ' . DOCRIGHT_CONFIRM . ') > 0' : ''),
+            'id'
         );
         if (empty($docs)) {
             return;

@@ -49,7 +49,7 @@ class UserpanelDocumentHandler
         return $this->db->GetOne(
             'SELECT COUNT(*)
             FROM documents
-            WHERE type < 0 AND customerid = ? AND (closed = 0 OR confirmdate = -1 OR confirmdate >= ?NOW?)',
+            WHERE type < 0 AND customerid = ? AND closed = 0 AND (confirmdate = -1 OR confirmdate >= ?NOW?)',
             array($this->customerid)
         );
     }

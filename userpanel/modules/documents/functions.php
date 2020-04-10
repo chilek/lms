@@ -24,25 +24,90 @@
  *  $Id$
  */
 
-function parse_notification_mail($string, $data)
-{
-    $customerinfo = $data['customerinfo'];
-    $string = str_replace('%cid%', $customerinfo['id'], $string);
-    $string = str_replace('%customername%', $customerinfo['customername'], $string);
-    $document = $data['document'];
-    $string = str_replace('%docid%', $document['id'], $string);
-    return $string;
-}
-
 function module_main()
 {
     global $SESSION;
 
+    $DB = LMSDB::getInstance();
     $LMS = LMS::getInstance();
     $SMARTY = LMSSmarty::getInstance();
 
-    if (isset($_POST['documentid']) && ($documentid = intval($_POST['documentid'])) > 0) {
-        if ($LMS->DB->GetOne(
+    $sms_contacts = $LMS->GetCustomerContacts($SESSION->id, CONTACT_MOBILE);
+    if (!empty($sms_contacts)) {
+        foreach ($sms_contacts as $sms_contact) {
+            if (($sms_contact['type'] & (CONTACT_NOTIFICATIONS | CONTACT_DISABLED)) == CONTACT_NOTIFICATIONS) {
+                if (!isset($sms_recipients)) {
+                    $sms_recipients = array();
+                }
+                $sms_recipients[] = $sms_contact['contact'];
+            }
+        }
+    }
+
+    $sms_options = $LMS->getCustomerSMSOptions();
+    $sms_active = !empty($sms_options) && isset($sms_options['service']) && !empty($sms_options['service']);
+    if (!$sms_active) {
+        $sms_service = ConfigHelper::getConfig('sms.service', '', true);
+        $sms_active = !empty($sms_service);
+    }
+    $sms_active = $sms_active && isset($sms_recipients);
+    $SMARTY->assign('sms_active', $sms_active);
+
+    if (isset($_GET['smsauth'])) {
+        if ($sms_active) {
+            if (isset($_GET['send'])) {
+                if (!isset($_SESSION['session_smsauthcode']) || time() - $_SESSION['session_smsauthcode_timestamp'] > 60) {
+                    $_SESSION['session_smsauthcode'] = $sms_authcode = strval(rand(10000000, 99999999));
+                    $_SESSION['session_smsauthcode_timestamp'] = time();
+                    $sms_body = 'Hasło jednorazowe: ' . $sms_authcode;
+                    $error = array();
+                    foreach ($sms_recipients as $sms_recipient) {
+                        $res = $LMS->SendSMS($sms_recipient, $sms_body, null, $sms_options);
+                        if (is_string($res)) {
+                            $error[] = $res;
+                        }
+                    }
+                    if ($error) {
+                        echo implode('<br>', $error);
+                    }
+                    die;
+                } else {
+                    if (isset($_SESSION['session_smsauthcode'])) {
+                        echo trans('Your previous authorization code is still valid. Please wait a minute until it expires.');
+                    } else {
+                        unset($_SESSION['session_smsauthcode'], $_SESSION['session_smsauthcode_timestamp']);
+                    }
+                    die;
+                }
+            } elseif (isset($_GET['check'])) {
+                if (isset($_SESSION['session_smsauthcode']) && time() - $_SESSION['session_smsauthcode_timestamp'] < 5 * 60) {
+                    if ($_POST['code'] == $_SESSION['session_smsauthcode']) {
+                        unset($_SESSION['session_smsauthcode'], $_SESSION['session_smsauthcode_timestamp']);
+
+                        // commit customer document only if it's owned by this customer
+                        // and is prepared for customer action
+                        $documentid = intval($_POST['documentid']);
+                        if ($DB->GetOne(
+                            'SELECT id FROM documents
+                            WHERE id = ? AND customerid = ? AND closed = 0 AND confirmdate > ?NOW?',
+                            array($documentid, $SESSION->id)
+                        )) {
+                            $LMS->CommitDocuments(array($documentid));
+                        }
+
+                        die;
+                    } else {
+                        echo trans('Authorization code you entered is invalid!');
+                    }
+                    die;
+                } else {
+                    echo trans('Your authorization code has expired! Try again in a moment.');
+                    die;
+                }
+            }
+        }
+    } elseif (isset($_POST['documentid']) && ($documentid = intval($_POST['documentid'])) > 0) {
+        if ($DB->GetOne(
             'SELECT 1 FROM documents WHERE id = ? AND customerid = ? AND closed = 0 AND confirmdate > 0 AND confirmdate > ?NOW?',
             array($documentid, $SESSION->id)
         )) {
@@ -105,7 +170,7 @@ function module_main()
 
                                 if (!empty($mail_recipient) && !empty($mail_subject) && !empty($mail_body)) {
                                     // operator notification
-                                    $mail_subject = parse_notification_mail(
+                                    $mail_subject = $LMS->customerNotificationReplaceSymbols(
                                         $mail_subject,
                                         array(
                                             'customerinfo' => $customerinfo,
@@ -115,7 +180,7 @@ function module_main()
                                             ),
                                         )
                                     );
-                                    $mail_body = parse_notification_mail(
+                                    $mail_body = $LMS->customerNotificationReplaceSymbols(
                                         $mail_body,
                                         array(
                                             'customerinfo' => $customerinfo,
@@ -138,7 +203,7 @@ function module_main()
                                 $mail_body = ConfigHelper::getConfig('userpanel.signed_document_scan_customer_notification_mail_body');
                                 if (!empty($mail_recipient) && !empty($mail_subject) && !empty($mail_body)) {
                                     // customer notification
-                                    $mail_subject = parse_notification_mail(
+                                    $mail_subject = $LMS->customerNotificationReplaceSymbols(
                                         $mail_subject,
                                         array(
                                             'customerinfo' => $customerinfo,
@@ -148,7 +213,7 @@ function module_main()
                                             ),
                                         )
                                     );
-                                    $mail_body = parse_notification_mail(
+                                    $mail_body = $LMS->customerNotificationReplaceSymbols(
                                         $mail_body,
                                         array(
                                             'customerinfo' => $customerinfo,
@@ -223,7 +288,7 @@ function module_main()
         }
     }
 
-    $documents = $LMS->DB->GetAll('SELECT d.id, d.number, d.type, c.title, c.fromdate, c.todate, 
+    $documents = $DB->GetAll('SELECT d.id, d.number, d.type, c.title, c.fromdate, c.todate, 
 		    c.description, n.template, d.closed, d.cdate, d.confirmdate
 		FROM documentcontents c
 		JOIN documents d ON (c.docid = d.id)
@@ -236,7 +301,7 @@ function module_main()
 
     if (!empty($documents)) {
         foreach ($documents as &$doc) {
-            $doc['attachments'] = $LMS->DB->GetAllBykey('SELECT * FROM documentattachments WHERE docid = ?
+            $doc['attachments'] = $DB->GetAllBykey('SELECT * FROM documentattachments WHERE docid = ?
 				ORDER BY type DESC, filename', 'id', array($doc['id']));
         }
     }

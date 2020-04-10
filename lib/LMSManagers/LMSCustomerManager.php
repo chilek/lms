@@ -1848,7 +1848,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $netnode_addresses = $this->db->GetAllByKey('SELECT address_id, 3 AS resourcetype, COUNT(*) AS used FROM netnodes
 			WHERE ownerid = ? AND address_id IS NOT NULL
 			GROUP BY address_id, resourcetype', 'address_id', array($id));
-        if (empty($netdev_addresses)) {
+        if (empty($netnode_addresses)) {
             $netnode_addresses = array();
         }
 
@@ -2097,5 +2097,15 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 WHERE customerid = ? AND type = ?',
             array($customerid, $consent)
         ) == $consent;
+    }
+
+    public function customerNotificationReplaceSymbols($string, $data)
+    {
+        $customerinfo = $data['customerinfo'];
+        $string = str_replace('%cid%', $customerinfo['id'], $string);
+        $string = str_replace('%customername%', $customerinfo['customername'], $string);
+        $document = $data['document'];
+        $string = str_replace('%docid%', $document['id'], $string);
+        return $string;
     }
 }

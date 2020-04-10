@@ -20,8 +20,38 @@
 
 </style>
 
-<div class="modal fade" id="newscan-dialog" tabindex="-1" role="dialog" aria-labelledby="newscan-dialog" aria-hidden="true">
-	<div class="modal-dialog" role="document">
+<div class="modal fade" id="authcode-dialog" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="authcode-dialog" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">{trans("One-time authorization code")}</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="alert" role="alert" style="display: none;">
+				</div>
+				<div class="form-group">
+					<form method="post" action="?m=documents&smsauth=1&check=1" name="authcode">
+						<label for="authcode" class="font-weight-bold">{trans("Enter code:")}</label>
+						<input type=text" name="authcode" id="authcode" autocomplete="off"
+							   placeholder="{trans("... which you received on your mobile phone")}"
+								{userpaneltip class="form-control" trigger="authcode"} />
+						<input type="hidden" class="documentid" value="{if isset($documentid)}{$documentid}{else}0{/if}">
+					</form>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-danger submit-button" formnovalidate accesskey="S">{trans("<!helpdesk>Submit")}</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">{trans("Close")}</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="newscan-dialog" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="newscan-dialog" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h4 class="modal-title">{trans("Document submission")}</h4>
@@ -30,8 +60,8 @@
 				</button>
 			</div>
 			<div class="modal-body">
-				<form method="post" action="?m=documents" name="newscan" enctype="multipart/form-data">
-					<div class="form-group">
+				<div class="form-group">
+					<form method="post" action="?m=documents" name="newscan" enctype="multipart/form-data">
 						<label for="scans" class="font-weight-bold">{trans("Select scan file:")}</label>
 						<input type="file" name="files[]" id="scans" {userpaneltip class="form-control-file" text="Enter path to file or click 'Browse' button" trigger="files"} multiple />
 						<input type="hidden" id="post_max_size" value="{$post_max_size.bytes}">
@@ -48,8 +78,8 @@
 							{t a=$upload_max_filesize.text}Maximum single file size: $a{/t}
 						</small>
 						<input type="hidden" name="documentid" value="{if isset($documentid)}{$documentid}{else}0{/if}">
-					</div>
-				</form>
+					</form>
+				</div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-danger submit-button" formnovalidate accesskey="S">{trans("<!helpdesk>Submit")}</button>
@@ -107,6 +137,11 @@
 											<a class="btn btn-primary" href="#" data-toggle="modal" data-target="#newscan-dialog" data-document-id="{$doc.id}">
 												{trans("Submit scan")}
 											</a>
+											{if $sms_active}
+												<a class="btn btn-primary" href="#" data-toggle="modal" data-target="#authcode-dialog" data-document-id="{$doc.id}">
+													{trans("Confirm")}
+												</a>
+											{/if}
 										{/if}
 									</div>
 								</div>
@@ -182,7 +217,59 @@
 		});
 
 		$('[data-target="#newscan-dialog"]').click(function() {
-			$('[name="documentid"]').val($(this).attr('data-document-id'));
+			$(this).find('[name="documentid"]').val($(this).attr('data-document-id'));
+		});
+
+		$('[data-target="#authcode-dialog"]').click(function() {
+			$('#authcode-dialog .documentid').val($(this).attr('data-document-id'));
+			$.ajax({
+				method: "POST",
+				url: '?m=documents&smsauth=1&send=1',
+				success: function (data) {
+					if (data.length) {
+						$('#authcode-dialog .alert').removeClass('alert-primary').addClass('alert-danger').html(data).show();
+					} else {
+						$('#authcode-dialog .alert').removeClass('alert-danger').addClass('alert-primary')
+							.html("{trans("Authorization code has been sent to you mobile phone.")}").show();
+					}
+					$('#authcode-dialog .submit-button').removeAttr('disabled');
+				}
+			});
+		});
+
+		$('#authcode-dialog').on('hidden.bs.modal', function() {
+			if ($(this).find('.submit-button').length) {
+				$('#authcode-dialog .alert').html('').hide();
+				$('#authcode').val(null);
+			} else {
+				location.reload();
+			}
+		}).on('shown.bs.modal', function() {
+			$('#authcode').focus();
+		}).find('form').submit(function(e) {
+			$('#authcode-dialog .submit-button').attr('disabled', 'disabled');
+			$.ajax({
+				method: "POST",
+				url: $(this).attr('action'),
+				data: {
+					code: $('#authcode').val(),
+					documentid: parseInt($('#authcode-dialog .documentid').val())
+				},
+				success: function(data) {
+					if (data.length) {
+						$('#authcode-dialog .alert').removeClass('alert-primary').addClass('alert-danger').html(data).show();
+					} else {
+						$('#authcode-dialog .alert').removeClass('alert-danger').addClass('alert-primary')
+							.html("{trans("Authorization code is valid! Document has been confirmed and your services will be activated in a few moments.")}").show();
+						$('#authcode-dialog').find('.documentid').siblings().hide().end().end().find('.submit-button').remove();
+					}
+					$('#authcode-dialog .submit-button').removeAttr('disabled');
+				}
+			});
+			e.preventDefault();
+		}).end().find('.submit-button').click(function() {
+			$('#authcode-dialog .submit-button').attr('disabled', 'disabled');
+			$('#authcode-dialog form').submit();
 		});
 	});
 

@@ -739,6 +739,12 @@ class LMS
         return $manager->checkCustomerConsent($customerid, $consent);
     }
 
+    public function customerNotificationReplaceSymbols($string, $data)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->customerNotificationReplaceSymbols($string, $data);
+    }
+
     /*
      * Customer groups
      */

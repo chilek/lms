@@ -287,6 +287,8 @@ version 25-git (????-??-??):
   - enhancement: operator can approve contract with document scan attached and thus
     activate services related with contract [chilan]
   - improvement: customers can be filtered by 'no zip code' virtual status [chilan]
+  - enhancement: customer can approve selected documents from userpanel using sms one-time
+    code authentication [chilan]
 
 version 24.0 (2019-05-16):
 

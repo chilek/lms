@@ -641,7 +641,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                 'name' => $message['from'],
                 'mail' => $message['sender'],
             ),
-            'contenttye' => $message['contenttype'],
+            'contenttype' => $message['contenttype'],
             'recipients' => $recipients,
         ));
         $msgid = $result['id'];
