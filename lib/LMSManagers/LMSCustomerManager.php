@@ -738,6 +738,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 case 73:
                     $state_conditions[] = 'EXISTS (SELECT 1 FROM documents WHERE customerid = c.id AND type < 0 AND archived = 0)';
                     break;
+                case 74:
+                    $state_conditions[] = 'c.id IN (SELECT DISTINCT ca.customer_id
+                        FROM customer_addresses ca
+                        JOIN addresses a ON a.id = ca.address_id
+                        WHERE a.zip IS NULL)';
+                    break;
                 default:
                     if ($state_item > 0 && $state_item < 50 && intval($state_item)) {
                         $customer_statuses[] = intval($state_item);

@@ -3816,7 +3816,8 @@ $_LANG['with end date:'] = 'z datą zakończenia:';
 $_LANG['<!enddate>- any -'] = '- dowolną -';
 $_LANG['expire in $a days'] = 'wygasną w ciągu $a dni';
 
-$_LANG['TERRIT not specified'] = 'Bez TERYT-u';
+$_LANG['TERRIT not specified'] = 'bez TERYT';
+$_LANG['ZIP code not specified'] = 'bez kodu pocztowego';
 $_LANG['Net Device not specified'] = 'Bez urządzenia sieciowego';
 
 $_LANG['with e-invoice'] = 'z e-fakturą';

@@ -286,6 +286,7 @@ version 25-git (????-??-??):
   - enhancement: customer can send signed document scans through userpanel [chilan]
   - enhancement: operator can approve contract with document scan attached and thus
     activate services related with contract [chilan]
+  - improvement: customers can be filtered by 'no zip code' virtual status [chilan]
 
 version 24.0 (2019-05-16):
 
