@@ -647,6 +647,21 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
         $msgid = $result['id'];
         $msgitems = $result['items'];
 
+        foreach ($recipients as &$row) {
+            if ($message['type'] == MSG_MAIL) {
+                $row['destination'] = explode(',', $row['email']);
+            } elseif ($message['type'] == MSG_WWW) {
+                $row['destination'] = array(trans('www'));
+            } elseif ($message['type'] == MSG_USERPANEL) {
+                $row['destination'] = array(trans('userpanel'));
+            } elseif ($message['type'] == MSG_USERPANEL_URGENT) {
+                $row['destination'] = array(trans('userpanel urgent'));
+            } else {
+                $row['destination'] = explode(',', $row['phone']);
+            }
+        }
+        unset($row);
+
         if ($message['type'] == MSG_MAIL) {
             if (!empty($files)) {
                 foreach ($files as &$file) {
