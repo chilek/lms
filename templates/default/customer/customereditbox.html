@@ -459,7 +459,7 @@
 						</TD>
 						<TD>
 							<span class="bold">{trans("Balance:")}</span>
-							{if $customerinfo.balance < 0}<span class="lms-ui-error">{$customerinfo.balance|money_format}</span>{else}{$customerinfo.balance|money_format}{/if}
+							{if $customerinfo.balance < 0}<span class="lms-ui-alert">{moneyf($customerinfo.balance)}</span>{else}{moneyf($customerinfo.balance)}{/if}
 						</TD>
 					</TR>
 					<TR>

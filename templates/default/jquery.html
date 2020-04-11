@@ -49,12 +49,8 @@
 	{/if}
 
 	$(function() {
-		{$first = null}
 		{if isset($error) && is_array($error)}
 			{foreach $error as $k => $v}
-				{if !isset($first)}
-					{$first = $k}
-				{/if}
 				$('[name="{$k}"]')
 					.attr('title', "{$v}")
 					.addClass('lms-ui-error');
@@ -62,9 +58,6 @@
 		{/if}
 		{if isset($warning) && is_array($warning)}
 			{foreach $warning as $k => $v}
-				{if !isset($first)}
-					{$first = $k}
-				{/if}
 				var name = "{$k|replace:'"':'\"'}";
 				$('[name="' + name + '"]')
 					.attr('title', "{$v}")
@@ -88,13 +81,25 @@
 <script>
 
 	$(function() {
-		{if isset($first)}
-			setTimeout(function() {
-				$('[name="{$first|replace:'"':'\"'}"]').get(0).scrollIntoView({
+		var elems = $('.lms-ui-error:visible');
+		if (elems.length) {
+			// scroll view into first erroneous form element
+			setTimeout(function () {
+				elems.first().get(0).scrollIntoView({
 					block: "center"
 				});
 			}, 0);
-		{/if}
+		} else {
+			elems = $('.lms-ui-warning:visible');
+			if (elems.length) {
+				// scroll view into first warning form element
+				setTimeout(function () {
+					elems.first().get(0).scrollIntoView({
+						block: "center"
+					});
+				}, 0);
+			}
+		}
 	});
 
 </script>

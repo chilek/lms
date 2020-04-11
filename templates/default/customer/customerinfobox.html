@@ -30,7 +30,7 @@
 				<div class="bold">
 					<IMG SRC="img/customer.gif" ALT=""{if $customerpanel} class="lms-ui-sortable-handle"{/if}>
 					{if $customerpanel}{trans("Owner:")}{/if}
-					{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}{if $customerinfo.extid} / {$customerinfo.extid}{/if}){if $customerinfo.deleted} <span class="red">({trans("deleted customer")})</span>{/if}
+					{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}{if $customerinfo.extid} / {$customerinfo.extid}{/if}){if $customerinfo.deleted} <span class="lms-ui-alert">({trans("deleted customer")})</span>{/if}
 				</div>
 				<div>
 					{if $customerpanel}<a href="?m=customerinfo&amp;id={$customerinfo.id}">{trans('Navigate to the customer')} &raquo;</a>{/if}&nbsp;
@@ -272,7 +272,7 @@
 										{if $customerinfo.cutoffstop > $smarty.now}
 										<TR>
 											<TD colspan="2">
-												<span class="lms-ui-error">
+												<span class="lms-ui-alert">
 												{if $customerinfo.cutoffstop == intval(pow(2, 31) - 1)}
 												{trans("Cutoff suspended indefinitely")}
 												{else}
@@ -402,7 +402,7 @@
 						</TD>
 						<TD WIDTH="98%">
 							{if $customerinfo.balance < 0}
-							<span class="lms-ui-error">{moneyf($customerinfo.balance)}</span>
+							<span class="lms-ui-alert">{moneyf($customerinfo.balance)}</span>
 							{if $instantpayment}
 							<FORM name="instantpayment" method="POST" action="?m=balanceadd&id={$customerinfo.id}&receipt=1">
 								<script>
