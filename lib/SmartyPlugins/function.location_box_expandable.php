@@ -60,11 +60,10 @@ function smarty_function_location_box_expandable($params, $template)
     $location_str = $params['data']['location_address_type'] == BILLING_ADDRESS ? ''
         : (empty($params['data']['location_name']) ? '' : $params['data']['location_name'] . ', ');
 
-    if ($params['data']['teryt']) {
-        $params['data']['location'] = trans('$a (TERRIT)', $params['data']['location']);
-    }
-
-    $location_str .= $params['data']['location'] ? $params['data']['location'] : '...';
+    $location_str .= $params['data']['location']
+        ? ($params['data']['teryt']
+            ? trans('$a (TERRIT)', $params['data']['location']) : $params['data']['location'])
+        : '...';
 
     $title = '';
 

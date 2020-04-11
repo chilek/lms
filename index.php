@@ -93,7 +93,7 @@ try {
     $DB = LMSDB::getInstance();
 } catch (Exception $ex) {
     trigger_error($ex->getMessage(), E_USER_WARNING);
-    // can't working without database
+    // can't work without database
     die("Fatal error: cannot connect to database!<BR>");
 }
 
@@ -214,6 +214,7 @@ if (!$api) {
 }
 
 $error = null; // initialize error variable needed for (almost) all modules
+$warning = null; // initialize warning variable needed for (almost) all modules
 
 // Load menu
 
@@ -369,6 +370,18 @@ if ($AUTH->islogged) {
                 // restore selected persistent filter info
                 if (isset($filter['persistent_filter'])) {
                     $SMARTY->assign('persistent_filter', $filter['persistent_filter']);
+                }
+
+                // preset error and warning smarty variable
+                // they can be easily filled later in modules
+                $SMARTY->assignByRef('error', $error);
+                $SMARTY->assignByRef('warning', $warning);
+
+                // preload warnings from submitted form to $warning variable
+                if (isset($_GET['warning'])) {
+                    $warnings = $_GET['warning'];
+                } elseif (isset($_POST['warning'])) {
+                    $warnings = $_POST['warning'];
                 }
             } else {
                 // persistent filter ajax management

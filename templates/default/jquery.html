@@ -24,8 +24,8 @@
 <script type="text/javascript" src="js/jquery-simple-combobox/js/jquery.scombobox.min.js"></script>
 *}
 <script src="js/sprintf.min.js"></script>
-<script type="text/javascript">
-<!--
+<script>
+
 	var lmsSettings = {
 		language: '{$language}',
 		settingsTimeout: {intval(ConfigHelper::getConfig('phpui.settings_timeout', 28800))},
@@ -48,22 +48,32 @@
 	});
 	{/if}
 
-	$( function() {
-		var lmsErrors = {
-			{if isset($error) && is_array($error)}
-			{foreach $error as $k=>$v}
-				"{$k|replace:'"':'\"'}":"{$v|replace:'"':'\"'}",
+	$(function() {
+		{$first = null}
+		{if isset($error) && is_array($error)}
+			{foreach $error as $k => $v}
+				{if !isset($first)}
+					{$first = $k}
+				{/if}
+				$('[name="{$k}"]')
+					.attr('title', "{$v}")
+					.addClass('lms-ui-error');
 			{/foreach}
-			{/if}
-		};
-
-		$.each( lmsErrors, function( index, value ) {
-			$("[name='" + index + "']")
-				.attr('title', value)
-				.addClass('lms-ui-error');
-		});
+		{/if}
+		{if isset($warning) && is_array($warning)}
+			{foreach $warning as $k => $v}
+				{if !isset($first)}
+					{$first = $k}
+				{/if}
+				var name = "{$k|replace:'"':'\"'}";
+				$('[name="' + name + '"]')
+					.attr('title', "{$v}")
+					.addClass('lms-ui-warning')
+					.after('<input type="hidden" name="warning[' + name.replace(/[\[\]]/g, '-') + ']" value="1" />');
+			{/foreach}
+		{/if}
 	});
-//-->
+
 </script>
 <script type="text/javascript" src="js/jquery.js"></script>
 <script type="text/javascript" src="js/lms-ui-deferred-submit.js"></script>
@@ -75,3 +85,16 @@
 <script type="text/javascript" src="js/lms-ui-datepicker.js"></script>
 <script type="text/javascript" src="js/lms-ui-combobox.js"></script>
 <script type="text/javascript" src="js/lms-ui-fileupload.js"></script>
+<script>
+
+	$(function() {
+		{if isset($first)}
+			setTimeout(function() {
+				$('[name="{$first|replace:'"':'\"'}"]').get(0).scrollIntoView({
+					block: "center"
+				});
+			}, 0);
+		{/if}
+	});
+
+</script>

@@ -201,10 +201,13 @@ if (isset($_POST['customeradd'])) {
         $properties['validator']($customeradd, $contacts, $error);
     }
 
-    if (!empty($customeradd['emails'])) {
-        foreach ($customeradd['emails'] as $idx => $val) {
-            if ($val['type'] & (CONTACT_INVOICES | CONTACT_DISABLED)) {
-                $emaileinvoice = true;
+    $customer_invoice_notice_consent_check = ConfigHelper::getConfig('phpui.customer_invoice_notice_consent_check', 'error');
+    if ($customer_invoice_notice_consent_check != 'none') {
+        if (!empty($customeradd['emails'])) {
+            foreach ($customeradd['emails'] as $idx => $val) {
+                if ($val['type'] & (CONTACT_INVOICES | CONTACT_DISABLED)) {
+                    $emaileinvoice = true;
+                }
             }
         }
     }
@@ -230,7 +233,14 @@ if (isset($_POST['customeradd'])) {
     }
 
     if (isset($customeradd['consents'][CCONSENT_INVOICENOTICE]) && !$emaileinvoice) {
-        $error['chkconsent' . CCONSENT_INVOICENOTICE] = trans('If the customer wants to receive an electronic invoice must be checked e-mail address to which to send e-invoices');
+        if ($customer_invoice_notice_consent_check == 'error') {
+            $error['chkconsent' . CCONSENT_INVOICENOTICE] =
+                trans('If the customer wants to receive an electronic invoice must be checked e-mail address to which to send e-invoices');
+        } elseif ($customer_invoice_notice_consent_check == 'warning'
+            && !isset($warnings['customeradd-consents--' . CCONSENT_INVOICENOTICE . '-'])) {
+            $warning['customeradd[consents][' . CCONSENT_INVOICENOTICE . ']'] =
+                trans('If the customer wants to receive an electronic invoice must be checked e-mail address to which to send e-invoices');
+        }
     }
 
     if (isset($customeradd['cutoffstopindefinitely'])) {
@@ -362,7 +372,5 @@ $SMARTY->assign('customeradd', $customeradd);
 if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.add_customer_group_required', false))) {
         $SMARTY->assign('groups', $DB->GetAll('SELECT id,name FROM customergroups ORDER BY id'));
 }
-$SMARTY->assign('error', $error);
-
 
 $SMARTY->display('customer/customeradd.html');

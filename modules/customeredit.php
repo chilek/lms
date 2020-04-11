@@ -177,16 +177,26 @@ if (!isset($_POST['xjxfun'])) {
                 $properties['validator']($customerdata, $contacts, $error);
             }
 
-            if ($customerdata['emails']) {
-                foreach ($customerdata['emails'] as $idx => $val) {
-                    if ($val['type'] & (CONTACT_INVOICES | CONTACT_DISABLED)) {
-                        $emaileinvoice = true;
+            $customer_invoice_notice_consent_check = ConfigHelper::getConfig('phpui.customer_invoice_notice_consent_check', 'error');
+            if ($customer_invoice_notice_consent_check != 'none') {
+                if ($customerdata['emails']) {
+                    foreach ($customerdata['emails'] as $idx => $val) {
+                        if ($val['type'] & (CONTACT_INVOICES | CONTACT_DISABLED)) {
+                            $emaileinvoice = true;
+                        }
                     }
                 }
             }
 
             if (isset($customerdata['consents'][CCONSENT_INVOICENOTICE]) && !$emaileinvoice) {
-                $error['chkconsent' . CCONSENT_INVOICENOTICE] = trans('If the customer wants to receive an electronic invoice must be checked e-mail address to which to send e-invoices');
+                if ($customer_invoice_notice_consent_check == 'error') {
+                    $error['chkconsent' . CCONSENT_INVOICENOTICE] =
+                        trans('If the customer wants to receive an electronic invoice must be checked e-mail address to which to send e-invoices');
+                } elseif ($customer_invoice_notice_consent_check == 'warning'
+                    && !isset($warnings['customerdata-consents--' . CCONSENT_INVOICENOTICE . '-'])) {
+                    $warning['customerdata[consents][' . CCONSENT_INVOICENOTICE . ']'] =
+                        trans('If the customer wants to receive an electronic invoice must be checked e-mail address to which to send e-invoices');
+                }
             }
 
             if (isset($customerdata['cutoffstopindefinitely'])) {
@@ -214,7 +224,7 @@ if (!isset($_POST['xjxfun'])) {
             $customerdata = $hook_data['customerdata'];
             $error = $hook_data['error'];
 
-            if (!$error) {
+            if (!$error && !$warning) {
                 $customerdata['cutoffstop'] = $cutoffstop;
 
                 if (!isset($customerdata['consents'])) {
@@ -298,8 +308,6 @@ if (!isset($_POST['xjxfun'])) {
                 $customerinfo['ssnwarning'] = empty($ssnwarning) ? 0 : 1;
                 $customerinfo['ssnexistencewarning'] = empty($ssnexistencewarning) ? 0 : 1;
                 $customerinfo['icnwarning'] = empty($icnwarning) ? 0 : 1;
-
-                $SMARTY->assign('error', $error);
             }
         } else {
             $customerinfo = $LMS->GetCustomer($_GET['id']);

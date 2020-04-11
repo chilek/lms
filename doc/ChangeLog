@@ -293,6 +293,11 @@ version 25-git (????-??-??):
     checked by default during add customer form open ('data_processing' is default) [chilan]
   - enhancement: new customer consents: userpanel document form approvals using SMS or scan [chilan]
   - enhancement: customer billing and post addreses can be copied to location address [chilan]
+  - enhancement: new 'phpui.customer_invoice_notice_consent_check' configuration variable controls
+    if customer with invoice notice consent checked should have marked one of his email contacts
+    with 'invoices' flag [chilan]
+  - enhancement/devel: new easier warning system - warning global backend variable has
+    the similar role to so far existing error variable [chilan]
 
 version 24.0 (2019-05-16):
 

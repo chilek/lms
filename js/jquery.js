@@ -238,7 +238,7 @@ function init_datepickers(selector) {
 				}
 			});
 		}
-		$(this).wrap('<div class="lms-ui-date-container">');
+		$(this).wrap('<div class="lms-ui-date-container"/>');
 		$(this).datepicker(options).attr("autocomplete", 'off')
 		if (unix) {
 			//$(this).off('change').removeAttr('onchange');
@@ -1369,6 +1369,8 @@ $(function() {
 				var textarea = $(ed.settings.selector);
 				if (textarea.hasClass('lms-ui-error') || textarea.hasClass('alert')) {
 					textarea.siblings('.mce-tinymce').addClass('lms-ui-error');
+				} else if (textarea.hasClass('lms-ui-warning')) {
+					textarea.siblings('.mce-tinymce').addClass('lms-ui-warning');
 				}
 				if (elementsToInitiate > 0) {
 					elementsToInitiate--;

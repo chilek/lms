@@ -455,17 +455,21 @@ INPUT {
 	}
 	&[type="checkbox"] {
 		&.alert,
-		&.lms-ui-error,
+		&.lms-ui-error {
+			outline: @error-outline;
+		}
 		&.lms-ui-warning {
-			outline: 2px solid #FF6060;
+			outline: @warning-outline;
 		}
 	}
 	&[type="radio"] {
 		&.alert,
 		&.lms-ui-error,
-		&.lms-ui-warning,
 		&:invalid {
-			outline: 2px solid #FF6060;
+			outline: @error-outline;
+		}
+		&.lms-ui-warning {
+			outline: @warning-outline;
 		}
 	}
 	&.hiddenbtn {
@@ -748,10 +752,18 @@ div.lms-ui-multiselectlayer {
 .red		{ color: #FF0000; }
 .brown		{ color: #A52A2A; }
 .white		{ color: #FFFFFF; }
-.mce-tinymce.mce-container.mce-panel.lms-ui-error {
-	border-width: 2px !important;
-	border-color: @error-background !important;
+
+.mce-tinymce.mce-container.mce-panel {
+	.lms-ui-error {
+		border-width: 2px !important;
+		border-color: @error-background !important;
+	}
+	.lms-ui-warning {
+		border-width: 2px !important;
+		border-color: @warning-background !important;
+	}
 }
+
 .alert,
 .lms-ui-error,
 input:invalid {
@@ -3176,8 +3188,13 @@ table.dataTable {
 }
 
 .lms-ui-address-select.alert,
-.lms-ui-address-select.lms-ui-error {
-	background-color: @error-background !important;
+.lms-ui-address-select {
+	.lms-ui-error {
+		background-color: @error-background !important;
+	}
+	.lms-ui-warning {
+		background-color: @warning-background !important;
+	}
 }
 
 .lms-ui-address-select {
@@ -3473,6 +3490,10 @@ table.dataTable {
 		color: @error-text;
 		background-color: @error-background;
 	}
+	&.lms-ui-warning .chosen-single {
+		color: @warning-text;
+		background-color: @warning-background;
+	}
 	/*
 	.chosen-search input[type=text] {
 		padding: 2px 20px 2px 5px;
@@ -3519,6 +3540,10 @@ table.dataTable {
 	&.lms-ui-error .chosen-choices {
 		color: @error-text;
 		background-color: @error-background;
+	}
+	&.lms-ui-warning .chosen-choices {
+		color: @warning-text;
+		background-color: @warning-background;
 	}
 	.chosen-drop .result-selected {
 		color: @blend;
