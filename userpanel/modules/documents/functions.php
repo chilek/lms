@@ -52,10 +52,12 @@ function module_main()
         && !empty($sms_onetime_password_body);
     if (!$sms_active) {
         $sms_service = ConfigHelper::getConfig('sms.service', '', true);
-        $sms_active = !empty($sms_service);
+        $sms_userpanel_approval = $LMS->checkCustomerConsent($SESSION->id, CCONSENT_USERPANEL_SMS);
+        $sms_active = !empty($sms_service) && !empty($sms_userpanel_approval);
     }
     $sms_active = $sms_active && isset($sms_recipients);
-    $SMARTY->assign('sms_active', $sms_active);
+
+    $scan_active = $LMS->checkCustomerConsent($SESSION->id, CCONSENT_USERPANEL_SCAN);
 
     if (isset($_POST['documentid'])) {
         $documentid = intval($_POST['documentid']);
@@ -105,7 +107,7 @@ function module_main()
                     }
                 }
                 die;
-            } else {
+            } elseif ($scan_active) {
                 $files = array();
                 $error = null;
 
@@ -330,6 +332,8 @@ function module_main()
 
     $SMARTY->assign('documents', $documents);
     $SMARTY->assign('documentid', $documentid);
+    $SMARTY->assign('sms_active', $sms_active);
+    $SMARTY->assign('scan_active', $scan_active);
     $SMARTY->assign('op', $op);
     $SMARTY->display('module:documents.html');
 }

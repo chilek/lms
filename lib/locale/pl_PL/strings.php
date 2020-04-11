@@ -4692,3 +4692,6 @@ $_LANG['Wait for customer action till:'] = 'Oczekuj na działanie klienta do:';
 $_LANG['Enter date in YYYY/MM/DD format we wait for customer action till (optional)'] = 'Wprowadź datę w formacie RRRR/MM/DD, do kiedy będziemy oczekiwać na działanie klienta (opcjonalnie)';
 $_LANG['Warning! Customer submitted signed document scan. Consider to review it and then possibly confirm.'] = 'Uwaga! Klient przesłał skan podpisanego dokumentu. Rozważ ich przejrzenie i ewentualnie zatwierdzenie.';
 $_LANG['Warning! Warning! Customer action time limit is expired is expired!'] = 'Uwaga! Upłynął termin przeznaczony na działanie klienta!';
+
+$_LANG['document form approval in customer panel using SMS authorization'] = 'zatwierdzanie przez panel abonencki formy dokumentowej autoryzowanej przez SMS';
+$_LANG['document form approval in customer panel using scans'] = 'zatwierdzanie przez panel abonencki formy dokumentowej w postaci skanów';

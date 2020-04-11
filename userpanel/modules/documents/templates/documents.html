@@ -25,7 +25,7 @@
 	<tr>
 		<td>
 
-{if $op == 'authcode'}
+{if $op == 'authcode' && $sms_active}
 	{box title="Authorization"}
 		<form id="authcode-dialog" method="post" action="?m=documents&smsauth=1&check=1" name="authcode">
 		<table width="100%" cellpadding="3" class="light">
@@ -113,7 +113,7 @@
 	{/box}
 {/if}
 
-{if $op == 'scans'}
+{if $op == 'scans' && $scan_active}
 	{box title="Document submission"}
 		<form id="newscan-dialog" method="post" action="?m=documents&op=scans" name="newscan" enctype="multipart/form-data">
 		<table width="100%" cellpadding="3" class="light">
@@ -240,9 +240,11 @@
 				{if $docattach.type == 1}{trans("View")}{else}{$docattach.filename}{/if} {img src="view.gif" alt="View"}
 			</a>
 			{if !$doc.closed && $docattach.type == 1 && $doc.confirmdate != -1}
-				<a href="?m=documents&op=scans&documentid={$doc.id}">
-					{trans("Submit scan")} {img src="attach.gif"}
-				</a>
+				{if $scan_active}
+					<a href="?m=documents&op=scans&documentid={$doc.id}">
+						{trans("Submit scan")} {img src="attach.gif"}
+					</a>
+				{/if}
 				{if $sms_active}
 					<a href="?m=documents&op=authcode&documentid={$doc.id}">
 						{trans("Confirm")} {img src="save.gif"}
@@ -251,14 +253,16 @@
 			{/if}
 			{if !$doc.closed && $docattach.type == 1}
 				<br>
-				<span class="awaits-scan">
-					{if $doc.confirmdate == -1}
-						{trans("awaits for operator signed document scan review")}
-					{else}
-						{trans("awaits for signed document scan submission")}
-					{/if}
-				</span>
-				<br>
+				{if $scan_active}
+					<span class="awaits-scan">
+						{if $doc.confirmdate == -1}
+							{trans("awaits for operator signed document scan review")}
+						{else}
+							{trans("awaits for signed document scan submission")}
+						{/if}
+					</span>
+					<br>
+				{/if}
 				{if $sms_active && $doc.confirmdate != -1}
 					<span class="awaits-scan">
 						{trans("awaits for your approval")}

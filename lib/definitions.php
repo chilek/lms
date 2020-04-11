@@ -88,6 +88,8 @@ define('CCONSENT_DATE', 1);
 define('CCONSENT_INVOICENOTICE', 2);
 define('CCONSENT_MAILINGNOTICE', 3);
 define('CCONSENT_EINVOICE', 4);
+define('CCONSENT_USERPANEL_SMS', 5);
+define('CCONSENT_USERPANEL_SCAN', 6);
 
 $CCONSENTS = array(
     CCONSENT_DATE => array(
@@ -108,6 +110,16 @@ $CCONSENTS = array(
     CCONSENT_MAILINGNOTICE => array(
         'label' => trans('Consent to messages delivery via e-mail or sms'),
         'name' => 'mailing_notice',
+        'type' => 'boolean',
+    ),
+    CCONSENT_USERPANEL_SMS => array(
+        'label' => trans('document form approval in customer panel using SMS authorization'),
+        'name' => 'userpanel_document_sms_approval',
+        'type' => 'boolean',
+    ),
+    CCONSENT_USERPANEL_SCAN => array(
+        'label' => trans('document form approval in customer panel using scans'),
+        'name' => 'userpanel_document_scan_approval',
         'type' => 'boolean',
     ),
 );

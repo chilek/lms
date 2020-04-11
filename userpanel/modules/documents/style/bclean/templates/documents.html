@@ -20,6 +20,7 @@
 
 </style>
 
+{if $sms_active}
 <div class="modal fade" id="authcode-dialog" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="authcode-dialog" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered" role="document">
 		<div class="modal-content">
@@ -49,7 +50,9 @@
 		</div>
 	</div>
 </div>
+{/if}
 
+{if $scan_active}
 <div class="modal fade" id="newscan-dialog" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="newscan-dialog" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered" role="document">
 		<div class="modal-content">
@@ -88,6 +91,7 @@
 		</div>
 	</div>
 </div>
+{/if}
 
 <div class="table-responsive">
 	<table class="table table-sm table-hover table-bordered table-striped table-condensed">
@@ -134,9 +138,11 @@
 											{/if}
 										</a>
 										{if !$doc.closed && $docattach.type == 1 && $doc.confirmdate != -1}
-											<a class="btn btn-primary" href="#" data-toggle="modal" data-target="#newscan-dialog" data-document-id="{$doc.id}">
-												{trans("Submit scan")}
-											</a>
+											{if $scan_active}
+												<a class="btn btn-primary" href="#" data-toggle="modal" data-target="#newscan-dialog" data-document-id="{$doc.id}">
+													{trans("Submit scan")}
+												</a>
+											{/if}
 											{if $sms_active}
 												<a class="btn btn-primary" href="#" data-toggle="modal" data-target="#authcode-dialog" data-document-id="{$doc.id}">
 													{trans("Confirm")}
@@ -147,13 +153,15 @@
 								</div>
 								{if !$doc.closed && $docattach.type == 1}
 									<div class="row">
-										<div class="awaits-scan col-md-auto alert alert-warning">
-											{if $doc.confirmdate == -1}
-												{trans("awaits for operator signed document scan review")}
-											{else}
-												{trans("awaits for signed document scan submission")}
-											{/if}
-										</div>
+										{if $scan_active}
+											<div class="awaits-scan col-md-auto alert alert-warning">
+												{if $doc.confirmdate == -1}
+													{trans("awaits for operator signed document scan review")}
+												{else}
+													{trans("awaits for signed document scan submission")}
+												{/if}
+											</div>
+										{/if}
 										{if $sms_active && $doc.confirmdate != -1}
 											<div class="awaits-scan col-md-auto alert alert-warning">
 												{trans("awaits for your approval")}

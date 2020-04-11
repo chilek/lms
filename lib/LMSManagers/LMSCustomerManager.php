@@ -2093,7 +2093,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     public function checkCustomerConsent($customerid, $consent)
     {
         return $this->db->GetOne(
-            'SELECT type FROM customercontents
+            'SELECT type FROM customerconsents
                 WHERE customerid = ? AND type = ?',
             array($customerid, $consent)
         ) == $consent;
