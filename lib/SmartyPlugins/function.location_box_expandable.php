@@ -88,11 +88,6 @@ function smarty_function_location_box_expandable($params, $template)
     }
 
     echo '<div style="padding: 3px 0; position: relative;">';
-    echo '<span class="lms-ui-button clear-location-box"><img src="img/eraser.gif" alt="">' . trans('Clear') . '</span>';
-
-    if (isset($params['data']['clear_button'])) {
-        echo '&nbsp;&nbsp;<span class="lms-ui-button delete-location-box"><img src="img/delete.gif" alt="">' . trans('Delete') . '</span>';
-    }
 
     static $usage_messages = array(
         'node_use_counter' => 'assigned to <strong>$a</strong> nodes',
@@ -100,7 +95,7 @@ function smarty_function_location_box_expandable($params, $template)
         'netnode_use_counter' => 'assigned to <strong>$a</strong> network nodes',
     );
     if (isset($params['data']['use_counter'])) {
-        echo '<div style="position: absolute; right: 0; top: 7px;">';
+        echo '<div>';
         $usages = array();
         foreach (array('node_use_counter', 'netdev_use_counter', 'netnode_use_counter') as $field_name) {
             if (!empty($params['data'][$field_name])) {
@@ -119,6 +114,11 @@ function smarty_function_location_box_expandable($params, $template)
         echo '<input type="hidden" value="' . $params['data']['location_address_type']  . '" name="' . $params['data']['prefix'] . '[location_address_type]" data-address="address_type">';
     } else {
         echo '<input type="hidden" value="' . LOCATION_ADDRESS .                          '" name="' . $params['data']['prefix'] . '[location_address_type]" data-address="address_type">';
+    }
+
+    $params['data']['buttons'] = smarty_function_button(array('icon' => 'clear', 'tip' => 'Clear', 'class' => 'clear-location-box'), $template);
+    if (isset($params['data']['clear_button'])) {
+        $params['data']['buttons'] .= smarty_function_button(array('icon' => 'trash', 'tip' => 'Delete', 'class' => 'delete-location-box'), $template);
     }
 
     smarty_function_location_box($params['data'], $template);

@@ -88,6 +88,9 @@ function smarty_function_location_box($params, $template)
         echo '<input type="hidden" value="' . $params['address_id']  . '" name="' . $input_name_address_id . '">';
     }
 
+    echo '<div class="lms-ui-address-box-container">';
+    echo '<div class="lms-ui-address-box-properties">';
+
     echo '<table>';
 
     echo '<tr' . (isset($params['hide_name']) ? ' style="display: none;"' : '') . '>
@@ -229,6 +232,15 @@ function smarty_function_location_box($params, $template)
           </tr>';
 
     echo '</table>';
+
+    echo '</div>';
+
+    echo '<div class="lms-ui-address-box-buttons">';
+    if (isset($params['buttons'])) {
+        echo $params['buttons'];
+    }
+    echo '</div>';
+    echo '</div>';
 
     echo '</fieldset>';
 

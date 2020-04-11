@@ -3994,9 +3994,20 @@ table.lms-ui-mac-address-selection {
 	}
 }
 
-.lms-ui-address-box [readonly] {
-	border: none;
-	background-color: transparent;
+.lms-ui-address-box {
+	display: inline;
+	[readonly] {
+		border: none;
+		background-color: transparent;
+	}
+	.lms-ui-address-box-container {
+		display: flex;
+		align-items: center;
+		.lms-ui-address-box-buttons {
+			display: flex;
+			flex-direction: column;
+		}
+	}
 }
 
 .lms-ui-message-quote {
