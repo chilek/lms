@@ -238,7 +238,8 @@ function init_datepickers(selector) {
 				}
 			});
 		}
-		$(this).datepicker(options).attr("autocomplete", 'off');
+		$(this).wrap('<div class="lms-ui-date-container">');
+		$(this).datepicker(options).attr("autocomplete", 'off')
 		if (unix) {
 			//$(this).off('change').removeAttr('onchange');
 			if (dt) {
