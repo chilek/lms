@@ -287,30 +287,37 @@
 							</TR>
 							<TR>
 								<TD WIDTH="1%" style="vertical-align: top">
-									<IMG SRC="img/options.gif" ALT="">
+									<i class="lms-ui-icon-consent"></i>
 								</TD>
 								<TD WIDTH="99%">
 									<TABLE cellpadding="2">
-									{block name="customerinfobox-options"}
-										{foreach $_CCONSENTS as $type => $consent}
 										<TR>
-											<TD>
-												{$consent.label}
+											<TD class="bold">
+												{trans("Consents:")}
 											</TD>
 											<TD>
-												{if isset($customerinfo.consents[$type])}
-													{if $consent.type == 'date'}
-														{$customerinfo.consents[$type]['cdate']|date_format:"Y/m/d"}
-													{else}
-														{trans("yes")}
-													{/if}
-												{else}
-													{trans("no")}
-												{/if}
 											</TD>
 										</TR>
-										{/foreach}
-									{/block}
+										{block name="customerinfobox-options"}
+											{foreach $_CCONSENTS as $type => $consent}
+												<TR>
+													<TD>
+														{$consent.label}
+													</TD>
+													<TD>
+														{if isset($customerinfo.consents[$type])}
+															{if $consent.type == 'date'}
+																{$customerinfo.consents[$type]['cdate']|date_format:"Y/m/d"}
+															{else}
+																{trans("yes")}
+															{/if}
+														{else}
+															{trans("no")}
+														{/if}
+													</TD>
+												</TR>
+											{/foreach}
+										{/block}
 									</TABLE>
 								</TD>
 							</TR>

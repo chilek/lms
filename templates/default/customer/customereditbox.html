@@ -373,24 +373,31 @@
 					</TR>
 					<TR>
 						<TD class="valign-top">
-							<IMG src="img/options.gif" alt="">
+							<i class="lms-ui-icon-consent"></i>
 						</TD>
 						<TD>
 							<TABLE cellpadding="0">
-							{block name="customereditbox-options"}
-								{foreach $_CCONSENTS as $type => $consent}
 								<TR>
-									<TD>
-										<label for="chkconsent{$type}">{$consent.label}</label>
+									<TD class="bold">
+										{trans("Consents:")}
 									</TD>
 									<TD>
-										<INPUT type="checkbox" name="customerdata[consents][{$type}]" id="chkconsent{$type}"
-											   value="{$smarty.now}"{if isset($customerinfo.consents[$type])} checked{/if}
-												{tip trigger="chkconsent"|cat:$type}>
 									</TD>
 								</TR>
-								{/foreach}
-							{/block}
+								{block name="customereditbox-options"}
+									{foreach $_CCONSENTS as $type => $consent}
+										<TR>
+											<TD>
+												<label for="chkconsent{$type}">{$consent.label}</label>
+											</TD>
+											<TD>
+												<INPUT type="checkbox" name="customerdata[consents][{$type}]" id="chkconsent{$type}"
+													   value="{$smarty.now}"{if isset($customerinfo.consents[$type])} checked{/if}
+														{tip trigger="chkconsent"|cat:$type}>
+											</TD>
+										</TR>
+									{/foreach}
+								{/block}
 							</TABLE>
 						</TD>
 					</TR>
