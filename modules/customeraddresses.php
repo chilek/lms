@@ -68,9 +68,9 @@ switch (strtolower($_GET['action'])) {
             $params['data']['show'] = 1;
         }
 
-        if (!empty($_GET['delete_button'])) {
-            $params['data']['delete_button'] = 1;
-        }
+        $params['data']['delete_button'] = isset($_GET['delete_button']) ? 1 : 0;
+        $params['data']['billing_address_button'] = isset($_GET['billing_address_button']) ? 1 : 0;
+        $params['data']['post_address_button'] = isset($_GET['post_address_button']) ? 1 : 0;
 
         if (!empty($_GET['default_type'])) {
             $params['data']['default_type'] = 1;

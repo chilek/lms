@@ -2440,6 +2440,12 @@ button,a,div {
 		}
 	}
 
+	&.lms-ui-button-home {
+		& > i {
+			.lms-ui-icon-home;
+		}
+	}
+
 	&.lms-ui-button-mail,
 	&.lms-ui-button-send {
 		& > i {
@@ -4006,6 +4012,7 @@ table.lms-ui-mac-address-selection {
 		.lms-ui-address-box-buttons {
 			display: flex;
 			flex-direction: column;
+			margin-left: 0.5em;
 			button:not(:first-child) {
 				margin-top: 0.2em;
 			}

@@ -59,7 +59,8 @@ $(function() {
         }
 
         $.ajax({
-            url: "?m=customeraddresses&action=getlocationboxhtml&prefix=" + $(this).attr('data-prefix') + "[addresses][" + counter + "]&default_type=1&delete_button=1&show=1",
+            url: "?m=customeraddresses&action=getlocationboxhtml&prefix=" + $(this).attr('data-prefix') +
+                "[addresses][" + counter + "]&default_type=1&delete_button=1&billing_address_button=1&post_address_button=1&show=1",
         }).done( function(data) {
             insertRow( _buttonrow, data );
         });
@@ -67,26 +68,16 @@ $(function() {
 
 	var timer = null;
 
-    /*!
-     * \brief Update address string name on box input change.
-     */
-    $('body').on('input', '.location-box-expandable input', function(){
-
-        var box = getLocationBox(this);
-
-		var address_type = box.find('[data-address="address_type"]').val();
-		var location_name = box.find('[data-address="location-name"]').val();
-		var teryt = box.find('[data-address="teryt-checkbox"]').prop('checked');
-		var city   = box.find('[data-address="city"]').val();
-		var cityid = teryt ? box.find('[data-address="city-hidden"]').val() : null;
+	function updateLocationString(box) {
+        var address_type = box.find('[data-address="address_type"]').val();
+        var location_name = box.find('[data-address="location-name"]').val();
+        var teryt = box.find('[data-address="teryt-checkbox"]').prop('checked');
+        var city   = box.find('[data-address="city"]').val();
         var street = box.find('[data-address="street"]').val();
-		var streetid = teryt ? box.find('[data-address="street-hidden"]').val() : null;
-		var house  = box.find('[data-address="house"]').val();
+        var house  = box.find('[data-address="house"]').val();
         var flat   = box.find('[data-address="flat"]').val();
         var zip    = box.find('[data-address="zip"]').val();
         var postoffice = box.find('[data-address="postoffice"]').val();
-		var country = box.find('[data-address="country"] option:selected').text();
-		var countryid = box.find('[data-address="country"]').val();
 
         var location = location_str({
             city: city,
@@ -101,6 +92,26 @@ $(function() {
 
         box.find('[data-address="location"]').val( location );
         box.find('.address-full').text( location );
+    }
+
+    /*!
+     * \brief Update address string name on box input change.
+     */
+    $('body').on('input', '.location-box-expandable input', function(){
+
+        var box = getLocationBox(this);
+
+        updateLocationString(box);
+
+        var teryt = box.find('[data-address="teryt-checkbox"]').prop('checked');
+		var city   = box.find('[data-address="city"]').val();
+		var cityid = teryt ? box.find('[data-address="city-hidden"]').val() : null;
+        var street = box.find('[data-address="street"]').val();
+		var streetid = teryt ? box.find('[data-address="street-hidden"]').val() : null;
+		var house  = box.find('[data-address="house"]').val();
+        var zip    = box.find('[data-address="zip"]').val();
+		var country = box.find('[data-address="country"] option:selected').text();
+		var countryid = box.find('[data-address="country"]').val();
 
         var elem = this;
 
@@ -370,6 +381,50 @@ $(function() {
 
             box.find("input[data-address='address_type']").val(3);            // update address type
                                                                               // 3 = DEFAULT_LOCATION_ADDRESS
+        }
+    });
+
+    function copyAddress(from, to) {
+        from.find('[data-address]').each(function(index, elem) {
+            var property = $(elem).attr('data-address');
+            if (['location-name', 'location', 'state', 'state-hidden', 'city', 'city-hidden', 'street', 'street-hidden', 'house', 'flat', 'zip', 'postoffice', 'country'].indexOf(property) != -1) {
+                to.find('[data-address="' + property + '"]').val($(elem).val());
+            }
+            to.find('[data-address="teryt-checkbox"]').prop('checked',
+                from.find('[data-address="teryt-checkbox"]').prop('checked')).trigger('change');
+        });
+
+        updateLocationString(to);
+    }
+
+    $('body').on('click', '.copy-address', function() {
+        var from = getLocationBox($('[data-address="address_type"][value="' + $(this).attr('data-type') + '"]'));
+        var to = getLocationBox(this);
+        console.log('from', from);
+        console.log('to', to);
+
+        var node_use_counter = parseInt(to.attr('data-node-use-counter'));
+        var netdev_use_counter = parseInt(to.attr('data-netdev-use-counter'));
+        var netnode_use_counter = parseInt(to.attr('data-netnode-use-counter'));
+        if (node_use_counter || netdev_use_counter || netnode_use_counter) {
+            var msg = $t('Address is used by the following resources:');
+            msg += '<br><br><ul>';
+            if (node_use_counter) {
+                msg += '<li>' + $t('assigned to <strong>$a</strong> nodes', node_use_counter) + '</li>';
+            }
+            if (netdev_use_counter) {
+                msg += '<li>' + $t('assigned to <strong>$a</strong> network devices', netdev_use_counter) + '</li>';
+            }
+            if (netnode_use_counter) {
+                msg += '<li>' + $t('assigned to <strong>$a</strong> network nodes', netnode_use_counter) + '</li>';
+            }
+            msg += '</ul><br>';
+            msg += $t('Do you confirm?');
+            confirmDialog(msg, this).done(function () {
+                copyAddress(from, to);
+            });
+        } else {
+            copyAddress(from, to);
         }
     });
 

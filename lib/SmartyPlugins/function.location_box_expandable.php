@@ -128,6 +128,12 @@ function smarty_function_location_box_expandable($params, $template)
     if (isset($params['data']['delete_button'])) {
         $params['data']['buttons'] .= smarty_function_button(array('icon' => 'trash', 'tip' => 'Delete', 'class' => 'delete-location-box'), $template);
     }
+    if (isset($params['data']['billing_address_button'])) {
+        $params['data']['buttons'] .= smarty_function_button(array('icon' => 'home', 'tip' => 'Copy from billing address', 'class' => 'copy-address', 'data_type' => BILLING_ADDRESS), $template);
+    }
+    if (isset($params['data']['post_address_button'])) {
+        $params['data']['buttons'] .= smarty_function_button(array('icon' => 'mail', 'tip' => 'Copy from post address', 'class' => 'copy-address', 'data_type' => POSTAL_ADDRESS), $template);
+    }
 
     smarty_function_location_box($params['data'], $template);
 

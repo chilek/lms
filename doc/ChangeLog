@@ -292,6 +292,7 @@ version 25-git (????-??-??):
   - improvement: 'phpui.default_customer_consents' specified which customer consents are
     checked by default during add customer form open ('data_processing' is default) [chilan]
   - enhancement: new customer consents: userpanel document form approvals using SMS or scan [chilan]
+  - enhancement: customer billing and post addreses can be copied to location address [chilan]
 
 version 24.0 (2019-05-16):
 
