@@ -65,7 +65,8 @@
 							<label for="customeradd[lastname]" class="nobr"><strong>{trans("Name/Surname:")}</strong></label>
 						</td>
 						<td>
-							<INPUT type="text" name="customeradd[lastname]" value="{$customeradd.lastname}" required {tip text="Enter customer last name or company name" trigger="lastname" bold=1}>
+							<INPUT type="text" name="customeradd[lastname]" value="{$customeradd.lastname}" required
+									{tip class="lms-ui-autogrow" text="Enter customer last name or company name" trigger="lastname" bold=1}>
 						</td>
 					</tr>
 					<tr>
@@ -73,7 +74,8 @@
 							<label for="customeradd[name]" class="nobr"><strong>{trans("First name:")}</strong>
 						</td>
 						<td>
-							<INPUT type="text" name="customeradd[name]" value="{$customeradd.name}" {tip text="Enter customer name" trigger="name" bold=1}></label>
+							<INPUT type="text" name="customeradd[name]" value="{$customeradd.name}"
+									{tip class="lms-ui-autogrow" text="Enter customer name" trigger="name" bold=1}></label>
 						</td>
 					</tr>
 				</table>
