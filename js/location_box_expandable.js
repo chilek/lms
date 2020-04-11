@@ -400,8 +400,6 @@ $(function() {
     $('body').on('click', '.copy-address', function() {
         var from = getLocationBox($('[data-address="address_type"][value="' + $(this).attr('data-type') + '"]'));
         var to = getLocationBox(this);
-        console.log('from', from);
-        console.log('to', to);
 
         var node_use_counter = parseInt(to.attr('data-node-use-counter'));
         var netdev_use_counter = parseInt(to.attr('data-netdev-use-counter'));
