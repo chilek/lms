@@ -68,8 +68,8 @@ switch (strtolower($_GET['action'])) {
             $params['data']['show'] = 1;
         }
 
-        if (!empty($_GET['clear_button'])) {
-            $params['data']['clear_button'] = 1;
+        if (!empty($_GET['delete_button'])) {
+            $params['data']['delete_button'] = 1;
         }
 
         if (!empty($_GET['default_type'])) {

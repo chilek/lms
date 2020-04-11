@@ -59,7 +59,7 @@ $(function() {
         }
 
         $.ajax({
-            url: "?m=customeraddresses&action=getlocationboxhtml&prefix=" + $(this).attr('data-prefix') + "[addresses][" + counter + "]&default_type=1&clear_button=1&show=1",
+            url: "?m=customeraddresses&action=getlocationboxhtml&prefix=" + $(this).attr('data-prefix') + "[addresses][" + counter + "]&default_type=1&delete_button=1&show=1",
         }).done( function(data) {
             insertRow( _buttonrow, data );
         });

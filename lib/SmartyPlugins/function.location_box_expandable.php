@@ -125,7 +125,7 @@ function smarty_function_location_box_expandable($params, $template)
     }
 
     $params['data']['buttons'] = smarty_function_button(array('icon' => 'clear', 'tip' => 'Clear', 'class' => 'clear-location-box'), $template);
-    if (isset($params['data']['clear_button'])) {
+    if (isset($params['data']['delete_button'])) {
         $params['data']['buttons'] .= smarty_function_button(array('icon' => 'trash', 'tip' => 'Delete', 'class' => 'delete-location-box'), $template);
     }
 
