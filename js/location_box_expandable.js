@@ -49,7 +49,7 @@ $(function() {
     /*!
      * \brief Add new address box to table.
      */
-    $('.locbox-addnew').click( function() {
+    $('.lms-ui-location-add-button').click( function() {
         var _buttonrow = $(this).closest('tr');
 
         if ( counter == -1 ) {

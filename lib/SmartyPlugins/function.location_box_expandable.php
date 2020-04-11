@@ -38,6 +38,14 @@ function smarty_function_location_box_expandable($params, $template)
         }
     }
 
+    if (!function_exists('smarty_function_button')) {
+        foreach ($template->getPluginsDir() as $v) {
+            if (file_exists($v . 'function.button.php')) {
+                require_once $v . 'function.button.php';
+            }
+        }
+    }
+
     // set default prefix
     if (empty($params['data']['prefix'])) {
         $params['data']['prefix'] = 'address';

@@ -25,7 +25,7 @@
  *  $Id$
  */
 
-function smarty_function_button(array $params, Smarty_Internal_Template $template)
+function smarty_function_button(array $params, $template)
 {
     // optional - we want buttons without icon
     $icon = isset($params['icon']) ? $params['icon'] : null;
@@ -57,6 +57,13 @@ function smarty_function_button(array $params, Smarty_Internal_Template $templat
     // optional - form id
     $form = isset($params['form']) ? $params['form'] : null;
 
+    $data_attributes = '';
+    foreach ($params as $name => $value) {
+        if (strpos($name, 'data_') === 0) {
+            $data_attributes .= ' ' . str_replace('_', '-', $name) . '="' . $value . '"';
+        }
+    }
+
     return '<' . ($type == 'link' || $type == 'link-button' ? 'a' : 'button type="' . $type . '"') . ($href ? ' href="' . $href . '"' : '')
             . ' class="' . ($type == 'link' ? '' : ($type == 'link-button' ? 'lms-ui-link-button ' : '') . 'lms-ui-button')
             . ($icon && !$custom_icon ? ' lms-ui-button-' . $icon : '')
@@ -67,6 +74,7 @@ function smarty_function_button(array $params, Smarty_Internal_Template $templat
             . ($external ? ' rel="external"' : '')
             . ($resourceid ? ' data-resourceid="' . $resourceid . '"' : '')
             . ($clipboard ? ' data-clipboard-text="' . $clipboard . '"' : '')
+            . $data_attributes
             . ($visible ? '' : ' style="display: none;"')
             . ($accesskey ? ' accesskey="' . $accesskey . '"' : '') . '>'
             . ($icon ? '<i' . ($custom_icon ? ' class="' . $icon . '"' : '') . '></i>' : '')
