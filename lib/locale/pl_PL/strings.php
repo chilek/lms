@@ -4699,3 +4699,5 @@ $_LANG['document form approval in customer panel using scans'] = 'zatwierdzanie 
 
 $_LANG['Copy from billing address'] = 'Kopiuj z adresu bilingowego';
 $_LANG['Copy from post address'] = 'Kopiuj z adresu korespondencyjnego';
+
+$_LANG['Choose TERRIT location'] = 'Wybierz lokalizację TERYT';

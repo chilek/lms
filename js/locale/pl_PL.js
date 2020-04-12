@@ -1916,7 +1916,21 @@ $_LANG['Add plan'] = 'Dodaj plan';
 $_LANG['cash receipt'] = 'dokument kasowy';
 $_LANG['Check box to make this plan a default for selected document type'] = 'Zaznacz pole, jeśli ten plan ma być domyślny dla wybranego typu dokumentów';
 $_LANG['Display this form again, when this numbering plan is saved'] = 'Wyświetl ten formularz ponownie po dodaniu planu numeracyjnego';
-$_LANG['Enter number template'] = 'Wprowadź szablon numeru';
+$_LANG[
+    'Enter number template<br><br>'
+    + 'Supported substitution symbols:<br>'
+    + '<strong>%N</strong> - document number,<br>'
+    + '<strong>%m</strong> - month number (always two digits),<br>'
+    + '<strong>%Y</strong> - year number (always four digits),<br>'
+    + '<strong>%C</strong> - customer id; if this symbol is present then customer dedicated numbering applies.<br><br>'
+    + 'Other symbols can be used which are described in PHP <strong>strftime<strong> function documentation.'
+] = 'Wprowadź szablon numeru<br><br>'
+    + 'Obsługiwane symbole podstawień:<br>'
+    + '<strong>%N</strong> - numer dokumentu,<br>'
+    + '<strong>%m</strong> - numer miesiąca (zawsze dwie cyfry),<br>'
+    + '<strong>%Y</strong> - numer roku (zawsze cztery cyfry),<br>'
+    + '<strong>%C</strong> - identyfikator klienta; w przypadku użycia tego symbolu zastosowanie ma indywidualna numeracja dla każdego klienta oddzielnie.<br><br>'
+    + 'Można użyć innych symboli opisanych w dokumentacji funkcji PHP <strong>strftime</strong>.';
 $_LANG['invoice'] = 'faktura';
 $_LANG['Main Information:'] = 'Informacje Podstawowe:';
 $_LANG['New Numbering Plan'] = 'Nowy plan numeracyjny';
@@ -2451,10 +2465,15 @@ $_LANG['Cutoff suspending:'] = 'Zawieszenie blokowania:';
 $_LANG['Enter notice contents'] = 'Wprowadź treść powiadomienia';
 $_LANG['Select days number of cutoff suspending'] = 'Wybierz ilość dni zawieszenia blokowania';
 $_LANG['Open attachment'] = 'Otwórz załącznik';
+$_LANG['Consents:'] = 'Zgody:';
 $_LANG['Consent to personal data processing:'] = 'Zgoda na przetwarzanie danych osobowych:';
+$_LANG['personal data processing'] = 'przetwarzanie danych osobowych';
 $_LANG['Consent to electronic invoices:'] = 'Zgoda na faktury elektroniczne:';
+$_LANG['Consent to electronic invoices'] = 'Zgoda na faktury elektroniczne';
 $_LANG['Consent to invoices delivery via e-mail:'] = 'Zgoda na dostarczanie faktur pocztą elektroniczną:';
+$_LANG['invoice delivery via e-mail'] = 'dostarczanie faktur pocztą elektroniczną';
 $_LANG['Consent to messages delivery via e-mail or sms:'] = 'Zgoda na dostarczanie informacji pocztą elektr. lub smsem:';
+$_LANG['message delivery via e-mail or sms'] = 'dostarczanie informacji pocztą elektr. lub smsem';
 $_LANG['Rows: $a'] = 'Liczba wierszy: $a';
 $_LANG['private person'] = 'osoba fizyczna';
 $_LANG['legal entity'] = 'osoba prawna / firma';
@@ -3327,6 +3346,7 @@ $_LANG['log in<!syslog>'] = 'zalogowanie';
 $_LANG['log out<!syslog>'] = 'wylogowanie';
 $_LANG['document attachment<!syslog>'] = 'załącznik dokumentu';
 $_LANG['document content<!syslog>'] = 'zawartość dokumentu';
+$_LANG['customer consent<!syslog>'] = 'zgoda klienta';
 
 $_LANG['Choose network'] = 'Wybierz sieć';
 $_LANG['- automatic selection -'] = '- wybór automatyczny -';
@@ -3654,6 +3674,8 @@ $_LANG['Email address is required!'] = 'Adres email jest wymagany!';
 $_LANG['Select document status'] = 'Wybierz status dokumentu';
 $_LANG['confirmed'] = 'zatwierdzony';
 $_LANG['unconfirmed'] = 'niezatwierdzony';
+$_LANG['review (signed document scan)'] = 'do przejrzenia (skan z podpisem klienta)';
+$_LANG['waiting for signed document scan'] = 'oczekujący na skan z podpisem klienta)';
 
 $_LANG['Customer ID and PIN'] = 'ID klienta i PIN';
 $_LANG['Phone number and PIN'] = 'Numer telefonu i PIN';
@@ -3679,6 +3701,7 @@ $_LANG['Not visible by the customer in electronic Customer Service Representativ
 $_LANG['Personal'] = 'Wizyta w biurze';
 $_LANG['If the customer wants to receive an electronic invoice must be checked e-mail address to which to send e-invoices'] = 'Jeśli klient chce otrzymywać fakturę elektroniczną musi zostać zaznaczony adres e-mail na który mają być wysyłane e-faktury';
 $_LANG['Cancellation of a traditional invoice (agreement on an electronic invoice):'] = 'Rezygnacja z faktury tradycyjnej (zgoda na fakturę elektroniczną):';
+$_LANG['cancellation of a traditional invoice (agreement on an electronic invoice)'] = 'rezygnacja z faktury tradycyjnej (zgoda na fakturę elektroniczną)';
 $_LANG['Check if send notification'] = 'Zaznacz, jeżeli chcesz wysyłać powiadomienia';
 $_LANG['Check if send technical notification'] = 'Zaznacz, jeżeli chcesz wysyłać informacje techniczne';
 $_LANG['notifications'] = 'powiadomienia';
@@ -3795,7 +3818,8 @@ $_LANG['with end date:'] = 'z datą zakończenia:';
 $_LANG['<!enddate>- any -'] = '- dowolną -';
 $_LANG['expire in $a days'] = 'wygasną w ciągu $a dni';
 
-$_LANG['TERRIT not specified'] = 'Bez TERYT-u';
+$_LANG['TERRIT not specified'] = 'bez TERYT';
+$_LANG['ZIP code not specified'] = 'bez kodu pocztowego';
 $_LANG['Net Device not specified'] = 'Bez urządzenia sieciowego';
 
 $_LANG['with e-invoice'] = 'z e-fakturą';
@@ -4664,3 +4688,18 @@ $_LANG['Documentation:'] = 'Dokumentacja:';
 
 $_LANG['New setting'] = 'Nowe ustawienie';
 $_LANG['Allows you to add new configuration setting'] = 'Dodanie nowego ustawienia konfiguracyjnego';
+
+$_LANG['Ticket subject can contain maximum $a characters!'] = 'Temat zgłoszenia może zawierać maksymalnie $a znaków!';
+
+$_LANG['Wait for customer action till:'] = 'Oczekuj na działanie klienta do:';
+$_LANG['Enter date in YYYY/MM/DD format we wait for customer action till (optional)'] = 'Wprowadź datę w formacie RRRR/MM/DD, do kiedy będziemy oczekiwać na działanie klienta (opcjonalnie)';
+$_LANG['Warning! Customer submitted signed document scan. Consider to review it and then possibly confirm.'] = 'Uwaga! Klient przesłał skan podpisanego dokumentu. Rozważ ich przejrzenie i ewentualnie zatwierdzenie.';
+$_LANG['Warning! Warning! Customer action time limit is expired is expired!'] = 'Uwaga! Upłynął termin przeznaczony na działanie klienta!';
+
+$_LANG['document form approval in customer panel using SMS authorization'] = 'zatwierdzanie przez panel abonencki formy dokumentowej autoryzowanej przez SMS';
+$_LANG['document form approval in customer panel using scans'] = 'zatwierdzanie przez panel abonencki formy dokumentowej w postaci skanów';
+
+$_LANG['Copy from billing address'] = 'Kopiuj z adresu bilingowego';
+$_LANG['Copy from post address'] = 'Kopiuj z adresu korespondencyjnego';
+
+$_LANG['Choose TERRIT location'] = 'Wybierz lokalizację TERYT';

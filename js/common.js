@@ -141,8 +141,61 @@ function locationchoosewin(varname, formname, city, street, default_city)
     return openSelectWindow('?m=chooselocation&name='+varname+'&form='+formname+'&city='+city+'&street='+street,'chooselocation',350,200,'true');
 }
 
+function openPopupWindow(options)
+{
+	if (typeof(options) !== 'object') {
+		console.log('openPopupWindow: missed "options" parameter!');
+		return;
+	}
+	if (!options.hasOwnProperty('url')) {
+		console.log('openPopupWindow: missed "url"!');
+		return;
+	}
+	if (!options.hasOwnProperty('selector')) {
+		console.log('openPopupWindow: missed "selector"!');
+		return;
+	}
+	if (!options.hasOwnProperty('onLoaded')) {
+		options.onLoaded = null;
+	}
+
+	$.ajax({
+		url: options.url,
+		async: true,
+		success: function(data) {
+			var dialog = $('<div/>').uniqueId().html(data).insertAfter(options.selector);
+			var dialogId = dialog.attr('id');
+			$(dialog).dialog({
+				autoOpen: true,
+				buttons: [],
+				dialogClass: 'lms-ui-popup',
+				closeOnEscape: true,
+				modal: true,
+				position: { my: "left top", at: "left bottom", of: options.selector },
+				resizable: true,
+				title: $t("Choose TERRIT location"),
+				open: function() {
+					$('.ui-widget-overlay').click(function() {
+						$( "#" + dialogId).dialog('destroy').remove();
+					})
+				},
+			});
+			$(options.selector).attr('data-dialog-id', dialogId);
+
+			if (options.onLoaded) {
+				options.onLoaded();
+			}
+		}
+
+	});
+}
+
 if ( typeof $ !== 'undefined' ) {
     $(function() {
+    	$(document).on('mouseleave', '.lms-ui-popup', function(e) {
+    		e.stopImmediatePropagation();
+		});
+
         // open location dialog window if teryt is checked
         $('body').on('click', '.teryt-address-button', function() {
 
@@ -162,7 +215,14 @@ if ( typeof $ !== 'undefined' ) {
             }
             var street = box.find("input[data-address='street-hidden']").val();
 
-            openSelectWindow('?m=chooselocation&city=' + city + '&street=' + street + "&boxid=" + box.attr('id'), 'chooselocation', 350, 200, 'true');
+            //openSelectWindow('?m=chooselocation&city=' + city + '&street=' + street + "&boxid=" + box.attr('id'), 'chooselocation', 350, 200, 'true');
+			openPopupWindow({
+				url: '?m=chooselocation&city=' + city + '&street=' + street + "&boxid=" + box.attr('id'),
+				selector: this,
+				onLoaded: function() {
+					$('#search [name="searchcity"]').focus();
+				}
+			});
         });
 
         // disable and enable inputs after click

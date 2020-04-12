@@ -22,7 +22,8 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 		this.onLoad = form.hasOwnProperty('onLoad') ? form.onLoad : null;
 		this.onAjax = form.hasOwnProperty('onAjax') ? form.onAjax : '';
 		this.class = form.hasOwnProperty('class') ? form.class : '';
-		this.emptyValue = form.hasOwnProperty('emptyValue') && (form.emptyValue == 1 || form.emptyValue || form.emptyValue == 'true')
+		this.emptyValue = form.hasOwnProperty('emptyValue') && (form.emptyValue == 1 || form.emptyValue || form.emptyValue == 'true');
+		this.suggestionContainer = form.hasOwnProperty('suggestionContainer') ? form.suggestionContainer : '#autosuggest';
 	} else {
 		//A reference to the element we're binding the list to.
 		this.elem = elem;
@@ -32,6 +33,7 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 		this.onSubmit = onSubmit;
 		this.onLoad = onLoad;
 		this.class = '';
+		this.suggestionContainer = '#autosuggest';
 	}
 	this.class = 'suggestion_list ' + this.class;
 
@@ -72,7 +74,7 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 	this.highlighted = -1;
 
 	//A div to use to create the dropdown.
-	this.div = document.getElementById("autosuggest");
+	this.div = $(form.suggestionContainer)[0];
 
 	//Do you want to remember what keycode means what? Me neither.
 	var ENT = 3;

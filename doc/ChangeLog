@@ -298,6 +298,8 @@ version 25-git (????-??-??):
     with 'invoices' flag [chilan]
   - enhancement/devel: new easier warning system - warning global backend variable has
     the similar role to so far existing error variable [chilan]
+  - improvement: redesigned choose territ location popup dialog - switched to jquery-ui
+    dialog [chilan]
 
 version 24.0 (2019-05-16):
 

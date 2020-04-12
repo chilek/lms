@@ -90,86 +90,94 @@ function get_loc_cities($districtid)
     return $list;
 }
 
-if (isset($_GET['ajax']) && isset($_GET['what'])) {
-    header('Content-type: text/plain');
-    $search = urldecode(trim($_GET['what']));
+if (isset($_GET['ajax']) && (isset($_POST['what']) || isset($_GET['what']))) {
+    header('Content-type: application/json');
+    if (isset($_GET['what']) && isset($_GET['mode'])) {
+        $what = trim($_GET['what']);
+        $mode = trim($_GET['mode']);
+        if (!strlen($what)) {
+            die;
+        }
 
-    if (!strlen($search)) {
-        print "false;";
-        die;
-    }
+        $list = $DB->GetAll('SELECT c.id, c.name,
+                b.name AS borough, b.type AS btype,
+                d.name AS district, d.id AS districtid,
+                s.name AS state, s.id AS stateid
+            FROM location_cities c
+            JOIN location_boroughs b ON (c.boroughid = b.id)
+            JOIN location_districts d ON (b.districtid = d.id)
+            JOIN location_states s ON (d.stateid = s.id)
+            WHERE c.name ?LIKE? ' . $DB->Escape("%$what%") . '
+            ORDER BY c.name, b.type LIMIT 10');
 
-    $list = $DB->GetAll('SELECT c.id, c.name,
-			b.name AS borough, b.type AS btype,
-			d.name AS district, d.id AS districtid,
-			s.name AS state, s.id AS stateid
-		FROM location_cities c
-		JOIN location_boroughs b ON (c.boroughid = b.id)
-		JOIN location_districts d ON (b.districtid = d.id)
-		JOIN location_states s ON (d.stateid = s.id)
-		WHERE c.name ?LIKE? ' . $DB->Escape("%$search%") . '
-		ORDER BY c.name, b.type LIMIT 10');
+        $result = array();
+        if ($list) {
+            foreach ($list as $idx => $row) {
+                $name = sprintf('%s (%s%s, %s)', $row['name'], $row['btype'] < 4 ?
+                    trans('<!borough_abbr>') : '', $row['borough'], trans('<!district_abbr>') . $row['district']);
+                $name_class = '';
+                $description = $description_class = '';
+                $action = array(
+                    'cityid' => $row['id'],
+                    'districtid' => $row['districtid'],
+                    'stateid' => $row['stateid'],
+                );
 
-    $result = array();
-    if ($list) {
-        foreach ($list as $idx => $row) {
-            $name = sprintf('%s (%s%s, %s)', $row['name'], $row['btype'] < 4 ?
-            trans('<!borough_abbr>') : '', $row['borough'], trans('<!district_abbr>') . $row['district']);
-            $name_class = '';
-            $description = $description_class = '';
-            $action = sprintf("javascript: search_update(%d,%d,%d)", $row['id'], $row['districtid'], $row['stateid']);
+                $result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
+            }
+        }
+    } elseif (isset($_GET['id']) && isset($_GET['what'])) {
+        $id = trim($_GET['id']);
+        $what = trim($_GET['what']);
+        if ($what == 'state') {
+            $stateid = $id;
+        } else if ($what == 'district') {
+            $districtid = $id;
+        } else if ($what == 'city') {
+            $cityid = $id;
+        } else if (!$what && preg_match('/^([0-9]+):([0-9]+):([0-9]+)$/', $id, $m)) {
+            $cityid = $m[1];
+            $districtid = $m[2];
+            $stateid = $m[3];
+        }
 
-            $result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
+        header('Content-Type: application/json');
+
+        $result = array();
+        $index = 0;
+
+        if ($stateid) {
+            $list = $DB->GetAll('SELECT id, name
+                FROM location_districts WHERE stateid = ?
+                ORDER BY name', array($stateid));
+            $result[] = array(
+                'type' => 'district',
+                'data' => $list ? $list : array(),
+                'selected' => !$what ? $districtid : 0,
+            );
+        }
+
+        if ($districtid) {
+            $list = get_loc_cities($districtid);
+            $result[] = array(
+                'type' => 'city',
+                'data' => $list ? $list : array(),
+                'selected' => !$what ? $cityid : 0,
+            );
+        }
+
+        if ($cityid) {
+            $list = get_loc_streets($cityid);
+            $result['street'] = array(
+                'type' => 'street',
+                'data' => $list ? $list : array(),
+                'selected' => 0,
+            );
         }
     }
 
-    header('Content-Type: application/json');
-    echo json_encode(array_values($result));
-    die;
+    die(json_encode(array_values($result)));
 }
-
-function select_location($what, $id)
-{
-    global $DB;
-
-    $JSResponse = new xajaxResponse();
-
-    if ($what == 'state') {
-        $stateid = $id;
-    } else if ($what == 'district') {
-        $districtid = $id;
-    } else if ($what == 'city') {
-        $cityid = $id;
-    } else if (!$what && preg_match('/^([0-9]+):([0-9]+):([0-9]+)$/', $id, $m)) {
-        $cityid = $m[1];
-        $districtid = $m[2];
-        $stateid = $m[3];
-    }
-
-    if ($stateid) {
-        $list = $DB->GetAll('SELECT id, name
-			FROM location_districts WHERE stateid = ?
-			ORDER BY name', array($stateid));
-
-        $JSResponse->call('update_selection', 'district', $list ? $list : array(), !$what ? $districtid : 0);
-    }
-
-    if ($districtid) {
-        $list = get_loc_cities($districtid);
-        $JSResponse->call('update_selection', 'city', $list ? $list : array(), !$what ? $cityid : 0);
-    }
-
-    if ($cityid) {
-        $list = get_loc_streets($cityid);
-        $JSResponse->call('update_selection', 'street', $list ? $list : array());
-    }
-
-    return $JSResponse;
-}
-
-$LMS->InitXajax();
-$LMS->RegisterXajaxFunction('select_location');
-$SMARTY->assign('xajax', $LMS->RunXajax());
 
 $layout['pagetitle'] = trans('Select location');
 
