@@ -173,6 +173,7 @@ function openPopupWindow(options)
 				modal: true,
 				position: { my: "left top", at: "left bottom", of: options.selector },
 				resizable: true,
+				width: 'auto',
 				title: $t("Choose TERRIT location"),
 				open: function() {
 					$('.ui-widget-overlay').click(function() {

@@ -108,7 +108,8 @@ if (isset($_GET['ajax']) && (isset($_POST['what']) || isset($_GET['what']))) {
             JOIN location_districts d ON (b.districtid = d.id)
             JOIN location_states s ON (d.stateid = s.id)
             WHERE c.name ?LIKE? ' . $DB->Escape("%$what%") . '
-            ORDER BY c.name, b.type LIMIT 10');
+            ORDER BY c.name, b.type LIMIT '
+            . intval(ConfigHelper::getConfig('phpui.autosuggest_max_length', 40)));
 
         $result = array();
         if ($list) {

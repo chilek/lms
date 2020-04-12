@@ -1,13 +1,29 @@
+<style>
+
+	#location-table {
+		width: 30em;
+	}
+
+	.location-property-selection {
+		width: 30em;
+	}
+
+	.ui-dialog .ui-dialog-content {
+		overflow: initial;
+	}
+
+</style>
+
 {if !empty($states)}
 <div id="location-box-autosuggest" style="display: none;"><ul></ul></div>
 
 <form name="search" id="search" method="post" action="?m=chooselocation">
 	<input type="submit" class="hiddenbtn">
-	<table id="searchtable" cellpadding="5" width="100%">
+	<table id="searchtable" cellpadding="5">
 		<tr>
 			<td class="dark nobr">
 				<i class="lms-ui-icon-home"></i>
-				 <input type="text" name="searchcity" value="" size="30" onkeyup="document.search.submit();" {tip text="Enter city name"} id="location-name">
+				 <input type="text" name="searchcity" value="" size="40" onkeyup="document.search.submit();" {tip text="Enter city name"} id="location-name">
 			</td>
 		</tr>
 	</table>
@@ -29,10 +45,16 @@
 		}
 	});
 
+	$('#location-name').keydown(function(e) {
+		if (e.code == 'Escape') {
+			e.stopPropagation();
+		}
+	});
+
 </script>
 {/if}
 
-<table id="locationtable" width="100%" cellpadding="3">
+<table id="location-table" cellpadding="3">
 {if empty($states)}
 	<tr><td width="100%" align="center">
 		<b>{trans("Location database is empty.")}</b>
@@ -41,7 +63,7 @@
 	<tr id="state">
 		<td width="1%">{trans("State")}:</td>
 		<td width="99%">
-			<select id="state_sel" name="state" {tip text="Select state"} style="width: 100%">
+			<select id="state_sel" class="location-property-selection" name="state" {tip text="Select state"}>
 			{foreach from=$states item=item}
 				<option value="{$item.id}">{$item.name}</option>
 			{/foreach}
@@ -51,7 +73,7 @@
 	<tr id="district"{if empty($districts)} style="display:none"{/if}>
 		<td>{trans("District")}:</td>
 		<td>
-			<select id="district_sel" name="district" {tip text="Select district"} style="width: 100%">
+			<select id="district_sel" class="location-property-selection" name="district" {tip text="Select district"}>
 			{if !$data.districtid}
 				<option value="0"></option>
 			{/if}
@@ -64,7 +86,7 @@
 	<tr id="city"{if empty($cities)} style="display:none"{/if}>
 		<td>{trans("City")}:</td>
 		<td>
-			<select id="city_sel" name="city" {tip text="Select city"} style="width: 100%">
+			<select id="city_sel" name="city" class="location-property-selection" {tip text="Select city"}>
 			{if !$data.cityid}
 				<option value="0"></option>
 			{/if}
@@ -77,7 +99,7 @@
 	<tr id="street"{if empty($streets)} style="display:none"{/if}>
 		<td>{trans("Street")}:</td>
 		<td>
-			<select id="street_sel" name="street" {tip text="Select street"} style="width: 100%">
+			<select id="street_sel" name="street" class="location-property-selection" {tip text="Select street"}>
 				{foreach $streets as $street}
 				<option value="{$street.id}" data-street-type="{$street.typename}" data-street-name-1="{$street.name1}"{if $street.name2} data-street-name-2="{$street.name2}"{/if}>{$street.name}</option>
 				{/foreach}
