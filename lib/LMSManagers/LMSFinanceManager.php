@@ -3183,7 +3183,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function DelBalance($id)
     {
-        $row = $this->db->GetRow('SELECT cash.customerid, docid, itemid, documents.type AS doctype, importid,
+        $row = $this->db->GetRow('SELECT cash.customerid, docid, value, itemid, documents.type AS doctype, importid,
 						(CASE WHEN d2.id IS NULL THEN 0 ELSE 1 END) AS referenced
 					FROM cash
 					LEFT JOIN documents ON (docid = documents.id)
@@ -3191,13 +3191,57 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 					WHERE cash.id = ?', array($id));
 
 
-        $this->db->Execute('DELETE FROM cash WHERE id = ?', array($id));
-        if ($this->syslog) {
-            $args = array(
-                SYSLOG::RES_CASH => $id,
-                SYSLOG::RES_CUST => $row['customerid'],
+        if ($row['doctype'] == DOC_CNOTE) {
+            $previous_record = $this->db->GetRow(
+                'SELECT c2.id, c2.docid, ic.count, c.itemid, c2.value
+                FROM cash c
+                JOIN documents d ON d.id = c.docid
+                JOIN documents d2 ON d2.id = d.reference
+                JOIN cash c2 ON c2.docid = d2.id AND c2.itemid = c.itemid
+                JOIN invoicecontents ic ON ic.docid = d2.id AND ic.itemid = c2.itemid
+                WHERE c.docid = ? AND c.itemid = ?',
+                array($row['docid'], $row['itemid'])
             );
-            $this->syslog->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
+            if (!empty($previous_record) && -$previous_record['value'] != $row['value']) {
+                $this->db->Execute(
+                    'UPDATE cash SET value = ? WHERE id = ?',
+                    array(str_replace(',', '.', -$previous_record['value']), $id)
+                );
+                $this->db->Execute(
+                    'UPDATE invoicecontents SET value = ?, count = ? WHERE docid = ? AND itemid = ?',
+                    array(
+                        str_replace(',', '.', $previous_record['value']),
+                        str_replace(',', '.', -$previous_record['count']),
+                        $row['docid'],
+                        $row['itemid']
+                    )
+                );
+                if ($this->syslog) {
+                    $args = array(
+                        SYSLOG::RES_CASH => $id,
+                        SYSLOG::RES_CUST => $row['customerid'],
+                        'value' => str_replace(',', '.', -$previous_record['value']),
+                    );
+                    $this->syslog->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_UPDATE, $args);
+                    $args = array(
+                        SYSLOG::RES_DOC => $row['docid'],
+                        SYSLOG::RES_CUST => $row['customerid'],
+                        'itemid' => $row['itemid'],
+                        'value' => str_replace(',', '.', $previous_record['value']),
+                        'count' => str_replace(',', '.', -$previous_record['count']),
+                    );
+                    $this->syslog->AddMessage(SYSLOG::RES_INVOICECONT, SYSLOG::OPER_UPDATE, $args);
+                }
+            }
+        } else {
+            $this->db->Execute('DELETE FROM cash WHERE id = ?', array($id));
+            if ($this->syslog) {
+                $args = array(
+                    SYSLOG::RES_CASH => $id,
+                    SYSLOG::RES_CUST => $row['customerid'],
+                );
+                $this->syslog->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
+            }
         }
         if ($row['importid']) {
             if ($this->syslog) {
@@ -3214,7 +3258,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $this->db->Execute('UPDATE cashimport SET closed = 0 WHERE id = ?', array($row['importid']));
         }
 
-        if ($row['doctype'] == DOC_INVOICE || $row['doctype'] == DOC_INVOICE_PRO || $row['doctype'] == DOC_CNOTE) {
+        if ($row['doctype'] == DOC_INVOICE || $row['doctype'] == DOC_INVOICE_PRO) {
             if (!$row['referenced']) {
                 $this->InvoiceContentDelete($row['docid'], $row['itemid']);
             }
