@@ -296,8 +296,6 @@ if (!isset($_POST['xjxfun'])) {
 
                 $SESSION->redirect($backurl);
             } else {
-                $SMARTY->assign('backurl', $backurl);
-
                 $olddata = $LMS->GetCustomer($_GET['id']);
 
                 $customerinfo = $customerdata;
@@ -355,6 +353,7 @@ if (!isset($_POST['xjxfun'])) {
                 );
             }
         }
+        $SMARTY->assign('backurl', $backurl);
     }
 
     $layout['pagetitle'] = trans('Customer Edit: $a', $customerinfo['customername']);
