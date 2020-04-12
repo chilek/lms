@@ -35,6 +35,8 @@ if (!isset($_POST['xjxfun'])) {
     } elseif (!$exists) {
         $SESSION->redirect('?m=customerlist');
     } else {
+        $backurl = $SESSION->is_set('backto') ? '?' . $SESSION->get('backto') : '?m=customerlist';
+
         $pin_min_size = intval(ConfigHelper::getConfig('phpui.pin_min_size', 4));
         if (!$pin_min_size) {
             $pin_min_size = 4;
@@ -292,8 +294,10 @@ if (!isset($_POST['xjxfun'])) {
                     }
                 }
 
-                $SESSION->redirect('?m=customerinfo&id='.$customerdata['id']);
+                $SESSION->redirect($backurl);
             } else {
+                $SMARTY->assign('backurl', $backurl);
+
                 $olddata = $LMS->GetCustomer($_GET['id']);
 
                 $customerinfo = $customerdata;
@@ -354,8 +358,6 @@ if (!isset($_POST['xjxfun'])) {
     }
 
     $layout['pagetitle'] = trans('Customer Edit: $a', $customerinfo['customername']);
-
-    $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
     $customerid = $customerinfo['id'];
 
