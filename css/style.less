@@ -62,8 +62,23 @@ BODY {
 		@media print {
 			margin-left: 0;
 		}
+		#lms-ui-menu-panel {
+			width: 16em;
+		}
 		#lms-ui-tool-panels {
 			margin-left: 17em;
+		}
+	}
+	&.main-menu-mobile {
+		margin-left: 4em;
+		@media print {
+			margin-left: 0;
+		}
+		#lms-ui-menu-panel {
+			width: 3em;
+		}
+		#lms-ui-tool-panels {
+			margin-left: 3.5em;
 		}
 	}
 }
@@ -128,7 +143,7 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 		border: @frame;
 		border-radius: 0 0 0.5em 0em;
 		& ~ #lms-ui-contents #lms-ui-quicksearch-indicators-panel {
-			padding-left: 1.5em;
+			padding-left: 0.5em;
 		}
 	}
 }
@@ -175,8 +190,8 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 	justify-content: flex-start;
 	align-items: flex-start;
 	flex: 1 1 auto;
-	margin-left: 0.4em;
 	margin-bottom: 0.85em;
+	margin-left: 0.45em;
 	padding: 0.43em;
 	& > p {
 		align-self: center;

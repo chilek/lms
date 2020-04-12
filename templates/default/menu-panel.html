@@ -30,49 +30,13 @@
 			});
 
 			if ($(window).width() <= 900) {
-				$('#lms-ui-menu-panel').addClass('mobile').css({
-					'min-width': 'unset',
-					'width' : '3em'
-				});
+				$('body').addClass('main-menu-mobile');
 			} else {
-				$('#lms-ui-menu-panel').removeClass('mobile').css({
-					'width': '16em',
-					'min-width': '16em'
-				});
+				$('body').removeClass('main-menu-mobile');
 			}
 
 			$(window).resize(function() {
-				if ($(window).width() <= 900) {
-					if (!$('#lms-ui-menu-panel').is('.mobile')) {
-						$('#lms-ui-menu-panel').addClass('mobile').css('min-width', 'unset')
-							.stop(true).animate({
-							width: '3em'
-						});
-						$('body').stop(true).animate({
-							"margin-left": '4em'
-						});
-						$('#lms-ui-tool-panels').stop(true).animate({
-							"margin-left": '4em'
-						});
-					}
-				} else {
-					if ($('#lms-ui-menu-panel').is('.mobile')) {
-						$('#lms-ui-menu-panel').removeClass('mobile')
-							.stop(true).animate({
-							width: '16em'
-						}, {
-							complete: function () {
-								$(this).css('min-width', '16em');
-							}
-						});
-						$('body').stop(true).animate({
-							"margin-left": '17em'
-						});
-						$('#lms-ui-tool-panels').stop(true).animate({
-							"margin-left": '17em'
-						});
-					}
-				}
+				$('body').toggleClass('main-menu-mobile', $(window).width() <= 900);
 			});
 
 		</script>
