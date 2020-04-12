@@ -201,7 +201,7 @@ if (isset($_POST['nodedata'])) {
             }
             if ($i == count($addresses)) {
                 $customer_addresses_warning = 1;
-                $error['address_id'] = trans('No address has been selected!');
+                $warn['address_id'] = trans('No address has been selected!');
             }
         }
     }
@@ -267,12 +267,14 @@ if (isset($_POST['nodedata'])) {
         array(
             'nodeadd' => $nodedata,
             'error'   => $error,
+            'warning'   => $warning,
         )
     );
     $nodedata = $hook_data['nodeadd'];
     $error = $hook_data['error'];
+    $warning = $hook_data['warning'];
 
-    if (!$error) {
+    if (!$error && !$warning) {
         $nodedata = $LMS->ExecHook('node_add_before', $nodedata);
 
         $ipi = $nodedata['invprojectid'];

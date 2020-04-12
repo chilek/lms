@@ -120,7 +120,7 @@ if (isset($_POST['customeradd'])) {
 
     if ($customeradd['ten'] !='') {
         if (!isset($customeradd['tenwarning']) && !check_ten($customeradd['ten'])) {
-            $error['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
+            $warning['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
             $customeradd['tenwarning'] = 1;
         }
         $ten_existence_check = ConfigHelper::getConfig('phpui.customer_ten_existence_check', 'none');
@@ -136,7 +136,7 @@ if (isset($_POST['customeradd'])) {
         switch ($ten_existence_check) {
             case 'warning':
                 if (!isset($customeradd['tenexistencewarning']) && $ten_exists) {
-                    $error['ten'] = trans('Customer with specified Tax Exempt Number already exists! If you are sure you want to accept it, then click "Submit" again.');
+                    $warning['ten'] = trans('Customer with specified Tax Exempt Number already exists! If you are sure you want to accept it, then click "Submit" again.');
                     $customeradd['tenexistencewarning'] = 1;
                 }
                 break;
@@ -150,7 +150,7 @@ if (isset($_POST['customeradd'])) {
 
     if ($customeradd['ssn'] != '') {
         if (!isset($customeradd['ssnwarning']) && !check_ssn($customeradd['ssn'])) {
-            $error['ssn'] = trans('Incorrect Social Security Number! If you are sure you want to accept it, then click "Submit" again.');
+            $warning['ssn'] = trans('Incorrect Social Security Number! If you are sure you want to accept it, then click "Submit" again.');
             $customeradd['ssnwarning'] = 1;
         }
         $ssn_existence_check = ConfigHelper::getConfig('phpui.customer_ssn_existence_check', 'none');
@@ -166,7 +166,7 @@ if (isset($_POST['customeradd'])) {
         switch ($ssn_existence_check) {
             case 'warning':
                 if (!isset($customeradd['ssnexistencewarning']) && $ssn_exists) {
-                    $error['ssn'] = trans('Customer with specified Social Security Number already exists! If you are sure you want to accept it, then click "Submit" again.');
+                    $warning['ssn'] = trans('Customer with specified Social Security Number already exists! If you are sure you want to accept it, then click "Submit" again.');
                     $customeradd['ssnexistencewarning'] = 1;
                 }
                 break;
@@ -179,7 +179,7 @@ if (isset($_POST['customeradd'])) {
     }
 
     if ($customeradd['icn'] != '' && !isset($customeradd['icnwarning']) && !check_icn($customeradd['icn'])) {
-        $error['icn'] = trans('Incorrect Identity Card Number! If you are sure you want to accept, then click "Submit" again.');
+        $warning['icn'] = trans('Incorrect Identity Card Number! If you are sure you want to accept, then click "Submit" again.');
         $icnwarning = 1;
     }
 
@@ -261,13 +261,15 @@ if (isset($_POST['customeradd'])) {
         'customeradd_validation_before_submit',
         array(
             'customeradd' => $customeradd,
-            'error' => $error
+            'error' => $error,
+            'warning' => $warning,
         )
     );
     $customeradd = $hook_data['customeradd'];
     $error = $hook_data['error'];
+    $warning = $hook_data['warning'];
 
-    if (!$error) {
+    if (!$error && !warning) {
         $customeradd['cutoffstop'] = $cutoffstop;
 
         if (!isset($customeradd['consents'])) {

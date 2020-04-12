@@ -92,7 +92,7 @@ if (!isset($_POST['xjxfun'])) {
 
             if ($customerdata['ten'] !='') {
                 if (!isset($customerdata['tenwarning']) && !check_ten($customerdata['ten'])) {
-                    $error['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
+                    $warning['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
                     $tenwarning = 1;
                 }
                 $ten_existence_check = ConfigHelper::getConfig('phpui.customer_ten_existence_check', 'none');
@@ -108,7 +108,7 @@ if (!isset($_POST['xjxfun'])) {
                 switch ($ten_existence_check) {
                     case 'warning':
                         if (!isset($customerdata['tenexistencewarning']) && $ten_exists) {
-                            $error['ten'] = trans('Customer with specified Tax Exempt Number already exists! If you are sure you want to accept it, then click "Submit" again.');
+                            $warning['ten'] = trans('Customer with specified Tax Exempt Number already exists! If you are sure you want to accept it, then click "Submit" again.');
                             $tenexistencewarning = 1;
                         }
                         break;
@@ -122,7 +122,7 @@ if (!isset($_POST['xjxfun'])) {
 
             if ($customerdata['ssn'] != '') {
                 if (!isset($customerdata['ssnwarning']) && !check_ssn($customerdata['ssn'])) {
-                    $error['ssn'] = trans('Incorrect Social Security Number! If you are sure you want to accept it, then click "Submit" again.');
+                    $warning['ssn'] = trans('Incorrect Social Security Number! If you are sure you want to accept it, then click "Submit" again.');
                     $ssnwarning = 1;
                 }
                 $ssn_existence_check = ConfigHelper::getConfig('phpui.customer_ssn_existence_check', 'none');
@@ -138,7 +138,7 @@ if (!isset($_POST['xjxfun'])) {
                 switch ($ssn_existence_check) {
                     case 'warning':
                         if (!isset($customerdata['ssnexistencewarning']) && $ssn_exists) {
-                            $error['ssn'] = trans('Customer with specified Social Security Number already exists! If you are sure you want to accept it, then click "Submit" again.');
+                            $warning['ssn'] = trans('Customer with specified Social Security Number already exists! If you are sure you want to accept it, then click "Submit" again.');
                             $ssnexistencewarning = 1;
                         }
                         break;
@@ -155,7 +155,7 @@ if (!isset($_POST['xjxfun'])) {
             }
 
             if ($customerdata['icn'] != '' && !isset($customerdata['icnwarning']) && !check_icn($customerdata['icn'])) {
-                $error['icn'] = trans('Incorrect Identity Card Number! If you are sure you want to accept, then click "Submit" again.');
+                $warning['icn'] = trans('Incorrect Identity Card Number! If you are sure you want to accept, then click "Submit" again.');
                 $icnwarning = 1;
             }
 
@@ -217,12 +217,14 @@ if (!isset($_POST['xjxfun'])) {
                 'customeredit_validation_before_submit',
                 array(
                     'customerdata' => $customerdata,
-                    'error' => $error
+                    'error' => $error,
+                    'warning' => $warning,
                 )
             );
 
             $customerdata = $hook_data['customerdata'];
             $error = $hook_data['error'];
+            $warning = $hook_data['warning'];
 
             if (!$error && !$warning) {
                 $customerdata['cutoffstop'] = $cutoffstop;

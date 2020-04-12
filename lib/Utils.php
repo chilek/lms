@@ -57,9 +57,9 @@ class Utils
             } else {
                 $class = '';
             }
-            $tmpl = $template->getTemplateVars('error');
-            if (isset($params['trigger']) && isset($tmpl[$params['trigger']])) {
-                $error = str_replace("'", '\\\'', $tmpl[$params['trigger']]);
+            $errors = $template->getTemplateVars('error');
+            if (isset($params['trigger']) && isset($errors[$params['trigger']])) {
+                $error = str_replace("'", '\\\'', $errors[$params['trigger']]);
                 $error = str_replace('"', '&quot;', $error);
                 $error = str_replace("\r", '', $error);
                 $error = str_replace("\n", '<BR>', $error);
@@ -67,19 +67,30 @@ class Utils
                 $result .= ' title="' . $error . '" ';
                 $result .= ' class="' . (empty($class) ? '' : $class) . ($params['bold'] ? ' lms-ui-error bold" ' : ' lms-ui-error" ');
             } else {
-                if ($params['text'] != '') {
-                    $text = $params['text'];
-                    unset($params['text']);
-                    $text = trans(array_merge((array)$text, $params));
+                $warnings = $template->getTemplateVars('warning');
+                if (isset($params['trigger']) && isset($warnings[$params['trigger']])) {
+                    $error = str_replace("'", '\\\'', $warnings[$params['trigger']]);
+                    $error = str_replace('"', '&quot;', $error);
+                    $error = str_replace("\r", '', $error);
+                    $error = str_replace("\n", '<BR>', $error);
 
-                    //$text = str_replace('\'', '\\\'', $text);
-                    $text = str_replace('"', '&quot;', $text);
-                    $text = str_replace("\r", '', $text);
-                    $text = str_replace("\n", '<BR>', $text);
+                    $result .= ' title="' . $error . '" ';
+                    $result .= ' class="' . (empty($class) ? '' : $class) . ($params['bold'] ? ' lms-ui-warning bold" ' : ' lms-ui-warning" ');
+                } else {
+                    if ($params['text'] != '') {
+                        $text = $params['text'];
+                        unset($params['text']);
+                        $text = trans(array_merge((array)$text, $params));
 
-                    $result .= ' title="' . $text . '" ';
+                        //$text = str_replace('\'', '\\\'', $text);
+                        $text = str_replace('"', '&quot;', $text);
+                        $text = str_replace("\r", '', $text);
+                        $text = str_replace("\n", '<BR>', $text);
+
+                        $result .= ' title="' . $text . '" ';
+                    }
+                    $result .= ' class="' . (empty($class) ? '' : $class) . (isset($params['bold']) && $params['bold'] ? ' bold' : '') . '" ';
                 }
-                $result .= ' class="' . (empty($class) ? '' : $class) . (isset($params['bold']) && $params['bold'] ? ' bold' : '') . '" ';
             }
 
             return $result;
