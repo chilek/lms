@@ -180,6 +180,9 @@ function openPopupWindow(options)
 						$( "#" + dialogId).dialog('destroy').remove();
 					})
 				},
+				close: function() {
+					$( "#" + dialogId).dialog('destroy').remove();
+				}
 			});
 			$(options.selector).attr('data-dialog-id', dialogId);
 

@@ -17,7 +17,7 @@
 {if !empty($states)}
 <div id="location-box-autosuggest" style="display: none;"><ul></ul></div>
 
-<form name="search" id="search" method="post" action="?m=chooselocation">
+<form name="location-search" id="location-search" method="post" action="?m=chooselocation">
 	<input type="submit" class="hiddenbtn">
 	<table id="searchtable" cellpadding="5">
 		<tr>
@@ -31,10 +31,9 @@
 
 <script>
 
-	var AUTOSUGGEST_MAX_LENGTH = {ConfigHelper::getConfig('phpui.autosuggest_max_length', 40)};
 	new AutoSuggest({
-		form: 'form[name="search"]',
-		elem: 'form[name="search"] [name="searchcity"]',
+		form: '#location-search',
+		elem: 'form[name="location-search"] [name="searchcity"]',
 		uri: '?m=chooselocation&ajax=1&mode=city&what=',
 		autosubmit: 0,
 		suggestionContainer: '#location-box-autosuggest',
