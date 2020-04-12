@@ -32,7 +32,14 @@
 			$('body').toggleClass('main-menu-mobile', $(window).width() <= 900);
 
 			$(window).resize(function() {
-				$('body').toggleClass('main-menu-mobile', $(window).width() <= 900);
+				$('body').toggleClass('main-menu-mobile', $(window).width() <= 900)
+				.css('margin-top', $('#lms-ui-tool-panels').outerHeight());
+			})
+
+			$(function() {
+				setTimeout(function() {
+					$(window).resize();
+				}, 0);
 			});
 
 		</script>
