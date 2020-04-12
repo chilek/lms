@@ -46,7 +46,7 @@
 		<TD class="text-right">
 			({$reg.id|string_format:"%04d"})
 		</TD>
-		<TD class="nobr text-right{if $reg.balance < 0} lms-ui-error{/if}">
+		<TD class="nobr text-right{if $reg.balance < 0} lms-ui-alert{/if}">
 			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_summaries')}
 			{$reg.balance|money_format}
 			{/if}

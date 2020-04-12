@@ -57,7 +57,7 @@
 										<select name="ipadd[netid]" {tip text="Choose network" trigger="netid" class="lms-ui-advanced-select"}>
 											<option value="0">{trans("- automatic selection -")}</option>
 											{foreach $networks as $net}
-											<option value="{$net.id}" data-pubnetid="{$net.pubnetid}" {if $net.id == $nodeipdata.netid} selected{/if}{if $net.disabled == 1} class="lms-ui-error"{/if}>{$net.name|truncate:20:"":true}: {$net.address}/{$net.prefix}</OPTION>
+											<option value="{$net.id}" data-pubnetid="{$net.pubnetid}" {if $net.id == $nodeipdata.netid} selected{/if}{if $net.disabled == 1} class="lms-ui-alert"{/if}>{$net.name|truncate:20:"":true}: {$net.address}/{$net.prefix}</OPTION>
 											{/foreach}
 										</select>
 										{if (ConfigHelper::checkConfig('phpui.show_assigned_networks_only')) && ConfigHelper::checkConfig('phpui.public_ip')}

@@ -57,7 +57,7 @@
 				</THEAD>
 				<TBODY>
 				{foreach $messagelist as $item}
-				<TR class="{if $item.status==$smarty.const.MSG_ERROR} lms-ui-error{elseif $item.status==$smarty.const.MSG_SENT} blend{elseif $item.status==$smarty.const.MSG_DELIVERED} green{/if}">
+				<TR class="{if $item.status==$smarty.const.MSG_ERROR} lms-ui-alert{elseif $item.status==$smarty.const.MSG_SENT} blend{elseif $item.status==$smarty.const.MSG_DELIVERED} green{/if}">
 					<TD class="nobr" onClick="return self.location.href='?m=messageinfo&id={$item.id}'">
 						{$item.cdate|date_format:"%Y/%m/%d"}
 					</TD>

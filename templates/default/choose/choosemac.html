@@ -36,7 +36,7 @@
 		<TD align="center">
 			{if $maclist.nodename[maclist] == ""}
 			<a href="javascript: void(0);" onclick="sendvalue(targetfield,'{$maclist.mac[maclist]}');">
-				{if $smarty.server.REMOTE_ADDR == $maclist.ip[maclist]}<span class="lms-ui-error">{/if}
+				{if $smarty.server.REMOTE_ADDR == $maclist.ip[maclist]}<span class="lms-ui-alert">{/if}
 						{$maclist.ip[maclist]}
 				{if $smarty.server.REMOTE_ADDR == $maclist.ip[maclist]}</span>{/if}
 			</A>
@@ -49,7 +49,7 @@
 	<table width="100%" height="100%">
 		<TR title="{trans("Click to close window")}" onclick="parent.window.close();">
 			<TD align="center">
-				<span class="lms-ui-error">{trans("That server hasn't seen any MAC addresses!")}</span>
+				<span class="lms-ui-alert">{trans("That server hasn't seen any MAC addresses!")}</span>
 				<BR><BR>
 				{trans("Or, most likely, can't get MAC addresses table on that host.")}
 			</TD>

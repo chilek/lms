@@ -111,26 +111,26 @@
 	{assign var=receiptid value=$receipt.id}
 	<TR class="highlight" data-name="{$receipt.number}">
 		<TD WIDTH="1%" NOWRAP><A id="{$receipt.id}"></A>
-			{if !$receipt.closed}<span class="lms-ui-error">{/if}
+			{if !$receipt.closed}<span class="lms-ui-alert">{/if}
 			{$receipt.cdate|date_format:"%Y/%m/%d %H:%M"}<BR>
 			{$receipt.user|truncate:"16":"...":true}
 			{if !$receipt.closed}</span>{/if}
 		</TD>
-		<TD WIDTH="1%" NOWRAP align="right"{if !$receipt.closed} class="lms-ui-error"{/if}>
+		<TD WIDTH="1%" NOWRAP align="right"{if !$receipt.closed} class="lms-ui-alert"{/if}>
 			{$receipt.number}
 		</TD>
-		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT"{if !$receipt.closed} class="lms-ui-error"{/if}>
+		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT"{if !$receipt.closed} class="lms-ui-alert"{/if}>
 			{if $receipt.value > 0}{moneyf($receipt.value, $receipt.currency)}{else}-{/if}
 		</TD>
-		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT"{if !$receipt.closed} class="lms-ui-error"{/if}>
+		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT"{if !$receipt.closed} class="lms-ui-alert"{/if}>
 			{if $receipt.value < 0}{moneyf($receipt.value*-1, $receipt.currency)}{else}-{/if}
 		</TD>
-		<TD WIDTH="45%"{if !$receipt.closed} class="lms-ui-error"{/if}>
+		<TD WIDTH="45%"{if !$receipt.closed} class="lms-ui-alert"{/if}>
 			{if $receipt.customerid}<A HREF="?m=customerinfo&id={$receipt.customerid}">{/if}
 			{$receipt.customer|truncate:"60":"...":true}
 			{if $receipt.customerid}</A>{/if}
 		</TD>
-		<TD WIDTH="50%"{if !$receipt.closed} class="lms-ui-error"{/if}>
+		<TD WIDTH="50%"{if !$receipt.closed} class="lms-ui-alert"{/if}>
 			{if $receipt.title}
 			{$receipt.title|truncate:"80":"...":true}
 			{/if}
@@ -231,7 +231,7 @@
 		<TD WIDTH="1%" nowrap>
 			{$logentry.time|date_format:"%x %H:%M"} &nbsp;
 			<B>
-			{if $logentry.value<0}<span class="lms-ui-error">{/if}{$logentry.value|money_format}{if $logentry.value<0}</span>{/if}
+			{if $logentry.value<0}<span class="lms-ui-alert">{/if}{$logentry.value|money_format}{if $logentry.value<0}</span>{/if}
 			<span class="blend">({trans("Cash state:")} {$logentry.snapshot|money_format})</span> &nbsp;
 			</B>
 		</TD>

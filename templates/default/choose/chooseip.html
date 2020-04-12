@@ -74,7 +74,7 @@
 		<td class="fall light" align="center">
 			<SELECT SIZE="1" onchange="parent.location.href='?m=chooseip{if $privnetid}&privnetid={$privnetid}{/if}{if $device}&device={$device}{/if}&netid='+document.selectnet.elements['netid'].value" NAME="netid">
 				{foreach $networks as $net}
-				<OPTION VALUE="{$net.id}"{if $net.id == $netid} selected{/if}{if $net.disabled == 1} class="lms-ui-error"{/if}>{$net.name|truncate:20:"":true}: {$net.address}/{$net.prefix}</OPTION>
+				<OPTION VALUE="{$net.id}"{if $net.id == $netid} selected{/if}{if $net.disabled == 1} class="lms-ui-alert"{/if}>{$net.name|truncate:20:"":true}: {$net.address}/{$net.prefix}</OPTION>
 				{foreachelse}
 				<OPTION VALUE="0">{trans("You don't have any IP network.")}</OPTION>
 				{/foreach}

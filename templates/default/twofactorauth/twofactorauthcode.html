@@ -68,7 +68,7 @@
 			&copy; 2001-{$smarty.now|date_format:'%Y'} LMS Developers
 		</span>
 		&nbsp;<br>
-		{if $error}<span class="lms-ui-error bold">{$error}</span>{else}&nbsp;{/if}
+		{if $error}<span class="lms-ui-alert bold">{$error}</span>{else}&nbsp;{/if}
 		&nbsp;<br>
 		<form method="post" name="authcodeform" action="{$target}">
 			<INPUT type="submit" class="hiddenbtn">
