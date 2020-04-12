@@ -169,7 +169,7 @@ if (isset($_GET['ajax']) && (isset($_POST['what']) || isset($_GET['what']))) {
 
         if ($cityid) {
             $list = get_loc_streets($cityid);
-            $result['street'] = array(
+            $result[] = array(
                 'type' => 'street',
                 'data' => $list ? $list : array(),
                 'selected' => 0,
