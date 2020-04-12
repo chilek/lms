@@ -55,13 +55,19 @@
 
 	</div>
 	<script>
-		if ({ConfigHelper::getConfig('phpui.logout_confirmation')}) {
-			$('#logout').click(function () {
-				confirmDialog($t("Are you sure that you want to logout?"), this).done(function () {
-					self.location.href = '?m=logout&is_sure=1';
+
+		$(function() {
+			if ({ConfigHelper::getConfig('phpui.logout_confirmation')}) {
+				$('#logout').click(function () {
+					confirmDialog($t("Are you sure that you want to logout?"), this).done(function () {
+						self.location.href = '?m=logout&is_sure=1';
+					});
+					return false;
 				});
-				return false;
-			});
-		}
+			}
+
+			$('body').css('margin-top', '3.2em');
+		});
+
 	</script>
 {/if}

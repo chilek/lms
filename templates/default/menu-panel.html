@@ -1,4 +1,4 @@
-<i id="lms-ui-menu-panel-toggle" class="fas fa-angle-left"></i>
+<i id="lms-ui-menu-panel-toggle" class="fas fa-angle-left no-print"></i>
 <nav id="lms-ui-menu-panel" class="no-print">
 	<div id="lms-ui-menu-panel-container">
 	<div id="lms-ui-logo">
@@ -11,20 +11,19 @@
 			var mainMenuVisible = getCookie('main-menu-visible');
 			mainMenuVisible = mainMenuVisible === null || mainMenuVisible == 'true';
 			if (mainMenuVisible) {
-				$('#lms-ui-menu-panel-toggle').addClass('visible');
+				$('body').addClass('main-menu-visible');
 			} else {
 				$('#lms-ui-menu-panel').hide();
 				$('#lms-ui-menu-panel-toggle').switchClass('fa-angle-left', 'fa-angle-right');
 			}
 
-
 			$('#lms-ui-menu-panel-toggle').click(function () {
 				var mainMenuVisible = $('#lms-ui-menu-panel').toggle().is(':visible');
 				if (mainMenuVisible) {
-					$('#lms-ui-menu-panel-toggle').addClass('visible')
+					$('body').addClass('main-menu-visible').find('#lms-ui-menu-panel-toggle')
 						.switchClass('fa-angle-right', 'fa-angle-left');
 				} else {
-					$('#lms-ui-menu-panel-toggle').removeClass('visible')
+					$('body').removeClass('main-menu-visible').find('#lms-ui-menu-panel-toggle')
 						.switchClass('fa-angle-left', 'fa-angle-right');
 				}
 				setCookie('main-menu-visible', mainMenuVisible);
@@ -37,8 +36,8 @@
 				});
 			} else {
 				$('#lms-ui-menu-panel').removeClass('mobile').css({
-					'width': '15em',
-					'min-width': '15em'
+					'width': '16em',
+					'min-width': '16em'
 				});
 			}
 
@@ -49,16 +48,28 @@
 							.stop(true).animate({
 							width: '3em'
 						});
+						$('body').stop(true).animate({
+							"margin-left": '4em'
+						});
+						$('#lms-ui-tool-panels').stop(true).animate({
+							"margin-left": '4em'
+						});
 					}
 				} else {
 					if ($('#lms-ui-menu-panel').is('.mobile')) {
 						$('#lms-ui-menu-panel').removeClass('mobile')
 							.stop(true).animate({
-							width: '15em'
+							width: '16em'
 						}, {
 							complete: function () {
-								$(this).css('min-width', '15em');
+								$(this).css('min-width', '16em');
 							}
+						});
+						$('body').stop(true).animate({
+							"margin-left": '17em'
+						});
+						$('#lms-ui-tool-panels').stop(true).animate({
+							"margin-left": '17em'
 						});
 					}
 				}
@@ -148,7 +159,7 @@
 		$('#lms-ui-menu-panel').on('mouseenter touchstart', function () {
 			if ($('#lms-ui-menu-panel').is('.mobile')) {
 				$(this).stop(true).animate({
-					width: '15em'
+					width: '16em'
 				});
 			}
 		}).on('mouseleave', function () {

@@ -45,13 +45,27 @@ BODY {
 	background-color: @lucid;
 	margin: 0;
 	padding: 0;
-	min-height: 100%;
-	width: 100%;
-	display: flex;
-	justify-content: flex-start;
-	align-items: flex-start;
-	overflow: hidden;
-	height: 100vh;
+	padding-top: 1.5em;
+	//min-height: 100%;
+	//width: 100%;
+	//display: flex;
+	//justify-content: flex-start;
+	//align-items: flex-start;
+	//overflow: hidden;
+	//height: 100vh;
+	margin-left: 0.5em;
+	#lms-ui-tool-panels {
+		margin-left: 0.5em;
+	}
+	&.main-menu-visible {
+		margin-left: 17em;
+		@media print {
+			margin-left: 0;
+		}
+		#lms-ui-tool-panels {
+			margin-left: 17em;
+		}
+	}
 }
 
 body.lms-ui-popup {
@@ -72,7 +86,7 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 }
 
 #lms-ui-menu-panel {
-	align-self: flex-start;
+//	align-self: flex-start;
 	background-color: @dark;
 	overflow: hidden;
 	border: 1px solid black;
@@ -80,8 +94,12 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 	flex-direction: column;
 	justify-content: flex-start;
 	align-items: stretch;
-	height: 100%;
-	flex: 0 0 auto;
+//	height: 100%;
+//	flex: 0 0 auto;
+	position: fixed;
+	left: 0;
+	top: 0;
+	height: 100vh;
 }
 
 #lms-ui-menu-panel-container {
@@ -95,13 +113,15 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 }
 
 #lms-ui-menu-panel-toggle {
-	position: absolute;
+	//position: absolute;
+	position: fixed;
 	left: 0.15em;
 	top: 0.15em;
 	background-size: cover;
 	width: 0.8em;
 	height: 0.8em;
 	cursor: pointer;
+	z-index: 1;
 	&:not(.visible) {
 		background-color: @superdark;
 		padding: 0.1em 0.0em 0.3em 0.1em;
@@ -148,8 +168,8 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 
 #lms-ui-contents {
 	overflow: hidden;
-	width: 100%;
-	height: 100vh;
+//	width: 100%;
+//	height: 100vh;
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
@@ -222,8 +242,8 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 #lms-ui-module-view {
 	width: 100%;
 	flex: 1 1 auto;
-	overflow: auto;
-	margin-top: 0.5em;
+	overflow: hidden;
+	//margin-top: 0.5em;
 }
 
 #lms-ui-generation-time {
@@ -238,7 +258,17 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 	margin-top: 0.5em;
 }
 
+#lms-ui-tool-panels {
+	position: fixed;
+	left: 0;
+	top: 0;
+	background-size: 100% 100%;
+	background-color: @lucid;
+	right: 0;
+}
+
 #lms-ui-quicksearch-indicators-panel {
+	display: flex;
 	justify-content: space-between;
 	flex-wrap: wrap;
 }
