@@ -4701,3 +4701,5 @@ $_LANG['Copy from billing address'] = 'Kopiuj z adresu bilingowego';
 $_LANG['Copy from post address'] = 'Kopiuj z adresu korespondencyjnego';
 
 $_LANG['Choose TERRIT location'] = 'Wybierz lokalizację TERYT';
+
+$_LANG['Sent by customer at $a'] = 'Przesłane przez klienta $a';

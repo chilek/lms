@@ -141,6 +141,7 @@
 				{documentview id="{$document.id}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
 					url="?m=documentview&id={$document.id}&attachmentid={$docattach.id}" external=true class=$class
 					text="{$docattach.filename} <img src=\"img/{if preg_match('/pdf/',$docattach.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)}xls{else}view{/if}.gif\">"}
+				{if $docattach.type == -1}<i class="lms-ui-icon-user" title="<strong>{t a=date("Y/m/d H:i", $docattach.cdate)}Sent by customer at $a{/t}</strong>"></i>{/if}
 				<input type="hidden" name="document[attachments][{$docattach.id}][deleted]" value="{$document.attachments[$docattach.id].deleted}">
 			</div>
 			{/foreach}
