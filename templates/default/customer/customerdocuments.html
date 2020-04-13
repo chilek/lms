@@ -129,12 +129,12 @@
 							{button type="link" icon="edit" href="?m=documentedit&id={$doc.docid}" tip="Edit"}
 						{/if}
 						{$docattach = $doc.attachments[0]}
-						{if $docattach.main || count($doc.attachments) == 1}
+						{if $docattach.type == 1 || count($doc.attachments) == 1}
 							{documentview id="{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
 							url="?m=documentview&id={$doc.docid}" external=true
 							text="<i class=\"{if preg_match('/pdf/',$docattach.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)}xls{/if}\"></i>"}
 						{/if}
-						{if count($doc.attachments) > 1 || !$doc.attachments[0].main}
+						{if count($doc.attachments) > 1 || !$docattach.type < 1}
 							<a href="#" id="allattachments-toggle-{$doc.docid}" onclick="toggle_all_attachments({$doc.docid}); return false;" title="{trans("more document attachments")}">
 								<img src="img/asc_order.gif">
 							</a>
@@ -143,10 +143,11 @@
 					</div>
 					<div id="allattachments-{$doc.docid}" class="document-attachment-container" style="display: none;">
 						{foreach $doc.attachments as $docattach}
-							{if $docattach@first && $docattach.main}{continue}{/if}
+							{if $docattach@first && $docattach.type == 1}{continue}{/if}
 							{documentview id="{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
 							url="?m=documentview&id={$doc.docid}&attachmentid={$docattach.id}" external=true
 							text="{$docattach.filename} <i class=\"{if preg_match('/pdf/',$docattach.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)}xls{/if}\"></i>"}
+							{if $docattach.type == -1}<i class="lms-ui-icon-user" title="<strong>{t a=date("Y/m/d H:i", $docattach.cdate)}Sent by customer at $a{/t}</strong>"></i>{/if}
 							<br>
 						{/foreach}
 					</div>
