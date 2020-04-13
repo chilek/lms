@@ -74,7 +74,7 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 	this.highlighted = -1;
 
 	//A div to use to create the dropdown.
-	this.div = $(form.suggestionContainer)[0];
+	this.div = $(this.suggestionContainer)[0];
 
 	//Do you want to remember what keycode means what? Me neither.
 	var ENT = 3;
