@@ -42,9 +42,9 @@ function smarty_function_customerlist($params, $template)
         }
 
         if (!empty($params['selecttip'])) {
-            $result .= Utils::tip(array('text' => $params['selecttip']), $template);
+            $result .= LMSSmartyPlugins::tipFunction(array('text' => $params['selecttip']), $template);
         } else {
-            $result .= Utils::tip(array('text' => 'Select customer (optional)'), $template);
+            $result .= LMSSmartyPlugins::tipFunction(array('text' => 'Select customer (optional)'), $template);
         }
 
         $result .= sprintf('onChange="reset_customer(\'%s\', \'%s\', \'%s\'); ', $params['form'], $params['selectname'], $params['inputname']);
@@ -104,9 +104,9 @@ function smarty_function_customerlist($params, $template)
     }
 
     if (!empty($params['inputtip'])) {
-        $result .= Utils::tip(array('text' => $params['inputtip']), $template);
+        $result .= LMSSmartyPlugins::tipFunction(array('text' => $params['inputtip']), $template);
     } else {
-        $result .= Utils::tip(array('text' => 'Enter customer ID', 'trigger' => 'customerid'), $template);
+        $result .= LMSSmartyPlugins::tipFunction(array('text' => 'Enter customer ID', 'trigger' => 'customerid'), $template);
     }
 
     $result .= '>';
@@ -116,7 +116,7 @@ function smarty_function_customerlist($params, $template)
             . '</script>';
     }
     $result .= '<a href="javascript: void(0);" onClick="return customerchoosewin(document.forms[\'' . $params['form'] . '\'].elements[\'' . $params['inputname'] . '\']);" ';
-    $result .= Utils::tip(array('text' => 'Click to search customer'), $template) . '>&nbsp;';
+    $result .= LMSSmartyPlugins::tipFunction(array('text' => 'Click to search customer'), $template) . '>&nbsp;';
     $result .= trans("Search") . '&nbsp;&raquo;&raquo;&raquo;</A>';
 
     if (empty($params['customers'])) {

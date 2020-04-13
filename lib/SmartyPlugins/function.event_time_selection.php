@@ -45,7 +45,7 @@ function smarty_function_event_time_selection($params, $template)
 					<div class="lms-ui-event-time-date">
 						' . trans("Begin:") . ' <INPUT type="text" id="event-start" placeholder="' . trans("yyyy/mm/dd hh:mm")
                             . '" name="' . $field_prefix . '[begin]" value="' . $begin . '" size="14" ' .
-                            Utils::tip(array(
+                            LMSSmartyPlugins::tipFunction(array(
                                 'class' => 'calendar-time',
                                 'text' => 'Enter date in YYYY/MM/DD hh:mm format (empty field means today) or click to choose it from calendar',
                                 'trigger' => 'begin',
@@ -55,7 +55,7 @@ function smarty_function_event_time_selection($params, $template)
 					<div class="lms-ui-event-time-date">
 						' . trans("End:") . ' <INPUT type="text" id="event-end" placeholder="' . trans("yyyy/mm/dd hh:mm")
                             . '" name="' . $field_prefix . '[end]" value="' . $end . '" size="14" ' .
-                            Utils::tip(array(
+                            LMSSmartyPlugins::tipFunction(array(
                                 'class' => 'calendar-time',
                                 'text' => 'Enter date in YYYY/MM/DD hh:mm format (empty field means today) or click to choose it from calendar',
                                 'trigger' => 'end',

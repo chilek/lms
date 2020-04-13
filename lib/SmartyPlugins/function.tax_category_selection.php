@@ -37,14 +37,14 @@ function smarty_function_tax_category_selection($params, $template)
     $result = '<select name="' . $elementname . '"' . (isset($params['id']) ? ' id="' . $params['id'] . '"' : '')
         . (isset($params['class']) ? ' class="' . $params['class'] . '"' : '')
         . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '')
-        . (isset($params['tip']) ? ' ' . Utils::tip(array('text' => $params['tip'], 'trigger' => isset($params['id']) ? $params['id'] : $elementname), $template) : '')
+        . (isset($params['tip']) ? ' ' . LMSSmartyPlugins::tipFunction(array('text' => $params['tip'], 'trigger' => isset($params['id']) ? $params['id'] : $elementname), $template) : '')
         . (isset($params['visible']) && !$params['visible'] ? ' style="display: none;"' : '')
         . $data_attributes . '>';
     $result .= '<option value="0">' . trans("- none -") . '</option>';
     foreach ($GLOBALS['TAX_CATEGORIES'] as $categoryid => $category) {
         $result .= '<option value="' . $categoryid . '"'
             . ($categoryid == $selected ? ' selected' : '') . ' '
-            . Utils::tip(array('text' => $category['description']), $template) . '>' . $category['label'] . '</option>';
+            . LMSSmartyPlugins::tipFunction(array('text' => $category['description']), $template) . '>' . $category['label'] . '</option>';
     }
     $result .= '</select>';
 

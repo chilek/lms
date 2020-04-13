@@ -34,13 +34,13 @@ function smarty_function_mac_address_selection($params, $template)
         $result .= '<tr id="mac' . $key . '" class="mac">
 			<td style="width: 100%;">
 				<input type="text" name="' . $form . '[macs][' . $key . ']" value="' . $mac . '" ' . (!$i ? 'required ' : '')
-                    . Utils::tip(array(
+                    . LMSSmartyPlugins::tipFunction(array(
                             'text' => "Enter MAC address",
                             'trigger' => 'mac' . $key
                         ), $template) . '>
 				<span class="ui-icon ui-icon-closethick remove-mac"></span>
 				<a href="#" class="mac-selector"
-					' . Utils::tip(array(
+					' . LMSSmartyPlugins::tipFunction(array(
                             'text' => "Click to select MAC from the list",
                         ), $template) . '>&raquo;&raquo;&raquo;</a>
 			</td>

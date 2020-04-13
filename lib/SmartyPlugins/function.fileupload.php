@@ -60,7 +60,7 @@ function smarty_function_fileupload($params, $template)
 			</div>
 			<div class="lms-ui-button-fileupload-container">
 				<button type="button" class="lms-ui-button-fileupload lms-ui-button' . (isset($error_tip_params) ? ' lms-ui-error' : '') . '" id="' . $id . '_button" '
-                    . (isset($error_tip_params) ? Utils::tip($error_tip_params, $template) : '') . '><i></i> ' . trans("Select files") . '</button>
+                    . (isset($error_tip_params) ? LMSSmartyPlugins::tipFunction($error_tip_params, $template) : '') . '><i></i> ' . trans("Select files") . '</button>
 				<INPUT name="' . $id . '[]" type="file" multiple class="fileupload-select-btn" style="display: none;" ' . ($form ? ' form="' . $form . '"' : '') . '>
 			</div>
 			<div class="fileupload-files">';
