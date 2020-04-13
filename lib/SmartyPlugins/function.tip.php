@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function smarty_function_tip($params, $template)
+function smarty_function_tip(array $params, $template)
 {
-    return Utils::tip($params, $template);
+    return LMSSmartyPlugins::tipFunction($params, $template);
 }
