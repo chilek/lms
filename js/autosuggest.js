@@ -106,7 +106,7 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 	Up/down arrows = Move the highlight up and down in the suggestions.
 	********************************************************/
 	this.elem.onkeydown = function(ev) {
-		var key = me.getKeyCode(ev);
+		var key = ev.keyCode;
 		var suggest;
 
 		if (/autosuggest-(left|top|right|bottom)/i.exec(me.elem.className) !== null)
@@ -189,7 +189,7 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 	then display a list of eligible suggestions.
 	********************************************************/
 	this.elem.onkeyup = function(ev) {
-		var key = me.getKeyCode(ev);
+		var key = ev.keyCode;
 		switch (key) {
 			//The control keys were already handled by onkeydown, so do nothing.
 			case ENT:
@@ -360,7 +360,7 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 		********************************************************/
 		ul.onmouseover = function(ev) {
 			//Walk up from target until you find the LI.
-			var target = me.getEventSource(ev);
+			var target = ev.target;
 			while (target.parentNode && target.tagName.toUpperCase() != 'LI') {
 				target = target.parentNode;
 			}
@@ -432,47 +432,6 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 			}
 		}
 	};
-
-	/********************************************************
-	Helper function to determine the keycode pressed in a
-	browser-independent manner.
-	********************************************************/
-	this.getKeyCode = function(ev) {
-		if(ev) {		//Moz
-			return ev.keyCode;
-		}
-		if(window.event) {	//IE
-			return window.event.keyCode;
-		}
-	};
-
-	/********************************************************
-	Helper function to determine the event source element in a
-	browser-independent manner.
-	********************************************************/
-	this.getEventSource = function(ev) {
-		if(ev) {		//Moz
-			return ev.target;
-		}
-		if(window.event) {	//IE
-			return window.event.srcElement;
-		}
-	};
-
-	/********************************************************
-	Helper function to cancel an event in a
-	browser-independent manner.
-	(Returning false helps too).
-	********************************************************/
-	this.cancelEvent = function(ev) {
-		if(ev) {		//Moz
-			ev.preventDefault();
-			ev.stopPropagation();
-		}
-		if(window.event) {	//IE
-			window.event.returnValue = false;
-		}
-	}
 }
 
 //counter to help create unique ID's
