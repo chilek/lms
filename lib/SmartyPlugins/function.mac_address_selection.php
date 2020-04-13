@@ -3,7 +3,7 @@
 /**
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,34 +24,7 @@
  *  $Id$
  */
 
-function smarty_function_mac_address_selection($params, $template)
+function smarty_function_mac_address_selection(array $params, $template)
 {
-    $result = '<table style="width: 100%;" class="lms-ui-mac-address-selection">';
-
-    $form = $params['form'];
-    $i = 0;
-    foreach ($params['macs'] as $key => $mac) {
-        $result .= '<tr id="mac' . $key . '" class="mac">
-			<td style="width: 100%;">
-				<input type="text" name="' . $form . '[macs][' . $key . ']" value="' . $mac . '" ' . (!$i ? 'required ' : '')
-                    . LMSSmartyPlugins::tipFunction(array(
-                            'text' => "Enter MAC address",
-                            'trigger' => 'mac' . $key
-                        ), $template) . '>
-				<span class="ui-icon ui-icon-closethick remove-mac"></span>
-				<a href="#" class="mac-selector"
-					' . LMSSmartyPlugins::tipFunction(array(
-                            'text' => "Click to select MAC from the list",
-                        ), $template) . '>&raquo;&raquo;&raquo;</a>
-			</td>
-		</tr>';
-        $i++;
-    }
-
-    $result .= '</table>
-		<a href="#" id="add-mac" data-field-prefix="' . $form
-            . '"><span class="ui-icon ui-icon-plusthick"></span> ' . trans("Add MAC address") . '</a>
-		<script src="js/lms-ui-mac-address-selection.js"></script>';
-
-    return $result;
+    return LMSSmartyPlugins::macAddressSelectionFunction($params, $template);
 }

@@ -24,24 +24,7 @@
  *  $Id$
  */
 
-function smarty_function_currency_selection($params, $template)
+function smarty_function_currency_selection(array $params, $template)
 {
-    $elementname = isset($params['elementname']) ? $params['elementname'] : 'currency';
-    $selected = isset($params['selected']) && isset($GLOBALS['CURRENCIES'][$params['selected']])
-        ? $params['selected'] : null;
-    $locked = isset($params['locked']) && $params['locked'];
-    if (function_exists('get_currency_value') && !$locked) {
-        $result = '<select name="' . $elementname . '" ' . LMSSmartyPlugins::tipFunction(array('text' => 'Select currency'), $template)
-            . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '') . '>';
-        foreach ($GLOBALS['CURRENCIES'] as $currency) {
-            $result .= '<option value="' . $currency . '"'
-                . ($currency == $selected ? ' selected' : '') . '>' . $currency . '</option>';
-        }
-        $result .= '</select>';
-    } else {
-        $result = LMS::$currency . '<input type="hidden" name="' . $elementname . '"'
-            . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '') . ' value="' . LMS::$currency . '">';
-    }
-
-    return $result;
+    return LMSSmartyPlugins::currencySelectionFunction($params, $template);
 }

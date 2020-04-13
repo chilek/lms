@@ -83,6 +83,196 @@ class LMSSmartyPlugins
 		</' . ($type == 'link' || $type == 'link-button' ? 'a' : 'button') . '>';
     }
 
+    public static function currencySelectionFunction(array $params, $template)
+    {
+        $elementname = isset($params['elementname']) ? $params['elementname'] : 'currency';
+        $selected = isset($params['selected']) && isset($GLOBALS['CURRENCIES'][$params['selected']])
+            ? $params['selected'] : null;
+        $locked = isset($params['locked']) && $params['locked'];
+        if (function_exists('get_currency_value') && !$locked) {
+            $result = '<select name="' . $elementname . '" ' . self::tipFunction(array('text' => 'Select currency'), $template)
+                . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '') . '>';
+            foreach ($GLOBALS['CURRENCIES'] as $currency) {
+                $result .= '<option value="' . $currency . '"'
+                    . ($currency == $selected ? ' selected' : '') . '>' . $currency . '</option>';
+            }
+            $result .= '</select>';
+        } else {
+            $result = LMS::$currency . '<input type="hidden" name="' . $elementname . '"'
+                . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '') . ' value="' . LMS::$currency . '">';
+        }
+
+        return $result;
+    }
+
+    public static function customerListFunction(array $params, $template)
+    {
+        $result = '';
+
+        $customername = !isset($params['customername']) || $params['customername'];
+
+        if (isset($params['selected']) && !preg_match('/^[0-9]+$/', $params['selected'])) {
+            $params['selected'] = '';
+        }
+
+        if (!empty($params['customers'])) {
+            $result .= sprintf('<SELECT name="%s" value="%s" ', $params['selectname'], $params['selected']);
+
+            if (!empty($params['select_id'])) {
+                $result .= 'id="' . $params['select_id'] . '" ';
+            }
+
+            if (!empty($params['selecttip'])) {
+                $result .= self::tipFunction(array('text' => $params['selecttip']), $template);
+            } else {
+                $result .= self::tipFunction(array('text' => 'Select customer (optional)'), $template);
+            }
+
+            $result .= sprintf('onChange="reset_customer(\'%s\', \'%s\', \'%s\'); ', $params['form'], $params['selectname'], $params['inputname']);
+
+            if (!empty($params['customOnChange'])) {
+                $result .= $params['customOnChange'];
+            }
+
+            $result .= '">';
+
+            if (isset($params['firstoption'])) {
+                if (!empty($params['firstoption'])) {
+                    $result .= '<OPTION value="0"';
+                    if (empty($params['selected'])) {
+                        $result .= ' selected';
+                    }
+                    $result .= '>' . trans($params['firstoption']) . '</OPTION>';
+                }
+            } else {
+                $result .= '<OPTION value="0"';
+                if (empty($params['selected'])) {
+                    $result .= ' selected';
+                }
+                $result .= '>' . trans("- select customer -") . '</OPTION>';
+            }
+            foreach ($params['customers'] as $customer) {
+                $result .= '<OPTION value="' . $customer['id'] . '"';
+                if ($customer['id'] == $params['selected']) {
+                    $result .= ' selected';
+                }
+                $result .= '>' . mb_substr($customer['customername'], 0, 40) . ' (' . sprintf("%04d", $customer['id']) . ')</OPTION>';
+            }
+            $result .= '</SELECT>&nbsp;' . trans("or Customer ID:");
+        } else {
+            $result .= trans("ID:");
+            $timer_var = 'customerlist_timer_' . md5($params['inputname']);
+        }
+        $result .= '&nbsp;<INPUT type="text" name="' . $params['inputname'] . '" value="' . $params['selected'] . '" data-prev-value="' . $params['selected'] . '" size="5" ';
+
+        if (!empty($params['input_id'])) {
+            $result .= 'id="' . $params['input_id'] . '" ';
+        }
+
+        if (isset($params['required']) && $params['required']) {
+            $result .= 'required ';
+        }
+
+        $on_change = !empty($params['customOnChange']) ? $params['customOnChange'] : '';
+
+        if (!empty($params['customers'])) {
+            $reset_customer = "if (this.value != \$(this).attr('data-prev-value')) { reset_customer('${params['form']}', '${params['inputname']}', '${params['selectname']}'); ${on_change}; \$(this).attr('data-prev-value', this.value); }";
+            $result .= "onChange=\"${reset_customer}\" onFocus=\"${reset_customer}\"";
+        } else {
+            $result .= sprintf(' onblur="%1$s" onfocus="%1$s" oninput="%1$s" ', 'if (this.value != $(this).attr(\'data-prev-value\')) {'
+                . 'var elem=this; clearTimeout(' . $timer_var . '); ' . $timer_var . '=setTimeout(function(){'
+                . $on_change . ';' . ($customername ? 'getCustomerName(elem);' : '') . ' $(elem).attr(\'data-prev-value\', elem.value);}, 500);}');
+        }
+
+        if (!empty($params['inputtip'])) {
+            $result .= self::tipFunction(array('text' => $params['inputtip']), $template);
+        } else {
+            $result .= self::tipFunction(array('text' => 'Enter customer ID', 'trigger' => 'customerid'), $template);
+        }
+
+        $result .= '>';
+        if (empty($params['customers'])) {
+            $result .= '<script type="text/javascript">var ' . $timer_var . ';'
+                . ($customername ? ' var cid = $(\'[name="' . $params['inputname']. '"]\'); if (cid.val()) getCustomerNameDeferred(cid.get(0));' : '')
+                . '</script>';
+        }
+        $result .= '<a href="javascript: void(0);" onClick="return customerchoosewin(document.forms[\'' . $params['form'] . '\'].elements[\'' . $params['inputname'] . '\']);" ';
+        $result .= self::tipFunction(array('text' => 'Click to search customer'), $template) . '>&nbsp;';
+        $result .= trans("Search") . '&nbsp;&raquo;&raquo;&raquo;</A>';
+
+        if (empty($params['customers'])) {
+            $result .= '&nbsp;&nbsp;&nbsp;<span class="customername"></span>';
+        }
+
+        return $result;
+    }
+
+    public static function fileUploadFunction(array $params, $template)
+    {
+        static $vars = array('id', 'fileupload');
+
+        $result = '';
+        foreach ($vars as $var) {
+            if (array_key_exists($var, $params)) {
+                $$var = $params[$var];
+            } else {
+                return $result;
+            }
+        }
+
+        $form = isset($params['form']) ? $params['form'] : null;
+
+        // special treatment of file upload errors marked in error associative array
+        $tmpl = $template->getTemplateVars('error');
+        if (isset($tmpl[$id . '_button'])) {
+            $error_variable = $id . '_button';
+        } elseif (isset($tmpl['files'])) {
+            $error_variable = 'files';
+        }
+        if (isset($error_variable)) {
+            $error_tip_params = array(
+                'text' => $tmpl[$error_variable],
+                'trigger' => $id . '_button'
+            );
+        }
+
+        $result = '<div class="fileupload" id="' . $id . '">
+			<div class="fileupload" id="' . $id . '-progress-dialog" title="' . trans("Uploading files ...") . '" style="display: none;">
+				<div style="padding: 10px;">' . trans("Uploading files to server ...") . '</div>
+				<div class="fileupload-progressbar"><div class="fileupload-progress-label"></div></div>
+			</div>
+			<div class="lms-ui-button-fileupload-container">
+				<button type="button" class="lms-ui-button-fileupload lms-ui-button' . (isset($error_tip_params) ? ' lms-ui-error' : '') . '" id="' . $id . '_button" '
+            . (isset($error_tip_params) ? self::tipFunction($error_tip_params, $template) : '') . '><i></i> ' . trans("Select files") . '</button>
+				<INPUT name="' . $id . '[]" type="file" multiple class="fileupload-select-btn" style="display: none;" ' . ($form ? ' form="' . $form . '"' : '') . '>
+			</div>
+			<div class="fileupload-files">';
+        if (!empty($fileupload) && isset($fileupload[$id])) {
+            foreach ($fileupload[$id] as $fileidx => $file) {
+                $result .= '<div>
+					<a href="#" class="fileupload-file"><i class="fas fa-trash"></i>
+						' . $file['name'] . ' (' . $file['sizestr'] . ')
+					</a>
+					<input type="hidden" name="fileupload[' . $id . '][' . $fileidx . '][name]" value="' . $file['name'] . '" ' . ($form ? ' form="' . $form . '"' : '') . '>
+					<input type="hidden" class="fileupload-file-size" name="fileupload[' . $id . '][' . $fileidx . '][size]" value="' . $file['size'] . '" ' . ($form ? ' form="' . $form . '"' : '') . '>
+					<input type="hidden" name="fileupload[' . $id . '][' . $fileidx . '][type]" value="' . $file['type'] . '" ' . ($form ? ' form="' . $form . '"' : '') . '>
+				</div>';
+            }
+        }
+        $result .= '</div>
+			<div class="fileupload-status lms-ui-error bold">
+			</div>
+			<input type="hidden" class="fileupload-tmpdir" name="fileupload[' . $id . '-tmpdir]" value="' . $fileupload[$id . '-tmpdir'] . '" ' . ($form ? ' form="' . $form . '"' : '') . '>
+		</div>';
+        $result .= '<script>
+			$(function() {
+				new lmsFileUpload("' . $id . '"' . ($form ? ', "' . $form . '"' : '') . ');
+			});
+		</script>';
+
+        return $result;
+    }
+
     public static function locationBoxFunction(array $params, $template)
     {
         $DB = LMSDB::getInstance();
@@ -286,7 +476,7 @@ class LMSSmartyPlugins
         echo '<tr>
               <td colspan="2">
                   <label><input type="checkbox" name="' . $input_name_teryt . '" class="lms-ui-address-teryt-checkbox" ' . (!empty($params['teryt']) ? 'checked' : '') . ' data-address="teryt-checkbox">' . trans("TERRIT-DB") . '</label>
-                  ' . LMSSmartyPlugins::buttonFunction(array('icon' => 'popup', 'class' => 'teryt-address-button'), $template) . '
+                  ' . self::buttonFunction(array('icon' => 'popup', 'class' => 'teryt-address-button'), $template) . '
               </td>
           </tr>';
 
@@ -389,21 +579,53 @@ class LMSSmartyPlugins
             echo '<input type="hidden" value="' . LOCATION_ADDRESS .                          '" name="' . $params['data']['prefix'] . '[location_address_type]" data-address="address_type">';
         }
 
-        $params['data']['buttons'] = LMSSmartyPlugins::buttonFunction(array('icon' => 'clear', 'tip' => 'Clear', 'class' => 'clear-location-box'), $template);
+        $params['data']['buttons'] = self::buttonFunction(array('icon' => 'clear', 'tip' => 'Clear', 'class' => 'clear-location-box'), $template);
         if (isset($params['data']['delete_button'])) {
-            $params['data']['buttons'] .= LMSSmartyPlugins::buttonFunction(array('icon' => 'trash', 'tip' => 'Delete', 'class' => 'delete-location-box'), $template);
+            $params['data']['buttons'] .= self::buttonFunction(array('icon' => 'trash', 'tip' => 'Delete', 'class' => 'delete-location-box'), $template);
         }
         if (isset($params['data']['billing_address_button'])) {
-            $params['data']['buttons'] .= LMSSmartyPlugins::buttonFunction(array('icon' => 'home', 'tip' => 'Copy from billing address', 'class' => 'copy-address', 'data_type' => BILLING_ADDRESS), $template);
+            $params['data']['buttons'] .= self::buttonFunction(array('icon' => 'home', 'tip' => 'Copy from billing address', 'class' => 'copy-address', 'data_type' => BILLING_ADDRESS), $template);
         }
         if (isset($params['data']['post_address_button'])) {
-            $params['data']['buttons'] .= LMSSmartyPlugins::buttonFunction(array('icon' => 'mail', 'tip' => 'Copy from post address', 'class' => 'copy-address', 'data_type' => POSTAL_ADDRESS), $template);
+            $params['data']['buttons'] .= self::buttonFunction(array('icon' => 'mail', 'tip' => 'Copy from post address', 'class' => 'copy-address', 'data_type' => POSTAL_ADDRESS), $template);
         }
 
         self::locationBoxFunction($params['data'], $template);
 
         echo '</div>';
         echo '</div>';
+    }
+
+    public static function macAddressSelectionFunction(array $params, $template)
+    {
+        $result = '<table style="width: 100%;" class="lms-ui-mac-address-selection">';
+
+        $form = $params['form'];
+        $i = 0;
+        foreach ($params['macs'] as $key => $mac) {
+            $result .= '<tr id="mac' . $key . '" class="mac">
+			<td style="width: 100%;">
+				<input type="text" name="' . $form . '[macs][' . $key . ']" value="' . $mac . '" ' . (!$i ? 'required ' : '')
+                . self::tipFunction(array(
+                    'text' => "Enter MAC address",
+                    'trigger' => 'mac' . $key
+                ), $template) . '>
+				<span class="ui-icon ui-icon-closethick remove-mac"></span>
+				<a href="#" class="mac-selector"
+					' . self::tipFunction(array(
+                    'text' => "Click to select MAC from the list",
+                ), $template) . '>&raquo;&raquo;&raquo;</a>
+			</td>
+		</tr>';
+            $i++;
+        }
+
+        $result .= '</table>
+		<a href="#" id="add-mac" data-field-prefix="' . $form
+            . '"><span class="ui-icon ui-icon-plusthick"></span> ' . trans("Add MAC address") . '</a>
+		<script src="js/lms-ui-mac-address-selection.js"></script>';
+
+        return $result;
     }
 
     public static function tipFunction(array $params, $template)
