@@ -39,7 +39,7 @@
 						<input type=text" name="authcode" id="authcode" autocomplete="off"
 							   placeholder="{trans("... which you received on your mobile phone")}"
 								{userpaneltip class="form-control" trigger="authcode"} />
-						<input type="hidden" class="documentid" value="{if isset($documentid)}{$documentid}{else}0{/if}">
+						<input type="hidden" name="documentid" class="documentid" value="{if isset($documentid)}{$documentid}{else}0{/if}">
 					</form>
 				</div>
 			</div>
@@ -80,7 +80,7 @@
 						<small class="form-text">
 							{t a=$upload_max_filesize.text}Maximum single file size: $a{/t}
 						</small>
-						<input type="hidden" name="documentid" value="{if isset($documentid)}{$documentid}{else}0{/if}">
+						<input type="hidden" name="documentid" class="documentid" value="{if isset($documentid)}{$documentid}{else}0{/if}">
 					</form>
 				</div>
 			</div>
@@ -230,7 +230,7 @@
 		});
 
 		$('[data-target="#newscan-dialog"]').click(function() {
-			$(this).find('[name="documentid"]').val($(this).attr('data-document-id'));
+			$('#newscan-dialog .documentid').val($(this).attr('data-document-id'));
 		});
 
 		$('[data-target="#authcode-dialog"]').click(function() {
