@@ -35,7 +35,7 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 		this.class = '';
 		this.suggestionContainer = '#autosuggest';
 	}
-	this.class = 'suggestion_list ' + this.class;
+	this.class = 'lms-ui-suggestion-container ' + this.class;
 
 	this.my_at_map = {
 		left: {
@@ -441,7 +441,7 @@ var idCounter = 0;
 $(document).click(function(e) {
 	var elem = e.target;
 	if (!$(elem).is('.lms-ui-quick-search,.lms-ui-suggestion-list *')) {
-		$('#autosuggest:visible').hide();
+		$('.lms-ui-suggestion-container:visible').hide();
 	}
 	return;
 });
