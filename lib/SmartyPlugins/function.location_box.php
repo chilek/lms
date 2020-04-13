@@ -227,7 +227,7 @@ function smarty_function_location_box($params, $template)
     echo '<tr>
               <td colspan="2">
                   <label><input type="checkbox" name="' . $input_name_teryt . '" class="lms-ui-address-teryt-checkbox" ' . (!empty($params['teryt']) ? 'checked' : '') . ' data-address="teryt-checkbox">' . trans("TERRIT-DB") . '</label>
-                  <span class="lms-ui-button teryt-address-button">&raquo;&raquo;&raquo;</span>
+                  ' . smarty_function_button(array('icon' => 'popup', 'class' => 'teryt-address-button'), $template) . '
               </td>
           </tr>';
 
