@@ -23,7 +23,8 @@
 		<tr>
 			<td class="dark nobr">
 				<i class="lms-ui-icon-home"></i>
-				 <input type="text" name="searchcity" value="" size="40" onkeyup="document.search.submit();" {tip text="Enter city name"} id="location-name">
+				 <input type="text" name="searchcity" value="" size="40" onkeyup="document.search.submit();"
+						 {tip text="Enter city name"} id="location-name" class="lms-ui-quick-search-input">
 			</td>
 		</tr>
 	</table>
@@ -41,12 +42,6 @@
 			if (data.hasOwnProperty('action')) {
 				search_update(data.action.cityid, data.action.districtid, data.action.stateid);
 			}
-		}
-	});
-
-	$('#location-name').keydown(function(e) {
-		if (e.code == 'Escape') {
-			e.stopPropagation();
 		}
 	});
 

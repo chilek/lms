@@ -114,7 +114,7 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 		else
 			suggest = 'bottom';
 
-		switch(key) {
+		switch (key) {
 			case ENT:
 			case RET:
 				me.useSuggestion();
@@ -128,7 +128,10 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 			break;
 
 			case ESC:
-				me.hideDiv();
+				if ($(me.div).is(':visible')) {
+					me.hideDiv();
+					ev.stopPropagation();
+				}
 			break;
 
 			case KEYUP:
@@ -265,7 +268,7 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 	Hide the dropdown and clear any highlight.
 	********************************************************/
 	this.hideDiv = function() {
-		this.div.style.display = 'none';
+		$(this.div).hide();
 		this.highlighted = -1;
 	};
 
@@ -482,13 +485,4 @@ $(document).click(function(e) {
 		$('#autosuggest:visible').hide();
 	}
 	return;
-});
-
-// hide autosuggest after escape key press
-$(document).keydown(function(e) {
-	var key = e.keyCode;
-	var elem = e.target;
-	if (key == 27 && !$(elem).is('.lms-ui-quick-search,.lms-ui-suggestion-list *')) {
-		$('#autosuggest:visible').hide();
-	}
 });
