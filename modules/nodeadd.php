@@ -187,8 +187,7 @@ if (isset($_POST['nodedata'])) {
 
     // check if customer address is selected or if default location address exists
     // if both are not fullfilled we generate user interface warning
-    $customer_addresses_warning = $_POST['customer_addresses_warning'];
-    if (!$customer_addresses_warning && isset($nodedata['address_id'])
+    if (!isset($warnings['nodedata-address_id-']) && isset($nodedata['address_id'])
         && $nodedata['address_id'] == -1 && !empty($nodedata['ownerid'])) {
         $addresses = $LMS->getCustomerAddresses($nodedata['ownerid'], true);
         if (count($addresses) > 1) {
@@ -201,11 +200,10 @@ if (isset($_POST['nodedata'])) {
             }
             if ($i == count($addresses)) {
                 $customer_addresses_warning = 1;
-                $warn['address_id'] = trans('No address has been selected!');
+                $warning['nodedata[address_id]'] = trans('No address has been selected!');
             }
         }
     }
-    $SMARTY->assign('customer_addresses_warning', $customer_addresses_warning);
 
     if ($nodedata['netdev']) {
         $ports = $DB->GetOne('SELECT ports FROM netdevices WHERE id = ?', array($nodedata['netdev']));
@@ -397,6 +395,5 @@ if (!empty($nodedata['ownerid'])) {
 
 $SMARTY->assign('networks', $LMS->GetNetworks(true));
 $SMARTY->assign('netdevices', $LMS->GetNetDevNames());
-$SMARTY->assign('error', $error);
 $SMARTY->assign('nodedata', $nodedata);
 $SMARTY->display('node/nodeadd.html');
