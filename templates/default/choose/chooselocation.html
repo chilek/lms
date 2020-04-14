@@ -1,281 +1,300 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<!--// $Id$ //-->
-<html>
-<head>
-    <meta name="GENERATOR" content="LMS {$layout.lmsv}">
-    <meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
-    <meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
-    <title>::: LMS :{if $layout.pagetitle != ""} {$layout.pagetitle} :{/if}::</title>
-    <link href="css/style.css" rel="stylesheet" type="text/css">
-    <script type="text/javascript" src="js/common.js"></script>
-    <script type="text/javascript" src="js/autosuggest.js"></script>
-    {$xajax}
-</head>
-<body class="light lms-ui-popup">
-<div id="overDiv" style="position:absolute; visibility:hidden; z-index:100;"></div>
-<script type="text/javascript" src="js/overlib.js"></script>
-    {if !empty($states)}
-    <div id="autosuggest"><ul></ul></div>
-    <form name="search" id="search" method="post" action="?m=chooselocation">
-    <input type="submit" class="hiddenbtn">
-    <table id="searchtable" cellpadding="5" width="100%">
-        <tr>
-            <td class="fall dark nobr">
-                 <img src="img/home.gif" alt="">
-                 <input type="text" name="searchcity" value="" size="40" onkeyup="document.search.submit();" {tip text="Enter city name"}>
-            </td>
-        </tr>
-    </table>
-    </form>
-    <script type="text/javascript">
-	<!--
-		var AUTOSUGGEST_MAX_LENGTH = {ConfigHelper::getConfig('phpui.autosuggest_max_length', 40)};
-		new AutoSuggest(document.forms['search'],document.forms['search'].elements['searchcity'],'?m=chooselocation&ajax=1&mode=city&what=',1);
-	//-->
-    </script>
-    {/if}
-	<table id="locationtable" width="100%" cellpadding="3">
-    {if empty($states)}
-        <tr><td width="100%" align="center">
-            <b>{trans("Location database is empty.")}</b>
-        </td></tr>
-    {else}
-	    <tr class="light" id="state">
-		    <td width="1%">{trans("State")}:</td>
-		    <td width="99%">
-		        <select id="state_sel" name="state" onchange="change_selection(this)" {tip text="Select state"} style="width: 100%">
-		        {foreach from=$states item=item}
-		            <option value="{$item.id}"{if $item.id == $data.stateid} selected{/if}>{$item.name}</option>
-		        {/foreach}
-		        </select>
-		    </td>
-	    </tr>
-	    <tr class="light" id="district"{if empty($districts)} style="display:none"{/if}>
-		    <td>{trans("District")}:</td>
-		    <td>
-		        <select id="district_sel" name="district" onchange="change_selection(this)" {tip text="Select district"} style="width: 100%">
-                {if !$data.districtid}
-                    <option value="0"></option>
-		        {/if}
-		        {foreach from=$districts item=item}
-		            <option value="{$item.id}"{if $item.id == $data.districtid} selected{/if}>{$item.name}</option>
-		        {/foreach}
-		        </select>
-		    </td>
-	    </tr>
-	    <tr class="light" id="city"{if empty($cities)} style="display:none"{/if}>
-		    <td>{trans("City")}:</td>
-		    <td>
-		        <select id="city_sel" name="city" onchange="change_selection(this)" {tip text="Select city"} style="width: 100%">
-                {if !$data.cityid}
-                    <option value="0"></option>
-		        {/if}
-		        {foreach from=$cities item=item}
-		            <option value="{$item.id}"{if $item.id == $data.cityid} selected{/if}>{$item.name}</option>
-		        {/foreach}
-		        </select>
-		    </td>
-	    </tr>
-	    <tr class="light" id="street"{if empty($streets)} style="display:none"{/if}>
-		    <td>{trans("Street")}:</td>
-		    <td>
-		        <select id="street_sel" name="street" {tip text="Select street"} style="width: 100%">
-		        {foreach from=$streets item=item}
-		            <option value="{$item.id}"{if $item.id == $data.streetid} selected{/if}>{$item.name}</option>
-		        {/foreach}
-		        </select>
-		    </td>
-	    </tr>
-	    <tr class="light" id="house"{if empty($data.streetid) && empty($data.cityid)} style="display:none"{/if}>
-		    <td class="nobr">{trans("House No.")}:</td>
-		    <td>
-                <input type="text" size="8" maxlength="8" id="house_input" name="house" value="" {tip text="Enter house number"}>
-		    </td>
-	    </tr>
-	    <tr class="light" id="flat"{if empty($data.streetid) && empty($data.cityid)} style="display:none"{/if}>
-		    <td class="nobr">{trans("Flat No.")}:</td>
-		    <td>
-                <input type="text" size="8" maxlength="8" id="flat_input" name="flat" value="" {tip text="Enter flat number"}>
-		    </td>
-	    </tr>
-        <tr class="light">
-            <td colspan="2" class="text-right nobr">
-                <a href="javascript:submit_location()" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></a>
-            </td>
-        </tr>
-	{/if}
-	</table>
-<script type="text/javascript">
-<!--
-function change_selection(elem)
-{
-	var district = document.getElementById('district'),
-		city = document.getElementById('city'),
-		street = document.getElementById('street'),
-		house = document.getElementById('house'),
-		flat = document.getElementById('flat');
+<style>
 
-	if (elem.name == 'state') {
-		district.style.display = 'none';
-		city.style.display = 'none';
-	}
-	else if (elem.name == 'district') {
-		city.style.display = 'none';
+	#location-table {
+		width: 30em;
 	}
 
-	street.style.display = 'none';
-	house.style.display = 'none';
-	flat.style.display = 'none';
-
-	if (elem.value != 0)
-	xajax_select_location(elem.name, elem.value);
-}
-
-function update_selection(type, data, selected)
-{
-	var i, len, elem = document.getElementById(type),
-		select = document.getElementById(type+'_sel');
-
-	select.options.length = 0;
-	if (type != 'street')
-		select.options[0] = new Option('', 0);
-	for (i=0, len=data.length; i<len; i++) {
-		select.options[select.options.length] = new Option(data[i].name, data[i].id);
+	.location-property-selection {
+		width: 30em;
 	}
 
-	if (i > 0)
-		elem.style.display = '';
-	select.value = selected ? selected : 0;
-	select.focus();
-
-	if (type == 'street') {
-		var house = document.getElementById('house_input');
-
-		document.getElementById('house').style.display = '';
-		document.getElementById('flat').style.display = '';
-
-		if (!i) {
-			house.focus();
-			house.select();
-		}
+	.lms-ui-popup .ui-dialog-content {
+		overflow: visible;
 	}
 
-	resize_frame();
-}
+</style>
 
-function search_update(cityid, districtid, stateid)
-{
-	document.getElementById('state_sel').value = stateid;
-	document.getElementById('district').style.display = 'none';
-	document.getElementById('city').style.display = 'none';
-	document.getElementById('street').style.display = 'none';
-	document.getElementById('house').style.display = 'none';
-	document.getElementById('flat').style.display = 'none';
-
-	xajax_select_location('', cityid+':'+districtid+':'+stateid);
-}
-
-function submit_location()
-{
-	var city     = document.getElementById('city_sel'),
-		street   = document.getElementById('street_sel'),
-		house    = document.getElementById('house_input'),
-		flat     = document.getElementById('flat_input'),
-		cr       = document.getElementById('city'),
-		loc      = window.parent.document.getElementById('location');
-		loc_city = window.parent.document.getElementById('location_city');
-
-	if (cr.style.display == 'none' || city.value == 0) {
-		window.parent.alertDialog($t("City has not been selected!"));
-		return;
-	}
-	if (house.value == '') {
-		window.parent.alertDialog($t("House number is required!"));
-		return;
-	}
-	if (house.length > 8) {
-		window.parent.alertDialog($t("House number is too long (max. 8 characters)!"));
-		return;
-	}
-	if (flat.length > 8) {
-		window.parent.alertDialog($t("Flat number is too long (max. 8 characters)!"));
-		return;
-	}
-
-	locform.elements[varname+'[location_city]'].value = city.value;
-	locform.elements[varname+'[location_street]'].value = street.value;
-	locform.elements[varname+'[location_house]'].value = house.value.trim();
-	locform.elements[varname+'[location_flat]'].value = flat.value;
-
-	if (loc) {
-		locat = build_location_str(
-			city.value ? city.options[city.selectedIndex].text : '',
-			street.value ? street.options[street.selectedIndex].text : '',
-			house.value, flat.value);
-		if (!/^(.+)\s*,\s*(.+)$/.test(locat)) {
-			// handle variant with city without street names
-			/^.+\((.+)\)$/.test(city.options[city.selectedIndex].text);
-			var borough = RegExp.$1;
-			{foreach $_BOROUGHTYPES as $key => $item}
-			borough = borough.replace('{$item} ', '');
-			{/foreach}
-			locat = borough + ', ' + locat;
-			/^(.+)\s*,\s*(.+)$/.test(locat);
-		}
-		if (loc_city) {
-			loc.value = RegExp.$2;
-			loc_city.value = RegExp.$1;
-		} else {
-			loc.value = locat;
-		}
-	}
-
-	window.parent.popclick();
-}
-
-function build_location_str(city, street, house, flat)
-{
-	var h, location = city;
-
-	if (city && /^([^(]+)/.test(city))
-		location = RegExp.$1.replace(/\s+$/, '');
-
-	if (flat) {
-		h = "{$data.house_template|default:'%h/%f'}";
-		h = h.replace('%h', house);
-		h = h.replace('%f', flat);
-	}
-	else
-		h = house;
-
-	if (street && /^([^,]+),\s*(.*)/.test(street))
-		location += ', ' + RegExp.$2 + ' ' + RegExp.$1 + ' ' + h;
-	else
-		location += ' ' + h;
-
-	return location;
-}
-
-function resize_frame()
-{
-	var st = document.getElementById('searchtable'),
-		lt = document.getElementById('locationtable'),
-		h = (st ? st.offsetHeight : 0) + lt.offsetHeight;
-
-	autoiframe_setsize('autoiframe', 350, Math.max(h, 160));
-}
-
-var win = window.parent, varname = '{$data.varname}', formname = '{$data.formname}',
-	locform = win.document.forms[formname];
 {if !empty($states)}
-document.getElementById('house_input').value = locform.elements[varname+'[location_house]'].value;
-document.getElementById('flat_input').value = locform.elements[varname+'[location_flat]'].value;
-document.search.searchcity.focus();
+<div id="location-box-autosuggest" style="display: none;"><ul></ul></div>
+
+<form name="location-search" id="location-search" method="post" action="?m=chooselocation">
+	<input type="submit" class="hiddenbtn">
+	<table id="searchtable" cellpadding="5">
+		<tr>
+			<td class="dark nobr">
+				<i class="lms-ui-icon-home"></i>
+				 <input type="text" name="searchcity" value="" size="40" onkeyup="document.search.submit();"
+						 {tip text="Enter city name"} id="location-name" class="lms-ui-quick-search-input">
+			</td>
+		</tr>
+	</table>
+</form>
+
+<script>
+
+	new AutoSuggest({
+		form: '#location-search',
+		elem: 'form[name="location-search"] [name="searchcity"]',
+		uri: '?m=chooselocation&ajax=1&mode=city&what=',
+		autosubmit: 0,
+		suggestionContainer: '#location-box-autosuggest',
+		onSubmit: function(data) {
+			if (data.hasOwnProperty('action')) {
+				search_update(data.action.cityid, data.action.districtid, data.action.stateid);
+			}
+		}
+	});
+
+</script>
 {/if}
 
-resize_frame();
+<table id="location-table" cellpadding="3">
+{if empty($states)}
+	<tr><td width="100%" align="center">
+		<b>{trans("Location database is empty.")}</b>
+	</td></tr>
+{else}
+	<tr id="state">
+		<td width="1%">{trans("State")}:</td>
+		<td width="99%">
+			<select id="state_sel" class="location-property-selection" name="state" {tip text="Select state"}>
+			{foreach from=$states item=item}
+				<option value="{$item.id}">{$item.name}</option>
+			{/foreach}
+			</select>
+		</td>
+	</tr>
+	<tr id="district"{if empty($districts)} style="display:none"{/if}>
+		<td>{trans("District")}:</td>
+		<td>
+			<select id="district_sel" class="location-property-selection" name="district" {tip text="Select district"}>
+			{if !$data.districtid}
+				<option value="0"></option>
+			{/if}
+			{foreach from=$districts item=item}
+				<option value="{$item.id}">{$item.name}</option>
+			{/foreach}
+			</select>
+		</td>
+	</tr>
+	<tr id="city"{if empty($cities)} style="display:none"{/if}>
+		<td>{trans("City")}:</td>
+		<td>
+			<select id="city_sel" name="city" class="location-property-selection" {tip text="Select city"}>
+			{if !$data.cityid}
+				<option value="0"></option>
+			{/if}
+			{foreach from=$cities item=item}
+				<option value="{$item.id}">{$item.name}</option>
+			{/foreach}
+			</select>
+		</td>
+	</tr>
+	<tr id="street"{if empty($streets)} style="display:none"{/if}>
+		<td>{trans("Street")}:</td>
+		<td>
+			<select id="street_sel" name="street" class="location-property-selection" {tip text="Select street"}>
+				{foreach $streets as $street}
+				<option value="{$street.id}" data-street-type="{$street.typename}" data-street-name-1="{$street.name1}"{if $street.name2} data-street-name-2="{$street.name2}"{/if}>{$street.name}</option>
+				{/foreach}
+			</select>
+		</td>
+	</tr>
+	<tr id="house"{if empty($data.streetid) && empty($data.cityid)} style="display:none"{/if}>
+		<td class="nobr">{trans("House No.")}:</td>
+		<td>
+			<input type="text" size="8" maxlength="8" id="house_input" name="house" value="" {tip text="Enter house number"}>
+		</td>
+	</tr>
+	<tr id="flat"{if empty($data.streetid) && empty($data.cityid)} style="display:none"{/if}>
+		<td class="nobr">{trans("Flat No.")}:</td>
+		<td>
+			<input type="text" size="8" maxlength="8" id="flat_input" name="flat" value="" {tip text="Enter flat number"}>
+		</td>
+	</tr>
 
-//-->
+	<tr>
+		<td colspan="2" class="text-right nobr">
+			{button icon="save" label="Save" onclick="javascript:submit_location()"}
+		</td>
+	</tr>
+{/if}
+</table>
+
+<script>
+
+function select_location(name, value)
+{
+	$.ajax({
+		url: '?m=chooselocation&ajax=1&api=1',
+		method: 'GET',
+		dataType: 'json',
+		data: {
+			what: name,
+			id: value
+		},
+		success: function(data) {
+			$.each(data, function(index, value) {
+				update_selection(value.type, value.data, value.selected);
+			});
+		}
+	});
+}
+
+
+/*!
+ * \brief Update input visibility on change value.
+ */
+$( "#state_sel, #district_sel, #city_sel" ).change( function() {
+    var name = $(this).attr( 'name' );
+
+    switch ( name ) {
+         case 'state':
+             $( '#district' ).hide();
+
+         case 'district':
+             $( '#city' ).hide();
+
+         default:
+             $( '#street, #house, #flat' ).hide();
+    }
+
+    if ( $(this).val() != 0 ) {
+		select_location( name, $(this).val() );
+    }
+});
+
+function update_selection(type, data, selected) {
+	var elem = $('#' + type);
+	var select = $('#' + type + '_sel');
+	var options = '';
+
+	options += '<option value="0"></option>';
+
+	$.each(data, function (index, value) {
+		if (type == 'street' && value.name.length) {
+			options += '<option value="' + value.id + '" data-street-type="' + value.typename + '" data-street-name-1="'
+					+ value.name1 + '"' + (value.name2 ? ' data-street-name-2="' + value.name2 + '"' : '') + '>' +
+					value.name + '</option>';
+		} else {
+			options += '<option value="' + value.id + '">' + value.name + '</option>';
+		}
+	});
+
+	select.html(options);
+	if (data.length) {
+		elem.show();
+	}
+
+	select.val(selected ? selected : 0).focus();
+
+	if (type == 'street') {
+		$('#house,#flat').show();
+
+		if (!data.length) {
+			$('#house_input').focus().select();
+		}
+	}
+}
+
+function search_update(cityid, districtid, stateid) {
+    $( '#state_sel' ).val( stateid );
+    $( '#district,#city,#street,#house,#flat' ).hide();
+
+    select_location('', cityid + ':' + districtid + ':' + stateid);
+}
+
+function submit_location() {
+	var state  = $('#state_sel');
+    var city   = $('#city_sel');
+    var street = $('#street_sel');
+    var house  = $('#house_input');
+    var flat   = $('#flat_input' );
+    var cr     = $('#city');
+    var tmp, input_str;
+
+    if (!cr.is(':visible') || !city.val()) {
+		window.parent.alertDialog($t("City has not been selected!"));
+		return;
+    }
+
+    if (!house.val().length) {
+		window.parent.alertDialog($t("House number is required!"));
+		return;
+    }
+
+    if (house.val().length > 8) {
+		window.parent.alertDialog($t("House number is too long (max. 8 characters)!"));
+        return;
+    }
+
+    if (flat.val().length > 8) {
+		window.parent.alertDialog($t("Flat number is too long (max. 8 characters)!"));
+		return;
+    }
+
+    // SET CITY
+    input_str = city.val() ? city.find('option:selected').text() : '';
+
+    if ( input_str && /^([^(]+)/.test(input_str) )  {
+        tmp = RegExp.$1.replace(/\s+$/, '');
+
+        location_box.find( "input[data-address='city']"        ).val(tmp);
+        location_box.find( "input[data-address='city-hidden']" ).val(city.val());
+        // automatically preselect 'Poland' country when we submit territized location
+        location_box.find( "select[data-address='country']").val(2);
+    }
+
+    // SET STREET
+    var street_option = $('option:selected', street);
+    if (parseInt(street_option.val())) {
+    	var street_parts = [];
+    	street_parts.push(street_option.attr('data-street-type'));
+		if (typeof(street_option.attr('data-street-name-2')) !== 'undefined') {
+			street_parts.push(street_option.attr('data-street-name-2'));
+		}
+		street_parts.push(street_option.attr('data-street-name-1'));
+		if (street_parts[0].match(/^rynek$/i) &&
+			(street_parts[1].match(/^rynek/i) || (street_parts.length == 3 && street_parts[2].match(/^rynek/i)))) {
+			street_parts.shift();
+		}
+    	location_box.find( "input[data-address='street']"        ).val( street_parts.join(' ') );
+        location_box.find( "input[data-address='street-hidden']" ).val( street_option.val() );
+    } else {
+        location_box.find( "input[data-address='street']"        ).val( '' );
+        location_box.find( "input[data-address='street-hidden']" ).val( '' );
+    }
+
+    // SET HOUSE AND FLAT NUMBER
+    location_box.find( "input[data-address='house']" ).val(house.val().trim());
+    location_box.find( "input[data-address='flat']"  ).val(flat.val());
+
+    // SET LOCATION NAME
+    //location_box.find( "input[data-address='location-name']" ).val( $( '#location-name' ).val() );
+
+    // SET STATE
+    location_box.find( "input[data-address='state']"        ).val(state.find('option:selected').text());
+    location_box.find( "input[data-address='state-hidden']" ).val(state.val());
+
+    // UPDATE ADDRESS STRING
+    parent.$( '#{$data.boxid}' ).find('input').first().trigger('input');
+
+	$('#' + location_box.find('[data-dialog-id]').attr('data-dialog-id')).dialog('destroy').remove();
+}
+
+var location_box = $( "#{$data.boxid}", window.parent.document );
+
+{if !empty($states)}
+$( '#house_input' ).val( location_box.find( "input[data-address='house']" ).val() );
+$( '#flat_input'  ).val( location_box.find( "input[data-address='flat']"  ).val() );
+
+{/if}
+
+// select city and street from selects
+$( '#state_sel'     ).val( {$data.stateid} );
+$( '#district_sel'  ).val( {$data.districtid} );
+$( '#city_sel'      ).val( {$data.cityid} );
+$( '#street_sel'    ).val( location_box.find( "input[data-address='street-hidden']" ).val() );
+$( '#location-name' ).val( location_box.find( "input[data-address='location-name']" ).val() );
+
 </script>
-</body>
-</html>

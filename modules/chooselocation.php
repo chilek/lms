@@ -232,8 +232,4 @@ $data['countries'] = $DB->GetAll('SELECT id, name FROM countries;');
 $SMARTY->assign('data', $data);
 $SMARTY->assign('states', $states);
 
-if (empty($_GET['boxid'])) {
-    $SMARTY->display('file:choose/chooselocation.html');
-} else {
-    $SMARTY->display('file:choose/chooselocation_ext.html');
-}
+$SMARTY->display('file:choose/chooselocation.html');
