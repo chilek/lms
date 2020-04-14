@@ -269,7 +269,7 @@ if (isset($_POST['customeradd'])) {
     $error = $hook_data['error'];
     $warning = $hook_data['warning'];
 
-    if (!$error && !warning) {
+    if (!$error && !$warning) {
         $customeradd['cutoffstop'] = $cutoffstop;
 
         if (!isset($customeradd['consents'])) {
