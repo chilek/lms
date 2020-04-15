@@ -126,7 +126,7 @@ switch ($type) {
         $status   = isset($_GET['status']) ? $_GET['status'] : $_POST['status'];
         $removed  = isset($_GET['removed']) ? $_GET['removed'] : $_POST['removed'];
         $subject  = !empty($_GET['subject']) ? $_GET['subject'] : $_POST['subject'];
-        $extended = !empty($_GET['extended']) ? true : !empty($_POST['extended']) ? true : false;
+        $extended = !empty($_GET['extended']) ? true : (!empty($_POST['extended']) ? true : false);
         $categories = !empty($_GET['categories']) ? $_GET['categories'] : $_POST['categories'];
         $datefrom  = !empty($_GET['datefrom']) ? $_GET['datefrom'] : $_POST['datefrom'];
         $dateto  = !empty($_GET['dateto']) ? $_GET['dateto'] : $_POST['dateto'];
