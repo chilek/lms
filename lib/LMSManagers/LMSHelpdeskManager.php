@@ -57,7 +57,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     /**
      * @param array $params associative array of parameters described below:
      *      ids - queue identifiers (default: null = any), array() or single integer value
-     *      state - ticket states (default: null = any), -1 = unresolved, -2 = any,
+     *      state - ticket states (default: null = any), -1 = unresolved, -2 = any, -3 = new or open
      *          array() of integer values or single integer value
      *      priority - ticket priorities (default: null = any),
      *          array() of integer values or single integer value
@@ -183,6 +183,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $statefilter = '';
         } elseif (is_array($state)) {
             $statefilter = ' AND t.state IN (' . implode(',', $state) . ')';
+        } elseif ($state == -3) {
+            $statefilter = ' AND t.state = (' . RT_NEW . 'OR t.state = ' . RT_OPEN .')';
         } elseif ($state == -1) {
             $statefilter = ' AND t.state <> ' . RT_RESOLVED;
         } else {
@@ -243,9 +245,13 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             case 'all':
                 $verifieridsfilter = '';
                 break;
-            default:
-                if (is_array($verifierids) && !empty($verifierids)) {
-                    $verifieridsfilter = ' AND t.verifierid IN (' . implode(',', $verifierids) . ') ';
+	    default:
+                if (!empty($verifierids)) {
+                    if (is_array($verifierids)) {
+                        $verifieridsfilter = ' AND t.verifierid IN (' . implode(',', $verifierids) . ') ';
+                    } else {
+                        $verifieridsfilter = ' AND t.verifierid = ' . $verifierids;
+                    }
                 } else {
                     $verifieridsfilter = '';
                 }
@@ -1977,19 +1983,20 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             'verify' => 0,
             'left' => 0,
             'events' => 0,
+            'overdue' => 0,
         );
 
         if (ConfigHelper::checkPrivilege('helpdesk_operation') || ConfigHelper::checkPrivilege('helpdesk_administration')) {
             $result['critical'] = $this->GetQueueContents(array('count' => true, 'priority' => RT_PRIORITY_CRITICAL,
-                'state' => -1, 'rights' => RT_RIGHT_INDICATOR));
+                'state' => -3, 'rights' => RT_RIGHT_INDICATOR));
             $result['urgent'] = $this->GetQueueContents(array('count' => true, 'priority' => RT_PRIORITY_URGENT,
-                'state' => -1, 'rights' => RT_RIGHT_INDICATOR));
+                'state' => -3, 'rights' => RT_RIGHT_INDICATOR));
             $result['unread'] = $this->GetQueueContents(array('count' => true, 'state' => -1, 'unread' => 1,
                 'rights' => RT_RIGHT_INDICATOR));
             $result['expired'] = $this->GetQueueContents(array('count' => true, 'state' => -1, 'deadline' => -2,
                 'owner' => Auth::GetCurrentUser(), 'rights' => RT_RIGHT_INDICATOR));
             $result['verify'] = $this->GetQueueContents(array('count' => true, 'state' => 7,
-                'verifier' => Auth::GetCurrentUser(), 'rights' => RT_RIGHT_INDICATOR));
+                'verifierids' => Auth::GetCurrentUser(), 'rights' => RT_RIGHT_INDICATOR));
             $result['left'] = $this->GetQueueContents(array('count' => true, 'state' => -1, 'owner' => -3,
                 'rights' => RT_RIGHT_INDICATOR));
         }
@@ -1998,6 +2005,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $event_manager = new LMSEventManager($this->db, $this->auth, $this->cache, $this->syslog);
             $result['events'] = $event_manager->GetEventList(array('userid' => Auth::GetCurrentUser(),
                 'forward' => 1, 'closed' => 0, 'count' => true));
+            $result['overdue'] = $event_manager->GetEventList(array('userid' => Auth::GetCurrentUser(),
+                'forward' => -1, 'closed' => 0, 'count' => true));
         }
 
         return $result;
