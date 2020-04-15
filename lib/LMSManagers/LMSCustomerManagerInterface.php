@@ -111,4 +111,8 @@ interface LMSCustomerManagerInterface
     public function checkCustomerConsent($customerid, $consent);
 
     public function customerNotificationReplaceSymbols($string, $data);
+
+    public function addCustomerConsents($customerid, $consents);
+
+    public function removeCustomerConsents($customerid, $consents);
 }

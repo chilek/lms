@@ -3,47 +3,6 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<SCRIPT>
-
-	function setWarnings(on)
-	{
-		if (on == 1)
-		{
-			document.getElementById('warnon').value = 1;
-			document.getElementById('warnoff').value = 0;
-		}
-		else
-		{
-			document.getElementById('warnon').value = 0;
-			document.getElementById('warnoff').value = 1;
-		}
-		document.setwarnings.submit();
-	}
-
-	function changeCustomerGroups(oper) {
-		var action = null;
-
-		switch (oper) {
-			case 1:
-				action = '?m=customergroup&oper=addtogroups';
-				break;
-			case 0:
-				action = '?m=customergroup&oper=removefromgroups';
-				break;
-			case 2:
-				action = '?m=customergroup&oper=changegroups';
-				break;
-		}
-
-		if (action === null) {
-			return false;
-		}
-
-		document.setwarnings.action = action;
-		document.setwarnings.submit();
-	}
-
-</SCRIPT>
 <FORM NAME="setwarnings" ID="customersearchresults" METHOD="POST" ACTION="?m=customerwarn&search=0">
 <TABLE class="lmsbox">
     <THEAD>
@@ -149,28 +108,36 @@
 		</TD>
 	</TR>
 	<TR class="ftop">
-		<TD width="100%" align="left" COLSPAN="4" nowrap>
-			<IMG SRC="img/warningon.gif"> <A HREF="javascript:setWarnings(1);">{trans("Enable")}</A> / <A HREF="javascript:setWarnings(0);">{trans("Disable")}</A>&nbsp;
-			<IMG SRC="img/mail.gif"> <A HREF="?m=customerwarn&search=1">{trans("Set notice content")}</A>
-		</TD>
-	</TR>
-	<TR class="ftop">
-		<TD width="100%" align="left" COLSPAN="4" nowrap>
-			<IMG SRC="img/group.gif"> <A HREF="javascript:changeCustomerGroups(1);">{trans("Add")}</A>
-			/
-			<A HREF="javascript:changeCustomerGroups(0);">{trans("Remove")}</A>
-			/
-			<A HREF="javascript:changeCustomerGroups(2);">{trans("Change Groups")}</A>:
-			{if is_array($listdata.customergroup)}
-				{$groups=array_flip($listdata.customergroup)}
-			{else}
-				{$groups=array()}
+		<TD COLSPAN="4" class="nobr">
+			<span class="bold">{trans("<!customersearch>Action:")}</span>
+			<select id="customer-action">
+				<option value="1">{trans("Enable warning")}</option>
+				<option value="2">{trans("Disable warning")}</option>
+				<option value="3">{trans("Set notice content")}</option>
+				{if is_array($listdata.customergroup)}
+					{$groups = array_flip($listdata.customergroup)}
+					<option value="4">{trans("Add to groups")}</option>
+					<option value="5">{trans("Remove from groups")}</option>
+					<option value="6">{trans("Change groups")}</option>
+				{/if}
+				<option value="7">{trans("Add consents")}</option>
+				<option value="8">{trans("Remove consents")}</option>
+			</select>
+			{if isset($groups)}
+				<SELECT SIZE="1" class="lms-ui-multiselect-deferred" NAME="setwarnings[customergroup][]"
+						id="customergroups" style="display: none;" multiple>
+					{foreach $customergroups as $customergroup}
+						<OPTION value="{$customergroup.id}"{if isset($groups[$customergroup.id])} selected{/if}>{$customergroup.name|truncate:50:"...":true}</OPTION>
+					{/foreach}
+				</SELECT>
 			{/if}
-			<SELECT SIZE="1" class="lms-ui-multiselect" NAME="setwarnings[customergroup][]" multiple>
-				{foreach $customergroups as $customergroup}
-				<OPTION value="{$customergroup.id}"{if isset($groups[$customergroup.id])} selected{/if}>{$customergroup.name|truncate:50:"...":true}</OPTION>
+			<select class="lms-ui-multiselect-deferred" name="consents[]" data-separator="<hr>"
+					id="customerconsents" style="display: none;" multiple>
+				{foreach $_CCONSENTS as $type => $consent}
+					<option value="{$type}">{$consent.label}</option>
 				{/foreach}
-			</SELECT>
+			</select>
+			{button icon="apply" label="Apply" id="customer-action-apply"}
 		</TD>
 	</TR>
 	{/if}
@@ -197,22 +164,122 @@
     </TFOOT>
 </TABLE>
 </FORM>
-	<script>
-		$('.balanceok-customer').click(function() {
+<script>
+
+	$(function() {
+		function setWarnings(on) {
+			if (on == 1) {
+				$('#warnon').val(1);
+				$('#warnoff').val(0);
+			} else {
+				$('#warnon').val(0);
+				$('#warnoff').val(1);
+			}
+			$('#customersearchresults').submit();
+		}
+
+		function changeCustomerGroups(oper) {
+			var action = null;
+
+			switch (oper) {
+				case 1:
+					action = '?m=customergroup&oper=addtogroups';
+					break;
+				case 0:
+					action = '?m=customergroup&oper=removefromgroups';
+					break;
+				case 2:
+					action = '?m=customergroup&oper=changegroups';
+					break;
+			}
+
+			if (action === null) {
+				return false;
+			}
+
+			$('#customersearchresults').attr('action', action).submit();
+		}
+
+		function changeCustomerConsents(oper) {
+			var action = null;
+
+			switch (oper) {
+				case 1:
+					action = '?m=customeredit&search=1&oper=addconsents';
+					break;
+				case 2:
+					action = '?m=customeredit&search=1&oper=removeconsents';
+					break;
+			}
+
+			if (action === null) {
+				return false;
+			}
+
+			$('#customersearchresults').attr('action', action).submit();
+		}
+
+		$('#customer-action').change(function() {
+			var action = parseInt($(this).val());
+			$('#customergroups').toggle(action >= 4 && action <= 6);
+			if (action >= 4 && action <= 6 && !$('#customergroups').is('.lms-ui-multiselect-wrapper')) {
+				init_multiselects('#customergroups');
+			}
+			$('#customerconsents').toggle(action >= 7 && action <= 8);
+			if (action >= 7 && action <= 8 && !$('#customerconsents').is('.lms-ui-multiselect-wrapper')) {
+				init_multiselects('#customerconsents');
+			}
+		});
+
+		$('#customer-action-apply').click(function() {
+
+			var action = parseInt($('#customer-action').val());
+			switch (action) {
+				case 1:
+					setWarnings(1);
+					break;
+				case 2:
+					setWarnings(0);
+					break;
+				case 3:
+					location.href = '?m=customerwarn&search=1';
+					break;
+				case 4:
+					changeCustomerGroups(1);
+					break;
+				case 5:
+					changeCustomerGroups(0);
+					break;
+				case 6:
+					changeCustomerGroups(2);
+					break;
+				case 7:
+					changeCustomerConsents(1);
+					break;
+				case 8:
+					changeCustomerConsents(2);
+					break;
+			}
+		});
+
+		$('.balanceok-customer').click(function () {
 			var name = $(this).closest('tr').attr('data-name');
 			console.log('name=', name);
-			confirmDialog($t("Are you sure, you want to account ALL debts of customer \'$a\'?", name), this).done(function() {
+			confirmDialog($t("Are you sure, you want to account ALL debts of customer \'$a\'?", name), this).done(function () {
 				location.href = $(this).attr('href');
 			});
 			return false;
 		});
-		$('.delete-customer').click(function() {
+
+		$('.delete-customer').click(function () {
 			var name = $(this).closest('tr').attr('data-name');
 			console.log('name=', name);
-			confirmDialog($t("Are you sure, you want to remove customer '$a' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!", name), this).done(function() {
+			confirmDialog($t("Are you sure, you want to remove customer '$a' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!", name), this).done(function () {
 				location.href = $(this).attr('href');
 			});
 			return false;
 		});
-	</script>
+	})
+
+</script>
 {/block}

@@ -97,12 +97,26 @@ if (isset($_GET['search'])) {
     $SESSION->restore('customersearch', $search);
     $SESSION->restore('cslo', $order);
     $SESSION->restore('csls', $state);
+    $SESSION->restore('cslsk', $statesqlkey);
     $SESSION->restore('csln', $network);
+    $SESSION->restore('cslng', $nodegroup);
     $SESSION->restore('cslg', $customergroup);
     $SESSION->restore('cslk', $sqlskey);
+    $SESSION->restore('csld', $division);
 
-        $customerlist = $LMS->GetCustomerList(compact("order", "state", "network", "customergroup", "search", "time", "sqlskey"));
-    
+    $customerlist = $LMS->GetCustomerList(compact(
+        'order',
+        'state',
+        'statesqlkey',
+        'network',
+        'customergroup',
+        'search',
+        'time',
+        'sqlskey',
+        'nodegroup',
+        'division'
+    ));
+
     unset($customerlist['total']);
     unset($customerlist['state']);
     unset($customerlist['network']);
@@ -118,7 +132,7 @@ if (isset($_GET['search'])) {
             $selected[$row['id']] = $row['id'];
         }
     }
-    
+
     $SMARTY->assign('selected', $selected);
 }
 

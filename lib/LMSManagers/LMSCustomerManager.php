@@ -2108,4 +2108,70 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $string = str_replace('%docid%', $document['id'], $string);
         return $string;
     }
+
+    public function addCustomerConsents($customerid, $consents)
+    {
+        if (!is_array($consents)) {
+            $consents = array($consents);
+        }
+        $consents = Utils::filterIntegers($consents);
+        $added = 0;
+        if (!empty($consents)) {
+            $now = time();
+            foreach ($consents as $consent) {
+                if (!$this->db->GetOne(
+                    'SELECT customerid FROM customerconsents WHERE customerid = ? AND type = ?',
+                    array($customerid, $consent)
+                )) {
+                    $args = array(
+                        SYSLOG::RES_CUST => $customerid,
+                        'cdate' => $now,
+                        'type' => $consent,
+                    );
+                    if ($this->db->Execute(
+                        'INSERT INTO customerconsents (customerid, cdate, type) VALUES (?, ?, ?)',
+                        array_values($args)
+                    )) {
+                        $added++;
+                        if ($this->syslog) {
+                            $this->syslog->AddMessage(SYSLOG::RES_CUSTCONSENT, SYSLOG::OPER_ADD, $args);
+                        }
+                    }
+                }
+            }
+        }
+        return $added;
+    }
+
+    public function removeCustomerConsents($customerid, $consents)
+    {
+        if (!is_array($consents)) {
+            $consents = array($consents);
+        }
+        $consents = Utils::filterIntegers($consents);
+        $removed = 0;
+        if (!empty($consents)) {
+            foreach ($consents as $consent) {
+                if ($this->db->GetOne(
+                    'SELECT customerid FROM customerconsents WHERE customerid = ? AND type = ?',
+                    array($customerid, $consent)
+                )) {
+                    $args = array(
+                        SYSLOG::RES_CUST => $customerid,
+                        'type' => $consent,
+                    );
+                    if ($this->db->Execute(
+                        'DELETE FROM customerconsents WHERE customerid = ? AND type = ?',
+                        array_values($args)
+                    )) {
+                        $removed++;
+                        if ($this->syslog) {
+                            $this->syslog->AddMessage(SYSLOG::RES_CUSTCONSENT, SYSLOG::OPER_DELETE, $args);
+                        }
+                    }
+                }
+            }
+        }
+        return $removed;
+    }
 }

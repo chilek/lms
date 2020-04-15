@@ -24,6 +24,59 @@
  *  $Id$
  */
 
+if (isset($_GET['search'])) {
+    $SESSION->restore('customersearch', $search);
+    $SESSION->restore('cslo', $order);
+    $SESSION->restore('csls', $state);
+    $SESSION->restore('cslsk', $statesqlkey);
+    $SESSION->restore('csln', $network);
+    $SESSION->restore('cslng', $nodegroup);
+    $SESSION->restore('cslg', $customergroup);
+    $SESSION->restore('cslk', $sqlskey);
+    $SESSION->restore('csld', $division);
+
+    $customerlist = $LMS->GetCustomerList(compact(
+        'order',
+        'state',
+        'statesqlkey',
+        'network',
+        'customergroup',
+        'search',
+        'time',
+        'sqlskey',
+        'nodegroup',
+        'division'
+    ));
+
+    unset($customerlist['total']);
+    unset($customerlist['state']);
+    unset($customerlist['network']);
+    unset($customerlist['customergroup']);
+    unset($customerlist['direction']);
+    unset($customerlist['order']);
+    unset($customerlist['below']);
+    unset($customerlist['over']);
+
+    if ($customerlist && isset($_POST['consents']) && !empty($_POST['consents'])) {
+        foreach ($customerlist as $row) {
+            switch ($_GET['oper']) {
+                case 'addconsents':
+                    $LMS->addCustomerConsents($row['id'], $_POST['consents']);
+                    break;
+                case 'removeconsents':
+                    $LMS->removeCustomerConsents($row['id'], $_POST['consents']);
+                    break;
+            }
+        }
+    }
+
+    if ($SESSION->is_set('backto')) {
+        $SESSION->redirect('?' . $SESSION->get('backto'));
+    } else {
+        $SESSION->redirect('?m=customerlist');
+    }
+}
+
 if (!isset($_POST['xjxfun'])) {
     require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
 

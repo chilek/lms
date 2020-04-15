@@ -300,6 +300,7 @@ version 25-git (????-??-??):
     the similar role to so far existing error variable [chilan]
   - improvement: redesigned choose territ location popup dialog - switched to jquery-ui
     dialog [chilan]
+  - enhancement: implemented mass customer consent change support [chilan]
 
 version 24.0 (2019-05-16):
 
