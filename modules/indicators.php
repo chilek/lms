@@ -125,7 +125,7 @@ switch ($action) {
                 $redirect = '?m=eventlist&persistent-filter=-1&a[]=' . Auth::GetCurrentUser();
             }
         }
-	break;
+        break;
     case 'overdue':
         if (ConfigHelper::CheckPrivilege('timetable_management')) {
             $count = $LMS->GetEventList(array('userid' => Auth::GetCurrentUser(),

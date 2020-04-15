@@ -245,7 +245,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             case 'all':
                 $verifieridsfilter = '';
                 break;
-	    default:
+            default:
                 if (!empty($verifierids)) {
                     if (is_array($verifierids)) {
                         $verifieridsfilter = ' AND t.verifierid IN (' . implode(',', $verifierids) . ') ';
@@ -961,7 +961,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     (isset($message['headers']['Reply-To']) ? $message['headers']['Reply-To'] : ''),
                 $headers,
                 isset($message['type']) ? $message['type'] : RTMESSAGE_REGULAR,
-		isset($message['phonefrom']) ? $message['phonefrom'] : '',
+                isset($message['phonefrom']) ? $message['phonefrom'] : '',
             )
         );
         $msgid = $this->db->GetLastInsertID('rtmessages');
