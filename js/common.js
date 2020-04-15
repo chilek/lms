@@ -158,6 +158,9 @@ function openPopupWindow(options)
 	if (!options.hasOwnProperty('onLoaded')) {
 		options.onLoaded = null;
 	}
+	if (!options.hasOwnProperty('title')) {
+		options.title = 'openPopupWindow';
+	}
 
 	$.ajax({
 		url: options.url,
@@ -174,7 +177,7 @@ function openPopupWindow(options)
 				position: { my: "left top", at: "left bottom", of: options.selector },
 				resizable: true,
 				width: 'auto',
-				title: $t("Choose TERRIT location"),
+				title: options.title,
 				open: function() {
 					$('.ui-widget-overlay').click(function() {
 						$( "#" + dialogId).dialog('destroy').remove();
@@ -219,10 +222,10 @@ if ( typeof $ !== 'undefined' ) {
             }
             var street = box.find("input[data-address='street-hidden']").val();
 
-            //openSelectWindow('?m=chooselocation&city=' + city + '&street=' + street + "&boxid=" + box.attr('id'), 'chooselocation', 350, 200, 'true');
 			openPopupWindow({
 				url: '?m=chooselocation&city=' + city + '&street=' + street + "&boxid=" + box.attr('id'),
 				selector: this,
+				title: $t("Choose TERRIT location"),
 				onLoaded: function() {
 					$('#search [name="searchcity"]').focus();
 				}
