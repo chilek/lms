@@ -249,6 +249,8 @@ $(function() {
                 confirmDialog(msg, this).done(function () {
                     location_box.closest('tr').remove();
                 });
+            } else {
+                location_box.closest('tr').remove();
             }
 		});
 	});
