@@ -4704,14 +4704,14 @@ $_LANG['Choose TERRIT location'] = 'Wybierz lokalizację TERYT';
 
 $_LANG['Sent by customer at $a'] = 'Przesłane przez klienta $a';
 
-$_LANG['Enable warning'] = 'Ustaw ostrzeżenie';
-$_LANG['Disable warning'] = 'Wyłącz ostrzeżenie';
-$_LANG['Add to groups'] = 'Dodaj do grup';
-$_LANG['Remove from groups'] = 'Usuń z grup';
-$_LANG['Change groups'] = 'Zmień grupy';
+$_LANG['<!customersearch>Enable warning'] = 'Włącz ostrzeżenie';
+$_LANG['<!customersearch>Disable warning'] = 'Wyłącz ostrzeżenie';
+$_LANG['<!customersearch>Add to groups'] = 'Dodaj do grup';
+$_LANG['<!customersearch>Add consents'] = 'Dodaj zgody';
+$_LANG['<!customersearch>Remove from groups'] = 'Usuń z grup';
+$_LANG['<!customersearch>Remove consents'] = 'Usuń zgody';
+$_LANG['<!customersearch>Change groups'] = 'Zmień grupy';
 $_LANG['<!customersearch>Action:'] = 'Czynność:';
-$_LANG['Add consents'] = 'Dodaj zgody';
-$_LANG['Remove consents'] = 'Usuń zgody';
 $_LANG['Apply'] = 'Zastosuj';
 
 $_LANG['Warnings'] = 'Ostrzeżenia';

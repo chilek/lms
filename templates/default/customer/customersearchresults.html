@@ -112,21 +112,21 @@
 			<span class="bold">{trans("<!customersearch>Action:")}</span>
 			<select id="customer-action">
 				<optgroup label="{trans("Warnings")}">
-					<option value="1">{trans("Enable warning")}</option>
-					<option value="2">{trans("Disable warning")}</option>
+					<option value="1">{trans("<!customersearch>Enable warning")}</option>
+					<option value="2">{trans("<!customersearch>Disable warning")}</option>
 					<option value="3">{trans("Set notice content")}</option>
 				</optgroup>
 				{if is_array($listdata.customergroup)}
 					<optgroup label="{trans("Customer groups")}">
 						{$groups = array_flip($listdata.customergroup)}
-						<option value="4">{trans("Add to groups")}</option>
-						<option value="5">{trans("Remove from groups")}</option>
-						<option value="6">{trans("Change groups")}</option>
+						<option value="4">{trans("<!customersearch>Add to groups")}</option>
+						<option value="5">{trans("<!customersearch>Remove from groups")}</option>
+						<option value="6">{trans("<!customersearch>Change groups")}</option>
 					</optgroup>
 				{/if}
 				<optgroup label="{trans("Customer consents")}">
-					<option value="7">{trans("Add consents")}</option>
-					<option value="8">{trans("Remove consents")}</option>
+					<option value="7">{trans("<!customersearch>Add consents")}</option>
+					<option value="8">{trans("<!customersearch>Remove consents")}</option>
 				</optgroup>
 			</select>
 			{if isset($groups)}
