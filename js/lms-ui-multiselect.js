@@ -341,19 +341,22 @@ function multiselect(options) {
 	// hide combobox after click out of the window
 	$(document).click(function(e) {
 		var elem = e.target;
-		while (elem && (elem.nodeName != 'DIV' || elem.className.match(/^lms-ui-multiselect(-tiny)?-wrapper/) === null))
+		while (elem && (elem.nodeName != 'DIV' || elem.className.match(/^lms-ui-multiselect(-tiny)?-wrapper/) === null)) {
 			elem = elem.parentNode;
+		}
 
-		if (!$(div).is(':visible') || (elem && elem.id == old_element.attr('id')))
+		if (!$(div).is(':visible') || (elem && elem.id == old_element.attr('id'))) {
 			return 0;
+		}
 
-		var parent = $(e.target).parent().html().indexOf(old_element.attr('name'));
+		var parent = $(e.target).parent().is(document) ? -1 : $(e.target).parent().html().indexOf(old_element.attr('name'));
 
 		if ($(e.target).html().indexOf("<head>") > -1 || parent == -1 ||
 			(parent > -1 && e.target.nodeName != 'INPUT' && e.target.nodeName != 'LI' && e.target.nodeName != 'SPAN')) {
 			$(div).hide();
-			if (new_selected != old_selected)
+			if (new_selected != old_selected) {
 				wrapper.triggerHandler('change');
+			}
 			old_selected = new_selected;
 		}
 	});
