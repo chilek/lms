@@ -184,7 +184,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         } elseif (is_array($state)) {
             $statefilter = ' AND t.state IN (' . implode(',', $state) . ')';
         } elseif ($state == -3) {
-            $statefilter = ' AND t.state = (' . RT_NEW . 'OR t.state = ' . RT_OPEN .')';
+            $statefilter = ' AND (t.state = ' . RT_NEW . ' OR t.state = ' . RT_OPEN .')';
         } elseif ($state == -1) {
             $statefilter = ' AND t.state <> ' . RT_RESOLVED;
         } else {
