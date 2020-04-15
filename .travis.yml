@@ -41,6 +41,13 @@ matrix:
         PHPCS_VER="^3"
         PHPCS_STANDARD="phpcs3.xml"
 
+    - os: linux
+      language: php
+      php: 7.4
+      env:
+        PHPCS_VER="^3"
+        PHPCS_STANDARD="phpcs3.xml"
+
 addons:
   postgresql: "9.2"
 
