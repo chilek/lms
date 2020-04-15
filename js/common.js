@@ -171,6 +171,7 @@ function openPopupWindow(options)
 			$(dialog).dialog({
 				autoOpen: true,
 				buttons: [],
+				closeText: $t("Close"),
 				dialogClass: 'lms-ui-popup',
 				closeOnEscape: true,
 				modal: true,
