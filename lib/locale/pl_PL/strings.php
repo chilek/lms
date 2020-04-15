@@ -4713,3 +4713,7 @@ $_LANG['<!customersearch>Action:'] = 'Czynność:';
 $_LANG['Add consents'] = 'Dodaj zgody';
 $_LANG['Remove consents'] = 'Usuń zgody';
 $_LANG['Apply'] = 'Zastosuj';
+
+$_LANG['Warnings'] = 'Ostrzeżenia';
+$_LANG['Customer groups'] = 'Grupy klientów';
+$_LANG['Customer consents'] = 'Zgody klientów';

@@ -111,17 +111,23 @@
 		<TD COLSPAN="4" class="nobr">
 			<span class="bold">{trans("<!customersearch>Action:")}</span>
 			<select id="customer-action">
-				<option value="1">{trans("Enable warning")}</option>
-				<option value="2">{trans("Disable warning")}</option>
-				<option value="3">{trans("Set notice content")}</option>
+				<optgroup label="{trans("Warnings")}">
+					<option value="1">{trans("Enable warning")}</option>
+					<option value="2">{trans("Disable warning")}</option>
+					<option value="3">{trans("Set notice content")}</option>
+				</optgroup>
 				{if is_array($listdata.customergroup)}
-					{$groups = array_flip($listdata.customergroup)}
-					<option value="4">{trans("Add to groups")}</option>
-					<option value="5">{trans("Remove from groups")}</option>
-					<option value="6">{trans("Change groups")}</option>
+					<optgroup label="{trans("Customer groups")}">
+						{$groups = array_flip($listdata.customergroup)}
+						<option value="4">{trans("Add to groups")}</option>
+						<option value="5">{trans("Remove from groups")}</option>
+						<option value="6">{trans("Change groups")}</option>
+					</optgroup>
 				{/if}
-				<option value="7">{trans("Add consents")}</option>
-				<option value="8">{trans("Remove consents")}</option>
+				<optgroup label="{trans("Customer consents")}">
+					<option value="7">{trans("Add consents")}</option>
+					<option value="8">{trans("Remove consents")}</option>
+				</optgroup>
 			</select>
 			{if isset($groups)}
 				<SELECT SIZE="1" class="lms-ui-multiselect-deferred" NAME="setwarnings[customergroup][]"
