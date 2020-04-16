@@ -23,7 +23,9 @@
 
 $this->BeginTrans();
 
-$this->Execute("ALTER TABLE cash ADD CONSTRAINT cash_importid_ukey UNIQUE (importid)");
+if (!$this->ResourceExists('cash_importid_ukey', LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
+    $this->Execute("ALTER TABLE cash ADD CONSTRAINT cash_importid_ukey UNIQUE (importid)");
+}
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020041600', 'dbversion'));
 
