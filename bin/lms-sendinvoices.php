@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -34,7 +34,10 @@ $parameters = array(
     'v' => 'version',
     't' => 'test',
     'f:' => 'fakedate:',
+    'p:' => 'part-number:',
     'g:' => 'fakehour:',
+    'l:' => 'part-size:',
+    'i:' => 'interval:',
     'e:' => 'extra-file:',
     'b' => 'backup',
     'a' => 'archive',
@@ -58,7 +61,7 @@ foreach ($short_to_longs as $short => $long) {
 if (array_key_exists('version', $options)) {
     print <<<EOF
 lms-sendinvoices.php
-(C) 2001-2019 LMS Developers
+(C) 2001-2020 LMS Developers
 
 EOF;
     exit(0);
@@ -67,7 +70,7 @@ EOF;
 if (array_key_exists('help', $options)) {
     print <<<EOF
 lms-sendinvoices.php
-(C) 2001-2019 LMS Developers
+(C) 2001-2020 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
@@ -75,7 +78,11 @@ lms-sendinvoices.php
 -v, --version                   print version info and exit;
 -q, --quiet                     suppress any output, except errors;
 -f, --fakedate=YYYY/MM/DD       override system date;
+-p, --part-number=NN            defines which part of invoices that should be sent;
 -g, --fakehour=HH               override system hour; if no fakehour is present - current hour will be used;
+                                (deprecated - use --part-number instead of);
+-s, --part-size=NN              defines part size of invoices that should be sent
+                                (can be specified as percentage value);
 -i, --interval=ms               force delay interval between subsequent posts
 -e, --extra-file=/tmp/file.pdf  send additional file as attachment
 -b, --backup                    make financial document file backup
@@ -91,7 +98,7 @@ $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
     print <<<EOF
 lms-sendinvoices.php
-(C) 2001-2019 LMS Developers
+(C) 2001-2020 LMS Developers
 
 EOF;
 }
@@ -226,7 +233,7 @@ $invoice_filename = ConfigHelper::getConfig('sendinvoices.invoice_filename', 'in
 $dnote_filename = ConfigHelper::getConfig('sendinvoices.debitnote_filename', 'dnote_%docid');
 
 if ($backup || $archive) {
-    $count_limit = 0;
+    $part_size = 0;
 } else {
     // now it's time for script settings
     $smtp_options = array(
@@ -253,7 +260,7 @@ if ($backup || $archive) {
     $aggregate_documents = ConfigHelper::checkConfig('sendinvoices.aggregate_documents');
     $dsn_email = ConfigHelper::getConfig('sendinvoices.dsn_email', '', true);
     $mdn_email = ConfigHelper::getConfig('sendinvoices.mdn_email', '', true);
-    $count_limit = ConfigHelper::getConfig('sendinvoices.limit', '0');
+    $part_size = isset($options['part-size']) ? $options['part-size'] : ConfigHelper::getConfig('sendinvoices.limit', '0');
 
     if (isset($options['interval'])) {
         $interval = $options['interval'];
@@ -276,11 +283,11 @@ if ($backup || $archive) {
         die("Fatal error: smtp_auth setting not supported! Can't continue, exiting." . PHP_EOL);
     }
 
-    $fakehour = isset($options['fakehour']) ? $options['fakehour'] : null;
-    if (isset($fakehour)) {
-        $curr_h = intval($fakehour);
+    $part_number = isset($options['part-number']) ? $options['part-number'] : (isset($options['fakehour']) ? $options['fakehour'] : null);
+    if (isset($part_number)) {
+        $part_number = intval($part_number);
     } else {
-        $curr_h = intval(date('H', time()));
+        $part_number = intval(date('H', time()));
     }
 
     $extrafile = (array_key_exists('extra-file', $options) ? $options['extra-file'] : null);
@@ -332,8 +339,8 @@ if ($backup || $archive) {
         echo "WARNING! You are using test mode." . PHP_EOL;
     }
 
-    if (!empty($count_limit) && preg_match('/^[0-9]+$/', $count_limit)) {
-        $count_offset = $curr_h * $count_limit;
+    if (!empty($part_size) && preg_match('/^[0-9]+$/', $part_size)) {
+        $part_offset = $part_number * $part_size;
     }
 }
 
@@ -362,10 +369,10 @@ if ($backup || $archive) {
     $args = array(CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_DISABLED,
         CONTACT_EMAIL | CONTACT_INVOICES, DOC_INVOICE, DOC_INVOICE_PRO, DOC_CNOTE, DOC_DNOTE);
 
-    if (!empty($count_limit) && preg_match('/^(?<percent>[0-9]+)%$/', $count_limit, $m)) {
+    if (!empty($part_size) && preg_match('/^(?<percent>[0-9]+)%$/', $part_size, $m)) {
         $percent = intval($m['percent']);
         if ($percent < 1 || $percent > 99) {
-            $count_limit = 0;
+            $part_size = 0;
         } else {
             $count = intval($DB->GetOne("SELECT COUNT(*)
 				FROM documents d
@@ -382,9 +389,9 @@ if ($backup || $archive) {
                 die;
             }
 
-            $count_limit = floor(($percent * $count) / 100);
-            $count_offset = $curr_h * $count_limit;
-            if ($count_offset >= $count) {
+            $part_size = floor(($percent * $count) / 100);
+            $part_offset = $part_number * $part_size;
+            if ($part_offset >= $count) {
                 die;
             }
         }
@@ -403,7 +410,7 @@ $query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctyp
             . ($archive ? " AND d.archived = 0" : '') . "
 			AND d.cdate >= $daystart AND d.cdate <= $dayend"
             . (!empty($groupnames) ? $customergroups : "")
-        . " ORDER BY d.number" . (!empty($count_limit) ? " LIMIT $count_limit OFFSET $count_offset" : '');
+        . " ORDER BY d.number" . (!empty($part_size) ? " LIMIT $part_size OFFSET $part_offset" : '');
 $docs = $DB->GetAll($query, $args);
 
 if (!empty($docs)) {
@@ -490,5 +497,3 @@ if (!empty($docs)) {
         ));
     }
 }
-
-?>
