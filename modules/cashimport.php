@@ -148,13 +148,11 @@ if (isset($_GET['action']) && $_GET['action'] == 'csv') {
         }
     }
 
-    $DB->BeginTrans();
-
     if (!empty($marks)) {
         $imports = $DB->GetAll('SELECT i.*, f.idate
 			FROM cashimport i
 			LEFT JOIN sourcefiles f ON (f.id = i.sourcefileid)
-			WHERE i.id IN ('.implode(',', $marks).')');
+			WHERE i.closed = 0 AND i.id IN ('.implode(',', $marks).')');
     }
 
     if (!empty($imports)) {
@@ -166,6 +164,8 @@ if (isset($_GET['action']) && $_GET['action'] == 'csv') {
             if ($import['closed'] == 1) {
                 continue;
             }
+
+            $DB->BeginTrans();
 
             $balance['time'] = $idate ? $import['idate'] : $import['date'];
             $balance['type'] = 1;
@@ -244,10 +244,9 @@ if (isset($_GET['action']) && $_GET['action'] == 'csv') {
             $balance['currency'] = LMS::$currency;
             $LMS->AddBalance($balance);
 
+            $DB->CommitTrans();
         }
     }
-
-    $DB->CommitTrans();
 }
 
 $divisions = $LMS->GetDivisions(array('order' => 'name'));
