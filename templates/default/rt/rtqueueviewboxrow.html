@@ -21,7 +21,7 @@
 		<a href="#" class="lms-ui-button-clipboard" data-clipboard-text="{$url}?m=rtticketview&id={$ticket.id}">
 			<i></i>
 		</a>
-		<span>{if is_array($filter.ids) && count($filter.ids) != 1}{$ticket.name}{/if}</span>
+		<span>{if (is_array($filter.ids) && count($filter.ids) != 1) || !isset($filter.ids)}{$ticket.name}{/if}</span>
 		<br>
 		{$ticket.createtime|date_format:"%Y/%m/%d %H:%M:%S"}
 	</TD>

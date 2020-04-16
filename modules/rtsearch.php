@@ -197,7 +197,9 @@ function RTSearch($search, $order = 'createtime,desc')
         .$DB->Concat('UPPER(c.lastname)', "' '", 'c.name').'
 		END AS requestor, t.requestor AS req, t.createtime,
 		(CASE WHEN m.lastmodified IS NULL THEN 0 ELSE m.lastmodified END) AS lastmodified, t.deleted, t.deltime,
-		t.priority, t.verifierid, t.deadline, m3.messageid, COUNT(m2.id) AS delcount
+		t.priority, t.verifierid, t.deadline,
+        eventcountopened, eventcountclosed, 
+		m3.messageid, COUNT(m2.id) AS delcount
 		FROM rttickets t
 		LEFT JOIN rtmessages m2 ON m2.ticketid = t.id AND m2.deleted = 1
 		' . implode(' ', $join) . '
@@ -207,13 +209,20 @@ function RTSearch($search, $order = 'createtime,desc')
 		LEFT JOIN vusers ON (t.owner = vusers.id)
 		LEFT JOIN vusers AS e ON (t.verifierid = vusers.id)
 		LEFT JOIN customeraddressview c ON c.id = t.customerid
-		LEFT JOIN vaddresses va ON va.id = t.address_id'
+		LEFT JOIN vaddresses va ON va.id = t.address_id
+        LEFT JOIN (
+            SELECT SUM(CASE WHEN closed = 0 THEN 1 ELSE 0 END) AS eventcountopened,
+                SUM(CASE WHEN closed = 1 THEN 1 ELSE 0 END) AS eventcountclosed,
+                ticketid FROM events
+            WHERE ticketid IS NOT NULL
+            GROUP BY ticketid
+        ) ev ON ev.ticketid = t.id'
         .(isset($where) ? $where : '')
         . ' GROUP BY t.id, t.customerid, t.subject, t.state, t.owner, t.service, t.type,
 			t.address_id, va.name, va.city, va.street, va.house, va.flat, c.address, c.city,
 			vusers.name, rtqueues.name,
 			t.requestor, c.lastname, c.name, t.createtime, m.lastmodified, t.deleted, t.deltime, t.priority,
-			t.verifierid, t.deadline, m3.messageid '
+			t.verifierid, t.deadline, eventcountopened, eventcountclosed, m3.messageid '
         . ($sqlord !='' ? $sqlord . ' ' . $direction : '')
         . (isset($search['limit']) ? ' LIMIT ' . $search['limit'] : '')
         . (isset($search['offset']) ? ' OFFSET ' . $search['offset'] : ''));
@@ -224,6 +233,14 @@ function RTSearch($search, $order = 'createtime,desc')
                 list ($ticket['requestor'], $ticket['requestoremail']) = sscanf($ticket['req'], "%[^<]<%[^>]");
             } else {
                 list ($ticket['requestoremail']) = sscanf($ticket['req'], "<%[^>]");
+            }
+
+            if (!empty($ticket['deadline'])) {
+                $ticket['deadline_diff'] = $ticket['deadline']-time();
+                $days = floor(($ticket['deadline_diff']/86400));
+                $hours = round(($ticket['deadline_diff']-($days*86400))/3600);
+                $ticket['deadline_days'] = abs($days);
+                $ticket['deadline_hours'] = abs($hours);
             }
         }
         unset($ticket);
