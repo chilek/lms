@@ -1036,7 +1036,8 @@ CREATE TABLE cash (
 	linktechnology integer DEFAULT NULL,
     currency varchar(3),
     currencyvalue numeric(17,10) DEFAULT 1.0,
-	PRIMARY KEY (id)
+	PRIMARY KEY (id),
+	CONSTRAINT cash_importid_ukey UNIQUE (importid)
 );
 CREATE INDEX cash_customerid_idx ON cash (customerid);
 CREATE INDEX cash_docid_idx ON cash (docid);
@@ -3766,6 +3767,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020041001');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020041600');
 
 COMMIT;
