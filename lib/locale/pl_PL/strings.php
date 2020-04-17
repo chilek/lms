@@ -1850,6 +1850,7 @@ $_LANG['Your PHP does not support Ming library required for map generation!'] = 
 $_LANG['Your unique installation ID:'] = 'Twój unikalny nr rejestracyjny:';
 $_LANG['You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.'] = 'Z pewnością wraz z niniejszym programem otrzymałeś też egzemplarz Powszechnej Licencji Publicznej GNU; jeśli nie - napisz do Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.';
 $_LANG['Zip:'] = 'Kod:';
+$_LANG['Add event assigned to ticket'] = 'Dodaj zdarzenie powiązane ze zgłoszeniem';
 $_LANG['Add tax rate'] = 'Dodaj stawkę';
 $_LANG['Are you sure, you want to delete taxrate \'$a\'?'] = 'Jesteś pewien, że chcesz usunąć stawkę \'$a\'?';
 $_LANG['Binds from date:'] = 'Obowiązuje od:';
@@ -3375,6 +3376,8 @@ $_LANG['Select note template'] = 'Wybierz szablon notatki';
 $_LANG['Enter name of the new message template'] = 'Wprowadź nazwę nowego szablonu wiadomości';
 $_LANG['no operation on message template'] = 'brak czynności na szablonie wiadomości';
 
+$_LANG['Assign to me as owner'] = 'Przypisz do mnie jako właściel';
+$_LANG['Assign to me as verifier'] = 'Przypisz do mnie jako weryfikator';
 $_LANG['Assign to me'] = 'Przypisz do mnie';
 $_LANG['assign to me'] = 'przypisz do mnie';
 $_LANG['Ticket has been assigned to user $a.'] = 'Zgłoszenie zostało przypisane do użytkownika $a.';

@@ -110,17 +110,16 @@
 		</TD>
 		<TD class="lms-ui-buttons text-right nobr">
 			{if $queue.unread}
-			<a href="?m=rtqueueedit&id={$queue.id}&unread=0"><img src="img/ticket-read.png" alt="" title="{t a=$queue.unread}Mark as read ($a unread){/t}"></a>
+			{button type="link" href="?m=rtqueueedit&id={$queue.id}&unread=0" icon="lms-ui-icon-read" alt="Mark queue as unread"}
 			{/if}
 			{if $queue.deleted == 1 && $queue.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
-			<A class="restore-rtqueue" HREF="?m=rtrestore&id={$queue.id}&qaction=restore"><IMG src="img/reload.gif" alt="{trans("Restore<!RT>")}" title="{trans("Restore<!RT>")}"></A>
-			<A class="remove-rtqueue" HREF="?m=rtremove&id={$queue.id}&qaction=delperm"><IMG src="img/delete.gif" alt="{trans("Delete permanently")}" title="{trans("Delete permanently")}"></A>
+			{button type="link" href="?m=rtrestore&id={$queue.id}&qaction=restore" icon="lms-ui-icon-reload" alt="Restore<!RT>"}
+			{button type="link" href="?m=rtremove&id={$queue.id}&qaction=delperm" icon="lms-ui-icon-delete" alt="Delete permanently" class="remove-rtqueue"}
 			{else}
-			<A class="delete-rtqueue" HREF="?m=rtqueuedel&id={$queue.id}&amp;qaction=delete"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			{button type="link" href="?m=rtqueuedel&id={$queue.id}&amp;qaction=delete" icon="lms-ui-icon-delete" alt="Delete" class="delete-rtqueue"}
 			{/if}
-			<A HREF="?m=rtqueueview&amp;id={$queue.id}"><IMG SRC="img/view.gif" alt="{trans("Browse")}" title="{trans("Browse")}"></A>
-			<A HREF="?m=rtqueueedit&amp;id={$queue.id}"><IMG SRC="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
-			<A HREF="?m=rtqueueinfo&amp;id={$queue.id}"><IMG SRC="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
+			{button type="link" href="?m=rtqueueedit&amp;id={$queue.id}" icon="lms-ui-icon-edit" alt="Edit" class="edit-rtqueue"}
+			{button type="link" href="?m=rtqueueinfo&amp;id={$queue.id}" icon="lms-ui-icon-info" alt="Info" class="info-rtqueue"}
 		</TD>
 	</TR>
 	{foreachelse}

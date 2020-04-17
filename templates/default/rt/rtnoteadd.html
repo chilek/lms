@@ -17,16 +17,14 @@
     <THEAD>
 	<TR>
 		<TD colspan="2" class="bold nobr">
-			<IMG src="img/ticket.gif" alt="">
-			{t a=$note.ticketid|string_format:"%06d"}Ticket No. $a{/t}
+			<i class="lms-ui-icon-helpdesk"></i> {t a=$note.ticketid|string_format:"%06d"}Ticket No. $a{/t}
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	<TR id="note-template-row"{if empty($notetemplates)} style="display: none;"{/if}>
 		<TD class="bold nobr">
-			<img src="img/docum.gif" alt="">
-			{trans("Note template:")}
+			<i class="lms-ui-icon-document"></i> {trans("Note template:")}
 		</TD>
 		<td id="note-templates">
 			{include file="rt/rtmessagetemplates.html" templates=$notetemplates tip="Select note template"}
@@ -34,8 +32,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/note.gif" alt="">
-			{trans("Note content:")}
+			<i class="lms-ui-icon-note"></i> {trans("Note content:")}
 		</TD>
 		<TD>
 			<TEXTAREA name="note[body]" cols="50" rows="5" {tip text="Enter note content" trigger="body"} >{$note.body}</TEXTAREA>
@@ -43,8 +40,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr valign-top">
-			<IMG src="img/attach.gif" alt="">
-			{trans("Attachments:")}
+			<i class="lms-ui-icon-upload"></i> {trans("Attachments:")}
 		</TD>
 		<TD>
 			{fileupload id="files" fileupload=$fileupload form="note-form"}
@@ -52,8 +48,8 @@
 	</TR>
 	<TR>
 		<TD colspan="2" class="buttons">
-			<A href="javascript: document.note.submit();" accesskey="s"><IMG src="img/save.gif" alt=""> {trans("Submit")}</A>
-			<A href="?m=rtticketview&id={$note.ticketid}"><IMG src="img/cancel.gif" alt=""> {trans("Cancel")}</A>
+			{button onclick="javascript: document.note.submit();" accesskey="s" icon="lms-ui-icon-save" label="Submit"}
+			{button type="button-link" href="?m=rtticketview&id={$note.ticketid}" icon="lms-ui-icon-cancel" label="Cancel"}
 		</TD>
 	</TR>
     </TBODY>
@@ -67,7 +63,7 @@
     <TBODY>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/mail.gif" alt=""> <label for="notify">{trans("Notify users:")}</label>
+			<i class="lms-ui-icon-mail"></i><label for="notify"> {trans("Notify users:")}</label>
 		</TD>
 		<TD>
 			<INPUT type="checkbox" name="note[notify]" id="notify" value="1"{if $note.notify} CHECKED{/if}>
@@ -75,7 +71,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/dead.gif" alt=""> {trans("Status:")}
+			<i class="lms-ui-icon-status"></i> {trans("Status:")}
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="note[state]" id="state" {tip text="Select status" trigger="state"}>
@@ -92,7 +88,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/desc.gif" alt=""> {trans("Cause:")}
+			<i class="lms-ui-icon-cause"></i> {trans("Cause:")}
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="note[cause]" {tip text="Select ticket cause" trigger="cause"}>
@@ -104,7 +100,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/volcano.png" alt="">{trans("Ticket source:")}
+			<i class="lms-ui-icon-source"></i> {trans("Ticket source:")}
 		</TD>
 		<TD>
 			<SELECT size="1" name="note[source]" {tip text="Select ticket source" trigger="source"}>
@@ -116,8 +112,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/report.gif" alt="">
-			{trans("Priority:")}
+			<i class="lms-ui-icon-priority"></i> {trans("Priority:")}
 		</TD>
 		<TD>
 			<SELECT size="1" name="note[priority]" {tip text="Set ticket priority" trigger="priority"}>
@@ -129,7 +124,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/queue.gif" alt=""> {trans("Queue:")}
+			<i class="lms-ui-icon-queue"></i> {trans("Queue:")}
 		</TD>
 		<TD>
 			<SELECT size="1" name="note[queueid]" {tip text="Select queue" trigger="queue"} onchange="xajax_queue_changed($(this).val(), $('#rtverifiers').val())">
@@ -141,7 +136,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/users.gif" alt=""> {trans("Owner:")}
+			<i class="lms-ui-icon-owner"></i> {trans("Owner:")}
 		</TD>
 		<TD>
 			<SELECT size="1" name="note[owner]" {tip text="Select user" trigger="owner"}>
@@ -163,8 +158,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/verifier.png" alt="">
-			{trans("Verifier:")}
+			<i class="lms-ui-icon-verifier"></i> {trans("Verifier:")}
 		</TD>
 		<TD>
 			{if !$ticket.verifierid || $ticket.verifierid == $layout.logid}
@@ -186,8 +180,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/calendar.gif" alt="">
-			{trans("<!rt>Deadline:")}
+			<i class="lms-ui-icon-deadline"></i> {trans("<!rt>Deadline:")}
 		</TD>
 		<TD>
 			{if ConfigHelper::checkConfig('phpui.helpdesk_allow_all_users_modify_deadline') || !$ticket.verifierid || $ticket.verifierid == $layout.logid}
