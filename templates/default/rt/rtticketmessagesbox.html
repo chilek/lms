@@ -44,7 +44,7 @@
 								{/if}
 							{/if}
 							{if $message.phonefrom}
-							&nbsp;&nbsp;&nbsp;<A class="phone_number" href="tel:{$message.phonefrom}"><img src="img/phone.gif"> {$message.phonefrom}</A>
+							&nbsp;&nbsp;&nbsp;<A class="phone_number" href="tel:{$message.phonefrom}"><i class="lms-ui-icon-phone"></i> {$message.phonefrom}</A>
 							{/if}
 						<BR>
 						{$message.subject|escape}
@@ -57,7 +57,7 @@
 							{foreach $message.attachments as $attachment}
 								{documentview id="{$message.id}-{$attachment@index}" type=$attachment.contenttype name=$attachment.filename
 									url="?m=rtmessageview&tid={$ticket.ticketid}&mid={$message.id}&file={urlencode($attachment.filename)}"
-									text="<IMG src=\"img/attach.gif\" alt=\"\"> {$attachment.filename}"}
+									text="<i class='lms-ui-button-upload'></i> {$attachment.filename}"}
 							{/foreach}
 						{/if}
 

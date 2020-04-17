@@ -111,6 +111,10 @@ if ($id && !isset($_POST['ticket'])) {
                 $LMS->TicketChange($id, array('owner' => Auth::GetCurrentUser()));
                 $SESSION->redirect('?m=rtticketview&id=' . $id);
                 break;
+            case 'assign2':
+                $LMS->TicketChange($id, array('verifierid' => Auth::GetCurrentUser()));
+                $SESSION->redirect('?m=rtticketview&id=' . $id);
+                break;
             case 'read':
                 $LMS->MarkTicketAsRead($id);
                 $SESSION->redirect('?m=rtqueueview'

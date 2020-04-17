@@ -87,53 +87,32 @@
 	<TD class="lms-ui-buttons nobr text-right">
 		{if $ticket.state != $smarty.const.RT_RESOLVED}
 			{if !$ticket.unread}
-			<a href="#" onclick="location.href = '?m=rtticketedit&id={$ticket.id}&action=unread' + get_backid(this);">
-				<img src="img/ticket-unread.png" alt="" title="{trans("Mark as unread")}">
-			</a>
+			{button type='link' icon="read" class="ticket-read" tip="Mark as unread" onclick="location.href = '?m=rtticketedit&id={$ticket.id}&action=unread'"}
 			{else}
-			<a href="#" onclick="location.href = '?m=rtticketedit&id={$ticket.id}&action=read' + get_backid(this);">
-				<img src="img/ticket-read.png" alt="" title="{trans("Mark as read")}">
-			</a>
+			{button type='link' icon="unread" class="ticket-unread" tip="Mark as read" onclick="location.href = '?m=rtticketedit&id={$ticket.id}&action=read'"}
 			{/if}
 		{/if}
 		{if $ticket.state != $smarty.const.RT_RESOLVED}
-			<a href="?m=eventadd&ticketid={$ticket.id}">
-				<img src="img/event-add.png">
-			</a>
+		{button type="link" icon="add" class="ticket-add-event" tip="Add event assigned to ticket" href="?m=eventadd&ticketid={$ticket.id}"}
 		{/if}
 		{if !$ticket.ownerid}
-			<A href="?m=rtqueueview&ticketid={$ticket.id}&action=assign" class="ticket-assign-to-me">
-				<img src="img/users.gif" alt="" title="{trans("Assign to me")}">
-			</A>
+		{button type="link" icon="owner" class="ticket-assign-to-me" tip="Assign to me as owner" href="?m=rtqueueview&ticketid={$ticket.id}&action=assign"}
 		{/if}
-		<A href="?m=rtticketprint&id={$ticket.id}" target="_BLANK">
-			<img src="img/print.gif" alt="" title="{trans("Print")}">
-		</A>
+                {if !$ticket.verifiername}
+		{button type="link" icon="verifier" class="ticket-assign2-to-me" tip="Assign to me as verifier" href="?m=rtqueueview&ticketid={$ticket.id}&action=assign2"}
+                {/if}
+		{button type="link" icon="print" class="ticket-print" tip="Print" href="?m=rtticketprint&id={$ticket.id}"}
 		{button type="link" icon="clone" href="?m=rtticketadd&ticketid={$ticket.id}" tip="Clone"}
 		{if $ticket.deleted == 1 && $ticket.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
-			<A class="restore-ticket" href="?m=rtrestore&id={$ticket.id}&taction=restore">
-				<img src="img/reload.gif" alt="" title="{trans("Restore<!RT>")}">
-			</A>
-			<A class="remove-ticket" href="?m=rtremove&id={$ticket.id}&taction=delperm">
-				<img src="img/delete.gif" alt="" title="{trans("Delete permanently")}">
-			</A>
+		{button type="link" icon="reload" href="?m=rtrestore&id={$ticket.id}&taction=restore" tip="Restore<!RT>"}
+		{button type="link" icon="delete" href="?m=rtremove&id={$ticket.id}&taction=delperm" tip="Delete permanently"}
 		{else}
-			<A class="delete-ticket" href="?m=rtticketdel&id={$ticket.id}&taction=delete">
-				<img src="img/delete.gif" alt="" title="{trans("Delete")}">
-			</A>
+		{button type="link" icon="delete" href="?m=rtticketdel&id={$ticket.id}&taction=delete" tip="Delete"}
 		{/if}
-		<A href="#" onclick="location.href = '?m=rtticketedit&id={$ticket.id}' + get_backid(this);">
-			<img src="img/edit.gif" alt="" title="{trans("Edit")}">
-		</A>
-		<A href="#" onclick="location.href = '?m=rtnoteadd&ticketid={$ticket.id}' + get_backid(this);">
-			<img src="img/note.gif" alt="" title="{trans("New Note")}">
-		</A>
-		<A href="#" onclick="location.href = '?m=rtmessageadd&ticketid={$ticket.id}' + get_backid(this);">
-			<img src="img/forward.gif" alt="" title="{trans("New Message")}">
-		</A>
-		<A href="?m=rtticketview&id={$ticket.id}">
-			<img src="img/info.gif" alt="" title="{trans("Info")}">
-		</A>
+		{button type="link" icon="edit" href="?m=rtticketedit&id={$ticket.id}" tip="Edit"}
+		{button type="link" icon="note" href="?m=rtnoteadd&ticketid={$ticket.id}" tip="New Note"}
+		{button type="link" icon="message" href="?m=rtmessageadd&ticketid={$ticket.id}" tip="New Message"}
+		{button type="link" icon="info" href="?m=rtticketview&id={$ticket.id}" tip="Info"}
 		<input type="checkbox" class="lms-ui-multi-check" name="ticketid[]" value="{$ticket.id}">
 	</TD>
 </TR>
