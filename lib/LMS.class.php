@@ -4395,7 +4395,7 @@ class LMS
         $from = $sender_email;
 
         if (!empty($sender_name)) {
-            $from = "$sender_name <$from>";
+            $from = qp_encode($sender_name) . " <$from>";
         }
 
         foreach ($docs as $doc) {
