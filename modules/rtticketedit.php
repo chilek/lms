@@ -102,7 +102,7 @@ if ($id && !isset($_POST['ticket'])) {
                         'sms_body' => $sms_body,
                     ));
                 $SESSION->redirect('?m=rtticketview&id=' . $id);
-                break;
+            break;
             case 'assign':
                 if (isset($_GET['check-conflict'])) {
                     header('Content-Type: application/json');
@@ -110,21 +110,21 @@ if ($id && !isset($_POST['ticket'])) {
                 }
                 $LMS->TicketChange($id, array('owner' => Auth::GetCurrentUser()));
                 $SESSION->redirect('?m=rtticketview&id=' . $id);
-                break;
+            break;
             case 'assign2':
                 $LMS->TicketChange($id, array('verifierid' => Auth::GetCurrentUser()));
-		$SESSION->redirect('?m=rtticketview&id=' . $id);
-		break;
+                $SESSION->redirect('?m=rtticketview&id=' . $id);
+            break;
             case 'read':
                 $LMS->MarkTicketAsRead($id);
                 $SESSION->redirect('?m=rtqueueview'
                     . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
-                break;
+            break;
             case 'unread':
                 $LMS->MarkTicketAsUnread($id);
                 $SESSION->redirect('?m=rtqueueview'
                     . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
-                break;
+            break;
             case 'resolve':
                 $LMS->TicketChange($id, array('state' => RT_RESOLVED));
 
