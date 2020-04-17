@@ -110,16 +110,16 @@
 		</TD>
 		<TD class="lms-ui-buttons text-right nobr">
 			{if $queue.unread}
-			{button type="link" href="?m=rtqueueedit&id={$queue.id}&unread=0" icon="lms-ui-icon-read" alt="Mark queue as unread"}
+			{button type="link" href="?m=rtqueueedit&id={$queue.id}&unread=0" icon="read" alt="Mark queue as unread"}
 			{/if}
 			{if $queue.deleted == 1 && $queue.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
-			{button type="link" href="?m=rtrestore&id={$queue.id}&qaction=restore" icon="lms-ui-icon-reload" alt="Restore<!RT>"}
-			{button type="link" href="?m=rtremove&id={$queue.id}&qaction=delperm" icon="lms-ui-icon-delete" alt="Delete permanently" class="remove-rtqueue"}
+			{button type="link" href="?m=rtrestore&id={$queue.id}&qaction=restore" icon="reload" alt="Restore<!RT>"}
+			{button type="link" href="?m=rtremove&id={$queue.id}&qaction=delperm" icon="delete" alt="Delete permanently" class="remove-rtqueue"}
 			{else}
-			{button type="link" href="?m=rtqueuedel&id={$queue.id}&amp;qaction=delete" icon="lms-ui-icon-delete" alt="Delete" class="delete-rtqueue"}
+			{button type="link" href="?m=rtqueuedel&id={$queue.id}&amp;qaction=delete" icon="delete" alt="Delete" class="delete-rtqueue"}
 			{/if}
-			{button type="link" href="?m=rtqueueedit&amp;id={$queue.id}" icon="lms-ui-icon-edit" alt="Edit" class="edit-rtqueue"}
-			{button type="link" href="?m=rtqueueinfo&amp;id={$queue.id}" icon="lms-ui-icon-info" alt="Info" class="info-rtqueue"}
+			{button type="link" href="?m=rtqueueedit&amp;id={$queue.id}" icon="edit" alt="Edit" class="edit-rtqueue"}
+			{button type="link" href="?m=rtqueueinfo&amp;id={$queue.id}" icon="info" alt="Info" class="info-rtqueue"}
 		</TD>
 	</TR>
 	{foreachelse}
