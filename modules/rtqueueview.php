@@ -328,12 +328,12 @@ if (isset($_GET['action'])) {
                 $SESSION->redirect(str_replace('&action=assign', '', $_SERVER['REQUEST_URI'])
                 . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
             }
-        break;
-	case 'assign2':
+            break;
+        case 'assign2':
                 $LMS->TicketChange($_GET['ticketid'], array('verifierid' => Auth::GetCurrentUser()));
                 $SESSION->redirect(str_replace('&action=assign2', '', $_SERVER['REQUEST_URI'])
                 . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
-        break;
+            break;
         case 'unlink':
             $LMS->TicketChange($_GET['ticketid'], array('parentid' => null));
             $backto = $SESSION->get('backto');
@@ -342,7 +342,7 @@ if (isset($_GET['action'])) {
             } else {
                 $SESSION->redirect('?' . $backto);
             }
-        break;
+            break;
     }
 }
 
