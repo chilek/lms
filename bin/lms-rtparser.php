@@ -206,6 +206,9 @@ if ($mail === false) {
 }
 
 $buffer = file_get_contents('php://stdin');
+if (!preg_match('/\r?\n$/', $buffer)) {
+    $buffer .= "\n";
+}
 if (mailparse_msg_parse($mail, $buffer) === false) {
     fprintf($stderr, "Fatal error: mailparse_msg_parse() error!" . PHP_EOL);
     exit(4);
