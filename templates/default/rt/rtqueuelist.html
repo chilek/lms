@@ -110,7 +110,7 @@
 		</TD>
 		<TD class="lms-ui-buttons text-right nobr">
 			{if $queue.unread}
-			{button type="link" href="?m=rtqueueedit&id={$queue.id}&unread=0" icon="read" alt="Mark queue as unread"}
+			{button type="link" href="?m=rtqueueedit&id={$queue.id}&unread=0" icon="read" alt="Mark queue as read"}
 			{/if}
 			{if $queue.deleted == 1 && $queue.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
 			{button type="link" href="?m=rtrestore&id={$queue.id}&qaction=restore" icon="reload" alt="Restore<!RT>"}
