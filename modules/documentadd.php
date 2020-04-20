@@ -214,6 +214,7 @@ if (isset($_POST['document'])) {
     if (!empty($attachments)) {
         foreach ($attachments as $attachment) {
             $attachment['tmpname'] = $tmppath . DIRECTORY_SEPARATOR . $attachment['name'];
+            $attachment['filename'] = $attachment['name'];
             $attachment['md5sum'] = md5_file($attachment['tmpname']);
             $attachment['attachmenttype'] = 0;
             $files[] = $attachment;
