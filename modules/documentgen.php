@@ -151,7 +151,7 @@ if (isset($_POST['document'])) {
         foreach ($attachments as $attachment) {
             $attachment['tmpname'] = $tmppath . DIRECTORY_SEPARATOR . $attachment['name'];
             $attachment['md5sum'] = md5_file($attachment['tmpname']);
-            $attachment['main'] = false;
+            $attachment['attachmenttype'] = 0;
             $globalfiles[] = $attachment;
         }
     }
@@ -166,7 +166,7 @@ if (isset($_POST['document'])) {
                 'name' => $filename,
                 'type' => mime_content_type($filename),
                 'md5sum' => md5_file($filename),
-                'main' => false,
+                'attachmenttype' => 0,
             );
         }
     }
@@ -248,7 +248,7 @@ if (isset($_POST['document'])) {
                         'type' => $engine['content_type'],
                         'name' => $engine['output'],
                         'tmpname' => $file,
-                        'main' => true,
+                        'attachmenttype' => 1,
                         'path' => $path,
                         'newfile' => $path . DIRECTORY_SEPARATOR . $md5sum,
                     );
@@ -342,12 +342,12 @@ if (isset($_POST['document'])) {
             ));
 
             foreach ($files as $file) {
-                $DB->Execute('INSERT INTO documentattachments (docid, filename, contenttype, md5sum, main)
+                $DB->Execute('INSERT INTO documentattachments (docid, filename, contenttype, md5sum, type)
 					VALUES (?, ?, ?, ?, ?)', array($docid,
                         basename($file['name']),
                         $file['type'],
                         $file['md5sum'],
-                        $file['main'] ? 1 : 0,
+                        $file['attachmenttype'],
                 ));
             }
 
