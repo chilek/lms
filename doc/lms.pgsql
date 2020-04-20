@@ -2333,7 +2333,7 @@ CREATE TABLE customercontacts (
     id 		integer 	DEFAULT nextval('customercontacts_id_seq'::text) NOT NULL,
     customerid 	integer 	NOT NULL
 		CONSTRAINT customercontacts_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    name 	varchar(255) 	NOT NULL DEFAULT '',
+    name 	varchar(10000) 	NOT NULL DEFAULT '',
     contact	varchar(255) 	NOT NULL DEFAULT '',
     type    integer         DEFAULT NULL,
     PRIMARY KEY (id)
@@ -3767,6 +3767,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020041600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020042000');
 
 COMMIT;
