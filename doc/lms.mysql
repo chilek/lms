@@ -544,7 +544,6 @@ CREATE TABLE documents (
 	paytime smallint NOT NULL DEFAULT '0',
 	paytype smallint DEFAULT NULL,
 	splitpayment smallint NOT NULL DEFAULT 0,
-    taxcategory smallint DEFAULT 0 NOT NULL,
 	closed tinyint(1) NOT NULL DEFAULT '0',
 	reference int(11) DEFAULT NULL,
 	reason varchar(255) NOT NULL DEFAULT '',
@@ -1052,6 +1051,7 @@ CREATE TABLE invoicecontents (
 	count decimal(9,3) NOT NULL DEFAULT '0',
 	description text NOT NULL DEFAULT '',
 	tariffid int(11) DEFAULT NULL,
+	taxcategory smallint DEFAULT 0 NOT NULL,
 	INDEX docid (docid),
 	CONSTRAINT invoicecontents_docid_fkey
 		FOREIGN KEY (docid) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE,

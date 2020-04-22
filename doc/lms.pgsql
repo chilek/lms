@@ -403,7 +403,6 @@ CREATE TABLE documents (
 	paytime smallint	DEFAULT 0 NOT NULL,
 	paytype smallint	DEFAULT NULL,
 	splitpayment smallint NOT NULL DEFAULT 0,
-    taxcategory smallint DEFAULT 0 NOT NULL,
 	closed smallint		DEFAULT 0 NOT NULL,
 	reference integer	DEFAULT NULL
 		CONSTRAINT documents_reference_fkey REFERENCES documents (id) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -916,7 +915,8 @@ CREATE TABLE invoicecontents (
 	tariffid integer 	DEFAULT NULL
 		CONSTRAINT invoicecontents_tariffid_fkey REFERENCES tariffs (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	pdiscount numeric(4,2) DEFAULT 0 NOT NULL,
-	vdiscount numeric(9,2) DEFAULT 0 NOT NULL
+	vdiscount numeric(9,2) DEFAULT 0 NOT NULL,
+	taxcategory smallint DEFAULT 0 NOT NULL
 );
 CREATE INDEX invoicecontents_docid_idx ON invoicecontents (docid);
 
