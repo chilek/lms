@@ -120,6 +120,7 @@
 					<optgroup label="{trans("Customer groups")}">
 						{$groups = array_flip($listdata.customergroup)}
 						<option value="4">{trans("<!customersearch>Add to groups")}</option>
+						<option value="9">{trans("<!customersearch>Create new group")}</option>
 						<option value="5">{trans("<!customersearch>Remove from groups")}</option>
 						<option value="6">{trans("<!customersearch>Change groups")}</option>
 					</optgroup>
@@ -137,6 +138,7 @@
 					{/foreach}
 				</SELECT>
 			{/if}
+			<input type="text" id="newcustomergroup" name="setwarnings[newcustomergroup]" style="display: none;">
 			<select class="lms-ui-multiselect-deferred" name="consents[]" data-separator="<hr>"
 					id="customerconsents" style="display: none;" multiple>
 				{foreach $_CCONSENTS as $type => $consent}
@@ -173,6 +175,11 @@
 <script>
 
 	$(function() {
+		var customergroups = [];
+		{foreach $customergroups as $customergroup}
+			customergroups.push('{$customergroup.name}');
+		{/foreach}
+
 		function setWarnings(on) {
 			if (on == 1) {
 				$('#warnon').val(1);
@@ -196,6 +203,18 @@
 					break;
 				case 2:
 					action = '?m=customergroup&oper=changegroups';
+					break;
+				case 3:
+					var newgroup = $('#newcustomergroup').val();
+					if (!newgroup.length) {
+						alertDialog($t("<!customersearch>New customer group name cannot be empty!"), $('#newcustomergroup'));
+						return false;
+					}
+					if (customergroups.indexOf(newgroup) != -1) {
+						alertDialog($t("<!customersearch>Customer group with specified name already exists!"), $('#newcustomergroup'));
+						return false;
+					}
+					action = '?m=customergroup&oper=addtogroups';
 					break;
 			}
 
@@ -231,6 +250,10 @@
 			if (action >= 4 && action <= 6 && !$('#customergroups').is('.lms-ui-multiselect-wrapper')) {
 				init_multiselects('#customergroups');
 			}
+			$('#newcustomergroup').toggle(action == 9);
+			if (action == 9) {
+				initAutoGrow('#newcustomergroup');
+			}
 			$('#customerconsents').toggle(action >= 7 && action <= 8);
 			if (action >= 7 && action <= 8 && !$('#customerconsents').is('.lms-ui-multiselect-wrapper')) {
 				init_multiselects('#customerconsents');
@@ -264,6 +287,9 @@
 					break;
 				case 8:
 					changeCustomerConsents(2);
+					break;
+				case 9:
+					changeCustomerGroups(3);
 					break;
 			}
 		});

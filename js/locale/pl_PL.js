@@ -115,7 +115,7 @@ $_LANG['Modification'] = 'Modyfikacja';
 $_LANG['Start service'] = 'Uruchomienie usługi';
 $_LANG['Hold service'] = 'Wstrzymanie usługi';
 $_LANG['Overdue events'] = 'Zaległe zdarzenia';
-$_LANG['Overdue events assigned to me'] = 'Zaległe zdarzenia przypisane do mnie';
+$_LANG['Overdue events assigned to You'] = 'Zaległe zdarzenia przypisane do Ciebie';
 $_LANG['Copy'] = 'Kopiuj';
 $_LANG['Only verifier can change this'] = 'Tylko weryfikator może to zmienić';
 $_LANG['<!rt>hours'] = 'godzin';
@@ -126,8 +126,8 @@ $_LANG['Enter invoice comment'] = 'Wprowadz komenarz do faktury';
 $_LANG['<!rt>Expired'] = 'Przeterminowany';
 $_LANG['<!rt>Not expired'] = 'Nieprzeterminowany';
 $_LANG['<!rt>less than 7 days to deadline'] = 'mniej niż 7 dni do terminu ostatecznego';
-$_LANG['<!rt>Owned expired tickets'] = 'Moje przeterminowane zgłoszenia (właściciel)';
-$_LANG['<!rt>Tickets waiting for my verification'] = 'Zgłoszenia oczekujące na moją weryfikację';
+$_LANG['<!rt>Expired tickets owned by You'] = 'Twoje przeterminowane zgłoszenia';
+$_LANG['<!rt>Tickets waiting for my verification'] = 'Zgłoszenia oczekujące na Twoją weryfikację';
 $_LANG['<!rt>Without deadline'] = 'Bez terminu ostatecznego';
 $_LANG['<!rt>With deadline'] = 'Z terminem ostatecznym';
 $_LANG['Ticket deadline could not be set in past!'] = 'Termin ostateczny nie może być datą minioną!';
@@ -1852,6 +1852,7 @@ $_LANG['Your PHP does not support Ming library required for map generation!'] = 
 $_LANG['Your unique installation ID:'] = 'Twój unikalny nr rejestracyjny:';
 $_LANG['You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.'] = 'Z pewnością wraz z niniejszym programem otrzymałeś też egzemplarz Powszechnej Licencji Publicznej GNU; jeśli nie - napisz do Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.';
 $_LANG['Zip:'] = 'Kod:';
+$_LANG['Add event assigned to ticket'] = 'Dodaj zdarzenie powiązane ze zgłoszeniem';
 $_LANG['Add tax rate'] = 'Dodaj stawkę';
 $_LANG['Are you sure, you want to delete taxrate \'$a\'?'] = 'Jesteś pewien, że chcesz usunąć stawkę \'$a\'?';
 $_LANG['Binds from date:'] = 'Obowiązuje od:';
@@ -3377,6 +3378,8 @@ $_LANG['Select note template'] = 'Wybierz szablon notatki';
 $_LANG['Enter name of the new message template'] = 'Wprowadź nazwę nowego szablonu wiadomości';
 $_LANG['no operation on message template'] = 'brak czynności na szablonie wiadomości';
 
+$_LANG['Assign to me as owner'] = 'Przypisz do mnie jako właściel';
+$_LANG['Assign to me as verifier'] = 'Przypisz do mnie jako weryfikator';
 $_LANG['Assign to me'] = 'Przypisz do mnie';
 $_LANG['assign to me'] = 'przypisz do mnie';
 $_LANG['Ticket has been assigned to user $a.'] = 'Zgłoszenie zostało przypisane do użytkownika $a.';
@@ -4244,7 +4247,7 @@ $_LANG['Mark as read ($a unread)'] = 'Oznacz jako przeczytane ($a nieprzeczytany
 $_LANG['<!event>Assign'] = 'Przypisz';
 $_LANG['<!event>Unassign'] = 'Cofnij przypisanie';
 
-$_LANG['Today\'s events assigned to you'] = 'Dzisiejsze zdarzenia przypisane do Ciebie';
+$_LANG['Today\'s events assigned to You'] = 'Dzisiejsze zdarzenia przypisane do Ciebie';
 $_LANG['Critical tickets'] = 'Zgłoszenia krytyczne';
 $_LANG['Urgent tickets'] = 'Zgłoszenia pilne';
 $_LANG['Unread tickets'] = 'Nieprzeczytane zgłoszenia';
@@ -4694,7 +4697,7 @@ $_LANG['Ticket subject can contain maximum $a characters!'] = 'Temat zgłoszenia
 $_LANG['Wait for customer action till:'] = 'Oczekuj na działanie klienta do:';
 $_LANG['Enter date in YYYY/MM/DD format we wait for customer action till (optional)'] = 'Wprowadź datę w formacie RRRR/MM/DD, do kiedy będziemy oczekiwać na działanie klienta (opcjonalnie)';
 $_LANG['Warning! Customer submitted signed document scan. Consider to review it and then possibly confirm.'] = 'Uwaga! Klient przesłał skan podpisanego dokumentu. Rozważ ich przejrzenie i ewentualnie zatwierdzenie.';
-$_LANG['Warning! Warning! Customer action time limit is expired is expired!'] = 'Uwaga! Upłynął termin przeznaczony na działanie klienta!';
+$_LANG['Warning! Customer action time limit is expired is expired!'] = 'Uwaga! Upłynął termin przeznaczony na działanie klienta!';
 
 $_LANG['document form approval in customer panel using SMS authorization'] = 'zatwierdzanie przez panel abonencki formy dokumentowej autoryzowanej przez SMS';
 $_LANG['document form approval in customer panel using scans'] = 'zatwierdzanie przez panel abonencki formy dokumentowej w postaci skanów';
@@ -4703,3 +4706,23 @@ $_LANG['Copy from billing address'] = 'Kopiuj z adresu bilingowego';
 $_LANG['Copy from post address'] = 'Kopiuj z adresu korespondencyjnego';
 
 $_LANG['Choose TERRIT location'] = 'Wybierz lokalizację TERYT';
+
+$_LANG['Sent by customer at $a'] = 'Przesłane przez klienta $a';
+
+$_LANG['<!customersearch>Enable warning'] = 'Włącz ostrzeżenie';
+$_LANG['<!customersearch>Disable warning'] = 'Wyłącz ostrzeżenie';
+$_LANG['<!customersearch>Add to groups'] = 'Dodaj do grup';
+$_LANG['<!customersearch>Create new group'] = 'Dodaj do nowej grupy';
+$_LANG['<!customersearch>Add consents'] = 'Dodaj zgody';
+$_LANG['<!customersearch>Remove from groups'] = 'Usuń z grup';
+$_LANG['<!customersearch>Remove consents'] = 'Usuń zgody';
+$_LANG['<!customersearch>Change groups'] = 'Zmień grupy';
+$_LANG['<!customersearch>Action:'] = 'Czynność:';
+$_LANG['<!customersearch>New customer group name cannot be empty!'] = 'Nazwa nowej grupy klientów nie może być pusta!';
+$_LANG['<!customersearch>Customer group with specified name already exists!'] = 'Grupa klientów o podanej nazwie już istnieje!';
+
+$_LANG['Apply'] = 'Zastosuj';
+
+$_LANG['Warnings'] = 'Ostrzeżenia';
+$_LANG['Customer groups'] = 'Grupy klientów';
+$_LANG['Customer consents'] = 'Zgody klientów';

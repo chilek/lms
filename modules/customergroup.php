@@ -69,6 +69,11 @@ if ($action == 'delete') {
             $groups = array($setwarnings['customergroup']);
         }
         $groups = Utils::filterIntegers($groups);
+    } elseif (isset($setwarnings['newcustomergroup']) && !empty($setwarnings['newcustomergroup'])) {
+        $groups = array($LMS->CustomergroupAdd(array(
+            'name' => $setwarnings['newcustomergroup'],
+            'description' => '',
+        )));
     } else {
         $groups = null;
     }
@@ -105,7 +110,7 @@ if ($action == 'delete') {
 } elseif (!empty($_POST['customerassignments']) && $LMS->CustomerGroupExists($_GET['id'])) {
     $oper = $_POST['oper'];
     $customerassignments = $_POST['customerassignments'];
-    
+
     if (isset($customerassignments['gmcustomerid']) && $oper=='0') {
         $assignment['customergroupid'] = $_GET['id'];
         foreach ($customerassignments['gmcustomerid'] as $value) {

@@ -408,10 +408,10 @@ function init_attachment_lists(selector) {
 }
 
 function initAutoGrow(selector) {
-	$(selector).inputAutogrow({
+	$(selector + ':not(.lms-ui-autogrow-initiated)').inputAutogrow({
 		minWidth: 200,
 		maxWidth: 500
-	});
+	}).addClass('lms-ui-autogrow-initiated');
 }
 
 function initListQuickSearch(options) {

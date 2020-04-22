@@ -4710,11 +4710,15 @@ $_LANG['Sent by customer at $a'] = 'Przesłane przez klienta $a';
 $_LANG['<!customersearch>Enable warning'] = 'Włącz ostrzeżenie';
 $_LANG['<!customersearch>Disable warning'] = 'Wyłącz ostrzeżenie';
 $_LANG['<!customersearch>Add to groups'] = 'Dodaj do grup';
+$_LANG['<!customersearch>Create new group'] = 'Dodaj do nowej grupy';
 $_LANG['<!customersearch>Add consents'] = 'Dodaj zgody';
 $_LANG['<!customersearch>Remove from groups'] = 'Usuń z grup';
 $_LANG['<!customersearch>Remove consents'] = 'Usuń zgody';
 $_LANG['<!customersearch>Change groups'] = 'Zmień grupy';
 $_LANG['<!customersearch>Action:'] = 'Czynność:';
+$_LANG['<!customersearch>New customer group name cannot be empty!'] = 'Nazwa nowej grupy klientów nie może być pusta!';
+$_LANG['<!customersearch>Customer group with specified name already exists!'] = 'Grupa klientów o podanej nazwie już istnieje!';
+
 $_LANG['Apply'] = 'Zastosuj';
 
 $_LANG['Warnings'] = 'Ostrzeżenia';

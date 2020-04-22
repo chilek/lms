@@ -301,6 +301,8 @@ version 25-git (????-??-??):
   - improvement: redesigned choose territ location popup dialog - switched to jquery-ui
     dialog [chilan]
   - enhancement: implemented mass customer consent change support [chilan]
+  - improvement: new action on customer search result is possible - add looked up customers
+    to customer group with specified name [chilan]
 
 version 24.0 (2019-05-16):
 
