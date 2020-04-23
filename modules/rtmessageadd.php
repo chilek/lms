@@ -122,7 +122,7 @@ if (isset($_POST['message'])) {
     $error = $hook_data['error'];
 
     if (!$error) {
-        $message['categories'] = array_flip($message['categories']);
+        $message['categories'] = is_array($message['categories']) ? array_flip($message['categories']) : array();
 
         $user = $LMS->GetUserInfo(Auth::GetCurrentUser());
 
