@@ -961,7 +961,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     (isset($message['headers']['Reply-To']) ? $message['headers']['Reply-To'] : ''),
                 $headers,
                 isset($message['type']) ? $message['type'] : RTMESSAGE_REGULAR,
-                isset($message['phonefrom']) ? $message['phonefrom'] : '',
+                isset($message['phonefrom']) && $message['phonefrom'] != -1 ? $message['phonefrom'] : '',
             )
         );
         $msgid = $this->db->GetLastInsertID('rtmessages');
@@ -1030,7 +1030,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $ticket['subject'],
             preg_replace("/\r/", "", $ticket['body']),
             empty($ticket['mailfrom']) ? '' : $ticket['mailfrom'],
-            empty($ticket['phonefrom']) ? '' : $ticket['phonefrom'],
+            empty($ticket['phonefrom']) || $ticket['phonefrom'] == -1 ? '' : $ticket['phonefrom'],
             isset($ticket['messageid']) ? $ticket['messageid'] : $this->lastmessageid,
             isset($ticket['replyto']) ? $ticket['replyto'] : '',
             isset($ticket['headers']) ? $ticket['headers'] : '',
@@ -1045,7 +1045,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 $ticket['subject'],
                 preg_replace("/\r/", "", $ticket['note']),
                 empty($ticket['mailfrom']) ? '' : $ticket['mailfrom'],
-                empty($ticket['phonefrom']) ? '' : $ticket['phonefrom'],
+                empty($ticket['phonefrom']) || $ticket['phonefrom'] == -1 ? '' : $ticket['phonefrom'],
                 isset($ticket['messageid']) ? $ticket['messageid'] : $this->lastmessageid,
                 isset($ticket['replyto']) ? $ticket['replyto'] : '',
                 isset($ticket['headers']) ? $ticket['headers'] : '',
