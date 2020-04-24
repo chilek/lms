@@ -247,7 +247,6 @@ $mail_headers = implode("\n", $decoded_mail_headers);
 unset($decoded_mail_headers);
 
 if (preg_match('#multipart/#', $partdata['content-type']) && !empty($parts)) {
-    $charset = $partdata['content-charset'];
     $mail_body = '';
     while (!empty($parts)) {
         $partid = array_shift($parts);
