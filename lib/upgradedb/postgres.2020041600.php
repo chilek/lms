@@ -24,6 +24,23 @@
 $this->BeginTrans();
 
 if (!$this->ResourceExists('cash_importid_ukey', LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
+    $cash_import_duplicates = $this->GetAll(
+        "SELECT id, importid FROM cash
+        WHERE importid IN (
+            SELECT importid FROM cash WHERE importid IS NOT NULL GROUP BY importid HAVING COUNT(*) > 1
+        )"
+    );
+    if (!empty($cash_import_duplicates)) {
+        $prev_importid = null;
+        foreach ($cash_import_duplicates as $cash_import) {
+            if ($prev_importid != $cash_import['importid']) {
+                $prev_importid = $cash_import['importid'];
+                continue;
+            }
+            $this->Execute("DELETE FROM cash WHERE id = ?", array($cash_import['id']));
+        }
+    }
+
     $this->Execute("ALTER TABLE cash ADD CONSTRAINT cash_importid_ukey UNIQUE (importid)");
 }
 
