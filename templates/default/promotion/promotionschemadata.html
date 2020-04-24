@@ -36,10 +36,15 @@
 
 <TABLE class="lmsbox">
 	<THEAD>
+	{if empty($schema.tariffs)}
+		{$tariffcnt = 0}
+	{else}
+		{$tariffcnt = count($schema.tariffs)}
+	{/if}
 	<TR>
 		<TD style="width: 100%;" class="hand text-left bold nobr" onClick="showOrHide('promotionschemadata');">
 			<IMG src="img/money.gif" alt="">
-			{t a=count($schema.tariffs)}Schema's Tariffs ($a):{/t}
+			{t a=$tariffcnt}Schema's Tariffs ($a):{/t}
 		</TD>
 	</TR>
 	</THEAD>
