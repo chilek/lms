@@ -36,7 +36,9 @@
 </a>
 
 {/if}
+{if Auth::GetCurrentUser()}
 <script>
+
     function getIndicatorStats() {
 		$.ajax('?m=indicators&ajax=1&api=1', {
 				method: "POST",
@@ -58,5 +60,7 @@
     setInterval(function() {
     	    getIndicatorStats();
         }, {ConfigHelper::getConfig('phpui.indicator_refresh_interval', 120)} * 1000);
+
 </script>
+{/if}
 {/block}
