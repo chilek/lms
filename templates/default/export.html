@@ -28,6 +28,7 @@
 						<B>{trans("Period:")}&nbsp;</B>
 					</TD>
 					<TD style="width: 1%;" class="nobr">
+						{date_period_preset from="#invoicereport [name=\"from\"]" to="#invoicereport [name=\"to\"]"}
 						{trans("From")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 					</TD>
 					<TD style="width: 97%;" class="nobr">
@@ -98,6 +99,7 @@
 					</TD>
 					<TD width="1%" nowrap>
 						<B>{trans("Period:")}</B>&nbsp;
+						{date_period_preset from="#receiptlist [name=\"from\"]" to="#receiptlist [name=\"to\"]"}
 						{trans("From")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 						{trans("To")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 					</TD>
