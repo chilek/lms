@@ -259,18 +259,30 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
             if ($doc['reference']) {
                 // I think we can simply do query here instead of building
                 // big sql join in $items query, we've got so many credit notes?
-                $item = $DB->GetRow(
-                    'SELECT taxid, value, count
-							FROM invoicecontents 
-							WHERE docid=? AND itemid=?',
-                    array($doc['reference'], $row['itemid'])
-                );
+                $value = 0;
+                $count = 0;
+                $refid = $doc['reference'];
+                do {
+                    $item = $DB->GetRow(
+                        'SELECT taxid, value, count, reference
+                            FROM invoicecontents
+                            JOIN documents ON id = docid
+                            WHERE docid=? AND itemid=?',
+                        array($refid, $row['itemid'])
+                    );
+                    if (!isset($firstitem)) {
+                        $firstitem = $item;
+                    }
+                    $value += $item['value'];
+                    $count += $item['count'];
+                    $refid = $item['reference'];
+                } while (!empty($refid));
 
-                $row['value'] += $item['value'];
-                $row['count'] += $item['count'];
+                $row['value'] += $value;
+                $row['count'] += $count;
 
-                $refitemsum = $item['value'] * $item['count'];
-                $refitemval = round($item['value'] / ($taxes[$item['taxid']]['value']+100) * 100, 2) * $item['count'];
+                $refitemsum = $value * $count;
+                $refitemval = round($value / ($taxes[$firstitem['taxid']]['value'] + 100) * 100, 2) * $count;
                 $refitemtax = $refitemsum - $refitemval;
 
                 $rectax[$item['taxid']]['tax'] -= $refitemtax;
