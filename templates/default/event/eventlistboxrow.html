@@ -26,7 +26,6 @@
     </TD>
     <TD data-target-url="?m=eventinfo&id={$event.id}">
         <a href="?m=eventinfo&id={$event.id}"><i class="lms-ui-icon-timetable"></i> <span class="bold" {if !$event.closed}style="color:black"{/if}>{$event.title}</span></a>
-        {if $event.description != ''}<br><i class="lms-ui-icon-description"></i> {$event.description}{/if}
         {if $event.note != ''}<span{if !$event.closed} style="color: red;"{/if}><br><i class="lms-ui-icon-note"></i> {$event.note}</span>{/if}
     </TD>
     <TD class="nobr" colspan="2" data-target-url="?m=eventinfo&id={$event.id}">
