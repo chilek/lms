@@ -90,7 +90,8 @@ function module_submit_setup()
         $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'hint', ?)", array($_POST['hint']));
     }
 
-    if ($oldstyle = $DB->GetOne("SELECT value FROM uiconfig WHERE section = 'userpanel' AND var = 'style'")) {
+    $oldstyle = $DB->GetOne("SELECT value FROM uiconfig WHERE section = 'userpanel' AND var = 'style'");
+    if (is_string($oldstyle)) {
         $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'style'", array($_POST['style']));
         if ($oldstyle != $_POST['style']) {
             userpanel_style_change();
