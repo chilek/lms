@@ -1035,7 +1035,7 @@ $(function() {
 				new multiselect({
 					id: multiselectId,
 					defaultValue: null,
-					icon: 'img/settings.gif',
+					icon: 'lms-ui-icon-configuration',
 					type: 'tiny'
 				});
 				toggle.find('#' + multiselectId).on('itemclick', function(e, data) {
@@ -1044,7 +1044,7 @@ $(function() {
 			}
 
 			var clearSettings = $(elem).siblings('div.top').find('div.lms-ui-datatable-clear-settings');
-			clearSettings.html('<img src="img/delete.gif" title="' + $t('Clear settings') + '">');
+			clearSettings.html('<i class="lms-ui-icon-clear" title="' + $t('Clear settings') + '"/>');
 			clearSettings.click(function() {
 				if (state) {
 					api.state.clear();

@@ -42,7 +42,7 @@ function multiselect(options) {
 		if (button) {
 			new_element.append(button);
 		} else {
-			new_element.html('<img src="' + icon + '">' + (label ? '&nbsp' + label : ''));
+			new_element.html(icon.match("img\/", icon) ? '<img src="' + icon + '">' + (label ? '&nbsp' + label : '') : '<i class="' + icon + '"/>');
 		}
 	} else {
 		$('<span/>')
