@@ -24,7 +24,7 @@
 		<br><a href="?m=userinfo&amp;id={$user.id}" style="font-weight: normal">{$user.name|truncate:"25":"...":true}</a>
         {/foreach}
     </TD>
-    <TD data-target-url="?m=eventinfo&id={$event.id}">
+    <TD class="lms-ui-tooltip-eventinfoshort" data-resourceid="{$event.id}">
         <a href="?m=eventinfo&id={$event.id}"><i class="lms-ui-icon-timetable"></i> <span class="bold" {if !$event.closed}style="color:black"{/if}>{$event.title}</span></a>
         {if $event.note != ''}<span{if !$event.closed} style="color: red;"{/if}><br><i class="lms-ui-icon-note"></i> {$event.note}</span>{/if}
     </TD>
