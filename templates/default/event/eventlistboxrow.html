@@ -24,8 +24,9 @@
 		<br><a href="?m=userinfo&amp;id={$user.id}" style="font-weight: normal">{$user.name|truncate:"25":"...":true}</a>
         {/foreach}
     </TD>
-    <TD class="lms-ui-tooltip-eventinfoshort" data-resourceid="{$event.id}">
+    <TD class="lms-ui-tooltip-eventinfoshort" data-resourceid="{$event.id}" data-target-url="?m=eventinfo&id={$event.id}">
         <a href="?m=eventinfo&id={$event.id}"><i class="lms-ui-icon-timetable"></i> <span class="bold" {if !$event.closed}style="color:black"{/if}>{$event.title}</span></a>
+        {if !ConfigHelper::checkConfig('phpui.timetable_hide_description')}{if $event.description != ''}<br><i class="lms-ui-icon-description"></i> {$event.description}{/if}{/if}
         {if $event.note != ''}<span{if !$event.closed} style="color: red;"{/if}><br><i class="lms-ui-icon-note"></i> {$event.note}</span>{/if}
     </TD>
     <TD class="nobr" colspan="2" data-target-url="?m=eventinfo&id={$event.id}">
@@ -57,9 +58,9 @@
                 <i></i>
             </a>
             {if $imadded}
-                {button type="link" icon="lms-ui-icon-owner" onclick="location.href = '?m=eventedit&id={$event.id}&action=unassign&backid=' + $(this).closest('.event-day-table').attr('id');" tip="Unassign"}
+                {button type="link" icon="owner" onclick="location.href = '?m=eventedit&id={$event.id}&action=unassign&backid=' + $(this).closest('.event-day-table').attr('id');" tip="Unassign"}
             {else}
-                {button type="link" icon="lms-ui-icon-owner" onclick="location.href = '?m=eventedit&id={$event.id}&action=assign&backid=' + $(this).closest('.event-day-table').attr('id');" tip="Assign"}
+                {button type="link" icon="owner" onclick="location.href = '?m=eventedit&id={$event.id}&action=assign&backid=' + $(this).closest('.event-day-table').attr('id');" tip="Assign"}
             {/if}
             {if ConfigHelper::checkPrivilege('timetable_management')}
             {if $event.closed}
@@ -67,7 +68,7 @@
             {else}
 		{button type="link" icon="close" onclick="location.href = '?m=eventedit&id={$event.id}&action=close&backid=' + $(this).closest('.event-day-table').attr('id');" tip="Close"}
 		{button type="link" icon="clone" href="?m=eventadd&id={$event.id}" tip="Clone"}
-		{button type="link" icon="delete" id='delete-event' onclick="location.href = '?m=eventdel&id={$event.id}&backid=' + $(this).closest('.event-day-table').attr('id')" tip="Delete permanently"}
+		{button type="link" icon="delete" class="delete-event" href="?m=eventdel&id={$event.id}" tip="Delete permanently"}
 		{button type="link" icon="edit" onclick="location.href = '?m=eventedit&id={$event.id}&backid=' + $(this).closest('.event-day-table').attr('id');"}
             {/if}
             {if $imadded && $event.note == ''}
@@ -78,13 +79,4 @@
         </div>
     </TD>
 </TR>
-        <script>
-                $('#delete-event').click(function() {
-                        confirmDialog($t("Are you sure, you want to delete that event?"), this).done(function() {
-                                location.href = $(this).attr('href');
-                        });
-                        return false;
-                });
-        </script>
-
 {/block}
