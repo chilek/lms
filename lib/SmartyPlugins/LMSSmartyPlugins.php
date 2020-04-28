@@ -30,7 +30,6 @@ class LMSSmartyPlugins
     {
         // optional - we want buttons without icon
         $icon = isset($params['icon']) ? $params['icon'] : null;
-        $custom_icon = isset($icon) && (strpos($icon, 'lms-ui-icon-') === 0 || strpos($icon, 'fa') === 0);
         // optional - button by default,
         $type = isset($params['type']) ? $params['type'] : 'button';
         // optional - text tip,
@@ -66,8 +65,7 @@ class LMSSmartyPlugins
         }
 
         return '<' . ($type == 'link' || $type == 'link-button' ? 'a' : 'button type="' . $type . '"') . ($href ? ' href="' . $href . '"' : '')
-            . ' class="' . ($type == 'link' ? '' : ($type == 'link-button' ? 'lms-ui-link-button ' : '') . 'lms-ui-button')
-            . ($icon && !$custom_icon ? ' lms-ui-button-' . $icon : '')
+            . ' class="lms-ui-button' . ($type == 'link-button' ? ' lms-ui-link-button ' : '')
             . ($class ? ' ' . $class : '') . '"'
             . ($id ? ' id="' . $id . '"' : '') . ($onclick ? ' onclick="' . $onclick . '"' : '')
             . ($form ? ' form="' . $form . '"' : '')
@@ -78,7 +76,7 @@ class LMSSmartyPlugins
             . $data_attributes
             . ($visible ? '' : ' style="display: none;"')
             . ($accesskey ? ' accesskey="' . $accesskey . '"' : '') . '>'
-            . ($icon ? '<i' . ($custom_icon ? ' class="' . $icon . '"' : '') . '></i>' : '')
+            . ($icon ? '<i class="' . (strpos('lms-ui-icon-', $icon) === 0 || strpos('fa', $icon) === 0 ? $icon : 'lms-ui-icon-' . $icon) . '"></i>' : '')
             . ($label ? '<span class="lms-ui-label">' . $label . '</span>' : '') . '
 		</' . ($type == 'link' || $type == 'link-button' ? 'a' : 'button') . '>';
     }
