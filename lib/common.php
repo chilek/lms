@@ -129,38 +129,12 @@ function ip_long($sip)
 
 function check_ip($ip)
 {
-    return (bool) preg_match('/^((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)$/', $ip);
+    return filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false;
 }
 
 function check_ipv6($ip)
 {
-        // fast exit for localhost
-    if (strlen($ip) < 3) {
-            return $ip == '::';
-    }
-
-    // Check if part is in IPv4 format
-    if (strpos($ip, '.')) {
-        $lastcolon = strrpos($ip, ':');
-        if (!($lastcolon && check_ip(substr($ip, $lastcolon + 1)))) {
-                return false;
-        }
-
-        // replace IPv4 part with dummy
-        $ip = substr($ip, 0, $lastcolon) . ':0:0';
-    }
-
-    // check uncompressed
-    if (strpos($ip, '::') === false) {
-        return preg_match('/^(?:[a-f0-9]{1,4}:){7}[a-f0-9]{1,4}$/i', $ip);
-    }
-
-    // check colon-count for compressed format
-    if (substr_count($ip, ':') < 8) {
-        return preg_match('/^(?::|(?:[a-f0-9]{1,4}:)+):(?:(?:[a-f0-9]{1,4}:)*[a-f0-9]{1,4})?$/i', $ip);
-    }
-
-    return false;
+    return filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false;
 }
 
 function check_mask($mask)
