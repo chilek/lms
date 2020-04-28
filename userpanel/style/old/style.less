@@ -1,7 +1,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -22,11 +22,8 @@
  *  $Id$
  */
 
-@import "../../../css/fontawesome/less/fontawesome";
-@fa-font-path: "../../css/fontawesome/webfonts";
-@import "../../../css/fontawesome/less/solid";
-@import "../../../css/fontawesome/less/brands";
-@import "../../../css/fontawesome/less/regular";
+@import "../../../css/less/userpanel-variables";
+@import "../../../css/less/common";
 
 @dialog-title: #333;
 @light: #fff7de;
@@ -39,8 +36,8 @@
 
 @blend: #888888;
 
-@import "../../../css/less/style-jquery-ui";
-@import "../../../css/less/style-button";
+@import "../../../css/less/jquery-ui";
+@import "../../../css/less/button";
 
 BODY		{ font-size: 10pt; font-family: Tahoma, Verdana, Arial, Helvetica; margin: 0pt; background-color: #FFF7DE; height: 100%; margin: 0; }
 TABLE		{ border: 0; }
@@ -239,63 +236,4 @@ div.g-recaptcha {
 #lms-ui-session-expire {
     font-weight: bold;
     color: red;
-}
-
-
-.dataTables_wrapper {
-    margin-bottom: 4px;
-    position: static;
-
-    .dataTables_processing {
-        font-weight: bold;
-    }
-    .top {
-        display: flex;
-        justify-content: space-around;
-        flex-wrap: wrap;
-    }
-    div.lms-ui-datatable-toolbar {
-        display: flex;
-        justify-content: space-between;
-    }
-    .dataTables_length {
-        padding-left: 4px;
-        padding-top: 5px;
-        white-space: nowrap;
-    }
-    div.lms-ui-datatable-clear-settings {
-        float: left;
-        padding-left: 4px;
-        padding-top: 4px;
-        cursor: pointer;
-    }
-    div.lms-ui-datatable-column-toggle {
-        float: left;
-        padding-left: 3px;
-        padding-top: 4px;
-    }
-    .dataTables_paginate {
-        float: left;
-        text-align: center;
-        padding-top: 2px;
-    }
-    .dataTables_filter {
-        padding-right: 4px;
-        padding-top: 5px;
-    }
-    .dataTables_info {
-        float: none;
-        text-align: center;
-        padding-top: 3px;
-        padding-bottom: 3px;
-        font-weight: bold;
-    }
-    .top {
-        border: 1px solid black;
-        border-bottom: 0;
-    }
-    .bottom {
-        border: 1px solid black;
-        border-top: 0;
-    }
 }
