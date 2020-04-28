@@ -417,22 +417,7 @@ function striphtml($text)
 
 function check_email($email)
 {
-    $length = strlen($email);
-
-    if (!$email
-            || substr($email, 0, 1) == '@'
-            || substr($email, 0, 1) == '.'
-            || strrpos($email, '@') == ($length - 1)
-            || strrpos($email, '.') == ($length - 1)
-            || substr_count($email, '@') != 1
-            || !substr_count(substr($email, strpos($email, '@')), '.')
-            || substr_count($email, '..')
-            || ($length-strrpos($email, '.'))<3
-    ) {
-        return false;
-    }
-
-    return preg_match('/^[a-z0-9\-._+]+@[a-z0-9\-.]+$/i', $email) > 0;
+    return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
 }
 
 function get_producer($mac)
