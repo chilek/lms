@@ -188,7 +188,7 @@ if ($documents) {
         }
 
         $invoicelist[$idx]['custname'] = $document['name'];
-        $invoicelist[$idx]['custaddress'] = $document['address'];
+        $invoicelist[$idx]['custaddress'] = (empty($document['zip']) ? '' : $document['zip'] . ' ') . $document['city'] . ', ' . $document['address'];
         $invoicelist[$idx]['ten'] = ($document['ten'] ? trans('TEN') . ' ' . $document['ten'] : ($document['ssn'] ? trans('SSN') . ' ' . $document['ssn'] : ''));
         $invoicelist[$idx]['number'] = docnumber(array(
             'number' => $document['number'],
