@@ -579,16 +579,20 @@
 }
 
 .lms-ui-icon-warnoff {
-  color: black;
+  &:before {
+    color: black !important;
+  }
 }
 
 .lms-ui-icon-warnon {
   .lms-ui-icon-warning;
-  color: gold;
-  text-stroke-width: 1px;
-  text-stroke-color: black;
-  -webkit-text-stroke-width: 1px;
-  -webkit-text-stroke-color: black;
+  &:before {
+    color: gold !important;
+    text-stroke-width: 1px;
+    text-stroke-color: black;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: black;
+  }
 }
 
 .lms-ui-icon-connect {
@@ -610,11 +614,13 @@
 
 .lms-ui-icon-connected {
   .lms-ui-icon-connect;
-  color: gold;
-  text-stroke-width: 1px;
-  text-stroke-color: black;
-  -webkit-text-stroke-width: 1px;
-  -webkit-text-stroke-color: black;
+  &:before {
+    color: gold !important;
+    text-stroke-width: 1px;
+    text-stroke-color: black;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: black;
+  }
 }
 
 .lms-ui-icon-disconnected {
@@ -626,7 +632,7 @@
   transform: rotate(180deg);
   &:before {
     content: @fa-var-toggle-on;
-    color: darkorange;
+    color: darkorange !important;
   }
 }
 
