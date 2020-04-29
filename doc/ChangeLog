@@ -303,6 +303,8 @@ version 25-git (????-??-??):
   - enhancement: implemented mass customer consent change support [chilan]
   - improvement: new action on customer search result is possible - add looked up customers
     to customer group with specified name [chilan]
+  - improvement: new variable 'phpui.timetable_hide_description' allows to hide
+    description in timetable [interduo]
 
 version 24.0 (2019-05-16):
 

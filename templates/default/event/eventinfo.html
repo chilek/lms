@@ -1,6 +1,7 @@
 {extends file="layout.html"}
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
+<script src="js/templates/event/eventlist.js"></script>
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <TABLE class="lmsbox">
@@ -269,7 +270,7 @@
 {/if}
 	<TR>
 		<TD class="text-right" colspan="3">
-			<a id="delete-event" href="?m=eventdel&id={$event.id}"><img src="img/delete.gif" alt=""> {trans("Delete")}</A>
+			<a class="delete-event" href="?m=eventdel&id={$event.id}"><img src="img/delete.gif" alt=""> {trans("Delete")}</A>
 			<A href="?m=eventedit&id={$event.id}"><IMG src="img/edit.gif" alt=""> {trans("Edit")}</A>
 			{if !$event.closed}
 			<A href="?m=eventedit&id={$event.id}&action=close"><IMG src="img/dead.gif" alt=""> {trans("Close")}</A>
@@ -280,12 +281,4 @@
 	</TR>
     </TBODY>
 </TABLE>
-	<script>
-		$('#delete-event').click(function() {
-			confirmDialog($t("Are you sure, you want to delete that event?"), this).done(function() {
-				location.href = $(this).attr('href');
-			});
-			return false;
-		});
-	</script>
 {/block}
