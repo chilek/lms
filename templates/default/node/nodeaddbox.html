@@ -364,7 +364,7 @@
 	<TR>
 		<TD style="width: 100%;" COLSPAN="2" class="lms-ui-box-buttons">
 			{block name="nodeaddbox-options"}
-			{button id="scan-button" icon="lms-ui-icon-search" label="Scan" onclick="location.href = '?m=nodescan{if $customerinfo.id}&ownerid={$customerinfo.id}{/if}';"}
+			{button id="scan-button" icon="search" label="Scan" onclick="location.href = '?m=nodescan{if $customerinfo.id}&ownerid={$customerinfo.id}{/if}';"}
 			{button type="submit" id="save-button" icon="save" label="Submit"}
 			{button id="cancel-button" icon="cancel" label="Cancel" onclick="location.href = '?m={if $customerinfo.id}customerinfo&id={$customerinfo.id}{else}nodelist{/if}';"}
 			<br>

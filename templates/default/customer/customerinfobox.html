@@ -477,11 +477,11 @@
 				{button type="link-button" id="rtsearch-button" class="{if $customerstats['tickets']['notresolved']}bold{/if}" icon="timetable"
 					label="{trans("Tickets")}{if $customerstats['tickets']} ({$customerstats['tickets']['all']}{if $customerstats['tickets']['notresolved']} / {$customerstats['tickets']['notresolved']}{/if}){/if}"
 					href="?m=rtsearch&id={$customerinfo.id}"}
-				{button type="link-button" id="accounts-button" icon="lms-ui-icon-customer" label="{trans("Accounts")} ({$customerstats['accounts']})"
+				{button type="link-button" id="accounts-button" icon="customer" label="{trans("Accounts")} ({$customerstats['accounts']})"
 					href="?m=accountlist&u={$customerinfo.id}"}
 				{button type="link-button" id="domains-button" icon="network"
 					label="{trans("Domains")} ({$customerstats['domains']})" href="?m=domainlist&c={$customerinfo.id}"}
-				{button type="link-button" id="stats-button" icon="lms-ui-icon-stats" label="Stats"
+				{button type="link-button" id="stats-button" icon="stats" label="Stats"
 					href="?m=trafficprint&type=customertraffic&customer={$customerinfo.id}"}
 				{button type="link-button" id="edit-button" icon="edit" label="Edit" href="?m=customeredit&id={$customerinfo.id}"}
 				{if ConfigHelper::checkPrivilege('customer_removal')}

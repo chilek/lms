@@ -8,8 +8,8 @@
 		</TD>
 		<TD style="width: 99%;" class="text-right nobr" colspan="2">
 			{if $ticket.state != $smarty.const.RT_RESOLVED}
-				{button icon="lms-ui-icon-note" label="New Note" onclick="window.location.href = '?m=rtnoteadd&ticketid={$ticket.ticketid}';"}
-				{button icon="lms-ui-icon-message" label="New Message" onclick="window.location.href = '?m=rtmessageadd&ticketid={$ticket.ticketid}';"}
+				{button icon="note" label="New Note" onclick="window.location.href = '?m=rtnoteadd&ticketid={$ticket.ticketid}';"}
+				{button icon="message" label="New Message" onclick="window.location.href = '?m=rtmessageadd&ticketid={$ticket.ticketid}';"}
 			{/if}
 		</TD>
 	</TR>
@@ -62,29 +62,29 @@
 						{/if}
 
 						{if $message.type == $smarty.const.RTMESSAGE_NOTE}
-							{button icon="lms-ui-icon-link" class="lms-ui-button-clipboard" label="Copy link" clipboard="{$url}?m=rtticketview&id={$ticket.ticketid}#rtmessage-{$message.id}"}
+							{button icon="link" class="lms-ui-button-clipboard" label="Copy link" clipboard="{$url}?m=rtticketview&id={$ticket.ticketid}#rtmessage-{$message.id}"}
 							{if $message.deleted == 1 && $message.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
-								{button icon="lms-ui-icon-restore" class="restore-rtmessage" resourceid="?m=rtrestore&id={$message.id}&maction=restore" label="Restore<!RT>"}
+								{button icon="restore" class="restore-rtmessage" resourceid="?m=rtrestore&id={$message.id}&maction=restore" label="Restore<!RT>"}
 
-								{button icon="lms-ui-icon-delete" class="remove-rtmessage" resourceid="?m=rtremove&id={$message.id}&maction=delperm" label="Delete permanently"}
+								{button icon="delete" class="remove-rtmessage" resourceid="?m=rtremove&id={$message.id}&maction=delperm" label="Delete permanently"}
 							{else}
-								{button icon="lms-ui-icon-trash" class="delete-rtmessage" resourceid="?m=rtmessagedel&id={$message.id}&maction=delete" label="Delete"}
+								{button icon="trash" class="delete-rtmessage" resourceid="?m=rtmessagedel&id={$message.id}&maction=delete" label="Delete"}
 							{/if}
 						{else}
-							{button icon="lms-ui-icon-link" class="lms-ui-button-clipboard" label="Copy link" clipboard="{$url}?m=rtticketview&id={$ticket.ticketid}#rtmessage-{$message.id}"}
-							{button icon="lms-ui-icon-details" onclick="location.href = '?m=rtmessageview&id={$message.id}';" label="Details"}
+							{button icon="link" class="lms-ui-button-clipboard" label="Copy link" clipboard="{$url}?m=rtticketview&id={$ticket.ticketid}#rtmessage-{$message.id}"}
+							{button icon="details" onclick="location.href = '?m=rtmessageview&id={$message.id}';" label="Details"}
 							{if $msgidx > 0}
 								{if $message.deleted == 1 && $message.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
-									{button icon="lms-ui-icon-restore" class="restore-rtmessage" resourceid="?m=rtrestore&id={$message.id}&maction=restore" label="Restore<!RT>"}
+									{button icon="restore" class="restore-rtmessage" resourceid="?m=rtrestore&id={$message.id}&maction=restore" label="Restore<!RT>"}
 
-									{button icon="lms-ui-icon-delete" class="remove-rtmessage" resourceid="?m=rtremove&id={$message.id}&maction=delperm" label="Delete permanently"}
+									{button icon="delete" class="remove-rtmessage" resourceid="?m=rtremove&id={$message.id}&maction=delperm" label="Delete permanently"}
 								{else}
-									{button icon="lms-ui-icon-trash" class="delete-rtmessage" resourceid="?m=rtmessagedel&id={$message.id}&maction=delete" label="Delete"}
+									{button icon="trash" class="delete-rtmessage" resourceid="?m=rtmessagedel&id={$message.id}&maction=delete" label="Delete"}
 								{/if}
 							{/if}
 							{if $ticket.state != $smarty.const.RT_RESOLVED}
-								{button icon="lms-ui-icon-reply" onclick="location.href = '?m=rtmessageadd&id={$message.id}&ticketid={$ticket.ticketid}';" label="<!vocative>Reply"}
-								{button icon="lms-ui-icon-quote" onclick="location.href = '?m=rtmessageadd&id={$message.id}&ticketid={$ticket.ticketid}&citing=1';" label="Quote"}
+								{button icon="reply" onclick="location.href = '?m=rtmessageadd&id={$message.id}&ticketid={$ticket.ticketid}';" label="<!vocative>Reply"}
+								{button icon="quote" onclick="location.href = '?m=rtmessageadd&id={$message.id}&ticketid={$ticket.ticketid}&citing=1';" label="Quote"}
 							{/if}
 						{/if}
 					</TD>

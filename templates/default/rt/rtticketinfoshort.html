@@ -98,8 +98,8 @@
 	<TR>
 		<TD colspan="2" class="lms-ui-box-buttons">
 		{if $event.ticket.state != $smarty.const.RT_RESOLVED}
-			{button type="link-button" icon="lms-ui-icon-message" label="New Message" href="?m=rtmessageadd&ticketid={$ticket.ticketid}"}
-			{button type="link-button" icon="lms-ui-icon-note" label="New Note" href="?m=rtnoteadd&ticketid={$ticket.ticketid}"}
+			{button type="link-button" icon="message" label="New Message" href="?m=rtmessageadd&ticketid={$ticket.ticketid}"}
+			{button type="link-button" icon="note" label="New Note" href="?m=rtnoteadd&ticketid={$ticket.ticketid}"}
 		{/if}
 		</TD>
 	</TR>

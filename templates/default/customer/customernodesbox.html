@@ -153,10 +153,10 @@
 
 				<div class="lms-ui-tab-table-column buttons">
 					{button type="link" href="?m=nodeset&id={$node.id}"
-						icon="lms-ui-icon-{if $node.access}connected{else}disconnected{/if}"
+						icon="{if $node.access}connected{else}disconnected{/if}"
 						tip="{if $node.access}Disconnect{else}Connect{/if}"}
 					{button type="link" href="?m=nodewarn&id={$node.id}"
-						icon="lms-ui-icon-{if $node.warning}warnon{else}warnoff{/if}"
+						icon="{if $node.warning}warnon{else}warnoff{/if}"
 						tip="{if $node.warning}Disable notice{else}Enable notice{/if}"}
 					<input type="hidden" value="{$node.name}">
 					{button type="link" class="delete-node" href="?m=nodedel&id={$node.id}" icon="delete" tip="Delete"}

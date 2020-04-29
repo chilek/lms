@@ -68,7 +68,7 @@
 
 					<div class="lms-ui-tab-table-column buttons">
 						{button type="link" href="?m=netedit&networkset&id={$network.id}"
-							icon="lms-ui-icon-{if $network.disabled}disconnected{else}connected{/if}"
+							icon="{if $network.disabled}disconnected{else}connected{/if}"
 							tip="{if $network.disabled}Connect{else}Disconnect{/if}"}
 						{button type="link" icon="delete" class="delete-network" href="?m=netdel&id={$network.id}" tip="Delete"}
 						{button type="link" href="?m=netedit&id={$network.id}" icon="edit"
