@@ -476,6 +476,30 @@ function initListQuickSearch(options) {
 	);
 }
 
+function showGallery(data) {
+	$('.lms-ui-gallery-container').show();
+	Galleria.ready(function() {
+		var gallery = this;
+		this.addElement('buttons').appendChild('container', 'buttons');
+		this.$('buttons').html('<i class="fullscreen-button fa-2x lms-ui-icon-fullscreen-on"/><i class="close-button fa-2x lms-ui-icon-hide"/>')
+			.on('click', 'i', function() {
+				if ($(this).is('.close-button')) {
+					gallery.destroy();
+					$('.lms-ui-gallery-container').hide();
+				} else {
+					gallery.toggleFullscreen();
+					$(this).toggleClass(['lms-ui-icon-fullscreen-on', 'lms-ui-icon-fullscreen-off']);
+				}
+			});
+	}).run(".lms-ui-gallery", {
+		dataSource: data,
+		keepSource: true,
+		//thumbnails: "lazy",
+		preload: 0,
+		_toggleInfo: false
+	});
+}
+
 $(function() {
 	var autocomplete = "off";
 	var elementsToInitiate = 0;

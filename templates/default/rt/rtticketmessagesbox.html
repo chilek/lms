@@ -1,4 +1,14 @@
 <!-- $Id$ -->
+<script>
+
+	$(function() {
+		$('.attachment-gallery').click(function() {
+			showGallery(JSON.parse($(this).attr('data-galleria')));
+		});
+	});
+
+</script>
+
 <br>
 <TABLE class="lmsbox">
 	<THEAD>
@@ -53,6 +63,22 @@
 						{/if}
 					</TD>
 					<TD style="width: 97%;" class="text-right">
+						<a href="#" class="attachment-gallery lms-ui-button">
+							<i class="lms-ui-icon-gallery"></i>
+						</a>
+						<script>
+							var data = [];
+							{foreach $message.attachments as $attachment}
+								data.push({
+									image: '?m=rtmessageview&tid={$ticket.ticketid}&mid={$message.id}&file={urlencode($attachment.filename)}&api=1',
+									thumb: '?m=rtmessageview&tid={$ticket.ticketid}&mid={$message.id}&file={urlencode($attachment.filename)}&api=1&thumbnail=150',
+									title: '{$attachment.filename}'
+									//description: 'Lorem ipsum caption'
+									//link: 'http://domain.com'
+								});
+							{/foreach}
+							$(document.currentScript).prev().attr('data-galleria', JSON.stringify(data));
+						</script>
 						{if $message.attachments}
 							{foreach $message.attachments as $attachment}
 								{documentview id="{$message.id}-{$attachment@index}" type=$attachment.contenttype name=$attachment.filename
