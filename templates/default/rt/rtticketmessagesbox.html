@@ -57,7 +57,7 @@
 							{foreach $message.attachments as $attachment}
 								{documentview id="{$message.id}-{$attachment@index}" type=$attachment.contenttype name=$attachment.filename
 									url="?m=rtmessageview&tid={$ticket.ticketid}&mid={$message.id}&file={urlencode($attachment.filename)}"
-									text="<i class='lms-ui-button-upload'></i> {$attachment.filename}"}
+									text="<i class='lms-ui-icon-upload'></i> {$attachment.filename}"}
 							{/foreach}
 						{/if}
 
