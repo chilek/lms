@@ -49,7 +49,7 @@ if (isset($_GET['file'])) {
                 header('Content-Type: ' . $attach['contenttype']);
                 header('Cache-Control: private');
                 header('Content-Disposition: ' . ($attach['contenttype'] == 'application/pdf' ? 'inline' : 'attachment') . '; filename=' . $filename);
-                @readfile($file);
+                echo @file_get_contents($file);
             }
         }
         $SESSION->close();
