@@ -639,6 +639,10 @@ $(function() {
 				xdsoft_datetimepicker.trigger('close.xdsoft');
 				$([body, window]).off('mousedown.xdsoft', arguments_callee6);
 			})
+			var current_time = xdsoft_datetimepicker.find('.xdsoft_time.xdsoft_current');
+			if (current_time.length && current_time.prev().length) {
+				current_time.prev()[0].scrollIntoView();
+			}
 		});
 
 		if (lmsSettings.openCalendarOnInputClick) {
