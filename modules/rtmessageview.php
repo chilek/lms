@@ -38,12 +38,19 @@ if (isset($_GET['file'])) {
             $filename
         );
         if (file_exists($file)) {
-            $size = @filesize($file);
-            header('Content-Length: '.$size.' bytes');
-            header('Content-Type: '.$attach['contenttype']);
-            header('Cache-Control: private');
-            header('Content-Disposition: ' . ($attach['contenttype'] == 'application/pdf' ? 'inline' : 'attachment') . '; filename='.$filename);
-            @readfile($file);
+            if ($_GET['thumbnail'] && ($width = intval($_GET['thumbnail'])) > 0 && class_exists('Imagick')) {
+                $imagick = new \Imagick($file);
+                $imagick->scaleImage($width, 0);
+                header('Content-Type: ' . $attach['contenttype']);
+                header('Cache-Control: private');
+                header('Content-Disposition: ' . ($attach['contenttype'] == 'application/pdf' ? 'inline' : 'attachment') . '; filename=' . $filename);
+                echo $imagick->getImageBlob();
+            } else {
+                header('Content-Type: ' . $attach['contenttype']);
+                header('Cache-Control: private');
+                header('Content-Disposition: ' . ($attach['contenttype'] == 'application/pdf' ? 'inline' : 'attachment') . '; filename=' . $filename);
+                @readfile($file);
+            }
         }
         $SESSION->close();
         die;
@@ -71,7 +78,7 @@ if ($message['deluserid']) {
 if ($message['customerid']) {
     $message['customername'] = $LMS->GetCustomerName($message['customerid']);
 }
-    
+
 if (!empty($message['attachments']) && count($message['attachments'])) {
     foreach ($message['attachments'] as $key => $val) {
         list($size, $unit) = setunits(@filesize(ConfigHelper::getConfig('rt.mail_dir') . DIRECTORY_SEPARATOR

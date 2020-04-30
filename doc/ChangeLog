@@ -305,6 +305,8 @@ version 25-git (????-??-??):
     to customer group with specified name [chilan]
   - improvement: new variable 'phpui.timetable_hide_description' allows to hide
     description in timetable [interduo]
+  - improvement: ticket message attached images can be scaled to 300 pixels width
+    on server-side if pecl-imagick is installed on server [chilan]
 
 version 24.0 (2019-05-16):
 

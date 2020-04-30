@@ -759,7 +759,7 @@ $(function() {
 		items: '.documentview-image',
 		tooltipClass: 'documentview',
 		content: function() {
-			var href = $(this).attr('href');
+			var href = $(this).attr('href') + '&thumbnail=300';
 			return '<img src="' + href + '" style="max-width: 300px;">';
 			//return '';
 		}
