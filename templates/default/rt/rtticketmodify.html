@@ -146,7 +146,7 @@
 				</label>
 			{/box_row}
 
-			{box_row icon="img/verifier.png" label="Verifier:" field_id="rtverifiers"}
+			{box_row icon="verifier" label="Verifier:" field_id="rtverifiers"}
 				{if $layout.module != 'rtticketedit' || !$ticket.oldverifierid || $ticket.oldverifierid == $layout.logid}
 					<SELECT size="1" name="ticket[verifierid]" {tip text="Select user" trigger="verifierid"}>
 						<OPTION value="">- {trans("select user")} -</OPTION>
@@ -292,12 +292,12 @@
 				{/capture}
 			{/function}
 
-			{box_row icon="lms-ui-icon-parentticket" label="Parent ticket:"}
+			{box_row icon="parentticket" label="Parent ticket:"}
 				{list id="parent-ticket" tipid="parentid" tip="Enter ID of parent ticket" items=$ticket.parent
 					field_name_pattern="ticket[parentid]" item_content="ticket_item_content"}
 			{/box_row}
 
-			{box_row icon="lms-ui-icon-relatedticket" label="Related tickets:"}
+			{box_row icon="relatedticket" label="Related tickets:"}
 				{list id="related-tickets" tipid="related-tickets-id" tip="Enter ticket identifier or ticket subject part"
 					items=$ticket.relatedtickets field_name_pattern="ticket[relatedtickets][%id%]" item_content="ticket_item_content"}
 			{/box_row}

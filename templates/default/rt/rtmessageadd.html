@@ -196,7 +196,7 @@
 				</label>
 			{/box_row}
 
-			{box_row icon="img/verifier.png" label="Verifier:" field_id="rtverifiers"}
+			{box_row icon="verifier" label="Verifier:" field_id="rtverifiers"}
 				{if $group_action || !$ticket.verifierid || $ticket.verifierid == $layout.logid}
 					<SELECT size="1" name="message[verifierid]" {tip text="Select user" trigger="verifierid"}>
 						<OPTION value="0">- {trans("select user")} -</OPTION>
