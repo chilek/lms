@@ -216,7 +216,7 @@
 
 		$('.docattach').on('click', function() {
 			var elem = $(this);
-			elem.toggleClass('blend crossed').find('.lms-ui-button-view').toggleClass('blend')
+			elem.toggleClass('blend crossed').find('.lms-ui-button').toggleClass('blend')
 			elem.find('i').toggleClass('lms-ui-icon-delete').toggleClass('lms-ui-icon-cancel');
 			elem.find('input').val(+ elem.hasClass('blend'));
 			return false;

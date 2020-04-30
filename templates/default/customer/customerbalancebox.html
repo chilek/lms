@@ -395,8 +395,8 @@
 						{trans("income/expense")}
 					</label>
 					{if $sourcelist}
-					<div class="isource lms-ui-button-isource">
-						<i></i>
+					<div class="isource">
+						<i class="lms-ui-icon-isource"></i>
 						<SELECT form="addbalance-form" name="addbalance[sourceid]" {tip text="Select import source (optional)" trigger="source"}>
 							<OPTION value="0">{trans("- none -")}</OPTION>
 							{foreach $sourcelist as $source}

@@ -49,13 +49,13 @@
     <TD class="text-right nobr" data-target-url="?m=eventinfo&id={$event.id}">
         <div class="no-print">
             {if !isset($eventlist_mode)}
-            <a href="#" class="lms-ui-button-timetable" title="{trans("Show in timetable")}"
+            <a href="#" class="lms-ui-button" title="{trans("Show in timetable")}"
                     onclick="location.href = '?m=eventlist&year={strftime('%Y', $event.date)}&month={strftime('%m', $event.date)}&day={strftime('%d', $event.date)}';">
-                <i></i>
+                <i class="lms-ui-icon-timetable"></i>
             </a>
             {/if}
-            <a href="#" class="lms-ui-button-clipboard" data-clipboard-text="{$url}?m=eventinfo&id={$event.id}">
-                <i></i>
+            <a href="#" class="lms-ui-button lms-ui-button-clipboard" data-clipboard-text="{$url}?m=eventinfo&id={$event.id}">
+                <i class="lms-ui-icon-clipboard"></i>
             </a>
             {if $imadded}
                 {button type="link" icon="owner" onclick="location.href = '?m=eventedit&id={$event.id}&action=unassign&backid=' + $(this).closest('.event-day-table').attr('id');" tip="Unassign"}
