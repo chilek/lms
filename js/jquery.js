@@ -499,10 +499,11 @@ function showGallery(data) {
 				$('.lms-ui-gallery-container').hide();
 			}
 		});
+		this.lazyLoadChunks(10);
 	}).run(".lms-ui-gallery", {
 		dataSource: data,
 		keepSource: true,
-		//thumbnails: "lazy",
+		thumbnails: "lazy",
 		preload: 0,
 		_toggleInfo: false
 	});
