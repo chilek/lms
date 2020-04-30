@@ -1,0 +1,63 @@
+/*
+ * LMS version 1.11-git
+ *
+ *  (C) Copyright 2001-2020 LMS Developers
+ *
+ *  Please, see the doc/AUTHORS for more information about authors!
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License Version 2 as
+ *  published by the Free Software Foundation.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ *  USA.
+ *
+ *  $Id$
+ */
+
+.lms-ui-gallery-container {
+  display: none;
+
+  .lms-ui-gallery-overlay {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 29000;
+    opacity: 0.3;
+    background-color: black;
+  }
+
+  .lms-ui-gallery {
+    top: 5em;
+    bottom: 5em;
+    left: 5em;
+    right: 5em;
+    position: absolute;
+    height: calc(100% - 10em);
+    z-index: 30000;
+
+    .galleria-buttons {
+      position: absolute;
+      top: 0.3em;
+      right: 0.5em;
+      z-index: 10;
+      color: white;
+
+      i {
+        cursor: pointer;
+        &:not(:last-child) {
+          margin-right: 0.3em;
+        }
+      }
+    }
+  }
+}
