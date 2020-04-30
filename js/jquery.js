@@ -491,6 +491,14 @@ function showGallery(data) {
 					$(this).toggleClass(['lms-ui-icon-fullscreen-on', 'lms-ui-icon-fullscreen-off']);
 				}
 			});
+		this.attachKeyboard({
+			left: this.prev, // applies the native prev() function
+			right: this.next,
+			escape: function() {
+				gallery.destroy();
+				$('.lms-ui-gallery-container').hide();
+			}
+		});
 	}).run(".lms-ui-gallery", {
 		dataSource: data,
 		keepSource: true,
