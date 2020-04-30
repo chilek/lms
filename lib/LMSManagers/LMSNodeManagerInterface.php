@@ -87,5 +87,5 @@ interface LMSNodeManagerInterface
 
     public function GetNodeLocations($customerid, $address_id = null);
 
-    public function GetNodeCustomerAssignments($assignments);
+    public function GetNodeCustomerAssignments($nodeid, $assignments);
 }

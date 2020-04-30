@@ -62,7 +62,7 @@ $customerid = $nodeinfo['ownerid'];
 
 include(MODULES_DIR . '/customer.inc.php');
 
-$nodeassignments = $LMS->GetNodeCustomerAssignments($assignments);
+$nodeassignments = $LMS->GetNodeCustomerAssignments($nodeid, $assignments);
 $SMARTY->assign('nodeassignments', $nodeassignments);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);

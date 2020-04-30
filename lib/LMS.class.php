@@ -1100,10 +1100,10 @@ class LMS
         return $manager->GetNodeLocations($customerid, $address_id);
     }
 
-    public function getNodeCustomerAssignments($assignments)
+    public function getNodeCustomerAssignments($nodeid, $assignments)
     {
         $manager = $this->getNodeManager();
-        return $manager->getNodeCustomerAssignments($assignments);
+        return $manager->getNodeCustomerAssignments($nodeid, $assignments);
     }
 
     /*
@@ -1715,10 +1715,10 @@ class LMS
         return $manager->updateManagementUrl($type, $id, $url);
     }
 
-    public function getNetDevCustomerAssignments($assignments)
+    public function getNetDevCustomerAssignments($netdevid, $assignments)
     {
         $manager = $this->getNetDevManager();
-        return $manager->getNetDevCustomerAssignments($assignments);
+        return $manager->getNetDevCustomerAssignments($netdevid, $assignments);
     }
 
     public function GetNetNode($id)

@@ -339,7 +339,7 @@ if (empty($nodeinfo['macs'])) {
 
 include(MODULES_DIR . '/customer.inc.php');
 
-$nodeassignments = $LMS->GetNodeCustomerAssignments($assignments);
+$nodeassignments = $LMS->GetNodeCustomerAssignments($nodeid, $assignments);
 $SMARTY->assign('nodeassignments', $nodeassignments);
 
 if (!ConfigHelper::checkConfig('phpui.big_networks')) {

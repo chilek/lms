@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -800,7 +800,7 @@ $netdev['id'] = $id;
 
 if (!empty($netdev['ownerid'])) {
     $assignments = $LMS->GetCustomerAssignments($netdev['ownerid'], true, false);
-    $assignments = $LMS->GetNetDevCustomerAssignments($assignments);
+    $assignments = $LMS->GetNetDevCustomerAssignments($id, $assignments);
     $SMARTY->assign(array(
         'assignments' => $assignments,
         'customerinfo' => array(

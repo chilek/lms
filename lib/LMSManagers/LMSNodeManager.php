@@ -978,7 +978,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         return $nodes;
     }
 
-    public function GetNodeCustomerAssignments($assignments)
+    public function GetNodeCustomerAssignments($nodeid, $assignments)
     {
         if (empty($assignments)) {
             return $assignments;
@@ -991,7 +991,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 continue;
             }
             foreach ($assignment['nodes'] as $node) {
-                if (!empty($node['netdev_name'])) {
+                if (!empty($node['netdev_name']) || $node['id'] != $nodeid) {
                     continue;
                 }
                 $node_assignments[] = $assignment;

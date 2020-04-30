@@ -1251,7 +1251,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         return $res;
     }
 
-    public function getNetDevCustomerAssignments($assignments)
+    public function getNetDevCustomerAssignments($netdevid, $assignments)
     {
         if (empty($assignments)) {
             return $assignments;
@@ -1263,10 +1263,12 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             if (!isset($assignment['nodes'])) {
                 continue;
             }
+            $netdev_assignment_added = false;
             foreach ($assignment['nodes'] as $node) {
-                if (empty($node['netdev_ownerid'])) {
+                if (empty($node['netdev_ownerid']) || $node['netdev_id'] != $netdevid || $netdev_assignment_added) {
                     continue;
                 }
+                $netdev_assignment_added = true;
                 $netdev_assignments[] = $assignment;
                 break;
             }
