@@ -685,4 +685,41 @@ class LMSSmartyPlugins
             return $result;
         }
     }
+
+    public static function boxRowBlock($params, $content, $template, $repeat)
+    {
+        if (!$repeat) {
+            $id = isset($params['id']) ? $params['id'] : null;
+            $icon = isset($params['icon']) ? $params['icon'] : null;
+            $label = isset($params['label']) ? $params['label'] : null;
+            $labelid = isset($params['labelid']) ? $params['labelid'] : null;
+            $visible = (isset($params['visible']) && $params['visible']) || !isset($params['visible']);
+            $class = isset($params['class']) ? $params['class'] : null;
+            $icon_class = isset($params['icon_class']) ? $params['icon_class'] : null;
+            $label_class = isset($params['label_class']) ? $params['label_class'] : null;
+            $field_id = isset($params['field_id']) ? $params['field_id'] : null;
+            $field_class = isset($params['field_class']) ? $params['field_class'] : null;
+
+            return '
+			<div' . ($id ? ' id="' . $id . '"' : '') . ' class="lms-ui-box-row' . ($class ? ' ' . $class : '') . '"'
+                . ($visible ? '' : ' style="display: none;"') . '>
+				<div class="lms-ui-box-row-icon' . ($icon_class ? ' ' . $icon_class : '') . '">
+					' . ($icon ? (strpos($icon, '/') !== false ? '<IMG src="' . $icon . '" alt="">'
+                    : '<i class="'
+                    . (strpos('lms-ui-icon-', $icon) === 0 || strpos('fa', $icon) === 0 ? $icon : 'lms-ui-icon-' . $icon)
+                    . '"></i>') : '') . '
+				</div>
+				<div class="lms-ui-box-row-label' . ($label_class ? ' ' . $label_class : '') . '">
+					' . ($labelid ? '<label for="' . $labelid . '">' : '')
+                . ($label ? trans($label) : '') . ($labelid ? '</label>' : '') . '
+				</div>
+				<div' . ($field_id ? ' id="' . $field_id . '"' : '')
+                . ' class="lms-ui-box-row-field' . ($field_class ? ' ' . $field_class : '') . '">
+					' . $content . '
+				</div>
+			</div>';
+        } else {
+            return '';
+        }
+    }
 }
