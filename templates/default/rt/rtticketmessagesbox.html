@@ -3,7 +3,7 @@
 
 	$(function() {
 		$('.attachment-gallery').click(function() {
-			showGallery(JSON.parse($(this).attr('data-galleria')));
+			showGallery(JSON.parse($(this).attr('data-gallery')));
 		});
 	});
 
@@ -63,22 +63,22 @@
 						{/if}
 					</TD>
 					<TD style="width: 97%;" class="text-right">
-						<a href="#" class="attachment-gallery lms-ui-button">
-							<i class="lms-ui-icon-gallery"></i>
-						</a>
-						<script>
-							var data = [];
-							{foreach $message.attachments as $attachment}
-								data.push({
-									image: '?m=rtmessageview&tid={$ticket.ticketid}&mid={$message.id}&file={urlencode($attachment.filename)}&api=1',
-									thumb: '?m=rtmessageview&tid={$ticket.ticketid}&mid={$message.id}&file={urlencode($attachment.filename)}&api=1&thumbnail=150',
-									title: '{$attachment.filename}'
-									//description: 'Lorem ipsum caption'
-									//link: 'http://domain.com'
-								});
-							{/foreach}
-							$(document.currentScript).prev().attr('data-galleria', JSON.stringify(data));
-						</script>
+						{$images = array()}
+						{foreach $message.attachments as $attachment}
+							{if strpos($attachment.contenttype, 'image') === 0}
+								{$image = array()}
+								{textformat assign="url" wrap=500}?m=rtmessageview&tid={$ticket.ticketid}&mid={$message.id}&file={urlencode($attachment.filename)}&api=1{/textformat}
+								{$image.image = $url}
+								{$image.thumb = $url|cat:"&thumbnail=500"}
+								{$image.title = $attachment.filename}
+								{$images[] = $image}
+							{/if}
+						{/foreach}
+						{if count($images)}
+							<a href="#" class="attachment-gallery lms-ui-button" data-gallery='{json_encode($images)}'>
+								<i class="lms-ui-icon-gallery"></i>
+							</a>
+						{/if}
 						{if $message.attachments}
 							{foreach $message.attachments as $attachment}
 								{documentview id="{$message.id}-{$attachment@index}" type=$attachment.contenttype name=$attachment.filename
@@ -86,7 +86,6 @@
 									text="<i class='lms-ui-icon-upload'></i> {$attachment.filename}"}
 							{/foreach}
 						{/if}
-
 						{if $message.type == $smarty.const.RTMESSAGE_NOTE}
 							{button icon="link" class="lms-ui-button-clipboard" label="Copy link" clipboard="{$url}?m=rtticketview&id={$ticket.ticketid}#rtmessage-{$message.id}"}
 							{if $message.deleted == 1 && $message.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
