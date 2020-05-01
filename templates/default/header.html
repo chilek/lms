@@ -45,7 +45,7 @@
 			var AUTOSUGGEST_MAX_LENGTH = {ConfigHelper::getConfig('phpui.autosuggest_max_length', 40)};
 
 			$('#lms-ui-back-to-top').click(function() {
-				$('#lms-ui-module-view').animate({ scrollTop: 0 });
+				$('html,body').animate({ scrollTop: 0 });
 			});
 
 			// we use 'tabId' session storage value for identifying web browser tabs
