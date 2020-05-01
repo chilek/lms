@@ -89,7 +89,15 @@ if (isset($_GET['attachmentaction'])) {
                         header('Content-Transfer-Encoding: binary');
                         header('Content-Length: ' . filesize($file['filepath']) . ' bytes');
                     } else {
-                        header('Content-Disposition: attachment; filename="' . $file['filename'] . '"');
+                        if (isset($_GET['thumbnail']) && ($width = intval($_GET['thumbnail'])) > 0
+                            && class_exists('Imagick') && strpos($file['contenttype'], 'image/') === 0) {
+                            $imagick = new \Imagick($file['filepath']);
+                            $imagick->scaleImage($width, 0);
+                            echo $imagick->getImageBlob();
+                            die;
+                        } else {
+                            header('Content-Disposition: attachment; filename="' . $file['filename'] . '"');
+                        }
                     }
                 } else {
                     header('Content-Disposition: attachment; filename="' . $file['filename'] . '"');

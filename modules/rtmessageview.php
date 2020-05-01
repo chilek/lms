@@ -38,7 +38,8 @@ if (isset($_GET['file'])) {
             $filename
         );
         if (file_exists($file)) {
-            if ($_GET['thumbnail'] && ($width = intval($_GET['thumbnail'])) > 0 && class_exists('Imagick')) {
+            if (isset($_GET['thumbnail']) && ($width = intval($_GET['thumbnail'])) > 0
+                && class_exists('Imagick') && strpos($attach['contenttype'], 'image/') === 0) {
                 $imagick = new \Imagick($file);
                 $imagick->scaleImage($width, 0);
                 header('Content-Type: ' . $attach['contenttype']);
