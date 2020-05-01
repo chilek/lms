@@ -30,7 +30,7 @@
 		<span>{$_SERVICETYPES[$ticket.service]}</span>
 		<span><br>{$_RT_TYPES[$ticket.type].label}</span>
 	</TD>
-	<TD class="nobr valign-middle">
+	<TD class="valign-middle">
 		<span class="bold">{$ticket.subject|escape|truncate:"100":"..."|default:"&nbsp;"}</span>
 		{foreach $ticket.categories as $tc}
 		<span style="{if $tc.style != ''}{$tc.style}{else}{$_CATEGORY_DEFAULT_STYLE}{/if}"><a href="?m=rtqueueview&persistent-filter=-1&catid={$tc.categoryid}&s=-1&priority=all&unread=-1&o=lastmodified,desc">{$tc.name}</a></span>
@@ -51,7 +51,7 @@
 			{/if}
 		{/if}
 	</TD>
-	<TD class="nobr valign-middle">
+	<TD class="nobr valign-middle ticket-location">
 		{if $ticket.netnodeid}
 			<a href="?m=netnodeinfo&id={$ticket.netnodeid}"><i class="lms-ui-icon-content lms-ui-icon-netnode"></i>{$ticket.netnode_name}</a>
 		{/if}
@@ -66,7 +66,7 @@
 			{$ticket.address}<br>{$ticket.city}
 		{/if}
 	</TD>
-	<TD class="nobr text-center">
+	<TD class="nobr text-center ticket-deadline">
 		{if $ticket.deadline}
 			{if $ticket.deadline_diff < 0 && $ticket.state != $smarty.const.RT_RESOLVED}
 				<span class="lms-ui-important-box" {tip text="{$ticket.deadline_days} {trans("days")} {$ticket.deadline_hours} {trans("<!rt>hours")}"}>{trans("<!rt>Expired")}</span>
@@ -81,7 +81,7 @@
 		{if $ticket.ownername}{$ticket.ownername|truncate:25:"...":true}{else}-{/if}<br>
 		{$ticket.lastmodified|date_format:"%Y/%m/%d %H:%M:%S"|default:"-"}
 	</TD>
-	<TD class="text-center nobr">
+	<TD class="text-center nobr ticket-events">
 		{if $ticket.eventcountopened}<A href="?m=eventsearch&ticketid={$ticket.id}">{$ticket.eventcountopened} </A>{else}- {/if}/
 		{if $ticket.eventcountclosed}<A href="?m=eventsearch&ticketid={$ticket.id}"> {$ticket.eventcountclosed}</A>{else} -{/if}
 	</TD>
