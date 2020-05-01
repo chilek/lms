@@ -19,6 +19,12 @@
 		margin-left: 0.5em;
 	}
 
+	@media screen and (min-width: 1200px) {
+		.message-buttons {
+			flex-shrink: 0;
+		}
+	}
+
 	.message-buttons button {
 		margin-top: 0.3em;
 	}
@@ -44,18 +50,24 @@
 	<TR>
 		<TD style="width: 100%;" colspan="3">
 			<TABLE class="lmsbox-inner">
+				<colgroup>
+					<col style="width: 1%;">
+					<col style="width: 1%;">
+					<col style="width: 1%;">
+					<col style="width: 97%;">
+				</colgroup>
 				{counter start=0 skip=1 print=false assign=msgidx}
 				{foreach from=$ticket.messages item=message}
 				{if $message.type == $smarty.const.RTMESSAGE_REGULAR || $message.type == $smarty.const.RTMESSAGE_NOTE}
 				<THEAD>
 				<TR id="rtmessage-{$message.id}"{if $message.deleted == 1 && $message.deltime != 0} class="light lms-ui-rtmessage-deleted"{/if}>
-					<TD style="width: 1%;" class="valign-top text-right bold nobr">
+					<TD class="valign-top text-right bold nobr">
 						{$message.createtime|date_format:"%Y/%m/%d %H:%M"}
 					</TD>
-					<TD style="width: 1%;" class="valign-top text-right bold">
+					<TD class="valign-top text-right bold">
 						{trans("From:")}{if $message.type == $smarty.const.RTMESSAGE_REGULAR}<BR>{trans("Subject:")}{/if}
 					</TD>
-					<TD style="width: 1%;" class="valign-top nobr">
+					<TD class="valign-top nobr">
 						{if $message.type == $smarty.const.RTMESSAGE_REGULAR}
 							{if $message.customerid}
 								<A href="?m=customerinfo&amp;id={$message.customerid}">{$message.customername}</A>
@@ -78,7 +90,7 @@
 						<A href="?m=userinfo&amp;id={$message.userid}">{$message.username}</A>
 						{/if}
 					</TD>
-					<TD style="width: 97%;" class="text-right message-properties">
+					<TD class="text-right message-properties">
 						<div class="message-attachments">
 							{$images = array()}
 							{foreach $message.attachments as $attachment}
