@@ -35,7 +35,7 @@ function modalDialog(title, message, buttons, deferred, context) {
 		autoOpen: true,
 		modal: true,
 		resizable: false,
-		title: title,
+		title: title.replace(/<![^>]*>/g, ''),
 		buttons: buttons,
 		position: position,
 		open: function() {
