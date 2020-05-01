@@ -370,7 +370,7 @@
 					<span class="blend"><i class="lms-ui-icon-status-resolved"></i>{trans("Ticket have open assigned events!")}</A></span>
 				{else}
 					{if empty($ticket['verifier_rtime']) && $ticket['verifierid'] != Auth::GetCurrentUser() && $ticket['verifierid']}
-						{button icon="verifier" label="Transfer ticket to verifier" onclick="location.href='?m=rtticketedit&id={$ticket.ticketid}&action=verify';"}
+						{button icon="verifier" label="Transfer to verifier" onclick="location.href='?m=rtticketedit&id={$ticket.ticketid}&action=verify';"}
 					{else}
 						{if !empty($ticket['verifier_rtime']) && $ticket['verifierid'] != Auth::GetCurrentUser()}
 							<i class="lms-ui-icon-verifier"></i><span style="color: {$_RT_STATES[$smarty.const.RT_VERIFIED].color}"> {trans("Ticket has been transferred to verifier")}</span>
