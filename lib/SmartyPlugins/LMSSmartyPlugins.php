@@ -76,7 +76,7 @@ class LMSSmartyPlugins
             . $data_attributes
             . ($visible ? '' : ' style="display: none;"')
             . ($accesskey ? ' accesskey="' . $accesskey . '"' : '') . '>'
-            . ($icon ? '<i class="' . (strpos('lms-ui-icon-', $icon) === 0 || strpos('fa', $icon) === 0 ? $icon : 'lms-ui-icon-' . $icon) . '"></i>' : '')
+            . ($icon ? '<i class="' . (strpos($icon, 'lms-ui-icon-') === 0 || strpos($icon, 'fa') === 0 ? $icon : 'lms-ui-icon-' . $icon) . '"></i>' : '')
             . ($label ? '<span class="lms-ui-label">' . $label . '</span>' : '') . '
 		</' . ($type == 'link' || $type == 'link-button' ? 'a' : 'button') . '>';
     }
@@ -706,7 +706,7 @@ class LMSSmartyPlugins
 				<div class="lms-ui-box-row-icon' . ($icon_class ? ' ' . $icon_class : '') . '">
 					' . ($icon ? (strpos($icon, '/') !== false ? '<IMG src="' . $icon . '" alt="">'
                     : '<i class="'
-                    . (strpos('lms-ui-icon-', $icon) === 0 || strpos('fa', $icon) === 0 ? $icon : 'lms-ui-icon-' . $icon)
+                    . (strpos($icon, 'lms-ui-icon-') === 0 || strpos($icon, 'fa') === 0 ? $icon : 'lms-ui-icon-' . $icon)
                     . '"></i>') : '') . '
 				</div>
 				<div class="lms-ui-box-row-label' . ($label_class ? ' ' . $label_class : '') . '">
