@@ -104,7 +104,7 @@ if (isset($_GET['attachmentaction'])) {
                 }
                 header('Pragma: public');
             }
-            readfile($file['filepath']);
+            echo @file_get_contents($file['filepath']);
             die;
             break;
 

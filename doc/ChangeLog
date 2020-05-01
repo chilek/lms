@@ -310,6 +310,7 @@ version 25-git (????-??-??):
   - enhancement: image gallery support for helpdesk tickets and ticket message items [chilan]
   - enhancement: smarty block '{buttons}' support introduced - allows to create responsive
     button panels on resource list [chilan]
+  - enhancement: image gallery support for network nodes, devices and models [chilan]
 
 version 24.0 (2019-05-16):
 

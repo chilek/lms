@@ -2270,5 +2270,6 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 $ticket['images'] = array_merge($ticket['images'], $images);
             }
         }
+        unset($message);
     }
 }

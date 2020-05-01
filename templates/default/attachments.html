@@ -45,7 +45,9 @@
             </div>
             {/if}
 
+            {$images = array()}
             {foreach $filecontainers[$attachmenttype].containers as $container}
+            {$images = array_merge($images, $container.images)}
             <div class="lms-ui-tab-table-row" data-id="{$container.id}" data-attachmenttype="{$attachmenttype}">
                 <div class="lms-ui-tab-table-wrapper col-3">
                     <div class="lms-ui-tab-table-wrapper date-creator col-2">
@@ -67,6 +69,10 @@
                 </div>
 
                 <div class="lms-ui-tab-table-column buttons">
+                    {if count($container.images)}
+                        {button type="link" icon="gallery" class="container-gallery" tip="Attachment gallery"
+                            data_gallery="{json_encode($container.images)}"}
+                    {/if}
                     {button type="link" href="#" class="container-edit" icon="edit" tip="Edit"}
                     {button type="link" href="#" class="container-save" icon="save" tip="Save"}
                     {button type="link" href="#" class="container-cancel" icon="cancel" tip="Cancel"}
@@ -105,6 +111,12 @@
                     {fileupload id="files-{$attachmenttype}" fileupload=$fileupload form="upload-form-{$attachmenttype}"}
                     {button icon="add" class="container-add-button" label="Add" form="upload-form-{$attachmenttype}"}
                 {/tab_buttons}
+                {if count($images)}
+                    {tab_buttons}
+                        {button icon="gallery" class="container-gallery" label="Attachment gallery"
+                            data_gallery="{json_encode($images)}"}
+                    {/tab_buttons}
+                {/if}
             {/tab_button_panel}
 
         {/tab_table}
