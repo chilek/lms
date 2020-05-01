@@ -308,6 +308,8 @@ version 25-git (????-??-??):
   - improvement: ticket message attached images can be scaled to 300 pixels width
     on server-side if pecl-imagick is installed on server [chilan]
   - enhancement: image gallery support for helpdesk tickets and ticket message items [chilan]
+  - enhancement: smarty block '{buttons}' support introduced - allows to create responsive
+    button panels on resource list [chilan]
 
 version 24.0 (2019-05-16):
 

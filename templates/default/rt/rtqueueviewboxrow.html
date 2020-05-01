@@ -86,37 +86,39 @@
 		{if $ticket.eventcountclosed}<A href="?m=eventsearch&ticketid={$ticket.id}"> {$ticket.eventcountclosed}</A>{else} -{/if}
 	</TD>
 	<TD class="lms-ui-buttons nobr text-right">
-		{if $ticket.state != $smarty.const.RT_RESOLVED}
-			{if !$ticket.unread}
-				{button type='link' icon="read" class="ticket-read" tip="Mark as unread" onclick="location.href = '?m=rtticketedit&id={$ticket.id}&action=unread'"}
-			{else}
-				{button type='link' icon="unread" class="ticket-unread" tip="Mark as read" onclick="location.href = '?m=rtticketedit&id={$ticket.id}&action=read'"}
+		{buttons}
+			{if $ticket.state != $smarty.const.RT_RESOLVED}
+				{if !$ticket.unread}
+					{button type='link' icon="read" class="ticket-read" tip="Mark as unread" onclick="location.href = '?m=rtticketedit&id={$ticket.id}&action=unread'"}
+				{else}
+					{button type='link' icon="unread" class="ticket-unread" tip="Mark as read" onclick="location.href = '?m=rtticketedit&id={$ticket.id}&action=read'"}
+				{/if}
 			{/if}
-		{/if}
-		{if !empty($ticket.imagecount)}
-			{button type="link" icon="gallery" class="ticket-image-gallery" tip="Show ticket attached image gallery"}
-		{/if}
-		{if $ticket.state != $smarty.const.RT_RESOLVED}
-			{button type="link" icon="add" class="ticket-add-event" tip="Add event assigned to ticket" href="?m=eventadd&ticketid={$ticket.id}"}
-		{/if}
-		{if !$ticket.ownerid}
-			{button type="link" icon="owner" class="ticket-assign-to-me" tip="Assign to me as owner" href="?m=rtqueueview&ticketid={$ticket.id}&action=assign"}
-		{/if}
-		{if !$ticket.verifiername}
-			{button type="link" icon="verifier" class="ticket-assign2-to-me" tip="Assign to me as verifier" href="?m=rtqueueview&ticketid={$ticket.id}&action=assign2"}
-		{/if}
-		{button type="link" icon="print" class="ticket-print" tip="Print" href="?m=rtticketprint&id={$ticket.id}"}
-		{button type="link" icon="clone" href="?m=rtticketadd&ticketid={$ticket.id}" tip="Clone"}
-		{if $ticket.deleted == 1 && $ticket.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
-			{button type="link" icon="reload" href="?m=rtrestore&id={$ticket.id}&taction=restore" tip="Restore<!RT>"}
-			{button type="link" icon="delete" href="?m=rtremove&id={$ticket.id}&taction=delperm" tip="Delete permanently"}
-		{else}
-			{button type="link" icon="delete" href="?m=rtticketdel&id={$ticket.id}&taction=delete" tip="Delete"}
-		{/if}
-		{button type="link" icon="edit" href="?m=rtticketedit&id={$ticket.id}" tip="Edit"}
-		{button type="link" icon="note" href="?m=rtnoteadd&ticketid={$ticket.id}" tip="New Note"}
-		{button type="link" icon="message" href="?m=rtmessageadd&ticketid={$ticket.id}" tip="New Message"}
-		{button type="link" icon="info" href="?m=rtticketview&id={$ticket.id}" tip="Info"}
+			{if !empty($ticket.imagecount)}
+				{button type="link" icon="gallery" class="ticket-image-gallery" tip="Show ticket attached image gallery"}
+			{/if}
+			{if $ticket.state != $smarty.const.RT_RESOLVED}
+				{button type="link" icon="add" class="ticket-add-event" tip="Add event assigned to ticket" href="?m=eventadd&ticketid={$ticket.id}"}
+			{/if}
+			{if !$ticket.ownerid}
+				{button type="link" icon="owner" class="ticket-assign-to-me" tip="Assign to me as owner" href="?m=rtqueueview&ticketid={$ticket.id}&action=assign"}
+			{/if}
+			{if !$ticket.verifiername}
+				{button type="link" icon="verifier" class="ticket-assign2-to-me" tip="Assign to me as verifier" href="?m=rtqueueview&ticketid={$ticket.id}&action=assign2"}
+			{/if}
+			{button type="link" icon="print" class="ticket-print" tip="Print" href="?m=rtticketprint&id={$ticket.id}"}
+			{button type="link" icon="clone" href="?m=rtticketadd&ticketid={$ticket.id}" tip="Clone"}
+			{if $ticket.deleted == 1 && $ticket.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
+				{button type="link" icon="reload" href="?m=rtrestore&id={$ticket.id}&taction=restore" tip="Restore<!RT>"}
+				{button type="link" icon="delete" href="?m=rtremove&id={$ticket.id}&taction=delperm" tip="Delete permanently"}
+			{else}
+				{button type="link" icon="delete" href="?m=rtticketdel&id={$ticket.id}&taction=delete" tip="Delete"}
+			{/if}
+			{button type="link" icon="edit" href="?m=rtticketedit&id={$ticket.id}" tip="Edit"}
+			{button type="link" icon="note" href="?m=rtnoteadd&ticketid={$ticket.id}" tip="New Note"}
+			{button type="link" icon="message" href="?m=rtmessageadd&ticketid={$ticket.id}" tip="New Message"}
+			{button type="link" icon="info" href="?m=rtticketview&id={$ticket.id}" tip="Info"}
+		{/buttons}
 		<input type="checkbox" class="lms-ui-multi-check" name="ticketid[]" value="{$ticket.id}">
 	</TD>
 </TR>

@@ -722,4 +722,22 @@ class LMSSmartyPlugins
             return '';
         }
     }
+
+    public static function blockButtons($params, $content, $template, $repeat)
+    {
+        if (!$repeat) {
+            return self::buttonFunction(
+                array(
+                    'type' => 'link',
+                    'icon' => isset($params['icon']) ? $params['icon'] : 'configuration',
+                    'class' => 'lms-ui-dropdown-toggle',
+                ),
+                $template
+            ) . '<div class="lms-ui-dropdown-buttons">'
+                . $content
+                . '</div>';
+        } else {
+            return '';
+        }
+    }
 }

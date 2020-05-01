@@ -68,3 +68,38 @@ a.lms-ui-link-button {
 a.lms-ui-link-button + button.lms-ui-button {
   margin-left: 0.33em;
 }
+
+.lms-ui-buttons {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  .lms-ui-dropdown-toggle {
+    display: none;
+    cursor: pointer;
+  }
+  .lms-ui-dropdown-buttons {
+    align-items: flex-start;
+    > * {
+      padding-left: 0.1em;
+      padding-right: 0.1em;
+    }
+  }
+  @media screen and (max-width: 1200px) {
+    .lms-ui-dropdown-toggle {
+      display: block;
+    }
+    .lms-ui-dropdown-buttons {
+      display: none;
+      padding: 0.2em;
+      position: absolute;
+      background-color: @light;
+      //min-width: 15em;
+      border: @frame;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      z-index: 1;
+      &.show {
+        display: flex;
+      }
+    }
+  }
+}
