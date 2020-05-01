@@ -4726,3 +4726,4 @@ $_LANG['Customer groups'] = 'Grupy klientów';
 $_LANG['Customer consents'] = 'Zgody klientów';
 
 $_LANG['Attachment gallery'] = 'Galeria załączników';
+$_LANG['Show ticket attached image gallery'] = 'Pokaż galerię obrazków załączonych do zgłoszenia';

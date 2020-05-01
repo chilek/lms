@@ -2,7 +2,8 @@
 <TR class="single-ticket {if $ticket.state == $smarty.const.RT_RESOLVED}blend{/if} highlight lms-ui-rt{if $ticket.deleted == 1 && $ticket.deltime != 0}-deleted{elseif $ticket.delcount && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}-partly-deleted{/if}"
 		id="ticket-{$ticket.id}"
 		data-target-url="?m=rtticketview&id={$ticket.id}"
-		data-name="{$ticket.id|string_format:"%06d"}">
+		data-name="{$ticket.id|string_format:"%06d"}"
+		data-ticket-id="{$ticket.id}">
 	<TD class="text-center">
 		{if $ticket.unread}
 		<a href="?m=rtticketview&id={$ticket.id}{if $ticket.firstunread}#rtmessage-{$ticket.firstunread}{/if}" class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$ticket.id}"><i class="lms-ui-icon-{if $ticket.priority == $smarty.const.RT_PRIORITY_CRITICAL && $ticket.state != $smarty.const.RT_RESOLVED}critical{else}unread{/if}"></i></a>
@@ -92,6 +93,7 @@
 			{button type='link' icon="unread" class="ticket-unread" tip="Mark as read" onclick="location.href = '?m=rtticketedit&id={$ticket.id}&action=read'"}
 			{/if}
 		{/if}
+		{button type="link" icon="gallery" class="ticket-image-gallery" tip="Show ticket attached image gallery"}
 		{if $ticket.state != $smarty.const.RT_RESOLVED}
 		{button type="link" icon="add" class="ticket-add-event" tip="Add event assigned to ticket" href="?m=eventadd&ticketid={$ticket.id}"}
 		{/if}

@@ -99,6 +99,7 @@
 			});
 			return false;
 		});
+
 		$('.restore-ticket').click(function() {
 			var link = $(this).attr('href');
 			var fulllink = link + get_backid(this);
@@ -108,12 +109,28 @@
 			});
 			return false;
 		});
+
 		$('.remove-ticket').click(function() {
 			var link = $(this).attr('href');
 			var fulllink = link + get_backid(this);
 			var name = $(this).closest('tr').attr('data-name');
 			confirmDialog($t("Are you sure, you want to permanently remove ticket $a?", name), this).done(function() {
 				location.href = fulllink;
+			});
+			return false;
+		});
+
+		$('.ticket-image-gallery').click(function() {
+			var ticket_id = parseInt($(this).closest('tr').attr('data-ticket-id'));
+			$.ajax({
+				url: "?m=rtticketview&api=1&ajax=1&op=get-image-gallery&id=" + ticket_id,
+				method: "GET",
+				dataType: "json",
+				success: function(data) {
+					if (data.length) {
+						showGallery(data);
+					}
+				}
 			});
 			return false;
 		});

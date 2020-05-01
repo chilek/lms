@@ -37,6 +37,14 @@ if (!$LMS->CheckTicketAccess($id)) {
 $ticket = $LMS->GetTicketContents($id);
 $LMS->getTicketImageGalleries($ticket);
 
+if (isset($_GET['ajax']) && isset($_GET['op'])) {
+    header('Content-Type: application/json');
+    if ($_GET['op'] = 'get-image-gallery') {
+        echo json_encode($ticket['images']);
+    }
+    die;
+}
+
 $ticket['childtickets'] = $LMS->GetChildTickets($id);
 
 if (!empty($ticket['relatedtickets'])) {
