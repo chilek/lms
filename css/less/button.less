@@ -84,8 +84,6 @@ a.lms-ui-link-button + button.lms-ui-button {
 }
 
 .lms-ui-responsive-buttons {
-  justify-content: flex-end;
-  align-items: center;
   > * {
     padding-left: 0.1em;
     padding-right: 0.1em;
@@ -96,12 +94,10 @@ a.lms-ui-link-button + button.lms-ui-button {
   }
   .lms-ui-dropdown-buttons {
     display: inline;
-    align-items: flex-start;
   }
   @media screen and (max-width: 1200px) {
-    display: flex;
     .lms-ui-dropdown-toggle {
-      display: block;
+      display: inline;
     }
     .lms-ui-dropdown-buttons {
       display: none;
