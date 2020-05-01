@@ -57,7 +57,7 @@
 					<col style="width: 97%;">
 				</colgroup>
 				{counter start=0 skip=1 print=false assign=msgidx}
-				{foreach from=$ticket.messages item=message}
+				{foreach $ticket.messages as $message}
 				{if $message.type == $smarty.const.RTMESSAGE_REGULAR || $message.type == $smarty.const.RTMESSAGE_NOTE}
 				<THEAD>
 				<TR id="rtmessage-{$message.id}"{if $message.deleted == 1 && $message.deltime != 0} class="light lms-ui-rtmessage-deleted"{/if}>
@@ -92,19 +92,8 @@
 					</TD>
 					<TD class="text-right message-properties">
 						<div class="message-attachments">
-							{$images = array()}
-							{foreach $message.attachments as $attachment}
-								{if strpos($attachment.contenttype, 'image') === 0}
-									{$image = array()}
-									{textformat assign="url" wrap=500}?m=rtmessageview&tid={$ticket.ticketid}&mid={$message.id}&file={urlencode($attachment.filename)}&api=1{/textformat}
-									{$image.image = $url}
-									{$image.thumb = $url|cat:"&thumbnail=500"}
-									{$image.title = $attachment.filename}
-									{$images[] = $image}
-								{/if}
-							{/foreach}
-							{if count($images)}
-								<a href="#" class="attachment-gallery lms-ui-button" data-gallery='{json_encode($images)}'>
+							{if count($message.images)}
+								<a href="#" class="attachment-gallery lms-ui-button" data-gallery='{json_encode($message.images)}'>
 									<i class="lms-ui-icon-gallery"></i>
 								</a>
 							{/if}

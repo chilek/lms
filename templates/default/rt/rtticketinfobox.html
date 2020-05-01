@@ -388,6 +388,11 @@
 				{button id="delete-rtticket" icon="delete" label="Delete" href="?m=rtticketdel&id={$ticket.ticketid}&taction=delete"}
 			{/if}
 			{button type="link-button" icon="edit" label="Edit" href="?m=rtticketedit&id={$ticket.ticketid}"}
+
+			{if count($ticket.images)}
+				{button id="ticket-gallery-button" icon="gallery" label="Attachment gallery" data_gallery="{json_encode($ticket.images)}"}
+			{/if}
+
 		</TD>
 	</TR>
 	</TBODY>
@@ -491,6 +496,10 @@
 				}
 			);
 			return false;
+		});
+
+		$('#ticket-gallery-button').click(function() {
+			showGallery(JSON.parse($(this).attr('data-gallery')));
 		});
 	});
 

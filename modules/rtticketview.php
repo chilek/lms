@@ -35,6 +35,7 @@ if (!$LMS->CheckTicketAccess($id)) {
 }
 
 $ticket = $LMS->GetTicketContents($id);
+$LMS->getTicketImageGalleries($ticket);
 
 $ticket['childtickets'] = $LMS->GetChildTickets($id);
 

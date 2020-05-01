@@ -60,7 +60,7 @@ class LMSSmartyPlugins
         $data_attributes = '';
         foreach ($params as $name => $value) {
             if (strpos($name, 'data_') === 0) {
-                $data_attributes .= ' ' . str_replace('_', '-', $name) . '="' . $value . '"';
+                $data_attributes .= ' ' . str_replace('_', '-', $name) . '=\'' . $value . '\'';
             }
         }
 

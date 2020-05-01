@@ -4724,3 +4724,5 @@ $_LANG['Apply'] = 'Zastosuj';
 $_LANG['Warnings'] = 'Ostrzeżenia';
 $_LANG['Customer groups'] = 'Grupy klientów';
 $_LANG['Customer consents'] = 'Zgody klientów';
+
+$_LANG['Attachment gallery'] = 'Galeria załączników';

@@ -2121,6 +2121,13 @@ class LMS
         $manager = $this->getHelpdeskManager();
         return $manager->TicketIsAssigned($ticketid);
     }
+
+    public function getTicketImageGalleries(&$ticket)
+    {
+        $manager = $this->getHelpdeskManager();
+        $manager->getTicketImageGalleries($ticket);
+    }
+
     /*
      *  LMS-UI configuration
      */

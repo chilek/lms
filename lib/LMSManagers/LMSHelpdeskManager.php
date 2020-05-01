@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2019 LMS Developers
+ *  Copyright (C) 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -2236,5 +2236,31 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             WHERE id = ? AND owner <> ?',
             array($ticketid, Auth::GetCurrentUser())
         ) > 0;
+    }
+
+    public function getTicketImageGalleries(&$ticket)
+    {
+        $ticket['images'] = array();
+        foreach ($ticket['messages'] as &$message) {
+            if ($message['type'] == RTMESSAGE_REGULAR || $message['type'] == RTMESSAGE_NOTE) {
+                $images = array();
+                $message['images'] = array();
+                foreach ($message['attachments'] as $attachment) {
+                    if (strpos($attachment['contenttype'], 'image') === 0) {
+                        $url = '?m=rtmessageview&tid=' . $ticket['ticketid'] . '&mid=' . $message['id']
+                            . '&file=' . urlencode($attachment['filename']) . '&api=1';
+                        $images[] = array(
+                            'image' => $url,
+                            'thumb' => $url . '&thumbnail=200',
+                            'title' => $attachment['filename'],
+                        );
+                    }
+                }
+            }
+            if (count($images)) {
+                $message['images'] = $images;
+                $ticket['images'] = array_merge($ticket['images'], $images);
+            }
+        }
     }
 }
