@@ -100,10 +100,10 @@
 			{if $ticket.state != $smarty.const.RT_RESOLVED}
 				{button type="link" icon="add" class="ticket-add-event" tip="Add event assigned to ticket" href="?m=eventadd&ticketid={$ticket.id}"}
 			{/if}
-			{if !$ticket.ownerid}
+			{if !$ticket.ownerid && Auth::GetCurrentUser() !== $ticket.verifierid}
 				{button type="link" icon="owner" class="ticket-assign-to-me" tip="Assign to me as owner" href="?m=rtqueueview&ticketid={$ticket.id}&action=assign"}
 			{/if}
-			{if !$ticket.verifiername}
+			{if !$ticket.verifierid && Auth::GetCurrentUser() !== $ticket.ownerid}
 				{button type="link" icon="verifier" class="ticket-assign2-to-me" tip="Assign to me as verifier" href="?m=rtqueueview&ticketid={$ticket.id}&action=assign2"}
 			{/if}
 			{button type="link" icon="print" class="ticket-print" tip="Print" href="?m=rtticketprint&id={$ticket.id}"}
