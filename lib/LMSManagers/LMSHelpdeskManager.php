@@ -2253,15 +2253,17 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             if ($message['type'] == RTMESSAGE_REGULAR || $message['type'] == RTMESSAGE_NOTE) {
                 $images = array();
                 $message['images'] = array();
-                foreach ($message['attachments'] as $attachment) {
-                    if (strpos($attachment['contenttype'], 'image') === 0) {
-                        $url = '?m=rtmessageview&tid=' . $ticket['ticketid'] . '&mid=' . $message['id']
-                            . '&file=' . urlencode($attachment['filename']) . '&api=1';
-                        $images[] = array(
-                            'image' => $url,
-                            'thumb' => $url . '&thumbnail=200',
-                            'title' => $attachment['filename'],
-                        );
+                if (!empty($message['attachments'])) {
+                    foreach ($message['attachments'] as $attachment) {
+                        if (strpos($attachment['contenttype'], 'image') === 0) {
+                            $url = '?m=rtmessageview&tid=' . $ticket['ticketid'] . '&mid=' . $message['id']
+                                . '&file=' . urlencode($attachment['filename']) . '&api=1';
+                            $images[] = array(
+                                'image' => $url,
+                                'thumb' => $url . '&thumbnail=200',
+                                'title' => $attachment['filename'],
+                            );
+                        }
                     }
                 }
             }
