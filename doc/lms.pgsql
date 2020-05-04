@@ -2763,12 +2763,22 @@ CREATE VIEW vnetworks AS
         LEFT JOIN vaddresses a ON no.address_id = a.id
     WHERE no.ipaddr = 0 AND no.ipaddr_pub = 0;
 
+CREATE VIEW customerconsentview AS
+    SELECT c.id AS customerid,
+        SUM(CASE WHEN cc.type = 1 THEN cc.cdate ELSE 0 END)::integer AS consentdate,
+        SUM(CASE WHEN cc.type = 2 THEN 1 ELSE 0 END)::smallint AS invoicenotice,
+        SUM(CASE WHEN cc.type = 3 THEN 1 ELSE 0 END)::smallint AS mailingnotice,
+        SUM(CASE WHEN cc.type = 4 THEN 1 ELSE 0 END)::smallint AS einvoice
+    FROM customers c
+        LEFT JOIN customerconsents cc ON cc.customerid = c.id
+    GROUP BY c.id;
+
 CREATE VIEW customerview AS
     SELECT c.*,
-        (CASE WHEN cc1.type IS NULL THEN 0 ELSE cc1.cdate END) AS consentdate,
-        (CASE WHEN cc2.type IS NULL THEN 0 ELSE 1 END) AS invoicenotice,
-        (CASE WHEN cc3.type IS NULL THEN 0 ELSE 1 END) AS mailingnotice,
-        (CASE WHEN cc4.type IS NULL THEN 0 ELSE 1 END) AS einvoice,
+        cc.consentdate AS consentdate,
+        cc.invoicenotice AS invoicenotice,
+        cc.mailingnotice AS mailingnotice,
+        cc.einvoice AS einvoice,
         a1.country_id as countryid, a1.zip as zip, a1.city as city,
         a1.street as street,a1.house as building, a1.flat as apartment,
         a2.country_id as post_countryid, a2.zip as post_zip,
@@ -2783,10 +2793,7 @@ CREATE VIEW customerview AS
         LEFT JOIN vaddresses a1 ON ca1.address_id = a1.id
         LEFT JOIN customer_addresses ca2 ON c.id = ca2.customer_id AND ca2.type = 0
         LEFT JOIN vaddresses a2 ON ca2.address_id = a2.id
-        LEFT JOIN customerconsents cc1 ON cc1.customerid = c.id AND cc1.type = 1
-        LEFT JOIN customerconsents cc2 ON cc2.customerid = c.id AND cc2.type = 2
-        LEFT JOIN customerconsents cc3 ON cc3.customerid = c.id AND cc3.type = 3
-        LEFT JOIN customerconsents cc4 ON cc4.customerid = c.id AND cc4.type = 4
+        LEFT JOIN customerconsentview cc ON cc.customerid = c.id
     WHERE NOT EXISTS (
         SELECT 1 FROM customerassignments a
         JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
@@ -2795,10 +2802,10 @@ CREATE VIEW customerview AS
 
 CREATE VIEW contractorview AS
     SELECT c.*,
-        (CASE WHEN cc1.type IS NULL THEN 0 ELSE cc1.cdate END) AS consentdate,
-        (CASE WHEN cc2.type IS NULL THEN 0 ELSE 1 END) AS invoicenotice,
-        (CASE WHEN cc3.type IS NULL THEN 0 ELSE 1 END) AS mailingnotice,
-        (CASE WHEN cc4.type IS NULL THEN 0 ELSE 1 END) AS einvoice,
+        cc.consentdate AS consentdate,
+        cc.invoicenotice AS invoicenotice,
+        cc.mailingnotice AS mailingnotice,
+        cc.einvoice AS einvoice,
         a1.country_id as countryid, a1.zip as zip, a1.city as city, a1.street as street,
         a1.house as building, a1.flat as apartment, a2.country_id as post_countryid,
         a2.zip as post_zip, a2.city as post_city, a2.street as post_street,
@@ -2812,18 +2819,15 @@ CREATE VIEW contractorview AS
         LEFT JOIN vaddresses a1 ON ca1.address_id = a1.id
         LEFT JOIN customer_addresses ca2 ON c.id = ca2.customer_id AND ca2.type = 0
         LEFT JOIN vaddresses a2 ON ca2.address_id = a2.id
-        LEFT JOIN customerconsents cc1 ON cc1.customerid = c.id AND cc1.type = 1
-        LEFT JOIN customerconsents cc2 ON cc2.customerid = c.id AND cc2.type = 2
-        LEFT JOIN customerconsents cc3 ON cc3.customerid = c.id AND cc3.type = 3
-        LEFT JOIN customerconsents cc4 ON cc4.customerid = c.id AND cc4.type = 4
+        LEFT JOIN customerconsentview cc ON cc.customerid = c.id
     WHERE c.type = 2;
 
 CREATE VIEW customeraddressview AS
     SELECT c.*,
-        (CASE WHEN cc1.type IS NULL THEN 0 ELSE cc1.cdate END) AS consentdate,
-        (CASE WHEN cc2.type IS NULL THEN 0 ELSE 1 END) AS invoicenotice,
-        (CASE WHEN cc3.type IS NULL THEN 0 ELSE 1 END) AS mailingnotice,
-        (CASE WHEN cc4.type IS NULL THEN 0 ELSE 1 END) AS einvoice,
+        cc.consentdate AS consentdate,
+        cc.invoicenotice AS invoicenotice,
+        cc.mailingnotice AS mailingnotice,
+        cc.einvoice AS einvoice,
         a1.country_id as countryid, a1.zip as zip, a1.city as city, a1.street as street,
         a1.house as building, a1.flat as apartment, a2.country_id as post_countryid,
         a2.zip as post_zip, a2.city as post_city, a2.street as post_street,
@@ -2837,10 +2841,7 @@ CREATE VIEW customeraddressview AS
         LEFT JOIN vaddresses a1 ON ca1.address_id = a1.id
         LEFT JOIN customer_addresses ca2 ON c.id = ca2.customer_id AND ca2.type = 0
         LEFT JOIN vaddresses a2 ON ca2.address_id = a2.id
-        LEFT JOIN customerconsents cc1 ON cc1.customerid = c.id AND cc1.type = 1
-        LEFT JOIN customerconsents cc2 ON cc2.customerid = c.id AND cc2.type = 2
-        LEFT JOIN customerconsents cc3 ON cc3.customerid = c.id AND cc3.type = 3
-        LEFT JOIN customerconsents cc4 ON cc4.customerid = c.id AND cc4.type = 4
+        LEFT JOIN customerconsentview cc ON cc.customerid = c.id
     WHERE c.type < 2;
 
 CREATE OR REPLACE FUNCTION int2txt(bigint) RETURNS text AS $$
@@ -3767,6 +3768,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020042701');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020050400');
 
 COMMIT;
