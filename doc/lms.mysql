@@ -2973,10 +2973,10 @@ RETURN @lms_current_user;
 
 CREATE VIEW customerconsentview AS
     SELECT c.id AS customerid,
-        CAST(SUM(CASE WHEN cc.type = 1 THEN cc.cdate ELSE 0 END) AS int)  AS consentdate,
-        CAST(SUM(CASE WHEN cc.type = 2 THEN 1 ELSE 0 END) AS int)  AS invoicenotice,
-        CAST(SUM(CASE WHEN cc.type = 3 THEN 1 ELSE 0 END) AS int)  AS mailingnotice,
-        CAST(SUM(CASE WHEN cc.type = 4 THEN 1 ELSE 0 END) AS int)  AS einvoice
+        SUM(CASE WHEN cc.type = 1 THEN cc.cdate ELSE 0 END)  AS consentdate,
+        SUM(CASE WHEN cc.type = 2 THEN 1 ELSE 0 END) AS invoicenotice,
+        SUM(CASE WHEN cc.type = 3 THEN 1 ELSE 0 END) AS mailingnotice,
+        SUM(CASE WHEN cc.type = 4 THEN 1 ELSE 0 END) AS einvoice
     FROM customers c
         LEFT JOIN customerconsents cc ON cc.customerid = c.id
     GROUP BY c.id;
