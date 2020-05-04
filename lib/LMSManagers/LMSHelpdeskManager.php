@@ -2250,9 +2250,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     {
         $ticket['images'] = array();
         foreach ($ticket['messages'] as &$message) {
+            $images = array();
+            $message['images'] = array();
             if ($message['type'] == RTMESSAGE_REGULAR || $message['type'] == RTMESSAGE_NOTE) {
-                $images = array();
-                $message['images'] = array();
                 if (!empty($message['attachments'])) {
                     foreach ($message['attachments'] as $attachment) {
                         if (strpos($attachment['contenttype'], 'image') === 0) {
