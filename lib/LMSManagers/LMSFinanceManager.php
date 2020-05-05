@@ -2024,13 +2024,15 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             );
             $this->syslog->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_DELETE, $args);
             $cashids = $this->db->GetCol('SELECT id FROM cash WHERE docid = ?', array($invoiceid));
-            foreach ($cashids as $cashid) {
-                $args = array(
-                    SYSLOG::RES_CASH => $cashid,
-                    SYSLOG::RES_DOC => $invoiceid,
-                    SYSLOG::RES_CUST => $customerid,
-                );
-                $this->syslog->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
+            if (!empty($cashids)) {
+                foreach ($cashids as $cashid) {
+                    $args = array(
+                        SYSLOG::RES_CASH => $cashid,
+                        SYSLOG::RES_DOC => $invoiceid,
+                        SYSLOG::RES_CUST => $customerid,
+                    );
+                    $this->syslog->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
+                }
             }
             $itemids = $this->db->GetCol('SELECT itemid FROM invoicecontents WHERE docid = ?', array($invoiceid));
             foreach ($itemids as $itemid) {
