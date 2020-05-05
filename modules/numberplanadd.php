@@ -26,7 +26,7 @@
 
 $numberplanadd = isset($_POST['numberplanadd']) ? $_POST['numberplanadd'] : null;
 
-if (count($numberplanadd)) {
+if (!empty($numberplanadd) && count($numberplanadd)) {
     $numberplanadd['template'] = trim($numberplanadd['template']);
 
     if ($numberplanadd['template']=='' && $numberplanadd['doctype']==0 && $numberplanadd['period']==0) {
@@ -47,7 +47,7 @@ if (count($numberplanadd)) {
     if ($numberplanadd['period'] == 0) {
         $error['period'] = trans('Numbering period is required!');
     }
-    
+
     if ($numberplanadd['doctype'] && isset($numberplanadd['isdefault'])) {
         if ($DB->GetOne(
             'SELECT 1 FROM numberplans n
