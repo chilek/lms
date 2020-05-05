@@ -92,7 +92,7 @@
 					</TD>
 					<TD class="text-right message-properties">
 						<div class="message-attachments">
-							{if count($message.images)}
+							{if !empty($message.images) && count($message.images)}
 								<a href="#" class="attachment-gallery lms-ui-button" data-gallery='{json_encode($message.images)}'>
 									<i class="lms-ui-icon-gallery"></i>
 								</a>
