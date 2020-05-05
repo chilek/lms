@@ -475,7 +475,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
             if (preg_match('/^[\+]?[0-9]+(,[\+]?[0-9]+)*$/', $message['phonenumber'])) {
                 $phonenumbers = preg_split('/,/', $message['phonenumber']);
             }
-            if (count($message['users'])) {
+            if (!empty($message['users']) && count($message['users'])) {
                 $user_phones = $DB->GetAllByKey('SELECT id, phone FROM users', 'id');
                 foreach ($message['users'] as $userid) {
                     if (isset($user_phones[$userid])) {
