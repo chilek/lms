@@ -469,7 +469,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				GROUP BY m4.ticketid
 			) m3 ON m3.ticketid = t.id
 			LEFT JOIN (
-			    SELECT ticketid, COUNT(a.*) AS imagecount
+			    SELECT ticketid, COUNT(*) AS imagecount
 			    FROM rtattachments a
 			    JOIN rtmessages ON rtmessages.id = a.messageid
 			    WHERE a.contenttype ?LIKE? ?
