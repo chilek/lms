@@ -199,7 +199,8 @@ function RTSearch($search, $order = 'createtime,desc')
 		(CASE WHEN m.lastmodified IS NULL THEN 0 ELSE m.lastmodified END) AS lastmodified, t.deleted, t.deltime,
 		t.priority, t.verifierid, t.deadline,
         eventcountopened, eventcountclosed, 
-		m3.messageid, COUNT(m2.id) AS delcount
+		m3.messageid, COUNT(m2.id) AS delcount,
+		ti.imagecount
 		FROM rttickets t
 		LEFT JOIN rtmessages m2 ON m2.ticketid = t.id AND m2.deleted = 1
 		' . implode(' ', $join) . '
@@ -210,6 +211,13 @@ function RTSearch($search, $order = 'createtime,desc')
 		LEFT JOIN vusers AS e ON (t.verifierid = vusers.id)
 		LEFT JOIN customeraddressview c ON c.id = t.customerid
 		LEFT JOIN vaddresses va ON va.id = t.address_id
+        LEFT JOIN (
+            SELECT ticketid, COUNT(*) AS imagecount
+            FROM rtattachments a
+            JOIN rtmessages ON rtmessages.id = a.messageid
+            WHERE a.contenttype ?LIKE? ' . $DB->Escape('image/%') . '
+            GROUP BY ticketid
+        ) ti ON ti.ticketid = t.id
         LEFT JOIN (
             SELECT SUM(CASE WHEN closed = 0 THEN 1 ELSE 0 END) AS eventcountopened,
                 SUM(CASE WHEN closed = 1 THEN 1 ELSE 0 END) AS eventcountclosed,
@@ -222,7 +230,7 @@ function RTSearch($search, $order = 'createtime,desc')
 			t.address_id, va.name, va.city, va.street, va.house, va.flat, c.address, c.city,
 			vusers.name, rtqueues.name,
 			t.requestor, c.lastname, c.name, t.createtime, m.lastmodified, t.deleted, t.deltime, t.priority,
-			t.verifierid, t.deadline, eventcountopened, eventcountclosed, m3.messageid '
+			t.verifierid, t.deadline, eventcountopened, eventcountclosed, m3.messageid, ti.imagecount '
         . ($sqlord !='' ? $sqlord . ' ' . $direction : '')
         . (isset($search['limit']) ? ' LIMIT ' . $search['limit'] : '')
         . (isset($search['offset']) ? ' OFFSET ' . $search['offset'] : ''));
