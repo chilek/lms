@@ -32,22 +32,24 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 {
     private $lastmessageid = null;
 
-    public function GetQueue($id)
+    public function GetQueue($id, $short = false)
     {
         if ($queue = $this->db->GetRow('SELECT * FROM rtqueues WHERE id=?', array($id))) {
-            $queue['verifier'] = $this->db->GetRow(
-                'SELECT id, name, rname, login FROM vusers WHERE id=(SELECT verifierid FROM rtqueues WHERE id=?)',
-                array($id)
-            );
-            $users = $this->db->GetAll('SELECT id, name, rname, login FROM vusers WHERE deleted=0 ORDER BY rname');
-            foreach ($users as $user) {
-                $user['rights'] = $this->GetUserRightsRT($user['id'], $id);
-                $queue['rights'][] = $user;
+            if (!$short) {
+                $queue['verifier'] = $this->db->GetRow(
+                    'SELECT id, name, rname, login FROM vusers WHERE id=(SELECT verifierid FROM rtqueues WHERE id=?)',
+                    array($id)
+                );
+                $users = $this->db->GetAll('SELECT id, name, rname, login FROM vusers WHERE deleted=0 ORDER BY rname');
+                foreach ($users as $user) {
+                    $user['rights'] = $this->GetUserRightsRT($user['id'], $id);
+                    $queue['rights'][] = $user;
+                }
+                $queue['categories'] = $this->db->GetAll('SELECT categoryid, name
+                    FROM rtqueuecategories
+                    JOIN rtcategories c ON c.id = categoryid
+                    WHERE queueid = ?', array($id));
             }
-            $queue['categories'] = $this->db->GetAll('SELECT categoryid, name
-                FROM rtqueuecategories
-                JOIN rtcategories c ON c.id = categoryid
-                WHERE queueid = ?', array($id));
             return $queue;
         } else {
             return null;

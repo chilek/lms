@@ -144,6 +144,9 @@ if (isset($_POST['message'])) {
 
         foreach ($tickets as $ticketid) {
             $queue = $LMS->GetQueueByTicketId($ticketid);
+            if ($message['queueid'] != -100 && $message['queueid'] != $queue['id']) {
+                $queue = $LMS->GetQueue($message['queueid'], true);
+            }
 
             $message['queue'] = $queue;
 

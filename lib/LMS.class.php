@@ -1791,10 +1791,10 @@ class LMS
      *   Request Tracker (Helpdesk)
      */
 
-    public function GetQueue($id)
+    public function GetQueue($id, $short = false)
     {
         $manager = $this->getHelpdeskManager();
-        return $manager->GetQueue($id);
+        return $manager->GetQueue($id, $short);
     }
 
     public function GetQueueContents(array $params)

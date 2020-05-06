@@ -31,7 +31,7 @@
 interface LMSHelpdeskManagerInterface
 {
 
-    public function GetQueue($id);
+    public function GetQueue($id, $short = false);
 
     public function GetQueueContents(array $params);
 
