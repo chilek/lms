@@ -87,7 +87,7 @@ if (isset($netnodedata)) {
         }
     }
 
-    if ($netnodedata['location_zip'] && !check_zip($netnodedata['location_zip'])) {
+    if ($netnodedata['location_zip'] && !Utils::checkZip($netnodedata['location_zip'], $netnodedata['location_country_id'])) {
         $error['location_zip'] = trans('Incorrect ZIP code!');
     }
 

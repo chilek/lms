@@ -311,6 +311,7 @@ version 25-git (????-??-??):
   - enhancement: smarty block '{buttons}' support introduced - allows to create responsive
     button panels on resource list [chilan]
   - enhancement: image gallery support for network nodes, devices and models [chilan]
+  - improvement: zip code validation is made basing on selected location address country [chilan]
 
 version 24.0 (2019-05-16):
 

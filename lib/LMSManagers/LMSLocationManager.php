@@ -491,4 +491,9 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
         }
         return self::$cities_with_sections;
     }
+
+    public function getCountryCodeById($countryid)
+    {
+        return $this->db->GetOne('SELECT ccode FROM countries WHERE id = ?', array($countryid));
+    }
 }

@@ -35,15 +35,6 @@ function check_ssn($ssn)
     return preg_match('/^[0-9]{6}\/[0-9]{3,4}$/', $ssn);
 }
 
-function check_zip($zip)
-{
-    if (ConfigHelper::checkConfig('phpui.skip_zip_validation')) {
-        return true;
-    } else {
-        return preg_match('/^[1-9][0-9]{4}$/', $zip);
-    }
-}
-
 function check_regon($regon)
 {
     return preg_match('/^[0-9]{8,10}$/', $regon);

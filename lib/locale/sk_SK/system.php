@@ -76,15 +76,6 @@ function check_ssn($ssn)
     return false;
 }
 
-function check_zip($zip)
-{
-    if (ConfigHelper::checkConfig('phpui.skip_zip_validation')) {
-        return true;
-    } else {
-        return preg_match('/^[0-9]{3}[\-\s]?[0-9]{2}$/', $zip);
-    }
-}
-
 function check_regon($regon)
 {
     $regon = str_replace('-', '', $regon);

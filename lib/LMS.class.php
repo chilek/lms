@@ -3270,6 +3270,12 @@ class LMS
         return $manager->GetCitiesWithSections();
     }
 
+    public function getCountryCodeById($countryid)
+    {
+        $manager = $this->getLocationManager();
+        return $manager->getCountryCodeById($countryid);
+    }
+
     public function GetNAStypes()
     {
         return $this->DB->GetAllByKey('SELECT id, name FROM nastypes ORDER BY name', 'id');

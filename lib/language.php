@@ -36,6 +36,9 @@ $LANGDEFS = array(
         'money_format_in_words' => '%s %s %s/100',
         'currency' => 'PLN',
 //        'mobile' => '(88[0-9]|5[01][0-9]|6[069][0-9]|7[2789][0-9])[0-9]{6}',
+        'check_zip' => function ($zip) {
+            return preg_match('/^[0-9]{2}-[0-9]{3}$/', $zip);
+        },
     ),
     'pl' => 'pl_PL',
     'lt_LT' => array(
@@ -48,6 +51,9 @@ $LANGDEFS = array(
         'money_format_in_words' => '%s %s %s/100',
         'currency' => 'EUR',
 //        'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
+        'check_zip' => function ($zip) {
+            return preg_match('/^[0-9]{5}$/', $zip);
+        }
     ),
     'lt' => 'lt_LT',
     'en_US' => array(
@@ -60,6 +66,9 @@ $LANGDEFS = array(
         'money_format_in_words' => '%s %s %s/100',
         'currency' => 'USD',
 //        'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
+        'check_zip' => function ($zip) {
+            return preg_match('/^[0-9]{5}$|^[0-9]{5}-[0-9]{4}$/', $zip);
+        },
     ),
     'en' => 'en_US',
     'en_GY' => array(
@@ -72,6 +81,9 @@ $LANGDEFS = array(
         'money_format_in_words' => '%s %s %s/100',
         'currency' => 'GYD',
 //        'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
+        'check_zip' => function ($zip) {
+            return preg_match('/^[0-9]{5}$|^[0-9]{5}-[0-9]{4}$/', $zip);
+        },
     ),
     'sk_SK' => array(
         'name' => 'Slovak',
@@ -83,6 +95,9 @@ $LANGDEFS = array(
         'money_format_in_words' => '%s %s %s/100',
         'currency' => 'EUR',
 //        'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
+        'check_zip' => function ($zip) {
+            return preg_match('/^[0-9]{3}[\-\s]?[0-9]{2}$/', $zip);
+        },
     ),
     'sk' => 'sk_SK',
     'ro_RO' => array(
@@ -95,6 +110,9 @@ $LANGDEFS = array(
         'money_format_in_words' => '%s %s %s/100',
         'currency' => 'RON',
 //        'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
+        'check_zip' => function ($zip) {
+            return preg_match('/^[0-9]{6}$/', $zip);
+        }
     ),
     'ro' => 'ro_RO',
     'cs_CZ' => array(
@@ -107,9 +125,18 @@ $LANGDEFS = array(
         'money_format_in_words' => '%s %s %s/100',
         'currency' => 'CZK',
 //        'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
+        'check_zip' => function ($zip) {
+            return preg_match('/^[1-9][0-9]{4}$/', $zip);
+        },
     ),
     'cs' => 'cs_CZ',
 );
+
+// for backward compatibility
+function check_zip($zip, $country = null)
+{
+    return Utils::checkZip($zip, $country);
+}
 
 // UI language
 if (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
