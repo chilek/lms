@@ -124,10 +124,12 @@
                                 <TD><IMG SRC="img/tax.gif" ALT=""></TD>
                                 <TD>{trans("Tax:")}</TD>
                                 <TD>
-                                    <SELECT SIZE="1" NAME="tariff[taxid]" {tip text="Select Tax rate" trigger="taxid"}>
-                                    {foreach item=tax from=$taxeslist}
-                                        <OPTION VALUE="{$tax.id}"{if $tariff.taxid == $tax.id} selected{/if}>{$tax.label}</OPTION>
-                                    {/foreach}
+                                    <SELECT SIZE="1" NAME="tariff[taxid]" {tip text="Select Tax rate" trigger="taxid"} required>
+                                        {foreach $taxeslist as $tax}
+                                            <OPTION VALUE="{$tax.id}"{if $tariff.taxid == $tax.id} selected{/if}>{$tax.label}</OPTION>
+                                        {foreachelse}
+                                            <option value="">{trans("- no tax rates defined -")}</option>
+                                        {/foreach}
                                     </SELECT>
                                 </TD>
                             </TR>
@@ -376,9 +378,9 @@
     </TR>
 
     <TR>
-        <TD WIDTH="100%" ALIGN="RIGHT">
-            <A HREF="javascript:document.tariff.submit();" ACCESSKEY="S">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
-            <A HREF="?m=tariffinfo&id={$tariff.id}">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A>
+        <TD colspan="3" class="lms-ui-box-buttons">
+            {button type="submit" label="Submit" icon="save"}
+            {button label="Cancel" icon="cancel" onclick="location.href='?m=tariffinfo&id={$tariff.id}';"}
         </TD>
     </TR>
     </TBODY>

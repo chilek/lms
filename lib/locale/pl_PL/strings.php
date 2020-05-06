@@ -4727,3 +4727,5 @@ $_LANG['Customer consents'] = 'Zgody klientów';
 
 $_LANG['Attachment gallery'] = 'Galeria załączników';
 $_LANG['Show ticket attached image gallery'] = 'Pokaż galerię obrazków załączonych do zgłoszenia';
+
+$_LANG['- no tax rates defined -'] = '- brak zdefiniowanych stawek podatkowych -';
