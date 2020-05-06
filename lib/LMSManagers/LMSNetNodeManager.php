@@ -166,9 +166,14 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 
     public function NetNodeAdd($netnodedata)
     {
-        $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
-
-        $address_id = $location_manager->InsertAddress($netnodedata);
+        if (!empty($netnodedata['ownerid']) && $netnodedata['customer_address_id'] > 0) {
+            $address_id = $netnodedata['customer_address_id'];
+        } elseif (!empty($netnodedata['location_city_name'])) {
+            $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
+            $address_id = $location_manager->InsertAddress($netnodedata);
+        } else {
+            $address_id = null;
+        }
 
         $args = array(
             'name'            => $netnodedata['name'],
@@ -186,7 +191,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
             'info'        => $netnodedata['info'],
             'admcontact' => empty($netnodedata['admcontact']) ? null : $netnodedata['admcontact'],
             'lastinspectiontime' => empty($netnodedata['lastinspectiontime']) ? null : $netnodedata['lastinspectiontime'],
-            'address_id'       => !empty($netnodedata['ownerid']) && $netnodedata['customer_address_id'] > 0 ? $netnodedata['customer_address_id'] : null,
+            'address_id'       => $address_id,
             'ownerid'          => !empty($netnodedata['ownerid']) && !empty($netnodedata['ownership']) ? $netnodedata['ownerid'] : null
         );
 
@@ -194,16 +199,6 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
             . ") VALUES (" . implode(', ', array_fill(0, count($args), '?')) . ")", array_values($args));
 
         $id = $this->db->GetLastInsertID('netnodes');
-
-        if (empty($data['ownerid'])) {
-            global $LMS;
-
-            $address_id = $LMS->InsertAddress($netnodedata);
-
-            if (!empty($address_id)) {
-                $this->db->Execute('UPDATE netnodes SET address_id = ? WHERE id = ?', array($address_id, $id));
-            }
-        }
 
         return $id;
     }
