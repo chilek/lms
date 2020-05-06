@@ -1,5 +1,13 @@
 {$use_alert_color = ConfigHelper::checkConfig('invoices.use_alert_color')}
 {$hide_discount = ConfigHelper::checkConfig('invoices.hide_discount')}
+{$hide_prodid = ConfigHelper::checkConfig('invoices.hide_prodid')}
+{$cols = 11}
+{if $hide_prodid}
+	{$cols = $cols - 1}
+{/if}
+{if $hide_discount || (empty($invoice.pdiscount) && empty($invoice.vdiscount))}
+	{$cols = $cols - 1}
+{/if}
 
 <!--// $Id$ //-->
 <DIV{if !$invoice.last} STYLE="page-break-after: always"{/if}>
@@ -138,12 +146,14 @@
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
 		<B>{trans("No.")}</B>
 	</TD>
-	<TD WIDTH="{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}90{else}91{/if}%" CLASS="head" ALIGN="CENTER">
+	<TD WIDTH="{-$cols + 101}%" CLASS="head" ALIGN="CENTER">
 		<B>{trans("Name of Product, Commodity or Service:")}</B>
 	</TD>
+	{if !$hide_prodid}
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
 		<B>{trans("Product ID:")}</B>
 	</TD>
+	{/if}
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
 		<B>{trans("Unit:")}</B>
 	</TD>
@@ -173,7 +183,7 @@
     </TR>
 {if $invoice.invoice}
     <TR>
-	<TD COLSPAN="{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}11{else}10{/if}" CLASS="fbottom">
+	<TD COLSPAN="{$cols}" CLASS="fbottom">
 		<B>{trans("Was:")}</B>
 	</TD>
     </TR>
@@ -181,34 +191,36 @@
 {counter start=0 print=false}
 {foreach from=$invoice.invoice.content item=item}
     <TR class="{cycle}">
-	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT">{counter}.</TD>
-	<TD WIDTH="{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}90{else}91{/if}%" CLASS="flr">
+	<TD CLASS="flr" ALIGN="RIGHT">{counter}.</TD>
+	<TD WIDTH="{-$cols + 101}%" CLASS="flr">
 		{$item.description}
 	</TD>
-	<TD WIDTH="1%" CLASS="flr">
+	{if !$hide_prodid}
+	<TD CLASS="flr">
 		{$item.prodid}
 	</TD>
-	<TD WIDTH="1%" CLASS="flr" ALIGN="CENTER">
+	{/if}
+	<TD CLASS="flr" ALIGN="CENTER">
 		{$item.content}
 	</TD>
-	<TD WIDTH="1%" CLASS="flr" ALIGN="CENTER">
+	<TD CLASS="flr" ALIGN="CENTER">
 		{floatval($item.count)}
 	</TD>
 	{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}
-	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
+	<TD CLASS="flr" ALIGN="RIGHT" NOWRAP>
 		{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f"} %{else}{$item.vdiscount|string_format:"%01.2f"}{/if}
 	</TD>
 	{/if}
-	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
+	<TD CLASS="flr" ALIGN="RIGHT" NOWRAP>
 		{$item.basevalue|string_format:"%01.2f"}
 	</TD>
-	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
+	<TD CLASS="flr" ALIGN="RIGHT" NOWRAP>
 		{$item.totalbase|string_format:"%01.2f"}
 	</TD>
-	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
+	<TD CLASS="flr" ALIGN="RIGHT" NOWRAP>
 		{$item.taxlabel}
 	</TD>
-	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
+	<TD CLASS="flr" ALIGN="RIGHT" NOWRAP>
 		{$item.totaltax|string_format:"%01.2f"}
 	</TD>
 	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
@@ -217,51 +229,51 @@
     </TR>
 {/foreach}
     <TR>
-	<TD COLSPAN="{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}7{else}6{/if}" ALIGN="RIGHT" CLASS="ftop" STYLE="text-align: right">
+	<TD COLSPAN="{$cols - 4}" ALIGN="RIGHT" CLASS="ftop" STYLE="text-align: right">
 		<P ALIGN="RIGHT"><B>{trans("Total:")}</B></P>
 	</TD>
-	<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fall" NOWRAP>
+	<TD ALIGN="RIGHT" CLASS="fall" NOWRAP>
 		{$invoice.invoice.totalbase|string_format:"%01.2f"}
 	</TD>
-	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT">
+	<TD CLASS="fall" ALIGN="RIGHT">
 		<B>x</B>
 	</TD>
-	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
+	<TD CLASS="fall" ALIGN="RIGHT" NOWRAP>
 		{$invoice.invoice.totaltax|string_format:"%01.2f"}
 	</TD>
-	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
+	<TD CLASS="fall" ALIGN="RIGHT" NOWRAP>
 		{$invoice.invoice.total|string_format:"%01.2f"}
 	</TD>
     </TR>
     <TR>
-	<TD COLSPAN="{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}7{else}6{/if}" ALIGN="RIGHT">
+	<TD COLSPAN="{$cols - 4}" ALIGN="RIGHT">
 		&nbsp;
 	</TD>
-	<TD COLSPAN="4" WIDTH="4%" ALIGN="CENTER">
+	<TD COLSPAN="4" ALIGN="CENTER">
 		<B>{trans("in it:")}</B>
 	</TD>
     </TR>
 {foreach from=$invoice.invoice.taxest item=item}
     <TR>
-	<TD COLSPAN="{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}7{else}6{/if}" ALIGN="RIGHT">
+	<TD COLSPAN="{$cols - 4}" ALIGN="RIGHT">
 		&nbsp;
 	</TD>
-	<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fall" NOWRAP>
+	<TD ALIGN="RIGHT" CLASS="fall" NOWRAP>
 		{$item.base|string_format:"%01.2f"}
 	</TD>
-	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT">
+	<TD CLASS="fall" ALIGN="RIGHT">
 		{$item.taxlabel}
 	</TD>
-	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
+	<TD CLASS="fall" ALIGN="RIGHT" NOWRAP>
 		{$item.tax|string_format:"%01.2f"}
 	</TD>
-	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
+	<TD CLASS="fall" ALIGN="RIGHT" NOWRAP>
 		{$item.total|string_format:"%01.2f"}
 	</TD>
     </TR>
 {/foreach}
     <TR>
-	<TD COLSPAN="{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}11{else}10{/if}" CLASS="fbottom">
+	<TD COLSPAN="{$cols}" CLASS="fbottom">
 		<B>{trans("Corrected to:")}</B>
 	</TD>
     </TR>
@@ -270,81 +282,83 @@
 {counter start=0 print=false}
 {foreach from=$invoice.content item=item}
     <TR class="{cycle name=cycle2}">
-	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT">{counter}.</TD>
-	<TD WIDTH="{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}90{else}91{/if}%" CLASS="flr">
+	<TD CLASS="flr" ALIGN="RIGHT">{counter}.</TD>
+	<TD WIDTH="{-$cols + 101}%" CLASS="flr">
 		{$item.description}
 	</TD>
-	<TD WIDTH="1%" CLASS="flr">
+	{if !$hide_prodid}
+	<TD CLASS="flr">
 		{$item.prodid}
 	</TD>
-	<TD WIDTH="1%" CLASS="flr" ALIGN="CENTER">
+	{/if}
+	<TD CLASS="flr" ALIGN="CENTER">
 		{$item.content}
 	</TD>
-	<TD WIDTH="1%" CLASS="flr" ALIGN="CENTER">
+	<TD CLASS="flr" ALIGN="CENTER">
 		{floatval($item.count)}
 	</TD>
 	{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}
-	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
+	<TD CLASS="flr" ALIGN="RIGHT" NOWRAP>
 		{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%01.2f"} %{else}{$item.vdiscount|string_format:"%01.2f"}{/if}
 	</TD>
 	{/if}
-	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
+	<TD CLASS="flr" ALIGN="RIGHT" NOWRAP>
 		{$item.basevalue|string_format:"%01.2f"}
 	</TD>
-	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
+	<TD CLASS="flr" ALIGN="RIGHT" NOWRAP>
 		{$item.totalbase|string_format:"%01.2f"}
 	</TD>
-	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
+	<TD CLASS="flr" ALIGN="RIGHT" NOWRAP>
 		{$item.taxlabel}
 	</TD>
-	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
+	<TD CLASS="flr" ALIGN="RIGHT" NOWRAP>
 		{$item.totaltax|string_format:"%01.2f"}
 	</TD>
-	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
+	<TD CLASS="flr" ALIGN="RIGHT" NOWRAP>
 		{$item.total|string_format:"%01.2f"}
 	</TD>
     </TR>
     {/foreach}
     <TR>
-	<TD COLSPAN="{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}7{else}6{/if}" ALIGN="RIGHT" CLASS="ftop" STYLE="text-align: right">
+	<TD COLSPAN="{$cols - 4}" ALIGN="RIGHT" CLASS="ftop" STYLE="text-align: right">
 		<P ALIGN="RIGHT"><B>{trans("Total:")}</B></P>
 	</TD>
-	<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fall" NOWRAP>
+	<TD ALIGN="RIGHT" CLASS="fall" NOWRAP>
 		{$invoice.totalbase|string_format:"%01.2f"}
 	</TD>
-	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT">
+	<TD CLASS="fall" ALIGN="RIGHT">
 		<B>x</B>
 	</TD>
-	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
+	<TD CLASS="fall" ALIGN="RIGHT" NOWRAP>
 		{$invoice.totaltax|string_format:"%01.2f"}
 	</TD>
-	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
+	<TD CLASS="fall" ALIGN="RIGHT" NOWRAP>
 		{$invoice.total|string_format:"%01.2f"}
 	</TD>
     </TR>
     <TR>
-	<TD COLSPAN="{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}7{else}6{/if}" ALIGN="RIGHT">
+	<TD COLSPAN="{$cols - 4}" ALIGN="RIGHT">
 		&nbsp;
 	</TD>
-	<TD COLSPAN="4" WIDTH="4%" ALIGN="CENTER">
+	<TD COLSPAN="4" ALIGN="CENTER">
 		<B>{trans("in it:")}</B>
 	</TD>
     </TR>
     {foreach from=$invoice.taxest item=item}
     <TR>
-	<TD COLSPAN="{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}7{else}6{/if}" ALIGN="RIGHT">
+	<TD COLSPAN="{$cols - 4}" ALIGN="RIGHT">
 		&nbsp;
 	</TD>
-	<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fall" NOWRAP>
+	<TD ALIGN="RIGHT" CLASS="fall" NOWRAP>
 		{$item.base|string_format:"%01.2f"}
 	</TD>
-	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT">
+	<TD CLASS="fall" ALIGN="RIGHT">
 		{$item.taxlabel}
 	</TD>
-	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
+	<TD CLASS="fall" ALIGN="RIGHT" NOWRAP>
 		{$item.tax|string_format:"%01.2f"}
 	</TD>
-	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
+	<TD CLASS="fall" ALIGN="RIGHT" NOWRAP>
 		{$item.total|string_format:"%01.2f"}
 	</TD>
     </TR>
@@ -354,22 +368,22 @@
 	{math assign=totaltax equation="x-y" x=$invoice.totaltax y=$invoice.invoice.totaltax}
 	{math assign=total equation="x-y" x=$invoice.total y=$invoice.invoice.total}
     <TR>
-	<TD COLSPAN="{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}11{else}10{/if}"></TD>
+	<TD COLSPAN="{$cols}"></TD>
     </TR>
     <TR>
-	<TD COLSPAN="{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}7{else}6{/if}" ALIGN="RIGHT">
+	<TD COLSPAN="{$cols - 4}" ALIGN="RIGHT">
 		<B>{trans("Difference value:")}</B>
 	</TD>
-	<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fall" NOWRAP>
+	<TD ALIGN="RIGHT" CLASS="fall" NOWRAP>
 		{if $totalbase > 0}+{/if}{$totalbase|string_format:"%01.2f"}
 	</TD>
-	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT">
+	<TD CLASS="fall" ALIGN="RIGHT">
 		<B>x</B>
 	</TD>
-	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
+	<TD CLASS="fall" ALIGN="RIGHT" NOWRAP>
 		{if $totaltax > 0}+{/if}{$totaltax|string_format:"%01.2f"}
 	</TD>
-	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
+	<TD CLASS="fall" ALIGN="RIGHT" NOWRAP>
 		{if $total > 0}+{/if}{$total|string_format:"%01.2f"}
 	</TD>
     </TR>
@@ -417,7 +431,7 @@
 	{/if}
 	{if ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_balance', true))}
 	<TR>
-		<TD WIDTH="100%" COLSPAN="2">
+		<TD COLSPAN="2">
 			{if $invoice.customerbalance > 0}
 				{$comment = trans('(excess payment)')}
 			{elseif $invoice.customerbalance < 0}
@@ -440,7 +454,7 @@
 	{$lms = LMS::getInstance()}
 	{$customerbalance = $lms->getCustomerBalance($invoice.customerid, $invoice.cdate + 1, true)}
 	<TR>
-		<TD WIDTH="100%" COLSPAN="2">
+		<TD COLSPAN="2">
 			{if $customerbalance > 0}
 				{$comment = trans('(excess payment)')}
 			{elseif $customerbalance < 0}
@@ -458,7 +472,7 @@
 	</TR>
 	{/if}
 	<TR>
-		<TD WIDTH="100%" COLSPAN="2">
+		<TD COLSPAN="2">
 			<B>{trans("Cautions:")}</B><BR>
 			<BLOCKQUOTE>
 			{trans("If you have any questions or doubts, contact with our Customer Service Representative. Prepare your Customer ID, please.")}<BR>
@@ -469,7 +483,7 @@
 	</TR>
 {if $invoice.comment}
 	<TR>
-		<TD WIDTH="100%" COLSPAN="2">
+		<TD COLSPAN="2">
 			<strong>{trans("Comment:")}</strong><BR>
 			<BLOCKQUOTE>
 			{$invoice.comment}

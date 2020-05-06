@@ -44,6 +44,7 @@ class LMSTcpdfInvoice extends LMSInvoice
     protected function Table()
     {
         $hide_discount = ConfigHelper::checkConfig('invoices.hide_discount');
+        $hide_prodid = ConfigHelper::checkConfig('invoices.hide_prodid');
 
         /* set the line width and headers font */
         $this->backend->SetFillColor(255, 255, 255);
@@ -58,7 +59,9 @@ class LMSTcpdfInvoice extends LMSInvoice
         /* invoice headers */
         $heads['no'] = trans('No.');
         $heads['name'] = trans('Name of Product, Commodity or Service:');
-        $heads['prodid'] = trans('Product ID:');
+        if (!$hide_prodid) {
+            $heads['prodid'] = trans('Product ID:');
+        }
         $heads['content'] = trans('Unit:');
         $heads['count'] = trans('Amount:');
         if (!$hide_discount && (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount']))) {
@@ -81,7 +84,9 @@ class LMSTcpdfInvoice extends LMSInvoice
             foreach ($this->data['content'] as $item) {
                 $t_width['no'] = 7;
                 $t_width['name'] = $this->backend->getStringWidth($item['description']);
-                $t_width['prodid'] = $this->backend->getStringWidth($item['prodid']);
+                if (!$hide_prodid) {
+                    $t_width['prodid'] = $this->backend->getStringWidth($item['prodid']);
+                }
                 $t_width['content'] = $this->backend->getStringWidth($item['content']);
                 $t_width['count'] = $this->backend->getStringWidth((float)$item['count']);
                 if (!$hide_discount) {
@@ -109,7 +114,9 @@ class LMSTcpdfInvoice extends LMSInvoice
             foreach ($this->data['invoice']['content'] as $item) {
                 $t_width['no'] = 7;
                 $t_width['name'] = $this->backend->getStringWidth($item['description']);
-                $t_width['prodid'] = $this->backend->getStringWidth($item['prodid']);
+                if (!$hide_prodid) {
+                    $t_width['prodid'] = $this->backend->getStringWidth($item['prodid']);
+                }
                 $t_width['content'] = $this->backend->getStringWidth($item['content']);
                 $t_width['count'] = $this->backend->getStringWidth((float)$item['count']);
                 if (!$hide_discount) {
@@ -175,7 +182,9 @@ class LMSTcpdfInvoice extends LMSInvoice
                     $h = $this->backend->getStringHeight($h_width['name'], $item['description'], true, false, '', 1) + 1;
                     $this->backend->Cell($h_width['no'], $h, $i . '.', 1, 0, 'C', 0, '', 1);
                     $this->backend->MultiCell($h_width['name'], $h, $item['description'], 1, 'L', false, 0, '', '', true, 0, false, false, $h, 'M');
-                    $this->backend->Cell($h_width['prodid'], $h, $item['prodid'], 1, 0, 'C', 0, '', 1);
+                    if (!$hide_prodid) {
+                        $this->backend->Cell($h_width['prodid'], $h, $item['prodid'], 1, 0, 'C', 0, '', 1);
+                    }
                     $this->backend->Cell($h_width['content'], $h, $item['content'], 1, 0, 'C', 0, '', 1);
                     $this->backend->Cell($h_width['count'], $h, (float)$item['count'], 1, 0, 'C', 0, '', 1);
                     if (!$hide_discount) {
@@ -244,7 +253,9 @@ class LMSTcpdfInvoice extends LMSInvoice
             $h = $this->backend->getStringHeight($h_width['name'], $item['description'], true, false, '', 1) + 1;
             $this->backend->Cell($h_width['no'], $h, $i . '.', 1, 0, 'C', 0, '', 1);
             $this->backend->MultiCell($h_width['name'], $h, $item['description'], 1, 'L', false, 0, '', '', true, 0, false, false, $h, 'M');
-            $this->backend->Cell($h_width['prodid'], $h, $item['prodid'], 1, 0, 'C', 0, '', 1);
+            if (!$hide_prodid) {
+                $this->backend->Cell($h_width['prodid'], $h, $item['prodid'], 1, 0, 'C', 0, '', 1);
+            }
             $this->backend->Cell($h_width['content'], $h, $item['content'], 1, 0, 'C', 0, '', 1);
             $this->backend->Cell($h_width['count'], $h, (float)$item['count'], 1, 0, 'C', 0, '', 1);
             if (!$hide_discount) {
