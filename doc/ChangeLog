@@ -316,6 +316,8 @@ version 25-git (????-??-??):
     visibility on invoices ('false' by default) [chilan]
   - improvement: 'mail.debug_level' allows to control debug message detail level ('2' is
     default) [chilan]
+  - improvement: 'phpui.quicksearch_keyboard_shortcut_modifier' defines quick search keyboard shortcut
+    modifier key ('ctrl' by default) [chilan]
 
 version 24.0 (2019-05-16):
 
