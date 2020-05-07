@@ -69,7 +69,7 @@ unset($netlist['online']);
 unset($netlist['order']);
 unset($netlist['direction']);
 
-$listdata['total'] = count($netlist);
+$listdata['total'] = empty($netlist) ? 0 : count($netlist);
 
 $SMARTY->assign('pagination', $pagination);
 $SMARTY->assign('listdata', $listdata);
