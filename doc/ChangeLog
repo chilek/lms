@@ -314,6 +314,8 @@ version 25-git (????-??-??):
   - improvement: zip code validation is made basing on selected location address country [chilan]
   - improvement: 'invoices.hide_prodid' configuration variable controls product id column
     visibility on invoices ('false' by default) [chilan]
+  - improvement: 'mail.debug_level' allows to control debug message detail level ('2' is
+    default) [chilan]
 
 version 24.0 (2019-05-16):
 

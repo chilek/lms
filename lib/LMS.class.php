@@ -2348,6 +2348,10 @@ class LMS
     public function SendMail($recipients, $headers, $body, $files = null, $persist = null, $smtp_options = null)
     {
         $persist = is_null($persist) ? ConfigHelper::getConfig('mail.smtp_persist', true) : $persist;
+        $debug_level = intval(ConfigHelper::getConfig('mail.debug_level', 2));
+        if (!$debug_level) {
+            $debug_level = 2;
+        }
 
         if (ConfigHelper::getConfig('mail.backend') == 'pear') {
             if (!is_object($this->mail_object) || !$persist) {
@@ -2516,7 +2520,7 @@ class LMS
 
             $debug_email = ConfigHelper::getConfig('mail.debug_email');
             if (!empty($debug_email)) {
-                $this->mail_object->SMTPDebug = 2;
+                $this->mail_object->SMTPDebug = $debug_level;
                 $recipients = ConfigHelper::getConfig('mail.debug_email');
             } else {
                 if (isset($headers['Cc'])) {
