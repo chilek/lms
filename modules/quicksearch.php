@@ -140,7 +140,7 @@ switch ($mode) {
                     $description_class = '';
                     $action = '?m=customerinfo&id=' . $row['id'];
 
-                    if ((empty($properties) || isset($properties['id'])) && preg_match("~^$search\$~i", $row['id'])) {
+                    if ((empty($properties) || isset($properties['id'])) && ltrim($search, '0') == $row['id']) {
                         $description = trans('Id:') . ' ' . $row['id'];
                     } else if ((empty($properties) || isset($properties['name'])) && $customer_count[$row['customername']]) {
                         $description = $row['address'];
