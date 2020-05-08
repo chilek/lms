@@ -140,9 +140,7 @@ switch ($mode) {
                     $description_class = '';
                     $action = '?m=customerinfo&id=' . $row['id'];
 
-                    if ((empty($properties) || isset($properties['id'])) && preg_match("~^$search\$~i", $row['id'])) {
-                        $description = trans('Id:') . ' ' . $row['id'];
-                    } else if ((empty($properties) || isset($properties['name'])) && $customer_count[$row['customername']]) {
+                    if ((empty($properties) || isset($properties['name'])) && $customer_count[$row['customername']]) {
                         $description = $row['address'];
                         if (!empty($row['post_address'])) {
                             $description .= '<BR>' . $row['post_address'];
@@ -150,6 +148,8 @@ switch ($mode) {
                                 $description .= '<BR>' . $row['post_name'];
                             }
                         }
+                    } else if ((empty($properties) || isset($properties['id'])) && preg_match("~^$search\$~i", $row['id'])) {
+                        $description = trans('Id:') . ' ' . $row['id'];
                     } else if ((empty($properties) || isset($properties['name'])) && preg_match("~$search~i", $row['customername'])) {
                         $description = '';
                     } else if ((empty($properties) || isset($properties['address'])) && preg_match("~$search~i", $row['address'])) {
