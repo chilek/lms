@@ -127,7 +127,7 @@ switch ($mode) {
                     $customer_count[$customername]++;
                 }
                 foreach ($candidates as $idx => $row) {
-                    $name = truncate_str($row['customername'], 50);
+                    $name = truncate_str('(#' . $row['id'] . ') ' . $row['customername'], 50);
 
                     $name_classes = array();
                     if ($row['deleted']) {
