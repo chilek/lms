@@ -88,7 +88,7 @@
 		<TD class="bold nobr"><img src="img/host.gif" alt="">{trans("Host:")}</td>
 		<td colspan="3">
 			{* if only one host was created then select him *}
-			{if count($hostlist) == 1}
+			{if !empty($hostlist) && count($hostlist) == 1}
 				{$netadd.hostid = $hostlist[0]['id']}
 			{/if}
 
