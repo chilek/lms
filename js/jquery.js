@@ -1539,8 +1539,16 @@ $(function() {
 	var qs_fields = $('.lms-ui-quick-search-field');
 
 	qs_fields.each(function(index, field) {
-		new AutoSuggest($(field).closest('form').get(0), $(field).find('input').get(0),
-			'?m=quicksearch&api=1&ajax=1&mode=' + $(field).attr('data-mode') + '&what=', lmsSettings.quickSearchAutoSubmit);
+		new AutoSuggest(
+			$(field).closest('form').get(0),
+			$(field).find('input').get(0),
+			'?m=quicksearch&api=1&ajax=1&mode=' + $(field).attr('data-mode') + '&what=',
+			lmsSettings.quickSearchAutoSubmit,
+			null,
+			function () {
+				$(field).find('input').tooltip('close');
+			}
+		)
 	});
 
 	qs_fields.find('input').on('click', function() {
