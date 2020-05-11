@@ -114,7 +114,7 @@
 				</SELECT></SPAN>
 				</label>
 
-				{if count($networks) > 1}
+				{if !empty($networks) && count($networks) > 1}
 					<label for="n" class="nobr"><SPAN>{trans("Network:")}</SPAN>
 					<SELECT SIZE="1" NAME="n" ONCHANGE="document.choosefilter.submit();">
 						<OPTION value="0" {if !$filter.network} SELECTED {/if}>{trans("- all networks -")}</OPTION>
