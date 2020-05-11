@@ -1539,14 +1539,17 @@ $(function() {
 	var qs_fields = $('.lms-ui-quick-search-field');
 
 	qs_fields.each(function(index, field) {
+		var input = $(field).find('input');
 		new AutoSuggest(
 			$(field).closest('form').get(0),
-			$(field).find('input').get(0),
+			input.get(0),
 			'?m=quicksearch&api=1&ajax=1&mode=' + $(field).attr('data-mode') + '&what=',
 			lmsSettings.quickSearchAutoSubmit,
 			null,
 			function () {
-				$(field).find('input').tooltip('close');
+				if (input.is('[data-tooltip]')) {
+					input.tooltip('close');
+				}
 			}
 		)
 	});
