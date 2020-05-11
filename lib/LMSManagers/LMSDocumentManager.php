@@ -297,6 +297,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 					WHERE id = ?', array($document['reference']));
                 }
             }
+            unset($document);
         }
 
         $list['total'] = count($list);

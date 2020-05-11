@@ -223,14 +223,14 @@
 			{$docattach = $doc.attachments[0]}
 			{if $docattach.type == 1 || count($doc.attachments) == 1}
 				{documentview id="{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
-					url="?m=documentview&id={$doc.docid}" external=true}
+					url="?m=documentview&id={$doc.docid}" external=true
+					text="<i class=\"lms-ui-icon-view{if preg_match('/pdf/',$docattach.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)} xls{/if}\"></i>"}
 			{/if}
 			{if count($doc.attachments) > 1 || $docattach.type < 1}
 			<a href="#" id="allattachments-toggle-{$doc.docid}" onclick="toggle_all_attachments({$doc.docid}); return false;" title="{trans("more document attachments")}">
 				<img src="img/asc_order.gif">
 			</a>
 			{/if}
-			<INPUT TYPE="checkbox" NAME="marks[{$docid}]" VALUE="{$docid}" class="lms-ui-multi-check"{if $marks.$docid} checked{/if}>
 			<div id="allattachments-{$doc.docid}" style="display: none;">
 				{foreach $doc.attachments as $docattach}
 					{if $docattach@first && $docattach.type == 1}{continue}{/if}
@@ -241,6 +241,7 @@
 					<br>
 				{/foreach}
 			</div>
+			<INPUT TYPE="checkbox" NAME="marks[{$docid}]" VALUE="{$docid}" class="lms-ui-multi-check"{if $marks.$docid} checked{/if}>
 		</TD>
 	</TR>
 	{foreachelse}
