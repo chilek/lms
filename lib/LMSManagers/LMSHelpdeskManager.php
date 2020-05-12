@@ -2007,7 +2007,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 'owner' => Auth::GetCurrentUser(), 'rights' => RT_RIGHT_INDICATOR));
             $result['verify'] = $this->GetQueueContents(array('count' => true, 'state' => 7,
                 'verifierids' => Auth::GetCurrentUser(), 'rights' => RT_RIGHT_INDICATOR));
-            $result['left'] = $this->GetQueueContents(array('count' => true, 'state' => -1, 'owner' => -3,
+            $result['left'] = $this->GetQueueContents(array('count' => true, 'state' => -1, 'owner' => Auth::GetCurrentUser(),
                 'rights' => RT_RIGHT_INDICATOR));
         }
 
