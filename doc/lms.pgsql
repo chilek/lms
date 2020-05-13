@@ -2722,7 +2722,7 @@ END
 ' LANGUAGE SQL;
 
 CREATE VIEW vaddresses AS
-    SELECT *, country_id AS countryid, city_id AS location_city, street_id AS location_street,
+    SELECT a.*, c.ccode AS ccode, country_id AS countryid, city_id AS location_city, street_id AS location_street,
         house AS location_house, flat AS location_flat,
         (TRIM(both ' ' FROM
              (CASE WHEN street IS NOT NULL THEN street ELSE city END)
@@ -2741,19 +2741,20 @@ CREATE VIEW vaddresses AS
                         ELSE (CASE WHEN flat IS NOT NULL THEN ' ' || flat ELSE '' END)
                     END)
         )) AS location
-    FROM addresses;
+    FROM addresses a
+    LEFT JOIN countries c ON c.id = a.country_id;
 
 /* ---------------------------------------------------
  Structure of view "vdivisions"
 ------------------------------------------------------*/
 CREATE VIEW vdivisions AS
     SELECT d.*,
-        a.country_id as countryid, a.zip as zip, a.city as city, a.address
+        a.country_id as countryid, a.ccode, a.zip as zip, a.city as city, a.address
     FROM divisions d
         JOIN vaddresses a ON a.id = d.address_id;
 
 CREATE VIEW vnetworks AS
-    SELECT h.name AS hostname, ne.*, no.ownerid, a.city_id as location_city,
+    SELECT h.name AS hostname, ne.*, no.ownerid, a.ccode, a.city_id as location_city,
         a.street_id as location_street, a.house as location_house, a.flat as location_flat,
         no.chkmac, inet_ntoa(ne.address) || '/' || mask2prefix(inet_aton(ne.mask)) AS ip,
         no.id AS nodeid, a.location
@@ -2779,9 +2780,11 @@ CREATE VIEW customerview AS
         cc.invoicenotice AS invoicenotice,
         cc.mailingnotice AS mailingnotice,
         cc.einvoice AS einvoice,
-        a1.country_id as countryid, a1.zip as zip, a1.city as city,
+        a1.country_id as countryid, a1.ccode,
+        a1.zip as zip, a1.city as city,
         a1.street as street,a1.house as building, a1.flat as apartment,
-        a2.country_id as post_countryid, a2.zip as post_zip,
+        a2.country_id as post_countryid, a2.ccode AS post_ccode,
+        a2.zip as post_zip,
         a2.city as post_city, a2.street as post_street, a2.name as post_name,
         a2.house as post_building, a2.flat as post_apartment,
         a1.address as address, a1.location AS full_address,
@@ -2806,8 +2809,10 @@ CREATE VIEW contractorview AS
         cc.invoicenotice AS invoicenotice,
         cc.mailingnotice AS mailingnotice,
         cc.einvoice AS einvoice,
-        a1.country_id as countryid, a1.zip as zip, a1.city as city, a1.street as street,
-        a1.house as building, a1.flat as apartment, a2.country_id as post_countryid,
+        a1.country_id as countryid, a1.ccode,
+        a1.zip as zip, a1.city as city, a1.street as street,
+        a1.house as building, a1.flat as apartment,
+        a2.country_id as post_countryid, a2.ccode AS post_ccode,
         a2.zip as post_zip, a2.city as post_city, a2.street as post_street,
         a2.house as post_building, a2.flat as post_apartment, a2.name as post_name,
         a1.address as address, a1.location AS full_address,
@@ -2828,8 +2833,10 @@ CREATE VIEW customeraddressview AS
         cc.invoicenotice AS invoicenotice,
         cc.mailingnotice AS mailingnotice,
         cc.einvoice AS einvoice,
-        a1.country_id as countryid, a1.zip as zip, a1.city as city, a1.street as street,
-        a1.house as building, a1.flat as apartment, a2.country_id as post_countryid,
+        a1.country_id as countryid, a1.ccode,
+        a1.zip as zip, a1.city as city, a1.street as street,
+        a1.house as building, a1.flat as apartment,
+        a2.country_id as post_countryid, a2.ccode AS post_ccode,
         a2.zip as post_zip, a2.city as post_city, a2.street as post_street,
         a2.house as post_building, a2.flat as post_apartment, a2.name as post_name,
         a1.address as address, a1.location AS full_address,
@@ -2857,6 +2864,7 @@ SELECT n.id, inet_ntoa(n.ipaddr) AS nasname, d.shortname, d.nastype AS type,
 
 CREATE VIEW vnodes AS
     SELECT n.*, m.mac,
+        a.ccode,
         a.city_id as location_city, a.street_id as location_street,
         a.house as location_house, a.flat as location_flat,
         a.location
@@ -2866,7 +2874,9 @@ CREATE VIEW vnodes AS
     WHERE n.ipaddr <> 0 OR n.ipaddr_pub <> 0;
 
 CREATE VIEW vmacs AS
-    SELECT n.*, m.mac, m.id AS macid, a.city_id as location_city,
+    SELECT n.*, m.mac, m.id AS macid,
+        a.ccode,
+        a.city_id as location_city,
         a.street_id as location_street, a.location,
         a.house as location_building, a.flat as location_flat
     FROM nodes n
@@ -2881,6 +2891,7 @@ CREATE VIEW vnodetariffs AS
         t.downrate_n, t.downceil_n,
         t.uprate_n, t.upceil_n,
         m.mac,
+        a.ccode,
         a.city_id as location_city, a.street_id as location_street,
         a.house as location_house, a.flat as location_flat,
         a.location
@@ -2951,6 +2962,7 @@ CREATE VIEW vnodealltariffs AS
         COALESCE(t1.up_burst_threshold_n, t2.up_burst_threshold_n, 0) AS up_burst_threshold_n,
         COALESCE(t1.up_burst_limit_n, t2.up_burst_limit_n, 0) AS up_burst_limit_n,
         m.mac,
+        a.ccode,
         a.city_id as location_city, a.street_id as location_street,
         a.house as location_house, a.flat as location_flat,
         a.location
@@ -3768,6 +3780,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020050400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020051300');
 
 COMMIT;
