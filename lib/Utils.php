@@ -137,6 +137,9 @@ class Utils
             'phpui.markdown_documentation_file',
             SYS_DIR . DIRECTORY_SEPARATOR . 'doc' . DIRECTORY_SEPARATOR . 'Zmienne-konfiguracyjne-LMS-Plus.md'
         );
+        if (!file_exists($markdown_documentation_file)) {
+            return null;
+        }
 
         if (isset($variable_name)) {
             $content = file_get_contents($markdown_documentation_file);
