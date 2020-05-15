@@ -1877,6 +1877,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 'number' => $number,
                 'template' => $this->db->GetOne('SELECT template FROM numberplans WHERE id = ?', array($invoice['invoice']['numberplanid'])),
                 'cdate' => $cdate,
+                'customerid' => $invoice['customer']['id'] ?: null,
             ));
         } else {
             $fullnumber = null;
