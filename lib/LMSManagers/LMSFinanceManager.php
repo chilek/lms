@@ -2106,7 +2106,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     {
         global $PAYTYPES;
 
-        if ($result = $this->db->GetRow('SELECT d.id, d.type AS doctype, d.number, d.name, d.customerid,
+        if ($result = $this->db->GetRow('SELECT d.id, d.type AS doctype, d.number, d.fullnumber, d.name, d.customerid,
 				d.userid, d.address, d.zip, d.city, d.countryid, cn.name AS country,
 				d.ten, d.ssn, d.cdate, d.sdate, d.paytime, d.paytype, d.splitpayment, d.numberplanid,
 				d.closed, d.cancelled, d.published, d.archived, d.comment AS comment, d.reference, d.reason, d.divisionid,
@@ -4455,6 +4455,19 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         $currtime = time();
 
+        $comment = ConfigHelper::getConfig('invoices.proforma_conversion_comment_format', '%comment');
+        $comment = str_replace(
+            array(
+                '%comment',
+                '%number',
+            ),
+            array(
+                empty($proforma['comment']) ? '' : $proforma['comment'],
+                $proforma['fullnumber'],
+            ),
+            $comment
+        );
+
         $args = array(
             'cdate' => $currtime,
             'sdate' => $currtime,
@@ -4484,7 +4497,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'div_inv_footer' => $proforma['div_inv_footer'] ?: '',
             'div_inv_author' => $proforma['div_inv_author'] ?: '',
             'div_inv_cplace' => $proforma['div_inv_cplace'] ?: '',
-            'comment' => $proforma['comment'] ?: null,
+            'comment' => strlen($comment) ? $comment : null,
             'currency' => $proforma['currency'],
             'currencyvalue' => $currencyvalues[$proforma['currencyvalue']],
             'memo' => $proforma['memo'],
