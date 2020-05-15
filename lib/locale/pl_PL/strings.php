@@ -2989,6 +2989,7 @@ $_LANG['Promotion Info: $a'] = 'Informacje o promocji: $a';
 $_LANG['Promotion name is required!'] = 'Nazwa promocji jest wymagana!';
 $_LANG['Schemas:'] = 'Schematy:';
 $_LANG['Schema\'s Tariffs ($a):'] = 'Taryfy schematu ($a)';
+$_LANG['Edit schema tariffs'] = 'Edytuj taryfy schematu';
 $_LANG['Schema Edit: $a'] = 'Edycja schematu: $a';
 $_LANG['Schema Info: $a'] = 'Informacje o schemacie: $a';
 $_LANG['Schema name is required!'] = 'Nazwa schematu jest wymagana!';
