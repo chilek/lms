@@ -1901,6 +1901,24 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $invoice['invoice']['post_address_id'] = $location_manager->CopyAddress($post_address_id);
         }
 
+        $doc_comment = $invoice['invoice']['comment'];
+        if (isset($invoice['invoice']['proformanumber'])) {
+            $comment = ConfigHelper::getConfig('invoices.proforma_conversion_comment_format', '%comment');
+            $comment = str_replace(
+                array(
+                    '%comment',
+                    '%number',
+                ),
+                array(
+                    $doc_comment,
+                    $invoice['invoice']['proformanumber'],
+                ),
+                $comment
+            );
+        } else {
+            $comment = $doc_comment;
+        }
+
         $args = array(
             'number' => $number,
             SYSLOG::RES_NUMPLAN => $invoice['invoice']['numberplanid'] ? $invoice['invoice']['numberplanid'] : null,
@@ -1936,7 +1954,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'div_inv_author' => ($division['inv_author'] ? $division['inv_author'] : ''),
             'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
             'fullnumber' => $fullnumber,
-            'comment' => $invoice['invoice']['comment'],
+            'comment' => $comment,
             'recipient_address_id' => $invoice['invoice']['recipient_address_id'],
             'post_address_id' => $invoice['invoice']['post_address_id'],
             'currency' => isset($invoice['invoice']['currency']) ? $invoice['invoice']['currency'] : LMS::$currency,
