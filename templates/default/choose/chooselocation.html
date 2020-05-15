@@ -189,6 +189,7 @@ function update_selection(type, data, selected) {
 	select.val(selected ? selected : 0).focus();
 
 	if (type == 'street') {
+		initAdvancedSelects(select);
 		$('#house,#flat').show();
 
 		if (!data.length) {
@@ -295,6 +296,7 @@ $( '#state_sel'     ).val( {$data.stateid} );
 $( '#district_sel'  ).val( {$data.districtid} );
 $( '#city_sel'      ).val( {$data.cityid} );
 $( '#street_sel'    ).val( location_box.find( "input[data-address='street-hidden']" ).val() );
+initAdvancedSelects('#street_sel');
 $( '#location-name' ).val( location_box.find( "input[data-address='location-name']" ).val() );
 
 </script>

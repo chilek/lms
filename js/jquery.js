@@ -251,6 +251,34 @@ function init_datepickers(selector) {
 	});
 }
 
+function initAdvancedSelects(selector) {
+	$(selector).each(function () {
+		if ($(this).next('.chosen-container').length) {
+			$(this).trigger('chosen:updated');
+			return;
+		}
+		$(this).on('chosen:ready', function () {
+			if (typeof ($(this).attr('required')) !== 'undefined') {
+				$(this).next().toggleClass('lms-ui-error', RegExp("^0?$").test($(this).val()));
+			}
+		});
+		$(this).chosen($.extend({
+			no_results_text: $t('No results match'),
+			placeholder_text_single: $t('Select an Option'),
+			placeholder_text_multiple: $t('Select Some Options'),
+			display_selected_options: false,
+			search_contains: true,
+			disable_search_threshold: 5,
+			inherit_select_classes: true
+		}, $(this).attr('data-options') ? JSON.parse($(this).attr('data-options')) : {}));
+		$(this).chosen().change(function (e, data) {
+			if (typeof ($(this).attr('required')) !== 'undefined') {
+				$(this).next().toggleClass('lms-ui-error', typeof (data) === 'undefined' || RegExp("^0?$").test(data.selected));
+			}
+		});
+	});
+}
+
 function init_comboboxes(selector) {
 	$(selector).each(function() {
 		$(this).scombobox($.extend({ wrap: false },
@@ -765,27 +793,7 @@ $(function() {
 		});
 	});
 
-	$('select.lms-ui-advanced-select').each(function() {
-		$(this).on('chosen:ready', function() {
-			if (typeof($(this).attr('required')) !== 'undefined') {
-				$(this).next().toggleClass('lms-ui-error', RegExp("^0?$").test($(this).val()));
-			}
-		});
-		$(this).chosen($.extend({
-			no_results_text: $t('No results match'),
-			placeholder_text_single: $t('Select an Option'),
-			placeholder_text_multiple: $t('Select Some Options'),
-			display_selected_options: false,
-			search_contains: true,
-			disable_search_threshold: 5,
-			inherit_select_classes: true
-		}, $(this).attr('data-options') ? JSON.parse($(this).attr('data-options')) : {}));
-		$(this).chosen().change(function(e, data) {
-			if (typeof($(this).attr('required')) !== 'undefined') {
-				$(this).next().toggleClass('lms-ui-error', typeof(data) === 'undefined' || RegExp("^0?$").test(data.selected));
-			}
-		});
-	});
+	initAdvancedSelects('select.lms-ui-advanced-select');
 
 	init_comboboxes('.lms-ui-combobox');
 
