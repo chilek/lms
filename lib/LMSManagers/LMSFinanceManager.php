@@ -1961,6 +1961,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'currencyvalue' => isset($invoice['invoice']['currencyvalue']) ? $invoice['invoice']['currencyvalue'] : 1.0,
             'memo' => isset($invoice['customer']['documentmemo']) && !empty($invoice['customer']['documentmemo'])
                 ? $invoice['customer']['documentmemo'] : null,
+            'reference' => isset($invoice['invoice']['proformaid']) ? $invoice['invoice']['proformaid'] : null,
         );
 
         $this->db->Execute('INSERT INTO documents (number, numberplanid, type,
@@ -1968,8 +1969,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			ten, ssn, zip, city, countryid, divisionid,
 			div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 			div_bank, div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
-			comment, recipient_address_id, post_address_id, currency, currencyvalue, memo)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			comment, recipient_address_id, post_address_id, currency, currencyvalue, memo, reference)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
         $iid = $this->db->GetLastInsertID('documents');
         if ($this->syslog) {
             unset($args[SYSLOG::RES_USER]);

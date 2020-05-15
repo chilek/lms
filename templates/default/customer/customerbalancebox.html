@@ -109,7 +109,9 @@
 					{/if}
 				{/if}
 				<TR{if $item.docid} data-published="{$item.published}" data-doctype="{$item.doctype}" data-senddate="{if $item.senddate}{$item.senddate|date_format:"%Y/%m/%d %H:%M"}{else}{$item.senddate}{/if}"
-					{if $item.doctype == $smarty.const.DOC_INVOICE_PRO} class="teal"{/if}{if $item.closed && ($item.doctype == $smarty.const.DOC_INVOICE || $item.doctype == $smarty.const.DOC_CNOTE || $item.doctype == $smarty.const.DOC_DNOTE)} class="blend"{/if}{/if}>
+					class="{if $item.doctype == $smarty.const.DOC_INVOICE_PRO} teal{if $item.referenced} transformed{/if}{/if}
+					{if $item.closed && ($item.doctype == $smarty.const.DOC_INVOICE || $item.doctype == $smarty.const.DOC_CNOTE || $item.doctype == $smarty.const.DOC_DNOTE)} blend{/if}"
+					{/if}>
 					<TD class="nobr">{$item.date}</TD>
 					<TD class="nobr">{$item.username|truncate:16:"...":true}</TD>
 					<TD class="text-right nobr">{if !$item.type}{moneyf($item.value*-1, $item.currency)}{else}-{/if}</TD>
@@ -117,7 +119,7 @@
 					<TD class="text-right nobr">{if $item.type && $item.value < 0}{moneyf($item.value*-1, $item.currency)}{else}-{/if}</TD>
 					<TD class="text-center">&raquo;</TD>
 					<TD class="text-right nobr{if $item.after < 0} red{/if}">{moneyf($item.after)}</TD>
-					<TD>{$item.comment}</TD>
+					<TD class="comment">{$item.comment}</TD>
 					<TD class="text-right nobr">
 						{foreach $item.customlinks as $link}
 							<A {if isset($link.url)} href="{$link.url}" {/if} rel="external" {if isset($link.onclick)} onclick="{$link.onclick}"{/if}>{if isset($link.icon)}<IMG src="{$link.icon}" alt="{$link.label}" {$link.tip}>{else}{$link.label}{/if}</A>

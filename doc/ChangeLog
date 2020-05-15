@@ -4,6 +4,8 @@ version 26-git (????-??-??):
 
   - enhancement: 'invoices.proforma_conversion_comment_format' allows to define comment format
     in invoice created from pro forma invoice [chilan]
+  - improvement: pro forma invoices which were transformed to regular invoice present description
+    with line-though [chilan]
 
 version 25.0 (2020-05-15):
 
