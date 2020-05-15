@@ -22,12 +22,11 @@
 <div id="location-box-autosuggest" style="display: none;"><ul></ul></div>
 
 <form name="location-search" id="location-search" method="post" action="?m=chooselocation">
-	<input type="submit" class="hiddenbtn">
 	<table id="searchtable" cellpadding="5">
 		<tr>
 			<td class="dark nobr">
 				<i class="lms-ui-icon-home"></i>
-				 <input type="text" name="searchcity" value="" size="40" onkeyup="document.search.submit();"
+				 <input type="text" name="searchcity" value="" size="40"
 						 {tip text="Enter city name"} id="location-name" class="lms-ui-quick-search-input">
 			</td>
 		</tr>
@@ -302,5 +301,9 @@ $( '#city_sel'      ).val( {$data.cityid} );
 $( '#street_sel'    ).val( location_box.find( "input[data-address='street-hidden']" ).val() );
 initAdvancedSelects('#street_sel');
 $( '#location-name' ).val( location_box.find( "input[data-address='location-name']" ).val() );
+
+$('#location-search').submit(function(e) {
+	e.preventDefault();
+});
 
 </script>
