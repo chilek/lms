@@ -1673,6 +1673,10 @@ $(function() {
 			});
 	});
 
+	$(document).on('keypress', "[data-tooltip]", function(e) {
+		$(this).tooltip('disable');
+	});
+
 	$(window).resize(function() {
 		var dropdown_buttons = $('.lms-ui-dropdown-buttons.show');
 		if (dropdown_buttons.length && parseInt($(this).outerWidth()) <= 1200) {
