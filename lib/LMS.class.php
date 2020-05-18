@@ -1230,10 +1230,10 @@ class LMS
         return $manager->GetTradeDocument($doc);
     }
 
-    public function GetInvoiceContent($invoiceid, $short = false)
+    public function GetInvoiceContent($invoiceid, $detail_level = LMSFinanceManager::INVOICE_CONTENT_DETAIL_ALL)
     {
         $manager = $this->getFinanceManager();
-        return $manager->GetInvoiceContent($invoiceid, $short);
+        return $manager->GetInvoiceContent($invoiceid, $detail_level);
     }
 
     public function GetNoteList(array $params)

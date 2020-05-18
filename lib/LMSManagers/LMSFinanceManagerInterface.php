@@ -68,7 +68,7 @@ interface LMSFinanceManagerInterface
 
     public function InvoiceContentDelete($invoiceid, $itemid = 0);
 
-    public function GetInvoiceContent($invoiceid, $short = false);
+    public function GetInvoiceContent($invoiceid, $detail_level = LMSFinanceManager::INVOICE_CONTENT_DETAIL_ALL);
 
     public function GetNoteList(array $params);
 

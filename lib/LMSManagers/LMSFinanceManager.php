@@ -30,6 +30,10 @@
  */
 class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 {
+    const INVOICE_CONTENT_DETAIL_GENERAL = 1;
+    const INVOICE_CONTENT_DETAIL_MORE = 2;
+    const INVOICE_CONTENT_DETAIL_ALL = 3;
+
     private $currency_values = array();
 
     public function GetPromotionNameBySchemaID($id)
@@ -2102,11 +2106,11 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         }
     }
 
-    public function GetInvoiceContent($invoiceid, $short = false)
+    public function GetInvoiceContent($invoiceid, $detail_level = LMSFinanceManager::INVOICE_CONTENT_DETAIL_ALL)
     {
         global $PAYTYPES;
 
-        if ($short) {
+        if ($detail_level <= self::INVOICE_CONTENT_DETAIL_MORE) {
             $result = $this->db->GetRow(
                 'SELECT d.id, d.type AS doctype, d.number, d.fullnumber, d.name, d.customerid,
 				d.userid, d.address, d.zip, d.city, d.countryid,
@@ -2180,7 +2184,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         }
 
         if ($result) {
-            if (!$short && !empty($result['recipient_address_id'])) {
+            if ($detail_level == self::INVOICE_CONTENT_DETAIL_ALL && !empty($result['recipient_address_id'])) {
                 $result['recipient_address'] = array(
                     'address_id' => $result['recipient_address_id'],
                     'location_name' => $result['rec_name'],
@@ -2214,7 +2218,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 }
             }
 
-            if (!$short) {
+            if ($detail_level >= self::INVOICE_CONTENT_DETAIL_MORE) {
                 $result['bankaccounts'] = $this->db->GetCol(
                     'SELECT contact FROM customercontacts
                     WHERE customerid = ? AND (type & ?) = ?',
@@ -2233,7 +2237,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $result['total'] = 0;
 
             if ($result['reference'] && $result['type'] != DOC_INVOICE_PRO) {
-                $result['invoice'] = $this->GetInvoiceContent($result['reference'], $short);
+                $result['invoice'] = $this->GetInvoiceContent($result['reference'], $detail_level);
                 if (isset($result['invoice']['invoice'])) {
                     // replace pointed correction note number to previous one in invoice chain
                     $result['invoice']['number'] = $result['invoice']['invoice']['number'];
@@ -2318,7 +2322,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             }
             $result['valuep'] = round(($result['value'] - floor($result['value'])) * 100);
 
-            if (!$short) {
+            if ($detail_level >= self::INVOICE_CONTENT_DETAIL_MORE) {
                 $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
                 $result['customerbalance'] = $customer_manager->GetCustomerBalance($result['customerid'], $result['cdate'] + 1);
                 // NOTE: don't waste CPU/mem when printing history is not set:
@@ -2341,7 +2345,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $result['pesel'] = $result['ssn'];
             $result['nip'] = $result['ten'];
 
-            if (!$short) {
+            if ($detail_level == self::INVOICE_CONTENT_DETAIL_ALL) {
                 if ($result['post_name'] || $result['post_address']) {
                     $result['serviceaddr'] = $result['post_name'];
                     if ($result['post_address']) {
@@ -2351,10 +2355,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         $result['serviceaddr'] .= "\n" . $result['post_zip'] . ' ' . $result['post_city'];
                     }
                 }
-
-                $result['disable_protection'] = ConfigHelper::checkConfig('invoices.disable_protection');
-                $result['protection_password'] = ConfigHelper::getConfig('invoices.protection_password');
             }
+
+            $result['disable_protection'] = ConfigHelper::checkConfig('invoices.disable_protection');
+            $result['protection_password'] = ConfigHelper::getConfig('invoices.protection_password');
 
             return $result;
         } else {

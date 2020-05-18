@@ -272,37 +272,74 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
     $datefrom = intval($_GET['from']);
     $dateto = intval($_GET['to']);
     $einvoice = intval($_GET['einvoice']);
-    $ids = $DB->GetCol(
-        'SELECT id FROM documents d
-				WHERE cdate >= ? AND cdate <= ? AND (type = ? OR type = ?) AND d.cancelled = 0'
-                .($einvoice ? ' AND d.customerid IN (SELECT id FROM customeraddressview WHERE ' . ($einvoice == 1 ? 'einvoice = 1' : 'einvoice = 0 OR einvoice IS NULL') . ')' : '')
-                .($ctype !=  -1 ? ' AND d.customerid IN (SELECT id FROM customers WHERE type = ' . intval($ctype) .')' : '')
-                .(!empty($_GET['divisionid']) ? ' AND d.divisionid = ' . intval($_GET['divisionid']) : '')
-                .(!empty($_GET['customerid']) ? ' AND d.customerid = '.intval($_GET['customerid']) : '')
-                .(!empty($_GET['numberplanid']) ? ' AND d.numberplanid' . (is_array($_GET['numberplanid'])
-                        ? ' IN (' . implode(',', Utils::filterIntegers($_GET['numberplanid'])) . ')'
-                        : ' = ' . intval($_GET['numberplanid']))
-                    : '')
-                .(!empty($_GET['autoissued']) ? ' AND d.userid IS NULL' : '')
-                .(!empty($_GET['manualissued']) ? ' AND d.userid IS NOT NULL' : '')
-                .(!empty($_GET['groupid']) ?
-                ' AND ' . (!empty($_GET['groupexclude']) ? 'NOT' : '') . '
-					EXISTS (SELECT 1 FROM customerassignments a
-					WHERE a.customerid = d.customerid AND a.customergroupid' . (is_array($_GET['groupid'])
-                        ? ' IN (' . implode(',', Utils::filterIntegers($_GET['groupid'])) . ')'
-                        : ' = ' . intval($_GET['groupid'])) . ')'
-                    : '')
-                .' AND NOT EXISTS (
-					SELECT 1 FROM customerassignments a
-					JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
-					WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)'
-                .' ORDER BY CEIL(cdate/86400), id',
+    $documents = $DB->GetAllByKey(
+        'SELECT
+            d.id, d.type,
+            cn.name AS country, n.template,
+            a.state AS rec_state, a.state_id AS rec_state_id,
+            a.city as rec_city, a.city_id AS rec_city_id,
+            a.street AS rec_street, a.street_id AS rec_street_id,
+            a.zip as rec_zip, a.postoffice AS rec_postoffice,
+            a.name as rec_name, a.address AS rec_address,
+            a.house AS rec_house, a.flat AS rec_flat, a.country_id AS rec_country_id,
+            c.pin AS customerpin, c.divisionid AS current_divisionid,
+            c.street, c.building, c.apartment,
+            (CASE WHEN d.post_address_id IS NULL THEN c.post_street ELSE a2.street END) AS post_street,
+            (CASE WHEN d.post_address_id IS NULL THEN c.post_building ELSE a2.house END) AS post_building,
+            (CASE WHEN d.post_address_id IS NULL THEN c.post_apartment ELSE a2.flat END) AS post_apartment,
+            (CASE WHEN d.post_address_id IS NULL THEN c.post_name ELSE a2.name END) AS post_name,
+            (CASE WHEN d.post_address_id IS NULL THEN c.post_address ELSE a2.address END) AS post_address,
+            (CASE WHEN d.post_address_id IS NULL THEN c.post_zip ELSE a2.zip END) AS post_zip,
+            (CASE WHEN d.post_address_id IS NULL THEN c.post_city ELSE a2.city END) AS post_city,
+            (CASE WHEN d.post_address_id IS NULL THEN c.post_postoffice ELSE a2.postoffice END) AS post_postoffice,
+            (CASE WHEN d.post_address_id IS NULL THEN c.post_countryid ELSE a2.country_id END) AS post_countryid,
+            cp.name AS post_country,
+            (CASE WHEN d.div_countryid IS NOT NULL
+                THEN (CASE WHEN d.countryid IS NULL
+                    THEN cdv.ccode
+                    ELSE cn.ccode
+                END)
+                ELSE NULL
+            END) AS lang
+        FROM documents d
+        JOIN customeraddressview c ON (c.id = d.customerid)
+        LEFT JOIN countries cn ON (cn.id = d.countryid)
+        LEFT JOIN countries cdv ON cdv.id = d.div_countryid
+        LEFT JOIN numberplans n ON (d.numberplanid = n.id)
+        LEFT JOIN vaddresses a ON d.recipient_address_id = a.id
+        LEFT JOIN vaddresses a2 ON d.post_address_id = a2.id
+        LEFT JOIN countries cp ON (d.post_address_id IS NOT NULL AND cp.id = a2.country_id) OR (d.post_address_id IS NULL AND cp.id = c.post_countryid)
+        WHERE d.cdate >= ? AND d.cdate <= ? AND (d.type = ? OR d.type = ?) AND d.cancelled = 0'
+        .($einvoice ? ' AND d.customerid IN (SELECT id FROM customeraddressview WHERE ' . ($einvoice == 1 ? 'einvoice = 1' : 'einvoice = 0 OR einvoice IS NULL') . ')' : '')
+        .($ctype !=  -1 ? ' AND d.customerid IN (SELECT id FROM customers WHERE type = ' . intval($ctype) .')' : '')
+        .(!empty($_GET['divisionid']) ? ' AND d.divisionid = ' . intval($_GET['divisionid']) : '')
+        .(!empty($_GET['customerid']) ? ' AND d.customerid = '.intval($_GET['customerid']) : '')
+        .(!empty($_GET['numberplanid']) ? ' AND d.numberplanid' . (is_array($_GET['numberplanid'])
+                ? ' IN (' . implode(',', Utils::filterIntegers($_GET['numberplanid'])) . ')'
+                : ' = ' . intval($_GET['numberplanid']))
+            : '')
+        .(!empty($_GET['autoissued']) ? ' AND d.userid IS NULL' : '')
+        .(!empty($_GET['manualissued']) ? ' AND d.userid IS NOT NULL' : '')
+        .(!empty($_GET['groupid']) ?
+        ' AND ' . (!empty($_GET['groupexclude']) ? 'NOT' : '') . '
+            EXISTS (SELECT 1 FROM customerassignments a
+            WHERE a.customerid = d.customerid AND a.customergroupid' . (is_array($_GET['groupid'])
+                ? ' IN (' . implode(',', Utils::filterIntegers($_GET['groupid'])) . ')'
+                : ' = ' . intval($_GET['groupid'])) . ')'
+            : '')
+        .' AND NOT EXISTS (
+            SELECT 1 FROM customerassignments a
+            JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+            WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)'
+        .' ORDER BY CEIL(cdate/86400), id',
+        'id',
         array($datefrom, $dateto, DOC_INVOICE, DOC_CNOTE)
     );
-    if (!$ids) {
+    if (empty($documents)) {
         $SESSION->close();
         die;
     }
+    $ids = array_keys($documents);
 
     $which = isset($_GET['which']) ? intval($_GET['which']) : 0;
     if ($which & DOC_ENTITY_DUPLICATE) {
@@ -453,6 +490,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 
         $totalvalue = 0;
         $totaltax = 0;
+        $jpkrow = 1;
     } else {
         try_generate_archive_invoices($ids);
     }
@@ -461,8 +499,11 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
     $i = 0;
 
     $invoices = array();
-    foreach ($ids as $idx => $invoiceid) {
-        $invoice = $LMS->GetInvoiceContent($invoiceid);
+    foreach ($documents as $invoiceid => $invoice) {
+        $invoice = array_merge($invoice, $LMS->GetInvoiceContent(
+            $invoiceid,
+            $jpk ? LMSFinanceManager::INVOICE_CONTENT_DETAIL_GENERAL : LMSFinanceManager::INVOICE_CONTENT_DETAIL_MORE
+        ));
         if (count($ids) == 1) {
             $docnumber = docnumber(array(
                 'number' => $invoice['number'],
@@ -490,7 +531,8 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 // JPK body positions (sale)
                 $jpk_data .= "\t<SprzedazWiersz>\n";
 
-                $jpk_data .= "\t\t<LpSprzedazy>" . ($idx + 1) . "</LpSprzedazy>\n";
+                $jpk_data .= "\t\t<LpSprzedazy>" . $jpkrow . "</LpSprzedazy>\n";
+                $jpkrow++;
                 $ten = empty($invoice['ten']) ? 'brak' : preg_replace('/[\s\-]/', '', $invoice['ten']);
                 $jpk_data .= "\t\t<NrKontrahenta>" . $ten . "</NrKontrahenta>\n";
                 $jpk_data .= "\t\t<NazwaKontrahenta>" . htmlspecialchars($invoice['name']) . "</NazwaKontrahenta>\n";

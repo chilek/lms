@@ -213,7 +213,7 @@ if ($documents) {
         switch ($doctype) {
             case DOC_INVOICE:
             case DOC_CNOTE:
-                $document = array_merge($document, $LMS->GetInvoiceContent($idx, true));
+                $document = array_merge($document, $LMS->GetInvoiceContent($idx, LMSFinanceManager::INVOICE_CONTENT_DETAIL_GENERAL));
                 break;
             case DOC_DNOTE:
                 $document = $LMS->GetNoteContent($idx);
