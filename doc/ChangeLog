@@ -6,6 +6,8 @@ version 26-git (????-??-??):
     in invoice created from pro forma invoice [chilan]
   - improvement: pro forma invoices which were transformed to regular invoice present description
     with line-though [chilan]
+  - improvement: big performance boost in invoice report generation - LMS::GetInvoiceContent()
+    gets short parameter support which allows to restrict returned data [chilan]
 
 version 25.0 (2020-05-15):
 

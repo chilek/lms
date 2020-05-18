@@ -2102,11 +2102,33 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         }
     }
 
-    public function GetInvoiceContent($invoiceid)
+    public function GetInvoiceContent($invoiceid, $short = false)
     {
         global $PAYTYPES;
 
-        if ($result = $this->db->GetRow('SELECT d.id, d.type AS doctype, d.number, d.fullnumber, d.name, d.customerid,
+        if ($short) {
+            $result = $this->db->GetRow(
+                'SELECT d.id, d.type AS doctype, d.number, d.fullnumber, d.name, d.customerid,
+				d.userid, d.address, d.zip, d.city, d.countryid,
+				d.ten, d.ssn, d.cdate, d.sdate, d.paytime, d.paytype, d.splitpayment, d.numberplanid,
+				d.closed, d.cancelled, d.published, d.archived, d.comment AS comment, d.reference, d.reason, d.divisionid,
+				n.template,
+				d.div_name AS division_name, d.div_shortname AS division_shortname,
+				d.div_address AS division_address, d.div_zip AS division_zip,
+				d.div_city AS division_city, d.div_countryid AS division_countryid,
+				d.div_ten AS division_ten, d.div_regon AS division_regon, d.div_bank AS div_bank, d.div_account AS account,
+				d.div_inv_header AS division_header, d.div_inv_footer AS division_footer,
+				d.div_inv_author AS division_author, d.div_inv_cplace AS division_cplace,
+				d.recipient_address_id, d.post_address_id,
+				d.currency, d.currencyvalue, d.memo
+				FROM documents d
+				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
+				WHERE d.id = ? AND (d.type = ? OR d.type = ? OR d.type = ?)',
+                array($invoiceid, DOC_INVOICE, DOC_CNOTE, DOC_INVOICE_PRO)
+            );
+        } else {
+            $result = $this->db->GetRow(
+                'SELECT d.id, d.type AS doctype, d.number, d.fullnumber, d.name, d.customerid,
 				d.userid, d.address, d.zip, d.city, d.countryid, cn.name AS country,
 				d.ten, d.ssn, d.cdate, d.sdate, d.paytime, d.paytype, d.splitpayment, d.numberplanid,
 				d.closed, d.cancelled, d.published, d.archived, d.comment AS comment, d.reference, d.reason, d.divisionid,
@@ -2152,8 +2174,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				LEFT JOIN vaddresses a ON d.recipient_address_id = a.id
 				LEFT JOIN vaddresses a2 ON d.post_address_id = a2.id
 				LEFT JOIN countries cp ON (d.post_address_id IS NOT NULL AND cp.id = a2.country_id) OR (d.post_address_id IS NULL AND cp.id = c.post_countryid)
-				WHERE d.id = ? AND (d.type = ? OR d.type = ? OR d.type = ?)', array($invoiceid, DOC_INVOICE, DOC_CNOTE, DOC_INVOICE_PRO))) {
-            if (!empty($result['recipient_address_id'])) {
+				WHERE d.id = ? AND (d.type = ? OR d.type = ? OR d.type = ?)',
+                array($invoiceid, DOC_INVOICE, DOC_CNOTE, DOC_INVOICE_PRO)
+            );
+        }
+
+        if ($result) {
+            if (!$short && !empty($result['recipient_address_id'])) {
                 $result['recipient_address'] = array(
                     'address_id' => $result['recipient_address_id'],
                     'location_name' => $result['rec_name'],
@@ -2187,14 +2214,16 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 }
             }
 
-            $result['bankaccounts'] = $this->db->GetCol(
-                'SELECT contact FROM customercontacts
-				WHERE customerid = ? AND (type & ?) = ?',
-                array($result['customerid'], CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
-                    CONTACT_BANKACCOUNT | CONTACT_INVOICES)
-            );
-            if (empty($result['bankaccounts'])) {
-                $result['bankaccounts'] = array();
+            if (!$short) {
+                $result['bankaccounts'] = $this->db->GetCol(
+                    'SELECT contact FROM customercontacts
+                    WHERE customerid = ? AND (type & ?) = ?',
+                    array($result['customerid'], CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
+                        CONTACT_BANKACCOUNT | CONTACT_INVOICES)
+                );
+                if (empty($result['bankaccounts'])) {
+                    $result['bankaccounts'] = array();
+                }
             }
 
             $result['pdiscount'] = 0;
@@ -2203,8 +2232,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $result['totaltax'] = 0;
             $result['total'] = 0;
 
-            if ($result['reference']) {
-                $result['invoice'] = $this->GetInvoiceContent($result['reference']);
+            if ($result['reference'] && $result['type'] != DOC_INVOICE_PRO) {
+                $result['invoice'] = $this->GetInvoiceContent($result['reference'], $short);
                 if (isset($result['invoice']['invoice'])) {
                     // replace pointed correction note number to previous one in invoice chain
                     $result['invoice']['number'] = $result['invoice']['invoice']['number'];
@@ -2289,16 +2318,18 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             }
             $result['valuep'] = round(($result['value'] - floor($result['value'])) * 100);
 
-            $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
-            $result['customerbalance'] = $customer_manager->GetCustomerBalance($result['customerid'], $result['cdate'] + 1);
-            // NOTE: don't waste CPU/mem when printing history is not set:
-            if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.print_balance_history', false))) {
-                if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.print_balance_history_save', false))) {
-                    $result['customerbalancelist'] = $customer_manager->GetCustomerBalanceList($result['customerid'], $result['cdate']);
-                } else {
-                    $result['customerbalancelist'] = $customer_manager->GetCustomerBalanceList($result['customerid']);
+            if (!$short) {
+                $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
+                $result['customerbalance'] = $customer_manager->GetCustomerBalance($result['customerid'], $result['cdate'] + 1);
+                // NOTE: don't waste CPU/mem when printing history is not set:
+                if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.print_balance_history', false))) {
+                    if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.print_balance_history_save', false))) {
+                        $result['customerbalancelist'] = $customer_manager->GetCustomerBalanceList($result['customerid'], $result['cdate']);
+                    } else {
+                        $result['customerbalancelist'] = $customer_manager->GetCustomerBalanceList($result['customerid']);
+                    }
+                    $result['customerbalancelistlimit'] = ConfigHelper::getConfig('invoices.print_balance_history_limit');
                 }
-                $result['customerbalancelistlimit'] = ConfigHelper::getConfig('invoices.print_balance_history_limit');
             }
 
             $result['paytypename'] = $PAYTYPES[$result['paytype']];
@@ -2309,18 +2340,21 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $result['month'] = date('m', $result['cdate']);
             $result['pesel'] = $result['ssn'];
             $result['nip'] = $result['ten'];
-            if ($result['post_name'] || $result['post_address']) {
-                $result['serviceaddr'] = $result['post_name'];
-                if ($result['post_address']) {
-                    $result['serviceaddr'] .= "\n" . $result['post_address'];
-                }
-                if ($result['post_zip'] && $result['post_city']) {
-                    $result['serviceaddr'] .= "\n" . $result['post_zip'] . ' ' . $result['post_city'];
-                }
-            }
 
-            $result['disable_protection'] = ConfigHelper::checkConfig('invoices.disable_protection');
-            $result['protection_password'] = ConfigHelper::getConfig('invoices.protection_password');
+            if (!$short) {
+                if ($result['post_name'] || $result['post_address']) {
+                    $result['serviceaddr'] = $result['post_name'];
+                    if ($result['post_address']) {
+                        $result['serviceaddr'] .= "\n" . $result['post_address'];
+                    }
+                    if ($result['post_zip'] && $result['post_city']) {
+                        $result['serviceaddr'] .= "\n" . $result['post_zip'] . ' ' . $result['post_city'];
+                    }
+                }
+
+                $result['disable_protection'] = ConfigHelper::checkConfig('invoices.disable_protection');
+                $result['protection_password'] = ConfigHelper::getConfig('invoices.protection_password');
+            }
 
             return $result;
         } else {
