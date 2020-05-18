@@ -736,6 +736,7 @@ $(function() {
 			items: '[data-tooltip]',
 			content: title,
 			show: false,
+			hide: false,
 			track: true,
 			classes: {
 				'ui-tooltip': tooltipClass
