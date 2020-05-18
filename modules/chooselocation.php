@@ -109,7 +109,10 @@ if (isset($_GET['ajax']) && (isset($_POST['what']) || isset($_GET['what']))) {
             JOIN location_states s ON (d.stateid = s.id)
             WHERE c.name ?LIKE? ' . $DB->Escape("%$what%") . '
             ORDER BY c.name, b.type LIMIT '
-            . intval(ConfigHelper::getConfig('phpui.autosuggest_max_length', 40)));
+            . intval(ConfigHelper::getConfig(
+                'phpui.location_autosuggest_max_length',
+                intval(ConfigHelper::getConfig('phpui.autosuggest_max_length', 40))
+            )));
 
         $result = array();
         if ($list) {
