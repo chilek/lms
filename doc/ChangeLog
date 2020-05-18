@@ -8,6 +8,8 @@ version 26-git (????-??-??):
     with line-though [chilan]
   - improvement: big performance boost in invoice report and jpk generation - LMS::GetInvoiceContent()
     gets detail level parameter support which allows to restrict returned data [chilan]
+  - improvement: 'phpui.location_autosuggest_max_length' specified maximum matched location items
+    visible in suggestion popup [chilan]
 
 version 25.0 (2020-05-15):
 
