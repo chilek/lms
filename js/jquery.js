@@ -1552,13 +1552,7 @@ $(function() {
 			$(field).closest('form').get(0),
 			input.get(0),
 			'?m=quicksearch&api=1&ajax=1&mode=' + $(field).attr('data-mode') + '&what=',
-			lmsSettings.quickSearchAutoSubmit,
-			null,
-			function () {
-				if (input.is('[data-tooltip]')) {
-					input.tooltip('close');
-				}
-			}
+			lmsSettings.quickSearchAutoSubmit
 		)
 	});
 
