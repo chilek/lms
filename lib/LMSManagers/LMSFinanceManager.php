@@ -1966,7 +1966,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'currencyvalue' => isset($invoice['invoice']['currencyvalue']) ? $invoice['invoice']['currencyvalue'] : 1.0,
             'memo' => isset($invoice['customer']['documentmemo']) && !empty($invoice['customer']['documentmemo'])
                 ? $invoice['customer']['documentmemo'] : null,
-            'reference' => isset($invoice['invoice']['proformaid']) ? $invoice['invoice']['proformaid'] : null,
+            'reference' => isset($invoice['invoice']['proformaid']) && !empty($invoice['invoice']['proformaid']) ? $invoice['invoice']['proformaid'] : null,
         );
 
         $this->db->Execute('INSERT INTO documents (number, numberplanid, type,
