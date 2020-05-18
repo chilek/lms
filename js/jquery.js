@@ -735,7 +735,7 @@ $(function() {
 		$(this).tooltip({
 			items: '[data-tooltip]',
 			content: title,
-			show: { delay: 500 },
+			show: false,
 			track: true,
 			classes: {
 				'ui-tooltip': tooltipClass
