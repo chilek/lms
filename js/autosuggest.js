@@ -276,14 +276,35 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 	/********************************************************
 	Modify the HTML in the dropdown to move the highlight.
 	********************************************************/
-	this.changeHighlight = function() {
-		$('li', this.div).each(function(i, elem) {
+	this.changeHighlight = function(key) {
+		var items = $('li', this.div);
+		items.each(function(i, elem) {
 			if (me.highlighted == i) {
 				$(elem).addClass('selected');
+
+				var meDiv = $(me.div);
+				var container_height = meDiv.height();
+				var container_top = meDiv.offset().top;
+				var elem_height = $(elem).outerHeight();
+				var elem_top = $(elem).offset().top;
+				if (key == KEYDN) {
+					if (!i) {
+						me.div.scrollTop = 0;
+					} else if (elem_top - container_top > container_height - elem_height) {
+						me.div.scrollTop += elem_height;
+					}
+				} else if (key == KEYUP) {
+					if (i == items.length - 1) {
+						me.div.scrollTop = elem_height * items.length;
+					} else {
+						if (elem_top - container_top < elem_height) {
+							me.div.scrollTop -= elem_height;
+						}
+					}
+				}
 			} else {
 				$(elem).removeClass('selected');
 			}
-
 		});
 	};
 
