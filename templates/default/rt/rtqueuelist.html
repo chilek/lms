@@ -109,6 +109,7 @@
 			{if $queue.lastticket}{$queue.lastticket|date_format:"%Y/%m/%d %H:%M:%S"}{else}-{/if}
 		</TD>
 		<TD class="lms-ui-buttons text-right nobr">
+			{button icon="add" label="Add" onclick="window.location.href = '?m=rtticketadd&amp;id={$queue.id}';"}
 			{if $queue.unread}
 			{button type="link" href="?m=rtqueueedit&id={$queue.id}&unread=0" icon="read" alt="Mark queue as read"}
 			{/if}
