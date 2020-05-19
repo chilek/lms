@@ -119,7 +119,9 @@
 					<TD class="text-right nobr">{if $item.type && $item.value < 0}{moneyf($item.value*-1, $item.currency)}{else}-{/if}</TD>
 					<TD class="text-center">&raquo;</TD>
 					<TD class="text-right nobr{if $item.after < 0} red{/if}">{moneyf($item.after)}</TD>
-					<TD class="comment">{$item.comment}</TD>
+					<TD class="comment"
+						{if $item.doctype == $smarty.const.DOC_INVOICE && !empty($item.reference) && $aggregate_documents && !empty($item.documentcomment)} title="{$item.documentcomment}"{/if}
+						>{$item.comment}</TD>
 					<TD class="text-right nobr">
 						{foreach $item.customlinks as $link}
 							<A {if isset($link.url)} href="{$link.url}" {/if} rel="external" {if isset($link.onclick)} onclick="{$link.onclick}"{/if}>{if isset($link.icon)}<IMG src="{$link.icon}" alt="{$link.label}" {$link.tip}>{else}{$link.label}{/if}</A>

@@ -10,6 +10,8 @@ version 26-git (????-??-??):
     gets detail level parameter support which allows to restrict returned data [chilan]
   - improvement: 'phpui.location_autosuggest_max_length' specified maximum matched location items
     visible in suggestion popup [chilan]
+  - improvement: customer balance box: in aggregate document mode show document comment for invoice
+    transformed from pro forma [chilan]
 
 version 25.0 (2020-05-15):
 

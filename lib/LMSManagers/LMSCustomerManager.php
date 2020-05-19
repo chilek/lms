@@ -249,6 +249,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             '(SELECT cash.id AS id, time, cash.type AS type,
                 cash.value AS value, cash.currency, cash.currencyvalue,
                 taxes.label AS tax, cash.customerid AS customerid,
+                documents.comment AS documentcomment, document.reference,
                 cash.comment, docid, vusers.name AS username,
                 documents.type AS doctype, documents.closed AS closed,
                 documents.published, documents.senddate, documents.archived, cash.importid,
@@ -264,20 +265,21 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             . ($totime ? ' AND time <= ' . intval($totime) : '') . ')
             UNION
             (SELECT ic.itemid AS id, d.cdate AS time, 0 AS type,
-            		(-ic.value * ic.count) AS value, d.currency, d.currencyvalue, NULL AS tax, d.customerid,
-            		ic.description AS comment, d.id AS docid, vusers.name AS username,
-            		d.type AS doctype, d.closed AS closed,
-            		d.published, d.senddate, 0 AS archived, NULL AS importid,
-            		(CASE WHEN d3.reference IS NULL THEN 0 ELSE 1 END) AS referenced,
-            		d.cdate, d.number, numberplans.template
-            	FROM documents d
-            	JOIN invoicecontents ic ON ic.docid = d.id
-            	LEFT JOIN (
-            	    SELECT DISTINCT reference FROM documents
-            	) d3 ON d3.reference = d.id
-            	JOIN numberplans ON numberplans.id = d.numberplanid
-            	LEFT JOIN vusers ON vusers.id = d.userid
-            	WHERE ' . (ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment') ? '1=0 AND' : '')
+                    (-ic.value * ic.count) AS value, d.currency, d.currencyvalue, NULL AS tax, d.customerid,
+                    d.comment AS documentcomment, d.reference,
+                    ic.description AS comment, d.id AS docid, vusers.name AS username,
+                    d.type AS doctype, d.closed AS closed,
+                    d.published, d.senddate, 0 AS archived, NULL AS importid,
+                    (CASE WHEN d3.reference IS NULL THEN 0 ELSE 1 END) AS referenced,
+                    d.cdate, d.number, numberplans.template
+                FROM documents d
+                JOIN invoicecontents ic ON ic.docid = d.id
+                LEFT JOIN (
+                    SELECT DISTINCT reference FROM documents
+                ) d3 ON d3.reference = d.id
+                JOIN numberplans ON numberplans.id = d.numberplanid
+                LEFT JOIN vusers ON vusers.id = d.userid
+                WHERE ' . (ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment') ? '1=0 AND' : '')
                 . ' d.customerid = ? AND d.type = ?'
                 . ($totime ? ' AND d.cdate <= ' . intval($totime) : '') . ')
             ORDER BY time ' . $direction . ', id',
