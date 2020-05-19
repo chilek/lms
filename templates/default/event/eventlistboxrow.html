@@ -58,9 +58,9 @@
                 <i class="lms-ui-icon-clipboard"></i>
             </a>
             {if $imadded}
-                {button type="link" icon="owner" onclick="location.href = '?m=eventedit&id={$event.id}&action=unassign&backid=' + $(this).closest('.event-day-table').attr('id');" tip="Unassign"}
+                {button type="link" icon="owner" onclick="location.href = '?m=eventedit&id={$event.id}&action=unassign&backid=' + $(this).closest('.event-day-table').attr('id');" tip="<!event>Unassign"}
             {else}
-                {button type="link" icon="owner" onclick="location.href = '?m=eventedit&id={$event.id}&action=assign&backid=' + $(this).closest('.event-day-table').attr('id');" tip="Assign"}
+                {button type="link" icon="owner" onclick="location.href = '?m=eventedit&id={$event.id}&action=assign&backid=' + $(this).closest('.event-day-table').attr('id');" tip="<!event>Assign"}
             {/if}
             {if ConfigHelper::checkPrivilege('timetable_management')}
             {if $event.closed}
