@@ -249,7 +249,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             '(SELECT cash.id AS id, time, cash.type AS type,
                 cash.value AS value, cash.currency, cash.currencyvalue,
                 taxes.label AS tax, cash.customerid AS customerid,
-                documents.comment AS documentcomment, document.reference,
+                documents.comment AS documentcomment, documents.reference,
                 cash.comment, docid, vusers.name AS username,
                 documents.type AS doctype, documents.closed AS closed,
                 documents.published, documents.senddate, documents.archived, cash.importid,
