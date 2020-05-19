@@ -12,6 +12,7 @@ version 26-git (????-??-??):
     visible in suggestion popup [chilan]
   - improvement: customer balance box: in aggregate document mode show document comment for invoice
     transformed from pro forma [chilan]
+  - improvement: allow to manipulate ticket categories during new note add [chilan]
 
 version 25.0 (2020-05-15):
 

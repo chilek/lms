@@ -192,6 +192,30 @@
 			{/if}
 		</TD>
 	</TR>
+
+	<TR>
+		<td class="bold nobr">
+			<i class="lms-ui-icon-queue"></i> {trans("Category changes:")}
+		</td>
+		<td>
+			<SELECT name="note[category_change]" {tip text="Select category change type" trigger="category_change"}>
+				<option value="0"{if $note.category_change == 0} selected{/if}>{trans("- no changes -")}</option>
+				<option value="1"{if $note.category_change == 1} selected{/if}>{trans("- replace -")}</option>
+				<option value="2"{if $note.category_change == 2} selected{/if}>{trans("- append -")}</option>
+				<option value="3"{if $note.category_change == 3} selected{/if}>{trans("- remove -")}</option>
+			</SELECT>
+		</td>
+	</TR>
+
+	<TR id="categories">
+		<td class="bold nobr">
+			<i class="lms-ui-icon-categories"></i> {trans("Categories:")}
+		</td>
+		<td>
+			{include file="rt/rtcategoryselection.html" name_prefix="note[categories]" categories=$categories}
+		</td>
+	</TR>
+
     </TBODY>
 </TABLE>
 </FORM>
@@ -202,6 +226,14 @@
 
 	$(function() {
 		$('form[name="note"] [name="note[body]"]').focus();
+
+		$('[name="note[category_change]"]').change(function() {
+			if (parseInt($(this).val())) {
+				$('#categories').show();
+			} else {
+				$('#categories').hide();
+			}
+		}).change();
 
 		$('#resolve').change(function() {
 			var stateelem = $('#state');

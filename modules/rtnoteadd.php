@@ -30,6 +30,11 @@ $LMS->InitXajax();
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'rtnotexajax.inc.php');
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
+$categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
+if (empty($categories)) {
+    $categories = array();
+}
+
 if (isset($_GET['ticketid'])) {
     $note['ticketid'] = intval($_GET['ticketid']);
 
@@ -44,11 +49,14 @@ if (isset($_GET['ticketid'])) {
     $note['inreplyto'] = $reply['id'];
     $note['references'] = implode(' ', $reply['references']);
 
+    $note['category_change'] = 0;
+
     if (ConfigHelper::checkConfig('phpui.helpdesk_notify')) {
         $note['notify'] = true;
     }
 
     $ticket = $LMS->GetTicketContents($note['ticketid']);
+    $note['categories'] = $ticket['categories'];
 } elseif (isset($_POST['note'])) {
     $note = $_POST['note'];
 
@@ -98,6 +106,8 @@ if (isset($_GET['ticketid'])) {
     if (!$error) {
         $messageid = '<msg.' . $ticket['queueid'] . '.' . $note['ticketid'] . '.'  . time() . '@rtsystem.' . gethostname() . '>';
 
+        $note['categories'] = is_array($note['categories']) ? array_flip($note['categories']) : array();
+
         $attachments = null;
         if (!empty($files)) {
             foreach ($files as &$file) {
@@ -133,6 +143,12 @@ if (isset($_GET['ticketid'])) {
             'verifierid' => empty($note['verifierid']) ? null : $note['verifierid'],
             'deadline' => empty($note['deadline']) ? null : $deadline,
         );
+
+        if ($note['category_change']) {
+            $props['category_change'] = $note['category_change'];
+            $props['categories'] = isset($note['categories']) ? array_keys($note['categories']) : array();
+        }
+
         $LMS->TicketChange($note['ticketid'], $props);
 
         if (isset($note['notify'])) {
@@ -235,6 +251,10 @@ if (isset($_GET['ticketid'])) {
             $SESSION->redirect('?' . $backto);
         }
     }
+
+    if (!empty($note['categories'])) {
+        $note['categories'] = array_flip($note['categories']);
+    }
 } else {
     $SESSION->redirect('?m=rtqueuelist');
 }
@@ -252,6 +272,12 @@ if (!isset($_POST['note'])) {
     }
 }
 
+foreach ($categories as &$category) {
+    $category['checked'] = isset($note['categories'][$category['id']]);
+}
+unset($category);
+
+$SMARTY->assign('categories', $categories);
 $SMARTY->assign('note', $note);
 $SMARTY->assign('userlist', $LMS->GetUserNames());
 $SMARTY->assign('queuelist', $LMS->LimitQueuesToUserpanelEnabled($LMS->GetQueueList(array('stats' => false)), $note['queueid']));
