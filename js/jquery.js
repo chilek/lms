@@ -1615,7 +1615,7 @@ $(function() {
 */
 
 	$(document).click(function(e) {
-		if (!$(e.target).is('.lms-ui-dropdown-toggle')) {
+		if (!$(e.target).is('.lms-ui-dropdown-toggle') && !$(e.target).closest('.lms-ui-dropdown-toggle').length) {
 			$('.lms-ui-dropdown-buttons').removeClass('show');
 		}
 

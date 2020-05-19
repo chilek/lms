@@ -109,18 +109,20 @@
 			{if $queue.lastticket}{$queue.lastticket|date_format:"%Y/%m/%d %H:%M:%S"}{else}-{/if}
 		</TD>
 		<TD class="lms-ui-buttons text-right nobr">
-			{button type="link" icon="add" tip="Add" onclick="window.location.href = '?m=rtticketadd&amp;id={$queue.id}';"}
-			{if $queue.unread}
-			{button type="link" href="?m=rtqueueedit&id={$queue.id}&unread=0" icon="read" tip="Mark queue as read"}
-			{/if}
-			{if $queue.deleted == 1 && $queue.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
-			{button type="link" href="?m=rtrestore&id={$queue.id}&qaction=restore" icon="reload" tip="Restore<!RT>"}
-			{button type="link" href="?m=rtremove&id={$queue.id}&qaction=delperm" icon="delete" tip="Delete permanently" class="remove-rtqueue"}
-			{else}
-			{button type="link" href="?m=rtqueuedel&id={$queue.id}&amp;qaction=delete" icon="delete" tip="Delete" class="delete-rtqueue"}
-			{/if}
-			{button type="link" href="?m=rtqueueedit&amp;id={$queue.id}" icon="edit" tip="Edit" class="edit-rtqueue"}
-			{button type="link" href="?m=rtqueueinfo&amp;id={$queue.id}" icon="info" tip="Info" class="info-rtqueue"}
+			{buttons}
+				{button type="link" icon="add" tip="Add" onclick="window.location.href = '?m=rtticketadd&amp;id={$queue.id}';"}
+				{if $queue.unread}
+				{button type="link" href="?m=rtqueueedit&id={$queue.id}&unread=0" icon="read" tip="Mark queue as read"}
+				{/if}
+				{if $queue.deleted == 1 && $queue.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
+				{button type="link" href="?m=rtrestore&id={$queue.id}&qaction=restore" icon="reload" tip="Restore<!RT>"}
+				{button type="link" href="?m=rtremove&id={$queue.id}&qaction=delperm" icon="delete" tip="Delete permanently" class="remove-rtqueue"}
+				{else}
+				{button type="link" href="?m=rtqueuedel&id={$queue.id}&amp;qaction=delete" icon="delete" tip="Delete" class="delete-rtqueue"}
+				{/if}
+				{button type="link" href="?m=rtqueueedit&amp;id={$queue.id}" icon="edit" tip="Edit" class="edit-rtqueue"}
+				{button type="link" href="?m=rtqueueinfo&amp;id={$queue.id}" icon="info" tip="Info" class="info-rtqueue"}
+			{/buttons}
 		</TD>
 	</TR>
 	{foreachelse}
