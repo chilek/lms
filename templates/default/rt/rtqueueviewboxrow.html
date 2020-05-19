@@ -85,7 +85,7 @@
 		{if $ticket.eventcountopened}<A href="?m=eventsearch&ticketid={$ticket.id}">{$ticket.eventcountopened} </A>{else}- {/if}/
 		{if $ticket.eventcountclosed}<A href="?m=eventsearch&ticketid={$ticket.id}"> {$ticket.eventcountclosed}</A>{else} -{/if}
 	</TD>
-	<TD class="lms-ui-buttons lms-ui-responsive-buttons nobr text-right">
+	<TD class="lms-ui-buttons nobr text-right">
 		{buttons}
 			{if $ticket.state != $smarty.const.RT_RESOLVED}
 				{if !$ticket.unread}

@@ -726,7 +726,7 @@ class LMSSmartyPlugins
     public static function blockButtons($params, $content, $template, $repeat)
     {
         if (!$repeat) {
-            return self::buttonFunction(
+            return '<div class="lms-ui-responsive-buttons">' . self::buttonFunction(
                 array(
                     'type' => 'link',
                     'icon' => isset($params['icon']) ? $params['icon'] : 'configuration',
@@ -735,7 +735,7 @@ class LMSSmartyPlugins
                 $template
             ) . '<div class="lms-ui-dropdown-buttons">'
                 . $content
-                . '</div>';
+                . '</div></div>';
         } else {
             return '';
         }
