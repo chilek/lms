@@ -1902,6 +1902,7 @@ if (isset($_GET['l']) && sprintf('%d', $_GET['l']) > 0 && sprintf('%d', $_GET['l
     $DB->Execute('INSERT INTO taxes (label, value, taxed) VALUES(?,?,?)', array('tax-free', 0, 0));
     $DB->Execute('INSERT INTO taxes (label, value, taxed) VALUES(?,?,?)', array('7%', 7, 1));
     $DB->Execute('INSERT INTO taxes (label, value, taxed) VALUES(?,?,?)', array('22%', 22, 1));
+    $DB->Execute('INSERT INTO taxes (label, value, taxed) VALUES(?,?,?)', array('23%', 23, 1));
 
     echo ' [OK]<BR>';
     echo '<B>'.trans('Generating subscriptions...').'</B>';
@@ -1918,7 +1919,7 @@ if (isset($_GET['l']) && sprintf('%d', $_GET['l']) > 0 && sprintf('%d', $_GET['l
                 'sh_limit' => 0, 'www_limit' => 0, 'mail_limit' => 0, 'sql_limit' => 0, 'ftp_limit' => 0,
                 'quota_sh_limit' => 0, 'quota_www_limit' => 0, 'quota_mail_limit' => 0, 'quota_sql_limit' => 0, 'quota_ftp_limit' => 0,
                 'domain_limit' => 0, 'alias_limit' => 0,
-                'type' => SERVICE_INTERNET, 'authtype' => 0);
+                'type' => SERVICE_INTERNET, 'authtype' => 0, 'taxcategory' => 0);
     $t1 = $LMS->TariffAdd($tariffdata);
     $tariffdata = array( 'name' => 'Standart', 'description' => 'Standart Tariff',
                 'value' => '60', 'taxid' => '2', 'prodid' => '',
@@ -1932,7 +1933,7 @@ if (isset($_GET['l']) && sprintf('%d', $_GET['l']) > 0 && sprintf('%d', $_GET['l
                 'sh_limit' => 0, 'www_limit' => 0, 'mail_limit' => 0, 'sql_limit' => 0, 'ftp_limit' => 0,
                 'quota_sh_limit' => 0, 'quota_www_limit' => 0, 'quota_mail_limit' => 0, 'quota_sql_limit' => 0, 'quota_ftp_limit' => 0,
                 'domain_limit' => 0, 'alias_limit' => 0,
-                'type' => SERVICE_INTERNET, 'authtype' => 0);
+                'type' => SERVICE_INTERNET, 'authtype' => 0, 'taxcategory' => 0);
     $t2 = $LMS->TariffAdd($tariffdata);
     $tariffdata = array( 'name' => 'Gold', 'description' => 'Gold Tariff',
                 'value' => '120', 'taxid' => '3', 'prodid' => '',
@@ -1946,7 +1947,7 @@ if (isset($_GET['l']) && sprintf('%d', $_GET['l']) > 0 && sprintf('%d', $_GET['l
                 'sh_limit' => 0, 'www_limit' => 0, 'mail_limit' => 0, 'sql_limit' => 0, 'ftp_limit' => 0,
                 'quota_sh_limit' => 0, 'quota_www_limit' => 0, 'quota_mail_limit' => 0, 'quota_sql_limit' => 0, 'quota_ftp_limit' => 0,
                 'domain_limit' => 0, 'alias_limit' => 0,
-                'type' => SERVICE_INTERNET, 'authtype' => 0);
+                'type' => SERVICE_INTERNET, 'authtype' => 0, 'taxcategory' => 0);
     $t3 = $LMS->TariffAdd($tariffdata);
     echo ($t1 && $t2 && $t3) ? ' [OK]<BR>' : ' <span style="color: red;">[FAIL]</span><br>';
 
@@ -2097,11 +2098,13 @@ if (isset($_GET['l']) && sprintf('%d', $_GET['l']) > 0 && sprintf('%d', $_GET['l
     echo '<B>'.trans('Generating network hardware and connections...').'</B>';
     flush();
     $nodes = $DB->GetOne('SELECT count(id) FROM vnodes');
+    $owners = $DB->GetOne('SELECT count(id) FROM customers');
     $sprod = count($producer);
     $i = 0;
     while ($nodes) {
         $i++;
         $prod = mt_rand(0, $sprod-1);
+        $owner = mt_rand(0, $owners-1);
         $LMS->NetDevAdd(array(
             'name'         => 'SWITCH_'.$i,
             'location'     => $streets[mt_rand(0, $ssize-1)].' '.mt_rand(1, 50),
@@ -2119,6 +2122,7 @@ if (isset($_GET['l']) && sprintf('%d', $_GET['l']) > 0 && sprintf('%d', $_GET['l
             'community'    => '',
             'clients'      => 0,
             'status'       => 0,
+            'ownerid'      => $owner,
         ));
         $ports = mt_rand(4, 14);
         for ($j = 0; $j < $ports; $j++) {
@@ -2190,6 +2194,7 @@ if (isset($_GET['l']) && sprintf('%d', $_GET['l']) > 0 && sprintf('%d', $_GET['l
                 $contents['valuebrutto'] = 100+$n*10+$n*0.1;
                 $contents['pdiscount'] = 0;
                 $contents['vdiscount'] = 0;
+                $contents['taxcategory'] = 0;
                 $inv['cdate'] += 86400;
 
                 foreach ($customers as $c) {
