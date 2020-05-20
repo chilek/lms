@@ -504,15 +504,17 @@
 		}
 	{/if}
 
-	$('#delete-button').click(function() {
-		confirmDialog($t("Are you sure, you want to remove customer '$a' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!", "{$customerinfo.customername|escape}"), this).done(function() {
-			location.href = $(this).attr('href');
+	$(function() {
+		$('#delete-button').click(function() {
+			confirmDialog($t("Are you sure, you want to remove customer '$a' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!", "{$customerinfo.customername|escape}"), this).done(function() {
+				location.href = $(this).attr('href');
+			});
 		});
-	});
 
-	$('#remove-button').click(function() {
-		confirmDialog($t("Do you want to permanently remove $a customer?", "{$customerinfo.customername|escape}"), this).done(function() {
-			location.href = $(this).attr('href');
+		$('#remove-button').click(function() {
+			confirmDialog($t("Do you want to permanently remove $a customer?", "{$customerinfo.customername|escape}"), this).done(function() {
+				location.href = $(this).attr('href');
+			});
 		});
 	});
 
