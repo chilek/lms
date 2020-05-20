@@ -470,7 +470,7 @@
 			{block name="customerinfobox-buttons"}
 			{if $customerinfo.deleted}
 				{if ConfigHelper::checkPrivilege('permanent_customer_removal')}
-					{button id="remove-button" icon="remove" label="Remove permanently" onclick="location.href = '?m=customerdel&id={$customerinfo.id}&type=permanent';"}
+					{button id="remove-button" icon="remove" label="Remove permanently" href="?m=customerdel&id={$customerinfo.id}&type=permanent"}
 				{/if}
 				{button id="restore-button" icon="restore" label="Restore" onclick="location.href = '?m=customeredit&id={$customerinfo.id}&action=recover';"}
 			{else}
@@ -485,7 +485,7 @@
 					href="?m=trafficprint&type=customertraffic&customer={$customerinfo.id}"}
 				{button type="link-button" id="edit-button" icon="edit" label="Edit" href="?m=customeredit&id={$customerinfo.id}"}
 				{if ConfigHelper::checkPrivilege('customer_removal')}
-					{button id="delete-button" icon="delete" label="Delete" onclick="location.href = '?m=customerdel&id={$customerinfo.id}';"}
+					{button id="delete-button" icon="delete" label="Delete" href="?m=customerdel&id={$customerinfo.id}"}
 				{/if}
 			{/if}
 			{if $info_link}
@@ -496,13 +496,24 @@
 	</TR>
 	</TBODY>
 </TABLE>
-{if $customerpanel}
-<SCRIPT type="text/javascript">
-<!--
-	if (getCookie('customerpanel') == '1')
-	{
-		document.getElementById('customerpanel').style.display = '';
-	}
-//-->
-</SCRIPT>
-{/if}
+<script>
+
+	{if $customerpanel}
+		if (getCookie('customerpanel') == '1') {
+			('#customerpanel').show();
+		}
+	{/if}
+
+	$('#delete-button').click(function() {
+		confirmDialog($t("Are you sure, you want to remove customer '$a' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!", "{$customerinfo.customername|escape}"), this).done(function() {
+			location.href = $(this).attr('href');
+		});
+	});
+
+	$('#remove-button').click(function() {
+		confirmDialog($t("Do you want to permanently remove $a customer?", "{$customerinfo.customername|escape}"), this).done(function() {
+			location.href = $(this).attr('href');
+		});
+	});
+
+</script>
