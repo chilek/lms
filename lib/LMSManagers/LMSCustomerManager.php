@@ -1577,6 +1577,18 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         global $LMS;
 
         $disable_customer_contacts = ConfigHelper::checkConfig('phpui.disable_contacts_during_customer_delete');
+        $delete_related_resources = preg_split(
+            '/[\s\.,;]+/',
+            ConfigHelper::getConfig(
+                'phpui.delete_related_customer_resources',
+                'assignments,customergroups,nodegroups,nodes,userpanel'
+            ),
+            -1,
+            PREG_SPLIT_NO_EMPTY
+        );
+        if (empty($delete_related_resources)) {
+            $delete_related_resources = array();
+        }
 
         $this->db->BeginTrans();
 
@@ -1589,48 +1601,54 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 SYSLOG::OPER_UPDATE,
                 array(SYSLOG::RES_CUST => $id, 'deleted' => 1)
             );
-            $assigns = $this->db->GetAll('SELECT id, customergroupid FROM customerassignments WHERE customerid = ?', array($id));
-            if (!empty($assigns)) {
-                foreach ($assigns as $assign) {
-                    $args = array(
-                    SYSLOG::RES_CUSTASSIGN => $assign['id'],
-                    SYSLOG::RES_CUST => $id,
-                    SYSLOG::RES_CUSTGROUP => $assign['customergroupid']
-                    );
-                    $this->syslog->AddMessage(SYSLOG::RES_CUSTASSIGN, SYSLOG::OPER_DELETE, $args);
+            if (in_array('customergroups', $delete_related_resources)) {
+                $assigns = $this->db->GetAll('SELECT id, customergroupid FROM customerassignments WHERE customerid = ?', array($id));
+                if (!empty($assigns)) {
+                    foreach ($assigns as $assign) {
+                        $args = array(
+                            SYSLOG::RES_CUSTASSIGN => $assign['id'],
+                            SYSLOG::RES_CUST => $id,
+                            SYSLOG::RES_CUSTGROUP => $assign['customergroupid']
+                        );
+                        $this->syslog->AddMessage(SYSLOG::RES_CUSTASSIGN, SYSLOG::OPER_DELETE, $args);
+                    }
                 }
             }
         }
 
-        $this->db->Execute('DELETE FROM customerassignments WHERE customerid=?', array($id));
+        if (in_array('customergroups', $delete_related_resources)) {
+            $this->db->Execute('DELETE FROM customerassignments WHERE customerid=?', array($id));
+        }
 
         if ($this->syslog) {
-            $assigns = $this->db->GetAll('SELECT id, tariffid, liabilityid FROM assignments WHERE customerid = ?', array($id));
-            if (!empty($assigns)) {
-                foreach ($assigns as $assign) {
-                    if ($assign['liabilityid']) {
-                        $args = array(
-                        SYSLOG::RES_LIAB => $assign['liabilityid'],
-                        SYSLOG::RES_CUST => $id);
-                        $this->syslog->AddMessage(SYSLOG::RES_LIAB, SYSLOG::OPER_DELETE, $args);
-                    }
-                    $args = array(
-                    SYSLOG::RES_ASSIGN => $assign['id'],
-                    SYSLOG::RES_TARIFF => $assign['tariffid'],
-                    SYSLOG::RES_LIAB => $assign['liabilityid'],
-                    SYSLOG::RES_CUST => $id
-                    );
-                    $this->syslog->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_DELETE, $args);
-                    $nodeassigns = $this->db->GetAll('SELECT id, nodeid FROM nodeassignments WHERE assignmentid = ?', array($assign['id']));
-                    if (!empty($nodeassigns)) {
-                        foreach ($nodeassigns as $nodeassign) {
+            if (in_array('assignments', $delete_related_resources)) {
+                $assigns = $this->db->GetAll('SELECT id, tariffid, liabilityid FROM assignments WHERE customerid = ?', array($id));
+                if (!empty($assigns)) {
+                    foreach ($assigns as $assign) {
+                        if ($assign['liabilityid']) {
                             $args = array(
-                            SYSLOG::RES_NODEASSIGN => $nodeassign['id'],
-                            SYSLOG::RES_NODE => $nodeassign['nodeid'],
+                                SYSLOG::RES_LIAB => $assign['liabilityid'],
+                                SYSLOG::RES_CUST => $id);
+                            $this->syslog->AddMessage(SYSLOG::RES_LIAB, SYSLOG::OPER_DELETE, $args);
+                        }
+                        $args = array(
                             SYSLOG::RES_ASSIGN => $assign['id'],
+                            SYSLOG::RES_TARIFF => $assign['tariffid'],
+                            SYSLOG::RES_LIAB => $assign['liabilityid'],
                             SYSLOG::RES_CUST => $id
-                            );
-                            $this->syslog->AddMessage(SYSLOG::RES_NODEASSIGN, SYSLOG::OPER_DELETE, $args);
+                        );
+                        $this->syslog->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_DELETE, $args);
+                        $nodeassigns = $this->db->GetAll('SELECT id, nodeid FROM nodeassignments WHERE assignmentid = ?', array($assign['id']));
+                        if (!empty($nodeassigns)) {
+                            foreach ($nodeassigns as $nodeassign) {
+                                $args = array(
+                                    SYSLOG::RES_NODEASSIGN => $nodeassign['id'],
+                                    SYSLOG::RES_NODE => $nodeassign['nodeid'],
+                                    SYSLOG::RES_ASSIGN => $assign['id'],
+                                    SYSLOG::RES_CUST => $id
+                                );
+                                $this->syslog->AddMessage(SYSLOG::RES_NODEASSIGN, SYSLOG::OPER_DELETE, $args);
+                            }
                         }
                     }
                 }
@@ -1650,16 +1668,19 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             }
         }
 
-        $liabs = $this->db->GetCol('SELECT liabilityid FROM assignments WHERE liabilityid IS NOT NULL AND customerid = ?', array($id));
-        if (!empty($liabs)) {
-            $this->db->Execute('DELETE FROM liabilities WHERE id IN (' . implode(',', $liabs) . ')');
+        if (in_array('assignments', $delete_related_resources)) {
+            $liabs = $this->db->GetCol('SELECT liabilityid FROM assignments WHERE liabilityid IS NOT NULL AND customerid = ?', array($id));
+            if (!empty($liabs)) {
+                $this->db->Execute('DELETE FROM liabilities WHERE id IN (' . implode(',', $liabs) . ')');
+            }
+
+            $this->db->Execute('DELETE FROM assignments WHERE customerid=?', array($id));
         }
 
-        $this->db->Execute('DELETE FROM assignments WHERE customerid=?', array($id));
         // nodes
         $nodes = $this->db->GetCol('SELECT id FROM vnodes WHERE ownerid=?', array($id));
         if ($nodes) {
-            if ($this->syslog) {
+            if ($this->syslog && in_array('nodes', $delete_related_resources)) {
                 $macs = $this->db->GetAll('SELECT id, nodeid FROM macs WHERE nodeid IN (' . implode(',', $nodes) . ')');
                 foreach ($macs as $mac) {
                     $args = array(
@@ -1676,14 +1697,19 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 }
             }
 
-            $this->db->Execute('DELETE FROM nodegroupassignments WHERE nodeid IN (' . join(',', $nodes) . ')');
-            $plugin_data = array();
-            foreach ($nodes as $node) {
-                $plugin_data[] = array('id' => $node, 'ownerid' => $id);
+            if (in_array('nodegroups', $delete_related_resources)) {
+                $this->db->Execute('DELETE FROM nodegroupassignments WHERE nodeid IN (' . join(',', $nodes) . ')');
             }
-            $LMS->ExecHook('node_del_before', $plugin_data);
-            $this->db->Execute('DELETE FROM nodes WHERE ownerid=?', array($id));
-            $LMS->ExecHook('node_del_after', $plugin_data);
+
+            if (in_array('nodes', $delete_related_resources)) {
+                $plugin_data = array();
+                foreach ($nodes as $node) {
+                    $plugin_data[] = array('id' => $node, 'ownerid' => $id);
+                }
+                $LMS->ExecHook('node_del_before', $plugin_data);
+                $this->db->Execute('DELETE FROM nodes WHERE ownerid=?', array($id));
+                $LMS->ExecHook('node_del_after', $plugin_data);
+            }
         }
 
         // hosting
@@ -1697,10 +1723,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             );
         }
 
-        // Remove Userpanel rights
-        $userpanel_dir = ConfigHelper::getConfig('directories.userpanel_dir');
-        if (!empty($userpanel_dir)) {
-            $this->db->Execute('DELETE FROM up_rights_assignments WHERE customerid=?', array($id));
+        if (in_array('userpanel', $delete_related_resources)) {
+            // Remove Userpanel rights
+            $userpanel_dir = ConfigHelper::getConfig('directories.userpanel_dir');
+            if (!empty($userpanel_dir)) {
+                $this->db->Execute('DELETE FROM up_rights_assignments WHERE customerid=?', array($id));
+            }
         }
 
         $this->db->CommitTrans();
