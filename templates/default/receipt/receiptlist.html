@@ -70,7 +70,7 @@
 			<A href="?m=receiptlist&o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}">{trans("For:")}</A> {if $listdata.order == "name"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="50%" nowrap>
-			{trans("Title:")}
+			{trans("Positions:")}
 		</TD>
 		<TD WIDTH="1%" class="text-right nobr">
 			<A href="?m=receiptadd&type=in&action=init&regid={$listdata.regid}">{trans("New Cash-in Receipt")} <img src="img/save.gif" alt=""></A><BR>
@@ -131,9 +131,11 @@
 			{if $receipt.customerid}</A>{/if}
 		</TD>
 		<TD WIDTH="50%"{if !$receipt.closed} class="lms-ui-alert"{/if}>
-			{if $receipt.title}
-			{$receipt.title|truncate:"80":"...":true}
-			{/if}
+			{foreach $receipt.positions as $position}
+				{$position.description|truncate:"80":"...":true}
+				({moneyf($position.value, $receipt.currency)})
+				{if !$position@last}<br>{/if}
+			{/foreach}
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
 			{if !$receipt.closed}

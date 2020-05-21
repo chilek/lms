@@ -3732,7 +3732,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         if ($list = $this->db->GetAll(
             'SELECT documents.id AS id, SUM(value) AS value, currency, currencyvalue, number, cdate, customerid,
 			documents.name AS customer, address, zip, city, numberplans.template, extnumber, closed,
-			MIN(description) AS title, COUNT(*) AS posnumber, vusers.rname AS user
+			COUNT(*) AS posnumber, vusers.rname AS user
 			FROM documents
 			LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 			LEFT JOIN vusers ON (userid = vusers.id)
@@ -3747,22 +3747,22 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             . (isset($offset) ? ' OFFSET ' . $offset : ''),
             array(DOC_RECEIPT, $registry)
         )) {
-            foreach ($list as $idx => $row) {
-                $list[$idx]['number'] = docnumber(array(
+            foreach ($list as $idx => &$row) {
+                $row['number'] = docnumber(array(
                     'number' => $row['number'],
                     'template' => $row['template'],
                     'cdate' => $row['cdate'],
                     'ext_num' => $row['extnumber'],
                     'customerid' => $row['customerid'],
                 ));
-                $list[$idx]['customer'] = $row['customer'].' '.$row['address'].' '.$row['zip'].' '.$row['city'];
+                $row['customer'] = $row['customer'].' '.$row['address'].' '.$row['zip'].' '.$row['city'];
 
-                // don't retrive descriptions of all items to not decrease speed
-                // but we want to know that there is something hidden ;)
-                if ($row['posnumber'] > 1) {
-                    $list[$idx]['title'] .= ' ...';
-                }
+                $row['positions'] = $this->db->GetAll(
+                    'SELECT * FROM receiptcontents WHERE docid = ? ORDER BY itemid',
+                    array($row['id'])
+                );
             }
+            unset($row);
 
             $list['order'] = $order;
             $list['direction'] = $direction;
