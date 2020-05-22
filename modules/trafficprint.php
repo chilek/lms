@@ -43,6 +43,9 @@ switch ($type) {
 
         $layout['pagetitle'] = trans('Stats of Customer $a in month $b', $LMS->GetCustomerName($customer), strftime('%B %Y', mktime(0, 0, 0, $month, 1, $year)));
 
+        $SMARTY->assign('showavg', isset($_POST['showavg']) ? 1 : 0);
+        $SMARTY->assign('showmax', isset($_POST['showmax']) ? 1 : 0);
+
         $from = mktime(0, 0, 0, $month, 1, $year);
         $to = mktime(0, 0, 0, $month+1, 1, $year);
 

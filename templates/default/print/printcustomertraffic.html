@@ -1,7 +1,14 @@
+<!--// $Id$ //-->
 {include file="clearheader.html"}
 {$speed_unit_type = ConfigHelper::getConfig('phpui.speed_unit_type', 1000)}
 {$speed_unit_aggregation_threshold = ConfigHelper::getConfig('phpui.speed_unit_aggregation_threshold', 5)}
-<!--// $Id$ //-->
+{$cols = 3}
+{if !empty($showavg)}
+	{$cols = $cols + 2}
+{/if}
+{if !empty($showmax)}
+	{$cols = $cols + 2}
+{/if}
 <TABLE WIDTH="100%" CELLPADDING="3" ALIGN="CENTER">
 	<TR>
 		<TD WIDTH="535" VALIGN="TOP">
@@ -23,21 +30,29 @@
 		<TD WIDTH="80" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
 			{trans("Download")}
 		</TD>
+		{if $showavg}
 		<TD WIDTH="75" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
 			{trans("Avg. download speed")}
 		</TD>
+		{/if}
+		{if $showmax}
 		<TD WIDTH="75" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
 			{trans("Max. download speed")}
 		</TD>
+		{/if}
 		<TD WIDTH="80" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
 			{trans("Upload")}
 		</TD>
+		{if $showavg}
 		<TD WIDTH="75" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
 			{trans("Avg. upload speed")}
 		</TD>
+		{/if}
+		{if $showmax}
 		<TD WIDTH="75" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
 			{trans("Max. upload speed")}
 		</TD>
+		{/if}
 	</TR>
 	{cycle values="white,grey" print=false}
 	{foreach from=$stats item=stat}
@@ -48,25 +63,33 @@
 		<TD ALIGN="RIGHT" NOWRAP>
 			{$stat.download|string_format:"%.2f"} {$stat.downloadunit}
 		</TD>
+		{if $showavg}
 		<TD ALIGN="RIGHT" NOWRAP>
 			{convert_to_units($stat.downavg * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s
 		</TD>
+		{/if}
+		{if $showmax}
 		<TD ALIGN="RIGHT" NOWRAP>
 			{convert_to_units($stat.downmax * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s
 		</TD>
+		{/if}
 		<TD ALIGN="RIGHT" NOWRAP>
 			{$stat.upload|string_format:"%.2f"} {$stat.uploadunit}
 		</TD>
+		{if $showavg}
 		<TD ALIGN="RIGHT" NOWRAP>
 			{convert_to_units($stat.upavg * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s
 		</TD>
+		{/if}
+		{if $showmax}
 		<TD ALIGN="RIGHT" NOWRAP>
 			{convert_to_units($stat.upmax * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s
 		</TD>
+		{/if}
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD COLSPAN="7" class="empty-table">
+		<TD COLSPAN="{$cols}" class="empty-table">
 			<p>{trans("No such stats for selected period.")}</p>
 		</TD>
 	</TR>
@@ -78,21 +101,29 @@
 		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
 			<B>{$listdata.download|string_format:"%.2f"} {$listdata.downloadunit|default:"KB"}</B>
 		</TD>
+		{if $showavg}
 		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
 			<B>{convert_to_units($listdata.downavg * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s</B>
 		</TD>
+		{/if}
+		{if $showmax}
 		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
 			<B>{convert_to_units($listdata.downmax * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s</B>
 		</TD>
+		{/if}
 		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
 			<B>{$listdata.upload|string_format:"%.2f"} {$listdata.uploadunit|default:"KB"}</B>
 		</TD>
+		{if $showavg}
 		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
 			<B>{convert_to_units($listdata.upavg * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s</B>
 		</TD>
+		{/if}
+		{if $showmax}
 		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
 			<B>{convert_to_units($listdata.upmax * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s</B>
 		</TD>
+		{/if}
 	</TR>
 </TABLE>
 {include file="clearfooter.html"}

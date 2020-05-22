@@ -24,6 +24,9 @@
  *  $Id$
  */
 
+$_LANG['show average speed'] = 'pokaż prędkość średnią';
+$_LANG['show maximum speed'] = 'pokaż prędkość maksymalną';
+
 $_LANG['Positions:'] = 'Pozycje:';
 
 $_LANG['link technologies'] = 'technologie łącza';
