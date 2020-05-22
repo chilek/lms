@@ -17,6 +17,7 @@ version 26-git (????-??-??):
     which customer related resources are removed during not-permanent customer delete process
     ('assignments,customergroups,nodegroups,nodes,userpanel' by default) [chilan]
   - improvement: show all receipt positions on receipt list [chilan]
+  - improvement: max download and max upload in customer traffic reports [chilan]
 
 version 25.0 (2020-05-15):
 
