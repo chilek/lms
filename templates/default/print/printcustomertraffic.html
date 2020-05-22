@@ -21,14 +21,20 @@
 		<TD WIDTH="80" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
 			{trans("Download")}
 		</TD>
-		<TD WIDTH="150" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
+		<TD WIDTH="75" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
 			{trans("Avg. download speed")}
+		</TD>
+		<TD WIDTH="75" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
+			{trans("Max. download speed")}
 		</TD>
 		<TD WIDTH="80" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
 			{trans("Upload")}
 		</TD>
-		<TD WIDTH="150" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
+		<TD WIDTH="75" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
 			{trans("Avg. upload speed")}
+		</TD>
+		<TD WIDTH="75" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
+			{trans("Max. upload speed")}
 		</TD>
 	</TR>
 	{cycle values="white,grey" print=false}
@@ -44,15 +50,21 @@
 			{$stat.downavg|string_format:"%d"} kbit/s
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
+			{$stat.downmax|string_format:"%d"} kbit/s
+		</TD>
+		<TD ALIGN="RIGHT" NOWRAP>
 			{$stat.upload|string_format:"%.2f"} {$stat.uploadunit}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
 			{$stat.upavg|string_format:"%d"} kbit/s
 		</TD>
+		<TD ALIGN="RIGHT" NOWRAP>
+			{$stat.upmax|string_format:"%d"} kbit/s
+		</TD>
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD COLSPAN="5" class="empty-table">
+		<TD COLSPAN="7" class="empty-table">
 			<p>{trans("No such stats for selected period.")}</p>
 		</TD>
 	</TR>
@@ -68,10 +80,16 @@
 			<B>{$listdata.downavg|string_format:"%d"} kbit/s</B>
 		</TD>
 		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
+			<B>{$listdata.downmax|string_format:"%d"} kbit/s</B>
+		</TD>
+		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
 			<B>{$listdata.upload|string_format:"%.2f"} {$listdata.uploadunit|default:"KB"}</B>
 		</TD>
 		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
 			<B>{$listdata.upavg|string_format:"%d"} kbit/s</B>
+		</TD>
+		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
+			<B>{$listdata.upmax|string_format:"%d"} kbit/s</B>
 		</TD>
 	</TR>
 </TABLE>
