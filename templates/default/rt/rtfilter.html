@@ -39,7 +39,7 @@
             {trans("Category:")}
             <input type="hidden" name="catid" value="all">
             <SELECT size="1" name="catid[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect lms-ui-multiselect-filter" data-default-value="{trans("- all -")}">
-                    <option value="-1" data-exclusive{if !is_array($filter.catids) && $filter.catids == -1} selected{/if}>{trans('- no categories -')}</option>
+                    <option value="-1" {if is_array($filter.catids) && in_array(-1, $filter.catids)} selected{/if}>{trans('- no categories -')}</option>
                     {foreach $categories $c}
                     <OPTION value="{$c.id}"{if is_array($filter.catids) && in_array($c.id, $filter.catids)} SELECTED{/if}>{$c.name}</OPTION>
                 {/foreach}
