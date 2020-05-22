@@ -35,6 +35,7 @@ switch ($type) {
         /******************************************/
 
         $stat_freq = ConfigHelper::getConfig('phpui.stat_freq', 12);
+        $speed_unit_type = ConfigHelper::getConfig('phpui.speed_unit_type', 1000);
 
         $month = isset($_POST['month']) ? $_POST['month'] : date('n');
         $year = isset($_POST['year']) ? $_POST['year'] : date('Y');
@@ -84,11 +85,11 @@ switch ($type) {
             );
 
             for ($i = 1; $i <= date('t', $from); $i++) {
-                $stats[$i]['upavg'] = $stats[$i]['upload'] * 8 / 1000 / 86400; //kbit/s
-                $stats[$i]['downavg'] = $stats[$i]['download'] * 8 / 1000 / 86400; //kbit/s
+                $stats[$i]['upavg'] = $stats[$i]['upload'] * 8 / $speed_unit_type / 86400; //kbit/s
+                $stats[$i]['downavg'] = $stats[$i]['download'] * 8 / $speed_unit_type / 86400; //kbit/s
 
-                $stats[$i]['upmax'] = $stats[$i]['upmax'] * 8 / 1000 / $stat_freq; //kbit/s
-                $stats[$i]['downmax'] = $stats[$i]['downmax'] * 8 / 1000 / $stat_freq; //kbit/s
+                $stats[$i]['upmax'] = $stats[$i]['upmax'] * 8 / $speed_unit_type / $stat_freq; //kbit/s
+                $stats[$i]['downmax'] = $stats[$i]['downmax'] * 8 / $speed_unit_type / $stat_freq; //kbit/s
 
                 $listdata['upload'] += $stats[$i]['upload'];
                 $listdata['download'] += $stats[$i]['download'];
