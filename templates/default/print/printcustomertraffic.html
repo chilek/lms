@@ -1,4 +1,6 @@
 {include file="clearheader.html"}
+{$speed_unit_type = ConfigHelper::getConfig('phpui.speed_unit_type', 1000)}
+{$speed_unit_aggregation_threshold = ConfigHelper::getConfig('phpui.speed_unit_aggregation_threshold', 5)}
 <!--// $Id$ //-->
 <TABLE WIDTH="100%" CELLPADDING="3" ALIGN="CENTER">
 	<TR>
@@ -47,19 +49,19 @@
 			{$stat.download|string_format:"%.2f"} {$stat.downloadunit}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{$stat.downavg|string_format:"%d"} kbit/s
+			{convert_to_units($stat.downavg * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{$stat.downmax|string_format:"%d"} kbit/s
+			{convert_to_units($stat.downmax * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
 			{$stat.upload|string_format:"%.2f"} {$stat.uploadunit}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{$stat.upavg|string_format:"%d"} kbit/s
+			{convert_to_units($stat.upavg * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{$stat.upmax|string_format:"%d"} kbit/s
+			{convert_to_units($stat.upmax * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s
 		</TD>
 	</TR>
 	{foreachelse}
@@ -77,19 +79,19 @@
 			<B>{$listdata.download|string_format:"%.2f"} {$listdata.downloadunit|default:"KB"}</B>
 		</TD>
 		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
-			<B>{$listdata.downavg|string_format:"%d"} kbit/s</B>
+			<B>{convert_to_units($listdata.downavg * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s</B>
 		</TD>
 		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
-			<B>{$listdata.downmax|string_format:"%d"} kbit/s</B>
+			<B>{convert_to_units($listdata.downmax * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s</B>
 		</TD>
 		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
 			<B>{$listdata.upload|string_format:"%.2f"} {$listdata.uploadunit|default:"KB"}</B>
 		</TD>
 		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
-			<B>{$listdata.upavg|string_format:"%d"} kbit/s</B>
+			<B>{convert_to_units($listdata.upavg * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s</B>
 		</TD>
 		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
-			<B>{$listdata.upmax|string_format:"%d"} kbit/s</B>
+			<B>{convert_to_units($listdata.upmax * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s</B>
 		</TD>
 	</TR>
 </TABLE>
