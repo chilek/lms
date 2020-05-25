@@ -22,16 +22,16 @@
 				   value="{$ticket.subject|escape}" {tip text="Enter subject" trigger="subject"}>
 		{/box_header}
 		{box_header icon="img/service-type.png" label="Service type:"}
-			<SELECT name="ticket[service]" id="ticket-service" class="lms-ui-advanced-select" {if ConfigHelper::checkConfig('rt.ticket_service_required')}required {tip text="Choose service type" trigger="service"}>
-					<OPTION value="" selected hidden>{trans("select")}</OPTION>{else}>{/if}
+                        <SELECT name="ticket[service]" id="ticket-service" {tip class="lms-ui-advanced-select" text="Choose service type" trigger="service"} {if ConfigHelper::checkConfig('rt.ticket_service_required')}required{/if}>
+					<OPTION value="" selected hidden>{trans("select")}</OPTION>
 				{foreach $_SERVICETYPES as $key => $service}
 					<OPTION value="{$key}"{if $key == $ticket.service} selected{/if}>{$service}</OPTION>
 				{/foreach}
 			</SELECT>
 		{/box_header}
 		{box_header icon="img/ticket-type.png" label="Ticket type:"}
-			<SELECT name="ticket[type]" id="ticket-type" class="lms-ui-advanced-select" {if ConfigHelper::checkConfig('rt.ticket_type_required')}required {tip text="Choose ticket type" trigger="type"}>
-					<OPTION value="" selected hidden>{trans("select")}</OPTION>{else}>{/if}
+                        <SELECT name="ticket[type]" id="ticket-type" {tip class="lms-ui-advanced-select" text="Choose ticket type" trigger="type"}{if ConfigHelper::checkConfig('rt.ticket_type_required')}required{/if}>
+					<OPTION value="" selected hidden>{trans("select")}</OPTION>
 				{foreach $_RT_TYPES as $key => $type}
 					<OPTION value="{$key}"{if $key == $ticket.type} selected{/if}>{$type.label}</OPTION>
 				{/foreach}
