@@ -763,7 +763,7 @@ $(function() {
 		$('.' + popup.class).tooltip({
 			items: '.' + popup.class,
 			show: false,
-			hide: false,
+			//hide: false,
 			track: false,
 			position: { my: "left top", at: "left bottom", collision: "flipfit" },
 			open: function(e, ui) {
@@ -806,7 +806,7 @@ $(function() {
 		track: true,
 		items: '.documentview-image',
 		show: false,
-		hide: false,
+		//hide: false,
 		tooltipClass: 'documentview',
 		content: function() {
 			var href = $(this).attr('href') + '&api=1&thumbnail=300';
