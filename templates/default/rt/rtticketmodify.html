@@ -52,7 +52,7 @@
 
 			{box_row icon="img/users.gif" label="Requestor:" field_id="requestor"}
 				<div class="lms-ui-box-row">
-					<SELECT name="ticket[requestor_userid]" class="lms-ui-advanced-select" {tip text="Select requestor from list" trigger="requestor_userid"}>
+					<SELECT name="ticket[requestor_userid]" {tip class="lms-ui-advanced-select" text="Select requestor from list" trigger="requestor_userid"}>
 						<option value="">{trans("<!person>- none -")}</option>
 						<option value="0"{if $ticket.requestor_userid == '0'} selected{/if}>{trans("- indicated person -")}</option>
 						{foreach $userlist as $user}
@@ -129,7 +129,7 @@
 		{box_panel}
 			{block name="rtticketmodify-rightcolumn"}
 			{box_row icon="img/users.gif" label="Owner:"}
-				<SELECT size="1" name="ticket[owner]" class="lms-ui-advanced-select" {tip text="Select user" trigger="owner"}>
+				<SELECT size="1" name="ticket[owner]" {tip class="lms-ui-advanced-select" text="Select user" trigger="owner"}>
 					<OPTION value="0">- {trans("select user")} -</OPTION>
 					{foreach $userlist as $user}
 						{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
@@ -148,7 +148,7 @@
 
 			{box_row icon="verifier" label="Verifier:" field_id="rtverifiers"}
 				{if $layout.module != 'rtticketedit' || !$ticket.oldverifierid || $ticket.oldverifierid == $layout.logid}
-					<SELECT size="1" name="ticket[verifierid]" class="lms-ui-advanced-select" {tip text="Select user" trigger="verifierid"}>
+					<SELECT size="1" name="ticket[verifierid]" {tip class="lms-ui-advanced-select" text="Select user" trigger="verifierid"}>
 						<OPTION value="">- {trans("select user")} -</OPTION>
 						{foreach $userlist as $user}
 							{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
@@ -176,7 +176,7 @@
 			{/box_row}
 
 			{box_row icon="img/dead.gif" label="Status:"}
-				<SELECT name="ticket[state]" id="state" class="lms-ui-advanced-select" {tip text="Select status" trigger="state"}>
+				<SELECT name="ticket[state]" id="state" {tip class="lms-ui-advanced-select" text="Select status" trigger="state"}>
 					{foreach $_RT_STATES as $stateidx => $state}
 					<OPTION value="{$stateidx}"{if $ticket.state == $stateidx} selected{/if}>{$state.label}</OPTION>
 					{/foreach}
@@ -189,7 +189,7 @@
 			{/box_row}
 
 			{box_row icon="img/queue.gif" label="Queue:"}
-				<SELECT size="1" name="ticket[queue]" class="lms-ui-advanced-select" {tip text="Select queue" trigger="queue"} onchange="xajax_queue_changed($(this).val(), $('#rtverifiers').val())">
+				<SELECT size="1" name="ticket[queue]" {tip class="lms-ui-advanced-select" text="Select queue" trigger="queue"} onchange="xajax_queue_changed($(this).val(), $('#rtverifiers').val())">
 					{foreach $queuelist as $item}
 					<OPTION value="{$item.id}"{if $item.newticketsubject && $item.newticketbody} data-newticket-notify="1"{/if}{if $item.id == $queue} selected{/if}>{$item.name}</OPTION>
 					{/foreach}
@@ -275,7 +275,7 @@
 			{/box_row}
 
 			{box_row icon="img/money.gif" label="Investment project:"}
-				<SELECT name="ticket[invprojectid]" class="lms-ui-advanced-select" {tip text="Select investment projects" trigger="invprojectid"}>
+				<SELECT name="ticket[invprojectid]" {tip class="lms-ui-advanced-select" text="Select investment projects" trigger="invprojectid"}>
 					<OPTION value="">{trans("- none -")}</OPTION>
 					{foreach $invprojectlist as $idx => $project}
 					<OPTION value="{$idx}" {if $idx == $ticket.invprojectid} selected{/if}>
