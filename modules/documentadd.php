@@ -287,7 +287,7 @@ if (isset($_POST['document'])) {
                 $time,
                 isset($document['closed']) ? $time : 0,
                 isset($document['closed']) ? Auth::GetCurrentUser() : null,
-                isset($document['closed']) ? 0 : $document['confirmdate'] + 86399,
+                isset($document['closed']) || empty($document['confirmdate']) ? 0 : $document['confirmdate'] + 86399,
                 $document['customerid'],
                 Auth::GetCurrentUser(),
                 trim($customer['lastname'] . ' ' . $customer['name']),
