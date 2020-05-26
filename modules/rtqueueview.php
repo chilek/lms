@@ -71,24 +71,22 @@ if (empty($filter['ids'])) {
 }
 
 // category id's
-if (isset($_GET['catid'])) {
-    if (is_array($_GET['catid'])) {
-        if (in_array(-1, $_GET['catid'])) {
-            $filter['catids'] = -1;
-        } else {
-            $filter['catids'] = Utils::filterIntegers($_GET['catid']);
-        }
-    } elseif (intval($_GET['catid'])) {
-        $filter['catids'] = Utils::filterIntegers(array($_GET['catid']));
-    } elseif ($_GET['catid'] == 'all') {
-        $filter['catids'] = 0;
+if (!empty($_GET['catid'])) {
+    if (!is_array($_GET['catid'])) {
+        $_GET['catid'] = array($_GET['catid']);
+    }
+
+    if (!in_array('all', $_GET['catid'])) {
+        $filter['catids'] = Utils::filterIntegers($_GET['catid']);
     }
 }
 
-if (!empty($filter['catids']) && $filter['catids'] != - 1) {
+if (!empty($filter['catids'])) {
     foreach ($filter['catids'] as $catidx => $catid) {
-        if (!$LMS->GetUserRightsToCategory(Auth::GetCurrentUser(), $catid)) {
-            unset($filter['catids'][$catidx]);
+        if ($catid != -1) {
+            if (!$LMS->GetUserRightsToCategory(Auth::GetCurrentUser(), $catid)) {
+                unset($filter['catids'][$catidx]);
+            }
         }
     }
     if (empty($filter['catids'])) {

@@ -359,6 +359,21 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     break;
             }
         }
+
+        if (!empty($catids) && !in_array('all', $catids)) {
+            if (in_array(-1, $catids)) {
+                if (count($catids) > 1) {
+                    $categoriesfilter = ' AND tc.categoryid IN (' . implode(',', $catids) . ') OR tc.categoryid IS NULL';
+                } else {
+                    $categoriesfilter = ' AND tc.categoryid IS NULL';
+                }
+            } else {
+                $categoriesfilter = ' AND tc.categoryid IN (' . implode(',', $catids) . ')';
+            }
+        } else {
+            $categoriesfilter = '';
+        }
+
         $userid = Auth::GetCurrentUser();
 
         $user_permission_checks = ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks');
@@ -406,8 +421,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 . ($qids ? ' AND (t.queueid IN (' . implode(',', $qids) . ')'
                             . ($all_queues && $user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid : '') . ')'
                     : ($user_permission_checks ? ' AND (t.queueid IS NOT NULL OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid . ')' : ''))
-                . (is_array($catids) ? ' AND tc.categoryid IN (' . implode(',', $catids) . ')'
-                    : ($catids > 0 ? ' AND tc.categoryid = ' . $catids : ($catids == -1 ? ' AND tc.ticketid IS NULL' : '')))
+                . $categoriesfilter
                 . $unreadfilter
                 . $parentfilter
                 . $statefilter
@@ -499,8 +513,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             . ($qids ? ' AND (t.queueid IN (' . implode(',', $qids) . ')'
                     . ($all_queues && $user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid : '') . ')'
                 : ($user_permission_checks ? ' AND (t.queueid IS NOT NULL OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid . ')' : ''))
-            . (is_array($catids) ? ' AND tc.categoryid IN (' . implode(',', $catids) . ')'
-                : ($catids > 0 ? ' AND tc.categoryid = ' . $catids : ($catids == -1 ? ' AND tc.ticketid IS NULL' : '')))
+            . $categoriesfilter
             . $unreadfilter
             . $parentfilter
             . $statefilter
