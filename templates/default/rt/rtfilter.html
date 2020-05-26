@@ -75,8 +75,8 @@
                     {foreach $users as $user}
                         {if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
                             || (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
-                            || (is_array($filter.owner) && in_array($user.id, $filter.owner))}
-                            <OPTION{if !$user.access} disabled{/if} value="{$user.id}"{if is_array($filter.owner) && in_array($user.id, $filter.owner)}} selected{/if}>{$user.rname|truncate:40:"...":true} ({$user.login})</OPTION>
+                            || in_array($user.id, $filter.owner)}
+                            <OPTION{if !$user.access} disabled{/if} value="{$user.id}"{if in_array($user.id, $filter.owner)}} selected{/if}>{$user.rname|truncate:40:"...":true} ({$user.login})</OPTION>
                         {/if}
                     {/foreach}
                 </SELECT>
