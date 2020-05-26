@@ -59,7 +59,7 @@
 						</div>
 						<div class="customerassignment-header-cell">
 							<input type="hidden" value="" name="assignment[tarifftype]" id="tarifftype">
-							<select id="tariff-select" class="lms-ui-advanced-select" name="assignment[tariffid]" {tip text="Select liability type" trigger="tariffid"}>
+							<select id="tariff-select" name="assignment[tariffid]" {tip class="lms-ui-advanced-select" text="Select liability type" trigger="tariffid"}>
 								{block name="customerassignmentsedit-special-tariffs"}
 								<option value=""   data-tarifftype="0" {if !$assignment.tariffid} selected{/if}>- {trans("tariffless liability")} -</option>
 								<option value="-1" data-tarifftype="0" {if $assignment.tariffid == -1} selected{/if}>{trans("- all liabilities suspended -")}</option>

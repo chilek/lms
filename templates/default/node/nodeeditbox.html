@@ -88,7 +88,7 @@
 									</td>
 									<td class="cell-flex">
                                         <div>
-										<select size="1" class="lms-ui-advanced-select" name="nodeedit[netid]" {tip text="Choose network" trigger="netid"}>
+										<select size="1" name="nodeedit[netid]" {tip class="lms-ui-advanced-select" text="Choose network" trigger="netid"}>
 											<option value="0">{trans("- automatic selection -")}</option>
 											{foreach $networks as $net}
 												<option value="{$net.id}" data-pubnetid="{$net.pubnetid}" {if $net.id == $nodeinfo.netid} selected{/if}{if $net.disabled == 1} class="lms-ui-alert"{/if}>{$net.name|truncate:20:"":true}: {$net.address}/{$net.prefix}</option>
