@@ -135,7 +135,7 @@ if (isset($filter['year']) && isset($filter['month']) && isset($filter['day'])) 
     $filter['edate'] = sprintf('%04d/%02d/%02d', $filter['year'], $filter['month'], $filter['day']);
 }
 
-$SESSION->saveFilter($filter);
+$SESSION->saveFilter(Utils::filterArrayByKeys($filter, array('year', 'month', 'day', 'edate'), true));
 
 if (!isset($filter['day'])) {
     $filter['day'] = date('j');

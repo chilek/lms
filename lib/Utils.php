@@ -37,6 +37,22 @@ class Utils
         });
     }
 
+    public static function filterArrayByKeys(array $array, array $keys, $reverse = false)
+    {
+        $result = array();
+        $keys = array_flip($keys);
+        array_walk($array, function ($item, $key) use ($reverse, $keys) {
+            if ($reverse) {
+                if (!isset($keys[$key])) {
+                    $result[$key] = $item;
+                }
+            } elseif (isset($keys[$key])) {
+                $result[$key] = $item;
+            }
+        });
+        return $result;
+    }
+
     // taken from RoundCube
     /**
      * Generate a random string
