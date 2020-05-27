@@ -41,7 +41,7 @@ class Utils
     {
         $result = array();
         $keys = array_flip($keys);
-        array_walk($array, function ($item, $key) use ($reverse, $keys, $result) {
+        array_walk($array, function ($item, $key) use ($reverse, $keys, &$result) {
             if ($reverse) {
                 if (!isset($keys[$key])) {
                     $result[$key] = $item;
