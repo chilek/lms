@@ -42,7 +42,7 @@ $(function() {
 		} else {
 			select.val($(this).attr('data-old-userid'));
 		}
-		select.trigger('chosen:updated');
+		updateAdvancedSelects(select);
 	});
 
 	$('[name="ticket[queue]"]').change(function () {

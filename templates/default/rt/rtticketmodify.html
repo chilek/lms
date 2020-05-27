@@ -329,7 +329,7 @@
 					stateelem.val(prev_state);
 				}
 			}
-			stateelem.trigger('chosen:updated');
+			updateAdvancedSelects(stateelem);
 		});
 
 		$('#state').change(function() {

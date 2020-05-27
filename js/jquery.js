@@ -279,6 +279,12 @@ function initAdvancedSelects(selector) {
 	});
 }
 
+function updateAdvancedSelects(selector) {
+	$(selector).each(function() {
+		$(this).trigger('chosen:updated');
+	});
+}
+
 function init_comboboxes(selector) {
 	$(selector).each(function() {
 		$(this).scombobox($.extend({ wrap: false },
