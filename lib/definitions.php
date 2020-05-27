@@ -928,6 +928,11 @@ $USERPANEL_AUTH_TYPES = array(
         'label_secret' => trans('PPPoE password:'),
         'selection' => trans('PPPoE login and password'),
     ),
+    6   => array(
+        'label' => trans('SSN/TEN:'),
+        'label_secret' => trans('PIN:'),
+        'selection' => trans('SSN/TEN and PIN'),
+    ),
 );
 
 define('EVENT_OTHER', 1);

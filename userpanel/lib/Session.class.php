@@ -379,6 +379,38 @@ class Session
         return $authinfo;
     }
 
+    private function GetCustomerIDBySsnTenAndPIN()
+    {
+        if (!$this->validPIN()) {
+            return null;
+        }
+
+        $ssnten = preg_replace('/[\-\s]/', '', $this->login);
+
+        if (!strlen($ssnten)) {
+            return null;
+        }
+
+        $authinfo['id'] = $this->db->GetOne(
+            "SELECT id FROM customers
+		    WHERE deleted = 0 AND (REPLACE(REPLACE(ssn, '-', ''), ' ', '') = ? OR REPLACE(REPLACE(ten, '-', ''), ' ', '') = ?)
+		    LIMIT 1",
+            array($ssnten, $ssnten)
+        );
+
+        if (empty($authinfo['id'])) {
+            return null;
+        }
+
+        $authinfo['passwd'] = $this->db->GetOne(
+            'SELECT pin FROM customers
+		    WHERE id = ? AND pin = ?',
+            array($authinfo['id'], $this->passwd)
+        );
+
+        return $authinfo;
+    }
+
     private function GetCustomerAuthInfo($customerid)
     {
         return $this->db->GetRow(
@@ -430,6 +462,9 @@ class Session
                 break;
             case 5:
                 $authinfo = $this->GetCustomerIDByNodeNameAndPassword();
+                break;
+            case 6:
+                $authinfo = $this->GetCustomerIDBySsnTenAndPIN();
                 break;
         }
 

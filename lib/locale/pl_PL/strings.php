@@ -3694,6 +3694,8 @@ $_LANG['Document number and PIN'] = 'Numer dokumentu i PIN';
 $_LANG['Customer e-mail and PIN'] = 'E-mail klienta i PIN';
 $_LANG['Document number:'] = 'Numer dokumentu:';
 $_LANG['Customer e-mail:'] = 'E-mail klienta:';
+$_LANG['SSN/TEN:'] = 'PESEL/NIP:';
+$_LANG['SSN/TEN and PIN'] = 'PESEL/NIP i PIN';
 
 $_LANG['without contracts'] = 'bez umów';
 $_LANG['Without Contracts'] = 'bez umów';
