@@ -30,8 +30,7 @@ function smarty_function_persistent_filter($params, $template)
     $persistent_filters = $template->getTemplateVars('persistent_filters');
     $persistent_filter = $template->getTemplateVars('persistent_filter');
 
-    if(!empty($persistent_filters) && is_array($persistent_filters))
-    {
+    if (!empty($persistent_filters) && is_array($persistent_filters)) {
         foreach ($persistent_filters as $key => $row) {
             $text[$key] = $row['text'];
         }
