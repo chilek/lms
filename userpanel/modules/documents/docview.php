@@ -56,9 +56,9 @@ if (!empty($_GET['id'])) {
     ));
     $filename = DOC_DIR. DIRECTORY_SEPARATOR .substr($doc['md5sum'], 0, 2). DIRECTORY_SEPARATOR .$doc['md5sum'];
     if (file_exists($filename)) {
-	$filename_pdf = DOC_DIR . DIRECTORY_SEPARATOR . substr($doc['md5sum'], 0, 2) . DIRECTORY_SEPARATOR . $doc['md5sum'].'.pdf';
+        $filename_pdf = DOC_DIR . DIRECTORY_SEPARATOR . substr($doc['md5sum'], 0, 2) . DIRECTORY_SEPARATOR . $doc['md5sum'].'.pdf';
         if (file_exists($filename_pdf)) {
-	    if ($doc['type'] == DOC_CONTRACT) {
+            if ($doc['type'] == DOC_CONTRACT) {
                 $title = trans('Contract No. $a', $docnumber);
             } elseif ($doc['type'] == DOC_ANNEX) {
                 $title = trans('Annex No. $a', $docnumber);
