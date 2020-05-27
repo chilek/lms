@@ -329,6 +329,7 @@
 					stateelem.val(prev_state);
 				}
 			}
+			stateelem.trigger('chosen:updated');
 		});
 
 		$('#state').change(function() {
