@@ -258,8 +258,8 @@ if ($SESSION->islogged) {
 
     if (ConfigHelper::checkConfig('userpanel.hide_nodes_modules')) {
         if (!$DB->GetOne('SELECT COUNT(*) FROM vnodes WHERE ownerid = ? LIMIT 1', array($SESSION->id))) {
-            unset($USERPANEL->MODULES['notices']);
-            unset($USERPANEL->MODULES['stats']);
+            $USERPANEL->RemoveModule('notices');
+            $USERPANEL->RemoveModule('stats');
         }
     }
 

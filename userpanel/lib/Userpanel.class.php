@@ -88,6 +88,17 @@ class USERPANEL
         return false;
     }
 
+    public function RemoveModule($module) {
+        if (!empty($module)) {
+            if (isset($this->MODULES[$module])) {
+                unset($this->MODULES[$module]);
+            }
+            if (isset($this->callbacks[$module])) {
+                unset($this->callbacks[$module]);
+            }
+        }
+    }
+
     public function GetCustomerRights($id)
     {
         $result = null;
@@ -112,7 +123,7 @@ class USERPANEL
 
     public function registerCallback($module, $callback)
     {
-        $this->callbacks[] = array(
+        $this->callbacks[$module] = array(
             'module' => $module,
             'callback' => $callback,
         );
