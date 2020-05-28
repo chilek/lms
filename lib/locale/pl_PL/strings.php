@@ -2338,6 +2338,7 @@ $_LANG['Coma-separated list of default invoice printout pages. You can use "orig
 $_LANG['internet'] = 'internet';
 $_LANG['hosting'] = 'hosting';
 $_LANG['service'] = 'usługa';
+$_LANG['transmission'] = 'transmisja';
 $_LANG['Select tariff type'] = 'Wybierz typ taryfy';
 $_LANG['Date from the future not allowed!'] = 'Data z przyszłości nie jest dozwolona!';
 $_LANG['no guarantee'] = 'brak';
