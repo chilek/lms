@@ -39,7 +39,7 @@ function module_main()
             array($SESSION->id, CCONSENT_DATE)
         )) {
             $LMS->DB->Execute(
-                'UPDATE customerconsents SET cdate = ?NOW? WHERE customer = ? AND type = ?',
+                'UPDATE customerconsents SET cdate = ?NOW? WHERE customerid = ? AND type = ?',
                 array($SESSION->id, CCONSENT_DATE)
             );
         } else {
