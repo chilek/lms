@@ -260,7 +260,8 @@ class Session
             'session_logname' => true, 'session_last' => true, 'session_lastip' => true,
             'session_smsauthenticated' => true, 'backto' => true, 'lastmodule' => true,
             'session_passwdrequiredchange' => true, 'session_authcoderequired' => true,
-            'session_twofactorauthrequirechange' => true, 'tabs' => true);
+            'session_twofactorauthrequirechange' => true, 'tabs' => true,
+            'prepared_persistent_filters' => true);
 
         if ($this->autoupdate || $this->_updated) {
             $content = array_merge($this->_content, array('tabs' => $this->_tab_content));
@@ -311,13 +312,20 @@ class Session
         }
     }
 
-    public function saveFilter($filter, $module = null)
+    public function saveFilter($filter, $module = null, $persistentKeys = null, $reversePersistentKeys = false)
     {
         if (empty($module)) {
             $module = $this->_content['module'];
         }
 
         $this->_content['filters'][$module] = $filter;
+        if (isset($persistentKeys)) {
+            $this->_content['prepared_persistent_filters'][$module] = Utils::filterArrayByKeys(
+                $filter,
+                $persistentKeys,
+                $reversePersistentKeys
+            );
+        }
 
         if ($this->autoupdate) {
             $this->_saveSession();
@@ -336,7 +344,13 @@ class Session
             return array();
         }
 
-        return $this->_content['filters'][$module];
+        if (isset($this->_content['prepared_persistent_filters'][$module])) {
+            $filter = $this->_content['prepared_persistent_filters'][$module];
+            unset($this->_content['prepared_persistent_filters'][$module]);
+            return $filter;
+        } else {
+            return $this->_content['filters'][$module];
+        }
     }
 
     public function removeFilter($module = null)
