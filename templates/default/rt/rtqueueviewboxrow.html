@@ -1,5 +1,5 @@
 {block name=rtboxrow}
-<TR class="single-ticket {if $ticket.state == $smarty.const.RT_RESOLVED}blend{/if} highlight lms-ui-rt{if $ticket.deleted == 1 && $ticket.deltime != 0}-deleted{elseif $ticket.delcount && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}-partly-deleted{/if}"
+<TR class="single-ticket {if $ticket.state == $smarty.const.RT_RESOLVED}blend{/if} highlight lms-ui-resource{if $ticket.deleted == 1 && $ticket.deltime != 0}-deleted{elseif $ticket.delcount && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}-partly-deleted{/if}"
 		id="ticket-{$ticket.id}"
 		data-target-url="?m=rtticketview&id={$ticket.id}"
 		data-name="{$ticket.id|string_format:"%06d"}"
