@@ -29,9 +29,8 @@
 		</thead>
 		{section name=helpdesklist loop=$helpdesklist start=$limit}
 			<tr class="table-click" data-href="?m=helpdesk&op=view&id={$helpdesklist[helpdesklist].id}">
-				<td class="text-center align-middle">{$helpdesklist[helpdesklist].id|string_format:"%06d"}</td>
+				<td class="text-center align-middle"><span class="badge" style="color: white; background-color:{$_RT_STATES[$helpdesklist[helpdesklist].state].color};">{$_RT_STATES[$helpdesklist[helpdesklist].state].label}</span><br>#{$helpdesklist[helpdesklist].id|string_format:"%06d"}</td>
 				<td>
-					<span class="badge" style="color: white; background-color:{$_RT_STATES[$helpdesklist[helpdesklist].state].color};">{$_RT_STATES[$helpdesklist[helpdesklist].state].label}</span>
 					<span {if $helpdesklist[helpdesklist].state == $smarty.const.RT_RESOLVED}style="color:grey"{/if}>{$helpdesklist[helpdesklist].subject|escape}</span>
 					<br>
 					<small class="text-muted">{trans("Date:")} {$helpdesklist[helpdesklist].createtime|date_format:"%Y/%m/%d %H:%M"} &nbsp; {trans("Last modified:")} {$helpdesklist[helpdesklist].lastmod|date_format:"%Y/%m/%d %H:%M"}</small>
