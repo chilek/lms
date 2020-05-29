@@ -765,6 +765,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     public function GetCategory($id)
     {
         if ($category = $this->db->GetRow('SELECT * FROM rtcategories WHERE id=?', array($id))) {
+            $cssProperties = Utils::parseCssProperties($category['style']);
+            $category['background-style'] = isset($cssProperties['background-color']) ? $cssProperties['background-color'] : '#ffffff';
+            $category['text-style'] = isset($cssProperties['color']) ? $cssProperties['color'] : '#000000';
             $users = $this->db->GetAll('SELECT id, name, rname, login FROM vusers WHERE deleted=0 ORDER BY rname');
             foreach ($users as $user) {
                 $user['owner'] = $this->db->GetOne('SELECT 1 FROM rtcategoryusers WHERE userid = ? AND categoryid = ?', array($user['id'], $id));

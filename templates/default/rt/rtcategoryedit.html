@@ -37,12 +37,25 @@
 			<IMG src="img/queue.gif" ALT="">
 		</TD>
 		<TD class="bold">
-			<label for="category-style">
-				{trans("<!rt-category>Look:")}
+			<label for="background-style">
+				{trans("<!rt-category>Background:")}
 			</label>
 		</TD>
+		<TD class="bold">
+			<input id="background-style" type="color" name="category[background-style]" value="{if empty($category['background-style'])}#ffffff{else}{$category['background-style']}{/if}">
+		</TD>
+	</TR>
+	<TR>
 		<TD>
-			<input id="category-style" type="color" name="category[style]" value="{$category.style}">
+			<IMG src="img/queue.gif" ALT="">
+		</TD>
+		<TD class="bold">
+			<label for="text-style">
+				{trans("<!rt-category>Text:")}
+			</label>
+		</TD>
+		<TD class="bold">
+			<input id="text-style" type="color" name="category[text-style]" value="{if empty($category['text-style'])}#000000{else}{$category['text-style']}{/if}">
 		</TD>
 	</TR>
 	<TR>

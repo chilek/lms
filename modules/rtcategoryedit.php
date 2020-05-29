@@ -48,7 +48,7 @@ if (isset($_POST['category'])) {
             'UPDATE rtcategories SET name=?, description=?, style=? WHERE id=?',
             array(trim($category['name']),
                     $category['description'],
-                    $category['style'],
+                    'background-color:' . $category['background-style'] . ';color:' . $category['text-style'],
                     $category['id'])
         );
 

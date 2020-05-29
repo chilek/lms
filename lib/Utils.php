@@ -271,4 +271,18 @@ class Utils
             return true;
         }
     }
+
+    public static function parseCssProperties($text)
+    {
+        $result = array();
+        $text = preg_replace('/\s/', '', $text);
+        $properties = explode(';', $text);
+        if (!empty($properties)) {
+            foreach ($properties as $property) {
+                list ($name, $value) = explode(':', $property);
+                $result[$name] = $value;
+            }
+        }
+        return $result;
+    }
 }

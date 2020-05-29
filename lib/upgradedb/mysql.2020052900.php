@@ -21,16 +21,18 @@
  *
  */
 
-function findCssProperty($text, $property)
+function parseCssProperties($text)
 {
-    if (($pos = stripos($text, $property . ':')) === false) {
-        return null;
+    $result = array();
+    $text = preg_replace('/\s/', '', $text);
+    $properties = explode(';', $text);
+    if (!empty($properties)) {
+        foreach ($properties as $property) {
+            list ($name, $value) = explode(':', $property);
+            $result[$name] = $value;
+        }
     }
-    $text = substr($text, $pos + strlen($property) + 1);
-    if (preg_match('/^\s*(?<value>[^;}\r\n]+)/', $text, $m)) {
-        return $m['value'];
-    }
-    return null;
+    return $result;
 }
 
 $this->BeginTrans();
@@ -38,14 +40,23 @@ $this->BeginTrans();
 $categories = $this->GetAll('SELECT id, style FROM rtcategories');
 if (!empty($categories)) {
     foreach ($categories as $category) {
-        $color = findCssProperty($category['style'], 'background-color');
-        if (!isset($color)) {
-            $color = findCssProperty($category['style'], 'background');
-            if (!isset($color)) {
-                $color = '#ffffff';
-            }
+        $cssProperties = parseCssProperties($category['style']);
+        if (isset($cssProperties['background'])) {
+            $background_color = $cssProperties['background'];
+        } elseif (isset($cssProperties['background-color'])) {
+            $background_color = $cssProperties['background-color'];
+        } else {
+            $background_color = '#ffffff';
         }
-        $this->Execute("UPDATE rtcategories SET style = ? WHERE id = ?", array($color, $category['id']));
+        if (isset($cssProperties['color'])) {
+            $color = $cssProperties['color'];
+        } else {
+            $color = '#000000';
+        }
+        $this->Execute(
+            "UPDATE rtcategories SET style = ? WHERE id = ?",
+            array('background-color:' . $background_color . ';' . 'color:' . $color, $category['id'])
+        );
     }
 }
 

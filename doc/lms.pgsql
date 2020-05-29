@@ -3227,7 +3227,7 @@ CREATE TRIGGER cash_customerbalances_truncate_trigger AFTER TRUNCATE ON cash
 /* ---------------------------------------------------
  Data records
 ------------------------------------------------------*/
-INSERT INTO rtcategories (name, description, style) VALUES ('default', 'default category', '#ffffff');
+INSERT INTO rtcategories (name, description, style) VALUES ('default', 'default category', 'background-color:#ffffff;color:#000000');
 
 INSERT INTO up_rights(module, name, description)
         VALUES ('info', 'edit_addr_ack', 'Customer can change address information with admin acknowlegment');

@@ -42,8 +42,8 @@
             <TD class="bold">{trans("<!rt-category>Look:")}
 	    </TD>
             <TD class="bold">
-				<div class="lms-ui-category-label"{if !empty($category.style)} style="background-color: {$category.style}"{/if}>
-					<div>{$category.name}</div>
+				<div class="lms-ui-category-label" style="{$category.style}">
+					{$category.name}
 				</div>
             </TD>
         </TR>
