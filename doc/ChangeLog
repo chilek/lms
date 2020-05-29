@@ -22,6 +22,8 @@ version 26-git (????-??-??):
   - enhancement: userpanel SSN/TEN and PIN authenication method support added [chilan]
   - improvement: minor visual improvements of panel/tab/card interface - larger vertical distances
     and different background color [chilan]
+  - improvement: use native color selector input element for helpdesk ticket category look
+    definition [chilan]
 
 version 25.0 (2020-05-15):
 
