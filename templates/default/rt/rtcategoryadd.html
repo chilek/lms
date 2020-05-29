@@ -42,7 +42,7 @@
 			</label>
 	    </TD>
 	    <TD class="bold">
-			<input id="category-style" type="color" name="category[style]" value="{$category.style}">
+			<input id="category-style" type="color" name="category[style]" value="{if empty($category.style)}#ffffff{else}{$category.style}{/if}">
 	    </TD>
 	</TR>
 	<TR>
