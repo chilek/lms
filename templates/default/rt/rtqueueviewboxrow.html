@@ -33,7 +33,11 @@
 	<TD class="valign-middle">
 		<span class="bold">{$ticket.subject|escape|truncate:"100":"..."|default:"&nbsp;"}</span>
 		{foreach $ticket.categories as $tc}
-		<a href="?m=rtqueueview&persistent-filter=-1&catid={$tc.categoryid}&s=-1&priority=all&unread=-1&o=lastmodified,desc" style="{if $tc.style != ''}{$tc.style}{else}{$_CATEGORY_DEFAULT_STYLE}{/if}">{$tc.name}</a>
+			<a href="?m=rtqueueview&persistent-filter=-1&catid={$tc.categoryid}&s=-1&priority=all&unread=-1&o=lastmodified,desc">
+				<div class="lms-ui-category-label"{if !empty($tc.style)} style="background-color: {$tc.style}"{/if}>
+					<div>{$tc.name}</div>
+				</div>
+			</a>
 		{/foreach}
 		{if $ticket.customerid}
 			<br>

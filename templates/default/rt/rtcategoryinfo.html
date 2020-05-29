@@ -39,14 +39,12 @@
             <TD>
                 <IMG src="img/queue.gif" ALT="">
             </TD>
-            <TD class="bold">{trans("Category style:")}
+            <TD class="bold">{trans("<!rt-category>Look:")}
 	    </TD>
             <TD class="bold">
-		{if $category.style}
-			<span style="{$category.style}">{$category.name}</span>
-		{else}
-			<span style="{$_CATEGORY_DEFAULT_STYLE}">{$category.name}</span>
-		{/if}
+				<div class="lms-ui-category-label"{if !empty($category.style)} style="background-color: {$category.style}"{/if}>
+					<div>{$category.name}</div>
+				</div>
             </TD>
         </TR>
 	<TR>
@@ -82,21 +80,26 @@
 	    </TD>
 	</TR>
 	<TR>
-	    <TD COLSPAN="3" class="text-right">
-	        <A HREF="?m=rtqueueview&catid={$category.id}"><IMG src="img/view.gif" alt=""> {trans("Browse")}</A>
-	    	<A HREF="?m=rtcategoryedit&id={$category.id}"><IMG src="img/save.gif" alt=""> {trans("Edit")}</A>
-		<A id="delete-rtcategory" HREF="?m=rtcategorydel&id={$category.id}" data-name="{$category.name}"><IMG src="img/delete.gif" alt=""> {trans("Delete")}</A>
-	    </TD>
+		<TD COLSPAN="3" class="lms-ui-box-buttons">
+			{button icon="view" label="Browse" onclick="location.href = '?m=rtqueueview&catid={$category.id}';"}
+			{button icon="save" label="Edit" onclick="location.href = '?m=rtcategoryedit&id={$category.id}';"}
+			{button id="delete-rtcategory" icon="delete" label="Delete" data_name="{$category.name}"
+				href="?m=rtcategorydel&id={$category.id}" data-name="{$category.name}"}
+		</TD>
 	</TR>
-    </TBODY>
+	</TBODY>
 </TABLE></P>
-	<script>
-		$('#delete-rtcategory').click(function() {
+<script>
+
+	$(function() {
+		$('#delete-rtcategory').click(function () {
 			var name = $(this).attr('data-name');
-			confirmDialog($t("Are you sure, you want to remove category '$a'?", name), this).done(function() {
+			confirmDialog($t("Are you sure, you want to remove category '$a'?", name), this).done(function () {
 				location.href = $(this).attr('href');
 			});
 			return false;
 		});
-	</script>
+	});
+
+</script>
 {/block}

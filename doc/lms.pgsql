@@ -3227,7 +3227,8 @@ CREATE TRIGGER cash_customerbalances_truncate_trigger AFTER TRUNCATE ON cash
 /* ---------------------------------------------------
  Data records
 ------------------------------------------------------*/
-INSERT INTO rtcategories (name, description) VALUES ('default', 'default category');
+INSERT INTO rtcategories (name, description, style) VALUES ('default', 'default category', 'white');
+
 INSERT INTO up_rights(module, name, description)
         VALUES ('info', 'edit_addr_ack', 'Customer can change address information with admin acknowlegment');
 INSERT INTO up_rights(module, name, description)
@@ -3780,6 +3781,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020051300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020052900');
 
 COMMIT;

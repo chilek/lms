@@ -23,6 +23,11 @@
  *  $Id$
  */
 
+$_LANG['show average speed'] = 'pokaż prędkość średnią';
+$_LANG['show maximum speed'] = 'pokaż prędkość maksymalną';
+
+$_LANG['Positions:'] = 'Pozycje:';
+
 $_LANG['link technologies'] = 'technologie łącza';
 $_LANG['service types'] = 'typy usług';
 $_LANG['<!uke-income>Service type'] = 'Typ usługi';
@@ -47,6 +52,8 @@ $_LANG['Ticket parent ID has been set to $a.'] = 'ID zgłoszenia nadrzędnego zo
 $_LANG['Ticket parent ID has been removed.'] = 'ID zgłoszenia nadrzędnego zostało usunięte.';
 $_LANG['Ticket does not exist'] = 'Zgłoszenie nie istnieje';
 $_LANG['Unlink'] = 'Odwiąż';
+$_LANG['<!login>username'] = 'użytkownik';
+$_LANG['<!login>password'] = 'hasło';
 $_LANG['Parent ticket:'] = 'Zgłoszenie nadrzędne:';
 $_LANG['show only parent tickets'] = 'pokaż tylko zgłoszenia nadrzędne';
 $_LANG['Enter ID of parent ticket'] = 'Wprowadź ID zgłoszenia narzędnego';
@@ -1982,8 +1989,10 @@ $_LANG['last $a documents'] = 'ostatnie $a dokumentów';
 $_LANG['Last operation:'] = 'Ostatnia operacja:';
 $_LANG['Limit of records displayed on one page in documents list. Default: 100.'] = 'Limit rekordów na jednej stronie listy dokumentów. Domyślnie: 100.';
 $_LANG['All Documents'] = 'Wszystkie dokumenty';
-$_LANG['Avg. download speed'] = 'Śr. prędkość downloadu';
-$_LANG['Avg. upload speed'] = 'Śr. prędkość uploadu';
+$_LANG['Avg. download speed'] = 'Śr. prędkość pobierania';
+$_LANG['Max. download speed'] = 'Maks. prędkość pobierania';
+$_LANG['Avg. upload speed'] = 'Śr. prędkość wysyłania';
+$_LANG['Max. upload speed'] = 'Maks. prędkość wysyłania';
 $_LANG['Day'] = 'Dzień';
 $_LANG['Documents type. You can use "html" or "pdf". Default: html.'] = 'Typ dokumentów. Możesz użyć "html" lub "pdf". Domyślnie: html.';
 $_LANG['Month:'] = 'Miesiąc:';
@@ -2331,6 +2340,7 @@ $_LANG['Coma-separated list of default invoice printout pages. You can use "orig
 $_LANG['internet'] = 'internet';
 $_LANG['hosting'] = 'hosting';
 $_LANG['service'] = 'usługa';
+$_LANG['transmission'] = 'transmisja';
 $_LANG['Select tariff type'] = 'Wybierz typ taryfy';
 $_LANG['Date from the future not allowed!'] = 'Data z przyszłości nie jest dozwolona!';
 $_LANG['no guarantee'] = 'brak';
@@ -2607,7 +2617,7 @@ $_LANG['without document'] = 'bez dokumentu';
 $_LANG['comment'] = 'komentarz';
 $_LANG['$a records for deleted nodes have been removed.<BR>'] = '$a rekordów nieistniejących komputerów zostało usuniętych.<BR>';
 $_LANG['- select category -'] = '- wybierz kategorię -';
-$_LANG['Category style:'] = 'Styl kategorii:';
+$_LANG['<!rt-category>Look:'] = 'Wygląd:';
 $_LANG['Enter category CSS style (optional):'] = 'Wprowadź styl CSS kategorii (opcjonalnie):';
 $_LANG['Available<!plural>:'] = 'Dostępne:';
 $_LANG['Selected<!plural>:'] = 'Wybrane:';
@@ -2991,6 +3001,7 @@ $_LANG['Promotion Info: $a'] = 'Informacje o promocji: $a';
 $_LANG['Promotion name is required!'] = 'Nazwa promocji jest wymagana!';
 $_LANG['Schemas:'] = 'Schematy:';
 $_LANG['Schema\'s Tariffs ($a):'] = 'Taryfy schematu ($a)';
+$_LANG['Edit schema tariffs'] = 'Edytuj taryfy schematu';
 $_LANG['Schema Edit: $a'] = 'Edycja schematu: $a';
 $_LANG['Schema Info: $a'] = 'Informacje o schemacie: $a';
 $_LANG['Schema name is required!'] = 'Nazwa schematu jest wymagana!';
@@ -3686,6 +3697,8 @@ $_LANG['Document number and PIN'] = 'Numer dokumentu i PIN';
 $_LANG['Customer e-mail and PIN'] = 'E-mail klienta i PIN';
 $_LANG['Document number:'] = 'Numer dokumentu:';
 $_LANG['Customer e-mail:'] = 'E-mail klienta:';
+$_LANG['SSN/TEN:'] = 'PESEL/NIP:';
+$_LANG['SSN/TEN and PIN'] = 'PESEL/NIP i PIN';
 
 $_LANG['without contracts'] = 'bez umów';
 $_LANG['Without Contracts'] = 'bez umów';
@@ -4726,3 +4739,10 @@ $_LANG['Apply'] = 'Zastosuj';
 $_LANG['Warnings'] = 'Ostrzeżenia';
 $_LANG['Customer groups'] = 'Grupy klientów';
 $_LANG['Customer consents'] = 'Zgody klientów';
+
+$_LANG['Attachment gallery'] = 'Galeria załączników';
+$_LANG['Show ticket attached image gallery'] = 'Pokaż galerię obrazków załączonych do zgłoszenia';
+
+$_LANG['- no tax rates defined -'] = '- brak zdefiniowanych stawek podatkowych -';
+
+$_LANG['Document does not exist!'] = 'Dokument nie istnieje!';

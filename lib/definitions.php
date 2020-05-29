@@ -153,8 +153,6 @@ $CONFIG_TYPES = array(
     CONFIG_TYPE_DATE_FORMAT => trans('date format'),
 );
 
-$CATEGORY_DEFAULT_STYLE = 'border: 1px black solid; color: black; background: #FFFFFF; padding: 1px; text-decoration: none;';
-
 // Helpdesk ticket status
 define('RT_NEW', 0);
 define('RT_OPEN', 1);
@@ -1149,7 +1147,6 @@ if (isset($SMARTY)) {
     $SMARTY->assign('_EVENTTYPES', $EVENTTYPES);
     $SMARTY->assign('_EVENTSTYLES', $EVENTSTYLES);
     $SMARTY->assign('_SESSIONTYPES', $SESSIONTYPES);
-    $SMARTY->assign('_CATEGORY_DEFAULT_STYLE', $CATEGORY_DEFAULT_STYLE);
     $SMARTY->assign('_EXISTINGASSIGNMENTS', $EXISTINGASSIGNMENTS);
     $SMARTY->assign('_CURRENCIES', $CURRENCIES);
     $SMARTY->assign('_TAX_CATEGORIES', $TAX_CATEGORIES);
