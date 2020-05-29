@@ -1237,6 +1237,17 @@ table.lmsbox {
 			}
 		}
 	}
+	&.lms-ui-tab-container {
+		margin-top: 0.7em;
+		& > thead {
+			background-color: @superdark;
+			& > .lmsbox-titlebar i {
+				width: 1.3em;
+				text-align: center;
+				margin-right: 0.5em;
+			}
+		}
+	}
 }
 
 table.lmsbox {
@@ -2136,11 +2147,12 @@ div.lms-ui-wysiwyg-editor {
 	}
 }
 
-.lms-ui-tab-container {
+div.lms-ui-tab-container {
 	display: flex;
 	flex-direction: column;
 	justify-items: flex-start;
 	border: @frame;
+	margin-top: 0.7em;
 	&:not(:last-child) {
 		margin-bottom: 0.3em;
 	}
@@ -2149,7 +2161,7 @@ div.lms-ui-wysiwyg-editor {
 		display: flex;
 		flex-direction: row;
 		justify-content: space-between;
-		background-color: @dark;
+		background-color: @superdark;
 		padding: 0.2em;
 		cursor: pointer;
 
