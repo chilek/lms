@@ -77,7 +77,9 @@ class LMS
 
         $this->cache = new LMSCache();
 
-        self::$lms = $this;
+        if (!isset(self::$lms)) {
+            self::$lms = $this;
+        }
     }
 
     public static function getSoftwareRevision()
