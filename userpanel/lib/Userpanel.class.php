@@ -88,7 +88,8 @@ class USERPANEL
         return false;
     }
 
-    public function RemoveModule($module) {
+    public function RemoveModule($module)
+    {
         if (!empty($module)) {
             if (isset($this->MODULES[$module])) {
                 unset($this->MODULES[$module]);
