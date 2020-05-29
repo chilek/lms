@@ -42,7 +42,7 @@ if (!empty($categories)) {
         if (!isset($color)) {
             $color = findCssProperty($category['style'], 'background');
             if (!isset($color)) {
-                $color = 'white';
+                $color = '#ffffff';
             }
         }
         $this->Execute("UPDATE rtcategories SET style = ? WHERE id = ?", array($color, $category['id']));
