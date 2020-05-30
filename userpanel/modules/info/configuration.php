@@ -31,11 +31,12 @@ $USERPANEL->AddModule(
     10,         // Priority
     trans('This module is for showing basic informations about current logged customer'),   // Description
     array(      // Array of submenus in LMS
-                array(
-                'name' => trans('Changes affirmation'),
-                'link' => '?m=userpanel&module=info&f=changes',
-                'tip' => trans('Customers\' changes in info module'),
-                'prio' => 30,
-            ),
-            )
+        array(
+            'name' => trans('Changes affirmation'),
+            'link' => '?m=userpanel&module=info&f=changes',
+            'tip' => trans('Customers\' changes in info module'),
+            'prio' => 30,
+        ),
+    ),
+    'lms-ui-icon-documentation'
 );

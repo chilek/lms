@@ -29,5 +29,7 @@ $USERPANEL->AddModule(
     'helpdesk',     // Module name - must be the same as directory name
     trans('Allows you to contact with network administrator'), // Tip
     70,         // Priority
-    trans('This module allows your customers to contact with you')  // Description
+    trans('This module allows your customers to contact with you'), // Description
+    '', //Submenu
+    'lms-ui-icon-helpdesk' //icon
 );
