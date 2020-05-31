@@ -50,6 +50,7 @@ $_LANG['Login'] = 'Zaloguj się';
 $_LANG['Basic Configuration:'] = 'Konfiguracja podstawowa:';
 $_LANG['modern'] = 'nowoczesny';
 $_LANG['Module'] = 'Moduł';
+$_LANG['Startup module:'] = 'Moduł startowy:';
 $_LANG['Module <b>$a</b> not found!'] = 'Moduł <b>$a</b> nie odnaleziony!';
 $_LANG['Module Configuration:'] = 'Konfiguracja modułu:';
 $_LANG['monthly'] = 'miesięcznie';

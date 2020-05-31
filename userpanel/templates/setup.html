@@ -64,6 +64,20 @@
             </TD>
         </TR>
         <TR>
+            <TD scope="col" class="text-left nobr">
+                {trans("Startup module:")}
+            </TD>
+            <TD scope="col">
+		    <SELECT name="startupmodule" SIZE="1">
+                    {foreach from=$menu item=$m}
+                        {if $m.module !== "logout"}
+                        <OPTION value="{$m.module}" {if $startupmodule == $m.module}selected{/if}>{$m.name}</OPTION>
+                        {/if}
+                    {/foreach}
+                </SELECT>
+            </TD>
+        </TR>
+        <TR>
             <TD scope="col" class="nobr">
                 {trans("Hint style:")}
             </TD>

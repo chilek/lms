@@ -218,6 +218,7 @@ $SMARTY->assignByRef('_ui_language', $LMS->ui_lang);
 $SMARTY->assignByRef('_language', $LMS->lang);
 $SMARTY->setTemplateDir(null);
 $style = ConfigHelper::getConfig('userpanel.style', 'default');
+$startupmodule = ConfigHelper::getConfig('userpanel.startup_module', 'info');
 $SMARTY->addTemplateDir(array(
     USERPANEL_DIR . DIRECTORY_SEPARATOR . 'style' . DIRECTORY_SEPARATOR .  $style . DIRECTORY_SEPARATOR . 'templates',
     USERPANEL_DIR . DIRECTORY_SEPARATOR . 'templates',
@@ -294,20 +295,10 @@ if ($SESSION->islogged) {
                 $SMARTY->display('error.html');
         }
     } elseif ($module=='') {
-        // if no module selected, redirect on module with lowest prio
-        $redirectmodule = 'nomodulesfound';
-        $redirectprio = 999;
-        foreach ($USERPANEL->MODULES as $menupos) {
-            if ($redirectprio > $menupos['prio']) {
-                $redirectmodule = $menupos['module'];
-                $redirectprio = $menupos['prio'];
-            }
-        }
-        if ($redirectmodule == 'nomodulesfound') {
-                $layout['error'] = trans('No modules found!');
-                $SMARTY->display('error.html');
+        if (!empty($module)) {
+            header('Location: ?m=' . $module);
         } else {
-            header('Location: ?m='.$redirectmodule);
+            header('Location: ?m=' . $startupmodule);
         }
     } else {
         $layout['error'] = trans('Module <b>$a</b> not found!', $module);

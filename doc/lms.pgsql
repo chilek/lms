@@ -3450,6 +3450,7 @@ URL: %url
 ('userpanel', 'hide_archived_documents', 'false', '', 0),
 ('userpanel', 'sms_credential_reminders', 'true', '', 0),
 ('userpanel', 'mail_credential_reminders', 'true', '', 0),
+('userpanel', 'startup_module', 'info', '', 0),
 ('directories', 'userpanel_dir', 'userpanel', '', 0);
 
 INSERT INTO invprojects (name, type) VALUES ('inherited', 1);
