@@ -564,7 +564,7 @@ define('DOC_OTHER', -128);
 
 
 $DOCTYPES = array(
-    DOC_OFFER		=>	trans('offer'),
+    DOC_OFFER           =>      trans('offer'),
     DOC_BILLING         =>      trans('billing'),
     DOC_INVOICE         =>      trans('invoice'),
     DOC_INVOICE_PRO     =>      trans('pro-forma invoice'),
