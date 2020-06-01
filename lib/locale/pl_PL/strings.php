@@ -4759,4 +4759,4 @@ $_LANG['- no tax rates defined -'] = '- brak zdefiniowanych stawek podatkowych -
 
 $_LANG['Document does not exist!'] = 'Dokument nie istnieje!';
 
-$_LANG['Visible panels:'] = 'Widoczne panele:';
+$_LANG['Visible tabs:'] = 'Widoczne zakładki:';

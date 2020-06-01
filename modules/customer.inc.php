@@ -34,15 +34,15 @@ if ($layout['module'] != 'customeredit') {
     $SMARTY->assignByRef('customerinfo', $customerinfo);
 }
 
-if (!is_array($visible_panels) || in_array('customerassignments', $visible_panels)) {
+if (!isset($resource_tabs['customerassignments']) || $resource_tabs['customerassignments']) {
     $commited             = !empty($_GET['commited']) ? true : false;
     $assignments = $LMS->GetCustomerAssignments($customerid, true, false);
 }
-if (!is_array($visible_panels) || in_array('customergroups', $visible_panels)) {
+if (!isset($resource_tabs['customergroups']) || $resource_tabs['customergroups']) {
     $customergroups = $LMS->CustomergroupGetForCustomer($customerid);
     $othercustomergroups = $LMS->GetGroupNamesWithoutCustomer($customerid);
 }
-if (!is_array($visible_panels) || in_array('customerbalancebox', $visible_panels)) {
+if (!isset($resource_tabs['customerbalancebox']) || $resource_tabs['customerbalancebox']) {
     if (isset($_GET['aggregate_documents'])) {
         $aggregate_documents = !empty($_GET['aggregate_documents']);
     } else {
@@ -51,10 +51,10 @@ if (!is_array($visible_panels) || in_array('customerbalancebox', $visible_panels
 
     $balancelist = $LMS->GetCustomerBalanceList($customerid, null, 'ASC', $aggregate_documents);
 }
-if (!is_array($visible_panels) || in_array('customervoipaccountsbox', $visible_panels)) {
+if (!isset($resource_tabs['customervoipaccountsbox']) || $resource_tabs['customervoipaccountsbox']) {
     $customervoipaccounts = $LMS->GetCustomerVoipAccounts($customerid);
 }
-if (!is_array($visible_panels) || in_array('customerdocuments', $visible_panels)) {
+if (!isset($resource_tabs['customerdocuments']) || $resource_tabs['customerdocuments']) {
     $documents = $LMS->GetDocuments($customerid, 10);
 
     if (!empty($documents)) {
@@ -64,10 +64,10 @@ if (!is_array($visible_panels) || in_array('customerdocuments', $visible_panels)
 }
 $taxeslist            = $LMS->GetTaxes();
 $allnodegroups        = $LMS->GetNodeGroupNames();
-if (!is_array($visible_panels) || in_array('customermessages', $visible_panels)) {
+if (!isset($resource_tabs['customermessages']) || $resource_tabs['customermessages']) {
     $messagelist = $LMS->GetMessages($customerid);
 }
-if (!is_array($visible_panels) || in_array('customerevents', $visible_panels)) {
+if (!isset($resource_tabs['customerevents']) || $resource_tabs['customerevents']) {
     $params = array(
         'customerid' => $customerid,
     );
@@ -81,10 +81,10 @@ if (!is_array($visible_panels) || in_array('customerevents', $visible_panels)) {
     }
     $eventlist = $LMS->EventSearch($params, 'date,desc', true);
 }
-if (!is_array($visible_panels) || in_array('customernodesbox', $visible_panels)) {
+if (!isset($resource_tabs['customernodesbox']) || $resource_tabs['customernodesbox']) {
     $customernodes = $LMS->GetCustomerNodes($customerid);
 }
-if (!is_array($visible_panels) || in_array('customernetnodes', $visible_panels)) {
+if (!isset($resource_tabs['customernetnodes']) || $resource_tabs['customernetnodes']) {
     $customernetnodes = $LMS->GetCustomerNetNodes($customerid);
 }
 
@@ -103,7 +103,7 @@ if (!empty($assignments)) {
     }
 }
 
-if (!is_array($visible_panels) || in_array('customernetworksbox', $visible_panels)) {
+if (!isset($resource_tabs['customernetworksbox']) || $resource_tabs['customernetworksbox']) {
     $customernetworks = $LMS->GetCustomerNetworks($customerid, 10);
 }
 
@@ -120,7 +120,7 @@ $customerstats = array(
     'accounts' => $DB->GetOne('SELECT COUNT(*) FROM passwd WHERE ownerid = ?', array($customerid))
 );
 
-if (!is_array($visible_panels) || in_array('customerdevices', $visible_panels)) {
+if (!isset($resource_tabs['customerdevices']) || $resource_tabs['customerdevices']) {
     $customerdevices = $LMS->GetNetDevList('name,asc', array('ownerid' => intval($customerid)));
     unset($customerdevices['total']);
     unset($customerdevices['order']);
@@ -132,7 +132,7 @@ if (!is_array($visible_panels) || in_array('customerdevices', $visible_panels)) 
     }
 }
 
-if (!is_array($visible_panels) || in_array('transactions', $visible_panels)) {
+if (!isset($resource_tabs['transactions']) || $resource_tabs['transactions']) {
     if ($SYSLOG && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.transaction_logs'))) {
         $trans = $SYSLOG->GetTransactions(array('key' => SYSLOG::getResourceKey(SYSLOG::RES_CUST), 'value' => $customerid, 'limit' => 300));
         if (!empty($trans)) {

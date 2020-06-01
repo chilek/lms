@@ -788,25 +788,25 @@ class LMSSmartyPlugins
         }
     }
 
-    public static function visiblePanelSelectorFunction($params, $template)
+    public static function resourceTabSelectorFunction($params, $template)
     {
         $layout = $template->getTemplateVars('layout');
-        $visible_panels = $template->getTemplateVars('visible_panels');
+        $resource_tabs = $template->getTemplateVars('resource_tabs');
 
         return '
-            <form name="visible-panel-selector-form" id="visible-panel-selector-form">
-                <input type="hidden" id="visible-panel-selector-module" value="' . $layout['module'] . '">'
-                . (isset($visible_panels)
-                    ? '<input type="hidden" id="visible-panel-selector-selected" value="' . $visible_panels . '">'
+            <form name="resource-tab-selector-form" id="resource-tab-selector-form">
+                <input type="hidden" id="resource-tab-module" value="' . $layout['module'] . '">'
+                . (isset($resource_tabs)
+                    ? '<input type="hidden" id="resource-tab-states" value="' . $resource_tabs . '">'
                     : '') . '
             </form>
-            <div id="lms-ui-visible-panel-selector-container">
+            <div id="lms-ui-resource-tab-selector-container">
                 <div>
-                    ' . trans("Visible panels:") . '
+                    ' . trans("Visible tabs:") . '
                 </div>
-                <select id="visible-panel-selector" name="visible-panels[]" form="visible-panel-selector-form" onchange="visiblePanelSelectorChanged()" multiple>
+                <select id="resource-tab-selector" name="resource-tabs[]" form="resource-tab-selector-form" onchange="resourceTabSelectorChanged()" multiple>
                 </select>
             </div>
-            <script src="js/lms-ui-visible-panel-selector.js"></script>';
+            <script src="js/lms-ui-resource-tab-selector.js"></script>';
     }
 }

@@ -22,28 +22,38 @@
  *  $Id$
  */
 
-function visiblePanelSelectorChanged() {
-    var visible_panels = [];
-    $('[name="visible-panels[]"]:checked').each(function() {
-        visible_panels.push($(this).val());
+function resourceTabSelectorChanged() {
+    var tabs = [];
+    $('[name="resource-tabs[]"]').each(function() {
+        tabs.push($(this).val() + ':' + ($(this).prop('checked') ? 1 : 0));
     });
     var params = {};
-    params[$("#visible-panel-selector-module").val() + "-visible-panels"] = visible_panels.join(';');
+    params[$("#resource-tab-module").val() + "-resource-tabs"] = tabs.join(';');
     savePersistentSettings(params).done(function() {
         location.reload();
     });
 }
 
 (function() {
+    var tabs = $("#resource-tab-states");
+    var visible_tabs = [];
+    var hidden_tabs = []
+    $.each(tabs.length ? tabs.val().split(';') : [], function(index, tab_state) {
+        var elem = tab_state.split(':');
+        if (parseInt(elem[1])) {
+            visible_tabs.push(elem[0]);
+        } else {
+            hidden_tabs.push(elem[0]);
+        }
+    });
+
     var options = '';
-    var visible_panels = $("#visible-panel-selector-selected");
-    var visible_panels_selected = visible_panels.length ? visible_panels.val().split(';') : '';
     $('.lms-ui-tab-container[data-label]').each(function () {
         var id = $(this).attr('id');
         if (!id) {
             return;
         }
-        var visible = !visible_panels.length || visible_panels_selected.indexOf(id) != -1;
+        var visible = visible_tabs.indexOf(id) != -1 || hidden_tabs.indexOf(id) == -1;
         $("#" + id).toggle(visible);
         options += '<option value="' + id + '"' +
             (visible ? ' selected' : '') +
@@ -52,11 +62,11 @@ function visiblePanelSelectorChanged() {
 
     if (options.length) {
         $(function() {
-            $('#visible-panel-selector').html(options);
+            $('#resource-tab-selector').html(options);
 
-            init_multiselects("#visible-panel-selector");
+            init_multiselects("#resource-tab-selector");
 
-            $('#lms-ui-visible-panel-selector-container').show();
+            $('#lms-ui-resource-tab-selector-container').show();
         });
     }
 })();

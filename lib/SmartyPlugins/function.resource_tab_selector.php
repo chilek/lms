@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function smarty_function_visible_panel_selector($params, $template)
+function smarty_function_resource_tab_selector($params, $template)
 {
-    return LMSSmartyPlugins::visiblePanelSelectorFunction($params, $template);
+    return LMSSmartyPlugins::resourceTabSelectorFunction($params, $template);
 }

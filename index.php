@@ -373,9 +373,20 @@ if ($AUTH->islogged) {
                     $SMARTY->assign('persistent_filter', $filter['persistent_filter']);
                 }
 
-                // visible panel toggle support
-                $visible_panels = $SESSION->get_persistent_setting($layout['module'] . '-visible-panels');
-                $SMARTY->assign('visible_panels', $visible_panels);
+                // tab visibility toggle support
+                $resource_tabs = $SESSION->get_persistent_setting($layout['module'] . '-resource-tabs');
+                $SMARTY->assign('resource_tabs', $resource_tabs);
+                if (!empty($resource_tabs)) {
+                    $resource_tabs = explode(';', $resource_tabs);
+                    $all_tabs = array();
+                    foreach ($resource_tabs as $resource_tab) {
+                        list ($resource_tab_id, $resource_tab_state) = explode(':', $resource_tab);
+                        $all_tabs[$resource_tab_id] = intval($resource_tab_state) != 0;
+                    }
+                    $resource_tabs = $all_tabs;
+                } else {
+                    $resource_tabs = array();
+                }
 
                 // preset error and warning smarty variable
                 // they can be easily filled later in modules
