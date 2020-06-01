@@ -723,7 +723,7 @@ class LMSSmartyPlugins
         }
     }
 
-    public static function blockButtons($params, $content, $template, $repeat)
+    public static function buttonsBlock($params, $content, $template, $repeat)
     {
         if (!$repeat) {
             return '<div class="lms-ui-responsive-buttons">' . self::buttonFunction(
@@ -739,5 +739,74 @@ class LMSSmartyPlugins
         } else {
             return '';
         }
+    }
+
+    public static function boxContainerBlock($params, $content, $template, $repeat)
+    {
+        if (!$repeat) {
+            $id = isset($params['id']) ? $params['id'] : null;
+
+            $data_attributes = '';
+            foreach ($params as $name => $value) {
+                if (strpos($name, 'data_') === 0) {
+                    $data_attributes .= ' ' . str_replace('_', '-', $name) . '=\'' . $value . '\'';
+                }
+            }
+
+            return '
+                <div' . ($id ? ' id="' . $id . '"' : '')
+                    . $data_attributes
+                    . ' class="lms-ui-box-container">'
+                    . $content . '
+                </div>';
+        } else {
+            return '';
+        }
+    }
+
+
+    public static function tabContainerBlock($params, $content, $template, $repeat)
+    {
+        if (!$repeat) {
+            $id = isset($params['id']) ? $params['id'] : null;
+            $label = isset($params['label']) ? trans($params['label']) : null;
+
+            $data_attributes = '';
+            foreach ($params as $name => $value) {
+                if (strpos($name, 'data_') === 0) {
+                    $data_attributes .= ' ' . str_replace('_', '-', $name) . '=\'' . $value . '\'';
+                }
+            }
+
+            return '
+                <div' . ($id ? ' id="' . $id . '"' : '')
+                    . (isset($label) ? ' data-label="' . $label . '"' : '')
+                    . $data_attributes
+                    . ' class="lms-ui-tab-container lms-ui-sortable">'
+                    . $content . '
+                </div>';
+        }
+    }
+
+    public static function visiblePanelSelectorFunction($params, $template)
+    {
+        $layout = $template->getTemplateVars('layout');
+        $visible_panels = $template->getTemplateVars('visible_panels');
+
+        return '
+            <form name="visible-panel-selector-form" id="visible-panel-selector-form">
+                <input type="hidden" id="visible-panel-selector-module" value="' . $layout['module'] . '">'
+                . (isset($visible_panels)
+                    ? '<input type="hidden" id="visible-panel-selector-selected" value="' . $visible_panels . '">'
+                    : '') . '
+            </form>
+            <div id="lms-ui-visible-panel-selector-container">
+                <div>
+                    ' . trans("Visible panels:") . '
+                </div>
+                <select id="visible-panel-selector" name="visible-panels[]" form="visible-panel-selector-form" onchange="visiblePanelSelectorChanged()" multiple>
+                </select>
+            </div>
+            <script src="js/lms-ui-visible-panel-selector.js"></script>';
     }
 }

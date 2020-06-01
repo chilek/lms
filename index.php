@@ -373,6 +373,10 @@ if ($AUTH->islogged) {
                     $SMARTY->assign('persistent_filter', $filter['persistent_filter']);
                 }
 
+                // visible panel toggle support
+                $visible_panels = $SESSION->get_persistent_setting($layout['module'] . '-visible-panels');
+                $SMARTY->assign('visible_panels', $visible_panels);
+
                 // preset error and warning smarty variable
                 // they can be easily filled later in modules
                 $SMARTY->assignByRef('error', $error);

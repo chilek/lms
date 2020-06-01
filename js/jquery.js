@@ -23,7 +23,7 @@
  */
 
 function savePersistentSettings(data) {
-	$.ajax('?m=persistentsetting', {
+	return $.ajax('?m=persistentsetting', {
 		async: true,
 		method: 'POST',
 		data: data,

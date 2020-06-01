@@ -10,7 +10,7 @@
 {if ConfigHelper::checkConfig('phpui.ewx_support')}{assign var=ewx value=1}{else}{assign var=ewx value=0}{/if}
 {assign var=today value=$today|date_format:"%s"}
 
-{tab_container id="customernodesbox"}
+{tab_container id="customernodesbox" label="Customer Nodes"}
 
 	{tab_header content_id="nodespanel-`$layout.module`"}
 		{tab_header_cell icon="lms-ui-icon-node"}

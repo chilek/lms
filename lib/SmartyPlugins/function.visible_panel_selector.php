@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function smarty_block_box_container($params, $content, $template, $repeat)
+function smarty_function_visible_panel_selector($params, $template)
 {
-    return LMSSmartyPlugins::boxContainerBlock($params, $content, $template, $repeat);
+    return LMSSmartyPlugins::visiblePanelSelectorFunction($params, $template);
 }

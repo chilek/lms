@@ -56,9 +56,13 @@
 	{include file="customer/customeractions.html"}
 {/block}
 </div>
-<script type="text/javascript">
-<!--
+
+<script>
+
 	restoreSortable('customerinfo-sortable', '{$customerinfo_sortable_order}');
-//-->
+
 </script>
+
+{visible_panel_selector}
+
 {/block}
