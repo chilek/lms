@@ -553,16 +553,18 @@ define('DOC_BREACH', -6);
 define('DOC_PAYMENTBOOK', -7);
 define('DOC_PAYMENTSUMMONS', -8);
 define('DOC_PAYMENTPRESUMMONS', -9);
-define('DOC_OTHER', -128);
 define('DOC_BILLING', -10);
 define('DOC_PRICELIST', -11);
 define('DOC_PROMOTION', -12);
 define('DOC_WARRANTY', -13);
 define('DOC_REGULATIONS', -14);
 define('DOC_CONF_FILE', -15);
+define('DOC_OFFER', -16);
+define('DOC_OTHER', -128);
 
 
 $DOCTYPES = array(
+    DOC_OFFER		=>	trans('offer'),
     DOC_BILLING         =>      trans('billing'),
     DOC_INVOICE         =>      trans('invoice'),
     DOC_INVOICE_PRO     =>      trans('pro-forma invoice'),
@@ -571,12 +573,12 @@ $DOCTYPES = array(
     DOC_CNOTE       =>  trans('credit note'), // faktura korygujaca
 //    DOC_CMEMO     =>  trans('credit memo'), // nota korygujaca
     DOC_DNOTE       =>  trans('debit note'), // nota obciazeniowa/debetowa/odsetkowa
-    DOC_CONTRACT        =>      trans('contract'),
-    DOC_ANNEX       =>  trans('annex'),
-    DOC_PROTOCOL        =>      trans('protocol'),
-    DOC_ORDER       =>  trans('order'),
+    DOC_CONTRACT        =>      trans('contract'), //umowa
+    DOC_ANNEX       =>  trans('annex'), //aneks umowy
+    DOC_PROTOCOL        =>      trans('protocol'), //protokol uruchomienia
+    DOC_ORDER       =>  trans('order'), //zamowienie
     DOC_SHEET       =>  trans('customer sheet'), // karta klienta
-    DOC_BREACH      =>  trans('contract termination'),
+    DOC_BREACH      =>  trans('contract termination'), //rozwiazanie umowy
     DOC_PAYMENTBOOK  => trans('payments book'), // ksiazeczka oplat
     DOC_PAYMENTSUMMONS  => trans('payment summons'), // wezwanie do zapłaty
     DOC_PAYMENTPRESUMMONS  => trans('payment pre-summons'), // przedsądowe wezw. do zapłaty
