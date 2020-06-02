@@ -357,6 +357,7 @@ define('RT_TYPE_REMOVE', 8);
 define('RT_TYPE_OTHER', 9);
 define('RT_TYPE_CONF', 10);
 define('RT_TYPE_PAYMENT', 11);
+define('RT_TYPE_TRANSFER', 12);
 
 
 $RT_TYPES = array(
@@ -414,6 +415,11 @@ $RT_TYPES = array(
         'label' => trans('Payment'),
         'class' => 'lms-ui-rt-ticket-type-payment',
         'name' => 'RT_TYPE_PAYMENT'
+    ),
+    RT_TYPE_TRANSFER => array(
+        'label' => trans('Transfer service'),
+        'class' => 'lms-ui-rt-ticket-type-transfer',
+        'name' => 'RT_TYPE_TRANSFER'
     ),
 );
 
