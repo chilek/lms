@@ -791,7 +791,7 @@ class LMSSmartyPlugins
     public static function resourceTabSelectorFunction($params, $template)
     {
         $layout = $template->getTemplateVars('layout');
-        $resource_tabs = $template->getTemplateVars('resource_tabs');
+        $resource_tabs = $template->getTemplateVars('serialized_resource_tabs');
 
         return '
             <form name="resource-tab-selector-form" id="resource-tab-selector-form">

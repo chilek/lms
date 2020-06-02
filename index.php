@@ -375,7 +375,7 @@ if ($AUTH->islogged) {
 
                 // tab visibility toggle support
                 $resource_tabs = $SESSION->get_persistent_setting($layout['module'] . '-resource-tabs');
-                $SMARTY->assign('resource_tabs', $resource_tabs);
+                $SMARTY->assign('serialized_resource_tabs', $resource_tabs);
                 if (!empty($resource_tabs)) {
                     $resource_tabs = explode(';', $resource_tabs);
                     $all_tabs = array();
@@ -387,6 +387,7 @@ if ($AUTH->islogged) {
                 } else {
                     $resource_tabs = array();
                 }
+                $SMARTY->assign('resource_tabs', $resource_tabs);
 
                 // preset error and warning smarty variable
                 // they can be easily filled later in modules
