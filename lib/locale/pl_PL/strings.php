@@ -122,6 +122,7 @@ $_LANG['Deinstalation'] = 'Demontaż';
 $_LANG['Modification'] = 'Modyfikacja';
 $_LANG['Start service'] = 'Uruchomienie usługi';
 $_LANG['Hold service'] = 'Wstrzymanie usługi';
+$_LANG['Transfer service'] = 'Przeniesienie usługi';
 $_LANG['Overdue events'] = 'Zaległe zdarzenia';
 $_LANG['Overdue events assigned to You'] = 'Zaległe zdarzenia przypisane do Ciebie';
 $_LANG['Copy'] = 'Kopiuj';
