@@ -284,30 +284,20 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             }
         }
 
-        switch ($owner) {
-            case '-3':
-                $ownerfilter = ' AND (t.owner IS NULL OR t.owner = '. Auth::GetCurrentUser() .')';
-                break;
-            case '-2':
+        if (!empty($owner) && !in_array('all', $owner)) {
+            if (in_array('-3', $owner)) {
+                $ownerfilter = ' AND (t.owner IS NULL OR t.owner = ' . Auth::GetCurrentUser() . ')';
+            } elseif (in_array('-2', $owner)) {
                 $ownerfilter = ' AND t.owner IS NOT NULL';
-                break;
-            case '-1':
-                $ownerfilter = ' AND t.owner IS NULL';
-                break;
-            case 'all':
-                $ownerfilter = '';
-                break;
-            default:
-                if (!empty($owner)) {
-                    if (is_array($owner)) {
-                        $ownerfilter = ' AND t.owner IN (' . implode(',', $owner) . ') ';
-                    } else {
-                        $ownerfilter = ' AND t.owner = ' . $owner;
-                    }
+            } elseif (in_array('-1', $owner)) {
+                if (count($owner) == 1) {
+                    $ownerfilter = ' AND t.owner IS NULL';
                 } else {
-                    $ownerfilter = '';
+                    $ownerfilter = ' AND (t.owner IS NULL OR t.owner IN (' . implode(',', $owner) . ')) ';
                 }
-                break;
+            } else {
+                $ownerfilter = ' AND t.owner IN (' . implode(',', $owner) . ') ';
+            }
         }
 
         if (!empty($deadline)) {

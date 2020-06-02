@@ -26,6 +26,8 @@ version 26-git (????-??-??):
     definition [chilan]
   - improvement: voip account password generation link near password form field [chilan]
   - enhancement: implemented visibility toggle of customer/node panels/tabs/boxes [chilan]
+  - improvement: allow to use ticket filter owner option 'no owner' together with 
+    selected user in helpdesk [interduo]
 
 version 25.0 (2020-05-15):
 
