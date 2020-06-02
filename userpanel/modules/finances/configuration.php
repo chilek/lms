@@ -29,5 +29,7 @@ $USERPANEL->AddModule(
     'finances',         // Module name - must be the same as directory name
     trans('Show your financial operations'), // Tip
     20,         // Priority
-    trans('This module is for showing financial informations, printing invoices')   // Description
+    trans('This module is for showing financial informations, printing invoices'),  // Description
+    '',
+    'lms-ui-icon-money'
 );

@@ -26,5 +26,5 @@
 
 function smarty_block_buttons($params, $content, $template, $repeat)
 {
-    return LMSSmartyPlugins::blockButtons($params, $content, $template, $repeat);
+    return LMSSmartyPlugins::buttonsBlock($params, $content, $template, $repeat);
 }

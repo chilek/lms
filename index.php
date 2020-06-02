@@ -34,6 +34,7 @@ $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIREC
 define('START_TIME', microtime(true));
 define('LMS-UI', true);
 define('K_TCPDF_EXTERNAL_CONFIG', true);
+define('K_TCPDF_CALLS_IN_HTML', true);
 ini_set('error_reporting', E_ALL&~E_NOTICE);
 
 // find alternative config files:
@@ -370,6 +371,21 @@ if ($AUTH->islogged) {
                 // restore selected persistent filter info
                 if (isset($filter['persistent_filter'])) {
                     $SMARTY->assign('persistent_filter', $filter['persistent_filter']);
+                }
+
+                // tab visibility toggle support
+                $resource_tabs = $SESSION->get_persistent_setting($layout['module'] . '-resource-tabs');
+                $SMARTY->assign('resource_tabs', $resource_tabs);
+                if (!empty($resource_tabs)) {
+                    $resource_tabs = explode(';', $resource_tabs);
+                    $all_tabs = array();
+                    foreach ($resource_tabs as $resource_tab) {
+                        list ($resource_tab_id, $resource_tab_state) = explode(':', $resource_tab);
+                        $all_tabs[$resource_tab_id] = intval($resource_tab_state) != 0;
+                    }
+                    $resource_tabs = $all_tabs;
+                } else {
+                    $resource_tabs = array();
                 }
 
                 // preset error and warning smarty variable

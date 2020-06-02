@@ -1,9 +1,9 @@
 <?php
 
-/*
- *  LMS version 1.11-git
+/**
+ * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,19 +24,7 @@
  *  $Id$
  */
 
-$USERPANEL->AddModule(
-    trans('Info'),    // Display name
-    'info',         // Module name - must be the same as directory name
-    trans('Show basic informations about you'), // Tip
-    10,         // Priority
-    trans('This module is for showing basic informations about current logged customer'),   // Description
-    array(      // Array of submenus in LMS
-        array(
-            'name' => trans('Changes affirmation'),
-            'link' => '?m=userpanel&module=info&f=changes',
-            'tip' => trans('Customers\' changes in info module'),
-            'prio' => 30,
-        ),
-    ),
-    'lms-ui-icon-documentation'
-);
+function smarty_function_resource_tab_selector($params, $template)
+{
+    return LMSSmartyPlugins::resourceTabSelectorFunction($params, $template);
+}

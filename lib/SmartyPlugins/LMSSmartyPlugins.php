@@ -723,7 +723,7 @@ class LMSSmartyPlugins
         }
     }
 
-    public static function blockButtons($params, $content, $template, $repeat)
+    public static function buttonsBlock($params, $content, $template, $repeat)
     {
         if (!$repeat) {
             return '<div class="lms-ui-responsive-buttons">' . self::buttonFunction(
@@ -739,5 +739,77 @@ class LMSSmartyPlugins
         } else {
             return '';
         }
+    }
+
+    public static function boxContainerBlock($params, $content, $template, $repeat)
+    {
+        if (!$repeat) {
+            $id = isset($params['id']) ? $params['id'] : null;
+
+            $data_attributes = '';
+            foreach ($params as $name => $value) {
+                if (strpos($name, 'data_') === 0) {
+                    $data_attributes .= ' ' . str_replace('_', '-', $name) . '=\'' . $value . '\'';
+                }
+            }
+
+            return '
+                <div' . ($id ? ' id="' . $id . '"' : '')
+                    . $data_attributes
+                    . ' class="lms-ui-box-container">'
+                    . $content . '
+                </div>';
+        } else {
+            return '';
+        }
+    }
+
+
+    public static function tabContainerBlock($params, $content, $template, $repeat)
+    {
+        if (!$repeat) {
+            $id = isset($params['id']) ? $params['id'] : null;
+            $label = isset($params['label']) ? trans($params['label']) : null;
+
+            $data_attributes = '';
+            foreach ($params as $name => $value) {
+                if (strpos($name, 'data_') === 0) {
+                    $data_attributes .= ' ' . str_replace('_', '-', $name) . '=\'' . $value . '\'';
+                }
+            }
+
+            return '
+                <div' . ($id ? ' id="' . $id . '"' : '')
+                    . (isset($label) ? ' data-label="' . $label . '"' : '')
+                    . $data_attributes
+                    . ' class="lms-ui-tab-container lms-ui-sortable">'
+                    . $content . '
+                </div>';
+        }
+    }
+
+    public static function resourceTabSelectorFunction($params, $template)
+    {
+        $layout = $template->getTemplateVars('layout');
+        $resource_tabs = $template->getTemplateVars('resource_tabs');
+
+        return '
+            <form name="resource-tab-selector-form" id="resource-tab-selector-form">
+                <input type="hidden" id="resource-tab-module" value="' . $layout['module'] . '">'
+                . (isset($resource_tabs)
+                    ? '<input type="hidden" id="resource-tab-states" value="' . $resource_tabs . '">'
+                    : '') . '
+            </form>
+            <div id="lms-ui-resource-tab-selector-container">
+                <div>
+                    ' . trans("Visible tabs:") . '
+                </div>
+                <select id="resource-tab-selector" name="resource-tabs[]" form="resource-tab-selector-form"
+                    data-default-value="' . trans("- none -") . '"
+                    data-shorten-to-default-value="false"
+                    onchange="resourceTabSelectorChanged()" multiple>
+                </select>
+            </div>
+            <script src="js/lms-ui-resource-tab-selector.js"></script>';
     }
 }

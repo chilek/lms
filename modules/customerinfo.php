@@ -60,6 +60,9 @@ $customerid = intval($_GET['id']);
 $LMS->InitXajax();
 
 if (!isset($_POST['xjxfun'])) {
+    $visible_panels = $SESSION->get_persistent_setting('customerinfo-visible-panels');
+    $SMARTY->assign('visible_panels', $visible_panels);
+
     include(MODULES_DIR.'/customer.inc.php');
     require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
 

@@ -56,14 +56,18 @@ if (isset($_GET['devid'])) {
 }
 
 $nodeinfo = $LMS->GetNode($nodeid);
-$nodegroups = $LMS->GetNodeGroupNamesByNode($nodeid);
-$othernodegroups = $LMS->GetNodeGroupNamesWithoutNode($nodeid);
+if (!isset($resource_tabs['nodegroups']) || $resource_tabs['nodegroups']) {
+    $nodegroups = $LMS->GetNodeGroupNamesByNode($nodeid);
+    $othernodegroups = $LMS->GetNodeGroupNamesWithoutNode($nodeid);
+}
 $customerid = $nodeinfo['ownerid'];
 
 include(MODULES_DIR . '/customer.inc.php');
 
-$nodeassignments = $LMS->GetNodeCustomerAssignments($nodeid, $assignments);
-$SMARTY->assign('nodeassignments', $nodeassignments);
+if (!isset($resource_tabs['nodeassignments']) || $resource_tabs['nodeassignments']) {
+    $nodeassignments = $LMS->GetNodeCustomerAssignments($nodeid, $assignments);
+    $SMARTY->assign('nodeassignments', $nodeassignments);
+}
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
@@ -141,12 +145,18 @@ $SMARTY->assign(array(
     'linkspeed' => intval(ConfigHelper::getConfig('phpui.default_linkspeed', 100000)),
 ));
 
-$SMARTY->assign('nodesessions', $LMS->GetNodeSessions($nodeid));
+if (!isset($resource_tabs['nodesessions']) || $resource_tabs['nodesessions']) {
+    $SMARTY->assign('nodesessions', $LMS->GetNodeSessions($nodeid));
+}
 $SMARTY->assign('netdevices', $netdevices);
 $SMARTY->assign('nodeauthtype', $nodeauthtype);
-$SMARTY->assign('nodegroups', $nodegroups);
-$SMARTY->assign('othernodegroups', $othernodegroups);
-$SMARTY->assign('mgmurls', $LMS->GetManagementUrls(LMSNetDevManager::NODE_URL, $nodeinfo['id']));
+if (!isset($resource_tabs['nodegroups']) || $resource_tabs['nodegroups']) {
+    $SMARTY->assign('nodegroups', $nodegroups);
+    $SMARTY->assign('othernodegroups', $othernodegroups);
+}
+if (!isset($resource_tabs['managementurls']) || $resource_tabs['managementurls']) {
+    $SMARTY->assign('mgmurls', $LMS->GetManagementUrls(LMSNetDevManager::NODE_URL, $nodeinfo['id']));
+}
 $SMARTY->assign('nodeinfo', $nodeinfo);
 $SMARTY->assign('objectid', $nodeinfo['id']);
 $SMARTY->assign('nodeinfo_sortable_order', $SESSION->get_persistent_setting('nodeinfo-sortable-order'));

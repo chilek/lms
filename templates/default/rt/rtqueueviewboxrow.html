@@ -1,5 +1,5 @@
 {block name=rtboxrow}
-<TR class="single-ticket {if $ticket.state == $smarty.const.RT_RESOLVED}blend{/if} highlight lms-ui-rt{if $ticket.deleted == 1 && $ticket.deltime != 0}-deleted{elseif $ticket.delcount && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}-partly-deleted{/if}"
+<TR class="single-ticket {if $ticket.state == $smarty.const.RT_RESOLVED}blend{/if} highlight lms-ui-resource{if $ticket.deleted == 1 && $ticket.deltime != 0}-deleted{elseif $ticket.delcount && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}-partly-deleted{/if}"
 		id="ticket-{$ticket.id}"
 		data-target-url="?m=rtticketview&id={$ticket.id}"
 		data-name="{$ticket.id|string_format:"%06d"}"
@@ -33,7 +33,11 @@
 	<TD class="valign-middle">
 		<span class="bold">{$ticket.subject|escape|truncate:"100":"..."|default:"&nbsp;"}</span>
 		{foreach $ticket.categories as $tc}
-		<a href="?m=rtqueueview&persistent-filter=-1&catid={$tc.categoryid}&s=-1&priority=all&unread=-1&o=lastmodified,desc" style="{if $tc.style != ''}{$tc.style}{else}{$_CATEGORY_DEFAULT_STYLE}{/if}">{$tc.name}</a>
+			<a href="?m=rtqueueview&persistent-filter=-1&catid={$tc.categoryid}&s=-1&priority=all&unread=-1&o=lastmodified,desc">
+				<div class="lms-ui-category-label" style="{$tc.style}">
+					{$tc.name}
+				</div>
+			</a>
 		{/foreach}
 		{if $ticket.customerid}
 			<br>

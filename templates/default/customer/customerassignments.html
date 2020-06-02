@@ -17,7 +17,8 @@
 <form method="post" name="{$tab_id}" id="{$tab_id}-form" action="?m=customerassignmentdel">
 </form>
 
-{tab_container id=$tab_id}
+{if !isset($data_label)}{$data_label="Customer Liabilities"}{/if}
+{tab_container id=$tab_id label=$data_label}
 
 	{tab_header content_id=$content_id}
 		{tab_header_cell icon="lms-ui-icon-assignment"}

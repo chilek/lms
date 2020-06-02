@@ -42,6 +42,7 @@ $(function() {
 		} else {
 			select.val($(this).attr('data-old-userid'));
 		}
+		updateAdvancedSelects(select);
 	});
 
 	$('[name="ticket[queue]"]').change(function () {

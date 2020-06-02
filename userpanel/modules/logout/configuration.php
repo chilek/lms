@@ -29,5 +29,7 @@ $USERPANEL->AddModule(
     'logout',       // Module name - must be the same as directory name
     trans('Allows you to logout'), // Tip
     100,            // Priority
-    trans('This module allows your customers to logout')    // Description
+    trans('This module allows your customers to logout'),    // Description
+    '',
+    'lms-ui-icon-logout'
 );

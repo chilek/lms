@@ -23,7 +23,7 @@
  */
 
 function savePersistentSettings(data) {
-	$.ajax('?m=persistentsetting', {
+	return $.ajax('?m=persistentsetting', {
 		async: true,
 		method: 'POST',
 		data: data,
@@ -276,6 +276,12 @@ function initAdvancedSelects(selector) {
 				$(this).next().toggleClass('lms-ui-error', typeof (data) === 'undefined' || RegExp("^0?$").test(data.selected));
 			}
 		});
+	});
+}
+
+function updateAdvancedSelects(selector) {
+	$(selector).each(function() {
+		$(this).trigger('chosen:updated');
 	});
 }
 

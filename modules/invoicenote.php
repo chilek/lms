@@ -267,7 +267,7 @@ switch ($action) {
         $SESSION->restore('invoiceid', $invoice['id'], true);
 
         if (!ConfigHelper::checkPrivilege('invoice_consent_date')) {
-            $cnote['cdate'] = $invoice['cdate'];
+            $cnote['cdate'] = time();
         }
 
         if (!ConfigHelper::checkPrivilege('invoice_sale_date')) {

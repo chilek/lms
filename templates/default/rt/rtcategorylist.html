@@ -22,7 +22,7 @@
 			{trans("Description")}:
 		</TD>
 		<TD class="bold text-center">
-			{trans("Category style:")}
+			{trans("<!rt-category>Look:")}
 		</TD>
 		<TD class="nobr">
 			<IMG src="img/users.gif" ALT="">
@@ -53,11 +53,9 @@
 			{/if}
 		</TD>
 		<TD class="bold text-center">
-			{if !empty($category.style)}
-				<span style="{$category.style}">&nbsp;{$category.name}&nbsp;</span>
-			{else}
-				<span style="{$_CATEGORY_DEFAULT_STYLE}">&nbsp;{$category.name}&nbsp;</span>
-			{/if}
+			<div class="lms-ui-category-label" style="{$category.style}">
+				{$category.name}
+			</div>
 		</TD>
 		<TD class="lms-ui-buttons">
 			{foreach $category.owners as $key => $owner}

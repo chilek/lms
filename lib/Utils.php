@@ -37,6 +37,22 @@ class Utils
         });
     }
 
+    public static function filterArrayByKeys(array $array, array $keys, $reverse = false)
+    {
+        $result = array();
+        $keys = array_flip($keys);
+        array_walk($array, function ($item, $key) use ($reverse, $keys, &$result) {
+            if ($reverse) {
+                if (!isset($keys[$key])) {
+                    $result[$key] = $item;
+                }
+            } elseif (isset($keys[$key])) {
+                $result[$key] = $item;
+            }
+        });
+        return $result;
+    }
+
     // taken from RoundCube
     /**
      * Generate a random string
@@ -254,5 +270,19 @@ class Utils
         } else {
             return true;
         }
+    }
+
+    public static function parseCssProperties($text)
+    {
+        $result = array();
+        $text = preg_replace('/\s/', '', $text);
+        $properties = explode(';', $text);
+        if (!empty($properties)) {
+            foreach ($properties as $property) {
+                list ($name, $value) = explode(':', $property);
+                $result[$name] = $value;
+            }
+        }
+        return $result;
     }
 }

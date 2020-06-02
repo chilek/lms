@@ -38,7 +38,7 @@ $USERPANEL->AddModule(
             'prio' => 40,
         ),
     ),
-    'lms-userpanel-documents'
+    'lms-ui-icon-document'
 );
 
 require_once('UserpanelDocumentHandler.php');

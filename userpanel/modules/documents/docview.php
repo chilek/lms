@@ -54,9 +54,24 @@ if (!empty($_GET['id'])) {
         'template' => $doc['template'],
         'cdate' => $doc['cdate'],
     ));
-    $filename = DOC_DIR.'/'.substr($doc['md5sum'], 0, 2).'/'.$doc['md5sum'];
+    $filename = DOC_DIR. DIRECTORY_SEPARATOR .substr($doc['md5sum'], 0, 2). DIRECTORY_SEPARATOR .$doc['md5sum'];
     if (file_exists($filename)) {
-        if (preg_match('/html/i', $doc['contenttype']) && strtolower(ConfigHelper::getConfig('phpui.document_type')) == 'pdf') {
+        $filename_pdf = DOC_DIR . DIRECTORY_SEPARATOR . substr($doc['md5sum'], 0, 2) . DIRECTORY_SEPARATOR . $doc['md5sum'].'.pdf';
+        if (file_exists($filename_pdf)) {
+            if ($doc['type'] == DOC_CONTRACT) {
+                $title = trans('Contract No. $a', $docnumber);
+            } elseif ($doc['type'] == DOC_ANNEX) {
+                $title = trans('Annex No. $a', $docnumber);
+            } else {
+                $title = $docnumber;
+            }
+            header('Content-type: application/pdf');
+            header('Content-Disposition: inline; filename="' . $title . '.pdf"');
+            header('Content-Transfer-Encoding: binary');
+            header('Content-Length: ' . filesize($filename_pdf));
+            header('Accept-Ranges: bytes');
+            readfile($filename_pdf);
+        } elseif (preg_match('/html/i', $doc['contenttype']) && strtolower(ConfigHelper::getConfig('phpui.document_type')) == 'pdf') {
             if ($doc['type'] == DOC_CONTRACT) {
                 $subject = trans('Contract');
                 $title = trans('Contract No. $a', $docnumber);

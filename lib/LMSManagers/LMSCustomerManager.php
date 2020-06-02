@@ -968,7 +968,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         } else {
             $capitalize_customer_names = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.capitalize_customer_names', true));
             $sql .= 'SELECT DISTINCT c.id AS id, c.lastname, c.name, ' . $this->db->Concat($capitalize_customer_names ? 'UPPER(lastname)' : 'lastname', "' '", 'c.name') . ' AS customername,
-            	c.type,
+                c.type, c.deleted,
                 status, full_address, post_full_address, c.address, c.zip, c.city, countryid, countries.name AS country, cc.email, ccp.phone, ten, ssn, c.info AS info,
                 extid, message, c.divisionid, c.paytime AS paytime, COALESCE(b.balance, 0) AS balance,
                 COALESCE(t.value, 0) AS tariffvalue, s.account, s.warncount, s.online,
