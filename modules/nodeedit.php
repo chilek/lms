@@ -339,8 +339,10 @@ if (empty($nodeinfo['macs'])) {
 
 include(MODULES_DIR . '/customer.inc.php');
 
-$nodeassignments = $LMS->GetNodeCustomerAssignments($nodeid, $assignments);
-$SMARTY->assign('nodeassignments', $nodeassignments);
+if (!isset($resource_tabs['nodeassignments']) || $resource_tabs['nodeassignments']) {
+    $nodeassignments = $LMS->GetNodeCustomerAssignments($nodeid, $assignments);
+    $SMARTY->assign('nodeassignments', $nodeassignments);
+}
 
 if (!ConfigHelper::checkConfig('phpui.big_networks')) {
     $SMARTY->assign('customers', $LMS->GetCustomerNames());
@@ -372,12 +374,18 @@ if (!empty($nodeinfo['ownerid'])) {
 $nprojects = $LMS->GetProjects();
 $SMARTY->assign('NNprojects', $nprojects);
 
-$SMARTY->assign('nodesessions', $LMS->GetNodeSessions($nodeid));
+if (!isset($resource_tabs['nodesessions']) || $resource_tabs['nodesessions']) {
+    $SMARTY->assign('nodesessions', $LMS->GetNodeSessions($nodeid));
+}
 $SMARTY->assign('networks', $LMS->GetNetworks(true));
 $SMARTY->assign('netdevices', $LMS->GetNetDevNames());
-$SMARTY->assign('nodegroups', $LMS->GetNodeGroupNamesByNode($nodeid));
-$SMARTY->assign('othernodegroups', $LMS->GetNodeGroupNamesWithoutNode($nodeid));
-$SMARTY->assign('mgmurls', $LMS->GetManagementUrls(LMSNetDevManager::NODE_URL, $nodeid));
+if (!isset($resource_tabs['nodegroups']) || $resource_tabs['nodegroups']) {
+    $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNamesByNode($nodeid));
+    $SMARTY->assign('othernodegroups', $LMS->GetNodeGroupNamesWithoutNode($nodeid));
+}
+if (!isset($resource_tabs['managementurls']) || $resource_tabs['managementurls']) {
+    $SMARTY->assign('mgmurls', $LMS->GetManagementUrls(LMSNetDevManager::NODE_URL, $nodeid));
+}
 $SMARTY->assign('error', $error);
 $SMARTY->assign('nodeinfo', $nodeinfo);
 $SMARTY->assign('objectid', $nodeinfo['id']);

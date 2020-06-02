@@ -25,7 +25,7 @@ version 26-git (????-??-??):
   - improvement: use native color selector input element for helpdesk ticket category look
     definition [chilan]
   - improvement: voip account password generation link near password form field [chilan]
-  - enhancement: implemented visibility toggle of customer panels/tabs/boxes [chilan]
+  - enhancement: implemented visibility toggle of customer/node panels/tabs/boxes [chilan]
 
 version 25.0 (2020-05-15):
 

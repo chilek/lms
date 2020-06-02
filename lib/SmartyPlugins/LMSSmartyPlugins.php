@@ -804,7 +804,10 @@ class LMSSmartyPlugins
                 <div>
                     ' . trans("Visible tabs:") . '
                 </div>
-                <select id="resource-tab-selector" name="resource-tabs[]" form="resource-tab-selector-form" onchange="resourceTabSelectorChanged()" multiple>
+                <select id="resource-tab-selector" name="resource-tabs[]" form="resource-tab-selector-form"
+                    data-default-value="' . trans("- none -") . '"
+                    data-shorten-to-default-value="false"
+                    onchange="resourceTabSelectorChanged()" multiple>
                 </select>
             </div>
             <script src="js/lms-ui-resource-tab-selector.js"></script>';

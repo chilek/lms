@@ -12,7 +12,7 @@
 	{include file="node/nodesessions.html"}
 {/block}
 {block name="nodeassignments"}
-	{include file="customer/customerassignments.html" tab_label=trans("Node Liabilities:") assignments=$nodeassignments tab_id="nodeassignments" content_id="nodeassignmentpanel"}
+	{include file="customer/customerassignments.html" data_label="Node Liabilities" tab_label=trans("Node Liabilities:") assignments=$nodeassignments tab_id="nodeassignments" content_id="nodeassignmentpanel"}
 {/block}
 {block name="managementurls"}
 	{include file="managementurl/managementurls.html"}
@@ -62,9 +62,12 @@
 	{include file="customer/customerbalancebox.html" limit=-10}
 {/block}
 </div>
-<script type="text/javascript">
-<!--
+<script>
+
 	restoreSortable('nodeedit-sortable', '{$nodeedit_sortable_order}');
-//-->
+
 </script>
+
+{resource_tab_selector}
+
 {/block}
