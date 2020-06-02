@@ -7,40 +7,30 @@
 
 </style>
 <h3><a class="btn btn-secondary mb-2" href="?m=helpdesk">{trans("Back")}</a></h3>
-<h5><span class="badge" style="color: white; background-color:{$_RT_STATES[$ticket.state].color};">{$_RT_STATES[$ticket.state].label}</span> {trans($title)}</h5>
+<h5><span class="badge" style="color: white; background-color:{$_RT_STATES[$ticket.state].color};">{$_RT_STATES[$ticket.state].label}</span><strong> {trans($title)}</strong></h5>
 {$allow_reopen_tickets_newer_than = intval(ConfigHelper::getConfig('userpanel.allow_reopen_tickets_newer_than'))}
 {foreach $ticket.messages as $message}
-	<div class="card">
-		<div class="card-header">
-			<h5 class="card-title">
-				{trans("Subject:")} <strong>{$message.subject|escape}</strong>
-			</h5>
-			<h6 class="card-subtitle text-muted">
-				<strong>{$message.createtime|date_format:"%Y/%m/%d %H:%M"}</strong>
-			</h6>
-		</div>
+<div class="card">
+	<div class="card-header">
+		{trans("Subject:")} <strong>{$message.subject|escape}</strong>
+	</div>
+	<div class="card-block">
 		<div class="card-block">
-			<div class="card-block">
-				<blockquote class="blockquote">
-					<p class="mb-0 p-3">{$message.body|escape|replace:"\n":"<br/>"}</p>
-					<footer class="blockquote-footer">{trans("From")}:
-						<strong>
-							{if $message.customerid}
-								{$message.customername}
-							{elseif $message.userid}
-								{$message.username}
-							{elseif $message.mailfrom}
-								{$message.mailfrom|escape}
-							{else}
-								{$ticket.requestor|escape}
-								{if $ticket.requestoremail}
-									&lt;{$ticket.requestoremail|escape}&gt;
-								{/if}
-							{/if}
-						</strong>
-					</footer>
-				</blockquote>
-
+			<blockquote class="blockquote">
+				<p class="mb-0 p-2">{$message.body|escape|replace:"\n":"<br/>"}</p>
+			</blockquote>
+			<small class="p-2 text-muted">{trans("From")}:
+				{if $message.customerid}
+					{$message.customername}{elseif $message.userid}{$message.username}
+				{elseif $message.mailfrom}
+					{$message.mailfrom|escape}
+				{else}
+					{$ticket.requestor|escape}
+					{if $ticket.requestoremail}
+						&lt;{$ticket.requestoremail|escape}&gt;
+					{/if}
+				{/if}, {trans("Time:")} {$message.createtime|date_format:"%Y/%m/%d %H:%M"}
+			</small>
 				{if $message.attachments}
 					<strong>{trans("Attachments:")}</strong>
 					<ul class="list-inline">
@@ -56,7 +46,7 @@
 
 				{if ($ticket.state != $smarty.const.RT_RESOLVED || ConfigHelper::getConfig('userpanel.allow_message_add_to_closed_tickets'))
 					&& (!$allow_reopen_tickets_newer_than || $smarty.now - $allow_reopen_tickets_newer_than <= $ticket.lastmod)}
-					<a class="btn btn-success" href="?m=helpdesk&op=message&id={$ticket.id}&msgid={$message.id}">{trans("Reply")}</a>
+					<a class="btn btn-success float-right" href="?m=helpdesk&op=message&id={$ticket.id}&msgid={$message.id}">{trans("Reply")}</a>
 				{/if}
 			</div>
 		</div>
