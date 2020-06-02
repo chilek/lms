@@ -991,7 +991,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 continue;
             }
             foreach ($assignment['nodes'] as $node) {
-                if (!empty($node['netdev_name']) || $node['id'] != $nodeid) {
+                if (empty($node['ownerid']) || $node['id'] != $nodeid) {
                     continue;
                 }
                 $node_assignments[] = $assignment;

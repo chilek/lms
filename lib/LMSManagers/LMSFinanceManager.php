@@ -170,7 +170,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 $assignments[$idx] = $row;
 
                 // assigned nodes
-                $assignments[$idx]['nodes'] = $this->db->GetAll('SELECT vn.name, vn.id, vn.location,
+                $assignments[$idx]['nodes'] = $this->db->GetAll('SELECT vn.name, vn.id, vn.location, vn.ownerid,
                                                                     nd.id AS netdev_id, nd.name AS netdev_name,
                                                                     nd.ownerid AS netdev_ownerid
                                                                  FROM

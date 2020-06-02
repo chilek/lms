@@ -1265,7 +1265,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             }
             $netdev_assignment_added = false;
             foreach ($assignment['nodes'] as $node) {
-                if (empty($node['netdev_ownerid']) || $node['netdev_id'] != $netdevid || $netdev_assignment_added) {
+                if (!empty($node['ownerid']) || $node['netdev_id'] != $netdevid || $netdev_assignment_added) {
                     continue;
                 }
                 $netdev_assignment_added = true;
