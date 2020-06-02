@@ -75,7 +75,7 @@ class ConfigLoader
                 $provider = new IniConfigProvider();
                 break;
             case UiConfigProvider::NAME:
-                $provider = new UiConfigProvider($options['user_id']);
+                $provider = new UiConfigProvider(isset($options['user_id']) ? $options['user_id'] : null);
                 break;
             case UserRightsConfigProvider::NAME:
                 $provider = new UserRightsConfigProvider();
