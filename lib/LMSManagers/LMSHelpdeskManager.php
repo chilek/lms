@@ -289,14 +289,16 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 $ownerfilter = ' AND (t.owner IS NULL OR t.owner = ' . Auth::GetCurrentUser() . ')';
             } elseif (in_array('-2', $owner)) {
                 $ownerfilter = ' AND t.owner IS NOT NULL';
-            } elseif (in_array('-1', $owner)) {
-                if (count($owner) == 1) {
-                    $ownerfilter = ' AND t.owner IS NULL';
-                } else {
-                    $ownerfilter = ' AND (t.owner IS NULL OR t.owner IN (' . implode(',', $owner) . ')) ';
-                }
             } else {
-                $ownerfilter = ' AND t.owner IN (' . implode(',', $owner) . ') ';
+                if (in_array('-1', $owner)) {
+                    if (count($owner) == 1) {
+                        $ownerfilter = ' AND t.owner IS NULL';
+                    } else {
+                        $ownerfilter = ' AND (t.owner IS NULL OR t.owner IN (' . implode(',', $owner) . ')) ';
+                    }
+                } else {
+                    $ownerfilter = ' AND t.owner IN (' . implode(',', $owner) . ') ';
+                }
             }
         }
 
