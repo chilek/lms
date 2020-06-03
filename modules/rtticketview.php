@@ -102,7 +102,7 @@ if ($ticket['customerid'] && ConfigHelper::checkConfig('phpui.helpdesk_customeri
 }
 
 $iteration = $LMS->GetQueueContents(array('ids' => $ticket['queueid'], 'order' => 'createtime,desc',
-    'state' => -1, 'priority' => null, 'catids' => null));
+    'state' => -1));
 
 if (!empty($iteration['total'])) {
     foreach ($iteration as $idx => $element) {
