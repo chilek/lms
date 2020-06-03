@@ -297,9 +297,17 @@
 					field_name_pattern="ticket[parentid]" item_content="ticket_item_content"}
 			{/box_row}
 
-			{box_row icon="relatedticket" label="Related tickets:"}
+			{if empty($ticket.parent)}
+				{$class = "blend"}
+				{$tip = "No parent ticket is selected!"}
+			{else}
+				{$class = ""}
+				{$tip = ""}
+			{/if}
+			{box_row icon="relatedticket" label="Related tickets:" class=$class tip=$tip}
 				{list id="related-tickets" tipid="related-tickets-id" tip="Enter ticket identifier or ticket subject part"
-					items=$ticket.relatedtickets field_name_pattern="ticket[relatedtickets][%id%]" item_content="ticket_item_content"}
+					items=$ticket.relatedtickets field_name_pattern="ticket[relatedtickets][%id%]" item_content="ticket_item_content"
+					disabled=empty($ticket.parent)}
 			{/box_row}
 			{/block}
 {/box_panel}

@@ -29,6 +29,7 @@ function smarty_function_list(array $params, Smarty_Internal_Template $template)
 
     $id = isset($params['id']) ? $params['id'] : 'list';
     $visible = !isset($params['visible']) || ConfigHelper::checkValue($params['visible']);
+    $disabled = isset($params['disabled']) && ConfigHelper::checkValue($params['disabled']);
     $tipid = isset($params['tipid']) ? $params['tipid'] : 'list-tip';
     $tip = isset($params['tip']) ? $params['tip'] : trans('Select elements using suggestions');
     $items = isset($params['items']) && !empty($params['items']) ? $params['items'] : null;
@@ -62,7 +63,7 @@ function smarty_function_list(array $params, Smarty_Internal_Template $template)
             }
         }
     }
-    return '<div id = "' . $id . '" class="lms-ui-list-container"' . ($visible ? '' : ' style="display: none;"') . '>
+    return '<div id = "' . $id . '" class="lms-ui-list-container' . ($disabled ? ' disabled' : '') . '"' . ($visible ? '' : ' style="display: none;"') . '>
 		<div class="lms-ui-list-suggestion-container">'
             . smarty_function_button(array(
                 'type' => 'link',

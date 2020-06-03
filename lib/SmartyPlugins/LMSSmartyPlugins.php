@@ -691,6 +691,8 @@ class LMSSmartyPlugins
         if (!$repeat) {
             $id = isset($params['id']) ? $params['id'] : null;
             $icon = isset($params['icon']) ? $params['icon'] : null;
+            // optional - text tip,
+            $tip = isset($params['tip']) ? trans($params['tip']) : null;
             $label = isset($params['label']) ? $params['label'] : null;
             $labelid = isset($params['labelid']) ? $params['labelid'] : null;
             $visible = (isset($params['visible']) && $params['visible']) || !isset($params['visible']);
@@ -702,7 +704,7 @@ class LMSSmartyPlugins
 
             return '
 			<div' . ($id ? ' id="' . $id . '"' : '') . ' class="lms-ui-box-row' . ($class ? ' ' . $class : '') . '"'
-                . ($visible ? '' : ' style="display: none;"') . '>
+                . ($visible ? '' : ' style="display: none;"') . ($tip ? ' title="' . trans($tip) . '"' : '') . '>
 				<div class="lms-ui-box-row-icon' . ($icon_class ? ' ' . $icon_class : '') . '">
 					' . ($icon ? (strpos($icon, '/') !== false ? '<IMG src="' . $icon . '" alt="">'
                     : '<i class="'

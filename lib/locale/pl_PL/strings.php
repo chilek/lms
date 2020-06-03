@@ -4768,3 +4768,5 @@ $_LANG['- no tax rates defined -'] = '- brak zdefiniowanych stawek podatkowych -
 $_LANG['Document does not exist!'] = 'Dokument nie istnieje!';
 
 $_LANG['Visible tabs:'] = 'Widoczne zakładki:';
+
+$_LANG['No parent ticket is selected!'] = 'Nie wybrano zgłoszenia nadrzędnego!';
