@@ -284,6 +284,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             }
         }
 
+        if (!empty($owner) && !is_array($owner)) {
+            $owner = array($owner);
+        }
+
         if (!empty($owner) && !in_array('all', $owner)) {
             if (in_array('-3', $owner)) {
                 $ownerfilter = ' AND (t.owner IS NULL OR t.owner = ' . Auth::GetCurrentUser() . ')';
