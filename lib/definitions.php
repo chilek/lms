@@ -406,6 +406,11 @@ $RT_TYPES = array(
         'class' => 'lms-ui-rt-ticket-type-stop',
         'name' => 'RT_TYPE_STOP'
     ),
+    RT_TYPE_TRANSFER => array(
+      'label' => trans('Transfer service'),
+      'class' => 'lms-ui-rt-ticket-type-transfer',
+      'name' => 'RT_TYPE_TRANSFER'
+    ),
     RT_TYPE_REMOVE => array(
         'label' => trans('Deinstalation'),
         'class' => 'lms-ui-rt-ticket-type-remove',
@@ -415,11 +420,6 @@ $RT_TYPES = array(
         'label' => trans('Payment'),
         'class' => 'lms-ui-rt-ticket-type-payment',
         'name' => 'RT_TYPE_PAYMENT'
-    ),
-    RT_TYPE_TRANSFER => array(
-        'label' => trans('Transfer service'),
-        'class' => 'lms-ui-rt-ticket-type-transfer',
-        'name' => 'RT_TYPE_TRANSFER'
     ),
 );
 
