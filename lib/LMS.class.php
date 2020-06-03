@@ -4446,7 +4446,7 @@ class LMS
                 'customerid' => $doc['customerid'],
             ));
             $body = preg_replace('/%invoice/', $invoice_number, $body);
-            $body = preg_replace('/%balance/', $this->GetCustomerBalance($doc['customerid']), $body);
+            $body = preg_replace('/%balance/', moneyf($this->GetCustomerBalance($doc['customerid']), self::$currency), $body);
             $body = preg_replace('/%today/', $year . '-' . $month . '-' . $day, $body);
             $body = str_replace('\n', "\n", $body);
             $subject = preg_replace('/%invoice/', $invoice_number, $subject);
