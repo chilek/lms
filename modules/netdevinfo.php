@@ -101,8 +101,7 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
         }
     }
 
-    $queue = $LMS->GetQueueContents(array('ids' => null, 'order' => null, 'state' => null, 'priority' => null,
-        'owner' => -1, 'catids' => null, 'removed' => null, 'netdevids' => $id));
+    $queue = $LMS->GetQueueContents(array('netdevids' => $id));
     unset($queue['total']);
     unset($queue['state']);
     unset($queue['order']);

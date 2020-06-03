@@ -39,9 +39,9 @@
             {trans("Category:")}
             <input type="hidden" name="catid" value="all">
             <SELECT size="1" name="catid[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect lms-ui-multiselect-filter" data-default-value="{trans("- all -")}">
-                    <option value="-1" {if in_array(-1, $filter.catids)} selected{/if}>{trans('- no categories -')}</option>
+                    <option value="-1" {if !empty($filter.catids) && in_array(-1, $filter.catids)} selected{/if}>{trans('- no categories -')}</option>
                     {foreach $categories $c}
-                    <OPTION value="{$c.id}"{if in_array($c.id, $filter.catids)} SELECTED{/if}>{$c.name}</OPTION>
+                    <OPTION value="{$c.id}"{if !empty($filter.catids) && in_array($c.id, $filter.catids)} SELECTED{/if}>{$c.name}</OPTION>
                 {/foreach}
             </SELECT>
             </label>
@@ -69,9 +69,9 @@
                 <input type="hidden" name="owner" value="all">
                 <SELECT size="1" name="owner[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect" data-default-value="{trans("No filter")}">
                     <option value="all" data-exclusive{if empty($filter.owner)} selected{/if}>{trans("No filter")}</option>
-                    <option value="-1" {if in_array('-1', $filter.owner)} selected{/if}>{trans("no owner")}</option>
-                    <option value="-2" data-exclusive{if in_array('-2', $filter.owner)} selected{/if}>{trans("with owner")}</option>
-                    <option value="-3" data-exclusive{if in_array('-3', $filter.owner)} selected{/if}>{trans("no owner or logged user")}</option>
+                    <option value="-1" {if !empty($filter.owner) && in_array('-1', $filter.owner)} selected{/if}>{trans("no owner")}</option>
+                    <option value="-2" data-exclusive{if !empty($filter.owner) && in_array('-2', $filter.owner)} selected{/if}>{trans("with owner")}</option>
+                    <option value="-3" data-exclusive{if !empty($filter.owner) && in_array('-3', $filter.owner)} selected{/if}>{trans("no owner or logged user")}</option>
                     {foreach $users as $user}
                         {if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
                             || (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
