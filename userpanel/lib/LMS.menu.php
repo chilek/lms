@@ -69,7 +69,7 @@ while (false !== ($filename = readdir($dh))) {
 }
 
 foreach ($USERPANEL->MODULES as $menupos) {
-    if (isset($menupos['submenu'])) {
+    if (!empty($menupos['submenu'])) {
         foreach ($menupos['submenu'] as $modulemenu) {
             $submenu[] = $modulemenu;
         }
