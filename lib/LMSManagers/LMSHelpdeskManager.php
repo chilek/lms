@@ -284,7 +284,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             }
         }
 
-        if (!empty($owner) && !empty($owner)) {
+        if (!empty($owner) && !is_array($owner)) {
             $owner = array($owner);
         }
 
