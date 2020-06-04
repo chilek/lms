@@ -1,0 +1,50 @@
+<table class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 99%;">
+	</colgroup>
+	<thead>
+		<TR>
+			<TD class="nobr bold" align="left" colspan="2">
+				<strong>{trans("Additional information:")}</strong>
+			</TD>
+		</TR>
+	</thead>
+	<tr>
+		<td class="nobr" align="right">
+			<B>{trans("Payments title:")}</B>
+		</td>
+		<td>
+			<input type="text" size="100" name="document[booklet][payment_title]" value="{trans("Payment for liabilities")}" {tip trigger="booklet_title"} required>
+		</td>
+	</tr>
+	<tr>
+		<td class="nobr" align="right">
+			<B>{trans("Payments aggregation interval:")}</B>
+		</td>
+		<td>
+			<select id="payments-aggregate" size="1" name="document[booklet][payment_aggregation]">
+				{foreach from=$_PERIODS key=key item=item}
+					{if $key != $smarty.const.DISPOSABLE}
+						<option value="{$key}"{if $key == $default_payment_aggregation} selected{/if}>{$item}</option>
+					{/if}
+				{/foreach}
+				<option value="{$daily_payment_aggregation}">{trans("daily")}</option>
+			</select>
+		</td>
+	</tr>
+	<tr id="payments-calculation">
+		<td class="nobr" align="right">
+			<B>{trans("Payments calculation in interval:")}</B>
+		</td>
+		<td>
+			<select size="1" name="document[booklet][payment_calculation]">
+				<option value="1" selected>{trans("at the beginning of the period")}</option>
+				<option value="0">{trans("at the end of the period")}</option>
+			</select>
+		</td>
+	</tr>
+</table>
+
+<input type="hidden" id="def-daily" value="{$smarty.const.DAILY}">
+<input type="hidden" id="def-monthly" value="{$smarty.const.MONTHLY}">

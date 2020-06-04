@@ -4787,3 +4787,14 @@ $_LANG['Queue $a'] = 'Kolejka $a';
 
 $_LANG['Select options'] = 'Wybierz opcje';
 $_LANG['Select owners'] = 'Wybierz właścicieli';
+
+$_LANG['Booklet of fees'] = 'Książeczka opłat';
+$_LANG['Assignments'] = 'Zobowiązania';
+$_LANG['All assignements for customer are suspended!'] = 'Wszystkie zobowiązania klienta są zawieszone!';
+$_LANG['Payments aggregation interval:'] = 'Interwał agregacji płatności:';
+$_LANG['Payments title:'] = 'Tytuł płatności:';
+$_LANG['Payments calculation in interval:'] = 'Naliczanie płatności w interwale:';
+$_LANG['at the beginning of the period'] = 'na początku okresu';
+$_LANG['at the end of the period'] = 'na końcu okresu';
+$_LANG['There is no assignments in selected period!'] = 'Brak zobowiązań w wybranym okresie!';
+$_LANG['Requiered!'] = 'Wymagane!';
