@@ -205,15 +205,40 @@ switch ($mode) {
         }
 
         // use customersearch module to find all customers
-        $s['customername'] = $search;
-        $s['address'] = $search;
-        $s['zip'] = $search;
-        $s['city'] = $search;
-        $s['email'] = $search;
-        $s['ten'] = $search;
-        $s['ssn'] = $search;
-        $s['info'] = $search;
-        $s['notes'] = $search;
+        $s = array();
+        if (empty($properties) || isset($properties['name'])) {
+            $s['customername'] = $search;
+        }
+        if (empty($properties) || isset($properties['address'])) {
+            $s['full_address'] = $search;
+        }
+        if (empty($properties) || isset($properties['post_name'])) {
+            $s['post_name'] = $search;
+        }
+        if (empty($properties) || isset($properties['post_address'])) {
+            $s['post_full_address'] = $search;
+        }
+        if (empty($properties) || isset($properties['location_name'])) {
+            $s['location_name'] = $search;
+        }
+        if (empty($properties) || isset($properties['location_address'])) {
+            $s['location_full_address'] = $search;
+        }
+        if (empty($properties) || isset($properties['email'])) {
+            $s['email'] = $search;
+        }
+        if (empty($properties) || isset($properties['ten'])) {
+            $s['ten'] = $search;
+        }
+        if (empty($properties) || isset($properties['ssn'])) {
+            $s['ssn'] = $search;
+        }
+        if (empty($properties) || isset($properties['additional-info'])) {
+            $s['info'] = $search;
+        }
+        if (empty($properties) || isset($properties['notes'])) {
+            $s['notes'] = $search;
+        }
 
         $SESSION->save('customersearch', $s);
         $SESSION->save('cslk', 'OR');
