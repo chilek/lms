@@ -652,9 +652,15 @@ switch ($mode) {
             }
         }
 
-        $s['name'] = $search;
-
+        $s = array();
+        if (empty($properties) || isset($properties['name'])) {
+            $s['name'] = $search;
+        }
+        if (empty($properties) || isset($properties['serial'])) {
+            $s['serialnumber'] = $search;
+        }
         $SESSION->save('netdevsearch', $s);
+        $SESSION->save('ndlsk', 'OR');
 
         $target = '?m=netdevsearch&search';
 
