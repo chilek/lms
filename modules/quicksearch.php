@@ -733,9 +733,17 @@ switch ($mode) {
         if (is_numeric($search) && intval($search)>0) {
             $target = '?m=rtticketview&id='.intval($search);
         } else {
-            $SESSION->save('rtsearch', array('name' => $search,
-                    'subject' => $search,
-                    'operator' => 'OR'));
+            $params = array('operator' => 'OR');
+            if (empty($properties) || isset($properties['subject'])) {
+                $params['subject'] = $search;
+            }
+            if (empty($properties) || isset($properties['requestor'])) {
+                $params['name'] = $search;
+            }
+            if (empty($properties) || isset($properties['unresolvedonly'])) {
+                $params['state'] = -1;
+            }
+            $SESSION->save('rtsearch', $params);
 
             $target = '?m=rtsearch&s=1';
         }
