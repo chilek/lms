@@ -4653,7 +4653,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 FROM assignments a
                 WHERE a.tariffid IS NULL AND a.liabilityid IS NULL
                     AND a.datefrom < ?NOW? AND (a.dateto = 0 OR a.dateto > ?NOW?)
-            ) s ON s.customerid = c.id
+            ) s ON s.customerid = assignments.customerid
             WHERE tariffid = ?',
             array($id)
         ) > 0);
