@@ -745,7 +745,7 @@ switch ($mode) {
             }
             $SESSION->save('rtsearch', $params);
 
-            $target = '?m=rtsearch&s=1';
+            $target = '?m=rtsearch&s=1&quicksearch=1';
         }
         break;
     case 'wireless':
