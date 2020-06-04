@@ -375,6 +375,15 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                             $searchargs[] = '(inet_ntoa(n.ipaddr) ?LIKE? ' . $this->db->Escape('%' . trim($value) . '%')
                             . ' OR inet_ntoa(n.ipaddr_pub) ?LIKE? ' . $this->db->Escape('%' . trim($value) . '%') . ')';
                             break;
+                        case 'ip':
+                            $searchargs[] = 'inet_ntoa(n.ipaddr) ?LIKE? ' . $this->db->Escape('%' . trim($value) . '%');
+                            break;
+                        case 'public_ip':
+                            $searchargs[] =  'inet_ntoa(n.ipaddr_pub) ?LIKE? ' . $this->db->Escape('%' . trim($value) . '%');
+                            break;
+                        case 'location':
+                            $searchargs[] =  'LOWER(n.location) ?LIKE? ' . $this->db->Escape('%' . trim($value) . '%');
+                            break;
                         case 'state':
                             if (!empty($value)) {
                                 $searchargs[] = 'n.location_city IN (SELECT lc.id FROM location_cities lc 

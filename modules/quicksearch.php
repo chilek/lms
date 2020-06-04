@@ -512,10 +512,22 @@ switch ($mode) {
         }
 
         // use nodesearch module to find all matching nodes
-        $s['name'] = $search;
-        $s['mac'] = $search;
-        $s['ipaddr'] = $search;
-
+        $s = array();
+        if (empty($properties) || isset($properties['name'])) {
+            $s['name'] = $search;
+        }
+        if (empty($properties) || isset($properties['mac'])) {
+            $s['mac'] = $search;
+        }
+        if (empty($properties) || isset($properties['ip'])) {
+            $s['ip'] = $search;
+        }
+        if (empty($properties) || isset($properties['public_ip'])) {
+            $s['public_ip'] = $search;
+        }
+        if (empty($properties) || isset($properties['location_address'])) {
+            $s['location'] = $search;
+        }
         $SESSION->save('nodesearch', $s);
         $SESSION->save('nslk', 'OR');
 
