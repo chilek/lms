@@ -30,6 +30,8 @@ version 26-git (????-??-??):
     selected user in helpdesk [interduo]
   - improvement: enable/disable related ticket list selector based on parent ticket
     definition [chilan]
+  - improvement: don't allow to edit used tariffs unless user has appropriate privilege
+    ('used_tariff_edit' permission introduced) [chilan]
 
 version 25.0 (2020-05-15):
 
