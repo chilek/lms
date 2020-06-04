@@ -4642,4 +4642,20 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             array($id, array(DOC_INVOICE, DOC_CNOTE, DOC_INVOICE_PRO))
         ) > 0);
     }
+
+    public function isTariffEditable($id)
+    {
+        return (ConfigHelper::checkPrivilege('used_tariff_edit') || $this->db->GetOne(
+            'SELECT COUNT(CASE WHEN s.customerid IS NULL AND commited = 1 AND suspended = 0 AND datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?) THEN 1 ELSE NULL END) AS active
+            FROM assignments
+            LEFT JOIN (
+                SELECT DISTINCT a.customerid
+                FROM assignments a
+                WHERE a.tariffid IS NULL AND a.liabilityid IS NULL
+                    AND a.datefrom < ?NOW? AND (a.dateto = 0 OR a.dateto > ?NOW?)
+            ) s ON s.customerid = c.id
+            WHERE tariffid = ?',
+            array($id)
+        ) > 0);
+    }
 }

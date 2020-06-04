@@ -34,6 +34,10 @@ if (isset($_GET['set'])) {
 }
 
 if (isset($_POST['tariff'])) {
+    if (!$LMS->isTariffEditable($_GET['id'])) {
+        return;
+    }
+
     $tariff = $_POST['tariff'];
     $limit = isset($_POST['limit']) ? $_POST['limit'] : array();
 
@@ -274,6 +278,10 @@ if (isset($_POST['tariff'])) {
     $tariff['tags'] = array_flip($tariff['tags']);
 } else {
     $tariff = $LMS->GetTariff($_GET['id']);
+
+    if (!empty($tariff['customers'])) {
+        return;
+    }
 
     if ($tariff['dateto']) {
         $tariff['dateto'] = date('Y/m/d', $tariff['dateto']);

@@ -161,4 +161,6 @@ interface LMSFinanceManagerInterface
     public function transformProformaInvoice($docid);
 
     public function isInvoiceEditable($id);
+
+    public function isTariffEditable($id);
 }

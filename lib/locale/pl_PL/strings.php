@@ -4770,3 +4770,4 @@ $_LANG['Document does not exist!'] = 'Dokument nie istnieje!';
 $_LANG['Visible tabs:'] = 'Widoczne zakładki:';
 
 $_LANG['No parent ticket is selected!'] = 'Nie wybrano zgłoszenia nadrzędnego!';
+$_LANG['used tariff edit'] = 'edycja użytych taryf';

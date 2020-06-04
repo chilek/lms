@@ -3401,6 +3401,12 @@ class LMS
         return $manager->isInvoiceEditable($id);
     }
 
+    public function isTariffEditable($id)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->isTariffEditable($id);
+    }
+
     /**
      * VoIP functions
      */
