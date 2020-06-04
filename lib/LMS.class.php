@@ -3395,6 +3395,12 @@ class LMS
         return $manager->transformProformaInvoice($docid);
     }
 
+    public function isInvoiceEditable($id)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->isInvoiceEditable($id);
+    }
+
     /**
      * VoIP functions
      */

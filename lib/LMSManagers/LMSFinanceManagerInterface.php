@@ -159,4 +159,6 @@ interface LMSFinanceManagerInterface
     public function CopyPromotionTariffPermissions($src_userid, $dst_userid);
 
     public function transformProformaInvoice($docid);
+
+    public function isInvoiceEditable($id);
 }
