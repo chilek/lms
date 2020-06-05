@@ -1,4 +1,4 @@
-dist: trusty
+dist: xenial
 
 env:
   global:
@@ -62,8 +62,8 @@ services:
   - mysql
 
 before_install:
-   - echo "extension = libzip.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-#  - if ${INSTALL_PHP_ZIP_EXTENSION}; then sudo apt-get install php-zip; fi
+   - if ${INSTALL_PHP_ZIP_EXTENSION}; then sudo apt-get install libzip-dev; pecl install zip; fi
+#   - echo "extension = libzip.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 #  - echo "extension = snmp.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
 install:
