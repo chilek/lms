@@ -32,6 +32,8 @@ version 26-git (????-??-??):
     definition [chilan]
   - improvement: don't allow to edit used tariffs unless user has appropriate privilege
     ('used_tariff_edit' permission introduced) [chilan]
+  - improvement: added dedicated looked up property customisation button inside quick search
+    input fields [chilan]
 
 version 25.0 (2020-05-15):
 
