@@ -55,7 +55,7 @@ matrix:
         INSTALL_PHP_ZIP_EXTENSION=true
 
 addons:
-  postgresql: "9.2"
+  postgresql: 9.4
 
 services:
   - postgresql
