@@ -77,7 +77,6 @@
         "ext-mbstring": "*",
         "ext-xml": "*",
         "ext-json": "*",
-        "ext-zip": "*",
         "ext-bcmath": "*",
         "ext-soap": "*",
         "ext-openssl": "*",
