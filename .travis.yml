@@ -62,7 +62,8 @@ services:
   - mysql
 
 before_install:
-  - if ${INSTALL_PHP_ZIP_EXTENSION}; then sudo apt-get install php-zip; fi
+   - echo "extension = libzip.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+#  - if ${INSTALL_PHP_ZIP_EXTENSION}; then sudo apt-get install php-zip; fi
 #  - echo "extension = snmp.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
 install:
