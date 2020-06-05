@@ -61,8 +61,8 @@ services:
   - postgresql
   - mysql
 
-before_install:
-   - if ${INSTALL_PHP_ZIP_EXTENSION}; then sudo apt-get install libzip-dev; pecl install zip; fi
+#before_install:
+#   - if ${INSTALL_PHP_ZIP_EXTENSION}; then sudo apt-get install libzip-dev; pecl install zip; fi
 #   - echo "extension = libzip.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 #  - echo "extension = snmp.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
