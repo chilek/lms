@@ -55,8 +55,8 @@ services:
   - postgresql
   - mysql
 
-before_install:
-  - echo "extension = snmp.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+#before_install:
+#  - echo "extension = snmp.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
 install:
   - composer install

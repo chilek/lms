@@ -79,7 +79,6 @@
         "ext-json": "*",
         "ext-zip": "*",
         "ext-bcmath": "*",
-        "ext-snmp": "*",
         "ext-soap": "*",
         "ext-openssl": "*",
         "phine/observer": "2.0",
