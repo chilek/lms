@@ -12,6 +12,7 @@ matrix:
       env:
         PHPCS_VER="^3"
         PHPCS_STANDARD="phpcs3.xml"
+        INSTALL_PHP_ZIP_EXTENSION=false
 
     - os: linux
       language: php
@@ -19,6 +20,7 @@ matrix:
       env:
         PHPCS_VER="^3"
         PHPCS_STANDARD="phpcs3.xml"
+        INSTALL_PHP_ZIP_EXTENSION=false
 
     - os: linux
       language: php
@@ -26,6 +28,7 @@ matrix:
       env:
         PHPCS_VER="^3"
         PHPCS_STANDARD="phpcs3.xml"
+        INSTALL_PHP_ZIP_EXTENSION=false
 
     - os: linux
       language: php
@@ -33,6 +36,7 @@ matrix:
       env:
         PHPCS_VER="^3"
         PHPCS_STANDARD="phpcs3.xml"
+        INSTALL_PHP_ZIP_EXTENSION=false
 
     - os: linux
       language: php
@@ -40,6 +44,7 @@ matrix:
       env:
         PHPCS_VER="^3"
         PHPCS_STANDARD="phpcs3.xml"
+        INSTALL_PHP_ZIP_EXTENSION=false
 
     - os: linux
       language: php
@@ -47,6 +52,7 @@ matrix:
       env:
         PHPCS_VER="^3"
         PHPCS_STANDARD="phpcs3.xml"
+        INSTALL_PHP_ZIP_EXTENSION=true
 
 addons:
   postgresql: "9.2"
@@ -55,7 +61,8 @@ services:
   - postgresql
   - mysql
 
-#before_install:
+before_install:
+  - if ${INSTALL_PHP_ZIP_EXTENSION}; then pecl install zip; fi
 #  - echo "extension = snmp.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
 install:
