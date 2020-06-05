@@ -326,8 +326,8 @@ form.lms-ui-quick-search {
 		cursor: pointer;
 		.lms-ui-no-user-select;
 	}
-	input {
 
+	input {
 		padding-right: 1.2em;
 		&:last-child {
 			padding-right: 0.3em;
@@ -345,8 +345,32 @@ form.lms-ui-quick-search {
 
 		& + div {
 			margin-left: -1.8em;
+			display: none;
+		}
+
+		&:focus {
+			padding-right: 1.2em;
+			&:last-child {
+				padding-right: 0.3em;
+			}
+			& + div {
+				display: block;
+			}
 		}
 	}
+
+	&:hover {
+		input {
+			padding-right: 1.2em;
+			&:last-child {
+				padding-right: 0.3em;
+			}
+			& + div {
+				display: block;
+			}
+		}
+	}
+
 	.fas,
 	.fab,
 	.far,
