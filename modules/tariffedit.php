@@ -279,7 +279,7 @@ if (isset($_POST['tariff'])) {
 } else {
     $tariff = $LMS->GetTariff($_GET['id']);
 
-    if (!empty($tariff['customers'])) {
+    if (!empty($tariff['customers']) && !ConfigHelper::checkPrivilege('used_tariff_edit')) {
         return;
     }
 
