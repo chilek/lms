@@ -74,6 +74,13 @@
     ],
     "require": {
         "php" : ">=5.6",
+        "ext-mbstring": "*",
+        "ext-xml": "*",
+        "ext-json": "*",
+        "ext-bcmath": "*",
+        "ext-soap": "*",
+        "ext-openssl": "*",
+        "ext-zip": "*",
         "phine/observer": "2.0",
         "phine/exception": "1.0",
         "phpmailer/phpmailer": "^6",

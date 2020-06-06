@@ -1,4 +1,4 @@
-dist: trusty
+dist: xenial
 
 env:
   global:
@@ -12,6 +12,7 @@ matrix:
       env:
         PHPCS_VER="^3"
         PHPCS_STANDARD="phpcs3.xml"
+        INSTALL_PHP_ZIP_EXTENSION=false
 
     - os: linux
       language: php
@@ -19,6 +20,7 @@ matrix:
       env:
         PHPCS_VER="^3"
         PHPCS_STANDARD="phpcs3.xml"
+        INSTALL_PHP_ZIP_EXTENSION=false
 
     - os: linux
       language: php
@@ -26,6 +28,7 @@ matrix:
       env:
         PHPCS_VER="^3"
         PHPCS_STANDARD="phpcs3.xml"
+        INSTALL_PHP_ZIP_EXTENSION=false
 
     - os: linux
       language: php
@@ -33,6 +36,7 @@ matrix:
       env:
         PHPCS_VER="^3"
         PHPCS_STANDARD="phpcs3.xml"
+        INSTALL_PHP_ZIP_EXTENSION=false
 
     - os: linux
       language: php
@@ -40,6 +44,7 @@ matrix:
       env:
         PHPCS_VER="^3"
         PHPCS_STANDARD="phpcs3.xml"
+        INSTALL_PHP_ZIP_EXTENSION=false
 
     - os: linux
       language: php
@@ -47,13 +52,19 @@ matrix:
       env:
         PHPCS_VER="^3"
         PHPCS_STANDARD="phpcs3.xml"
+        INSTALL_PHP_ZIP_EXTENSION=true
 
 addons:
-  postgresql: "9.2"
+  postgresql: 9.4
 
 services:
   - postgresql
   - mysql
+
+#before_install:
+#   - if ${INSTALL_PHP_ZIP_EXTENSION}; then sudo apt-get install libzip-dev; pecl install zip; fi
+#   - echo "extension = libzip.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+#  - echo "extension = snmp.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
 install:
   - composer install

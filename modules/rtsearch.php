@@ -111,16 +111,16 @@ function RTSearch($search, $order = 'createtime,desc')
             .$DB->Concat('UPPER(c.lastname)', "' '", 'UPPER(c.name)').' ?LIKE? UPPER('.$DB->Escape('%'.$search['name'].'%').'))';
     }
     if (isset($search['queue'])) {
-        if (is_array($search['queue'])) {
-            $where_queue = '(t.queueid IN (' . implode(',', $search['queue']) . ')';
-        } elseif (empty($search['queue'])) {
-            return null;
-        } else {
-            $where_queue = '(t.queueid = '.intval($search['queue']);
+        if (!empty($search['queue'])) {
+            if (is_array($search['queue'])) {
+                $where_queue = '(t.queueid IN (' . implode(',', $search['queue']) . ')';
+            } else {
+                $where_queue = '(t.queueid = ' . intval($search['queue']);
+            }
+            $user_permission_checks = ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks');
+            $userid = Auth::GetCurrentUser();
+            $where[] = $where_queue . ($user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid : '') . ')';
         }
-        $user_permission_checks = ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks');
-        $userid = Auth::GetCurrentUser();
-        $where[] = $where_queue . ($user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid : '') . ')';
     }
     if (isset($search['catids'])) {
         $where[] = 'tc.categoryid IN ('.implode(',', $search['catids']).')';
@@ -266,7 +266,7 @@ $layout['pagetitle'] = trans('Ticket Search');
 
 if (isset($_POST['search'])) {
     $search = $_POST['search'];
-} elseif (isset($_GET['page']) || isset($_GET['o'])) {
+} elseif (isset($_GET['page']) || isset($_GET['o']) || isset($_GET['quicksearch'])) {
     $SESSION->restore('rtsearch', $search);
 }
 

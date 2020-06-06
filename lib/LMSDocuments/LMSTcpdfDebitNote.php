@@ -203,9 +203,10 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
         /* data */
         $i = 1;
         foreach ($this->data['content'] as $item) {
-            $this->backend->Cell($h_width['no'], 6, $i . '.', 1, 0, 'C', 0, '', 1);
-            $this->backend->Cell($h_width['name'], 6, $item['description'], 1, 0, 'L', 0, '', 1);
-            $this->backend->Cell($h_width['total'], 6, sprintf('%01.2f', $item['value']), 1, 0, 'R', 0, '', 1);
+            $h = $this->backend->getStringHeight($h_width['name'], $item['description'], true, false, '', 1) + 1;
+            $this->backend->Cell($h_width['no'], $h, $i . '.', 1, 0, 'C', 0, '', 1);
+            $this->backend->MultiCell($h_width['name'], $h, $item['description'], 1, 'L', false, 0, '', '', true, 0, false, false, $h, 'M');
+            $this->backend->Cell($h_width['total'], $h, sprintf('%01.2f', $item['value']), 1, 0, 'R', 0, '', 1);
             $this->backend->Ln();
             $i++;
         }

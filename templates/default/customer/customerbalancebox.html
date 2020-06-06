@@ -147,7 +147,7 @@
 									{button type="link" icon="correction" href="?m=invoicenote&id={$item.docid}&action=init"
 										tip="Revise"}
 								{/if}
-								{if !$item.cancelled && !$item.archived && !$item.referenced && (!$item.published || ConfigHelper::checkPrivilege('published_document_modification'))}
+								{if !$item.closed && !$item.cancelled && !$item.archived && !$item.referenced && (!$item.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 									{textformat assign="onclick" wrap=5000}
 										{if $item.published}
 											confirmDialog($t('Document has been published already! Are you sure you want to edit it despite this?'), this)

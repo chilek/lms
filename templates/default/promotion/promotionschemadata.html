@@ -187,7 +187,7 @@
 							<div class="promoschema-tariff-selection-header-row">
 								<div class="promoschema-tariff-selection-header-cell">
 									<SELECT name="form[tariffid]" id="tariff-select"
-											{tip text="Select subscription" trigger="tariffid"}>
+											{tip class="lms-ui-advanced-select" text="Select subscription" trigger="tariffid"}>
 										{foreach $tariffs as $tariff}
 										<OPTION value="{$tariff.id}" {if $tariff.id == $formdata.tariffid}selected{/if}
 											data-tarifftags="{$tariff.tags}" data-valid="{$tariff.valid}"
@@ -336,10 +336,13 @@
 			$('option', tariff_select).each(function() {
 				if ($(this).css('display') != 'none') {
 					tariff_select.val($(this).val());
+					updateAdvancedSelects(tariff_select);
 					return false;
 				}
 			});
 		}
+
+		updateAdvancedSelects(tariff_select);
 	}
 
 	$(function () {

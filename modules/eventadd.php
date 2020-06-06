@@ -29,6 +29,9 @@ include(MODULES_DIR . DIRECTORY_SEPARATOR . 'eventxajax.inc.php');
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'rtticketxajax.inc.php');
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
+$allow_empty_categories = ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories');
+$empty_category_warning = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_empty_category_warning', true));
+
 if (isset($_GET['ticketid']) && !empty($_GET['ticketid']) && intval($_GET['ticketid'])) {
     $eventticketid = intval($_GET['ticketid']);
 }
@@ -132,9 +135,15 @@ if (isset($_POST['event'])) {
 
     switch ($event['helpdesk']) {
         case 'new':
-            if (!is_array($ticket['categories']) || !count($ticket['categories'])) {
-                $error['categories'] = trans('You have to select category!');
+            if (empty($ticket['categories']) && (!$allow_empty_categories || (empty($ticket['categorywarn']) && $empty_category_warning))) {
+                if ($allow_empty_categories) {
+                    $ticket['categorywarn'] = 1;
+                    $error['categories'] = trans('Category selection is recommended but not required!');
+                } else {
+                    $error['categories'] = trans('You have to select category!');
+                }
             }
+
             if (empty($event['description'])) {
                 $error['description'] = trans('If ticket is assigned to event being created, empty description is not allowed!');
             }

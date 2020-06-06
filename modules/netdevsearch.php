@@ -83,6 +83,9 @@ function NetDevSearch($order = 'name,asc', $search = null, $sqlskey = 'AND')
                         .' OR n.name ?LIKE? '.$DB->Escape("%$value%").')';
                         $nodes = true;
                         break;
+                    case 'serialnumber':
+                        $searchargs[] = 'LOWER(d.serialnumber) ?LIKE? ' . $DB->Escape("%$value%");
+                        break;
                     case 'ports':
                         $searchargs[] = "ports = ".intval($value);
                         break;

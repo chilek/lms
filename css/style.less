@@ -307,6 +307,7 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 .lms-ui-quick-search {
 	display: flex;
 	justify-content: flex-start;
+	align-items: center;
 	flex-wrap: wrap;
 }
 
@@ -319,20 +320,57 @@ form.lms-ui-quick-search {
 
 .lms-ui-quick-search-field {
 	display: flex;
-	align-items: flex-start;
+	align-items: center;
 	margin-left: 0.3em;
 	img {
 		cursor: pointer;
 		.lms-ui-no-user-select;
 	}
+
 	input {
+		padding-right: 1.2em;
+		&:last-child {
+			padding-right: 0.3em;
+		}
+		padding-top: 0.3em;
+		padding-bottom: 0.3em;
+		padding-left: 0.3em;
+
 		margin-left: 0.3em;
 		width: 1.7em;
 		display: inline-block;
 		&.lms-ui-quick-search-active {
 			width: 8.4em;
 		}
+
+		& + div {
+			margin-left: -1.8em;
+			display: none;
+		}
+
+		&:focus {
+			padding-right: 1.2em;
+			&:last-child {
+				padding-right: 0.3em;
+			}
+			& + div {
+				display: block;
+			}
+		}
 	}
+
+	&:hover {
+		input {
+			padding-right: 1.2em;
+			&:last-child {
+				padding-right: 0.3em;
+			}
+			& + div {
+				display: block;
+			}
+		}
+	}
+
 	.fas,
 	.fab,
 	.far,
@@ -1813,6 +1851,10 @@ table.dataTable {
 	}
 	.chosen-drop {
 		background-color: @lucid;
+		width: auto;
+		li {
+			white-space: nowrap;
+		}
 	}
 }
 

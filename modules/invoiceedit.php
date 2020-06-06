@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -48,15 +48,7 @@ $taxeslist = $LMS->GetTaxes();
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 
 if (isset($_GET['id']) && ($action == 'edit' || $action == 'init')) {
-    if ($LMS->isDocumentPublished($_GET['id']) && !ConfigHelper::checkPrivilege('published_document_modification')) {
-        return;
-    }
-
-    if ($LMS->isDocumentReferenced($_GET['id'])) {
-        return;
-    }
-
-    if ($LMS->isArchiveDocument($_GET['id'])) {
+    if (!$LMS->isInvoiceEditable($_GET['id'])) {
         return;
     }
 

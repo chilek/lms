@@ -205,15 +205,40 @@ switch ($mode) {
         }
 
         // use customersearch module to find all customers
-        $s['customername'] = $search;
-        $s['address'] = $search;
-        $s['zip'] = $search;
-        $s['city'] = $search;
-        $s['email'] = $search;
-        $s['ten'] = $search;
-        $s['ssn'] = $search;
-        $s['info'] = $search;
-        $s['notes'] = $search;
+        $s = array();
+        if (empty($properties) || isset($properties['name'])) {
+            $s['customername'] = $search;
+        }
+        if (empty($properties) || isset($properties['address'])) {
+            $s['full_address'] = $search;
+        }
+        if (empty($properties) || isset($properties['post_name'])) {
+            $s['post_name'] = $search;
+        }
+        if (empty($properties) || isset($properties['post_address'])) {
+            $s['post_full_address'] = $search;
+        }
+        if (empty($properties) || isset($properties['location_name'])) {
+            $s['location_name'] = $search;
+        }
+        if (empty($properties) || isset($properties['location_address'])) {
+            $s['location_full_address'] = $search;
+        }
+        if (empty($properties) || isset($properties['email'])) {
+            $s['email'] = $search;
+        }
+        if (empty($properties) || isset($properties['ten'])) {
+            $s['ten'] = $search;
+        }
+        if (empty($properties) || isset($properties['ssn'])) {
+            $s['ssn'] = $search;
+        }
+        if (empty($properties) || isset($properties['additional-info'])) {
+            $s['info'] = $search;
+        }
+        if (empty($properties) || isset($properties['notes'])) {
+            $s['notes'] = $search;
+        }
 
         $SESSION->save('customersearch', $s);
         $SESSION->save('cslk', 'OR');
@@ -487,10 +512,22 @@ switch ($mode) {
         }
 
         // use nodesearch module to find all matching nodes
-        $s['name'] = $search;
-        $s['mac'] = $search;
-        $s['ipaddr'] = $search;
-
+        $s = array();
+        if (empty($properties) || isset($properties['name'])) {
+            $s['name'] = $search;
+        }
+        if (empty($properties) || isset($properties['mac'])) {
+            $s['mac'] = $search;
+        }
+        if (empty($properties) || isset($properties['ip'])) {
+            $s['ip'] = $search;
+        }
+        if (empty($properties) || isset($properties['public_ip'])) {
+            $s['public_ip'] = $search;
+        }
+        if (empty($properties) || isset($properties['location_address'])) {
+            $s['location'] = $search;
+        }
         $SESSION->save('nodesearch', $s);
         $SESSION->save('nslk', 'OR');
 
@@ -615,9 +652,15 @@ switch ($mode) {
             }
         }
 
-        $s['name'] = $search;
-
+        $s = array();
+        if (empty($properties) || isset($properties['name'])) {
+            $s['name'] = $search;
+        }
+        if (empty($properties) || isset($properties['serial'])) {
+            $s['serialnumber'] = $search;
+        }
         $SESSION->save('netdevsearch', $s);
+        $SESSION->save('ndlsk', 'OR');
 
         $target = '?m=netdevsearch&search';
 
@@ -635,7 +678,10 @@ switch ($mode) {
             }
 
             $userid = Auth::GetCurrentUser();
+
             $user_permission_checks = ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks');
+            $allow_empty_categories = ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories');
+
             $candidates = $DB->GetAll(
                 "SELECT t.id, t.subject, t.requestor, t.state, c.name, c.lastname
 				FROM rttickets t
@@ -643,7 +689,7 @@ switch ($mode) {
 				LEFT JOIN rtticketcategories tc ON t.id = tc.ticketid
 				LEFT JOIN customerview c on (t.customerid = c.id)
 				WHERE (r.rights IS NOT NULL" . ($user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid : '') . ")
-					AND ".(is_array($catids) ? "tc.categoryid IN (".implode(',', $catids).")" : "tc.categoryid IS NULL")
+					AND " . (is_array($catids) ? '(tc.categoryid IN (' . implode(',', $catids) . ') ' . ($allow_empty_categories ? ' OR tc.categoryid IS NULL' : '') . ')' : 'tc.categoryid IS NULL')
                     . (empty($properties) || isset($properties['unresolvedonly']) ? ' AND t.state <> ' . RT_RESOLVED : '') . " AND ("
                     . (empty($properties) || isset($properties['id']) ? (preg_match('/^[0-9]+$/', $search) ? 't.id = ' . $search : '1=0') : '1=0')
                     . (empty($properties) || isset($properties['subject']) ? " OR LOWER(t.subject) ?LIKE? LOWER($sql_search)" : '')
@@ -733,11 +779,19 @@ switch ($mode) {
         if (is_numeric($search) && intval($search)>0) {
             $target = '?m=rtticketview&id='.intval($search);
         } else {
-            $SESSION->save('rtsearch', array('name' => $search,
-                    'subject' => $search,
-                    'operator' => 'OR'));
+            $params = array('operator' => 'OR');
+            if (empty($properties) || isset($properties['subject'])) {
+                $params['subject'] = $search;
+            }
+            if (empty($properties) || isset($properties['requestor'])) {
+                $params['name'] = $search;
+            }
+            if (empty($properties) || isset($properties['unresolvedonly'])) {
+                $params['state'] = -1;
+            }
+            $SESSION->save('rtsearch', $params);
 
-            $target = '?m=rtsearch&s=1';
+            $target = '?m=rtsearch&s=1&quicksearch=1';
         }
         break;
     case 'wireless':

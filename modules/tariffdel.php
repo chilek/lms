@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,10 +26,8 @@
 
 $id = intval($_GET['id']);
 
-if ($id && $LMS->TariffExists($id)) {
-    if (!$DB->GetOne('SELECT 1 FROM assignments WHERE tariffid = ? LIMIT 1', array($id))) {
-        $LMS->TariffDelete($id);
-    }
+if ($id && $LMS->TariffExists($id) && $LMS->isTariffEditable($id)) {
+    $LMS->TariffDelete($id);
 }
 
 $SESSION->redirect('?m=tarifflist');

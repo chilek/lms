@@ -4631,4 +4631,31 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         return intval($invoiceid);
     }
+
+    public function isInvoiceEditable($id)
+    {
+        return ($this->db->GetOne(
+            'SELECT d.id FROM documents d
+            LEFT JOIN documents d2 ON d2.reference = d.id
+            WHERE d.id = ? AND d.type IN ? AND d.cancelled = 0 AND d.closed = 0 AND d.archived = 0 AND d2.id IS NULL
+                ' . (ConfigHelper::checkPrivilege('published_document_modification') ? '' : ' AND d.published = 0'),
+            array($id, array(DOC_INVOICE, DOC_CNOTE, DOC_INVOICE_PRO))
+        ) > 0);
+    }
+
+    public function isTariffEditable($id)
+    {
+        return (ConfigHelper::checkPrivilege('used_tariff_edit') || $this->db->GetOne(
+            'SELECT COUNT(CASE WHEN s.customerid IS NULL AND commited = 1 AND suspended = 0 AND datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?) THEN 1 ELSE NULL END) AS active
+            FROM assignments
+            LEFT JOIN (
+                SELECT DISTINCT a.customerid
+                FROM assignments a
+                WHERE a.tariffid IS NULL AND a.liabilityid IS NULL
+                    AND a.datefrom < ?NOW? AND (a.dateto = 0 OR a.dateto > ?NOW?)
+            ) s ON s.customerid = assignments.customerid
+            WHERE tariffid = ?',
+            array($id)
+        ) > 0);
+    }
 }

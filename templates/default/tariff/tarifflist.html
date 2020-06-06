@@ -182,7 +182,9 @@
 				{else}
 					<A class="delete-tariff" HREF="?m=tariffdel&id={$tariff.id}">
 				{/if}<IMG SRC="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
-				<A HREF="?m=tariffedit&amp;id={$tariff.id}"><IMG SRC="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
+				{if empty($tariff.customers) || ConfigHelper::checkPrivilege('used_tariff_edit')}
+					<A HREF="?m=tariffedit&id={$tariff.id}"><IMG SRC="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
+				{/if}
 				<A HREF="?m=tariffadd&amp;id={$tariff.id}"><IMG SRC="img/clone.gif" alt="{trans("Clone")}" title="{trans("Clone")}"></A>
 				<A HREF="?m=tariffinfo&amp;id={$tariff.id}"><IMG SRC="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
 		</TD>

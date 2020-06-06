@@ -853,6 +853,27 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                 $searchargs[] = "UPPER(post_$key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . ")";
                             }
                             break;
+                        case 'full_address':
+                            $searchargs[] = "UPPER(c.full_address) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . ")";
+                            break;
+                        case 'post_name':
+                            $searchargs[] = "UPPER(c.post_name) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . ")";
+                            break;
+                        case 'post_full_address':
+                            $searchargs[] = "UPPER(c.post_full_address) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . ")";
+                            break;
+                        case 'location_name':
+                            $searchargs[] = "EXISTS (SELECT 1 FROM customer_addresses ca2
+                                JOIN vaddresses va ON va.id = ca2.address_id
+                                WHERE ca2.customer_id = c.id AND ca2.type IN (" . DEFAULT_LOCATION_ADDRESS . ',' . LOCATION_ADDRESS . ")
+                                    AND UPPER(va.name) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . "))";
+                            break;
+                        case 'location_full_address':
+                            $searchargs[] = "EXISTS (SELECT 1 FROM customer_addresses ca2
+                                JOIN vaddresses va ON va.id = ca2.address_id
+                                WHERE ca2.customer_id = c.id AND ca2.type IN (" . DEFAULT_LOCATION_ADDRESS . ',' . LOCATION_ADDRESS . ")
+                                    AND UPPER(va.location) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . "))";
+                            break;
                         case 'customername':
                             // UPPER here is a workaround for postgresql ILIKE bug
                             $searchargs[] = $this->db->Concat('UPPER(c.lastname)', "' '", 'UPPER(c.name)') . ' ?LIKE? UPPER(' . $this->db->Escape("%$value%") . ')';
