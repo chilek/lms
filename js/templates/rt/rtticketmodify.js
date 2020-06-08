@@ -64,7 +64,7 @@ $(function() {
 		$('#customernotify-row').show();
 	}
 
-	$('#parent-ticket').on('lms-ui-list:updated', function(e, data) {
+	$('#parent-ticket').on('lms:list_updated', function(e, data) {
 		$('#related-tickets').toggleClass('disabled', !data.list.length)
 			.closest('.lms-ui-box-row').toggleClass('blend', !data.list.length)
 			.removeAttr('data-tooltip').attr('title', data.list.length ? '' : $t("No parent ticket is selected!"));

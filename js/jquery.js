@@ -483,7 +483,7 @@ function initListQuickSearch(options) {
 			} else {
 				list.append(html).show();
 			}
-			list_container.trigger('lms-ui-list:updated', { list: list.find('li') });
+			list_container.trigger('lms:list_updated', { list: list.find('li') });
 		},
 		function (suggestions) {
 			var result = [];
@@ -1654,7 +1654,7 @@ $(function() {
 				list.toggle(list.find('li').length > 0);
 				list_container.find('.lms-ui-list-suggestion').focus();
 
-				list_container.trigger('lms-ui-list:updated', { list: list.find('li') });
+				list_container.trigger('lms:list_updated', { list: list.find('li') });
 			}
 			return;
 		}
@@ -1714,6 +1714,16 @@ $(function() {
 			at: "left",
 			of: this
 		})
+	});
+
+	$('button[type="submit"]').each(function() {
+		var form = $(this).attr('form') ? $('form#' + $(this).attr('form')) : $(this).closest('form');
+		var button = $(this);
+		form.submit(function() {
+			button.attr('disabled', 'disabled');
+		}).on('lms:form_validation_failed', function() {
+			button.removeAttr('disabled');
+		});
 	});
 
 	initAutoGrow('.lms-ui-autogrow');
