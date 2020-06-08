@@ -1709,6 +1709,17 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         if (empty($props['relatedtickets'])) {
             $props['relatedtickets'] = array();
         }
+        // find tickets with the same as current ticket parentid set before the moment
+        // and treat them as related tickets too
+        if (!empty($relatedtickets) && !empty($props['parentid'])) {
+            foreach ($relatedtickets as $ticket) {
+                if ($ticket['parentid'] == $props['parentid']) {
+                    $props['relatedtickets'][] = $ticket['id'];
+                }
+            }
+            $props['relatedtickets'] = array_unique($props['relatedtickets']);
+        }
+
         $relations_to_remove = array_diff(array_keys($relatedtickets), array_values($props['relatedtickets']));
         if (!empty($relations_to_remove)) {
             foreach ($relations_to_remove as $tid) {
@@ -2135,7 +2146,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     public function GetRelatedTickets($ticketid)
     {
         return $this->db->GetAllByKey(
-            'SELECT id, subject AS name FROM rttickets WHERE id <> ? AND parentid = (SELECT parentid FROM rttickets WHERE id = ?) ORDER BY id',
+            'SELECT id, subject AS name, parentid FROM rttickets WHERE id <> ? AND parentid = (SELECT parentid FROM rttickets WHERE id = ?) ORDER BY id',
             'id',
             array($ticketid, $ticketid)
         );
