@@ -104,8 +104,14 @@
 		});
 
 		$('#newrequest .submit-button').click(function() {
+			if ($(this).is("[disabled]")) {
+				return false;
+			}
+			$(this).attr('disabled', 'disabled');
 			if (check_file_sizes()) {
 				document.helpdesk.submit();
+			} else {
+				$(this).removeAttr('disabled');
 			}
 		});
 	});
