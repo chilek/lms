@@ -1148,7 +1148,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $ticket['requestor_userid'] = 0;
         }
 
-        $ticket['categories'] = $this->db->GetAllByKey('SELECT categoryid AS id, c.name
+        $ticket['categories'] = $this->db->GetAllByKey('SELECT categoryid AS id, c.name, c.style
 								FROM rtticketcategories tc
 								JOIN rtcategories c ON c.id = tc.categoryid
 								WHERE ticketid = ?', 'id', array($id));
