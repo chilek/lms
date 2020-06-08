@@ -319,8 +319,9 @@ form.lms-ui-quick-search {
 }
 
 .lms-ui-quick-search-field {
-	display: flex;
-	align-items: center;
+//	display: flex;
+//	align-items: center;
+	position: relative;
 	margin-left: 0.3em;
 	img {
 		cursor: pointer;
@@ -328,13 +329,7 @@ form.lms-ui-quick-search {
 	}
 
 	input {
-		padding-right: 1.2em;
-		&:last-child {
-			padding-right: 0.3em;
-		}
-		padding-top: 0.3em;
-		padding-bottom: 0.3em;
-		padding-left: 0.3em;
+		padding: 0.3em;
 
 		margin-left: 0.3em;
 		width: 1.7em;
@@ -344,12 +339,15 @@ form.lms-ui-quick-search {
 		}
 
 		& + div {
-			margin-left: -1.8em;
+			//margin-left: -1.8em;
 			display: none;
+			position: absolute;
+			top: 0.3em;
+			right: 0;
 		}
 
 		&:focus {
-			padding-right: 1.2em;
+			padding-right: 1.5em;
 			&:last-child {
 				padding-right: 0.3em;
 			}
@@ -361,7 +359,7 @@ form.lms-ui-quick-search {
 
 	&:hover {
 		input {
-			padding-right: 1.2em;
+			padding-right: 1.5em;
 			&:last-child {
 				padding-right: 0.3em;
 			}
