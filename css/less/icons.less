@@ -134,7 +134,8 @@
 }
 
 .lms-ui-icon-money,
-.lms-ui-icon-cash {
+.lms-ui-icon-cash,
+.lms-ui-icon-paytype {
   .fa-icon;
   .fas;
   .lms-ui-icon;
@@ -435,7 +436,8 @@
   }
 }
 
-.lms-ui-icon-clipboard {
+.lms-ui-icon-clipboard,
+.lms-ui-icon-notes {
   .fa-icon;
   .fas;
   .lms-ui-icon;
@@ -1182,7 +1184,8 @@
   }
 }
 
-.lms-ui-icon-password {
+.lms-ui-icon-password,
+.lms-ui-icon-lastloggedin {
   .fa-icon;
   .fas;
   .lms-ui-icon;
@@ -1312,5 +1315,115 @@
   .lms-ui-icon;
   &:before {
     content: @fa-var-ellipsis-v;
+  }
+}
+
+.lms-ui-icon-optional-info {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-info-circle;
+  }
+}
+
+.lms-ui-icon-modified-date {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-user-clock;
+  }
+}
+
+.lms-ui-icon-legal-personality {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-briefcase;
+  }
+}
+
+.lms-ui-icon-division {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-building;
+  }
+}
+
+.lms-ui-icon-customer-pin-code {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-ellipsis-h;
+  }
+}
+
+.lms-ui-icon-user-id-number {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-id-card;
+  }
+}
+
+.lms-ui-icon-account-number {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-credit-card;
+  }
+}
+
+.lms-ui-icon-customer-status-connected {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-user-check;
+  }
+}
+
+.lms-ui-icon-customer-status-awaiting {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    color: green;
+    content: @fa-var-user-clock;
+  }
+}
+
+.lms-ui-icon-customer-status-interested {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-user-plus;
+  }
+}
+
+.lms-ui-icon-customer-status-disconnected {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-user-times;
+  }
+}
+
+.lms-ui-icon-customer-status-debt-collection {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    color: red;
+    content: @fa-var-user-alt-slash;
   }
 }

@@ -50,7 +50,7 @@
 						{block name="customerinfobox-leftcolumn"}
 							<TR>
 								<TD WIDTH="1%">
-									<IMG src="img/{$_CSTATUSES[$customerinfo.status].img}" alt="">
+									<i class="lms-ui-icon-customer-status-{$_CSTATUSES[$customerinfo.status].alias}"></i>
 								</TD>
 								<TD WIDTH="99%" class="bold lms-ui-customer-status-{$_CSTATUSES[$customerinfo.status].alias}">
 									{$_CSTATUSES[$customerinfo.status].singularlabel}
@@ -59,7 +59,7 @@
 						{if $customerinfo.division}
 							<TR>
 								<TD WIDTH="1%">
-									<IMG src="img/division.gif" alt="">
+									<i class="lms-ui-icon-division"></i>
 								</TD>
 								<TD WIDTH="99%">
 									{$customerinfo.division}
@@ -68,7 +68,7 @@
 						{/if}
 							<TR>
 								<TD WIDTH="1%">
-									<IMG src="img/folder.gif" alt="">
+									<i class="lms-ui-icon-legal-personality"></i>
 								</TD>
 								<TD WIDTH="99%">
 									{if $customerinfo.type == $smarty.const.CTYPES_COMPANY}{assign var='type' value=$smarty.const.CTYPES_COMPANY}{$_CTYPES.$type}{elseif $customerinfo.type == $smarty.const.CTYPES_PRIVATE}{assign var='type' value=$smarty.const.CTYPES_PRIVATE}{$_CTYPES.$type}{/if}
@@ -157,7 +157,7 @@
 						{if $customerinfo.pin}
 							<TR>
 								<TD WIDTH="1%">
-									<IMG SRC="img/pin.gif" class="lms-ui-button-clipboard" data-clipboard-text="{$customerinfo.pin}" ALT="">
+									<i class="lms-ui-icon-customer-pin-code lms-ui-button-clipboard" data-clipboard-text="{$customerinfo.pin}" ALT=""></i>
 								</TD>
 								<TD WIDTH="99%">
 									{if ConfigHelper::checkConfig('phpui.protect_passwords')}
@@ -173,7 +173,7 @@
 						{if $customerinfo.icn != ""}
 							<TR>
 								<TD WIDTH="1%">
-									<IMG SRC="img/serialnumber.gif" ALT="">
+									<i class="lms-ui-icon-user-id-number"></i>
 								</TD>
 								<TD WIDTH="99%">
 									{trans("ICN")}: {$customerinfo.icn}
@@ -183,7 +183,7 @@
 						{if $customerinfo.ssn != ""}
 							<TR>
 								<TD WIDTH="1%">
-									<IMG SRC="img/serialnumber.gif" ALT="">
+									<i class="lms-ui-icon-user-id-number"></i>
 								</TD>
 								<TD WIDTH="99%">
 									{trans("SSN")}: {$customerinfo.ssn}
@@ -193,7 +193,7 @@
 						{if $customerinfo.ten != ""}
 							<TR>
 								<TD WIDTH="1%">
-									<IMG SRC="img/serialnumber.gif" ALT="">
+									<i class="lms-ui-icon-user-id-number"></i>
 								</TD>
 								<TD WIDTH="99%">
 									{trans("TEN")}: {$customerinfo.ten}
@@ -203,7 +203,7 @@
 						{if $customerinfo.regon != ""}
 							<TR>
 								<TD WIDTH="1%">
-									<IMG SRC="img/serialnumber.gif" ALT="">
+									<i class="lms-ui-icon-user-id-number"></i>
 								</TD>
 								<TD WIDTH="99%">
 									{trans("REGON")}: {$customerinfo.regon}
@@ -213,7 +213,7 @@
 						{if $customerinfo.rbename != ""}
 							<TR>
 								<TD style="width: 1%;" class="valign-top">
-									<IMG SRC="img/serialnumber.gif" ALT="">
+									<i class="lms-ui-icon-user-id-number"></i>
 								</TD>
 								<TD style="width: 99%;">
 									{trans("RBE Name:")}
@@ -230,7 +230,7 @@
 						{if $customerinfo.rbe != ""}
 							<TR>
 								<TD style="width: 1%;">
-									<IMG SRC="img/serialnumber.gif" ALT="">
+									<i class="lms-ui-icon-user-id-number"></i>
 								</TD>
 								<TD style="width: 99%;">
 									{trans("RBE")}: {$customerinfo.rbe}
@@ -240,7 +240,7 @@
 						{if $customerinfo.bankaccount}
 							<TR>
 								<TD WIDTH="1%">
-									<IMG SRC="img/card.gif" ALT="">
+									<i class="lms-ui-icon-account-number"></i>
 								</TD>
 								<TD WIDTH="99%" NOWRAP>
 									{format_bankaccount($customerinfo.bankaccount)}
@@ -249,7 +249,7 @@
 						{/if}
 							<TR>
 								<TD WIDTH="1%" style="vertical-align: top">
-									<IMG SRC="img/options.gif" ALT="">
+									<i class="lms-ui-icon-paytype"></i>
 								</TD>
 								<TD WIDTH="99%">
 									<TABLE cellpadding="2">
@@ -331,7 +331,7 @@
 					{if $customerinfo.info}
 					<TR>
 						<TD WIDTH="1%">
-							<IMG SRC="img/info1.gif" ALT="">
+							<i class="lms-ui-icon-optional-info"></i>
 						</TD>
 						<TD WIDTH="99%" COLSPAN="2">
 							<TABLE width="100%" CELLPADDING="5">
@@ -347,7 +347,7 @@
 					{if $customerinfo.message}
 					<TR>
 						<TD WIDTH="1%">
-							<IMG SRC="img/warningon.gif" ALT="">
+							<i class="lms-ui-icon-warning"></i>
 						</TD>
 						<TD WIDTH="99%" COLSPAN="2">
 							<TABLE width="100%" CELLPADDING="5">
@@ -363,7 +363,7 @@
 					{if $customerinfo.notes}
 					<TR>
 						<TD WIDTH="1%">
-							<IMG SRC="img/note.gif" ALT="">
+							<i class="lms-ui-icon-notes"></i>
 						</TD>
 						<TD WIDTH="99%" COLSPAN="2">
 							<TABLE width="100%" CELLPADDING="5">
@@ -395,7 +395,7 @@
 					{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 					<TR>
 						<TD WIDTH="1%">
-							<IMG SRC="img/money.gif" ALT="">
+							<i class="lms-ui-icon-money"></i>
 						</TD>
 						<TD WIDTH="1%">
 							<B>{trans("Balance:")}</B>
@@ -433,7 +433,7 @@
 					{/if}
 					<TR>
 								<TD WIDTH="1%">
-								<IMG SRC="img/cms.gif" ALT="">
+								<i class="lms-ui-icon-lastloggedin"></i>
 						</TD>
 						<TD WIDTH="1%" NOWRAP>
 							<B>{trans("Last login:")}<BR>
@@ -446,7 +446,7 @@
 					</TR>
 					<TR>
 						<TD WIDTH="1%">
-							<IMG SRC="img/users.gif" ALT="">
+							<i class="lms-ui-icon-modified-date"></i>
 						</TD>
 						<TD WIDTH="1%">
 							<B>{trans("Created:")}<BR>
