@@ -49,6 +49,14 @@ if (isset($_GET['ajax']) && isset($_GET['op'])) {
 
 $ticket['childtickets'] = $LMS->GetChildTickets($id);
 
+if (!empty($ticket['childtickets'])) {
+    foreach ($ticket['childtickets'] as $cticket) {
+        if ($LMS->CheckTicketAccess($cticket['id'])) {
+            $childticketscontent[] = $LMS->GetTicketContents($cticket['id']);
+        }
+    }
+}
+
 if (!empty($ticket['relatedtickets'])) {
     foreach ($ticket['relatedtickets'] as $rticket) {
         if ($LMS->CheckTicketAccess($rticket['id'])) {
@@ -156,6 +164,7 @@ if (isset($_GET['highlight'])) {
 
 $SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('relatedticketscontent', $relatedticketscontent);
+$SMARTY->assign('childticketscontent', $childticketscontent);
 $SMARTY->assign('parentticketcontent', $parentticketcontent);
 
 $SMARTY->assign('categories', $categories);

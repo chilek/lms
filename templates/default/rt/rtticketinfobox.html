@@ -436,6 +436,11 @@
 <br>
 {include file="rt/rtticketparentinfo.html"}
 {/if}
+{if $ticket.childtickets}
+<br>
+{include file="rt/rtticketchildlist.html"}
+{/if}
+
 {if $ticket.relatedtickets}
 <br>
 {include file="rt/rtticketrelatedlist.html"}
