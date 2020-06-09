@@ -180,13 +180,28 @@ if ($import_file != 'php://stdin' && !is_readable($import_file)) {
     die("Couldn't read contents from $import_file file!" . PHP_EOL);
 }
 
-$LMS->CashImportParseFile(
+$error = $LMS->CashImportParseFile(
     $import_filename,
     file_get_contents($import_file),
     $patterns,
     $quiet,
     ConfigHelper::checkConfig('cashimport.use_file_date') ? $filemtime : null
 );
+
+if (!$quiet && !empty($error)) {
+    foreach ($error['lines'] as $ln => $item) {
+        if (is_array($item)) {
+            $attributes = array();
+            foreach ($item as $key => $value) {
+                $attributes[] = $key . ': ' . $value;
+            }
+            echo "Duplicated: line " . $ln . ': ' . implode(', ', $attributes) . PHP_EOL;
+        } else {
+            echo "Invalid format: line " . $ln . ': ' . $item . PHP_EOL;
+        }
+    }
+}
+
 if (ConfigHelper::checkConfig('cashimport.autocommit')) {
     $LMS->CashImportCommit();
 }
