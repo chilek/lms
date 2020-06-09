@@ -233,8 +233,15 @@ if (isset($_GET['unread'])) {
     $filter['unread'] = -1;
 }
 
-if (!is_array($_GET['parent']) && !empty($_GET['parent'])) {
-    $filter['parent'] = intval($_GET['parent']);
+if (!empty($_GET['parentids'])) {
+    if (!is_array($_GET['parentids'])) {
+        $_GET['parentids'] = array($_GET['parentids']);
+    }
+    if (!in_array('-1', $_GET['parentids'])) {
+        $filter['parentids'] = Utils::filterIntegers($_GET['parentids']);
+    } else {
+        $filter['parentids'] = -1;
+    }
 }
 
 if (isset($_GET['rights'])) {
@@ -291,7 +298,7 @@ unset($queue['deadline']);
 unset($queue['service']);
 unset($queue['type']);
 unset($queue['unread']);
-unset($queue['parent']);
+unset($queue['parentids']);
 unset($queue['rights']);
 unset($queue['verifier']);
 unset($queue['netnode']);

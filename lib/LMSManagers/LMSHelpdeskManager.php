@@ -93,9 +93,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
      *      unread - ticket unread flag (default: null or < 0 = any),
      *          0 - read tickets,
      *          1 - unread tickets,
-     *      parent - ticket parentid
+     *      parentids - ticket parentid
      *          null (default: null = any),
-     *          1 - show only parent tickets
+     *          -1 - show only parent tickets
+     *          single integer value - all tickets with the same parent id
      *      verifierids - ticket verifier (default: null = any/none)
      *          array() of integer values,
      *          all - filter is off
@@ -121,7 +122,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     {
         extract($params);
         foreach (array('ids', 'state', 'priority', 'owner', 'catids', 'removed', 'netdevids', 'netnodeids', 'deadline',
-            'serviceids', 'typeids', 'unread', 'parent','verifierids') as $var) {
+            'serviceids', 'typeids', 'unread', 'parentids','verifierids') as $var) {
             if (!isset($$var)) {
                 $$var = null;
             }
@@ -345,14 +346,16 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         } else {
             $unreadfilter = '';
         }
-        if (!is_array($parent) && !empty($parent)) {
-            switch ($parent) {
-                case '1':
-                    $parentfilter = ' AND t.parentid IS NULL';
-                    break;
-                default:
-                    $parentfilter = '';
-                    break;
+
+        if (!empty($parentids)) {
+            if (!is_array($parentids)) {
+                $parentids = array($parentids);
+            }
+
+            if (in_array(-1, $parentids)) {
+                $parentfilter = ' AND t.parentid IS NULL';
+            } else {
+                $parentfilter = ' AND t.parentid IN (' . implode(',', $parentids) . ')';
             }
         }
 
