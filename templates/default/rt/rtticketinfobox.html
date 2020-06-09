@@ -70,31 +70,17 @@
                                     {$_RT_TYPES[$ticket.type].label}
 								</TD>
 							</TR>
+							{if $ticket.customerid}
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
 									<i class="lms-ui-icon-content lms-ui-icon-customer"></i>{trans("Customer:")}
 								</TD>
 								<TD style="width: 99%;" class="nobr">
-									{if $ticket.customerid}
 									<A href="?m=customerinfo&amp;id={$ticket.customerid}">{$ticket.customername|escape} ({$ticket.customerid|string_format:"%04d"})</A>
-									{if $ticket.requestor}<BR>{$ticket.requestor}{/if}
-									{if $ticket.requestor_phone}<BR>{$ticket.requestor_phone}{/if}
-									{if $ticket.requestor_mail}<BR>{$ticket.requestor_mail}{/if}
-									{else}
-										{if $ticket.requestor_userid}
-										<A href="?m=userinfo&id={$ticket.requestor_userid}">{$ticket.requestor_username}</A>
-										{else}
-											{$ticket.requestor}
-											{if $ticket.requestor_mail}
-											<br><A href="mailto:{$ticket.requestor_mail}">{$ticket.requestor_mail}</A>
-											{/if}
-											{if $ticket.requestor_phone}
-											<br>{$ticket.requestor_phone}
-											{/if}
-										{/if}
-									{/if}
 								</TD>
 							</TR>
+							{/if}
+							{if $ticket.requestor_userid || $ticket.requestor_name || $ticket.requestor_mail || $ticket.requestor_phone}
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
 									<i class="lms-ui-icon-content lms-ui-icon-requestor"></i>{trans("Requestor:")}
@@ -113,6 +99,7 @@
 									{/if}
 								</TD>
 							</TR>
+							{/if}
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
 									<i class="lms-ui-icon-content lms-ui-icon-timetable"></i>{trans("Create time:")}
