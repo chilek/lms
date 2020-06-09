@@ -195,7 +195,7 @@ if (!$quiet && !empty($error)) {
             foreach ($item as $key => $value) {
                 $attributes[] = $key . ': ' . $value;
             }
-            echo "Duplicated: line " . $ln . ': ' . implode(', ', $attributes) . PHP_EOL;
+            echo "Duplicate: line " . $ln . ': ' . implode(', ', $attributes) . PHP_EOL;
         } else {
             echo "Invalid format: line " . $ln . ': ' . $item . PHP_EOL;
         }
