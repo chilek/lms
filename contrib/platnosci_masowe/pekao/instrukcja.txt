@@ -1,0 +1,18 @@
+Skrypt do importu platnosci z PeKaO S.A. via cm.pekao.com.pl
+Autor: Michal Margula
+============================================================
+
+Skrocona instrukcja:
+
+1) Ustawic zmienna phpui.import_config = pekao_cashimportcfg.php
+2) Wgrac pekao_cashimportcfg.php do /opt/lms/modules/
+3) Zmodyfikowac pekao.sh, wskazujac odpowiedine sciezki, hasla i nazwe firmy i wgrac do /usr/local/bin
+4) Utworzyc crona, ktory pobiera platnosci z serwisu i je importuje, przyklad:
+
+15 * * * *	root	/usr/local/bin/pekao.sh
+30 * * * *      root    find /home/pekao/HOME/A/firma/ -name *.csv -cmin -60 -exec /opt/lms/bin/lms-cashimport.php -f {} \;
+
+UWAGI
+- mozna to zrobic prosciej dodajac wywolanie lms-cashimport.php do pekao.sh
+- prosze zwrocic uwage na sciezke w pekao.sh, gdzie zawiera ona pierwsza litere nazwy firmy
+- w moim przypadku otrzymalem certyfikat z przestarzalymi algorytmami podpisu i nowy cURL go nie akceptuje
