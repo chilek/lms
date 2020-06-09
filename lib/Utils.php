@@ -53,6 +53,18 @@ class Utils
         return $result;
     }
 
+    public static function array_column(array $array, $key)
+    {
+        if (!is_array($array) || empty($key)) {
+            return $array;
+        }
+        $result = array();
+        foreach ($array as $idx => $item) {
+            $result[$idx] = $item[$key];
+        }
+        return $result;
+    }
+
     // taken from RoundCube
     /**
      * Generate a random string
