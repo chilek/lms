@@ -1612,26 +1612,34 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             }
         }
 
-        if (isset($props['requestor']) && empty($props['requestor'])) {
-            $props['requestor'] = '';
+        if (array_key_exists('requestor', $props)) {
+            if (empty($props['requestor'])) {
+                $props['requestor'] = '';
+            }
         } else {
             $props['requestor'] = $ticket['requestor'];
         }
 
-        if (isset($props['requestor_userid']) && empty($props['requestor_userid'])) {
-            $props['requestor_userid'] = null;
+        if (array_key_exists('requestor_userid', $props)) {
+            if (empty($props['requestor_userid'])) {
+                $props['requestor_userid'] = null;
+            }
         } else {
             $props['requestor_userid'] = $ticket['requestor_userid'];
         }
 
-        if (isset($props['requestor_phone']) && empty($props['requestor_phone'])) {
-            $props['requestor_phone'] = null;
+        if (array_key_exists('requestor_phone', $props)) {
+            if (empty($props['requestor_phone'])) {
+                $props['requestor_phone'] = null;
+            }
         } else {
             $props['requestor_phone'] = $ticket['requestor_phone'];
         }
 
-        if (isset($props['requestor_mail']) && empty($props['requestor_mail'])) {
-            $props['requestor_mail'] = null;
+        if (array_key_exists('requestor_mail', $props)) {
+            if (empty($props['requestor_mail'])) {
+                $props['requestor_mail'] = null;
+            }
         } else {
             $props['requestor_mail'] = $ticket['requestor_mail'];
         }
