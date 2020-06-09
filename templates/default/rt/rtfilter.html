@@ -128,9 +128,9 @@
             </label>
             <label class="nobr">
                 {trans("Parent ticket:")}
-                <SELECT size="1" name="parent" onChange="document.filter.submit()">
-                    <option value=""{if $filter.parent == ""} selected{/if}>{trans("all")}</option>
-                    <option value="1"{if $filter.parent == 1} selected{/if}>{trans("show only parent tickets")}</option>
+                <SELECT size="1" name="parentids" onChange="document.filter.submit()">
+                    <option value=""{if $filter.parentids == ""} selected{/if}>{trans("all")}</option>
+                    <option value="-1"{if $filter.parentids == -1} selected{/if}>{trans("show only parent tickets")}</option>
                 </SELECT>
             </label>
             <label class="nobr">
