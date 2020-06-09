@@ -234,10 +234,10 @@ if (isset($_GET['unread'])) {
 }
 
 if (!empty($_GET['parentids'])) {
-    if(!is_array($_GET['parentids'])) {
+    if (!is_array($_GET['parentids'])) {
         $_GET['parentids'] = array($_GET['parentids']);
     }
-    if(!in_array('-1', $_GET['parentids'])) {
+    if (!in_array('-1', $_GET['parentids'])) {
         $filter['parentids'] = Utils::filterIntegers($_GET['parentids']);
     } else {
         $filter['parentids'] = -1;
