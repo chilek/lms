@@ -35,6 +35,7 @@ version 26-git (????-??-??):
   - improvement: added dedicated looked up property customisation button inside quick search
     input fields [chilan]
   - improvement: lms-cashimport.php script generates import report on output [chilan]
+  - enhancement: userpanel startup module can be defined from user interface [interduo]
 
 version 25.0 (2020-05-15):
 
