@@ -79,6 +79,18 @@
 		</TD>
 	</TR>
 	{/if}
+	{if $ticket.childtickets}
+	<TR>
+		<TD class="bold nobr">
+			<i class="lms-ui-icon-content lms-ui-icon-childticket"></i>{trans("Child tickets:")}
+		</TD>
+		<TD>
+			{foreach $ticket.childtickets as $i}
+			<A href="?m=rtticketview&id={$i.id}">#{$i.id|string_format:"%06d"} {$i.subject}</A><br>
+			{/foreach}
+		</TD>
+	</TR>
+	{/if}
 	{if $ticket.message}
 	<TR>
 		<TD class="bold">
