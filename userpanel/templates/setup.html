@@ -64,20 +64,6 @@
             </TD>
         </TR>
         <TR>
-            <TD scope="col" class="text-left nobr">
-                {trans("Startup module:")}
-            </TD>
-            <TD scope="col">
-		    <SELECT name="startupmodule" SIZE="1">
-                    {foreach from=$menu item=$m}
-                        {if $m.module !== "logout"}
-                        <OPTION value="{$m.module}" {if $startupmodule == $m.module}selected{/if}>{$m.name}</OPTION>
-                        {/if}
-                    {/foreach}
-                </SELECT>
-            </TD>
-        </TR>
-        <TR>
             <TD scope="col" class="nobr">
                 {trans("Hint style:")}
             </TD>
@@ -86,6 +72,20 @@
                     <OPTION value="modern" {if $hint=='modern'} SELECTED{/if}>{trans("modern")}</OPTION>
                     <OPTION value="classic" {if $hint=='classic'} SELECTED{/if}>{trans("classic")}</OPTION>
                     <OPTION value="none" {if $hint=='none'} SELECTED{/if}>{trans("none")}</OPTION>
+                </SELECT>
+            </TD>
+        </TR>
+        <TR>
+            <TD scope="col" class="text-left nobr">
+                {trans("Startup module:")}
+            </TD>
+            <TD scope="col">
+                <SELECT name="startupmodule" SIZE="1">
+                    {foreach $menu as $m}
+                        {if $m.module !== "logout"}
+                            <OPTION value="{$m.module}" {if $startupmodule == $m.module}selected{/if}>{$m.name}</OPTION>
+                        {/if}
+                    {/foreach}
                 </SELECT>
             </TD>
         </TR>
