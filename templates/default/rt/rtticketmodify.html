@@ -286,10 +286,7 @@
 			{/box_row}
 
 			{function ticket_item_content}
-				{capture name="item_content_result" assign="item_content_result"}
-					{sprintf("#%06d", $item.id)}
-					<a href="?m=rtticketview&id={$item.id}">{$item.name}</a>
-				{/capture}
+				{capture name="item_content_result" assign="item_content_result"}{sprintf("#%06d", $item.id)} <a href="?m=rtticketview&id={$item.id}">{$item.name}</a>{/capture}
 			{/function}
 
 			{box_row icon="parentticket" label="Parent ticket:"}
