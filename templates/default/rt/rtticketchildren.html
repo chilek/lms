@@ -10,10 +10,10 @@
 				<i class="lms-ui-icon-helpdesk"></i> {trans("Child tickets:")}
 			</TD>
 			<TD>
-			{if $ticket.state != $smarty.const.RT_RESOLVED}
-			{button icon="add" label="Add"
-			onclick="location.href='?m=rtticketadd&parentid={$ticket.ticketid}{if $ticket.customerid}&customerid={$ticket.customerid}{/if}';"}
-			{/if}
+				{if $ticket.state != $smarty.const.RT_RESOLVED}
+					{button icon="add" label="Add"
+						onclick="location.href='?m=rtticketadd&parentid={$ticket.ticketid}{if $ticket.customerid}&customerid={$ticket.customerid}{/if}';"}
+				{/if}
 			</TD>
 		</TR>
 	</THEAD>
