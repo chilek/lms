@@ -50,7 +50,7 @@ if (isset($_GET['ajax']) && isset($_GET['op'])) {
 $ticket['childtickets'] = $LMS->GetChildTickets($id);
 
 if (!empty($ticket['childtickets'])) {
-    $childticketscontent = $LMS->GetQueueContents(array('parentids' => $id, 'count' => false));
+    $childticketscontent = $LMS->GetQueueContents(array('parentids' => $id, 'count' => false, 'rights' => true));
     unset($childticketscontent['total']);
     unset($childticketscontent['state']);
     unset($childticketscontent['order']);
