@@ -79,7 +79,11 @@ if (!empty($_POST['qs'])) {
 }
 $sql_search = $DB->Escape("%$search%");
 
-if (isset($qs_properties[$mode])) {
+if (isset($_POST['properties']) && is_array($_POST['properties'])) {
+    $properties = array_flip($_POST['properties']);
+} elseif (isset($_GET['properties']) && is_array($_GET['properties'])) {
+    $properties = array_flip($_GET['properties']);
+} elseif (isset($qs_properties[$mode])) {
     $properties = $qs_properties[$mode];
 } else {
     $properties = array();

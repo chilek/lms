@@ -16,7 +16,9 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 	if (form.constructor.name !== 'HTMLFormElement') {
 		this.elem = $(form.elem)[0];
 		this.form = $(form.form)[0];
+		this.method = form.hasOwnProperty('method') ? form.method : "GET";
 		this.uri = form.uri;
+		this.formData = form.hasOwnProperty('formData') ? form.formData : {};
 		this.autosubmit = form.hasOwnProperty('autosubmit') && (form.autosubmit == 1 || form.autosubmit == 'true');
 		this.onSubmit = form.hasOwnProperty('onSubmit') ? form.onSubmit : null;
 		this.onLoad = form.hasOwnProperty('onLoad') ? form.onLoad : null;
@@ -28,7 +30,9 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 		//A reference to the element we're binding the list to.
 		this.elem = elem;
 		this.form = form;
+		this.method = "GET";
 		this.uri = uri;
+		this.formData = {};
 		this.autosubmit = (typeof(autosubmit) !== 'undefined' && (autosubmit == 1 || autosubmit == 'true'));
 		this.onSubmit = onSubmit;
 		this.onLoad = onLoad;
@@ -204,26 +208,14 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 		default:
 			if (this.value != me.inputText && (me.emptyValue || this.value.length > 0)) {
 				clearTimeout(me.timer);
-				me.timer = setTimeout(function(){ me.HTTPpreload(); }, me.request_delay);
+				me.timer = setTimeout(function() {
+						me.getSuggestions();
+					}, me.request_delay);
 			} else {
 				me.hideDiv();
 			}
 		}
 	};
-
-	this.HTTPloaded = function () {
-		if ((xmlhttp) && (xmlhttp.readyState == 4)) {
-			me.inputText = this.value;
-			me.getSuggestions();
-			if (me.suggestions.length) {
-				me.createDiv();
-				me.positionDiv();
-				me.showDiv();
-			} else {
-				me.hideDiv();
-			}
-		}
-	}
 
 	/********************************************************
 	Insert the highlighted suggestion into the input box, and
@@ -404,52 +396,42 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 
 	};
 
-	/********************************************************
-	determine which of the suggestions matches the input (ajaxized)
-	********************************************************/
-	//Construct XMLHTTP handler.
-	this.setXMLHTTP = function () {
-  		var x = null;
-		try { x = new ActiveXObject("Msxml2.XMLHTTP") }
-  		  catch(e) {
-			try { x = new ActiveXObject("Microsoft.XMLHTTP") }
-			  catch(ee) { x = null; }
-		  }
-		if(!x && typeof XMLHttpRequest != "undefined") {
-			x = new XMLHttpRequest();
-  		}
-		return x;
-	}
-
-	this.HTTPpreload = function() {
+	this.getSuggestions = function() {
 		var uri = this.uri + encodeURIComponent(this.elem.value);
-		xmlhttp = me.setXMLHTTP();
-		xmlhttp.onreadystatechange = this.HTTPloaded;
 		if (this.onAjax) {
 			uri = this.onAjax(uri);
 		}
-		xmlhttp.open("GET", uri, true);
-		xmlhttp.send(null);
+		$.ajax({
+			method: me.method,
+			url: uri,
+			data: me.formData,
+			success: function(data) {
+				me.inputText = $(me.elem).val();
+				me.parseSuggestions(data);
+				if (me.suggestions.length) {
+					me.createDiv();
+					me.positionDiv();
+					me.showDiv();
+				} else {
+					me.hideDiv();
+				}
+			}
+		});
 	}
 
-	this.getSuggestions = function() {
-		try {
-			this.suggestions = JSON.parse(xmlhttp.responseText);
-		} catch(x) {
-			this.suggestions = [];
-		}
-
-		if (this.suggestions.length) {
-			$.each(this.suggestions, function(i, elem) {
+	this.parseSuggestions = function(data) {
+		me.suggestions = data ? data : [];
+		if (me.suggestions.length) {
+			$.each(me.suggestions, function(i, elem) {
 				var name = elem.name;
 				if (me.inputText && !name.toLowerCase().indexOf(me.inputText.toLowerCase())) {
 					me.suggestions.push(elem);
 				}
 			});
 			if (this.onLoad) {
-				var suggestions = (this.onLoad)(this.suggestions);
+				var suggestions = (me.onLoad)(me.suggestions);
 				if (typeof(suggestions) === 'object') {
-					this.suggestions = suggestions;
+					me.suggestions = suggestions;
 				}
 			}
 		}
