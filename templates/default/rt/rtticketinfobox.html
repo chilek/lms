@@ -384,9 +384,9 @@
 	</TR>
 	</TBODY>
 </TABLE>
+
 {if $stats}
-<br>
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-tab-container">
 	<TBODY>
 	<TR>
 		<TD style="width: 1%;" class="dark bold nobr">
@@ -403,9 +403,9 @@
 	</TBODY>
 </TABLE>
 {/if}
+
 {if $customerinfo}
-<br>
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-tab-container">
 	<TBODY>
 	<TR>
 		<TD style="width: 1%;" class="dark bold nobr">
@@ -426,24 +426,23 @@
 	</TBODY>
 </TABLE>
 {/if}
+
 {if $customernodes}
-<br>
-{include file="customer/customernodesbox.html"}
+	{include file="customer/customernodesbox.html"}
 {/if}
-<br>
+
 {include file="rt/rtticketeventlist.html"}
+
 {if $ticket.parentid}
-<br>
-{include file="rt/rtticketparentinfo.html"}
+	{include file="rt/rtticketparentinfo.html"}
 {/if}
+
 {if $ticket.childtickets}
-<br>
-{include file="rt/rtticketchildren.html"}
+	{include file="rt/rtticketchildren.html"}
 {/if}
 
 {if $ticket.relatedtickets}
-<br>
-{include file="rt/rtticketrelatedlist.html"}
+	{include file="rt/rtticketrelatedlist.html"}
 {/if}
 
 <script>
