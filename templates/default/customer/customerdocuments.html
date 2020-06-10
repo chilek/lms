@@ -165,7 +165,7 @@
 {if !empty($documents) && count($documents)}
 		{tab_button_panel}
 			{tab_buttons}
-				<button type="button" id="send-documents" class="lms-ui-button">
+				<button type="button" id="send-documents" class="lms-ui-button" data-send-documents="{$customerinfo.senddocuments}">
 					<i class="lms-ui-icon-mail"></i> {trans("Send documents")}
 				</button>
 				<button type="button" id="print-docs" class="lms-ui-button">

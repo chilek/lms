@@ -23,6 +23,8 @@
  *  $Id$
  */
 
+$_LANG['Customer has not any assigned email contacts with "documents" flag!'] = 'Klient nie posiada przypisanych żadnych adresów poczty elektronicznej z ustawioną flagą "dokumenty"!';
+
 $_LANG['show average speed'] = 'pokaż prędkość średnią';
 $_LANG['show maximum speed'] = 'pokaż prędkość maksymalną';
 
