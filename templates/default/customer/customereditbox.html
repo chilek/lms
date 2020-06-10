@@ -106,7 +106,7 @@
 					{block name="customereditbox-leftcolumn"}
 					<TR>
 						<TD>
-							<IMG src="img/{$_CSTATUSES[$customerinfo.status].img}" alt="">
+							<i class="lms-ui-icon-customer-status-{$_CSTATUSES[$customerinfo.status].alias}"></i>
 						</TD>
 						<TD>
 							<SELECT size="1" name="customerdata[status]" {tip text="Select customer state" trigger="status"}>
@@ -119,7 +119,7 @@
 					{if $divisions}
 					<TR>
 						<TD>
-							<IMG src="img/division.gif" alt="">
+							<i class="lms-ui-icon-division"></i>
 						</TD>
 						<TD>
 							<SELECT size="1" name="customerdata[divisionid]" {tip text="Select division" trigger="divisionid"}>
@@ -134,7 +134,7 @@
 					{/if}
 					<TR>
 						<TD>
-							<IMG src="img/folder.gif" alt="">
+							<i class="lms-ui-icon-legal-personality"></i>
 						</TD>
 						<TD>
 							<INPUT type="radio" name="customerdata[type]" value="{$smarty.const.CTYPES_PRIVATE}" id="private" {tip text="Select legal personality type" trigger="type"}{if $customerinfo.type == $smarty.const.CTYPES_PRIVATE} CHECKED{/if}><label for="private">{assign var='type' value=$smarty.const.CTYPES_PRIVATE}{$_CTYPES.$type}</label>
@@ -246,7 +246,7 @@
 					{include file="customer/customercontacts.html" customerinfo=$customerinfo formelemprefix="customerdata"}
 					<TR>
 						<TD>
-							<IMG src="img/pin.gif" alt="">
+							<i class="lms-ui-icon-customer-pin-code"></i>
 						</TD>
 						<TD>
 							<INPUT type="text" required name="customerdata[pin]" size="{$pin_max_size}" value="{if $customerinfo.pin}{$customerinfo.pin}{/if}" {tip text=$pin_tip trigger="pin"}>&nbsp;
@@ -255,7 +255,7 @@
 					</TR>
 					<TR>
 						<TD class="valign-top">
-							<IMG src="img/serialnumber.gif" alt="">
+							<i class="lms-ui-icon-user-id-number"></i>
 						</TD>
 						<TD class="cell-flex">
 							<div>
@@ -324,7 +324,7 @@
 					</TR>
 					<TR>
 						<TD class="valign-top">
-							<IMG src="img/options.gif" alt="">
+							<i class="lms-ui-icon-paytype"></i>
 						</TD>
 						<TD>
 							<TABLE>
@@ -421,7 +421,7 @@
 					{block name="customereditbox-rightcolumn"}
 					<TR>
 						<TD>
-							<IMG src="img/info1.gif" alt="">
+							<i class="lms-ui-icon-optional-info"></i>
 						</TD>
 						<TD>
 							<TEXTAREA name="customerdata[info]" class="lms-ui-wysiwyg-editor" COLS="60" ROWS="10" {tip text="Enter additional information (optional)"}{if isset($customerinfo.wysiwyg.info)} data-wysiwyg="{$customerinfo.wysiwyg.info}"{/if}>{$customerinfo.info|escape}</TEXTAREA>
@@ -429,7 +429,7 @@
 					</TR>
 					<TR>
 						<TD>
-							<IMG src="img/warningon.gif" alt="">
+							<i class="lms-ui-icon-warning"></i>
 						</TD>
 						<TD>
 							<TEXTAREA name="customerdata[message]" class="lms-ui-wysiwyg-editor" COLS="60" ROWS="10" {tip text="Enter notice contents (optional)"}{if isset($customerinfo.wysiwyg.message)} data-wysiwyg="{$customerinfo.wysiwyg.message}"{/if}>{$customerinfo.message|escape}</TEXTAREA>
@@ -437,7 +437,7 @@
 					</TR>
 					<TR>
 						<TD>
-							<IMG src="img/note.gif" alt="">
+							<i class="lms-ui-icon-notes"></i>
 						</TD>
 						<TD>
 							<TEXTAREA name="customerdata[notes]" class="lms-ui-wysiwyg-editor" COLS="60" ROWS="10" {tip text="Enter notes (optional)"}{if isset($customerinfo.wysiwyg.notes)} data-wysiwyg="{$customerinfo.wysiwyg.notes}"{/if}>{$customerinfo.notes|escape}</TEXTAREA>
@@ -455,7 +455,7 @@
 					</TR>
 					<TR>
 						<TD>
-							<IMG src="img/money.gif" alt="">
+							<i class="lms-ui-icon-money"></i>
 						</TD>
 						<TD>
 							<span class="bold">{trans("Balance:")}</span>
@@ -464,7 +464,7 @@
 					</TR>
 					<TR>
 						<TD>
-							<IMG src="img/users.gif" alt="">
+							<i class="lms-ui-icon-modified-date"></i>
 						</TD>
 						<TD>
 							<span class="bold">{trans("Created:")}</span> {$customerinfo.createdby}, {$customerinfo.creationdateh}<BR>
