@@ -102,6 +102,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
      *          all - filter is off
      *          -1 - without verifier set
      *          -2 - with verifier set
+     *      rights - tickets from queues with particular permissions (default:null whitch means tickets from all queues),
      *      projectids - ticket investment projects (default: null = any/none)
      *          array() of integer values,
      *      count - count records only or return selected record interval
@@ -122,7 +123,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     {
         extract($params);
         foreach (array('ids', 'state', 'priority', 'owner', 'catids', 'removed', 'netdevids', 'netnodeids', 'deadline',
-            'serviceids', 'typeids', 'unread', 'parentids','verifierids') as $var) {
+            'serviceids', 'typeids', 'unread', 'parentids','verifierids','rights') as $var) {
             if (!isset($$var)) {
                 $$var = null;
             }
