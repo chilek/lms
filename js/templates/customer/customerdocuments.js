@@ -35,7 +35,7 @@ function toggle_all_attachments(docid) {
 $(function() {
 	$('#send-documents').click(function() {
 		if (!$(this).closest('div.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
-			alertDialog($t('No document of given type has been selected!'), this);
+			alertDialog($t('No document has been selected!'), this);
 			return;
 		}
 		if (!parseInt($(this).attr('data-send-documents'))) {
