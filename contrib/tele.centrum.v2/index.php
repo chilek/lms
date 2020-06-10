@@ -1,14 +1,17 @@
 <?php
+
 error_reporting(E_ALL &~ E_NOTICE &~ E_DEPRECATED);
 
-require_once 'lib/initLMS.php';
+require_once('..' . DIRECTORY_SEPARATOR . 'initLMS.php');
 
 $uid        = $_GET['id'];
 $phone      = $_GET['phone'];
 $agentnr    = $_GET['agentnr'];
 $ticket['phonetype'] = 'on';
 
-require_once 'lib/definitions.php';
+require_once('lib' . DIRECTORY_SEPARATOR . 'definitions.php');
+
+$SMARTY = new LMSSmarty;
 
 if ($ip != $callcenterip) {
     $check = false;
@@ -43,7 +46,7 @@ if (!empty($_POST)) {
     if ($ticket['body'] == '' and $ticket['queue']==1) {
         $error['body'] = 'Podaj treść zgłoszenia!';
     }
-    
+
     if ($ticket['name'] == '') {
         $error['name'] = 'Podaj imię i nazwisko/nazwę klienta!';
     }
