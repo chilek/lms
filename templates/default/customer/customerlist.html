@@ -301,14 +301,14 @@
 				{if $customer.status == $smarty.const.CSTATUS_CONNECTED}
 					{if $customer.nodewarn == 1}
 						{if $customer.message}{$tip=$customer.message}{else}{$tip="Disable notices for all"}{/if}
-						{button type="link" icon="warnoff" tip=$tip href="?m=nodewarn&ownerid={$customer.id}"}
+						{button type="link" icon="warnon" tip=$tip href="?m=nodewarn&ownerid={$customer.id}"}
 					{else}
 						{if $customer.nodewarn == 2}
 							{if $customer.message}{$tip=$customer.message}{else}{$tip="Disable notices for all"}{/if}
 							{button type="link" icon="warnmix" tip=$tip href="?m=nodewarn&ownerid={$customer.id}"}
 						{else}
 							{if $customer.message}{$tip=$customer.message}{else}{$tip="Enable notices for all"}{/if}
-							{button type="link" icon="warnon" tip=$tip href="?m=nodewarn&ownerid={$customer.id}&warning=1"}
+							{button type="link" icon="warnoff" tip=$tip href="?m=nodewarn&ownerid={$customer.id}&warning=1"}
 						{/if}
 					{/if}
 				{/if}
