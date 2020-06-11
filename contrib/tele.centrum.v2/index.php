@@ -12,6 +12,8 @@ $ticket['phonetype'] = 'on';
 require_once('lib' . DIRECTORY_SEPARATOR . 'definitions.php');
 
 $SMARTY = new LMSSmarty;
+$SMARTY->AddTemplateDir('templates');
+$SMARTY->setCompileDir('templates_c');
 
 if ($ip != $callcenterip) {
     $check = false;
