@@ -281,17 +281,18 @@
 		<TD class="lms-ui-buttons text-right nobr">
 			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 				{if $customer.balance < 0}
-					<A class="balanceok-customer" href="?m=customerbalanceok&id={$customer.id}"><i class="lms-ui-icon-settle" title="{trans("Account")}"></i></A>
+					{button type="link" class="balanceok-customer" href="?m=customerbalanceok&id={$customer.id}" icon="settle" tip="Account"}
 				{/if}
 			{/if}
 			{if $customer.account}
 				{if $customer.status == $smarty.const.CSTATUS_CONNECTED}
 					{if $customer.nodeac == 1}
-						<A href="?m=nodeset&amp;ownerid={$customer.id}"><i class="lms-ui-icon-connected" title="{trans("Disconnect All")}"></i></A>
+						{button type="link" icon="connected" tip="Disconnect All" href="?m=nodeset&ownerid={$customer.id}"}
 					{else}
 						{if $customer.nodeac == 2}
-							<A href="?m=nodeset&amp;ownerid={$customer.id}"><i class="lms-ui-icon-mixconnected" title="{trans("Disconnect All")}"></i></A>
-						{else}<A href="?m=nodeset&amp;ownerid={$customer.id}&amp;access=1"><i class="lms-ui-icon-disconnected" title="{trans("Connect All")}"></i></A>
+							{button type="link" icon="mixconnected" tip="Disconnect All" href="?m=nodeset&ownerid={$customer.id}"}
+						{else}
+							{button type="link" icon="disconnected" tip="Connect All" href="?m=nodeset&ownerid={$customer.id}&access=1"}
 						{/if}
 					{/if}
 				{/if}
@@ -299,22 +300,26 @@
 			{if $customer.warncount}
 				{if $customer.status == $smarty.const.CSTATUS_CONNECTED}
 					{if $customer.nodewarn == 1}
-						<A href="?m=nodewarn&amp;ownerid={$customer.id}" {if $customer.message}{tip text=$customer.message}{/if}><i class="lms-ui-icon-warnoff" title="{trans("Disable notices for all")}"></i></A>
+						{if $customer.message}{$tip=$customer.message}{else}{$tip="Disable notices for all"}{/if}
+						{button type="link" icon="warnoff" tip=$tip href="?m=nodewarn&ownerid={$customer.id}"}
 					{else}
 						{if $customer.nodewarn == 2}
-							<A href="?m=nodewarn&amp;ownerid={$customer.id}" {if $customer.message}{tip text=$customer.message}{/if}><i class="lms-ui-icon-warnmix" title="{trans("Disable notices for all")}"></i></A>
-						{else}<A href="?m=nodewarn&amp;ownerid={$customer.id}&amp;warning=1" {if $customer.message}{tip text=$customer.message}{/if}><i class="lms-ui-icon-warnon" title="{trans("Enable notices for all")}"></i></A>
+							{if $customer.message}{$tip=$customer.message}{else}{$tip="Disable notices for all"}{/if}
+							{button type="link" icon="warnmix" tip=$tip href="?m=nodewarn&ownerid={$customer.id}"}
+						{else}
+							{if $customer.message}{$tip=$customer.message}{else}{$tip="Enable notices for all"}{/if}
+							{button type="link" icon="warnon" tip=$tip href="?m=nodewarn&ownerid={$customer.id}&warning=1"}
 						{/if}
 					{/if}
 				{/if}
 			{/if}
 			{if $filter.state == 50}
-			<A href="?m=customeredit&amp;id={$customer.id}&amp;action=recover"><i class="lms-ui-icon-restore" title="{trans("Recover")}"></i></A>
+				{button type="link" icon="restore" tip="Recover" href="?m=customeredit&id={$customer.id}&action=recover"}
 			{else}
-			<A class="delete-customer" href="?m=customerdel&id={$customer.id}"><i class="lms-ui-icon-delete" title="{trans("Delete")}"></i></A>
-			<A href="?m=customeredit&amp;id={$customer.id}"><i class="lms-ui-icon-edit" title="{trans("Edit")}"></i></A>
+				{button type="link" class="delete-customer" icon="delete" tip="Delete" href="?m=customerdel&id={$customer.id}"}
+				{button type="link" icon="edit" tip="Edit" href="?m=customeredit&id={$customer.id}"}
 			{/if}
-			<A href="?m=customerinfo&amp;id={$customer.id}"><i class="lms-ui-icon-optional-info" title="{trans("Info")}"></i></A>
+			{button type="link" icon="info" tip="Info" href="?m=customerinfo&id={$customer.id}"}
 		</TD>
 	</TR>
         {/block}
