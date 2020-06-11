@@ -814,4 +814,34 @@ class LMSSmartyPlugins
             </div>
             <script src="js/lms-ui-resource-tab-selector.js"></script>';
     }
+
+    public static function iconFunction(array $params, $template)
+    {
+        // optional - allow to easily attach event handler in jquery,
+        $id = isset($params['id']) ? $params['id'] : null;
+        // optional - additional css classes which are appended to class attribute
+        $class = isset($params['class']) && !empty($class) ? $params['class'] : null;
+        // optional - icon selection transformed to css class
+        $name = isset($params['name']) ? $params['name'] : null;
+        // optional - text tip,
+        $tip = isset($params['tip']) ? trans($params['tip']) : null;
+
+        $data_attributes = '';
+        foreach ($params as $key => $value) {
+            if (strpos($key, 'data_') === 0) {
+                $data_attributes .= ' ' . str_replace('_', '-', $key) . '=\'' . $value . '\'';
+            }
+        }
+
+        return '<i'
+            . (isset($id) ? ' id="' . $id . '"' : '')
+            . ' class="'
+            . (isset($name) ? (strpos($name, 'lms-ui-icon-') === 0 || strpos($name, 'fa') === 0
+                ? $name : 'lms-ui-icon-' . $name) : '')
+            . (isset($class) ? ' ' . $class : '')
+            . '"'
+            . (isset($tip) ? ' title="' . $tip . '"' : '')
+            . $data_attributes
+            . '></i>';
+    }
 }
