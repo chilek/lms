@@ -820,7 +820,7 @@ class LMSSmartyPlugins
         // optional - allow to easily attach event handler in jquery,
         $id = isset($params['id']) ? $params['id'] : null;
         // optional - additional css classes which are appended to class attribute
-        $class = isset($params['class']) && !empty($class) ? $params['class'] : null;
+        $class = isset($params['class']) && !empty($params['class']) ? $params['class'] : null;
         // optional - icon selection transformed to css class
         $name = isset($params['name']) ? $params['name'] : null;
         // optional - text tip,
