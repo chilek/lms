@@ -16,16 +16,16 @@
 	<THEAD>
 	<TR>
 		<TD COLSPAN="2" class="nobr">
-			<IMG src="img/queue.gif" ALT="">
+			<i class="lms-ui-icon-queue"></i>
 			<B>{trans("Category")}:</B><BR>
-			<IMG src="img/info1.gif" ALT="">
+			<i class="lms-ui-icon-optional-info"></i>
 			{trans("Description")}:
 		</TD>
 		<TD class="bold text-center">
 			{trans("<!rt-category>Look:")}
 		</TD>
 		<TD class="nobr">
-			<IMG src="img/users.gif" ALT="">
+			<i class="lms-ui-icon-owner"></i>
 			<B>{trans("Owners")}:</B>
 		</TD>
 		<TD class="text-center">
@@ -46,10 +46,10 @@
 	{foreach $categories as $category}
 	<TR class="highlight" data-target-url="?m=rtqueueview&catid={$category.id}" data-name="{$category.name}">
 		<TD COLSPAN="2">
-			<IMG src="img/queue.gif" ALT="">
+			<i class="lms-ui-icon-queue"></i>
 			<B>{$category.name}</B><BR>
 			{if $category.description}
-				<IMG src="img/info1.gif" ALT=""> {$category.description}
+				<i class="lms-ui-icon-optional-info"></i> {$category.description}
 			{/if}
 		</TD>
 		<TD class="bold text-center">
@@ -72,10 +72,10 @@
 			{if $category.lastticket}{$category.lastticket|date_format:"%Y/%m/%d %H:%M:%S"}{else}-{/if}
 		</TD>
 		<TD class="lms-ui-buttons text-right nobr">
-			<A HREF="?m=rtqueueview&amp;catid={$category.id}"><IMG SRC="img/view.gif" alt="{trans("Browse")}" title="{trans("Browse")}"></A>
-			<A class="delete-rtcategory" HREF="?m=rtcategorydel&id={$category.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
-			<A HREF="?m=rtcategoryedit&amp;id={$category.id}"><IMG SRC="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
-			<A HREF="?m=rtcategoryinfo&amp;id={$category.id}"><IMG SRC="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
+			{button type="link" href="?m=rtqueueview&amp;catid={$category.id}" icon="view" tip="{trans("Browse")}"}
+			{button type="link" class="delete-rtcategory" href="?m=rtcategorydel&id={$category.id}" icon="delete" tip="{trans("Delete")}"}
+			{button type="link" href="?m=rtcategoryedit&amp;id={$category.id}" icon="edit" tip="{trans("Edit")}"}
+			{button type="link" href="?m=rtcategoryinfo&amp;id={$category.id}" icon="info" tip="{trans("Info")}"}
 		</TD>
 	</TR>
 	{foreachelse}
@@ -89,7 +89,7 @@
         <TFOOT>
 	<TR>
 		<TD COLSPAN="4" class="text-right bold">
-			<IMG src="img/info2.gif" ALT="">
+			<i class="lms-ui-icon-info"></i>
 			{trans("Total:")}
 		</TD>
 		<TD class="bold text-center">
