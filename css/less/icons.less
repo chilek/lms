@@ -144,6 +144,15 @@
   }
 }
 
+.lms-ui-icon-settle {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-coins;
+  }
+}
+
 .lms-ui-icon-signout {
   .fa-icon;
   .fas;
@@ -587,6 +596,17 @@
   }
 }
 
+.lms-ui-icon-warnmix {
+  .lms-ui-icon-warning;
+  &:before {
+    color: burlywood !important;
+    text-stroke-width: 1px;
+    text-stroke-color: black;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: black;
+  }
+}
+
 .lms-ui-icon-warnon {
   .lms-ui-icon-warning;
   &:before {
@@ -626,6 +646,17 @@
   }
 }
 
+.lms-ui-icon-mixconnected {
+  .lms-ui-icon-connect;
+  &:before {
+    color: burlywood !important;
+    text-stroke-width: 1px;
+    text-stroke-color: black;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: black;
+  }
+}
+
 .lms-ui-icon-disconnected {
   .fa-icon;
   .fas;
@@ -635,7 +666,7 @@
   transform: rotate(180deg);
   &:before {
     content: @fa-var-toggle-on;
-    color: darkorange !important;
+    color: black !important;
   }
 }
 
