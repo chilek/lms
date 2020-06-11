@@ -72,10 +72,10 @@
 			{if $category.lastticket}{$category.lastticket|date_format:"%Y/%m/%d %H:%M:%S"}{else}-{/if}
 		</TD>
 		<TD class="lms-ui-buttons text-right nobr">
-			{button type="link" href="?m=rtqueueview&amp;catid={$category.id}" icon="view" tip="{trans("Browse")}"}
-			{button type="link" class="delete-rtcategory" href="?m=rtcategorydel&id={$category.id}" icon="delete" tip="{trans("Delete")}"}
-			{button type="link" href="?m=rtcategoryedit&amp;id={$category.id}" icon="edit" tip="{trans("Edit")}"}
-			{button type="link" href="?m=rtcategoryinfo&amp;id={$category.id}" icon="info" tip="{trans("Info")}"}
+			{button type="link" href="?m=rtqueueview&catid={$category.id}" icon="view" tip="Browse"}
+			{button type="link" class="delete-rtcategory" href="?m=rtcategorydel&id={$category.id}" icon="delete" tip="Delete"}
+			{button type="link" href="?m=rtcategoryedit&id={$category.id}" icon="edit" tip="Edit"}
+			{button type="link" href="?m=rtcategoryinfo&id={$category.id}" icon="info" tip="Info"}
 		</TD>
 	</TR>
 	{foreachelse}
