@@ -366,6 +366,7 @@ class SYSLOG
         $datefrom = (isset($params['datefrom']) && !empty($params['datefrom']) ? intval($params['datefrom']) : 0);
         $dateto = (isset($params['dateto']) && !empty($params['dateto']) ? intval($params['dateto']) : 0);
         $resource = (isset($params['resource']) && !empty($params['resource']) ? $params['resource'] : 0);
+        $details = (isset($params['details'])) && !empty($params['details']);
 
         $args = array();
         $where = array();
@@ -400,12 +401,82 @@ class SYSLOG
         }
         $trans = $this->DB->GetAll(
             'SELECT DISTINCT lt.id, lt.time, lt.userid, u.login, lt.module FROM logtransactions lt
-			JOIN logmessages lm ON lm.transactionid = lt.id 
-			LEFT JOIN users u ON u.id = lt.userid ' . implode(' ', $joins)
-            . (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : '') . ' ORDER BY lt.id ' . $order
+            JOIN logmessages lm ON lm.transactionid = lt.id
+            LEFT JOIN users u ON u.id = lt.userid ' . implode(' ', $joins)
+            . (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : '')
+            . ' ORDER BY lt.id ' . $order
             . ' LIMIT ' . $limit . (!empty($offset) ? ' OFFSET ' . $offset : ''),
             $args
         );
+
+        if ($details && !empty($trans)) {
+            $tids = Utils::array_column($trans, 'id');
+
+            $messages = $this->DB->GetAll(
+                'SELECT lm.transactionid, lm.id, resource, operation FROM logmessages lm
+                WHERE lm.transactionid IN ?
+                ORDER BY transactionid, lm.id',
+                array($tids)
+            );
+            $transaction_messages = array();
+            if (!empty($messages)) {
+                foreach ($messages as $message) {
+                    $transactionid = $message['transactionid'];
+                    $messageid = $message['id'];
+                    if (!isset($transaction_messages[$transactionid][$messageid])) {
+                        $transaction_messages[$transactionid][$messageid] = array();
+                    }
+                    $transaction_messages[$transactionid][$messageid] = $message;
+                }
+            }
+
+            $keys = $this->DB->GetAll(
+                'SELECT m.transactionid, m.id, k.name, k.value FROM logmessagekeys k
+                JOIN logmessages m ON m.id = k.logmessageid
+                WHERE m.transactionid IN ?
+                ORDER BY m.transactionid, m.id, k.name',
+                array($tids)
+            );
+            $transaction_keys = array();
+            if (!empty($keys)) {
+                foreach ($keys as $key) {
+                    $transactionid = $key['transactionid'];
+                    if (!isset($transaction_keys[$transactionid])) {
+                        $transaction_keys[$transactionid] = array();
+                    }
+                    $transaction_keys[$transactionid][] = $key;
+                }
+            }
+
+            $data = $this->DB->GetAll(
+                'SELECT m.transactionid, m.id, d.name, d.value FROM logmessagedata d
+                JOIN logmessages m ON m.id = d.logmessageid
+                WHERE m.transactionid IN ?
+                ORDER BY m.transactionid, m.id, d.name',
+                array($tids)
+            );
+            $transaction_data = array();
+            if (!empty($data)) {
+                foreach ($data as $d) {
+                    $transactionid = $d['transactionid'];
+                    if (!isset($transaction_data[$transactionid])) {
+                        $transaction_data[$transactionid] = array();
+                    }
+                    $transaction_data[$transactionid][] = $d;
+                }
+            }
+
+            foreach ($trans as &$tran) {
+                $this->_decodeTransaction(
+                    $tran,
+                    isset($transaction_messages[$tran['id']]) ? $transaction_messages[$tran['id']] : null,
+                    isset($transaction_keys[$tran['id']]) ? $transaction_keys[$tran['id']] : null,
+                    isset($transaction_data[$tran['id']]) ? $transaction_data[$tran['id']] : null,
+                );
+            }
+            unset($tran);
+        }
+
         return $trans;
     }
 
@@ -488,65 +559,43 @@ class SYSLOG
         //$data['name'] = trans($data['name']);
     }
 
-    public function DecodeTransaction(&$tran)
+    private function _decodeTransaction(&$transaction, $messages, $keys, $data)
     {
-        $tran['messages'] = $this->DB->GetAllByKey(
-            'SELECT id, resource, operation FROM logmessages lm
-			WHERE lm.transactionid = ?
-			ORDER BY lm.id',
-            'id',
-            array($tran['id'])
-        );
-
         // PHP code is much faster then LIMIT 11 sql clause
-        $tran['messages'] = array_reverse(array_slice($tran['messages'], 0, 11, true), true);
+        $transaction['messages'] = array_reverse(array_slice($messages, 0, 11, true), true);
 
-        $keys = $this->DB->GetAll(
-            'SELECT m.id, k.name, k.value FROM logmessagekeys k
-            JOIN logmessages m ON m.id = k.logmessageid
-            WHERE m.transactionid = ?
-            ORDER BY m.id, k.name',
-            array($tran['id'])
-        );
         if (!empty($keys)) {
             foreach ($keys as $key) {
                 $messageid = $key['id'];
-                if (!isset($tran['messages'][$messageid])) {
+                if (!isset($transaction['messages'][$messageid])) {
                     break;
                 }
-                if (!isset($tran['messages'][$messageid]['keys'])) {
-                    $trans['messages'][$messageid]['keys'] = array();
+                if (!isset($transaction['messages'][$messageid]['keys'])) {
+                    $transaction['messages'][$messageid]['keys'] = array();
                 }
-                $tran['messages'][$messageid]['keys'][$key['name']] = array(
+                $transaction['messages'][$messageid]['keys'][$key['name']] = array(
                     'value' => $key['value'],
                 );
             }
         }
 
-        $data = $this->DB->GetAll(
-            'SELECT m.id, d.name, d.value FROM logmessagedata d
-            JOIN logmessages m ON m.id = d.logmessageid
-            WHERE m.transactionid = ?
-            ORDER BY m.id, d.name',
-            array($tran['id'])
-        );
         if (!empty($data)) {
             foreach ($data as $d) {
                 $messageid = $d['id'];
-                if (!isset($tran['messages'][$messageid])) {
+                if (!isset($transaction['messages'][$messageid])) {
                     break;
                 }
-                if (!isset($tran['messages'][$messageid]['data'])) {
-                    $trans['messages'][$messageid]['data'] = array();
+                if (!isset($transaction['messages'][$messageid]['data'])) {
+                    $transaction['messages'][$messageid]['data'] = array();
                 }
-                $tran['messages'][$messageid]['data'][$d['name']] = array(
+                $transaction['messages'][$messageid]['data'][$d['name']] = array(
                     'value' => $d['value'],
                 );
             }
         }
 
-        if (!empty($tran['messages'])) {
-            foreach ($tran['messages'] as $messageid => &$msg) {
+        if (!empty($transaction['messages'])) {
+            foreach ($transaction['messages'] as $messageid => &$msg) {
                 $msg['text'] = '<span class="bold">' . self::getResourceName($msg['resource']);
                 $msg['text'] .= ': ' . self::getOperationName($msg['operation']) . '</span>';
                 if (!empty($msg['keys'])) {
@@ -568,6 +617,35 @@ class SYSLOG
             }
             unset($msg);
         }
+    }
+
+    public function DecodeTransaction(&$transaction)
+    {
+        $messages = $this->DB->GetAllByKey(
+            'SELECT id, resource, operation FROM logmessages lm
+            WHERE lm.transactionid = ?
+            ORDER BY lm.id',
+            'id',
+            array($transaction['id'])
+        );
+
+        $keys = $this->DB->GetAll(
+            'SELECT m.id, k.name, k.value FROM logmessagekeys k
+            JOIN logmessages m ON m.id = k.logmessageid
+            WHERE m.transactionid = ?
+            ORDER BY m.id, k.name',
+            array($transaction['id'])
+        );
+
+        $data = $this->DB->GetAll(
+            'SELECT m.id, d.name, d.value FROM logmessagedata d
+            JOIN logmessages m ON m.id = d.logmessageid
+            WHERE m.transactionid = ?
+            ORDER BY m.id, d.name',
+            array($transaction['id'])
+        );
+
+        $this->_decodeTransaction($transaction, $messages, $keys, $data);
     }
 
     public function GetResourcePropertyNames($type)

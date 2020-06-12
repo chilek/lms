@@ -134,12 +134,21 @@ if (!isset($resource_tabs['customerdevices']) || $resource_tabs['customerdevices
 
 if (!isset($resource_tabs['transactions']) || $resource_tabs['transactions']) {
     if ($SYSLOG && ConfigHelper::checkPrivilege('transaction_logs')) {
-        $trans = $SYSLOG->GetTransactions(array('key' => SYSLOG::getResourceKey(SYSLOG::RES_CUST), 'value' => $customerid, 'limit' => 300));
+        $trans = $SYSLOG->GetTransactions(
+            array(
+                'key' => SYSLOG::getResourceKey(SYSLOG::RES_CUST),
+                'value' => $customerid,
+                'limit' => 300,
+                'details' => true,
+            )
+        );
+/*
         if (!empty($trans)) {
             foreach ($trans as $idx => $tran) {
                 $SYSLOG->DecodeTransaction($trans[$idx]);
             }
         }
+*/
         $SMARTY->assign('transactions', $trans);
         $SMARTY->assign('resourcetype', SYSLOG::RES_CUST);
         $SMARTY->assign('resourceid', $customerid);
