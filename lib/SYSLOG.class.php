@@ -471,7 +471,7 @@ class SYSLOG
                     $tran,
                     isset($transaction_messages[$tran['id']]) ? $transaction_messages[$tran['id']] : null,
                     isset($transaction_keys[$tran['id']]) ? $transaction_keys[$tran['id']] : null,
-                    isset($transaction_data[$tran['id']]) ? $transaction_data[$tran['id']] : null,
+                    isset($transaction_data[$tran['id']]) ? $transaction_data[$tran['id']] : null
                 );
             }
             unset($tran);
