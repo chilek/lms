@@ -3,13 +3,19 @@
 error_reporting(E_ALL &~ E_NOTICE &~ E_DEPRECATED);
 
 require_once('..' . DIRECTORY_SEPARATOR . 'initLMS.php');
+require_once('lib' . DIRECTORY_SEPARATOR . 'definitions.php');
+$basedir=(__DIR__ . DIRECTORY_SEPARATOR . 'templates_c');
 
 $uid        = $_GET['id'];
 $phone      = $_GET['phone'];
 $agentnr    = $_GET['agentnr'];
 $ticket['phonetype'] = 'on';
 
-require_once('lib' . DIRECTORY_SEPARATOR . 'definitions.php');
+if (!is_dir($basedir)) {
+    die("Create Smarty Compile directory please run: mkdir " . $basedir);
+} elseif (!is_readable($basedir) || !is_writable($basedir)) {
+    die("Bad permissions on directory - please run: chmod 755 " . $basedir . "; chown 33:33 " . $basedir);
+}
 
 $SMARTY = new LMSSmarty;
 $SMARTY->AddTemplateDir('templates');
