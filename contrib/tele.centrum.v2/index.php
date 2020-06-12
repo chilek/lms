@@ -12,9 +12,9 @@ $agentnr    = $_GET['agentnr'];
 $ticket['phonetype'] = 'on';
 
 if (!is_dir($basedir)) {
-    die("Create Smarty Compile directory please run: mkdir " . $basedir);
+    die("Please create Smarty compiled templates directory using shell command: mkdir " . $basedir);
 } elseif (!is_readable($basedir) || !is_writable($basedir)) {
-    die("Bad permissions on directory - please run: chmod 755 " . $basedir . "; chown 33:33 " . $basedir);
+    die("Smarty compiled templates directory has invalid persmissions - please correct it using shell commands: chmod 755 " . $basedir . "; chown 33:33 " . $basedir);
 }
 
 $SMARTY = new LMSSmarty;
