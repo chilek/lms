@@ -244,6 +244,8 @@ class SYSLOG
 
     private static $syslog = null;
 
+    private static $resourceKeyByName = null;
+
     private $DB;
     private $userid = null;
     private $transid = 0;
@@ -253,6 +255,11 @@ class SYSLOG
     {
         if (self::$syslog == null && ($force || ConfigHelper::checkConfig('phpui.logging'))) {
             self::$syslog = new SYSLOG();
+            foreach (self::$resource_keys as $key => $name) {
+                if (isset($name)) {
+                    self::$resourceKeyByName[$name] = $key;
+                }
+            }
         }
         return self::$syslog;
     }
@@ -483,41 +490,83 @@ class SYSLOG
 
     public function DecodeTransaction(&$tran)
     {
-        $tran['messages'] = $this->DB->GetAll(
+        $tran['messages'] = $this->DB->GetAllByKey(
             'SELECT id, resource, operation FROM logmessages lm
-			WHERE lm.transactionid = ? ORDER BY lm.id',
+			WHERE lm.transactionid = ?
+			ORDER BY lm.id',
+            'id',
             array($tran['id'])
         );
+
         // PHP code is much faster then LIMIT 11 sql clause
-        $tran['messages'] = array_slice($tran['messages'], 0, 11);
+        $tran['messages'] = array_reverse(array_slice($tran['messages'], 0, 11, true), true);
+
+        $keys = $this->DB->GetAll(
+            'SELECT m.id, k.name, k.value FROM logmessagekeys k
+            JOIN logmessages m ON m.id = k.logmessageid
+            WHERE m.transactionid = ?
+            ORDER BY m.id, k.name',
+            array($tran['id'])
+        );
+        if (!empty($keys)) {
+            foreach ($keys as $key) {
+                $messageid = $key['id'];
+                if (!isset($tran['messages'][$messageid])) {
+                    break;
+                }
+                if (!isset($tran['messages'][$messageid]['keys'])) {
+                    $trans['messages'][$messageid]['keys'] = array();
+                }
+                $tran['messages'][$messageid]['keys'][$key['name']] = array(
+                    'value' => $key['value'],
+                );
+            }
+        }
+
+        $data = $this->DB->GetAll(
+            'SELECT m.id, d.name, d.value FROM logmessagedata d
+            JOIN logmessages m ON m.id = d.logmessageid
+            WHERE m.transactionid = ?
+            ORDER BY m.id, d.name',
+            array($tran['id'])
+        );
+        if (!empty($data)) {
+            foreach ($data as $d) {
+                $messageid = $d['id'];
+                if (!isset($tran['messages'][$messageid])) {
+                    break;
+                }
+                if (!isset($tran['messages'][$messageid]['data'])) {
+                    $trans['messages'][$messageid]['data'] = array();
+                }
+                $tran['messages'][$messageid]['data'][$d['name']] = array(
+                    'value' => $d['value'],
+                );
+            }
+        }
 
         if (!empty($tran['messages'])) {
-            foreach ($tran['messages'] as $idx => $tr) {
-                $msg = &$tran['messages'][$idx];
-                $msg['text'] = '<span class="bold">' . self::getResourceName($tr['resource']);
-                $msg['text'] .= ': ' . self::getOperationName($tr['operation']) . '</span>';
-                $keys = $this->DB->GetAll('SELECT name, value FROM logmessagekeys 
-					WHERE logmessageid = ? ORDER BY name', array($tr['id']));
-                if (!empty($keys)) {
-                    $msg['keys'] = array();
-                    foreach ($keys as $key => $v) {
-                        $msg['text'] .= ', ' . $v['name'] . ': ' . $v['value'];
-                        $key_name = preg_replace('/^[a-z]+_/i', '', $v['name']);
-                        $msg['keys'][$v['name']] = array('type' => array_search($key_name, self::$resource_keys), 'value' => $v['value']);
+            foreach ($tran['messages'] as $messageid => &$msg) {
+                $msg['text'] = '<span class="bold">' . self::getResourceName($msg['resource']);
+                $msg['text'] .= ': ' . self::getOperationName($msg['operation']) . '</span>';
+                if (!empty($msg['keys'])) {
+                    foreach ($msg['keys'] as $keyname => &$key) {
+                        $msg['text'] .= ', ' . $keyname . ': ' . $key['value'];
+                        $key_name = preg_replace('/^[a-z]+_/i', '', $keyname);
+                        $key['type'] = self::$resourceKeyByName[$key_name];
                     }
+                    unset($key);
                 }
-                $data = $this->DB->GetAll('SELECT name, value FROM logmessagedata 
-					WHERE logmessageid = ? ORDER BY name', array($tr['id']));
-                if (!empty($data)) {
-                    $msg['data'] = array();
-                    foreach ($data as $key => $v) {
-                        $v['resource'] = $msg['resource'];
-                        $this->DecodeMessageData($v);
-                        $msg['text'] .= ', ' . $v['name'] . ': ' . $v['value'];
-                        $msg['data'][$v['name']] = $v['value'];
+                if (!empty($msg['data'])) {
+                    foreach ($msg['data'] as $dname => &$data) {
+                        $data['resource'] = $msg['resource'];
+                        $this->DecodeMessageData($data);
+                        $msg['text'] .= ', ' . $dname . ': ' . $data['value'];
                     }
+                    unset($data);
                 }
             }
+            unset($msg);
         }
     }
 
