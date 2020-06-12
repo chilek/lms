@@ -133,7 +133,7 @@ if (!isset($resource_tabs['customerdevices']) || $resource_tabs['customerdevices
 }
 
 if (!isset($resource_tabs['transactions']) || $resource_tabs['transactions']) {
-    if ($SYSLOG && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.transaction_logs'))) {
+    if ($SYSLOG && ConfigHelper::checkPrivilege('transaction_logs')) {
         $trans = $SYSLOG->GetTransactions(array('key' => SYSLOG::getResourceKey(SYSLOG::RES_CUST), 'value' => $customerid, 'limit' => 300));
         if (!empty($trans)) {
             foreach ($trans as $idx => $tran) {
