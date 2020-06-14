@@ -4,17 +4,20 @@ error_reporting(E_ALL &~ E_NOTICE &~ E_DEPRECATED);
 
 require_once('..' . DIRECTORY_SEPARATOR . 'initLMS.php');
 require_once('lib' . DIRECTORY_SEPARATOR . 'definitions.php');
-$basedir=(__DIR__ . DIRECTORY_SEPARATOR . 'templates_c');
 
 $uid        = $_GET['id'];
 $phone      = $_GET['phone'];
 $agentnr    = $_GET['agentnr'];
 $ticket['phonetype'] = 'on';
 
+$basedir=(__DIR__ . DIRECTORY_SEPARATOR . 'templates_c');
+$wwwuser=posix_getuid();
+$wwwgroup=posix_getgid();
+
 if (!is_dir($basedir)) {
     die("Please create Smarty compiled templates directory using shell command: mkdir " . $basedir);
 } elseif (!is_readable($basedir) || !is_writable($basedir)) {
-    die("Smarty compiled templates directory has invalid persmissions - please correct it using shell commands: chmod 755 " . $basedir . "; chown 33:33 " . $basedir);
+    die("Please set valid permissions to Smarty compiled templates directory using shell commands: chmod 755 " . $basedir . "; chown " . $wwwuser. ":" . $wwwgroup . " " . $basedir);
 }
 
 $SMARTY = new LMSSmarty;
