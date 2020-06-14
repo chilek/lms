@@ -1,5 +1,17 @@
 W konfiguracji LMS tworzymy nową sekcję 'callcenter'.
 
+W pierwszej kolejności należy stworzyć katalog templates_c oraz nadać mu właściwe uprawnienia.
+
+Jeśli używasz Debiana będą to najprawdopodobniej komendy:
+mkdir /var/www/html/lms/contrib/tele.centrum.v2/templates_c/;
+chmod 755 /var/www/html/lms/contrib/tele.centrum.v2/templates_c/;
+chown 33:33 /var/www/html/lms/contrib/tele.centrum.v2/templates_c/;
+
+Jeśli używasz CentOS:
+mkdir /var/www/html/lms/contrib/tele.centrum.v2/templates_c/;
+chmod 755 /var/www/html/lms/contrib/tele.centrum.v2/templates_c/;
+chown 48:48 /var/www/html/lms/contrib/tele.centrum.v2/templates_c/;
+
 Uzupełniamy sekcje o zmienne:
 - callcenterip - podać adres IP z którego łączyć się będą agenci callcenter,
 - networks - adresacja sieci, która może wyświetlać formularz callcenter np. 10.10.10.0/24 (można podać kilka sieci oddzielonych przecinkiem), 
