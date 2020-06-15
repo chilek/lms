@@ -26,7 +26,7 @@ version 26-git (????-??-??):
     definition [chilan]
   - improvement: voip account password generation link near password form field [chilan]
   - enhancement: implemented visibility toggle of customer/node panels/tabs/boxes [chilan]
-  - improvement: allow to use ticket filter owner option 'no owner' together with 
+  - improvement: allow to use ticket filter owner option 'no owner' together with
     selected user in helpdesk [interduo]
   - improvement: enable/disable related ticket list selector based on parent ticket
     definition [chilan]
@@ -36,7 +36,7 @@ version 26-git (????-??-??):
     input fields [chilan]
   - improvement: lms-cashimport.php script generates import report on output [chilan]
   - enhancement: userpanel startup module can be defined from user interface [interduo]
-  - improvement: new customers can get minimal free identifiers when 'phpui.reuse_customer_id'
+  - improvement: new customer can get first free identifier when 'phpui.reuse_customer_id'
     is set to 'true' [chilan]
 
 version 25.0 (2020-05-15):
