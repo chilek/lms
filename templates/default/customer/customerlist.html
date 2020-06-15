@@ -314,18 +314,14 @@
 					{/if}
 				{/if}
 			{/if}
-			{if $filter.state == 50}
+			{if $customer.deleted}
+				{if ConfigHelper::checkPrivilege('permanent_customer_removal')}
+					{button type="link" class="remove-button" icon="clear" tip="Remove permanently" href="?m=customerdel&id={$customer.id}&type=permanent"}
+				{/if}
 				{button type="link" icon="restore" tip="Recover" href="?m=customeredit&id={$customer.id}&action=recover"}
 			{else}
-				{if $customer.deleted}
-					{if ConfigHelper::checkPrivilege('permanent_customer_removal')}
-						{button type="link" class="remove-button" icon="remove" tip="Remove permanently" href="?m=customerdel&id={$customer.id}&type=permanent"}
-					{/if}
-					{button type="link" icon="restore" tip="Recover" href="?m=customeredit&id={$customer.id}&action=recover"}
-				{else}
-					{if ConfigHelper::checkPrivilege('customer_removal')}
-						{button type="link" class="delete-customer" icon="delete" tip="Delete" href="?m=customerdel&id={$customer.id}"}
-					{/if}
+				{if ConfigHelper::checkPrivilege('customer_removal')}
+					{button type="link" class="delete-customer" icon="delete" tip="Delete" href="?m=customerdel&id={$customer.id}"}
 				{/if}
 				{button type="link" icon="edit" tip="Edit" href="?m=customeredit&id={$customer.id}"}
 			{/if}
