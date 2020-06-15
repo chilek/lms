@@ -17,7 +17,7 @@ $wwwgroup=posix_getgid();
 if (!is_dir($basedir)) {
     die("Please create Smarty compiled templates directory using shell command: mkdir " . $basedir);
 } elseif (!is_readable($basedir) || !is_writable($basedir)) {
-    die("Please set propper permissions to Smarty compiled templates directory using shell commands: chmod 755 " . $basedir . "; chown " . $wwwuser. ":" . $wwwgroup . " " . $basedir);
+    die("Please set correct permissions to Smarty compiled templates directory using shell commands: chmod 755 " . $basedir . "; chown " . $wwwuser. ":" . $wwwgroup . " " . $basedir);
 }
 
 $SMARTY = new LMSSmarty;
