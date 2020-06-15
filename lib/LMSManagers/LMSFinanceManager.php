@@ -636,7 +636,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     }
 
                     // assume $data['at'] == 1, set last day of the specified month
-                    $dateto = mktime(23, 59, 59, $month + $length + ($cday && $cday != 1 ? 1 : 0), 0, $year);
+                    $dateto = mktime(23, 59, 59, $month + (empty($length) ? 0 : $length) + ($cday && $cday != 1 ? 1 : 0), 0, $year);
                     $cday = 0;
                 }
 
