@@ -514,14 +514,47 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'paytype'        => !empty($customeradd['paytype']) ? $customeradd['paytype'] : null,
         );
 
-        if ($this->db->Execute('INSERT INTO customers (extid, name, lastname, type,
+        $reuse_customer_id = ConfigHelper::checkConfig('phpui.reuse_customer_id');
+
+        if ($reuse_customer_id) {
+            $this->db->LockTables('customers');
+
+            $cids = $this->db->GetCol('SELECT id FROM customers ORDER BY id');
+            $id = 0;
+            if (!empty($cids)) {
+                foreach ($cids as $cid) {
+                    if ($cid - $id > 1) {
+                        break;
+                    }
+                    $id = $cid;
+                }
+            }
+            $id++;
+
+            $args[SYSLOG::RES_CUST] = $id;
+        }
+
+        $result = $this->db->Execute('INSERT INTO customers (extid, name, lastname, type,
                         ten, ssn, status, creationdate,
                         creatorid, info, notes, message, documentmemo, pin, regon, rbename, rbe,
-                        icn, cutoffstop, divisionid, paytime, paytype)
+                        icn, cutoffstop, divisionid, paytime, paytype' . ($reuse_customer_id ? ', id' : ''). ')
                     VALUES (?, ?, ' . ($capitalize_customer_names ? 'UPPER(?)' : '?') . ', ?, ?, ?, ?, ?NOW?,
-                        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))
-        ) {
-            $id = $this->db->GetLastInsertID('customers');
+                        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?' . ($reuse_customer_id ? ', ?' : '') . ')', array_values($args));
+
+        if ($reuse_customer_id) {
+            $this->db->UnLockTables();
+        }
+
+        if ($result) {
+            if ($reuse_customer_id) {
+                switch (ConfigHelper::getConfig('database.type')) {
+                    case 'postgres':
+                        $this->db->Execute('SELECT setval(\'customers_id_seq\', (SELECT MAX(id) FROM customers))');
+                        break;
+                }
+            } else {
+                $id = $this->db->GetLastInsertID('customers');
+            }
 
             // INSERT ADDRESSES
             foreach ($customeradd['addresses'] as $v) {
