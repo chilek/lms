@@ -321,7 +321,7 @@
 					{if ConfigHelper::checkPrivilege('permanent_customer_removal')}
 						{button type="link" class="remove-button" icon="remove" tip="Remove permanently" href="?m=customerdel&id={$customer.id}&type=permanent"}
 					{/if}
-					{button type="link" class="restore-button" icon="restore" tip="Restore" href="?m=customeredit&id={$customer.id}&action=recover"}
+					{button type="link" icon="restore" tip="Recover" href="?m=customeredit&id={$customer.id}&action=recover"}
 				{else}
 					{if ConfigHelper::checkPrivilege('customer_removal')}
 						{button type="link" class="delete-customer" icon="delete" tip="Delete" href="?m=customerdel&id={$customer.id}"}
