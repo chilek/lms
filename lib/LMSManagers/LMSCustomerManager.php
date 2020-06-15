@@ -517,6 +517,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $reuse_customer_id = ConfigHelper::checkConfig('phpui.reuse_customer_id');
 
         if ($reuse_customer_id) {
+            $this->db->BeginTrans();
             $this->db->LockTables('customers');
 
             $cids = $this->db->GetCol('SELECT id FROM customers ORDER BY id');
@@ -543,6 +544,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         if ($reuse_customer_id) {
             $this->db->UnLockTables();
+            $this->db->CommitTrans();
         }
 
         if ($result) {
