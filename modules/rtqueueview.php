@@ -76,7 +76,9 @@ if (!empty($_GET['catid'])) {
         $_GET['catid'] = array($_GET['catid']);
     }
 
-    if (!in_array('all', $_GET['catid'])) {
+    if (in_array('all', $_GET['catid'])) {
+        $filter['catids'] = null;
+    } else {
         $filter['catids'] = Utils::filterIntegers($_GET['catid']);
     }
 }
