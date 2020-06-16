@@ -30,19 +30,21 @@
 							<input type="hidden" name="userand" value="0">
 							<input type="checkbox" name="userand" value="1" onchange="document.filter.submit();"{if isset($filter.userand) && $filter.userand} checked{/if}>
 						</label>
-                        <SELECT size="1" name="a[]" OnChange="document.filter.submit();"
-                                class="lms-ui-multiselect lms-ui-multiselect-filter" multiple
-                                data-default-value="{trans("- all -")}">
-                            <OPTION value="-1" {if is_array($filter.userid) && in_array('-1', $filter.userid)} selected{/if}
-                                    data-exclusive>{trans("unassigned")}
-                            </OPTION>
-                            {foreach $userlist as $user}
-                                <OPTION $filter.userid)}&& SELECTED{ in_array($user.id, is_array($filter.userid)
-                                        value="{$user.id}" {if/if}{if !$user.access} disabled{/if}>{$user.rname|truncate:40:"...":true}
-                                    ({$user.login})
-                                </OPTION>
-                            {/foreach}
-                        </SELECT>
+						<SELECT size="1" name="a[]" OnChange="document.filter.submit();"
+								class="lms-ui-multiselect lms-ui-multiselect-filter" multiple
+								data-default-value="{trans("- all -")}">
+							<OPTION value="-1" {if is_array($filter.userid) && in_array('-1', $filter.userid)} selected{/if}
+									data-exclusive>- {trans("unassigned")} -
+							</OPTION>
+							{foreach $userlist as $user}
+								{if !ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users') || (ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users') && $user.access) || in_array($user.id, $filter.owner)}
+									<OPTION{if !$user.access} disabled{/if}
+											value="{$user.id}" {if is_array($filter.userid) && in_array($user.id, $filter.userid)}} selected{/if}>{$user.rname|truncate:40:"...":true}
+										({$user.login})
+									</OPTION>
+								{/if}
+							{/foreach}
+						</SELECT>
 						{trans("Privacy:")}
 						<SELECT name="privacy" onchange="document.filter.submit();">
 							<OPTION value="0"{if $filter.privacy == "0"} selected{/if}>{trans("- all -")}</OPTION>
