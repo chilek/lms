@@ -514,14 +514,49 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'paytype'        => !empty($customeradd['paytype']) ? $customeradd['paytype'] : null,
         );
 
-        if ($this->db->Execute('INSERT INTO customers (extid, name, lastname, type,
+        $reuse_customer_id = ConfigHelper::checkConfig('phpui.reuse_customer_id');
+
+        if ($reuse_customer_id) {
+            $this->db->BeginTrans();
+            $this->db->LockTables('customers');
+
+            $cids = $this->db->GetCol('SELECT id FROM customers ORDER BY id');
+            $id = 0;
+            if (!empty($cids)) {
+                foreach ($cids as $cid) {
+                    if ($cid - $id > 1) {
+                        break;
+                    }
+                    $id = $cid;
+                }
+            }
+            $id++;
+
+            $args[SYSLOG::RES_CUST] = $id;
+        }
+
+        $result = $this->db->Execute('INSERT INTO customers (extid, name, lastname, type,
                         ten, ssn, status, creationdate,
                         creatorid, info, notes, message, documentmemo, pin, regon, rbename, rbe,
-                        icn, cutoffstop, divisionid, paytime, paytype)
+                        icn, cutoffstop, divisionid, paytime, paytype' . ($reuse_customer_id ? ', id' : ''). ')
                     VALUES (?, ?, ' . ($capitalize_customer_names ? 'UPPER(?)' : '?') . ', ?, ?, ?, ?, ?NOW?,
-                        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))
-        ) {
-            $id = $this->db->GetLastInsertID('customers');
+                        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?' . ($reuse_customer_id ? ', ?' : '') . ')', array_values($args));
+
+        if ($reuse_customer_id) {
+            $this->db->UnLockTables();
+            $this->db->CommitTrans();
+        }
+
+        if ($result) {
+            if ($reuse_customer_id) {
+                switch (ConfigHelper::getConfig('database.type')) {
+                    case 'postgres':
+                        $this->db->Execute('SELECT setval(\'customers_id_seq\', (SELECT MAX(id) FROM customers))');
+                        break;
+                }
+            } else {
+                $id = $this->db->GetLastInsertID('customers');
+            }
 
             // INSERT ADDRESSES
             foreach ($customeradd['addresses'] as $v) {
@@ -1587,13 +1622,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         return $res;
     }
 
-    /**
-     * Deletes customer
-     *
-     * @global type $LMS
-     * @param int $id Customer id
-     */
-    public function deleteCustomer($id)
+    private function deleteCustomerHelper($id)
     {
         global $LMS;
 
@@ -1610,8 +1639,6 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         if (empty($delete_related_resources)) {
             $delete_related_resources = array();
         }
-
-        $this->db->BeginTrans();
 
         $this->db->Execute('UPDATE customers SET deleted=1, moddate=?NOW?, modid=?
                 WHERE id=?', array(Auth::GetCurrentUser(), $id));
@@ -1680,8 +1707,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 if (!empty($contacts)) {
                     foreach ($contacts as $contact) {
                         $args = array(
-                        SYSLOG::RES_CUSTCONTACT => $contact,
-                        SYSLOG::RES_CUST => $id,
+                            SYSLOG::RES_CUSTCONTACT => $contact,
+                            SYSLOG::RES_CUST => $id,
                         );
                         $this->syslog->AddMessage(SYSLOG::RES_CUSTCONTACT, SYSLOG::OPER_UPDATE, $args);
                     }
@@ -1751,7 +1778,18 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 $this->db->Execute('DELETE FROM up_rights_assignments WHERE customerid=?', array($id));
             }
         }
+    }
 
+    /**
+     * Deletes customer
+     *
+     * @global type $LMS
+     * @param int $id Customer id
+     */
+    public function deleteCustomer($id)
+    {
+        $this->db->BeginTrans();
+        $this->deleteCustomerHelper($id);
         $this->db->CommitTrans();
     }
 
@@ -1768,7 +1806,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $addr_ids = $this->db->GetCol('SELECT address_id FROM customer_addresses WHERE customer_id = ?', array($id));
         $this->db->Execute('DELETE FROM addresses WHERE id in (' . implode($addr_ids, ',') . ')');
 
-        $this->deleteCustomer($id);
+        $this->deleteCustomerHelper($id);
 
         $this->db->Execute('DELETE FROM customers WHERE id = ?', array($id));
 

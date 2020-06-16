@@ -257,7 +257,8 @@
 
 	{foreach $customerlist as $customer}
         {block name="customerlist-list-row"}
-	<TR class="highlight {if $customer.deleted} lms-ui-resource-deleted{/if} {if $customer.account && !$customer.nodeac} blend{/if}" data-target-url="?m=customerinfo&id={$customer.id}" data-name="{$customer.customername|escape:"javascript"|escape:"html"}">
+	<TR class="highlight {if $customer.deleted} lms-ui-resource-deleted{/if} {if $customer.account && !$customer.nodeac} blend{/if}"
+		data-target-url="?m=customerinfo&id={$customer.id}" data-name="{$customer.customername|escape:"javascript"|escape:"html"}">
 		<TD>
 			<i class="lms-ui-icon-customer-status-{$_CSTATUSES[$customerinfo.status].alias}"></i>{if $customer.info}&nbsp;<i class="lms-ui-icon-optional-info" title="{$customer.info}"></i>{/if}<A name="{$customer.id}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$customer.id}">&nbsp;<span class="bold">{$customer.customername|escape}</span></A><BR>
 			<i class="lms-ui-icon-home"></i>&nbsp;{$customer.full_address}{if $customer.country != ""}, {t}{$customer.country}{/t}{/if}
@@ -313,10 +314,15 @@
 					{/if}
 				{/if}
 			{/if}
-			{if $filter.state == 50}
+			{if $customer.deleted}
+				{if ConfigHelper::checkPrivilege('permanent_customer_removal')}
+					{button type="link" class="remove-button" icon="clear" tip="Remove permanently" href="?m=customerdel&id={$customer.id}&type=permanent"}
+				{/if}
 				{button type="link" icon="restore" tip="Recover" href="?m=customeredit&id={$customer.id}&action=recover"}
 			{else}
-				{button type="link" class="delete-customer" icon="delete" tip="Delete" href="?m=customerdel&id={$customer.id}"}
+				{if ConfigHelper::checkPrivilege('customer_removal')}
+					{button type="link" class="delete-customer" icon="delete" tip="Delete" href="?m=customerdel&id={$customer.id}"}
+				{/if}
 				{button type="link" icon="edit" tip="Edit" href="?m=customeredit&id={$customer.id}"}
 			{/if}
 			{button type="link" icon="info" tip="Info" href="?m=customerinfo&id={$customer.id}"}
@@ -335,20 +341,35 @@
 	</TBODY>
 </TABLE>
 </FORM>
-	<script>
-		$('.balanceok-customer').click(function() {
+
+<script>
+
+	$(function() {
+		$('.balanceok-customer').click(function () {
 			var name = $(this).closest('tr').attr('data-name');
-			confirmDialog($t("Are you sure, you want to account ALL debts of customer \'$a\'?", name), this).done(function() {
+			confirmDialog($t("Are you sure, you want to account ALL debts of customer \'$a\'?", name), this).done(function () {
 				location.href = $(this).attr('href');
 			});
 			return false;
 		});
-		$('.delete-customer').click(function() {
+
+		$('.delete-customer').click(function () {
 			var name = $(this).closest('tr').attr('data-name');
-			confirmDialog($t("Are you sure, you want to remove customer '$a' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!", name), this).done(function() {
+			confirmDialog($t("Are you sure, you want to remove customer '$a' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!", name), this).done(function () {
 				location.href = $(this).attr('href');
 			});
 			return false;
 		});
-	</script>
+
+		$('.remove-button').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			confirmDialog($t("Do you want to permanently remove $a customer?", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	});
+
+</script>
+
 {/block}

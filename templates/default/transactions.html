@@ -52,15 +52,12 @@
 					</TD>
 					<TD class="valign-bottom">
 						{if $tr.messages}
-							{if count($tr.messages) > 10}{$start = 9 - count($tr.messages)}...<br>
-							{else}{$start=-1}{/if}
-							{section name=messages loop=$tr.messages start=$start step=-1}
-								{$message = $tr.messages[messages]}
+							{foreach $tr.messages as $messageid => $message}
 								<span class="bold">{SYSLOG::getResourceName($message.resource)}: <span style="{SYSLOG::getOperationStyle($message.operation)}">{SYSLOG::getOperationName($message.operation)}</span></span>
 								{foreach $message.keys as $key => $msgkey}{$key}: {if $msgkey.value}<a href="?m=archiveinfo&amp;type={$msgkey.type}&amp;id={$msgkey.value}&amp;date={$tr.time}">{/if}{$msgkey.value}{if $msgkey.value}</a>{/if}{if !$msgkey@last}, {/if}{/foreach}
-								{foreach $message.data as $key => $value}{$key}: {$value}{if !$value@last}, {/if}{/foreach}
-								{if !$messages@last}<br>{/if}
-							{/section}
+								{foreach $message.data as $key => $value}{$key}: {$value.value}{if !$value@last}, {/if}{/foreach}
+								{if !$message@last}<br>{/if}
+							{/foreach}
 						{/if}
 					</TD>
 				</TR>
