@@ -38,7 +38,9 @@ version 26-git (????-??-??):
   - enhancement: userpanel startup module can be defined from user interface [interduo]
   - improvement: new customer can get first free identifier when 'phpui.reuse_customer_id'
     is set to 'true' [chilan]
-
+  - improvement: added phpui.timetable_hide_disabled_users setting
+    in eventmodify/eventlistfilter [interduo]
+    
 version 25.0 (2020-05-15):
 
   - improvement: introduced invoices.hide_ssn configuration variable which allows to hide SSN
