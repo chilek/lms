@@ -267,7 +267,9 @@ if (!isset($_POST['note'])) {
     $note['priority'] = $ticket['priority'];
     $note['verifierid'] = $ticket['verifierid'];
     $note['deadline'] = $ticket['deadline'];
-    if ($note['state'] == RT_NEW) {
+    $notechangestateafter = ConfigHelper::getConfig('rt.change_ticket_state_to_open_after_note_add_interval', 0);
+
+    if ($note['state'] == RT_NEW && (isset($notechangestateafter) && time()-$ticket['createtime'] > $notechangestateafter)) {
         $note['state'] = RT_OPEN;
     }
 }

@@ -40,7 +40,10 @@ version 26-git (????-??-??):
     is set to 'true' [chilan]
   - improvement: added phpui.timetable_hide_disabled_users setting
     in eventmodify/eventlistfilter [interduo]
-    
+  - enhancement: allow to disable state changes new->open when adding note to ticket - now
+    it depends on variable rt.change_ticket_state_to_open_after_note_add_interval
+    (default: 0, which keeps current behaviour) [interduo]
+
 version 25.0 (2020-05-15):
 
   - improvement: introduced invoices.hide_ssn configuration variable which allows to hide SSN
