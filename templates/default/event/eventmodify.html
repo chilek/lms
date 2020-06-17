@@ -116,10 +116,9 @@
 						<SELECT name="event[userlist][]" class="lms-ui-multiselect" multiple data-default-value="{trans("- select user -")}" data-shorten-to-default-value="false">
 							{foreach $userlist as $user}
 								{if !ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users') || (ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users')
-                                                                    && $user.access) || in_array($user.id, $filter.owner)}
-								<OPTION {if !$user.access} disabled{/if} value="{$user.id}" {if is_array($event.userlist) && in_array($user.id, $event.userlist)}}selected{/if}>
-									{$user.rname|truncate:40:"...":true}({$user.login})
-								</OPTION>
+									&& $user.access) || in_array($user.id, $filter.owner)}
+								<OPTION {if !$user.access} disabled{/if} value="{$user.id}" {if is_array($event.userlist) && in_array($user.id, $event.userlist)}}selected{/if}
+									>{$user.rname|truncate:40:"...":true}({$user.login})</OPTION>
 								{/if}
 							{/foreach}
 						</SELECT>
