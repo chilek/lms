@@ -918,7 +918,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
         $message['type'] = $msg['type'];
         $message['subject'] = !empty($msg['subject']) ? $msg['subject'] : '';
         $message['body'] = !empty($msg['body']) ? $msg['body'] : '';
-        if ($message['contenttype'] == 'text/html') {
+        if ($msg['contenttype'] == 'text/html') {
             $message['wysiwyg']['mailbody'] = 'true';
         }
     }
