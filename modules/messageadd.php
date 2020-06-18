@@ -913,11 +913,14 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
     $SMARTY->assign('autoload_template', true);
     $message['nodeid'] = isset($_GET['nodeid']) ? intval($_GET['nodeid']) : 0;
 } else {
-    $message['type'] = isset($_GET['type']) ? intval($_GET['type']) : MSG_MAIL;
-    $message['subject'] = isset($_GET['subject']) ? urldecode($_GET['subject']) : '';
-    $message['body'] = isset($_GET['body']) ? urldecode($_GET['body']) : '';
-    if (isset($_GET['contenttype']) && urldecode($_GET['contenttype']) == 'text/html') {
-        $message['wysiwyg']['mailbody'] = 'true';
+    if (isset($_GET['messageid'])) {
+        $msg = $LMS->getSingleMessage($_GET['messageid']);
+        $message['type'] = $msg['type'];
+        $message['subject'] = !empty($msg['subject']) ? $msg['subject'] : '';
+        $message['body'] = !empty($msg['body']) ? $msg['body'] : '';
+        if ($message['contenttype'] == 'text/html') {
+            $message['wysiwyg']['mailbody'] = 'true';
+        }
     }
     $message['usergroup'] = isset($_GET['usergroupid']) ? intval($_GET['usergroupid']) : 0;
     $message['tmplid'] = isset($_GET['templateid']) ? intval($_GET['templateid']) : 0;

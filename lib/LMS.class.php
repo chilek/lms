@@ -3590,6 +3590,12 @@ class LMS
         return $manager->updateMessageItems($params);
     }
 
+    public function getSingleMessage($id, $details = false)
+    {
+        $manager = $this->getMessageManager();
+        return $manager->getSingleMessage($id, $details);
+    }
+
     /**
      * Returns user manager
      *

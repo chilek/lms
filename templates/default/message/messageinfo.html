@@ -115,7 +115,7 @@
 		<TD COLSPAN="3" class="lms-ui-box-buttons">
 			{button id="delete-message" icon="delete" label="Delete"}
 			{button icon="cancel" label="Cancel" onclick="location.href = '?m=messagelist';"}
-			{button icon="resend" label="Resend" onclick="location.href = '?m=messageadd&type={$message.type}&subject={urlencode($message.subject)}&body={urlencode($message.body)}&contenttype={$message.contenttype}';"}
+			{button icon="resend" label="Resend" onclick="location.href = '?m=messageadd&messageid={$message.id}';"}
 		</TD>
 	</TR>
     </TBODY>
