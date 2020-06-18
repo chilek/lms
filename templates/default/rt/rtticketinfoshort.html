@@ -21,6 +21,16 @@
 		</TD>
 	</TR>
 	{/if}
+	{if $ticket.createtime}
+	<TR>
+		<TD class="bold nobr">
+			{icon name="lms-ui-icon-uptime"} {trans("Creation time:")}
+		</TD>
+		<TD>
+			{$ticket.createtime|date_format:"%Y/%m/%d %H:%M:%S"}
+		</TD>
+	</TR>
+	{/if}
 	{if $ticket.invprojectid}
 	<TR>
 		<TD class="bold nobr">
