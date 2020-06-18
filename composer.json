@@ -84,8 +84,8 @@
         "phine/observer": "2.0",
         "phine/exception": "1.0",
         "phpmailer/phpmailer": "^6",
-        "tecnickcom/tcpdf": "6.2.21",
-        "spipu/html2pdf": "^4.5",
+        "tecnickcom/tcpdf": "^6",
+        "spipu/html2pdf": "^5",
         "components/normalize.css": "^3.0",
         "smarty/smarty": "3.1.33",
         "rospdf/pdf-php": "^0.12",
@@ -121,7 +121,7 @@
     },
     "scripts": {
         "pre-autoload-dump": [ "@repairHTML2PDF", "@repairTCPDF", "@repairEZPDF" ],
-        "repairHTML2PDF": "sed -i -e 's/class HTML2PDF_myPdf extends TCPDF/class HTML2PDF_myPdf extends LMSTCPDF/' vendor/spipu/html2pdf/_class/myPdf.class.php",
+        "repairHTML2PDF": "sed -i -e 's/class MyPdf extends \\TCPDF/class MyPdf extends \\LMSTCPDF/' vendor/spipu/html2pdf/src/MyPdf.php",
         "repairTCPDF": "sed -i -e 's/\\(\\s\\+\\)register_shutdown_function/\\1\\\/\\\/register_shutdown_function/' vendor/tecnickcom/tcpdf/tcpdf.php",
         "repairEZPDF": "cp -f lib/ezpdf/fonts/arial* vendor/rospdf/pdf-php/src/fonts"
     }

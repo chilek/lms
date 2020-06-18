@@ -33,7 +33,7 @@ $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIREC
 
 define('START_TIME', microtime(true));
 define('LMS-UI', true);
-define('K_TCPDF_EXTERNAL_CONFIG', true);
+//define('K_TCPDF_EXTERNAL_CONFIG', true);
 define('K_TCPDF_CALLS_IN_HTML', true);
 ini_set('error_reporting', E_ALL&~E_NOTICE);
 
