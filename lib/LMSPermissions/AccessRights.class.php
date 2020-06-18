@@ -117,4 +117,36 @@ class AccessRights
 
         return $access;
     }
+
+    public function applyMenuPermissions(&$menu, $rights)
+    {
+        $all_menus = array_keys($menu);
+        $effective_menus = array();
+        foreach ($rights as $permname) {
+            if (!isset($this->permissions[$permname])) {
+                continue;
+            }
+            $menuperms = $this->permissions[$permname]->getMenuPermissions();
+            if (is_int($menuperms['allow_menu_items'])) {
+                if ($menuperms['allow_menu_items'] == Permission::MENU_ALL) {
+                    $effective_menus = $all_menus;
+                }
+            } else {
+                $effective_menus = array_merge($effective_menus, $menuperms['allow_menu_items']);
+            }
+            if (is_int($menuperms['deny_menu_items'])) {
+                if ($menuperms['deny_menu_items'] == Permission::MENU_ALL) {
+                    $effective_menus = array_diff($effective_menus, $all_menus);
+                }
+            } else {
+                $effective_menus = array_diff($effective_menus, $menuperms['deny_menu_items']);
+            }
+        }
+        $effective_menus = array_flip(array_unique($effective_menus));
+        foreach ($menu as $menukey => $menuitem) {
+            if (!isset($effective_menus[$menukey])) {
+                unset($menu[$menukey]);
+            }
+        }
+    }
 }
