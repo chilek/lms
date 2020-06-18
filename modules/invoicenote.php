@@ -408,7 +408,6 @@ switch ($action) {
                                 $contents[$idx]['valuebrutto'] = f_round(-1 * $contents[$idx]['vdiscount']);
                             }
                         }
-
                     }
                 }
                 if (!empty($invoicecontents[$idx]['count']) && !empty($contents[$idx]['count'])) {
