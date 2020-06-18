@@ -239,7 +239,7 @@ foreach ($access_table as $name => $permission) {
         isset($permission['allow_regexp']) ? $permission['allow_regexp'] : null,
         isset($permission['deny_regexp']) ? $permission['deny_regexp'] : null,
         isset($permission['allow_menu_items']) ? $permission['allow_menu_items'] : null,
-        isset($permission['deny_menu_items']) ? $permission['deny_menu_items'] : null,
+        isset($permission['deny_menu_items']) ? $permission['deny_menu_items'] : null
     ));
 }
 $access->appendPermission(
