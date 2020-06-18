@@ -93,6 +93,7 @@
 						{/if}
 						{button type="link" icon="delete" class="delete-message" href="?m=messagedel&id={$item.id}"
 							tip="Delete"}
+						{button type="link" icon="resend" href="?m=messageadd&messageid={$item.id}" tip="Resend"}
 						<input type="checkbox" class="lms-ui-multi-check" name="marks[{$item.id}]" value="{$item.id}"
 							form="customermessages-form">
 						<div id="files-{$item.filecontainerid}" style="display: none;" class="files">
