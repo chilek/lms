@@ -48,10 +48,10 @@ class Permission
     ) {
         $this->name = $name;
         $this->label = $label;
-        $this->allow_regexps = is_null($allow_regexp) ? array() : array($allow_regexp);
-        $this->deny_regexps = is_null($deny_regexp) ? array() : array($deny_regexp);
-        $this->allow_menu_items = is_null($allow_menu_items) ? array() : $allow_menu_items;
-        $this->deny_menu_items = is_null($deny_menu_items) ? array() : $deny_menu_items;
+        $this->allow_regexps = isset($allow_regexp) ? array($allow_regexp) : array();
+        $this->deny_regexps = isset($deny_regexp) ? array($deny_regexp) : array();
+        $this->allow_menu_items = isset($allow_menu_items) ? $allow_menu_items : array();
+        $this->deny_menu_items = isset($deny_menu_items) ? $deny_menu_items : array();
     }
 
     public function getName()

@@ -44,7 +44,7 @@ version 26-git (????-??-??):
     it depends on variable rt.change_ticket_state_to_open_after_note_add_interval
     (default: 0, which keeps current behaviour) [interduo]
   - improvement: allow to quickly resend existing message [chilan]
-  - enhancement: implemeneted main menu item visibility toggle basing on user permissions [chilan]
+  - enhancement: implemeneted menu item visibility toggle basing on user permissions [chilan]
 
 version 25.0 (2020-05-15):
 
