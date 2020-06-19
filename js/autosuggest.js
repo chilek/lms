@@ -405,6 +405,7 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 			method: me.method,
 			url: uri,
 			data: me.formData,
+			dataType: "json",
 			success: function(data) {
 				me.inputText = $(me.elem).val();
 				me.parseSuggestions(data);
@@ -422,12 +423,14 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 	this.parseSuggestions = function(data) {
 		me.suggestions = data ? data : [];
 		if (me.suggestions.length) {
+/*
 			$.each(me.suggestions, function(i, elem) {
 				var name = elem.name;
 				if (me.inputText && !name.toLowerCase().indexOf(me.inputText.toLowerCase())) {
 					me.suggestions.push(elem);
 				}
 			});
+*/
 			if (this.onLoad) {
 				var suggestions = (me.onLoad)(me.suggestions);
 				if (typeof(suggestions) === 'object') {
