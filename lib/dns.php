@@ -322,7 +322,7 @@ function validate_dns_record(&$record, &$error)
             break;
         case 'ALIAS':
         case 'ANAME':
-            if ($errorname = check_hostname_fqdn($record['alias'], true, false)) {
+            if (strlen($record['alias']) && $errorname = check_hostname_fqdn($record['alias'], true, false)) {
                 $error['alias'] = $errorname;
             }
             break;
@@ -423,6 +423,8 @@ function validate_dns_record(&$record, &$error)
             $record['content'] = $record['mailserver'];
             break;
         case 'CNAME':
+        case 'ALIAS':
+        case 'ANAME':
             $record['name'] = $record['alias'];
             $record['content'] = $record['domain'];
             break;
