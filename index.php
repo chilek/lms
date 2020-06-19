@@ -350,7 +350,9 @@ if ($AUTH->islogged) {
             // everyone should have access to documentation
             $rights[] = 'documentation';
 
-            $access->applyMenuPermissions($menu, $rights);
+            if (!$api) {
+                $access->applyMenuPermissions($menu, $rights);
+            }
 
             $layout['module'] = $module;
 
