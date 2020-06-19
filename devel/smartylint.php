@@ -90,6 +90,10 @@ try {
     die("Fatal error: cannot connect to database!" . PHP_EOL);
 }
 
+$AUTH = null;
+$SYSLOG = null;
+$LMS = new LMS($DB, $AUTH, $SYSLOG);
+
 // Initialize templates engine (must be before locale settings)
 $SMARTY = new LMSSmarty;
 
@@ -140,19 +144,24 @@ $SMARTY->debugging = ConfigHelper::checkConfig('phpui.smarty_debug');
 
 $plugin_manager->executeHook('smarty_initialized', $SMARTY);
 
-if ($argc != 2) {
+if ($argc < 2) {
     die('smartylint: syntax error - template file name is required!' . PHP_EOL);
 }
 
-if (!is_readable($argv[1])) {
-    die('smartylint: template file ' . $argv[1] . ' does not exist or is not readable!' . PHP_EOL);
+foreach (array_slice($argv, 1) as $template) {
+    if (!is_readable($template)) {
+        die('smartylint: template file ' . $template . ' does not exist or is not readable!' . PHP_EOL);
+    }
 }
 
+$pagination = LMSPaginationFactory::getPagination(1, 10, 5, false);
+$SMARTY->assign('pagination', $pagination);
+
 try {
-    $SMARTY->clearCache('file:' . $argv[1]);
-    $SMARTY->fetch('file:' . $argv[1]);
+    foreach (array_slice($argv, 1) as $template) {
+        $SMARTY->clearCache('file:' . $template);
+        $result = $SMARTY->fetch('file:' . $template);
+    }
 } catch (Exception $e) {
     echo $e->getMessage() . PHP_EOL;
 }
-
-?>
