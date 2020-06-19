@@ -228,6 +228,11 @@ function parse_dns_record(&$record)
         case 'AAAA':
             $record['ipdst'] = $record['content'];
             break;
+        case 'ALIAS':
+        case 'ANAME':
+            $record['alias'] = $record['name'];
+            $record['domain'] = $record['content'];
+            break;
         case 'NS':
             $record['ns'] = $record['content'];
             break;
@@ -313,6 +318,12 @@ function validate_dns_record(&$record, &$error)
                 $error['ipdst'] = trans('Field cannot be empty!');
             } else if (!check_ipv6($record['ipdst'])) {
                 $error['ipdst'] = trans('Invalid IP address!');
+            }
+            break;
+        case 'ALIAS':
+        case 'ANAME':
+            if ($errorname = check_hostname_fqdn($record['alias'], true, false)) {
+                $error['alias'] = $errorname;
             }
             break;
         case 'NS':

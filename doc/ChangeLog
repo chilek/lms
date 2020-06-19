@@ -47,6 +47,8 @@ version 26-git (????-??-??):
   - enhancement: implemeneted main menu item visibility toggle basing on user permissions [chilan]
   - improvement: allow to hide createtime in ticket row (variable:
     rt.hide_ticket_row_create_time, default: 0) [interduo]
+  - enhancement: hosting: added support for ALIAS and ANAME record types - they are used
+    by github pages [chilan]
 
 version 25.0 (2020-05-15):
 
