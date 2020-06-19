@@ -148,7 +148,8 @@ if ($argc < 2) {
     die('smartylint: syntax error - template file name is required!' . PHP_EOL);
 }
 
-foreach (array_slice($argv, 1) as $template) {
+array_shift($argv);
+foreach ($argv as $template) {
     if (!is_readable($template)) {
         die('smartylint: template file ' . $template . ' does not exist or is not readable!' . PHP_EOL);
     }
@@ -158,7 +159,7 @@ $pagination = LMSPaginationFactory::getPagination(1, 10, 5, false);
 $SMARTY->assign('pagination', $pagination);
 
 try {
-    foreach (array_slice($argv, 1) as $template) {
+    foreach ($argv as $template) {
         $SMARTY->clearCache('file:' . $template);
         $result = $SMARTY->fetch('file:' . $template);
     }
