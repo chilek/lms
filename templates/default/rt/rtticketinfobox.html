@@ -54,6 +54,7 @@
 									{$ticket.subject|escape|truncate:50:"...":true}
 								</TD>
 							</TR>
+							{if $ticket.service != SERVICE_OTHER}
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
 									<i class="lms-ui-icon-content lms-ui-icon-service"></i>{trans("Service type:")}
@@ -62,6 +63,8 @@
                                     {$_SERVICETYPES[$ticket.service]}
 								</TD>
 							</TR>
+							{/if}
+							{if $ticket.type != RT_TYPE_OTHER}
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
 									<i class="lms-ui-icon-content lms-ui-icon-type"></i>{trans("Ticket type:")}
@@ -70,6 +73,7 @@
                                     {$_RT_TYPES[$ticket.type].label}
 								</TD>
 							</TR>
+							{/if}
 							{if $ticket.customerid}
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
@@ -168,6 +172,7 @@
 									{/if}
 								</TD>
 							</TR>
+							{if $ticket.deadline}
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
 									<i class="lms-ui-icon-content lms-ui-icon-timetable"></i>{trans("<!rt>Deadline:")}
@@ -180,6 +185,7 @@
 									{/if}
 								</TD>
 							</TR>
+							{/if}
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
 									<i class="lms-ui-icon-content lms-ui-icon-queue"></i>{trans("Queue:")}
@@ -196,6 +202,7 @@
 									{$_RT_STATES[$ticket.state].label}
 								</TD>
 							</TR>
+							{if $ticket.cause}
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
 									<i class="lms-ui-icon-content lms-ui-icon-cause"></i>{trans("Cause:")}
@@ -206,6 +213,7 @@
 									{else}{trans("unknown/other")}{/if}
 								</TD>
 							</TR>
+							{/if}
 							{if $ticket.deleted == 1 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
@@ -224,6 +232,7 @@
 								</TD>
 							</TR>
 							{/if}
+							{if $ticket.source}
 							<TR>
 								<TD class="bold nobr">
 									<i class="lms-ui-icon-content lms-ui-icon-source"></i>{trans("Ticket source:")}
@@ -232,6 +241,8 @@
 									{$_RT_SOURCES[$ticket.source]}
 								</TD>
 							</TR>
+							{/if}
+							{if $ticket.priority}
 							<TR>
 								<TD class="bold nobr">
 									<i class="lms-ui-icon-content lms-ui-icon-priority"></i>{trans("Priority:")}
@@ -240,6 +251,7 @@
 									<span style="{$_RT_PRIORITY_STYLES[$ticket.priority]}">{$_RT_PRIORITIES[$ticket.priority]}</span>
 								</TD>
 							</TR>
+							{/if}
 							{if $ticket.address_id}
 							<TR>
 								<TD class="bold nobr">
