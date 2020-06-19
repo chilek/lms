@@ -120,6 +120,10 @@ class AccessRights
 
     public function applyMenuPermissions(&$menu, $rights)
     {
+        if (empty($menu)) {
+            return;
+        }
+
         $all_menus = array();
         foreach ($menu as $menukey => $menuitem) {
             $all_menus[$menukey] = isset($menuitem['submenu']) ? array_keys($menuitem['submenu']) : Permission::MENU_ALL;
