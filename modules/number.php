@@ -24,13 +24,14 @@
  *  $Id$
  */
 
-if ($doc = $DB->GetRow('SELECT number, cdate, type, numberplans.template, extnumber
+if ($doc = $DB->GetRow('SELECT number, cdate, type, customerid, numberplans.template, extnumber
 			FROM documents
 			LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 			WHERE documents.id = ?', array($_GET['id']))) {
     $ntempl = docnumber(array(
         'number' => $doc['number'],
         'template' => $doc['template'],
+        'customerid' => $doc['customerid'],
         'cdate' => $doc['cdate'],
         'ext_num' => $doc['extnumber'],
     ));
@@ -49,7 +50,7 @@ if ($doc = $DB->GetRow('SELECT number, cdate, type, numberplans.template, extnum
             $ntempl = trans('Debit Note No. $a', $ntempl);
             break;
     }
-    
+
     $SMARTY->assign('content', $ntempl);
     $SMARTY->display('dynpopup.html');
 }
