@@ -49,6 +49,7 @@ version 26-git (????-??-??):
     rt.hide_ticket_row_create_time, default: 0) [interduo]
   - enhancement: hosting: added support for ALIAS and ANAME record types - they are used
     by github pages [chilan]
+  - enhancement: allow to quickly clone existing invoice [chilan]
 
 version 25.0 (2020-05-15):
 
