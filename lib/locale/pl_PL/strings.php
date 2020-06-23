@@ -4277,6 +4277,7 @@ $_LANG['<!assignment>Commited'] = 'Zatwierdzone';
 $_LANG['Unread:'] = 'Nieprzeczytane:';
 $_LANG['Mark as unread'] = 'Oznacz jako nieprzeczytane';
 $_LANG['Mark as read'] = 'Oznacz jako przeczytane';
+$_LANG['Mark queue as read'] = 'Oznacz kolejkę jako przeczytaną';
 $_LANG['Mark as read ($a unread)'] = 'Oznacz jako przeczytane ($a nieprzeczytanych)';
 
 $_LANG['<!event>Assign'] = 'Przypisz';
