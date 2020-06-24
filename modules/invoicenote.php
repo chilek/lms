@@ -53,8 +53,9 @@ if (isset($_GET['id']) && $action == 'init') {
         $nitem['name']      = $item['description'];
         $nitem['prodid']    = $item['prodid'];
         $nitem['count']     = str_replace(',', '.', $item['count']);
-        $nitem['discount']  = (!empty(floatval($item['pdiscount'])) ? str_replace(',', '.', $item['pdiscount']) : str_replace(',', '.', $item['vdiscount']));
-        $nitem['discount_type'] = (!empty(floatval($item['pdiscount'])) ? DISCOUNT_PERCENTAGE : DISCOUNT_AMOUNT);
+        $pdiscount = floatval($item['pdiscount']);
+        $nitem['discount']  = (!empty($pdiscount) ? str_replace(',', '.', $item['pdiscount']) : str_replace(',', '.', $item['vdiscount']));
+        $nitem['discount_type'] = (!empty($pdiscount) ? DISCOUNT_PERCENTAGE : DISCOUNT_AMOUNT);
         $nitem['pdiscount'] = str_replace(',', '.', $item['pdiscount']);
         $nitem['vdiscount'] = str_replace(',', '.', $item['vdiscount']);
         $nitem['content']       = str_replace(',', '.', $item['content']);
