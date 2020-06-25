@@ -3411,7 +3411,7 @@ $_LANG['Select note template'] = 'Wybierz szablon notatki';
 $_LANG['Enter name of the new message template'] = 'Wprowadź nazwę nowego szablonu wiadomości';
 $_LANG['no operation on message template'] = 'brak czynności na szablonie wiadomości';
 
-$_LANG['Assign to me as owner'] = 'Przypisz do mnie jako właściel';
+$_LANG['Assign to me as owner'] = 'Przypisz do mnie jako właściciel';
 $_LANG['Assign to me as verifier'] = 'Przypisz do mnie jako weryfikator';
 $_LANG['Assign to me'] = 'Przypisz do mnie';
 $_LANG['assign to me'] = 'przypisz do mnie';
