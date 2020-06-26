@@ -100,6 +100,10 @@ a.lms-ui-link-button + button.lms-ui-button {
     &.secondary {
       display: inline !important;
     }
+    @media screen and (max-width: 800px) {
+      .fa-lg;
+      line-height: normal;
+    }
   }
   .lms-ui-dropdown-buttons {
     display: inline;
@@ -109,7 +113,7 @@ a.lms-ui-link-button + button.lms-ui-button {
   }
   @media screen and (max-width: 1200px) {
     .lms-ui-dropdown-toggle {
-      display: inline !important;
+      display: inline-block !important;
       &.secondary {
         display: none !important;
       }
