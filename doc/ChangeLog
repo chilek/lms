@@ -50,6 +50,7 @@ version 26-git (????-??-??):
   - enhancement: hosting: added support for ALIAS and ANAME record types - they are used
     by github pages [chilan]
   - enhancement: allow to quickly clone existing invoice [chilan]
+  - enhancement: implemented true responsive menu popups [chilan]
 
 version 25.0 (2020-05-15):
 

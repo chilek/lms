@@ -4777,3 +4777,6 @@ $_LANG['No parent ticket is selected!'] = 'Nie wybrano zgłoszenia nadrzędnego!
 $_LANG['used tariff edit'] = 'edycja użytych taryf';
 
 $_LANG['Resend'] = 'Wyślij nową';
+
+$_LANG['more actions'] = 'więcej czynności';
+$_LANG['Ticket $a'] = 'Zgłoszenie $a';
