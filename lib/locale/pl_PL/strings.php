@@ -4780,3 +4780,4 @@ $_LANG['Resend'] = 'Wyślij nową';
 
 $_LANG['more actions'] = 'więcej czynności';
 $_LANG['Ticket $a'] = 'Zgłoszenie $a';
+$_LANG['Event $a'] = 'Zdarzenie $a';
