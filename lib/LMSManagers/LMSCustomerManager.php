@@ -1102,7 +1102,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                     END
                                 )
                             END
-                        )
+                        ) * a.count
                     ) AS value
                     FROM assignments a
                     LEFT JOIN tariffs t ON (t.id = a.tariffid)
