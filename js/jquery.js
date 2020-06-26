@@ -516,7 +516,7 @@ function showGallery(data) {
 	Galleria.ready(function() {
 		var gallery = this;
 		this.addElement('buttons').appendChild('container', 'buttons');
-		this.$('buttons').html('<i class="fullscreen-button fa-2x lms-ui-icon-fullscreen-on"/><i class="close-button fa-2x lms-ui-icon-hide"/>')
+		this.$('buttons').html('<i class="fullscreen-button fa-2x lms-ui-icon-fullscreen-on"></i><i class="close-button fa-2x lms-ui-icon-hide"></i>')
 			.on('click', 'i', function() {
 				if ($(this).is('.close-button')) {
 					gallery.destroy();
