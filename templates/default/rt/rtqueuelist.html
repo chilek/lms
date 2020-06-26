@@ -71,7 +71,9 @@
     </THEAD>
     <TBODY>
 	{foreach $queues as $queue}
-	<TR class="highlight lms-ui-resource{if $queue.deleted == 1 && $queue.deltime != 0}-deleted{elseif $queue.delcount != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}-partly-deleted{else}{/if}" data-target-url="?m=rtqueueview&id={$queue.id}" data-name="{$queue.name}">
+	<TR class="highlight lms-ui-resource{if $queue.deleted == 1 && $queue.deltime != 0}-deleted{elseif $queue.delcount != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}-partly-deleted{else}{/if}"
+		data-target-url="?m=rtqueueview&id={$queue.id}" data-name="{$queue.name}"
+		data-popup-menu-title="{t a=$queue.name}Queue $a{/t}">
 		<TD class="nobr bold">
 		{if $queue.critical != 0}
 			<i class="lms-ui-icon-content lms-ui-icon-critical"></i>
