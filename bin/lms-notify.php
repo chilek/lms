@@ -343,8 +343,8 @@ function parse_customer_data($data, $row)
     $data = preg_replace("/\%deadline-y/", strftime("%Y", $deadline), $data);
     $data = preg_replace("/\%deadline-m/", strftime("%m", $deadline), $data);
     $data = preg_replace("/\%deadline-d/", strftime("%d", $deadline), $data);
-    $data = preg_replace("/\%B/", $row['balance'], $data);
-    $data = preg_replace("/\%totalB/", $row['totalbalance'], $data);
+    $data = preg_replace("/\%B/", sprintf('%01.2f', $row['balance']), $data);
+    $data = preg_replace("/\%totalB/", sprintf('%01.2f', $row['totalbalance']), $data);
     $data = preg_replace("/\%saldo/", moneyf($row['balance']), $data);
     $data = preg_replace("/\%totalsaldo/", moneyf($row['totalbalance']), $data);
     $data = preg_replace("/\%pin/", $row['pin'], $data);
