@@ -334,8 +334,8 @@ function parse_customer_data($data, $row)
         format_bankaccount(bankaccount($row['id'], $row['account'])),
         $data
     );
-    $data = preg_replace("/\%b/", $amount, $data);
-    $data = preg_replace("/\%totalb/", $totalamount, $data);
+    $data = preg_replace("/\%b/", sprintf('%01.2f', $amount), $data);
+    $data = preg_replace("/\%totalb/", sprintf('%01.2f', $totalamount), $data);
     $data = preg_replace("/\%date-y/", strftime("%Y"), $data);
     $data = preg_replace("/\%date-m/", strftime("%m"), $data);
     $data = preg_replace("/\%date_month_name/", strftime("%B"), $data);
