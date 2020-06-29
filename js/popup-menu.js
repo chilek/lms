@@ -77,9 +77,9 @@ $(function() {
     });
 
     popup_menu.find('.close-button').click(function() {
-        $('body,#lms-ui-contents').removeClass('popup-menu');
         popup_menu.removeClass('show');
         $('.lms-ui-dropdown-toggle.open').removeClass('open');
+        $('body,#lms-ui-contents').removeClass('popup-menu');
     });
 
     $('.lms-ui-dropdown-toggle').click(function() {
