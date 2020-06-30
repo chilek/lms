@@ -51,6 +51,8 @@ version 26-git (????-??-??):
     by github pages [chilan]
   - enhancement: allow to quickly clone existing invoice [chilan]
   - enhancement: implemented true responsive menu popups [chilan]
+  - enhancement: implemented bulk operations on customer contact flags in customer search
+    result [chilan]
 
 version 25.0 (2020-05-15):
 

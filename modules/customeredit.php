@@ -57,7 +57,10 @@ if (isset($_GET['search'])) {
     unset($customerlist['below']);
     unset($customerlist['over']);
 
-    if ($customerlist && isset($_POST['consents']) && !empty($_POST['consents'])) {
+    require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
+    if ($customerlist && ((isset($_POST['consents']) && !empty($_POST['consents']))
+        || (isset($_GET['type']) && isset($_POST['contactflags'][$_GET['type']]) && !empty($_POST['contactflags'][$_GET['type']])
+            && isset($CUSTOMERCONTACTTYPES[$_GET['type']])))) {
         foreach ($customerlist as $row) {
             switch ($_GET['oper']) {
                 case 'addconsents':
@@ -65,6 +68,12 @@ if (isset($_GET['search'])) {
                     break;
                 case 'removeconsents':
                     $LMS->removeCustomerConsents($row['id'], $_POST['consents']);
+                    break;
+                case 'addflags':
+                    $LMS->addCustomerContactFlags($row['id'], $_GET['type'], $_POST['contactflags'][$_GET['type']]);
+                    break;
+                case 'removeflags':
+                    $LMS->removeCustomerContactFlags($row['id'], $_GET['type'], $_POST['contactflags'][$_GET['type']]);
                     break;
             }
         }

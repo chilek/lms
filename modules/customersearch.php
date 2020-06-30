@@ -190,6 +190,7 @@ if (isset($_GET['search'])) {
     } elseif ($listdata['total'] == 1) {
         $SESSION->redirect('?m=customerinfo&id=' . $customerlist[0]['id']);
     } else {
+        include(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
         $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
         $SMARTY->display('customer/customersearchresults.html');
     }

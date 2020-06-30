@@ -4757,6 +4757,8 @@ $_LANG['<!customersearch>Replace groups'] = 'Zastąp grupy';
 $_LANG['<!customersearch>Action:'] = 'Czynność:';
 $_LANG['<!customersearch>New customer group name cannot be empty!'] = 'Nazwa nowej grupy klientów nie może być pusta!';
 $_LANG['<!customersearch>Customer group with specified name already exists!'] = 'Grupa klientów o podanej nazwie już istnieje!';
+$_LANG['<!customersearch>Add flags'] = 'Dodaj flagi';
+$_LANG['<!customersearch>Remove flags'] = 'Usuń flagi';
 
 $_LANG['Apply'] = 'Zastosuj';
 

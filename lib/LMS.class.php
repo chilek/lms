@@ -759,6 +759,18 @@ class LMS
         return $manager->removeCustomerConsents($customerid, $consents);
     }
 
+    public function addCustomerContactFlags($customerid, $type, $flags)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->addCustomerContactFlags($customerid, $type, $flags);
+    }
+
+    public function removeCustomerContactFlags($customerid, $type, $flags)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->removeCustomerContactFlags($customerid, $type, $flags);
+    }
+
     /*
      * Customer groups
      */
