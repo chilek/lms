@@ -737,7 +737,9 @@ div.lms-ui-multiselectlayer {
 			background-color: @lucid;
 			padding-left: 2em;
 			text-indent: -2.2em;
-			border-bottom: @dotted-line;
+			&:not(:last-child) {
+				border-bottom: @dotted-line;
+			}
 			input {
 				border: none;
 				margin: 3px 3px 3px 4px;
