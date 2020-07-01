@@ -38,10 +38,6 @@ $_LANG['Generate XML report'] = 'Generuj raport XML';
 $_LANG['Phone contacts:'] = 'Telefony kontaktowe:';
 $_LANG['(undefined)'] = '(nieokreślone)';
 
-$_LANG['other<!singular>'] = 'pozostały';
-$_LANG['other<!plural>'] = 'pozostali';
-$_LANG['Other:<!summary>'] = 'Pozostali:';
-
 $_LANG['Networks don\'t have the same mask!'] = 'Sieci nie posiadają tej samej maski!';
 $_LANG['Source address $a ($b) collides with destination address $c ($d)!'] = 'Adres źródłowy $a ($b) koliduje z adresem docelowym $c ($d)!';
 $_LANG['with compacting'] = 'z porządkowaniem';
@@ -64,6 +60,7 @@ $_LANG['Parent ticket:'] = 'Zgłoszenie nadrzędne:';
 $_LANG['show only parent tickets'] = 'pokaż tylko zgłoszenia nadrzędne';
 $_LANG['Enter ID of parent ticket'] = 'Wprowadź ID zgłoszenia narzędnego';
 $_LANG['There is no related tickets'] = 'Brak powiązanych zgłoszeń';
+$_LANG['There is no child tickets'] = 'Brak zgłoszeń podrzędnych';
 $_LANG['Related tickets:'] = 'Powiązane zgłoszenia:';
 $_LANG['Child tickets:'] = 'Podrzędne zgłoszenia:';
 $_LANG['Verified'] = 'Weryfikowany';
@@ -188,6 +185,9 @@ $_LANG['Cost limit:'] = 'Limit kosztów:';
 $_LANG['Callee:'] = 'Dokąd:';
 $_LANG['Unit size<!voip>'] = 'Rozmiar jednostki';
 $_LANG['Start call:'] = 'Dokąd:';
+
+$_LANG['billing'] = 'billing';
+
 $_LANG['purchase invoice'] = 'faktura zakupu';
 $_LANG['pro-forma invoice'] = 'faktura pro-forma';
 $_LANG['$a ($b addresses)'] = '$a ($b adresów)';
@@ -3413,7 +3413,7 @@ $_LANG['Select note template'] = 'Wybierz szablon notatki';
 $_LANG['Enter name of the new message template'] = 'Wprowadź nazwę nowego szablonu wiadomości';
 $_LANG['no operation on message template'] = 'brak czynności na szablonie wiadomości';
 
-$_LANG['Assign to me as owner'] = 'Przypisz do mnie jako właściel';
+$_LANG['Assign to me as owner'] = 'Przypisz do mnie jako właściciel';
 $_LANG['Assign to me as verifier'] = 'Przypisz do mnie jako weryfikator';
 $_LANG['Assign to me'] = 'Przypisz do mnie';
 $_LANG['assign to me'] = 'przypisz do mnie';
@@ -4279,6 +4279,7 @@ $_LANG['<!assignment>Commited'] = 'Zatwierdzone';
 $_LANG['Unread:'] = 'Nieprzeczytane:';
 $_LANG['Mark as unread'] = 'Oznacz jako nieprzeczytane';
 $_LANG['Mark as read'] = 'Oznacz jako przeczytane';
+$_LANG['Mark queue as read'] = 'Oznacz kolejkę jako przeczytaną';
 $_LANG['Mark as read ($a unread)'] = 'Oznacz jako przeczytane ($a nieprzeczytanych)';
 
 $_LANG['<!event>Assign'] = 'Przypisz';
@@ -4758,6 +4759,8 @@ $_LANG['<!customersearch>Replace groups'] = 'Zastąp grupy';
 $_LANG['<!customersearch>Action:'] = 'Czynność:';
 $_LANG['<!customersearch>New customer group name cannot be empty!'] = 'Nazwa nowej grupy klientów nie może być pusta!';
 $_LANG['<!customersearch>Customer group with specified name already exists!'] = 'Grupa klientów o podanej nazwie już istnieje!';
+$_LANG['<!customersearch>Add flags'] = 'Dodaj flagi';
+$_LANG['<!customersearch>Remove flags'] = 'Usuń flagi';
 
 $_LANG['Apply'] = 'Zastosuj';
 
@@ -4775,3 +4778,14 @@ $_LANG['Document does not exist!'] = 'Dokument nie istnieje!';
 $_LANG['Visible tabs:'] = 'Widoczne zakładki:';
 
 $_LANG['No parent ticket is selected!'] = 'Nie wybrano zgłoszenia nadrzędnego!';
+$_LANG['used tariff edit'] = 'edycja użytych taryf';
+
+$_LANG['Resend'] = 'Wyślij nową';
+
+$_LANG['more actions'] = 'więcej czynności';
+$_LANG['Ticket $a'] = 'Zgłoszenie $a';
+$_LANG['Event $a'] = 'Zdarzenie $a';
+$_LANG['Queue $a'] = 'Kolejka $a';
+
+$_LANG['Select options'] = 'Wybierz opcje';
+$_LANG['Select owners'] = 'Wybierz właścicieli';

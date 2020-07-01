@@ -6,6 +6,7 @@ function multiselect(options) {
 	var def = typeof options.defaultValue !== 'undefined' ? options.defaultValue : '';
 	var shorten_to_def = typeof options.shortenToDefaultValue === 'undefined' ||
 		options.shortenToDefaultValue == 'true' ? true : false;
+	var popupTitle = typeof options.popupTitle !== 'undefined' && options.popupTitle ? options.popupTitle : $t('Select options');
 	var tiny = typeof options.type !== 'undefined' && options.type == 'tiny';
 	var bottom = typeof options.bottom !== 'undefined' && options.bottom;
 	var button = typeof options.button !== 'undefined' && options.button;
@@ -78,8 +79,9 @@ function multiselect(options) {
 	}).appendTo(div);
 	var titlebar = $('<div/>', {
 		class: 'lms-ui-multiselect-popup-titlebar'
-	}).html('<div id="lms-ui-multiselect-popup-title">Tytuł</div><i class="lms-ui-icon-hide close-button"></i>')
-		.appendTo(div_container);
+	}).html('<div class="lms-ui-multiselect-popup-title">' + popupTitle +
+		'</div><i class="lms-ui-icon-hide close-button"></i>')
+			.appendTo(div_container);
 	var ul = $('<ul/>', {
 		class: 'lms-ui-multiselect-popup-list'
 	}).appendTo(div_container);

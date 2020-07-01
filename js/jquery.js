@@ -116,6 +116,7 @@ function init_multiselects(selector) {
 				id: $(this).uniqueId().attr('id'),
 				defaultValue: $(this).attr('data-default-value'),
 				shortenToDefaultValue: $(this).attr('data-shorten-to-default-value'),
+				popupTitle: $(this).attr('data-popup-title'),
 				type: $(this).attr('data-type'),
 				icon: $(this).attr('data-icon'),
 				button: $(this).attr('data-button'),

@@ -4784,3 +4784,6 @@ $_LANG['more actions'] = 'więcej czynności';
 $_LANG['Ticket $a'] = 'Zgłoszenie $a';
 $_LANG['Event $a'] = 'Zdarzenie $a';
 $_LANG['Queue $a'] = 'Kolejka $a';
+
+$_LANG['Select options'] = 'Wybierz opcje';
+$_LANG['Select owners'] = 'Wybierz właścicieli';
