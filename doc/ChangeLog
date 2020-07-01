@@ -54,6 +54,8 @@ version 26-git (????-??-??):
   - enhancement: implemented bulk operations on customer contact flags in customer search
     result [chilan]
   - enhancement: implemented true responsive lms-ui-multiselect control [chilan]
+  - enhancement: 'payments.prefer_netto' allows to enable netto value usage produced by plugins
+    ('false' by default) [televoice]
 
 version 25.0 (2020-05-15):
 
