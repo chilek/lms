@@ -53,6 +53,7 @@ version 26-git (????-??-??):
   - enhancement: implemented true responsive menu popups [chilan]
   - enhancement: implemented bulk operations on customer contact flags in customer search
     result [chilan]
+  - enhancement: implemented true responsive lms-ui-multiselect control [chilan]
 
 version 25.0 (2020-05-15):
 
