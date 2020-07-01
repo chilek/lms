@@ -166,7 +166,7 @@ if (!empty($_GET['owner']) && (!in_array('all', $_GET['owner']))) {
         $_GET['owner'] = array($_GET['owner']);
     }
     $filter['owner'] = Utils::filterIntegers($_GET['owner']);
-} else {
+} elseif (!isset($filter['owner'])) {
     $filter['owner'] = array();
 }
 
