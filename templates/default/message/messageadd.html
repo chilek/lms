@@ -500,8 +500,8 @@ $(function() {
 	});
 
 	$('[name="message[usergroup]"]').change(function() {
-		var userms = $('#' + $('[name="message[users][]"]').first().closest('.lms-ui-multiselectlayer')
-				.attr('id').replace('-layer', '')).find('.lms-ui-multiselect').data('multiselect-object');
+		var userms = $('#' + $('[name="message[users][]"]').first().closest('.lms-ui-multiselect-popup-container')
+				.attr('id').replace('-popup', '')).find('.lms-ui-multiselect').data('multiselect-object');
 		var users = JSON.parse($(this).find('option:selected').attr('data-users'));
 		$.each(users, function(index, value) {
 			users[index] = String(value);

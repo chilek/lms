@@ -31,7 +31,7 @@ $(function() {
             if (dropdown_toggle.length) {
                 popup_menu.attr('aria-hidden', true);
                 dropdown_toggle.removeClass('open');
-                $('body,#lms-ui-contents,#lms-ui-module-view').removeClass('popup-menu');
+                showMainScrollbars();
                 popup_menu.css({
                     'left': '',
                     'top': ''
@@ -42,10 +42,12 @@ $(function() {
 
 
     $(document).click(function(e) {
-        if (!$(e.target).is('.lms-ui-dropdown-toggle') && !$(e.target).closest('.lms-ui-dropdown-toggle').length && !$(e.target).closest('#lms-ui-popup-menu').length) {
+        if (!$(e.target).is('.lms-ui-dropdown-toggle') && !$(e.target).closest('.lms-ui-dropdown-toggle').length &&
+            !$(e.target).closest('#lms-ui-popup-menu').length &&
+            popup_menu.is('[aria-hidden="false"]')) {
             popup_menu.attr('aria-hidden', true);
             $('.lms-ui-dropdown-toggle.open').removeClass('open');
-            $('body,#lms-ui-contents,#lms-ui-module-view').removeClass('popup-menu');
+            showMainScrollbars();
         }
     });
 
@@ -60,14 +62,14 @@ $(function() {
                     'top': ''
                 });
             } else if (parseInt($(window).outerWidth()) >= 800) {
-                $('body,#lms-ui-contents,#lms-ui-module-view').removeClass('popup-menu');
+                showMainScrollbars();
                 popup_menu.position({
                     my: "right top",
                     at: "left top",
                     of: dropdown_toggle
                 });
             } else {
-                $('body,#lms-ui-contents,#lms-ui-module-view').addClass('popup-menu');
+                hideMainScrollbars();
                 popup_menu.css({
                     'left': '',
                     'top': ''
@@ -79,7 +81,7 @@ $(function() {
     popup_menu.find('.close-button').click(function() {
         popup_menu.attr('aria-hidden', true);
         $('.lms-ui-dropdown-toggle.open').removeClass('open');
-        $('body,#lms-ui-contents,#lms-ui-module-view').removeClass('popup-menu');
+        showMainScrollbars();
     });
 
     $('.lms-ui-dropdown-toggle').click(function() {
@@ -118,7 +120,7 @@ $(function() {
                     of: that
                 });
             } else {
-                $('body,#lms-ui-contents,#lms-ui-module-view').toggleClass('popup-menu');
+                hideMainScrollbars();
                 popup_menu.css({
                     'left': '',
                     'top': ''

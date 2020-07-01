@@ -48,7 +48,7 @@ BODY {
 	background-color: @lucid;
 	margin: 0;
 	padding: 0;
-	&.popup-menu {
+	&.fullscreen-popup {
 		overflow: hidden;
 	}
 	//min-height: 100%;
@@ -197,7 +197,7 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 
 #lms-ui-contents {
 	overflow: visible;
-	&.popup-menu {
+	&.fullscreen-popup {
 		overflow: hidden;
 	}
 //	width: 100%;
@@ -274,7 +274,7 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 #lms-ui-module-view {
 	width: 100%;
 	overflow: visible;
-	&.popup-menu {
+	&.fullscreen-popup {
 		overflow: hidden;
 	}
 	//margin-top: 0.5em;
@@ -718,13 +718,22 @@ div.lms-ui-multiselect-tiny {
 	align-items: center;
 	.lms-ui-no-user-select;
 }
-div.lms-ui-multiselectlayer {
+div.lms-ui-multiselect-popup-container {
 	position: absolute;
-	z-index: 20000;
-	overflow: hidden;
 	width: 350px;
+	@media screen and (max-width: 800px) {
+		position: fixed;
+		width: 100%;
+		left: 0;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		font-size: 200%;
+	}
+	z-index: 31000;
+	overflow: hidden;
 	.lms-ui-no-user-select;
-	ul {
+	.lms-ui-multiselect-popup-list {
 		list-style: none;
 		cursor: default;
 		padding: 0;
@@ -732,6 +741,11 @@ div.lms-ui-multiselectlayer {
 		border: solid 1px @blend;
 		max-height: 200px;
 		max-width: 350px;
+		@media screen and (max-width: 800px) {
+			max-height: unset;
+			max-width: unset;
+			height: 90%;
+		}
 		overflow-x: hidden;
 		overflow-y: auto;
 		li {
@@ -740,6 +754,10 @@ div.lms-ui-multiselectlayer {
 			background-color: @lucid;
 			padding-left: 2em;
 			text-indent: -2.2em;
+			@media screen and (max-width: 800px) {
+				padding-left: 1.2em;
+				text-indent: -1.1em;
+			}
 			&:not(:last-child) {
 				border-bottom: @dotted-line;
 			}
@@ -761,11 +779,42 @@ div.lms-ui-multiselectlayer {
 			padding-left: 3px;
 		}
 	}
-	div {
-		border-left: solid 1px @blend;
-		border-right: solid 1px @blend;
-		border-bottom: solid 1px @blend;
+	.lms-ui-multiselect-popup {
+		border: solid 1px @blend;
 		background-color: @light;
+		@media screen and (max-width: 800px) {
+			padding: 0.5em;
+			position: relative;
+			height: 100%;
+		}
+		.lms-ui-multiselect-popup-titlebar {
+			display: none;
+			@media screen and (max-width: 800px) {
+				display: flex;
+			}
+			justify-content: space-between;
+			align-items: center;
+			padding-bottom: 0.5em;
+			margin-bottom: 0.5em;
+			border-bottom: @dotted-line;
+			i {
+				margin-left: 1.5em;
+				cursor: pointer;
+			}
+		}
+
+		.lms-ui-multiselect-popup-checkall {
+			width: 100%;
+			@media screen and (max-width: 800px) {
+				position: absolute;
+				bottom: 0;
+				padding-bottom: 1.5em;
+				background-color: @light;
+			}
+			input {
+				margin-right: 0.9em;
+			}
+		}
 	}
 }
 

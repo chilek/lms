@@ -70,10 +70,19 @@ function multiselect(options) {
 
 	// create multiselect list div (hidden)
 	var div = $('<div/>', {
-		class: 'lms-ui-multiselectlayer',
-		id: elemid + '-layer'
+		class: 'lms-ui-multiselect-popup-container',
+		id: elemid + '-popup'
 	}).hide().appendTo(form);
-	var ul = $('<ul/>').appendTo(div);
+	var div_container = $('<div/>', {
+		class: 'lms-ui-multiselect-popup'
+	}).appendTo(div);
+	var titlebar = $('<div/>', {
+		class: 'lms-ui-multiselect-popup-titlebar'
+	}).html('<div id="lms-ui-multiselect-popup-title">Tytuł</div><i class="lms-ui-icon-hide close-button"></i>')
+		.appendTo(div_container);
+	var ul = $('<ul/>', {
+		class: 'lms-ui-multiselect-popup-list'
+	}).appendTo(div_container);
 
 	var new_selected;
 	var old_selected;
@@ -109,14 +118,22 @@ function multiselect(options) {
 				new_element.html(selected_string);
 				new_element.attr('title', '');
 			}
-			var list = $('#' + wrapper.attr('id') + '-layer');
+			var list = $('#' + wrapper.attr('id') + '-popup');
 			if (list.is(':visible')) {
 				setTimeout(function() {
-					list.position({
-						my: 'left top',
-						at: bottom ? 'left bottom' : 'right top',
-						of: wrapper
-					});
+					if (parseInt($(window).outerWidth()) >= 800) {
+						list.position({
+							my: 'left top',
+							at: tiny || bottom ? 'left bottom' : 'right top',
+							of: wrapper
+						});
+					} else {
+						hideMainScrollbars();
+						list.css({
+							'left': '',
+							'top': ''
+						});
+					}
 				}, 1);
 			}
 		}
@@ -233,7 +250,9 @@ function multiselect(options) {
 	new_selected = this.generateSelectedString();
 	old_selected = new_selected;
 	if (!tiny || selection_group) {
-		checkall_div = $('<div/>').appendTo(div);
+		checkall_div = $('<div/>', {
+			class: 'lms-ui-multiselect-popup-checkall'
+		}).appendTo(div_container);
 		$('<input type="checkbox" class="checkall" value="1"><span>' + $t('check all<!items>') + '</span>').appendTo(checkall_div);
 
 		updateCheckAll();
@@ -270,42 +289,59 @@ function multiselect(options) {
 			}
 			e.preventDefault();
 		}
-		var list = $('#' + this.id + '-layer');
+		var list = $('#' + this.id + '-popup');
 		if (!list.is(':visible') && (e.type != 'keydown' || e.key != 'Escape')) {
 			setTimeout(function() {
-				list.show().position({
-					my: 'left top',
-					at: tiny || bottom ? 'left bottom' : 'right top',
-					of: wrapper
-				});
+				list.show();
+				if (parseInt($(window).outerWidth()) >= 800) {
+					list.position({
+						my: 'left top',
+						at: tiny || bottom ? 'left bottom' : 'right top',
+						of: wrapper
+					});
+				} else {
+					hideMainScrollbars();
+					list.css({
+						'left': '',
+						'top': ''
+					});
+				}
 				all_items.removeClass('active');
 				all_enabled_items.first().addClass('active').find('input').focus();
 			}, 1);
 		} else {
 			list.hide();
-			if (new_selected != old_selected)
+			showMainScrollbars();
+			if (new_selected != old_selected) {
 				wrapper.triggerHandler('change');
+			}
 			old_selected = new_selected;
 		}
 	});
 
-	ul.on('keydown', function(e) {
+	$(document).on('keydown', function(e) {
+		var popup_container = $(e.target).closest('.lms-ui-multiselect-popup-container');
+		if (!popup_container.length || !popup_container.is(div)) {
+			return;
+		}
 		var li;
 		switch (e.key) {
 			case 'Escape':
 				e.preventDefault();
-				$(this).parent().hide();
+				$(div).hide();
 				wrapper.focus();
-				if (new_selected != old_selected)
+				if (new_selected != old_selected) {
 					wrapper.triggerHandler('change');
+				}
 				old_selected = new_selected;
+				showMainScrollbars();
 				break;
 			case 'ArrowDown':
-				li = $('input:focus', this).closest('li');
+				li = $('input:focus', ul).closest('li');
 				do {
 					li = li.next();
 				} while (li.length && li.is('.disabled'));
-				$('li', this).removeClass('active');
+				$('li', ul).removeClass('active');
 				if (li.length) {
 					li.addClass('active').find('input').focus();
 				} else {
@@ -315,11 +351,11 @@ function multiselect(options) {
 				e.preventDefault();
 				break;
 			case 'ArrowUp':
-				li = $('input:focus', this).closest('li');
+				li = $('input:focus', ul).closest('li');
 				do {
 					li = li.prev();
 				} while (li.length && li.is('.disabled'));
-				$('li', this).removeClass('active');
+				$('li', ul).removeClass('active');
 				if (li.length) {
 					li.addClass('active').find('input').focus();
 				} else {
@@ -340,25 +376,28 @@ function multiselect(options) {
 
 	// hide combobox after click out of the window
 	$(document).click(function(e) {
-		var elem = e.target;
-		while (elem && (elem.nodeName != 'DIV' || elem.className.match(/^lms-ui-multiselect(-tiny)?-wrapper/) === null)) {
-			elem = elem.parentNode;
-		}
-
-		if (!$(div).is(':visible') || (elem && elem.id == old_element.attr('id'))) {
-			return 0;
-		}
-
-		var parent = $(e.target).parent().is(document) ? -1 : $(e.target).parent().html().indexOf(old_element.attr('name'));
-
-		if ($(e.target).html().indexOf("<head>") > -1 || parent == -1 ||
-			(parent > -1 && e.target.nodeName != 'INPUT' && e.target.nodeName != 'LI' && e.target.nodeName != 'SPAN')) {
+		var elem = $(e.target);
+		if ($(div).is(':visible') &&
+			!elem.is('.lms-ui-multiselect-wrapper,.lms-ui-multiselect-tiny-wrapper') &&
+			!elem.closest('.lms-ui-multiselect-wrapper,.lms-ui-multiselect-tiny-wrapper').length &&
+			!elem.closest('.lms-ui-multiselect-popup-container').length) {
 			$(div).hide();
 			if (new_selected != old_selected) {
 				wrapper.triggerHandler('change');
 			}
 			old_selected = new_selected;
+			showMainScrollbars();
 		}
+	});
+
+	div_container.find('.close-button').click(function() {
+		$(div).hide();
+		wrapper.focus();
+		if (new_selected != old_selected) {
+			wrapper.triggerHandler('change');
+		}
+		old_selected = new_selected;
+		showMainScrollbars();
 	});
 
 	function checkElements(item) {
