@@ -187,7 +187,7 @@
 			var properties = [];
 			var id = $(this).attr('id');
 
-			$('#' + id + '-layer input:checked').each(function () {
+			$('#' + id + '-popup .lms-ui-multiselect-popup-list input:checked').each(function () {
 				properties.push($(this).val());
 			});
 			qs_data["qs-properties"][mode] = properties.join(',');
