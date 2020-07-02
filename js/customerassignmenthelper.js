@@ -112,10 +112,10 @@ function CustomerAssignmentHelper(options) {
 
 	this.checkAllTerminalsHandler = function() {
 		var checkAllElem = $('#check_all_terminals');
-		$('.customerdevices .lms-ui-multiselect:visible').each(function() {
+		$('.customerdevices .lms-ui-multiselect-container:visible').each(function() {
 			$(this).data('multiselect-object').toggleCheckAll(checkAllElem.prop('checked'));
 		});
-		$('body').on('checkall', '.customerdevices .lms-ui-multiselect-wrapper', function(e, data) {
+		$('body').on('lms:multiselect:checkall', '.customerdevices select', function(e, data) {
 			checkAllElem.prop('checked', data.allChecked);
 		});
 	}
@@ -172,10 +172,10 @@ function CustomerAssignmentHelper(options) {
 
 		var ms = [];
 		if (tarifftype == helper.phoneTariffType) {
-			ms.push(tr.find('div.phones .lms-ui-multiselect'));
+			ms.push(tr.find('div.phones .lms-ui-multiselect-container'));
 		} else {
-			ms.push(tr.find('div.nodes .lms-ui-multiselect'));
-			ms.push(tr.find('div.netdevnodes .lms-ui-multiselect'));
+			ms.push(tr.find('div.nodes .lms-ui-multiselect-container'));
+			ms.push(tr.find('div.netdevnodes .lms-ui-multiselect-container'));
 		}
         if (!ms.length) {
 			return;
@@ -235,10 +235,10 @@ function CustomerAssignmentHelper(options) {
 
 		var ms = [];
 		if (tarifftype == helper.phoneTariffType) {
-			ms.push(tr.find('div.phones .lms-ui-multiselect'));
+			ms.push(tr.find('div.phones .lms-ui-multiselect-container'));
 		} else {
-			ms.push(tr.find('div.nodes .lms-ui-multiselect'));
-			ms.push(tr.find('div.netdevnodes .lms-ui-multiselect'));
+			ms.push(tr.find('div.nodes .lms-ui-multiselect-container'));
+			ms.push(tr.find('div.netdevnodes .lms-ui-multiselect-container'));
 		}
         if (!ms.length) {
 			return;
