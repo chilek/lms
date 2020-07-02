@@ -326,8 +326,7 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 
 form.lms-ui-quick-search {
 	margin-top: -0.5em;
-	> .lms-ui-quick-search-field,
-	#qs-selector {
+	> * {
 		margin-top: 0.5em;
 	}
 }
@@ -680,141 +679,153 @@ BUTTON.lms-ui-warning { background-color: @warning-background; }
 
 IMG		{ vertical-align: middle; border: 0; }
 
-div.lms-ui-multiselect-wrapper {
-	vertical-align: middle;
+.lms-ui-multiselect-container {
 	display: inline-block;
-	background-color: @lucid;
-	border: solid 1px @blend;
-}
 
-div.lms-ui-multiselect {
-	float: left;
-	overflow: hidden;
-	font-size:  @font-size;
-	font-family: @fonts;
-	vertical-align: middle;
-	cursor: default;
-	padding: 0px 0px 0px 4px;
-	max-width: 200px;
-	white-space: pre-wrap;
-	min-width: 200px;
-	display: inline-block;
-	&.lms-ui-multiselect-filter {
-		min-width: 100px;
+	select {
+		display: none;
 	}
-}
 
-span.lms-ui-icon-multiselect {
-	float: right;
-	background-image: url('@{lms-img-path}/1.png');
-	background-repeat: no-repeat;
-	width: 16px;
-	height: 14px;
-	background-size: 16px;
-	margin-right: 2px;
-}
-
-div.lms-ui-multiselect-tiny {
-	overflow: hidden;
-	vertical-align: middle;
-	cursor: pointer;
-	display: flex;
-	align-items: center;
-	.lms-ui-no-user-select;
-}
-div.lms-ui-multiselect-popup {
-	position: absolute;
-	width: 350px;
-	border: solid 1px @blend;
-	background-color: @light;
-	@media screen and (max-width: 800px) {
-		position: fixed;
-		width: auto;
-		left: 0;
-		top: 0;
-		right: 0;
-		bottom: 0;
-		padding: 0.5em;
-		font-size: 200%;
-	}
-	z-index: 31000;
-	overflow: hidden;
-	.lms-ui-no-user-select;
-
-	.lms-ui-multiselect-popup-list {
-		list-style: none;
-		cursor: default;
-		padding: 0;
-		margin: 0;
+	.lms-ui-multiselect-launcher {
+		vertical-align: middle;
+		display: inline-block;
+		background-color: @lucid;
 		border: solid 1px @blend;
-		max-height: 200px;
-		max-width: 350px;
-		@media screen and (max-width: 800px) {
-			max-height: 80%;
-			max-width: unset;
+
+		.lms-ui-multiselect-launcher-label {
+			float: left;
+			overflow: hidden;
+			font-size:  @font-size;
+			font-family: @fonts;
+			vertical-align: middle;
+			cursor: default;
+			padding: 0px 0px 0px 4px;
+			max-width: 200px;
+			white-space: pre-wrap;
+			min-width: 200px;
+			display: inline-block;
+			&.lms-ui-multiselect-filter {
+				min-width: 100px;
+			}
 		}
-		overflow-x: hidden;
-		overflow-y: auto;
-		li {
+
+		.lms-ui-multiselect-launcher-toggle {
+			float: right;
+			background-image: url('@{lms-img-path}/1.png');
+			background-repeat: no-repeat;
+			width: 16px;
+			height: 14px;
+			background-size: 16px;
+			margin-right: 2px;
+		}
+	}
+
+	&.tiny .lms-ui-multiselect-launcher {
+		overflow: hidden;
+		vertical-align: middle;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		border: 0;
+		background-color: transparent;
+		.lms-ui-no-user-select;
+	}
+
+	.lms-ui-multiselect-popup {
+		position: absolute;
+		width: 350px;
+		border: solid 1px @blend;
+		background-color: @light;
+		z-index: 31000;
+		overflow: hidden;
+		.lms-ui-no-user-select;
+
+		@media screen and (max-width: 800px) {
+			position: fixed;
+			width: auto;
+			left: 0;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			padding: 0.5em;
+			font-size: 200%;
+		}
+
+		.lms-ui-multiselect-popup-list {
+			list-style: none;
+			cursor: default;
 			padding: 0;
 			margin: 0;
-			background-color: @lucid;
-			padding-left: 2em;
-			text-indent: -2.2em;
+			border: solid 1px @blend;
+			max-height: 200px;
+			max-width: 350px;
 			@media screen and (max-width: 800px) {
-				padding-left: 1.2em;
-				text-indent: -1.1em;
+				max-height: 80%;
+				max-width: unset;
 			}
-			&:not(:last-child) {
-				border-bottom: @dotted-line;
+			overflow-x: hidden;
+			overflow-y: auto;
+			li {
+				padding: 0;
+				margin: 0;
+				background-color: @lucid;
+				padding-left: 2em;
+				text-indent: -2.2em;
+				@media screen and (max-width: 800px) {
+					padding-left: 1.2em;
+					text-indent: -1.1em;
+				}
+				&:not(:last-child) {
+					border-bottom: @dotted-line;
+				}
+				input {
+					border: none;
+					margin: 3px 3px 3px 4px;
+				}
+				&.selected {
+					background-color: @dark;
+				}
+				&.active {
+					background-color: @superdark;
+				}
+				&.exclusive {
+					font-weight: bold;
+				}
 			}
-			input {
-				border: none;
-				margin: 3px 3px 3px 4px;
+			span {
+				padding-left: 3px;
 			}
-			&.selected {
-				background-color: @dark;
+		}
+
+		.lms-ui-multiselect-popup-titlebar {
+			display: none;
+			@media screen and (max-width: 800px) {
+				display: flex;
 			}
-			&.active {
-				background-color: @superdark;
-			}
-			&.exclusive {
+			justify-content: space-between;
+			align-items: center;
+			padding-bottom: 0.5em;
+			margin-bottom: 0.5em;
+			border-bottom: @dotted-line;
+			.lms-ui-multiselect-popup-title {
 				font-weight: bold;
 			}
+			i {
+				margin-left: 1.5em;
+				cursor: pointer;
+			}
 		}
-		span {
-			padding-left: 3px;
-		}
-	}
 
-	.lms-ui-multiselect-popup-titlebar {
-		display: none;
-		@media screen and (max-width: 800px) {
-			display: flex;
-		}
-		justify-content: space-between;
-		align-items: center;
-		padding-bottom: 0.5em;
-		margin-bottom: 0.5em;
-		border-bottom: @dotted-line;
-		.lms-ui-multiselect-popup-title {
-			font-weight: bold;
-		}
-		i {
-			margin-left: 1.5em;
-			cursor: pointer;
-		}
-	}
-
-	.lms-ui-multiselect-popup-checkall {
-		width: 100%;
-		@media screen and (max-width: 800px) {
-			margin-top: 0.5em;
-			border-top: @dotted-line;
-			padding-top: 0.5em;
-		}
-		input {
-			margin-right: 0.9em;
+		.lms-ui-multiselect-popup-checkall {
+			width: 100%;
+			@media screen and (max-width: 800px) {
+				margin-top: 0.5em;
+				border-top: @dotted-line;
+				padding-top: 0.5em;
+			}
+			input {
+				margin-right: 0.9em;
+			}
 		}
 	}
 }

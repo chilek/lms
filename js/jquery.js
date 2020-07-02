@@ -1106,7 +1106,7 @@ $(function() {
 					icon: 'lms-ui-icon-configuration',
 					type: 'tiny'
 				});
-				toggle.find('#' + multiselectId).on('itemclick', function(e, data) {
+				toggle.find('#' + multiselectId).on('lms:multiselect:itemclick', function(e, data) {
 					api.column(data.index).visible(data.checked);
 				});
 			}
@@ -1129,8 +1129,9 @@ $(function() {
 						api.column(index).search('');
 					}
 				});
-				$(elem).parent().find('div.lms-ui-multiselect-popup-container li:not(.selected)').addClass('selected')
-					.find(':checkbox').prop('checked', true);
+				$(elem).parent().find('.column-toggle').each(function() {
+					$(this).find('option:not(:disabled)').attr('selected', 'selected');
+				}).trigger('lms:multiselect:updated');
 
 				var pageLen = $(elem).attr('data-page-length');
 				if (pageLen !== undefined) {

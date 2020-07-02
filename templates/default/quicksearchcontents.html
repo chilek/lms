@@ -138,66 +138,63 @@
     {/foreach}
 
     $('#qs-selector').each(function() {
-        var selector = $(this);
+		var selector = $(this);
 		var field_count = Object.keys(qs_fields).length;
-    	$('.lms-ui-quick-search-field[data-mode]').each(function() {
-    		var mode = $(this).attr('data-mode');
-    		if (field_count && !qs_fields.hasOwnProperty(mode))
-    			$(this).hide();
-            selector.append('<option value="' + mode + '"' + (!field_count || qs_fields.hasOwnProperty(mode) ? ' selected' : '') +
-                '>' + $(this).attr('data-label') + '</option>');
-    	});
-    	new multiselect({
-            id: $(this).attr('id'),
-            defaultValue: null,
-            button: $('<i class="lms-ui-icon-secondary-selection"></i>'),
-            type: 'tiny'
-        });
-    	$('#qs-selector').change(function() {
-			qs_fields = {};
-            $('#qs-selector-popup .lms-ui-multiselect-popup-list input:checked').each(function () {
-				qs_fields[$(this).val()] = true;
-			});
-			$('.lms-ui-quick-search-field').hide();
-			$.each(qs_fields, function(key, value) {
-				$('.lms-ui-quick-search-field[data-mode="' + key + '"]').show();
-			});
+		$('.lms-ui-quick-search-field[data-mode]').each(function () {
+			var mode = $(this).attr('data-mode');
+			if (field_count && !qs_fields.hasOwnProperty(mode))
+				$(this).hide();
+			selector.append('<option value="' + mode + '"' + (!field_count || qs_fields.hasOwnProperty(mode) ? ' selected' : '') +
+					'>' + $(this).attr('data-label') + '</option>');
+		});
+		new multiselect({
+			id: $(this).attr('id'),
+			defaultValue: null,
+			button: $('<i class="lms-ui-icon-secondary-selection"></i>'),
+			type: 'tiny'
+		});
+	}).change(function() {
+		qs_fields = {};
+		$(this).find("option[selected]").each(function () {
+			qs_fields[$(this).val()] = true;
+		});
+		$('.lms-ui-quick-search-field').hide();
+		$.each(qs_fields, function(key) {
+			$('.lms-ui-quick-search-field[data-mode="' + key + '"]').show();
+		});
 
-			bindKeyboardShortcuts();
+		bindKeyboardShortcuts();
 
-            qs_data["qs-fields"] = Object.keys(qs_fields).join(',');
-			$.ajax({
-				method: "POST",
-				url: '?m=persistentsetting',
-				data: qs_data
-			});
-    	});
+		qs_data["qs-fields"] = Object.keys(qs_fields).join(',');
+		$.ajax({
+			method: "POST",
+			url: '?m=persistentsetting',
+			data: qs_data
+		});
 	});
 
-    $('select.lms-ui-quicksearch-property-selection').each(function(k) {
-        var id = $(this).attr('id');
-        var mode = $(this).closest('.lms-ui-quick-search-field').attr('data-mode');
-        new multiselect({
+    $('select.lms-ui-quicksearch-property-selection').each(function() {
+		var id = $(this).attr('id');
+		new multiselect({
 			id: id,
 			defaultValue: null,
 			button: $(this).prev('i'),
 			type: 'tiny'
 		});
-		$('#' + id).change(function() {
-			var properties = [];
-			var id = $(this).attr('id');
-
-			$('#' + id + '-popup .lms-ui-multiselect-popup-list input:checked').each(function () {
-				properties.push($(this).val());
-			});
-			qs_data["qs-properties"][mode] = properties.join(',');
-            $.ajax({
-				method: "POST",
-				url: '?m=persistentsetting',
-				data: qs_data
-			});
+	}).change(function() {
+		var mode = $(this).closest('.lms-ui-quick-search-field').attr('data-mode');
+		var properties = [];
+		$(this).find("option[selected]").each(function() {
+			properties.push($(this).val());
+		});
+		qs_data["qs-properties"][mode] = properties.join(',');
+		$.ajax({
+			method: "POST",
+			url: '?m=persistentsetting',
+			data: qs_data
 		});
 	});
 
     bindKeyboardShortcuts();
+
 </script>
