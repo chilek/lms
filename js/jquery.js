@@ -547,10 +547,12 @@ function showGallery(data) {
 
 function hideMainScrollbars() {
 	$('body,#lms-ui-contents,#lms-ui-module-view').addClass('fullscreen-popup');
+	$('#lms-ui-back-to-top').addClass('fullscreen-popup');
 }
 
 function showMainScrollbars() {
 	$('body,#lms-ui-contents,#lms-ui-module-view').removeClass('fullscreen-popup');
+	$('#lms-ui-back-to-top').removeClass('fullscreen-popup');
 }
 
 $(function() {

@@ -112,6 +112,9 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 	right: 1.8em;
 	bottom: 0.6em;
 	z-index: 30000;
+	&.fullscreen-popup {
+		z-index: 0;
+	}
 }
 
 #lms-ui-menu-panel {
@@ -323,7 +326,8 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 
 form.lms-ui-quick-search {
 	margin-top: -0.5em;
-	> * {
+	> .lms-ui-quick-search-field,
+	#qs-selector {
 		margin-top: 0.5em;
 	}
 }
@@ -718,21 +722,25 @@ div.lms-ui-multiselect-tiny {
 	align-items: center;
 	.lms-ui-no-user-select;
 }
-div.lms-ui-multiselect-popup-container {
+div.lms-ui-multiselect-popup {
 	position: absolute;
 	width: 350px;
+	border: solid 1px @blend;
+	background-color: @light;
 	@media screen and (max-width: 800px) {
 		position: fixed;
-		width: 100%;
+		width: auto;
 		left: 0;
 		top: 0;
 		right: 0;
 		bottom: 0;
+		padding: 0.5em;
 		font-size: 200%;
 	}
 	z-index: 31000;
 	overflow: hidden;
 	.lms-ui-no-user-select;
+
 	.lms-ui-multiselect-popup-list {
 		list-style: none;
 		cursor: default;
@@ -742,9 +750,8 @@ div.lms-ui-multiselect-popup-container {
 		max-height: 200px;
 		max-width: 350px;
 		@media screen and (max-width: 800px) {
-			max-height: unset;
+			max-height: 80%;
 			max-width: unset;
-			height: 80%;
 		}
 		overflow-x: hidden;
 		overflow-y: auto;
@@ -779,44 +786,33 @@ div.lms-ui-multiselect-popup-container {
 			padding-left: 3px;
 		}
 	}
-	.lms-ui-multiselect-popup {
-		border: solid 1px @blend;
-		background-color: @light;
-		@media screen and (max-width: 800px) {
-			padding: 0.5em;
-			position: relative;
-			height: 100%;
-		}
-		.lms-ui-multiselect-popup-titlebar {
-			display: none;
-			@media screen and (max-width: 800px) {
-				display: flex;
-			}
-			justify-content: space-between;
-			align-items: center;
-			padding-bottom: 0.5em;
-			margin-bottom: 0.5em;
-			border-bottom: @dotted-line;
-			.lms-ui-multiselect-popup-title {
-				font-weight: bold;
-			}
-			i {
-				margin-left: 1.5em;
-				cursor: pointer;
-			}
-		}
 
-		.lms-ui-multiselect-popup-checkall {
-			width: 100%;
-			@media screen and (max-width: 800px) {
-				position: absolute;
-				bottom: 0;
-				padding-bottom: 1.5em;
-				background-color: @light;
-			}
-			input {
-				margin-right: 0.9em;
-			}
+	.lms-ui-multiselect-popup-titlebar {
+		display: none;
+		@media screen and (max-width: 800px) {
+			display: flex;
+		}
+		justify-content: space-between;
+		align-items: center;
+		padding-bottom: 0.5em;
+		margin-bottom: 0.5em;
+		border-bottom: @dotted-line;
+		.lms-ui-multiselect-popup-title {
+			font-weight: bold;
+		}
+		i {
+			margin-left: 1.5em;
+			cursor: pointer;
+		}
+	}
+
+	.lms-ui-multiselect-popup-checkall {
+		width: 100%;
+		@media screen and (max-width: 800px) {
+			margin-top: 0.5em;
+		}
+		input {
+			margin-right: 0.9em;
 		}
 	}
 }

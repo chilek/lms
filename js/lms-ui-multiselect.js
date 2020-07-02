@@ -71,20 +71,17 @@ function multiselect(options) {
 
 	// create multiselect list div (hidden)
 	var div = $('<div/>', {
-		class: 'lms-ui-multiselect-popup-container',
+		class: 'lms-ui-multiselect-popup',
 		id: elemid + '-popup'
 	}).hide().appendTo(form);
-	var div_container = $('<div/>', {
-		class: 'lms-ui-multiselect-popup'
-	}).appendTo(div);
 	var titlebar = $('<div/>', {
 		class: 'lms-ui-multiselect-popup-titlebar'
 	}).html('<div class="lms-ui-multiselect-popup-title">' + popupTitle +
 		'</div><i class="lms-ui-icon-hide close-button"></i>')
-			.appendTo(div_container);
+			.appendTo(div);
 	var ul = $('<ul/>', {
 		class: 'lms-ui-multiselect-popup-list'
-	}).appendTo(div_container);
+	}).appendTo(div);
 
 	var new_selected;
 	var old_selected;
@@ -254,7 +251,7 @@ function multiselect(options) {
 	if (!tiny || selection_group) {
 		checkall_div = $('<div/>', {
 			class: 'lms-ui-multiselect-popup-checkall'
-		}).appendTo(div_container);
+		}).appendTo(div);
 		$('<input type="checkbox" class="checkall" value="1"><span>' + $t('check all<!items>') + '</span>').appendTo(checkall_div);
 
 		updateCheckAll();
@@ -322,7 +319,7 @@ function multiselect(options) {
 	});
 
 	$(document).on('keydown', function(e) {
-		var popup_container = $(e.target).closest('.lms-ui-multiselect-popup-container');
+		var popup_container = $(e.target).closest('.lms-ui-multiselect-popup');
 		if (!popup_container.length || !popup_container.is(div)) {
 			return;
 		}
@@ -382,7 +379,7 @@ function multiselect(options) {
 		if ($(div).is(':visible') &&
 			!elem.is('.lms-ui-multiselect-wrapper,.lms-ui-multiselect-tiny-wrapper') &&
 			!elem.closest('.lms-ui-multiselect-wrapper,.lms-ui-multiselect-tiny-wrapper').length &&
-			!elem.closest('.lms-ui-multiselect-popup-container').length) {
+			!elem.closest('.lms-ui-multiselect-popup').length) {
 			$(div).hide();
 			if (new_selected != old_selected) {
 				wrapper.triggerHandler('change');
@@ -392,7 +389,7 @@ function multiselect(options) {
 		}
 	});
 
-	div_container.find('.close-button').click(function() {
+	div.find('.close-button').click(function() {
 		$(div).hide();
 		wrapper.focus();
 		if (new_selected != old_selected) {
