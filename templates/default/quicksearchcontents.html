@@ -155,7 +155,7 @@
         });
     	$('#qs-selector').change(function() {
 			qs_fields = {};
-            $('#qs-selector-layer input:checked').each(function () {
+            $('#qs-selector-popup .lms-ui-multiselect-popup-list input:checked').each(function () {
 				qs_fields[$(this).val()] = true;
 			});
 			$('.lms-ui-quick-search-field').hide();
