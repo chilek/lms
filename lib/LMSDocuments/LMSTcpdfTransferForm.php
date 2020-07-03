@@ -251,7 +251,7 @@ class LMSTcpdfTransferForm extends LMSDocument
         $this->backend->Text(7, 50, $this->data['zip'] . ' ' . $this->data['city']);
 
         /* title */
-        $this->backend->MultiCell(50, 10, $this->data['title'], 0, 'R', false, 1, 7, 59, true, 0, false, true, 10, 'M');
+        $this->backend->MultiCell(50, 10, $this->data['title'], 0, 'L', false, 1, 7, 59, true, 0, false, true, 10, 'M');
 
         /* amount */
         $this->backend->SetFont(self::TCPDF_FONT, 'B', 10);
