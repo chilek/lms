@@ -23,6 +23,7 @@
  */
 
 @import "less/lms-variables";
+@import "less/generic";
 @import "less/fontawesome";
 @import "less/icons";
 @import "less/datatables";
@@ -32,13 +33,7 @@
 @import "less/jquery-ui";
 @import "less/gallery";
 @import "less/popup-menu";
-
-.lms-ui-no-user-select {
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
-}
+@import "less/multiselect";
 
 HTML { height: 100%; }
 
@@ -681,160 +676,6 @@ BUTTON.lms-ui-error { background-color: @error-background; }
 BUTTON.lms-ui-warning { background-color: @warning-background; }
 
 IMG		{ vertical-align: middle; border: 0; }
-
-.lms-ui-multiselect-container {
-	display: inline-block;
-
-	select,
-	.lms-ui-multiselect-label-workaround {
-		display: none;
-	}
-
-	.lms-ui-multiselect-launcher {
-		vertical-align: middle;
-		display: inline-block;
-		background-color: @lucid;
-		border: solid 1px @blend;
-
-		.lms-ui-multiselect-launcher-label {
-			float: left;
-			overflow: hidden;
-			font-size:  @font-size;
-			font-family: @fonts;
-			vertical-align: middle;
-			cursor: default;
-			padding: 0px 0px 0px 4px;
-			max-width: 200px;
-			white-space: pre-wrap;
-			min-width: 200px;
-			display: inline-block;
-			&.lms-ui-multiselect-filter {
-				min-width: 100px;
-			}
-		}
-
-		.lms-ui-multiselect-launcher-toggle {
-			float: right;
-			background-image: url('@{lms-img-path}/1.png');
-			background-repeat: no-repeat;
-			width: 16px;
-			height: 14px;
-			background-size: 16px;
-			margin-right: 2px;
-		}
-	}
-
-	&.tiny .lms-ui-multiselect-launcher {
-		overflow: hidden;
-		vertical-align: middle;
-		cursor: pointer;
-		display: flex;
-		align-items: center;
-		border-color: transparent;
-		background-color: transparent;
-		.lms-ui-no-user-select;
-	}
-
-	.lms-ui-multiselect-popup {
-		position: absolute;
-		width: 350px;
-		border: solid 1px @blend;
-		background-color: @light;
-		z-index: 31000;
-		overflow: hidden;
-		box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-		.lms-ui-no-user-select;
-
-		@media screen and (max-width: 800px) {
-			position: fixed;
-			width: auto;
-			left: 0;
-			top: 0;
-			right: 0;
-			bottom: 0;
-			padding: 0.5em;
-			font-size: 200%;
-		}
-
-		.lms-ui-multiselect-popup-list {
-			list-style: none;
-			cursor: default;
-			padding: 0;
-			margin: 0;
-			border: solid 1px @blend;
-			max-height: 200px;
-			max-width: 350px;
-			@media screen and (max-width: 800px) {
-				max-height: 80%;
-				max-width: unset;
-			}
-			overflow-x: hidden;
-			overflow-y: auto;
-			li {
-				white-space: normal;
-				padding: 0;
-				margin: 0;
-				background-color: @lucid;
-				padding-left: 2em;
-				text-indent: -2.2em;
-				@media screen and (max-width: 800px) {
-					padding-left: 1.2em;
-					text-indent: -1.1em;
-				}
-				&:not(:last-child) {
-					border-bottom: @dotted-line;
-				}
-				input {
-					border: none;
-					margin: 3px 3px 3px 4px;
-				}
-				&.selected {
-					background-color: @dark;
-				}
-				&.active {
-					background-color: @superdark;
-				}
-				&.exclusive {
-					font-weight: bold;
-				}
-			}
-			span {
-				padding-left: 3px;
-			}
-		}
-
-		.lms-ui-multiselect-popup-titlebar {
-			display: none;
-			@media screen and (max-width: 800px) {
-				display: flex;
-			}
-			justify-content: space-between;
-			align-items: center;
-			padding-bottom: 0.5em;
-			margin-bottom: 0.5em;
-			border-bottom: @dotted-line;
-			.lms-ui-multiselect-popup-title {
-				font-weight: bold;
-			}
-			i {
-				margin-left: 1.5em;
-				cursor: pointer;
-			}
-		}
-
-		.lms-ui-multiselect-popup-checkall {
-			width: 100%;
-			@media screen and (max-width: 800px) {
-				margin-top: 0.5em;
-				border-top: @dotted-line;
-				padding-top: 0.5em;
-			}
-			input {
-				margin-right: 0.9em;
-			}
-		}
-	}
-}
 
 .click-menu {
 	//font-size: 100%;
