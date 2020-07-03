@@ -71,8 +71,17 @@ function multiselect(options) {
 	// replace select with multiselect
 	old_element.replaceWith(container);
 
+	container.closest('label').click(function(e) {
+		if ($(this).find('.lms-ui-multiselect-container.open').length) {
+			e.preventDefault();
+			return;
+		}
+		launcher.click();
+	});
+
 	// create multiselect list div (hidden)
 	var popup = $('<div class="lms-ui-multiselect-popup"></div>').hide().appendTo(container);
+	$('<input type="checkbox" class="lms-ui-multiselect-label-workaround">').appendTo(popup);
 	$('<div class="lms-ui-multiselect-popup-titlebar"><div class="lms-ui-multiselect-popup-title">' + popupTitle +
 		'</div><i class="lms-ui-icon-hide close-button"></i></div>').appendTo(popup);
 	$('<ul class="lms-ui-multiselect-popup-list"></ul>').appendTo(popup);
@@ -154,9 +163,7 @@ function multiselect(options) {
 			var exclusive = $(this).attr('data-exclusive');
 			var selected = $(this).is(':selected');
 			var disabled = $(this).is(':disabled');
-			var class_name = (exclusive === '' ? 'exclusive' : '');
-
-			class_name += ' visible';
+			var class_name = 'visible' + (exclusive === '' ? ' exclusive' : '');
 
 			var data = '';
 			$.each($(this).data(), function (key, value) {
@@ -170,7 +177,7 @@ function multiselect(options) {
 				(disabled ? ' blend disabled' : '') + '"' + data + '>';
 
 			list += '<input type="checkbox" value="' + $(this).val() + '" class="' + class_name +
-				'"' + (selected ? ' checked' : '') + (disabled ? ' disabled' : '') + '>';
+				'"' + (selected ? ' checked' : '') + (disabled ? ' disabled' : '') + '/>';
 
 			var text = $(this).attr('data-html-content');
 			if (!text) {
@@ -184,21 +191,15 @@ function multiselect(options) {
 		ul.html(list);
 	}
 
-	buildPopupList();
-
-	all_items = ul.find('li');
-	all_enabled_items = all_items.filter(':not(.disabled)');
-	all_enabled_checkboxes = all_enabled_items.find(':checkbox');
-
-	// add some mouse/key events handlers
-	ul.on('click', 'li', function(e) {
-		var checkbox = $(this).find('input[type="checkbox"]');
-		$(this).toggleClass('selected');
+	function popupListItemClickHandler(e) {
+		var item = $(this);
+		var checkbox = item.find('input[type="checkbox"]');
+		item.toggleClass('selected');
 
 		if (!$(e.target).is('input')) {
 			checkbox.prop('checked', !checkbox.prop('checked'));
 		}
-		if ($(this).is('.exclusive')) {
+		if (item.is('.exclusive')) {
 			all_items.not(this).removeClass('selected').find(':checkbox').prop('checked', false);
 		} else {
 			all_items.filter('.exclusive').removeClass('selected').find(':checkbox').prop('checked', false);
@@ -226,11 +227,26 @@ function multiselect(options) {
 		});
 
 		e.stopPropagation();
-	}).on('mouseenter', 'li', function () {
+	}
+
+	function popupListItemMouseEnterHandler() {
 		$(this).addClass('active').find('input').focus().end().siblings('li').not(this).removeClass('active');
-	}).on('mouseleave', 'li', function () {
+	}
+
+	function popupListItemMouseLeaveHandler() {
 		$(this).removeClass('active');
-	});
+	}
+
+	buildPopupList();
+
+	all_items = ul.find('li');
+	all_enabled_items = all_items.filter(':not(.disabled)');
+	all_enabled_checkboxes = all_enabled_items.find(':checkbox');
+
+	// add some mouse/key events handlers
+	ul.on('click', 'li:not(.disabled)', popupListItemClickHandler)
+		.on('mouseenter', 'li:not(.disabled)', popupListItemMouseEnterHandler)
+		.on('mouseleave', 'li:not(.disabled)', popupListItemMouseLeaveHandler);
 
 	function checkAllElements() {
 		var checked = ul.parent().find('.checkall').prop('checked');
@@ -312,8 +328,10 @@ function multiselect(options) {
 				all_items.removeClass('active');
 				all_enabled_items.first().addClass('active').find('input').focus();
 			}, 1);
+			e.stopPropagation();
 		} else {
 			popup.hide();
+			container.removeClass('open');
 			disableFullScreenPopup();
 			if (new_selected != old_selected) {
 				old_element.trigger('change');
@@ -332,6 +350,7 @@ function multiselect(options) {
 			case 'Escape':
 				e.preventDefault();
 				$(popup).hide();
+				container.removeClass('open');
 				launcher.focus();
 				if (new_selected != old_selected) {
 					old_element.trigger('change');
@@ -377,14 +396,17 @@ function multiselect(options) {
 		}
 	});
 
-	popup.find('.close-button').click(function() {
+	popup.find('.close-button').click(function(e) {
 		popup.hide();
+		container.removeClass('open');
 		launcher.focus();
 		if (new_selected != old_selected) {
 			old_element.trigger('change');
 		}
 		old_selected = new_selected;
 		disableFullScreenPopup();
+		e.preventDefault();
+		e.stopPropagation();
 	});
 
 	function checkElements(item) {
