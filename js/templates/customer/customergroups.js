@@ -24,7 +24,7 @@
 
 $(function() {
 	$('#add-groups').click(function() {
-		if ($("input[name='customergroupid[]']").filter(':checked').length)
+		if ($("[name='customergroupid[]'] option:selected").length)
 			$('form#customergroupassignment').submit();
 		else
 			return false;
