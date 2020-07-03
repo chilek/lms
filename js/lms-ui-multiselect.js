@@ -62,9 +62,6 @@ function multiselect(options) {
 			.appendTo(launcher);
 	}
 
-	container.data('multiselect-object', this);
-	old_element.data('multiselect-object', this);
-
 	// save onitemclick event handler
 	var itemclick = old_element.prop('onitemclick');
 	if (typeof(itemclick) == 'function') {
@@ -73,13 +70,18 @@ function multiselect(options) {
 
 	// replace select with multiselect
 	old_element.replaceWith(container);
-	container.append(old_element);
 
 	// create multiselect list div (hidden)
 	var popup = $('<div class="lms-ui-multiselect-popup"></div>').hide().appendTo(container);
 	$('<div class="lms-ui-multiselect-popup-titlebar"><div class="lms-ui-multiselect-popup-title">' + popupTitle +
 		'</div><i class="lms-ui-icon-hide close-button"></i></div>').appendTo(popup);
 	$('<ul class="lms-ui-multiselect-popup-list"></ul>').appendTo(popup);
+
+	// append original select element to container
+	container.append(old_element);
+
+	container.data('multiselect-object', this);
+	old_element.data('multiselect-object', this);
 
 	var ul = popup.find('.lms-ui-multiselect-popup-list');
 
