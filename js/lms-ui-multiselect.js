@@ -1,4 +1,26 @@
-// $Id$
+/*
+ * LMS version 1.11-git
+ *
+ *  (C) Copyright 2001-2020 LMS Developers
+ *
+ *  Please, see the doc/AUTHORS for more information about authors!
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License Version 2 as
+ *  published by the Free Software Foundation.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ *  USA.
+ *
+ *  $Id$
+ */
 
 // hide combobox after click out of the window
 $(document).click(function(e) {
@@ -78,6 +100,30 @@ $(document).keydown(function(e) {
 	}
 });
 
+$(window).resize(function() {
+	var popup = $('.lms-ui-multiselect-popup:visible');
+	if (!popup.length) {
+		return;
+	}
+
+	var container = popup.closest('.lms-ui-multiselect-container');
+	var launcher = container.find('.lms-ui-multiselect-launcher');
+	if (parseInt($(this).outerWidth()) >= 800) {
+		disableFullScreenPopup();
+		popup.position({
+			my: "left top",
+			at: container.is('.tiny') || container.is('.bottom') ? 'left bottom' : 'right top',
+			of: launcher
+		});
+	} else {
+		enableFullScreenPopup();
+		popup.css({
+			'left': '',
+			'top': ''
+		});
+	}
+});
+
 function multiselect(options) {
 	var multiselect = this;
 	var elemid = options.id;
@@ -106,6 +152,7 @@ function multiselect(options) {
 	var selection_group = $(old_element).hasClass('lms-ui-multiselect-selection-group');
 
 	var container = $('<div class="lms-ui-multiselect-container' + (tiny ? ' tiny' : '') +
+		(bottom ? ' bottom' : '') +
 		(old_class && old_class.length ? ' ' + old_class : '') + '"/>').data('multiselect-object', this);
 	var launcher = $('<div class="lms-ui-multiselect-launcher" title="' + old_element.attr('title') + '" tabindex="0"/>')
 		.attr('style', old_element.attr('style')).appendTo(container);
