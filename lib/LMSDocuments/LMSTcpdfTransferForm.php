@@ -194,12 +194,12 @@ class LMSTcpdfTransferForm extends LMSDocument
         $this->backend->Rect(66.25, 62, 135, 5, 'F', '', array(255, 255, 255));
 
         /* title */
-        $this->backend->Rect(68, 68, 11, 3, 'F', '', array(255, 255, 255));
-        $this->backend->Text(68, 68, 'tytułem');
-        $this->backend->Rect(66.25, 71, 135, 10, 'F', '', array(255, 255, 255));
+        $this->backend->Rect(68, 69, 11, 3, 'F', '', array(255, 255, 255));
+        $this->backend->Text(68, 69, 'tytułem');
+        $this->backend->Rect(66.25, 72, 135, 10, 'F', '', array(255, 255, 255));
 
         /* stamps */
-        $this->backend->Rect(191, 82, 10, 6, 'F', '', array(255, 255, 255));
+        $this->backend->Rect(191, 83, 10, 6, 'F', '', array(255, 255, 255));
         $this->backend->Line(201, 80, 201, 90, $line_thin);
         $this->backend->Rect(66, 2, 135, 80, 'D', array('all' => $line_thin));
         $this->backend->Rect(66, 83, 68, 20, 'DF', array('all' => $line_thin));
@@ -251,7 +251,7 @@ class LMSTcpdfTransferForm extends LMSDocument
         $this->backend->Text(7, 50, $this->data['zip'] . ' ' . $this->data['city']);
 
         /* title */
-        $this->backend->Text(7, 59, $this->data['title']);
+        $this->backend->MultiCell(50, 10, $this->data['title'], 0, 'R', false, 1, 7, 59, true, 0, false, true, 10, 'M');
 
         /* amount */
         $this->backend->SetFont(self::TCPDF_FONT, 'B', 10);
@@ -308,21 +308,25 @@ class LMSTcpdfTransferForm extends LMSDocument
             );
             $this->backend->StartTransform();
             $this->backend->TranslateX(55);
-            $this->backend->write1DBarcode($this->data['barcode'], 'C128', '', 72, 60, 8, 0.3, $style, '');
+            $this->backend->write1DBarcode($this->data['barcode'], 'C128', '', 73, 60, 8, 0.3, $style, '');
             $this->backend->StopTransform();
+        }
+
+        /* deadline */
+        $paytype = $this->data['paytype'];
+        if ($paytype != 8) {
+            $this->backend->SetFont(self::TCPDF_FONT, '', 8);
+            if ($paytype != 8) {
+                $this->backend->MultiCell(135 - 70, 10, trans('Deadline:') . ' ' . date("d.m.Y", $this->data['pdate']) . ' r.', 0, 'R', false, 1, 66.25 + 68.5, 69, true, 0, false, true, 10, 'M');
+            }
         }
 
         /* title */
         $this->backend->SetFont(self::TCPDF_FONT, 'B', 9);
-        $this->backend->MultiCell(135 - 60, 10, $this->data['title'], 0, 'R', false, 1, 66.25 + 60, 71, true, 0, false, true, 10, 'M');
-
-        /* deadline */
-        $paytype = $this->data['paytype'];
-        $this->backend->SetFont(self::TCPDF_FONT, '', 8);
-        if ($paytype != 8) {
-            $this->backend->Text(115, 72, trans('Deadline:'));
-            $this->backend->Text(115, 75, date("d.m.Y", $this->data['pdate']) . ' r.');
-        }
+        $cell_height_ratio = $this->backend->getCellHeightRatio();
+        $this->backend->setCellHeightRatio(0.9);
+        $this->backend->MultiCell(135 - 70, 10, $this->data['title'], 0, 'R', false, 1, 66.25 + 68.5, 73.5, true, 0, false, true, 10, 'M');
+        $this->backend->setCellHeightRatio($cell_height_ratio);
     }
 
     public function GetCommonData($data)
