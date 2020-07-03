@@ -1,5 +1,24 @@
 // $Id$
 
+// hide combobox after click out of the window
+$(document).click(function(e) {
+	var popup = $('.lms-ui-multiselect-popup:visible');
+	if (!popup.length) {
+		return;
+	}
+	var container = popup.closest('.lms-ui-multiselect-container');
+	var old_element = container.find('select');
+	var elem = $(e.target);
+	if (!elem.is(old_element) &&
+		!elem.is('.lms-ui-multiselect-launcher') &&
+		!elem.closest('.lms-ui-multiselect-launcher').length &&
+		!elem.closest('.lms-ui-multiselect-popup').length) {
+		popup.hide();
+		container.removeClass('open');
+		old_element.trigger('lms:multiselect:change');
+	}
+});
+
 function multiselect(options) {
 	var multiselect = this;
 	var elemid = options.id;
@@ -44,6 +63,7 @@ function multiselect(options) {
 	}
 
 	container.data('multiselect-object', this);
+	old_element.data('multiselect-object', this);
 
 	// save onitemclick event handler
 	var itemclick = old_element.prop('onitemclick');
@@ -109,7 +129,7 @@ function multiselect(options) {
 							of: launcher
 						});
 					} else {
-						hideMainScrollbars();
+						enableFullScreenPopup();
 						popup.css({
 							'left': '',
 							'top': ''
@@ -126,82 +146,89 @@ function multiselect(options) {
 		popup.find('.checkall').prop('checked', checkboxes.filter(':checked').length == checkboxes.length);
 	}
 
-	$('option', old_element).each(function() {
-		var exclusive = $(this).attr('data-exclusive');
-		var class_name = (exclusive == '' ? 'exclusive' : '');
-		class_name += ' visible';
-		var li = $('<li/>').addClass(class_name).appendTo(ul);
+	function buildPopupList() {
+		var list = '';
+		$('option', old_element).each(function () {
+			var exclusive = $(this).attr('data-exclusive');
+			var selected = $(this).is(':selected');
+			var disabled = $(this).is(':disabled');
+			var class_name = (exclusive === '' ? 'exclusive' : '');
 
-		// add elements
-		var box = $('<input type="checkbox" value="' + $(this).val() + '" class="' + class_name + '"/>').appendTo(li);
+			class_name += ' visible';
 
-		var text = $(this).attr('data-html-content');
-		if (!text) {
-			text = $(this).text();
-		}
-		$('<span/>').html(text).appendTo(li);
-
-		$.each($(this).data(), function(key, value) {
-			li.attr('data-' + key, value);
-		});
-
-		if ($(this).is(':selected')) {
-			li.addClass('selected');
-			box.prop('checked', true);
-		}
-
-		if ($(this).is(':disabled')) {
-			li.addClass('blend disabled');
-			box.prop('disabled', true);
-			return;
-		}
-
-		// add some mouse/key events handlers
-		li.click(function(e) {
-			$(this).toggleClass('selected');
-
-			if (!$(e.target).is('input')) {
-				box.prop('checked', !box.prop('checked'));
-			}
-			if ($(this).is('.exclusive')) {
-				all_items.not(this).removeClass('selected').find(':checkbox').prop('checked', false);
-			} else {
-				all_items.filter('.exclusive').removeClass('selected').find(':checkbox').prop('checked', false);
-			}
-			if (e.shiftKey && !all_enabled_items.filter('.exclusive[data-prev-checked]').length) {
-				checkElements(this);
-			} else {
-				all_enabled_items.filter('[data-prev-checked]').removeAttr('data-prev-checked');
-				$(this).attr('data-prev-checked', $(this).is('.selected'));
-			}
-
-			new_selected = multiselect.generateSelectedString();
-
-			updateCheckAll();
-
-			old_element.trigger('lms:multiselect:itemclick', {
-				index: $(this).index(),
-				value: box.val(),
-				checked: box.is(':checked')
+			var data = '';
+			$.each($(this).data(), function (key, value) {
+				if (!data.length) {
+					data = ' ';
+				}
+				data += 'data-' + key + '="' + value + '"';
 			});
 
-			var checkboxes = all_enabled_items.filter(':not(.exclusive)').filter('.visible').find(':checkbox');
-			old_element.trigger('lms:multiselect:checkall', {
-				allChecked: checkboxes.filter(':checked').length == checkboxes.length
-			});
+			list += '<li class="' + class_name + (selected ? ' selected' : '') +
+				(disabled ? ' blend disabled' : '') + '"' + data + '>';
 
-			e.stopPropagation();
-		}).mouseenter(function() {
-			$(this).addClass('active').find('input').focus().end().siblings('li').not(this).removeClass('active');
-		}).mouseleave(function() {
-			$(this).removeClass('active');
+			list += '<input type="checkbox" value="' + $(this).val() + '" class="' + class_name +
+				'"' + (selected ? ' checked' : '') + (disabled ? ' disabled' : '') + '>';
+
+			var text = $(this).attr('data-html-content');
+			if (!text) {
+				text = $(this).text();
+			}
+			list += '<span>' + text + '</span>';
+
+			list += '</li>';
 		});
-		// TODO: keyboard events
-	});
+
+		ul.html(list);
+	}
+
+	buildPopupList();
 
 	all_items = ul.find('li');
 	all_enabled_items = all_items.filter(':not(.disabled)');
 	all_enabled_checkboxes = all_enabled_items.find(':checkbox');
+
+	// add some mouse/key events handlers
+	ul.on('click', 'li', function(e) {
+		var checkbox = $(this).find('input[type="checkbox"]');
+		$(this).toggleClass('selected');
+
+		if (!$(e.target).is('input')) {
+			checkbox.prop('checked', !checkbox.prop('checked'));
+		}
+		if ($(this).is('.exclusive')) {
+			all_items.not(this).removeClass('selected').find(':checkbox').prop('checked', false);
+		} else {
+			all_items.filter('.exclusive').removeClass('selected').find(':checkbox').prop('checked', false);
+		}
+		if (e.shiftKey && !all_enabled_items.filter('.exclusive[data-prev-checked]').length) {
+			checkElements(this);
+		} else {
+			all_enabled_items.filter('[data-prev-checked]').removeAttr('data-prev-checked');
+			$(this).attr('data-prev-checked', $(this).is('.selected'));
+		}
+
+		new_selected = multiselect.generateSelectedString();
+
+		updateCheckAll();
+
+		old_element.trigger('lms:multiselect:itemclick', {
+			index: $(this).index(),
+			value: checkbox.val(),
+			checked: checkbox.is(':checked')
+		});
+
+		var checkboxes = all_enabled_items.filter(':not(.exclusive)').filter('.visible').find(':checkbox');
+		old_element.trigger('lms:multiselect:checkall', {
+			allChecked: checkboxes.filter(':checked').length == checkboxes.length
+		});
+
+		e.stopPropagation();
+	}).on('mouseenter', 'li', function () {
+		$(this).addClass('active').find('input').focus().end().siblings('li').not(this).removeClass('active');
+	}).on('mouseleave', 'li', function () {
+		$(this).removeClass('active');
+	});
 
 	function checkAllElements() {
 		var checked = ul.parent().find('.checkall').prop('checked');
@@ -266,6 +293,7 @@ function multiselect(options) {
 		if (!popup.is(':visible') && (e.type != 'keydown' || e.key != 'Escape')) {
 			setTimeout(function() {
 				popup.show();
+				container.addClass('open');
 				if (parseInt($(window).outerWidth()) >= 800) {
 					popup.position({
 						my: 'left top',
@@ -273,7 +301,7 @@ function multiselect(options) {
 						of: launcher
 					});
 				} else {
-					hideMainScrollbars();
+					enableFullScreenPopup();
 					popup.css({
 						'left': '',
 						'top': ''
@@ -284,7 +312,7 @@ function multiselect(options) {
 			}, 1);
 		} else {
 			popup.hide();
-			showMainScrollbars();
+			disableFullScreenPopup();
 			if (new_selected != old_selected) {
 				old_element.trigger('change');
 			}
@@ -307,7 +335,7 @@ function multiselect(options) {
 					old_element.trigger('change');
 				}
 				old_selected = new_selected;
-				showMainScrollbars();
+				disableFullScreenPopup();
 				break;
 			case 'ArrowDown':
 				li = $('input:focus', ul).closest('li');
@@ -347,23 +375,6 @@ function multiselect(options) {
 		}
 	});
 
-	// hide combobox after click out of the window
-	$(document).click(function(e) {
-		var elem = $(e.target);
-		if (popup.is(':visible') &&
-			!elem.is(old_element) &&
-			!elem.is('.lms-ui-multiselect-launcher') &&
-			!elem.closest('.lms-ui-multiselect-launcher').length &&
-			!elem.closest('.lms-ui-multiselect-popup').length) {
-			popup.hide();
-			if (new_selected != old_selected) {
-				old_element.trigger('change');
-			}
-			old_selected = new_selected;
-			showMainScrollbars();
-		}
-	});
-
 	popup.find('.close-button').click(function() {
 		popup.hide();
 		launcher.focus();
@@ -371,7 +382,7 @@ function multiselect(options) {
 			old_element.trigger('change');
 		}
 		old_selected = new_selected;
-		showMainScrollbars();
+		disableFullScreenPopup();
 	});
 
 	function checkElements(item) {
@@ -405,23 +416,16 @@ function multiselect(options) {
 		updateCheckAll();
 	}
 
+	old_element.on('lms:multiselect:change', function() {
+		if (new_selected != old_selected) {
+			$(this).trigger('change');
+		}
+		old_selected = new_selected;
+		disableFullScreenPopup();
+	});
+
 	old_element.on('lms:multiselect:updated', function() {
-		$('option', this).each(function() {
-			var input = popup.find('input[value="' + $(this).val() + '"]');
-			var li = input.closest('li');
-			var selected = $(this).is(':selected');
-			var disabled = $(this).is(':disabled');
-			var visible = li.is('.visible');
-			if (visible) {
-				input.prop('checked', selected);
-				li.toggleClass('selected', selected);
-				input.prop('disabled', disabled);
-				li.toggleClass('blend disabled', disabled);
-			} else {
-				input.prop('checked', false);
-				li.removeClass('selected');
-			}
-		});
+		buildPopupList();
 
 		multiselect.generateSelectedString();
 

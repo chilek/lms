@@ -362,6 +362,9 @@ form.lms-ui-quick-search {
 		& + div {
 			margin-left: -1.8em;
 			visibility: hidden;
+			&.open {
+				visibility: visible;
+			}
 		}
 
 		&:focus {
@@ -726,7 +729,7 @@ IMG		{ vertical-align: middle; border: 0; }
 		cursor: pointer;
 		display: flex;
 		align-items: center;
-		border: 0;
+		border-color: transparent;
 		background-color: transparent;
 		.lms-ui-no-user-select;
 	}
