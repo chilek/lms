@@ -396,6 +396,8 @@ function multiselect(options) {
 				old_element.trigger('change');
 			}
 			old_selected = new_selected;
+			e.stopPropagation();
+			e.preventDefault();
 		}
 	});
 
