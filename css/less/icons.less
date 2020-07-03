@@ -1313,10 +1313,10 @@
 
 .lms-ui-icon-hide {
   .fa-icon;
-  .far;
+  .fas;
   .lms-ui-icon;
   &:before {
-    content: @fa-var-window-close;
+    content: @fa-var-times;
   }
 }
 
@@ -1445,5 +1445,25 @@
   &:before {
     color: red;
     content: @fa-var-user-alt-slash;
+  }
+}
+
+.lms-ui-icon-redo,
+.lms-ui-icon-resend {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-redo;
+  }
+}
+
+.lms-ui-icon-secondary-selection,
+.lms-ui-icon-additional-selection {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-ellipsis-v;
   }
 }

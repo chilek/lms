@@ -144,6 +144,8 @@
 							{/if}
 							{if $item.doctype == $smarty.const.DOC_INVOICE}
 								{if !$item.cancelled}
+									{button type="link" icon="clone" href="?m=invoicenew&action=init&id={$item.docid}&clone=1"
+										tip="Clone"}
 									{button type="link" icon="correction" href="?m=invoicenote&id={$item.docid}&action=init"
 										tip="Revise"}
 								{/if}

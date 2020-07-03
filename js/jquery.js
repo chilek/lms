@@ -116,6 +116,7 @@ function init_multiselects(selector) {
 				id: $(this).uniqueId().attr('id'),
 				defaultValue: $(this).attr('data-default-value'),
 				shortenToDefaultValue: $(this).attr('data-shorten-to-default-value'),
+				popupTitle: $(this).attr('data-popup-title'),
 				type: $(this).attr('data-type'),
 				icon: $(this).attr('data-icon'),
 				button: $(this).attr('data-button'),
@@ -516,7 +517,7 @@ function showGallery(data) {
 	Galleria.ready(function() {
 		var gallery = this;
 		this.addElement('buttons').appendChild('container', 'buttons');
-		this.$('buttons').html('<i class="fullscreen-button fa-2x lms-ui-icon-fullscreen-on"/><i class="close-button fa-2x lms-ui-icon-hide"/>')
+		this.$('buttons').html('<i class="fullscreen-button lms-ui-icon-fullscreen-on"></i><i class="close-button lms-ui-icon-hide"></i>')
 			.on('click', 'i', function() {
 				if ($(this).is('.close-button')) {
 					gallery.destroy();
@@ -542,6 +543,16 @@ function showGallery(data) {
 		preload: 0,
 		_toggleInfo: false
 	});
+}
+
+function enableFullScreenPopup() {
+	$('body,#lms-ui-contents,#lms-ui-module-view').addClass('fullscreen-popup');
+	$('#lms-ui-back-to-top').addClass('fullscreen-popup');
+}
+
+function disableFullScreenPopup() {
+	$('body,#lms-ui-contents,#lms-ui-module-view').removeClass('fullscreen-popup');
+	$('#lms-ui-back-to-top').removeClass('fullscreen-popup');
 }
 
 $(function() {
@@ -1095,7 +1106,7 @@ $(function() {
 					icon: 'lms-ui-icon-configuration',
 					type: 'tiny'
 				});
-				toggle.find('#' + multiselectId).on('itemclick', function(e, data) {
+				toggle.find('#' + multiselectId).on('lms:multiselect:itemclick', function(e, data) {
 					api.column(data.index).visible(data.checked);
 				});
 			}
@@ -1118,8 +1129,9 @@ $(function() {
 						api.column(index).search('');
 					}
 				});
-				$(elem).parent().find('div.lms-ui-multiselectlayer li:not(.selected)').addClass('selected')
-					.find(':checkbox').prop('checked', true);
+				$(elem).parent().find('.column-toggle').each(function() {
+					$(this).find('option:not(:disabled)').attr('selected', 'selected');
+				}).trigger('lms:multiselect:updated');
 
 				var pageLen = $(elem).attr('data-page-length');
 				if (pageLen !== undefined) {
@@ -1568,15 +1580,15 @@ $(function() {
 		)
 	});
 
-	qs_fields.find('input').on('click', function() {
-		qs_fields.find('input').removeClass('lms-ui-quick-search-active');
+	qs_fields.find('input[type="text"]').on('click', function() {
+		qs_fields.find('input[type="text"]').removeClass('lms-ui-quick-search-active');
 		$(this).addClass('lms-ui-quick-search-active').focus();
 	}).siblings('i').on('click', function() {
-		qs_fields.find('input').removeClass('lms-ui-quick-search-active');
-		$(this).siblings('input').addClass('lms-ui-quick-search-active').focus();
+		qs_fields.find('input[type="text"]').removeClass('lms-ui-quick-search-active');
+		$(this).siblings('input[type="text"]').addClass('lms-ui-quick-search-active').focus();
 	});
 	if (!location.hash.length) {
-		qs_fields.first().find('input').addClass('lms-ui-quick-search-active').focus();
+		qs_fields.first().find('input[type="text"]').addClass('lms-ui-quick-search-active').focus();
 	}
 
 	$(document).keydown(function(e) {
@@ -1622,10 +1634,6 @@ $(function() {
 */
 
 	$(document).click(function(e) {
-		if (!$(e.target).is('.lms-ui-dropdown-toggle') && !$(e.target).closest('.lms-ui-dropdown-toggle').length) {
-			$('.lms-ui-dropdown-buttons').removeClass('show');
-		}
-
 		if ($(e.target).is('.lms-ui-button') || $(e.target).closest('.lms-ui-suggestion-item').length) {
 			return;
 		}
@@ -1692,28 +1700,6 @@ $(function() {
 	// disables jquery-ui tooltip after any key press in ui control
 	$(document).on('keypress', "[data-tooltip]", function() {
 		$(this).tooltip('disable');
-	});
-
-	$(window).resize(function() {
-		var dropdown_buttons = $('.lms-ui-dropdown-buttons.show');
-		if (dropdown_buttons.length && parseInt($(this).outerWidth()) <= 1200) {
-			dropdown_buttons.position({
-				my: "right",
-				at: "left",
-				of: dropdown_buttons.prev()
-			});
-		}
-	});
-
-	$('.lms-ui-dropdown-toggle').click(function() {
-		var dropdown_buttons = $(this).next();
-		dropdown_buttons.toggleClass('show');
-		$('.lms-ui-dropdown-buttons').not(dropdown_buttons).removeClass('show');
-		dropdown_buttons.position({
-			my: "right",
-			at: "left",
-			of: this
-		})
 	});
 
 	$('button[type="submit"]').each(function() {

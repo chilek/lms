@@ -9,9 +9,12 @@
     </TD>
     <TD class="bold nobr">
         <a href="?m={$layout.module}{if isset($filter.custid)}&id={$filter.custid}{/if}{if !empty($filter.ids)}&id[]={implode('&id[]=', $filter.ids)}{/if}{if $filter.state == -1}&s=-1{elseif !empty($filter.state) && is_array($filter.state)}&s[]={implode('&s[]=', $filter.state)}{/if}&o=ticketid{if $filter.direction == "asc" && $filter.order == "ticketid"},desc{/if}">{trans("ID:")}</a>{if $filter.order == "ticketid"}<i class="lms-ui-icon-{if $filter.direction == 'desc'}descending{else}ascending{/if}"></i>{/if}
-        {if empty($filter.ids) || count($filter.ids)!=1}<a href="?m={$layout.module}{if isset($filter.custid)}&id={$filter.custid}{/if}{if !empty($filter.ids)}&id[]={implode('&id[]=', $filter.ids)}{/if}{if $filter.state == -1}&s=-1{elseif !empty($filter.state) && is_array($filter.state)}&s[]={implode('&s[]=', $filter.state)}{/if}&o=queue{if $filter.direction == "asc" && $filter.order == "queue"},desc{/if}">/ {trans("Queue:")}</a>{if $filter.order == "queue"}<i class="lms-ui-icon-{if $filter.direction == "desc"}descending{else}ascending{/if}"></i>{/if}{/if}
-        <br>
-        <a href="?m={$layout.module}{if isset($filter.custid)}&id={$filter.custid}{/if}{if !empty($filter.ids)}&id[]={implode('&id[]=', $filter.ids)}{/if}{if $filter.state == -1}&s=-1{elseif !empty($filter.state) && is_array($filter.state)}&s[]={implode('&s[]=', $filter.state)}{/if}&o=createtime{if $filter.direction == "asc" && $filter.order == "createtime"},desc{/if}"> {trans("Create time:")}</a>{if $filter.order == "createtime"}<i class="lms-ui-icon-{if $filter.direction == 'desc'}descending{else}ascending{/if}"></i>{/if}
+        {if empty($filter.ids) || count($filter.ids)!=1}
+            <a href="?m={$layout.module}{if isset($filter.custid)}&id={$filter.custid}{/if}{if !empty($filter.ids)}&id[]={implode('&id[]=', $filter.ids)}{/if}{if $filter.state == -1}&s=-1{elseif !empty($filter.state) && is_array($filter.state)}&s[]={implode('&s[]=', $filter.state)}{/if}&o=queue{if $filter.direction == "asc" && $filter.order == "queue"},desc{/if}">/ {trans("Queue:")}</a>{if $filter.order == "queue"}<i class="lms-ui-icon-{if $filter.direction == "desc"}descending{else}ascending{/if}"></i>{/if}
+        {/if}
+        {if !ConfigHelper::checkConfig('rt.hide_ticket_row_create_time')}
+            <br><a href="?m={$layout.module}{if isset($filter.custid)}&id={$filter.custid}{/if}{if !empty($filter.ids)}&id[]={implode('&id[]=', $filter.ids)}{/if}{if $filter.state == -1}&s=-1{elseif !empty($filter.state) && is_array($filter.state)}&s[]={implode('&s[]=', $filter.state)}{/if}&o=createtime{if $filter.direction == "asc" && $filter.order == "createtime"},desc{/if}"> {trans("Create time:")}</a>{if $filter.order == "createtime"}<i class="lms-ui-icon-{if $filter.direction == 'desc'}descending{else}ascending{/if}"></i>{/if}
+        {/if}
     </TD>
     <TD class="nobr bold">
         <i class="lms-ui-icon-content lms-ui-icon-service"></i>{trans("Service type:")}<br>

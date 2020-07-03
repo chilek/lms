@@ -224,7 +224,7 @@ if (!$layout['popup'] && !$api) {
 
     $menu = $plugin_manager->executeHook('menu_initialized', $menu);
 
-    $SMARTY->assign('newmenu', $menu);
+    $SMARTY->assignByRef('newmenu', $menu);
 }
 
 header('X-Powered-By: LMS/'.$layout['lmsv']);
@@ -347,6 +347,11 @@ if ($AUTH->islogged) {
         }
 
         if ($global_allow || $allow) {
+            // everyone should have access to documentation
+            $rights[] = 'documentation';
+
+            $access->applyMenuPermissions($menu, $rights);
+
             $layout['module'] = $module;
 
             $SESSION->save('module', $module);

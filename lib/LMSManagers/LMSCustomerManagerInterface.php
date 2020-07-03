@@ -115,4 +115,8 @@ interface LMSCustomerManagerInterface
     public function addCustomerConsents($customerid, $consents);
 
     public function removeCustomerConsents($customerid, $consents);
+
+    public function addCustomerContactFlags($customerid, $type, $flags);
+
+    public function removeCustomerContactFlags($customerid, $type, $flags);
 }

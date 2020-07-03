@@ -97,10 +97,7 @@ function GetItemList($id, $order = 'id,desc', $search = null, $cat = null, $stat
     return $result;
 }
 
-$message = $DB->GetRow('SELECT m.*, u.name
-		FROM messages m
-		LEFT JOIN vusers u ON (u.id = m.userid) 
-		WHERE m.id = ?', array(intval($_GET['id'])));
+$message = $LMS->getSingleMessage($_GET['id']);
 
 if (!$message) {
     $SESSION->redirect('?m=messagelist');

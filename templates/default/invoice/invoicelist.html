@@ -175,6 +175,10 @@
 			{if $invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_INVOICE_PRO || $invoice.type == $smarty.const.DOC_CNOTE}
 				{if $invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_CNOTE}
 					{if !$invoice.cancelled && ($invoice.type == $smarty.const.DOC_INVOICE || ($invoice.type == $smarty.const.DOC_CNOTE && !$invoice.referenced))}
+						{if $invoice.type == $smarty.const.DOC_INVOICE}
+							{button type="link" icon="clone" href="?m=invoicenew&action=init&id={$invoice.id}&clone=1"
+								tip="Clone"}
+						{/if}
 						{button type="link" icon="correction" href="?m=invoicenote&id={$invoice.id}&action=init" tip="Revise"}
 					{/if}
 					{if ($invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_INVOICE_PRO) && !$invoice.closed && !$invoice.referenced && !$invoice.archived}

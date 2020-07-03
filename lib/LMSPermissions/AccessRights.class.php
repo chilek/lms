@@ -117,4 +117,78 @@ class AccessRights
 
         return $access;
     }
+
+    public function applyMenuPermissions(&$menu, $rights)
+    {
+        if (empty($menu)) {
+            return;
+        }
+
+        $all_menus = array();
+        foreach ($menu as $menukey => $menuitem) {
+            $all_menus[$menukey] = isset($menuitem['submenu']) ? array_keys($menuitem['submenu']) : Permission::MENU_ALL;
+        }
+
+        $effective_menus = array();
+        foreach ($rights as $permname) {
+            if (!isset($this->permissions[$permname])) {
+                continue;
+            }
+            $menuperms = $this->permissions[$permname]->getMenuPermissions();
+            if (is_int($menuperms['allow_menu_items'])) {
+                if ($menuperms['allow_menu_items'] == Permission::MENU_ALL) {
+                    $effective_menus = $all_menus;
+                }
+            } else {
+                foreach ($menuperms['allow_menu_items'] as $menukey => $menuitem) {
+                    if (is_int($menuitem)) {
+                        if ($menuitem == Permission::MENU_ALL) {
+                            $menuperms['allow_menu_items'][$menukey] = $all_menus[$menukey];
+                        }
+                    }
+                }
+                $effective_menus = array_merge_recursive($effective_menus, $menuperms['allow_menu_items']);
+            }
+            if (is_int($menuperms['deny_menu_items'])) {
+                if ($menuperms['deny_menu_items'] == Permission::MENU_ALL) {
+                    $effective_menus = array_diff_key($effective_menus, $all_menus);
+                    if (!empty($effective_menus)) {
+                        foreach ($effective_menus as $menukey => $menuitem) {
+                            $effective_menus[$menukey] = array_diff_key($effective_menus[$menukey], $all_menus[$menukey]);
+                        }
+                    }
+                }
+            } else {
+                $effective_menus = array_diff_key($effective_menus, $menuperms['deny_menu_items']);
+                if (!empty($effective_menus)) {
+                    foreach ($effective_menus as $menukey => $menuitem) {
+                        if (isset($menuperms['deny_menu_items'][$menukey])) {
+                            $effective_menus[$menukey] = array_diff_key($effective_menus[$menukey], $menuperms['deny_menu_items'][$menukey]);
+                        }
+                    }
+                }
+            }
+        }
+        if (!empty($effective_menus)) {
+            foreach ($effective_menus as $menukey => $menuitem) {
+                if (is_array($menuitem) && !empty($menuitem)) {
+                    $effective_menus[$menukey] = array_flip(array_unique($menuitem));
+                }
+            }
+        }
+        foreach ($menu as $menukey => &$menuitem) {
+            if (isset($effective_menus[$menukey])) {
+                if (isset($menuitem['submenu'])) {
+                    foreach ($menuitem['submenu'] as $submenukey => $submenuitem) {
+                        if (!isset($effective_menus[$menukey][$submenukey])) {
+                            unset($menuitem['submenu'][$submenukey]);
+                        }
+                    }
+                }
+            } else {
+                unset($menu[$menukey]);
+            }
+        }
+        unset($menuitem);
+    }
 }

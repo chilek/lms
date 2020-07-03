@@ -3,6 +3,7 @@
 		id="ticket-{$ticket.id}"
 		data-target-url="?m=rtticketview&id={$ticket.id}"
 		data-name="{$ticket.id|string_format:"%06d"}"
+		data-popup-menu-title="{t a=$ticket.id|string_format:"#%06d"}Ticket $a{/t}"
 		data-ticket-id="{$ticket.id}">
 	<TD class="text-center">
 		{if $ticket.unread}
@@ -23,8 +24,7 @@
 			<i class="lms-ui-icon-clipboard"></i>
 		</a>
 		<span>{if (is_array($filter.ids) && count($filter.ids) != 1) || !isset($filter.ids)}{$ticket.name}{/if}</span>
-		<br>
-		{$ticket.createtime|date_format:"%Y/%m/%d %H:%M:%S"}
+		{if !ConfigHelper::checkConfig('rt.hide_ticket_row_create_time')}<br>{$ticket.createtime|date_format:"%Y/%m/%d %H:%M:%S"}{/if}
 	</TD>
 	<TD class="text-center">
 		<span>{$_SERVICETYPES[$ticket.service]}</span>

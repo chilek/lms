@@ -95,15 +95,28 @@ a.lms-ui-link-button + button.lms-ui-button {
     padding-right: 0.1em;
   }
   .lms-ui-dropdown-toggle {
-    display: none;
+    display: none !important;
     cursor: pointer;
+    &.secondary {
+      display: inline !important;
+    }
+    @media screen and (max-width: 800px) {
+      .fa-lg;
+      line-height: normal;
+    }
   }
   .lms-ui-dropdown-buttons {
     display: inline;
+    .lms-ui-button.secondary {
+      display: none;
+    }
   }
   @media screen and (max-width: 1200px) {
     .lms-ui-dropdown-toggle {
-      display: inline;
+      display: inline-block !important;
+      &.secondary {
+        display: none !important;
+      }
     }
     .lms-ui-dropdown-buttons {
       display: none;
@@ -116,6 +129,9 @@ a.lms-ui-link-button + button.lms-ui-button {
       z-index: 1;
       &.show {
         display: flex;
+      }
+      .lms-ui-button {
+        display: none;
       }
     }
   }

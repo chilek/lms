@@ -69,7 +69,7 @@ class LMSSmartyPlugins
             . ($class ? ' ' . $class : '') . '"'
             . ($id ? ' id="' . $id . '"' : '') . ($onclick ? ' onclick="' . $onclick . '"' : '')
             . ($form ? ' form="' . $form . '"' : '')
-            . ($tip ? ' title="' . $tip . '"' : '')
+            . ($tip ? ' title="' . $tip . '" data-title="' . $tip . '"' : '')
             . ($external ? ' rel="external"' : '')
             . ($resourceid ? ' data-resourceid="' . $resourceid . '"' : '')
             . ($clipboard ? ' data-clipboard-text="' . $clipboard . '"' : '')
@@ -731,11 +731,21 @@ class LMSSmartyPlugins
             return '<div class="lms-ui-responsive-buttons">' . self::buttonFunction(
                 array(
                     'type' => 'link',
-                    'icon' => isset($params['icon']) ? $params['icon'] : 'configuration',
+                    'icon' => isset($params['icon']) ? $params['icon'] : 'additional-selection',
                     'class' => 'lms-ui-dropdown-toggle',
                 ),
                 $template
-            ) . '<div class="lms-ui-dropdown-buttons">'
+            ) . (isset($params['secondary']) && $params['secondary'] ?
+                self::buttonFunction(
+                    array(
+                        'type' => 'link',
+                        'icon' => isset($params['icon']) ? $params['icon'] : 'additional-selection',
+                        'class' => 'lms-ui-dropdown-toggle secondary',
+                        'tip' => trans('more actions'),
+                    ),
+                    $template
+                ) : '')
+                . '<div class="lms-ui-dropdown-buttons">'
                 . $content
                 . '</div></div>';
         } else {

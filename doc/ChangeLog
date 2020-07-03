@@ -44,6 +44,19 @@ version 26-git (????-??-??):
     it depends on variable rt.change_ticket_state_to_open_after_note_add_interval
     (default: 0, which keeps current behaviour) [interduo]
   - improvement: allow to quickly resend existing message [chilan]
+  - enhancement: implemeneted main menu item visibility toggle basing on user permissions [chilan]
+  - improvement: allow to hide createtime in ticket row (variable:
+    rt.hide_ticket_row_create_time, default: 0) [interduo]
+  - enhancement: hosting: added support for ALIAS and ANAME record types - they are used
+    by github pages [chilan]
+  - enhancement: allow to quickly clone existing invoice [chilan]
+  - enhancement: implemented true responsive menu popups [chilan]
+  - enhancement: implemented bulk operations on customer contact flags in customer search
+    result [chilan]
+  - enhancement: implemented true responsive lms-ui-multiselect control [chilan]
+  - enhancement: 'payments.prefer_netto' allows to enable netto value usage produced by plugins
+    ('false' by default) [televoice]
+  - enhancement: separate the Tcpdf transfer form into a separate class [ravvar]
 
 version 25.0 (2020-05-15):
 

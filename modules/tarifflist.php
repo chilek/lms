@@ -79,31 +79,33 @@ function GetTariffList($order = 'name,asc', $type = null, $access = 0, $customer
 			t.uprate_n, t.downrate_n, t.upceil_n, t.downceil_n, t.climit_n, t.plimit_n,
 			t.description, t.period, a.customerscount, a.count, a.value AS sumval
 			FROM tariffs t
-			LEFT JOIN (SELECT a.tariffid, COUNT(*) AS count,
-				COUNT(DISTINCT a.customerid) AS customerscount,
-				SUM((((tt.value * (100 - a.pdiscount)) / 100.0) - a.vdiscount) *
-					(CASE tt.period
-						WHEN '.MONTHLY.' THEN 1
-						WHEN '.QUARTERLY.' THEN 1.0 / 3
-						WHEN '.YEARLY.' THEN 1.0 / 12
-						WHEN '.HALFYEARLY.' THEN 1.0 / 6
-						ELSE (CASE a.period
+			LEFT JOIN (
+			    SELECT a.tariffid, COUNT(*) AS count,
+				    COUNT(DISTINCT a.customerid) AS customerscount,
+				    SUM((((tt.value * (100 - a.pdiscount)) / 100.0) - a.vdiscount) *
+						(CASE tt.period
 							WHEN '.MONTHLY.' THEN 1
 							WHEN '.QUARTERLY.' THEN 1.0 / 3
 							WHEN '.YEARLY.' THEN 1.0 / 12
 							WHEN '.HALFYEARLY.' THEN 1.0 / 6
-							ELSE 0 END)
-					END)
-				) AS value
+							ELSE (CASE a.period
+								WHEN '.MONTHLY.' THEN 1
+								WHEN '.QUARTERLY.' THEN 1.0 / 3
+								WHEN '.YEARLY.' THEN 1.0 / 12
+								WHEN '.HALFYEARLY.' THEN 1.0 / 6
+								ELSE 0 END)
+						END) * a.count
+					) AS value
 				FROM assignments a
 				JOIN tariffs tt ON (tt.id = tariffid)'
-                .($customergroupid ? ' JOIN customerassignments cc ON (cc.customerid = a.customerid)
-				WHERE cc.customergroupid = '.intval($customergroupid) : '')
-            .($promotionid ? ' AND tt.id IN (SELECT pa.tariffid
-				FROM promotionassignments pa
-				JOIN promotionschemas ps ON (ps.id = pa.promotionschemaid)
-					WHERE ps.promotionid = ' .intval($promotionid).')' : '')
-                .' GROUP BY a.tariffid
+                . ($customergroupid ? ' JOIN customerassignments cc ON (cc.customerid = a.customerid)
+                    AND cc.customergroupid = ' . intval($customergroupid) : '')
+                . ' WHERE a.commited = 1'
+                . ($promotionid ? ' AND tt.id IN (SELECT pa.tariffid
+                    FROM promotionassignments pa
+                    JOIN promotionschemas ps ON (ps.id = pa.promotionschemaid)
+                    WHERE ps.promotionid = ' . intval($promotionid) . ')' : '')
+                . ' GROUP BY a.tariffid
 			) a ON (a.tariffid = t.id)
 			LEFT JOIN taxes ON (t.taxid = taxes.id)
 			WHERE 1=1'
@@ -130,13 +132,14 @@ function GetTariffList($order = 'name,asc', $type = null, $access = 0, $customer
 							WHEN '.YEARLY.' THEN 1.0 / 12
 							WHEN '.HALFYEARLY.' THEN 1.0 / 6
 							ELSE 0 END)
-					END)
+					END) * x.count
 				) AS value
-			FROM (SELECT a.tariffid, t.period, a.period AS aperiod, a.pdiscount, a.vdiscount, t.value
-				FROM assignments a
-				JOIN tariffs t ON (t.id = a.tariffid)'
-                .($customergroupid ? ' JOIN customerassignments cc ON (cc.customerid = a.customerid)' : '')
-                .' WHERE (
+			FROM (
+                SELECT a.tariffid, a.count, t.period, a.period AS aperiod, a.pdiscount, a.vdiscount, t.value
+                FROM assignments a
+                JOIN tariffs t ON (t.id = a.tariffid)'
+                . ($customergroupid ? ' JOIN customerassignments cc ON (cc.customerid = a.customerid)' : '')
+                . ' WHERE a.commited = 1 AND (
 					a.suspended = 1
 					OR a.datefrom > ?NOW?
 					OR (a.dateto <= ?NOW? AND a.dateto != 0)
@@ -147,9 +150,9 @@ function GetTariffList($order = 'name,asc', $type = null, $access = 0, $customer
 							AND b.datefrom <= ?NOW? AND (b.dateto > ?NOW? OR b.dateto = 0)
 					)
 				)'
-                .($type ? ' AND t.type = '.intval($type) : '')
-                .($customergroupid ? ' AND cc.customergroupid = '.intval($customergroupid) : '')
-                .($promotionid ? ' AND t.id IN (SELECT pa.tariffid
+                . ($type ? ' AND t.type = '.intval($type) : '')
+                . ($customergroupid ? ' AND cc.customergroupid = '.intval($customergroupid) : '')
+                . ($promotionid ? ' AND t.id IN (SELECT pa.tariffid
 					FROM promotionassignments pa
 				JOIN promotionschemas ps ON (ps.id = pa.promotionschemaid)
 					WHERE ps.promotionid = ' .intval($promotionid).')' : '')

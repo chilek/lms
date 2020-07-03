@@ -3411,7 +3411,7 @@ $_LANG['Select note template'] = 'Wybierz szablon notatki';
 $_LANG['Enter name of the new message template'] = 'Wprowadź nazwę nowego szablonu wiadomości';
 $_LANG['no operation on message template'] = 'brak czynności na szablonie wiadomości';
 
-$_LANG['Assign to me as owner'] = 'Przypisz do mnie jako właściel';
+$_LANG['Assign to me as owner'] = 'Przypisz do mnie jako właściciel';
 $_LANG['Assign to me as verifier'] = 'Przypisz do mnie jako weryfikator';
 $_LANG['Assign to me'] = 'Przypisz do mnie';
 $_LANG['assign to me'] = 'przypisz do mnie';
@@ -4277,6 +4277,7 @@ $_LANG['<!assignment>Commited'] = 'Zatwierdzone';
 $_LANG['Unread:'] = 'Nieprzeczytane:';
 $_LANG['Mark as unread'] = 'Oznacz jako nieprzeczytane';
 $_LANG['Mark as read'] = 'Oznacz jako przeczytane';
+$_LANG['Mark queue as read'] = 'Oznacz kolejkę jako przeczytaną';
 $_LANG['Mark as read ($a unread)'] = 'Oznacz jako przeczytane ($a nieprzeczytanych)';
 
 $_LANG['<!event>Assign'] = 'Przypisz';
@@ -4756,6 +4757,8 @@ $_LANG['<!customersearch>Replace groups'] = 'Zastąp grupy';
 $_LANG['<!customersearch>Action:'] = 'Czynność:';
 $_LANG['<!customersearch>New customer group name cannot be empty!'] = 'Nazwa nowej grupy klientów nie może być pusta!';
 $_LANG['<!customersearch>Customer group with specified name already exists!'] = 'Grupa klientów o podanej nazwie już istnieje!';
+$_LANG['<!customersearch>Add flags'] = 'Dodaj flagi';
+$_LANG['<!customersearch>Remove flags'] = 'Usuń flagi';
 
 $_LANG['Apply'] = 'Zastosuj';
 
@@ -4776,3 +4779,11 @@ $_LANG['No parent ticket is selected!'] = 'Nie wybrano zgłoszenia nadrzędnego!
 $_LANG['used tariff edit'] = 'edycja użytych taryf';
 
 $_LANG['Resend'] = 'Wyślij nową';
+
+$_LANG['more actions'] = 'więcej czynności';
+$_LANG['Ticket $a'] = 'Zgłoszenie $a';
+$_LANG['Event $a'] = 'Zdarzenie $a';
+$_LANG['Queue $a'] = 'Kolejka $a';
+
+$_LANG['Select options'] = 'Wybierz opcje';
+$_LANG['Select owners'] = 'Wybierz właścicieli';

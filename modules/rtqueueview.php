@@ -161,15 +161,18 @@ if (isset($_GET['tt'])) {
 }
 
 // owner
-if (!empty($_GET['owner']) && (!in_array('all', $_GET['owner']))) {
+if (!empty($_GET['owner'])) {
     if (!is_array($_GET['owner'])) {
         $_GET['owner'] = array($_GET['owner']);
     }
-    $filter['owner'] = Utils::filterIntegers($_GET['owner']);
-} else {
+    if (in_array('all', $_GET['owner'])) {
+        $filter['owner'] = array();
+    } else {
+        $filter['owner'] = Utils::filterIntegers($_GET['owner']);
+    }
+} elseif (!isset($filter['owner'])) {
     $filter['owner'] = array();
 }
-
 
 // removed or not?
 if (isset($_GET['r'])) {

@@ -49,4 +49,6 @@ interface LMSMessageManagerInterface
     public function addMessage(array $params);
 
     public function updateMessageItems(array $params);
+
+    public function getSingleMessage($id, $details = false);
 }

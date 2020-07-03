@@ -334,8 +334,8 @@ function parse_customer_data($data, $row)
         format_bankaccount(bankaccount($row['id'], $row['account'])),
         $data
     );
-    $data = preg_replace("/\%b/", $amount, $data);
-    $data = preg_replace("/\%totalb/", $totalamount, $data);
+    $data = preg_replace("/\%b/", sprintf('%01.2f', $amount), $data);
+    $data = preg_replace("/\%totalb/", sprintf('%01.2f', $totalamount), $data);
     $data = preg_replace("/\%date-y/", strftime("%Y"), $data);
     $data = preg_replace("/\%date-m/", strftime("%m"), $data);
     $data = preg_replace("/\%date_month_name/", strftime("%B"), $data);
@@ -343,8 +343,8 @@ function parse_customer_data($data, $row)
     $data = preg_replace("/\%deadline-y/", strftime("%Y", $deadline), $data);
     $data = preg_replace("/\%deadline-m/", strftime("%m", $deadline), $data);
     $data = preg_replace("/\%deadline-d/", strftime("%d", $deadline), $data);
-    $data = preg_replace("/\%B/", $row['balance'], $data);
-    $data = preg_replace("/\%totalB/", $row['totalbalance'], $data);
+    $data = preg_replace("/\%B/", sprintf('%01.2f', $row['balance']), $data);
+    $data = preg_replace("/\%totalB/", sprintf('%01.2f', $row['totalbalance']), $data);
     $data = preg_replace("/\%saldo/", moneyf($row['balance']), $data);
     $data = preg_replace("/\%totalsaldo/", moneyf($row['totalbalance']), $data);
     $data = preg_replace("/\%pin/", $row['pin'], $data);

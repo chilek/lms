@@ -107,6 +107,7 @@
 			{/if}
 			{button type="link" icon="delete" class="delete-message" tip="Delete" href="?m=messagedel&id={$message.id}"}
 			{button type="link" icon="info" tip="Info" onclick="location.href = '?m=messageinfo&id={$message.id}';"}
+			{button type="link" icon="resend" tip="Resend" onclick="location.href = '?m=messageadd&messageid={$message.id}';"}
 			<input type="checkbox" name="marks[{$message.id}]" value="{$message.id}" class="lms-ui-multi-check"{if $marks.messageid} checked{/if}>
 			<div id="files-{$message.filecontainerid}" style="display: none;" class="files">
 				{foreach $message.files as $file}

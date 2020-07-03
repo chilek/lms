@@ -147,7 +147,7 @@
 			{/box_row}
 
 			{box_row icon="verifier" label="Verifier:" field_id="rtverifiers"}
-				{if $layout.module != 'rtticketedit' || !$ticket.oldverifierid || $ticket.oldverifierid == $layout.logid}
+				{if $layout.module != 'rtticketedit' || !$ticket.oldverifierid || $ticket.oldverifierid == $layout.logid || ConfigHelper::checkConfig('privileges.superuser')}
 					<SELECT size="1" name="ticket[verifierid]" {tip class="lms-ui-advanced-select" text="Select user" trigger="verifierid"}>
 						<OPTION value="">- {trans("select user")} -</OPTION>
 						{foreach $userlist as $user}

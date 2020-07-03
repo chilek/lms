@@ -1,5 +1,7 @@
 {block name="eventlistboxrow"}
-<TR class="highlight event-single{if $event.closed} blend{/if}{if $event.wholeday} event-whole-day{/if}{if $event.multiday} event-multi-day{/if}" data-event-id="{$event.id}">
+<TR class="highlight event-single{if $event.closed} blend{/if}{if $event.wholeday} event-whole-day{/if}{if $event.multiday} event-multi-day{/if}"
+    data-event-id="{$event.id}"
+    data-popup-menu-title="{t a=$event.id|string_format:"#%06d"}Event $a{/t}">
     <TD style="min-width: 90px; {if isset($_EVENTSTYLES[$event.type])} {$_EVENTSTYLES[$event.type]}{/if}" class="text-center bold event-single-sortable-handler">
     {$_EVENTTYPES[$event.type]}{if $_EVENTTYPES[$event.type]}<br>{/if}{if $event.ticketid}<span class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$event.ticketid}"><a href="?m=rtticketview&id={$event.ticketid}" style="color: black">{$event.ticketid|string_format:"%06d"}</a></span>{/if}
     </TD>
@@ -51,12 +53,14 @@
             {buttons}
                 {if !isset($eventlist_mode)}
                     <a href="#" class="lms-ui-button" title="{trans("Show in timetable")}"
+                       data-title="{trans("Show in timetable")}"
                        onclick="location.href = '?m=eventlist&year={strftime('%Y', $event.date)}&month={strftime('%m', $event.date)}&day={strftime('%d', $event.date)}';">
                         <i class="lms-ui-icon-timetable"></i>
                     </a>
                 {/if}
                 <a href="#" class="lms-ui-button lms-ui-button-clipboard"
-                   data-clipboard-text="{$url}?m=eventinfo&id={$event.id}">
+                   data-clipboard-text="{$url}?m=eventinfo&id={$event.id}"
+                    data-title="{trans("Click copies to clipboard")}">
                     <i class="lms-ui-icon-clipboard"></i>
                 </a>
                 {if $imadded}
@@ -71,7 +75,7 @@
                         {button type="link" icon="close" onclick="location.href = '?m=eventedit&id={$event.id}&action=close&backid=' + $(this).closest('.event-day-table').attr('id');" tip="Close"}
                         {button type="link" icon="clone" href="?m=eventadd&id={$event.id}" tip="Clone"}
                         {button type="link" icon="delete" class="delete-event" href="?m=eventdel&id={$event.id}" tip="Delete permanently"}
-                        {button type="link" icon="edit" onclick="location.href = '?m=eventedit&id={$event.id}&backid=' + $(this).closest('.event-day-table').attr('id');"}
+                        {button type="link" icon="edit" onclick="location.href = '?m=eventedit&id={$event.id}&backid=' + $(this).closest('.event-day-table').attr('id');" tip="Edit"}
                     {/if}
                     {if $imadded && $event.note == ''}
                         {button type="link" icon="note" onclick="location.href = '?m=eventnote&id={$event.id}&backid=' + $(this).closest('.event-day-table').attr('id');" tip="Add Note"}

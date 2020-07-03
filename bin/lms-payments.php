@@ -167,6 +167,7 @@ $check_invoices = ConfigHelper::checkConfig('payments.check_invoices');
 $proforma_generates_commitment = ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment');
 $delete_old_assignments_after_days = intval(ConfigHelper::getConfig('payments.delete_old_assignments_after_days', 30));
 $prefer_settlement_only = ConfigHelper::checkConfig('payments.prefer_settlement_only');
+$prefer_netto = ConfigHelper::checkConfig('payments.prefer_netto');
 
 function localtime2()
 {
@@ -869,8 +870,19 @@ if ($result['assignments']) {
     $assigns = $result['assignments'];
 }
 
+if ($prefer_netto) {
+    $taxeslist = $LMS->GetTaxes();
+}
+
 // determine currency values for assignments with foreign currency
+// if payments.prefer_netto = true, use value netto+tax
 foreach ($assigns as &$assign) {
+    if ($prefer_netto) {
+        if (isset($assign['netvalue']) && !empty($assign['netvalue']) != 0) {
+            $assign['value'] = $assign['netvalue'] * (100 + $taxeslist[$assign['taxid']]['value']) / 100;
+        }
+    }
+
     $currency = $assign['currency'];
     if (empty($currency)) {
         $assign['currency'] = LMS::$currency;

@@ -759,6 +759,18 @@ class LMS
         return $manager->removeCustomerConsents($customerid, $consents);
     }
 
+    public function addCustomerContactFlags($customerid, $type, $flags)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->addCustomerContactFlags($customerid, $type, $flags);
+    }
+
+    public function removeCustomerContactFlags($customerid, $type, $flags)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->removeCustomerContactFlags($customerid, $type, $flags);
+    }
+
     /*
      * Customer groups
      */
@@ -3588,6 +3600,12 @@ class LMS
     {
         $manager = $this->getMessageManager();
         return $manager->updateMessageItems($params);
+    }
+
+    public function getSingleMessage($id, $details = false)
+    {
+        $manager = $this->getMessageManager();
+        return $manager->getSingleMessage($id, $details);
     }
 
     /**

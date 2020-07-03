@@ -2833,54 +2833,58 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $result['tags'] = $tarifftag_manager->getTariffTagsForTariff($id);
 
         $unactive = $this->db->GetAllByKey('SELECT SUM(a.count) AS count,
-            SUM(CASE t.period
-				WHEN ' . MONTHLY . ' THEN t.value
-				WHEN ' . QUARTERLY . ' THEN t.value/3
-				WHEN ' . HALFYEARLY . ' THEN t.value/6
-				WHEN ' . YEARLY . ' THEN t.value/12
-				ELSE (CASE a.period
-				    WHEN ' . MONTHLY . ' THEN t.value
-				    WHEN ' . QUARTERLY . ' THEN t.value/3
-				    WHEN ' . HALFYEARLY . ' THEN t.value/6
-				    WHEN ' . YEARLY . ' THEN t.value/12
-				    ELSE 0
-				    END)
-				END) AS value,
-				t.currency
-			FROM assignments a
-			JOIN tariffs t ON (t.id = a.tariffid)
-			WHERE t.id = ? AND a.commited = 1 AND (
-			            a.suspended = 1
-			            OR a.datefrom > ?NOW?
-			            OR (a.dateto <= ?NOW? AND a.dateto != 0)
-			            OR EXISTS (
-			                    SELECT 1 FROM assignments b
-					    WHERE b.customerid = a.customerid
-						    AND liabilityid IS NULL AND tariffid IS NULL
-						    AND b.datefrom <= ?NOW? AND (b.dateto > ?NOW? OR b.dateto = 0)
-				    )
+            SUM(
+                (((t.value * (100 - a.pdiscount)) / 100.0) - a.vdiscount)
+                * (CASE t.period
+                    WHEN ' . MONTHLY . ' THEN 1
+                    WHEN ' . QUARTERLY . ' THEN 1 / 3
+                    WHEN ' . HALFYEARLY . ' THEN 1 / 6
+                    WHEN ' . YEARLY . ' THEN 1 / 12
+                    ELSE (CASE a.period
+                        WHEN ' . MONTHLY . ' THEN 1
+                        WHEN ' . QUARTERLY . ' THEN 1 / 3
+                        WHEN ' . HALFYEARLY . ' THEN 1 / 6
+                        WHEN ' . YEARLY . ' THEN 1 / 12
+                        ELSE 0
+                    END)
+                END) * a.count) AS value,
+                t.currency
+            FROM assignments a
+            JOIN tariffs t ON (t.id = a.tariffid)
+            WHERE t.id = ? AND a.commited = 1 AND (
+                a.suspended = 1
+                OR a.datefrom > ?NOW?
+                OR (a.dateto <= ?NOW? AND a.dateto != 0)
+                OR EXISTS (
+                    SELECT 1 FROM assignments b
+                    WHERE b.customerid = a.customerid
+                        AND liabilityid IS NULL AND tariffid IS NULL
+                        AND b.datefrom <= ?NOW? AND (b.dateto > ?NOW? OR b.dateto = 0)
+                )
 			)
 			GROUP BY t.currency', 'currency', array($id));
 
-        $all = $this->db->GetAllByKey('SELECT SUM(a.count) AS count,
-			SUM(CASE t.period
-				WHEN ' . MONTHLY . ' THEN t.value
-				WHEN ' . QUARTERLY . ' THEN t.value/3
-				WHEN ' . HALFYEARLY . ' THEN t.value/6
-				WHEN ' . YEARLY . ' THEN t.value/12
-				ELSE (CASE a.period
-				    WHEN ' . MONTHLY . ' THEN t.value
-				    WHEN ' . QUARTERLY . ' THEN t.value/3
-				    WHEN ' . HALFYEARLY . ' THEN t.value/6
-				    WHEN ' . YEARLY . ' THEN t.value/12
-				    ELSE 0
-				    END)
-				 END) AS value,
-				 t.currency
-			FROM assignments a
-			JOIN tariffs t ON (t.id = a.tariffid)
-			WHERE tariffid = ? AND commited = 1
-			GROUP BY t.currency', 'currency', array($id));
+        $all = $this->db->GetAllByKey('SELECT COUNT(*) AS count,
+            SUM(
+                (((t.value * (100 - a.pdiscount)) / 100.0) - a.vdiscount)
+                * (CASE t.period
+                    WHEN ' . MONTHLY . ' THEN 1
+                    WHEN ' . QUARTERLY . ' THEN 1 / 3
+                    WHEN ' . HALFYEARLY . ' THEN 1 / 6
+                    WHEN ' . YEARLY . ' THEN 1 / 12
+                    ELSE (CASE a.period
+                        WHEN ' . MONTHLY . ' THEN 1
+                        WHEN ' . QUARTERLY . ' THEN 1 / 3
+                        WHEN ' . HALFYEARLY . ' THEN 1 / 6
+                        WHEN ' . YEARLY . ' THEN 1 / 12
+                        ELSE 0
+                    END)
+                END) * a.count) AS value,
+                t.currency
+            FROM assignments a
+            JOIN tariffs t ON (t.id = a.tariffid)
+            WHERE tariffid = ? AND commited = 1
+            GROUP BY t.currency', 'currency', array($id));
 
         // count of all customers with that tariff
         $result['customerscount'] = empty($result['customers']) ? 0 : count($result['customers']);

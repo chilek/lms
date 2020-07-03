@@ -1102,7 +1102,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                     END
                                 )
                             END
-                        )
+                        ) * a.count
                     ) AS value
                     FROM assignments a
                     LEFT JOIN tariffs t ON (t.id = a.tariffid)
@@ -2265,5 +2265,65 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             }
         }
         return $removed;
+    }
+
+    private function changeCustomerContactFlags($operation, $customerid, $type, $flags)
+    {
+        if (!is_array($flags)) {
+            $flags = array($flags);
+        }
+        $flags = Utils::filterIntegers($flags);
+        $contacttypes = $GLOBALS['CUSTOMERCONTACTTYPES'];
+        if (!empty($flags) && isset($contacttypes[$type])) {
+            $contacttype = $contacttypes[$type];
+            $flags = array_intersect(array_keys($contacttype['ui']['flags']), $flags);
+            if (empty($flags)) {
+                return;
+            }
+            $newtype = 0;
+            foreach ($flags as $flag) {
+                $newtype |= $flag;
+            }
+            if ($newtype) {
+                if ($operation == 'add') {
+                    $this->db->Execute(
+                        'UPDATE customercontacts SET type = type | ? WHERE customerid = ? AND type & ? > 0',
+                        array($newtype, $customerid, $contacttype['flagmask'])
+                    );
+                } else {
+                    $this->db->Execute(
+                        'UPDATE customercontacts SET type = type & ? WHERE customerid = ? AND type & ? > 0',
+                        array(~$newtype, $customerid, $contacttype['flagmask'])
+                    );
+                }
+
+                if ($this->syslog) {
+                    $contacts = $this->db->GetAll(
+                        'SELECT id, type FROM customercontacts WHERE customerid = ? AND type & ? > 0',
+                        array($customerid, $contacttype['flagmask'])
+                    );
+                    if (!empty($contacts)) {
+                        foreach ($contacts as $contact) {
+                            $args = array(
+                                SYSLOG::RES_CUSTCONTACT => $contact['id'],
+                                SYSLOG::RES_CUST => $customerid,
+                                'type' => $contact['type'],
+                            );
+                            $this->syslog->AddMessage(SYSLOG::RES_CUSTCONTACT, SYSLOG::OPER_UPDATE, $args);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public function addCustomerContactFlags($customerid, $type, $flags)
+    {
+        return $this->changeCustomerContactFlags('add', $customerid, $type, $flags);
+    }
+
+    public function removeCustomerContactFlags($customerid, $type, $flags)
+    {
+        return $this->changeCustomerContactFlags('remove', $customerid, $type, $flags);
     }
 }

@@ -470,4 +470,27 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
         }
         return 0;
     }
+
+    public function getSingleMessage($id, $details = false)
+    {
+        $message = $this->db->GetRow(
+            'SELECT m.*, u.name AS username, u.id AS userid
+            FROM messages m
+            LEFT JOIN vusers u ON u.id = m.userid
+            WHERE m.id = ?',
+            array($id)
+        );
+
+        if ($details && !empty($message)) {
+            $message['items'] = $this->db->GetAll(
+                'SELECT i.messageid AS id, i.status, i.error,
+                    i.destination, i.lastdate, i.lastreaddate
+                FROM messageitems i
+                WHERE i.messageid = ?',
+                array($id)
+            );
+        }
+
+        return $message;
+    }
 }

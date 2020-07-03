@@ -23,6 +23,7 @@
  */
 
 @import "less/lms-variables";
+@import "less/generic";
 @import "less/fontawesome";
 @import "less/icons";
 @import "less/datatables";
@@ -31,13 +32,8 @@
 @import "less/button";
 @import "less/jquery-ui";
 @import "less/gallery";
-
-.lms-ui-no-user-select {
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
-}
+@import "less/popup-menu";
+@import "less/multiselect";
 
 HTML { height: 100%; }
 
@@ -47,6 +43,9 @@ BODY {
 	background-color: @lucid;
 	margin: 0;
 	padding: 0;
+	&.fullscreen-popup {
+		overflow: hidden;
+	}
 	//min-height: 100%;
 	//width: 100%;
 	//display: flex;
@@ -108,6 +107,9 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 	right: 1.8em;
 	bottom: 0.6em;
 	z-index: 30000;
+	&.fullscreen-popup {
+		z-index: 0;
+	}
 }
 
 #lms-ui-menu-panel {
@@ -193,6 +195,9 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 
 #lms-ui-contents {
 	overflow: visible;
+	&.fullscreen-popup {
+		overflow: hidden;
+	}
 //	width: 100%;
 //	height: 100vh;
 	display: flex;
@@ -267,6 +272,9 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 #lms-ui-module-view {
 	width: 100%;
 	overflow: visible;
+	&.fullscreen-popup {
+		overflow: hidden;
+	}
 	//margin-top: 0.5em;
 	h1 {
 		margin-block-start: 0.4em;
@@ -346,9 +354,12 @@ form.lms-ui-quick-search {
 			width: 8.4em;
 		}
 
-		& + div {
+		&.lms-ui-quick-search-input + div {
 			margin-left: -1.8em;
 			visibility: hidden;
+			&.open {
+				visibility: visible;
+			}
 		}
 
 		&:focus {
@@ -665,95 +676,6 @@ BUTTON.lms-ui-error { background-color: @error-background; }
 BUTTON.lms-ui-warning { background-color: @warning-background; }
 
 IMG		{ vertical-align: middle; border: 0; }
-
-div.lms-ui-multiselect-wrapper {
-	vertical-align: middle;
-	display: inline-block;
-	background-color: @lucid;
-	border: solid 1px @blend;
-}
-
-div.lms-ui-multiselect {
-	float: left;
-	overflow: hidden;
-	font-size:  @font-size;
-	font-family: @fonts;
-	vertical-align: middle;
-	cursor: default;
-	padding: 0px 0px 0px 4px;
-	max-width: 200px;
-	white-space: pre-wrap;
-	min-width: 200px;
-	display: inline-block;
-	&.lms-ui-multiselect-filter {
-		min-width: 100px;
-	}
-}
-
-span.lms-ui-icon-multiselect {
-	float: right;
-	background-image: url('@{lms-img-path}/1.png');
-	background-repeat: no-repeat;
-	width: 16px;
-	height: 14px;
-	background-size: 16px;
-	margin-right: 2px;
-}
-
-div.lms-ui-multiselect-tiny {
-	overflow: hidden;
-	vertical-align: middle;
-	cursor: pointer;
-	display: flex;
-	align-items: center;
-	.lms-ui-no-user-select;
-}
-div.lms-ui-multiselectlayer {
-	position: absolute;
-	z-index: 20000;
-	overflow: hidden;
-	width: 350px;
-	.lms-ui-no-user-select;
-	ul {
-		list-style: none;
-		cursor: default;
-		padding: 0;
-		margin: 0;
-		border: solid 1px @blend;
-		white-space: nowrap;
-		max-height: 200px;
-		max-width: 350px;
-		overflow-x: hidden;
-		overflow-y: auto;
-		li {
-			padding: 0;
-			margin: 0;
-			background-color: @lucid;
-			input {
-				border: none;
-				margin: 3px 3px 3px 4px;
-			}
-			&.selected {
-				background-color: @dark;
-			}
-			&.active {
-				background-color: @superdark;
-			}
-			&.exclusive {
-				font-weight: bold;
-			}
-		}
-		span {
-			padding-left: 3px;
-		}
-	}
-	div {
-		border-left: solid 1px @blend;
-		border-right: solid 1px @blend;
-		border-bottom: solid 1px @blend;
-		background-color: @light;
-	}
-}
 
 .click-menu {
 	//font-size: 100%;
@@ -1956,6 +1878,7 @@ div.lms-ui-filter-container {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	flex-wrap: wrap;
 	div.lms-ui-filter-definition {
 		display: flex;
 		flex-wrap: wrap;
