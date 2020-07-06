@@ -41,6 +41,7 @@ $last = $DB->GetRow('SELECT cash.id AS id, cash.value AS value, cash.currency, c
 		ORDER BY cash.id DESC LIMIT 1');
 
 $SMARTY->assign('last', $last);
+$SMARTY->assign('currency', LMS::$default_currency);
 $SMARTY->assign('operation', $SESSION->get('addtype'));
 $SMARTY->assign('sourceid', $SESSION->get('addsource'));
 $SMARTY->assign('comment', $SESSION->get('addbc'));

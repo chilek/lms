@@ -169,7 +169,7 @@ if (isset($addbalance['mcustomerid'])) {
 
     if ($addbalance['value'] != 0) {
         $addbalance['currencyvalue'] = $LMS->getCurrencyValue($addbalance['currency'], $addbalance['time']);
-        if (!isset($addvalance['currencyvalue'])) {
+        if (!isset($addbalance['currencyvalue'])) {
             die('Fatal error: couldn\'t get quote for ' . $addbalance['currency'] . ' currency!<br>');
         }
         $LMS->AddBalance($addbalance);
