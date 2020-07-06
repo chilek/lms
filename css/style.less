@@ -815,6 +815,10 @@ ul.lms-ui-suggestion-list {
 	list-style-type: none;
 	padding: 0;
 	margin: 0;
+	@media screen and (max-width: @mobile-max-width) {
+		overflow: auto;
+		max-height: calc(100vh - 8em);
+	}
 }
 
 li.lms-ui-suggestion-item {
@@ -1015,7 +1019,9 @@ li.lms-ui-suggestion-item {
 
 #autosuggest {
 	display: none;
-	z-index: 10000;
+	@media screen and (min-width: @mobile-max-width) {
+		z-index: 10000;
+	}
 	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
 }
 
