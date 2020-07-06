@@ -195,6 +195,39 @@
 		});
 	});
 
-    bindKeyboardShortcuts();
+	bindKeyboardShortcuts();
+
+	$('.lms-ui-quick-search-input').keydown(function(e) {
+		if (e.code != 'Escape') {
+			return;
+		}
+
+		if (!$("body").is('.lms-ui-mobile') || $("#autosuggest").is(":visible")) {
+			return;
+		}
+
+		var toolPanels = $("#lms-ui-tool-panels");
+		toolPanels.hide().removeClass('fullscreen-popup')
+				.find('.lms-ui-quick-search-field').removeClass('lms-ui-quick-search-active')
+				.find('input[type="text"]').removeClass('lms-ui-quick-search-active');
+		disableFullScreenPopup();
+	});
+
+	$(function() {
+		$('#lms-ui-mobile-menu-search').click(function () {
+			var toolPanels = $("#lms-ui-tool-panels");
+			if (toolPanels.is(':visible')) {
+				toolPanels.hide().removeClass('fullscreen-popup')
+					.find('.lms-ui-quick-search-field').removeClass('lms-ui-quick-search-active')
+					.find('input[type="text"]').removeClass('lms-ui-quick-search-active');
+				disableFullScreenPopup();
+			} else {
+				toolPanels.show().addClass('fullscreen-popup')
+					.find('.lms-ui-quick-search-field').first().addClass('lms-ui-quick-search-active')
+					.find('input[type="text"]').addClass('lms-ui-quick-search-active').focus();
+				enableFullScreenPopup();
+			}
+		});
+	});
 
 </script>

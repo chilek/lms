@@ -1,0 +1,225 @@
+/*
+ * LMS version 1.11-git
+ *
+ *  (C) Copyright 2001-2020 LMS Developers
+ *
+ *  Please, see the doc/AUTHORS for more information about authors!
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License Version 2 as
+ *  published by the Free Software Foundation.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ *  USA.
+ *
+ *  $Id$
+ */
+
+body {
+  @media screen and (min-width: @mobile-max-width) {
+    &.main-menu-visible {
+      margin-left: 17em;
+      @media print {
+        margin-left: 0;
+      }
+
+      #lms-ui-menu-panel {
+        width: 16em;
+      }
+
+      #lms-ui-tool-panels {
+        margin-left: 17em;
+      }
+    }
+
+    /*
+        &.lms-ui-mobile {
+          margin-left: 4em;
+          @media print {
+            margin-left: 0;
+          }
+
+          #lms-ui-menu-panel {
+            width: 3em;
+          }
+
+          #lms-ui-tool-panels {
+            margin-left: 3.5em;
+          }
+        }
+
+        &.main-menu-mobile-wide {
+          margin-left: 17em;
+
+          #lms-ui-menu-panel {
+            width: 16em;
+          }
+
+          #lms-ui-tool-panels {
+            margin-left: 17em;
+          }
+        }
+      }
+    */
+  }
+}
+
+#lms-ui-menu-panel {
+  //	align-self: flex-start;
+  background-color: @dark;
+  overflow: hidden;
+  border: 1px solid black;
+  display: flex;
+  @media screen and (max-width: @mobile-max-width) {
+    display: none;
+    &.fullscreen-popup {
+      display: unset;
+    }
+    overflow-y: auto;
+    border: 0;
+    font-size: 200%;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 2em;
+    z-index: 31500;
+  }
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  //	height: 100%;
+  //	flex: 0 0 auto;
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+
+  #lms-ui-menu-panel-container {
+    overflow-x: hidden;
+    overflow-y: auto;
+    margin-right: 0px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+
+    #lms-ui-logo {
+      margin-top: 0.3em;
+      display: flex;
+      justify-content: center;
+      align-self: stretch;
+
+      @media screen and (max-width: @mobile-max-width) {
+        display: none;
+      }
+
+      :not(:first-child) {
+        margin-left: 0.3em;
+        font-weight: bold;
+        align-self: flex-end;
+      }
+    }
+
+    #lms-ui-main-menu {
+      margin-top: 0.5em;
+      //margin-bottom: 0.5em;
+      align-self: stretch;
+    }
+
+    #lms-ui-session-expire {
+      font-weight: bold;
+      color: darkred;
+      align-self: stretch;
+      text-align: center;
+      margin-bottom: 0.5em;
+    }
+
+    #lms-ui-copyrights {
+      font-weight: bold;
+      align-self: stretch;
+      text-align: center;
+      margin-bottom: 0.5em;
+
+      @media screen and (min-width: @mobile-max-width) {
+        display: none;
+      }
+    }
+  }
+}
+
+#lms-ui-menu-panel-toggle {
+  @media screen and (max-width: @mobile-max-width) {
+    display: none;
+  }
+
+  //position: absolute;
+  position: fixed;
+  left: 0.15em;
+  top: 0.15em;
+  background-size: cover;
+  width: 0.8em;
+  height: 0.8em;
+  cursor: pointer;
+  z-index: 1;
+
+  &:not(.visible) {
+    background-color: @superdark;
+    padding: 0.1em 0.0em 0.3em 0.1em;
+    border: @frame;
+    border-radius: 0 0 0.5em 0em;
+
+    & ~ #lms-ui-contents #lms-ui-quicksearch-indicators-panel {
+      @media screen and (min-width: @mobile-max-width) {
+        padding-left: 0.5em;
+      }
+    }
+  }
+}
+
+#lms-ui-mobile-menu-container {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2.2em;
+  z-index: 60;
+  background-color: @lucid;
+  font-size: 200%;
+
+  @media screen and (min-width: @mobile-max-width) {
+    display: none;
+  }
+
+  #lms-ui-mobile-menu-panel {
+    border-bottom: 1px solid black;
+    margin-bottom: 0.2em;
+    background-color: @dark;
+    height: auto;
+    width: 100%;
+
+    @media screen and (max-width: @mobile-max-width) {
+      .lms-ui-button {
+        margin-top: 0.2em;
+        margin-bottom: 0.2em;
+        border-radius: unset;
+
+        &:hover {
+          border-radius: unset;
+        }
+
+        border: 0;
+        //&:not(:last-child) {
+        border-right: 1px solid black;
+        //}
+      }
+    }
+  }
+}

@@ -1,3 +1,28 @@
+<div id="lms-ui-mobile-menu-container">
+	<nav id="lms-ui-mobile-menu-panel">
+		{button type="link" id="lms-ui-mobile-menu-toggle" icon="menu"}
+		{button type="link" id="lms-ui-mobile-menu-search" icon="search"}
+	</nav>
+</div>
+
+<script>
+
+	$(function() {
+		$('#lms-ui-mobile-menu-toggle').click(function() {
+			if ($('#lms-ui-menu-panel').is(':visible')) {
+				console.log('visible');
+				$('#lms-ui-menu-panel').removeClass('fullscreen-popup');
+				disableFullScreenPopup();
+			} else {
+				$('#lms-ui-menu-panel').addClass('fullscreen-popup');
+				enableFullScreenPopup();
+			}
+			//$('#lms-ui-menu-panel').toggle();
+		});
+	});
+
+</script>
+
 <i id="lms-ui-menu-panel-toggle" class="fas fa-angle-left no-print"></i>
 <nav id="lms-ui-menu-panel" class="no-print">
 	<div id="lms-ui-menu-panel-container">
@@ -29,11 +54,13 @@
 				setCookie('main-menu-visible', mainMenuVisible);
 			});
 
-			$('body').toggleClass('main-menu-mobile', $(window).width() <= 900);
+			$('body').toggleClass('lms-ui-mobile', parseInt($(window).outerWidth()) <= 800);
 
 			$(window).resize(function() {
-				$('body').toggleClass('main-menu-mobile', $(window).width() <= 900)
-				.css('margin-top', $('#lms-ui-tool-panels').outerHeight());
+				var mobileMode = parseInt($(window).outerWidth()) <= 800;
+				$('body').toggleClass('lms-ui-mobile', mobileMode)
+					.css('margin-top', mobileMode ? '' : $('#lms-ui-tool-panels').outerHeight());
+				$('.lms-ui-popup:visible').toggleClass('fullscreen-popup', mobileMode);
 			})
 
 			$(function() {

@@ -212,6 +212,9 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 						me.getSuggestions();
 					}, me.request_delay);
 			} else {
+				if (!this.value.length) {
+					me.inputText = '';
+				}
 				me.hideDiv();
 			}
 		}
@@ -254,7 +257,12 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 	Display the dropdown. Pretty straightforward.
 	********************************************************/
 	this.showDiv = function() {
-		$(this.div).show().position($.extend(this.my_at_map[this.placement], { of: this.elem } ));
+		$(this.div).show();
+		if (!$('body').is('.lms-ui-mobile')) {
+			$(this.div).position($.extend(this.my_at_map[this.placement], {of: this.elem}));
+		} else {
+			$(this.div).position(null);
+		}
 	};
 
 	/********************************************************
@@ -298,28 +306,6 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 				$(elem).removeClass('selected');
 			}
 		});
-	};
-
-	/********************************************************
-	Position the dropdown div below the input text field.
-	********************************************************/
-	this.positionDiv = function() {
-		var el = this.elem;
-		var x = 0;
-		var y = 0;
-
-		//Walk up the DOM and add up all of the offset positions.
-		while (el.offsetParent && el.tagName.toUpperCase() != 'BODY') {
-			x += el.offsetLeft;
-			y += el.offsetTop;
-			el = el.offsetParent;
-		}
-
-		x += el.offsetLeft;
-		y += el.offsetTop;
-
-		this.div.style.left = x + 'px';
-		this.div.style.top = y + 'px';
 	};
 
 	/********************************************************
@@ -392,8 +378,6 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 		};
 
 		this.div.className = this.class;
-		this.div.style.position = 'absolute';
-
 	};
 
 	this.getSuggestions = function() {
@@ -411,7 +395,6 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 				me.parseSuggestions(data);
 				if (me.suggestions.length) {
 					me.createDiv();
-					me.positionDiv();
 					me.showDiv();
 				} else {
 					me.hideDiv();
@@ -444,11 +427,13 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 //counter to help create unique ID's
 var idCounter = 0;
 
+
 // hide autosuggest after click out of the window
-$(document).click(function(e) {
-	var elem = e.target;
-	if (!$(elem).is('.lms-ui-quick-search,.lms-ui-suggestion-list *')) {
-		$('.lms-ui-suggestion-container:visible').hide();
+$(document).click(function() {
+	var autosuggest = $('.lms-ui-suggestion-container:visible');
+	if (!autosuggest.length) {
+		return;
 	}
-	return;
+	autosuggest.hide().closest('.lms-ui-popup').removeClass('fullscreen-popup').hide();
+	disableFullScreenPopup();
 });
