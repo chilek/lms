@@ -206,10 +206,9 @@
 			return;
 		}
 
-		var toolPanels = $("#lms-ui-tool-panels");
-		toolPanels.hide().removeClass('fullscreen-popup')
+		$("#lms-ui-tool-panels").hide().removeClass('fullscreen-popup')
 				.find('.lms-ui-quick-search-field').removeClass('lms-ui-quick-search-active')
-				.find('input[type="text"]').removeClass('lms-ui-quick-search-active');
+				.find('.lms-ui-quick-search-input').removeClass('lms-ui-quick-search-active');
 		disableFullScreenPopup();
 	});
 
