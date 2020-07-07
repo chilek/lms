@@ -101,9 +101,12 @@
 
 {/block}
 
-<select id="qs-selector" name="qs-selector[]" class="lms-ui-quick-search-selector lms-ui-multiselect-selection-group" multiple title="{trans("Click here to select which quick search fields should be visible")}">
+<select id="qs-selector" name="qs-selector[]" class="lms-ui-quick-search-selector lms-ui-multiselect-selection-group"
+	multiple title="{trans("Click here to select which quick search fields should be visible")}">
 
 </select>
+
+{button type="link" icon="clear" id="lms-ui-quick-search-field-clear"}
 
 <script>
     function bindKeyboardShortcuts() {
@@ -142,8 +145,7 @@
 		var field_count = Object.keys(qs_fields).length;
 		$('.lms-ui-quick-search-field[data-mode]').each(function () {
 			var mode = $(this).attr('data-mode');
-			if (field_count && !qs_fields.hasOwnProperty(mode))
-				$(this).hide();
+			$(this).toggleClass('visible', !field_count || qs_fields.hasOwnProperty(mode));
 			selector.append('<option value="' + mode + '"' + (!field_count || qs_fields.hasOwnProperty(mode) ? ' selected' : '') +
 					'>' + $(this).attr('data-label') + '</option>');
 		});
@@ -158,9 +160,9 @@
 		$(this).find("option[selected]").each(function () {
 			qs_fields[$(this).val()] = true;
 		});
-		$('.lms-ui-quick-search-field').hide();
+		$('.lms-ui-quick-search-field').removeClass('visible');
 		$.each(qs_fields, function(key) {
-			$('.lms-ui-quick-search-field[data-mode="' + key + '"]').show();
+			$('.lms-ui-quick-search-field[data-mode="' + key + '"]').addClass('visible');
 		});
 
 		bindKeyboardShortcuts();
@@ -207,24 +209,134 @@
 		}
 
 		$("#lms-ui-tool-panels").hide().removeClass('fullscreen-popup')
-				.find('.lms-ui-quick-search-field').removeClass('lms-ui-quick-search-active')
-				.find('.lms-ui-quick-search-input').removeClass('lms-ui-quick-search-active');
+			.find('.lms-ui-quick-search-field').removeClass('lms-ui-quick-search-active')
+			.find('.lms-ui-quick-search-input').removeClass('lms-ui-quick-search-active');
 		disableFullScreenPopup();
 	});
 
 	$(function() {
+		// quick search input auto show/hide support
+		var qsFields = $('.lms-ui-quick-search-field');
+
+		qsFields.each(function(index, field) {
+			var input = $(field).find('input');
+			new AutoSuggest(
+					$(field).closest('form').get(0),
+					input.get(0),
+					'?m=quicksearch&api=1&ajax=1&mode=' + $(field).attr('data-mode') + '&what=',
+					lmsSettings.quickSearchAutoSubmit
+			)
+		});
+
+		qsFields.find('.lms-ui-quick-search-input').on('click', function() {
+			qsFields.find('.lms-ui-quick-search-input').removeClass('lms-ui-quick-search-active')
+				.closest('.lms-ui-quick-search-field').removeClass('lms-ui-quick-search-active');
+			$(this).addClass('lms-ui-quick-search-active').focus().closest('.lms-ui-quick-search-field')
+				.addClass('lms-ui-quick-search-active');
+		}).siblings('i').on('click', function() {
+			var popup_menu;
+			if ($('body').is('.lms-ui-mobile')) {
+				popup_menu = $('#lms-ui-popup-menu');
+				if (popup_menu.is(':visible')) {
+					popup_menu.hide().removeClass('fullscreen-popup');
+					disableFullScreenPopup();
+				} else {
+					var field_count = Object.keys(qs_fields).length;
+					var html = '';
+					$('.lms-ui-quick-search-field[data-mode]').each(function() {
+						var mode = $(this).attr('data-mode');
+						if (field_count && !qs_fields.hasOwnProperty(mode)) {
+							return;
+						}
+						html += '<li data-mode="' + mode + '"><i class="' + $(this).find('.lms-ui-quick-search-icon').attr('class') + ' fa-fw' +
+								'"></i>' + $(this).attr('data-label') + '</li>';
+					});
+					html += '<li><i class="lms-ui-icon-configuration fa-fw"></i>' + $t('Customise') + '</li>';
+					$('#lms-ui-popup-menu-title').html($t('Select resource type'));
+					$('#lms-ui-popup-menu-content ul').html(html).find('li').click(function () {
+						popup_menu.hide().removeClass('fullscreen-popup');
+						disableFullScreenPopup();
+						var mode = $(this).attr('data-mode');
+						if (mode) {
+							$('.lms-ui-quick-search-field[data-mode="' + mode + '"] .lms-ui-quick-search-input').click();
+							setCookie('default-mobile-quick-search-field', mode);
+						} else {
+							$('#qs-selector').siblings('.lms-ui-multiselect-launcher').trigger('click');
+						}
+					});
+					popup_menu.show().addClass('fullscreen-popup');
+					enableFullScreenPopup();
+				}
+			} else {
+				qsFields.find('.lms-ui-quick-search-input.lms-ui-quick-search-active').removeClass('lms-ui-quick-search-active');
+				$(this).siblings('.lms-ui-quick-search-input').addClass('lms-ui-quick-search-active').focus()
+						.closest('.lms-ui-quick-search-field').addClass('lms-ui-quick-search-active');
+			}
+		});
+		if (!location.hash.length) {
+			qsFields.first().find('.lms-ui-quick-search-input').addClass('lms-ui-quick-search-active').focus();
+		}
+
+		$(document).keydown(function(e) {
+			var new_field;
+			if (e.keyCode != 9)
+				return;
+			var qs_field = $(e.target).closest('.lms-ui-quick-search-field');
+			if (qsFields.index(qs_field) == -1)
+				return;
+			if (e.shiftKey) {
+				new_field = qs_field;
+				do {
+					new_field = new_field.prev('.lms-ui-quick-search-field');
+				} while (new_field.length && !new_field.is(':visible'));
+				if (!new_field.length) {
+					new_field = qsFields.last();
+					while (new_field.length && !new_field.is(':visible')) {
+						new_field = new_field.prev('.lms-ui-quick-search-field');
+					}
+				}
+			} else {
+				new_field = qs_field;
+				do {
+					new_field = new_field.next('.lms-ui-quick-search-field');
+				} while (new_field.length && !new_field.is(':visible'));
+				if (!new_field.length) {
+					new_field = qsFields.first();
+					while (new_field.length && !new_field.is(':visible')) {
+						new_field = new_field.next('.lms-ui-quick-search-field');
+					}
+				}
+			}
+			$(e.target).removeClass('lms-ui-quick-search-active');
+			new_field.find('input').addClass('lms-ui-quick-search-active').focus();
+			e.preventDefault();
+		});
+
+		$('#lms-ui-quick-search-field-clear').click(function() {
+			$(this).siblings('.lms-ui-quick-search-field.lms-ui-quick-search-active').find('.lms-ui-quick-search-input')
+				.val('').keyup();
+		});
+
 		$('#lms-ui-mobile-menu-search').click(function () {
 			var toolPanels = $("#lms-ui-tool-panels");
 			if (toolPanels.is(':visible')) {
-				toolPanels.hide().removeClass('fullscreen-popup')
-					.find('.lms-ui-quick-search-field').removeClass('lms-ui-quick-search-active')
-					.find('input[type="text"]').removeClass('lms-ui-quick-search-active');
-				disableFullScreenPopup();
-			} else {
-				toolPanels.show().addClass('fullscreen-popup')
-					.find('.lms-ui-quick-search-field').first().addClass('lms-ui-quick-search-active')
-					.find('input[type="text"]').addClass('lms-ui-quick-search-active').focus();
-				enableFullScreenPopup();
+				var activeField = toolPanels.find('.lms-ui-quick-search-field.lms-ui-quick-search-active');
+				if (activeField.length) {
+					activeField.find('.lms-ui-quick-search-input').focus();
+				} else {
+					var defaultQuickSearchField = getCookie('default-mobile-quick-search-field');
+					var quickSearchField;
+					if (defaultQuickSearchField) {
+						quickSearchField = $('.lms-ui-quick-search-field[data-mode="' + defaultQuickSearchField + '"]')
+						if (!quickSearchField.length) {
+							quickSearchField = toolPanels.find('.lms-ui-quick-search-field').first();
+						}
+					} else {
+						quickSearchField = toolPanels.find('.lms-ui-quick-search-field').first();
+					}
+					quickSearchField.addClass('lms-ui-quick-search-active')
+						.find('.lms-ui-quick-search-input').addClass('lms-ui-quick-search-active').focus();
+				}
 			}
 		});
 	});

@@ -377,7 +377,7 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 			me.changeHighlight();
 		};
 
-		this.div.className = this.class;
+		$(this.div).addClass(this.class);
 	};
 
 	this.getSuggestions = function() {

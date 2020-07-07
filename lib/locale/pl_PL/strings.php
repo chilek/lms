@@ -4787,3 +4787,5 @@ $_LANG['Queue $a'] = 'Kolejka $a';
 
 $_LANG['Select options'] = 'Wybierz opcje';
 $_LANG['Select owners'] = 'Wybierz właścicieli';
+$_LANG['Select resource type'] = 'Wybierz typ zasobu';
+$_LANG['Customise'] = 'Dostosuj';
