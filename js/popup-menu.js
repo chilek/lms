@@ -46,8 +46,8 @@ $(function() {
         if (!$(e.target).is('.lms-ui-dropdown-toggle') && !$(e.target).closest('.lms-ui-dropdown-toggle').length &&
             !$(e.target).closest('#lms-ui-popup-menu').length &&
             popup_menu.is(':visible')) {
-            popup_menu.addClass('fullscreen-popup open');
-            popup_menu.show();
+            popup_menu.removeClass('fullscreen-popup open');
+            popup_menu.hide();
             $('.lms-ui-dropdown-toggle.open').removeClass('open');
             disableFullScreenPopup();
         }
