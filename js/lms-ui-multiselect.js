@@ -212,10 +212,10 @@ function multiselect(options) {
 
 	this.generateSelectedString = function() {
 		var selected = [];
-		old_element.find('option').removeAttr('selected');
+		old_element.find('option').removeAttr('selected').prop('selected', false);
 		$('input:checked', ul).each(function() {
 			selected.push($(this).next().html());
-			old_element.find('option[value="' + $(this).val() + '"]').attr('selected', 'selected');
+			old_element.find('option[value="' + $(this).val() + '"]').attr('selected', 'selected').prop('selected', true);
 		});
 		if (selected.length) {
 			if (def && shorten_to_def && def.length && selected.length == $('input', ul).length) {
