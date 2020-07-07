@@ -241,6 +241,7 @@
 					popup_menu.hide().removeClass('fullscreen-popup');
 					disableFullScreenPopup();
 				} else {
+					$(this).addClass('lms-ui-dropdown-toggle');
 					var field_count = Object.keys(qs_fields).length;
 					var html = '';
 					$('.lms-ui-quick-search-field[data-mode]').each(function() {
