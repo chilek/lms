@@ -546,12 +546,12 @@ function showGallery(data) {
 }
 
 function enableFullScreenPopup() {
-	$('body').addClass('fullscreen-popup');
+	//$('body').addClass('fullscreen-popup');
 }
 
 function disableFullScreenPopup() {
 	if (!$('.lms-ui-popup.fullscreen-popup:visible').length) {
-		$('body').removeClass('fullscreen-popup');
+		//$('body').removeClass('fullscreen-popup');
 	}
 }
 

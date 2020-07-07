@@ -36,7 +36,10 @@
 @import "less/multiselect";
 @import "less/menu";
 
-HTML { height: 100%; }
+html {
+	height: 100%;
+	overflow: hidden;
+}
 
 body {
 	font-size: @font-size;
@@ -45,6 +48,8 @@ body {
 	margin: 0;
 	padding: 0;
 	height: 100%;
+	overflow: auto;
+	height: calc(100vh - 4em);
 
 	&.fullscreen-popup {
 		overflow: hidden;
