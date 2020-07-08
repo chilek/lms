@@ -58,6 +58,8 @@ version 26-git (????-??-??):
     ('false' by default) [televoice]
   - enhancement: separate the Tcpdf transfer form into a separate class [ravvar]
   - enhancement: responsive version of layout implemented [chilan]
+  - improvement: 'phpui.promotion_activation_at_next_day' configuration variable support new 'business'
+    value which causes next business day usage for activation [chilan]
 
 version 25.0 (2020-05-15):
 

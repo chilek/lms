@@ -297,4 +297,23 @@ class Utils
         }
         return $result;
     }
+
+    public static function findNextBusinessDay($date = null)
+    {
+        $holidaysByYear = array();
+
+        list ($year, $month, $day, $weekday) = explode('/', date('Y/m/j/N', $date ? $date : time()));
+        $date = mktime(0, 0, 0, $month, $day, $year);
+
+        while (true) {
+            if (!isset($holidaysByYear[$year])) {
+                $holidaysByYear[$year] = getHolidays($year);
+            }
+            if ($weekday < 6 && !isset($holidaysByYear[$year][$date])) {
+                return $date;
+            }
+            $date = strtotime('+1 day', $date);
+            list ($year, $weekday) = explode('/', date('Y/N', $date));
+        }
+    }
 }
