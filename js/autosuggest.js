@@ -257,7 +257,7 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 	Display the dropdown. Pretty straightforward.
 	********************************************************/
 	this.showDiv = function() {
-		$(this.div).show();
+		$(this.div).show().data('autosuggest-input', this.elem);
 		if (!$('body').is('.lms-ui-mobile')) {
 			$(this.div).position($.extend(this.my_at_map[this.placement], {of: this.elem}));
 		} else {
@@ -269,7 +269,7 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 	Hide the dropdown and clear any highlight.
 	********************************************************/
 	this.hideDiv = function() {
-		$(this.div).hide();
+		$(this.div).hide().removeData('autosuggest-input', null);
 		this.highlighted = -1;
 	};
 
@@ -429,11 +429,12 @@ var idCounter = 0;
 
 
 // hide autosuggest after click out of the window
-$(document).click(function() {
+$(document).click(function(e) {
 	var autosuggest = $('.lms-ui-suggestion-container:visible');
-	if (!autosuggest.length) {
+	if (!autosuggest.length || $(e.target).is(autosuggest.data('autosuggest-input'))) {
 		return;
 	}
+
 	autosuggest.hide().closest('.lms-ui-popup').removeClass('fullscreen-popup').hide();
 	disableFullScreenPopup();
 });
