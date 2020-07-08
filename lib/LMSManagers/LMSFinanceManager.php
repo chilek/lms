@@ -330,6 +330,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $datefrom    = $data['datefrom'];
             $cday        = date('d', $datefrom);
 
+            $use_discounts = ConfigHelper::checkConfig('phpui.promotion_use_discounts');
+
             foreach ($data_tariff as $idx => $dt) {
                 list($value, $period) = explode(':', $dt);
 
@@ -475,6 +477,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $_datefrom = 0;
                     $at        = (ConfigHelper::checkConfig('phpui.promotion_preserve_at_day') && $data['at'] !== '')
                                                ? $data['at'] : $this->CalcAt($period, $datefrom);
+
                     $length    = $data_schema[$idx - 1];
                     $month     = date('n', $datefrom);
                     $year      = date('Y', $datefrom);
@@ -483,32 +486,36 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $tariffid = null;
 
                     if ($value != 'NULL') {
-                        if ($tariff['period'] !== null) {
-                            $tariffid = $this->db->GetOne(
-                                'SELECT id FROM tariffs
-														   WHERE
-																name   = ? AND
-																value  = ? AND
-																currency = ? AND
-																period = ?
-														   LIMIT 1',
-                                array($tariff['name'],
-                                    empty($value) || $value == 'NULL' ? 0 : str_replace(',', '.', $value),
-                                    $tariff['currency'],
-                                    $tariff['period'])
-                            );
+                        if ($use_discounts) {
+                            $tariffid = $tariff['id'];
                         } else {
-                            $tariffid = $this->db->GetOne(
-                                '
-								SELECT id FROM tariffs
-								WHERE name = ? AND value = ? AND currency = ? AND period IS NULL
-								LIMIT 1',
-                                array(
-                                    $tariff['name'],
-                                    empty($value) || $value == 'NULL' ? 0 : str_replace(',', '.', $value),
-                                    $tariff['currency'],
-                                )
-                            );
+                            if ($tariff['period'] !== null) {
+                                $tariffid = $this->db->GetOne(
+                                    'SELECT id FROM tariffs
+                                                               WHERE
+                                                                    name   = ? AND
+                                                                    value  = ? AND
+                                                                    currency = ? AND
+                                                                    period = ?
+                                                               LIMIT 1',
+                                    array($tariff['name'],
+                                        empty($value) || $value == 'NULL' ? 0 : str_replace(',', '.', $value),
+                                        $tariff['currency'],
+                                        $tariff['period'])
+                                );
+                            } else {
+                                $tariffid = $this->db->GetOne(
+                                    '
+                                    SELECT id FROM tariffs
+                                    WHERE name = ? AND value = ? AND currency = ? AND period IS NULL
+                                    LIMIT 1',
+                                    array(
+                                        $tariff['name'],
+                                        empty($value) || $value == 'NULL' ? 0 : str_replace(',', '.', $value),
+                                        $tariff['currency'],
+                                    )
+                                );
+                            }
                         }
 
                         // ... if not found clone tariff
@@ -621,7 +628,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                     'datefrom' => $datefrom,
                                     'dateto' => $partial_dateto,
                                     'pdiscount' => 0,
-                                    'vdiscount' => $partial_vdiscount,
+                                    'vdiscount' => ($use_discounts ? $tariff['value'] - $val : 0) + $partial_vdiscount,
                                     'attribute' => !empty($data['attribute']) ? $data['attribute'] : null,
                                     SYSLOG::RES_LIAB => null,
                                     'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
@@ -703,7 +710,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                 'datefrom'          => $partial_datefrom,
                                 'dateto'            => $data['dateto'],
                                 'pdiscount'         => 0,
-                                'vdiscount'         => $partial_vdiscount,
+                                'vdiscount'         => ($use_discounts ? $tariff['value'] - $val : 0) + $partial_vdiscount,
                                 'attribute'         => !empty($data['attribute']) ? $data['attribute'] : null,
                                 SYSLOG::RES_LIAB    => null,
                                 'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
@@ -739,7 +746,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             'datefrom' => $__datefrom,
                             'dateto' => $__dateto,
                             'pdiscount' => 0,
-                            'vdiscount' => 0,
+                            'vdiscount' => ($use_discounts ? $tariff['value'] - $value : 0),
                             'attribute' => !empty($data['attribute']) ? $data['attribute'] : null,
                             SYSLOG::RES_LIAB => empty($lid) ? null : $lid,
                             'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,

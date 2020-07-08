@@ -60,6 +60,8 @@ version 26-git (????-??-??):
   - enhancement: responsive version of layout implemented [chilan]
   - improvement: 'phpui.promotion_activation_at_next_day' configuration variable support new 'business'
     value which causes next business day usage for activation [chilan]
+  - enhancement: 'phpui.promotion_use_discounts' configuration variable allows to force
+    value discounts usage in assignments created basing on promotion schemas [chilan]
 
 version 25.0 (2020-05-15):
 
