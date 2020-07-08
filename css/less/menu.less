@@ -23,7 +23,7 @@
  */
 
 body {
-  @media screen and (min-width: @mobile-max-width) {
+  @media screen and (min-width: @mobile-max-width + 1px) {
     &.main-menu-visible {
       margin-left: 17em;
       @media print {
@@ -148,7 +148,7 @@ body {
       text-align: center;
       margin-bottom: 0.5em;
 
-      @media screen and (min-width: @mobile-max-width) {
+      @media screen and (min-width: @mobile-max-width + 1px) {
         display: none;
       }
     }
@@ -177,7 +177,7 @@ body {
     border-radius: 0 0 0.5em 0em;
 
     & ~ #lms-ui-contents #lms-ui-quicksearch-indicators-panel {
-      @media screen and (min-width: @mobile-max-width) {
+      @media screen and (min-width: @mobile-max-width + 1px) {
         padding-left: 0.5em;
       }
     }
@@ -194,7 +194,7 @@ body {
   background-color: @lucid;
   font-size: 200%;
 
-  @media screen and (min-width: @mobile-max-width) {
+  @media screen and (min-width: @mobile-max-width + 1px) {
     display: none;
   }
 
