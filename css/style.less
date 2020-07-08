@@ -264,13 +264,10 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 			border: 0;
 			width: 100%;
 			border-top: @frame;
-			padding-top: 0.5em;
-			padding-bottom: 0.5em;
+
 			.lms-ui-suggestion-item {
 				flex-direction: column;
 				align-items: unset;
-				padding-left: 0.5em;
-				padding-right: 0.5em;
 				.lms-ui-suggestion-name {
 					font-size: inherit;
 				}
@@ -849,176 +846,182 @@ input:invalid {
 	&:hover {
 		cursor: pointer;
 	}
-}
 
-ul.lms-ui-suggestion-list {
-	list-style-type: none;
-	padding: 0;
-	margin: 0;
-	@media screen and (max-width: @mobile-max-width) {
-		overflow: auto;
-		max-height: calc(100vh - 11em);
-	}
-}
+	.lms-ui-suggestion-list {
+		list-style-type: none;
+		padding: 0;
+		margin: 0;
+		padding-top: 0.5em;
+		padding-bottom: 0.5em;
 
-li.lms-ui-suggestion-item {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	&:not(:last-child) {
-		border-bottom: @dark dotted 1px;
-	}
-	&.selected {
-		background-color: @highlight;
-		a {
-			color: black;
+		@media screen and (max-width: @mobile-max-width) {
+			overflow: auto;
+			max-height: calc(100vh - 11em);
 		}
-	}
-	a {
-		text-decoration: none;
-		padding-left: 2px;
-		color: black;
-	}
-}
 
-.lms-ui-suggestion-icon {
-	content: "";
-	padding-right: 17px;
-	background-size: contain;
-	background-repeat: no-repeat;
-}
+		.lms-ui-suggestion-item {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding-left: 0.5em;
+			padding-right: 0.5em;
 
-.lms-ui-suggestion-name {
-	font-size: 12px;
-	padding-top: 2px;
-	color: black;
-	&.blend {
-		.blend;
-	}
-	&.red {
-		.red;
-	}
-	&.lms-ui-suggestion-customer-status-awaiting::before {
-		.lms-ui-suggestion-icon;
-		background-image: url('@{lms-img-path}/wait.gif');
-	}
-	&.lms-ui-suggestion-customer-status-interested::before {
-		.lms-ui-suggestion-icon;
-		background-image: url('@{lms-img-path}/unk.gif');
-	}
-	&.lms-ui-suggestion-customer-status-disconnected::before {
-		.lms-ui-suggestion-icon;
-		background-image: url('@{lms-img-path}/node_off.gif');
-	}
-	&.lms-ui-suggestion-customer-status-debtcollection::before {
-		.lms-ui-suggestion-icon;
-		background-image: url('@{lms-img-path}/money.gif');
-	}
-	&.lms-ui-suggestion-node-status-unknown::before {
-		.lms-ui-suggestion-icon;
-		background-image: url('@{lms-img-path}/node_unk.gif');
-	}
-	&.lms-ui-suggestion-node-status-online::before {
-		.lms-ui-suggestion-icon;
-		background-image: url('@{lms-img-path}/node_on.gif');
-	}
-	&.lms-ui-suggestion-node-status-offline::before {
-		.lms-ui-suggestion-icon;
-		background-image: url('@{lms-img-path}/node_off.gif');
-	}
-	&.lms-ui-suggestion-netdevice::before {
-			.lms-ui-suggestion-icon;
-			background-image: url('@{lms-img-path}/netdev.gif');
-	}
-	&.lms-ui-suggestion-wireless::before {
-		.lms-ui-suggestion-icon;
-		background-image: url('@{lms-img-path}/wireless.gif');
-	}
+			&:not(:last-child) {
+				border-bottom: @dark dotted 1px;
+			}
+			&.selected {
+				background-color: @highlight;
+				a {
+					color: black;
+				}
+			}
+			a {
+				text-decoration: none;
+				padding-left: 2px;
+				color: black;
+			}
 
-	&.lms-ui-suggestion-wireless-uni {
-		&::before {
-			.lms-ui-suggestion-icon;
-			background-image: url('@{lms-img-path}/wireless.gif');
-		}
-		color: teal;
-	}
-	&.lms-ui-suggestion-wireless-nni {
-		&::before {
-			.lms-ui-suggestion-icon;
-			background-image: url('@{lms-img-path}/wireless.gif');
-		}
-		color: brown;
-	}
-	&.lms-ui-suggestion-network::before {
-		.lms-ui-suggestion-icon;
-		background-image: url('@{lms-img-path}/network.gif');
-	}
-	&.lms-ui-suggestion-netnode::before {
-			.lms-ui-suggestion-icon;
-			background-image: url('@{lms-img-path}/netnode.png');
-	}
-	&.lms-ui-suggestion-customer-status-connected::before {
-		.lms-ui-suggestion-icon;
-		background-image: url('@{lms-img-path}/customer.gif');
-	}
-	&.lms-ui-suggestion-ticket-state-new {
-		.red;
-		&::before {
-			.lms-ui-suggestion-icon;
-			background-image: url('@{lms-img-path}/new.gif');
-		}
-	}
-	&.lms-ui-suggestion-ticket-state-open {
-		&::before {
-			.lms-ui-suggestion-icon;
-			background-image: url('@{lms-img-path}/open.gif');
-		}
-	}
-	&.lms-ui-suggestion-ticket-state-resolved {
-		.blend;
-		&::before {
-			.lms-ui-suggestion-icon;
-			background-image: url('@{lms-img-path}/resolved.gif');
-		}
-	}
-	&.lms-ui-suggestion-ticket-state-dead {
-		&::before {
-			.lms-ui-suggestion-icon;
-			background-image: url('@{lms-img-path}/dead.gif');
-		}
-	}
-	&.lms-ui-suggestion-ticket-state-scheduled {
-		&::before {
-			.lms-ui-suggestion-icon;
-			background-image: url('@{lms-img-path}/calendar.gif');
-		}
-	}
-	&.lms-ui-suggestion-ticket-state-waiting {
-		&::before {
-			.lms-ui-suggestion-icon;
-			background-image: url('@{lms-img-path}/calendar.gif');
-		}
-	}
-	&.lms-ui-suggestion-ticket-state-verified {
-		&::before {
-			.lms-ui-suggestion-icon;
-			background-image: url('@{lms-img-path}/verifier.png');
-		}
-	}
-	&.lms-ui-suggestion-phone {
-		&::before {
-			.lms-ui-suggestion-icon;
-			background-image: url('@{lms-img-path}/phone.gif');
-		}
-	}
-}
+			.lms-ui-suggestion-icon {
+				content: "";
+				padding-right: 17px;
+				background-size: contain;
+				background-repeat: no-repeat;
+			}
 
-.lms-ui-suggestion-description {
-	font-size: 10px;
-	margin-right: 2px;
-	color: brown;
-	padding-left: 20px;
-	text-align: right;
+			.lms-ui-suggestion-name {
+				font-size: 12px;
+				padding-top: 2px;
+				color: black;
+				&.blend {
+					.blend;
+				}
+				&.red {
+					.red;
+				}
+				&.lms-ui-suggestion-customer-status-awaiting::before {
+					.lms-ui-suggestion-icon;
+					background-image: url('@{lms-img-path}/wait.gif');
+				}
+				&.lms-ui-suggestion-customer-status-interested::before {
+					.lms-ui-suggestion-icon;
+					background-image: url('@{lms-img-path}/unk.gif');
+				}
+				&.lms-ui-suggestion-customer-status-disconnected::before {
+					.lms-ui-suggestion-icon;
+					background-image: url('@{lms-img-path}/node_off.gif');
+				}
+				&.lms-ui-suggestion-customer-status-debtcollection::before {
+					.lms-ui-suggestion-icon;
+					background-image: url('@{lms-img-path}/money.gif');
+				}
+				&.lms-ui-suggestion-node-status-unknown::before {
+					.lms-ui-suggestion-icon;
+					background-image: url('@{lms-img-path}/node_unk.gif');
+				}
+				&.lms-ui-suggestion-node-status-online::before {
+					.lms-ui-suggestion-icon;
+					background-image: url('@{lms-img-path}/node_on.gif');
+				}
+				&.lms-ui-suggestion-node-status-offline::before {
+					.lms-ui-suggestion-icon;
+					background-image: url('@{lms-img-path}/node_off.gif');
+				}
+				&.lms-ui-suggestion-netdevice::before {
+					.lms-ui-suggestion-icon;
+					background-image: url('@{lms-img-path}/netdev.gif');
+				}
+				&.lms-ui-suggestion-wireless::before {
+					.lms-ui-suggestion-icon;
+					background-image: url('@{lms-img-path}/wireless.gif');
+				}
+
+				&.lms-ui-suggestion-wireless-uni {
+					&::before {
+						.lms-ui-suggestion-icon;
+						background-image: url('@{lms-img-path}/wireless.gif');
+					}
+					color: teal;
+				}
+				&.lms-ui-suggestion-wireless-nni {
+					&::before {
+						.lms-ui-suggestion-icon;
+						background-image: url('@{lms-img-path}/wireless.gif');
+					}
+					color: brown;
+				}
+				&.lms-ui-suggestion-network::before {
+					.lms-ui-suggestion-icon;
+					background-image: url('@{lms-img-path}/network.gif');
+				}
+				&.lms-ui-suggestion-netnode::before {
+					.lms-ui-suggestion-icon;
+					background-image: url('@{lms-img-path}/netnode.png');
+				}
+				&.lms-ui-suggestion-customer-status-connected::before {
+					.lms-ui-suggestion-icon;
+					background-image: url('@{lms-img-path}/customer.gif');
+				}
+				&.lms-ui-suggestion-ticket-state-new {
+					.red;
+					&::before {
+						.lms-ui-suggestion-icon;
+						background-image: url('@{lms-img-path}/new.gif');
+					}
+				}
+				&.lms-ui-suggestion-ticket-state-open {
+					&::before {
+						.lms-ui-suggestion-icon;
+						background-image: url('@{lms-img-path}/open.gif');
+					}
+				}
+				&.lms-ui-suggestion-ticket-state-resolved {
+					.blend;
+					&::before {
+						.lms-ui-suggestion-icon;
+						background-image: url('@{lms-img-path}/resolved.gif');
+					}
+				}
+				&.lms-ui-suggestion-ticket-state-dead {
+					&::before {
+						.lms-ui-suggestion-icon;
+						background-image: url('@{lms-img-path}/dead.gif');
+					}
+				}
+				&.lms-ui-suggestion-ticket-state-scheduled {
+					&::before {
+						.lms-ui-suggestion-icon;
+						background-image: url('@{lms-img-path}/calendar.gif');
+					}
+				}
+				&.lms-ui-suggestion-ticket-state-waiting {
+					&::before {
+						.lms-ui-suggestion-icon;
+						background-image: url('@{lms-img-path}/calendar.gif');
+					}
+				}
+				&.lms-ui-suggestion-ticket-state-verified {
+					&::before {
+						.lms-ui-suggestion-icon;
+						background-image: url('@{lms-img-path}/verifier.png');
+					}
+				}
+				&.lms-ui-suggestion-phone {
+					&::before {
+						.lms-ui-suggestion-icon;
+						background-image: url('@{lms-img-path}/phone.gif');
+					}
+				}
+			}
+
+			.lms-ui-suggestion-description {
+				font-size: 10px;
+				margin-right: 2px;
+				color: brown;
+				padding-left: 20px;
+				text-align: right;
+			}
+		}
+	}
 }
 
 .lms-ui-customer-status {
