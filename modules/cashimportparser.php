@@ -42,11 +42,13 @@ if (isset($_POST['fileupload'])) {
     if (empty($files)) {
         $error['files'] = trans('No files selected!');
     } else {
+/*
         foreach ($files as $file) {
             if (strpos($file['type'], 'text') !== 0) {
                 $error['files'] = trans('Non plain text file detected!');
             }
         }
+*/
         if (isset($error['files'])) {
             include(MODULES_DIR . DIRECTORY_SEPARATOR . 'cashimport.php');
             die;
