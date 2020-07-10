@@ -38,7 +38,9 @@
 
 html {
 	height: 100%;
-	overflow: hidden;
+	.fullscreen-popup {
+		overflow: hidden;
+	}
 	@media print {
 		overflow: visible;
 	}
@@ -73,8 +75,10 @@ body {
 		}
 	}
 
-	@media screen and (max-width: @mobile-max-width) {
-		margin-top: 4em;
+	&:not(.lms-ui-popup) {
+		@media screen and (max-width: @mobile-max-width) {
+			margin-top: 4em;
+		}
 	}
 
 	//min-height: 100%;
@@ -85,6 +89,10 @@ body {
 	//overflow: hidden;
 	//height: 100vh;
 	margin-left: 0.5em;
+
+	&.lms-ui-popup {
+		margin-left: 0;
+	}
 
 	#lms-ui-tool-panels {
 		margin-left: 1.2em;
