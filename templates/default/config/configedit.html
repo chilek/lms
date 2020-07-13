@@ -227,6 +227,7 @@
 				$('[name="config[var]"]').val(data.name).trigger('autogrow');
 				$('[name="config[section]"]').scombobox('val', data.section);
 				getDocumentation(data.section, data.name);
+				$('#configedit').trigger('lms:form_validation_failed');
 			},
 			onLoad: function() {
 				$('[name="config[var]"]:ui-tooltip').tooltip('destroy');
