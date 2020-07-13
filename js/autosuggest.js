@@ -352,7 +352,7 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 			ul.appendChild(li);
 		});
 
-		this.div.replaceChild(ul,this.div.childNodes[0]);
+		$(ul).appendTo($(this.div).empty());
 
 		/********************************************************
 		mouseover handler for the dropdown ul

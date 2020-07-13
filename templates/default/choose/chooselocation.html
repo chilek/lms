@@ -18,6 +18,15 @@
 		z-index: 1;
 	}
 
+	@media screen and (max-width: 800px) {
+		#location-box-autosuggest .lms-ui-suggestion-list {
+			overflow: initial;
+		}
+		#location-box-autosuggest .lms-ui-suggestion-description {
+			display: none;
+		}
+	}
+
 </style>
 
 {if !empty($states)}

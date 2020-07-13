@@ -477,6 +477,7 @@ function initListQuickSearch(options) {
 		form: form[0],
 		elem: list_suggestion[0],
 		uri: options.ajax,
+		suggestionContainer: '#lms-ui-list-suggestion-container',
 		onSubmit: function (data) {
 			list_suggestion.val('');
 			var html = '<li data-item-id="' + data.id + '">' +

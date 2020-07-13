@@ -271,25 +271,6 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 	@media screen and (max-width: @mobile-max-width) {
 		width: 100%;
 
-		#autosuggest {
-			font-size: 150%;
-			border: 0;
-			width: 100%;
-			border-top: @frame;
-
-			.lms-ui-suggestion-item {
-				flex-direction: column;
-				align-items: unset;
-				.lms-ui-suggestion-name {
-					font-size: inherit;
-				}
-				.lms-ui-suggestion-description {
-					padding-top: 0.4em;
-					font-size: 90%;
-				}
-			}
-		}
-
 		.lms-ui-quick-search-selector .lms-ui-multiselect-launcher {
 			display: none;
 		}
@@ -852,9 +833,36 @@ input:invalid {
 	padding: 0px;
 	min-width: 350px;
 	position: absolute;
+	display: none;
+	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+
 	@media screen and (max-width: @mobile-max-width) {
 		position: static;
+
+		font-size: 150%;
+		border: 0;
+		width: 100%;
+		border-top: @frame;
+
+		.lms-ui-suggestion-item {
+			flex-direction: column;
+			align-items: unset !important;
+
+			.lms-ui-suggestion-name {
+				font-size: inherit;
+			}
+
+			.lms-ui-suggestion-description {
+				padding-top: 0.4em;
+				font-size: 90%;
+			}
+		}
 	}
+
+	@media screen and (min-width: @mobile-max-width + 1px) {
+		z-index: 55;
+	}
+
 	&:hover {
 		cursor: pointer;
 	}
@@ -901,7 +909,9 @@ input:invalid {
 			}
 
 			.lms-ui-suggestion-name {
-				font-size: 12px;
+				@media screen and (min-width: @mobile-max-width + 1px) {
+					font-size: 12px;
+				}
 				padding-top: 2px;
 				color: black;
 				&.blend {
@@ -1026,7 +1036,9 @@ input:invalid {
 			}
 
 			.lms-ui-suggestion-description {
-				font-size: 10px;
+				@media screen and (min-width: @mobile-max-width + 1px) {
+					font-size: 10px;
+				}
 				margin-right: 2px;
 				color: brown;
 				padding-left: 20px;
@@ -1070,14 +1082,6 @@ input:invalid {
 	& .lms-ui-tab-table-column:not(.buttons) {
 		text-decoration: line-through;
 	}
-}
-
-#autosuggest {
-	display: none;
-	@media screen and (min-width: @mobile-max-width + 1px) {
-		z-index: 55;
-	}
-	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
 }
 
 .acl		{ list-style-type: square; }
