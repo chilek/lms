@@ -100,7 +100,7 @@ body {
 		@media screen and (max-width: @mobile-max-width) {
 			margin-left: 0;
 			top: 4em;
-			z-index: 31700;
+			z-index: 70;
 			display: none;
 
 			&.fullscreen-popup {
@@ -133,7 +133,7 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 	opacity: 0.8;
 	right: 1.8em;
 	bottom: 0.6em;
-	z-index: 30000;
+	z-index: 60;
 
 	@media screen and (max-width: @mobile-max-width) {
 		font-size: 120%;
@@ -1075,7 +1075,7 @@ input:invalid {
 #autosuggest {
 	display: none;
 	@media screen and (min-width: @mobile-max-width + 1px) {
-		z-index: 10000;
+		z-index: 55;
 	}
 	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
 }
@@ -2444,14 +2444,16 @@ table.lms-ui-mac-address-selection {
 	text-overflow: ellipsis;
 }
 
-#lms-ui-modal-dialog ol {
-	list-style: none;
-	padding-left: 0;
-	width: 90%;
-}
+#lms-ui-modal-dialog {
+	ol {
+		list-style: none;
+		padding-left: 0;
+		width: 90%;
 
-#lms-ui-modal-dialog li.message {
-	font-weight: bold;
+		li.message {
+			font-weight: bold;
+		}
+	}
 }
 
 fieldset {
