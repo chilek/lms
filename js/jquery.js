@@ -472,9 +472,12 @@ function initListQuickSearch(options) {
 	}
 	var list = list_container.find('.lms-ui-list');
 	var list_suggestion = list_container.find('.lms-ui-list-suggestion');
-	new AutoSuggest(
-		list_container.closest('form')[0], list_suggestion[0], options.ajax, 0,
-		function (data) {
+	var form = list_container.closest('form');
+	new AutoSuggest({
+		form: form[0],
+		elem: list_suggestion[0],
+		uri: options.ajax,
+		onSubmit: function (data) {
 			list_suggestion.val('');
 			var html = '<li data-item-id="' + data.id + '">' +
 				'<input type="hidden" name="' + options.field_name_pattern.replace('%id%', data.id) + '" value="' + data.id + '">' +
@@ -484,16 +487,17 @@ function initListQuickSearch(options) {
 			} else {
 				list.append(html).show();
 			}
-			list_container.trigger('lms:list_updated', { list: list.find('li') });
+			list_container.trigger('lms:list_updated', {list: list.find('li')});
+			form.trigger('lms:form_validation_failed');
 		},
-		function (suggestions) {
+		onLoad: function (suggestions) {
 			var result = [];
 			var itemids = [];
 
 			list.find('li[data-item-id]').each(function () {
 				itemids.push($(this).attr('data-item-id'));
 			});
-			$(options.conflict_lists).each(function(key, list) {
+			$(options.conflict_lists).each(function (key, list) {
 				$(list).find('li[data-item-id]').each(function () {
 					itemids.push($(this).attr('data-item-id'));
 				});
@@ -509,7 +513,7 @@ function initListQuickSearch(options) {
 
 			return result;
 		}
-	);
+	});
 }
 
 function showGallery(data) {
