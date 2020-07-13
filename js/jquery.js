@@ -1639,7 +1639,7 @@ $(function() {
 	});
 
 	// disables jquery-ui tooltip after any key press in ui control
-	$(document).on('keypress', "[data-tooltip]", function() {
+	$(document).on('keypress', "[data-tooltip]:ui-tooltip", function() {
 		$(this).tooltip('disable');
 	});
 
