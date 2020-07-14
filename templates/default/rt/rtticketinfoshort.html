@@ -14,10 +14,20 @@
 	{if $ticket.creatorid}
 	<TR>
 		<TD class="bold nobr">
-			<i class="lms-ui-icon-user"></i> {trans("Created by:")}
+			{icon name="user" label="Created by:"}
 		</TD>
 		<TD>
 			<A href="?m=userinfo&id={$ticket.creatorid}">{$ticket.creator}</a>
+		</TD>
+	</TR>
+	{/if}
+	{if $ticket.createtime}
+	<TR>
+		<TD class="bold nobr">
+			{icon name="uptime" label="Creation time:"}
+		</TD>
+		<TD>
+			{$ticket.createtime|date_format:"%Y/%m/%d %H:%M:%S"}
 		</TD>
 	</TR>
 	{/if}
