@@ -1946,8 +1946,10 @@ div.lms-ui-filter-container {
 		width: 80%;
 		& > *,
 		& > form > * {
-			margin: 0.2em;
-			display: inline-block;
+			&:not(script) {
+				margin: 0.2em;
+				display: inline-block;
+			}
 		}
 	}
 }
