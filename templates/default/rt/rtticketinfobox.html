@@ -349,7 +349,7 @@
 
 			<br>
 
-			{if (!$ticket.owner && $ticket.owner != $layout.logid) || ConfigHelper::checkPrivilege('superuser')}
+			{if $ticket.owner != $layout.logid}
 			{button id="ticket-assign-to-me" icon="user" label="Assign to me" href="?m=rtticketedit&id={$ticket.ticketid}&action=assign"}
 			{/if}
 			{if (!$ticket.verifier && $ticket.owner !== $layout.logid) || ConfigHelper::checkPrivilege('superuser')}
