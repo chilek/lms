@@ -14,7 +14,7 @@
 	{if $ticket.creatorid}
 	<TR>
 		<TD class="bold nobr">
-			<i class="lms-ui-icon-user"></i> {trans("Created by:")}
+			{icon name="user" label="Created by:"}
 		</TD>
 		<TD>
 			<A href="?m=userinfo&id={$ticket.creatorid}">{$ticket.creator}</a>
