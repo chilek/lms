@@ -260,7 +260,7 @@
 	<TR class="highlight {if $customer.deleted} lms-ui-resource-deleted{/if} {if $customer.account && !$customer.nodeac} blend{/if}"
 		data-target-url="?m=customerinfo&id={$customer.id}" data-name="{$customer.customername|escape:"javascript"|escape:"html"}">
 		<TD>
-			<i class="lms-ui-icon-customer-status-{$_CSTATUSES[$customerinfo.status].alias}"></i>
+			<i class="lms-ui-icon-customer-status-{$_CSTATUSES[$customer.status].alias}"></i>
 			{if $customer.info}&nbsp;<i class="lms-ui-icon-optional-info" title="{htmlspecialchars($customer.info)}"></i>{/if}
 			<A name="{$customer.id}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$customer.id}">&nbsp;<span class="bold">{$customer.customername|escape}</span></A>
 			<BR>
