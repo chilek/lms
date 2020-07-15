@@ -375,65 +375,69 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         }
 
                         if ($only_activation) {
-                            $tariffid = $this->db->GetOne(
-                                'SELECT id FROM tariffs
-														   WHERE
-																name   = ? AND
-																value  = ? AND
-																currency = ?
-														   LIMIT 1',
-                                array($tariff['name'],
-                                    empty($value) || $value == 'NULL' ? 0 : str_replace(',', '.', $value),
-                                    $tariff['currency']
-                                )
-                            );
+                            if ($use_discounts) {
+                                $tariffid = $tariff['id'];
+                            } else {
+                                $tariffid = $this->db->GetOne(
+                                    'SELECT id FROM tariffs
+                                                               WHERE
+                                                                    name   = ? AND
+                                                                    value  = ? AND
+                                                                    currency = ?
+                                                               LIMIT 1',
+                                    array($tariff['name'],
+                                        empty($value) || $value == 'NULL' ? 0 : str_replace(',', '.', $value),
+                                        $tariff['currency']
+                                    )
+                                );
 
-                            // ... if not found clone tariff
-                            if (!$tariffid) {
-                                $args = $this->db->GetRow('SELECT
-														  name, value, splitpayment, taxcategory, currency, period, taxid, type,
-														  upceil, downceil, uprate, downrate,
-														  up_burst_time, up_burst_threshold, up_burst_limit, 
-														  down_burst_time, down_burst_threshold, down_burst_limit, 
-														  prodid, plimit, climit, dlimit,
-														  upceil_n, downceil_n, uprate_n, downrate_n,
-														  up_burst_time_n, up_burst_threshold_n, up_burst_limit_n, 
-														  down_burst_time_n, down_burst_threshold_n, down_burst_limit_n, 
-														  domain_limit, alias_limit, sh_limit,
-														  www_limit, ftp_limit, mail_limit, sql_limit, quota_sh_limit, quota_www_limit,
-														  quota_ftp_limit, quota_mail_limit, quota_sql_limit, authtype
-													   FROM
-														  tariffs WHERE id = ?', array($tariff['id']));
+                                // ... if not found clone tariff
+                                if (!$tariffid) {
+                                    $args = $this->db->GetRow('SELECT
+                                                              name, value, splitpayment, taxcategory, currency, period, taxid, type,
+                                                              upceil, downceil, uprate, downrate,
+                                                              up_burst_time, up_burst_threshold, up_burst_limit,
+                                                              down_burst_time, down_burst_threshold, down_burst_limit,
+                                                              prodid, plimit, climit, dlimit,
+                                                              upceil_n, downceil_n, uprate_n, downrate_n,
+                                                              up_burst_time_n, up_burst_threshold_n, up_burst_limit_n,
+                                                              down_burst_time_n, down_burst_threshold_n, down_burst_limit_n,
+                                                              domain_limit, alias_limit, sh_limit,
+                                                              www_limit, ftp_limit, mail_limit, sql_limit, quota_sh_limit, quota_www_limit,
+                                                              quota_ftp_limit, quota_mail_limit, quota_sql_limit, authtype
+                                                           FROM
+                                                              tariffs WHERE id = ?', array($tariff['id']));
 
-                                $args = array_merge($args, array(
-                                    'name' => $tariff['name'],
-                                    'value' => str_replace(',', '.', $value),
-                                    'period' => $tariff['period']));
+                                    $args = array_merge($args, array(
+                                        'name' => $tariff['name'],
+                                        'value' => str_replace(',', '.', $value),
+                                        'period' => $tariff['period']));
 
-                                $args[SYSLOG::RES_TAX] = $args['taxid'];
-                                unset($args['taxid']);
+                                    $args[SYSLOG::RES_TAX] = $args['taxid'];
+                                    unset($args['taxid']);
 
-                                $this->db->Execute('INSERT INTO tariffs
-												   (name, value, splitpayment, taxcategory, currency, period, type,
-												   upceil, downceil, uprate, downrate,
-												   up_burst_time, up_burst_threshold, up_burst_limit, 
-												   down_burst_time, down_burst_threshold, down_burst_limit, 
-												   prodid, plimit, climit, dlimit,
-												   upceil_n, downceil_n, uprate_n, downrate_n,
-												   up_burst_time_n, up_burst_threshold_n, up_burst_limit_n, 
-												   down_burst_time_n, down_burst_threshold_n, down_burst_limit_n, 
-												   domain_limit, alias_limit, sh_limit, www_limit, ftp_limit, mail_limit, sql_limit,
-												   quota_sh_limit, quota_www_limit, quota_ftp_limit, quota_mail_limit, quota_sql_limit,
-												   authtype, taxid)
-												VALUES
-												   (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-												   ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+                                    $this->db->Execute('INSERT INTO tariffs
+                                                       (name, value, splitpayment, taxcategory, currency, period, type,
+                                                       upceil, downceil, uprate, downrate,
+                                                       up_burst_time, up_burst_threshold, up_burst_limit,
+                                                       down_burst_time, down_burst_threshold, down_burst_limit,
+                                                       prodid, plimit, climit, dlimit,
+                                                       upceil_n, downceil_n, uprate_n, downrate_n,
+                                                       up_burst_time_n, up_burst_threshold_n, up_burst_limit_n,
+                                                       down_burst_time_n, down_burst_threshold_n, down_burst_limit_n,
+                                                       domain_limit, alias_limit, sh_limit, www_limit, ftp_limit, mail_limit, sql_limit,
+                                                       quota_sh_limit, quota_www_limit, quota_ftp_limit, quota_mail_limit, quota_sql_limit,
+                                                       authtype, taxid)
+                                                    VALUES
+                                                       (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                                                       ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
-                                $tariffid = $this->db->GetLastInsertId('tariffs');
+                                    $tariffid = $this->db->GetLastInsertId('tariffs');
 
-                                if ($this->syslog) {
-                                    $args[SYSLOG::RES_TARIFF] = $tariffid;
-                                    $this->syslog->AddMessage(SYSLOG::RES_TARIFF, SYSLOG::OPER_ADD, $args);
+                                    if ($this->syslog) {
+                                        $args[SYSLOG::RES_TARIFF] = $tariffid;
+                                        $this->syslog->AddMessage(SYSLOG::RES_TARIFF, SYSLOG::OPER_ADD, $args);
+                                    }
                                 }
                             }
                         } else {
