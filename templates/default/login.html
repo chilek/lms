@@ -42,6 +42,11 @@
 			margin: 1em;
 		}
 
+		.login-box-container table {
+			margin-top: 1em;
+			margin-bottom: 1em;
+		}
+
 		.lms-ui-dberrors {
 
 		}
@@ -57,7 +62,6 @@
 			{t a=LMS::SOFTWARE_NAME}$a version{/t} {$layout.lmsv}{if $layout.lmsvr} ({$layout.lmsvr}){/if}<br>
 			&copy; 2001-{$smarty.now|date_format:'%Y'} LMS Developers
 		</span>
-		<span><br></span>
 		<form method="post" name="loginform" action="{$target}">
 			<table>
 				<tr>
@@ -88,7 +92,6 @@
 				</tr>
 			</table>
 		</form>
-		<br>
 		<a href="doc/html/{$_ui_language}/"><span class="blend">{trans("Documentation")}</span></a>
 		<a href="http://www.lms.org.pl/"><span class="blend">{trans("LMS Project Homepage")}</span></a>
 	</div>
