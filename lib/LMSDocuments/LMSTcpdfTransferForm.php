@@ -27,6 +27,9 @@
 class LMSTcpdfTransferForm extends LMSDocument
 {
     const TCPDF_FONT = 'liberationsans';
+    const VALUE_BALANCE = 1;
+    const VALUE_ASSIGNMENTS = 2;
+    const VALUE_CUSTOM = 3;
 
     public function __construct($title, $pagesize = 'A4', $orientation = 'portrait')
     {
@@ -336,6 +339,9 @@ class LMSTcpdfTransferForm extends LMSDocument
         $customerinfo = $LMS->GetCustomer($data['customerid']);
         $divisionid = $LMS->GetCustomerDivision($data['customerid']);
         $division = $LMS->GetDivision($divisionid);
+
+        $this->data['customerinfo'] = $customerinfo;
+        $this->data['$division'] = $division;
 
         // division data
         $this->data['division_name'] = $division['name'];
