@@ -73,7 +73,7 @@ if (!empty($userinfo['twofactorauth'])) {
 
     $barcode = new Barcode();
     $barcodeObj = $barcode->getBarcodeObj('QRCODE', $url, 150, 150);
-    $SMARTY->assign('qrcode_image', base64_encode($barcodeObj->getPngData()));
+    $SMARTY->assign('qrcode_image', base64_encode($barcodeObj->getPngData(false)));
 }
 
 $SMARTY->assign('userinfo', $userinfo);
