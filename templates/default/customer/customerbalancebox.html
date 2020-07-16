@@ -42,11 +42,11 @@
 			<a href="javascript:document.printcustomerbalance.submit();">{trans("Customer Balance Sheet")}</a>
 		{/tab_header_cell}
 		{tab_header_cell}
-			<A id="newtransferformanchor" rel="external" href="?m=customertransferform&id={$balancelist.customerid}&type={LMSHtmlTransferForm::VALUE_ASSIGNMENTS}">{trans("Transfer form:")}</A>
+			<A id="newtransferformanchor" rel="external" href="?m=customertransferform&id={$balancelist.customerid}&type={LMSTcpdfTransferForm::VALUE_ASSIGNMENTS}">{trans("Transfer form:")}</A>
 			<SELECT name="newtransferform" onchange="javascript:new_transfer_form_type_changed()" form="addbalance-form">
-				<OPTION value="{LMSHtmlTransferForm::VALUE_ASSIGNMENTS}">{trans("<!transferform>assignments")}</OPTION>
-				<OPTION value="{LMSHtmlTransferForm::VALUE_BALANCE}">{trans("<!transferform>balance")}</OPTION>
-				<OPTION value="{LMSHtmlTransferForm::VALUE_CUSTOM}">{trans("<!transferform>custom")}</OPTION>
+				<OPTION value="{LMSTcpdfTransferForm::VALUE_ASSIGNMENTS}">{trans("<!transferform>assignments")}</OPTION>
+				<OPTION value="{LMSTcpdfTransferForm::VALUE_BALANCE}">{trans("<!transferform>balance")}</OPTION>
+				<OPTION value="{LMSTcpdfTransferForm::VALUE_CUSTOM}">{trans("<!transferform>custom")}</OPTION>
 			</SELECT>
 			<input type="text" name="newtransferformcustomvalue" pattern="[0-9]+(\.[0-9]{literal}{1,2}{/literal})?" size="5" style="display: none;" form="addbalance-form">
 			<A id="newdocanchor" href="?m=invoicenew&action=init&customerid={$balancelist.customerid}">{trans("New document:")}</A>
@@ -550,7 +550,7 @@
 		var type = $('[name="newtransferform"]').val();
 		$('#newtransferformanchor').attr('href', '?m=customertransferform&id={$balancelist.customerid}&type=' + type +
 			'&value=' + $('[name="newtransferformcustomvalue"]').val());
-		if (type == {LMSHtmlTransferForm::VALUE_CUSTOM}) {
+		if (type == {LMSTcpdfTransferForm::VALUE_CUSTOM}) {
 			$('[name="newtransferformcustomvalue"]').show().focus();
 		} else {
 			$('[name="newtransferformcustomvalue"]').hide();
