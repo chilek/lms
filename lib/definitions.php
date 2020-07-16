@@ -90,6 +90,7 @@ define('CCONSENT_MAILINGNOTICE', 3);
 define('CCONSENT_EINVOICE', 4);
 define('CCONSENT_USERPANEL_SMS', 5);
 define('CCONSENT_USERPANEL_SCAN', 6);
+define('CCONSENT_TRANSFERFORM', 7);
 
 $CCONSENTS = array(
     CCONSENT_DATE => array(
@@ -120,6 +121,11 @@ $CCONSENTS = array(
     CCONSENT_USERPANEL_SCAN => array(
         'label' => trans('document form approval in customer panel using scans'),
         'name' => 'userpanel_document_scan_approval',
+        'type' => 'boolean',
+    ),
+    CCONSENT_TRANSFERFORM => array(
+        'label' => trans('invoice transfer form'),
+        'name' => 'transferform',
         'type' => 'boolean',
     ),
 );
