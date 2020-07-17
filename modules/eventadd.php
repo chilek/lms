@@ -214,6 +214,10 @@ if (isset($_POST['event'])) {
                     $ticket['deadline'] = $dtime;
                 }
 
+                if (!empty($ticket['categories'])) {
+                    $ticket['categories'] = array_flip($ticket['categories']);
+                }
+
                 $event['ticketid'] = $LMS->TicketAdd($ticket);
 
                 if (ConfigHelper::checkConfig('phpui.newticket_notify')) {
