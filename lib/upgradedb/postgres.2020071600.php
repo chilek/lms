@@ -23,21 +23,12 @@
 
 $this->BeginTrans();
 
-$customers = $this->GetAll('SELECT id FROM customers');
 define('CCONSENT_TRANSFERFORM', 7);
-if (!empty($customers)) {
-    $cdate = time();
-    foreach ($customers as $customer) {
-        $this->Execute(
-            "INSERT INTO customerconsents (customerid, cdate, type) VALUES(?, ?, ?)",
-            array(
-                intval($customer['id']),
-                intval($cdate),
-                CCONSENT_TRANSFERFORM
-            )
-        );
-    }
-}
+$this->Execute(
+    'INSERT INTO customerconsents (customerid, cdate, type)
+        (SELECT id, ?NOW?, ? FROM customers)',
+    array(CCONSENT_TRANSFER_FORM)
+);
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020071600', 'dbversion'));
 
