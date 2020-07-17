@@ -121,3 +121,4 @@ $_LANG['SMS credential reminders:'] = 'Przypomnienia SMS z danymi do logowania:'
 $_LANG['SMS credential reminders'] = 'Przypomnienia SMS z danymi do logowania';
 $_LANG['Mail credential reminders:'] = 'Przypomnienia mailowe z danymi do logowania:';
 $_LANG['Mail credential reminders'] = 'Przypomnienia mailowe z danymi do logowania';
+$_LANG['Logged as:'] = 'Zalogowany jako:';

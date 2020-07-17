@@ -15,7 +15,7 @@
 			</h2>
 		</td>
 		<td class="text-right valign-top" style="padding: 1em 1em;">
-			{trans("Session expires after:")}
+			{trans("Logged as:")} {$userinfo.customername|truncate:60:"... "},<br>{trans("Session expires after:")}
 			<span id="lms-ui-session-expire">
 				{sprintf("%02d:%02d", floor($timeout / 60), $timeout % 60)}
 			</span>
