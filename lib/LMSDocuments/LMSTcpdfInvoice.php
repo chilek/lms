@@ -871,7 +871,10 @@ class LMSTcpdfInvoice extends LMSInvoice
             }
 
             /* FT-0100 form */
-            $this->invoice_transferform(new LMSTcpdfTransferForm('Transfer form', $pagesize = 'A4', $orientation = 'portrait'));
+            $lms = LMS::getInstance();
+            if ($lms->checkCustomerConsent($this->data['customerid'], CCONSENT_TRANSFERFORM)) {
+                $this->invoice_transferform(new LMSTcpdfTransferForm('Transfer form', $pagesize = 'A4', $orientation = 'portrait'));
+            }
         }
 
         $docnumber = docnumber(array(
