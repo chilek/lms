@@ -26,13 +26,13 @@ $this->BeginTrans();
 $customers = $this->GetAll('SELECT id FROM customers');
 define('CCONSENT_TRANSFERFORM', 7);
 if (!empty($customers)) {
-    $cadte = time();
+    $cdate = time();
     foreach ($customers as $customer) {
         $this->Execute(
             "INSERT INTO customerconsents (customerid, cdate, type) VALUES(?, ?, ?)",
             array(
                 intval($customer['id']),
-                intval($cadte),
+                intval($cdate),
                 CCONSENT_TRANSFERFORM
             )
         );

@@ -125,7 +125,7 @@ $CCONSENTS = array(
     ),
     CCONSENT_TRANSFERFORM => array(
         'label' => trans('invoice transfer form'),
-        'name' => 'transferform',
+        'name' => 'transfer_form',
         'type' => 'boolean',
     ),
 );
