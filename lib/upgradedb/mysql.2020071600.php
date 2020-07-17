@@ -27,7 +27,7 @@ define('CCONSENT_TRANSFERFORM', 7);
 $this->Execute(
     'INSERT INTO customerconsents (customerid, cdate, type)
         (SELECT id, ?NOW?, ? FROM customers)',
-    array(CCONSENT_TRANSFER_FORM)
+    array(CCONSENT_TRANSFERFORM)
 );
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020071600', 'dbversion'));
