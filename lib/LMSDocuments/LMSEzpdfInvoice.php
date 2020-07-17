@@ -1312,8 +1312,11 @@ class LMSEzpdfInvoice extends LMSInvoice
 
         $this->backend->check_page_length($top, 200);
         if ($this->data['customerbalance'] < 0 || ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.always_show_form', true))) {
-            $this->invoice_main_form_fill(187, 3, 0.4);
-            $this->invoice_simple_form_fill(14, 3, 0.4);
+            $lms = LMS::getInstance();
+            if ($lms->checkCustomerConsent($this->data['customerid'], CCONSENT_TRANSFERFORM)) {
+                $this->invoice_main_form_fill(187, 3, 0.4);
+                $this->invoice_simple_form_fill(14, 3, 0.4);
+            }
         }
         $page = $this->backend->ezStopPageNumbers(1, 1, $page);
 
