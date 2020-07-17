@@ -63,6 +63,7 @@ version 26-git (????-??-??):
   - enhancement: 'phpui.promotion_use_discounts' configuration variable allows to force
     value discounts usage in assignments created basing on promotion schemas [chilan]
   - improvement: replace the transfer form from HTML to Tcpdf [ravvar]
+  - enhancement: allow to show the transfer form on the invoice for selected customers [ravvar]
 
 version 25.0 (2020-05-15):
 
