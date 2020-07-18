@@ -102,8 +102,8 @@
 		</TD>
 		<TD class="nobr">
 			<SELECT name="invoice[paytype]" {tip text="Select payment type" trigger="paytype"}>
-				{foreach from=$_PAYTYPES item=item key=key}
-				<OPTION value="{$key}"{if $invoice.paytype==$key} selected{/if}>{$item}</OPTION>
+				{foreach $_PAYTYPES as $key => $item}
+				<OPTION value="{$key}"{if $invoice.paytype==$key} selected{/if}>{trans($item)}</OPTION>
 				{/foreach}
 			</SELECT>
 			<label id="splitpayment"{if !$is_split_payment_suggested} style="display: none;"{/if}>

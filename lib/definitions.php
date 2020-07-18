@@ -713,16 +713,16 @@ $SERVICETYPES = array(
 );
 
 $PAYTYPES = array(
-    1   => trans('cash'),
-    2   => trans('transfer'),
-    3   => trans('transfer/cash'),
-    4   => trans('card'),
-    5   => trans('compensation'),
-    6   => trans('barter'),
-    7   => trans('contract'),
-    8   => trans('paid'),
-    9   => trans('cash on delivery'),
-    10  => trans('instalments'),
+    1   => 'cash',
+    2   => 'transfer',
+    3   => 'transfer/cash',
+    4   => 'card',
+    5   => 'compensation',
+    6   => 'barter',
+    7   => 'contract',
+    8   => 'paid',
+    9   => 'cash on delivery',
+    10  => 'instalments',
 );
 
 // Contact types

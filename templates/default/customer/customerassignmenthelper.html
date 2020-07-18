@@ -542,8 +542,8 @@
 									<SELECT name="{$variable_prefix}[paytype]" {tip text="Select payment type" trigger="paytype"}>
 										<OPTION value=""{if !$variables.paytype} selected{/if}>- {trans("default")} -</OPTION>
 
-										{foreach from=$_PAYTYPES item=item key=key}
-										<OPTION value="{$key}"{if $variables.paytype==$key} selected{/if}>{$item}</OPTION>
+										{foreach $_PAYTYPES as $key => $item}
+										<OPTION value="{$key}"{if $variables.paytype==$key} selected{/if}>{trans($item)}</OPTION>
 										{/foreach}
 									</SELECT>
 								</TD>

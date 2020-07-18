@@ -501,7 +501,7 @@ class SYSLOG
                 $data['value'] = $PERIODS[$data['value']];
                 break;
             case 'paytype':
-                $data['value'] = empty($data['value']) ? trans('default') : $PAYTYPES[$data['value']];
+                $data['value'] = empty($data['value']) ? trans('default') : trans($PAYTYPES[$data['value']]);
                 break;
             case 'paytime':
                 $data['value'] = $data['value'] == -1 ? trans('default') : $data['value'];

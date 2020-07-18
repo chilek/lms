@@ -185,7 +185,7 @@ class LMSEzpdfInvoice extends LMSInvoice
         );
         if (!ConfigHelper::checkConfig('invoices.hide_payment_type')) {
             $this->backend->text_align_right($x, $y, $font_size, trans('Payment type:').' ');
-            $y = $y - $this->backend->text_align_left($x, $y, $font_size, $this->data['paytypename']);
+            $y = $y - $this->backend->text_align_left($x, $y, $font_size, trans($this->data['paytypename']));
             if (!empty($this->data['splitpayment'])) {
                 $this->backend->text_align_right($x + 50, $y, $font_size, trans('(split payment)'));
             }
