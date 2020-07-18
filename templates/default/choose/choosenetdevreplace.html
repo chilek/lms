@@ -2,8 +2,7 @@
 <!--// $Id$ //-->
 <html><head>
 <meta name="GENERATOR" content="LMS {$layout.lmsv}">
-<meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
-<meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
+{include file="language.html"}
 <title>::: LMS :{if $layout.pagetitle != ""} {$layout.pagetitle} :{/if}::</title>
 <link href="css/style.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="js/common.js"></SCRIPT>
@@ -13,7 +12,7 @@
 <script type="text/javascript" src="js/overlib.js"></script>
 <script type="text/javascript">
 <!--
-	
+
 	var ndspDict = {};
 
 	function SaveForm()
@@ -23,8 +22,8 @@
 
 		for (var i=0; i<inputTags.length; i++)
 		{
-			if (inputTags[i].type='radio' 
-					&& inputTags[i].name.lastIndexOf('nd',0)===0 
+			if (inputTags[i].type='radio'
+					&& inputTags[i].name.lastIndexOf('nd',0)===0
 					&& inputTags[i].checked) {
 				if (result!='') {
 					result += ',';
@@ -89,7 +88,7 @@
 	</script>
 	<tr class="highlight {cycle}"  id="ndsp{$netdevlist[netdevlist].id}" >
 		<td width="1%">
-			<input type="radio" group="group1" class="box {cycle print=false}{cycle}" name="ndlist" id="nd{$netdevlist[netdevlist].id}" value="{$netdevlist[netdevlist].id}"> 
+			<input type="radio" group="group1" class="box {cycle print=false}{cycle}" name="ndlist" id="nd{$netdevlist[netdevlist].id}" value="{$netdevlist[netdevlist].id}">
 		</td>
 		<td width="99%" style="vertical-align: top;">
 			<table width="100%">
@@ -129,9 +128,9 @@
 					<img src="img/cancel.gif" alt=""> <a href="javascript:CloseForm()">{trans("Cancel")}</a>
 			    	</td>
 			    <td class="fall dark">
-				    <IMG src="img/search.gif" ALT="{trans('Filter devices by name')}"/> <INPUT TYPE="text" NAME="flt" ID="flt" {tip text="Filter devices by name"} onkeyup="FilterForm();"/> 
+				    <IMG src="img/search.gif" ALT="{trans('Filter devices by name')}"/> <INPUT TYPE="text" NAME="flt" ID="flt" {tip text="Filter devices by name"} onkeyup="FilterForm();"/>
 			    </td>
-			    
+
 			    <td align="right" class="fall dark nobr">
 				<a href="javascript:SaveForm()">{trans("Replace")} <img src="img/save.gif" alt=""></a>
 			    </td>

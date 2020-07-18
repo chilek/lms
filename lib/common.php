@@ -495,7 +495,7 @@ function moneyf_in_words($value, $currency = null)
         $currency = LMS::$currency;
     }
     return sprintf(
-        $GLOBALS['LANGDEFS'][$GLOBALS['_language']]['money_format_in_words'],
+        Localisation::getCurrentMoneyFormat(),
         to_words(floor($value)),
         $currency,
         round(($value - floor($value)) * 100)
@@ -1197,26 +1197,7 @@ function validate_random_string($string, $min_size, $max_size, $characters)
 
 function trans()
 {
-    global $_LANG;
-
-    $args = func_get_args();
-    $content = array_shift($args);
-
-    if (is_array($content)) {
-        $args = array_values($content);
-        $content = array_shift($args);
-    }
-
-    if (isset($_LANG[$content])) {
-        $content = trim($_LANG[$content]);
-    }
-
-    for ($i = 1, $len = count($args); $i <= $len; $i++) {
-        $content = str_replace('$'.chr(97+$i-1), $args[$i-1], $content);
-    }
-
-    $content = preg_replace('/<![^>]+>/', '', $content);
-    return $content;
+    return call_user_func_array('Localisation::trans', func_get_args());
 }
 
 function check_url($url)

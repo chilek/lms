@@ -2,10 +2,10 @@
 <!--// $Id$ //-->
 <html><head>
 <meta name="GENERATOR" content="LMS {$layout.lmsv}">
-<meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
-<meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
+{uiLanguage = Localisation::getCurrentUiLanguageInfo()}
+{include file="language.html"}
 <title>::: LMS :{if $layout.pagetitle != ""} {$layout.pagetitle} :{/if}::</title>
-{include file="jquery.html" language=$LANGDEFS.$_ui_language.html lms_language=$_ui_language}
+{include file="jquery.html" language=$uiLanguage.html lms_language=Localisation::getCurrentUiLanguage()}
 <link href="css/style.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="js/common.js"></SCRIPT>
 {if $js}<script type="text/javascript">

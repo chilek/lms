@@ -149,7 +149,7 @@ require_once(USERPANEL_LIB_DIR . DIRECTORY_SEPARATOR . 'Session.class.php');
 require_once(USERPANEL_LIB_DIR . DIRECTORY_SEPARATOR . 'Userpanel.class.php');
 require_once(USERPANEL_LIB_DIR . DIRECTORY_SEPARATOR . 'ULMS.class.php');
 
-@include(USERPANEL_DIR . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'locale' . DIRECTORY_SEPARATOR . $_ui_language . DIRECTORY_SEPARATOR . 'strings.php');
+Localisation::appendUiLanguage(USERPANEL_DIR . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'locale');
 
 unset($LMS); // reset LMS class to enable wrappers for LMS older versions
 
@@ -171,9 +171,9 @@ if (!empty($plugins)) {
 
 $SESSION = new Session($DB, $_TIMEOUT);
 $USERPANEL = new USERPANEL($DB, $SESSION);
-$LMS->ui_lang = $_ui_language;
-$LMS->lang = $_language;
-LMS::$currency = $_currency;
+$LMS->ui_lang = Localisation::getCurrentUiLanguage();
+$LMS->lang = Localisation::getCurrentSystemLanguage();
+LMS::$currency = Localisation::getCurrentCurrency();
 
 // Initialize modules
 
@@ -191,13 +191,7 @@ foreach ($modules_dirs as $suspected_module_dir) {
     while (false !== ($filename = readdir($dh))) {
         if ((is_null($enabled_modules) || in_array($filename, $enabled_modules)) && (preg_match('/^[a-zA-Z0-9]/', $filename))
             && (is_dir($suspected_module_dir . $filename)) && file_exists($suspected_module_dir . $filename . DIRECTORY_SEPARATOR . 'configuration.php')) {
-            $locale_filename = $suspected_module_dir . $filename . DIRECTORY_SEPARATOR . 'locale' . DIRECTORY_SEPARATOR . $_ui_language . DIRECTORY_SEPARATOR . 'strings.php';
-            if (@is_readable($locale_filename)) {
-                @include($locale_filename);
-            } else {
-                $locale_filename = $suspected_module_dir . $filename . DIRECTORY_SEPARATOR . 'locale' . DIRECTORY_SEPARATOR . substr($_ui_language, 0, 2) . DIRECTORY_SEPARATOR . 'strings.php';
-                @include($locale_filename);
-            }
+            Localisation::appendUiLanguage($suspected_module_dir . $filename . DIRECTORY_SEPARATOR . 'locale');
             include($suspected_module_dir . $filename . DIRECTORY_SEPARATOR . 'configuration.php');
             if (is_dir($suspected_module_dir . $filename . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR)) {
                 $plugins = glob($suspected_module_dir . $filename . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . '*.php');

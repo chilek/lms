@@ -29,7 +29,7 @@ use setasign\Fpdi\PdfParser\StreamReader;
 
 function invoice_body($document, $invoice)
 {
-    refresh_ui_language($invoice['lang']);
+    Localisation::setUiLanguage($invoice['lang']);
     $document->Draw($invoice);
     if (!isset($invoice['last'])) {
         $document->NewPage();

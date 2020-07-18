@@ -24,230 +24,84 @@
  *  $Id$
  */
 
+Localisation::init();
 
-$LANGDEFS = array(
-    'pl_PL' => array(
-        'name' => 'Polish',
-        'orig' => 'Polski',
-        'locale' => 'pl_PL.UTF-8',
-        'charset' => 'UTF-8',
-        'html' => 'pl',
-        'money_format' => '%01.2f zł',
-        'money_format_in_words' => '%s %s %s/100',
-        'currency' => 'PLN',
-//        'mobile' => '(88[0-9]|5[01][0-9]|6[069][0-9]|7[2789][0-9])[0-9]{6}',
-        'check_zip' => function ($zip) {
-            return preg_match('/^[0-9]{2}-[0-9]{3}$/', $zip);
-        },
-    ),
-    'pl' => 'pl_PL',
-    'lt_LT' => array(
-        'name' => 'Lithuanian',
-        'orig' => 'Litewski',
-        'locale' => 'lt_LT.UTF-8',
-        'charset' => 'UTF-8',
-        'html' => 'lt',
-        'money_format' => '%01.2f EUR',
-        'money_format_in_words' => '%s %s %s/100',
-        'currency' => 'EUR',
-//        'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
-        'check_zip' => function ($zip) {
-            return preg_match('/^[0-9]{5}$/', $zip);
-        }
-    ),
-    'lt' => 'lt_LT',
-    'en_US' => array(
-        'name' => 'English',
-        'orig' => 'English',
-        'locale' => 'en_US.UTF-8',
-        'charset' => 'UTF-8',
-        'html' => 'en',
-        'money_format' => '$ %01.2f',
-        'money_format_in_words' => '%s %s %s/100',
-        'currency' => 'USD',
-//        'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
-        'check_zip' => function ($zip) {
-            return preg_match('/^[0-9]{5}$|^[0-9]{5}-[0-9]{4}$/', $zip);
-        },
-    ),
-    'en' => 'en_US',
-    'en_GY' => array(
-        'name' => 'English (Guyana)',
-        'orig' => 'English (Guyana)',
-        'locale' => 'en_GY.UTF-8',
-        'charset' => 'UTF-8',
-        'html' => 'en',
-        'money_format' => '$ %01.2f',
-        'money_format_in_words' => '%s %s %s/100',
-        'currency' => 'GYD',
-//        'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
-        'check_zip' => function ($zip) {
-            return preg_match('/^[0-9]{5}$|^[0-9]{5}-[0-9]{4}$/', $zip);
-        },
-    ),
-    'sk_SK' => array(
-        'name' => 'Slovak',
-        'orig' => 'Slovenský',
-        'locale' => 'sk_SK.UTF-8',
-        'charset' => 'UTF-8',
-        'html' => 'sk',
-        'money_format' => '%01.2f EUR',
-        'money_format_in_words' => '%s %s %s/100',
-        'currency' => 'EUR',
-//        'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
-        'check_zip' => function ($zip) {
-            return preg_match('/^[0-9]{3}[\-\s]?[0-9]{2}$/', $zip);
-        },
-    ),
-    'sk' => 'sk_SK',
-    'ro_RO' => array(
-        'name' => 'Romanian',
-        'orig' => 'Romana',
-        'locale' => 'ro_RO.UTF-8',
-        'charset' => 'UTF-8',
-        'html' => 'ro',
-        'money_format' => '%01.2f RON',
-        'money_format_in_words' => '%s %s %s/100',
-        'currency' => 'RON',
-//        'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
-        'check_zip' => function ($zip) {
-            return preg_match('/^[0-9]{6}$/', $zip);
-        }
-    ),
-    'ro' => 'ro_RO',
-    'cs_CZ' => array(
-        'name' => 'Czech',
-        'orig' => 'Česky',
-        'locale' => 'cs_CZ.UTF-8',
-        'charset' => 'UTF-8',
-        'html' => 'cs',
-        'money_format' => '%01.2f Kč',
-        'money_format_in_words' => '%s %s %s/100',
-        'currency' => 'CZK',
-//        'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
-        'check_zip' => function ($zip) {
-            return preg_match('/^[1-9][0-9]{4}$/', $zip);
-        },
-    ),
-    'cs' => 'cs_CZ',
-);
+Localisation::detectUiLanguage();
+Localisation::detectSystemLanguage();
+Localisation::fixUiLanguage();
 
-// for backward compatibility
-function check_zip($zip, $country = null)
-{
-    return Utils::checkZip($zip, $country);
-}
+Localisation::loadUiLanguage();
+Localisation::loadSystemLanguage();
 
-// UI language
-if (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-    $langs = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
-} else {
-    $langs = '';
-}
-
-$langs = explode(',', $langs);
-
-foreach ($langs as $val) {
-    if (strlen($val) >= 5) {
-        $val = str_replace('-', '_', substr($val, 0, 5));
-        if (isset($LANGDEFS[$val])) {
-            $_ui_language = $val;
-            break;
-        }
-    } else {
-        $val = substr($val, 0, 2);
-        if (isset($LANGDEFS[$val]) && is_string($LANGDEFS[$val])) {
-            $_ui_language = $LANGDEFS[$val];
-            break;
-        }
-    }
-}
-
-// System language
-$lang = ConfigHelper::getConfig('phpui.lang');
-if (!empty($lang)) {
-    if (isset($LANGDEFS[$lang])) {
-        if (is_string($LANGDEFS[$lang])) {
-            $_language = $LANGDEFS[$lang];
-        } else {
-            $_language = $lang;
-        }
-    } else {
-        $_language = 'en_US';
-    }
-} else if (isset($_ui_language)) {
-    $_language = $_ui_language;
-} else {
-    $_language = 'en_US'; // default language
-}
-
-$_currency = $LANGDEFS[$_language]['currency'];
-
-// Use system lang for UI if any of browser langs isn't supported
-// or browser langs aren't set
-if (!isset($_ui_language)) {
-    $_ui_language = $_language;
-}
-
-$_LANG = array();
-if (@is_readable(LIB_DIR . DIRECTORY_SEPARATOR . 'locale' . DIRECTORY_SEPARATOR . $_ui_language . DIRECTORY_SEPARATOR . 'strings.php')) {
-    include(LIB_DIR . DIRECTORY_SEPARATOR . 'locale' . DIRECTORY_SEPARATOR . $_ui_language . DIRECTORY_SEPARATOR . 'strings.php');
-}
-if (@is_readable(LIB_DIR . DIRECTORY_SEPARATOR . 'locale' . DIRECTORY_SEPARATOR . $_ui_language . DIRECTORY_SEPARATOR . 'ui.php')) {
-    include(LIB_DIR . DIRECTORY_SEPARATOR . 'locale' . DIRECTORY_SEPARATOR . $_ui_language . DIRECTORY_SEPARATOR . 'ui.php');
-}
-if (@is_readable(LIB_DIR . DIRECTORY_SEPARATOR . 'locale' . DIRECTORY_SEPARATOR . $_language . DIRECTORY_SEPARATOR . 'system.php')) {
-    include(LIB_DIR . DIRECTORY_SEPARATOR . 'locale' . DIRECTORY_SEPARATOR . $_language . DIRECTORY_SEPARATOR . 'system.php');
-}
-
-setlocale(LC_COLLATE, $LANGDEFS[$_language]['locale']);
-setlocale(LC_CTYPE, $LANGDEFS[$_language]['locale']);
-setlocale(LC_TIME, $LANGDEFS[$_language]['locale']);
-setlocale(LC_NUMERIC, $LANGDEFS[$_language]['locale']);
+$locale = Localisation::getCurrentLocale();
+setlocale(LC_COLLATE, $locale);
+setlocale(LC_CTYPE, $locale);
+setlocale(LC_TIME, $locale);
+setlocale(LC_NUMERIC, $locale);
 
 mb_internal_encoding('UTF-8');
 
-$_current_ui_language = $_ui_language;
-
-function refresh_ui_language($lang)
+function uptimef($ts)
 {
-    global $_current_ui_language;
-    global $_LANG;
-    global $LANGDEFS;
-    if (!empty($lang)) {
-        if (strlen($lang) >= 5) {
-            $language = substr($lang, 0, 5);
-            if (!isset($LANGDEFS[$language])) {
-                $language = 'en_US';
-            }
-        } else {
-            $language = substr($lang, 0, 2);
-            if (isset($LANGDEFS[$language]) && is_string($LANGDEFS[$language])) {
-                $language = $LANGDEFS[$language];
-            } else {
-                $language = 'en_US';
-            }
-        }
-        if ($language != $_current_ui_language) {
-            $_current_ui_language = $language;
-            $_LANG = array();
-            if (@is_readable(LIB_DIR . DIRECTORY_SEPARATOR . 'locale' . DIRECTORY_SEPARATOR . $_current_ui_language . DIRECTORY_SEPARATOR . 'strings.php')) {
-                include(LIB_DIR . DIRECTORY_SEPARATOR . 'locale' . DIRECTORY_SEPARATOR . $_current_ui_language . DIRECTORY_SEPARATOR . 'strings.php');
-            }
-        }
-    }
+    return Localisation::callUiLanguageFunction('uptimef', $ts);
 }
 
-function reset_ui_language()
+function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
 {
-    global $_current_ui_language;
-    global $_ui_language;
-    global $_LANG;
-    if ($_current_ui_language != $_ui_language) {
-        $_current_ui_language = $_ui_language;
-        $_LANG = array();
-        if (@is_readable(LIB_DIR . DIRECTORY_SEPARATOR . 'locale' . DIRECTORY_SEPARATOR . $_current_ui_language . DIRECTORY_SEPARATOR . 'strings.php')) {
-            include(LIB_DIR . DIRECTORY_SEPARATOR . 'locale' . DIRECTORY_SEPARATOR . $_current_ui_language . DIRECTORY_SEPARATOR . 'strings.php');
-        }
-    }
+    return Localisation::callUiLanguageFunction('to_words', $num, $power, $powsuffix, $short_version);
+}
+
+function check_zip($zip)
+{
+    return Localisation::CallSystemLanguageFunction('check_zip', $zip);
+}
+
+function check_ten($ten)
+{
+    return Localisation::CallSystemLanguageFunction('check_ten', $ten);
+}
+
+function check_ssn($ssn)
+{
+    return Localisation::CallSystemLanguageFunction('check_ssn', $ssn);
+}
+
+function check_regon($regon)
+{
+    return Localisation::CallSystemLanguageFunction('check_regon', $regon);
+}
+
+function check_icn($icn)
+{
+    return Localisation::CallSystemLanguageFunction('check_icn', $icn);
+}
+
+function bankaccount($id, $account = null)
+{
+    return Localisation::CallSystemLanguageFunction('bankaccount', $id, $account);
+}
+
+function check_bankaccount($account)
+{
+    return Localisation::CallSystemLanguageFunction('check_bankaccount', $account);
+}
+
+function format_bankaccount($account)
+{
+    return Localisation::CallSystemLanguageFunction('format_bankaccount', $account);
+}
+
+function getHolidays($year = null)
+{
+    return Localisation::CallSystemLanguageFunction('getHolidays', $year);
+}
+
+function generateRandomPostcode()
+{
+    return Localisation::CallSystemLanguageFunction('generateRandomPostcode');
+}
+
+function get_currency_value($currency, $date = null)
+{
+    return Localisation::CallSystemLanguageFunction('get_currency_value', $currency, $date);
 }

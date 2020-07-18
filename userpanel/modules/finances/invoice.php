@@ -89,7 +89,7 @@ function try_generate_archive_invoices($ids)
 
                 $invoice['type'] = $which;
 
-                refresh_ui_language($invoice['lang']);
+                Localisation::setUiLanguage($invoice['lang']);
                 $document->Draw($invoice);
 
                 if (!$invoice['published']) {
@@ -191,7 +191,7 @@ if (!empty($_POST['inv'])) {
         }
         $invoice['type'] = $which;
 
-        refresh_ui_language($invoice['lang']);
+        Localisation::setUiLanguage($invoice['lang']);
 
         $document->Draw($invoice);
         if (!isset($invoice['last'])) {
@@ -202,7 +202,7 @@ if (!empty($_POST['inv'])) {
             $LMS->PublishDocuments($invoice['id']);
         }
     }
-    reset_ui_language();
+    Localisation::resetUiLanguage();
 } else {
     $invoice = $LMS->GetInvoiceContent($_GET['id']);
 
@@ -237,9 +237,9 @@ if (!empty($_POST['inv'])) {
         $layout['pagetitle'] = trans('Credit Note No. $a', $docnumber);
     }
 
-    refresh_ui_language($invoice['lang']);
+    Localisation::setUiLanguage($invoice['lang']);
     $document->Draw($invoice);
-    reset_ui_language();
+    Localisation::resetUiLanguage();
 
     if (!$invoice['published']) {
         $LMS->PublishDocuments($invoice['id']);

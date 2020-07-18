@@ -60,23 +60,11 @@ abstract class LMSPlugin implements ObserverInterface
      */
     public static function loadLocales()
     {
-        global $_ui_language, $_LANG;
-
         $reflector = new ReflectionClass(get_called_class());
-        $localebasedir = dirname($reflector->getFileName()) . DIRECTORY_SEPARATOR . 'lib'
-            . DIRECTORY_SEPARATOR . 'locale';
-        $filename = $localebasedir . DIRECTORY_SEPARATOR . $_ui_language
-            . DIRECTORY_SEPARATOR . 'strings.php';
-        if (@is_readable($filename)) {
-            require_once($filename);
-        } else {
-            // fallback locale selection using language code shortcut
-            $filename = $localebasedir . DIRECTORY_SEPARATOR . substr($_ui_language, 0, 2)
-                . DIRECTORY_SEPARATOR . 'strings.php';
-            if (@is_readable($filename)) {
-                require_once($filename);
-            }
-        }
+        Localisation::appendUiLanguage(
+            dirname($reflector->getFileName()) . DIRECTORY_SEPARATOR . 'lib'
+                . DIRECTORY_SEPARATOR . 'locale'
+        );
     }
 
     /**
@@ -124,7 +112,7 @@ abstract class LMSPlugin implements ObserverInterface
         $new_hook_data = $this->dispatcher($hook_name, $hook_data);
         $lms_plugin_manager->setHookData($new_hook_data);
     }
-    
+
     /**
      * Processes hook
      *
@@ -153,7 +141,7 @@ abstract class LMSPlugin implements ObserverInterface
             return $hook_data;
         }
     }
-    
+
     /**
      * Returns handler class name for hook
      *
@@ -169,7 +157,7 @@ abstract class LMSPlugin implements ObserverInterface
             return $this->handlers[$hook_name]['class'];
         }
     }
-    
+
     /**
      * Returns handler method name for hook
      *

@@ -272,16 +272,16 @@ class Utils
             return true;
         }
         if (!isset($country) || empty($country)) {
-            $country = $GLOBALS['_language'];
+            $country = Localisation::getCurrentSystemLanguage();
         } else if (preg_match('/^[0-9]+$/', $country)) {
             $LMS = LMS::getInstance();
             $country = $LMS->getCountryCodeById($country);
         }
-        if (isset($GLOBALS['LANGDEFS'][$country]['check_zip'])) {
-            return $GLOBALS['LANGDEFS'][$country]['check_zip']($zip);
-        } else {
-            return true;
-        }
+        Localisation::setSystemLanguage($country);
+        $res = Localisation::callSystemLanguageFunction('check_zip', $zip);
+        Localisation::resetSystemLanguage();
+
+        return isset($res) ? !empty($res) : false;
     }
 
     public static function parseCssProperties($text)

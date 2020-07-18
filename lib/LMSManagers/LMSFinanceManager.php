@@ -1690,7 +1690,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         $idx = 0;
         if (isset($data['lang'])) {
-            refresh_ui_language($data['lang']);
+            Localisation::setUiLanguage($data['lang']);
         }
 
         $count = Utils::docEntityCount($which);
@@ -1706,7 +1706,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             }
         }
         if (isset($data['lang'])) {
-            reset_ui_language();
+            Localisation::resetUiLanguage();
         }
 
         return array(

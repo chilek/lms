@@ -1,0 +1,5 @@
+{if !isset($uiLanguage)}
+    {$uiLanguage = Localisation::getCurrentUiLanguageInfo()}
+{/if}
+<meta http-equiv="Content-Language" content="{$uiLanguage.html}">
+<meta http-equiv="Content-Type" content="text/html; charset={$uiLanguage.charset}">
