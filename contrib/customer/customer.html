@@ -2,7 +2,9 @@
 <!--// $Id$ //-->
 <html><head>
 <meta name="GENERATOR" content="LMS {$layout.lmsv}">
-{include file="language.html"}
+{$uiLanguage = Localisation::getCurrentUiLanguageInfo()}
+<meta http-equiv="Content-Language" content="{$uiLanguage.html}">
+<meta http-equiv="Content-Type" content="text/html; charset={$uiLanguage.charset}">
 {* INSERT PAGE TITLE / WSTAW SWÓJ TYTUŁ STRONY *}
 <title></title>
 <STYLE type="text/css">

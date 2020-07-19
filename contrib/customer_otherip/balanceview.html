@@ -2,7 +2,9 @@
 <!--// $Id$ //-->
 <html><head>
 <meta name="GENERATOR" content="LMS {$layout.lmsv}">
-{include file="language.html"}
+{$uiLanguage = Localisation::getCurrentUiLanguageInfo()}
+<meta http-equiv="Content-Language" content="{$uiLanguage.html}">
+<meta http-equiv="Content-Type" content="text/html; charset={$uiLanguage.charset}">
 <title>::: LMS :{if $layout.pagetitle neq ""} {$layout.pagetitle} :{/if}::</title>
 <link href="css/style.css" rel="stylesheet" type="text/css">
 <script type="text/JavaScript" src="js/common.js"> </script>
