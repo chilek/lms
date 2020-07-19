@@ -141,7 +141,7 @@ if ($emails) {
                     $message = $DB->GetRow('SELECT id, ticketid FROM rtmessages WHERE subject = ?', array($subject));
                     if (empty($message)) {
                         $DB->Execute(
-                           'INSERT INTO rttickets (queueid, customerid, requestor, subject,
+                            'INSERT INTO rttickets (queueid, customerid, requestor, subject,
                             state, owner, createtime, cause, creatorid)
                             VALUES (?, ?, ?, ?, 0, ?, ?NOW?, ?, ?)',
                             array(
