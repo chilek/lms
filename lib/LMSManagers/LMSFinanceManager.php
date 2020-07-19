@@ -354,7 +354,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
                         // payday is before the start of the period
                         // set activation payday to next month's payday
-                        $activation_at_next_day = ConfigHelper::getConfig('phpui.promotion_activation_at_next_day');
+                        $activation_at_next_day = ConfigHelper::getConfig('phpui.promotion_activation_at_next_day', '', true);
                         if (ConfigHelper::checkValue($activation_at_next_day) || preg_match('/^(absolute|business)$/', $activation_at_next_day)) {
                             $_datefrom = $data['datefrom'];
                             $datefrom = time() + 86400;
