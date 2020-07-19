@@ -18,10 +18,19 @@
 		z-index: 1;
 	}
 
+	@media screen and (max-width: 800px) {
+		#location-box-autosuggest .lms-ui-suggestion-list {
+			overflow: initial;
+		}
+		#location-box-autosuggest .lms-ui-suggestion-description {
+			display: none;
+		}
+	}
+
 </style>
 
 {if !empty($states)}
-<div id="location-box-autosuggest" style="display: none;"><ul></ul></div>
+<div id="location-box-autosuggest" style="display: none;" class="lms-ui-popup"><ul></ul></div>
 
 <form name="location-search" id="location-search" method="post" action="?m=chooselocation">
 	<table id="searchtable" cellpadding="5">

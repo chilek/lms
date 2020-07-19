@@ -212,6 +212,9 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 						me.getSuggestions();
 					}, me.request_delay);
 			} else {
+				if (!this.value.length) {
+					me.inputText = '';
+				}
 				me.hideDiv();
 			}
 		}
@@ -254,14 +257,19 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 	Display the dropdown. Pretty straightforward.
 	********************************************************/
 	this.showDiv = function() {
-		$(this.div).show().position($.extend(this.my_at_map[this.placement], { of: this.elem } ));
+		$(this.div).show().data('autosuggest-input', this.elem);
+		if (!$('body').is('.lms-ui-mobile')) {
+			$(this.div).position($.extend(this.my_at_map[this.placement], {of: this.elem}));
+		} else {
+			$(this.div).position(null);
+		}
 	};
 
 	/********************************************************
 	Hide the dropdown and clear any highlight.
 	********************************************************/
 	this.hideDiv = function() {
-		$(this.div).hide();
+		$(this.div).hide().removeData('autosuggest-input', null);
 		this.highlighted = -1;
 	};
 
@@ -298,28 +306,6 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 				$(elem).removeClass('selected');
 			}
 		});
-	};
-
-	/********************************************************
-	Position the dropdown div below the input text field.
-	********************************************************/
-	this.positionDiv = function() {
-		var el = this.elem;
-		var x = 0;
-		var y = 0;
-
-		//Walk up the DOM and add up all of the offset positions.
-		while (el.offsetParent && el.tagName.toUpperCase() != 'BODY') {
-			x += el.offsetLeft;
-			y += el.offsetTop;
-			el = el.offsetParent;
-		}
-
-		x += el.offsetLeft;
-		y += el.offsetTop;
-
-		this.div.style.left = x + 'px';
-		this.div.style.top = y + 'px';
 	};
 
 	/********************************************************
@@ -366,7 +352,7 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 			ul.appendChild(li);
 		});
 
-		this.div.replaceChild(ul,this.div.childNodes[0]);
+		$(ul).appendTo($(this.div).empty());
 
 		/********************************************************
 		mouseover handler for the dropdown ul
@@ -391,9 +377,7 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 			me.changeHighlight();
 		};
 
-		this.div.className = this.class;
-		this.div.style.position = 'absolute';
-
+		$(this.div).addClass(this.class);
 	};
 
 	this.getSuggestions = function() {
@@ -411,7 +395,6 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 				me.parseSuggestions(data);
 				if (me.suggestions.length) {
 					me.createDiv();
-					me.positionDiv();
 					me.showDiv();
 				} else {
 					me.hideDiv();
@@ -444,11 +427,14 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 //counter to help create unique ID's
 var idCounter = 0;
 
+
 // hide autosuggest after click out of the window
 $(document).click(function(e) {
-	var elem = e.target;
-	if (!$(elem).is('.lms-ui-quick-search,.lms-ui-suggestion-list *')) {
-		$('.lms-ui-suggestion-container:visible').hide();
+	var autosuggest = $('.lms-ui-suggestion-container:visible');
+	if (!autosuggest.length || $(e.target).is(autosuggest.data('autosuggest-input'))) {
+		return;
 	}
-	return;
+
+	autosuggest.hide().closest('.lms-ui-popup').removeClass('fullscreen-popup').hide();
+	disableFullScreenPopup();
 });

@@ -96,8 +96,9 @@ class LMSSmartyPlugins
             }
             $result .= '</select>';
         } else {
-            $result = LMS::$currency . '<input type="hidden" name="' . $elementname . '"'
-                . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '') . ' value="' . LMS::$currency . '">';
+            $result = Localisation::getCurrentCurrency() . '<input type="hidden" name="' . $elementname . '"'
+                . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '') . ' value="'
+                . Localisation::getCurrentCurrency() . '">';
         }
 
         return $result;
@@ -835,6 +836,8 @@ class LMSSmartyPlugins
         $name = isset($params['name']) ? $params['name'] : null;
         // optional - text tip,
         $tip = isset($params['tip']) ? trans($params['tip']) : null;
+        // optional - text label
+        $label = isset($params['label']) ? trans($params['label']) : null;
 
         $data_attributes = '';
         foreach ($params as $key => $value) {
@@ -852,6 +855,38 @@ class LMSSmartyPlugins
             . '"'
             . (isset($tip) ? ' title="' . $tip . '"' : '')
             . $data_attributes
-            . '></i>';
+        . '></i>'
+            . (isset($label) ? ' ' . $label : '');
+    }
+
+    public static function paytypesFunction(array $params, $template)
+    {
+        static $paytypes = array();
+
+        if (empty($paytypes)) {
+            $paytypes = $GLOBALS['PAYTYPES'];
+            foreach ($paytypes as &$paytype) {
+                $paytype = trans($paytype);
+            }
+            unset($paytype);
+            uasort($paytypes, function ($a, $b) {
+                return $a > $b ? 1 : ($a < $b ? -1 : 0);
+            });
+        }
+
+        $elemname = $params['elemname'];
+        $selected = isset($params['selected']) && !empty($params['selected']) ? $params['selected'] : 0;
+        $tip = isset($params['tip']) ? $params['tip'] : trans('Select payment type');
+        $trigger = isset($params['trigger']) ? $params['trigger'] : 'paytype';
+
+        $options = '';
+        foreach ($paytypes as $key => $item) {
+            $item = trans($item);
+            $options .= '<option value="' . $key . '"' . ($selected == $key ? ' selected' : '') . '>' . $item . '</option>';
+        }
+        return '<select name="' . $elemname . '" ' . self::tipFunction(array('text' => $tip, 'trigger' => $trigger), $template) . '>
+			<option value=""' . (!$selected ? ' selected' : '') . '>- ' . trans("default") . '-</option>'
+            . $options
+            . '</select>';
     }
 }

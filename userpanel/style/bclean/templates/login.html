@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="style/bclean/vendor/twbs/bootstrap/dist/css/bootstrap.min.css">
         <link type="text/css" rel="stylesheet" href="{stylefile}">
         <link href="{ConfigHelper::getConfig('userpanel.shortcut_icon', 'img/lms-net.gif')}" rel="shortcut icon">
-        {include file="jquery.html" language=$LANGDEFS.$_ui_language.html lms_language=$_ui_language}
+        {include file="jquery.html" language=Localisation::getCurrentHtmlLanguage() lms_language=Localisation::getCurrentUiLanguage()}
         {$google_recaptcha_sitekey = ConfigHelper::getConfig('userpanel.google_recaptcha_sitekey')}
         {if $google_recaptcha_sitekey}
         <script>

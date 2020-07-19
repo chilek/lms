@@ -384,7 +384,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         $op_liability = '              ';
                         $op_payment = sprintf("%9.2f %s ", $row_s['value'], $row_s['currency']);
                     }
-                    $op_after = sprintf("%9.2f %s ", $row_s['after'], LMS::$currency);
+                    $op_after = sprintf("%9.2f %s ", $row_s['after'], Localisation::getCurrentCurrency());
                     $for_what = sprintf(" %-52s", $row_s['comment']);
                     $lN .= $op_time . '|' . $op_liability . '|' . $op_payment . '|' . $op_after . '|' . $for_what . $eol;
                 }

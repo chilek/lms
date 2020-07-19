@@ -24,8 +24,8 @@
  *  $Id$
  */
 
-/*use setasign\Fpdi\Tcpdf\Fpdi;
-use setasign\Fpdi\PdfParser\StreamReader;*/
+use setasign\Fpdi\Tcpdf\Fpdi;
+use setasign\Fpdi\PdfParser\StreamReader;
 
 if (!empty($_POST['marks'])) {
     $marks = array();
@@ -70,8 +70,7 @@ if (!empty($_POST['marks'])) {
             header('Content-Disposition: ' . ($pdf ? 'inline' : 'attachment') . '; filename='.$list[0]['filename']);
             header('Pragma: public');
             if ($pdf) {
-                $pdf = new FPDI();
-//              $pdf = new Fpdi();
+                $pdf = new Fpdi();
                 $pdf->setPrintHeader(false);
                 $pdf->setPrintFooter(false);
             }

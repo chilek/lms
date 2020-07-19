@@ -51,7 +51,7 @@ if (!empty($_POST['division'])) {
 
     if ($division['location_zip'] == '') {
         $error['division[location_zip]'] = trans('Zip code is required!');
-    } else if (!Utils::checkZip($division['location_zip'], $division['location_country_id'])) {
+    } else if (!Localisation::checkZip($division['location_zip'], $division['location_country_id'])) {
         $error['division[location_zip]'] = trans('Incorrect ZIP code!');
     }
 
@@ -109,7 +109,7 @@ if (!isset($division['location_city']) && $default_city) {
 
 $layout['pagetitle'] = trans('New Division');
 
-if ($_language == 'pl_PL') {
+if (Localisation::getCurrentSystemLanguage() == 'pl_PL') {
     require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'tax_office_codes.php');
 }
 

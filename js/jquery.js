@@ -472,9 +472,13 @@ function initListQuickSearch(options) {
 	}
 	var list = list_container.find('.lms-ui-list');
 	var list_suggestion = list_container.find('.lms-ui-list-suggestion');
-	new AutoSuggest(
-		list_container.closest('form')[0], list_suggestion[0], options.ajax, 0,
-		function (data) {
+	var form = list_container.closest('form');
+	new AutoSuggest({
+		form: form[0],
+		elem: list_suggestion[0],
+		uri: options.ajax,
+		suggestionContainer: '#lms-ui-list-suggestion-container',
+		onSubmit: function (data) {
 			list_suggestion.val('');
 			var html = '<li data-item-id="' + data.id + '">' +
 				'<input type="hidden" name="' + options.field_name_pattern.replace('%id%', data.id) + '" value="' + data.id + '">' +
@@ -484,16 +488,17 @@ function initListQuickSearch(options) {
 			} else {
 				list.append(html).show();
 			}
-			list_container.trigger('lms:list_updated', { list: list.find('li') });
+			list_container.trigger('lms:list_updated', {list: list.find('li')});
+			form.trigger('lms:form_validation_failed');
 		},
-		function (suggestions) {
+		onLoad: function (suggestions) {
 			var result = [];
 			var itemids = [];
 
 			list.find('li[data-item-id]').each(function () {
 				itemids.push($(this).attr('data-item-id'));
 			});
-			$(options.conflict_lists).each(function(key, list) {
+			$(options.conflict_lists).each(function (key, list) {
 				$(list).find('li[data-item-id]').each(function () {
 					itemids.push($(this).attr('data-item-id'));
 				});
@@ -509,7 +514,7 @@ function initListQuickSearch(options) {
 
 			return result;
 		}
-	);
+	});
 }
 
 function showGallery(data) {
@@ -546,13 +551,13 @@ function showGallery(data) {
 }
 
 function enableFullScreenPopup() {
-	$('body,#lms-ui-contents,#lms-ui-module-view').addClass('fullscreen-popup');
-	$('#lms-ui-back-to-top').addClass('fullscreen-popup');
+	$('html,body').addClass('fullscreen-popup');
 }
 
 function disableFullScreenPopup() {
-	$('body,#lms-ui-contents,#lms-ui-module-view').removeClass('fullscreen-popup');
-	$('#lms-ui-back-to-top').removeClass('fullscreen-popup');
+	if (!$('.lms-ui-popup.fullscreen-popup:visible').length) {
+		$('html,body').removeClass('fullscreen-popup');
+	}
 }
 
 $(function() {
@@ -1567,65 +1572,6 @@ $(function() {
 		show_pagecontent();
 	}
 
-	// quick search input auto show/hide support
-	var qs_fields = $('.lms-ui-quick-search-field');
-
-	qs_fields.each(function(index, field) {
-		var input = $(field).find('input');
-		new AutoSuggest(
-			$(field).closest('form').get(0),
-			input.get(0),
-			'?m=quicksearch&api=1&ajax=1&mode=' + $(field).attr('data-mode') + '&what=',
-			lmsSettings.quickSearchAutoSubmit
-		)
-	});
-
-	qs_fields.find('input[type="text"]').on('click', function() {
-		qs_fields.find('input[type="text"]').removeClass('lms-ui-quick-search-active');
-		$(this).addClass('lms-ui-quick-search-active').focus();
-	}).siblings('i').on('click', function() {
-		qs_fields.find('input[type="text"]').removeClass('lms-ui-quick-search-active');
-		$(this).siblings('input[type="text"]').addClass('lms-ui-quick-search-active').focus();
-	});
-	if (!location.hash.length) {
-		qs_fields.first().find('input[type="text"]').addClass('lms-ui-quick-search-active').focus();
-	}
-
-	$(document).keydown(function(e) {
-		var new_field;
-		if (e.keyCode != 9)
-			return;
-		var qs_field = $(e.target).closest('.lms-ui-quick-search-field');
-		if (qs_fields.index(qs_field) == -1)
-			return;
-		if (e.shiftKey) {
-			new_field = qs_field;
-			do {
-				new_field = new_field.prev('.lms-ui-quick-search-field');
-			} while (new_field.length && !new_field.is(':visible'));
-			if (!new_field.length) {
-				new_field = qs_fields.last();
-				while (new_field.length && !new_field.is(':visible')) {
-					new_field = new_field.prev('.lms-ui-quick-search-field');
-				}
-			}
-		} else {
-			new_field = qs_field;
-			do {
-				new_field = new_field.next('.lms-ui-quick-search-field');
-			} while (new_field.length && !new_field.is(':visible'));
-			if (!new_field.length) {
-				new_field = qs_fields.first();
-				while (new_field.length && !new_field.is(':visible')) {
-					new_field = new_field.next('.lms-ui-quick-search-field');
-				}
-			}
-		}
-		$(e.target).removeClass('lms-ui-quick-search-active');
-		new_field.find('input').addClass('lms-ui-quick-search-active').focus();
-		e.preventDefault();
-	});
-
 /*
 	var matches = navigator.appVersion.match(/(chrome\/[0-9]+)/i);
 	if (matches && typeof(matches) === 'object' && parseInt(matches[0].split('/')[1]) >= 69) {
@@ -1698,7 +1644,7 @@ $(function() {
 	});
 
 	// disables jquery-ui tooltip after any key press in ui control
-	$(document).on('keypress', "[data-tooltip]", function() {
+	$(document).on('keypress', "[data-tooltip]:ui-tooltip", function() {
 		$(this).tooltip('disable');
 	});
 
@@ -1706,8 +1652,12 @@ $(function() {
 		var form = $(this).attr('form') ? $('form#' + $(this).attr('form')) : $(this).closest('form');
 		var button = $(this);
 		form.submit(function() {
-			button.attr('disabled', 'disabled');
+			if (!$(this).attr('data-form-validation-failed')) {
+				button.attr('disabled', 'disabled');
+			}
+			$(this).removeAttr('data-form-validation-failed');
 		}).on('lms:form_validation_failed', function() {
+			$(this).attr('data-form-validation-failed', true);
 			button.removeAttr('disabled');
 		});
 	});

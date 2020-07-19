@@ -148,9 +148,6 @@ $SYSLOG = SYSLOG::getInstance();
 
 $AUTH = null;
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
-$LMS->ui_lang = $_ui_language;
-$LMS->lang = $_language;
-LMS::$currency = $_currency;
 
 $plugin_manager = new LMSPluginManager();
 $LMS->setPluginManager($plugin_manager);
@@ -605,7 +602,7 @@ $documents = $DB->GetAll(
         DOC_DNOTE,
         $daystart,
         $dayend,
-        LMS::$currency,
+        Localisation::getCurrentCurrency(),
     )
 );
 if (!empty($documents)) {
@@ -648,7 +645,7 @@ $cashes = $DB->GetAll(
     'SELECT id, currency FROM cash
     WHERE currency <> ? AND time >= ? AND time <= ?',
     array(
-        LMS::$currency,
+        Localisation::getCurrentCurrency(),
         $daystart,
         $dayend,
     )
@@ -885,10 +882,10 @@ foreach ($assigns as &$assign) {
 
     $currency = $assign['currency'];
     if (empty($currency)) {
-        $assign['currency'] = LMS::$currency;
+        $assign['currency'] = Localisation::getCurrentCurrency();
         continue;
     }
-    if ($currency != LMS::$currency) {
+    if ($currency != Localisation::getCurrentCurrency()) {
         if (!isset($currencyvalues[$currency])) {
             $currencyvalues[$currency] = $LMS->getCurrencyValue($currency, $currtime);
             if (!isset($currencyvalues[$currency])) {
@@ -902,10 +899,10 @@ unset($assign);
 if (!empty($currencyvalues) && !$quiet) {
     print "Currency quotes:" . PHP_EOL;
     foreach ($currencyvalues as $currency => $value) {
-        print '1 ' . $currency . ' = ' . $value . ' ' . LMS::$currency . PHP_EOL;
+        print '1 ' . $currency . ' = ' . $value . ' ' . Localisation::getCurrentCurrency(). PHP_EOL;
     }
 }
-$currencyvalues[LMS::$currency] = 1.0;
+$currencyvalues[Localisation::getCurrentCurrency()] = 1.0;
 
 foreach ($assigns as $assign) {
     $cid = $assign['customerid'];

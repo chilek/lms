@@ -220,6 +220,7 @@
 				$('[name="config[section]"]').scombobox('val', data.section);
 				$('[name="config[var]"]').val(data.name).trigger('autogrow');
 				getDocumentation(data.section, data.name);
+				$('#configadd').trigger('lms:form_validation_failed');
 			},
 			onLoad: function() {
 				$('[name="config[var]"]:ui-tooltip').tooltip('destroy');

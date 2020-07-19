@@ -253,7 +253,7 @@ class Utils
 
         $result = array();
 
-        $value = ConfigHelper::getConfig('phpui.default_customer_consents', 'data_processing', true);
+        $value = ConfigHelper::getConfig('phpui.default_customer_consents', 'data_processing,transfer_form', true);
         if (!empty($value)) {
             $values = array_flip(preg_split('/[\s\.,;]+/', $value, -1, PREG_SPLIT_NO_EMPTY));
             foreach ($CCONSENTS as $consent_id => $consent) {
@@ -264,24 +264,6 @@ class Utils
         }
 
         return $result;
-    }
-
-    public static function checkZip($zip, $country = null)
-    {
-        if (ConfigHelper::checkConfig('phpui.skip_zip_validation')) {
-            return true;
-        }
-        if (!isset($country) || empty($country)) {
-            $country = $GLOBALS['_language'];
-        } else if (preg_match('/^[0-9]+$/', $country)) {
-            $LMS = LMS::getInstance();
-            $country = $LMS->getCountryCodeById($country);
-        }
-        if (isset($GLOBALS['LANGDEFS'][$country]['check_zip'])) {
-            return $GLOBALS['LANGDEFS'][$country]['check_zip']($zip);
-        } else {
-            return true;
-        }
     }
 
     public static function parseCssProperties($text)
@@ -296,5 +278,24 @@ class Utils
             }
         }
         return $result;
+    }
+
+    public static function findNextBusinessDay($date = null)
+    {
+        $holidaysByYear = array();
+
+        list ($year, $month, $day, $weekday) = explode('/', date('Y/m/j/N', $date ? $date : time()));
+        $date = mktime(0, 0, 0, $month, $day, $year);
+
+        while (true) {
+            if (!isset($holidaysByYear[$year])) {
+                $holidaysByYear[$year] = getHolidays($year);
+            }
+            if ($weekday < 6 && !isset($holidaysByYear[$year][$date])) {
+                return $date;
+            }
+            $date = strtotime('+1 day', $date);
+            list ($year, $weekday) = explode('/', date('Y/N', $date));
+        }
     }
 }

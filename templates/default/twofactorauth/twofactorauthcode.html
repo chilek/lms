@@ -3,10 +3,9 @@
 <html>
 <head>
     <meta name="GENERATOR" content="LMS {$layout.lmsv}">
-    <meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
-    <meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
+	{include file="language.html"}
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	{include file="jquery.html" language=$LANGDEFS.$_ui_language.html lms_language=$_ui_language}
+	{include file="jquery.html" language=Localisation::getCurrentHtmlLanguage() lms_language=Localisation::getCurrentUiLanguage()}
     <link href="{ConfigHelper::getConfig('phpui.style', 'css/style.css')}" rel="stylesheet" type="text/css">
     <link href="img/lms-net.gif" rel="shortcut icon">
     <title>::: {t a=LMS::SOFTWARE_NAME}Welcome to $a{/t} {$layout.lmsv} :::</title>
@@ -107,7 +106,7 @@
 		</form>
 		<br>
 		<br>
-		<a href="doc/html/{$_ui_language}/"><span class="blend">{trans("Documentation")}</span></a><br>
+		<a href="doc/html/{Localisation::getCurrentUiLanguage()}/"><span class="blend">{trans("Documentation")}</span></a><br>
 		<a href="http://www.lms.org.pl/"><span class="blend">{trans("LMS Project Homepage")}</span></a>
 	</div>
 	{if $layout.dberrors}

@@ -87,5 +87,3 @@ if (ConfigHelper::checkConfig('phpui.logging') && class_exists('SYSLOG')) {
 $AUTH = null;
 
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
-$LMS->ui_lang = $_ui_language;
-$LMS->lang = $_language;

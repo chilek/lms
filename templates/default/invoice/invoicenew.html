@@ -110,12 +110,7 @@
 			{trans("Payment type:")}
 		</TD>
 		<TD class="nobr">
-			<SELECT name="invoice[paytype]" {tip text="Select payment type" trigger="paytype"}>
-				<OPTION value=""{if !$invoice.paytype} selected{/if}>- {trans("default")} -</OPTION>
-				{foreach from=$_PAYTYPES item=item key=key}
-				<OPTION value="{$key}"{if $invoice.paytype==$key} selected{/if}>{$item}</OPTION>
-				{/foreach}
-			</SELECT>
+			{paytypes elemname="invoice[paytype]" selected=$invoice.paytype}
 			<label id="splitpayment"{if !$is_split_payment_suggested} style="display: none;"{/if}>
 				<input type="checkbox" name="invoice[splitpayment]" value="1"{if $is_split_payment_suggested && $invoice.splitpayment} checked{/if}>
 				{trans("split payment")}

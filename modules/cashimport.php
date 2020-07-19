@@ -241,7 +241,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'csv') {
                 $SYSLOG->AddMessage(SYSLOG::RES_CASHIMPORT, SYSLOG::OPER_UPDATE, $args);
             }
 
-            $balance['currency'] = LMS::$currency;
+            $balance['currency'] = Localisation::getCurrentCurrency();
             $LMS->AddBalance($balance);
 
             $DB->CommitTrans();

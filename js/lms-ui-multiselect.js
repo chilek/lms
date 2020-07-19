@@ -36,6 +36,8 @@ $(document).click(function(e) {
 		!elem.closest('.lms-ui-multiselect-launcher').length &&
 		!elem.closest('.lms-ui-multiselect-popup').length) {
 		popup.hide();
+		popup.removeClass('fullscreen-popup');
+		disableFullScreenPopup();
 		container.removeClass('open');
 		old_element.trigger('lms:multiselect:change');
 	}
@@ -186,7 +188,7 @@ function multiselect(options) {
 	});
 
 	// create multiselect list div (hidden)
-	var popup = $('<div class="lms-ui-multiselect-popup"></div>').hide().appendTo(container);
+	var popup = $('<div class="lms-ui-multiselect-popup lms-ui-popup"></div>').hide().appendTo(container);
 	$('<input type="checkbox" class="lms-ui-multiselect-label-workaround">').appendTo(popup);
 	$('<div class="lms-ui-multiselect-popup-titlebar"><div class="lms-ui-multiselect-popup-title">' + popupTitle +
 		'</div><i class="lms-ui-icon-hide close-button"></i></div>').appendTo(popup);
@@ -210,10 +212,10 @@ function multiselect(options) {
 
 	this.generateSelectedString = function() {
 		var selected = [];
-		old_element.find('option').removeAttr('selected');
+		old_element.find('option').removeAttr('selected').prop('selected', false);
 		$('input:checked', ul).each(function() {
 			selected.push($(this).next().html());
-			old_element.find('option[value="' + $(this).val() + '"]').attr('selected', 'selected');
+			old_element.find('option[value="' + $(this).val() + '"]').attr('selected', 'selected').prop('selected', true);
 		});
 		if (selected.length) {
 			if (def && shorten_to_def && def.length && selected.length == $('input', ul).length) {
@@ -417,6 +419,7 @@ function multiselect(options) {
 		if (!popup.is(':visible') && (e.type != 'keydown' || e.key != 'Escape')) {
 			setTimeout(function() {
 				popup.show();
+				popup.addClass('fullscreen-popup');
 				container.addClass('open');
 				if (parseInt($(window).outerWidth()) >= 800) {
 					popup.position({
@@ -437,6 +440,7 @@ function multiselect(options) {
 			e.stopPropagation();
 		} else {
 			popup.hide();
+			popup.removeClass('fullscreen-popup');
 			container.removeClass('open');
 			disableFullScreenPopup();
 			if (new_selected != old_selected) {
@@ -450,6 +454,7 @@ function multiselect(options) {
 
 	popup.find('.close-button').click(function(e) {
 		popup.hide();
+		popup.removeClass('fullscreen-popup');
 		container.removeClass('open');
 		launcher.focus();
 		if (new_selected != old_selected) {

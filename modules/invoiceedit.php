@@ -615,7 +615,7 @@ switch ($action) {
         } else {
             $args['fullnumber'] = null;
         }
-        $args[SYSLOG::RES_NUMPLAN] = $invoice['numberplanid'];
+        $args[SYSLOG::RES_NUMPLAN] = $invoice['numberplanid'] ?: null;
         //$args['recipient_address_id'] = $invoice
         $args[SYSLOG::RES_DOC] = $iid;
         $DB->Execute('UPDATE documents SET cdate = ?, sdate = ?, paytime = ?, paytype = ?, splitpayment = ?, customerid = ?,

@@ -24,58 +24,46 @@
  *  $Id$
  */
 
-
-function check_ten($ten)
-{
-    return preg_match('/^CZ[0-9]{8,10}$/', $ten);
-}
-
-function check_ssn($ssn)
-{
-    return preg_match('/^[0-9]{6}\/[0-9]{3,4}$/', $ssn);
-}
-
-function check_regon($regon)
-{
-    return preg_match('/^[0-9]{8,10}$/', $regon);
-}
-
-function check_icn($icn)
-{
-    return preg_match('/^[1-9][0-9]{8}$/', $icn);
-}
-
-function bankaccount($id, $account = null)
-{
-    return iban_account('CZ', 22, $id, $account);
-}
-
-function check_bankaccount($account)
-{
-    return iban_check_account('CZ', 22, $account);
-}
-
-function format_bankaccount($account)
-{
-    return preg_replace('/(..)(....)(....)(....)(....)(....)/i', '${1} ${2} ${3} ${4} ${5} ${6}', $account);
-}
-
-function getHolidays($year = null)
-{
-    return array();
-}
-
-/*!
- * \brief Generate random postcode
- *
- * \return string
- */
-function generateRandomPostcode()
-{
-    return rand(1, 9) . sprintf("%04d", rand(0, 9999));
-}
-
-function get_currency_value($currency, $date = null)
-{
-    return exchangeratesapi_get_currency_value($currency, $date);
-}
+self::addLanguageFunctions(
+    self::SYSTEM_FUNCTION,
+    array(
+        'check_zip' => function ($zip) {
+            return preg_match('/^[1-9][0-9]{4}$/', $zip);
+        },
+        'check_ten' => function ($ten) {
+            return preg_match('/^CZ[0-9]{8,10}$/', $ten);
+        },
+        'check_ssn' => function ($ssn) {
+            return preg_match('/^[0-9]{6}\/[0-9]{3,4}$/', $ssn);
+        },
+        'check_regon' => function ($regon) {
+            return preg_match('/^[0-9]{8,10}$/', $regon);
+        },
+        'check_icn' => function ($icn) {
+            return preg_match('/^[1-9][0-9]{8}$/', $icn);
+        },
+        'bankaccount' => function ($id, $account = null) {
+            return iban_account('CZ', 22, $id, $account);
+        },
+        'check_bankaccount' => function ($account) {
+            return iban_check_account('CZ', 22, $account);
+        },
+        'format_bankaccount' => function ($account) {
+            return preg_replace('/(..)(....)(....)(....)(....)(....)/i', '${1} ${2} ${3} ${4} ${5} ${6}', $account);
+        },
+        'getHolidays' => function ($year = null) {
+            return array();
+        },
+        /*!
+         * \brief Generate random postcode
+         *
+         * \return string
+         */
+        'generateRandomPostcode' => function () {
+            return rand(1, 9) . sprintf("%04d", rand(0, 9999));
+        },
+        'get_currency_value' => function ($currency, $date = null) {
+            return exchangeratesapi_get_currency_value($currency, $date);
+        },
+    )
+);

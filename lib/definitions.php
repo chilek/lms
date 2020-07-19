@@ -90,6 +90,7 @@ define('CCONSENT_MAILINGNOTICE', 3);
 define('CCONSENT_EINVOICE', 4);
 define('CCONSENT_USERPANEL_SMS', 5);
 define('CCONSENT_USERPANEL_SCAN', 6);
+define('CCONSENT_TRANSFERFORM', 7);
 
 $CCONSENTS = array(
     CCONSENT_DATE => array(
@@ -120,6 +121,11 @@ $CCONSENTS = array(
     CCONSENT_USERPANEL_SCAN => array(
         'label' => trans('document form approval in customer panel using scans'),
         'name' => 'userpanel_document_scan_approval',
+        'type' => 'boolean',
+    ),
+    CCONSENT_TRANSFERFORM => array(
+        'label' => trans('invoice transfer form'),
+        'name' => 'transfer_form',
         'type' => 'boolean',
     ),
 );
@@ -707,16 +713,16 @@ $SERVICETYPES = array(
 );
 
 $PAYTYPES = array(
-    1   => trans('cash'),
-    2   => trans('transfer'),
-    3   => trans('transfer/cash'),
-    4   => trans('card'),
-    5   => trans('compensation'),
-    6   => trans('barter'),
-    7   => trans('contract'),
-    8   => trans('paid'),
-    9   => trans('cash on delivery'),
-    10  => trans('instalments'),
+    1   => 'cash',
+    2   => 'transfer',
+    3   => 'transfer/cash',
+    4   => 'card',
+    5   => 'compensation',
+    6   => 'barter',
+    7   => 'contract',
+    8   => 'paid',
+    9   => 'cash on delivery',
+    10  => 'instalments',
 );
 
 // Contact types

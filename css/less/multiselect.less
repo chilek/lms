@@ -76,24 +76,26 @@
   }
 
   .lms-ui-multiselect-popup {
+    display: none;
     position: absolute;
     width: 350px;
     border: solid 1px @blend;
     background-color: @light;
-    z-index: 31000;
+    z-index: 65;
     overflow: hidden;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     .lms-ui-no-user-select;
 
-    @media screen and (max-width: 800px) {
+    @media screen and (max-width: @mobile-max-width) {
       position: fixed;
       width: auto;
       left: 0;
-      top: 0;
+      top: 2em;
       right: 0;
       bottom: 0;
       padding: 0.5em;
       font-size: 200%;
+      border: 0;
     }
 
     .lms-ui-multiselect-popup-list {
@@ -104,7 +106,8 @@
       border: solid 1px @blend;
       max-height: 200px;
       max-width: 350px;
-      @media screen and (max-width: 800px) {
+      text-align: left;
+      @media screen and (max-width: @mobile-max-width) {
         max-height: 80%;
         max-width: unset;
       }
@@ -117,7 +120,7 @@
         background-color: @lucid;
         padding-left: 2em;
         text-indent: -2.2em;
-        @media screen and (max-width: 800px) {
+        @media screen and (max-width: @mobile-max-width) {
           padding-left: 1.2em;
           text-indent: -1.1em;
         }
@@ -145,7 +148,7 @@
 
     .lms-ui-multiselect-popup-titlebar {
       display: none;
-      @media screen and (max-width: 800px) {
+      @media screen and (max-width: @mobile-max-width) {
         display: flex;
       }
       justify-content: space-between;
@@ -164,7 +167,7 @@
 
     .lms-ui-multiselect-popup-checkall {
       width: 100%;
-      @media screen and (max-width: 800px) {
+      @media screen and (max-width: @mobile-max-width) {
         margin-top: 0.5em;
         border-top: @dotted-line;
         padding-top: 0.5em;

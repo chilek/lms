@@ -24,63 +24,52 @@
  *  $Id$
  */
 
-function check_ten($ten)
-{
-    return true;
-}
+self::addLanguageFunctions(
+    self::SYSTEM_FUNCTION,
+    array(
+        'check_zip' => function ($zip) {
+            return preg_match('/^[0-9]{6}$/', $zip);
+        },
+        'check_ten' => function ($ten) {
+            return true;
+        },
+        'check_ssn' => function ($ssn) {
+            $ssn = str_replace(array('-','/',' ',"\t","\n"), '', $ssn);
 
-function check_ssn($ssn)
-{
-    $ssn = str_replace(array('-','/',' ',"\t","\n"), '', $ssn);
+            if (!is_numeric($ssn) || strlen($ssn) < 13) {
+                return false;
+            }
 
-    if (!is_numeric($ssn) || strlen($ssn) < 13) {
-        return false;
-    }
-
-    return true;
-}
-
-function check_regon($regon) // business registration number
-{
-    return true;
-}
-
-function check_icn($icn) // identity card number
-{
-    return true;
-}
-
-function bankaccount($id, $account = null)
-{
-    return iban_account('RO', 22, $id, $account);
-}
-
-function check_bankaccount($account)
-{
-    return iban_check_account('RO', 22, $account);
-}
-
-function format_bankaccount($account)
-{
-    return $account;
-}
-
-function getHolidays($year = null)
-{
-    return array();
-}
-
-/*!
- * \brief Generate random postcode
- *
- * \return string
- */
-function generateRandomPostcode()
-{
-    return sprintf("%06d", rand(0, 999999));
-}
-
-function get_currency_value($currency, $date = null)
-{
-    return exchangeratesapi_get_currency_value($currency, $date);
-}
+            return true;
+        },
+        'check_regon' =>  function ($regon) {
+            return true;
+        },
+        'check_icn' => function ($icn) {
+            return true;
+        },
+        'bankaccount' => function ($id, $account = null) {
+            return iban_account('RO', 22, $id, $account);
+        },
+        'check_bankaccount' => function ($account) {
+            return iban_check_account('RO', 22, $account);
+        },
+        'format_bankaccount' => function ($account) {
+            return $account;
+        },
+        'getHolidays' => function ($year = null) {
+            return array();
+        },
+        /*!
+         * \brief Generate random postcode
+         *
+         * \return string
+         */
+        'generateRandomPostcode' => function () {
+            return sprintf("%06d", rand(0, 999999));
+        },
+        'get_currency_value' => function ($currency, $date = null) {
+            return exchangeratesapi_get_currency_value($currency, $date);
+        },
+    )
+);

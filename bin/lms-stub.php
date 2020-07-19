@@ -141,12 +141,7 @@ $SYSLOG = SYSLOG::getInstance();
 
 $AUTH = null;
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
-$LMS->ui_lang = $_ui_language;
-$LMS->lang = $_language;
 
 /* ********************************************************************
    We should have all hard work here which is being done by our script!
    ********************************************************************/
-
-
-?>

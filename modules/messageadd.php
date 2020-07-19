@@ -243,7 +243,7 @@ function GetRecipient($customerid)
 
 function BodyVars(&$body, $data, $eol)
 {
-    global $LMS, $LANGDEFS;
+    global $LMS;
 
     $data['services'] = $LMS->GetCustomerServiceSummary($data['id']);
 
@@ -297,11 +297,11 @@ function BodyVars(&$body, $data, $eol)
         $services = $data['services'];
         $lN = '';
         if (!empty($services)) {
-            $lN .= strtoupper(trans("Total:"))  . " " . sprintf("%2s", sprintf($LANGDEFS[$LMS->ui_lang]['money_format'], $services['total_value'])) . $eol;
+            $lN .= strtoupper(trans("Total:"))  . " " . sprintf("%2s", sprintf(Localisation::getCurrentMoneyFormat(), $services['total_value'])) . $eol;
             unset($services['total_value']);
             foreach ($services as $row) {
                 $lN .= strtoupper($row['tarifftypename']) .": ";
-                $lN .= sprintf("%2s", sprintf($LANGDEFS[$LMS->ui_lang]['money_format'], $row['sumvalue'])) . $eol;
+                $lN .= sprintf("%2s", sprintf(Localisation::getCurrentMoneyFormat(), $row['sumvalue'])) . $eol;
             }
         }
         $body = str_replace('%services', $lN, $body);

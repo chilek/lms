@@ -1,5 +1,36 @@
+<div id="lms-ui-mobile-menu-container" class="no-print">
+	<nav id="lms-ui-mobile-menu-panel">
+		{button type="link" id="lms-ui-mobile-menu-toggle" class="lms-ui-mobile-menu-item"
+			icon="menu" data_target="#lms-ui-menu-panel"}
+		{button type="link" id="lms-ui-mobile-menu-search" class="lms-ui-mobile-menu-item"
+			icon="search" data_target="#lms-ui-tool-panels"}
+	</nav>
+</div>
+
+<script>
+
+	$(function() {
+		$('#lms-ui-mobile-menu-panel .lms-ui-mobile-menu-item').click(function() {
+			var target = $(this).attr('data-target');
+			if ($(target).is(':visible')) {
+				$(target).removeClass('fullscreen-popup');
+				disableFullScreenPopup();
+			} else {
+				$(target).addClass('fullscreen-popup');
+				enableFullScreenPopup();
+			}
+
+			$(this).parent().find('.lms-ui-mobile-menu-item:not([data-target="' + target + '"])').each(function() {
+				$($(this).attr('data-target')).removeClass('fullscreen-popup');
+				disableFullScreenPopup();
+			});
+		});
+	});
+
+</script>
+
 <i id="lms-ui-menu-panel-toggle" class="fas fa-angle-left no-print"></i>
-<nav id="lms-ui-menu-panel" class="no-print">
+<nav id="lms-ui-menu-panel" class="no-print lms-ui-popup">
 	<div id="lms-ui-menu-panel-container">
 	<div id="lms-ui-logo">
 		<img src="{ConfigHelper::getConfig('phpui.logo', 'img/logo-40.png')}" title="LMS {$layout.lmsv}">
@@ -29,11 +60,13 @@
 				setCookie('main-menu-visible', mainMenuVisible);
 			});
 
-			$('body').toggleClass('main-menu-mobile', $(window).width() <= 900);
+			$('body').toggleClass('lms-ui-mobile', parseInt($(window).outerWidth()) <= 800);
 
 			$(window).resize(function() {
-				$('body').toggleClass('main-menu-mobile', $(window).width() <= 900)
-				.css('margin-top', $('#lms-ui-tool-panels').outerHeight());
+				var mobileMode = parseInt($(window).outerWidth()) <= 800;
+				$('body').toggleClass('lms-ui-mobile', mobileMode)
+					.css('margin-top', mobileMode ? '' : $('#lms-ui-tool-panels').outerHeight());
+				$('.lms-ui-popup:visible').toggleClass('fullscreen-popup', mobileMode);
 			})
 
 			$(function() {

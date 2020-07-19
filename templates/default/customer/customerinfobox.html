@@ -265,7 +265,7 @@
 												{trans("Payment type:")}
 											</TD>
 											<TD>
-												{assign var=paytype value=$customerinfo.paytype}{if $_PAYTYPES.$paytype}{$_PAYTYPES.$paytype}{else}{trans("default")}{/if}
+												{assign var=paytype value=$customerinfo.paytype}{if $_PAYTYPES.$paytype}{trans($_PAYTYPES.$paytype)}{else}{trans("default")}{/if}
 											</TD>
 										</TR>
 										{if $customerinfo.cutoffstop > $smarty.now}

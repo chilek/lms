@@ -57,10 +57,6 @@ if (count($userconfig)) {
         }
     }
 
-    if (!$userconfig['description']) {
-        $SESSION->redirect('?'.$SESSION->get('backto'));
-    }
-
     if ($msg = $LMS->CheckOption($option, $userconfig['value'], $config['type'])) {
         $error['value'] = $msg;
     }

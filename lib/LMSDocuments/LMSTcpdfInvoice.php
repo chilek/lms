@@ -590,7 +590,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             }
         }
         if (!ConfigHelper::checkConfig('invoices.hide_payment_type')) {
-            $this->backend->writeHTMLCell(0, 0, '', '', trans('Payment type:') . '<b>' . $this->data['paytypename'] . '</b>', 0, 1, 0, true, 'R');
+            $this->backend->writeHTMLCell(0, 0, '', '', trans('Payment type:') . '<b>' . trans($this->data['paytypename']) . '</b>', 0, 1, 0, true, 'R');
             if (!empty($this->data['splitpayment'])) {
                 $this->backend->writeHTMLCell(0, 0, '', '', '<b>' . trans('(split payment)') . '</b>', 0, 1, 0, true, 'R');
             }
@@ -871,7 +871,10 @@ class LMSTcpdfInvoice extends LMSInvoice
             }
 
             /* FT-0100 form */
-            $this->invoice_transferform(new LMSTcpdfTransferForm('Transfer form', $pagesize = 'A4', $orientation = 'portrait'));
+            $lms = LMS::getInstance();
+            if ($lms->checkCustomerConsent($this->data['customerid'], CCONSENT_TRANSFERFORM)) {
+                $this->invoice_transferform(new LMSTcpdfTransferForm('Transfer form', $pagesize = 'A4', $orientation = 'portrait'));
+            }
         }
 
         $docnumber = docnumber(array(

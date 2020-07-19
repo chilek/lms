@@ -24,7 +24,7 @@
 		<tr class="light">
 			<td><img src="img/options.gif" ALT=""></TD>
 			<td class="bold nobr">{trans("Payment type:")}</td>
-			<td class="nobr">{if $invoice.paytypename}{$invoice.paytypename}{/if}</td>
+			<td class="nobr">{if $invoice.paytypename}{trans($invoice.paytypename)}{/if}</td>
 		</tr>
 	</TBODY>
 </table>

@@ -286,7 +286,7 @@ if (isset($_POST['tariff'])) {
     if (!empty($default_assignment_period)) {
         $tariff['period'] = $default_assignment_period;
     }
-    $tariff['currency'] = LMS::$default_currency;
+    $tariff['currency'] = Localisation::getDefaultCurrency();
 }
 
 $layout['pagetitle'] = trans('New Subscription');

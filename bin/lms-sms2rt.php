@@ -156,8 +156,6 @@ $SYSLOG = SYSLOG::getInstance();
 
 $AUTH = null;
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
-$LMS->ui_lang = $_ui_language;
-$LMS->lang = $_language;
 
 $incoming_queue = ConfigHelper::getConfig($config_section . '.incoming_queue', 'SMS');
 $default_mail_from = ConfigHelper::getConfig($config_section . '.default_mail_from', 'root@localhost');

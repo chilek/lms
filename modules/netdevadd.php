@@ -91,7 +91,7 @@ if (isset($netdev)) {
         $error['netdev[teryt]'] = trans('TERRIT address is required!');
     }
 
-    if (empty($netdev['ownerid']) && $netdev['location_zip'] && !Utils::checkZip($netdev['location_zip'], $netdev['location_country_id'])) {
+    if (empty($netdev['ownerid']) && $netdev['location_zip'] && !Localisation::checkZip($netdev['location_zip'], $netdev['location_country_id'])) {
         $error['location_zip'] = trans('Incorrect ZIP code!');
     }
 

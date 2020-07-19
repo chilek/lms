@@ -42,11 +42,11 @@
 			<a href="javascript:document.printcustomerbalance.submit();">{trans("Customer Balance Sheet")}</a>
 		{/tab_header_cell}
 		{tab_header_cell}
-			<A id="newtransferformanchor" rel="external" href="?m=customertransferform&id={$balancelist.customerid}&type={LMSHtmlTransferForm::VALUE_ASSIGNMENTS}">{trans("Transfer form:")}</A>
+			<A id="newtransferformanchor" rel="external" href="?m=customertransferform&id={$balancelist.customerid}&type={LMSTcpdfTransferForm::VALUE_ASSIGNMENTS}">{trans("Transfer form:")}</A>
 			<SELECT name="newtransferform" onchange="javascript:new_transfer_form_type_changed()" form="addbalance-form">
-				<OPTION value="{LMSHtmlTransferForm::VALUE_ASSIGNMENTS}">{trans("<!transferform>assignments")}</OPTION>
-				<OPTION value="{LMSHtmlTransferForm::VALUE_BALANCE}">{trans("<!transferform>balance")}</OPTION>
-				<OPTION value="{LMSHtmlTransferForm::VALUE_CUSTOM}">{trans("<!transferform>custom")}</OPTION>
+				<OPTION value="{LMSTcpdfTransferForm::VALUE_ASSIGNMENTS}">{trans("<!transferform>assignments")}</OPTION>
+				<OPTION value="{LMSTcpdfTransferForm::VALUE_BALANCE}">{trans("<!transferform>balance")}</OPTION>
+				<OPTION value="{LMSTcpdfTransferForm::VALUE_CUSTOM}">{trans("<!transferform>custom")}</OPTION>
 			</SELECT>
 			<input type="text" name="newtransferformcustomvalue" pattern="[0-9]+(\.[0-9]{literal}{1,2}{/literal})?" size="5" style="display: none;" form="addbalance-form">
 			<A id="newdocanchor" href="?m=invoicenew&action=init&customerid={$balancelist.customerid}">{trans("New document:")}</A>
@@ -383,7 +383,7 @@
 					<INPUT type="text" form="addbalance-form" name="addbalance[time]" size="15" maxlength="16" {tip class="lms-ui-datetime" text="Enter transaction time in 'yyyy/mm/dd hh:mm' format (empty field means current time). Click to select date from calendar."} {if $time}value="{$time|date_format:"%Y/%m/%d %H:%M"}"{/if}>
 					{$layout.logname|truncate:16:"...":true}
 					<INPUT type="text" size="8" form="addbalance-form" name="addbalance[value]" accesskey="s" {if $value}value="{$value}"{/if} {tip text="Enter transaction value"}>&nbsp;
-					{currency_selection selected=LMS::$default_currency elementname="addbalance[currency]" form="addbalance-form"}
+					{currency_selection selected=Localisation::getDefaultCurrency() elementname="addbalance[currency]" form="addbalance-form"}
 					<SELECT SIZE="1" form="addbalance-form" name="addbalance[taxid]" {tip text="Select Tax value"}>
 						{foreach item=tax from=$taxeslist}
 						<OPTION value="{$tax.id}" {if ($taxid && $tax.id == $taxid) || (!$taxid && $tax.value == $default_taxrate)}selected{/if}>{$tax.label}</OPTION>
@@ -550,7 +550,7 @@
 		var type = $('[name="newtransferform"]').val();
 		$('#newtransferformanchor').attr('href', '?m=customertransferform&id={$balancelist.customerid}&type=' + type +
 			'&value=' + $('[name="newtransferformcustomvalue"]').val());
-		if (type == {LMSHtmlTransferForm::VALUE_CUSTOM}) {
+		if (type == {LMSTcpdfTransferForm::VALUE_CUSTOM}) {
 			$('[name="newtransferformcustomvalue"]').show().focus();
 		} else {
 			$('[name="newtransferformcustomvalue"]').hide();
