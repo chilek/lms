@@ -389,6 +389,25 @@ class Localisation
         return call_user_func_array('Localisation::callLanguageFunction', $args);
     }
 
+    public static function arraySort(array &$array, $key = null)
+    {
+        foreach ($array as &$item) {
+            if (isset($key)) {
+                $item[$key] = self::trans($item[$key]);
+            } else {
+                $item = self::trans($item);
+            }
+        }
+        unset($item);
+        uasort($array, function ($a, $b) use ($key) {
+            if (isset($key)) {
+                return $a[$key] > $b[$key] ? 1 : ($a[$key] < $b[$key] ? -1 : 0);
+            } else {
+                return $a > $b ? 1 : ($a < $b ? -1 : 0);
+            }
+        });
+    }
+
     public static function checkZip($zip, $country = null)
     {
         if (ConfigHelper::checkConfig('phpui.skip_zip_validation')) {

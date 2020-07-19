@@ -274,7 +274,10 @@ class LMSSmartyPlugins
 
     public static function locationBoxFunction(array $params, $template)
     {
-        $DB = LMSDB::getInstance();
+        static $countries = array();
+        static $states = array();
+
+        $lms = LMS::getInstance();
 
         if (empty($params)) {
             $params = array();
@@ -353,11 +356,11 @@ class LMSSmartyPlugins
               <td>' . trans('State') . '</td>
               <td>';
 
-        if ($template->getTemplateVars('__states')) {
-            $states = $template->getTemplateVars('__states');
-        } else {
-            $states = $DB->GetCol('SELECT name FROM states;');
-            $template->assign('__states', $states);
+        if (isset($states) && empty($states)) {
+            $states = $lms->GetCountryStates();
+            if (!empty($states)) {
+                Localisation::arraySort($states, 'name');
+            }
         }
 
         if ($states) {
@@ -434,17 +437,15 @@ class LMSSmartyPlugins
             $params['countryid'] = -1;
         }
 
-        if ($template->getTemplateVars('__countries')) {
-            $countries = $template->getTemplateVars('__countries');
-        } else {
-            $countries = $DB->GetAll('SELECT id, name FROM countries;');
-            $template->assign('__countries', $countries);
+        if (empty($countries)) {
+            $countries = $lms->GetCountries();
+            Localisation::arraySort($countries, 'name');
         }
 
         if ($countries) {
             echo '<tr><td>' . trans('Country:') . '</td><td>
-              <select name="' . $input_name_country_id . '" data-address="country">
-              <option value="">---</option>';
+                <select name="' . $input_name_country_id . '" data-address="country">
+                <option value="">---</option>';
 
             foreach ($countries as $v) {
                 if ($v['id'] == $params['location_country_id']) {
@@ -865,13 +866,7 @@ class LMSSmartyPlugins
 
         if (empty($paytypes)) {
             $paytypes = $GLOBALS['PAYTYPES'];
-            foreach ($paytypes as &$paytype) {
-                $paytype = trans($paytype);
-            }
-            unset($paytype);
-            uasort($paytypes, function ($a, $b) {
-                return $a > $b ? 1 : ($a < $b ? -1 : 0);
-            });
+            Localisation::arraySort($paytypes);
         }
 
         $elemname = $params['elemname'];

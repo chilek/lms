@@ -367,8 +367,6 @@ $customeradd = $hook_data['customeradd'];
 
 $SMARTY->assign('xajax', $LMS->RunXajax());
 $SMARTY->assign(compact('pin_min_size', 'pin_max_size', 'pin_allowed_characters'));
-$SMARTY->assign('cstateslist', $LMS->GetCountryStates());
-$SMARTY->assign('countrieslist', $LMS->GetCountries());
 $SMARTY->assign('divisions', $LMS->GetDivisions());
 $SMARTY->assign('customeradd', $customeradd);
 if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.add_customer_group_required', false))) {
