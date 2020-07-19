@@ -200,6 +200,11 @@ class Localisation
 
     public static function getCurrentMoneyFormat()
     {
+        return self::$langDefs[self::$systemLanguage]['money_format'];
+    }
+
+    public static function getCurrentMoneyFormatInWords()
+    {
         return self::$langDefs[self::$systemLanguage]['money_format_in_words'];
     }
 

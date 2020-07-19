@@ -88,13 +88,12 @@ $SESSION = new Session($DB, ConfigHelper::getConfig('phpui.timeout'));
 $AUTH = new Auth($DB, $SESSION);
 $SYSLOG = null;
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
-$LMS->ui_lang = $_ui_language;
-$LMS->lang = $_language;
+$LMS->ui_lang = Localisation::getCurrentUiLanguage();
+$LMS->lang = Localisation::getCurrentSystemLanguage();
 
 // set some template and layout variables
 
 $SMARTY->assignByRef('_LANG', $_LANG);
-$SMARTY->assignByRef('LANGDEFS', $LANGDEFS);
 $SMARTY->assignByRef('_ui_language', $LMS->ui_lang);
 $SMARTY->assignByRef('_language', $LMS->lang);
 $SMARTY->template_dir = getcwd();

@@ -85,8 +85,8 @@
 	{if ConfigHelper::checkConfig('privileges.superuser') || (!ConfigHelper::checkConfig('privileges.hide_finances') && !ConfigHelper::checkConfig('privileges.hide_summaries'))}
 	<TR>
 		<TD CLASS="HEADGREY" COLSPAN="{if $customernodes}5{else}4{/if}" ALIGN="RIGHT"><B>{trans("Total:")}</B></TD>
-		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP><B>{sum array=$customerlist column="tariffvalue" string_format=$LANGDEFS.$_language.money_format}</B></TD>
-		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP><B>{sum array=$customerlist column="balance" string_format=$LANGDEFS.$_language.money_format}</B></TD>
+		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP><B>{sum array=$customerlist column="tariffvalue" string_format=Localisation::getCurrentMoneyFormat()}</B></TD>
+		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP><B>{sum array=$customerlist column="balance" string_format=Localisation::getCurrentMoneyFormat()}</B></TD>
 	</TR>
 	{/if}
 </TABLE>

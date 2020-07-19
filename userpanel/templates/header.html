@@ -1,13 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <!--// $Id$ //-->
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{$_ui_language}">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{Localisation::getCurrentUiLanguage()}">
 <head>
-  <meta content="text/html; charset={$LANGDEFS.$_ui_language.charset}" http-equiv="content-type" />
+  {$uiLanguage = Localisation::getCurrentUiLanguageInfo()}
+  <meta content="text/html; charset={$uiLanguage.charset}" http-equiv="content-type" />
   <title>{if $page_header}{$page_header}{else}{trans("Virtual Customer Service")}{/if}</title>
   <link href="{ConfigHelper::getConfig('userpanel.shortcut_icon', 'img/lms-net.gif')}" rel="shortcut icon">
   <script type="text/javascript" src="style/default/common.js"></script>
   <script type="text/javascript" src="js/common.js"></script>
-  {include file="jquery.html" language=$LANGDEFS.$_ui_language.html lms_language=$_ui_language}
+  {include file="jquery.html" language=$uiLanguage.html lms_language=Localisation::getCurrentUiLanguage()}
   <link type="text/css" rel="stylesheet" href="{stylefile}" />
   {$hint_mode = ConfigHelper::getConfig('userpanel.hint')}
 {if $hint_mode != 'classic' && $hint_mode != 'none'}

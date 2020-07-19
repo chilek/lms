@@ -104,15 +104,14 @@ require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 $AUTH = null;
 $SYSLOG = null;
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
-$LMS->ui_lang = $_ui_language;
-$LMS->lang = $_language;
+$LMS->ui_lang = Localisation::getCurrentUiLanguage();
+$LMS->lang = Localisation::getCurrentSystemLanguage();
 
 $plugin_manager = new LMSPluginManager();
 $LMS->setPluginManager($plugin_manager);
 
 // set some template and layout variables
 
-$SMARTY->assignByRef('LANGDEFS', $LANGDEFS);
 $SMARTY->assignByRef('_ui_language', $LMS->ui_lang);
 $SMARTY->assignByRef('_language', $LMS->lang);
 $SMARTY->template_dir = getcwd();

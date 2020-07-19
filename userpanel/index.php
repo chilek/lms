@@ -207,7 +207,6 @@ foreach ($modules_dirs as $suspected_module_dir) {
     }
 }
 
-$SMARTY->assignByRef('LANGDEFS', $LANGDEFS);
 $SMARTY->assignByRef('_ui_language', $LMS->ui_lang);
 $SMARTY->assignByRef('_language', $LMS->lang);
 $SMARTY->setTemplateDir(null);

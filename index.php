@@ -207,7 +207,6 @@ $layout['popup'] = isset($_GET['popup']) ? true : false;
 
 if (!$api) {
     $SMARTY->assignByRef('layout', $layout);
-    $SMARTY->assignByRef('LANGDEFS', $LANGDEFS);
     $SMARTY->assignByRef('_ui_language', $LMS->ui_lang);
     $SMARTY->assignByRef('_language', $LMS->lang);
     $SMARTY->assignByRef('_currency', LMS::$currency);

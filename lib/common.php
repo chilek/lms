@@ -495,7 +495,7 @@ function moneyf_in_words($value, $currency = null)
         $currency = LMS::$currency;
     }
     return sprintf(
-        Localisation::getCurrentMoneyFormat(),
+        Localisation::getCurrentMoneyFormatInWords(),
         to_words(floor($value)),
         $currency,
         round(($value - floor($value)) * 100)

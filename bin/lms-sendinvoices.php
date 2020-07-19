@@ -226,7 +226,6 @@ if (!$no_attachments) {
     $SMARTY->setCompileDir(SMARTY_COMPILE_DIR);
 
     $SMARTY->assignByRef('layout', $layout);
-    $SMARTY->assignByRef('LANGDEFS', $LANGDEFS);
 }
 
 $invoice_filename = ConfigHelper::getConfig('sendinvoices.invoice_filename', 'invoice_%docid');
@@ -349,18 +348,15 @@ if ($backup || $archive) {
 $SYSLOG = null;
 $AUTH = null;
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
-$LMS->ui_lang = $_ui_language;
-$LMS->lang = $_language;
-LMS::$currency = $_currency;
+$LMS->ui_lang = Localisation::getCurrentUiLanguage();
+$LMS->lang = Localisation::getCurrentSystemLanguage();
+LMS::$currency = Localisation::getCurrentCurrency();
 
 $plugin_manager = new LMSPluginManager();
 $LMS->setPluginManager($plugin_manager);
 
 if (!$no_attachments) {
     $plugin_manager->executeHook('smarty_initialized', $SMARTY);
-
-    $SMARTY->assignByRef('_ui_language', $LMS->ui_lang);
-    $SMARTY->assignByRef('_language', $LMS->lang);
 }
 
 if ($backup || $archive) {
