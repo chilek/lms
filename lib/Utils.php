@@ -266,24 +266,6 @@ class Utils
         return $result;
     }
 
-    public static function checkZip($zip, $country = null)
-    {
-        if (ConfigHelper::checkConfig('phpui.skip_zip_validation')) {
-            return true;
-        }
-        if (!isset($country) || empty($country)) {
-            $country = Localisation::getCurrentSystemLanguage();
-        } else if (preg_match('/^[0-9]+$/', $country)) {
-            $LMS = LMS::getInstance();
-            $country = $LMS->getCountryCodeById($country);
-        }
-        Localisation::setSystemLanguage($country);
-        $res = Localisation::callSystemLanguageFunction('check_zip', $zip);
-        Localisation::resetSystemLanguage();
-
-        return isset($res) ? !empty($res) : false;
-    }
-
     public static function parseCssProperties($text)
     {
         $result = array();

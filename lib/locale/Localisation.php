@@ -381,15 +381,15 @@ class Localisation
             return true;
         }
         if (!isset($country) || empty($country)) {
-            $country = $GLOBALS['_language'];
+            $country = self::getCurrentSystemLanguage();
         } else if (preg_match('/^[0-9]+$/', $country)) {
             $LMS = LMS::getInstance();
             $country = $LMS->getCountryCodeById($country);
         }
-        if (isset(self::$langDefs[$country]['check_zip'])) {
-            return self::$langDefs[$country]['check_zip']($zip);
-        } else {
-            return true;
-        }
+        self::setSystemLanguage($country);
+        $res = self::callSystemLanguageFunction('check_zip', $zip);
+        self::resetSystemLanguage();
+
+        return isset($res) ? !empty($res) : false;
     }
 }

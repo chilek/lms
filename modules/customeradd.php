@@ -226,7 +226,7 @@ if (isset($_POST['customeradd'])) {
             $customeradd['addresses'][ $k ]['show'] = true;
         }
 
-        if ($v['location_zip'] && !Utils::checkZip($v['location_zip'], $v['location_country_id'])) {
+        if ($v['location_zip'] && !Localisation::checkZip($v['location_zip'], $v['location_country_id'])) {
             $error['customeradd[addresses][' . $k . '][location_zip]'] = trans('Incorrect ZIP code!');
             $customeradd['addresses'][ $k ]['show'] = true;
         }

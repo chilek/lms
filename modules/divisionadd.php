@@ -51,7 +51,7 @@ if (!empty($_POST['division'])) {
 
     if ($division['location_zip'] == '') {
         $error['division[location_zip]'] = trans('Zip code is required!');
-    } else if (!Utils::checkZip($division['location_zip'], $division['location_country_id'])) {
+    } else if (!Localisation::checkZip($division['location_zip'], $division['location_country_id'])) {
         $error['division[location_zip]'] = trans('Incorrect ZIP code!');
     }
 
