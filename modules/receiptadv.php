@@ -216,7 +216,7 @@ if (isset($_POST['receipt'])) {
                 Auth::GetCurrentUser(),
                 $record['name'],
                 $fullnumber,
-                isset($receipt['currency']) ? $receipt['currency'] : LMS::$currency,
+                isset($receipt['currency']) ? $receipt['currency'] : Localisation::getCurrentCurrency(),
                 isset($receipt['currencyvalue']) ? $receipt['currencyvalue'] : 1.0,
             )
         );
@@ -251,7 +251,7 @@ if (isset($_POST['receipt'])) {
                     Auth::GetCurrentUser(),
                     $receipt['name'],
                     $fullnumber,
-                    isset($receipt['currency']) ? $receipt['currency'] : LMS::$currency,
+                    isset($receipt['currency']) ? $receipt['currency'] : Localisation::getCurrentCurrency(),
                     isset($receipt['currencyvalue']) ? $receipt['currencyvalue'] : 1.0,
                 )
             );
@@ -278,7 +278,7 @@ if (isset($_POST['receipt'])) {
                 $cdate,
                 $rid,
                 str_replace(',', '.', $record['value'] * -1),
-                isset($receipt['currency']) ? $receipt['currency'] : LMS::$currency,
+                isset($receipt['currency']) ? $receipt['currency'] : Localisation::getCurrentCurrency(),
                 isset($receipt['currencyvalue']) ? $receipt['currencyvalue'] : 1.0,
                 trans('Advance return') . ' - ' . $titlenumber,
                 Auth::GetCurrentUser()
@@ -303,7 +303,7 @@ if (isset($_POST['receipt'])) {
                     $cdate,
                     $rid,
                     str_replace(',', '.', $value * -1),
-                    isset($receipt['currency']) ? $receipt['currency'] : LMS::$currency,
+                    isset($receipt['currency']) ? $receipt['currency'] : Localisation::getCurrentCurrency(),
                     isset($receipt['currencyvalue']) ? $receipt['currencyvalue'] : 1.0,
                     $receipt['description'],
                     Auth::GetCurrentUser()

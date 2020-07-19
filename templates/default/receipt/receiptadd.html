@@ -322,7 +322,7 @@
 <P>
 <TABLE class="lmsbox">
     <THEAD>
-	{if $receipt.o_type == "customer" && $receipt['currency'] == LMS::$currency}
+	{if $receipt.o_type == "customer" && $receipt['currency'] == Localisation::getCurrentCurrency()}
 	<TR>
 		<TD colspan="4">
 			<FORM name="additemlist" method="POST" action="?m=receiptadd&amp;action=additemlist">
@@ -355,7 +355,7 @@
 								<TD onclick="checkElement('mark{$item.id}')">{$item.number}</TD>
 								<TD align="right" onclick="checkElement('mark{$item.id}')" class="nobr">
 									{moneyf($item.value * $item.currencyvalue)}
-									{if $item.currency != LMS::$currency}
+									{if $item.currency != Localisation::getCurrentCurrency()}
 										<br>({moneyf($item.value, $item.currency)})
 									{/if}
 								</TD>

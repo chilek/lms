@@ -34,6 +34,7 @@ class Localisation
     private static $uiLanguage = null;
     private static $systemLanguage = null;
     private static $defaultSystemLanguage = null;
+    private static $defaultCurrency = null;
     private static $uiStrings = array();
 
     public static function init()
@@ -188,6 +189,14 @@ class Localisation
         }
     }
 
+    public static function initDefaultCurrency()
+    {
+        self::$defaultCurrency = ConfigHelper::getConfig('phpui.default_currency', '', true);
+        if (empty(self::$defaultCurrency) || !isset($GLOBALS['CURRENCIES'][self::$defaultCurrency])) {
+            self::$defaultCurrency = self::$langDefs[self::$systemLanguage]['currency'];
+        }
+    }
+
     public static function getCurrentLocale()
     {
         return self::$langDefs[self::$systemLanguage]['locale'];
@@ -196,6 +205,11 @@ class Localisation
     public static function getCurrentCurrency()
     {
         return self::$langDefs[self::$systemLanguage]['currency'];
+    }
+
+    public static function getDefaultCurrency()
+    {
+        return self::$defaultCurrency;
     }
 
     public static function getCurrentMoneyFormat()

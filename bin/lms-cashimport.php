@@ -146,12 +146,6 @@ $SYSLOG = SYSLOG::getInstance();
 $AUTH = null;
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
 
-LMS::$currency = Localisation::getCurrentCurrency();
-LMS::$default_currency = ConfigHelper::getConfig('phpui.default_currency', '', true);
-if (empty(LMS::$default_currency) || !isset($CURRENCIES[LMS::$default_currency])) {
-    LMS::$default_currency = LMS::$currency;
-}
-
 $plugin_manager = new LMSPluginManager();
 $LMS->setPluginManager($plugin_manager);
 

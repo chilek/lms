@@ -171,7 +171,6 @@ if (!empty($plugins)) {
 
 $SESSION = new Session($DB, $_TIMEOUT);
 $USERPANEL = new USERPANEL($DB, $SESSION);
-LMS::$currency = Localisation::getCurrentCurrency();
 
 // Initialize modules
 

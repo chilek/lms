@@ -59,7 +59,7 @@ switch ($action) {
 				WHERE doctype = ? AND isdefault = 1', array(DOC_DNOTE));
         }
 
-        $note['currency'] = LMS::$default_currency;
+        $note['currency'] = Localisation::getDefaultCurrency();
 
         break;
 

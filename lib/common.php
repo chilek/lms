@@ -484,15 +484,15 @@ function isboolean($value)
 function moneyf($value, $currency = null)
 {
     if (empty($currency)) {
-        $currency = LMS::$currency;
+        $currency = Localisation::getCurrentCurrency();
     }
     return sprintf('%01.2f %s', $value, $currency);
 }
 
 function moneyf_in_words($value, $currency = null)
 {
-    if (empty($currency) || $currency == LMS::$currency) {
-        $currency = LMS::$currency;
+    if (empty($currency) || $currency == Localisation::getCurrentCurrency()) {
+        $currency = Localisation::getCurrentCurrency();
     }
     return sprintf(
         Localisation::getCurrentMoneyFormatInWords(),
@@ -1435,7 +1435,7 @@ function geocode($location)
 function exchangeratesapi_get_currency_value($currency, $date = null)
 {
     $result = file_get_contents('https://api.exchangeratesapi.io/'
-        . (empty($date) ? 'latest' : date('Y-m-d', $date)) . '?base=' . $currency . '&symbols=' . LMS::$currency);
+        . (empty($date) ? 'latest' : date('Y-m-d', $date)) . '?base=' . $currency . '&symbols=' . Localisation::getCurrentCurrency());
     if ($result === false) {
         return null;
     }
@@ -1445,8 +1445,8 @@ function exchangeratesapi_get_currency_value($currency, $date = null)
         return null;
     }
 
-    if (!isset($result['rates'][LMS::$currency])) {
+    if (!isset($result['rates'][Localisation::getCurrentCurrency()])) {
         return null;
     }
-    return $result['rates'][LMS::$currency];
+    return $result['rates'][Localisation::getCurrentCurrency()];
 }

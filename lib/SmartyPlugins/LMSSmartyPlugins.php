@@ -96,8 +96,9 @@ class LMSSmartyPlugins
             }
             $result .= '</select>';
         } else {
-            $result = LMS::$currency . '<input type="hidden" name="' . $elementname . '"'
-                . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '') . ' value="' . LMS::$currency . '">';
+            $result = Localisation::getCurrentCurrency() . '<input type="hidden" name="' . $elementname . '"'
+                . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '') . ' value="'
+                . Localisation::getCurrentCurrency() . '">';
         }
 
         return $result;

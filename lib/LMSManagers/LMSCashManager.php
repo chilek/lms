@@ -459,7 +459,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                     );
                     $this->syslog->AddMessage(SYSLOG::RES_CASHIMPORT, SYSLOG::OPER_UPDATE, $args);
                 }
-                $balance['currency'] = LMS::$currency;
+                $balance['currency'] = Localisation::getCurrentCurrency();
                 $finance_manager->AddBalance($balance);
 
                 $this->db->CommitTrans();
