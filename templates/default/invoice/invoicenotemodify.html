@@ -148,11 +148,7 @@
 			{trans("Payment type (cash/transfer/etc):")}
 		</TD>
 		<TD class="nobr">
-			<SELECT name="cnote[paytype]" {tip text="Select payment type" trigger="paytype"}>
-				{foreach $_PAYTYPES as $key => $item}
-					<OPTION value="{$key}"{if $cnote.paytype==$key} selected{/if}>{trans($item)}</OPTION>
-				{/foreach}
-			</SELECT>
+			{paytypes elemname="cnote[paytype]" selected=$cnote.paytype}
 			<label id="splitpayment"{if !$is_split_payment_suggested} style="display: none;"{/if}>
 				<input type="checkbox" name="cnote[splitpayment]" value="1"{if $is_split_payment_suggested && $cnote.splitpayment} checked{/if}>
 				{trans("split payment")}

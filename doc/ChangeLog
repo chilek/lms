@@ -67,6 +67,8 @@ version 26-git (????-??-??):
   - devel/improvement: localisation support moved to separate class - symultaneous multi-localisation
     support [chilan]
   - devel/refactoring: moved currency configuration to Localisation class [chilan]
+  - improvement: separate smarty function for paytype selection - items are sorted by name
+    in accordance with current ui locale [chilan]
 
 version 25.0 (2020-05-15):
 

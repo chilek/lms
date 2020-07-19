@@ -251,12 +251,8 @@
 			{trans("Payment type:")}
 		</TD>
 		<TD>
-			<SELECT name="division[inv_paytype]" {tip text="Select default invoices payment type" trigger="paytype"}>
-				<OPTION value=""{if !$division.inv_paytype} selected{/if}>- {trans("default")} -</OPTION>
-				{foreach $_PAYTYPES as $key => $item}
-				<OPTION value="{$key}"{if $division.inv_paytype==$key} selected{/if}>{trans($item)}</OPTION>
-				{/foreach}
-			</SELECT>
+			{paytypes elemname="division[inv_paytype]" selected=$division.inv_paytype
+				tip="Select default invoices payment type"}
 		</TD>
 	</TR>
 	<TR>

@@ -836,7 +836,7 @@ class LMSSmartyPlugins
         $name = isset($params['name']) ? $params['name'] : null;
         // optional - text tip,
         $tip = isset($params['tip']) ? trans($params['tip']) : null;
-    // optional - text label
+        // optional - text label
         $label = isset($params['label']) ? trans($params['label']) : null;
 
         $data_attributes = '';
@@ -857,5 +857,36 @@ class LMSSmartyPlugins
             . $data_attributes
         . '></i>'
             . (isset($label) ? ' ' . $label : '');
+    }
+
+    public static function paytypesFunction(array $params, $template)
+    {
+        static $paytypes = array();
+
+        if (empty($paytypes)) {
+            $paytypes = $GLOBALS['PAYTYPES'];
+            foreach ($paytypes as &$paytype) {
+                $paytype = trans($paytype);
+            }
+            unset($paytype);
+            uasort($paytypes, function ($a, $b) {
+                return $a > $b ? 1 : ($a < $b ? -1 : 0);
+            });
+        }
+
+        $elemname = $params['elemname'];
+        $selected = isset($params['selected']) && !empty($params['selected']) ? $params['selected'] : 0;
+        $tip = isset($params['tip']) ? $params['tip'] : trans('Select payment type');
+        $trigger = isset($params['trigger']) ? $params['trigger'] : 'paytype';
+
+        $options = '';
+        foreach ($paytypes as $key => $item) {
+            $item = trans($item);
+            $options .= '<option value="' . $key . '"' . ($selected == $key ? ' selected' : '') . '>' . $item . '</option>';
+        }
+        return '<select name="' . $elemname . '" ' . self::tipFunction(array('text' => $tip, 'trigger' => $trigger), $template) . '>
+			<option value=""' . (!$selected ? ' selected' : '') . '>- ' . trans("default") . '-</option>'
+            . $options
+            . '</select>';
     }
 }
