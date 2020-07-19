@@ -109,7 +109,7 @@ if (!isset($division['location_city']) && $default_city) {
 
 $layout['pagetitle'] = trans('New Division');
 
-if ($_language == 'pl_PL') {
+if (Localisation::getCurrentSystemLanguage() == 'pl_PL') {
     require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'tax_office_codes.php');
 }
 

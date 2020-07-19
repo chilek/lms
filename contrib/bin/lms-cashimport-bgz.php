@@ -136,8 +136,6 @@ require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'SYSLOG.class.php');
 $AUTH = null;
 $SYSLOG = null;
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
-$LMS->ui_lang = $_ui_language;
-$LMS->lang = $_language;
 
 $bgz_username = ConfigHelper::getConfig('finances.bgz_username');
 $bgz_password = ConfigHelper::getConfig('finances.bgz_password');
@@ -524,7 +522,7 @@ function commit_cashimport()
 
     if (!empty($imports)) {
         $idate  = ConfigHelper::checkValue(ConfigHelper::getConfig('finances.cashimport_use_idate', false));
-                
+
         $icheck = ConfigHelper::checkValue(ConfigHelper::getConfig('finances.cashimport_checkinvoices', false));
 
         foreach ($imports as $import) {

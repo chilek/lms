@@ -160,8 +160,6 @@ $SESSION = new Session(
 );
 $AUTH = new Auth($DB, $SESSION);
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
-$LMS->ui_lang = Localisation::getCurrentUiLanguage();
-$LMS->lang = Localisation::getCurrentSystemLanguage();
 
 LMS::$currency = Localisation::getCurrentCurrency();
 LMS::$default_currency = ConfigHelper::getConfig('phpui.default_currency', '', true);
@@ -207,7 +205,6 @@ $layout['popup'] = isset($_GET['popup']) ? true : false;
 
 if (!$api) {
     $SMARTY->assignByRef('layout', $layout);
-    $SMARTY->assignByRef('_language', $LMS->lang);
     $SMARTY->assignByRef('_currency', LMS::$currency);
     $SMARTY->assignByRef('_default_currency', LMS::$default_currency);
 }

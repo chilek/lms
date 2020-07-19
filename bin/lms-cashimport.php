@@ -145,8 +145,6 @@ $SYSLOG = SYSLOG::getInstance();
 
 $AUTH = null;
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
-$LMS->ui_lang = Localisation::getCurrentUiLanguage();
-$LMS->lang = Localisation::getCurrentSystemLanguage();
 
 LMS::$currency = Localisation::getCurrentCurrency();
 LMS::$default_currency = ConfigHelper::getConfig('phpui.default_currency', '', true);

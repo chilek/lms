@@ -856,8 +856,8 @@ $menu = array(
         'documentation' => array(
             'name' => trans('Documentation'),
             'css' => 'lms-ui-icon-documentation',
-            'link' => (is_dir('doc' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . $LMS->ui_lang)
-                ? 'doc' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . $LMS->ui_lang . DIRECTORY_SEPARATOR
+            'link' => (is_dir('doc' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . Localisation::getCurrentUiLanguage())
+                ? 'doc' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . Localisation::getCurrentUiLanguage() . DIRECTORY_SEPARATOR
                 : 'doc' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'en' . DIRECTORY_SEPARATOR),
             'tip' => trans('Documentation'),
             'accesskey' => 'h',

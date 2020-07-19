@@ -24,12 +24,12 @@
  *  $Id$
  */
 
-switch ($LMS->ui_lang) {
-    case 'pl':
-         $_LANG['Administration message'] = 'Wiadomość administracyjna';
-         $_LANG['Click here to mark this message as readed.'] = 'Kliknij tutaj aby odznaczyć tą wiadomość jako przeczytaną.';
-         $_LANG['Access to network on this computer is locked. Possible causes: unknown network device or unknown computer.'] = 'Dostęp do sieci na tym komputerze jest zablokowany. Możliwe przyczyny: nieznana karta sieciowa lub nieznany komputer.';
-         $_LANG['Please contact with our Customer Service.'] = 'Proszę się skontaktować z naszym Biurem Obsługi.';
-         $_LANG['Access to network on this computer is locked.'] = 'Dostęp do sieci na tym komputerze jest zablokowany.';
+switch (Localisation::getCurrentUiLanguage()) {
+    case 'pl_PL':
+        $_LANG['Administration message'] = 'Wiadomość administracyjna';
+        $_LANG['Click here to mark this message as readed.'] = 'Kliknij tutaj aby odznaczyć tą wiadomość jako przeczytaną.';
+        $_LANG['Access to network on this computer is locked. Possible causes: unknown network device or unknown computer.'] = 'Dostęp do sieci na tym komputerze jest zablokowany. Możliwe przyczyny: nieznana karta sieciowa lub nieznany komputer.';
+        $_LANG['Please contact with our Customer Service.'] = 'Proszę się skontaktować z naszym Biurem Obsługi.';
+        $_LANG['Access to network on this computer is locked.'] = 'Dostęp do sieci na tym komputerze jest zablokowany.';
         break;
 }

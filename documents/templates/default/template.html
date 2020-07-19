@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
 <title>{trans("Contract")}</title>
@@ -11,8 +12,7 @@ TABLE		{ border-collapse: collapse; }
 P		{ font-size: 12pt; font-family: LiberationSans, sans-serif; text-align: center; }
 -->
 </STYLE>
-{$uiLanguage = Localisation::getCurrentUiLanguageInfo()}
-<meta http-equiv="Content-Type" content="text/html; charset={$uiLanguage.charset}">
+<meta http-equiv="Content-Type" content="text/html; charset={Localisation::getCurrentHtmlCharset()}">
 </head>
 <body>
 <h1>{$engine.title} {$document.nr}</h1>

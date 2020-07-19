@@ -208,6 +208,16 @@ class Localisation
         return self::$langDefs[self::$systemLanguage]['money_format_in_words'];
     }
 
+    public static function getCurrentHtmlCharset()
+    {
+        return self::$langDefs[self::$uiLanguage]['charset'];
+    }
+
+    public static function getCurrentHtmlLanguage()
+    {
+        return self::$langDefs[self::$uiLanguage]['html'];
+    }
+
     public static function loadUiLanguage()
     {
         if (isset(self::$uiStrings[self::$uiLanguage])) {
@@ -271,11 +281,6 @@ class Localisation
     public static function getCurrentUiLanguage()
     {
         return self::$uiLanguage;
-    }
-
-    public static function getCurrentUiLanguageInfo()
-    {
-        return self::$langDefs[self::$uiLanguage];
     }
 
     public static function resetUiLanguage()

@@ -142,8 +142,6 @@ $SYSLOG = SYSLOG::getInstance();
 
 $AUTH = null;
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
-$LMS->ui_lang = Localisation::getCurrentUiLanguage();
-$LMS->lang = Localisation::getCurrentSystemLanguage();
 
 $hostname = gethostname();
 if (empty($hostname)) {

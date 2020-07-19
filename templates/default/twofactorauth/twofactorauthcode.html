@@ -3,10 +3,9 @@
 <html>
 <head>
     <meta name="GENERATOR" content="LMS {$layout.lmsv}">
-	{$uiLanguage = Localisation::getCurrentUiLanguageInfo()}
 	{include file="language.html"}
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	{include file="jquery.html" language=$uiLanguage.html lms_language=Localisation::getCurrentUiLanguage()}
+	{include file="jquery.html" language=Localisation::getCurrentHtmlLanguage() lms_language=Localisation::getCurrentUiLanguage()}
     <link href="{ConfigHelper::getConfig('phpui.style', 'css/style.css')}" rel="stylesheet" type="text/css">
     <link href="img/lms-net.gif" rel="shortcut icon">
     <title>::: {t a=LMS::SOFTWARE_NAME}Welcome to $a{/t} {$layout.lmsv} :::</title>

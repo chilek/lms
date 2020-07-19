@@ -1,6 +1,5 @@
 <script type="text/javascript" src="js/OpenLayers/OpenLayers.js"></script>
-{$uiLanguage = Localisation::getCurrentUiLanguageInfo()}
-<script type="text/javascript" src="js/OpenLayers/lang/{$uiLanguage.html}.js"></script>
+<script type="text/javascript" src="js/OpenLayers/lang/{Localisation::getCurrentHtmlLanguage()}.js"></script>
 {include file="google-maps.html"}
 <script type="text/javascript" src="js/DragPopup.js"></script>
 <script type="text/javascript" src="js/map.js"></script>

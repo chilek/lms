@@ -26,12 +26,12 @@
 
 $_MODINFO['mailing'] = array(
         'summary' => array(
-            'en' => 'Mailing',
-            'pl' => 'Mailing'
+            'en_US' => 'Mailing',
+            'pl_PL' => 'Mailing'
             ),
         'description' => array(
-            'en' => 'Mass mail to customers',
-            'pl' => 'Korespondencja seryjna do klientów'
+            'en_US' => 'Mass mail to customers',
+            'pl_PL' => 'Korespondencja seryjna do klientów'
             ),
         'version' => '1.11-git',
         'revision' => '$Revision$',
@@ -43,13 +43,13 @@ $_MODINFO['mailing'] = array(
             array(
                 'id' => 'mailing',
                 'text' => array(
-                    'en' => 'Mailing',
-                    'pl' => 'Mailing',
+                    'en_US' => 'Mailing',
+                    'pl_PL' => 'Mailing',
                     ),
                 'img' => 'mail.gif',
                 'tip' => array(
-                    'en' => 'Mass Mail',
-                    'pl' => 'Korespondencja seryjna',
+                    'en_US' => 'Mass Mail',
+                    'pl_PL' => 'Korespondencja seryjna',
                     ),
                 ),
             ),
@@ -57,8 +57,8 @@ $_MODINFO['mailing'] = array(
             'mailing' => array(
                 'default' => true,
                 'description' => array(
-                    'en' => 'Sending mail to customers groups',
-                    'pl' => 'Wysyłanie poczty do grup użytkowników',
+                    'en_US' => 'Sending mail to customers groups',
+                    'pl_PL' => 'Wysyłanie poczty do grup użytkowników',
                     ),
                 ),
             ),

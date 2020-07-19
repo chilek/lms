@@ -295,8 +295,6 @@ $SYSLOG = SYSLOG::getInstance();
 
 $AUTH = null;
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
-$LMS->ui_lang = Localisation::getCurrentUiLanguage();
-$LMS->lang = Localisation::getCurrentSystemLanguage();
 LMS::$currency = Localisation::getCurrentCurrency();
 
 $plugin_manager = new LMSPluginManager();

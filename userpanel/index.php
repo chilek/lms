@@ -171,8 +171,6 @@ if (!empty($plugins)) {
 
 $SESSION = new Session($DB, $_TIMEOUT);
 $USERPANEL = new USERPANEL($DB, $SESSION);
-$LMS->ui_lang = Localisation::getCurrentUiLanguage();
-$LMS->lang = Localisation::getCurrentSystemLanguage();
 LMS::$currency = Localisation::getCurrentCurrency();
 
 // Initialize modules
@@ -207,7 +205,6 @@ foreach ($modules_dirs as $suspected_module_dir) {
     }
 }
 
-$SMARTY->assignByRef('_language', $LMS->lang);
 $SMARTY->setTemplateDir(null);
 $style = ConfigHelper::getConfig('userpanel.style', 'default');
 $startupmodule = ConfigHelper::getConfig('userpanel.startup_module', 'info');

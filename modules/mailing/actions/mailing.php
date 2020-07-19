@@ -27,7 +27,7 @@
 function GetEmails($group, $network = null, $customergroup = null)
 {
     global $DB, $LMS;
-    
+
     if ($group == 4) {
         $deleted = 1;
         $network = null;
@@ -35,18 +35,18 @@ function GetEmails($group, $network = null, $customergroup = null)
     } else {
         $deleted = 0;
     }
-    
+
     $disabled = ($group == 5) ? 1 : 0;
     $indebted = ($group == 6) ? 1 : 0;
-    
+
     if ($group>3) {
         $group = 0;
     }
-    
+
     if ($network) {
         $net = $LMS->GetNetworkParams($network);
     }
-    
+
     if ($emails = $DB->GetAll('SELECT customers.id AS id, cc.contact AS email, '.$DB->Concat('lastname', "' '", 'customers.name').' AS customername, pin, '
         .'COALESCE(SUM(value), 0.00) AS balance '
         .'FROM customers
@@ -63,7 +63,7 @@ function GetEmails($group, $network = null, $customergroup = null)
         if ($disabled) {
             $access = $DB->GetAllByKey('SELECT ownerid AS id FROM vnodes GROUP BY ownerid HAVING (SUM(access) != COUNT(access))', 'id');
         }
-            
+
         foreach ($emails as $idx => $row) {
             if ($disabled && $access[$row['id']]) {
                 $emails2[] = $row;
@@ -73,7 +73,7 @@ function GetEmails($group, $network = null, $customergroup = null)
                 }
             }
         }
-    
+
         if ($disabled || $indebted) {
             $emails = $emails2;
         }
@@ -144,12 +144,12 @@ if (isset($_POST['mailing'])) {
         $mailing['body'] = str_replace("\r", '', $mailing['body']);
         $SMARTY->assign('mailing', $mailing);
         $SMARTY->display($_LMSDIR.'/modules/core/templates/header.html');
-        
+
         $emails = GetEmails($mailing['group'], $mailing['network'], $mailing['customergroup']);
-        
+
         $SMARTY->assign('recipcount', count($emails));
         $SMARTY->display($_LMSDIR.'/modules/mailing/templates/mailingsend.html');
-        
+
         if (count($emails)) {
             $files = null;
             if (isset($file)) {
@@ -162,19 +162,19 @@ if (isset($_POST['mailing'])) {
             if (!empty($debug_email)) {
                 echo '<B>'.trans('Warning! Debug mode (using address $a).', $debug_email).'</B><BR>';
             }
-            
+
             $headers['Date'] = date('D, d F Y H:i:s T');
             $headers['From'] = '"'.$mailing['from'].'" <'.$mailing['sender'].'>';
             $headers['Subject'] = $mailing['subject'];
             $headers['Reply-To'] = $headers['From'];
-            
+
             foreach ($emails as $key => $row) {
                 if (!empty($debug_email)) {
                     $row['email'] = $debug_email;
                 }
-                
+
                 $body = $mailing['body'];
-                
+
                 $body = str_replace('%customer', $row['customername'], $body);
                 $body = str_replace('%balance', $row['balance'], $body);
                 $body = str_replace('%cid', $row['id'], $body);
@@ -187,20 +187,20 @@ if (isset($_POST['mailing'])) {
 						ORDER BY time DESC LIMIT 10', array($row['id']))) {
                         foreach ($last10_array as $r) {
                             $last10 .= date("Y/m/d | ", $r['time']);
-                            $last10 .= sprintf("%20s | ", sprintf($LANGDEFS[$LMS->lang][money_format], $r['value']));
+                            $last10 .= sprintf("%20s | ", sprintf(Localisation::getCurrentMoneyFormat(), $r['value']));
                             $last10 .= $r['comment']."\n";
                         }
                     }
                     $body = str_replace('%last_10_in_a_table', $last10, $body);
                 }
-                
+
                 $headers['To'] = '<'.$row['email'].'>';
-                
+
                 echo '<img src="img/mail.gif" border="0" align="absmiddle" alt=""> '.trans('$a of $b ($c): $d &lt;$4&gt;', ($key+1), count($emails), sprintf('%02.1f%%', round((100/count($emails))*($key+1), 1)), $row['customername'], $row['email']);
                 echo '<font color=red> '.$LMS->SendMail($row['email'], $headers, $body, $files)."</font><BR>\n";
             }
         }
-        
+
         $SMARTY->display($_LMSDIR.'/modules/mailing/templates/mailingsend-footer.html');
         $SMARTY->display($_LMSDIR.'/modules/core/templates/footer.html');
         $SESSION->close();
