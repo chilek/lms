@@ -145,13 +145,13 @@ $SYSLOG = SYSLOG::getInstance();
 
 $AUTH = null;
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
-$LMS->ui_lang = $_ui_language;
-$LMS->lang = $_language;
+$LMS->ui_lang = Localisation::getCurrentUiLanguage();
+$LMS->lang = Localisation::getCurrentSystemLanguage();
 
-LMS::$currency = $_currency;
+LMS::$currency = Localisation::getCurrentCurrency();
 LMS::$default_currency = ConfigHelper::getConfig('phpui.default_currency', '', true);
 if (empty(LMS::$default_currency) || !isset($CURRENCIES[LMS::$default_currency])) {
-    LMS::$default_currency = $_currency;
+    LMS::$default_currency = LMS::$currency;
 }
 
 $plugin_manager = new LMSPluginManager();

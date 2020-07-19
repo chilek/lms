@@ -143,8 +143,8 @@ $SYSLOG = SYSLOG::getInstance();
 $SYSLOG = null;
 $AUTH = null;
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
-$LMS->ui_lang = $_ui_language;
-$LMS->lang = $_language;
+$LMS->ui_lang = Localisation::getCurrentUiLanguage();
+$LMS->lang = Localisation::getCurrentSystemLanguage();
 
 if (isset($options['from'])) {
     list ($year, $month, $day) = explode('/', $options['from']);
