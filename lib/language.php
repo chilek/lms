@@ -26,13 +26,6 @@
 
 Localisation::init();
 
-Localisation::detectUiLanguage();
-Localisation::detectSystemLanguage();
-Localisation::fixUiLanguage();
-
-Localisation::loadUiLanguage();
-Localisation::loadSystemLanguage();
-
 mb_internal_encoding('UTF-8');
 
 function uptimef($ts)

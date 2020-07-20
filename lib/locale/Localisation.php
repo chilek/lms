@@ -124,6 +124,13 @@ class Localisation
             ),
             'cs' => 'cs_CZ',
         );
+
+        self::detectUiLanguage();
+        self::detectSystemLanguage();
+        self::fixUiLanguage();
+
+        self::loadUiLanguage();
+        self::loadSystemLanguage();
     }
 
     private static function checkLanguage($lang)
@@ -142,7 +149,7 @@ class Localisation
         return null;
     }
 
-    public static function detectUiLanguage()
+    private static function detectUiLanguage()
     {
         if (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
             $langs = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
@@ -160,7 +167,7 @@ class Localisation
         }
     }
 
-    public static function detectSystemLanguage()
+    private static function detectSystemLanguage()
     {
         $lang = ConfigHelper::getConfig('phpui.lang');
         if (!empty($lang)) {
@@ -184,7 +191,7 @@ class Localisation
 
     // Use system lang for UI if any of browser langs isn't supported
     // or browser langs aren't set
-    public static function fixUiLanguage()
+    private static function fixUiLanguage()
     {
         if (!isset(self::$uiLanguage)) {
             self::$defaultUiLanguage = self::$uiLanguage = self::$systemLanguage;
@@ -238,7 +245,7 @@ class Localisation
         return self::$langDefs[self::$uiLanguage]['html'];
     }
 
-    public static function loadUiLanguage()
+    private static function loadUiLanguage()
     {
         if (isset(self::$uiStrings[self::$uiLanguage])) {
             return;
@@ -319,7 +326,7 @@ class Localisation
         self::setLocales();
     }
 
-    public static function loadSystemLanguage()
+    private static function loadSystemLanguage()
     {
         if (isset(self::$langDefs[self::$systemLanguage][self::SYSTEM_FUNCTION])
             && !empty(self::$langDefs[self::$systemLanguage][self::SYSTEM_FUNCTION])) {
