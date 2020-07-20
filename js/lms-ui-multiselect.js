@@ -291,7 +291,7 @@ function multiselect(options) {
 			if (!text) {
 				text = $(this).text();
 			}
-			list += '<span>' + text + '</span>';
+			list += '<span>' + text.trim() + '</span>';
 
 			list += '</li>';
 		});
