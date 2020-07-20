@@ -178,6 +178,8 @@ class Localisation
         } else {
             self::$defaultSystemLanguage = self::$systemLanguage = 'en_US'; // default language
         }
+
+        self::setLocales();
     }
 
     // Use system lang for UI if any of browser langs isn't supported
@@ -197,9 +199,13 @@ class Localisation
         }
     }
 
-    public static function getCurrentLocale()
+    private static function setLocales()
     {
-        return self::$langDefs[self::$systemLanguage]['locale'];
+        $locale = self::$langDefs[self::$systemLanguage]['locale'];
+        setlocale(LC_COLLATE, $locale);
+        setlocale(LC_CTYPE, $locale);
+        setlocale(LC_TIME, $locale);
+        setlocale(LC_NUMERIC, $locale);
     }
 
     public static function getCurrentCurrency()
@@ -310,6 +316,7 @@ class Localisation
     public static function resetSystemLanguage()
     {
         self::$systemLanguage = self::$defaultSystemLanguage;
+        self::setLocales();
     }
 
     public static function loadSystemLanguage()
@@ -337,6 +344,7 @@ class Localisation
                 self::$langDefs[self::$systemLanguage][self::SYSTEM_FUNCTION] = array();
                 self::loadSystemLanguage();
             }
+            self::setLocales();
         }
     }
 

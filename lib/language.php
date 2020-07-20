@@ -33,12 +33,6 @@ Localisation::fixUiLanguage();
 Localisation::loadUiLanguage();
 Localisation::loadSystemLanguage();
 
-$locale = Localisation::getCurrentLocale();
-setlocale(LC_COLLATE, $locale);
-setlocale(LC_CTYPE, $locale);
-setlocale(LC_TIME, $locale);
-setlocale(LC_NUMERIC, $locale);
-
 mb_internal_encoding('UTF-8');
 
 function uptimef($ts)
