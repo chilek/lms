@@ -24,6 +24,7 @@
 
 function modalDialog(title, message, buttons, deferred, context) {
 	var position = { my: "center", at: "center", of: window };
+	var mobile = $('body').is('.lms-ui-mobile');
 
 	$('#lms-ui-modal-dialog .message').html(message.replace("\n", '<br>'));
 
@@ -37,12 +38,32 @@ function modalDialog(title, message, buttons, deferred, context) {
 		resizable: false,
 		title: title.replace(/<![^>]*>/g, ''),
 		buttons: buttons,
-		position: position,
+		classes: {
+			"ui-dialog": "lms-ui-modal-dialog-wrapper lms-ui-popup"
+		},
+		position: mobile ? null : position,
+		create: function() {
+			enableFullScreenPopup();
+		},
 		open: function() {
 			var that = this;
 			$('.ui-widget-overlay').bind('click', function () {
 				$(that).dialog('close');
 			});
+			if (mobile) {
+				$(that).closest('.ui-dialog').css({
+					'width': '',
+					'left': '',
+					'top': ''
+				}).find('.ui-dialog-titlebar-close').html('<i class="lms-ui-icon-hide"></i>');
+			} else {
+				$(that).closest('.ui-dialog').find('.ui-dialog-titlebar-close').html(
+					'<span class="ui-button-icon ui-icon ui-icon-closethick"></span><span class="ui-button-icon-space"></span>'
+				);
+			}
+		},
+		destroy: function() {
+			disableFullScreenPopup();
 		}
 	});
 

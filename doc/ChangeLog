@@ -388,6 +388,7 @@ version 25.0 (2020-05-15):
     default) [chilan]
   - improvement: 'phpui.quicksearch_keyboard_shortcut_modifier' defines quick search keyboard shortcut
     modifier key ('ctrl' by default) [chilan]
+  - improvement: confirmation dialogs are responsive [chilan]
 
 version 24.0 (2019-05-16):
 
