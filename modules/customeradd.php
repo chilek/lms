@@ -118,6 +118,36 @@ if (isset($_POST['customeradd'])) {
         }
     }
 
+    // check addresses
+    foreach ($customeradd['addresses'] as $k => $v) {
+        if ($v['location_address_type'] == BILLING_ADDRESS && !$v['location_city_name']) {
+            $error['customeradd[addresses][' . $k . '][location_city_name]'] = trans('City name required!');
+            $customeradd['addresses'][ $k ]['show'] = true;
+        }
+
+        $countryCode = $LMS->getCountryCodeById($v['location_country_id']);
+        if ($v['location_address_type'] == BILLING_ADDRESS) {
+            $billingCountryCode = $countryCode;
+        }
+
+        if (!ConfigHelper::checkPrivilege('full_access') && ConfigHelper::checkConfig('phpui.teryt_required')
+            && !empty($v['location_city_name']) && ($v['location_country_id'] == 2 || empty($v['location_country_id']))
+            && (!isset($v['teryt']) || empty($v['location_city']))) {
+            $error['customeradd[addresses][' . $k . '][teryt]'] = trans('TERRIT address is required!');
+            $customeradd['addresses'][ $k ]['show'] = true;
+        }
+
+        Localisation::setSystemLanguage($countryCode);
+        if ($v['location_zip'] && !check_zip($v['location_zip'])) {
+            $error['customeradd[addresses][' . $k . '][location_zip]'] = trans('Incorrect ZIP code!');
+            $customeradd['addresses'][ $k ]['show'] = true;
+        }
+    }
+
+    if (isset($billingCountryCode)) {
+        Localisation::setSystemLanguage($billingCountryCode);
+    }
+
     if ($customeradd['ten'] !='') {
         if (!isset($customeradd['tenwarning']) && !check_ten($customeradd['ten'])) {
             $warning['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
@@ -187,6 +217,8 @@ if (isset($_POST['customeradd'])) {
         $error['regon'] = trans('Incorrect Business Registration Number!');
     }
 
+    Localisation::resetSystemLanguage();
+
     if ($customeradd['pin'] == '') {
         $error['pin'] = trans('PIN code is required!');
     } elseif (!validate_random_string($customeradd['pin'], $pin_min_size, $pin_max_size, $pin_allowed_characters)) {
@@ -211,28 +243,6 @@ if (isset($_POST['customeradd'])) {
             }
         }
     }
-
-    // check addresses
-    foreach ($customeradd['addresses'] as $k => $v) {
-        if ($v['location_address_type'] == BILLING_ADDRESS && !$v['location_city_name']) {
-            $error['customeradd[addresses][' . $k . '][location_city_name]'] = trans('City name required!');
-            $customeradd['addresses'][ $k ]['show'] = true;
-        }
-
-        if (!ConfigHelper::checkPrivilege('full_access') && ConfigHelper::checkConfig('phpui.teryt_required')
-            && !empty($v['location_city_name']) && ($v['location_country_id'] == 2 || empty($v['location_country_id']))
-            && (!isset($v['teryt']) || empty($v['location_city']))) {
-            $error['customeradd[addresses][' . $k . '][teryt]'] = trans('TERRIT address is required!');
-            $customeradd['addresses'][ $k ]['show'] = true;
-        }
-
-        Localisation::setSystemLanguage($LMS->getCountryCodeById($v['location_country_id']));
-        if ($v['location_zip'] && !check_zip($v['location_zip'])) {
-            $error['customeradd[addresses][' . $k . '][location_zip]'] = trans('Incorrect ZIP code!');
-            $customeradd['addresses'][ $k ]['show'] = true;
-        }
-    }
-    Localisation::resetSystemLanguage();
 
     if (isset($customeradd['consents'][CCONSENT_INVOICENOTICE]) && !$emaileinvoice) {
         if ($customer_invoice_notice_consent_check == 'error') {

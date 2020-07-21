@@ -141,6 +141,11 @@ if (!isset($_POST['xjxfun'])) {
                     $customerdata['addresses'][ $k ]['show'] = true;
                 }
 
+                $countryCode = $LMS->getCountryCodeById($v['location_country_id']);
+                if ($v['location_address_type'] == BILLING_ADDRESS) {
+                    $billingCountryCode = $countryCode;
+                }
+
                 if (!ConfigHelper::checkPrivilege('full_access') && ConfigHelper::checkConfig('phpui.teryt_required')
                     && !empty($v['location_city_name']) && ($v['location_country_id'] == 2 || empty($v['location_country_id']))
                     && (!isset($v['teryt']) || empty($v['location_city']))) {
@@ -148,13 +153,16 @@ if (!isset($_POST['xjxfun'])) {
                     $customerdata['addresses'][ $k ]['show'] = true;
                 }
 
-                Localisation::setSystemLanguage($LMS->getCountryCodeById($v['location_country_id']));
+                Localisation::setSystemLanguage($countryCode);
                 if ($v['location_zip'] && !check_zip($v['location_zip'])) {
                     $error['customerdata[addresses][' . $k . '][location_zip]'] = trans('Incorrect ZIP code!');
                     $customerdata['addresses'][ $k ]['show'] = true;
                 }
             }
-            Localisation::resetSystemLanguage();
+
+            if (isset($billingCountryCode)) {
+                Localisation::setSystemLanguage($billingCountryCode);
+            }
 
             if ($customerdata['ten'] !='') {
                 if (!isset($customerdata['tenwarning']) && !check_ten($customerdata['ten'])) {
@@ -224,6 +232,8 @@ if (!isset($_POST['xjxfun'])) {
                 $warning['icn'] = trans('Incorrect Identity Card Number! If you are sure you want to accept, then click "Submit" again.');
                 $icnwarning = 1;
             }
+
+            Localisation::resetSystemLanguage();
 
             if ($customerdata['pin'] == '') {
                 $error['pin'] = trans('PIN code is required!');
