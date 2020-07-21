@@ -141,9 +141,12 @@ if (!isset($_POST['xjxfun'])) {
                     $customerdata['addresses'][ $k ]['show'] = true;
                 }
 
-                $countryCode = $LMS->getCountryCodeById($v['location_country_id']);
-                if ($v['location_address_type'] == BILLING_ADDRESS) {
-                    $billingCountryCode = $countryCode;
+                $countryCode = null;
+                if (!empty($v['location_country_id'])) {
+                    $countryCode = $LMS->getCountryCodeById($v['location_country_id']);
+                    if ($v['location_address_type'] == BILLING_ADDRESS) {
+                        $billingCountryCode = $countryCode;
+                    }
                 }
 
                 if (!ConfigHelper::checkPrivilege('full_access') && ConfigHelper::checkConfig('phpui.teryt_required')
