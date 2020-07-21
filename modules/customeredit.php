@@ -148,11 +148,13 @@ if (!isset($_POST['xjxfun'])) {
                     $customerdata['addresses'][ $k ]['show'] = true;
                 }
 
-                if ($v['location_zip'] && !Localisation::checkZip($v['location_zip'], $v['location_country_id'])) {
+                Localisation::setSystemLanguage($LMS->getCountryCodeById($v['location_country_id']));
+                if ($v['location_zip'] && !check_zip($v['location_zip'])) {
                     $error['customerdata[addresses][' . $k . '][location_zip]'] = trans('Incorrect ZIP code!');
                     $customerdata['addresses'][ $k ]['show'] = true;
                 }
             }
+            Localisation::resetSystemLanguage();
 
             if ($customerdata['ten'] !='') {
                 if (!isset($customerdata['tenwarning']) && !check_ten($customerdata['ten'])) {

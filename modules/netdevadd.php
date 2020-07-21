@@ -91,9 +91,11 @@ if (isset($netdev)) {
         $error['netdev[teryt]'] = trans('TERRIT address is required!');
     }
 
-    if (empty($netdev['ownerid']) && $netdev['location_zip'] && !Localisation::checkZip($netdev['location_zip'], $netdev['location_country_id'])) {
+    Localisation::setSystemLanguage($LMS->getCountryCodeById($netdev['location_country_id']));
+    if (empty($netdev['ownerid']) && $netdev['location_zip'] && !check_zip($netdev['location_zip'])) {
         $error['location_zip'] = trans('Incorrect ZIP code!');
     }
+    Localisation::resetSystemLanguage();
 
     $hook_data = $LMS->executeHook(
         'netdevadd_validation_before_submit',

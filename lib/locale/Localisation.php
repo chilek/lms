@@ -424,22 +424,4 @@ class Localisation
             }
         });
     }
-
-    public static function checkZip($zip, $country = null)
-    {
-        if (ConfigHelper::checkConfig('phpui.skip_zip_validation')) {
-            return true;
-        }
-        if (!isset($country) || empty($country)) {
-            $country = self::getCurrentSystemLanguage();
-        } else if (preg_match('/^[0-9]+$/', $country)) {
-            $LMS = LMS::getInstance();
-            $country = $LMS->getCountryCodeById($country);
-        }
-        self::setSystemLanguage($country);
-        $res = self::callSystemLanguageFunction('check_zip', $zip);
-        self::resetSystemLanguage();
-
-        return isset($res) ? !empty($res) : false;
-    }
 }

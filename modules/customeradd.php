@@ -226,11 +226,13 @@ if (isset($_POST['customeradd'])) {
             $customeradd['addresses'][ $k ]['show'] = true;
         }
 
-        if ($v['location_zip'] && !Localisation::checkZip($v['location_zip'], $v['location_country_id'])) {
+        Localisation::setSystemLanguage($LMS->getCountryCodeById($v['location_country_id']));
+        if ($v['location_zip'] && !check_zip($v['location_zip'])) {
             $error['customeradd[addresses][' . $k . '][location_zip]'] = trans('Incorrect ZIP code!');
             $customeradd['addresses'][ $k ]['show'] = true;
         }
     }
+    Localisation::resetSystemLanguage();
 
     if (isset($customeradd['consents'][CCONSENT_INVOICENOTICE]) && !$emaileinvoice) {
         if ($customer_invoice_notice_consent_check == 'error') {

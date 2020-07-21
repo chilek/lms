@@ -69,9 +69,11 @@ if (isset($netnodedata)) {
         }
     }
 
-    if ($netnodedata['location_zip'] && !Localisation::checkZip($netnodedata['location_zip'], $netnodedata['location_country_id'])) {
+    Localisation::setSystemLanguage($LMS->getCountryCodeById($netnodedata['location_country_id']));
+    if ($netnodedata['location_zip'] && !check_zip($netnodedata['location_zip'])) {
         $error['location_zip'] = trans('Incorrect ZIP code!');
     }
+    Localisation::resetSystemLanguage();
 
     if (in_array($netnodedata['ownership'], array('1', '2'))) { // węzeł współdzielony lub obcy
         if (!strlen(trim($netnodedata['coowner']))) {
