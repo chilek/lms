@@ -380,7 +380,7 @@ class Localisation
         return $content;
     }
 
-    private static function callLanguageFunction()
+    private static function callFunction()
     {
         $args = func_get_args();
         $type = array_shift($args);
@@ -392,18 +392,18 @@ class Localisation
         return null;
     }
 
-    public static function callUiLanguageFunction()
+    public static function callUiFunction()
     {
         $args = func_get_args();
         array_unshift($args, self::UI_FUNCTION);
-        return call_user_func_array('Localisation::callLanguageFunction', $args);
+        return call_user_func_array('Localisation::callFunction', $args);
     }
 
-    public static function callSystemLanguageFunction()
+    public static function callSystemFunction()
     {
         $args = func_get_args();
         array_unshift($args, self::SYSTEM_FUNCTION);
-        return call_user_func_array('Localisation::callLanguageFunction', $args);
+        return call_user_func_array('Localisation::callFunction', $args);
     }
 
     public static function arraySort(array &$array, $key = null)
