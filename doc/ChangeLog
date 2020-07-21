@@ -69,6 +69,7 @@ version 26-git (????-??-??):
   - devel/refactoring: moved currency configuration to Localisation class [chilan]
   - improvement: separate smarty function for paytype selection - items are sorted by name
     in accordance with current ui locale [chilan]
+  - improvement: customer identifiers are validated with billing address country in mind [chilan]
 
 version 25.0 (2020-05-15):
 
