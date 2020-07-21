@@ -587,16 +587,34 @@ $(function() {
 		var fromdate, todate;
 		var fromvalue = $(from).val();
 		var tovalue = $(from).val();
+		var time = $(this).is('.time');
 
-		if (fromvalue.match(/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/)) {
-			fromdate = new Date(fromvalue.replace(/\//g, '-'));
+		if (time) {
+			if (fromvalue.match(/^[0-9]{4}\/[0-9]{2}\/[0-9]{2} [0-9]{2}:[0-9]{2}$/)) {
+				fromdate = new Date(fromvalue.replace(/\//g, '-'));
+			} else {
+				fromdate = new Date();
+			}
 		} else {
-			fromdate = new Date();
+			if (fromvalue.match(/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/)) {
+				fromdate = new Date(fromvalue.replace(/\//g, '-'));
+			} else {
+				fromdate = new Date();
+			}
 		}
-		if (tovalue.match(/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/)) {
-			todate = new Date(tovalue.replace(/\//g, '-'));
+
+		if (time) {
+			if (tovalue.match(/^[0-9]{4}\/[0-9]{2}\/[0-9]{2} [0-9]{2}:[0-9]{2}$/)) {
+				todate = new Date(tovalue.replace(/\//g, '-'));
+			} else {
+				todate = new Date();
+			}
 		} else {
-			todate = new Date();
+			if (tovalue.match(/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/)) {
+				todate = new Date(tovalue.replace(/\//g, '-'));
+			} else {
+				todate = new Date();
+			}
 		}
 
 		if (period == 'previous-month' || typeof(period) === 'undefined') {
@@ -634,8 +652,13 @@ $(function() {
 			todate.setFullYear(fromdate.getFullYear());
 		}
 
-		$(from).val(sprintf("%04d/%02d/%02d", fromdate.getFullYear(), fromdate.getMonth() + 1, fromdate.getDate()));
-		$(to).val(sprintf("%04d/%02d/%02d", todate.getFullYear(), todate.getMonth() + 1, todate.getDate()));
+		if (time) {
+			$(from).val(sprintf("%04d/%02d/%02d %02d:%02d", fromdate.getFullYear(), fromdate.getMonth() + 1, fromdate.getDate(), 0, 0));
+			$(to).val(sprintf("%04d/%02d/%02d %02d:%02d", todate.getFullYear(), todate.getMonth() + 1, todate.getDate(), 23, 59));
+		} else {
+			$(from).val(sprintf("%04d/%02d/%02d", fromdate.getFullYear(), fromdate.getMonth() + 1, fromdate.getDate()));
+			$(to).val(sprintf("%04d/%02d/%02d", todate.getFullYear(), todate.getMonth() + 1, todate.getDate()));
+		}
 	});
 
 	$.datetimepicker.setLocale(lmsSettings.language);

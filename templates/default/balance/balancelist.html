@@ -80,7 +80,7 @@
 	}
 	{/if}
 </SCRIPT>
-<FORM METHOD="POST" NAME="page">
+<FORM METHOD="POST" NAME="page" id="balancelist">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox lms-ui-background-cycle">
     <COLGROUP>
@@ -125,37 +125,44 @@
 		<TH scope="col">&nbsp;</TH>
 	</TR>
 	<TR>
-		<TD colspan="10" class="nobr">
-			<div style="float: left;">
-                        <b>{trans("Filter:")}</b>
-                        <INPUT type="text" name="search" value="{$listdata.search}" size="15" {tip text="Enter value of searching data and select category"}>
-                        <SELECT size="1" name="cat" style="width: 150px">
-                                <OPTION value=""{if $listdata.cat == ""} SELECTED{/if}>{trans("- select category -")}</OPTION>
-                                <OPTION value="comment"{if $listdata.cat == "comment"} SELECTED{/if}>{trans("comment")}</OPTION>
-                                <OPTION value="cdate"{if $listdata.cat == "cdate"} SELECTED{/if}>{trans("date (YYYY/MM/DD)")}</OPTION>
-                                <OPTION value="month"{if $listdata.cat == "month"} SELECTED{/if}>{trans("month (YYYY/MM)")}</OPTION>
-                                <OPTION value="number"{if $listdata.cat == "number"} SELECTED{/if}>{trans("document number")}</OPTION>
-                                <OPTION value="value"{if $listdata.cat == "value"} SELECTED{/if}>{trans("value")}</OPTION>
-                                <OPTION value="name"{if $listdata.cat == "name"} SELECTED{/if}>{trans("customer name")}</OPTION>
-                                <OPTION value="customerid"{if $listdata.cat == "customerid"} SELECTED{/if}>{trans("customer ID")}</OPTION>
-                                <OPTION value="ten"{if $listdata.cat == "ten"} SELECTED{/if}>{trans("TEN")}</OPTION>
-                                <OPTION value="address"{if $listdata.cat == "address"} SELECTED{/if}>{trans("address")}</OPTION>
-                                <OPTION value="documented"{if $listdata.cat == "documented"} SELECTED{/if}>{trans("with document")}</OPTION>
-                                <OPTION value="notdocumented"{if $listdata.cat == "notdocumented"} SELECTED{/if}>{trans("without document")}</OPTION>
-                                <OPTION value="cashimport"{if $listdata.cat == "cashimport"} selected{/if}>{trans("cash import file")}</OPTION>
-                        </SELECT>
-                        {trans("Group:")}
-                        <SELECT size="1" name="group">
-                                <OPTION value="0"{if !$listdata.group} SELECTED{/if}>{trans("- all groups -")}</OPTION>
-                                {section name="grouplist" loop=$grouplist}
-                                <OPTION value="{$grouplist[grouplist].id}"{if $listdata.group == $grouplist[grouplist].id} SELECTED{/if}>{$grouplist[grouplist].name|truncate:40:"...":true}</OPTION>
-                                {/section}
-                        </SELECT>
-                        <INPUT type="checkbox" name="groupexclude" id="groupexclude"{if $listdata.groupexclude} CHECKED{/if}><label for="groupexclude">{trans("exclude group")}</label>&nbsp;
-                        </div>
-                        {trans("From:")} <INPUT TYPE="text" NAME="from" SIZE="14" maxlength="14" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d %H:%M"}{/if}" placeholder="{trans("yyyy/mm/dd hh:mm")}" {tip class="lms-ui-datetime" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
-                        {trans("To:")} <INPUT TYPE="text" NAME="to" SIZE="14" maxlength="14" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d %H:%M"}{/if}" placeholder="{trans("yyyy/mm/dd hh:mm")}" {tip class="lms-ui-datetime" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
-                        <A href="javascript:filter();">&raquo;&raquo;&raquo;</A><BR>
+		<TD colspan="10">
+			<strong>{trans("Filter:")}</strong>
+			<INPUT type="text" name="search" value="{$listdata.search}"
+				   size="15" {tip text="Enter value of searching data and select category"}>
+			<SELECT size="1" name="cat" style="width: 150px">
+				<OPTION value=""{if $listdata.cat == ""} SELECTED{/if}>{trans("- select category -")}</OPTION>
+				<OPTION value="comment"{if $listdata.cat == "comment"} SELECTED{/if}>{trans("comment")}</OPTION>
+				<OPTION value="cdate"{if $listdata.cat == "cdate"} SELECTED{/if}>{trans("date (YYYY/MM/DD)")}</OPTION>
+				<OPTION value="month"{if $listdata.cat == "month"} SELECTED{/if}>{trans("month (YYYY/MM)")}</OPTION>
+				<OPTION value="number"{if $listdata.cat == "number"} SELECTED{/if}>{trans("document number")}</OPTION>
+				<OPTION value="value"{if $listdata.cat == "value"} SELECTED{/if}>{trans("value")}</OPTION>
+				<OPTION value="name"{if $listdata.cat == "name"} SELECTED{/if}>{trans("customer name")}</OPTION>
+				<OPTION value="customerid"{if $listdata.cat == "customerid"} SELECTED{/if}>{trans("customer ID")}</OPTION>
+				<OPTION value="ten"{if $listdata.cat == "ten"} SELECTED{/if}>{trans("TEN")}</OPTION>
+				<OPTION value="address"{if $listdata.cat == "address"} SELECTED{/if}>{trans("address")}</OPTION>
+				<OPTION value="documented"{if $listdata.cat == "documented"} SELECTED{/if}>{trans("with document")}</OPTION>
+				<OPTION value="notdocumented"{if $listdata.cat == "notdocumented"} SELECTED{/if}>{trans("without document")}</OPTION>
+				<OPTION value="cashimport"{if $listdata.cat == "cashimport"} selected{/if}>{trans("cash import file")}</OPTION>
+			</SELECT>
+			{trans("Group:")}
+			<SELECT size="1" name="group">
+				<OPTION value="0"{if !$listdata.group} SELECTED{/if}>{trans("- all groups -")}</OPTION>
+				{section name="grouplist" loop=$grouplist}
+					<OPTION value="{$grouplist[grouplist].id}"{if $listdata.group == $grouplist[grouplist].id} SELECTED{/if}>{$grouplist[grouplist].name|truncate:40:"...":true}</OPTION>
+				{/section}
+			</SELECT>
+			<INPUT type="checkbox" name="groupexclude" id="groupexclude"{if $listdata.groupexclude} CHECKED{/if}><label
+					for="groupexclude">{trans("exclude group")}</label>&nbsp;
+			<span class="nobr">
+				{date_period_preset from="#balancelist [name=\"from\"]" to="#balancelist [name=\"to\"]" time=true}
+				{trans("From:")} <INPUT TYPE="text" NAME="from" SIZE="14" maxlength="14"
+										value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d %H:%M"}{/if}"
+										placeholder="{trans("yyyy/mm/dd hh:mm")}" {tip class="lms-ui-datetime" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+				{trans("To:")} <INPUT TYPE="text" NAME="to" SIZE="14" maxlength="14"
+									  value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d %H:%M"}{/if}"
+									  placeholder="{trans("yyyy/mm/dd hh:mm")}" {tip class="lms-ui-datetime" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+			</span>
+			<A href="javascript:filter();">&raquo;&raquo;&raquo;</A><BR>
 		</TD>
 	</TR>
 	{if $pagination->getTotal() != 0}

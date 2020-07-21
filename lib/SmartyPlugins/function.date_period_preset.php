@@ -29,6 +29,8 @@ function smarty_function_date_period_preset(array $params, Smarty_Internal_Templ
     $from_selector = isset($params['from']) ? $params['from'] : null;
     $to_selector = isset($params['to']) ? $params['to'] : null;
     $periods = isset($params['periods']) ? $params['periods'] : null;
+    $time = isset($params['time']) && !empty($params['time']);
+
     if (!isset($from_selector) || !isset($to_selector)) {
         return;
     }
@@ -69,7 +71,8 @@ function smarty_function_date_period_preset(array $params, Smarty_Internal_Templ
                 $icon = 'lms-ui-icon-previous';
                 break;
         }
-        $result .= '<button type="button" class="lms-ui-button ' . $icon . ' lms-ui-button-date-period" data-from="'
+        $result .= '<button type="button" class="lms-ui-button ' . $icon . ' lms-ui-button-date-period'
+            . ($time ? ' time' : '') . '" data-from="'
             . htmlspecialchars($from_selector) . '" data-to="'
             . htmlspecialchars($to_selector) . '" data-period="' . $period . '" title="' . $label . '">'
             . '<i></i></button>&nbsp;';
