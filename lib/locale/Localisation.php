@@ -131,6 +131,8 @@ class Localisation
 
         self::loadUiLanguage();
         self::loadSystemLanguage();
+
+        mb_internal_encoding('UTF-8');
     }
 
     private static function checkLanguage($lang)
@@ -292,7 +294,7 @@ class Localisation
 
     public static function setUiLanguage($lang)
     {
-        if ($lang == self::$uiLanguage) {
+        if ($lang == self::$uiLanguage || empty($lang) || !isset(self::$langDefs[$lang])) {
             return;
         }
 
@@ -340,7 +342,7 @@ class Localisation
 
     public static function setSystemLanguage($lang)
     {
-        if ($lang == self::$systemLanguage) {
+        if ($lang == self::$systemLanguage || empty($lang) || !isset(self::$langDefs[$lang])) {
             return;
         }
 

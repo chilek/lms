@@ -26,8 +26,6 @@
 
 Localisation::init();
 
-mb_internal_encoding('UTF-8');
-
 function uptimef($ts)
 {
     return Localisation::callUiLanguageFunction('uptimef', $ts);
