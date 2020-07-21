@@ -320,6 +320,7 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 
 		//Create an array of LI's for the words.
 		$.each(this.suggestions, function(i, elem) {
+			var icon = elem.hasOwnProperty('icon') ? elem.icon : null;
 			var name = elem.name;
 			var name_class = elem.name_class;
 			var desc = elem.description ? elem.description : '';
@@ -331,8 +332,8 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 			var desc_elem = $('<div class="lms-ui-suggestion-description ' + desc_class + '">' + desc + '</div>').get(0);
 			var li = $('<li class="lms-ui-suggestion-item" />').attr('title', tip).get(0);
 
-			name_elem.innerHTML = name.length > AUTOSUGGEST_MAX_LENGTH ?
-				name.substring(0, AUTOSUGGEST_MAX_LENGTH) + " ..." : name;
+			name_elem.innerHTML = (icon ? '<i class="' + icon + '"></i>' : '') + (name.length > AUTOSUGGEST_MAX_LENGTH ?
+				name.substring(0, AUTOSUGGEST_MAX_LENGTH) + " ..." : name);
 
 			if (action && !me.autosubmit && !me.onSubmit) {
 				var a = $('<a href="' + action + '"/>').get(0);

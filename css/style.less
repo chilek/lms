@@ -851,6 +851,10 @@ input:invalid {
 
 			.lms-ui-suggestion-name {
 				font-size: inherit;
+
+				i {
+					padding: 0.3em;
+				}
 			}
 
 			.lms-ui-suggestion-description {
@@ -912,9 +916,15 @@ input:invalid {
 			.lms-ui-suggestion-name {
 				@media screen and (min-width: @mobile-max-width + 1px) {
 					font-size: 12px;
+					i {
+						font-size: 100%;
+						padding: 0.3em;
+					}
 				}
+
 				padding-top: 2px;
 				color: black;
+
 				&.blend {
 					.blend;
 				}
