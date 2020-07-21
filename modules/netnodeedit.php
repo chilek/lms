@@ -87,7 +87,9 @@ if (isset($netnodedata)) {
         }
     }
 
-    Localisation::setSystemLanguage($LMS->getCountryCodeById($netnodedata['location_country_id']));
+    if (!empty($netnodedata['location_country_id'])) {
+        Localisation::setSystemLanguage($LMS->getCountryCodeById($netnodedata['location_country_id']));
+    }
     if ($netnodedata['location_zip'] && !check_zip($netnodedata['location_zip'])) {
         $error['location_zip'] = trans('Incorrect ZIP code!');
     }
