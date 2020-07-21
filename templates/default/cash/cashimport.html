@@ -3,7 +3,17 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<SCRIPT>
+
+<style>
+
+	#file-label {
+		padding-top: 1.2em;
+	}
+
+</style>
+
+<script>
+
 	function Delete()
 	{
 		document.cashimport.action += '&action=delete';
@@ -15,7 +25,8 @@
 		document.cashimport.action += '&action=save';
 		document.cashimport.submit();
 	}
-</SCRIPT>
+
+</script>
 <FORM NAME="cashimport" ACTION="?m=cashimport" METHOD="post">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
@@ -197,7 +208,7 @@
     </THEAD>
     <TBODY>
 	<TR>
-		<TD class="bold nobr valign-top">
+		<TD class="bold nobr valign-top" id="file-label">
 			<IMG src="img/attach.gif" alt="">
 			{trans("Import files:")}
 		</TD>
