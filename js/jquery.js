@@ -659,6 +659,8 @@ $(function() {
 			$(from).val(sprintf("%04d/%02d/%02d", fromdate.getFullYear(), fromdate.getMonth() + 1, fromdate.getDate()));
 			$(to).val(sprintf("%04d/%02d/%02d", todate.getFullYear(), todate.getMonth() + 1, todate.getDate()));
 		}
+
+		$(from).trigger('change');
 	});
 
 	$.datetimepicker.setLocale(lmsSettings.language);
