@@ -39,6 +39,7 @@
 		multiSelectMaxVisible: '{ConfigHelper::getConfig('phpui.multiselect_max_visible', 0)}',
         eventTimeStep: {ConfigHelper::getConfig('phpui.event_time_step', 30)},
 		openCalendarOnInputClick: {if ConfigHelper::checkConfig('phpui.open_calendar_on_input_click')}true{else}false{/if},
+		uploadedImageMaxSize: {intval(ConfigHelper::getConfig('phpui.uploaded_image_max_size', 0))},
 		monthlyPeriod: {$smarty.const.MONTHLY}
 	};
 

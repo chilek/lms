@@ -25,14 +25,16 @@
 function lmsFileUpload(elemid, formid) {
 	var elem = $("#" + elemid);
 	var formelem = typeof(formid) != 'undefined' ? $('#' + formid) : $(this).closest("form");
+	var formdata = new FormData(formelem.get(0));
 	var progressbar = elem.find(".fileupload-progressbar");
 	var progresslabel = progressbar.find(".fileupload-progress-label");
 	var xhr;
 
-	function upload_files(form, formdata) {
-		var action = form.attr("action");
-		if (action === undefined)
+	function upload_files(formdata) {
+		var action = formelem.attr("action");
+		if (action === undefined) {
 			action = document.location;
+		}
 		action += "&ajax=1&fileupload=1";
 		$("#" + elemid + "-progress-dialog").dialog("open");
 		xhr = $.ajax(action, {
@@ -88,6 +90,59 @@ function lmsFileUpload(elemid, formid) {
 		});
 	}
 
+	function prepare_files(files) {
+		var left = files.length;
+		$(files).each(function(index, file) {
+			var fileReader = new FileReader();
+			fileReader.onload = function() {
+				if (file.type.match('^image/.*') && lmsSettings.uploadedImageMaxSize) {
+					var image = new Image();
+					var imageUrl = URL.createObjectURL(file);
+					image.onload = function() {
+						// Resize the image
+						var canvas = document.createElement('canvas'),
+							maxSize = lmsSettings.uploadedImageMaxSize,
+							width = image.width,
+							height = image.height;
+						if (width > height) {
+							if (width > maxSize) {
+								height *= maxSize / width;
+								width = maxSize;
+							}
+						} else {
+							if (height > maxSize) {
+								width *= maxSize / height;
+								height = maxSize;
+							}
+						}
+						canvas.width = width;
+						canvas.height = height;
+						canvas.getContext('2d').drawImage(image, 0, 0, width, height);
+						canvas.toBlob(function(blob) {
+								formdata.append(elemid + '[]', blob, file.name);
+								left--;
+								if (!left) {
+									formelem.trigger('lms:files-prepared');
+								}
+							}, file.type);
+					};
+					image.src = imageUrl;
+				} else {
+					formdata.append(elemid + '[]', file);
+					left--;
+					if (!left) {
+						formelem.trigger('lms:files-prepared');
+					}
+				}
+			};
+			fileReader.readAsBinaryString(file);
+		});
+	}
+
+	formelem.on('lms:files-prepared', function() {
+		upload_files(formdata);
+	});
+
 	elem.find("button").on("click", function() {
 		$(this).siblings("input[type=file]").val("").click();
 	}).on("dragover", function(e) {
@@ -103,14 +158,8 @@ function lmsFileUpload(elemid, formid) {
 		e.stopPropagation();
 		$(this).removeClass("lms-ui-fileupload-dropzone");
 		var files = e.originalEvent.dataTransfer.files;
-		var formdata = new FormData(formelem.get(0));
+		prepare_files(files);
 		formdata.delete(elemid + '[]');
-		$(files).each(function(index, file) {
-			var fileReader = new FileReader();
-			fileReader.readAsDataURL(file);
-			formdata.append(elemid + '[]', file);
-		});
-		upload_files(formelem, formdata);
 	});
 	elem.find('#' + elemid + '-progress-dialog').dialog({
 		modal: true,
@@ -132,8 +181,9 @@ function lmsFileUpload(elemid, formid) {
 		value: false
 	});
 	elem.find("input[type=file]").on("change", function() {
-		var formdata = new FormData(formelem.get(0));
-		upload_files(formelem, formdata);
+		var files = $(this).get(0).files;
+		prepare_files(files);
+		formdata.delete(elemid + '[]');
 	});
 	elem.find(".fileupload-file").on("click", function() {
 		$(this).parent().remove();
