@@ -66,49 +66,58 @@
 					<span class="bold">{trans("Filter:")}</span> {trans("Customer:")}
 					{customerlist form="page" customers=$customers selected=$filter.customer selectname="customer" inputname="c" firstoption="- all customers -"}
 
-					{trans("Type:")}
 					<input type="hidden" name="t[]" value="0">
-					<SELECT size="1" name="t[]" onChange="javascript:applyFilter();" multiple class="lms-ui-multiselect" data-default-value="{trans("- all -")}">
-						{foreach $_DOCTYPES as $key => $item}{if $key < 0}
-						<OPTION VALUE="{$key}"{if is_array($filter.type) && in_array($key, $filter.type)} selected{/if}>{$item}</OPTION>
-						{/if}{/foreach}
-					</SELECT>
+					<label>
+						{trans("Type:")}
+						<SELECT size="1" name="t[]" onChange="javascript:applyFilter();" multiple class="lms-ui-multiselect" data-default-value="{trans("- all -")}">
+							{foreach $_DOCTYPES as $key => $item}{if $key < 0}
+							<OPTION VALUE="{$key}"{if is_array($filter.type) && in_array($key, $filter.type)} selected{/if}>{$item}</OPTION>
+							{/if}{/foreach}
+						</SELECT>
+					</label>
 
-					{trans("Service:")}
 					<input type="hidden" name="service[]" value="0">
-					<SELECT size="1" name="service[]" onChange="javascript:applyFilter();" multiple class="lms-ui-multiselect" data-default-value="{trans("- all -")}">
-						{foreach $_SERVICETYPES as $key => $item}
-						<OPTION VALUE="{$key}"{if is_array($filter.service) && in_array($key, $filter.service)} selected{/if}>{$item}</OPTION>
-						{/foreach}
-					</SELECT>
+					<label>
+						{trans("Service:")}
+						<SELECT size="1" name="service[]" onChange="javascript:applyFilter();" multiple class="lms-ui-multiselect" data-default-value="{trans("- all -")}">
+							{foreach $_SERVICETYPES as $key => $item}
+							<OPTION VALUE="{$key}"{if is_array($filter.service) && in_array($key, $filter.service)} selected{/if}>{$item}</OPTION>
+							{/foreach}
+						</SELECT>
+					</label>
 
-					{trans("User:")}
-					{if empty($users)}
-					<input type="hidden" name="usertype" value="">
-					<input type="hidden" name="u[]" value="0">
-					{else}
-					<SELECT name="usertype" onChange="javascript:applyFilter();">
-						<option value="creator"{if empty($filter.usertype) || $filter.usertype == 'creator'} selected{/if}>{trans("creator")}</option>
-						<option value="authorising"{if $filter.usertype == 'authorising'} selected{/if}>{trans("authorising")}</option>
-						<option value="archivizator"{if empty($filter.usertype) || $filter.usertype == 'archivizator'} selected{/if}>{trans("archiwizator")}</option>
-					</SELECT>
+					<span class="nobr">
+						{trans("User:")}
+						{if empty($users)}
+						<input type="hidden" name="usertype" value="">
+						<input type="hidden" name="u[]" value="0">
+						{else}
+						<SELECT name="usertype" onChange="javascript:applyFilter();">
+							<option value="creator"{if empty($filter.usertype) || $filter.usertype == 'creator'} selected{/if}>{trans("creator")}</option>
+							<option value="authorising"{if $filter.usertype == 'authorising'} selected{/if}>{trans("authorising")}</option>
+							<option value="archivizator"{if empty($filter.usertype) || $filter.usertype == 'archivizator'} selected{/if}>{trans("archiwizator")}</option>
+						</SELECT>
 
-					<input type="hidden" name="u[]" value="0">
-					<SELECT name="u[]" onChange="javascript:applyFilter();" multiple class="lms-ui-multiselect" data-default-value="{trans("- all -")}">
-						{foreach $users as $user}
-						<option value="{$user.id}"{if is_array($filter.userid) && in_array($user.id, $filter.userid)} selected{/if}>{$user.name}</option>
-						{/foreach}
-					</SELECT>
+						<input type="hidden" name="u[]" value="0">
+						<SELECT name="u[]" onChange="javascript:applyFilter();" multiple class="lms-ui-multiselect" data-default-value="{trans("- all -")}">
+							{foreach $users as $user}
+							<option value="{$user.id}"{if is_array($filter.userid) && in_array($user.id, $filter.userid)} selected{/if}>{$user.name}</option>
+							{/foreach}
+						</SELECT>
+					</span>
 
 					{/if}
-					{trans("Period:")}
-					<SELECT name="periodtype" onChange="javascript:applyFilter();">
-						<OPTION value="creationdate"{if empty($filter.periodtype) || $filter.periodtype == 'creationdate'} selected{/if}>{trans("creation date")}</OPTION>
-						<OPTION value="confirmationdate"{if $filter.periodtype == 'confirmationdate'} selected{/if}>{trans("confirmation date")}</OPTION>
-						<OPTION value="archivizationdate"{if $filter.periodtype == 'archivizationdate'} selected{/if}>{trans("archivization date")}</OPTION>
-						<OPTION value="fromdate"{if $filter.periodtype == 'fromdate'} selected{/if}>{trans("'from' date")}</OPTION>
-						<OPTION value="todate"{if $filter.periodtype == 'todate'} selected{/if}>{trans("'to' date")}</OPTION>
-					</SELECT>
+
+					<label>
+						{trans("Period:")}
+						<SELECT name="periodtype" onChange="javascript:applyFilter();">
+							<OPTION value="creationdate"{if empty($filter.periodtype) || $filter.periodtype == 'creationdate'} selected{/if}>{trans("creation date")}</OPTION>
+							<OPTION value="confirmationdate"{if $filter.periodtype == 'confirmationdate'} selected{/if}>{trans("confirmation date")}</OPTION>
+							<OPTION value="archivizationdate"{if $filter.periodtype == 'archivizationdate'} selected{/if}>{trans("archivization date")}</OPTION>
+							<OPTION value="fromdate"{if $filter.periodtype == 'fromdate'} selected{/if}>{trans("'from' date")}</OPTION>
+							<OPTION value="todate"{if $filter.periodtype == 'todate'} selected{/if}>{trans("'to' date")}</OPTION>
+						</SELECT>
+					</label>
 
 					<span class="nobr">
 						{date_period_preset from="#documentlist [name=\"from\"]" to="#documentlist [name=\"to\"]"}
@@ -123,33 +132,39 @@
                     </span>
 
 					{if !empty($numberplans) && count($numberplans)}
-					{trans("Number plan:")}
-					<SELECT name="p" onChange="javascript:applyFilter();" {tip text="Select numbering plan"}>
-						<OPTION value="0">- {trans("all")} -</OPTION>
-						{foreach $numberplans as $plan}
-						{$period = $plan.period}
-						<OPTION value="{$plan.id}"{if $filter.numberplan == $plan.id} selected{/if}>{number number=$plan.next template=$plan.template time=$invoice.cdate customerid=$filter.customer} ({$_NUM_PERIODS.$period})</OPTION>
-						{/foreach}
-					</SELECT>
+					<label>
+						{trans("Number plan:")}
+						<SELECT name="p" onChange="javascript:applyFilter();" {tip text="Select numbering plan"}>
+							<OPTION value="0">- {trans("all")} -</OPTION>
+							{foreach $numberplans as $plan}
+							{$period = $plan.period}
+							<OPTION value="{$plan.id}"{if $filter.numberplan == $plan.id} selected{/if}>{number number=$plan.next template=$plan.template time=$invoice.cdate customerid=$filter.customer} ({$_NUM_PERIODS.$period})</OPTION>
+							{/foreach}
+						</SELECT>
+					</label>
 					{else}
 					<input type="hidden" name="p" value="0">
 					{/if}
 
-					{trans("Status:")}
-					<SELECT name="s" onChange="javascript:applyFilter();" {tip text="Select document status"}>
-						<OPTION value="-1">- {trans("all")} - </OPTION>
-						<OPTION value="0"{if $filter.status == 0} selected{/if}>{trans("unconfirmed")}</OPTION>
-						<OPTION value="1"{if $filter.status == 1} selected{/if}>{trans("confirmed")}</OPTION>
-						<OPTION value="2"{if $filter.status == 2} selected{/if}>{trans("review (signed document scan)")}</OPTION>
-						<OPTION value="3"{if $filter.status == 3} selected{/if}>{trans("waiting for signed document scan")}</OPTION>
-					</SELECT>
+					<label>
+						{trans("Status:")}
+						<SELECT name="s" onChange="javascript:applyFilter();" {tip text="Select document status"}>
+							<OPTION value="-1">- {trans("all")} - </OPTION>
+							<OPTION value="0"{if $filter.status == 0} selected{/if}>{trans("unconfirmed")}</OPTION>
+							<OPTION value="1"{if $filter.status == 1} selected{/if}>{trans("confirmed")}</OPTION>
+							<OPTION value="2"{if $filter.status == 2} selected{/if}>{trans("review (signed document scan)")}</OPTION>
+							<OPTION value="3"{if $filter.status == 3} selected{/if}>{trans("waiting for signed document scan")}</OPTION>
+						</SELECT>
+					</label>
 
-					{trans("Archived:")}
-					<SELECT name="archived" onChange="javascript:applyFilter();" {tip text="Select document archived state"}>
-						<OPTION value="-1">- {trans("all")} - </OPTION>
-						<OPTION value="1"{if $filter.archived == 1} selected{/if}>{trans("yes")}</OPTION>
-						<OPTION value="0"{if $filter.archived == 0} selected{/if}>{trans("no")}</OPTION>
-					</SELECT>
+					<label>
+						{trans("Archived:")}
+						<SELECT name="archived" onChange="javascript:applyFilter();" {tip text="Select document archived state"}>
+							<OPTION value="-1">- {trans("all")} - </OPTION>
+							<OPTION value="1"{if $filter.archived == 1} selected{/if}>{trans("yes")}</OPTION>
+							<OPTION value="0"{if $filter.archived == 0} selected{/if}>{trans("no")}</OPTION>
+						</SELECT>
+					</label>
 
 					<A href="javascript:applyFilter();">&raquo;&raquo;&raquo;</A>
                     </form>
