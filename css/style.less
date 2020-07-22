@@ -476,9 +476,15 @@ td[onclick]	{ cursor: pointer; }
 .container       { padding: 0; }
 FORM		{ display: inline; }
 
-LABEL {
+label {
 	cursor: pointer;
+	white-space: nowrap;
+
 	.lms-ui-no-user-select;
+
+	> input[type="checkbox"] {
+		margin-right: 0.6em;
+	}
 }
 
 A {
