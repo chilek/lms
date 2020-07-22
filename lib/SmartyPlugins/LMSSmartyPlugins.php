@@ -374,7 +374,7 @@ class LMSSmartyPlugins
             $tmp_state = mb_strtolower($params['location_state_name']);
 
             foreach ($states as $v) {
-                echo '<option ' . (mb_strtolower($v) == $tmp_state ? 'selected' : '')  . '>' . $v . '</option>';
+                echo '<option ' . (!empty($v) && mb_strtolower($v) == $tmp_state ? 'selected' : '')  . '>' . $v . '</option>';
             }
 
             unset($tmp_state);
