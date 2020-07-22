@@ -78,5 +78,5 @@ function smarty_function_date_period_preset(array $params, Smarty_Internal_Templ
             . '<i></i></button>&nbsp;';
     }
 
-    return $result;
+    return '<div class="lms-ui-date-period-wrapper">' . $result . '</div>';
 }
