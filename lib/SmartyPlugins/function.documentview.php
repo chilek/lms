@@ -60,7 +60,7 @@ function smarty_function_documentview($params, $template)
     $result .= '<div class="documentviewdialog" id="documentviewdialog-' . $id . '" title="' . $name . '" style="display: none;"
 		data-url="' . $url . '"></div>';
 
-    $result .= '<a href="' . $url . '"';
+    $result .= '<a href="' . $url . '" data-title="' . $name . '"';
     if (empty($type)) {
         $result .=  ' class="lms-ui-button" ' . ($external ? ' rel="external"' : '');
     } else {

@@ -647,6 +647,7 @@ $_LANG['Display this form again, when this group is saved'] = 'Po dodaniu grupy 
 $_LANG['Display tickets matching the following criteria:'] = 'Wyświetl zgłoszenia pasujące do następujących kryteriów';
 $_LANG['DNS servers:'] = 'Serwery DNS:';
 $_LANG['Document'] = 'Dokument';
+$_LANG['Document $a'] = 'Dokument $a';
 $_LANG['Documentation'] = 'Dokumentacja';
 $_LANG['Document with specified number exists!'] = 'Dokument z podanym numerem już istnieje!';
 $_LANG['Domain:'] = 'Domena:';
