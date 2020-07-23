@@ -1,7 +1,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -122,7 +122,7 @@ function lmsFileUpload(elemid, formid) {
 								formdata.append(elemid + '[]', blob, file.name);
 								left--;
 								if (!left) {
-									formelem.trigger('lms:files-prepared');
+									upload_files(formdata);
 								}
 							}, file.type);
 					};
@@ -131,17 +131,13 @@ function lmsFileUpload(elemid, formid) {
 					formdata.append(elemid + '[]', file);
 					left--;
 					if (!left) {
-						formelem.trigger('lms:files-prepared');
+						upload_files(formdata);
 					}
 				}
 			};
 			fileReader.readAsBinaryString(file);
 		});
 	}
-
-	formelem.on('lms:files-prepared', function() {
-		upload_files(formdata);
-	});
 
 	elem.find("button").on("click", function() {
 		$(this).siblings("input[type=file]").val("").click();
