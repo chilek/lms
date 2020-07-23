@@ -57,7 +57,7 @@ class Session
         if (isset($remindform)) {
             $sms_service = ConfigHelper::getConfig('sms.service', '', true);
             if (($remindform['type'] == 1 && !ConfigHelper::checkConfig('userpanel.mail_credential_reminders'))
-                || ($remindform['type'] == 2 && (!ConfigHelper::checkConfig('userpanel.sms_credential_reminders')) || empty($sms_service))) {
+                || ($remindform['type'] == 2 && (!ConfigHelper::checkConfig('userpanel.sms_credential_reminders') || empty($sms_service)))) {
                 return;
             }
 
