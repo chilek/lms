@@ -26,11 +26,12 @@ function lmsFileUpload(elemid, formid) {
 	var elem = $("#" + elemid);
 	var formelem = typeof(formid) != 'undefined' ? $('#' + formid) : $(this).closest("form");
 	var formdata = new FormData(formelem.get(0));
+	var files;
 	var progressbar = elem.find(".fileupload-progressbar");
 	var progresslabel = progressbar.find(".fileupload-progress-label");
 	var xhr;
 
-	function upload_files(formdata) {
+	function upload_files() {
 		var action = formelem.attr("action");
 		if (action === undefined) {
 			action = document.location;
@@ -62,7 +63,7 @@ function lmsFileUpload(elemid, formid) {
 					var count = fileupload_files.find(".fileupload-file").length;
 					$.each(data.files, function(key, file) {
 						var size = get_size_unit(file.size);
-						fileupload_files.append('<div>' +
+						var fileListItem = $('<div>' +
 							'<a href="#" class="fileupload-file"><i class="fas fa-trash"></i>&nbsp;' +
 							file.name + ' (' + size.size + ' ' + size.unit + ')</a>' +
 							'<input type="hidden" name="fileupload[' + elemid + '][' + (count + key) + '][name]"' +
@@ -71,7 +72,15 @@ function lmsFileUpload(elemid, formid) {
 								' value="' + file.size + '" ' + (formid ? ' form="' + formid + '"' : '') + '>' +
 							'<input type="hidden" name="fileupload[' + elemid + '][' + (count + key) + '][type]"' +
 								' value="' + file.type + '" ' + (formid ? ' form="' + formid + '"' : '') + '>' +
-						'</div>');
+						'</div>').appendTo(fileupload_files);
+						fileListItem.find('.fileupload-file').tooltip({
+							items: 'a',
+							content: files[key].imgElem,
+							classes: {
+								'ui-tooltip' : 'documentview'
+							},
+							track: true
+						});
 						elem.find(".fileupload-file").on("click", function() {
 							$(this).parent().remove();
 						});
@@ -90,20 +99,59 @@ function lmsFileUpload(elemid, formid) {
 		});
 	}
 
-	function prepare_files(files) {
+	function prepare_files() {
 		var left = files.length;
 		$(files).each(function(index, file) {
 			var fileReader = new FileReader();
-			fileReader.onload = function() {
-				if (file.type.match('^image/.*') && lmsSettings.uploadedImageMaxSize) {
+			fileReader.onload = function(readerEvent) {
+				if (file.type.match('^image/.*')) {
 					var image = new Image();
-					var imageUrl = URL.createObjectURL(file);
+					var imageUrl = readerEvent.target.result;
 					image.onload = function() {
 						// Resize the image
 						var canvas = document.createElement('canvas'),
-							maxSize = lmsSettings.uploadedImageMaxSize,
-							width = image.width,
-							height = image.height;
+							imgWidth = image.width,
+							imgHeight = image.height,
+							maxSize = 300,
+							width,
+							height;
+
+						// render thumbnail
+						width = imgWidth;
+						height = imgHeight;
+						if (width > maxSize || height > maxSize) {
+							if (width > height) {
+								if (width > maxSize) {
+									height *= maxSize / width;
+									width = maxSize;
+								}
+							} else {
+								if (height > maxSize) {
+									width *= maxSize / height;
+									height = maxSize;
+								}
+							}
+							canvas.width = width;
+							canvas.height = height;
+							canvas.getContext('2d').drawImage(image, 0, 0, width, height);
+							file.imgElem = $('<img src="' + canvas.toDataURL(file.type) + '">');
+
+							width = imgWidth;
+							height = imgHeight;
+						} else {
+							file.imgElem = $(image);
+						}
+
+						maxSize = lmsSettings.uploadedImageMaxSize;
+
+						if (width <= maxSize && height <= maxSize) {
+							formdata.append(elemid + '[]', file);
+							left--;
+							if (!left) {
+								upload_files();
+							}
+							return;
+						}
 						if (width > height) {
 							if (width > maxSize) {
 								height *= maxSize / width;
@@ -122,7 +170,7 @@ function lmsFileUpload(elemid, formid) {
 								formdata.append(elemid + '[]', blob, file.name);
 								left--;
 								if (!left) {
-									upload_files(formdata);
+									upload_files();
 								}
 							}, file.type);
 					};
@@ -131,11 +179,11 @@ function lmsFileUpload(elemid, formid) {
 					formdata.append(elemid + '[]', file);
 					left--;
 					if (!left) {
-						upload_files(formdata);
+						upload_files();
 					}
 				}
 			};
-			fileReader.readAsBinaryString(file);
+			fileReader.readAsDataURL(file);
 		});
 	}
 
@@ -153,8 +201,8 @@ function lmsFileUpload(elemid, formid) {
 		e.preventDefault();
 		e.stopPropagation();
 		$(this).removeClass("lms-ui-fileupload-dropzone");
-		var files = e.originalEvent.dataTransfer.files;
-		prepare_files(files);
+		files = e.originalEvent.dataTransfer.files;
+		prepare_files();
 		formdata.delete(elemid + '[]');
 	});
 	elem.find('#' + elemid + '-progress-dialog').dialog({
@@ -177,8 +225,8 @@ function lmsFileUpload(elemid, formid) {
 		value: false
 	});
 	elem.find("input[type=file]").on("change", function() {
-		var files = $(this).get(0).files;
-		prepare_files(files);
+		files = $(this).get(0).files;
+		prepare_files();
 		formdata.delete(elemid + '[]');
 	});
 	elem.find(".fileupload-file").on("click", function() {
