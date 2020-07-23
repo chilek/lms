@@ -613,6 +613,7 @@ $message = $hook_data['message'];
 
 if (!is_array($message['ticketid'])) {
     $ticket = $LMS->GetTicketContents($message['ticketid']);
+    $LMS->getTicketImageGalleries($ticket);
     $SMARTY->assign('ticket', $ticket);
     if (!isset($_POST['message'])) {
         $message['source'] = $ticket['source'];
