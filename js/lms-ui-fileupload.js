@@ -144,7 +144,7 @@ function lmsFileUpload(elemid, formid) {
 
 						maxSize = lmsSettings.uploadedImageMaxSize;
 
-						if (width <= maxSize && height <= maxSize) {
+						if (!maxSize || (width <= maxSize && height <= maxSize)) {
 							formdata.append(elemid + '[]', file);
 							left--;
 							if (!left) {
