@@ -26,6 +26,7 @@ function lmsFileUpload(elemid, formid) {
 	var elem = $("#" + elemid);
 	var formelem = typeof(formid) != 'undefined' ? $('#' + formid) : $(this).closest("form");
 	var formdata = new FormData(formelem.get(0));
+	var dontScaleImages = elem.find('.dont-scale-images');
 	var files;
 	var progressbar = elem.find(".fileupload-progressbar");
 	var progresslabel = progressbar.find(".fileupload-progress-label");
@@ -144,7 +145,7 @@ function lmsFileUpload(elemid, formid) {
 
 						maxSize = lmsSettings.uploadedImageMaxSize;
 
-						if (!maxSize || (width <= maxSize && height <= maxSize)) {
+						if (!maxSize || dontScaleImages.prop('checked') || (width <= maxSize && height <= maxSize)) {
 							formdata.append(elemid + '[]', file);
 							left--;
 							if (!left) {

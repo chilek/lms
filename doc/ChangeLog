@@ -74,6 +74,8 @@ version 26-git (????-??-??):
     browser side to specified size (default '0' value means disabled) [chilan]
   - bugfix: postgresql: connect through IP instead of socket when localhost is set
     in lms.ini [interduo]
+  - enhancement: if uploaded image scaling is enable allow to disable scaling using optional
+    checkbox [chilan]
 
 version 25.0 (2020-05-15):
 
