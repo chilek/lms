@@ -235,7 +235,7 @@ class LMSSmartyPlugins
             );
         }
 
-        $result = '<div class="fileupload" id="' . $id . '">
+        $result = '<div class="lms-ui-fileupload" id="' . $id . '">
 			<div class="fileupload" id="' . $id . '-progress-dialog" title="' . trans("Uploading files ...") . '" style="display: none;">
 				<div style="padding: 10px;">' . trans("Uploading files to server ...") . '</div>
 				<div class="fileupload-progressbar"><div class="fileupload-progress-label"></div></div>

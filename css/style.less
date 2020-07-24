@@ -1158,22 +1158,26 @@ input:invalid {
   padding: 2px 7px 3px 7px;
 }
 
-button.lms-ui-button-fileupload {
-	&.lms-ui-fileupload-dropzone {
-		box-shadow: @slave;
+.lms-ui-fileupload {
+	display: inline-block;
+
+	.lms-ui-button-fileupload-container {
+		padding-bottom: 3px;
 	}
-}
 
-div.lms-ui-button-fileupload-container {
-	padding-bottom: 3px;
-}
+	.lms-ui-button-fileupload {
+		&.lms-ui-fileupload-dropzone {
+			box-shadow: @slave;
+		}
+	}
 
-.fileupload-files {
-	margin-top: 0.5em;
-	margin-bottom: 0.5em;
+	.fileupload-files {
+		margin-top: 0.5em;
+		margin-bottom: 0.5em;
 
-	> div {
-		margin-top: 0.3em;
+		> div {
+			margin-top: 0.3em;
+		}
 	}
 }
 
