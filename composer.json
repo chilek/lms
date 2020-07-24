@@ -70,6 +70,17 @@
                     "reference": "5.13.0"
                 }
             }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "galleriajs/galleria",
+                "version": "1.6.1",
+                "dist": {
+                    "url": "https://github.com/GalleriaJS/galleria/archive/1.6.1.zip",
+                    "type": "zip"
+                }
+            }
         }
     ],
     "require": {
@@ -107,7 +118,8 @@
 		"fortawesome/font-awesome": "^5",
         "html2text/html2text": "^4",
         "drmonty/datatables-responsive": "^2.2",
-        "pragmarx/google2fa": "^6"
+        "pragmarx/google2fa": "^6",
+        "GalleriaJS/galleria": "^1"
     },
     "require-dev": {
         "phpunit/phpunit": "^4",
