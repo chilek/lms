@@ -62,6 +62,9 @@ function modalDialog(title, message, buttons, deferred, context) {
 				);
 			}
 		},
+		close: function() {
+			disableFullScreenPopup();
+		},
 		destroy: function() {
 			disableFullScreenPopup();
 		}
