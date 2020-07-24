@@ -89,7 +89,7 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
         }
 
         $cstring = implode(' ', array(
-            ($host != '' && $host != 'localhost' ? 'host=' . $host : ''),
+            ($host != '' ? 'host=' . $host : ''),
             ($port != '' ? 'port=' . $port : ''),
             ($dbuser != '' ? 'user=' . $dbuser : ''),
             ($dbpasswd != '' ? 'password=' . $dbpasswd : ''),

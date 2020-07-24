@@ -72,6 +72,8 @@ version 26-git (????-??-??):
   - improvement: customer identifiers are validated with billing address country in mind [chilan]
   - enhancement: 'phpui.uploaded_image_max_size' allows to resize images uploaded to server on web
     browser side to specified size (default '0' value means disabled) [chilan]
+  - bugfix: postgresql: connect through IP instead of socket when localhost is set
+    in lms.ini [interduo]
 
 version 25.0 (2020-05-15):
 
