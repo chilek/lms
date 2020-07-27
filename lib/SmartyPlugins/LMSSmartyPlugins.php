@@ -361,9 +361,6 @@ class LMSSmartyPlugins
 
         if (isset($states) && empty($states)) {
             $states = $lms->GetCountryStates();
-            if (!empty($states)) {
-                Localisation::arraySort($states, 'name');
-            }
         }
 
         if ($states) {
