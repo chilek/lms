@@ -119,7 +119,7 @@
         "html2text/html2text": "^4",
         "drmonty/datatables-responsive": "^2.2",
         "pragmarx/google2fa": "^6",
-        "GalleriaJS/galleria": "^1"
+        "galleriajs/galleria": "^1"
     },
     "require-dev": {
         "phpunit/phpunit": "^4",
