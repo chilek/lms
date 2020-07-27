@@ -90,7 +90,16 @@ $(function() {
         });
         location = (address_type == 1 || !location_name.length ? '' : location_name + ', ') + (location.length > 0 ? location : '...');
 
-        box.find('[data-address="location"]').val( location );
+        var location2 = location_str({
+            city: city,
+            street: street,
+            house: house,
+            flat: flat,
+            zip: zip,
+            postoffice: postoffice
+        });
+        box.find('[data-address="location"]').val( location2 );
+
         box.find('.address-full').text( location );
     }
 
