@@ -109,7 +109,7 @@
 		<td>
 			<select id="street_sel" name="street" class="location-property-selection" {tip text="Select street"}>
 				{foreach $streets as $street}
-				<option value="{$street.id}" data-street-type="{$street.typename}" data-street-name-1="{$street.name1}"{if $street.name2} data-street-name-2="{$street.name2}"{/if}>{$street.name}</option>
+				<option value="{$street.id}" data-street-type="{$street.typename}" data-street-name-1="{htmlspecialchars($street.name1)}"{if $street.name2} data-street-name-2="{htmlspecialchars($street.name2)}"{/if}>{$street.name}</option>
 				{/foreach}
 			</select>
 		</td>
