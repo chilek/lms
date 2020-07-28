@@ -2122,19 +2122,25 @@ if (!empty($intersect)) {
                         );
                         if (!empty($nodes)) {
                             foreach ($nodes as $node) {
-                                $DB->Execute("UPDATE nodes SET access = ?
-                                    WHERE id = ?", array(0, $node['id']));
-                                if ($SYSLOG) {
-                                    $SYSLOG->NewTransaction('lms-notify.php');
-                                    $SYSLOG->AddMessage(
-                                        SYSLOG::RES_NODE,
-                                        SYSLOG::OPER_UPDATE,
-                                        array(
-                                            SYSLOG::RES_NODE => $node['id'],
-                                            SYSLOG::RES_CUST => $node['ownerid'],
-                                            'access' => 0
-                                        )
-                                    );
+                                if (!$quiet) {
+                                    printf("[block/node-access] CustomerID: %04d, NodeID: %04d" . PHP_EOL, $node['ownerid'], $node['id']);
+                                }
+
+                                if (!$debug) {
+                                    $DB->Execute("UPDATE nodes SET access = ?
+                                        WHERE id = ?", array(0, $node['id']));
+                                    if ($SYSLOG) {
+                                        $SYSLOG->NewTransaction('lms-notify.php');
+                                        $SYSLOG->AddMessage(
+                                            SYSLOG::RES_NODE,
+                                            SYSLOG::OPER_UPDATE,
+                                            array(
+                                                SYSLOG::RES_NODE => $node['id'],
+                                                SYSLOG::RES_CUST => $node['ownerid'],
+                                                'access' => 0
+                                            )
+                                        );
+                                    }
                                 }
                             }
                         }
@@ -2149,19 +2155,25 @@ if (!empty($intersect)) {
                         );
                         if (!empty($assigns)) {
                             foreach ($assigns as $assign) {
-                                $DB->Execute("UPDATE assignments SET invoice = ?
-                                    WHERE id = ?", array(0, $assign['id']));
-                                if ($SYSLOG) {
-                                    $SYSLOG->NewTransaction('lms-notify.php');
-                                    $SYSLOG->AddMessage(
-                                        SYSLOG::RES_ASSIGN,
-                                        SYSLOG::OPER_UPDATE,
-                                        array(
-                                            SYSLOG::RES_ASSIGN => $assign['id'],
-                                            SYSLOG::RES_CUST => $assign['customerid'],
-                                            'invoice' => 0
-                                        )
-                                    );
+                                if (!$quiet) {
+                                    printf("[block/assignment-invoice] CustomerID: %04d, AssignmentID: %d" . PHP_EOL, $assign['customerid'], $assign['id']);
+                                }
+
+                                if (!$debug) {
+                                    $DB->Execute("UPDATE assignments SET invoice = ?
+                                        WHERE id = ?", array(0, $assign['id']));
+                                    if ($SYSLOG) {
+                                        $SYSLOG->NewTransaction('lms-notify.php');
+                                        $SYSLOG->AddMessage(
+                                            SYSLOG::RES_ASSIGN,
+                                            SYSLOG::OPER_UPDATE,
+                                            array(
+                                                SYSLOG::RES_ASSIGN => $assign['id'],
+                                                SYSLOG::RES_CUST => $assign['customerid'],
+                                                'invoice' => 0
+                                            )
+                                        );
+                                    }
                                 }
                             }
                         }
@@ -2174,17 +2186,23 @@ if (!empty($intersect)) {
                         );
                         if (!empty($custids)) {
                             foreach ($custids as $custid) {
-                                $DB->Execute(
-                                    "UPDATE customers SET status = ? WHERE id = ?",
-                                    array(CSTATUS_DEBT_COLLECTION, $custid)
-                                );
-                                if ($SYSLOG) {
-                                    $SYSLOG->NewTransaction('lms-notify.php');
-                                    $SYSLOG->AddMessage(
-                                        SYSLOG::RES_CUST,
-                                        SYSLOG::OPER_UPDATE,
-                                        array(SYSLOG::RES_CUST => $custid, 'status' => CSTATUS_DEBT_COLLECTION)
+                                if (!$quiet) {
+                                    printf("[block/customer-status] CustomerID: %04d" . PHP_EOL, $custid);
+                                }
+
+                                if (!$debug) {
+                                    $DB->Execute(
+                                        "UPDATE customers SET status = ? WHERE id = ?",
+                                        array(CSTATUS_DEBT_COLLECTION, $custid)
                                     );
+                                    if ($SYSLOG) {
+                                        $SYSLOG->NewTransaction('lms-notify.php');
+                                        $SYSLOG->AddMessage(
+                                            SYSLOG::RES_CUST,
+                                            SYSLOG::OPER_UPDATE,
+                                            array(SYSLOG::RES_CUST => $custid, 'status' => CSTATUS_DEBT_COLLECTION)
+                                        );
+                                    }
                                 }
                             }
                         }
@@ -2202,13 +2220,19 @@ if (!empty($intersect)) {
                                 "SELECT id FROM assignments WHERE customerid = ? AND tariffid IS NULL AND liabilityid IS NULL",
                                 array($cid)
                             )) {
-                                $DB->Execute("INSERT INTO assignments (customerid, datefrom, tariffid, liabilityid)
-                                    VALUES (?, ?, NULL, NULL)", array($cid, $args['datefrom']));
-                                if ($SYSLOG) {
-                                    $SYSLOG->NewTransaction('lms-notify.php');
-                                    $args[SYSLOG::RES_ASSIGN] = $DB->GetLastInsertID('assignments');
-                                    $args[SYSLOG::RES_CUST] = $cid;
-                                    $SYSLOG->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_ADD, $args);
+                                if (!$quiet) {
+                                    printf("[block/all-assignment-suspension] CustomerID: %04d" . PHP_EOL, $cid);
+                                }
+
+                                if (!$debug) {
+                                    $DB->Execute("INSERT INTO assignments (customerid, datefrom, tariffid, liabilityid)
+                                        VALUES (?, ?, NULL, NULL)", array($cid, $args['datefrom']));
+                                    if ($SYSLOG) {
+                                        $SYSLOG->NewTransaction('lms-notify.php');
+                                        $args[SYSLOG::RES_ASSIGN] = $DB->GetLastInsertID('assignments');
+                                        $args[SYSLOG::RES_CUST] = $cid;
+                                        $SYSLOG->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_ADD, $args);
+                                    }
                                 }
                             }
                         }
@@ -2238,19 +2262,25 @@ if (!empty($intersect)) {
                         );
                         if (!empty($nodes)) {
                             foreach ($nodes as $node) {
-                                $DB->Execute("UPDATE nodes SET access = ?
-                                    WHERE id = ?", array(1, $node['id']));
-                                if ($SYSLOG) {
-                                    $SYSLOG->NewTransaction('lms-notify.php');
-                                    $SYSLOG->AddMessage(
-                                        SYSLOG::RES_NODE,
-                                        SYSLOG::OPER_UPDATE,
-                                        array(
-                                            SYSLOG::RES_NODE => $node['id'],
-                                            SYSLOG::RES_CUST => $node['ownerid'],
-                                            'access' => 1
-                                        )
-                                    );
+                                if (!$quiet) {
+                                    printf("[unblock/node-access] CustomerID: %04d, NodeID: %04d" . PHP_EOL, $node['ownerid'], $node['id']);
+                                }
+
+                                if (!$debug) {
+                                    $DB->Execute("UPDATE nodes SET access = ?
+                                        WHERE id = ?", array(1, $node['id']));
+                                    if ($SYSLOG) {
+                                        $SYSLOG->NewTransaction('lms-notify.php');
+                                        $SYSLOG->AddMessage(
+                                            SYSLOG::RES_NODE,
+                                            SYSLOG::OPER_UPDATE,
+                                            array(
+                                                SYSLOG::RES_NODE => $node['id'],
+                                                SYSLOG::RES_CUST => $node['ownerid'],
+                                                'access' => 1
+                                            )
+                                        );
+                                    }
                                 }
                             }
                         }
@@ -2265,19 +2295,25 @@ if (!empty($intersect)) {
                         );
                         if (!empty($assigns)) {
                             foreach ($assigns as $assign) {
-                                $DB->Execute("UPDATE assignments SET invoice = ?
-                                    WHERE id = ?", array(1, $assign['id']));
-                                if ($SYSLOG) {
-                                    $SYSLOG->NewTransaction('lms-notify.php');
-                                    $SYSLOG->AddMessage(
-                                        SYSLOG::RES_ASSIGN,
-                                        SYSLOG::OPER_UPDATE,
-                                        array(
-                                            SYSLOG::RES_ASSIGN => $assign['id'],
-                                            SYSLOG::RES_CUST => $assign['customerid'],
-                                            'invoice' => 1
-                                        )
-                                    );
+                                if (!$quiet) {
+                                    printf("[unblock/assignment-invoice] CustomerID: %04d, AssignmentID: %04d" . PHP_EOL, $assign['customerid'], $assign['id']);
+                                }
+
+                                if (!$debug) {
+                                    $DB->Execute("UPDATE assignments SET invoice = ?
+                                        WHERE id = ?", array(1, $assign['id']));
+                                    if ($SYSLOG) {
+                                        $SYSLOG->NewTransaction('lms-notify.php');
+                                        $SYSLOG->AddMessage(
+                                            SYSLOG::RES_ASSIGN,
+                                            SYSLOG::OPER_UPDATE,
+                                            array(
+                                                SYSLOG::RES_ASSIGN => $assign['id'],
+                                                SYSLOG::RES_CUST => $assign['customerid'],
+                                                'invoice' => 1
+                                            )
+                                        );
+                                    }
                                 }
                             }
                         }
@@ -2290,17 +2326,23 @@ if (!empty($intersect)) {
                         );
                         if (!empty($custids)) {
                             foreach ($custids as $custid) {
-                                $DB->Execute(
-                                    "UPDATE customers SET status = ? WHERE id = ?",
-                                    array(CSTATUS_CONNECTED, $custid)
-                                );
-                                if ($SYSLOG) {
-                                    $SYSLOG->NewTransaction('lms-notify.php');
-                                    $SYSLOG->AddMessage(
-                                        SYSLOG::RES_CUST,
-                                        SYSLOG::OPER_UPDATE,
-                                        array(SYSLOG::RES_CUST => $custid, 'status' => CSTATUS_CONNECTED)
+                                if (!$quiet) {
+                                    printf("[unblock/customer-status] CustomerID: %04d" . PHP_EOL, $custid);
+                                }
+
+                                if (!$debug) {
+                                    $DB->Execute(
+                                        "UPDATE customers SET status = ? WHERE id = ?",
+                                        array(CSTATUS_CONNECTED, $custid)
                                     );
+                                    if ($SYSLOG) {
+                                        $SYSLOG->NewTransaction('lms-notify.php');
+                                        $SYSLOG->AddMessage(
+                                            SYSLOG::RES_CUST,
+                                            SYSLOG::OPER_UPDATE,
+                                            array(SYSLOG::RES_CUST => $custid, 'status' => CSTATUS_CONNECTED)
+                                        );
+                                    }
                                 }
                             }
                         }
@@ -2331,12 +2373,18 @@ if (!empty($intersect)) {
                                     );
                                     if (!empty($aids)) {
                                         foreach ($aids as $aid) {
-                                            $DB->Execute("UPDATE assignments SET settlement = 1, datefrom = ?
-                                                WHERE id = ?", array($args['datefrom'], $aid));
-                                            if ($SYSLOG) {
-                                                $args[SYSLOG::RES_ASSIGN] = $aid;
-                                                $args[SYSLOG::RES_CUST] = $cid;
-                                                $SYSLOG->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_UPDATE, $args);
+                                            if (!$quiet) {
+                                                printf("[unblock/all-assignment-suspension] assignment update: CustomerID: %04d, AssignmentID: %04d" . PHP_EOL, $cid, $aid);
+                                            }
+
+                                            if (!$debug) {
+                                                $DB->Execute("UPDATE assignments SET settlement = 1, datefrom = ?
+                                                    WHERE id = ?", array($args['datefrom'], $aid));
+                                                if ($SYSLOG) {
+                                                    $args[SYSLOG::RES_ASSIGN] = $aid;
+                                                    $args[SYSLOG::RES_CUST] = $cid;
+                                                    $SYSLOG->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_UPDATE, $args);
+                                                }
                                             }
                                         }
                                     }
@@ -2346,13 +2394,19 @@ if (!empty($intersect)) {
                                 WHERE customerid = ? AND tariffid IS NULL AND liabilityid IS NULL", array($cid));
                             if (!empty($aids)) {
                                 foreach ($aids as $aid) {
-                                    $DB->Execute("DELETE FROM assignments WHERE id = ?", array($aid));
-                                    if ($SYSLOG) {
-                                        $SYSLOG->AddMessage(
-                                            SYSLOG::RES_ASSIGN,
-                                            SYSLOG::OPER_DELETE,
-                                            array(SYSLOG::RES_ASSIGN => $aid, SYSLOG::RES_CUST => $cid)
-                                        );
+                                    if (!$quiet) {
+                                        printf("[unblock/all-assignment-suspension] assignment deletion: CustomerID: %04d, AssignmentID: %04d" . PHP_EOL, $cid, $aid);
+                                    }
+
+                                    if (!$debug) {
+                                        $DB->Execute("DELETE FROM assignments WHERE id = ?", array($aid));
+                                        if ($SYSLOG) {
+                                            $SYSLOG->AddMessage(
+                                                SYSLOG::RES_ASSIGN,
+                                                SYSLOG::OPER_DELETE,
+                                                array(SYSLOG::RES_ASSIGN => $aid, SYSLOG::RES_CUST => $cid)
+                                            );
+                                        }
                                     }
                                 }
                             }
