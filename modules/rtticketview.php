@@ -35,6 +35,10 @@ if (!$LMS->CheckTicketAccess($id)) {
 }
 
 $ticket = $LMS->GetTicketContents($id);
+if (empty($ticket)) {
+    $SMARTY->assign('message', trans('Ticket is unavailable!'));
+    access_denied();
+}
 $LMS->getTicketImageGalleries($ticket);
 
 if (isset($_GET['ajax']) && isset($_GET['op'])) {

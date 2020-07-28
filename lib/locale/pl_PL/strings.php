@@ -54,6 +54,7 @@ $_LANG['Cannot link ticket because of related ticket loop!'] = 'Nie można powi�
 $_LANG['Ticket parent ID has been set to $a.'] = 'ID zgłoszenia nadrzędnego zostało ustawione na $a.';
 $_LANG['Ticket parent ID has been removed.'] = 'ID zgłoszenia nadrzędnego zostało usunięte.';
 $_LANG['Ticket does not exist'] = 'Zgłoszenie nie istnieje';
+$_LANG['Ticket is unavailable!'] = 'Zgłoszenie niedostępne!';
 $_LANG['Unlink'] = 'Odwiąż';
 $_LANG['<!login>username'] = 'użytkownik';
 $_LANG['<!login>password'] = 'hasło';

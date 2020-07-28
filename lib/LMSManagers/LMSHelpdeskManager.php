@@ -1147,6 +1147,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 . (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations') ? ' AND t.deleted = 0' : '')
                 . (' AND t.id = ?'), array($id));
 
+        if (empty($ticket)) {
+            return null;
+        }
+
         $ticket['requestor_name'] = $ticket['requestor'];
         if (empty($ticket['requestor_userid']) && (!empty($ticket['requestor']) || !empty($ticket['requestor_mail']) || !empty($ticket['requestor_phone']))) {
             $ticket['requestor_userid'] = 0;
