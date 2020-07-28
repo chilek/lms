@@ -913,6 +913,10 @@ foreach ($assigns as $assign) {
         continue;
     }
 
+    if (!isset($assign['taxcategory'])) {
+        $assign['taxcategory'] = 0;
+    }
+
     $linktechnology = isset($assignment_linktechnologies[$assign['id']]) ? $assignment_linktechnologies[$assign['id']]['technology'] : null;
 
     if (!$assign['suspended'] && $assign['allsuspended']) {
