@@ -397,8 +397,10 @@ switch ($action) {
         $subtitle = trans('New IP address');
         $nodeipdata = $_POST['ipadd'];
         $nodeipdata['ownerid'] = null;
-        foreach ($nodeipdata['macs'] as $key => $value) {
-            $nodeipdata['macs'][$key] = str_replace('-', ':', $value);
+        if (!empty($nodeipdata['macs'])) {
+            foreach ($nodeipdata['macs'] as $key => $value) {
+                $nodeipdata['macs'][$key] = str_replace('-', ':', $value);
+            }
         }
 
         $nodeipdata = trim_rec($nodeipdata);
@@ -505,8 +507,10 @@ switch ($action) {
         $subtitle = trans('IP address edit');
         $nodeipdata = $_POST['ipadd'];
         $nodeipdata['ownerid'] = null;
-        foreach ($nodeipdata['macs'] as $key => $value) {
-            $nodeipdata['macs'][$key] = str_replace('-', ':', $value);
+        if (!empty($nodeipdata['macs'])) {
+            foreach ($nodeipdata['macs'] as $key => $value) {
+                $nodeipdata['macs'][$key] = str_replace('-', ':', $value);
+            }
         }
 
         foreach ($nodeipdata as $key => $value) {
