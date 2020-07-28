@@ -2023,7 +2023,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 'itemid' => $itemid,
                 'value' => $item['valuebrutto'],
                 SYSLOG::RES_TAX => $item['taxid'],
-                'taxcategory' => $item['taxcategory'],
+                'taxcategory' => isset($item['taxcategory']) && !empty($item['taxcategory']) ? $item['taxcategory'] : 0,
                 'prodid' => $item['prodid'],
                 'content' => $item['jm'],
                 'count' => $item['count'],
