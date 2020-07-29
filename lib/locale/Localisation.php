@@ -418,9 +418,9 @@ class Localisation
         unset($item);
         uasort($array, function ($a, $b) use ($key) {
             if (isset($key)) {
-                return $a[$key] > $b[$key] ? 1 : ($a[$key] < $b[$key] ? -1 : 0);
+                return strcoll($a[$key], $b[$key]);
             } else {
-                return $a > $b ? 1 : ($a < $b ? -1 : 0);
+                return strcoll($a, $b);
             }
         });
     }
