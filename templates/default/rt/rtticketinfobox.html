@@ -362,10 +362,10 @@
 
 			<br>
 
-			{if $ticket.owner != $layout.logid}
+			{if ($ticket.owner != $layout.logid && $ticket.state != RT_RESOLVED) || ConfigHelper::checkPrivilege('superuser')}
 			{button id="ticket-assign-to-me" icon="user" label="Assign to me" href="?m=rtticketedit&id={$ticket.ticketid}&action=assign"}
 			{/if}
-			{if (!$ticket.verifier && $ticket.owner !== $layout.logid) || ConfigHelper::checkPrivilege('superuser')}
+			{if (!$ticket.verifier && $ticket.owner !== $layout.logid && $ticket.state != RT_RESOLVED) || ConfigHelper::checkPrivilege('superuser')}
 			{button id="ticket-assign2-to-me" type='link-button' icon="user" label="Assign to me as verifier" href="?m=rtticketedit&id={$ticket.ticketid}&action=assign2"}
 			{/if}
 			{if $ticket.state != $smarty.const.RT_RESOLVED}
