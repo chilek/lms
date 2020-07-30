@@ -71,6 +71,7 @@
     <input type="text" name="qs[wireless]" value="" size="15" {tip text="Enter wireless SSID and press Enter" class="blend lms-ui-quick-search-input"}>
 </div>
 
+{if ConfigHelper::checkPrivilege('helpdesk_operation')}
 <div id="qs-ticket" class="lms-ui-quick-search-field" data-mode="ticket" data-label="{trans("<!qs>ticket")}" data-keyboard-shortcut="{$qs_keyboard_shortcut_modifier}+8">
 	<i class="lms-ui-quick-search-icon lms-ui-icon-helpdesk" {tip text="Enter request tracker ID, subject or requestor name and press Enter"}></i>
     <input type="text" name="qs[ticket]" value="" size="15" {tip text="Enter some property value and press Enter. Icon on left allows to choose which properties are considered." class="blend lms-ui-quick-search-input"}>
@@ -83,6 +84,7 @@
 		<option value="unresolvedonly"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.unresolvedonly)} selected{/if}>{trans("<!qs>show unresolved only")}</option>
 	</select>
 </div>
+{/if}
 
 <div id="qs-account" class="lms-ui-quick-search-field" data-mode="account" data-label="{trans("<!qs>account")}" data-keyboard-shortcut="{$qs_keyboard_shortcut_modifier}+9">
 	<i class="lms-ui-quick-search-icon lms-ui-icon-hosting" {tip text="Enter account or alias name and press Enter"}></i>
