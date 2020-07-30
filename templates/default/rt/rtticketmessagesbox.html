@@ -40,8 +40,8 @@
 			<i class="lms-ui-icon-message"></i> <B>{trans("Ticket History")}</B>
 		</TD>
 		<TD style="width: 99%;" class="text-right nobr" colspan="2">
-			{if $ticket.state != $smarty.const.RT_RESOLVED}
-				{button icon="note" label="New Note" onclick="window.location.href = '?m=rtnoteadd&ticketid={$ticket.ticketid}';"}
+			{button icon="note" label="New Note" onclick="window.location.href = '?m=rtnoteadd&ticketid={$ticket.ticketid}';"}
+			{if $ticket.state != $smarty.const.RT_RESOLVED || ConfigHelper::checkPrivilege('superuser')}
 				{button icon="message" label="New Message" onclick="window.location.href = '?m=rtmessageadd&ticketid={$ticket.ticketid}';"}
 			{/if}
 		</TD>

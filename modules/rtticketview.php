@@ -174,6 +174,9 @@ if (isset($_GET['highlight'])) {
         unset($message);
 }
 
+$aet = ConfigHelper::getConfig('rt.allow_edit_resolvedtickets_newer_than');
+
+$SMARTY->assign('aet', $aet);
 $SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('relatedticketscontent', $relatedticketscontent);
 $SMARTY->assign('childticketscontent', $childticketscontent);

@@ -351,8 +351,11 @@ if (isset($_GET['action'])) {
     }
 }
 
+$aet = ConfigHelper::getConfig('rt.allow_edit_resolvedtickets_newer_than');
+
 $SESSION->remove('backid');
 
+$SMARTY->assign('aet', $aet);
 $SMARTY->assign('pagination', $pagination);
 $SMARTY->assign('queues', $queues);
 $SMARTY->assign('projects', $projects);
