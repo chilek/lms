@@ -368,7 +368,7 @@
 			{if (!$ticket.verifier && $ticket.owner !== $layout.logid && $ticket.state != RT_RESOLVED) || ConfigHelper::checkPrivilege('superuser')}
 			{button id="ticket-assign2-to-me" type='link-button' icon="user" label="Assign to me as verifier" href="?m=rtticketedit&id={$ticket.ticketid}&action=assign2"}
 			{/if}
-			{if $ticket.state != $smarty.const.RT_RESOLVED}
+			{if $ticket.state != RT_RESOLVED}
 				{if (ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events')) && !empty($ticket['openeventcount'])}
 					<span class="blend"><i class="lms-ui-icon-status-resolved"></i>{trans("Ticket have open assigned events!")}</A></span>
 				{else}
