@@ -119,7 +119,7 @@
 	{/if}
 	<TR>
 		<TD colspan="2" class="lms-ui-box-buttons">
-		{if ($ticket.state != RT_RESOLVED || ($ticket.state == RT_RESOLVED && $aet && ($smarty.now - $ticket.resolvetime) < $aet)) || (ConfigHelper::checkPrivilege('superuser'))}
+		{if ($ticket.state != $smarty.const.RT_RESOLVED || ($ticket.state == $smarty.const.RT_RESOLVED && $aet && ($smarty.now - $ticket.resolvetime) < $aet)) || (ConfigHelper::checkPrivilege('superuser'))}
 			{button type="link-button" icon="message" label="New Message" href="?m=rtmessageadd&ticketid={$ticket.ticketid}"}
 		{/if}
 		{button type="link-button" icon="note" label="New Note" href="?m=rtnoteadd&ticketid={$ticket.ticketid}"}

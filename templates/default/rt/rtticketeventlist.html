@@ -10,7 +10,7 @@
 			<i class="lms-ui-icon-timetable"></i> {trans("Timetable assigned events:")}
 		</TD>
 		<TD class="text-right nobr">
-			{if $ticket.state != RT_RESOLVED}
+			{if $ticket.state != $smarty.const.RT_RESOLVED}
 				{button icon="add" label="Add"
 					onclick="location.href='?m=eventadd&ticketid={$ticket.ticketid}{if $ticket.customerid}&customerid={$ticket.customerid}{/if}';"}
 				{button icon="close" label="Close all"
