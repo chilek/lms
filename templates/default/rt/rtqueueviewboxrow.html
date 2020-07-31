@@ -118,6 +118,8 @@
 			{else}
 				{button type="link" icon="delete" href="?m=rtticketdel&id={$ticket.id}&taction=delete" tip="Delete"}
 			{/if}
+
+			NOW:{$smarty.now} VARIABLE: {$aet} RESOLVETIME: {$ticket.resolvetime}
 			{if ($ticket.state != RT_RESOLVED || ($ticket.state == RT_RESOLVED && $aet && ($smarty.now - $ticket.resolvetime) < $aet)) || (ConfigHelper::checkPrivilege('superuser'))}
 				{button type="link" icon="edit" href="?m=rtticketedit&id={$ticket.id}" tip="Edit"}
 			{/if}
