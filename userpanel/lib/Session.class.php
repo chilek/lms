@@ -77,7 +77,7 @@ class Session
                     $params = array_merge($params, array($remindform['email'],(CONTACT_EMAIL|CONTACT_INVOICES|CONTACT_NOTIFICATIONS)));
                     break;
                 case 2:
-                    $phone = preg_replace('/ -/', '', $remindform['phone']);
+                    $phone = preg_replace('/[\s\-]/', '', $remindform['phone']);
                     if (!preg_match('/^[0-9]+$/', $phone)) {
                         return;
                     }
