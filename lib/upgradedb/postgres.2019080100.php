@@ -28,8 +28,8 @@ $this->Execute("
 		REFERENCES users (id) ON UPDATE CASCADE ON DELETE CASCADE;
 	ALTER TABLE uiconfig ADD COLUMN configid integer DEFAULT NULL
 		REFERENCES uiconfig (id) ON UPDATE CASCADE ON DELETE RESTRICT;
-    ALTER TABLE uiconfig DROP CONSTRAINT uiconfig_section_key;
-	ALTER TABLE uiconfig ADD CONSTRAINT uiconfig_section_key UNIQUE (section, var, userid);
+    ALTER TABLE uiconfig DROP CONSTRAINT uiconfig_section_var_key;
+	ALTER TABLE uiconfig ADD CONSTRAINT uiconfig_section_var_key UNIQUE (section, var, userid);
 ");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019080100', 'dbversion'));
