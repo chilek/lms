@@ -78,6 +78,8 @@ version 26-git (????-??-??):
     checkbox [chilan]
   - improvement: don't show quick search fields when current user has no permissions to related
     part of system [chilan]
+  - improvement: added 'phpui.send_message_confirm_threshold' configuration variable which control
+    how many potential message recipients trigger confirmation dialog ('50' by default) [milek]
 
 version 25.0 (2020-05-15):
 
