@@ -34,7 +34,7 @@ interface LMSCustomerManagerInterface
 {
     public function getCustomerName($id);
 
-    public function getCustomerEmail($id);
+    public function getCustomerEmail($id, $requiredFlags = 0, $forbiddenFlags = 0);
 
     public function customerExists($id);
 

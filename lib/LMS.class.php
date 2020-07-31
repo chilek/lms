@@ -487,10 +487,10 @@ class LMS
         return $manager->getCustomerName($id);
     }
 
-    public function GetCustomerEmail($id)
+    public function GetCustomerEmail($id, $requiredFlags = 0, $forbiddenFlags = 0)
     {
         $manager = $this->getCustomerManager();
-        return $manager->getCustomerEmail($id);
+        return $manager->getCustomerEmail($id, $requiredFlags, $forbiddenFlags);
     }
 
     public function CustomerExists($id)

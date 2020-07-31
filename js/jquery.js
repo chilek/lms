@@ -703,6 +703,7 @@ $(function() {
 		}
 		$(this).datetimepicker(options).attr("autocomplete", autocomplete);
 
+		var that = this;
 		// avoid datetimepicker ui control close after second click on trigger button
 		var xdsoft_datetimepicker = $(this).data('xdsoft_datetimepicker');
 		xdsoft_datetimepicker.on('open.xdsoft', function() {
@@ -715,10 +716,11 @@ $(function() {
 				xdsoft_datetimepicker.trigger('close.xdsoft');
 				$([body, window]).off('mousedown.xdsoft', arguments_callee6);
 			})
-			var current_time = xdsoft_datetimepicker.find('.xdsoft_time.xdsoft_current');
-			if (current_time.length && current_time.prev().length) {
-				current_time.prev()[0].scrollIntoView();
+			if (!$(that).val().length) {
+				xdsoft_datetimepicker.find('.xdsoft_today_button').trigger('mousedown.xdsoft');
 			}
+
+			xdsoft_datetimepicker.trigger('afterOpen.xdsoft');
 		});
 
 		if (lmsSettings.openCalendarOnInputClick) {

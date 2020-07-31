@@ -51,10 +51,17 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      * @param int $id Customer id
      * @return array Customer email
      */
-    public function getCustomerEmail($id)
+    public function getCustomerEmail($id, $requiredFlags = 0, $forbiddenFlags = 0)
     {
-        return $this->db->GetCol('SELECT contact FROM customercontacts
-               WHERE customerid = ? AND (type & ? = ?)', array($id, CONTACT_EMAIL, CONTACT_EMAIL));
+        return $this->db->GetCol(
+            'SELECT contact FROM customercontacts
+            WHERE customerid = ? AND (type & ?) = ?',
+            array(
+                $id,
+                CONTACT_EMAIL | $requiredFlags | $forbiddenFlags,
+                (CONTACT_EMAIL | $requiredFlags) & ~$forbiddenFlags,
+            )
+        );
     }
 
     /**

@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2019 LMS Developers
+ *  Copyright (C) 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -42,9 +42,9 @@ class UiConfigProvider implements ConfigProviderInterface
         $db = LMSDB::getInstance();
         $userid = (isset($options['user_id'])) ? $options['user_id'] : false;
         if (!$userid) {
-            return $db->GetAll('SELECT section, var, value, description FROM uiconfig WHERE disabled = 0 AND userid is null');
+            $result = $db->GetAll('SELECT section, var, value, description FROM uiconfig WHERE disabled = 0 AND userid is null');
         } else {
-            return $db->GetAll(
+            $result = $db->GetAll(
                 'SELECT u1.section, u1.var, u1.value, u1.description
             FROM uiconfig u1
             WHERE u1.disabled = 0
@@ -57,5 +57,7 @@ class UiConfigProvider implements ConfigProviderInterface
                 array($userid)
             );
         }
+
+        return is_array($result) ? $result : array();
     }
 }

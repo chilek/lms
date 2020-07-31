@@ -332,12 +332,12 @@ if ($AUTH->islogged) {
             $SYSLOG->NewTransaction($module);
         }
 
+        // everyone should have access to documentation
+        $rights[] = 'documentation';
+
+        $access->applyMenuPermissions($menu, $rights);
+
         if ($global_allow || $allow) {
-            // everyone should have access to documentation
-            $rights[] = 'documentation';
-
-            $access->applyMenuPermissions($menu, $rights);
-
             $layout['module'] = $module;
 
             $SESSION->save('module', $module);

@@ -91,7 +91,7 @@ if (isset($_POST['properties']) && is_array($_POST['properties'])) {
 
 switch ($mode) {
     case 'customer':
-        if (empty($search)) {
+        if (empty($search) || (!ConfigHelper::checkPrivilege('customer_management') && !ConfigHelper::checkPrivilege('read_only'))) {
             die;
         }
 
@@ -258,7 +258,7 @@ switch ($mode) {
         break;
 
     case 'customerext':
-        if (empty($search)) {
+        if (empty($search) || (!ConfigHelper::checkPrivilege('customer_management') && !ConfigHelper::checkPrivilege('read_only'))) {
             die;
         }
 
@@ -311,7 +311,8 @@ switch ($mode) {
         break;
 
     case 'phone':
-        if (empty($search)) {
+        if (empty($search) || (!ConfigHelper::checkPrivilege('customer_management')
+                && !ConfigHelper::checkPrivilege('voip_account_management') && !ConfigHelper::checkPrivilege('read_only'))) {
             die;
         }
 
@@ -399,7 +400,7 @@ switch ($mode) {
 
 
     case 'node':
-        if (empty($search)) {
+        if (empty($search) || (!ConfigHelper::checkPrivilege('node_management') && !ConfigHelper::checkPrivilege('read_only'))) {
             die;
         }
 
@@ -543,7 +544,7 @@ switch ($mode) {
         break;
 
     case 'netnode':
-        if (empty($search)) {
+        if (empty($search) || (!ConfigHelper::checkPrivilege('network_management') && !ConfigHelper::checkPrivilege('read_only'))) {
             die;
         }
 
@@ -599,7 +600,7 @@ switch ($mode) {
         break;
 
     case 'netdevice':
-        if (empty($search)) {
+        if (empty($search) || (!ConfigHelper::checkPrivilege('network_management') && !ConfigHelper::checkPrivilege('read_only'))) {
             die;
         }
 
@@ -673,7 +674,7 @@ switch ($mode) {
         break;
 
     case 'ticket':
-        if (empty($search)) {
+        if (empty($search) || (!ConfigHelper::checkPrivilege('helpdesk_operation') && !ConfigHelper::checkPrivilege('read_only'))) {
             die;
         }
 
@@ -801,7 +802,7 @@ switch ($mode) {
         }
         break;
     case 'wireless':
-        if (empty($search)) {
+        if (empty($search) || (!ConfigHelper::checkPrivilege('network_management') && !ConfigHelper::checkPrivilege('read_only'))) {
             die;
         }
 
@@ -856,7 +857,7 @@ switch ($mode) {
         }
         break;
     case 'network':
-        if (empty($search)) {
+        if (empty($search) || (!ConfigHelper::checkPrivilege('network_management') && !ConfigHelper::checkPrivilege('read_only'))) {
             die;
         }
 
@@ -918,7 +919,7 @@ switch ($mode) {
 
         break;
     case 'account':
-        if (empty($search)) {
+        if (empty($search) || (!ConfigHelper::checkPrivilege('hosting_management') && !ConfigHelper::checkPrivilege('read_only'))) {
             die;
         }
 
@@ -988,7 +989,7 @@ switch ($mode) {
         break;
 
     case 'document':
-        if (empty($search)) {
+        if (empty($search) || (!ConfigHelper::checkPrivilege('customer_management') && !ConfigHelper::checkPrivilege('read_only'))) {
             die;
         }
 

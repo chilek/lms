@@ -1,6 +1,7 @@
 {block name="quicksearchcontents"}
 
 {$qs_keyboard_shortcut_modifier = ConfigHelper::getConfig('phpui.quicksearch_keyboard_shortcut_modifier', 'ctrl')}
+{if ConfigHelper::checkPrivilege('customer_management') || ConfigHelper::checkPrivilege('read_only')}
 <div id="qs-customer" class="lms-ui-quick-search-field" data-mode="customer" data-label="{trans("<!qs>customer")}" data-keyboard-shortcut="{$qs_keyboard_shortcut_modifier}+1">
 	<i class="lms-ui-quick-search-icon lms-ui-icon-customer" {tip text="Click here to select which customer properties should be used during search"}></i>
     <input type="text" name="qs[customer]" value="" size="15" {tip text="Enter some property value and press Enter. Icon on left allows to choose which properties are considered." class="blend lms-ui-quick-search-input"}>
@@ -20,17 +21,25 @@
 		<option value="notes"{if !isset($qs_properties.customer) || isset($qs_properties.customer['notes'])} selected{/if}>{trans("<!qs>notes")}</option>
 	</select>
 </div>
+{/if}
 
+{if ConfigHelper::checkPrivilege('customer_management') || ConfigHelper::checkPrivilege('voip_account_management') || ConfigHelper::checkPrivilege('read_only')}
 <div id="qs-phone" class="lms-ui-quick-search-field" data-mode="phone" data-label="{trans("<!qs>phone")}" data-keyboard-shortcut="{$qs_keyboard_shortcut_modifier}+2">
 	<i class="lms-ui-quick-search-icon lms-ui-icon-phone" {tip text="Enter phone number and press Enter"}></i>
     <input type="text" name="qs[phone]" value="" size="15" {tip text="Enter phone number and press Enter" class="blend lms-ui-quick-search-input"}>
 	<i class="fa-fw lms-ui-icon-customisation"></i>
 	<select id="qs-phone-properties" class="lms-ui-quicksearch-property-selection lms-ui-multiselect-selection-group" multiple title="{trans("Click here to select how phone numbers should be searched")}">
-		<option value="contact"{if !isset($qs_properties.phone) || isset($qs_properties.phone.contact)} selected{/if}>{trans("<!qs>customer phone number")}</option>
-		<option value="account"{if !isset($qs_properties.phone) || isset($qs_properties.phone.account)} selected{/if}>{trans("<!qs>voip account number")}</option>
+		{if ConfigHelper::checkPrivilege('customer_management') || ConfigHelper::checkPrivilege('read_only')}
+			<option value="contact"{if !isset($qs_properties.phone) || isset($qs_properties.phone.contact)} selected{/if}>{trans("<!qs>customer phone number")}</option>
+		{/if}
+		{if ConfigHelper::checkPrivilege('voip_account_management') || ConfigHelper::checkPrivilege('read_only')}
+			<option value="account"{if !isset($qs_properties.phone) || isset($qs_properties.phone.account)} selected{/if}>{trans("<!qs>voip account number")}</option>
+		{/if}
 	</select>
 </div>
+{/if}
 
+{if ConfigHelper::checkPrivilege('node_management') || ConfigHelper::checkPrivilege('read_only')}
 <div id="qs-node" class="lms-ui-quick-search-field" data-mode="node" data-label="{trans("<!qs>node")}" data-keyboard-shortcut="{$qs_keyboard_shortcut_modifier}+3">
 	<i class="lms-ui-quick-search-icon lms-ui-icon-node" {tip text="Enter node ID, name, IP address or MAC address and press Enter"}></i>
     <input type="text" name="qs[node]" value="" size="15" {tip text="Enter some property value and press Enter. Icon on left allows to choose which properties are considered." class="blend lms-ui-quick-search-input"}>
@@ -44,17 +53,23 @@
 		<option value="location_address"{if !isset($qs_properties.node) || isset($qs_properties.node.location_address)} selected{/if}>{trans("<!qs>location address")}</option>
 	</select>
 </div>
+{/if}
 
+{if ConfigHelper::checkPrivilege('network_management') || ConfigHelper::checkPrivilege('read_only')}
 <div id="qs-network" class="lms-ui-quick-search-field" data-mode="network" data-label="{trans("<!qs>network")}" data-keyboard-shortcut="{$qs_keyboard_shortcut_modifier}+4">
 	<i class="lms-ui-quick-search-icon lms-ui-icon-ipnetwork" {tip text="Enter network ID, name or IP address and press Enter"}></i>
     <input type="text" name="qs[network]" value="" size="15" {tip text="Enter network ID, name or IP address and press Enter" class="blend lms-ui-quick-search-input"}>
 </div>
+{/if}
 
+{if ConfigHelper::checkPrivilege('network_management') || ConfigHelper::checkPrivilege('read_only')}
 <div id="qs-netnode" class="lms-ui-quick-search-field" data-mode="netnode" data-label="{trans("<!qs>network node")}" data-keyboard-shortcut="{$qs_keyboard_shortcut_modifier}+5">
 	<i class="lms-ui-quick-search-icon lms-ui-icon-netnode" {tip text="Enter netnode ID or name and press Enter"}></i>
     <input type="text" name="qs[netnode]" value="" size="15" {tip text="Enter netnode ID or name and press Enter" class="blend lms-ui-quick-search-input"}>
 </div>
+{/if}
 
+{if ConfigHelper::checkPrivilege('network_management') || ConfigHelper::checkPrivilege('read_only')}
 <div id="qs-netdev" class="lms-ui-quick-search-field" data-mode="netdevice" data-label="{trans("<!qs>network device")}" data-keyboard-shortcut="{$qs_keyboard_shortcut_modifier}+6">
 	<i class="lms-ui-quick-search-icon lms-ui-icon-netdev" {tip text="Enter device ID, name or serial number and press Enter"}></i>
     <input type="text" name="qs[netdevice]" value="" size="15" {tip text="Enter some property value and press Enter. Icon on left allows to choose which properties are considered." class="blend lms-ui-quick-search-input"}>
@@ -65,12 +80,16 @@
 		<option value="serial"{if !isset($qs_properties.netdevice) || isset($qs_properties.netdevice.serial)} selected{/if}>{trans("<!qs>device serial number")}</option>
 	</select>
 </div>
+{/if}
 
+{if ConfigHelper::checkPrivilege('network_management') || ConfigHelper::checkPrivilege('read_only')}
 <div id="qs-wireless" class="lms-ui-quick-search-field" data-mode="wireless" data-label="{trans("<!qs>wireless")}" data-keyboard-shortcut="{$qs_keyboard_shortcut_modifier}+7">
 	<i class="lms-ui-quick-search-icon lms-ui-icon-wireless" {tip text="Enter wireless SSID and press Enter"}></i>
     <input type="text" name="qs[wireless]" value="" size="15" {tip text="Enter wireless SSID and press Enter" class="blend lms-ui-quick-search-input"}>
 </div>
+{/if}
 
+{if ConfigHelper::checkPrivilege('helpdesk_operation') || ConfigHelper::checkPrivilege('read_only')}
 <div id="qs-ticket" class="lms-ui-quick-search-field" data-mode="ticket" data-label="{trans("<!qs>ticket")}" data-keyboard-shortcut="{$qs_keyboard_shortcut_modifier}+8">
 	<i class="lms-ui-quick-search-icon lms-ui-icon-helpdesk" {tip text="Enter request tracker ID, subject or requestor name and press Enter"}></i>
     <input type="text" name="qs[ticket]" value="" size="15" {tip text="Enter some property value and press Enter. Icon on left allows to choose which properties are considered." class="blend lms-ui-quick-search-input"}>
@@ -83,21 +102,28 @@
 		<option value="unresolvedonly"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.unresolvedonly)} selected{/if}>{trans("<!qs>show unresolved only")}</option>
 	</select>
 </div>
+{/if}
 
+{if ConfigHelper::checkPrivilege('hosting_management') || ConfigHelper::checkPrivilege('read_only')}
 <div id="qs-account" class="lms-ui-quick-search-field" data-mode="account" data-label="{trans("<!qs>account")}" data-keyboard-shortcut="{$qs_keyboard_shortcut_modifier}+9">
 	<i class="lms-ui-quick-search-icon lms-ui-icon-hosting" {tip text="Enter account or alias name and press Enter"}></i>
     <input type="text" name="qs[account]" value="" size="15" {tip text="Enter account or alias name and press Enter" class="blend lms-ui-quick-search-input"}>
 </div>
+{/if}
 
+{if ConfigHelper::checkPrivilege('customer_management') || ConfigHelper::checkPrivilege('read_only')}
 <div id="qs-docum" class="lms-ui-quick-search-field" data-mode="document" data-label="{trans("<!qs>document")}" data-keyboard-shortcut="{$qs_keyboard_shortcut_modifier}+y">
 	<i class="lms-ui-quick-search-icon lms-ui-icon-document" {tip text="Enter document number and press Enter"}></i>
     <input type="text" name="qs[document]" value="" size="15" {tip text="Enter document number and press Enter" class="blend lms-ui-quick-search-input"}>
 </div>
+{/if}
 
+{if ConfigHelper::checkPrivilege('customer_management') || ConfigHelper::checkPrivilege('read_only')}
 <div id="qs-customerext" class="lms-ui-quick-search-field" data-mode="customerext" data-label="{trans("<!qs>customer external id")}" data-keyboard-shortcut="{$qs_keyboard_shortcut_modifier}+e">
 	<i class="lms-ui-quick-search-icon lms-ui-icon-externalid" {tip text="Enter external customer ID fragment and press Enter"}></i>
     <input type="text" name="qs[customerext]" value="" size="15" {tip text="Enter external customer ID fragment and press Enter" class="blend lms-ui-quick-search-input"}>
 </div>
+{/if}
 
 {/block}
 

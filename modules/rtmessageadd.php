@@ -566,7 +566,7 @@ if (isset($_POST['message'])) {
             }
 
             if (!$message['destination'] && !$reply['userid']) {
-                $message['destination'] = $LMS->GetCustomerEmail($message['customerid']);
+                $message['destination'] = $LMS->GetCustomerEmail($message['customerid'], 0, CONTACT_DISABLED);
                 if (!empty($message['destination'])) {
                     $message['destination'] = implode(',', $message['destination']);
                 }

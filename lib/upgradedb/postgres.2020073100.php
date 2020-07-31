@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License Version 2 as
@@ -23,16 +23,8 @@
 
 $this->BeginTrans();
 
-$this->Execute("
-	ALTER TABLE uiconfig ADD COLUMN userid integer DEFAULT NULL
-		REFERENCES users (id) ON UPDATE CASCADE ON DELETE CASCADE;
-	ALTER TABLE uiconfig ADD COLUMN configid integer DEFAULT NULL
-		REFERENCES uiconfig (id) ON UPDATE CASCADE ON DELETE RESTRICT;
-    ALTER TABLE uiconfig DROP CONSTRAINT IF EXISTS uiconfig_section_key;
-    ALTER TABLE uiconfig DROP CONSTRAINT IF EXISTS uiconfig_section_var_key;
-	ALTER TABLE uiconfig ADD CONSTRAINT uiconfig_section_key UNIQUE (section, var, userid);
-");
+$this->Execute("ALTER TABLE customerbalances ALTER COLUMN balance TYPE numeric(12,2)");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019080100', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020073100', 'dbversion'));
 
 $this->CommitTrans();
