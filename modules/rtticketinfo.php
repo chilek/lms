@@ -50,7 +50,8 @@ $ticket['message'] = $DB->GetOne(
 );
 
 $ticket['uptime'] = uptimef($ticket['resolvetime'] ? $ticket['resolvetime'] - $ticket['createtime'] : time() - $ticket['createtime']);
+$aet = ConfigHelper::getConfig('rt.allow_edit_resolvedtickets_newer_than');
 
 $SMARTY->assign('ticket', $ticket);
-
+$SMARTY->assign('aet', $aet);
 $SMARTY->display('rt/rtticketinfoshort.html');
