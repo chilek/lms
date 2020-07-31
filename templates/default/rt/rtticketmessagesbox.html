@@ -115,7 +115,7 @@
 											{button icon="trash" class="delete-rtmessage" resourceid="?m=rtmessagedel&id={$message.id}&maction=delete" label="Delete"}
 										{/if}
 									{/if}
-									{if $ticket.state != RT_RESOLVED}
+									{if ($ticket.state != RT_RESOLVED || ($ticket.state == RT_RESOLVED && $aet && ($smarty.now - $ticket.resolvetime) < $aet)) || (ConfigHelper::checkPrivilege('superuser'))}
 										{button icon="reply" onclick="location.href = '?m=rtmessageadd&id={$message.id}&ticketid={$ticket.ticketid}';" label="<!vocative>Reply"}
 										{button icon="quote" onclick="location.href = '?m=rtmessageadd&id={$message.id}&ticketid={$ticket.ticketid}&citing=1';" label="Quote"}
 									{/if}
