@@ -26,7 +26,7 @@ $this->BeginTrans();
 $this->Execute("
     CREATE TABLE customerbalances (
         customerid int(11) NOT NULL,
-        balance decimal(9,2) NOT NULL,
+        balance decimal(12,2) NOT NULL,
         CONSTRAINT customerbalances_customerid_fkey
             FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
     ) ENGINE=InnoDB

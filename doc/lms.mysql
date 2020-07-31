@@ -1140,7 +1140,7 @@ CREATE TABLE cashimport (
 #
 CREATE TABLE customerbalances (
     customerid int(11) NOT NULL,
-    balance decimal(9,2) NOT NULL,
+    balance decimal(12,2) NOT NULL,
     CONSTRAINT customerbalances_customerid_fkey
         FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
@@ -3736,4 +3736,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020071600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020073100');
