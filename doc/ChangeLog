@@ -76,6 +76,8 @@ version 26-git (????-??-??):
     in lms.ini [interduo]
   - enhancement: if uploaded image scaling is enable allow to disable scaling using optional
     checkbox [chilan]
+  - enhancement: setting: rt.allow_edit_resolvedtickets_newer_than allow to stop reopening
+    old tickets [interduo]
 
 version 25.0 (2020-05-15):
 
