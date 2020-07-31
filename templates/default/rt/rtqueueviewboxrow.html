@@ -1,5 +1,5 @@
 {block name=rtboxrow}
-<TR class="single-ticket {if $ticket.state == $smarty.const.RT_RESOLVED}blend{/if} highlight lms-ui-resource{if $ticket.deleted == 1 && $ticket.deltime != 0}-deleted{elseif $ticket.delcount && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}-partly-deleted{/if}"
+<TR class="single-ticket {if $ticket.state == RT_RESOLVED}blend{/if} highlight lms-ui-resource{if $ticket.deleted == 1 && $ticket.deltime != 0}-deleted{elseif $ticket.delcount && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}-partly-deleted{/if}"
 		id="ticket-{$ticket.id}"
 		data-target-url="?m=rtticketview&id={$ticket.id}"
 		data-name="{$ticket.id|string_format:"%06d"}"
@@ -7,14 +7,14 @@
 		data-ticket-id="{$ticket.id}">
 	<TD class="text-center">
 		{if $ticket.unread}
-		<a href="?m=rtticketview&id={$ticket.id}{if $ticket.firstunread}#rtmessage-{$ticket.firstunread}{/if}" class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$ticket.id}"><i class="lms-ui-icon-{if $ticket.priority == $smarty.const.RT_PRIORITY_CRITICAL && $ticket.state != $smarty.const.RT_RESOLVED}critical{else}unread{/if}"></i></a>
+		<a href="?m=rtticketview&id={$ticket.id}{if $ticket.firstunread}#rtmessage-{$ticket.firstunread}{/if}" class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$ticket.id}"><i class="lms-ui-icon-{if $ticket.priority == $smarty.const.RT_PRIORITY_CRITICAL && $ticket.state != RT_RESOLVED}critical{else}unread{/if}"></i></a>
 		{elseif $ticket.messageid}
-		<a href="?m=rtticketview&id={$ticket.id}&highlight[pattern]={$filter.body.pattern}{if isset($filter.body.regexp)}&highlight[regexp]={$filter.body.regexp}{/if}#rtmessage-{$ticket.messageid}" class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$ticket.id}"><i class="lms-ui-icon-{if $ticket.priority == $smarty.const.RT_PRIORITY_CRITICAL && $ticket.state != $smarty.const.RT_RESOLVED}priority{else}search{/if}"></i></a>
+		<a href="?m=rtticketview&id={$ticket.id}&highlight[pattern]={$filter.body.pattern}{if isset($filter.body.regexp)}&highlight[regexp]={$filter.body.regexp}{/if}#rtmessage-{$ticket.messageid}" class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$ticket.id}"><i class="lms-ui-icon-{if $ticket.priority == $smarty.const.RT_PRIORITY_CRITICAL && $ticket.state != RT_RESOLVED}priority{else}search{/if}"></i></a>
 		{/if}
 	</TD>
 	<TD class="text-center" style="background:transparent; color:{$_RT_STATES[$ticket.state].color};">
 		<span class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$ticket.id}">
-			{$_RT_STATES[$ticket.state].label}<br>{if $ticket.priority != 0}<span {if $ticket.state != $smarty.const.RT_RESOLVED}style="color:black"{/if}>{$_RT_PRIORITIES[$ticket.priority]}</span>{/if}{if !empty($ticket.verifiername) && !empty($ticket.state) && $ticket.state == $smarty.const.RT_VERIFIED}({$ticket.verifiername}){/if}
+			{$_RT_STATES[$ticket.state].label}<br>{if $ticket.priority != 0}<span {if $ticket.state != RT_RESOLVED}style="color:black"{/if}>{$_RT_PRIORITIES[$ticket.priority]}</span>{/if}{if !empty($ticket.verifiername) && !empty($ticket.state) && $ticket.state == $smarty.const.RT_VERIFIED}({$ticket.verifiername}){/if}
 		</span>
 	</TD>
 	<TD class="nobr">
@@ -72,7 +72,7 @@
 	</TD>
 	<TD class="nobr text-center ticket-deadline">
 		{if $ticket.deadline}
-			{if $ticket.deadline_diff < 0 && $ticket.state != $smarty.const.RT_RESOLVED}
+			{if $ticket.deadline_diff < 0 && $ticket.state != RT_RESOLVED}
 				<span class="lms-ui-important-box" {tip text="{$ticket.deadline_days} {trans("days")} {$ticket.deadline_hours} {trans("<!rt>hours")}"}>{trans("<!rt>Expired")}</span>
 			{else}
 				{$ticket.deadline_days} {trans("days")} {$ticket.deadline_hours} {trans("<!rt>hours")}
@@ -91,7 +91,7 @@
 	</TD>
 	<TD class="lms-ui-buttons nobr text-right">
 		{buttons}
-			{if $ticket.state != $smarty.const.RT_RESOLVED}
+			{if $ticket.state != RT_RESOLVED}
 				{if !$ticket.unread}
 					{button type='link' icon="read" class="ticket-read" tip="Mark as unread" onclick="location.href = '?m=rtticketedit&id={$ticket.id}&action=unread'"}
 				{else}

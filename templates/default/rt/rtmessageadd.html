@@ -127,7 +127,7 @@
 				</SELECT>
 				&nbsp;
 				<label>
-					<INPUT type="checkbox" name="message[resolve]" id="resolve" value="{$smarty.const.RT_RESOLVED}"{if isset($message.resolve) || $message.state == $smarty.const.RT_RESOLVED} CHECKED{/if}{tip trigger="resolve"}>
+					<INPUT type="checkbox" name="message[resolve]" id="resolve" value="{RT_RESOLVED}"{if isset($message.resolve) || $message.state == RT_RESOLVED} CHECKED{/if}{tip trigger="resolve"}>
 					{trans("resolve ticket")}
 				</label>
 			{/box_row}
@@ -290,7 +290,7 @@
 			var stateelem = $('#state');
 			if ($(this).prop('checked')) {
 				$(this).data('prev-state', stateelem.val());
-				stateelem.val({$smarty.const.RT_RESOLVED});
+				stateelem.val({RT_RESOLVED});
 			} else {
 				var prev_state = $(this).data('prev-state');
 				if (prev_state) {
@@ -300,7 +300,7 @@
 		});
 
 		$('#state').change(function() {
-			$('#resolve').prop('checked', $(this).val() == {$smarty.const.RT_RESOLVED});
+			$('#resolve').prop('checked', $(this).val() == {RT_RESOLVED});
 		});
 
 		$('[name="message[owner]"]').change(function() {

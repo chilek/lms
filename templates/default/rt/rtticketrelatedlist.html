@@ -10,7 +10,7 @@
 				<i class="lms-ui-icon-helpdesk"></i> {trans("Related tickets:")}
 			</TD>
 			<TD>
-				{if $ticket.state != $smarty.const.RT_RESOLVED}
+				{if $ticket.state != RT_RESOLVED}
 					{button icon="add" label="Add"
 						onclick="location.href='?m=rtticketadd&parentid={$ticket.parent.id}{if $ticket.customerid}&customerid={$ticket.customerid}{/if}';"}
 				{/if}
