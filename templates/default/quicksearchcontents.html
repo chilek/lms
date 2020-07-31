@@ -71,7 +71,7 @@
     <input type="text" name="qs[wireless]" value="" size="15" {tip text="Enter wireless SSID and press Enter" class="blend lms-ui-quick-search-input"}>
 </div>
 
-{if ConfigHelper::checkPrivilege('helpdesk_operation')}
+{if ConfigHelper::checkPrivilege('helpdesk_operation') || ConfigHelper::checkPrivilege('read_only')}
 <div id="qs-ticket" class="lms-ui-quick-search-field" data-mode="ticket" data-label="{trans("<!qs>ticket")}" data-keyboard-shortcut="{$qs_keyboard_shortcut_modifier}+8">
 	<i class="lms-ui-quick-search-icon lms-ui-icon-helpdesk" {tip text="Enter request tracker ID, subject or requestor name and press Enter"}></i>
     <input type="text" name="qs[ticket]" value="" size="15" {tip text="Enter some property value and press Enter. Icon on left allows to choose which properties are considered." class="blend lms-ui-quick-search-input"}>
