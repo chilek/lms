@@ -77,16 +77,18 @@ class Session
                     $params = array_merge($params, array($remindform['email'],(CONTACT_EMAIL|CONTACT_INVOICES|CONTACT_NOTIFICATIONS)));
                     break;
                 case 2:
-                    if (!preg_match('/^[0-9]+$/', $remindform['phone'])) {
+                    $phone = preg_replace('/ -/', '', $remindform['phone']);
+                    if (!preg_match('/^[0-9]+$/', $phone)) {
                         return;
                     }
                     $join = 'JOIN customercontacts cc ON cc.customerid = c.id';
-                    $where = ' AND contact = ? AND cc.type & ? = ?';
+                    $where = ' AND REPLACE(REPLACE(contact, \'-\', \'\'), \' \', \'\') = ? AND cc.type & ? > 0';
                     $params = array_merge(
                         $params,
-                        array(preg_replace('/ -/', '', $remindform['phone']),
+                        array(
+                            $phone,
                             CONTACT_MOBILE,
-                        CONTACT_MOBILE)
+                        )
                     );
                     break;
                 default:
@@ -115,7 +117,7 @@ class Session
                     $body
                 );
             } else {
-                $LMS->SendSMS($remindform['phone'], $body);
+                $LMS->SendSMS($phone, $body);
             }
             $this->error = trans('Credential reminder has been sent!');
             return;
