@@ -78,10 +78,12 @@ version 26-git (????-??-??):
     checkbox [chilan]
   - improvement: don't show quick search fields when current user has no permissions to related
     part of system [chilan]
+  - improvement: added 'phpui.send_message_confirm_threshold' configuration variable which control
+    how many potential message recipients trigger confirmation dialog ('50' by default) [milek]
   - enhancement: setting: rt.allow_edit_resolvedtickets_newer_than allow to stop reopening
     old tickets [interduo]
-
-
+    
+    
 version 25.0 (2020-05-15):
 
   - improvement: introduced invoices.hide_ssn configuration variable which allows to hide SSN

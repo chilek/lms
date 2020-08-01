@@ -1124,8 +1124,8 @@ if (empty($types) || in_array('reminder', $types)) {
         ) v ON (v.docid = d.id)
         LEFT JOIN numberplans n ON (d.numberplanid = n.id)
         WHERE d.type IN (?, ?, ?) AND d.closed = 0 AND b2.balance < ?
-            AND ((d.cdate / 86400) + d.paytime - ? + 1) * 86400 >= $daystart
-            AND ((d.cdate / 86400) + d.paytime - ? + 1) * 86400 < $dayend"
+            AND (d.cdate + (d.paytime - ? + 1) * 86400) >= $daystart
+            AND (d.cdate + (d.paytime - ? + 1) * 86400) < $dayend"
             . ($notifications['reminder']['deleted_customers'] ? '' : ' AND c.deleted = 0'),
         array(
             DOC_CNOTE,

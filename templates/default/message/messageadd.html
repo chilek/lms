@@ -58,14 +58,14 @@
 		$('textarea[name="message[' + messageelem + ']"]').html(message);
 	}
 
-	function submit_try() {
+	function submit_try(threshold) {
 		$.ajax('?m=messageadd&count_recipients=1', {
 				method: "POST",
 				dataType: "json",
 				data: $('form[name="message"]').serialize()
 			}
 		).done(function (data) {
-			if (data.recipients <= 50) {
+			if (data.recipients <= threshold) {
 				document.message.submit();
 			} else {
 				confirmDialog($t("Are you sure you want to send messages to $a customer(s)?", data.recipients), $('#submit-try')).done(function() {
@@ -427,7 +427,7 @@
 	</TR>
 	<TR>
 		<TD COLSPAN="3" class="lms-ui-box-buttons">
-			{button icon="quick-send" id="submit-try" label="Send" onclick="submit_try();"}
+			{button icon="quick-send" id="submit-try" label="Send" onclick="submit_try({ConfigHelper::getConfig('phpui.send_message_confirm_threshold',50)});"}
 		</TD>
 	</TR>
     </TBODY>
