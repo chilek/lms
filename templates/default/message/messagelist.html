@@ -30,7 +30,7 @@
 	</TR>
 	<TR>
 		<TD colspan="5" class="nobr">
-			<FORM METHOD="POST" NAME="page" action="?m=messagelist">
+			<FORM METHOD="POST" NAME="page" action="?m=messagelist" id="messagelist">
 			<INPUT type="submit" class="hiddenbtn">
 			<B>{trans("Filter:")} </B>
 			<INPUT type="text" name="search" value="{$listdata.search}" {tip text="Enter value of searching data and select category"}>&nbsp;
@@ -72,7 +72,7 @@
 	{if $pagination->getTotal() != 0}
 	<TR>
 		<TD class="lms-ui-pagination" COLSPAN="5">
-			{include file="pagination.html"}
+			{include file="pagination.html" form="messagelist"}
 		</TD>
 	</TR>
 	{/if}
@@ -132,7 +132,7 @@
 	{if $pagination->getTotal() != 0}
 	<TR>
 		<TD class="lms-ui-pagination" COLSPAN="5">
-			{include file="pagination.html"}
+			{include file="pagination.html" form="messagelist"}
 		</TD>
 	</TR>
 	{/if}
