@@ -527,7 +527,7 @@ if (isset($_POST['message'])) {
             if ($queue['newmessagesubject'] && $queue['newmessagebody']) {
                 $message['customernotify'] = 1;
             }
-            $aet = ConfigHelper::getConfig('rt.allow_edit_resolvedtickets_newer_than');
+            $aet = ConfigHelper::getConfig('rt.allow_modify_resolved_tickets_newer_than');
             if ($message['state'] == RT_RESOLVED && !ConfigHelper::checkPrivilege('superuser') && $aet && (time() - $message['resolvetime'] > $aet)) {
                 die("Cannot send message - ticket was resolved more than " . $aet . " seconds.");
             }
