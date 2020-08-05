@@ -269,7 +269,7 @@ if (!isset($_POST['s'])) {
 }
 $SESSION->save('tls', $s);
 
-if (!isset($_POST['tg']) && !is_null($_POST['tg'])) {
+if (!isset($_POST['tg'])) {
     $SESSION->restore('tltg', $tg);
 } else {
     $tg = $_POST['tg'];
