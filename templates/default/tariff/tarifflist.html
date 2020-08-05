@@ -104,6 +104,7 @@
 					<input type="hidden" name="g" value="">
 				{/if}
 				{if !empty($tags) && count($tags)}
+					<input type="hidden" name="tg" value="">
 					{trans("Tags:")}
 					<SELECT size="5" name="tg[]" class="lms-ui-multiselect lms-ui-multiselect-filter"
 							onchange="document.choosefilter.submit();" {tip text="Select tariff tags"}
