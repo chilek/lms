@@ -109,7 +109,7 @@ function GetTariffList($order = 'name,asc', $type = null, $access = 0, $customer
 			) a ON (a.tariffid = t.id)
 			LEFT JOIN taxes ON (t.taxid = taxes.id)
 			WHERE 1=1'
-            . ($customergroupid ? ' AND a.tariffid IS NOT NULL' : '')
+            . ($customergroupid || $promotionid ? ' AND a.tariffid IS NOT NULL' : '')
             . (!empty($tags) ? ' AND t.id IN (SELECT DISTINCT tariffid FROM tariffassignments WHERE tarifftagid IN (' . implode(',', $tags) . '))' : '')
             .($type ? ' AND t.type = '.intval($type) : '')
             .($access ? ' AND t.authtype & ' . intval($access) . ' > 0' : '')
