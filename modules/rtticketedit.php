@@ -256,6 +256,11 @@ if (empty($categories)) {
     $categories = array();
 }
 
+$aet = ConfigHelper::getConfig('rt.allow_modify_resolved_tickets_newer_than', 86400);
+if ($ticket['state'] == RT_RESOLVED && !ConfigHelper::checkPrivilege('superuser') && $aet && (time() - $ticket['resolvetime'] > $aet)) {
+    die("Cannot edit ticket - ticket was resolved more than " . $aet . " seconds.");
+}
+
 if (isset($_POST['ticket'])) {
     $ticketedit = $_POST['ticket'];
     $ticketedit['ticketid'] = $ticket['ticketid'];
