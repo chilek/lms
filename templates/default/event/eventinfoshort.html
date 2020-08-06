@@ -264,7 +264,7 @@
 	{if $event.ticket.state != $smarty.const.RT_RESOLVED}
 	<TR>
 		<TD colspan="3">
-                    {if ($ticket.state != RT_RESOLVED || ($ticket.state == RT_RESOLVED && $aet && ($smarty.now - $ticket.resolvetime) < $aet)) || (ConfigHelper::checkPrivilege('superuser'))}
+                    {if ($ticket.state != $smarty.const.RT_RESOLVED || ($ticket.state == $smarty.const.RT_RESOLVED && $aet && ($smarty.now - $ticket.resolvetime) < $aet)) || (ConfigHelper::checkPrivilege('superuser'))}
                         {button type="link-button" icon="message" label="New Message" href="?m=rtmessageadd&ticketid={$event.ticketid}"}
                     {/if}
                     {button type="link-button" icon="note" label="New Note" href="?m=rtnoteadd&ticketid={$event.ticketid}"}
