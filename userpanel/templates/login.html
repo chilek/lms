@@ -6,7 +6,7 @@
 	<title>{trans("Virtual Customer Service")}</title>
 <link type="text/css" rel="stylesheet" href="{stylefile}" />
 <link href="{ConfigHelper::getConfig('userpanel.shortcut_icon', 'img/lms-net.gif')}" rel="shortcut icon">
-{include file="jquery.html" language=Config::getCurrentHtmlLanguage() lms_language=Localisation::getCurrentUiLanguage()}
+{include file="jquery.html" language=Localisation::getCurrentHtmlLanguage() lms_language=Localisation::getCurrentUiLanguage()}
 {$google_recaptcha_sitekey = ConfigHelper::getConfig('userpanel.google_recaptcha_sitekey')}
 {if !empty($google_recaptcha_sitekey)}
 <script>
