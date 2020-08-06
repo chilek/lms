@@ -81,7 +81,7 @@ version 26-git (????-??-??):
   - improvement: added 'phpui.send_message_confirm_threshold' configuration variable which control
     how many potential message recipients trigger confirmation dialog ('50' by default) [milek]
   - enhancement: setting: rt.allow_modify_resolved_tickets_newer_than, allow to stop reopening
-    old tickets [interduo]
+    old tickets (default '86400') [interduo]
     
     
 version 25.0 (2020-05-15):

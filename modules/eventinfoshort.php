@@ -27,7 +27,7 @@
 $event = $LMS->GetEvent($_GET['id']);
 $userlist = $DB->GetAllByKey('SELECT id, rname FROM vusers
 	WHERE deleted = 0 AND access = 1 ORDER BY lastname ASC', 'id');
-$aet = ConfigHelper::getConfig('rt.allow_modify_resolved_tickets_newer_than');
+$aet = ConfigHelper::getConfig('rt.allow_modify_resolved_tickets_newer_than', 86400');
 
 $SMARTY->assign('aet', $aet);
 $SMARTY->assign('event', $event);
