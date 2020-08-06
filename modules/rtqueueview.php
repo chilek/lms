@@ -351,7 +351,7 @@ if (isset($_GET['action'])) {
     }
 }
 
-$aet = ConfigHelper::getConfig('rt.allow_modify_resolved_tickets_newer_than', 86400');
+$aet = ConfigHelper::getConfig('rt.allow_modify_resolved_tickets_newer_than', 86400);
 
 $SESSION->remove('backid');
 

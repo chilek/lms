@@ -50,7 +50,7 @@ $ticket['message'] = $DB->GetOne(
 );
 
 $ticket['uptime'] = uptimef($ticket['resolvetime'] ? $ticket['resolvetime'] - $ticket['createtime'] : time() - $ticket['createtime']);
-$aet = ConfigHelper::getConfig('rt.allow_modify_resolved_tickets_newer_than', 86400');
+$aet = ConfigHelper::getConfig('rt.allow_modify_resolved_tickets_newer_than', 86400);
 
 $SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('aet', $aet);
