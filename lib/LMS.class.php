@@ -2475,13 +2475,16 @@ class LMS
                     $this->mail_object->SMTPAuth = true;
                     $this->mail_object->AuthType = $auth_type;
                 }
-                $this->mail_object->SMTPSecure = (!isset($smtp_options['secure'])
-                    ? ConfigHelper::getConfig('mail.smtp_secure', '', true)
-                    : $smtp_options['secure']);
-                if ($this->mail_object->SMTPSecure == 'false') {
-                    $this->mail_object->SMTPSecure = '';
-                    $this->mail_object->SMTPAutoTLS = false;
-                }
+            } else {
+                $this->mail_object->SMTPAuth = false;
+            }
+
+            $this->mail_object->SMTPSecure = (!isset($smtp_options['secure'])
+                ? ConfigHelper::getConfig('mail.smtp_secure', '', true)
+                : $smtp_options['secure']);
+            if ($this->mail_object->SMTPSecure == 'false') {
+                $this->mail_object->SMTPSecure = '';
+                $this->mail_object->SMTPAutoTLS = false;
             }
 
             $this->mail_object->SMTPOptions = array(
