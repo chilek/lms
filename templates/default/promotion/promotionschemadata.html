@@ -218,7 +218,8 @@
 								</div>
 								<div class="promoschema-tariff-selection-header-cell">
 									<SELECT id="tariff-tags" name="form[tags][]" class="lms-ui-multiselect"
-											{tip text="Select tariff tags"} multiple onchange="javascript:updateTariffs();"{if empty($tags)} style="display: none;"{/if}>
+											{tip text="Select tariff tags"} multiple onchange="javascript:updateTariffs();"{if empty($tags)} style="display: none;"{/if}
+											>
 										{foreach $tags as $tag}
 											<OPTION value="{$tag.id}"{if isset($formdata.tags) && in_array($tag.id, $formdata.tags)} selected{/if}>{$tag.name}</OPTION>
 										{/foreach}

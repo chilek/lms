@@ -32,13 +32,13 @@
 
   .lms-ui-multiselect-launcher {
     vertical-align: middle;
-    display: inline-block;
+    display: block;
     background-color: @lucid;
     border: solid 1px @blend;
+    min-height: 1.4em;
 
     .lms-ui-multiselect-launcher-label {
-      float: left;
-      overflow: hidden;
+      //overflow: hidden;
       font-size:  @font-size;
       font-family: @fonts;
       vertical-align: middle;
@@ -47,7 +47,7 @@
       max-width: 200px;
       white-space: pre-wrap;
       min-width: 200px;
-      display: inline-block;
+      display: block;
       &.lms-ui-multiselect-filter {
         min-width: 100px;
       }
@@ -61,6 +61,17 @@
       height: 14px;
       background-size: 16px;
       margin-right: 2px;
+      display: block;
+    }
+
+    .lms-ui-multiselect-clear-button {
+      float: right;
+      margin-right: -0.2em;
+      margin-left: 0.3em;
+      display: block;
+      opacity: 0.4;
+      font-size: 100%;
+      cursor: pointer;
     }
   }
 
@@ -72,6 +83,7 @@
     align-items: center;
     border-color: transparent;
     background-color: transparent;
+    min-height: unset;
     .lms-ui-no-user-select;
   }
 

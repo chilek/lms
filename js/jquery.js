@@ -120,6 +120,7 @@ function init_multiselects(selector) {
 				type: $(this).attr('data-type'),
 				icon: $(this).attr('data-icon'),
 				button: $(this).attr('data-button'),
+				clearButton: $(this).attr('data-clear-button'),
 				bottom: lmsSettings.multiSelectPopupOnBottom,
 				separator: $(this).attr('data-separator'),
 				maxVisible: lmsSettings.multiSelectMaxVisible,

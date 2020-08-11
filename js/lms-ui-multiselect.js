@@ -136,6 +136,7 @@ function multiselect(options) {
 	var tiny = typeof options.type !== 'undefined' && options.type == 'tiny';
 	var bottom = typeof options.bottom !== 'undefined' && options.bottom;
 	var button = typeof options.button !== 'undefined' && options.button;
+	var clearButton = typeof options.clearButton === 'undefined' || options.clearButton == 'true' ? true : false;
 	var icon = typeof options.icon !== 'undefined' ? options.icon : 'img/settings.gif';
 	var label = typeof options.label !== 'undefined' ? options.label : '';
 	var separator = typeof options.separator !== 'undefined' ? options.separator : ', ';
@@ -166,7 +167,9 @@ function multiselect(options) {
 			launcher.html(icon.match("img\/", icon) ? '<img src="' + icon + '">' + (label ? '&nbsp' + label : '') : '<i class="' + icon + '"/>');
 		}
 	} else {
-		$('<div class="lms-ui-multiselect-launcher-label"></div><span class="lms-ui-multiselect-launcher-toggle"></span>')
+		$('<span class="lms-ui-multiselect-launcher-toggle"></span>' +
+			(clearButton ? '<i class="lms-ui-multiselect-clear-button lms-ui-icon-hide"></i>' : '') +
+			'<div class="lms-ui-multiselect-launcher-label"></div>')
 			.appendTo(launcher);
 	}
 
@@ -402,6 +405,19 @@ function multiselect(options) {
 			e.stopPropagation();
 		});
 	}
+
+	launcher.find('.lms-ui-multiselect-clear-button').click(function(e) {
+		multiselect.updateSelection([]);
+
+		updateCheckAll();
+
+		if (new_selected != old_selected) {
+			old_element.trigger('change');
+		}
+		old_selected = new_selected;
+
+		e.stopPropagation();
+	});
 
 	// add some mouse/key event handlers
 	launcher.on('click keydown', function(e) {
