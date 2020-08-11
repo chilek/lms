@@ -416,6 +416,7 @@ function multiselect(options) {
 		}
 		old_selected = new_selected;
 
+		e.preventDefault();
 		e.stopPropagation();
 	});
 
