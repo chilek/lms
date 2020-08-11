@@ -84,7 +84,8 @@ version 26-git (????-??-??):
     to prevent old ticket re-open (default '86400') [interduo]
   - enhancement: allow to select different lms.ini file using its name containing http
     server port [chilan]
-  - enhancement: additional selection level in assignment definition - service type [chilan]
+  - enhancement: additional selection level in assignment and promotion tariff definition - service
+    type [chilan]
 
 version 25.0 (2020-05-15):
 

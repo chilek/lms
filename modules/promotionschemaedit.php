@@ -199,6 +199,7 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
 
     $DB->Execute('DELETE FROM promotionassignments WHERE id = ?', array($aid));
 
+    $data['servicetype'] = $_POST['form']['servicetype'];
     $data['tags'] = $_POST['form']['tags'];
     $data['alltariffs'] = $_POST['form']['alltariffs'];
     $SESSION->save('psdform', $data);
