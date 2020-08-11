@@ -27,7 +27,6 @@
 /**
  * ConfigHelper
  *
- * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
 class ConfigHelper
 {
