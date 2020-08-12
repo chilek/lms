@@ -104,6 +104,71 @@ class LMSSmartyPlugins
         return $result;
     }
 
+    public static function divisionSelectionFunction(array $params, $template)
+    {
+        static $user_divisions = array();
+        $lms = LMS::getInstance();
+        $layout = $template->getTemplateVars('layout');
+        $force_global_division_context = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.force_global_division_context'), false);
+
+        if (empty($params)) {
+            $params = array();
+        }
+
+        $label = isset($params['label']) ? $params['label'] : null;
+        $elementname = isset($params['elementname']) ? $params['elementname'] : 'division';
+        $selected = isset($params['selected']) ? $params['selected'] : null;
+        $onchange = isset($params['onchange']) && !empty($params['onchange']) ? $params['onchange'] : null;
+        $division_selection = isset($params['division_selection']) && !empty($params['division_selection']) ? $params['division_selection'] : null;
+
+        if (isset($user_divisions) && empty($user_divisions)) {
+            if ($force_global_division_context) {
+                if (!empty($layout['division'])) {
+                    $user_divisions = $lms->GetDivision($layout['division']);
+                }
+            } else {
+                $user_divisions = $lms->GetDivisions(array('userid' => Auth::GetCurrentUser()));
+            }
+        }
+
+        $result = '';
+
+        if ($force_global_division_context) {
+            $result .= ($label ? '<label>' : '') . ($label ? trans($label) : '');
+            $result .= '<span name="force_division_context" class="force_division_context bold">' . (!empty($user_divisions) ? $user_divisions['shortname'] : trans("all")) . '</span>';
+            $result .= ($label ? '</label>' : '');
+            $result .= '<input type="hidden" class="division-context-selected" name="' . $elementname . '"'
+                . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '') . ' value="'
+                . $layout['division'] . '">';
+        } else {
+            if (!empty($user_divisions) && count($user_divisions) > 1) {
+                $result .= ($label ? '<label for="' . $elementname . '">' : '') . ($label ? trans($label) : '') . ($label ? '&nbsp;' : '');
+                $result .= '<select name="' . $elementname . '" ' . self::tipFunction(array('text' => 'Select division'), $template)
+                    . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '')
+                    . ($onchange ? ' onchange="' . $onchange . '"' : '')
+                    . ($division_selection ? ' division_selection="' . $division_selection . '"' : '')
+                    . '>';
+                $result .= '<option VALUE=""' . (!$selected ? ' selected' : '') . '>- ' . trans("all") . ' -</option>';
+                foreach ($user_divisions as $division) {
+                    $result .= '<option value="' . $division['id'] . '"'
+                        . ($selected == $division['id'] ? ' selected' : '') . '>' . $division['shortname'] . '</option>';
+                }
+                $result .= '</select>';
+                $result .= ($label ? '</label>' : '');
+            } else {
+                $user_division = reset($user_divisions);
+                $result .= ($label ? '<label>' : '') . ($label ? trans($label) : '');
+                $result .= '<span class="bold">' . (!empty($user_divisions) ? $user_division['shortname'] : trans("all")) . '</span>';
+                $result .= ($label ? '</label>' : '');
+                $result .= '<input type="hidden" class="division-context-selected" name="' . $elementname . '"'
+                    . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '') . ' value="'
+                    . $user_division['id'] . '">';
+            }
+        }
+
+        return $result;
+    }
+
     public static function customerListFunction(array $params, $template)
     {
         $result = '';

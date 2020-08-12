@@ -31,6 +31,9 @@ if (!$LMS->UserExists($id)) {
     $SESSION->redirect('?m=userlist');
 }
 
+$divisions = $LMS->GetDivisions();
+$user_divisions = array_keys($LMS->GetDivisions(array('userid' => $id)));
+
 if (isset($_GET['fromuser'])) {
     header('Content-Type: application/json');
     die(json_encode($LMS->GetUserRights($_GET['fromuser'])));
@@ -75,6 +78,9 @@ if ($userinfo) {
         $error['lastname'] = trans('You have to enter first and lastname!');
     }
 
+    if (!isset($userinfo['divisions'])) {
+        $error['division'] = trans('You have to choose division!');
+    }
     if ($userinfo['email']!='' && !check_email($userinfo['email'])) {
         $error['email'] = trans('E-mail isn\'t correct!');
     }
@@ -124,6 +130,34 @@ if ($userinfo) {
             $userinfo['twofactorauth'] = 1;
             $google2fa = new Google2FA();
             $userinfo['twofactorauthsecretkey'] = $google2fa->generateSecretKey();
+        }
+
+        $diff_divisions = array();
+        // check if user divisions were changed
+        foreach ($user_divisions as $user_division) {
+            if (in_array(intval($user_division), $userinfo['divisions'])) {
+                continue;
+            } else {
+                $diff_divisions[] = intval($user_division);
+            }
+        }
+        foreach ($userinfo['divisions'] as $userinfo_division) {
+            if (in_array(intval($userinfo_division), $user_divisions)) {
+                continue;
+            } else {
+                $diff_divisions[] = intval($userinfo_division);
+            }
+        }
+        $userinfo['diff_divisions'] = $diff_divisions;
+
+        // if divisions were changed
+        if ($diff_divisions) {
+            // change default division context if division was removed
+            $currentDivisionContext = $SESSION->get_persistent_setting('division_context');
+            $newUserDivisions = array_keys($LMS->GetDivisions(array('status' => 0, 'userid' => $id)));
+            if (!in_array($currentDivisionContext, $newUserDivisions)) {
+                $SESSION->save_persistent_setting('division_context', $newUserDivisions[0]);
+            }
         }
 
         $userinfo['accessfrom'] = $accessfrom;
@@ -227,6 +261,8 @@ $SMARTY->assign('accesslist', $accesslist);
 $SMARTY->assign('available', $DB->GetAllByKey('SELECT id, name FROM customergroups ORDER BY name', 'id'));
 $SMARTY->assign('users', $LMS->GetUserNames());
 $SMARTY->assign('userinfo', $userinfo);
+$SMARTY->assign('divisions', $divisions);
+$SMARTY->assign('user_divisions', $user_divisions);
 $SMARTY->assign('error', $error);
 
 $SMARTY->display('user/useredit.html');

@@ -62,7 +62,7 @@
 	</style>
 <H1>{$layout.pagetitle}</H1>
 
-<FORM method="get" action="?m={$layout.module}" name="choosefilter">
+<FORM method="get" action="?m={$layout.module}" name="choosefilter" id="choosefilter">
 <p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" NAME="m" VALUE="customerlist">
@@ -141,14 +141,9 @@
 				<OPTION VALUE="74"{if $filter.state == 74} SELECTED{/if}>{trans("ZIP code not specified")}</OPTION>
 			</SELECT>
 			</label>
-			<label for="d">{trans("Division")}:
-			<SELECT SIZE="1" NAME="d" ONCHANGE="document.choosefilter.submit();">
-				<OPTION VALUE=""{if !$filter.division} selected{/if}>- {trans("all")} -</OPTION>
-				{foreach $divisions as $division}
-				<OPTION VALUE="{$division.id}"{if $filter.division == $division.id} selected{/if}>{$division.shortname|truncate:30:"...":true}</OPTION>
-				{/foreach}
-			</SELECT>
-			</label>
+
+			{division_selection elementname="d" selected=$filter.division onchange="document.choosefilter.submit();" label="Division:"}
+
 			<label for="n" class="nobr">
 			{trans("Network:")}
 			<SELECT SIZE="1" NAME="n" ONCHANGE="document.choosefilter.submit();">
@@ -348,6 +343,10 @@
 <script>
 
 	$(function() {
+		$('.force_division_context').on( 'lms:division_selection', function() {
+			document.choosefilter.submit();
+		});
+
 		$('.balanceok-customer').click(function () {
 			var name = $(this).closest('tr').attr('data-name');
 			confirmDialog($t("Are you sure, you want to account ALL debts of customer \'$a\'?", name), this).done(function () {

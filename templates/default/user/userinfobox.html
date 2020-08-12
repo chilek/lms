@@ -226,6 +226,19 @@
 				{$userinfo.faillogin}, {$userinfo.failedloginip} {if $userinfo.failedloginip != $userinfo.failedloginhost}({$userinfo.failedloginhost}){/if}
 			</TD>
 		</TR>
+		<tr>
+			<td class="bold nobr">
+				<IMG src="img/division.gif" alt="">
+			</td>
+			<td class="bold nobr">
+				{trans("Division:")}
+			</td>
+			<td>
+				{foreach from=$user_divisions item=i name=user_division}
+					{$i.shortname}{if not $smarty.foreach.user_division.last}, {/if}
+				{/foreach}
+			</td>
+		</tr>
 		{block name="other-information"}
 		{/block}
 		<TR>

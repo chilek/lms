@@ -128,15 +128,22 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
      *
      * @return array Users data
      */
-    public function getUserList()
+    public function getUserList($params = array())
     {
+        extract($params);
+
         $userlist = $this->db->GetAll(
             'SELECT id, login, name, phone, lastlogindate, lastloginip, passwdexpiration, passwdlastchange, access,
                 accessfrom, accessto, rname, twofactorauth
             FROM vusers
-            WHERE deleted=0
-            ORDER BY login ASC'
+            WHERE deleted = 0'
+            . (isset($divisions) ? ' AND id IN (SELECT userid
+                    FROM userdivisions
+                    WHERE divisionid IN (' . $divisions . ')
+                    )' : '') .
+            ' ORDER BY login ASC'
         );
+
         if ($userlist) {
             foreach ($userlist as &$row) {
                 if ($row['id'] == Auth::GetCurrentUser()) {
@@ -235,9 +242,15 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
                 'SELECT id FROM users WHERE login=?',
                 array($user['login'])
             );
+
+            foreach ($user['divisions'] as $divisionid) {
+                $this->db->Execute('INSERT INTO userdivisions (userid, divisionid) VALUES(?, ?)', array($id, $divisionid));
+            }
+
             if ($this->syslog) {
                 unset($args['passwd']);
                 $args[SYSLOG::RES_USER] = $id;
+                $args['divisions'] = implode(',', $user['divisions']);
                 $this->syslog->AddMessage(SYSLOG::RES_USER, SYSLOG::OPER_ADD, $args);
             }
             return $id;
@@ -406,7 +419,19 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
         $res = $this->db->Execute('UPDATE users SET login=?, firstname=?, lastname=?, email=?, rights=?,
 				hosts=?, position=?, ntype=?, phone=?, passwdforcechange=?, passwdexpiration=?, access=?,
 				accessfrom=?, accessto=?, twofactorauth=?, twofactorauthsecretkey=? WHERE id=?', array_values($args));
+
+        if ($res) {
+            // if divisions were changed
+            if (!empty($user['diff_divisions'])) {
+                $this->db->Execute('DELETE FROM userdivisions WHERE userid = ?', array($user['id']));
+                foreach ($user['divisions'] as $userinfo_division) {
+                    $this->db->Execute('INSERT INTO userdivisions (userid, divisionid) VALUES(?, ?)', array($user['id'], $userinfo_division));
+                }
+            }
+        }
+
         if ($res && $this->syslog) {
+            $args['divisions'] = implode(',', $user['divisions']);
             $this->syslog->AddMessage(SYSLOG::RES_USER, SYSLOG::OPER_UPDATE, $args);
         }
         return $res;

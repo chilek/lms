@@ -955,3 +955,5 @@ foreach ($menu as $idx => $item) {
 }
 
 uasort($menu, 'menu_cmp');
+
+$SMARTY->assign('context_divisions', $LMS->GetDivisions(array('status' => 0, 'userid' => Auth::GetCurrentUser())));

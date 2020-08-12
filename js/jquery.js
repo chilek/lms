@@ -36,6 +36,20 @@ function savePersistentSettings(data) {
 	});
 }
 
+function saveCurrentDivision(data) {
+	return $.ajax('?m=currentdivision', {
+		async: true,
+		method: 'POST',
+		data: data,
+		dataType: 'json',
+		error: function(jqXHR, textStatus, errorThrown) {
+			if (errorThrown != 'abort') {
+				alert($t('AJAX: Error during persistent setting save on server:') + ' ' + errorThrown);
+			}
+		}
+	});
+}
+
 var dataTablesLanguage = {};
 $.ajax("js/jquery-datatables-i18n/" + lmsSettings.language + ".json", {
 	method: "GET",

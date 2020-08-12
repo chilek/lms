@@ -39,6 +39,7 @@ DROP TABLE IF EXISTS files;
 DROP TABLE IF EXISTS filecontainers;
 DROP TABLE IF EXISTS passwdhistory;
 DROP TABLE IF EXISTS userassignments;
+DROP TABLE IF EXISTS userdivisions;
 DROP TABLE IF EXISTS usergroups;
 DROP TABLE IF EXISTS rttemplatetypes;
 DROP TABLE IF EXISTS rttemplatequeues;
@@ -197,10 +198,6 @@ CREATE TABLE users (
   PRIMARY KEY  (id),
   UNIQUE KEY login (login)
 ) ENGINE=InnoDB;
-
-CREATE VIEW vusers AS
-	SELECT *, CONCAT(firstname, ' ', lastname) AS name, CONCAT(lastname, ' ', firstname) AS rname
-	FROM users;
 
 # --------------------------------------------------------
 #
@@ -2642,6 +2639,23 @@ CREATE TABLE userassignments (
 
 # --------------------------------------------------------
 #
+# Structure of table userdivisions
+#
+CREATE TABLE userdivisions (
+	id int(11) NOT NULL auto_increment,
+	userid int(11) NOT NULL,
+	divisionid int(11) NOT NULL,
+	PRIMARY KEY (id),
+	INDEX userdivisions_userid_idx (userid),
+	CONSTRAINT userdivisions_userid_fkey
+		FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT userdivisions_divisionid_fkey
+		FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	UNIQUE KEY userdivisions_userid_divisionid_ukey (userid, divisionid)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
 # Structure of table passwdhistory
 #
 CREATE TABLE passwdhistory (
@@ -3009,7 +3023,20 @@ CREATE VIEW customerview AS
         SELECT 1 FROM customerassignments a
         JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
         WHERE e.userid = lms_current_user() AND a.customerid = c.id)
+        AND c.divisionid IN (
+            SELECT ud.divisionid
+            FROM userdivisions ud
+            WHERE ud.userid = lms_current_user())
         AND c.type < 2;
+
+CREATE VIEW vusers AS
+    SELECT u.*, CONCAT(u.firstname, ' ', u.lastname) AS name, CONCAT(u.lastname, ' ', u.firstname) AS rname
+    FROM users u
+    JOIN userdivisions ud ON u.id = ud.userid
+    WHERE ud.divisionid IN (SELECT ud2.divisionid
+                             FROM userdivisions ud2
+                             WHERE ud2.userid = lms_current_user())
+    GROUP BY u.id;
 
 CREATE VIEW contractorview AS
     SELECT c.*,
@@ -3305,6 +3332,7 @@ URL: %url
 ('phpui', 'default_teryt_city', 'false', '', 0),
 ('phpui', 'passwordhistory', 6, '', 0),
 ('phpui', 'event_usergroup_selection_type', 'update', '', 0),
+('phpui', 'force_global_division_context', 'false', '', 0),
 ('payments', 'date_format', '%Y/%m/%d', '', 0),
 ('payments', 'default_unit_name', 'pcs.', '', 0),
 ('voip', 'default_cost_limit', '200','', 2),
@@ -3736,4 +3764,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020080300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020081200');
