@@ -167,7 +167,7 @@ function multiselect(options) {
 			launcher.html(icon.match("img\/", icon) ? '<img src="' + icon + '">' + (label ? '&nbsp' + label : '') : '<i class="' + icon + '"/>');
 		}
 	} else {
-		$('<span class="lms-ui-multiselect-launcher-toggle"></span>' +
+		$('<i class="lms-ui-multiselect-launcher-toggle lms-ui-icon-customisation"></i>' +
 			(clearButton ? '<i class="lms-ui-multiselect-clear-button lms-ui-icon-hide"></i>' : '') +
 			'<div class="lms-ui-multiselect-launcher-label"></div>')
 			.appendTo(launcher);
