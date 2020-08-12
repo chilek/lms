@@ -31,6 +31,9 @@ if (!$LMS->UserExists($id)) {
     $SESSION->redirect('?m=userlist');
 }
 
+$divisions = $LMS->GetDivisions();
+$user_divisions = array_keys($LMS->GetDivisions(array('userid' => $id)));
+
 if (isset($_GET['fromuser'])) {
     header('Content-Type: application/json');
     die(json_encode($LMS->GetUserRights($_GET['fromuser'])));
@@ -73,6 +76,10 @@ if ($userinfo) {
     }
     if ($userinfo['lastname'] == '') {
         $error['lastname'] = trans('You have to enter first and lastname!');
+    }
+
+    if (!isset($userinfo['divisions'])) {
+        $error['division'] = trans('You have to choose division!');
     }
 
     if ($userinfo['email']!='' && !check_email($userinfo['email'])) {
@@ -175,6 +182,44 @@ if ($userinfo) {
             }
         }
 
+
+        if (isset($userinfo['divisions'])) {
+            $diff_divisions = array();
+
+            // check if user divisions were changed
+            foreach ($user_divisions as $user_division) {
+                if (in_array(intval($user_division), $userinfo['divisions'])) {
+                    continue;
+                } else {
+                    $diff_divisions[] = $user_division;
+                }
+            }
+            foreach ($userinfo['divisions'] as $userinfo_division) {
+                if (in_array(intval($userinfo_division), $user_divisions)) {
+                    continue;
+                } else {
+                    $diff_divisions[] = $userinfo_division;
+                }
+            }
+
+            // if divisions were changed
+            if ($diff_divisions) {
+                $DB->BeginTrans();
+                $DB->Execute('DELETE FROM userdivisions WHERE userid = ?', array($userinfo['id']));
+                foreach ($userinfo['divisions'] as $userinfo_division) {
+                    $DB->Execute('INSERT INTO userdivisions (userid, divisionid) VALUES(?, ?)', array($userinfo['id'], $userinfo_division));
+                }
+                $DB->CommitTrans();
+
+                // change default division context if division was removed
+                $currentDivisionContext = $SESSION->get_persistent_setting('division_context');
+                $newUserDivisions = array_keys($LMS->GetDivisions(array('status' => 0, 'userid' => $id)));
+                if (!in_array($currentDivisionContext, $newUserDivisions)) {
+                    $SESSION->save_persistent_setting('division_context', $newUserDivisions[0]);
+                }
+            }
+        }
+
         $SESSION->redirect('?m=userinfo&id='.$userinfo['id']);
     } else {
         $userinfo['selected'] = array();
@@ -227,6 +272,8 @@ $SMARTY->assign('accesslist', $accesslist);
 $SMARTY->assign('available', $DB->GetAllByKey('SELECT id, name FROM customergroups ORDER BY name', 'id'));
 $SMARTY->assign('users', $LMS->GetUserNames());
 $SMARTY->assign('userinfo', $userinfo);
+$SMARTY->assign('divisions', $divisions);
+$SMARTY->assign('user_divisions', $user_divisions);
 $SMARTY->assign('error', $error);
 
 $SMARTY->display('user/useredit.html');

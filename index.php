@@ -245,6 +245,27 @@ if ($AUTH->islogged) {
     if (!$api) {
         $SMARTY->assign('main_menu_sortable_order', $SESSION->get_persistent_setting('main-menu-order'));
 
+        $user_divisions = $LMS->GetDivisions(array('userid' => Auth::GetCurrentUser()));
+        $user_division = reset($user_divisions);
+        if (count($user_divisions) > 1) {
+            $persistentDivisionContext = $SESSION->get_persistent_setting('division_context');
+            if (!isset($persistentDivisionContext)) {
+                $SESSION->save_persistent_setting('division_context', '');
+                $persistentDivisionContext = $SESSION->get_persistent_setting('division_context');
+            }
+            $tabDivisionContext = $SESSION->get('division_context', true);
+            if (!isset($tabDivisionContext)) {
+                $tabDivisionContext = $SESSION->get_persistent_setting('division_context');
+                $SESSION->save('division_context', $tabDivisionContext, true);
+            }
+        } else {
+            $SESSION->save_persistent_setting('division_context', $user_division['id']);
+            $SESSION->save('division_context', $user_division['id'], true);
+        }
+
+        $SMARTY->assign('division_context', $tabDivisionContext);
+        $layout['division'] = $tabDivisionContext;
+
         $SMARTY->assign('qs_properties', $qs_properties);
 
         $qs_fields = $SESSION->get_persistent_setting('qs-fields');

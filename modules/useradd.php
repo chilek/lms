@@ -68,6 +68,10 @@ if (count($useradd)) {
         $error['lastname'] = trans('You have to enter first and lastname!');
     }
 
+    if (!isset($useradd['divisions'])) {
+        $error['division'] = trans('You have to choose division!');
+    }
+
     if ($useradd['password'] == '') {
         $error['password'] = trans('Empty passwords are not allowed!');
     } elseif ($useradd['password'] != $useradd['confirm']) {
@@ -164,6 +168,12 @@ if (count($useradd)) {
             }
         }
 
+        if (isset($useradd['divisions'])) {
+            foreach ($useradd['divisions'] as $divisionid) {
+                $DB->Execute('INSERT INTO userdivisions (userid, divisionid) VALUES(?, ?)', array($id, $divisionid));
+            }
+        }
+
         $LMS->executeHook('useradd_after_submit', $id);
         $SESSION->redirect('?m=userinfo&id=' . $id);
     } elseif (isset($_POST['selected'])) {
@@ -191,5 +201,6 @@ $SMARTY->assign('error', $error);
 $SMARTY->assign('accesslist', $accesslist);
 $SMARTY->assign('users', $LMS->GetUserNames());
 $SMARTY->assign('available', $DB->GetAllByKey('SELECT id, name FROM customergroups ORDER BY name', 'id'));
+$SMARTY->assign('divisions', $LMS->GetDivisions());
 
 $SMARTY->display('user/useradd.html');

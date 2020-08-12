@@ -142,6 +142,19 @@ body {
       margin-bottom: 0.5em;
     }
 
+    #lms-ui-division {
+      align-self: stretch;
+      text-align: center;
+      margin-bottom: 0.5em;
+      > select {
+        @media screen and (max-width: @mobile-max-width + 1px) {
+          font-size: 80%;
+          width: 90%;
+          flex-grow: 1;
+        }
+      }
+    }
+
     #lms-ui-copyrights {
       font-weight: bold;
       align-self: stretch;

@@ -454,7 +454,7 @@ $customerinfo = $hook_data['customerinfo'];
 $SMARTY->assign('xajax', $LMS->RunXajax());
 $SMARTY->assign(compact('pin_min_size', 'pin_max_size', 'pin_allowed_characters'));
 $SMARTY->assign('customerinfo', $customerinfo);
-$SMARTY->assign('divisions', $LMS->GetDivisions());
+$SMARTY->assign('divisions', $LMS->GetDivisions(array('userid' => Auth::GetCurrentUser())));
 $SMARTY->assign('recover', ($action == 'recover' ? 1 : 0));
 $SMARTY->assign('customeredit_sortable_order', $SESSION->get_persistent_setting('customeredit-sortable-order'));
 $SMARTY->display('customer/customeredit.html');

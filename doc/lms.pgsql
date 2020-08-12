@@ -2576,6 +2576,24 @@ CREATE TABLE userassignments (
 CREATE INDEX userassignments_userid_idx ON userassignments (userid);
 
 /* ---------------------------------------------------
+ Structure of table userdivisions
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS userdivisions_id_seq;
+CREATE SEQUENCE userdivisions_id_seq;
+DROP TABLE IF EXISTS userdivisions CASCADE;
+CREATE TABLE userdivisions (
+    id integer DEFAULT nextval('userdivisions_id_seq'::text) NOT NULL,
+    userid      integer     NOT NULL
+        CONSTRAINT users_userid_fkey REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    divisionid  integer     NOT NULL
+        CONSTRAINT divisions_divisionid_fkey REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (id),
+    CONSTRAINT userdivisions_userid_divisionid_key UNIQUE (userid, divisionid)
+);
+DROP INDEX IF EXISTS userdivisions_userid_idx;
+CREATE INDEX userdivisions_userid_idx ON userdivisions (userid);
+
+/* ---------------------------------------------------
  Structure of table passwdhistory
 ------------------------------------------------------*/
 DROP SEQUENCE IF EXISTS passwdhistory_id_seq;
@@ -2801,6 +2819,10 @@ CREATE VIEW customerview AS
         SELECT 1 FROM customerassignments a
         JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
         WHERE e.userid = lms_current_user() AND a.customerid = c.id)
+        AND c.divisionid IN (
+            SELECT ud.divisionid
+            FROM userdivisions ud
+            WHERE ud.userid = lms_current_user())
         AND c.type < 2;
 
 CREATE VIEW contractorview AS
@@ -3158,8 +3180,13 @@ CREATE VIEW customermailsview AS
 			GROUP BY customerid;
 
 CREATE VIEW vusers AS
-	SELECT *, (firstname || ' ' || lastname) AS name, (lastname || ' ' || firstname) AS rname
-	FROM users;
+    SELECT u.*, (u.firstname || ' ' || u.lastname) AS name, (u.lastname || ' ' || u.firstname) AS rname
+    FROM users u
+    JOIN userdivisions ud ON u.id = ud.userid
+    WHERE ud.divisionid IN (SELECT ud2.divisionid
+                             FROM userdivisions ud2
+                             WHERE ud2.userid = lms_current_user())
+    GROUP BY u.id;
 
 CREATE FUNCTION customerbalances_update()
     RETURNS trigger
@@ -3351,6 +3378,7 @@ URL: %url
 ('phpui', 'default_teryt_city', 'false', '', 0),
 ('phpui', 'passwordhistory', 6, '', 0),
 ('phpui', 'event_usergroup_selection_type', 'update', '', 0),
+('phpui', 'force_global_division_context', 'false', '', 0),
 ('payments', 'date_format', '%Y/%m/%d', '', 0),
 ('payments', 'default_unit_name', 'pcs.', '', 0),
 ('voip', 'default_cost_limit', '200', '', 2),
@@ -3782,6 +3810,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020080300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020081200');
 
 COMMIT;

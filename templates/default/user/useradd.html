@@ -222,6 +222,26 @@
 			{include file="multiselect.html" selected=$useradd.selected available_tip="Enabled<!plural>:" selected_tip="Disabled<!plural>:"}
 		</TD>
 	</TR>
+
+	{if is_array($divisions) && count($divisions)}
+		<tr>
+			<td class="bold nobr">
+				<IMG src="img/division.gif" alt=""> {trans("Divisions:")}
+			</td>
+			<td>
+				<label for="useradd[divisions][]">
+					<select SIZE="4" NAME="useradd[divisions][]" multiple {tip text="Select divisions" class="lms-ui-multiselect" trigger="division"} data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
+						{foreach $divisions as $division}
+							<option value="{$division.id}" {if isset($useradd.divisions) && in_array($division.id, $useradd.divisions)} selected{/if}>
+								{$division.shortname|truncate:30:"...":true}
+							</option>
+						{/foreach}
+					</select>
+				</label>
+			</td>
+		</tr>
+	{/if}
+
 	<TR>
 		<TD colspan="2" class="lms-ui-box-buttons">
 			{button type="submit" icon="save" label="Submit"}

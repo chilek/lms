@@ -62,9 +62,12 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
         }
 
         return $this->db->GetAllByKey(
-            'SELECT * FROM vdivisions
-			WHERE 1=1'
-            . (isset($status) ? ' AND status = ' . intval($status) : '')
+            'SELECT vd.*' . (isset($userid) ? ', vd.id as divisionid ' : '') . 'FROM vdivisions vd'
+            . (isset($userid) ? ' JOIN userdivisions ud ON vd.id = ud.divisionid' : '') .
+            ' WHERE 1=1'
+            . (isset($status) ? ' AND vd.status = ' . intval($status) : '')
+            . (isset($userid) ? ' AND ud.userid = ' . intval($userid) : '')
+            . (isset($divisionid) ? ' AND vd.id = ' . intval($divisionid) : '')
             . ($sqlord != '' ? $sqlord . ' ' . $direction : ''),
             'id'
         );

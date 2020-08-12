@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -28,5 +28,25 @@ $layout['pagetitle'] = trans('Users List');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$SMARTY->assign('userslist', $LMS->GetUserList());
+$divisionContext = $SESSION->get('division_context', true);
+if (!isset($divisionContext)) {
+    $divisionContext = $SESSION->get_persistent_setting('division_context');
+    $SESSION->save('division_context', $divisionContext, true);
+}
+$SMARTY->assign('division_context', $divisionContext);
+$layout['division'] = $divisionContext;
+
+if (isset($_GET['division'])) {
+    $filter['division'] = $_GET['division'];
+} else {
+    $filter['division'] = $divisionContext;
+}
+
+if (empty($filter['division'])) {
+    $user_divisions = implode(",", array_keys($LMS->GetDivisions(array('userid' => Auth::GetCurrentUser()))));
+} else {
+    $user_divisions = $filter['division'];
+}
+
+$SMARTY->assign('userslist', $LMS->GetUserList(array('divisions' => $user_divisions)));
 $SMARTY->display('user/userlist.html');
