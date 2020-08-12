@@ -554,7 +554,7 @@ function send_sms_to_user($phone, $data)
 if (empty($types) || in_array('timetable', $types)) {
     $days = $notifications['timetable']['days'];
     $users = $DB->GetAll(
-        "SELECT id, name, (CASE WHEN ntype & ? > 0 THEN email ELSE '' END) AS email,
+        "SELECT id, firstname, lastname, (CASE WHEN ntype & ? > 0 THEN email ELSE '' END) AS email,
             (CASE WHEN ntype & ? > 0 THEN phone ELSE '' END) AS phone FROM users
         WHERE deleted = 0 AND access = 1 AND ntype & ? > 0 AND (email <> '' OR phone <> '')",
         array(MSG_MAIL, MSG_SMS, (MSG_MAIL | MSG_SMS))
@@ -566,6 +566,8 @@ if (empty($types) || in_array('timetable', $types)) {
         if (empty($user['email']) && empty($user['phone'])) {
             continue;
         }
+
+        $user['name'] = $user['firstname'] . ' ' . $user['lastname'];
 
         $contents = '';
         $events = $DB->GetAll("SELECT DISTINCT title, description, begintime, endtime,
@@ -1831,7 +1833,7 @@ if (empty($types) || in_array('events', $types)) {
     if (!empty($events)) {
         $customers = array();
         $users = $DB->GetAllByKey(
-            "SELECT id, name, (CASE WHEN (ntype & ?) > 0 THEN email ELSE '' END) AS email,
+            "SELECT id, firstname, lastname, (CASE WHEN (ntype & ?) > 0 THEN email ELSE '' END) AS email,
                 (CASE WHEN (ntype & ?) > 0 THEN phone ELSE '' END) AS phone FROM users
             WHERE deleted = 0 AND accessfrom <= ?NOW? AND (accessto = 0 OR accessto >= ?NOW?)
             ORDER BY id",
@@ -1841,6 +1843,8 @@ if (empty($types) || in_array('events', $types)) {
 
         foreach ($events as $event) {
             $contacts = array();
+
+            $event['name'] = $event['firstname'] . ' ' . $event['lastname'];
 
             $message = $event['description'];
             $subject = $event['title'];
