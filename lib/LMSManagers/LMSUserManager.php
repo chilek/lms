@@ -230,7 +230,6 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             'accessto' => !empty($user['accessto']) ? $user['accessto'] : 0,
             'twofactorauth' => $user['twofactorauth'],
             'twofactorauthsecretkey' => $user['twofactorauthsecretkey'],
-            'divisions' => $user['divisions'],
         );
         $user_inserted = $this->db->Execute(
             'INSERT INTO users (login, firstname, lastname, email, passwd, rights, hosts, position, ntype, phone,
@@ -244,7 +243,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
                 array($user['login'])
             );
 
-            foreach ($args['divisions'] as $divisionid) {
+            foreach ($user['divisions'] as $divisionid) {
                 $this->db->Execute('INSERT INTO userdivisions (userid, divisionid) VALUES(?, ?)', array($id, $divisionid));
             }
 
@@ -419,6 +418,19 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
         $res = $this->db->Execute('UPDATE users SET login=?, firstname=?, lastname=?, email=?, rights=?,
 				hosts=?, position=?, ntype=?, phone=?, passwdforcechange=?, passwdexpiration=?, access=?,
 				accessfrom=?, accessto=?, twofactorauth=?, twofactorauthsecretkey=? WHERE id=?', array_values($args));
+
+        if ($res) {
+            // if divisions were changed
+            if (!empty($user['diff_divisions'])) {
+                $this->db->BeginTrans();
+                $this->db->Execute('DELETE FROM userdivisions WHERE userid = ?', array($user['id']));
+                foreach ($user['divisions'] as $userinfo_division) {
+                    $this->db->Execute('INSERT INTO userdivisions (userid, divisionid) VALUES(?, ?)', array($user['id'], $userinfo_division));
+                }
+                $this->db->CommitTrans();
+            }
+        }
+
         if ($res && $this->syslog) {
             $this->syslog->AddMessage(SYSLOG::RES_USER, SYSLOG::OPER_UPDATE, $args);
         }
