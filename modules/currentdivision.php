@@ -24,11 +24,9 @@
  *  $Id$
  */
 
-if (isset($_POST) && !empty($_POST)) {
-    foreach ($_POST as $variable => $value) {
-        $SESSION->save_persistent_setting($variable, $value);
-        $SESSION->save($variable, $value, true);
-    }
+if (isset($_POST['division_context']) && !empty($_POST['division_context'])) {
+        $SESSION->save_persistent_setting('division_context', $_POST['division_context']);
+        $SESSION->save('division_context', $_POST['division_context'], true);
 }
 
 header('Content-type: application/json');

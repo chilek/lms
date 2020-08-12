@@ -230,6 +230,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             'accessto' => !empty($user['accessto']) ? $user['accessto'] : 0,
             'twofactorauth' => $user['twofactorauth'],
             'twofactorauthsecretkey' => $user['twofactorauthsecretkey'],
+            'divisions' => $user['divisions'],
         );
         $user_inserted = $this->db->Execute(
             'INSERT INTO users (login, firstname, lastname, email, passwd, rights, hosts, position, ntype, phone,
@@ -242,6 +243,11 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
                 'SELECT id FROM users WHERE login=?',
                 array($user['login'])
             );
+
+            foreach ($user['divisions'] as $divisionid) {
+                $this->db->Execute('INSERT INTO userdivisions (userid, divisionid) VALUES(?, ?)', array($id, $divisionid));
+            }
+
             if ($this->syslog) {
                 unset($args['passwd']);
                 $args[SYSLOG::RES_USER] = $id;

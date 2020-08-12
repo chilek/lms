@@ -34,7 +34,7 @@ $this->Execute("
             FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
         CONSTRAINT userdivisions_divisionid_fkey
             FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE,
-        UNIQUE KEY userdivisions_userid_divisionid_key (userid, divisionid)
+        UNIQUE KEY userdivisions_userid_divisionid_ukey (userid, divisionid)
     ) ENGINE=InnoDB
 ");
 

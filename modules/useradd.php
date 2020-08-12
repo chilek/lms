@@ -168,12 +168,6 @@ if (count($useradd)) {
             }
         }
 
-        if (isset($useradd['divisions'])) {
-            foreach ($useradd['divisions'] as $divisionid) {
-                $DB->Execute('INSERT INTO userdivisions (userid, divisionid) VALUES(?, ?)', array($id, $divisionid));
-            }
-        }
-
         $LMS->executeHook('useradd_after_submit', $id);
         $SESSION->redirect('?m=userinfo&id=' . $id);
     } elseif (isset($_POST['selected'])) {

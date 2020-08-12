@@ -2588,7 +2588,7 @@ CREATE TABLE userdivisions (
     divisionid  integer     NOT NULL
         CONSTRAINT divisions_divisionid_fkey REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY (id),
-    CONSTRAINT userdivisions_userid_divisionid_key UNIQUE (userid, divisionid)
+    CONSTRAINT userdivisions_userid_divisionid_ukey UNIQUE (userid, divisionid)
 );
 DROP INDEX IF EXISTS userdivisions_userid_idx;
 CREATE INDEX userdivisions_userid_idx ON userdivisions (userid);
