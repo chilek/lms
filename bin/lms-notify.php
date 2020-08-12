@@ -38,6 +38,7 @@ $parameters = array(
     's:' => 'section:',
     'c:' => 'channel:',
     'a:' => 'actions:',
+    'g:' => 'customergroups:',
 );
 
 foreach ($parameters as $key => $val) {
@@ -56,7 +57,7 @@ foreach ($short_to_longs as $short => $long) {
 if (array_key_exists('version', $options)) {
     print <<<EOF
 lms-notify.php
-(C) 2001-2017 LMS Developers
+(C) 2001-2020 LMS Developers
 
 EOF;
     exit(0);
@@ -65,7 +66,7 @@ EOF;
 if (array_key_exists('help', $options)) {
     print <<<EOF
 lms-notify.php
-(C) 2001-2017 LMS Developers
+(C) 2001-2020 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
@@ -82,6 +83,9 @@ lms-notify.php
 -a, --actions=<node-access,customer-status,assignment-invoice,all-assignment-suspension>
                                 action names which should be performed for
                                 virtual block/unblock channels
+-g, --customergroups=<group1,group2,...>
+                                allow to specify customer groups to which notified customers
+                                should be assigned
 
 EOF;
     exit(0);
@@ -91,7 +95,7 @@ $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
     print <<<EOF
 lms-notify.php
-(C) 2001-2017 LMS Developers
+(C) 2001-2020 LMS Developers
 
 EOF;
 }
@@ -217,6 +221,7 @@ $format = ConfigHelper::getConfig($config_section . '.format', 'text');
 $mail_format = ConfigHelper::getConfig($config_section . '.mail_format', $format);
 $content_type = $format == 'html' ? 'text/html' : 'text/plain';
 $mail_content_type = $mail_format == 'html' ? 'text/html' : 'text/plain';
+$customergroups = ConfigHelper::getConfig($config_section . '.customergroups', '', true);
 
 $content_types = array(
     MSG_MAIL => $mail_content_type,
@@ -546,6 +551,21 @@ function send_sms_to_user($phone, $data)
     $result = $LMS->SendSMS(str_replace(' ', '', $phone), $data);
 }
 
+// prepare customergroups in sql query
+if (isset($options['customergroups'])) {
+    $customergroups = $options['customergroups'];
+}
+if (!empty($customergroups)) {
+    $customergroups = preg_split("/[[:blank:]]+/", $customergroups, -1, PREG_SPLIT_NO_EMPTY);
+    foreach ($customergroups as $idx => $customergroup) {
+        $customergroups[$idx] = mb_strtoupper($customergroup);
+    }
+    $customergroups = " AND EXISTS (SELECT 1 FROM customergroups g, customerassignments ca
+        WHERE c.id = ca.customerid
+        AND g.id = ca.customergroupid
+        AND UPPER(g.name) IN ('" . implode("', '", $customergroups) . "'))";
+}
+
 // ------------------------------------------------------------------------
 // ACTIONS
 // ------------------------------------------------------------------------
@@ -671,7 +691,8 @@ if (empty($types) || in_array('documents', $types)) {
         ) x ON (x.customerid = c.id)
         WHERE d.type IN (?, ?) AND dc.todate >= $daystart + ? * 86400
             AND dc.todate < $daystart + (? + 1) * 86400"
-            . ($notifications['documents']['deleted_customers'] ? '' : ' AND c.deleted = 0'),
+            . ($notifications['documents']['deleted_customers'] ? '' : ' AND c.deleted = 0')
+            . ($customergroups ?: ''),
         array(
             CONTACT_EMAIL | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
             CONTACT_EMAIL | CONTACT_NOTIFICATIONS,
@@ -810,8 +831,9 @@ if (empty($types) || in_array('contracts', $types)) {
             GROUP BY customerid
         ) x ON (x.customerid = c.id)
         WHERE d.dateto >= $daystart + ? * 86400 AND d.dateto < $daystart + (? + 1) * 86400"
-            . ($notifications['contracts']['deleted_customers'] ? '' : ' AND c.deleted = 0') . "
-        GROUP BY c.id, c.pin, c.lastname, c.name, d.dateto, m.email, x.phone",
+            . ($notifications['contracts']['deleted_customers'] ? '' : ' AND c.deleted = 0')
+            . ($customergroups ?: '')
+        . " GROUP BY c.id, c.pin, c.lastname, c.name, d.dateto, m.email, x.phone",
         array(
             CONTACT_EMAIL | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
             CONTACT_EMAIL | CONTACT_NOTIFICATIONS,
@@ -957,7 +979,8 @@ if (empty($types) || in_array('debtors', $types)) {
             GROUP BY customerid
         ) x ON (x.customerid = c.id)
         WHERE c.status <> ? AND c.cutoffstop < $currtime AND b2.balance " . ($limit > 0 ? '>' : '<') . " ?"
-            . ($notifications['debtors']['deleted_customers'] ? '' : ' AND c.deleted = 0'),
+            . ($notifications['debtors']['deleted_customers'] ? '' : ' AND c.deleted = 0')
+            . ($customergroups ?: ''),
         array(
             DOC_CNOTE,
             $days,
@@ -1128,7 +1151,8 @@ if (empty($types) || in_array('reminder', $types)) {
         WHERE d.type IN (?, ?, ?) AND d.closed = 0 AND b2.balance < ?
             AND (d.cdate + (d.paytime - ? + 1) * 86400) >= $daystart
             AND (d.cdate + (d.paytime - ? + 1) * 86400) < $dayend"
-            . ($notifications['reminder']['deleted_customers'] ? '' : ' AND c.deleted = 0'),
+            . ($notifications['reminder']['deleted_customers'] ? '' : ' AND c.deleted = 0')
+            . ($customergroups ?: ''),
         array(
             DOC_CNOTE,
             DOC_RECEIPT,
@@ -1303,7 +1327,8 @@ if (empty($types) || in_array('income', $types)) {
             GROUP BY customerid
         ) x ON (x.customerid = c.id)
         WHERE cash.type = 1 AND cash.value > 0 AND cash.time >= $daystart + (? * 86400) AND cash.time < $daystart + (? + 1) * 86400"
-            . ($notifications['income']['deleted_customers'] ? '' : ' AND c.deleted = 0'),
+            . ($notifications['income']['deleted_customers'] ? '' : ' AND c.deleted = 0')
+            . ($customergroups ?: ''),
         array(
             DOC_CNOTE,
             DOC_RECEIPT,
@@ -1445,7 +1470,8 @@ if (empty($types) || in_array('invoices', $types)) {
         ) ca ON (ca.customerid = d.customerid)
         WHERE (c.invoicenotice IS NULL OR c.invoicenotice = 0) AND d.type IN (?, ?, ?)
             AND d.cdate >= ? AND d.cdate <= ?"
-            . ($notifications['invoices']['deleted_customers'] ? '' : ' AND c.deleted = 0'),
+            . ($notifications['invoices']['deleted_customers'] ? '' : ' AND c.deleted = 0')
+            . ($customergroups ?: ''),
         array(
             CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
             CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS,
@@ -1589,7 +1615,8 @@ if (empty($types) || in_array('notes', $types)) {
         ) ca ON (ca.customerid = d.customerid)
         WHERE (c.invoicenotice IS NULL OR c.invoicenotice = 0) AND d.type = ?
             AND d.cdate >= ? AND d.cdate <= ?"
-            . ($notifications['notes']['deleted_customers'] ? '' : ' AND c.deleted = 0'),
+            . ($notifications['notes']['deleted_customers'] ? '' : ' AND c.deleted = 0')
+            . ($customergroups ?: ''),
         array(
             CONTACT_EMAIL | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
             CONTACT_EMAIL | CONTACT_NOTIFICATIONS,
@@ -1722,7 +1749,8 @@ if (empty($types) || in_array('warnings', $types)) {
             GROUP BY customerid
         ) ca ON (ca.customerid = c.id)
         WHERE c.id IN (SELECT DISTINCT ownerid FROM vnodes WHERE warning = 1)"
-            . ($notifications['warnings']['deleted_customers'] ? '' : ' AND c.deleted = 0'),
+            . ($notifications['warnings']['deleted_customers'] ? '' : ' AND c.deleted = 0')
+            . ($customergroups ?: ''),
         array(
             CONTACT_EMAIL | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
             CONTACT_EMAIL | CONTACT_NOTIFICATIONS,
