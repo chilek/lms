@@ -34,7 +34,7 @@ $this->Execute("
         PRIMARY KEY (id),
         CONSTRAINT userdivisions_userid_divisionid_ukey UNIQUE (userid, divisionid)
     );
-    CREATE INDEX userdivisions_userid_idx ON userdivisions (userid);
+    CREATE INDEX userdivisions_userid_idx ON userdivisions (userid)
 ");
 
 $this->Execute(
@@ -48,7 +48,7 @@ $this->Execute(
     array('phpui', 'force_global_division_context', 'false', CONFIG_TYPE_BOOLEAN)
 );
 
-$this->Execute("DROP VIEW customerview;");
+$this->Execute("DROP VIEW customerview");
 $this->Execute("
     CREATE VIEW customerview AS
         SELECT c.*,
@@ -81,8 +81,10 @@ $this->Execute("
                 SELECT ud.divisionid
                 FROM userdivisions ud
                 WHERE ud.userid = lms_current_user())
-            AND c.type < 2;
+            AND c.type < 2
 ");
+
+$this->Execute("DROP VIEW vusers");
 
 $this->Execute("
     CREATE VIEW vusers AS
@@ -92,7 +94,7 @@ $this->Execute("
         WHERE ud.divisionid IN (SELECT ud2.divisionid
                                  FROM userdivisions ud2
                                  WHERE ud2.userid = lms_current_user())
-        GROUP BY u.id;
+        GROUP BY u.id
 ");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020081200', 'dbversion'));

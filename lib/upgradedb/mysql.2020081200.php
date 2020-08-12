@@ -81,10 +81,10 @@ $this->Execute("
             SELECT ud.divisionid
             FROM userdivisions ud
             WHERE ud.userid = lms_current_user())
-        AND c.type < 2;
+        AND c.type < 2
 ");
 
-$this->Execute("DROP VIEW vusers;");
+$this->Execute("DROP VIEW vusers");
 $this->Execute("
     CREATE VIEW vusers AS
         SELECT u.*, (u.firstname || ' ' || u.lastname) AS name, (u.lastname || ' ' || u.firstname) AS rname
@@ -93,7 +93,7 @@ $this->Execute("
         WHERE ud.divisionid IN (SELECT ud2.divisionid
                                  FROM userdivisions ud2
                                  WHERE ud2.userid = lms_current_user())
-        GROUP BY u.id;
+        GROUP BY u.id
 ");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020081200', 'dbversion'));
