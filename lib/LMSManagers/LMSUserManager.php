@@ -423,12 +423,10 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
         if ($res) {
             // if divisions were changed
             if (!empty($user['diff_divisions'])) {
-                $this->db->BeginTrans();
                 $this->db->Execute('DELETE FROM userdivisions WHERE userid = ?', array($user['id']));
                 foreach ($user['divisions'] as $userinfo_division) {
                     $this->db->Execute('INSERT INTO userdivisions (userid, divisionid) VALUES(?, ?)', array($user['id'], $userinfo_division));
                 }
-                $this->db->CommitTrans();
             }
         }
 

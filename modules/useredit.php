@@ -209,44 +209,6 @@ if ($userinfo) {
             }
         }
 
-
-//        if (isset($userinfo['divisions'])) {
-//            $diff_divisions = array();
-//
-//            // check if user divisions were changed
-//            foreach ($user_divisions as $user_division) {
-//                if (in_array(intval($user_division), $userinfo['divisions'])) {
-//                    continue;
-//                } else {
-//                    $diff_divisions[] = $user_division;
-//                }
-//            }
-//            foreach ($userinfo['divisions'] as $userinfo_division) {
-//                if (in_array(intval($userinfo_division), $user_divisions)) {
-//                    continue;
-//                } else {
-//                    $diff_divisions[] = $userinfo_division;
-//                }
-//            }
-//
-//            // if divisions were changed
-//            if ($diff_divisions) {
-//                $DB->BeginTrans();
-//                $DB->Execute('DELETE FROM userdivisions WHERE userid = ?', array($userinfo['id']));
-//                foreach ($userinfo['divisions'] as $userinfo_division) {
-//                    $DB->Execute('INSERT INTO userdivisions (userid, divisionid) VALUES(?, ?)', array($userinfo['id'], $userinfo_division));
-//                }
-//                $DB->CommitTrans();
-//
-//                // change default division context if division was removed
-//                $currentDivisionContext = $SESSION->get_persistent_setting('division_context');
-//                $newUserDivisions = array_keys($LMS->GetDivisions(array('status' => 0, 'userid' => $id)));
-//                if (!in_array($currentDivisionContext, $newUserDivisions)) {
-//                    $SESSION->save_persistent_setting('division_context', $newUserDivisions[0]);
-//                }
-//            }
-//        }
-
         $SESSION->redirect('?m=userinfo&id='.$userinfo['id']);
     } else {
         $userinfo['selected'] = array();
