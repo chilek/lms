@@ -244,7 +244,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
                 array($user['login'])
             );
 
-            foreach ($user['divisions'] as $divisionid) {
+            foreach ($args['divisions'] as $divisionid) {
                 $this->db->Execute('INSERT INTO userdivisions (userid, divisionid) VALUES(?, ?)', array($id, $divisionid));
             }
 
