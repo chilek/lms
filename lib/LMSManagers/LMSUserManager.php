@@ -250,6 +250,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             if ($this->syslog) {
                 unset($args['passwd']);
                 $args[SYSLOG::RES_USER] = $id;
+                $args['divisions'] = implode(',', $user['divisions']);
                 $this->syslog->AddMessage(SYSLOG::RES_USER, SYSLOG::OPER_ADD, $args);
             }
             return $id;
@@ -432,6 +433,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
         }
 
         if ($res && $this->syslog) {
+            $args['divisions'] = implode(',', $user['divisions']);
             $this->syslog->AddMessage(SYSLOG::RES_USER, SYSLOG::OPER_UPDATE, $args);
         }
         return $res;
