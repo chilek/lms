@@ -307,11 +307,11 @@ class Auth
     {
         $this->islogged = false;
 
-        if ($user = $this->DB->GetRow('SELECT id, name, passwd, hosts, lastlogindate, lastloginip,
+        if ($user = $this->DB->GetRow('SELECT id, firstname, lastname, passwd, hosts, lastlogindate, lastloginip,
 				passwdforcechange, passwdexpiration, passwdlastchange, access, accessfrom, accessto,
 				twofactorauth, twofactorauthsecretkey
-			FROM vusers WHERE login=? AND deleted=0', array($this->login))) {
-            $this->logname = $user['name'];
+			FROM users WHERE login=? AND deleted=0', array($this->login))) {
+            $this->logname = $user['firstname'] . ' ' . $user['lastname'];
             $this->id = $user['id'];
             $this->last = $user['lastlogindate'];
             $this->lastip = $user['lastloginip'];
