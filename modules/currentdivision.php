@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-if (isset($_POST['division_context']) && !empty($_POST['division_context'])) {
+if (isset($_POST['division_context'])) {
         $SESSION->save_persistent_setting('division_context', $_POST['division_context']);
         $SESSION->save('division_context', $_POST['division_context'], true);
 }
