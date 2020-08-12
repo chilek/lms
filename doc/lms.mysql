@@ -2654,16 +2654,6 @@ CREATE TABLE userdivisions (
 	UNIQUE KEY userdivisions_userid_divisionid_ukey (userid, divisionid)
 ) ENGINE=InnoDB;
 
-CREATE VIEW vusers AS
-    SELECT u.*, CONCAT(u.firstname, ' ', u.lastname) AS name, CONCAT(u.lastname, ' ', u.firstname) AS rname
-    FROM users u
-    JOIN userdivisions ud ON u.id = ud.userid
-    WHERE ud.divisionid IN (SELECT ud2.divisionid
-                             FROM userdivisions ud2
-                             WHERE ud2.userid = lms_current_user())
-    GROUP BY u.id;
-
-
 # --------------------------------------------------------
 #
 # Structure of table passwdhistory
@@ -3038,6 +3028,15 @@ CREATE VIEW customerview AS
             FROM userdivisions ud
             WHERE ud.userid = lms_current_user())
         AND c.type < 2;
+
+CREATE VIEW vusers AS
+    SELECT u.*, CONCAT(u.firstname, ' ', u.lastname) AS name, CONCAT(u.lastname, ' ', u.firstname) AS rname
+    FROM users u
+    JOIN userdivisions ud ON u.id = ud.userid
+    WHERE ud.divisionid IN (SELECT ud2.divisionid
+                             FROM userdivisions ud2
+                             WHERE ud2.userid = lms_current_user())
+    GROUP BY u.id;
 
 CREATE VIEW contractorview AS
     SELECT c.*,
