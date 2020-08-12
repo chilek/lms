@@ -87,6 +87,9 @@ version 26-git (????-??-??):
   - enhancement: additional selection level in assignment and promotion tariff definition - service
     type [chilan]
   - improvement: implemented clear button in lms-ui-multiselect ui controls [chilan]
+  - enhancement: implemented user permissions for companies and global division context selection.
+    Configuration variable 'phpui.force_global_division_context' ('false' by default)
+    allows to force division contex [ravvar]
 
 version 25.0 (2020-05-15):
 
