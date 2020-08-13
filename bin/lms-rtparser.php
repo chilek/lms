@@ -496,7 +496,7 @@ if (!$prev_tid) { // generate new ticket if previous not found
 } else {
     // find userid
     $requserid = $DB->GetOne(
-        "SELECT id FROM users WHERE email = ? AND email <> ''",
+        "SELECT id FROM vusers WHERE email = ? AND email <> ''",
         array($fromemail)
     );
     if (empty($requserid)) {
