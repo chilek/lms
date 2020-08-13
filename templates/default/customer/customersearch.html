@@ -412,10 +412,10 @@
 		</TD>
 		<TD style="width: 99%;">
 			<SELECT SIZE="1" name="g[]" multiple class="lms-ui-multiselect">
-				<OPTION value=""{if !$listdata.customergroup} selected{/if} data-exclusive>{trans("- all groups -")}</OPTION>
-				<OPTION value="-1"{if $listdata.customergroup == -1} selected{/if} data-exclusive>{trans("- without assigned groups -")}</OPTION>
+				<OPTION value=""{if ! is_array($listdata.customergroup) && !$listdata.customergroup} selected{/if} data-exclusive>{trans("- all groups -")}</OPTION>
+				<OPTION value="-1"{if !is_array($listdata.customergroup) && $listdata.customergroup == -1} selected{/if} data-exclusive>{trans("- without assigned groups -")}</OPTION>
 				{foreach $customergroups as $customergroup}
-				<OPTION value="{$customergroup.id}"{if $listdata.customergroup == $customergroup.id} selected{/if}>{$customergroup.name|truncate:50:"...":true}</OPTION>
+				<OPTION value="{$customergroup.id}"{if is_array($listdata.customergroup) && in_array($customergroup.id, $listdata.customergroup)} selected{/if}>{$customergroup.name|truncate:50:"...":true}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>

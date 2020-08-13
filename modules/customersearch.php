@@ -149,7 +149,7 @@ if (isset($_GET['search'])) {
     $listdata['over'] = $customerlist['over'];
     $listdata['state'] = $state;
     $listdata['network'] = $network;
-    $listdata['customergroup'] = empty($customergroup) ? array() : is_array($customergroup) ? $customergroup : array($customergroup);
+    $listdata['customergroup'] = empty($customergroup) ? array() : $customergroup;
     $listdata['nodegroup'] = $nodegroup;
     $listdata['division'] = $division;
 
