@@ -98,7 +98,11 @@ $SESSION->save('csln', $network);
 if (!isset($_POST['g'])) {
     $SESSION->restore('cslg', $customergroup);
 } else {
-    $customergroup = $_POST['g'];
+    if (count($_POST['g']) == 1 && intval($_POST['g'][0]) <= 0) {
+        $customergroup = reset($_POST['g']);
+    } else {
+        $customergroup = $_POST['g'];
+    }
 }
 $SESSION->save('cslg', $customergroup);
 
@@ -145,7 +149,7 @@ if (isset($_GET['search'])) {
     $listdata['over'] = $customerlist['over'];
     $listdata['state'] = $state;
     $listdata['network'] = $network;
-    $listdata['customergroup'] = empty($customergroup) ? array() : array($customergroup);
+    $listdata['customergroup'] = empty($customergroup) ? array() : is_array($customergroup) ? $customergroup : array($customergroup);
     $listdata['nodegroup'] = $nodegroup;
     $listdata['division'] = $division;
 
