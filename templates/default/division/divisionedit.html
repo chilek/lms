@@ -274,10 +274,29 @@
 			</SELECT>
 		</TD>
 	</TR>
+	<tr>
+		<td>
+			<IMG src="img/users.gif" alt="">
+		</td>
+		<td class="bold nobr">
+			{trans("Users:")}
+		</td>
+		<td>
+			<label for="division[users][]">
+				<select SIZE="4" NAME="division[users][]" multiple {tip text="Select users" class="lms-ui-multiselect"} data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
+					{foreach $userslist as $user}
+						<option value="{$user.id}" {if !empty($division_users) && in_array($user.id, $division_users)} selected{/if}>
+							{$user.login|truncate:30:"...":true}
+						</option>
+					{/foreach}
+				</select>
+			</label>
+		</td>
+	</tr>
 	<TR>
-		<TD align="right" colspan="3">
-			<A href="javascript:document.division.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
-			<A href="?m=divisionlist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A><BR>
+		<TD colspan="3" class="lms-ui-box-buttons">
+			{button type="submit" icon="save" label="Submit"}
+			{button type="link-button" icon="cancel" label="Cancel" href="?m=divisionlist"}
 		</TD>
 	</TR>
     </TBODY>

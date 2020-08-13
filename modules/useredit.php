@@ -132,33 +132,25 @@ if ($userinfo) {
             $userinfo['twofactorauthsecretkey'] = $google2fa->generateSecretKey();
         }
 
-        $diff_divisions = array();
+        $diffDivisionAdd = array();
+        $diffDivisionDel = array();
         // check if user divisions were changed
         foreach ($user_divisions as $user_division) {
             if (in_array(intval($user_division), $userinfo['divisions'])) {
                 continue;
             } else {
-                $diff_divisions[] = intval($user_division);
+                $diffDivisionDel[] = intval($user_division);
             }
         }
         foreach ($userinfo['divisions'] as $userinfo_division) {
             if (in_array(intval($userinfo_division), $user_divisions)) {
                 continue;
             } else {
-                $diff_divisions[] = intval($userinfo_division);
+                $diffDivisionAdd[] = intval($userinfo_division);
             }
         }
-        $userinfo['diff_divisions'] = $diff_divisions;
-
-        // if divisions were changed
-        if ($diff_divisions) {
-            // change default division context if division was removed
-            $currentDivisionContext = $SESSION->get_persistent_setting('division_context');
-            $newUserDivisions = array_keys($LMS->GetDivisions(array('status' => 0, 'userid' => $id)));
-            if (!in_array($currentDivisionContext, $newUserDivisions)) {
-                $SESSION->save_persistent_setting('division_context', $newUserDivisions[0]);
-            }
-        }
+        $userinfo['diff_division_del'] = $diffDivisionDel;
+        $userinfo['diff_division_add'] = $diffDivisionAdd;
 
         $userinfo['accessfrom'] = $accessfrom;
         $userinfo['accessto'] = $accessto;
