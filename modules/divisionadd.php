@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -28,7 +28,9 @@ if (!empty($_POST['division'])) {
     $division = $_POST['division'];
 
     foreach ($division as $key => $value) {
-        $division[$key] = trim($value);
+        if (!is_array($value)) {
+            $division[$key] = trim($value);
+        }
     }
 
     if ($division['name']=='' && $division['description']=='' && $division['shortname']=='') {
@@ -115,8 +117,12 @@ if (Localisation::getCurrentSystemLanguage() == 'pl_PL') {
     require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'tax_office_codes.php');
 }
 
+$usersList = $LMS->GetUserList();
+unset($usersList['total']);
+
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('division', $division);
+$SMARTY->assign('userslist', $usersList);
 $SMARTY->assign('error', $error);
 $SMARTY->display('division/divisionadd.html');

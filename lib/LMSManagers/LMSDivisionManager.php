@@ -107,8 +107,15 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
 
         $divisionid = $this->db->GetLastInsertID('divisions');
 
+        if ($divisionid && isset($division['users'])) {
+            foreach ($division['users'] as $userid) {
+                $this->db->Execute('INSERT INTO userdivisions (userid, divisionid) VALUES(?, ?)', array($userid, $divisionid));
+            }
+        }
+
         if ($this->syslog) {
             $args[SYSLOG::RES_DIV] = $divisionid;
+            $args['users'] = (isset($division['users']) ? implode(',', $division['users']) : null);
             $this->syslog->AddMessage(SYSLOG::RES_DIV, SYSLOG::OPER_ADD, $args);
         }
 
@@ -176,10 +183,23 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
 			inv_paytype=?, email=?, description=?, status=?, tax_office_code = ?
 			WHERE id=?', array_values($args));
 
+        if (!empty($division['diff_users_del'])) {
+            foreach ($division['diff_users_del'] as $userdelid) {
+                $this->db->Execute('DELETE FROM userdivisions WHERE userid = ? AND divisionid = ?', array($userdelid, $division['id']));
+            }
+        }
+
+        if (!empty($division['diff_users_add'])) {
+            foreach ($division['diff_users_add'] as $useraddid) {
+                $this->db->Execute('INSERT INTO userdivisions (userid, divisionid) VALUES(?, ?)', array($useraddid, $division['id']));
+            }
+        }
+
         $lm = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
         $lm->UpdateAddress($division);
 
         if ($this->syslog) {
+            $args['users'] = implode(',', $division['users']);
             $this->syslog->AddMessage(SYSLOG::RES_DIV, SYSLOG::OPER_UPDATE, $args);
         }
     }

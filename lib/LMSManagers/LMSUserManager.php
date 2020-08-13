@@ -132,7 +132,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
     {
         extract($params);
 
-        $userlist = $this->db->GetAll(
+        $userlist = $this->db->GetAllByKey(
             'SELECT id, login, name, phone, lastlogindate, lastloginip, passwdexpiration, passwdlastchange, access,
                 accessfrom, accessto, rname, twofactorauth
             FROM vusers
@@ -141,7 +141,8 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
                     FROM userdivisions
                     WHERE divisionid IN (' . $divisions . ')
                     )' : '') .
-            ' ORDER BY login ASC'
+            ' ORDER BY login ASC',
+            'id'
         );
 
         if ($userlist) {
@@ -421,11 +422,15 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
 				accessfrom=?, accessto=?, twofactorauth=?, twofactorauthsecretkey=? WHERE id=?', array_values($args));
 
         if ($res) {
-            // if divisions were changed
-            if (!empty($user['diff_divisions'])) {
-                $this->db->Execute('DELETE FROM userdivisions WHERE userid = ?', array($user['id']));
-                foreach ($user['divisions'] as $userinfo_division) {
-                    $this->db->Execute('INSERT INTO userdivisions (userid, divisionid) VALUES(?, ?)', array($user['id'], $userinfo_division));
+            if (!empty($user['diff_division_del'])) {
+                foreach ($user['diff_division_del'] as $divisiondelid) {
+                    $this->db->Execute('DELETE FROM userdivisions WHERE userid = ? AND divisionid = ?', array($user['id'], $divisiondelid));
+                }
+            }
+
+            if (!empty($user['diff_division_add'])) {
+                foreach ($user['diff_division_add'] as $divisionaddid) {
+                    $this->db->Execute('INSERT INTO userdivisions (userid, divisionid) VALUES(?, ?)', array($user['id'], $divisionaddid));
                 }
             }
         }
