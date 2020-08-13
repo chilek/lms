@@ -597,8 +597,6 @@ if (empty($types) || in_array('timetable', $types)) {
             continue;
         }
 
-        $user['name'] = $user['firstname'] . ' ' . $user['lastname'];
-
         $contents = '';
         $events = $DB->GetAll("SELECT DISTINCT title, description, begintime, endtime,
             customerid, UPPER(lastname) AS lastname, c.name AS name, address
@@ -1881,8 +1879,6 @@ if (empty($types) || in_array('events', $types)) {
 
         foreach ($events as $event) {
             $contacts = array();
-
-            $event['name'] = $event['firstname'] . ' ' . $event['lastname'];
 
             $message = $event['description'];
             $subject = $event['title'];
