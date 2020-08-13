@@ -87,7 +87,7 @@ $this->Execute("
 $this->Execute("DROP VIEW vusers");
 $this->Execute("
     CREATE VIEW vusers AS
-        SELECT u.*, (u.firstname || ' ' || u.lastname) AS name, (u.lastname || ' ' || u.firstname) AS rname
+        SELECT u.*, CONCAT(u.firstname, ' ', u.lastname) AS name, CONCAT(u.lastname, ' ', u.firstname) AS rname
         FROM users u
         JOIN userdivisions ud ON u.id = ud.userid
         WHERE ud.divisionid IN (SELECT ud2.divisionid
