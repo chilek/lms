@@ -194,18 +194,22 @@
 					<tr id="user-rights">
 						<td class="valign-top nobr">
 							{foreach $accesslist as $name => $access}
-							{if $access@index <= floor($access@total / 2) - 1}
-							<INPUT type="checkbox" data-right-name="{$name}" id="acl_{$access@index}"
-								   name="acl[{$name}]" value="1" {if $access.enabled} checked{/if}> <label for="acl_{$access@index}">{$access.name}</label><BR>
-							{/if}
+								{if $access@index <= floor($access@total / 2) - 1}
+									{if !empty($access.name)}
+									<INPUT type="checkbox" data-right-name="{$name}" id="acl_{$access@index}"
+									   name="acl[{$name}]" value="1" {if $access.enabled} checked{/if}> <label for="acl_{$access@index}">{$access.name}</label><BR>
+									{/if}
+								{/if}
 							{/foreach}
 						</td>
 						<td class="valign-top nobr">
 							{foreach $accesslist as $name => $access}
-							{if $access@index > floor($access@total / 2) - 1}
-							<INPUT type="checkbox" data-right-name="{$name}" id="acl_{$access@index}"
-								   name="acl[{$name}]" value="1" {if $access.enabled} checked{/if}> <label for="acl_{$access@index}">{$access.name}</label><BR>
-							{/if}
+								{if $access@index > floor($access@total / 2) - 1}
+									{if !empty($access.name)}
+									<INPUT type="checkbox" data-right-name="{$name}" id="acl_{$access@index}"
+										   name="acl[{$name}]" value="1" {if $access.enabled} checked{/if}> <label for="acl_{$access@index}">{$access.name}</label><BR>
+									{/if}
+								{/if}
 							{/foreach}
 							{assign var="name" value=""}
 						</td>
