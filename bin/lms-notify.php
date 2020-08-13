@@ -556,14 +556,24 @@ if (isset($options['customergroups'])) {
     $customergroups = $options['customergroups'];
 }
 if (!empty($customergroups)) {
-    $customergroups = preg_split("/[[:blank:]]+/", $customergroups, -1, PREG_SPLIT_NO_EMPTY);
-    foreach ($customergroups as $idx => $customergroup) {
-        $customergroups[$idx] = mb_strtoupper($customergroup);
+    $all_customergroups = $DB->GetCol("SELECT UPPER(name) FROM customergroups");
+    if (!empty($all_customergroups)) {
+        $customergroups = mb_strtoupper($customergroups);
+        $inverse = strpos($customergroups, '!') === 0;
+        if ($inverse) {
+            $customergroups = mb_substr($customergroups, 1);
+        }
+        $customergroups = preg_split("/([\s]+|[\s]*,[\s]*)/", $customergroups, -1, PREG_SPLIT_NO_EMPTY);
+        if ($inverse) {
+            $customergroups = array_diff($all_customergroups, $customergroups);
+        } else {
+            $customergroups = array_intersect($all_customergroups, $customergroups);
+        }
+        $customergroups = " AND EXISTS (SELECT 1 FROM customergroups g, customerassignments ca
+            WHERE c.id = ca.customerid
+            AND g.id = ca.customergroupid
+            AND UPPER(g.name) IN ('" . implode("', '", $customergroups) . "'))";
     }
-    $customergroups = " AND EXISTS (SELECT 1 FROM customergroups g, customerassignments ca
-        WHERE c.id = ca.customerid
-        AND g.id = ca.customergroupid
-        AND UPPER(g.name) IN ('" . implode("', '", $customergroups) . "'))";
 }
 
 // ------------------------------------------------------------------------
