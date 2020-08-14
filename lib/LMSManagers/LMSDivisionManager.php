@@ -115,7 +115,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
 
         if ($this->syslog) {
             $args[SYSLOG::RES_DIV] = $divisionid;
-            $args['users'] = (isset($division['users']) ? implode(',', $division['users']) : null);
+            $args['added_users'] = (isset($division['users']) ? implode(',', $division['users']) : null);
             $this->syslog->AddMessage(SYSLOG::RES_DIV, SYSLOG::OPER_ADD, $args);
         }
 
@@ -199,7 +199,8 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
         $lm->UpdateAddress($division);
 
         if ($this->syslog) {
-            $args['users'] = implode(',', $division['users']);
+            $args['added_users'] = implode(',', $division['diff_users_add']);
+            $args['removed_users'] = implode(',', $division['diff_users_del']);
             $this->syslog->AddMessage(SYSLOG::RES_DIV, SYSLOG::OPER_UPDATE, $args);
         }
     }
