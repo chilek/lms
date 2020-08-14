@@ -36,7 +36,9 @@ $user_divisions = array_keys($LMS->GetDivisions(array('userid' => $id)));
 
 if (isset($_GET['fromuser'])) {
     header('Content-Type: application/json');
-    die(json_encode($LMS->GetUserRights($_GET['fromuser'])));
+    $formuser['rights'] = $LMS->GetUserRights($_GET['fromuser']);
+    $formuser['divisions'] = array_keys($LMS->GetDivisions(array('userid' => $_GET['fromuser'])));
+    die(json_encode($formuser));
 }
 
 if (isset($_GET['removetrusteddevices'])) {

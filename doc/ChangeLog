@@ -93,6 +93,7 @@ version 26-git (????-??-??):
     allows to force division contex [ravvar]
   - improvement: converted customer group selection in customer search form to multiple
     selection [chilan]
+  - enhancement: added the ability to copy user divisions between users [ravvar]
 
 version 25.0 (2020-05-15):
 
