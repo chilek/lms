@@ -85,6 +85,7 @@ class SYSLOG
     const RES_DOCATTACH = 57;
     const RES_DOCCONTENT = 58;
     const RES_CUSTCONSENT = 59;
+    const RES_CUSTNOTE = 60;
 
     const OPER_ADD = 1;
     const OPER_DELETE = 2;
@@ -157,6 +158,7 @@ class SYSLOG
         self::RES_DOCATTACH => 'document attachment<!syslog>',
         self::RES_DOCCONTENT => 'document content<!syslog>',
         self::RES_CUSTCONSENT => 'customer consent<!syslog>',
+        self::RES_CUSTNOTE => 'customer note<!syslog>',
     );
     private static $resource_keys = array(
         self::RES_USER => 'userid',
@@ -218,6 +220,7 @@ class SYSLOG
         self::RES_DOCATTACH => 'documentattachmentid',
         self::RES_DOCCONTENT => 'documentcontentid',
         self::RES_CUSTCONSENT => 'customerconsentid',
+        self::RES_CUSTNOTE => 'customernoteid',
     );
     private static $operations = array(
         self::OPER_ADD => 'addition<!syslog>',

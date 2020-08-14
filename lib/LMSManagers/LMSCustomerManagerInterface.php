@@ -119,4 +119,12 @@ interface LMSCustomerManagerInterface
     public function addCustomerContactFlags($customerid, $type, $flags);
 
     public function removeCustomerContactFlags($customerid, $type, $flags);
+
+    public function getCustomerNotes($cid);
+
+    public function getCustomerNote($id);
+
+    public function addCustomerNote($params);
+
+    public function delCustomerNote($id);
 }

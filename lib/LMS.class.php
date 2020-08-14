@@ -769,6 +769,30 @@ class LMS
         return $manager->removeCustomerContactFlags($customerid, $type, $flags);
     }
 
+    public function getCustomerNotes($cid)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->getCustomerNotes($cid);
+    }
+
+    public function getCustomerNote($id)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->getCustomerNote($id);
+    }
+
+    public function addCustomerNote($params)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->addCustomerNote($params);
+    }
+
+    public function delCustomerNote($id)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->delCustomerNote($id);
+    }
+
     /*
      * Customer groups
      */

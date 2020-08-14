@@ -4797,3 +4797,10 @@ $_LANG['Select resource type'] = 'Wybierz typ zasobu';
 $_LANG['Customise'] = 'Dostosuj';
 
 $_LANG['don\'t scale images'] = 'nie skaluj obrazków';
+
+$_LANG['customer note<!syslog>'] = 'notatka klienta';
+$_LANG['Customer Notes'] = 'Notatki klienta';
+$_LANG['Customer Notes:'] = 'Notatki klienta:';
+$_LANG['New customer note:'] = 'Nowa notatka:';
+$_LANG['Add new customer note'] = 'Dodaje nową notatkę klienta';
+$_LANG['No customer notes.'] = 'Brak notatek klienta.';

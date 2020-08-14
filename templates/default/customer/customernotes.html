@@ -1,0 +1,166 @@
+<!--// $Id$ //-->
+
+<style>
+
+    #customernotes-datatable tbody td:not(:last-child) {
+        padding-right: 1em;
+    }
+
+    #customernotes-datatable tbody .date {
+        font-weight: bold;
+        white-space: nowrap;
+    }
+
+    #customernotes-datatable tbody .username {
+        font-weight: bold;
+        white-space: nowrap;
+    }
+
+    #customernotes-datatable tbody .note {
+        text-align: left;
+    }
+
+    #customernotes-datatable_filter {
+        display: none;
+    }
+
+</style>
+
+{tab_container id="customernotes" label="Customer Notes"}
+
+    {tab_header content_id="notespanel"}
+        {tab_header_cell icon="lms-ui-icon-notes"}
+            <strong>{trans("Customer Notes:")}</strong>
+        {/tab_header_cell}
+    {/tab_header}
+
+    {tab_contents id="notespanel"}
+
+        {tab_table}
+            <TABLE id="customernotes-datatable" class="lmsbox-inner lms-ui-datatable lms-ui-datatable-column-search"
+                    {if $limit} data-page-length="{$limit}"{/if}
+                   data-order='[[ 0, "desc" ]]'
+                   width="100%">
+                <COLGROUP>
+                    <COL style="width: 1%;">
+                    <COL style="width: 1%;">
+                    <COL style="width: 97%;">
+                    <COL style="width: 1%;">
+                </COLGROUP>
+                <thead>
+                    <tr>
+                        <th class="nobr" data-searchable="false" data-select-value="false">
+                            {trans("Date:")}
+                        </th>
+                        <th class="nobr" data-searchable="true" data-select-value="true" data-filter-id="user-filter">
+                            {trans("User:")}
+                        </th>
+                        <th class="nobr text-left" data-orderable="false" data-searchable="true" data-select-value="false" data-filter-id="note-filter">
+                            {trans("Note:")}
+                        </th>
+                        <th data-searchable="false" data-sortable="false">
+                            &nbsp;
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {foreach $customernotes as $customernote}
+                    <TR data-id="{$customernote.id}">
+                        <TD class="date">
+                            {$customernote.dt|date_format:"%Y/%m/%d %H:%M"}
+                        </TD>
+                        <TD class="username" data-order="{$customernote.rusername}">
+                            {$customernote.username}
+                        </TD>
+                        <TD class="note">
+                            {$customernote.note}
+                        </TD>
+                        <TD class="text-right nobr">
+                            {button type="link" icon="delete" class="delete-note" tip="Delete"}
+                        </TD>
+                    </TR>
+{*
+                    {foreachelse}
+                    <TR>
+                        <TD class="empty-table" colspan="4">
+                            <p>{trans("No customer notes.")}</p>
+                        </TD>
+                    </TR>
+*}
+                    {/foreach}
+                </tbody>
+            </TABLE>
+        {/tab_table}
+
+        {tab_button_panel}
+            {tab_buttons}
+                <label for="customernote" class="bold">{trans("New customer note:")}</label>
+                <input type="text" name="customernote" id="customernote" size="100">
+                {button icon="add" id="add-note" label="Add" tip="Add new customer note"}
+            {/tab_buttons}
+        {/tab_button_panel}
+
+    {/tab_contents}
+
+{/tab_container}
+
+<template id="delete-note-template">
+    {button type="link" icon="delete" class="delete-note" tip="Delete"}
+</template>
+
+<script>
+
+    $(function() {
+        var action = '?m=customernote';
+        var addBtn = $('#add-note');
+        var table = $('#customernotes-datatable').DataTable();
+
+        $('#customernotes-datatable').on('click', '.delete-note', function() {
+            addBtn.prop('disabled', true);
+            var noteid = $(this).closest('tr').attr('data-id');
+            $.ajax({
+                url: action + '&api=1&oper=del&id=' + noteid,
+                async: true,
+                method: 'POST',
+                dataType: 'json',
+                success: function() {
+                    table.rows('[data-id="' + noteid + '"]').remove().draw();
+                    $('#add-note').prop('disabled', false);
+                }
+            });
+        });
+
+        addBtn.click(function() {
+            var note = $('#customernote');
+            if (note.val().length < 4) {
+                return;
+            }
+
+            $(this).prop('disabled', true);
+
+            $.ajax({
+                url: action + '&api=1&oper=add',
+                async: true,
+                method: 'POST',
+                dataType: 'json',
+                data: {
+                    customerid: {$customerinfo.id},
+                    customernote: note.val()
+                },
+                success: function(data) {
+                    if (data.hasOwnProperty('id')) {
+                        var tr = $('<tr data-id="' + data.id + '"><td class="date">' +
+                            data.date + '</td><td class="username" data-order="' + data.rusername + '">' +
+                            data.username + '</td><td class="note">' +
+                            data.note + '</td><td>' +
+                            $('#delete-note-template').html() + '</td></tr>')
+                        table.row.add(tr).draw();
+                    }
+                    note.val('');
+                    addBtn.prop('disabled', false);
+                }
+            });
+        });
+    });
+
+</script>

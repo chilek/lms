@@ -34,6 +34,10 @@ if ($layout['module'] != 'customeredit') {
     $SMARTY->assignByRef('customerinfo', $customerinfo);
 }
 
+if (!isset($resource_tabs['customernotes']) || $resource_tabs['customernotes']) {
+    $customernotes = $LMS->getCustomerNotes($customerid);
+}
+
 if (!isset($resource_tabs['customerassignments']) || $resource_tabs['customerassignments']) {
     $commited             = !empty($_GET['commited']) ? true : false;
     $assignments = $LMS->GetCustomerAssignments($customerid, true, false);
@@ -189,6 +193,7 @@ $SMARTY->assign(array(
 ));
 
 $SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources WHERE deleted = 0 ORDER BY name'));
+$SMARTY->assignByRef('customernotes', $customernotes);
 $SMARTY->assignByRef('customernodes', $customernodes);
 $SMARTY->assignByRef('customernetworks', $customernetworks);
 $SMARTY->assignByRef('customerdevices', $customerdevices);

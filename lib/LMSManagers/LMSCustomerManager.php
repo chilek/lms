@@ -2333,4 +2333,71 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     {
         return $this->changeCustomerContactFlags('remove', $customerid, $type, $flags);
     }
+
+    public function getCustomerNotes($cid)
+    {
+        return $this->db->GetAll(
+            'SELECT n.id, u.login AS user, u.name AS username, u.rname AS rusername, dt, message AS note
+            FROM customernotes n
+            JOIN vusers u ON u.id = n.userid
+            WHERE customerid = ? ORDER BY dt DESC',
+            array($cid)
+        );
+    }
+
+    public function getCustomerNote($id)
+    {
+        $result = $this->db->GetRow(
+            'SELECT n.id, u.login AS user, u.name AS username, u.rname AS rusername, dt, message AS note
+            FROM customernotes n
+            JOIN vusers u ON u.id = n.userid
+            WHERE n.id = ?',
+            array($id)
+        );
+        $result['date'] = date('Y/m/d H:i', $result['dt']);
+        return $result;
+    }
+
+    public function addCustomerNote($params)
+    {
+        $res = $this->db->Execute(
+            'INSERT INTO customernotes (userid, customerid, dt, message) VALUES (?, ?, ?NOW?, ?)',
+            array(Auth::GetCurrentUser(), $params['customerid'], $params['customernote'])
+        );
+
+        if ($res) {
+            $id = $this->db->GetLastInsertID('customernotes');
+            if ($this->syslog) {
+                $args = array(
+                    SYSLOG::RES_CUSTNOTE => $id,
+                    SYSLOG::RES_CUST => $params['customerid'],
+                    'message' => $params['customernote'],
+                );
+                $this->syslog->AddMessage(SYSLOG::RES_CUSTNOTE, SYSLOG::OPER_ADD, $args);
+            }
+        } else {
+            $id = null;
+        }
+
+        return $id;
+    }
+
+    public function delCustomerNote($id)
+    {
+        if ($this->syslog) {
+            $note = $this->db->GetAll(
+                'SELECT id, customerid FROM customernotes WHERE id = ?',
+                array($id)
+            );
+            $args = array(
+                SYSLOG::RES_CUSTNOTE => $id,
+                SYSLOG::RES_CUST => $note['customerid'],
+            );
+            $this->syslog->AddMessage(SYSLOG::RES_CUSTNOTE, SYSLOG::OPER_DELETE, $args);
+        }
+
+        $res = $this->db->Execute('DELETE FROM customernotes WHERE id = ?', array($id));
+
+        return $res;
+    }
 }
