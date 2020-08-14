@@ -67,6 +67,21 @@ jQuery.cachedScript = function(url, options) {
 	return jQuery.ajax(options);
 }
 
+jQuery.fn.extend({
+	autoHeight: function () {
+		function autoHeight_(element) {
+			return jQuery(element)
+				.css({ 'height': 'auto', 'overflow-y': 'hidden' })
+				.height(element.scrollHeight);
+		}
+		return this.each(function() {
+			autoHeight_(this).on('input', function() {
+				autoHeight_(this);
+			});
+		});
+	}
+});
+
 function show_pagecontent() {
 	$('#lms-ui-spinner').hide();
 	$('#lms-ui-contents').show();
@@ -458,10 +473,16 @@ function init_attachment_lists(selector) {
 }
 
 function initAutoGrow(selector) {
-	$(selector + ':not(.lms-ui-autogrow-initiated)').inputAutogrow({
-		minWidth: 200,
-		maxWidth: 500
-	}).addClass('lms-ui-autogrow-initiated');
+	$(selector + ':not(.lms-ui-autogrow-initiated)').each(function() {
+		if ($(this).is('textarea')) {
+			$(this).autoHeight();
+		} else {
+			$(this).inputAutogrow({
+				minWidth: 200,
+				maxWidth: 500
+			}).addClass('lms-ui-autogrow-initiated');
+		}
+	});
 }
 
 function initListQuickSearch(options) {

@@ -24,6 +24,10 @@
         display: none;
     }
 
+    #customernote {
+        margin-right: 1em;
+    }
+
 </style>
 
 {tab_container id="customernotes" label="Customer Notes"}
@@ -74,7 +78,7 @@
                             {$customernote.username}
                         </TD>
                         <TD class="note">
-                            {$customernote.note}
+                            {nl2br($customernote.note)}
                         </TD>
                         <TD class="text-right nobr">
                             {button type="link" icon="delete" class="delete-note" tip="Delete"}
@@ -88,7 +92,7 @@
         {tab_button_panel}
             {tab_buttons}
                 <label for="customernote" class="bold">{trans("New customer note:")}</label>
-                <input type="text" name="customernote" id="customernote" size="100">
+                <textarea class="lms-ui-autogrow" cols="50" rows="1" id="customernote"></textarea>
                 {button icon="add" id="add-note" label="Add" tip="Add new customer note"}
             {/tab_buttons}
         {/tab_button_panel}
@@ -145,7 +149,7 @@
                         var tr = $('<tr data-id="' + data.id + '"><td class="date">' +
                             data.date + '</td><td class="username" data-order="' + data.rusername + '">' +
                             data.username + '</td><td class="note">' +
-                            data.note + '</td><td>' +
+                            data.note.replace(/\r?\n/g, '<br>') + '</td><td>' +
                             $('#delete-note-template').html() + '</td></tr>')
                         table.row.add(tr).draw();
                     }
