@@ -276,8 +276,13 @@
 					dataType: "json",
 					success: function(data) {
 						var user_rights = $('#user-rights');
-						$.each(data, function(key, value) {
+						$.each(data['rights'], function(key, value) {
 							$('[data-right-name="'  + value + '"]', user_rights).prop('checked', true);
+						});
+
+						$('select[name="useradd[divisions][]"] option').attr('selected', false).trigger('lms:multiselect:updated');
+						$.each(data['divisions'], function(key, value) {
+							$('select[name="useradd[divisions][]"] option[value="' + value + '"]').attr('selected','selected').trigger('lms:multiselect:updated');
 						});
 					}
 				});

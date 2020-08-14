@@ -28,7 +28,9 @@ use PragmaRX\Google2FA\Google2FA;
 
 if (isset($_GET['fromuser'])) {
     header('Content-Type: application/json');
-    die(json_encode($LMS->GetUserRights($_GET['fromuser'])));
+    $formuser['rights'] = $LMS->GetUserRights($_GET['fromuser']);
+    $formuser['divisions'] = array_keys($LMS->GetDivisions(array('userid' => $_GET['fromuser'])));
+    die(json_encode($formuser));
 }
 
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'usercopypermissions.inc.php');
