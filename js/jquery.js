@@ -1255,7 +1255,9 @@ $(function() {
 					type: ''
 				}
 			},
-			language: dataTablesLanguage,
+			language: $.extend(dataTablesLanguage, {
+				"emptyTable": $(elem).attr('data-empty-table-message')
+			}),
 			initComplete: function(settings, json) {
 				$(elem).show();
 			},

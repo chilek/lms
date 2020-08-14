@@ -40,6 +40,7 @@
             <TABLE id="customernotes-datatable" class="lmsbox-inner lms-ui-datatable lms-ui-datatable-column-search"
                     {if $limit} data-page-length="{$limit}"{/if}
                    data-order='[[ 0, "desc" ]]'
+                   data-empty-table-message="{trans("No customer notes.")}"
                    width="100%">
                 <COLGROUP>
                     <COL style="width: 1%;">
@@ -79,14 +80,6 @@
                             {button type="link" icon="delete" class="delete-note" tip="Delete"}
                         </TD>
                     </TR>
-{*
-                    {foreachelse}
-                    <TR>
-                        <TD class="empty-table" colspan="4">
-                            <p>{trans("No customer notes.")}</p>
-                        </TD>
-                    </TR>
-*}
                     {/foreach}
                 </tbody>
             </TABLE>
