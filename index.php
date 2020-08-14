@@ -253,13 +253,15 @@ if ($AUTH->islogged) {
         if (count($user_divisions) > 1) {
             $persistentDivisionContext = $SESSION->get_persistent_setting('division_context');
             if (!isset($persistentDivisionContext)
-                || !in_array($SESSION->get_persistent_setting('division_context', array_keys($user_divisions)))) {
+                || (!in_array($persistentDivisionContext, array_keys($user_divisions))
+                    && !empty($persistentDivisionContext))) {
                 $SESSION->save_persistent_setting('division_context', '');
                 $persistentDivisionContext = $SESSION->get_persistent_setting('division_context');
             }
             $tabDivisionContext = $SESSION->get('division_context', true);
             if (!isset($tabDivisionContext)
-                || !in_array($SESSION->get_persistent_setting('division_context', array_keys($user_divisions)))) {
+                || (!in_array($persistentDivisionContext, array_keys($user_divisions)
+                    && !empty($persistentDivisionContext)))) {
                 $tabDivisionContext = $SESSION->get_persistent_setting('division_context');
                 $SESSION->save('division_context', $tabDivisionContext, true);
             }
@@ -268,10 +270,10 @@ if ($AUTH->islogged) {
             $SESSION->save('division_context', $user_division['id'], true);
         }
     }
-    $SMARTY->assign('division_context', $tabDivisionContext);
     $layout['division'] = $tabDivisionContext;
 
     if (!$api) {
+        $SMARTY->assign('division_context', $tabDivisionContext);
         $SMARTY->assign('main_menu_sortable_order', $SESSION->get_persistent_setting('main-menu-order'));
         $SMARTY->assign('qs_properties', $qs_properties);
 
