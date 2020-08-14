@@ -79,7 +79,9 @@ if (isset($_GET['search'])) {
         }
     }
 
-    if ($SESSION->is_set('backto')) {
+    if ($SESSION->is_set('backto', true)) {
+        $SESSION->redirect('?' . $SESSION->get('backto', true));
+    } elseif ($SESSION->is_set('backto')) {
         $SESSION->redirect('?' . $SESSION->get('backto'));
     } else {
         $SESSION->redirect('?m=customerlist');
