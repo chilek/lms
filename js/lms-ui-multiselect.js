@@ -300,6 +300,10 @@ function multiselect(options) {
 		});
 
 		ul.html(list);
+
+		all_items = ul.find('li');
+		all_enabled_items = all_items.filter(':not(.disabled)');
+		all_enabled_checkboxes = all_enabled_items.find(':checkbox');
 	}
 
 	function popupListItemClickHandler(e) {
@@ -349,10 +353,6 @@ function multiselect(options) {
 	}
 
 	buildPopupList();
-
-	all_items = ul.find('li');
-	all_enabled_items = all_items.filter(':not(.disabled)');
-	all_enabled_checkboxes = all_enabled_items.find(':checkbox');
 
 	// add some mouse/key events handlers
 	ul.on('click', 'li:not(.disabled)', popupListItemClickHandler)
