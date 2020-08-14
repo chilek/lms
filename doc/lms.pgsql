@@ -311,6 +311,23 @@ CREATE INDEX customerconsents_cdate_idx ON customerconsents (cdate);
 CREATE INDEX customerconsents_type_idx ON customerconsents (type);
 
 /* --------------------------------------------------------
+  Structure of table "customernotes" (customernotes)
+-------------------------------------------------------- */
+DROP SEQUENCE IF EXISTS customernotes_id_seq;
+CREATE SEQUENCE customernotes_id_seq;
+DROP TABLE IF EXISTS customernotes CASCADE;
+CREATE TABLE customernotes (
+    id integer DEFAULT nextval('customernotes_id_seq'::text) NOT NULL,
+    userid integer DEFAULT NULL
+       CONSTRAINT customernotes_userid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    customerid integer NOT NULL
+       CONSTRAINT customernotes_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    dt integer NOT NULL,
+    message text NOT NULL,
+    PRIMARY KEY (id)
+);
+
+/* --------------------------------------------------------
   Structure of table "numberplans"
 -------------------------------------------------------- */
 DROP SEQUENCE IF EXISTS numberplans_id_seq;
@@ -3810,6 +3827,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020081300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020081400');
 
 COMMIT;

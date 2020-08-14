@@ -144,6 +144,7 @@ DROP TABLE IF EXISTS customer_addresses;
 DROP TABLE IF EXISTS zipcodes;
 DROP TABLE IF EXISTS states;
 DROP TABLE IF EXISTS numberplans;
+DROP TABLE IF EXISTS customernotes;
 DROP TABLE IF EXISTS customerconsents;
 DROP TABLE IF EXISTS customers;
 DROP TABLE IF EXISTS divisions;
@@ -460,6 +461,23 @@ CREATE TABLE customerconsents (
     KEY customerconsents_type_idx (type),
     UNIQUE KEY customerconsents_ukey (customerid, type)
 ) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table customernotes (customernotes)
+#
+CREATE TABLE customernotes (
+    id int(11) NOT NULL auto_increment,
+    userid int(11) DEFAULT NULL,
+    customerid int(11) NOT NULL,
+    dt int(11) NOT NULL,
+    message text NOT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT customernotes_userid_fkey
+        FOREIGN KEY (userid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT customernotes_customerid_fkey
+        FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
+);
 
 # --------------------------------------------------------
 #
@@ -3764,4 +3782,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020081300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020081400');
