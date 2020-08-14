@@ -20,8 +20,9 @@
 	{tab_contents id="messagespanel"}
 
 		{tab_table}
-			<TABLE id="customermessages-datatable" class="lmsbox-inner{if !empty($messagelist)} lms-ui-datatable{/if}"
-					{if !empty($messagelist)}{if $limit} data-page-length="{$limit}"{/if}
+			<TABLE id="customermessages-datatable" class="lmsbox-inner lms-ui-datatable"
+					{if $limit} data-page-length="{$limit}"
+					data-empty-table-message="{trans("There are no messages in database.")}"
 					data-order='[[ 0, "desc" ]]' style="display: none;"{/if} width="100%">
 				<COLGROUP>
 					<COL style="width: 1%;">
@@ -104,12 +105,6 @@
 								<br>
 							{/foreach}
 						</div>
-					</TD>
-				</TR>
-				{foreachelse}
-				<TR>
-					<TD class="empty-table" colspan="7">
-						<P>{trans("There are no messages in database.")}</P>
 					</TD>
 				</TR>
 				{/foreach}
