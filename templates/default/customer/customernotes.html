@@ -26,6 +26,7 @@
 
     #customernote {
         margin-right: 1em;
+        min-height: 1.5em;
     }
 
 </style>
@@ -78,7 +79,7 @@
                             {$customernote.username}
                         </TD>
                         <TD class="note">
-                            {nl2br($customernote.note)}
+                            {nl2br(htmlspecialchars($customernote.note))}
                         </TD>
                         <TD class="text-right nobr">
                             {button type="link" icon="delete" class="delete-note" tip="Delete"}
@@ -129,7 +130,8 @@
 
         addBtn.click(function() {
             var note = $('#customernote');
-            if (note.val().length < 4) {
+            if (note.val().trim().length < 4) {
+                alertDialog($t("Customer note is too short!"), this);
                 return;
             }
 
@@ -149,7 +151,7 @@
                         var tr = $('<tr data-id="' + data.id + '"><td class="date">' +
                             data.date + '</td><td class="username" data-order="' + data.rusername + '">' +
                             data.username + '</td><td class="note">' +
-                            data.note.replace(/\r?\n/g, '<br>') + '</td><td>' +
+                            data.text.replace(/\r?\n/g, '<br>') + '</td><td>' +
                             $('#delete-note-template').html() + '</td></tr>')
                         table.row.add(tr).draw();
                     }

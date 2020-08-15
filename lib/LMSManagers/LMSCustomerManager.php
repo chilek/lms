@@ -2339,7 +2339,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         return $this->db->GetAll(
             'SELECT n.id, u.login AS user, u.name AS username, u.rname AS rusername, dt, message AS note
             FROM customernotes n
-            JOIN vusers u ON u.id = n.userid
+            LEFT JOIN vusers u ON u.id = n.userid
             WHERE customerid = ? ORDER BY dt DESC',
             array($cid)
         );
@@ -2350,11 +2350,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $result = $this->db->GetRow(
             'SELECT n.id, u.login AS user, u.name AS username, u.rname AS rusername, dt, message AS note
             FROM customernotes n
-            JOIN vusers u ON u.id = n.userid
+            LEFT JOIN vusers u ON u.id = n.userid
             WHERE n.id = ?',
             array($id)
         );
         $result['date'] = date('Y/m/d H:i', $result['dt']);
+        $result['text'] = htmlspecialchars($result['note']);
         return $result;
     }
 
