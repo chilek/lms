@@ -790,7 +790,10 @@ $(function() {
 			}
 
 			if (ifNewWindow) {
-				window.open(url);
+				// new browser tab can be opened as hidden or tabid of new tab can be not initialised
+				// so we have to clear sessionStorage in newly opened browser window/tab
+				// this allows new created window/tab initialise its own tabid
+				window.open(url).sessionStorage.clear();
 			} else {
 				location.href = url;
 			}
