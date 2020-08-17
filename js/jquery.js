@@ -793,7 +793,9 @@ $(function() {
 				// new browser tab can be opened as hidden or tabid of new tab can be not initialised
 				// so we have to clear sessionStorage in newly opened browser window/tab
 				// this allows new created window/tab initialise its own tabid
-				window.open(url).sessionStorage.clear();
+				window.sessionStorage.clear();
+				window.open(url);
+				sessionStorage.setItem('tabId', lmsTabId);
 			} else {
 				location.href = url;
 			}

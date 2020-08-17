@@ -166,7 +166,7 @@ if (isset($_GET['oldtabid']) && isset($_GET['tabid']) && isset($_POST['oldbackto
     && preg_match('/^[0-9]+$/', $_GET['oldtabid'])
     && preg_match('/^[0-9]+$/', $_GET['tabid'])) {
     $SESSION->fixBackTo($_GET['oldtabid'], $_POST['oldbackto'], $_GET['tabid'], $_POST['backto']);
-    $SESSION->close();
+    //$SESSION->close();
     header('Content-Type: application/json');
     die('[]');
 }

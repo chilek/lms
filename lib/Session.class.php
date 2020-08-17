@@ -147,7 +147,7 @@ class Session
 
         $this->DB->Execute('UPDATE sessions SET content = ? WHERE id = ?', array(serialize($content), $this->SID));
 
-        $this->DB->UnlockTables();
+        $this->DB->UnLockTables();
         $this->DB->CommitTrans();
     }
 
