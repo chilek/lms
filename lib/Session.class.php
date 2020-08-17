@@ -129,19 +129,26 @@ class Session
 
     public function fixBackTo($oldTabId, $oldBackTo, $newTabId, $newBackTo)
     {
-        if (isset($this->_tab_content[$oldTabId]['backto'])) {
-            if ($this->_tab_content[$oldTabId]['backto'] != $oldBackTo) {
-                $this->_tab_content[$oldTabId]['backto'] = $oldBackTo;
-                $this->_updated = true;
+        $this->DB->BeginTrans();
+        $this->DB->LockTables('sessions');
+
+        $content = $this->DB->GetOne('SELECT content FROM sessions WHERE id = ?', array($this->SID));
+        $content = unserialize($content);
+
+        if (isset($content['tabs'][$oldTabId]['backto'])) {
+            if ($content['tabs'][$oldTabId]['backto'] != $oldBackTo) {
+                $content['tabs'][$oldTabId]['backto'] = $oldBackTo;
             }
         }
-        if (!isset($this->_tab_content[$newTabId])) {
-            $this->_tab_content[$newTabId] = array();
+        if (!isset($content['tabs'][$newTabId])) {
+            $content['tabs'][$newTabId] = array();
         }
-        if ($this->_tab_content[$newTabId]['backto'] != $newBackTo) {
-            $this->_updated = true;
-        }
-        $this->_tab_content[$newTabId]['backto'] = $newBackTo;
+        $content['tabs'][$newTabId]['backto'] = $newBackTo;
+
+        $this->DB->Execute('UPDATE sessions SET content = ? WHERE id = ?', array(serialize($content), $this->SID));
+
+        $this->DB->UnlockTables();
+        $this->DB->CommitTrans();
     }
 
     public function save($variable, $content, $tab = false)
