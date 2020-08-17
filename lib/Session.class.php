@@ -311,6 +311,17 @@ class Session
             $session_content = array_intersect_key($content, $session_variables);
             $settings_content = array_diff_key($content, $session_variables);
             $settings_content['mtime'] = time();
+
+            // new browser tab can be opened as hidden or tabid of new tab can be not initialised
+            // so we have to be careful and handle 'backto' session variable in special way and
+            // we should check if tabs info in session content stored in database didn't change
+            // in mean time and if it did than one or more from ajax calls changed it and we should
+            // use it as reliable source of info.
+            $content = unserialize($this->DB->GetOne('SELECT content FROM sessions WHERE id = ?', array($this->SID)));
+            if (count($content['tabs']) > count($session_content['tabs'])) {
+                $session_content['tabs'] = $content['tabs'];
+            }
+
             $this->DB->Execute(
                 'UPDATE sessions SET content = ?, mtime = ?NOW? WHERE id = ?',
                 array(serialize($session_content), $this->SID)
