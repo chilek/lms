@@ -71,8 +71,13 @@
 				{if $backto}
 					if (oldLmsTabId) {
 						$.ajax({
-							url: '?oldtabid=' + oldLmsTabId + '&oldbackto={$oldbackto}&tabid=' + lmsTabId + '&backto={$backto}',
+							url: '?oldtabid=' + oldLmsTabId + '&tabid=' + lmsTabId,
+							method: "POST",
 							dataType: 'json',
+							data: {
+								oldbackto: $('#oldbackto').val(),
+								backto: $('#backto').val()
+							}
 						});
 					}
 				{/if}

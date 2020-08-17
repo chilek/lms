@@ -148,8 +148,8 @@ class Session
     {
         if ($tab) {
             if ($variable === 'backto') {
-                self::$oldBackTo = base64_encode($this->_tab_content[$this->tabId]['backto']);
-                self::$backTo = base64_encode($content);
+                self::$oldBackTo = $this->_tab_content[$this->tabId]['backto'];
+                self::$backTo = $content;
             }
             if (!isset($this->_tab_content[$this->tabId])) {
                 $this->_tab_content[$this->tabId] = array();

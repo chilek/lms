@@ -162,10 +162,10 @@ $SESSION = new Session(
 // new browser tab can be opened as hidden or tabid of new tab can be not initialised
 // so we have to be careful and handle 'backto' session variable in special way and
 // correct this variable when new tab id has been determined before the moment
-if (isset($_GET['oldtabid']) && isset($_GET['tabid']) && isset($_GET['oldbackto']) && isset($_GET['backto'])
+if (isset($_GET['oldtabid']) && isset($_GET['tabid']) && isset($_POST['oldbackto']) && isset($_POST['backto'])
     && preg_match('/^[0-9]+$/', $_GET['oldtabid'])
     && preg_match('/^[0-9]+$/', $_GET['tabid'])) {
-    $SESSION->fixBackTo($_GET['oldtabid'], base64_decode($_GET['oldbackto']), $_GET['tabid'], base64_decode($_GET['backto']));
+    $SESSION->fixBackTo($_GET['oldtabid'], $_POST['oldbackto'], $_GET['tabid'], $_POST['backto']);
     $SESSION->close();
     header('Content-Type: application/json');
     die('[]');
