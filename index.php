@@ -159,6 +159,17 @@ $SESSION = new Session(
     ConfigHelper::getConfig('phpui.timeout'),
     ConfigHelper::getConfig('phpui.settings_timeout')
 );
+// new browser tab can be opened as hidden or tabid of new tab can be not initialised
+// so we have to be careful and handle 'backto' session variable in special way and
+// correct this variable when new tab id has been determined before the moment
+if (isset($_GET['oldtabid']) && isset($_GET['tabid']) && isset($_GET['oldbackto']) && isset($_GET['backto'])
+    && preg_match('/^[0-9]+$/', $_GET['oldtabid'])
+    && preg_match('/^[0-9]+$/', $_GET['tabid'])) {
+    $SESSION->fixBackTo($_GET['oldtabid'], base64_decode($_GET['oldbackto']), $_GET['tabid'], base64_decode($_GET['backto']));
+    $SESSION->close();
+    header('Content-Type: application/json');
+    die('[]');
+}
 $AUTH = new Auth($DB, $SESSION);
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
 

@@ -46,6 +46,10 @@
 	{/block}
 	{block name=pagecontent}
 		{include file="spinner.html"}
+		{$oldbackto = SESSION::getOldBackTo()}
+		{$backto = SESSION::getBackTo()}
+		<input type="hidden" id="oldbackto" value="{$oldbackto}">
+		<input type="hidden" id="backto" value="{$backto}">
 		<script>
 
 			var AUTOSUGGEST_MAX_LENGTH = {ConfigHelper::getConfig('phpui.autosuggest_max_length', 40)};
@@ -60,8 +64,22 @@
 			if (!lmsTabId) {
 				sessionStorage.setItem('tabId', Date.now());
 				lmsTabId = sessionStorage.getItem('tabId');
+				// new browser tab can be opened as hidden or tabid of new tab can be not initialised
+				// so we have to be careful and handle 'backto' session variable in special way and
+				// correct this variable when new tab id has been determined before the moment
+				var oldLmsTabId = getCookie('tabId');
+				{if $backto}
+					if (oldLmsTabId) {
+						$.ajax({
+							url: '?oldtabid=' + oldLmsTabId + '&oldbackto={$oldbackto}&tabid=' + lmsTabId + '&backto={$backto}',
+							dataType: 'json',
+						});
+					}
+				{/if}
 			}
-			setCookie('tabId', lmsTabId);
+			if (!document.hidden) {
+				setCookie('tabId', lmsTabId);
+			}
 
 			$(window).focus(function() {
 				setCookie('tabId', lmsTabId);

@@ -99,7 +99,14 @@ if (!isset($_POST['xjxfun'])) {
     } elseif (!$exists) {
         $SESSION->redirect('?m=customerlist');
     } else {
-        $backurl = $SESSION->is_set('backto') ? '?' . $SESSION->get('backto') : '?m=customerlist';
+        if ($SESSION->is_set('backto', true)) {
+            $backto = $SESSION->get('backto', true);
+        } elseif ($SESSION->is_set('backto')) {
+            $backto = $SESSION->get('backto');
+        } else {
+            $backto = '';
+        }
+        $backurl = $backto ? '?' . $backto : '?m=customerlist';
 
         $pin_min_size = intval(ConfigHelper::getConfig('phpui.pin_min_size', 4));
         if (!$pin_min_size) {

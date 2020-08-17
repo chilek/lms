@@ -46,6 +46,8 @@ class Session
                         // garbage collector procedure
 
     private $tabId = null;
+    private static $oldBackTo = '';
+    private static $backTo = '';
 
     public function __construct(&$DB, $timeout = 0, $settings_timeout = 0)
     {
@@ -112,9 +114,43 @@ class Session
         }
     }
 
+    // new browser tab can be opened as hidden or tabid of new tab can be not initialised
+    // so we have to be careful and handle 'backto' session variable in special way and
+    // correct this variable when new tab id has been determined before the moment
+    public static function getOldBackTo()
+    {
+        return self::$oldBackTo;
+    }
+
+    public static function getBackTo()
+    {
+        return self::$backTo;
+    }
+
+    public function fixBackTo($oldTabId, $oldBackTo, $newTabId, $newBackTo)
+    {
+        if (isset($this->_tab_content[$oldTabId]['backto'])) {
+            if ($this->_tab_content[$oldTabId]['backto'] != $oldBackTo) {
+                $this->_tab_content[$oldTabId]['backto'] = $oldBackTo;
+                $this->_updated = true;
+            }
+        }
+        if (!isset($this->_tab_content[$newTabId])) {
+            $this->_tab_content[$newTabId] = array();
+        }
+        if ($this->_tab_content[$newTabId]['backto'] != $newBackTo) {
+            $this->_updated = true;
+        }
+        $this->_tab_content[$newTabId]['backto'] = $newBackTo;
+    }
+
     public function save($variable, $content, $tab = false)
     {
         if ($tab) {
+            if ($variable === 'backto') {
+                self::$oldBackTo = base64_encode($this->_tab_content[$this->tabId]['backto']);
+                self::$backTo = base64_encode($content);
+            }
             if (!isset($this->_tab_content[$this->tabId])) {
                 $this->_tab_content[$this->tabId] = array();
             }
