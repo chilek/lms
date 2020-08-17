@@ -74,10 +74,10 @@
 		{tab_table}
 
 			{$datatables_max_records=intval(ConfigHelper::getConfig('phpui.datatables_max_records', 300))}
-			<TABLE id="customerbalancebox-datatable" class="lmsbox-inner{if !$datatables_max_records || count($balancelist.list) < $datatables_max_records} lms-ui-datatable{else} lms-ui-background-cycle{/if}"
-					{if !$datatables_max_records || count($balancelist.list) < $datatables_max_records} data-page-length="{$n}"
+			<TABLE id="customerbalancebox-datatable" class="lmsbox-inner{if !$datatables_max_records || empty($balancelist.list) || count($balancelist.list) < $datatables_max_records} lms-ui-datatable{else} lms-ui-background-cycle{/if}"
+					{if !$datatables_max_records || empty($balancelist.list) || count($balancelist.list) < $datatables_max_records} data-page-length="{$n}"
 					data-empty-table-message="{trans("That customer hasn't got any transactions.")}"
-					data-display-start="{$n = count($balancelist.list) + $limit}{if $n < 0}0{else}{$n}{/if}" style="display: none;"{/if} width="100%">
+					data-display-start="{if empty($balancelist.list)}{$n = $limit}{else}{$n = count($balancelist.list) + $limit}{/if}{if $n < 0}0{else}{$n}{/if}" style="display: none;"{/if} width="100%">
 				<COLGROUP>
 					<COL style="width: 1%;">
 					<COL style="width: 1%;">
@@ -315,14 +315,6 @@
 								value="{$item.id}" class="lms-ui-multi-check">
 					</TD>
 				</TR>
-				{foreachelse}
-					{if $datatables_max_records && count($balancelist.list) >= $datatables_max_records}
-					<TR>
-						<TD class="empty-table" colspan="9">
-							<p>{trans("That customer hasn't got any transactions.")}</p>
-						</TD>
-					</TR>
-					{/if}
 				{/foreach}
 				</TBODY>
 			</TABLE>
