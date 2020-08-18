@@ -122,11 +122,21 @@ if (!empty($from) && !empty($to)) {
 $pagelimit = ConfigHelper::getConfig('phpui.balancelist_pagelimit');
 $page = (empty($_GET['page']) ? 0 : intval($_GET['page']));
 
-if (isset($_GET['sourcefileid'])) {
-    $s = $DB->GetOne('SELECT name FROM sourcefiles WHERE id = ?', array($_GET['sourcefileid']));
-    $c = 'cashimport';
-    $SESSION->save('bls', $s);
-    $SESSION->save('blc', $c);
+if (isset($_GET['sourcefileid']) || $c == 'cashimport') {
+    if (isset($_GET['sourcefileid'])) {
+        $sourcefileid = intval($_GET['sourcefileid']);
+        $sourcefilename = $DB->GetOne('SELECT name FROM sourcefiles WHERE id = ?', array($sourcefileid));
+    } else {
+        $sourcefileid = $DB->GetCol('SELECT id FROM sourcefiles WHERE name = ?', array($s));
+        $sourcefilename = $s;
+    }
+    if (!empty($sourcefileid) && !empty($sourcefilename)) {
+        $SMARTY->assign('sourcefilename', $sourcefilename);
+        $s = $sourcefileid;
+        $c = 'cashimport';
+        $SESSION->save('bls', $s);
+        $SESSION->save('blc', $c);
+    }
 }
 
 $summary = $LMS->GetBalanceList(array('search' => $s, 'cat' => $c, 'group' => $g, 'exclude'=> $ge,

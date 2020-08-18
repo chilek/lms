@@ -3136,7 +3136,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $where = ' AND cash.comment ?LIKE? ' . $this->db->Escape("%$search%");
                     break;
                 case 'cashimport':
-                    $where = ' AND cash.importid IN (SELECT i.id FROM cashimport i JOIN sourcefiles f ON f.id = i.sourcefileid WHERE f.name = ' . $this->db->Escape("$search") . ')';
+                    if (!empty($search)) {
+                        $where = ' AND cash.importid IN (SELECT i.id FROM cashimport i WHERE i.sourcefileid '
+                            . (is_array($search) ? ' IN (' . implode(',', Utils::filterIntegers($search)) . ')' : ' = ' . intval($search)) . ')';
+                    }
                     break;
             }
         } elseif ($cat) {

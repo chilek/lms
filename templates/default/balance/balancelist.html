@@ -28,6 +28,10 @@
 			});
 			return false;
 		});
+
+		$('#search,#cat').change(function() {
+			$('#sourcefileid').val('');
+		});
 	});
 
 	function printr()
@@ -127,9 +131,10 @@
 	<TR>
 		<TD colspan="10">
 			<strong>{trans("Filter:")}</strong>
-			<INPUT type="text" name="search" value="{$listdata.search}"
+			<INPUT type="hidden" name="sourcefileid" id="sourcefileid" value="{if isset($sourcefilename)}{$listdata.search}{/if}">
+			<INPUT type="text" name="search" id="search" value="{if $listdata.cat == 'cashimport' && isset($sourcefilename)}{$sourcefilename}{else}{$listdata.search}{/if}"
 				   size="15" {tip text="Enter value of searching data and select category"}>
-			<SELECT size="1" name="cat" style="width: 150px">
+			<SELECT size="1" name="cat" id="cat" style="width: 150px">
 				<OPTION value=""{if $listdata.cat == ""} SELECTED{/if}>{trans("- select category -")}</OPTION>
 				<OPTION value="comment"{if $listdata.cat == "comment"} SELECTED{/if}>{trans("comment")}</OPTION>
 				<OPTION value="cdate"{if $listdata.cat == "cdate"} SELECTED{/if}>{trans("date (YYYY/MM/DD)")}</OPTION>
