@@ -317,6 +317,10 @@ class Session
             // we should check if tabs info in session content stored in database didn't change
             // in mean time and if it did than one or more from ajax calls changed it and we should
             // use it as reliable source of info.
+
+            $this->DB->BeginTrans();
+            $this->DB->LockTables('sessions');
+
             $content = unserialize($this->DB->GetOne('SELECT content FROM sessions WHERE id = ?', array($this->SID)));
             if (count($content['tabs']) > count($session_content['tabs'])) {
                 $session_content['tabs'] = $content['tabs'];
@@ -326,6 +330,10 @@ class Session
                 'UPDATE sessions SET content = ?, mtime = ?NOW? WHERE id = ?',
                 array(serialize($session_content), $this->SID)
             );
+
+            $this->DB->UnLockTables();
+            $this->DB->CommitTrans();
+
             $this->DB->Execute(
                 'UPDATE users SET settings = ?, persistentsettings = ? WHERE login = ?',
                 array(serialize($settings_content), serialize($this->_persistent_settings), $this->_content['session_login'])
