@@ -123,8 +123,8 @@ $pagelimit = ConfigHelper::getConfig('phpui.balancelist_pagelimit');
 $page = (empty($_GET['page']) ? 0 : intval($_GET['page']));
 
 if (isset($_GET['sourcefileid']) || $c == 'cashimport') {
-    if (isset($_GET['sourcefileid'])) {
-        $sourcefileid = intval($_GET['sourcefileid']);
+    if (isset($_GET['sourcefileid']) || (isset($_POST['sourcefileid']) && !empty($_POST['sourcefileid']))) {
+        $sourcefileid = intval(isset($_GET['sourcefileid']) ? $_GET['sourcefileid'] : $_POST['sourcefileid']);
         $sourcefilename = $DB->GetOne('SELECT name FROM sourcefiles WHERE id = ?', array($sourcefileid));
     } else {
         $sourcefileid = $DB->GetCol('SELECT id FROM sourcefiles WHERE name = ?', array($s));
