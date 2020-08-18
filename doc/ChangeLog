@@ -95,6 +95,7 @@ version 26-git (????-??-??):
     selection [chilan]
   - enhancement: added the ability to copy user divisions between users [ravvar]
   - enhancement: customer notes support in dedicated tab [chilan]
+  - enhancement: divided mailing notice consent to separate mail and sms delivery consents [chilan]
 
 version 25.0 (2020-05-15):
 
