@@ -28,26 +28,44 @@
 ini_set('error_reporting', E_ALL & ~E_NOTICE);
 
 $parameters = array(
-    'C:' => 'config-file:',
-    'q' => 'quiet',
-    'h' => 'help',
-    'v' => 'version',
-    'd' => 'debug',
-    'f:' => 'fakedate:',
-    't:' => 'type:',
-    's:' => 'section:',
-    'c:' => 'channel:',
-    'a:' => 'actions:',
-    'g:' => 'customergroups:',
+    'config-file:' => 'C:',
+    'quiet' => 'q',
+    'help' => 'h',
+    'version' => 'v',
+    'debug' => 'd',
+    'fakedate:' => 'f:',
+    'type:' => 't:',
+    'section:' => 's:',
+    'channel:' => 'c:',
+    'actions:' => 'a:',
+    'customergroups:' => 'g:',
 );
 
-foreach ($parameters as $key => $val) {
-    $val = preg_replace('/:/', '', $val);
-    $newkey = preg_replace('/:/', '', $key);
-    $short_to_longs[$newkey] = $val;
+$long_to_shorts = array();
+foreach ($parameters as $long => $short) {
+    $long = str_replace(':', '', $long);
+    if (isset($short)) {
+        $short = str_replace(':', '', $short);
+    }
+    $long_to_shorts[$long] = $short;
 }
-$options = getopt(implode('', array_keys($parameters)), $parameters);
-foreach ($short_to_longs as $short => $long) {
+
+$options = getopt(
+    implode(
+        '',
+        array_filter(
+            array_values($parameters),
+            function ($value) {
+                return isset($value);
+            }
+        )
+    ),
+    array_keys($parameters)
+);
+
+foreach (array_flip(array_filter($long_to_shorts, function ($value) {
+    return isset($value);
+})) as $short => $long) {
     if (array_key_exists($short, $options)) {
         $options[$long] = $options[$short];
         unset($options[$short]);
