@@ -222,6 +222,7 @@ $mail_format = ConfigHelper::getConfig($config_section . '.mail_format', $format
 $content_type = $format == 'html' ? 'text/html' : 'text/plain';
 $mail_content_type = $mail_format == 'html' ? 'text/html' : 'text/plain';
 $customergroups = ConfigHelper::getConfig($config_section . '.customergroups', '', true);
+$ignore_customer_consents = ConfigHelper::checkConfig($config_section . '.ignore_customer_consents');
 
 $content_types = array(
     MSG_MAIL => $mail_content_type,
@@ -691,12 +692,12 @@ if (empty($types) || in_array('documents', $types)) {
             FROM customercontacts
             WHERE (type & ?) = ?
             GROUP BY customerid
-        ) m ON (m.customerid = c.id)
+        ) m ON (m.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.mailingnotice = 1') . "
         LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
             FROM customercontacts
             WHERE (type & ?) = ?
             GROUP BY customerid
-        ) x ON (x.customerid = c.id)
+        ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
         WHERE d.type IN (?, ?) AND dc.todate >= $daystart + ? * 86400
             AND dc.todate < $daystart + (? + 1) * 86400"
             . ($notifications['documents']['deleted_customers'] ? '' : ' AND c.deleted = 0')
@@ -832,12 +833,12 @@ if (empty($types) || in_array('contracts', $types)) {
             FROM customercontacts
             WHERE (type & ?) = ?
             GROUP BY customerid
-        ) m ON (m.customerid = c.id)
+        ) m ON (m.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.mailingnotice = 1') . "
         LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
             FROM customercontacts
             WHERE (type & ?) = ?
             GROUP BY customerid
-        ) x ON (x.customerid = c.id)
+        ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
         WHERE d.dateto >= $daystart + ? * 86400 AND d.dateto < $daystart + (? + 1) * 86400"
             . ($notifications['contracts']['deleted_customers'] ? '' : ' AND c.deleted = 0')
             . ($customergroups ?: '')
@@ -980,12 +981,12 @@ if (empty($types) || in_array('debtors', $types)) {
             FROM customercontacts
             WHERE (type & ?) = ?
             GROUP BY customerid
-        ) m ON (m.customerid = c.id)
+        ) m ON (m.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.mailingnotice = 1') . "
         LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
             FROM customercontacts
             WHERE (type & ?) = ?
             GROUP BY customerid
-        ) x ON (x.customerid = c.id)
+        ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
         WHERE c.status <> ? AND c.cutoffstop < $currtime AND b2.balance " . ($limit > 0 ? '>' : '<') . " ?"
             . ($notifications['debtors']['deleted_customers'] ? '' : ' AND c.deleted = 0')
             . ($customergroups ?: ''),
@@ -1144,12 +1145,12 @@ if (empty($types) || in_array('reminder', $types)) {
             FROM customercontacts
             WHERE (type & ?) = ?
             GROUP BY customerid
-        ) m ON (m.customerid = c.id)
+        ) m ON (m.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.mailingnotice = 1') . "
         LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
             FROM customercontacts
             WHERE (type & ?) = ?
             GROUP BY customerid
-        ) x ON (x.customerid = c.id)
+        ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
         JOIN (
             SELECT SUM(value) * -1 AS value, currency, docid
             FROM cash
@@ -1328,12 +1329,12 @@ if (empty($types) || in_array('income', $types)) {
             FROM customercontacts
             WHERE (type & ?) = ?
             GROUP BY customerid
-        ) m ON (m.customerid = c.id)
+        ) m ON (m.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.mailingnotice = 1') . "
         LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
             FROM customercontacts
             WHERE (type & ?) = ?
             GROUP BY customerid
-        ) x ON (x.customerid = c.id)
+        ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
         WHERE cash.type = 1 AND cash.value > 0 AND cash.time >= $daystart + (? * 86400) AND cash.time < $daystart + (? + 1) * 86400"
             . ($notifications['income']['deleted_customers'] ? '' : ' AND c.deleted = 0')
             . ($customergroups ?: ''),
@@ -1461,12 +1462,12 @@ if (empty($types) || in_array('invoices', $types)) {
             FROM customercontacts
             WHERE (type & ?) = ?
             GROUP BY customerid
-        ) m ON (m.customerid = c.id)
+        ) m ON (m.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.mailingnotice = 1') . "
         LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
             FROM customercontacts
             WHERE (type & ?) = ?
             GROUP BY customerid
-        ) x ON (x.customerid = c.id)
+        ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
         JOIN (SELECT SUM(value) * -1 AS value, currency, docid
             FROM cash
             GROUP BY docid, currency
@@ -1606,12 +1607,12 @@ if (empty($types) || in_array('notes', $types)) {
             FROM customercontacts
             WHERE (type & ?) = ?
             GROUP BY customerid
-        ) m ON (m.customerid = c.id)
+        ) m ON (m.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.mailingnotice = 1') . "
         LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
             FROM customercontacts
             WHERE (type & ?) = ?
             GROUP BY customerid
-        ) x ON (x.customerid = c.id)
+        ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
         JOIN (SELECT SUM(value) * -1 AS value, currency, docid
             FROM cash
             GROUP BY docid, currency
@@ -1746,12 +1747,12 @@ if (empty($types) || in_array('warnings', $types)) {
             FROM customercontacts
             WHERE (type & ?) = ?
             GROUP BY customerid
-        ) m ON (m.customerid = c.id)
+        ) m ON (m.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.mailingnotice = 1') . "
         LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
             FROM customercontacts
             WHERE (type & ?) = ?
             GROUP BY customerid
-        ) x ON (x.customerid = c.id)
+        ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
         LEFT JOIN (SELECT SUM(value * currencyvalue) AS balance, customerid
             FROM cash
             GROUP BY customerid
