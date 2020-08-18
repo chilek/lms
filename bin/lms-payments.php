@@ -34,20 +34,34 @@
 ini_set('error_reporting', E_ALL&~E_NOTICE);
 
 $parameters = array(
-    'C:' => 'config-file:',
-    'q' => 'quiet',
-    'h' => 'help',
-    'v' => 'version',
-    'f:' => 'fakedate:',
+    'config-file:' => 'C:',
+    'quiet' => 'q',
+    'help' => 'h',
+    'version' => 'v',
+    'fakedate:' => 'f:',
+    'customerid:' => null,
 );
 
-foreach ($parameters as $key => $val) {
-    $val = preg_replace('/:/', '', $val);
-    $newkey = preg_replace('/:/', '', $key);
-    $short_to_longs[$newkey] = $val;
+$long_to_shorts = array();
+foreach ($parameters as $long => $short) {
+    $long = str_replace(':', '', $long);
+    if (isset($short)) {
+        $short = str_replace(':', '', $short);
+    }
+    $long_to_shorts[$long] = $short;
 }
-$options = getopt(implode('', array_keys($parameters)), $parameters);
-foreach ($short_to_longs as $short => $long) {
+$options = getopt(
+    implode('', array_filter(array_values($parameters), function($value) {
+        return isset($value);
+    })),
+    array_keys($parameters)
+);
+foreach (array_flip(array_filter(
+        $long_to_shorts,
+        function($value) {
+            return isset($value);
+        }
+    )) as $short => $long) {
     if (array_key_exists($short, $options)) {
         $options[$long] = $options[$short];
         unset($options[$short]);
@@ -177,7 +191,8 @@ function localtime2()
     }
 }
 
-$fakedate = (array_key_exists('fakedate', $options) ? $options['fakedate'] : null);
+$fakedate = isset($options['fakedate']) ? $options['fakedate'] : null;
+$customerid = isset($options['customerid']) && intval($options['customerid']) ? $options['customerid'] : null;
 
 $currtime = strftime("%s", localtime2());
 $month = intval(strftime("%m", localtime2()));
@@ -436,7 +451,7 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 	LEFT JOIN tariffs t ON (a.tariffid = t.id)
 	LEFT JOIN liabilities l ON (a.liabilityid = l.id)
 	LEFT JOIN divisions d ON (d.id = c.divisionid)
-	WHERE (c.status = ? OR c.status = ?)
+	WHERE " . ($customerid ? 'c.id = ' . $customerid . ' AND ' : '') . "(c.status = ? OR c.status = ?)
 		AND a.commited = 1
 		AND ((a.period = ? AND at = ?)
 			OR ((a.period = ?
@@ -508,7 +523,7 @@ $query = "SELECT
 			) voipphones ON voipphones.assignment_id = a.id
 			LEFT JOIN tariffs t ON (a.tariffid = t.id)
 			LEFT JOIN divisions d ON (d.id = c.divisionid)
-	    WHERE
+	    WHERE " . ($customerid ? 'c.id = ' . $customerid . ' AND ' : '') . "
 	      (c.status  = ? OR c.status = ?) AND
 	      t.type = ? AND
 	      a.commited = 1 AND
