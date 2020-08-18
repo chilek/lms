@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-if (isset($_GET['oper']) && $_GET['oper'] = 'loadtransactionlist') {
+if (isset($_GET['oper']) && $_GET['oper'] == 'loadtransactionlist') {
     header('Content-Type: text/html');
 
     if ($SYSLOG && ConfigHelper::checkPrivilege('transaction_logs')) {
