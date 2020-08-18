@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2019 LMS Developers
+ *  Copyright (C) 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -132,18 +132,33 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
     {
         extract($params);
 
-        $userlist = $this->db->GetAllByKey(
-            'SELECT id, login, name, phone, lastlogindate, lastloginip, passwdexpiration, passwdlastchange, access,
+        if (isset($superuser)) {
+            $userlist = $this->db->GetAllByKey(
+                'SELECT id, login, name, phone, lastlogindate, lastloginip, passwdexpiration, passwdlastchange, access,
                 accessfrom, accessto, rname, twofactorauth
-            FROM vusers
+            FROM vusersadmin
             WHERE deleted = 0'
-            . (isset($divisions) ? ' AND id IN (SELECT userid
+                . (isset($divisions) && !empty($divisions) ? ' AND id IN (SELECT userid
                     FROM userdivisions
                     WHERE divisionid IN (' . $divisions . ')
                     )' : '') .
-            ' ORDER BY login ASC',
-            'id'
-        );
+                ' ORDER BY login ASC',
+                'id'
+            );
+        } else {
+            $userlist = $this->db->GetAllByKey(
+                'SELECT id, login, name, phone, lastlogindate, lastloginip, passwdexpiration, passwdlastchange, access,
+                    accessfrom, accessto, rname, twofactorauth
+                FROM vusers
+                WHERE deleted = 0'
+                . (isset($divisions) && !empty($divisions) ? ' AND id IN (SELECT userid
+                        FROM userdivisions
+                        WHERE divisionid IN (' . $divisions . ')
+                        )' : '') .
+                ' ORDER BY login ASC',
+                'id'
+            );
+        }
 
         if ($userlist) {
             foreach ($userlist as &$row) {

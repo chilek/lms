@@ -1,11 +1,9 @@
 <?php
 
 /*
- *  LMS version 1.11-git
+ * LMS version 1.11-git
  *
- *  Copyright (C) 2001-2018 LMS Developers
- *
- *  Please, see the doc/AUTHORS for more information about authors!
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License Version 2 as
@@ -21,26 +19,18 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id$
  */
 
-/**
- * LMSDivisionManagerInterface
- *
- */
-interface LMSDivisionManagerInterface
-{
-    public function GetDivision($id);
+$this->BeginTrans();
 
-    public function GetDivisionByName($name);
+$this->Execute("DROP VIEW IF EXISTS vusersadmin");
 
-    public function GetDivisions($params = array());
+$this->Execute("
+    CREATE VIEW vusersadmin AS
+        SELECT *, CONCAT(firstname, ' ', lastname) AS name, CONCAT(lastname, ' ', firstname) AS rname
+        FROM users
+");
 
-    public function AddDivision($division);
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020081900', 'dbversion'));
 
-    public function DeleteDivision($id);
-
-    public function UpdateDivision($division);
-
-    public function CheckDivisionsAccess($divisions);
-}
+$this->CommitTrans();

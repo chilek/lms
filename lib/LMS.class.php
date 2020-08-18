@@ -4324,6 +4324,12 @@ class LMS
         return $manager->UpdateDivision($division);
     }
 
+    public function CheckDivisionsAccess($divisions)
+    {
+        $manager = $this->getDivisionManager();
+        return $manager->CheckDivisionsAccess($divisions);
+    }
+
     /*
      * projects
      */

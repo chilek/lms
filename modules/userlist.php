@@ -36,17 +36,18 @@ if (!isset($divisionContext)) {
 $SMARTY->assign('division_context', $divisionContext);
 $layout['division'] = $divisionContext;
 
+$superuser = (ConfigHelper::checkPrivilege('superuser') ? 1 : 0);
+
 if (isset($_GET['division'])) {
-    $filter['division'] = $_GET['division'];
+    $selectedDivision = $_GET['division'];
 } else {
-    $filter['division'] = $divisionContext;
+    $selectedDivision = $divisionContext;
 }
 
-if (empty($filter['division'])) {
-    $user_divisions = implode(",", array_keys($LMS->GetDivisions(array('userid' => Auth::GetCurrentUser()))));
-} else {
-    $user_divisions = $filter['division'];
-}
+$userslist = (!empty($superuser) ? $LMS->GetUserList(array('divisions' => $selectedDivision, 'superuser' => 1)) : $LMS->GetUserList(array('divisions' => $selectedDivision)));
+unset($userslist['total']);
 
-$SMARTY->assign('userslist', $LMS->GetUserList(array('divisions' => $user_divisions)));
+$SMARTY->assign('userslist', $userslist);
+$SMARTY->assign('selectedDivision', $selectedDivision);
+$SMARTY->assign('superuser', $superuser);
 $SMARTY->display('user/userlist.html');

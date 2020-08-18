@@ -3209,6 +3209,10 @@ CREATE VIEW vusers AS
                              WHERE ud2.userid = lms_current_user())
     GROUP BY u.id;
 
+CREATE VIEW vusersadmin AS
+SELECT *, (firstname || ' ' || lastname) AS name, (lastname || ' ' || firstname) AS rname
+FROM users;
+
 CREATE FUNCTION customerbalances_update()
     RETURNS trigger
     LANGUAGE plpgsql
@@ -3831,6 +3835,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020081800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020081900');
 
 COMMIT;
