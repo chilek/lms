@@ -99,6 +99,7 @@ version 26-git (????-??-??):
   - enhancement: sms and mailing notice consent support for lms-notify.php backend script
     ('ignore_customer_consents' script configuration variable set to 'true' allows to imitate previous
     behavior) [chilan]
+  - improvement: transaction log tab content is loaded in background and on-demand [chilan]
 
 version 25.0 (2020-05-15):
 

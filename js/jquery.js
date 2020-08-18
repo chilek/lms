@@ -22,6 +22,8 @@
  *  $Id$
  */
 
+var elementsToInitiate = 0;
+
 function savePersistentSettings(data) {
 	return $.ajax('?m=persistentsetting', {
 		async: true,
@@ -357,6 +359,286 @@ function init_comboboxes(selector) {
 	}
 }
 
+function init_datatables(selector) {
+	$(selector).each(function() {
+		var elem = this;
+		var init = {};
+
+		init.displayStart = $(elem).attr('data-display-start');
+		if (init.displayStart === undefined) {
+			init.displayStart = 0;
+		}
+		init.searchColumns = $(elem).attr('data-search-columns');
+		if (init.searchColumns === undefined) {
+			init.searchColumns = [];
+		} else {
+			init.searchColumns = JSON.parse(init.searchColumns);
+		}
+		init.stateSave = $(elem).attr('data-state-save');
+		init.stateSaveProps = true;
+		if (init.stateSave === undefined) {
+			init.stateSave = false;
+		} else if (init.stateSave.match(/^\[(.+)\]$/)) {
+			init.stateSaveProps = JSON.parse(RegExp.$1);
+		} else {
+			init.stateSave = true;
+		}
+		init.ordering = $(elem).attr('data-ordering');
+		if (init.ordering === undefined) {
+			init.ordering = true;
+		}
+		init.orderCellsTop = $(elem).attr('data-searching');
+		if (init.orderCellsTop === undefined) {
+			init.orderCellsTop = true;
+		}
+		init.dom = '<"top"<"lms-ui-datatable-toolbar"<"lms-ui-datatable-clear-settings"><"lms-ui-datatable-column-toggle">l>pf>rt<"bottom"i><"clear">';
+		$(elem).data('init', init);
+
+		var trStyle = $(elem).closest('tr').attr('style');
+		if (trStyle !== undefined && trStyle.match(/display:\s*none/)) {
+			return;
+		}
+
+		var columnSearch = $(elem).hasClass('lms-ui-datatable-column-search');
+		var columnToggle = $(elem).hasClass('lms-ui-datatable-column-toggle');
+
+		if (columnSearch) {
+			var tr = $('thead tr', elem).clone().addClass('search-row');
+			tr.appendTo($('thead', elem)).find('th').each(function (key, th) {
+				var content = '';
+				if ((searchable = $(th).attr('data-searchable')) === undefined ||
+					searchable == 'true') {
+					if ((selectValue = $(th).attr('data-select-value')) !== undefined &&
+						selectValue == 'true') {
+						var selectValues = [];
+						tr.parent().siblings('tbody').children('tr').each(function (index, row) {
+							value = $($('td', row)[key]).html().trim();
+							if (!value.length || selectValues.indexOf(value) > -1)
+								return;
+							selectValues.push(value);
+						});
+						if (selectValues.length > 1) {
+							content = '<select' + ($(th).attr('data-filter-id') ? ' id="' + $(th).attr('data-filter-id') + '"' : '') +
+								'><option value="">' + $t('- any -') + '</option>';
+							selectValues.sort().forEach(function (value, index) {
+								content += '<option value="' + value + '">' + value + '</option>';
+							});
+							content += '</select>';
+						}
+					} else {
+						content = '<input type="search" placeholder="' + $t('Search') + '"' +
+							($(th).attr('data-filter-id') ? ' id="' + $(th).attr('data-filter-id') + '"' : '') + '>';
+					}
+				} else {
+					content = '';
+				}
+				$(th).html(content);
+			});
+			$('thead .search-row input', elem).on('keyup change search', function () {
+				$(elem).DataTable().column($(this).parent().index() + ':visible')
+					.search(this.value.length ? this.value : '', true).draw();
+			});
+			$('thead .search-row select', elem).on('change', function () {
+				var value = this.value;
+				$(elem).DataTable().column($(this).parent().index() + ':visible')
+					.search(value.length ? '^' + value + '$' : '', true).draw();
+			});
+		}
+
+		$(elem).on('init.dt', function (e, settings) {
+			var searchColumns = $(this).data('init').searchColumns;
+			var api = new $.fn.dataTable.Api(settings);
+			$(this).data('api', api);
+			var state = api.state.loaded();
+
+			if (state && columnSearch) {
+				var i = 0;
+				var searchFields = $('thead input[type="search"],thead select', elem);
+				api.columns().every(function (index) {
+					var columnState = state.columns[index];
+					var searchValue = '';
+					if (!columnState.visible) {
+						return;
+					}
+					if (typeof searchColumns[index].search === 'undefined') {
+						$(searchFields[i]).val(state.columns[index].search.search.replace(/[\^\$]/g, ''));
+					} else {
+						$(searchFields[i]).val(searchColumns[index].search.replace(/[\^\$]/g, ''));
+						if (searchColumns[index].search.length) {
+							if ($(searchFields[i]).is('thead select')) {
+								searchValue = '^' + searchColumns[index].search + '$';
+							} else {
+								searchValue = searchColumns[index].search;
+							}
+						}
+						//console.log(searchValue);
+						api.column(index).search(searchValue, true).draw();
+					}
+					i++;
+				});
+			}
+
+			if (columnToggle) {
+				var toggle = $(elem).siblings('div.top').find('div.lms-ui-datatable-column-toggle');
+				var content = '<form name="' + $(elem).attr('id') + '" class="column-toggle">' +
+					'<select class="column-toggle" class="lms-ui-multiselect" name="' +
+					$(elem).attr('id') + '-column-toggle[]" multiple' +
+					' title="' + $t('Column visibility') + '">';
+				api.columns().every(function (index) {
+					var text = $(this.header()).text().trim();
+					if (text.indexOf(':') > 0) {
+						content += '<option value="' + index + '"' +
+							(!state || state.columns[index].visible ? ' selected' : '') + '>' + text.replace(':', '') + '</option>';
+					}
+				});
+				content += '</select></form>';
+				toggle.html(content);
+				var multiselectId = toggle.find('select.column-toggle').uniqueId().attr('id');
+				new multiselect({
+					id: multiselectId,
+					defaultValue: null,
+					icon: 'lms-ui-icon-configuration',
+					type: 'tiny'
+				});
+				toggle.find('#' + multiselectId).on('lms:multiselect:itemclick', function (e, data) {
+					api.column(data.index).visible(data.checked);
+				});
+			}
+
+			var clearSettings = $(elem).siblings('div.top').find('div.lms-ui-datatable-clear-settings');
+			clearSettings.html('<i class="lms-ui-icon-clear" title="' + $t('Clear settings') + '"/>');
+			clearSettings.click(function () {
+				if (state) {
+					api.state.clear();
+				}
+				api.columns().every(function () {
+					this.visible(true);
+				});
+				$('thead tr:last-child th', elem).each(function (index, th) {
+					if ($('input[type="search"]', th).length) {
+						$('input[type="search"]', th).val('');
+						api.column(index).search('');
+					} else if ($('select', th).length) {
+						$('select', th).prop('selectedIndex', 0);
+						api.column(index).search('');
+					}
+				});
+				$(elem).parent().find('.column-toggle').each(function () {
+					$(this).find('option:not(:disabled)').attr('selected', 'selected');
+				}).trigger('lms:multiselect:updated');
+
+				var pageLen = $(elem).attr('data-page-length');
+				if (pageLen !== undefined) {
+					api.page.len(pageLen);
+				} else {
+					api.page.len(10);
+				}
+
+				var order = $(elem).attr('data-order');
+				if (order !== undefined) {
+					api.order(JSON.parse(order));
+				} else {
+					api.order([[0, 'asc']]);
+				}
+				api.search('');
+
+				api.draw('full-hold');
+
+				var displayStart = $(elem).attr('data-display-start');
+				api.page(displayStart !== undefined ?
+					Math.ceil(displayStart / pageLen) : 0).draw('page');
+			});
+
+			if (elementsToInitiate > 0) {
+				elementsToInitiate--;
+				if (!elementsToInitiate) {
+					show_pagecontent();
+				}
+			}
+		}).on('column-visibility.dt', function (e, settings, column, visible) {
+			if (!visible)
+				return;
+			var api = $(this).data('api');
+			var searchValue = api.columns(column).search()[0];
+			var state = api.state();
+			var columnStates = state ? state.columns : null;
+			var i = 0;
+			api.columns().every(function (index) {
+				if (index == column) {
+					$('thead tr:last-child th:nth-child(' + (i + 1) + ') :input', elem).val(searchValue.replace(/[\^\$]/g, ''));
+				}
+				if (columnStates && !columnStates[index].visible) {
+					return;
+				}
+				i++;
+			});
+		}).on('responsive-resize.dt', function (e, datatable, columns) {
+			// first fired events contains "-" characters instead of column visibility states
+			// so we should omit this event
+			if (typeof (columns[columns.length - 1]) == 'boolean') {
+				var search_fields = $(this).closest('table').find('.search-row th');
+				$.each(columns, function (index, visible) {
+					datatable.column(index).visible(true);
+					if (visible) {
+						search_fields.eq(index).show();
+					} else {
+						search_fields.eq(index).hide();
+					}
+				});
+			}
+		}).on('mouseenter', '.child', function () {
+			$(this).prev().addClass('highlight');
+		}).on('mouseleave', '.child', function () {
+			$(this).prev().removeClass('highlight');
+		});
+
+		$(elem).DataTable({
+//			language: {
+//				url: "js/jquery-datatables-i18n/" + lmsSettings.language + ".json"
+//			},
+			responsive: {
+				details: {
+					display: $.fn.dataTable.Responsive.display.childRowImmediate,
+					type: ''
+				}
+			},
+			language: $.extend(dataTablesLanguage, {
+				"emptyTable": $(elem).attr('data-empty-table-message')
+			}),
+			initComplete: function (settings, json) {
+				$(elem).show();
+			},
+			dom: init.dom,
+			stripeClasses: [],
+			//deferRender: true,
+			processing: true,
+			stateDuration: lmsSettings.settingsTimeout,
+			lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, $t('all')]],
+			displayStart: init.displayStart,
+			searchCols: init.searchColumns,
+			stateSave: init.stateSave,
+			stateSaveProps: init.stateSaveProps,
+			ordering: init.ordering,
+			orderCellsTop: init.orderCellsTop,
+			stateSaveParams: function (settings, data) {
+				var api = new $.fn.dataTable.Api(settings);
+				var stateSaveProps = api.init().stateSaveProps;
+				if (!Array.isArray(stateSaveProps)) {
+					return;
+				}
+				for (var property in data) {
+					if (data.hasOwnProperty(property)) {
+						if (property == "time" || stateSaveProps.indexOf(property) >= 0) {
+							continue;
+						}
+						delete data[property];
+					}
+				}
+			}
+		});
+	});
+}
+
 function init_titlebars(selector) {
 	$(selector).each(function() {
 		$(this).prop('onclick', null);
@@ -365,7 +647,7 @@ function init_titlebars(selector) {
 			showOrHide(elemid);
 			$('#' + elemid).find('.lms-ui-datatable').each(function () {
 				if (!$.fn.dataTable.isDataTable(this)) {
-					initDataTable(this);
+					init_datatables(this);
 				}
 			});
 		});
@@ -598,7 +880,6 @@ function disableFullScreenPopup() {
 
 $(function() {
 	var autocomplete = "off";
-	var elementsToInitiate = 0;
 	var scrollTimeout = null;
 
 	$('#lms-ui-module-view').scroll(function(e) {
@@ -1075,287 +1356,7 @@ $(function() {
 		}
 	});
 
-	function initDataTable(elem) {
-		var init = $(elem).data('init');
-
-		var columnSearch = $(elem).hasClass('lms-ui-datatable-column-search');
-		var columnToggle = $(elem).hasClass('lms-ui-datatable-column-toggle');
-
-		if (columnSearch) {
-			var tr = $('thead tr', elem).clone().addClass('search-row');
-			tr.appendTo($('thead', elem)).find('th').each(function(key, th) {
-				var content = '';
-				if ((searchable = $(th).attr('data-searchable')) === undefined ||
-					searchable == 'true') {
-					if ((selectValue = $(th).attr('data-select-value')) !== undefined &&
-						selectValue == 'true') {
-						var selectValues = [];
-						tr.parent().siblings('tbody').children('tr').each(function(index, row) {
-							value = $($('td', row)[key]).html().trim();
-							if (!value.length || selectValues.indexOf(value) > -1)
-								return;
-							selectValues.push(value);
-						});
-						if (selectValues.length > 1) {
-							content = '<select' + ($(th).attr('data-filter-id') ? ' id="' + $(th).attr('data-filter-id') + '"' : '') +
-								'><option value="">'  + $t('- any -') + '</option>';
-							selectValues.sort().forEach(function(value, index) {
-								content += '<option value="' + value + '">' + value + '</option>';
-							});
-							content += '</select>';
-						}
-					} else {
-						content = '<input type="search" placeholder="' + $t('Search') + '"' +
-							($(th).attr('data-filter-id') ? ' id="' + $(th).attr('data-filter-id') + '"' : '') + '>';
-					}
-				} else {
-					content = '';
-				}
-				$(th).html(content);
-			});
-			$('thead .search-row input', elem).on('keyup change search', function() {
-				$(elem).DataTable().column($(this).parent().index() + ':visible')
-					.search(this.value.length ? this.value : '', true).draw();
-			});
-			$('thead .search-row select', elem).on('change', function() {
-				var value = this.value;
-				$(elem).DataTable().column($(this).parent().index() + ':visible')
-					.search(value.length ? '^' + value + '$' : '', true).draw();
-			});
-		}
-
-		$(elem).on('init.dt', function(e, settings) {
-			var searchColumns = $(this).data('init').searchColumns;
-			var api = new $.fn.dataTable.Api(settings);
-			$(this).data('api', api);
-			var state = api.state.loaded();
-
-			if (state && columnSearch) {
-				var i = 0;
-				var searchFields = $('thead input[type="search"],thead select', elem);
-				api.columns().every(function(index) {
-					var columnState = state.columns[index];
-					var searchValue = '';
-					if (!columnState.visible) {
-						return;
-					}
-					if (typeof searchColumns[index].search === 'undefined') {
-						$(searchFields[i]).val(state.columns[index].search.search.replace(/[\^\$]/g, ''));
-					} else {
-						$(searchFields[i]).val(searchColumns[index].search.replace(/[\^\$]/g, ''));
-						if (searchColumns[index].search.length) {
-							if ($(searchFields[i]).is('thead select')) {
-								searchValue = '^' + searchColumns[index].search + '$';
-							} else {
-								searchValue = searchColumns[index].search;
-							}
-						}
-						//console.log(searchValue);
-						api.column(index).search(searchValue, true).draw();
-					}
-					i++;
-				});
-			}
-
-			if (columnToggle) {
-				var toggle = $(elem).siblings('div.top').find('div.lms-ui-datatable-column-toggle');
-				var content = '<form name="' + $(elem).attr('id') + '" class="column-toggle">' +
-					'<select class="column-toggle" class="lms-ui-multiselect" name="' +
-					$(elem).attr('id') + '-column-toggle[]" multiple' +
-					' title="' + $t('Column visibility') + '">';
-				api.columns().every(function(index) {
-					var text = $(this.header()).text().trim();
-					if (text.indexOf(':') > 0) {
-						content += '<option value="' + index + '"' +
-							(!state || state.columns[index].visible ? ' selected' : '') + '>' + text.replace(':', '') + '</option>';
-					}
-				});
-				content += '</select></form>';
-				toggle.html(content);
-				var multiselectId = toggle.find('select.column-toggle').uniqueId().attr('id');
-				new multiselect({
-					id: multiselectId,
-					defaultValue: null,
-					icon: 'lms-ui-icon-configuration',
-					type: 'tiny'
-				});
-				toggle.find('#' + multiselectId).on('lms:multiselect:itemclick', function(e, data) {
-					api.column(data.index).visible(data.checked);
-				});
-			}
-
-			var clearSettings = $(elem).siblings('div.top').find('div.lms-ui-datatable-clear-settings');
-			clearSettings.html('<i class="lms-ui-icon-clear" title="' + $t('Clear settings') + '"/>');
-			clearSettings.click(function() {
-				if (state) {
-					api.state.clear();
-				}
-				api.columns().every(function() {
-					this.visible(true);
-				});
-				$('thead tr:last-child th', elem).each(function(index, th) {
-					if ($('input[type="search"]', th).length) {
-						$('input[type="search"]', th).val('');
-						api.column(index).search('');
-					} else if ($('select', th).length) {
-						$('select', th).prop('selectedIndex', 0);
-						api.column(index).search('');
-					}
-				});
-				$(elem).parent().find('.column-toggle').each(function() {
-					$(this).find('option:not(:disabled)').attr('selected', 'selected');
-				}).trigger('lms:multiselect:updated');
-
-				var pageLen = $(elem).attr('data-page-length');
-				if (pageLen !== undefined) {
-					api.page.len(pageLen);
-				} else {
-					api.page.len(10);
-				}
-
-				var order = $(elem).attr('data-order');
-				if (order !== undefined) {
-					api.order(JSON.parse(order));
-				} else {
-					api.order([[0, 'asc']]);
-				}
-				api.search('');
-
-				api.draw('full-hold');
-
-				var displayStart = $(elem).attr('data-display-start');
-				api.page(displayStart !== undefined ?
-					Math.ceil(displayStart / pageLen) : 0).draw('page');
-			});
-
-			if (elementsToInitiate > 0) {
-				elementsToInitiate--;
-				if (!elementsToInitiate) {
-					show_pagecontent();
-				}
-			}
-		}).on('column-visibility.dt', function(e, settings, column, visible) {
-			if (!visible)
-				return;
-			var api = $(this).data('api');
-			var searchValue = api.columns(column).search()[0];
-			var state = api.state();
-			var columnStates = state ? state.columns : null;
-			var i = 0;
-			api.columns().every(function(index) {
-				if (index == column) {
-					$('thead tr:last-child th:nth-child(' + (i + 1) + ') :input', elem).val(searchValue.replace(/[\^\$]/g, ''));
-				}
-				if (columnStates && !columnStates[index].visible) {
-					return;
-				}
-				i++;
-			});
-		}).on('responsive-resize.dt', function (e, datatable, columns) {
-			// first fired events contains "-" characters instead of column visibility states
-			// so we should omit this event
-			if (typeof(columns[columns.length - 1]) == 'boolean') {
-				var search_fields = $(this).closest('table').find('.search-row th');
-				$.each(columns, function (index, visible) {
-					datatable.column(index).visible(true);
-					if (visible) {
-						search_fields.eq(index).show();
-					} else {
-						search_fields.eq(index).hide();
-					}
-				});
-			}
-		}).on('mouseenter', '.child', function() {
-			$(this).prev().addClass('highlight');
-		}).on('mouseleave', '.child', function() {
-			$(this).prev().removeClass('highlight');
-		});
-
-		$(elem).DataTable({
-//			language: {
-//				url: "js/jquery-datatables-i18n/" + lmsSettings.language + ".json"
-//			},
-			responsive: {
-				details: {
-					display: $.fn.dataTable.Responsive.display.childRowImmediate,
-					type: ''
-				}
-			},
-			language: $.extend(dataTablesLanguage, {
-				"emptyTable": $(elem).attr('data-empty-table-message')
-			}),
-			initComplete: function(settings, json) {
-				$(elem).show();
-			},
-			dom: init.dom,
-			stripeClasses: [],
-			//deferRender: true,
-			processing: true,
-			stateDuration: lmsSettings.settingsTimeout,
-			lengthMenu: [[ 10, 25, 50, 100, -1 ], [ 10, 25, 50, 100, $t('all') ]],
-			displayStart: init.displayStart,
-			searchCols: init.searchColumns,
-			stateSave: init.stateSave,
-			stateSaveProps: init.stateSaveProps,
-			ordering: init.ordering,
-			orderCellsTop: init.orderCellsTop,
-			stateSaveParams: function(settings, data) {
-				var api = new $.fn.dataTable.Api(settings);
-				var stateSaveProps = api.init().stateSaveProps;
-				if (!Array.isArray(stateSaveProps)) {
-					return;
-				}
-				for (var property in data) {
-					if (data.hasOwnProperty(property)) {
-						if (property == "time" || stateSaveProps.indexOf(property) >= 0) {
-							continue;
-						}
-						delete data[property];
-					}
-				}
-			}
-		});
-	}
-
-	dataTables.each(function() {
-		var init = {};
-		init.displayStart = $(this).attr('data-display-start');
-		if (init.displayStart === undefined) {
-			init.displayStart = 0;
-		}
-		init.searchColumns = $(this).attr('data-search-columns');
-		if (init.searchColumns === undefined) {
-			init.searchColumns = [];
-		} else {
-			init.searchColumns = JSON.parse(init.searchColumns);
-		}
-		init.stateSave = $(this).attr('data-state-save');
-		init.stateSaveProps = true;
-		if (init.stateSave === undefined) {
-			init.stateSave = false;
-		} else if (init.stateSave.match(/^\[(.+)\]$/)) {
-			init.stateSaveProps = JSON.parse(RegExp.$1);
-		} else {
-			init.stateSave = true;
-		}
-		init.ordering = $(this).attr('data-ordering');
-		if (init.ordering === undefined) {
-			init.ordering = true;
-		}
-		init.orderCellsTop = $(this).attr('data-searching');
-		if (init.orderCellsTop === undefined) {
-			init.orderCellsTop = true;
-		}
-		init.dom = '<"top"<"lms-ui-datatable-toolbar"<"lms-ui-datatable-clear-settings"><"lms-ui-datatable-column-toggle">l>pf>rt<"bottom"i><"clear">';
-		$(this).data('init', init);
-
-		var trStyle = $(this).closest('tr').attr('style');
-		if (trStyle !== undefined && trStyle.match(/display:\s*none/)) {
-			return;
-		}
-
-		initDataTable(this);
-	});
+	init_datatables(dataTables);
 
 	init_titlebars('.lmsbox-titlebar');
 

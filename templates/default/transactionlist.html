@@ -1,0 +1,43 @@
+<TABLE id="transactions-datatable" class="lmsbox-inner lms-ui-datatable" data-order='[[ 0, "desc" ]]' data-page-length="10"
+       data-empty-table-message="{trans("No such transactions in database.")}"
+       style="display: none;" width="100%">
+    <COLGROUP>
+        <COL style="width: 1%;">
+        <COL style="width: 1%;">
+        <COL style="width: 1%;">
+        <COL style="width: 97%;">
+    </COLGROUP>
+    <THEAD>
+        <TR>
+            <TH class="bold nobr">{trans("Date:")}</TH>
+            <TH class="bold nobr">{trans("User:")}</TH>
+            <TH class="bold nobr">{trans("Module:")}</TH>
+            <TH class="bold nobr" data-orderable="false">{trans("Operations:")}</TH>
+        </TR>
+    </THEAD>
+    <TBODY>
+        {foreach $transactions as $tr}
+        <TR>
+            <TD class="valign-bottom nobr">
+                {$tr.time|date_format:"Y.m.d H:i:s"}
+            </TD>
+            <TD class="text-center valign-bottom nobr">
+                <a href="?m=userinfo&amp;id={$tr.userid}">{$tr.login}</a>
+            </TD>
+            <TD class="text-center valign-bottom nobr">
+                {$tr.module}
+            </TD>
+            <TD class="valign-bottom">
+                {if $tr.messages}
+                    {foreach $tr.messages as $messageid => $message}
+                        <span class="bold">{SYSLOG::getResourceName($message.resource)}: <span style="{SYSLOG::getOperationStyle($message.operation)}">{SYSLOG::getOperationName($message.operation)}</span></span>
+                        {foreach $message.keys as $key => $msgkey}{$key}: {if $msgkey.value}<a href="?m=archiveinfo&amp;type={$msgkey.type}&amp;id={$msgkey.value}&amp;date={$tr.time}">{/if}{$msgkey.value}{if $msgkey.value}</a>{/if}{if !$msgkey@last}, {/if}{/foreach}
+                        {foreach $message.data as $key => $value}{$key}: {$value.value}{if !$value@last}, {/if}{/foreach}
+                        {if !$message@last}<br>{/if}
+                    {/foreach}
+                {/if}
+            </TD>
+        </TR>
+        {/foreach}
+    </TBODY>
+</TABLE>
