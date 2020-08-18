@@ -2,6 +2,26 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
+
+<style>
+
+	#action-panel {
+		display: flex;
+		align-items: center;
+		padding-top: 0.3em;
+		padding-bottom: 0.3em;
+	}
+
+	#action-panel > * {
+		margin-left: 0.7em;
+	}
+
+	#action-panel button {
+		margin-top: 0;
+	}
+
+</style>
+
 <H1>{$layout.pagetitle}</H1>
 <FORM NAME="setwarnings" ID="customersearchresults" METHOD="POST" ACTION="?m=customerwarn&search=0">
 <TABLE class="lmsbox lms-ui-background-cycle">
@@ -108,61 +128,63 @@
 	</TR>
 	<TR class="ftop">
 		<TD COLSPAN="4" class="nobr">
-			<span class="bold">{trans("<!customersearch>Action:")}</span>
-			<select id="customer-action">
-				<optgroup label="{trans("Warnings")}">
-					<option value="1">{trans("<!customersearch>Enable warning")}</option>
-					<option value="2">{trans("<!customersearch>Disable warning")}</option>
-					<option value="3">{trans("Set notice content")}</option>
-				</optgroup>
-				{if is_array($listdata.customergroup)}
-					<optgroup label="{trans("Customer groups")}">
-						{$groups = array_flip($listdata.customergroup)}
-						<option value="4">{trans("<!customersearch>Add to groups")}</option>
-						<option value="9">{trans("<!customersearch>Create new group")}</option>
-						<option value="5">{trans("<!customersearch>Remove from groups")}</option>
-						<option value="6">{trans("<!customersearch>Replace groups")}</option>
+			<div id="action-panel">
+				<span class="bold">{trans("<!customersearch>Action:")}</span>
+				<select id="customer-action">
+					<optgroup label="{trans("Warnings")}">
+						<option value="1">{trans("<!customersearch>Enable warning")}</option>
+						<option value="2">{trans("<!customersearch>Disable warning")}</option>
+						<option value="3">{trans("Set notice content")}</option>
 					</optgroup>
-				{/if}
-				<optgroup label="{trans("Customer consents")}">
-					<option value="7">{trans("<!customersearch>Add consents")}</option>
-					<option value="8">{trans("<!customersearch>Remove consents")}</option>
-				</optgroup>
-				{foreach $_CUSTOMERCONTACTTYPES as $contacttypeidx => $contacttype}
-					<optgroup label="{$contacttype.ui.legend.text}">
-						<option value="{$contacttypeidx}-1" data-resource="{$contacttypeidx}" data-operation="1"
-							data-target-multiselect="#contactflags-{$contacttypeidx}"
-							>{trans("<!customersearch>Add flags")}</option>
-						<option value="{$contacttypeidx}-2" data-resource="{$contacttypeidx}" data-operation="2"
-							data-target-multiselect="#contactflags-{$contacttypeidx}"
-							>{trans("<!customersearch>Remove flags")}</option>
+					{if is_array($listdata.customergroup)}
+						<optgroup label="{trans("Customer groups")}">
+							{$groups = array_flip($listdata.customergroup)}
+							<option value="4">{trans("<!customersearch>Add to groups")}</option>
+							<option value="9">{trans("<!customersearch>Create new group")}</option>
+							<option value="5">{trans("<!customersearch>Remove from groups")}</option>
+							<option value="6">{trans("<!customersearch>Replace groups")}</option>
+						</optgroup>
+					{/if}
+					<optgroup label="{trans("Customer consents")}">
+						<option value="7">{trans("<!customersearch>Add consents")}</option>
+						<option value="8">{trans("<!customersearch>Remove consents")}</option>
 					</optgroup>
-				{/foreach}
-			</select>
-			{if isset($groups)}
-				<SELECT SIZE="1" class="lms-ui-multiselect-deferred" NAME="setwarnings[customergroup][]"
-						id="customergroups" style="display: none;" multiple>
-					{foreach $customergroups as $customergroup}
-						<OPTION value="{$customergroup.id}"{if isset($groups[$customergroup.id])} selected{/if}>{$customergroup.name|truncate:50:"...":true}</OPTION>
-					{/foreach}
-				</SELECT>
-			{/if}
-			<input type="text" id="newcustomergroup" name="setwarnings[newcustomergroup]" style="display: none;">
-			<select class="lms-ui-multiselect-deferred" name="consents[]" data-separator="<hr>"
-					id="customerconsents" style="display: none;" multiple>
-				{foreach $_CCONSENTS as $type => $consent}
-					<option value="{$type}">{$consent.label}</option>
-				{/foreach}
-			</select>
-			{foreach $_CUSTOMERCONTACTTYPES as $contacttypeidx => $contacttype}
-				<select class="lms-ui-multiselect-deferred" name="contactflags[{$contacttypeidx}][]"
-						id="contactflags-{$contacttypeidx}" style="display: none;" multiple>
-					{foreach $contacttype.ui.flags as $flagidx => $flag}
-						<option value="{$flagidx}">{$flag.label}</option>
+					{foreach $_CUSTOMERCONTACTTYPES as $contacttypeidx => $contacttype}
+						<optgroup label="{$contacttype.ui.legend.text}">
+							<option value="{$contacttypeidx}-1" data-resource="{$contacttypeidx}" data-operation="1"
+								data-target-multiselect="#contactflags-{$contacttypeidx}"
+								>{trans("<!customersearch>Add flags")}</option>
+							<option value="{$contacttypeidx}-2" data-resource="{$contacttypeidx}" data-operation="2"
+								data-target-multiselect="#contactflags-{$contacttypeidx}"
+								>{trans("<!customersearch>Remove flags")}</option>
+						</optgroup>
 					{/foreach}
 				</select>
-			{/foreach}
-			{button icon="apply" label="Apply" id="customer-action-apply"}
+				{if isset($groups)}
+					<SELECT SIZE="1" class="lms-ui-multiselect-deferred" NAME="setwarnings[customergroup][]"
+							id="customergroups" style="display: none;" multiple>
+						{foreach $customergroups as $customergroup}
+							<OPTION value="{$customergroup.id}"{if isset($groups[$customergroup.id])} selected{/if}>{$customergroup.name|truncate:50:"...":true}</OPTION>
+						{/foreach}
+					</SELECT>
+				{/if}
+				<input type="text" id="newcustomergroup" name="setwarnings[newcustomergroup]" style="display: none;">
+				<select class="lms-ui-multiselect-deferred" name="consents[]" data-separator="<hr>"
+						id="customerconsents" style="display: none;" multiple>
+					{foreach $_CCONSENTS as $type => $consent}
+						<option value="{$type}">{$consent.label}</option>
+					{/foreach}
+				</select>
+				{foreach $_CUSTOMERCONTACTTYPES as $contacttypeidx => $contacttype}
+					<select class="lms-ui-multiselect-deferred" name="contactflags[{$contacttypeidx}][]"
+							id="contactflags-{$contacttypeidx}" style="display: none;" multiple>
+						{foreach $contacttype.ui.flags as $flagidx => $flag}
+							<option value="{$flagidx}">{$flag.label}</option>
+						{/foreach}
+					</select>
+				{/foreach}
+				{button icon="apply" label="Apply" id="customer-action-apply"}
+			</div>
 		</TD>
 	</TR>
 	{/if}
@@ -282,27 +304,37 @@
 
 		$('#customer-action').change(function() {
 			var action = parseInt($(this).val());
-			$('#customergroups').toggle(action >= 4 && action <= 6);
-			if (action >= 4 && action <= 6 && !$('#customergroups').is('.lms-ui-multiselect-wrapper')) {
+
+			if ($('#customergroups').parent('.lms-ui-multiselect-container').length) {
+				$('#customergroups').parent('.lms-ui-multiselect-container').toggle(action >= 4 && action <= 6);
+			} else if (action >= 4 && action <= 6) {
+				$('#customergroups').show();
 				init_multiselects('#customergroups');
 			}
+
 			$('#newcustomergroup').toggle(action == 9);
 			if (action == 9) {
 				initAutoGrow('#newcustomergroup');
 			}
-			$('#customerconsents').toggle(action >= 7 && action <= 8);
-			if (action >= 7 && action <= 8 && !$('#customerconsents').is('.lms-ui-multiselect-wrapper')) {
+
+			if ($('#customerconsents').parent('.lms-ui-multiselect-container').length) {
+				$('#customerconsents').parent('.lms-ui-multiselect-container').toggle(action >= 7 && action <= 8);
+			} else if (action >= 7 && action <= 8) {
+				$('#customerconsents').show();
 				init_multiselects('#customerconsents');
 			}
+
 			var target_multiselect = $('option:selected', this).attr('data-target-multiselect');
 			$('[id|="contactflags"]').each(function() {
 				if (target_multiselect && '#' + $(this).attr('id') == target_multiselect) {
-					$(this).show();
-					if (!$(this).is('.lms-ui-multiselect-wrapper')) {
+					if ($(this).parent('.lms-ui-multiselect-container').length) {
+						$(this).parent('.lms-ui-multiselect-container').show();
+					} else {
+						$(this).show();
 						init_multiselects(target_multiselect);
 					}
 				} else {
-					$(this).hide();
+					$(this).parent('.lms-ui-multiselect-container').hide();
 				}
 			});
 		});
