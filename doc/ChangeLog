@@ -96,6 +96,9 @@ version 26-git (????-??-??):
   - enhancement: added the ability to copy user divisions between users [ravvar]
   - enhancement: customer notes support in dedicated tab [chilan]
   - enhancement: divided mailing notice consent to separate mail and sms delivery consents [chilan]
+  - enhancement: sms and mailing notice consent support for lms-notify.php backend script
+    ('ignore_customer_consents' script configuration variable set to 'true' allows to imitate previous
+    behavior) [chilan]
 
 version 25.0 (2020-05-15):
 
