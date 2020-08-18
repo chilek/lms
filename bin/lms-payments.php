@@ -50,18 +50,23 @@ foreach ($parameters as $long => $short) {
     }
     $long_to_shorts[$long] = $short;
 }
+
 $options = getopt(
-    implode('', array_filter(array_values($parameters), function($value) {
-        return isset($value);
-    })),
+    implode(
+        '',
+        array_filter(
+            array_values($parameters),
+            function ($value) {
+                return isset($value);
+            }
+        )
+    ),
     array_keys($parameters)
 );
-foreach (array_flip(array_filter(
-        $long_to_shorts,
-        function($value) {
-            return isset($value);
-        }
-    )) as $short => $long) {
+
+foreach (array_flip(array_filter($long_to_shorts, function ($value) {
+    return isset($value);
+})) as $short => $long) {
     if (array_key_exists($short, $options)) {
         $options[$long] = $options[$short];
         unset($options[$short]);
