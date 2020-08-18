@@ -2804,6 +2804,7 @@ CREATE VIEW customerconsentview AS
         SUM(CASE WHEN cc.type = 1 THEN cc.cdate ELSE 0 END)::integer AS consentdate,
         SUM(CASE WHEN cc.type = 2 THEN 1 ELSE 0 END)::smallint AS invoicenotice,
         SUM(CASE WHEN cc.type = 3 THEN 1 ELSE 0 END)::smallint AS mailingnotice,
+        SUM(CASE WHEN cc.type = 8 THEN 1 ELSE 0 END)::smallint AS smsnotice,
         SUM(CASE WHEN cc.type = 4 THEN 1 ELSE 0 END)::smallint AS einvoice
     FROM customers c
         LEFT JOIN customerconsents cc ON cc.customerid = c.id
@@ -2814,6 +2815,7 @@ CREATE VIEW customerview AS
         cc.consentdate AS consentdate,
         cc.invoicenotice AS invoicenotice,
         cc.mailingnotice AS mailingnotice,
+        cc.smsnotice AS smsnotice,
         cc.einvoice AS einvoice,
         a1.country_id as countryid, a1.ccode,
         a1.zip as zip, a1.city as city,
@@ -2847,6 +2849,7 @@ CREATE VIEW contractorview AS
         cc.consentdate AS consentdate,
         cc.invoicenotice AS invoicenotice,
         cc.mailingnotice AS mailingnotice,
+        cc.smsnotice AS smsnotice,
         cc.einvoice AS einvoice,
         a1.country_id as countryid, a1.ccode,
         a1.zip as zip, a1.city as city, a1.street as street,
@@ -2871,6 +2874,7 @@ CREATE VIEW customeraddressview AS
         cc.consentdate AS consentdate,
         cc.invoicenotice AS invoicenotice,
         cc.mailingnotice AS mailingnotice,
+        cc.smsnotice AS smsnotice,
         cc.einvoice AS einvoice,
         a1.country_id as countryid, a1.ccode,
         a1.zip as zip, a1.city as city, a1.street as street,
@@ -3827,6 +3831,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020081400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020081800');
 
 COMMIT;

@@ -91,6 +91,7 @@ define('CCONSENT_EINVOICE', 4);
 define('CCONSENT_USERPANEL_SMS', 5);
 define('CCONSENT_USERPANEL_SCAN', 6);
 define('CCONSENT_TRANSFERFORM', 7);
+define('CCONSENT_SMSNOTICE', 8);
 
 $CCONSENTS = array(
     CCONSENT_DATE => array(
@@ -109,8 +110,13 @@ $CCONSENTS = array(
         'type' => 'boolean',
     ),
     CCONSENT_MAILINGNOTICE => array(
-        'label' => trans('message delivery via e-mail or sms'),
+        'label' => trans('message delivery via e-mail'),
         'name' => 'mailing_notice',
+        'type' => 'boolean',
+    ),
+    CCONSENT_SMSNOTICE => array(
+        'label' => trans('message delivery via sms'),
+        'name' => 'sms_notice',
         'type' => 'boolean',
     ),
     CCONSENT_USERPANEL_SMS => array(

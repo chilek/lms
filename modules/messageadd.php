@@ -193,7 +193,7 @@ function GetRecipients($filter, $type = MSG_MAIL)
         . (isset($smstable) ? $smstable : '')
         . ($tarifftype ? $tarifftable : '')
         .'WHERE deleted = ' . $deleted
-        . ($consent ? ' AND c.mailingnotice = 1' : '')
+        . ($consent ? ' AND ' . ($type == MSG_SMS || $type == MSG_ANYSMS ? 'c.smsnotice' : 'c.mailingnotice') . ' = 1' : '')
         . ($type == MSG_WWW ? ' AND c.id IN (SELECT DISTINCT ownerid FROM nodes)' : '')
         .($group!=0 ? ' AND c.status = '.$group : '')
         .($network ? ' AND c.id IN (SELECT ownerid FROM vnodes WHERE 
