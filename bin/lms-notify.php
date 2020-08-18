@@ -1898,12 +1898,12 @@ if (empty($types) || in_array('events', $types)) {
                             FROM customercontacts
                             WHERE (type & ?) = ?
                             GROUP BY customerid
-                        ) m ON (m.customerid = c.id)
+                        ) m ON (m.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.mailingnotice = 1') . "
                         LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
                             FROM customercontacts
                             WHERE (type & ?) = ?
                             GROUP BY customerid
-                        ) x ON (x.customerid = c.id)
+                        ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
                         WHERE c.id = ?",
                         array(
                             CONTACT_EMAIL | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
