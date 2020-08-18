@@ -681,7 +681,7 @@ if (empty($types) || in_array('documents', $types)) {
     $customers = $DB->GetAll(
         "SELECT DISTINCT c.id, c.pin, c.lastname, c.name,
             b.balance, m.email, x.phone
-        FROM customers c
+        FROM customeraddressview c
         LEFT JOIN (
             SELECT customerid, SUM(value * currencyvalue) AS balance FROM cash
             GROUP BY customerid
@@ -813,7 +813,7 @@ if (empty($types) || in_array('contracts', $types)) {
         "SELECT c.id, c.pin, c.lastname, c.name,
             SUM(value * currencyvalue) AS balance, d.dateto AS cdate,
             m.email, x.phone
-        FROM customers c
+        FROM customeraddressview c
         JOIN cash ON (c.id = cash.customerid) "
         . ($expiration_type == 'assignments' ?
             "JOIN (
@@ -952,7 +952,7 @@ if (empty($types) || in_array('debtors', $types)) {
     $customers = $DB->GetAll(
         "SELECT c.id, c.pin, c.lastname, c.name,
             b2.balance AS balance, b.balance AS totalbalance, m.email, x.phone, divisions.account
-        FROM customers c
+        FROM customeraddressview c
         LEFT JOIN divisions ON divisions.id = c.divisionid
         LEFT JOIN (
             SELECT customerid, SUM(value * currencyvalue) AS balance FROM cash GROUP BY customerid
@@ -1116,7 +1116,7 @@ if (empty($types) || in_array('reminder', $types)) {
         d.number, n.template, d.cdate, d.paytime, m.email, x.phone, divisions.account,
         b2.balance AS balance, b.balance AS totalbalance, v.value, v.currency
         FROM documents d
-        JOIN customers c ON (c.id = d.customerid)
+        JOIN customeraddressview c ON (c.id = d.customerid)
         LEFT JOIN divisions ON divisions.id = c.divisionid
         LEFT JOIN (
             SELECT customerid, SUM(value * currencyvalue) AS balance FROM cash GROUP BY customerid
@@ -1300,7 +1300,7 @@ if (empty($types) || in_array('income', $types)) {
         " . $DB->Concat('c.lastname', "' '", 'c.name') . " AS name,
         b2.balance AS balance, b.balance AS totalbalance
         FROM cash
-        JOIN customers c ON c.id = cash.customerid
+        JOIN customeraddressview c ON c.id = cash.customerid
         LEFT JOIN divisions ON divisions.id = c.divisionid
         LEFT JOIN (
             SELECT customerid, SUM(value * currencyvalue) AS balance FROM cash GROUP BY customerid
@@ -1741,7 +1741,7 @@ if (empty($types) || in_array('warnings', $types)) {
     $customers = $DB->GetAll(
         "SELECT c.id, (" . $DB->Concat('c.lastname', "' '", 'c.name') . ") AS name,
         c.pin, c.message, m.email, x.phone, divisions.account, COALESCE(ca.balance, 0) AS balance
-        FROM customers c
+        FROM customeraddressview c
         LEFT JOIN divisions ON divisions.id = c.divisionid
         LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
             FROM customercontacts
