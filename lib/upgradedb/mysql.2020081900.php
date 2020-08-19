@@ -23,10 +23,10 @@
 
 $this->BeginTrans();
 
-$this->Execute("DROP VIEW IF EXISTS vusersadmin");
+$this->Execute("DROP VIEW IF EXISTS vallusers");
 
 $this->Execute("
-    CREATE VIEW vusersadmin AS
+    CREATE VIEW vallusers AS
         SELECT *, CONCAT(firstname, ' ', lastname) AS name, CONCAT(lastname, ' ', firstname) AS rname
         FROM users
 ");

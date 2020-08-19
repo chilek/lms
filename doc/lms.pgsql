@@ -3209,7 +3209,7 @@ CREATE VIEW vusers AS
                              WHERE ud2.userid = lms_current_user())
     GROUP BY u.id;
 
-CREATE VIEW vusersadmin AS
+CREATE VIEW vallusers AS
 SELECT *, (firstname || ' ' || lastname) AS name, (lastname || ' ' || firstname) AS rname
 FROM users;
 

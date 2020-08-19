@@ -22,7 +22,7 @@ DROP VIEW IF EXISTS vnodes;
 DROP VIEW IF EXISTS vnodes_mac;
 DROP VIEW IF EXISTS nas;
 DROP VIEW IF EXISTS vusers;
-DROP VIEW IF EXISTS vusersadmin;
+DROP VIEW IF EXISTS vallusers;
 DROP VIEW IF EXISTS vdivisions;
 DROP VIEW IF EXISTS vnodetariffs_allsuspended;
 DROP VIEW IF EXISTS vnodetariffs_tariffs;
@@ -3059,7 +3059,7 @@ CREATE VIEW vusers AS
                              WHERE ud2.userid = lms_current_user())
     GROUP BY u.id;
 
-CREATE VIEW vusersadmin AS
+CREATE VIEW vallusers AS
 	SELECT *, CONCAT(firstname, ' ', lastname) AS name, CONCAT(lastname, ' ', firstname) AS rname
 	FROM users;
 
