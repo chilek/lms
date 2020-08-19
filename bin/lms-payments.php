@@ -600,7 +600,7 @@ $dayend = $daystart + 86399;
 
 $documents = $DB->GetAll(
     'SELECT d.id, d.currency FROM documents d
-    WHERE ((d.type IN (?, ?, ?) AND sdate >= ? AND sdate <= ?)
+    WHERE ' . ($customerid ? 'd.customerid = ' . $customerid . ' AND ' : '') . '((d.type IN (?, ?, ?) AND sdate >= ? AND sdate <= ?)
         OR (d.type IN (?, ?) AND cdate >= ? AND cdate <= ?))
         AND currency <> ?',
     array(
@@ -654,7 +654,7 @@ if (!empty($documents)) {
 
 $cashes = $DB->GetAll(
     'SELECT id, currency FROM cash
-    WHERE currency <> ? AND time >= ? AND time <= ?',
+    WHERE ' . ($customerid ? 'customerid = ' . $customerid . ' AND ' : '') . 'currency <> ? AND time >= ? AND time <= ?',
     array(
         Localisation::getCurrentCurrency(),
         $daystart,
@@ -1482,7 +1482,7 @@ foreach ($assigns as $assign) {
 if ($check_invoices) {
     $DB->Execute(
         "UPDATE documents SET closed = 1
-		WHERE customerid IN (
+		WHERE " . ($customerid ? 'customerid = ' . $customerid . ' AND ' : '') . "customerid IN (
 			SELECT c.customerid
 			FROM cash c
 			WHERE c.time <= ?NOW?
@@ -1501,7 +1501,7 @@ if ($delete_old_assignments_after_days) {
     $DB->Execute(
         "DELETE FROM liabilities WHERE id IN (
 			SELECT liabilityid FROM assignments
-				WHERE ((dateto <> 0 AND dateto < $today - ? * 86400
+				WHERE " . ($customerid ? 'customerid = ' . $customerid . ' AND ' : '') . "((dateto <> 0 AND dateto < $today - ? * 86400
 						OR (period = ? AND at < $today - ? * 86400))
 					AND liabilityid IS NOT NULL)
 		)",
@@ -1509,8 +1509,8 @@ if ($delete_old_assignments_after_days) {
     );
     $DB->Execute(
         "DELETE FROM assignments
-		WHERE (dateto <> 0 AND dateto < $today - ? * 86400)
-			OR (period = ? AND at < $today - ? * 86400)",
+		WHERE " . ($customerid ? 'customerid = ' . $customerid . ' AND ' : '') . "((dateto <> 0 AND dateto < $today - ? * 86400)
+			OR (period = ? AND at < $today - ? * 86400))",
         array($delete_old_assignments_after_days, DISPOSABLE, $delete_old_assignments_after_days)
     );
 }
