@@ -257,6 +257,7 @@ foreach (array(
              'income',
              'invoices',
              'notes',
+             'birthday',
              'warnings',
              'messages',
              'timetable'
@@ -338,6 +339,8 @@ function parse_customer_data($data, $row)
         format_bankaccount(bankaccount($row['id'], $row['account'])),
         $data
     );
+    $data = preg_replace('/%name/', $row['name'], $data);
+    $data = preg_replace('/%age/', $row['age'], $data);
     $data = preg_replace("/\%b/", sprintf('%01.2f', $amount), $data);
     $data = preg_replace("/\%totalb/", sprintf('%01.2f', $totalamount), $data);
     $data = preg_replace("/\%date-y/", strftime("%Y"), $data);
@@ -1699,6 +1702,130 @@ if (empty($types) || in_array('notes', $types)) {
                         $row['name'],
                         $row['id'],
                         $row['doc_number']
+                    );
+                }
+            }
+
+            if (!$debug) {
+                if (in_array('mail', $channels) && !empty($recipient_mails)) {
+                    $msgid = create_message(MSG_MAIL, $subject, $message);
+                    foreach ($recipient_mails as $recipient_mail) {
+                        send_mail(
+                            $msgid,
+                            $row['id'],
+                            $recipient_mail,
+                            $row['name'],
+                            $subject,
+                            $message
+                        );
+                    }
+                }
+                if (in_array('sms', $channels) && !empty($recipient_phones)) {
+                    $msgid = create_message(MSG_SMS, $subject, $message);
+                    foreach ($recipient_phones as $recipient_phone) {
+                        send_sms($msgid, $row['id'], $recipient_phone, $message);
+                    }
+                }
+                if (in_array('userpanel', $channels)) {
+                    $msgid = create_message(MSG_USERPANEL, $subject, $message);
+                    send_to_userpanel($msgid, $row['id'], trans('userpanel'));
+                }
+                if (in_array('userpanel-urgent', $channels)) {
+                    $msgid = create_message(MSG_USERPANEL_URGENT, $subject, $message);
+                    send_to_userpanel($msgid, $row['id'], trans('userpanel urgent'));
+                }
+            }
+        }
+    }
+}
+
+// Customer birthdays
+if (empty($types) || in_array('birthday', $types)) {
+    $cmonth = date('m', $daystart);
+    $customers = $DB->GetAll(
+        "SELECT c.id, c.lastname, c.name, c.ssn, m.email, x.phone
+        FROM customeraddressview c
+        LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
+            FROM customercontacts
+            WHERE (type & ?) = ?
+            GROUP BY customerid
+        ) m ON (m.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.mailingnotice = 1') . "
+        LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
+            FROM customercontacts
+            WHERE (type & ?) = ?
+            GROUP BY customerid
+        ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
+        WHERE " . $DB->RegExp('c.ssn', '[0-9]{2}(' . $cmonth . '|' . sprintf('%02d', $cmonth + 20) . ')' . date('d', $daystart) . '[0-9]{5}')
+        . ($notifications['birthday']['deleted_customers'] ? '' : ' AND c.deleted = 0')
+        . ($customergroups ?: ''),
+        array(
+            CONTACT_EMAIL | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
+            CONTACT_EMAIL | CONTACT_NOTIFICATIONS,
+            CONTACT_MOBILE | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
+            CONTACT_MOBILE | CONTACT_NOTIFICATIONS,
+        )
+    );
+    if (!empty($customers)) {
+        $notifications['birthday']['customers'] = array();
+        foreach ($customers as $row) {
+            $notifications['birthday']['customers'][] = $row['id'];
+
+            $row['name'] = $row['lastname'] . ' ' . $row['name'];
+            $year = intval(substr($row['ssn'], 0, 2));
+            $month = intval(substr($row['ssn'], 2, 2));
+            $row['age'] = round(date('Y') - (1900 + floor($month / 20) * 100) - $year);
+
+            $message = parse_customer_data($notifications['birthday']['message'], $row);
+            $subject = parse_customer_data($notifications['birthday']['subject'], $row);
+
+            if (empty($row['email'])) {
+                $recipient_mails = null;
+            } else {
+                $recipient_mails = explode(',', $debug_email ?: trim($row['email']));
+            }
+            if (empty($row['phone'])) {
+                $recipient_phones = null;
+            } else {
+                $recipient_phones = explode(',', $debug_phone ?: trim($row['phone']));
+            }
+
+            if (!$quiet) {
+                if (in_array('mail', $channels) && !empty($recipient_mails)) {
+                    foreach ($recipient_mails as $recipient_mail) {
+                        printf(
+                            "[mail/birthday] %s (%04d) age %s: %s" . PHP_EOL,
+                            $row['name'],
+                            $row['id'],
+                            $row['age'],
+                            $recipient_mail
+                        );
+                    }
+                }
+                if (in_array('sms', $channels) && !empty($recipient_phones)) {
+                    foreach ($recipient_phones as $recipient_phone) {
+                        printf(
+                            "[sms/birthday] %s (%04d) age %s: %s" . PHP_EOL,
+                            $row['name'],
+                            $row['id'],
+                            $row['age'],
+                            $recipient_phone
+                        );
+                    }
+                }
+                if (in_array('userpanel', $channels)) {
+                    printf(
+                        "[userpanel/birthday] %s (%04d): age %s" . PHP_EOL,
+                        $row['name'],
+                        $row['id'],
+                        $row['age']
+                    );
+                }
+                if (in_array('userpanel-urgent', $channels)) {
+                    printf(
+                        "[userpanel-urgent/notes] %s (%04d): age %s" . PHP_EOL,
+                        $row['name'],
+                        $row['id'],
+                        $row['age']
                     );
                 }
             }
