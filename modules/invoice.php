@@ -336,6 +336,9 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
         array($datefrom, $dateto, DOC_INVOICE, DOC_CNOTE)
     );
     if (empty($documents)) {
+        if ($jpk) {
+            echo trans('No documents to JPK export!');
+        }
         $SESSION->close();
         die;
     }
@@ -1185,9 +1188,11 @@ if (!is_null($attachment_name) && isset($docnumber)) {
     $attachment_name = preg_replace('/[^[:alnum:]_\.]/i', '_', $attachment_name);
 } elseif ($jpk) {
     if ($jpk_type == 'fa') {
-        $attachment_name = strftime('JPK_FA-%Y-%m-%d-%H-%M-%S.xml');
+        $attachment_name = 'JPK_FA_' . date('Y-m-d', $datefrom) . '_' . date('Y-m-d', $dateto)
+            . '_' . strftime('%Y-%m-%d-%H-%M-%S') . '.xml';
     } else {
-        $attachment_name = strftime('JPK_VAT-%Y-%m-%d-%H-%M-%S.' . ($jpk_format == 'xml' ? 'xml' : 'csv'));
+        $attachment_name = 'JPK_VAT_' . date('Y-m-d', $datefrom) . '_' . date('Y-m-d', $dateto)
+            . '_' . strftime('%Y-%m-%d-%H-%M-%S') . '.' . ($jpk_format == 'xml' ? 'xml' : 'csv');
     }
 } else {
     $attachment_name = 'invoices.' . ($invoice_type == 'pdf' ? 'pdf' : 'html');
