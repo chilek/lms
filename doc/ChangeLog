@@ -100,6 +100,7 @@ version 26-git (????-??-??):
     ('ignore_customer_consents' script configuration variable set to 'true' allows to imitate previous
     behavior) [chilan]
   - improvement: transaction log tab content is loaded in background and on-demand [chilan]
+  - enhancement: lms-notify.php supports customer 'birthday' type notifications [chilan]
 
 version 25.0 (2020-05-15):
 
