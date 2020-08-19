@@ -1822,7 +1822,7 @@ if (empty($types) || in_array('birthday', $types)) {
                 }
                 if (in_array('userpanel-urgent', $channels)) {
                     printf(
-                        "[userpanel-urgent/notes] %s (%04d): age %s" . PHP_EOL,
+                        "[userpanel-urgent/birthday] %s (%04d): age %s" . PHP_EOL,
                         $row['name'],
                         $row['id'],
                         $row['age']
