@@ -83,6 +83,7 @@ if ($userinfo) {
     if (!isset($userinfo['divisions'])) {
         $error['division'] = trans('You have to choose division!');
     }
+
     if ($userinfo['email']!='' && !check_email($userinfo['email'])) {
         $error['email'] = trans('E-mail isn\'t correct!');
     }

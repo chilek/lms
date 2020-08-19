@@ -22,6 +22,7 @@ DROP VIEW IF EXISTS vnodes;
 DROP VIEW IF EXISTS vnodes_mac;
 DROP VIEW IF EXISTS nas;
 DROP VIEW IF EXISTS vusers;
+DROP VIEW IF EXISTS vallusers;
 DROP VIEW IF EXISTS vdivisions;
 DROP VIEW IF EXISTS vnodetariffs_allsuspended;
 DROP VIEW IF EXISTS vnodetariffs_tariffs;
@@ -3058,6 +3059,10 @@ CREATE VIEW vusers AS
                              WHERE ud2.userid = lms_current_user())
     GROUP BY u.id;
 
+CREATE VIEW vallusers AS
+	SELECT *, CONCAT(firstname, ' ', lastname) AS name, CONCAT(lastname, ' ', firstname) AS rname
+	FROM users;
+
 CREATE VIEW contractorview AS
     SELECT c.*,
         cc.consentdate AS consentdate,
@@ -3786,4 +3791,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020081800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020081900');

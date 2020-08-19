@@ -117,7 +117,7 @@ if (Localisation::getCurrentSystemLanguage() == 'pl_PL') {
     require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'tax_office_codes.php');
 }
 
-$usersList = $LMS->GetUserList();
+$usersList = $LMS->GetUserList(array('superuser' => 1));
 unset($usersList['total']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);

@@ -118,6 +118,7 @@ class LMSSmartyPlugins
         $label = isset($params['label']) ? $params['label'] : null;
         $elementname = isset($params['elementname']) ? $params['elementname'] : 'division';
         $selected = isset($params['selected']) ? $params['selected'] : null;
+        $superuser = isset($params['superuser']) && !empty($params['superuser']) ? $params['superuser'] : null;
         $onchange = isset($params['onchange']) && !empty($params['onchange']) ? $params['onchange'] : null;
         $division_selection = isset($params['division_selection']) && !empty($params['division_selection']) ? $params['division_selection'] : null;
 
@@ -127,7 +128,7 @@ class LMSSmartyPlugins
                     $user_divisions = $lms->GetDivision($layout['division']);
                 }
             } else {
-                $user_divisions = $lms->GetDivisions(array('userid' => Auth::GetCurrentUser()));
+                $user_divisions = (empty($superuser) ? $lms->GetDivisions(array('userid' => Auth::GetCurrentUser())) : $lms->GetDivisions());
             }
         }
 

@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2018 LMS Developers
+ *  Copyright (C) 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -203,5 +203,24 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
             $args['removed_users'] = implode(',', $division['diff_users_del']);
             $this->syslog->AddMessage(SYSLOG::RES_DIV, SYSLOG::OPER_UPDATE, $args);
         }
+    }
+
+    public function CheckDivisionsAccess($divisions)
+    {
+        $user_divisions = $this->GetDivisions(array('userid' => Auth::GetCurrentUser()));
+
+        if (is_array($divisions)) {
+            foreach ($divisions as $division) {
+                if (!isset($user_divisions[$division])) {
+                    return false;
+                }
+            }
+        } else {
+            if (!isset($user_divisions[$divisions])) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

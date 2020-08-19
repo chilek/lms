@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,9 +24,20 @@
  *  $Id$
  */
 
+$superuser = (ConfigHelper::checkPrivilege('superuser') ? 1 : 0);
+
 $divisionlist = $DB->GetAll('SELECT d.id, d.name, d.shortname, d.status,
 	(SELECT COUNT(*) FROM customers WHERE divisionid = d.id) AS cnt 
 	FROM divisions d ORDER BY d.shortname');
+
+if (empty($superuser)) {
+    foreach ($divisionlist as $dkey => $division) {
+        if (!($LMS->CheckDivisionsAccess($division['id']))) {
+            unset($divisionlist[$dkey]);
+        }
+    }
+    $divisionlist = array_values($divisionlist);
+}
 
 $listdata['total'] = empty($divisionlist) ? 0 : count($divisionlist);
 
@@ -43,6 +54,7 @@ $SESSION->save('cdlp', $page);
 $layout['pagetitle'] = trans('Divisions List');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->save('backto', $_SERVER['QUERY_STRING'], true);
 
 $SMARTY->assign('pagelimit', $pagelimit);
 $SMARTY->assign('page', $page);

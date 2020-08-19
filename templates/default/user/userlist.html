@@ -28,8 +28,7 @@
     <THEAD>
 	<tr>
 		<td colspan="7">
-			<span class="bold">{trans("Filter:")}</span>&nbsp;&nbsp;&nbsp;
-			{division_selection elementname="division" selected=$filter.division onchange="document.choosefilter.submit();" label="Division:"}
+			{division_selection elementname="division" selected=$selectedDivision onchange="document.choosefilter.submit();" label="Division:" superuser="{if !empty($superuser)}1{/if}"}
 		</td>
 	</tr>
 	<TR>

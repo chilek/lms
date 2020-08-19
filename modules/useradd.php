@@ -47,7 +47,7 @@ if (count($useradd)) {
         }
     }
 
-    if ($useradd['login'] == '' && $useradd['firstname'] == '' && $useradd['lastname'] == '' && $useradd['password'] == '' && $useradd['confirm'] == '') {
+    if ($useradd['login'] == '' && $useradd['firstname'] == '' && $useradd['lastname'] == '' && $useradd['password'] == '' && $useradd['confirm'] == '' && !isset($useradd['divisions'])) {
         $SESSION->redirect('?m=useradd');
     }
 
@@ -198,5 +198,4 @@ $SMARTY->assign('accesslist', $accesslist);
 $SMARTY->assign('users', $LMS->GetUserNames());
 $SMARTY->assign('available', $DB->GetAllByKey('SELECT id, name FROM customergroups ORDER BY name', 'id'));
 $SMARTY->assign('divisions', $LMS->GetDivisions());
-
 $SMARTY->display('user/useradd.html');
