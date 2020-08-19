@@ -330,6 +330,10 @@ if (isset($_POST['nodedata'])) {
     $nodedata['linktechnology'] = intval(ConfigHelper::getConfig('phpui.default_linktechnology', 0));
     $nodedata['linkspeed'] = intval(ConfigHelper::getConfig('phpui.default_linkspeed', 100000));
 
+    if (ConfigHelper::checkConfig('phpui.default_node_check_mac')) {
+        $nodedata['chkmac'] = 1;
+    }
+
     // check if customer address is selected or if default location address exists
     // if both are not fullfilled we generate user interface warning
 /*
