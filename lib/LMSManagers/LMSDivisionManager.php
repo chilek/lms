@@ -207,16 +207,16 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
 
     public function CheckDivisionsAccess($divisions)
     {
-        $user_divisions = array_keys($this->GetDivisions(array('userid' => Auth::GetCurrentUser())));
+        $user_divisions = $this->GetDivisions(array('userid' => Auth::GetCurrentUser()));
 
         if (is_array($divisions)) {
             foreach ($divisions as $division) {
-                if (!in_array($division, $user_divisions)) {
+                if (!isset($user_divisions[$division])) {
                     return false;
                 }
             }
         } else {
-            if (!in_array($divisions, $user_divisions)) {
+            if (!isset($user_divisions[$divisions])) {
                 return false;
             }
         }
