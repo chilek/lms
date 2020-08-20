@@ -103,6 +103,8 @@ version 26-git (????-??-??):
   - enhancement: lms-notify.php supports customer 'birthday' type notifications [chilan]
   - improvement: 'phpui.default_node_check_mac' allows to enable mac checking automatically
     during new node creation ('false' by default) [chilan]
+  - improvement: new customer group input parameter parser allows for much more group
+    assignment combination tests [chilan]
 
 version 25.0 (2020-05-15):
 

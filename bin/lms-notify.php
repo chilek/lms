@@ -578,24 +578,32 @@ if (isset($options['customergroups'])) {
     $customergroups = $options['customergroups'];
 }
 if (!empty($customergroups)) {
-    $all_customergroups = $DB->GetCol("SELECT UPPER(name) FROM customergroups");
-    if (!empty($all_customergroups)) {
-        $customergroups = mb_strtoupper($customergroups);
-        $inverse = strpos($customergroups, '!') === 0;
-        if ($inverse) {
-            $customergroups = mb_substr($customergroups, 1);
+    $ORs = preg_split("/([\s]+|[\s]*,[\s]*)/", mb_strtoupper($customergroups), -1, PREG_SPLIT_NO_EMPTY);
+    $customergroup_ORs = array();
+    foreach ($ORs as $OR) {
+        $ANDs = preg_split("/([\s]*\+[\s]*)/", $OR, -1, PREG_SPLIT_NO_EMPTY);
+        $customergroup_ANDs_regular = array();
+        $customergroup_ANDs_inversed = array();
+        foreach ($ANDs as $AND) {
+            if (strpos($AND, '!') === false) {
+                $customergroup_ANDs_regular[] = $AND;
+            } else {
+                $customergroup_ANDs_inversed[] = substr($AND, 1);
+            }
         }
-        $customergroups = preg_split("/([\s]+|[\s]*,[\s]*)/", $customergroups, -1, PREG_SPLIT_NO_EMPTY);
-        if ($inverse) {
-            $customergroups = array_diff($all_customergroups, $customergroups);
-        } else {
-            $customergroups = array_intersect($all_customergroups, $customergroups);
-        }
-        $customergroups = " AND EXISTS (SELECT 1 FROM customergroups g, customerassignments ca
-            WHERE c.id = ca.customerid
-            AND g.id = ca.customergroupid
-            AND UPPER(g.name) IN ('" . implode("', '", $customergroups) . "'))";
+        $customergroup_ORs[] = '('
+            . (empty($customergroup_ANDs_regular) ? '1 = 1' : "EXISTS (SELECT COUNT(*) FROM customergroups
+                JOIN customerassignments ON customerassignments.customergroupid = customergroups.id
+                WHERE customerassignments.customerid = c.id
+                AND UPPER(customergroups.name) IN ('" . implode("', '", $customergroup_ANDs_regular) . "')
+                HAVING COUNT(*) = " . count($customergroup_ANDs_regular) . ')')
+            . (empty($customergroup_ANDs_inversed) ? '' : " AND NOT EXISTS (SELECT customergroups.id FROM customergroups
+                JOIN customerassignments ON customerassignments.customergroupid = customergroups.id
+                WHERE customerassignments.customerid = c.id
+                AND UPPER(customergroups.name) IN ('" . implode("', '", $customergroup_ANDs_inversed) . "'))")
+            . ')';
     }
+    $customergroups = ' AND (' . implode(' OR ', $customergroup_ORs) . ')';
 }
 
 // ------------------------------------------------------------------------
