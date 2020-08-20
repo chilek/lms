@@ -73,6 +73,31 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
         );
     }
 
+    public function getDivisionList($params = array())
+    {
+        if (isset($params['offset'])) {
+            $offset = $params['offset'];
+        } else {
+            $offset = null;
+        }
+        if (isset($params['limit'])) {
+            $limit = $params['limit'];
+        } else {
+            $limit = null;
+        }
+
+        $user_divisions = implode(',', array_keys($this->GetDivisions(array('userid' => Auth::GetCurrentUser()))));
+
+        return $this->db->GetAll('
+            SELECT d.id, d.name, d.shortname, d.status, (SELECT COUNT(*) FROM customers WHERE divisionid = d.id) AS cnt 
+            FROM divisions d'
+            . (isset($params['superuser']) && empty($params['superuser']) ? ' WHERE id IN (' . $user_divisions . ')' : '') .
+            ' ORDER BY d.shortname'
+            . (isset($limit) ? ' LIMIT ' . $limit : '')
+            . (isset($offset) ? ' OFFSET ' . $offset : '')
+        );
+    }
+
     public function AddDivision($division)
     {
         $lm = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
