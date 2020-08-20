@@ -24,41 +24,34 @@
  *  $Id$
  */
 
-$superuser = (ConfigHelper::checkPrivilege('superuser') ? 1 : 0);
+$layout['pagetitle'] = trans('Divisions List');
+$params['superuser'] = (ConfigHelper::checkPrivilege('superuser') ? 1 : 0);
 
-$divisionlist = $DB->GetAll('SELECT d.id, d.name, d.shortname, d.status,
-	(SELECT COUNT(*) FROM customers WHERE divisionid = d.id) AS cnt 
-	FROM divisions d ORDER BY d.shortname');
-
-if (empty($superuser)) {
-    foreach ($divisionlist as $dkey => $division) {
-        if (!($LMS->CheckDivisionsAccess($division['id']))) {
-            unset($divisionlist[$dkey]);
-        }
-    }
-    $divisionlist = array_values($divisionlist);
-}
-
-$listdata['total'] = empty($divisionlist) ? 0 : count($divisionlist);
-
-if ($SESSION->is_set('cdlp') && !isset($_GET['page'])) {
+if ($SESSION->is_set('cdlp', true) && !isset($_GET['page'])) {
+    $SESSION->restore('cdlp', $_GET['page'], true);
+} elseif ($SESSION->is_set('cdlp') && !isset($_GET['page'])) {
     $SESSION->restore('cdlp', $_GET['page']);
 }
 
-$page = (!isset($_GET['page']) ? 1 : $_GET['page']);
-$pagelimit = ConfigHelper::getConfig('phpui.divisionlist_pagelimit', $listdata['total']);
-$start = ($page - 1) * $pagelimit;
+$page = (!isset($_GET['page']) ? 1 : intval($_GET['page']));
 
 $SESSION->save('cdlp', $page);
+$SESSION->save('cdlp', $page, true);
 
-$layout['pagetitle'] = trans('Divisions List');
+$divisionlist = $LMS->getDivisionList($params);
+$total = empty($divisionlist) ? 0 : count($divisionlist);
+$limit = intval(ConfigHelper::getConfig('phpui.divisionlist_pagelimit', $total));
+$offset = ($page - 1) * $limit;
+$params['offset'] = $offset;
+$params['limit'] = $limit;
+
+$divisionlist = $LMS->getDivisionList($params);
+$pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SESSION->save('backto', $_SERVER['QUERY_STRING'], true);
 
-$SMARTY->assign('pagelimit', $pagelimit);
-$SMARTY->assign('page', $page);
-$SMARTY->assign('start', $start);
 $SMARTY->assign('divisionlist', $divisionlist);
-$SMARTY->assign('listdata', $listdata);
+$SMARTY->assign('pagination', $pagination);
+
 $SMARTY->display('division/divisionlist.html');

@@ -4306,6 +4306,12 @@ class LMS
         return $manager->GetDivisions($params);
     }
 
+    public function getDivisionList($params = array())
+    {
+        $manager = $this->getDivisionManager();
+        return $manager->getDivisionList($params);
+    }
+
     public function AddDivision($division)
     {
         $manager = $this->getDivisionManager();
