@@ -149,6 +149,7 @@ if (isset($_POST['config'])) {
 $layout['pagetitle'] = trans('Option Edit: $a', $option);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->save('backto', $_SERVER['QUERY_STRING'], true);
 
 $config['documentation'] = Utils::MarkdownToHtml(Utils::LoadMarkdownDocumentation($option));
 

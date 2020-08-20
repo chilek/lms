@@ -36,6 +36,7 @@
 <form name="configdel-form" id="configdel-form" method="POST" action="?m=configdel"></form>
 
 <TABLE id="configlist-datatable" class="lmsbox lms-ui-multi-check lms-ui-datatable lms-ui-datatable-column-search lms-ui-datatable-column-toggle"
+		data-state-duration='-1'
 		data-order='[[ 1, "asc" ]]'
 		data-page-length="{$pagelimit}"
 		data-state-save="true"
@@ -97,11 +98,15 @@
 		<TD>
 			{if $config.userid}{$config.login} / {$config.firstname} {$config.lastname}{else}-- {t}Global{/t} --{/if}
 		</TD>
-		<TD class="text-right nobr">
-			<A href="?m=configedit&id={$config.id}&statuschange=1"><IMG src="img/wait.gif" alt="{if $config.disabled}{trans("Enable")}{else}{trans("Disable")}{/if}" title="{if $config.disabled}{trans("Enable")}{else}{trans("Disable")}{/if}"></A>
-			<a href="?m=configadd&id={$config.id}" title="{trans("Clone")}"><img src="img/clone.gif"></a>
-			<A class="delete-config" data-user="{$config.userid}" href="?m=configdel&id={$config.id}{if !$config.userid}&globalconf=1{/if}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
-			<A href="?m={if $config.userid}configedituser{else}configedit{/if}&id={$config.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
+		<TD class="lms-ui-buttons text-right nobr">
+			{if $config.disabled}
+				{button type="link" icon="disconnected" tip="Enable" href="?m=configedit&id={$config.id}&statuschange=1"}
+			{else}
+				{button type="link" icon="connected" tip="Disable" href="?m=configedit&id={$config.id}&statuschange=1"}
+			{/if}
+			{button type="link" icon="clone" tip="Clone" href="?m=configadd&id={$config.id}"}
+			{button type="link" icon="delete" class="delete-config" tip="Delete" data-user="{$config.userid}" href="?m=configdel&id={$config.id}{if !$config.userid}&globalconf=1{/if}"}
+			{button type="link" icon="edit" tip="Edit" href="?m={if $config.userid}configedituser{else}configedit{/if}&id={$config.id}"}
 			<input type="checkbox" name="marks[{$config.id}]" value="{$config.id}" form="configdel-form" class="lms-ui-multi-check">
 		</TD>
 	</TR>
