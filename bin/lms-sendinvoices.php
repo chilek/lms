@@ -43,6 +43,7 @@ $parameters = array(
     'archive' => 'a',
     'output-directory:' => 'o:',
     'no-attachment' => 'n',
+    'customerid:' => null,
 );
 
 $long_to_shorts = array();
@@ -107,6 +108,7 @@ lms-sendinvoices.php
 -a, --archive                   archive financial documents in documents directory
 -o, --output-directory=/path    output directory for document backup
 -n, --no-attachments            dont attach documents
+    --customerid=<id>           limit invoices to specifed customer
 
 EOF;
     exit(0);
@@ -314,6 +316,7 @@ if ($backup || $archive) {
 }
 
 $fakedate = isset($options['fakedate']) ? $options['fakedate'] : null;
+$customerid = isset($options['customerid']) && intval($options['customerid']) ? $options['customerid'] : null;
 
 function localtime2($fakedate)
 {
@@ -393,7 +396,7 @@ if ($backup || $archive) {
 					WHERE (type & ?) = ?
 					GROUP BY customerid
 				) m ON m.customerid = c.id
-				WHERE c.deleted = 0 AND d.cancelled = 0 AND d.type IN (?, ?, ?, ?) AND c.invoicenotice = 1
+				WHERE " . ($customerid ? 'c.id = ' . $customerid . ' AND ' : '') . "c.deleted = 0 AND d.cancelled = 0 AND d.type IN (?, ?, ?, ?) AND c.invoicenotice = 1
 					AND d.cdate >= $daystart AND d.cdate <= $dayend"
                 . (!empty($groupnames) ? $customergroups : ""), $args));
             if (empty($count)) {
@@ -417,7 +420,7 @@ $query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctyp
         . ($backup || $archive ? '' : " JOIN (SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
 				FROM customercontacts WHERE (type & ?) = ? GROUP BY customerid) m ON m.customerid = c.id")
         . " LEFT JOIN numberplans n ON n.id = d.numberplanid 
-		WHERE c.deleted = 0 AND d.cancelled = 0 AND d.type IN (?, ?, ?, ?)" . ($backup || $archive ? '' : " AND c.invoicenotice = 1")
+		WHERE " . ($customerid ? 'c.id = ' . $customerid . ' AND ' : '') . "c.deleted = 0 AND d.cancelled = 0 AND d.type IN (?, ?, ?, ?)" . ($backup || $archive ? '' : " AND c.invoicenotice = 1")
             . ($archive ? " AND d.archived = 0" : '') . "
 			AND d.cdate >= $daystart AND d.cdate <= $dayend"
             . (!empty($groupnames) ? $customergroups : "")

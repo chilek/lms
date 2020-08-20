@@ -92,7 +92,7 @@ lms-payments.php
 -v, --version                   print version info and exit;
 -q, --quiet                     suppress any output, except errors;
 -f, --fakedate=YYYY/MM/DD       override system date;
-    --customerid=<id>           narrow assigned to specifed customer
+    --customerid=<id>           limit assignments to to specifed customer
 
 EOF;
     exit(0);
