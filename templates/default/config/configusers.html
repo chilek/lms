@@ -22,7 +22,7 @@
             {trans("Comment:")}
         </TD>
         <TD class="nobr" align="right">
-            <A href="?m=configadduser&configid={$config.id}">{trans("Add")} <img src="img/add.gif" alt=""></A>
+            {button type="link-button" href="?m=configadduser&configid={$config.id}" icon="add" label="Add"}
         </TD>
     </TR>
     </THEAD>
@@ -37,10 +37,14 @@
                 {$configuser.value}<BR>
                 {$configuser.description}
             </TD>
-            <TD class="text-right nobr">
-                <A href="?m=configedit&id={$configuser.id}&statuschange=1"><IMG src="img/wait.gif" alt="{if $config.disabled}{trans("Enable")}{else}{trans("Disable")}{/if}" title="{if $config.disabled}{trans("Enable")}{else}{trans("Disable")}{/if}"></A>
-                <A class="delete-config" href="?m=configdel&id={$configuser.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
-                <A href="?m=configedituser&id={$configuser.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
+            <TD class="lms-ui-buttons text-right nobr">
+                {if $configuser.disabled}
+                    {button type="link" icon="disconnected" tip="Enable" href="?m=configedit&id={$configuser.id}&statuschange=1"}
+                {else}
+                    {button type="link" icon="connected" tip="Disable" href="?m=configedit&id={$configuser.id}&statuschange=1"}
+                {/if}
+                {button type="link" icon="delete" class="delete-config" tip="Delete" href="?m=configdel&id={$configuser.id}"}
+                {button type="link" icon="edit" tip="Edit" href="?m=configedituser&id={$configuser.id}"}
             </TD>
         </TR>
         {foreachelse}

@@ -96,9 +96,9 @@
 				</TR>
 			{/if}
 			<TR>
-				<TD align="right" colspan="3">
-					<A id="submit-button" href="javascript:document.userconfig.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></A>
-					<A href="?m=configlist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></A><BR>
+				<TD class="lms-ui-box-buttons" colspan="3">
+					{button type="submit" icon="save" label="Submit"}
+					{button type="link-button" icon="cancel" label="Cancel" href="{$backtolink}"}
 				</TD>
 			</TR>
 			</TBODY>

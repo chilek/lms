@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,7 +27,13 @@
 $id = isset($_GET['id']) ? intval($_GET['id']) : null;
 
 if (!$id) {
-    $SESSION->redirect('?'.$SESSION->get('backto'));
+    if ($SESSION->is_set('backto', true)) {
+        $SESSION->redirect('?' . $SESSION->get('backto', true));
+    } elseif ($SESSION->is_set('backto')) {
+        $SESSION->redirect('?' . $SESSION->get('backto'));
+    } else {
+        $SESSION->redirect('?m=configlist');
+    }
 }
 
 function ConfigOptionExists($confid)
@@ -38,7 +44,13 @@ function ConfigOptionExists($confid)
 
 $id = ConfigOptionExists($id);
 if (empty($id)) {
-    $SESSION->redirect('?'.$SESSION->get('backto'));
+    if ($SESSION->is_set('backto', true)) {
+        $SESSION->redirect('?' . $SESSION->get('backto', true));
+    } elseif ($SESSION->is_set('backto')) {
+        $SESSION->redirect('?' . $SESSION->get('backto'));
+    } else {
+        $SESSION->redirect('?m=configlist');
+    }
 }
 
 $config = $DB->GetRow('SELECT c.*, u.login, u.firstname, u.lastname 
@@ -90,9 +102,25 @@ if (count($userconfig)) {
         unset($userconfig['description']);
         unset($userconfig['disabled']);
 
-        $SESSION->redirect('?'.$SESSION->get('backto'));
+        if ($SESSION->is_set('backto', true)) {
+            $SESSION->redirect('?' . $SESSION->get('backto', true));
+        } elseif ($SESSION->is_set('backto')) {
+            $SESSION->redirect('?' . $SESSION->get('backto'));
+        } else {
+            $SESSION->redirect('?m=configlist');
+        }
     }
     $config = $userconfig;
+}
+
+if ($SESSION->is_set('backto', true)) {
+    $SMARTY->assign('backtolink', '?' . $SESSION->get('backto'), true);
+
+} elseif ($SESSION->is_set('backto')) {
+    $SMARTY->assign('backtolink', '?' . $SESSION->get('backto'));
+
+} else {
+    $SMARTY->assign('backtolink', '?m=configlist');
 }
 
 $SMARTY->assign('error', $error);
