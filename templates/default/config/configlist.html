@@ -35,7 +35,13 @@
 
 <form name="configdel-form" id="configdel-form" method="POST" action="?m=configdel"></form>
 
-<TABLE id="configlist-datatable" {if empty($configlist)}class="lmsbox"{else}class="lmsbox lms-ui-multi-check lms-ui-datatable lms-ui-datatable-column-search lms-ui-datatable-column-toggle" data-order='[[ 1, "asc" ]]' data-page-length="{$pagelimit}" data-state-save="true"{if !empty($section)} data-search-columns='[ { "search": "{$section}" }, null, null, null, null ]'{/if} style="display: none;"{/if}>
+<TABLE id="configlist-datatable" class="lmsbox lms-ui-multi-check lms-ui-datatable lms-ui-datatable-column-search lms-ui-datatable-column-toggle"
+		data-order='[[ 1, "asc" ]]'
+		data-page-length="{$pagelimit}"
+		data-state-save="true"
+		{if !empty($section)} data-search-columns='[ { "search": "{$section}" }, null, null, null, null ]'{/if}
+		data-empty-table-message='{t a="?m=configload"}No configuration options in database.<br>Click <A href="$a">here</A> to import them from lms.ini.{/t}'
+		style="display: none;">
     <COLGROUP>
 		<COL style="width: 1%;">
 		<COL style="width: 1%;">
@@ -99,14 +105,6 @@
 			<input type="checkbox" name="marks[{$config.id}]" value="{$config.id}" form="configdel-form" class="lms-ui-multi-check">
 		</TD>
 	</TR>
-	{foreachelse}
-	<TR>
-		<TD colspan="6" class="empty-table">
-			<p>
-				{trans("No configuration options in database.")} {t}Click <A href="?m=configload">here</A> to import them from lms.ini.{/t}
-			</p>
-		</TD>
-	</TR>
 	{/foreach}
     </TBODY>
     <TFOOT>
@@ -161,8 +159,9 @@
 		});
 
 		function toggleSectionClone() {
-			$('#section-clone').toggle($('#section-filter').val().length > 0);
-
+			{if !empty($configlist)}
+				$('#section-clone').toggle($('#section-filter').val().length > 0);
+			{/if}
 		}
 
 		$('#section-filter').change(function() {
