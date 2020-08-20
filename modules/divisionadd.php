@@ -121,6 +121,7 @@ $usersList = $LMS->GetUserList(array('superuser' => 1));
 unset($usersList['total']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->save('backto', $_SERVER['QUERY_STRING'], true);
 
 $SMARTY->assign('division', $division);
 $SMARTY->assign('userslist', $usersList);
