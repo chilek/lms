@@ -14,12 +14,12 @@
 			{button type="link-button" icon="add" label="Add division" href="?m=divisionadd"}
 		</TD>
 	</TR>
-	{if $listdata.total != 0}
-	<TR>
-		<TD class="lms-ui-pagination" COLSPAN="5">
-			{include file="scroller.html" loop=$divisionlist}
-		</TD>
-	</TR>
+	{if $pagination->getTotal() != 0}
+		<TR>
+			<TD class="lms-ui-pagination" COLSPAN="5">
+				{include file="pagination.html"}
+			</TD>
+		</TR>
 	{/if}
     </THEAD>
     <TBODY>
@@ -54,12 +54,12 @@
 	{/section}
     </TBODY>
     <TFOOT>
-	{if $listdata.total != 0}
-	<TR>
-		<TD class="lms-ui-pagination" COLSPAN="5">
-			{include file="scroller.html" loop=$divisionlist}
-		</TD>
-	</TR>
+	{if $pagination->getTotal() != 0}
+		<TR>
+			<TD class="lms-ui-pagination" COLSPAN="5">
+				{include file="pagination.html"}
+			</TD>
+		</TR>
 	{/if}
     </TFOOT>
 </TABLE>

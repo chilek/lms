@@ -24,41 +24,61 @@
  *  $Id$
  */
 
-$superuser = (ConfigHelper::checkPrivilege('superuser') ? 1 : 0);
+function getDivisionsList($search)
+{
+    $db = LMSDB::getInstance();
+    $lms = LMS::getInstance();
 
-$divisionlist = $DB->GetAll('SELECT d.id, d.name, d.shortname, d.status,
-	(SELECT COUNT(*) FROM customers WHERE divisionid = d.id) AS cnt 
-	FROM divisions d ORDER BY d.shortname');
-
-if (empty($superuser)) {
-    foreach ($divisionlist as $dkey => $division) {
-        if (!($LMS->CheckDivisionsAccess($division['id']))) {
-            unset($divisionlist[$dkey]);
-        }
+    if (isset($search['offset'])) {
+        $offset = $search['offset'];
+    } else {
+        $offset = null;
     }
-    $divisionlist = array_values($divisionlist);
+    if (isset($search['limit'])) {
+        $limit = $search['limit'];
+    } else {
+        $limit = null;
+    }
+
+    $user_divisions = implode(',', array_keys($lms->GetDivisions(array('userid' => Auth::GetCurrentUser()))));
+
+    return $db->GetAll('
+        SELECT d.id, d.name, d.shortname, d.status, (SELECT COUNT(*) FROM customers WHERE divisionid = d.id) AS cnt 
+        FROM divisions d'
+        . (empty($search['superuser']) ? ' WHERE id IN (' . $user_divisions . ')' : '') .
+        ' ORDER BY d.shortname'
+        . (isset($limit) ? ' LIMIT ' . $limit : '')
+        . (isset($offset) ? ' OFFSET ' . $offset : ''));
 }
 
-$listdata['total'] = empty($divisionlist) ? 0 : count($divisionlist);
+$layout['pagetitle'] = trans('Divisions List');
+$search['superuser'] = (ConfigHelper::checkPrivilege('superuser') ? 1 : 0);
 
-if ($SESSION->is_set('cdlp') && !isset($_GET['page'])) {
+if ($SESSION->is_set('cdlp', true) && !isset($_GET['page'])) {
+    $SESSION->restore('cdlp', $_GET['page'], true);
+} elseif ($SESSION->is_set('cdlp') && !isset($_GET['page'])) {
     $SESSION->restore('cdlp', $_GET['page']);
 }
 
-$page = (!isset($_GET['page']) ? 1 : $_GET['page']);
-$pagelimit = ConfigHelper::getConfig('phpui.divisionlist_pagelimit', $listdata['total']);
-$start = ($page - 1) * $pagelimit;
+$page = (!isset($_GET['page']) ? 1 : intval($_GET['page']));
 
 $SESSION->save('cdlp', $page);
+$SESSION->save('cdlp', $page, true);
 
-$layout['pagetitle'] = trans('Divisions List');
+$divisionlist = getDivisionsList($search);
+$total = empty($divisionlist) ? 0 : count($divisionlist);
+$limit = intval(ConfigHelper::getConfig('phpui.divisionlist_pagelimit', $total));
+$offset = ($page - 1) * $limit;
+$search['offset'] = $offset;
+$search['limit'] = $limit;
+
+$divisionlist = getDivisionsList($search);
+$pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SESSION->save('backto', $_SERVER['QUERY_STRING'], true);
 
-$SMARTY->assign('pagelimit', $pagelimit);
-$SMARTY->assign('page', $page);
-$SMARTY->assign('start', $start);
 $SMARTY->assign('divisionlist', $divisionlist);
-$SMARTY->assign('listdata', $listdata);
+$SMARTY->assign('pagination', $pagination);
+
 $SMARTY->display('division/divisionlist.html');
