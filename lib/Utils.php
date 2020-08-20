@@ -180,6 +180,9 @@ class Utils
             } else {
                 $chunk = substr($content, $startpos, $endpos - $startpos);
             }
+            if (($endpos = strpos($chunk, '***')) !== false) {
+                $chunk = substr($chunk, 0, $endpos);
+            }
             $lines = explode("\n", $chunk);
             array_shift($lines);
             foreach ($lines as &$line) {
