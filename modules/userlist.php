@@ -26,8 +26,6 @@
 
 $layout['pagetitle'] = trans('Users List');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
-
 $divisionContext = $SESSION->get('division_context', true);
 if (!isset($divisionContext)) {
     $divisionContext = $SESSION->get_persistent_setting('division_context');
@@ -38,6 +36,12 @@ $layout['division'] = $divisionContext;
 
 $superuser = (ConfigHelper::checkPrivilege('superuser') ? 1 : 0);
 
+if ($SESSION->is_set('uldiv', true) && !isset($_GET['division'])) {
+    $SESSION->restore('uldiv', $_GET['division'], true);
+} elseif ($SESSION->is_set('uldiv') && !isset($_GET['division'])) {
+    $SESSION->restore('uldiv', $_GET['division']);
+}
+
 if (isset($_GET['division'])) {
     $selectedDivision = $_GET['division'];
 } else {
@@ -46,6 +50,12 @@ if (isset($_GET['division'])) {
 
 $userslist = (!empty($superuser) ? $LMS->GetUserList(array('divisions' => $selectedDivision, 'superuser' => 1)) : $LMS->GetUserList(array('divisions' => $selectedDivision)));
 unset($userslist['total']);
+
+$SESSION->save('uldiv', $selectedDivision);
+$SESSION->save('uldiv', $selectedDivision, true);
+
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->save('backto', $_SERVER['QUERY_STRING'], true);
 
 $SMARTY->assign('userslist', $userslist);
 $SMARTY->assign('selectedDivision', $selectedDivision);

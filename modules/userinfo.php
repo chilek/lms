@@ -50,6 +50,7 @@ $userinfo['ntype'] = implode(', ', $ntype);
 $layout['pagetitle'] = trans('User Info: $a', $userinfo['login']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->save('backto', $_SERVER['QUERY_STRING'], true);
 
 if ($SYSLOG && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.transaction_logs'))) {
     $trans = $SYSLOG->GetTransactions(array('userid' => $id));
