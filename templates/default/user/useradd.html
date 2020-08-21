@@ -305,6 +305,13 @@
 						});
 						usergroups.trigger('lms:multiselect:updated');
 
+						var customergroups = $('#customergroups');
+						customergroups.find('option').prop('selected', false);
+						$.each(data['customergroups'], function(key, value) {
+							customergroups.find('option[value="' + value + '"]').prop('selected', true);
+						});
+						customergroups.trigger('lms:multiselect:updated');
+
 						var divisions = $('#divisions');
 						divisions.find('option').prop('selected', false);
 						$.each(data['divisions'], function(key, value) {

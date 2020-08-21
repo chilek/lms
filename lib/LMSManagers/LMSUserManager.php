@@ -477,9 +477,6 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
 
             $usergroup_manager = new LMSUserGroupManager($this->db, $this->auth, $this->cache, $this->syslog);
             $usergroups = $usergroup_manager->getUserAssignments($user['id']);
-            if (empty($usergroups)) {
-                $usergroups = array();
-            }
             $usergroups = array_keys($usergroups);
             if (empty($user['usergroups'])) {
                 $user['usergroups'] = array();

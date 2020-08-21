@@ -27,7 +27,6 @@
 /**
  * LMSCustomerGroupManagerInterface
  *
- * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
 interface LMSCustomerGroupManagerInterface
 {
@@ -66,4 +65,6 @@ interface LMSCustomerGroupManagerInterface
     public function GetCustomerWithoutGroupNames($groupid, $network = null);
 
     public function getAllCustomerGroups();
+
+    public function getExcludedCustomerGroups($userid);
 }

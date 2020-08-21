@@ -53,6 +53,7 @@ if (isset($_GET['fromuser'])) {
     header('Content-Type: application/json');
     $fromuser['rights'] = $LMS->GetUserRights($_GET['fromuser']);
     $fromuser['usergroups'] = array_keys($LMS->getUserAssignments($_GET['fromuser']));
+    $fromuser['customergroups'] = array_diff(array_keys($LMS->getAllCustomerGroups()), $LMS->getExcludedCustomerGroups($_GET['fromuser']));
     $fromuser['divisions'] = array_keys($LMS->GetDivisions(array('userid' => $_GET['fromuser'])));
     die(json_encode($fromuser));
 }
@@ -208,27 +209,11 @@ if ($userinfo) {
     $accesslist = $access->getArray($rights);
 
     $selectedusergroups = $LMS->getUserAssignments($id);
-    if (empty($selectedusergroups)) {
-        $selectedusergroups = array();
-    }
     $SMARTY->assign('selectedusergroups', $selectedusergroups);
 
     $customergroups = $LMS->getAllCustomerGroups();
-    if (empty($customergroups)) {
-        $customergroups = array();
-    }
-    $excludedgroups = $DB->GetAllByKey(
-        'SELECT g.id, g.name
-        FROM customergroups g, excludedgroups
-            WHERE customergroupid = g.id AND userid = ?
-        ORDER BY name',
-        'id',
-        array($id)
-    );
-    if (empty($excludedgroups)) {
-        $excludedgroups = array();
-    }
-    $SMARTY->assign('selectedgroups', array_flip(array_diff(array_keys($customergroups), array_keys($excludedgroups))));
+    $excludedgroups = $LMS->getExcludedCustomerGroups($id);
+    $SMARTY->assign('selectedgroups', array_flip(array_diff(array_keys($customergroups), $excludedgroups)));
 }
 
 foreach ($LMS->GetUserInfo($id) as $key => $value) {

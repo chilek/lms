@@ -905,6 +905,12 @@ class LMS
         return $manager->getAllCustomerGroups();
     }
 
+    public function getExcludedCustomerGroups($userid)
+    {
+        $manager = $this->getCustomerGroupManager();
+        return $manager->getExcludedCustomerGroups($userid);
+    }
+
     /*
      *  Nodes functions
      */

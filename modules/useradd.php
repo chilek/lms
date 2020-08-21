@@ -30,6 +30,7 @@ if (isset($_GET['fromuser'])) {
     header('Content-Type: application/json');
     $fromuser['rights'] = $LMS->GetUserRights($_GET['fromuser']);
     $fromuser['usergroups'] = array_keys($LMS->getUserAssignments($_GET['fromuser']));
+    $fromuser['customergroups'] = array_diff(array_keys($LMS->getAllCustomerGroups()), $LMS->getExcludedCustomerGroups($_GET['fromuser']));
     $fromuser['divisions'] = array_keys($LMS->GetDivisions(array('userid' => $_GET['fromuser'])));
     die(json_encode($fromuser));
 }
