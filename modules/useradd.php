@@ -154,29 +154,10 @@ if (count($useradd)) {
             );
         }
 
-        if (isset($_POST['selected'])) {
-            foreach ($_POST['selected'] as $idx => $name) {
-                $DB->Execute('INSERT INTO excludedgroups (customergroupid, userid)
-					VALUES(?, ?)', array($idx, $id));
-                if ($SYSLOG) {
-                    $args = array(
-                        SYSLOG::RES_EXCLGROUP =>
-                            $DB->GetLastInsertID('excludedgroups'),
-                        SYSLOG::RES_CUSTGROUP => $idx,
-                        SYSLOG::RES_USER => $id
-                    );
-                    $SYSLOG->AddMessage(SYSLOG::RES_EXCLGROUP, SYSLOG::OPER_ADD, $args);
-                }
-            }
-        }
-
         $LMS->executeHook('useradd_after_submit', $id);
         $SESSION->redirect('?m=userinfo&id=' . $id);
-    } elseif (isset($_POST['selected'])) {
-        foreach ($_POST['selected'] as $idx => $name) {
-            $useradd['selected'][$idx]['id'] = $idx;
-            $useradd['selected'][$idx]['name'] = $name;
-        }
+    } else {
+        $SMARTY->assign('selectedgroups', array_flip(isset($useradd['groups']) ? $useradd['groups'] : array()));
     }
 } else {
     $useradd['ntype'] = MSG_MAIL | MSG_SMS;
@@ -194,6 +175,7 @@ $layout['pagetitle'] = trans('New User');
 
 $SMARTY->assign('useradd', $useradd);
 $SMARTY->assign('error', $error);
+$SMARTY->assign('groups', $LMS->getAllCustomerGroups());
 $SMARTY->assign('accesslist', $accesslist);
 $SMARTY->assign('users', $LMS->GetUserNames());
 $SMARTY->assign('available', $DB->GetAllByKey('SELECT id, name FROM customergroups ORDER BY name', 'id'));

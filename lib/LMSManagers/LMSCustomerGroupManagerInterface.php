@@ -64,4 +64,6 @@ interface LMSCustomerGroupManagerInterface
     public function CustomerassignmentExist($groupid, $customerid);
 
     public function GetCustomerWithoutGroupNames($groupid, $network = null);
+
+    public function getAllCustomerGroups();
 }

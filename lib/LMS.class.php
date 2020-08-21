@@ -899,6 +899,12 @@ class LMS
         return $manager->GetCustomerWithoutGroupNames($groupid, $network);
     }
 
+    public function getAllCustomerGroups()
+    {
+        $manager = $this->getCustomerGroupManager();
+        return $manager->getAllCustomerGroups();
+    }
+
     /*
      *  Nodes functions
      */

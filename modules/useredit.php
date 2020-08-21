@@ -188,48 +188,9 @@ if ($userinfo) {
             );
         }
 
-        if ($SYSLOG) {
-            $groups = $DB->GetAll(
-                'SELECT id, customergroupid FROM excludedgroups WHERE userid = ?',
-                array($userinfo['id'])
-            );
-            if (!empty($groups)) {
-                foreach ($groups as $group) {
-                    $args = array(
-                    SYSLOG::RES_EXCLGROUP => $group['id'],
-                    SYSLOG::RES_CUSTGROUP => $group['customergroupid'],
-                    SYSLOG::RES_USER => $userinfo['id']
-                    );
-                    $SYSLOG->AddMessage(SYSLOG::RES_EXCLGROUP, SYSLOG::OPER_DELETE, $args);
-                }
-            }
-        }
-        $DB->Execute('DELETE FROM excludedgroups WHERE userid = ?', array($userinfo['id']));
-        if (isset($_POST['selected'])) {
-            foreach ($_POST['selected'] as $idx => $name) {
-                $DB->Execute('INSERT INTO excludedgroups (customergroupid, userid)
-						VALUES(?, ?)', array($idx, $userinfo['id']));
-                if ($SYSLOG) {
-                    $args = array(
-                        SYSLOG::RES_EXCLGROUP =>
-                        $DB->GetLastInsertID('excludedgroups'),
-                        SYSLOG::RES_CUSTGROUP => $idx,
-                        SYSLOG::RES_USER => $userinfo['id']
-                    );
-                    $SYSLOG->AddMessage(SYSLOG::RES_EXCLGROUP, SYSLOG::OPER_ADD, $args);
-                }
-            }
-        }
-
         $SESSION->redirect('?m=userinfo&id='.$userinfo['id']);
     } else {
-        $userinfo['selected'] = array();
-        if (isset($_POST['selected'])) {
-            foreach ($_POST['selected'] as $idx => $name) {
-                $userinfo['selected'][$idx]['id'] = $idx;
-                $userinfo['selected'][$idx]['name'] = $name;
-            }
-        }
+        $SMARTY->assign('selectedgroups', array_flip(isset($userinfo['groups']) ? $userinfo['groups'] : array()));
 
         $access = AccessRights::getInstance();
         $accesslist = $access->getArray(array_keys($acl));
@@ -239,6 +200,23 @@ if ($userinfo) {
 
     $access = AccessRights::getInstance();
     $accesslist = $access->getArray($rights);
+
+    $groups = $LMS->getAllCustomerGroups();
+    if (empty($groups)) {
+        $groups = array();
+    }
+    $excludedgroups = $DB->GetAllByKey(
+        'SELECT g.id, g.name
+        FROM customergroups g, excludedgroups
+            WHERE customergroupid = g.id AND userid = ?
+        ORDER BY name',
+        'id',
+        array($id)
+    );
+    if (empty($excludedgroups)) {
+        $excludedgroups = array();
+    }
+    $SMARTY->assign('selectedgroups', array_flip(array_diff(array_keys($groups), array_keys($excludedgroups))));
 }
 
 foreach ($LMS->GetUserInfo($id) as $key => $value) {
@@ -247,20 +225,13 @@ foreach ($LMS->GetUserInfo($id) as $key => $value) {
     }
 }
 
-if (!isset($userinfo['selected'])) {
-    $userinfo['selected'] = $DB->GetAllByKey('SELECT g.id, g.name
-		FROM customergroups g, excludedgroups
-	        WHERE customergroupid = g.id AND userid = ?
-		ORDER BY name', 'id', array($userinfo['id']));
-}
-
 $layout['pagetitle'] = trans('User Edit: $a', $userinfo['login']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SESSION->save('backto', $_SERVER['QUERY_STRING'], true);
 
 $SMARTY->assign('accesslist', $accesslist);
-$SMARTY->assign('available', $DB->GetAllByKey('SELECT id, name FROM customergroups ORDER BY name', 'id'));
+$SMARTY->assign('groups', $LMS->getAllCustomerGroups());
 $SMARTY->assign('users', $LMS->GetUserNames());
 $SMARTY->assign('userinfo', $userinfo);
 $SMARTY->assign('divisions', $divisions);

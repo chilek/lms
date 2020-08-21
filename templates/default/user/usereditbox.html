@@ -240,6 +240,8 @@
 			</table>
 		</TD>
 	</TR>
+
+	{if is_array($groups) && count($groups)}
 	<TR>
 		<TD>
 			<IMG src="img/group.gif" alt="">
@@ -248,9 +250,15 @@
 			{trans("Groups:")}
 		</TD>
 		<TD class="nobr">
-			{include file="multiselect.html" selected=$userinfo.selected available_tip="Enabled<!plural>:" selected_tip="Disabled<!plural>:"}
+			<select SIZE="4" NAME="userinfo[groups][]" id="groups" multiple {tip text="Select customer groups" class="lms-ui-multiselect" trigger="groups"}
+					data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
+				{foreach $groups as $group}
+					<option value="{$group.id}"{if isset($selectedgroups[$group.id])} selected{/if}>{$group.name}</option>
+				{/foreach}
+			</select>
 		</TD>
 	</TR>
+	{/if}
 
 	{if is_array($divisions) && count($divisions)}
 		<tr>
@@ -261,15 +269,14 @@
 				{trans("Divisions:")}
 			</td>
 			<td>
-				<label for="userinfo[divisions][]">
-					<select SIZE="4" NAME="userinfo[divisions][]" multiple {tip text="Select divisions" class="lms-ui-multiselect" trigger="division"} data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
-						{foreach $divisions as $division}
-							<option value="{$division.id}" {if isset($user_divisions) && in_array($division.id, $user_divisions)} selected{/if}>
-								{$division.shortname|truncate:30:"...":true}
-							</option>
-						{/foreach}
-					</select>
-				</label>
+				<select SIZE="4" NAME="userinfo[divisions][]" id="divisions" multiple {tip text="Select divisions" class="lms-ui-multiselect" trigger="divisions"}
+						data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
+					{foreach $divisions as $division}
+						<option value="{$division.id}" {if isset($user_divisions) && in_array($division.id, $user_divisions)} selected{/if}>
+							{$division.shortname|truncate:30:"...":true}
+						</option>
+					{/foreach}
+				</select>
 			</td>
 		</tr>
 	{/if}

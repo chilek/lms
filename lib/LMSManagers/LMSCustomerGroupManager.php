@@ -393,4 +393,9 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
                         . ' GROUP BY c.id, c.lastname, c.name
             ORDER BY c.lastname, c.name', array($groupid));
     }
+
+    public function getAllCustomerGroups()
+    {
+        return $this->db->GetAllByKey('SELECT id, name FROM customergroups ORDER BY name', 'id');
+    }
 }

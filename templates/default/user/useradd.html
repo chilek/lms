@@ -223,7 +223,12 @@
 			<IMG src="img/group.gif" alt=""> {trans("Groups:")}
 		</TD>
 		<TD class="nobr">
-			{include file="multiselect.html" selected=$useradd.selected available_tip="Enabled<!plural>:" selected_tip="Disabled<!plural>:"}
+			<select SIZE="4" NAME="useradd[groups][]" id="groups" multiple {tip text="Select customer groups" class="lms-ui-multiselect" trigger="groups"}
+					data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
+				{foreach $groups as $group}
+					<option value="{$group.id}"{if isset($selectedgroups[$group.id])} selected{/if}>{$group.name}</option>
+				{/foreach}
+			</select>
 		</TD>
 	</TR>
 
@@ -233,15 +238,13 @@
 				<IMG src="img/division.gif" alt=""> {trans("Divisions:")}
 			</td>
 			<td>
-				<label for="useradd[divisions][]">
-					<select SIZE="4" NAME="useradd[divisions][]" multiple {tip text="Select divisions" class="lms-ui-multiselect" trigger="division"} data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
-						{foreach $divisions as $division}
-							<option value="{$division.id}" {if isset($useradd.divisions) && in_array($division.id, $useradd.divisions)} selected{/if}>
-								{$division.shortname|truncate:30:"...":true}
-							</option>
-						{/foreach}
-					</select>
-				</label>
+				<select SIZE="4" NAME="useradd[divisions][]" multiple {tip text="Select divisions" class="lms-ui-multiselect" trigger="division"} data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
+					{foreach $divisions as $division}
+						<option value="{$division.id}" {if isset($useradd.divisions) && in_array($division.id, $useradd.divisions)} selected{/if}>
+							{$division.shortname|truncate:30:"...":true}
+						</option>
+					{/foreach}
+				</select>
 			</td>
 		</tr>
 	{/if}
