@@ -30,6 +30,15 @@
     display: none;
   }
 
+  &.lms-ui-error {
+    color: unset !important;
+
+    .lms-ui-multiselect-launcher {
+      background-color: @error-background;
+      color: @error-text;
+    }
+  }
+
   .lms-ui-multiselect-launcher {
     vertical-align: middle;
     display: block;
