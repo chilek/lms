@@ -4808,3 +4808,5 @@ $_LANG['New customer note:'] = 'Nowa notatka:';
 $_LANG['Add new customer note'] = 'Dodaje nową notatkę klienta';
 $_LANG['No customer notes.'] = 'Brak notatek klienta.';
 $_LANG['Customer note is too short!'] = 'Notatka kliencka jest zbyt krótka!';
+
+$_LANG['Show more/less'] = 'Pokaż więcej/mniej';

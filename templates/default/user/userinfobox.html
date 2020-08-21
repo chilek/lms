@@ -5,6 +5,15 @@
 		margin-top: 0.4em;
 	}
 
+	#show-more-less {
+		margin-left: 4em;
+		width: 3em;
+	}
+
+	ul.excludedgroups {
+		margin-block-end: 0.5em;
+	}
+
 </style>
 <TABLE class="lmsbox" style="width: 100%;" cellpadding="3">
 	<colgroup>
@@ -203,10 +212,15 @@
 			</TD>
 			<TD class="bold nobr">{trans("Excluded groups:")}</TD>
 			<TD>
-				{foreach from=$excludedgroups item=item}
-				{if $item@first}<ul>{/if}
-				<li class="acl"><a href="?m=customergroupinfo&id={$item.id}">{$item.name}</a></li>
-				{if $item@last}</ul>{/if}
+				{foreach $excludedgroups as $item}
+					{if $item@first}<ul class="excludedgroups">{/if}
+					<li class="acl excludedgroup"{if $item@iteration > 10} style="display: none;"{/if}><a href="?m=customergroupinfo&id={$item.id}">{$item.name}</a></li>
+					{if $item@last}
+						</ul>
+						{if $item@iteration > 10}
+							{button icon="more" tip="Show more/less" id="show-more-less"}
+						{/if}
+					{/if}
 				{foreachelse}
 				-
 				{/foreach}
@@ -290,6 +304,11 @@
 				location.href = '?m=useredit&id={$userinfo.id}&removetrusteddevices=1';
 			});
 			return false;
+		});
+
+		$('#show-more-less').click(function() {
+			$('.excludedgroup:nth-child(n+10)').toggle();
+			$(this).find('i').toggleClass('lms-ui-icon-more lms-ui-icon-less');
 		});
 	});
 
