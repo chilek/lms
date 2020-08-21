@@ -31,6 +31,23 @@ if (!$LMS->UserExists($id)) {
     $SESSION->redirect('?m=userlist');
 }
 
+if (isset($_GET['oper']) && $_GET['oper'] == 'loadtransactionlist') {
+    header('Content-Type: text/html');
+
+    if ($SYSLOG && ConfigHelper::checkPrivilege('transaction_logs')) {
+        $trans = $SYSLOG->GetTransactions(array(
+            'userid' => $id,
+            'limit' => 300,
+            'details' => true,
+        ));
+        $SMARTY->assign('transactions', $trans);
+        $SMARTY->assign('userid', $id);
+        die($SMARTY->fetch('transactionlist.html'));
+    }
+
+    die();
+}
+
 $divisions = $LMS->GetDivisions();
 $user_divisions = array_keys($LMS->GetDivisions(array('userid' => $id)));
 
@@ -241,17 +258,6 @@ $layout['pagetitle'] = trans('User Edit: $a', $userinfo['login']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SESSION->save('backto', $_SERVER['QUERY_STRING'], true);
-
-if ($SYSLOG && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.transaction_logs'))) {
-    $trans = $SYSLOG->GetTransactions(array('userid' => $id));
-    if (!empty($trans)) {
-        foreach ($trans as $idx => $tran) {
-            $SYSLOG->DecodeTransaction($trans[$idx]);
-        }
-    }
-    $SMARTY->assign('transactions', $trans);
-    $SMARTY->assign('userid', $id);
-}
 
 $SMARTY->assign('accesslist', $accesslist);
 $SMARTY->assign('available', $DB->GetAllByKey('SELECT id, name FROM customergroups ORDER BY name', 'id'));
