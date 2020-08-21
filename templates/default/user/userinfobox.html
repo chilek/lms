@@ -240,7 +240,9 @@
 			</td>
 			<td>
 				{foreach $user_divisions as $item}
-					{$item.shortname}{if !$item@last}, {/if}
+					{if $item@first}<ul>{/if}
+					<li><a href="?m=divisionedit&id={$item.id}">{$item.shortname}</a></li>
+					{if $item@last}</ul>{/if}
 				{/foreach}
 			</td>
 		</tr>
