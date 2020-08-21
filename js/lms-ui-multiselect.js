@@ -156,7 +156,7 @@ function multiselect(options) {
 
 	var container = $('<div class="lms-ui-multiselect-container' + (tiny ? ' tiny' : '') +
 		(bottom ? ' bottom' : '') +
-		(old_class && old_class.length ? ' ' + old_class : '') + '"/>').data('multiselect-object', this);
+		(old_class && old_class.length ? ' ' + old_class : '') + '"/>');
 	var launcher = $('<div class="lms-ui-multiselect-launcher" title="' + old_element.attr('title') + '" tabindex="0"/>')
 		.attr('style', old_element.attr('style')).appendTo(container);
 
