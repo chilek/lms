@@ -34,6 +34,23 @@ if (!$userinfo || $userinfo['deleted']) {
     $SESSION->redirect('?m=userlist');
 }
 
+if (isset($_GET['oper']) && $_GET['oper'] == 'loadtransactionlist') {
+    header('Content-Type: text/html');
+
+    if ($SYSLOG && ConfigHelper::checkPrivilege('transaction_logs')) {
+        $trans = $SYSLOG->GetTransactions(array(
+            'userid' => $id,
+            'limit' => 300,
+            'details' => true,
+        ));
+        $SMARTY->assign('transactions', $trans);
+        $SMARTY->assign('userid', $id);
+        die($SMARTY->fetch('transactionlist.html'));
+    }
+
+    die();
+}
+
 $rights = $LMS->GetUserRights($id);
 $access = AccessRights::getInstance();
 $accesslist = $access->getArray($rights);
@@ -51,17 +68,6 @@ $layout['pagetitle'] = trans('User Info: $a', $userinfo['login']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SESSION->save('backto', $_SERVER['QUERY_STRING'], true);
-
-if ($SYSLOG && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.transaction_logs'))) {
-    $trans = $SYSLOG->GetTransactions(array('userid' => $id));
-    if (!empty($trans)) {
-        foreach ($trans as $idx => $tran) {
-            $SYSLOG->DecodeTransaction($trans[$idx]);
-        }
-    }
-    $SMARTY->assign('transactions', $trans);
-    $SMARTY->assign('userid', $id);
-}
 
 if (!empty($userinfo['twofactorauth'])) {
     $google2fa = new Google2FA();
