@@ -3792,6 +3792,7 @@ $_LANG['Are you sure, you want to recover cancelled invoice \'$a\'?'] = 'Jesteś
 $_LANG['Are you sure, you want to recover cancelled debit note \'$a\'?'] = 'Jesteś pewien, że chcesz przywrócić anulowaną notę obciążeniową \'$a\'?';
 
 $_LANG['User groups'] = 'Grupy użytkowników';
+$_LANG['User groups:'] = 'Grupy użytkowników:';
 $_LANG['user group<!syslog>'] = 'grupa użytkowników';
 $_LANG['User Groups List'] = 'Lista grup użytkowników';
 $_LANG['All users are members of this group.'] = 'Wszyscy użytkownicy są członkami tej grupy.';
@@ -4773,6 +4774,7 @@ $_LANG['Apply'] = 'Zastosuj';
 
 $_LANG['Warnings'] = 'Ostrzeżenia';
 $_LANG['Customer groups'] = 'Grupy klientów';
+$_LANG['Customer groups:'] = 'Grupy klientów:';
 $_LANG['Customer consents'] = 'Zgody klientów';
 
 $_LANG['Attachment gallery'] = 'Galeria załączników';

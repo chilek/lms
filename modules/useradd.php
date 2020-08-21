@@ -28,9 +28,10 @@ use PragmaRX\Google2FA\Google2FA;
 
 if (isset($_GET['fromuser'])) {
     header('Content-Type: application/json');
-    $formuser['rights'] = $LMS->GetUserRights($_GET['fromuser']);
-    $formuser['divisions'] = array_keys($LMS->GetDivisions(array('userid' => $_GET['fromuser'])));
-    die(json_encode($formuser));
+    $fromuser['rights'] = $LMS->GetUserRights($_GET['fromuser']);
+    $fromuser['usergroups'] = array_keys($LMS->getUserAssignments($_GET['fromuser']));
+    $fromuser['divisions'] = array_keys($LMS->GetDivisions(array('userid' => $_GET['fromuser'])));
+    die(json_encode($fromuser));
 }
 
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'usercopypermissions.inc.php');
@@ -157,7 +158,8 @@ if (count($useradd)) {
         $LMS->executeHook('useradd_after_submit', $id);
         $SESSION->redirect('?m=userinfo&id=' . $id);
     } else {
-        $SMARTY->assign('selectedgroups', array_flip(isset($useradd['groups']) ? $useradd['groups'] : array()));
+        $SMARTY->assign('selectedusergroups', array_flip(isset($useradd['usergroups']) ? $useradd['usergroups'] : array()));
+        $SMARTY->assign('selectedgroups', array_flip(isset($useradd['customergroups']) ? $useradd['customergroups'] : array()));
     }
 } else {
     $useradd['ntype'] = MSG_MAIL | MSG_SMS;
@@ -175,7 +177,8 @@ $layout['pagetitle'] = trans('New User');
 
 $SMARTY->assign('useradd', $useradd);
 $SMARTY->assign('error', $error);
-$SMARTY->assign('groups', $LMS->getAllCustomerGroups());
+$SMARTY->assign('usergroups', $LMS->getAllUserGroups());
+$SMARTY->assign('customergroups', $LMS->getAllCustomerGroups());
 $SMARTY->assign('accesslist', $accesslist);
 $SMARTY->assign('users', $LMS->GetUserNames());
 $SMARTY->assign('available', $DB->GetAllByKey('SELECT id, name FROM customergroups ORDER BY name', 'id'));

@@ -256,20 +256,18 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
         if ($user_inserted) {
             $id = $this->db->GetLastInsertID('users');
 
-            $group_manager = new LMSCustomerGroupManager($this->db, $this->auth, $this->cache, $this->syslog);
-            $groups = $group_manager->getAllCustomerGroups();
-            if (empty($groups)) {
-                $groups = array();
+            if (!empty($user['usergroups'])) {
+                $usergroup_manager = new LMSUserGroupManager($this->db, $this->auth, $this->cache, $this->syslog);
+                foreach ($user['usergroups'] as $group) {
+                    $usergroup_manager->UserassignmentAdd(array(
+                        'userid' => $id,
+                        'usergroupid' => $group,
+                    ));
+                }
             }
-            $groups = array_keys($groups);
 
-            if (!isset($user['groups'])) {
-                $user['groups'] = array();
-            }
-            $excludedgroups_to_add = array_diff($groups, $user['groups']);
-
-            if (!empty($excludedgroups_to_add)) {
-                foreach ($excludedgroups_to_add as $group) {
+            if (!empty($user['customergroups'])) {
+                foreach ($user['customergroups'] as $group) {
                     if ($this->db->Execute(
                         'INSERT INTO excludedgroups (userid, customergroupid) VALUES (?, ?)',
                         array($id, $group)
@@ -376,6 +374,9 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
                 $userinfo['trusteddevices'] = array();
             }
 
+            $usergroup_manager = new LMSUserGroupManager($this->db, $this->auth, $this->cache, $this->syslog);
+            $userinfo['usergroups'] = $usergroup_manager->getUserAssignments($id);
+
             $this->cache->setCache('users', $id, null, $userinfo);
 
             if ($userinfo['id'] == Auth::GetCurrentUser()) {
@@ -474,15 +475,44 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
                 }
             }
 
-            $group_manager = new LMSCustomerGroupManager($this->db, $this->auth, $this->cache, $this->syslog);
-            $groups = $group_manager->getAllCustomerGroups();
-            if (empty($groups)) {
-                $groups = array();
+            $usergroup_manager = new LMSUserGroupManager($this->db, $this->auth, $this->cache, $this->syslog);
+            $usergroups = $usergroup_manager->getUserAssignments($user['id']);
+            if (empty($usergroups)) {
+                $usergroups = array();
             }
-            $groups = array_keys($groups);
+            $usergroups = array_keys($usergroups);
+            if (empty($user['usergroups'])) {
+                $user['usergroups'] = array();
+            }
+            $usergroups_to_remove = array_diff($usergroups, $user['usergroups']);
+            $usergroups_to_add = array_diff($user['usergroups'], $usergroups);
 
-            if (!isset($user['groups'])) {
-                $user['groups'] = array();
+            if (!empty($usergroups_to_remove)) {
+                foreach ($usergroups_to_remove as $group) {
+                    $usergroup_manager->UserassignmentDelete(array(
+                        'userid' => $user['id'],
+                        'usergroupid' => $group,
+                    ));
+                }
+            }
+            if (!empty($usergroups_to_add)) {
+                foreach ($usergroups_to_add as $group) {
+                    $usergroup_manager->UserassignmentAdd(array(
+                        'userid' => $user['id'],
+                        'usergroupid' => $group,
+                    ));
+                }
+            }
+
+            $customergroup_manager = new LMSCustomerGroupManager($this->db, $this->auth, $this->cache, $this->syslog);
+            $customergroups = $customergroup_manager->getAllCustomerGroups();
+            if (empty($customergroups)) {
+                $customergroups = array();
+            }
+            $customergroups = array_keys($customergroups);
+
+            if (!isset($user['customergroups'])) {
+                $user['customergroups'] = array();
             }
             $excludedgroups = $this->db->GetAllByKey(
                 'SELECT id, customergroupid FROM excludedgroups WHERE userid = ?',
@@ -493,8 +523,11 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
                 $excludedgroups = array();
             }
 
-            $excludedgroups_to_remove = array_diff(array_keys($excludedgroups), array_diff($groups, $user['groups']));
-            $excludedgroups_to_add = array_diff($groups, $user['groups'], array_keys($excludedgroups));
+            if (empty($user['customergroups'])) {
+                $user['customergroups'] = array();
+            }
+            $excludedgroups_to_remove = array_diff(array_keys($excludedgroups), array_diff($customergroups, $user['customergroups']));
+            $excludedgroups_to_add = array_diff($customergroups, $user['customergroups'], array_keys($excludedgroups));
 
             if (!empty($excludedgroups_to_remove)) {
                 foreach ($excludedgroups_to_remove as $group) {

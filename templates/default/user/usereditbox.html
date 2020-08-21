@@ -241,19 +241,38 @@
 		</TD>
 	</TR>
 
-	{if is_array($groups) && count($groups)}
+	{if is_array($usergroups) && count($usergroups)}
 	<TR>
 		<TD>
-			<IMG src="img/group.gif" alt="">
+			{icon name="usergroup" class="fa-fw"}
 		</TD>
 		<TD class="bold nobr">
-			{trans("Groups:")}
+			{trans("User groups:")}
 		</TD>
 		<TD class="nobr">
-			<select SIZE="4" NAME="userinfo[groups][]" id="groups" multiple {tip text="Select customer groups" class="lms-ui-multiselect" trigger="groups"}
+			<select SIZE="4" NAME="userinfo[usergroups][]" id="usergroups" multiple {tip text="Select user groups" class="lms-ui-multiselect" trigger="usergroups"}
 					data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
-				{foreach $groups as $group}
-					<option value="{$group.id}"{if isset($selectedgroups[$group.id])} selected{/if}>{$group.name}</option>
+				{foreach $usergroups as $group}
+					<option value="{$group.id}"{if isset($selectedusergroups[$group.id])} selected{/if}>{$group.name}</option>
+				{/foreach}
+			</select>
+		</TD>
+	</TR>
+	{/if}
+
+	{if is_array($customergroups) && count($customergroups)}
+	<TR>
+		<TD>
+			{icon name="customergroup" class="fa-fw"}
+		</TD>
+		<TD class="bold nobr">
+			{trans("Customer groups:")}
+		</TD>
+		<TD class="nobr">
+			<select SIZE="4" NAME="userinfo[customergroups][]" id="customergroups" multiple {tip text="Select customer groups" class="lms-ui-multiselect" trigger="customergroups"}
+					data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
+				{foreach $customergroups as $customergroup}
+					<option value="{$customergroup.id}"{if isset($selectedgroups[$customergroup.id])} selected{/if}>{$customergroup.name}</option>
 				{/foreach}
 			</select>
 		</TD>
@@ -263,7 +282,7 @@
 	{if is_array($divisions) && count($divisions)}
 		<tr>
 			<td>
-				<IMG src="img/division.gif" alt="">
+				{icon name="division" class="fa-fw"}
 			</td>
 			<td class="bold nobr">
 				{trans("Divisions:")}
@@ -315,10 +334,19 @@
 							$('[data-right-name="'  + value + '"]', user_rights).prop('checked', true);
 						});
 
-						$('select[name="userinfo[divisions][]"] option').attr('selected', false).trigger('lms:multiselect:updated');
-						$.each(data['divisions'], function(key, value) {
-							$('select[name="userinfo[divisions][]"] option[value="' + value + '"]').attr('selected','selected').trigger('lms:multiselect:updated');
+						var usergroups = $('#usergroups');
+						usergroups.find('option').prop('selected', false);
+						$.each(data['usergroups'], function(key, value) {
+							usergroups.find('option[value="' + value + '"]').prop('selected', true);
 						});
+						usergroups.trigger('lms:multiselect:updated');
+
+						var divisions = $('#divisions');
+						divisions.find('option').prop('selected', false);
+						$.each(data['divisions'], function(key, value) {
+							divisions.find('option[value="' + value + '"]').prop('selected', true);
+						});
+						divisions.trigger('lms:multiselect:updated');
 					}
 				});
 			}

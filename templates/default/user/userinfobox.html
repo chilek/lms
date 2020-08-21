@@ -210,9 +210,26 @@
 				</ul>
 			</TD>
 		</TR>
+
+		<tr>
+			<td class="bold nobr">
+				{icon name="usergroup" class="fa-fw"}
+			</td>
+			<td class="bold nobr">
+				{trans("User groups:")}
+			</td>
+			<td>
+				{foreach $userinfo.usergroups as $item}
+					{if $item@first}<ul>{/if}
+					<li><a href="?m=usergroupinfo&id={$item.id}">{$item.name}</a></li>
+					{if $item@last}</ul>{/if}
+				{/foreach}
+			</td>
+		</tr>
+
 		<TR>
 			<TD>
-				<IMG src="img/group.gif" alt="">
+				{icon name="customergroup" class="fa-fw"}
 			</TD>
 			<TD class="bold nobr">{trans("Excluded groups:")}</TD>
 			<TD>
@@ -233,10 +250,10 @@
 
 		<tr>
 			<td class="bold nobr">
-				<IMG src="img/division.gif" alt="">
+				{icon name="division" class="fa-fw"}
 			</td>
 			<td class="bold nobr">
-				{trans("Division:")}
+				{trans("Divisions:")}
 			</td>
 			<td>
 				{foreach $user_divisions as $item}

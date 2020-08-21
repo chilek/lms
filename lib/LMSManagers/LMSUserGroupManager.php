@@ -137,6 +137,18 @@ class LMSUserGroupManager extends LMSManager implements LMSUserGroupManagerInter
         return $res;
     }
 
+    public function getUserAssignments($userid)
+    {
+        return $this->db->GetAllByKey(
+            'SELECT ug.id, ug.name, ug.description
+            FROM userassignments ua
+            JOIN usergroups ug ON ug.id = ua.usergroupid
+            WHERE ua.userid = ?',
+            'id',
+            array($userid)
+        );
+    }
+
     public function UsergroupDelete($id)
     {
         if (!$this->UsergroupWithUserGet($id)) {
@@ -179,8 +191,8 @@ class LMSUserGroupManager extends LMSManager implements LMSUserGroupManagerInter
         return $this->db->Execute('UPDATE usergroups SET name=?, description=? WHERE id=?', array_values($args));
     }
 
-    public function UsergroupGetAll()
+    public function getAllUserGroups()
     {
-        return $this->db->GetAll('SELECT g.id, g.name, g.description FROM usergroups g ORDER BY g.name ASC');
+        return $this->db->GetAllByKey('SELECT g.id, g.name, g.description FROM usergroups g ORDER BY g.name ASC', 'id');
     }
 }

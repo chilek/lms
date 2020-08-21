@@ -4168,6 +4168,12 @@ class LMS
         return $manager->UserassignmentAdd($userassignmentdata);
     }
 
+    public function getUserAssignments($userid)
+    {
+        $manager = $this->getUserGroupManager();
+        return $manager->getUserAssignments($userid);
+    }
+
     public function UsergroupDelete($id)
     {
         $manager = $this->getUserGroupManager();
@@ -4180,10 +4186,10 @@ class LMS
         return $manager->UsergroupUpdate($usergroupdata);
     }
 
-    public function UsergroupGetAll()
+    public function getAllUserGroups()
     {
         $manager = $this->getUserGroupManager();
-        return $manager->UsergroupGetAll();
+        return $manager->getAllUserGroups();
     }
 
     /**

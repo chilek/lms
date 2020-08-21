@@ -218,14 +218,29 @@
 			</table>
 		</TD>
 	</TR>
+
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/group.gif" alt=""> {trans("Groups:")}
+			{icon name="usergroup" class="fa-fw"} {trans("User groups:")}
 		</TD>
 		<TD class="nobr">
-			<select SIZE="4" NAME="useradd[groups][]" id="groups" multiple {tip text="Select customer groups" class="lms-ui-multiselect" trigger="groups"}
+			<select SIZE="4" NAME="useradd[usergroups][]" id="usergroups" multiple {tip text="Select user groups" class="lms-ui-multiselect" trigger="usergroups"}
 					data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
-				{foreach $groups as $group}
+				{foreach $usergroups as $group}
+					<option value="{$group.id}"{if isset($selectedusergroups[$group.id])} selected{/if}>{$group.name}</option>
+				{/foreach}
+			</select>
+		</TD>
+	</TR>
+
+	<TR>
+		<TD class="bold nobr">
+			{icon name="customergroup" class="fa-fw"} {trans("Customer groups:")}
+		</TD>
+		<TD class="nobr">
+			<select SIZE="4" NAME="useradd[customergroups][]" id="customergroups" multiple {tip text="Select customer groups" class="lms-ui-multiselect" trigger="customergroups"}
+					data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
+				{foreach $customergroups as $group}
 					<option value="{$group.id}"{if isset($selectedgroups[$group.id])} selected{/if}>{$group.name}</option>
 				{/foreach}
 			</select>
@@ -235,10 +250,10 @@
 	{if is_array($divisions) && count($divisions)}
 		<tr>
 			<td class="bold nobr">
-				<IMG src="img/division.gif" alt=""> {trans("Divisions:")}
+				{icon name="division" class="fa-fw"} {trans("Divisions:")}
 			</td>
 			<td>
-				<select SIZE="4" NAME="useradd[divisions][]" multiple {tip text="Select divisions" class="lms-ui-multiselect" trigger="division"} data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
+				<select SIZE="4" NAME="useradd[divisions][]" id="divisions" multiple {tip text="Select divisions" class="lms-ui-multiselect" trigger="division"} data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
 					{foreach $divisions as $division}
 						<option value="{$division.id}" {if isset($useradd.divisions) && in_array($division.id, $useradd.divisions)} selected{/if}>
 							{$division.shortname|truncate:30:"...":true}
@@ -283,10 +298,19 @@
 							$('[data-right-name="'  + value + '"]', user_rights).prop('checked', true);
 						});
 
-						$('select[name="useradd[divisions][]"] option').attr('selected', false).trigger('lms:multiselect:updated');
-						$.each(data['divisions'], function(key, value) {
-							$('select[name="useradd[divisions][]"] option[value="' + value + '"]').attr('selected','selected').trigger('lms:multiselect:updated');
+						var usergroups = $('#usergroups');
+						usergroups.find('option').prop('selected', false);
+						$.each(data['usergroups'], function(key, value) {
+							usergroups.find('option[value="' + value + '"]').prop('selected', true);
 						});
+						usergroups.trigger('lms:multiselect:updated');
+
+						var divisions = $('#divisions');
+						divisions.find('option').prop('selected', false);
+						$.each(data['divisions'], function(key, value) {
+							divisions.find('option[value="' + value + '"]').prop('selected', true);
+						});
+						divisions.trigger('lms:multiselect:updated');
 					}
 				});
 			}

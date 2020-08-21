@@ -105,6 +105,7 @@ version 26-git (????-??-??):
     during new node creation ('false' by default) [chilan]
   - improvement: new customer group input parameter parser allows for much more group
     assignment combination tests [chilan]
+  - improvement: implemented user group assignment management from user forms [chilan]
 
 version 25.0 (2020-05-15):
 

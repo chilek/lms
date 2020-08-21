@@ -31,6 +31,7 @@ if (!$LMS->UserExists($id)) {
     $SESSION->redirect('?m=userlist');
 }
 
+// ajax request handlers
 if (isset($_GET['oper']) && $_GET['oper'] == 'loadtransactionlist') {
     header('Content-Type: text/html');
 
@@ -48,15 +49,14 @@ if (isset($_GET['oper']) && $_GET['oper'] == 'loadtransactionlist') {
     die();
 }
 
-$divisions = $LMS->GetDivisions();
-$user_divisions = array_keys($LMS->GetDivisions(array('userid' => $id)));
-
 if (isset($_GET['fromuser'])) {
     header('Content-Type: application/json');
-    $formuser['rights'] = $LMS->GetUserRights($_GET['fromuser']);
-    $formuser['divisions'] = array_keys($LMS->GetDivisions(array('userid' => $_GET['fromuser'])));
-    die(json_encode($formuser));
+    $fromuser['rights'] = $LMS->GetUserRights($_GET['fromuser']);
+    $fromuser['usergroups'] = array_keys($LMS->getUserAssignments($_GET['fromuser']));
+    $fromuser['divisions'] = array_keys($LMS->GetDivisions(array('userid' => $_GET['fromuser'])));
+    die(json_encode($fromuser));
 }
+// end of ajax request handlers
 
 if (isset($_GET['removetrusteddevices'])) {
     $AUTH->removeTrustedDevices($id, isset($_GET['deviceid']) ? $_GET['deviceid'] : null);
@@ -67,6 +67,9 @@ if (isset($_GET['forcepasswdchange'])) {
     $LMS->forcePasswordChange($id);
     $SESSION->redirect($_SERVER['HTTP_REFERER']);
 }
+
+$divisions = $LMS->GetDivisions();
+$user_divisions = array_keys($LMS->GetDivisions(array('userid' => $id)));
 
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'usercopypermissions.inc.php');
 
@@ -190,7 +193,10 @@ if ($userinfo) {
 
         $SESSION->redirect('?m=userinfo&id='.$userinfo['id']);
     } else {
-        $SMARTY->assign('selectedgroups', array_flip(isset($userinfo['groups']) ? $userinfo['groups'] : array()));
+        $SMARTY->assign('selectedusergroups', !empty($userinfo['usergroups']) ? array_flip($userinfo['usergroups']) : array());
+
+        $customergroups = $LMS->getAllCustomerGroups();
+        $SMARTY->assign('selectedgroups', array_flip(isset($userinfo['customergroups']) ? $userinfo['customergroups'] : array()));
 
         $access = AccessRights::getInstance();
         $accesslist = $access->getArray(array_keys($acl));
@@ -201,9 +207,15 @@ if ($userinfo) {
     $access = AccessRights::getInstance();
     $accesslist = $access->getArray($rights);
 
-    $groups = $LMS->getAllCustomerGroups();
-    if (empty($groups)) {
-        $groups = array();
+    $selectedusergroups = $LMS->getUserAssignments($id);
+    if (empty($selectedusergroups)) {
+        $selectedusergroups = array();
+    }
+    $SMARTY->assign('selectedusergroups', $selectedusergroups);
+
+    $customergroups = $LMS->getAllCustomerGroups();
+    if (empty($customergroups)) {
+        $customergroups = array();
     }
     $excludedgroups = $DB->GetAllByKey(
         'SELECT g.id, g.name
@@ -216,7 +228,7 @@ if ($userinfo) {
     if (empty($excludedgroups)) {
         $excludedgroups = array();
     }
-    $SMARTY->assign('selectedgroups', array_flip(array_diff(array_keys($groups), array_keys($excludedgroups))));
+    $SMARTY->assign('selectedgroups', array_flip(array_diff(array_keys($customergroups), array_keys($excludedgroups))));
 }
 
 foreach ($LMS->GetUserInfo($id) as $key => $value) {
@@ -231,8 +243,9 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SESSION->save('backto', $_SERVER['QUERY_STRING'], true);
 
 $SMARTY->assign('accesslist', $accesslist);
-$SMARTY->assign('groups', $LMS->getAllCustomerGroups());
+$SMARTY->assign('customergroups', $customergroups);
 $SMARTY->assign('users', $LMS->GetUserNames());
+$SMARTY->assign('usergroups', $LMS->getAlluserGroups());
 $SMARTY->assign('userinfo', $userinfo);
 $SMARTY->assign('divisions', $divisions);
 $SMARTY->assign('user_divisions', $user_divisions);
