@@ -1086,38 +1086,40 @@ $(function() {
 	$('.lms-ui-button-clipboard').attr('title', $t('Click copies to clipboard'));
 	new ClipboardJS('.lms-ui-button-clipboard');
 
-	$(document).on('mouseenter', '[title]', function() {
-		if ($(this).is('[data-tooltip]')) {
-			return;
-		}
-		tooltipClass = '';
-		if ($(this).hasClass('lms-ui-error') || $(this).hasClass('alert')) {
-			tooltipClass += ' lms-ui-error';
-			if ($(this).hasClass('bold')) {
-				tooltipClass += ' bold';
+	if (tooltipsEnabled) {
+		$(document).on('mouseenter', '[title]', function () {
+			if ($(this).is('[data-tooltip]')) {
+				return;
 			}
-		} else if ($(this).hasClass('lms-ui-warning')) {
-			tooltipClass += 'lms-ui-warning';
-		} else if ($(this).hasClass('bold')) {
-			tooltipClass += 'bold';
-		}
+			tooltipClass = '';
+			if ($(this).hasClass('lms-ui-error') || $(this).hasClass('alert')) {
+				tooltipClass += ' lms-ui-error';
+				if ($(this).hasClass('bold')) {
+					tooltipClass += ' bold';
+				}
+			} else if ($(this).hasClass('lms-ui-warning')) {
+				tooltipClass += 'lms-ui-warning';
+			} else if ($(this).hasClass('bold')) {
+				tooltipClass += 'bold';
+			}
 
-		var title = $(this).attr('title');
-		$(this).attr('data-tooltip', title).removeAttr('title');
-		$(this).tooltip({
-			items: '[data-tooltip]',
-			content: title,
-			show: false,
-			hide: false,
-			track: true,
-			classes: {
-				'ui-tooltip': tooltipClass
-			},
-			create: function() {
-				$(this).tooltip('open');
-			}
+			var title = $(this).attr('title');
+			$(this).attr('data-tooltip', title).removeAttr('title');
+			$(this).tooltip({
+				items: '[data-tooltip]',
+				content: title,
+				show: false,
+				hide: false,
+				track: true,
+				classes: {
+					'ui-tooltip': tooltipClass
+				},
+				create: function () {
+					$(this).tooltip('open');
+				}
+			});
 		});
-	});
+	}
 
 	[
 		{ class: 'lms-ui-tooltip-voipaccountinfo', url: '?m=voipaccountinfoshort&id='},
