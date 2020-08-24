@@ -75,7 +75,7 @@
                         {button type="link" icon="close" onclick="location.href = '?m=eventedit&id={$event.id}&action=close&backid=' + $(this).closest('.event-day-table').attr('id');" tip="Close"}
                         {button type="link" icon="clone" href="?m=eventadd&id={$event.id}" tip="Clone"}
                         {button type="link" icon="delete" class="delete-event" href="?m=eventdel&id={$event.id}" tip="Delete permanently"}
-                        {button type="link" icon="edit" onclick="location.href = '?m=eventedit&id={$event.id}&backid=' + $(this).closest('.event-day-table').attr('id');" tip="Edit"}
+                        {button type="link" class="event-edit" icon="edit" href="?m=eventedit&id={$event.id}&backid=" tip="Edit"}
                     {/if}
                     {if $imadded && $event.note == ''}
                         {button type="link" icon="note" onclick="location.href = '?m=eventnote&id={$event.id}&backid=' + $(this).closest('.event-day-table').attr('id');" tip="Add Note"}

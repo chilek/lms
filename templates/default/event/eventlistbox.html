@@ -100,5 +100,15 @@
 		}
     });
 
+    $(function() {
+        $('.event-day-table').each(function() {
+            var id = $(this).attr('id');
+            $(this).find('.event-edit').each(function() {
+                var href = $(this).attr('href');
+                $(this).attr('href', href + id);
+            });
+        });
+    })
+
 </script>
 {/block}
