@@ -117,6 +117,7 @@ class LMSSmartyPlugins
 
         $label = isset($params['label']) ? $params['label'] : null;
         $elementname = isset($params['elementname']) ? $params['elementname'] : 'division';
+        $elementid = isset($params['elementid']) ? $params['elementid'] : $elementname;
         $selected = isset($params['selected']) ? $params['selected'] : null;
         $superuser = isset($params['superuser']) && !empty($params['superuser']) ? $params['superuser'] : null;
         $onchange = isset($params['onchange']) && !empty($params['onchange']) ? $params['onchange'] : null;
@@ -144,7 +145,7 @@ class LMSSmartyPlugins
         } else {
             if (!empty($user_divisions) && count($user_divisions) > 1) {
                 $result .= ($label ? '<label for="' . $elementname . '">' : '') . ($label ? trans($label) : '') . ($label ? '&nbsp;' : '');
-                $result .= '<select id="' . $elementname . '" name="' . $elementname . '" ' . self::tipFunction(array('text' => 'Select division'), $template)
+                $result .= '<select id="' . $elementid . '" name="' . $elementname . '" ' . self::tipFunction(array('text' => 'Select division'), $template)
                     . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '')
                     . ($onchange ? ' onchange="' . $onchange . '"' : '')
                     . ($division_selection ? ' division_selection="' . $division_selection . '"' : '')
