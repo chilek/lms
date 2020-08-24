@@ -40,6 +40,7 @@ $parameters = array(
     'version' => 'v',
     'fakedate:' => 'f:',
     'customerid:' => null,
+    'customergroups:' => 'g:',
 );
 
 $long_to_shorts = array();
@@ -93,6 +94,9 @@ lms-payments.php
 -q, --quiet                     suppress any output, except errors;
 -f, --fakedate=YYYY/MM/DD       override system date;
     --customerid=<id>           limit assignments to to specifed customer
+-g, --customergroups=<group1,group2,...>
+                                allow to specify customer groups to which notified customers
+                                should be assigned
 
 EOF;
     exit(0);
@@ -185,6 +189,7 @@ $proforma_generates_commitment = ConfigHelper::checkConfig('phpui.proforma_invoi
 $delete_old_assignments_after_days = intval(ConfigHelper::getConfig('payments.delete_old_assignments_after_days', 30));
 $prefer_settlement_only = ConfigHelper::checkConfig('payments.prefer_settlement_only');
 $prefer_netto = ConfigHelper::checkConfig('payments.prefer_netto');
+$customergroups = ConfigHelper::getConfig('payments.customergroups', '', true);
 
 function localtime2()
 {
@@ -365,21 +370,37 @@ if (!empty($results)) {
 }
 
 // prepare customergroups in sql query
-$customergroups = " AND EXISTS (SELECT 1 FROM customergroups g, customerassignments ca 
-	WHERE c.id = ca.customerid 
-	AND g.id = ca.customergroupid 
-	AND (%groups)) ";
-$groupnames = ConfigHelper::getConfig('payments.customergroups');
-$groupsql = "";
-$groups = preg_split("/[[:blank:]]+/", $groupnames, -1, PREG_SPLIT_NO_EMPTY);
-foreach ($groups as $group) {
-    if (!empty($groupsql)) {
-        $groupsql .= " OR ";
-    }
-    $groupsql .= "UPPER(g.name) = UPPER('".$group."')";
+if (isset($options['customergroups'])) {
+    $customergroups = $options['customergroups'];
 }
-if (!empty($groupsql)) {
-    $customergroups = preg_replace("/\%groups/", $groupsql, $customergroups);
+if (!empty($customergroups)) {
+    $ORs = preg_split("/([\s]+|[\s]*,[\s]*)/", mb_strtoupper($customergroups), -1, PREG_SPLIT_NO_EMPTY);
+    $customergroup_ORs = array();
+    foreach ($ORs as $OR) {
+        $ANDs = preg_split("/([\s]*\+[\s]*)/", $OR, -1, PREG_SPLIT_NO_EMPTY);
+        $customergroup_ANDs_regular = array();
+        $customergroup_ANDs_inversed = array();
+        foreach ($ANDs as $AND) {
+            if (strpos($AND, '!') === false) {
+                $customergroup_ANDs_regular[] = $AND;
+            } else {
+                $customergroup_ANDs_inversed[] = substr($AND, 1);
+            }
+        }
+        $customergroup_ORs[] = '('
+            . (empty($customergroup_ANDs_regular) ? '1 = 1' : "EXISTS (SELECT COUNT(*) FROM customergroups
+                JOIN customerassignments ON customerassignments.customergroupid = customergroups.id
+                WHERE customerassignments.customerid = %customerid_alias%
+                AND UPPER(customergroups.name) IN ('" . implode("', '", $customergroup_ANDs_regular) . "')
+                HAVING COUNT(*) = " . count($customergroup_ANDs_regular) . ')')
+            . (empty($customergroup_ANDs_inversed) ? '' : " AND NOT EXISTS (SELECT COUNT(*) FROM customergroups
+                JOIN customerassignments ON customerassignments.customergroupid = customergroups.id
+                WHERE customerassignments.customerid = %customerid_alias%
+                AND UPPER(customergroups.name) IN ('" . implode("', '", $customergroup_ANDs_inversed) . "')
+                HAVING COUNT(*) = 0)")
+            . ')';
+    }
+    $customergroups = ' AND (' . implode(' OR ', $customergroup_ORs) . ')';
 }
 
 // invoice auto-closes
@@ -390,7 +411,7 @@ if ($check_invoices) {
 			SELECT c.customerid
 			FROM cash c
 			WHERE c.time <= ?NOW?
-				" . (!empty($groupnames) ? $customergroups : '') . "
+				" . ($customergroups ? str_replace('%customerid_alias%', 'c.customerid', $customergroups) : '') . "
 			GROUP BY c.customerid
 			HAVING SUM(c.value * c.currencyvalue) >= 0
 		) AND type IN (?, ?, ?)
@@ -467,7 +488,7 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 			OR (a.period = ? AND at = ?)
 			OR (a.period = ? AND at = ?))
 			AND a.datefrom <= ? AND (a.dateto > ? OR a.dateto = 0)))"
-        .(!empty($groupnames) ? $customergroups : "")
+        . ($customergroups ? str_replace('%customerid_alias%', 'c.id', $customergroups) : '')
     ." ORDER BY a.customerid, a.recipient_address_id, a.invoice,  a.paytype, a.numberplanid, a.separatedocument, currency, value DESC, a.id";
 $services = $DB->GetAll($query, array(CTYPES_PRIVATE, CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION,
     DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $last_dom ? 0 : $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
@@ -542,7 +563,7 @@ $query = "SELECT
 		  (a.period  = ? AND at = ?)) AND
 		   a.datefrom <= ? AND
 		  (a.dateto > ? OR a.dateto = 0)))"
-        .(!empty($groupnames) ? $customergroups : "")
+        . ($customergroups ? str_replace('%customerid_alias%', 'c.id', $customergroups) : '')
     ." ORDER BY a.customerid, a.recipient_address_id, a.invoice, a.paytype, a.numberplanid, a.separatedocument, currency, voipcost.value DESC, a.id";
 
 $billings = $DB->GetAll($query, array(CTYPES_PRIVATE, 1, CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION, SERVICE_PHONE,
@@ -1486,7 +1507,7 @@ if ($check_invoices) {
 			SELECT c.customerid
 			FROM cash c
 			WHERE c.time <= ?NOW?
-				" . (!empty($groupnames) ? $customergroups : '') . "
+				" . ($customergroups ? str_replace('%customerid_alias%', 'c.customerid', $customergroups) : '') . "
 			GROUP BY c.customerid
 			HAVING SUM(c.value * c.currencyvalue) >= 0
 		) AND type IN (?, ?, ?)

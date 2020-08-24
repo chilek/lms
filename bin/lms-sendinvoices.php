@@ -44,6 +44,7 @@ $parameters = array(
     'output-directory:' => 'o:',
     'no-attachment' => 'n',
     'customerid:' => null,
+    'customergroups:' => null,
 );
 
 $long_to_shorts = array();
@@ -109,6 +110,9 @@ lms-sendinvoices.php
 -o, --output-directory=/path    output directory for document backup
 -n, --no-attachments            dont attach documents
     --customerid=<id>           limit invoices to specifed customer
+    --customergroups=<group1,group2,...>
+                                allow to specify customer groups to which notified customers
+                                should be assigned
 
 EOF;
     exit(0);
@@ -266,6 +270,7 @@ if ($backup || $archive) {
         'ssl_allow_self_signed' => ConfigHelper::checkConfig('sendinvoices.smtp_ssl_allow_self_signed'),
     );
 
+    $customergroups = ConfigHelper::getConfig('sendinvoices.customergroups', '', true);
     $debug_email = ConfigHelper::getConfig('sendinvoices.debug_email', '', true);
     $sender_name = ConfigHelper::getConfig('sendinvoices.sender_name', '', true);
     $sender_email = ConfigHelper::getConfig('sendinvoices.sender_email', '', true);
@@ -336,22 +341,38 @@ $dayend = $daystart + 86399;
 if ($backup || $archive) {
     $groupnames = '';
 } else {
-    // prepare customergroups in sql query
-    $customergroups = " AND EXISTS (SELECT 1 FROM customergroups g, customerassignments ca 
-		WHERE c.id = ca.customerid 
-		AND g.id = ca.customergroupid 
-		AND (%groups)) ";
-    $groupnames = ConfigHelper::getConfig('sendinvoices.customergroups');
-    $groupsql = "";
-    $groups = preg_split("/[[:blank:]]+/", $groupnames, -1, PREG_SPLIT_NO_EMPTY);
-    foreach ($groups as $group) {
-        if (!empty($groupsql)) {
-            $groupsql .= " OR ";
-        }
-        $groupsql .= "UPPER(g.name) = UPPER('".$group."')";
+// prepare customergroups in sql query
+    if (isset($options['customergroups'])) {
+        $customergroups = $options['customergroups'];
     }
-    if (!empty($groupsql)) {
-        $customergroups = preg_replace("/\%groups/", $groupsql, $customergroups);
+    if (!empty($customergroups)) {
+        $ORs = preg_split("/([\s]+|[\s]*,[\s]*)/", mb_strtoupper($customergroups), -1, PREG_SPLIT_NO_EMPTY);
+        $customergroup_ORs = array();
+        foreach ($ORs as $OR) {
+            $ANDs = preg_split("/([\s]*\+[\s]*)/", $OR, -1, PREG_SPLIT_NO_EMPTY);
+            $customergroup_ANDs_regular = array();
+            $customergroup_ANDs_inversed = array();
+            foreach ($ANDs as $AND) {
+                if (strpos($AND, '!') === false) {
+                    $customergroup_ANDs_regular[] = $AND;
+                } else {
+                    $customergroup_ANDs_inversed[] = substr($AND, 1);
+                }
+            }
+            $customergroup_ORs[] = '('
+                . (empty($customergroup_ANDs_regular) ? '1 = 1' : "EXISTS (SELECT COUNT(*) FROM customergroups
+                JOIN customerassignments ON customerassignments.customergroupid = customergroups.id
+                WHERE customerassignments.customerid = c.id
+                AND UPPER(customergroups.name) IN ('" . implode("', '", $customergroup_ANDs_regular) . "')
+                HAVING COUNT(*) = " . count($customergroup_ANDs_regular) . ')')
+                . (empty($customergroup_ANDs_inversed) ? '' : " AND NOT EXISTS (SELECT COUNT(*) FROM customergroups
+                JOIN customerassignments ON customerassignments.customergroupid = customergroups.id
+                WHERE customerassignments.customerid = c.id
+                AND UPPER(customergroups.name) IN ('" . implode("', '", $customergroup_ANDs_inversed) . "')
+                HAVING COUNT(*) = 0)")
+                . ')';
+        }
+        $customergroups = ' AND (' . implode(' OR ', $customergroup_ORs) . ')';
     }
 
     $test = array_key_exists('test', $options);
@@ -398,7 +419,7 @@ if ($backup || $archive) {
 				) m ON m.customerid = c.id
 				WHERE " . ($customerid ? 'c.id = ' . $customerid . ' AND ' : '') . "c.deleted = 0 AND d.cancelled = 0 AND d.type IN (?, ?, ?, ?) AND c.invoicenotice = 1
 					AND d.cdate >= $daystart AND d.cdate <= $dayend"
-                . (!empty($groupnames) ? $customergroups : ""), $args));
+                . ($customergroups ?: ''), $args));
             if (empty($count)) {
                 die;
             }
