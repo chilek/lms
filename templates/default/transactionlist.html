@@ -1,4 +1,4 @@
-<TABLE id="transactions-datatable" class="lmsbox-inner lms-ui-datatable" data-order='[[ 0, "desc" ]]' data-page-length="10"
+<TABLE id="transactions-datatable" class="lmsbox-inner lms-ui-datatable lms-ui-datatable-column-search" data-order='[[ 0, "desc" ]]' data-page-length="10"
        data-empty-table-message="{trans("No such transactions in database.")}"
        style="display: none;" width="100%">
     <COLGROUP>
@@ -9,10 +9,10 @@
     </COLGROUP>
     <THEAD>
         <TR>
-            <TH class="bold nobr">{trans("Date:")}</TH>
-            <TH class="bold nobr">{trans("User:")}</TH>
-            <TH class="bold nobr">{trans("Module:")}</TH>
-            <TH class="bold nobr" data-orderable="false">{trans("Operations:")}</TH>
+            <TH class="bold nobr" data-searchable="false" data-select-value="false">{trans("Date:")}</TH>
+            <TH class="bold nobr" data-searchable="true" data-select-value="true" data-filter-id="user-filter">{trans("User:")}</TH>
+            <TH class="bold nobr" data-searchable="true" data-select-value="false" data-filter-id="module-filter">{trans("Module:")}</TH>
+            <TH class="bold nobr" data-orderable="false" data-searchable="true" data-select-value="false">{trans("Operations:")}</TH>
         </TR>
     </THEAD>
     <TBODY>
