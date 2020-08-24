@@ -144,7 +144,7 @@ class LMSSmartyPlugins
         } else {
             if (!empty($user_divisions) && count($user_divisions) > 1) {
                 $result .= ($label ? '<label for="' . $elementname . '">' : '') . ($label ? trans($label) : '') . ($label ? '&nbsp;' : '');
-                $result .= '<select name="' . $elementname . '" ' . self::tipFunction(array('text' => 'Select division'), $template)
+                $result .= '<select id="' . $elementname . '" name="' . $elementname . '" ' . self::tipFunction(array('text' => 'Select division'), $template)
                     . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '')
                     . ($onchange ? ' onchange="' . $onchange . '"' : '')
                     . ($division_selection ? ' division_selection="' . $division_selection . '"' : '')
