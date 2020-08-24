@@ -597,10 +597,11 @@ if (!empty($customergroups)) {
                 WHERE customerassignments.customerid = c.id
                 AND UPPER(customergroups.name) IN ('" . implode("', '", $customergroup_ANDs_regular) . "')
                 HAVING COUNT(*) = " . count($customergroup_ANDs_regular) . ')')
-            . (empty($customergroup_ANDs_inversed) ? '' : " AND NOT EXISTS (SELECT customergroups.id FROM customergroups
+            . (empty($customergroup_ANDs_inversed) ? '' : " AND NOT EXISTS (SELECT COUNT(*) FROM customergroups
                 JOIN customerassignments ON customerassignments.customergroupid = customergroups.id
                 WHERE customerassignments.customerid = c.id
-                AND UPPER(customergroups.name) IN ('" . implode("', '", $customergroup_ANDs_inversed) . "'))")
+                AND UPPER(customergroups.name) IN ('" . implode("', '", $customergroup_ANDs_inversed) . "')
+                HAVING COUNT(*) = 0)")
             . ')';
     }
     $customergroups = ' AND (' . implode(' OR ', $customergroup_ORs) . ')';
