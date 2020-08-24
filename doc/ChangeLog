@@ -108,6 +108,7 @@ version 26-git (????-??-??):
   - improvement: implemented user group assignment management from user forms [chilan]
   - improvement: 'phpui.touch_device_tooltips' configuration variable allows to disable globally
     tooltips/hints on touch devices (default 'false' value means disabled) [chilan]
+  - enhancement: added transaction tab/box into netdevinfo/netdevedit views [chilan]
 
 version 25.0 (2020-05-15):
 

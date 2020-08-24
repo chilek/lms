@@ -412,7 +412,10 @@ function init_datatables(selector) {
 						selectValue == 'true') {
 						var selectValues = [];
 						tr.parent().siblings('tbody').children('tr').each(function (index, row) {
-							value = $($('td', row)[key]).html().trim();
+							var value = $($('td', row)[key]).attr('data-search');
+							if (value === undefined) {
+								value = $($('td', row)[key]).html().trim();
+							}
 							if (!value.length || selectValues.indexOf(value) > -1)
 								return;
 							selectValues.push(value);

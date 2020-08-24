@@ -24,7 +24,7 @@
 	{include file="customer/customernetworksbox.html"}
 {/block}
 {block name="transactions"}
-	{if ConfigHelper::checkConfig('phpui.logging') && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.transaction_logs'))}
+	{if ConfigHelper::checkConfig('phpui.logging') && ConfigHelper::checkPrivilege('transaction_logs')}
 		{include file="transactions.html"}
 	{/if}
 {/block}

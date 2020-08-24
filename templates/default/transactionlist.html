@@ -21,7 +21,7 @@
             <TD class="valign-bottom nobr">
                 {$tr.time|date_format:"Y.m.d H:i:s"}
             </TD>
-            <TD class="text-center valign-bottom nobr">
+            <TD class="text-center valign-bottom nobr" data-search="{$tr.login}">
                 <a href="?m=userinfo&amp;id={$tr.userid}">{$tr.login}</a>
             </TD>
             <TD class="text-center valign-bottom nobr">
