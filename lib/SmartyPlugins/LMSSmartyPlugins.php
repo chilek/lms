@@ -116,7 +116,8 @@ class LMSSmartyPlugins
         }
 
         $label = isset($params['label']) ? $params['label'] : null;
-        $elementname = isset($params['elementname']) ? $params['elementname'] : 'division';
+        $name = isset($params['name']) ? $params['name'] : 'division';
+        $id = isset($params['id']) ? $params['id'] : $name;
         $selected = isset($params['selected']) ? $params['selected'] : null;
         $superuser = isset($params['superuser']) && !empty($params['superuser']) ? $params['superuser'] : null;
         $onchange = isset($params['onchange']) && !empty($params['onchange']) ? $params['onchange'] : null;
@@ -138,13 +139,13 @@ class LMSSmartyPlugins
             $result .= ($label ? '<label>' : '') . ($label ? trans($label) : '');
             $result .= '<span name="force_division_context" class="force_division_context bold">' . (!empty($user_divisions) ? $user_divisions['shortname'] : trans("all")) . '</span>';
             $result .= ($label ? '</label>' : '');
-            $result .= '<input type="hidden" class="division-context-selected" name="' . $elementname . '"'
+            $result .= '<input type="hidden" class="division-context-selected" name="' . $name . '"'
                 . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '') . ' value="'
                 . $layout['division'] . '">';
         } else {
             if (!empty($user_divisions) && count($user_divisions) > 1) {
-                $result .= ($label ? '<label for="' . $elementname . '">' : '') . ($label ? trans($label) : '') . ($label ? '&nbsp;' : '');
-                $result .= '<select name="' . $elementname . '" ' . self::tipFunction(array('text' => 'Select division'), $template)
+                $result .= ($label ? '<label for="' . $name . '">' : '') . ($label ? trans($label) : '') . ($label ? '&nbsp;' : '');
+                $result .= '<select id="' . $id . '" name="' . $name . '" ' . self::tipFunction(array('text' => 'Select division'), $template)
                     . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '')
                     . ($onchange ? ' onchange="' . $onchange . '"' : '')
                     . ($division_selection ? ' division_selection="' . $division_selection . '"' : '')
@@ -161,7 +162,7 @@ class LMSSmartyPlugins
                 $result .= ($label ? '<label>' : '') . ($label ? trans($label) : '');
                 $result .= '<span class="bold">' . (!empty($user_divisions) ? $user_division['shortname'] : trans("all")) . '</span>';
                 $result .= ($label ? '</label>' : '');
-                $result .= '<input type="hidden" class="division-context-selected" name="' . $elementname . '"'
+                $result .= '<input type="hidden" class="division-context-selected" name="' . $name . '"'
                     . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '') . ' value="'
                     . $user_division['id'] . '">';
             }
