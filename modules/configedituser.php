@@ -115,10 +115,8 @@ if (count($userconfig)) {
 
 if ($SESSION->is_set('backto', true)) {
     $SMARTY->assign('backtolink', '?' . $SESSION->get('backto'), true);
-
 } elseif ($SESSION->is_set('backto')) {
     $SMARTY->assign('backtolink', '?' . $SESSION->get('backto'));
-
 } else {
     $SMARTY->assign('backtolink', '?m=configlist');
 }
