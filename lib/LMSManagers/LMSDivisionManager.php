@@ -88,8 +88,8 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
 
         $user_divisions = implode(',', array_keys($this->GetDivisions(array('userid' => Auth::GetCurrentUser()))));
 
-        return $this->db->GetAll('
-            SELECT d.id, d.name, d.shortname, d.status, (SELECT COUNT(*) FROM customers WHERE divisionid = d.id) AS cnt 
+        return $this->db->GetAll(
+            'SELECT d.id, d.name, d.shortname, d.status, (SELECT COUNT(*) FROM customers WHERE divisionid = d.id) AS cnt
             FROM divisions d'
             . (isset($params['superuser']) && empty($params['superuser']) ? ' WHERE id IN (' . $user_divisions . ')' : '') .
             ' ORDER BY d.shortname'

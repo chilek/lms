@@ -31,7 +31,7 @@ $template = $numberplan['template'];
 
 $numberplanedit = isset($_POST['numberplanedit']) ? $_POST['numberplanedit'] : null;
 
-if (count($numberplanedit)) {
+if (is_array($numberplanedit) && count($numberplanedit)) {
     $numberplanedit['template'] = trim($numberplanedit['template']);
     $numberplanedit['id'] = $numberplan['id'];
 
