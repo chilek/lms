@@ -70,14 +70,14 @@
                 <SELECT size="1" name="owner[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect"
                         data-default-value="{trans("No filter")}" data-popup-title="{trans("Select owners")}">
                     <option value="all" data-exclusive{if empty($filter.owner)} selected{/if}>{trans("No filter")}</option>
-                    <option value="-1" {if !empty($filter.owner) && in_array('-1', $filter.owner)} selected{/if}>{trans("no owner")}</option>
-                    <option value="-2" data-exclusive{if !empty($filter.owner) && in_array('-2', $filter.owner)} selected{/if}>{trans("with owner")}</option>
-                    <option value="-3" data-exclusive{if !empty($filter.owner) && in_array('-3', $filter.owner)} selected{/if}>{trans("no owner or logged user")}</option>
+                    <option value="-1" {if !empty($filter.owner) && is_array($filter.owner) && in_array('-1', $filter.owner)} selected{/if}>{trans("no owner")}</option>
+                    <option value="-2" data-exclusive{if !empty($filter.owner) && is_array($filter.owner) && in_array('-2', $filter.owner)} selected{/if}>{trans("with owner")}</option>
+                    <option value="-3" data-exclusive{if !empty($filter.owner) && is_array($filter.owner) && in_array('-3', $filter.owner)} selected{/if}>{trans("no owner or logged user")}</option>
                     {foreach $users as $user}
                         {if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
                             || (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
                             || (is_array($filter.owner) && in_array($user.id, $filter.owner))}
-                            <OPTION{if !$user.access} disabled{/if} value="{$user.id}"{if in_array($user.id, $filter.owner)}} selected{/if}>{$user.rname|truncate:40:"...":true} ({$user.login})</OPTION>
+			    <OPTION{if !$user.access} disabled{/if} value="{$user.id}"{if is_array($filter.owner) && in_array($user.id, $filter.owner)}} selected{/if}>{$user.rname|truncate:40:"...":true} ({$user.login})</OPTION>
                         {/if}
                     {/foreach}
                 </SELECT>
