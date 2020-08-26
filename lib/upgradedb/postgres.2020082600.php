@@ -23,7 +23,12 @@
 
 $this->BeginTrans();
 
-$this->Execute("ALTER TABLE tariffs DROP CONSTRAINT tariff_rule_id_fk");
+if ($this->ResourceExists('tariff_rule_id_fk', LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
+    $this->Execute("ALTER TABLE tariffs DROP CONSTRAINT tariff_rule_id_fk");
+} else {
+    $this->Execute("ALTER TABLE tariffs DROP CONSTRAINT tariffs_voip_tariff_rule_id_fkey");
+}
+
 $this->Execute(
     "ALTER TABLE tariffs ADD CONSTRAINT tariffs_voip_tariff_rule_id_fkey
     FOREIGN KEY (voip_tariff_rule_id) REFERENCES voip_rule_groups (id) ON UPDATE CASCADE ON DELETE SET NULL"
