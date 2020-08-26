@@ -924,7 +924,8 @@ CREATE TABLE tariffs (
 	INDEX type (type),
 	FOREIGN KEY (numberplanid)        REFERENCES numberplans  (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (voip_tariff_id)      REFERENCES voip_tariffs (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	FOREIGN KEY (voip_tariff_rule_id) REFERENCES voip_rules   (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT tariffs_voip_tariff_rule_id_fkey
+		FOREIGN KEY (voip_tariff_rule_id) REFERENCES voip_rule_groups (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT tariffs_taxid_fkey
 		FOREIGN KEY (taxid) REFERENCES taxes (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
@@ -3791,4 +3792,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020082500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020082600');
