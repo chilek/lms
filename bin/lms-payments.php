@@ -397,7 +397,7 @@ if (!empty($customergroups)) {
                 JOIN customerassignments ON customerassignments.customergroupid = customergroups.id
                 WHERE customerassignments.customerid = %customerid_alias%
                 AND UPPER(customergroups.name) IN ('" . implode("', '", $customergroup_ANDs_inversed) . "')
-                HAVING COUNT(*) = 0)")
+                HAVING COUNT(*) > 0)")
             . ')';
     }
     $customergroups = ' AND (' . implode(' OR ', $customergroup_ORs) . ')';
