@@ -1619,7 +1619,9 @@
 </script>
 
 </FORM>
+{/if}
 
+{if $printmenu == "netdev" || $printmenu == "finances"}
 <form method="post" name="uke-income" id="uke-income" action="?m=netdevprint&type=uke-income" target="_blank">
 	<input type="submit" class="hiddenbtn">
 	<table class="lmsbox">
@@ -1717,6 +1719,6 @@
 		</tbody>
 	</table>
 </FORM>
-
 {/if}
+
 {/block}
