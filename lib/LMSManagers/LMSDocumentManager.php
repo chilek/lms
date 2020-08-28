@@ -775,6 +775,12 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 array($docid)
             );
 
+            // don't notify customer about document approval where
+            // customer does not wait for it
+            if (empty($doc['customerawaits'])) {
+                continue;
+            }
+
             // customer awaits for signed document scan approval
             // so we should probably notify him about document confirmation
             if (!empty($mail_sender_address) && !empty($mail_subject) && !empty($mail_body)) {
