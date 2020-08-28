@@ -232,7 +232,7 @@ if (isset($_POST['document'])) {
 
         $DB->CommitTrans();
 
-        if ($closed == 1) {
+        if ($closed == 1 && !$document['closed']) {
             $LMS->CommitDocuments(array($documentedit['id']));
         }
 
