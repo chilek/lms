@@ -191,7 +191,7 @@ if (isset($_POST['document'])) {
 			        archived = ?, adate = ?, auserid = ?, number=?, numberplanid=?, fullnumber=?
 				WHERE id=?',
             array(  $documentedit['type'],
-                    $closed,
+                    $closed == 1 && !$document['closed'] ? 0 : $closed,
                     $documentedit['closed'] ? ($document['closed'] ? $document['sdate'] : time()) : 0,
                     $documentedit['closed'] ? ($document['closed'] ? $document['cuserid'] : $userid) : null,
                     !$document['closed'] && $documentedit['closed'] && $document['confirmdate'] == -1 ? 0 : ($documentedit['closed'] || !$documentedit['confirmdate'] ? 0 : $documentedit['confirmdate'] + 86399),
