@@ -91,7 +91,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $now = mktime(0, 0, 0, date('n'), date('d'), date('Y'));
 
         $assignments = $this->db->GetAll('SELECT
-                                            a.id AS id, a.tariffid, a.customerid, a.period,
+                                            a.id AS id, a.tariffid, a.customerid, a.period, a.backwardperiod,
                                             a.at, a.suspended, a.invoice, a.settlement,
                                             a.datefrom, a.dateto, a.pdiscount,
                                             a.vdiscount AS unitary_vdiscount,
@@ -627,6 +627,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                     SYSLOG::RES_TARIFF => $tariffid,
                                     SYSLOG::RES_CUST => $data['customerid'],
                                     'period' => $period,
+                                    'backwardperiod' => 0,
                                     'at' => $partial_at,
                                     'count' => $data['count'],
                                     'invoice' => isset($data['invoice']) ? $data['invoice'] : 0,
@@ -709,6 +710,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                 SYSLOG::RES_TARIFF  => empty($data['tariffid']) ? null : $tariffid,
                                 SYSLOG::RES_CUST    => $data['customerid'],
                                 'period'            => $period,
+                                'backwardperiod'    => 0,
                                 'at'                => $partial_at,
                                 'count'             => $data['count'],
                                 'invoice'           => isset($data['invoice']) ? $data['invoice'] : 0,
@@ -745,6 +747,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             SYSLOG::RES_TARIFF => empty($tariffid) ? null : $tariffid,
                             SYSLOG::RES_CUST => $data['customerid'],
                             'period' => $period,
+                            'backwardperiod' => 0,
                             'at' => $at,
                             'count' => $data['count'],
                             'invoice' => isset($data['invoice']) ? $data['invoice'] : 0,
@@ -855,6 +858,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         SYSLOG::RES_TARIFF  => empty($data['tariffid']) ? null : intval($data['tariffid']),
                         SYSLOG::RES_CUST    => $data['customerid'],
                         'period'            => $data['period'],
+                        'backwardperiod'    => 0,
                         'at'                => $partial_at,
                         'count'             => isset($data['count']) ? $data['count'] : 1,
                         'invoice'           => isset($data['invoice']) ? $data['invoice'] : 0,
@@ -921,6 +925,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         SYSLOG::RES_TARIFF  => empty($data['tariffid']) ? null : intval($data['tariffid']),
                         SYSLOG::RES_CUST    => $data['customerid'],
                         'period'            => $data['period'],
+                        'backwardperiod'    => 0,
                         'at'                => $partial_at,
                         'count'             => isset($data['count']) ? $data['count'] : 1,
                         'invoice'           => isset($data['invoice']) ? $data['invoice'] : 0,
@@ -974,6 +979,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     SYSLOG::RES_TARIFF => empty($data['tariffid']) ? null : intval($data['tariffid']),
                     SYSLOG::RES_CUST => $data['customerid'],
                     'period' => $data['period'],
+                    'backwardperiod'    => isset($data['backwardperiod']) ? 1 : 0,
                     'at' => $data['at'],
                     'count'             => isset($data['count']) ? $data['count'] : 1,
                     'invoice' => isset($data['invoice']) ? $data['invoice'] : 0,
@@ -1012,11 +1018,11 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     {
         $this->db->Execute(
             'INSERT INTO assignments
-    							(tariffid, customerid, period, at, count, invoice, separatedocument,
-    							settlement, numberplanid,
-    							paytype, datefrom, dateto, pdiscount, vdiscount, attribute, liabilityid, recipient_address_id,
-    							docid, commited)
-					        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                (tariffid, customerid, period, backwardperiod, at, count, invoice, separatedocument,
+                settlement, numberplanid,
+                paytype, datefrom, dateto, pdiscount, vdiscount, attribute, liabilityid, recipient_address_id,
+                docid, commited)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             array_values($args)
         );
 

@@ -1003,7 +1003,8 @@ CREATE TABLE assignments (
 	liabilityid int(11) DEFAULT NULL,
 	customerid int(11) NOT NULL,
 	period smallint NOT NULL DEFAULT '0',
-	at int(11) NOT NULL DEFAULT '0',
+    backwardperiod smallint NOT NULL DEFAULT 0,
+    at int(11) NOT NULL DEFAULT '0',
 	datefrom int(11) NOT NULL DEFAULT '0',
 	dateto int(11) NOT NULL DEFAULT '0',
 	invoice tinyint(1) NOT NULL DEFAULT '0',
@@ -3792,4 +3793,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020082600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020082800');

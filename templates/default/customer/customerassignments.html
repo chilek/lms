@@ -174,7 +174,7 @@
 						</div>
 						<div class="lms-ui-tab-table-column accounting">
 							{if $a.tariffid || $a.liabilityid}
-								{$a.payday}
+								{$a.payday}{if $a.backwardperiod} {icon name="lms-ui-icon-previous" tip="<!assignment>backward"}{/if}
 							{/if}
 						</div>
 					</div>

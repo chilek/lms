@@ -110,6 +110,9 @@
 		}
 	}
 
+	#a_day > td > * {
+		margin-top: 0.3em;
+	}
 
 </style>
 
@@ -400,7 +403,12 @@
 										<OPTION value="{$key}"{if $variables.period == $key} SELECTED{/if}>{$item}</OPTION>
 										{/foreach}
 									</SELECT>
-
+									<label>
+										<input type="checkbox" id="backward-period" name="{$variable_prefix}[backwardperiod]" value="1"
+											{if !empty($variables.backwardperiod)} checked{/if}>
+										{trans("<!assignment>backward")}
+									</label>
+									<br>
 									<INPUT id="a-day-of-month" type="TEXT" name="{$variable_prefix}[at]"
 										value="{if $variables.at}{$variables.at}{/if}"
 										{tip text="Enter accounting time. For disposable accounting enter date in format YYYY/MM/DD, for weekly accounting enter day of week (Monday = 1), for monthly accounting enter day of month (1 to 28), for yearly accounting enter day and month in format DD/MM (15/09 means September 15th), for half-yearly DD/MM (MM <=6) and for quarterly DD/MM (MM <= 3)" trigger="at"}

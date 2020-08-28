@@ -369,6 +369,7 @@ if (isset($_POST['assignment'])) {
             SYSLOG::RES_CUST => $customer['id'],
             'attribute' => !empty($a['attribute']) ? $a['attribute'] : null,
             'period' => $period,
+            'backwardperiod' => isset($a['backwardperiod']) ? 1 : 0,
             'at' => $at,
             'count' => $count,
             'invoice' => isset($a['invoice']) ? $a['invoice'] : 0,
@@ -385,7 +386,8 @@ if (isset($_POST['assignment'])) {
             SYSLOG::RES_ASSIGN => $a['id']
         );
 
-        $DB->Execute('UPDATE assignments SET tariffid=?, customerid=?, attribute=?, period=?, at=?, count=?,
+        $DB->Execute('UPDATE assignments SET tariffid=?, customerid=?, attribute=?, period=?,
+            backwardperiod=?, at=?, count=?,
 			invoice=?, separatedocument=?, settlement=?, datefrom=?, dateto=?, pdiscount=?, vdiscount=?,
 			liabilityid=?, numberplanid=?, paytype=?, recipient_address_id=?
 			WHERE id=?', array_values($args));
@@ -453,7 +455,7 @@ if (isset($_POST['assignment'])) {
 
     $SMARTY->assign('error', $error);
 } else {
-    $a = $DB->GetRow('SELECT a.id AS id, a.customerid, a.tariffid, a.period,
+    $a = $DB->GetRow('SELECT a.id AS id, a.customerid, a.tariffid, a.period, a.backwardperiod,
 				a.at, a.count, a.datefrom, a.dateto, a.numberplanid, a.paytype,
 				a.invoice, a.separatedocument,
 				(CASE WHEN liabilityid IS NULL THEN tariffs.splitpayment ELSE liabilities.splitpayment END) AS splitpayment,
