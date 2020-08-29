@@ -42,7 +42,7 @@ $parameters = array(
     'backup' => 'b',
     'archive' => 'a',
     'output-directory:' => 'o:',
-    'no-attachment' => 'n',
+    'no-attachments' => 'n',
     'customerid:' => null,
     'customergroups:' => null,
 );
