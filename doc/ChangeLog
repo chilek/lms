@@ -109,7 +109,9 @@ version 26-git (????-??-??):
   - improvement: 'phpui.touch_device_tooltips' configuration variable allows to disable globally
     tooltips/hints on touch devices (default 'false' value means disabled) [chilan]
   - enhancement: added transaction tab/box into netdevinfo/netdevedit views [chilan]
-  - improvement: allow to use assignments with backward period accounting [chilan]
+  - improvement: allow to use assignments with backward period accounting - 'payments.backward_comment'
+    and 'payments.settlement_backward_comment' configuration variables control format of generated cash
+    operation content [chilan]
 
 version 25.0 (2020-05-15):
 
