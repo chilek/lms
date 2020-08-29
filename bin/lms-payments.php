@@ -180,7 +180,9 @@ $deadline = ConfigHelper::getConfig('payments.deadline', 14);
 $sdate_next = ConfigHelper::checkConfig('payments.saledate_next_month');
 $paytype = ConfigHelper::getConfig('payments.paytype', 2); // TRANSFER
 $comment = ConfigHelper::getConfig('payments.comment', "Tariff %tariff - %attribute subscription for period %period");
+$backward_comment = ConfigHelper::getConfig('payments.backward_comment', $comment);
 $s_comment = ConfigHelper::getConfig('payments.settlement_comment', $comment);
+$s_backward_comment = ConfigHelper::getConfig('payments.settlement_backward_comment', $s_comment);
 $suspension_description = ConfigHelper::getConfig('payments.suspension_description', '');
 $suspension_percentage = ConfigHelper::getConfig('finances.suspension_percentage', 0);
 $unit_name = trans(ConfigHelper::getConfig('payments.default_unit_name'));
@@ -959,50 +961,35 @@ foreach ($assigns as $assign) {
     if ($assign['liabilityid']) {
         $desc = $assign['name'];
     } else {
-        $desc = $comment;
+        if (empty($assign['backwardperiod'])) {
+            $desc = $comment;
+        } else {
+            $desc = $backward_comment;
+        }
     }
 
     $desc = preg_replace("/\%type/", $assign['tarifftype'] != SERVICE_OTHER ? $SERVICETYPES[$assign['tarifftype']] : '', $desc);
     $desc = preg_replace("/\%tariff/", $assign['name'], $desc);
     $desc = preg_replace("/\%attribute/", $assign['attribute'], $desc);
     $desc = preg_replace("/\%desc/", $assign['description'], $desc);
-    if (empty($assign['backwardperiod'])) {
-        $desc = preg_replace("/\%current_month/", $current_month, $desc);
-        $desc = preg_replace("/\%current_period/", $current_period, $desc);
-        $desc = preg_replace("/\%next_period/", $next_period, $desc);
-        $desc = preg_replace("/\%prev_period/", $prev_period, $desc);
-    } else {
-        $desc = preg_replace("/\%current_month/", $previous_month, $desc);
-        $desc = preg_replace("/\%current_period/", $prev_period, $desc);
-        $desc = preg_replace("/\%next_period/", $current_period, $desc);
-        $desc = preg_replace("/\%prev_period/", '', $desc);
-    }
+    $desc = preg_replace("/\%current_month/", $current_month, $desc);
+    $desc = preg_replace("/\%current_period/", $current_period, $desc);
+    $desc = preg_replace("/\%next_period/", $next_period, $desc);
+    $desc = preg_replace("/\%prev_period/", $prev_period, $desc);
 
     $p = $assign['period'];
 
     // better use this
-    if (empty($assign['backwardperiod'])) {
-        $desc = preg_replace("/\%forward_periods/", $forward_periods[$p], $desc);
-        $desc = preg_replace("/\%forward_aligned_periods/", $forward_aligned_periods[$p], $desc);
-    } else {
-        $desc = preg_replace("/\%forward_periods/", $backward_periods[$p], $desc);
-        $desc = preg_replace("/\%forward_aligned_periods/", $backward_aligned_periods[$p], $desc);
-    }
+    $desc = preg_replace("/\%forward_periods/", $forward_periods[$p], $desc);
+    $desc = preg_replace("/\%forward_aligned_periods/", $forward_aligned_periods[$p], $desc);
     $desc = preg_replace("/\%backward_periods/", $backward_periods[$p], $desc);
     $desc = preg_replace("/\%backward_aligned_periods/", $backward_aligned_periods[$p], $desc);
 
     // for backward references
-    if (empty($assign['backwardperiod'])) {
-        $desc = preg_replace("/\%forward_period/", $forward_periods[$p], $desc);
-        $desc = preg_replace("/\%forward_period_aligned/", $forward_aligned_periods[$p], $desc);
-        $desc = preg_replace("/\%period/", $forward_periods[$p], $desc);
-        $desc = preg_replace("/\%aligned_period/", $forward_aligned_periods[$p], $desc);
-    } else {
-        $desc = preg_replace("/\%forward_period/", $backward_periods[$p], $desc);
-        $desc = preg_replace("/\%forward_period_aligned/", $backward_aligned_periods[$p], $desc);
-        $desc = preg_replace("/\%period/", $backward_periods[$p], $desc);
-        $desc = preg_replace("/\%aligned_period/", $backward_aligned_periods[$p], $desc);
-    }
+    $desc = preg_replace("/\%forward_period/", $forward_periods[$p], $desc);
+    $desc = preg_replace("/\%forward_period_aligned/", $forward_aligned_periods[$p], $desc);
+    $desc = preg_replace("/\%period/", $forward_periods[$p], $desc);
+    $desc = preg_replace("/\%aligned_period/", $forward_aligned_periods[$p], $desc);
 
     if (strpos($comment, "%aligned_partial_period") !== false) {
         if ($assign['datefrom']) {
@@ -1407,23 +1394,20 @@ foreach ($assigns as $assign) {
             if (floatval($value)) {
                 //print "value: $val diffdays: $diffdays alldays: $alldays settl_value: $value" . PHP_EOL;
 
-                $sdesc = $s_comment;
+                if (empty($assign['backwardperiod'])) {
+                    $sdesc = $s_comment;
+                } else {
+                    $sdesc = $s_backward_comment;
+                }
                 $sdesc = preg_replace("/\%type/", $assign['tarifftype'] != SERVICE_OTHER ? $SERVICETYPES[$assign['tarifftype']] : '', $sdesc);
                 $sdesc = preg_replace("/\%tariff/", $assign['name'], $sdesc);
                 $sdesc = preg_replace("/\%attribute/", $assign['attribute'], $sdesc);
                 $sdesc = preg_replace("/\%desc/", $assign['description'], $sdesc);
                 $sdesc = preg_replace("/\%period/", $period, $sdesc);
-                if (empty($assign['backwardperiod'])) {
-                    $sdesc = preg_replace("/\%current_month/", $current_month, $sdesc);
-                    $sdesc = preg_replace("/\%current_period/", $current_period, $sdesc);
-                    $sdesc = preg_replace("/\%next_period/", $next_period, $sdesc);
-                    $sdesc = preg_replace("/\%prev_period/", $prev_period, $sdesc);
-                } else {
-                    $sdesc = preg_replace("/\%current_month/", $previous_month, $sdesc);
-                    $sdesc = preg_replace("/\%current_period/", $prev_period, $sdesc);
-                    $sdesc = preg_replace("/\%next_period/", $current_period, $sdesc);
-                    $sdesc = preg_replace("/\%prev_period/", '', $sdesc);
-                }
+                $sdesc = preg_replace("/\%current_month/", $current_month, $sdesc);
+                $sdesc = preg_replace("/\%current_period/", $current_period, $sdesc);
+                $sdesc = preg_replace("/\%next_period/", $next_period, $sdesc);
+                $sdesc = preg_replace("/\%prev_period/", $prev_period, $sdesc);
 
                 if ($assign['invoice']) {
                     if ($assign['invoice'] == DOC_DNOTE) {
