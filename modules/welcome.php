@@ -24,7 +24,9 @@
  *  $Id$
  */
 
-@include(LIB_DIR.'/locale/' . Localisation::getCurrentUiLanguage() . '/fortunes.php');
+if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.hide_fortune', false))) {
+   @include(LIB_DIR.'/locale/' . Localisation::getCurrentUiLanguage() . '/fortunes.php');
+}
 
 $layout['pagetitle'] = 'LAN Management System';
 
