@@ -534,6 +534,7 @@ function tariffSelectionHandler() {
 		$('#a_properties').show();
 	} else {
 		$('#a_numberplan,#a_paytype,#a_address,#a_day').show();
+		$('#backward-period').toggle(val != -2 || !promotion_select);
 		if ((val == -2 && promotion_select) || (val != -2)) {
 			$('#a_options,#a_properties,#a_existingassignments').show();
 		} else {

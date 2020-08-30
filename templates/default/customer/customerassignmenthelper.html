@@ -403,8 +403,8 @@
 										<OPTION value="{$key}"{if $variables.period == $key} SELECTED{/if}>{$item}</OPTION>
 										{/foreach}
 									</SELECT>
-									<label>
-										<input type="checkbox" id="backward-period" name="{$variable_prefix}[backwardperiod]" value="1"
+									<label id="backward-period">
+										<input type="checkbox" name="{$variable_prefix}[backwardperiod]" value="1"
 											{if !empty($variables.backwardperiod)} checked{/if}>
 										{trans("<!assignment>backward")}
 									</label>
