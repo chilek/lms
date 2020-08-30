@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.hide_fortune', false))) {
+if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.hide_fortunes', false))) {
     @include(LIB_DIR.'/locale/' . Localisation::getCurrentUiLanguage() . '/fortunes.php');
 }
 

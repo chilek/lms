@@ -113,7 +113,7 @@ version 26-git (????-??-??):
     and 'payments.settlement_backward_comment' configuration variables control format of generated cash
     operation content [chilan]
   - enhancement: added the ability to hide fortunes on the Welcome page by setting configuration
-    variable 'phpui.hide_fortune' ('false' by default) [awbnet]
+    variable 'phpui.hide_fortunes' ('false' by default) [awbnet]
 
 version 25.0 (2020-05-15):
 
