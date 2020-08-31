@@ -70,11 +70,12 @@
 			<TABLE class="lmsbox-inner lms-ui-background-cycle" id="schematariffs">
 				<THEAD>
 				<TR>
-					<TD style="width: {math equation="96-x" x=$periodcnt}%;" class="bold nobr">
+					<TD style="width: {math equation="95-x" x=$periodcnt}%;" class="bold nobr">
 						<INPUT type="submit" class="hiddenbtn">
 						{trans("Name:")}
 					</TD>
 					<TD style="width: 1%;" class="text-right bold nobr">{trans("Value")}:</TD>
+					<TD style="width: 1%;" class="text-right nobr">{trans("<!assignment>Backward:")}</TD>
 					<TD style="width: 1%;" class="text-right nobr">{trans("Optional")}:</TD>
 					<TD style="width: 1%;" class="text-right nobr">{trans("<!promotionassignment>Label")}:</TD>
 					{foreach from=$schema.periods item=period}
@@ -92,6 +93,16 @@
 					<TD class="text-right valign-top bold nobr">
 						{$tariff.value|string_format:"%.2f"}
 					</TD>
+					<td class="text-right valign-top nobr">
+						<span class="tariff-view"{if $error && $formdata.aid == $tariff.id} style="display: none;"{/if}
+								data-backwardperiod="{$tariff.backwardperiod}">
+							{if $tariff.backwardperiod}{trans("yes")}{else}{trans("no")}{/if}
+						</span>
+						<input class="tariff-edit" type="checkbox" name="form[{$tariff.id}][backwardperiod]" value="1"
+							   {tip text="Check if tariff should be accounted backward"}
+								{if $formdata[$tariff.id].backwardperiod} checked{/if}
+								{if !$error || $formdata.aid != $tariff.id} style="display: none;"{/if}>
+					</td>
 					<TD class="text-right valign-top nobr">
 						<SPAN class="tariff-view" {if $error && $formdata.aid == $tariff.id} style="display:none"{/if}
 								data-optional="{$tariff.optional}">
@@ -187,7 +198,7 @@
 				</TR>
 				{foreachelse}
 				<TR>
-					<TD colspan="{$periodcnt+5}" class="empty-table">
+					<TD colspan="{$periodcnt+6}" class="empty-table">
 						<p>{trans("This schema has no assigned tariffs.")}</p>
 					</TD>
 				</TR>
@@ -257,6 +268,10 @@
 								</div>
 							</div>
 						</div>
+					</TD>
+					<TD class="ftop text-right valign-top nobr">
+						<INPUT type="checkbox" name="form[backwardperiod]" value="1" {tip text="Check if tariff should be accounted backward"}
+								{if $formdata.backwardperiod} checked{/if}>
 					</TD>
 					<TD class="ftop text-right valign-top nobr">
 						<INPUT type="checkbox" name="form[optional]" value="1" {tip text="Check if tariff should be optional"}
@@ -438,6 +453,8 @@
 				$(this).siblings('.tariff-view').each(function() {
 					if ($(this).is('[data-optional]')) {
 						edit.prop('checked', parseInt($(this).attr('data-optional')) == 1);
+					} else if ($(this).is('[data-backwardperiod]')) {
+						edit.prop('checked', parseInt($(this).attr('data-backwardperiod')) == 1);
 					} else if ($(this).is('[data-selectable]')) {
 						edit.find('.selectable-edit').val($(this).attr('data-selectable'));
 					} else if ($(this).is('[data-value]')) {

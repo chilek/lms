@@ -39,6 +39,7 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
     $schema = explode(';', $schema);
 
     $optional = 0;
+    $backwardperiod = 0;
     $label = null;
 
     if ($assignmentid) {
@@ -58,6 +59,9 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
             $value = trim($value);
         }
         switch ($key) {
+            case 'backwardperiod':
+                $backwardperiod = 1;
+                break;
             case 'optional':
                 $optional = 1;
                 break;
@@ -131,8 +135,8 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
         if (!empty($assignmentid)) {
             $DB->Execute(
                 'UPDATE promotionassignments
-				SET optional = ?, label = ?, data = ? WHERE id = ?',
-                array($optional, $label, $datastr, $assignmentid)
+				SET backwardperiod = ?, optional = ?, label = ?, data = ? WHERE id = ?',
+                array($backwardperiod, $optional, $label, $datastr, $assignmentid)
             );
             if ($SYSLOG) {
                 $args = array(
@@ -140,6 +144,7 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
                     SYSLOG::RES_PROMOSCHEMA => $schemaid,
                     SYSLOG::RES_TARIFF => $form['tariffid'],
                     SYSLOG::RES_PROMO => $promotionid,
+                    'backwardperiod' => $backwardperiod,
                     'optional' => $optional,
                     'label' => empty($label) ? null : $label,
                     'data' => $datastr
@@ -152,14 +157,15 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
             $args = array(
                 SYSLOG::RES_PROMOSCHEMA => $schemaid,
                 SYSLOG::RES_TARIFF => intval($form['tariffid']),
+                'backwardperiod' => $backwardperiod,
                 'optional' => $optional,
                 'label' => empty($label) ? null : $label,
                 'data' => $datastr,
                 'orderid' => empty($orderid) ? 1 : $orderid,
             );
             $DB->Execute('INSERT INTO promotionassignments
-				(promotionschemaid, tariffid, optional, label, data, orderid)
-				VALUES (?, ?, ?, ?, ?, ?)', array_values($args));
+				(promotionschemaid, tariffid, backwardperiod, optional, label, data, orderid)
+				VALUES (?, ?, ?, ?, ?, ?, ?)', array_values($args));
             if ($SYSLOG) {
                 $args[SYSLOG::RES_PROMO] = $promotionid;
                 $args[SYSLOG::RES_PROMOASSIGN] =

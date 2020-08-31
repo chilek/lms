@@ -627,7 +627,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                     SYSLOG::RES_TARIFF => $tariffid,
                                     SYSLOG::RES_CUST => $data['customerid'],
                                     'period' => $period,
-                                    'backwardperiod' => 0,
+                                    'backwardperiod' => $data['backwardperiod'],
                                     'at' => $partial_at,
                                     'count' => $data['count'],
                                     'invoice' => isset($data['invoice']) ? $data['invoice'] : 0,
@@ -710,7 +710,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                 SYSLOG::RES_TARIFF  => empty($data['tariffid']) ? null : $tariffid,
                                 SYSLOG::RES_CUST    => $data['customerid'],
                                 'period'            => $period,
-                                'backwardperiod'    => 0,
+                                'backwardperiod'    => $data['backwardperiod'],
                                 'at'                => $partial_at,
                                 'count'             => $data['count'],
                                 'invoice'           => isset($data['invoice']) ? $data['invoice'] : 0,
@@ -747,7 +747,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             SYSLOG::RES_TARIFF => empty($tariffid) ? null : $tariffid,
                             SYSLOG::RES_CUST => $data['customerid'],
                             'period' => $period,
-                            'backwardperiod' => 0,
+                            'backwardperiod' => $data['backwardperiod'],
                             'at' => $at,
                             'count' => $data['count'],
                             'invoice' => isset($data['invoice']) ? $data['invoice'] : 0,
@@ -4162,7 +4162,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         $promotion_schema_assignments = $this->db->GetAll('SELECT
 				p.id AS promotion_id, ps.id AS schema_id, pa.id AS assignment_id,
-				t.name as tariff_name, pa.optional, pa.data AS adata,
+				t.name as tariff_name, pa.backwardperiod, pa.optional, pa.data AS adata,
 				(CASE WHEN label IS NULL THEN ' . $this->db->Concat("'unlabeled_'", 'pa.id') . ' ELSE label END) AS label,
 				t.id as tariffid, t.type AS tarifftype, t.value, t.authtype, t.currency
 			FROM promotions p
@@ -4259,6 +4259,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     'tariff'   => $assign['tariff_name'],
                     'value'    => $assign['value'],
                     'currency' => $assign['currency'],
+                    'backwardperiod' => $assign['backwardperiod'],
                     'optional' => $assign['optional'],
                     'authtype' => $assign['authtype'],
                     'type' => $assign['tarifftype'],

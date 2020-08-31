@@ -25,6 +25,8 @@
  */
 
 $_LANG['<!assignment>backward'] = 'wstecz';
+$_LANG['<!assignment>Backward:'] = 'Wstecz:';
+$_LANG['Check if tariff should be accounted backward'] = 'Zaznacz, jeśli taryfa powinna być naliczana za okres wsteczny';
 
 $_LANG['No documents to JPK export!'] = 'Brak dokumentów do eksportu JPK!';
 

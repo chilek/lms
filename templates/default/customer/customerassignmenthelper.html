@@ -230,6 +230,8 @@
 																					id="{$countid}" min="1" max="50" required
 																					value="{if isset($variables.counts[$schemaid][$label])}{$variables.counts[$schemaid][$label]}{else}1{/if}">
 																			</span>
+																			<input type="hidden" name="{$variable_prefix}[backwardperiods][{$schemaid}][{$label}][{$item.single.assignmentid}]"
+																				value="{$item.single.backwardperiod}">
 																		</td>
 																		<td>
 																			<table class="single-assignment" data-assignment-id="{$item.single.assignmentid}"
@@ -290,6 +292,8 @@
 																			{foreach $item.selection.items as $item}
 																			<table class="single-assignment" data-assignment-id="{$item.assignmentid}"
 																					{if !in_array($item.assignmentid, (array)$variables.sassignmentid[$schemaid])}style="display: none;"{/if}>
+																				<input type="hidden" name="{$variable_prefix}[backwardperiods][{$schemaid}][{$label}][{$item.assignmentid}]"
+																					   value="{$item.backwardperiod}">
 																				<tr>
 																					{foreach $item.periods as $period}
 																						<td>{$period.label}</td>
@@ -403,7 +407,7 @@
 										<OPTION value="{$key}"{if $variables.period == $key} SELECTED{/if}>{$item}</OPTION>
 										{/foreach}
 									</SELECT>
-									<label id="backward-period">
+									<label id="backward-period" {tip text="Check if tariff should be accounted backward"}>
 										<input type="checkbox" name="{$variable_prefix}[backwardperiod]" value="1"
 											{if !empty($variables.backwardperiod)} checked{/if}>
 										{trans("<!assignment>backward")}

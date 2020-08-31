@@ -90,6 +90,7 @@ if (isset($_POST['assignment'])) {
         if (is_array($a['sassignmentid'][$schemaid])) {
             $modifiedvalues = $a['values'][$schemaid];
             $counts = $a['counts'][$schemaid];
+            $backwardperiods = $a['backwardperiods'][$schemaid];
             $copy_a = $a;
             $snodes = $a['snodes'][$schemaid];
             $sphones = $a['sphones'][$schemaid];
@@ -102,6 +103,7 @@ if (isset($_POST['assignment'])) {
                 $copy_a['promotionassignmentid'] = $v;
                 $copy_a['modifiedvalues'] = isset($modifiedvalues[$label][$v]) ? $modifiedvalues[$label][$v] : array();
                 $copy_a['count'] = $counts[$label];
+                $copy_a['backwardperiod'] = $backwardperiods[$label][$v];
                 $copy_a['nodes'] = $snodes[$label];
                 $copy_a['phones'] = $sphones[$label];
                 $tariffid = $LMS->AddAssignment($copy_a);

@@ -122,6 +122,7 @@ function CustomerAssignmentHelper(options) {
 
 	this.promotionSelectionHandler = function() {
 		$('#a_location,#a_check_all_terminals,#a_options,#a_existingassignments,#a_properties').toggle(parseInt($(this).val()) != 0);
+		$('#backward-period').toggle(parseInt($(this).val()) == 0);
 
 		$('.promotion-table').hide();
 
