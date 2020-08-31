@@ -29,16 +29,18 @@
 			{block name="extra-panel"}
 			{/block}
 		</div>
-		<div id="lms-ui-welcome-bottom-panel">
-			{block name="fortune-panel"}
-				{if $layout.fortune}
-					<div id="fortune" class="cf fall superlight" style="padding: 10px;">
-						<img src="img/totd.gif" alt="Fortune" class="lf" style="margin-right: 10px;">
-						<p class="txt">{$layout.fortune|replace:"\n":"<br>"}</p>
-					</div>
-				{/if}
-			{/block}
-		</div>
+		{if !ConfigHelper::checkConfig('phpui.hide_fortunes')}
+			<div id="lms-ui-welcome-bottom-panel">
+				{block name="fortune-panel"}
+					{if $layout.fortune}
+						<div id="fortune" class="cf fall superlight" style="padding: 10px;">
+							<img src="img/totd.gif" alt="Fortune" class="lf" style="margin-right: 10px;">
+							<p class="txt">{$layout.fortune|replace:"\n":"<br>"}</p>
+						</div>
+					{/if}
+				{/block}
+			</div>
+		{/if}
 	</div>
 	<script>
 
