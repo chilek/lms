@@ -29,7 +29,7 @@
 			{block name="extra-panel"}
 			{/block}
 		</div>
-		{if !ConfigHelper::getConfig('phpui.hide_fortunes', false)}
+		{if !ConfigHelper::checkConfig('phpui.hide_fortunes')}
 			<div id="lms-ui-welcome-bottom-panel">
 				{block name="fortune-panel"}
 					{if $layout.fortune}
