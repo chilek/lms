@@ -231,6 +231,10 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
             if (!empty($pattern['comment_replace'])) {
                 $comment = preg_replace($pattern['comment_replace']['from'], $pattern['comment_replace']['to'], $comment);
             }
+            if (!empty($pattern['customer_replace'])) {
+                $customername = preg_replace($pattern['customer_replace']['from'], $pattern['customer_replace']['to'], $customername);
+            }
+
             $cid = $id;
             if (empty($cid)) {
                 $cid = '-';
