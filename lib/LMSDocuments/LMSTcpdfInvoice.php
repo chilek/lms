@@ -584,13 +584,13 @@ class LMSTcpdfInvoice extends LMSInvoice
             if ($this->use_alert_color) {
                     $this->backend->SetTextColorArray(array(255, 0, 0));
             }
-            $this->backend->writeHTMLCell(0, 0, '', 17, trans('Deadline:') . '<b>' . date("d.m.Y", $this->data['pdate']) . '</b>', 0, 1, 0, true, 'R');
+            $this->backend->writeHTMLCell(0, 0, '', 17, trans('Deadline:') . ' <b>' . date("d.m.Y", $this->data['pdate']) . '</b>', 0, 1, 0, true, 'R');
             if ($this->use_alert_color) {
                     $this->backend->SetTextColor();
             }
         }
         if (!ConfigHelper::checkConfig('invoices.hide_payment_type')) {
-            $this->backend->writeHTMLCell(0, 0, '', '', trans('Payment type:') . '<b>' . trans($this->data['paytypename']) . '</b>', 0, 1, 0, true, 'R');
+            $this->backend->writeHTMLCell(0, 0, '', '', trans('Payment type:') . ' <b>' . trans($this->data['paytypename']) . '</b>', 0, 1, 0, true, 'R');
             if (!empty($this->data['splitpayment'])) {
                 $this->backend->writeHTMLCell(0, 0, '', '', '<b>' . trans('(split payment)') . '</b>', 0, 1, 0, true, 'R');
             }
