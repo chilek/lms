@@ -40,7 +40,7 @@ switch ($_GET['action']) {
         } else {
             die("Cannot open event - event closed too long ago.");
         }
-    break;
+        break;
     case 'close':
         if (isset($_GET['ticketid'])) {
             $DB->Execute('UPDATE events SET closed = 1, closeduserid = ?, closeddate = ?NOW? WHERE closed = 0 AND ticketid = ?', array(Auth::GetCurrentUser(), $_GET['ticketid']));
@@ -50,7 +50,7 @@ switch ($_GET['action']) {
             $SESSION->redirect('?'.$SESSION->get('backto')
                 . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
         }
-    break;
+        break;
     case 'assign':
         if (!$event.closed || ($event.closed && $aee && ($smarty.now - $event.closeddate < $aee)) || ConfigHelper::checkPrivilege('superuser')) {
             $LMS->AssignUserToEvent($_GET['id'], Auth::GetCurrentUser());
@@ -59,16 +59,16 @@ switch ($_GET['action']) {
         } else {
             die("Cannot assign to event - event closed too long ago.");
         }
-    break;
+        break;
     case 'unassign':
         if (!$event.closed || ($event.closed && $aee && ($smarty.now - $event.closeddate < $aee)) || ConfigHelper::checkPrivilege('superuser')) {
             $LMS->UnassignUserFromEvent($_GET['id'], Auth::GetCurrentUser());
             $SESSION->redirect('?' . $SESSION->get('backto')
                 . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
-	} else {
+        } else {
             die("Cannot unassign from event - event closed too long ago.");
         }
-    break;
+        break;
 }
 
 if (isset($_GET['id'])) {
