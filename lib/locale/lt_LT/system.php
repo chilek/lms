@@ -28,7 +28,7 @@ self::addLanguageFunctions(
     self::SYSTEM_FUNCTION,
     array(
         'check_zip' => function ($zip) {
-            return preg_match('/^[0-9]{5}$/', $zip);
+            return preg_match('/^(LT-?)?[0-9]{5}$/', $zip);
         },
         'check_ten' => function ($ten) {
             $steps = array(1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4);
