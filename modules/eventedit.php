@@ -33,7 +33,7 @@ $aee = ConfigHelper::getConfig('phpui.allow_modify_closed_events_newer_than', 60
 
 switch ($_GET['action']) {
     case 'open':
-        if (($event.closed && $aee && ($smarty.now - $event.closeddate < $aee)) || ConfigHelper::checkPrivilege('superuser')) {
+        if (($event.closed && $aee && (($smarty.now - $event.closeddate) < $aee)) || ConfigHelper::checkPrivilege('superuser')) {
             $DB->Execute('UPDATE events SET closed = 0, closeduserid = NULL, closeddate = 0 WHERE id = ?', array($_GET['id']));
             $SESSION->redirect('?'.$SESSION->get('backto')
                 . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
@@ -52,7 +52,7 @@ switch ($_GET['action']) {
         }
         break;
     case 'assign':
-        if (!$event.closed || ($event.closed && $aee && ($smarty.now - $event.closeddate < $aee)) || ConfigHelper::checkPrivilege('superuser')) {
+        if (!$event.closed || ($event.closed && $aee && (($smarty.now - $event.closeddate) < $aee)) || ConfigHelper::checkPrivilege('superuser')) {
             $LMS->AssignUserToEvent($_GET['id'], Auth::GetCurrentUser());
             $SESSION->redirect('?' . $SESSION->get('backto')
                 . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
@@ -61,7 +61,7 @@ switch ($_GET['action']) {
         }
         break;
     case 'unassign':
-        if (!$event.closed || ($event.closed && $aee && ($smarty.now - $event.closeddate < $aee)) || ConfigHelper::checkPrivilege('superuser')) {
+        if (!$event.closed || ($event.closed && $aee && (($smarty.now - $event.closeddate) < $aee)) || ConfigHelper::checkPrivilege('superuser')) {
             $LMS->UnassignUserFromEvent($_GET['id'], Auth::GetCurrentUser());
             $SESSION->redirect('?' . $SESSION->get('backto')
                 . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
