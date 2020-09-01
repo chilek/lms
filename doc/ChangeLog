@@ -114,6 +114,9 @@ version 26-git (????-??-??):
     operation content [chilan]
   - enhancement: added the ability to hide fortunes on the Welcome page by setting configuration
     variable 'phpui.hide_fortunes' ('false' by default) [awbnet]
+  - enhancement: variable phpui.allow_modify_closed_events_newer_than allows to prevent modify
+    old events (default '604800') [interduo]
+
 
 version 25.0 (2020-05-15):
 
