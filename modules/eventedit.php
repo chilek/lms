@@ -35,7 +35,7 @@ if (isset($_GET['action'])) {
         $SESSION->redirect('?'.$SESSION->get('backto')
             . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
     } elseif ($_GET['action'] == 'close' && isset($_GET['ticketid'])) {
-        $DB->Execute('UPDATE events SET closed = 1, closeduserid = ?, closeddate = ?NOW?  WHERE ticketid = ?', array(Auth::GetCurrentUser(), $_GET['ticketid']));
+        $DB->Execute('UPDATE events SET closed = 1, closeduserid = ?, closeddate = ?NOW?  WHERE closed = 0 AND ticketid = ?', array(Auth::GetCurrentUser(), $_GET['ticketid']));
         $SESSION->redirect('?'.$SESSION->get('backto'));
     } elseif ($_GET['action'] == 'close') {
         $DB->Execute('UPDATE events SET closed = 1, closeduserid = ?, closeddate = ?NOW?  WHERE id = ?', array(Auth::GetCurrentUser(), $_GET['id']));
