@@ -173,7 +173,7 @@ if (!ConfigHelper::checkConfig('phpui.big_networks')) {
     $SMARTY->assign('customers', $LMS->GetCustomerNames());
 }
 
-if (!empty($voipaccountedit['ownerid']) && $LMS->CustomerExists($voipaccountedit['ownerid']) && ($customerid = $voipaccountedit['ownerid'])) {
+if (!empty($voipaccountinfo['ownerid']) && $LMS->CustomerExists($voipaccountinfo['ownerid']) && ($customerid = $voipaccountinfo['ownerid'])) {
     include(MODULES_DIR . '/customer.inc.php');
 }
 
