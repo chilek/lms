@@ -4816,3 +4816,5 @@ $_LANG['No customer notes.'] = 'Brak notatek klienta.';
 $_LANG['Customer note is too short!'] = 'Notatka kliencka jest zbyt krótka!';
 
 $_LANG['Show more/less'] = 'Pokaż więcej/mniej';
+
+$_LANG['Preview'] = 'Podgląd';
