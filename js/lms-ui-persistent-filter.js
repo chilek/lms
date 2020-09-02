@@ -33,10 +33,18 @@ $(function() {
 
 		var module = location.href.replace(/^.+?m=([a-zA-Z0-9_-]+)(?:&.+|$)/, '$1');
 		var url = '?m=' + module + '&persistent-filter=' + selection + '&action=update&api=1';
-		var formData = {};
 		var filterId = div.attr('data-filter-id');
+		var formData;
 		if (filterId) {
-			formData["filter-id"] = filterId;
+			var form = div.closest('form');
+			formData = new FormData(form.get(0));
+			form.find('.no-persistent-filter-field').each(function() {
+				formData.delete($(this).attr('name'));
+			});
+			formData.append('filter-id', filterId);
+			url += '&savefilter=1';
+		} else {
+			formData = new FormData();
 		}
 
 		$('html,body').css('cursor', 'wait');
@@ -45,6 +53,8 @@ $(function() {
 		$.ajax(url, {
 			method: "POST",
 			data: formData,
+			processData: false,
+			contentType: false,
 			success: function (result) {
 				if (filterId) {
 					result = result[filterId];

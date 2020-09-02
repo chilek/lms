@@ -448,13 +448,15 @@ if ($AUTH->islogged) {
                     $filterId = isset($_POST['filter-id']) ? $_POST['filter-id'] : null;
                     switch ($_GET['action']) {
                         case 'update':
-                            $SESSION->savePersistentFilter(
-                                $_GET['persistent-filter'],
-                                $SESSION->getFilter(null, $filterId),
-                                null,
-                                $filterId
-                            );
-                            $persistent_filters = $SESSION->getAllPersistentFilters(null, $persistentFilterId);
+                            $oldFilter = $SESSION->getFilter(null, $filterId);
+                            if (isset($_GET['savefilter'])) {
+                                $filter = array_merge($_POST, array('persistent_filter' => $_GET['persistent-filter']));
+                                $SESSION->saveFilter($filter, null, null, false, $filterId);
+                            } else {
+                                $filter = $oldFilter;
+                            }
+                            $SESSION->savePersistentFilter($_GET['persistent-filter'], $filter, null, $filterId);
+                            $persistent_filters = $SESSION->getAllPersistentFilters(null, $filterId);
                             $SESSION->close();
                             header('Content-type: application/json');
                             die(json_encode($persistent_filters));
