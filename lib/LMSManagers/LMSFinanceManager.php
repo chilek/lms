@@ -3246,7 +3246,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     {
         $args = array(
             'time' => isset($addbalance['time']) ? $addbalance['time'] : time(),
-            SYSLOG::RES_USER => isset($addbalance['userid']) && !empty($addbalance['userid']) ? $addbalance['userid'] : Auth::GetCurrentUser(),
+            SYSLOG::RES_USER => isset($addbalance['userid']) && !empty($addbalance['userid']) || $addbalance['userid'] === NULL ? $addbalance['userid'] : Auth::GetCurrentUser(),
             'value' => str_replace(',', '.', round($addbalance['value'], 2)),
             'currency' => $addbalance['currency'],
             'currencyvalue' => isset($addbalance['currencyvalue']) ? $addbalance['currencyvalue'] : 1.0,
