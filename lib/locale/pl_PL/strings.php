@@ -3318,6 +3318,7 @@ $_LANG['Transaction Log View ($a transactions)'] = 'Podgląd dziennika transakcj
 $_LANG['Resource ID:'] = 'ID zasobu:';
 $_LANG['Resource Type:'] = 'Typ zasobu:';
 $_LANG['Enter resource ID (empty means any ID)'] = 'Podaj ID zasobu (puste pole oznacza dowolny ID)';
+$_LANG['Enter property value (empty means any value)'] = 'Podaj wartość właściwości (puste pole oznacza dowolną wartość)';
 $_LANG['Next'] = 'Następne';
 $_LANG['Previous'] = 'Poprzednie';
 $_LANG['Next<!pagin>'] = 'Następna';
