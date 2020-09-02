@@ -2813,7 +2813,7 @@ $_LANG['Note recipient:'] = 'Odbiorca noty:';
 $_LANG['No such debit notes in database.'] = 'Brak not obciążeniowych w bazie danych.';
 $_LANG['voip accounts management'] = 'zarządzanie kontami VoIP';
 $_LANG['Voip prefix management'] = 'Zarządzanie prefiksami VoIP';
-$_LANG['Userpanel management'] = 'zarządzanie Userpanelem';
+$_LANG['Userpanel management'] = 'zarządzanie Panelem abonenckim';
 $_LANG['cash-in receipt'] = 'KP';
 $_LANG['cash-out receipt'] = 'KW';
 $_LANG['cash receipts'] = 'dok. kasowe';
@@ -3459,7 +3459,7 @@ $_LANG['Read status:'] = 'Status przeczytania:';
 $_LANG['Was read on:'] = 'Przeczytana dnia:';
 $_LANG['Last read on:'] = 'Ostatnio czytana dnia:';
 $_LANG['Was confirm on:'] = 'Potwierdzona dnia:';
-$_LANG['only userpanel message'] = 'tylko wiadomości userpanel';
+$_LANG['only userpanel message'] = 'tylko wiadomości panelu abonenckiego';
 
 $_LANG['New ticket customer notification subject:'] = 'Temat listu z powiadomieniem klienta o nowym zgłoszeniu:';
 $_LANG['New ticket customer notification body:'] = 'Treść listu z powiadomieniem klienta o nowym zgłoszeniu:';
