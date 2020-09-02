@@ -241,7 +241,7 @@
 					{documentview id="{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
 						url="?m=documentview&id={$doc.docid}" external=true
 						text="<i class=\"lms-ui-icon-view{if preg_match('/pdf/',$docattach.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)} xls{/if}\"></i>"
-						tip="View"}
+						tip="Preview"}
 				{/if}
 			{/buttons}
 			{if count($doc.attachments) > 1 || $docattach.type < 1}
