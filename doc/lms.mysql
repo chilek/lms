@@ -2239,13 +2239,16 @@ CREATE TABLE uiconfig (
     disabled tinyint(1) NOT NULL DEFAULT '0',
     type smallint NOT NULL DEFAULT 0,
     userid int(11) DEFAULT NULL,
+    divisionid int(11) DEFAULT NULL,
     configid int(11) DEFAULT NULL,
     PRIMARY KEY (id),
-    UNIQUE KEY var (section, var, userid),
+    UNIQUE KEY uiconfig_section_var_userid_divisionid_ukey (section, var, userid, divisionid),
 	CONSTRAINT uiconfig_userid_fkey
 		FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT uiconfig_divisionid_fkey
+		FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT uiconfig_configid_fkey
-		FOREIGN KEY (configid) REFERENCES uiconfig (id) ON DELETE RESTRICT ON UPDATE CASCADE
+		FOREIGN KEY (configid) REFERENCES uiconfig (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -3802,4 +3805,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020083100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020090200');

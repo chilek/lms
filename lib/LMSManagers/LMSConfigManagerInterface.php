@@ -40,9 +40,23 @@ interface LMSConfigManagerInterface
 
     public function GetConfigVariable($config_id);
 
-    public function CloneConfigSection($section, $new_section, $userid = null);
+    public function CloneConfigSection($section, $new_section);
 
-    public function DeleteConfigOption($id, $global = true);
+    public function DeleteConfigOption($id);
+
+    public function getRelatedDivisions($id);
+
+    public function getRelatedUsers($id, $divisionid = null);
+
+    public function getRelatedOptions($id);
+
+    public function getOptionHierarchy($id);
+
+    public function addConfigOption($option);
+
+    public function editConfigOption($option);
+
+    public function getParentOption($id);
 
     public function toggleConfigOption($id);
 }

@@ -51,7 +51,7 @@
 			<SPAN class="nobr">{trans("Last login:")}</SPAN>
 		</TH>
 		<TH scope="col">
-			<SPAN class="nobr">{trans("Total:")} {$userslist.total}</SPAN>
+			<SPAN class="nobr">{trans("Total:")} {count($userslist)}</SPAN>
 		</TH>
 	</TR>
     </THEAD>
@@ -122,7 +122,7 @@
 		get_revdns(userhosts);
 
 		$(function() {
-			$('.force_division_context').on( 'lms:division_selection', function() {
+			$('.division-context').on( 'lms:division_selection', function() {
 				document.choosefilter.submit();
 			});
 		});
