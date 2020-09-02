@@ -149,9 +149,9 @@
 			{/if}
 
 			{if !$note.published || ConfigHelper::checkPrivilege('published_document_modification')}
-				{button type="link" icon="view" external=true href="?m=note&id={$note.id}&dontpublish=1"}
+				{button type="link" icon="view" tip="Preview" external=true href="?m=note&id={$note.id}&dontpublish=1"}
 			{/if}
-			{button type="link" icon="print" external=true href="?m=note&id={$note.id}"}
+			{button type="link" icon="print" tip="Print" external=true href="?m=note&id={$note.id}"}
 			<INPUT TYPE="checkbox" NAME="marks[{$note.id}]" VALUE="{$note.id}"{if $marks.$noteid}CHECKED{/if} class="lms-ui-multi-check">
 		</TD>
 	</TR>
