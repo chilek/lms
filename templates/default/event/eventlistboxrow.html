@@ -2,7 +2,7 @@
 <TR class="highlight event-single{if $event.closed} blend{/if}{if $event.wholeday} event-whole-day{/if}{if $event.multiday} event-multi-day{/if}"
     data-event-id="{$event.id}"
     data-popup-menu-title="{t a=$event.id|string_format:"#%06d"}Event $a{/t}">
-    <TD style="min-width: 90px; {if isset($_EVENTSTYLES[$event.type])} {$_EVENTSTYLES[$event.type]}{/if}" class="text-center bold event-single-sortable-handler">
+	<TD style="min-width: 90px; {if isset($_EVENTSTYLES[$event.type])} {$_EVENTSTYLES[$event.type]}{/if}" class="text-center bold {if !$event.closed || ($event.closed && ($smarty.now - $event.closeddate < ConfigHelper::getConfig('phpui.allow_modify_closed_events_newer_than', 604800))) || ConfigHelper::checkPrivilege('superuser')}event-single-sortable-handler{/if}">
     {$_EVENTTYPES[$event.type]}{if $_EVENTTYPES[$event.type]}<br>{/if}{if $event.ticketid}<span class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$event.ticketid}"><a href="?m=rtticketview&id={$event.ticketid}" style="color: black">{$event.ticketid|string_format:"%06d"}</a></span>{/if}
     </TD>
     <TD class="text-left nobr bold" style="min-width:100px" data-target-url="?m=eventinfo&id={$event.id}">
