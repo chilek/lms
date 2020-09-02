@@ -243,11 +243,11 @@
 				{if $invoice.type == $smarty.const.DOC_INVOICE && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 					{button type="link" icon="view" tip="Preview" class="print-invoice" href="?m=invoice&id={$invoice.id}&dontpublish=1"}
 				{/if}
-				{button type="link" icon="print" class="print-invoice" href="?m=invoice&id={$invoice.id}"}
+				{button type="link" icon="print" tip="Print" class="print-invoice" href="?m=invoice&id={$invoice.id}"}
 			{/if}
 			{if $invoice.type == $smarty.const.DOC_CNOTE}
 				{if !$invoice.published || ConfigHelper::checkPrivilege('published_document_modification')}
-					{button type="link" icon="view" class="print-invoice" href="?m=invoice&id={$invoice.id}&dontpublish=1"}
+					{button type="link" icon="view" tip="Preview" class="print-invoice" href="?m=invoice&id={$invoice.id}&dontpublish=1"}
 				{/if}
 				{button type="link" icon="print" tip="Print" class="print-invoice" href="?m=invoice&id={$invoice.id}"}
 			{/if}
