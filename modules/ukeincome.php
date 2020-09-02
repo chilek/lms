@@ -43,16 +43,39 @@ if ($to) {
     $unixto = mktime(23, 59, 59); //today
 }
 
-$type = isset($_POST['type']) && $_POST['type'] == 'linktechnologies' ? 'linktechnologies' : 'servicetypes';
+if (isset($_POST['type'])) {
+    $type = isset($_POST['type']) && $_POST['type'] == 'linktechnologies' ? 'linktechnologies' : 'servicetypes';
+    $filter['uke-income']['type'] = $type;
+} else {
+    $type = 'servicetypes';
+    unset($filter['uke-income']['type']);
+}
 
 if (isset($_POST['brutto'])) {
+    $filter['uke-income']['brutto'] = 1;
+
     $value_formula = 'cash.value';
 } else {
+    unset($filter['uke-income']['brutto']);
+
     $value_formula = '(cash.value * 100) / (100 + t.value)';
 }
 
 $bandwidths = isset($_POST['bandwidths']);
+if ($bandwidths) {
+    $filter['uke-income']['bandwidths'] = 1;
+} else {
+    unset($filter['uke-income']['bandwidths']);
+}
+
 $division = intval($_POST['division']);
+if ($division) {
+    $filter['uke-income']['division'] = $division;
+} else {
+    unset($filter['uke-income']['division']);
+}
+
+$SESSION->saveFilter($filter['uke-income'], 'print', null, false, 'uke-income');
 
 $income = $DB->GetAll('
 	SELECT ' . ($type == 'linktechnologies' ? 'cash.linktechnology' : 'tf.type') . ' AS type,

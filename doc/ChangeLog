@@ -116,7 +116,7 @@ version 26-git (????-??-??):
     variable 'phpui.hide_fortunes' ('false' by default) [awbnet]
   - enhancement: variable phpui.allow_modify_closed_events_newer_than allows to prevent modify
     old events (default '604800') [interduo]
-
+  - enhancement: added support for many persistent filters in single module [chilan]
 
 version 25.0 (2020-05-15):
 

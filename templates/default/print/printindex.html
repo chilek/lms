@@ -2,6 +2,25 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
+
+<style>
+
+	.print-menu {
+		display: flex;
+		align-items: center;
+	}
+
+	.print-menu > *:not(:first-child) {
+		margin-left: 1em;
+	}
+
+	.print-filter {
+		display: flex;
+		align-items: center;
+	}
+
+</style>
+
 <H1>{$layout.pagetitle}</H1>
 {$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
 {if $printmenu=="customer"}
@@ -1622,7 +1641,7 @@
 {/if}
 
 {if $printmenu == "netdev" || $printmenu == "finances"}
-<form method="post" name="uke-income" id="uke-income" action="?m=netdevprint&type=uke-income" target="_blank">
+<form method="post" name="uke-income" id="uke-income" action="?m=netdevprint&type=uke-income&module-filter=print" target="_blank">
 	<input type="submit" class="hiddenbtn">
 	<table class="lmsbox">
 		<colgroup>
@@ -1647,11 +1666,11 @@
 			</td>
 			<td class="nobr">
 				<label>
-					<input type="radio" name="type" value="linktechnologies" checked>
+					<input type="radio" name="type" value="linktechnologies"{if !isset($filter['uke-income']['type']) || $filter['uke-income']['type'] == 'linktechnologies'} checked{/if}>
 					{trans("link technologies")}
 				</label>
 				<label>
-					<input type="radio" name="type" value="servicetypes">
+					<input type="radio" name="type" value="servicetypes"{if isset($filter['uke-income']['type']) && $filter['uke-income']['type'] == 'servicetypes'} checked{/if}>
 					{trans("service types")}
 				</label>
 			</td>
@@ -1667,7 +1686,8 @@
 				<select name="division"	{tip text="Select division"}>
 					<option value="">{trans("- all -")}</option>
 					{foreach $divisions as $division}
-						<option value="{$division.id}">{$division.shortname}</option>
+						<option value="{$division.id}"{if isset($filter['uke-income']['division']) && $filter['uke-income']['division'] == $division.id} selected{/if}
+							>{$division.shortname}</option>
 					{/foreach}
 				</select>
 			</td>
@@ -1695,7 +1715,7 @@
 				</label>
 			</td>
 			<td>
-				<input type="checkbox" name="bandwidths" id="bandwidths" value="1">
+				<input type="checkbox" name="bandwidths" id="bandwidths" value="1"{if isset($filter['uke-income']['bandwidths'])} checked{/if}>
 			</td>
 		</tr>
 		<tr>
@@ -1708,12 +1728,18 @@
 				</label>
 			</td>
 			<td>
-				<input type="checkbox" name="brutto" id="brutto" value="1">
+				<input type="checkbox" name="brutto" id="brutto" value="1"{if isset($filter['uke-income']['brutto'])} checked{/if}>
 			</td>
 		</tr>
 		<tr>
-			<td colspan="3" class="buttons">
-				<a href="javascript:document.forms['uke-income'].submit();">{trans("Save")} <img src="img/save.gif" alt=""></a>
+			<TD colspan="3" class="lms-ui-box-buttons">
+				<div class="print-menu">
+					{button icon="print" label="Print" onclick="javascript:document.forms['uke-income'].submit();"}
+					<div class="print-filter">
+						<strong>{trans("Filter:")}</strong>
+						{persistent_filter id="uke-income"}
+					</div>
+				<div>
 			</td>
 		</tr>
 		</tbody>

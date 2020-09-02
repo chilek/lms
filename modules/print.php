@@ -972,6 +972,8 @@ switch ($type) {
         $SMARTY->assign('divisions', $LMS->GetDivisions());
         $SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources ORDER BY name'));
         $SMARTY->assign('printmenu', 'finances');
+
         $SMARTY->display('print/printindex.html');
+
         break;
 }

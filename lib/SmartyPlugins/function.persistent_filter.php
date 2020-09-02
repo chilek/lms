@@ -27,8 +27,16 @@
 function smarty_function_persistent_filter($params, $template)
 {
     $layout = $template->getTemplateVars('layout');
+    $filter_id = isset($params['id']) ? $params['id'] : null;
+
     $persistent_filters = $template->getTemplateVars('persistent_filters');
     $persistent_filter = $template->getTemplateVars('persistent_filter');
+    $filter = $template->getTemplateVars('filter');
+
+    if (isset($filter_id)) {
+        $persistent_filters = $persistent_filters[$filter_id];
+        $persistent_filter = $filter[$filter_id]['persistent_filter'];
+    }
 
     if (!empty($persistent_filters) && is_array($persistent_filters)) {
         foreach ($persistent_filters as $key => $row) {
@@ -44,7 +52,7 @@ function smarty_function_persistent_filter($params, $template)
     }
 
     return '
-		<div class="lms-ui-persistent-filter">
+		<div class="lms-ui-persistent-filter"' . (isset($filter_id) ? ' data-filter-id="' . $filter_id . '"' : '') . '>
 			<select class="lms-ui-filter-selection lms-ui-combobox" title="' . trans("<!filter>Select filter") . '">
 				<option value="-1">' . trans("<!filter>- none -") . '</option>
 				' . $filters . '

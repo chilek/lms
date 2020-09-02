@@ -394,12 +394,20 @@ if ($AUTH->islogged) {
 
                 // persister filter apply
                 if (isset($_GET['persistent-filter'])) {
-                    $filter = $SESSION->getPersistentFilter($_GET['persistent-filter']);
+                    $filterId = isset($_GET['filter-id']) ? $_GET['filter-id'] : null;
+                    $filter = $SESSION->getPersistentFilter(
+                        $_GET['persistent-filter'],
+                        null,
+                        $filterId
+                    );
                     $filter['persistent_filter'] = $_GET['persistent-filter'];
-                    $SESSION->saveFilter($filter);
-                } else {
-                    $filter = $SESSION->getFilter();
+                    if (isset($filterId)) {
+                        $SESSION->saveFilter($filter, null, null, false, $filterId);
+                    } else {
+                        $SESSION->saveFilter($filter);
+                    }
                 }
+                $filter = $SESSION->getFilter(isset($_GET['module-filter']) ? $_GET['module-filter'] : null);
                 $SMARTY->assignByRef('filter', $filter);
 
                 // restore selected persistent filter info
@@ -437,21 +445,31 @@ if ($AUTH->islogged) {
             } else {
                 // persistent filter ajax management
                 if (isset($_GET['persistent-filter']) && isset($_GET['action'])) {
+                    $filterId = isset($_POST['filter-id']) ? $_POST['filter-id'] : null;
                     switch ($_GET['action']) {
                         case 'update':
-                            $SESSION->savePersistentFilter($_GET['persistent-filter'], $SESSION->getFilter());
-                            $persistent_filters = $SESSION->getAllPersistentFilters();
+                            $SESSION->savePersistentFilter(
+                                $_GET['persistent-filter'],
+                                $SESSION->getFilter(null, $filterId),
+                                null,
+                                $filterId
+                            );
+                            $persistent_filters = $SESSION->getAllPersistentFilters(null, $persistentFilterId);
                             $SESSION->close();
                             header('Content-type: application/json');
                             die(json_encode($persistent_filters));
-                        break;
+                            break;
                         case 'delete':
-                            $SESSION->removePersistentFilter($_GET['persistent-filter']);
-                            $persistent_filters = $SESSION->getAllPersistentFilters();
+                            $SESSION->removePersistentFilter(
+                                $_GET['persistent-filter'],
+                                null,
+                                $filterId
+                            );
+                            $persistent_filters = $SESSION->getAllPersistentFilters(null, $filterId);
                             $SESSION->close();
                             header('Content-type: application/json');
                             die(json_encode($persistent_filters));
-                        break;
+                            break;
                     }
                 }
             }
