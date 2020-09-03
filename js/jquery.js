@@ -1533,6 +1533,7 @@ $(function() {
 			language_url: lmsSettings.language == 'en' ? null : 'js/tinymce5/langs/' + lmsSettings.language + '.js',
 			// TinyMCE 4
 			skin_url: 'css/tinymce4',
+			content_css: 'css/tinymce4/lms/content.css',
 			theme: "modern",
 			plugins: "preview,autoresize,contextmenu,fullscreen,searchreplace,table,image,link,anchor,textcolor,autosave,paste",
 			// TinyMCE 5
