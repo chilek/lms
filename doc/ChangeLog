@@ -119,6 +119,8 @@ version 26-git (????-??-??):
   - enhancement: added support for many persistent filters in single module [chilan]
   - improvement: allow to force quick search by resource id prepending numeric value with hash
     character [chilan]
+  - improvement: allow to click in auto suggestion description to open resource
+    in new window/tab [chilan]
 
 version 25.0 (2020-05-15):
 
