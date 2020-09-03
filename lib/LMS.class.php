@@ -3331,6 +3331,12 @@ class LMS
         return $manager->getCountryCodeById($countryid);
     }
 
+    public function isTerritState($state)
+    {
+        $manager = $this->getLocationManager();
+        return $manager->isTerritState($state);
+    }
+
     public function GetNAStypes()
     {
         return $this->DB->GetAllByKey('SELECT id, name FROM nastypes ORDER BY name', 'id');

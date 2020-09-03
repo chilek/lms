@@ -496,4 +496,12 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
     {
         return $this->db->GetOne('SELECT ccode FROM countries WHERE id = ?', array($countryid));
     }
+
+    public function isTerritState($state)
+    {
+        return empty($state) || $this->db->GetOne(
+            'SELECT id FROM location_states WHERE LOWER(name) = LOWER(?)',
+            array($state)
+        ) > 0;
+    }
 }

@@ -160,7 +160,7 @@ if (!isset($_POST['xjxfun'])) {
 
                 if (!ConfigHelper::checkPrivilege('full_access') && ConfigHelper::checkConfig('phpui.teryt_required')
                     && !empty($v['location_city_name']) && ($v['location_country_id'] == 2 || empty($v['location_country_id']))
-                    && (!isset($v['teryt']) || empty($v['location_city']))) {
+                    && (!isset($v['teryt']) || empty($v['location_city'])) && $LMS->isTerritState($v['location_state_name'])) {
                     $error['customerdata[addresses][' . $k . '][teryt]'] = trans('TERRIT address is required!');
                     $customerdata['addresses'][ $k ]['show'] = true;
                 }
