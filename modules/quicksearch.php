@@ -89,15 +89,16 @@ if (isset($_POST['properties']) && is_array($_POST['properties'])) {
     $properties = array();
 }
 
+$resourceIdOnly = preg_match('/^#[0-9]+$/', $search) > 0;
+if ($resourceIdOnly) {
+    $properties = array('id' => 'id');
+    $search = str_replace('#', '', $search);
+}
+
 switch ($mode) {
     case 'customer':
         if (empty($search) || (!ConfigHelper::checkPrivilege('customer_management') && !ConfigHelper::checkPrivilege('read_only'))) {
             die;
-        }
-
-        $customerIdOnly = preg_match('/^#[0-9]+$/', $search) > 0;
-        if ($customerIdOnly) {
-            $search = str_replace('#', '', $search);
         }
 
         if (isset($_GET['ajax'])) { // support for AutoSuggest
@@ -111,17 +112,17 @@ switch ($mode) {
 				LEFT JOIN vaddresses va ON va.id = ca.address_id
 				LEFT JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & ?) > 0
 				WHERE " . (empty($properties) || isset($properties['id']) ? (preg_match('/^[0-9]+$/', $search) ? 'c.id = ' . $search : '1=0') : '1=0')
-                    . (!$customerIdOnly && (empty($properties) || isset($properties['name'])) ? " OR LOWER(" . $DB->Concat('lastname', "' '", 'c.name') . ") ?LIKE? LOWER($sql_search)" : '')
-                    . (!$customerIdOnly && (empty($properties) || isset($properties['address'])) ? " OR LOWER(full_address) ?LIKE? LOWER($sql_search)" : '')
-                    . (!$customerIdOnly && (empty($properties) || isset($properties['post_name'])) ? " OR LOWER(post_name) ?LIKE? LOWER($sql_search)" : '')
-                    . (!$customerIdOnly && (empty($properties) || isset($properties['post_address'])) ? " OR LOWER(post_full_address) ?LIKE? LOWER($sql_search)" : '')
-                    . (!$customerIdOnly && (empty($properties) || isset($properties['location_name'])) ? " OR LOWER(va.name) ?LIKE? LOWER($sql_search)" : '')
-                    . (!$customerIdOnly && (empty($properties) || isset($properties['location_address'])) ? " OR LOWER(va.address) ?LIKE? LOWER($sql_search)" : '')
-                    . (!$customerIdOnly && (empty($properties) || isset($properties['email'])) ? " OR LOWER(cc.contact) ?LIKE? LOWER($sql_search)" : '')
-                    . (!$customerIdOnly && (empty($properties) || isset($properties['ten'])) ? " OR REPLACE(REPLACE(c.ten, '-', ''), ' ', '') ?LIKE? REPLACE(REPLACE($sql_search, '-', ''), ' ', '')" : '')
-                    . (!$customerIdOnly && (empty($properties) || isset($properties['ssn'])) ? " OR REPLACE(REPLACE(c.ssn, '-', ''), ' ', '') ?LIKE? REPLACE(REPLACE($sql_search, '-', ''), ' ', '')" : '')
-                    . (!$customerIdOnly && (empty($properties) || isset($properties['additional-info'])) ? " OR LOWER(c.info) ?LIKE? LOWER($sql_search)" : '')
-                    . (!$customerIdOnly && (empty($properties) || isset($properties['notes'])) ? " OR LOWER(c.notes) ?LIKE? LOWER($sql_search)" : '') . "
+                    . (empty($properties) || isset($properties['name']) ? " OR LOWER(" . $DB->Concat('lastname', "' '", 'c.name') . ") ?LIKE? LOWER($sql_search)" : '')
+                    . (empty($properties) || isset($properties['address']) ? " OR LOWER(full_address) ?LIKE? LOWER($sql_search)" : '')
+                    . (empty($properties) || isset($properties['post_name']) ? " OR LOWER(post_name) ?LIKE? LOWER($sql_search)" : '')
+                    . (empty($properties) || isset($properties['post_address']) ? " OR LOWER(post_full_address) ?LIKE? LOWER($sql_search)" : '')
+                    . (empty($properties) || isset($properties['location_name']) ? " OR LOWER(va.name) ?LIKE? LOWER($sql_search)" : '')
+                    . (empty($properties) || isset($properties['location_address']) ? " OR LOWER(va.address) ?LIKE? LOWER($sql_search)" : '')
+                    . (empty($properties) || isset($properties['email']) ? " OR LOWER(cc.contact) ?LIKE? LOWER($sql_search)" : '')
+                    . (empty($properties) || isset($properties['ten']) ? " OR REPLACE(REPLACE(c.ten, '-', ''), ' ', '') ?LIKE? REPLACE(REPLACE($sql_search, '-', ''), ' ', '')" : '')
+                    . (empty($properties) || isset($properties['ssn']) ? " OR REPLACE(REPLACE(c.ssn, '-', ''), ' ', '') ?LIKE? REPLACE(REPLACE($sql_search, '-', ''), ' ', '')" : '')
+                    . (empty($properties) || isset($properties['additional-info']) ? " OR LOWER(c.info) ?LIKE? LOWER($sql_search)" : '')
+                    . (empty($properties) || isset($properties['notes']) ? " OR LOWER(c.notes) ?LIKE? LOWER($sql_search)" : '') . "
                 ORDER by deleted, customername, cc.contact, full_address
 				LIMIT ?", array(DEFAULT_LOCATION_ADDRESS, LOCATION_ADDRESS, CONTACT_EMAIL, intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 
