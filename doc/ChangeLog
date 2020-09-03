@@ -117,6 +117,8 @@ version 26-git (????-??-??):
   - enhancement: variable phpui.allow_modify_closed_events_newer_than allows to prevent modify
     old events (default '604800') [interduo]
   - enhancement: added support for many persistent filters in single module [chilan]
+  - improvement: allow to force quick search by customer id prepending numeric value with hash
+    character [chilan]
 
 version 25.0 (2020-05-15):
 
