@@ -22,8 +22,7 @@
  *  $Id$
  */
 
-// hide combobox after click out of the window
-$(document).click(function(e) {
+function closeAllMultiSelectPopups(e) {
 	var popup = $('.lms-ui-multiselect-popup:visible');
 	if (!popup.length) {
 		return;
@@ -41,6 +40,11 @@ $(document).click(function(e) {
 		container.removeClass('open');
 		old_element.trigger('lms:multiselect:change');
 	}
+}
+
+// hide combobox after click out of the window
+$(document).click(function(e) {
+	closeAllMultiSelectPopups(e);
 });
 
 $(document).keydown(function(e) {
@@ -407,6 +411,11 @@ function multiselect(options) {
 	}
 
 	launcher.find('.lms-ui-multiselect-clear-button').click(function(e) {
+		closeAllMultiSelectPopups($.Event({
+			type: 'click',
+			target: document
+		}));
+
 		multiselect.updateSelection([]);
 
 		updateCheckAll();
@@ -434,6 +443,13 @@ function multiselect(options) {
 			e.preventDefault();
 		}
 		if (!popup.is(':visible') && (e.type != 'keydown' || e.key != 'Escape')) {
+			if (e.type == 'click') {
+				closeAllMultiSelectPopups($.Event({
+					type: 'click',
+					target: document
+				}));
+			}
+
 			setTimeout(function() {
 				popup.show();
 				popup.addClass('fullscreen-popup');
