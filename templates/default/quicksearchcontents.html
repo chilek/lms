@@ -246,12 +246,13 @@
 
 		qsFields.each(function(index, field) {
 			var input = $(field).find('input');
-			new AutoSuggest(
-					$(field).closest('form').get(0),
-					input.get(0),
-					'?m=quicksearch&api=1&ajax=1&mode=' + $(field).attr('data-mode') + '&what=',
-					lmsSettings.quickSearchAutoSubmit
-			)
+			new AutoSuggest({
+				form: $(field).closest('form'),
+				elem: input,
+				uri: '?m=quicksearch&api=1&ajax=1&mode=' +$(field).attr('data-mode') + '&what=',
+				autosubmit: lmsSettings.quickSearchAutoSubmit,
+				activeDescription: true
+			})
 		});
 
 		qsFields.find('.lms-ui-quick-search-input').on('click', function() {

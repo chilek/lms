@@ -26,6 +26,7 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 		this.class = form.hasOwnProperty('class') ? form.class : '';
 		this.emptyValue = form.hasOwnProperty('emptyValue') && (form.emptyValue == 1 || form.emptyValue || form.emptyValue == 'true');
 		this.suggestionContainer = form.hasOwnProperty('suggestionContainer') ? form.suggestionContainer : '#autosuggest';
+		this.activeDescription = form.hasOwnProperty('activeDescription') ? form.activeDescription : false;
 	} else {
 		//A reference to the element we're binding the list to.
 		this.elem = elem;
@@ -38,6 +39,7 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 		this.onLoad = onLoad;
 		this.class = '';
 		this.suggestionContainer = '#autosuggest';
+		this.activeDescription = false;
 	}
 	this.class = 'lms-ui-suggestion-container ' + this.class;
 
@@ -314,10 +316,6 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 	this.createDiv = function() {
 		var ul = $('<ul class="lms-ui-suggestion-list" />').get(0);
 
-		function onClick() {
-			me.useSuggestion();
-		}
-
 		//Create an array of LI's for the words.
 		$.each(this.suggestions, function(i, elem) {
 			var icon = elem.hasOwnProperty('icon') ? elem.icon : null;
@@ -329,7 +327,8 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 			var tip = elem.hasOwnProperty('tip') ? elem.tip : null;
 
 			var name_elem = $('<div class="lms-ui-suggestion-name ' + name_class +'" />').get(0);
-			var desc_elem = $('<div class="lms-ui-suggestion-description ' + desc_class + '">' + desc + '</div>').get(0);
+			var desc_elem = $('<div class="lms-ui-suggestion-description ' + desc_class + '">' +
+				(me.activeDescription && action ? '<a href="' + action + '">' : '') + desc + (me.activeDescription && action ? '</a>' : '') + '</div>').get(0);
 			var li = $('<li class="lms-ui-suggestion-item" />').attr('title', tip).get(0);
 
 			name_elem.innerHTML = (icon ? '<i class="' + icon + '"></i>' : '') + (name.length > AUTOSUGGEST_MAX_LENGTH ?
@@ -344,7 +343,6 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 				li.appendChild(name_elem);
 				li.appendChild(desc_elem);
 			}
-			li.onclick = onClick;
 
 			if (me.highlighted == i) {
 				$(li).addClass('selected');
@@ -353,7 +351,9 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 			ul.appendChild(li);
 		});
 
-		$(ul).appendTo($(this.div).empty());
+		$(ul).appendTo($(this.div).empty()).find('.lms-ui-suggestion-item').click(function() {
+			me.useSuggestion();
+		});
 
 		/********************************************************
 		mouseover handler for the dropdown ul
