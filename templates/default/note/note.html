@@ -50,8 +50,9 @@
 			{/if}
 
 			{$tmp}
-		</TD>
-		<TD WIDTH="50%" class="sdr valign-top">
+			<BR>
+			<BR>
+			<BR>
 			<B>{trans("Note recipient:")}</B><BR>
 			<BR>
 			{$note.name}<BR>
@@ -70,6 +71,13 @@
 					<BR>
 				{/if}
 			{/if}
+		</TD>
+		<TD WIDTH="50%" class="sdr valign-top">
+			<BR>
+			<BR>
+			{$note.name}<BR>
+			{$note.address}<BR>
+			{$note.zip} {$note.city}
 		</TD>
 	</TR>
 </TABLE>
