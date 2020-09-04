@@ -121,7 +121,7 @@ version 26-git (????-??-??):
     character [chilan]
   - improvement: allow to click in auto suggestion description to open resource
     in new window/tab [chilan]
-  - improvement: don't require territ flag for customer addresses which have selected province
+  - improvement: don't require territ flag for addresses which have selected province
     from outside territ database province list [chilan]
 
 version 25.0 (2020-05-15):
