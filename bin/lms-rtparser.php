@@ -194,6 +194,7 @@ $autoreply_subject = ConfigHelper::getConfig('rt.autoreply_subject', "[RT#%tid] 
 $autoreply_body = ConfigHelper::getConfig('rt.autoreply_body', '', true);
 $autoreply = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.autoreply', '1'));
 $subject_ticket_regexp_match = ConfigHelper::getConfig('rt.subject_ticket_regexp_match', 'RT#(?<ticketid>[0-9]{6,})');
+$aoct = ConfigHelper::getConfig('rtparser.allow_open_resolved_tickets_newer_than', (ConfigHelper::getConfig('userpanel.allow_reopen_tickets_newer_than', 604800)));
 
 $stderr = fopen('php://stderr', 'w');
 
@@ -394,6 +395,8 @@ if (!$prev_tid && preg_match('/' . $subject_ticket_regexp_match . '/', $mh_subje
     $prev_tid = sprintf('%d', $matches['ticketid']);
     if (!$LMS->TicketExists($prev_tid)) {
         $prev_tid = 0;
+    } else {
+        $prev_tid_contents = $LMS->GetTicketContents($prev_tid);
     }
 }
 
@@ -462,7 +465,9 @@ if (!$autoreply_from) {
     }
 }
 
-if (!$prev_tid) { // generate new ticket if previous not found
+
+// generate new ticket if previous ticket not found or ticket was resolved more than rtparser.allow_open_resolved_tickets_newer_than
+if (!$prev_tid || ($prev_tid && $prev_tid_contents['resolvetime'] && (($prev_tid_contents['resolvetime'] + $aoct) < time()))) {
     $cats = array();
     foreach ($categories as $category) {
         if (($catid = $LMS->GetCategoryIdByName($category)) != null) {
