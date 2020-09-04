@@ -7,7 +7,7 @@
     <THEAD>
     <TR>
         <TD>
-            <IMG src="img/calendar.gif" alt="">
+            {icon name="timetable"}
         </TD>
         <TD class="bold">
             {trans("Title:")}
@@ -20,7 +20,7 @@
     <TBODY>
     <TR>
         <TD>
-            <IMG src="img/time.gif" alt="">
+            {icon name="uptime"}
         </TD>
         <TD class="bold nobr">
             {trans("Begin time:")}
@@ -33,7 +33,7 @@
     {if $event.begintime != $event.endtime || $event.enddate > $event.date}
         <TR>
             <TD>
-                <IMG src="img/time.gif" alt="">
+                {icon name="uptime"}
             </TD>
             <TD class="bold nobr">
                 {trans("End time:")}
@@ -52,7 +52,7 @@
     {if $event.description}
         <TR>
             <TD>
-                <IMG src="img/info.gif" alt="">
+                {icon name="description"}
             </TD>
             <TD class="bold nobr">
                 {trans("Description:")}
@@ -70,7 +70,7 @@
     {/if}
     <TR>
         <TD>
-            <IMG src="img/desc.gif" alt="">
+            {icon name="type"}
         </TD>
         <TD class="bold">
             {trans("Type:")}
@@ -81,7 +81,7 @@
     </TR>
     <TR>
         <TD>
-            <IMG src="img/access.gif" alt="">
+            {icon name="status"}
         </TD>
         <TD class="bold">
             {trans("Status:")}
@@ -92,7 +92,7 @@
     </TR>
     <TR>
         <TD>
-            <IMG src="img/users.gif" alt="">
+            {icon name="owner"}
         </TD>
         <TD class="bold">
             {trans("Created by:")}
@@ -104,7 +104,7 @@
     {if $event.creationdate != 0}
         <TR>
             <TD>
-                <IMG src="img/time.gif" alt="">
+                {icon name="uptime"}
             </TD>
             <TD class="bold">
                 {trans("Creation time:")}
@@ -117,7 +117,7 @@
     {if $event.moduserid != 0}
         <TR>
             <TD>
-                <IMG src="img/users.gif" alt="">
+                {icon name="owner"}
             </TD>
             <TD class="bold">
                 <B>{trans("Last modified by:")}</B>
@@ -130,7 +130,7 @@
     {if $event.moddate != 0}
         <TR>
             <TD>
-                <IMG src="img/time.gif" alt="">
+                {icon name="uptime"}
             </TD>
             <TD class="bold">
                 {trans("Last modification time:")}
@@ -143,7 +143,7 @@
     {if $event.closeduserid != 0}
         <TR>
             <TD>
-                <IMG src="img/users.gif" alt="">
+                {icon name="owner"}
             </TD>
             <TD class="bold nobr">
                 <B>{trans("Closed by")}:</B>
@@ -156,7 +156,7 @@
     {if $event.closeddate != 0}
         <TR>
             <TD>
-                <IMG src="img/time.gif" alt="">
+                {icon name="timetable"}
             </TD>
             <TD class="bold nobr">
                 {trans("Closed time")}:
@@ -168,7 +168,7 @@
     {/if}
     <TR>
         <TD>
-            <IMG src="img/customer.gif" alt="">
+	    {icon name="customer"}
         </TD>
         <TD class="bold">
             {trans("Customer:")}
@@ -179,7 +179,7 @@
     </TR>
     <TR>
         <TD>
-            <IMG src="img/home.gif" alt="">
+            {icon name="location"}
         </TD>
         <TD class="bold">
             {trans("Location:")}
@@ -274,12 +274,12 @@
     {/if}
     <TR>
         <TD class="text-right" colspan="3">
-            <a id="delete-event" href="?m=eventdel&id={$event.id}"><img src="img/delete.gif" alt=""> {trans("Delete")}</A>
-            <A href="?m=eventedit&id={$event.id}"><IMG src="img/edit.gif" alt=""> {trans("Edit")}</A>
+            {button type='link-button' id='delete-event' href="?m=eventdel&id={$event.id}" label='Delete' icon='delete'}
+            {button type='link-button' href="?m=eventedit&id={$event.id}" label='Edit' icon='edit'}
             {if !$event.closed}
-                <A href="?m=eventedit&id={$event.id}&action=close"><IMG src="img/dead.gif" alt=""> {trans("Close")}</A>
+                {button type='link-button' href="?m=eventedit&id={$event.id}&action=close" label='Close' icon='close'}
             {else}
-                <A href="?m=eventedit&id={$event.id}&action=open"><IMG src="img/open.gif" alt=""> {trans("Open")}</A>
+                {button type='link-button' href="?m=eventedit&id={$event.id}&action=open" label='Open' icon='open'}
             {/if}
         </TD>
     </TR>
