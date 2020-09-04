@@ -229,6 +229,11 @@ if (isset($_POST['nodeedit'])) {
         }
     }
 
+    if (!ConfigHelper::checkPrivilege('full_access') && ConfigHelper::checkConfig('phpui.node_to_network_device_connection_required')
+        && empty($nodeedit['netdev'])) {
+        $error['netdev'] = trans('Network device selection is required!');
+    }
+
     if (!$nodeedit['ownerid']) {
         $error['nodeedit[customerid]'] = trans('Customer not selected!');
         $error['nodeedit[ownerid]']    = trans('Customer not selected!');

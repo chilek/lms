@@ -4821,3 +4821,5 @@ $_LANG['Customer note is too short!'] = 'Notatka kliencka jest zbyt krótka!';
 $_LANG['Show more/less'] = 'Pokaż więcej/mniej';
 
 $_LANG['Preview'] = 'Podgląd';
+
+$_LANG['Network device selection is required!'] = 'Wymagany wybór urządzenia sieciowego!';

@@ -238,6 +238,11 @@ if (isset($_POST['nodedata'])) {
         $nodedata['halfduplex'] = 0;
     }
 
+    if (!ConfigHelper::checkPrivilege('full_access') && ConfigHelper::checkConfig('phpui.node_to_network_device_connection_required')
+        && empty($nodedata['netdev'])) {
+        $error['netdev'] = trans('Network device selection is required!');
+    }
+
     if (!ConfigHelper::checkPrivilege('full_access') && ConfigHelper::checkConfig('phpui.teryt_required')
         && !empty($nodedata['address_id']) && !$LMS->isTerritAddress($nodedata['address_id'])) {
         $error['address_id'] = trans('TERRIT address is required!');

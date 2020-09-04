@@ -123,6 +123,8 @@ version 26-git (????-??-??):
     in new window/tab [chilan]
   - improvement: don't require territ flag for addresses which have selected province
     from outside territ database province list [chilan]
+  - enhancement: 'phpui.node_to_network_device_connection_required' (default: 'false') configuration
+    variable controls if network device connection is required for added/edit node [chilan]
 
 version 25.0 (2020-05-15):
 

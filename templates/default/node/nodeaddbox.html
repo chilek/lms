@@ -169,7 +169,9 @@
 								<TD class="cell-flex">
 									<div>
 												<a href="javascript: void(0);" onclick="return netDevChooseWin(document.nodeadd.elements['nodedata[netdev]']);" {tip trigger="netdev" text="Search device"}>&raquo;&raquo;&raquo;</A>
-									<SELECT SIZE="1" NAME="nodedata[netdev]" {tip class="lms-ui-advanced-select" text="Select network device (optional)" trigger="netdev"} onchange="change_netdevice(this.options[this.selectedIndex].value)">
+									<SELECT SIZE="1" NAME="nodedata[netdev]" {tip class="lms-ui-advanced-select" text="Select network device (optional)" trigger="netdev"}
+											{if ConfigHelper::checkConfig('phpui.node_to_network_device_connection_required')} required{/if}
+											onchange="change_netdevice(this.options[this.selectedIndex].value)">
 										<OPTION VALUE="0"{if !$nodedata.netdev} SELECTED{/if}>{trans("- select device -")}</OPTION>
 										{section name=netdevices loop=$netdevices}
 										<OPTION VALUE="{$netdevices[netdevices].id}"{if $netdevices[netdevices].id==$nodedata.netdev} SELECTED{/if}>{$netdevices[netdevices].name} {$netdevices[netdevices].producer}{if $netdevices[netdevices].location} / {$netdevices[netdevices].location}{/if}</OPTION>

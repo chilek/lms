@@ -669,7 +669,8 @@ SELECT {
 	}
 	&.alert,
 	&.lms-ui-error,
-	&:invalid {
+	&:invalid,
+	&[required] {
 		background-color: @error-background;
 	}
 	&.lms-ui-warning {
@@ -685,6 +686,9 @@ select {
 	background-repeat: no-repeat;
 	background-position: right top;
 	border: @select-border;
+	&[required] {
+		color: @error-text;
+	}
 	background-size: 16px;
 	padding-right: 16px;
 	padding-left: 3px;
