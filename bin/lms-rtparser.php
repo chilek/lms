@@ -392,7 +392,7 @@ if ($lastref) {
 // check email subject
 if (!$prev_tid && preg_match('/' . $subject_ticket_regexp_match . '/', $mh_subject, $matches)) {
     $prev_tid = sprintf('%d', $matches['ticketid']);
-    if (!$DB->GetOne("SELECT id FROM rttickets WHERE id = ?", array($prev_tid))) {
+    if (!$LMS->TicketExists($prev_tid)) {
         $prev_tid = 0;
     }
 }
