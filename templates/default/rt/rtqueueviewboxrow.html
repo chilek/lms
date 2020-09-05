@@ -115,12 +115,6 @@
 			{/if}
 			{button type="link" icon="print" class="ticket-print" tip="Print" href="?m=rtticketprint&id={$ticket.id}"}
 			{button type="link" icon="clone" href="?m=rtticketadd&ticketid={$ticket.id}" tip="Clone"}
-			{if $ticket.deleted == 1 && $ticket.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
-				{button type="link" icon="reload" href="?m=rtrestore&id={$ticket.id}&taction=restore" tip="Restore<!RT>"}
-				{button type="link" icon="delete" href="?m=rtremove&id={$ticket.id}&taction=delperm" tip="Delete permanently"}
-			{else}
-				{button type="link" icon="delete" href="?m=rtticketdel&id={$ticket.id}&taction=delete" tip="Delete"}
-			{/if}
 
 			{if ($ticket.state != $smarty.const.RT_RESOLVED || ($ticket.state == $smarty.const.RT_RESOLVED && $aet && ($smarty.now - $ticket.resolvetime) < $aet)) || (ConfigHelper::checkPrivilege('superuser'))}
 				{button type="link" icon="edit" href="?m=rtticketedit&id={$ticket.id}" tip="Edit"}
@@ -128,6 +122,12 @@
 			{button type="link" icon="note" href="?m=rtnoteadd&ticketid={$ticket.id}" tip="New Note"}
 			{if ($ticket.state != $smarty.const.RT_RESOLVED || ($ticket.state == $smarty.const.RT_RESOLVED && $aet && ($smarty.now - $ticket.resolvetime) < $aet)) || (ConfigHelper::checkPrivilege('superuser'))}
 				{button type="link" icon="message" href="?m=rtmessageadd&ticketid={$ticket.id}" tip="New Message"}
+			{/if}
+			{if $ticket.deleted == 1 && $ticket.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
+				{button type="link" icon="reload" href="?m=rtrestore&id={$ticket.id}&taction=restore" tip="Restore<!RT>"}
+				{button type="link" icon="delete" href="?m=rtremove&id={$ticket.id}&taction=delperm" tip="Delete permanently"}
+			{else}
+				{button type="link" icon="delete" href="?m=rtticketdel&id={$ticket.id}&taction=delete" tip="Delete"}
 			{/if}
 		{/buttons}
 		<input type="checkbox" class="lms-ui-multi-check" name="ticketid[]" value="{$ticket.id}">
