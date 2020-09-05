@@ -38,11 +38,11 @@ function smarty_block_box_header($params, $content, $template, $repeat)
 				</div>';
         } else {
             return '
-				<div' . ($id ? ' id="' . $id . '"' : '') . ' class="lms-ui-box-header">
-					' . (strpos($icon, '/') !== false ? '<IMG src="' . $icon . '" alt="">'
-                        : '<i class="' . $icon . '"></i>')
-                    . trans($label)
-                    . $content . '
+		<div' . ($id ? ' id="' . $id . '"' : '') . ' class="lms-ui-box-header">
+		' . (strpos($icon, '/') !== false ? '<IMG src="' . $icon . '" alt="">'
+                    : (strpos($icon, 'lms-ui-icon-') === 0) ? ('<i class="' . $icon . '"></i>') : ('<i class="lms-ui-icon-' . $icon . '"></i>'))
+                  . trans($label)
+                  . $content . '
 				</div>';
         }
     }
