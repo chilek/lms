@@ -129,6 +129,8 @@ version 26-git (????-??-??):
   - improvement: allow to include cash source file name in cash import record cash
     calculation [chilan]
   - improvement: changed default value for 'phpui.datables_max_records' from '300' to '0' [chilan]
+  - enhancement: 'phpui.timetable_user_row_limit' (default: '4') configuration variable to hide
+    assigned users to event when there is too many user assigned [interduo]
 
 version 25.0 (2020-05-15):
 

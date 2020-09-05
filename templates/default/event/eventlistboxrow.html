@@ -19,12 +19,18 @@
             <br>{$event.date|date_format:"%x"}
         {/if}
         {$imadded=0}
-        {foreach $event.userlist as $user}
+	{if !empty($event.userlist)}
+            {if $event.userlist|@count le ConfigHelper::getConfig('phpui.timetable_user_row_limit', 4) || empty(ConfigHelper::getConfig('phpui.timetable_user_row_limit', 4))}
+                {foreach $event.userlist as $user}
 		{if $layout.logid == $user.id}
 			{$imadded=1}
 		{/if}
 		<br><a href="?m=userinfo&amp;id={$user.id}" style="font-weight: normal">{$user.name|truncate:"25":"...":true}</a>
-        {/foreach}
+                {/foreach}
+	    {else}
+	    <br><i class="lms-ui-icon-user lms-ui-tooltip-eventinfoshort" data-resourceid="{$event.id}"></i> {$event.userlist|@count}
+	    {/if}
+	{/if}
     </TD>
     <TD data-target-url="?m=eventinfo&id={$event.id}">
         <a href="?m=eventinfo&id={$event.id}"><i class="lms-ui-icon-timetable lms-ui-tooltip-eventinfoshort" data-resourceid="{$event.id}"></i> <span class="bold" {if !$event.closed}style="color:black"{/if}>{$event.title}</span></a>
