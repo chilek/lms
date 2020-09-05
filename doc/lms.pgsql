@@ -3301,6 +3301,9 @@ INSERT INTO countries (name, ccode) VALUES
 ('Czech', 'cs_CZ'),
 ('Guyana', 'en_GY');
 
+INSERT INTO addresses (name) VALUES ('default');
+INSERT INTO divisions (shortname, name, address_id) VALUES ('default', 'default', 1);
+
 INSERT INTO nastypes (name) VALUES
 ('mikrotik_snmp'),
 ('cisco'),
