@@ -364,7 +364,7 @@
 									{trans("Deadline:")}
 								</TD>
 								<TD id="paytime-cell">
-									<SELECT name="customeradd[paytime]" data-value="{$customeradd.paytime}"
+									<SELECT name="customeradd[paytime]" {if isset($customeradd.paytime)}data-value="{$customeradd.paytime}"{/if}
 											{tip class="lms-ui-combobox" text="Select default deadline in days" trigger="paytime"}>
 										<OPTION value="-1"{if !isset($customeradd.paytime) || $customeradd.paytime==-1} selected{/if}>- {trans("default")} -</OPTION>
 										<OPTION value="0"{if isset($customeradd.paytime) && $customeradd.paytime==0} selected{/if}>0</OPTION>
