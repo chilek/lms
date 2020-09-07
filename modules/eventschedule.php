@@ -149,7 +149,7 @@ if (!isset($filter['year'])) {
     $filter['year'] = date('Y');
 }
 
-$layout['pagetitle'] = trans('Plan');
+$layout['pagetitle'] = trans('Schedule');
 
 $filter['forward'] = ConfigHelper::getConfig('phpui.timetable_days_forward');
 $eventlist = $LMS->GetEventList($filter);
