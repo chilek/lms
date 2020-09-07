@@ -161,6 +161,9 @@ DROP TABLE IF EXISTS countries;
 DROP TABLE IF EXISTS twofactorauthcodehistory;
 DROP TABLE IF EXISTS twofactorauthtrusteddevices;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS comments;
+DROP TABLE IF EXISTS cryptokeys;
+DROP TABLE IF EXISTS tsigkeys;
 
 SET FOREIGN_KEY_CHECKS = 1;
 SET SESSION sql_mode   = '';
