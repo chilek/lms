@@ -30,6 +30,7 @@ DROP VIEW IF EXISTS vnodetariffs;
 DROP VIEW IF EXISTS vnodealltariffs_nodes;
 DROP VIEW IF EXISTS vnodealltariffs_tariffs;
 DROP VIEW IF EXISTS vnodealltariffs;
+DROP VIEW IF EXISTS customerconsentview;
 
 DROP TABLE IF EXISTS up_info_changes;
 DROP TABLE IF EXISTS up_help;
@@ -161,6 +162,7 @@ DROP TABLE IF EXISTS countries;
 DROP TABLE IF EXISTS twofactorauthcodehistory;
 DROP TABLE IF EXISTS twofactorauthtrusteddevices;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS customerbalances;
 DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS cryptokeys;
 DROP TABLE IF EXISTS tsigkeys;
