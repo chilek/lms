@@ -40,7 +40,7 @@
 						{trans("Customer:")}
 						{customerlist form="filter" customers=$customers selected=$filter.customerid selectname="u" inputname="u" customOnChange="document.filter.submit();" customername=false}
 						{button label="Today" onclick="location.href='?m=eventschedule&day={$smarty.now|date_format:"%d"}&month={$smarty.now|date_format:"%m"}&year={$smarty.now|date_format:"%Y"}';"}
-						<input type="text" name="date" class="lms-ui-date" value="{if $filter.year}{$filter.year}/{$filter.month}/{$filter.day}{/if}" onchange="document.filter.submit();">
+						<input type="text" name="date" class="lms-ui-date" value="{if $filter.year}{sprintf("%04d/%02d/%02d", $filter.year, $filter.month, $filter.day)}{/if}" onchange="document.filter.submit();">
 						{trans("Status:")}
 						<SELECT name="closed" onchange="document.filter.submit();">
 							<OPTION value="" {if $filter.closed == ""} selected{/if}>{trans("- all -")}</OPTION>
