@@ -1853,8 +1853,11 @@ table.dataTable {
 	vertical-align: middle;
 }
 
-.ui-tooltip.lms-ui-tooltip-nodelist {
-	max-width: initial;
+.ui-tooltip {
+	&.lms-ui-tooltip-nodelist,
+	&.lms-ui-tooltip-eventinfoshort {
+		max-width: initial;
+	}
 }
 
 .lms-ui-cursor-pointer:hover {
