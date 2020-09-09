@@ -1,6 +1,14 @@
+<style>
+
+    .eventinfoshort-textbox {
+        max-width: fit-content;
+        padding: 0.3em;
+    }
+
+</style>
 <TABLE class="lmsbox-inner" id="table">
 {*
-    commented out as it causes strange table grow in event short info popup
+    commented out as it causes strange table grow
     <COLGROUP>
         <COL style="width: 1%;">
         <COL style="width: 1%;">
@@ -61,13 +69,9 @@
                 {trans("Description:")}
             </TD>
             <TD>
-                <TABLE WIDTH="90%" CELLPADDING="5">
-                    <TR>
-                        <TD CLASS="fall superlight">
-                            {$event.description|replace:"\n":"<BR>"}
-                        </TD>
-                    </TR>
-                </TABLE>
+                <div class="fall superlight eventinfoshort-textbox">
+                    {$event.description|replace:"\n":"<BR>"}
+                </div>
             </TD>
         </TR>
     {/if}
@@ -227,13 +231,9 @@
                 {trans("Note:")}
             </TD>
             <TD>
-                <TABLE WIDTH="90%" CELLPADDING="5">
-                    <TR>
-                        <TD class="fall superlight">
-                            {$event.note|replace:"\n":"<BR>"}
-                        </TD>
-                    </TR>
-                </TABLE>
+                <div class="fall superlight eventinfoshort-textbox">
+                    {$event.note|replace:"\n":"<BR>"}
+                </div>
             </TD>
         </TR>
     {/if}
