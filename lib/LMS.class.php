@@ -294,6 +294,10 @@ class LMS
                 'up_rights_assignments', 'up_customers', 'up_help', 'up_info_changes'
             );
 
+            $order_records = array(
+                'documents', 'networks', 'rttickets', 'rtmessages', 'uiconfig'
+            );
+
             foreach ($tables as $idx => $table) {
                 if (in_array($table, $order)) {
                     unset($tables[$idx]);
@@ -317,7 +321,7 @@ class LMS
                 $query = 'INSERT INTO ' . $tablename . ' (' . implode(',', $fields) . ') VALUES ';
                 $record_limit = self::DB_DUMP_MULTI_RECORD_LIMIT;
                 $records = array();
-                $this->DB->Execute('SELECT * FROM ' . $tablename);
+                $this->DB->Execute('SELECT * FROM ' . $tablename . (in_array($tablename, $order_records) ? ' ORDER BY id' : ''));
                 while ($row = $this->DB->_driver_fetchrow_assoc()) {
                     $values = array();
                     foreach ($row as $value) {
