@@ -2813,7 +2813,7 @@ $_LANG['Note recipient:'] = 'Odbiorca noty:';
 $_LANG['No such debit notes in database.'] = 'Brak not obciążeniowych w bazie danych.';
 $_LANG['voip accounts management'] = 'zarządzanie kontami VoIP';
 $_LANG['Voip prefix management'] = 'Zarządzanie prefiksami VoIP';
-$_LANG['Userpanel management'] = 'zarządzanie Panelem abonenta';
+$_LANG['Userpanel management'] = 'zarządzanie Panelem klienta';
 $_LANG['cash-in receipt'] = 'KP';
 $_LANG['cash-out receipt'] = 'KW';
 $_LANG['cash receipts'] = 'dok. kasowe';
@@ -3448,9 +3448,9 @@ $_LANG['Show tickets'] = 'Pokaż zgłoszenia';
 
 $_LANG['www'] = 'www';
 $_LANG['any sms'] = 'dowolny SMS';
-$_LANG['userpanel'] = 'Panel abonenta';
-$_LANG['Userpanel'] = 'Panel abonenta';
-$_LANG['userpanel urgent'] = 'panel abonenta (pilne)';
+$_LANG['userpanel'] = 'Panel klienta';
+$_LANG['Userpanel'] = 'Panel klienta';
+$_LANG['userpanel urgent'] = 'panel klienta (pilne)';
 $_LANG['I confirm reading'] = 'Zapoznałem się';
 $_LANG['Urgent'] = 'Pilna';
 $_LANG['Casual'] = 'Zwykła';
@@ -3459,7 +3459,7 @@ $_LANG['Read status:'] = 'Status przeczytania:';
 $_LANG['Was read on:'] = 'Przeczytana dnia:';
 $_LANG['Last read on:'] = 'Ostatnio czytana dnia:';
 $_LANG['Was confirm on:'] = 'Potwierdzona dnia:';
-$_LANG['only userpanel message'] = 'tylko wiadomości panelu abonenta';
+$_LANG['only userpanel message'] = 'tylko wiadomości panelu klienta';
 
 $_LANG['New ticket customer notification subject:'] = 'Temat listu z powiadomieniem klienta o nowym zgłoszeniu:';
 $_LANG['New ticket customer notification body:'] = 'Treść listu z powiadomieniem klienta o nowym zgłoszeniu:';
@@ -4443,8 +4443,8 @@ $_LANG['Message template list'] = 'Lista szablonów wiadomości';
 $_LANG['No message templates in database.'] = 'Brak szablonów wiadomości w bazie danych.';
 $_LANG['Are you sure, you want to delete that message template?'] = 'Jesteś pewien, że chcesz usunąć ten szablon wiadomości?';
 $_LANG['Are you sure, you want to delete all selected message templates?'] = 'Jesteś pewien, że chcesz usunąć wszystkie wybrane szablony wiadomości?';
-$_LANG['<!message>userpanel'] = 'panel abonenta';
-$_LANG['<!message>userpanel (urgent)'] = 'panel abonenta (pilne)';
+$_LANG['<!message>userpanel'] = 'panel klienta';
+$_LANG['<!message>userpanel (urgent)'] = 'panel klienta (pilne)';
 $_LANG['<!message>warning'] = 'ostrzeżenie';
 $_LANG['<!message>credit note reason'] = 'powód korekty';
 $_LANG['Add message template'] = 'Dodaj szablon wiadomości';
@@ -4751,8 +4751,8 @@ $_LANG['Enter date in YYYY/MM/DD format we wait for customer action till (option
 $_LANG['Warning! Customer submitted signed document scan. Consider to review it and then possibly confirm.'] = 'Uwaga! Klient przesłał skan podpisanego dokumentu. Rozważ ich przejrzenie i ewentualnie zatwierdzenie.';
 $_LANG['Warning! Customer action time limit is expired is expired!'] = 'Uwaga! Upłynął termin przeznaczony na działanie klienta!';
 
-$_LANG['document form approval in customer panel using SMS authorization'] = 'zatwierdzanie przez panel abonenta formy dokumentowej autoryzowanej przez SMS';
-$_LANG['document form approval in customer panel using scans'] = 'zatwierdzanie przez panel abonenta formy dokumentowej w postaci skanów';
+$_LANG['document form approval in customer panel using SMS authorization'] = 'zatwierdzanie przez panel klienta formy dokumentowej autoryzowanej przez SMS';
+$_LANG['document form approval in customer panel using scans'] = 'zatwierdzanie przez panel klienta formy dokumentowej w postaci skanów';
 $_LANG['invoice transfer form'] = 'druczek przelewu na fakturze';
 
 $_LANG['Copy from billing address'] = 'Kopiuj z adresu bilingowego';
