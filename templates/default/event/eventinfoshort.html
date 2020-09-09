@@ -29,37 +29,6 @@
     </TR>
     </THEAD>
     <TBODY>
-    <TR>
-        <TD>
-            {icon name="uptime"}
-        </TD>
-        <TD class="bold nobr">
-            {trans("Begin time:")}
-        </TD>
-        <TD>
-            {$event.date|date_format:"%x (%A)"}
-            {($event.date + $event.begintime)|date_format:"%H:%M"}
-        </TD>
-    </TR>
-    {if $event.begintime != $event.endtime || $event.enddate > $event.date}
-        <TR>
-            <TD>
-                {icon name="uptime"}
-            </TD>
-            <TD class="bold nobr">
-                {trans("End time:")}
-            </TD>
-            <TD>
-                {if $event.enddate}
-                    {$event.enddate|date_format:"%x (%A)"}
-                    {($event.enddate + $event.endtime)|date_format:"%H:%M"}
-                {else}
-                    {$event.date|date_format:"%x (%A)"}
-                    {($event.date + $event.endtime)|date_format:"%H:%M"}
-                {/if}
-            </TD>
-        </TR>
-    {/if}
     {if $event.description}
         <TR>
             <TD>
@@ -71,6 +40,21 @@
             <TD>
                 <div class="fall superlight eventinfoshort-textbox">
                     {$event.description|replace:"\n":"<BR>"}
+                </div>
+            </TD>
+        </TR>
+    {/if}
+    {if $event.note}
+        <TR>
+            <TD>
+                {icon name="note"}
+            </TD>
+            <TD class="bold nobr">
+                {trans("Note:")}
+            </TD>
+            <TD>
+                <div class="fall superlight eventinfoshort-textbox">
+                    {$event.note|replace:"\n":"<BR>"}
                 </div>
             </TD>
         </TR>
@@ -99,89 +83,13 @@
     </TR>
     <TR>
         <TD>
-            {icon name="user"}
-        </TD>
-        <TD class="bold">
-            {trans("Created by:")}
-        </TD>
-        <TD class="nobr">
-            <A href="?m=userinfo&id={$event.userid}">{$event.username}</A>
-        </TD>
-    </TR>
-    {if $event.creationdate != 0}
-        <TR>
-            <TD>
-                {icon name="uptime"}
-            </TD>
-            <TD class="bold">
-                {trans("Creation time:")}
-            </TD>
-            <TD>
-                {$event.creationdate|date_format:"%x (%X)"}
-            </TD>
-        </TR>
-    {/if}
-    {if $event.moduserid != 0}
-        <TR>
-            <TD>
-                {icon name="user"}
-            </TD>
-            <TD class="bold">
-                <B>{trans("Last modified by:")}</B>
-            </TD>
-            <TD class="nobr">
-                <A href="?m=userinfo&id={$event.moduserid}">{$event.modusername}</A>
-            </TD>
-        </TR>
-    {/if}
-    {if $event.moddate != 0}
-        <TR>
-            <TD>
-                {icon name="uptime"}
-            </TD>
-            <TD class="bold">
-                {trans("Last modification time:")}
-            </TD>
-            <TD>
-                {$event.moddate|date_format:"%x (%X)"}
-            </TD>
-        </TR>
-    {/if}
-    {if $event.closeduserid != 0}
-        <TR>
-            <TD>
-                {icon name="user"}
-            </TD>
-            <TD class="bold nobr">
-                <B>{trans("Closed by")}:</B>
-            </TD>
-            <TD class="nobr">
-                <A href="?m=userinfo&id={$event.closeduserid}">{$event.closedusername}</A>
-            </TD>
-        </TR>
-    {/if}
-    {if $event.closeddate != 0}
-        <TR>
-            <TD>
-                {icon name="timetable"}
-            </TD>
-            <TD class="bold nobr">
-                {trans("Closed time")}:
-            </TD>
-            <TD>
-                {$event.closeddate|date_format:"%x (%X)"}
-            </TD>
-        </TR>
-    {/if}
-    <TR>
-        <TD>
 	    {icon name="customer"}
         </TD>
         <TD class="bold">
             {trans("Customer:")}
         </TD>
         <TD class="nobr">
-            <A href="?m=customerinfo&id={$event.customerid}">{$event.customername}</A>
+            <A href="?m=customerinfo&amp;id={$event.customerid}">{$event.customername|truncate:"30":"...":true}</A>
         </TD>
     </TR>
     <TR>
@@ -194,16 +102,15 @@
         <TD class="nobr">
         {if $event.netnode_name}
             {icon name="netnode"} <a href="?m=netnodeinfo&id={$event.netnode_id}">{$event.netnode_name}</a>
-            {if !empty($event.netnode_location)}<br><i class="lms-ui-icon-location"></i> {$event.netnode_location}{/if}
+	    {if !empty($event.netnode_location)}<br>{$event.netnode_location}{/if}
         {else}
             {if $event.customername}
-                {icon name="customer"} <A href="?m=customerinfo&amp;id={$event.customerid}">{$event.customername|truncate:"30":"...":true}</A><br>
                 {if !empty($event.address_id)}
-                    {icon name="location"} {$event.location}
+                    {$event.location}
                 {elseif !empty($event.nodeid)}
                     <a href="?m=nodeinfo&id={$event.nodeid}"> {$event.nodelocation}</a>
                 {else}
-		    {icon name="location"} {$event.customerlocation}
+		    {$event.customerlocation}
                 {/if}
             {/if}
         {/if}
@@ -219,21 +126,6 @@
             </TD>
             <TD class="nobr">
                 <a href="?m=nodeinfo&id={$event.nodeid}">{$event.node_name}: {$event.node_location}</a>
-            </TD>
-        </TR>
-    {/if}
-    {if $event.note}
-        <TR>
-            <TD>
-                {icon name="note"}
-            </TD>
-            <TD class="bold nobr">
-                {trans("Note:")}
-            </TD>
-            <TD>
-                <div class="fall superlight eventinfoshort-textbox">
-                    {$event.note|replace:"\n":"<BR>"}
-                </div>
             </TD>
         </TR>
     {/if}
