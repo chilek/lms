@@ -157,6 +157,7 @@ LmsUiIconSelectMenu.prototype._appendAddressList = function( address_list, prese
         }
 
         html += '<option value="' + this.address_id  + '" data-icon="' + icon + '"' +
+            ' data-territ="' + this.teryt + '"' +
             (preselection && this.hasOwnProperty('default_address') ? ' selected' : '') + '>' +
             this.location + '</option>';
     });
