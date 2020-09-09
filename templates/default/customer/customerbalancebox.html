@@ -73,7 +73,7 @@
 
 		{tab_table}
 
-			{$datatables_max_records=intval(ConfigHelper::getConfig('phpui.datatables_max_records', 300))}
+			{$datatables_max_records=intval(ConfigHelper::getConfig('phpui.datatables_max_records', 0, true))}
 			<TABLE id="customerbalancebox-datatable" class="lmsbox-inner{if !$datatables_max_records || empty($balancelist.list) || count($balancelist.list) < $datatables_max_records} lms-ui-datatable{else} lms-ui-background-cycle{/if}"
 					{if !$datatables_max_records || empty($balancelist.list) || count($balancelist.list) < $datatables_max_records} data-page-length="{$n}"
 					data-empty-table-message="{trans("That customer hasn't got any transactions.")}"
