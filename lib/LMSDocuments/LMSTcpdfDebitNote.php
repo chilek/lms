@@ -256,7 +256,6 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
 
         $dottedLine = array('width' => 0.2, 'dash' => '1,1,1,1', 'phase' => 0, 'color' => array(0, 0, 0));
         $this->backend->Line(125, $y, 195, $y, $dottedLine);
-
         $this->backend->writeHTMLCell(70, '', 125, '', trans('issuer\'s signature'), 0, 1, 0, true, 'C');
     }
 
