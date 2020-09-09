@@ -125,9 +125,11 @@ version 26-git (????-??-??):
     from outside territ database province list [chilan]
   - enhancement: 'phpui.node_to_network_device_connection_required' (default: 'false') configuration
     variable controls if network device connection is required for added/edit node [chilan]
+  - enhancement: 'phpui.teryt_required' support for voip account localisations [chilan]
   - improvement: don't allow to add messages to ticket whitch was resolved too long time ago 
   variable: rtparser.allow_open_resolved_tickets_newer_than, default: 259200 [interduo]
-
+  
+  
 version 25.0 (2020-05-15):
 
   - improvement: introduced invoices.hide_ssn configuration variable which allows to hide SSN

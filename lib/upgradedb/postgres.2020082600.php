@@ -25,7 +25,8 @@ $this->BeginTrans();
 
 if ($this->ResourceExists('tariff_rule_id_fk', LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
     $this->Execute("ALTER TABLE tariffs DROP CONSTRAINT tariff_rule_id_fk");
-} else {
+}
+if ($this->ResourceExists('tariffs_voip_tariff_rule_id_fkey', LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
     $this->Execute("ALTER TABLE tariffs DROP CONSTRAINT tariffs_voip_tariff_rule_id_fkey");
 }
 

@@ -444,7 +444,7 @@ $query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctyp
 		WHERE " . ($customerid ? 'c.id = ' . $customerid . ' AND ' : '') . "c.deleted = 0 AND d.cancelled = 0 AND d.type IN (?, ?, ?, ?)" . ($backup || $archive ? '' : " AND c.invoicenotice = 1")
             . ($archive ? " AND d.archived = 0" : '') . "
 			AND d.cdate >= $daystart AND d.cdate <= $dayend"
-            . (!empty($groupnames) ? $customergroups : "")
+            . ($customergroups ?: '')
         . " ORDER BY d.number" . (!empty($part_size) ? " LIMIT $part_size OFFSET $part_offset" : '');
 $docs = $DB->GetAll($query, $args);
 

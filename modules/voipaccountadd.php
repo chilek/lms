@@ -153,6 +153,12 @@ if (isset($_POST['voipaccountdata'])) {
             $error['address_id'] = trans('Selected address was not assigned to customer.');
             $voipaccountdata['address_id'] = null;
         }
+        // check if selected address is territ address
+        if (!isset($error['address_id']) && !ConfigHelper::checkPrivilege('full_access')
+            && ConfigHelper::checkConfig('phpui.teryt_required') && ($voipaccountdata['address_id'] == -1
+                || !$LMS->isTerritAddress($voipaccountdata['address_id']))) {
+            $error['address_id'] = trans('TERRIT address is required!');
+        }
     }
 
     $hook_data = $plugin_manager->executeHook(
@@ -184,10 +190,10 @@ if (isset($_POST['voipaccountdata'])) {
         if (!isset($voipaccountdata['reuse'])) {
             $SESSION->redirect('?m=voipaccountinfo&id='.$voipaccountid);
         }
-        
+
         $ownerid = $voipaccountdata['ownerid'];
         unset($voipaccountdata);
-        
+
         $voipaccountdata['ownerid'] = $ownerid;
         $voipaccountdata['reuse'] = '1';
     }

@@ -254,7 +254,6 @@ if ($AUTH->islogged) {
     }
 
     $user_divisions = $LMS->GetDivisions(array('userid' => Auth::GetCurrentUser()));
-    $user_divisions_ids = array_keys($user_divisions);
     $persistentDivisionContext = $SESSION->get_persistent_setting('division_context');
     $tabDivisionContext = $SESSION->get('division_context', true);
     // check if user has any division
@@ -263,6 +262,7 @@ if ($AUTH->islogged) {
         $tabDivisionContext = '';
         $SESSION->save('division_context', $tabDivisionContext, true);
     } else {
+        $user_divisions_ids = array_keys($user_divisions);
         $user_division = reset($user_divisions);
         if (count($user_divisions) > 1) {
             if (!isset($persistentDivisionContext)

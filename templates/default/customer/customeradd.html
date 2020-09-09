@@ -326,14 +326,14 @@
 									{if $customeradd.tenexistencewarning}
 									<INPUT type="hidden" name="customeradd[tenexistencewarning]" value="1">
 									{/if}
-									<a class="gusapi-button" data-type="{\GusApi\RegonConstantsInterface::SEARCH_TYPE_NIP}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
+									<a class="gusapi-button" data-type="{\GusApi\SearchType::NIP}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
 								</TD>
 							</TR>
 							<TR>
 								<TD>{trans("REGON")}:</TD>
 								<TD>
 									<INPUT type="text" size="30" value="{$customeradd.regon}" name="customeradd[regon]" {tip text="Enter Business Registration Number (optional)" trigger="regon"}>
-									<a class="gusapi-button" data-type="{\GusApi\RegonConstantsInterface::SEARCH_TYPE_REGON}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
+									<a class="gusapi-button" data-type="{\GusApi\SearchType::REGON}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
 								</TD>
 							</TR>
 							<TR>
@@ -346,7 +346,7 @@
 								<TD>{trans("RBE")}:</TD>
 								<TD>
 									<INPUT type="text" size="30" value="{$customeradd.rbe}" name="customeradd[rbe]" {tip text="Enter National Court Register / Register of Business Entities Number (optional)" trigger="rbe"}>
-									<a class="gusapi-button" data-type="{\GusApi\RegonConstantsInterface::SEARCH_TYPE_KRS}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
+									<a class="gusapi-button" data-type="{\GusApi\SearchType::KRS}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
 								</TD>
 							</TR>
 						</TABLE>
@@ -364,7 +364,7 @@
 									{trans("Deadline:")}
 								</TD>
 								<TD id="paytime-cell">
-									<SELECT name="customeradd[paytime]" data-value="{$customeradd.paytime}"
+									<SELECT name="customeradd[paytime]" {if isset($customeradd.paytime)}data-value="{$customeradd.paytime}"{/if}
 											{tip class="lms-ui-combobox" text="Select default deadline in days" trigger="paytime"}>
 										<OPTION value="-1"{if !isset($customeradd.paytime) || $customeradd.paytime==-1} selected{/if}>- {trans("default")} -</OPTION>
 										<OPTION value="0"{if isset($customeradd.paytime) && $customeradd.paytime==0} selected{/if}>0</OPTION>
@@ -534,7 +534,7 @@
 				$(this).attr('data-type'),
 				$(this).siblings('input[type="text"]').val().replace(/-/g, ''),
 				function(data) {
-					GusApiFinished('customeradd', data.details);
+					GusApiFinished('customeradd', data);
 				});
 			return;
 		});

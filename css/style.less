@@ -1808,16 +1808,6 @@ table.dataTable {
 	}
 }
 
-.lms-ui-address-select.alert,
-.lms-ui-address-select {
-	.lms-ui-error {
-		background-color: @error-background !important;
-	}
-	.lms-ui-warning {
-		background-color: @warning-background !important;
-	}
-}
-
 .lms-ui-address-select {
 	padding-left: 4px;
 	padding-right: 4px;
@@ -1834,6 +1824,16 @@ table.dataTable {
 
 	& .ui-selectmenu-icon.ui-icon {
 		background: url('@{lms-img-path}/1.png') !important;
+	}
+
+	&.alert,
+	&.lms-ui-error {
+		background-color: @error-background !important;
+		color: @error-text !important;
+	}
+	&.lms-ui-warning {
+		background-color: @warning-background !important;
+		color: @warning-text !important;
 	}
 }
 
@@ -1853,8 +1853,11 @@ table.dataTable {
 	vertical-align: middle;
 }
 
-.ui-tooltip.lms-ui-tooltip-nodelist {
-	max-width: initial;
+.ui-tooltip {
+	&.lms-ui-tooltip-nodelist,
+	&.lms-ui-tooltip-eventinfoshort {
+		max-width: initial;
+	}
 }
 
 .lms-ui-cursor-pointer:hover {

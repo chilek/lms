@@ -295,14 +295,14 @@
 										{if $customerinfo.tenexistencewarning}
 										<INPUT type="hidden" name="customerdata[tenexistencewarning]" value="1">
 										{/if}
-										<a class="gusapi-button" data-type="{\GusApi\RegonConstantsInterface::SEARCH_TYPE_NIP}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
+										<a class="gusapi-button" data-type="{\GusApi\SearchType::NIP}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
 									</TD>
 								</TR>
 								<TR>
 									<TD>{trans("REGON")}:</TD>
 									<TD>
 										<INPUT type="text" value="{$customerinfo.regon}" name="customerdata[regon]" size="30" {tip text="Enter Business Registration Number (optional)" trigger="regon"}>
-										<a class="gusapi-button" data-type="{\GusApi\RegonConstantsInterface::SEARCH_TYPE_REGON}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
+										<a class="gusapi-button" data-type="{\GusApi\SearchType::REGON}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
 									</TD>
 								</TR>
 								<TR>
@@ -315,7 +315,7 @@
 									<TD>{trans("RBE")}:</TD>
 									<TD>
 										<INPUT type="text" value="{$customerinfo.rbe}" name="customerdata[rbe]" size="30" {tip text="Enter National Court Register / Register of Business Entities Number (optional)" trigger="rbe"}>
-										<a class="gusapi-button" data-type="{\GusApi\RegonConstantsInterface::SEARCH_TYPE_KRS}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
+										<a class="gusapi-button" data-type="{\GusApi\SearchType::KRS}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
 									</TD>
 								</TR>
 							</TABLE>
@@ -522,7 +522,7 @@
 				$(this).attr('data-type'),
 				$(this).siblings('input[type="text"]').val().replace(/-/g, ''),
 				function(data) {
-					GusApiFinished('customerdata', data.details);
+					GusApiFinished('customerdata', data);
                 });
 			return false;
 		});

@@ -393,6 +393,8 @@ class Session
                     $persistentKeys,
                     $reversePersistentKeys
                 );
+            } elseif (isset($this->_content['prepared_persistent_filters'][$module]['subfilters'][$id])) {
+                unset($this->_content['prepared_persistent_filters'][$module]['subfilters'][$id]);
             }
         } else {
             $this->_content['filters'][$module] = $filter;
@@ -402,6 +404,8 @@ class Session
                     $persistentKeys,
                     $reversePersistentKeys
                 );
+            } elseif (isset($this->_content['prepared_persistent_filters'][$module])) {
+                unset($this->_content['prepared_persistent_filters'][$module]);
             }
         }
 

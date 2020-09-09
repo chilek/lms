@@ -655,6 +655,8 @@ class LMSTcpdfInvoice extends LMSInvoice
         if (!empty($this->data['memo'])) {
             $tmp = $this->data['memo'];
 
+            $this->backend->SetFont(self::TCPDF_FONT, 'I');
+
             $tmp = mb_ereg_replace('\r?\n', '<br>', $tmp);
             if (ConfigHelper::checkConfig('invoices.qr2pay') && !isset($this->data['rebate'])) {
                 $width = 150;
