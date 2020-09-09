@@ -44,7 +44,7 @@
     {foreach $times as $ktime => $time}
         <tr class="highlight">
             <td class="nobr" align="center">
-                <strong>{$time}</strong>
+                <strong>{$time|truncate:6:" "}</strong>
             </td>
             {foreach $usereventlistgrid as $userevents}
                 <td style="border-left: dotted 1px;">
