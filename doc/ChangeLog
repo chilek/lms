@@ -126,6 +126,8 @@ version 26-git (????-??-??):
   - enhancement: 'phpui.node_to_network_device_connection_required' (default: 'false') configuration
     variable controls if network device connection is required for added/edit node [chilan]
   - enhancement: 'phpui.teryt_required' support for voip account localisations [chilan]
+  - improvement: allow to include cash source file name in cash import record cash
+    calculation [chilan]
 
 version 25.0 (2020-05-15):
 
