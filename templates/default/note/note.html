@@ -21,7 +21,6 @@
 	<TR>
 		<TD WIDTH="54%" class="sdr valign-top">
 			<B>{trans("Note drawer:")}</B><BR>
-			<BR>
 			{if !ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')
 				|| empty($note.bankccounts)}
 				{$accounts = array(bankaccount($note.customerid, $note.account))}
@@ -54,7 +53,6 @@
 			<BR>
 			<BR>
 			<B>{trans("Note recipient:")}</B><BR>
-			<BR>
 			{$note.name}<BR>
 			{$note.address}<BR>
 			{$note.zip} {$note.city}

@@ -93,7 +93,16 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
             $drawer .= $line . '<br>';
         }
         $this->backend->Ln(0);
-        $this->backend->writeHTMLCell(80, '', '', 45, $drawer, 0, 1, 0, true, 'L');
+        $this->backend->writeHTMLCell(80, '', '', 47, $drawer, 0, 1, 0, true, 'L');
+    }
+
+    public function shipping_address()
+    {
+        $shipaddress .= $this->data['name'] . '<br>';
+        $shipaddress .= $this->data['address'] . '<br>';
+        $shipaddress .= $this->data['zip'] . ' ' . $this->data['city'] . '<br>';
+        $this->backend->SetFont(self::TCPDF_FONT, 'B', 12);
+        $this->backend->writeHTMLCell(80, '', 114, 56, $shipaddress, 0, 1, 0, true, 'L');
     }
 
     public function note_recipient()
@@ -111,15 +120,9 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
             $recipient .= trans('SSN') . ': ' . $this->data['ssn'];
         }
         $this->backend->SetFont(self::TCPDF_FONT, '', 10);
-        $this->backend->writeHTMLCell(80, '', 120, 50, $recipient, 0, 1, 0, true, 'L');
+        $this->backend->writeHTMLCell(80, '', 15, 95, $recipient, 0, 1, 0, true, 'L');
 
         $y = $this->backend->GetY();
-
-        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_bankaccount', true))) {
-            $bankaccount = trans('Bank account:') .' <b>' . format_bankaccount(bankaccount($this->data['customerid'], $this->data['account'])) . '</b>';
-            $this->backend->SetFont(self::TCPDF_FONT, 'B', 8);
-            $this->backend->writeHTMLCell('', '', 120, '', $bankaccount, 0, 1, 0, true, 'L');
-        }
 
         if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_credentials', true))) {
             $pin = '<b>' . trans('Customer ID: $a', sprintf('%04d', $this->data['customerid'])) . '</b><br>';
@@ -135,7 +138,7 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
     public function note_data()
     {
         /* print table */
-        $this->backend->Ln(20);
+        $this->backend->Ln(0);
         $this->backend->writeHTMLCell('', '', '', '', '', 0, 1, 0, true, 'L');
 
         $this->backend->SetFillColor(200, 200, 200);
@@ -243,6 +246,20 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
         $this->backend->writeHTMLCell(0, 6, '', '', trans('In words:') . ' ' . moneyf_in_words($this->data['value'], $this->data['currency']), 0, 1, 0, true, 'R');
     }
 
+    public function signature()
+    {
+        $this->backend->Ln(45);
+        $this->backend->SetFont(self::TCPDF_FONT, '', 9);
+
+        $y = $this->backend->GetY();
+        $this->backend->SetY($y);
+
+        $dottedLine = array('width' => 0.2, 'dash' => '1,1,1,1', 'phase' => 0, 'color' => array(0, 0, 0));
+        $this->backend->Line(125, $y, 195, $y, $dottedLine);
+
+        $this->backend->writeHTMLCell(70, '', 125, '', trans('issuer\'s signature'), 0, 1, 0, true, 'C');
+    }
+
     public function Draw($note)
     {
         $this->data = $note;
@@ -252,9 +269,13 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
         $this->invoice_expositor();
         $this->note_title();
         $this->note_drawer();
+        $this->shipping_address();
         $this->note_recipient();
         $this->note_data();
         $this->invoice_to_pay();
+        if (ConfigHelper::checkConfig('notes.issuer_signature')) {
+            $this->signature();
+        }
         $this->invoice_footnote();
         $docnumber = docnumber(array(
             'number' => $this->data['number'],
