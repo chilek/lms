@@ -75,8 +75,6 @@ if ($api) {
 
     if (isset($_GET['d'])) {
         $filter['division'] = $_GET['d'];
-    } else {
-        $filter['division'] = $divisionContext;
     }
 
     if (isset($_GET['assignments'])) {
