@@ -129,9 +129,11 @@ version 26-git (????-??-??):
   - improvement: allow to include cash source file name in cash import record cash
     calculation [chilan]
   - improvement: changed default value for 'phpui.datables_max_records' from '300' to '0' [chilan]
+  - enhancement: introduce configuration per division (UI) [ravvar, chilan]
   - improvement: don't allow to add messages to ticket whitch was resolved too long time ago 
     variable: rtparser.allow_open_resolved_tickets_newer_than, default: 259200 [interduo]
-
+    
+    
 version 25.0 (2020-05-15):
 
   - improvement: introduced invoices.hide_ssn configuration variable which allows to hide SSN

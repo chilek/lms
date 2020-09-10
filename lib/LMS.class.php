@@ -266,20 +266,21 @@ class LMS
                 'users', 'twofactorauthcodehistory', 'twofactorauthtrusteddevices',
                 'countries', 'location_states', 'location_districts', 'location_boroughs',
                 'location_cities', 'location_street_types', 'location_streets',
-                'location_buildings', 'addresses', 'divisions', 'customers', 'numberplans',
-                'states', 'zipcodes', 'customer_addresses', 'documents', 'documentcontents',
-                'documentattachments', 'cashregs', 'receiptcontents', 'taxes', 'voipaccounts',
-                'voip_rule_groups', 'voip_prefix_groups', 'voip_rules', 'voip_tariffs',
-                'voip_rule_states', 'voip_prefixes', 'voip_cdr', 'voip_price_groups',
-                'tariffs', 'voip_numbers', 'voip_pool_numbers', 'voip_emergency_numbers',
-                'liabilities', 'assignments', 'voip_number_assignments', 'invoicecontents',
-                'debitnotecontents', 'cashsources', 'sourcefiles', 'cashimport',
-                'customerbalances', 'cash', 'pna', 'ewx_channels', 'ewx_stm_channels', 'hosts',
-                'networks', 'invprojects', 'netnodes', 'netdeviceproducers', 'netdevicemodels',
-                'netdevices', 'netradiosectors', 'nodes', 'ewx_stm_nodes', 'nodelocks', 'macs',
-                'nodegroups', 'nodegroupassignments', 'nodeassignments', 'tarifftags',
-                'tariffassignments', 'promotions', 'promotionschemas', 'promotionassignments',
-                'payments', 'numberplanassignments', 'customergroups', 'customerassignments',
+                'location_buildings', 'addresses', 'divisions', 'customers',
+                'customerconsents', 'customernotes', 'numberplans', 'states', 'zipcodes',
+                'customer_addresses', 'documents', 'documentcontents', 'documentattachments',
+                'cashregs', 'receiptcontents', 'taxes', 'voipaccounts', 'voip_rule_groups',
+                'voip_prefix_groups', 'voip_rules', 'voip_tariffs', 'voip_rule_states',
+                'voip_prefixes', 'voip_cdr', 'voip_price_groups', 'tariffs', 'voip_numbers',
+                'voip_pool_numbers', 'voip_emergency_numbers', 'liabilities', 'assignments',
+                'voip_number_assignments', 'invoicecontents', 'debitnotecontents',
+                'cashsources', 'sourcefiles', 'cashimport', 'customerbalances', 'cash', 'pna',
+                'ewx_channels', 'ewx_stm_channels', 'hosts', 'networks', 'invprojects',
+                'netnodes', 'netdeviceproducers', 'netdevicemodels', 'netdevices',
+                'netradiosectors', 'nodes', 'ewx_stm_nodes', 'nodelocks', 'macs', 'nodegroups',
+                'nodegroupassignments', 'nodeassignments', 'tarifftags', 'tariffassignments',
+                'promotions', 'promotionschemas', 'promotionassignments', 'payments',
+                'numberplanassignments', 'customergroups', 'customerassignments',
                 'nodesessions', 'stats', 'netlinks', 'rtqueues', 'rttickets',
                 'rtticketlastview', 'rtmessages', 'rtrights', 'rtattachments', 'rtcategories',
                 'rtcategoryusers', 'rtticketcategories', 'rtqueuecategories', 'domains',
@@ -290,8 +291,9 @@ class LMS
                 'excludedgroups', 'messages', 'messageitems', 'nastypes', 'managementurls',
                 'logtransactions', 'logmessages', 'logmessagekeys', 'logmessagedata',
                 'templates', 'rttemplatetypes', 'rttemplatequeues', 'usergroups',
-                'userassignments', 'passwdhistory', 'filecontainers', 'files', 'up_rights',
-                'up_rights_assignments', 'up_customers', 'up_help', 'up_info_changes'
+                'userassignments', 'userdivisions', 'passwdhistory', 'filecontainers', 'files',
+                'up_rights', 'up_rights_assignments', 'up_customers', 'up_help',
+                'up_info_changes'
             );
 
             foreach ($tables as $idx => $table) {
@@ -317,7 +319,7 @@ class LMS
                 $query = 'INSERT INTO ' . $tablename . ' (' . implode(',', $fields) . ') VALUES ';
                 $record_limit = self::DB_DUMP_MULTI_RECORD_LIMIT;
                 $records = array();
-                $this->DB->Execute('SELECT * FROM ' . $tablename);
+                $this->DB->Execute('SELECT * FROM ' . $tablename . (isset($record['id']) ? ' ORDER BY id' : ''));
                 while ($row = $this->DB->_driver_fetchrow_assoc()) {
                     $values = array();
                     foreach ($row as $value) {
@@ -415,6 +417,12 @@ class LMS
     {
         $manager = $this->getUserManager();
         return $manager->getUserList($params);
+    }
+
+    public function GetUsers($params = array())
+    {
+        $manager = $this->getUserManager();
+        return $manager->getUsers($params);
     }
 
     public function GetUserIDByLogin($login)
@@ -2204,16 +2212,58 @@ class LMS
         return $manager->GetConfigVariable($config_id);
     }
 
-    public function CloneConfigSection($section, $new_section, $userid = null)
+    public function CloneConfigSection($section, $new_section)
     {
         $manager = $this->getConfigManager();
-        return $manager->CloneConfigSection($section, $new_section, $userid);
+        return $manager->CloneConfigSection($section, $new_section);
     }
 
-    public function DeleteConfigOption($id, $global = true)
+    public function DeleteConfigOption($id)
     {
         $manager = $this->getConfigManager();
-        return $manager->DeleteConfigOption($id, $global);
+        return $manager->DeleteConfigOption($id);
+    }
+
+    public function getRelatedUsers($id, $divisionid = null)
+    {
+        $manager = $this->getConfigManager();
+        return $manager->getRelatedUsers($id, $divisionid);
+    }
+
+    public function getRelatedDivisions($id)
+    {
+        $manager = $this->getConfigManager();
+        return $manager->getRelatedDivisions($id);
+    }
+
+    public function getRelatedOptions($id)
+    {
+        $manager = $this->getConfigManager();
+        return $manager->getRelatedOptions($id);
+    }
+
+    public function getOptionHierarchy($id)
+    {
+        $manager = $this->getConfigManager();
+        return $manager->getOptionHierarchy($id);
+    }
+
+    public function addConfigOption($option)
+    {
+        $manager = $this->getConfigManager();
+        return $manager->addConfigOption($option);
+    }
+
+    public function editConfigOption($option)
+    {
+        $manager = $this->getConfigManager();
+        return $manager->editConfigOption($option);
+    }
+
+    public function getParentOption($id)
+    {
+        $manager = $this->getConfigManager();
+        return $manager->getParentOption($id);
     }
 
     public function toggleConfigOption($id)
@@ -4354,10 +4404,10 @@ class LMS
         return $manager->UpdateDivision($division);
     }
 
-    public function CheckDivisionsAccess($divisions)
+    public function CheckDivisionsAccess($params)
     {
         $manager = $this->getDivisionManager();
-        return $manager->CheckDivisionsAccess($divisions);
+        return $manager->checkDivisionsAccess($params);
     }
 
     /*

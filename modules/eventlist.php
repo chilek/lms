@@ -141,24 +141,39 @@ $filter['forward'] = ConfigHelper::getConfig('phpui.timetable_days_forward');
 $eventlist = $LMS->GetEventList($filter);
 
 $overdue_events_only = isset($_GET['overdue_events_only']) ? 1 : 0;
+$overdue_events = array();
 
 if (ConfigHelper::checkConfig('phpui.timetable_overdue_events') && empty($overdue_events_only)) {
     $params['userid'] = Auth::GetCurrentUser();
     $params['forward'] = -1;
     $params['closed'] = 0;
     $params['type'] = 0;
+    $params['count'] = true;
+    $count = $LMS->GetEventList($params);
+    $params['count'] = false;
+    if ($count > 100) {
+        $params['limit'] = 100;
+        $SMARTY->assign('overdue_limited', 1);
+    } else {
+        $params['limit'] = $count;
+    }
     $overdue_events = $LMS->GetEventList($params);
-}
-
-if (!empty($overdue_events_only)) {
+} elseif (!empty($overdue_events_only)) {
     unset($params['userid']);
     $params['forward'] = -1;
     $params['closed'] = 0;
     $params['type'] = 0;
+    $params['count'] = true;
+    $count = $LMS->GetEventList($params);
+    $params['count'] = false;
+    if ($count > 100) {
+        $params['limit'] = 100;
+        $SMARTY->assign('overdue_limited', 1);
+    } else {
+        $params['limit'] = $count;
+    }
     $overdue_events = $LMS->GetEventList($params);
 }
-
-
 
 // create calendars
 for ($i = 0; $i < ConfigHelper::getConfig('phpui.timetable_days_forward'); $i++) {
@@ -183,9 +198,7 @@ $SMARTY->assign('today', $today);
 
 $SMARTY->assign('period', $DB->GetRow('SELECT MIN(date) AS fromdate, MAX(date) AS todate FROM events'));
 $SMARTY->assign('eventlist', $eventlist);
-if (ConfigHelper::checkConfig('phpui.timetable_overdue_events')) {
-    $SMARTY->assign('overdue_events', $overdue_events);
-}
+$SMARTY->assign('overdue_events', $overdue_events);
 
 $SMARTY->assign('days', $days);
 $SMARTY->assign('daylist', $daylist);

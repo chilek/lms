@@ -32,6 +32,9 @@
 
 <FORM method="POST" id="configadd" action="?m=configadd" name="config">
 <INPUT type="submit" class="hiddenbtn">
+<INPUT type="hidden" name="config[reftype]" value="{$reftype}">
+<INPUT type="hidden" name="config[refconfigid]" value="{$refconfigid}">
+
 <TABLE class="lmsbox" id="configadd-lmsbox">
 	<colgroup>
 		<col style="width: 100%;">
@@ -46,36 +49,96 @@
 						<col style="width: 98%;">
 					</colgroup>
 					<tbody>
+						{if !empty($reftype) && $reftype == 'division'}
+							<tr>
+								<td>
+									{icon name="division" class="fa-fw"}
+								</td>
+								<td class="nobr bold">
+									{trans("Division")}
+								</td>
+								<td>
+									<SELECT size="1" name="config[divisionid]" {tip text="Select division" trigger="divisionid"}>
+										{foreach $divisionslist as $division}
+											<OPTION value="{$division.id}"{if $config.division == $division.id} selected{/if}>{$division.shortname}</OPTION>
+										{/foreach}
+									</SELECT>
+								</td>
+							</tr>
+						{/if}
+						{if !empty($reftype)}
+							{if $reftype == 'divisionuser'}
+								<tr>
+									<td>
+										{icon name="division" class="fa-fw"}
+									</td>
+									<td class="nobr bold">
+										{trans("Division")}
+									</td>
+									<td>
+										<strong>{$divisioninfo.shortname}</strong>
+										<INPUT type="hidden" name="config[divisionid]" value="{$divisioninfo.id}">
+									</td>
+								</tr>
+							{/if}
+							{if $reftype == 'divisionuser' || $reftype == 'user'}
+								<tr>
+									<td>
+										{icon name="user" class="fa-fw"}
+									</td>
+									<td class="nobr bold">
+										{trans("User")}
+									</td>
+									<td>
+										<SELECT size="1" name="config[userid]" {tip text="Select user" trigger="userid"}>
+											{foreach $userslist as $user}
+												<OPTION value="{$user.id}"{if $config.user == $user.id} selected{/if}>{$user.login} / {$user.name}</OPTION>
+											{/foreach}
+										</SELECT>
+									</td>
+								</tr>
+							{/if}
+						{/if}
 						<tr>
 							<td>
-								<img src="img/settings.gif" alt="">
+								{icon name="configuration" class="fa-fw"}
 							</TD>
 							<td class="bold">
 								{trans("Section:")}
 							</td>
-							<TD>
-								<SELECT size="1" name="config[section]" {tip class="lms-ui-combobox" text="Select section" trigger="section"}
-									{if !isset($config.section)}
-										data-value=""
-									{elseif !in_array($config.section, $sections)}
-										data-value="{$config.section}"
-									{/if}>
-									{foreach $sections as $section}
-										<OPTION value="{$section}"{if $config.section == $section} selected{/if}>{$section}</OPTION>
-									{/foreach}
-								</SELECT>&nbsp;
-							</TD>
-						</TR>
+							<td>
+								{if empty($reftype)}
+									<SELECT size="1" name="config[section]" {tip class="lms-ui-combobox" text="Select section" trigger="section"}
+										{if !isset($config.section)}
+											data-value=""
+										{elseif !in_array($config.section, $sections)}
+											data-value="{$config.section}"
+										{/if}>
+										{foreach $sections as $section}
+											<OPTION value="{$section}"{if $config.section == $section} selected{/if}>{$section}</OPTION>
+										{/foreach}
+									</SELECT>
+								{else}
+									<strong>{$config.section}</strong>
+									<INPUT type="hidden" name="config[section]" value="{$config.section}">
+								{/if}&nbsp;
+							</td>
+						</tr>
 						<TR>
 							<TD>
-								<img src="img/settings.gif" alt="">
+								{icon name="service" class="fa-fw"}
 							</TD>
 							<TD class="bold">
 								{trans("Name:")}
 							</TD>
 							<TD>
-								<INPUT type="text" name="config[var]" value="{$config.var}" size="30"
-										{tip class="lms-ui-autogrow" text="Enter option name" trigger="var" bold=1}>&nbsp;
+								{if empty($reftype)}
+									<INPUT type="text" name="config[var]" value="{$config.var}" size="30"
+											{tip class="lms-ui-autogrow" text="Enter option name" trigger="var" bold=1}>&nbsp;
+								{else}
+									<strong>{$config.var}</strong>
+									<INPUT type="hidden" name="config[var]" value="{$config.var}">
+								{/if}&nbsp;
 							</TD>
 						</TR>
 					</tbody>
@@ -96,7 +159,7 @@
 						<tbody>
 							<tr>
 								<td>
-									<img src="img/producer.gif" alt="">
+									{icon name="service" class="fa-fw"}
 								</td>
 								<TD class="bold">
 									{trans("Value:")}
@@ -109,7 +172,7 @@
 							</TR>
 							<TR>
 								<TD>
-									<img src="img/info1.gif" alt="">
+									{icon name="comment" class="fa-fw"}
 								</TD>
 								<TD class="bold">
 									{trans("Comment:")}
@@ -120,7 +183,7 @@
 							</TR>
 							<TR>
 								<TD>
-									<img src="img/wait.gif" alt="">
+									{icon name="wait" class="fa-fw"}
 								</TD>
 								<TD class="bold">
 									{trans("Status:")}
@@ -129,22 +192,25 @@
 									<INPUT type="checkbox" value="1" name="config[disabled]" id="config_disabled"{if $config.disabled} CHECKED{/if} {tip text="You can turn it off"}><label for="config_disabled">{trans("Off")}</label>
 								</TD>
 							</TR>
-							{if ConfigHelper::checkPrivilege('superuser')}
-							<TR>
-								<TD>
-									<img src="img/desc.gif" alt="">
-								</TD>
-								<TD class="bold">
-									{trans("Type:")}
-								</TD>
-								<TD>
-									<SELECT size="1" name="config[type]" {tip text="Select config type" trigger="type"}>
-										{foreach $_CONFIG_TYPES as $key => $type}
-											<OPTION value="{$key}"{if $config.type == $key} selected{/if}>{$type}</OPTION>
-										{/foreach}
-									</SELECT>
-								</TD>
-							</TR>
+							{if ConfigHelper::checkPrivilege('superuser') && empty($reftype)}
+								<TR>
+									<TD>
+										<img src="img/desc.gif" alt="">
+									</TD>
+									<TD class="bold">
+										{trans("Type:")}
+									</TD>
+									<TD>
+										<SELECT size="1" name="config[type]" {tip text="Select config type" trigger="type"}>
+											{foreach $_CONFIG_TYPES as $key => $type}
+												<OPTION value="{$key}"{if $config.type == $key} selected{/if}>{$type}</OPTION>
+											{/foreach}
+										</SELECT>
+									</TD>
+								</TR>
+							{/if}
+							{if !empty($reftype)}
+								<INPUT type="hidden" name="config[type]" value="{$config.type}">
 							{/if}
 						</tbody>
 					</table>
@@ -177,7 +243,7 @@
 		<TR>
 			<TD class="lms-ui-box-buttons">
 				{button type="submit" onclick="document.config.submit();" icon="save" label="Submit"}
-				{button type="link-button" href="?m=configlist" icon="cancel" label="Cancel"}
+				{button type="link-button" onclick="location.href = '{$backurl}';" icon="cancel" label="Cancel"}
 				<br>
 				<label>
 					<INPUT type="checkbox" name="config[reuse]" value="ON" id="reuse"{if $config.reuse} checked{/if}>

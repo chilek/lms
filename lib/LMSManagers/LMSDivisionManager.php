@@ -30,6 +30,18 @@
  */
 class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterface
 {
+    private static $currentDivision = null;
+
+    public static function setCurrentDivision($division)
+    {
+        self::$currentDivision = $division;
+    }
+
+    public static function getCurrentDivision()
+    {
+        return self::$currentDivision;
+    }
+
     public function GetDivision($id)
     {
         return $this->db->GetRow('SELECT * FROM vdivisions WHERE id = ?', array($id));
@@ -75,13 +87,15 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
 
     public function getDivisionList($params = array())
     {
-        if (isset($params['offset'])) {
-            $offset = $params['offset'];
+        extract($params);
+
+        if (isset($offset)) {
+            $offset = $offset;
         } else {
             $offset = null;
         }
-        if (isset($params['limit'])) {
-            $limit = $params['limit'];
+        if (isset($limit)) {
+            $limit = $limit;
         } else {
             $limit = null;
         }
@@ -90,8 +104,10 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
 
         return $this->db->GetAll(
             'SELECT d.id, d.name, d.shortname, d.status, (SELECT COUNT(*) FROM customers WHERE divisionid = d.id) AS cnt
-            FROM divisions d'
-            . (isset($params['superuser']) && empty($params['superuser']) ? ' WHERE id IN (' . $user_divisions . ')' : '') .
+            FROM divisions d
+            WHERE 1 = 1'
+            . ((isset($superuser) && empty($superuser)) || !isset($superuser) ? ' AND id IN (' . $user_divisions . ')' : '')
+            . (isset($exludedDivisions) && !empty($exludedDivisions) ? ' AND id NOT IN (' . $exludedDivisions . ')' : '') .
             ' ORDER BY d.shortname'
             . (isset($limit) ? ' LIMIT ' . $limit : '')
             . (isset($offset) ? ' OFFSET ' . $offset : '')
@@ -230,22 +246,27 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
         }
     }
 
-    public function CheckDivisionsAccess($divisions)
+    public function checkDivisionsAccess($params = array())
     {
-        $user_divisions = $this->GetDivisions(array('userid' => Auth::GetCurrentUser()));
+        extract($params);
+        $user_id = (isset($userid) ? $userid : Auth::GetCurrentUser());
+        $user_divisions = $this->GetDivisions(array('userid' => $user_id));
 
-        if (is_array($divisions)) {
-            foreach ($divisions as $division) {
-                if (!isset($user_divisions[$division])) {
+        if (isset($divisions)) {
+            if (is_array($divisions)) {
+                foreach ($divisions as $division) {
+                    if (!isset($user_divisions[$division])) {
+                        return false;
+                    }
+                }
+            } else {
+                if (!isset($user_divisions[$divisions])) {
                     return false;
                 }
             }
+            return true;
         } else {
-            if (!isset($user_divisions[$divisions])) {
-                return false;
-            }
+            return false;
         }
-
-        return true;
     }
 }

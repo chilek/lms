@@ -130,7 +130,6 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
         }
     }
 
-
     public function GetConfigDefaultType($option)
     {
         return array_key_exists($option, $this->default_config_types)
@@ -209,101 +208,290 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
         );
     }
 
-    public function CloneConfigSection($section, $new_section, $userid = null)
+    public function CloneConfigSection($section, $new_section)
     {
-        if (empty($userid)) {
-            $variables = $this->db->GetAll(
-                'SELECT var, value, description, disabled, type FROM uiconfig WHERE section = ?',
-                array($section)
-            );
-            if (!empty($variables)) {
-                foreach ($variables as $variable) {
-                    $args = array_merge(array('section' => $new_section), $variable);
-                    $this->db->Execute(
-                        'INSERT INTO uiconfig (section, var, value, description, disabled, type)
-                        VALUES (?, ?, ?, ?, ?, ?)',
-                        array_values($args)
-                    );
-                    if ($this->syslog) {
-                        $args[SYSLOG::RES_UICONF] = $this->db->GetLastInsertID('uiconfig');
-                        $this->syslog->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_ADD, $args);
-                    }
-                }
-            }
-        } else {
-            $variables = $this->db->GetAll(
-                'SELECT id, var, value, description, disabled, type FROM uiconfig
-                WHERE section = ?',
-                array($section)
-            );
-            if (!empty($variables)) {
-                foreach ($variables as $variable) {
-                    $args = array(
-                        'section' => $new_section,
-                        'var' => $variable['var'],
-                        'value' => $variable['value'],
-                        'description' => $variable['description'],
-                        'disabled' => $variable['disabled'],
-                        'type' => $variable['type'],
-                        'ref_' . SYSLOG::getResourceKey(SYSLOG::RES_UICONF) => $variable['id'],
-                        'ref_' . SYSLOG::getResourceKey(SYSLOG::RES_USER) => $userid,
-                    );
-                    $this->db->Execute(
-                        'INSERT INTO uiconfig (section, var, value, description, disabled, type, configid, userid)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-                        array_values($args)
-                    );
-                    if ($this->syslog) {
-                        $args[SYSLOG::RES_UICONF] = $this->db->GetLastInsertID('uiconfig');
-                        $this->syslog->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_ADD, $args);
-                    }
+        $variables = $this->db->GetAll(
+            'SELECT var, value, description, disabled, type FROM uiconfig WHERE section = ?',
+            array($section)
+        );
+
+        if (!empty($variables)) {
+            foreach ($variables as $variable) {
+                $args = array_merge(array('section' => $new_section), $variable);
+                $this->db->Execute(
+                    'INSERT INTO uiconfig (section, var, value, description, disabled, type)
+                    VALUES (?, ?, ?, ?, ?, ?)',
+                    array_values($args)
+                );
+                if ($this->syslog) {
+                    $args[SYSLOG::RES_UICONF] = $this->db->GetLastInsertID('uiconfig');
+                    $this->syslog->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_ADD, $args);
                 }
             }
         }
     }
 
-    public function DeleteConfigOption($id, $global = true)
+    public function DeleteConfigOption($id)
     {
-        if ($global) {
-            if ($this->syslog) {
-                $local_options = $this->db->GetAll('SELECT id, userid FROM uiconfig WHERE configid = ?', array($id));
-            }
+        $option_deleted = $this->db->Execute('DELETE FROM uiconfig WHERE id = ?', array($id));
 
-            $this->db->Execute('DELETE FROM uiconfig WHERE configid = ?', array($id));
-
-            if ($this->syslog && !empty($local_options)) {
-                foreach ($local_options as $local_option) {
-                    $args = array(
-                        SYSLOG::RES_UICONF => $local_option['id'],
-                        SYSLOG::RES_USER => $local_option['userid'],
-                        'ref_' . SYSLOG::getResourceKey(SYSLOG::RES_UICONF) => $id
-                    );
-                    $this->syslog->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_DELETE, $args);
-                }
-            }
-        }
-
-        $this->db->Execute('DELETE FROM uiconfig WHERE id = ?', array($id));
-
-        if ($this->syslog) {
+        if ($this->syslog && $option_deleted) {
             $args = array(SYSLOG::RES_UICONF => $id);
             $this->syslog->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_DELETE, $args);
         }
     }
 
-    public function toggleConfigOption($id)
+    public function getRelatedDivisions($id)
     {
-        if ($this->syslog) {
-            $disabled = $this->db->GetOne('SELECT disabled FROM uiconfig WHERE id = ?', array($id));
-            $args = array(
-                SYSLOG::RES_UICONF => $id,
-                'disabled' => $disabled ? 0 : 1
-            );
-            $this->syslog->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_UPDATE, $args);
-        }
-        $this->db->Execute(
-            'UPDATE uiconfig SET disabled = CASE disabled WHEN 0 THEN 1 ELSE 0 END WHERE id = ?',
+        return $this->db->GetAllByKey(
+            'SELECT divisionid
+            FROM uiconfig
+            WHERE configid = ?
+              AND divisionid IS NOT NULL',
+            'divisionid',
             array($id)
         );
+    }
+
+    public function getRelatedUsers($id, $division = null)
+    {
+        if (isset($division) && !empty($division)) {
+            // user override division conf
+            return $this->db->GetAllByKey(
+                'SELECT userid 
+                FROM uiconfig
+                WHERE configid = ?
+                  AND userid IS NOT NULL
+                  AND divisionid = ?',
+                'userid',
+                array(
+                    $id,
+                    $division
+                )
+            );
+        } else {
+            // user override global conf
+            return $this->db->GetAllByKey(
+                'SELECT userid 
+                FROM uiconfig
+                WHERE configid = ?
+                  AND userid IS NOT NULL
+                  AND divisionid IS NULL',
+                'userid',
+                array($id)
+            );
+        }
+    }
+
+    public function getRelatedOptions($id)
+    {
+        return $this->db->GetAll(
+            'SELECT c.*, d.shortname, d.id AS divisionid, u.login, u.name
+            FROM uiconfig c
+            LEFT JOIN divisions d ON d.id = c.divisionid
+            LEFT JOIN vallusers u on c.userid = u.id
+            WHERE c.configid = ?',
+            array($id)
+        );
+    }
+
+    public function getOptionHierarchy($id)
+    {
+        $optionHierarchy = array();
+        $parentOption = $this->getParentOption($id);
+        $relatedOptions = $this->getRelatedOptions($id);
+        $option = $this->GetConfigVariable($id);
+
+        if ($relatedOptions) {
+            if (!$parentOption) { //for division
+                foreach ($relatedOptions as $idx => $relatedOption) {
+                    if (!empty($relatedOption['divisionid'])) {
+                        $optionHierarchy['divisions'][$idx] = $relatedOption;
+                        $optionHierarchy['ids'][] = $relatedOption['id'];
+                        //check if division has related records
+                        $divisionrelatedOptions = $this->getRelatedOptions($relatedOption['id']);
+                        if ($divisionrelatedOptions) {
+                            $optionHierarchy['divisions'][$idx]['users'] = $divisionrelatedOptions;
+                            foreach ($divisionrelatedOptions as $divisionrelatedOption) {
+                                $optionHierarchy['ids'][] = $divisionrelatedOption['id'];
+                            }
+                        }
+                    } else {
+                        $optionHierarchy['users'][] = $relatedOption;
+                        $optionHierarchy['ids'][] = $relatedOption['id'];
+                    }
+                }
+            } else {
+                $lms = LMS::getInstance();
+                $optionHierarchy['divisions'][0] = $lms->GetDivision($option['divisionid']);
+                $optionHierarchy['ids'][] = $option['id'];
+                $optionHierarchy['divisions'][0]['users'] = $relatedOptions;
+                foreach ($relatedOptions as $userrelatedOption) {
+                    $optionHierarchy['ids'][] = $userrelatedOption['id'];
+                }
+            }
+        }
+
+        if (isset($optionHierarchy['divisions'])) {
+            $optionHierarchy['divisions'] = array_values($optionHierarchy['divisions']);
+        }
+        if (isset($optionHierarchy['users'])) {
+            $optionHierarchy['users'] = array_values($optionHierarchy['users']);
+        }
+        if (isset($optionHierarchy['ids'])) {
+            $optionHierarchy['ids'] = array_combine($optionHierarchy['ids'], $optionHierarchy['ids']);
+        }
+
+        return $optionHierarchy;
+    }
+
+    public function addConfigOption($option)
+    {
+        $args = array(
+            'section' => $option['section'],
+            'var' => $option['var'],
+            'value' => $option['value'],
+            'description' => $option['description'],
+            'disabled' => $option['disabled'],
+            'type' => $option['type'],
+            'userid' => $option['userid'],
+            'divisionid' => $option['divisionid'],
+            'configid' => $option['configid']
+        );
+
+        $option_inserted = $this->db->Execute(
+            'INSERT INTO uiconfig (section, var, value, description, disabled, type, userid, divisionid, configid)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            array_values($args)
+        );
+
+        if ($option_inserted) {
+            $configid = $this->db->GetLastInsertID('uiconfig');
+            if ($this->syslog) {
+                $args[SYSLOG::RES_UICONF] = $configid;
+                $this->syslog->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_ADD, $args);
+            }
+
+            return $configid;
+        } else {
+            return false;
+        }
+    }
+
+    public function editConfigOption($option)
+    {
+        $args = array(
+            'section' => $option['section'],
+            'var' => $option['var'],
+            'value' => $option['value'],
+            'description' => $option['description'],
+            'type' => $option['type'],
+            'id' => $option['id']
+        );
+
+        $id = $option['id'];
+
+        // if 'disabled' flag was changed
+        $statuschange = $option['statuschange'];
+        if (!empty($statuschange)) {
+            $this->toggleConfigOption($id);
+        }
+
+        $option_edited = $this->db->Execute(
+            'UPDATE uiconfig SET section = ?, var = ?, value = ?, description = ?, type = ? WHERE id = ?',
+            array_values($args)
+        );
+        if ($this->syslog && $option_edited) {
+            $args[SYSLOG::RES_UICONF] = $id;
+            $this->syslog->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_UPDATE, $args);
+        }
+
+        $optionHierarchy = $this->getOptionHierarchy($id);
+        if (!empty($optionHierarchy)) {
+            $optionHierarchyIds = (isset($optionHierarchy['ids']) ? $optionHierarchy['ids'] : null);
+            $optionHierarchyIdsSql = implode(',', array_keys($optionHierarchy['ids']));
+            $refArgs = array(
+                'section' => $option['section'],
+                'var' => $option['var'],
+                'type' => $option['type']
+            );
+
+            $reloptions_edited =$this->db->Execute(
+                'UPDATE uiconfig SET section = ?, var = ?, type = ? WHERE id IN (' . $optionHierarchyIdsSql . ')',
+                array_values($refArgs)
+            );
+
+            if ($this->syslog && $reloptions_edited) {
+                foreach ($optionHierarchyIds as $idx => $optionHierarchyId) {
+                    $refArgs[SYSLOG::RES_UICONF] = $idx;
+                    $this->syslog->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_UPDATE, $refArgs);
+                }
+            }
+        }
+    }
+
+    public function getParentOption($id)
+    {
+        return $this->db->GetRow(
+            'SELECT * FROM uiconfig c1 
+            WHERE c1.id = (SELECT c2.configid FROM uiconfig c2 WHERE c2.id = ?)',
+            array($id)
+        );
+    }
+
+    public function toggleConfigOption($id)
+    {
+        $parentOption = $this->getParentOption($id);
+        if (!$parentOption || $parentOption['disabled'] == 0) {
+            $disabled = $this->db->GetOne('SELECT disabled FROM uiconfig WHERE id = ?', array($id));
+            $newdisabled = $disabled ? 0 : 1;
+            if ($this->syslog) {
+                $args = array(
+                    SYSLOG::RES_UICONF => $id,
+                    'disabled' => $newdisabled
+                );
+                $this->syslog->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_UPDATE, $args);
+            }
+            $this->db->Execute(
+                'UPDATE uiconfig SET disabled = CASE disabled WHEN 0 THEN 1 ELSE 0 END WHERE id = ?',
+                array($id)
+            );
+
+            $optionHierarchy = $this->getOptionHierarchy($id);
+            $relatedConfigs = array();
+            if ($optionHierarchy) {
+                if (isset($optionHierarchy['divisions'])) {
+                    foreach ($optionHierarchy['divisions'] as $division) {
+                        $relatedConfigs[$division['id']][] = $division['id'];
+                        if (isset($division['users'])) {
+                            foreach ($division['users'] as $divisionuser) {
+                                $relatedConfigs[$divisionuser['id']][] =  $divisionuser['id'];
+                            }
+                        }
+                    }
+                }
+
+                if (isset($optionHierarchy['users'])) {
+                    foreach ($optionHierarchy['users'] as $user) {
+                        $relatedConfigs[$user['id']][] = $user['id'];
+                    }
+                }
+
+                if (!empty($relatedConfigs)) {
+                    $relatedConfigsIds = implode(',', array_keys($relatedConfigs));
+                    $this->db->Execute('UPDATE uiconfig SET disabled = ? WHERE id IN ('. $relatedConfigsIds .')', array($newdisabled));
+
+                    if ($this->syslog) {
+                        foreach ($relatedConfigs as $idx => $relatedConfig) {
+                            $args = array(
+                                SYSLOG::RES_UICONF => $idx,
+                                'disabled' => $newdisabled
+                            );
+                            $this->syslog->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_UPDATE, $args);
+                        }
+                    }
+                }
+            }
+        }
     }
 }
