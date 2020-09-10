@@ -39,14 +39,16 @@
     <TBODY>
     {foreach $relatedoptions.divisions as $relatedoption}
         <TR class="highlight {if $relatedoption.disabled} blend{/if}">
-            <TD class="valign-top" style="padding-top: 1em;">
+            <TD OnClick="return self.location.href='?m=configedit&id={$relatedoption.id}';" class="valign-top" style="padding-top: 1em;">
                 <strong>{$relatedoption.shortname}</strong><BR>
             </TD>
-            <TD class="nobr valign-top" style="padding-top: 1em;">
+            <TD OnClick="return self.location.href='?m=configedit&id={$relatedoption.id}';" class="nobr valign-top" style="padding-top: 1em;">
                 {$relatedoption.description} <br><br>
-                {include file="config/configdivisionusers.html"}
+                <div>
+                    {include file="config/configdivisionusers.html"}
+                </div>
             </TD>
-            <TD class="nobr valign-top" align="center" style="padding-top: 1em;">
+            <TD OnClick="return self.location.href='?m=configedit&id={$relatedoption.id}';" class="nobr valign-top" align="center" style="padding-top: 1em;">
                 {$relatedoption.value}
             </TD>
             <TD class="lms-ui-buttons text-right nobr valign-top">

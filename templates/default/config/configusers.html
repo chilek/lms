@@ -36,16 +36,16 @@
     <TBODY>
     {foreach $relatedoptions.users as $relatedoption}
         <TR class="highlight {if $relatedoption.disabled} blend{/if}">
-            <TD class="nobr">
+            <TD OnClick="return self.location.href='?m=configedit&id={$relatedoption.id}';" class="nobr">
                 <strong>{$relatedoption.login}</strong><BR>
             </TD>
-            <TD class="nobr">
+            <TD OnClick="return self.location.href='?m=configedit&id={$relatedoption.id}';" class="nobr">
                 {$relatedoption.name}
             </TD>
-            <TD class="nobr">
+            <TD OnClick="return self.location.href='?m=configedit&id={$relatedoption.id}';" class="nobr">
                 {$relatedoption.description}
             </TD>
-            <TD class="nobr">
+            <TD OnClick="return self.location.href='?m=configedit&id={$relatedoption.id}';" class="nobr">
                 {$relatedoption.value}
             </TD>
             <TD class="lms-ui-buttons text-right nobr">
