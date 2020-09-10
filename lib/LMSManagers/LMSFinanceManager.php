@@ -3720,6 +3720,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 case 'address':
                     $where = ' AND address ?LIKE? ' . $this->db->Escape('%' . $search . '%');
                     break;
+                case 'positions':
+                    $positionsfilter = ' AND description ?LIKE? ' . $this->db->Escape('%' . $search . '%');
+                    break;
             }
         }
 
@@ -3747,7 +3750,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 						(CASE WHEN SUM(value * documents.currencyvalue) > 0 THEN SUM(value * documents.currencyvalue) ELSE 0 END) AS income,
 						(CASE WHEN SUM(value * documents.currencyvalue) < 0 THEN -SUM(value * documents.currencyvalue) ELSE 0 END) AS expense 
 					FROM documents
-					JOIN receiptcontents ON documents.id = docid AND type = ?
+					JOIN receiptcontents ON documents.id = docid AND type = ? ' . $positionsfilter . '
 					WHERE regid = ?
 					GROUP BY documents.id '
                     . $having . '
@@ -3769,7 +3772,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			FROM documents
 			LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 			LEFT JOIN vusers ON (userid = vusers.id)
-			LEFT JOIN receiptcontents ON (documents.id = docid AND type = ?)
+			LEFT JOIN receiptcontents ON (documents.id = docid AND type = ? ' . $positionsfilter .')
 			WHERE regid = ?'
             .$where
             .' GROUP BY documents.id, currency, currencyvalue, number, cdate, customerid, documents.name, address, zip, city, numberplans.template,
