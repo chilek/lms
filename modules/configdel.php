@@ -49,4 +49,3 @@ if ($SESSION->is_set('backto', true)) {
 } else {
     $SESSION->redirect('?m=configlist');
 }
-
