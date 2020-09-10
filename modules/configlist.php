@@ -185,11 +185,24 @@ function GetConfigList()
 
     $DB = LMSDB::getInstance();
 
-    $config = $DB->GetAll('SELECT c.id, c.section, c.var, c.value, c.description as usercomment, c.disabled, c.userid,
-        u.login, u.firstname, u.lastname
+    $config = $DB->GetAll(
+        'SELECT c.id, c.section, c.var, c.value, c.description as usercomment, c.disabled, c.userid, c.divisionid, c.configid,
+        u.login, u.firstname, u.lastname, d.shortname,
+        (CASE WHEN c.divisionid IS NOT NULL AND c.userid IS NULL 
+                THEN \'division value\'
+            WHEN c.divisionid IS NOT NULL AND c.userid IS NOT NULL 
+                THEN \'user in division value\' 
+            WHEN c.divisionid IS NULL AND c.userid IS NOT NULL 
+                THEN \'user value\'
+            WHEN c.divisionid IS NULL AND c.userid IS NULL 
+                THEN \'global value\'
+            END
+        ) AS configtypedesc
         FROM uiconfig c
-        LEFT JOIN users u on c.userid = u.id           
-        WHERE section != \'userpanel\'');
+        LEFT JOIN users u on c.userid = u.id
+        LEFT JOIN divisions d on c.divisionid = d.id
+        WHERE section != \'userpanel\''
+    );
 
     if ($config) {
         $markdown_documentation = Utils::LoadMarkdownDocumentation();

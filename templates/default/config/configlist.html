@@ -40,14 +40,16 @@
 		data-order='[[ 1, "asc" ]]'
 		data-page-length="{$pagelimit}"
 		data-state-save="true"
-		{if !empty($section)} data-search-columns='[ { "search": "{$section}" }, null, null, null, null ]'{/if}
+		{if !empty($section)} data-search-columns='[ { "search": "{$section}" }, null, null, null, null, null, null, null ]'{/if}
 		data-empty-table-message='{t a="?m=configload"}No configuration options in database.<br>Click <A href="$a">here</A> to import them from lms.ini.{/t}'
 		style="display: none;">
     <COLGROUP>
 		<COL style="width: 1%;">
 		<COL style="width: 1%;">
 		<COL style="width: 1%;">
-		<COL style="width: 95%;">
+		<COL style="width: 93%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
 		<COL style="width: 1%;">
 		<COL style="width: 1%;">
     </COLGROUP>
@@ -65,8 +67,14 @@
 		<TH scope="col" class="text-center valign-bottom">
 			{trans("Comment:")}
 		</TH>
+		<TH scope="col" class="valign-bottom nobr" data-searchable="true" data-select-value="true" data-filter-id="type-filter">
+			{trans("Type:")}
+		</TH>
 		<TH scope="col" class="valign-bottom nobr" data-searchable="true" data-select-value="true" data-filter-id="user-filter">
 			{trans("User:")}
+		</TH>
+		<TH scope="col" class="valign-bottom nobr" data-searchable="true" data-select-value="true" data-filter-id="division-filter">
+			{trans("Division:")}
 		</TH>
 		<TH scope="col" class="text-right valign-bottom nobr" data-searchable="false" data-sortable="false">
 			<div id="command-buttons">
@@ -95,8 +103,14 @@
 			{$config.description|truncate:5000:"..."}
 			{if $config.usercomment != ''}<p><SPAN class="bold">{trans("Comment:")}</SPAN> {$config.usercomment|truncate:2000:"..."}</p>{/if}
 		</TD>
-		<TD>
-			{if $config.userid}{$config.login} / {$config.firstname} {$config.lastname}{else}-- {t}Global{/t} --{/if}
+		<TD class="nobr">
+			{trans($config.configtypedesc)}
+		</TD>
+		<TD class="nobr">
+			{if $config.userid}{$config.login} / {$config.firstname} {$config.lastname}{else}-- {t}none{/t} --{/if}
+		</TD>
+		<TD class="nobr">
+			{if $config.divisionid}{$config.shortname}{else}-- {t}none{/t} --{/if}
 		</TD>
 		<TD class="lms-ui-buttons text-right nobr">
 			{if $config.disabled}
@@ -104,9 +118,11 @@
 			{else}
 				{button type="link" icon="connected" tip="Disable" href="?m=configedit&id={$config.id}&statuschange=1"}
 			{/if}
+			{if empty($config.configid)}
 			{button type="link" icon="clone" tip="Clone" href="?m=configadd&id={$config.id}"}
-			{button type="link" icon="delete" class="delete-config" tip="Delete" data-user="{$config.userid}" href="?m=configdel&id={$config.id}{if !$config.userid}&globalconf=1{/if}"}
-			{button type="link" icon="edit" tip="Edit" href="?m={if $config.userid}configedituser{else}configedit{/if}&id={$config.id}"}
+			{/if}
+			{button type="link" icon="delete" class="delete-config" tip="Delete" href="?m=configdel&id={$config.id}"}
+			{button type="link" icon="edit" tip="Edit" href="?m=configedit&id={$config.id}"}
 			<input type="checkbox" name="marks[{$config.id}]" value="{$config.id}" form="configdel-form" class="lms-ui-multi-check">
 		</TD>
 	</TR>
@@ -114,7 +130,7 @@
     </TBODY>
     <TFOOT>
 	<TR>
-		<TD colspan="6" class="text-right bold">
+		<TD colspan="8" class="text-right bold">
 			<label>
 				{trans("Check All")}
 				<INPUT type="checkbox" class="lms-ui-multi-check-all">
@@ -139,16 +155,9 @@
 
 		$('.delete-config').click(function() {
 			var name = $(this).closest('tr').attr('data-name');
-			var userid = $(this).attr('data-user');
-			if (userid) {
-				confirmDialog($t("Are you sure, you want to delete option '$a' from database?", name), this).done(function () {
+			confirmDialog($t("Are you sure, you want to delete option \'$a\' from database?\n\nIf option has related options this action will remove all of them.", name), this).done(function() {
 					location.href = $(this).attr('href');
 				});
-			} else {
-				confirmDialog($t("Are you sure, you want to delete option '$a' from database?\n\nThis action will remove this option for all users.", name), this).done(function() {
-					location.href = $(this).attr('href');
-				});
-			}
 			return false;
 		});
 
@@ -188,9 +197,7 @@
 				return false;
 			}
 
-			var userid = parseInt($('#user-filter').val());
-			location.href = '?m=configadd&section=' + $('#section-filter').val() + '&new-section=' + section_name +
-					(userid ? '&userid=' + userid : '');
+			location.href = '?m=configadd&section=' + $('#section-filter').val() + '&new-section=' + section_name + '';
 		});
 
 		toggleSectionClone();

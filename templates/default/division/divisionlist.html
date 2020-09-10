@@ -56,7 +56,7 @@
     <TFOOT>
 	{if $pagination->getTotal() != 0}
 		<TR>
-			<TD class="lms-ui-pagination" COLSPAN="5">
+			<TD class="lms-ui-pagination division-context" COLSPAN="5">
 				{include file="pagination.html"}
 			</TD>
 		</TR>
@@ -64,6 +64,12 @@
     </TFOOT>
 </TABLE>
 	<script>
+		$(function() {
+			$('.division-context').on( 'lms:division_selection', function() {
+				location.reload();
+			});
+		});
+
 		$('.delete-division').click(function() {
 			var name = $(this).closest('tr').attr('data-name');
 			confirmDialog($t("Are you sure, you want to delete division '$a'?", name), this).done(function() {

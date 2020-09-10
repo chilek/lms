@@ -28,7 +28,7 @@ if (isset($_GET['id'])) {
     $id = intval($_GET['id']);
     if ($id) {
         $DB->BeginTrans();
-        $LMS->DeleteConfigOption($id, isset($_GET['globalconf']));
+        $LMS->DeleteConfigOption($id);
         $DB->CommitTrans();
     }
 } elseif (isset($_POST['marks'])) {
@@ -36,10 +36,16 @@ if (isset($_GET['id'])) {
     if (!empty($options)) {
         $DB->BeginTrans();
         foreach ($options as $option) {
-            $LMS->DeleteConfigOption($option, true);
+            $LMS->DeleteConfigOption($option);
         }
         $DB->CommitTrans();
     }
 }
 
-$SESSION->redirect('?' . $SESSION->get('backto'));
+if ($SESSION->is_set('backto', true)) {
+    $SESSION->redirect('?' . $SESSION->get('backto', true));
+} elseif ($SESSION->is_set('backto')) {
+    $SESSION->redirect('?' . $SESSION->get('backto'));
+} else {
+    $SESSION->redirect('?m=configlist');
+}

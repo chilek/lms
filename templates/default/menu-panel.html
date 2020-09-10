@@ -77,10 +77,9 @@
 
 		</script>
 
-		{if count($context_divisions) > 1}
+		{if is_array($context_divisions) && count($context_divisions) > 1}
 			<div id="lms-ui-division">
 				<select size="1" id="select_context_division" name="select_context_division" {tip text="Global division context"}>
-					<option value="">{trans("- all -")}</option>
 					{foreach $context_divisions as $division}
 						<option value="{$division.id}" {if $division.id == $division_context}selected{/if}>
 							{$division.shortname|truncate:30:"...":true}
@@ -156,7 +155,10 @@
 			data['division_context'] = $(this).val();
 			saveCurrentDivision(data).done(function () {
 				$('.division-context-selected').val(data['division_context']);
-				$('.force_division_context').trigger( "lms:division_selection");
+				var divisionContext = $('.division-context');
+				if (divisionContext.length) {
+					divisionContext.trigger("lms:division_selection");
+				}
 			});
 		});
 
