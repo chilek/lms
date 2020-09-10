@@ -28,6 +28,8 @@ $_LANG['<!assignment>backward'] = 'wstecz';
 $_LANG['<!assignment>Backward:'] = 'Wstecz:';
 $_LANG['Check if tariff should be accounted backward'] = 'Zaznacz, jeśli taryfa powinna być naliczana za okres wsteczny';
 
+$_LANG['(limited to first 100)'] = '(ograniczone do pierwszych 100)';
+
 $_LANG['No documents to JPK export!'] = 'Brak dokumentów do eksportu JPK!';
 
 $_LANG['Customer has not any assigned email contacts with "documents" flag!'] = 'Klient nie posiada przypisanych żadnych adresów poczty elektronicznej z ustawioną flagą "dokumenty"!';
