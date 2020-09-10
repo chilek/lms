@@ -137,7 +137,7 @@ class LMSSmartyPlugins
 
         if ($force_global_division_context) {
             $result .= ($label ? '<label>' : '') . ($label ? trans($label) : '');
-            $result .= '<span name="force_division_context" class="force_division_context bold">' . (!empty($user_divisions) ? $user_divisions['shortname'] : trans("all")) . '</span>';
+            $result .= '<span class="division-context bold">' . (!empty($user_divisions) ? $user_divisions['shortname'] : trans("all")) . '</span>';
             $result .= ($label ? '</label>' : '');
             $result .= '<input type="hidden" class="division-context-selected" name="' . $name . '"'
                 . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '') . ' value="'
@@ -145,7 +145,7 @@ class LMSSmartyPlugins
         } else {
             if (!empty($user_divisions) && count($user_divisions) > 1) {
                 $result .= ($label ? '<label for="' . $name . '">' : '') . ($label ? trans($label) : '') . ($label ? '&nbsp;' : '');
-                $result .= '<select id="' . $id . '" name="' . $name . '" ' . self::tipFunction(array('text' => 'Select division'), $template)
+                $result .= '<select class="division-context" id="' . $id . '" name="' . $name . '" ' . self::tipFunction(array('text' => 'Select division'), $template)
                     . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '')
                     . ($onchange ? ' onchange="' . $onchange . '"' : '')
                     . ($division_selection ? ' division_selection="' . $division_selection . '"' : '')
@@ -160,7 +160,7 @@ class LMSSmartyPlugins
             } else {
                 $user_division = reset($user_divisions);
                 $result .= ($label ? '<label>' : '') . ($label ? trans($label) : '');
-                $result .= '<span class="bold">' . (!empty($user_divisions) ? $user_division['shortname'] : trans("all")) . '</span>';
+                $result .= '<span class="division-context bold">' . (!empty($user_divisions) ? $user_division['shortname'] : trans("all")) . '</span>';
                 $result .= ($label ? '</label>' : '');
                 $result .= '<input type="hidden" class="division-context-selected" name="' . $name . '"'
                     . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '') . ' value="'

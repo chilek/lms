@@ -2301,8 +2301,8 @@ if (!empty($intersect)) {
                     }
                     $customers = $DB->GetCol(
                         "SELECT id FROM customers
-                        WHERE status IN (?, ?) AND id IN (" . implode(',', $customers) . ")",
-                        array(CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION)
+                        WHERE status IN ? AND id IN (" . implode(',', $customers) . ")",
+                        array(array(CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION))
                     );
                     if (empty($customers)) {
                         break;
@@ -2440,8 +2440,9 @@ if (!empty($intersect)) {
                         break;
                     }
                     $customers = $DB->GetCol(
-                        "SELECT id FROM customers WHERE status = ?"
-                        . (empty($customers) ? '' : " AND id NOT IN (" . implode(',', $customers) . ")"),
+                        "SELECT c.id FROM customers c WHERE c.status = ?"
+                        . (empty($customers) ? '' : " AND c.id NOT IN (" . implode(',', $customers) . ")")
+                        . ($customergroups ?: ''),
                         array(CSTATUS_DEBT_COLLECTION)
                     );
                     if (empty($customers)) {

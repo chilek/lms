@@ -44,6 +44,8 @@ interface LMSUserManagerInterface
 
     public function getUserList($params = array());
 
+    public function getUsers($params = array());
+
     public function getUserIDByLogin($login);
 
     public function userAdd($user);

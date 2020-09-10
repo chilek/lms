@@ -296,10 +296,6 @@ class LMS
                 'up_info_changes'
             );
 
-            $order_records = array(
-                'documents', 'networks', 'rttickets', 'rtmessages', 'uiconfig'
-            );
-
             foreach ($tables as $idx => $table) {
                 if (in_array($table, $order)) {
                     unset($tables[$idx]);
@@ -323,7 +319,7 @@ class LMS
                 $query = 'INSERT INTO ' . $tablename . ' (' . implode(',', $fields) . ') VALUES ';
                 $record_limit = self::DB_DUMP_MULTI_RECORD_LIMIT;
                 $records = array();
-                $this->DB->Execute('SELECT * FROM ' . $tablename . (in_array($tablename, $order_records) ? ' ORDER BY id' : ''));
+                $this->DB->Execute('SELECT * FROM ' . $tablename . (isset($record['id']) ? ' ORDER BY id' : ''));
                 while ($row = $this->DB->_driver_fetchrow_assoc()) {
                     $values = array();
                     foreach ($row as $value) {
@@ -421,6 +417,12 @@ class LMS
     {
         $manager = $this->getUserManager();
         return $manager->getUserList($params);
+    }
+
+    public function GetUsers($params = array())
+    {
+        $manager = $this->getUserManager();
+        return $manager->getUsers($params);
     }
 
     public function GetUserIDByLogin($login)
@@ -2210,16 +2212,58 @@ class LMS
         return $manager->GetConfigVariable($config_id);
     }
 
-    public function CloneConfigSection($section, $new_section, $userid = null)
+    public function CloneConfigSection($section, $new_section)
     {
         $manager = $this->getConfigManager();
-        return $manager->CloneConfigSection($section, $new_section, $userid);
+        return $manager->CloneConfigSection($section, $new_section);
     }
 
-    public function DeleteConfigOption($id, $global = true)
+    public function DeleteConfigOption($id)
     {
         $manager = $this->getConfigManager();
-        return $manager->DeleteConfigOption($id, $global);
+        return $manager->DeleteConfigOption($id);
+    }
+
+    public function getRelatedUsers($id, $divisionid = null)
+    {
+        $manager = $this->getConfigManager();
+        return $manager->getRelatedUsers($id, $divisionid);
+    }
+
+    public function getRelatedDivisions($id)
+    {
+        $manager = $this->getConfigManager();
+        return $manager->getRelatedDivisions($id);
+    }
+
+    public function getRelatedOptions($id)
+    {
+        $manager = $this->getConfigManager();
+        return $manager->getRelatedOptions($id);
+    }
+
+    public function getOptionHierarchy($id)
+    {
+        $manager = $this->getConfigManager();
+        return $manager->getOptionHierarchy($id);
+    }
+
+    public function addConfigOption($option)
+    {
+        $manager = $this->getConfigManager();
+        return $manager->addConfigOption($option);
+    }
+
+    public function editConfigOption($option)
+    {
+        $manager = $this->getConfigManager();
+        return $manager->editConfigOption($option);
+    }
+
+    public function getParentOption($id)
+    {
+        $manager = $this->getConfigManager();
+        return $manager->getParentOption($id);
     }
 
     public function toggleConfigOption($id)
@@ -4360,10 +4404,10 @@ class LMS
         return $manager->UpdateDivision($division);
     }
 
-    public function CheckDivisionsAccess($divisions)
+    public function CheckDivisionsAccess($params)
     {
         $manager = $this->getDivisionManager();
-        return $manager->CheckDivisionsAccess($divisions);
+        return $manager->checkDivisionsAccess($params);
     }
 
     /*

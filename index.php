@@ -262,17 +262,16 @@ if ($AUTH->islogged) {
         $tabDivisionContext = '';
         $SESSION->save('division_context', $tabDivisionContext, true);
     } else {
-        $user_divisions_ids = array_keys($user_divisions);
         $user_division = reset($user_divisions);
         if (count($user_divisions) > 1) {
             if (!isset($persistentDivisionContext)
-                || (!in_array($persistentDivisionContext, $user_divisions_ids)
+                || (!isset($user_divisions[$persistentDivisionContext])
                     && !empty($persistentDivisionContext))) {
-                $SESSION->save_persistent_setting('division_context', '');
+                $SESSION->save_persistent_setting('division_context', $user_division['id']);
                 $persistentDivisionContext = $SESSION->get_persistent_setting('division_context');
             }
             if (!isset($tabDivisionContext)
-                || (!in_array($persistentDivisionContext, $user_divisions_ids)
+                || (!isset($user_divisions[$persistentDivisionContext])
                     && !empty($persistentDivisionContext))) {
                 $tabDivisionContext = $persistentDivisionContext;
                 $SESSION->save('division_context', $tabDivisionContext, true);
@@ -282,6 +281,7 @@ if ($AUTH->islogged) {
             $SESSION->save('division_context', $user_division['id'], true);
         }
     }
+    LMSDivisionManager::setCurrentDivision($tabDivisionContext);
     $layout['division'] = $tabDivisionContext;
 
     if (!$api) {
@@ -325,11 +325,7 @@ if ($AUTH->islogged) {
         'user_id' => Auth::GetCurrentUser(),
     ));
 
-    LMSConfig::getConfig(array(
-        'force' => true,
-        'force_user_settings_only' => true,
-        'user_id' => Auth::GetCurrentUser(),
-    ));
+    ConfigHelper::setFilter(LMSDivisionManager::getCurrentDivision(), Auth::GetCurrentUser());
 
     Localisation::initDefaultCurrency();
 
