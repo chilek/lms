@@ -35,7 +35,7 @@
     </THEAD>
     <TBODY>
     {foreach $relatedoptions.users as $relatedoption}
-        <TR class="highlight {if $relatedoption.disabled} blend{/if}">
+        <TR class="highlight {if $relatedoption.disabled} blend{/if}" data-target-url="?m=configedit&id={$relatedoption.id}">
             <TD class="nobr">
                 <strong>{$relatedoption.login}</strong><BR>
             </TD>
