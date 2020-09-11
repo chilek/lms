@@ -4849,3 +4849,5 @@ $_LANG['Show more/less'] = 'Pokaż więcej/mniej';
 $_LANG['Preview'] = 'Podgląd';
 
 $_LANG['Network device selection is required!'] = 'Wymagany wybór urządzenia sieciowego!';
+
+$_LANG['financial operations'] = 'operacje finansowe';
