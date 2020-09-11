@@ -126,7 +126,6 @@
 			{if ($ticket.state != $smarty.const.RT_RESOLVED || ($ticket.state == $smarty.const.RT_RESOLVED && $aet && ($smarty.now - $ticket.resolvetime) < $aet)) || (ConfigHelper::checkPrivilege('superuser'))}
 				{button type="link" icon="message" href="?m=rtmessageadd&ticketid={$ticket.id}" tip="New Message"}
 			{/if}
-			{button type="link" icon="info" href="?m=rtticketview&id={$ticket.id}" tip="Info"}
 		{/buttons}
 		<input type="checkbox" class="lms-ui-multi-check" name="ticketid[]" value="{$ticket.id}">
 	</TD>

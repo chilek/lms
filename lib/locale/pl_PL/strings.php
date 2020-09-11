@@ -24,6 +24,9 @@
  *  $Id$
  */
 
+$_LANG['<!invoice>receipt'] = 'paragon';
+$_LANG['<!invoice>(receipt)'] = '(paragon)';
+
 $_LANG['<!assignment>backward'] = 'wstecz';
 $_LANG['<!assignment>Backward:'] = 'Wstecz:';
 $_LANG['Check if tariff should be accounted backward'] = 'Zaznacz, jeśli taryfa powinna być naliczana za okres wsteczny';
@@ -4849,3 +4852,5 @@ $_LANG['Show more/less'] = 'Pokaż więcej/mniej';
 $_LANG['Preview'] = 'Podgląd';
 
 $_LANG['Network device selection is required!'] = 'Wymagany wybór urządzenia sieciowego!';
+
+$_LANG['financial operations'] = 'operacje finansowe';

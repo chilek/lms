@@ -60,7 +60,9 @@
 			{if $use_alert_color}<span style="color: red; font-weight: bold;">{/if}
 			{$invoice.pdate|date_format:"%Y/%m/%d"}<BR>
 			{if $use_alert_color}</span>{/if}
-			{if !ConfigHelper::checkConfig('invoices.hide_payment_type')}{trans($invoice.paytypename)}{if !empty($invoice.splitpayment)}<br>{trans("(split payment)")}{/if}{/if}
+			{if !ConfigHelper::checkConfig('invoices.hide_payment_type')}{trans($invoice.paytypename)}
+			{if !empty($invoice.splitpayment)}<br>{trans("(split payment)")}{/if}
+			{if $invoice.flags & $smarty.const.DOC_RECEIPT}<br>{trans("<!invoice>(receipt)")}{/if}{/if}
 		</TD>
 	</TR>
 	<TR>

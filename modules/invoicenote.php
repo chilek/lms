@@ -99,6 +99,9 @@ if (isset($_GET['id']) && $action == 'init') {
     $cnote['reason'] = '';
     $cnote['paytype'] = $invoice['paytype'];
     $cnote['splitpayment'] = $invoice['splitpayment'];
+    $cnote['flags'] = array(
+        DOC_FLAG_RECEIPT => $invoice['flags'] & DOC_FLAG_RECEIPT ? 1 : 0,
+    );
     $cnote['currency'] = $invoice['currency'];
     $cnote['oldcurrency'] = $invoice['currency'];
 
@@ -575,6 +578,7 @@ switch ($action) {
             'paytime' => $cnote['paytime'],
             'paytype' => $cnote['paytype'],
             'splitpayment' => empty($cnote['splitpayment']) ? 0 : 1,
+            'flags' => empty($cnote['flags'][DOC_FLAG_RECEIPT]) ? 0 : DOC_FLAG_RECEIPT,
             SYSLOG::RES_USER => Auth::GetCurrentUser(),
             SYSLOG::RES_CUST => $invoice['customerid'],
             'name' => $use_current_customer_data ? $customer['customername'] : $invoice['name'],
@@ -612,12 +616,12 @@ switch ($action) {
             'currencyvalue' => $cnote['currencyvalue'],
             'memo' => $use_current_customer_data ? (empty($customer['documentmemo']) ? null : $customer['documentmemo']) : $invoice['memo'],
         );
-        $DB->Execute('INSERT INTO documents (number, numberplanid, type, cdate, sdate, paytime, paytype, splitpayment,
+        $DB->Execute('INSERT INTO documents (number, numberplanid, type, cdate, sdate, paytime, paytype, splitpayment, flags,
 				userid, customerid, name, address, ten, ssn, zip, city, countryid, reference, reason, divisionid,
 				div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 				div_bank, div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
 				recipient_address_id, post_address_id, currency, currencyvalue, memo)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
 					?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
         $id = $DB->GetOne(

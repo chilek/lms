@@ -608,6 +608,8 @@ $DOCTYPES = array(
     DOC_OTHER       =>  trans('other')
 );
 
+define('DOC_FLAG_RECEIPT', 1);
+
 define('DOC_ENTITY_ORIGINAL', 1);
 define('DOC_ENTITY_COPY', 2);
 define('DOC_ENTITY_DUPLICATE', 4);

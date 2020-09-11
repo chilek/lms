@@ -570,6 +570,7 @@ switch ($action) {
             'paytime' => $paytime,
             'paytype' => $invoice['paytype'],
             'splitpayment' => empty($invoice['splitpayment']) ? 0 : 1,
+            'flags' => empty($invoice['flags'][DOC_FLAG_RECEIPT]) ? 0 : DOC_FLAG_RECEIPT,
             SYSLOG::RES_CUST => $invoice['customerid'],
             'name' => $use_current_customer_data ? $customer['customername'] : $invoice['name'],
             'address' => $use_current_customer_data ? (($customer['postoffice'] && $customer['postoffice'] != $customer['city'] && $customer['street']
@@ -618,7 +619,7 @@ switch ($action) {
         $args[SYSLOG::RES_NUMPLAN] = $invoice['numberplanid'] ?: null;
         //$args['recipient_address_id'] = $invoice
         $args[SYSLOG::RES_DOC] = $iid;
-        $DB->Execute('UPDATE documents SET cdate = ?, sdate = ?, paytime = ?, paytype = ?, splitpayment = ?, customerid = ?,
+        $DB->Execute('UPDATE documents SET cdate = ?, sdate = ?, paytime = ?, paytype = ?, splitpayment = ?, flags = ?, customerid = ?,
 				name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ?, countryid = ?, divisionid = ?,
 				div_name = ?, div_shortname = ?, div_address = ?, div_city = ?, div_zip = ?, div_countryid = ?,
 				div_ten = ?, div_regon = ?, div_bank = ?, div_account = ?, div_inv_header = ?, div_inv_footer = ?,

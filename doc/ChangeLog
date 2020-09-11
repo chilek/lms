@@ -131,9 +131,17 @@ version 26-git (????-??-??):
   - improvement: changed default value for 'phpui.datables_max_records' from '300' to '0' [chilan]
   - enhancement: introduce configuration per division (UI) [ravvar, chilan]
   - enhancement: implemented 'customer-group' action in lms-notify.php [chilan]
+  - enhancement: new user permission 'financial_operations' disallows access to financial
+    record lists [chilan]
+  - enhancement: new configuration variable 'sms.message_template' allows to reformat
+    message before sending it [chilan]
+  - improvement: lms-rtparser.php backend script is able to scale down image according
+    to 'phpui.uploaded_image_max_size' [chilan]
+  - enhancement: added separate receipt/bill sale flag for invoices [chilan]
   - improvement: don't allow to add messages to ticket whitch was resolved too long time ago 
     variable: rtparser.allow_open_resolved_tickets_newer_than, default: 259200 [interduo]
-
+    
+    
 version 25.0 (2020-05-15):
 
   - improvement: introduced invoices.hide_ssn configuration variable which allows to hide SSN
