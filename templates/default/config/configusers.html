@@ -35,17 +35,17 @@
     </THEAD>
     <TBODY>
     {foreach $relatedoptions.users as $relatedoption}
-        <TR class="highlight {if $relatedoption.disabled} blend{/if}">
-            <TD OnClick="return self.location.href='?m=configedit&id={$relatedoption.id}';" class="nobr">
+        <TR class="highlight {if $relatedoption.disabled} blend{/if}" data-target-url="?m=configedit&id={$relatedoption.id}">
+            <TD class="nobr">
                 <strong>{$relatedoption.login}</strong><BR>
             </TD>
-            <TD OnClick="return self.location.href='?m=configedit&id={$relatedoption.id}';" class="nobr">
+            <TD class="nobr">
                 {$relatedoption.name}
             </TD>
-            <TD OnClick="return self.location.href='?m=configedit&id={$relatedoption.id}';" class="nobr">
+            <TD class="nobr">
                 {$relatedoption.description}
             </TD>
-            <TD OnClick="return self.location.href='?m=configedit&id={$relatedoption.id}';" class="nobr">
+            <TD class="nobr">
                 {$relatedoption.value}
             </TD>
             <TD class="lms-ui-buttons text-right nobr">

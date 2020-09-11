@@ -45,17 +45,17 @@
 
     {if $reftype == division}
         {foreach $relatedoptions.divisions[0].users as $relatedoptionuser}
-            <TR class="highlight {if $relatedoptionuser.disabled} blend{/if}">
-                <TD OnClick="return self.location.href='?m=configedit&id={$relatedoptionuser.id}';" class="nobr">
+            <TR class="highlight {if $relatedoptionuser.disabled} blend{/if}" data-target-url="?m=configedit&id={$relatedoptionuser.id}">
+                <TD class="nobr">
                     <strong>{$relatedoptionuser.login}</strong><BR>
                 </TD>
-                <TD OnClick="return self.location.href='?m=configedit&id={$relatedoptionuser.id}';" class="nobr">
+                <TD class="nobr">
                     {$relatedoptionuser.name}
                 </TD>
-                <TD OnClick="return self.location.href='?m=configedit&id={$relatedoptionuser.id}';" class="nobr">
+                <TD class="nobr">
                     {$relatedoptionuser.description}
                 </TD>
-                <TD OnClick="return self.location.href='?m=configedit&id={$relatedoptionuser.id}';" class="nobr">
+                <TD class="nobr">
                     {$relatedoptionuser.value}
                 </TD>
                 <TD class="lms-ui-buttons text-right nobr">
@@ -77,17 +77,17 @@
         {/foreach}
     {else}
         {foreach $relatedoption.users as $relatedoptionuser}
-            <TR class="highlight {if $relatedoptionuser.disabled} blend{/if}">
-                <TD OnClick="return self.location.href='?m=configedit&id={$relatedoptionuser.id}';" class="nobr">
+            <TR class="highlight {if $relatedoptionuser.disabled} blend{/if}" data-target-url="?m=configedit&id={$relatedoptionuser.id}">
+                <TD class="nobr">
                     <strong>{$relatedoptionuser.login}</strong><BR>
                 </TD>
-                <TD OnClick="return self.location.href='?m=configedit&id={$relatedoptionuser.id}';" class="nobr">
+                <TD class="nobr">
                     {$relatedoptionuser.name}
                 </TD>
-                <TD OnClick="return self.location.href='?m=configedit&id={$relatedoptionuser.id}';" class="nobr">
+                <TD class="nobr">
                     {$relatedoptionuser.description}
                 </TD>
-                <TD OnClick="return self.location.href='?m=configedit&id={$relatedoptionuser.id}';" class="nobr">
+                <TD class="nobr">
                     {$relatedoptionuser.value}
                 </TD>
                 <TD class="lms-ui-buttons text-right nobr">
