@@ -141,10 +141,12 @@ $filter['forward'] = ConfigHelper::getConfig('phpui.timetable_days_forward');
 $eventlist = $LMS->GetEventList($filter);
 
 $overdue_events_only = isset($_GET['overdue_events_only']) ? 1 : 0;
+$force_overdue_events = isset($_GET['force_overdue_events']) ? 1 : 0;
+
 $overdue_events = array();
 
+$params['userid'] = Auth::GetCurrentUser();
 if (ConfigHelper::checkConfig('phpui.timetable_overdue_events') && empty($overdue_events_only)) {
-    $params['userid'] = Auth::GetCurrentUser();
     $params['forward'] = -1;
     $params['closed'] = 0;
     $params['type'] = 0;
@@ -158,8 +160,10 @@ if (ConfigHelper::checkConfig('phpui.timetable_overdue_events') && empty($overdu
         $params['limit'] = $count;
     }
     $overdue_events = $LMS->GetEventList($params);
-} elseif (!empty($overdue_events_only)) {
-    unset($params['userid']);
+} elseif (!empty($overdue_events_only) || !empty($force_overdue_events)) {
+    if (empty($force_overdue_events)) {
+        unset($params['userid']);
+    }
     $params['forward'] = -1;
     $params['closed'] = 0;
     $params['type'] = 0;
