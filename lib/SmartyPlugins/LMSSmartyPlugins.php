@@ -121,7 +121,6 @@ class LMSSmartyPlugins
         $selected = isset($params['selected']) ? $params['selected'] : null;
         $superuser = isset($params['superuser']) && !empty($params['superuser']) ? $params['superuser'] : null;
         $onchange = isset($params['onchange']) && !empty($params['onchange']) ? $params['onchange'] : null;
-        $division_selection = isset($params['division_selection']) && !empty($params['division_selection']) ? $params['division_selection'] : null;
 
         if (isset($user_divisions) && empty($user_divisions)) {
             if ($force_global_division_context) {
@@ -148,7 +147,6 @@ class LMSSmartyPlugins
                 $result .= '<select class="division-context" id="' . $id . '" name="' . $name . '" ' . self::tipFunction(array('text' => 'Select division'), $template)
                     . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '')
                     . ($onchange ? ' onchange="' . $onchange . '"' : '')
-                    . ($division_selection ? ' division_selection="' . $division_selection . '"' : '')
                     . '>';
                 $result .= '<option VALUE=""' . (!$selected ? ' selected' : '') . '>- ' . trans("all") . ' -</option>';
                 foreach ($user_divisions as $division) {
