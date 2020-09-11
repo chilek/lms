@@ -39,14 +39,14 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
 
     public function note_date()
     {
-        $this->backend->SetFont(self::TCPDF_FONT, '', 10);
-        $this->backend->writeHTMLCell(0, 0, '', 20, trans('Draw-up date:') . ' <b>' . date("d.m.Y", $this->data['cdate']) . '</b>', 0, 1, 0, true, 'R');
+        $this->backend->SetFont(self::TCPDF_FONT, '', 8);
+        $this->backend->writeHTMLCell(0, 0, '', 10, trans('Draw-up date:') . ' <b>' . date("d.m.Y", $this->data['cdate']) . '</b>', 0, 1, 0, true, 'R');
         $this->backend->writeHTMLCell(0, 0, '', '', trans('Deadline:') . ' <b>' . date("d.m.Y", $this->data['pdate']) . '</b>', 0, 1, 0, true, 'R');
     }
 
     public function note_title()
     {
-        $this->backend->SetY(35);
+        $this->backend->SetY(29);
         $this->backend->SetFont(self::TCPDF_FONT, 'B', 16);
         $docnumber = docnumber(array(
             'number' => $this->data['number'],
@@ -61,7 +61,7 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
 
     public function note_drawer()
     {
-        $this->backend->SetFont(self::TCPDF_FONT, '', 10);
+        $this->backend->SetFont(self::TCPDF_FONT, '', 8);
         $drawer = '<b>' . trans('Note drawer:') . '</b><br>';
         $tmp = $this->data['division_header'];
 
@@ -93,7 +93,7 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
             $drawer .= $line . '<br>';
         }
         $this->backend->Ln(0);
-        $this->backend->writeHTMLCell(80, '', '', 47, $drawer, 0, 1, 0, true, 'L');
+        $this->backend->writeHTMLCell(80, '', '', 45, $drawer, 0, 1, 0, true, 'L');
     }
 
     public function shipping_address()
@@ -101,8 +101,8 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
         $shipaddress .= $this->data['name'] . '<br>';
         $shipaddress .= $this->data['address'] . '<br>';
         $shipaddress .= $this->data['zip'] . ' ' . $this->data['city'] . '<br>';
-        $this->backend->SetFont(self::TCPDF_FONT, 'B', 12);
-        $this->backend->writeHTMLCell(80, '', 114, 56, $shipaddress, 0, 1, 0, true, 'L');
+        $this->backend->SetFont(self::TCPDF_FONT, 'B', 10);
+        $this->backend->writeHTMLCell(80, '', 125, 50, $shipaddress, 0, 1, 0, true, 'L');
     }
 
     public function note_recipient()
@@ -120,7 +120,7 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
             $recipient .= trans('SSN') . ': ' . $this->data['ssn'];
         }
         $this->backend->SetFont(self::TCPDF_FONT, '', 10);
-        $this->backend->writeHTMLCell(80, '', 15, 95, $recipient, 0, 1, 0, true, 'L');
+        $this->backend->writeHTMLCell(80, '', 15, 80.5, $recipient, 0, 1, 0, true, 'L');
 
         $y = $this->backend->GetY();
 
@@ -138,7 +138,7 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
     public function note_data()
     {
         /* print table */
-        $this->backend->Ln(0);
+        $this->backend->Ln(4.2);
         $this->backend->writeHTMLCell('', '', '', '', '', 0, 1, 0, true, 'L');
 
         $this->backend->SetFillColor(200, 200, 200);
@@ -259,10 +259,20 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
         $this->backend->writeHTMLCell(70, '', 125, '', trans('issuer\'s signature'), 0, 1, 0, true, 'C');
     }
 
+    public function note_header_image()
+    {
+        $image_path = ConfigHelper::getConfig('invoices.header_image', '', true);
+        if (!file_exists($image_path)) {
+            return;
+        }
+        $this->backend->writeHTMLCell(40, 0, 12, 8, '<img src="' . $image_path . '">');
+    }
+
     public function Draw($note)
     {
         $this->data = $note;
 
+        $this->note_header_image();
         $this->invoice_no_accountant();
         $this->note_date();
         $this->invoice_expositor();
