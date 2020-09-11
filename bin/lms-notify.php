@@ -134,11 +134,33 @@ if (empty($channels)) {
     $channels[] = 'mail';
 }
 
+$supported_actions = array(
+    'customer-status' => false,
+    'node-access' => false,
+    'assignment-invoice' => false,
+    'all-assignment-suspension' => false,
+    'customer-group' => true,
+);
+
 $actions = array();
 if (isset($options['actions'])) {
-    $actions = explode(',', $options['actions']);
+    if (preg_match('/^[^,\(]+(\([^\)]+\))?(,[^,\(]+(\([^\)]+\))?)*$/', $options['actions'])
+        && preg_match_all('/([^,\(]+)(?:\(([^\)]+)\))?/', $options['actions'], $matches)) {
+        foreach ($matches[1] as $idx => $action) {
+            if (!isset($supported_actions[$action]) || ($supported_actions[$action] != !empty($matches[2][$idx]))) {
+                die('Invalid format of actions parameter!' . PHP_EOL);
+            }
+            $actions[$action] = empty($matches[2][$idx]) ? array() : preg_split('/,/', $matches[2][$idx], PREG_SPLIT_NO_EMPTY);
+        }
+    } else {
+        die('Invalid format of actions parameter!' . PHP_EOL);
+    }
 } else {
-    $actions = array('node-access', 'customer-status', 'assignment-invoice');
+    $actions = array(
+        'node-access' => array(),
+        'customer-status' => array(),
+        'assignment-invoice' => array(),
+    );
 }
 
 $current_month = intval(strftime('%m'));
@@ -2299,317 +2321,426 @@ if (!empty($intersect)) {
                     if (empty($customers)) {
                         break;
                     }
+
+                    $where = array();
+                    foreach ($actions as $action => $action_params) {
+                        switch ($action) {
+                            case 'node-access':
+                                $where[] = 'EXISTS (SELECT id FROM nodes WHERE nodes.ownerid = c.id AND access = 1)';
+                                break;
+                            case 'assignment-invoice':
+                                $where[] = 'EXISTS (SELECT id FROM assignments
+                                    WHERE invoice = ' . DOC_INVOICE . ' AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL)
+                                        AND datefrom <= ?NOW? AND (dateto = 0 OR dateto >= ?NOW?)
+                                        AND customerid = c.id)';
+                                break;
+                            case 'customer-status':
+                                $where[] = 'EXISTS (SELECT id FROM customers
+                                    WHERE status <> ' . CSTATUS_DEBT_COLLECTION . ' AND customers.id = c.id)';
+                                break;
+                            case 'all-assignment-suspension':
+                                $where[] = 'NOT EXISTS (SELECT id FROM assignments
+                                    WHERE customerid = c.id AND tariffid IS NULL AND liabilityid IS NULL)';
+                                break;
+                            case 'customer-group':
+                                $where[] = 'NOT EXISTS (
+                                    SELECT ca.id FROM customerassignments ca
+                                    JOIN customergroups g ON g.id = ca.customergroupid
+                                    WHERE ca.customerid = c.id AND LOWER(g.name) = LOWER(\'' . reset($action_params) . '\'))';
+                                break;
+                        }
+                    }
+
                     $customers = $DB->GetCol(
-                        "SELECT id FROM customers
-                        WHERE status IN ? AND id IN (" . implode(',', $customers) . ")",
-                        array(array(CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION))
+                        'SELECT c.id FROM customers c
+                        WHERE c.id IN (' . implode(',', $customers) . ')'
+                        . ' AND (' . implode(' AND ', $where) . ')'
                     );
                     if (empty($customers)) {
                         break;
                     }
-                    if (in_array('node-access', $actions)) {
-                        $nodes = $DB->GetAll(
-                            "SELECT id, ownerid FROM nodes WHERE access = ?
-                            AND ownerid IN (" . implode(',', $customers) . ")",
-                            array(1)
-                        );
-                        if (!empty($nodes)) {
-                            foreach ($nodes as $node) {
-                                if (!$quiet) {
-                                    printf("[block/node-access] CustomerID: %04d, NodeID: %04d" . PHP_EOL, $node['ownerid'], $node['id']);
-                                }
 
-                                if (!$debug) {
-                                    $DB->Execute("UPDATE nodes SET access = ?
-                                        WHERE id = ?", array(0, $node['id']));
-                                    if ($SYSLOG) {
-                                        $SYSLOG->NewTransaction('lms-notify.php');
-                                        $SYSLOG->AddMessage(
-                                            SYSLOG::RES_NODE,
-                                            SYSLOG::OPER_UPDATE,
-                                            array(
-                                                SYSLOG::RES_NODE => $node['id'],
-                                                SYSLOG::RES_CUST => $node['ownerid'],
-                                                'access' => 0
-                                            )
-                                        );
+                    foreach ($actions as $action => $action_params) {
+                        switch ($action) {
+                            case 'node-access':
+                                $nodes = $DB->GetAll(
+                                    "SELECT id, ownerid FROM nodes WHERE access = ?
+                                    AND ownerid IN (" . implode(',', $customers) . ")",
+                                    array(1)
+                                );
+                                if (!empty($nodes)) {
+                                    foreach ($nodes as $node) {
+                                        if (!$quiet) {
+                                            printf("[block/node-access] CustomerID: %04d, NodeID: %04d" . PHP_EOL, $node['ownerid'], $node['id']);
+                                        }
+
+                                        if (!$debug) {
+                                            $DB->Execute("UPDATE nodes SET access = ?
+                                                WHERE id = ?", array(0, $node['id']));
+                                            if ($SYSLOG) {
+                                                $SYSLOG->NewTransaction('lms-notify.php');
+                                                $SYSLOG->AddMessage(
+                                                    SYSLOG::RES_NODE,
+                                                    SYSLOG::OPER_UPDATE,
+                                                    array(
+                                                        SYSLOG::RES_NODE => $node['id'],
+                                                        SYSLOG::RES_CUST => $node['ownerid'],
+                                                        'access' => 0
+                                                    )
+                                                );
+                                            }
+                                        }
                                     }
                                 }
-                            }
-                        }
-                    }
-                    if (in_array('assignment-invoice', $actions)) {
-                        $assigns = $DB->GetAll(
-                            "SELECT id, customerid FROM assignments
-                            WHERE invoice = ? AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL)
-                                AND datefrom <= ?NOW? AND (dateto = 0 OR dateto >= ?NOW?)
-                                AND customerid IN (" . implode(',', $customers) . ")",
-                            array(1)
-                        );
-                        if (!empty($assigns)) {
-                            foreach ($assigns as $assign) {
-                                if (!$quiet) {
-                                    printf("[block/assignment-invoice] CustomerID: %04d, AssignmentID: %d" . PHP_EOL, $assign['customerid'], $assign['id']);
-                                }
+                                break;
+                            case 'assignment-invoice':
+                                $assigns = $DB->GetAll(
+                                    "SELECT id, customerid FROM assignments
+                                    WHERE invoice = ? AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL)
+                                        AND datefrom <= ?NOW? AND (dateto = 0 OR dateto >= ?NOW?)
+                                        AND customerid IN (" . implode(',', $customers) . ")",
+                                    array(1)
+                                );
+                                if (!empty($assigns)) {
+                                    foreach ($assigns as $assign) {
+                                        if (!$quiet) {
+                                            printf("[block/assignment-invoice] CustomerID: %04d, AssignmentID: %d" . PHP_EOL, $assign['customerid'], $assign['id']);
+                                        }
 
-                                if (!$debug) {
-                                    $DB->Execute("UPDATE assignments SET invoice = ?
-                                        WHERE id = ?", array(0, $assign['id']));
-                                    if ($SYSLOG) {
-                                        $SYSLOG->NewTransaction('lms-notify.php');
-                                        $SYSLOG->AddMessage(
-                                            SYSLOG::RES_ASSIGN,
-                                            SYSLOG::OPER_UPDATE,
-                                            array(
-                                                SYSLOG::RES_ASSIGN => $assign['id'],
-                                                SYSLOG::RES_CUST => $assign['customerid'],
-                                                'invoice' => 0
-                                            )
-                                        );
+                                        if (!$debug) {
+                                            $DB->Execute("UPDATE assignments SET invoice = ?
+                                                WHERE id = ?", array(0, $assign['id']));
+                                            if ($SYSLOG) {
+                                                $SYSLOG->NewTransaction('lms-notify.php');
+                                                $SYSLOG->AddMessage(
+                                                    SYSLOG::RES_ASSIGN,
+                                                    SYSLOG::OPER_UPDATE,
+                                                    array(
+                                                        SYSLOG::RES_ASSIGN => $assign['id'],
+                                                        SYSLOG::RES_CUST => $assign['customerid'],
+                                                        'invoice' => 0
+                                                    )
+                                                );
+                                            }
+                                        }
                                     }
                                 }
-                            }
-                        }
-                    }
-                    if (in_array('customer-status', $actions)) {
-                        $custids = $DB->GetCol(
-                            "SELECT id FROM customers
-                            WHERE status <> ? AND id IN (" . implode(',', $customers) . ")",
-                            array(CSTATUS_DEBT_COLLECTION)
-                        );
-                        if (!empty($custids)) {
-                            foreach ($custids as $custid) {
-                                if (!$quiet) {
-                                    printf("[block/customer-status] CustomerID: %04d" . PHP_EOL, $custid);
-                                }
+                                break;
+                            case 'customer-status':
+                                $custids = $DB->GetCol(
+                                    "SELECT id FROM customers
+                                    WHERE status <> ? AND id IN (" . implode(',', $customers) . ")",
+                                    array(CSTATUS_DEBT_COLLECTION)
+                                );
+                                if (!empty($custids)) {
+                                    foreach ($custids as $custid) {
+                                        if (!$quiet) {
+                                            printf("[block/customer-status] CustomerID: %04d" . PHP_EOL, $custid);
+                                        }
 
-                                if (!$debug) {
-                                    $DB->Execute(
-                                        "UPDATE customers SET status = ? WHERE id = ?",
-                                        array(CSTATUS_DEBT_COLLECTION, $custid)
-                                    );
-                                    if ($SYSLOG) {
-                                        $SYSLOG->NewTransaction('lms-notify.php');
-                                        $SYSLOG->AddMessage(
-                                            SYSLOG::RES_CUST,
-                                            SYSLOG::OPER_UPDATE,
-                                            array(SYSLOG::RES_CUST => $custid, 'status' => CSTATUS_DEBT_COLLECTION)
-                                        );
+                                        if (!$debug) {
+                                            $DB->Execute(
+                                                "UPDATE customers SET status = ? WHERE id = ?",
+                                                array(CSTATUS_DEBT_COLLECTION, $custid)
+                                            );
+                                            if ($SYSLOG) {
+                                                $SYSLOG->NewTransaction('lms-notify.php');
+                                                $SYSLOG->AddMessage(
+                                                    SYSLOG::RES_CUST,
+                                                    SYSLOG::OPER_UPDATE,
+                                                    array(SYSLOG::RES_CUST => $custid, 'status' => CSTATUS_DEBT_COLLECTION)
+                                                );
+                                            }
+                                        }
                                     }
                                 }
-                            }
-                        }
-                    }
-                    if (in_array('all-assignment-suspension', $actions)) {
-                        $args = array(
-                            SYSLOG::RES_ASSIGN => null,
-                            SYSLOG::RES_CUST => null,
-                            'datefrom' => time(),
-                            SYSLOG::RES_TARIFF => null,
-                            SYSLOG::RES_LIAB => null,
-                        );
-                        foreach ($customers as $cid) {
-                            if (!$DB->GetOne(
-                                "SELECT id FROM assignments WHERE customerid = ? AND tariffid IS NULL AND liabilityid IS NULL",
-                                array($cid)
-                            )) {
-                                if (!$quiet) {
-                                    printf("[block/all-assignment-suspension] CustomerID: %04d" . PHP_EOL, $cid);
-                                }
+                                break;
+                            case 'all-assignment-suspension':
+                                $args = array(
+                                    SYSLOG::RES_ASSIGN => null,
+                                    SYSLOG::RES_CUST => null,
+                                    'datefrom' => time(),
+                                    SYSLOG::RES_TARIFF => null,
+                                    SYSLOG::RES_LIAB => null,
+                                );
+                                foreach ($customers as $cid) {
+                                    if (!$DB->GetOne(
+                                        "SELECT id FROM assignments WHERE customerid = ? AND tariffid IS NULL AND liabilityid IS NULL",
+                                        array($cid)
+                                    )) {
+                                        if (!$quiet) {
+                                            printf("[block/all-assignment-suspension] CustomerID: %04d" . PHP_EOL, $cid);
+                                        }
 
-                                if (!$debug) {
-                                    $DB->Execute("INSERT INTO assignments (customerid, datefrom, tariffid, liabilityid)
-                                        VALUES (?, ?, NULL, NULL)", array($cid, $args['datefrom']));
-                                    if ($SYSLOG) {
-                                        $SYSLOG->NewTransaction('lms-notify.php');
-                                        $args[SYSLOG::RES_ASSIGN] = $DB->GetLastInsertID('assignments');
-                                        $args[SYSLOG::RES_CUST] = $cid;
-                                        $SYSLOG->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_ADD, $args);
+                                        if (!$debug) {
+                                            $DB->Execute("INSERT INTO assignments (customerid, datefrom, tariffid, liabilityid)
+                                                VALUES (?, ?, NULL, NULL)", array($cid, $args['datefrom']));
+                                            if ($SYSLOG) {
+                                                $SYSLOG->NewTransaction('lms-notify.php');
+                                                $args[SYSLOG::RES_ASSIGN] = $DB->GetLastInsertID('assignments');
+                                                $args[SYSLOG::RES_CUST] = $cid;
+                                                $SYSLOG->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_ADD, $args);
+                                            }
+                                        }
                                     }
                                 }
-                            }
+                                break;
+                            case 'customer-group':
+                                $customergroupid = $LMS->CustomergroupGetId(reset($action_params));
+                                if ($customergroupid) {
+                                    foreach ($customers as $cid) {
+                                        if (!$quiet) {
+                                            printf("[block/customer-group] CustomerID: %04d, CustomerGroupID: %04d" . PHP_EOL, $cid, $customergroupid);
+                                        }
+
+                                        if (!$debug) {
+                                            $LMS->CustomerassignmentAdd(
+                                                array(
+                                                    'customergroupid' => $customergroupid,
+                                                    'customerid' => $cid,
+                                                )
+                                            );
+                                        }
+                                    }
+                                }
+                                break;
                         }
                     }
+
                     $plugin_manager->executeHook('notification_blocks', array(
                         'customers' => $customers,
                         'actions' => $actions,
                     ));
+
                     break;
                 case 'unblock':
-                    if (empty($customers)) {
-                        break;
+                    $where = array();
+                    foreach ($actions as $action => $action_params) {
+                        switch ($action) {
+                            case 'node-access':
+                                $where[] = 'EXISTS (SELECT id FROM nodes WHERE nodes.ownerid = c.id AND access = 0)';
+                                break;
+                            case 'assignment-invoice':
+                                $where[] = 'EXISTS (SELECT id FROM assignments
+                                    WHERE invoice <> ' . DOC_INVOICE . ' AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL)
+                                        AND datefrom <= ?NOW? AND (dateto = 0 OR dateto >= ?NOW?)
+                                        AND customerid = c.id)';
+                                break;
+                            case 'customer-status':
+                                $where[] = 'EXISTS (SELECT id FROM customers
+                                    WHERE status <> ' . CSTATUS_CONNECTED . ' AND customers.id = c.id)';
+                                break;
+                            case 'all-assignment-suspension':
+                                $where[] = 'EXISTS (SELECT id FROM assignments
+                                    WHERE customerid = c.id AND tariffid IS NULL AND liabilityid IS NULL)';
+                                break;
+                            case 'customer-group':
+                                $where[] = 'EXISTS (
+                                    SELECT ca.id FROM customerassignments ca
+                                    JOIN customergroups g ON g.id = ca.customergroupid
+                                    WHERE ca.customerid = c.id AND LOWER(g.name) = LOWER(\'' . reset($action_params) . '\'))';
+                                break;
+                        }
                     }
+
                     $customers = $DB->GetCol(
-                        "SELECT c.id FROM customers c WHERE c.status = ?"
-                        . (empty($customers) ? '' : " AND c.id NOT IN (" . implode(',', $customers) . ")")
-                        . ($customergroups ?: ''),
-                        array(CSTATUS_DEBT_COLLECTION)
+                        'SELECT c.id FROM customers c
+                        WHERE 1 = 1'
+                        . (empty($customers) ? '' : ' AND c.id NOT IN (' . implode(',', $customers) . ')')
+                        . ' AND (' . implode(' AND ', $where) . ')'
+                        . ($customergroups ?: '')
                     );
                     if (empty($customers)) {
                         break;
                     }
-                    if (in_array('node-access', $actions)) {
-                        $nodes = $DB->GetAll(
-                            "SELECT id, ownerid FROM nodes WHERE access = ?
-                            AND ownerid IN (" . implode(',', $customers) . ")",
-                            array(0)
-                        );
-                        if (!empty($nodes)) {
-                            foreach ($nodes as $node) {
-                                if (!$quiet) {
-                                    printf("[unblock/node-access] CustomerID: %04d, NodeID: %04d" . PHP_EOL, $node['ownerid'], $node['id']);
-                                }
 
-                                if (!$debug) {
-                                    $DB->Execute("UPDATE nodes SET access = ?
-                                        WHERE id = ?", array(1, $node['id']));
-                                    if ($SYSLOG) {
-                                        $SYSLOG->NewTransaction('lms-notify.php');
-                                        $SYSLOG->AddMessage(
-                                            SYSLOG::RES_NODE,
-                                            SYSLOG::OPER_UPDATE,
-                                            array(
-                                                SYSLOG::RES_NODE => $node['id'],
-                                                SYSLOG::RES_CUST => $node['ownerid'],
-                                                'access' => 1
-                                            )
-                                        );
+                    foreach ($actions as $action => $action_params) {
+                        switch ($action) {
+                            case 'node-access':
+                                $nodes = $DB->GetAll(
+                                    "SELECT id, ownerid FROM nodes WHERE access = ?
+                                    AND ownerid IN (" . implode(',', $customers) . ")",
+                                    array(0)
+                                );
+                                if (!empty($nodes)) {
+                                    foreach ($nodes as $node) {
+                                        if (!$quiet) {
+                                            printf("[unblock/node-access] CustomerID: %04d, NodeID: %04d" . PHP_EOL, $node['ownerid'], $node['id']);
+                                        }
+
+                                        if (!$debug) {
+                                            $DB->Execute("UPDATE nodes SET access = ?
+                                                WHERE id = ?", array(1, $node['id']));
+                                            if ($SYSLOG) {
+                                                $SYSLOG->NewTransaction('lms-notify.php');
+                                                $SYSLOG->AddMessage(
+                                                    SYSLOG::RES_NODE,
+                                                    SYSLOG::OPER_UPDATE,
+                                                    array(
+                                                        SYSLOG::RES_NODE => $node['id'],
+                                                        SYSLOG::RES_CUST => $node['ownerid'],
+                                                        'access' => 1
+                                                    )
+                                                );
+                                            }
+                                        }
                                     }
                                 }
-                            }
-                        }
-                    }
-                    if (in_array('assignment-invoice', $actions)) {
-                        $assigns = $DB->GetAll(
-                            "SELECT id, customerid FROM assignments
-                            WHERE invoice = ? AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL)
-                                AND datefrom <= ?NOW? AND (dateto = 0 OR dateto >= ?NOW?)
-                                AND customerid IN (" . implode(',', $customers) . ")",
-                            array(0)
-                        );
-                        if (!empty($assigns)) {
-                            foreach ($assigns as $assign) {
-                                if (!$quiet) {
-                                    printf("[unblock/assignment-invoice] CustomerID: %04d, AssignmentID: %04d" . PHP_EOL, $assign['customerid'], $assign['id']);
-                                }
+                                break;
+                            case 'assignment-invoice':
+                                $assigns = $DB->GetAll(
+                                    "SELECT id, customerid FROM assignments
+                                    WHERE invoice = ? AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL)
+                                        AND datefrom <= ?NOW? AND (dateto = 0 OR dateto >= ?NOW?)
+                                        AND customerid IN (" . implode(',', $customers) . ")",
+                                    array(0)
+                                );
+                                if (!empty($assigns)) {
+                                    foreach ($assigns as $assign) {
+                                        if (!$quiet) {
+                                            printf("[unblock/assignment-invoice] CustomerID: %04d, AssignmentID: %04d" . PHP_EOL, $assign['customerid'], $assign['id']);
+                                        }
 
-                                if (!$debug) {
-                                    $DB->Execute("UPDATE assignments SET invoice = ?
-                                        WHERE id = ?", array(1, $assign['id']));
-                                    if ($SYSLOG) {
-                                        $SYSLOG->NewTransaction('lms-notify.php');
-                                        $SYSLOG->AddMessage(
-                                            SYSLOG::RES_ASSIGN,
-                                            SYSLOG::OPER_UPDATE,
-                                            array(
-                                                SYSLOG::RES_ASSIGN => $assign['id'],
-                                                SYSLOG::RES_CUST => $assign['customerid'],
-                                                'invoice' => 1
-                                            )
-                                        );
+                                        if (!$debug) {
+                                            $DB->Execute("UPDATE assignments SET invoice = ?
+                                                WHERE id = ?", array(1, $assign['id']));
+                                            if ($SYSLOG) {
+                                                $SYSLOG->NewTransaction('lms-notify.php');
+                                                $SYSLOG->AddMessage(
+                                                    SYSLOG::RES_ASSIGN,
+                                                    SYSLOG::OPER_UPDATE,
+                                                    array(
+                                                        SYSLOG::RES_ASSIGN => $assign['id'],
+                                                        SYSLOG::RES_CUST => $assign['customerid'],
+                                                        'invoice' => 1
+                                                    )
+                                                );
+                                            }
+                                        }
                                     }
                                 }
-                            }
-                        }
-                    }
-                    if (in_array('customer-status', $actions)) {
-                        $custids = $DB->GetCol(
-                            "SELECT id FROM customers
-                            WHERE status = ? AND id IN (" . implode(',', $customers) . ")",
-                            array(CSTATUS_DEBT_COLLECTION)
-                        );
-                        if (!empty($custids)) {
-                            foreach ($custids as $custid) {
-                                if (!$quiet) {
-                                    printf("[unblock/customer-status] CustomerID: %04d" . PHP_EOL, $custid);
-                                }
+                                break;
+                            case 'customer-status':
+                                $custids = $DB->GetCol(
+                                    "SELECT id FROM customers
+                                    WHERE status = ? AND id IN (" . implode(',', $customers) . ")",
+                                    array(CSTATUS_DEBT_COLLECTION)
+                                );
+                                if (!empty($custids)) {
+                                    foreach ($custids as $custid) {
+                                        if (!$quiet) {
+                                            printf("[unblock/customer-status] CustomerID: %04d" . PHP_EOL, $custid);
+                                        }
 
-                                if (!$debug) {
-                                    $DB->Execute(
-                                        "UPDATE customers SET status = ? WHERE id = ?",
-                                        array(CSTATUS_CONNECTED, $custid)
-                                    );
-                                    if ($SYSLOG) {
-                                        $SYSLOG->NewTransaction('lms-notify.php');
-                                        $SYSLOG->AddMessage(
-                                            SYSLOG::RES_CUST,
-                                            SYSLOG::OPER_UPDATE,
-                                            array(SYSLOG::RES_CUST => $custid, 'status' => CSTATUS_CONNECTED)
-                                        );
+                                        if (!$debug) {
+                                            $DB->Execute(
+                                                "UPDATE customers SET status = ? WHERE id = ?",
+                                                array(CSTATUS_CONNECTED, $custid)
+                                            );
+                                            if ($SYSLOG) {
+                                                $SYSLOG->NewTransaction('lms-notify.php');
+                                                $SYSLOG->AddMessage(
+                                                    SYSLOG::RES_CUST,
+                                                    SYSLOG::OPER_UPDATE,
+                                                    array(SYSLOG::RES_CUST => $custid, 'status' => CSTATUS_CONNECTED)
+                                                );
+                                            }
+                                        }
                                     }
                                 }
-                            }
-                        }
-                    }
-                    if (in_array('all-assignment-suspension', $actions)) {
-                        $args = array(
-                            SYSLOG::RES_ASSIGN => null,
-                            SYSLOG::RES_CUST => null,
-                            'settlement' => 1,
-                            'datefrom' => time(),
-                        );
-                        foreach ($customers as $cid) {
-                            if ($SYSLOG) {
-                                $SYSLOG->NewTransaction('lms-notify.php');
-                            }
-                            if ($datefrom = $DB->GetOne(
-                                "SELECT datefrom FROM assignments WHERE customerid = ? AND tariffid IS NULL AND liabilityid IS NULL",
-                                array($cid)
-                            )) {
-                                $year = intval(strftime('%Y', $datefrom));
-                                $month = intval(strftime('%m', $datefrom));
-                                if ($year < $current_year || ($year == $current_year && $month < $current_month)) {
-                                    $aids = $DB->GetCol(
-                                        "SELECT id FROM assignments
-                                        WHERE customerid = ? AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL)
-                                            AND datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?)",
+                                break;
+                            case 'all-assignment-suspension':
+                                $args = array(
+                                    SYSLOG::RES_ASSIGN => null,
+                                    SYSLOG::RES_CUST => null,
+                                    'settlement' => 1,
+                                    'datefrom' => time(),
+                                );
+                                foreach ($customers as $cid) {
+                                    if ($SYSLOG) {
+                                        $SYSLOG->NewTransaction('lms-notify.php');
+                                    }
+                                    if ($datefrom = $DB->GetOne(
+                                        "SELECT datefrom FROM assignments WHERE customerid = ? AND tariffid IS NULL AND liabilityid IS NULL",
                                         array($cid)
-                                    );
+                                    )) {
+                                        $year = intval(strftime('%Y', $datefrom));
+                                        $month = intval(strftime('%m', $datefrom));
+                                        if ($year < $current_year || ($year == $current_year && $month < $current_month)) {
+                                            $aids = $DB->GetCol(
+                                                "SELECT id FROM assignments
+                                                WHERE customerid = ? AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL)
+                                                    AND datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?)",
+                                                array($cid)
+                                            );
+                                            if (!empty($aids)) {
+                                                foreach ($aids as $aid) {
+                                                    if (!$quiet) {
+                                                        printf("[unblock/all-assignment-suspension] assignment update: CustomerID: %04d, AssignmentID: %04d" . PHP_EOL, $cid, $aid);
+                                                    }
+
+                                                    if (!$debug) {
+                                                        $DB->Execute("UPDATE assignments SET settlement = 1, datefrom = ?
+                                                            WHERE id = ?", array($args['datefrom'], $aid));
+                                                        if ($SYSLOG) {
+                                                            $args[SYSLOG::RES_ASSIGN] = $aid;
+                                                            $args[SYSLOG::RES_CUST] = $cid;
+                                                            $SYSLOG->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_UPDATE, $args);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    $aids = $DB->GetCol("SELECT id FROM assignments
+                                        WHERE customerid = ? AND tariffid IS NULL AND liabilityid IS NULL", array($cid));
                                     if (!empty($aids)) {
                                         foreach ($aids as $aid) {
                                             if (!$quiet) {
-                                                printf("[unblock/all-assignment-suspension] assignment update: CustomerID: %04d, AssignmentID: %04d" . PHP_EOL, $cid, $aid);
+                                                printf("[unblock/all-assignment-suspension] assignment deletion: CustomerID: %04d, AssignmentID: %04d" . PHP_EOL, $cid, $aid);
                                             }
 
                                             if (!$debug) {
-                                                $DB->Execute("UPDATE assignments SET settlement = 1, datefrom = ?
-                                                    WHERE id = ?", array($args['datefrom'], $aid));
+                                                $DB->Execute("DELETE FROM assignments WHERE id = ?", array($aid));
                                                 if ($SYSLOG) {
-                                                    $args[SYSLOG::RES_ASSIGN] = $aid;
-                                                    $args[SYSLOG::RES_CUST] = $cid;
-                                                    $SYSLOG->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_UPDATE, $args);
+                                                    $SYSLOG->AddMessage(
+                                                        SYSLOG::RES_ASSIGN,
+                                                        SYSLOG::OPER_DELETE,
+                                                        array(SYSLOG::RES_ASSIGN => $aid, SYSLOG::RES_CUST => $cid)
+                                                    );
                                                 }
                                             }
                                         }
                                     }
                                 }
-                            }
-                            $aids = $DB->GetCol("SELECT id FROM assignments
-                                WHERE customerid = ? AND tariffid IS NULL AND liabilityid IS NULL", array($cid));
-                            if (!empty($aids)) {
-                                foreach ($aids as $aid) {
-                                    if (!$quiet) {
-                                        printf("[unblock/all-assignment-suspension] assignment deletion: CustomerID: %04d, AssignmentID: %04d" . PHP_EOL, $cid, $aid);
-                                    }
+                                break;
+                            case 'customer-group':
+                                $customergroupid = $LMS->CustomergroupGetId(reset($action_params));
+                                if ($customergroupid) {
+                                    foreach ($customers as $cid) {
+                                        if (!$quiet) {
+                                            printf("[unblock/customer-group] CustomerID: %04d, CustomerGroupID: %04d" . PHP_EOL, $cid, $customergroupid);
+                                        }
 
-                                    if (!$debug) {
-                                        $DB->Execute("DELETE FROM assignments WHERE id = ?", array($aid));
-                                        if ($SYSLOG) {
-                                            $SYSLOG->AddMessage(
-                                                SYSLOG::RES_ASSIGN,
-                                                SYSLOG::OPER_DELETE,
-                                                array(SYSLOG::RES_ASSIGN => $aid, SYSLOG::RES_CUST => $cid)
+                                        if (!$debug) {
+                                            $LMS->CustomerassignmentDelete(
+                                                array(
+                                                    'customergroupid' => $customergroupid,
+                                                    'customerid' => $cid,
+                                                )
                                             );
                                         }
                                     }
                                 }
-                            }
+                                break;
                         }
                     }
+
                     $plugin_manager->executeHook('notification_unblocks', array(
                         'customers' => $customers,
                         'actions' => $actions,
                     ));
+
                     break;
             }
         }
