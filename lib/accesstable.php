@@ -110,7 +110,7 @@ $access_table = array(
     ),
     'customer_management' => array(
         'label' => trans('customers management'),
-        'allow_regexp' => '^((customer|document)(add|edit|info|infoshort|list|print|search|warn|cutoffstop|group)|documentdel|customertransferform|customeraddresses|customernote|customerassignmenthelper|documentsend|documentgen|documentview|nodewarn|choosenode|gusapi)$',
+        'allow_regexp' => '^((customer|document)(add|edit|info|infoshort|list|print|search|warn|cutoffstop|group)|documentdel|customertransferform|customeraddresses|customernote|customerassignmenthelper|documentsend|documentgen|documentview|nodewarn|choosenode|gusapi|number)$',
         'allow_menu_items' => array(
             'customers' => Permission::MENU_ALL,
             'documents' => Permission::MENU_ALL,
