@@ -133,6 +133,8 @@ version 26-git (????-??-??):
   - enhancement: implemented 'customer-group' action in lms-notify.php [chilan]
   - enhancement: new user permission 'financial_operations' disallows access to financial
     record lists [chilan]
+  - enhancement: new configuration variable 'sms.message_template' allows to reformat
+    message before sending it [chilan]
 
 version 25.0 (2020-05-15):
 

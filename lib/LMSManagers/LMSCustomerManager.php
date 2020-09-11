@@ -2096,6 +2096,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'fast' => 'sms-customers.fast',
             'from' => 'sms-customers.from',
             'phone_number_validation_pattern' => 'sms-customers.phone_number_validation_pattern',
+            'message_template' => 'sms-customers.message_template',
         );
 
         foreach ($variable_mapping as $option_name => $variable_name) {
