@@ -41,14 +41,14 @@
 		{/foreach}
 		{if $ticket.customerid}
 			<br>
-			<A href="?m=customerinfo&id={$ticket.customerid}">{$ticket.requestor|escape|truncate:"60":"..."}</A>
+			<A href="?m=customerinfo&id={$ticket.customerid}">{if $ticket.lastname}{$ticket.lastname} {/if}{$ticket.name|escape|truncate:"60":"..."}</A>
 		{/if}
 		{if $ticket.requestor_userid}
 		<br>
-		<A href="?m=userinfo&id={$ticket.requestor_userid}">{$ticket.requestor_username}</A>
-		{elseif $ticket.requestor_name || $ticket.requestor_mail || $ticket.requestor_phone}
+		<A href="?m=userinfo&id={$ticket.requestor_userid}">{$ticket.requestor_name}</A>
+		{elseif $ticket.req || $ticket.requestor_mail || $ticket.requestor_phone}
 			<br>
-			{$ticket.requestor|escape}
+			{$ticket.req|escape}
 			{if $ticket.requestor_phone}<BR>{$ticket.requestor_phone}{/if}
 			{if $ticket.requestor_mail}<BR>
 			<A href="mailto:{$ticket.requestor_mail}""> &lt;{$ticket.requestor_mail}&gt;</A>

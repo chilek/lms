@@ -439,9 +439,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         if ($result = $this->db->GetAll(
             'SELECT DISTINCT t.id, t.customerid, t.address_id, va.name AS vaname, va.city AS vacity, va.street, va.house, va.flat, c.address, c.city, vusers.name AS ownername,
-				t.subject, t.state, owner AS ownerid, t.requestor AS req, t.source, t.priority, rtqueues.name, t.requestor_phone, t.requestor_mail, t.deadline, t.requestor_userid,
-				CASE WHEN customerid IS NULL THEN t.requestor ELSE '
-                . $this->db->Concat('c.lastname', "' '", 'c.name') . ' END AS requestor,
+				t.subject, t.state, owner AS ownerid, t.requestor AS req, t.source, t.priority, rtqueues.name, t.requestor_phone, t.requestor_mail, t.deadline, t.requestor_userid, c.name, c.lastname, rq.name AS requestor_name,
 				t.createtime AS createtime, u.name AS creatorname, t.deleted, t.deltime, t.deluserid,
 				t.modtime AS lastmodified, vi.name AS verifiername, vi.id AS verifierid,
 				eventcountopened, eventcountclosed, delcount, tc2.categories, t.netnodeid, nn.name AS netnode_name, t.netdevid, nd.name AS netdev_name, vb.location as netnode_location, t.service, t.type, t.resolvetime,
@@ -454,6 +452,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			LEFT JOIN vusers AS vi ON (verifierid = vi.id)
 			LEFT JOIN customeraddressview c ON (t.customerid = c.id)
 			LEFT JOIN vusers u ON (t.creatorid = u.id)
+			LEFT JOIN vusers rq ON (t.requestor_userid = rq.id)
 			LEFT JOIN rtqueues ON (rtqueues.id = t.queueid)
 			LEFT JOIN netnodes nn ON nn.id = t.netnodeid
 			LEFT JOIN netdevices nd ON nd.id = t.netdevid
