@@ -285,7 +285,7 @@ if ($documents) {
                 $listdata[$taxid]['val_receipt'] = 0;
             }
 
-            if ($invoicelist[$idx]['flags'] & DOC_FLAG_RECEIPT) {
+            if (!empty($invoicelist[$idx]['flags'][DOC_FLAG_RECEIPT])) {
                 $listdata[$taxid]['tax_receipt'] += $tax * $document['currencyvalue'];
                 $listdata[$taxid]['val_receipt'] += $netto * $document['currencyvalue'];
                 $listdata['tax_receipt'] += $tax * $document['currencyvalue'];
@@ -334,7 +334,7 @@ if (isset($_POST['extended'])) {
 
         $page = ceil($i/$rows);
 
-        if ($row['flags'] & DOC_FLAG_RECEIPT) {
+        if (!empty($row['flags'][DOC_FLAG_RECEIPT])) {
             $totals[$page]['total_receipt'] += $row['brutto'] * $row['currencyvalue'];
             $totals[$page]['sumtax_receipt'] += $row['tax'] * $row['currencyvalue'];
             foreach ($taxeslist as $idx => $tax) {

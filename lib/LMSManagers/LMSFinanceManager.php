@@ -2263,7 +2263,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $result['totaltax'] = 0;
             $result['total'] = 0;
 
-            $result['flags'][DOC_FLAG_RECEIPT] = $result['flags'] & DOC_FLAG_RECEIPT ? 1 : 0;
+            $result['flags'] = array(
+                DOC_FLAG_RECEIPT => ($result['flags'] & DOC_FLAG_RECEIPT) ? 1 : 0,
+            );
 
             if ($result['reference'] && $result['type'] != DOC_INVOICE_PRO) {
                 $result['invoice'] = $this->GetInvoiceContent($result['reference'], $detail_level);
