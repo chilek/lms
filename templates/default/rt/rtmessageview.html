@@ -12,7 +12,7 @@
     <THEAD>
         <TR>
 		<TD>
-		        <IMG src="img/open.gif" alt="">
+		        {icon name="helpdesk"}
 		</TD>
 		<TD class="bold">
 			{trans("Subject:")}
@@ -25,7 +25,7 @@
     <TBODY>
 	<TR>
 		<TD>
-			<IMG src="img/time.gif" alt="">
+			{icon name="uptime"}
 		</TD>
 		<TD class="bold">
 			{trans("Date:")}
@@ -36,10 +36,10 @@
 	</TR>	
 	<TR>
 		<TD class="nobr">
-		        {if $message.userid}
-				<IMG src="img/users.gif" alt="">
+		    {if $message.userid}
+				{icon name="user"}
 			{else}
-				<IMG src="img/customer.gif" alt="">
+				{icon name="requestor" class="fa-fw"}
 			{/if}
 		</TD>
 		<TD class="nobr bold">
@@ -62,7 +62,7 @@
 	{if $message.headers}
 	<TR>
 		<TD>
-			<IMG src="img/mail.gif" alt="">
+			{icon name="message"}
 		</TD>
 		<TD class="bold">
 			{trans("Headers:")}
@@ -75,7 +75,7 @@
 	{if $message.messageid}
 	<TR>
 		<TD>
-			<IMG src="img/mail.gif" alt="">
+			{icon name="message"}
 		</TD>
 		<TD class="nobr bold">
 			Message-Id:
@@ -88,7 +88,7 @@
 	{if $message.replyto}
 	<TR>
 		<TD>
-			<IMG src="img/mail.gif" alt="">
+			{icon name="message"}
 		</TD>
 		<TD class="nobr bold">
 			Reply-To:
@@ -101,7 +101,7 @@
 	{if $message.inreplyto}
 	<TR>
 		<TD>
-			<IMG src="img/mail.gif" alt="">
+			{icon name="message"}
 		</TD>
 		<TD class="nobr">
 			In-Reply-To:
@@ -113,7 +113,7 @@
 	{/if}
 	<TR>
 		<TD>
-			<IMG src="img/edit.gif" alt="">
+			{icon name="edit"}
 		</TD>
 		<TD class="bold">
 			{trans("Message:")}
@@ -125,7 +125,7 @@
 	{if $message.attachments}
 	<TR>
 		<TD>
-			<IMG src="img/attach.gif" alt="">
+			{icon name="fileupload"}
 		</TD>
 		<TD class="bold">
 			{trans("Attachments:")}
@@ -166,8 +166,8 @@
 	{/if}
 	<TR>
 		<TD colspan="3" class="nobr text-right">
-			<A href="?m=rtmessageadd&id={$message.id}&ticketid={$message.ticketid}"><IMG src="img/edit.gif" alt=""> {trans("Reply")}</A>
-			<A href="?m=rtticketview&id={$message.ticketid}"><IMG src="img/cancel.gif" alt=""> {trans("Cancel")}</A>
+			{button type="link-button" href="?m=rtmessageadd&id={$message.id}&ticketid={$message.ticketid}" icon="message" label="Reply"}
+			{button type="link-button" href="?m=rtticketview&id={$message.ticketid}" icon="cancel" label="Cancel"}
 		</TD>
 	</TR>
     </TBODY>
