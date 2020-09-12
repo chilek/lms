@@ -212,7 +212,7 @@
 				</SELECT>
 			{/box_row}
 
-			{box_row icon="priority" label="Priority:"}
+			{box_row icon="priority" label="Priority:" class="fa-fw"}
 				<SELECT size="1" name="ticket[priority]" {tip text="Set ticket priority" trigger="priority"}>
 					{foreach $_RT_PRIORITIES as $priorityidx => $priority}
 					<OPTION value="{$priorityidx}"{if $ticket.priority == $priorityidx}selected {/if}>{$priority}</OPTION>
@@ -221,7 +221,7 @@
 			{/box_row}
 
 {if $layout.module != 'eventadd'}
-			{box_row icon="location" label="Location:"}
+			{box_row icon="location" label="Location:" class="fa-fw"}
 				{if $ticket.address_id > 0 && $customerid}
 					{$selected_address_id = $ticket.address_id}
 				{else}
