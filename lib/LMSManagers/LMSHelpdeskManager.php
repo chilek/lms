@@ -1904,7 +1904,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         $args['type'] = MSG_SMS;
 
         if ($params['verifierid']) {
-            $verifier_phone = $this->db->GetCol(
+            $verifier_phone = $this->db->GetOne(
                 'SELECT phone FROM users WHERE phone <> \'\' AND deleted = 0 AND access = 1 AND users.id = ?',
                 array($params['verifierid'])
             );
