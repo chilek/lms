@@ -98,9 +98,29 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
 
     public function shipping_address()
     {
-        $shipaddress .= $this->data['name'] . '<br>';
-        $shipaddress .= $this->data['address'] . '<br>';
-        $shipaddress .= $this->data['zip'] . ' ' . $this->data['city'] . '<br>';
+        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.post_address', true))) {
+            $shipaddress = '';
+            if ($this->data['post_name'] || $this->data['post_address']) {
+                $lines = document_address(array(
+                    'name' => $this->data['post_name'] ? $this->data['post_name'] : $this->data['name'],
+                    'address' => $this->data['post_address'],
+                    'street' => $this->data['post_street'],
+                    'zip' => $this->data['post_zip'],
+                    'postoffice' => $this->data['post_postoffice'],
+                    'city' => $this->data['post_city'],
+                ));
+                $shipaddress .= implode('<br>', $lines);
+            } else {
+                $shipaddress .= $this->data['name'] . '<br>';
+                $shipaddress .= $this->data['address'] . '<br>';
+                $shipaddress .= $this->data['zip'] . ' ' . $this->data['city'] . '<br>';
+            }
+
+            if ($this->data['division_countryid'] && $this->data['post_countryid'] && $this->data['division_countryid'] != $this->data['post_countryid']) {
+                $shipaddress .= ', ' . trans($this->data['post_country']) . '<br>';
+            }
+        }
+
         $this->backend->SetFont(self::TCPDF_FONT, 'B', 10);
         $this->backend->writeHTMLCell(80, '', 125, 50, $shipaddress, 0, 1, 0, true, 'L');
     }
