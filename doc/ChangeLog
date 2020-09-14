@@ -138,6 +138,7 @@ version 26-git (????-??-??):
   - improvement: lms-rtparser.php backend script is able to scale down image according
     to 'phpui.uploaded_image_max_size' [chilan]
   - enhancement: added separate receipt/bill sale flag for invoices [chilan]
+  - enhancement: resolve ticket by new action button in queueview list [interduo]
 
 version 25.0 (2020-05-15):
 
