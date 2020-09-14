@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -62,7 +62,7 @@ $access_table = array(
         'label' => trans('financial operations'),
         'allow_regexp' => '^((customerassignment)(add|info|list|move|edit|del)|(balance|customerbalance)(new|add|ok|del|)|(cashreg(info))|(invoice|invoice(new|edit|del|note|paid|info|send))|(note|note(add|edit|del|paid))|number|customertransferform)$',
         'allow_menu_items' => array(
-            'finances' => array('balancenew', 'invoicenew', 'invoicenew-profrma', 'noteadd', 'receiptadd'),
+            'finances' => array('balancenew', 'invoicenew', 'invoicenew-proforma', 'noteadd', 'receiptadd'),
         ),
     ),
     'finances_management' => array(
