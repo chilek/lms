@@ -594,7 +594,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             if (!empty($this->data['splitpayment'])) {
                 $this->backend->writeHTMLCell(0, 0, '', '', '<b>' . trans('(split payment)') . '</b>', 0, 1, 0, true, 'R');
             }
-            if ($this->data['flags'] & DOC_FLAG_RECEIPT) {
+            if (!empty($this->data['flags'][DOC_FLAG_RECEIPT])) {
                 $this->backend->writeHTMLCell(0, 0, '', '', '<b>' . trans('<!invoice>(receipt)') . '</b>', 0, 1, 0, true, 'R');
             }
         }
