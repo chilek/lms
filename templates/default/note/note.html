@@ -71,11 +71,19 @@
 			{/if}
 		</TD>
 		<TD WIDTH="46%" class="mdf bold valign-top">
-			<BR>
-			<BR>
-			{$note.name}<BR>
-			{$note.address}<BR>
-			{$note.zip} {$note.city}
+			{if ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.post_address', true))}
+				<BR>
+				<BR>
+				<B>
+				{if $note.post_name || $note.post_address}
+					{if $note.post_name}{$name=$note.post_name}{else}{$name=$note.name}{/if}
+					{document_address name=$name address=$note.post_address street=$note.post_street zip=$note.post_zip postoffice=$note.post_postoffice city=$note.post_city}
+				{else}
+					{$note.name}<BR>
+					{$note.address}<BR>
+					{$note.zip} {$note.city}
+				{/if}</B>
+			{/if}
 		</TD>
 	</TR>
 </TABLE>
