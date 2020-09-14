@@ -2820,6 +2820,7 @@ $_LANG['List of debit notes'] = 'Lista not obciążeniowych';
 $_LANG['New Debit Note'] = 'Nowa nota obc.';
 $_LANG['New Debit Note<!long>'] = 'Nowa nota obciążeniowa';
 $_LANG['Note drawer:'] = 'Wystawca noty:';
+$_LANG['issuer\'s signature'] = 'podpis wystawcy noty';
 $_LANG['Note recipient:'] = 'Odbiorca noty:';
 $_LANG['No such debit notes in database.'] = 'Brak not obciążeniowych w bazie danych.';
 $_LANG['voip accounts management'] = 'zarządzanie kontami VoIP';

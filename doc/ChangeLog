@@ -139,6 +139,11 @@ version 26-git (????-??-??):
     to 'phpui.uploaded_image_max_size' [chilan]
   - enhancement: added separate receipt/bill sale flag for invoices [chilan]
   - enhancement: resolve ticket by new action button in queueview list [interduo]
+  - improvement: changed TCPDF/HTML debit note to use correspondence address as
+    shipping address (if 'invoices.post_address' is set to true) [awbnet]
+  - improvement: added issuer's signature field to debit note (TCPDF/HTML)
+    (visible if 'notes.issuer_signature' is set to true, default: 'false') [awbnet]
+  - improvement: made TCPDF debit note version look like TCPDF invoice [awbnet]
 
 version 25.0 (2020-05-15):
 
