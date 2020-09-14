@@ -30,6 +30,10 @@
  */
 interface LMSDivisionManagerInterface
 {
+    public static function setCurrentDivision($division);
+
+    public static function getCurrentDivision();
+
     public function GetDivision($id);
 
     public function GetDivisionByName($name);
@@ -44,5 +48,5 @@ interface LMSDivisionManagerInterface
 
     public function UpdateDivision($division);
 
-    public function CheckDivisionsAccess($divisions);
+    public function checkDivisionsAccess($params);
 }

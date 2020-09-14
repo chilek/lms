@@ -107,6 +107,50 @@
 			<B>{trans("Total:")}</B>
 		</TD>
 		<TD CLASS="HEADGREY" ALIGN="RIGHT">
+			<B>{($listdata.brutto+$listdata.brutto_receipt)|string_format:"%01.2f"}</B>
+		</TD>
+		{foreach item=tax from=$taxes}
+			{assign var=taxid value=$tax.id}
+			<TD CLASS="HEADGREY" ALIGN="RIGHT">
+				<B>{($listdata.$taxid.val+$listdata.$taxid.val_receipt)|string_format:"%01.2f"}</B>
+			</TD>
+			{if $tax.value}
+				<TD CLASS="HEADGREY" ALIGN="RIGHT">
+					<B>{($listdata.$taxid.tax+$listdata.$taxid.tax_receipt)|string_format:"%01.2f"}</B>
+				</TD>
+				{/if}
+			{/foreach}
+		<TD CLASS="HEADGREY" ALIGN="RIGHT">
+			<B>{($listdata.tax+$listdata.tax_receipt)|string_format:"%01.2f"}</B>
+		</TD>
+	</TR>
+	<TR>
+		<TD CLASS="HEADGREY" COLSPAN="4" ALIGN="RIGHT">
+			<B>{trans("<!invoice>With receipt:")}</B>
+		</TD>
+		<TD CLASS="HEADGREY" ALIGN="RIGHT">
+			<B>{$listdata.brutto_receipt|string_format:"%01.2f"}</B>
+		</TD>
+		{foreach item=tax from=$taxes}
+			{assign var=taxid value=$tax.id}
+			<TD CLASS="HEADGREY" ALIGN="RIGHT">
+				<B>{$listdata.$taxid.val_receipt|string_format:"%01.2f"}</B>
+			</TD>
+			{if $tax.value}
+				<TD CLASS="HEADGREY" ALIGN="RIGHT">
+					<B>{$listdata.$taxid.tax_receipt|string_format:"%01.2f"}</B>
+				</TD>
+				{/if}
+			{/foreach}
+		<TD CLASS="HEADGREY" ALIGN="RIGHT">
+			<B>{$listdata.tax_receipt|string_format:"%01.2f"}</B>
+		</TD>
+	</TR>
+	<TR>
+		<TD CLASS="HEADGREY" COLSPAN="4" ALIGN="RIGHT">
+			<B>{trans("<!invoice>Without receipt:")}</B>
+		</TD>
+		<TD CLASS="HEADGREY" ALIGN="RIGHT">
 			<B>{$listdata.brutto|string_format:"%01.2f"}</B>
 		</TD>
 		{if !in_array(DOC_DNOTE, $doctypes)}

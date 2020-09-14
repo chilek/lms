@@ -469,6 +469,7 @@ if (isset($_POST['message'])) {
 
                 $LMS->NotifyUsers(array(
                     'queue' => $queue['id'],
+                    'verifierid' => empty($message['verifierid']) ? null : $message['verifierid'],
                     'mail_headers' => $headers,
                     'mail_body' => $body,
                     'sms_body' => $sms_body,

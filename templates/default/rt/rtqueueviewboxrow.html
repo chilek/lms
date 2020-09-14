@@ -20,9 +20,6 @@
 	<TD class="nobr">
 		<span class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$ticket.id}">
 			<span class="bold" style="{$_RT_PRIORITY_STYLES[$ticket.priority]}">&nbsp;{$ticket.id|string_format:"%06d"}&nbsp;</span>
-		<a href="#" class="lms-ui-button-clipboard lms-ui-button" data-clipboard-text="{$url}?m=rtticketview&id={$ticket.id}">
-			<i class="lms-ui-icon-clipboard"></i>
-		</a>
 		<span>{if (is_array($filter.ids) && count($filter.ids) != 1) || !isset($filter.ids)}{$ticket.name}{/if}</span>
 		{if !ConfigHelper::checkConfig('rt.hide_ticket_row_create_time')}<br>{$ticket.createtime|date_format:"%Y/%m/%d %H:%M:%S"}{/if}
 	</TD>
@@ -98,6 +95,7 @@
 					{button type='link' icon="unread" class="ticket-unread" tip="Mark as read" onclick="location.href = '?m=rtticketedit&id={$ticket.id}&action=read'"}
 				{/if}
 			{/if}
+			{button type='link' class="lms-ui-button-clipboard" icon="clipboard" clipboard="{$url}/?m=rtticketview&id={$ticket.id}" tip="Copy to clipboard"}
 			{if !empty($ticket.imagecount)}
 				{button type="link" icon="gallery" class="ticket-image-gallery" tip="Show ticket attached image gallery"}
 			{/if}
@@ -110,6 +108,14 @@
 			{if ($ticket.state != $smarty.const.RT_RESOLVED && !$ticket.verifierid && Auth::GetCurrentUser() != $ticket.ownerid)}
 				{button type="link" icon="verifier" class="ticket-assign2-to-me" tip="Assign to me as verifier" href="?m=rtqueueview&ticketid={$ticket.id}&action=assign2"}
 			{/if}
+			{if $ticket.state != $smarty.const.RT_RESOLVED}
+				{if $ticket.verifierid && $ticket.verifierid != Auth::GetCurrentUser() &&  $ticket.state != $smarty.const.RT_VERIFIED}
+					{button type="link" icon="verifier" tip="Transfer to verifier" href="?m=rtqueueview&ticketid={$ticket.id}&action=verify"}
+				{else}
+					{button type="link" icon="close" tip="Resolve" href="?m=rtticketedit&id={$ticket.id}&action=resolve"}
+				{/if}
+			{/if}
+
 			{button type="link" icon="print" class="ticket-print" tip="Print" href="?m=rtticketprint&id={$ticket.id}"}
 			{button type="link" icon="clone" href="?m=rtticketadd&ticketid={$ticket.id}" tip="Clone"}
 			{if $ticket.deleted == 1 && $ticket.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
@@ -126,7 +132,6 @@
 			{if ($ticket.state != $smarty.const.RT_RESOLVED || ($ticket.state == $smarty.const.RT_RESOLVED && $aet && ($smarty.now - $ticket.resolvetime) < $aet)) || (ConfigHelper::checkPrivilege('superuser'))}
 				{button type="link" icon="message" href="?m=rtmessageadd&ticketid={$ticket.id}" tip="New Message"}
 			{/if}
-			{button type="link" icon="info" href="?m=rtticketview&id={$ticket.id}" tip="Info"}
 		{/buttons}
 		<input type="checkbox" class="lms-ui-multi-check" name="ticketid[]" value="{$ticket.id}">
 	</TD>

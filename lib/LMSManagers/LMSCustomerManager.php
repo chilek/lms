@@ -2025,7 +2025,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
     public function isTerritAddress($address_id)
     {
-        return $this->db->GetOne('SELECT id FROM addresses WHERE city_id IS NOT NULL AND street_id IS NOT NULL') > 0;
+        return $this->db->GetOne('SELECT id FROM addresses WHERE city_id IS NOT NULL AND house IS NOT NULL AND id = ?', array($address_id)) > 0;
     }
 
     public function GetCustomerContacts($id, $mask = null)
@@ -2096,6 +2096,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'fast' => 'sms-customers.fast',
             'from' => 'sms-customers.from',
             'phone_number_validation_pattern' => 'sms-customers.phone_number_validation_pattern',
+            'message_template' => 'sms-customers.message_template',
         );
 
         foreach ($variable_mapping as $option_name => $variable_name) {

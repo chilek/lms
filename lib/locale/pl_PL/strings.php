@@ -24,9 +24,17 @@
  *  $Id$
  */
 
+$_LANG['<!invoice>With receipt:'] = 'W tym faktury wyst. na podst. parag. fisk.:';
+$_LANG['<!invoice>Without receipt:'] = 'Różnica (kwoty do uwzgl. w VAT-7):';
+
+$_LANG['<!invoice>receipt'] = 'paragon';
+$_LANG['<!invoice>(receipt)'] = '(paragon)';
+
 $_LANG['<!assignment>backward'] = 'wstecz';
 $_LANG['<!assignment>Backward:'] = 'Wstecz:';
 $_LANG['Check if tariff should be accounted backward'] = 'Zaznacz, jeśli taryfa powinna być naliczana za okres wsteczny';
+
+$_LANG['(limited to first 100)'] = '(ograniczone do pierwszych 100)';
 
 $_LANG['No documents to JPK export!'] = 'Brak dokumentów do eksportu JPK!';
 
@@ -271,7 +279,7 @@ $_LANG['Ticket ID:'] = 'Nr zgłoszenia:';
 $_LANG['Ticket ID'] = 'Nr zgłoszenia';
 $_LANG['Add option'] = 'Dodaj opcję';
 $_LANG['select first avible'] = 'wybierz pierwszy wolny';
-$_LANG['Select address'] = 'Wybierz address';
+$_LANG['Select address'] = 'Wybierz adres';
 $_LANG['address'] = 'adres';
 $_LANG['Address'] = 'Adres';
 $_LANG['Address:'] = 'Adres:';
@@ -328,7 +336,7 @@ $_LANG['Are you sure, you want to delete domain: \'$a\' and all accounts/aliases
 $_LANG['Are you sure, you want to delete node $a?'] = 'Jesteś pewien, że chcesz usunąć komputer $a?';
 $_LANG['Are you sure, you want to delete node \'$a\' from database?'] = 'Jesteś pewien, że chcesz usunąć komputer \'$a\' z bazy danych?';
 $_LANG['Are you sure, you want to delete option \'$a\' from database?'] = 'Jesteś pewien, że chcesz usunąć opcję \'$a\' z bazy danych?';
-$_LANG['Are you sure, you want to delete option \'$a\' from database?\n\nThis action will remove this option for all users.'] = 'Jesteś pewien, że chcesz usunąć opcję \'$a\' z bazy danych?\n\nTa akcja usunie tę opcję dla wszystkich użytkowników.';
+$_LANG['Are you sure, you want to delete option \'$a\' from database?\n\nIf option has related options this action will remove all of them.'] = 'Jesteś pewien, że chcesz usunąć opcję \'$a\' z bazy danych?\n\nJeśli opcja ma powiązane opcje, ta akcja usunie je wszystkie.';
 $_LANG['Are you sure, you want to delete selected operation(s) and document item(s)?'] = 'Czy na pewno usunąć wybrane operacje wraz z pozycjami dokumentów?';
 $_LANG['Are you sure, you want to delete that connection?'] = 'Jesteś pewien, że chcesz usunąć to połączenie?';
 $_LANG['Are you sure, you want to delete that device?'] = 'Jesteś pewien, że chcesz usunąć to urządzenie?';
@@ -1355,7 +1363,10 @@ $_LANG['Only \'new\' ticket can be owned by no one!'] = 'Tylko nowe zgłoszenia 
 $_LANG['Open'] = 'Otwórz';
 $_LANG['opened'] = 'otwarty';
 $_LANG['Opened:'] = 'Otwarte:';
-$_LANG['Option Edit: $a'] = 'Edycja opcji: $a';
+$_LANG['Global option edit: $a'] = 'Edycja opcji globalnej: $a';
+$_LANG['Division option edit: $a'] = 'Edycja opcji $a dla firmy';
+$_LANG['User in division option edit: $a'] = 'Edycja opcji $a dla użytkownika w firmie';
+$_LANG['User option edit: $a'] = 'Edycja opcji $a dla użytkownika';
 $_LANG['Option Edit: $a/$b/$c'] = 'Edycja opcji: $a/$b/$c';
 $_LANG['Option exists!'] = 'Opcja już istnieje!';
 $_LANG['Option name contains forbidden characters!'] = 'Nazwa opcji zawiera niedozwolone znaki.';
@@ -2814,7 +2825,7 @@ $_LANG['Note recipient:'] = 'Odbiorca noty:';
 $_LANG['No such debit notes in database.'] = 'Brak not obciążeniowych w bazie danych.';
 $_LANG['voip accounts management'] = 'zarządzanie kontami VoIP';
 $_LANG['Voip prefix management'] = 'Zarządzanie prefiksami VoIP';
-$_LANG['Userpanel management'] = 'zarządzanie Userpanelem';
+$_LANG['Userpanel management'] = 'zarządzanie Panelem klienta';
 $_LANG['cash-in receipt'] = 'KP';
 $_LANG['cash-out receipt'] = 'KW';
 $_LANG['cash receipts'] = 'dok. kasowe';
@@ -3450,9 +3461,9 @@ $_LANG['Show tickets'] = 'Pokaż zgłoszenia';
 
 $_LANG['www'] = 'www';
 $_LANG['any sms'] = 'dowolny SMS';
-$_LANG['userpanel'] = 'Panel abonencki';
-$_LANG['Userpanel'] = 'Panel abonencki';
-$_LANG['userpanel urgent'] = 'panel abonencki (pilne)';
+$_LANG['userpanel'] = 'Panel klienta';
+$_LANG['Userpanel'] = 'Panel klienta';
+$_LANG['userpanel urgent'] = 'panel klienta (pilne)';
 $_LANG['I confirm reading'] = 'Zapoznałem się';
 $_LANG['Urgent'] = 'Pilna';
 $_LANG['Casual'] = 'Zwykła';
@@ -3461,7 +3472,7 @@ $_LANG['Read status:'] = 'Status przeczytania:';
 $_LANG['Was read on:'] = 'Przeczytana dnia:';
 $_LANG['Last read on:'] = 'Ostatnio czytana dnia:';
 $_LANG['Was confirm on:'] = 'Potwierdzona dnia:';
-$_LANG['only userpanel message'] = 'tylko wiadomości userpanel';
+$_LANG['only userpanel message'] = 'tylko wiadomości panelu klienta';
 
 $_LANG['New ticket customer notification subject:'] = 'Temat listu z powiadomieniem klienta o nowym zgłoszeniu:';
 $_LANG['New ticket customer notification body:'] = 'Treść listu z powiadomieniem klienta o nowym zgłoszeniu:';
@@ -4285,6 +4296,7 @@ $_LANG['greater or equal'] = 'większe lub równe';
 $_LANG['configuration file'] = 'plik konfiguracyjny';
 
 $_LANG['Click copies to clipboard'] = 'Kliknięcie kopiuje do schowka';
+$_LANG['Copy to clipboard'] = 'Kopiuj do schowka';
 
 $_LANG['(payment without title)'] = '(płatność bez tytułu)';
 
@@ -4445,8 +4457,8 @@ $_LANG['Message template list'] = 'Lista szablonów wiadomości';
 $_LANG['No message templates in database.'] = 'Brak szablonów wiadomości w bazie danych.';
 $_LANG['Are you sure, you want to delete that message template?'] = 'Jesteś pewien, że chcesz usunąć ten szablon wiadomości?';
 $_LANG['Are you sure, you want to delete all selected message templates?'] = 'Jesteś pewien, że chcesz usunąć wszystkie wybrane szablony wiadomości?';
-$_LANG['<!message>userpanel'] = 'panel abonencki';
-$_LANG['<!message>userpanel (urgent)'] = 'panel abonencki (pilne)';
+$_LANG['<!message>userpanel'] = 'panel klienta';
+$_LANG['<!message>userpanel (urgent)'] = 'panel klienta (pilne)';
 $_LANG['<!message>warning'] = 'ostrzeżenie';
 $_LANG['<!message>credit note reason'] = 'powód korekty';
 $_LANG['Add message template'] = 'Dodaj szablon wiadomości';
@@ -4553,7 +4565,20 @@ $_LANG['Are you sure that you want remove tariff rule \'$a\'?'] = 'Czy jesteś p
 $_LANG['Are you sure that you want remove tariff \'$a\'?'] = 'Czy jesteś pewien, że chcesz usunąć cennik \'$a\'?';
 
 $_LANG['Set for user'] = 'Ustaw dla użytkownika';
-$_LANG['Users parameters'] = 'Parametry użytkowników';
+$_LANG['User configuration variable parameters'] = 'Parametry zmiennej konfiguracyjnej użytkownika';
+$_LANG['Global configuration variable parameters'] = 'Globalne parametry zmiennej konfiguracyjnej';
+$_LANG['Division configuration variable parameters'] = 'Firmowe parametry zmiennej konfiguracyjnej';
+$_LANG['User in division configuration variable parameters'] = 'Parametry zmiennej konfiguracyjnej dla użytkownika w firmie';
+$_LANG['overwrite parameters from panel #1'] = 'nadpisuje parametry z panelu #1';
+$_LANG['overwrite parameters from panel #2 and panel #1'] = 'nadpisuje parametry z panelu #2 oraz panelu #1';
+$_LANG['overwrite parameters from panel #3 and panel #2 and panel #1'] = 'nadpisuje parametry z panelu #3 oraz panelu #2 oraz panelu #1';
+$_LANG['global value'] = 'wartość globalna';
+$_LANG['user value'] = 'wartość dla użytkownika';
+$_LANG['division value'] = 'wartość dla firmy';
+$_LANG['user in division value'] = 'wartość dla użytkownika w firmie';
+$_LANG['Add config for division'] = 'Dodaj ustawienie dla firmy';
+$_LANG['Add config for user'] = 'Dodaj ustawienie dla użytkownika';
+$_LANG['Add config for user in division'] = 'Dodaj ustawienie dla użytkownika w firmie';
 $_LANG['Setting config option \'$a\' for user'] = 'Ustawianie opcji konfiguracyjnej \'$a\' dla użytkownika';
 $_LANG['Edition config option \'$a\' for user \'$b\''] = 'Edycja opcji konfiguracyjnej \'$a\' dla użytkownika \'$b\'';
 $_LANG['Users parameters:'] = 'Parametry użytkowników';
@@ -4562,6 +4587,14 @@ $_LANG['Are you sure, you want to delete?'] = 'Jesteś pewien/pewna, że chcesz 
 $_LANG['User login'] = 'Login';
 $_LANG['User login:'] = 'Login:';
 $_LANG['Global'] = 'Globalne';
+$_LANG['Overriding config option for division'] = 'Nadpisywanie opcji konfiguracyjnej dla firmy';
+$_LANG['Overriding config option for user in division'] = 'Nadpisywanie opcji konfiguracyjnej dla użytkownika w firmie';
+$_LANG['Overriding config option for user'] = 'Nadpisywanie opcji konfiguracyjnej dla użytkownika';
+$_LANG['Referenced option does not exists!'] = 'Opcja nadrzędna nie istnieje!';
+$_LANG['Division is required!'] = 'Firma jest wymagana!';
+$_LANG['User is required!'] = 'Użytkownik jest wymagany!';
+$_LANG['User is required!'] = 'Użytkownik jest wymagany!';
+$_LANG['User is not asigned to the division!'] = 'Użytkownik nie jest przypisany do firmy!';
 
 $_LANG['<!netelemtype>office building'] = 'budynek biurowy';
 $_LANG['<!netelemtype>residential building'] = 'budynek mieszkalny';
@@ -4753,8 +4786,8 @@ $_LANG['Enter date in YYYY/MM/DD format we wait for customer action till (option
 $_LANG['Warning! Customer submitted signed document scan. Consider to review it and then possibly confirm.'] = 'Uwaga! Klient przesłał skan podpisanego dokumentu. Rozważ ich przejrzenie i ewentualnie zatwierdzenie.';
 $_LANG['Warning! Customer action time limit is expired is expired!'] = 'Uwaga! Upłynął termin przeznaczony na działanie klienta!';
 
-$_LANG['document form approval in customer panel using SMS authorization'] = 'zatwierdzanie przez panel abonencki formy dokumentowej autoryzowanej przez SMS';
-$_LANG['document form approval in customer panel using scans'] = 'zatwierdzanie przez panel abonencki formy dokumentowej w postaci skanów';
+$_LANG['document form approval in customer panel using SMS authorization'] = 'zatwierdzanie przez panel klienta formy dokumentowej autoryzowanej przez SMS';
+$_LANG['document form approval in customer panel using scans'] = 'zatwierdzanie przez panel klienta formy dokumentowej w postaci skanów';
 $_LANG['invoice transfer form'] = 'druczek przelewu na fakturze';
 
 $_LANG['Copy from billing address'] = 'Kopiuj z adresu bilingowego';
@@ -4824,3 +4857,5 @@ $_LANG['Show more/less'] = 'Pokaż więcej/mniej';
 $_LANG['Preview'] = 'Podgląd';
 
 $_LANG['Network device selection is required!'] = 'Wymagany wybór urządzenia sieciowego!';
+
+$_LANG['financial operations'] = 'operacje finansowe';

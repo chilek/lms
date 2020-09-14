@@ -125,6 +125,20 @@ version 26-git (????-??-??):
     from outside territ database province list [chilan]
   - enhancement: 'phpui.node_to_network_device_connection_required' (default: 'false') configuration
     variable controls if network device connection is required for added/edit node [chilan]
+  - enhancement: 'phpui.teryt_required' support for voip account localisations [chilan]
+  - improvement: allow to include cash source file name in cash import record cash
+    calculation [chilan]
+  - improvement: changed default value for 'phpui.datables_max_records' from '300' to '0' [chilan]
+  - enhancement: introduce configuration per division (UI) [ravvar, chilan]
+  - enhancement: implemented 'customer-group' action in lms-notify.php [chilan]
+  - enhancement: new user permission 'financial_operations' disallows access to financial
+    record lists [chilan]
+  - enhancement: new configuration variable 'sms.message_template' allows to reformat
+    message before sending it [chilan]
+  - improvement: lms-rtparser.php backend script is able to scale down image according
+    to 'phpui.uploaded_image_max_size' [chilan]
+  - enhancement: added separate receipt/bill sale flag for invoices [chilan]
+  - enhancement: resolve ticket by new action button in queueview list [interduo]
 
 version 25.0 (2020-05-15):
 

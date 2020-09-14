@@ -377,13 +377,13 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 $jpk_data .= "<JPK xmlns=\"http://jpk.mf.gov.pl/wzor/2017/11/13/1113/\""
                     . " xmlns:etd=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2016/01/25/eD/DefinicjeTypy/\">\n";
             } else {
-                $jpk_data .= "<JPK xmlns=\"http://crd.gov.pl/wzor/2020/02/25/9142/\""
-                    . " xmlns:etd=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2018/08/24/eD/DefinicjeTypy/\">\n";
+                $jpk_data .= "<JPK xmlns=\"http://crd.gov.pl/wzor/2020/05/08/9393/\""
+                    . " xmlns:etd=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2020/03/11/eD/DefinicjeTypy/\">\n";
             }
         }
 
         $divisionid = intval($_GET['divisionid']);
-        $division = $DB->GetRow("SELECT d.name, shortname, va.address, va.city,
+        $division = $DB->GetRow("SELECT d.name, shortname, d.email, va.address, va.city,
 				va.zip, va.countryid, ten, regon,
 				account, inv_header, inv_footer, inv_author, inv_cplace, va.location_city,
 				va.location_street, tax_office_code,
@@ -407,7 +407,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 $jpk_data .= "\t\t<DataDo>" . strftime('%Y-%m-%d', $dateto) . "</DataDo>\n";
                 $jpk_data .= "\t\t<NazwaSystemu>LMS</NazwaSystemu>\n";
             } else {
-                $jpk_data .= "\t\t<KodFormularza kodSystemowy=\"JPK_V7M (1)\" wersjaSchemy=\"1-0\">JPK_VAT</KodFormularza>\n";
+                $jpk_data .= "\t\t<KodFormularza kodSystemowy=\"JPK_V7M (1)\" wersjaSchemy=\"1-2E\">JPK_VAT</KodFormularza>\n";
                 $jpk_data .= "\t\t<WariantFormularza>1</WariantFormularza>\n";
                 $jpk_data .= "\t\t<DataWytworzeniaJPK>" . strftime('%Y-%m-%dT%H:%M:%S') . "</DataWytworzeniaJPK>\n";
                 $jpk_data .= "\t\t<NazwaSystemu>LMS</NazwaSystemu>\n";
@@ -488,6 +488,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 $jpk_data .= "\t\t\t<Email>" . $division['email'] . "</Email>\n";
                 $jpk_data .= "\t\t</OsobaNiefizyczna>\n";
                 $jpk_data .= "\t</Podmiot1>\n";
+                $jpk_data .= "\t<Ewidencja>\n";
             }
         }
 
@@ -549,6 +550,10 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 $jpk_data .= "\t\t<DataSprzedazy>" . strftime('%Y-%m-%d', $invoice['sdate']) . "</DataSprzedazy>\n";
 
                 if ($jpk_vat_version == 4) {
+                    if (!empty($invoice['flags'][DOC_FLAG_RECEIPT])) {
+                        $jpk_data .= "\t\t<TypDokumentu>FP</TypDokumentu>\n";
+                    }
+
                     $tax_categories = array();
                     foreach ($invoice['content'] as $item) {
                         if (!empty($item['taxcategory'])) {
@@ -1037,6 +1042,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 $jpk_data .= "\t\t<LiczbaWierszyZakupow>0</LiczbaWierszyZakupow>\n";
                 $jpk_data .= "\t\t<PodatekNaliczony>0</PodatekNaliczony>\n";
                 $jpk_data .= "\t</ZakupCtrl>\n";
+                $jpk_data .= "\t</Ewidencja>\n";
             }
         } else {
             $jpk_data .= "\t<FakturaCtrl>\n";
@@ -1066,10 +1072,10 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             $positions = 0;
             foreach ($invoices as $invoice) {
                 foreach ($invoice['content'] as $idx => $position) {
-                    $jpk_data .="\t<FakturaWiersz" . ($jpk_fa_version == 2 ? ' typ="G"' : '') . ">\n";
-                    $jpk_data .="\t\t<P_2B>" . $invoice['fullnumber'] . "</P_2B>\n";
-                    $jpk_data .="\t\t<P_7>" . htmlspecialchars($position['description']) . "</P_7>\n";
-                    $jpk_data .="\t\t<P_8A>" . htmlspecialchars($position['content']) . "</P_8A>\n";
+                    $jpk_data .= "\t<FakturaWiersz" . ($jpk_fa_version == 2 ? ' typ="G"' : '') . ">\n";
+                    $jpk_data .= "\t\t<P_2B>" . $invoice['fullnumber'] . "</P_2B>\n";
+                    $jpk_data .= "\t\t<P_7>" . htmlspecialchars($position['description']) . "</P_7>\n";
+                    $jpk_data .= "\t\t<P_8A>" . htmlspecialchars($position['content']) . "</P_8A>\n";
 
                     if (isset($invoice['invoice'])) {
                         $count = $position['count'] - $invoice['invoice']['content'][$idx]['count'];

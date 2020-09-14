@@ -460,6 +460,7 @@ CREATE TABLE documents (
     senddate integer	DEFAULT 0 NOT NULL,
     memo text           DEFAULT NULL,
     confirmdate integer NOT NULL DEFAULT 0,
+    flags smallint DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
 );
 CREATE INDEX documents_cdate_idx ON documents(cdate);
@@ -2143,19 +2144,21 @@ DROP SEQUENCE IF EXISTS uiconfig_id_seq;
 CREATE SEQUENCE uiconfig_id_seq;
 DROP TABLE IF EXISTS uiconfig CASCADE;
 CREATE TABLE uiconfig (
-    id 		integer 	DEFAULT nextval('uiconfig_id_seq'::text) NOT NULL,
-    section 	varchar(64) 	NOT NULL DEFAULT '',
-    var 	varchar(64) 	NOT NULL DEFAULT '',
-    value 	text 		NOT NULL DEFAULT '',
-    description text 		NOT NULL DEFAULT '',
-    disabled 	smallint 	NOT NULL DEFAULT 0,
-    type 	smallint 	NOT NULL DEFAULT 0,
-    userid 	integer 	DEFAULT NULL
+    id          integer         DEFAULT nextval('uiconfig_id_seq'::text) NOT NULL,
+    section     varchar(64)     NOT NULL DEFAULT '',
+    var         varchar(64)     NOT NULL DEFAULT '',
+    value       text            NOT NULL DEFAULT '',
+    description text            NOT NULL DEFAULT '',
+    disabled    smallint        NOT NULL DEFAULT 0,
+    type        smallint        NOT NULL DEFAULT 0,
+    userid      integer         DEFAULT NULL
         CONSTRAINT uiconfig_userid_fkey REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    configid 	integer 	DEFAULT NULL
-        CONSTRAINT uiconfig_configid_fkey REFERENCES uiconfig (id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    divisionid      integer         DEFAULT NULL
+        CONSTRAINT uiconfig_divisionid_fkey REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    configid    integer         DEFAULT NULL
+        CONSTRAINT uiconfig_configid_fkey REFERENCES uiconfig (id) ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY (id),
-    CONSTRAINT uiconfig_section_key UNIQUE (section, var, userid)
+    CONSTRAINT uiconfig_section_var_userid_divisionid_ukey UNIQUE (section, var, userid, divisionid)
 );
 
 /* ---------------------------------------------------
@@ -3840,6 +3843,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020083100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020091100');
 
 COMMIT;

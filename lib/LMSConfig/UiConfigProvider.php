@@ -39,25 +39,68 @@ class UiConfigProvider implements ConfigProviderInterface
      */
     public function load(array $options = array())
     {
+        static $ui_config_cache = array();
+
         $db = LMSDB::getInstance();
-        $userid = (isset($options['user_id'])) ? $options['user_id'] : false;
-        if (!$userid) {
-            $result = $db->GetAll('SELECT section, var, value, description FROM uiconfig WHERE disabled = 0 AND userid is null');
+        $userid = strval(isset($options['user_id']) ? $options['user_id'] : 0);
+        $divisionid = strval(isset($options['division_id']) ? $options['division_id'] : 0);
+
+        $configs = array();
+        if (empty($ui_config_cache)) {
+            $results = $db->GetAll('SELECT * FROM uiconfig WHERE disabled = 0');
+
+            if (!empty($results)) {
+                foreach ($results as $result) {
+                    if (empty($result['divisionid']) && empty($result['userid'])) {
+                        $ui_config_cache['0']['0'][$result['section']][$result['var']] = $result;
+                    } elseif (!empty($result['divisionid']) && empty($result['userid'])) {
+                        $ui_config_cache[$result['divisionid']]['0'][$result['section']][$result['var']] = $result;
+                    } elseif (empty($result['divisionid']) && !empty($result['userid'])) {
+                        $ui_config_cache['0'][$result['userid']][$result['section']][$result['var']] = $result;
+                    } else {
+                        $ui_config_cache[$result['divisionid']][$result['userid']][$result['section']][$result['var']] = $result;
+                    }
+                }
+                $configs = $ui_config_cache['0']['0'];
+            }
         } else {
-            $result = $db->GetAll(
-                'SELECT u1.section, u1.var, u1.value, u1.description
-            FROM uiconfig u1
-            WHERE u1.disabled = 0
-            AND u1.id = (SELECT u2.id
-                FROM uiconfig u2
-                WHERE u2.section = u1.section
-                AND u2.var = u1.var
-                AND (u2.userid = ? OR u2.userid is null)
-                ORDER BY COALESCE(u2.userid, 0) DESC LIMIT 1)',
-                array($userid)
-            );
+            // Nie może być zmiennej konfiguracyjnej dla użytkownika lub dywizji jeśli
+            // nie ma zmiennej konfiguracyjnej globalnej.
+            // Zmienne konfiguracyjne globalne są bazą.
+            $arrays = array($ui_config_cache['0']['0']);
+
+            if (!empty($divisionid)) {
+                // overwrite global configs with division configs
+                if (isset($ui_config_cache[$divisionid]['0'])) {
+                    $arrays[] = $ui_config_cache[$divisionid]['0'];
+                }
+
+                // overwrite global configs with user in division configs
+                if (!empty($userid) && isset($ui_config_cache[$divisionid][$userid])) {
+                    $arrays[] = $ui_config_cache[$divisionid][$userid];
+                }
+            }
+
+            if (!empty($userid) && isset($ui_config_cache['0'][$userid])) {
+                // overwrite global configs with user configs
+                $arrays[] = $ui_config_cache['0'][$userid];
+            }
+
+            $configs = call_user_func_array('array_merge_recursive', $arrays);
+
+            foreach ($configs as $section => &$variables) {
+                foreach ($variables as $variable_name => &$variable) {
+                    foreach ($variable as $property_name => $property_value) {
+                        if (is_array($property_value)) {
+                            $variable[$property_name] = array_pop($property_value);
+                        }
+                    }
+                }
+                unset($variable);
+            }
+            unset($variables);
         }
 
-        return is_array($result) ? $result : array();
+        return $configs;
     }
 }

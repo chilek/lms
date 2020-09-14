@@ -65,4 +65,5 @@ $patterns[] = array(
     'use_line_hash' => false,   // create md5 hash for whole import line instead of
                 // time, value, customer name and comment
     'line_idx_hash' => false,   // include line number into hash data
+    'filename_hash' => false,   // include source file name into hash data
 );

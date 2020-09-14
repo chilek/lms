@@ -1,9 +1,20 @@
+<style>
+
+    .eventinfoshort-textbox {
+        max-width: 30em;
+        padding: 0.3em;
+    }
+
+</style>
 <TABLE class="lmsbox-inner" id="table">
+{*
+    commented out as it causes strange table grow
     <COLGROUP>
         <COL style="width: 1%;">
         <COL style="width: 1%;">
         <COL style="width: 98%;">
     </COLGROUP>
+*}
     <THEAD>
     <TR>
         <TD>
@@ -58,13 +69,9 @@
                 {trans("Description:")}
             </TD>
             <TD>
-                <TABLE WIDTH="90%" CELLPADDING="5">
-                    <TR>
-                        <TD CLASS="fall superlight">
-                            {$event.description|replace:"\n":"<BR>"}
-                        </TD>
-                    </TR>
-                </TABLE>
+                <div class="fall superlight eventinfoshort-textbox">
+                    {$event.description|replace:"\n":"<BR>"}
+                </div>
             </TD>
         </TR>
     {/if}
@@ -186,17 +193,17 @@
         </TD>
         <TD class="nobr">
         {if $event.netnode_name}
-            <i class="lms-ui-icon-netnode"></i> <a href="?m=netnodeinfo&id={$event.netnode_id}">{$event.netnode_name}</a>
+            {icon name="netnode"} <a href="?m=netnodeinfo&id={$event.netnode_id}">{$event.netnode_name}</a>
             {if !empty($event.netnode_location)}<br><i class="lms-ui-icon-location"></i> {$event.netnode_location}{/if}
         {else}
             {if $event.customername}
-            <i class="lms-ui-icon-customer"></i> <A href="?m=customerinfo&amp;id={$event.customerid}">{$event.customername|truncate:"30":"...":true}</A><br>
+                {icon name="customer"} <A href="?m=customerinfo&amp;id={$event.customerid}">{$event.customername|truncate:"30":"...":true}</A><br>
                 {if !empty($event.address_id)}
-                    <i class="lms-ui-icon-location"></i> {$event.location}
+                    {icon name="location"} {$event.location}
                 {elseif !empty($event.nodeid)}
                     <a href="?m=nodeinfo&id={$event.nodeid}"> {$event.nodelocation}</a>
                 {else}
-                    <i class="lms-ui-icon-location"></i> {$event.customerlocation}
+		    {icon name="location"} {$event.customerlocation}
                 {/if}
             {/if}
         {/if}
@@ -205,7 +212,7 @@
     {if !empty($event.nodeid)}
         <TR>
             <TD>
-                <IMG src="img/node.gif" alt="">
+                {icon name="node"}
             </TD>
             <TD class="bold">
                 {trans("Node:")}
@@ -218,26 +225,22 @@
     {if $event.note}
         <TR>
             <TD>
-                <IMG src="img/note.gif" alt="">
+                {icon name="note"}
             </TD>
             <TD class="bold nobr">
                 {trans("Note:")}
             </TD>
             <TD>
-                <TABLE WIDTH="90%" CELLPADDING="5">
-                    <TR>
-                        <TD class="fall superlight">
-                            {$event.note|replace:"\n":"<BR>"}
-                        </TD>
-                    </TR>
-                </TABLE>
+                <div class="fall superlight eventinfoshort-textbox">
+                    {$event.note|replace:"\n":"<BR>"}
+                </div>
             </TD>
         </TR>
     {/if}
     {if $event.userlist}
         <TR>
             <TD>
-                <IMG src="img/users.gif" alt="">
+                {icon name="user"}
             </TD>
             <TD class="bold">
                 {trans("Users:")}
@@ -252,7 +255,7 @@
     {if isset($event.ticketid)}
         <TR>
             <TD>
-                <i class="lms-ui-icon-helpdesk">
+                {icon name="helpdesk"}
             </TD>
             <TD class="bold">
                 {trans("Helpdesk assignment:")}

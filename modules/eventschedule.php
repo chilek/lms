@@ -88,6 +88,10 @@ if (!isset($_POST['loginform']) && !empty($_POST)) {
     $filter['privacy'] = isset($_POST['privacy']) ? intval($_POST['privacy']) : null;
     $filter['closed'] = isset($_POST['closed']) ? $_POST['closed'] : null;
 } else {
+    if ($SESSION->is_set('eld')) {
+        $filter = array_merge($filter, $SESSION->get('eld'));
+    }
+
     if (isset($_GET['day']) && isset($_GET['month']) && isset($_GET['year'])) {
         if (isset($_GET['day'])) {
             $filter['day'] = $_GET['day'];
@@ -135,6 +139,13 @@ if (isset($filter['year']) && isset($filter['month']) && isset($filter['day'])) 
     $filter['edate'] = sprintf('%04d/%02d/%02d', $filter['year'], $filter['month'], $filter['day']);
 }
 
+$SESSION->save('eld', array(
+    'year' => $filter['year'],
+    'month' => $filter['month'],
+    'day' => $filter['day'],
+    'edate' => $filter['edate'],
+));
+
 $SESSION->saveFilter($filter, null, array('year', 'month', 'day', 'edate'), true);
 
 if (!isset($filter['day'])) {
@@ -149,7 +160,7 @@ if (!isset($filter['year'])) {
     $filter['year'] = date('Y');
 }
 
-$layout['pagetitle'] = trans('Timetable');
+$layout['pagetitle'] = trans('Schedule');
 
 $filter['forward'] = ConfigHelper::getConfig('phpui.timetable_days_forward');
 $eventlist = $LMS->GetEventList($filter);

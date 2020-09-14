@@ -123,8 +123,19 @@ $pagelimit = ConfigHelper::getConfig('phpui.balancelist_pagelimit');
 $page = (empty($_GET['page']) ? 0 : intval($_GET['page']));
 
 if (isset($_GET['sourcefileid']) || $c == 'cashimport') {
-    if (isset($_GET['sourcefileid']) || (isset($_POST['sourcefileid']) && !empty($_POST['sourcefileid']))) {
-        $sourcefileid = intval(isset($_GET['sourcefileid']) ? $_GET['sourcefileid'] : $_POST['sourcefileid']);
+    if (isset($_GET['sourcefileid'])) {
+        $sourcefileid = intval($_GET['sourcefileid']);
+    } elseif (isset($_POST['sourcefileid']) && !empty($_POST['sourcefileid'])) {
+        $sourcefileid = intval($_POST['sourcefileid']);
+    } else {
+        $SESSION->restore('blsfid', $sourcefileid);
+        if ($sourcefileid) {
+            $sourcefileid = intval($sourcefileid);
+        } else {
+            $sourcefileid = 0;
+        }
+    }
+    if ($sourcefileid) {
         $sourcefilename = $DB->GetOne('SELECT name FROM sourcefiles WHERE id = ?', array($sourcefileid));
     } else {
         $sourcefileid = $DB->GetCol('SELECT id FROM sourcefiles WHERE name = ?', array($s));
@@ -136,7 +147,10 @@ if (isset($_GET['sourcefileid']) || $c == 'cashimport') {
         $c = 'cashimport';
         $SESSION->save('bls', $s);
         $SESSION->save('blc', $c);
+        $SESSION->save('blsfid', $sourcefileid);
     }
+} elseif ($c != 'cashimport') {
+    $SESSION->remove('blsfid');
 }
 
 $summary = $LMS->GetBalanceList(array('search' => $s, 'cat' => $c, 'group' => $g, 'exclude'=> $ge,

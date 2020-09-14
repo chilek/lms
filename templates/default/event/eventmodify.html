@@ -308,6 +308,18 @@
 
 		customer_addresses.init();
 
+		{if $layout.module == 'eventedit'}
+		function change_customer(customer_selector, address_selector) {
+			getCustomerAddresses($(customer_selector).val(), function (addresses) {
+				customer_addresses.setAddressList(addresses);
+				if (Object.keys(addresses).length == 1) {
+					$('#customer_addresses').val($('#customer_addresses option:last-child').val());
+					customer_addresses.refresh();
+				}
+				xajax_select_location($(customer_selector).val(), $(address_selector).val());
+			});
+		}
+		{/if}
 		//initCustomerSelection('{$event.customerid}', '{$ticket.address_id}');
 
 	</SCRIPT>
