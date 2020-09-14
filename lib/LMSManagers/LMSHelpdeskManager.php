@@ -1844,23 +1844,31 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         $smtp_options = $this->GetRTSmtpOptions();
 
         if ($params['verifierid']) {
-            $verifier_email = $this->db->GetOne('SELECT email FROM users WHERE users.id = ?', array($params['verifierid']));
-            $params['mail_headers']['To'] = '<' . $verifier_email . '>';
-            $LMS->SendMail(
-                $verifier_email,
-                $params['mail_headers'],
-                $params['mail_body'],
-                $notification_attachments && isset($params['attachments']) && !empty($params['attachments']) ? $params['attachments'] : null,
-                null,
-                $smtp_options
+            $verifier_email = $this->db->GetOne(
+                'SELECT email FROM users WHERE email <> \'\' AND deleted = 0 AND access = 1 AND users.id = ?',
+                array($params['verifierid'])
             );
-        } else {
+            if (!empty($verifier_email)) {
+                $params['mail_headers']['To'] = '<' . $verifier_email . '>';
+                $LMS->SendMail(
+                    $verifier_email,
+                    $params['mail_headers'],
+                    $params['mail_body'],
+                    $notification_attachments && isset($params['attachments']) && !empty($params['attachments']) ? $params['attachments'] : null,
+                    null,
+                    $smtp_options
+                );
+            }
+        }
+
+        if ($params['queue']) {
             if ($recipients = $this->db->GetCol(
                 'SELECT DISTINCT email
 			FROM users, rtrights
 			WHERE users.id=userid AND queueid = ? AND email != \'\'
 				AND (rtrights.rights & ' . RT_RIGHT_NOTICE . ') > 0 AND deleted = 0 AND access = 1'
                 . (!isset($args['user']) || $notify_author ? '' : ' AND users.id <> ?')
+                . ($params['verifierid'] ? ' AND users.id <> ' . intval($params['verifierid']) : '')
                 . ' AND (ntype & ?) > 0',
                 array_values($args)
             )) {
@@ -1894,16 +1902,25 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         // send sms
         $args['type'] = MSG_SMS;
+
         if ($params['verifierid']) {
-            $verifier_phone = $this->db->GetCol('SELECT phone FROM users WHERE users.id = ?', $verifierid);
-            $LMS->SendSMS($verifier_phone, $params['sms_body']);
-        } else {
+            $verifier_phone = $this->db->GetCol(
+                'SELECT phone FROM users WHERE phone <> \'\' AND deleted = 0 AND access = 1 AND users.id = ?',
+                $params['verifierid']
+            );
+            if (!empty($verifier_phone)) {
+                $LMS->SendSMS($verifier_phone, $params['sms_body']);
+            }
+        }
+
+        if ($params['queue']) {
             if (!empty($sms_service) && ($recipients = $this->db->GetCol(
                 'SELECT DISTINCT phone
 			FROM users, rtrights
 				WHERE users.id=userid AND queueid = ? AND phone != \'\'
 					AND (rtrights.rights & ' . RT_RIGHT_NOTICE . ') > 0 AND deleted = 0 AND access = 1'
                     . (!isset($args['user']) || $notify_author ? '' : ' AND users.id <> ?')
+                    . ($params['verifierid'] ? ' AND users.id <> ' . intval($params['verifierid']) : '')
                     . ' AND (ntype & ?) > 0',
                 array_values($args)
             ))) {

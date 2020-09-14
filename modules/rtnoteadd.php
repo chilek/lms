@@ -234,6 +234,7 @@ if (isset($_GET['ticketid'])) {
 
             $LMS->NotifyUsers(array(
                 'queue' => $queue['id'],
+                'verifierid' => empty($note['verifierid']) ? null : $note['verifierid'],
                 'mail_headers' => $headers,
                 'mail_body' => $body,
                 'sms_body' => $sms_body,
