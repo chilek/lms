@@ -20,9 +20,6 @@
 	<TD class="nobr">
 		<span class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$ticket.id}">
 			<span class="bold" style="{$_RT_PRIORITY_STYLES[$ticket.priority]}">&nbsp;{$ticket.id|string_format:"%06d"}&nbsp;</span>
-		<a href="#" class="lms-ui-button-clipboard lms-ui-button" data-clipboard-text="{$url}?m=rtticketview&id={$ticket.id}">
-			<i class="lms-ui-icon-clipboard"></i>
-		</a>
 		<span>{if (is_array($filter.ids) && count($filter.ids) != 1) || !isset($filter.ids)}{$ticket.name}{/if}</span>
 		{if !ConfigHelper::checkConfig('rt.hide_ticket_row_create_time')}<br>{$ticket.createtime|date_format:"%Y/%m/%d %H:%M:%S"}{/if}
 	</TD>
@@ -98,6 +95,7 @@
 					{button type='link' icon="unread" class="ticket-unread" tip="Mark as read" onclick="location.href = '?m=rtticketedit&id={$ticket.id}&action=read'"}
 				{/if}
 			{/if}
+			{button type='link' class="lms-ui-button-clipboard" icon="clipboard" clipboard="{$url}/?m=rtticketview&id={$ticket.id}" tip="Copy to clipboard"}
 			{if !empty($ticket.imagecount)}
 				{button type="link" icon="gallery" class="ticket-image-gallery" tip="Show ticket attached image gallery"}
 			{/if}
