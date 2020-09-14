@@ -1899,6 +1899,11 @@ if (isset($_GET['l']) && sprintf('%d', $_GET['l']) > 0 && sprintf('%d', $_GET['l
     $DB->Execute('INSERT INTO divisions (name, shortname, address_id) VALUES(?,?,?)', array('default', 'default', $LMS->InsertAddress($addr)));
     $divisionid = $DB->GetLastInsertID('divisions');
 
+    $DB->Execute(
+        'INSERT INTO userdivisions (userid, divisionid)
+        (SELECT u.id, d.id FROM users u, divisions d)'
+    );
+
     $DB->Execute('INSERT INTO taxes (label, value, taxed) VALUES(?,?,?)', array('tax-free', 0, 0));
     $DB->Execute('INSERT INTO taxes (label, value, taxed) VALUES(?,?,?)', array('7%', 7, 1));
     $DB->Execute('INSERT INTO taxes (label, value, taxed) VALUES(?,?,?)', array('22%', 22, 1));
