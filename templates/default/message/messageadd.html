@@ -154,7 +154,7 @@
 							<TD class="nobr" rowspan="3">{trans("Status:")}</TD>
 							<TD rowspan="3">
 								<SELECT name="message[group]" {tip trigger="group" text="Select recipients group"} required>
-									<option value="0" {if $message.group == 0} selected{/if}>{trans("- all customers -")}</option>
+									<option value="0"{if !$message.group} selected{/if}>{trans("- all customers -")}</option>
 									{foreach $_CSTATUSES as $statusidx => $status}
 										<option value="{$statusidx}"{if $message.group == $statusidx} selected{/if}>{$status.plurallabel}</option>
 									{/foreach}
