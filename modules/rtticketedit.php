@@ -415,9 +415,11 @@ if (isset($_POST['ticket'])) {
                 || $ticket['deadline'] != $ticketedit['deadline']
                 || $ticket['priority'] != $ticketedit['priority']
                 || $ticket['parentid'] != $ticketedit['parentid']))
-            || ($ticket['queueid'] != $ticketedit['queue'] && !empty($newticket_notify))) {
+            || ($ticket['queueid'] != $ticketedit['queue'] && !empty($newticket_notify))
+            || ($ticket['verifierid'] != $ticketedit['verifierid'] && !empty($ticketedit['verifierid']))) {
             $user = $LMS->GetUserInfo(Auth::GetCurrentUser());
             $queue = $LMS->GetQueueByTicketId($ticket['ticketid']);
+            $verifierid = $ticket['verifierid'];
             $mailfname = '';
 
             $helpdesk_sender_name = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
@@ -494,6 +496,7 @@ if (isset($_POST['ticket'])) {
             $LMS->NotifyUsers(array(
                 'queue' => $ticketedit['queue'],
                 'oldqueue' => $ticket['queueid'] == $ticketedit['queue'] ? null : $ticket['queueid'],
+                'verifierid' => $verifierid == $ticketedit['verifierid'] ? null : $ticketedit['verifierid'],
                 'mail_headers' => $headers,
                 'mail_body' => $body,
                 'sms_body' => $sms_body,

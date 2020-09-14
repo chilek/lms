@@ -1845,8 +1845,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         if ($params['verifierid']) {
             $verifier_email = $this->db->GetOne(
-                'SELECT email FROM users WHERE email <> \'\' AND deleted = 0 AND access = 1 AND users.id = ?',
-                array($params['verifierid'])
+                'SELECT email FROM users WHERE email <> \'\' AND deleted = 0 AND access = 1 AND users.id = ?
+                AND (ntype & ?) > 0',
+                array($params['verifierid'], MSG_MAIL)
             );
             if (!empty($verifier_email)) {
                 $params['mail_headers']['To'] = '<' . $verifier_email . '>';
@@ -1905,8 +1906,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         if ($params['verifierid']) {
             $verifier_phone = $this->db->GetOne(
-                'SELECT phone FROM users WHERE phone <> \'\' AND deleted = 0 AND access = 1 AND users.id = ?',
-                array($params['verifierid'])
+                'SELECT phone FROM users WHERE phone <> \'\' AND deleted = 0 AND access = 1 AND users.id = ?
+                AND (ntype & ?) > 0',
+                array($params['verifierid'], MSG_SMS)
             );
             if (!empty($verifier_phone)) {
                 $LMS->SendSMS($verifier_phone, $params['sms_body']);
