@@ -74,7 +74,9 @@ body {
 #lms-ui-menu-panel {
   //	align-self: flex-start;
   z-index: 1;
-  box-shadow: 1em 0 0.9em @lucid;
+  @media screen and (min-width: @mobile-max-width + 1px) {
+    box-shadow: 1em 0 0.9em @lucid;
+  }
   background-color: @dark;
   overflow: hidden;
   border: 1px solid black;
