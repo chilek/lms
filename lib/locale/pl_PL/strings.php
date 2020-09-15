@@ -3304,6 +3304,17 @@ $_LANG['Closed time'] = 'Czas zamknięcia';
 $_LANG['current:'] = 'aktualnie:';
 
 $_LANG['- new section -'] = '- nowa sekcja -';
+$_LANG['Target section:'] = 'Sekcja docelowa:';
+$_LANG['Target user:'] = 'Użytkownik docelowy:';
+$_LANG['Target division:'] = 'Firma docelowa:';
+$_LANG['to_the_source_sections'] = 'do_żródłowych_sekcji';
+$_LANG['Create the missing parent bindings:'] = 'Utwórz brakujące powiązania nadrzędne:';
+$_LANG['With child bindings:'] = 'Z powiązaniami podrzędnymi:';
+$_LANG['Override existing:'] = 'Nadpisz istniejące:';
+$_LANG['Are you sure, you want to clone all selected options?'] = 'Czy jesteś pewien, że chcesz sklonować wybrane opcje?';
+$_LANG['new section name'] = 'nazwa nowej sekcji';
+$_LANG['Clone selected'] = 'Klonuj zaznaczone';
+$_LANG['Delete selected'] = 'Usuń zaznaczone';
 $_LANG['Enter section name'] = 'Podaj nazwę sekcji';
 $_LANG['Section name can\'t be empty'] = 'Nazwa sekcji nie może być pusta!';
 
@@ -4770,7 +4781,6 @@ $_LANG['TERRIT address is required!'] = 'Wymagany adres zgodny z TERYT!';
 
 $_LANG['investment project management'] = 'zarządzanie projektami inwestycyjnymi';
 
-$_LANG['Clone section to new one with specified name'] = 'Kopiuj sekcję pod nową nazwą, którą określiłeś';
 $_LANG['Enter new section name'] = 'Wprowadz nazwę nowej sekcji';
 $_LANG['Section with specified name already exist!'] = 'Sekcja o podanej nazwie już istnieje!';
 

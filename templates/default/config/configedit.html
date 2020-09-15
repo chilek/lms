@@ -103,7 +103,7 @@
 							</TD>
 							<td>
 								{if empty($reftype)}
-								<SELECT size="1" name="config[section]" size="30" {tip class="lms-ui-combobox" text="Select section" trigger="section"}
+								<SELECT size="1" name="config[section]" {tip class="lms-ui-combobox" text="Select section" trigger="section"}
 										{if !in_array($config.section, $sections)} data-value="{$config.section}"{/if}>
 									{foreach $sections as $section}
 										<OPTION value="{$section}"{if $config.section == $section} selected{/if}>{$section}</OPTION>

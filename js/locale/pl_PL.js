@@ -23,6 +23,16 @@
  *  $Id$
  */
 
+$_LANG['<!invoice>telecommunication service'] = 'usługa telekomunikacyjna';
+$_LANG['translates into JPK MPP flag'] = 'przekłada się na flagę JPK MPP';
+$_LANG['translates into JPK EE flag'] = 'przekłada się na flagę JPK EE';
+$_LANG['translates into JPK FP flag'] = 'przekłada się na flagę JPK FP';
+$_LANG['Document flags:'] = 'Flagi dokumentu:';
+
+$_LANG['with discount'] = 'z rabatem';
+
+$_LANG['Tax Category:'] = 'GTU:';
+
 $_LANG['<!invoice>With receipt:'] = 'W tym faktury wyst. na podst. parag. fisk.:';
 $_LANG['<!invoice>Without receipt:'] = 'Różnica (kwoty do uwzgl. w VAT-7):';
 
@@ -43,6 +53,7 @@ $_LANG['show average speed'] = 'pokaż prędkość średnią';
 $_LANG['show maximum speed'] = 'pokaż prędkość maksymalną';
 
 $_LANG['Positions:'] = 'Pozycje:';
+$_LANG['Positions'] = 'Pozycje';
 
 $_LANG['link technologies'] = 'technologie łącza';
 $_LANG['service types'] = 'typy usług';
@@ -103,7 +114,7 @@ $_LANG['<!retention>External source address:'] = 'Zewnętrzny adres źródłowy:
 $_LANG['<!retention>External source port:'] = 'Zewnętrzny port źródłowy:';
 $_LANG['<!retention>Enter external source port'] = 'Podaj zewnętrzny port źródłowy';
 $_LANG['<!retention>Enter external source port in numeric format'] = 'Podaj zewnętrzny port źródłowy w formacie numerycznym';
-$_LANG['<!retention>Enter date in \'yyyy/mm/dd hh:mm:ss\' format or click to choose it from calendar'] = 'Podaj datę w formacie \'rrrr/mm/dd hh:mm:ss\' lub kliknij żeby wybrać ją z kalendarza';
+$_LANG['<!retention>Enter date in \'yyyy/mm/dd hh:mm:ss\' format or click to choose it from calendar'] = 'Podaj datę w formacie \'rrrr/mm/dd hh:mm:ss\' lub kliknij, żeby wybrać ją z kalendarza';
 $_LANG['<!retention>Retention logs'] = 'Dzienniki retencyjne';
 $_LANG['<!retention>Date'] = 'Data';
 $_LANG['<!retention>Event'] = 'Zdarzenie';
@@ -202,9 +213,6 @@ $_LANG['Cost limit:'] = 'Limit kosztów:';
 $_LANG['Callee:'] = 'Dokąd:';
 $_LANG['Unit size<!voip>'] = 'Rozmiar jednostki';
 $_LANG['Start call:'] = 'Dokąd:';
-
-$_LANG['billing'] = 'billing';
-
 $_LANG['purchase invoice'] = 'faktura zakupu';
 $_LANG['pro-forma invoice'] = 'faktura pro forma';
 $_LANG['$a ($b addresses)'] = '$a ($b adresów)';
@@ -212,7 +220,7 @@ $_LANG['$a addresses'] = '$a adresów';
 $_LANG['$a ago ($b)'] = '$a temu ($b)';
 $_LANG['$a at least one year old records have been removed.<BR>'] = '$a rekordów starszych niż rok zostało usuniętych.<BR>';
 $_LANG['$a dollars $b cents'] = '$a złotych $b groszy';
-$_LANG['$a months'] = '$a m-cy';
+$_LANG['$a months'] = '$a mies.';
 $_LANG['$a of $b ($c) $d:'] = '$a z $b ($c) $d:';
 $_LANG['$a records after compacting.'] = '$a rekordów po kompaktowaniu.';
 $_LANG['$a records before compacting.<BR>'] = '$a rekordów przed kompaktowaniem.<BR>';
@@ -467,7 +475,7 @@ $_LANG['City:'] = 'Miasto:';
 $_LANG['Clear'] = 'Wyczyść';
 $_LANG['Clear Account'] = 'Rozlicz';
 $_LANG['Clear Contents'] = 'Wyczyść zawartość';
-$_LANG['Clearing database...'] = 'Czyszczenie bazy danych...';
+$_LANG['Clearing database...'] = 'Czyszczenie bazy danych…';
 $_LANG['Click here, to register your installation and learn more why you should - IT\'S FREE!'] = 'Kliknij tutaj, aby zarejestrować swoją instalację LMS-a i dowiedzieć się dlaczego powinieneś to zrobić - TO NIC NIE KOSZTUJE!';
 $_LANG['Click on column name to change sorting order'] = 'Kliknij na nazwy kolumn w celu zmiany porządku sortowania';
 $_LANG['Click on the Computer name above to get it records'] = 'Kliknij na nazwę komputera, żeby zaznaczyć jego dane';
@@ -521,7 +529,7 @@ $_LANG['Created:'] = 'Utworzony:';
 $_LANG['Created by: $a'] = 'Utworzone przez: $a';
 $_LANG['Create new'] = 'Utwórz nową';
 $_LANG['Create time:'] = 'Data utworzenia:';
-$_LANG['Generating subscriptions...'] = 'Generuję taryfy...';
+$_LANG['Generating subscriptions...'] = 'Generuję taryfy…';
 $_LANG['Creation time:'] = 'Czas utworzenia:';
 $_LANG['Creditor:'] = 'Wierzyciel:';
 $_LANG['Creditor name is required!'] = 'Nazwa wierzyciela jest wymagana!';
@@ -920,10 +928,10 @@ $_LANG['Generate invoice'] = 'Wygeneruj fakturę';
 $_LANG['Generate PIN'] = 'Wygeneruj PIN';
 $_LANG['Click to generate random password'] = 'Kliknij, aby wygenerować losowe hasło';
 $_LANG['Generate random PIN'] = 'Wygeneruj losowy PIN';
-$_LANG['Generating customers...'] = 'Generuję klientów...';
-$_LANG['Generating network...'] = 'Generuję sieć...';
-$_LANG['Generating network hardware and connections...'] = 'Generuję sprzęt i połączenia...';
-$_LANG['Generating payments...'] = 'Generuję płatności...';
+$_LANG['Generating customers...'] = 'Generuję klientów…';
+$_LANG['Generating network...'] = 'Generuję sieć…';
+$_LANG['Generating network hardware and connections...'] = 'Generuję sprzęt i połączenia…';
+$_LANG['Generating payments...'] = 'Generuję płatności…';
 $_LANG['Generating random data'] = 'Generowanie danych losowych';
 $_LANG['get source registry balance'] = 'wstaw saldo rejestru źródłowego';
 $_LANG['Price:'] = 'Cena:';
@@ -1540,7 +1548,7 @@ $_LANG['Select accounting frequency'] = 'Wybierz częstotliwość naliczania';
 $_LANG['Select address status'] = 'Wybierz status adresu';
 $_LANG['Select All<!nodes>'] = 'Zaznacz wszystkie';
 $_LANG['- select customer -'] = '- wybierz klienta -';
-$_LANG['... select customer ...'] = '... wybierz klienta ...';
+$_LANG['... select customer ...'] = '… wybierz klienta …';
 $_LANG['select customer'] = 'wybierz klienta';
 $_LANG['Select customer'] = 'Wybierz klienta';
 $_LANG['select customer from list or enter his data if is not a customer'] = 'wybierz klienta z listy lub wprowadź jego dane jeżeli nie ma go na liście';
@@ -1566,8 +1574,8 @@ $_LANG['Select event\'s status'] = 'Wybierz status wpisu';
 $_LANG['- select filter category -'] = '- wybierz kategorię filtrowania -';
 $_LANG['Select from list device for connection'] = 'Z listy wybierz urządzenie do podłączenia';
 $_LANG['Select from list device for replacement'] = 'Z listy wybierz urządzenie do wymiany';
-$_LANG['... select group ...'] = '... wybierz grupę ...';
-$_LANG['... select groups ...'] = '... wybierz grupy ...';
+$_LANG['... select group ...'] = '… wybierz grupę …';
+$_LANG['... select groups ...'] = '… wybierz grupy …';
 $_LANG['Select group'] = 'Wybierz grupę';
 $_LANG['Select group to attribute to customer'] = 'Wybierz grupę, którą chcesz przypisać klientowi';
 $_LANG['- select host -'] = '- wybierz host -';
@@ -1859,7 +1867,7 @@ $_LANG['Write down network address and select mask'] = 'Wpisz adres sieci i wybi
 $_LANG['Write (+R)'] = 'Zapis (+O)';
 $_LANG['Wrong discount value!'] = 'Błędna wartość rabatu!';
 $_LANG['Wrong password or login.'] = 'Złe hasło lub login.';
-$_LANG['www'] = 'www';
+$_LANG['www'] = 'WWW';
 $_LANG['half-yearly'] = 'półrocznie';
 $_LANG['half-yearly ($a)'] = 'półrocznie ($a)';
 $_LANG['yearly'] = 'rocznie';
@@ -2058,8 +2066,8 @@ $_LANG['Transfer forms'] = 'Formularze przelewu';
 $_LANG['Not set'] = 'Nie ustawione';
 $_LANG['New network is too small. Put in order IP addresses first!'] = 'Nowa sieć jest zbyt mała. Uporządkuj najpierw adresy IP!';
 $_LANG['You can assign customer to ticket'] = 'Możesz przypisać klienta do zgłoszenia';
-$_LANG['Generating invoices...'] = 'Generuję faktury...';
-$_LANG['Generating hosts...'] = 'Generuję hosty...';
+$_LANG['Generating invoices...'] = 'Generuję faktury…';
+$_LANG['Generating hosts...'] = 'Generuję hosty…';
 $_LANG['equal to'] = 'równe';
 $_LANG['Sharing surface'] = 'Udostępnianie powierzchni';
 $_LANG['Antennas installation'] = 'Instalacja anten';
@@ -2448,13 +2456,13 @@ $_LANG['Enter limit of e-mail accounts'] = 'Wprowadź limit liczby kont e-mail';
 $_LANG['Enter limit of ftp accounts'] = 'Wprowadź limit liczby kont ftp';
 $_LANG['Enter limit of shell accounts'] = 'Wprowadź limit liczby kont shellowych';
 $_LANG['Enter limit of sql accounts'] = 'Wprowadź limit liczby kont sql';
-$_LANG['Enter limit of www accounts'] = 'Wprowadź limit liczby kont www';
+$_LANG['Enter limit of www accounts'] = 'Wprowadź limit liczby kont WWW';
 $_LANG['Enter limit of cloud accounts'] = 'Wprowadź limit liczby kont w chmurze';
 $_LANG['Enter quota limit of e-mail account'] = 'Wprowadź limit rozmiaru konta e-mail';
 $_LANG['Enter quota limit of ftp account'] = 'Wprowadź limit rozmiaru konta ftp';
 $_LANG['Enter quota limit of shell account'] = 'Wprowadź limit rozmiaru konta shellowego';
 $_LANG['Enter quota limit of sql account'] = 'Wprowadź limit rozmiaru konta sql';
-$_LANG['Enter quota limit of www account'] = 'Wprowadź limit rozmiaru konta www';
+$_LANG['Enter quota limit of www account'] = 'Wprowadź limit rozmiaru konta WWW';
 $_LANG['Enter quota limit of cloud account'] = 'Wprowadź limit rozmiaru konta w chmurze';
 $_LANG['Forward e-mail:'] = 'E-mail przekierowania:';
 $_LANG['Hosting:'] = 'Hosting:';
@@ -2464,14 +2472,14 @@ $_LANG['Limit of e-mail accounts:'] = 'Limit liczby kont e-mail:';
 $_LANG['Limit of ftp accounts:'] = 'Limit liczby kont ftp:';
 $_LANG['Limit of shell accounts:'] = 'Limit liczby kont shellowych:';
 $_LANG['Limit of sql accounts:'] = 'Limit liczby kont sql:';
-$_LANG['Limit of www accounts:'] = 'Limit liczby kont www:';
+$_LANG['Limit of www accounts:'] = 'Limit liczby kont WWW:';
 $_LANG['Limit of cloud accounts:'] = 'Limit liczby kont w chmurze:';
 $_LANG['not expire'] = 'nie wygasa';
 $_LANG['Quota limit of e-mail account:'] = 'Limit rozmiaru konta e-mail:';
 $_LANG['Quota limit of ftp account:'] = 'Limit rozmiaru konta ftp:';
 $_LANG['Quota limit of shell account:'] = 'Limit rozmiaru konta shellowego:';
 $_LANG['Quota limit of sql account:'] = 'Limit rozmiaru konta sql:';
-$_LANG['Quota limit of www account:'] = 'Limit rozmiaru konta www:';
+$_LANG['Quota limit of www account:'] = 'Limit rozmiaru konta WWW:';
 $_LANG['Quota limit of cloud account:'] = 'Limit rozmiaru konta w chmurze:';
 $_LANG['Exceeded \'$a\' accounts limit of selected customer ($b)!'] = 'Przekroczony limit liczby kont typu \'$a\' dla wybranego klienta ($b)!';
 $_LANG['Exceeded \'$a\' account quota limit of selected customer ($b)!'] = 'Przekroczony limit rozmiaru konta typu \'$a\' dla wybranego klienta ($b)!';
@@ -2859,17 +2867,17 @@ $_LANG['Are you sure you want to delete this record?'] = 'Jesteś pewien, że ch
 $_LANG['Are you sure you want to delete this record \'$a\'?'] = 'Jesteś pewien, że chcesz usunąć ten rekord \'$a\'?';
 $_LANG['Enter IP address of mailserver'] = 'Wprowadź adres IP serwera pocztowego';
 $_LANG['Enter IP address of master NS'] = 'Wprowadź adres IP głównego serwera nazw';
-$_LANG['Enter IP address of webserver'] = 'wprowadź adres IP serwera www';
-$_LANG['Default SPF record. If you leave the field blank, record will not add. Example: "v=spf1 a mx ip4:ADDRESS_MAILSERVER ~all" (Put in quotes).'] = 'Domyślny SPF rekord. Jeśli pozostawimy puste pole, rekord się nie doda. Przykład: "v=spf1 a mx ip4:ADRES_SERWERA_MAIL ~all" (Umieszczać w cudzysłowiach).';
+$_LANG['Enter IP address of webserver'] = 'wprowadź adres IP serwera WWW';
+$_LANG['Default SPF record. If you leave the field blank, record will not add. Example: "v=spf1 a mx ip4:ADDRESS_MAILSERVER ~all" (Put in quotes).'] = 'Domyślny rekord SPF. Jeśli pozostawimy puste pole, rekord nie doda się. Przykład: "v=spf1 a mx ip4:ADRES_SERWERA_MAIL ~all" (Umieszczać w cudzysłowach).';
 $_LANG['Enter record TTL'] = 'Wprowadź TTL rekordu';
 $_LANG['IP address of mailserver'] = 'Adres IP serwera pocztowego';
 $_LANG['IP address of master NS:'] = 'Adres IP głównego serwera nazw:';
-$_LANG['IP address of webserver'] = 'Adres IP serwera www';
+$_LANG['IP address of webserver'] = 'Adres IP serwera WWW';
 $_LANG['Wrong record type!'] = 'Nieprawidłowy typ rekordu!';
 $_LANG['Wrong TTL'] = 'Nieprawidłowy TTL';
 $_LANG['SOA record already exists'] = 'Rekord SOA już istnieje';
 $_LANG['Select record type'] = 'Wybierz typ rekordu';
-$_LANG['IP address of webserver is required!'] = 'Adres IP serwera www jest wymagany!';
+$_LANG['IP address of webserver is required!'] = 'Adres IP serwera WWW jest wymagany!';
 $_LANG['IP address of master NS is required!'] = 'Adres IP głównego serwera nazw jest wymagany!';
 $_LANG['IP address of mailserver is required!'] = 'Adres IP serwera pocztowego jest wymagany!';
 $_LANG['Mail Exchange (MX) name record which identifies the name of the server that handles mail for domain (should be a FQDN).'] = 'MX - nazwa rekordu, który identyfikuje nazwę serwera pocztowego dla domeny (powinna to być FQDN)';
@@ -3096,6 +3104,7 @@ $_LANG['in debt above 100% (expired)'] = 'zadłużeni ponad 100% (przeterminowan
 $_LANG['in debt above 200% (expired)'] = 'zadłużeni ponad 200% (przeterminowane)';
 $_LANG['<!borough_abbr>'] = 'gm.';
 $_LANG['<!district_abbr>'] = 'pow.';
+$_LANG['<!state_abbr>'] = 'woj.';
 $_LANG['City'] = 'Miejscowość';
 $_LANG['Click to add.'] = 'Kliknij, aby dodać.';
 $_LANG['Click to add network.'] = 'Kliknij, aby dodać sieć.';
@@ -3220,9 +3229,9 @@ $_LANG['phone'] = 'telefon';
 $_LANG['tv'] = 'telewizja';
 $_LANG['Change connection properties'] = 'Zmień właściwości połączenia';
 
-$_LANG['Check a host ...'] = 'Sprawdź łączność z hostem ...';
-$_LANG['Center map around network elements ...'] = 'Wyśrodkuj mapę wokół jej elementów ...';
-$_LANG['Refresh network state ...'] = 'Odśwież stan sieci ...';
+$_LANG['Check a host ...'] = 'Sprawdź łączność z hostem …';
+$_LANG['Center map around network elements ...'] = 'Wyśrodkuj mapę wokół jej elementów …';
+$_LANG['Refresh network state ...'] = 'Odśwież stan sieci …';
 
 $_LANG['municipal commune'] = 'gm. miejska';
 $_LANG['rural commune'] = 'gm. wiejska';
@@ -3294,6 +3303,17 @@ $_LANG['Closed time'] = 'Czas zamknięcia';
 $_LANG['current:'] = 'aktualnie:';
 
 $_LANG['- new section -'] = '- nowa sekcja -';
+$_LANG['Target section:'] = 'Sekcja docelowa:';
+$_LANG['Target user:'] = 'Użytkownik docelowy:';
+$_LANG['Target division:'] = 'Firma docelowa:';
+$_LANG['to_the_source_sections'] = 'do_żródłowych_sekcji';
+$_LANG['Create the missing parent bindings:'] = 'Utwórz brakujące powiązania nadrzędne:';
+$_LANG['With child bindings:'] = 'Z powiązaniami podrzędnymi:';
+$_LANG['Override existing:'] = 'Nadpisz istniejące:';
+$_LANG['Are you sure, you want to clone all selected options?'] = 'Czy jesteś pewien, że chcesz sklonować wybrane opcje?';
+$_LANG['new section name'] = 'nazwa nowej sekcji';
+$_LANG['Clone selected'] = 'Klonuj zaznaczone';
+$_LANG['Delete selected'] = 'Usuń zaznaczone';
 $_LANG['Enter section name'] = 'Podaj nazwę sekcji';
 $_LANG['Section name can\'t be empty'] = 'Nazwa sekcji nie może być pusta!';
 
@@ -3462,7 +3482,7 @@ $_LANG['Ticket\'s node $a ($b) has been removed.'] = 'Komputer powiązany ze zg�
 $_LANG['Ticket\'s priority has been changed from $a to $b.'] = 'Priorytet zgłoszenia został zmieniony z $a na $b.';
 $_LANG['Show tickets'] = 'Pokaż zgłoszenia';
 
-$_LANG['www'] = 'www';
+$_LANG['www'] = 'WWW';
 $_LANG['any sms'] = 'dowolny SMS';
 $_LANG['userpanel'] = 'Panel klienta';
 $_LANG['Userpanel'] = 'Panel klienta';
@@ -3995,8 +4015,8 @@ $_LANG['Attached files:'] = 'Załączone pliki:';
 $_LANG['Files:'] = 'Pliki:';
 
 $_LANG['Select files'] = 'Wybierz pliki';
-$_LANG['Uploading files ...'] = 'Wysyłanie plików ...';
-$_LANG['Uploading files to server ...'] = 'Wysyłanie plików na serwer ...';
+$_LANG['Uploading files ...'] = 'Wysyłanie plików …';
+$_LANG['Uploading files to server ...'] = 'Wysyłanie plików na serwer …';
 $_LANG['Loading'] = 'Wczytywanie';
 
 $_LANG['mobile'] = 'komórkowa';
@@ -4669,7 +4689,7 @@ $_LANG['Are you sure you want to remove this trusted device?'] = 'Jesteś pewien
 $_LANG['Remove trusted device'] = 'Usuń zaufane urządzenie';
 
 $_LANG['Trusted devices ($a):'] = 'Zaufane urządzenia ($a):';
-$_LANG['<!trusteddevices>Web browser:'] = 'Przeglądarka www:';
+$_LANG['<!trusteddevices>Web browser:'] = 'Przeglądarka WWW:';
 $_LANG['<!trusteddevices>Added from IP:'] = 'Dodano z IP:';
 $_LANG['<!trusteddevices>Expires:'] = 'Wygasa:';
 $_LANG['No trusted devices in database.'] = 'Brak zaufanych urządzeń w bazie danych.';
@@ -4752,15 +4772,14 @@ $_LANG['Memo:'] = 'Notatka:';
 
 $_LANG['close event'] = 'zamknij zdarzenie';
 
-$_LANG['Tax category:'] = 'Kategoria podatkowa:';
-$_LANG['Select tax category'] = 'Wybierz kategorię podatkową';
-$_LANG['Tax category selection is required!'] = 'Wymagany wybór kategorii podatkowej!';
+$_LANG['Tax category:'] = 'GTU:';
+$_LANG['Select tax category'] = 'Wybierz GTU';
+$_LANG['Tax category selection is required!'] = 'Wymagany wybór GTU!';
 
 $_LANG['TERRIT address is required!'] = 'Wymagany adres zgodny z TERYT!';
 
 $_LANG['investment project management'] = 'zarządzanie projektami inwestycyjnymi';
 
-$_LANG['Clone section to new one with specified name'] = 'Kopiuj sekcję pod nową nazwą, którą określiłeś';
 $_LANG['Enter new section name'] = 'Wprowadz nazwę nowej sekcji';
 $_LANG['Section with specified name already exist!'] = 'Sekcja o podanej nazwie już istnieje!';
 
@@ -4873,3 +4892,4 @@ $_LANG['Add routed networks to node'] = 'Dodaj trasowane sieci do komputera';
 $_LANG['Select routed networks to assign to node'] = 'Wybierz trasowane sieci, które chcesz przypisać do komputera';
 $_LANG['Are you sure, you want to remove routed network to node assignments?'] = 'Jesteś pewien, że chcesz usunąć powiązania między trasowanymi sieciami, a komputerem?';
 $_LANG['routed network<!syslog>'] = 'trasowana sieć';
+$_LANG['Routed via:'] = 'Trasowana przez:';

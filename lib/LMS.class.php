@@ -2248,10 +2248,10 @@ class LMS
         return $manager->GetConfigVariable($config_id);
     }
 
-    public function CloneConfigSection($section, $new_section)
+    public function cloneConfigs($params)
     {
         $manager = $this->getConfigManager();
-        return $manager->CloneConfigSection($section, $new_section);
+        return $manager->cloneConfigs($params);
     }
 
     public function DeleteConfigOption($id)
