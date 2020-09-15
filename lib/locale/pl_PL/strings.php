@@ -4108,7 +4108,7 @@ $_LANG['SMS from $a'] = 'SMS od $a';
 $_LANG['Source:'] = 'Źródło:';
 $_LANG['Select ticket source'] = 'Wybierz źródło zgłoszenia';
 $_LANG['Set ticket priority'] = 'Wybierz priorytet zgłoszenia';
-$_LANG['Remove ticket priority'] = 'Usuń priorytet zgłoszenia';
+$_LANG['Reset ticket priority'] = 'Usuń priorytet zgłoszenia';
 
 $_LANG['Create ticket'] = 'Utwórz zgłoszenie';
 $_LANG['Request Number'] = 'Nr zgłoszenia';
