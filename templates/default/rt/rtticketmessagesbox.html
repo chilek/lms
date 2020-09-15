@@ -141,7 +141,7 @@
 				</THEAD>
 				<TBODY>
 				<TR>
-					<TD colspan="4" {if $message.deleted == 1 && $message.deltime != 0}
+					<TD colspan="5" {if $message.deleted == 1 && $message.deltime != 0}
 						class="lucid lms-ui-rtmessage-deleted fbt lms-ui-autolinker" {else} class="fbt superlight lms-ui-autolinker{if $message.type == $smarty.const.RTMESSAGE_NOTE} blend{/if}"{/if}>
 						{$message.body|escape|replace:"\n":'<br>'|replace:"[matched-text]":"<span class=\"lms-ui-matched-text\">"|replace:"[/matched-text]":"</span>"|message_quote}
 					</TD>
@@ -157,9 +157,17 @@
 						<td width="1%" class="fbt text-right bold nobr valign-top">
 							{trans("From:")}
 						</td>
-						<td width="98%" colspan="2" class="fbt lms-ui-autolinker">
+						<td width="97%" colspan="2" class="fbt lms-ui-autolinker">
 							<A href="?m=userinfo&id={$message.userid}">{$message.username}</A><BR>
 							{$message.body|escape|replace:"\n":"<BR>"}
+						</td>
+						<td width="1%" class="fbt nobr">
+						{if $message.deleted == 1 && $message.deltime != 0 && ConfigHelper::checkPrivilege('superuser')}
+							{button type='link' icon="restore" class="restore-rtmessage" resourceid="?m=rtrestore&id={$message.id}&maction=restore" tip="Restore"}
+							{button type='link' icon="delete" class="remove-rtmessage" resourceid="?m=rtremove&id={$message.id}&maction=delperm" tip="Delete permanently"}
+						{else}
+							{button type='link' icon="trash" class="delete-rtmessage" resourceid="?m=rtmessagedel&id={$message.id}&maction=delete"}
+						{/if}
 						</td>
 					</tr>
 				</TBODY>
