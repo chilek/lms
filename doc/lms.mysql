@@ -1356,6 +1356,23 @@ CREATE TABLE netnodes (
 
 # --------------------------------------------------------
 #
+# Structure of table routednetworks
+#
+CREATE TABLE routednetworks (
+    id int(11) NOT NULL auto_increment,
+    nodeid int(11) NOT NULL,
+    netid int(11) NOT NULL,
+    comment varchar(256) DEFAULT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY routednetworks_netid_key (netid),
+    CONSTRAINT routednetworks_nodeid_fkey
+        FOREIGN KEY (nodeid) REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT routednetworks_netid_fkey
+        FOREIGN KEY (netid) REFERENCES networks (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=INNODB;
+
+# --------------------------------------------------------
+#
 # Structure of table netdeviceproducers
 #
 CREATE TABLE netdeviceproducers (
@@ -3806,4 +3823,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020091100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020091600');

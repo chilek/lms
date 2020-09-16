@@ -1376,6 +1376,21 @@ CREATE INDEX nodes_ipaddr_pub_idx ON nodes (ipaddr_pub);
 CREATE INDEX nodes_linkradiosector_idx ON nodes (linkradiosector);
 CREATE INDEX nodes_authtype_idx ON nodes (authtype);
 
+/* --------------------------------------------------------
+  Structure of table "routednetworks"
+-------------------------------------------------------- */
+CREATE SEQUENCE routednetworks_id_seq;
+CREATE TABLE routednetworks (
+    id integer DEFAULT nextval('routednetworks_id_seq'::text) NOT NULL,
+    nodeid integer NOT NULL
+        CONSTRAINT routednetworks_nodeid_fkey REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    netid integer NOT NULL
+        CONSTRAINT routednetworks_netid_fkey REFERENCES networks (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    comment varchar(256) DEFAULT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT routednetworks_netid_key UNIQUE (netid)
+);
+
 /* ---------------------------------------------------
  Structure of table "ewx_stm_nodes" (EtherWerX(R))
 ------------------------------------------------------*/
@@ -3843,6 +3858,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020091100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020091600');
 
 COMMIT;
