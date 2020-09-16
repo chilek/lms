@@ -224,7 +224,7 @@ $RT_STATES = array(
         'name' => 'RT_EXPIRED'
     ),
     RT_VERIFIED => array(
-        'label' => trans('Verified'),
+        'label' => trans('verified'),
         'color' => 'green',
         'img' => 'img/verifier.png',
         'name' => 'RT_VERIFIED'
