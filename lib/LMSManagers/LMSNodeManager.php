@@ -1061,7 +1061,6 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                         );
                     }
                 }
-
             }
         }
 
