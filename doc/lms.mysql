@@ -102,6 +102,7 @@ DROP TABLE IF EXISTS nodegroups;
 DROP TABLE IF EXISTS macs;
 DROP TABLE IF EXISTS nodelocks;
 DROP TABLE IF EXISTS ewx_stm_nodes;
+DROP TABLE IF EXISTS routednetworks;
 DROP TABLE IF EXISTS nodes;
 DROP TABLE IF EXISTS netradiosectors;
 DROP TABLE IF EXISTS netdevices;
@@ -1356,23 +1357,6 @@ CREATE TABLE netnodes (
 
 # --------------------------------------------------------
 #
-# Structure of table routednetworks
-#
-CREATE TABLE routednetworks (
-    id int(11) NOT NULL auto_increment,
-    nodeid int(11) NOT NULL,
-    netid int(11) NOT NULL,
-    comment varchar(256) DEFAULT NULL,
-    PRIMARY KEY (id),
-    UNIQUE KEY routednetworks_netid_ukey (netid),
-    CONSTRAINT routednetworks_nodeid_fkey
-        FOREIGN KEY (nodeid) REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT routednetworks_netid_fkey
-        FOREIGN KEY (netid) REFERENCES networks (id) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=INNODB;
-
-# --------------------------------------------------------
-#
 # Structure of table netdeviceproducers
 #
 CREATE TABLE netdeviceproducers (
@@ -1518,6 +1502,23 @@ CREATE TABLE nodes (
   CONSTRAINT nodes_modid_fkey
   	FOREIGN KEY (modid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table routednetworks
+#
+CREATE TABLE routednetworks (
+    id int(11) NOT NULL auto_increment,
+    nodeid int(11) NOT NULL,
+    netid int(11) NOT NULL,
+    comment varchar(256) DEFAULT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY routednetworks_netid_ukey (netid),
+    CONSTRAINT routednetworks_nodeid_fkey
+        FOREIGN KEY (nodeid) REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT routednetworks_netid_fkey
+        FOREIGN KEY (netid) REFERENCES networks (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=INNODB;
 
 # --------------------------------------------------------
 #
