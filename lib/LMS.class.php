@@ -1162,6 +1162,30 @@ class LMS
         return $manager->getNodeCustomerAssignments($nodeid, $assignments);
     }
 
+    public function getNodeRoutedNetworks($nodeid)
+    {
+        $manager = $this->getNodeManager();
+        return $manager->getNodeRoutedNetworks($nodeid);
+    }
+
+    public function getNodeNotRoutedNetworks($nodeid)
+    {
+        $manager = $this->getNodeManager();
+        return $manager->getNodeNotRoutedNetworks($nodeid);
+    }
+
+    public function addNodeRoutedNetworks(array $params)
+    {
+        $manager = $this->getNodeManager();
+        return $manager->addNodeRoutedNetworks($params);
+    }
+
+    public function deleteNodeRoutedNetwork($nodeid, $netid)
+    {
+        $manager = $this->getNodeManager();
+        return $manager->deleteNodeRoutedNetwork($nodeid, $netid);
+    }
+
     /*
      *  Tarrifs and finances
      */

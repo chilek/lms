@@ -32,6 +32,9 @@
 {block name="customernetworksbox"}
 	{include file="customer/customernetworksbox.html"}
 {/block}
+{block name="routednetworks"}
+	{include file="node/routednetworks.html"}
+{/block}
 {block name="transactions"}
 	{if ConfigHelper::checkConfig('phpui.logging') && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.transaction_logs'))}
 		{include file="transactions.html"}

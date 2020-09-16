@@ -1010,4 +1010,87 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 
         return $node_assignments;
     }
+
+    public function getNodeRoutedNetworks($nodeid)
+    {
+        return $this->db->GetAllByKey(
+            'SELECT n.*, rn.comment
+            FROM vnetworks n
+            JOIN routednetworks rn ON rn.netid = n.id
+            WHERE rn.nodeid = ?',
+            'id',
+            array($nodeid)
+        );
+    }
+
+    public function getNodeNotRoutedNetworks($nodeid)
+    {
+        return $this->db->GetAllByKey(
+            'SELECT n.*
+            FROM vnetworks n
+            LEFT JOIN routednetworks rn ON rn.netid = n.id
+            WHERE rn.id IS NULL AND n.ownerid = (SELECT ownerid FROM nodes WHERE id = ?)',
+            'id',
+            array($nodeid)
+        );
+    }
+
+    public function addNodeRoutedNetworks(array $params)
+    {
+        $added = 0;
+
+        if (!empty($params['networks'])) {
+            foreach ($params['networks'] as $network) {
+                $args = array(
+                    SYSLOG::RES_NETWORK => $network,
+                    SYSLOG::RES_NODE => $params['nodeid'],
+                    'comment' => $params['comment'],
+                );
+                $result = $this->db->Execute(
+                    'INSERT INTO routednetworks (netid, nodeid, comment) VALUES (?, ?, ?)',
+                    array_values($args)
+                );
+                if ($result) {
+                    $added += $result;
+                    if ($this->syslog) {
+                        $args[SYSLOG::RES_ROUTEDNET] = $this->db->GetLastInsertID('routednetworks');
+                        $this->syslog->AddMessage(
+                            SYSLOG::RES_ROUTEDNET,
+                            SYSLOG::OPER_ADD,
+                            $args
+                        );
+                    }
+                }
+
+            }
+        }
+
+        return $added;
+    }
+
+    public function deleteNodeRoutedNetwork($nodeid, $netid)
+    {
+        if ($this->syslog) {
+            $routednetid = $this->db->GetOne(
+                'SELECT id FROM routednetworks WHERE nodeid = ? AND netid = ?',
+                array($nodeid, $netid)
+            );
+        }
+
+        $result = $this->db->Execute(
+            'DELETE FROM routednetworks WHERE nodeid = ? AND netid = ?',
+            array($nodeid, $netid)
+        );
+
+        if ($result && $this->syslog) {
+            $args = array(
+                SYSLOG::RES_ROUTEDNET => $routednetid,
+                SYSLOG::RES_NETWORK => $netid,
+                SYSLOG::RES_NODE => $nodeid,
+            );
+            $this->syslog->AddMessage(SYSLOG::RES_ROUTEDNET, SYSLOG::OPER_DELETE, $args);
+        }
+
+        return $result;
+    }
 }

@@ -126,7 +126,7 @@ $access_table = array(
     ),
     'node_management' => array(
         'label' => trans('nodes management'),
-        'allow_regexp' => '^(node(add|info|infoshort|list|listshort|scan|search|del|edit|print|warn|sessionlist)|choose(mac|ip|location|gpscoords|netdevice)|ping)|customeraddresses$',
+        'allow_regexp' => '^(node(add|info|infoshort|list|listshort|scan|search|del|edit|print|warn|sessionlist)|choose(mac|ip|location|gpscoords|netdevice)|ping)|customeraddresses|routednetworks$',
         'allow_menu_items' => array(
             'nodes' => Permission::MENU_ALL,
         ),

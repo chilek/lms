@@ -1,0 +1,115 @@
+{css}
+{js}
+
+<form method="post" name="routednetworks" id="routednetworks" action="?m=routednetworks&action=add">
+	<input type="hidden" name="nodeid" value="{$objectid}">
+</form>
+
+{tab_container id="routednetworksbox" label="Routed Networks"}
+
+	{tab_header content_id="routednetworkspanel-`$layout.module`"}
+		{tab_header_cell icon="lms-ui-icon-routing"}
+			<strong>{t a=$routednetworks|@count|default:"0"}Routed Networks ($a):{/t}</strong>
+		{/tab_header_cell}
+	{/tab_header}
+
+	{tab_contents id="routednetworkspanel-`$layout.module`"}
+
+		{tab_table}
+
+			{if $customernetworks}
+			<div class="lms-ui-tab-table-row header">
+				<div class="lms-ui-tab-table-wrapper col-3">
+					<div class="lms-ui-tab-table-wrapper col-2">
+						<div class="lms-ui-tab-table-column name">
+							{trans("Name:")}
+						</div>
+						<div class="lms-ui-tab-table-column address">
+							{trans("Address:")}
+						</div>
+					</div>
+
+					<div class="lms-ui-tab-table-column comment">
+						{trans("Comment:")}
+					</div>
+				</div>
+
+				<div class="lms-ui-tab-table-column buttons">
+				</div>
+			</div>
+			{/if}
+
+			{foreach $routednetworks as $network}
+				<div class="lms-ui-tab-table-row">
+					<div class="lms-ui-tab-table-wrapper col-3">
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column name">
+								<strong>{$network.name}</strong>
+							</div>
+							<div class="lms-ui-tab-table-column address">
+								{$network.ip}
+							</div>
+						</div>
+
+						<div class="lms-ui-tab-table-column comment"{if mb_strlen($network.comment) > 36} title="{$network.comment}"{/if}>
+							{$network.comment|default:"-"|truncate:40:" ..."}
+						</div>
+					</div>
+
+					<div class="lms-ui-tab-table-column buttons">
+						{textformat assign="onclick" wrap=5000}
+							confirmDialog($t('Are you sure, you want to remove routed network?'), this).done(function() {
+								$('form#routednetworks').attr('action', '?m=routednetworks&action=delete&netid={$network.id}').submit();
+							});
+						{/textformat}
+						{button type="link" icon="delete" onclick=$onclick tip="Remove routed network"}
+						{button type="link" href="?m=netinfo&id={$network.id}" icon="info" tip="Info"}
+						<input type="checkbox" name="routednetwork[{$network.id}]"
+							value="{$network.id}" class="lms-ui-multi-check" form="routednetworks">
+					</div>
+				</div>
+
+			{foreachelse}
+			<div class="lms-ui-tab-empty-table">
+				{trans("That node hasn't got any assigned routed networks.")}
+			</div>
+			{/foreach}
+
+		{/tab_table}
+
+{if !empty($routednetworks) || !empty($notroutednetworks)}
+		{tab_button_panel}
+			{tab_buttons}
+{if !empty($notroutednetworks)}
+				<button type="button" class="lms-ui-button" id="add-routed-networks"
+						{tip text="Add routed networks to node"}>
+					<i class="lms-ui-icon-add"></i> {trans("Add")}
+				</button>
+				<SELECT name="routednetworkid[]" {tip text="Select routed networks to assign to node" class="lms-ui-multiselect"}
+						form="routednetworks" multiple>
+					{foreach $notroutednetworks as $network}
+						<OPTION VALUE="{$network.id}">{$network.name} ({$network.ip})</OPTION>
+					{/foreach}
+				</SELECT>
+				<label>
+					{trans("Comment:")}
+					<input type="text" size="50" name="routednetworkcomment" form="routednetworks" class="lms-ui-autogrow">
+				</label>
+{/if}
+			{/tab_buttons}
+			{tab_buttons}
+{if !empty($routednetworks)}
+				<button type="button" class="lms-ui-button" id="delete-routed-networks">
+					<i class="lms-ui-icon-delete"></i> {trans("Delete")}
+				</button>
+				<label>
+					{trans("Check All")}
+					<input type="checkbox" class="lms-ui-multi-check-all">
+				</label>
+{/if}
+			{/tab_buttons}
+		{/tab_button_panel}
+{/if}
+
+	{/tab_contents}
+{/tab_container}

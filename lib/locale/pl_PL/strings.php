@@ -4861,3 +4861,13 @@ $_LANG['Preview'] = 'Podgląd';
 $_LANG['Network device selection is required!'] = 'Wymagany wybór urządzenia sieciowego!';
 
 $_LANG['financial operations'] = 'operacje finansowe';
+
+$_LANG['Routed Networks ($a):'] = 'Trasowane sieci ($a):';
+$_LANG['Routed Networks'] = 'Trasowane sieci';
+$_LANG['That node hasn\'t got any assigned routed networks.'] = 'Komputer nie posiada przypisanych żadnych trasowanych sieci.';
+$_LANG['Remove routed network'] = 'Usuń trasowaną sieć';
+$_LANG['Are you sure, you want to remove routed network?'] = 'Jesteś pewien, że chcesz usunąć trasowaną sieć?';
+$_LANG['Add routed networks to node'] = 'Dodaj trasowane sieci do komputera';
+$_LANG['Select routed networks to assign to node'] = 'Wybierz trasowane sieci, które chcesz przypisać do komputera';
+$_LANG['Are you sure, you want to remove routed network to node assignments?'] = 'Jesteś pewien, że chcesz usunąć powiązania między trasowanymi sieciami, a komputerem?';
+$_LANG['routed network<!syslog>'] = 'trasowana sieć';
