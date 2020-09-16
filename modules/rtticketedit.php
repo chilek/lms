@@ -135,7 +135,7 @@ if ($id && !isset($_POST['ticket'])) {
                 break;
             case 'resetpriority':
                 $ticket = $LMS->GetTicketContents($id);
-                if ($ticket['priority'] != 0) {
+                if ($ticket['priority'] != RT_PRIORITY_NORMAL) {
                     $LMS->TicketChange($id, array('priority' => '0'));
                 }
                 $SESSION->redirect('?m=rtqueueview'
