@@ -144,6 +144,8 @@ version 26-git (????-??-??):
   - improvement: added issuer's signature field to debit note (TCPDF/HTML)
     (visible if 'notes.issuer_signature' is set to true, default: 'false') [awbnet]
   - improvement: made TCPDF debit note version look like TCPDF invoice [awbnet]
+  - improvement: new default values for 'phpui.multiselect_popup_on_bottom' (change from 'false'
+    to 'true') and 'phpui.multiselect_max_visible' (change from '0' to '5') [chilan]
 
 version 25.0 (2020-05-15):
 
