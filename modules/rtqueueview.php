@@ -24,6 +24,36 @@
  *  $Id$
  */
 
+if (isset($_GET['action'])) {
+    switch ($_GET['action']) {
+        case 'assign':
+            if (!empty($_GET['ticketid'])) {
+                if (isset($_GET['check-conflict'])) {
+                    header('Content-Type: application/json');
+                    die(json_encode($LMS->TicketIsAssigned($_GET['ticketid'])));
+                }
+                $LMS->TicketChange($_GET['ticketid'], array('owner' => Auth::GetCurrentUser()));
+                $SESSION->redirect(str_replace('&action=assign', '', $_SERVER['REQUEST_URI'])
+                    . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
+            }
+            break;
+        case 'assign2':
+            $LMS->TicketChange($_GET['ticketid'], array('verifierid' => Auth::GetCurrentUser()));
+            $SESSION->redirect(str_replace('&action=assign2', '', $_SERVER['REQUEST_URI'])
+                . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
+            break;
+        case 'unlink':
+            $LMS->TicketChange($_GET['ticketid'], array('parentid' => null));
+            $backto = $SESSION->get('backto');
+            if (empty($backto)) {
+                $SESSION->redirect('?m=rtqueuelist');
+            } else {
+                $SESSION->redirect('?' . $backto);
+            }
+            break;
+    }
+}
+
 $LMS->CleanupTicketLastView();
 
 // queue id's
@@ -320,36 +350,6 @@ $netnodelist = $LMS->GetNetNodeList(array(), 'name');
 unset($netnodelist['total']);
 unset($netnodelist['order']);
 unset($netnodelist['direction']);
-
-if (isset($_GET['action'])) {
-    switch ($_GET['action']) {
-        case 'assign':
-            if (!empty($_GET['ticketid'])) {
-                if (isset($_GET['check-conflict'])) {
-                    header('Content-Type: application/json');
-                    die(json_encode($LMS->TicketIsAssigned($_GET['ticketid'])));
-                }
-                $LMS->TicketChange($_GET['ticketid'], array('owner' => Auth::GetCurrentUser()));
-                $SESSION->redirect(str_replace('&action=assign', '', $_SERVER['REQUEST_URI'])
-                . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
-            }
-            break;
-        case 'assign2':
-                $LMS->TicketChange($_GET['ticketid'], array('verifierid' => Auth::GetCurrentUser()));
-                $SESSION->redirect(str_replace('&action=assign2', '', $_SERVER['REQUEST_URI'])
-                . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
-            break;
-        case 'unlink':
-            $LMS->TicketChange($_GET['ticketid'], array('parentid' => null));
-            $backto = $SESSION->get('backto');
-            if (empty($backto)) {
-                $SESSION->redirect('?m=rtqueuelist');
-            } else {
-                $SESSION->redirect('?' . $backto);
-            }
-            break;
-    }
-}
 
 $aet = ConfigHelper::getConfig('rt.allow_modify_resolved_tickets_newer_than', 86400);
 

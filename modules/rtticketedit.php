@@ -109,7 +109,14 @@ if ($id && !isset($_POST['ticket'])) {
                     'sms_body' => $sms_body,
                 ));
 
-                $SESSION->redirect('?m=rtticketview&id=' . $id);
+                if ($SESSION->is_set('backto')) {
+                    $SESSION->redirect(
+                        '?' . $SESSION->get('backto') . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : '')
+                    );
+                } else {
+                    $SESSION->redirect('?m=rtticketview&id=' . $id);
+                }
+
                 break;
             case 'assign':
                 if (isset($_GET['check-conflict'])) {

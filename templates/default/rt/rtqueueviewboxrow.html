@@ -110,7 +110,7 @@
 			{/if}
 			{if $ticket.state != $smarty.const.RT_RESOLVED}
 				{if $ticket.verifierid && $ticket.verifierid != Auth::GetCurrentUser() &&  $ticket.state != $smarty.const.RT_VERIFIED}
-					{button type="link" icon="verifier" tip="Transfer to verifier" href="?m=rtqueueview&ticketid={$ticket.id}&action=verify"}
+					{button type="link" icon="verifier" tip="Transfer to verifier" href="?m=rtticketedit&id={$ticket.id}&action=verify"}
 				{else}
 					{button type="link" icon="close" tip="Resolve" href="?m=rtticketedit&id={$ticket.id}&action=resolve"}
 				{/if}
