@@ -153,6 +153,10 @@
 				<input type="checkbox" name="cnote[splitpayment]" value="1"{if $is_split_payment_suggested && $cnote.splitpayment} checked{/if}>
 				{trans("split payment")}
 			</label>
+			<label>
+				<input type="checkbox" name="cnote[flags][{$smarty.const.DOC_FLAG_RECEIPT}]" value="1"{if $cnote.flags[$smarty.const.DOC_FLAG_RECEIPT]} checked{/if}>
+				{trans("<!invoice>receipt")}
+			</label>
 		</TD>
 	</TR>
 	{if $refdoc.divisionid != $refdoc.current_divisionid}

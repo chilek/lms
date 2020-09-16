@@ -19,9 +19,8 @@
 
 <TABLE WIDTH="100%" CELLSPACING="3" class="sdr">
 	<TR>
-		<TD WIDTH="50%" class="sdr valign-top">
+		<TD WIDTH="54%" class="sdr valign-top">
 			<B>{trans("Note drawer:")}</B><BR>
-			<BR>
 			{if !ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')
 				|| empty($note.bankccounts)}
 				{$accounts = array(bankaccount($note.customerid, $note.account))}
@@ -54,7 +53,6 @@
 			<BR>
 			<BR>
 			<B>{trans("Note recipient:")}</B><BR>
-			<BR>
 			{$note.name}<BR>
 			{$note.address}<BR>
 			{$note.zip} {$note.city}
@@ -72,12 +70,20 @@
 				{/if}
 			{/if}
 		</TD>
-		<TD WIDTH="50%" class="sdr valign-top">
-			<BR>
-			<BR>
-			{$note.name}<BR>
-			{$note.address}<BR>
-			{$note.zip} {$note.city}
+		<TD WIDTH="46%" class="mdf bold valign-top">
+			{if ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.post_address', true))}
+				<BR>
+				<BR>
+				<B>
+				{if $note.post_name || $note.post_address}
+					{if $note.post_name}{$name=$note.post_name}{else}{$name=$note.name}{/if}
+					{document_address name=$name address=$note.post_address street=$note.post_street zip=$note.post_zip postoffice=$note.post_postoffice city=$note.post_city}
+				{else}
+					{$note.name}<BR>
+					{$note.address}<BR>
+					{$note.zip} {$note.city}
+				{/if}</B>
+			{/if}
 		</TD>
 	</TR>
 </TABLE>
@@ -181,4 +187,18 @@ customer's balance: {$note.customerbalancelist.balance}
 </TABLE>
 {/if}
 
+{if !ConfigHelper::checkConfig('notes.issuer_signature')}
+<table width="100%" style="margin-top:12em;">
+	<tbody>
+		<tr>
+			<td width="50%"></td>
+			<td width="27%" align="center" style="border-bottom:1px dotted #000;"></td>
+		</tr>
+		<tr>
+			<td width="50%"></td>
+			<td width="27%" align="center" class="sdr">{trans("issuer's signature")}</td>
+		</tr>
+	</tbody>
+</table>
+{/if}
 </DIV>

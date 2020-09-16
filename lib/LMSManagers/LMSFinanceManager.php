@@ -1959,6 +1959,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'paytime' => $invoice['invoice']['paytime'],
             'paytype' => $invoice['invoice']['paytype'],
             'splitpayment' => empty($invoice['invoice']['splitpayment']) ? 0 : 1,
+            'flags' => empty($invoice['invoice']['flags'][DOC_FLAG_RECEIPT]) ? 0 : DOC_FLAG_RECEIPT,
             SYSLOG::RES_USER => Auth::GetCurrentUser(),
             SYSLOG::RES_CUST => $invoice['customer']['id'],
             'customername' => $invoice['customer']['customername'],
@@ -1996,12 +1997,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         );
 
         $this->db->Execute('INSERT INTO documents (number, numberplanid, type,
-			cdate, sdate, paytime, paytype, splitpayment, userid, customerid, name, address,
+			cdate, sdate, paytime, paytype, splitpayment, flags, userid, customerid, name, address,
 			ten, ssn, zip, city, countryid, divisionid,
 			div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 			div_bank, div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
 			comment, recipient_address_id, post_address_id, currency, currencyvalue, memo, reference)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
         $iid = $this->db->GetLastInsertID('documents');
         if ($this->syslog) {
             unset($args[SYSLOG::RES_USER]);
@@ -2140,7 +2141,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $result = $this->db->GetRow(
                 'SELECT d.id, d.type AS doctype, d.number, d.fullnumber, d.name, d.customerid,
 				d.userid, d.address, d.zip, d.city, d.countryid,
-				d.ten, d.ssn, d.cdate, d.sdate, d.paytime, d.paytype, d.splitpayment, d.numberplanid,
+				d.ten, d.ssn, d.cdate, d.sdate, d.paytime, d.paytype, d.splitpayment, d.flags, d.numberplanid,
 				d.closed, d.cancelled, d.published, d.archived, d.comment AS comment, d.reference, d.reason, d.divisionid,
 				n.template,
 				d.div_name AS division_name, d.div_shortname AS division_shortname,
@@ -2160,7 +2161,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $result = $this->db->GetRow(
                 'SELECT d.id, d.type AS doctype, d.number, d.fullnumber, d.name, d.customerid,
 				d.userid, d.address, d.zip, d.city, d.countryid, cn.name AS country,
-				d.ten, d.ssn, d.cdate, d.sdate, d.paytime, d.paytype, d.splitpayment, d.numberplanid,
+				d.ten, d.ssn, d.cdate, d.sdate, d.paytime, d.paytype, d.splitpayment, d.flags, d.numberplanid,
 				d.closed, d.cancelled, d.published, d.archived, d.comment AS comment, d.reference, d.reason, d.divisionid,
 				(SELECT name FROM vusers WHERE id = d.userid) AS user, n.template,
 				d.div_name AS division_name, d.div_shortname AS division_shortname,
@@ -2261,6 +2262,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $result['totalbase'] = 0;
             $result['totaltax'] = 0;
             $result['total'] = 0;
+
+            $result['flags'] = array(
+                DOC_FLAG_RECEIPT => ($result['flags'] & DOC_FLAG_RECEIPT) ? 1 : 0,
+            );
 
             if ($result['reference'] && $result['type'] != DOC_INVOICE_PRO) {
                 $result['invoice'] = $this->GetInvoiceContent($result['reference'], $detail_level);

@@ -160,7 +160,29 @@
 	</TR>
 	<TR>
 		<TD COLSPAN="4" ALIGN="RIGHT" class="HEADGREY">
-			<B>{trans("Total from start of period:")}</B>
+			<B>{trans("Total from start of period (with receipt):")}</B>
+		</TD>
+		{foreach item=tax from=$taxes}
+			{assign var=taxid value=$tax.id}
+			<TD ALIGN="RIGHT" class="HEADGREY">
+				<B>{$totals.$item.allval_receipt.$taxid|string_format:"%01.2f"}</B>
+			</TD>
+			{if $tax.value}
+				<TD ALIGN="RIGHT" class="HEADGREY">
+					<B>{$totals.$item.alltax_receipt.$taxid|string_format:"%01.2f"}</B>
+				</TD>
+			{/if}
+		{/foreach}
+		<TD ALIGN="RIGHT" class="HEADGREY">
+			<B>{$totals.$item.alltotal_receipt|string_format:"%01.2f"}</B>
+		</TD>
+		<TD ALIGN="RIGHT" class="HEADGREY">
+			<B>{$totals.$item.allsumtax_receipt|string_format:"%01.2f"}</B>
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN="4" ALIGN="RIGHT" class="HEADGREY">
+			<B>{trans("Total from start of period (without receipt):")}</B>
 		</TD>
 		{if !in_array(DOC_DNOTE, $doctypes)}
 		{foreach $taxes as $tax}
@@ -183,6 +205,28 @@
 			<B>{$totals.$item.allsumtax|string_format:"%01.2f"}</B>
 		</TD>
 		{/if}
+	</TR>
+	<TR>
+		<TD COLSPAN="4" ALIGN="RIGHT" class="HEADGREY">
+			<B>{trans("Total from start of period:")}</B>
+		</TD>
+		{foreach item=tax from=$taxes}
+			{assign var=taxid value=$tax.id}
+			<TD ALIGN="RIGHT" class="HEADGREY">
+				<B>{($totals.$item.allval.$taxid+$totals.$item.allval_receipt.$taxid)|string_format:"%01.2f"}</B>
+			</TD>
+			{if $tax.value}
+				<TD ALIGN="RIGHT" class="HEADGREY">
+					<B>{($totals.$item.alltax.$taxid+$totals.$item.alltax_receipt.$taxid)|string_format:"%01.2f"}</B>
+				</TD>
+			{/if}
+			{/foreach}
+		<TD ALIGN="RIGHT" class="HEADGREY">
+			<B>{($totals.$item.alltotal+$totals.$item.alltotal_receipt)|string_format:"%01.2f"}</B>
+		</TD>
+		<TD ALIGN="RIGHT" class="HEADGREY">
+			<B>{($totals.$item.allsumtax+$totals.$item.allsumtax_receipt)|string_format:"%01.2f"}</B>
+		</TD>
 	</TR>
 </TABLE>
 {if $report_type == 'pdf'}

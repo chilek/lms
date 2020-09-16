@@ -38,13 +38,15 @@
     </THEAD>
     <TBODY>
     {foreach $relatedoptions.divisions as $relatedoption}
-        <TR class="highlight {if $relatedoption.disabled} blend{/if}">
+        <TR class="highlight {if $relatedoption.disabled} blend{/if}" data-target-url="?m=configedit&id={$relatedoption.id}">
             <TD class="valign-top" style="padding-top: 1em;">
                 <strong>{$relatedoption.shortname}</strong><BR>
             </TD>
             <TD class="nobr valign-top" style="padding-top: 1em;">
                 {$relatedoption.description} <br><br>
-                {include file="config/configdivisionusers.html"}
+                <div>
+                    {include file="config/configdivisionusers.html"}
+                </div>
             </TD>
             <TD class="nobr valign-top" align="center" style="padding-top: 1em;">
                 {$relatedoption.value}

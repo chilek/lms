@@ -46,10 +46,10 @@
 	{/block}
 	{block name=pagecontent}
 		{include file="spinner.html"}
-		{$oldbackto = SESSION::getOldBackTo()}
-		{$backto = SESSION::getBackTo()}
-		<input type="hidden" id="oldbackto" value="{$oldbackto}">
-		<input type="hidden" id="backto" value="{$backto}">
+		{$__oldbackto = SESSION::getOldBackTo()}
+		{$__backto = SESSION::getBackTo()}
+		<input type="hidden" id="oldbackto" value="{$__oldbackto}">
+		<input type="hidden" id="backto" value="{$__backto}">
 		<script>
 
 			var AUTOSUGGEST_MAX_LENGTH = {ConfigHelper::getConfig('phpui.autosuggest_max_length', 40)};
@@ -68,7 +68,7 @@
 				// so we have to be careful and handle 'backto' session variable in special way and
 				// correct this variable when new tab id has been determined before the moment
 				var oldLmsTabId = getCookie('tabId');
-				{if $backto}
+				{if $__backto}
 					if (oldLmsTabId) {
 						$.ajax({
 							url: '?oldtabid=' + oldLmsTabId + '&tabid=' + lmsTabId,

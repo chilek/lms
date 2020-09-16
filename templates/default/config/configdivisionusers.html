@@ -45,7 +45,7 @@
 
     {if $reftype == division}
         {foreach $relatedoptions.divisions[0].users as $relatedoptionuser}
-            <TR class="highlight {if $relatedoptionuser.disabled} blend{/if}">
+            <TR class="highlight {if $relatedoptionuser.disabled} blend{/if}" data-target-url="?m=configedit&id={$relatedoptionuser.id}">
                 <TD class="nobr">
                     <strong>{$relatedoptionuser.login}</strong><BR>
                 </TD>
@@ -77,7 +77,7 @@
         {/foreach}
     {else}
         {foreach $relatedoption.users as $relatedoptionuser}
-            <TR class="highlight {if $relatedoptionuser.disabled} blend{/if}">
+            <TR class="highlight {if $relatedoptionuser.disabled} blend{/if}" data-target-url="?m=configedit&id={$relatedoptionuser.id}">
                 <TD class="nobr">
                     <strong>{$relatedoptionuser.login}</strong><BR>
                 </TD>

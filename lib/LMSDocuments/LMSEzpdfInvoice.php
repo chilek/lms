@@ -189,6 +189,9 @@ class LMSEzpdfInvoice extends LMSInvoice
             if (!empty($this->data['splitpayment'])) {
                 $this->backend->text_align_right($x + 50, $y, $font_size, trans('(split payment)'));
             }
+            if (!empty($this->data['flags'][DOC_FLAG_RECEIPT])) {
+                $this->backend->text_align_right($x + 50, $y, $font_size, trans('<!invoice>(receipt)'));
+            }
         }
         return $y;
     }

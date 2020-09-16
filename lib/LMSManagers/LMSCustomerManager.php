@@ -799,7 +799,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             }
         }
         if (!empty($customer_statuses)) {
-            $state_conditions[] = '(c.status = ' . implode(' AND c.status = ', $customer_statuses) . ' AND c.deleted = 0)';
+            $state_conditions[] = '((c.status = ' . implode(' ' . $statesqlskey . ' c.status = ', $customer_statuses) . ') AND c.deleted = 0)';
         }
 
         if (isset($assignments)) {
@@ -2096,6 +2096,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'fast' => 'sms-customers.fast',
             'from' => 'sms-customers.from',
             'phone_number_validation_pattern' => 'sms-customers.phone_number_validation_pattern',
+            'message_template' => 'sms-customers.message_template',
         );
 
         foreach ($variable_mapping as $option_name => $variable_name) {

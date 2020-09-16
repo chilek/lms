@@ -262,6 +262,8 @@ foreach (explode("\n", $mail_headers) as $mail_header) {
 $mail_headers = implode("\n", $decoded_mail_headers);
 unset($decoded_mail_headers);
 
+$image_max_size = ConfigHelper::getConfig('phpui.uploaded_image_max_size');
+
 if (preg_match('#multipart/#', $partdata['content-type']) && !empty($parts)) {
     $mail_body = '';
     while (!empty($parts)) {
@@ -328,6 +330,25 @@ if (preg_match('#multipart/#', $partdata['content-type']) && !empty($parts)) {
                 continue;
             }
             $file_name = iconv_mime_decode($file_name);
+
+            if ($image_max_size && class_exists('Imagick') && strpos($partdata['content-type'], 'image/') === 0) {
+                $imagick = new \Imagick();
+                $imagick->readImageBlob($file_content);
+                $width = $imagick->getImageWidth();
+                $height = $imagick->getImageHeight();
+                if ($height > $width) {
+                    if ($height > $image_max_size) {
+                        $imagick->scaleImage(0, $image_max_size);
+                        $file_content = $imagick->getImageBlob();
+                    }
+                } else {
+                    if ($width > $image_max_size) {
+                        $imagick->scaleImage($image_max_size, 0);
+                        $file_content = $imagick->getImageBlob();
+                    }
+                }
+            }
+
             $files[] = array(
                 'name' => $file_name,
                 'type' => $partdata['content-type'],
