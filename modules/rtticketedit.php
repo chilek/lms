@@ -348,6 +348,18 @@ if (isset($_POST['ticket'])) {
         }
     }
 
+    if (!ConfigHelper::checkPrivilege('superuser') && $ticket['state'] == RT_VERIFIED) {
+        if ($ticketedit['state'] != RT_VERIFIED) {
+            if (!empty($ticket['verifierid']) && $ticket['verifierid'] != Auth::GetCurrentUser()) {
+                $error['state'] = trans('Ticket is already transferred to verifier!');
+            }
+        } else {
+            if ($ticket['verifierid'] != $ticketedit['verifierid'] && $ticketedit['verifierid'] != Auth::GetCurrentUser()) {
+                $error['verifierid'] = trans('Ticket is already transferred to verifier!');
+            }
+        }
+    }
+
     $ticketedit['customerid'] = ($ticketedit['custid'] ? $ticketedit['custid'] : 0);
 
     if ($ticketedit['requestor_userid'] == '0') {
