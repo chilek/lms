@@ -30,7 +30,7 @@ $this->Execute("
         netid int(11) NOT NULL,
         comment varchar(256) DEFAULT NULL,
         PRIMARY KEY (id),
-        UNIQUE KEY routednetworks_netid_key (netid),
+        UNIQUE KEY routednetworks_netid_ukey (netid),
         CONSTRAINT routednetworks_nodeid_fkey
             FOREIGN KEY (nodeid) REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
         CONSTRAINT routednetworks_netid_fkey
