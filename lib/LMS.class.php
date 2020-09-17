@@ -1180,10 +1180,10 @@ class LMS
         return $manager->addNodeRoutedNetworks($params);
     }
 
-    public function deleteNodeRoutedNetwork($nodeid, $netid)
+    public function deleteNodeRoutedNetworks(array $params)
     {
         $manager = $this->getNodeManager();
-        return $manager->deleteNodeRoutedNetwork($nodeid, $netid);
+        return $manager->deleteNodeRoutedNetworks($params);
     }
 
     /*

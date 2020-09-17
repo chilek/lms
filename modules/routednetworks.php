@@ -39,9 +39,10 @@ switch ($_GET['action']) {
         } elseif (isset($_POST['routednetwork']) && is_array($_POST['routednetwork'])) {
             $networks = $_POST['routednetwork'];
         }
-        foreach ($networks as $netid) {
-            $LMS->deleteNodeRoutedNetwork($_POST['nodeid'], $netid);
-        }
+        $LMS->deleteNodeRoutedNetworks(array(
+            'nodeid' => $_POST['nodeid'],
+            'networks' => $networks
+        ));
         break;
 }
 
