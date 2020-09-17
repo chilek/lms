@@ -45,6 +45,7 @@ class LMSTcpdfInvoice extends LMSInvoice
     {
         $hide_discount = ConfigHelper::checkConfig('invoices.hide_discount');
         $hide_prodid = ConfigHelper::checkConfig('invoices.hide_prodid');
+        $show_tax_category = ConfigHelper::checkConfig('invoices.show_tax_category') && !empty($this->data['taxcategories']);
 
         /* set the line width and headers font */
         $this->backend->SetFillColor(255, 255, 255);
@@ -61,6 +62,9 @@ class LMSTcpdfInvoice extends LMSInvoice
         $heads['name'] = trans('Name of Product, Commodity or Service:');
         if (!$hide_prodid) {
             $heads['prodid'] = trans('Product ID:');
+        }
+        if ($show_tax_category) {
+            $heads['taxcategory'] = trans('Tax Category:');
         }
         $heads['content'] = trans('Unit:');
         $heads['count'] = trans('Amount:');
@@ -86,6 +90,9 @@ class LMSTcpdfInvoice extends LMSInvoice
                 $t_width['name'] = $this->backend->getStringWidth($item['description']);
                 if (!$hide_prodid) {
                     $t_width['prodid'] = $this->backend->getStringWidth($item['prodid']);
+                }
+                if ($show_tax_category) {
+                    $t_width['taxcategory'] = $this->backend->getStringWidth(sprintf('%02d', $item['taxcategory']));
                 }
                 $t_width['content'] = $this->backend->getStringWidth($item['content']);
                 $t_width['count'] = $this->backend->getStringWidth((float)$item['count']);
@@ -116,6 +123,9 @@ class LMSTcpdfInvoice extends LMSInvoice
                 $t_width['name'] = $this->backend->getStringWidth($item['description']);
                 if (!$hide_prodid) {
                     $t_width['prodid'] = $this->backend->getStringWidth($item['prodid']);
+                }
+                if ($show_tax_category) {
+                    $t_width['taxcategory'] = $this->backend->getStringWidth(sprintf('%02d', $item['taxcategory']));
                 }
                 $t_width['content'] = $this->backend->getStringWidth($item['content']);
                 $t_width['count'] = $this->backend->getStringWidth((float)$item['count']);
@@ -185,6 +195,9 @@ class LMSTcpdfInvoice extends LMSInvoice
                     if (!$hide_prodid) {
                         $this->backend->Cell($h_width['prodid'], $h, $item['prodid'], 1, 0, 'C', 0, '', 1);
                     }
+                    if ($show_tax_category) {
+                        $this->backend->Cell($h_width['taxcategory'], $h, empty($item['taxcategory']) ? '' : sprintf('%02d', $item['taxcategory']), 1, 0, 'C', 0, '', 1);
+                    }
                     $this->backend->Cell($h_width['content'], $h, $item['content'], 1, 0, 'C', 0, '', 1);
                     $this->backend->Cell($h_width['count'], $h, (float)$item['count'], 1, 0, 'C', 0, '', 1);
                     if (!$hide_discount) {
@@ -207,7 +220,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             /* invoice correction summary table - headers */
             $sum = 0;
             foreach ($h_width as $name => $w) {
-                if (in_array($name, array('no', 'name', 'prodid', 'content', 'count', 'discount', 'basevalue'))) {
+                if (in_array($name, array('no', 'name', 'prodid', 'taxcategory', 'content', 'count', 'discount', 'basevalue'))) {
                     $sum += $w;
                 }
             }
@@ -256,6 +269,9 @@ class LMSTcpdfInvoice extends LMSInvoice
             if (!$hide_prodid) {
                 $this->backend->Cell($h_width['prodid'], $h, $item['prodid'], 1, 0, 'C', 0, '', 1);
             }
+            if ($show_tax_category) {
+                $this->backend->Cell($h_width['taxcategory'], $h, empty($item['taxcategory']) ? '' : sprintf('%02d', $item['taxcategory']), 1, 0, 'C', 0, '', 1);
+            }
             $this->backend->Cell($h_width['content'], $h, $item['content'], 1, 0, 'C', 0, '', 1);
             $this->backend->Cell($h_width['count'], $h, (float)$item['count'], 1, 0, 'C', 0, '', 1);
             if (!$hide_discount) {
@@ -277,7 +293,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         /* invoice summary table - headers */
         $sum = 0;
         foreach ($h_width as $name => $w) {
-            if (in_array($name, array('no', 'name', 'prodid', 'content', 'count', 'discount', 'basevalue'))) {
+            if (in_array($name, array('no', 'name', 'prodid', 'taxcategory', 'content', 'count', 'discount', 'basevalue'))) {
                 $sum += $w;
             }
         }

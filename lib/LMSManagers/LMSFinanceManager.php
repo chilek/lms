@@ -2257,6 +2257,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 }
             }
 
+            $result['taxcategories'] = array();
             $result['pdiscount'] = 0;
             $result['vdiscount'] = 0;
             $result['totalbase'] = 0;
@@ -2341,8 +2342,14 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
                     $result['pdiscount'] += $row['pdiscount'];
                     $result['vdiscount'] += $row['vdiscount'];
+
+                    if (!empty($row['taxcategory'])) {
+                        $result['taxcategories'][] = $row['taxcategory'];
+                    }
                 }
             }
+
+            $result['taxcategories'] = array_unique($result['taxcategories']);
 
             $result['pdate'] = $result['cdate'] + ($result['paytime'] * 86400);
             $result['value'] = $result['total'] - (isset($result['invoice']) ? $result['invoice']['total'] : 0);

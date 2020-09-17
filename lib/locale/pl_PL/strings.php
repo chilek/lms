@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$_LANG['Tax Category:'] = 'GTU:';
+
 $_LANG['<!invoice>With receipt:'] = 'W tym faktury wyst. na podst. parag. fisk.:';
 $_LANG['<!invoice>Without receipt:'] = 'Różnica (kwoty do uwzgl. w VAT-7):';
 

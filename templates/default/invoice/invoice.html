@@ -1,8 +1,16 @@
 {$use_alert_color = ConfigHelper::checkConfig('invoices.use_alert_color')}
 {$hide_discount = ConfigHelper::checkConfig('invoices.hide_discount')}
 {$hide_prodid = ConfigHelper::checkConfig('invoices.hide_prodid')}
-{$cols = 11}
+{$show_tax_category = ConfigHelper::checkConfig('invoices.show_tax_category')}
+{if empty($invoice.taxcategories)}
+	{$show_tax_category = false}
+{/if}
+
+{$cols = 12}
 {if $hide_prodid}
+	{$cols = $cols - 1}
+{/if}
+{if !$show_tax_category}
 	{$cols = $cols - 1}
 {/if}
 {if $hide_discount || (empty($invoice.pdiscount) && empty($invoice.vdiscount))}
@@ -156,6 +164,11 @@
 		<B>{trans("Product ID:")}</B>
 	</TD>
 	{/if}
+	{if $show_tax_category}
+	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
+		<B>{trans("Tax Category:")}</B>
+	</TD>
+	{/if}
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
 		<B>{trans("Unit:")}</B>
 	</TD>
@@ -200,6 +213,13 @@
 	{if !$hide_prodid}
 	<TD CLASS="flr">
 		{$item.prodid}
+	</TD>
+	{/if}
+	{if $show_tax_category}
+	<TD CLASS="flr" ALIGN="CENTER">
+		{if !empty($item.taxcategory)}
+			{sprintf('%02d', $item.taxcategory)}
+		{/if}
 	</TD>
 	{/if}
 	<TD CLASS="flr" ALIGN="CENTER">
@@ -291,6 +311,13 @@
 	{if !$hide_prodid}
 	<TD CLASS="flr">
 		{$item.prodid}
+	</TD>
+	{/if}
+	{if $show_tax_category}
+	<TD CLASS="flr" ALIGN="CENTER">
+		{if !empty($item.taxcategory)}
+			{sprintf('%02d', $item.taxcategory)}
+		{/if}
 	</TD>
 	{/if}
 	<TD CLASS="flr" ALIGN="CENTER">
