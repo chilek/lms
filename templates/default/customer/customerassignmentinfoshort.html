@@ -62,7 +62,7 @@
 		<TD class="nobr">{trans("Tax category:")}</TD>
 		<TD>
 			{if $assignment.taxcategory}
-				<span {tip text=$_TAX_CATEGORIES[$assignment.taxcategory].description}>{$_TAX_CATEGORIES[$assignment.taxcategory].label}</span>
+				<span {tip text=$_TAX_CATEGORIES[$assignment.taxcategory].description}>({sprintf('%02d', $assignment.taxcategory)}) {$_TAX_CATEGORIES[$assignment.taxcategory].label}</span>
 			{else}
 				{trans("- none -")}
 			{/if}
