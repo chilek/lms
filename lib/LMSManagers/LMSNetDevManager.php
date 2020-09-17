@@ -1276,4 +1276,14 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
         return $netdev_assignments;
     }
+
+    public function getNetDevOwnerByNodeId($nodeid)
+    {
+        return $this->db->GetOne(
+            'SELECT nd.ownerid FROM netdevices nd
+            JOIN nodes n ON n.netdev = nd.id AND n.ownerid IS NULL
+            WHERE n.id = ?',
+            array($nodeid)
+        );
+    }
 }

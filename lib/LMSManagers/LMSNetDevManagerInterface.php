@@ -93,4 +93,6 @@ interface LMSNetDevManagerInterface
     public function updateManagementUrl($type, $id, array $url);
 
     public function getNetDevCustomerAssignments($netdevid, $assignments);
+
+    public function getNetDevOwnerByNodeId($nodeid);
 }

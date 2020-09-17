@@ -1043,6 +1043,10 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 
         if (!empty($params['networks'])) {
             $customerid = $this->GetNodeOwner($params['nodeid']);
+            if (empty($customerid)) {
+                $netdev_manager = new LMSNetDevManager($this->db, $this->auth, $this->cache, $this->syslog);
+                $customerid = $netdev_manager->getNetDevOwnerByNodeId($params['nodeid']);
+            }
 
             foreach ($params['networks'] as $network) {
                 $args = array(
@@ -1078,6 +1082,10 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 
         if (!empty($params['networks'])) {
             $customerid = $this->GetNodeOwner($params['nodeid']);
+            if (empty($customerid)) {
+                $netdev_manager = new LMSNetDevManager($this->db, $this->auth, $this->cache, $this->syslog);
+                $customerid = $netdev_manager->getNetDevOwnerByNodeId($params['nodeid']);
+            }
 
             foreach ($params['networks'] as $network) {
                 if ($this->syslog) {

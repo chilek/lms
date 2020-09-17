@@ -1801,6 +1801,12 @@ class LMS
         return $manager->getNetDevCustomerAssignments($netdevid, $assignments);
     }
 
+    public function getNetDevOwnerByNodeId($nodeid)
+    {
+        $manager = $this->getNetDevManager();
+        return $manager->getNetDevOwnerByNodeId($nodeid);
+    }
+
     public function GetNetNode($id)
     {
         $manager = $this->getNetNodeManager();
