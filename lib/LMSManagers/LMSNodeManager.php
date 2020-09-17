@@ -1081,7 +1081,15 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         $removed = 0;
 
         if (!empty($params['networks'])) {
+            if (!isset($params['nodeid'])) {
+                $params['nodeid'] = $this->db->GetOne(
+                    'SELECT nodeid FROM routednetworks WHERE netid = ?',
+                    array(reset($params['networks']))
+                );
+            }
+
             $customerid = $this->GetNodeOwner($params['nodeid']);
+
             if (empty($customerid)) {
                 $netdev_manager = new LMSNetDevManager($this->db, $this->auth, $this->cache, $this->syslog);
                 $customerid = $netdev_manager->getNetDevOwnerByNodeId($params['nodeid']);
