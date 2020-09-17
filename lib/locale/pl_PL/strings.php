@@ -4752,9 +4752,9 @@ $_LANG['Memo:'] = 'Notatka:';
 
 $_LANG['close event'] = 'zamknij zdarzenie';
 
-$_LANG['Tax category:'] = 'Kategoria podatkowa:';
-$_LANG['Select tax category'] = 'Wybierz kategorię podatkową';
-$_LANG['Tax category selection is required!'] = 'Wymagany wybór kategorii podatkowej!';
+$_LANG['Tax category:'] = 'GTU:';
+$_LANG['Select tax category'] = 'Wybierz GTU';
+$_LANG['Tax category selection is required!'] = 'Wymagany wybór GTU!';
 
 $_LANG['TERRIT address is required!'] = 'Wymagany adres zgodny z TERYT!';
 
