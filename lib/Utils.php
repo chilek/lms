@@ -53,14 +53,18 @@ class Utils
         return $result;
     }
 
-    public static function array_column(array $array, $key)
+    public static function array_column(array $array, $column_key, $index_key = null)
     {
-        if (!is_array($array) || empty($key)) {
+        if (!is_array($array) || empty($column_key)) {
             return $array;
         }
         $result = array();
         foreach ($array as $idx => $item) {
-            $result[$idx] = $item[$key];
+            if (isset($index_key)) {
+                $result[$item[$index_key]] = $item[$column_key];
+            } else {
+                $result[$idx] = $item[$column_key];
+            }
         }
         return $result;
     }
