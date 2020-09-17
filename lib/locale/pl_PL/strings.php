@@ -4871,3 +4871,4 @@ $_LANG['Add routed networks to node'] = 'Dodaj trasowane sieci do komputera';
 $_LANG['Select routed networks to assign to node'] = 'Wybierz trasowane sieci, które chcesz przypisać do komputera';
 $_LANG['Are you sure, you want to remove routed network to node assignments?'] = 'Jesteś pewien, że chcesz usunąć powiązania między trasowanymi sieciami, a komputerem?';
 $_LANG['routed network<!syslog>'] = 'trasowana sieć';
+$_LANG['Routed via:'] = 'Trasowana przez:';

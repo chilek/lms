@@ -1394,10 +1394,15 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     public function GetCustomerNetworks($id, $count = null)
     {
         return $this->db->GetAll('
-            SELECT *
-            FROM vnetworks
-            WHERE ownerid = ?
-            ORDER BY name ASC
+            SELECT n.*,
+            nd.id AS routernetdevid, nd.name AS routernetdevname,
+            rn.nodeid AS routernodeid, nodes.name AS routernodename, INET_NTOA(nodes.ipaddr) AS routerip
+            FROM vnetworks n
+            LEFT JOIN routednetworks rn ON rn.netid = n.id
+            LEFT JOIN nodes ON nodes.id = rn.nodeid
+            LEFT JOIN netdevices nd ON nd.id = nodes.netdev AND nodes.ownerid IS NULL
+            WHERE n.ownerid = ?
+            ORDER BY n.name ASC
             ' . ($count ? ' LIMIT ' . $count : ''), array($id));
     }
 
