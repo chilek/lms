@@ -1029,7 +1029,9 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             'SELECT n.*
             FROM vnetworks n
             LEFT JOIN routednetworks rn ON rn.netid = n.id
-            WHERE rn.id IS NULL AND n.ownerid = (SELECT ownerid FROM nodes WHERE id = ?)',
+            LEFT JOIN nodes ON nodes.ownerid = n.ownerid OR nodes.ownerid IS NULL
+            LEFT JOIN netdevices nd ON nd.id = nodes.netdev AND nodes.ownerid IS NULL
+            WHERE rn.id IS NULL AND nodes.id = ? AND (nodes.ownerid = n.ownerid OR nd.ownerid = n.ownerid)',
             'id',
             array($nodeid)
         );

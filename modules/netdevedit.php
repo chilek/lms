@@ -908,6 +908,11 @@ switch ($edit) {
         $SMARTY->assign('networks', $LMS->GetNetworks(true));
         $SMARTY->assign('nodesessions', $LMS->GetNodeSessions($_GET['ip']));
         $SMARTY->assign('netdevvipedit_sortable_order', $SESSION->get_persistent_setting('netdevipedit-sortable-order'));
+
+        $SMARTY->assign('routednetworks', $LMS->getNodeRoutedNetworks($_GET['ip']));
+        $SMARTY->assign('notroutednetworks', $LMS->getNodeNotRoutedNetworks($_GET['ip']));
+        $SMARTY->assign('nodeid', $_GET['ip']);
+
         $SMARTY->display('netdev/netdevipedit.html');
         break;
     case 'addip':

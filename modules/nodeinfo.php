@@ -161,6 +161,7 @@ if (!isset($resource_tabs['managementurls']) || $resource_tabs['managementurls']
 if (!isset($resource_tabs['routednetworks']) || $resource_tabs['routednetworks']) {
     $SMARTY->assign('routednetworks', $LMS->getNodeRoutedNetworks($nodeinfo['id']));
     $SMARTY->assign('notroutednetworks', $LMS->getNodeNotRoutedNetworks($nodeinfo['id']));
+    $SMARTY->assign('nodeid', $nodeinfo['id']);
 }
 
 $SMARTY->assign('nodeinfo', $nodeinfo);

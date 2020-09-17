@@ -161,6 +161,11 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
         $SMARTY->assign('nodeipdata', $LMS->GetNode($_GET['ip']));
         $SMARTY->assign('nodesessions', $LMS->GetNodeSessions($_GET['ip']));
         $SMARTY->assign('netdevauthtype', $netdevauthtype);
+
+        $SMARTY->assign('routednetworks', $LMS->getNodeRoutedNetworks($_GET['ip']));
+        $SMARTY->assign('notroutednetworks', $LMS->getNodeNotRoutedNetworks($_GET['ip']));
+        $SMARTY->assign('nodeid', $_GET['ip']);
+
         $SMARTY->display('netdev/netdevipinfo.html');
     } else {
         $SMARTY->assign('netdevinfo_sortable_order', $SESSION->get_persistent_setting('netdevinfo-sortable-order'));

@@ -2,7 +2,7 @@
 {js}
 
 <form method="post" name="routednetworks" id="routednetworks" action="?m=routednetworks&action=add">
-	<input type="hidden" name="nodeid" value="{$objectid}">
+	<input type="hidden" name="nodeid" value="{$nodeid}">
 </form>
 
 {tab_container id="routednetworksbox" label="Routed Networks"}
@@ -17,7 +17,7 @@
 
 		{tab_table}
 
-			{if $customernetworks}
+			{if $routednetworks}
 			<div class="lms-ui-tab-table-row header">
 				<div class="lms-ui-tab-table-wrapper col-3">
 					<div class="lms-ui-tab-table-wrapper col-2">

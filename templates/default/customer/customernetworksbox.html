@@ -73,8 +73,10 @@
 								{else}
 									<strong>
 										{if empty($network.routernetdevid)}
+											{icon name="node"}
 											<a href="?m=nodeinfo&id={$network.routernodeid}">{$network.routernodename}</a>
 										{else}
+											{icon name="netdev"}
 											<a href="?m=netdevinfo&id={$network.routernetdevid}&ip={$network.routernodeid}">{$network.routernetdevname} / {$network.routernodename}</a>
 										{/if}
 									</strong>

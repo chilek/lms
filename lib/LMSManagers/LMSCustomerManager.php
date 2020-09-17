@@ -1400,7 +1400,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             FROM vnetworks n
             LEFT JOIN routednetworks rn ON rn.netid = n.id
             LEFT JOIN nodes ON nodes.id = rn.nodeid
-            LEFT JOIN netdevices nd ON nd.id = nodes.netdev AND nodes.ownerid IS NULL
+            LEFT JOIN netdevices nd ON nd.id = nodes.netdev AND nodes.ownerid IS NULL AND nodes.netdev IS NOT NULL
             WHERE n.ownerid = ?
             ORDER BY n.name ASC
             ' . ($count ? ' LIMIT ' . $count : ''), array($id));
