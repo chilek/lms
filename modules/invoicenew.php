@@ -310,7 +310,7 @@ switch ($action) {
                 $itemdata['cashid'] = $id;
                 $itemdata['name'] = $cash['comment'];
                 $itemdata['taxid'] = $cash['taxid'];
-                $itemdata['taxcategory'] = 0;
+                $itemdata['taxcategory'] = $_POST['l_taxcategory'][$id];
                 $itemdata['tax'] = isset($taxeslist[$itemdata['taxid']]) ? $taxeslist[$itemdata['taxid']]['label'] : '';
                 $itemdata['discount'] = 0;
                 $itemdata['pdiscount'] = 0;

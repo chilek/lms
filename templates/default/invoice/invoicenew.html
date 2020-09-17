@@ -189,10 +189,11 @@
 				<col style="width: 1%;">
 				<col style="width: 1%;">
 				<col style="width: 1%;">
+				<col style="width: 1%;">
 			</colgroup>
 			<thead>
 				<tr>
-					<th colspan="9">
+					<th colspan="10">
 						<IMG src="img/money.gif" alt="">
 						{trans("Invoiceless liabilities:")}
 					</th>
@@ -200,6 +201,7 @@
 				<TR>
 					<th scope="col">{trans("Date:")}</th>
 					<th scope="col">{trans("Name of product, commodity or service:")}</th>
+					<th scope="col" class="nobr">{trans("Tax Category:")}</th>
 					<th scope="col" class="text-right nobr">{trans("Product ID:")}</th>
 					<th scope="col" class="text-right">{trans("Amount:")}</th>
 					<th scope="col" class="text-right">{trans("Unit:")}</th>
@@ -214,6 +216,10 @@
 				<TR class="highlight {cycle}">
 					<TD class="nobr">{$covenantlist[covenantlist].time|date_format:"%Y/%m/%d"}</TD>
 					<TD>{$covenantlist[covenantlist].comment}</TD>
+					<td>
+						{tax_category_selection elementname="l_taxcategory[{$covenantlist[covenantlist].cashid}]"
+							tip="Select tax category"}
+					</td>
 					<TD class="text-right"><INPUT type="text" name="l_prodid[{$covenantlist[covenantlist].cashid}]" value="{ConfigHelper::getConfig('phpui.default_prodid', '', true)}" size="6"></TD>
 					<TD class="text-right"><INPUT type="text" name="l_count[{$covenantlist[covenantlist].cashid}]" value="1" size="3"></TD>
 					<TD class="text-right"><INPUT type="text" name="l_jm[{$covenantlist[covenantlist].cashid}]" value="{trans(ConfigHelper::getConfig('payments.default_unit_name'))}" size="3"></TD>
@@ -229,7 +235,7 @@
 				<TD colspan="2" class="nobr">
 					<INPUT type="checkbox" name="allbox" id="allbox" onchange="CheckAll('additemlist', this)" value="1"><label for="allbox">{trans("Check All")}</label>
 				</TD>
-				<TD class="text-right nobr" colspan="7">
+				<TD class="text-right nobr" colspan="8">
 					<A href="javascript:document.additemlist.submit();">{trans("Add items")} <IMG src="img/save.gif" alt=""></A>
 				</TD>
 			</TR>
