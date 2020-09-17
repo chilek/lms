@@ -282,7 +282,7 @@
 				{if $refdoc.closed}
 					{if $item.taxcategory}
 						<span {tip text=$_TAX_CATEGORIES[$item.taxcategory].description}>
-							{$_TAX_CATEGORIES[$item.taxcategory].label}
+							{$_TAX_CATEGORIES[$item.taxcategory].label} ({sprintf('%02d', $item.taxcategory)})
 						</span>
 					{else}
 						{trans("- none -")}
@@ -291,7 +291,7 @@
 					<INPUT TYPE="hidden" VALUE="{$item.taxcategory}" NAME="taxcategory[{$itemid}]">
 					{if $item.taxcategory}
 						<span {tip text=$_TAX_CATEGORIES[$item.taxcategory].description}>
-							{$_TAX_CATEGORIES[$item.taxcategory].label}
+							{$_TAX_CATEGORIES[$item.taxcategory].label} ({sprintf('%02d', $item.taxcategory)})
 						</span>
 					{else}
 						{trans("- none -")}

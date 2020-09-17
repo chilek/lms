@@ -105,7 +105,7 @@
                     selected=$row.taxcategory visible=false tip="Select tax category" data_old_value=$item.taxcategory}
                 <span class="invoice-contents-field-value"{if $item.taxcategory} title="{$_TAX_CATEGORIES[$item.taxcategory].description}"{/if}>
                     {if $item.taxcategory}
-                        {$_TAX_CATEGORIES[$item.taxcategory].label}
+                        {$_TAX_CATEGORIES[$item.taxcategory].label} ({sprintf('%02d', $item.taxcategory)})
                     {else}
                         {trans("- none -")}
                     {/if}
