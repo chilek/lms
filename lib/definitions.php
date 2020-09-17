@@ -1078,41 +1078,49 @@ $EXISTINGASSIGNMENTS = array(
 );
 
 $TAX_CATEGORIES = array(
-    10 => array(
-        'label' => 'budynek lub grunt',
-        'description' => 'Dostawa budynków, budowli i gruntów',
-    ),
-    9 => array(
-        'label' => 'lek lub wybór medyczny',
-        'description' => 'Dostawa leków oraz wyrobów medycznych - produktów leczniczych, środków spożywczych specjalnego przeznaczenia żywieniowego oraz wyrobów medycznych, objętych obowiązkiem zgłoszenia, o którym mowa w art. 37av ust. 1 ustawy z dnia 6 września 2001 r. - Prawo farmaceutyczne (Dz. U. z 2019 r. poz. 499, z późn. zm.)',
-    ),
-    8 => array(
-        'label' => 'metal szlachetny lub nieszlachetny',
-        'description' => 'Dostawa metali szlachetnych oraz nieszlachetnych - wyłącznie określonych w poz. 1-3 załącznika nr 12 do ustawy oraz w poz. 12-25, 33-40, 45, 46, 56 i 78 załącznika nr 15 do ustawy',
-    ),
     1 => array(
         'label' => 'napój alkoholowy',
         'description' => 'Dostawa napojów alkoholowych - alkoholu etylowego, piwa, wina, napojów fermentowanych i wyrobów pośrednich, w rozumieniu przepisów o podatku akcyzowym',
-    ),
-    5 => array(
-        'label' => 'odpad',
-        'description' => 'Dostawa odpadów - wyłącznie określonych w poz. 79-91 załącznika nr 15 do ustawy',
-    ),
-    3 => array(
-        'label' => 'olej opałowy',
-        'description' => 'Dostawa oleju opałowego w rozumieniu przepisów o podatku akcyzowym oraz olejów smarowych, pozostałych olejów o kodach CN od 2710 19 71 do 2710 19 99, z wyłączeniem wyrobów o kodzie CN 2710 19 85 (oleje białe, parafina ciekła) oraz smarów plastycznych zaliczanych do kodu CN 2710 19 99, olejów smarowych o kodzie CN 2710 20 90, preparatów smarowych objętych pozycją CN 3403, z wyłączeniem smarów plastycznych objętych tą pozycją',
     ),
     2 => array(
         'label' => 'paliwo',
         'description' => 'Dostawa towarów, o których mowa w art. 103 ust. 5aa ustawy',
     ),
-    7 => array(
-        'label' => 'pojazd samochodowy',
-        'description' => 'Dostawa pojazdów oraz części samochodowych o kodach wyłącznie CN 8701 - 8708 oraz CN 8708 10',
+    3 => array(
+        'label' => 'olej opałowy',
+        'description' => 'Dostawa oleju opałowego w rozumieniu przepisów o podatku akcyzowym oraz olejów smarowych, pozostałych olejów o kodach CN od 2710 19 71 do 2710 19 99, z wyłączeniem wyrobów o kodzie CN 2710 19 85 (oleje białe, parafina ciekła) oraz smarów plastycznych zaliczanych do kodu CN 2710 19 99, olejów smarowych o kodzie CN 2710 20 90, preparatów smarowych objętych pozycją CN 3403, z wyłączeniem smarów plastycznych objętych tą pozycją',
+    ),
+    4 => array(
+        'label' => 'wyrób nikotynowy',
+        'description' => 'Dostawa wyrobów tytoniowych, suszu tytoniowego, płynu do papierosów elektronicznych i wyrobów nowatorskich, w rozumieniu przepisów o podatku akcyzowym',
+    ),
+    5 => array(
+        'label' => 'odpad',
+        'description' => 'Dostawa odpadów - wyłącznie określonych w poz. 79-91 załącznika nr 15 do ustawy',
     ),
     6 => array(
         'label' => 'urządzenie elektroniczne',
         'description' => 'Dostawa urządzeń elektronicznych oraz części i materiałów do nich, wyłącznie określonych w poz. 7-9, 59-63, 65, 66, 69 i 94-96 załącznika nr 15 do ustawy',
+    ),
+    7 => array(
+        'label' => 'pojazd samochodowy',
+        'description' => 'Dostawa pojazdów oraz części samochodowych o kodach wyłącznie CN 8701 - 8708 oraz CN 8708 10',
+    ),
+    8 => array(
+        'label' => 'metal szlachetny lub nieszlachetny',
+        'description' => 'Dostawa metali szlachetnych oraz nieszlachetnych - wyłącznie określonych w poz. 1-3 załącznika nr 12 do ustawy oraz w poz. 12-25, 33-40, 45, 46, 56 i 78 załącznika nr 15 do ustawy',
+    ),
+    9 => array(
+        'label' => 'lek lub wybór medyczny',
+        'description' => 'Dostawa leków oraz wyrobów medycznych - produktów leczniczych, środków spożywczych specjalnego przeznaczenia żywieniowego oraz wyrobów medycznych, objętych obowiązkiem zgłoszenia, o którym mowa w art. 37av ust. 1 ustawy z dnia 6 września 2001 r. - Prawo farmaceutyczne (Dz. U. z 2019 r. poz. 499, z późn. zm.)',
+    ),
+    10 => array(
+        'label' => 'budynek lub grunt',
+        'description' => 'Dostawa budynków, budowli i gruntów',
+    ),
+    11 => array(
+        'label' => 'usługa związana z gazami cieplarnianymi',
+        'description' => 'Świadczenie usług w zakresie przenoszenia uprawnień do emisji gazów cieplarnianych, o których mowa w ustawie z dnia 12 czerwca 2015 r. o systemie handlu uprawnieniami do emisji gazów cieplarnianych (Dz. U. z 2018 r. poz. 1201 i 2538 oraz z 2019 r. poz. 730, 1501 i 1532)',
     ),
     12 => array(
         'label' => 'usługa o charakterze niematerialnym',
@@ -1121,14 +1129,6 @@ $TAX_CATEGORIES = array(
     13 => array(
         'label' => 'usługa transportowa lub gospodarki magazynowej',
         'description' => 'Świadczenie usług transportowych i gospodarki magazynowej - Sekcja H PKWiU 2015 symbol ex 49.4, ex 52.1',
-    ),
-    11 => array(
-        'label' => 'usługa związana z gazami cieplarnianymi',
-        'description' => 'Świadczenie usług w zakresie przenoszenia uprawnień do emisji gazów cieplarnianych, o których mowa w ustawie z dnia 12 czerwca 2015 r. o systemie handlu uprawnieniami do emisji gazów cieplarnianych (Dz. U. z 2018 r. poz. 1201 i 2538 oraz z 2019 r. poz. 730, 1501 i 1532)',
-    ),
-    4 => array(
-        'label' => 'wyrób nikotynowy',
-        'description' => 'Dostawa wyrobów tytoniowych, suszu tytoniowego, płynu do papierosów elektronicznych i wyrobów nowatorskich, w rozumieniu przepisów o podatku akcyzowym',
     ),
 );
 

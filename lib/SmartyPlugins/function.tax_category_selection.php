@@ -45,7 +45,7 @@ function smarty_function_tax_category_selection($params, $template)
         $result .= '<option value="' . $categoryid . '"'
             . ($categoryid == $selected ? ' selected' : '') . ' '
             . LMSSmartyPlugins::tipFunction(array('text' => $category['description']), $template) . '>'
-            . $category['label'] . ' (' . sprintf('%02d', $categoryid) . ')' . '</option>';
+            . '(' . sprintf('%02d', $categoryid) . ') ' . $category['label'] . '</option>';
     }
     $result .= '</select>';
 
