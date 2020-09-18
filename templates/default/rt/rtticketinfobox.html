@@ -297,7 +297,7 @@
 							{if $ticket.invprojectid}
 							<TR>
 								<TD class="bold nobr">
-									{icon name="invproject"} {trans("Investment project:")}
+									{icon name="invproject" label="Investment project:"}
 								</TD>
 								<TD>
 									{$ticket.invproject_name}</A>
@@ -307,7 +307,7 @@
 							{if $ticket.parentid}
 							<TR>
 								<TD class="bold">
-									<i class="lms-ui-icon-content lms-ui-icon-parentticket"></i>{trans("Parent ticket:")}
+									{icon name="parentticket" label="Parent ticket:"}
 								</TD>
 								<TD>
 									#{$ticket.parent.id|string_format:"%06d"} <a href="?m=rtticketview&id={$ticket.parent.id}">{$ticket.parent.name}</a><br>
@@ -317,7 +317,7 @@
 							{if $ticket.childtickets}
                                                         <TR>
                                                                 <TD class="bold">
-                                                                        <i class="lms-ui-icon-content lms-ui-icon-childticket"></i>{trans("Child tickets:")}
+                                                                        {icon name="childticket" label="Child tickets:"}
                                                                 </TD>
 								<TD>
 								{foreach $ticket.childtickets as $t}
@@ -329,7 +329,7 @@
 							{if $ticket.relatedtickets}
 							<TR>
 								<TD class="bold nobr">
-									<i class="lms-ui-icon-content lms-ui-icon-relatedticket"></i>{trans("Related tickets:")}
+									{icon name="relatedticket" label="Related tickets:"}
 								</TD>
 								<TD>
 									{foreach $ticket.relatedtickets as $i}
