@@ -196,7 +196,7 @@
 				</SELECT>
 			{/box_row}
 
-			{box_row icon="cause" label="Cause:"}
+			{box_row icon="cause" label="Cause:" class="fa-fw"}
 				<SELECT size="1" name="ticket[cause]" {tip text="Select ticket cause" trigger="cause"}>
 					<OPTION value="0" {if !$ticket.cause}selected{/if}>{trans("unknown/other")}</OPTION>
 					<OPTION value="1" {if $ticket.cause == 1}selected{/if}>{trans("customer's side")}</OPTION>
