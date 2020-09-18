@@ -188,7 +188,7 @@
 				</label>
 			{/box_row}
 
-			{box_row icon="queue" label="Queue:"}
+			{box_row icon="queue" label="Queue:" icon_class="fa-fw"}
 				<SELECT size="1" name="ticket[queue]" {tip class="lms-ui-advanced-select" text="Select queue" trigger="queue"} onchange="xajax_queue_changed($(this).val(), $('#rtverifiers').val())">
 					{foreach $queuelist as $item}
 					<OPTION value="{$item.id}"{if $item.newticketsubject && $item.newticketbody} data-newticket-notify="1"{/if}{if $item.id == $queue} selected{/if}>{$item.name}</OPTION>
@@ -196,7 +196,7 @@
 				</SELECT>
 			{/box_row}
 
-			{box_row icon="cause" label="Cause:" class="fa-fw"}
+			{box_row icon="cause" label="Cause:" icon_class="fa-fw"}
 				<SELECT size="1" name="ticket[cause]" {tip text="Select ticket cause" trigger="cause"}>
 					<OPTION value="0" {if !$ticket.cause}selected{/if}>{trans("unknown/other")}</OPTION>
 					<OPTION value="1" {if $ticket.cause == 1}selected{/if}>{trans("customer's side")}</OPTION>
