@@ -31,7 +31,7 @@
 		<INPUT type="submit" class="hiddenbtn">
 
 		{box_container id="event"}
-			{box_header icon="img/calendar.gif" label="Title:"}
+			{box_header icon="timetable" label="Title:"}
 				<INPUT type="text" name="event[title]" id="event[title]" value="{$event.title}" required size="50" {tip text="Enter event title" trigger="title"}>
 			{/box_header}
 
@@ -39,11 +39,11 @@
 				{box_panel}
 					{block name="eventmodify_left_panel"}
 
-					{box_row icon="img/time.gif" label="Time:"}
+					{box_row icon="uptime" label="Time:"}
 						{event_time_selection field_prefix="event" begin=$event.begin end=$event.end wholedays=$event.wholedays}
 					{/box_row}
 
-					{box_row icon="img/info.gif" label="Description:"}
+					{box_row icon="description" label="Description:"}
 						<TEXTAREA name="event[description]" id="description" cols="50" rows="5"
 								{tip text="Enter additional information (optional)" class="lms-ui-wysiwyg-editor" trigger="description"}
 								{if isset($event.wysiwyg.description)} data-wysiwyg="{$event.wysiwyg.description}"{/if}>{$event.description}</TEXTAREA>
@@ -55,14 +55,14 @@
 				{box_panel}
 					{block name="eventmodify_right_panel"}
 
-					{box_row icon="img/access.gif" label="Availability:"}
+					{box_row icon="status" label="Availability:" icon_class="fa-fw"}
 						<label>
 							<INPUT type="checkbox" name="event[private]" {tip text="Select event's status"}{if $event.private}CHECKED{/if}>
 							{trans("private")}
 						</label>
 					{/box_row}
 
-					{box_row icon="img/desc.gif" label="Type:"}
+					{box_row icon="type" label="Type:" icon_class="fa-fw"}
 						<SELECT name="event[type]" size="1">
 							{foreach from=$_EVENTTYPES key=key item=type}
 								<OPTION value="{$key}" {if $key == $event.type || (!$event.type && $key == $smarty.const.EVENT_OTHER)}SELECTED{/if}>{$type}</OPTION>
@@ -70,7 +70,7 @@
 						</SELECT>
 					{/box_row}
 
-					{box_row icon="img/customer.gif" label="Customer:"}
+					{box_row icon="customer" label="Customer:" icon_class="fa-fw"}
 						{if $layout.module == 'eventedit' || (empty($event.ticketid) && empty($event.customerid))}
 							{$customer_selector='[name=&quot;event[custid]&quot;]'}
 							{$address_selector='[name=&quot;event[address_id]&quot;]'}
@@ -85,7 +85,7 @@
 						{/if}
 					{/box_row}
 
-					{box_row icon="img/home.gif" label="Location:"}
+					{box_row icon="location" label="Location:" icon_class="fa-fw"}
 						{if !isset($event.ticketid) || empty($event.ticket.address_id)}
 							{include file="customer/customeraddresses.html" id="customer_addresses" name="event[address_id]" trigger="address_id"}
 						{else}
@@ -94,7 +94,7 @@
 					{/box_row}
 
 					{$visibility=!empty($nodes)}
-					{box_row class="node-row" icon="img/node.gif" label="Node:" visible=$visibility}
+					{box_row class="node-row" icon="node" label="Node:" visible=$visibility}
 						{if !isset($event.ticketid)}
 							<select class="node-list" name="event[nodeid]" {tip text="Select node"}>
 								<option value="">{trans("- none -")}</option>
@@ -112,7 +112,7 @@
 						{/if}
 					{/box_row}
 
-					{box_row icon="img/users.gif" label="Users:" field_class="multiselect"}
+					{box_row icon="user" label="Users:" field_class="multiselect" icon_class="fa-fw"}
 						<SELECT name="event[userlist][]" class="lms-ui-multiselect" id="userlist" multiple data-default-value="{trans("- select user -")}" data-shorten-to-default-value="false">
 							{foreach $userlist as $user}
 								{if !ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users') || (ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users')
@@ -147,11 +147,11 @@
 					{/function}
 
 					{if $layout.module == 'eventedit'}
-						{box_row icon="img/note.gif" label="Note:"}
+						{box_row icon="note" label="Note:"}
 							<TEXTAREA name="event[note]" cols="50" rows="5" {tip text="Enter note (optional)"}>{$event.note}</TEXTAREA>
 						{/box_row}
 
-						{box_row icon="img/ticket.gif" label="Assign ticket"}
+						{box_row icon="helpdesk" label="Assign ticket"}
 							<input type="hidden" name="event[ticketid]" value="0">
 							{list id="eventedit-ticket" tipid="ticketid" tip="Test" items=$event.ticket
 								field_name_pattern="event[ticketid]" item_content="event_ticket_item_content"}
@@ -159,7 +159,7 @@
 					{/if}
 
 {if $layout.module == 'eventadd'}
-						{box_row icon="img/ticket.gif" label="<!ticket-event>Ticket:"}
+						{box_row icon="helpdesk" label="<!ticket-event>Ticket:" icon_class="fa-fw"}
 							<label for="helpdesk-none">
 								<input type="radio" class="helpdesk-assign-selection" id="helpdesk-none" name="event[helpdesk]" value="none"{if $event.helpdesk == 'none'} checked{/if}>
 								{trans("<!ticket-event>none")}
