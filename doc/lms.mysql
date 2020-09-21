@@ -156,6 +156,7 @@ DROP TABLE IF EXISTS location_buildings;
 DROP TABLE IF EXISTS location_streets;
 DROP TABLE IF EXISTS location_street_types;
 DROP TABLE IF EXISTS location_cities;
+DROP TABLE IF EXISTS location_city_types;
 DROP TABLE IF EXISTS location_boroughs;
 DROP TABLE IF EXISTS location_districts;
 DROP TABLE IF EXISTS location_states;
@@ -296,6 +297,18 @@ CREATE TABLE location_boroughs (
 
 # --------------------------------------------------------
 #
+# Structure of table location_city_types
+#
+CREATE TABLE location_city_types (
+    id int(11) NOT NULL auto_increment,
+    ident varchar(8) NOT NULL,
+    name varchar(64) NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY location_city_types_name_ukey (name)
+) ENGINE=INNODB;
+
+# --------------------------------------------------------
+#
 # Structure of table location_cities
 #
 CREATE TABLE location_cities (
@@ -303,10 +316,13 @@ CREATE TABLE location_cities (
 	ident varchar(8)    NOT NULL, -- TERYT: SYM / SYMPOD
 	name varchar(64)    NOT NULL, -- TERYT: NAZWA
 	cityid int(11)      DEFAULT NULL,
+	type int(11)        DEFAULT NULL,
 	boroughid int(11)   DEFAULT NULL,
 	PRIMARY KEY (id),
 	INDEX cityid (cityid),
 	INDEX boroughid (boroughid, name),
+	CONSTRAINT location_cities_type_fkey
+		FOREIGN KEY (type) REFERENCES location_city_types (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (boroughid) REFERENCES location_boroughs (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=INNODB;
 
@@ -3824,4 +3840,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020091600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020092100');

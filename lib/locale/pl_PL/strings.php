@@ -3096,6 +3096,7 @@ $_LANG['in debt above 100% (expired)'] = 'zadłużeni ponad 100% (przeterminowan
 $_LANG['in debt above 200% (expired)'] = 'zadłużeni ponad 200% (przeterminowane)';
 $_LANG['<!borough_abbr>'] = 'gm.';
 $_LANG['<!district_abbr>'] = 'pow.';
+$_LANG['<!state_abbr>'] = 'woj.';
 $_LANG['City'] = 'Miejscowość';
 $_LANG['Click to add.'] = 'Kliknij, aby dodać.';
 $_LANG['Click to add network.'] = 'Kliknij, aby dodać sieć.';

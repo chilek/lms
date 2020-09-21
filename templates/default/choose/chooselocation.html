@@ -53,6 +53,7 @@
 		uri: '?m=chooselocation&ajax=1&mode=city&what=',
 		autosubmit: 0,
 		suggestionContainer: '#location-box-autosuggest',
+		suggestMaxLength: 0,
 		onSubmit: function(data) {
 			if (data.hasOwnProperty('action')) {
 				search_update(data.action.cityid, data.action.districtid, data.action.stateid);

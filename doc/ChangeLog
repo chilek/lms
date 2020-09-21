@@ -149,6 +149,7 @@ version 26-git (????-??-??):
   - enhancement: added routed network support [chilan]
   - improvement: 'invoices.show_tax_category' configuration variable ('false' by default) controls
     tax category column visibility on invoices [chilan]
+  - enhancement: added territ city type property support [chilan]
 
 version 25.0 (2020-05-15):
 

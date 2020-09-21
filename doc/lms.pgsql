@@ -135,6 +135,20 @@ CREATE TABLE location_boroughs (
 );
 
 /* --------------------------------------------------------
+  Structure of table "location_city_types"
+-------------------------------------------------------- */
+DROP SEQUENCE IF EXISTS location_city_types_id_seq;
+CREATE SEQUENCE location_city_types_id_seq;
+DROP TABLE IF EXISTS location_city_types CASCADE;
+CREATE TABLE location_city_types (
+    id integer DEFAULT nextval('location_city_types_id_seq'::text) NOT NULL,
+    ident varchar(8) NOT NULL,
+    name varchar(64) NOT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT location_city_types_name_ukey UNIQUE (name)
+);
+
+/* --------------------------------------------------------
   Structure of table "location_cities"
 -------------------------------------------------------- */
 DROP SEQUENCE IF EXISTS location_cities_id_seq;
@@ -145,6 +159,8 @@ CREATE TABLE location_cities (
 	ident varchar(8)    NOT NULL, -- TERYT: SYM / SYMPOD
 	name varchar(64)    NOT NULL, -- TERYT: NAZWA
 	cityid integer      DEFAULT NULL,
+	type integer        DEFAULT NULL
+		CONSTRAINT location_cities_type_fkey REFERENCES location_city_types (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	boroughid integer   DEFAULT NULL
 		REFERENCES location_boroughs (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (id)
@@ -3858,6 +3874,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020091600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020092100');
 
 COMMIT;
