@@ -772,9 +772,10 @@ class LMSSmartyPlugins
             return '
 			<div' . ($id ? ' id="' . $id . '"' : '') . ' class="lms-ui-box-row' . ($class ? ' ' . $class : '') . '"'
                 . ($visible ? '' : ' style="display: none;"') . ($tip ? ' title="' . trans($tip) . '"' : '') . '>
-				<div class="lms-ui-box-row-icon' . ($icon_class ? ' ' . $icon_class : '') . '">
+				<div class="lms-ui-box-row-icon' . '">
 					' . ($icon ? (strpos($icon, '/') !== false ? '<IMG src="' . $icon . '" alt="">'
                     : '<i class="'
+                    . ($icon_class ? $icon_class . ' ' : '')
                     . (strpos($icon, 'lms-ui-icon-') === 0 || strpos($icon, 'fa') === 0 ? $icon : 'lms-ui-icon-' . $icon)
                     . '"></i>') : '') . '
 				</div>
