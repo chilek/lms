@@ -100,7 +100,7 @@ if (isset($_GET['id']) && $action == 'init') {
     $cnote['paytype'] = $invoice['paytype'];
     $cnote['splitpayment'] = $invoice['splitpayment'];
     $cnote['flags'] = array(
-        DOC_FLAG_RECEIPT => $invoice['flags'] & DOC_FLAG_RECEIPT ? 1 : 0,
+        DOC_FLAG_RECEIPT => empty($invoice['flags'][DOC_FLAG_RECEIPT]) ? 0 : 1,
     );
     $cnote['currency'] = $invoice['currency'];
     $cnote['oldcurrency'] = $invoice['currency'];
