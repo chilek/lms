@@ -150,6 +150,7 @@ version 26-git (????-??-??):
   - improvement: 'invoices.show_tax_category' configuration variable ('false' by default) controls
     tax category column visibility on invoices [chilan]
   - enhancement: added territ city type property support [chilan]
+  - enhancement: implemented JPK new 'EE' flag support for invoices [chilan]
 
 version 25.0 (2020-05-15):
 
