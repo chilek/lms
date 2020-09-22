@@ -107,7 +107,7 @@ $_LANG['<!retention>External source address:'] = 'Zewnętrzny adres źródłowy:
 $_LANG['<!retention>External source port:'] = 'Zewnętrzny port źródłowy:';
 $_LANG['<!retention>Enter external source port'] = 'Podaj zewnętrzny port źródłowy';
 $_LANG['<!retention>Enter external source port in numeric format'] = 'Podaj zewnętrzny port źródłowy w formacie numerycznym';
-$_LANG['<!retention>Enter date in \'yyyy/mm/dd hh:mm:ss\' format or click to choose it from calendar'] = 'Podaj datę w formacie \'rrrr/mm/dd hh:mm:ss\' lub kliknij żeby wybrać ją z kalendarza';
+$_LANG['<!retention>Enter date in \'yyyy/mm/dd hh:mm:ss\' format or click to choose it from calendar'] = 'Podaj datę w formacie \'rrrr/mm/dd hh:mm:ss\' lub kliknij, żeby wybrać ją z kalendarza';
 $_LANG['<!retention>Retention logs'] = 'Dzienniki retencyjne';
 $_LANG['<!retention>Date'] = 'Data';
 $_LANG['<!retention>Event'] = 'Zdarzenie';
@@ -213,7 +213,7 @@ $_LANG['$a addresses'] = '$a adresów';
 $_LANG['$a ago ($b)'] = '$a temu ($b)';
 $_LANG['$a at least one year old records have been removed.<BR>'] = '$a rekordów starszych niż rok zostało usuniętych.<BR>';
 $_LANG['$a dollars $b cents'] = '$a złotych $b groszy';
-$_LANG['$a months'] = '$a m-cy';
+$_LANG['$a months'] = '$a mies.';
 $_LANG['$a of $b ($c) $d:'] = '$a z $b ($c) $d:';
 $_LANG['$a records after compacting.'] = '$a rekordów po kompaktowaniu.';
 $_LANG['$a records before compacting.<BR>'] = '$a rekordów przed kompaktowaniem.<BR>';
@@ -2861,7 +2861,7 @@ $_LANG['Are you sure you want to delete this record \'$a\'?'] = 'Jesteś pewien,
 $_LANG['Enter IP address of mailserver'] = 'Wprowadź adres IP serwera pocztowego';
 $_LANG['Enter IP address of master NS'] = 'Wprowadź adres IP głównego serwera nazw';
 $_LANG['Enter IP address of webserver'] = 'wprowadź adres IP serwera www';
-$_LANG['Default SPF record. If you leave the field blank, record will not add. Example: "v=spf1 a mx ip4:ADDRESS_MAILSERVER ~all" (Put in quotes).'] = 'Domyślny SPF rekord. Jeśli pozostawimy puste pole, rekord się nie doda. Przykład: "v=spf1 a mx ip4:ADRES_SERWERA_MAIL ~all" (Umieszczać w cudzysłowiach).';
+$_LANG['Default SPF record. If you leave the field blank, record will not add. Example: "v=spf1 a mx ip4:ADDRESS_MAILSERVER ~all" (Put in quotes).'] = 'Domyślny rekord SPF. Jeśli pozostawimy puste pole, rekord nie doda się. Przykład: "v=spf1 a mx ip4:ADRES_SERWERA_MAIL ~all" (Umieszczać w cudzysłowach).';
 $_LANG['Enter record TTL'] = 'Wprowadź TTL rekordu';
 $_LANG['IP address of mailserver'] = 'Adres IP serwera pocztowego';
 $_LANG['IP address of master NS:'] = 'Adres IP głównego serwera nazw:';
