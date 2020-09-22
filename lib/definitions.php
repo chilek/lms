@@ -609,6 +609,7 @@ $DOCTYPES = array(
 );
 
 define('DOC_FLAG_RECEIPT', 1);
+define('DOC_FLAG_TELECOM_SERVICE', 2);
 
 define('DOC_ENTITY_ORIGINAL', 1);
 define('DOC_ENTITY_COPY', 2);

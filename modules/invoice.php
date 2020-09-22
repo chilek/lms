@@ -569,6 +569,10 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                         }
                     }
 
+                    if (!empty($invoice['flags'][DOC_FLAG_TELECOM_SERVICE])) {
+                        $jpk_data .= "\t\t<EE>1</EE>\n";
+                    }
+
                     $splitpayment = isset($invoice['splitpayment']) && !empty($invoice['splitpayment']);
                     if ($splitpayment) {
                         $jpk_data .= "\t\t<MPP>1</MPP>\n";
