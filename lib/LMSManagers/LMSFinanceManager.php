@@ -3733,6 +3733,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 case 'address':
                     $where = ' AND address ?LIKE? ' . $this->db->Escape('%' . $search . '%');
                     break;
+                case 'positions':
+                    $where = ' AND EXISTS (SELECT 1 FROM receiptcontents WHERE description ?LIKE? ' . $this->db->Escape('%' . $search . '%') . ')';
+                    break;
             }
         }
 
