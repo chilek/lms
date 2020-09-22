@@ -89,6 +89,7 @@
 					<OPTION value="customerid"{if $listdata.cat == "customerid"} SELECTED{/if}>{trans("customer ID")}</OPTION>
 					<OPTION value="ten"{if $listdata.cat == "ten"} SELECTED{/if}>{trans("TEN")}</OPTION>
 					<OPTION value="address"{if $listdata.cat == "address"} SELECTED{/if}>{trans("address")}</OPTION>
+					<OPTION value="positions"{if $listdata.cat == "positions"} SELECTED{/if}>{trans("Positions")}</OPTION>
 				</SELECT>&nbsp;
 				<B>{trans("Period:")}</B>&nbsp;
 				{date_period_preset from="#receiptlist [name=\"from\"]" to="#receiptlist [name=\"to\"]"}
