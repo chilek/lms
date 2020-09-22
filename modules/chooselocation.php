@@ -120,7 +120,7 @@ if (isset($_GET['ajax']) && (isset($_POST['what']) || isset($_GET['what']))) {
         if ($list) {
             foreach ($list as $idx => $row) {
                 $name_alternative = sprintf(
-                    '%s (%s)<br>%s, %s%s, %s',
+                    '%s (%s)<br><span class="terc">%s, %s%s, %s</span>',
                     preg_replace('/(' . $what . ')/i', '<strong>$1</strong>', $row['name']),
                     empty($row['citytype']) ? '-' : $row['citytype'],
                     trans('<!state_abbr>') . ' ' . mb_strtoupper($row['state']),
