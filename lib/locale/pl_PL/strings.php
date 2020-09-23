@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$_LANG['with discount'] = 'z rabatem';
+
 $_LANG['Tax Category:'] = 'GTU:';
 
 $_LANG['<!invoice>With receipt:'] = 'W tym faktury wyst. na podst. parag. fisk.:';
