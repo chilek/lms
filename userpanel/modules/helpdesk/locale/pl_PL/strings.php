@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -29,7 +29,7 @@ $_LANG['Customer:'] = 'Klient:';
 $_LANG['Allows you to contact with network administrator'] = 'Pozwala Ci skontaktować się z administratorem';
 $_LANG['Body:'] = 'Treść:';
 $_LANG['Cancel'] = 'Anuluj';
-$_LANG['Click icon on the left to see request details'] = 'Kliknij ikonę po lewej stronie aby zobaczyć szczegóły zgłoszenia';
+$_LANG['Click icon on the left to see request details'] = 'Kliknij ikonę po lewej stronie, aby zobaczyć szczegóły zgłoszenia';
 $_LANG['Date:'] = 'Data:';
 $_LANG['dead'] = 'martwy';
 $_LANG['Queues:'] = 'Kolejki:';
@@ -40,10 +40,10 @@ $_LANG['Enter request subject'] = 'Wprowadź temat zgłoszenia';
 $_LANG['No subject'] = 'Brak tematu';
 $_LANG['From:'] = 'Od:';
 $_LANG['Helpdesk'] = 'Helpdesk';
-$_LANG['Helpdesk queues for tickets requested in Userpanel'] = 'Kolejki Helpdesku dla zgłoszeń z Userpanela';
+$_LANG['Helpdesk queues for tickets requested in Userpanel'] = 'Kolejki Helpdesku dla zgłoszeń z Panelu klienta';
 $_LANG['Last modified:'] = 'Ostatnio zmodyfikowany:';
-$_LANG['LMS address needed to build link to new ticket in notification message'] = 'Adres LMSa potrzebny do utworzenia w powiadomieniu linku do nowego zgłoszenia';
-$_LANG['LMS url:'] = 'URL LMSa:';
+$_LANG['LMS address needed to build link to new ticket in notification message'] = 'Adres LMS-a potrzebny do utworzenia w powiadomieniu linku do nowego zgłoszenia';
+$_LANG['LMS url:'] = 'URL LMS-a:';
 $_LANG['Module Configuration:'] = 'Konfiguracja modułu:';
 $_LANG['new'] = 'nowy';
 $_LANG['New Request'] = 'Nowe zgłoszenie';
@@ -51,12 +51,12 @@ $_LANG['No such requests in database.'] = 'Nie ma żadnych zgłoszeń w bazie da
 $_LANG['Number:'] = 'Numer:';
 $_LANG['open'] = 'otwarty';
 $_LANG['Request history'] = 'Historia zgłoszeń';
-$_LANG['Request No. $a / Queue: $b'] = 'Zgłoszenie Nr $a / Kolejka: $b';
-$_LANG['Request No. $a'] = 'Zgłoszenie Nr $a';
+$_LANG['Request No. $a / Queue: $b'] = 'Zgłoszenie nr $a / Kolejka: $b';
+$_LANG['Request No. $a'] = 'Zgłoszenie nr $a';
 $_LANG['resolved'] = 'rozwiązany';
 $_LANG['- select queues -'] = '- wybierz kolejki -';
 $_LANG['- select user -'] = '- wybierz użytkownika -';
-$_LANG['Sender of new request notifications and his email. If not specified notifications goes from queue address.'] = 'Nadawca powiadomień o nowych zgłoszeniach (i jego email). Jeśli nie podano zostanie użyty adres kolejki.';
+$_LANG['Sender of new request notifications and his email. If not specified notifications goes from queue address.'] = 'Nadawca powiadomień o nowych zgłoszeniach (i jego e-mail). Jeśli nie podano zostanie użyty adres kolejki.';
 $_LANG['Status:'] = 'Status:';
 $_LANG['Subject:'] = 'Temat:';
 $_LANG['<!helpdesk>Submit'] = 'Wyślij';
@@ -72,7 +72,7 @@ $_LANG['Allow message add to closed tickets:'] = 'Pozwól na dodawanie wiadomoś
 $_LANG['Limit ticket movements to selected queues:'] = 'Ogranicz przesunięcia zgłoszenia do wybranych kolejek:';
 
 $_LANG['Visible ticket sources:'] = 'Źródła widocznych zgłoszeń:';
-$_LANG['Helpdesk visible ticket sources in Userpanel'] = 'Widoczne źródła zgłoszeń Helpdesku w Userpanelu';
+$_LANG['Helpdesk visible ticket sources in Userpanel'] = 'Widoczne źródła zgłoszeń Helpdesku w Panelu klienta';
 
 $_LANG['Allow to reopen tickets newer than:'] = 'Pozwól na ponowne otwieranie zgłoszeń nowszych niż:';
 
