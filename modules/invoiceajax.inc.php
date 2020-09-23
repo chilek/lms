@@ -1,11 +1,16 @@
 <?php
 
-if (isset($_GET['splitpaymentcheck'])) {
-    $splitpayment = $LMS->isSplitPaymentSuggested(
-        $_GET['customerid'],
-        $_GET['cdate'],
-        $_GET['value']
+if (isset($_GET['updatedocumentflags'])) {
+    $documentflags = array(
+        'splitpayment' => $LMS->isSplitPaymentSuggested(
+            $_GET['customerid'],
+            $_GET['cdate'],
+            $_GET['value']
+        ),
+        'telecomservice' => $LMS->isTelecomServiceSuggested(
+            $_GET['customerid']
+        ),
     );
     header('Content-Type: application/json');
-    die(json_encode(compact('splitpayment')));
+    die(json_encode($documentflags));
 }

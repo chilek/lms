@@ -741,10 +741,13 @@ if (!empty($contents)) {
     }
 }
 
-$SMARTY->assign('is_split_payment_suggested', $LMS->isSplitPaymentSuggested(
-    isset($customer) ? $customer['id'] : null,
-    date('Y/m/d', $invoice['cdate']),
-    $total_value
+$SMARTY->assign('suggested_flags', array(
+    'splitpayment' => $LMS->isSplitPaymentSuggested(
+        isset($customer) ? $customer['id'] : null,
+        date('Y/m/d', $invoice['cdate']),
+        $total_value
+    ),
+    'telecomservice' => true,
 ));
 
 $SMARTY->display('invoice/invoicenew.html');

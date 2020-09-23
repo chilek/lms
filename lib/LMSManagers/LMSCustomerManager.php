@@ -2083,7 +2083,22 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'SELECT c.id FROM customers c
             WHERE c.id = ? AND c.type = ?',
             array($customerid, CTYPES_COMPANY)
-        ) && $value >= $split_payment_threshold_value;
+        ) > 0 && $value >= $split_payment_threshold_value;
+    }
+
+    public function isTelecomServiceSuggested($customerid)
+    {
+        if (empty($customerid)) {
+            return false;
+        }
+
+        $customerid = intval($customerid);
+
+        return $this->db->GetOne(
+            'SELECT c.id FROM customers c
+            WHERE c.id = ? AND c.type = ?',
+            array($customerid, CTYPES_PRIVATE)
+        ) > 0;
     }
 
     public function getCustomerSMSOptions()

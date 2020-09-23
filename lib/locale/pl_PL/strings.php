@@ -24,6 +24,12 @@
  *  $Id$
  */
 
+$_LANG['<!invoice>telecommunication service'] = 'usługa telekomunikacyjna';
+$_LANG['translates into JPK MPP flag'] = 'przekłada się na flagę JPK MPP';
+$_LANG['translates into JPK EE flag'] = 'przekłada się na flagę JPK EE';
+$_LANG['translates into JPK FP flag'] = 'przekłada się na flagę JPK FP';
+$_LANG['Document flags:'] = 'Flagi dokumentu:';
+
 $_LANG['with discount'] = 'z rabatem';
 
 $_LANG['Tax Category:'] = 'GTU:';

@@ -1959,7 +1959,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'paytime' => $invoice['invoice']['paytime'],
             'paytype' => $invoice['invoice']['paytype'],
             'splitpayment' => empty($invoice['invoice']['splitpayment']) ? 0 : 1,
-            'flags' => empty($invoice['invoice']['flags'][DOC_FLAG_RECEIPT]) ? 0 : DOC_FLAG_RECEIPT,
+            'flags' => (empty($invoice['invoice']['flags'][DOC_FLAG_RECEIPT]) ? 0 : DOC_FLAG_RECEIPT)
+                + (empty($invoice['invoice']['flags'][DOC_FLAG_TELECOM_SERVICE]) ? 0 : DOC_FLAG_TELECOM_SERVICE),
             SYSLOG::RES_USER => Auth::GetCurrentUser(),
             SYSLOG::RES_CUST => $invoice['customer']['id'],
             'customername' => $invoice['customer']['customername'],

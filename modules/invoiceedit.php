@@ -570,7 +570,8 @@ switch ($action) {
             'paytime' => $paytime,
             'paytype' => $invoice['paytype'],
             'splitpayment' => empty($invoice['splitpayment']) ? 0 : 1,
-            'flags' => empty($invoice['flags'][DOC_FLAG_RECEIPT]) ? 0 : DOC_FLAG_RECEIPT,
+            'flags' => (empty($invoice['flags'][DOC_FLAG_RECEIPT]) ? 0 : DOC_FLAG_RECEIPT)
+                + (empty($invoice['flags'][DOC_FLAG_TELECOM_SERVICE]) ? 0 : DOC_FLAG_TELECOM_SERVICE),
             SYSLOG::RES_CUST => $invoice['customerid'],
             'name' => $use_current_customer_data ? $customer['customername'] : $invoice['name'],
             'address' => $use_current_customer_data ? (($customer['postoffice'] && $customer['postoffice'] != $customer['city'] && $customer['street']
@@ -807,10 +808,13 @@ if (!empty($contents)) {
     }
 }
 
-$SMARTY->assign('is_split_payment_suggested', $LMS->isSplitPaymentSuggested(
-    isset($customer) ? $customer['id'] : null,
-    date('Y/m/d', $invoice['cdate']),
-    $total_value
+$SMARTY->assign('suggested_flags', array(
+    'splitpayment' => $LMS->isSplitPaymentSuggested(
+        isset($customer) ? $customer['id'] : null,
+        date('Y/m/d', $invoice['cdate']),
+        $total_value
+    ),
+    'telecomservice' => true,
 ));
 
 $SMARTY->display('invoice/invoiceedit.html');
