@@ -507,6 +507,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             if (!empty($user['diff_division_del'])) {
                 foreach ($user['diff_division_del'] as $divisiondelid) {
                     $this->db->Execute('DELETE FROM userdivisions WHERE userid = ? AND divisionid = ?', array($user['id'], $divisiondelid));
+                    $this->db->Execute('DELETE FROM uiconfig WHERE userid = ? AND divisionid = ?', array($user['id'], $divisiondelid));
                 }
             }
 
