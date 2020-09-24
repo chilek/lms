@@ -154,6 +154,7 @@ version 26-git (????-??-??):
   - improvement: added 'with discount' customer state filter [chilan]
   - enhancement: add support for multilevel cloning of the configuration variables [ravvar]
   - improvement: added 'with receipt' filter on invoice list [chilan]
+  - improvement: added service type property in tariffless liabilities [chilan]
 
 version 25.0 (2020-05-15):
 
