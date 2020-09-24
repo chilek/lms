@@ -153,6 +153,7 @@ version 26-git (????-??-??):
   - enhancement: implemented JPK new 'EE' flag support for invoices [chilan]
   - improvement: added 'with discount' customer state filter [chilan]
   - enhancement: add support for multilevel cloning of the configuration variables [ravvar]
+  - improvement: added 'with receipt' filter on invoice list [chilan]
 
 version 25.0 (2020-05-15):
 
