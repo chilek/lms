@@ -453,7 +453,7 @@ if (!empty($assigns)) {
 $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_address_id,
 		a.period, a.backwardperiod, a.at, a.suspended, a.settlement, a.datefrom, a.dateto, a.pdiscount, a.vdiscount,
 		a.invoice, a.separatedocument, c.type AS customertype,
-		(CASE WHEN t.type IS NULL THEN l.type ELSE t.type END) AS tarifftype,
+		(CASE WHEN a.liabilityid IS NULL THEN t.type ELSE l.type END) AS tarifftype,
 		(CASE WHEN c.type = ? THEN 0 ELSE (CASE WHEN a.liabilityid IS NULL THEN t.splitpayment ELSE l.splitpayment END) END) AS splitpayment,
 		(CASE WHEN a.liabilityid IS NULL THEN t.taxcategory ELSE l.taxcategory END) AS taxcategory,
 		t.description AS description, a.id AS assignmentid,
@@ -505,13 +505,13 @@ $billing_invoice_description = ConfigHelper::getConfig('payments.billing_invoice
 $query = "SELECT
 			a.id, a.tariffid, a.customerid, a.period, a.backwardperiod, a.at, a.suspended, a.settlement, a.datefrom,
 			0 AS pdiscount, 0 AS vdiscount, a.invoice, a.separatedocument, c.type AS customertype,
-			(CASE WHEN t.type IS NULL THEN l.type ELSE t.type END) AS tarifftype,
+			(CASE WHEN a.liabilityid IS NULL THEN t.type ELSE l.type END) AS tarifftype,
 			(CASE WHEN c.type = ? THEN 0 ELSE t.splitpayment END) AS splitpayment,
 			t.taxcategory AS taxcategory,
 			t.description AS description, a.id AS assignmentid,
 			c.divisionid, c.paytype, a.paytype AS a_paytype, a.numberplanid, a.attribute,
 			d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
-			t.type AS tarifftype, t.taxid AS taxid, '' as prodid, voipcost.value, t.currency, voipphones.phones,
+			t.taxid AS taxid, '' as prodid, voipcost.value, t.currency, voipphones.phones,
 			'set' AS liabilityid, '$billing_invoice_description' AS name,
 			? AS count,
 			(SELECT COUNT(id)
@@ -556,7 +556,7 @@ $query = "SELECT
 				GROUP BY vna2.assignment_id
 			) voipphones ON voipphones.assignment_id = a.id
 			LEFT JOIN tariffs t ON (a.tariffid = t.id)
-			LEFT JOIN liabilities l ON (a.liabilityid = a.id)
+			LEFT JOIN liabilities l ON (a.liabilityid = l.id)
 			LEFT JOIN divisions d ON (d.id = c.divisionid)
 	    WHERE " . ($customerid ? 'c.id = ' . $customerid . ' AND ' : '') . "
 	      (c.status  = ? OR c.status = ?) AND
