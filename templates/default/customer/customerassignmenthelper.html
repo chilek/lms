@@ -481,6 +481,21 @@
 								</TD>
 							</TR>
 
+							<TR id="a_type" style="display: none;">
+								<TD>
+									<IMG SRC="img/money.gif" alt="">
+								</TD>
+								<TD>
+									{trans("Type:")}
+								</TD>
+								<TD>
+									<SELECT id="tariff-type" size="1" name="{$variable_prefix}[type]" {tip text="Select liability type" trigger="type"}>
+										{foreach $_SERVICETYPES as $key => $item}
+											<OPTION VALUE="{$key}"{if $variables.type == $key} selected{/if}>{$item}</OPTION>
+										{/foreach}
+									</SELECT>
+								</TD>
+
 							<TR id="a_tax" style="display: none;">
 								<TD>
 									<IMG src="img/tax.gif" alt="">

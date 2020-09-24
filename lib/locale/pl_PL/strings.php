@@ -2383,6 +2383,7 @@ $_LANG['hosting'] = 'hosting';
 $_LANG['service'] = 'usługa';
 $_LANG['transmission'] = 'transmisja';
 $_LANG['Select tariff type'] = 'Wybierz typ taryfy';
+$_LANG['Select liability type'] = 'Wybierz typ zobowiązania';
 $_LANG['Date from the future not allowed!'] = 'Data z przyszłości nie jest dozwolona!';
 $_LANG['no guarantee'] = 'brak';
 $_LANG['Select date of cutoff suspending (optional)'] = 'Wybierz datę zawieszenia blokowania (opcjonalnie)';
