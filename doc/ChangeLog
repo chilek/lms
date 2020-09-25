@@ -160,6 +160,8 @@ version 26-git (????-??-??):
   - improvement: 'phpui.default_tariff_type' ('-1' by default) controls type property
     for newly created tariffs [chilan]
   - improvement: added split payment and telecommunication service filter on invoice list [chilan]
+  - improvement: 'invoices.allow_negative_values' ('false' by default) allows to enable negative
+    value invoice position use [chilan]
 
 version 25.0 (2020-05-15):
 
