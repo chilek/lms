@@ -3305,6 +3305,10 @@ $_LANG['Closed time'] = 'Czas zamknięcia';
 $_LANG['current:'] = 'aktualnie:';
 
 $_LANG['- new section -'] = '- nowa sekcja -';
+$_LANG['Cloning'] = 'Klonowanie';
+$_LANG['Target variables type:'] = 'Docelowy typ zmiennych:';
+$_LANG['Import from file'] = 'Importuj z pliku';
+$_LANG['Export selected'] = 'Eksportuj zaznaczone';
 $_LANG['Target section:'] = 'Sekcja docelowa:';
 $_LANG['Target user:'] = 'Użytkownik docelowy:';
 $_LANG['Target division:'] = 'Firma docelowa:';
@@ -4045,6 +4049,8 @@ $_LANG['- any -'] = '- dowolne -';
 $_LANG['Import from files:'] = 'Import z plików:';
 $_LANG['Non plain text file detected!'] = 'Wykryto plik nietekstowy!';
 $_LANG['No files selected!'] = 'Nie wybrano żadnego pliku!';
+$_LANG['To many files selected!'] = 'Wybrano za dużo plików!';
+$_LANG['Target variables type has not been selected!'] = 'Docelowy typ zmiennych nie został wybrany!';
 $_LANG['File $a:'] = 'Plik $a:';
 
 $_LANG['Document has been published already! Are you sure you want to edit it despite this?'] = 'Dokument został już upubliczniony! Jesteś pewien, że mimo tego chcesz go edytować?';

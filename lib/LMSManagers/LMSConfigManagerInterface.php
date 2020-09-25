@@ -44,6 +44,8 @@ interface LMSConfigManagerInterface
 
     public function cloneConfigs($params);
 
+    public function importConfigs($params);
+
     public function getRelatedDivisions($id);
 
     public function getRelatedUsers($id, $divisionid = null);

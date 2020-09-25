@@ -29,7 +29,12 @@
 	.clone-container-section-input,
 	.clone-container-section-select,
 	.clone-container-user,
-	.clone-container-division {
+	.clone-container-division,
+	.import-container,
+	.import-container-file,
+	.import-container-type,
+	.import-container-user,
+	.import-container-division {
 		display: flex;
 		flex-wrap: wrap;
 		flex-direction: row;
@@ -37,7 +42,20 @@
 		align-items: center;
 	}
 
-	.clone-container-center {
+	.clone-container, .import-container {
+		margin-top: -0.5em;
+	}
+
+	.row-container-buttons {
+		display: flex;
+		flex-wrap: wrap;
+		flex-direction: row;
+		justify-content: flex-end;
+		align-items: center;
+	}
+
+	.clone-container-center,
+	.import-container-center {
 		display: flex;
 		align-content: flex-start;
 		align-items: center;
@@ -50,12 +68,20 @@
 	.clone-container-center > label {
 		white-space: normal;
 	}
+	.import-container-center > label {
+		white-space: normal;
+	}
 
-	.clone-container-select {
+	.clone-container-select,
+	.import-container-select {
 		padding-top: 0.5em;
 		padding-right: 0.5em;
 		text-align: left;
 		font-weight: normal;
+	}
+
+	#export {
+		padding-right: 0.25em;
 	}
 
 </style>
@@ -63,6 +89,7 @@
 <H1>{$layout.pagetitle}</H1>
 
 <form name="configform" id="configform" method="POST" action="?m=config"></form>
+<form name="parser" id="parser" enctype="multipart/form-data" method="post" action="?m=configimport">
 
 <TABLE id="configlist-datatable" class="lmsbox lms-ui-multi-check lms-ui-datatable lms-ui-datatable-column-search"
 		data-state-duration='-1'
@@ -132,10 +159,10 @@
 			{trans($config.reftypedescription)}
 		</TD>
 		<TD>
-			{if $config.userid}{$config.login} / {$config.firstname} {$config.lastname}{else}{t}<!filter>- none -{/t}{/if}
+			{if $config.userid}{$config.login} - {$config.firstname} {$config.lastname}{else}{trans('<!filter>- none -')}{/if}
 		</TD>
 		<TD>
-			{if $config.divisionid}{$config.shortname}{else}{t}<!filter>- none -{/t}{/if}
+			{if $config.divisionid}{$config.shortname}{else}{trans('<!filter>- none -')}{/if}
 		</TD>
 		<TD class="lms-ui-buttons text-right nobr">
 			{if $config.disabled}
@@ -157,7 +184,74 @@
 	<TR>
 		<TD colspan="8" class="text-right bold">
 			<div class="row-container">
+				<fieldset id="import">
+					<legend>Import</legend>
+					<div class="import-container">
+						<div class="import-container-file">
+							<div class="import-container-center">
+								{fileupload id="files" fileupload=$fileupload form="parser"}
+							</div>
+						</div>
+
+						<div class="import-container-type">
+							<div class="import-container-center">
+								{trans('Target variables type:')}
+							</div>
+							<div class="import-container-select">
+								<SELECT size="1" id="import-type" {tip text="Select variables type" trigger="type"}>
+									<OPTION value="" selected>{trans('Select')}</OPTION>
+									<OPTION value="global">{trans('global value')}</OPTION>
+									<OPTION value="division">{trans('division value')}</OPTION>
+									<OPTION value="divisionuser">{trans('user in division value')}</OPTION>
+									<OPTION value="user">{trans('user value')}</OPTION>
+								</SELECT>
+							</div>
+						</div>
+
+						<div class="import-container-user" style="display: none;">
+							<div class="import-container-center">
+								{trans('Target user:')}
+							</div>
+							<div class="import-container-select">
+								<SELECT size="1" id="import-user" {tip text="Select user" trigger="user"}>
+									{foreach $users as $user}
+										<OPTION value="{$user.id}">{$user.login} / {$user.rname}</OPTION>
+									{/foreach}
+								</SELECT>
+							</div>
+						</div>
+
+						<div class="import-container-division" style="display: none;">
+							<div class="import-container-center">
+								{trans('Target division:')}
+							</div>
+							<div class="import-container-select">
+								<SELECT size="1" id="import-division" {tip text="Select division" trigger="division"}>
+									{foreach $divisions as $division}
+										<OPTION value="{$division.id}">{$division.shortname}</OPTION>
+									{/foreach}
+								</SELECT>
+							</div>
+						</div>
+
+						<div class="import-container-center import-withparentbindings" style="display: none;">
+							<label for="import-withparentbindings">{trans('Create the missing parent bindings:')}</label>
+							<input type="checkbox" id="import-withparentbindings">
+						</div>
+
+						<div class="import-container-center import-override">
+							<label for="import-override">{trans('Override existing:')}</label>
+							<input type="checkbox" id="import-override">
+						</div>
+
+						<div>
+							{button icon="importsource" label="Import from file" id="import-configs"}
+						</div>
+					</div>
+				</fieldset>
+
 				<fieldset id="clone" style="display: none;">
+					<legend>{trans('Cloning')}</legend>
 					<div class="clone-container">
 						<div class="clone-container-section-input" style="display: none;">
 							<div class="clone-container-center">
@@ -174,7 +268,7 @@
 							</div>
 							<div class="clone-container-select">
 								<SELECT size="1" id="section-name-select" {tip class="lms-ui-combobox" text="Select section" trigger="section"}>
-									<OPTION value="samesection" selected>{t}to_the_source_sections{/t}</OPTION>
+									<OPTION value="samesection" selected>{trans('to_the_source_sections')}</OPTION>
 									{foreach $sections as $section}
 										<OPTION value="{$section}">{$section}</OPTION>
 									{/foreach}
@@ -228,7 +322,10 @@
 						</div>
 					</div>
 				</fieldset>
-				<div class="clone-container">
+				<div class="row-container-buttons">
+					<div id="export" style="display: none;">
+						{button icon="importsource" label="Export selected" id="export-configs"}
+					</div>
 					<div>
 						{button icon="delete" label="Delete selected" id="delete-configs"}
 					</div>
@@ -250,8 +347,12 @@
 		withchildbindings.prop('checked', true);
 		var withparentbindings = $('#withparentbindings');
 		withparentbindings.prop('checked', true);
+		var import_withparentbindings = $('#import-withparentbindings');
+		import_withparentbindings.prop('checked', true);
 		var override = $('#override');
 		override.prop('checked', true);
+		var import_override = $('#import-override');
+		import_override.prop('checked', true);
 
 		$('.configadd').click(function() {
 			var select = $('thead tr select', $(this).closest('table'));
@@ -282,54 +383,105 @@
 			});
 		});
 
-		function toggleClone() {
-			$('#clone, .clone-container-section-input, .clone-container-section-select, .clone-container-user, .withchildbindings, .withparentbindings, .override').hide();
-			{if !empty($configlist)}
+		$('#export-configs').click(function() {
+			if (!$(this).closest('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+				alertDialog($t("No option has been selected!"), this);
+				return;
+			} else {
 				var type_filer = $('#type-filter').val();
 				var user_filer = $('#user-filter').val();
 				var division_filer = $('#division-filter').val();
+				var export_args = '';
 
 				if (type_filer === $t("global value")) {
-					$('#clone, .clone-container-section-input, .withchildbindings').show();
-					$('.clone-container-section-select, .clone-container-user, .clone-container-division, .withparentbindings, .override').hide();
-					return;
+					export_args += '&source-type=' + type_filer + '';
 				}
-
 				if (type_filer === $t("division value")
 						&& division_filer != $t("<!filter>- none -") && division_filer.length > 0
 						&& (user_filer === $t("<!filter>- none -") || user_filer.length === 0)) {
-					$('#clone, .clone-container-section-select, .clone-container-division, .withchildbindings, .withparentbindings, .override').show();
-					$('.clone-container-section-input, .clone-container-user').hide();
-					return;
+					export_args += '&source-division=' + division_filer + '';
 				}
 
 				if (type_filer === $t("user in division value")
 						&& division_filer != $t("<!filter>- none -") && division_filer.length > 0
 						&& user_filer !== $t("<!filter>- none -") && user_filer.length > 0) {
-					$('#clone, .clone-container-user, .clone-container-section-select, .clone-container-division, .withparentbindings, .override').show();
-					$('.clone-container-section-input, .withchildbindings').hide();
-					return;
+					export_args += '&source-division=' + division_filer + '';
+					export_args += '&source-user=' + user_filer + '';
 				}
 
 				if (type_filer === $t("user value")
 						&& user_filer !== $t("<!filter>- none -") && user_filer.length > 0
 						&& (division_filer === $t("<!filter>- none -") || division_filer.length === 0)) {
-					$('#clone, .clone-container-section-select, .clone-container-user, .withparentbindings, .override').show();
-					$('.clone-container-section-input, .clone-container-division, .withchildbindings').hide();
-					return;
+					export_args += '&source-user=' + user_filer + '';
 				}
-			{/if}
-		}
+				document.configform.action = '?m=configexport' + export_args + '';
+				document.configform.submit();
+				return;
+			}
+		});
 
-		$('#type-filter').change(function() {
-			toggleClone();
-		})
-		$('#user-filter').change(function() {
-			toggleClone();
-		})
-		$('#division-filter').change(function() {
-			toggleClone();
-		})
+		$('#import-configs').click(function() {
+			var uploaded_files_count = $('.fileupload-files').find('div').length;
+			if (!uploaded_files_count) {
+				alertDialog($t("No files selected!"), this);
+				return;
+			} else if (uploaded_files_count > 1) {
+				alertDialog($t("Too many files selected!"), this);
+				return;
+			}
+
+			if (!$('#import-type').val().length) {
+				alertDialog($t("Target variables type has not been selected!"), this);
+				return;
+			}
+
+			var importType = $('#import-type').val();
+
+			var importUser = $('#import-user');
+			var importUserVisible = importUser.is(':visible');
+
+			var importDivision = $('#import-division');
+			var importDivisionVisible = importDivision.is(':visible');
+
+			var importWithparentbindingsVisible = import_withparentbindings.is(':visible');
+			var importOverrideVisible = import_override.is(':visible');
+
+			var args = '';
+
+			if (importType.length > 0) {
+				args += '&target-type=' + importType + '';
+			}
+
+			if (importUserVisible) {
+				var user_id = importUser.val();
+				if (user_id) {
+					args += '&target-user=' + user_id + '';
+				}
+			}
+
+			if (importDivisionVisible) {
+				var division_id = importDivision.val();
+				if (division_id) {
+					args += '&target-division=' + division_id + '';
+				}
+			}
+
+			if (importWithparentbindingsVisible) {
+				if ($(import_withparentbindings).is(':checked')) {
+					args += '&withparentbindings=1';
+				}
+			}
+
+			if (importOverrideVisible) {
+				if ($(import_override).is(':checked')) {
+					args += '&override=1';
+				}
+			}
+
+			document.parser.action = '?m=configimport' + args + '';
+			document.parser.submit();
+			return;
+		});
 
 		$('#clone-configs').click(function() {
 			if (!$(this).closest('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
@@ -368,7 +520,7 @@
 				}
 
 				if (section_name_input_val.length) {
-					args += '&new-section=' + section_name_input_val + '';
+					args += '&target-section=' + section_name_input_val + '';
 				}
 
 			}
@@ -386,21 +538,21 @@
 				}
 
 				if (section_name_select_input_val.length) {
-					args += '&new-section=' + section_name_select_input_val + '';
+					args += '&target-section=' + section_name_select_input_val + '';
 				}
 			}
 
 			if (user_name_visible) {
 				var user_id = user_name.val();
 				if (user_id) {
-					args += '&new-user=' + user_id + '';
+					args += '&target-user=' + user_id + '';
 				}
 			}
 
 			if (division_name_visible) {
 				var division_id = division_name.val();
 				if (division_id) {
-					args += '&new-division=' + division_id + '';
+					args += '&target-division=' + division_id + '';
 				}
 			}
 
@@ -423,13 +575,80 @@
 			}
 
 			confirmDialog($t("Are you sure, you want to clone all selected options?"), this).done(function () {
-				document.configform.action = '?m=configadd' + args +'';
+				document.configform.action = '?m=configadd' + args + '';
 				document.configform.submit();
 				return;
 			});
 		});
 
-		toggleClone();
+		function toggleActions() {
+			$('#export, #clone, .clone-container-section-input, .clone-container-section-select, .clone-container-user, .withchildbindings, .withparentbindings, .override').hide();
+			{if !empty($configlist)}
+				var type_filer = $('#type-filter').val();
+				var user_filer = $('#user-filter').val();
+				var division_filer = $('#division-filter').val();
+
+				if (type_filer === $t("global value")) {
+					$('#export, #clone, .clone-container-section-input, .withchildbindings').show();
+					$('.clone-container-section-select, .clone-container-user, .clone-container-division, .withparentbindings, .override').hide();
+					return;
+				}
+
+				if (type_filer === $t("division value")
+						&& division_filer != $t("<!filter>- none -") && division_filer.length > 0
+						&& (user_filer === $t("<!filter>- none -") || user_filer.length === 0)) {
+					$('#export, #clone, .clone-container-section-select, .clone-container-division, .withchildbindings, .withparentbindings, .override').show();
+					$('.clone-container-section-input, .clone-container-user').hide();
+					return;
+				}
+
+				if (type_filer === $t("user in division value")
+						&& division_filer != $t("<!filter>- none -") && division_filer.length > 0
+						&& user_filer !== $t("<!filter>- none -") && user_filer.length > 0) {
+					$('#export, #clone, .clone-container-user, .clone-container-section-select, .clone-container-division, .withparentbindings, .override').show();
+					$('.clone-container-section-input, .withchildbindings').hide();
+					return;
+				}
+
+				if (type_filer === $t("user value")
+						&& user_filer !== $t("<!filter>- none -") && user_filer.length > 0
+						&& (division_filer === $t("<!filter>- none -") || division_filer.length === 0)) {
+					$('#export, #clone, .clone-container-section-select, .clone-container-user, .withparentbindings, .override').show();
+					$('.clone-container-section-input, .clone-container-division, .withchildbindings').hide();
+					return;
+				}
+			{/if}
+		}
+
+		$('#type-filter').change(function() {
+			toggleActions();
+		})
+		$('#user-filter').change(function() {
+			toggleActions();
+		})
+		$('#division-filter').change(function() {
+			toggleActions();
+		})
+
+		$('#import-type').on('change', function () {
+			var import_type = $(this).val();
+			if (import_type.length === 0 || import_type === 'global') {
+				$('.import-withparentbindings, .import-container-division, .import-container-user').hide();
+			}
+			if (import_type === 'division') {
+				$('.import-container-user').hide();
+				$('.import-withparentbindings, .import-container-division').show();
+			}
+			if (import_type === 'divisionuser') {
+				$('.import-withparentbindings, .import-container-division, .import-container-user').show();
+			}
+			if (import_type === 'user') {
+				$('.import-container-division').hide();
+				$('.import-withparentbindings, .import-container-user').show();
+			}
+		});
+
+		toggleActions();
 	});
 
 </script>
