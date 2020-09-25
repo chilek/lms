@@ -157,6 +157,8 @@ version 26-git (????-??-??):
   - improvement: added service type property in tariffless liabilities [chilan]
   - improvement: 'phpui.default_liability_type' ('-1' by default) controls liability type
     property for newly created tariffless assignments [chilan]
+  - improvement: 'phpui.default_tariff_type' ('-1' by default) controls type property
+    for newly created tariffs [chilan]
 
 version 25.0 (2020-05-15):
 
