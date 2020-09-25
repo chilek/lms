@@ -33,7 +33,7 @@ $payment_title = str_replace($Before, $After, ConfigHelper::getConfig('finances.
 
 $transferform = new LMSTcpdfTransferForm('Transfer form', $pagesize = 'A4', $orientation = 'portrait');
 $tranferform_common_data = $transferform->GetCommonData(array('customerid' => $cid));
-$payment_value = trim($tranferform_common_data['customerinfo']['balance'] * -1);
+$payment_value = str_replace(',', '.', trim($tranferform_common_data['customerinfo']['balance'] * -1));
 
 $tranferform_custom_data = array(
     'title' => $payment_title,
