@@ -140,6 +140,14 @@ if ($id && !isset($_POST['ticket'])) {
                 $SESSION->redirect('?m=rtqueueview'
                     . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
                 break;
+            case 'resetpriority':
+                $ticket = $LMS->GetTicketContents($id);
+                if ($ticket['priority'] != RT_PRIORITY_NORMAL) {
+                    $LMS->TicketChange($id, array('priority' => RT_PRIORITY_NORMAL));
+                }
+                $SESSION->redirect('?m=rtqueueview'
+                    . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
+                break;
             case 'resolve':
                 $ticket = $LMS->GetTicketContents($id);
 
