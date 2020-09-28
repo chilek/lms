@@ -4049,7 +4049,6 @@ $_LANG['- any -'] = '- dowolne -';
 $_LANG['Import from files:'] = 'Import z plików:';
 $_LANG['Non plain text file detected!'] = 'Wykryto plik nietekstowy!';
 $_LANG['No files selected!'] = 'Nie wybrano żadnego pliku!';
-$_LANG['To many files selected!'] = 'Wybrano za dużo plików!';
 $_LANG['Target variables type has not been selected!'] = 'Docelowy typ zmiennych nie został wybrany!';
 $_LANG['File $a:'] = 'Plik $a:';
 

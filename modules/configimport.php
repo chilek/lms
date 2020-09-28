@@ -39,12 +39,15 @@ if (isset($_POST['fileupload'])) {
 
     if (empty($files)) {
         $error['files'] = trans('No files selected!');
-    } elseif (count($files) > 1) {
-        $error['files'] = trans('Too many files selected!');
     } else {
-        $file = $files[0];
-        if (strpos(mime_content_type($tmppath . DIRECTORY_SEPARATOR . $file['name']), 'text') !== 0) {
-            $error['files'] = trans('Non plain text file detected!');
+        foreach ($files as $file) {
+            if (strpos(mime_content_type($tmppath . DIRECTORY_SEPARATOR . $file['name']), 'text') !== 0) {
+                $error['files'] = trans('Non plain text file detected!');
+            }
+
+            if (!(array) parse_ini_file($tmppath . DIRECTORY_SEPARATOR . $file['name'], true)) {
+                $error['files'] = trans('Bad file structure!');
+            }
         }
         if (isset($error['files'])) {
             include(MODULES_DIR . DIRECTORY_SEPARATOR . 'configlist.php');
@@ -52,21 +55,23 @@ if (isset($_POST['fileupload'])) {
         }
     }
 
-    $filename = $file['name'];
-    $filecontent = file_get_contents($tmppath . DIRECTORY_SEPARATOR . $filename);
-
-    $filePath = $tmppath . DIRECTORY_SEPARATOR . $filename;
     $DB->BeginTrans();
-    $LMS->importConfigs(
-        array(
-            'file' => $filePath,
-            'targetType' => $_GET['target-type'],
-            'withparentbindings' => (isset($_GET['withparentbindings']) ? intval($_GET['withparentbindings']) : null),
-            'targetUser' => (isset($_GET['target-user']) ? intval($_GET['target-user']) : null),
-            'targetDivision' => (isset($_GET['target-division']) ? intval($_GET['target-division']) : null),
-            'override' => (isset($_GET['override']) ? intval($_GET['override']) : null)
-        )
-    );
+    foreach ($files as $file) {
+        $filename = $file['name'];
+        $filecontent = file_get_contents($tmppath . DIRECTORY_SEPARATOR . $filename);
+
+        $filePath = $tmppath . DIRECTORY_SEPARATOR . $filename;
+        $LMS->importConfigs(
+            array(
+                'file' => $filePath,
+                'targetType' => $_GET['target-type'],
+                'withparentbindings' => (isset($_GET['withparentbindings']) ? intval($_GET['withparentbindings']) : null),
+                'targetUser' => (isset($_GET['target-user']) ? intval($_GET['target-user']) : null),
+                'targetDivision' => (isset($_GET['target-division']) ? intval($_GET['target-division']) : null),
+                'override' => (isset($_GET['override']) ? intval($_GET['override']) : null)
+            )
+        );
+    }
     $DB->CommitTrans();
 
     // deletes uploaded files

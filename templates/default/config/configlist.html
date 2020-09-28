@@ -425,9 +425,6 @@
 			if (!uploaded_files_count) {
 				alertDialog($t("No files selected!"), this);
 				return;
-			} else if (uploaded_files_count > 1) {
-				alertDialog($t("Too many files selected!"), this);
-				return;
 			}
 
 			if (!$('#import-type').val().length) {

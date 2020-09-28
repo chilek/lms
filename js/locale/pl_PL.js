@@ -2382,6 +2382,7 @@ $_LANG['hosting'] = 'hosting';
 $_LANG['service'] = 'usługa';
 $_LANG['transmission'] = 'transmisja';
 $_LANG['Select tariff type'] = 'Wybierz typ taryfy';
+$_LANG['Select liability type'] = 'Wybierz typ zobowiązania';
 $_LANG['Date from the future not allowed!'] = 'Data z przyszłości nie jest dozwolona!';
 $_LANG['no guarantee'] = 'brak';
 $_LANG['Select date of cutoff suspending (optional)'] = 'Wybierz datę zawieszenia blokowania (opcjonalnie)';
@@ -4047,7 +4048,6 @@ $_LANG['- any -'] = '- dowolne -';
 $_LANG['Import from files:'] = 'Import z plików:';
 $_LANG['Non plain text file detected!'] = 'Wykryto plik nietekstowy!';
 $_LANG['No files selected!'] = 'Nie wybrano żadnego pliku!';
-$_LANG['To many files selected!'] = 'Wybrano za dużo plików!';
 $_LANG['Target variables type has not been selected!'] = 'Docelowy typ zmiennych nie został wybrany!';
 $_LANG['File $a:'] = 'Plik $a:';
 
@@ -4144,6 +4144,9 @@ $_LANG['SMS from $a'] = 'SMS od $a';
 $_LANG['Source:'] = 'Źródło:';
 $_LANG['Select ticket source'] = 'Wybierz źródło zgłoszenia';
 $_LANG['Set ticket priority'] = 'Wybierz priorytet zgłoszenia';
+
+$_LANG['Reset ticket priority'] = 'Usuń priorytet zgłoszenia';
+
 $_LANG['Availability:'] = 'Dostępność:';
 
 $_LANG['Create ticket'] = 'Utwórz zgłoszenie';
