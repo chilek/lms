@@ -738,6 +738,7 @@ version 24.0 (2019-05-16):
     (added special symbol %aligned_partial_period) [ravvar]
   - improvement: added delete and clear contact buttons [chilan]
   - improvement: added jquery based confirmation dialog [chilan]
+  - enhancement: add multilevel configuration export and import [ravvar]
 
 version 1.11.23 (2018-03-21):
 

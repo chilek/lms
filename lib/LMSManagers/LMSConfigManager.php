@@ -317,7 +317,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
 
         if (isset($config_id) && !empty($config_id) && isset($targetSection) && !empty($targetSection)) {
             $variableinfo = $this->GetConfigVariable($config_id);
-            $optionExist = $this->ConfigOptionExists(array('section' => $targetSection, 'variable' => $variableinfo['var']));
+            $optionExist = $this->globalConfigOptionExists(array('section' => $targetSection, 'variable' => $variableinfo['var']));
 
             if (!$optionExist) {
                 // clone to the new section
@@ -916,6 +916,373 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
         }
     }
 
+    private function importAsGlobalConfig($params)
+    {
+        extract($params);
+
+        if (isset($targetSection) && !empty($targetSection)
+            && isset($targetVariable) && !empty($targetVariable)
+            && isset($targetValue) && !empty($targetValue)) {
+            $optionExist = $this->globalConfigOptionExists(array('section' => $targetSection, 'variable' => $targetVariable));
+
+            if (!$optionExist) {
+                // set option type
+                $option = $targetSection . '.' . $targetVariable;
+                $optionType = $this->GetConfigDefaultType($option);
+
+                // create new variable
+                $globalArgs = array(
+                    'section' => $targetSection,
+                    'var' => $targetVariable,
+                    'value' => $targetValue,
+                    'description' => '',
+                    'disabled' => 0,
+                    'type' => $optionType,
+                    'userid' => null,
+                    'divisionid' => null,
+                    'configid' => null
+                );
+                $this->addConfigOption($globalArgs);
+            } else {
+                // override existing
+                if (isset($override) && !empty($override)) {
+                    $globalArgs = array(
+                        'value' => $targetValue,
+                        'id' => $optionExist
+                    );
+                    $this->overrideConfigOption($globalArgs);
+                }
+            }
+        }
+    }
+
+    private function importAsDivisionConfig($params)
+    {
+        extract($params);
+
+        if (isset($targetSection) && !empty($targetSection)
+            && isset($targetVariable) && !empty($targetVariable)
+            && isset($targetValue) && !empty($targetValue)
+            && isset($targetDivision) && !empty($targetDivision)) {
+            $divisionOptionExist = $this->divisionConfigOptionExists(array('section' => $targetSection, 'variable' => $targetVariable, 'divisionid' => $targetDivision));
+
+            if (!$divisionOptionExist) {  // create division config
+                $globalOptionExist = $this->globalConfigOptionExists(array('section' => $targetSection, 'variable' => $targetVariable));
+                if ($globalOptionExist) { // global parent option exists
+                    // get global option data
+                    $globalOption = $this->GetConfigVariable($globalOptionExist);
+                    $divisionTargetArgs = array(
+                        'section' => $globalOption['section'],
+                        'var' => $globalOption['var'],
+                        'value' => $targetValue,
+                        'description' => $globalOption['description'],
+                        'disabled' => $globalOption['disabled'],
+                        'type' => $globalOption['type'],
+                        'userid' => null,
+                        'divisionid' => $targetDivision,
+                        'configid' => $globalOption['id']
+                    );
+                    $this->addConfigOption($divisionTargetArgs);
+                } else { // global parent option does not exist - parent dependency is requiered
+                    if (isset($withparentbindings) && !empty($withparentbindings)) {
+                        // set option type
+                        $option = $targetSection . '.' . $targetVariable;
+                        $optionType = $this->GetConfigDefaultType($option);
+                        $globalArgs = array(
+                            'section' => $targetSection,
+                            'var' => $targetVariable,
+                            'value' => $targetValue,
+                            'description' => '',
+                            'disabled' => 0,
+                            'type' => $optionType,
+                            'userid' => null,
+                            'divisionid' => null,
+                            'configid' => null
+                        );
+                        $addedGlobalConfig = $this->addConfigOption($globalArgs);
+
+                        if (!empty($addedGlobalConfig)) { // bind target division to previously added global option
+                            $divisionTargetArgs = array(
+                                'section' => $targetSection,
+                                'var' => $targetVariable,
+                                'value' => $targetValue,
+                                'description' => '',
+                                'disabled' => 0,
+                                'type' => $optionType,
+                                'userid' => null,
+                                'divisionid' => $targetDivision,
+                                'configid' => $addedGlobalConfig
+                            );
+                            $this->addConfigOption($divisionTargetArgs);
+                        }
+                    }
+                }
+            } else { // override existing division config
+                if (isset($override) && !empty($override)) {
+                    $divisionTargetArgs = array(
+                        'value' => $targetValue,
+                        'id' => $divisionOptionExist
+                    );
+                    $this->overrideConfigOption($divisionTargetArgs);
+                }
+            }
+        }
+    }
+
+    private function importAsDivisionUserConfig($params)
+    {
+        extract($params);
+
+        if (isset($targetSection) && !empty($targetSection)
+            && isset($targetVariable) && !empty($targetVariable)
+            && isset($targetValue) && !empty($targetValue)
+            && isset($targetUser) && !empty($targetUser)
+            && isset($targetDivision) && !empty($targetDivision)) {
+            $lms = LMS::getInstance();
+            $userDivisionAccess = $lms->checkDivisionsAccess(array('divisions' => $targetDivision, 'userid' => $targetUser));
+
+            if ($userDivisionAccess) {
+                $divisionUserOptionExist = $this->divisionUserConfigOptionExists(array(
+                    'section' => $targetSection,
+                    'variable' => $targetVariable,
+                    'divisionid' => $targetDivision,
+                    'userid' => $targetUser
+                ));
+                if (!$divisionUserOptionExist) {  // create divisionuser config
+                    $divisionOptionExist = $this->divisionConfigOptionExists(array(
+                        'section' => $targetSection,
+                        'variable' => $targetVariable,
+                        'divisionid' => $targetDivision
+                    ));
+                    if ($divisionOptionExist) { // division parent option exists
+                        // get division option data
+                        $divisionOption = $this->GetConfigVariable($divisionOptionExist);
+                        // add user option
+                        $divisionUserTargetArgs = array(
+                            'section' => $divisionOption['section'],
+                            'var' => $divisionOption['var'],
+                            'value' => $targetValue,
+                            'description' => $divisionOption['description'],
+                            'disabled' => $divisionOption['disabled'],
+                            'type' => $divisionOption['type'],
+                            'userid' => $targetUser,
+                            'divisionid' => $targetDivision,
+                            'configid' => $divisionOption['id']
+                        );
+                        $this->addConfigOption($divisionUserTargetArgs);
+                    } else { // division parent option does not exist - parent dependency is requiered
+                        if (isset($withparentbindings) && !empty($withparentbindings)) {
+                            $globalOptionExist = $this->globalConfigOptionExists(array(
+                                'section' => $targetSection,
+                                'variable' => $targetVariable
+                            ));
+                            if ($globalOptionExist) { // global parent option exists
+                                // get global option data
+                                $globalOption = $this->GetConfigVariable($globalOptionExist);
+                                $divisionTargetArgs = array(
+                                    'section' => $globalOption['section'],
+                                    'var' => $globalOption['var'],
+                                    'value' => $targetValue,
+                                    'description' => $globalOption['description'],
+                                    'disabled' => $globalOption['disabled'],
+                                    'type' => $globalOption['type'],
+                                    'userid' => null,
+                                    'divisionid' => $targetDivision,
+                                    'configid' => $globalOption['id']
+                                );
+                                $addedDivisionConfig = $this->addConfigOption($divisionTargetArgs);
+
+                                if (!empty($addedDivisionConfig)) {
+                                    $divisionUserTargetArgs = array(
+                                        'section' => $globalOption['section'],
+                                        'var' => $globalOption['var'],
+                                        'value' => $targetValue,
+                                        'description' => $globalOption['description'],
+                                        'disabled' => $globalOption['disabled'],
+                                        'type' => $globalOption['type'],
+                                        'userid' => $targetUser,
+                                        'divisionid' => $targetDivision,
+                                        'configid' => $addedDivisionConfig
+                                    );
+                                    $this->addConfigOption($divisionUserTargetArgs);
+                                }
+                            } else { // global parent option does not exist - parent dependency is requiered
+                                // set option type
+                                $option = $targetSection . '.' . $targetVariable;
+                                $optionType = $this->GetConfigDefaultType($option);
+                                $globalArgs = array(
+                                    'section' => $targetSection,
+                                    'var' => $targetVariable,
+                                    'value' => $targetValue,
+                                    'description' => '',
+                                    'disabled' => 0,
+                                    'type' => $optionType,
+                                    'userid' => null,
+                                    'divisionid' => null,
+                                    'configid' => null
+                                );
+                                $addedGlobalConfig = $this->addConfigOption($globalArgs);
+
+                                if (!empty($addedGlobalConfig)) { // bind target division to previously added global option
+                                    $divisionTargetArgs = array(
+                                        'section' => $targetSection,
+                                        'var' => $targetVariable,
+                                        'value' => $targetValue,
+                                        'description' => '',
+                                        'disabled' => 0,
+                                        'type' => $optionType,
+                                        'userid' => null,
+                                        'divisionid' => $targetDivision,
+                                        'configid' => $addedGlobalConfig
+                                    );
+                                    $addedDivisionConfig = $this->addConfigOption($divisionTargetArgs);
+                                }
+
+                                if (!empty($addedDivisionConfig)) {
+                                    $divisionUserTargetArgs = array(
+                                        'section' => $targetSection,
+                                        'var' => $targetVariable,
+                                        'value' => $targetValue,
+                                        'description' => '',
+                                        'disabled' => 0,
+                                        'type' => $optionType,
+                                        'userid' => $targetUser,
+                                        'divisionid' => $targetDivision,
+                                        'configid' => $addedDivisionConfig
+                                    );
+                                    $this->addConfigOption($divisionUserTargetArgs);
+                                }
+                            }
+                        }
+                    }
+                } else { // override existing division config
+                    if (isset($override) && !empty($override)) {
+                        $divisionUserTargetArgs = array(
+                            'value' => $targetValue,
+                            'id' => $divisionUserOptionExist
+                        );
+                        $this->overrideConfigOption($divisionUserTargetArgs);
+                    }
+                }
+            }
+        }
+    }
+
+    private function importAsUserConfig($params)
+    {
+        extract($params);
+
+        if (isset($targetSection) && !empty($targetSection)
+            && isset($targetVariable) && !empty($targetVariable)
+            && isset($targetValue) && !empty($targetValue)
+            && isset($targetUser) && !empty($targetUser)) {
+            $userOptionExist = $this->userConfigOptionExists(array('section' => $targetSection, 'variable' => $targetVariable, 'userid' => $targetUser));
+
+            if (!$userOptionExist) {  // create user config
+                $globalOptionExist = $this->globalConfigOptionExists(array('section' => $targetSection, 'variable' => $targetVariable));
+                if ($globalOptionExist) { // global parent option exists
+                    // get global option data
+                    $globalOption = $this->GetConfigVariable($globalOptionExist);
+                    $userTargetArgs = array(
+                        'section' => $globalOption['section'],
+                        'var' => $globalOption['var'],
+                        'value' => $targetValue,
+                        'description' => $globalOption['description'],
+                        'disabled' => $globalOption['disabled'],
+                        'type' => $globalOption['type'],
+                        'userid' => $targetUser,
+                        'divisionid' => null,
+                        'configid' => $globalOption['id']
+                    );
+                    $this->addConfigOption($userTargetArgs);
+                } else { // global parent option does not exist - parent dependency is requiered
+                    if (isset($withparentbindings) && !empty($withparentbindings)) {
+                        // set option type
+                        $option = $targetSection . '.' . $targetVariable;
+                        $optionType = $this->GetConfigDefaultType($option);
+                        $globalArgs = array(
+                            'section' => $targetSection,
+                            'var' => $targetVariable,
+                            'value' => $targetValue,
+                            'description' => '',
+                            'disabled' => 0,
+                            'type' => $optionType,
+                            'userid' => null,
+                            'divisionid' => null,
+                            'configid' => null
+                        );
+                        $addedGlobalConfig = $this->addConfigOption($globalArgs);
+
+                        if (!empty($addedGlobalConfig)) { // bind target user to previously added global option
+                            $userTargetArgs = array(
+                                'section' => $targetSection,
+                                'var' => $targetVariable,
+                                'value' => $targetValue,
+                                'description' => '',
+                                'disabled' => 0,
+                                'type' => $optionType,
+                                'userid' => $targetUser,
+                                'divisionid' => null,
+                                'configid' => $addedGlobalConfig
+                            );
+                            $this->addConfigOption($userTargetArgs);
+                        }
+                    }
+                }
+            } else { // override existing division config
+                if (isset($override) && !empty($override)) {
+                    $userTargetArgs = array(
+                        'value' => $targetValue,
+                        'id' => $userOptionExist
+                    );
+                    $this->overrideConfigOption($userTargetArgs);
+                }
+            }
+        }
+    }
+
+    private function importConfig($params)
+    {
+        extract($params);
+        if (isset($targetType)) {
+            switch ($targetType) {
+                case 'global':
+                    $this->importAsGlobalConfig($params);
+                    break;
+                case 'division':
+                    $this->importAsDivisionConfig($params);
+                    break;
+                case 'divisionuser':
+                    $this->importAsDivisionUserConfig($params);
+                    break;
+                case 'user':
+                    $this->importAsUserConfig($params);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    public function importConfigs($params)
+    {
+        extract($params);
+        if (isset($file) && !empty($file) && isset($targetType) && !empty($targetType)) {
+            $configs = (array) parse_ini_file($file, true);
+        }
+
+        if (!empty($configs)) {
+            foreach ($configs as $section => $variables) {
+                foreach ($variables as $variable => $value) {
+                    $params['targetSection'] = $section;
+                    $params['targetVariable'] = $variable;
+                    $params['targetValue'] = $value;
+                    $this->importConfig($params);
+                }
+            }
+        }
+    }
+
     public function getRelatedDivisions($id)
     {
         return $this->db->GetAllByKey(
@@ -1102,6 +1469,25 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                     $this->syslog->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_UPDATE, $refArgs);
                 }
             }
+        }
+    }
+
+    private function overrideConfigOption($option)
+    {
+        $args = array(
+            'value' => $option['value'],
+            'id' => $option['id']
+        );
+
+        $id = $option['id'];
+
+        $option_edited = $this->db->Execute(
+            'UPDATE uiconfig SET value = ? WHERE id = ?',
+            array_values($args)
+        );
+        if ($this->syslog && $option_edited) {
+            $args[SYSLOG::RES_UICONF] = $id;
+            $this->syslog->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_UPDATE, $args);
         }
     }
 

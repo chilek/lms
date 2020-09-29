@@ -2254,6 +2254,12 @@ class LMS
         return $manager->cloneConfigs($params);
     }
 
+    public function importConfigs($params)
+    {
+        $manager = $this->getConfigManager();
+        return $manager->importConfigs($params);
+    }
+
     public function DeleteConfigOption($id)
     {
         $manager = $this->getConfigManager();

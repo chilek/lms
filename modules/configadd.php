@@ -182,8 +182,8 @@ if (!empty($config)) {
     $config = $LMS->GetConfigVariable($_GET['id']);
     unset($config['id']);
     $config['section'] = trans('$a-clone', $config['section']);
-} elseif (isset($_GET['new-section'])) {
-    if (!preg_match('/^[a-z0-9_-]+$/', $_GET['new-section'])) {
+} elseif (isset($_GET['target-section'])) {
+    if (!preg_match('/^[a-z0-9_-]+$/', $_GET['target-section'])) {
         die;
     }
 
@@ -192,11 +192,11 @@ if (!empty($config)) {
     $LMS->cloneConfigs(
         array(
         'variables' => $variables,
-        'targetSection' => $_GET['new-section'],
+        'targetSection' => $_GET['target-section'],
         'withchildbindings' => (isset($_GET['withchildbindings']) ? intval($_GET['withchildbindings']) : null),
         'withparentbindings' => (isset($_GET['withparentbindings']) ? intval($_GET['withparentbindings']) : null),
-        'targetUser' => (isset($_GET['new-user']) ? intval($_GET['new-user']) : null),
-        'targetDivision' => (isset($_GET['new-division']) ? intval($_GET['new-division']) : null),
+        'targetUser' => (isset($_GET['target-user']) ? intval($_GET['target-user']) : null),
+        'targetDivision' => (isset($_GET['target-division']) ? intval($_GET['target-division']) : null),
         'override' => (isset($_GET['override']) ? intval($_GET['override']) : null)
         )
     );
