@@ -983,7 +983,7 @@ if (isset($options['update'])) {
             $simc[$v['sym']] = array(
                 'id'     => $v['id'],
                 'key'    => $v['woj'].':'.$v['pow'].':'.$v['gmi'].':'.$v['rodz_gmi'],
-                'nazwa'  => $v['rodz_mi'],
+                'nazwa'  => $v['nazwa'],
                 'rodz_mi' => $v['rodz_mi'],
                 'sym'    => $v['sym'],
                 'sympod' => $v['sympod'],
