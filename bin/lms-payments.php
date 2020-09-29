@@ -1086,7 +1086,7 @@ foreach ($assigns as $assign) {
 
         $val = str_replace(',', '.', sprintf("%.2f", $val));
 
-        $telecom_service = $force_telecom_service_flag && $assign['customertype'] == CTYPES_PRIVATE && $assign['tarifftype'] != SERVICE_OTHER;
+        $telecom_service = $force_telecom_service_flag && ( $assign['customertype'] == CTYPES_PRIVATE || $assign['customertype'] == CTYPES_COMPANY ) && $assign['tarifftype'] != SERVICE_OTHER;
 
         if ($assign['invoice']) {
             if ($assign['a_paytype']) {
