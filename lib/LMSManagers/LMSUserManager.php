@@ -176,9 +176,10 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
         if (isset($superuser)) {
             $userlist = $this->db->GetAllByKey(
                 'SELECT id, login, name, phone, lastlogindate, lastloginip, passwdexpiration, passwdlastchange, access,
-                accessfrom, accessto, rname, twofactorauth
+                accessfrom, accessto, rname, twofactorauth, email
             FROM vallusers
             WHERE deleted = 0'
+                . (isset($overdueusers) ? 'AND id IN (SELECT userid FROM eventassignments WHERE eventid IN (SELECT id FROM events WHERE closed=0 AND (enddate+86400) > ?NOW? ))' : '')
                 . (isset($divisions) && !empty($divisions) ? ' AND id IN (SELECT userid
                     FROM userdivisions
                     WHERE divisionid IN (' . $divisions . ')
@@ -189,9 +190,10 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
         } else {
             $userlist = $this->db->GetAllByKey(
                 'SELECT id, login, name, phone, lastlogindate, lastloginip, passwdexpiration, passwdlastchange, access,
-                    accessfrom, accessto, rname, twofactorauth
+                    accessfrom, accessto, rname, twofactorauth, email
                 FROM vusers
                 WHERE deleted = 0'
+                . (isset($overdueusers) && !empty($overdueuserse) ? ' AND id IN (SELECT userid FROM eventassignments WHERE eventid IN (SELECT id FROM events WHERE closed=0 AND (enddate+86400) > ?NOW? ))' : '')
                 . (isset($divisions) && !empty($divisions) ? ' AND id IN (SELECT userid
                         FROM userdivisions
                         WHERE divisionid IN (' . $divisions . ')
@@ -246,7 +248,9 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             unset($row);
         }
 
-        $userlist['total'] = empty($userlist) ? 0 : count($userlist);
+        if ($params['short'] != 1) {
+            $userlist['total'] = empty($userlist) ? 0 : count($userlist);
+        }
         return $userlist;
     }
 
