@@ -595,7 +595,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 
         extract($params);
         if (empty($enddate)) {
-            $enddate = $begindate;
+            $enddate = $date;
         }
         $users = Utils::filterIntegers($users);
 
@@ -605,7 +605,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                         WHERE a.userid IN (' . implode(',', $users) . ')
                                 AND (date < ? OR (date = ? AND begintime < ?))
                                 AND (enddate > ? OR (enddate = ? AND endtime > ?))',
-            array($enddate, $enddate, $endtime, $begindate, $begindate, $begintime)
+            array($enddate, $enddate, $endtime, $date, $date, $begintime)
         );
     }
 
