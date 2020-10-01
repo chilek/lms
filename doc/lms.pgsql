@@ -312,6 +312,7 @@ CREATE TABLE customers (
     paytime smallint 	DEFAULT -1 NOT NULL,
     paytype smallint 	DEFAULT NULL,
     documentmemo text   DEFAULT NULL,
+    flags smallint NOT NULL DEFAULT 0,
 	PRIMARY KEY (id)
 );
 CREATE INDEX customers_lastname_idx ON customers (lastname, name);
@@ -2875,10 +2876,10 @@ CREATE VIEW customerview AS
         SELECT 1 FROM customerassignments a
         JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
         WHERE e.userid = lms_current_user() AND a.customerid = c.id)
-        AND c.divisionid IN (
+        AND (lms_current_user() = 0 OR c.divisionid IN (
             SELECT ud.divisionid
             FROM userdivisions ud
-            WHERE ud.userid = lms_current_user())
+            WHERE ud.userid = lms_current_user()))
         AND c.type < 2;
 
 CREATE VIEW contractorview AS
@@ -3875,6 +3876,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020092400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020100100');
 
 COMMIT;
