@@ -130,6 +130,10 @@
 					<INPUT type="checkbox" name="telecomservice"{if $listdata.telecomservice} checked{/if}>
 					{trans("<!invoice>telecommunication service")}
 				</label>
+				<label {tip text="translates into JPK TP flag"}>
+					<INPUT type="checkbox" name="relatedentity"{if $listdata.relatedentity} checked{/if}>
+					{trans("related entity")}
+				</label>
 				&nbsp;
 				<A href="javascript:filter();">&raquo;&raquo;&raquo;</A>
 		</TD>

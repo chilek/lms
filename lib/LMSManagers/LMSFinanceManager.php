@@ -1843,6 +1843,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 . (!empty($splitpayment) ? ' AND d.splitpayment = 1' : '')
                 . (!empty($withreceipt) ? ' AND d.flags & ' . DOC_FLAG_RECEIPT . ' > 0' : '')
                 . (!empty($telecomservice) ? ' AND d.flags & ' . DOC_FLAG_TELECOM_SERVICE . ' > 0' : '')
+                . (!empty($relatedentity) ? ' AND d.flags & ' . DOC_FLAG_RELATED_ENTITY . ' > 0' : '')
                 . (!empty($numberplan) ? ' AND d.numberplanid IN (' . implode(',', $numberplan) . ')' : '')
                 . (!empty($division) ? ' AND d.divisionid = ' . intval($division) : '')
                 . (isset($having) ? $having : '') . ') a');
@@ -1889,6 +1890,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             . (!empty($splitpayment) ? ' AND d.splitpayment = 1' : '')
             . (!empty($withreceipt) ? ' AND d.flags & ' . DOC_FLAG_RECEIPT . ' > 0' : '')
             . (!empty($telecomservice) ? ' AND d.flags & ' . DOC_FLAG_TELECOM_SERVICE . ' > 0' : '')
+            . (!empty($relatedentity) ? ' AND d.flags & ' . DOC_FLAG_RELATED_ENTITY . ' > 0' : '')
             . (!empty($numberplan) ? ' AND d.numberplanid IN (' . implode(',', $numberplan) . ')' : '')
             . (!empty($division) ? ' AND d.divisionid = ' . intval($division) : '')
             .' GROUP BY d.id, d2.id, d.number, d.cdate, d.customerid,
@@ -2278,6 +2280,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $result['flags'] = array(
                 DOC_FLAG_RECEIPT => ($result['flags'] & DOC_FLAG_RECEIPT) ? 1 : 0,
                 DOC_FLAG_TELECOM_SERVICE => ($result['flags'] & DOC_FLAG_TELECOM_SERVICE) ? 1 : 0,
+                DOC_FLAG_RELATED_ENTITY => ($result['flags'] & DOC_FLAG_RELATED_ENTITY) ? 1 : 0,
             );
 
             if ($result['reference'] && $result['type'] != DOC_INVOICE_PRO) {
