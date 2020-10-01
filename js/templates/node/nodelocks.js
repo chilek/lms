@@ -1,7 +1,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -47,7 +47,7 @@ function toggleNodeLock(id) {
 	xajax_toggleNodeLock(id);
 }
 
-$("#nodelockspanel .lms-ui-button-delete").click(function() {
+$("#nodelockspanel .delete-button").click(function() {
 	$(this).parent().find('[id*="lockdays_"]').prop('checked', false).end()
 		.find('select').val(0);
 });

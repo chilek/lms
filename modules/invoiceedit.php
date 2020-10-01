@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -48,15 +48,7 @@ $taxeslist = $LMS->GetTaxes();
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 
 if (isset($_GET['id']) && ($action == 'edit' || $action == 'init')) {
-    if ($LMS->isDocumentPublished($_GET['id']) && !ConfigHelper::checkPrivilege('published_document_modification')) {
-        return;
-    }
-
-    if ($LMS->isDocumentReferenced($_GET['id'])) {
-        return;
-    }
-
-    if ($LMS->isArchiveDocument($_GET['id'])) {
+    if (!$LMS->isInvoiceEditable($_GET['id'])) {
         return;
     }
 
@@ -100,6 +92,7 @@ if (isset($_GET['id']) && ($action == 'edit' || $action == 'init')) {
     $invoice['oldnumber'] = $invoice['number'];
     $invoice['oldnumberplanid'] = $invoice['numberplanid'];
     $invoice['oldcustomerid'] = $invoice['customerid'];
+    $invoice['oldflags'] = $invoice['flags'];
     $invoice['oldcomment'] = $invoice['comment'];
 
     $hook_data = array(
@@ -152,6 +145,8 @@ function changeContents($contents, $newcontents)
     return $result;
 }
 
+$value_regexp = ConfigHelper::checkConfig('invoices.allow_negative_values') ? '/^[-]?[0-9]+([\.,][0-9]+)*$/' : '/^[0-9]+([\.,][0-9]+)*$/';
+
 switch ($action) {
     case 'additem':
     case 'savepos':
@@ -189,11 +184,11 @@ switch ($action) {
             $error[str_replace('%variable', 'valuebrutto', $error_index)] = trans('Field cannot be empty!');
         } else {
             $itemdata['valuenetto'] = cleanUpValue($itemdata['valuenetto']);
-            if (strlen($itemdata['valuenetto']) && !preg_match('/^[0-9]+([\.,][0-9]+)*$/', $itemdata['valuenetto'])) {
+            if (strlen($itemdata['valuenetto']) && !preg_match($value_regexp, $itemdata['valuenetto'])) {
                 $error[str_replace('%variable', 'valuenetto', $error_index)] = trans('Invalid format!');
             }
             $itemdata['valuebrutto'] = cleanUpValue($itemdata['valuebrutto']);
-            if (strlen($itemdata['valuebrutto']) && !preg_match('/^[0-9]+([\.,][0-9]+)*$/', $itemdata['valuebrutto'])) {
+            if (strlen($itemdata['valuebrutto']) && !preg_match($value_regexp, $itemdata['valuebrutto'])) {
                 $error[str_replace('%variable', 'valuebrutto', $error_index)] = trans('Invalid format!');
             }
         }
@@ -294,6 +289,7 @@ switch ($action) {
         $oldnumber = $invoice['oldnumber'];
         $oldnumberplanid = $invoice['oldnumberplanid'];
         $oldcustomerid = $invoice['oldcustomerid'];
+        $oldflags = $invoice['oldflags'];
         $oldcomment = $invoice['oldcomment'];
         $closed   = $invoice['closed'];
         $divisionid = $invoice['divisionid'];
@@ -322,6 +318,7 @@ switch ($action) {
         $invoice['oldnumber'] = $oldnumber;
         $invoice['oldnumberplanid'] = $oldnumberplanid;
         $invoice['oldcustomerid'] = $oldcustomerid;
+        $invoice['oldflags'] = $oldflags;
         $invoice['oldcomment'] = $oldcomment;
         $invoice['divisionid'] = $divisionid;
         $invoice['name'] = $name;
@@ -578,6 +575,10 @@ switch ($action) {
             'paytime' => $paytime,
             'paytype' => $invoice['paytype'],
             'splitpayment' => empty($invoice['splitpayment']) ? 0 : 1,
+            'flags' => (empty($invoice['flags'][DOC_FLAG_RECEIPT]) ? 0 : DOC_FLAG_RECEIPT)
+                + (empty($invoice['flags'][DOC_FLAG_TELECOM_SERVICE]) ? 0 : DOC_FLAG_TELECOM_SERVICE)
+                + ($use_current_customer_data && isset($customer['flags'][CUSTOMER_FLAG_RELATED_ENTITY]) ? DOC_FLAG_RELATED_ENTITY
+                    : (isset($invoice['oldflags'][DOC_FLAG_RELATED_ENTITY]) ? DOC_FLAG_RELATED_ENTITY : 0)),
             SYSLOG::RES_CUST => $invoice['customerid'],
             'name' => $use_current_customer_data ? $customer['customername'] : $invoice['name'],
             'address' => $use_current_customer_data ? (($customer['postoffice'] && $customer['postoffice'] != $customer['city'] && $customer['street']
@@ -623,10 +624,10 @@ switch ($action) {
         } else {
             $args['fullnumber'] = null;
         }
-        $args[SYSLOG::RES_NUMPLAN] = $invoice['numberplanid'];
+        $args[SYSLOG::RES_NUMPLAN] = $invoice['numberplanid'] ?: null;
         //$args['recipient_address_id'] = $invoice
         $args[SYSLOG::RES_DOC] = $iid;
-        $DB->Execute('UPDATE documents SET cdate = ?, sdate = ?, paytime = ?, paytype = ?, splitpayment = ?, customerid = ?,
+        $DB->Execute('UPDATE documents SET cdate = ?, sdate = ?, paytime = ?, paytype = ?, splitpayment = ?, flags = ?, customerid = ?,
 				name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ?, countryid = ?, divisionid = ?,
 				div_name = ?, div_shortname = ?, div_address = ?, div_city = ?, div_zip = ?, div_countryid = ?,
 				div_ten = ?, div_regon = ?, div_bank = ?, div_account = ?, div_inv_header = ?, div_inv_footer = ?,
@@ -814,10 +815,13 @@ if (!empty($contents)) {
     }
 }
 
-$SMARTY->assign('is_split_payment_suggested', $LMS->isSplitPaymentSuggested(
-    isset($customer) ? $customer['id'] : null,
-    date('Y/m/d', $invoice['cdate']),
-    $total_value
+$SMARTY->assign('suggested_flags', array(
+    'splitpayment' => $LMS->isSplitPaymentSuggested(
+        isset($customer) ? $customer['id'] : null,
+        date('Y/m/d', $invoice['cdate']),
+        $total_value
+    ),
+    'telecomservice' => true,
 ));
 
 $SMARTY->display('invoice/invoiceedit.html');

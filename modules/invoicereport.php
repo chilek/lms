@@ -55,7 +55,7 @@ if ($to) {
 
 $layout['pagetitle'] = trans('Sale Registry for period $a - $b', $from, $to);
 
-$listdata = array('tax' => 0, 'brutto' => 0);
+$listdata = array('tax' => 0, 'brutto' => 0, 'tax_receipt' => 0, 'brutto_receipt' => 0);
 $invoicelist = array();
 $taxeslist = array();
 $taxes = array();
@@ -157,9 +157,42 @@ $args = array($doctypes, $unixfrom, $unixto);
 
 $taxes = $DB->GetAllByKey('SELECT id, value, label, taxed FROM taxes', 'id');
 
-$documents = $DB->GetAll('SELECT d.id, d.type
+$documents = $DB->GetAll('SELECT d.id, d.type,
+            cn.name AS country, n.template,
+            a.state AS rec_state, a.state_id AS rec_state_id,
+            a.city as rec_city, a.city_id AS rec_city_id,
+            a.street AS rec_street, a.street_id AS rec_street_id,
+            a.zip as rec_zip, a.postoffice AS rec_postoffice,
+            a.name as rec_name, a.address AS rec_address,
+            a.house AS rec_house, a.flat AS rec_flat, a.country_id AS rec_country_id,
+            c.pin AS customerpin, c.divisionid AS current_divisionid,
+            c.street, c.building, c.apartment,
+            (CASE WHEN d.post_address_id IS NULL THEN c.post_street ELSE a2.street END) AS post_street,
+            (CASE WHEN d.post_address_id IS NULL THEN c.post_building ELSE a2.house END) AS post_building,
+            (CASE WHEN d.post_address_id IS NULL THEN c.post_apartment ELSE a2.flat END) AS post_apartment,
+            (CASE WHEN d.post_address_id IS NULL THEN c.post_name ELSE a2.name END) AS post_name,
+            (CASE WHEN d.post_address_id IS NULL THEN c.post_address ELSE a2.address END) AS post_address,
+            (CASE WHEN d.post_address_id IS NULL THEN c.post_zip ELSE a2.zip END) AS post_zip,
+            (CASE WHEN d.post_address_id IS NULL THEN c.post_city ELSE a2.city END) AS post_city,
+            (CASE WHEN d.post_address_id IS NULL THEN c.post_postoffice ELSE a2.postoffice END) AS post_postoffice,
+            (CASE WHEN d.post_address_id IS NULL THEN c.post_countryid ELSE a2.country_id END) AS post_countryid,
+            cp.name AS post_country,
+            (CASE WHEN d.div_countryid IS NOT NULL
+                THEN (CASE WHEN d.countryid IS NULL
+                    THEN cdv.ccode
+                    ELSE cn.ccode
+                END)
+                ELSE NULL
+            END) AS lang
 	    FROM documents d
-	    LEFT JOIN numberplans n ON d.numberplanid = n.id' .
+        JOIN customeraddressview c ON (c.id = d.customerid)
+        LEFT JOIN countries cn ON (cn.id = d.countryid)
+        LEFT JOIN countries cdv ON cdv.id = d.div_countryid
+        LEFT JOIN numberplans n ON (d.numberplanid = n.id)
+        LEFT JOIN vaddresses a ON d.recipient_address_id = a.id
+        LEFT JOIN vaddresses a2 ON d.post_address_id = a2.id
+        LEFT JOIN countries cp ON (d.post_address_id IS NOT NULL AND cp.id = a2.country_id) OR (d.post_address_id IS NULL AND cp.id = c.post_countryid)
+	    ' .
         ( $ctype != -1 ? ' LEFT JOIN customers cu ON d.customerid = cu.id ' : '' )
         . ' WHERE cancelled = 0 AND d.type IN ? AND (' . $wherecol . ' BETWEEN ? AND ?) '
         .(isset($numberplans) ? 'AND d.numberplanid IN (' . $numberplans . ')' : '')
@@ -180,7 +213,7 @@ if ($documents) {
         switch ($doctype) {
             case DOC_INVOICE:
             case DOC_CNOTE:
-                $document = $LMS->GetInvoiceContent($idx);
+                $document = array_merge($document, $LMS->GetInvoiceContent($idx, LMSFinanceManager::INVOICE_CONTENT_DETAIL_GENERAL));
                 break;
             case DOC_DNOTE:
                 $document = $LMS->GetNoteContent($idx);
@@ -188,7 +221,7 @@ if ($documents) {
         }
 
         $invoicelist[$idx]['custname'] = $document['name'];
-        $invoicelist[$idx]['custaddress'] = $document['address'];
+        $invoicelist[$idx]['custaddress'] = (empty($document['zip']) ? '' : $document['zip'] . ' ') . $document['city'] . ', ' . $document['address'];
         $invoicelist[$idx]['ten'] = ($document['ten'] ? trans('TEN') . ' ' . $document['ten'] : ($document['ssn'] ? trans('SSN') . ' ' . $document['ssn'] : ''));
         $invoicelist[$idx]['number'] = docnumber(array(
             'number' => $document['number'],
@@ -199,6 +232,7 @@ if ($documents) {
         $invoicelist[$idx]['cdate'] = $document['cdate'];
         $invoicelist[$idx]['sdate'] = $document['sdate'];
         $invoicelist[$idx]['pdate'] = $document['pdate'];
+        $invoicelist[$idx]['flags'] = $document['flags'];
         $invoicelist[$idx]['customerid'] = $document['customerid'];
         $invoicelist[$idx]['currency'] = $document['currency'];
         $invoicelist[$idx]['currencyvalue'] = $document['currencyvalue'];
@@ -216,6 +250,13 @@ if ($documents) {
             }
             if (!isset($invoicelist[$idx]['brutto'])) {
                 $invoicelist[$idx]['brutto'] = 0;
+            }
+
+            if (!isset($invoicelist[$idx]['tax_receipt'])) {
+                $invoicelist[$idx]['tax_receipt'] = 0;
+            }
+            if (!isset($invoicelist[$idx]['brutto_receipt'])) {
+                $invoicelist[$idx]['brutto_receipt'] = 0;
             }
 
             if ($doctype == DOC_DNOTE) {
@@ -240,12 +281,21 @@ if ($documents) {
             if (!isset($listdata[$taxid])) {
                 $listdata[$taxid]['tax'] = 0;
                 $listdata[$taxid]['val'] = 0;
+                $listdata[$taxid]['tax_receipt'] = 0;
+                $listdata[$taxid]['val_receipt'] = 0;
             }
 
-            $listdata[$taxid]['tax'] += $tax * $document['currencyvalue'];
-            $listdata[$taxid]['val'] += $netto * $document['currencyvalue'];
-            $listdata['tax'] += $tax * $document['currencyvalue'];
-            $listdata['brutto'] += $brutto * $document['currencyvalue'];
+            if (!empty($invoicelist[$idx]['flags'][DOC_FLAG_RECEIPT])) {
+                $listdata[$taxid]['tax_receipt'] += $tax * $document['currencyvalue'];
+                $listdata[$taxid]['val_receipt'] += $netto * $document['currencyvalue'];
+                $listdata['tax_receipt'] += $tax * $document['currencyvalue'];
+                $listdata['brutto_receipt'] += $brutto * $document['currencyvalue'];
+            } else {
+                $listdata[$taxid]['tax'] += $tax * $document['currencyvalue'];
+                $listdata[$taxid]['val'] += $netto * $document['currencyvalue'];
+                $listdata['tax'] += $tax * $document['currencyvalue'];
+                $listdata['brutto'] += $brutto * $document['currencyvalue'];
+            }
         }
     }
 
@@ -284,12 +334,21 @@ if (isset($_POST['extended'])) {
 
         $page = ceil($i/$rows);
 
-        $totals[$page]['total'] += $row['brutto'] * $row['currencyvalue'];
-        $totals[$page]['sumtax'] += $row['tax'] * $row['currencyvalue'];
+        if (!empty($row['flags'][DOC_FLAG_RECEIPT])) {
+            $totals[$page]['total_receipt'] += $row['brutto'] * $row['currencyvalue'];
+            $totals[$page]['sumtax_receipt'] += $row['tax'] * $row['currencyvalue'];
+            foreach ($taxeslist as $idx => $tax) {
+                $totals[$page]['val_receipt'][$idx] += $row[$idx]['val'] * $row['currencyvalue'];
+                $totals[$page]['tax_receipt'][$idx] += $row[$idx]['tax'] * $row['currencyvalue'];
+            }
+        } else {
+            $totals[$page]['total'] += $row['brutto'] * $row['currencyvalue'];
+            $totals[$page]['sumtax'] += $row['tax'] * $row['currencyvalue'];
 
-        foreach ($taxeslist as $idx => $tax) {
-            $totals[$page]['val'][$idx] += $row[$idx]['val'] * $row['currencyvalue'];
-            $totals[$page]['tax'][$idx] += $row[$idx]['tax'] * $row['currencyvalue'];
+            foreach ($taxeslist as $idx => $tax) {
+                $totals[$page]['val'][$idx] += $row[$idx]['val'] * $row['currencyvalue'];
+                $totals[$page]['tax'][$idx] += $row[$idx]['tax'] * $row['currencyvalue'];
+            }
         }
 
         $i++;
@@ -298,10 +357,14 @@ if (isset($_POST['extended'])) {
     foreach ($totals as $page => $t) {
         $pages[] = $page;
 
+        $totals[$page]['alltotal_receipt'] = $totals[$page-1]['alltotal_receipt'] + $t['total_receipt'];
+        $totals[$page]['allsumtax_receipt'] = $totals[$page-1]['allsumtax_receipt'] + $t['sumtax_receipt'];
         $totals[$page]['alltotal'] = $totals[$page-1]['alltotal'] + $t['total'];
         $totals[$page]['allsumtax'] = $totals[$page-1]['allsumtax'] + $t['sumtax'];
 
         foreach ($taxeslist as $idx => $tax) {
+            $totals[$page]['allval_receipt'][$idx] = $totals[$page-1]['allval_receipt'][$idx] + $t['val_receipt'][$idx];
+            $totals[$page]['alltax_receipt'][$idx] = $totals[$page-1]['alltax_receipt'][$idx] + $t['tax_receipt'][$idx];
             $totals[$page]['allval'][$idx] = $totals[$page-1]['allval'][$idx] + $t['val'][$idx];
             $totals[$page]['alltax'][$idx] = $totals[$page-1]['alltax'][$idx] + $t['tax'][$idx];
         }

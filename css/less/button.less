@@ -1,0 +1,138 @@
+/*
+ * LMS version 1.11-git
+ *
+ *  (C) Copyright 2001-2020 LMS Developers
+ *
+ *  Please, see the doc/AUTHORS for more information about authors!
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License Version 2 as
+ *  published by the Free Software Foundation.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ *  USA.
+ *
+ *  $Id$
+ */
+
+button.lms-ui-button {
+  min-height: 2.5em;
+  padding: 0.33em;
+  padding-top: 0.15em;
+  padding-bottom: 0.15em;
+}
+
+a.lms-ui-button {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+a.lms-ui-link-button {
+  min-height: 1.95em;
+  vertical-align: top;
+  padding: 0.33em;
+  padding-top: 0.35em;
+  padding-bottom: 0em;
+}
+
+button.lms-ui-button,
+a.lms-ui-link-button {
+  display: inline-block;
+  margin-top: 0.5em;
+  border: 1px solid @darkbrown;
+  color: black !important;
+  text-decoration: none;
+  background-color: @light;
+  background-repeat: no-repeat;
+  background-position: 3px 3px;
+  outline: none;
+  &.lms-ui-button-icon {
+    padding-left: 25px;
+  }
+  &:hover {
+    text-decoration: none;
+  }
+  &:not([disabled]) {
+    &:active {
+      background-color: @dark;
+      box-shadow: inset 1px 1px 4px 0px rgba(0, 0, 0, 0.4);
+    }
+    &:focus {
+      box-shadow: 0px 0px 1px 1px black;
+    }
+    &:hover {
+      box-shadow: 0px 0px 3px 1px black;
+    }
+  }
+  &[disabled] {
+    color: @blend !important;
+    cursor: no-drop;
+    &:before {
+      color: @blend !important;
+    }
+  }
+  i + .lms-ui-label {
+    padding-left: 0.3em;
+    font-weight: 700;
+  }
+}
+
+a.lms-ui-link-button + button.lms-ui-button {
+  margin-left: 0.33em;
+}
+
+.lms-ui-responsive-buttons {
+  display: inline-block;
+  > * {
+    padding-left: 0.1em;
+    padding-right: 0.1em;
+  }
+  .lms-ui-dropdown-toggle {
+    display: none !important;
+    cursor: pointer;
+    &.secondary {
+      display: inline !important;
+    }
+    @media screen and (max-width: @mobile-max-width) {
+      .fa-lg;
+      line-height: normal;
+    }
+  }
+  .lms-ui-dropdown-buttons {
+    display: inline;
+    .lms-ui-button.secondary {
+      display: none;
+    }
+  }
+  @media screen and (max-width: 1200px) {
+    .lms-ui-dropdown-toggle {
+      display: inline-block !important;
+      &.secondary {
+        display: none !important;
+      }
+    }
+    .lms-ui-dropdown-buttons {
+      display: none;
+      padding: 0.2em;
+      position: absolute;
+      background-color: @light;
+      //min-width: 15em;
+      border: @frame;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      z-index: 1;
+      &.show {
+        display: flex;
+      }
+      .lms-ui-button {
+        display: none;
+      }
+    }
+  }
+}

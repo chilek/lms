@@ -87,6 +87,8 @@ function changeContents($contents, $newcontents)
     return $result;
 }
 
+$value_regexp = ConfigHelper::checkConfig('invoices.allow_negative_values') ? '/^[-]?[0-9]+([\.,][0-9]+)*$/' : '/^[0-9]+([\.,][0-9]+)*$/';
+
 switch ($action) {
     case 'init':
         unset($invoice);
@@ -118,21 +120,23 @@ switch ($action) {
                 );
             }
 
-            $customer = $LMS->GetCustomer($invoice['customerid']);
-            $invoice['proformaid'] = $_GET['id'];
-            $invoice['proformanumber'] = docnumber(array(
-                'doctype' => DOC_INVOICE_PRO,
-                'cdate' => $invoice['cdate'],
-                'template' => $invoice['template'],
-                'customerid' => $invoice['customerid'],
-            ));
-            $invoice['preserve-proforma'] = ConfigHelper::checkConfig('phpui.default_preserve_proforma_invoice');
+            if (!isset($_GET['clone'])) {
+                $customer = $LMS->GetCustomer($invoice['customerid']);
+                $invoice['proformaid'] = $_GET['id'];
+                $invoice['proformanumber'] = docnumber(array(
+                    'doctype' => DOC_INVOICE_PRO,
+                    'cdate' => $invoice['cdate'],
+                    'template' => $invoice['template'],
+                    'customerid' => $invoice['customerid'],
+                ));
+                $invoice['preserve-proforma'] = ConfigHelper::checkConfig('phpui.default_preserve_proforma_invoice');
+            }
         } else {
             if (!empty($_GET['customerid']) && $LMS->CustomerExists($_GET['customerid'])) {
                 $customer = $LMS->GetCustomer($_GET['customerid'], true);
                 $invoice['customerid'] = $_GET['customerid'];
             }
-            $invoice['currency'] = LMS::$default_currency;
+            $invoice['currency'] = Localisation::getDefaultCurrency();
         }
         $invoice['number'] = '';
         $invoice['numberplanid'] = null;
@@ -213,11 +217,11 @@ switch ($action) {
             $error[str_replace('%variable', 'valuebrutto', $error_index)] = trans('Field cannot be empty!');
         } else {
             $itemdata['valuenetto'] = cleanUpValue($itemdata['valuenetto']);
-            if (strlen($itemdata['valuenetto']) && !preg_match('/^[0-9]+([\.,][0-9]+)*$/', $itemdata['valuenetto'])) {
+            if (strlen($itemdata['valuenetto']) && !preg_match($value_regexp, $itemdata['valuenetto'])) {
                 $error[str_replace('%variable', 'valuenetto', $error_index)] = trans('Invalid format!');
             }
             $itemdata['valuebrutto'] = cleanUpValue($itemdata['valuebrutto']);
-            if (strlen($itemdata['valuebrutto']) && !preg_match('/^[0-9]+([\.,][0-9]+)*$/', $itemdata['valuebrutto'])) {
+            if (strlen($itemdata['valuebrutto']) && !preg_match($value_regexp, $itemdata['valuebrutto'])) {
                 $error[str_replace('%variable', 'valuebrutto', $error_index)] = trans('Invalid format!');
             }
         }
@@ -308,7 +312,7 @@ switch ($action) {
                 $itemdata['cashid'] = $id;
                 $itemdata['name'] = $cash['comment'];
                 $itemdata['taxid'] = $cash['taxid'];
-                $itemdata['taxcategory'] = 0;
+                $itemdata['taxcategory'] = $_POST['l_taxcategory'][$id];
                 $itemdata['tax'] = isset($taxeslist[$itemdata['taxid']]) ? $taxeslist[$itemdata['taxid']]['label'] : '';
                 $itemdata['discount'] = 0;
                 $itemdata['pdiscount'] = 0;
@@ -739,10 +743,13 @@ if (!empty($contents)) {
     }
 }
 
-$SMARTY->assign('is_split_payment_suggested', $LMS->isSplitPaymentSuggested(
-    isset($customer) ? $customer['id'] : null,
-    date('Y/m/d', $invoice['cdate']),
-    $total_value
+$SMARTY->assign('suggested_flags', array(
+    'splitpayment' => $LMS->isSplitPaymentSuggested(
+        isset($customer) ? $customer['id'] : null,
+        date('Y/m/d', $invoice['cdate']),
+        $total_value
+    ),
+    'telecomservice' => true,
 ));
 
 $SMARTY->display('invoice/invoicenew.html');

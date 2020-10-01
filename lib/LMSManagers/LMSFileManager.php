@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2019 LMS Developers
+ *  Copyright (C) 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -45,6 +45,20 @@ class LMSFileManager extends LMSManager implements LMSFileManagerInterface
             $container['description'] = wordwrap($container['description'], 120, '<br>', true);
             $container['files'] = $this->db->GetAll('SELECT * FROM files
 				WHERE containerid = ?', array($container['id']));
+
+            $container['images'] = array();
+            foreach ($container['files'] as &$file) {
+                if (strpos($file['contenttype'], 'image') === 0) {
+                    $url = '?m=attachments&type=' . $type . '&attachmentaction=viewfile&fileid='
+                        . $file['id'] . '&api=1';
+                    $container['images'][] = array(
+                        'image' => $url,
+                        'thumb' => $url . '&thumbnail=200',
+                        'title' => $file['filename'],
+                    );
+                }
+            }
+            unset($file);
         }
         unset($container);
 

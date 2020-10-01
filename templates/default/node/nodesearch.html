@@ -77,7 +77,7 @@
 			<IMG src="img/home.gif" width="16" alt=""> {trans("State")}:
 		</td>
 		<td>
-			<select id="state_sel" name="search[state]" onchange="change_selection(this)" {tip text="Select state"} style="width: 20%;">
+			<select id="state_sel" name="search[state]" onchange="change_selection(this)" {tip text="Select state"}>
 				<option value="0"></option>
 				{foreach from=$states item=item}
 				<option value="{$item.id}"{if $item.id == $nodesearch.state} selected{/if}>{$item.name}</option>

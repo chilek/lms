@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,7 +26,38 @@
 
 $layout['pagetitle'] = trans('Users List');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$divisionContext = $SESSION->get('division_context', true);
+if (!isset($divisionContext)) {
+    $divisionContext = $SESSION->get_persistent_setting('division_context');
+    $SESSION->save('division_context', $divisionContext, true);
+}
+$SMARTY->assign('division_context', $divisionContext);
+$layout['division'] = $divisionContext;
 
-$SMARTY->assign('userslist', $LMS->GetUserList());
+$superuser = (ConfigHelper::checkPrivilege('superuser') ? 1 : 0);
+
+if ($SESSION->is_set('uldiv', true) && !isset($_GET['division'])) {
+    $SESSION->restore('uldiv', $_GET['division'], true);
+} elseif ($SESSION->is_set('uldiv') && !isset($_GET['division'])) {
+    $SESSION->restore('uldiv', $_GET['division']);
+}
+
+if (isset($_GET['division'])) {
+    $selectedDivision = $_GET['division'];
+} else {
+    $selectedDivision = $divisionContext;
+}
+
+$userslist = (!empty($superuser) ? $LMS->GetUserList(array('divisions' => $selectedDivision, 'superuser' => 1)) : $LMS->GetUserList(array('divisions' => $selectedDivision)));
+unset($userslist['total']);
+
+$SESSION->save('uldiv', $selectedDivision);
+$SESSION->save('uldiv', $selectedDivision, true);
+
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->save('backto', $_SERVER['QUERY_STRING'], true);
+
+$SMARTY->assign('userslist', $userslist);
+$SMARTY->assign('selectedDivision', $selectedDivision);
+$SMARTY->assign('superuser', $superuser);
 $SMARTY->display('user/userlist.html');

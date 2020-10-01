@@ -29,5 +29,7 @@ $USERPANEL->AddModule(
     'help',         // Module name - must be the same as directory name
     trans('Runs problems solving center'), // Tip
     5,          // Priority
-    trans('This module shows problems solving center')  // Description
+    trans('This module shows problems solving center'), // Description
+    '',
+    'lms-ui-icon-help'
 );

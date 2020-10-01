@@ -60,14 +60,14 @@ function smarty_function_documentview($params, $template)
     $result .= '<div class="documentviewdialog" id="documentviewdialog-' . $id . '" title="' . $name . '" style="display: none;"
 		data-url="' . $url . '"></div>';
 
-    $result .= '<A href="' . $url . '"';
+    $result .= '<a href="' . $url . '" data-title="' . $name . '"';
     if (empty($type)) {
-        $result .=  ' class="lms-ui-button-view' . (isset($params['class']) ? ' ' . $params['class'] : '') . '" ' . ($external ? ' rel="external"' : '');
+        $result .=  ' class="lms-ui-button" ' . ($external ? ' rel="external"' : '');
     } else {
         $result .= ' id="documentview-' . $id . '" data-dialog-id="documentviewdialog-' . $id . '" '
-            . 'class="lms-ui-button-view documentview documentview-' . $type . (isset($params['class']) ? ' ' . $params['class'] : '') . '"';
+            . 'class="lms-ui-button documentview documentview-' . $type . '"';
     }
-    $result .= '>' . $text . '</A>';
+    $result .= '>' . $text . '</a>';
 
     return $result;
 }

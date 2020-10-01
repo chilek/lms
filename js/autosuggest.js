@@ -16,7 +16,9 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 	if (form.constructor.name !== 'HTMLFormElement') {
 		this.elem = $(form.elem)[0];
 		this.form = $(form.form)[0];
+		this.method = form.hasOwnProperty('method') ? form.method : "GET";
 		this.uri = form.uri;
+		this.formData = form.hasOwnProperty('formData') ? form.formData : {};
 		this.autosubmit = form.hasOwnProperty('autosubmit') && (form.autosubmit == 1 || form.autosubmit == 'true');
 		this.onSubmit = form.hasOwnProperty('onSubmit') ? form.onSubmit : null;
 		this.onLoad = form.hasOwnProperty('onLoad') ? form.onLoad : null;
@@ -24,16 +26,22 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 		this.class = form.hasOwnProperty('class') ? form.class : '';
 		this.emptyValue = form.hasOwnProperty('emptyValue') && (form.emptyValue == 1 || form.emptyValue || form.emptyValue == 'true');
 		this.suggestionContainer = form.hasOwnProperty('suggestionContainer') ? form.suggestionContainer : '#autosuggest';
+		this.activeDescription = form.hasOwnProperty('activeDescription') ? form.activeDescription : false;
+		this.suggestMaxLength = form.hasOwnProperty('suggestMaxLength') ? parseInt(form.suggestMaxLength) : AUTOSUGGEST_MAX_LENGTH;
 	} else {
 		//A reference to the element we're binding the list to.
 		this.elem = elem;
 		this.form = form;
+		this.method = "GET";
 		this.uri = uri;
+		this.formData = {};
 		this.autosubmit = (typeof(autosubmit) !== 'undefined' && (autosubmit == 1 || autosubmit == 'true'));
 		this.onSubmit = onSubmit;
 		this.onLoad = onLoad;
 		this.class = '';
 		this.suggestionContainer = '#autosuggest';
+		this.activeDescription = false;
+		this.suggestMaxLength = AUTOSUGGEST_MAX_LENGTH;
 	}
 	this.class = 'lms-ui-suggestion-container ' + this.class;
 
@@ -204,26 +212,17 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 		default:
 			if (this.value != me.inputText && (me.emptyValue || this.value.length > 0)) {
 				clearTimeout(me.timer);
-				me.timer = setTimeout(function(){ me.HTTPpreload(); }, me.request_delay);
+				me.timer = setTimeout(function() {
+						me.getSuggestions();
+					}, me.request_delay);
 			} else {
+				if (!this.value.length) {
+					me.inputText = '';
+				}
 				me.hideDiv();
 			}
 		}
 	};
-
-	this.HTTPloaded = function () {
-		if ((xmlhttp) && (xmlhttp.readyState == 4)) {
-			me.inputText = this.value;
-			me.getSuggestions();
-			if (me.suggestions.length) {
-				me.createDiv();
-				me.positionDiv();
-				me.showDiv();
-			} else {
-				me.hideDiv();
-			}
-		}
-	}
 
 	/********************************************************
 	Insert the highlighted suggestion into the input box, and
@@ -262,51 +261,55 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 	Display the dropdown. Pretty straightforward.
 	********************************************************/
 	this.showDiv = function() {
-		$(this.div).show().position($.extend(this.my_at_map[this.placement], { of: this.elem } ));
+		$(this.div).show().data('autosuggest-input', this.elem);
+		if (!$('body').is('.lms-ui-mobile')) {
+			$(this.div).position($.extend(this.my_at_map[this.placement], {of: this.elem}));
+		} else {
+			$(this.div).position(null);
+		}
 	};
 
 	/********************************************************
 	Hide the dropdown and clear any highlight.
 	********************************************************/
 	this.hideDiv = function() {
-		$(this.div).hide();
+		$(this.div).hide().removeData('autosuggest-input', null);
 		this.highlighted = -1;
 	};
 
 	/********************************************************
 	Modify the HTML in the dropdown to move the highlight.
 	********************************************************/
-	this.changeHighlight = function() {
-		$('li', this.div).each(function(i, elem) {
+	this.changeHighlight = function(key) {
+		var items = $('li', this.div);
+		items.each(function(i, elem) {
 			if (me.highlighted == i) {
 				$(elem).addClass('selected');
+
+				var meDiv = $(me.div);
+				var container_height = meDiv.height();
+				var container_top = meDiv.offset().top;
+				var elem_height = $(elem).outerHeight();
+				var elem_top = $(elem).offset().top;
+				if (key == KEYDN) {
+					if (!i) {
+						me.div.scrollTop = 0;
+					} else if (elem_top - container_top > container_height - elem_height) {
+						me.div.scrollTop += elem_height;
+					}
+				} else if (key == KEYUP) {
+					if (i == items.length - 1) {
+						me.div.scrollTop = elem_height * items.length;
+					} else {
+						if (elem_top - container_top < elem_height) {
+							me.div.scrollTop -= elem_height;
+						}
+					}
+				}
 			} else {
 				$(elem).removeClass('selected');
 			}
-
 		});
-	};
-
-	/********************************************************
-	Position the dropdown div below the input text field.
-	********************************************************/
-	this.positionDiv = function() {
-		var el = this.elem;
-		var x = 0;
-		var y = 0;
-
-		//Walk up the DOM and add up all of the offset positions.
-		while (el.offsetParent && el.tagName.toUpperCase() != 'BODY') {
-			x += el.offsetLeft;
-			y += el.offsetTop;
-			el = el.offsetParent;
-		}
-
-		x += el.offsetLeft;
-		y += el.offsetTop;
-
-		this.div.style.left = x + 'px';
-		this.div.style.top = y + 'px';
 	};
 
 	/********************************************************
@@ -315,25 +318,24 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 	this.createDiv = function() {
 		var ul = $('<ul class="lms-ui-suggestion-list" />').get(0);
 
-		function onClick() {
-			me.useSuggestion();
-		}
-
 		//Create an array of LI's for the words.
 		$.each(this.suggestions, function(i, elem) {
+			var icon = elem.hasOwnProperty('icon') ? elem.icon : null;
 			var name = elem.name;
+			var effectiveName = elem.hasOwnProperty('name_alternative') ? elem.name_alternative : elem.name;
 			var name_class = elem.name_class;
 			var desc = elem.description ? elem.description : '';
 			var desc_class = elem.description_class;
 			var action = elem.action ? elem.action : '';
 			var tip = elem.hasOwnProperty('tip') ? elem.tip : null;
 
-			var name_elem = $('<div class="lms-ui-suggestion-name ' + name_class +'" />').get(0);
-			var desc_elem = $('<div class="lms-ui-suggestion-description ' + desc_class + '">' + desc + '</div>').get(0);
+			var name_elem = $('<div class="lms-ui-suggestion-name ' + name_class + '" />').get(0);
+			var desc_elem = $('<div class="lms-ui-suggestion-description ' + desc_class + '">' +
+				(me.activeDescription && action ? '<a href="' + action + '">' : '') + desc + (me.activeDescription && action ? '</a>' : '') + '</div>').get(0);
 			var li = $('<li class="lms-ui-suggestion-item" />').attr('title', tip).get(0);
 
-			name_elem.innerHTML = name.length > AUTOSUGGEST_MAX_LENGTH ?
-				name.substring(0, AUTOSUGGEST_MAX_LENGTH) + " ..." : name;
+			name_elem.innerHTML = (icon ? '<i class="' + icon + '"></i>' : '') + (me.suggestMaxLength && effectiveName.length > me.suggestMaxLength ?
+				effectiveName.substring(0, me.suggestMaxLength) + " ..." : effectiveName);
 
 			if (action && !me.autosubmit && !me.onSubmit) {
 				var a = $('<a href="' + action + '"/>').get(0);
@@ -344,7 +346,6 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 				li.appendChild(name_elem);
 				li.appendChild(desc_elem);
 			}
-			li.onclick = onClick;
 
 			if (me.highlighted == i) {
 				$(li).addClass('selected');
@@ -353,7 +354,9 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 			ul.appendChild(li);
 		});
 
-		this.div.replaceChild(ul,this.div.childNodes[0]);
+		$(ul).appendTo($(this.div).empty()).find('.lms-ui-suggestion-item').click(function() {
+			me.useSuggestion();
+		});
 
 		/********************************************************
 		mouseover handler for the dropdown ul
@@ -378,57 +381,47 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 			me.changeHighlight();
 		};
 
-		this.div.className = this.class;
-		this.div.style.position = 'absolute';
-
+		$(this.div).addClass(this.class);
 	};
 
-	/********************************************************
-	determine which of the suggestions matches the input (ajaxized)
-	********************************************************/
-	//Construct XMLHTTP handler.
-	this.setXMLHTTP = function () {
-  		var x = null;
-		try { x = new ActiveXObject("Msxml2.XMLHTTP") }
-  		  catch(e) {
-			try { x = new ActiveXObject("Microsoft.XMLHTTP") }
-			  catch(ee) { x = null; }
-		  }
-		if(!x && typeof XMLHttpRequest != "undefined") {
-			x = new XMLHttpRequest();
-  		}
-		return x;
-	}
-
-	this.HTTPpreload = function() {
+	this.getSuggestions = function() {
 		var uri = this.uri + encodeURIComponent(this.elem.value);
-		xmlhttp = me.setXMLHTTP();
-		xmlhttp.onreadystatechange = this.HTTPloaded;
 		if (this.onAjax) {
 			uri = this.onAjax(uri);
 		}
-		xmlhttp.open("GET", uri, true);
-		xmlhttp.send(null);
+		$.ajax({
+			method: me.method,
+			url: uri,
+			data: me.formData,
+			dataType: "json",
+			success: function(data) {
+				me.inputText = $(me.elem).val();
+				me.parseSuggestions(data);
+				if (me.suggestions.length) {
+					me.createDiv();
+					me.showDiv();
+				} else {
+					me.hideDiv();
+				}
+			}
+		});
 	}
 
-	this.getSuggestions = function() {
-		try {
-			this.suggestions = JSON.parse(xmlhttp.responseText);
-		} catch(x) {
-			this.suggestions = [];
-		}
-
-		if (this.suggestions.length) {
-			$.each(this.suggestions, function(i, elem) {
+	this.parseSuggestions = function(data) {
+		me.suggestions = data ? data : [];
+		if (me.suggestions.length) {
+/*
+			$.each(me.suggestions, function(i, elem) {
 				var name = elem.name;
 				if (me.inputText && !name.toLowerCase().indexOf(me.inputText.toLowerCase())) {
 					me.suggestions.push(elem);
 				}
 			});
+*/
 			if (this.onLoad) {
-				var suggestions = (this.onLoad)(this.suggestions);
+				var suggestions = (me.onLoad)(me.suggestions);
 				if (typeof(suggestions) === 'object') {
-					this.suggestions = suggestions;
+					me.suggestions = suggestions;
 				}
 			}
 		}
@@ -438,11 +431,14 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 //counter to help create unique ID's
 var idCounter = 0;
 
+
 // hide autosuggest after click out of the window
 $(document).click(function(e) {
-	var elem = e.target;
-	if (!$(elem).is('.lms-ui-quick-search,.lms-ui-suggestion-list *')) {
-		$('.lms-ui-suggestion-container:visible').hide();
+	var autosuggest = $('.lms-ui-suggestion-container:visible');
+	if (!autosuggest.length || $(e.target).is(autosuggest.data('autosuggest-input'))) {
+		return;
 	}
-	return;
+
+	autosuggest.hide().closest('.lms-ui-popup').removeClass('fullscreen-popup').hide();
+	disableFullScreenPopup();
 });

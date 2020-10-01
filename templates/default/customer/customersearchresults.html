@@ -2,9 +2,29 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
+
+<style>
+
+	#action-panel {
+		display: flex;
+		align-items: center;
+		padding-top: 0.3em;
+		padding-bottom: 0.3em;
+	}
+
+	#action-panel > * {
+		margin-left: 0.7em;
+	}
+
+	#action-panel button {
+		margin-top: 0;
+	}
+
+</style>
+
 <H1>{$layout.pagetitle}</H1>
 <FORM NAME="setwarnings" ID="customersearchresults" METHOD="POST" ACTION="?m=customerwarn&search=0">
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-background-cycle">
     <THEAD>
 	<TR {tip text="Click on column name to change sorting order"}>
 		<TD width="97%">
@@ -37,11 +57,10 @@
 	{section name=customerlist loop=$customerlist}
 	<INPUT type="hidden" class="hiddenbtn" name="setwarnings[mcustomerid][]" value="{$customerlist[customerlist].id}">
 	{/section}
-	{cycle values="light,lucid" print=false}
 	{section name=customerlist loop=$customerlist start=$start max=$pagelimit}
-	<TR class="highlight {cycle}{if $customerlist[customerlist].account && !$customerlist[customerlist].nodeac} blend{/if}" data-name="{$customerlist[customerlist].customername|escape:"javascript"|escape:"html"}">
+	<TR class="highlight {if $customerlist[customerlist].deleted} lms-ui-resource-deleted{/if} {if $customerlist[customerlist].account && !$customerlist[customerlist].nodeac} blend{/if}" data-name="{$customerlist[customerlist].customername|escape:"javascript"|escape:"html"}">
 		<TD onClick="return self.location.href='?m=customerinfo&id={$customerlist[customerlist].id}';" valign="top">
-			<IMG src="img/{$_CSTATUSES[$customerlist[customerlist].status].img}" alt="">{if $customerlist[customerlist].info} <img src="img/info1.gif" ALT="" {tip text=$customerlist[customerlist].info}>{/if} <A name="{$customerlist[customerlist].id}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$customerlist[customerlist].id}"><B>{$customerlist[customerlist].customername}</B>{if $customerlist[customerlist].deleted} (<span class="red">{trans("deleted customer")}</span>){/if}</A><BR>
+			<IMG src="img/{$_CSTATUSES[$customerlist[customerlist].status].img}" alt="">{if $customerlist[customerlist].info} <img src="img/info1.gif" ALT="" {tip text=$customerlist[customerlist].info}>{/if} <A name="{$customerlist[customerlist].id}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$customerlist[customerlist].id}"><B>{$customerlist[customerlist].customername}</B></A><BR>
 			<IMG src="img/home.gif" alt="">&nbsp;{$customerlist[customerlist].full_address}{if $customerlist[customerlist].country != ""}, {t}{$customerlist[customerlist].country}{/t}{/if}
 		</TD>
 		<TD valign="top" align="right" NOWRAP>
@@ -109,43 +128,63 @@
 	</TR>
 	<TR class="ftop">
 		<TD COLSPAN="4" class="nobr">
-			<span class="bold">{trans("<!customersearch>Action:")}</span>
-			<select id="customer-action">
-				<optgroup label="{trans("Warnings")}">
-					<option value="1">{trans("<!customersearch>Enable warning")}</option>
-					<option value="2">{trans("<!customersearch>Disable warning")}</option>
-					<option value="3">{trans("Set notice content")}</option>
-				</optgroup>
-				{if is_array($listdata.customergroup)}
-					<optgroup label="{trans("Customer groups")}">
-						{$groups = array_flip($listdata.customergroup)}
-						<option value="4">{trans("<!customersearch>Add to groups")}</option>
-						<option value="9">{trans("<!customersearch>Create new group")}</option>
-						<option value="5">{trans("<!customersearch>Remove from groups")}</option>
-						<option value="6">{trans("<!customersearch>Change groups")}</option>
+			<div id="action-panel">
+				<span class="bold">{trans("<!customersearch>Action:")}</span>
+				<select id="customer-action">
+					<optgroup label="{trans("Warnings")}">
+						<option value="1">{trans("<!customersearch>Enable warning")}</option>
+						<option value="2">{trans("<!customersearch>Disable warning")}</option>
+						<option value="3">{trans("Set notice content")}</option>
 					</optgroup>
-				{/if}
-				<optgroup label="{trans("Customer consents")}">
-					<option value="7">{trans("<!customersearch>Add consents")}</option>
-					<option value="8">{trans("<!customersearch>Remove consents")}</option>
-				</optgroup>
-			</select>
-			{if isset($groups)}
-				<SELECT SIZE="1" class="lms-ui-multiselect-deferred" NAME="setwarnings[customergroup][]"
-						id="customergroups" style="display: none;" multiple>
-					{foreach $customergroups as $customergroup}
-						<OPTION value="{$customergroup.id}"{if isset($groups[$customergroup.id])} selected{/if}>{$customergroup.name|truncate:50:"...":true}</OPTION>
+					{if is_array($listdata.customergroup)}
+						<optgroup label="{trans("Customer groups")}">
+							{$groups = array_flip($listdata.customergroup)}
+							<option value="4">{trans("<!customersearch>Add to groups")}</option>
+							<option value="9">{trans("<!customersearch>Create new group")}</option>
+							<option value="5">{trans("<!customersearch>Remove from groups")}</option>
+							<option value="6">{trans("<!customersearch>Replace groups")}</option>
+						</optgroup>
+					{/if}
+					<optgroup label="{trans("Customer consents")}">
+						<option value="7">{trans("<!customersearch>Add consents")}</option>
+						<option value="8">{trans("<!customersearch>Remove consents")}</option>
+					</optgroup>
+					{foreach $_CUSTOMERCONTACTTYPES as $contacttypeidx => $contacttype}
+						<optgroup label="{$contacttype.ui.legend.text}">
+							<option value="{$contacttypeidx}-1" data-resource="{$contacttypeidx}" data-operation="1"
+								data-target-multiselect="#contactflags-{$contacttypeidx}"
+								>{trans("<!customersearch>Add flags")}</option>
+							<option value="{$contacttypeidx}-2" data-resource="{$contacttypeidx}" data-operation="2"
+								data-target-multiselect="#contactflags-{$contacttypeidx}"
+								>{trans("<!customersearch>Remove flags")}</option>
+						</optgroup>
 					{/foreach}
-				</SELECT>
-			{/if}
-			<input type="text" id="newcustomergroup" name="setwarnings[newcustomergroup]" style="display: none;">
-			<select class="lms-ui-multiselect-deferred" name="consents[]" data-separator="<hr>"
-					id="customerconsents" style="display: none;" multiple>
-				{foreach $_CCONSENTS as $type => $consent}
-					<option value="{$type}">{$consent.label}</option>
+				</select>
+				{if isset($groups)}
+					<SELECT SIZE="1" class="lms-ui-multiselect-deferred" NAME="setwarnings[customergroup][]"
+							id="customergroups" style="display: none;" multiple>
+						{foreach $customergroups as $customergroup}
+							<OPTION value="{$customergroup.id}"{if isset($groups[$customergroup.id])} selected{/if}>{$customergroup.name|truncate:50:"...":true}</OPTION>
+						{/foreach}
+					</SELECT>
+				{/if}
+				<input type="text" id="newcustomergroup" name="setwarnings[newcustomergroup]" style="display: none;">
+				<select class="lms-ui-multiselect-deferred" name="consents[]" data-separator="<hr>"
+						id="customerconsents" style="display: none;" multiple>
+					{foreach $_CCONSENTS as $type => $consent}
+						<option value="{$type}">{$consent.label}</option>
+					{/foreach}
+				</select>
+				{foreach $_CUSTOMERCONTACTTYPES as $contacttypeidx => $contacttype}
+					<select class="lms-ui-multiselect-deferred" name="contactflags[{$contacttypeidx}][]"
+							id="contactflags-{$contacttypeidx}" style="display: none;" multiple>
+						{foreach $contacttype.ui.flags as $flagidx => $flag}
+							<option value="{$flagidx}">{$flag.label}</option>
+						{/foreach}
+					</select>
 				{/foreach}
-			</select>
-			{button icon="apply" label="Apply" id="customer-action-apply"}
+				{button icon="apply" label="Apply" id="customer-action-apply"}
+			</div>
 		</TD>
 	</TR>
 	{/if}
@@ -244,24 +283,63 @@
 			$('#customersearchresults').attr('action', action).submit();
 		}
 
+		function changeContactFlags(type, operation) {
+			var action = null;
+
+			switch (operation) {
+				case 1:
+					action = '?m=customeredit&search=1&type=' + type + '&oper=addflags';
+					break;
+				case 2:
+					action = '?m=customeredit&search=1&type=' + type + '&oper=removeflags';
+					break;
+			}
+
+			if (action === null) {
+				return false;
+			}
+
+			$('#customersearchresults').attr('action', action).submit();
+		}
+
 		$('#customer-action').change(function() {
 			var action = parseInt($(this).val());
-			$('#customergroups').toggle(action >= 4 && action <= 6);
-			if (action >= 4 && action <= 6 && !$('#customergroups').is('.lms-ui-multiselect-wrapper')) {
+
+			if ($('#customergroups').parent('.lms-ui-multiselect-container').length) {
+				$('#customergroups').parent('.lms-ui-multiselect-container').toggle(action >= 4 && action <= 6);
+			} else if (action >= 4 && action <= 6) {
+				$('#customergroups').show();
 				init_multiselects('#customergroups');
 			}
+
 			$('#newcustomergroup').toggle(action == 9);
 			if (action == 9) {
 				initAutoGrow('#newcustomergroup');
 			}
-			$('#customerconsents').toggle(action >= 7 && action <= 8);
-			if (action >= 7 && action <= 8 && !$('#customerconsents').is('.lms-ui-multiselect-wrapper')) {
+
+			if ($('#customerconsents').parent('.lms-ui-multiselect-container').length) {
+				$('#customerconsents').parent('.lms-ui-multiselect-container').toggle(action >= 7 && action <= 8);
+			} else if (action >= 7 && action <= 8) {
+				$('#customerconsents').show();
 				init_multiselects('#customerconsents');
 			}
+
+			var target_multiselect = $('option:selected', this).attr('data-target-multiselect');
+			$('[id|="contactflags"]').each(function() {
+				if (target_multiselect && '#' + $(this).attr('id') == target_multiselect) {
+					if ($(this).parent('.lms-ui-multiselect-container').length) {
+						$(this).parent('.lms-ui-multiselect-container').show();
+					} else {
+						$(this).show();
+						init_multiselects(target_multiselect);
+					}
+				} else {
+					$(this).parent('.lms-ui-multiselect-container').hide();
+				}
+			});
 		});
 
 		$('#customer-action-apply').click(function() {
-
 			var action = parseInt($('#customer-action').val());
 			switch (action) {
 				case 1:
@@ -290,6 +368,14 @@
 					break;
 				case 9:
 					changeCustomerGroups(3);
+					break;
+				default:
+					var option = $('#customer-action option:selected');
+					var resource = option.attr('data-resource');
+					var operation = option.attr('data-operation');
+					if (resource && operation) {
+						changeContactFlags(resource, parseInt(operation));
+					}
 					break;
 			}
 		});

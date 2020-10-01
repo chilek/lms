@@ -76,13 +76,28 @@
             </TD>
         </TR>
         <TR>
+            <TD scope="col" class="text-left nobr">
+                {trans("Startup module:")}
+            </TD>
+            <TD scope="col">
+                <SELECT name="startupmodule" SIZE="1">
+                    {$menu2 = $menu}
+                    {array_multisort(Utils::array_column($menu2, 'name'), SORT_LOCALE_STRING, $menu2)}
+                    {foreach $menu2 as $m}
+                        {if $m.module !== "logout"}
+                            <OPTION value="{$m.module}" {if $startupmodule == $m.module}selected{/if}>{$m.name}</OPTION>
+                        {/if}
+                    {/foreach}
+                </SELECT>
+            </TD>
+        </TR>
+        <TR>
             <TD scope="col" class="nobr">
                 <label for="hide_nodes_modules">{trans("Disabling modules:")}</label>
             </TD>
             <TD scope="col">
-                <INPUT class="box light" type="checkbox" name="hide_nodes_modules" id="hide_nodes_modules" value="1" {if
-                       $hide_nodes_modules} checked{/if} {tip text="Hiding some modules useless when customer hasn't got
-                any nodes"}>
+                <INPUT class="box light" type="checkbox" name="hide_nodes_modules" id="hide_nodes_modules" value="1"
+                        {if $hide_nodes_modules} checked{/if} {tip text="Hiding some modules useless when customer hasn't got any nodes"}>
             </TD>
         </TR>
         <TR>
@@ -154,10 +169,8 @@
                 <label for="force_ssl">{trans("Force SSL:")}</label>
             </TD>
             <TD scope="col">
-                <INPUT type="checkbox" name="force_ssl" id="force_ssl" value="1" {if $force_ssl}
-                       checked{/if} {tip text="SSL Enforcing. Setting this option to 1 will effect with that LMS will
-                enforce SSL connection with redirect to \'https://\'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] at every
-                request without SSL. Default: 0 (off)."}>
+                <INPUT type="checkbox" name="force_ssl" id="force_ssl" value="1" {if $force_ssl} checked{/if}
+                        {tip text="SSL Enforcing. Setting this option to 1 will effect with that LMS will enforce SSL connection with redirect to \'https://\'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] at every request without SSL. Default: 0 (off)."}>
             </TD>
         </TR>
 

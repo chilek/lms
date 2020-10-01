@@ -28,7 +28,8 @@ if (!$this->ResourceExists('cash_importid_ukey', LMSDB::RESOURCE_TYPE_CONSTRAINT
         "SELECT id, importid FROM cash
         WHERE importid IN (
             SELECT importid FROM cash WHERE importid IS NOT NULL GROUP BY importid HAVING COUNT(*) > 1
-        )"
+        )
+        ORDER BY importid"
     );
     if (!empty($cash_import_duplicates)) {
         $prev_importid = null;

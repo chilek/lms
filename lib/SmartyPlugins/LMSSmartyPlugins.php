@@ -30,7 +30,6 @@ class LMSSmartyPlugins
     {
         // optional - we want buttons without icon
         $icon = isset($params['icon']) ? $params['icon'] : null;
-        $custom_icon = isset($icon) && (strpos($icon, 'lms-ui-icon-') === 0 || strpos($icon, 'fa') === 0);
         // optional - button by default,
         $type = isset($params['type']) ? $params['type'] : 'button';
         // optional - text tip,
@@ -61,24 +60,23 @@ class LMSSmartyPlugins
         $data_attributes = '';
         foreach ($params as $name => $value) {
             if (strpos($name, 'data_') === 0) {
-                $data_attributes .= ' ' . str_replace('_', '-', $name) . '="' . $value . '"';
+                $data_attributes .= ' ' . str_replace('_', '-', $name) . '=\'' . $value . '\'';
             }
         }
 
         return '<' . ($type == 'link' || $type == 'link-button' ? 'a' : 'button type="' . $type . '"') . ($href ? ' href="' . $href . '"' : '')
-            . ' class="' . ($type == 'link' ? '' : ($type == 'link-button' ? 'lms-ui-link-button ' : '') . 'lms-ui-button')
-            . ($icon && !$custom_icon ? ' lms-ui-button-' . $icon : '')
+            . ' class="lms-ui-button' . ($type == 'link-button' ? ' lms-ui-link-button ' : '')
             . ($class ? ' ' . $class : '') . '"'
             . ($id ? ' id="' . $id . '"' : '') . ($onclick ? ' onclick="' . $onclick . '"' : '')
             . ($form ? ' form="' . $form . '"' : '')
-            . ($tip ? ' title="' . $tip . '"' : '')
+            . ($tip ? ' title="' . $tip . '" data-title="' . $tip . '"' : '')
             . ($external ? ' rel="external"' : '')
             . ($resourceid ? ' data-resourceid="' . $resourceid . '"' : '')
             . ($clipboard ? ' data-clipboard-text="' . $clipboard . '"' : '')
             . $data_attributes
             . ($visible ? '' : ' style="display: none;"')
             . ($accesskey ? ' accesskey="' . $accesskey . '"' : '') . '>'
-            . ($icon ? '<i' . ($custom_icon ? ' class="' . $icon . '"' : '') . '></i>' : '')
+            . ($icon ? '<i class="' . (strpos($icon, 'lms-ui-icon-') === 0 || strpos($icon, 'fa') === 0 ? $icon : 'lms-ui-icon-' . $icon) . '"></i>' : '')
             . ($label ? '<span class="lms-ui-label">' . $label . '</span>' : '') . '
 		</' . ($type == 'link' || $type == 'link-button' ? 'a' : 'button') . '>';
     }
@@ -98,8 +96,74 @@ class LMSSmartyPlugins
             }
             $result .= '</select>';
         } else {
-            $result = LMS::$currency . '<input type="hidden" name="' . $elementname . '"'
-                . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '') . ' value="' . LMS::$currency . '">';
+            $result = Localisation::getCurrentCurrency() . '<input type="hidden" name="' . $elementname . '"'
+                . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '') . ' value="'
+                . Localisation::getCurrentCurrency() . '">';
+        }
+
+        return $result;
+    }
+
+    public static function divisionSelectionFunction(array $params, $template)
+    {
+        static $user_divisions = array();
+        $lms = LMS::getInstance();
+        $layout = $template->getTemplateVars('layout');
+        $force_global_division_context = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.force_global_division_context'), false);
+
+        if (empty($params)) {
+            $params = array();
+        }
+
+        $label = isset($params['label']) ? $params['label'] : null;
+        $name = isset($params['name']) ? $params['name'] : 'division';
+        $id = isset($params['id']) ? $params['id'] : $name;
+        $selected = isset($params['selected']) ? $params['selected'] : null;
+        $superuser = isset($params['superuser']) && !empty($params['superuser']) ? $params['superuser'] : null;
+        $onchange = isset($params['onchange']) && !empty($params['onchange']) ? $params['onchange'] : null;
+
+        if (isset($user_divisions) && empty($user_divisions)) {
+            if ($force_global_division_context) {
+                if (!empty($layout['division'])) {
+                    $user_divisions = $lms->GetDivision($layout['division']);
+                }
+            } else {
+                $user_divisions = (empty($superuser) ? $lms->GetDivisions(array('userid' => Auth::GetCurrentUser())) : $lms->GetDivisions());
+            }
+        }
+
+        $result = '';
+
+        if ($force_global_division_context) {
+            $result .= ($label ? '<label>' : '') . ($label ? trans($label) : '');
+            $result .= '<span class="division-context bold">' . (!empty($user_divisions) ? $user_divisions['shortname'] : trans("all")) . '</span>';
+            $result .= ($label ? '</label>' : '');
+            $result .= '<input type="hidden" class="division-context-selected" name="' . $name . '"'
+                . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '') . ' value="'
+                . $layout['division'] . '">';
+        } else {
+            if (!empty($user_divisions) && count($user_divisions) > 1) {
+                $result .= ($label ? '<label for="' . $name . '">' : '') . ($label ? trans($label) : '') . ($label ? '&nbsp;' : '');
+                $result .= '<select class="division-context" id="' . $id . '" name="' . $name . '" ' . self::tipFunction(array('text' => 'Select division'), $template)
+                    . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '')
+                    . ($onchange ? ' onchange="' . $onchange . '"' : '')
+                    . '>';
+                $result .= '<option VALUE=""' . (!$selected ? ' selected' : '') . '>- ' . trans("all") . ' -</option>';
+                foreach ($user_divisions as $division) {
+                    $result .= '<option value="' . $division['id'] . '"'
+                        . ($selected == $division['id'] ? ' selected' : '') . '>' . $division['shortname'] . '</option>';
+                }
+                $result .= '</select>';
+                $result .= ($label ? '</label>' : '');
+            } else {
+                $user_division = reset($user_divisions);
+                $result .= ($label ? '<label>' : '') . ($label ? trans($label) : '');
+                $result .= '<span class="division-context bold">' . (!empty($user_divisions) ? $user_division['shortname'] : trans("all")) . '</span>';
+                $result .= ($label ? '</label>' : '');
+                $result .= '<input type="hidden" class="division-context-selected" name="' . $name . '"'
+                    . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '') . ' value="'
+                    . $user_division['id'] . '">';
+            }
         }
 
         return $result;
@@ -236,15 +300,18 @@ class LMSSmartyPlugins
             );
         }
 
-        $result = '<div class="fileupload" id="' . $id . '">
+        $result = '<div class="lms-ui-fileupload" id="' . $id . '">
 			<div class="fileupload" id="' . $id . '-progress-dialog" title="' . trans("Uploading files ...") . '" style="display: none;">
 				<div style="padding: 10px;">' . trans("Uploading files to server ...") . '</div>
 				<div class="fileupload-progressbar"><div class="fileupload-progress-label"></div></div>
 			</div>
 			<div class="lms-ui-button-fileupload-container">
 				<button type="button" class="lms-ui-button-fileupload lms-ui-button' . (isset($error_tip_params) ? ' lms-ui-error' : '') . '" id="' . $id . '_button" '
-            . (isset($error_tip_params) ? self::tipFunction($error_tip_params, $template) : '') . '><i></i> ' . trans("Select files") . '</button>
+            . (isset($error_tip_params) ? self::tipFunction($error_tip_params, $template) : '') . '><i class="lms-ui-icon-fileupload"></i> ' . trans("Select files") . '</button>
 				<INPUT name="' . $id . '[]" type="file" multiple class="fileupload-select-btn" style="display: none;" ' . ($form ? ' form="' . $form . '"' : '') . '>
+				' . (ConfigHelper::getConfig('phpui.uploaded_image_max_size', 0)
+                    ? '<label><input type="checkbox" class="dont-scale-images" value="1">' . trans("don't scale images") . '</label>'
+                    : '') . '
 			</div>
 			<div class="fileupload-files">';
         if (!empty($fileupload) && isset($fileupload[$id])) {
@@ -275,7 +342,10 @@ class LMSSmartyPlugins
 
     public static function locationBoxFunction(array $params, $template)
     {
-        $DB = LMSDB::getInstance();
+        static $countries = array();
+        static $states = array();
+
+        $lms = LMS::getInstance();
 
         if (empty($params)) {
             $params = array();
@@ -354,11 +424,8 @@ class LMSSmartyPlugins
               <td>' . trans('State') . '</td>
               <td>';
 
-        if ($template->getTemplateVars('__states')) {
-            $states = $template->getTemplateVars('__states');
-        } else {
-            $states = $DB->GetCol('SELECT name FROM states;');
-            $template->assign('__states', $states);
+        if (isset($states) && empty($states)) {
+            $states = $lms->GetCountryStates();
         }
 
         if ($states) {
@@ -372,7 +439,7 @@ class LMSSmartyPlugins
             $tmp_state = mb_strtolower($params['location_state_name']);
 
             foreach ($states as $v) {
-                echo '<option ' . (mb_strtolower($v) == $tmp_state ? 'selected' : '')  . '>' . $v . '</option>';
+                echo '<option ' . (!empty($v) && mb_strtolower($v['name']) == $tmp_state ? 'selected' : '')  . '>' . $v['name'] . '</option>';
             }
 
             unset($tmp_state);
@@ -435,17 +502,15 @@ class LMSSmartyPlugins
             $params['countryid'] = -1;
         }
 
-        if ($template->getTemplateVars('__countries')) {
-            $countries = $template->getTemplateVars('__countries');
-        } else {
-            $countries = $DB->GetAll('SELECT id, name FROM countries;');
-            $template->assign('__countries', $countries);
+        if (empty($countries)) {
+            $countries = $lms->GetCountries();
+            Localisation::arraySort($countries, 'name');
         }
 
         if ($countries) {
             echo '<tr><td>' . trans('Country:') . '</td><td>
-              <select name="' . $input_name_country_id . '" data-address="country">
-              <option value="">---</option>';
+                <select name="' . $input_name_country_id . '" data-address="country">
+                <option value="">---</option>';
 
             foreach ($countries as $v) {
                 if ($v['id'] == $params['location_country_id']) {
@@ -686,5 +751,203 @@ class LMSSmartyPlugins
 
             return $result;
         }
+    }
+
+    public static function boxRowBlock($params, $content, $template, $repeat)
+    {
+        if (!$repeat) {
+            $id = isset($params['id']) ? $params['id'] : null;
+            $icon = isset($params['icon']) ? $params['icon'] : null;
+            // optional - text tip,
+            $tip = isset($params['tip']) ? trans($params['tip']) : null;
+            $label = isset($params['label']) ? $params['label'] : null;
+            $labelid = isset($params['labelid']) ? $params['labelid'] : null;
+            $visible = (isset($params['visible']) && $params['visible']) || !isset($params['visible']);
+            $class = isset($params['class']) ? $params['class'] : null;
+            $icon_class = isset($params['icon_class']) ? $params['icon_class'] : null;
+            $label_class = isset($params['label_class']) ? $params['label_class'] : null;
+            $field_id = isset($params['field_id']) ? $params['field_id'] : null;
+            $field_class = isset($params['field_class']) ? $params['field_class'] : null;
+
+            return '
+			<div' . ($id ? ' id="' . $id . '"' : '') . ' class="lms-ui-box-row' . ($class ? ' ' . $class : '') . '"'
+                . ($visible ? '' : ' style="display: none;"') . ($tip ? ' title="' . trans($tip) . '"' : '') . '>
+				<div class="lms-ui-box-row-icon' . '">
+					' . ($icon ? (strpos($icon, '/') !== false ? '<IMG src="' . $icon . '" alt="">'
+                    : '<i class="'
+                    . ($icon_class ? $icon_class . ' ' : '')
+                    . (strpos($icon, 'lms-ui-icon-') === 0 || strpos($icon, 'fa') === 0 ? $icon : 'lms-ui-icon-' . $icon)
+                    . '"></i>') : '') . '
+				</div>
+				<div class="lms-ui-box-row-label' . ($label_class ? ' ' . $label_class : '') . '">
+					' . ($labelid ? '<label for="' . $labelid . '">' : '')
+                . ($label ? trans($label) : '') . ($labelid ? '</label>' : '') . '
+				</div>
+				<div' . ($field_id ? ' id="' . $field_id . '"' : '')
+                . ' class="lms-ui-box-row-field' . ($field_class ? ' ' . $field_class : '') . '">
+					' . $content . '
+				</div>
+			</div>';
+        } else {
+            return '';
+        }
+    }
+
+    public static function buttonsBlock($params, $content, $template, $repeat)
+    {
+        if (!$repeat) {
+            return '<div class="lms-ui-responsive-buttons">' . self::buttonFunction(
+                array(
+                    'type' => 'link',
+                    'icon' => isset($params['icon']) ? $params['icon'] : 'additional-selection',
+                    'class' => 'lms-ui-dropdown-toggle',
+                ),
+                $template
+            ) . (isset($params['secondary']) && $params['secondary'] ?
+                self::buttonFunction(
+                    array(
+                        'type' => 'link',
+                        'icon' => isset($params['icon']) ? $params['icon'] : 'additional-selection',
+                        'class' => 'lms-ui-dropdown-toggle secondary',
+                        'tip' => trans('more actions'),
+                    ),
+                    $template
+                ) : '')
+                . '<div class="lms-ui-dropdown-buttons">'
+                . $content
+                . '</div></div>';
+        } else {
+            return '';
+        }
+    }
+
+    public static function boxContainerBlock($params, $content, $template, $repeat)
+    {
+        if (!$repeat) {
+            $id = isset($params['id']) ? $params['id'] : null;
+
+            $data_attributes = '';
+            foreach ($params as $name => $value) {
+                if (strpos($name, 'data_') === 0) {
+                    $data_attributes .= ' ' . str_replace('_', '-', $name) . '=\'' . $value . '\'';
+                }
+            }
+
+            return '
+                <div' . ($id ? ' id="' . $id . '"' : '')
+                    . $data_attributes
+                    . ' class="lms-ui-box-container">'
+                    . $content . '
+                </div>';
+        } else {
+            return '';
+        }
+    }
+
+
+    public static function tabContainerBlock($params, $content, $template, $repeat)
+    {
+        if (!$repeat) {
+            $id = isset($params['id']) ? $params['id'] : null;
+            $label = isset($params['label']) ? trans($params['label']) : null;
+
+            $data_attributes = '';
+            foreach ($params as $name => $value) {
+                if (strpos($name, 'data_') === 0) {
+                    $data_attributes .= ' ' . str_replace('_', '-', $name) . '=\'' . $value . '\'';
+                }
+            }
+
+            return '
+                <div' . ($id ? ' id="' . $id . '"' : '')
+                    . (isset($label) ? ' data-label="' . $label . '"' : '')
+                    . $data_attributes
+                    . ' class="lms-ui-tab-container lms-ui-sortable">'
+                    . $content . '
+                </div>';
+        }
+    }
+
+    public static function resourceTabSelectorFunction($params, $template)
+    {
+        $layout = $template->getTemplateVars('layout');
+        $resource_tabs = $template->getTemplateVars('serialized_resource_tabs');
+
+        return '
+            <form name="resource-tab-selector-form" id="resource-tab-selector-form">
+                <input type="hidden" id="resource-tab-module" value="' . $layout['module'] . '">'
+                . (isset($resource_tabs)
+                    ? '<input type="hidden" id="resource-tab-states" value="' . $resource_tabs . '">'
+                    : '') . '
+            </form>
+            <div id="lms-ui-resource-tab-selector-container">
+                <div>
+                    ' . trans("Visible tabs:") . '
+                </div>
+                <select id="resource-tab-selector" name="resource-tabs[]" form="resource-tab-selector-form"
+                    data-default-value="' . trans("- none -") . '"
+                    data-shorten-to-default-value="false"
+                    onchange="resourceTabSelectorChanged()" multiple>
+                </select>
+            </div>
+            <script src="js/lms-ui-resource-tab-selector.js"></script>';
+    }
+
+    public static function iconFunction(array $params, $template)
+    {
+        // optional - allow to easily attach event handler in jquery,
+        $id = isset($params['id']) ? $params['id'] : null;
+        // optional - additional css classes which are appended to class attribute
+        $class = isset($params['class']) && !empty($params['class']) ? $params['class'] : null;
+        // optional - icon selection transformed to css class
+        $name = isset($params['name']) ? $params['name'] : null;
+        // optional - text tip,
+        $tip = isset($params['tip']) ? trans($params['tip']) : null;
+        // optional - text label
+        $label = isset($params['label']) ? trans($params['label']) : null;
+
+        $data_attributes = '';
+        foreach ($params as $key => $value) {
+            if (strpos($key, 'data_') === 0) {
+                $data_attributes .= ' ' . str_replace('_', '-', $key) . '=\'' . $value . '\'';
+            }
+        }
+
+        return '<i'
+            . (isset($id) ? ' id="' . $id . '"' : '')
+            . ' class="'
+            . (isset($name) ? (strpos($name, 'lms-ui-icon-') === 0 || strpos($name, 'fa') === 0
+                ? $name : 'lms-ui-icon-' . $name) : '')
+            . (isset($class) ? ' ' . $class : '')
+            . '"'
+            . (isset($tip) ? ' title="' . $tip . '"' : '')
+            . $data_attributes
+        . '></i>'
+            . (isset($label) ? ' ' . $label : '');
+    }
+
+    public static function paytypesFunction(array $params, $template)
+    {
+        static $paytypes = array();
+
+        if (empty($paytypes)) {
+            $paytypes = $GLOBALS['PAYTYPES'];
+            Localisation::arraySort($paytypes);
+        }
+
+        $elemname = $params['elemname'];
+        $selected = isset($params['selected']) && !empty($params['selected']) ? $params['selected'] : 0;
+        $tip = isset($params['tip']) ? $params['tip'] : trans('Select payment type');
+        $trigger = isset($params['trigger']) ? $params['trigger'] : 'paytype';
+
+        $options = '';
+        foreach ($paytypes as $key => $item) {
+            $item = trans($item);
+            $options .= '<option value="' . $key . '"' . ($selected == $key ? ' selected' : '') . '>' . $item . '</option>';
+        }
+        return '<select name="' . $elemname . '" ' . self::tipFunction(array('text' => $tip, 'trigger' => $trigger), $template) . '>
+			<option value=""' . (!$selected ? ' selected' : '') . '>- ' . trans("default") . '-</option>'
+            . $options
+            . '</select>';
     }
 }

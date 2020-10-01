@@ -90,6 +90,7 @@ if (isset($_POST['assignment'])) {
         if (is_array($a['sassignmentid'][$schemaid])) {
             $modifiedvalues = $a['values'][$schemaid];
             $counts = $a['counts'][$schemaid];
+            $backwardperiods = $a['backwardperiods'][$schemaid];
             $copy_a = $a;
             $snodes = $a['snodes'][$schemaid];
             $sphones = $a['sphones'][$schemaid];
@@ -102,6 +103,7 @@ if (isset($_POST['assignment'])) {
                 $copy_a['promotionassignmentid'] = $v;
                 $copy_a['modifiedvalues'] = isset($modifiedvalues[$label][$v]) ? $modifiedvalues[$label][$v] : array();
                 $copy_a['count'] = $counts[$label];
+                $copy_a['backwardperiod'] = $backwardperiods[$label][$v];
                 $copy_a['nodes'] = $snodes[$label];
                 $copy_a['phones'] = $sphones[$label];
                 $tariffid = $LMS->AddAssignment($copy_a);
@@ -157,11 +159,13 @@ if (isset($_POST['assignment'])) {
         $a['at'] = $default_assignment_at;
     }
 
+    $a['type'] = intval(ConfigHelper::getConfig('phpui.default_liability_type', '-1'));
+
     $a['check_all_terminals'] =
         ConfigHelper::checkConfig('phpui.promotion_schema_all_terminal_check');
 
     $a['count'] = 1;
-    $a['currency'] = LMS::$default_currency;
+    $a['currency'] = Localisation::getDefaultCurrency();
 }
 
 $layout['pagetitle'] = trans('New Liability: $a', '<A href="?m=customerinfo&id='.$customer['id'].'">'.$customer['name'].'</A>');

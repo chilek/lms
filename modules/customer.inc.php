@@ -24,6 +24,27 @@
  *  $Id$
  */
 
+if (isset($_GET['oper']) && $_GET['oper'] == 'loadtransactionlist') {
+    header('Content-Type: text/html');
+
+    if ($SYSLOG && ConfigHelper::checkPrivilege('transaction_logs')) {
+        $trans = $SYSLOG->GetTransactions(
+            array(
+                'key' => SYSLOG::getResourceKey(SYSLOG::RES_CUST),
+                'value' => $customerid,
+                'limit' => 300,
+                'details' => true,
+            )
+        );
+        $SMARTY->assign('transactions', $trans);
+        $SMARTY->assign('resourcetype', SYSLOG::RES_CUST);
+        $SMARTY->assign('resourceid', $customerid);
+        die($SMARTY->fetch('transactionlist.html'));
+    }
+
+    die();
+}
+
 if ($layout['module'] != 'customeredit') {
     $customerinfo = $LMS->GetCustomer($customerid);
 
@@ -34,36 +55,63 @@ if ($layout['module'] != 'customeredit') {
     $SMARTY->assignByRef('customerinfo', $customerinfo);
 }
 
-if (isset($_GET['aggregate_documents'])) {
-    $aggregate_documents = !empty($_GET['aggregate_documents']);
-} else {
-    $aggregate_documents = ConfigHelper::checkConfig('phpui.aggregate_documents');
+if (!isset($resource_tabs['customernotes']) || $resource_tabs['customernotes']) {
+    $customernotes = $LMS->getCustomerNotes($customerid);
 }
 
-$commited             = !empty($_GET['commited']) ? true : false;
-$allevents            = isset($_GET['allevents']) && !empty($_GET['allevents']);
-$assignments          = $LMS->GetCustomerAssignments($customerid, true, false);
-$customergroups       = $LMS->CustomergroupGetForCustomer($customerid);
-$othercustomergroups  = $LMS->GetGroupNamesWithoutCustomer($customerid);
-$balancelist          = $LMS->GetCustomerBalanceList($customerid, null, 'ASC', $aggregate_documents);
-$customervoipaccounts = $LMS->GetCustomerVoipAccounts($customerid);
-$documents            = $LMS->GetDocuments($customerid, 10);
+if (!isset($resource_tabs['customerassignments']) || $resource_tabs['customerassignments']) {
+    $commited             = !empty($_GET['commited']) ? true : false;
+    $assignments = $LMS->GetCustomerAssignments($customerid, true, false);
+}
+if (!isset($resource_tabs['customergroups']) || $resource_tabs['customergroups']) {
+    $customergroups = $LMS->CustomergroupGetForCustomer($customerid);
+    $othercustomergroups = $LMS->GetGroupNamesWithoutCustomer($customerid);
+}
+if (!isset($resource_tabs['customerbalancebox']) || $resource_tabs['customerbalancebox']) {
+    if (isset($_GET['aggregate_documents'])) {
+        $aggregate_documents = !empty($_GET['aggregate_documents']);
+    } else {
+        $aggregate_documents = ConfigHelper::checkConfig('phpui.aggregate_documents');
+    }
+
+    $balancelist = $LMS->GetCustomerBalanceList($customerid, null, 'ASC', $aggregate_documents);
+}
+if (!isset($resource_tabs['customervoipaccountsbox']) || $resource_tabs['customervoipaccountsbox']) {
+    $customervoipaccounts = $LMS->GetCustomerVoipAccounts($customerid);
+}
+if (!isset($resource_tabs['customerdocuments']) || $resource_tabs['customerdocuments']) {
+    $documents = $LMS->GetDocuments($customerid, 10);
+
+    if (!empty($documents)) {
+        $SMARTY->assign('docrights', $DB->GetAllByKey('SELECT doctype, rights
+            FROM docrights WHERE userid = ? AND rights > 1', 'doctype', array(Auth::GetCurrentUser())));
+    }
+}
 $taxeslist            = $LMS->GetTaxes();
 $allnodegroups        = $LMS->GetNodeGroupNames();
-$messagelist          = $LMS->GetMessages($customerid);
-$params = array(
-    'customerid' => $customerid,
-);
-if (isset($_GET['events-from-date'])) {
-    $params['datefrom'] = date_to_timestamp($_GET['events-from-date']);
-    $SMARTY->assign('events_from_date', $_GET['events-from-date']);
+if (!isset($resource_tabs['customermessages']) || $resource_tabs['customermessages']) {
+    $messagelist = $LMS->GetMessages($customerid);
 }
-if ($allevents) {
-    $params['closed'] = '';
+if (!isset($resource_tabs['customerevents']) || $resource_tabs['customerevents']) {
+    $params = array(
+        'customerid' => $customerid,
+    );
+    if (isset($_GET['events-from-date'])) {
+        $params['datefrom'] = date_to_timestamp($_GET['events-from-date']);
+        $SMARTY->assign('events_from_date', $_GET['events-from-date']);
+    }
+    $allevents = isset($_GET['allevents']) && !empty($_GET['allevents']);
+    if ($allevents) {
+        $params['closed'] = '';
+    }
+    $eventlist = $LMS->EventSearch($params, 'date,desc', true);
 }
-$eventlist            = $LMS->EventSearch($params, 'date,desc', true);
-$customernodes        = $LMS->GetCustomerNodes($customerid);
-$customernetnodes = $LMS->GetCustomerNetNodes($customerid);
+if (!isset($resource_tabs['customernodesbox']) || $resource_tabs['customernodesbox']) {
+    $customernodes = $LMS->GetCustomerNodes($customerid);
+}
+if (!isset($resource_tabs['customernetnodes']) || $resource_tabs['customernetnodes']) {
+    $customernetnodes = $LMS->GetCustomerNetNodes($customerid);
+}
 
 // prepare node assignments array which allows to easily map nodes to assignments
 $nodeassignments = array();
@@ -80,7 +128,9 @@ if (!empty($assignments)) {
     }
 }
 
-$customernetworks     = $LMS->GetCustomerNetworks($customerid, 10);
+if (!isset($resource_tabs['customernetworksbox']) || $resource_tabs['customernetworksbox']) {
+    $customernetworks = $LMS->GetCustomerNetworks($customerid, 10);
+}
 
 $userid = Auth::GetCurrentUser();
 $user_permission_checks = ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks');
@@ -95,31 +145,16 @@ $customerstats = array(
     'accounts' => $DB->GetOne('SELECT COUNT(*) FROM passwd WHERE ownerid = ?', array($customerid))
 );
 
-$customerdevices = $LMS->GetNetDevList('name,asc', array('ownerid' => intval($customerid)));
-unset($customerdevices['total']);
-unset($customerdevices['order']);
-unset($customerdevices['direction']);
+if (!isset($resource_tabs['customerdevices']) || $resource_tabs['customerdevices']) {
+    $customerdevices = $LMS->GetNetDevList('name,asc', array('ownerid' => intval($customerid)));
+    unset($customerdevices['total']);
+    unset($customerdevices['order']);
+    unset($customerdevices['direction']);
 
-$counter = count($customerdevices);
-for ($i=0; $i<$counter; ++$i) {
-    $customerdevices[$i]['ips'] = $LMS->GetNetDevIPs($customerdevices[$i]['id']);
-}
-
-if ($SYSLOG && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.transaction_logs'))) {
-    $trans = $SYSLOG->GetTransactions(array('key' => SYSLOG::getResourceKey(SYSLOG::RES_CUST), 'value' => $customerid, 'limit' => 300));
-    if (!empty($trans)) {
-        foreach ($trans as $idx => $tran) {
-            $SYSLOG->DecodeTransaction($trans[$idx]);
-        }
+    $counter = count($customerdevices);
+    for ($i = 0; $i < $counter; ++$i) {
+        $customerdevices[$i]['ips'] = $LMS->GetNetDevIPs($customerdevices[$i]['id']);
     }
-    $SMARTY->assign('transactions', $trans);
-    $SMARTY->assign('resourcetype', SYSLOG::RES_CUST);
-    $SMARTY->assign('resourceid', $customerid);
-}
-
-if (!empty($documents)) {
-    $SMARTY->assign('docrights', $DB->GetAllByKey('SELECT doctype, rights
-        FROM docrights WHERE userid = ? AND rights > 1', 'doctype', array(Auth::GetCurrentUser())));
 }
 
 // try to determine preselected cash registry numberplan for instant cash receipt creations
@@ -156,6 +191,7 @@ $SMARTY->assign(array(
 ));
 
 $SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources WHERE deleted = 0 ORDER BY name'));
+$SMARTY->assignByRef('customernotes', $customernotes);
 $SMARTY->assignByRef('customernodes', $customernodes);
 $SMARTY->assignByRef('customernetworks', $customernetworks);
 $SMARTY->assignByRef('customerdevices', $customerdevices);

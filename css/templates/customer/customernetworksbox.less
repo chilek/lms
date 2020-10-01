@@ -24,12 +24,15 @@
 
 [id^="networkspanel-"] {
 	.name {
-		width: 40em;
+		width: 30em;
 	}
 	.id {
 		width: 8em;
 	}
 	.address {
+		width: 10em;
+	}
+	.router {
 		width: 10em;
 	}
 	.host {
@@ -40,6 +43,14 @@
 	}
 
 	@media all and (max-width: 1200px) {
+		.col-2 {
+			flex-direction: column !important;
+			width: 25em !important;
+			div {
+				flex-grow: 0 !important;
+				width: 100% !important;
+			}
+		}
 		.col-3 {
 			flex-direction: column !important;
 			width: 10em !important;

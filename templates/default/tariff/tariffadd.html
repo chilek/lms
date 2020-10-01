@@ -83,15 +83,17 @@
 
 				<TR>
 				    <TD WIDTH="1%">
-					<IMG SRC="img/tax.gif" ALT="">
+						<IMG SRC="img/tax.gif" ALT="">
 				    </TD>
 				    <TD WIDTH="1%" NOWRAP><B>{trans("Tax:")}</B></TD>
 				    <TD WIDTH="98%">
-					<SELECT SIZE="1" NAME="tariff[taxid]" {tip text="Select Tax rate" trigger="taxid"}>
-					{foreach item=tax from=$taxeslist}
-					    <OPTION VALUE="{$tax.id}"{if $tax.value == $default_taxrate || $tax.id == $tariff.taxid} selected{/if}>{$tax.label}</OPTION>
-					{/foreach}
-					</SELECT>
+						<SELECT SIZE="1" NAME="tariff[taxid]" {tip text="Select Tax rate" trigger="taxid"} required>
+							{foreach $taxeslist as $tax}
+								<OPTION VALUE="{$tax.id}"{if $tax.value == $default_taxrate || $tax.id == $tariff.taxid} selected{/if}>{$tax.label}</OPTION>
+							{foreachelse}
+								<option value="">{trans("- no tax rates defined -")}</option>
+							{/foreach}
+						</SELECT>
 				    </TD>
 				</TR>
 				<TR>
@@ -445,9 +447,9 @@
         </TD>
     </TR>
 	<TR>
-	    <TD WIDTH="100%" COLSPAN="3" ALIGN="RIGHT">
-	    	<A HREF="javascript:document.tariff.submit();" accesskey="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
-		<A HREF="?m=tarifflist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
+	    <TD colspan="3" class="lms-ui-box-buttons">
+			{button type="submit" label="Submit" icon="save"}
+			{button label="Cancel" icon="cancel" onclick="location.href='?m=tarifflist';"}
 	    </TD>
 	</TR>
     </TBODY>

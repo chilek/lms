@@ -149,6 +149,12 @@ if (isset($_POST['voipaccountedit'])) {
             $error['address_id'] = trans('Selected address was not assigned to customer.');
             $voipaccountedit['address_id'] = null;
         }
+        // check if selected address is territ address
+        if (!isset($error['address_id']) && !ConfigHelper::checkPrivilege('full_access')
+            && ConfigHelper::checkConfig('phpui.teryt_required') && ($voipaccountedit['address_id'] == -1
+                || !$LMS->isTerritAddress($voipaccountedit['address_id']))) {
+            $error['address_id'] = trans('TERRIT address is required!');
+        }
     }
 
     $hook_data = $plugin_manager->executeHook(
@@ -173,7 +179,7 @@ if (!ConfigHelper::checkConfig('phpui.big_networks')) {
     $SMARTY->assign('customers', $LMS->GetCustomerNames());
 }
 
-if (!empty($voipaccountedit['ownerid']) && $LMS->CustomerExists($voipaccountedit['ownerid']) && ($customerid = $voipaccountedit['ownerid'])) {
+if (!empty($voipaccountinfo['ownerid']) && $LMS->CustomerExists($voipaccountinfo['ownerid']) && ($customerid = $voipaccountinfo['ownerid'])) {
     include(MODULES_DIR . '/customer.inc.php');
 }
 

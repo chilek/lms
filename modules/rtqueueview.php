@@ -24,6 +24,36 @@
  *  $Id$
  */
 
+if (isset($_GET['action'])) {
+    switch ($_GET['action']) {
+        case 'assign':
+            if (!empty($_GET['ticketid'])) {
+                if (isset($_GET['check-conflict'])) {
+                    header('Content-Type: application/json');
+                    die(json_encode($LMS->TicketIsAssigned($_GET['ticketid'])));
+                }
+                $LMS->TicketChange($_GET['ticketid'], array('owner' => Auth::GetCurrentUser()));
+                $SESSION->redirect(str_replace('&action=assign', '', $_SERVER['REQUEST_URI'])
+                    . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
+            }
+            break;
+        case 'assign2':
+            $LMS->TicketChange($_GET['ticketid'], array('verifierid' => Auth::GetCurrentUser()));
+            $SESSION->redirect(str_replace('&action=assign2', '', $_SERVER['REQUEST_URI'])
+                . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
+            break;
+        case 'unlink':
+            $LMS->TicketChange($_GET['ticketid'], array('parentid' => null));
+            $backto = $SESSION->get('backto');
+            if (empty($backto)) {
+                $SESSION->redirect('?m=rtqueuelist');
+            } else {
+                $SESSION->redirect('?' . $backto);
+            }
+            break;
+    }
+}
+
 $LMS->CleanupTicketLastView();
 
 // queue id's
@@ -71,24 +101,24 @@ if (empty($filter['ids'])) {
 }
 
 // category id's
-if (isset($_GET['catid'])) {
-    if (is_array($_GET['catid'])) {
-        if (in_array(-1, $_GET['catid'])) {
-            $filter['catids'] = -1;
-        } else {
-            $filter['catids'] = Utils::filterIntegers($_GET['catid']);
-        }
-    } elseif (intval($_GET['catid'])) {
-        $filter['catids'] = Utils::filterIntegers(array($_GET['catid']));
-    } elseif ($_GET['catid'] == 'all') {
-        $filter['catids'] = 0;
+if (!empty($_GET['catid'])) {
+    if (!is_array($_GET['catid'])) {
+        $_GET['catid'] = array($_GET['catid']);
+    }
+
+    if (in_array('all', $_GET['catid'])) {
+        $filter['catids'] = null;
+    } else {
+        $filter['catids'] = Utils::filterIntegers($_GET['catid']);
     }
 }
 
-if (!empty($filter['catids']) && $filter['catids'] != - 1) {
+if (!empty($filter['catids'])) {
     foreach ($filter['catids'] as $catidx => $catid) {
-        if (!$LMS->GetUserRightsToCategory(Auth::GetCurrentUser(), $catid)) {
-            unset($filter['catids'][$catidx]);
+        if ($catid != -1) {
+            if (!$LMS->GetUserRightsToCategory(Auth::GetCurrentUser(), $catid)) {
+                unset($filter['catids'][$catidx]);
+            }
         }
     }
     if (empty($filter['catids'])) {
@@ -161,19 +191,17 @@ if (isset($_GET['tt'])) {
 }
 
 // owner
-if (isset($_GET['owner'])) {
-    if (is_array($_GET['owner'])) {
-        $filter['owner'] = Utils::filterIntegers($_GET['owner']);
-        if (count($filter['owner']) == 1 && reset($filter['owner']) <= 0) {
-            $filter['owner'] = intval(reset($filter['owner']));
-        }
-    } elseif (intval($_GET['owner']) > 0) {
-        $filter['owner'] = Utils::filterIntegers(array($_GET['owner']));
+if (!empty($_GET['owner'])) {
+    if (!is_array($_GET['owner'])) {
+        $_GET['owner'] = array($_GET['owner']);
+    }
+    if (in_array('all', $_GET['owner'])) {
+        $filter['owner'] = array();
     } else {
-        $filter['owner'] = intval($_GET['owner']);
+        $filter['owner'] = Utils::filterIntegers($_GET['owner']);
     }
 } elseif (!isset($filter['owner'])) {
-    $filter['owner'] = 'all';
+    $filter['owner'] = array();
 }
 
 // removed or not?
@@ -240,8 +268,15 @@ if (isset($_GET['unread'])) {
     $filter['unread'] = -1;
 }
 
-if (!is_array($_GET['parent']) && !empty($_GET['parent'])) {
-    $filter['parent'] = intval($_GET['parent']);
+if (!empty($_GET['parentids'])) {
+    if (!is_array($_GET['parentids'])) {
+        $_GET['parentids'] = array($_GET['parentids']);
+    }
+    if (!in_array('-1', $_GET['parentids'])) {
+        $filter['parentids'] = Utils::filterIntegers($_GET['parentids']);
+    } else {
+        $filter['parentids'] = -1;
+    }
 }
 
 if (isset($_GET['rights'])) {
@@ -298,7 +333,7 @@ unset($queue['deadline']);
 unset($queue['service']);
 unset($queue['type']);
 unset($queue['unread']);
-unset($queue['parent']);
+unset($queue['parentids']);
 unset($queue['rights']);
 unset($queue['verifier']);
 unset($queue['netnode']);
@@ -316,38 +351,11 @@ unset($netnodelist['total']);
 unset($netnodelist['order']);
 unset($netnodelist['direction']);
 
-if (isset($_GET['action'])) {
-    switch ($_GET['action']) {
-        case 'assign':
-            if (!empty($_GET['ticketid'])) {
-                if (isset($_GET['check-conflict'])) {
-                    header('Content-Type: application/json');
-                    die(json_encode($LMS->TicketIsAssigned($_GET['ticketid'])));
-                }
-                $LMS->TicketChange($_GET['ticketid'], array('owner' => Auth::GetCurrentUser()));
-                $SESSION->redirect(str_replace('&action=assign', '', $_SERVER['REQUEST_URI'])
-                . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
-            }
-            break;
-        case 'assign2':
-                $LMS->TicketChange($_GET['ticketid'], array('verifierid' => Auth::GetCurrentUser()));
-                $SESSION->redirect(str_replace('&action=assign2', '', $_SERVER['REQUEST_URI'])
-                . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
-            break;
-        case 'unlink':
-            $LMS->TicketChange($_GET['ticketid'], array('parentid' => null));
-            $backto = $SESSION->get('backto');
-            if (empty($backto)) {
-                $SESSION->redirect('?m=rtqueuelist');
-            } else {
-                $SESSION->redirect('?' . $backto);
-            }
-            break;
-    }
-}
+$aet = ConfigHelper::getConfig('rt.allow_modify_resolved_tickets_newer_than', 86400);
 
 $SESSION->remove('backid');
 
+$SMARTY->assign('aet', $aet);
 $SMARTY->assign('pagination', $pagination);
 $SMARTY->assign('queues', $queues);
 $SMARTY->assign('projects', $projects);

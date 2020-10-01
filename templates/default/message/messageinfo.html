@@ -39,7 +39,7 @@
 		</TD>
 		<TD>
 			{if $message.userid}
-			<a href="?m=userinfo&id={$message.userid}">{$message.name}</a>
+			<a href="?m=userinfo&id={$message.userid}">{$message.username}</a>
 			{else}LMS{/if}
 		</TD>
 	</TR>
@@ -102,8 +102,8 @@
 				{foreach $filecontainers as $container}
 						{foreach $container.files as $file}
 							{documentview id="{$container.id}-{$file.id}" type=$file.contenttype name=$file.filename
-							url="?m=attachments&attachmentaction=viewfile&type=messageid&id={$container.id}&fileid={$file.id}" external=true
-							text="{$file.filename} <img src=\"img/{if preg_match('/pdf/',$file.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$file.contenttype)}xls{else}view{/if}.gif\">"}
+								url="?m=attachments&attachmentaction=viewfile&type=messageid&id={$container.id}&fileid={$file.id}" external=true
+								text="{$file.filename} <i class=\"lms-ui-icon-view{if preg_match('/pdf/',$file.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$file.contenttype)} xls{/if}\"></i>"}
 							<br>
 						{/foreach}
 					{button id="downloadzippedcontainer" onclick="location.href = '?m=attachments&attachmentaction=downloadzippedcontainer&type=messageid&id={$container.id}';" label="Download as zip archive" icon="fileupload"}
@@ -115,6 +115,7 @@
 		<TD COLSPAN="3" class="lms-ui-box-buttons">
 			{button id="delete-message" icon="delete" label="Delete"}
 			{button icon="cancel" label="Cancel" onclick="location.href = '?m=messagelist';"}
+			{button icon="resend" label="Resend" onclick="location.href = '?m=messageadd&messageid={$message.id}';"}
 		</TD>
 	</TR>
     </TBODY>

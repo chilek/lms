@@ -1,5 +1,6 @@
 <!--// $Id$ //-->
 <style>
+
 	.customer-header {
 		width: 100%;
 		display: flex;
@@ -18,7 +19,7 @@
 
 </style>
 
-<TABLE class="lmsbox{if $customerpanel} lms-ui-sortable{/if}" id="customerinfobox">
+<TABLE class="lmsbox{if $customerpanel} lms-ui-tab-container lms-ui-sortable{/if}" id="customerinfobox"{if $customerpanel} data-label="{trans("Customer Info")}"{/if}>
 	<COLGROUP>
 		<COL style="width: 99%;">
 		<COL style="width: 1%;">
@@ -28,7 +29,7 @@
 		<TD colspan="2">
 			<div class="customer-header">
 				<div class="bold">
-					<IMG SRC="img/customer.gif" ALT=""{if $customerpanel} class="lms-ui-sortable-handle"{/if}>
+					{icon name="customer" class="{if $customerpanel} lms-ui-sortable-handle{/if}"}
 					{if $customerpanel}{trans("Owner:")}{/if}
 					{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}{if $customerinfo.extid} / {$customerinfo.extid}{/if}){if $customerinfo.deleted} <span class="lms-ui-alert">({trans("deleted customer")})</span>{/if}
 				</div>
@@ -50,7 +51,7 @@
 						{block name="customerinfobox-leftcolumn"}
 							<TR>
 								<TD WIDTH="1%">
-									<IMG src="img/{$_CSTATUSES[$customerinfo.status].img}" alt="">
+									{icon name="customer-status-{$_CSTATUSES[$customerinfo.status].alias}"}
 								</TD>
 								<TD WIDTH="99%" class="bold lms-ui-customer-status-{$_CSTATUSES[$customerinfo.status].alias}">
 									{$_CSTATUSES[$customerinfo.status].singularlabel}
@@ -59,7 +60,7 @@
 						{if $customerinfo.division}
 							<TR>
 								<TD WIDTH="1%">
-									<IMG src="img/division.gif" alt="">
+									{icon name="division"}
 								</TD>
 								<TD WIDTH="99%">
 									{$customerinfo.division}
@@ -68,20 +69,36 @@
 						{/if}
 							<TR>
 								<TD WIDTH="1%">
-									<IMG src="img/folder.gif" alt="">
+									{icon name="legal-personality"}
 								</TD>
 								<TD WIDTH="99%">
 									{if $customerinfo.type == $smarty.const.CTYPES_COMPANY}{assign var='type' value=$smarty.const.CTYPES_COMPANY}{$_CTYPES.$type}{elseif $customerinfo.type == $smarty.const.CTYPES_PRIVATE}{assign var='type' value=$smarty.const.CTYPES_PRIVATE}{$_CTYPES.$type}{/if}
 								</TD>
 							</TR>
 
+						{if !empty($customerinfo.flags)}
+							<TR>
+								<TD WIDTH="1%">
+									{icon name="legal-personality"}
+								</TD>
+								<TD WIDTH="99%">
+									{$first = true}
+									{foreach $_CUSTOMERFLAGS as $cflag => $flag}
+										{if ($customerinfo.flags & $cflag) > 0}
+											{if !$first}, {/if}<span title="{$flag.tip}">{$flag.label}</span>{$first = false}
+										{/if}
+									{/foreach}
+								</TD>
+							</TR>
+						{/if}
+
 							{foreach $customerinfo.addresses as $v}
 								{if $v.location_address_type == $smarty.const.BILLING_ADDRESS}
 								<tr>
-									<td style="width: 1%;"><i class="lms-ui-icon-home fa-fw" title="{trans('billing address')}"></i></td>
+									<td style="width: 1%;">{icon name="home" class="fa-fw" tip="billing address"}</td>
 									<td style="width: 99%;">
 										<span title="{trans('billing address')}">{if $v.teryt}{t a=$v.location}$a (TERRIT){/t}{else}{$v.location}{/if}
-											<a href="https://www.google.com/maps/place/{$v.location}" title="{trans("Google Maps")}"><i class="lms-ui-icon-location"></i></a>
+											<a href="https://www.google.com/maps/place/{$v.location}" title="{trans("Google Maps")}">{icon name="location"}</a>
 										</span>
 									</td>
 								</tr>
@@ -92,10 +109,10 @@
 							{foreach $customerinfo.addresses as $v}
 								{if $v.location_address_type == $smarty.const.POSTAL_ADDRESS}
 								<tr>
-									<td style="width: 1%;"><i class="lms-ui-icon-mail fa-fw" title="{trans('postal address')}"></i></td>
+									<td style="width: 1%;">{icon name="mail" class="fa-fw" tip="postal address"}</td>
 									<td style="width: 99%;">
 										<span title="{trans('postal address')}">{if $v.location_name}{$v.location_name}, {/if}{if $v.teryt}{t a=$v.location}$a (TERRIT){/t}{else}{$v.location}{/if}
-											<a href="https://www.google.com/maps/place/{$v.location}" title="{trans("Google Maps")}"><i class="lms-ui-icon-location"></i></a>
+											<a href="https://www.google.com/maps/place/{$v.location}" title="{trans("Google Maps")}">{icon name="location"}</a>
 										</span>
 									</td>
 								</tr>
@@ -115,11 +132,11 @@
 									{/if}
 
 									<td style="width: 1%;">
-										<i class="{$icon}" alt="" title="{$title}"></i>
+										{icon class=$icon tip=$title}
 									</td>
 									<td style="width: 99%;">
 										<span title="{$title}">{if $v.location_name}{$v.location_name}, {/if}{if $v.teryt}{t a=$v.location}$a (TERRIT){/t}{else}{$v.location}{/if}
-											<a href="https://www.google.com/maps/place/{$v.location}" title="{trans("Google Maps")}"><i class="lms-ui-icon-location"></i></a>
+											<a href="https://www.google.com/maps/place/{$v.location}" title="{trans("Google Maps")}">{icon name="location"}</a>
 										</span>
 									</td>
 								</tr>
@@ -133,7 +150,7 @@
 								<TD style="width: 99%;" class="customer-contact">
 									<fieldset style="width: auto;">
 										<legend class="bold nobr">
-											<i class="{$properties.ui.legend.icon}"></i>
+											{icon class=$properties.ui.legend.icon}
 											{$properties.ui.legend.text}
 										</legend>
 										<TABLE>
@@ -157,13 +174,11 @@
 						{if $customerinfo.pin}
 							<TR>
 								<TD WIDTH="1%">
-									<IMG SRC="img/pin.gif" class="lms-ui-button-clipboard" data-clipboard-text="{$customerinfo.pin}" ALT="">
+									{icon name="customer-pin-code" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.pin}
 								</TD>
 								<TD WIDTH="99%">
 									{if ConfigHelper::checkConfig('phpui.protect_passwords')}
-										<button class="lms-ui-button-clipboard lms-ui-button" data-clipboard-text="{$customerinfo.pin}">
-											<i></i> {trans("Copy")}
-										</button>
+										{button icon="clipboard" class="lms-ui-button-clipboard" label="Copy" data_clipboard_text=$customerinfo.pin}
 									{else}
 										{$customerinfo.pin}
 									{/if}
@@ -173,7 +188,7 @@
 						{if $customerinfo.icn != ""}
 							<TR>
 								<TD WIDTH="1%">
-									<IMG SRC="img/serialnumber.gif" ALT="">
+									{icon name="user-id-number"}
 								</TD>
 								<TD WIDTH="99%">
 									{trans("ICN")}: {$customerinfo.icn}
@@ -183,7 +198,7 @@
 						{if $customerinfo.ssn != ""}
 							<TR>
 								<TD WIDTH="1%">
-									<IMG SRC="img/serialnumber.gif" ALT="">
+									{icon name="user-id-number"}
 								</TD>
 								<TD WIDTH="99%">
 									{trans("SSN")}: {$customerinfo.ssn}
@@ -193,7 +208,7 @@
 						{if $customerinfo.ten != ""}
 							<TR>
 								<TD WIDTH="1%">
-									<IMG SRC="img/serialnumber.gif" ALT="">
+									{icon name="user-id-number"}
 								</TD>
 								<TD WIDTH="99%">
 									{trans("TEN")}: {$customerinfo.ten}
@@ -203,7 +218,7 @@
 						{if $customerinfo.regon != ""}
 							<TR>
 								<TD WIDTH="1%">
-									<IMG SRC="img/serialnumber.gif" ALT="">
+									{icon name="user-id-number"}
 								</TD>
 								<TD WIDTH="99%">
 									{trans("REGON")}: {$customerinfo.regon}
@@ -213,7 +228,7 @@
 						{if $customerinfo.rbename != ""}
 							<TR>
 								<TD style="width: 1%;" class="valign-top">
-									<IMG SRC="img/serialnumber.gif" ALT="">
+									{icon name="user-id-number"}
 								</TD>
 								<TD style="width: 99%;">
 									{trans("RBE Name:")}
@@ -230,7 +245,7 @@
 						{if $customerinfo.rbe != ""}
 							<TR>
 								<TD style="width: 1%;">
-									<IMG SRC="img/serialnumber.gif" ALT="">
+									{icon name="user-id-number"}
 								</TD>
 								<TD style="width: 99%;">
 									{trans("RBE")}: {$customerinfo.rbe}
@@ -240,7 +255,7 @@
 						{if $customerinfo.bankaccount}
 							<TR>
 								<TD WIDTH="1%">
-									<IMG SRC="img/card.gif" ALT="">
+									{icon name="account-number"}
 								</TD>
 								<TD WIDTH="99%" NOWRAP>
 									{format_bankaccount($customerinfo.bankaccount)}
@@ -249,7 +264,7 @@
 						{/if}
 							<TR>
 								<TD WIDTH="1%" style="vertical-align: top">
-									<IMG SRC="img/options.gif" ALT="">
+									{icon name="paytype"}
 								</TD>
 								<TD WIDTH="99%">
 									<TABLE cellpadding="2">
@@ -266,7 +281,7 @@
 												{trans("Payment type:")}
 											</TD>
 											<TD>
-												{assign var=paytype value=$customerinfo.paytype}{if $_PAYTYPES.$paytype}{$_PAYTYPES.$paytype}{else}{trans("default")}{/if}
+												{assign var=paytype value=$customerinfo.paytype}{if $_PAYTYPES.$paytype}{trans($_PAYTYPES.$paytype)}{else}{trans("default")}{/if}
 											</TD>
 										</TR>
 										{if $customerinfo.cutoffstop > $smarty.now}
@@ -287,7 +302,7 @@
 							</TR>
 							<TR>
 								<TD WIDTH="1%" style="vertical-align: top">
-									<i class="lms-ui-icon-consent"></i>
+									{icon name="consent"}
 								</TD>
 								<TD WIDTH="99%">
 									<TABLE cellpadding="2" class="lms-ui-separated-rows">
@@ -331,7 +346,7 @@
 					{if $customerinfo.info}
 					<TR>
 						<TD WIDTH="1%">
-							<IMG SRC="img/info1.gif" ALT="">
+							{icon name="optional-info"}
 						</TD>
 						<TD WIDTH="99%" COLSPAN="2">
 							<TABLE width="100%" CELLPADDING="5">
@@ -347,7 +362,7 @@
 					{if $customerinfo.message}
 					<TR>
 						<TD WIDTH="1%">
-							<IMG SRC="img/warningon.gif" ALT="">
+							{icon name="warning"}
 						</TD>
 						<TD WIDTH="99%" COLSPAN="2">
 							<TABLE width="100%" CELLPADDING="5">
@@ -363,7 +378,7 @@
 					{if $customerinfo.notes}
 					<TR>
 						<TD WIDTH="1%">
-							<IMG SRC="img/note.gif" ALT="">
+							{icon name="notes"}
 						</TD>
 						<TD WIDTH="99%" COLSPAN="2">
 							<TABLE width="100%" CELLPADDING="5">
@@ -379,7 +394,7 @@
 					{if $customerinfo.documentmemo}
 					<TR>
 						<TD>
-							<i class="lms-ui-icon-memo"></i>
+							{icon name="memo"}
 						</TD>
 						<TD COLSPAN="2">
 							<TABLE width="100%" CELLPADDING="5">
@@ -395,7 +410,7 @@
 					{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 					<TR>
 						<TD WIDTH="1%">
-							<IMG SRC="img/money.gif" ALT="">
+							{icon name="money"}
 						</TD>
 						<TD WIDTH="1%">
 							<B>{trans("Balance:")}</B>
@@ -432,8 +447,8 @@
 					</TR>
 					{/if}
 					<TR>
-								<TD WIDTH="1%">
-								<IMG SRC="img/cms.gif" ALT="">
+						<TD WIDTH="1%">
+							{icon name="lastloggedin"}
 						</TD>
 						<TD WIDTH="1%" NOWRAP>
 							<B>{trans("Last login:")}<BR>
@@ -446,7 +461,7 @@
 					</TR>
 					<TR>
 						<TD WIDTH="1%">
-							<IMG SRC="img/users.gif" ALT="">
+							{icon name="modified-date"}
 						</TD>
 						<TD WIDTH="1%">
 							<B>{trans("Created:")}<BR>
@@ -470,22 +485,22 @@
 			{block name="customerinfobox-buttons"}
 			{if $customerinfo.deleted}
 				{if ConfigHelper::checkPrivilege('permanent_customer_removal')}
-					{button id="remove-button" icon="remove" label="Remove permanently" onclick="location.href = '?m=customerdel&id={$customerinfo.id}&type=permanent';"}
+					{button id="remove-button" icon="remove" label="Remove permanently" href="?m=customerdel&id={$customerinfo.id}&type=permanent"}
 				{/if}
 				{button id="restore-button" icon="restore" label="Restore" onclick="location.href = '?m=customeredit&id={$customerinfo.id}&action=recover';"}
 			{else}
 				{button type="link-button" id="rtsearch-button" class="{if $customerstats['tickets']['notresolved']}bold{/if}" icon="timetable"
 					label="{trans("Tickets")}{if $customerstats['tickets']} ({$customerstats['tickets']['all']}{if $customerstats['tickets']['notresolved']} / {$customerstats['tickets']['notresolved']}{/if}){/if}"
 					href="?m=rtsearch&id={$customerinfo.id}"}
-				{button type="link-button" id="accounts-button" icon="lms-ui-icon-customer" label="{trans("Accounts")} ({$customerstats['accounts']})"
+				{button type="link-button" id="accounts-button" icon="customer" label="{trans("Accounts")} ({$customerstats['accounts']})"
 					href="?m=accountlist&u={$customerinfo.id}"}
 				{button type="link-button" id="domains-button" icon="network"
 					label="{trans("Domains")} ({$customerstats['domains']})" href="?m=domainlist&c={$customerinfo.id}"}
-				{button type="link-button" id="stats-button" icon="lms-ui-icon-stats" label="Stats"
+				{button type="link-button" id="stats-button" icon="stats" label="Stats"
 					href="?m=trafficprint&type=customertraffic&customer={$customerinfo.id}"}
 				{button type="link-button" id="edit-button" icon="edit" label="Edit" href="?m=customeredit&id={$customerinfo.id}"}
 				{if ConfigHelper::checkPrivilege('customer_removal')}
-					{button id="delete-button" icon="delete" label="Delete" onclick="location.href = '?m=customerdel&id={$customerinfo.id}';"}
+					{button id="delete-button" icon="delete" label="Delete" href="?m=customerdel&id={$customerinfo.id}"}
 				{/if}
 			{/if}
 			{if $info_link}
@@ -496,13 +511,26 @@
 	</TR>
 	</TBODY>
 </TABLE>
-{if $customerpanel}
-<SCRIPT type="text/javascript">
-<!--
-	if (getCookie('customerpanel') == '1')
-	{
-		document.getElementById('customerpanel').style.display = '';
-	}
-//-->
-</SCRIPT>
-{/if}
+<script>
+
+	{if $customerpanel}
+		if (getCookie('customerpanel') == '1') {
+			$('#customerpanel').show();
+		}
+	{/if}
+
+	$(function() {
+		$('#delete-button').click(function() {
+			confirmDialog($t("Are you sure, you want to remove customer '$a' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!", "{$customerinfo.customername|escape}"), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+		});
+
+		$('#remove-button').click(function() {
+			confirmDialog($t("Do you want to permanently remove $a customer?", "{$customerinfo.customername|escape}"), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+		});
+	});
+
+</script>

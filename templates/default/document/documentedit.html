@@ -140,7 +140,7 @@
 				{/if}
 				{documentview id="{$document.id}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
 					url="?m=documentview&id={$document.id}&attachmentid={$docattach.id}" external=true class=$class
-					text="{$docattach.filename} <i class=\"{if preg_match('/pdf/',$docattach.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)}xls{/if}\"></i>"}
+					text="{$docattach.filename} <i class=\"lms-ui-icon-view{if preg_match('/pdf/',$docattach.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)} xls{/if}\"></i>"}
 				{if $docattach.type == -1}<i class="lms-ui-icon-user" title="<strong>{t a=date("Y/m/d H:i", $docattach.cdate)}Sent by customer at $a{/t}</strong>"></i>{/if}
 				<input type="hidden" name="document[attachments][{$docattach.id}][deleted]" value="{$document.attachments[$docattach.id].deleted}">
 			</div>
@@ -216,7 +216,7 @@
 
 		$('.docattach').on('click', function() {
 			var elem = $(this);
-			elem.toggleClass('blend crossed').find('.lms-ui-button-view').toggleClass('blend')
+			elem.toggleClass('blend crossed').find('.lms-ui-button').toggleClass('blend')
 			elem.find('i').toggleClass('lms-ui-icon-delete').toggleClass('lms-ui-icon-cancel');
 			elem.find('input').val(+ elem.hasClass('blend'));
 			return false;

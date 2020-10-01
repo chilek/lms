@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -28,20 +28,38 @@
 ini_set('error_reporting', E_ALL&~E_NOTICE);
 
 $parameters = array(
-    'C:' => 'config-file:',
-    'q' => 'quiet',
-    'h' => 'help',
-    'v' => 'version',
-    'f:' => 'import-file:',
+    'config-file:' => 'C:',
+    'quiet' => 'q',
+    'help' => 'h',
+    'version' => 'v',
+    'import-file:' => 'f:',
 );
 
-foreach ($parameters as $key => $val) {
-    $val = preg_replace('/:/', '', $val);
-    $newkey = preg_replace('/:/', '', $key);
-    $short_to_longs[$newkey] = $val;
+$long_to_shorts = array();
+foreach ($parameters as $long => $short) {
+    $long = str_replace(':', '', $long);
+    if (isset($short)) {
+        $short = str_replace(':', '', $short);
+    }
+    $long_to_shorts[$long] = $short;
 }
-$options = getopt(implode('', array_keys($parameters)), $parameters);
-foreach ($short_to_longs as $short => $long) {
+
+$options = getopt(
+    implode(
+        '',
+        array_filter(
+            array_values($parameters),
+            function ($value) {
+                return isset($value);
+            }
+        )
+    ),
+    array_keys($parameters)
+);
+
+foreach (array_flip(array_filter($long_to_shorts, function ($value) {
+    return isset($value);
+})) as $short => $long) {
     if (array_key_exists($short, $options)) {
         $options[$long] = $options[$short];
         unset($options[$short]);
@@ -51,7 +69,7 @@ foreach ($short_to_longs as $short => $long) {
 if (array_key_exists('version', $options)) {
     print <<<EOF
 lms-cashimport.php
-(C) 2001-2016 LMS Developers
+(C) 2001-2020 LMS Developers
 
 EOF;
     exit(0);
@@ -60,7 +78,7 @@ EOF;
 if (array_key_exists('help', $options)) {
     print <<<EOF
 lms-cashimport.php
-(C) 2001-2016 LMS Developers
+(C) 2001-2020 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
@@ -77,7 +95,7 @@ $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
     print <<<EOF
 lms-cashimport.php
-(C) 2001-2016 LMS Developers
+(C) 2001-2020 LMS Developers
 
 EOF;
 }
@@ -145,14 +163,6 @@ $SYSLOG = SYSLOG::getInstance();
 
 $AUTH = null;
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
-$LMS->ui_lang = $_ui_language;
-$LMS->lang = $_language;
-
-LMS::$currency = $_currency;
-LMS::$default_currency = ConfigHelper::getConfig('phpui.default_currency', '', true);
-if (empty(LMS::$default_currency) || !isset($CURRENCIES[LMS::$default_currency])) {
-    LMS::$default_currency = $_currency;
-}
 
 $plugin_manager = new LMSPluginManager();
 $LMS->setPluginManager($plugin_manager);
@@ -180,13 +190,28 @@ if ($import_file != 'php://stdin' && !is_readable($import_file)) {
     die("Couldn't read contents from $import_file file!" . PHP_EOL);
 }
 
-$LMS->CashImportParseFile(
+$error = $LMS->CashImportParseFile(
     $import_filename,
     file_get_contents($import_file),
     $patterns,
     $quiet,
     ConfigHelper::checkConfig('cashimport.use_file_date') ? $filemtime : null
 );
+
+if (!$quiet && !empty($error)) {
+    foreach ($error['lines'] as $ln => $item) {
+        if (is_array($item)) {
+            $attributes = array();
+            foreach ($item as $key => $value) {
+                $attributes[] = $key . ': ' . $value;
+            }
+            echo "Duplicate: line " . $ln . ': ' . implode(', ', $attributes) . PHP_EOL;
+        } else {
+            echo "Invalid format: line " . $ln . ': ' . $item . PHP_EOL;
+        }
+    }
+}
+
 if (ConfigHelper::checkConfig('cashimport.autocommit')) {
     $LMS->CashImportCommit();
 }

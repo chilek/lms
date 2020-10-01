@@ -11,7 +11,13 @@
 	</tr>
 	<tr>
 		<td class="empty-table">
-			<p>{trans("You have no access rights to this part of system.")}</p>
+			<p>
+				{if isset($message) && !empty($message)}
+					{$message}
+				{else}
+					{trans("You have no access rights to this part of system.")}
+				{/if}
+			</p>
 		</td>
 	</tr>
 </table>

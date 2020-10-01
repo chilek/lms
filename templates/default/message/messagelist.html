@@ -30,7 +30,7 @@
 	</TR>
 	<TR>
 		<TD colspan="5" class="nobr">
-			<FORM METHOD="POST" NAME="page" action="?m=messagelist">
+			<FORM METHOD="POST" NAME="page" action="?m=messagelist" id="messagelist">
 			<INPUT type="submit" class="hiddenbtn">
 			<B>{trans("Filter:")} </B>
 			<INPUT type="text" name="search" value="{$listdata.search}" {tip text="Enter value of searching data and select category"}>&nbsp;
@@ -72,7 +72,7 @@
 	{if $pagination->getTotal() != 0}
 	<TR>
 		<TD class="lms-ui-pagination" COLSPAN="5">
-			{include file="pagination.html"}
+			{include file="pagination.html" form="messagelist"}
 		</TD>
 	</TR>
 	{/if}
@@ -107,12 +107,13 @@
 			{/if}
 			{button type="link" icon="delete" class="delete-message" tip="Delete" href="?m=messagedel&id={$message.id}"}
 			{button type="link" icon="info" tip="Info" onclick="location.href = '?m=messageinfo&id={$message.id}';"}
+			{button type="link" icon="resend" tip="Resend" onclick="location.href = '?m=messageadd&messageid={$message.id}';"}
 			<input type="checkbox" name="marks[{$message.id}]" value="{$message.id}" class="lms-ui-multi-check"{if $marks.messageid} checked{/if}>
 			<div id="files-{$message.filecontainerid}" style="display: none;" class="files">
 				{foreach $message.files as $file}
 					{documentview id="{$message.id}-{$file.id}" type=$file.contenttype name=$file.filename
 					url="?m=attachments&attachmentaction=viewfile&type=messageid&id={$message.filecontainerid}&fileid={$file.id}" external=true
-					text="{$file.filename} <img src=\"img/{if preg_match('/pdf/',$file.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$file.contenttype)}xls{else}view{/if}.gif\">"}
+					text="{$file.filename} <i class=\"lms-ui-icon-view{if preg_match('/pdf/',$file.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$file.contenttype)} xls{/if}\"></i>"}
 					<br>
 				{/foreach}
 			</div>
@@ -131,7 +132,7 @@
 	{if $pagination->getTotal() != 0}
 	<TR>
 		<TD class="lms-ui-pagination" COLSPAN="5">
-			{include file="pagination.html"}
+			{include file="pagination.html" form="messagelist"}
 		</TD>
 	</TR>
 	{/if}

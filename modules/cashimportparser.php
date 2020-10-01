@@ -43,7 +43,7 @@ if (isset($_POST['fileupload'])) {
         $error['files'] = trans('No files selected!');
     } else {
         foreach ($files as $file) {
-            if (strpos($file['type'], 'text') !== 0) {
+            if (strpos(mime_content_type($tmppath . DIRECTORY_SEPARATOR . $file['name']), 'text') !== 0) {
                 $error['files'] = trans('Non plain text file detected!');
             }
         }

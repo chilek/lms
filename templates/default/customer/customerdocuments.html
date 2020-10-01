@@ -6,7 +6,7 @@
 <form method="POST" name="customerdocuments" id="customerdocuments-form">
 </form>
 
-{tab_container id="customerdocuments"}
+{tab_container id="customerdocuments" label="Customer Documents"}
 
 	{tab_header content_id="docpanel"}
 		{tab_header_cell icon="lms-ui-icon-document"}
@@ -132,7 +132,7 @@
 						{if $docattach.type == 1 || count($doc.attachments) == 1}
 							{documentview id="{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
 							url="?m=documentview&id={$doc.docid}" external=true
-							text="<i class=\"{if preg_match('/pdf/',$docattach.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)}xls{/if}\"></i>"}
+							text="<i class=\"lms-ui-icon-view{if preg_match('/pdf/',$docattach.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)} xls{/if}\"></i>"}
 						{/if}
 						{if count($doc.attachments) > 1 || !$docattach.type < 1}
 							<a href="#" id="allattachments-toggle-{$doc.docid}" onclick="toggle_all_attachments({$doc.docid}); return false;" title="{trans("more document attachments")}">
@@ -145,8 +145,8 @@
 						{foreach $doc.attachments as $docattach}
 							{if $docattach@first && $docattach.type == 1}{continue}{/if}
 							{documentview id="{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
-							url="?m=documentview&id={$doc.docid}&attachmentid={$docattach.id}" external=true
-							text="{$docattach.filename} <i class=\"{if preg_match('/pdf/',$docattach.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)}xls{/if}\"></i>"}
+								url="?m=documentview&id={$doc.docid}&attachmentid={$docattach.id}" external=true
+								text="{$docattach.filename} <i class=\"lms-ui-icon-view{if preg_match('/pdf/',$docattach.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)} xls{/if}\"></i>"}
 							{if $docattach.type == -1}<i class="lms-ui-icon-user" title="<strong>{t a=date("Y/m/d H:i", $docattach.cdate)}Sent by customer at $a{/t}</strong>"></i>{/if}
 							<br>
 						{/foreach}
@@ -165,20 +165,20 @@
 {if !empty($documents) && count($documents)}
 		{tab_button_panel}
 			{tab_buttons}
-				<button type="button" id="send-documents" class="lms-ui-button lms-ui-button-mail">
-					<i></i> {trans("Send documents")}
+				<button type="button" id="send-documents" class="lms-ui-button" data-send-documents="{$customerinfo.senddocuments}">
+					<i class="lms-ui-icon-mail"></i> {trans("Send documents")}
 				</button>
-				<button type="button" id="print-docs" class="lms-ui-button lms-ui-button-print">
-					<i></i> {trans("Print")}
+				<button type="button" id="print-docs" class="lms-ui-button">
+					<i class="lms-ui-icon-print"></i> {trans("Print")}
 				</button>
-				<button type="button" id="confirm-docs" class="lms-ui-button lms-ui-button-confirm">
-					<i></i> {trans("Confirm")}
+				<button type="button" id="confirm-docs" class="lms-ui-button">
+					<i class="lms-ui-icon-confirm"></i> {trans("Confirm")}
 				</button>
-				<button type="button" id="archive-docs" class="lms-ui-button lms-ui-button-archive">
-					<i></i> {trans("Archive")}
+				<button type="button" id="archive-docs" class="lms-ui-button">
+					<i class="lms-ui-icon-archive"></i> {trans("Archive")}
 				</button>
-				<button type="button" id="delete-docs" class="lms-ui-button lms-ui-button-delete">
-					<i></i> {trans("Delete")}
+				<button type="button" id="delete-docs" class="lms-ui-button">
+					<i class="lms-ui-icon-delete"></i> {trans("Delete")}
 				</button>
 			{/tab_buttons}
 			{tab_buttons}

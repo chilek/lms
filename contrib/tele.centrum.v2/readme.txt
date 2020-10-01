@@ -1,33 +1,41 @@
-W konfiguracji utworzyć nowy interfejs użytkownika 'callcenter'.
+W konfiguracji LMS tworzymy nową sekcję 'callcenter'.
 
-Uzupełnić o opcję:
+W pierwszej kolejności należy stworzyć katalog templates_c oraz nadać mu właściwe uprawnienia.
+
+Jeśli używasz Debiana będą to najprawdopodobniej komendy:
+mkdir /var/www/html/lms/contrib/tele.centrum.v2/templates_c/;
+chmod 755 /var/www/html/lms/contrib/tele.centrum.v2/templates_c/;
+chown 33:33 /var/www/html/lms/contrib/tele.centrum.v2/templates_c/;
+
+Jeśli używasz CentOS:
+mkdir /var/www/html/lms/contrib/tele.centrum.v2/templates_c/;
+chmod 755 /var/www/html/lms/contrib/tele.centrum.v2/templates_c/;
+chown 48:48 /var/www/html/lms/contrib/tele.centrum.v2/templates_c/;
+
+Uzupełniamy sekcje o zmienne:
 - callcenterip - podać adres IP z którego łączyć się będą agenci callcenter,
 - networks - adresacja sieci, która może wyświetlać formularz callcenter np. 10.10.10.0/24 (można podać kilka sieci oddzielonych przecinkiem), 
 - queues - id kolejek w LMS, odzielone przecinkami. 
 
-Kolejno Zgłoszenie awarii, informacja handlowa oraz sprawy finansowe,
+Kolejno: Zgłoszenie awarii, informacja handlowa oraz sprawy finansowe,
 - categories - id kategorii zgłoszeń w LMS, odzielone przecinkami. 
 
-Kolejno Internet, telewizja, telefon oraz ogólna, 
+Kolejno: Internet, telewizja, telefon oraz ogólna, 
 (UWAGA! ZACHOWANIE KOLEJNOŚCI JEST WYMAGANE DO POPRAWNEGO DZIAŁANIA.)
 - queueuser - id użytkownika do którego ma być przypisane zgłoszenie (może być 0),
 - warning - treść wiadomości specjalnej wyświetlanej na górze strony,
 - information - możliwość dodanie dodatkowych informacji do wysuwającego się panelu (np. tabela z godzinami pracy).
 
-
-Skrypt który piszuje nagrania do poprawnych zgłoszeń znajduję się w folderze bin. 
+Skrypt, który dodaje nagrania rozmów callcenter do odpowiednich zgłoszeń znajduję się w folderze bin. 
 Skrypt wymaga rozszerzenia imap dla PHP.
 
+Należy dodać go do crontab.
 
-Należy ustawić go cyklicznie w cron. 
-
-Wymagane do pobierania nagrań z rozmów:
+Wymagane ustawienia do pobierania nagrań z rozmów:
 - hostname - nazwa hosta poczty,
 - user - nazwa użytkownika poczty,
 - pass - hasło użytkownika,
 - mailfrom - nazwa maila callcenter.
-
-
 
 Dodatkowo, należy upewnić się czy w sekcji 'rt' utworzona jest opcja 'mail_dir' z lokalizacją folderu. 
 Będzie ona wykorzystywana do zapisywanie nagrań z rozmów.

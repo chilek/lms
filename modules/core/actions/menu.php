@@ -23,7 +23,7 @@
 
 // execstack lacks language info so gain it from LMS object:
 
-$lang = $LMS->ui_lang;
+$lang = Localisation::getCurrentUiLanguage();
 
 foreach ($ExecStack->_MODINFO as $modulename => $modinfo) {
     if (isset($modinfo['menus'])) {
@@ -50,9 +50,9 @@ foreach ($ExecStack->_MODINFO as $modulename => $modinfo) {
                 if (! isset($actioninfo['menu'])) {
                     $actioninfo['menu'] = $modulename;
                 }
-                    
+
                 $args = isset($actioninfo['args']) ? $actioninfo['args'] : '';
-                
+
                 $menu[$actioninfo['menu']]['submenu'][] = array(
                 'name' => $actioninfo['menuname'][$lang],
                 'link' => '?m='.$modulename.'&a='.$actionname.$args,

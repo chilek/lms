@@ -184,24 +184,32 @@
 											{if isset($useradd.src_userid) && $useradd.src_userid == $user.id} selected{/if}>{$user.rname} ({$user.login})</option>
 								{/foreach}
 							</select>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">
 							{include file="user/usercopypermissions.html" form_variable_prefix="useradd" variables=$useradd}
 						</td>
 					</tr>
 					<tr id="user-rights">
 						<td class="valign-top nobr">
 							{foreach $accesslist as $name => $access}
-							{if $access@index <= floor($access@total / 2) - 1}
-							<INPUT type="checkbox" data-right-name="{$name}" id="acl_{$access@index}"
-								   name="acl[{$name}]" value="1" {if $access.enabled} checked{/if}> <label for="acl_{$access@index}">{$access.name}</label><BR>
-							{/if}
+								{if $access@index <= floor($access@total / 2) - 1}
+									{if !empty($access.name)}
+									<INPUT type="checkbox" data-right-name="{$name}" id="acl_{$access@index}"
+									   name="acl[{$name}]" value="1" {if $access.enabled} checked{/if}> <label for="acl_{$access@index}">{$access.name}</label><BR>
+									{/if}
+								{/if}
 							{/foreach}
 						</td>
 						<td class="valign-top nobr">
 							{foreach $accesslist as $name => $access}
-							{if $access@index > floor($access@total / 2) - 1}
-							<INPUT type="checkbox" data-right-name="{$name}" id="acl_{$access@index}"
-								   name="acl[{$name}]" value="1" {if $access.enabled} checked{/if}> <label for="acl_{$access@index}">{$access.name}</label><BR>
-							{/if}
+								{if $access@index > floor($access@total / 2) - 1}
+									{if !empty($access.name)}
+									<INPUT type="checkbox" data-right-name="{$name}" id="acl_{$access@index}"
+										   name="acl[{$name}]" value="1" {if $access.enabled} checked{/if}> <label for="acl_{$access@index}">{$access.name}</label><BR>
+									{/if}
+								{/if}
 							{/foreach}
 							{assign var="name" value=""}
 						</td>
@@ -210,14 +218,52 @@
 			</table>
 		</TD>
 	</TR>
+
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/group.gif" alt=""> {trans("Groups:")}
+			{icon name="usergroup" class="fa-fw"} {trans("User groups:")}
 		</TD>
 		<TD class="nobr">
-			{include file="multiselect.html" selected=$useradd.selected available_tip="Enabled<!plural>:" selected_tip="Disabled<!plural>:"}
+			<select SIZE="4" NAME="useradd[usergroups][]" id="usergroups" multiple {tip text="Select user groups" class="lms-ui-multiselect" trigger="usergroups"}
+					data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
+				{foreach $usergroups as $group}
+					<option value="{$group.id}"{if isset($selectedusergroups[$group.id])} selected{/if}>{$group.name}</option>
+				{/foreach}
+			</select>
 		</TD>
 	</TR>
+
+	<TR>
+		<TD class="bold nobr">
+			{icon name="customergroup" class="fa-fw"} {trans("Customer groups:")}
+		</TD>
+		<TD class="nobr">
+			<select SIZE="4" NAME="useradd[customergroups][]" id="customergroups" multiple {tip text="Select customer groups" class="lms-ui-multiselect" trigger="customergroups"}
+					data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
+				{foreach $customergroups as $group}
+					<option value="{$group.id}"{if isset($selectedgroups[$group.id])} selected{/if}>{$group.name}</option>
+				{/foreach}
+			</select>
+		</TD>
+	</TR>
+
+	{if is_array($divisions) && count($divisions)}
+		<tr>
+			<td class="bold nobr">
+				{icon name="division" class="fa-fw"} {trans("Divisions:")}
+			</td>
+			<td>
+				<select SIZE="4" NAME="useradd[divisions][]" id="divisions" multiple {tip text="Select divisions" class="lms-ui-multiselect" trigger="division"} data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
+					{foreach $divisions as $division}
+						<option value="{$division.id}" {if isset($useradd.divisions) && in_array($division.id, $useradd.divisions)} selected{/if}>
+							{$division.shortname|truncate:30:"...":true}
+						</option>
+					{/foreach}
+				</select>
+			</td>
+		</tr>
+	{/if}
+
 	<TR>
 		<TD colspan="2" class="lms-ui-box-buttons">
 			{button type="submit" icon="save" label="Submit"}
@@ -248,9 +294,30 @@
 					dataType: "json",
 					success: function(data) {
 						var user_rights = $('#user-rights');
-						$.each(data, function(key, value) {
+						$.each(data['rights'], function(key, value) {
 							$('[data-right-name="'  + value + '"]', user_rights).prop('checked', true);
 						});
+
+						var usergroups = $('#usergroups');
+						usergroups.find('option').prop('selected', false);
+						$.each(data['usergroups'], function(key, value) {
+							usergroups.find('option[value="' + value + '"]').prop('selected', true);
+						});
+						usergroups.trigger('lms:multiselect:updated');
+
+						var customergroups = $('#customergroups');
+						customergroups.find('option').prop('selected', false);
+						$.each(data['customergroups'], function(key, value) {
+							customergroups.find('option[value="' + value + '"]').prop('selected', true);
+						});
+						customergroups.trigger('lms:multiselect:updated');
+
+						var divisions = $('#divisions');
+						divisions.find('option').prop('selected', false);
+						$.each(data['divisions'], function(key, value) {
+							divisions.find('option[value="' + value + '"]').prop('selected', true);
+						});
+						divisions.trigger('lms:multiselect:updated');
 					}
 				});
 			}

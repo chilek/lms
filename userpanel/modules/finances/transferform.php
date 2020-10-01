@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,23 +24,25 @@
  *  $Id$
  */
 
-?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<html>
-<head>
-  <meta content="text/html; charset=utf-8" http-equiv="content-type">
-  <title>Wirtualne Biuro Obsługi Klienta</title>
-</head>
-<body>
-<?php
-
 global $SESSION;
 
-$doc = new LMSHtmlTransferForm(LMSHtmlTransferForm::VALUE_BALANCE);
-echo $doc->Draw(array(
-    'customerid' => $SESSION->id,
-));
+$cid = $SESSION->id;
+$Before = array ("%CID%", "%LongCID%");
+$After = array ($cid, sprintf('%04d', $cid));
+$payment_title = str_replace($Before, $After, ConfigHelper::getConfig('finances.pay_title', 'Abonament - ID:%CID% %LongCID%'));
 
-?>
-</body>
-</html>
+$transferform = new LMSTcpdfTransferForm('Transfer form', $pagesize = 'A4', $orientation = 'portrait');
+$tranferform_common_data = $transferform->GetCommonData(array('customerid' => $cid));
+$payment_value = str_replace(',', '.', trim($tranferform_common_data['customerinfo']['balance'] * -1));
+
+$tranferform_custom_data = array(
+    'title' => $payment_title,
+    'value' => $payment_value,
+    'paytype' => 8, // only to hide deadline
+    'barcode' => $payment_title,
+);
+
+$tranferform_custom_data['value'] = $payment_value;
+$tranferform_data = $transferform->SetCustomData($tranferform_common_data, $tranferform_custom_data);
+$transferform->Draw($tranferform_data, 0, 25);
+$transferform->WriteToBrowser();

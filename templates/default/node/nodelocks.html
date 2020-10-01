@@ -6,7 +6,7 @@
 <FORM id="nodelockadd" name="nodelockadd">
 </FORM>
 
-{tab_container id="nodelocks"}
+{tab_container id="nodelocks" label="Node Locks"}
 
 	{tab_header content_id="nodelockspanel"}
 		{tab_header_cell icon="lms-ui-icon-nodelock"}
@@ -46,8 +46,8 @@
 					<option value="{$i}">{$i|string_format:"%02d"}</option>
 					{/for}
 				</select>
-				<a class="lms-ui-button-delete">
-					<i title="{trans("Clear")}"></i>
+				<a class="lms-ui-button delete-button">
+					<i class="lms-ui-icon-delete" title="{trans("Clear")}"></i>
 				</a>
 			{/tab_buttons}
 			{tab_buttons}

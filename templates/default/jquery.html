@@ -24,6 +24,8 @@
 <script type="text/javascript" src="js/jquery-simple-combobox/js/jquery.scombobox.min.js"></script>
 *}
 <script src="js/sprintf.min.js"></script>
+<script src="js/galleria/galleria.min.js"></script>
+<script src="js/galleria/themes/classic/galleria.classic.min.js"></script>
 <script>
 
 	var lmsSettings = {
@@ -33,12 +35,19 @@
 		quickSearchAutoSubmit: '{ConfigHelper::getConfig('phpui.quicksearch_autosubmit', 'true')}',
 		defaultTerytCity: '{ConfigHelper::getConfig('phpui.default_teryt_city')}',
         zipCodeBackend: '{ConfigHelper::getConfig('phpui.zipcode_backend', 'osm')}',
-        multiSelectPopupOnBottom: {if ConfigHelper::checkConfig('phpui.multiselect_popup_on_bottom')}true{else}false{/if},
-		multiSelectMaxVisible: '{ConfigHelper::getConfig('phpui.multiselect_max_visible', 0)}',
+        multiSelectPopupOnBottom: {if ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.multiselect_popup_on_bottom', 'true'))}true{else}false{/if},
+		multiSelectMaxVisible: '{intval(ConfigHelper::getConfig('phpui.multiselect_max_visible', 5))}',
         eventTimeStep: {ConfigHelper::getConfig('phpui.event_time_step', 30)},
 		openCalendarOnInputClick: {if ConfigHelper::checkConfig('phpui.open_calendar_on_input_click')}true{else}false{/if},
-		monthlyPeriod: {$smarty.const.MONTHLY}
+		uploadedImageMaxSize: {intval(ConfigHelper::getConfig('phpui.uploaded_image_max_size', 0))},
+		monthlyPeriod: {$smarty.const.MONTHLY},
+		touchDeviceTooltips: {if ConfigHelper::checkConfig('phpui.touch_device_tooltips', 'false')}true{else}false{/if}
 	};
+
+	var tooltipsEnabled = true;
+	if ("ontouchstart" in document.documentElement && !lmsSettings.touchDeviceTooltips) {
+		tooltipsEnabled = false;
+	}
 
 	{if ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.disable_mobile_tooltips', true))}
 	$(function() {

@@ -55,7 +55,7 @@
 				{box_panel}
 					{block name="eventmodify_right_panel"}
 
-					{box_row icon="img/access.gif" label="Status:"}
+					{box_row icon="img/access.gif" label="Availability:"}
 						<label>
 							<INPUT type="checkbox" name="event[private]" {tip text="Select event's status"}{if $event.private}CHECKED{/if}>
 							{trans("private")}
@@ -113,10 +113,12 @@
 					{/box_row}
 
 					{box_row icon="img/users.gif" label="Users:" field_class="multiselect"}
-						<SELECT name="event[userlist][]" class="lms-ui-multiselect" multiple data-default-value="{trans("- select user -")}" data-shorten-to-default-value="false">
+						<SELECT name="event[userlist][]" class="lms-ui-multiselect" id="userlist" multiple data-default-value="{trans("- select user -")}" data-shorten-to-default-value="false">
 							{foreach $userlist as $user}
-								{if $user.access}
-								<OPTION value="{$user.id}"{if !empty($event.userlist) && in_array($user.id, $event.userlist)} selected{/if}>{$user.rname} ({$user.login})</OPTION>
+								{if !ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users') || (ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users')
+									&& $user.access) || is_array($filter.owner) && in_array($user.id, $filter.owner)}
+								<OPTION {if !$user.access} disabled{/if} value="{$user.id}" {if is_array($event.userlist) && in_array($user.id, $event.userlist)}selected{/if}
+									>{$user.rname|truncate:40:"...":true} ({$user.login})</OPTION>
 								{/if}
 							{/foreach}
 						</SELECT>
@@ -282,7 +284,7 @@
 		});
 
 		function update_user_selection(users) {
-			var userms = $('.lms-ui-multiselect').data('multiselect-object');
+			var userms = $('#userlist').data('multiselect-object');
 			{if ConfigHelper::getConfig('phpui.event_usergroup_selection_type', 'update') == 'update'}
 			userms.updateSelection(users);
 			{else}
@@ -306,6 +308,18 @@
 
 		customer_addresses.init();
 
+		{if $layout.module == 'eventedit'}
+		function change_customer(customer_selector, address_selector) {
+			getCustomerAddresses($(customer_selector).val(), function (addresses) {
+				customer_addresses.setAddressList(addresses);
+				if (Object.keys(addresses).length == 1) {
+					$('#customer_addresses').val($('#customer_addresses option:last-child').val());
+					customer_addresses.refresh();
+				}
+				xajax_select_location($(customer_selector).val(), $(address_selector).val());
+			});
+		}
+		{/if}
 		//initCustomerSelection('{$event.customerid}', '{$ticket.address_id}');
 
 	</SCRIPT>

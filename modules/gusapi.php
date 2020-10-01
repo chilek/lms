@@ -26,6 +26,7 @@
 
 use GusApi\GusApi;
 use GusApi\RegonConstantsInterface;
+use GusApi\SearchType;
 use GusApi\Exception\InvalidUserKeyException;
 use GusApi\ReportTypes;
 use GusApi\ReportTypeMapper;
@@ -34,46 +35,42 @@ if (!isset($_GET['searchtype']) || !isset($_GET['searchdata'])) {
     return;
 }
 
-if (!in_array($_GET['searchtype'], array(RegonConstantsInterface::SEARCH_TYPE_NIP,
-    RegonConstantsInterface::SEARCH_TYPE_REGON, RegonConstantsInterface::SEARCH_TYPE_KRS))) {
+if (!in_array($_GET['searchtype'], array(SearchType::NIP,
+    SearchType::REGON, SearchType::KRS))) {
     return;
 }
 
 $apikey = ConfigHelper::getConfig('phpui.gusapi_key', 'abcde12345abcde12345');
 if ($apikey == 'abcde12345abcde12345') {
-    $adapter = new \GusApi\Adapter\Soap\SoapAdapter(
-        RegonConstantsInterface::BASE_WSDL_URL_TEST,
-        RegonConstantsInterface::BASE_WSDL_ADDRESS_TEST
-    );
+    $env = 'dev';
 } else {
-    $adapter = new \GusApi\Adapter\Soap\SoapAdapter(
-        RegonConstantsInterface::BASE_WSDL_URL,
-        RegonConstantsInterface::BASE_WSDL_ADDRESS // production server / serwer produkcyjny
-    );
+    $env = 'prod';
 }
 
 $gus = new GusApi(
     $apikey, // your user key / twój klucz użytkownika
-    $adapter
+    $env
 );
 
-$mapper = new ReportTypeMapper();
+//$mapper = new ReportTypeMapper();
 
 try {
-    $sessionId = $gus->login();
+    if (!$gus->login()) {
+        throw new Exception(trans('Bad REGON API user key'));
+    }
 
     switch ($_GET['searchtype']) {
-        case RegonConstantsInterface::SEARCH_TYPE_NIP:
-            $gusReports = $gus->getByNip($sessionId, preg_replace('/[^a-z0-9]/i', '', $_GET['searchdata']));
+        case SearchType::NIP:
+            $gusReports = $gus->getByNip(preg_replace('/[^a-z0-9]/i', '', $_GET['searchdata']));
             break;
-        case RegonConstantsInterface::SEARCH_TYPE_REGON:
-            $gusReports = $gus->getByRegon($sessionId, $_GET['searchdata']);
+        case SearchType::REGON:
+            $gusReports = $gus->getByRegon($_GET['searchdata']);
             break;
-        case RegonConstantsInterface::SEARCH_TYPE_KRS:
-            $gusReports = $gus->getByRegon($sessionId, $_GET['searchdata']);
+        case SearchType::KRS:
+            $gusReports = $gus->getByRegon($_GET['searchdata']);
             break;
         default:
-            return $result;
+            throw new Exception(trans('Unsupported resource type'));
     }
 
     if (count($gusReports) > 1) {
@@ -82,50 +79,50 @@ try {
 
     $gusReport = $gusReports[0];
     $personType = $gusReport->getType();
-    $reportType = $mapper->getReportType($gusReport);
-
-    $fullReport = $gus->getFullReport(
-        $sessionId,
-        $gusReport,
-        $reportType
-    );
 
     if ($personType == \GusApi\SearchReport::TYPE_JURIDICAL_PERSON) {
+        $fullReport = $gus->getFullReport(
+            $gusReport,
+            ReportTypes::REPORT_PUBLIC_LAW
+        );
+
+        $report = reset($fullReport);
+
         $details = array(
-            'lastname' => $fullReport->dane->praw_nazwa->__toString(),
+            'lastname' => $report['praw_nazwa'],
             'name' => '',
-            'rbename' => $fullReport->dane->praw_organRejestrowy_Nazwa->__toString(),
-            'rbe' => $fullReport->dane->praw_numerWrejestrzeEwidencji->__toString(),
-            'regon' => property_exists($fullReport->dane, 'praw_regon9')
-                ? $fullReport->dane->praw_regon9->__toString()
-                : $fullReport->dane->praw_regon14->__toString(),
-            'ten' => $fullReport->dane->praw_nip->__toString(),
+            'rbename' => $report['praw_organRejestrowy_Nazwa'],
+            'rbe' => $report['praw_numerWRejestrzeEwidencji'],
+            'regon' => array_key_exists('praw_regon9', $report)
+                ? $report['praw_regon9']
+                : $report['praw_regon14'],
+            'ten' => $report['praw_nip'],
             'addresses' => array(),
         );
 
         $addresses = array();
 
-        $terc = $fullReport->dane->praw_adSiedzWojewodztwo_Symbol->__toString()
-            . $fullReport->dane->praw_adSiedzPowiat_Symbol->__toString()
-            . $fullReport->dane->praw_adSiedzGmina_Symbol->__toString();
-        $simc = $fullReport->dane->praw_adSiedzMiejscowosc_Symbol->__toString();
-        $ulic = $fullReport->dane->praw_adSiedzUlica_Symbol->__toString();
+        $terc = $report['praw_adSiedzWojewodztwo_Symbol']
+            . $report['praw_adSiedzPowiat_Symbol']
+            . $report['praw_adSiedzGmina_Symbol'];
+        $simc = $report['praw_adSiedzMiejscowosc_Symbol'];
+        $ulic = $report['praw_adSiedzUlica_Symbol'];
         $location = $LMS->TerytToLocation($terc, $simc, $ulic);
 
         $addresses[] = array(
-            'location_state_name' => mb_strtolower($fullReport->dane->praw_adSiedzWojewodztwo_Nazwa->__toString()),
-            'location_city_name' => $fullReport->dane->praw_adSiedzMiejscowosc_Nazwa->__toString(),
-            'location_street_name' => $fullReport->dane->praw_adSiedzUlica_Nazwa->__toString(),
-            'location_house' => $fullReport->dane->praw_adSiedzNumerNieruchomosci->__toString(),
-            'location_flat' => $fullReport->dane->praw_adSiedzNumerLokalu->__toString(),
+            'location_state_name' => mb_strtolower($report['praw_adSiedzWojewodztwo_Nazwa']),
+            'location_city_name' => $report['praw_adSiedzMiejscowosc_Nazwa'],
+            'location_street_name' => $report['praw_adSiedzUlica_Nazwa'],
+            'location_house' => $report['praw_adSiedzNumerNieruchomosci'],
+            'location_flat' => $report['praw_adSiedzNumerLokalu'],
             'location_zip' => preg_replace(
                 '/^([0-9]{2})([0-9]{3})$/',
                 '$1-$2',
-                $fullReport->dane->praw_adSiedzKodPocztowy->__toString()
+                $report['praw_adSiedzKodPocztowy']
             ),
-            'location_postoffice' => $fullReport->dane->praw_adSiedzMiejscowoscPoczty_Nazwa->__toString()
-                == $fullReport->dane->praw_adSiedzMiejscowosc_Nazwa->__toString() ? ''
-                    : $fullReport->dane->praw_adSiedzMiejscowoscPoczty_Nazwa->__toString(),
+            'location_postoffice' => $report['praw_adSiedzMiejscowoscPoczty_Nazwa']
+                == $report['praw_adSiedzMiejscowosc_Nazwa'] ? ''
+                    : $report['praw_adSiedzMiejscowoscPoczty_Nazwa'],
             'location_state' => empty($location) ? 0 : $location['location_state'],
             'location_city' => empty($location) ? 0 : $location['location_city'],
             'location_street' => empty($location) ? 0 : $location['location_street'],
@@ -133,40 +130,60 @@ try {
 
         $details['addresses'] = $addresses;
     } elseif ($personType == \GusApi\SearchReport::TYPE_NATURAL_PERSON) {
+        $silo = $gusReport->getSilo();
+
+        $siloMapper = array(
+            1 => ReportTypes::REPORT_ACTIVITY_PHYSIC_CEIDG,
+            2 => ReportTypes::REPORT_ACTIVITY_PHYSIC_AGRO,
+            3 => ReportTypes::REPORT_ACTIVITY_PHYSIC_OTHER_PUBLIC,
+            4 => ReportTypes::REPORT_ACTIVITY_LOCAL_PHYSIC_WKR_PUBLIC,
+        );
+
+        if (!isset($siloMapper[$silo])) {
+            die;
+        }
+
+        $fullReport = $gus->getFullReport(
+            $gusReport,
+            $siloMapper[$silo]
+        );
+
+        $report = reset($fullReport);
+
         $details = array(
-            'lastname' => $fullReport->dane->fiz_nazwa->__toString(),
+            'lastname' => $report['fiz_nazwa'],
             'name' => '',
-            'rbename' => $fullReport->dane->fizC_RodzajRejestru_Nazwa->__toString(),
-            'rbe' => $fullReport->dane->fizC_numerwRejestrzeEwidencji->__toString(),
-            'regon' => property_exists($fullReport->dane, 'fiz_regon9')
-                ? $fullReport->dane->fiz_regon9->__toString()
-                : $fullReport->dane->fiz_regon14->__toString(),
+            'rbename' => $report['fizC_RodzajRejestru_Nazwa'],
+            'rbe' => $report['fizC_numerwRejestrzeEwidencji'],
+            'regon' => array_key_exists('fiz_regon9', $report)
+                ? $report['fiz_regon9']
+                : $report['fiz_regon14'],
             'addresses' => array(),
         );
 
         $addresses = array();
 
-        $terc = $fullReport->dane->fiz_adSiedzWojewodztwo_Symbol->__toString()
-            . $fullReport->dane->fiz_adSiedzPowiat_Symbol->__toString()
-            . $fullReport->dane->fiz_adSiedzGmina_Symbol->__toString();
-        $simc = $fullReport->dane->fiz_adSiedzMiejscowosc_Symbol->__toString();
-        $ulic = $fullReport->dane->fiz_adSiedzUlica_Symbol->__toString();
+        $terc = $report['fiz_adSiedzWojewodztwo_Symbol']
+            . $report['fiz_adSiedzPowiat_Symbol']
+            . $report['fiz_adSiedzGmina_Symbol'];
+        $simc = $report['fiz_adSiedzMiejscowosc_Symbol'];
+        $ulic = $report['fiz_adSiedzUlica_Symbol'];
         $location = $LMS->TerytToLocation($terc, $simc, $ulic);
 
         $addresses[] = array(
-            'location_state_name' => mb_strtolower($fullReport->dane->fiz_adSiedzWojewodztwo_Nazwa->__toString()),
-            'location_city_name' => $fullReport->dane->fiz_adSiedzMiejscowosc_Nazwa->__toString(),
-            'location_street_name' => $fullReport->dane->fiz_adSiedzUlica_Nazwa->__toString(),
-            'location_house' => $fullReport->dane->fiz_adSiedzNumerNieruchomosci->__toString(),
-            'location_flat' => $fullReport->dane->fiz_adSiedzNumerLokalu->__toString(),
+            'location_state_name' => mb_strtolower($report['fiz_adSiedzWojewodztwo_Nazwa']),
+            'location_city_name' => $report['fiz_adSiedzMiejscowosc_Nazwa'],
+            'location_street_name' => $report['fiz_adSiedzUlica_Nazwa'],
+            'location_house' => $report['fiz_adSiedzNumerNieruchomosci'],
+            'location_flat' => $report['fiz_adSiedzNumerLokalu'],
             'location_zip' => preg_replace(
                 '/^([0-9]{2})([0-9]{3})$/',
                 '$1-$2',
-                $fullReport->dane->fiz_adSiedzKodPocztowy->__toString()
+                $report['fiz_adSiedzKodPocztowy']
             ),
-            'location_postoffice' => $fullReport->dane->fiz_adSiedzMiejscowoscPoczty_Nazwa->__toString()
-                == $fullReport->dane->fiz_adSiedzMiejscowosc_Nazwa->__toString() ? ''
-                    : $fullReport->dane->fiz_adSiedzMiejscowoscPoczty_Nazwa->__toString(),
+            'location_postoffice' => $report['fiz_adSiedzMiejscowoscPoczty_Nazwa']
+                == $report->dane['adSiedzMiejscowosc_Nazwa'] ? ''
+                    : $report['fiz_adSiedzMiejscowoscPoczty_Nazwa'],
             'location_state' => empty($location) ? 0 : $location['location_state'],
             'location_city' => empty($location) ? 0 : $location['location_city'],
             'location_street' => empty($location) ? 0 : $location['location_street'],
@@ -175,31 +192,16 @@ try {
         $details['addresses'] = $addresses;
 
         $fullReport = $gus->getFullReport(
-            $sessionId,
             $gusReport,
             \GusApi\ReportTypes::REPORT_ACTIVITY_PHYSIC_PERSON
         );
 
-        $details['ten'] = $fullReport->dane->fiz_nip->__toString();
-    }
-
-    $detailsChild = $fullReport->addChild('details');
-    foreach ($details as $key => $value) {
-        if ($key == 'addresses') {
-            $addressesChild = $detailsChild->addChild('addresses');
-            foreach ($value as $addressnr => $address) {
-                $addressChild = $addressesChild->addChild('address');
-                foreach ($address as $addresskey => $addressvalue) {
-                    $addressChild->addChild($addresskey, $addressvalue);
-                }
-            }
-        } else {
-            $detailsChild->addChild($key, $value);
-        }
+        $report = reset($fullReport);
+        $details['ten'] = $report['fiz_nip'];
     }
 
     header('Content-Type: application/json');
-    die(json_encode($fullReport));
+    die(json_encode($details));
 } catch (InvalidUserKeyException $e) {
     header('Content-Type: application/json');
     die(json_encode(array('error' => trans('Bad REGON API user key'))));
@@ -208,4 +210,7 @@ try {
     die(json_encode(array('warning' => trans("No data found in REGON database"))));
 //      . "For more information read server message below:\n"
 //      . '$a', $gus->getResultSearchMessage($sessionId)))));
+} catch (Exception $e) {
+    header('Content-Type: application/json');
+    die(json_encode(array('error' => $e->getMessage())));
 }

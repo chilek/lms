@@ -112,16 +112,17 @@ function CustomerAssignmentHelper(options) {
 
 	this.checkAllTerminalsHandler = function() {
 		var checkAllElem = $('#check_all_terminals');
-		$('.customerdevices .lms-ui-multiselect:visible').each(function() {
+		$('.customerdevices .lms-ui-multiselect-container:visible').each(function() {
 			$(this).data('multiselect-object').toggleCheckAll(checkAllElem.prop('checked'));
 		});
-		$('body').on('checkall', '.customerdevices .lms-ui-multiselect-wrapper', function(e, data) {
+		$('body').on('lms:multiselect:checkall', '.customerdevices select', function(e, data) {
 			checkAllElem.prop('checked', data.allChecked);
 		});
 	}
 
 	this.promotionSelectionHandler = function() {
 		$('#a_location,#a_check_all_terminals,#a_options,#a_existingassignments,#a_properties').toggle(parseInt($(this).val()) != 0);
+		$('#backward-period').toggle(parseInt($(this).val()) == 0);
 
 		$('.promotion-table').hide();
 
@@ -172,10 +173,10 @@ function CustomerAssignmentHelper(options) {
 
 		var ms = [];
 		if (tarifftype == helper.phoneTariffType) {
-			ms.push(tr.find('div.phones .lms-ui-multiselect'));
+			ms.push(tr.find('div.phones .lms-ui-multiselect-container'));
 		} else {
-			ms.push(tr.find('div.nodes .lms-ui-multiselect'));
-			ms.push(tr.find('div.netdevnodes .lms-ui-multiselect'));
+			ms.push(tr.find('div.nodes .lms-ui-multiselect-container'));
+			ms.push(tr.find('div.netdevnodes .lms-ui-multiselect-container'));
 		}
         if (!ms.length) {
 			return;
@@ -235,10 +236,10 @@ function CustomerAssignmentHelper(options) {
 
 		var ms = [];
 		if (tarifftype == helper.phoneTariffType) {
-			ms.push(tr.find('div.phones .lms-ui-multiselect'));
+			ms.push(tr.find('div.phones .lms-ui-multiselect-container'));
 		} else {
-			ms.push(tr.find('div.nodes .lms-ui-multiselect'));
-			ms.push(tr.find('div.netdevnodes .lms-ui-multiselect'));
+			ms.push(tr.find('div.nodes .lms-ui-multiselect-container'));
+			ms.push(tr.find('div.netdevnodes .lms-ui-multiselect-container'));
 		}
         if (!ms.length) {
 			return;
@@ -518,10 +519,10 @@ function tariffSelectionHandler() {
 	}
 
 	if (val == '') {
-		$('#a_tax,#a_value,#a_taxcategory,#a_productid,#a_name').show();
+		$('#a_tax,#a_type,#a_value,#a_taxcategory,#a_productid,#a_name').show();
 		$('#a_attribute').hide();
 	} else {
-		$('#a_tax,#a_value,#a_taxcategory,#a_productid,#a_name').hide();
+		$('#a_tax,#a_type,#a_value,#a_taxcategory,#a_productid,#a_name').hide();
 		if (val == -1) {
 			$('#a_attribute').hide();
 		} else {
@@ -534,6 +535,7 @@ function tariffSelectionHandler() {
 		$('#a_properties').show();
 	} else {
 		$('#a_numberplan,#a_paytype,#a_address,#a_day').show();
+		$('#backward-period').toggle(val != -2 || !promotion_select);
 		if ((val == -2 && promotion_select) || (val != -2)) {
 			$('#a_options,#a_properties,#a_existingassignments').show();
 		} else {

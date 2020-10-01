@@ -1,54 +1,67 @@
 <TABLE class="lmsbox lms-ui-background-cycle">
     <COLGROUP>
         <COL style="width: 1%;">
+        <COL style="width: 1%;">
         <COL style="width: 98%;">
+        <COL style="width: 1%;">
         <COL style="width: 1%;">
     </COLGROUP>
     <THEAD>
-    <TR>
-        <td>
-            <strong>{trans("Users parameters")}</strong>
+    <TR style="background-color: #B6A688;">
+        <td class="bold" colspan="4">
+            #4  {trans("User configuration variable parameters")} ({trans('overwrite parameters from panel #3 and panel #2 and panel #1')})
         </td>
-        <td></td>
-        <td></td>
+        <td>
+            {button type="link-button" href="?m=configadd&refconfigid={$config.id}&reftype=user" icon="add" label="Add" tip="Add config for user"}
+        </td>
     </TR>
     <TR>
-        <TD class="nobr">
-            <strong>{trans("Login:")}</strong><BR>
-            {trans("First/last name:")}
+        <TD class="nobr bold">
+            <strong>{trans("Login:")}</strong>
         </TD>
-        <TD class="nobr">
-            {trans("Value:")}<BR>
+        <td class="nobr bold">
+            {trans("First/last name:")}
+        </td>
+        <TD class="nobr bold">
             {trans("Comment:")}
         </TD>
-        <TD class="nobr" align="right">
-            <A href="?m=configadduser&configid={$config.id}">{trans("Add")} <img src="img/add.gif" alt=""></A>
+        <TD class="nobr bold">
+            {trans("Value:")}
+        </TD>
+        <TD>
+            &nbsp;
         </TD>
     </TR>
     </THEAD>
     <TBODY>
-    {foreach $configusers as $configuser}
-        <TR class="highlight {if $configuser.disabled} blend{/if}">
+    {foreach $relatedoptions.users as $relatedoption}
+        <TR class="highlight {if $relatedoption.disabled} blend{/if}" data-target-url="?m=configedit&id={$relatedoption.id}">
             <TD class="nobr">
-                <strong>{$configuser.login}</strong><BR>
-                {$configuser.firstname} {$configuser.lastname}
+                <strong>{$relatedoption.login}</strong><BR>
             </TD>
             <TD class="nobr">
-                {$configuser.value}<BR>
-                {$configuser.description}
+                {$relatedoption.name}
             </TD>
-            <TD class="text-right nobr">
-                <A href="?m=configedit&id={$configuser.id}&statuschange=1"><IMG src="img/wait.gif" alt="{if $config.disabled}{trans("Enable")}{else}{trans("Disable")}{/if}" title="{if $config.disabled}{trans("Enable")}{else}{trans("Disable")}{/if}"></A>
-                <A class="delete-config" href="?m=configdel&id={$configuser.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
-                <A href="?m=configedituser&id={$configuser.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
+            <TD class="nobr">
+                {$relatedoption.description}
+            </TD>
+            <TD class="nobr">
+                {$relatedoption.value}
+            </TD>
+            <TD class="lms-ui-buttons text-right nobr">
+                {if $relatedoption.disabled}
+                    {button type="link" icon="disconnected" tip="Enable" href="?m=configedit&id={$relatedoption.id}&statuschange=1"}
+                {else}
+                    {button type="link" icon="connected" tip="Disable" href="?m=configedit&id={$relatedoption.id}&statuschange=1"}
+                {/if}
+                {button type="link" icon="delete" class="delete-config" tip="Delete" href="?m=configdel&id={$relatedoption.id}"}
+                {button type="link" icon="edit" tip="Edit" href="?m=configedit&id={$relatedoption.id}"}
             </TD>
         </TR>
         {foreachelse}
         <TR>
-            <TD COLSPAN="3" class="fall" align="center">
-                <p>&nbsp;</p>
-                <p><strong>{t}No data{/t}</strong></p>
-                <p>&nbsp;</p>
+            <TD COLSPAN="5" class="empty-table" align="center">
+                <strong>{trans("No data")}</strong>
             </TD>
         </TR>
     {/foreach}

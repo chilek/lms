@@ -2,7 +2,7 @@
 
 {css}
 
-{tab_container id="customerdevices"}
+{tab_container id="customerdevices" label="Network Devices"}
 
 	{tab_header content_id="devicespanel"}
 		{tab_header_cell icon="lms-ui-icon-netdev"}
@@ -64,7 +64,11 @@
 							<i class="lms-ui-icon-netdev"></i>
 							<strong>{$customerdevice.name}</strong>
 							{if $customerdevice.location}<BR>
-								{$customerdevice.location|truncate:60:"...":true}
+								{if empty($customerdevice.location_city)}
+									{$customerdevice.location|truncate:60:"...":true}
+								{else}
+									{t a=$customerdevice.location|truncate:60:"...":true}$a (TERRIT){/t}
+								{/if}
 							{/if}
 						</div>
 						<div class="lms-ui-tab-table-column description">

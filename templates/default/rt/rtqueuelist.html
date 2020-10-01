@@ -71,7 +71,9 @@
     </THEAD>
     <TBODY>
 	{foreach $queues as $queue}
-	<TR class="highlight lms-ui-rt{if $queue.deleted == 1 && $queue.deltime != 0}-deleted{elseif $queue.delcount != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}-partly-deleted{else}{/if}" data-target-url="?m=rtqueueview&id={$queue.id}" data-name="{$queue.name}">
+	<TR class="highlight lms-ui-resource{if $queue.deleted == 1 && $queue.deltime != 0}-deleted{elseif $queue.delcount != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}-partly-deleted{else}{/if}"
+		data-target-url="?m=rtqueueview&id={$queue.id}" data-name="{$queue.name}"
+		data-popup-menu-title="{t a=$queue.name}Queue $a{/t}">
 		<TD class="nobr bold">
 		{if $queue.critical != 0}
 			<i class="lms-ui-icon-content lms-ui-icon-critical"></i>
@@ -83,7 +85,7 @@
 			{/if}
 		{/if}
 		</TD>
-		<TD class="nobr bold">
+		<TD class="bold">
 			{$queue.name}
 		</TD>
 		<TD>
@@ -109,17 +111,20 @@
 			{if $queue.lastticket}{$queue.lastticket|date_format:"%Y/%m/%d %H:%M:%S"}{else}-{/if}
 		</TD>
 		<TD class="lms-ui-buttons text-right nobr">
-			{if $queue.unread}
-			{button type="link" href="?m=rtqueueedit&id={$queue.id}&unread=0" icon="read" alt="Mark queue as read"}
-			{/if}
-			{if $queue.deleted == 1 && $queue.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
-			{button type="link" href="?m=rtrestore&id={$queue.id}&qaction=restore" icon="reload" alt="Restore<!RT>"}
-			{button type="link" href="?m=rtremove&id={$queue.id}&qaction=delperm" icon="delete" alt="Delete permanently" class="remove-rtqueue"}
-			{else}
-			{button type="link" href="?m=rtqueuedel&id={$queue.id}&amp;qaction=delete" icon="delete" alt="Delete" class="delete-rtqueue"}
-			{/if}
-			{button type="link" href="?m=rtqueueedit&amp;id={$queue.id}" icon="edit" alt="Edit" class="edit-rtqueue"}
-			{button type="link" href="?m=rtqueueinfo&amp;id={$queue.id}" icon="info" alt="Info" class="info-rtqueue"}
+			{buttons}
+				{button type="link" icon="add" tip="Add" onclick="window.location.href = '?m=rtticketadd&amp;id={$queue.id}';"}
+				{if $queue.unread}
+				{button type="link" href="?m=rtqueueedit&id={$queue.id}&unread=0" icon="read" tip="Mark queue as read"}
+				{/if}
+				{if $queue.deleted == 1 && $queue.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
+				{button type="link" href="?m=rtrestore&id={$queue.id}&qaction=restore" icon="reload" tip="Restore<!RT>"}
+				{button type="link" href="?m=rtremove&id={$queue.id}&qaction=delperm" icon="delete" tip="Delete permanently" class="remove-rtqueue"}
+				{else}
+				{button type="link" href="?m=rtqueuedel&id={$queue.id}&amp;qaction=delete" icon="delete" tip="Delete" class="delete-rtqueue"}
+				{/if}
+				{button type="link" href="?m=rtqueueedit&amp;id={$queue.id}" icon="edit" tip="Edit" class="edit-rtqueue"}
+				{button type="link" href="?m=rtqueueinfo&amp;id={$queue.id}" icon="info" tip="Info" class="info-rtqueue"}
+			{/buttons}
 		</TD>
 	</TR>
 	{foreachelse}

@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$_LANG['Show period column in assignment panel'] = 'Pokaż kolumnę okres w zakładce zobowiazań';
+$_LANG['Show period column in assignment panel'] = 'Pokaż kolumnę okres w zakładce zobowiązań';
 $_LANG['$a dollars $b cents'] = '$a zł $b gr';
 $_LANG['Accounting day'] = 'Dzień naliczania';
 $_LANG['Admin:'] = 'Administrator:';

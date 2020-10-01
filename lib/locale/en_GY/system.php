@@ -24,72 +24,52 @@
  *  $Id$
  */
 
-function check_ten($ten)
-{
-    return true;
-}
+self::addLanguageFunctions(
+    self::SYSTEM_FUNCTION,
+    array(
+        'check_zip' => function ($zip) {
+            return preg_match('/^[0-9]{5}$|^[0-9]{5}-[0-9]{4}$/', $zip);
+        },
+        'check_ten' => function ($ten) {
+            return true;
+        },
+        'check_ssn' => function ($ssn) {
+            $ssn = str_replace(array('-','/',' ',"\t","\n"), '', $ssn);
 
-function check_ssn($ssn)
-{
-    $ssn = str_replace(array('-','/',' ',"\t","\n"), '', $ssn);
+            if (!is_numeric($ssn) || strlen($ssn) != 9) {
+                return false;
+            }
 
-    if (!is_numeric($ssn) || strlen($ssn) != 9) {
-        return false;
-    }
-
-    return true;
-}
-
-function check_zip($zip)
-{
-    if (ConfigHelper::checkConfig('phpui.skip_zip_validation')) {
-        return true;
-    } else {
-        return preg_match('/^[0-9]{5}$|^[0-9]{5}-[0-9]{4}$/', $zip);
-    }
-}
-
-function check_regon($regon) // business registration number
-{
-    return true;
-}
-
-function check_icn($icn) // identity card number
-{
-    return true;
-}
-
-function bankaccount($id, $account = null)
-{
-    return iban_account('US', 26, $id, $account);
-}
-
-function check_bankaccount($account)
-{
-    return iban_check_account('US', 26, $account);
-}
-
-function format_bankaccount($account)
-{
-    return $account;
-}
-
-function getHolidays($year = null)
-{
-    return array();
-}
-
-/*!
- * \brief Generate random postcode
- *
- * \return string
- */
-function generateRandomPostcode()
-{
-    return sprintf("%05d", rand(0, 99999)) . '-' . sprintf("%04d", rand(0, 9999));
-}
-
-function get_currency_value($currency, $date = null)
-{
-    return exchangeratesapi_get_currency_value($currency, $date);
-}
+            return true;
+        },
+        'check_regon' => function ($regon) {
+            return true;
+        },
+        'check_icn' => function ($icn) {
+            return true;
+        },
+        'bankaccount' => function ($id, $account = null) {
+            return iban_account('US', 26, $id, $account);
+        },
+        'check_bankaccount' => function ($account) {
+            return iban_check_account('US', 26, $account);
+        },
+        'format_bankaccount' => function ($account) {
+            return $account;
+        },
+        'getHolidays' => function ($year = null) {
+            return array();
+        },
+        /*!
+         * \brief Generate random postcode
+         *
+         * \return string
+         */
+        'generateRandomPostcode' => function () {
+            return sprintf("%05d", rand(0, 99999)) . '-' . sprintf("%04d", rand(0, 9999));
+        },
+        'get_currency_value' => function ($currency, $date = null) {
+            return exchangeratesapi_get_currency_value($currency, $date);
+        },
+    )
+);

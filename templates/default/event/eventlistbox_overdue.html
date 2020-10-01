@@ -11,7 +11,15 @@
     <THEAD>
         <TR class="superdark">
             <TD class="bold nobr" colspan="6">
-                <i class="lms-ui-icon-content lms-ui-icon-timetable"></i>{trans("Overdue events assigned to You")}
+                <i class="lms-ui-icon-content lms-ui-icon-timetable"></i>
+                {if !empty($overdue_events_only)}
+                    {trans("Overdue events")}
+                {else}
+                    {trans("Overdue events assigned to You")}
+                {/if}
+                {if isset($overdue_limited)}
+                    {trans("(limited to first 100)")}
+                {/if}
             </TD>
         </TR>
     </THEAD>

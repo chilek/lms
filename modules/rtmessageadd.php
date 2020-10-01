@@ -144,6 +144,9 @@ if (isset($_POST['message'])) {
 
         foreach ($tickets as $ticketid) {
             $queue = $LMS->GetQueueByTicketId($ticketid);
+            if ($message['queueid'] != -100 && $message['queueid'] != $queue['id']) {
+                $queue = $LMS->GetQueue($message['queueid'], true);
+            }
 
             $message['queue'] = $queue;
 
@@ -466,6 +469,7 @@ if (isset($_POST['message'])) {
 
                 $LMS->NotifyUsers(array(
                     'queue' => $queue['id'],
+                    'verifierid' => empty($message['verifierid']) ? null : $message['verifierid'],
                     'mail_headers' => $headers,
                     'mail_body' => $body,
                     'sms_body' => $sms_body,
@@ -524,6 +528,10 @@ if (isset($_POST['message'])) {
             if ($queue['newmessagesubject'] && $queue['newmessagebody']) {
                 $message['customernotify'] = 1;
             }
+            $aet = ConfigHelper::getConfig('rt.allow_modify_resolved_tickets_newer_than', 86400);
+            if ($message['state'] == RT_RESOLVED && !ConfigHelper::checkPrivilege('superuser') && $aet && (time() - $message['resolvetime'] > $aet)) {
+                die("Cannot send message - ticket was resolved more than " . $aet . " seconds.");
+            }
         }
         $message['category_change'] = 0;
         if (ConfigHelper::checkConfig('phpui.helpdesk_notify')) {
@@ -563,7 +571,7 @@ if (isset($_POST['message'])) {
             }
 
             if (!$message['destination'] && !$reply['userid']) {
-                $message['destination'] = $LMS->GetCustomerEmail($message['customerid']);
+                $message['destination'] = $LMS->GetCustomerEmail($message['customerid'], 0, CONTACT_DISABLED);
                 if (!empty($message['destination'])) {
                     $message['destination'] = implode(',', $message['destination']);
                 }
@@ -610,6 +618,7 @@ $message = $hook_data['message'];
 
 if (!is_array($message['ticketid'])) {
     $ticket = $LMS->GetTicketContents($message['ticketid']);
+    $LMS->getTicketImageGalleries($ticket);
     $SMARTY->assign('ticket', $ticket);
     if (!isset($_POST['message'])) {
         $message['source'] = $ticket['source'];

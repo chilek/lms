@@ -46,6 +46,8 @@ class Session
                         // garbage collector procedure
 
     private $tabId = null;
+    private static $oldBackTo = '';
+    private static $backTo = '';
 
     public function __construct(&$DB, $timeout = 0, $settings_timeout = 0)
     {
@@ -112,9 +114,50 @@ class Session
         }
     }
 
+    // new browser tab can be opened as hidden or tabid of new tab can be not initialised
+    // so we have to be careful and handle 'backto' session variable in special way and
+    // correct this variable when new tab id has been determined before the moment
+    public static function getOldBackTo()
+    {
+        return self::$oldBackTo;
+    }
+
+    public static function getBackTo()
+    {
+        return self::$backTo;
+    }
+
+    public function fixBackTo($oldTabId, $oldBackTo, $newTabId, $newBackTo)
+    {
+        $this->DB->BeginTrans();
+        $this->DB->LockTables('sessions');
+
+        $content = $this->DB->GetOne('SELECT content FROM sessions WHERE id = ?', array($this->SID));
+        $content = unserialize($content);
+
+        if (isset($content['tabs'][$oldTabId]['backto'])) {
+            if ($content['tabs'][$oldTabId]['backto'] != $oldBackTo) {
+                $content['tabs'][$oldTabId]['backto'] = $oldBackTo;
+            }
+        }
+        if (!isset($content['tabs'][$newTabId])) {
+            $content['tabs'][$newTabId] = array();
+        }
+        $content['tabs'][$newTabId]['backto'] = $newBackTo;
+
+        $this->DB->Execute('UPDATE sessions SET content = ? WHERE id = ?', array(serialize($content), $this->SID));
+
+        $this->DB->UnLockTables();
+        $this->DB->CommitTrans();
+    }
+
     public function save($variable, $content, $tab = false)
     {
         if ($tab) {
+            if ($variable === 'backto') {
+                self::$oldBackTo = $this->_tab_content[$this->tabId]['backto'];
+                self::$backTo = $content;
+            }
             if (!isset($this->_tab_content[$this->tabId])) {
                 $this->_tab_content[$this->tabId] = array();
             }
@@ -260,17 +303,37 @@ class Session
             'session_logname' => true, 'session_last' => true, 'session_lastip' => true,
             'session_smsauthenticated' => true, 'backto' => true, 'lastmodule' => true,
             'session_passwdrequiredchange' => true, 'session_authcoderequired' => true,
-            'session_twofactorauthrequirechange' => true, 'tabs' => true);
+            'session_twofactorauthrequirechange' => true, 'tabs' => true,
+            'prepared_persistent_filters' => true);
 
         if ($this->autoupdate || $this->_updated) {
             $content = array_merge($this->_content, array('tabs' => $this->_tab_content));
             $session_content = array_intersect_key($content, $session_variables);
             $settings_content = array_diff_key($content, $session_variables);
             $settings_content['mtime'] = time();
+
+            // new browser tab can be opened as hidden or tabid of new tab can be not initialised
+            // so we have to be careful and handle 'backto' session variable in special way and
+            // we should check if tabs info in session content stored in database didn't change
+            // in mean time and if it did than one or more from ajax calls changed it and we should
+            // use it as reliable source of info.
+
+            $this->DB->BeginTrans();
+            $this->DB->LockTables('sessions');
+
+            $content = unserialize($this->DB->GetOne('SELECT content FROM sessions WHERE id = ?', array($this->SID)));
+            if (is_array($content['tabs']) && (!is_array($session_content['tabs']) || (is_array($content['tabs']) && count($content['tabs']) > count($session_content['tabs'])))) {
+                $session_content['tabs'] = $content['tabs'];
+            }
+
             $this->DB->Execute(
                 'UPDATE sessions SET content = ?, mtime = ?NOW? WHERE id = ?',
                 array(serialize($session_content), $this->SID)
             );
+
+            $this->DB->UnLockTables();
+            $this->DB->CommitTrans();
+
             $this->DB->Execute(
                 'UPDATE users SET settings = ?, persistentsettings = ? WHERE login = ?',
                 array(serialize($settings_content), serialize($this->_persistent_settings), $this->_content['session_login'])
@@ -311,13 +374,40 @@ class Session
         }
     }
 
-    public function saveFilter($filter, $module = null)
+    public function saveFilter($filter, $module = null, $persistentKeys = null, $reversePersistentKeys = false, $id = null)
     {
         if (empty($module)) {
             $module = $this->_content['module'];
         }
 
-        $this->_content['filters'][$module] = $filter;
+        if (isset($id)) {
+            if (!isset($this->_content['filters'][$module]['subfilters'][$id])) {
+                $this->_content['filters'][$module]['subfilters'][$id] = array();
+            } elseif (isset($this->_content['filters'][$module]['subfilters'][$id]['persistent_filter']) && !isset($filter['persistent_filter'])) {
+                $filter['persistent_filter'] = $this->_content['filters'][$module]['subfilters'][$id]['persistent_filter'];
+            }
+            $this->_content['filters'][$module]['subfilters'][$id] = $filter;
+            if (isset($persistentKeys)) {
+                $this->_content['prepared_persistent_filters'][$module]['subfilters'][$id] = Utils::filterArrayByKeys(
+                    $filter,
+                    $persistentKeys,
+                    $reversePersistentKeys
+                );
+            } elseif (isset($this->_content['prepared_persistent_filters'][$module]['subfilters'][$id])) {
+                unset($this->_content['prepared_persistent_filters'][$module]['subfilters'][$id]);
+            }
+        } else {
+            $this->_content['filters'][$module] = $filter;
+            if (isset($persistentKeys)) {
+                $this->_content['prepared_persistent_filters'][$module] = Utils::filterArrayByKeys(
+                    $filter,
+                    $persistentKeys,
+                    $reversePersistentKeys
+                );
+            } elseif (isset($this->_content['prepared_persistent_filters'][$module])) {
+                unset($this->_content['prepared_persistent_filters'][$module]);
+            }
+        }
 
         if ($this->autoupdate) {
             $this->_saveSession();
@@ -326,45 +416,85 @@ class Session
         }
     }
 
-    public function getFilter($module = null)
+    public function getFilter($module = null, $id = null)
     {
         if (empty($module)) {
             $module = $this->_content['module'];
         }
 
-        if (!isset($this->_content['filters'][$module])) {
+        if (isset($id)) {
+            if (isset($this->_content['prepared_persistent_filters'][$module]['subfilters'][$id])) {
+                $filter = $this->_content['prepared_persistent_filters'][$module]['subfilters'][$id];
+                unset($this->_content['prepared_persistent_filters'][$module]['subfilters'][$id]);
+                return $filter;
+            } else {
+                return $this->_content['filters'][$module]['subfilters'][$id];
+            }
+        } elseif (isset($this->_content['filters'][$module]['subfilters'])) {
+            if (isset($this->_content['prepared_persistent_filters'][$module]['subfilters'])) {
+                $filter = $this->_content['prepared_persistent_filters'][$module]['subfilters'];
+                unset($this->_content['prepared_persistent_filters'][$module]['subfilters']);
+                return $filter;
+            } else {
+                return $this->_content['filters'][$module]['subfilters'];
+            }
+        } elseif (!isset($this->_content['filters'][$module])) {
             return array();
         }
 
-        return $this->_content['filters'][$module];
-    }
-
-    public function removeFilter($module = null)
-    {
-        if (empty($module)) {
-            $module = $this->_content['module'];
-        }
-
-        if (isset($this->_content['filters'][$module])) {
-            unset($this->_content['filters'][$module]);
-            if ($this->autoupdate) {
-                $this->_saveSession();
-            } else {
-                $this->_updated = true;
-            }
-            return true;
+        if (isset($this->_content['prepared_persistent_filters'][$module])) {
+            $filter = $this->_content['prepared_persistent_filters'][$module];
+            unset($this->_content['prepared_persistent_filters'][$module]);
+            return $filter;
         } else {
-            return false;
+            return $this->_content['filters'][$module];
         }
     }
 
-    public function savePersistentFilter($name, $filter, $module = null)
+    public function removeFilter($module = null, $id = null)
     {
         if (empty($module)) {
             $module = $this->_content['module'];
         }
 
-        $this->_persistent_settings['filters'][$module][$name] = $filter;
+        if (isset($id)) {
+            if (isset($this->_content['filters'][$module]['subfilters'][$id])) {
+                unset($this->_content['filters'][$module]['subfilters'][$id]);
+                if ($this->autoupdate) {
+                    $this->_saveSession();
+                } else {
+                    $this->_updated = true;
+                }
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            if (isset($this->_content['filters'][$module])) {
+                unset($this->_content['filters'][$module]);
+                if ($this->autoupdate) {
+                    $this->_saveSession();
+                } else {
+                    $this->_updated = true;
+                }
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    public function savePersistentFilter($name, $filter, $module = null, $id = null)
+    {
+        if (empty($module)) {
+            $module = $this->_content['module'];
+        }
+
+        if (isset($id)) {
+            $this->_persistent_settings['filters'][$module]['subfilters'][$id][$name] = $filter;
+        } else {
+            $this->_persistent_settings['filters'][$module][$name] = $filter;
+        }
 
         if ($this->autoupdate) {
             $this->_saveSession();
@@ -373,13 +503,18 @@ class Session
         }
     }
 
-    public function getPersistentFilter($name, $module = null)
+    public function getPersistentFilter($name, $module = null, $id = null)
     {
         if (empty($module)) {
             $module = $this->_content['module'];
         }
 
-        if (!isset($this->_persistent_settings['filters'][$module][$name])) {
+        if (isset($id)) {
+            if (isset($this->_persistent_settings['filters'][$module]['subfilters'][$id][$name])) {
+                return $this->_persistent_settings['filters'][$module]['subfilters'][$id][$name];
+            }
+            return array();
+        } elseif (!isset($this->_persistent_settings['filters'][$module][$name])) {
             return array();
         }
 
@@ -392,11 +527,24 @@ class Session
             $module = $this->_content['module'];
         }
 
-        if (!isset($this->_persistent_settings['filters'][$module])) {
+        $result = array();
+
+        if (isset($this->_persistent_settings['filters'][$module]['subfilters'])) {
+            foreach ($this->_persistent_settings['filters'][$module]['subfilters'] as $filter_id => $filters) {
+                if (!isset($result[$filter_id])) {
+                    $result[$filter_id] = array();
+                }
+                foreach ($filters as $filter_name => $filter) {
+                    $result[$filter_id][] = array(
+                        'text' => $filter_name,
+                        'value' => $filter_name,
+                    );
+                }
+            }
+            return $result;
+        } elseif (!isset($this->_persistent_settings['filters'][$module])) {
             return array();
         }
-
-        $result = array();
 
         foreach ($this->_persistent_settings['filters'][$module] as $filter_name => $filter) {
             $result[] = array(
@@ -408,13 +556,25 @@ class Session
         return $result;
     }
 
-    public function removePersistentFilter($name, $module = null)
+    public function removePersistentFilter($name, $module = null, $id = null)
     {
         if (empty($module)) {
             $module = $this->_content['module'];
         }
 
-        if (isset($this->_persistent_settings['filters'][$module][$name])) {
+        if (isset($id)) {
+            if (isset($this->_persistent_settings['filters'][$module]['subfilters'][$id][$name])) {
+                unset($this->_persistent_settings['filters'][$module]['subfilters'][$id][$name]);
+                if ($this->autoupdate) {
+                    $this->_saveSession();
+                } else {
+                    $this->_updated = true;
+                }
+                return true;
+            } else {
+                return false;
+            }
+        } elseif (isset($this->_persistent_settings['filters'][$module][$name])) {
             unset($this->_persistent_settings['filters'][$module][$name]);
             if ($this->autoupdate) {
                 $this->_saveSession();

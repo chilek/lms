@@ -18,6 +18,11 @@
 {block name=netdevmodelattachments}
 	{include file="attachments.html" attachmenttype="netdevmodelid" attachmentresourceid=$netdev.modelid}
 {/block}
+{block name="transactions"}
+	{if ConfigHelper::checkConfig('phpui.logging') && ConfigHelper::checkPrivilege('transaction_logs')}
+		{include file="transactions.html"}
+	{/if}
+{/block}
 {block name=netdevassignments}
 	{include file="customer/customerassignments.html" tab_label=trans("Network Device Liabilities:")}
 {/block}

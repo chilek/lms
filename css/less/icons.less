@@ -1,0 +1,1526 @@
+/*
+ * LMS version 1.11-git
+ *
+ *  (C) Copyright 2001-2020 LMS Developers
+ *
+ *  Please, see the doc/AUTHORS for more information about authors!
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License Version 2 as
+ *  published by the Free Software Foundation.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ *  USA.
+ *
+ *  $Id$
+ */
+
+.lms-ui-icon {
+  line-height: unset;
+  vertical-align: unset;
+  font-size: 140%;
+}
+
+.lms-ui-icon-fixed-width {
+  width: 1.5em;
+  text-align: center;
+}
+
+.lms-ui-icon-map-pin {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-map-pin;
+  }
+}
+
+.lms-ui-icon-customer-location {
+  .lms-ui-icon-map-pin;
+  color: red;
+}
+
+.lms-ui-icon-default-customer-location {
+  .lms-ui-icon-map-pin;
+  color: blue;
+}
+
+.lms-ui-icon-sticky-note,
+.lms-ui-icon-memo {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-sticky-note;
+  }
+}
+
+.lms-ui-icon-quick-send {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-sign-in-alt;
+  }
+}
+
+.lms-ui-icon-nodesession,
+.lms-ui-icon-session {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  .fa-rotate-90;
+  &:before {
+    content: @fa-var-exchange-alt;
+  }
+}
+
+.lms-ui-icon-nodelock,
+.lms-ui-icon-lock {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-lock;
+  }
+}
+
+.lms-ui-icon-convert,
+.lms-ui-icon-transform {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-exchange-alt;
+  }
+}
+
+.lms-ui-icon-correct,
+.lms-ui-icon-correction {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-wrench;
+  }
+}
+
+.lms-ui-icon-cashsource,
+.lms-ui-icon-isource,
+.lms-ui-icon-importsource {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-file-invoice;
+  }
+}
+
+.lms-ui-icon-debitnote,
+.lms-ui-icon-dnote {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-file-invoice-dollar;
+  }
+}
+
+.lms-ui-icon-money,
+.lms-ui-icon-cash,
+.lms-ui-icon-paytype {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-money-bill;
+  }
+}
+
+.lms-ui-icon-settle {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-coins;
+  }
+}
+
+.lms-ui-icon-signout {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-unlink;
+  }
+}
+
+.lms-ui-icon-hourglass,
+.lms-ui-icon-wait {
+  .fa-icon;
+  .far;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-hourglass;
+  }
+}
+
+.lms-ui-icon-options,
+.lms-ui-icon-option {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-table;
+  }
+}
+
+.lms-ui-icon-sign,
+.lms-ui-icon-signature,
+.lms-ui-icon-consent {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-signature;
+  }
+}
+
+.lms-ui-icon-assignment,
+.lms-ui-icon-assign {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-money-check-alt;
+  }
+}
+
+.lms-ui-icon-save,
+.lms-ui-icon-submit {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-save;
+  }
+}
+
+.lms-ui-icon-cancel {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-backspace;
+  }
+}
+
+.lms-ui-icon-location {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-map-marker-alt;
+  }
+}
+
+.lms-ui-icon-search {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-search;
+  }
+}
+
+.lms-ui-icon-next {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-angle-double-right;
+  }
+}
+
+.lms-ui-icon-fast-next {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-fast-forward;
+  }
+}
+
+.lms-ui-icon-previous {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-angle-double-left;
+  }
+}
+
+.lms-ui-icon-fast-previous {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-fast-backward;
+  }
+}
+
+.lms-ui-icon-current-year {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-angle-double-up;
+  }
+}
+
+.lms-ui-icon-clone,
+.lms-ui-icon-copy {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-copy;
+  }
+}
+
+.lms-ui-icon-clean,
+.lms-ui-icon-clear {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-eraser;
+  }
+}
+
+.lms-ui-icon-trash,
+.lms-ui-icon-delete,
+.lms-ui-icon-remove {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-trash;
+  }
+}
+
+.lms-ui-icon-edit,
+.lms-ui-icon-change,
+.lms-ui-icon-modify {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-edit;
+  }
+}
+
+.lms-ui-icon-fileupload,
+.lms-ui-icon-upload {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-paperclip;
+  }
+}
+
+.lms-ui-icon-back,
+.lms-ui-icon-return {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-caret-square-up;
+  }
+}
+
+.lms-ui-icon-add,
+.lms-ui-icon-new,
+.lms-ui-icon-append {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-plus-square;
+  }
+}
+
+.lms-ui-icon-print {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-print;
+  }
+}
+
+.lms-ui-icon-descending {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-sort-down;
+  }
+}
+
+.lms-ui-icon-ascending {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-sort-up;
+  }
+}
+
+.lms-ui-icon-confirm,
+.lms-ui-icon-apply {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-check-double;
+  }
+}
+
+.lms-ui-icon-mail,
+.lms-ui-icon-send {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-envelope;
+  }
+}
+
+.lms-ui-icon-phone,
+.lms-ui-icon-call {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-phone;
+  }
+}
+
+.lms-ui-icon-sms,
+.lms-ui-icon-mobile {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-mobile-alt;
+  }
+}
+
+.lms-ui-icon-www,
+.lms-ui-icon-web {
+  .fa-icon;
+  .fab;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-chrome;
+  }
+}
+
+.lms-ui-icon-userpanel,
+.lms-ui-icon-panel {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-users;
+  }
+}
+
+.lms-ui-icon-clipboard,
+.lms-ui-icon-notes {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-paste;
+  }
+}
+
+.lms-ui-icon-view {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-eye;
+  }
+  &.pdf:before {
+    content: @fa-var-file-pdf;
+  }
+  &.xls:before {
+    content: @fa-var-file-excel;
+  }
+}
+
+.lms-ui-icon-help,
+.lms-ui-icon-info,
+.lms-ui-icon-details {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-info;
+  }
+}
+
+.lms-ui-icon-open {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-book-open;
+  }
+}
+
+.lms-ui-icon-close {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-book;
+  }
+}
+
+.lms-ui-icon-unread {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-book;
+    color: royalblue;
+  }
+}
+
+.lms-ui-icon-read {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-book-open;
+  }
+}
+
+.lms-ui-icon-urgent {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-bell;
+    color: darkorange;
+  }
+}
+
+.lms-ui-icon-critical {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-bell;
+    color: red;
+  }
+}
+
+.lms-ui-icon-nodegroup,
+.lms-ui-icon-ngroup,
+.lms-ui-icon-ng {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-layer-group;
+  }
+}
+
+.lms-ui-icon-customergroup,
+.lms-ui-icon-cgroup,
+.lms-ui-icon-cg {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-users;
+  }
+}
+
+.lms-ui-icon-usergroup,
+.lms-ui-icon-ugroup,
+.lms-ui-icon-ug {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-user-tag;
+  }
+}
+
+.lms-ui-icon-suspend,
+.lms-ui-icon-lock {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-lock;
+  }
+}
+
+.lms-ui-icon-unlock {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-unlock;
+  }
+}
+
+.lms-ui-icon-warning,
+.lms-ui-icon-warn,
+.lms-ui-icon-warnoff {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-exclamation-triangle;
+  }
+}
+
+.lms-ui-icon-warnoff {
+  &:before {
+    color: black !important;
+  }
+}
+
+.lms-ui-icon-warnmix {
+  .lms-ui-icon-warning;
+  &:before {
+    color: burlywood !important;
+    text-stroke-width: 1px;
+    text-stroke-color: black;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: black;
+  }
+}
+
+.lms-ui-icon-warnon {
+  .lms-ui-icon-warning;
+  &:before {
+    color: gold !important;
+    text-stroke-width: 1px;
+    text-stroke-color: black;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: black;
+  }
+}
+
+.lms-ui-icon-connect {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-toggle-on;
+  }
+}
+.lms-ui-icon-plug {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-plug;
+  }
+}
+
+.lms-ui-icon-connected {
+  .lms-ui-icon-connect;
+  &:before {
+    color: gold !important;
+    text-stroke-width: 1px;
+    text-stroke-color: black;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: black;
+  }
+}
+
+.lms-ui-icon-mixconnected {
+  .lms-ui-icon-connect;
+  &:before {
+    color: burlywood !important;
+    text-stroke-width: 1px;
+    text-stroke-color: black;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: black;
+  }
+}
+
+.lms-ui-icon-disconnected {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  .fa-flip-horizontal;
+  &:before {
+    content: @fa-var-toggle-on;
+    color: black !important;
+  }
+}
+
+.lms-ui-icon-node {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-desktop;
+  }
+}
+
+.lms-ui-icon-verifier {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-chalkboard-teacher;
+  }
+}
+
+.lms-ui-icon-deadline {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-hourglass-end;
+  }
+}
+
+.lms-ui-icon-actions {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-cogs;
+  }
+}
+
+.lms-ui-icon-uptime {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-clock;
+  }
+}
+
+.lms-ui-icon-content {
+  width: 2em;
+  text-align: center;
+}
+
+.lms-ui-icon-categories {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-check-square;
+  }
+}
+
+.lms-ui-icon-restore {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-undo-alt;
+  }
+}
+
+.lms-ui-icon-description {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-audio-description;
+  }
+}
+
+
+.lms-ui-icon-nodeoff {
+  .lms-ui-icon-node;
+}
+
+.lms-ui-icon-nodeon {
+  .lms-ui-icon-node;
+  text-stroke-width: 1px;
+  text-stroke-color: limegreen;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: limegreen;
+}
+
+.lms-ui-icon-nodeunk {
+  .lms-ui-icon-node;
+  text-stroke-width: 1px;
+  text-stroke-color: red;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: red;
+}
+
+.lms-ui-icon-netdevice,
+.lms-ui-icon-device {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-hdd;
+  }
+}
+
+.lms-ui-icon-netdev {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-hdd;
+  }
+}
+
+.lms-ui-icon-netdevoff {
+  .lms-ui-icon-netdevice;
+}
+
+.lms-ui-icon-netdevon {
+  .lms-ui-icon-netdevice;
+  text-stroke-width: 1px;
+  text-stroke-color: gold;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: gold;
+}
+
+.lms-ui-icon-netdevunk {
+  .lms-ui-icon-netdevice;
+  text-stroke-width: 1px;
+  text-stroke-color: red;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: red;
+}
+
+.lms-ui-icon-mailsent {
+  .lms-ui-icon-mail;
+  &:before {
+    color: @blend !important;
+  }
+}
+
+.lms-ui-icon-customer {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-user;
+  }
+}
+
+.lms-ui-icon-phone {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-phone;
+  }
+}
+
+.lms-ui-icon-node {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-desktop;
+  }
+}
+
+.lms-ui-icon-ipnetwork,
+.lms-ui-icon-networks,
+.lms-ui-icon-network {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-globe;
+  }
+}
+
+.lms-ui-icon-subject {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-business-time;
+  }
+}
+
+.lms-ui-icon-user {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-user;
+  }
+}
+
+.lms-ui-icon-owner {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-user-circle;
+  }
+}
+
+.lms-ui-icon-queue {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-tasks;
+  }
+}
+
+.lms-ui-icon-netnode {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-layer-group;
+  }
+}
+
+.lms-ui-icon-service {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-cog;
+  }
+}
+
+.lms-ui-icon-type {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-ticket-alt;
+  }
+}
+
+.lms-ui-icon-event-type {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-calendar;
+  }
+}
+
+.lms-ui-icon-requestor {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-male;
+  }
+}
+
+.lms-ui-icon-helpdesk {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-tasks;
+  }
+}
+
+.lms-ui-icon-calendar,
+.lms-ui-icon-timetable {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-calendar-alt;
+  }
+}
+
+.lms-ui-icon-administration {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-screwdriver;
+  }
+}
+
+.lms-ui-icon-reload {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-sync;
+  }
+}
+
+.lms-ui-icon-relatedticket {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-expand-arrows-alt;
+  }
+}
+
+.lms-ui-icon-childticket {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-arrow-circle-down;
+  }
+}
+
+.lms-ui-icon-parentticket {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-reply-all;
+  }
+}
+
+.lms-ui-icon-source {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-th;
+  }
+}
+
+.lms-ui-icon-priority {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-thermometer-empty;
+  }
+}
+
+.lms-ui-icon-cause {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-asterisk;
+  }
+}
+
+.lms-ui-icon-logout {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-power-off;
+  }
+}
+
+.lms-ui-icon-login {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-sign-in-alt;
+  }
+}
+
+.lms-ui-icon-configuration {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-wrench;
+  }
+}
+
+.lms-ui-icon-archiveview,
+.lms-ui-icon-archive,
+.lms-ui-icon-transactions,
+.lms-ui-icon-transaction,
+.lms-ui-icon-logging,
+.lms-ui-icon-log,
+.lms-ui-icon-history {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-history;
+  }
+}
+
+.lms-ui-icon-finances {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-money-bill;
+  }
+}
+
+.lms-ui-icon-invproject {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-money-bill;
+  }
+}
+
+.lms-ui-icon-status {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    color: cornflowerblue;
+    content: @fa-var-book;
+  }
+}
+
+.lms-ui-icon-status-resolved {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    color: dimgrey;
+    content: @fa-var-book;
+  }
+}
+
+
+.lms-ui-icon-wireless {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-wifi;
+  }
+}
+
+.lms-ui-icon-wired {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-bolt;
+  }
+}
+
+.lms-ui-icon-fiber {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-fire;
+  }
+}
+
+.lms-ui-icon-hosting {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-server;
+  }
+}
+
+.lms-ui-icon-add {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-plus-square;
+  }
+}
+
+.lms-ui-icon-document {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-file-alt;
+  }
+
+}
+
+.lms-ui-icon-stats {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-chart-line;
+  }
+
+}
+
+.lms-ui-icon-externalid {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-database;
+  }
+}
+
+.lms-ui-icon-popup {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-external-link-alt;
+  }
+}
+
+.lms-ui-icon-message {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-envelope;
+  }
+}
+
+.lms-ui-icon-note {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-pen;
+  }
+}
+
+.lms-ui-icon-documentation {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-book;
+  }
+}
+
+.lms-ui-icon-password,
+.lms-ui-icon-lastloggedin {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-key;
+  }
+}
+
+.lms-ui-icon-reply-all,
+.lms-ui-icon-reply {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-reply-all;
+  }
+}
+
+.lms-ui-icon-citing,
+.lms-ui-icon-quote {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-quote-right;
+  }
+}
+
+.lms-ui-icon-chat,
+.lms-ui-icon-comment,
+.lms-ui-icon-comments {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-comments;
+  }
+}
+
+.lms-ui-icon-home {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-home;
+  }
+}
+
+.lms-ui-icon-link,
+.lms-ui-icon-url {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-link;
+  }
+}
+
+.lms-ui-icon-trust,
+.lms-ui-icon-handshake {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-handshake;
+  }
+}
+
+.lms-ui-icon-list {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-list;
+  }
+}
+
+.lms-ui-icon-tags,
+.lms-ui-icon-label {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-tags;
+  }
+}
+
+.lms-ui-icon-fullscreen-on {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-arrows-alt;
+  }
+}
+
+.lms-ui-icon-fullscreen-off {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-compress-arrows-alt;
+  }
+}
+
+.lms-ui-icon-hide {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-times;
+  }
+}
+
+.lms-ui-icon-gallery {
+  .fa-icon;
+  .far;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-images;
+  }
+}
+
+.lms-ui-icon-customisation {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-caret-down;
+  }
+}
+
+.lms-ui-icon-optional-info {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-info-circle;
+  }
+}
+
+.lms-ui-icon-modified-date {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-user-clock;
+  }
+}
+
+.lms-ui-icon-legal-personality {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-briefcase;
+  }
+}
+
+.lms-ui-icon-division {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-building;
+  }
+}
+
+.lms-ui-icon-customer-pin-code {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-ellipsis-h;
+  }
+}
+
+.lms-ui-icon-more {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-angle-double-down;
+  }
+}
+
+.lms-ui-icon-less {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-angle-double-up;
+  }
+}
+
+.lms-ui-icon-user-id-number {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-id-card;
+  }
+}
+
+.lms-ui-icon-account-number {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-credit-card;
+  }
+}
+
+.lms-ui-icon-customer-status-connected {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-user-check;
+  }
+}
+
+.lms-ui-icon-customer-status-awaiting {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    color: green;
+    content: @fa-var-user-clock;
+  }
+}
+
+.lms-ui-icon-customer-status-interested {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-user-plus;
+  }
+}
+
+.lms-ui-icon-customer-status-disconnected {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-user-times;
+  }
+}
+
+.lms-ui-icon-customer-status-debtcollection {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    color: red;
+    content: @fa-var-user-alt-slash;
+  }
+}
+
+.lms-ui-icon-redo,
+.lms-ui-icon-resend {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-redo;
+  }
+}
+
+.lms-ui-icon-secondary-selection,
+.lms-ui-icon-additional-selection {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-ellipsis-v;
+  }
+}
+
+.lms-ui-icon-menu {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-bars;
+  }
+}
+
+.lms-ui-icon-routing,
+.lms-ui-icon-routed {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-route;
+  }
+}

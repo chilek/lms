@@ -57,6 +57,12 @@ $authors = array(
             'realname' => 'Krzysztof Drewicz',
             ),
 
+    'interduo' => array(
+            'info' => 'Frontend, Backend, Testowanie, Optymalizacja',
+        'realname' => 'Jarosław Kłopotek',
+        'www' => 'www.interduo.pl'
+            ),
+
         'Lexx' => array(
             'info' => 'PHP, C, doc, website',
             'www' => 'www.lexx.w.pl',

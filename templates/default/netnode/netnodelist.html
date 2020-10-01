@@ -131,7 +131,7 @@
 						{foreach $filecontainer.files as $file}
 							{documentview id="{$filecontainer.id}-{$file.id}" type=$file.contenttype name=$file.filename
 							url="?m=attachments&attachmentaction=viewfile&type=messageid&id={$item.filecontainerid}&fileid={$file.id}" external=true
-							text="{$file.filename} <img src=\"img/{if preg_match('/pdf/',$file.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$file.contenttype)}xls{else}view{/if}.gif\">"}
+							text="{$file.filename} <i class=\"lms-ui-icon-view{if preg_match('/pdf/',$file.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$file.contenttype)} xls{/if}\"></i>"}
 							<br>
 						{/foreach}
 					</div>

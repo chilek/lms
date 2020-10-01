@@ -87,5 +87,13 @@ interface LMSNodeManagerInterface
 
     public function GetNodeLocations($customerid, $address_id = null);
 
-    public function GetNodeCustomerAssignments($assignments);
+    public function GetNodeCustomerAssignments($nodeid, $assignments);
+
+    public function getNodeRoutedNetworks($nodeid);
+
+    public function getNodeNotRoutedNetworks($nodeid);
+
+    public function addNodeRoutedNetworks(array $params);
+
+    public function deleteNodeRoutedNetworks(array $params);
 }

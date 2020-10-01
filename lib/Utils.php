@@ -37,6 +37,38 @@ class Utils
         });
     }
 
+    public static function filterArrayByKeys(array $array, array $keys, $reverse = false)
+    {
+        $result = array();
+        $keys = array_flip($keys);
+        array_walk($array, function ($item, $key) use ($reverse, $keys, &$result) {
+            if ($reverse) {
+                if (!isset($keys[$key])) {
+                    $result[$key] = $item;
+                }
+            } elseif (isset($keys[$key])) {
+                $result[$key] = $item;
+            }
+        });
+        return $result;
+    }
+
+    public static function array_column(array $array, $column_key, $index_key = null)
+    {
+        if (!is_array($array) || empty($column_key)) {
+            return $array;
+        }
+        $result = array();
+        foreach ($array as $idx => $item) {
+            if (isset($index_key)) {
+                $result[$item[$index_key]] = $item[$column_key];
+            } else {
+                $result[$idx] = $item[$column_key];
+            }
+        }
+        return $result;
+    }
+
     // taken from RoundCube
     /**
      * Generate a random string
@@ -137,6 +169,9 @@ class Utils
             'phpui.markdown_documentation_file',
             SYS_DIR . DIRECTORY_SEPARATOR . 'doc' . DIRECTORY_SEPARATOR . 'Zmienne-konfiguracyjne-LMS-Plus.md'
         );
+        if (!file_exists($markdown_documentation_file)) {
+            return null;
+        }
 
         if (isset($variable_name)) {
             $content = file_get_contents($markdown_documentation_file);
@@ -148,6 +183,9 @@ class Utils
                 $chunk = substr($content, $startpos);
             } else {
                 $chunk = substr($content, $startpos, $endpos - $startpos);
+            }
+            if (($endpos = strpos($chunk, '***')) !== false) {
+                $chunk = substr($chunk, 0, $endpos);
             }
             $lines = explode("\n", $chunk);
             array_shift($lines);
@@ -222,7 +260,7 @@ class Utils
 
         $result = array();
 
-        $value = ConfigHelper::getConfig('phpui.default_customer_consents', 'data_processing', true);
+        $value = ConfigHelper::getConfig('phpui.default_customer_consents', 'data_processing,transfer_form', true);
         if (!empty($value)) {
             $values = array_flip(preg_split('/[\s\.,;]+/', $value, -1, PREG_SPLIT_NO_EMPTY));
             foreach ($CCONSENTS as $consent_id => $consent) {
@@ -233,5 +271,38 @@ class Utils
         }
 
         return $result;
+    }
+
+    public static function parseCssProperties($text)
+    {
+        $result = array();
+        $text = preg_replace('/\s/', '', $text);
+        $properties = explode(';', $text);
+        if (!empty($properties)) {
+            foreach ($properties as $property) {
+                list ($name, $value) = explode(':', $property);
+                $result[$name] = $value;
+            }
+        }
+        return $result;
+    }
+
+    public static function findNextBusinessDay($date = null)
+    {
+        $holidaysByYear = array();
+
+        list ($year, $month, $day, $weekday) = explode('/', date('Y/m/j/N', $date ? $date : time()));
+        $date = mktime(0, 0, 0, $month, $day, $year);
+
+        while (true) {
+            if (!isset($holidaysByYear[$year])) {
+                $holidaysByYear[$year] = getHolidays($year);
+            }
+            if ($weekday < 6 && !isset($holidaysByYear[$year][$date])) {
+                return $date;
+            }
+            $date = strtotime('+1 day', $date);
+            list ($year, $weekday) = explode('/', date('Y/N', $date));
+        }
     }
 }

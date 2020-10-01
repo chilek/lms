@@ -27,10 +27,19 @@
 /**
  * ConfigHelper
  *
- * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
 class ConfigHelper
 {
+    public static function setFilter($divisionid = null, $userid = null)
+    {
+        LMSConfig::getConfig(array(
+            'force' => true,
+            'force_ui_only' => true,
+            'user_id' => $userid,
+            'division_id' => $divisionid,
+        ));
+    }
+
     /**
      * Returns config cariable value
      *

@@ -5,7 +5,7 @@
 <form method="post" name="customermessages" id="customermessages-form" action="?m=messagedel">
 </form>
 
-{tab_container id="customermessages"}
+{tab_container id="customermessages" label="Customer Messages"}
 
 	{tab_header content_id="messagespanel"}
 		{tab_header_cell icon="lms-ui-icon-message"}
@@ -20,8 +20,9 @@
 	{tab_contents id="messagespanel"}
 
 		{tab_table}
-			<TABLE id="customermessages-datatable" class="lmsbox-inner{if !empty($messagelist)} lms-ui-datatable{/if}"
-					{if !empty($messagelist)}{if $limit} data-page-length="{$limit}"{/if}
+			<TABLE id="customermessages-datatable" class="lmsbox-inner lms-ui-datatable"
+					{if $limit} data-page-length="{$limit}"
+					data-empty-table-message="{trans("There are no messages in database.")}"
 					data-order='[[ 0, "desc" ]]' style="display: none;"{/if} width="100%">
 				<COLGROUP>
 					<COL style="width: 1%;">
@@ -93,22 +94,17 @@
 						{/if}
 						{button type="link" icon="delete" class="delete-message" href="?m=messagedel&id={$item.id}"
 							tip="Delete"}
+						{button type="link" icon="resend" href="?m=messageadd&messageid={$item.id}" tip="Resend"}
 						<input type="checkbox" class="lms-ui-multi-check" name="marks[{$item.id}]" value="{$item.id}"
 							form="customermessages-form">
 						<div id="files-{$item.filecontainerid}" style="display: none;" class="files">
 							{foreach $item.files as $file}
 								{documentview id="{$item.id}-{$file.id}" type=$file.contenttype name=$file.filename
-								url="?m=attachments&attachmentaction=viewfile&type=messageid&id={$item.filecontainerid}&fileid={$file.id}" external=true
-								text="{$file.filename} <img src=\"img/{if preg_match('/pdf/',$file.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$file.contenttype)}xls{else}view{/if}.gif\">"}
+									url="?m=attachments&attachmentaction=viewfile&type=messageid&id={$item.filecontainerid}&fileid={$file.id}" external=true
+									text="{$file.filename} <i class=\"lms-ui-icon-view{if preg_match('/pdf/',$file.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$file.contenttype)} xls{/if}\"></i>"}
 								<br>
 							{/foreach}
 						</div>
-					</TD>
-				</TR>
-				{foreachelse}
-				<TR>
-					<TD class="empty-table" colspan="7">
-						<P>{trans("There are no messages in database.")}</P>
 					</TD>
 				</TR>
 				{/foreach}

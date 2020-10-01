@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -23,6 +23,7 @@
  *
  *  $Id$
  */
+
 $id = intval($_GET['id']);
 
 if (!$LMS->NetDevExists($id)) {
@@ -37,7 +38,7 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
     $netdev = $LMS->GetNetDev($id);
     if (!empty($netdev['ownerid'])) {
         $assignments = $LMS->GetCustomerAssignments($netdev['ownerid'], true, false);
-        $assignments = $LMS->GetNetDevCustomerAssignments($assignments);
+        $assignments = $LMS->GetNetDevCustomerAssignments($id, $assignments);
         $SMARTY->assign(array(
             'assignments' => $assignments,
             'customerinfo' => array(
@@ -100,8 +101,7 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
         }
     }
 
-    $queue = $LMS->GetQueueContents(array('ids' => null, 'order' => null, 'state' => null, 'priority' => null,
-        'owner' => -1, 'catids' => null, 'removed' => null, 'netdevids' => $id));
+    $queue = $LMS->GetQueueContents(array('netdevids' => $id));
     unset($queue['total']);
     unset($queue['state']);
     unset($queue['order']);
@@ -161,6 +161,11 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
         $SMARTY->assign('nodeipdata', $LMS->GetNode($_GET['ip']));
         $SMARTY->assign('nodesessions', $LMS->GetNodeSessions($_GET['ip']));
         $SMARTY->assign('netdevauthtype', $netdevauthtype);
+
+        $SMARTY->assign('routednetworks', $LMS->getNodeRoutedNetworks($_GET['ip']));
+        $SMARTY->assign('notroutednetworks', $LMS->getNodeNotRoutedNetworks($_GET['ip']));
+        $SMARTY->assign('nodeid', $_GET['ip']);
+
         $SMARTY->display('netdev/netdevipinfo.html');
     } else {
         $SMARTY->assign('netdevinfo_sortable_order', $SESSION->get_persistent_setting('netdevinfo-sortable-order'));

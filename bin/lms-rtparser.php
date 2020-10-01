@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -28,21 +28,39 @@
 ini_set('error_reporting', E_ALL&~E_NOTICE);
 
 $parameters = array(
-    'C:' => 'config-file:',
-    's' => 'silent',
-    'h' => 'help',
-    'v' => 'version',
-    'd' => 'debug',
-    'q:' => 'queue:',
+    'config-file:' => 'C:',
+    'silent' => 's',
+    'help' => 'h',
+    'version' => 'v',
+    'debug' => 'd',
+    'queue:' => 'q:',
 );
 
-foreach ($parameters as $key => $val) {
-    $val = preg_replace('/:/', '', $val);
-    $newkey = preg_replace('/:/', '', $key);
-    $short_to_longs[$newkey] = $val;
+$long_to_shorts = array();
+foreach ($parameters as $long => $short) {
+    $long = str_replace(':', '', $long);
+    if (isset($short)) {
+        $short = str_replace(':', '', $short);
+    }
+    $long_to_shorts[$long] = $short;
 }
-$options = getopt(implode('', array_keys($parameters)), $parameters);
-foreach ($short_to_longs as $short => $long) {
+
+$options = getopt(
+    implode(
+        '',
+        array_filter(
+            array_values($parameters),
+            function ($value) {
+                return isset($value);
+            }
+        )
+    ),
+    array_keys($parameters)
+);
+
+foreach (array_flip(array_filter($long_to_shorts, function ($value) {
+    return isset($value);
+})) as $short => $long) {
     if (array_key_exists($short, $options)) {
         $options[$long] = $options[$short];
         unset($options[$short]);
@@ -52,7 +70,7 @@ foreach ($short_to_longs as $short => $long) {
 if (array_key_exists('version', $options)) {
     print <<<EOF
 lms-rtparser.php
-(C) 2001-2018 LMS Developers
+(C) 2001-2020 LMS Developers
 
 EOF;
     exit(0);
@@ -61,7 +79,7 @@ EOF;
 if (array_key_exists('help', $options)) {
     print <<<EOF
 lms-rtparser.php
-(C) 2001-2018 LMS Developers
+(C) 2001-2020 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
@@ -80,7 +98,7 @@ $quiet = array_key_exists('silent', $options);
 if (!$quiet) {
     print <<<EOF
 lms-rtparser.php
-(C) 2001-2018 LMS Developers
+(C) 2001-2020 LMS Developers
 
 EOF;
 }
@@ -142,8 +160,6 @@ $SYSLOG = SYSLOG::getInstance();
 
 $AUTH = null;
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
-$LMS->ui_lang = $_ui_language;
-$LMS->lang = $_language;
 
 $hostname = gethostname();
 if (empty($hostname)) {
@@ -246,6 +262,8 @@ foreach (explode("\n", $mail_headers) as $mail_header) {
 $mail_headers = implode("\n", $decoded_mail_headers);
 unset($decoded_mail_headers);
 
+$image_max_size = ConfigHelper::getConfig('phpui.uploaded_image_max_size');
+
 if (preg_match('#multipart/#', $partdata['content-type']) && !empty($parts)) {
     $mail_body = '';
     while (!empty($parts)) {
@@ -312,6 +330,25 @@ if (preg_match('#multipart/#', $partdata['content-type']) && !empty($parts)) {
                 continue;
             }
             $file_name = iconv_mime_decode($file_name);
+
+            if ($image_max_size && class_exists('Imagick') && strpos($partdata['content-type'], 'image/') === 0) {
+                $imagick = new \Imagick();
+                $imagick->readImageBlob($file_content);
+                $width = $imagick->getImageWidth();
+                $height = $imagick->getImageHeight();
+                if ($height > $width) {
+                    if ($height > $image_max_size) {
+                        $imagick->scaleImage(0, $image_max_size);
+                        $file_content = $imagick->getImageBlob();
+                    }
+                } else {
+                    if ($width > $image_max_size) {
+                        $imagick->scaleImage($image_max_size, 0);
+                        $file_content = $imagick->getImageBlob();
+                    }
+                }
+            }
+
             $files[] = array(
                 'name' => $file_name,
                 'type' => $partdata['content-type'],

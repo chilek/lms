@@ -1,0 +1,60 @@
+<!-- $Id$ -->
+<TABLE class="lmsbox lms-ui-tab-container">
+	<COLGROUP>
+		<COL style="width: 99%;">
+		<COL style="width: 1%;">
+	</COLGROUP>
+	<THEAD>
+		<TR class="hand lmsbox-titlebar nobr" data-lmsbox-content="childpanel-{$layout.module}">
+			<TD class="bold">
+				<i class="lms-ui-icon-helpdesk"></i> {trans("Child tickets:")}
+			</TD>
+			<TD>
+				{if $ticket.state != $smarty.const.RT_RESOLVED}
+					{button icon="add" label="Add"
+						onclick="location.href='?m=rtticketadd&parentid={$ticket.ticketid}{if $ticket.customerid}&customerid={$ticket.customerid}{/if}';"}
+				{/if}
+			</TD>
+		</TR>
+	</THEAD>
+	<TBODY>
+		<TR id="childpanel-{$layout.module}">
+			<TD colspan="2">
+				<table class="lmsbox{if !$childtickets}-inner{/if} lms-ui-background-cycle">
+					<COLGROUP>
+					    <COL style="width: 1%;">
+					    <COL style="width: 1%;">
+					    <COL style="width: 1%;">
+					    <COL style="width: 1%;">
+					    <COL style="width: 50%;">
+					    <COL style="width: 45%;">
+					    <COL style="width: 1%;">
+					    <COL style="width: 1%;">
+					    <COL style="width: 1%;">
+					    <COL style="width: 1%;">
+					</COLGROUP>
+					<THEAD>
+						{include file="rt/rtheader.html"}
+					</THEAD>
+					<TBODY>
+					{foreach $childticketscontent as $ticket}
+						{$id = $ticket.ticketid}
+						{include file="rt/rtqueueviewboxrow.html"}
+					{foreachelse}
+					<TR>
+						<TD COLSPAN="11" class="empty-table">
+							<p>{trans("There is no child tickets")}</p>
+						</TD>
+					</TR>
+					{/foreach}
+					</TBODY>
+				</table>
+			</TD>
+		</TR>
+	</TBODY>
+</TABLE>
+
+<SCRIPT type="text/javascript">
+	if (getCookie('childpanel-{$layout.module}') == '1')
+		document.getElementById('childpanel-{$layout.module}').style.display = '';
+</SCRIPT>

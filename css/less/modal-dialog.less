@@ -1,0 +1,63 @@
+/*
+ * LMS version 1.11-git
+ *
+ *  (C) Copyright 2001-2020 LMS Developers
+ *
+ *  Please, see the doc/AUTHORS for more information about authors!
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License Version 2 as
+ *  published by the Free Software Foundation.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ *  USA.
+ *
+ *  $Id$
+ */
+
+#lms-ui-modal-dialog {
+  ol {
+    list-style: none;
+    padding-left: 0;
+    width: 90%;
+
+    li.message {
+      font-weight: bold;
+    }
+  }
+}
+
+.lms-ui-modal-dialog-wrapper {
+  @media screen and (max-width: @mobile-max-width) {
+    font-size: 200%;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+
+    .ui-dialog-titlebar-close {
+      text-indent: unset;
+      border: 0 !important;
+      background-color: transparent !important;
+      box-shadow: unset !important;
+      right: 0.5em !important;
+      top: 40% !important;
+
+      .lms-ui-icon-hide {
+        position: absolute;
+        text-indent: unset;
+        width: 0;
+        height: 0;
+        left: 0;
+        top: 0;
+      }
+    }
+  }
+}

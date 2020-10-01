@@ -389,7 +389,7 @@ if ($type == 'openlayers') {
     $SMARTY->assign('start', $start);
     $SMARTY->assign('mini', $mini);
     $SMARTY->assign('type', $type);
-    $SMARTY->assign('emptydb', count($deviceslist) ? false : true);
+    $SMARTY->assign('emptydb', empty($deviceslist));
     $SMARTY->assign('gd', function_exists('imagepng'));
     $SMARTY->assign('ming', function_exists('ming_useswfversion'));
     $SMARTY->display('netdev/netdevmap.html');

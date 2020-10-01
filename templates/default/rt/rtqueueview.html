@@ -4,6 +4,18 @@
 <!-- $Id$ -->
 <H1>{$layout.pagetitle}</H1>
 
+<style>
+
+	@media screen and (max-width: 1200px) {
+		.ticket-location,
+		.ticket-deadline,
+		.ticket-events {
+			display: none;
+		}
+	}
+
+</style>
+
 <TABLE class="lmsbox lms-ui-background-cycle lms-ui-multi-check">
     <COLGROUP>
         <COL style="width: 1%;">
@@ -20,12 +32,12 @@
     <THEAD>
         {include file="rt/rtfilter.html"}
         <TR>
-            <TD class="lms-ui-pagination" COLSPAN="6">
+            <TD class="lms-ui-pagination ticket-list-pagination" COLSPAN="6">
                 {if $pagination->getTotal() != 0}
                 {include file="pagination.html" form="filter-form"}
                 {/if}
             </TD>
-			<TD class="lms-ui-pagination text-right nobr" colspan="4">
+			<TD class="lms-ui-pagination text-right ticket-list-buttons" colspan="4">
 				<label> <input type="checkbox" class="lms-ui-multi-check-all">
 					{trans("Check All")}
 				</label>
@@ -41,12 +53,12 @@
     </TBODY>
     <TFOOT>
         <TR>
-            <TD class="lms-ui-pagination" COLSPAN="6">
+            <TD class="lms-ui-pagination ticket-list-pagination" COLSPAN="6">
                 {if $pagination->getTotal() != 0}
                 {include file="pagination.html" form="filter-form"}
                 {/if}
             </TD>
-			<TD class="lms-ui-pagination text-right nobr" colspan="4">
+			<TD class="lms-ui-pagination text-right ticket-list-buttons" colspan="4">
 				<label> <input type="checkbox" class="lms-ui-multi-check-all">
 					{trans("Check all")}
 				</label>
@@ -99,6 +111,7 @@
 			});
 			return false;
 		});
+
 		$('.restore-ticket').click(function() {
 			var link = $(this).attr('href');
 			var fulllink = link + get_backid(this);
@@ -108,6 +121,7 @@
 			});
 			return false;
 		});
+
 		$('.remove-ticket').click(function() {
 			var link = $(this).attr('href');
 			var fulllink = link + get_backid(this);
@@ -117,6 +131,36 @@
 			});
 			return false;
 		});
+
+		$('.ticket-image-gallery').click(function() {
+			var btn = this;
+			$.ajax({
+				url: "?m=rtticketview&api=1&ajax=1&op=get-image-gallery&id=" +
+					parseInt($(this).closest('tr').attr('data-ticket-id')),
+				method: "GET",
+				dataType: "json",
+				success: function(data) {
+					if (data.length) {
+						showGallery(data);
+					} else {
+						$(btn).hide();
+					}
+				}
+			});
+			return false;
+		});
+
+		$(window).resize(function() {
+			if (parseInt($(this).outerWidth()) <= 1200) {
+				$('.ticket-list-filter').attr('colspan', 7);
+				$('.ticket-list-pagination').attr('colspan', 4);
+				$('.ticket-list-buttons').attr('colspan', 3);
+			} else {
+				$('.ticket-list-filter').attr('colspan', 10);
+				$('.ticket-list-pagination').attr('colspan', 6);
+				$('.ticket-list-buttons').attr('colspan', 4);
+			}
+		}).resize();
 	});
 
 </script>

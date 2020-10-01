@@ -35,6 +35,11 @@ function toggle_all_attachments(docid) {
 $(function() {
 	$('#send-documents').click(function() {
 		if (!$(this).closest('div.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			alertDialog($t('No document has been selected!'), this);
+			return;
+		}
+		if (!parseInt($(this).attr('data-send-documents'))) {
+			alertDialog($t('Customer has not any assigned email contacts with "documents" flag!'), this);
 			return;
 		}
 		confirmDialog($t('Are you sure, you want to send documents to customer?'), this).done(function() {

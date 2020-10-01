@@ -37,7 +37,11 @@ if (!$LMS->CheckTicketAccess($id)) {
 //$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $ticket = $LMS->GetTicketContents($id);
+
+
 $ticket['relatedtickets'] = $LMS->GetRelatedTickets($id);
+$ticket['childtickets'] = $LMS->GetChildTickets($id);
+
 $ticket['message'] = $DB->GetOne(
     'SELECT body FROM rtmessages
 		    WHERE ticketid = ?
@@ -46,7 +50,8 @@ $ticket['message'] = $DB->GetOne(
 );
 
 $ticket['uptime'] = uptimef($ticket['resolvetime'] ? $ticket['resolvetime'] - $ticket['createtime'] : time() - $ticket['createtime']);
+$aet = ConfigHelper::getConfig('rt.allow_modify_resolved_tickets_newer_than', 86400);
 
 $SMARTY->assign('ticket', $ticket);
-
+$SMARTY->assign('aet', $aet);
 $SMARTY->display('rt/rtticketinfoshort.html');

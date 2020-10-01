@@ -12,7 +12,7 @@
 	{include file="node/nodesessions.html"}
 {/block}
 {block name="nodeassignments"}
-	{include file="customer/customerassignments.html" tab_label=trans("Node Liabilities:") assignments=$nodeassignments tab_id="nodeassignments" content_id="nodeassignmentpanel"}
+	{include file="customer/customerassignments.html" data_label="Node Liabilities" tab_label=trans("Node Liabilities:") assignments=$nodeassignments tab_id="nodeassignments" content_id="nodeassignmentpanel"}
 {/block}
 {block name="managementurls"}
 	{include file="managementurl/managementurls.html"}
@@ -31,6 +31,9 @@
 {/block}
 {block name="customernetworksbox"}
 	{include file="customer/customernetworksbox.html"}
+{/block}
+{block name="routednetworks"}
+	{include file="node/routednetworks.html"}
 {/block}
 {block name="transactions"}
 	{if ConfigHelper::checkConfig('phpui.logging') && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.transaction_logs'))}
@@ -62,9 +65,12 @@
 	{include file="customer/customerbalancebox.html" limit=-10}
 {/block}
 </div>
-<script type="text/javascript">
-<!--
+<script>
+
 	restoreSortable('nodeinfo-sortable', '{$nodeinfo_sortable_order}');
-//-->
+
 </script>
+
+{resource_tab_selector}
+
 {/block}

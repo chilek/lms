@@ -29,5 +29,7 @@ $USERPANEL->AddModule(
     'modules',      // Module name - must be the same as directory name
     trans('Show informations about modules'), // Tip
     98,         // Priority
-    trans('This module is for showing informations about modules')  // Description
+    trans('This module is for showing informations about modules'),  // Description
+    '',
+    'lms-ui-icon-configuration'
 );

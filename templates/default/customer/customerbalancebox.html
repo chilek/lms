@@ -13,7 +13,7 @@
 	<input type="hidden" name="customer" value="{$balancelist.customerid}">
 </FORM>
 
-{tab_container id="customerbalancebox"}
+{tab_container id="customerbalancebox" label="Customer Account"}
 
 	{if $limit}
 		{$content_id="customerbalancepanel"}
@@ -42,11 +42,11 @@
 			<a href="javascript:document.printcustomerbalance.submit();">{trans("Customer Balance Sheet")}</a>
 		{/tab_header_cell}
 		{tab_header_cell}
-			<A id="newtransferformanchor" rel="external" href="?m=customertransferform&id={$balancelist.customerid}&type={LMSHtmlTransferForm::VALUE_ASSIGNMENTS}">{trans("Transfer form:")}</A>
+			<A id="newtransferformanchor" rel="external" href="?m=customertransferform&id={$balancelist.customerid}&type={LMSTcpdfTransferForm::VALUE_ASSIGNMENTS}">{trans("Transfer form:")}</A>
 			<SELECT name="newtransferform" onchange="javascript:new_transfer_form_type_changed()" form="addbalance-form">
-				<OPTION value="{LMSHtmlTransferForm::VALUE_ASSIGNMENTS}">{trans("<!transferform>assignments")}</OPTION>
-				<OPTION value="{LMSHtmlTransferForm::VALUE_BALANCE}">{trans("<!transferform>balance")}</OPTION>
-				<OPTION value="{LMSHtmlTransferForm::VALUE_CUSTOM}">{trans("<!transferform>custom")}</OPTION>
+				<OPTION value="{LMSTcpdfTransferForm::VALUE_ASSIGNMENTS}">{trans("<!transferform>assignments")}</OPTION>
+				<OPTION value="{LMSTcpdfTransferForm::VALUE_BALANCE}">{trans("<!transferform>balance")}</OPTION>
+				<OPTION value="{LMSTcpdfTransferForm::VALUE_CUSTOM}">{trans("<!transferform>custom")}</OPTION>
 			</SELECT>
 			<input type="text" name="newtransferformcustomvalue" pattern="[0-9]+(\.[0-9]{literal}{1,2}{/literal})?" size="5" style="display: none;" form="addbalance-form">
 			<A id="newdocanchor" href="?m=invoicenew&action=init&customerid={$balancelist.customerid}">{trans("New document:")}</A>
@@ -73,8 +73,11 @@
 
 		{tab_table}
 
-			{$datatables_max_records=intval(ConfigHelper::getConfig('phpui.datatables_max_records', 300))}
-			<TABLE id="customerbalancebox-datatable" class="lmsbox-inner{if !empty($balancelist.list) && (!$datatables_max_records || count($balancelist.list) < $datatables_max_records)} lms-ui-datatable{else} lms-ui-background-cycle{/if}"{if !empty($balancelist.list) && (!$datatables_max_records || count($balancelist.list) < $datatables_max_records)} data-page-length="{$n}" data-display-start="{$n = count($balancelist.list) + $limit}{if $n < 0}0{else}{$n}{/if}" style="display: none;"{/if} width="100%">
+			{$datatables_max_records=intval(ConfigHelper::getConfig('phpui.datatables_max_records', 0, true))}
+			<TABLE id="customerbalancebox-datatable" class="lmsbox-inner{if !$datatables_max_records || empty($balancelist.list) || count($balancelist.list) < $datatables_max_records} lms-ui-datatable{else} lms-ui-background-cycle{/if}"
+					{if !$datatables_max_records || empty($balancelist.list) || count($balancelist.list) < $datatables_max_records} data-page-length="{$n}"
+					data-empty-table-message="{trans("That customer hasn't got any transactions.")}"
+					data-display-start="{if empty($balancelist.list)}{$n = $limit}{else}{$n = count($balancelist.list) + $limit}{/if}{if $n < 0}0{else}{$n}{/if}" style="display: none;"{/if} width="100%">
 				<COLGROUP>
 					<COL style="width: 1%;">
 					<COL style="width: 1%;">
@@ -109,7 +112,9 @@
 					{/if}
 				{/if}
 				<TR{if $item.docid} data-published="{$item.published}" data-doctype="{$item.doctype}" data-senddate="{if $item.senddate}{$item.senddate|date_format:"%Y/%m/%d %H:%M"}{else}{$item.senddate}{/if}"
-					{if $item.doctype == $smarty.const.DOC_INVOICE_PRO} class="teal"{/if}{if $item.closed && ($item.doctype == $smarty.const.DOC_INVOICE || $item.doctype == $smarty.const.DOC_CNOTE || $item.doctype == $smarty.const.DOC_DNOTE)} class="blend"{/if}{/if}>
+					class="{if $item.doctype == $smarty.const.DOC_INVOICE_PRO} teal{if $item.referenced} transformed{/if}{/if}
+					{if $item.closed && ($item.doctype == $smarty.const.DOC_INVOICE || $item.doctype == $smarty.const.DOC_CNOTE || $item.doctype == $smarty.const.DOC_DNOTE)} blend{/if}"
+					{/if}>
 					<TD class="nobr">{$item.date}</TD>
 					<TD class="nobr">{$item.username|truncate:16:"...":true}</TD>
 					<TD class="text-right nobr">{if !$item.type}{moneyf($item.value*-1, $item.currency)}{else}-{/if}</TD>
@@ -117,7 +122,9 @@
 					<TD class="text-right nobr">{if $item.type && $item.value < 0}{moneyf($item.value*-1, $item.currency)}{else}-{/if}</TD>
 					<TD class="text-center">&raquo;</TD>
 					<TD class="text-right nobr{if $item.after < 0} red{/if}">{moneyf($item.after)}</TD>
-					<TD>{$item.comment}</TD>
+					<TD class="comment"
+						{if $item.doctype == $smarty.const.DOC_INVOICE && !empty($item.reference) && $aggregate_documents && !empty($item.documentcomment)} title="{$item.documentcomment}"{/if}
+						>{$item.comment}</TD>
 					<TD class="text-right nobr">
 						{foreach $item.customlinks as $link}
 							<A {if isset($link.url)} href="{$link.url}" {/if} rel="external" {if isset($link.onclick)} onclick="{$link.onclick}"{/if}>{if isset($link.icon)}<IMG src="{$link.icon}" alt="{$link.label}" {$link.tip}>{else}{$link.label}{/if}</A>
@@ -140,10 +147,12 @@
 							{/if}
 							{if $item.doctype == $smarty.const.DOC_INVOICE}
 								{if !$item.cancelled}
+									{button type="link" icon="clone" href="?m=invoicenew&action=init&id={$item.docid}&clone=1"
+										tip="Clone"}
 									{button type="link" icon="correction" href="?m=invoicenote&id={$item.docid}&action=init"
 										tip="Revise"}
 								{/if}
-								{if !$item.cancelled && !$item.archived && !$item.referenced && (!$item.published || ConfigHelper::checkPrivilege('published_document_modification'))}
+								{if !$item.closed && !$item.cancelled && !$item.archived && !$item.referenced && (!$item.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 									{textformat assign="onclick" wrap=5000}
 										{if $item.published}
 											confirmDialog($t('Document has been published already! Are you sure you want to edit it despite this?'), this)
@@ -306,12 +315,6 @@
 								value="{$item.id}" class="lms-ui-multi-check">
 					</TD>
 				</TR>
-				{foreachelse}
-				<TR>
-					<TD class="empty-table" colspan="9">
-						<p>{trans("That customer hasn't got any transactions.")}</p>
-					</TD>
-				</TR>
 				{/foreach}
 				</TBODY>
 			</TABLE>
@@ -377,7 +380,7 @@
 					<INPUT type="text" form="addbalance-form" name="addbalance[time]" size="15" maxlength="16" {tip class="lms-ui-datetime" text="Enter transaction time in 'yyyy/mm/dd hh:mm' format (empty field means current time). Click to select date from calendar."} {if $time}value="{$time|date_format:"%Y/%m/%d %H:%M"}"{/if}>
 					{$layout.logname|truncate:16:"...":true}
 					<INPUT type="text" size="8" form="addbalance-form" name="addbalance[value]" accesskey="s" {if $value}value="{$value}"{/if} {tip text="Enter transaction value"}>&nbsp;
-					{currency_selection selected=LMS::$default_currency elementname="addbalance[currency]" form="addbalance-form"}
+					{currency_selection selected=Localisation::getDefaultCurrency() elementname="addbalance[currency]" form="addbalance-form"}
 					<SELECT SIZE="1" form="addbalance-form" name="addbalance[taxid]" {tip text="Select Tax value"}>
 						{foreach item=tax from=$taxeslist}
 						<OPTION value="{$tax.id}" {if ($taxid && $tax.id == $taxid) || (!$taxid && $tax.value == $default_taxrate)}selected{/if}>{$tax.label}</OPTION>
@@ -395,8 +398,8 @@
 						{trans("income/expense")}
 					</label>
 					{if $sourcelist}
-					<div class="isource lms-ui-button-isource">
-						<i></i>
+					<div class="isource">
+						<i class="lms-ui-icon-isource"></i>
 						<SELECT form="addbalance-form" name="addbalance[sourceid]" {tip text="Select import source (optional)" trigger="source"}>
 							<OPTION value="0">{trans("- none -")}</OPTION>
 							{foreach $sourcelist as $source}
@@ -544,7 +547,7 @@
 		var type = $('[name="newtransferform"]').val();
 		$('#newtransferformanchor').attr('href', '?m=customertransferform&id={$balancelist.customerid}&type=' + type +
 			'&value=' + $('[name="newtransferformcustomvalue"]').val());
-		if (type == {LMSHtmlTransferForm::VALUE_CUSTOM}) {
+		if (type == {LMSTcpdfTransferForm::VALUE_CUSTOM}) {
 			$('[name="newtransferformcustomvalue"]').show().focus();
 		} else {
 			$('[name="newtransferformcustomvalue"]').hide();

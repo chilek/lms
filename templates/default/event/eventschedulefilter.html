@@ -25,10 +25,16 @@
 							{/foreach}
 						</SELECT>
 						{trans("User:")}
-						<SELECT size="1" name="a[]" OnChange="document.filter.submit();" class="lms-ui-multiselect lms-ui-multiselect-filter" multiple data-default-value="{trans("- all -")}">
-							<OPTION value="-1" {if is_array($filter.userid) && in_array('-1', $filter.userid)} selected{/if}>- {trans("unassigned")} -</OPTION>
+						<SELECT size="1" name="a[]" OnChange="document.filter.submit();"
+								class="lms-ui-multiselect lms-ui-multiselect-filter" multiple
+								data-default-value="{trans("- all -")}">
+							<OPTION value="-1" {if is_array($filter.userid) && in_array('-1', $filter.userid)} selected{/if}
+									data-exclusive>- {trans("unassigned")} -</OPTION>
 							{foreach $userlist as $user}
-								<OPTION value="{$user.id}"{if is_array($filter.userid) && in_array($user.id, $filter.userid)} SELECTED{/if}{if !$user.access} disabled{/if}>{$user.rname|truncate:40:"...":true} ({$user.login})</OPTION>
+								{if !ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users') || (ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users') && $user.access) || is_array($filter.owner) && in_array($user.id, $filter.owner)}
+									<OPTION{if !$user.access} disabled{/if}
+											value="{$user.id}" {if is_array($filter.userid) && in_array($user.id, $filter.userid)}} selected{/if}>{$user.rname|truncate:40:"...":true} ({$user.login})</OPTION>
+								{/if}
 							{/foreach}
 						</SELECT>
 						{trans("Privacy:")}
@@ -40,7 +46,7 @@
 						{trans("Customer:")}
 						{customerlist form="filter" customers=$customers selected=$filter.customerid selectname="u" inputname="u" customOnChange="document.filter.submit();" customername=false}
 						{button label="Today" onclick="location.href='?m=eventschedule&day={$smarty.now|date_format:"%d"}&month={$smarty.now|date_format:"%m"}&year={$smarty.now|date_format:"%Y"}';"}
-						<input type="text" name="date" class="lms-ui-date" value="{if $filter.year}{$filter.year}/{$filter.month}/{$filter.day}{/if}" onchange="document.filter.submit();">
+						<input type="text" name="date" class="lms-ui-date" value="{if $filter.year}{sprintf("%04d/%02d/%02d", $filter.year, $filter.month, $filter.day)}{/if}" onchange="document.filter.submit();">
 						{trans("Status:")}
 						<SELECT name="closed" onchange="document.filter.submit();">
 							<OPTION value="" {if $filter.closed == ""} selected{/if}>{trans("- all -")}</OPTION>

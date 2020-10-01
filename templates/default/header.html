@@ -4,10 +4,9 @@
 <head>
 	<title>{block name=title}::: LMS :::{/block}</title>
 	<meta name="GENERATOR" content="LMS {$layout.lmsv}">
-	<meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
-	<meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
+	{include file="language.html"}
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	{include file="jquery.html" language=$LANGDEFS.$_ui_language.html lms_language=$_ui_language}
+	{include file="jquery.html" language=Localisation::getCurrentHtmlLanguage() lms_language=Localisation::getCurrentUiLanguage()}
 	<link href="{ConfigHelper::getConfig('phpui.style', 'css/style.css')}" rel="stylesheet" type="text/css">
 	<link href="css/map.css" rel="stylesheet" type="text/css">
 	{block name="extra-css-styles"}{/block}
@@ -19,15 +18,26 @@
 	<script src="js/mousetrap/mousetrap.min.js"></script>
 	<script src="js/mousetrap/plugins/global-bind/mousetrap-global-bind.min.js"></script>
 </head>
-<body onload="start_login_timeout({ConfigHelper::getConfig('phpui.timeout')})">
+<body onload="start_login_timeout({ConfigHelper::getConfig('phpui.timeout')})" class="lms-ui-main-document">
 <input type="file" id="tinymce-image-upload" style="display: none;">
 <div id="overDiv" style="position:absolute; visibility:hidden; z-index:100;"></div>
-<button id="lms-ui-back-to-top" class="lms-ui-button lms-ui-button-back no-print">
-	<i></i> {trans("Back to top")}
+<div class="lms-ui-gallery-container">
+	<div class="lms-ui-gallery-overlay"></div>
+	<div class="lms-ui-gallery"></div>
+</div>
+<button id="lms-ui-back-to-top" class="lms-ui-button no-print">
+	<i class="lms-ui-icon-back"></i> {trans("Back to top")}
 </button>
 <script src="js/overlib.js"></script>
+
 {include file="modal-dialogs.html"}
 <script src="js/modal-dialogs.js"></script>
+
+{include file="popup-menu.html"}
+<script src="js/popup-menu.js"></script>
+
+{include file="list.html"}
+
 {if $layout.popup}
 	{block name=module_content}{/block}
 {else}
@@ -36,12 +46,16 @@
 	{/block}
 	{block name=pagecontent}
 		{include file="spinner.html"}
+		{$__oldbackto = SESSION::getOldBackTo()}
+		{$__backto = SESSION::getBackTo()}
+		<input type="hidden" id="oldbackto" value="{$__oldbackto}">
+		<input type="hidden" id="backto" value="{$__backto}">
 		<script>
 
 			var AUTOSUGGEST_MAX_LENGTH = {ConfigHelper::getConfig('phpui.autosuggest_max_length', 40)};
 
 			$('#lms-ui-back-to-top').click(function() {
-				$('#lms-ui-module-view').animate({ scrollTop: 0 });
+				$('html,body').animate({ scrollTop: 0 });
 			});
 
 			// we use 'tabId' session storage value for identifying web browser tabs
@@ -50,8 +64,27 @@
 			if (!lmsTabId) {
 				sessionStorage.setItem('tabId', Date.now());
 				lmsTabId = sessionStorage.getItem('tabId');
+				// new browser tab can be opened as hidden or tabid of new tab can be not initialised
+				// so we have to be careful and handle 'backto' session variable in special way and
+				// correct this variable when new tab id has been determined before the moment
+				var oldLmsTabId = getCookie('tabId');
+				{if $__backto}
+					if (oldLmsTabId) {
+						$.ajax({
+							url: '?oldtabid=' + oldLmsTabId + '&tabid=' + lmsTabId,
+							method: "POST",
+							dataType: 'json',
+							data: {
+								oldbackto: $('#oldbackto').val(),
+								backto: $('#backto').val()
+							}
+						});
+					}
+				{/if}
 			}
-			setCookie('tabId', lmsTabId);
+			if (!document.hidden) {
+				setCookie('tabId', lmsTabId);
+			}
 
 			$(window).focus(function() {
 				setCookie('tabId', lmsTabId);
@@ -59,7 +92,7 @@
 
 		</script>
 		<section id="lms-ui-contents" style="display: none;">
-			<div id="lms-ui-tool-panels">
+			<div id="lms-ui-tool-panels" class="lms-ui-popup no-print">
 				{include file="quicksearch-indicators-panel.html"}
 				{include file="toolbar-panel.html"}
 			</div>

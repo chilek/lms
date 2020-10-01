@@ -24,16 +24,21 @@
  *  $Id$
  */
 
-// REPLACE THIS WITH PATH TO YOU CONFIG FILE
+ini_set('error_reporting', E_ALL & ~E_NOTICE);
+
+$CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
+
+// find alternative config files:
 if (is_readable('lms.ini')) {
     $CONFIG_FILE = 'lms.ini';
+} elseif (isset($_SERVER['HTTP_HOST']) && isset($_SERVER['SERVER_PORT'])
+    && is_readable(DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . ':' . $_SERVER['SERVER_PORT'] . '.ini')) {
+    $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . ':' . $_SERVER['SERVER_PORT'] . '.ini';
 } elseif (isset($_SERVER['HTTP_HOST']) && is_readable(DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini')) {
     $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini';
-} else {
-    $CONFIG_FILE = '/etc/lms/lms.ini';
+} elseif (!is_readable($CONFIG_FILE)) {
+    die('Unable to read configuration file [' . $CONFIG_FILE . ']!');
 }
-
-ini_set('error_reporting', E_ALL&~E_NOTICE);
 
 define('CONFIG_FILE', $CONFIG_FILE);
 
@@ -87,5 +92,3 @@ if (ConfigHelper::checkConfig('phpui.logging') && class_exists('SYSLOG')) {
 $AUTH = null;
 
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
-$LMS->ui_lang = $_ui_language;
-$LMS->lang = $_language;

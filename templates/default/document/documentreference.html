@@ -6,11 +6,11 @@
     {trans("Reference document:")}
 </TD>
 <TD class="nobr">
-    <SELECT name="document[reference]" class="lms-ui-advanced-select" {tip text="Select reference document" trigger="reference"}>
+    <SELECT name="document[reference]" {tip class="lms-ui-advanced-select" text="Select reference document" trigger="reference"}>
         <OPTION value=""{if !$document.reference} selected{/if}>{trans("- none -")}</OPTION>
         {foreach $references as $doc}
         {number number=$doc.number template=$doc.template time=$doc.cdate customerid=$cid assign="number"}
-        <OPTION value="{$doc.docid}"{if $document.reference.id == $doc.docid} selected{/if}>{t a=$_DOCTYPES[$doc.type] b=$number c=$doc.cdate|date_format:"%Y/%m/%d"}$a no. $b issued on $c{/t}</OPTION>
+        <OPTION value="{$doc.docid}"{if isset($document.reference.id) && $document.reference.id == $doc.docid} selected{/if}>{t a=$_DOCTYPES[$doc.type] b=$number c=$doc.cdate|date_format:"%Y/%m/%d"}$a no. $b issued on $c{/t}</OPTION>
         {/foreach}
     </SELECT>
 </TD>

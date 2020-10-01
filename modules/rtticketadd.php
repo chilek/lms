@@ -317,6 +317,7 @@ if (isset($_POST['ticket'])) {
 
             $LMS->NotifyUsers(array(
                 'queue' => $queue,
+                'verifierid' => $ticket['verifierid'],
                 'mail_headers' => $headers,
                 'mail_body' => $body,
                 'sms_body' => $sms_body,
@@ -337,9 +338,6 @@ if (isset($_POST['ticket'])) {
 
     if (!empty($ticket['relatedtickets'])) {
         $ticket['relatedtickets'] = $LMS->getTickets($ticket['relatedtickets']);
-    }
-    if (!empty($ticket['parentid'])) {
-        $ticket['parent'] = $LMS->getTickets($ticket['parentid']);
     }
 } else {
     $queuelist = $LMS->GetQueueList(array('stats' => false));
@@ -439,6 +437,9 @@ if (isset($_POST['ticket'])) {
         $ticket['parentid'] = $oldticket['parentid'];
         $ticket['netdevid'] = $oldticket['netdevid'];
     }
+}
+if (!empty($ticket['parentid'])) {
+    $ticket['parent'] = $LMS->getTickets($ticket['parentid']);
 }
 
 $layout['pagetitle'] = trans('New Ticket');

@@ -3,7 +3,17 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<SCRIPT>
+
+<style>
+
+	#file-label {
+		padding-top: 1.2em;
+	}
+
+</style>
+
+<script>
+
 	function Delete()
 	{
 		document.cashimport.action += '&action=delete';
@@ -15,7 +25,8 @@
 		document.cashimport.action += '&action=save';
 		document.cashimport.submit();
 	}
-</SCRIPT>
+
+</script>
 <FORM NAME="cashimport" ACTION="?m=cashimport" METHOD="post">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
@@ -197,7 +208,7 @@
     </THEAD>
     <TBODY>
 	<TR>
-		<TD class="bold nobr valign-top">
+		<TD class="bold nobr valign-top" id="file-label">
 			<IMG src="img/attach.gif" alt="">
 			{trans("Import files:")}
 		</TD>
@@ -242,7 +253,10 @@
     <TBODY>
 	<TR class="lms-ui-button-panel">
 		<TD>
-			<TABLE id="cashimport-packages-datatable"{if !empty($sourcefiles)} class="lms-ui-datatable lms-ui-datatable-column-search lms-ui-datatable-column-toggle" data-order='[[ 0, "desc" ]]' data-page-length="25" data-state-save="true" style="display: none;"{/if} width="100%">
+			<TABLE id="cashimport-packages-datatable" class="lms-ui-datatable lms-ui-datatable-column-search lms-ui-datatable-column-toggle"
+				   data-order='[[ 0, "desc" ]]' data-page-length="25" data-state-save="true" style="display: none;"
+				   data-empty-table-message="{trans("There are no packages in database.")}"
+				   width="100%">
 				<COLGROUP>
 					<COL style="width: 1%;">
 					<COL style="width: 96%;">
@@ -268,12 +282,6 @@
 					<TD class="text-center">{$item.count|default:0}</TD>
 					<TD class="text-right">
 						<A class="delete-cashpackage" href="?m=cashpackagedel&id={$item.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
-					</TD>
-				</TR>
-				{foreachelse}
-				<TR>
-					<TD class="empty-table" colspan="5">
-						<p>{trans("There are no packages in database.")}</p>
 					</TD>
 				</TR>
 				{/foreach}

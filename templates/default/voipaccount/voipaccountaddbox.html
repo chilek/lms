@@ -80,6 +80,7 @@
                                                 </td>
                                                 <td>
                                                     <input type="{if ConfigHelper::checkPrivilege('hide_voip_passwords')}password{else}text{/if}" name="voipaccountdata[passwd]" value="{$voipaccountdata.passwd}" {tip text="Enter password" trigger="passwd"}>
+                                                    <a href="#" id="genpasswd"  {tip text="Click to generate random password"}>&raquo;&raquo;&raquo;</a>
                                                 </td>
                                             </tr>
                                         {/block}
@@ -164,14 +165,14 @@
                                                 </td>
                                                 <td>
                                                     {customerlist
-                                                    form="voipaccountadd"
-                                                    customers=$customers
-                                                    selected=$voipaccountdata.ownerid
-                                                    selectname="voipaccountdata[customerid]"
-                                                    inputname="voipaccountdata[ownerid]"
-                                                    selecttip="Assign voip account to customer"
-                                                    customOnChange="change_customer();"
-                                                    required=true}
+                                                        form="voipaccountadd"
+                                                        customers=$customers
+                                                        selected=$voipaccountdata.ownerid
+                                                        selectname="voipaccountdata[customerid]"
+                                                        inputname="voipaccountdata[ownerid]"
+                                                        selecttip="Assign voip account to customer"
+                                                        customOnChange="change_customer();"
+                                                        required=true}
                                                 </td>
                                             </tr>
                                         {/block}
@@ -245,11 +246,23 @@
     </table>
 </form>
 
-<script type="text/javascript">
-<!--
+<script>
+
     var remove_number      = '{$remove_number}';
     var pool_number_select = '{$pool_number_select}';
     var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
+
+    function checkIfTerritLocation() {
+        {if ConfigHelper::checkConfig('phpui.teryt_required')}
+            var ca = $('#customer_addresses');
+            var option = ca.find('option[value="' + ca.val() + '"]');
+            if (territ = option.attr('data-territ')) {
+                ca.next().toggleClass('lms-ui-error', !parseInt(territ));
+            } else {
+                ca.next().addClass('lms-ui-error');
+            }
+        {/if}
+    }
 
     $( function() {
         $('#voip-login').focus();
@@ -287,7 +300,19 @@
             }
         });
 
-    } );
+        $("#genpasswd").click(function() {
+            var length = {ConfigHelper::getConfig('phpui.voipaccount_password_length', '16')};
+            if (length > 32) length = 32;
+
+            $('[name="voipaccountdata[passwd]"]').val(
+                generate_random_string(length, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+            );
+        });
+
+        $('#customer_addresses').on('iconselectmenuchange', function(e, ui) {
+            checkIfTerritLocation();
+        });
+    });
 
     /*!
      * \brief Update addresses list on customer change.
@@ -295,6 +320,7 @@
     function change_customer() {
         getCustomerAddresses($('[name="voipaccountdata[ownerid]"]').val(), function(addresses) {
             customer_addresses.setAddressList( addresses );
+            checkIfTerritLocation();
         });
     }
 
@@ -306,6 +332,8 @@
         {/if}
 
         customer_addresses.init();
+
+        checkIfTerritLocation();
     });
-//-->
-</SCRIPT>
+
+</script>

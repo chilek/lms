@@ -88,15 +88,10 @@ $SESSION = new Session($DB, ConfigHelper::getConfig('phpui.timeout'));
 $AUTH = new Auth($DB, $SESSION);
 $SYSLOG = null;
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
-$LMS->ui_lang = $_ui_language;
-$LMS->lang = $_language;
 
 // set some template and layout variables
 
 $SMARTY->assignByRef('_LANG', $_LANG);
-$SMARTY->assignByRef('LANGDEFS', $LANGDEFS);
-$SMARTY->assignByRef('_ui_language', $LMS->ui_lang);
-$SMARTY->assignByRef('_language', $LMS->lang);
 $SMARTY->template_dir = getcwd();
 $SMARTY->compile_dir = SMARTY_COMPILE_DIR;
 include('lang.php');
@@ -120,7 +115,7 @@ if (isset($_GET['readed'])) {
     $customerinfo = $LMS->GetCustomer($customerid);
     $layout['oldurl'] = $_GET['oldurl'];
     $SMARTY->assign('customerinfo', $customerinfo);
-        $SMARTY->assign('nodeinfo', $nodeinfo);
+    $SMARTY->assign('nodeinfo', $nodeinfo);
     $SMARTY->assign('layout', $layout);
     $SMARTY->display('message.html');
 }

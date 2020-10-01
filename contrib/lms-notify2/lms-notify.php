@@ -169,8 +169,6 @@ if (ConfigHelper::checkConfig('phpui.logging') && class_exists('SYSLOG')) {
 
 $AUTH = null;
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
-$LMS->ui_lang = $_ui_language;
-$LMS->lang = $_language;
 
 $month = intval(strftime("%m", time()));
 $year = strftime("%Y", time());
@@ -183,7 +181,7 @@ $mday = strftime("%s", mktime(0, 0, 0, $month, 1, $year));
 
 function parse_data($id, $tresc, $customer)
 {
-    global $LMS, $LANGDEFS;
+    global $LMS;
     $tresc = preg_replace("/\%dzis/", date("d/m/Y"), $tresc);
     $tresc = preg_replace("/\%balance/", sprintf("%6.2f", $customer['balance']), $tresc);
     $tresc = preg_replace("/\%bankaccount/", format_bankaccount($customer['bankaccount']), $tresc);
@@ -194,7 +192,7 @@ function parse_data($id, $tresc, $customer)
                         ORDER BY time DESC LIMIT 10', array($customer['id']))) {
             foreach ($last10_array as $r) {
                     $last10 .= date("Y/m/d | ", $r['time']);
-                    $last10 .= sprintf("%20s | ", sprintf($LANGDEFS[$LMS->ui_lang]['money_format'], $r['value']));
+                    $last10 .= sprintf("%20s | ", sprintf(Localisation::getCurrentMoneyFormat(), $r['value']));
                     $last10 .= $r['comment']."\n";
             }
         }

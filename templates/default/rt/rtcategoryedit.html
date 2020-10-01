@@ -36,9 +36,26 @@
 		<TD>
 			<IMG src="img/queue.gif" ALT="">
 		</TD>
-		<TD class="bold">{trans("Category style:")}</TD>
+		<TD class="bold">
+			<label for="background-style">
+				{trans("<!rt-category>Background:")}
+			</label>
+		</TD>
+		<TD class="bold">
+			<input id="background-style" type="color" name="category[background-style]" value="{if empty($category['background-style'])}#ffffff{else}{$category['background-style']}{/if}">
+		</TD>
+	</TR>
+	<TR>
 		<TD>
-			<TEXTAREA NAME="category[style]" COLS="50" ROWS="2" {tip text="Enter category CSS style (optional):"}>{$category.style}</TEXTAREA>
+			<IMG src="img/queue.gif" ALT="">
+		</TD>
+		<TD class="bold">
+			<label for="text-style">
+				{trans("<!rt-category>Text:")}
+			</label>
+		</TD>
+		<TD class="bold">
+			<input id="text-style" type="color" name="category[text-style]" value="{if empty($category['text-style'])}#000000{else}{$category['text-style']}{/if}">
 		</TD>
 	</TR>
 	<TR>
@@ -83,26 +100,28 @@
 	    </TD>
 	</TR>
 	<TR>
-	    <TD COLSPAN="3" class="text-right">
-	    	<A HREF="javascript:document.category.submit();" accesskey="s"><IMG src="img/save.gif" alt=""> {trans("Submit")}</A>
-		<A id="delete-rtcategory" HREF="?m=rtcategorydel&id={$category.id}" data-name="{$category.name}" accesskey="d"><IMG src="img/delete.gif" alt=""> {trans("Delete")}</A>
-		<A HREF="?m=rtcategorylist"><IMG src="img/cancel.gif" alt=""> {trans("Cancel")}</A>
-	    </TD>
+		<TD COLSPAN="3" class="lms-ui-box-buttons">
+			{button type="submit" icon="save" label="Submit"}
+			{button id="delete-rtcategory" icon="delete" label="Delete" data_name="{$category.name}"
+				href="?m=rtcategorydel&id={$category.id}" data-name="{$category.name}"}
+			{button icon="cancel" label="Cancel" onclick="location.href = '?m=rtcategorylist';"}
+		</TD>
 	</TR>
     </TBODY>
 </TABLE></FORM></P>
-<SCRIPT>
-$(function() {
-	$('form[name="category"] [name="category[name]"]').focus();
-});
+<script>
 
-$('#delete-rtcategory').click(function() {
-	var name = $(this).attr('data-name');
-	confirmDialog($t("Are you sure, you want to remove category '$a'?", name), this).done(function() {
-		location.href = $(this).attr('href');
+	$(function() {
+		$('form[name="category"] [name="category[name]"]').focus();
+
+		$('#delete-rtcategory').click(function() {
+			var name = $(this).attr('data-name');
+			confirmDialog($t("Are you sure, you want to remove category '$a'?", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
 	});
-	return false;
-});
 
-</SCRIPT>
+</script>
 {/block}

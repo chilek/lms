@@ -109,6 +109,34 @@ if (isset($_POST['group'])) {
 $SESSION->save('ilg', $g);
 $SESSION->save('ilge', $ge);
 
+if (isset($_POST['search'])) {
+    $sp = isset($_POST['splitpayment']) ? true : false;
+} else {
+    $SESSION->restore('ilsp', $sp);
+}
+$SESSION->save('ilsp', $sp);
+
+if (isset($_POST['search'])) {
+    $wr = isset($_POST['withreceipt']) ? true : false;
+} else {
+    $SESSION->restore('ilwr', $wr);
+}
+$SESSION->save('ilwr', $wr);
+
+if (isset($_POST['search'])) {
+    $ts = isset($_POST['telecomservice']) ? true : false;
+} else {
+    $SESSION->restore('ilts', $ts);
+}
+$SESSION->save('ilts', $ts);
+
+if (isset($_POST['search'])) {
+    $re = isset($_POST['relatedentity']) ? true : false;
+} else {
+    $SESSION->restore('ilre', $re);
+}
+$SESSION->save('ilre', $re);
+
 if ($c == 'cdate' && $s && preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $s)) {
     list($year, $month, $day) = explode('/', $s);
     $s = mktime(0, 0, 0, $month, $day, $year);
@@ -118,7 +146,8 @@ if ($c == 'cdate' && $s && preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $s)) {
 }
 
 $total = intval($LMS->GetInvoiceList(array('search' => $s, 'cat' => $c, 'group' => $g, 'exclude'=> $ge,
-    'numberplan' => $np, 'division' => $div, 'hideclosed' => $h, 'order' => $o, 'proforma' => $proforma, 'count' => true)));
+    'numberplan' => $np, 'division' => $div, 'hideclosed' => $h, 'order' => $o, 'proforma' => $proforma,
+    'splitpayment' => $sp, 'withreceipt' => $wr, 'telecomservice' => $ts, 'relatedentity' => $re, 'count' => true)));
 
 $limit = intval(ConfigHelper::getConfig('phpui.invoicelist_pagelimit', 100));
 $page = !isset($_GET['page']) ? ceil($total / $limit) : $_GET['page'];
@@ -129,7 +158,8 @@ $page = intval($page);
 $offset = ($page - 1) * $limit;
 
 $invoicelist = $LMS->GetInvoiceList(array('search' => $s, 'cat' => $c, 'group' => $g, 'exclude'=> $ge,
-    'numberplan' => $np, 'division' => $div, 'hideclosed' => $h, 'order' => $o, 'limit' => $limit, 'offset' => $offset, 'proforma' => $proforma,
+    'numberplan' => $np, 'division' => $div, 'hideclosed' => $h, 'order' => $o, 'limit' => $limit, 'offset' => $offset,
+    'proforma' => $proforma, 'splitpayment' => $sp, 'withreceipt' => $wr, 'telecomservice' => $ts, 'relatedentity' => $re,
     'count' => false));
 
 $pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
@@ -141,6 +171,10 @@ $SESSION->restore('ilge', $listdata['groupexclude']);
 $SESSION->restore('ilnp', $listdata['numberplanid']);
 $SESSION->restore('ildiv', $listdata['divisionid']);
 $SESSION->restore('ilh', $listdata['hideclosed']);
+$SESSION->restore('ilsp', $listdata['splitpayment']);
+$SESSION->restore('ilwr', $listdata['withreceipt']);
+$SESSION->restore('ilts', $listdata['telecomservice']);
+$SESSION->restore('ilre', $listdata['relatedentity']);
 
 $listdata['total'] = $total;
 $listdata['order'] = $invoicelist['order'];

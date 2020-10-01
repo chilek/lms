@@ -24,9 +24,6 @@
  *  $Id$
  */
 
-// REPLACE THIS WITH PATH TO YOUR CONFIG FILE
-$CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
-
 // PLEASE DO NOT MODIFY ANYTHING BELOW THIS LINE UNLESS YOU KNOW
 // *EXACTLY* WHAT ARE YOU DOING!!!
 // *******************************************************************
@@ -34,15 +31,20 @@ $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIREC
 define('START_TIME', microtime(true));
 define('LMS-UI', true);
 define('K_TCPDF_EXTERNAL_CONFIG', true);
-ini_set('error_reporting', E_ALL&~E_NOTICE);
+define('K_TCPDF_CALLS_IN_HTML', true);
+ini_set('error_reporting', E_ALL & ~E_NOTICE);
+
+$CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
 
 // find alternative config files:
 if (is_readable('lms.ini')) {
     $CONFIG_FILE = 'lms.ini';
+} elseif (is_readable(DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . ':' . $_SERVER['SERVER_PORT'] . '.ini')) {
+    $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . ':' . $_SERVER['SERVER_PORT'] . '.ini';
 } elseif (is_readable(DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini')) {
     $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini';
 } elseif (!is_readable($CONFIG_FILE)) {
-    die('Unable to read configuration file ['.$CONFIG_FILE.']!');
+    die('Unable to read configuration file [' . $CONFIG_FILE . ']!');
 }
 
 define('CONFIG_FILE', $CONFIG_FILE);
@@ -157,16 +159,21 @@ $SESSION = new Session(
     ConfigHelper::getConfig('phpui.timeout'),
     ConfigHelper::getConfig('phpui.settings_timeout')
 );
+// new browser tab can be opened as hidden or tabid of new tab can be not initialised
+// so we have to be careful and handle 'backto' session variable in special way and
+// correct this variable when new tab id has been determined before the moment
+if (isset($_GET['oldtabid']) && isset($_GET['tabid']) && isset($_POST['oldbackto']) && isset($_POST['backto'])
+    && preg_match('/^[0-9]+$/', $_GET['oldtabid'])
+    && preg_match('/^[0-9]+$/', $_GET['tabid'])) {
+    $SESSION->fixBackTo($_GET['oldtabid'], $_POST['oldbackto'], $_GET['tabid'], $_POST['backto']);
+    //$SESSION->close();
+    header('Content-Type: application/json');
+    die('[]');
+}
 $AUTH = new Auth($DB, $SESSION);
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
-$LMS->ui_lang = $_ui_language;
-$LMS->lang = $_language;
 
-LMS::$currency = $_currency;
-LMS::$default_currency = ConfigHelper::getConfig('phpui.default_currency', '', true);
-if (empty(LMS::$default_currency) || !isset($CURRENCIES[LMS::$default_currency])) {
-    LMS::$default_currency = $_currency;
-}
+Localisation::initDefaultCurrency();
 
 $plugin_manager = new LMSPluginManager();
 $LMS->setPluginManager($plugin_manager);
@@ -206,11 +213,6 @@ $layout['popup'] = isset($_GET['popup']) ? true : false;
 
 if (!$api) {
     $SMARTY->assignByRef('layout', $layout);
-    $SMARTY->assignByRef('LANGDEFS', $LANGDEFS);
-    $SMARTY->assignByRef('_ui_language', $LMS->ui_lang);
-    $SMARTY->assignByRef('_language', $LMS->lang);
-    $SMARTY->assignByRef('_currency', LMS::$currency);
-    $SMARTY->assignByRef('_default_currency', LMS::$default_currency);
 }
 
 $error = null; // initialize error variable needed for (almost) all modules
@@ -223,7 +225,7 @@ if (!$layout['popup'] && !$api) {
 
     $menu = $plugin_manager->executeHook('menu_initialized', $menu);
 
-    $SMARTY->assign('newmenu', $menu);
+    $SMARTY->assignByRef('newmenu', $menu);
 }
 
 header('X-Powered-By: LMS/'.$layout['lmsv']);
@@ -251,9 +253,40 @@ if ($AUTH->islogged) {
         }
     }
 
-    if (!$api) {
-        $SMARTY->assign('main_menu_sortable_order', $SESSION->get_persistent_setting('main-menu-order'));
+    $user_divisions = $LMS->GetDivisions(array('userid' => Auth::GetCurrentUser()));
+    $persistentDivisionContext = $SESSION->get_persistent_setting('division_context');
+    $tabDivisionContext = $SESSION->get('division_context', true);
+    // check if user has any division
+    if (!$user_divisions) {
+        $SESSION->save_persistent_setting('division_context', '');
+        $tabDivisionContext = '';
+        $SESSION->save('division_context', $tabDivisionContext, true);
+    } else {
+        $user_division = reset($user_divisions);
+        if (count($user_divisions) > 1) {
+            if (!isset($persistentDivisionContext)
+                || (!isset($user_divisions[$persistentDivisionContext])
+                    && !empty($persistentDivisionContext))) {
+                $SESSION->save_persistent_setting('division_context', $user_division['id']);
+                $persistentDivisionContext = $SESSION->get_persistent_setting('division_context');
+            }
+            if (!isset($tabDivisionContext)
+                || (!isset($user_divisions[$persistentDivisionContext])
+                    && !empty($persistentDivisionContext))) {
+                $tabDivisionContext = $persistentDivisionContext;
+                $SESSION->save('division_context', $tabDivisionContext, true);
+            }
+        } else {
+            $SESSION->save_persistent_setting('division_context', $user_division['id']);
+            $SESSION->save('division_context', $user_division['id'], true);
+        }
+    }
+    LMSDivisionManager::setCurrentDivision($tabDivisionContext);
+    $layout['division'] = $tabDivisionContext;
 
+    if (!$api) {
+        $SMARTY->assign('division_context', $tabDivisionContext);
+        $SMARTY->assign('main_menu_sortable_order', $SESSION->get_persistent_setting('main-menu-order'));
         $SMARTY->assign('qs_properties', $qs_properties);
 
         $qs_fields = $SESSION->get_persistent_setting('qs-fields');
@@ -292,16 +325,9 @@ if ($AUTH->islogged) {
         'user_id' => Auth::GetCurrentUser(),
     ));
 
-    LMSConfig::getConfig(array(
-        'force' => true,
-        'force_user_settings_only' => true,
-        'user_id' => Auth::GetCurrentUser(),
-    ));
+    ConfigHelper::setFilter(LMSDivisionManager::getCurrentDivision(), Auth::GetCurrentUser());
 
-    LMS::$default_currency = ConfigHelper::getConfig('phpui.default_currency', '', true);
-    if (empty(LMS::$default_currency) || !isset($CURRENCIES[LMS::$default_currency])) {
-        LMS::$default_currency = LMS::$currency;
-    }
+    Localisation::initDefaultCurrency();
 
     $module = isset($_GET['m']) ? preg_replace('/[^a-zA-Z0-9_-]/', '', $_GET['m']) : '';
     $deny = $allow = false;
@@ -345,6 +371,11 @@ if ($AUTH->islogged) {
             $SYSLOG->NewTransaction($module);
         }
 
+        // everyone should have access to documentation
+        $rights[] = 'documentation';
+
+        $access->applyMenuPermissions($menu, $rights);
+
         if ($global_allow || $allow) {
             $layout['module'] = $module;
 
@@ -359,18 +390,42 @@ if ($AUTH->islogged) {
 
                 // persister filter apply
                 if (isset($_GET['persistent-filter'])) {
-                    $filter = $SESSION->getPersistentFilter($_GET['persistent-filter']);
+                    $filterId = isset($_GET['filter-id']) ? $_GET['filter-id'] : null;
+                    $filter = $SESSION->getPersistentFilter(
+                        $_GET['persistent-filter'],
+                        null,
+                        $filterId
+                    );
                     $filter['persistent_filter'] = $_GET['persistent-filter'];
-                    $SESSION->saveFilter($filter);
-                } else {
-                    $filter = $SESSION->getFilter();
+                    if (isset($filterId)) {
+                        $SESSION->saveFilter($filter, null, null, false, $filterId);
+                    } else {
+                        $SESSION->saveFilter($filter);
+                    }
                 }
+                $filter = $SESSION->getFilter(isset($_GET['module-filter']) ? $_GET['module-filter'] : null);
                 $SMARTY->assignByRef('filter', $filter);
 
                 // restore selected persistent filter info
                 if (isset($filter['persistent_filter'])) {
                     $SMARTY->assign('persistent_filter', $filter['persistent_filter']);
                 }
+
+                // tab visibility toggle support
+                $resource_tabs = $SESSION->get_persistent_setting($layout['module'] . '-resource-tabs');
+                $SMARTY->assign('serialized_resource_tabs', $resource_tabs);
+                if (!empty($resource_tabs)) {
+                    $resource_tabs = explode(';', $resource_tabs);
+                    $all_tabs = array();
+                    foreach ($resource_tabs as $resource_tab) {
+                        list ($resource_tab_id, $resource_tab_state) = explode(':', $resource_tab);
+                        $all_tabs[$resource_tab_id] = intval($resource_tab_state) != 0;
+                    }
+                    $resource_tabs = $all_tabs;
+                } else {
+                    $resource_tabs = array();
+                }
+                $SMARTY->assign('resource_tabs', $resource_tabs);
 
                 // preset error and warning smarty variable
                 // they can be easily filled later in modules
@@ -386,21 +441,33 @@ if ($AUTH->islogged) {
             } else {
                 // persistent filter ajax management
                 if (isset($_GET['persistent-filter']) && isset($_GET['action'])) {
+                    $filterId = isset($_POST['filter-id']) ? $_POST['filter-id'] : null;
                     switch ($_GET['action']) {
                         case 'update':
-                            $SESSION->savePersistentFilter($_GET['persistent-filter'], $SESSION->getFilter());
-                            $persistent_filters = $SESSION->getAllPersistentFilters();
+                            $oldFilter = $SESSION->getFilter(null, $filterId);
+                            if (isset($_GET['savefilter'])) {
+                                $filter = array_merge($_POST, array('persistent_filter' => $_GET['persistent-filter']));
+                                $SESSION->saveFilter($filter, null, null, false, $filterId);
+                            } else {
+                                $filter = $oldFilter;
+                            }
+                            $SESSION->savePersistentFilter($_GET['persistent-filter'], $filter, null, $filterId);
+                            $persistent_filters = $SESSION->getAllPersistentFilters(null, $filterId);
                             $SESSION->close();
                             header('Content-type: application/json');
                             die(json_encode($persistent_filters));
-                        break;
+                            break;
                         case 'delete':
-                            $SESSION->removePersistentFilter($_GET['persistent-filter']);
-                            $persistent_filters = $SESSION->getAllPersistentFilters();
+                            $SESSION->removePersistentFilter(
+                                $_GET['persistent-filter'],
+                                null,
+                                $filterId
+                            );
+                            $persistent_filters = $SESSION->getAllPersistentFilters(null, $filterId);
                             $SESSION->close();
                             header('Content-type: application/json');
                             die(json_encode($persistent_filters));
-                        break;
+                            break;
                     }
                 }
             }

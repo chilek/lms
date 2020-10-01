@@ -22,6 +22,7 @@ DROP VIEW IF EXISTS vnodes;
 DROP VIEW IF EXISTS vnodes_mac;
 DROP VIEW IF EXISTS nas;
 DROP VIEW IF EXISTS vusers;
+DROP VIEW IF EXISTS vallusers;
 DROP VIEW IF EXISTS vdivisions;
 DROP VIEW IF EXISTS vnodetariffs_allsuspended;
 DROP VIEW IF EXISTS vnodetariffs_tariffs;
@@ -29,6 +30,7 @@ DROP VIEW IF EXISTS vnodetariffs;
 DROP VIEW IF EXISTS vnodealltariffs_nodes;
 DROP VIEW IF EXISTS vnodealltariffs_tariffs;
 DROP VIEW IF EXISTS vnodealltariffs;
+DROP VIEW IF EXISTS customerconsentview;
 
 DROP TABLE IF EXISTS up_info_changes;
 DROP TABLE IF EXISTS up_help;
@@ -39,6 +41,7 @@ DROP TABLE IF EXISTS files;
 DROP TABLE IF EXISTS filecontainers;
 DROP TABLE IF EXISTS passwdhistory;
 DROP TABLE IF EXISTS userassignments;
+DROP TABLE IF EXISTS userdivisions;
 DROP TABLE IF EXISTS usergroups;
 DROP TABLE IF EXISTS rttemplatetypes;
 DROP TABLE IF EXISTS rttemplatequeues;
@@ -99,6 +102,7 @@ DROP TABLE IF EXISTS nodegroups;
 DROP TABLE IF EXISTS macs;
 DROP TABLE IF EXISTS nodelocks;
 DROP TABLE IF EXISTS ewx_stm_nodes;
+DROP TABLE IF EXISTS routednetworks;
 DROP TABLE IF EXISTS nodes;
 DROP TABLE IF EXISTS netradiosectors;
 DROP TABLE IF EXISTS netdevices;
@@ -143,6 +147,7 @@ DROP TABLE IF EXISTS customer_addresses;
 DROP TABLE IF EXISTS zipcodes;
 DROP TABLE IF EXISTS states;
 DROP TABLE IF EXISTS numberplans;
+DROP TABLE IF EXISTS customernotes;
 DROP TABLE IF EXISTS customerconsents;
 DROP TABLE IF EXISTS customers;
 DROP TABLE IF EXISTS divisions;
@@ -151,6 +156,7 @@ DROP TABLE IF EXISTS location_buildings;
 DROP TABLE IF EXISTS location_streets;
 DROP TABLE IF EXISTS location_street_types;
 DROP TABLE IF EXISTS location_cities;
+DROP TABLE IF EXISTS location_city_types;
 DROP TABLE IF EXISTS location_boroughs;
 DROP TABLE IF EXISTS location_districts;
 DROP TABLE IF EXISTS location_states;
@@ -158,6 +164,10 @@ DROP TABLE IF EXISTS countries;
 DROP TABLE IF EXISTS twofactorauthcodehistory;
 DROP TABLE IF EXISTS twofactorauthtrusteddevices;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS customerbalances;
+DROP TABLE IF EXISTS comments;
+DROP TABLE IF EXISTS cryptokeys;
+DROP TABLE IF EXISTS tsigkeys;
 
 SET FOREIGN_KEY_CHECKS = 1;
 SET SESSION sql_mode   = '';
@@ -197,10 +207,6 @@ CREATE TABLE users (
   PRIMARY KEY  (id),
   UNIQUE KEY login (login)
 ) ENGINE=InnoDB;
-
-CREATE VIEW vusers AS
-	SELECT *, CONCAT(firstname, ' ', lastname) AS name, CONCAT(lastname, ' ', firstname) AS rname
-	FROM users;
 
 # --------------------------------------------------------
 #
@@ -291,6 +297,18 @@ CREATE TABLE location_boroughs (
 
 # --------------------------------------------------------
 #
+# Structure of table location_city_types
+#
+CREATE TABLE location_city_types (
+    id int(11) NOT NULL auto_increment,
+    ident varchar(8) NOT NULL,
+    name varchar(64) NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY location_city_types_name_ukey (name)
+) ENGINE=INNODB;
+
+# --------------------------------------------------------
+#
 # Structure of table location_cities
 #
 CREATE TABLE location_cities (
@@ -298,10 +316,13 @@ CREATE TABLE location_cities (
 	ident varchar(8)    NOT NULL, -- TERYT: SYM / SYMPOD
 	name varchar(64)    NOT NULL, -- TERYT: NAZWA
 	cityid int(11)      DEFAULT NULL,
+	type int(11)        DEFAULT NULL,
 	boroughid int(11)   DEFAULT NULL,
 	PRIMARY KEY (id),
 	INDEX cityid (cityid),
 	INDEX boroughid (boroughid, name),
+	CONSTRAINT location_cities_type_fkey
+		FOREIGN KEY (type) REFERENCES location_city_types (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (boroughid) REFERENCES location_boroughs (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=INNODB;
 
@@ -439,6 +460,7 @@ CREATE TABLE customers (
   paytime smallint	NOT NULL DEFAULT '-1',
   paytype smallint  DEFAULT NULL,
   documentmemo text DEFAULT NULL,
+  flags smallint NOT NULL DEFAULT 0,
   PRIMARY KEY  (id),
   INDEX name (lastname, name),
   CONSTRAINT customers_creatorid_fkey
@@ -463,6 +485,23 @@ CREATE TABLE customerconsents (
     KEY customerconsents_type_idx (type),
     UNIQUE KEY customerconsents_ukey (customerid, type)
 ) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table customernotes (customernotes)
+#
+CREATE TABLE customernotes (
+    id int(11) NOT NULL auto_increment,
+    userid int(11) DEFAULT NULL,
+    customerid int(11) NOT NULL,
+    dt int(11) NOT NULL,
+    message text NOT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT customernotes_userid_fkey
+        FOREIGN KEY (userid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT customernotes_customerid_fkey
+        FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
+);
 
 # --------------------------------------------------------
 #
@@ -578,6 +617,7 @@ CREATE TABLE documents (
 	senddate int(11) NOT NULL DEFAULT '0',
 	memo text DEFAULT NULL,
     confirmdate int(11) NOT NULL DEFAULT 0,
+    flags smallint DEFAULT 0 NOT NULL,
     PRIMARY KEY (id),
 	INDEX cdate (cdate),
 	INDEX numberplanid (numberplanid),
@@ -908,7 +948,8 @@ CREATE TABLE tariffs (
 	INDEX type (type),
 	FOREIGN KEY (numberplanid)        REFERENCES numberplans  (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (voip_tariff_id)      REFERENCES voip_tariffs (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	FOREIGN KEY (voip_tariff_rule_id) REFERENCES voip_rules   (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT tariffs_voip_tariff_rule_id_fkey
+		FOREIGN KEY (voip_tariff_rule_id) REFERENCES voip_rule_groups (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT tariffs_taxid_fkey
 		FOREIGN KEY (taxid) REFERENCES taxes (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
@@ -971,7 +1012,8 @@ CREATE TABLE liabilities (
 	name text               NOT NULL DEFAULT '',
 	taxid int(11)           NOT NULL,
 	prodid varchar(255)     NOT NULL DEFAULT '',
-	PRIMARY KEY (id),
+	type smallint DEFAULT -1 NOT NULL,
+    PRIMARY KEY (id),
 	CONSTRAINT liabilities_taxid_fkey
 		FOREIGN KEY (taxid) REFERENCES taxes (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
@@ -986,7 +1028,8 @@ CREATE TABLE assignments (
 	liabilityid int(11) DEFAULT NULL,
 	customerid int(11) NOT NULL,
 	period smallint NOT NULL DEFAULT '0',
-	at int(11) NOT NULL DEFAULT '0',
+    backwardperiod smallint NOT NULL DEFAULT 0,
+    at int(11) NOT NULL DEFAULT '0',
 	datefrom int(11) NOT NULL DEFAULT '0',
 	dateto int(11) NOT NULL DEFAULT '0',
 	invoice tinyint(1) NOT NULL DEFAULT '0',
@@ -1140,7 +1183,7 @@ CREATE TABLE cashimport (
 #
 CREATE TABLE customerbalances (
     customerid int(11) NOT NULL,
-    balance decimal(9,2) NOT NULL,
+    balance decimal(12,2) NOT NULL,
     CONSTRAINT customerbalances_customerid_fkey
         FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
@@ -1480,6 +1523,23 @@ CREATE TABLE nodes (
 
 # --------------------------------------------------------
 #
+# Structure of table routednetworks
+#
+CREATE TABLE routednetworks (
+    id int(11) NOT NULL auto_increment,
+    nodeid int(11) NOT NULL,
+    netid int(11) NOT NULL,
+    comment varchar(256) DEFAULT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY routednetworks_netid_ukey (netid),
+    CONSTRAINT routednetworks_nodeid_fkey
+        FOREIGN KEY (nodeid) REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT routednetworks_netid_fkey
+        FOREIGN KEY (netid) REFERENCES networks (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=INNODB;
+
+# --------------------------------------------------------
+#
 # Structure of table ewx_stm_nodes (EtherWerX(R))
 #
 CREATE TABLE ewx_stm_nodes (
@@ -1643,6 +1703,7 @@ CREATE TABLE promotionassignments (
     optional tinyint    DEFAULT '0' NOT NULL,
     label varchar(60) DEFAULT NULL,
     orderid int(11)     DEFAULT 0 NOT NULL,
+    backwardperiod smallint NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
     INDEX tariffid (tariffid),
     FOREIGN KEY (promotionschemaid) REFERENCES promotionschemas (id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -2215,13 +2276,16 @@ CREATE TABLE uiconfig (
     disabled tinyint(1) NOT NULL DEFAULT '0',
     type smallint NOT NULL DEFAULT 0,
     userid int(11) DEFAULT NULL,
+    divisionid int(11) DEFAULT NULL,
     configid int(11) DEFAULT NULL,
     PRIMARY KEY (id),
-    UNIQUE KEY var (section, var),
+    UNIQUE KEY uiconfig_section_var_userid_divisionid_ukey (section, var, userid, divisionid),
 	CONSTRAINT uiconfig_userid_fkey
 		FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT uiconfig_divisionid_fkey
+		FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT uiconfig_configid_fkey
-		FOREIGN KEY (configid) REFERENCES uiconfig (id) ON DELETE RESTRICT ON UPDATE CASCADE
+		FOREIGN KEY (configid) REFERENCES uiconfig (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -2473,7 +2537,7 @@ CREATE TABLE messageitems (
 	status 		smallint	DEFAULT '0' NOT NULL,
 	error 		text		DEFAULT NULL,
 	lastreaddate 	int(11)		DEFAULT '0' NOT NULL,
-	externalmsgid	int(6)		DEFAULT '0' NOT NULL,
+	externalmsgid	int(11)		DEFAULT '0' NOT NULL,
     body 		text		DEFAULT NULL,
         PRIMARY KEY (id),
 	INDEX messageid (messageid),
@@ -2576,7 +2640,7 @@ CREATE TABLE logmessagedata (
 CREATE TABLE templates (
 	id int(11)		NOT NULL auto_increment,
 	type tinyint		NOT NULL,
-	name varchar(50)	NOT NULL,
+	name varchar(100)	NOT NULL,
 	subject varchar(255)	DEFAULT '' NOT NULL,
 	message	text		DEFAULT '' NOT NULL,
 	PRIMARY KEY (id),
@@ -2638,6 +2702,23 @@ CREATE TABLE userassignments (
 	FOREIGN KEY (usergroupid) REFERENCES usergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	UNIQUE KEY userassignments_usergroupid_key (usergroupid, userid)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table userdivisions
+#
+CREATE TABLE userdivisions (
+	id int(11) NOT NULL auto_increment,
+	userid int(11) NOT NULL,
+	divisionid int(11) NOT NULL,
+	PRIMARY KEY (id),
+	INDEX userdivisions_userid_idx (userid),
+	CONSTRAINT userdivisions_userid_fkey
+		FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT userdivisions_divisionid_fkey
+		FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	UNIQUE KEY userdivisions_userid_divisionid_ukey (userid, divisionid)
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -2782,7 +2863,7 @@ CREATE VIEW vnodes_mac AS
 	FROM macs GROUP BY nodeid;
 
 CREATE VIEW vaddresses AS
-	SELECT *, country_id AS countryid, city_id AS location_city, street_id AS location_street,
+	SELECT a.*, c.ccode AS ccode, country_id AS countryid, city_id AS location_city, street_id AS location_street,
 			  house AS location_house, flat AS location_flat,
 			  (TRIM(both ' ' FROM
 					CONCAT((CASE WHEN street IS NOT NULL THEN street ELSE city END),
@@ -2802,23 +2883,23 @@ CREATE VIEW vaddresses AS
 							END)
 					)
 			  )) AS location
-	FROM addresses;
+	FROM addresses a
+    LEFT JOIN countries c ON c.id = a.country_id;
 
 CREATE VIEW vdivisions AS
     SELECT d.*,
-        a.country_id as countryid, a.zip as zip, a.city as city, a.address
+        a.country_id as countryid, a.ccode, a.zip as zip, a.city as city, a.address
     FROM divisions d
         JOIN vaddresses a ON a.id = d.address_id;
 
 CREATE VIEW vnodes AS
     SELECT n.*, m.mac,
-        a.city_id as location_city, a.street_id as location_street,
+        a.ccode, a.city_id as location_city, a.street_id as location_street,
         a.house as location_house, a.flat as location_flat, a.location
     FROM nodes n
         LEFT JOIN vnodes_mac m ON (n.id = m.nodeid)
         LEFT JOIN vaddresses a ON n.address_id = a.id
     WHERE n.ipaddr <> 0 OR n.ipaddr_pub <> 0;
-
 
 CREATE VIEW vnodetariffs_allsuspended AS
 	SELECT customerid, COUNT(id) AS allsuspended FROM assignments
@@ -2872,6 +2953,7 @@ CREATE VIEW vnodetariffs AS
 		t.uprate_n, t.upceil_n,
 		t.up_burst_time_n, t.up_burst_threshold_n, t.up_burst_limit_n,
 		m.mac,
+        a.ccode,
 		a.city_id as location_city, a.street_id as location_street,
 		a.house as location_house, a.flat as location_flat,
 		a.location
@@ -2946,6 +3028,7 @@ CREATE VIEW vnodealltariffs AS
 		COALESCE(t1.up_burst_threshold_n, t2.up_burst_threshold_n, 0) AS up_burst_threshold_n,
 		COALESCE(t1.up_burst_limit_n, t2.up_burst_limit_n, 0) AS up_burst_limit_n,
 		m.mac,
+        a.ccode,
 		a.city_id as location_city, a.street_id as location_street,
 		a.house as location_house, a.flat as location_flat,
 		a.location
@@ -2960,7 +3043,7 @@ CREATE VIEW vnodealltariffs AS
 			   OR (t1.nodeid IS NULL AND t2.nodeid IS NULL));
 
 CREATE VIEW vmacs AS
-    SELECT n.*, m.mac, m.id AS macid, a.city_id as location_city, a.street_id as location_street,
+    SELECT n.*, m.mac, m.id AS macid, a.ccode, a.city_id as location_city, a.street_id as location_street,
         a.house as location_building, a.flat as location_flat, a.location
     FROM nodes n
         JOIN macs m ON (n.id = m.nodeid)
@@ -2971,15 +3054,29 @@ DROP FUNCTION IF EXISTS lms_current_user;
 CREATE FUNCTION lms_current_user() RETURNS int(11) NO SQL
 RETURN @lms_current_user;
 
+CREATE VIEW customerconsentview AS
+    SELECT c.id AS customerid,
+        SUM(CASE WHEN cc.type = 1 THEN cc.cdate ELSE 0 END)  AS consentdate,
+        SUM(CASE WHEN cc.type = 2 THEN 1 ELSE 0 END) AS invoicenotice,
+        SUM(CASE WHEN cc.type = 3 THEN 1 ELSE 0 END) AS mailingnotice,
+        SUM(CASE WHEN cc.type = 8 THEN 1 ELSE 0 END) AS smsnotice,
+        SUM(CASE WHEN cc.type = 4 THEN 1 ELSE 0 END) AS einvoice
+    FROM customers c
+        LEFT JOIN customerconsents cc ON cc.customerid = c.id
+    GROUP BY c.id;
+
 CREATE VIEW customerview AS
     SELECT c.*,
-        (CASE WHEN cc1.type IS NULL THEN 0 ELSE cc1.cdate END) AS consentdate,
-        (CASE WHEN cc2.type IS NULL THEN 0 ELSE 1 END) AS invoicenotice,
-        (CASE WHEN cc3.type IS NULL THEN 0 ELSE 1 END) AS mailingnotice,
-        (CASE WHEN cc4.type IS NULL THEN 0 ELSE 1 END) AS einvoice,
-        a1.country_id as countryid, a1.zip as zip, a1.city as city,
+        cc.consentdate AS consentdate,
+        cc.invoicenotice AS invoicenotice,
+        cc.mailingnotice AS mailingnotice,
+        cc.smsnotice AS smsnotice,
+        cc.einvoice AS einvoice,
+        a1.country_id as countryid, a1.ccode,
+        a1.zip as zip, a1.city as city,
         a1.street as street, a1.house as building, a1.flat as apartment,
-        a2.country_id as post_countryid, a2.zip as post_zip, a2.city as post_city,
+        a2.country_id as post_countryid, a2.ccode AS post_ccode,
+        a2.zip as post_zip, a2.city as post_city,
         a2.street as post_street, a2.house as post_building, a2.flat as post_apartment,
         a2.name as post_name, a1.address as address, a1.location AS full_address,
         a1.postoffice AS postoffice,
@@ -2990,24 +3087,41 @@ CREATE VIEW customerview AS
         LEFT JOIN vaddresses a1 ON ca1.address_id = a1.id
         LEFT JOIN customer_addresses ca2 ON c.id = ca2.customer_id AND ca2.type = 0
         LEFT JOIN vaddresses a2 ON ca2.address_id = a2.id
-        LEFT JOIN customerconsents cc1 ON cc1.customerid = c.id AND cc1.type = 1
-        LEFT JOIN customerconsents cc2 ON cc2.customerid = c.id AND cc2.type = 2
-        LEFT JOIN customerconsents cc3 ON cc3.customerid = c.id AND cc3.type = 3
-        LEFT JOIN customerconsents cc4 ON cc4.customerid = c.id AND cc4.type = 4
+        LEFT JOIN customerconsentview cc ON cc.customerid = c.id
     WHERE NOT EXISTS (
         SELECT 1 FROM customerassignments a
         JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
         WHERE e.userid = lms_current_user() AND a.customerid = c.id)
+        AND (lms_current_user() = 0 OR c.divisionid IN (
+            SELECT ud.divisionid
+            FROM userdivisions ud
+            WHERE ud.userid = lms_current_user()))
         AND c.type < 2;
+
+CREATE VIEW vusers AS
+    SELECT u.*, CONCAT(u.firstname, ' ', u.lastname) AS name, CONCAT(u.lastname, ' ', u.firstname) AS rname
+    FROM users u
+    LEFT JOIN userdivisions ud ON u.id = ud.userid
+    WHERE lms_current_user() = 0 OR ud.divisionid IN (SELECT ud2.divisionid
+                             FROM userdivisions ud2
+                             WHERE ud2.userid = lms_current_user())
+    GROUP BY u.id;
+
+CREATE VIEW vallusers AS
+	SELECT *, CONCAT(firstname, ' ', lastname) AS name, CONCAT(lastname, ' ', firstname) AS rname
+	FROM users;
 
 CREATE VIEW contractorview AS
     SELECT c.*,
-        (CASE WHEN cc1.type IS NULL THEN 0 ELSE cc1.cdate END) AS consentdate,
-        (CASE WHEN cc2.type IS NULL THEN 0 ELSE 1 END) AS invoicenotice,
-        (CASE WHEN cc3.type IS NULL THEN 0 ELSE 1 END) AS mailingnotice,
-        (CASE WHEN cc4.type IS NULL THEN 0 ELSE 1 END) AS einvoice,
-        a1.country_id as countryid, a1.zip as zip, a1.city as city, a1.street as street,
-        a1.house as building, a1.flat as apartment, a2.country_id as post_countryid,
+        cc.consentdate AS consentdate,
+        cc.invoicenotice AS invoicenotice,
+        cc.mailingnotice AS mailingnotice,
+        cc.smsnotice AS smsnotice,
+        cc.einvoice AS einvoice,
+        a1.country_id as countryid, a1.ccode,
+        a1.zip as zip, a1.city as city, a1.street as street,
+        a1.house as building, a1.flat as apartment,
+        a2.country_id as post_countryid, a2.ccode AS post_ccode,
         a2.zip as post_zip, a2.city as post_city, a2.street as post_street,
         a2.house as post_building, a2.flat as post_apartment, a2.name as post_name,
         a1.address as address, a1.location AS full_address,
@@ -3019,20 +3133,20 @@ CREATE VIEW contractorview AS
         LEFT JOIN vaddresses a1 ON ca1.address_id = a1.id
         LEFT JOIN customer_addresses ca2 ON c.id = ca2.customer_id AND ca2.type = 0
         LEFT JOIN vaddresses a2 ON ca2.address_id = a2.id
-        LEFT JOIN customerconsents cc1 ON cc1.customerid = c.id AND cc1.type = 1
-        LEFT JOIN customerconsents cc2 ON cc2.customerid = c.id AND cc2.type = 2
-        LEFT JOIN customerconsents cc3 ON cc3.customerid = c.id AND cc3.type = 3
-        LEFT JOIN customerconsents cc4 ON cc4.customerid = c.id AND cc4.type = 4
+        LEFT JOIN customerconsentview cc ON cc.customerid = c.id
     WHERE c.type = 2;
 
 CREATE VIEW customeraddressview AS
     SELECT c.*,
-        (CASE WHEN cc1.type IS NULL THEN 0 ELSE cc1.cdate END) AS consentdate,
-        (CASE WHEN cc2.type IS NULL THEN 0 ELSE 1 END) AS invoicenotice,
-        (CASE WHEN cc3.type IS NULL THEN 0 ELSE 1 END) AS mailingnotice,
-        (CASE WHEN cc4.type IS NULL THEN 0 ELSE 1 END) AS einvoice,
-        a1.country_id as countryid, a1.zip as zip, a1.city as city, a1.street as street,
-        a1.house as building, a1.flat as apartment, a2.country_id as post_countryid,
+        cc.consentdate AS consentdate,
+        cc.invoicenotice AS invoicenotice,
+        cc.mailingnotice AS mailingnotice,
+        cc.smsnotice AS smsnotice,
+        cc.einvoice AS einvoice,
+        a1.country_id as countryid, a1.ccode,
+        a1.zip as zip, a1.city as city, a1.street as street,
+        a1.house as building, a1.flat as apartment,
+        a2.country_id as post_countryid, a2.ccode AS post_ccode,
         a2.zip as post_zip, a2.city as post_city, a2.street as post_street,
         a2.house as post_building, a2.flat as post_apartment, a2.name as post_name,
         a1.address as address, a1.location AS full_address,
@@ -3044,10 +3158,7 @@ CREATE VIEW customeraddressview AS
         LEFT JOIN vaddresses a1 ON ca1.address_id = a1.id
         LEFT JOIN customer_addresses ca2 ON c.id = ca2.customer_id AND ca2.type = 0
         LEFT JOIN vaddresses a2 ON ca2.address_id = a2.id
-        LEFT JOIN customerconsents cc1 ON cc1.customerid = c.id AND cc1.type = 1
-        LEFT JOIN customerconsents cc2 ON cc2.customerid = c.id AND cc2.type = 2
-        LEFT JOIN customerconsents cc3 ON cc3.customerid = c.id AND cc3.type = 3
-        LEFT JOIN customerconsents cc4 ON cc4.customerid = c.id AND cc4.type = 4
+        LEFT JOIN customerconsentview cc ON cc.customerid = c.id
     WHERE c.type < 2;
 
 CREATE VIEW teryt_terc AS
@@ -3098,7 +3209,7 @@ CREATE FUNCTION mask2prefix(mask bigint) RETURNS smallint DETERMINISTIC
 RETURN bit_count(mask);
 
 CREATE VIEW vnetworks AS
-    SELECT h.name AS hostname, ne.*, no.ownerid, a.city_id as location_city,
+    SELECT h.name AS hostname, ne.*, no.ownerid, a.ccode, a.city_id as location_city,
         a.street_id as location_street, a.house as location_house,
         a.flat as location_flat, no.chkmac, CONCAT(inet_ntoa(ne.address), '/',
         mask2prefix(inet_aton(ne.mask))) AS ip, no.id AS nodeid, a.location
@@ -3171,8 +3282,9 @@ CREATE TRIGGER cash_customerbalances_delete_trigger AFTER DELETE ON cash
     END $$
 DELIMITER ;
 
-INSERT INTO rtcategories (name, description)
-	VALUES ('default', 'default category');
+INSERT INTO rtcategories (name, description, style)
+	VALUES ('default', 'default category', 'background-color:#ffffff;color:#000000');
+
 INSERT INTO up_rights(module, name, description)
 	VALUES ('info', 'edit_addr_ack', 'Customer can change address information with admin acknowlegment');
 INSERT INTO up_rights(module, name, description)
@@ -3190,6 +3302,9 @@ INSERT INTO countries (name, ccode) VALUES
 ('USA', 'en_US'),
 ('Czech', 'cs_CZ'),
 ('Guyana', 'en_GY');
+
+INSERT INTO addresses (name) VALUES ('default');
+INSERT INTO divisions (shortname, name, address_id) VALUES ('default', 'default', (SELECT MAX(id) FROM addresses));
 
 INSERT INTO nastypes (name) VALUES
 ('mikrotik_snmp'),
@@ -3295,6 +3410,7 @@ URL: %url
 ('phpui', 'default_teryt_city', 'false', '', 0),
 ('phpui', 'passwordhistory', 6, '', 0),
 ('phpui', 'event_usergroup_selection_type', 'update', '', 0),
+('phpui', 'force_global_division_context', 'false', '', 0),
 ('payments', 'date_format', '%Y/%m/%d', '', 0),
 ('payments', 'default_unit_name', 'pcs.', '', 0),
 ('voip', 'default_cost_limit', '200','', 2),
@@ -3394,6 +3510,7 @@ URL: %url
 ('userpanel', 'hide_archived_documents', 'false', '', 0),
 ('userpanel', 'sms_credential_reminders', 'true', '', 0),
 ('userpanel', 'mail_credential_reminders', 'true', '', 0),
+('userpanel', 'startup_module', 'info', '', 0),
 ('directories','userpanel_dir','userpanel','',0);
 
 INSERT INTO invprojects (name, type) VALUES ('inherited', 1);
@@ -3725,4 +3842,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020042000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020100100');

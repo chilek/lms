@@ -24,26 +24,26 @@
  *  $Id$
  */
 
-// REPLACE THIS WITH PATH TO YOUR CONFIG FILE
-
-$CONFIG_FILE = (is_readable('lms.ini')) ? 'lms.ini' : DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
-
 // PLEASE DO NOT MODIFY ANYTHING BELOW THIS LINE UNLESS YOU KNOW
 // *EXACTLY* WHAT ARE YOU DOING!!!
 // *******************************************************************
 
 ini_set('session.name', 'LMSSESSIONID');
-ini_set('error_reporting', E_ALL&~E_NOTICE);
+ini_set('error_reporting', E_ALL & ~E_NOTICE);
+
+$CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
 
 // find alternative config files:
 if (is_readable('lms.ini')) {
     $CONFIG_FILE = 'lms.ini';
+} elseif (is_readable(DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . ':' . $_SERVER['SERVER_PORT'] . '.ini')) {
+    $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . ':' . $_SERVER['SERVER_PORT'] . '.ini';
 } elseif (is_readable(DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini')) {
     $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini';
 } elseif (is_readable('..' . DIRECTORY_SEPARATOR .'lms.ini')) {
     $CONFIG_FILE = '..' . DIRECTORY_SEPARATOR .'lms.ini';
 } elseif (!is_readable($CONFIG_FILE)) {
-    die('Unable to read configuration file ['.$CONFIG_FILE.']!');
+    die('Unable to read configuration file [' . $CONFIG_FILE . ']!');
 }
 
 define('CONFIG_FILE', $CONFIG_FILE);
@@ -149,7 +149,7 @@ require_once(USERPANEL_LIB_DIR . DIRECTORY_SEPARATOR . 'Session.class.php');
 require_once(USERPANEL_LIB_DIR . DIRECTORY_SEPARATOR . 'Userpanel.class.php');
 require_once(USERPANEL_LIB_DIR . DIRECTORY_SEPARATOR . 'ULMS.class.php');
 
-@include(USERPANEL_DIR . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'locale' . DIRECTORY_SEPARATOR . $_ui_language . DIRECTORY_SEPARATOR . 'strings.php');
+Localisation::appendUiLanguage(USERPANEL_DIR . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'locale');
 
 unset($LMS); // reset LMS class to enable wrappers for LMS older versions
 
@@ -171,9 +171,6 @@ if (!empty($plugins)) {
 
 $SESSION = new Session($DB, $_TIMEOUT);
 $USERPANEL = new USERPANEL($DB, $SESSION);
-$LMS->ui_lang = $_ui_language;
-$LMS->lang = $_language;
-LMS::$currency = $_currency;
 
 // Initialize modules
 
@@ -191,13 +188,7 @@ foreach ($modules_dirs as $suspected_module_dir) {
     while (false !== ($filename = readdir($dh))) {
         if ((is_null($enabled_modules) || in_array($filename, $enabled_modules)) && (preg_match('/^[a-zA-Z0-9]/', $filename))
             && (is_dir($suspected_module_dir . $filename)) && file_exists($suspected_module_dir . $filename . DIRECTORY_SEPARATOR . 'configuration.php')) {
-            $locale_filename = $suspected_module_dir . $filename . DIRECTORY_SEPARATOR . 'locale' . DIRECTORY_SEPARATOR . $_ui_language . DIRECTORY_SEPARATOR . 'strings.php';
-            if (@is_readable($locale_filename)) {
-                @include($locale_filename);
-            } else {
-                $locale_filename = $suspected_module_dir . $filename . DIRECTORY_SEPARATOR . 'locale' . DIRECTORY_SEPARATOR . substr($_ui_language, 0, 2) . DIRECTORY_SEPARATOR . 'strings.php';
-                @include($locale_filename);
-            }
+            Localisation::appendUiLanguage($suspected_module_dir . $filename . DIRECTORY_SEPARATOR . 'locale');
             include($suspected_module_dir . $filename . DIRECTORY_SEPARATOR . 'configuration.php');
             if (is_dir($suspected_module_dir . $filename . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR)) {
                 $plugins = glob($suspected_module_dir . $filename . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . '*.php');
@@ -213,11 +204,9 @@ foreach ($modules_dirs as $suspected_module_dir) {
     }
 }
 
-$SMARTY->assignByRef('LANGDEFS', $LANGDEFS);
-$SMARTY->assignByRef('_ui_language', $LMS->ui_lang);
-$SMARTY->assignByRef('_language', $LMS->lang);
 $SMARTY->setTemplateDir(null);
 $style = ConfigHelper::getConfig('userpanel.style', 'default');
+$startupmodule = ConfigHelper::getConfig('userpanel.startup_module', 'info');
 $SMARTY->addTemplateDir(array(
     USERPANEL_DIR . DIRECTORY_SEPARATOR . 'style' . DIRECTORY_SEPARATOR .  $style . DIRECTORY_SEPARATOR . 'templates',
     USERPANEL_DIR . DIRECTORY_SEPARATOR . 'templates',
@@ -258,8 +247,8 @@ if ($SESSION->islogged) {
 
     if (ConfigHelper::checkConfig('userpanel.hide_nodes_modules')) {
         if (!$DB->GetOne('SELECT COUNT(*) FROM vnodes WHERE ownerid = ? LIMIT 1', array($SESSION->id))) {
-            unset($USERPANEL->MODULES['notices']);
-            unset($USERPANEL->MODULES['stats']);
+            $USERPANEL->RemoveModule('notices');
+            $USERPANEL->RemoveModule('stats');
         }
     }
 
@@ -294,20 +283,10 @@ if ($SESSION->islogged) {
                 $SMARTY->display('error.html');
         }
     } elseif ($module=='') {
-        // if no module selected, redirect on module with lowest prio
-        $redirectmodule = 'nomodulesfound';
-        $redirectprio = 999;
-        foreach ($USERPANEL->MODULES as $menupos) {
-            if ($redirectprio > $menupos['prio']) {
-                $redirectmodule = $menupos['module'];
-                $redirectprio = $menupos['prio'];
-            }
-        }
-        if ($redirectmodule == 'nomodulesfound') {
-                $layout['error'] = trans('No modules found!');
-                $SMARTY->display('error.html');
+        if (!empty($module)) {
+            header('Location: ?m=' . $module);
         } else {
-            header('Location: ?m='.$redirectmodule);
+            header('Location: ?m=' . $startupmodule);
         }
     } else {
         $layout['error'] = trans('Module <b>$a</b> not found!', $module);

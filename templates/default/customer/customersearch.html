@@ -295,6 +295,7 @@
 			<IMG src="img/empty.gif" width="16" alt=""> {trans("Created:")}
 		</TD>
 		<TD style="width: 99%;">
+			{date_period_preset from="#customersearch [name=\"search[createdfrom]\"]" to="#customersearch [name=\"search[createdto]\"]"}
 			{trans("from")} <INPUT type="text" class="lms-ui-date" value="" name="search[createdfrom]" size="10" placeholder="{trans("yyyy/mm/dd")}">
 			{trans("to")} <INPUT type="text" class="lms-ui-date" value="" name="search[createdto]" size="10" placeholder="{trans("yyyy/mm/dd")}">
 		</TD>
@@ -304,6 +305,7 @@
 			<IMG src="img/empty.gif" width="16" alt=""> {trans("Deleted:")}
 		</TD>
 		<TD style="width: 99%;">
+			{date_period_preset from="#customersearch [name=\"search[deletedfrom]\"]" to="#customersearch [name=\"search[deletedto]\"]"}
 			{trans("from")} <INPUT type="text" class="lms-ui-date" value="" name="search[deletedfrom]" size="10" placeholder="{trans("yyyy/mm/dd")}">
 			{trans("to")} <INPUT type="text" class="lms-ui-date" value="" name="search[deletedto]" size="10" placeholder="{trans("yyyy/mm/dd")}">
 		</TD>
@@ -359,6 +361,7 @@
 				<OPTION value="59">{trans("without contracts")}</OPTION>
 				<OPTION value="60">{trans("with expired contracts")}</OPTION>
 				<OPTION value="61">{trans("with expiring contracts")}</OPTION>
+				<OPTION VALUE="75">{trans("with discount")}</OPTION>
 				<OPTION VALUE="70">{trans("TERRIT not specified")}</OPTION>
 				<OPTION VALUE="74">{trans("ZIP code not specified")}</OPTION>
 				<OPTION value="73">{trans("with unarchived documents")}</OPTION>
@@ -409,12 +412,12 @@
 			<IMG src="img/group.gif" alt=""> {trans("Group:")}
 		</TD>
 		<TD style="width: 99%;">
-			<SELECT SIZE="1" name="g">
-				<OPTION value="" {if !$listdata.customergroup} SELECTED {/if}>{trans("- all groups -")}</OPTION>
-				<OPTION value="-1"{if $listdata.customergroup == -1} selected{/if}>{trans("- without assigned groups -")}</OPTION>
-				{section name=customergroups loop=$customergroups}
-				<OPTION value="{$customergroups[customergroups].id}" {if $listdata.customergroup == $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:50:"...":true}</OPTION>
-				{/section}
+			<SELECT SIZE="1" name="g[]" multiple class="lms-ui-multiselect">
+				<OPTION value=""{if ! is_array($listdata.customergroup) && !$listdata.customergroup} selected{/if} data-exclusive>{trans("- all groups -")}</OPTION>
+				<OPTION value="-1"{if !is_array($listdata.customergroup) && $listdata.customergroup == -1} selected{/if} data-exclusive>{trans("- without assigned groups -")}</OPTION>
+				{foreach $customergroups as $customergroup}
+				<OPTION value="{$customergroup.id}"{if is_array($listdata.customergroup) && in_array($customergroup.id, $listdata.customergroup)} selected{/if}>{$customergroup.name|truncate:50:"...":true}</OPTION>
+				{/foreach}
 			</SELECT>
 		</TD>
 	</TR>

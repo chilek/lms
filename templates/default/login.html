@@ -3,8 +3,7 @@
 <html>
 <head>
     <meta name="GENERATOR" content="LMS {$layout.lmsv}">
-    <meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
-    <meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
+	{include file="language.html"}
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<link href="{ConfigHelper::getConfig('phpui.style', 'css/style.css')}" rel="stylesheet" type="text/css">
     <link href="img/lms-net.gif" rel="shortcut icon">
@@ -42,57 +41,61 @@
 			margin: 1em;
 		}
 
+		.login-box-container table {
+			margin-top: 1em;
+			margin-bottom: 1em;
+		}
+
+		.login-box-container table td > i {
+			margin-right: 0.3em;
+		}
+
 		.lms-ui-dberrors {
 
 		}
 	</style>
 </head>
-<body>
+<body class="lms-ui-login-form">
 <div>
 	<div class="login-logo-container">
 		<img src="img/logo.png" alt="">
 	</div>
 	<div class="login-box-container loginform light">
 		<span class="bold text-center">
-			{t a=LMS::SOFTWARE_NAME}$a version{/t} {$layout.lmsv}{if $layout.lmsvr} ({$layout.lmsvr}){/if}<br><br>
+			{t a=LMS::SOFTWARE_NAME}$a version{/t} {$layout.lmsv}{if $layout.lmsvr} ({$layout.lmsvr}){/if}<br>
 			&copy; 2001-{$smarty.now|date_format:'%Y'} LMS Developers
 		</span>
-		&nbsp;<br>
-		{if $error}<span class="lms-ui-alert bold">{$error}</span>{else}&nbsp;{/if}
-		&nbsp;<br>
 		<form method="post" name="loginform" action="{$target}">
 			<table>
 				<tr>
 					<td class="text-right bold">
-						{trans("Login:")}&nbsp;
+						<i class="lms-ui-icon-user"></i>
 					</td>
 					<td>
-						<input class="bold" type="text" name="loginform[login]" size="22" accesskey="l">
+						<input class="bold" type="text" name="loginform[login]" size="16" accesskey="l" placeholder="{trans("<!login>username")}">
 					</td>
 				</tr>
 				<tr>
 					<td class="text-right bold">
-						{trans("Password:")}&nbsp;
+						<i class="lms-ui-icon-password"></i>
 					</td>
 					<td>
-						<input class="bold" type="password" name="loginform[pwd]" size="22"><br>
-					</td>
-				</tr>
-				<tr>
-					<td colspan="2">
-						&nbsp;
+						<input class="bold" type="password" name="loginform[pwd]" size="16" placeholder="{trans("<!login>password")}"><br>
 					</td>
 				</tr>
 				<tr>
 					<td colspan="2" class="text-center">
-						{button type="submit" label="Login"}
+						{if $error}<span class="lms-ui-alert bold">{$error}</span>{/if}
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" class="text-center">
+						{button type="submit" label="Login" icon="login"}
 					</td>
 				</tr>
 			</table>
 		</form>
-		&nbsp;<br>
-		<br>
-		<a href="doc/html/{$_ui_language}/"><span class="blend">{trans("Documentation")}</span></a><br>
+		<a href="doc/html/{Localisation::getCurrentUiLanguage()}/"><span class="blend">{trans("Documentation")}</span></a>
 		<a href="http://www.lms.org.pl/"><span class="blend">{trans("LMS Project Homepage")}</span></a>
 	</div>
 	{if $layout.dberrors}

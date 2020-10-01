@@ -185,9 +185,12 @@ class LMSEzpdfInvoice extends LMSInvoice
         );
         if (!ConfigHelper::checkConfig('invoices.hide_payment_type')) {
             $this->backend->text_align_right($x, $y, $font_size, trans('Payment type:').' ');
-            $y = $y - $this->backend->text_align_left($x, $y, $font_size, $this->data['paytypename']);
+            $y = $y - $this->backend->text_align_left($x, $y, $font_size, trans($this->data['paytypename']));
             if (!empty($this->data['splitpayment'])) {
                 $this->backend->text_align_right($x + 50, $y, $font_size, trans('(split payment)'));
+            }
+            if (!empty($this->data['flags'][DOC_FLAG_RECEIPT])) {
+                $this->backend->text_align_right($x + 50, $y, $font_size, trans('<!invoice>(receipt)'));
             }
         }
         return $y;
@@ -415,6 +418,8 @@ class LMSEzpdfInvoice extends LMSInvoice
     protected function invoice_data($x, $y, $width, $font_size, $margin)
     {
         $hide_discount = ConfigHelper::checkConfig('invoices.hide_discount');
+        $hide_prodid = ConfigHelper::checkConfig('invoices.hide_prodid');
+        $show_tax_category = ConfigHelper::checkConfig('invoices.show_tax_category') && !empty($this->data['taxcategories']);
 
         $this->backend->setlinestyle(0.5);
         $this->backend->line($x, $y, $x + $width, $y);
@@ -422,7 +427,12 @@ class LMSEzpdfInvoice extends LMSInvoice
         $v = 1;
         $t_data[$v++] = '<b>' . trans('No.') . '</b>';
         $t_data[$v++] = '<b>' . trans('Name of Product, Commodity or Service:') . '</b>';
-        $t_data[$v++] = '<b>' . trans('Product ID:') . '</b>';
+        if (!$hide_prodid) {
+            $t_data[$v++] = '<b>' . trans('Product ID:') . '</b>';
+        }
+        if ($show_tax_category) {
+            $t_data[$v++] = '<b>' . trans('Tax Category:') . '</b>';
+        }
         $t_data[$v++] = '<b>' . trans('Unit:') . '</b>';
         $t_data[$v++] = '<b>' . trans('Amount:') . '</b>';
         if (!$hide_discount && (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount']))) {
@@ -446,7 +456,12 @@ class LMSEzpdfInvoice extends LMSInvoice
             foreach ($this->data['content'] as $item) {
                 $v = 2;
                 $tt_width[$v++] = $this->backend->getTextWidth($font_size, $item['description']);
-                $tt_width[$v++] = $this->backend->getTextWidth($font_size, $item['prodid']);
+                if (!$hide_prodid) {
+                    $tt_width[$v++] = $this->backend->getTextWidth($font_size, $item['prodid']);
+                }
+                if ($show_tax_category) {
+                    $tt_width[$v++] = $this->backend->getTextWidth($font_size, sprintf('%02d', $item['taxcategory']));
+                }
                 $tt_width[$v++] = $this->backend->getTextWidth($font_size, $item['content']);
                 $tt_width[$v++] = $this->backend->getTextWidth($font_size, (float)$item['count']);
                 if (!$hide_discount) {
@@ -480,7 +495,12 @@ class LMSEzpdfInvoice extends LMSInvoice
             foreach ($this->data['invoice']['content'] as $item) {
                 $v = 2;
                 $tt_width[$v++] = $this->backend->getTextWidth($font_size, $item['description']);
-                $tt_width[$v++] = $this->backend->getTextWidth($font_size, $item['prodid']);
+                if (!$hide_prodid) {
+                    $tt_width[$v++] = $this->backend->getTextWidth($font_size, $item['prodid']);
+                }
+                if ($show_tax_category) {
+                    $tt_width[$v++] = $this->backend->getTextWidth($font_size, sprintf('%02d', $item['taxcategory']));
+                }
                 $tt_width[$v++] = $this->backend->getTextWidth($font_size, $item['content']);
                 $tt_width[$v++] = $this->backend->getTextWidth($font_size, (float)$item['count']);
                 if (!$hide_discount) {
@@ -510,9 +530,21 @@ class LMSEzpdfInvoice extends LMSInvoice
             }
         }
         // Kolumna 2 będzie miała rozmiar ustalany dynamicznie
-        $t_width[2] = $width - ($t_width[1] + $t_width[3] + $t_width[4] + $t_width[5] + $t_width[6] + $t_width[7]
-            + $t_width[8] + $t_width[9] + $t_width[10] + (!$hide_discount && (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) ? $t_width[11] : 0)
-            + 2 * $margin * (!$hide_discount && (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) ? 11 : 10));
+        $cols = array(1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
+        if ($hide_prodid) {
+            array_pop($cols);
+        }
+        if (!$show_tax_category) {
+            array_pop($cols);
+        }
+        if ($hide_discount || (empty($this->data['pdiscount']) && empty($this->data['vdiscount']))) {
+            array_pop($cols);
+        }
+        $t_width[2] = $width;
+        foreach ($cols as $col) {
+            $t_width[2] -= $t_width[$col] + 2 * $margin;
+        }
+
         $y = $this->invoice_data_row($x, $y, $width, $font_size, $margin, $t_data, $t_width, $t_justify);
         $t_justify[11] = $t_justify[10] = $t_justify[9] = $t_justify[8] = $t_justify[7] = $t_justify[6] = $t_justify[5] = "right";
         $t_justify[2] = 'left';
@@ -529,7 +561,12 @@ class LMSEzpdfInvoice extends LMSInvoice
                     $v = 1;
                     $t_data[$v++] = $lp;
                     $t_data[$v++] = $item['description'];
-                    $t_data[$v++] = $item['prodid'];
+                    if (!$hide_prodid) {
+                        $t_data[$v++] = $item['prodid'];
+                    }
+                    if ($show_tax_category) {
+                        $t_data[$v++] = empty($item['taxcategory']) ? '' : sprintf('%02d', $item['taxcategory']);
+                    }
                     $t_data[$v++] = $item['content'];
                     $t_data[$v++] = (float)$item['count'];
                     if (!$hide_discount) {
@@ -554,13 +591,26 @@ class LMSEzpdfInvoice extends LMSInvoice
                 }
             }
 
-            $x = $x + (!$hide_discount && (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) ? 7 : 6) * 2 * $margin + $t_width[1] + $t_width[2] + $t_width[3]
-                + $t_width[4] + $t_width[5] + $t_width[6] + (!$hide_discount && (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) ? $t_width[7] : 0);
+            $cols = array(1, 2, 3, 4, 5, 6, 7, 8);
+            if ($hide_prodid) {
+                array_pop($cols);
+            }
+            if (!$show_tax_category) {
+                array_pop($cols);
+            }
+            if ($hide_discount || (empty($this->data['pdiscount']) && empty($this->data['vdiscount']))) {
+                array_pop($cols);
+            }
+
+            $x += count($cols) * 2 * $margin;
+            foreach ($cols as $col) {
+                $x += $t_width[$col];
+            }
 
             $fy = $y - $margin - $this->backend->GetFontHeight($font_size);
             $this->backend->text_align_right($x - $margin, $fy, $font_size, '<b>' . trans('Total:') . '</b>');
 
-            $v = (!$hide_discount && (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount']))) ? 8 : 7;
+            $v = count($cols) + 1;
             $t_data[$v++] = sprintf('%01.2f', $this->data['invoice']['totalbase']);
             $t_data[$v++] = "<b>x</b>";
             $t_data[$v++] = sprintf('%01.2f', $this->data['invoice']['totaltax']);
@@ -571,12 +621,12 @@ class LMSEzpdfInvoice extends LMSInvoice
 
             $fy = $y - $margin - $this->backend->GetFontHeight($font_size);
             $this->backend->text_align_right($x - $margin, $fy, $font_size, '<b>' . trans('in it:') . '</b>');
-            $v = (!$hide_discount && (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount']))) ? 8 : 7;
+            $v = count($cols) + 1;
             $this->backend->line($x, $y, $x + $t_width[$v++] + $t_width[$v++] + $t_width[$v++] + $t_width[$v++] + 8 * $margin, $y);
 
             if ($this->data['invoice']['taxest']) {
                 foreach ($this->data['invoice']['taxest'] as $item) {
-                    $v = (!$hide_discount && (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount']))) ? 8 : 7;
+                    $v = count($cols) + 1;
                     $t_data[$v++] = sprintf('%01.2f', $item['base']);
                     $t_data[$v++] = $item['taxlabel'];
                     $t_data[$v++] = sprintf('%01.2f', $item['tax']);
@@ -601,7 +651,12 @@ class LMSEzpdfInvoice extends LMSInvoice
                 $v = 1;
                 $t_data[$v++] = $lp;
                 $t_data[$v++] = $item['description'];
-                $t_data[$v++] = $item['prodid'];
+                if (!$hide_prodid) {
+                    $t_data[$v++] = $item['prodid'];
+                }
+                if ($show_tax_category) {
+                    $t_data[$v++] = empty($item['taxcategory']) ? '' : sprintf('%02d', $item['taxcategory']);
+                }
                 $t_data[$v++] = $item['content'];
                 $t_data[$v++] = (float)$item['count'];
                 if (!$hide_discount) {
@@ -628,13 +683,15 @@ class LMSEzpdfInvoice extends LMSInvoice
 
         $return[1] = $y;
 
-        $x = $x + (!$hide_discount && (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) ? 7 : 6) * 2 * $margin + $t_width[1] + $t_width[2] + $t_width[3]
-            + $t_width[4] + $t_width[5] + $t_width[6] + (!$hide_discount && (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) ? $t_width[7] : 0);
+        $x += count($cols) * 2 * $margin;
+        foreach ($cols as $col) {
+            $x += $t_width[$col];
+        }
 
         $fy = $y - $margin - $this->backend->GetFontHeight($font_size);
         $this->backend->text_align_right($x - $margin, $fy, $font_size, '<b>' . trans('Total:') . '</b>');
 
-        $v = (!$hide_discount && (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount']))) ? 8 : 7;
+        $v = count($cols) + 1;
         $t_data[$v++] = sprintf('%01.2f', $this->data['totalbase']);
         $t_data[$v++] = "<b>x</b>";
         $t_data[$v++] = sprintf('%01.2f', $this->data['totaltax']);
@@ -646,12 +703,12 @@ class LMSEzpdfInvoice extends LMSInvoice
 
         $fy = $y - $margin - $this->backend->GetFontHeight($font_size);
         $this->backend->text_align_right($x - $margin, $fy, $font_size, '<b>' . trans('in it:') . '</b>');
-        $v = (!$hide_discount && (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount']))) ? 8 : 7;
+        $v = count($cols) + 1;
         $this->backend->line($x, $y, $x + $t_width[$v++] + $t_width[$v++] + $t_width[$v++] + $t_width[$v++] + 8 * $margin, $y);
 
         if ($this->data['taxest']) {
             foreach ($this->data['taxest'] as $item) {
-                $v = (!$hide_discount && (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount']))) ? 8 : 7;
+                $v = count($cols) + 1;
                 $t_data[$v++] = sprintf('%01.2f', $item['base']);
                 $t_data[$v++] = $item['taxlabel'];
                 $t_data[$v++] = sprintf('%01.2f', $item['tax']);
@@ -667,11 +724,11 @@ class LMSEzpdfInvoice extends LMSInvoice
 
             $y = $y - 5;
             $fy = $y - $margin - $this->backend->GetFontHeight($font_size);
-            $v = (!$hide_discount && (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount']))) ? 8 : 7;
+            $v = count($cols) + 1;
             $this->backend->line($x, $y, $x + $t_width[$v++] + $t_width[$v++] + $t_width[$v++] + $t_width[$v++] + 8 * $margin, $y);
             $this->backend->text_align_right($x - $margin, $fy, $font_size, '<b>' . trans('Difference value:') . '</b>');
 
-            $v = (!$hide_discount && !empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) ? 8 : 7;
+            $v = count($cols) + 1;
             $t_data[$v++] = ($totalbase > 0 ? '+' : '') . sprintf('%01.2f', $totalbase);
             $t_data[$v++] = "<b>x</b>";
             $t_data[$v++] = ($totaltax > 0 ? '+' : '') . sprintf('%01.2f', $totaltax);
@@ -688,6 +745,8 @@ class LMSEzpdfInvoice extends LMSInvoice
     protected function new_invoice_data($x, $y, $width, $font_size, $margin)
     {
         $hide_discount = ConfigHelper::checkConfig('invoices.hide_discount');
+        $hide_prodid = ConfigHelper::checkConfig('invoices.hide_prodid');
+        $show_tax_category = ConfigHelper::checkConfig('invoices.show_tax_category') && !empty($this->data['taxcategories']);
 
         $this->backend->setlinestyle(0.5);
         $data = array();
@@ -705,11 +764,19 @@ class LMSEzpdfInvoice extends LMSInvoice
         // tabelka glowna
         $cols['no'] = '<b>' . trans('No.') . '</b>';
         $cols['name'] = '<b>' . trans('Name of Product, Commodity or Service:') . '</b>';
-        $cols['prodid'] = '<b>' . trans('Product ID:') . '</b>';
+        if (!$hide_prodid) {
+            $cols['prodid'] = '<b>' . trans('Product ID:') . '</b>';
+        }
+        if ($show_tax_category) {
+            $cols['taxcategory'] = '<b>' . trans('Tax Category:') . '</b>';
+        }
         $cols['content'] = '<b>' . trans('Unit:') . '</b>';
         $cols['count'] = '<b>' . trans('Amount:') . '</b>';
         if (!$hide_discount && (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount']))) {
             $cols['discount'] = '<b>' . trans('Discount:') . '</b>';
+        }
+        if ($show_tax_category) {
+            $cols['taxcategory'] = '<b>' . trans('Tax Category:') . '</b>';
         }
         $cols['basevalue'] = '<b>' . trans('Unitary Net Value:') . '</b>';
         $cols['totalbase'] = '<b>' . trans('Net Value:') . '</b>';
@@ -728,7 +795,12 @@ class LMSEzpdfInvoice extends LMSInvoice
         if ($this->data['content']) {
             foreach ($this->data['content'] as $item) {
                 $tt_width['name'] = $this->backend->getTextWidth($font_size, $item['description']);
-                $tt_width['prodid'] = $this->backend->getTextWidth($font_size, $item['prodid']);
+                if (!$hide_prodid) {
+                    $tt_width['prodid'] = $this->backend->getTextWidth($font_size, $item['prodid']);
+                }
+                if ($show_tax_category) {
+                    $tt_width['taxcategory'] = $this->backend->getTextWidth($font_size, sprintf('%02d', $item['taxcategory']));
+                }
                 $tt_width['content'] = $this->backend->getTextWidth($font_size, $item['content']);
                 $tt_width['count'] = $this->backend->getTextWidth($font_size, (float)$item['count']);
                 if (!$hide_discount) {
@@ -759,7 +831,12 @@ class LMSEzpdfInvoice extends LMSInvoice
         if (isset($this->data['invoice']['content'])) {
             foreach ($this->data['invoice']['content'] as $item) {
                 $tt_width['name'] = $this->backend->getTextWidth($font_size, $item['description']);
-                $tt_width['prodid'] = $this->backend->getTextWidth($font_size, $item['prodid']);
+                if (!$hide_prodid) {
+                    $tt_width['prodid'] = $this->backend->getTextWidth($font_size, $item['prodid']);
+                }
+                if ($show_tax_category) {
+                    $tt_width['taxcategory'] = $this->backend->getTextWidth($font_size, sprintf('%02d', $item['taxcategory']));
+                }
                 $tt_width['content'] = $this->backend->getTextWidth($font_size, $item['content']);
                 $tt_width['count'] = $this->backend->getTextWidth($font_size, (float)$item['count']);
                 if (!$hide_discount) {
@@ -805,6 +882,7 @@ class LMSEzpdfInvoice extends LMSInvoice
         foreach ($cols as $name => $text) {
             switch ($name) {
                 case 'no':
+                case 'taxcategory':
                     $params['cols'][$name]['justification'] = 'center';
                     break;
                 case 'name':
@@ -819,7 +897,7 @@ class LMSEzpdfInvoice extends LMSInvoice
         // size of taxes summary table
         $xx = $x;
         foreach ($params['cols'] as $name => $value) {
-            if (in_array($name, array('no', 'name', 'prodid', 'content', 'count', 'discount', 'basevalue'))) {
+            if (in_array($name, array('no', 'name', 'prodid', 'taxcategory', 'content', 'count', 'discount', 'basevalue'))) {
                 $xx += $params['cols'][$name]['width'];
             } else {
                 $cols2[$name] = $params['cols'][$name];
@@ -849,7 +927,12 @@ class LMSEzpdfInvoice extends LMSInvoice
                 foreach ($this->data['invoice']['content'] as $item) {
                     $data[$i]['no'] = $i + 1;
                     $data[$i]['name'] = $item['description'];
-                    $data[$i]['prodid'] = $item['prodid'];
+                    if (!$hide_prodid) {
+                        $data[$i]['prodid'] = $item['prodid'];
+                    }
+                    if ($show_tax_category) {
+                        $data[$i]['taxcategory'] = empty($item['taxcategory']) ? '' : sprintf('%02d', $item['taxcategory']);
+                    }
                     $data[$i]['content'] = $item['content'];
                     $data[$i]['count'] = (float)$item['count'];
                     if (!$hide_discount) {
@@ -925,7 +1008,12 @@ class LMSEzpdfInvoice extends LMSInvoice
             foreach ($this->data['content'] as $item) {
                 $data[$i]['no'] = $i + 1;
                 $data[$i]['name'] = $item['description'];
-                $data[$i]['prodid'] = $item['prodid'];
+                if (!$hide_prodid) {
+                    $data[$i]['prodid'] = $item['prodid'];
+                }
+                if ($show_tax_category) {
+                    $data[$i]['taxcategory'] = empty($item['taxcategory']) ? '' : sprintf('%02d', $item['taxcategory']);
+                }
                 $data[$i]['content'] = $item['content'];
                 $data[$i]['count'] = (float)$item['count'];
                 if (!$hide_discount) {
@@ -1269,8 +1357,11 @@ class LMSEzpdfInvoice extends LMSInvoice
 
         $this->backend->check_page_length($top, 200);
         if ($this->data['customerbalance'] < 0 || ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.always_show_form', true))) {
-            $this->invoice_main_form_fill(187, 3, 0.4);
-            $this->invoice_simple_form_fill(14, 3, 0.4);
+            $lms = LMS::getInstance();
+            if ($lms->checkCustomerConsent($this->data['customerid'], CCONSENT_TRANSFERFORM)) {
+                $this->invoice_main_form_fill(187, 3, 0.4);
+                $this->invoice_simple_form_fill(14, 3, 0.4);
+            }
         }
         $page = $this->backend->ezStopPageNumbers(1, 1, $page);
 

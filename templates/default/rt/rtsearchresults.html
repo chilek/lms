@@ -3,6 +3,19 @@
 {block name=module_content}
 <!-- $Id$ -->
 <H1>{$layout.pagetitle}</H1>
+
+<style>
+
+	@media screen and (max-width: 1200px) {
+		.ticket-location,
+		.ticket-deadline,
+		.ticket-events {
+			display: none;
+		}
+	}
+
+</style>
+
 <TABLE class="lmsbox lms-ui-background-cycle lms-ui-multi-check">
 	<COLGROUP>
 		<COL style="width: 1%;">
@@ -24,7 +37,7 @@
 			{include file="pagination.html"}
 			{/if}
 		</TD>
-		<TD class="text-right nobr" colspan="4">
+		<TD class="text-right" colspan="4">
 			<label> <input type="checkbox" class="lms-ui-multi-check-all">
 				{trans("Check all")}
 			</label>
@@ -44,7 +57,7 @@
 			{include file="pagination.html"}
 			{/if}
 		</TD>
-		<TD class="text-right dark nobr" colspan="4">
+		<TD class="text-right dark" colspan="4">
 			<label>
 				<input type="checkbox" class="lms-ui-multi-check-all">
 				{trans("Check all")}
@@ -58,13 +71,13 @@
 </TABLE>
 <script>
 
-        function get_backid(elem) {
-                var ticket = $(elem).closest('.single-ticket').prev('.single-ticket');
-                if (ticket.length) {
-                        return '&backid=' + ticket.attr('id');
-                }
-                return '';
-        }
+	function get_backid(elem) {
+		var ticket = $(elem).closest('.single-ticket').prev('.single-ticket');
+		if (ticket.length) {
+			return '&backid=' + ticket.attr('id');
+		}
+		return '';
+	}
 
 	$(function() {
 		function disableLink() {
@@ -88,6 +101,36 @@
 			});
 			location.href = '?m=rtmessageadd&ticketid[]=' + ticketid.join('&ticketid[]=');
 		});
+
+		$('.ticket-image-gallery').click(function() {
+			var btn = this;
+			$.ajax({
+				url: "?m=rtticketview&api=1&ajax=1&op=get-image-gallery&id=" +
+						parseInt($(this).closest('tr').attr('data-ticket-id')),
+				method: "GET",
+				dataType: "json",
+				success: function(data) {
+					if (data.length) {
+						showGallery(data);
+					} else {
+						$(btn).hide();
+					}
+				}
+			});
+			return false;
+		});
+
+		$(window).resize(function() {
+			if (parseInt($(this).outerWidth()) <= 1200) {
+				$('.ticket-list-filter').attr('colspan', 7);
+				$('.ticket-list-pagination').attr('colspan', 4);
+				$('.ticket-list-buttons').attr('colspan', 3);
+			} else {
+				$('.ticket-list-filter').attr('colspan', 10);
+				$('.ticket-list-pagination').attr('colspan', 6);
+				$('.ticket-list-buttons').attr('colspan', 4);
+			}
+		}).resize();
 	});
 
 </script>

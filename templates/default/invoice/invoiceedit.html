@@ -102,13 +102,33 @@
 		</TD>
 		<TD class="nobr">
 			<SELECT name="invoice[paytype]" {tip text="Select payment type" trigger="paytype"}>
-				{foreach from=$_PAYTYPES item=item key=key}
-				<OPTION value="{$key}"{if $invoice.paytype==$key} selected{/if}>{$item}</OPTION>
+				{foreach $_PAYTYPES as $key => $item}
+				<OPTION value="{$key}"{if $invoice.paytype==$key} selected{/if}>{trans($item)}</OPTION>
 				{/foreach}
 			</SELECT>
-			<label id="splitpayment"{if !$is_split_payment_suggested} style="display: none;"{/if}>
-				<input type="checkbox" name="invoice[splitpayment]" value="1"{if $is_split_payment_suggested && $invoice.splitpayment} checked{/if}>
+		</TD>
+	</TR>
+	<TR>
+		<TD class="bold nobr">
+			{trans("Document flags:")}
+		</TD>
+		<TD class="nobr">
+			<label id="splitpayment" {tip text="translates into JPK MPP flag"}
+					{if empty($suggested_flags.splitpayment)} style="display: none;"{/if}>
+				<input type="checkbox" name="invoice[splitpayment]" value="1"
+						{if !empty($suggested_flags.splitpayment) && $invoice.splitpayment} checked{/if}>
 				{trans("split payment")}
+			</label>
+			<label {tip text="translates into JPK FP flag"}>
+				<input type="checkbox" name="invoice[flags][{$smarty.const.DOC_FLAG_RECEIPT}]" value="1"
+						{if $invoice.flags[$smarty.const.DOC_FLAG_RECEIPT]} checked{/if}>
+				{trans("<!invoice>receipt")}
+			</label>
+			<label id="telecomservice" {tip text="translates into JPK EE flag"}
+					{if empty($suggested_flags.telecomservice)} style="display: none;"{/if}>
+				<input type="checkbox" name="invoice[flags][{$smarty.const.DOC_FLAG_TELECOM_SERVICE}]" value="1"
+						{if $invoice.flags[$smarty.const.DOC_FLAG_TELECOM_SERVICE]} checked{/if}>
+				{trans("<!invoice>telecommunication service")}
 			</label>
 		</TD>
 	</TR>
@@ -172,10 +192,10 @@
     var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
     var recipient_addr;
 
-	function isSplitPaymentSuggested() {
+	function updateDocumentFlags() {
 		$.ajax({
 			data: {
-				splitpaymentcheck: 1,
+				updatedocumentflags: 1,
 				customerid: $('#ownerid_input').val(),
 				cdate: $('#cdate').val(),
 				value: $('#s-valuebrutto').val()
@@ -184,7 +204,11 @@
 			success: function(result) {
 				$('#splitpayment').toggle(result.splitpayment);
 				if (!result.splitpayment) {
-					$('[name="invoice[splitpayment]"]').prop('checked', false);
+					$('#splitpayment :checkbox').prop('checked', false);
+				}
+				//$('#telecomservice').toggle(result.telecomservice);
+				if (!result.telecomservice) {
+					$('#telecomservice :checkbox').prop('checked', false);
 				}
 			}
 		});
@@ -205,7 +229,7 @@
             customer_addresses.appendAddressList( addresses, false );
             customer_addresses.refresh();
         });
-        isSplitPaymentSuggested();
+        updateDocumentFlags()
     }
 
 {if $invoice.customerid && isset($invoice.recipient_address)}
@@ -217,7 +241,7 @@
 		$('form[name="setcustomer"] [name="invoice[number]"]').focus();
 
 		$('#cdate').change(function() {
-			isSplitPaymentSuggested();
+			updateDocumentFlags();
 		});
 	});
 

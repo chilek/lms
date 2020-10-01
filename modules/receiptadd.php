@@ -214,7 +214,7 @@ switch ($action) {
             unset($error);
 
         $receipt['currency_locked'] = false;
-        $receipt['currency'] = LMS::$default_currency;
+        $receipt['currency'] = Localisation::getDefaultCurrency();
 
         // get default receipt's numberplanid and next number
         $receipt['regid'] = isset($_GET['regid']) ? $_GET['regid'] : $oldreg;
@@ -812,7 +812,7 @@ switch ($action) {
                 'name' => '',
                 'closed' => 1,
                 'fullnumber' => $fullnumber,
-                'currency' => isset($receipt['currency']) ? $receipt['currency'] : LMS::$currency,
+                'currency' => isset($receipt['currency']) ? $receipt['currency'] : Localisation::getCurrentCurrency(),
                 'currencyvalue' => isset($receipt['currencyvalue']) ? $receipt['currencyvalue'] : 1.0,
             );
             $DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed, fullnumber, currency, currencyvalue)
@@ -877,7 +877,7 @@ switch ($action) {
                 SYSLOG::RES_USER => Auth::GetCurrentUser(),
                 'closed' => 1,
                 'fullnumber' => $fullnumber,
-                'currency' => isset($receipt['currency']) ? $receipt['currency'] : LMS::$currency,
+                'currency' => isset($receipt['currency']) ? $receipt['currency'] : Localisation::getCurrentCurrency(),
                 'currencyvalue' => isset($receipt['currencyvalue']) ? $receipt['currencyvalue'] : 1.0,
             );
             $DB->Execute('INSERT INTO documents (type, number, numberplanid, cdate, userid, closed, fullnumber, currency, currencyvalue)
@@ -978,7 +978,7 @@ if ($contents) {
         }
     }
     if ($locked) {
-        $receipt['currency'] = LMS::$currency;
+        $receipt['currency'] = Localisation::getCurrentCurrency();
         $receipt['currency_locked'] = true;
     }
 }

@@ -28,9 +28,8 @@ require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
 
 function module_main()
 {
-    global $SESSION;
+    global $SESSION, $LMS;
 
-    $LMS = LMS::getInstance();
     $SMARTY = LMSSmarty::getInstance();
 
     if (!empty($_GET['consent'])) {
@@ -39,7 +38,7 @@ function module_main()
             array($SESSION->id, CCONSENT_DATE)
         )) {
             $LMS->DB->Execute(
-                'UPDATE customerconsents SET cdate = ?NOW? WHERE customer = ? AND type = ?',
+                'UPDATE customerconsents SET cdate = ?NOW? WHERE customerid = ? AND type = ?',
                 array($SESSION->id, CCONSENT_DATE)
             );
         } else {
@@ -117,6 +116,7 @@ function parse_notification_mail($string, $customerinfo)
 function module_updateusersave()
 {
     global $LMS, $SMARTY, $SESSION, $rights, $error;
+    $SYSLOG = SYSLOG::getInstance();
 
     $userinfo = $LMS->GetCustomer($SESSION->id);
 
@@ -136,15 +136,42 @@ function module_updateusersave()
                     if (isset($right['edit_contact'])) {
                         if (isset($userinfo[$type][$i]) && $userinfo[$type][$i][$checked_property] != $v) {
                             if ($v) {
-                                $LMS->DB->Execute('UPDATE customercontacts SET contact = ? WHERE id = ? AND customerid = ?', array($v, $i, $id));
+                                $args = array(
+                                    'contact' => $v,
+                                    SYSLOG::RES_CUSTCONTACT => $i,
+                                    SYSLOG::RES_CUST => $id,
+                                );
+                                $LMS->DB->Execute(
+                                    'UPDATE customercontacts SET contact = ? WHERE id = ? AND customerid = ?',
+                                    array_values($args)
+                                );
+                                if ($SYSLOG) {
+                                    $SYSLOG->AddMessage(SYSLOG::RES_CUSTCONTACT, SYSLOG::OPER_UPDATE, $args);
+                                }
                             } else {
-                                $LMS->DB->Execute('DELETE FROM customercontacts WHERE id = ? AND customerid = ?', array($i, $id));
+                                $args = array(
+                                    SYSLOG::RES_CUSTCONTACT => $i,
+                                    SYSLOG::RES_CUST => $id,
+                                );
+                                $LMS->DB->Execute('DELETE FROM customercontacts WHERE id = ? AND customerid = ?', array_values($args));
+                                if ($SYSLOG) {
+                                    $SYSLOG->AddMessage(SYSLOG::RES_CUSTCONTACT, SYSLOG::OPER_DELETE, $args);
+                                }
                             }
                         } elseif (!isset($userinfo[$type][$i])  && $v) {
+                            $args = array(
+                                SYSLOG::RES_CUST => $id,
+                                'contact' => $v,
+                                'type' => CONTACT_LANDLINE,
+                            );
                             $LMS->DB->Execute(
                                 'INSERT INTO customercontacts (customerid, contact, type) VALUES (?, ?, ?)',
-                                array($id, $v, CONTACT_LANDLINE)
+                                array_values($args)
                             );
+                            if ($SYSLOG) {
+                                $args[SYSLOG::RES_CUSTCONTACT] = $LMS->DB->GetLastInsertID('customercontacts');
+                                $SYSLOG->AddMessage(SYSLOG::RES_CUSTCONTACT, SYSLOG::OPER_UPDATE, $args);
+                            }
                         }
 
                         $userinfo[$type][$i][$checked_property] = $v;

@@ -34,11 +34,17 @@ switch ($type) {
     case 'customertraffic':
         /******************************************/
 
+        $stat_freq = ConfigHelper::getConfig('phpui.stat_freq', 12);
+        $speed_unit_type = ConfigHelper::getConfig('phpui.speed_unit_type', 1000);
+
         $month = isset($_POST['month']) ? $_POST['month'] : date('n');
         $year = isset($_POST['year']) ? $_POST['year'] : date('Y');
         $customer = isset($_POST['customer']) ? intval($_POST['customer']) : intval($_GET['customer']);
 
         $layout['pagetitle'] = trans('Stats of Customer $a in month $b', $LMS->GetCustomerName($customer), strftime('%B %Y', mktime(0, 0, 0, $month, 1, $year)));
+
+        $SMARTY->assign('showavg', isset($_POST['showavg']) ? 1 : 0);
+        $SMARTY->assign('showmax', isset($_POST['showmax']) ? 1 : 0);
 
         $from = mktime(0, 0, 0, $month, 1, $year);
         $to = mktime(0, 0, 0, $month+1, 1, $year);
@@ -52,6 +58,10 @@ switch ($type) {
         )) {
             for ($i=1; $i<=date('t', $from); $i++) {
                 $stats[$i]['date'] = mktime(0, 0, 0, $month, $i, $year);
+                $stats[$i]['download'] = 0;
+                $stats[$i]['upload'] = 0;
+                $stats[$i]['downmax'] = 0;
+                $stats[$i]['upmax'] = 0;
             }
 
             foreach ($list as $row) {
@@ -59,11 +69,30 @@ switch ($type) {
 
                 $stats[$day]['download'] += $row['download'];
                 $stats[$day]['upload'] += $row['upload'];
+
+                if ($row['download'] > $stats[$day]['downmax']) {
+                    $stats[$day]['downmax'] = $row['download'];
+                }
+                if ($row['upload'] > $stats[$day]['upmax']) {
+                    $stats[$day]['upmax'] = $row['upload'];
+                }
             }
 
-            for ($i=1; $i<=date('t', $from); $i++) {
-                $stats[$i]['upavg'] = $stats[$i]['upload']*8/1000/86400; //kbit/s
-                $stats[$i]['downavg'] = $stats[$i]['download']*8/1000/86400; //kbit/s
+            $listdata = array(
+                'upload' => 0,
+                'download' => 0,
+                'upavg' => 0,
+                'downavg' => 0,
+                'upmax' => 0,
+                'downmax' => 0,
+            );
+
+            for ($i = 1; $i <= date('t', $from); $i++) {
+                $stats[$i]['upavg'] = $stats[$i]['upload'] * 8 / $speed_unit_type / 86400; //kbit/s
+                $stats[$i]['downavg'] = $stats[$i]['download'] * 8 / $speed_unit_type / 86400; //kbit/s
+
+                $stats[$i]['upmax'] = $stats[$i]['upmax'] * 8 / $speed_unit_type / $stat_freq; //kbit/s
+                $stats[$i]['downmax'] = $stats[$i]['downmax'] * 8 / $speed_unit_type / $stat_freq; //kbit/s
 
                 $listdata['upload'] += $stats[$i]['upload'];
                 $listdata['download'] += $stats[$i]['download'];
@@ -72,10 +101,17 @@ switch ($type) {
 
                 list($stats[$i]['upload'], $stats[$i]['uploadunit']) = setunits($stats[$i]['upload']);
                 list($stats[$i]['download'], $stats[$i]['downloadunit']) = setunits($stats[$i]['download']);
+
+                if ($stats[$i]['upmax'] > $listdata['upmax']) {
+                    $listdata['upmax'] = $stats[$i]['upmax'];
+                }
+                if ($stats[$i]['downmax'] > $listdata['downmax']) {
+                    $listdata['downmax'] = $stats[$i]['downmax'];
+                }
             }
 
-            $listdata['upavg'] = $listdata['upavg']/date('t', $from);
-            $listdata['downavg'] = $listdata['downavg']/date('t', $from);
+            $listdata['upavg'] = $listdata['upavg'] / date('t', $from);
+            $listdata['downavg'] = $listdata['downavg'] / date('t', $from);
             list($listdata['upload'], $listdata['uploadunit']) = setunits($listdata['upload']);
             list($listdata['download'], $listdata['downloadunit']) = setunits($listdata['download']);
 

@@ -1,0 +1,80 @@
+<style>
+    #config-division-users {
+        width: 100%;
+        padding-top: 0.7em;
+    }
+</style>
+
+<TABLE class="lmsbox lms-ui-background-cycle">
+    <COLGROUP>
+        <COL style="width: 1%;">
+        <COL style="width: 98%;">
+        <COL style="width: 1%;">
+        <COL style="width: 1%;">
+    </COLGROUP>
+    <THEAD>
+    <TR style="background-color: #B6A688;">
+        <td class="bold" colspan="3">
+            #2 {trans("Division configuration variable parameters")} ({trans('overwrite parameters from panel #1')})
+        </td>
+        <td>
+            {button type="link-button" href="?m=configadd&refconfigid={$config.id}&reftype=division" icon="add" label="Add" tip="Add config for division"}
+        </td>
+    </TR>
+    <TR>
+        <TD class="nobr bold">
+            {trans("Division:")}
+        </TD>
+        <TD class="nobr bold">
+            {trans("Comment:")} / {trans("Users:")}
+        </TD>
+        <TD class="nobr bold">
+            {trans("Value:")}
+        </TD>
+        <TD class="nobr" align="right">
+            &nbsp;
+        </TD>
+    </TR>
+    </THEAD>
+    <TBODY>
+    {foreach $relatedoptions.divisions as $relatedoption}
+        <TR class="highlight {if $relatedoption.disabled} blend{/if}" data-target-url="?m=configedit&id={$relatedoption.id}">
+            <TD class="valign-top" style="padding-top: 1em;">
+                <strong>{$relatedoption.shortname}</strong><BR>
+            </TD>
+            <TD class="nobr valign-top" style="padding-top: 1em;">
+                {$relatedoption.description} <br><br>
+                <div>
+                    {include file="config/configdivisionusers.html"}
+                </div>
+            </TD>
+            <TD class="nobr valign-top" align="center" style="padding-top: 1em;">
+                {$relatedoption.value}
+            </TD>
+            <TD class="lms-ui-buttons text-right nobr valign-top">
+                {if $relatedoption.disabled}
+                    {button type="link" icon="disconnected" tip="Enable" href="?m=configedit&id={$relatedoption.id}&statuschange=1"}
+                {else}
+                    {button type="link" icon="connected" tip="Disable" href="?m=configedit&id={$relatedoption.id}&statuschange=1"}
+                {/if}
+                {button type="link" icon="delete" class="delete-config" tip="Delete" href="?m=configdel&id={$relatedoption.id}"}
+                {button type="link" icon="edit" tip="Edit" href="?m=configedit&id={$relatedoption.id}"}
+            </TD>
+        </TR>
+    {foreachelse}
+        <TR>
+            <TD COLSPAN="4" class="empty-table" align="center">
+                <strong>{trans("No data")}</strong>
+            </TD>
+        </TR>
+    {/foreach}
+    </TBODY>
+</TABLE>
+<script>
+    $('.delete-config').click(function() {
+        confirmDialog($t("Are you sure, you want to delete?"), this).done(function() {
+            location.href = $(this).attr('href');
+        });
+        return false;
+    });
+</script>

@@ -30,7 +30,7 @@ define('USERPANEL_SETUPMODE', 1);
 $SMARTY->registerResource('module', new Smarty_Resource_Userpanel_Setup_Module());
 
 // Include locale file (main)
-@include(USERPANEL_DIR.'/lib/locale/'.$_ui_language.'/strings.php');
+Localisation::appendUiLanguage(USERPANEL_DIR . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'locale');
 
 // Include userpanel.class
 require_once(USERPANEL_DIR.'/lib/Userpanel.class.php');
@@ -46,7 +46,7 @@ foreach ($modules_dirs as $suspected_module_dir) {
     while (false !== ($filename = readdir($dh))) {
         if ((preg_match('/^[a-zA-Z0-9]/', $filename)) && (is_dir($suspected_module_dir . $filename))
             && file_exists($suspected_module_dir . $filename.'/configuration.php')) {
-            @include($suspected_module_dir . $filename.'/locale/'.$_ui_language.'/strings.php');
+            Localisation::appendUiLanguage($suspected_module_dir . $filename . DIRECTORY_SEPARATOR . 'locale');
             include($suspected_module_dir . $filename.'/configuration.php');
         }
     }

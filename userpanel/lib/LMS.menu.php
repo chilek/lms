@@ -31,7 +31,7 @@ define('USERPANEL_DIR', $CONFIG['directories']['userpanel_dir']);
 define('USERPANEL_LIB_DIR', USERPANEL_DIR . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR);
 define('USERPANEL_MODULES_DIR', USERPANEL_DIR . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR);
 
-@include(USERPANEL_DIR.'/lib/locale/'.$_ui_language.'/strings.php');
+Localisation::appendUiLanguage(USERPANEL_DIR . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'locale');
 
 // Clear submenu array
 $submenu = null;
@@ -41,7 +41,7 @@ $submenu[] =
     array(
         'name' => trans('Configuration'),
         'link' => '?m=userpanel',
-        'tip' => trans('Userpanel configuration'),
+        'tip' => trans('Userpanel Configuration'),
         'prio' => 10,
     );
 $submenu[] =
@@ -63,13 +63,13 @@ $USERPANEL = new USERPANEL($DB, $SESSION);
 $dh  = opendir(USERPANEL_MODULES_DIR);
 while (false !== ($filename = readdir($dh))) {
     if ((preg_match('/^[a-zA-Z0-9]/', $filename)) && (is_dir(USERPANEL_MODULES_DIR.$filename)) && file_exists(USERPANEL_MODULES_DIR.$filename."/configuration.php")) {
-        @include(USERPANEL_MODULES_DIR.$filename.'/locale/'.$_ui_language.'/strings.php');
-        include(USERPANEL_MODULES_DIR.$filename.'/configuration.php');
+        Localisation::appendUiLanguage(USERPANEL_MODULES_DIR . $filename . DIRECTORY_SEPARATOR . 'locale');
+        include(USERPANEL_MODULES_DIR.$filename . DIRECTORY_SEPARATOR . 'configuration.php');
     }
 }
 
 foreach ($USERPANEL->MODULES as $menupos) {
-    if (isset($menupos['submenu'])) {
+    if (!empty($menupos['submenu'])) {
         foreach ($menupos['submenu'] as $modulemenu) {
             $submenu[] = $modulemenu;
         }

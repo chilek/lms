@@ -231,7 +231,7 @@
 		<TD WIDTH="98%">
 			{if ConfigHelper::checkConfig('phpui.protect_passwords')}
 				<button class="lms-ui-button-clipboard lms-ui-button" data-clipboard-text="{$netdev.secret}">
-					<i></i> {trans("Copy")}
+					<i class="lms-ui-icon-clipboard"></i> {trans("Copy")}
 				</button>
 			{else}
 				{$netdev.secret}
@@ -352,13 +352,13 @@
     		</TD>
 	</TR>
 	<TR>
-	        <TD WIDTH="100%" COLSPAN="2" ALIGN="RIGHT">
+		<TD WIDTH="100%" COLSPAN="2" class="lms-ui-box-buttons">
 {/if}
 			{block name="netdevinfobox-buttons"}
-			<a href="?m=netdevadd&id={$netdev.id}&clone=1">{trans("Clone")} <img src="img/clone.gif" alt="{trans("Clone")}"</a>
-			<A href="javascript:void(0);" onclick="javascript:openSelectWindow('?m=choosenetdevreplace&id={$netdev.id}', 'Replace netdev', 600, 290, 1, 1);">{trans("Replace")} <img src="img/alias.gif" ALT="{trans("Replace")}"></A>
-			<A href="?m=netdevedit&id={$netdev.id}" ACCESSKEY="E">{trans("Edit")} <IMG src="img/edit.gif" ALT="{trans("Edit")}"></A>
-			<A id="delete-netdev" href="?m=netdevdel&id={$netdev.id}&is_sure=1" data-name="{$netdev.name}">{trans("Delete")} <img src="img/delete.gif" ALT=""></A>
+				{button icon="clone" id="clone-netdev" onclick="location.href = '?m=netdevadd&id={$netdev.id}&clone=1';" label="Clone"}
+				{button icon="convert" id="replace-netdev" onclick="javascript:openSelectWindow('?m=choosenetdevreplace&id={$netdev.id}', 'Replace netdev', 600, 290, 1, 1);" label="Replace"}
+				{button icon="edit" id="edit-netdev" onclick="location.href = '?m=netdevedit&id={$netdev.id}';" label="Edit" accesskey="E"}
+				{button icon="delete" id="delete-netdev" label="Delete" data_name="{$netdev.name}"}
 			{/block}
 		</TD>
 	</TR>
@@ -375,7 +375,7 @@ if (getCookie('devicepanel') == '1') {
 	$('#delete-netdev').click(function() {
 		var name = $(this).attr('data-name');
 		confirmDialog($t("Are you sure, you want to remove device '$a' from database?", name), this).done(function() {
-			location.href = $(this).attr('href');
+			location.href = '?m=netdevdel&id={$netdev.id}&is_sure=1';
 		});
 		return false;
 	});

@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2018 LMS Developers
+ *  Copyright (C) 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -30,6 +30,18 @@
  */
 class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterface
 {
+    private static $currentDivision = null;
+
+    public static function setCurrentDivision($division)
+    {
+        self::$currentDivision = $division;
+    }
+
+    public static function getCurrentDivision()
+    {
+        return self::$currentDivision;
+    }
+
     public function GetDivision($id)
     {
         return $this->db->GetRow('SELECT * FROM vdivisions WHERE id = ?', array($id));
@@ -62,11 +74,43 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
         }
 
         return $this->db->GetAllByKey(
-            'SELECT * FROM vdivisions
-			WHERE 1=1'
-            . (isset($status) ? ' AND status = ' . intval($status) : '')
+            'SELECT vd.*' . (isset($userid) ? ', vd.id as divisionid ' : '') . 'FROM vdivisions vd'
+            . (isset($userid) ? ' JOIN userdivisions ud ON vd.id = ud.divisionid' : '') .
+            ' WHERE 1=1'
+            . (isset($status) ? ' AND vd.status = ' . intval($status) : '')
+            . (isset($userid) ? ' AND ud.userid = ' . intval($userid) : '')
+            . (isset($divisionid) ? ' AND vd.id = ' . intval($divisionid) : '')
             . ($sqlord != '' ? $sqlord . ' ' . $direction : ''),
             'id'
+        );
+    }
+
+    public function getDivisionList($params = array())
+    {
+        extract($params);
+
+        if (isset($offset)) {
+            $offset = $offset;
+        } else {
+            $offset = null;
+        }
+        if (isset($limit)) {
+            $limit = $limit;
+        } else {
+            $limit = null;
+        }
+
+        $user_divisions = implode(',', array_keys($this->GetDivisions(array('userid' => Auth::GetCurrentUser()))));
+
+        return $this->db->GetAll(
+            'SELECT d.id, d.name, d.shortname, d.status, (SELECT COUNT(*) FROM customers WHERE divisionid = d.id) AS cnt
+            FROM divisions d
+            WHERE 1 = 1'
+            . ((isset($superuser) && empty($superuser)) || !isset($superuser) ? ' AND id IN (' . $user_divisions . ')' : '')
+            . (isset($exludedDivisions) && !empty($exludedDivisions) ? ' AND id NOT IN (' . $exludedDivisions . ')' : '') .
+            ' ORDER BY d.shortname'
+            . (isset($limit) ? ' LIMIT ' . $limit : '')
+            . (isset($offset) ? ' OFFSET ' . $offset : '')
         );
     }
 
@@ -104,8 +148,15 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
 
         $divisionid = $this->db->GetLastInsertID('divisions');
 
+        if ($divisionid && isset($division['users'])) {
+            foreach ($division['users'] as $userid) {
+                $this->db->Execute('INSERT INTO userdivisions (userid, divisionid) VALUES(?, ?)', array($userid, $divisionid));
+            }
+        }
+
         if ($this->syslog) {
             $args[SYSLOG::RES_DIV] = $divisionid;
+            $args['added_users'] = (isset($division['users']) ? implode(',', $division['users']) : null);
             $this->syslog->AddMessage(SYSLOG::RES_DIV, SYSLOG::OPER_ADD, $args);
         }
 
@@ -173,11 +224,49 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
 			inv_paytype=?, email=?, description=?, status=?, tax_office_code = ?
 			WHERE id=?', array_values($args));
 
+        if (!empty($division['diff_users_del'])) {
+            foreach ($division['diff_users_del'] as $userdelid) {
+                $this->db->Execute('DELETE FROM userdivisions WHERE userid = ? AND divisionid = ?', array($userdelid, $division['id']));
+            }
+        }
+
+        if (!empty($division['diff_users_add'])) {
+            foreach ($division['diff_users_add'] as $useraddid) {
+                $this->db->Execute('INSERT INTO userdivisions (userid, divisionid) VALUES(?, ?)', array($useraddid, $division['id']));
+            }
+        }
+
         $lm = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
         $lm->UpdateAddress($division);
 
         if ($this->syslog) {
+            $args['added_users'] = implode(',', $division['diff_users_add']);
+            $args['removed_users'] = implode(',', $division['diff_users_del']);
             $this->syslog->AddMessage(SYSLOG::RES_DIV, SYSLOG::OPER_UPDATE, $args);
+        }
+    }
+
+    public function checkDivisionsAccess($params = array())
+    {
+        extract($params);
+        $user_id = (isset($userid) ? $userid : Auth::GetCurrentUser());
+        $user_divisions = $this->GetDivisions(array('userid' => $user_id));
+
+        if (isset($divisions)) {
+            if (is_array($divisions)) {
+                foreach ($divisions as $division) {
+                    if (!isset($user_divisions[$division])) {
+                        return false;
+                    }
+                }
+            } else {
+                if (!isset($user_divisions[$divisions])) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            return false;
         }
     }
 }

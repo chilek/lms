@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2019 LMS Developers
+ *  Copyright (C) 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -75,7 +75,7 @@ class ConfigLoader
                 $provider = new IniConfigProvider();
                 break;
             case UiConfigProvider::NAME:
-                $provider = new UiConfigProvider($options['user_id']);
+                $provider = new UiConfigProvider();
                 break;
             case UserRightsConfigProvider::NAME:
                 $provider = new UserRightsConfigProvider();

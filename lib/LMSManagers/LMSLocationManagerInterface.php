@@ -61,4 +61,8 @@ interface LMSLocationManagerInterface
     public function GetZipCode(array $params);
 
     public function GetCitiesWithSections();
+
+    public function getCountryCodeById($countryid);
+
+    public function isTerritState($state);
 }

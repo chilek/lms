@@ -1,17 +1,14 @@
 <div id="lms-ui-quicksearch-indicators-panel" class="lms-ui-tool-panel no-print">
 	{block name=quicksearch}
 	<div class="lms-ui-quick-search">
-		<div id="autosuggest">
-		</div>
 		<form method="post" name="quicksearch" id="quicksearch" action="?m=quicksearch" class="lms-ui-quick-search">
-			<span>
-				{trans("Search:")}
-			</span>
 			{include file="quicksearchcontents.html"}
 			{* Enter key submit hack for IE *}
 			{* don't change this to img element as it breaks auto search after pressing enter outside autosuggest box *}
 			<input type="image" src="img/empty.gif" width="0" height="0" style="border: none;">
 		</form>
+		<div id="autosuggest" class="lms-ui-popup">
+		</div>
 	</div>
 	{/block}
 	{if ! ConfigHelper::checkConfig('phpui.hide_indicators')}

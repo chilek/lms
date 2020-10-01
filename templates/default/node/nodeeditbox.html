@@ -88,7 +88,7 @@
 									</td>
 									<td class="cell-flex">
                                         <div>
-										<select size="1" class="smaller-select" name="nodeedit[netid]" {tip text="Choose network" trigger="netid"}>
+										<select size="1" name="nodeedit[netid]" {tip class="lms-ui-advanced-select" text="Choose network" trigger="netid"}>
 											<option value="0">{trans("- automatic selection -")}</option>
 											{foreach $networks as $net}
 												<option value="{$net.id}" data-pubnetid="{$net.pubnetid}" {if $net.id == $nodeinfo.netid} selected{/if}{if $net.disabled == 1} class="lms-ui-alert"{/if}>{$net.name|truncate:20:"":true}: {$net.address}/{$net.prefix}</option>
@@ -203,7 +203,9 @@
 									<td class="cell-flex">
 										<div>
 				                        <a href="javascript: void(0);" onclick="return netDevChooseWin(document.editnode.elements['nodeedit[netdev]']);" {tip trigger="netdev" text="Search device"}>&raquo;&raquo;&raquo;</A>
-										<select size="1" name="nodeedit[netdev]" id="netdev" {tip text="Select net device from list" trigger="netdev"} onchange="change_netdevice(this.options[this.selectedIndex].value);">
+										<select size="1" name="nodeedit[netdev]" id="netdev" {tip text="Select net device from list" trigger="netdev"}
+												{if ConfigHelper::checkConfig('phpui.node_to_network_device_connection_required')} required{/if}
+												onchange="change_netdevice(this.options[this.selectedIndex].value);">
 											<option value="0" {if ! $nodeinfo.netdev}SELECTED{/if}>- {trans("no device")} -</option>
 											{section name="netdev" loop=$netdevices}
 											<option value="{$netdevices[netdev].id}" {if $nodeinfo.netdev == $netdevices[netdev].id} selected{/if}>{$netdevices[netdev].name} {if $netdevices[netdev].producer}/ {$netdevices[netdev].producer}{/if} {if $netdevices[netdev].location}({$netdevices[netdev].location }){/if}</option>
@@ -514,14 +516,18 @@
 	//  GENERATE RANDOM PASSWORD
 	// ---------------------
 	$( '#genpasswd' ).click( function() {
+		var length = {ConfigHelper::getConfig('phpui.nodepassword_length', '16')};
+		if (length > 32) {
+			length = 32;
+		}
 		if ($('#passwordcontainer').val().length > 0) {
 			confirmDialog($t("Are you sure, you want to generate new password?"), this).done(function() {
-				var length = {ConfigHelper::getConfig('phpui.nodepassword_length', '16')};
-				if (length > 32)
-					length = 32;
 				$( '#passwordcontainer' ).val( generate_random_string(length) );
 				event.preventDefault();
 			});
+			return false;
+		} else {
+			$( '#passwordcontainer' ).val( generate_random_string(length) );
 			return false;
 		}
 	});

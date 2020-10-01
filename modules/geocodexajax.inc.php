@@ -79,7 +79,7 @@ function get_gps_coordinates($location, $latitude_selector, $longitude_selector)
             $location_string = (isset($address['state_name']) && !empty($address['state_name']) ? $address['state_name'] . ', ' : '')
             . (isset($address['district_name']) && !empty($address['district_name']) ? $address['district_name'] . ', ' : '')
             . (isset($address['borough_name']) && !empty($address['borough_name']) ? $address['borough_name'] . ', ' : '')
-            . $address['city_name']
+            . (isset($address['zip']) ? $address['zip'] . ' ' : '') . $address['city_name']
             . (isset($location['street']) && !empty($location['street']) ? ', ' . $location['street'] : '')
             . (isset($location['house']) && mb_strlen($location['house']) ? ' ' . $location['house'] : '')
             . (isset($location['flat']) && mb_strlen($location['flat']) ? '/' . $location['flat'] : '');

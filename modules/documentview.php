@@ -24,8 +24,8 @@
  *  $Id$
  */
 
-/*use setasign\Fpdi\Tcpdf\Fpdi;
-use setasign\Fpdi\PdfParser\StreamReader;*/
+use setasign\Fpdi\Tcpdf\Fpdi;
+use setasign\Fpdi\PdfParser\StreamReader;
 
 if (!empty($_POST['marks'])) {
     $marks = array();
@@ -70,8 +70,7 @@ if (!empty($_POST['marks'])) {
             header('Content-Disposition: ' . ($pdf ? 'inline' : 'attachment') . '; filename='.$list[0]['filename']);
             header('Pragma: public');
             if ($pdf) {
-                $pdf = new FPDI();
-//              $pdf = new Fpdi();
+                $pdf = new Fpdi();
                 $pdf->setPrintHeader(false);
                 $pdf->setPrintFooter(false);
             }
@@ -144,7 +143,7 @@ if (!empty($_POST['marks'])) {
 	FROM documents d
 	LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 	JOIN docrights r ON (r.doctype = d.type)
-	WHERE d.id = ? AND r.userid = ? AND (r.rights & 1) = 1', array($_GET['id'], Auth::GetCurrentUser()))) {
+	WHERE d.id = ? AND r.userid = ? AND (r.rights & ?) > 0', array($_GET['id'], Auth::GetCurrentUser(), DOCRIGHT_VIEW))) {
     $docattachments = $DB->GetAllByKey('SELECT * FROM documentattachments WHERE docid = ?
 		ORDER BY type DESC', 'id', array($_GET['id']));
     $attachmentid = intval($_GET['attachmentid']);
@@ -218,6 +217,8 @@ if (!empty($_POST['marks'])) {
         }
     }
     die;
+} elseif (!$LMS->DocumentExists(!$_GET['id'])) {
+    $SMARTY->assign('message', trans('Document does not exist!'));
 }
 
 $SMARTY->display('noaccess.html');

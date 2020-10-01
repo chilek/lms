@@ -297,6 +297,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 					WHERE id = ?', array($document['reference']));
                 }
             }
+            unset($document);
         }
 
         $list['total'] = count($list);
@@ -571,7 +572,16 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
     */
     public function DocumentExists($properties)
     {
+        if (!is_array($properties)) {
+            if (preg_match('/^[0-9]+$/', $properties)) {
+                return $this->db->GetOne('SELECT 1 FROM documents WHERE id = ?', array($properties)) > 0;
+            } else {
+                return false;
+            }
+        }
+
         extract($properties);
+
         if (!isset($doctype)) {
             $doctype = null;
         }

@@ -62,7 +62,7 @@
 	</style>
 <H1>{$layout.pagetitle}</H1>
 
-<FORM method="get" action="?m={$layout.module}" name="choosefilter">
+<FORM method="get" action="?m={$layout.module}" name="choosefilter" id="choosefilter">
 <p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" NAME="m" VALUE="customerlist">
@@ -79,8 +79,8 @@
         {block name="customerlist-list-header"}
 	<TR {tip text="Click on column name to change sorting order"}>
 		<td scope="col" class="nobr">
-			<img src="img/customer.gif" alt=""> <a href="?m={$layout.module}&amp;s={$filter.state}&amp;o=customername{if $filter.direction == "asc" && $filter.order == "customername"},desc{/if}">{trans("First/last or Company name")}</A> {if $filter.order == "customername"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<img src="img/home.gif" alt=""> <a href="?m={$layout.module}&amp;s={$filter.state}&amp;o=address{if $filter.direction == "asc" && $filter.order == "address"},desc{/if}">{trans("Address:")}</A> {if $filter.order == "address"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<i class="lms-ui-icon-customer"></i> <a href="?m={$layout.module}&amp;s={$filter.state}&amp;o=customername{if $filter.direction == "asc" && $filter.order == "customername"},desc{/if}">{trans("First/last or Company name")}</A> {if $filter.order == "customername"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<i class="lms-ui-icon-home"></i> <a href="?m={$layout.module}&amp;s={$filter.state}&amp;o=address{if $filter.direction == "asc" && $filter.order == "address"},desc{/if}">{trans("Address:")}</A> {if $filter.order == "address"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</td>
 		<td scope="col" class="text-right nobr">
 			<a href="?m={$layout.module}&amp;s={$filter.state}&amp;o=extid{if $filter.direction == "asc" && $filter.order == "extid"},desc{/if}"><span class="bold">{trans("External ID:")}</span></A> {if $filter.order == "extid"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
@@ -134,6 +134,7 @@
 				<OPTION VALUE="64"{if $filter.state == 64} SELECTED{/if}>{trans("with nodes")}</OPTION>
 				<OPTION VALUE="65"{if $filter.state == 65} SELECTED{/if}>{trans("without nodes")}</OPTION>
 				<OPTION VALUE="66"{if $filter.state == 66} SELECTED{/if}>{trans("without invoice flag")}</OPTION>
+				<OPTION VALUE="75"{if $filter.state == 75} SELECTED{/if}>{trans("with discount")}</OPTION>
 				<OPTION VALUE="67"{if $filter.state == 67} SELECTED{/if}>{trans("without building number")}</OPTION>
 				<OPTION VALUE="68"{if $filter.state == 68} SELECTED{/if}>{trans("without zip")}</OPTION>
 				<OPTION VALUE="69"{if $filter.state == 69} SELECTED{/if}>{trans("without city")}</OPTION>
@@ -141,14 +142,9 @@
 				<OPTION VALUE="74"{if $filter.state == 74} SELECTED{/if}>{trans("ZIP code not specified")}</OPTION>
 			</SELECT>
 			</label>
-			<label for="d">{trans("Division")}:
-			<SELECT SIZE="1" NAME="d" ONCHANGE="document.choosefilter.submit();">
-				<OPTION VALUE=""{if !$filter.division} selected{/if}>- {trans("all")} -</OPTION>
-				{foreach $divisions as $division}
-				<OPTION VALUE="{$division.id}"{if $filter.division == $division.id} selected{/if}>{$division.shortname|truncate:30:"...":true}</OPTION>
-				{/foreach}
-			</SELECT>
-			</label>
+
+			{division_selection name="d" selected=$filter.division onchange="document.choosefilter.submit();" label="Division:"}
+
 			<label for="n" class="nobr">
 			{trans("Network:")}
 			<SELECT SIZE="1" NAME="n" ONCHANGE="document.choosefilter.submit();">
@@ -257,10 +253,14 @@
 
 	{foreach $customerlist as $customer}
         {block name="customerlist-list-row"}
-	<TR class="highlight {if $customer.account && !$customer.nodeac} blend{/if}" data-target-url="?m=customerinfo&id={$customer.id}" data-name="{$customer.customername|escape:"javascript"|escape:"html"}">
+	<TR class="highlight {if $customer.deleted} lms-ui-resource-deleted{/if} {if $customer.account && !$customer.nodeac} blend{/if}"
+		data-target-url="?m=customerinfo&id={$customer.id}" data-name="{$customer.customername|escape:"javascript"|escape:"html"}">
 		<TD>
-			<IMG src="img/{$_CSTATUSES[$customer.status].img}" alt="">{if $customer.info}&nbsp;<img src="img/info1.gif" alt="" {tip text=$customer.info}>{/if}<A name="{$customer.id}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$customer.id}">&nbsp;<span class="bold">{$customer.customername|escape}</span></A><BR>
-			<IMG src="img/home.gif" alt="">&nbsp;{$customer.full_address}{if $customer.country != ""}, {t}{$customer.country}{/t}{/if}
+			<i class="lms-ui-icon-customer-status-{$_CSTATUSES[$customer.status].alias}"></i>
+			{if $customer.info}&nbsp;<i class="lms-ui-icon-optional-info" title="{nl2br(htmlspecialchars($customer.info))}"></i>{/if}
+			<A name="{$customer.id}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$customer.id}">&nbsp;<span class="bold">{$customer.customername|escape}</span></A>
+			<BR>
+			<i class="lms-ui-icon-home"></i>&nbsp;{$customer.full_address}{if $customer.country != ""}, {t}{$customer.country}{/t}{/if}
 		</TD>
 		<TD class="text-right nobr">
 			({if $customer.extid}{$customer.extid} / {/if}{$customer.id|string_format:"%04d"})
@@ -281,17 +281,18 @@
 		<TD class="lms-ui-buttons text-right nobr">
 			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 				{if $customer.balance < 0}
-					<A class="balanceok-customer" href="?m=customerbalanceok&id={$customer.id}"><IMG src="img/pay.gif" alt="{trans("Account")}" title="{trans("Account")}"></A>
+					{button type="link" class="balanceok-customer" href="?m=customerbalanceok&id={$customer.id}" icon="settle" tip="Account"}
 				{/if}
 			{/if}
 			{if $customer.account}
 				{if $customer.status == $smarty.const.CSTATUS_CONNECTED}
 					{if $customer.nodeac == 1}
-						<A href="?m=nodeset&amp;ownerid={$customer.id}"><IMG src="img/access.gif" alt="{trans("Disconnect All")}" title="{trans("Disconnect All")}"></A>
+						{button type="link" icon="connected" tip="Disconnect All" href="?m=nodeset&ownerid={$customer.id}"}
 					{else}
 						{if $customer.nodeac == 2}
-							<A href="?m=nodeset&amp;ownerid={$customer.id}"><IMG src="img/mixaccess.gif" alt="{trans("Disconnect All")}" title="{trans("Disconnect All")}"></A>
-						{else}<A href="?m=nodeset&amp;ownerid={$customer.id}&amp;access=1"><IMG src="img/noaccess.gif" alt="{trans("Connect All")}" title="{trans("Connect All")}"></A>
+							{button type="link" icon="mixconnected" tip="Disconnect All" href="?m=nodeset&ownerid={$customer.id}"}
+						{else}
+							{button type="link" icon="disconnected" tip="Connect All" href="?m=nodeset&ownerid={$customer.id}&access=1"}
 						{/if}
 					{/if}
 				{/if}
@@ -299,22 +300,31 @@
 			{if $customer.warncount}
 				{if $customer.status == $smarty.const.CSTATUS_CONNECTED}
 					{if $customer.nodewarn == 1}
-						<A href="?m=nodewarn&amp;ownerid={$customer.id}" {if $customer.message}{tip text=$customer.message}{/if}><IMG src="img/warningon.gif" alt="{trans("Disable notices for all")}" title="{trans("Disable notices for all")}"></A>
+						{if $customer.message}{$tip=htmlspecialchars($customer.message)}{else}{$tip="Disable notices for all"}{/if}
+						{button type="link" icon="warnon" tip=$tip href="?m=nodewarn&ownerid={$customer.id}"}
 					{else}
 						{if $customer.nodewarn == 2}
-							<A href="?m=nodewarn&amp;ownerid={$customer.id}" {if $customer.message}{tip text=$customer.message}{/if}><IMG src="img/warningmix.gif" alt="{trans("Disable notices for all")}" title="{trans("Disable notices for all")}"></A>
-						{else}<A href="?m=nodewarn&amp;ownerid={$customer.id}&amp;warning=1" {if $customer.message}{tip text=$customer.message}{/if}><IMG src="img/warningoff.gif" alt="{trans("Enable notices for all")}" title="{trans("Enable notices for all")}"></A>
+							{if $customer.message}{$tip=htmlspecialchars($customer.message)}{else}{$tip="Disable notices for all"}{/if}
+							{button type="link" icon="warnmix" tip=$tip href="?m=nodewarn&ownerid={$customer.id}"}
+						{else}
+							{if $customer.message}{$tip=htmlspecialchars($customer.message)}{else}{$tip="Enable notices for all"}{/if}
+							{button type="link" icon="warnoff" tip=$tip href="?m=nodewarn&ownerid={$customer.id}&warning=1"}
 						{/if}
 					{/if}
 				{/if}
 			{/if}
-			{if $filter.state == 50}
-			<A href="?m=customeredit&amp;id={$customer.id}&amp;action=recover"><IMG src="img/recover.gif" alt="{trans("Recover")}" title="{trans("Recover")}"></A>
+			{if $customer.deleted}
+				{if ConfigHelper::checkPrivilege('permanent_customer_removal')}
+					{button type="link" class="remove-button" icon="clear" tip="Remove permanently" href="?m=customerdel&id={$customer.id}&type=permanent"}
+				{/if}
+				{button type="link" icon="restore" tip="Recover" href="?m=customeredit&id={$customer.id}&action=recover"}
 			{else}
-			<A class="delete-customer" href="?m=customerdel&id={$customer.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
-			<A href="?m=customeredit&amp;id={$customer.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
+				{if ConfigHelper::checkPrivilege('customer_removal')}
+					{button type="link" class="delete-customer" icon="delete" tip="Delete" href="?m=customerdel&id={$customer.id}"}
+				{/if}
+				{button type="link" icon="edit" tip="Edit" href="?m=customeredit&id={$customer.id}"}
 			{/if}
-			<A href="?m=customerinfo&amp;id={$customer.id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
+			{button type="link" icon="info" tip="Info" href="?m=customerinfo&id={$customer.id}"}
 		</TD>
 	</TR>
         {/block}
@@ -330,20 +340,39 @@
 	</TBODY>
 </TABLE>
 </FORM>
-	<script>
-		$('.balanceok-customer').click(function() {
+
+<script>
+
+	$(function() {
+		$('.division-context').on( 'lms:division_selection', function() {
+			document.choosefilter.submit();
+		});
+
+		$('.balanceok-customer').click(function () {
 			var name = $(this).closest('tr').attr('data-name');
-			confirmDialog($t("Are you sure, you want to account ALL debts of customer \'$a\'?", name), this).done(function() {
+			confirmDialog($t("Are you sure, you want to account ALL debts of customer \'$a\'?", name), this).done(function () {
 				location.href = $(this).attr('href');
 			});
 			return false;
 		});
-		$('.delete-customer').click(function() {
+
+		$('.delete-customer').click(function () {
 			var name = $(this).closest('tr').attr('data-name');
-			confirmDialog($t("Are you sure, you want to remove customer '$a' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!", name), this).done(function() {
+			confirmDialog($t("Are you sure, you want to remove customer '$a' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!", name), this).done(function () {
 				location.href = $(this).attr('href');
 			});
 			return false;
 		});
-	</script>
+
+		$('.remove-button').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			confirmDialog($t("Do you want to permanently remove $a customer?", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	});
+
+</script>
+
 {/block}

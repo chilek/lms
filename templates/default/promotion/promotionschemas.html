@@ -37,6 +37,7 @@
 				<A HREF="?m=promotionschemaset&id={$schema.id}&access={$schema.disabled}">{if $schema.disabled}<IMG src="img/noaccess.gif" alt="{trans("Enable")}" title="{trans("Enable")}">{else}<IMG src="img/access.gif" alt="{trans("Disable")}" title="{trans("Disable")}">{/if}</A>
 				<A class="delete-promotion" HREF="?m=promotionschemadel&id={$schema.id}"><IMG SRC="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
                                <A HREF="?m=promotionschemaclone&id={$schema.id}"><IMG SRC="img/clone.gif" alt="{trans("Clone")}" title="{trans("Clone")}"></A>
+                               {button type='link-button' icon="edit" href="?m=promotionschemainfo&id={$schema.id}" tip="Edit schema tariffs"}
                                <A HREF="?m=promotionschemaedit&id={$schema.id}"><IMG SRC="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 				<A HREF="?m=promotionschemainfo&id={$schema.id}"><IMG SRC="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
 			    </TD>

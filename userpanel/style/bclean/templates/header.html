@@ -4,13 +4,13 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <link rel="stylesheet" href="style/bclean/vendor/twbs/bootstrap/dist/css/bootstrap.min.css">
         <title>{if $page_header}{$page_header}{else}{trans("Virtual Customer Service")}{/if}</title>
-        <link href="{ConfigHelper::getConfig('userpanel.shortcut_icon', 'img/lms-net.gif')}" rel="shortcut icon">
-        {include file="jquery.html" language=$LANGDEFS.$_ui_language.html lms_language=$_ui_language}
+        <link rel="stylesheet" href="style/bclean/vendor/twbs/bootstrap/dist/css/bootstrap.min.css">
         <link type="text/css" rel="stylesheet" href="{stylefile}">
+        <link href="{ConfigHelper::getConfig('userpanel.shortcut_icon', 'img/lms-net.gif')}" rel="shortcut icon">
+        {include file="jquery.html" language=Localisation::getCurrentHtmlLanguage() lms_language=Localisation::getCurrentUiLanguage()}
 		<script src="style/default/common.js"></script>
-		<script src="img/common.js"></script>
+		<script src="js/common.js"></script>
 {$hint_mode = ConfigHelper::getConfig('userpanel.hint')}
 {if $hint_mode != 'classic' && $hint_mode != 'none'}
         <script type="text/javascript" src="style/default/avatar.js"></script>

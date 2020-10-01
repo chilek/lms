@@ -34,7 +34,7 @@ interface LMSCustomerManagerInterface
 {
     public function getCustomerName($id);
 
-    public function getCustomerEmail($id);
+    public function getCustomerEmail($id, $requiredFlags = 0, $forbiddenFlags = 0);
 
     public function customerExists($id);
 
@@ -100,6 +100,8 @@ interface LMSCustomerManagerInterface
 
     public function isSplitPaymentSuggested($customerid, $cdate, $value);
 
+    public function isTelecomServiceSuggested($customerid);
+
     public function getCustomerSMSOptions();
 
     public function GetCustomerAddressesWithoutEndPoints($customerid);
@@ -115,4 +117,16 @@ interface LMSCustomerManagerInterface
     public function addCustomerConsents($customerid, $consents);
 
     public function removeCustomerConsents($customerid, $consents);
+
+    public function addCustomerContactFlags($customerid, $type, $flags);
+
+    public function removeCustomerContactFlags($customerid, $type, $flags);
+
+    public function getCustomerNotes($cid);
+
+    public function getCustomerNote($id);
+
+    public function addCustomerNote($params);
+
+    public function delCustomerNote($id);
 }

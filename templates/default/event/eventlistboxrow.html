@@ -1,6 +1,8 @@
 {block name="eventlistboxrow"}
-<TR class="highlight event-single{if $event.closed} blend{/if}{if $event.wholeday} event-whole-day{/if}{if $event.multiday} event-multi-day{/if}" data-event-id="{$event.id}">
-    <TD style="min-width: 90px; {if isset($_EVENTSTYLES[$event.type])} {$_EVENTSTYLES[$event.type]}{/if}" class="text-center bold event-single-sortable-handler">
+<TR class="highlight event-single{if $event.closed} blend{/if}{if $event.wholeday} event-whole-day{/if}{if $event.multiday} event-multi-day{/if}"
+    data-event-id="{$event.id}"
+    data-popup-menu-title="{t a=$event.id|string_format:"#%06d"}Event $a{/t}">
+	<TD style="min-width: 90px; {if isset($_EVENTSTYLES[$event.type])} {$_EVENTSTYLES[$event.type]}{/if}" class="text-center bold {if !$event.closed || ($event.closed && ($smarty.now - $event.closeddate < ConfigHelper::getConfig('phpui.allow_modify_closed_events_newer_than', 604800))) || ConfigHelper::checkPrivilege('superuser')}event-single-sortable-handler{/if}">
     {$_EVENTTYPES[$event.type]}{if $_EVENTTYPES[$event.type]}<br>{/if}{if $event.ticketid}<span class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$event.ticketid}"><a href="?m=rtticketview&id={$event.ticketid}" style="color: black">{$event.ticketid|string_format:"%06d"}</a></span>{/if}
     </TD>
     <TD class="text-left nobr bold" style="min-width:100px" data-target-url="?m=eventinfo&id={$event.id}">
@@ -25,8 +27,8 @@
         {/foreach}
     </TD>
     <TD data-target-url="?m=eventinfo&id={$event.id}">
-        <a href="?m=eventinfo&id={$event.id}"><i class="lms-ui-icon-timetable"></i> <span class="bold" {if !$event.closed}style="color:black"{/if}>{$event.title}</span></a>
-        {if $event.description != ''}<br><i class="lms-ui-icon-description"></i> {$event.description}{/if}
+        <a href="?m=eventinfo&id={$event.id}"><i class="lms-ui-icon-timetable lms-ui-tooltip-eventinfoshort" data-resourceid="{$event.id}"></i> <span class="bold" {if !$event.closed}style="color:black"{/if}>{$event.title}</span></a>
+        {if !ConfigHelper::checkConfig('phpui.timetable_hide_description')}{if $event.description != ''}<br><i class="lms-ui-icon-description"></i> {$event.description}{/if}{/if}
         {if $event.note != ''}<span{if !$event.closed} style="color: red;"{/if}><br><i class="lms-ui-icon-note"></i> {$event.note}</span>{/if}
     </TD>
     <TD class="nobr" colspan="2" data-target-url="?m=eventinfo&id={$event.id}">
@@ -46,56 +48,40 @@
         {/if}
         {/if}
     </TD>
-    <TD class="text-right nobr" data-target-url="?m=eventinfo&id={$event.id}">
+    <TD class="text-right nobr">
         <div class="no-print">
-            {if !isset($eventlist_mode)}
-            <a href="#" class="lms-ui-button-timetable" title="{trans("Show in timetable")}"
-                    onclick="location.href = '?m=eventlist&year={strftime('%Y', $event.date)}&month={strftime('%m', $event.date)}&day={strftime('%d', $event.date)}';">
-                <i></i>
-            </a>
-            {/if}
-            <a href="#" class="lms-ui-button-clipboard" data-clipboard-text="{$url}?m=eventinfo&id={$event.id}">
-                <i></i>
-            </a>
-            {if $imadded}
-            <a href="#" onclick="location.href = '?m=eventedit&id={$event.id}&action=unassign&backid=' + $(this).closest('.event-day-table').attr('id');">
-                <img src="img/users.gif" alt="{trans("<!event>Unassign")}" title=" {trans("<!event>Unassign")} ">
-            </a>
-            {else}
-            <a href="#" onclick="location.href = '?m=eventedit&id={$event.id}&action=assign&backid=' + $(this).closest('.event-day-table').attr('id');">
-                <img src="img/users.gif" alt="{trans("<!event>Assign")}" title=" {trans("<!event>Assign")} ">
-            </a>
-            {/if}
-            {if ConfigHelper::checkPrivilege('timetable_management')}
-            {if $event.closed}
-            <A href="#" onclick="location.href = '?m=eventedit&id={$event.id}&action=open&backid=' + $(this).closest('.event-day-table').attr('id');">
-                <IMG src="img/resolved.gif" alt="{trans("Open")}" title="&nbsp;{trans("Open")}&nbsp;">
-            </A>
-            {else}
-            <A href="#" onclick="location.href = '?m=eventedit&id={$event.id}&action=close&backid=' + $(this).closest('.event-day-table').attr('id');">
-                <IMG src="img/open.gif" alt="{trans("Close")}" title="&nbsp;{trans("Close")}&nbsp;">
-            </A>
-            {/if}
-            <a href="?m=eventadd&id={$event.id}">
-                <IMG src="img/clone.gif" alt="{trans("Clone")}" title="&nbsp;{trans("Clone")}&nbsp;">
-            </a>
-                {textformat assign="onclick" wrap=5000}
-                    confirmDialog($t('Are you sure, you want to delete that event?'), this).done(function() {
-                    location.href = '?m=eventdel&id={$event.id}&backid=' + $(this).closest('.event-day-table').attr('id');
-                    });
-                {/textformat}
-            <A href="#" OnClick="{$onclick}">
-                <IMG src="img/delete.gif" alt="{trans("Delete")}" title="&nbsp;{trans("Delete")}&nbsp;">
-            </A>
-            <A href="#" onclick="location.href = '?m=eventedit&id={$event.id}&backid=' + $(this).closest('.event-day-table').attr('id');">
-                <IMG src="img/edit.gif" alt="{trans("Edit")}" title="&nbsp;{trans("Edit")}&nbsp;">
-            </A>
-            {/if}
-            {if $imadded && $event.note == ''}
-            <A href="#" onclick="location.href = '?m=eventnote&id={$event.id}&backid=' + $(this).closest('.event-day-table').attr('id');">
-                <IMG src="img/note.gif" alt="{trans("Add Note")}" title="{trans("Add Note")}">
-            </A>
-            {/if}
+            {buttons}
+                {if !isset($eventlist_mode)}
+                    <a href="#" class="lms-ui-button" title="{trans("Show in timetable")}"
+                       data-title="{trans("Show in timetable")}"
+                       onclick="location.href = '?m=eventlist&year={strftime('%Y', $event.date)}&month={strftime('%m', $event.date)}&day={strftime('%d', $event.date)}';">
+                        <i class="lms-ui-icon-timetable"></i>
+                    </a>
+                {/if}
+                <a href="#" class="lms-ui-button lms-ui-button-clipboard"
+                   data-clipboard-text="{$url}?m=eventinfo&id={$event.id}"
+                    data-title="{trans("Click copies to clipboard")}">
+                    <i class="lms-ui-icon-clipboard"></i>
+                </a>
+                {if ConfigHelper::checkPrivilege('timetable_management')}
+		{if ($event.closed)}
+                    {if !ConfigHelper::getConfig('phpui.allow_modify_closed_events_newer_than', 604800) || ($smarty.now - $event.closeddate < ConfigHelper::getConfig('phpui.allow_modify_closed_events_newer_than', 604800)) || ConfigHelper::checkPrivilege('superuser')}
+                        {button type="link" icon="open" onclick="location.href = '?m=eventedit&id={$event.id}&action=open&backid=' + $(this).closest('.event-day-table').attr('id');" tip="Open"}
+                    {/if}
+                {else}
+                    {if $imadded}
+                        {button type="link" icon="owner" onclick="location.href = '?m=eventedit&id={$event.id}&action=unassign&backid=' + $(this).closest('.event-day-table').attr('id');" tip="<!event>Unassign"}
+                    {else}
+                        {button type="link" icon="owner" onclick="location.href = '?m=eventedit&id={$event.id}&action=assign&backid=' + $(this).closest('.event-day-table').attr('id');" tip="<!event>Assign"}
+                    {/if}
+                    {button type="link" icon="close" onclick="location.href = '?m=eventedit&id={$event.id}&action=close&backid=' + $(this).closest('.event-day-table').attr('id');" tip="Close"}
+                    {button type="link" icon="clone" href="?m=eventadd&id={$event.id}" tip="Clone"}
+                    {button type="link" class="event-edit" icon="edit" href="?m=eventedit&id={$event.id}&backid=" tip="Edit"}
+                    {button type="link" icon="note" onclick="location.href = '?m=eventnote&id={$event.id}&backid=' + $(this).closest('.event-day-table').attr('id');" tip="Add Note"}
+                    {button type="link" icon="delete" class="delete-event" href="?m=eventdel&id={$event.id}" tip="Delete permanently"}
+                {/if}
+                {/if}
+            {/buttons}
         </div>
     </TD>
 </TR>

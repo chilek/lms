@@ -41,8 +41,12 @@ $(function() {
 			macchoosewin($(this).siblings('input')[0]);
 		} else {
 			var mac_row = $(this).closest('.mac');
-			if (mac_row.index()) {
+			var other_mac_rows = mac_row.siblings('.mac');
+			if (mac_row.index() || other_mac_rows.length) {
 				mac_row.remove();
+				if (other_mac_rows.length) {
+					other_mac_rows.first().find('input').prop('required', true);
+				}
 			} else {
 				mac_row.find('input').val('');
 			}

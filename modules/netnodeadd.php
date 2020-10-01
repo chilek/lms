@@ -69,9 +69,13 @@ if (isset($netnodedata)) {
         }
     }
 
+    if (!empty($netnodedata['location_country_id'])) {
+        Localisation::setSystemLanguage($LMS->getCountryCodeById($netnodedata['location_country_id']));
+    }
     if ($netnodedata['location_zip'] && !check_zip($netnodedata['location_zip'])) {
         $error['location_zip'] = trans('Incorrect ZIP code!');
     }
+    Localisation::resetSystemLanguage();
 
     if (in_array($netnodedata['ownership'], array('1', '2'))) { // węzeł współdzielony lub obcy
         if (!strlen(trim($netnodedata['coowner']))) {
@@ -97,7 +101,7 @@ if (isset($netnodedata)) {
     if (empty($netnodedata['ownerid']) && !ConfigHelper::checkPrivilege('full_access')
         && ConfigHelper::checkConfig('phpui.teryt_required')
         && !empty($netnodedata['location_city_name']) && ($netnodedata['location_country_id'] == 2 || empty($netnodedata['location_country_id']))
-        && (!isset($netnodedata['teryt']) || empty($netnodedata['location_city']))) {
+        && (!isset($netnodedata['teryt']) || empty($netnodedata['location_city'])) && $LMS->isTerritState($netnodedata['location_state_name'])) {
         $error['netnode[teryt]'] = trans('TERRIT address is required!');
     }
 

@@ -30,7 +30,7 @@
 	<TR>
 		<TD><IMG src="img/print.gif" ALT=""></TD>
 		<TD class="bold nobr">{trans("Payment Type:")}</TD>
-		<TD class="nobr">{if $assignment.paytypename}{$assignment.paytypename}{else}{trans("default")}{/if}</TD>
+		<TD class="nobr">{if $assignment.paytypename}{trans($assignment.paytypename)}{else}{trans("default")}{/if}</TD>
 	</TR>
 	<TR>
 		<TD><IMG src="img/options.gif" ALT=""></TD>
@@ -62,7 +62,7 @@
 		<TD class="nobr">{trans("Tax category:")}</TD>
 		<TD>
 			{if $assignment.taxcategory}
-				<span {tip text=$_TAX_CATEGORIES[$assignment.taxcategory].description}>{$_TAX_CATEGORIES[$assignment.taxcategory].label}</span>
+				<span {tip text=$_TAX_CATEGORIES[$assignment.taxcategory].description}>({sprintf('%02d', $assignment.taxcategory)}) {$_TAX_CATEGORIES[$assignment.taxcategory].label}</span>
 			{else}
 				{trans("- none -")}
 			{/if}

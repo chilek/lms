@@ -24,7 +24,7 @@
 
 $(function() {
 	$('#add-nodegroups').click(function() {
-		if ($("input[name='nodegroupid[]']").filter(':checked').length) {
+		if ($("[name='nodegroupid[]'] option:selected").length) {
 			$('form#nodegroupassignment').submit();
 		}
 	});

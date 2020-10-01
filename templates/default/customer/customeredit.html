@@ -7,6 +7,9 @@
 {block name="customereditbox"}
 	{include file="customer/customereditbox.html"}
 {/block}
+{block name="customernotes"}
+	{include file="customer/customernotes.html" limit=10}
+{/block}
 {block name="customernodesbox"}
 	{include file="customer/customernodesbox.html"}
 {/block}
@@ -43,9 +46,12 @@
 	{include file="customer/customerbalancebox.html" limit=-10}
 {/block}
 </div>
-<script type="text/javascript">
-<!--
+<script>
+
 	restoreSortable('customeredit-sortable', '{$customeredit_sortable_order}');
-//-->
+
 </script>
+
+{resource_tab_selector}
+
 {/block}

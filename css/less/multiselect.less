@@ -1,0 +1,198 @@
+/*
+ * LMS version 1.11-git
+ *
+ *  (C) Copyright 2001-2020 LMS Developers
+ *
+ *  Please, see the doc/AUTHORS for more information about authors!
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License Version 2 as
+ *  published by the Free Software Foundation.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ *  USA.
+ *
+ *  $Id$
+ */
+
+.lms-ui-multiselect-container {
+  display: inline-block;
+
+  select,
+  .lms-ui-multiselect-label-workaround {
+    display: none;
+  }
+
+  &.lms-ui-error {
+    color: unset !important;
+
+    .lms-ui-multiselect-launcher {
+      background-color: @error-background;
+      color: @error-text;
+    }
+  }
+
+  .lms-ui-multiselect-launcher {
+    vertical-align: middle;
+    display: block;
+    background-color: @lucid;
+    border: solid 1px @blend;
+    min-height: 1.4em;
+
+    .lms-ui-multiselect-launcher-label {
+      //overflow: hidden;
+      font-size:  @font-size;
+      font-family: @fonts;
+      vertical-align: middle;
+      cursor: default;
+      padding: 0px 0px 0px 4px;
+      max-width: 200px;
+      white-space: pre-wrap;
+      min-width: 200px;
+      display: block;
+      &.lms-ui-multiselect-filter {
+        min-width: 100px;
+      }
+    }
+
+    .lms-ui-multiselect-launcher-toggle {
+      float: right;
+      margin-right: 0.2em;
+      display: block;
+      font-size: 120%;
+    }
+
+    .lms-ui-multiselect-clear-button {
+      float: right;
+      margin-right: .3em;
+      margin-left: .3em;
+      display: block;
+      opacity: .4;
+      font-size: 100%;
+      cursor: pointer;
+      margin-top: 0.12em;
+    }
+  }
+
+  &.tiny .lms-ui-multiselect-launcher {
+    overflow: hidden;
+    vertical-align: middle;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-color: transparent;
+    background-color: transparent;
+    min-height: unset;
+    .lms-ui-no-user-select;
+  }
+
+  .lms-ui-multiselect-popup {
+    display: none;
+    position: absolute;
+    width: 350px;
+    border: solid 1px @blend;
+    background-color: @light;
+    z-index: 65;
+    overflow: hidden;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    .lms-ui-no-user-select;
+
+    @media screen and (max-width: @mobile-max-width) {
+      position: fixed;
+      width: auto;
+      left: 0;
+      top: 2em;
+      right: 0;
+      bottom: 0;
+      padding: 0.5em;
+      font-size: 200%;
+      border: 0;
+    }
+
+    .lms-ui-multiselect-popup-list {
+      list-style: none;
+      cursor: default;
+      padding: 0;
+      margin: 0;
+      border: solid 1px @blend;
+      max-height: 200px;
+      max-width: 350px;
+      text-align: left;
+      @media screen and (max-width: @mobile-max-width) {
+        max-height: 80%;
+        max-width: unset;
+      }
+      overflow-x: hidden;
+      overflow-y: auto;
+      li {
+        white-space: normal;
+        padding: 0;
+        margin: 0;
+        background-color: @lucid;
+        padding-left: 2em;
+        text-indent: -2.2em;
+        @media screen and (max-width: @mobile-max-width) {
+          padding-left: 1.2em;
+          text-indent: -1.1em;
+        }
+        &:not(:last-child) {
+          border-bottom: @dotted-line;
+        }
+        input {
+          border: none;
+          margin: 3px 3px 3px 4px;
+        }
+        &.selected {
+          background-color: @dark;
+        }
+        &.active {
+          background-color: @superdark;
+        }
+        &.exclusive {
+          font-weight: bold;
+        }
+      }
+      span {
+        padding-left: 3px;
+      }
+    }
+
+    .lms-ui-multiselect-popup-titlebar {
+      display: none;
+      @media screen and (max-width: @mobile-max-width) {
+        display: flex;
+      }
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 0.5em;
+      margin-bottom: 0.5em;
+      border-bottom: @dotted-line;
+      .lms-ui-multiselect-popup-title {
+        font-weight: bold;
+      }
+      i {
+        margin-left: 1.5em;
+        cursor: pointer;
+      }
+    }
+
+    .lms-ui-multiselect-popup-checkall {
+      width: 100%;
+      @media screen and (max-width: @mobile-max-width) {
+        margin-top: 0.5em;
+        border-top: @dotted-line;
+        padding-top: 0.5em;
+      }
+      input {
+        margin-right: 0.9em;
+      }
+    }
+  }
+}

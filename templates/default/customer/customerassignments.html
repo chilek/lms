@@ -17,7 +17,8 @@
 <form method="post" name="{$tab_id}" id="{$tab_id}-form" action="?m=customerassignmentdel">
 </form>
 
-{tab_container id=$tab_id}
+{if !isset($data_label)}{$data_label="Customer Liabilities"}{/if}
+{tab_container id=$tab_id label=$data_label}
 
 	{tab_header content_id=$content_id}
 		{tab_header_cell icon="lms-ui-icon-assignment"}
@@ -42,7 +43,7 @@
 				{trans("<!assignment>Commited")}
 				<input type="checkbox" class="commited" value="1"{if $commited} checked{/if}>
 			</label>
-			<a class="clear-filter lms-ui-button-delete" href="#"><i></i><a>
+			<a class="clear-filter lms-ui-button" href="#"><i class="lms-ui-icon-delete"></i><a>
 		{/tab_header_cell}
 		{tab_header_cell}
 			{if !$customerinfo.deleted}
@@ -173,7 +174,7 @@
 						</div>
 						<div class="lms-ui-tab-table-column accounting">
 							{if $a.tariffid || $a.liabilityid}
-								{$a.payday}
+								{$a.payday}{if $a.backwardperiod} {icon name="lms-ui-icon-previous" tip="<!assignment>backward"}{/if}
 							{/if}
 						</div>
 					</div>

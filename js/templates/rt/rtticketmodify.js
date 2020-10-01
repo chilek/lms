@@ -42,6 +42,7 @@ $(function() {
 		} else {
 			select.val($(this).attr('data-old-userid'));
 		}
+		updateAdvancedSelects(select);
 	});
 
 	$('[name="ticket[queue]"]').change(function () {
@@ -62,6 +63,12 @@ $(function() {
 	} else {
 		$('#customernotify-row').show();
 	}
+
+	$('#parent-ticket').on('lms:list_updated', function(e, data) {
+		$('#related-tickets').toggleClass('disabled', !data.list.length)
+			.closest('.lms-ui-box-row').toggleClass('blend', !data.list.length)
+			.removeAttr('data-tooltip').attr('title', data.list.length ? '' : $t("No parent ticket is selected!"));
+	});
 });
 
 function change_customer(customer_selector, address_selector) {

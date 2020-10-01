@@ -361,7 +361,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
         $list = $this->db->GetAll(
             'SELECT events.id AS id, title, note, description, date, begintime, enddate, endtime, events.customerid AS customerid, closed, events.type, '
                 . $this->db->Concat('UPPER(c.lastname)', "' '", 'c.name').' AS customername, nn.id AS netnode_id, nn.name AS netnode_name, vd.address AS netnode_location,
-				userid, vusers.name AS username, ' . $this->db->Concat('c.city', "', '", 'c.address').' AS customerlocation,
+				userid, vusers.name AS username, ' . $this->db->Concat('c.city', "', '", 'c.address').' AS customerlocation, closeddate,
 				events.address_id, va.location, events.nodeid as nodeid, vn.location AS nodelocation, ticketid, cc.customerphone
 			FROM events
 			LEFT JOIN vaddresses va ON va.id = events.address_id
@@ -595,7 +595,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 
         extract($params);
         if (empty($enddate)) {
-            $enddate = $begindate;
+            $enddate = $date;
         }
         $users = Utils::filterIntegers($users);
 
@@ -605,7 +605,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                         WHERE a.userid IN (' . implode(',', $users) . ')
                                 AND (date < ? OR (date = ? AND begintime < ?))
                                 AND (enddate > ? OR (enddate = ? AND endtime > ?))',
-            array($enddate, $enddate, $endtime, $begindate, $begindate, $begintime)
+            array($enddate, $enddate, $endtime, $date, $date, $begintime)
         );
     }
 

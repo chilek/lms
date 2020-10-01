@@ -58,6 +58,7 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
         //$this->_version .= ' ('.preg_replace('/^.Revision: ([0-9.]+).*/','\1',$this->_revision).'/'.preg_replace('/^.Revision: ([0-9.]+).*/','\1','$Revision$').')';
         $this->_version .= '';
         $this->Connect($dbhost, $dbuser, $dbpasswd, $dbname);
+        $this->Execute('SELECT set_config(\'lms.current_user\', ?, false)', array('0'));
     }
 
     /**
@@ -89,7 +90,7 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
         }
 
         $cstring = implode(' ', array(
-            ($host != '' && $host != 'localhost' ? 'host=' . $host : ''),
+            ($host != '' ? 'host=' . $host : ''),
             ($port != '' ? 'port=' . $port : ''),
             ($dbuser != '' ? 'user=' . $dbuser : ''),
             ($dbpasswd != '' ? 'password=' . $dbpasswd : ''),

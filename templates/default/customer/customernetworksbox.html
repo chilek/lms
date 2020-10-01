@@ -1,7 +1,7 @@
 {css}
 {js}
 
-{tab_container id="customernetworksbox"}
+{tab_container id="customernetworksbox" label="Customer Networks"}
 
 	{tab_header content_id="networkspanel-`$layout.module`"}
 		{tab_header_cell icon="lms-ui-icon-network"}
@@ -21,16 +21,21 @@
 			{if $customernetworks}
 			<div class="lms-ui-tab-table-row header">
 				<div class="lms-ui-tab-table-wrapper col-4">
-					<div class="lms-ui-tab-table-column name">
-						{trans("Name:")}
-					</div>
-
-					<div class="lms-ui-tab-table-wrapper col-3">
+					<div class="lms-ui-tab-table-wrapper col-2">
+						<div class="lms-ui-tab-table-column name">
+							{trans("Name:")}
+						</div>
 						<div class="lms-ui-tab-table-column id">
 							{trans("ID:")}
 						</div>
+					</div>
+
+					<div class="lms-ui-tab-table-wrapper col-3">
 						<div class="lms-ui-tab-table-column address">
 							{trans("Address:")}
+						</div>
+						<div class="lms-ui-tab-table-column router">
+							{trans("Routed via:")}
 						</div>
 						<div class="lms-ui-tab-table-column host">
 							{trans("Host:")}
@@ -46,19 +51,37 @@
 			{foreach $customernetworks as $network}
 				<div class="lms-ui-tab-table-row{if $network.disabled} blend{/if}" data-target-url="?m=netinfo&id={$network.id}">
 					<div class="lms-ui-tab-table-wrapper col-4">
-						<div class="lms-ui-tab-table-column name">
-							<strong>{$network.name}</strong>
-							{if $network.location}<BR>
-								<br><strong>{$network.location|truncate:60:"...":true}</strong>
-							{/if}
-						</div>
-
-						<div class="lms-ui-tab-table-wrapper col-3">
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column name">
+								<strong>{$network.name}</strong>
+								{if $network.location}<BR>
+									<br><strong>{$network.location|truncate:60:"...":true}</strong>
+								{/if}
+							</div>
 							<div class="lms-ui-tab-table-column id">
 								({$network.id|string_format:"%04d"})
 							</div>
+						</div>
+
+						<div class="lms-ui-tab-table-wrapper col-3">
 							<div class="lms-ui-tab-table-column address">
 								{$network.ip}
+							</div>
+							<div class="lms-ui-tab-table-column router">
+								{if empty($network.routernodename)}
+									-
+								{else}
+									<strong>
+										{if empty($network.routernetdevid)}
+											{icon name="node"}
+											<a href="?m=nodeinfo&id={$network.routernodeid}">{$network.routernodename}</a>
+										{else}
+											{icon name="netdev"}
+											<a href="?m=netdevinfo&id={$network.routernetdevid}&ip={$network.routernodeid}">{$network.routernetdevname} / {$network.routernodename}</a>
+										{/if}
+									</strong>
+									({$network.routerip})
+								{/if}
 							</div>
 							<div class="lms-ui-tab-table-column host">
 								{$network.hostname}
@@ -68,7 +91,7 @@
 
 					<div class="lms-ui-tab-table-column buttons">
 						{button type="link" href="?m=netedit&networkset&id={$network.id}"
-							icon="lms-ui-icon-{if $network.disabled}disconnected{else}connected{/if}"
+							icon="{if $network.disabled}disconnected{else}connected{/if}"
 							tip="{if $network.disabled}Connect{else}Disconnect{/if}"}
 						{button type="link" icon="delete" class="delete-network" href="?m=netdel&id={$network.id}" tip="Delete"}
 						{button type="link" href="?m=netedit&id={$network.id}" icon="edit"

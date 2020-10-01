@@ -45,13 +45,13 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
             return;
         }
 
-        $cstate = $this->db->GetOne('SELECT stateid FROM zipcodes WHERE zip = ?', array($zip));
+        $zipcode = $this->db->GetRow('SELECT stateid, zip FROM zipcodes WHERE zip = ?', array($zip));
 
         $args = array(
             SYSLOG::RES_STATE => $stateid,
             'zip' => $zip
         );
-        if ($cstate === null) {
+        if ($zipcode === null) {
             $this->db->Execute(
                 'INSERT INTO zipcodes (stateid, zip) VALUES (?, ?)',
                 array_values($args)
@@ -60,7 +60,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
                 $args[SYSLOG::RES_ZIP] = $this->db->GetLastInsertID('zipcodes');
                 $this->syslog->AddMessage(SYSLOG::RES_ZIP, SYSLOG::OPER_ADD, $args);
             }
-        } else if ($cstate != $stateid) {
+        } else if ($zipcode['stateid'] != $stateid) {
             $this->db->Execute(
                 'UPDATE zipcodes SET stateid = ? WHERE zip = ?',
                 array_values($args)
@@ -490,5 +490,18 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
             self::$cities_with_sections = array();
         }
         return self::$cities_with_sections;
+    }
+
+    public function getCountryCodeById($countryid)
+    {
+        return $this->db->GetOne('SELECT ccode FROM countries WHERE id = ?', array($countryid));
+    }
+
+    public function isTerritState($state)
+    {
+        return empty($state) || $this->db->GetOne(
+            'SELECT id FROM location_states WHERE LOWER(name) = LOWER(?)',
+            array($state)
+        ) > 0;
     }
 }

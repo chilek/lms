@@ -1,14 +1,28 @@
 <?php
+
 error_reporting(E_ALL &~ E_NOTICE &~ E_DEPRECATED);
 
-require_once 'lib/initLMS.php';
+require_once('..' . DIRECTORY_SEPARATOR . 'initLMS.php');
+require_once('lib' . DIRECTORY_SEPARATOR . 'definitions.php');
 
 $uid        = $_GET['id'];
 $phone      = $_GET['phone'];
 $agentnr    = $_GET['agentnr'];
 $ticket['phonetype'] = 'on';
 
-require_once 'lib/definitions.php';
+$basedir=(__DIR__ . DIRECTORY_SEPARATOR . 'templates_c');
+$wwwuser=posix_getuid();
+$wwwgroup=posix_getgid();
+
+if (!is_dir($basedir)) {
+    die("Please create Smarty compiled templates directory using shell command: mkdir " . $basedir);
+} elseif (!is_readable($basedir) || !is_writable($basedir)) {
+    die("Please set correct permissions to Smarty compiled templates directory using shell commands: chmod 755 " . $basedir . "; chown " . $wwwuser. ":" . $wwwgroup . " " . $basedir);
+}
+
+$SMARTY = new LMSSmarty;
+$SMARTY->AddTemplateDir('templates');
+$SMARTY->setCompileDir('templates_c');
 
 if ($ip != $callcenterip) {
     $check = false;
@@ -43,7 +57,7 @@ if (!empty($_POST)) {
     if ($ticket['body'] == '' and $ticket['queue']==1) {
         $error['body'] = 'Podaj treść zgłoszenia!';
     }
-    
+
     if ($ticket['name'] == '') {
         $error['name'] = 'Podaj imię i nazwisko/nazwę klienta!';
     }

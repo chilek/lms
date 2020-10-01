@@ -27,7 +27,21 @@
 
 	.promoschema-tariff-selection-header-cell {
 		display: flex;
+		padding: 0.2em;
 	}
+
+	.promoschema-tariff-selection-header-cell:first-child {
+		width: 6em;
+	}
+
+	.promoschema-tariff-selection-header > div:last-child {
+		padding-left: 5.5em;
+	}
+
+	.promoschema-tariff-selection-header > div:last-child .promoschema-tariff-selection-header-cell:first-child {
+		width: auto;
+	}
+
 
 </style>
 
@@ -56,11 +70,12 @@
 			<TABLE class="lmsbox-inner lms-ui-background-cycle" id="schematariffs">
 				<THEAD>
 				<TR>
-					<TD style="width: {math equation="96-x" x=$periodcnt}%;" class="bold nobr">
+					<TD style="width: {math equation="95-x" x=$periodcnt}%;" class="bold nobr">
 						<INPUT type="submit" class="hiddenbtn">
 						{trans("Name:")}
 					</TD>
 					<TD style="width: 1%;" class="text-right bold nobr">{trans("Value")}:</TD>
+					<TD style="width: 1%;" class="text-right nobr">{trans("<!assignment>Backward:")}</TD>
 					<TD style="width: 1%;" class="text-right nobr">{trans("Optional")}:</TD>
 					<TD style="width: 1%;" class="text-right nobr">{trans("<!promotionassignment>Label")}:</TD>
 					{foreach from=$schema.periods item=period}
@@ -78,6 +93,16 @@
 					<TD class="text-right valign-top bold nobr">
 						{$tariff.value|string_format:"%.2f"}
 					</TD>
+					<td class="text-right valign-top nobr">
+						<span class="tariff-view"{if $error && $formdata.aid == $tariff.id} style="display: none;"{/if}
+								data-backwardperiod="{$tariff.backwardperiod}">
+							{if $tariff.backwardperiod}{trans("yes")}{else}{trans("no")}{/if}
+						</span>
+						<input class="tariff-edit" type="checkbox" name="form[{$tariff.id}][backwardperiod]" value="1"
+							   {tip text="Check if tariff should be accounted backward"}
+								{if $formdata[$tariff.id].backwardperiod} checked{/if}
+								{if !$error || $formdata.aid != $tariff.id} style="display: none;"{/if}>
+					</td>
 					<TD class="text-right valign-top nobr">
 						<SPAN class="tariff-view" {if $error && $formdata.aid == $tariff.id} style="display:none"{/if}
 								data-optional="{$tariff.optional}">
@@ -173,7 +198,7 @@
 				</TR>
 				{foreachelse}
 				<TR>
-					<TD colspan="{$periodcnt+5}" class="empty-table">
+					<TD colspan="{$periodcnt+6}" class="empty-table">
 						<p>{trans("This schema has no assigned tariffs.")}</p>
 					</TD>
 				</TR>
@@ -186,15 +211,48 @@
 						<div class="promoschema-tariff-selection-header">
 							<div class="promoschema-tariff-selection-header-row">
 								<div class="promoschema-tariff-selection-header-cell">
-									<SELECT name="form[tariffid]" id="tariff-select"
-											{tip text="Select subscription" trigger="tariffid"}>
-										{foreach $tariffs as $tariff}
-										<OPTION value="{$tariff.id}" {if $tariff.id == $formdata.tariffid}selected{/if}
-											data-tarifftags="{$tariff.tags}" data-valid="{$tariff.valid}"
-											{if !$tariff.valid} class="blend"{if !$formdata.alltariffs} style="display: none;"{/if}{/if}
+									<label for="service-type"><strong>{trans("Type")}:</strong></label>
+								</div>
+								<div class="promoschema-tariff-selection-header-cell">
+									<select id="service-type" name="form[servicetype]">
+										<option value="0">{trans("- all -")}</option>
+										{foreach $_SERVICETYPES as $type => $label}
+											<option value="{$type}"{if $formdata.servicetype == $type} selected{/if}>{$label}</option>
+										{/foreach}
+									</select>
+								</div>
+							</div>
+							{if !empty($tags)}
+							<div class="promoschema-tariff-selection-header-row">
+								<div class="promoschema-tariff-selection-header-cell">
+									<label for="tariff-tags"><strong>{trans("Tags:")}</strong></label>
+								</div>
+								<div class="promoschema-tariff-selection-header-cell">
+									<SELECT id="tariff-tags" name="form[tags][]" class="lms-ui-multiselect"
+											{tip text="Select tariff tags"} multiple onchange="javascript:updateTariffs();"{if empty($tags)} style="display: none;"{/if}
 											>
-										{$tariff.name|truncate:40:"...":true} ({moneyf($tariff.value, $tariff.currency)}{if $tariff.upceil || $tariff.downceil}, {convert_to_units($tariff.downceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/{convert_to_units($tariff.upceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}{/if})
-										</OPTION>
+										{foreach $tags as $tag}
+											<OPTION value="{$tag.id}"{if isset($formdata.tags) && in_array($tag.id, $formdata.tags)} selected{/if}>{$tag.name}</OPTION>
+										{/foreach}
+									</SELECT>
+								</div>
+							</div>
+							{/if}
+							<div class="promoschema-tariff-selection-header-row">
+								<div class="promoschema-tariff-selection-header-cell">
+									<label for="tariff-select"><strong>{trans("Tariff")}:</strong></label>
+								</div>
+								<div class="promoschema-tariff-selection-header-cell">
+									<SELECT name="form[tariffid]" id="tariff-select"
+											{tip class="lms-ui-advanced-select" text="Select subscription" trigger="tariffid"}>
+										{foreach $tariffs as $tariff}
+											<OPTION value="{$tariff.id}" {if $tariff.id == $formdata.tariffid}selected{/if}
+													data-tarifftype="{$tariff.tarifftype}"
+													data-tarifftags="{$tariff.tags}" data-valid="{$tariff.valid}"
+													{if !$tariff.valid} class="blend"{if !$formdata.alltariffs} style="display: none;"{/if}{/if}
+											>
+												{$tariff.name|truncate:40:"...":true} ({moneyf($tariff.value, $tariff.currency)}{if $tariff.upceil || $tariff.downceil}, {convert_to_units($tariff.downceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/{convert_to_units($tariff.upceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}{/if})
+											</OPTION>
 										{/foreach}
 									</SELECT>
 								</div>
@@ -202,25 +260,18 @@
 							<div class="promoschema-tariff-selection-header-row">
 								<div class="promoschema-tariff-selection-header-cell">
 									<label>
-										<input type="checkbox" name="form[alltariffs]" value="1"
+										<input type="checkbox" id="alltariffs" name="form[alltariffs]" value="1"
 												{tip text="Check if all tariffs should be displayed" trigger="alltariffs"}
 												{if isset($formdata.alltariffs)} checked{/if}>
 										{trans("show all tariffs")}
 									</label>
 								</div>
-								{if !empty($tags)}
-									<div class="promoschema-tariff-selection-header-cell">
-										<label for="promoschema-tariff-selection-tags">{trans("Tags:")}</label>
-										<SELECT id="promoschema-tariff-selection-tags" name="form[tags][]" class="lms-ui-multiselect"
-												{tip text="Select tariff tags"} multiple onchange="javascript:updateTariffs();"{if empty($tags)} style="display: none;"{/if}>
-											{foreach $tags as $tag}
-												<OPTION value="{$tag.id}"{if isset($formdata.tags) && in_array($tag.id, $formdata.tags)} selected{/if}>{$tag.name}</OPTION>
-											{/foreach}
-										</SELECT>
-									</div>
-								{/if}
 							</div>
 						</div>
+					</TD>
+					<TD class="ftop text-right valign-top nobr">
+						<INPUT type="checkbox" name="form[backwardperiod]" value="1" {tip text="Check if tariff should be accounted backward"}
+								{if $formdata.backwardperiod} checked{/if}>
 					</TD>
 					<TD class="ftop text-right valign-top nobr">
 						<INPUT type="checkbox" name="form[optional]" value="1" {tip text="Check if tariff should be optional"}
@@ -289,11 +340,12 @@
 	}
 
 	function updateTariffs() {
-		var valid_checked = $('[name="form[alltariffs]"]').is(':checked');
+		var allTariffChecked = $('#alltariffs').is(':checked');
 		var tariff_select = $('#tariff-select');
+		var serviceType = parseInt($('#service-type').val());
 
 		var tags = [];
-		$('[name="form[tags][]"]:checked').each(function() {
+		$('#tariff-tags option:selected').each(function() {
 			tags.push(parseInt($(this).val()));
 		});
 
@@ -304,46 +356,51 @@
 				return;
 			}
 
+			var tariffType = parseInt(option.attr('data-tarifftype'));
+			var tariffValid = parseInt(option.attr('data-valid'));
+			var visible = false;
+
 			if (tags.length) {
-				option.css('display', 'none');
-
 				var tarifftags = option.attr('data-tarifftags');
-				if (typeof(tarifftags) === 'undefined' || !tarifftags.length) {
-					return;
-				}
+				if (typeof(tarifftags) !== 'undefined' && tarifftags.length) {
+					tarifftags = JSON.parse('[' + tarifftags + ']');
 
-				tarifftags = JSON.parse('[' +  tarifftags + ']');
-
-				$.each(tarifftags, function(key, value) {
-					if (tags.indexOf(value) > -1) {
-						if (option.attr('data-valid') == '0') {
-							option.css('display', valid_checked ? '' : 'none');
-						} else {
-							option.css('display', '');
+					$.each(tarifftags, function (key, value) {
+						if (tags.indexOf(value) > -1) {
+							visible = visible || tariffValid !== 0 || allTariffChecked;
 						}
-					}
-				});
-			} else {
-				if (option.attr('data-valid') == '0') {
-					option.css('display', valid_checked ? '' : 'none');
-				} else {
-					option.css('display', '');
+					});
 				}
+			} else {
+				visible = tariffValid !== 0 || allTariffChecked;
 			}
+
+			if (serviceType) {
+				visible = visible && (!tariffType || serviceType === tariffType);
+			}
+
+			option.toggle(visible);
 		});
 
 		if ($('option:selected', tariff_select).css('display') == 'none') {
 			$('option', tariff_select).each(function() {
 				if ($(this).css('display') != 'none') {
 					tariff_select.val($(this).val());
+					updateAdvancedSelects(tariff_select);
 					return false;
 				}
 			});
 		}
+
+		updateAdvancedSelects(tariff_select);
 	}
 
-	$(function () {
-		$('[name="form[alltariffs]"]').click(function() {
+	$(function() {
+		$('#alltariffs').click(function() {
+			updateTariffs();
+		});
+
+		$('#service-type').change(function() {
 			updateTariffs();
 		});
 
@@ -396,6 +453,8 @@
 				$(this).siblings('.tariff-view').each(function() {
 					if ($(this).is('[data-optional]')) {
 						edit.prop('checked', parseInt($(this).attr('data-optional')) == 1);
+					} else if ($(this).is('[data-backwardperiod]')) {
+						edit.prop('checked', parseInt($(this).attr('data-backwardperiod')) == 1);
 					} else if ($(this).is('[data-selectable]')) {
 						edit.find('.selectable-edit').val($(this).attr('data-selectable'));
 					} else if ($(this).is('[data-value]')) {

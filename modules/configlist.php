@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -185,11 +185,14 @@ function GetConfigList()
 
     $DB = LMSDB::getInstance();
 
-    $config = $DB->GetAll('SELECT c.id, c.section, c.var, c.value, c.description as usercomment, c.disabled, c.userid,
-        u.login, u.firstname, u.lastname
+    $config = $DB->GetAll(
+        'SELECT c.id, c.section, c.var, c.value, c.description as usercomment, c.disabled, c.userid, c.divisionid, c.configid,
+        u.login, u.firstname, u.lastname, d.shortname
         FROM uiconfig c
-        LEFT JOIN users u on c.userid = u.id           
-        WHERE section != \'userpanel\'');
+        LEFT JOIN users u on c.userid = u.id
+        LEFT JOIN divisions d on c.divisionid = d.id
+        WHERE section != \'userpanel\''
+    );
 
     if ($config) {
         $markdown_documentation = Utils::LoadMarkdownDocumentation();
@@ -206,6 +209,20 @@ function GetConfigList()
             if (!empty($item['usercomment'])) {
                 $item['usercomment'] = str_replace("\n", '<br>', $item['usercomment']);
             }
+
+            if (!empty($item['divisionid']) && empty($item['userid'])) {
+                $item['reftype'] = 'division';
+                $item['reftypedescription'] = 'division value';
+            } elseif (!empty($item['divisionid']) && !empty($item['userid'])) {
+                $item['reftype'] = 'divisionuser';
+                $item['reftypedescription'] = 'user in division value';
+            } elseif (empty($item['divisionid']) && !empty($item['userid'])) {
+                $item['reftype'] = 'user';
+                $item['reftypedescription'] = 'user value';
+            } else {
+                $item['reftype'] = null;
+                $item['reftypedescription'] = 'global value';
+            }
         }
         unset($item);
     }
@@ -220,8 +237,11 @@ $configlist = GetConfigList();
 $pagelimit = ConfigHelper::getConfig('phpui.configlist_pagelimit', count($configlist));
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->save('backto', $_SERVER['QUERY_STRING'], true);
 
+$SMARTY->assign('users', $LMS->getUsers(array('superuser' => 1)));
 $SMARTY->assign('sections', $LMS->GetConfigSections());
+$SMARTY->assign('divisions', $LMS->GetDivisions());
 $SMARTY->assign('pagelimit', $pagelimit);
 $SMARTY->assign('configlist', $configlist);
 $SMARTY->assign('section', isset($_GET['s']) ? $_GET['s'] : '');

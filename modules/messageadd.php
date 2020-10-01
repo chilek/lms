@@ -193,7 +193,7 @@ function GetRecipients($filter, $type = MSG_MAIL)
         . (isset($smstable) ? $smstable : '')
         . ($tarifftype ? $tarifftable : '')
         .'WHERE deleted = ' . $deleted
-        . ($consent ? ' AND c.mailingnotice = 1' : '')
+        . ($consent ? ' AND ' . ($type == MSG_SMS || $type == MSG_ANYSMS ? 'c.smsnotice' : 'c.mailingnotice') . ' = 1' : '')
         . ($type == MSG_WWW ? ' AND c.id IN (SELECT DISTINCT ownerid FROM nodes)' : '')
         .($group!=0 ? ' AND c.status = '.$group : '')
         .($network ? ' AND c.id IN (SELECT ownerid FROM vnodes WHERE 
@@ -243,7 +243,7 @@ function GetRecipient($customerid)
 
 function BodyVars(&$body, $data, $eol)
 {
-    global $LMS, $LANGDEFS;
+    global $LMS;
 
     $data['services'] = $LMS->GetCustomerServiceSummary($data['id']);
 
@@ -297,11 +297,11 @@ function BodyVars(&$body, $data, $eol)
         $services = $data['services'];
         $lN = '';
         if (!empty($services)) {
-            $lN .= strtoupper(trans("Total:"))  . " " . sprintf("%2s", sprintf($LANGDEFS[$LMS->ui_lang]['money_format'], $services['total_value'])) . $eol;
+            $lN .= strtoupper(trans("Total:"))  . " " . sprintf("%2s", sprintf(Localisation::getCurrentMoneyFormat(), $services['total_value'])) . $eol;
             unset($services['total_value']);
             foreach ($services as $row) {
                 $lN .= strtoupper($row['tarifftypename']) .": ";
-                $lN .= sprintf("%2s", sprintf($LANGDEFS[$LMS->ui_lang]['money_format'], $row['sumvalue'])) . $eol;
+                $lN .= sprintf("%2s", sprintf(Localisation::getCurrentMoneyFormat(), $row['sumvalue'])) . $eol;
             }
         }
         $body = str_replace('%services', $lN, $body);
@@ -475,7 +475,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
             if (preg_match('/^[\+]?[0-9]+(,[\+]?[0-9]+)*$/', $message['phonenumber'])) {
                 $phonenumbers = preg_split('/,/', $message['phonenumber']);
             }
-            if (count($message['users'])) {
+            if (!empty($message['users']) && count($message['users'])) {
                 $user_phones = $DB->GetAllByKey('SELECT id, phone FROM users', 'id');
                 foreach ($message['users'] as $userid) {
                     if (isset($user_phones[$userid])) {
@@ -913,7 +913,15 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
     $SMARTY->assign('autoload_template', true);
     $message['nodeid'] = isset($_GET['nodeid']) ? intval($_GET['nodeid']) : 0;
 } else {
-    $message['type'] = isset($_GET['type']) ? intval($_GET['type']) : MSG_MAIL;
+    if (isset($_GET['messageid'])) {
+        $msg = $LMS->getSingleMessage($_GET['messageid']);
+        $message['type'] = $msg['type'];
+        $message['subject'] = !empty($msg['subject']) ? $msg['subject'] : '';
+        $message['body'] = !empty($msg['body']) ? $msg['body'] : '';
+        if ($msg['contenttype'] == 'text/html') {
+            $message['wysiwyg']['mailbody'] = 'true';
+        }
+    }
     $message['usergroup'] = isset($_GET['usergroupid']) ? intval($_GET['usergroupid']) : 0;
     $message['tmplid'] = isset($_GET['templateid']) ? intval($_GET['templateid']) : 0;
     $SMARTY->assign('autoload_template', true);

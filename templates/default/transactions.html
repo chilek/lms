@@ -7,7 +7,7 @@
 	<INPUT type="hidden" name="search[userid]" value="{$userid}">
 </FORM>
 
-{tab_container id="transactions"}
+{tab_container id="transactions" label="Transaction Log"}
 
 	{tab_header content_id="transactionpanel"}
 		{tab_header_cell icon="lms-ui-icon-transactions"}
@@ -22,60 +22,9 @@
 
 		{tab_table}
 
-			<TABLE id="transactions-datatable" class="lmsbox-inner{if $transactions} lms-ui-datatable{/if}"{if $transactions} data-order='[[ 0, "desc" ]]' data-page-length="10" style="display: none;"{/if} width="100%">
-				<COLGROUP>
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 97%;">
-				</COLGROUP>
-			{if $transactions}
-				<THEAD>
-				<TR>
-					<TH class="bold nobr">{trans("Date:")}</TH>
-					<TH class="bold nobr">{trans("User:")}</TH>
-					<TH class="bold nobr">{trans("Module:")}</TH>
-					<TH class="bold nobr" data-orderable="false">{trans("Operations:")}</TH>
-				</TR>
-				</THEAD>
-				<TBODY>
-				{foreach $transactions as $tr}
-				<TR>
-					<TD class="valign-bottom nobr">
-						{$tr.time|date_format:"Y.m.d H:i:s"}
-					</TD>
-					<TD class="text-center valign-bottom nobr">
-						<a href="?m=userinfo&amp;id={$tr.userid}">{$tr.login}</a>
-					</TD>
-					<TD class="text-center valign-bottom nobr">
-						{$tr.module}
-					</TD>
-					<TD class="valign-bottom">
-						{if $tr.messages}
-							{if count($tr.messages) > 10}{$start = 9 - count($tr.messages)}...<br>
-							{else}{$start=-1}{/if}
-							{section name=messages loop=$tr.messages start=$start step=-1}
-								{$message = $tr.messages[messages]}
-								<span class="bold">{SYSLOG::getResourceName($message.resource)}: <span style="{SYSLOG::getOperationStyle($message.operation)}">{SYSLOG::getOperationName($message.operation)}</span></span>
-								{foreach $message.keys as $key => $msgkey}{$key}: {if $msgkey.value}<a href="?m=archiveinfo&amp;type={$msgkey.type}&amp;id={$msgkey.value}&amp;date={$tr.time}">{/if}{$msgkey.value}{if $msgkey.value}</a>{/if}{if !$msgkey@last}, {/if}{/foreach}
-								{foreach $message.data as $key => $value}{$key}: {$value}{if !$value@last}, {/if}{/foreach}
-								{if !$messages@last}<br>{/if}
-							{/section}
-						{/if}
-					</TD>
-				</TR>
-				{/foreach}
-				</TBODY>
-			{else}
-			<TBODY>
-			<TR>
-				<TD class="empty-table" colspan="4">
-					<p>{trans("No such transactions in database.")}</p>
-				</TD>
-			</TR>
-			</TBODY>
-			{/if}
-			</TABLE>
+			<div id="transactions-datatable" class="lms-ui-tab-table lms-ui-tab-hourglass">
+				<i></i>
+			</div>
 
 		{/tab_table}
 
@@ -89,6 +38,27 @@
 			e.stopPropagation();
 			$('form[name=search]').submit();
 		});
+
+		function loadTransactionList() {
+			$.ajax({
+				url: location.href.replace(/#.+$/, '') + '&oper=loadtransactionlist',
+				dataType: "html",
+				method: "GET",
+				success: function(data) {
+					$('#transactions-datatable').replaceWith(data);
+					init_datatables('#transactions-datatable');
+					$('#transactions-datatable').show();
+				}
+			})
+		}
+
+		if ($('#transactionpanel').is(':visible')) {
+			loadTransactionList();
+		} else {
+			$('[data-lmsbox-content="transactionpanel"]').one('click', function() {
+				loadTransactionList();
+			});
+		}
 	});
 
 </SCRIPT>

@@ -31,6 +31,7 @@ function smarty_block_box_header($params, $content, $template, $repeat)
         $multi_row = isset($params['multi_row']) && $params['multi_row'];
         $icon = isset($params['icon']) ? $params['icon'] : null;
         $label = isset($params['label']) ? $params['label'] : null;
+        $icon_class = isset($params['icon_class']) ? $params['icon_class'] : null;
 
         if ($multi_row) {
             return '<div class="lms-ui-box-header-multi-row">'
@@ -38,11 +39,12 @@ function smarty_block_box_header($params, $content, $template, $repeat)
 				</div>';
         } else {
             return '
-				<div' . ($id ? ' id="' . $id . '"' : '') . ' class="lms-ui-box-header">
-					' . (strpos($icon, '/') !== false ? '<IMG src="' . $icon . '" alt="">'
-                        : '<i class="' . $icon . '"></i>')
-                    . trans($label)
-                    . $content . '
+		<div' . ($id ? ' id="' . $id . '"' : '') . ' class="lms-ui-box-header">
+		' . (strpos($icon, '/') !== false ? '<IMG src="' . $icon . '" alt="">'
+                    : (strpos($icon, 'lms-ui-icon-') === 0 ? '<i class="' . $icon : '<i class="lms-ui-icon-' . $icon))
+                    . (!empty($icon_class) ? ' ' . $icon_class : '') . '"></i>'
+                  . trans($label)
+                  . $content . '
 				</div>';
         }
     }

@@ -1,15 +1,48 @@
 <!-- $Id$ -->
-<br>
-<TABLE class="lmsbox">
+<script>
+
+	$(function() {
+		$('.attachment-gallery').click(function() {
+			showGallery(JSON.parse($(this).attr('data-gallery')));
+		});
+	});
+
+</script>
+
+<style>
+
+	.message-properties > div {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.message-buttons {
+		margin-left: 0.5em;
+	}
+
+	@media screen and (min-width: 1200px) {
+		.message-buttons {
+			flex-shrink: 0;
+		}
+	}
+
+	.message-buttons button {
+		margin-top: 0.3em;
+	}
+
+</style>
+
+<TABLE class="lmsbox lms-ui-tab-container">
 	<THEAD>
 	<TR>
 		<TD style="width: 1%;" class="bold nobr">
 			<i class="lms-ui-icon-message"></i> <B>{trans("Ticket History")}</B>
 		</TD>
 		<TD style="width: 99%;" class="text-right nobr" colspan="2">
-			{if $ticket.state != $smarty.const.RT_RESOLVED}
-				{button icon="lms-ui-icon-note" label="New Note" onclick="window.location.href = '?m=rtnoteadd&ticketid={$ticket.ticketid}';"}
-				{button icon="lms-ui-icon-message" label="New Message" onclick="window.location.href = '?m=rtmessageadd&ticketid={$ticket.ticketid}';"}
+			{button icon="note" label="New Note" onclick="window.location.href = '?m=rtnoteadd&ticketid={$ticket.ticketid}';"}
+			{if ($ticket.state != $smarty.const.RT_RESOLVED || ($ticket.state == $smarty.const.RT_RESOLVED && $aet && ($smarty.now - $ticket.resolvetime) < $aet)) || (ConfigHelper::checkPrivilege('superuser'))}
+				{button icon="message" label="New Message" onclick="window.location.href = '?m=rtmessageadd&ticketid={$ticket.ticketid}';"}
 			{/if}
 		</TD>
 	</TR>
@@ -18,18 +51,24 @@
 	<TR>
 		<TD style="width: 100%;" colspan="3">
 			<TABLE class="lmsbox-inner">
+				<colgroup>
+					<col style="width: 1%;">
+					<col style="width: 1%;">
+					<col style="width: 1%;">
+					<col style="width: 97%;">
+				</colgroup>
 				{counter start=0 skip=1 print=false assign=msgidx}
-				{foreach from=$ticket.messages item=message}
+				{foreach $ticket.messages as $message}
 				{if $message.type == $smarty.const.RTMESSAGE_REGULAR || $message.type == $smarty.const.RTMESSAGE_NOTE}
 				<THEAD>
 				<TR id="rtmessage-{$message.id}"{if $message.deleted == 1 && $message.deltime != 0} class="light lms-ui-rtmessage-deleted"{/if}>
-					<TD style="width: 1%;" class="valign-top text-right bold nobr">
+					<TD class="valign-top text-right bold nobr">
 						{$message.createtime|date_format:"%Y/%m/%d %H:%M"}
 					</TD>
-					<TD style="width: 1%;" class="text-right bold">
+					<TD class="valign-top text-right bold">
 						{trans("From:")}{if $message.type == $smarty.const.RTMESSAGE_REGULAR}<BR>{trans("Subject:")}{/if}
 					</TD>
-					<TD style="width: 1%;" class="nobr">
+					<TD class="valign-top nobr">
 						{if $message.type == $smarty.const.RTMESSAGE_REGULAR}
 							{if $message.customerid}
 								<A href="?m=customerinfo&amp;id={$message.customerid}">{$message.customername}</A>
@@ -52,41 +91,51 @@
 						<A href="?m=userinfo&amp;id={$message.userid}">{$message.username}</A>
 						{/if}
 					</TD>
-					<TD style="width: 97%;" class="text-right">
-						{if $message.attachments}
-							{foreach $message.attachments as $attachment}
-								{documentview id="{$message.id}-{$attachment@index}" type=$attachment.contenttype name=$attachment.filename
-									url="?m=rtmessageview&tid={$ticket.ticketid}&mid={$message.id}&file={urlencode($attachment.filename)}"
-									text="<i class='lms-ui-button-upload'></i> {$attachment.filename}"}
-							{/foreach}
-						{/if}
+					<TD class="text-right message-properties">
+						<div>
+							<div class="message-buttons">
+								{if $message.type == $smarty.const.RTMESSAGE_NOTE}
+									{button icon="link" class="lms-ui-button-clipboard" label="Copy link" clipboard="{$url}?m=rtticketview&id={$ticket.ticketid}#rtmessage-{$message.id}"}
+									{if $message.deleted == 1 && $message.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
+										{button icon="restore" class="restore-rtmessage" resourceid="?m=rtrestore&id={$message.id}&maction=restore" label="Restore<!RT>"}
 
-						{if $message.type == $smarty.const.RTMESSAGE_NOTE}
-							{button icon="lms-ui-icon-link" class="lms-ui-button-clipboard" label="Copy link" clipboard="{$url}?m=rtticketview&id={$ticket.ticketid}#rtmessage-{$message.id}"}
-							{if $message.deleted == 1 && $message.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
-								{button icon="lms-ui-icon-restore" class="restore-rtmessage" resourceid="?m=rtrestore&id={$message.id}&maction=restore" label="Restore<!RT>"}
-
-								{button icon="lms-ui-icon-delete" class="remove-rtmessage" resourceid="?m=rtremove&id={$message.id}&maction=delperm" label="Delete permanently"}
-							{else}
-								{button icon="lms-ui-icon-trash" class="delete-rtmessage" resourceid="?m=rtmessagedel&id={$message.id}&maction=delete" label="Delete"}
-							{/if}
-						{else}
-							{button icon="lms-ui-icon-link" class="lms-ui-button-clipboard" label="Copy link" clipboard="{$url}?m=rtticketview&id={$ticket.ticketid}#rtmessage-{$message.id}"}
-							{button icon="lms-ui-icon-details" onclick="location.href = '?m=rtmessageview&id={$message.id}';" label="Details"}
-							{if $msgidx > 0}
-								{if $message.deleted == 1 && $message.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
-									{button icon="lms-ui-icon-restore" class="restore-rtmessage" resourceid="?m=rtrestore&id={$message.id}&maction=restore" label="Restore<!RT>"}
-
-									{button icon="lms-ui-icon-delete" class="remove-rtmessage" resourceid="?m=rtremove&id={$message.id}&maction=delperm" label="Delete permanently"}
+										{button icon="delete" class="remove-rtmessage" resourceid="?m=rtremove&id={$message.id}&maction=delperm" label="Delete permanently"}
+									{else}
+										{button icon="trash" class="delete-rtmessage" resourceid="?m=rtmessagedel&id={$message.id}&maction=delete" label="Delete"}
+									{/if}
 								{else}
-									{button icon="lms-ui-icon-trash" class="delete-rtmessage" resourceid="?m=rtmessagedel&id={$message.id}&maction=delete" label="Delete"}
+									{button icon="link" class="lms-ui-button-clipboard" label="Copy link" clipboard="{$url}?m=rtticketview&id={$ticket.ticketid}#rtmessage-{$message.id}"}
+									{button icon="details" onclick="location.href = '?m=rtmessageview&id={$message.id}';" label="Details"}
+									{if $msgidx > 0}
+										{if $message.deleted == 1 && $message.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
+											{button icon="restore" class="restore-rtmessage" resourceid="?m=rtrestore&id={$message.id}&maction=restore" label="Restore<!RT>"}
+
+											{button icon="delete" class="remove-rtmessage" resourceid="?m=rtremove&id={$message.id}&maction=delperm" label="Delete permanently"}
+										{else}
+											{button icon="trash" class="delete-rtmessage" resourceid="?m=rtmessagedel&id={$message.id}&maction=delete" label="Delete"}
+										{/if}
+									{/if}
+									{if ($ticket.state != $smarty.const.RT_RESOLVED || ($ticket.state == $smarty.const.RT_RESOLVED && $aet && ($smarty.now - $ticket.resolvetime) < $aet)) || (ConfigHelper::checkPrivilege('superuser'))}
+										{button icon="reply" onclick="location.href = '?m=rtmessageadd&id={$message.id}&ticketid={$ticket.ticketid}';" label="<!vocative>Reply"}
+										{button icon="quote" onclick="location.href = '?m=rtmessageadd&id={$message.id}&ticketid={$ticket.ticketid}&citing=1';" label="Quote"}
+									{/if}
 								{/if}
-							{/if}
-							{if $ticket.state != $smarty.const.RT_RESOLVED}
-								{button icon="lms-ui-icon-reply" onclick="location.href = '?m=rtmessageadd&id={$message.id}&ticketid={$ticket.ticketid}';" label="<!vocative>Reply"}
-								{button icon="lms-ui-icon-quote" onclick="location.href = '?m=rtmessageadd&id={$message.id}&ticketid={$ticket.ticketid}&citing=1';" label="Quote"}
-							{/if}
-						{/if}
+							</div>
+							<div class="message-attachments">
+								{if !empty($message.images) && count($message.images)}
+									<a href="#" class="attachment-gallery lms-ui-button" data-gallery='{json_encode($message.images)}'>
+										<i class="lms-ui-icon-gallery"></i>
+									</a>
+								{/if}
+								{if $message.attachments}
+									{foreach $message.attachments as $attachment}
+										{documentview id="{$message.id}-{$attachment@index}" type=$attachment.contenttype name=$attachment.filename
+											url="?m=rtmessageview&tid={$ticket.ticketid}&mid={$message.id}&file={urlencode($attachment.filename)}&api=1"
+											text="<i class='lms-ui-icon-upload'></i> {$attachment.filename}"}
+									{/foreach}
+								{/if}
+							</div>
+						</div>
 					</TD>
 				</TR>
 				</THEAD>

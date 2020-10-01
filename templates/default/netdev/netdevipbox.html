@@ -99,7 +99,7 @@
 
 				<div class="lms-ui-tab-table-column buttons">
 					{button type="link" href="?m=netdevedit&id={if $netdev.id}{$netdev.id}{else}{$netdevedit.id}{/if}&action=ipset&ip={$netdevip.id}"
-						icon="lms-ui-icon-{if $netdevip.access}connected{else}disconnected{/if}" tip="{if $netdevip.access}Disconnect{else}Connect{/if}"}
+						icon="{if $netdevip.access}connected{else}disconnected{/if}" tip="{if $netdevip.access}Disconnect{else}Connect{/if}"}
 					<input type="hidden" value="{$netdevip.name}">
 					{button type="link" class="delete-address" href="?m=netdevedit&action=ipdel&id={$netdev.id}&ip={$netdevip.id}"
 						icon="delete" tip="Delete"}
@@ -121,9 +121,9 @@
 		{if $netdevips}
 		{tab_button_panel}
 			{tab_buttons}
-				{button icon="lms-ui-icon-connected" onclick="location.href='?m=netdevedit&id={if $netdev.id}{$netdev.id}{else}{$netdevedit.id}{/if}&action=ipset&access=1';"
+				{button icon="connected" onclick="location.href='?m=netdevedit&id={if $netdev.id}{$netdev.id}{else}{$netdevedit.id}{/if}&action=ipset&access=1';"
 					label="Connect"}
-				{button icon="lms-ui-icon-disconnected" onclick="location.href='?m=netdevedit&id={if $netdev.id}{$netdev.id}{else}{$netdevedit.id}{/if}&action=ipset';"
+				{button icon="disconnected" onclick="location.href='?m=netdevedit&id={if $netdev.id}{$netdev.id}{else}{$netdevedit.id}{/if}&action=ipset';"
 					label="Disconnect"}
 			{/tab_buttons}
 		{/tab_button_panel}

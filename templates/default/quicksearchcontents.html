@@ -1,103 +1,138 @@
 {block name="quicksearchcontents"}
 
-<div id="qs-customer" class="lms-ui-quick-search-field" data-mode="customer" data-label="{trans("<!qs>customer")}" data-keyboard-shortcut="ctrl+1">
-    <i class="lms-ui-quick-search-icon lms-ui-icon-customer" {tip text="Click here to select which customer properties should be used during search"}></i>
-    <select id="qs-customer-properties" class="lms-ui-quicksearch-property-selection lms-ui-multiselect-selection-group" multiple title="{trans("Click here to select which customer properties should be used during search")}">
-        <option value="id"{if !isset($qs_properties.customer) || isset($qs_properties.customer.id)} selected{/if}>{trans("<!qs>customer id")}</option>
-        <option value="name"{if !isset($qs_properties.customer) || isset($qs_properties.customer.name)} selected{/if}>{trans("<!qs>customer name")}</option>
-        <option value="address"{if !isset($qs_properties.customer) || isset($qs_properties.customer.address)} selected{/if}>{trans("<!qs>address")}</option>
-        <option value="post_name"{if !isset($qs_properties.customer) || isset($qs_properties.customer.post_name)} selected{/if}>{trans("<!qs>post name")}</option>
-        <option value="post_address"{if !isset($qs_properties.customer) || isset($qs_properties.customer.post_address)} selected{/if}>{trans("<!qs>post address")}</option>
-        <option value="location_name"{if !isset($qs_properties.customer) || isset($qs_properties.customer.location_name)} selected{/if}>{trans("<!qs>location name")}</option>
-        <option value="location_address"{if !isset($qs_properties.customer) || isset($qs_properties.customer.location_address)} selected{/if}>{trans("<!qs>location address")}</option>
-        <option value="email"{if !isset($qs_properties.customer) || isset($qs_properties.customer.email)} selected{/if}>{trans("<!qs>email")}</option>
+{$qs_keyboard_shortcut_modifier = ConfigHelper::getConfig('phpui.quicksearch_keyboard_shortcut_modifier', 'ctrl')}
+{if ConfigHelper::checkPrivilege('customer_management') || ConfigHelper::checkPrivilege('read_only')}
+<div id="qs-customer" class="lms-ui-quick-search-field" data-mode="customer" data-label="{trans("<!qs>customer")}" data-keyboard-shortcut="{$qs_keyboard_shortcut_modifier}+1">
+	<i class="lms-ui-quick-search-icon lms-ui-icon-customer" {tip text="Click here to select which customer properties should be used during search"}></i>
+    <input type="text" name="qs[customer]" value="" size="15" {tip text="Enter some property value and press Enter. Icon on left allows to choose which properties are considered." class="blend lms-ui-quick-search-input"}>
+	<i class="fa-fw lms-ui-icon-customisation"></i>
+	<select id="qs-customer-properties" class="lms-ui-quicksearch-property-selection lms-ui-multiselect-selection-group" multiple title="{trans("Click here to select which customer properties should be used during search")}">
+		<option value="id"{if !isset($qs_properties.customer) || isset($qs_properties.customer.id)} selected{/if}>{trans("<!qs>customer id")}</option>
+		<option value="name"{if !isset($qs_properties.customer) || isset($qs_properties.customer.name)} selected{/if}>{trans("<!qs>customer name")}</option>
+		<option value="address"{if !isset($qs_properties.customer) || isset($qs_properties.customer.address)} selected{/if}>{trans("<!qs>address")}</option>
+		<option value="post_name"{if !isset($qs_properties.customer) || isset($qs_properties.customer.post_name)} selected{/if}>{trans("<!qs>post name")}</option>
+		<option value="post_address"{if !isset($qs_properties.customer) || isset($qs_properties.customer.post_address)} selected{/if}>{trans("<!qs>post address")}</option>
+		<option value="location_name"{if !isset($qs_properties.customer) || isset($qs_properties.customer.location_name)} selected{/if}>{trans("<!qs>location name")}</option>
+		<option value="location_address"{if !isset($qs_properties.customer) || isset($qs_properties.customer.location_address)} selected{/if}>{trans("<!qs>location address")}</option>
+		<option value="email"{if !isset($qs_properties.customer) || isset($qs_properties.customer.email)} selected{/if}>{trans("<!qs>email")}</option>
 		<option value="ten"{if !isset($qs_properties.customer) || isset($qs_properties.customer.ten)} selected{/if}>{trans("<!qs>TEN")}</option>
 		<option value="ssn"{if !isset($qs_properties.customer) || isset($qs_properties.customer.ssn)} selected{/if}>{trans("<!qs>SSN")}</option>
 		<option value="additional-info"{if !isset($qs_properties.customer) || isset($qs_properties.customer['additional-info'])} selected{/if}>{trans("<!qs>additional information")}</option>
 		<option value="notes"{if !isset($qs_properties.customer) || isset($qs_properties.customer['notes'])} selected{/if}>{trans("<!qs>notes")}</option>
-    </select>
-    <input type="text" name="qs[customer]" value="" size="15" {tip text="Enter some property value and press Enter. Icon on left allows to choose which properties are considered." class="blend lms-ui-quick-search-input"}>
-</div>
-
-<div id="qs-phone" class="lms-ui-quick-search-field" data-mode="phone" data-label="{trans("<!qs>phone")}" data-keyboard-shortcut="ctrl+2">
-	<i class="lms-ui-quick-search-icon lms-ui-icon-phone" {tip text="Enter phone number and press Enter"}></i>
-	<select id="qs-phone-properties" class="lms-ui-quicksearch-property-selection lms-ui-multiselect-selection-group" multiple title="{trans("Click here to select how phone numbers should be searched")}">
-		<option value="contact"{if !isset($qs_properties.phone) || isset($qs_properties.phone.contact)} selected{/if}>{trans("<!qs>customer phone number")}</option>
-		<option value="account"{if !isset($qs_properties.phone) || isset($qs_properties.phone.account)} selected{/if}>{trans("<!qs>voip account number")}</option>
 	</select>
+</div>
+{/if}
+
+{if ConfigHelper::checkPrivilege('customer_management') || ConfigHelper::checkPrivilege('voip_account_management') || ConfigHelper::checkPrivilege('read_only')}
+<div id="qs-phone" class="lms-ui-quick-search-field" data-mode="phone" data-label="{trans("<!qs>phone")}" data-keyboard-shortcut="{$qs_keyboard_shortcut_modifier}+2">
+	<i class="lms-ui-quick-search-icon lms-ui-icon-phone" {tip text="Enter phone number and press Enter"}></i>
     <input type="text" name="qs[phone]" value="" size="15" {tip text="Enter phone number and press Enter" class="blend lms-ui-quick-search-input"}>
+	<i class="fa-fw lms-ui-icon-customisation"></i>
+	<select id="qs-phone-properties" class="lms-ui-quicksearch-property-selection lms-ui-multiselect-selection-group" multiple title="{trans("Click here to select how phone numbers should be searched")}">
+		{if ConfigHelper::checkPrivilege('customer_management') || ConfigHelper::checkPrivilege('read_only')}
+			<option value="contact"{if !isset($qs_properties.phone) || isset($qs_properties.phone.contact)} selected{/if}>{trans("<!qs>customer phone number")}</option>
+		{/if}
+		{if ConfigHelper::checkPrivilege('voip_account_management') || ConfigHelper::checkPrivilege('read_only')}
+			<option value="account"{if !isset($qs_properties.phone) || isset($qs_properties.phone.account)} selected{/if}>{trans("<!qs>voip account number")}</option>
+		{/if}
+	</select>
 </div>
+{/if}
 
-<div id="qs-node" class="lms-ui-quick-search-field" data-mode="node" data-label="{trans("<!qs>node")}" data-keyboard-shortcut="ctrl+3">
+{if ConfigHelper::checkPrivilege('node_management') || ConfigHelper::checkPrivilege('read_only')}
+<div id="qs-node" class="lms-ui-quick-search-field" data-mode="node" data-label="{trans("<!qs>node")}" data-keyboard-shortcut="{$qs_keyboard_shortcut_modifier}+3">
 	<i class="lms-ui-quick-search-icon lms-ui-icon-node" {tip text="Enter node ID, name, IP address or MAC address and press Enter"}></i>
-    <select id="qs-node-properties" class="lms-ui-quicksearch-property-selection lms-ui-multiselect-selection-group" multiple title="{trans("Click here to select which node properties should be used during search")}">
-        <option value="id"{if !isset($qs_properties.node) || isset($qs_properties.node.id)} selected{/if}>{trans("<!qs>node id")}</option>
-        <option value="name"{if !isset($qs_properties.node) || isset($qs_properties.node.name)} selected{/if}>{trans("<!qs>node name")}</option>
-        <option value="ip"{if !isset($qs_properties.node) || isset($qs_properties.node.ip)} selected{/if}>{trans("<!qs>ip address")}</option>
-        <option value="public_ip"{if !isset($qs_properties.node) || isset($qs_properties.node.public_ip)} selected{/if}>{trans("<!qs>public ip address")}</option>
-        <option value="mac"{if !isset($qs_properties.node) || isset($qs_properties.node.mac)} selected{/if}>{trans("<!qs>mac address")}</option>
-        <option value="location_address"{if !isset($qs_properties.node) || isset($qs_properties.node.location_address)} selected{/if}>{trans("<!qs>location address")}</option>
-    </select>
     <input type="text" name="qs[node]" value="" size="15" {tip text="Enter some property value and press Enter. Icon on left allows to choose which properties are considered." class="blend lms-ui-quick-search-input"}>
+	<i class="fa-fw lms-ui-icon-customisation"></i>
+	<select id="qs-node-properties" class="lms-ui-quicksearch-property-selection lms-ui-multiselect-selection-group" multiple title="{trans("Click here to select which node properties should be used during search")}">
+		<option value="id"{if !isset($qs_properties.node) || isset($qs_properties.node.id)} selected{/if}>{trans("<!qs>node id")}</option>
+		<option value="name"{if !isset($qs_properties.node) || isset($qs_properties.node.name)} selected{/if}>{trans("<!qs>node name")}</option>
+		<option value="ip"{if !isset($qs_properties.node) || isset($qs_properties.node.ip)} selected{/if}>{trans("<!qs>ip address")}</option>
+		<option value="public_ip"{if !isset($qs_properties.node) || isset($qs_properties.node.public_ip)} selected{/if}>{trans("<!qs>public ip address")}</option>
+		<option value="mac"{if !isset($qs_properties.node) || isset($qs_properties.node.mac)} selected{/if}>{trans("<!qs>mac address")}</option>
+		<option value="location_address"{if !isset($qs_properties.node) || isset($qs_properties.node.location_address)} selected{/if}>{trans("<!qs>location address")}</option>
+	</select>
 </div>
+{/if}
 
-<div id="qs-network" class="lms-ui-quick-search-field" data-mode="network" data-label="{trans("<!qs>network")}" data-keyboard-shortcut="ctrl+4">
+{if ConfigHelper::checkPrivilege('network_management') || ConfigHelper::checkPrivilege('read_only')}
+<div id="qs-network" class="lms-ui-quick-search-field" data-mode="network" data-label="{trans("<!qs>network")}" data-keyboard-shortcut="{$qs_keyboard_shortcut_modifier}+4">
 	<i class="lms-ui-quick-search-icon lms-ui-icon-ipnetwork" {tip text="Enter network ID, name or IP address and press Enter"}></i>
     <input type="text" name="qs[network]" value="" size="15" {tip text="Enter network ID, name or IP address and press Enter" class="blend lms-ui-quick-search-input"}>
 </div>
+{/if}
 
-<div id="qs-netnode" class="lms-ui-quick-search-field" data-mode="netnode" data-label="{trans("<!qs>network node")}" data-keyboard-shortcut="ctrl+5">
+{if ConfigHelper::checkPrivilege('network_management') || ConfigHelper::checkPrivilege('read_only')}
+<div id="qs-netnode" class="lms-ui-quick-search-field" data-mode="netnode" data-label="{trans("<!qs>network node")}" data-keyboard-shortcut="{$qs_keyboard_shortcut_modifier}+5">
 	<i class="lms-ui-quick-search-icon lms-ui-icon-netnode" {tip text="Enter netnode ID or name and press Enter"}></i>
     <input type="text" name="qs[netnode]" value="" size="15" {tip text="Enter netnode ID or name and press Enter" class="blend lms-ui-quick-search-input"}>
 </div>
+{/if}
 
-<div id="qs-netdev" class="lms-ui-quick-search-field" data-mode="netdevice" data-label="{trans("<!qs>network device")}" data-keyboard-shortcut="ctrl+6">
+{if ConfigHelper::checkPrivilege('network_management') || ConfigHelper::checkPrivilege('read_only')}
+<div id="qs-netdev" class="lms-ui-quick-search-field" data-mode="netdevice" data-label="{trans("<!qs>network device")}" data-keyboard-shortcut="{$qs_keyboard_shortcut_modifier}+6">
 	<i class="lms-ui-quick-search-icon lms-ui-icon-netdev" {tip text="Enter device ID, name or serial number and press Enter"}></i>
-    <select id="qs-netdev-properties" class="lms-ui-quicksearch-property-selection lms-ui-multiselect-selection-group" multiple title="{trans("Click here to select which network device properties should be used during search")}">
-        <option value="id"{if !isset($qs_properties.netdevice) || isset($qs_properties.netdevice.id)} selected{/if}>{trans("<!qs>device id")}</option>
-        <option value="name"{if !isset($qs_properties.netdevice) || isset($qs_properties.netdevice.name)} selected{/if}>{trans("<!qs>device name")}</option>
-        <option value="serial"{if !isset($qs_properties.netdevice) || isset($qs_properties.netdevice.serial)} selected{/if}>{trans("<!qs>device serial number")}</option>
-    </select>
     <input type="text" name="qs[netdevice]" value="" size="15" {tip text="Enter some property value and press Enter. Icon on left allows to choose which properties are considered." class="blend lms-ui-quick-search-input"}>
+	<i class="fa-fw lms-ui-icon-customisation"></i>
+	<select id="qs-netdev-properties" class="lms-ui-quicksearch-property-selection lms-ui-multiselect-selection-group" multiple title="{trans("Click here to select which network device properties should be used during search")}">
+		<option value="id"{if !isset($qs_properties.netdevice) || isset($qs_properties.netdevice.id)} selected{/if}>{trans("<!qs>device id")}</option>
+		<option value="name"{if !isset($qs_properties.netdevice) || isset($qs_properties.netdevice.name)} selected{/if}>{trans("<!qs>device name")}</option>
+		<option value="serial"{if !isset($qs_properties.netdevice) || isset($qs_properties.netdevice.serial)} selected{/if}>{trans("<!qs>device serial number")}</option>
+	</select>
 </div>
+{/if}
 
-<div id="qs-wireless" class="lms-ui-quick-search-field" data-mode="wireless" data-label="{trans("<!qs>wireless")}" data-keyboard-shortcut="ctrl+7">
+{if ConfigHelper::checkPrivilege('network_management') || ConfigHelper::checkPrivilege('read_only')}
+<div id="qs-wireless" class="lms-ui-quick-search-field" data-mode="wireless" data-label="{trans("<!qs>wireless")}" data-keyboard-shortcut="{$qs_keyboard_shortcut_modifier}+7">
 	<i class="lms-ui-quick-search-icon lms-ui-icon-wireless" {tip text="Enter wireless SSID and press Enter"}></i>
     <input type="text" name="qs[wireless]" value="" size="15" {tip text="Enter wireless SSID and press Enter" class="blend lms-ui-quick-search-input"}>
 </div>
+{/if}
 
-<div id="qs-ticket" class="lms-ui-quick-search-field" data-mode="ticket" data-label="{trans("<!qs>ticket")}" data-keyboard-shortcut="ctrl+8">
+{if ConfigHelper::checkPrivilege('helpdesk_operation') || ConfigHelper::checkPrivilege('read_only')}
+<div id="qs-ticket" class="lms-ui-quick-search-field" data-mode="ticket" data-label="{trans("<!qs>ticket")}" data-keyboard-shortcut="{$qs_keyboard_shortcut_modifier}+8">
 	<i class="lms-ui-quick-search-icon lms-ui-icon-helpdesk" {tip text="Enter request tracker ID, subject or requestor name and press Enter"}></i>
-    <select id="qs-ticket-properties" class="lms-ui-quicksearch-property-selection lms-ui-multiselect-selection-group" multiple title="{trans("Click here to select which ticket properties should be used during search")}">
-        <option value="id"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.id)} selected{/if}>{trans("<!qs>ticket id")}</option>
-        <option value="subject"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.subject)} selected{/if}>{trans("<!qs>ticket subject")}</option>
-        <option value="requestor"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.requestor)} selected{/if}>{trans("<!qs>ticket requestor")}</option>
-        <option value="customername"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.customername)} selected{/if}>{trans("<!qs>customer name")}</option>
-		<option value="unresolvedonly"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.unresolvedonly)} selected{/if}>{trans("<!qs>show unresolved only")}</option>
-    </select>
     <input type="text" name="qs[ticket]" value="" size="15" {tip text="Enter some property value and press Enter. Icon on left allows to choose which properties are considered." class="blend lms-ui-quick-search-input"}>
+	<i class="fa-fw lms-ui-icon-customisation"></i>
+	<select id="qs-ticket-properties" class="lms-ui-quicksearch-property-selection lms-ui-multiselect-selection-group" multiple title="{trans("Click here to select which ticket properties should be used during search")}">
+		<option value="id"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.id)} selected{/if}>{trans("<!qs>ticket id")}</option>
+		<option value="subject"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.subject)} selected{/if}>{trans("<!qs>ticket subject")}</option>
+		<option value="requestor"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.requestor)} selected{/if}>{trans("<!qs>ticket requestor")}</option>
+		<option value="customername"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.customername)} selected{/if}>{trans("<!qs>customer name")}</option>
+		<option value="unresolvedonly"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.unresolvedonly)} selected{/if}>{trans("<!qs>show unresolved only")}</option>
+	</select>
 </div>
+{/if}
 
-<div id="qs-account" class="lms-ui-quick-search-field" data-mode="account" data-label="{trans("<!qs>account")}" data-keyboard-shortcut="ctrl+9">
+{if ConfigHelper::checkPrivilege('hosting_management') || ConfigHelper::checkPrivilege('read_only')}
+<div id="qs-account" class="lms-ui-quick-search-field" data-mode="account" data-label="{trans("<!qs>account")}" data-keyboard-shortcut="{$qs_keyboard_shortcut_modifier}+9">
 	<i class="lms-ui-quick-search-icon lms-ui-icon-hosting" {tip text="Enter account or alias name and press Enter"}></i>
     <input type="text" name="qs[account]" value="" size="15" {tip text="Enter account or alias name and press Enter" class="blend lms-ui-quick-search-input"}>
 </div>
+{/if}
 
-<div id="qs-docum" class="lms-ui-quick-search-field" data-mode="document" data-label="{trans("<!qs>document")}" data-keyboard-shortcut="ctrl+y">
+{if ConfigHelper::checkPrivilege('customer_management') || ConfigHelper::checkPrivilege('read_only')}
+<div id="qs-docum" class="lms-ui-quick-search-field" data-mode="document" data-label="{trans("<!qs>document")}" data-keyboard-shortcut="{$qs_keyboard_shortcut_modifier}+y">
 	<i class="lms-ui-quick-search-icon lms-ui-icon-document" {tip text="Enter document number and press Enter"}></i>
     <input type="text" name="qs[document]" value="" size="15" {tip text="Enter document number and press Enter" class="blend lms-ui-quick-search-input"}>
 </div>
+{/if}
 
-<div id="qs-customerext" class="lms-ui-quick-search-field" data-mode="customerext" data-label="{trans("<!qs>customer external id")}" data-keyboard-shortcut="ctrl+e">
+{if ConfigHelper::checkPrivilege('customer_management') || ConfigHelper::checkPrivilege('read_only')}
+<div id="qs-customerext" class="lms-ui-quick-search-field" data-mode="customerext" data-label="{trans("<!qs>customer external id")}" data-keyboard-shortcut="{$qs_keyboard_shortcut_modifier}+e">
 	<i class="lms-ui-quick-search-icon lms-ui-icon-externalid" {tip text="Enter external customer ID fragment and press Enter"}></i>
     <input type="text" name="qs[customerext]" value="" size="15" {tip text="Enter external customer ID fragment and press Enter" class="blend lms-ui-quick-search-input"}>
 </div>
+{/if}
 
 {/block}
 
-<select id="qs-selector" name="qs-selector[]" class="lms-ui-quick-search-selector lms-ui-multiselect-selection-group" multiple title="{trans("Click here to select which quick search fields should be visible")}">
+<select id="qs-selector" name="qs-selector[]" class="lms-ui-quick-search-selector lms-ui-multiselect-selection-group"
+	multiple title="{trans("Click here to select which quick search fields should be visible")}">
 
 </select>
+
+{button type="link" icon="clear" id="lms-ui-quick-search-field-clear"}
 
 <script>
     function bindKeyboardShortcuts() {
@@ -132,66 +167,206 @@
     {/foreach}
 
     $('#qs-selector').each(function() {
-        var selector = $(this);
+		var selector = $(this);
 		var field_count = Object.keys(qs_fields).length;
-    	$('.lms-ui-quick-search-field[data-mode]').each(function() {
-    		var mode = $(this).attr('data-mode');
-    		if (field_count && !qs_fields.hasOwnProperty(mode))
-    			$(this).hide();
-            selector.append('<option value="' + mode + '"' + (!field_count || qs_fields.hasOwnProperty(mode) ? ' selected' : '') +
-                '>' + $(this).attr('data-label') + '</option>');
-    	});
-    	new multiselect({
-            id: $(this).attr('id'),
-            defaultValue: null,
-            button: $('<i class="fas fa-angle-down"></i>'),
-            type: 'tiny'
-        });
-    	$('#qs-selector').change(function() {
-			qs_fields = {};
-            $('#qs-selector-layer input:checked').each(function () {
-				qs_fields[$(this).val()] = true;
-			});
-			$('.lms-ui-quick-search-field').hide();
-			$.each(qs_fields, function(key, value) {
-				$('.lms-ui-quick-search-field[data-mode="' + key + '"]').show();
-			});
-
-			bindKeyboardShortcuts();
-
-            qs_data["qs-fields"] = Object.keys(qs_fields).join(',');
-			$.ajax({
-				method: "POST",
-				url: '?m=persistentsetting',
-				data: qs_data
-			});
-    	});
-	});
-
-    $('select.lms-ui-quicksearch-property-selection').each(function(k) {
-        var id = $(this).attr('id');
-        var mode = $(this).closest('.lms-ui-quick-search-field').attr('data-mode');
-        new multiselect({
-			id: id,
+		$('.lms-ui-quick-search-field[data-mode]').each(function () {
+			var mode = $(this).attr('data-mode');
+			$(this).toggleClass('visible', !field_count || qs_fields.hasOwnProperty(mode));
+			selector.append('<option value="' + mode + '"' + (!field_count || qs_fields.hasOwnProperty(mode) ? ' selected' : '') +
+					'>' + $(this).attr('data-label') + '</option>');
+		});
+		new multiselect({
+			id: $(this).attr('id'),
 			defaultValue: null,
-			button: $(this).siblings('i'),
+			button: $('<i class="lms-ui-icon-secondary-selection"></i>'),
 			type: 'tiny'
 		});
-		$('#' + id).change(function() {
-			var properties = [];
-			var id = $(this).attr('id');
+	}).change(function() {
+		qs_fields = {};
+		$(this).find("option[selected]").each(function () {
+			qs_fields[$(this).val()] = true;
+		});
+		$('.lms-ui-quick-search-field').removeClass('visible');
+		$.each(qs_fields, function(key) {
+			$('.lms-ui-quick-search-field[data-mode="' + key + '"]').addClass('visible');
+		});
 
-			$('#' + id + '-layer input:checked').each(function () {
-				properties.push($(this).val());
-			});
-			qs_data["qs-properties"][mode] = properties.join(',');
-            $.ajax({
-				method: "POST",
-				url: '?m=persistentsetting',
-				data: qs_data
-			});
+		bindKeyboardShortcuts();
+
+		qs_data["qs-fields"] = Object.keys(qs_fields).join(',');
+		$.ajax({
+			method: "POST",
+			url: '?m=persistentsetting',
+			data: qs_data
 		});
 	});
 
-    bindKeyboardShortcuts();
+    $('select.lms-ui-quicksearch-property-selection').each(function() {
+		var id = $(this).attr('id');
+		new multiselect({
+			id: id,
+			defaultValue: null,
+			button: $(this).prev('i'),
+			type: 'tiny'
+		});
+	}).change(function() {
+		var mode = $(this).closest('.lms-ui-quick-search-field').attr('data-mode');
+		var properties = [];
+		$(this).find("option[selected]").each(function() {
+			properties.push($(this).val());
+		});
+		qs_data["qs-properties"][mode] = properties.join(',');
+		$.ajax({
+			method: "POST",
+			url: '?m=persistentsetting',
+			data: qs_data
+		});
+	});
+
+	bindKeyboardShortcuts();
+
+	$('.lms-ui-quick-search-input').keydown(function(e) {
+		if (e.code != 'Escape') {
+			return;
+		}
+
+		if (!$("body").is('.lms-ui-mobile') || $("#autosuggest").is(":visible")) {
+			return;
+		}
+
+		$("#lms-ui-tool-panels").hide().removeClass('fullscreen-popup')
+			.find('.lms-ui-quick-search-field').removeClass('lms-ui-quick-search-active')
+			.find('.lms-ui-quick-search-input').removeClass('lms-ui-quick-search-active');
+		disableFullScreenPopup();
+	});
+
+	$(function() {
+		// quick search input auto show/hide support
+		var qsFields = $('.lms-ui-quick-search-field');
+
+		qsFields.each(function(index, field) {
+			var input = $(field).find('input');
+			new AutoSuggest({
+				form: $(field).closest('form'),
+				elem: input,
+				uri: '?m=quicksearch&api=1&ajax=1&mode=' +$(field).attr('data-mode') + '&what=',
+				autosubmit: lmsSettings.quickSearchAutoSubmit,
+				activeDescription: true
+			})
+		});
+
+		qsFields.find('.lms-ui-quick-search-input').on('click', function() {
+			qsFields.find('.lms-ui-quick-search-input').removeClass('lms-ui-quick-search-active')
+				.closest('.lms-ui-quick-search-field').removeClass('lms-ui-quick-search-active');
+			$(this).addClass('lms-ui-quick-search-active').focus().closest('.lms-ui-quick-search-field')
+				.addClass('lms-ui-quick-search-active');
+		}).siblings('i').on('click', function() {
+			var popup_menu;
+			if ($('body').is('.lms-ui-mobile')) {
+				popup_menu = $('#lms-ui-popup-menu');
+				if (popup_menu.is(':visible')) {
+					popup_menu.hide().removeClass('fullscreen-popup');
+					disableFullScreenPopup();
+				} else {
+					$(this).addClass('lms-ui-dropdown-toggle');
+					var field_count = Object.keys(qs_fields).length;
+					var html = '';
+					$('.lms-ui-quick-search-field[data-mode]').each(function() {
+						var mode = $(this).attr('data-mode');
+						if (field_count && !qs_fields.hasOwnProperty(mode)) {
+							return;
+						}
+						html += '<li data-mode="' + mode + '"><i class="' + $(this).find('.lms-ui-quick-search-icon').attr('class') + ' fa-fw' +
+								'"></i>' + $(this).attr('data-label') + '</li>';
+					});
+					html += '<li><i class="lms-ui-icon-configuration fa-fw"></i>' + $t('Customise') + '</li>';
+					$('#lms-ui-popup-menu-title').html($t('Select resource type'));
+					$('#lms-ui-popup-menu-content ul').html(html).find('li').click(function () {
+						popup_menu.hide().removeClass('fullscreen-popup');
+						disableFullScreenPopup();
+						var mode = $(this).attr('data-mode');
+						if (mode) {
+							$('.lms-ui-quick-search-field[data-mode="' + mode + '"] .lms-ui-quick-search-input').click();
+							setCookie('default-mobile-quick-search-field', mode);
+						} else {
+							$('#qs-selector').siblings('.lms-ui-multiselect-launcher').trigger('click');
+						}
+					});
+					popup_menu.show().addClass('fullscreen-popup');
+					enableFullScreenPopup();
+				}
+			} else {
+				qsFields.find('.lms-ui-quick-search-input.lms-ui-quick-search-active').removeClass('lms-ui-quick-search-active');
+				$(this).siblings('.lms-ui-quick-search-input').addClass('lms-ui-quick-search-active').focus()
+						.closest('.lms-ui-quick-search-field').addClass('lms-ui-quick-search-active');
+			}
+		});
+		if (!location.hash.length) {
+			qsFields.first().find('.lms-ui-quick-search-input').addClass('lms-ui-quick-search-active').focus();
+		}
+
+		$(document).keydown(function(e) {
+			var new_field;
+			if (e.keyCode != 9)
+				return;
+			var qs_field = $(e.target).closest('.lms-ui-quick-search-field');
+			if (qsFields.index(qs_field) == -1)
+				return;
+			if (e.shiftKey) {
+				new_field = qs_field;
+				do {
+					new_field = new_field.prev('.lms-ui-quick-search-field');
+				} while (new_field.length && !new_field.is(':visible'));
+				if (!new_field.length) {
+					new_field = qsFields.last();
+					while (new_field.length && !new_field.is(':visible')) {
+						new_field = new_field.prev('.lms-ui-quick-search-field');
+					}
+				}
+			} else {
+				new_field = qs_field;
+				do {
+					new_field = new_field.next('.lms-ui-quick-search-field');
+				} while (new_field.length && !new_field.is(':visible'));
+				if (!new_field.length) {
+					new_field = qsFields.first();
+					while (new_field.length && !new_field.is(':visible')) {
+						new_field = new_field.next('.lms-ui-quick-search-field');
+					}
+				}
+			}
+			$(e.target).removeClass('lms-ui-quick-search-active');
+			new_field.find('input').addClass('lms-ui-quick-search-active').focus();
+			e.preventDefault();
+		});
+
+		$('#lms-ui-quick-search-field-clear').click(function() {
+			$(this).siblings('.lms-ui-quick-search-field.lms-ui-quick-search-active').find('.lms-ui-quick-search-input')
+				.val('').keyup();
+		});
+
+		$('#lms-ui-mobile-menu-search').click(function () {
+			var toolPanels = $("#lms-ui-tool-panels");
+			if (toolPanels.is(':visible')) {
+				var activeField = toolPanels.find('.lms-ui-quick-search-field.lms-ui-quick-search-active');
+				if (activeField.length) {
+					activeField.find('.lms-ui-quick-search-input').focus();
+				} else {
+					var defaultQuickSearchField = getCookie('default-mobile-quick-search-field');
+					var quickSearchField;
+					if (defaultQuickSearchField) {
+						quickSearchField = $('.lms-ui-quick-search-field[data-mode="' + defaultQuickSearchField + '"]')
+						if (!quickSearchField.length) {
+							quickSearchField = toolPanels.find('.lms-ui-quick-search-field').first();
+						}
+					} else {
+						quickSearchField = toolPanels.find('.lms-ui-quick-search-field').first();
+					}
+					quickSearchField.addClass('lms-ui-quick-search-active')
+						.find('.lms-ui-quick-search-input').addClass('lms-ui-quick-search-active').focus();
+				}
+			}
+		});
+	});
+
 </script>

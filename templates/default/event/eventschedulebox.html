@@ -36,7 +36,7 @@
             &nbsp;
         </td>
         {foreach $usereventlistgrid as $userevents}
-            <td style="border-left: solid 2px; text-align: center;">
+            <td style="border-left: dotted 1px; text-align: center;">
                 <strong>{$userevents.username}</strong>
             </td>
         {/foreach}
@@ -44,10 +44,10 @@
     {foreach $times as $ktime => $time}
         <tr class="highlight">
             <td class="nobr" align="center">
-                <strong>{$time}</strong>
+                <strong>{$time|truncate:6:" "}</strong>
             </td>
             {foreach $usereventlistgrid as $userevents}
-                <td style="border-left: solid 2px;">
+                <td style="border-left: dotted 1px;">
                     {foreach $userevents['eventsgrid'] as $edate => $dateevents}
                         {if $edate == $day}
                             <table style="border-collapse: separate;">

@@ -110,6 +110,9 @@
 		}
 	}
 
+	#a_day > td > * {
+		margin-top: 0.3em;
+	}
 
 </style>
 
@@ -227,6 +230,8 @@
 																					id="{$countid}" min="1" max="50" required
 																					value="{if isset($variables.counts[$schemaid][$label])}{$variables.counts[$schemaid][$label]}{else}1{/if}">
 																			</span>
+																			<input type="hidden" name="{$variable_prefix}[backwardperiods][{$schemaid}][{$label}][{$item.single.assignmentid}]"
+																				value="{$item.single.backwardperiod}">
 																		</td>
 																		<td>
 																			<table class="single-assignment" data-assignment-id="{$item.single.assignmentid}"
@@ -287,6 +292,8 @@
 																			{foreach $item.selection.items as $item}
 																			<table class="single-assignment" data-assignment-id="{$item.assignmentid}"
 																					{if !in_array($item.assignmentid, (array)$variables.sassignmentid[$schemaid])}style="display: none;"{/if}>
+																				<input type="hidden" name="{$variable_prefix}[backwardperiods][{$schemaid}][{$label}][{$item.assignmentid}]"
+																					   value="{$item.backwardperiod}">
 																				<tr>
 																					{foreach $item.periods as $period}
 																						<td>{$period.label}</td>
@@ -400,7 +407,12 @@
 										<OPTION value="{$key}"{if $variables.period == $key} SELECTED{/if}>{$item}</OPTION>
 										{/foreach}
 									</SELECT>
-
+									<label id="backward-period" {tip text="Check if tariff should be accounted backward"}>
+										<input type="checkbox" name="{$variable_prefix}[backwardperiod]" value="1"
+											{if !empty($variables.backwardperiod)} checked{/if}>
+										{trans("<!assignment>backward")}
+									</label>
+									<br>
 									<INPUT id="a-day-of-month" type="TEXT" name="{$variable_prefix}[at]"
 										value="{if $variables.at}{$variables.at}{/if}"
 										{tip text="Enter accounting time. For disposable accounting enter date in format YYYY/MM/DD, for weekly accounting enter day of week (Monday = 1), for monthly accounting enter day of month (1 to 28), for yearly accounting enter day and month in format DD/MM (15/09 means September 15th), for half-yearly DD/MM (MM <=6) and for quarterly DD/MM (MM <= 3)" trigger="at"}
@@ -468,6 +480,21 @@
 									</SELECT>
 								</TD>
 							</TR>
+
+							<TR id="a_type" style="display: none;">
+								<TD>
+									<IMG SRC="img/money.gif" alt="">
+								</TD>
+								<TD>
+									{trans("Type:")}
+								</TD>
+								<TD>
+									<SELECT id="tariff-type" size="1" name="{$variable_prefix}[type]" {tip text="Select liability type" trigger="type"}>
+										{foreach $_SERVICETYPES as $key => $item}
+											<OPTION VALUE="{$key}"{if $variables.type == $key} selected{/if}>{$item}</OPTION>
+										{/foreach}
+									</SELECT>
+								</TD>
 
 							<TR id="a_tax" style="display: none;">
 								<TD>
@@ -539,13 +566,7 @@
 									{trans("Payment Type:")}
 								</TD>
 								<TD>
-									<SELECT name="{$variable_prefix}[paytype]" {tip text="Select payment type" trigger="paytype"}>
-										<OPTION value=""{if !$variables.paytype} selected{/if}>- {trans("default")} -</OPTION>
-
-										{foreach from=$_PAYTYPES item=item key=key}
-										<OPTION value="{$key}"{if $variables.paytype==$key} selected{/if}>{$item}</OPTION>
-										{/foreach}
-									</SELECT>
+									{paytypes elemname="{$variable_prefix}[paytype]" selected=$variables.paytype}
 								</TD>
 							</TR>
 

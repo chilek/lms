@@ -68,7 +68,7 @@ interface LMSFinanceManagerInterface
 
     public function InvoiceContentDelete($invoiceid, $itemid = 0);
 
-    public function GetInvoiceContent($invoiceid);
+    public function GetInvoiceContent($invoiceid, $detail_level = LMSFinanceManager::INVOICE_CONTENT_DETAIL_ALL);
 
     public function GetNoteList(array $params);
 
@@ -159,4 +159,8 @@ interface LMSFinanceManagerInterface
     public function CopyPromotionTariffPermissions($src_userid, $dst_userid);
 
     public function transformProformaInvoice($docid);
+
+    public function isInvoiceEditable($id);
+
+    public function isTariffEditable($id);
 }

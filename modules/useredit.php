@@ -31,10 +31,33 @@ if (!$LMS->UserExists($id)) {
     $SESSION->redirect('?m=userlist');
 }
 
+// ajax request handlers
+if (isset($_GET['oper']) && $_GET['oper'] == 'loadtransactionlist') {
+    header('Content-Type: text/html');
+
+    if ($SYSLOG && ConfigHelper::checkPrivilege('transaction_logs')) {
+        $trans = $SYSLOG->GetTransactions(array(
+            'userid' => $id,
+            'limit' => 300,
+            'details' => true,
+        ));
+        $SMARTY->assign('transactions', $trans);
+        $SMARTY->assign('userid', $id);
+        die($SMARTY->fetch('transactionlist.html'));
+    }
+
+    die();
+}
+
 if (isset($_GET['fromuser'])) {
     header('Content-Type: application/json');
-    die(json_encode($LMS->GetUserRights($_GET['fromuser'])));
+    $fromuser['rights'] = $LMS->GetUserRights($_GET['fromuser']);
+    $fromuser['usergroups'] = array_keys($LMS->getUserAssignments($_GET['fromuser']));
+    $fromuser['customergroups'] = array_diff(array_keys($LMS->getAllCustomerGroups()), $LMS->getExcludedCustomerGroups($_GET['fromuser']));
+    $fromuser['divisions'] = array_keys($LMS->GetDivisions(array('userid' => $_GET['fromuser'])));
+    die(json_encode($fromuser));
 }
+// end of ajax request handlers
 
 if (isset($_GET['removetrusteddevices'])) {
     $AUTH->removeTrustedDevices($id, isset($_GET['deviceid']) ? $_GET['deviceid'] : null);
@@ -45,6 +68,9 @@ if (isset($_GET['forcepasswdchange'])) {
     $LMS->forcePasswordChange($id);
     $SESSION->redirect($_SERVER['HTTP_REFERER']);
 }
+
+$divisions = $LMS->GetDivisions();
+$user_divisions = array_keys($LMS->GetDivisions(array('userid' => $id)));
 
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'usercopypermissions.inc.php');
 
@@ -73,6 +99,10 @@ if ($userinfo) {
     }
     if ($userinfo['lastname'] == '') {
         $error['lastname'] = trans('You have to enter first and lastname!');
+    }
+
+    if (!isset($userinfo['divisions'])) {
+        $error['division'] = trans('You have to choose division!');
     }
 
     if ($userinfo['email']!='' && !check_email($userinfo['email'])) {
@@ -126,6 +156,26 @@ if ($userinfo) {
             $userinfo['twofactorauthsecretkey'] = $google2fa->generateSecretKey();
         }
 
+        $diffDivisionAdd = array();
+        $diffDivisionDel = array();
+        // check if user divisions were changed
+        foreach ($user_divisions as $user_division) {
+            if (in_array(intval($user_division), $userinfo['divisions'])) {
+                continue;
+            } else {
+                $diffDivisionDel[] = intval($user_division);
+            }
+        }
+        foreach ($userinfo['divisions'] as $userinfo_division) {
+            if (in_array(intval($userinfo_division), $user_divisions)) {
+                continue;
+            } else {
+                $diffDivisionAdd[] = intval($userinfo_division);
+            }
+        }
+        $userinfo['diff_division_del'] = $diffDivisionDel;
+        $userinfo['diff_division_add'] = $diffDivisionAdd;
+
         $userinfo['accessfrom'] = $accessfrom;
         $userinfo['accessto'] = $accessto;
         $LMS->UserUpdate($userinfo);
@@ -142,48 +192,12 @@ if ($userinfo) {
             );
         }
 
-        if ($SYSLOG) {
-            $groups = $DB->GetAll(
-                'SELECT id, customergroupid FROM excludedgroups WHERE userid = ?',
-                array($userinfo['id'])
-            );
-            if (!empty($groups)) {
-                foreach ($groups as $group) {
-                    $args = array(
-                    SYSLOG::RES_EXCLGROUP => $group['id'],
-                    SYSLOG::RES_CUSTGROUP => $group['customergroupid'],
-                    SYSLOG::RES_USER => $userinfo['id']
-                    );
-                    $SYSLOG->AddMessage(SYSLOG::RES_EXCLGROUP, SYSLOG::OPER_DELETE, $args);
-                }
-            }
-        }
-        $DB->Execute('DELETE FROM excludedgroups WHERE userid = ?', array($userinfo['id']));
-        if (isset($_POST['selected'])) {
-            foreach ($_POST['selected'] as $idx => $name) {
-                $DB->Execute('INSERT INTO excludedgroups (customergroupid, userid)
-						VALUES(?, ?)', array($idx, $userinfo['id']));
-                if ($SYSLOG) {
-                    $args = array(
-                        SYSLOG::RES_EXCLGROUP =>
-                        $DB->GetLastInsertID('excludedgroups'),
-                        SYSLOG::RES_CUSTGROUP => $idx,
-                        SYSLOG::RES_USER => $userinfo['id']
-                    );
-                    $SYSLOG->AddMessage(SYSLOG::RES_EXCLGROUP, SYSLOG::OPER_ADD, $args);
-                }
-            }
-        }
-
         $SESSION->redirect('?m=userinfo&id='.$userinfo['id']);
     } else {
-        $userinfo['selected'] = array();
-        if (isset($_POST['selected'])) {
-            foreach ($_POST['selected'] as $idx => $name) {
-                $userinfo['selected'][$idx]['id'] = $idx;
-                $userinfo['selected'][$idx]['name'] = $name;
-            }
-        }
+        $SMARTY->assign('selectedusergroups', !empty($userinfo['usergroups']) ? array_flip($userinfo['usergroups']) : array());
+
+        $customergroups = $LMS->getAllCustomerGroups();
+        $SMARTY->assign('selectedgroups', array_flip(isset($userinfo['customergroups']) ? $userinfo['customergroups'] : array()));
 
         $access = AccessRights::getInstance();
         $accesslist = $access->getArray(array_keys($acl));
@@ -193,6 +207,13 @@ if ($userinfo) {
 
     $access = AccessRights::getInstance();
     $accesslist = $access->getArray($rights);
+
+    $selectedusergroups = $LMS->getUserAssignments($id);
+    $SMARTY->assign('selectedusergroups', $selectedusergroups);
+
+    $customergroups = $LMS->getAllCustomerGroups();
+    $excludedgroups = $LMS->getExcludedCustomerGroups($id);
+    $SMARTY->assign('selectedgroups', array_flip(array_diff(array_keys($customergroups), $excludedgroups)));
 }
 
 foreach ($LMS->GetUserInfo($id) as $key => $value) {
@@ -201,32 +222,18 @@ foreach ($LMS->GetUserInfo($id) as $key => $value) {
     }
 }
 
-if (!isset($userinfo['selected'])) {
-    $userinfo['selected'] = $DB->GetAllByKey('SELECT g.id, g.name
-		FROM customergroups g, excludedgroups
-	        WHERE customergroupid = g.id AND userid = ?
-		ORDER BY name', 'id', array($userinfo['id']));
-}
-
 $layout['pagetitle'] = trans('User Edit: $a', $userinfo['login']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
-
-if ($SYSLOG && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.transaction_logs'))) {
-    $trans = $SYSLOG->GetTransactions(array('userid' => $id));
-    if (!empty($trans)) {
-        foreach ($trans as $idx => $tran) {
-            $SYSLOG->DecodeTransaction($trans[$idx]);
-        }
-    }
-    $SMARTY->assign('transactions', $trans);
-    $SMARTY->assign('userid', $id);
-}
+$SESSION->save('backto', $_SERVER['QUERY_STRING'], true);
 
 $SMARTY->assign('accesslist', $accesslist);
-$SMARTY->assign('available', $DB->GetAllByKey('SELECT id, name FROM customergroups ORDER BY name', 'id'));
+$SMARTY->assign('customergroups', $customergroups);
 $SMARTY->assign('users', $LMS->GetUserNames());
+$SMARTY->assign('usergroups', $LMS->getAlluserGroups());
 $SMARTY->assign('userinfo', $userinfo);
+$SMARTY->assign('divisions', $divisions);
+$SMARTY->assign('user_divisions', $user_divisions);
 $SMARTY->assign('error', $error);
 
 $SMARTY->display('user/useredit.html');

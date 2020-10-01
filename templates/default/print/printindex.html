@@ -2,6 +2,25 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
+
+<style>
+
+	.print-menu {
+		display: flex;
+		align-items: center;
+	}
+
+	.print-menu > *:not(:first-child) {
+		margin-left: 1em;
+	}
+
+	.print-filter {
+		display: flex;
+		align-items: center;
+	}
+
+</style>
+
 <H1>{$layout.pagetitle}</H1>
 {$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
 {if $printmenu=="customer"}
@@ -48,6 +67,7 @@
 										<OPTION value="59">{trans("without contracts")}</OPTION>
 										<OPTION value="60">{trans("with expired contracts")}</OPTION>
 										<OPTION value="61">{trans("with expiring contracts")}</OPTION>
+										<OPTION VALUE="75">{trans("with discount")}</OPTION>
 										<OPTION value="73">{trans("with unarchived documents")}</OPTION>
 										<OPTION value="-1" data-exclusive>{trans("without nodes")}</OPTION>
 									</SELECT>
@@ -1389,6 +1409,18 @@
 					</TD>
 					<TD style="width: 92%;"></TD>
 				</TR>
+				<tr>
+					<td colspan="9">
+						<label>
+							<input type="checkbox" name="showavg" value="1" checked>
+							{trans("show average speed")}
+						</label>
+						<label>
+							<input type="checkbox" name="showmax" value="1" checked>
+							{trans("show maximum speed")}
+						</label>
+					</td>
+				</tr>
 			</TABLE>
 		</TD>
 	</TR>
@@ -1607,8 +1639,10 @@
 </script>
 
 </FORM>
+{/if}
 
-<form method="post" name="uke-income" id="uke-income" action="?m=netdevprint&type=uke-income" target="_blank">
+{if $printmenu == "netdev" || $printmenu == "finances"}
+<form method="post" name="uke-income" id="uke-income" action="?m=netdevprint&type=uke-income&module-filter=print" target="_blank">
 	<input type="submit" class="hiddenbtn">
 	<table class="lmsbox">
 		<colgroup>
@@ -1633,11 +1667,11 @@
 			</td>
 			<td class="nobr">
 				<label>
-					<input type="radio" name="type" value="linktechnologies" checked>
+					<input type="radio" name="type" value="linktechnologies"{if !isset($filter['uke-income']['type']) || $filter['uke-income']['type'] == 'linktechnologies'} checked{/if}>
 					{trans("link technologies")}
 				</label>
 				<label>
-					<input type="radio" name="type" value="servicetypes">
+					<input type="radio" name="type" value="servicetypes"{if isset($filter['uke-income']['type']) && $filter['uke-income']['type'] == 'servicetypes'} checked{/if}>
 					{trans("service types")}
 				</label>
 			</td>
@@ -1653,7 +1687,8 @@
 				<select name="division"	{tip text="Select division"}>
 					<option value="">{trans("- all -")}</option>
 					{foreach $divisions as $division}
-						<option value="{$division.id}">{$division.shortname}</option>
+						<option value="{$division.id}"{if isset($filter['uke-income']['division']) && $filter['uke-income']['division'] == $division.id} selected{/if}
+							>{$division.shortname}</option>
 					{/foreach}
 				</select>
 			</td>
@@ -1667,8 +1702,12 @@
 			</TD>
 			<TD class="nobr">
 				{date_period_preset from="#uke-income [name=\"from\"]" to="#uke-income [name=\"to\"]" periods="previous-year,previous-month,current-year,current-month,next-month,next-year"}
-				{trans("From")}&nbsp;<INPUT type="text" name="from" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
-				{trans("To")}&nbsp;<INPUT type="text" name="to" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+				{trans("From")}
+				<INPUT type="text" name="from" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}"
+					{tip class="lms-ui-date no-persistent-filter-field" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+				{trans("To")}
+				<INPUT type="text" name="to" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}"
+					{tip class="lms-ui-date no-persistent-filter-field" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 			</TD>
 		</tr>
 		<tr>
@@ -1681,7 +1720,7 @@
 				</label>
 			</td>
 			<td>
-				<input type="checkbox" name="bandwidths" id="bandwidths" value="1">
+				<input type="checkbox" name="bandwidths" id="bandwidths" value="1"{if isset($filter['uke-income']['bandwidths'])} checked{/if}>
 			</td>
 		</tr>
 		<tr>
@@ -1694,17 +1733,23 @@
 				</label>
 			</td>
 			<td>
-				<input type="checkbox" name="brutto" id="brutto" value="1">
+				<input type="checkbox" name="brutto" id="brutto" value="1"{if isset($filter['uke-income']['brutto'])} checked{/if}>
 			</td>
 		</tr>
 		<tr>
-			<td colspan="3" class="buttons">
-				<a href="javascript:document.forms['uke-income'].submit();">{trans("Save")} <img src="img/save.gif" alt=""></a>
+			<TD colspan="3" class="lms-ui-box-buttons">
+				<div class="print-menu">
+					{button icon="print" label="Print" onclick="javascript:document.forms['uke-income'].submit();"}
+					<div class="print-filter">
+						<strong>{trans("Filter:")}</strong>
+						{persistent_filter id="uke-income"}
+					</div>
+				<div>
 			</td>
 		</tr>
 		</tbody>
 	</table>
 </FORM>
-
 {/if}
+
 {/block}

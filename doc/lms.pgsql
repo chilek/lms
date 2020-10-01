@@ -135,6 +135,20 @@ CREATE TABLE location_boroughs (
 );
 
 /* --------------------------------------------------------
+  Structure of table "location_city_types"
+-------------------------------------------------------- */
+DROP SEQUENCE IF EXISTS location_city_types_id_seq;
+CREATE SEQUENCE location_city_types_id_seq;
+DROP TABLE IF EXISTS location_city_types CASCADE;
+CREATE TABLE location_city_types (
+    id integer DEFAULT nextval('location_city_types_id_seq'::text) NOT NULL,
+    ident varchar(8) NOT NULL,
+    name varchar(64) NOT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT location_city_types_name_ukey UNIQUE (name)
+);
+
+/* --------------------------------------------------------
   Structure of table "location_cities"
 -------------------------------------------------------- */
 DROP SEQUENCE IF EXISTS location_cities_id_seq;
@@ -145,6 +159,8 @@ CREATE TABLE location_cities (
 	ident varchar(8)    NOT NULL, -- TERYT: SYM / SYMPOD
 	name varchar(64)    NOT NULL, -- TERYT: NAZWA
 	cityid integer      DEFAULT NULL,
+	type integer        DEFAULT NULL
+		CONSTRAINT location_cities_type_fkey REFERENCES location_city_types (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	boroughid integer   DEFAULT NULL
 		REFERENCES location_boroughs (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (id)
@@ -296,6 +312,7 @@ CREATE TABLE customers (
     paytime smallint 	DEFAULT -1 NOT NULL,
     paytype smallint 	DEFAULT NULL,
     documentmemo text   DEFAULT NULL,
+    flags smallint NOT NULL DEFAULT 0,
 	PRIMARY KEY (id)
 );
 CREATE INDEX customers_lastname_idx ON customers (lastname, name);
@@ -309,6 +326,23 @@ CREATE TABLE customerconsents (
 );
 CREATE INDEX customerconsents_cdate_idx ON customerconsents (cdate);
 CREATE INDEX customerconsents_type_idx ON customerconsents (type);
+
+/* --------------------------------------------------------
+  Structure of table "customernotes" (customernotes)
+-------------------------------------------------------- */
+DROP SEQUENCE IF EXISTS customernotes_id_seq;
+CREATE SEQUENCE customernotes_id_seq;
+DROP TABLE IF EXISTS customernotes CASCADE;
+CREATE TABLE customernotes (
+    id integer DEFAULT nextval('customernotes_id_seq'::text) NOT NULL,
+    userid integer DEFAULT NULL
+       CONSTRAINT customernotes_userid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    customerid integer NOT NULL
+       CONSTRAINT customernotes_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    dt integer NOT NULL,
+    message text NOT NULL,
+    PRIMARY KEY (id)
+);
 
 /* --------------------------------------------------------
   Structure of table "numberplans"
@@ -443,6 +477,7 @@ CREATE TABLE documents (
     senddate integer	DEFAULT 0 NOT NULL,
     memo text           DEFAULT NULL,
     confirmdate integer NOT NULL DEFAULT 0,
+    flags smallint DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
 );
 CREATE INDEX documents_cdate_idx ON documents(cdate);
@@ -763,7 +798,7 @@ CREATE TABLE tariffs (
 	voip_tariff_id integer      DEFAULT NULL
 		REFERENCES voip_tariffs (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	voip_tariff_rule_id integer DEFAULT NULL
-		REFERENCES voip_rules (id) ON DELETE SET NULL ON UPDATE CASCADE,
+		CONSTRAINT tariffs_voip_tariff_rule_id_fkey REFERENCES voip_rule_groups (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	datefrom integer	NOT NULL DEFAULT 0,
 	dateto integer		NOT NULL DEFAULT 0,
 	authtype smallint 	DEFAULT 0 NOT NULL,
@@ -839,6 +874,7 @@ CREATE TABLE liabilities (
 	taxid integer       	NOT NULL
 		CONSTRAINT liabilities_taxid_fkey REFERENCES taxes (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	prodid varchar(255) 	DEFAULT '' NOT NULL,
+	type smallint DEFAULT -1 NOT NULL,
 	PRIMARY KEY (id)
 );
 
@@ -857,6 +893,7 @@ CREATE TABLE assignments (
 	customerid integer	NOT NULL
 		CONSTRAINT assignments_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	period smallint 	DEFAULT 0 NOT NULL,
+	backwardperiod smallint DEFAULT 0 NOT NULL,
 	at integer 		DEFAULT 0 NOT NULL,
 	datefrom integer	DEFAULT 0 NOT NULL,
 	dateto integer		DEFAULT 0 NOT NULL,
@@ -1005,7 +1042,7 @@ CREATE INDEX cashimport_sourceid_idx ON cashimport (sourceid);
 CREATE TABLE customerbalances (
     customerid integer NOT NULL
         CONSTRAINT customerbalances_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    balance numeric(9,2) NOT NULL
+    balance numeric(12,2) NOT NULL
 );
 
 /* --------------------------------------------------------
@@ -1357,6 +1394,21 @@ CREATE INDEX nodes_ipaddr_pub_idx ON nodes (ipaddr_pub);
 CREATE INDEX nodes_linkradiosector_idx ON nodes (linkradiosector);
 CREATE INDEX nodes_authtype_idx ON nodes (authtype);
 
+/* --------------------------------------------------------
+  Structure of table "routednetworks"
+-------------------------------------------------------- */
+CREATE SEQUENCE routednetworks_id_seq;
+CREATE TABLE routednetworks (
+    id integer DEFAULT nextval('routednetworks_id_seq'::text) NOT NULL,
+    nodeid integer NOT NULL
+        CONSTRAINT routednetworks_nodeid_fkey REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    netid integer NOT NULL
+        CONSTRAINT routednetworks_netid_fkey REFERENCES networks (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    comment varchar(256) DEFAULT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT routednetworks_netid_key UNIQUE (netid)
+);
+
 /* ---------------------------------------------------
  Structure of table "ewx_stm_nodes" (EtherWerX(R))
 ------------------------------------------------------*/
@@ -1547,6 +1599,7 @@ CREATE TABLE promotionassignments (
     optional smallint   DEFAULT 0 NOT NULL,
     label varchar(60) DEFAULT NULL,
     orderid integer     NOT NULL DEFAULT 0,
+    backwardperiod smallint DEFAULT 0 NOT NULL,
     PRIMARY KEY (id)
 );
 CREATE INDEX promotionassignments_tariffid_idx ON promotionassignments (tariffid);
@@ -2124,19 +2177,21 @@ DROP SEQUENCE IF EXISTS uiconfig_id_seq;
 CREATE SEQUENCE uiconfig_id_seq;
 DROP TABLE IF EXISTS uiconfig CASCADE;
 CREATE TABLE uiconfig (
-    id 		integer 	DEFAULT nextval('uiconfig_id_seq'::text) NOT NULL,
-    section 	varchar(64) 	NOT NULL DEFAULT '',
-    var 	varchar(64) 	NOT NULL DEFAULT '',
-    value 	text 		NOT NULL DEFAULT '',
-    description text 		NOT NULL DEFAULT '',
-    disabled 	smallint 	NOT NULL DEFAULT 0,
-    type 	smallint 	NOT NULL DEFAULT 0,
-    userid 	integer 	DEFAULT NULL
+    id          integer         DEFAULT nextval('uiconfig_id_seq'::text) NOT NULL,
+    section     varchar(64)     NOT NULL DEFAULT '',
+    var         varchar(64)     NOT NULL DEFAULT '',
+    value       text            NOT NULL DEFAULT '',
+    description text            NOT NULL DEFAULT '',
+    disabled    smallint        NOT NULL DEFAULT 0,
+    type        smallint        NOT NULL DEFAULT 0,
+    userid      integer         DEFAULT NULL
         CONSTRAINT uiconfig_userid_fkey REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    configid 	integer 	DEFAULT NULL
-        CONSTRAINT uiconfig_configid_fkey REFERENCES uiconfig (id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    divisionid      integer         DEFAULT NULL
+        CONSTRAINT uiconfig_divisionid_fkey REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    configid    integer         DEFAULT NULL
+        CONSTRAINT uiconfig_configid_fkey REFERENCES uiconfig (id) ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY (id),
-    CONSTRAINT uiconfig_section_key UNIQUE (section, var, userid)
+    CONSTRAINT uiconfig_section_var_userid_divisionid_ukey UNIQUE (section, var, userid, divisionid)
 );
 
 /* ---------------------------------------------------
@@ -2506,7 +2561,7 @@ DROP TABLE IF EXISTS templates CASCADE;
 CREATE TABLE templates (
 	id      integer		 DEFAULT nextval('templates_id_seq'::text) NOT NULL,
 	type    smallint	 NOT NULL,
-	name    varchar(50)	 NOT NULL,
+	name    varchar(100)	 NOT NULL,
 	subject varchar(255) DEFAULT '' NOT NULL,
 	message	text		 DEFAULT '' NOT NULL,
 	PRIMARY KEY (id),
@@ -2574,6 +2629,24 @@ CREATE TABLE userassignments (
 	UNIQUE (usergroupid, userid)
 );
 CREATE INDEX userassignments_userid_idx ON userassignments (userid);
+
+/* ---------------------------------------------------
+ Structure of table userdivisions
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS userdivisions_id_seq;
+CREATE SEQUENCE userdivisions_id_seq;
+DROP TABLE IF EXISTS userdivisions CASCADE;
+CREATE TABLE userdivisions (
+    id integer DEFAULT nextval('userdivisions_id_seq'::text) NOT NULL,
+    userid      integer     NOT NULL
+        CONSTRAINT users_userid_fkey REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    divisionid  integer     NOT NULL
+        CONSTRAINT divisions_divisionid_fkey REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (id),
+    CONSTRAINT userdivisions_userid_divisionid_ukey UNIQUE (userid, divisionid)
+);
+DROP INDEX IF EXISTS userdivisions_userid_idx;
+CREATE INDEX userdivisions_userid_idx ON userdivisions (userid);
 
 /* ---------------------------------------------------
  Structure of table passwdhistory
@@ -2722,7 +2795,7 @@ END
 ' LANGUAGE SQL;
 
 CREATE VIEW vaddresses AS
-    SELECT *, country_id AS countryid, city_id AS location_city, street_id AS location_street,
+    SELECT a.*, c.ccode AS ccode, country_id AS countryid, city_id AS location_city, street_id AS location_street,
         house AS location_house, flat AS location_flat,
         (TRIM(both ' ' FROM
              (CASE WHEN street IS NOT NULL THEN street ELSE city END)
@@ -2741,19 +2814,20 @@ CREATE VIEW vaddresses AS
                         ELSE (CASE WHEN flat IS NOT NULL THEN ' ' || flat ELSE '' END)
                     END)
         )) AS location
-    FROM addresses;
+    FROM addresses a
+    LEFT JOIN countries c ON c.id = a.country_id;
 
 /* ---------------------------------------------------
  Structure of view "vdivisions"
 ------------------------------------------------------*/
 CREATE VIEW vdivisions AS
     SELECT d.*,
-        a.country_id as countryid, a.zip as zip, a.city as city, a.address
+        a.country_id as countryid, a.ccode, a.zip as zip, a.city as city, a.address
     FROM divisions d
         JOIN vaddresses a ON a.id = d.address_id;
 
 CREATE VIEW vnetworks AS
-    SELECT h.name AS hostname, ne.*, no.ownerid, a.city_id as location_city,
+    SELECT h.name AS hostname, ne.*, no.ownerid, a.ccode, a.city_id as location_city,
         a.street_id as location_street, a.house as location_house, a.flat as location_flat,
         no.chkmac, inet_ntoa(ne.address) || '/' || mask2prefix(inet_aton(ne.mask)) AS ip,
         no.id AS nodeid, a.location
@@ -2763,15 +2837,29 @@ CREATE VIEW vnetworks AS
         LEFT JOIN vaddresses a ON no.address_id = a.id
     WHERE no.ipaddr = 0 AND no.ipaddr_pub = 0;
 
+CREATE VIEW customerconsentview AS
+    SELECT c.id AS customerid,
+        SUM(CASE WHEN cc.type = 1 THEN cc.cdate ELSE 0 END)::integer AS consentdate,
+        SUM(CASE WHEN cc.type = 2 THEN 1 ELSE 0 END)::smallint AS invoicenotice,
+        SUM(CASE WHEN cc.type = 3 THEN 1 ELSE 0 END)::smallint AS mailingnotice,
+        SUM(CASE WHEN cc.type = 8 THEN 1 ELSE 0 END)::smallint AS smsnotice,
+        SUM(CASE WHEN cc.type = 4 THEN 1 ELSE 0 END)::smallint AS einvoice
+    FROM customers c
+        LEFT JOIN customerconsents cc ON cc.customerid = c.id
+    GROUP BY c.id;
+
 CREATE VIEW customerview AS
     SELECT c.*,
-        (CASE WHEN cc1.type IS NULL THEN 0 ELSE cc1.cdate END) AS consentdate,
-        (CASE WHEN cc2.type IS NULL THEN 0 ELSE 1 END) AS invoicenotice,
-        (CASE WHEN cc3.type IS NULL THEN 0 ELSE 1 END) AS mailingnotice,
-        (CASE WHEN cc4.type IS NULL THEN 0 ELSE 1 END) AS einvoice,
-        a1.country_id as countryid, a1.zip as zip, a1.city as city,
+        cc.consentdate AS consentdate,
+        cc.invoicenotice AS invoicenotice,
+        cc.mailingnotice AS mailingnotice,
+        cc.smsnotice AS smsnotice,
+        cc.einvoice AS einvoice,
+        a1.country_id as countryid, a1.ccode,
+        a1.zip as zip, a1.city as city,
         a1.street as street,a1.house as building, a1.flat as apartment,
-        a2.country_id as post_countryid, a2.zip as post_zip,
+        a2.country_id as post_countryid, a2.ccode AS post_ccode,
+        a2.zip as post_zip,
         a2.city as post_city, a2.street as post_street, a2.name as post_name,
         a2.house as post_building, a2.flat as post_apartment,
         a1.address as address, a1.location AS full_address,
@@ -2783,24 +2871,28 @@ CREATE VIEW customerview AS
         LEFT JOIN vaddresses a1 ON ca1.address_id = a1.id
         LEFT JOIN customer_addresses ca2 ON c.id = ca2.customer_id AND ca2.type = 0
         LEFT JOIN vaddresses a2 ON ca2.address_id = a2.id
-        LEFT JOIN customerconsents cc1 ON cc1.customerid = c.id AND cc1.type = 1
-        LEFT JOIN customerconsents cc2 ON cc2.customerid = c.id AND cc2.type = 2
-        LEFT JOIN customerconsents cc3 ON cc3.customerid = c.id AND cc3.type = 3
-        LEFT JOIN customerconsents cc4 ON cc4.customerid = c.id AND cc4.type = 4
+        LEFT JOIN customerconsentview cc ON cc.customerid = c.id
     WHERE NOT EXISTS (
         SELECT 1 FROM customerassignments a
         JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
         WHERE e.userid = lms_current_user() AND a.customerid = c.id)
+        AND (lms_current_user() = 0 OR c.divisionid IN (
+            SELECT ud.divisionid
+            FROM userdivisions ud
+            WHERE ud.userid = lms_current_user()))
         AND c.type < 2;
 
 CREATE VIEW contractorview AS
     SELECT c.*,
-        (CASE WHEN cc1.type IS NULL THEN 0 ELSE cc1.cdate END) AS consentdate,
-        (CASE WHEN cc2.type IS NULL THEN 0 ELSE 1 END) AS invoicenotice,
-        (CASE WHEN cc3.type IS NULL THEN 0 ELSE 1 END) AS mailingnotice,
-        (CASE WHEN cc4.type IS NULL THEN 0 ELSE 1 END) AS einvoice,
-        a1.country_id as countryid, a1.zip as zip, a1.city as city, a1.street as street,
-        a1.house as building, a1.flat as apartment, a2.country_id as post_countryid,
+        cc.consentdate AS consentdate,
+        cc.invoicenotice AS invoicenotice,
+        cc.mailingnotice AS mailingnotice,
+        cc.smsnotice AS smsnotice,
+        cc.einvoice AS einvoice,
+        a1.country_id as countryid, a1.ccode,
+        a1.zip as zip, a1.city as city, a1.street as street,
+        a1.house as building, a1.flat as apartment,
+        a2.country_id as post_countryid, a2.ccode AS post_ccode,
         a2.zip as post_zip, a2.city as post_city, a2.street as post_street,
         a2.house as post_building, a2.flat as post_apartment, a2.name as post_name,
         a1.address as address, a1.location AS full_address,
@@ -2812,20 +2904,20 @@ CREATE VIEW contractorview AS
         LEFT JOIN vaddresses a1 ON ca1.address_id = a1.id
         LEFT JOIN customer_addresses ca2 ON c.id = ca2.customer_id AND ca2.type = 0
         LEFT JOIN vaddresses a2 ON ca2.address_id = a2.id
-        LEFT JOIN customerconsents cc1 ON cc1.customerid = c.id AND cc1.type = 1
-        LEFT JOIN customerconsents cc2 ON cc2.customerid = c.id AND cc2.type = 2
-        LEFT JOIN customerconsents cc3 ON cc3.customerid = c.id AND cc3.type = 3
-        LEFT JOIN customerconsents cc4 ON cc4.customerid = c.id AND cc4.type = 4
+        LEFT JOIN customerconsentview cc ON cc.customerid = c.id
     WHERE c.type = 2;
 
 CREATE VIEW customeraddressview AS
     SELECT c.*,
-        (CASE WHEN cc1.type IS NULL THEN 0 ELSE cc1.cdate END) AS consentdate,
-        (CASE WHEN cc2.type IS NULL THEN 0 ELSE 1 END) AS invoicenotice,
-        (CASE WHEN cc3.type IS NULL THEN 0 ELSE 1 END) AS mailingnotice,
-        (CASE WHEN cc4.type IS NULL THEN 0 ELSE 1 END) AS einvoice,
-        a1.country_id as countryid, a1.zip as zip, a1.city as city, a1.street as street,
-        a1.house as building, a1.flat as apartment, a2.country_id as post_countryid,
+        cc.consentdate AS consentdate,
+        cc.invoicenotice AS invoicenotice,
+        cc.mailingnotice AS mailingnotice,
+        cc.smsnotice AS smsnotice,
+        cc.einvoice AS einvoice,
+        a1.country_id as countryid, a1.ccode,
+        a1.zip as zip, a1.city as city, a1.street as street,
+        a1.house as building, a1.flat as apartment,
+        a2.country_id as post_countryid, a2.ccode AS post_ccode,
         a2.zip as post_zip, a2.city as post_city, a2.street as post_street,
         a2.house as post_building, a2.flat as post_apartment, a2.name as post_name,
         a1.address as address, a1.location AS full_address,
@@ -2837,10 +2929,7 @@ CREATE VIEW customeraddressview AS
         LEFT JOIN vaddresses a1 ON ca1.address_id = a1.id
         LEFT JOIN customer_addresses ca2 ON c.id = ca2.customer_id AND ca2.type = 0
         LEFT JOIN vaddresses a2 ON ca2.address_id = a2.id
-        LEFT JOIN customerconsents cc1 ON cc1.customerid = c.id AND cc1.type = 1
-        LEFT JOIN customerconsents cc2 ON cc2.customerid = c.id AND cc2.type = 2
-        LEFT JOIN customerconsents cc3 ON cc3.customerid = c.id AND cc3.type = 3
-        LEFT JOIN customerconsents cc4 ON cc4.customerid = c.id AND cc4.type = 4
+        LEFT JOIN customerconsentview cc ON cc.customerid = c.id
     WHERE c.type < 2;
 
 CREATE OR REPLACE FUNCTION int2txt(bigint) RETURNS text AS $$
@@ -2856,6 +2945,7 @@ SELECT n.id, inet_ntoa(n.ipaddr) AS nasname, d.shortname, d.nastype AS type,
 
 CREATE VIEW vnodes AS
     SELECT n.*, m.mac,
+        a.ccode,
         a.city_id as location_city, a.street_id as location_street,
         a.house as location_house, a.flat as location_flat,
         a.location
@@ -2865,7 +2955,9 @@ CREATE VIEW vnodes AS
     WHERE n.ipaddr <> 0 OR n.ipaddr_pub <> 0;
 
 CREATE VIEW vmacs AS
-    SELECT n.*, m.mac, m.id AS macid, a.city_id as location_city,
+    SELECT n.*, m.mac, m.id AS macid,
+        a.ccode,
+        a.city_id as location_city,
         a.street_id as location_street, a.location,
         a.house as location_building, a.flat as location_flat
     FROM nodes n
@@ -2880,6 +2972,7 @@ CREATE VIEW vnodetariffs AS
         t.downrate_n, t.downceil_n,
         t.uprate_n, t.upceil_n,
         m.mac,
+        a.ccode,
         a.city_id as location_city, a.street_id as location_street,
         a.house as location_house, a.flat as location_flat,
         a.location
@@ -2950,6 +3043,7 @@ CREATE VIEW vnodealltariffs AS
         COALESCE(t1.up_burst_threshold_n, t2.up_burst_threshold_n, 0) AS up_burst_threshold_n,
         COALESCE(t1.up_burst_limit_n, t2.up_burst_limit_n, 0) AS up_burst_limit_n,
         m.mac,
+        a.ccode,
         a.city_id as location_city, a.street_id as location_street,
         a.house as location_house, a.flat as location_flat,
         a.location
@@ -3145,8 +3239,17 @@ CREATE VIEW customermailsview AS
 			GROUP BY customerid;
 
 CREATE VIEW vusers AS
-	SELECT *, (firstname || ' ' || lastname) AS name, (lastname || ' ' || firstname) AS rname
-	FROM users;
+    SELECT u.*, (u.firstname || ' ' || u.lastname) AS name, (u.lastname || ' ' || u.firstname) AS rname
+    FROM users u
+    LEFT JOIN userdivisions ud ON u.id = ud.userid
+    WHERE lms_current_user() = 0 OR ud.divisionid IN (SELECT ud2.divisionid
+                             FROM userdivisions ud2
+                             WHERE ud2.userid = lms_current_user())
+    GROUP BY u.id;
+
+CREATE VIEW vallusers AS
+SELECT *, (firstname || ' ' || lastname) AS name, (lastname || ' ' || firstname) AS rname
+FROM users;
 
 CREATE FUNCTION customerbalances_update()
     RETURNS trigger
@@ -3214,7 +3317,8 @@ CREATE TRIGGER cash_customerbalances_truncate_trigger AFTER TRUNCATE ON cash
 /* ---------------------------------------------------
  Data records
 ------------------------------------------------------*/
-INSERT INTO rtcategories (name, description) VALUES ('default', 'default category');
+INSERT INTO rtcategories (name, description, style) VALUES ('default', 'default category', 'background-color:#ffffff;color:#000000');
+
 INSERT INTO up_rights(module, name, description)
         VALUES ('info', 'edit_addr_ack', 'Customer can change address information with admin acknowlegment');
 INSERT INTO up_rights(module, name, description)
@@ -3232,6 +3336,9 @@ INSERT INTO countries (name, ccode) VALUES
 ('USA', 'en_US'),
 ('Czech', 'cs_CZ'),
 ('Guyana', 'en_GY');
+
+INSERT INTO addresses (name) VALUES ('default');
+INSERT INTO divisions (shortname, name, address_id) VALUES ('default', 'default', (SELECT MAX(id) FROM addresses));
 
 INSERT INTO nastypes (name) VALUES
 ('mikrotik_snmp'),
@@ -3337,6 +3444,7 @@ URL: %url
 ('phpui', 'default_teryt_city', 'false', '', 0),
 ('phpui', 'passwordhistory', 6, '', 0),
 ('phpui', 'event_usergroup_selection_type', 'update', '', 0),
+('phpui', 'force_global_division_context', 'false', '', 0),
 ('payments', 'date_format', '%Y/%m/%d', '', 0),
 ('payments', 'default_unit_name', 'pcs.', '', 0),
 ('voip', 'default_cost_limit', '200', '', 2),
@@ -3436,6 +3544,7 @@ URL: %url
 ('userpanel', 'hide_archived_documents', 'false', '', 0),
 ('userpanel', 'sms_credential_reminders', 'true', '', 0),
 ('userpanel', 'mail_credential_reminders', 'true', '', 0),
+('userpanel', 'startup_module', 'info', '', 0),
 ('directories', 'userpanel_dir', 'userpanel', '', 0);
 
 INSERT INTO invprojects (name, type) VALUES ('inherited', 1);
@@ -3767,6 +3876,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020042000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020100100');
 
 COMMIT;

@@ -34,6 +34,23 @@ if (!$userinfo || $userinfo['deleted']) {
     $SESSION->redirect('?m=userlist');
 }
 
+if (isset($_GET['oper']) && $_GET['oper'] == 'loadtransactionlist') {
+    header('Content-Type: text/html');
+
+    if ($SYSLOG && ConfigHelper::checkPrivilege('transaction_logs')) {
+        $trans = $SYSLOG->GetTransactions(array(
+            'userid' => $id,
+            'limit' => 300,
+            'details' => true,
+        ));
+        $SMARTY->assign('transactions', $trans);
+        $SMARTY->assign('userid', $id);
+        die($SMARTY->fetch('transactionlist.html'));
+    }
+
+    die();
+}
+
 $rights = $LMS->GetUserRights($id);
 $access = AccessRights::getInstance();
 $accesslist = $access->getArray($rights);
@@ -50,17 +67,7 @@ $userinfo['ntype'] = implode(', ', $ntype);
 $layout['pagetitle'] = trans('User Info: $a', $userinfo['login']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
-
-if ($SYSLOG && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.transaction_logs'))) {
-    $trans = $SYSLOG->GetTransactions(array('userid' => $id));
-    if (!empty($trans)) {
-        foreach ($trans as $idx => $tran) {
-            $SYSLOG->DecodeTransaction($trans[$idx]);
-        }
-    }
-    $SMARTY->assign('transactions', $trans);
-    $SMARTY->assign('userid', $id);
-}
+$SESSION->save('backto', $_SERVER['QUERY_STRING'], true);
 
 if (!empty($userinfo['twofactorauth'])) {
     $google2fa = new Google2FA();
@@ -73,7 +80,7 @@ if (!empty($userinfo['twofactorauth'])) {
 
     $barcode = new Barcode();
     $barcodeObj = $barcode->getBarcodeObj('QRCODE', $url, 150, 150);
-    $SMARTY->assign('qrcode_image', base64_encode($barcodeObj->getPngData()));
+    $SMARTY->assign('qrcode_image', base64_encode($barcodeObj->getPngData(false)));
 }
 
 $SMARTY->assign('userinfo', $userinfo);
@@ -81,5 +88,6 @@ $SMARTY->assign('accesslist', $accesslist);
 $SMARTY->assign('excludedgroups', $DB->GetAll('SELECT g.id, g.name FROM customergroups g, excludedgroups 
 					    WHERE customergroupid = g.id AND userid = ?
 					    ORDER BY name', array($userinfo['id'])));
+$SMARTY->assign('user_divisions', $LMS->GetDivisions(array('userid' => $userinfo['id'])));
 
 $SMARTY->display('user/userinfo.html');

@@ -27,7 +27,7 @@ $this->Execute("
     CREATE TABLE customerbalances (
         customerid integer NOT NULL CONSTRAINT customerbalances_customerid_fkey
             REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
-        balance numeric(9,2) NOT NULL
+        balance numeric(12,2) NOT NULL
     )
 ");
 

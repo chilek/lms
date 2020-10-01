@@ -38,7 +38,7 @@
 		</td>
 	</TR>
 	<TR>
-		<TD colspan="6" class="nobr">
+		<TD colspan="6">
 			<span class="bold">{trans("Filter:")}</span>
 			{trans("Status")}:
 			<SELECT SIZE="1" NAME="s" ONCHANGE="document.choosefilter.submit();">
@@ -154,8 +154,8 @@
 					<div id="listfiles-{$filecontainer.id}" style="display: none;" class="files">
 						{foreach $filecontainer.files as $file}
 							{documentview id="{$filecontainer.id}-{$file.id}" type=$file.contenttype name=$file.filename
-							url="?m=attachments&attachmentaction=viewfile&type=messageid&id={$netdev.filecontainerid}&fileid={$file.id}" external=true
-							text="{$file.filename} <img src=\"img/{if preg_match('/pdf/',$file.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$file.contenttype)}xls{else}view{/if}.gif\">"}
+								url="?m=attachments&attachmentaction=viewfile&type=messageid&id={$netdev.filecontainerid}&fileid={$file.id}" external=true
+								text="{$file.filename} <i class=\"lms-ui-icon-view{if preg_match('/pdf/',$file.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$file.contenttype)} xls{/if}\"></i>"}
 							<br>
 						{/foreach}
 					</div>

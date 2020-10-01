@@ -268,8 +268,12 @@ if (isset($_POST['tariff'])) {
 
     $SMARTY->assign('error', $error);
 } elseif (isset($_GET['id'])) {
-        $tariff = $DB->GetRow('SELECT * FROM tariffs
-	                WHERE id = ?', array(intval($_GET['id'])));
+    $tariff = $DB->GetRow(
+        'SELECT * FROM tariffs
+        WHERE id = ?',
+        array($_GET['id'])
+    );
+    $tariff['tags'] = $LMS->getTariffTagsForTariff($_GET['id']);
 } else {
     $tariff['domain_limit'] = 0;
     $tariff['alias_limit'] = 0;
@@ -278,11 +282,13 @@ if (isset($_POST['tariff'])) {
         $tariff['quota_' . $type['alias'] . '_limit'] = 0;
     }
 
+    $tariff['type'] = intval(ConfigHelper::getConfig('phpui.default_tariff_type', '-1'));
+
     $default_assignment_period = ConfigHelper::getConfig('phpui.default_assignment_period');
     if (!empty($default_assignment_period)) {
         $tariff['period'] = $default_assignment_period;
     }
-    $tariff['currency'] = LMS::$default_currency;
+    $tariff['currency'] = Localisation::getDefaultCurrency();
 }
 
 $layout['pagetitle'] = trans('New Subscription');

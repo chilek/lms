@@ -231,6 +231,10 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
             if (!empty($pattern['comment_replace'])) {
                 $comment = preg_replace($pattern['comment_replace']['from'], $pattern['comment_replace']['to'], $comment);
             }
+            if (!empty($pattern['customer_replace'])) {
+                $customername = preg_replace($pattern['customer_replace']['from'], $pattern['customer_replace']['to'], $customername);
+            }
+
             $cid = $id;
             if (empty($cid)) {
                 $cid = '-';
@@ -244,11 +248,11 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
             $customer = trim($lastname.' '.$name);
             $comment = trim($comment);
 
-            if (!empty($pattern['use_line_hash'])) {
-                $hash = md5($theline.(!empty($pattern['line_idx_hash']) ? $ln : ''));
-            } else {
-                $hash = md5($time.$value.$customer.$comment.(!empty($pattern['line_idx_hash']) ? $ln : ''));
-            }
+            $hash = md5(
+                (empty($pattern['use_line_hash']) ? $time . $value . $customer . $comment : $theline)
+                    . (!empty($pattern['line_idx_hash']) ? $ln : '')
+                    . (!empty($pattern['filename_hash']) ? $filename : '')
+            );
 
             if (is_numeric($value)) {
                 if (isset($pattern['modvalue']) && $pattern['modvalue']) {
@@ -459,7 +463,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                     );
                     $this->syslog->AddMessage(SYSLOG::RES_CASHIMPORT, SYSLOG::OPER_UPDATE, $args);
                 }
-                $balance['currency'] = LMS::$currency;
+                $balance['currency'] = Localisation::getCurrentCurrency();
                 $finance_manager->AddBalance($balance);
 
                 $this->db->CommitTrans();

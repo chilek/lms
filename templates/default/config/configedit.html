@@ -32,11 +32,29 @@
 
 <FORM method="POST" id="configedit" action="?m=configedit&id={$config.id}" name="config">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE class="lmsbox" id="configedit-lmsbox">
+<INPUT type="hidden" name="config[reftype]" value="{$reftype}">
+<INPUT type="hidden" name="config[refconfigid]" value="{$refconfigid}">
+
+	<TABLE class="lmsbox" id="configedit-lmsbox">
 	<colgroup>
 		<col style="width: 100%;">
 	</colgroup>
     <THEAD>
+		<tr style="background-color: #B6A688;">
+			<td class="bold" style="border-bottom: 1px solid black;">
+				{if empty($reftype)}
+					#1 {trans('Global configuration variable parameters')}
+				{else}
+					{if $reftype == 'division'}
+						#1 {trans('Division configuration variable parameters')}
+					{elseif $reftype == 'divisionuser'}
+						{trans('User in division configuration variable parameters')}
+					{else}
+						{trans('User configuration variable parameters')}
+					{/if}
+				{/if}
+			</td>
+		</tr>
 		<TR>
 			<TD>
 				<table>
@@ -46,32 +64,72 @@
 						<col style="width: 98%;">
 					</colgroup>
 					<tbody>
+						{if !empty($reftype)}
+							{if $reftype == 'division' || $reftype == 'divisionuser'}
+							<tr>
+								<td>
+									{icon name="division" class="fa-fw"}
+								</td>
+								<td class="nobr bold">
+									{trans("Division")}
+								</td>
+								<td>
+									<strong>{$divisioninfo.shortname}</strong>
+									<INPUT type="hidden" name="config[divisionid]" value="{$config.divisionid}">
+								</td>
+							</tr>
+							{/if}
+							{if $reftype == 'divisionuser' || $reftype == 'user'}
+								<tr>
+									<td>
+										{icon name="user" class="fa-fw"}
+									</td>
+									<td class="nobr bold">
+										{trans("User")}
+									</td>
+									<td>
+										<strong>{$config.userid}</strong>
+										<INPUT type="hidden" name="config[userid]" value="{$config.userid}">
+									</td>
+								</tr>
+							{/if}
+						{/if}
 						<TR>
 							<TD>
-								<img src="img/settings.gif" alt="">
+								{icon name="configuration" class="fa-fw"}
 							</TD>
 							<TD class="bold"width="1%">
 								{trans("Section:")}
 							</TD>
 							<td>
-								<SELECT size="1" name="config[section]" size="30" {tip class="lms-ui-combobox" text="Select section" trigger="section"}
+								{if empty($reftype)}
+								<SELECT size="1" name="config[section]" {tip class="lms-ui-combobox" text="Select section" trigger="section"}
 										{if !in_array($config.section, $sections)} data-value="{$config.section}"{/if}>
 									{foreach $sections as $section}
 										<OPTION value="{$section}"{if $config.section == $section} selected{/if}>{$section}</OPTION>
 									{/foreach}
 								</SELECT>
+								{else}
+									<strong>{$config.section}</strong>
+									<INPUT type="hidden" name="config[section]" value="{$config.section}">
+								{/if}&nbsp;
 							</td>
 						</TR>
 						<TR>
 							<TD>
-								<img src="img/settings.gif" alt="">
+								{icon name="service" class="fa-fw"}
 							</TD>
 							<TD class="bold"width="1%">
 								{trans("Name:")}
 							</TD>
 							<TD>
+								{if empty($reftype)}
 								<INPUT type="text" name="config[var]" value="{$config.var}"
 										{tip class="lms-ui-autogrow" text="Enter option name" trigger="var" bold=1}>
+								{else}
+									<strong>{$config.var}</strong>
+									<INPUT type="hidden" name="config[var]" value="{$config.var}">
+								{/if}&nbsp;
 							</TD>
 						</TR>
 					</tbody>
@@ -92,7 +150,7 @@
 						<tbody>
 							<TR>
 								<TD>
-									<img src="img/producer.gif" alt="">
+									{icon name="service" class="fa-fw"}
 								</TD>
 								<TD class="bold">
 									{trans("Value:")}
@@ -105,7 +163,7 @@
 							</TR>
 							<TR>
 								<TD>
-									<img src="img/info1.gif" alt="">
+									{icon name="comment" class="fa-fw"}
 								</TD>
 								<TD class="bold">
 									{trans("Comment:")}
@@ -116,7 +174,7 @@
 							</TR>
 							<TR>
 								<TD>
-									<img src="img/wait.gif" alt="">
+									{icon name="wait" class="fa-fw"}
 								</TD>
 								<TD class="bold">
 									{trans("Status:")}
@@ -125,22 +183,25 @@
 									<INPUT type="checkbox" value="1" id="disabled" name="config[disabled]" {if $config.disabled}CHECKED{/if} {tip text="You can turn it off"}><label for="disabled"> {trans("Off")}</label>
 								</TD>
 							</TR>
-							{if ConfigHelper::checkPrivilege('superuser')}
-							<TR>
-								<TD>
-									<img src="img/desc.gif" alt="">
-								</TD>
-								<TD class="bold">
-									{trans("Type:")}
-								</TD>
-								<TD>
-									<SELECT size="1" name="config[type]" {tip text="Select config type" trigger="type"}>
-										{foreach $_CONFIG_TYPES as $key => $type}
-											<OPTION value="{$key}"{if $config.type == $key} selected{/if}>{$type}</OPTION>
-										{/foreach}
-									</SELECT>
-								</TD>
-							</TR>
+							{if ConfigHelper::checkPrivilege('superuser') && empty($reftype)}
+								<TR>
+									<TD>
+										{icon name="type" class="fa-fw"}
+									</TD>
+									<TD class="bold">
+										{trans("Type:")}
+									</TD>
+									<TD>
+										<SELECT size="1" name="config[type]" {tip text="Select config type" trigger="type"}>
+											{foreach $_CONFIG_TYPES as $key => $type}
+												<OPTION value="{$key}"{if $config.type == $key} selected{/if}>{$type}</OPTION>
+											{/foreach}
+										</SELECT>
+									</TD>
+								</TR>
+							{/if}
+							{if !empty($reftype)}
+								<INPUT type="hidden" name="config[type]" value="{$config.type}">
 							{/if}
 						</tbody>
 					</table>
@@ -173,16 +234,21 @@
 		<TR>
 			<TD class="lms-ui-box-buttons">
 				{button type="submit" onclick="document.config.submit();" icon="save" label="Submit"}
-				{button id="delete-config" href="?m=configdel&id={$config.id}&globalconf=1" icon="delete" label="Delete"}
-				{button type="link-button" href="?m=configlist" icon="cancel" label="Cancel"}
+				{button id="delete-config" href="?m=configdel&id={$config.id}" icon="delete" label="Delete"}
+				{button type="link-button" onclick="location.href = '{$backurl}';" icon="cancel" label="Cancel"}
 			</TD>
 		</TR>
     </TBODY>
 </TABLE>
 </FORM>
 
-{include file="config/configusers.html"}
-
+	{if empty($reftype)}
+		{include file="config/configdivisions.html"}
+		{include file="config/configusers.html"}
+	{/if}
+	{if $reftype == 'division'}
+		{include file="config/configdivisionusers.html"}
+	{/if}
 <script>
 
 	$(function() {
@@ -227,6 +293,7 @@
 				$('[name="config[var]"]').val(data.name).trigger('autogrow');
 				$('[name="config[section]"]').scombobox('val', data.section);
 				getDocumentation(data.section, data.name);
+				$('#configedit').trigger('lms:form_validation_failed');
 			},
 			onLoad: function() {
 				$('[name="config[var]"]:ui-tooltip').tooltip('destroy');

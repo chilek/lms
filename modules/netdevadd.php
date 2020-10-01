@@ -87,9 +87,17 @@ if (isset($netdev)) {
     if (empty($netdev['ownerid']) && !ConfigHelper::checkPrivilege('full_access')
         && ConfigHelper::checkConfig('phpui.teryt_required')
         && !empty($netdev['location_city_name']) && ($netdev['location_country_id'] == 2 || empty($netdev['location_country_id']))
-        && (!isset($netdev['teryt']) || empty($netdev['location_city']))) {
+        && (!isset($netdev['teryt']) || empty($netdev['location_city'])) && $LMS->isTerritState($netdev['location_state_name'])) {
         $error['netdev[teryt]'] = trans('TERRIT address is required!');
     }
+
+    if (!empty($netdev['location_country_id'])) {
+        Localisation::setSystemLanguage($LMS->getCountryCodeById($netdev['location_country_id']));
+    }
+    if (empty($netdev['ownerid']) && $netdev['location_zip'] && !check_zip($netdev['location_zip'])) {
+        $error['location_zip'] = trans('Incorrect ZIP code!');
+    }
+    Localisation::resetSystemLanguage();
 
     $hook_data = $LMS->executeHook(
         'netdevadd_validation_before_submit',

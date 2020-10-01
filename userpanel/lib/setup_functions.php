@@ -43,6 +43,7 @@ function module_setup()
     $SMARTY->assign('shortcut_icon', ConfigHelper::getConfig('userpanel.shortcut_icon', ''));
     $SMARTY->assign('stylelist', getdir(USERPANEL_DIR . DIRECTORY_SEPARATOR . 'style', '^[a-z0-9]*$'));
     $SMARTY->assign('style', ConfigHelper::getConfig('userpanel.style', 'default'));
+    $SMARTY->assign('startupmodule', ConfigHelper::getConfig('userpanel.startup_module', 'info'));
     $SMARTY->assign('hint', ConfigHelper::getConfig('userpanel.hint', 'modern'));
     $SMARTY->assign('hide_nodes_modules', ConfigHelper::getConfig('userpanel.hide_nodes_modules', 0));
     $SMARTY->assign('reminder_mail_sender', ConfigHelper::getConfig('userpanel.reminder_mail_sender', ''));
@@ -90,13 +91,20 @@ function module_submit_setup()
         $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'hint', ?)", array($_POST['hint']));
     }
 
-    if ($oldstyle = $DB->GetOne("SELECT value FROM uiconfig WHERE section = 'userpanel' AND var = 'style'")) {
+    $oldstyle = $DB->GetOne("SELECT value FROM uiconfig WHERE section = 'userpanel' AND var = 'style'");
+    if (is_string($oldstyle)) {
         $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'style'", array($_POST['style']));
         if ($oldstyle != $_POST['style']) {
             userpanel_style_change();
         }
     } else {
         $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'style', ?)", array($_POST['style']));
+    }
+
+    if ($DB->GetOne("SELECT 1 FROM uiconfig WHERE section = 'userpanel' AND var = 'startup_module'")) {
+        $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'startup_module'", array($_POST['startupmodule']));
+    } else {
+        $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'startup_module', ?)", array($_POST['startupmodule']));
     }
 
     if ($DB->GetOne("SELECT 1 FROM uiconfig WHERE section = 'userpanel' AND var = 'hide_nodes_modules'")) {

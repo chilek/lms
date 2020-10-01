@@ -1,6 +1,170 @@
 $Id$
 
-version 25-git (????-??-??):
+version 26-git (????-??-??):
+
+  - enhancement: 'invoices.proforma_conversion_comment_format' allows to define comment format
+    in invoice created from pro forma invoice [chilan]
+  - improvement: pro forma invoices which were transformed to regular invoice present description
+    with line-though [chilan]
+  - improvement: big performance boost in invoice report and jpk generation - LMS::GetInvoiceContent()
+    gets detail level parameter support which allows to restrict returned data [chilan]
+  - improvement: 'phpui.location_autosuggest_max_length' specified maximum matched location items
+    visible in suggestion popup [chilan]
+  - improvement: customer balance box: in aggregate document mode show document comment for invoice
+    transformed from pro forma [chilan]
+  - improvement: allow to manipulate ticket categories during new note add [chilan]
+  - improvement: 'phpui.delete_related_customer_resources' configuration variable allows to specify
+    which customer related resources are removed during not-permanent customer delete process
+    ('assignments,customergroups,nodegroups,nodes,userpanel' by default) [chilan]
+  - improvement: show all receipt positions on receipt list [chilan]
+  - improvement: max download and max upload in customer traffic reports [chilan]
+  - improvement: allow to enable/disable speed column presentation on traffic report [chilan]
+  - enhancement: userpanel SSN/TEN and PIN authenication method support added [chilan]
+  - improvement: minor visual improvements of panel/tab/card interface - larger vertical distances
+    and different background color [chilan]
+  - improvement: use native color selector input element for helpdesk ticket category look
+    definition [chilan]
+  - improvement: voip account password generation link near password form field [chilan]
+  - enhancement: implemented visibility toggle of customer/node panels/tabs/boxes [chilan]
+  - improvement: allow to use ticket filter owner option 'no owner' together with
+    selected user in helpdesk [interduo]
+  - improvement: enable/disable related ticket list selector based on parent ticket
+    definition [chilan]
+  - improvement: don't allow to edit used tariffs unless user has appropriate privilege
+    ('used_tariff_edit' permission introduced) [chilan]
+  - improvement: added dedicated looked up property customisation button inside quick search
+    input fields [chilan]
+  - improvement: lms-cashimport.php script generates import report on output [chilan]
+  - enhancement: userpanel startup module can be defined from user interface [interduo]
+  - improvement: new customer can get first free identifier when 'phpui.reuse_customer_id'
+    is set to 'true' [chilan]
+  - improvement: added phpui.timetable_hide_disabled_users setting
+    in eventmodify/eventlistfilter [interduo]
+  - enhancement: allow to disable state changes new->open when adding note to ticket - now
+    it depends on variable rt.change_ticket_state_to_open_after_note_add_interval
+    (default: 0, which keeps current behaviour) [interduo]
+  - improvement: allow to quickly resend existing message [chilan]
+  - enhancement: implemeneted main menu item visibility toggle basing on user permissions [chilan]
+  - improvement: allow to hide createtime in ticket row (variable:
+    rt.hide_ticket_row_create_time, default: 0) [interduo]
+  - enhancement: hosting: added support for ALIAS and ANAME record types - they are used
+    by github pages [chilan]
+  - enhancement: allow to quickly clone existing invoice [chilan]
+  - enhancement: implemented true responsive menu popups [chilan]
+  - enhancement: implemented bulk operations on customer contact flags in customer search
+    result [chilan]
+  - enhancement: implemented true responsive lms-ui-multiselect control [chilan]
+  - enhancement: 'payments.prefer_netto' allows to enable netto value usage produced by plugins
+    ('false' by default) [televoice]
+  - enhancement: separate the Tcpdf transfer form into a separate class [ravvar]
+  - enhancement: responsive version of layout implemented [chilan]
+  - improvement: 'phpui.promotion_activation_at_next_day' configuration variable support new 'business'
+    value which causes next business day usage for activation [chilan]
+  - enhancement: 'phpui.promotion_use_discounts' configuration variable allows to force
+    value discounts usage in assignments created basing on promotion schemas [chilan]
+  - improvement: replace the transfer form from HTML to Tcpdf [ravvar]
+  - enhancement: allow to show the transfer form on the invoice for selected customers [ravvar]
+  - devel/improvement: localisation support moved to separate class - symultaneous multi-localisation
+    support [chilan]
+  - devel/refactoring: moved currency configuration to Localisation class [chilan]
+  - improvement: separate smarty function for paytype selection - items are sorted by name
+    in accordance with current ui locale [chilan]
+  - improvement: customer identifiers are validated with billing address country in mind [chilan]
+  - enhancement: 'phpui.uploaded_image_max_size' allows to resize images uploaded to server on web
+    browser side to specified size (default '0' value means disabled) [chilan]
+  - bugfix: postgresql: connect through IP instead of socket when localhost is set
+    in lms.ini [interduo]
+  - enhancement: if uploaded image scaling is enable allow to disable scaling using optional
+    checkbox [chilan]
+  - improvement: don't show quick search fields when current user has no permissions to related
+    part of system [chilan]
+  - improvement: added 'phpui.send_message_confirm_threshold' configuration variable which control
+    how many potential message recipients trigger confirmation dialog ('50' by default) [milek]
+  - enhancement: configuration variable 'rt.allow_modify_resolved_tickets_newer_than' allows
+    to prevent old ticket re-open (default '86400') [interduo]
+  - enhancement: allow to select different lms.ini file using its name containing http
+    server port [chilan]
+  - enhancement: additional selection level in assignment and promotion tariff definition - service
+    type [chilan]
+  - improvement: implemented clear button in lms-ui-multiselect ui controls [chilan]
+  - enhancement: customer group selection support added in lms-notify.php [chilan]
+  - enhancement: implemented user permissions for companies and global division context selection.
+    Configuration variable 'phpui.force_global_division_context' ('false' by default)
+    allows to force division contex [ravvar]
+  - improvement: converted customer group selection in customer search form to multiple
+    selection [chilan]
+  - enhancement: added the ability to copy user divisions between users [ravvar]
+  - enhancement: customer notes support in dedicated tab [chilan]
+  - enhancement: divided mailing notice consent to separate mail and sms delivery consents [chilan]
+  - enhancement: sms and mailing notice consent support for lms-notify.php backend script
+    ('ignore_customer_consents' script configuration variable set to 'true' allows to imitate previous
+    behavior) [chilan]
+  - improvement: transaction log tab content is loaded in background and on-demand [chilan]
+  - enhancement: lms-notify.php supports customer 'birthday' type notifications [chilan]
+  - improvement: 'phpui.default_node_check_mac' allows to enable mac checking automatically
+    during new node creation ('false' by default) [chilan]
+  - improvement: new customer group input parameter parser allows for much more group
+    assignment combination tests [chilan]
+  - improvement: implemented user group assignment management from user forms [chilan]
+  - improvement: 'phpui.touch_device_tooltips' configuration variable allows to disable globally
+    tooltips/hints on touch devices (default 'false' value means disabled) [chilan]
+  - enhancement: added transaction tab/box into netdevinfo/netdevedit views [chilan]
+  - improvement: allow to use assignments with backward period accounting - 'payments.backward_comment'
+    and 'payments.settlement_backward_comment' configuration variables control format of generated cash
+    operation content [chilan]
+  - enhancement: added the ability to hide fortunes on the Welcome page by setting configuration
+    variable 'phpui.hide_fortunes' ('false' by default) [awbnet]
+  - enhancement: variable phpui.allow_modify_closed_events_newer_than allows to prevent modify
+    old events (default '604800') [interduo]
+  - enhancement: added support for many persistent filters in single module [chilan]
+  - improvement: allow to force quick search by resource id prepending numeric value with hash
+    character [chilan]
+  - improvement: allow to click in auto suggestion description to open resource
+    in new window/tab [chilan]
+  - improvement: don't require territ flag for addresses which have selected province
+    from outside territ database province list [chilan]
+  - enhancement: 'phpui.node_to_network_device_connection_required' (default: 'false') configuration
+    variable controls if network device connection is required for added/edit node [chilan]
+  - enhancement: 'phpui.teryt_required' support for voip account localisations [chilan]
+  - improvement: allow to include cash source file name in cash import record cash
+    calculation [chilan]
+  - improvement: changed default value for 'phpui.datables_max_records' from '300' to '0' [chilan]
+  - enhancement: introduce configuration per division (UI) [ravvar, chilan]
+  - enhancement: implemented 'customer-group' action in lms-notify.php [chilan]
+  - enhancement: new user permission 'financial_operations' disallows access to financial
+    record lists [chilan]
+  - enhancement: new configuration variable 'sms.message_template' allows to reformat
+    message before sending it [chilan]
+  - improvement: lms-rtparser.php backend script is able to scale down image according
+    to 'phpui.uploaded_image_max_size' [chilan]
+  - enhancement: added separate receipt/bill sale flag for invoices [chilan]
+  - enhancement: resolve ticket by new action button in queueview list [interduo]
+  - improvement: changed TCPDF/HTML debit note to use correspondence address as
+    shipping address (if 'invoices.post_address' is set to true) [awbnet]
+  - improvement: added issuer's signature field to debit note (TCPDF/HTML)
+    (visible if 'notes.issuer_signature' is set to true, default: 'false') [awbnet]
+  - improvement: made TCPDF debit note version look like TCPDF invoice [awbnet]
+  - improvement: new default values for 'phpui.multiselect_popup_on_bottom' (change from 'false'
+    to 'true') and 'phpui.multiselect_max_visible' (change from '0' to '5') [chilan]
+  - enhancement: added routed network support [chilan]
+  - improvement: 'invoices.show_tax_category' configuration variable ('false' by default) controls
+    tax category column visibility on invoices [chilan]
+  - enhancement: added territ city type property support [chilan]
+  - enhancement: implemented JPK new 'EE' flag support for invoices [chilan]
+  - improvement: added 'with discount' customer state filter [chilan]
+  - enhancement: add support for multilevel cloning of the configuration variables [ravvar]
+  - improvement: added 'with receipt' filter on invoice list [chilan]
+  - improvement: added service type property in tariffless liabilities [chilan]
+  - improvement: 'phpui.default_liability_type' ('-1' by default) controls liability type
+    property for newly created tariffless assignments [chilan]
+  - improvement: 'phpui.default_tariff_type' ('-1' by default) controls type property
+    for newly created tariffs [chilan]
+  - improvement: added split payment and telecommunication service filter on invoice list [chilan]
+  - improvement: 'invoices.allow_negative_values' ('false' by default) allows to enable negative
+    value invoice position use [chilan]
+  - enhancement: added customer flags - for now it is used for JPK TP purpose [chilan]
+
+version 25.0 (2020-05-15):
 
   - improvement: introduced invoices.hide_ssn configuration variable which allows to hide SSN
     on invoices [chilan]
@@ -303,6 +467,22 @@ version 25-git (????-??-??):
   - enhancement: implemented mass customer consent change support [chilan]
   - improvement: new action on customer search result is possible - add looked up customers
     to customer group with specified name [chilan]
+  - improvement: new variable 'phpui.timetable_hide_description' allows to hide
+    description in timetable [interduo]
+  - improvement: ticket message attached images can be scaled to 300 pixels width
+    on server-side if pecl-imagick is installed on server [chilan]
+  - enhancement: image gallery support for helpdesk tickets and ticket message items [chilan]
+  - enhancement: smarty block '{buttons}' support introduced - allows to create responsive
+    button panels on resource list [chilan]
+  - enhancement: image gallery support for network nodes, devices and models [chilan]
+  - improvement: zip code validation is made basing on selected location address country [chilan]
+  - improvement: 'invoices.hide_prodid' configuration variable controls product id column
+    visibility on invoices ('false' by default) [chilan]
+  - improvement: 'mail.debug_level' allows to control debug message detail level ('2' is
+    default) [chilan]
+  - improvement: 'phpui.quicksearch_keyboard_shortcut_modifier' defines quick search keyboard shortcut
+    modifier key ('ctrl' by default) [chilan]
+  - improvement: confirmation dialogs are responsive [chilan]
 
 version 24.0 (2019-05-16):
 
@@ -559,6 +739,7 @@ version 24.0 (2019-05-16):
     (added special symbol %aligned_partial_period) [ravvar]
   - improvement: added delete and clear contact buttons [chilan]
   - improvement: added jquery based confirmation dialog [chilan]
+  - enhancement: add multilevel configuration export and import [ravvar]
 
 version 1.11.23 (2018-03-21):
 

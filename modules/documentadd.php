@@ -287,7 +287,7 @@ if (isset($_POST['document'])) {
                 $time,
                 isset($document['closed']) ? $time : 0,
                 isset($document['closed']) ? Auth::GetCurrentUser() : null,
-                isset($document['closed']) ? 0 : $document['confirmdate'] + 86399,
+                isset($document['closed']) || empty($document['confirmdate']) ? 0 : $document['confirmdate'] + 86399,
                 $document['customerid'],
                 Auth::GetCurrentUser(),
                 trim($customer['lastname'] . ' ' . $customer['name']),
@@ -364,6 +364,7 @@ if (isset($_POST['document'])) {
                 if (is_array($selected_assignment['sassignmentid'][$schemaid])) {
                     $modifiedvalues = $selected_assignment['values'][$schemaid];
                     $counts = $selected_assignment['counts'][$schemaid];
+                    $backwardperiods = $selected_assignment['backwardperiods'][$schemaid];
                     $copy_a = $selected_assignment;
                     $snodes = $selected_assignment['snodes'][$schemaid];
                     $sphones = $selected_assignment['sphones'][$schemaid];
@@ -376,6 +377,7 @@ if (isset($_POST['document'])) {
                         $copy_a['promotionassignmentid'] = $v;
                         $copy_a['modifiedvalues'] = isset($modifiedvalues[$label][$v]) ? $modifiedvalues[$label][$v] : array();
                         $copy_a['count'] = $counts[$label];
+                        $copy_a['backwardperiod'] = $backwardperiods[$label][$v];
                         $copy_a['nodes'] = $snodes[$label];
                         $copy_a['phones'] = $sphones[$label];
                         $tariffid = $LMS->AddAssignment($copy_a);

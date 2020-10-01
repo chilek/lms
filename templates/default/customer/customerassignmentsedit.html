@@ -22,6 +22,14 @@
 		align-items: baseline;
     }
 
+	.customerassignment-header-cell {
+		padding: 0.2em;
+	}
+
+	.customerassignment-header-cell:first-child {
+		width: 6em;
+	}
+
 	.customerassignment-header-row select{
         width: 100%;
         flex-grow: 1;
@@ -31,7 +39,11 @@
 		padding-left: 5.5em;
 	}
 
-    customerassignment-header-cell {
+	.customerassignment-header > div:last-child .customerassignment-header-cell:first-child {
+		width: auto;
+	}
+
+	customerassignment-header-cell {
         display: flex;
     }
 
@@ -55,11 +67,38 @@
 				<div class="customerassignment-header">
 					<div class="customerassignment-header-row">
 						<div class="customerassignment-header-cell">
-							<label for="customerdata[lastname]"><strong>{trans("Type")}/{trans("Tariff")}:</strong></label>
+							<label><strong>{trans("Type")}:</strong></label>
+						</div>
+						<div class="customerassignment-header-cell">
+							<select name="assignment[servicetype]" id="servicetype">
+								<option value="0">{trans("- all -")}</option>
+								{foreach $_SERVICETYPES as $type => $label}
+									<option value="{$type}"{if $assignment.servicetype == $type} selected{/if}>{$label}</option>
+								{/foreach}
+							</select>
+						</div>
+					</div>
+					{if !empty($tags)}
+					<div class="customerassignment-header-row">
+						<div class="customerassignment-header-cell">
+							<label for="assignment-tags"><strong>{trans("Tags:")}</strong></label>
+						</div>
+						<div class="customerassignment-header-cell">
+							<SELECT id="assignment-tags" name="assignment[tags][]" class="lms-ui-multiselect" {tip text="Select tariff tags"} multiple onchange="javascript:updateTariffs();"{if empty($tags)} style="display: none;"{/if}>
+								{foreach $tags as $tag}
+									<OPTION value="{$tag.id}"{if isset($assignment.tags) && in_array($tag.id, $assignment.tags)} selected{/if}>{$tag.name}</OPTION>
+								{/foreach}
+							</SELECT>
+						</div>
+					</div>
+					{/if}
+					<div class="customerassignment-header-row">
+						<div class="customerassignment-header-cell">
+							<label><strong>{trans("Tariff")}:</strong></label>
 						</div>
 						<div class="customerassignment-header-cell">
 							<input type="hidden" value="" name="assignment[tarifftype]" id="tarifftype">
-							<select id="tariff-select" name="assignment[tariffid]" {tip text="Select liability type" trigger="tariffid"}>
+							<select id="tariff-select" name="assignment[tariffid]" {tip class="lms-ui-advanced-select" text="Select liability type" trigger="tariffid"}>
 								{block name="customerassignmentsedit-special-tariffs"}
 								<option value=""   data-tarifftype="0" {if !$assignment.tariffid} selected{/if}>- {trans("tariffless liability")} -</option>
 								<option value="-1" data-tarifftype="0" {if $assignment.tariffid == -1} selected{/if}>{trans("- all liabilities suspended -")}</option>
@@ -81,20 +120,10 @@
 					<div class="customerassignment-header-row">
 						<div class="customerassignment-header-cell">
 							<label>
-								<input type="checkbox" name="assignment[alltariffs]" {tip text="Check if all tariffs should be displayed" trigger="alltariffs"}{if $assignment.alltariffs} checked{/if}>
+								<input type="checkbox" id="alltariffs" name="assignment[alltariffs]" {tip text="Check if all tariffs should be displayed" trigger="alltariffs"}{if $assignment.alltariffs} checked{/if}>
 								{trans("show all tariffs")}
 							</label>
 						</div>
-						{if !empty($tags)}
-						<div class="customerassignment-header-cell">
-							<label for="assignment-tags">{trans("Tags:")}</label>
-							<SELECT id="assignment-tags" name="assignment[tags][]" class="lms-ui-multiselect" {tip text="Select tariff tags"} multiple onchange="javascript:updateTariffs();"{if empty($tags)} style="display: none;"{/if}>
-								{foreach $tags as $tag}
-								<OPTION value="{$tag.id}"{if isset($assignment.tags) && in_array($tag.id, $assignment.tags)} selected{/if}>{$tag.name}</OPTION>
-								{/foreach}
-							</SELECT>
-						</div>
-						{/if}
 					</div>
 				</div>
 			</td>
@@ -185,7 +214,7 @@
             document.assignment.submit();
 		});
 
-		$('[name="assignment[alltariffs]"]').click(function() {
+		$('#alltariffs').click(function() {
 			updateTariffs();
 
 			var checked = this.checked;
@@ -204,17 +233,22 @@
 			// +++ PROMOTION CODE
 		});
 
+		$('#servicetype').change(function() {
+			updateTariffs();
+		});
+
 		updateCheckAllNodes();
 
 		updateTariffs();
 	});
 
 	function updateTariffs() {
-		var valid_checked = $('[name="assignment[alltariffs]"]').is(':checked');
+		var allTariffChecked = $('#alltariffs').is(':checked');
 		var tariff_select = $('#tariff-select');
+		var serviceType = parseInt($('#servicetype').val());
 
 		var tags = [];
-		$('[name="assignment[tags][]"]:checked').each(function() {
+		$('#assignment-tags option:selected').each(function() {
 			tags.push(parseInt($(this).val()));
 		});
 
@@ -225,37 +259,37 @@
 				return;
 			}
 
+			var tariffType = parseInt(option.attr('data-tarifftype'));
+			var tariffValid = parseInt(option.attr('data-valid'));
+			var visible = false;
+
 			if (tags.length) {
-				option.css('display', 'none');
-
 				var tarifftags = option.attr('data-tarifftags');
-				if (typeof(tarifftags) === 'undefined' || !tarifftags.length) {
-					return;
-				}
+				if (typeof(tarifftags) !== 'undefined' && tarifftags.length) {
+					tarifftags = JSON.parse('[' + tarifftags + ']');
 
-				tarifftags = JSON.parse('[' +  tarifftags + ']');
-
-				$.each(tarifftags, function(key, value) {
-					if (tags.indexOf(value) > -1) {
-						if (option.attr('data-valid') == '0') {
-							option.css('display', valid_checked ? '' : 'none');
-						} else {
-							option.css('display', '');
+					$.each(tarifftags, function (key, value) {
+						if (tags.indexOf(value) > -1) {
+							visible = visible || tariffValid !== 0 || allTariffChecked;
 						}
-					}
-				});
-			} else {
-				if (option.attr('data-valid') == '0') {
-					option.css('display', valid_checked ? '' : 'none');
-				} else {
-					option.css('display', '');
+					});
 				}
+			} else {
+				visible = tariffValid !== 0 || allTariffChecked;
 			}
+
+			if (serviceType) {
+				visible = visible && (!tariffType || serviceType === tariffType);
+			}
+
+			option.toggle(visible);
 		});
 
 		if ($('option:selected', tariff_select).css('display') == 'none') {
-			tariff_select.val($('option:nth(0)').val());
+			tariff_select.val($('option:nth-child(0)').val());
 		}
+
+		updateAdvancedSelects(tariff_select);
 	}
 
 </SCRIPT>

@@ -24,7 +24,9 @@
  *  $Id$
  */
 
-@include(LIB_DIR.'/locale/'.$_language.'/fortunes.php');
+if (!ConfigHelper::checkConfig('phpui.hide_fortunes')) {
+    @include(LIB_DIR.'/locale/' . Localisation::getCurrentUiLanguage() . '/fortunes.php');
+}
 
 $layout['pagetitle'] = 'LAN Management System';
 
@@ -45,7 +47,8 @@ if (ConfigHelper::checkConfig('privileges.superuser')) {
     $SMARTY->assign('regdata', $LMS->GetRegisterData());
 }
 
-$SMARTY->assign('_dochref', is_dir('doc/html/'.$LMS->ui_lang) ? 'doc/html/'.$LMS->ui_lang.'/' : 'doc/html/en/');
+$SMARTY->assign('_dochref', is_dir('doc/html/' . Localisation::getCurrentUiLanguage())
+    ? 'doc/html/' . Localisation::getCurrentUiLanguage() . DIRECTORY_SEPARATOR : 'doc/html/en/');
 $SMARTY->assign('rtstats', $LMS->RTStats());
 
 if (ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_sysinfo')) {

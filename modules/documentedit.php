@@ -184,12 +184,14 @@ if (isset($_POST['document'])) {
             'customerid' => $document['customerid'],
         ));
 
+        $closed = $documentedit['closed'] ? ($document['confirmdate'] == -1 && $document['closed'] != 2 ? 2 : 1) : 0;
+
         $DB->Execute(
             'UPDATE documents SET type=?, closed=?, sdate=?, cuserid=?, confirmdate = ?,
 			        archived = ?, adate = ?, auserid = ?, number=?, numberplanid=?, fullnumber=?
 				WHERE id=?',
             array(  $documentedit['type'],
-                    $documentedit['closed'] ? ($document['confirmdate'] == -1 && $document['closed'] != 2 ? 2 : 1) : 0,
+                    $closed == 1 && !$document['closed'] ? 0 : $closed,
                     $documentedit['closed'] ? ($document['closed'] ? $document['sdate'] : time()) : 0,
                     $documentedit['closed'] ? ($document['closed'] ? $document['cuserid'] : $userid) : null,
                     !$document['closed'] && $documentedit['closed'] && $document['confirmdate'] == -1 ? 0 : ($documentedit['closed'] || !$documentedit['confirmdate'] ? 0 : $documentedit['confirmdate'] + 86399),
@@ -229,6 +231,10 @@ if (isset($_POST['document'])) {
         $LMS->AddDocumentAttachments($documentedit['id'], $files);
 
         $DB->CommitTrans();
+
+        if ($closed == 1 && !$document['closed']) {
+            $LMS->CommitDocuments(array($documentedit['id']));
+        }
 
         $SESSION->redirect('?'.$SESSION->get('backto'));
     } else {

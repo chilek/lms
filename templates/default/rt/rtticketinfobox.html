@@ -54,6 +54,7 @@
 									{$ticket.subject|escape|truncate:50:"...":true}
 								</TD>
 							</TR>
+							{if $ticket.service != SERVICE_OTHER}
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
 									<i class="lms-ui-icon-content lms-ui-icon-service"></i>{trans("Service type:")}
@@ -62,6 +63,8 @@
                                     {$_SERVICETYPES[$ticket.service]}
 								</TD>
 							</TR>
+							{/if}
+							{if $ticket.type != RT_TYPE_OTHER}
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
 									<i class="lms-ui-icon-content lms-ui-icon-type"></i>{trans("Ticket type:")}
@@ -70,31 +73,18 @@
                                     {$_RT_TYPES[$ticket.type].label}
 								</TD>
 							</TR>
+							{/if}
+							{if $ticket.customerid}
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
 									<i class="lms-ui-icon-content lms-ui-icon-customer"></i>{trans("Customer:")}
 								</TD>
 								<TD style="width: 99%;" class="nobr">
-									{if $ticket.customerid}
 									<A href="?m=customerinfo&amp;id={$ticket.customerid}">{$ticket.customername|escape} ({$ticket.customerid|string_format:"%04d"})</A>
-									{if $ticket.requestor}<BR>{$ticket.requestor}{/if}
-									{if $ticket.requestor_phone}<BR>{$ticket.requestor_phone}{/if}
-									{if $ticket.requestor_mail}<BR>{$ticket.requestor_mail}{/if}
-									{else}
-										{if $ticket.requestor_userid}
-										<A href="?m=userinfo&id={$ticket.requestor_userid}">{$ticket.requestor_username}</A>
-										{else}
-											{$ticket.requestor}
-											{if $ticket.requestor_mail}
-											<br><A href="mailto:{$ticket.requestor_mail}">{$ticket.requestor_mail}</A>
-											{/if}
-											{if $ticket.requestor_phone}
-											<br>{$ticket.requestor_phone}
-											{/if}
-										{/if}
-									{/if}
 								</TD>
 							</TR>
+							{/if}
+							{if $ticket.requestor_userid || $ticket.requestor_name || $ticket.requestor_mail || $ticket.requestor_phone}
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
 									<i class="lms-ui-icon-content lms-ui-icon-requestor"></i>{trans("Requestor:")}
@@ -113,6 +103,7 @@
 									{/if}
 								</TD>
 							</TR>
+							{/if}
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
 									<i class="lms-ui-icon-content lms-ui-icon-timetable"></i>{trans("Create time:")}
@@ -181,6 +172,7 @@
 									{/if}
 								</TD>
 							</TR>
+							{if $ticket.deadline}
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
 									<i class="lms-ui-icon-content lms-ui-icon-timetable"></i>{trans("<!rt>Deadline:")}
@@ -193,6 +185,7 @@
 									{/if}
 								</TD>
 							</TR>
+							{/if}
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
 									<i class="lms-ui-icon-content lms-ui-icon-queue"></i>{trans("Queue:")}
@@ -209,6 +202,7 @@
 									{$_RT_STATES[$ticket.state].label}
 								</TD>
 							</TR>
+							{if $ticket.cause}
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
 									<i class="lms-ui-icon-content lms-ui-icon-cause"></i>{trans("Cause:")}
@@ -219,6 +213,7 @@
 									{else}{trans("unknown/other")}{/if}
 								</TD>
 							</TR>
+							{/if}
 							{if $ticket.deleted == 1 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
@@ -237,6 +232,7 @@
 								</TD>
 							</TR>
 							{/if}
+							{if $ticket.source}
 							<TR>
 								<TD class="bold nobr">
 									<i class="lms-ui-icon-content lms-ui-icon-source"></i>{trans("Ticket source:")}
@@ -245,6 +241,8 @@
 									{$_RT_SOURCES[$ticket.source]}
 								</TD>
 							</TR>
+							{/if}
+							{if $ticket.priority}
 							<TR>
 								<TD class="bold nobr">
 									<i class="lms-ui-icon-content lms-ui-icon-priority"></i>{trans("Priority:")}
@@ -252,6 +250,8 @@
 								<TD>
 									<span style="{$_RT_PRIORITY_STYLES[$ticket.priority]}">{$_RT_PRIORITIES[$ticket.priority]}</span>
 								</TD>
+							</TR>
+							{/if}
 							{if $ticket.address_id}
 							<TR>
 								<TD class="bold nobr">
@@ -297,7 +297,7 @@
 							{if $ticket.invprojectid}
 							<TR>
 								<TD class="bold nobr">
-									<i class="lms-ui-icon-content lms-ui-icon-money"></i>{trans("Investment project:")}
+									{icon name="invproject" label="Investment project:"}
 								</TD>
 								<TD>
 									{$ticket.invproject_name}</A>
@@ -307,7 +307,7 @@
 							{if $ticket.parentid}
 							<TR>
 								<TD class="bold">
-									<i class="lms-ui-icon-content lms-ui-icon-parentticket"></i>{trans("Parent ticket:")}
+									{icon name="parentticket" label="Parent ticket:"}
 								</TD>
 								<TD>
 									#{$ticket.parent.id|string_format:"%06d"} <a href="?m=rtticketview&id={$ticket.parent.id}">{$ticket.parent.name}</a><br>
@@ -317,7 +317,7 @@
 							{if $ticket.childtickets}
                                                         <TR>
                                                                 <TD class="bold">
-                                                                        <i class="lms-ui-icon-content lms-ui-icon-childticket"></i>{trans("Child tickets:")}
+                                                                        {icon name="childticket" label="Child tickets:"}
                                                                 </TD>
 								<TD>
 								{foreach $ticket.childtickets as $t}
@@ -329,7 +329,7 @@
 							{if $ticket.relatedtickets}
 							<TR>
 								<TD class="bold nobr">
-									<i class="lms-ui-icon-content lms-ui-icon-relatedticket"></i>{trans("Related tickets:")}
+									{icon name="relatedticket" label="Related tickets:"}
 								</TD>
 								<TD>
 									{foreach $ticket.relatedtickets as $i}
@@ -345,7 +345,7 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD class="lms-ui-box-buttons" colspan="3" style="line-height: 180%;">
+		<TD class="lms-ui-box-buttons" colspan="3">
 			<label>
 				<input type="checkbox" id="messages-chkbox">
 				{trans("Messages")}
@@ -362,15 +362,18 @@
 
 			<br>
 
-			{if $ticket.owner != $layout.logid}
-			{button id="ticket-assign-to-me" icon="user" label="Assign to me" href="?m=rtticketedit&id={$ticket.ticketid}&action=assign"}
+			{if ($ticket.owner != $layout.logid && $ticket.state != $smarty.const.RT_RESOLVED) || ConfigHelper::checkPrivilege('superuser')}
+				{button id="ticket-assign-to-me" icon="user" label="Assign to me" href="?m=rtticketedit&id={$ticket.ticketid}&action=assign"}
+			{/if}
+			{if (!$ticket.verifier && $ticket.owner != $layout.logid && $ticket.state != $smarty.const.RT_RESOLVED) || ConfigHelper::checkPrivilege('superuser')}
+				{button id="ticket-assign2-to-me" type='link-button' icon="user" label="Assign to me as verifier" href="?m=rtticketedit&id={$ticket.ticketid}&action=assign2"}
 			{/if}
 			{if $ticket.state != $smarty.const.RT_RESOLVED}
 				{if (ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events')) && !empty($ticket['openeventcount'])}
 					<span class="blend"><i class="lms-ui-icon-status-resolved"></i>{trans("Ticket have open assigned events!")}</A></span>
 				{else}
 					{if empty($ticket['verifier_rtime']) && $ticket['verifierid'] != Auth::GetCurrentUser() && $ticket['verifierid']}
-						{button icon="verifier" label="Transfer ticket to verifier" onclick="location.href='?m=rtticketedit&id={$ticket.ticketid}&action=verify';"}
+						{button icon="verifier" label="Transfer to verifier" onclick="location.href='?m=rtticketedit&id={$ticket.ticketid}&action=verify';"}
 					{else}
 						{if !empty($ticket['verifier_rtime']) && $ticket['verifierid'] != Auth::GetCurrentUser()}
 							<i class="lms-ui-icon-verifier"></i><span style="color: {$_RT_STATES[$smarty.const.RT_VERIFIED].color}"> {trans("Ticket has been transferred to verifier")}</span>
@@ -387,14 +390,21 @@
 			{else}
 				{button id="delete-rtticket" icon="delete" label="Delete" href="?m=rtticketdel&id={$ticket.ticketid}&taction=delete"}
 			{/if}
-			{button type="link-button" icon="edit" label="Edit" href="?m=rtticketedit&id={$ticket.ticketid}"}
+			{if $ticket.state != $smarty.const.RT_RESOLVED || ($ticket.state == $smarty.const.RT_RESOLVED && $aet && ($smarty.now - $ticket.resolvetime) < $aet) || (ConfigHelper::checkPrivilege('superuser'))}
+			    {button type="link-button" icon="edit" label="Edit" href="?m=rtticketedit&id={$ticket.ticketid}"}
+			{/if}
+
+			{if count($ticket.images)}
+				{button id="ticket-gallery-button" icon="gallery" label="Attachment gallery" data_gallery="{json_encode($ticket.images)}"}
+			{/if}
+
 		</TD>
 	</TR>
 	</TBODY>
 </TABLE>
+
 {if $stats}
-<br>
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-tab-container">
 	<TBODY>
 	<TR>
 		<TD style="width: 1%;" class="dark bold nobr">
@@ -411,9 +421,9 @@
 	</TBODY>
 </TABLE>
 {/if}
+
 {if $customerinfo}
-<br>
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-tab-container">
 	<TBODY>
 	<TR>
 		<TD style="width: 1%;" class="dark bold nobr">
@@ -434,19 +444,23 @@
 	</TBODY>
 </TABLE>
 {/if}
+
 {if $customernodes}
-<br>
-{include file="customer/customernodesbox.html"}
+	{include file="customer/customernodesbox.html"}
 {/if}
-<br>
+
 {include file="rt/rtticketeventlist.html"}
+
 {if $ticket.parentid}
-<br>
-{include file="rt/rtticketparentinfo.html"}
+	{include file="rt/rtticketparentinfo.html"}
 {/if}
+
+{if $ticket.childtickets}
+	{include file="rt/rtticketchildren.html"}
+{/if}
+
 {if $ticket.relatedtickets}
-<br>
-{include file="rt/rtticketrelatedlist.html"}
+	{include file="rt/rtticketrelatedlist.html"}
 {/if}
 
 <script>
@@ -491,6 +505,10 @@
 				}
 			);
 			return false;
+		});
+
+		$('#ticket-gallery-button').click(function() {
+			showGallery(JSON.parse($(this).attr('data-gallery')));
 		});
 	});
 

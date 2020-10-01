@@ -83,6 +83,15 @@ $CSTATUSES = array(
     ),
 );
 
+define('CUSTOMER_FLAG_RELATED_ENTITY', 1);
+
+$CUSTOMERFLAGS = array(
+    CUSTOMER_FLAG_RELATED_ENTITY => array(
+        'label' => trans('related entity'),
+        'tip' => trans('translates into JPK TP flag'),
+    )
+);
+
 // customer consents
 define('CCONSENT_DATE', 1);
 define('CCONSENT_INVOICENOTICE', 2);
@@ -90,6 +99,8 @@ define('CCONSENT_MAILINGNOTICE', 3);
 define('CCONSENT_EINVOICE', 4);
 define('CCONSENT_USERPANEL_SMS', 5);
 define('CCONSENT_USERPANEL_SCAN', 6);
+define('CCONSENT_TRANSFERFORM', 7);
+define('CCONSENT_SMSNOTICE', 8);
 
 $CCONSENTS = array(
     CCONSENT_DATE => array(
@@ -108,8 +119,13 @@ $CCONSENTS = array(
         'type' => 'boolean',
     ),
     CCONSENT_MAILINGNOTICE => array(
-        'label' => trans('message delivery via e-mail or sms'),
+        'label' => trans('message delivery via e-mail'),
         'name' => 'mailing_notice',
+        'type' => 'boolean',
+    ),
+    CCONSENT_SMSNOTICE => array(
+        'label' => trans('message delivery via sms'),
+        'name' => 'sms_notice',
         'type' => 'boolean',
     ),
     CCONSENT_USERPANEL_SMS => array(
@@ -120,6 +136,11 @@ $CCONSENTS = array(
     CCONSENT_USERPANEL_SCAN => array(
         'label' => trans('document form approval in customer panel using scans'),
         'name' => 'userpanel_document_scan_approval',
+        'type' => 'boolean',
+    ),
+    CCONSENT_TRANSFERFORM => array(
+        'label' => trans('invoice transfer form'),
+        'name' => 'transfer_form',
         'type' => 'boolean',
     ),
 );
@@ -152,8 +173,6 @@ $CONFIG_TYPES = array(
     CONFIG_TYPE_MAIL_SECURE => trans('mail security protocol'),
     CONFIG_TYPE_DATE_FORMAT => trans('date format'),
 );
-
-$CATEGORY_DEFAULT_STYLE = 'border: 1px black solid; color: black; background: #FFFFFF; padding: 1px; text-decoration: none;';
 
 // Helpdesk ticket status
 define('RT_NEW', 0);
@@ -214,7 +233,7 @@ $RT_STATES = array(
         'name' => 'RT_EXPIRED'
     ),
     RT_VERIFIED => array(
-        'label' => trans('Verified'),
+        'label' => trans('verified'),
         'color' => 'green',
         'img' => 'img/verifier.png',
         'name' => 'RT_VERIFIED'
@@ -359,6 +378,7 @@ define('RT_TYPE_REMOVE', 8);
 define('RT_TYPE_OTHER', 9);
 define('RT_TYPE_CONF', 10);
 define('RT_TYPE_PAYMENT', 11);
+define('RT_TYPE_TRANSFER', 12);
 
 
 $RT_TYPES = array(
@@ -406,6 +426,11 @@ $RT_TYPES = array(
         'label' => trans('Hold service'),
         'class' => 'lms-ui-rt-ticket-type-stop',
         'name' => 'RT_TYPE_STOP'
+    ),
+    RT_TYPE_TRANSFER => array(
+      'label' => trans('Transfer service'),
+      'class' => 'lms-ui-rt-ticket-type-transfer',
+      'name' => 'RT_TYPE_TRANSFER'
     ),
     RT_TYPE_REMOVE => array(
         'label' => trans('Deinstalation'),
@@ -555,16 +580,18 @@ define('DOC_BREACH', -6);
 define('DOC_PAYMENTBOOK', -7);
 define('DOC_PAYMENTSUMMONS', -8);
 define('DOC_PAYMENTPRESUMMONS', -9);
-define('DOC_OTHER', -128);
 define('DOC_BILLING', -10);
 define('DOC_PRICELIST', -11);
 define('DOC_PROMOTION', -12);
 define('DOC_WARRANTY', -13);
 define('DOC_REGULATIONS', -14);
 define('DOC_CONF_FILE', -15);
+define('DOC_OFFER', -16);
+define('DOC_OTHER', -128);
 
 
 $DOCTYPES = array(
+    DOC_OFFER           =>      trans('offer'),
     DOC_BILLING         =>      trans('billing'),
     DOC_INVOICE         =>      trans('invoice'),
     DOC_INVOICE_PRO     =>      trans('pro-forma invoice'),
@@ -573,12 +600,12 @@ $DOCTYPES = array(
     DOC_CNOTE       =>  trans('credit note'), // faktura korygujaca
 //    DOC_CMEMO     =>  trans('credit memo'), // nota korygujaca
     DOC_DNOTE       =>  trans('debit note'), // nota obciazeniowa/debetowa/odsetkowa
-    DOC_CONTRACT        =>      trans('contract'),
-    DOC_ANNEX       =>  trans('annex'),
-    DOC_PROTOCOL        =>      trans('protocol'),
-    DOC_ORDER       =>  trans('order'),
+    DOC_CONTRACT        =>      trans('contract'), //umowa
+    DOC_ANNEX       =>  trans('annex'), //aneks umowy
+    DOC_PROTOCOL        =>      trans('protocol'), //protokol uruchomienia
+    DOC_ORDER       =>  trans('order'), //zamowienie
     DOC_SHEET       =>  trans('customer sheet'), // karta klienta
-    DOC_BREACH      =>  trans('contract termination'),
+    DOC_BREACH      =>  trans('contract termination'), //rozwiazanie umowy
     DOC_PAYMENTBOOK  => trans('payments book'), // ksiazeczka oplat
     DOC_PAYMENTSUMMONS  => trans('payment summons'), // wezwanie do zapłaty
     DOC_PAYMENTPRESUMMONS  => trans('payment pre-summons'), // przedsądowe wezw. do zapłaty
@@ -589,6 +616,10 @@ $DOCTYPES = array(
     DOC_CONF_FILE   =>  trans('configuration file'),
     DOC_OTHER       =>  trans('other')
 );
+
+define('DOC_FLAG_RECEIPT', 1);
+define('DOC_FLAG_TELECOM_SERVICE', 2);
+define('DOC_FLAG_RELATED_ENTITY', 4);
 
 define('DOC_ENTITY_ORIGINAL', 1);
 define('DOC_ENTITY_COPY', 2);
@@ -701,16 +732,16 @@ $SERVICETYPES = array(
 );
 
 $PAYTYPES = array(
-    1   => trans('cash'),
-    2   => trans('transfer'),
-    3   => trans('transfer/cash'),
-    4   => trans('card'),
-    5   => trans('compensation'),
-    6   => trans('barter'),
-    7   => trans('contract'),
-    8   => trans('paid'),
-    9   => trans('cash on delivery'),
-    10  => trans('instalments'),
+    1   => 'cash',
+    2   => 'transfer',
+    3   => 'transfer/cash',
+    4   => 'card',
+    5   => 'compensation',
+    6   => 'barter',
+    7   => 'contract',
+    8   => 'paid',
+    9   => 'cash on delivery',
+    10  => 'instalments',
 );
 
 // Contact types
@@ -928,6 +959,11 @@ $USERPANEL_AUTH_TYPES = array(
         'label_secret' => trans('PPPoE password:'),
         'selection' => trans('PPPoE login and password'),
     ),
+    6   => array(
+        'label' => trans('SSN/TEN:'),
+        'label_secret' => trans('PIN:'),
+        'selection' => trans('SSN/TEN and PIN'),
+    ),
 );
 
 define('EVENT_OTHER', 1);
@@ -1053,41 +1089,49 @@ $EXISTINGASSIGNMENTS = array(
 );
 
 $TAX_CATEGORIES = array(
-    10 => array(
-        'label' => 'budynek lub grunt',
-        'description' => 'Dostawa budynków, budowli i gruntów',
-    ),
-    9 => array(
-        'label' => 'lek lub wybór medyczny',
-        'description' => 'Dostawa leków oraz wyrobów medycznych - produktów leczniczych, środków spożywczych specjalnego przeznaczenia żywieniowego oraz wyrobów medycznych, objętych obowiązkiem zgłoszenia, o którym mowa w art. 37av ust. 1 ustawy z dnia 6 września 2001 r. - Prawo farmaceutyczne (Dz. U. z 2019 r. poz. 499, z późn. zm.)',
-    ),
-    8 => array(
-        'label' => 'metal szlachetny lub nieszlachetny',
-        'description' => 'Dostawa metali szlachetnych oraz nieszlachetnych - wyłącznie określonych w poz. 1-3 załącznika nr 12 do ustawy oraz w poz. 12-25, 33-40, 45, 46, 56 i 78 załącznika nr 15 do ustawy',
-    ),
     1 => array(
         'label' => 'napój alkoholowy',
         'description' => 'Dostawa napojów alkoholowych - alkoholu etylowego, piwa, wina, napojów fermentowanych i wyrobów pośrednich, w rozumieniu przepisów o podatku akcyzowym',
-    ),
-    5 => array(
-        'label' => 'odpad',
-        'description' => 'Dostawa odpadów - wyłącznie określonych w poz. 79-91 załącznika nr 15 do ustawy',
-    ),
-    3 => array(
-        'label' => 'olej opałowy',
-        'description' => 'Dostawa oleju opałowego w rozumieniu przepisów o podatku akcyzowym oraz olejów smarowych, pozostałych olejów o kodach CN od 2710 19 71 do 2710 19 99, z wyłączeniem wyrobów o kodzie CN 2710 19 85 (oleje białe, parafina ciekła) oraz smarów plastycznych zaliczanych do kodu CN 2710 19 99, olejów smarowych o kodzie CN 2710 20 90, preparatów smarowych objętych pozycją CN 3403, z wyłączeniem smarów plastycznych objętych tą pozycją',
     ),
     2 => array(
         'label' => 'paliwo',
         'description' => 'Dostawa towarów, o których mowa w art. 103 ust. 5aa ustawy',
     ),
-    7 => array(
-        'label' => 'pojazd samochodowy',
-        'description' => 'Dostawa pojazdów oraz części samochodowych o kodach wyłącznie CN 8701 - 8708 oraz CN 8708 10',
+    3 => array(
+        'label' => 'olej opałowy',
+        'description' => 'Dostawa oleju opałowego w rozumieniu przepisów o podatku akcyzowym oraz olejów smarowych, pozostałych olejów o kodach CN od 2710 19 71 do 2710 19 99, z wyłączeniem wyrobów o kodzie CN 2710 19 85 (oleje białe, parafina ciekła) oraz smarów plastycznych zaliczanych do kodu CN 2710 19 99, olejów smarowych o kodzie CN 2710 20 90, preparatów smarowych objętych pozycją CN 3403, z wyłączeniem smarów plastycznych objętych tą pozycją',
+    ),
+    4 => array(
+        'label' => 'wyrób nikotynowy',
+        'description' => 'Dostawa wyrobów tytoniowych, suszu tytoniowego, płynu do papierosów elektronicznych i wyrobów nowatorskich, w rozumieniu przepisów o podatku akcyzowym',
+    ),
+    5 => array(
+        'label' => 'odpad',
+        'description' => 'Dostawa odpadów - wyłącznie określonych w poz. 79-91 załącznika nr 15 do ustawy',
     ),
     6 => array(
         'label' => 'urządzenie elektroniczne',
         'description' => 'Dostawa urządzeń elektronicznych oraz części i materiałów do nich, wyłącznie określonych w poz. 7-9, 59-63, 65, 66, 69 i 94-96 załącznika nr 15 do ustawy',
+    ),
+    7 => array(
+        'label' => 'pojazd samochodowy',
+        'description' => 'Dostawa pojazdów oraz części samochodowych o kodach wyłącznie CN 8701 - 8708 oraz CN 8708 10',
+    ),
+    8 => array(
+        'label' => 'metal szlachetny lub nieszlachetny',
+        'description' => 'Dostawa metali szlachetnych oraz nieszlachetnych - wyłącznie określonych w poz. 1-3 załącznika nr 12 do ustawy oraz w poz. 12-25, 33-40, 45, 46, 56 i 78 załącznika nr 15 do ustawy',
+    ),
+    9 => array(
+        'label' => 'lek lub wybór medyczny',
+        'description' => 'Dostawa leków oraz wyrobów medycznych - produktów leczniczych, środków spożywczych specjalnego przeznaczenia żywieniowego oraz wyrobów medycznych, objętych obowiązkiem zgłoszenia, o którym mowa w art. 37av ust. 1 ustawy z dnia 6 września 2001 r. - Prawo farmaceutyczne (Dz. U. z 2019 r. poz. 499, z późn. zm.)',
+    ),
+    10 => array(
+        'label' => 'budynek lub grunt',
+        'description' => 'Dostawa budynków, budowli i gruntów',
+    ),
+    11 => array(
+        'label' => 'usługa związana z gazami cieplarnianymi',
+        'description' => 'Świadczenie usług w zakresie przenoszenia uprawnień do emisji gazów cieplarnianych, o których mowa w ustawie z dnia 12 czerwca 2015 r. o systemie handlu uprawnieniami do emisji gazów cieplarnianych (Dz. U. z 2018 r. poz. 1201 i 2538 oraz z 2019 r. poz. 730, 1501 i 1532)',
     ),
     12 => array(
         'label' => 'usługa o charakterze niematerialnym',
@@ -1097,20 +1141,13 @@ $TAX_CATEGORIES = array(
         'label' => 'usługa transportowa lub gospodarki magazynowej',
         'description' => 'Świadczenie usług transportowych i gospodarki magazynowej - Sekcja H PKWiU 2015 symbol ex 49.4, ex 52.1',
     ),
-    11 => array(
-        'label' => 'usługa związana z gazami cieplarnianymi',
-        'description' => 'Świadczenie usług w zakresie przenoszenia uprawnień do emisji gazów cieplarnianych, o których mowa w ustawie z dnia 12 czerwca 2015 r. o systemie handlu uprawnieniami do emisji gazów cieplarnianych (Dz. U. z 2018 r. poz. 1201 i 2538 oraz z 2019 r. poz. 730, 1501 i 1532)',
-    ),
-    4 => array(
-        'label' => 'wyrób nikotynowy',
-        'description' => 'Dostawa wyrobów tytoniowych, suszu tytoniowego, płynu do papierosów elektronicznych i wyrobów nowatorskich, w rozumieniu przepisów o podatku akcyzowym',
-    ),
 );
 
 if (isset($SMARTY)) {
     $SMARTY->assign('_NETWORK_INTERFACE_TYPES', $NETWORK_INTERFACE_TYPES);
     $SMARTY->assign('_CTYPES', $CTYPES);
     $SMARTY->assign('_CSTATUSES', $CSTATUSES);
+    $SMARTY->assign('_CUSTOMERFLAGS', $CUSTOMERFLAGS);
     $SMARTY->assign('_CCONSENTS', $CCONSENTS);
     $SMARTY->assign('_MESSAGETEMPLATES', $MESSAGETEMPLATES);
     $SMARTY->assign('_ACCOUNTTYPES', $ACCOUNTTYPES);
@@ -1144,7 +1181,6 @@ if (isset($SMARTY)) {
     $SMARTY->assign('_EVENTTYPES', $EVENTTYPES);
     $SMARTY->assign('_EVENTSTYLES', $EVENTSTYLES);
     $SMARTY->assign('_SESSIONTYPES', $SESSIONTYPES);
-    $SMARTY->assign('_CATEGORY_DEFAULT_STYLE', $CATEGORY_DEFAULT_STYLE);
     $SMARTY->assign('_EXISTINGASSIGNMENTS', $EXISTINGASSIGNMENTS);
     $SMARTY->assign('_CURRENCIES', $CURRENCIES);
     $SMARTY->assign('_TAX_CATEGORIES', $TAX_CATEGORIES);
