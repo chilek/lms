@@ -162,6 +162,7 @@ version 26-git (????-??-??):
   - improvement: added split payment and telecommunication service filter on invoice list [chilan]
   - improvement: 'invoices.allow_negative_values' ('false' by default) allows to enable negative
     value invoice position use [chilan]
+  - enhancement: added customer flags - for now it is used for JPK TP purpose [chilan]
 
 version 25.0 (2020-05-15):
 
