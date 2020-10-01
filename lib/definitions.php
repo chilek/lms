@@ -83,6 +83,15 @@ $CSTATUSES = array(
     ),
 );
 
+define('CUSTOMER_FLAG_RELATED_ENTITY', 1);
+
+$CUSTOMERFLAGS = array(
+    CUSTOMER_FLAG_RELATED_ENTITY => array(
+        'label' => trans('related entity'),
+        'tip' => trans('translates into JPK TP flag'),
+    )
+);
+
 // customer consents
 define('CCONSENT_DATE', 1);
 define('CCONSENT_INVOICENOTICE', 2);
@@ -610,6 +619,7 @@ $DOCTYPES = array(
 
 define('DOC_FLAG_RECEIPT', 1);
 define('DOC_FLAG_TELECOM_SERVICE', 2);
+define('DOC_FLAG_RELATED_ENTITY', 4);
 
 define('DOC_ENTITY_ORIGINAL', 1);
 define('DOC_ENTITY_COPY', 2);
@@ -1137,6 +1147,7 @@ if (isset($SMARTY)) {
     $SMARTY->assign('_NETWORK_INTERFACE_TYPES', $NETWORK_INTERFACE_TYPES);
     $SMARTY->assign('_CTYPES', $CTYPES);
     $SMARTY->assign('_CSTATUSES', $CSTATUSES);
+    $SMARTY->assign('_CUSTOMERFLAGS', $CUSTOMERFLAGS);
     $SMARTY->assign('_CCONSENTS', $CCONSENTS);
     $SMARTY->assign('_MESSAGETEMPLATES', $MESSAGETEMPLATES);
     $SMARTY->assign('_ACCOUNTTYPES', $ACCOUNTTYPES);

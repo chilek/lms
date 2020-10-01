@@ -154,6 +154,24 @@
 					</TD>
 				</TR>
 
+				<TR>
+					<TD>
+						<i class="lms-ui-icon-legal-personality"></i>
+					</TD>
+					<TD>
+						<select name="customeradd[flags][]" {tip text="Select customer flags (optional)" class="lms-ui-multiselect"}
+								multiple>
+							{foreach $_CUSTOMERFLAGS as $cflag => $flag}
+								<option value="{$cflag}"
+										{if is_array($customeradd.flags) && in_array($cflag, $customeradd.flags)} selected{/if}
+										title="{$flag.tip}"
+								>{$flag.label}</option>
+							{/foreach}
+						</select>
+					</TD>
+				</TR>
+
+
 				{$addr_counter = 0}
 
 				<tr>

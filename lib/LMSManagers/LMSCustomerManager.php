@@ -490,12 +490,23 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      */
     public function customerAdd($customeradd)
     {
+        global $CUSTOMERFLAGS;
+
         $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
 
         $capitalize_customer_names = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.capitalize_customer_names', true));
 
         $customeradd['name'] = str_replace(array('”', '„'), '"', $customeradd['name']);
         $customeradd['lastname'] = str_replace(array('”', '„'), '"', $customeradd['lastname']);
+
+        $flags = 0;
+        if (isset($customeradd['flags'])) {
+            foreach ($customeradd['flags'] as $flag) {
+                if (isset($CUSTOMERFLAGS[$flag])) {
+                    $flags |= $flag;
+                }
+            }
+        }
 
         $args = array(
             'extid'          => $customeradd['extid'],
@@ -519,6 +530,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             SYSLOG::RES_DIV  => empty($customeradd['divisionid']) ? null : $customeradd['divisionid'],
             'paytime'        => $customeradd['paytime'],
             'paytype'        => !empty($customeradd['paytype']) ? $customeradd['paytype'] : null,
+            'flags'          => $flags,
         );
 
         $reuse_customer_id = ConfigHelper::checkConfig('phpui.reuse_customer_id');
@@ -545,9 +557,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $result = $this->db->Execute('INSERT INTO customers (extid, name, lastname, type,
                         ten, ssn, status, creationdate,
                         creatorid, info, notes, message, documentmemo, pin, regon, rbename, rbe,
-                        icn, cutoffstop, divisionid, paytime, paytype' . ($reuse_customer_id ? ', id' : ''). ')
+                        icn, cutoffstop, divisionid, paytime, paytype, flags' . ($reuse_customer_id ? ', id' : ''). ')
                     VALUES (?, ?, ' . ($capitalize_customer_names ? 'UPPER(?)' : '?') . ', ?, ?, ?, ?, ?NOW?,
-                        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?' . ($reuse_customer_id ? ', ?' : '') . ')', array_values($args));
+                        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?' . ($reuse_customer_id ? ', ?' : '') . ')', array_values($args));
 
         if ($reuse_customer_id) {
             $this->db->UnLockTables();
@@ -1428,7 +1440,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      */
     public function GetCustomer($id, $short = false)
     {
-        global $CONTACTTYPES, $CUSTOMERCONTACTTYPES;
+        global $CONTACTTYPES, $CUSTOMERCONTACTTYPES, $CUSTOMERFLAGS;
 
         require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
 
@@ -1480,6 +1492,14 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             }
             $result['balance'] = $this->getCustomerBalance($result['id']);
             $result['bankaccount'] = bankaccount($result['id'], $result['account']);
+
+            $flags = $result['flags'];
+            $result['flags'] = array();
+            foreach ($CUSTOMERFLAGS as $cflag => $flag) {
+                if ($flags & $cflag) {
+                    $result['flags'][] = $cflag;
+                }
+            }
 
             foreach ($CUSTOMERCONTACTTYPES as $contacttype => $properties) {
                 $result[$contacttype . 's'] = $this->db->GetAll(
@@ -1548,10 +1568,21 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     */
     public function customerUpdate($customerdata)
     {
+        global $CUSTOMERFLAGS;
+
         $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
 
         $customerdata['name'] = str_replace(array('”', '„'), '"', $customerdata['name']);
         $customerdata['lastname'] = str_replace(array('”', '„'), '"', $customerdata['lastname']);
+
+        $flags = 0;
+        if (isset($customerdata['flags'])) {
+            foreach ($customerdata['flags'] as $flag) {
+                if (isset($CUSTOMERFLAGS[$flag])) {
+                    $flags |= $flag;
+                }
+            }
+        }
 
         $args = array(
             'extid'          => $customerdata['extid'],
@@ -1575,6 +1606,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             SYSLOG::RES_DIV  => empty($customerdata['divisionid']) ? null : $customerdata['divisionid'],
             'paytime'        => $customerdata['paytime'],
             'paytype'        => $customerdata['paytype'] ? $customerdata['paytype'] : null,
+            'flags'          => $flags,
             SYSLOG::RES_CUST => $customerdata['id']
         );
 
@@ -1616,7 +1648,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                ten=?, ssn=?, moddate=?NOW?, modid=?,
                                info=?, notes=?, lastname=' . ($capitalize_customer_names ? 'UPPER(?)' : '?') . ', name=?,
                                deleted=0, message=?, documentmemo=?, pin=?, regon=?, icn=?, rbename=?, rbe=?,
-                               cutoffstop=?, divisionid=?, paytime=?, paytype=?
+                               cutoffstop=?, divisionid=?, paytime=?, paytype=?, flags = ?
                                WHERE id=?', array_values($args));
 
         if ($res) {

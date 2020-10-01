@@ -76,6 +76,22 @@
 								</TD>
 							</TR>
 
+						{if !empty($customerinfo.flags)}
+							<TR>
+								<TD WIDTH="1%">
+									{icon name="legal-personality"}
+								</TD>
+								<TD WIDTH="99%">
+									{$first = true}
+									{foreach $_CUSTOMERFLAGS as $cflag => $flag}
+										{if ($customerinfo.flags & $cflag) > 0}
+											{if !$first}, {/if}<span title="{$flag.tip}">{$flag.label}</span>{$first = false}
+										{/if}
+									{/foreach}
+								</TD>
+							</TR>
+						{/if}
+
 							{foreach $customerinfo.addresses as $v}
 								{if $v.location_address_type == $smarty.const.BILLING_ADDRESS}
 								<tr>
