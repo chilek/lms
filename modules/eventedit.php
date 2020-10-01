@@ -154,7 +154,7 @@ if (isset($_POST['event'])) {
 
     if (ConfigHelper::checkConfig('phpui.event_overlap_warning')
         && !$error && empty($event['overlapwarned']) && ($users = $LMS->EventOverlaps(array(
-            'date' => $data,
+            'date' => $date,
             'begintime' => $begintime,
             'enddate' => $enddate,
             'endtime' => $endtime,
