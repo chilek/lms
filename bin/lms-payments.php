@@ -1145,7 +1145,7 @@ foreach ($assigns as $assign) {
                 $itemid = 0;
 
                 $customer = $DB->GetRow("SELECT lastname, name, address, street, city, zip, postoffice, ssn, ten,
-                            countryid, divisionid, paytime, documentmemo
+                            countryid, divisionid, paytime, documentmemo, flags
 						FROM customeraddressview WHERE id = $cid");
 
                 if (!isset($divisions[$customer['divisionid']])) {
@@ -1219,7 +1219,8 @@ foreach ($assigns as $assign) {
                         $currency,
                         $currencyvalues[$currency],
                         empty($customer['documentmemo']) ? null : $customer['documentmemo'],
-                        $telecom_service ? DOC_FLAG_TELECOM_SERVICE : 0,
+                        ($telecom_service ? DOC_FLAG_TELECOM_SERVICE : 0)
+                            + ($customer['flags'] & CUSTOMER_FLAG_RELATED_ENTITY ? DOC_FLAG_RELATED_ENTITY : 0),
                     )
                 );
 
