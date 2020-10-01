@@ -92,6 +92,7 @@ if (isset($_GET['id']) && ($action == 'edit' || $action == 'init')) {
     $invoice['oldnumber'] = $invoice['number'];
     $invoice['oldnumberplanid'] = $invoice['numberplanid'];
     $invoice['oldcustomerid'] = $invoice['customerid'];
+    $invoice['oldflags'] = $invoice['flags'];
     $invoice['oldcomment'] = $invoice['comment'];
 
     $hook_data = array(
@@ -288,6 +289,7 @@ switch ($action) {
         $oldnumber = $invoice['oldnumber'];
         $oldnumberplanid = $invoice['oldnumberplanid'];
         $oldcustomerid = $invoice['oldcustomerid'];
+        $oldflags = $invoice['oldflags'];
         $oldcomment = $invoice['oldcomment'];
         $closed   = $invoice['closed'];
         $divisionid = $invoice['divisionid'];
@@ -316,6 +318,7 @@ switch ($action) {
         $invoice['oldnumber'] = $oldnumber;
         $invoice['oldnumberplanid'] = $oldnumberplanid;
         $invoice['oldcustomerid'] = $oldcustomerid;
+        $invoice['oldflags'] = $oldflags;
         $invoice['oldcomment'] = $oldcomment;
         $invoice['divisionid'] = $divisionid;
         $invoice['name'] = $name;
@@ -573,7 +576,9 @@ switch ($action) {
             'paytype' => $invoice['paytype'],
             'splitpayment' => empty($invoice['splitpayment']) ? 0 : 1,
             'flags' => (empty($invoice['flags'][DOC_FLAG_RECEIPT]) ? 0 : DOC_FLAG_RECEIPT)
-                + (empty($invoice['flags'][DOC_FLAG_TELECOM_SERVICE]) ? 0 : DOC_FLAG_TELECOM_SERVICE),
+                + (empty($invoice['flags'][DOC_FLAG_TELECOM_SERVICE]) ? 0 : DOC_FLAG_TELECOM_SERVICE)
+                + ($use_current_customer_data && isset($customer['flags'][CUSTOMER_FLAG_RELATED_ENTITY]) ? DOC_FLAG_RELATED_ENTITY
+                    : (isset($invoice['oldflags'][DOC_FLAG_RELATED_ENTITY]) ? DOC_FLAG_RELATED_ENTITY : 0)),
             SYSLOG::RES_CUST => $invoice['customerid'],
             'name' => $use_current_customer_data ? $customer['customername'] : $invoice['name'],
             'address' => $use_current_customer_data ? (($customer['postoffice'] && $customer['postoffice'] != $customer['city'] && $customer['street']

@@ -101,6 +101,7 @@ if (isset($_GET['id']) && $action == 'edit') {
     $cnote['oldnumber'] = $cnote['number'];
     $cnote['oldnumberplanid'] = $cnote['numberplanid'];
     $cnote['oldcustomerid'] = $cnote['customerid'];
+    $cnote['oldflags'] = $cnote['flags'];
     $cnote['oldcurrency'] = $cnote['currency'];
 
     $hook_data = array(
@@ -149,6 +150,7 @@ switch ($action) {
         $oldnumber = $cnote['oldnumber'];
         $oldnumberplanid = $cnote['oldnumberplanid'];
         $oldcustomerid = $cnote['oldcustomerid'];
+        $oldflags = $cnote['oldflags'];
         $oldcurrency = $cnote['oldcurrency'];
 
         $oldcnote = $cnote;
@@ -178,6 +180,7 @@ switch ($action) {
         $cnote['oldnumber'] = $oldnumber;
         $cnote['oldnumberplanid'] = $oldnumberplanid;
         $cnote['oldcustomerid'] = $oldcustomerid;
+        $cnote['oldflags'] = $oldflags;
         $cnote['oldcurrency'] = $oldcurrency;
 
         $invoice = $oldcnote['invoice'];
@@ -558,7 +561,9 @@ switch ($action) {
             'paytype' => $cnote['paytype'],
             'splitpayment' => $cnote['splitpayment'],
             'flags' => (empty($cnote['flags'][DOC_FLAG_RECEIPT]) ? 0 : DOC_FLAG_RECEIPT)
-                 + (empty($cnote['flags'][DOC_FLAG_TELECOM_SERVICE]) ? 0 : DOC_FLAG_TELECOM_SERVICE),
+                + (empty($cnote['flags'][DOC_FLAG_TELECOM_SERVICE]) ? 0 : DOC_FLAG_TELECOM_SERVICE)
+                + ($use_current_customer_data && isset($customer['flags'][CUSTOMER_FLAG_RELATED_ENTITY]) ? DOC_FLAG_RELATED_ENTITY
+                    : (!empty($cnote['oldflags'][DOC_FLAG_RELATED_ENTITY]) ? DOC_FLAG_RELATED_ENTITY : 0)),
             SYSLOG::RES_CUST => $cnote['customerid'],
             'name' => $use_current_customer_data ? $customer['customername'] : $cnote['name'],
             'address' => $use_current_customer_data ? (($customer['postoffice'] && $customer['postoffice'] != $customer['city'] && $customer['street']
