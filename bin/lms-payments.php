@@ -1145,8 +1145,8 @@ foreach ($assigns as $assign) {
                 $itemid = 0;
 
                 $customer = $DB->GetRow("SELECT lastname, name, address, street, city, zip, postoffice, ssn, ten,
-                            countryid, divisionid, paytime, documentmemo, flags
-						FROM customeraddressview WHERE id = $cid");
+                            countryid, divisionid, paytime, documentmemo, flags, type
+						FROM customeraddressview WHERE id = ?", array($cid));
 
                 if (!isset($divisions[$customer['divisionid']])) {
                     $divisions[$customer['divisionid']] = $LMS->GetDivision($customer['divisionid']);
@@ -1220,7 +1220,7 @@ foreach ($assigns as $assign) {
                         $currencyvalues[$currency],
                         empty($customer['documentmemo']) ? null : $customer['documentmemo'],
                         ($telecom_service ? DOC_FLAG_TELECOM_SERVICE : 0)
-                            + ($customer['flags'] & CUSTOMER_FLAG_RELATED_ENTITY ? DOC_FLAG_RELATED_ENTITY : 0),
+                            + ($customer['flags'] & CUSTOMER_FLAG_RELATED_ENTITY && $customer['type'] == CTYPES_COMPANY ? DOC_FLAG_RELATED_ENTITY : 0),
                     )
                 );
 
