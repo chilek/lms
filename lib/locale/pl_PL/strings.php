@@ -4448,6 +4448,7 @@ $_LANG['treat as regular expression'] = 'traktuj jako wyrażenie regularne';
 $_LANG['whole days'] = 'całe dni';
 $_LANG['whole day'] = 'cały dzień';
 $_LANG['multi day'] = 'wielodniowe';
+$_LANG['(multi day)'] = '(wielodniowe)';
 $_LANG['$a days'] = '$a dni';
 
 $_LANG['Click here to open calendar'] = 'Kliknij tutaj, aby otworzyć kalendarz';

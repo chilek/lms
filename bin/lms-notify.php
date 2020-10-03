@@ -651,16 +651,28 @@ if (empty($types) || in_array('timetable', $types)) {
         }
 
         $contents = '';
-        $events = $DB->GetAll("SELECT DISTINCT title, description, begintime, endtime,
+        $events = $DB->GetAll(
+            "SELECT DISTINCT title, description, date, begintime, enddate, endtime,
             customerid, UPPER(lastname) AS lastname, c.name AS name, address
             FROM events
             LEFT JOIN customeraddressview c ON (c.id = customerid)
             LEFT JOIN eventassignments ON (events.id = eventassignments.eventid)
-            WHERE date=? AND
-            ((private=1 AND (events.userid=? OR eventassignments.userid=?)) OR
-            (private=0 AND eventassignments.userid=?) OR
-            (private=0 AND eventassignments.userid IS NULL))
-            ORDER BY begintime", array($date, $user['id'], $user['id'], $user['id']));
+            WHERE ((date >= ? AND date < ?) OR (enddate <> 0 AND date < ? AND enddate >= ?))
+                AND ((private = 1 AND (events.userid = ? OR eventassignments.userid = ?))
+                    OR (private = 0 AND eventassignments.userid = ?)
+                    OR (private = 0 AND eventassignments.userid IS NULL)
+                )
+            ORDER BY begintime",
+            array(
+                $date,
+                strtotime('tomorrow', $date),
+                strtotime('tomorrow', $date),
+                $date,
+                $user['id'],
+                $user['id'],
+                $user['id']
+            )
+        );
 
         if (!empty($events)) {
             $mail_contents = '';
@@ -681,6 +693,10 @@ if (empty($types) || in_array('timetable', $types)) {
                         $endtime = sprintf("%02d:%02d", floor($event['endtime'] / 3600), floor(($event['endtime'] % 3600) / 60));
                         $mail_contents .= ' - ' . $endtime;
                         $sms_contents .= ' - ' . $endtime;
+                    }
+                    if ($event['date'] != $event['enddate']) {
+                        $mail_contents .= ' ' . trans('(multi day)');
+                        $sms_contents .= ' ' . trans('(multi day)');
                     }
                 }
 
