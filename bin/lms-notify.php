@@ -666,17 +666,24 @@ if (empty($types) || in_array('timetable', $types)) {
             $mail_contents = '';
             $sms_contents = '';
             foreach ($events as $event) {
-                $begintime = sprintf("%02d:%02d", floor($event['begintime'] / 100), $event['begintime'] % 100);
-                $mail_contents .= trans("Timetable for today") . ': ' . $today . PHP_EOL;
-                $sms_contents .= trans("Timetable for today") . ': ' . $today . ', ';
+                $mail_contents .= trans('Timetable for today') . ': ' . $today . PHP_EOL;
+                $sms_contents .= trans('Timetable for today') . ': ' . $today . ', ';
                 $mail_contents .= "----------------------------------------------------------------------------" . PHP_EOL;
-                $mail_contents .= trans("Time:") . "\t" . $begintime;
-                $sms_contents .= trans("Time:") . " " . $begintime;
-                if ($event['endtime'] != 0 && $event['begintime'] != $event['endtime']) {
-                    $endtime = sprintf("%02d:%02d", floor($event['endtime'] / 100), $event['endtime'] % 100);
-                    $mail_contents .= ' - ' . $endtime;
-                    $sms_contents .= ' - ' . $endtime;
+
+                if ($event['endtime'] == 86400) {
+                    $mail_contents .= trans('whole day');
+                    $sms_contents .= trans('whole day');
+                } else {
+                    $begintime = sprintf("%02d:%02d", floor($event['begintime'] / 3600), floor(($event['begintime'] % 3600) / 60));
+                    $mail_contents .= trans('Time:') . "\t" . $begintime;
+                    $sms_contents .= trans('Time:') . ' ' . $begintime;
+                    if ($event['endtime'] != 0 && $event['begintime'] != $event['endtime']) {
+                        $endtime = sprintf("%02d:%02d", floor($event['endtime'] / 3600), floor(($event['endtime'] % 3600) / 60));
+                        $mail_contents .= ' - ' . $endtime;
+                        $sms_contents .= ' - ' . $endtime;
+                    }
                 }
+
                 $mail_contents .= PHP_EOL;
                 $sms_contents .= ': ';
                 $mail_contents .= trans('Title:') . "\t" . $event['title'] . PHP_EOL;
