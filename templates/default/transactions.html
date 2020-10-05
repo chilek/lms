@@ -41,7 +41,7 @@
 
 		function loadTransactionList() {
 			$.ajax({
-				url: location.href.replace(/#.+$/, '') + '&oper=loadtransactionlist',
+				url: location.href.replace(/#.*$/, '') + '&oper=loadtransactionlist',
 				dataType: "html",
 				method: "GET",
 				success: function(data) {
