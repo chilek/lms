@@ -562,9 +562,10 @@ switch ($action) {
             'splitpayment' => $cnote['splitpayment'],
             'flags' => (empty($cnote['flags'][DOC_FLAG_RECEIPT]) ? 0 : DOC_FLAG_RECEIPT)
                 + (empty($cnote['flags'][DOC_FLAG_TELECOM_SERVICE]) || $customer['type'] == CTYPES_COMPANY ? 0 : DOC_FLAG_TELECOM_SERVICE)
-                + ($use_current_customer_data && isset($customer['flags'][CUSTOMER_FLAG_RELATED_ENTITY])
-                    ? ($customer['type'] == CTYPES_COMPANY ? DOC_FLAG_RELATED_ENTITY : 0)
-                    : (!empty($cnote['oldflags'][DOC_FLAG_RELATED_ENTITY]) ? DOC_FLAG_RELATED_ENTITY : 0)),
+                + ($use_current_customer_data
+                    ? ($customer['type'] == CTYPES_COMPANY && isset($customer['flags'][CUSTOMER_FLAG_RELATED_ENTITY]) ? DOC_FLAG_RELATED_ENTITY : 0)
+                    : (isset($cnote['oldflags'][DOC_FLAG_RELATED_ENTITY]) ? DOC_FLAG_RELATED_ENTITY : 0)
+                ),
             SYSLOG::RES_CUST => $cnote['customerid'],
             'name' => $use_current_customer_data ? $customer['customername'] : $cnote['name'],
             'address' => $use_current_customer_data ? (($customer['postoffice'] && $customer['postoffice'] != $customer['city'] && $customer['street']
