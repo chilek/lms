@@ -675,11 +675,9 @@ if (empty($types) || in_array('timetable', $types)) {
         );
 
         if (!empty($events)) {
-            $mail_contents = '';
-            $sms_contents = '';
+            $mail_contents = trans('Timetable for today') . ': ' . $today . PHP_EOL;
+            $sms_contents = trans('Timetable for today') . ': ' . $today . ', ';
             foreach ($events as $event) {
-                $mail_contents .= trans('Timetable for today') . ': ' . $today . PHP_EOL;
-                $sms_contents .= trans('Timetable for today') . ': ' . $today . ', ';
                 $mail_contents .= "----------------------------------------------------------------------------" . PHP_EOL;
 
                 if ($event['endtime'] == 86400) {
@@ -721,7 +719,6 @@ if (empty($types) || in_array('timetable', $types)) {
                         $sms_contents .= ' - ' . implode(', ', $contacts);
                     }
                 }
-                $mail_contents .= "----------------------------------------------------------------------------" . PHP_EOL;
                 $sms_contents .= ' ';
             }
 
