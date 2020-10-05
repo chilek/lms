@@ -658,6 +658,7 @@ if (empty($types) || in_array('timetable', $types)) {
             LEFT JOIN customeraddressview c ON (c.id = customerid)
             LEFT JOIN eventassignments ON (events.id = eventassignments.eventid)
             WHERE ((date >= ? AND date < ?) OR (enddate <> 0 AND date < ? AND enddate >= ?))
+                AND closed = 0
                 AND ((private = 1 AND (events.userid = ? OR eventassignments.userid = ?))
                     OR (private = 0 AND eventassignments.userid = ?)
                     OR (private = 0 AND eventassignments.userid IS NULL)
