@@ -134,12 +134,38 @@ if (empty($channels)) {
     $channels[] = 'mail';
 }
 
+define('ACTION_PARAM_NONE', 0);
+define('ACTION_PARAM_REQUIRED', 1);
+define('ACTION_PARAM_OPTIONAL', -1);
+
 $supported_actions = array(
-    'customer-status' => false,
-    'node-access' => false,
-    'assignment-invoice' => false,
-    'all-assignment-suspension' => false,
-    'customer-group' => true,
+    'customer-status' => array(
+        'params' => ACTION_PARAM_NONE,
+    ),
+    'node-access' => array(
+        'params' => ACTION_PARAM_NONE,
+    ),
+    'assignment-invoice' => array(
+        'params' => ACTION_PARAM_OPTIONAL,
+        'param_validator' => function ($params) {
+            if (count($params) > 1) {
+                return false;
+            }
+            static $allowed_params = array('invoice', 'proforma', 'note');
+            foreach ($params as $param) {
+                if (!in_array($param, $allowed_params)) {
+                    return false;
+                }
+            }
+            return true;
+        },
+    ),
+    'all-assignment-suspension' => array(
+        'params' => ACTION_PARAM_NONE,
+    ),
+    'customer-group' => array(
+        'params' => ACTION_PARAM_REQUIRED,
+    ),
 );
 
 $actions = array();
@@ -147,10 +173,17 @@ if (isset($options['actions'])) {
     if (preg_match('/^[^,\(]+(\([^\)]+\))?(,[^,\(]+(\([^\)]+\))?)*$/', $options['actions'])
         && preg_match_all('/([^,\(]+)(?:\(([^\)]+)\))?/', $options['actions'], $matches)) {
         foreach ($matches[1] as $idx => $action) {
-            if (!isset($supported_actions[$action]) || ($supported_actions[$action] != !empty($matches[2][$idx]))) {
+            if (!isset($supported_actions[$action])
+                || ($supported_actions[$action]['params'] == ACTION_PARAM_REQUIRED && empty($matches[2][$idx]))
+                || ($supported_actions[$action]['params'] == ACTION_PARAM_NONE && !empty($matches[2][$idx]))) {
                 die('Invalid format of actions parameter!' . PHP_EOL);
             }
             $actions[$action] = empty($matches[2][$idx]) ? array() : preg_split('/,/', $matches[2][$idx], PREG_SPLIT_NO_EMPTY);
+
+            if (!empty($actions[$action]) && (($supported_actions[$action]['params'] == ACTION_PARAM_REQUIRED || $supported_actions[$action]['params'] == ACTION_PARAM_OPTIONAL)
+                && isset($supported_actions[$action]['param_validator']) && !($supported_actions[$action]['param_validator']($actions[$action])))) {
+                die('Invalid format of actions parameter!' . PHP_EOL);
+            }
         }
     } else {
         die('Invalid format of actions parameter!' . PHP_EOL);
@@ -2420,7 +2453,7 @@ if (!empty($intersect)) {
                                     WHERE invoice = ? AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL)
                                         AND datefrom <= ?NOW? AND (dateto = 0 OR dateto >= ?NOW?)
                                         AND customerid IN (" . implode(',', $customers) . ")",
-                                    array(1)
+                                    array(DOC_INVOICE)
                                 );
                                 if (!empty($assigns)) {
                                     foreach ($assigns as $assign) {
@@ -2428,9 +2461,25 @@ if (!empty($intersect)) {
                                             printf("[block/assignment-invoice] CustomerID: %04d, AssignmentID: %d" . PHP_EOL, $assign['customerid'], $assign['id']);
                                         }
 
+                                        if (empty($action_params)) {
+                                            $target_doctype = 0;
+                                        } else {
+                                            switch (reset($action_params)) {
+                                                case 'proforma':
+                                                    $target_doctype = DOC_INVOICE_PRO;
+                                                    break;
+                                                case 'invoice':
+                                                    $target_doctype = DOC_INVOICE;
+                                                    break;
+                                                case 'note':
+                                                    $target_doctype = DOC_DNOTE;
+                                                    break;
+                                            }
+                                        }
+
                                         if (!$debug) {
                                             $DB->Execute("UPDATE assignments SET invoice = ?
-                                                WHERE id = ?", array(0, $assign['id']));
+                                                WHERE id = ?", array($target_doctype, $assign['id']));
                                             if ($SYSLOG) {
                                                 $SYSLOG->NewTransaction('lms-notify.php');
                                                 $SYSLOG->AddMessage(
@@ -2439,7 +2488,7 @@ if (!empty($intersect)) {
                                                     array(
                                                         SYSLOG::RES_ASSIGN => $assign['id'],
                                                         SYSLOG::RES_CUST => $assign['customerid'],
-                                                        'invoice' => 0
+                                                        'invoice' => $target_doctype
                                                     )
                                                 );
                                             }
@@ -2611,10 +2660,10 @@ if (!empty($intersect)) {
                             case 'assignment-invoice':
                                 $assigns = $DB->GetAll(
                                     "SELECT id, customerid FROM assignments
-                                    WHERE invoice = ? AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL)
+                                    WHERE invoice <> ? AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL)
                                         AND datefrom <= ?NOW? AND (dateto = 0 OR dateto >= ?NOW?)
                                         AND customerid IN (" . implode(',', $customers) . ")",
-                                    array(0)
+                                    array(DOC_INVOICE)
                                 );
                                 if (!empty($assigns)) {
                                     foreach ($assigns as $assign) {
@@ -2624,7 +2673,7 @@ if (!empty($intersect)) {
 
                                         if (!$debug) {
                                             $DB->Execute("UPDATE assignments SET invoice = ?
-                                                WHERE id = ?", array(1, $assign['id']));
+                                                WHERE id = ?", array(DOC_INVOICE, $assign['id']));
                                             if ($SYSLOG) {
                                                 $SYSLOG->NewTransaction('lms-notify.php');
                                                 $SYSLOG->AddMessage(
@@ -2633,7 +2682,7 @@ if (!empty($intersect)) {
                                                     array(
                                                         SYSLOG::RES_ASSIGN => $assign['id'],
                                                         SYSLOG::RES_CUST => $assign['customerid'],
-                                                        'invoice' => 1
+                                                        'invoice' => DOC_INVOICE,
                                                     )
                                                 );
                                             }
