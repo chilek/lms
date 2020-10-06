@@ -164,6 +164,9 @@ if (isset($_POST['assignment'])) {
     $a['check_all_terminals'] =
         ConfigHelper::checkConfig('phpui.promotion_schema_all_terminal_check');
 
+    $default_assignment_discount_type = ConfigHelper::getConfig('phpui.default_assignment_discount_type', 'percentage');
+    $a['discount_type'] = $default_assignment_discount_type == 'percentage' ? DISCOUNT_PERCENTAGE : DISCOUNT_AMOUNT;
+
     $a['count'] = 1;
     $a['currency'] = Localisation::getDefaultCurrency();
 }
