@@ -419,7 +419,7 @@ class LMSEzpdfInvoice extends LMSInvoice
     {
         $hide_discount = ConfigHelper::checkConfig('invoices.hide_discount');
         $hide_prodid = ConfigHelper::checkConfig('invoices.hide_prodid');
-        $show_tax_category = ConfigHelper::checkConfig('invoices.show_tax_category') && !empty($this->data['taxcategories']);
+        $show_tax_category = ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_tax_category'), 'true') && !empty($this->data['taxcategories']);
 
         $this->backend->setlinestyle(0.5);
         $this->backend->line($x, $y, $x + $width, $y);
