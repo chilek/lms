@@ -1,7 +1,7 @@
 {$use_alert_color = ConfigHelper::checkConfig('invoices.use_alert_color')}
 {$hide_discount = ConfigHelper::checkConfig('invoices.hide_discount')}
 {$hide_prodid = ConfigHelper::checkConfig('invoices.hide_prodid')}
-{$show_tax_category = ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_tax_category'), 'true')}
+{$show_tax_category = ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_tax_category', 'true'))}
 {if empty($invoice.taxcategories)}
 	{$show_tax_category = false}
 {/if}
