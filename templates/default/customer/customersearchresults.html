@@ -149,6 +149,10 @@
 						<option value="7">{trans("<!customersearch>Add consents")}</option>
 						<option value="8">{trans("<!customersearch>Remove consents")}</option>
 					</optgroup>
+					<optgroup label="{trans("<!customersearch>Messages")}">
+						<option value="10">{trans("<!customersearch>New email message")}</option>
+						<option value="11">{trans("<!customersearch>New sms message")}</option>
+					</optgroup>
 					{foreach $_CUSTOMERCONTACTTYPES as $contacttypeidx => $contacttype}
 						<optgroup label="{$contacttype.ui.legend.text}">
 							<option value="{$contacttypeidx}-1" data-resource="{$contacttypeidx}" data-operation="1"
@@ -283,6 +287,25 @@
 			$('#customersearchresults').attr('action', action).submit();
 		}
 
+		function sendMessage(type) {
+			var action = null;
+
+			switch (type) {
+				case 'sms':
+					action = '?m=messageadd&type={$smarty.const.MSG_SMS}';
+					break;
+				case 'email':
+					action = '?m=messageadd&type={$smarty.const.MSG_MAIL}';
+					break;
+			}
+
+			if (action === null) {
+				return false;
+			}
+
+			$('#customersearchresults').attr('action', action).submit();
+		}
+
 		function changeContactFlags(type, operation) {
 			var action = null;
 
@@ -368,6 +391,12 @@
 					break;
 				case 9:
 					changeCustomerGroups(3);
+					break;
+				case 10:
+					sendMessage('email');
+					break;
+				case 11:
+					sendMessage('sms');
 					break;
 				default:
 					var option = $('#customer-action option:selected');

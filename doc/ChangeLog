@@ -167,6 +167,8 @@ version 26-git (????-??-??):
     in new customer assignment form ('percentage' by default) [chilan]
   - enhancement: lms-notify.php support action parameter for 'assignment-invoice' which
     specifies target document type [chilan]
+  - enhancement: allow send message instatly to customers which were found in customer search
+    form [chilan]
 
 version 25.0 (2020-05-15):
 

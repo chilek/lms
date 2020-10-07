@@ -9,13 +9,20 @@
 		border: 0;
 	}
 
+	.customer-contact {
+		margin-left: 2em;
+	}
+
 </style>
 	{$xajax}
 <H1>{$layout.pagetitle}</H1>
 <FORM name="message" id="message" method="post" action="?m=messageadd" enctype="multipart/form-data">
-<p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
-</p>
+
+{if !empty($message.customers)}
+	<input type="hidden" name="message[customermode]" value="1">
+{/if}
+
 <script>
 
 	function checkaddr(email)
@@ -46,7 +53,7 @@
 
 	function change_message_template(tmplid) {
 		if (tmplid)
-			xajax_getMessageTemplate(tmplid, 'subject', {if $message.emails || !isset($message.customerid)}$('#typemail').prop('checked') || {/if}
+			xajax_getMessageTemplate(tmplid, 'subject', {if $message.mailcount || empty($message.customers)}$('#typemail').prop('checked') || {/if}
 				$('#typewww').prop('checked') || $('#typeuserpanel').prop('checked') || $('#typeuserpanelurgent').prop('checked') ? 'mailbody' : 'smsbody');
 	}
 
@@ -92,10 +99,10 @@
 				{trans("Type:")}
 			</TD>
 			<TD>
-				{if $message.emails || !isset($message.customerid)}
+				{if $message.emailcount || empty($message.customers)}
 					<INPUT type="radio" name="message[type]" id="typemail" value="{$smarty.const.MSG_MAIL}"{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} checked{/if} {tip trigger="type" text="Select message type"}><label for="typemail"><span class="bold">{trans("email")}</span></label>
 				{/if}
-				{if $message.phones || !isset($message.customerid)}
+				{if $message.phonecount || empty($message.customers)}
 					<INPUT type="radio" name="message[type]" id="typesms" value="{$smarty.const.MSG_SMS}"{if $message.type == $smarty.const.MSG_SMS} checked{/if} {tip trigger="type" text="Select message type"}><label for="typesms"><span class="bold">{trans("sms")}</span></label>
 				{/if}
 				<INPUT type="radio" name="message[type]" id="typeanysms" value="{$smarty.const.MSG_ANYSMS}"{if $message.type == $smarty.const.MSG_ANYSMS} checked{/if} {tip trigger="type" text="Select message type"}><label for="typeanysms"><span class="bold">{trans("any sms")}</span></label>
@@ -104,32 +111,34 @@
 				<INPUT type="radio" name="message[type]" id="typeuserpanelurgent" value="{$smarty.const.MSG_USERPANEL_URGENT}"{if $message.type == $smarty.const.MSG_USERPANEL_URGENT} checked{/if} {tip trigger="type" text="Select message type"}><label for="typeuserpanelurgent"><span class="bold">{trans("userpanel urgent")}</span></label>
 			</TD>
 		</TR>
-		{if $message.customerid}
-			<TR id="customer-filter">
-				<TD class="valign-top">
-					<IMG src="img/customer.gif" alt="">
-				</TD>
-				<TD class="valign-top bold nobr">
-					<span id="customer-recipient"{if $message.type == $smarty.const.MSG_ANYSMS} style="display: none;"{/if}>{trans("Recipient:")}</span>
-					<span id="customer-data"{if $message.type != $smarty.const.MSG_ANYSMS} style="display: none;"{/if}>{trans("Customer data:")}</span>
-				</TD>
-				<TD class="bold">
-					{$message.customer} ({$message.customerid|string_format:"%04d"})
-					<br>
-					{if empty($nodes)}
-						<input type="hidden" name="message[nodeid]" value="">
-					{else}
-						{trans("Node:")}
-						<select name="message[nodeid]">
-						<option value="">{trans("- none -")}</option>
-						{foreach $nodes as $node}
-							<option value="{$node.id}"{if $node.id == $message.nodeid} selected{/if}>{$node.name}: {$node.location}</option>
-						{/foreach}
-					</select>
-					{/if}
-					<INPUT type="hidden" name="message[customerid]" value="{$message.customerid}">
-				</TD>
-			</TR>
+		{if !empty($message.customers)}
+			{if count($message.customers) == 1}
+				{$customer = reset($message.customers)}
+				<TR id="customer-filter">
+					<TD class="valign-top">
+						<IMG src="img/customer.gif" alt="">
+					</TD>
+					<TD class="valign-top bold nobr">
+						<span id="customer-recipient"{if $message.type == $smarty.const.MSG_ANYSMS} style="display: none;"{/if}>{trans("Recipient:")}</span>
+						<span id="customer-data"{if $message.type != $smarty.const.MSG_ANYSMS} style="display: none;"{/if}>{trans("Customer data:")}</span>
+					</TD>
+					<TD class="bold">
+						{$customer.name} ({$customer.customerid|string_format:"%04d"})
+						<br>
+						{if empty($nodes)}
+							<input type="hidden" name="message[nodeid]" value="">
+						{else}
+							{trans("Node:")}
+							<select name="message[nodeid]">
+							<option value="">{trans("- none -")}</option>
+							{foreach $nodes as $node}
+								<option value="{$node.id}"{if $node.id == $message.nodeid} selected{/if}>{$node.name}: {$node.location}</option>
+							{/foreach}
+						</select>
+						{/if}
+					</TD>
+				</TR>
+			{/if}
 		{else}
 			<TR id="customer-filter"{if $message.type == $smarty.const.MSG_ANYSMS} style="display: none;"{/if}>
 				<TD>
@@ -249,39 +258,61 @@
 		{/if}
     </THEAD>
     <TBODY>
-	{if $message.emails}
-	<TR id="customermails"{if $message.type != $smarty.const.MSG_MAIL} style="display: none;"{/if}>
-		<TD>
-			<IMG src="img/email.gif" alt="">
-		</TD>
-		<TD class="bold nobr">
-			{trans("E-mail:")}
-		</TD>
-		<TD>
-			{foreach $message.emails as $email}
-				<label><INPUT type="checkbox" name="message[customermails][{$email@index}]" value="{$email.contact}"{if $message.customermails[$email@index]} checked{/if}>
-				{$email.contact}{if $email.name} ({$email.name}){/if}</label>
-				{if !$email@last}<br>{/if}
-			{/foreach}
-		</TD>
-	</TR>
+	{if $message.emailcount}
+		<TR id="customermails"{if $message.type != $smarty.const.MSG_MAIL} style="display: none;"{/if}>
+			<TD class="valign-top">
+				<IMG src="img/email.gif" alt="">
+			</TD>
+			<TD class="bold nobr valign-top">
+				{trans("E-mail:")}
+			</TD>
+			<TD>
+				{$first = true}
+				{foreach $message.customers as $customerid => $customer}
+					{if !empty($customer.emails)}
+						{if !$first}<br>{else}{$first = false}{/if}
+						<a href="?m=customerinfo&id={$customerid}">(#{$customerid|string_format:"%04d"}) {$customer.name}</a>
+						{foreach $customer.emails as $email}
+							<br>
+							<input type="hidden" name="message[customers][{$customerid}][emails][{$email.id}]" value="0">
+							<label class="customer-contact">
+								<INPUT type="checkbox" name="message[customers][{$customerid}][emails][{$email.id}]" value="{$email.contact}"
+										{if !empty($email.checked)}checked{/if}>
+								{$email.contact}{if $email.name} ({$email.name}){/if}
+							</label>
+						{/foreach}
+					{/if}
+				{/foreach}
+			</TD>
+		</TR>
 	{/if}
-	{if $message.phones}
-	<TR id="customerphones"{if $message.type != $smarty.const.MSG_SMS} style="display: none;"{/if}>
-		<TD>
-			<IMG src="img/phone.gif" alt="">
-		</TD>
-		<TD class="bold nobr">
-			{trans("Phone:")}
-		</TD>
-		<TD>
-			{foreach $message.phones as $phone}
-				<label><INPUT type="checkbox" name="message[customerphones][{$phone@index}]" value="{$phone.contact}"{if $message.customerphones[$phone@index]} checked{/if}>
-				{$phone.contact}{if $phone.name} ({$phone.name}){/if}</label>
-				{if !$phone@last}<br>{/if}
-			{/foreach}
-		</TD>
-	</TR>
+	{if $message.phonecount}
+		<TR id="customerphones"{if $message.type != $smarty.const.MSG_SMS} style="display: none;"{/if}>
+			<TD class="valign-top">
+				<IMG src="img/phone.gif" alt="">
+			</TD>
+			<TD class="bold nobr valign-top">
+				{trans("Phone:")}
+			</TD>
+			<TD>
+				{$first = true}
+				{foreach $message.customers as $customerid => $customer}
+					{if !empty($customer.phones)}
+						{if !$first}<br>{else}{$first = false}{/if}
+						<a href="?m=customerinfo&id={$customerid}">(#{$customerid|string_format:"%04d"}) {$customer.name}</a>
+						{foreach $customer.phones as $phone}
+							<br>
+							<input type="hidden" name="message[customers][{$customerid}][phones][{$phone.id}]" value="0">
+							<label class="customer-contact">
+								<INPUT type="checkbox" name="message[customers][{$customerid}][phones][{$phone.id}]" value="{$phone.contact}"
+										{if !empty($phone.checked)}checked{/if}>
+								{$phone.contact}{if $phone.name} ({$phone.name}){/if}
+							</label>
+						{/foreach}
+					{/if}
+				{/foreach}
+			</TD>
+		</TR>
 	{/if}
 	<TR ID="mailsender"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
 		<TD>
@@ -441,14 +472,14 @@ $(function() {
 	$('form[name="message"] [name="message[sender]"]').focus();
 
 	$('[name="message[type]"]').change(function() {
-		$('#customer-filter').toggle(parseInt($(this).val()) != {$smarty.const.MSG_ANYSMS}{if $message.customerid} || true{/if});
+		$('#customer-filter').toggle(parseInt($(this).val()) != {$smarty.const.MSG_ANYSMS}{if !empty($message.customers)} || true{/if});
 
 		var elem = $(this).attr('id');
 		if (elem == 'typesms' || elem == 'typeanysms' || elem == 'typewww' || elem == 'typeuserpanel' || elem == 'typeuserpanelurgent') {
 			$('#mailfrom,#mailsender,#attachment').hide();
 
-			{if $message.emails}
-			$('#customermails').hide();
+			{if $message.emailcount}
+				$('#customermails').hide();
 			{/if}
 
 			$('#users,#phonenumber,#customer-data').toggle(elem == 'typeanysms');
@@ -457,26 +488,26 @@ $(function() {
 			$('#mailbody').toggle(elem == 'typewww' || elem == 'typeuserpanel' || elem == 'typeuserpanelurgent');
 			$('#smsbody,#charscount').toggle(elem != 'typewww' && elem != 'typeuserpanel' && elem != 'typeuserpanelurgent');
 			if (elem == 'typewww') {
-				{if $message.phones}
-				$('#customerphones').hide();
+				{if $message.phonecount}
+					$('#customerphones').hide();
 				{/if}
 
 				xajax_getMessageTemplates({$smarty.const.TMPL_WWW});
 			} else if (elem == 'typeuserpanel') {
-				{if $message.phones}
-				$('#customerphones').hide();
+				{if $message.phonecount}
+					$('#customerphones').hide();
 				{/if}
 
 				xajax_getMessageTemplates({$smarty.const.TMPL_USERPANEL});
 			} else if (elem == 'typeuserpanelurgent') {
-				{if $message.phones}
-				$('#customerphones').hide();
+				{if $message.phonecount}
+					$('#customerphones').hide();
 				{/if}
 
 				xajax_getMessageTemplates({$smarty.const.TMPL_USERPANEL_URGENT});
 			} else {
-				{if $message.phones}
-				$('#customerphones').toggle(elem != 'typeanysms');
+				{if $message.phonecount}
+					$('#customerphones').toggle(elem != 'typeanysms');
 				{/if}
 
 				xajax_getMessageTemplates({$smarty.const.TMPL_SMS});
@@ -484,12 +515,12 @@ $(function() {
 		} else {
 			$('#mailbody,#mailfrom,#mailsender,#attachment').show();
 
-			{if $message.emails}
-			$('#customermails').show();
+			{if $message.emailcount}
+				$('#customermails').show();
 			{/if}
 
-			{if $message.phones}
-			$('#customerphones').hide();
+			{if $message.phonecount}
+				$('#customerphones').hide();
 			{/if}
 
 			if ($('#phonenumber').length) {
