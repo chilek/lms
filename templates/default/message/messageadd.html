@@ -59,7 +59,7 @@
 	}
 
 	function messageTemplateReceived(subjectelem, subject, messageelem, message) {
-		xjx.$(subjectelem).value = subject;
+		$('#' + subjectelem).val(subject);
 		if (tinyMCE.editors.length) {
 			tinyMCE.editors[0].setContent(message);
 		}

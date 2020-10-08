@@ -25,7 +25,7 @@
 function lmsFileUpload(elemid, formid) {
 	var elem = $("#" + elemid);
 	var formelem = typeof(formid) != 'undefined' ? $('#' + formid) : $(this).closest("form");
-	var formdata = new FormData(formelem.get(0));
+	var formdata;
 	var dontScaleImages = elem.find('.dont-scale-images');
 	var files;
 	var progressbar = elem.find(".fileupload-progressbar");
@@ -33,6 +33,8 @@ function lmsFileUpload(elemid, formid) {
 	var xhr;
 
 	function upload_files() {
+		formdata = new FormData(formelem.get(0));
+
 		var action = formelem.attr("action");
 		if (action === undefined) {
 			action = document.location;
@@ -204,6 +206,7 @@ function lmsFileUpload(elemid, formid) {
 		$(this).removeClass("lms-ui-fileupload-dropzone");
 		files = e.originalEvent.dataTransfer.files;
 		prepare_files();
+		formdata = new FormData(formelem.get(0));
 		formdata.delete(elemid + '[]');
 	});
 	elem.find('#' + elemid + '-progress-dialog').dialog({
@@ -228,6 +231,7 @@ function lmsFileUpload(elemid, formid) {
 	elem.find("input[type=file]").on("change", function() {
 		files = $(this).get(0).files;
 		prepare_files();
+		formdata = new FormData(formelem.get(0));
 		formdata.delete(elemid + '[]');
 	});
 	elem.find(".fileupload-file").on("click", function() {
