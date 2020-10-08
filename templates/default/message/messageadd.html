@@ -52,9 +52,10 @@
 	}
 
 	function change_message_template(tmplid) {
-		if (tmplid)
-			xajax_getMessageTemplate(tmplid, 'subject', {if $message.mailcount || empty($message.customers)}$('#typemail').prop('checked') || {/if}
+		if (tmplid) {
+			xajax_getMessageTemplate(tmplid, 'subject', {if $message.emailcount || empty($message.customers)}$('#typemail').prop('checked') || {/if}
 				$('#typewww').prop('checked') || $('#typeuserpanel').prop('checked') || $('#typeuserpanelurgent').prop('checked') ? 'mailbody' : 'smsbody');
+		}
 	}
 
 	function messageTemplateReceived(subjectelem, subject, messageelem, message) {
@@ -542,7 +543,7 @@ $(function() {
 	}).change();
 
 	{if isset($autoload_template) && $message.tmplid}
-	$('#msgtmplid').change();
+		$('#msgtmplid').change();
 	{/if}
 });
 countChars(document.getElementById('smstext'));
