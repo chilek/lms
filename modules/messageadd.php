@@ -929,11 +929,11 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
     }
 
     $SMARTY->assign('error', $error);
-} else if (!empty($_GET['customerid']) || isset($_POST['setwarnings'])) {
+} else if (!empty($_GET['customerid']) || isset($_POST['customers'])) {
     if (!empty($_GET['customerid'])) {
         $customers = array($_GET['customerid']);
     } else {
-        $customers = $_POST['setwarnings']['mcustomerid'];
+        $customers = $_POST['customers'];
     }
 
     $message['customers'] = $DB->GetAllByKey(

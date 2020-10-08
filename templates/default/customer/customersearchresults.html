@@ -54,9 +54,9 @@
 	{/if}
     </THEAD>
     <TBODY>
-	{section name=customerlist loop=$customerlist}
-	<INPUT type="hidden" class="hiddenbtn" name="setwarnings[mcustomerid][]" value="{$customerlist[customerlist].id}">
-	{/section}
+	{foreach $customerlist as $customer}
+		<INPUT type="hidden" class="hiddenbtn customer-item" name="setwarnings[mcustomerid][]" value="{$customer.id}">
+	{/foreach}
 	{section name=customerlist loop=$customerlist start=$start max=$pagelimit}
 	<TR class="highlight {if $customerlist[customerlist].deleted} lms-ui-resource-deleted{/if} {if $customerlist[customerlist].account && !$customerlist[customerlist].nodeac} blend{/if}" data-name="{$customerlist[customerlist].customername|escape:"javascript"|escape:"html"}">
 		<TD onClick="return self.location.href='?m=customerinfo&id={$customerlist[customerlist].id}';" valign="top">
@@ -302,6 +302,10 @@
 			if (action === null) {
 				return false;
 			}
+
+			$('.customer-item').each(function() {
+				$(this).attr('name', $(this).attr('name').replace('setwarnings[mcustomerid]', 'customers'));
+			});
 
 			$('#customersearchresults').attr('action', action).submit();
 		}
