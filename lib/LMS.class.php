@@ -3002,25 +3002,24 @@ class LMS
                     return MSG_NEW;
                 case 'serwersms':
                     $args = array(
-                        'akcja' => 'wyslij_sms',
-                        'login' => $username,
-                        'haslo' => $password,
-                        'numer' => $number,
-                        'wiadomosc' => $message,
+                        'username' => $username,
+                        'password' => $password,
+                        'phone' => $number,
+                        'text' => $message,
                     );
 
                     if ($from != 'ECO') {
-                        $args['nadawca'] = $from;
+                        $args['sender'] = $from;
                     }
 
                     if (!ConfigHelper::checkValue($transliterate_message)) {
                         $trans_message = iconv('UTF-8', 'ASCII//TRANSLIT', $message);
                         if (strlen($message) != strlen($trans_message)) {
-                            $args['kodowanie'] = 'UTF-8';
+                            $args['utf'] = 'true';
                         }
                     }
                     if ($messageid) {
-                        $args['usmsid'] = $messageid;
+                        $args['unique_id'] = $messageid;
                     }
                     $fast = isset($sms_options['fast']) ? $sms_options['fast'] : ConfigHelper::getConfig('sms.fast', 'false');
                     if (ConfigHelper::checkValue($fast)) {
@@ -3030,13 +3029,13 @@ class LMS
                     $encodedargs = http_build_query($args);
 
                     $curl = curl_init();
-                    curl_setopt($curl, CURLOPT_URL, 'https://api1.serwersms.pl/zdalnie/index.php');
+                    curl_setopt($curl, CURLOPT_URL, 'https://api2.serwersms.pl/messages/send_sms');
                     curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
                     curl_setopt($curl, CURLOPT_POST, 1);
                     curl_setopt($curl, CURLOPT_POSTFIELDS, $encodedargs);
                     curl_setopt($curl, CURLOPT_TIMEOUT, 10);
 
-                    $page = curl_exec($curl);
+                    $result = curl_exec($curl);
                     if (curl_error($curl)) {
                         $errors[] = 'SMS communication error. ' . curl_error($curl);
                         continue 2;
@@ -3050,18 +3049,14 @@ class LMS
 
                     curl_close($curl);
 
-                    $lines = explode("\n", $page);
-                    foreach ($lines as $lineidx => $line) {
-                        $lines[$lineidx] = trim($line);
-                    }
-                    $page = implode('', $lines);
+                    $result = json_decode($result, true);
 
-                    if (preg_match('/<Blad>([^<]*)<\/Blad>/i', $page, $matches)) {
-                        $errors[] = 'Serwersms error: ' . $matches[1];
+                    if (isset($result['error'])) {
+                        $errors[] = 'Serwersms error: code=' . $result['error']['code'] . ', type="' . $result['error']['type'] . '" message="' . $result['error']['message'] . '"';
                         continue 2;
                     }
 
-                    if (!preg_match('/<Skolejkowane><SMS id="[^"]+" numer="[^"]+" godzina_skolejkowania="[^"]+"\/><\/Skolejkowane>/', $page)) {
+                    if (empty($result['queued'])) {
                         $errors[] = 'Serwersms error: message has not been sent!';
                         continue 2;
                     }

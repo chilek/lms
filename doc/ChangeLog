@@ -169,6 +169,7 @@ version 26-git (????-??-??):
     specifies target document type [chilan]
   - enhancement: allow send message instatly to customers which were found in customer search
     form [chilan]
+  - devel/improvement: bumped used serwersms API from v1 to v2 [chilan]
 
 version 25.0 (2020-05-15):
 
