@@ -101,15 +101,45 @@
 			</TD>
 			<TD>
 				{if $message.emailcount || empty($message.customers)}
-					<INPUT type="radio" name="message[type]" id="typemail" value="{$smarty.const.MSG_MAIL}"{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} checked{/if} {tip trigger="type" text="Select message type"}><label for="typemail"><span class="bold">{trans("email")}</span></label>
+					<label>
+						<INPUT type="radio" name="message[type]" id="typemail" value="{$smarty.const.MSG_MAIL}"
+								{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} checked{/if}
+								{tip trigger="type" text="Select message type"}>
+						<span class="bold">{trans("email")}</span>
+					</label>
 				{/if}
 				{if $message.phonecount || empty($message.customers)}
-					<INPUT type="radio" name="message[type]" id="typesms" value="{$smarty.const.MSG_SMS}"{if $message.type == $smarty.const.MSG_SMS} checked{/if} {tip trigger="type" text="Select message type"}><label for="typesms"><span class="bold">{trans("sms")}</span></label>
+					<label>
+						<INPUT type="radio" name="message[type]" id="typesms" value="{$smarty.const.MSG_SMS}"
+								{if $message.type == $smarty.const.MSG_SMS} checked{/if}
+								{tip trigger="type" text="Select message type"}>
+						<span class="bold">{trans("sms")}</span>
+					</label>
 				{/if}
-				<INPUT type="radio" name="message[type]" id="typeanysms" value="{$smarty.const.MSG_ANYSMS}"{if $message.type == $smarty.const.MSG_ANYSMS} checked{/if} {tip trigger="type" text="Select message type"}><label for="typeanysms"><span class="bold">{trans("any sms")}</span></label>
-				<INPUT type="radio" name="message[type]" id="typewww" value="{$smarty.const.MSG_WWW}"{if $message.type == $smarty.const.MSG_WWW} checked{/if} {tip trigger="type" text="Select message type"}><label for="typewww"><span class="bold">{trans("www")}</span></label>
-				<INPUT type="radio" name="message[type]" id="typeuserpanel" value="{$smarty.const.MSG_USERPANEL}"{if $message.type == $smarty.const.MSG_USERPANEL} checked{/if} {tip trigger="type" text="Select message type"}><label for="typeuserpanel"><span class="bold">{trans("userpanel")}</span></label>
-				<INPUT type="radio" name="message[type]" id="typeuserpanelurgent" value="{$smarty.const.MSG_USERPANEL_URGENT}"{if $message.type == $smarty.const.MSG_USERPANEL_URGENT} checked{/if} {tip trigger="type" text="Select message type"}><label for="typeuserpanelurgent"><span class="bold">{trans("userpanel urgent")}</span></label>
+				<label>
+					<INPUT type="radio" name="message[type]" id="typeanysms" value="{$smarty.const.MSG_ANYSMS}"
+							{if $message.type == $smarty.const.MSG_ANYSMS} checked{/if}
+							{tip trigger="type" text="Select message type"}>
+					<span class="bold">{trans("any sms")}</span>
+				</label>
+				<label>
+					<INPUT type="radio" name="message[type]" id="typewww" value="{$smarty.const.MSG_WWW}"
+							{if $message.type == $smarty.const.MSG_WWW} checked{/if}
+							{tip trigger="type" text="Select message type"}>
+					<span class="bold">{trans("www")}</span>
+				</label>
+				<label>
+					<INPUT type="radio" name="message[type]" id="typeuserpanel" value="{$smarty.const.MSG_USERPANEL}"
+							{if $message.type == $smarty.const.MSG_USERPANEL} checked{/if}
+							{tip trigger="type" text="Select message type"}>
+					<span class="bold">{trans("userpanel")}</span>
+				</label>
+				<label>
+					<INPUT type="radio" name="message[type]" id="typeuserpanelurgent" value="{$smarty.const.MSG_USERPANEL_URGENT}"
+							{if $message.type == $smarty.const.MSG_USERPANEL_URGENT} checked{/if}
+							{tip trigger="type" text="Select message type"}>
+					<span class="bold">{trans("userpanel urgent")}</span>
+				</label>
 			</TD>
 		</TR>
 		{if !empty($message.customers)}
