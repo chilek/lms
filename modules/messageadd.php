@@ -762,7 +762,8 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
             $sms_options = $LMS->getCustomerSMSOptions();
         }
 
-        foreach ($recipients as $key => $row) {
+        $key = 1;
+        foreach ($recipients as $row) {
             $body = $message['body'];
 
             $customerid = isset($row['id']) ? $row['id'] : 0;
@@ -800,9 +801,9 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 
                 echo trans(
                     '$a of $b ($c) $d:',
-                    ($key + 1),
+                    $key,
                     count($recipients),
-                    sprintf('%02.1f%%', round((100 / count($recipients)) * ($key + 1), 1)),
+                    sprintf('%02.1f%%', round((100 / count($recipients)) * $key, 1)),
                     $row['customername'] . ' &lt;' . $destination . '&gt;'
                 );
                 flush();
@@ -855,6 +856,8 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                     );
                 }
             }
+
+            $key++;
         }
 
         echo '<script type="text/javascript">';
@@ -872,8 +875,9 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
         $message['customers'] = $DB->GetAllByKey(
             'SELECT id AS customerid, '
             . $DB->Concat('UPPER(lastname)', "' '", 'name') . ' AS name
-		FROM customerview
-		WHERE id IN ?',
+            FROM customerview
+            WHERE id IN ?
+            ORDER BY name',
             'customerid',
             array($customers)
         );
@@ -939,8 +943,9 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
     $message['customers'] = $DB->GetAllByKey(
         'SELECT id AS customerid, '
         . $DB->Concat('UPPER(lastname)', "' '", 'name') . ' AS name
-		FROM customerview
-		WHERE id IN ?',
+        FROM customerview
+        WHERE id IN ?
+        ORDER BY name',
         'customerid',
         array($customers)
     );

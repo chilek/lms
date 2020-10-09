@@ -20,6 +20,7 @@
 	.customer-list-summary {
 		padding-top: 0.3em;
 		font-weight: bold;
+		cursor: pointer;
 	}
 
 	.customer-list {
@@ -338,7 +339,7 @@
 						{foreach $message.customers as $customerid => $customer}
 							{if !empty($customer.emails)}
 								<div class="customer-list-item">
-									<a href="?m=customerinfo&id={$customerid}">(#{$customerid|string_format:"%04d"}) {$customer.name}</a>
+									<a href="?m=customerinfo&id={$customerid}">(#{$customerid|string_format:"%04d"}) {$customer.name|truncate:50:"..."}</a>
 									{foreach $customer.emails as $email}
 										{if !empty($email.checked)}{$selected_contacts = $selected_contacts + 1}{/if}
 										<br>
@@ -351,7 +352,7 @@
 									{/foreach}
 								</div>
 								{$total_customers = $total_customers + 1}
-								{if ($total_customers % 20) == 20}
+								{if ($total_customers % 20) == 0}
 									</div>
 									<div class="customer-list-column">
 								{/if}
@@ -361,7 +362,13 @@
 				</div>
 				<script>
 
-					$(document.currentScript).closest('.customers').find('.customer-list-summary').text($t('$a selected contacts of $b customers', {$selected_contacts}, {$total_customers}));
+					var customers = $(document.currentScript).closest('.customers');
+					customers.find('.customer-list-summary')
+						.text($t('$a selected contacts of $b customers', {$selected_contacts}, {$total_customers}))
+						.parent().toggle({if $total_customers > 5}true{else}false{/if});
+					{if $total_customers <= 5}
+						customers.find('.customer-list').show();
+					{/if}
 
 				</script>
 			</TD>
@@ -388,7 +395,7 @@
 						{foreach $message.customers as $customerid => $customer}
 							{if !empty($customer.phones)}
 								<div class="customer-list-item">
-									<a href="?m=customerinfo&id={$customerid}">(#{$customerid|string_format:"%04d"}) {$customer.name}</a>
+									<a href="?m=customerinfo&id={$customerid}">(#{$customerid|string_format:"%04d"}) {$customer.name|truncate:50:"..."}</a>
 									{foreach $customer.phones as $phone}
 										{if !empty($phone.checked)}{$selected_contacts = $selected_contacts + 1}{/if}
 										<br>
@@ -401,7 +408,7 @@
 									{/foreach}
 								</div>
 								{$total_customers = $total_customers + 1}
-								{if ($total_customers % 20) == 20}
+								{if ($total_customers % 20) == 0}
 									</div>
 									<div class="customer-list-column">
 								{/if}
@@ -411,7 +418,13 @@
 				</div>
 				<script>
 
-					$(document.currentScript).closest('.customers').find('.customer-list-summary').text($t('$a selected contacts of $b customers', {$selected_contacts}, {$total_customers}));
+					var customers = $(document.currentScript).closest('.customers');
+					customers.find('.customer-list-summary')
+							.parent().text($t('$a selected contacts of $b customers', {$selected_contacts}, {$total_customers}))
+							.toggle({if $total_customers > 5}true{else}false{/if});
+					{if $total_customers <= 5}
+						customers.find('.customer-list').show();
+					{/if}
 
 				</script>
 			</TD>
@@ -661,6 +674,11 @@ $(function() {
 	$('.customer-list-summary-container .lms-ui-button').click(function() {
 		$(this).closest('.customers').find('.customer-list').toggle();
 		$(this).toggle().siblings('.lms-ui-button').not(this).toggle();
+	});
+
+	$('.customer-list-summary').click(function() {
+		$(this).closest('.customers').find('.customer-list').toggle();
+		$(this).siblings('.lms-ui-button').not(this).toggle();
 	});
 });
 
