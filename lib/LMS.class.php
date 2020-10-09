@@ -3007,8 +3007,12 @@ class LMS
                         'haslo' => $password,
                         'numer' => $number,
                         'wiadomosc' => $message,
-                        'nadawca' => $from,
                     );
+
+                    if ($from != 'ECO') {
+                        $args['nadawca'] = $from;
+                    }
+
                     if (!ConfigHelper::checkValue($transliterate_message)) {
                         $trans_message = iconv('UTF-8', 'ASCII//TRANSLIT', $message);
                         if (strlen($message) != strlen($trans_message)) {
