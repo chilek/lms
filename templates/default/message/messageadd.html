@@ -420,8 +420,8 @@
 
 					var customers = $(document.currentScript).closest('.customers');
 					customers.find('.customer-list-summary')
-							.parent().text($t('$a selected contacts of $b customers', {$selected_contacts}, {$total_customers}))
-							.toggle({if $total_customers > 5}true{else}false{/if});
+							.text($t('$a selected contacts of $b customers', {$selected_contacts}, {$total_customers}))
+							.parent().toggle({if $total_customers > 5}true{else}false{/if});
 					{if $total_customers <= 5}
 						customers.find('.customer-list').show();
 					{/if}
