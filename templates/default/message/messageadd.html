@@ -13,6 +13,34 @@
 		margin-left: 2em;
 	}
 
+	.customers {
+		padding-bottom: 1em !important;
+	}
+
+	.customer-list-summary {
+		padding-top: 0.3em;
+		font-weight: bold;
+	}
+
+	.customer-list {
+		display: flex;
+		flex-wrap: wrap;
+		padding-top: 0.7em !important;
+	}
+
+	.customer-list-column {
+		display: flex;
+		flex-direction: column;
+		padding-right: 1.5em;
+	}
+
+	.customer-list-item {
+	}
+
+	.customer-list-summary-container {
+		display: block;
+	}
+
 </style>
 	{$xajax}
 <H1>{$layout.pagetitle}</H1>
@@ -297,23 +325,45 @@
 			<TD class="bold nobr valign-top">
 				{trans("E-mail:")}
 			</TD>
-			<TD>
-				{$first = true}
-				{foreach $message.customers as $customerid => $customer}
-					{if !empty($customer.emails)}
-						{if !$first}<br>{else}{$first = false}{/if}
-						<a href="?m=customerinfo&id={$customerid}">(#{$customerid|string_format:"%04d"}) {$customer.name}</a>
-						{foreach $customer.emails as $email}
-							<br>
-							<input type="hidden" name="message[customers][{$customerid}][emails][{$email.id}]" value="0">
-							<label class="customer-contact">
-								<INPUT type="checkbox" name="message[customers][{$customerid}][emails][{$email.id}]" value="{$email.contact}"
-										{if !empty($email.checked)}checked{/if}>
-								{$email.contact}{if $email.name} ({$email.name}){/if}
-							</label>
+			<TD class="customers">
+				<div class="customer-list-summary-container">
+					<span class="customer-list-summary"></span>
+					{button icon="more" class="more-button" tip="show customer list"}
+					{button icon="less" class="less-button" tip="hide customer list" visible=false}
+				</div>
+				<div class="customer-list" style="display: none;">
+					{$selected_contacts = 0}
+					{$total_customers = 0}
+					<div class="customer-list-column">
+						{foreach $message.customers as $customerid => $customer}
+							{if !empty($customer.emails)}
+								<div class="customer-list-item">
+									<a href="?m=customerinfo&id={$customerid}">(#{$customerid|string_format:"%04d"}) {$customer.name}</a>
+									{foreach $customer.emails as $email}
+										{if !empty($email.checked)}{$selected_contacts = $selected_contacts + 1}{/if}
+										<br>
+										<input type="hidden" name="message[customers][{$customerid}][emails][{$email.id}]" value="0">
+										<label class="customer-contact">
+											<INPUT type="checkbox" name="message[customers][{$customerid}][emails][{$email.id}]" value="{$email.contact}"
+													{if !empty($email.checked)}checked{/if}>
+											{$email.contact}{if $email.name} ({$email.name}){/if}
+										</label>
+									{/foreach}
+								</div>
+								{$total_customers = $total_customers + 1}
+								{if ($total_customers % 20) == 20}
+									</div>
+									<div class="customer-list-column">
+								{/if}
+							{/if}
 						{/foreach}
-					{/if}
-				{/foreach}
+					</div>
+				</div>
+				<script>
+
+					$(document.currentScript).closest('.customers').find('.customer-list-summary').text($t('$a selected contacts of $b customers', {$selected_contacts}, {$total_customers}));
+
+				</script>
 			</TD>
 		</TR>
 	{/if}
@@ -325,23 +375,45 @@
 			<TD class="bold nobr valign-top">
 				{trans("Phone:")}
 			</TD>
-			<TD>
-				{$first = true}
-				{foreach $message.customers as $customerid => $customer}
-					{if !empty($customer.phones)}
-						{if !$first}<br>{else}{$first = false}{/if}
-						<a href="?m=customerinfo&id={$customerid}">(#{$customerid|string_format:"%04d"}) {$customer.name}</a>
-						{foreach $customer.phones as $phone}
-							<br>
-							<input type="hidden" name="message[customers][{$customerid}][phones][{$phone.id}]" value="0">
-							<label class="customer-contact">
-								<INPUT type="checkbox" name="message[customers][{$customerid}][phones][{$phone.id}]" value="{$phone.contact}"
-										{if !empty($phone.checked)}checked{/if}>
-								{$phone.contact}{if $phone.name} ({$phone.name}){/if}
-							</label>
+			<TD class="customers">
+				<div class="customer-list-summary-container">
+					<span class="customer-list-summary"></span>
+					{button icon="more" class="more-button" tip="show customer list"}
+					{button icon="less" class="less-button" tip="hide customer list" visible=false}
+				</div>
+				<div class="customer-list" style="display: none;">
+					{$selected_contacts = 0}
+					{$total_customers = 0}
+					<div class="customer-list-column">
+						{foreach $message.customers as $customerid => $customer}
+							{if !empty($customer.phones)}
+								<div class="customer-list-item">
+									<a href="?m=customerinfo&id={$customerid}">(#{$customerid|string_format:"%04d"}) {$customer.name}</a>
+									{foreach $customer.phones as $phone}
+										{if !empty($phone.checked)}{$selected_contacts = $selected_contacts + 1}{/if}
+										<br>
+										<input type="hidden" name="message[customers][{$customerid}][phones][{$phone.id}]" value="0">
+										<label class="customer-contact">
+											<INPUT type="checkbox" name="message[customers][{$customerid}][phones][{$phone.id}]" value="{$phone.contact}"
+													{if !empty($phone.checked)}checked{/if}>
+											{$phone.contact}{if $phone.name} ({$phone.name}){/if}
+										</label>
+									{/foreach}
+								</div>
+								{$total_customers = $total_customers + 1}
+								{if ($total_customers % 20) == 20}
+									</div>
+									<div class="customer-list-column">
+								{/if}
+							{/if}
 						{/foreach}
-					{/if}
-				{/foreach}
+					</div>
+				</div>
+				<script>
+
+					$(document.currentScript).closest('.customers').find('.customer-list-summary').text($t('$a selected contacts of $b customers', {$selected_contacts}, {$total_customers}));
+
+				</script>
 			</TD>
 		</TR>
 	{/if}
@@ -575,7 +647,23 @@ $(function() {
 	{if isset($autoload_template) && $message.tmplid}
 		$('#msgtmplid').change();
 	{/if}
+
+	$('.customer-contact :checkbox').click(function() {
+		var customers = $(this).closest('.customers');
+		customers.find('.customer-list-summary')
+			.text($t(
+				'$a selected contacts of $b customers',
+				customers.find(':checkbox:checked').length,
+				customers.find('.customer-list-item').length
+			));
+	});
+
+	$('.customer-list-summary-container .lms-ui-button').click(function() {
+		$(this).closest('.customers').find('.customer-list').toggle();
+		$(this).toggle().siblings('.lms-ui-button').not(this).toggle();
+	});
 });
+
 countChars(document.getElementById('smstext'));
 
 document.getElementById('smstext').onmouseout = function() {

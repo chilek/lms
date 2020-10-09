@@ -4910,3 +4910,7 @@ $_LANG['Select routed networks to assign to node'] = 'Wybierz trasowane sieci, k
 $_LANG['Are you sure, you want to remove routed network to node assignments?'] = 'Jesteś pewien, że chcesz usunąć powiązania między trasowanymi sieciami, a komputerem?';
 $_LANG['routed network<!syslog>'] = 'trasowana sieć';
 $_LANG['Routed via:'] = 'Trasowana przez:';
+
+$_LANG['$a selected contacts of $b customers'] = '$a wybranych kontaktów spośród $b klientów';
+$_LANG['show customer list'] = 'pokaż listę klientów';
+$_LANG['hide customer list'] = 'ukryj listę klientów';

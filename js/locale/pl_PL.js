@@ -24,6 +24,9 @@
  */
 
 $_LANG['<!invoice>telecommunication service'] = 'usługa telekomunikacyjna';
+$_LANG['Select customer flags (optional)'] = 'Wybierz flagi klienta (opcjonalne)';
+$_LANG['related entity'] = 'podmiot powiązany';
+$_LANG['translates into JPK TP flag'] = 'przekłada się na flagę JPK TP';
 $_LANG['translates into JPK MPP flag'] = 'przekłada się na flagę JPK MPP';
 $_LANG['translates into JPK EE flag'] = 'przekłada się na flagę JPK EE';
 $_LANG['translates into JPK FP flag'] = 'przekłada się na flagę JPK FP';
@@ -213,6 +216,9 @@ $_LANG['Cost limit:'] = 'Limit kosztów:';
 $_LANG['Callee:'] = 'Dokąd:';
 $_LANG['Unit size<!voip>'] = 'Rozmiar jednostki';
 $_LANG['Start call:'] = 'Dokąd:';
+
+$_LANG['billing'] = 'billing';
+
 $_LANG['purchase invoice'] = 'faktura zakupu';
 $_LANG['pro-forma invoice'] = 'faktura pro forma';
 $_LANG['$a ($b addresses)'] = '$a ($b adresów)';
@@ -4444,6 +4450,7 @@ $_LANG['treat as regular expression'] = 'traktuj jako wyrażenie regularne';
 $_LANG['whole days'] = 'całe dni';
 $_LANG['whole day'] = 'cały dzień';
 $_LANG['multi day'] = 'wielodniowe';
+$_LANG['(multi day)'] = '(wielodniowe)';
 $_LANG['$a days'] = '$a dni';
 
 $_LANG['Click here to open calendar'] = 'Kliknij tutaj, aby otworzyć kalendarz';
@@ -4842,6 +4849,9 @@ $_LANG['<!customersearch>New customer group name cannot be empty!'] = 'Nazwa now
 $_LANG['<!customersearch>Customer group with specified name already exists!'] = 'Grupa klientów o podanej nazwie już istnieje!';
 $_LANG['<!customersearch>Add flags'] = 'Dodaj flagi';
 $_LANG['<!customersearch>Remove flags'] = 'Usuń flagi';
+$_LANG['<!customersearch>Messages'] = 'Wiadomości';
+$_LANG['<!customersearch>New email message'] = 'Nowa wiadomość e-mail';
+$_LANG['<!customersearch>New sms message'] = 'Nowa wiadomość SMS';
 
 $_LANG['Apply'] = 'Zastosuj';
 
@@ -4902,3 +4912,5 @@ $_LANG['Select routed networks to assign to node'] = 'Wybierz trasowane sieci, k
 $_LANG['Are you sure, you want to remove routed network to node assignments?'] = 'Jesteś pewien, że chcesz usunąć powiązania między trasowanymi sieciami, a komputerem?';
 $_LANG['routed network<!syslog>'] = 'trasowana sieć';
 $_LANG['Routed via:'] = 'Trasowana przez:';
+
+$_LANG['$a selected contacts of $b customers'] = '$a wybranych kontaktów spośród $b klientów';
