@@ -24,15 +24,8 @@
 	}
 
 	.customer-list {
-		display: flex;
-		flex-wrap: wrap;
+		column-width: 20vh;
 		padding-top: 0.7em !important;
-	}
-
-	.customer-list-column {
-		display: flex;
-		flex-direction: column;
-		padding-right: 1.5em;
 	}
 
 	.customer-list-item {
@@ -335,30 +328,24 @@
 				<div class="customer-list" style="display: none;">
 					{$selected_contacts = 0}
 					{$total_customers = 0}
-					<div class="customer-list-column">
-						{foreach $message.customers as $customerid => $customer}
-							{if !empty($customer.emails)}
-								<div class="customer-list-item">
-									<a href="?m=customerinfo&id={$customerid}">(#{$customerid|string_format:"%04d"}) {$customer.name|truncate:50:"..."}</a>
-									{foreach $customer.emails as $email}
-										{if !empty($email.checked)}{$selected_contacts = $selected_contacts + 1}{/if}
-										<br>
-										<input type="hidden" name="message[customers][{$customerid}][emails][{$email.id}]" value="0">
-										<label class="customer-contact">
-											<INPUT type="checkbox" name="message[customers][{$customerid}][emails][{$email.id}]" value="{$email.contact}"
-													{if !empty($email.checked)}checked{/if}>
-											{$email.contact}{if $email.name} ({$email.name}){/if}
-										</label>
-									{/foreach}
-								</div>
-								{$total_customers = $total_customers + 1}
-								{if ($total_customers % 20) == 0}
-									</div>
-									<div class="customer-list-column">
-								{/if}
-							{/if}
-						{/foreach}
-					</div>
+					{foreach $message.customers as $customerid => $customer}
+						{if !empty($customer.emails)}
+							<div class="customer-list-item">
+								<a href="?m=customerinfo&id={$customerid}">(#{$customerid|string_format:"%04d"}) {$customer.name|truncate:50:"..."}</a>
+								{foreach $customer.emails as $email}
+									{if !empty($email.checked)}{$selected_contacts = $selected_contacts + 1}{/if}
+									<br>
+									<input type="hidden" name="message[customers][{$customerid}][emails][{$email.id}]" value="0">
+									<label class="customer-contact">
+										<INPUT type="checkbox" name="message[customers][{$customerid}][emails][{$email.id}]" value="{$email.contact}"
+												{if !empty($email.checked)}checked{/if}>
+										{$email.contact}{if $email.name} ({$email.name}){/if}
+									</label>
+								{/foreach}
+							</div>
+							{$total_customers = $total_customers + 1}
+						{/if}
+					{/foreach}
 				</div>
 				<script>
 
@@ -391,30 +378,24 @@
 				<div class="customer-list" style="display: none;">
 					{$selected_contacts = 0}
 					{$total_customers = 0}
-					<div class="customer-list-column">
-						{foreach $message.customers as $customerid => $customer}
-							{if !empty($customer.phones)}
-								<div class="customer-list-item">
-									<a href="?m=customerinfo&id={$customerid}">(#{$customerid|string_format:"%04d"}) {$customer.name|truncate:50:"..."}</a>
-									{foreach $customer.phones as $phone}
-										{if !empty($phone.checked)}{$selected_contacts = $selected_contacts + 1}{/if}
-										<br>
-										<input type="hidden" name="message[customers][{$customerid}][phones][{$phone.id}]" value="0">
-										<label class="customer-contact">
-											<INPUT type="checkbox" name="message[customers][{$customerid}][phones][{$phone.id}]" value="{$phone.contact}"
-													{if !empty($phone.checked)}checked{/if}>
-											{$phone.contact}{if $phone.name} ({$phone.name}){/if}
-										</label>
-									{/foreach}
-								</div>
-								{$total_customers = $total_customers + 1}
-								{if ($total_customers % 20) == 0}
-									</div>
-									<div class="customer-list-column">
-								{/if}
-							{/if}
-						{/foreach}
-					</div>
+					{foreach $message.customers as $customerid => $customer}
+						{if !empty($customer.phones)}
+							<div class="customer-list-item">
+								<a href="?m=customerinfo&id={$customerid}">(#{$customerid|string_format:"%04d"}) {$customer.name|truncate:50:"..."}</a>
+								{foreach $customer.phones as $phone}
+									{if !empty($phone.checked)}{$selected_contacts = $selected_contacts + 1}{/if}
+									<br>
+									<input type="hidden" name="message[customers][{$customerid}][phones][{$phone.id}]" value="0">
+									<label class="customer-contact">
+										<INPUT type="checkbox" name="message[customers][{$customerid}][phones][{$phone.id}]" value="{$phone.contact}"
+												{if !empty($phone.checked)}checked{/if}>
+										{$phone.contact}{if $phone.name} ({$phone.name}){/if}
+									</label>
+								{/foreach}
+							</div>
+							{$total_customers = $total_customers + 1}
+						{/if}
+					{/foreach}
 				</div>
 				<script>
 
