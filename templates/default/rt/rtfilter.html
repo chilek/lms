@@ -161,7 +161,11 @@
                     <OPTION value="{$project.id}"{if is_array($filter.projectids) && in_array($project.id, $filter.projectids)} selected{/if}>{$project.name|truncate:40:"...":true}</OPTION>
                 {/foreach}
                 </SELECT>
-             </label>
+            </label>
+            <label class="nobr">
+                {trans("Customer ID:")}
+                <input type="text" name="cid" value="{if $filter.cid}{$filter.cid}{/if}" onChange="document.filter.submit();">
+            </label>
         </FORM>
         </div>
         {persistent_filter}

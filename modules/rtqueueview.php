@@ -179,6 +179,13 @@ if (isset($_GET['pids'])) {
     }
 }
 
+// customerid
+if (empty($_GET['cid'])) {
+    $filter['cid'] = null;
+} else {
+    $filter['cid'] = intval($_GET['cid']);
+}
+
 // types
 if (isset($_GET['tt'])) {
     if (is_array($_GET['tt'])) {
@@ -337,6 +344,7 @@ unset($queue['parentids']);
 unset($queue['rights']);
 unset($queue['verifier']);
 unset($queue['netnode']);
+unset($queue['cid']);
 
 $queues = $LMS->GetQueueList(array('stats' => false));
 $categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
