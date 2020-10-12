@@ -481,7 +481,13 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				SELECT m4.ticketid, MIN(m4.id) AS firstunread FROM rtmessages m4
 				JOIN rttickets t2 ON t2.id = m4.ticketid
 				LEFT JOIN rtticketlastview lv2 ON lv2.ticketid = m4.ticketid AND lv2.userid = ?
-				WHERE lv2.vdate < t2.modtime
+				WHERE 1 = 1'
+                    . str_replace('t.', 't2.', $qids ? ' AND (t.queueid IN (' . implode(',', $qids) . ')'
+                            . ($all_queues && $user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid : '') . ')'
+                        : ($user_permission_checks ? ' AND (t.queueid IS NOT NULL OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid . ')' : ''))
+                    . str_replace('t.', 't2.', $statefilter)
+                    . str_replace('t.', 't2.', $removedfilter)
+                    . ' AND lv2.vdate < t2.modtime
 				GROUP BY m4.ticketid
 			) m3 ON m3.ticketid = t.id
 			LEFT JOIN (
