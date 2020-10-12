@@ -110,12 +110,12 @@
 					<span class="bold">{trans("Filter:")}</span>
 
 					{trans("Customer:")}
-					<SELECT SIZE="1" NAME="fvoipaccid">
-					<OPTION VALUE="">{trans("- all -")}</OPTION>
-					{foreach from=$voipaccounts item=vacc}
-						<OPTION VALUE="{$vacc.id}" {if $listdata.fvoipaccid == $vacc.id} SELECTED{/if}>{$vacc.owner|truncate:40:"...":true} ({$vacc.login})</OPTION>
-					{/foreach}
-					</SELECT>
+					<select name="fvoipaccid" class="lms-ui-advanced-select">
+						<option value="" {if !$listdata.fvoipaccid}selected{/if}>{trans("- all -")}</option>
+						{foreach from=$voipaccounts item=vacc}
+						<option value="{$vacc.id}" {if $listdata.fvoipaccid == $vacc.id} selected{/if}>{$vacc.owner|truncate:40:"...":true} ({$vacc.login})</option>
+						{/foreach}
+					</select>
 
 					{trans("Period")} {trans("from")}&nbsp;
 					<INPUT
