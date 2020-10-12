@@ -107,6 +107,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
      *          array() of integer values,
      *      cid - ticket customerid (default: null = any/none, integer value)
      *      subject - ticket subject (default: null = any/none, text value)
+     *      fromdate - ticket creation date was from  (default: null = any/none, integer value)
+     *      todate - ticket creation date was to  (default: null = any/none, integer value)
      *      count - count records only or return selected record interval
      *          true - count only,
      *          false - get records,
