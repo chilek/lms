@@ -125,7 +125,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     {
         extract($params);
         foreach (array('ids', 'state', 'priority', 'owner', 'catids', 'removed', 'netdevids', 'netnodeids', 'deadline',
-            'serviceids', 'typeids', 'unread', 'parentids', 'verifierids', 'rights', 'projectids', 'cid', 'subject') as $var) {
+            'serviceids', 'typeids', 'unread', 'parentids', 'verifierids', 'rights', 'projectids', 'cid', 'subject', 'fromdate', 'todate') as $var) {
             if (!isset($$var)) {
                 $$var = null;
             }
@@ -282,6 +282,18 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $subjectfilter = '';
         } else {
             $subjectfilter = " AND t.subject LIKE '%" . $subject . "%'";
+        }
+
+        if (empty($fromdate)) {
+            $fromdatefilter = '';
+        } else {
+            $fromdatefilter = ' AND t.createtime >= ' . $fromdate;
+        }
+
+        if (empty($todate)) {
+            $todatefilter = '';
+        } else {
+            $todatefilter = ' AND t.createtime <= ' . $todate;
         }
 
         if (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations')) {
@@ -450,6 +462,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 . $projectidsfilter
                 . $cidfilter
                 . $subjectfilter
+                . $fromdatefilter
+                . $todatefilter
                 . $typeidsfilter, array($userid));
         }
 
@@ -544,6 +558,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             . $projectidsfilter
             . $cidfilter
             . $subjectfilter
+            . $fromdatefilter
+            . $todatefilter
             . $typeidsfilter
             . ($sqlord != '' ? $sqlord . ' ' . $direction : '')
             . (isset($limit) ? ' LIMIT ' . $limit : '')
@@ -594,6 +610,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         $result['type'] = $typeids;
         $result['unread'] = $unread;
         $result['rights'] = $rights;
+        $result['fromdate'] = $fromdate;
+        $result['todate'] = $todate;
 
         return $result;
     }

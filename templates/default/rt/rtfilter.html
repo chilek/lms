@@ -170,6 +170,15 @@
                 {trans("Subject:")}
                 <input type="text" name="subject" value="{if $filter.subject}{$filter.subject}{/if}" onChange="document.filter.submit();">
             </label>
+            <label class="nobr">
+                {trans("Created:")}
+                <input type="text" name="fromdate" SIZE="14" maxlength="16" value="{$queue.fromdate}"
+                    placeholder="{if $filter.fromdate}{$filter.fromdate|date_format:"%Y/%m/%d %H:%M"}{else}{trans("yyyy/mm/dd hh:mm")}{/if}"
+                    {tip class="lms-ui-datetime"} onChange="document.filter.submit();">
+                <input type="text" name="todate" size="14" maxlength="16" value="{$queue.todate}"
+                    placeholder="{if $filter.todate}{$filter.todate|date_format:"%Y/%m/%d %H:%M"}{else}{trans("yyyy/mm/dd hh:mm")}{/if}"
+                    {tip class="lms-ui-datetime"} onChange="document.filter.submit();">
+            </label>
         </FORM>
         </div>
         {persistent_filter}
