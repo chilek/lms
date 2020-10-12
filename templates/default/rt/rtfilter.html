@@ -166,6 +166,10 @@
                 {trans("Customer ID:")}
                 <input type="text" name="cid" value="{if $filter.cid}{$filter.cid}{/if}" onChange="document.filter.submit();">
             </label>
+            <label class="nobr">
+                {trans("Subject:")}
+                <input type="text" name="subject" value="{if $filter.subject}{$filter.subject}{/if}" onChange="document.filter.submit();">
+            </label>
         </FORM>
         </div>
         {persistent_filter}

@@ -106,6 +106,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
      *      projectids - ticket investment projects (default: null = any/none)
      *          array() of integer values,
      *      cid - ticket customerid (default: null = any/none, integer value)
+     *      subject - ticket subject (default: null = any/none, text value)
      *      count - count records only or return selected record interval
      *          true - count only,
      *          false - get records,
@@ -124,7 +125,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     {
         extract($params);
         foreach (array('ids', 'state', 'priority', 'owner', 'catids', 'removed', 'netdevids', 'netnodeids', 'deadline',
-            'serviceids', 'typeids', 'unread', 'parentids', 'verifierids', 'rights', 'projectids', 'cid') as $var) {
+            'serviceids', 'typeids', 'unread', 'parentids', 'verifierids', 'rights', 'projectids', 'cid', 'subject') as $var) {
             if (!isset($$var)) {
                 $$var = null;
             }
@@ -275,6 +276,12 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $cidfilter = '';
         } else {
             $cidfilter = ' AND t.customerid = ' . $cid;
+        }
+
+        if (empty($subject)) {
+            $subjectfilter = '';
+        } else {
+            $subjectfilter = " AND t.subject LIKE '%" . $subject . "%'";
         }
 
         if (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations')) {
@@ -442,6 +449,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 . $verifieridsfilter
                 . $projectidsfilter
                 . $cidfilter
+                . $subjectfilter
                 . $typeidsfilter, array($userid));
         }
 
@@ -535,6 +543,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             . $verifieridsfilter
             . $projectidsfilter
             . $cidfilter
+            . $subjectfilter
             . $typeidsfilter
             . ($sqlord != '' ? $sqlord . ' ' . $direction : '')
             . (isset($limit) ? ' LIMIT ' . $limit : '')

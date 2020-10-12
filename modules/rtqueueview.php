@@ -186,6 +186,13 @@ if (empty($_GET['cid'])) {
     $filter['cid'] = intval($_GET['cid']);
 }
 
+// subject
+if (empty($_GET['subject'])) {
+    $filter['subject'] = null;
+} else {
+    $filter['subject'] = $_GET['subject'];
+}
+
 // types
 if (isset($_GET['tt'])) {
     if (is_array($_GET['tt'])) {
@@ -344,7 +351,10 @@ unset($queue['parentids']);
 unset($queue['rights']);
 unset($queue['verifier']);
 unset($queue['netnode']);
+unset($queue['projectids']);
 unset($queue['cid']);
+unset($queue['subject']);
+
 
 $queues = $LMS->GetQueueList(array('stats' => false));
 $categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
