@@ -105,6 +105,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
      *      rights - tickets from queues with particular permissions (default:null whitch means tickets from all queues),
      *      projectids - ticket investment projects (default: null = any/none)
      *          array() of integer values,
+     *      cid - ticket customerid (default: null = any/none, integer value)
+     *      subject - ticket subject (default: null = any/none, text value)
+     *      fromdate - ticket creation date was from  (default: null = any/none, integer value)
+     *      todate - ticket creation date was to  (default: null = any/none, integer value)
      *      count - count records only or return selected record interval
      *          true - count only,
      *          false - get records,
@@ -123,7 +127,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     {
         extract($params);
         foreach (array('ids', 'state', 'priority', 'owner', 'catids', 'removed', 'netdevids', 'netnodeids', 'deadline',
-            'serviceids', 'typeids', 'unread', 'parentids','verifierids','rights') as $var) {
+            'serviceids', 'typeids', 'unread', 'parentids', 'verifierids', 'rights', 'projectids', 'cid', 'subject', 'fromdate', 'todate') as $var) {
             if (!isset($$var)) {
                 $$var = null;
             }
@@ -268,6 +272,30 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $projectidsfilter = ' AND t.invprojectid IN (' . implode(',', $projectids) . ')';
         } else {
             $projectidsfilter = ' AND t.invprojectid = '.$projectids;
+        }
+
+        if (empty($cid)) {
+            $cidfilter = '';
+        } else {
+            $cidfilter = ' AND t.customerid = ' . $cid;
+        }
+
+        if (empty($subject)) {
+            $subjectfilter = '';
+        } else {
+            $subjectfilter = " AND t.subject LIKE '%" . $subject . "%'";
+        }
+
+        if (empty($fromdate)) {
+            $fromdatefilter = '';
+        } else {
+            $fromdatefilter = ' AND t.createtime >= ' . $fromdate;
+        }
+
+        if (empty($todate)) {
+            $todatefilter = '';
+        } else {
+            $todatefilter = ' AND t.createtime <= ' . $todate;
         }
 
         if (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations')) {
@@ -434,6 +462,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 . $serviceidsfilter
                 . $verifieridsfilter
                 . $projectidsfilter
+                . $cidfilter
+                . $subjectfilter
+                . $fromdatefilter
+                . $todatefilter
                 . $typeidsfilter, array($userid));
         }
 
@@ -532,6 +564,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             . $serviceidsfilter
             . $verifieridsfilter
             . $projectidsfilter
+            . $cidfilter
+            . $subjectfilter
+            . $fromdatefilter
+            . $todatefilter
             . $typeidsfilter
             . ($sqlord != '' ? $sqlord . ' ' . $direction : '')
             . (isset($limit) ? ' LIMIT ' . $limit : '')
@@ -582,6 +618,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         $result['type'] = $typeids;
         $result['unread'] = $unread;
         $result['rights'] = $rights;
+        $result['fromdate'] = $fromdate;
+        $result['todate'] = $todate;
 
         return $result;
     }

@@ -161,7 +161,22 @@
                     <OPTION value="{$project.id}"{if is_array($filter.projectids) && in_array($project.id, $filter.projectids)} selected{/if}>{$project.name|truncate:40:"...":true}</OPTION>
                 {/foreach}
                 </SELECT>
-             </label>
+            </label>
+            <label class="nobr">
+                <input type="text" name="cid" value="{$queue.cid}" placeholder="{trans("Customer ID:")}" onChange="document.filter.submit();">
+            </label>
+            <label class="nobr">
+                <input type="text" name="subject" value="{$queue.subject}" placeholder="{trans("Subject:")}" onChange="document.filter.submit();">
+            </label>
+            <label class="nobr">
+                {trans("Created:")}
+                <input type="text" name="fromdate" SIZE="14" maxlength="16" value="{$queue.fromdate}"
+                    placeholder="{if $filter.fromdate}{$filter.fromdate|date_format:"%Y/%m/%d %H:%M"}{else}{trans("yyyy/mm/dd hh:mm")}{/if}"
+                    {tip class="lms-ui-datetime"} onChange="document.filter.submit();">
+                <input type="text" name="todate" size="14" maxlength="16" value="{$queue.todate}"
+                    placeholder="{if $filter.todate}{$filter.todate|date_format:"%Y/%m/%d %H:%M"}{else}{trans("yyyy/mm/dd hh:mm")}{/if}"
+                    {tip class="lms-ui-datetime"} onChange="document.filter.submit();">
+            </label>
         </FORM>
         </div>
         {persistent_filter}
