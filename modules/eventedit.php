@@ -164,7 +164,7 @@ if (isset($_POST['event'])) {
         $users = array_map(function ($userid) use ($users_by_id) {
             return $users_by_id[$userid];
         }, $users);
-        $error['begin'] = $error['endd'] =
+        $error['begin'] = $error['end'] =
             trans(
                 'Event is assigned to users which already have assigned an event in the same time: $a!',
                 implode(', ', $users)
