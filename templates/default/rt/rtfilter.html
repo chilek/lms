@@ -163,12 +163,10 @@
                 </SELECT>
             </label>
             <label class="nobr">
-                {trans("Customer ID:")}
-                <input type="text" name="cid" value="{$queue.cid}" onChange="document.filter.submit();">
+                <input type="text" name="cid" value="{$queue.cid}" placeholder="{trans("Customer ID:")}" onChange="document.filter.submit();">
             </label>
             <label class="nobr">
-                {trans("Subject:")}
-                <input type="text" name="subject" value="{$queue.subject}" onChange="document.filter.submit();">
+                <input type="text" name="subject" value="{$queue.subject}" placeholder="{trans("Subject:")}" onChange="document.filter.submit();">
             </label>
             <label class="nobr">
                 {trans("Created:")}
