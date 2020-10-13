@@ -608,7 +608,8 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
         return $this->db->GetCol(
             'SELECT DISTINCT a.userid FROM events e
                         JOIN eventassignments a ON a.eventid = e.id
-                        WHERE a.userid IN (' . implode(',', $users) . ')
+                        WHERE ' . (isset($params['ignoredevent']) ? 'e.id <> ' . intval($params['ignoredevent']) . ' AND ' : '')
+                            . 'a.userid IN (' . implode(',', $users) . ')
                                 AND (date < ? OR (date = ? AND begintime < ?))
                                 AND (enddate > ? OR (enddate = ? AND endtime > ?))',
             array($enddate, $enddate, $endtime, $date, $date, $begintime)
