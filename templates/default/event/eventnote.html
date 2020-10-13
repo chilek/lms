@@ -27,13 +27,14 @@
 		</TD>
 		<TD width="98%" class="fright">
 			{$event.date|date_format:"%x (%A)"}
-			{if $event.endtime == 86400}
+			{if $event.wholedays}
 				- {trans("whole day")}
 			{else}
 				{math equation="floor(x / 3600)" x=$event.begintime format="%02d"}:{math equation="x % 3600" x=$event.begintime format="%02d"}
 				{if $event.begintime != $event.endtime}
 				- {math equation="floor(x / 3600)" x=$event.endtime format="%02d"}:{math equation="x % 3600" x=$event.endtime format="%02d"}
 				{/if}
+				{if $event.multiday}<br>{trans("multi day")}{/if}
 			{/if}
 		</TD>
 	</TR>

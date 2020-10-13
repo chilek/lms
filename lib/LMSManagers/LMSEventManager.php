@@ -215,6 +215,12 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
         }
 
         $event['wholedays'] = $event['endtime'] == 86400;
+        $event['multiday'] = false;
+
+        if ($event['enddate'] && ($event['enddate'] - $event['date'])) {
+            $event['multiday'] = round(($event['enddate'] - $event['date']) / 86400) > 0;
+        }
+
         $event['helpdesk'] = !empty($event['ticketid']);
         $event['userlist'] = $this->db->GetCol('SELECT userid AS id
 			FROM vusers, eventassignments
