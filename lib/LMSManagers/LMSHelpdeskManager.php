@@ -283,7 +283,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         if (empty($subject)) {
             $subjectfilter = '';
         } else {
-            $subjectfilter = " AND t.subject LIKE '%" . $subject . "%'";
+            $subjectfilter = " AND t.subject ?LIKE? '%" . $subject . "%'";
         }
 
         if (empty($fromdate)) {
