@@ -149,10 +149,12 @@
 						<option value="7">{trans("<!customersearch>Add consents")}</option>
 						<option value="8">{trans("<!customersearch>Remove consents")}</option>
 					</optgroup>
-					<optgroup label="{trans("<!customersearch>Messages")}">
-						<option value="10">{trans("<!customersearch>New email message")}</option>
-						<option value="11">{trans("<!customersearch>New sms message")}</option>
-					</optgroup>
+					{if ConfigHelper::checkPrivilege("messaging")}
+						<optgroup label="{trans("<!customersearch>Messages")}">
+							<option value="10">{trans("<!customersearch>New email message")}</option>
+							<option value="11">{trans("<!customersearch>New sms message")}</option>
+						</optgroup>
+					{/if}
 					{foreach $_CUSTOMERCONTACTTYPES as $contacttypeidx => $contacttype}
 						<optgroup label="{$contacttype.ui.legend.text}">
 							<option value="{$contacttypeidx}-1" data-resource="{$contacttypeidx}" data-operation="1"
