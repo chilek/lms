@@ -19,31 +19,42 @@
             <br>{$event.date|date_format:"%x"}
         {/if}
         {$imadded=0}
-        {foreach $event.userlist as $user}
-		{if $layout.logid == $user.id}
-			{$imadded=1}
-		{/if}
-		<br><a href="?m=userinfo&amp;id={$user.id}" style="font-weight: normal">{$user.name|truncate:"25":"...":true}</a>
-        {/foreach}
+        {$user_row_limit = intval(ConfigHelper::getConfig('phpui.timetable_user_row_limit', 4))}
+        {if !empty($event.userlist)}
+            {if !$user_row_limit || count($event.userlist) <= $user_row_limit}
+                {foreach $event.userlist as $user}
+                    {if $layout.logid == $user.id}
+                        {$imadded=1}
+                    {/if}
+                    <br>
+                    <a href="?m=userinfo&amp;id={$user.id}"
+                       style="font-weight: normal">{$user.name|truncate:"25":"...":true}</a>
+                {/foreach}
+            {else}
+                <br>
+                <i class="lms-ui-icon-user lms-ui-tooltip-eventinfoshort" data-resourceid="{$event.id}"></i>
+                {$event.userlist|@count}
+            {/if}
+        {/if}
     </TD>
     <TD data-target-url="?m=eventinfo&id={$event.id}">
         <a href="?m=eventinfo&id={$event.id}"><i class="lms-ui-icon-timetable lms-ui-tooltip-eventinfoshort" data-resourceid="{$event.id}"></i> <span class="bold" {if !$event.closed}style="color:black"{/if}>{$event.title}</span></a>
-        {if !ConfigHelper::checkConfig('phpui.timetable_hide_description')}{if $event.description != ''}<br><i class="lms-ui-icon-description"></i> {$event.description}{/if}{/if}
-        {if $event.note != ''}<span{if !$event.closed} style="color: red;"{/if}><br><i class="lms-ui-icon-note"></i> {$event.note}</span>{/if}
+        {if !ConfigHelper::checkConfig('phpui.timetable_hide_description')}{if $event.description != ''}<br>{icon name="description"} {$event.description}{/if}{/if}
+        {if $event.note != ''}<span{if !$event.closed} style="color: red;"{/if}><br>{icon name="note"} {$event.note}</span>{/if}
     </TD>
     <TD class="nobr" colspan="2" data-target-url="?m=eventinfo&id={$event.id}">
         {if $event.netnode_name}
-        <i class="lms-ui-icon-netnode"></i> <a href="?m=netnodeinfo&id={$event.netnode_id}">{$event.netnode_name}</a>
-            {if !empty($event.netnode_location)}<br><i class="lms-ui-icon-location"></i> {$event.netnode_location}{/if}
+        {icon name="netnode"} <a href="?m=netnodeinfo&id={$event.netnode_id}">{$event.netnode_name}</a>
+            {if !empty($event.netnode_location)}<br>{icon name="location"} {$event.netnode_location}{/if}
         {else}
         {if $event.customername}
-        <i class="lms-ui-icon-customer"></i> <A href="?m=customerinfo&amp;id={$event.customerid}">{$event.customername|truncate:"30":"...":true}</A><br>
+            {icon name="customer"} <A href="?m=customerinfo&amp;id={$event.customerid}">{$event.customername|truncate:"30":"...":true}</A><br>
         {if !empty($event.address_id)}
-        <i class="lms-ui-icon-location"></i> {$event.location}
+            {icon name="location"} {$event.location}
         {elseif !empty($event.nodeid)}
-        <a href="?m=nodeinfo&id={$event.nodeid}"> {$event.nodelocation}</a>
+            <a href="?m=nodeinfo&id={$event.nodeid}"> {$event.nodelocation}</a>
         {else}
-        <i class="lms-ui-icon-location"></i> {$event.customerlocation}
+            {icon name="location"} {$event.customerlocation}
         {/if}
         {/if}
         {/if}
@@ -55,31 +66,31 @@
                     <a href="#" class="lms-ui-button" title="{trans("Show in timetable")}"
                        data-title="{trans("Show in timetable")}"
                        onclick="location.href = '?m=eventlist&year={strftime('%Y', $event.date)}&month={strftime('%m', $event.date)}&day={strftime('%d', $event.date)}';">
-                        <i class="lms-ui-icon-timetable"></i>
+                        {icon name="timetable"}
                     </a>
                 {/if}
                 <a href="#" class="lms-ui-button lms-ui-button-clipboard"
                    data-clipboard-text="{$url}?m=eventinfo&id={$event.id}"
-                    data-title="{trans("Click copies to clipboard")}">
-                    <i class="lms-ui-icon-clipboard"></i>
+                   data-title="{trans("Click copies to clipboard")}">
+                   {icon name="clipboard"}
                 </a>
                 {if ConfigHelper::checkPrivilege('timetable_management')}
-		{if ($event.closed)}
-                    {if !ConfigHelper::getConfig('phpui.allow_modify_closed_events_newer_than', 604800) || ($smarty.now - $event.closeddate < ConfigHelper::getConfig('phpui.allow_modify_closed_events_newer_than', 604800)) || ConfigHelper::checkPrivilege('superuser')}
-                        {button type="link" icon="open" onclick="location.href = '?m=eventedit&id={$event.id}&action=open&backid=' + $(this).closest('.event-day-table').attr('id');" tip="Open"}
-                    {/if}
-                {else}
-                    {if $imadded}
-                        {button type="link" icon="owner" onclick="location.href = '?m=eventedit&id={$event.id}&action=unassign&backid=' + $(this).closest('.event-day-table').attr('id');" tip="<!event>Unassign"}
+                    {if ($event.closed)}
+                        {if !ConfigHelper::getConfig('phpui.allow_modify_closed_events_newer_than', 604800) || ($smarty.now - $event.closeddate < ConfigHelper::getConfig('phpui.allow_modify_closed_events_newer_than', 604800)) || ConfigHelper::checkPrivilege('superuser')}
+                            {button type="link" icon="open" onclick="location.href = '?m=eventedit&id={$event.id}&action=open&backid=' + $(this).closest('.event-day-table').attr('id');" tip="Open"}
+                        {/if}
                     {else}
-                        {button type="link" icon="owner" onclick="location.href = '?m=eventedit&id={$event.id}&action=assign&backid=' + $(this).closest('.event-day-table').attr('id');" tip="<!event>Assign"}
+                        {if $imadded}
+                            {button type="link" icon="owner" onclick="location.href = '?m=eventedit&id={$event.id}&action=unassign&backid=' + $(this).closest('.event-day-table').attr('id');" tip="<!event>Unassign"}
+                        {else}
+                            {button type="link" icon="owner" onclick="location.href = '?m=eventedit&id={$event.id}&action=assign&backid=' + $(this).closest('.event-day-table').attr('id');" tip="<!event>Assign"}
+                        {/if}
+                        {button type="link" icon="close" onclick="location.href = '?m=eventedit&id={$event.id}&action=close&backid=' + $(this).closest('.event-day-table').attr('id');" tip="Close"}
+                        {button type="link" icon="clone" href="?m=eventadd&id={$event.id}" tip="Clone"}
+                        {button type="link" class="event-edit" icon="edit" href="?m=eventedit&id={$event.id}&backid=" tip="Edit"}
+                        {button type="link" icon="note" onclick="location.href = '?m=eventnote&id={$event.id}&backid=' + $(this).closest('.event-day-table').attr('id');" tip="Add Note"}
+                        {button type="link" icon="delete" class="delete-event" href="?m=eventdel&id={$event.id}" tip="Delete permanently"}
                     {/if}
-                    {button type="link" icon="close" onclick="location.href = '?m=eventedit&id={$event.id}&action=close&backid=' + $(this).closest('.event-day-table').attr('id');" tip="Close"}
-                    {button type="link" icon="clone" href="?m=eventadd&id={$event.id}" tip="Clone"}
-                    {button type="link" class="event-edit" icon="edit" href="?m=eventedit&id={$event.id}&backid=" tip="Edit"}
-                    {button type="link" icon="note" onclick="location.href = '?m=eventnote&id={$event.id}&backid=' + $(this).closest('.event-day-table').attr('id');" tip="Add Note"}
-                    {button type="link" icon="delete" class="delete-event" href="?m=eventdel&id={$event.id}" tip="Delete permanently"}
-                {/if}
                 {/if}
             {/buttons}
         </div>
