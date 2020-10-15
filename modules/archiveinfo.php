@@ -24,6 +24,27 @@
  *  $Id$
  */
 
+if (isset($_GET['oper']) && $_GET['oper'] == 'loadtransactionlist') {
+    header('Content-Type: text/html');
+
+    if ($SYSLOG && ConfigHelper::checkPrivilege('transaction_logs')
+        && isset($_GET['type']) && isset($_GET['id']) && isset($_GET['date'])) {
+        $trans = $SYSLOG->GetTransactions(
+            array(
+                'key' => SYSLOG::getResourceKey(intval($_GET['type'])),
+                'value' => intval($_GET['id']),
+                'limit' => 300,
+                'details' => true,
+            )
+        );
+
+        $SMARTY->assign('transactions', $trans);
+        die($SMARTY->fetch('transactionlist.html'));
+    }
+
+    die();
+}
+
 if (!$SYSLOG) {
     $body = trans('Transaction logging is disabled.');
     $SMARTY->assign('body', $body);
@@ -45,17 +66,6 @@ if (!empty($date)) {
 
 $resource['properties'] = $SYSLOG->GetResourceProperties($resource);
 $resource['name'] = SYSLOG::getResourceName($type);
-
-//xdebug_var_dump($resource);
-//die;
-
-$trans = $SYSLOG->GetTransactions(array('key' => SYSLOG::getResourceKey($type), 'value' => $id));
-if (!empty($trans)) {
-    foreach ($trans as $idx => $tran) {
-        $SYSLOG->DecodeTransaction($trans[$idx]);
-    }
-}
-$SMARTY->assign('transactions', $trans);
 
 $layout['pagetitle'] = trans('Archived Resource Information');
 
