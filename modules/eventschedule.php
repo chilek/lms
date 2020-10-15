@@ -167,7 +167,9 @@ $eventlist = $LMS->GetEventList($filter);
 
 $userid = $filter['userid'];
 
-$userlist = $LMS->GetUserNames();
+$params['access'] = 1;
+$userlist = $LMS->GetUserList($params);
+
 $SMARTY->assign('userlist', $userlist);
 if (is_array($userid) && in_array('-1', $userid)) {
     $userlist[-1]['id'] = -1;
