@@ -38,7 +38,7 @@ switch ($_GET['action']) {
             $SESSION->redirect('?'.$SESSION->get('backto')
                 . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
         } else {
-            die("Cannot open event - event closed too long ago.");
+            die(trans('Cannot open event - event closed too long ago.'));
         }
         break;
     case 'close':
