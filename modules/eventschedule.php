@@ -168,7 +168,9 @@ $eventlist = $LMS->GetEventList($filter);
 $userid = $filter['userid'];
 
 $params['short'] = 1;
-$params['access'] = 1;
+if (ConfigHelper::getConfig('phpui.timetable_hide_disabled_users')) {
+    $params['access'] = 1;
+}
 $userlist = $LMS->GetUserList($params);
 
 $SMARTY->assign('userlist', $userlist);
