@@ -448,6 +448,46 @@ if (!empty($assigns)) {
         }
     }
 }
+#michal dodanie 6 złotych
+#zmienne do ewentualnej edycji
+$id_zobowiazania_obciazajacego = 329;   # id zobowiazania wziete z bazy lms z tabeli zobowiazan
+$prog_dopuszczalnego_zadluzenia = 0;   # -3 = -3zl, 0 = 0zl itd
+$ktorego_dnia_miesiaca	= 14;           #od kiedy liczymy fakturę przeterminowaną. u nas termin jest do 10 - od 14 liczymy że jest przeterminowana
+#koniec zmienne
+$dzien_skryptu = intval(strftime("%d", localtime2())); # wyciągam dzień, również jeśli podano fakedate
+$rok_kar = $year;
+if ($month == 1){
+    $rok_kar -=1;
+}
+$data_kar = mktime(0, 0, 0, $month - 1, $ktorego_dnia_miesiaca, $rok_kar);
+echo "Data kar:  $data_kar" . " " . date('d/m/Y', $data_kar) . " \n";
+echo "Dzień skryptu: $dzien_skryptu\n";
+if( intval($dzien_skryptu) == 3 ) { #wystawiamy faktury 3-ciego każdego miesiąca i tego dnia sprawdzamy płatności
+    ### Sprawdź najpierw tych którzy do tej pory nie mieli kary i nałóż karę jeśli trzeba
+    $zapytanie = "WITH _tmp AS (SELECT a.*, (SELECT SUM(value) FROM cash WHERE customerid = a.customerid AND time < ". $data_kar .") AS bilans 
+        			        FROM assignments a WHERE tariffid = " . $id_zobowiazania_obciazajacego . ")
+    			    SELECT * FROM _tmp WHERE bilans < " . $prog_dopuszczalnego_zadluzenia . " AND suspended = 1";
+    $results = $DB->GetAll($zapytanie);
+        foreach ($results as $row) {
+            $aid = $row['id'];
+            echo "Aktualizuję klienta o ID ". $row['customerid'] . " - nakładam karę\n";
+            $kara_on = "UPDATE assignments SET suspended = 0 WHERE id = '$aid' ";
+            $DB->Execute($kara_on);
+        }
+    echo "Teraz klienci, którzy mieli już doliczone kary, które należy zdjąć: \n";
+    $zapytanie = "WITH _tmp AS (SELECT a.*, (SELECT SUM(value) FROM cash WHERE customerid = a.customerid AND time < " . $data_kar . ") AS bilans 
+                            FROM assignments a WHERE tariffid = " . $id_zobowiazania_obciazajacego . ")
+                    SELECT * FROM _tmp WHERE bilans >= 0 AND suspended = 0";
+        $results = $DB->GetAll($zapytanie);
+        foreach ($results as $row) {
+            $aid = $row['id'];
+            echo "Aktualizuję klienta o ID ". $row['customerid'] . " - zdejmuję karę\n";
+            $kara_off = "UPDATE assignments SET suspended = 1 WHERE id = '$aid' ";
+            $DB->Execute($kara_off);
+        }
+    }
+echo "Koniec kar, idę dalej\n";
+#koniec 6 złotych
 
 // let's go, fetch *ALL* assignments in given day
 $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_address_id,
