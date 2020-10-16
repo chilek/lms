@@ -1550,6 +1550,8 @@ $(function() {
 			paste_data_images: true,
 			relative_urls : false,
 			remove_script_host : false,
+			forced_root_block : false,
+			entity_encoding: 'raw',
 			file_picker_callback: function(callback, value, meta) {
 				if (meta.filetype == 'image') {
 					$('#tinymce-image-upload').trigger('click');
