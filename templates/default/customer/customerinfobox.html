@@ -17,6 +17,10 @@
 		display: flex;
 	}
 
+	.limit-width {
+		max-width: 35vw;
+	}
+
 </style>
 
 <TABLE class="lmsbox{if $customerpanel} lms-ui-tab-container lms-ui-sortable{/if}" id="customerinfobox"{if $customerpanel} data-label="{trans("Customer Info")}"{/if}>
@@ -351,7 +355,7 @@
 						<TD WIDTH="99%" COLSPAN="2">
 							<TABLE width="100%" CELLPADDING="5">
 								<TR>
-									<TD class="fall superlight lms-ui-autolinker">
+									<TD class="fall superlight lms-ui-autolinker limit-width">
 										{$customerinfo.info|replace:"\n":"<BR>"}
 									</TD>
 								</TR>
@@ -367,7 +371,7 @@
 						<TD WIDTH="99%" COLSPAN="2">
 							<TABLE width="100%" CELLPADDING="5">
 								<TR>
-									<TD class="fall superlight lms-ui-autolinker">
+									<TD class="fall superlight lms-ui-autolinker limit-width">
 										{$customerinfo.message|replace:"\n":"<BR>"}
 									</TD>
 								</TR>
@@ -383,7 +387,7 @@
 						<TD WIDTH="99%" COLSPAN="2">
 							<TABLE width="100%" CELLPADDING="5">
 								<TR>
-									<TD class="fall superlight lms-ui-autolinker">
+									<TD class="fall superlight lms-ui-autolinker limit-width">
 										{$customerinfo.notes|replace:"\n":"<BR>"}
 									</TD>
 								</TR>
@@ -399,7 +403,7 @@
 						<TD COLSPAN="2">
 							<TABLE width="100%" CELLPADDING="5">
 								<TR>
-									<TD class="fall superlight lms-ui-autolinker">
+									<TD class="fall superlight lms-ui-autolinker limit-width">
 										{$customerinfo.documentmemo|replace:"\n":"<BR>"}
 									</TD>
 								</TR>
