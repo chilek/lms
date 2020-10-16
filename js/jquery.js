@@ -1566,6 +1566,17 @@ $(function() {
 						reader.readAsDataURL(file);
 					});
 				}
+			},
+			setup: function (ed) {
+				ed.on('BeforeSetContent', function(e) {
+					if (e.format == 'html') {
+						e.content = e.content.replace(/\r?\n/g, '<br class="lms-ui-line-break" />');
+					}
+				}).on('GetContent', function(e) {
+					if (e.format == 'html') {
+						e.content = e.content.replace(/<br class="lms-ui-line-break"[^>]*>/g, '\r\n');
+					}
+				});
 			}
 		});
 	}
