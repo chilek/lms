@@ -131,6 +131,24 @@ else
 	exit 1;
 }
 
+my $vdbq = $dbase->prepare("SELECT var, value FROM uiconfig WHERE section = 'fping'");
+$vdbq->execute();
+
+while(my $row = $vdbq->fetchrow_hashref())
+{
+        if($row->{'value'}) #replace fping variables vith non-empty values from db
+        {
+                no strict 'refs';
+                my $prefix = $row->{'var'};
+                ${"$prefix"} = $row->{'value'};
+        }
+
+}
+
+$vdbq->finish();
+
+$tmpfile = $tmpfile . "-" . time(); #add timestamp to temporary file
+
 if(!$networks_list)
 {
 	my $dbq = $dbase->prepare("SELECT name FROM networks");
