@@ -3234,10 +3234,10 @@ class LMS
         return $manager->DocumentExists($properties);
     }
 
-    public function CommitDocuments(array $ids)
+    public function CommitDocuments(array $ids, $userpanel = false)
     {
         $manager = $this->getDocumentManager();
-        return $manager->CommitDocuments($ids);
+        return $manager->CommitDocuments($ids, $userpanel);
     }
 
     public function ArchiveDocuments(array $ids)

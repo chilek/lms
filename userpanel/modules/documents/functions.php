@@ -97,7 +97,7 @@ function module_main()
 
                                 // commit customer document only if it's owned by this customer
                                 // and is prepared for customer action
-                                $LMS->CommitDocuments(array($documentid));
+                                $LMS->CommitDocuments(array($documentid), true);
                             } else {
                                 echo trans('Authorization code you entered is invalid!');
                             }

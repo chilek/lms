@@ -40,7 +40,7 @@ interface LMSDocumentManagerInterface
 
     public function DocumentExists($properties);
 
-    public function CommitDocuments(array $ids);
+    public function CommitDocuments(array $ids, $userpanel = false);
 
     public function ArchiveDocuments(array $ids);
 

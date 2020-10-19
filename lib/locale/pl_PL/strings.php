@@ -3767,6 +3767,8 @@ $_LANG['Email address is required!'] = 'Adres e-mail jest wymagany!';
 
 $_LANG['Select document status'] = 'Wybierz status dokumentu';
 $_LANG['confirmed'] = 'zatwierdzony';
+$_LANG['confirmed (signed document scan)'] = 'zatwierdzony (skan z podpisem klienta)';
+$_LANG['confirmed (sms authorization)'] = 'zatwierdzony (autoryzacja SMS-em)';
 $_LANG['unconfirmed'] = 'niezatwierdzony';
 $_LANG['review (signed document scan)'] = 'do przejrzenia (skan z podpisem klienta)';
 $_LANG['waiting for signed document scan'] = 'oczekujący na skan z podpisem klienta)';

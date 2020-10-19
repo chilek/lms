@@ -193,13 +193,19 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 $status_sql = ' AND d.closed = 0 AND d.confirmdate >= 0 AND (d.confirmdate = 0 OR d.confirmdate < ?NOW?)';
                 break;
             case 1:
-                $status_sql = ' AND d.closed = 1';
+                $status_sql = ' AND d.closed > 0';
                 break;
             case 2:
                 $status_sql = ' AND d.closed = 0 AND d.confirmdate = -1';
                 break;
             case 3:
                 $status_sql = ' AND d.closed = 0 AND d.confirmdate > 0 AND d.confirmdate > ?NOW?';
+                break;
+            case 4:
+                $status_sql = ' AND d.closed = 2';
+                break;
+            case 5:
+                $status_sql = ' AND d.closed = 3';
                 break;
             default:
                 $status_sql = '';
@@ -690,7 +696,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         );
     }
 
-    public function CommitDocuments(array $ids)
+    public function CommitDocuments(array $ids, $userpanel = false)
     {
         function parse_notification_mail($string, $data)
         {
@@ -751,7 +757,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
  				adate = ?, auserid = ? WHERE id = ?',
                 array(
                     $userid,
-                    empty($doc['customerawaits']) ? 1 : 2,
+                    empty($doc['customerawaits']) ? ($userpanel ? 3 : 1) : 2,
                     $doc['customerawaits'] ? 0 : $doc['confirmdate'],
                     0,
                     null,
