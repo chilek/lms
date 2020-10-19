@@ -449,7 +449,7 @@ if (!empty($assigns)) {
     }
 }
 
-#check customer payments
+#check customer penalties
 #code variables
 $checked_tariff_id = 329; #tariff id that we set as a penalty tariff
 $allowed_debt = 0; #-3 = -3 PLN, 0 = 0 PLN, self-explanatory variable
