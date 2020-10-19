@@ -448,10 +448,11 @@ if (!empty($assigns)) {
         }
     }
 }
+
 #check customer payments
 #code variables
-$checked_tariff_id = 329; # tariff id that we set as a penalty tariff
-$allowed_debt = 0; # -3 = -3zl, 0 = 0zl, self-explanatory variable
+$checked_tariff_id = 329; #tariff id that we set as a penalty tariff
+$allowed_debt = 0; #-3 = -3 PLN, 0 = 0 PLN, self-explanatory variable
 $penalty_from_day = 14; #the day we consider an invoice overdue. for example - for payments due 10th of each month we set 14th just to be safe
 #end variables
 $script_day = intval(strftime("%d", localtime2())); # get script day, including fake date cases
@@ -465,27 +466,27 @@ echo "Script day: $script_day\n";
 if( intval($script_day) == 3 ) { #the day we issue our invoices
     ### Check customers without penalty, set penalty if needed
     echo "Setting penalties:\n";
-    $check_clients = "WITH _tmp AS (SELECT a.*, (SELECT SUM(value) FROM cash WHERE customerid = a.customerid AND time < ". $penalty_day .") AS balance 
-        			        FROM assignments a WHERE tariffid = " . $checked_tariff_id . ")
-    			    SELECT * FROM _tmp WHERE balance < " . $allowed_debt . " AND suspended = 1";
-    $results = $DB->GetAll($check_clients);
+    $check_clients = "WITH _tmp AS (SELECT a.*, (SELECT SUM(value) FROM cash WHERE customerid = a.customerid AND time < ?) AS balance
+                                        FROM assignments a WHERE tariffid = ?)
+                            SELECT * FROM _tmp WHERE balance < ? AND suspended = 1";
+    $results = $DB->GetAll($check_clients, array($penalty_day, $checked_tariff_id, $allowed_debt));
         foreach ($results as $row) {
             $aid = $row['id'];
             echo "Updating customer - ID: ". $row['customerid'] . " - setting penalty\n";
-            $penalty_on = "UPDATE assignments SET suspended = 0 WHERE id = '$aid' ";
-            $DB->Execute($penalty_on);
+            $penalty_on = "UPDATE assignments SET suspended = 0 WHERE id = ?";
+            $DB->Execute($penalty_on, array($aid));
         }
     ### Check customers with penalties, remove if required
     echo "Removing penalties: \n";
-    $check_penalties = "WITH _tmp AS (SELECT a.*, (SELECT SUM(value) FROM cash WHERE customerid = a.customerid AND time < " . $penalty_day . ") AS balance 
-                            FROM assignments a WHERE tariffid = " . $checked_tariff_id . ")
+    $check_penalties = "WITH _tmp AS (SELECT a.*, (SELECT SUM(value) FROM cash WHERE customerid = a.customerid AND time < ?) AS balance
+                            FROM assignments a WHERE tariffid = ?)
                     SELECT * FROM _tmp WHERE balance >= 0 AND suspended = 0";
-        $results = $DB->GetAll($check_penalties);
+        $results = $DB->GetAll($check_penalties, array($penalty_day, $checked_tariff_id));
         foreach ($results as $row) {
             $aid = $row['id'];
             echo "Updating customer - ID: ". $row['customerid'] . " - removing penalty\n";
-            $penalty_off = "UPDATE assignments SET suspended = 1 WHERE id = '$aid' ";
-            $DB->Execute($penalty_off);
+            $penalty_off = "UPDATE assignments SET suspended = 1 WHERE id = ?";
+            $DB->Execute($penalty_off, array($aid));
         }
     }
 echo "Penalties done, proceeding:\n";
