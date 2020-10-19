@@ -464,7 +464,7 @@ echo "Penalty day:  $penalty_day" . " " . date('d/m/Y', $penalty_day) . " \n";
 echo "Script day: $script_day\n";
 if( intval($script_day) == 3 ) { #the day we issue our invoices
     ### Check customers without penalty, set penalty if needed
-    echo "Setting penalties:\n"
+    echo "Setting penalties:\n";
     $check_clients = "WITH _tmp AS (SELECT a.*, (SELECT SUM(value) FROM cash WHERE customerid = a.customerid AND time < ". $penalty_day .") AS balance 
         			        FROM assignments a WHERE tariffid = " . $checked_tariff_id . ")
     			    SELECT * FROM _tmp WHERE balance < " . $allowed_debt . " AND suspended = 1";
