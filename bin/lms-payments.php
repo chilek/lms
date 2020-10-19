@@ -490,7 +490,7 @@ if( intval($script_day) == 3 ) { #the day we issue our invoices
         }
     }
 echo "Penalties done, proceeding:\n";
-#end customer payments
+#end customer penalties
 
 // let's go, fetch *ALL* assignments in given day
 $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_address_id,
