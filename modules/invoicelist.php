@@ -151,7 +151,7 @@ $total = intval($LMS->GetInvoiceList(array('search' => $s, 'cat' => $c, 'group' 
 
 $limit = intval(ConfigHelper::getConfig('phpui.invoicelist_pagelimit', 100));
 $page = !isset($_GET['page']) ? ceil($total / $limit) : $_GET['page'];
-if (empty($page)) {
+if (empty($page) || $page > ceil($total / $limit)) {
     $page = 1;
 }
 $page = intval($page);
