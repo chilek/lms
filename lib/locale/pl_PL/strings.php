@@ -3783,10 +3783,13 @@ $_LANG['SSN/TEN:'] = 'PESEL/NIP:';
 $_LANG['SSN/TEN and PIN'] = 'PESEL/NIP i PIN';
 
 $_LANG['without contracts'] = 'bez umów';
+$_LANG['without active contracts'] = 'bez aktywnych umów';
 $_LANG['Without Contracts'] = 'bez umów';
 $_LANG['with expired contracts'] = 'z przeterminowanymi umowami';
+$_LANG['with expired, active contracts'] = 'z aktywnymi przeterminowanymi umowami';
 $_LANG['Expired Contracts'] = 'przeterminowane umowy';
 $_LANG['with expiring contracts'] = 'z umowami bliskimi przeterminowania';
+$_LANG['with expiring, active contracts'] = 'z aktywnymi umowami bliskimi przeterminowania';
 $_LANG['Expiring Contracts'] = 'umowy bliskie przeterminowania';
 $_LANG['Customers Without Contracts List $a$b'] = 'Lista klientów bez umów $a$b';
 $_LANG['Customers With Expired Contracts List $a$b'] = 'Lista klientów z przeterminowanymi umowami $a$b';

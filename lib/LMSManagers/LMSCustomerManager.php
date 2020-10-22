@@ -691,6 +691,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         if (!isset($state) || !is_array($state)) {
             $state = array();
         }
+
+        $archived_document_condition = '';
+
         foreach ($state as $state_item) {
             switch ($state_item) {
                 case 50:
@@ -746,9 +749,19 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 case 59:
                 case 60:
                 case 61:
-                    $contracts = $state_item - 58;
-                    $contracts_days = intval(ConfigHelper::getConfig('contracts.contracts_days'));
+                case 76:
+                case 77:
+                case 78:
                     $contracts_expiration_type = ConfigHelper::getConfig('contracts.expiration_type', 'documents');
+                    if ($state_item >= 76) {
+                        $contracts = $state_item - 75;
+                        if ($contracts_expiration_type == 'documents') {
+                            $archived_document_condition = ' AND d.archived = 0';
+                        }
+                    } else {
+                        $contracts = $state_item - 58;
+                    }
+                    $contracts_days = intval(ConfigHelper::getConfig('contracts.contracts_days'));
                     if ($contracts == 1) {
                         if ($contracts_expiration_type == 'documents') {
                             $state_conditions[] = 'd.customerid IS NULL';
@@ -1146,8 +1159,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         'LEFT JOIN (
 							SELECT COUNT(*), d.customerid FROM documents d
 							JOIN documentcontents dc ON dc.docid = d.id
-							WHERE d.type IN (' . DOC_CONTRACT . ',' . DOC_ANNEX . ')
-							GROUP BY d.customerid
+							WHERE d.type IN (' . DOC_CONTRACT . ',' . DOC_ANNEX . ')'
+                            . $archived_document_condition
+                            . ' GROUP BY d.customerid
 						) d ON d.customerid = c.id' :
                         'LEFT JOIN (
 							SELECT customerid
@@ -1163,9 +1177,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 								SUM(CASE WHEN dc.todate > ?NOW? THEN 1 ELSE 0 END),
 								d.customerid FROM documents d
 							JOIN documentcontents dc ON dc.docid = d.id
-							WHERE d.type IN (' . DOC_CONTRACT . ',' . DOC_ANNEX . ')
-							GROUP BY d.customerid
-							HAVING SUM(CASE WHEN dc.todate < ?NOW? THEN 1 ELSE 0 END) > 0
+							WHERE d.type IN (' . DOC_CONTRACT . ',' . DOC_ANNEX . ')'
+                            . $archived_document_condition
+                            . ' GROUP BY d.customerid
+							HAVING SUM(CASE WHEN dc.todate > 0 AND dc.todate < ?NOW? THEN 1 ELSE 0 END) > 0
 								AND SUM(CASE WHEN dc.todate >= ?NOW? THEN 1 ELSE 0 END) = 0
 						) d ON d.customerid = c.id' :
                         'JOIN (
@@ -1181,7 +1196,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 							SELECT DISTINCT d.customerid FROM documents d
 							JOIN documentcontents dc ON dc.docid = d.id
 							WHERE dc.todate >= ?NOW? AND dc.todate <= ?NOW? + 86400 * ' . $contracts_days . '
-								AND type IN (' . DOC_CONTRACT . ',' . DOC_ANNEX . ')
+								AND type IN (' . DOC_CONTRACT . ',' . DOC_ANNEX . ')'
+                                . $archived_document_condition
+                            . '
 						) d ON d.customerid = c.id' :
                         'JOIN (
 							SELECT customerid
