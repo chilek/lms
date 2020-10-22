@@ -3,71 +3,87 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-background-cycle">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 95%;">
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+	</colgroup>
     <THEAD>
 	<TR>
-		<TD width="1%" NOWRAP><IMG src="img/division.gif" alt=""> <B>{trans("Name:")}</B></TD>
-		<TD width="1%" align="right" NOWRAP>{trans("ID:")}</TD>
-		<TD width="96%" align="left" NOWRAP>{trans("Long name:")}</TD>
-		<TD width="1%" align="right" NOWRAP>{trans("Customers:")}</TD>
-		<TD width="1%" align="right" NOWRAP>
+		<TD class="bold nobr"><IMG src="img/division.gif" alt=""> {trans("Name:")}</TD>
+		<TD class="bold text-right">{trans("ID:")}</TD>
+		<TD class="text-left nobr">
+			{trans("Text label:")}
+		</TD>
+		<TD class="text-left nobr">
+			{trans("Long name:")}
+		</TD>
+		<TD class="text-right nobr">{trans("Customers:")}</TD>
+		<TD class="text-right nobr">
 			{button type="link-button" icon="add" label="Add division" href="?m=divisionadd"}
 		</TD>
 	</TR>
 	{if $pagination->getTotal() != 0}
 		<TR>
-			<TD class="lms-ui-pagination" COLSPAN="5">
+			<TD class="lms-ui-pagination" COLSPAN="6">
 				{include file="pagination.html"}
 			</TD>
 		</TR>
 	{/if}
     </THEAD>
     <TBODY>
-	{cycle values="light,lucid" print=false}
-	{section name=list loop=$divisionlist}
-	<TR class="highlight {cycle}{if $divisionlist[list].status} blend{/if}" data-name="{$divisionlist[list].shortname}">
-		<TD NOWRAP onclick="return self.location.href='?m=divisionedit&amp;id={$divisionlist[list].id}';">
-			<IMG src="img/division.gif" alt=""> <B>{$divisionlist[list].shortname}</B>
+	{foreach $divisionlist as $division}
+	<TR class="{if $division.status} blend{/if}" data-name="{$division.shortname}">
+		<TD class="bold nobr" onclick="return self.location.href='?m=divisionedit&amp;id={$division.id}';">
+			<IMG src="img/division.gif" alt=""> {$division.shortname}
 		</TD>
-		<TD align="right" NOWRAP onclick="return self.location.href='?m=divisionedit&amp;id={$divisionlist[list].id}';">
-			({$divisionlist[list].id|string_format:"%04d"})
+		<TD class="text-right nobr" onclick="return self.location.href='?m=divisionedit&amp;id={$division.id}';">
+			({$division.id|string_format:"%04d"})
 		</TD>
-		<TD align="left" onclick="return self.location.href='?m=divisionedit&amp;id={$divisionlist[list].id}';">
-			{$divisionlist[list].name}
+		<td class="text-left">
+			{$division.label|default:"-"}
+		</td>
+		<TD class="text-left" onclick="return self.location.href='?m=divisionedit&amp;id={$division.id}';">
+			{$division.name}
 		</TD>
-		<TD align="right" onclick="return self.location.href='?m=divisionedit&amp;id={$divisionlist[list].id}';">
-			{$divisionlist[list].cnt|default:0}
+		<TD class="text-right" onclick="return self.location.href='?m=divisionedit&amp;id={$division.id}';">
+			{$division.cnt|default:0}
 		</TD>
-		<TD align="right" class="lms-ui-buttons text-right nobr">
-			{button type="link" icon="lock" tip="{if $divisionlist[list].status}{trans("Unlock")}{else}{trans("Lock")}{/if}" href="?m=divisionedit&amp;id={$divisionlist[list].id}&amp;changestatus=1"}
-			{button type="link" icon="delete" tip="Delete" class="delete-division" href="?m=divisiondel&id={$divisionlist[list].id}"}
-			{button type="link" icon="clone" tip="Clone" class="clone-division" href="?m=divisionclone&id={$divisionlist[list].id}"}
-			{button type="link" icon="edit" tip="Edit" href="?m=divisionedit&id={$divisionlist[list].id}"}
+		<TD class="lms-ui-buttons text-right nobr">
+			{button type="link" icon="lock" tip="{if $division.status}{trans("Unlock")}{else}{trans("Lock")}{/if}" href="?m=divisionedit&amp;id={$division.id}&amp;changestatus=1"}
+			{button type="link" icon="delete" tip="Delete" class="delete-division" href="?m=divisiondel&id={$division.id}"}
+			{button type="link" icon="clone" tip="Clone" class="clone-division" href="?m=divisionclone&id={$division.id}"}
+			{button type="link" icon="edit" tip="Edit" href="?m=divisionedit&id={$division.id}"}
 		</TD>
 	</TR>
-	{sectionelse}
+	{foreachelse}
 	<TR>
-		<TD colspan="5" class="empty-table">
+		<TD colspan="6" class="empty-table">
 			<p>{trans("No such divisions in database.")}</p>
 		</TD>
 	</TR>
-	{/section}
+	{/foreach}
     </TBODY>
     <TFOOT>
 	{if $pagination->getTotal() != 0}
 		<TR>
-			<TD class="lms-ui-pagination division-context" COLSPAN="5">
+			<TD class="lms-ui-pagination division-context" COLSPAN="6">
 				{include file="pagination.html"}
 			</TD>
 		</TR>
 	{/if}
     </TFOOT>
 </TABLE>
-	<script>
-		$(function() {
-			$('.division-context').on( 'lms:division_selection', function() {
-				location.reload();
-			});
+
+<script>
+
+	$(function() {
+		$('.division-context').on( 'lms:division_selection', function() {
+			location.reload();
 		});
 
 		$('.delete-division').click(function() {
@@ -84,5 +100,8 @@
 			});
 			return false;
 		});
-	</script>
+	});
+
+</script>
+
 {/block}

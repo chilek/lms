@@ -4918,3 +4918,6 @@ $_LANG['show customer list'] = 'pokaż listę klientów';
 $_LANG['hide customer list'] = 'ukryj listę klientów';
 
 $_LANG['Cannot open event - event closed too long ago.'] = 'Nie można otworzyć zdarzenia - zostało ono zamknięte zbyt dawno.';
+
+$_LANG['Text label:'] = 'Etykieta tekstowa:';
+$_LANG['Enter text label under which division is visible in user interface'] = 'Podaj etykietę tekstową pod jaką widoczna jest firma w interfejsie użytkownika';

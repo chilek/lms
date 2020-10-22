@@ -172,6 +172,8 @@ version 26-git (????-??-??):
   - devel/improvement: bumped used serwersms API from v1 to v2 [chilan]
   - enhancement: 'phpui.timetable_user_row_limit' (default: '4') configuration variable to hide
     assigned users to event when there is too many user assigned [interduo]
+  - enhancement: added text label property to divisions which is presented in user interface
+    in division selection list [chilan]
 
 version 25.0 (2020-05-15):
 

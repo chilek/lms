@@ -87,8 +87,8 @@
 								<TD style="width: 98%;" class="nobr">
 									<SELECT size="1" name="division" {tip text="Select division"}>
 										<OPTION value="0">- {trans("all")} -</OPTION>
-										{foreach from=$divisions item=item}
-										<OPTION value="{$item.id}">{$item.shortname}</OPTION>
+										{foreach $divisions as $item}
+											<OPTION value="{$item.id}">{$item.label}</OPTION>
 										{/foreach}
 									</SELECT>
 								</TD>
@@ -330,10 +330,10 @@
 						    </TD>
 						    <TD style="width: 98%;" class="nobr">
 							<SELECT size="1" name="division" {tip text="Select division"}>
-							    <OPTION value="0">- {trans("all")} -</OPTION>
-                    					    {foreach from=$divisions item=item}
-			                            	    <OPTION value="{$item.id}">{$item.shortname}</OPTION>
-							    {/foreach}
+								<OPTION value="0">- {trans("all")} -</OPTION>
+								{foreach $divisions as $item}
+									<OPTION value="{$item.id}">{$item.label}</OPTION>
+								{/foreach}
 							</SELECT>
 						    </TD>
 						</TR>
@@ -533,10 +533,10 @@
 						    </TD>
 						    <TD style="width: 98%;" colspan="2" class="nobr">
 							<SELECT size="1" name="division" {tip text="Select division"}>
-							    <OPTION value="0">- {trans("all")} -</OPTION>
-                    					{foreach from=$divisions item=item}
-			                            	    <OPTION value="{$item.id}">{$item.shortname}</OPTION>
-							{/foreach}
+								<OPTION value="0">- {trans("all")} -</OPTION>
+								{foreach $divisions as $item}
+									<OPTION value="{$item.id}">{$item.label}</OPTION>
+								{/foreach}
 							</SELECT>
 						    </TD>
 						</TR>
@@ -829,7 +829,7 @@
 								<SELECT size="1" name="division" {tip text="Select division"}>
 									<OPTION value="0">- {trans("all")} -</OPTION>
 									{foreach $divisions as $division}
-									<OPTION value="{$division.id}">{$division.shortname}</OPTION>
+									<OPTION value="{$division.id}">{$division.label}</OPTION>
 									{/foreach}
 								</SELECT>
 							</TD>
@@ -1124,7 +1124,7 @@
 									<SELECT size="1" name="division" {tip text="Select division"}>
 										<OPTION value="0">- {trans("all")} -</OPTION>
 										{foreach $divisions as $division}
-										<OPTION value="{$division.id}">{$division.shortname}</OPTION>
+										<OPTION value="{$division.id}">{$division.label}</OPTION>
 										{/foreach}
 									</SELECT>
 								</TD>
@@ -1468,7 +1468,7 @@
 								<SELECT size="1" name="division" {tip text="Select division"}>
 									<OPTION value="0">{trans("- none -")}</OPTION>
 									{foreach $divisions as $item}
-										<OPTION value="{$item.id}">{$item.shortname}</OPTION>
+										<OPTION value="{$item.id}">{$item.label}</OPTION>
 									{/foreach}
 								</SELECT>
 							</TD>
@@ -1688,7 +1688,7 @@
 					<option value="">{trans("- all -")}</option>
 					{foreach $divisions as $division}
 						<option value="{$division.id}"{if isset($filter['uke-income']['division']) && $filter['uke-income']['division'] == $division.id} selected{/if}
-							>{$division.shortname}</option>
+							>{$division.label}</option>
 					{/foreach}
 				</select>
 			</td>

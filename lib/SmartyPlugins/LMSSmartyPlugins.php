@@ -151,7 +151,7 @@ class LMSSmartyPlugins
                 $result .= '<option VALUE=""' . (!$selected ? ' selected' : '') . '>- ' . trans("all") . ' -</option>';
                 foreach ($user_divisions as $division) {
                     $result .= '<option value="' . $division['id'] . '"'
-                        . ($selected == $division['id'] ? ' selected' : '') . '>' . $division['shortname'] . '</option>';
+                        . ($selected == $division['id'] ? ' selected' : '') . '>' . $division['label'] . '</option>';
                 }
                 $result .= '</select>';
                 $result .= ($label ? '</label>' : '');
