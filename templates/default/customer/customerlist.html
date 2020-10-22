@@ -122,8 +122,11 @@
 					<option value="71"{if $filter.state == 71} selected{/if}>{trans("overdue receivables")}</option>
 				{/if}
 				<OPTION value="59"{if $filter.state == 59} SELECTED{/if}>{trans("without contracts")}</OPTION>
+				<OPTION value="76"{if $filter.state == 76} SELECTED{/if}>{trans("without active contracts")}</OPTION>
 				<OPTION value="60"{if $filter.state == 60} SELECTED{/if}>{trans("with expired contracts")}</OPTION>
+				<OPTION value="77"{if $filter.state == 77} SELECTED{/if}>{trans("with expired, active contracts")}</OPTION>
 				<OPTION value="61"{if $filter.state == 61} SELECTED{/if}>{trans("with expiring contracts")}</OPTION>
+				<OPTION value="78"{if $filter.state == 78} SELECTED{/if}>{trans("with expiring, active contracts")}</OPTION>
 				<OPTION value="73"{if $filter.state == 73} SELECTED{/if}>{trans("with unarchived documents")}</OPTION>
 				<OPTION VALUE="53"{if $filter.state == 53} SELECTED{/if}>{trans("online")}</OPTION>
 				<OPTION VALUE="54"{if $filter.state == 54} SELECTED{/if}>{trans("without group")}</OPTION>
