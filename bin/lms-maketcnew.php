@@ -40,6 +40,7 @@ $parameters = array(
     'quiet' => 'q',
     'help' => 'h',
     'version' => 'v',
+    'host:' => 'H:',
 );
 
 $long_to_shorts = array();
@@ -91,6 +92,7 @@ lms-maketcnew.php
 -h, --help                      print this help and exit;
 -v, --version                   print version info and exit;
 -q, --quiet                     suppress any output, except errors;
+-H, --host=<host-name>          allows to limit networks to those assigned to specified host
 
 EOF;
     exit(0);
@@ -183,7 +185,12 @@ $script_multi_mac = ConfigHelper::checkConfig('tcnew.multi_mac');
 $create_device_channels = ConfigHelper::checkConfig('tcnew.create_device_channels');
 $all_assignments = ConfigHelper::checkConfig('tcnew.all_assignments');
 
-$existing_networks = $DB->GetCol("SELECT name FROM networks");
+$host = isset($options['host']) ? mb_strtoupper($options['host']) : null;
+
+$existing_networks = $DB->GetCol(
+    "SELECT n.name FROM networks n"
+    . ($host ? " JOIN hosts h ON h.id = n.hostid WHERE h.name = '" . $host . "'" : '')
+);
 
 // get selected networks from ini file
 $networks = ConfigHelper::getConfig('tcnew.networks', '', true);
