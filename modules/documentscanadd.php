@@ -75,7 +75,6 @@ if (isset($_POST['documentscans'])) {
         foreach ($files as &$file) {
             $image->setResolution(300, 300);
             $image->readImage($file['tmpname'] . '[0]');
-            $image->setIteratorIndex(0);
             $image->writeImage($file['tmpname'] . '.png');
 
             $result = $zbarDecoder->make($file['tmpname'] . '.png');
@@ -86,6 +85,8 @@ if (isset($_POST['documentscans'])) {
                 $file['fullnumber'] = $result->text;
                 $file['documents'] = $LMS->getDocumentsByFullNumber($result->text);
             }
+
+            $image->clear();
         }
         unset($file);
 
