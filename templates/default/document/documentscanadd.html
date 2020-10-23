@@ -102,7 +102,7 @@
 											<label>
 												<input type="checkbox" class="lms-ui-multi-check" name="documents[{$file.name}]" value="{$document.id}">
 												{capture assign="customerlink"}
-													<a href="?m=customerinfo&id={$document.id}">{$document.name} (#{$document.customerid})</a>
+													<a href="?m=customerinfo&id={$document.customerid}">{$document.name} (#{$document.customerid})</a>
 												{/capture}
 												{t a=$_DOCTYPES[$document.type] b=$document.cdate|date_format:"%Y/%m/%d" c=$customerlink}$a issued on $b for $c{/t}
 											</label>
