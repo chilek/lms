@@ -176,6 +176,8 @@ version 26-git (????-??-??):
     in division selection list [chilan]
   - enhancement: added some new customer search status filters - expiring/expired/without
     and active (unarchived) document flags [chilan]
+  - improvement: lms-maketcnew.php support --host parameter which allows to limit selected
+    networks to those assigned to specified host [chilan]
 
 version 25.0 (2020-05-15):
 
