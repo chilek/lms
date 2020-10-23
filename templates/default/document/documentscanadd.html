@@ -82,6 +82,7 @@
 					</tr>
 				</thead>
 				<tbody>
+					{$matches = 0}
 					{foreach $files as $file}
 						<tr>
 							<td>
@@ -96,6 +97,7 @@
 							</td>
 							<td>
 								{if !empty($file.documents)}
+									{$matches = $matches + 1}
 									<ul id="document-list">
 									{foreach $file.documents as $document}
 										<li>
@@ -109,6 +111,8 @@
 										</li>
 									{/foreach}
 									</ul>
+								{else}
+									-
 								{/if}
 							</td>
 						</tr>
@@ -120,6 +124,7 @@
 						</tr>
 					{/foreach}
 				</tbody>
+				{if $matches}
 				<tfoot>
 					<tr>
 						<td colspan="2">
@@ -133,6 +138,7 @@
 						</td>
 					</tr>
 				</tfoot>
+				{/if}
 			</table>
 		</td>
 	</tr>
