@@ -4924,3 +4924,13 @@ $_LANG['Cannot open event - event closed too long ago.'] = 'Nie można otworzyć
 
 $_LANG['Text label:'] = 'Etykieta tekstowa:';
 $_LANG['Enter text label under which division is visible in user interface'] = 'Podaj etykietę tekstową pod jaką widoczna jest firma w interfejsie użytkownika';
+
+$_LANG['Add Scans'] = 'Dodaj skany';
+$_LANG['Allow you to attach scan to existing document'] = 'Umożliwa dodanie skanu do istniejącego dokumentu';
+$_LANG['Select files with document scans'] = 'Wybierz pliki ze skanami dokumentów';
+$_LANG['No image files!'] = 'Brak plików z obrazkami!';
+$_LANG['Recognised document number:'] = 'Rozponany numer dokumentu:';
+$_LANG['Matched documents:'] = 'Dopasowane dokumenty:';
+$_LANG['No matched documents!'] = 'Brak dopasowanych dokumentów!';
+$_LANG['File name:'] = 'Nazwa pliku:';
+$_LANG['$a issued on $b for $c'] = '$a z dnia $b dla $c';

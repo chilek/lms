@@ -3324,6 +3324,18 @@ class LMS
         return $manager->CopyDocumentPermissions($src_userid, $dst_userid);
     }
 
+    public function getDocumentsByFullNumber($full_number)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->getDocumentsByFullNumber($full_number);
+    }
+
+    public function isDocumentAccessible($docid)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->isDocumentAccessible($docid);
+    }
+
     /*
      *  Location
      */

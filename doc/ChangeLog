@@ -178,6 +178,8 @@ version 26-git (????-??-??):
     and active (unarchived) document flags [chilan]
   - improvement: lms-maketcnew.php support --host parameter which allows to limit selected
     networks to those assigned to specified host [chilan]
+  - enhancement: implemented document scan upload with automatic document number recognition
+    basing on bar code placed on document [chilan]
 
 version 25.0 (2020-05-15):
 

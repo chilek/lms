@@ -69,4 +69,8 @@ interface LMSDocumentManagerInterface
     public function DeleteDocument($docid);
 
     public function CopyDocumentPermissions($src_userid, $dst_userid);
+
+    public function getDocumentsByFullNumber($full_number);
+
+    public function isDocumentAccessible($docid);
 }

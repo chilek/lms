@@ -1,0 +1,160 @@
+{extends file="layout.html"}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+
+<style>
+
+	#document-list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		margin-top: 0.3em;
+		margin-bottom: 0.3em;
+	}
+
+	#file-list {
+		padding: 1.2em;
+	}
+
+	#file-list > table {
+		border: 1px dotted black;
+	}
+
+	#file-list > table thead td {
+		border-bottom: 1px solid black;
+	}
+
+</style>
+
+<FORM name="documentscanadd" method="POST" id="documentscanadd-form" action="?m=documentscanadd">
+<INPUT type="submit" class="hiddenbtn">
+<input type="hidden" name="documentscans" value="1">
+<TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 98%;">
+	</COLGROUP>
+    <THEAD>
+	<TR>
+		<TD>
+			<IMG src="img/docum.gif" alt="">
+		</TD>
+		<TD class="bold nobr" colspan="2">
+			{trans("Select files with document scans")}
+		</TD>
+	</TR>
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD>
+			{icon name="upload"}
+		</TD>
+		<TD class="bold">
+			{trans("Files:")}
+		</TD>
+		<TD>
+			{fileupload id="attachments" fileupload=$fileupload form="documentscanadd-form"}
+		</TD>
+	</TR>
+	{if !empty($files)}
+	<tr>
+		<td colspan="3" id="file-list">
+			<table class="lmsbox-inner lms-ui-background-cycle lms-ui-multi-check">
+				<colgroup>
+					<col style="width: 1%;">
+					<col style="width: 1%;">
+					<col style="width: 98%;">
+				</colgroup>
+				<thead>
+					<tr>
+						<td class="bold nobr">
+							{trans("File name:")}
+						</td>
+						<td class="bold nobr">
+							{trans("Recognised document number:")}
+						</td>
+						<td class="bold nobr">
+							{trans("Matched documents:")}
+						</td>
+					</tr>
+				</thead>
+				<tbody>
+					{foreach $files as $file}
+						<tr>
+							<td>
+								{$file.name}
+							</td>
+							<td>
+								{if isset($file.fullnumber)}
+									{$file.fullnumber}
+								{else}
+									-
+								{/if}
+							</td>
+							<td>
+								{if !empty($file.documents)}
+									<ul id="document-list">
+									{foreach $file.documents as $document}
+										<li>
+											<label>
+												<input type="checkbox" class="lms-ui-multi-check" name="documents[{$file.name}]" value="{$document.id}">
+												{capture assign="customerlink"}
+													<a href="?m=customerinfo&id={$document.id}">{$document.name} (#{$document.customerid})</a>
+												{/capture}
+												{t a=$_DOCTYPES[$document.type] b=$document.cdate|date_format:"%Y/%m/%d" c=$customerlink}$a issued on $b for $c{/t}
+											</label>
+										</li>
+									{/foreach}
+									</ul>
+								{/if}
+							</td>
+						</tr>
+					{foreachelse}
+						<tr>
+							<td colspan="3" class="empty-table">
+								{trans("No matched documents!")}
+							</td>
+						</tr>
+					{/foreach}
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="2">
+							&nbsp;
+						</td>
+						<td class="nobr">
+							<label>
+								<input type="checkbox" class="lms-ui-multi-check-all">
+								{trans("Check All")}
+							</label>
+						</td>
+					</tr>
+				</tfoot>
+			</table>
+		</td>
+	</tr>
+	{/if}
+	<TR>
+		<TD colspan="3" class="lms-ui-box-buttons">
+			{button type="submit" icon="save" label="Submit"}
+			{button icon="clear" label="Clear" onclick="location.href = '?m=documentscanadd';"}
+			{button icon="cancel" label="Cancel" onclick="location.href = '?m=documentlist';"}
+		</TD>
+	</TR>
+    </TBODY>
+</TABLE>
+
+</FORM>
+
+<script>
+
+	$(function() {
+		$('form[name="documentadd"] [name="document[title]"]').focus();
+
+	});
+
+</script>
+{/block}

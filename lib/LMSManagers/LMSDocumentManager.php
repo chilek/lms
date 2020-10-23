@@ -1442,4 +1442,25 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             array($dst_userid, $src_userid)
         );
     }
+
+    public function getDocumentsByFullNumber($full_number)
+    {
+        return $this->db->GetAllByKey(
+            'SELECT d.* FROM documents d
+            JOIN customerview c ON c.id = d.customerid
+            WHERE d.fullnumber = ?',
+            'id',
+            array($full_number)
+        );
+    }
+
+    public function isDocumentAccessible($docid)
+    {
+        return $this->db->GetOne(
+            'SELECT d.id FROM documents d
+            JOIN customerview c ON c.id = d.customerid
+            WHERE d.id = ?',
+            array($docid)
+        ) > 0;
+    }
 }
