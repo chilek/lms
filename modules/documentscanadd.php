@@ -45,7 +45,7 @@ if (isset($_POST['documentscans'])) {
             $attachment['filename'] = $attachment['name'];
             $attachment['md5sum'] = md5_file($attachment['tmpname']);
             $attachment['attachmenttype'] = 0;
-            $files[] = $attachment;
+            $files[$attachment['name']] = $attachment;
         }
     }
 
@@ -54,12 +54,12 @@ if (isset($_POST['documentscans'])) {
     }
 
     if (isset($_POST['documents'])) {
-        foreach ($files as $file) {
-            if (isset($_POST['documents'][$file['filename']])) {
-                $docid = $_POST['documents'][$file['filename']];
+        foreach ($files as $filename => $file) {
+            if (isset($_POST['documents'][$filename])) {
+                $docid = $_POST['documents'][$filename];
                 if ($LMS->isDocumentAccessible($docid)) {
-                    $LMS->AddDocumentFileAttachments($files);
-                    $LMS->AddDocumentAttachments($docid, $files);
+                    $LMS->AddDocumentFileAttachments(array($files[$filename]));
+                    $LMS->AddDocumentAttachments($docid, array($files[$filename]));
                 }
             }
         }
