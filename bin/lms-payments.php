@@ -1250,9 +1250,8 @@ foreach ($assigns as $assign) {
                     if (empty($assign['tariffid'])) {
                         $tmp_itemid = $DB->GetOne(
                             "SELECT itemid FROM invoicecontents
-                            WHERE tariffid IS NULL AND description = ? AND value=? AND docid=? AND description=? AND pdiscount=? AND vdiscount=?",
+                            WHERE tariffid IS NULL AND value=? AND docid=? AND description=? AND pdiscount=? AND vdiscount=?",
                             array(
-                                $assign['name'],
                                 str_replace(',', '.', $val / $assign['count']),
                                 $invoices[$cid],
                                 $desc,
