@@ -458,9 +458,9 @@ $penalty_from_day = 14; #the day we consider an invoice overdue. for example - f
 $script_day = intval(strftime("%d", localtime2())); # get script day, including fake date cases
 $penalty_year = $year;
 if ($month == 1){
-    $rok_kar -=1;
+    $penalty_year -=1;
 }
-$penalty_day = mktime(0, 0, 0, $month - 1, $penalty_from_day, $penalty_year);
+$penalty_day = mktime(1, 10, 10, $month - 1, $penalty_from_day, $penalty_year);
 echo "Penalty day:  $penalty_day" . " " . date('d/m/Y', $penalty_day) . " \n";
 echo "Script day: $script_day\n";
 if( intval($script_day) == 3 ) { #the day we issue our invoices
