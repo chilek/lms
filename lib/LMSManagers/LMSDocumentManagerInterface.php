@@ -70,7 +70,9 @@ interface LMSDocumentManagerInterface
 
     public function CopyDocumentPermissions($src_userid, $dst_userid);
 
-    public function getDocumentsByFullNumber($full_number);
+    public function getDocumentsByFullNumber($full_number, $all_types = false);
+
+    public function getDocumentsByChecksum($checksum, $all_types = false);
 
     public function isDocumentAccessible($docid);
 }

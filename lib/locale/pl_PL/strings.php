@@ -4934,3 +4934,4 @@ $_LANG['Matched documents:'] = 'Dopasowane dokumenty:';
 $_LANG['No matched documents!'] = 'Brak dopasowanych dokumentów!';
 $_LANG['File name:'] = 'Nazwa pliku:';
 $_LANG['$a issued on $b for $c'] = '$a z dnia $b dla $c';
+$_LANG['$a issued on $b for $c (already assigned)'] = '$a z dnia $b dla $c (już przypisany)';

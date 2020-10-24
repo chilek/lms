@@ -36,6 +36,18 @@ if (isset($_POST['documentscans'])) {
     $SMARTY->assign('fileupload', $fileupload);
 
     if (!empty($attachments)) {
+        if (isset($_GET['action'])) {
+            rrmdir($tmppath);
+            switch ($_GET['action']) {
+                case 'cancel':
+                    $SESSION->redirect('?m=documentlist');
+                    break;
+                case 'clear':
+                    $SESSION->redirect('?m=documentscanadd');
+                    break;
+            }
+        }
+
         foreach ($attachments as $attachment) {
             if (strpos($attachment['type'], 'image') !== 0
                 && strpos($attachment['type'], 'pdf') === false) {
@@ -73,20 +85,24 @@ if (isset($_POST['documentscans'])) {
         $image = new \Imagick();
 
         foreach ($files as &$file) {
-            $image->setResolution(300, 300);
-            $image->readImage($file['tmpname'] . '[0]');
-            $image->writeImage($file['tmpname'] . '.png');
+            $file['duplicates'] = $LMS->getDocumentsByChecksum($file['md5sum']);
 
-            $result = $zbarDecoder->make($file['tmpname'] . '.png');
+            if (empty($file['duplicates'])) {
+                $image->setResolution(300, 300);
+                $image->readImage($file['tmpname'] . '[0]');
+                $image->writeImage($file['tmpname'] . '.png');
 
-            @unlink($file['tmpname'] . '.png');
+                $result = $zbarDecoder->make($file['tmpname'] . '.png');
 
-            if ($result->code == 200) {
-                $file['fullnumber'] = $result->text;
-                $file['documents'] = $LMS->getDocumentsByFullNumber($result->text);
+                @unlink($file['tmpname'] . '.png');
+
+                if ($result->code == 200) {
+                    $file['fullnumber'] = $result->text;
+                    $file['documents'] = $LMS->getDocumentsByFullNumber($result->text);
+                }
+
+                $image->clear();
             }
-
-            $image->clear();
         }
         unset($file);
 

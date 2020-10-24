@@ -1443,14 +1443,27 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         );
     }
 
-    public function getDocumentsByFullNumber($full_number)
+    public function getDocumentsByFullNumber($full_number, $all_types = false)
     {
         return $this->db->GetAllByKey(
             'SELECT d.* FROM documents d
             JOIN customerview c ON c.id = d.customerid
-            WHERE d.fullnumber = ?',
+            WHERE d.fullnumber = ?'
+            . ($all_types ? '' : ' AND d.type < 0'),
             'id',
             array($full_number)
+        );
+    }
+
+    public function getDocumentsByChecksum($checksum, $all_types = false)
+    {
+        return $this->db->GetAllByKey(
+            'SELECT d.* FROM documents d
+            JOIN customerview c ON c.id = d.customerid
+            WHERE EXISTS (SELECT a.id FROM documentattachments a WHERE a.docid = d.id AND a.md5sum = ?)'
+            . ($all_types ? '' : ' AND d.type < 0'),
+            'id',
+            array($checksum)
         );
     }
 

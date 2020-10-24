@@ -6,14 +6,6 @@
 
 <style>
 
-	#document-list {
-		list-style: none;
-		margin: 0;
-		padding: 0;
-		margin-top: 0.3em;
-		margin-bottom: 0.3em;
-	}
-
 	#file-list {
 		padding: 1.2em;
 	}
@@ -24,6 +16,18 @@
 
 	#file-list > table thead td {
 		border-bottom: 1px solid black;
+	}
+
+	.document-list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		margin-top: 0.3em;
+		margin-bottom: 0.3em;
+	}
+
+	.checkbox-placeholder {
+		visibility: hidden;
 	}
 
 </style>
@@ -96,22 +100,35 @@
 								{/if}
 							</td>
 							<td>
+								{if !empty($file.duplicates)}
+									<ul class="document-list">
+										{foreach $file.duplicates as $document}
+										<li class="blend">
+											<input type="checkbox" class="checkbox-placeholder">
+											{capture assign="customerlink"}
+												<a href="?m=customerinfo&id={$document.customerid}">{$document.name} (#{$document.customerid})</a>
+											{/capture}
+											{t a=$_DOCTYPES[$document.type] b=$document.cdate|date_format:"%Y/%m/%d" c=$customerlink}$a issued on $b for $c (already assigned){/t}
+										</li>
+										{/foreach}
+									</ul>
+								{/if}
 								{if !empty($file.documents)}
 									{$matches = $matches + 1}
-									<ul id="document-list">
-									{foreach $file.documents as $document}
-										<li>
-											<label>
-												<input type="checkbox" class="lms-ui-multi-check" name="documents[{$file.name}]" value="{$document.id}">
-												{capture assign="customerlink"}
-													<a href="?m=customerinfo&id={$document.customerid}">{$document.name} (#{$document.customerid})</a>
-												{/capture}
-												{t a=$_DOCTYPES[$document.type] b=$document.cdate|date_format:"%Y/%m/%d" c=$customerlink}$a issued on $b for $c{/t}
-											</label>
-										</li>
-									{/foreach}
+									<ul class="document-list">
+										{foreach $file.documents as $document}
+											<li>
+												<label>
+													<input type="checkbox" class="lms-ui-multi-check" name="documents[{$file.name}]" value="{$document.id}">
+													{capture assign="customerlink"}
+														<a href="?m=customerinfo&id={$document.customerid}">{$document.name} (#{$document.customerid})</a>
+													{/capture}
+													{t a=$_DOCTYPES[$document.type] b=$document.cdate|date_format:"%Y/%m/%d" c=$customerlink}$a issued on $b for $c{/t}
+												</label>
+											</li>
+										{/foreach}
 									</ul>
-								{else}
+								{elseif empty($file.duplicates)}
 									-
 								{/if}
 							</td>
@@ -146,8 +163,8 @@
 	<TR>
 		<TD colspan="3" class="lms-ui-box-buttons">
 			{button type="submit" icon="save" label="Submit"}
-			{button icon="clear" label="Clear" onclick="location.href = '?m=documentscanadd';"}
-			{button icon="cancel" label="Cancel" onclick="location.href = '?m=documentlist';"}
+			{button icon="clear" label="Clear" data_action="clear"}
+			{button icon="cancel" label="Cancel" data_action="cancel"}
 		</TD>
 	</TR>
     </TBODY>
@@ -158,8 +175,10 @@
 <script>
 
 	$(function() {
-		$('form[name="documentadd"] [name="document[title]"]').focus();
-
+		$('[data-action]').click(function() {
+			var form = $('#documentscanadd-form');
+			form.attr('action', form.attr('action') + '&action=' + $(this).attr('data-action')).submit();
+		});
 	});
 
 </script>
