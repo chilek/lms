@@ -26,6 +26,14 @@
 		margin-bottom: 0.3em;
 	}
 
+	.document-list.lms-ui-multi-check-ignore {
+		display: inline-block;
+	}
+
+	.lms-ui-multi-check[type="checkbox"] {
+		vertical-align: super;
+	}
+
 	.checkbox-placeholder {
 		visibility: hidden;
 	}
@@ -115,16 +123,30 @@
 								{/if}
 								{if !empty($file.documents)}
 									{$matches = $matches + 1}
-									<ul class="document-list">
+									{if count($file.documents) > 1}
+										{$first = reset($file.documents)}
+										<input type="checkbox" class="lms-ui-multi-check"
+											   name="documents[{$file.name}]" value="{$first.id}">
+									{/if}
+									<ul class="document-list{if count($file.documents) > 1} lms-ui-multi-check-ignore{/if}">
 										{foreach $file.documents as $document}
 											<li>
-												<label>
-													<input type="checkbox" class="lms-ui-multi-check" name="documents[{$file.name}]" value="{$document.id}">
-													{capture assign="customerlink"}
-														<a href="?m=customerinfo&id={$document.customerid}">{$document.name} (#{$document.customerid})</a>
-													{/capture}
-													{t a=$_DOCTYPES[$document.type] b=$document.cdate|date_format:"%Y/%m/%d" c=$customerlink}$a issued on $b for $c{/t}
-												</label>
+												{if count($file.documents) == 1}
+													<input type="checkbox" class="lms-ui-multi-check"
+														name="documents[{$file.name}]" value="{$document.id}">
+												{else}
+													<label>
+														<input type="radio" name="radio[{$file.name}]"
+															class="document-selector" value="{$document.id}"
+															{if $document@first} checked{/if}>
+												{/if}
+												{capture assign="customerlink"}
+													<a href="?m=customerinfo&id={$document.customerid}">{$document.name} (#{$document.customerid})</a>
+												{/capture}
+												{t a=$_DOCTYPES[$document.type] b=$document.cdate|date_format:"%Y/%m/%d" c=$customerlink}$a issued on $b for $c{/t}
+												{if count($file.documents) > 1}
+													</label>
+												{/if}
 											</li>
 										{/foreach}
 									</ul>
@@ -178,6 +200,14 @@
 		$('[data-action]').click(function() {
 			var form = $('#documentscanadd-form');
 			form.attr('action', form.attr('action') + '&action=' + $(this).attr('data-action')).submit();
+		});
+
+		$('.document-selector').click(function() {
+			$(this).closest('.document-list').siblings('.lms-ui-multi-check').val($(this).val());
+			var checkbox = $(this).closest('.document-list').siblings('.lms-ui-multi-check');
+			if (!checkbox.prop('checked')) {
+				checkbox.click();
+			}
 		});
 	});
 

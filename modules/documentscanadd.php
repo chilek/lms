@@ -75,6 +75,7 @@ if (isset($_POST['documentscans'])) {
                 }
             }
         }
+        rrmdir($tmppath);
         $SESSION->redirect('?m=documentscanadd');
     } elseif (!empty($files)) {
         if (!class_exists('Imagick')) {

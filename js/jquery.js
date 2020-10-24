@@ -1268,7 +1268,7 @@ $(function() {
 		if (tbody.is('table')) {
 			tbody = tbody.find('tbody');
 		}
-		var checkboxes = tbody.parent().find(':checkbox');
+		var checkboxes = tbody.parent().find('[type="checkbox"]');
 		var allcheckboxes = checkboxes.filter('.lms-ui-multi-check');
 
 		var checkall = checkboxes.filter('.lms-ui-multi-check-all');
@@ -1298,7 +1298,7 @@ $(function() {
 		function checkElements(checkbox) {
 			// reorder all checkboxes list when it is contained in lms-ui-datatable
 			if ($(checkbox).closest('.lms-ui-datatable').length) {
-				checkboxes = tbody.parent().find(':checkbox');
+				checkboxes = tbody.parent().find('[type="checkbox"]');
 				allcheckboxes = checkboxes.filter('.lms-ui-multi-check');
 			}
 
@@ -1325,7 +1325,8 @@ $(function() {
 			var checkbox = $(elem)[0];
 			var row = $(checkbox).closest('tr,.lms-ui-tab-table-row');
 			row.click(function(e) {
-				if ($(e.target).closest('.lms-ui-button-clipboard').length) {
+				if ($(e.target).closest('.lms-ui-button-clipboard').length
+					|| $(e.target).closest('.lms-ui-multi-check-ignore').length) {
 					return;
 				}
 				if (e.shiftKey) {
@@ -1337,7 +1338,7 @@ $(function() {
 					updateCheckAll();
 				}
 			});
-			row.find(':checkbox').click(function(e) {
+			row.find('[type="checkbox"]').click(function(e) {
 				if (e.shiftKey) {
 					checkElements(this);
 				} else {
