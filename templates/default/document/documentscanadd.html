@@ -30,7 +30,11 @@
 		display: inline-block;
 	}
 
-	.lms-ui-multi-check[type="checkbox"] {
+	label.lms-ui-multi-check-ignore {
+		padding-left: 0.5em;
+	}
+
+	.lms-ui-multi-check.radio-buttons {
 		vertical-align: super;
 	}
 
@@ -125,7 +129,7 @@
 									{$matches = $matches + 1}
 									{if count($file.documents) > 1}
 										{$first = reset($file.documents)}
-										<input type="checkbox" class="lms-ui-multi-check"
+										<input type="checkbox" class="lms-ui-multi-check radio-buttons"
 											   name="documents[{$file.name}]" value="{$first.id}">
 									{/if}
 									<ul class="document-list{if count($file.documents) > 1} lms-ui-multi-check-ignore{/if}">
@@ -133,20 +137,20 @@
 											<li>
 												{if count($file.documents) == 1}
 													<input type="checkbox" class="lms-ui-multi-check"
+														id="document-{$file@index}-{$document@index}"
 														name="documents[{$file.name}]" value="{$document.id}">
 												{else}
-													<label>
-														<input type="radio" name="radio[{$file.name}]"
-															class="document-selector" value="{$document.id}"
-															{if $document@first} checked{/if}>
+													<input type="radio" name="radio[{$file.name}]"
+														id="document-{$file@index}-{$document@index}"
+														class="document-selector" value="{$document.id}"
+														{if $document@first} checked{/if}>
 												{/if}
-												{capture assign="customerlink"}
-													<a href="?m=customerinfo&id={$document.customerid}">{$document.name} (#{$document.customerid})</a>
-												{/capture}
-												{t a=$_DOCTYPES[$document.type] b=$document.cdate|date_format:"%Y/%m/%d" c=$customerlink}$a issued on $b for $c{/t}
-												{if count($file.documents) > 1}
-													</label>
-												{/if}
+												<label class="lms-ui-multi-check-ignore" for="document-{$file@index}-{$document@index}">
+													{capture assign="customerlink"}
+														<a href="?m=customerinfo&id={$document.customerid}">{$document.name} (#{$document.customerid})</a>
+													{/capture}
+													{t a=$_DOCTYPES[$document.type] b=$document.cdate|date_format:"%Y/%m/%d" c=$customerlink}$a issued on $b for $c{/t}
+												</label>
 											</li>
 										{/foreach}
 									</ul>
