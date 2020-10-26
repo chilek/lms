@@ -180,6 +180,7 @@ version 26-git (????-??-??):
     networks to those assigned to specified host [chilan]
   - enhancement: implemented document scan upload with automatic document number recognition
     basing on bar code placed on document [chilan]
+  - improvement: document number bar code generation for all document templates [chilan]
 
 version 25.0 (2020-05-15):
 
