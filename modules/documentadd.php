@@ -141,6 +141,13 @@ if (isset($_POST['document'])) {
         }
         $SMARTY->assignByRef('document', $document);
 
+        $fullnumber = docnumber(array(
+            'number' => $document['number'],
+            'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($document['numberplanid'])),
+            'cdate' => time(),
+            'customerid' => $document['customerid'],
+        ));
+
         if ($document['templ']) {
             foreach ($documents_dirs as $doc) {
                 if (file_exists($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'])) {
@@ -176,6 +183,10 @@ if (isset($_POST['document'])) {
                 $engine,
                 isset($document['attachments']) ? $document['attachments'] : array()
             ));
+
+            $barcode = new \Com\Tecnick\Barcode\Barcode();
+            $bobj = $barcode->getBarcodeObj('C128', iconv('UTF-8', 'ASCII//TRANSLIT', $fullnumber), -1, -30, 'black');
+            $document['barcode'] = base64_encode($bobj->getPngData());
 
             // run template engine
             if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
@@ -255,13 +266,6 @@ if (isset($_POST['document'])) {
         $DB->BeginTrans();
 
         $division = $LMS->GetDivision($customer['divisionid']);
-
-        $fullnumber = docnumber(array(
-            'number' => $document['number'],
-            'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($document['numberplanid'])),
-            'cdate' => $time,
-            'customerid' => $document['customerid'],
-        ));
 
         // if document will not be closed now we should store commit flags in documents table
         // to allow restore commit flags later during document close process
