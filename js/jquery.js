@@ -1325,8 +1325,8 @@ $(function() {
 			var checkbox = $(elem)[0];
 			var row = $(checkbox).closest('tr,.lms-ui-tab-table-row');
 			row.click(function(e) {
-				if ($(e.target).closest('.lms-ui-button-clipboard').length
-					|| $(e.target).closest('.lms-ui-multi-check-ignore').length) {
+				if ($(e.target).closest('.lms-ui-button-clipboard').length ||
+					$(e.target).closest('.lms-ui-multi-check-ignore').length) {
 					return;
 				}
 				if (e.shiftKey) {
