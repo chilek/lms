@@ -79,7 +79,7 @@ if (isset($_POST['documentscans'])) {
         $SESSION->redirect('?m=documentscanadd');
     } elseif (!empty($files)) {
         if (!class_exists('Imagick')) {
-            die(trans('No PHP Imagick extension installed'));
+            die(trans('No PHP Imagick extension installed!'));
         }
 
         $zbarDecoder = new \RobbieP\ZbarQrdecoder\ZbarDecoder();
@@ -93,7 +93,11 @@ if (isset($_POST['documentscans'])) {
                 $image->readImage($file['tmpname'] . '[0]');
                 $image->writeImage($file['tmpname'] . '.png');
 
-                $result = $zbarDecoder->make($file['tmpname'] . '.png');
+                try {
+                    $result = $zbarDecoder->make($file['tmpname'] . '.png');
+                } catch (Exception $e) {
+                    die($e->getMessage());
+                }
 
                 @unlink($file['tmpname'] . '.png');
 
