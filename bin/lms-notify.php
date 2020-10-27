@@ -685,7 +685,7 @@ if (empty($types) || in_array('timetable', $types)) {
 
         $contents = '';
         $events = $DB->GetAll(
-            "SELECT DISTINCT title, description, date, begintime, enddate, endtime,
+            "SELECT DISTINCT title, description, note, date, begintime, enddate, endtime,
             customerid, UPPER(lastname) AS lastname, c.name AS name, address
             FROM events
             LEFT JOIN customeraddressview c ON (c.id = customerid)
@@ -738,6 +738,8 @@ if (empty($types) || in_array('timetable', $types)) {
                 $sms_contents .= $event['title'];
                 $mail_contents .= trans('Description:') . "\t" . $event['description'] . PHP_EOL;
                 $sms_contents .= ' (' . $event['description'] . ')';
+                $mail_contents .= trans('Note:') . "\t" . $event['note'] . PHP_EOL;
+                $sms_contents .= ' (' . $event['note'] . ')';
                 if ($event['customerid']) {
                     $mail_contents .= trans('Customer:') . "\t" . $event['lastname'] . " " . $event['name']
                         . ", " . $event['address'] . PHP_EOL;
