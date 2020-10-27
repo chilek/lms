@@ -1459,11 +1459,12 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
     {
         return $this->db->GetAllByKey(
             'SELECT d.* FROM documents d
+            JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND r.rights & ' . DOCRIGHT_EDIT . ' > 0)
             JOIN customerview c ON c.id = d.customerid
             WHERE EXISTS (SELECT a.id FROM documentattachments a WHERE a.docid = d.id AND a.md5sum = ?)'
             . ($all_types ? '' : ' AND d.type < 0'),
             'id',
-            array($checksum)
+            array(Auth::GetCurrentUser(), $checksum)
         );
     }
 
@@ -1471,9 +1472,10 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
     {
         return $this->db->GetOne(
             'SELECT d.id FROM documents d
+            JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND r.rights & ' . DOCRIGHT_EDIT . ' > 0)
             JOIN customerview c ON c.id = d.customerid
             WHERE d.id = ?',
-            array($docid)
+            array(Auth::GetCurrentUser(), $docid)
         ) > 0;
     }
 }
