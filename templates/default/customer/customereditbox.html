@@ -65,7 +65,8 @@
 							<label for="customerdata[lastname]"><strong>{trans("Name/Surname:")}</strong></label>
 						</td>
 						<td>
-							<INPUT type="text" name="customerdata[lastname]" value="{$customerinfo.lastname|escape}" required
+							<INPUT type="text" name="customerdata[lastname]" maxlength="128"
+									value="{$customerinfo.lastname|escape}" required
 									{tip class="lms-ui-autogrow" text="Enter first/lastname of customer" trigger="lastname" bold=1}>
 						</td>
 					</tr>
@@ -75,6 +76,7 @@
 						</td>
 						<td>
 							<INPUT type="text" name="customerdata[name]" value="{$customerinfo.name|escape}"
+									maxlength="128"
 									{tip class="lms-ui-autogrow" text="Enter first name of customer (optional)" trigger="name" bold=1}>
 						</td>
 					</tr>
