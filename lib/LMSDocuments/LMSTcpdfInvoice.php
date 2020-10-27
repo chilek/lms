@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -29,6 +29,7 @@ class LMSTcpdfInvoice extends LMSInvoice
     const TCPDF_FONT = 'liberationsans';
 
     private $use_alert_color;
+    private $exportInvoice;
 
     public function __construct($title, $pagesize = 'A4', $orientation = 'portrait')
     {
@@ -403,7 +404,7 @@ class LMSTcpdfInvoice extends LMSInvoice
 
         if (!ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')
             || empty($this->data['bankccounts'])) {
-            $accounts = array(bankaccount($this->data['customerid'], $this->data['account']));
+            $accounts = array(bankaccount($this->data['customerid'], $this->data['account'], $this->exportInvoice));
         } else {
             $accounts = array();
         }
@@ -412,7 +413,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             $accounts = array_merge($accounts, $this->data['bankaccounts']);
         }
         foreach ($accounts as &$account) {
-            $account = format_bankaccount($account);
+            $account = format_bankaccount($account, $this->exportInvoice);
         }
         $account_text = ($this->use_alert_color ? '<span style="color:red">' : '')
             . implode("\n", $accounts)
@@ -441,7 +442,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         $buyer .= $this->data['name'] . '<br>';
         $buyer .= $this->data['address'] . '<br>';
         $buyer .= $this->data['zip'] . ' ' . $this->data['city'];
-        if ($this->data['division_countryid'] && $this->data['countryid'] && $this->data['division_countryid'] != $this->data['countryid']) {
+        if ($this->exportInvoice) {
             $buyer .= ', ' . trans($this->data['country']);
         }
         $buyer .= '<br>';
@@ -476,7 +477,7 @@ class LMSTcpdfInvoice extends LMSInvoice
                 $postbox .= $this->data['zip'] . ' ' . $this->data['city'] . '<br>';
             }
 
-            if ($this->data['division_countryid'] && $this->data['post_countryid'] && $this->data['division_countryid'] != $this->data['post_countryid']) {
+            if ($this->exportInvoice) {
                 $postbox .= ', ' . trans($this->data['post_country']) . '<br>';
             }
 
@@ -646,12 +647,12 @@ class LMSTcpdfInvoice extends LMSInvoice
             //$this->backend->Write(0, trans('Notes:'), '', 0, 'L', true, 0, false, false, 0);
             $tmp = $this->data['division_footer'];
 
-            $accounts = array(bankaccount($this->data['customerid'], $this->data['account']));
+            $accounts = array(bankaccount($this->data['customerid'], $this->data['account'], $this->exportInvoice));
             if (ConfigHelper::checkConfig('invoices.show_all_accounts')) {
                 $accounts = array_merge($accounts, $this->data['bankaccounts']);
             }
             foreach ($accounts as &$account) {
-                $account = format_bankaccount($account);
+                $account = format_bankaccount($account, $this->exportInvoice);
             }
             $tmp = str_replace('%bankaccount', implode("\n", $accounts), $tmp);
             $tmp = str_replace('%bankname', $this->data['div_bank'], $tmp);
@@ -761,6 +762,8 @@ class LMSTcpdfInvoice extends LMSInvoice
 
     public function invoice_body_standard()
     {
+        $this->exportInvoice = $this->data['division_countryid'] && $this->data['countryid'] && $this->data['division_countryid'] != $this->data['countryid'];
+
         $this->invoice_cancelled();
         $this->invoice_no_accountant();
         $this->invoice_header_image();
@@ -864,6 +867,8 @@ class LMSTcpdfInvoice extends LMSInvoice
 
     public function invoice_body_ft0100()
     {
+        $this->exportInvoice = $this->data['division_countryid'] && $this->data['countryid'] && $this->data['division_countryid'] != $this->data['countryid'];
+
         $this->invoice_cancelled();
         $this->invoice_no_accountant();
         $this->invoice_header_image();

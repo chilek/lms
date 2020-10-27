@@ -128,14 +128,21 @@ self::addLanguageFunctions(
 
             return preg_match('/^[A-Z]{2}[0-9]{7}$/i', $icn) || preg_match('/^[A-Z]{3}[0-9]{6}$/i', $icn);
         },
-        'bankaccount' => function ($id, $account = null) {
-            return iban_account('SK', 22, $id, $account);
+        'bankaccount' => function ($id, $account = null, $country_code = false) {
+            return ($country_code && strpos($account, 'SK') !== 0 ? 'SK' : '') . iban_account('SK', 22, $id, $account);
         },
         'check_bankaccount' => function ($account) {
+            if (strpos($account, 'SK') === 0) {
+                $account = substr($account, 2);
+            }
             return iban_check_account('SK', 22, $account);
         },
-        'format_bankaccount' => function ($account) {
-            return preg_replace('/(..)(....)(....)(....)(....)(....)/i', '${1} ${2} ${3} ${4} ${5} ${6}', $account);
+        'format_bankaccount' => function ($account, $country_code = false) {
+            if ($country_code) {
+                return preg_replace('/(....)(....)(....)(....)(....)(....)/i', '${1} ${2} ${3} ${4} ${5} ${6}', $account);
+            } else {
+                return preg_replace('/(..)(....)(....)(....)(....)(....)/i', '${1} ${2} ${3} ${4} ${5} ${6}', $account);
+            }
         },
         'getHolidays' => function ($year = null) {
             return array();
