@@ -2210,6 +2210,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				    END)
 				    ELSE NULL
 				END) AS lang,
+				cdv.ccode AS div_ccode,
 				d.currency, d.currencyvalue, d.memo
 				FROM documents d
 				JOIN customeraddressview c ON (c.id = d.customerid)
@@ -2222,6 +2223,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				WHERE d.id = ? AND (d.type = ? OR d.type = ? OR d.type = ?)',
                 array($invoiceid, DOC_INVOICE, DOC_CNOTE, DOC_INVOICE_PRO)
             );
+
+            $result['export'] = $result['division_countryid'] && $result['countryid'] && $result['division_countryid'] != $result['countryid'];
         }
 
         if ($result) {

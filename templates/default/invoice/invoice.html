@@ -1,14 +1,12 @@
 {$use_alert_color = ConfigHelper::checkConfig('invoices.use_alert_color')}
 {$hide_discount = ConfigHelper::checkConfig('invoices.hide_discount')}
 {$hide_prodid = ConfigHelper::checkConfig('invoices.hide_prodid')}
-{if !empty($invoice.division_countryid) && !empty($invoice.countryid) && $invoice.division_countryid != $invoice.countryid}
-	{$exportInvoice = true}
-{else}
-	{$exportInvoice = false}
-{/if}
 {$show_tax_category = ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_tax_category', 'true'))}
 {if empty($invoice.taxcategories)}
 	{$show_tax_category = false}
+{/if}
+{if !empty($invoice.div_ccode)}
+	{Localisation::setSystemLanguage($invoice.div_ccode)}
 {/if}
 
 {$cols = 12}
@@ -90,7 +88,7 @@
 			<div class="address-header">{trans("Seller:")}</div>
 			{if !ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')
 				|| empty($invoice.bankccounts)}
-				{$accounts = array(bankaccount($invoice.customerid, $invoice.account, $exportInvoice))}
+				{$accounts = array(bankaccount($invoice.customerid, $invoice.account, $invoice.export))}
 			{else}
 				{$accounts = array()}
 			{/if}
@@ -99,7 +97,7 @@
 				{$accounts = array_merge($accounts, $invoice.bankaccounts)}
 			{/if}
 			{foreach $accounts as $accountidx => $account}
-				{$accounts[$accountidx] = format_bankaccount($account, $exportInvoice)}
+				{$accounts[$accountidx] = format_bankaccount($account, $invoice.export)}
 			{/foreach}
 			{textformat assign="account_text" wrap=5000}
 				{if $use_alert_color}<span style="color:red">{/if}{implode('<br>', $accounts)}{if $use_alert_color}</span>{/if}
@@ -122,7 +120,7 @@
 			<div class="address-header">{trans("Purchaser:")}</div>
 			{$invoice.name}<BR>
 			{$invoice.address}<BR>
-			{$invoice.zip} {$invoice.city}{if $exportInvoice}, {trans($invoice.country)}{/if}<BR>
+			{$invoice.zip} {$invoice.city}{if $invoice.export}, {trans($invoice.country)}{/if}<BR>
 			{if $invoice.ten != ""}{trans("TEN:")} {$invoice.ten}<BR>{elseif !ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.hide_ssn', true)) && $invoice.ssn != ""}{trans("SSN:")} {$invoice.ssn}<BR>{/if}
 
 			<BR>
@@ -606,3 +604,7 @@ customer's balance: {$invoice.customerbalancelist.balance}
 {/if}
 
 </DIV>
+
+{if !empty($invoice.div_ccode)}
+	{Localisation::resetSystemLanguage()}
+{/if}

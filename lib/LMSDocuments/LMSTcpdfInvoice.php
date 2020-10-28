@@ -29,7 +29,6 @@ class LMSTcpdfInvoice extends LMSInvoice
     const TCPDF_FONT = 'liberationsans';
 
     private $use_alert_color;
-    private $exportInvoice;
 
     public function __construct($title, $pagesize = 'A4', $orientation = 'portrait')
     {
@@ -404,7 +403,7 @@ class LMSTcpdfInvoice extends LMSInvoice
 
         if (!ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')
             || empty($this->data['bankccounts'])) {
-            $accounts = array(bankaccount($this->data['customerid'], $this->data['account'], $this->exportInvoice));
+            $accounts = array(bankaccount($this->data['customerid'], $this->data['account'], $this->data['export']));
         } else {
             $accounts = array();
         }
@@ -413,7 +412,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             $accounts = array_merge($accounts, $this->data['bankaccounts']);
         }
         foreach ($accounts as &$account) {
-            $account = format_bankaccount($account, $this->exportInvoice);
+            $account = format_bankaccount($account, $this->data['export']);
         }
         $account_text = ($this->use_alert_color ? '<span style="color:red">' : '')
             . implode("\n", $accounts)
@@ -442,7 +441,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         $buyer .= $this->data['name'] . '<br>';
         $buyer .= $this->data['address'] . '<br>';
         $buyer .= $this->data['zip'] . ' ' . $this->data['city'];
-        if ($this->exportInvoice) {
+        if ($this->data['export']) {
             $buyer .= ', ' . trans($this->data['country']);
         }
         $buyer .= '<br>';
@@ -477,7 +476,7 @@ class LMSTcpdfInvoice extends LMSInvoice
                 $postbox .= $this->data['zip'] . ' ' . $this->data['city'] . '<br>';
             }
 
-            if ($this->exportInvoice) {
+            if (!empty($postbox) && $this->data['export']) {
                 $postbox .= ', ' . trans($this->data['post_country']) . '<br>';
             }
 
@@ -647,12 +646,12 @@ class LMSTcpdfInvoice extends LMSInvoice
             //$this->backend->Write(0, trans('Notes:'), '', 0, 'L', true, 0, false, false, 0);
             $tmp = $this->data['division_footer'];
 
-            $accounts = array(bankaccount($this->data['customerid'], $this->data['account'], $this->exportInvoice));
+            $accounts = array(bankaccount($this->data['customerid'], $this->data['account'], $this->data['export']));
             if (ConfigHelper::checkConfig('invoices.show_all_accounts')) {
                 $accounts = array_merge($accounts, $this->data['bankaccounts']);
             }
             foreach ($accounts as &$account) {
-                $account = format_bankaccount($account, $this->exportInvoice);
+                $account = format_bankaccount($account, $this->data['export']);
             }
             $tmp = str_replace('%bankaccount', implode("\n", $accounts), $tmp);
             $tmp = str_replace('%bankname', $this->data['div_bank'], $tmp);
@@ -762,7 +761,9 @@ class LMSTcpdfInvoice extends LMSInvoice
 
     public function invoice_body_standard()
     {
-        $this->exportInvoice = $this->data['division_countryid'] && $this->data['countryid'] && $this->data['division_countryid'] != $this->data['countryid'];
+        if (!empty($this->data['div_ccode'])) {
+            Localisation::setSystemLanguage($this->data['div_ccode']);
+        }
 
         $this->invoice_cancelled();
         $this->invoice_no_accountant();
@@ -829,6 +830,10 @@ class LMSTcpdfInvoice extends LMSInvoice
                 1
             );
         }
+
+        if (!empty($this->data['div_ccode'])) {
+            Localisation::resetSystemLanguage();
+        }
     }
 
     protected function invoice_transferform($transferform)
@@ -851,10 +856,11 @@ class LMSTcpdfInvoice extends LMSInvoice
             $payment_barcode = $payment_docnumber;
         }
 
-        $tranferform_common_data = $transferform->GetCommonData(array('customerid' => $this->data['customerid']));
+        $tranferform_common_data = $transferform->GetCommonData(array('customerid' => $this->data['customerid'], 'export' => $this->data['export']));
         $tranferform_custom_data = array(
             'title' => $payment_title,
             'value' => $payment_value,
+            'export' => $this->data['export'],
             'currency' => $this->data['currency'],
             'paytype' => $this->data['paytype'],
             'pdate' => $this->data['pdate'],
@@ -867,7 +873,9 @@ class LMSTcpdfInvoice extends LMSInvoice
 
     public function invoice_body_ft0100()
     {
-        $this->exportInvoice = $this->data['division_countryid'] && $this->data['countryid'] && $this->data['division_countryid'] != $this->data['countryid'];
+        if (!empty($this->data['div_ccode'])) {
+            Localisation::setSystemLanguage($this->data['div_ccode']);
+        }
 
         $this->invoice_cancelled();
         $this->invoice_no_accountant();
@@ -944,6 +952,10 @@ class LMSTcpdfInvoice extends LMSInvoice
                 $this->data['protection_password'],
                 1
             );
+        }
+
+        if (!empty($this->data['div_ccode'])) {
+            Localisation::resetSystemLanguage();
         }
     }
 }
