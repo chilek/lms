@@ -476,8 +476,8 @@ class LMSTcpdfInvoice extends LMSInvoice
                 $postbox .= $this->data['zip'] . ' ' . $this->data['city'] . '<br>';
             }
 
-            if (!empty($postbox) && $this->data['export']) {
-                $postbox .= ', ' . trans($this->data['post_country']) . '<br>';
+            if ($this->data['export']) {
+                $postbox .= trans(empty($this->data['post_country']) ? $this->data['country'] : $this->data['post_country']) . '<br>';
             }
 
             $this->backend->SetFont(self::TCPDF_FONT, 'B', 10);
