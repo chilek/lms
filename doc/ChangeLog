@@ -188,6 +188,9 @@ version 26-git (????-??-??):
     using public VIES webapi [chilan]
   - enhancement: present VAR reg. no. (TEN's) in full format with country code when invoice
     is export document [chilan]
+  - enhancement: 'invoices.check_customer_vat_payer_flag_for_telecom_service' configuration variable
+    with default 'false' value controls if invoices issued for telecom services are flagged
+    as JPK-EE for customers which are not active VAT payers [chilan]
 
 version 25.0 (2020-05-15):
 
