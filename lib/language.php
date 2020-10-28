@@ -76,6 +76,11 @@ function format_bankaccount($account, $country_code = false)
     return Localisation::CallSystemFunction('format_bankaccount', $account, $country_code);
 }
 
+function format_ten($ten, $country_code = false)
+{
+    return Localisation::CallSystemFunction('format_ten', $ten, $country_code);
+}
+
 function getHolidays($year = null)
 {
     return Localisation::CallSystemFunction('getHolidays', $year);

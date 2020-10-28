@@ -161,6 +161,15 @@ self::addLanguageFunctions(
                 return preg_replace('/(..)(....)(....)(....)(....)(....)(....)/i', '${1} ${2} ${3} ${4} ${5} ${6} ${7}', $account);
             }
         },
+        'format_ten' => function ($ten, $country_code = false) {
+            if ($country_code) {
+                $ten = preg_replace('/[ \-]/', '', $ten);
+            }
+            if (strpos($ten, 'PL') === 0) {
+                $ten = substr($ten, 2);
+            }
+            return ($country_code ? 'PL' : '') . $ten;
+        },
         'getHolidays' => function ($year = null) {
             if (!$year) {
                 $year = date("Y");

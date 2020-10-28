@@ -186,6 +186,8 @@ version 26-git (????-??-??):
   - enhancement: added new 'VAT payer' customer flag [chilan]
   - enhancement: lms-vies.php backend script allows to update VAT payer customer flag
     using public VIES webapi [chilan]
+  - enhancement: present VAR reg. no. (TEN's) in full format with country code when invoice
+    is export document [chilan]
 
 version 25.0 (2020-05-15):
 

@@ -399,7 +399,7 @@ class LMSTcpdfInvoice extends LMSInvoice
     {
         $this->backend->SetFont(self::TCPDF_FONT, '', 8);
         $seller = '<b>' . trans('Seller:') . '</b><br>';
-        $tmp = $this->data['division_header'];
+        $tmp = str_replace('%ten%', format_ten($this->data['division_ten'], $this->data['export']), $this->data['division_header']);
 
         if (!ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')
             || empty($this->data['bankccounts'])) {
@@ -446,7 +446,10 @@ class LMSTcpdfInvoice extends LMSInvoice
         }
         $buyer .= '<br>';
         if ($this->data['ten']) {
-            $buyer .= trans('TEN') . ': ' . $this->data['ten'] . '<br>';
+            $currentSystemLanguage = Localisation::getCurrentSystemLanguage();
+            Localisation::setSystemLanguage($this->data['lang']);
+            $buyer .= trans('TEN') . ': ' . format_ten($this->data['ten'], $this->data['export']) . '<br>';
+            Localisation::setSystemLanguage($currentSystemLanguage);
         } elseif (!ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.hide_ssn', true)) && $this->data['ssn']) {
             $buyer .= trans('SSN') . ': ' . $this->data['ssn'] . '<br>';
         }
