@@ -92,6 +92,7 @@ lms-vies.php
 -h, --help                      print this help and exit;
 -v, --version                   print version info and exit;
 -q, --quiet                     suppress any output, except errors;
+-d, --dry-run                   dont change customer 'VAT payer' flag;
     --customerid=<id>           limit assignments to to specifed customer
 -g, --customergroups=<group1,group2,...>
                                 allow to specify customer groups to which notified customers
