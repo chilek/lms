@@ -50,7 +50,6 @@ class Localisation
                 'money_format_in_words' => '%s %s %s/100',
                 'currency' => 'PLN',
                 'vies_code' => 'PL',
-                'iban_code' => 'PL',
                 //'mobile' => '(88[0-9]|5[01][0-9]|6[069][0-9]|7[2789][0-9])[0-9]{6}',
             ),
             'pl' => 'pl_PL',
@@ -64,7 +63,6 @@ class Localisation
                 'money_format_in_words' => '%s %s %s/100',
                 'currency' => 'EUR',
                 'vies_code' => 'LT',
-                'iban_code' => 'LT',
                 //'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
             ),
             'lt' => 'lt_LT',
@@ -101,7 +99,6 @@ class Localisation
                 'money_format_in_words' => '%s %s %s/100',
                 'currency' => 'EUR',
                 'vies_code' => 'SK',
-                'iban_code' => 'SK',
                 //'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
             ),
             'sk' => 'sk_SK',
@@ -115,7 +112,6 @@ class Localisation
                 'money_format_in_words' => '%s %s %s/100',
                 'currency' => 'RON',
                 'vies_code' => 'RO',
-                'iban_code' => 'RO',
                 //'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
             ),
             'ro' => 'ro_RO',
@@ -129,7 +125,6 @@ class Localisation
                 'money_format_in_words' => '%s %s %s/100',
                 'currency' => 'CZK',
                 'vies_code' => 'CZ',
-                'iban_code' => 'CZ',
                 //'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
             ),
             'cs' => 'cs_CZ',
@@ -245,11 +240,6 @@ class Localisation
     public static function getCurrentMoneyFormatInWords()
     {
         return self::$langDefs[self::$systemLanguage]['money_format_in_words'];
-    }
-
-    public static function getCurrentIbanCode()
-    {
-        return isset(self::$langDefs[self::$systemLanguage]['iban_code']) ? self::$langDefs[self::$systemLanguage]['iban_code'] : null;
     }
 
     public static function getCurrentViesCode()
