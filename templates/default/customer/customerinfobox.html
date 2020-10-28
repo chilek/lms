@@ -87,11 +87,7 @@
 								</TD>
 								<TD WIDTH="99%">
 									{$first = true}
-									{foreach $_CUSTOMERFLAGS as $cflag => $flag}
-										{if ($customerinfo.flags & $cflag) > 0}
-											{if !$first}, {/if}<span title="{$flag.tip}">{$flag.label}</span>{$first = false}
-										{/if}
-									{/foreach}
+									{foreach $_CUSTOMERFLAGS as $cflag => $flag}{if isset($customerinfo.flags[$cflag])}{if !$first}, {/if}<span title="{$flag.tip}">{$flag.label}</span>{$first = false}{/if}{/foreach}
 								</TD>
 							</TR>
 						{/if}
