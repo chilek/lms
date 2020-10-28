@@ -581,7 +581,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 
             $recipients = GetCustomers($customers);
 
-            if (count($recipients) == 1 && !empty($message['nodeid'])) {
+            if (isset($recipients) && count($recipients) == 1 && !empty($message['nodeid'])) {
                 $recipient = array_shift($recipients);
                 $recipient['node'] = $LMS->GetNode($message['nodeid']);
                 $recipients[$recipient['id']] = $recipient;
