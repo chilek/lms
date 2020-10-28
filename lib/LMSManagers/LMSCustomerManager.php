@@ -2143,9 +2143,13 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         $customerid = intval($customerid);
 
+        $check_customer_vat_payer_flag_for_telecom_service =
+            ConfigHelper::checkConfig('invoices.check_customer_vat_payer_flag_for_telecom_service');
+
         return $this->db->GetOne(
             'SELECT c.id FROM customers c
-            WHERE c.id = ? AND c.type = ?',
+            WHERE c.id = ? AND (c.type = ? OR '
+            . ($check_customer_vat_payer_flag_for_telecom_service ? 'c.flags & ' . CUSTOMER_FLAG_VAT_PAYER . ' = 0' : ' 1 = 0') . ')',
             array($customerid, CTYPES_PRIVATE)
         ) > 0;
     }
