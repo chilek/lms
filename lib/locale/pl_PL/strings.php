@@ -31,6 +31,9 @@ $_LANG['translates into JPK TP flag'] = 'przekłada się na flagę JPK TP';
 $_LANG['translates into JPK MPP flag'] = 'przekłada się na flagę JPK MPP';
 $_LANG['translates into JPK EE flag'] = 'przekłada się na flagę JPK EE';
 $_LANG['translates into JPK FP flag'] = 'przekłada się na flagę JPK FP';
+$_LANG['VAT payer'] = 'płatnik VAT';
+$_LANG['if customer is not VAT payer, then his telecommunication services are reported with JPK EE flag'] = 'jeśli klient nie jest płatnikiem VAT, to świadczone mu usługi telekomunikacyjne są raportowane z flagą JPK EE';
+
 $_LANG['Document flags:'] = 'Flagi dokumentu:';
 
 $_LANG['with discount'] = 'z rabatem';

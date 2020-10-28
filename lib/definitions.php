@@ -84,12 +84,17 @@ $CSTATUSES = array(
 );
 
 define('CUSTOMER_FLAG_RELATED_ENTITY', 1);
+define('CUSTOMER_FLAG_VAT_PAYER', 2);
 
 $CUSTOMERFLAGS = array(
     CUSTOMER_FLAG_RELATED_ENTITY => array(
         'label' => trans('related entity'),
         'tip' => trans('translates into JPK TP flag'),
-    )
+    ),
+    CUSTOMER_FLAG_VAT_PAYER => array(
+        'label' => trans('VAT payer'),
+        'tip' => trans('if customer is not VAT payer, then his telecommunication services are reported with JPK EE flag'),
+    ),
 );
 
 // customer consents
