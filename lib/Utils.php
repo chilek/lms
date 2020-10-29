@@ -315,10 +315,6 @@ class Utils
         $requester_id = strpos($requester_id, $requester_country) == 0
             ? preg_replace('/^' . $requester_country . '/', '', $requester_id) : $requester_id;
 
-        if ($trader_country == $requester_country && $trader_id == $requester_id) {
-            return false;
-        }
-
         if (!isset($vies)) {
             $vies = new \DragonBe\Vies\Vies();
             if (!$vies->getHeartBeat()->isAlive()) {
