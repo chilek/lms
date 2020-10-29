@@ -334,10 +334,35 @@ class Utils
 
     public static function validatePlVat($trader_country, $trader_id)
     {
+        static $curl = null;
+
+        if (!isset($curl)) {
+            if (!function_exists('curl_init')) {
+                throw new Exception(trans('Curl extension not loaded!'));
+            }
+            $curl = curl_init();
+        }
+
         $trader_id = strpos($trader_id, $trader_country) == 0
             ? preg_replace('/^' . $trader_country . '/', '', $trader_id) : $trader_id;
 
-        $result = @file_get_contents('https://wl-api.mf.gov.pl/api/search/nip/' . $trader_id . '?date=' . date('Y-m-d'));
+        curl_setopt($curl, CURLOPT_URL, 'https://wl-api.mf.gov.pl/api/search/nip/' . $trader_id . '?date=' . date('Y-m-d'));
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_TIMEOUT, 10);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array('Accept: application/json'));
+
+        $result = curl_exec($curl);
+        if (curl_error($result)) {
+            throw new Exception('Communication error: ' . curl_error($curl));
+        }
+
+/*
+        $info = curl_getinfo($curl);
+        if ($info['http_code'] != '200') {
+            throw new Exception('Communication error. Http code: ' . $info['http_code']);
+        }
+*/
+
         if (empty($result)) {
             return false;
         }
