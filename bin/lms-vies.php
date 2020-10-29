@@ -258,6 +258,12 @@ foreach ($customers as $customer) {
 
     try {
         $valid = Utils::validateVat($customer_ccode, $customer_ten, $div_ccode, $div_ten);
+    } catch (\DragonBe\Vies\ViesException $e) {
+        echo $e->getMessage() . PHP_EOL;
+        continue;
+    } catch (\DragonBe\Vies\ViesServiceException $e) {
+        echo $e->getMessage() . PHP_EOL;
+        continue;
     } catch (Exception $e) {
         die($e->getMessage() . PHP_EOL);
     }
