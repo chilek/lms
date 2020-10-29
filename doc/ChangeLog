@@ -191,6 +191,7 @@ version 26-git (????-??-??):
   - enhancement: 'invoices.check_customer_vat_payer_flag_for_telecom_service' configuration variable
     with default 'false' value controls if invoices issued for telecom services are flagged
     as JPK-EE for customers which are not active VAT payers [chilan]
+  - improvement: added customer flag filter in customer search form [chilan]
 
 version 25.0 (2020-05-15):
 
