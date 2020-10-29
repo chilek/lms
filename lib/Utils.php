@@ -352,7 +352,7 @@ class Utils
         curl_setopt($curl, CURLOPT_HTTPHEADER, array('Accept: application/json'));
 
         $result = curl_exec($curl);
-        if (curl_error($result)) {
+        if (curl_error($curl)) {
             throw new Exception('Communication error: ' . curl_error($curl));
         }
 
