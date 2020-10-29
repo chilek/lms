@@ -188,6 +188,28 @@
 		</TD>
 	</TR>
 	<TR>
+		<TD class="bold nobr">
+			<i class="lms-ui-icon-legal-personality fa-fw"></i> {trans("Flags:")}
+		</TD>
+		<TD>
+			<input type="hidden" name="flags[]" value="0">
+			<select name="flags[]" {tip text="Select customer flags (optional)" class="lms-ui-multiselect"}
+					multiple data-default-value="{trans("- all -")}">
+				{foreach $_CUSTOMERFLAGS as $cflag => $flag}
+					<option value="{$cflag}" title="{$flag.tip}">{$flag.label}</option>
+				{/foreach}
+			</select>
+			<label>
+				<INPUT class="radio" type="radio" value="AND" name="fk"{if $fk != 'OR'} checked{/if}>
+				{trans("and")}
+			</label>
+			<label>
+				<INPUT class="radio" type="radio" value="OR" name="fk"{if $fk == 'OR'} checked{/if}>
+				{trans("or")}
+			</label>
+		</TD>
+	</TR>
+	<TR>
 		<TD style="width: 1%;" class="bold nobr">
 			<IMG src="img/state.gif" alt=""> {trans("Country state:")}
 		</TD>

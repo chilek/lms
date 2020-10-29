@@ -685,6 +685,14 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $state = array($state);
         }
 
+        if (!isset($flagsqlskey)) {
+            $flagsqlskey = 'AND';
+        }
+
+        if (!is_array($flags) && !empty($flags)) {
+            $flags = array($flags);
+        }
+
         $customer_statuses = array();
         $state_conditions = array();
 
@@ -828,6 +836,16 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         }
         if (!empty($customer_statuses)) {
             $state_conditions[] = '((c.status = ' . implode(' ' . $statesqlskey . ' c.status = ', $customer_statuses) . ') AND c.deleted = 0)';
+        }
+
+        $flagmask = 0;
+        foreach ($flags as $flag) {
+            $flagmask |= intval($flag);
+        }
+        if ($flagmask) {
+            $flag_condition = '(c.flags & ' . $flagmask . ($flagsqlskey == 'AND' ? ' = ' . $flagmask : ' > 0') . ')';
+        } else {
+            $flag_condition = '';
         }
 
         if (isset($assignments)) {
@@ -1209,6 +1227,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 						) ass ON ass.customerid = c.id') : '')))
                 . ' WHERE '
                 . (empty($state_conditions) ? '1 = 1' : implode(' ' . $statesqlskey . ' ', $state_conditions))
+                . ($flag_condition ? ' AND ' . $flag_condition : '')
                 . ($division ? ' AND c.divisionid = ' . intval($division) : '')
                 . ($assignment ? ' AND c.id IN ('.$assignment.')' : '')
                 . ($network ? ' AND (EXISTS (SELECT 1 FROM vnodes WHERE ownerid = c.id
