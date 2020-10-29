@@ -331,4 +331,22 @@ class Utils
 
         return $vatResult->isValid();
     }
+
+    public static function validatePlVat($trader_country, $trader_id)
+    {
+        $trader_id = strpos($trader_id, $trader_country) == 0
+            ? preg_replace('/^' . $trader_country . '/', '', $trader_id) : $trader_id;
+
+        $result = @file_get_contents('https://wl-api.mf.gov.pl/api/search/nip/' . $trader_id . '?date=' . date('Y-m-d'));
+        if (empty($result)) {
+            return false;
+        }
+
+        $result = json_decode($result, true);
+        if (empty($result) || !isset($result['result']['subject']['statusVat'])) {
+            return false;
+        }
+
+        return $result['result']['subject']['statusVat'] == 'Czynny';
+    }
 }

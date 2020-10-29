@@ -76,7 +76,7 @@ foreach (array_flip(array_filter($long_to_shorts, function ($value) {
 
 if (array_key_exists('version', $options)) {
     print <<<EOF
-lms-vies.php
+lms-vat-payers.php
 (C) 2001-2020 LMS Developers
 
 EOF;
@@ -85,7 +85,7 @@ EOF;
 
 if (array_key_exists('help', $options)) {
     print <<<EOF
-lms-vies.php
+lms-vat-payers.php
 (C) 2001-2020 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
@@ -105,7 +105,7 @@ EOF;
 $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
     print <<<EOF
-lms-vies.php
+lms-vat-payers.php
 (C) 2001-2020 LMS Developers
 
 EOF;
@@ -257,7 +257,11 @@ foreach ($customers as $customer) {
     $customer_ten = preg_replace('/[ -]/', '', $customer['ten']);
 
     try {
-        $valid = Utils::validateVat($customer_ccode, $customer_ten, $div_ccode, $div_ten);
+        if ($customer_ccode == 'PL') {
+            $valid = Utils::validatePlVat($customer_ccode, $customer_ten);
+        } else {
+            $valid = Utils::validateVat($customer_ccode, $customer_ten, $div_ccode, $div_ten);
+        }
     } catch (\DragonBe\Vies\ViesException $e) {
         echo $e->getMessage() . PHP_EOL;
         continue;
