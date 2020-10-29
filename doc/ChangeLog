@@ -184,8 +184,8 @@ version 26-git (????-??-??):
   - improvement: invoices: show iban bank accounts with country codes if seller and buyer are
     from different countries [chilan]
   - enhancement: added new 'VAT payer' customer flag [chilan]
-  - enhancement: lms-vies.php backend script allows to update VAT payer customer flag
-    using public VIES webapi [chilan]
+  - enhancement: lms-vat-payers.php backend script allows to update VAT payer customer flag
+    using public VIES webapi and MF.GOV.PL REST api [chilan]
   - enhancement: present VAR reg. no. (TEN's) in full format with country code when invoice
     is export document [chilan]
   - enhancement: 'invoices.check_customer_vat_payer_flag_for_telecom_service' configuration variable
