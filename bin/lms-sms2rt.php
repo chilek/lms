@@ -31,45 +31,49 @@
 // *EXACTLY* WHAT ARE YOU DOING!!!
 // *******************************************************************
 
-ini_set('error_reporting', E_ALL&~E_NOTICE);
+ini_set('error_reporting', E_ALL & ~E_NOTICE);
 
-$parameters = array(
-    'config-file:' => 'C:',
-    'quiet' => 'q',
-    'help' => 'h',
-    'version' => 'v',
-    'section:' => 's:',
-    'message-file:' => 'm:',
-);
+if (isset($_SERVER['HTTP_HOST'])) {
+    $options = array();
+} else {
+    $parameters = array(
+        'config-file:' => 'C:',
+        'quiet' => 'q',
+        'help' => 'h',
+        'version' => 'v',
+        'section:' => 's:',
+        'message-file:' => 'm:',
+    );
 
-$long_to_shorts = array();
-foreach ($parameters as $long => $short) {
-    $long = str_replace(':', '', $long);
-    if (isset($short)) {
-        $short = str_replace(':', '', $short);
+    $long_to_shorts = array();
+    foreach ($parameters as $long => $short) {
+        $long = str_replace(':', '', $long);
+        if (isset($short)) {
+            $short = str_replace(':', '', $short);
+        }
+        $long_to_shorts[$long] = $short;
     }
-    $long_to_shorts[$long] = $short;
-}
 
-$options = getopt(
-    implode(
-        '',
-        array_filter(
-            array_values($parameters),
-            function ($value) {
-                return isset($value);
-            }
-        )
-    ),
-    array_keys($parameters)
-);
+    $options = getopt(
+        implode(
+            '',
+            array_filter(
+                array_values($parameters),
+                function ($value) {
+                    return isset($value);
+                }
+            )
+        ),
+        array_keys($parameters)
+    );
 
-foreach (array_flip(array_filter($long_to_shorts, function ($value) {
-    return isset($value);
-})) as $short => $long) {
-    if (array_key_exists($short, $options)) {
-        $options[$long] = $options[$short];
-        unset($options[$short]);
+    foreach (array_flip(array_filter($long_to_shorts, function ($value) {
+        return isset($value);
+    })) as $short => $long) {
+        if (array_key_exists($short, $options)) {
+            $options[$long] = $options[$short];
+            unset($options[$short]);
+        }
     }
 }
 
@@ -112,6 +116,10 @@ $config_section = isset($options['section']) && preg_match('/^[a-z0-9-_]+$/i', $
 
 if (array_key_exists('config-file', $options)) {
     $CONFIG_FILE = $options['config-file'];
+} elseif (isset($_SERVER['HTTP_HOST']) && is_readable('lms.ini')) {
+    $CONFIG_FILE = 'lms.ini';
+} elseif (isset($_SERVER['HTTP_HOST']) && is_readable(DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini')) {
+    $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini';
 } else {
     $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
 }
@@ -189,10 +197,35 @@ $newticket_notify = ConfigHelper::checkConfig('phpui.newticket_notify');
 $helpdesk_customerinfo = ConfigHelper::checkConfig('phpui.helpdesk_customerinfo');
 $helpdesk_sendername = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
 
-if (isset($options['message-file'])) {
-    $message_file = $options['message-file'];
+if (isset($_SERVER['HTTP_HOST'])) {
+    $request = file_get_contents('php://input');
+    $request = json_decode($request, true);
+
+    if (empty($request)) {
+        die('Cannot decode request as JSON input!<br>');
+    }
+
+    if (!preg_match('/^(?<datetime>.+)\s+GMT\s+(?<timezone>[\+\-]?[0-9]+)$/', $request['timestamp'], $m)) {
+        die('Invalid timestamp format!<br>');
+    }
+    $datetime = DateTime::createFromFormat('M/d/Y H:i:s', $m['datetime']);
+    $timestamp = $datetime->format('Y/m/d H:i:s') . ' ' . $m['timezone'];
+
+    $message_file = tempnam('/tmp', 'LMS_SMS_MESSAGE_FILE');
+    file_put_contents(
+        $message_file,
+        'From: ' . preg_replace('/^\+/', '', $request['number']) . PHP_EOL
+        . 'Received: ' . $timestamp . PHP_EOL
+        . PHP_EOL
+        . $request['message'] . PHP_EOL
+    );
 } else {
     die("Required message file parameter!" . PHP_EOL);
+    if (isset($options['message-file'])) {
+        $message_file = $options['message-file'];
+    } else {
+        die("Required message file parameter!" . PHP_EOL);
+    }
 }
 
 if (($queueid = $DB->GetOne(
@@ -384,5 +417,3 @@ if (($fh = fopen($message_file, "r")) != null) {
 }
 
 $DB->Destroy();
-
-?>
