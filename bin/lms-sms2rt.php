@@ -208,6 +208,11 @@ if (isset($_SERVER['HTTP_HOST'])) {
     if (!preg_match('/^(?<datetime>.+)\s+GMT\s+(?<timezone>[\+\-]?[0-9]+)$/', $request['timestamp'], $m)) {
         die('Invalid timestamp format!<br>');
     }
+
+    if (empty($request['message'])) {
+        die('Empty message detected!<br>');
+    }
+
     $datetime = DateTime::createFromFormat('M/d/Y H:i:s', $m['datetime']);
     $timestamp = $datetime->format('Y/m/d H:i:s') . ' ' . $m['timezone'];
 
