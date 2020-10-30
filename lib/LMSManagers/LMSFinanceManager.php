@@ -1273,7 +1273,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $a['pdiscount'] = ($a['discount_type'] == DISCOUNT_PERCENTAGE ? floatval($a['discount']) : 0);
             $a['vdiscount'] = ($a['discount_type'] == DISCOUNT_AMOUNT ? floatval($a['discount']) : 0);
         }
-        if ($a['pdiscount'] < 0 || $a['pdiscount'] > 99.99) {
+        if ($a['pdiscount'] < 0 || $a['pdiscount'] > 100) {
             $error['discount'] = trans('Wrong discount value!');
         }
 
