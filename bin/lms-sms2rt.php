@@ -106,7 +106,7 @@ EOF;
 }
 
 $quiet = array_key_exists('quiet', $options);
-if (!$quiet) {
+if (!$quiet && !$http_mode) {
     print <<<EOF
 lms-sms2rt.php
 (C) 2001-2020 LMS Developers
