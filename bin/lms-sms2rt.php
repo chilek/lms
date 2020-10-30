@@ -33,7 +33,9 @@
 
 ini_set('error_reporting', E_ALL & ~E_NOTICE);
 
-if (isset($_SERVER['HTTP_HOST'])) {
+$http_mode = isset($_SERVER['HTTP_HOST']);
+
+if ($http_mode) {
     $options = array();
 } else {
     $parameters = array(
@@ -116,9 +118,9 @@ $config_section = isset($options['section']) && preg_match('/^[a-z0-9-_]+$/i', $
 
 if (array_key_exists('config-file', $options)) {
     $CONFIG_FILE = $options['config-file'];
-} elseif (isset($_SERVER['HTTP_HOST']) && is_readable('lms.ini')) {
+} elseif ($http_mode && is_readable('lms.ini')) {
     $CONFIG_FILE = 'lms.ini';
-} elseif (isset($_SERVER['HTTP_HOST']) && is_readable(DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini')) {
+} elseif ($http_mode && is_readable(DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini')) {
     $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini';
 } else {
     $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
@@ -197,33 +199,36 @@ $newticket_notify = ConfigHelper::checkConfig('phpui.newticket_notify');
 $helpdesk_customerinfo = ConfigHelper::checkConfig('phpui.helpdesk_customerinfo');
 $helpdesk_sendername = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
 
-if (isset($_SERVER['HTTP_HOST'])) {
-    $request = file_get_contents('php://input');
-    $request = json_decode($request, true);
+// Load plugin files and register hook callbacks
+$plugin_manager = new LMSPluginManager();
+$LMS->setPluginManager($plugin_manager);
 
-    if (empty($request)) {
-        die('Cannot decode request as JSON input!<br>');
+if ($http_mode) {
+    // call external incoming SMS handler(s)
+    $errors = array();
+    $content = null;
+
+    foreach (explode(',', $service) as $single_service) {
+        $data = $this->executeHook('parse_incoming_sms', $single_service);
+        if (isset($data['error'])) {
+            $errors[$single_service] = $data['error'];
+            continue;
+        }
+        if ($data['content']) {
+            $content = $data['content'];
+            break;
+        }
     }
 
-    if (!preg_match('/^(?<datetime>.+)\s+GMT\s+(?<timezone>[\+\-]?[0-9]+)$/', $request['timestamp'], $m)) {
-        die('Invalid timestamp format!<br>');
+    if (!isset($content)) {
+        foreach ($errors as $single_service => $error) {
+            echo $single_service . ': ' . $error . '<br>';
+        }
+        die;
     }
 
-    if (empty($request['message'])) {
-        die('Empty message detected!<br>');
-    }
-
-    $datetime = DateTime::createFromFormat('M/d/Y H:i:s', $m['datetime']);
-    $timestamp = $datetime->format('Y/m/d H:i:s') . ' ' . $m['timezone'];
-
-    $message_file = tempnam('/tmp', 'LMS_SMS_MESSAGE_FILE');
-    file_put_contents(
-        $message_file,
-        'From: ' . preg_replace('/^\+/', '', $request['number']) . PHP_EOL
-        . 'Received: ' . $timestamp . PHP_EOL
-        . PHP_EOL
-        . $request['message'] . PHP_EOL
-    );
+    $message_file = tempnam('/tmp', 'LMS_INCOMING_MESSAGE');
+    file_put_contents($message_file, $content);
 } else {
     die("Required message file parameter!" . PHP_EOL);
     if (isset($options['message-file'])) {
@@ -239,10 +244,6 @@ if (($queueid = $DB->GetOne(
 )) == null) {
     die("Undefined queue!" . PHP_EOL);
 }
-
-// Load plugin files and register hook callbacks
-$plugin_manager = new LMSPluginManager();
-$LMS->setPluginManager($plugin_manager);
 
 $plugins = $plugin_manager->getAllPluginInfo(LMSPluginManager::OLD_STYLE);
 if (!empty($plugins)) {
@@ -421,7 +422,7 @@ if (($fh = fopen($message_file, "r")) != null) {
     die("Message file doesn't exist!" . PHP_EOL);
 }
 
-if (isset($_SERVER['HTTP_HOST'])) {
+if ($http_mode) {
     @unlink($message_file);
 }
 
