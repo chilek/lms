@@ -421,4 +421,8 @@ if (($fh = fopen($message_file, "r")) != null) {
     die("Message file doesn't exist!" . PHP_EOL);
 }
 
+if (isset($_SERVER['HTTP_HOST'])) {
+    @unlink($message_file);
+}
+
 $DB->Destroy();
