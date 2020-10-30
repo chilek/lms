@@ -36,6 +36,7 @@ ini_set('error_reporting', E_ALL & ~E_NOTICE);
 $http_mode = isset($_SERVER['HTTP_HOST']);
 
 if ($http_mode) {
+    ob_clean();
     $options = array();
 } else {
     $parameters = array(
