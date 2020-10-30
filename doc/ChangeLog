@@ -192,7 +192,7 @@ version 26-git (????-??-??):
     with default 'false' value controls if invoices issued for telecom services are flagged
     as JPK-EE for customers which are not active VAT payers [chilan]
   - improvement: added customer flag filter in customer search form [chilan]
-  - enhancement: lms-sms2rt.php backend script can be launcher from within http server and handle
+  - enhancement: lms-sms2rt.php backend script can be launched from within http server and handle
     incoming sms callback made from external device [chilan]
 
 version 25.0 (2020-05-15):
