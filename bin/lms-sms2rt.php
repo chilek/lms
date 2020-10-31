@@ -231,7 +231,6 @@ if ($http_mode) {
     $message_file = tempnam('/tmp', 'LMS_INCOMING_MESSAGE');
     file_put_contents($message_file, $content);
 } else {
-    die("Required message file parameter!" . PHP_EOL);
     if (isset($options['message-file'])) {
         $message_file = $options['message-file'];
     } else {
