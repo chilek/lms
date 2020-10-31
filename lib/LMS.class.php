@@ -2828,7 +2828,7 @@ class LMS
             $message = $data['message'];
             $messageid = $data['messageid'];
 
-            if (in_array($service, array('smscenter', 'serwersms', 'smsapi'))) {
+            if (in_array($service, array('smscenter', 'smsapi'))) {
                 if (!function_exists('curl_init')) {
                     $errors[] = trans('Curl extension not loaded!');
                     continue;
