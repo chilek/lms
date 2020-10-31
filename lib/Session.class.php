@@ -303,8 +303,8 @@ class Session
             'session_logname' => true, 'session_last' => true, 'session_lastip' => true,
             'session_smsauthenticated' => true, 'backto' => true, 'lastmodule' => true,
             'session_passwdrequiredchange' => true, 'session_authcoderequired' => true,
-            'session_twofactorauthrequirechange' => true, 'tabs' => true,
-            'prepared_persistent_filters' => true);
+            'session_twofactorauthrequirechange' => true, 'session_passverified' => true,
+            'tabs' => true, 'prepared_persistent_filters' => true);
 
         if ($this->autoupdate || $this->_updated) {
             $content = array_merge($this->_content, array('tabs' => $this->_tab_content));
