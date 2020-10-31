@@ -3004,68 +3004,6 @@ class LMS
                     }
 
                     return MSG_NEW;
-                case 'serwersms':
-                    $args = array(
-                        'username' => $username,
-                        'password' => $password,
-                        'phone' => $number,
-                        'text' => $message,
-                    );
-
-                    if ($from != 'ECO') {
-                        $args['sender'] = $from;
-                    }
-
-                    if (!ConfigHelper::checkValue($transliterate_message)) {
-                        $trans_message = iconv('UTF-8', 'ASCII//TRANSLIT', $message);
-                        if (strlen($message) != strlen($trans_message)) {
-                            $args['utf'] = 'true';
-                        }
-                    }
-                    if ($messageid) {
-                        $args['unique_id'] = $messageid;
-                    }
-                    $fast = isset($sms_options['fast']) ? $sms_options['fast'] : ConfigHelper::getConfig('sms.fast', 'false');
-                    if (ConfigHelper::checkValue($fast)) {
-                        $args['speed'] = 1;
-                    }
-
-                    $encodedargs = http_build_query($args);
-
-                    $curl = curl_init();
-                    curl_setopt($curl, CURLOPT_URL, 'https://api2.serwersms.pl/messages/send_sms');
-                    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-                    curl_setopt($curl, CURLOPT_POST, 1);
-                    curl_setopt($curl, CURLOPT_POSTFIELDS, $encodedargs);
-                    curl_setopt($curl, CURLOPT_TIMEOUT, 10);
-
-                    $result = curl_exec($curl);
-                    if (curl_error($curl)) {
-                        $errors[] = 'SMS communication error. ' . curl_error($curl);
-                        continue 2;
-                    }
-
-                    $info = curl_getinfo($curl);
-                    if ($info['http_code'] != '200') {
-                        $errors[] = 'SMS communication error. Http code: ' . $info['http_code'];
-                        continue 2;
-                    }
-
-                    curl_close($curl);
-
-                    $result = json_decode($result, true);
-
-                    if (isset($result['error'])) {
-                        $errors[] = 'Serwersms error: code=' . $result['error']['code'] . ', type="' . $result['error']['type'] . '" message="' . $result['error']['message'] . '"';
-                        continue 2;
-                    }
-
-                    if (empty($result['queued'])) {
-                        $errors[] = 'Serwersms error: message has not been sent!';
-                        continue 2;
-                    }
-
-                    return MSG_SENT;
                 case 'smsapi':
                     $args = array(
                         'username' => $username,
