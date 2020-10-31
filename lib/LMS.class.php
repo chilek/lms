@@ -2829,7 +2829,7 @@ class LMS
             $message = $data['message'];
             $messageid = $data['messageid'];
 
-            if (in_array($service, array('smscenter', 'smsapi'))) {
+            if ($service == 'smscenter') {
                 if (!function_exists('curl_init')) {
                     $errors[] = trans('Curl extension not loaded!');
                     continue;
@@ -3005,56 +3005,6 @@ class LMS
                     }
 
                     return MSG_NEW;
-                case 'smsapi':
-                    $args = array(
-                        'username' => $username,
-                        'password' => md5($password),
-                        'to' => $number,
-                        'message' => $message,
-                        'from' => !empty($from) ? $from : 'ECO',
-                        'encoding' => 'utf-8',
-                    );
-                    $fast = isset($sms_options['fast']) ? $sms_options['fast'] : ConfigHelper::getConfig('sms.fast');
-                    if (ConfigHelper::checkValue($fast)) {
-                        $args['fast'] = 1;
-                    }
-                    if ($messageid) {
-                        $args['idx'] = $messageid;
-                    }
-
-                    $encodedargs = http_build_query($args);
-
-                    $curl = curl_init();
-                    curl_setopt($curl, CURLOPT_URL, 'https://ssl.smsapi.pl/sms.do');
-                    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-                    curl_setopt($curl, CURLOPT_POST, 1);
-                    curl_setopt($curl, CURLOPT_POSTFIELDS, $encodedargs);
-                    curl_setopt($curl, CURLOPT_TIMEOUT, 10);
-
-                    $page = curl_exec($curl);
-                    if (curl_error($curl)) {
-                        $errors[] = 'SMS communication error. ' . curl_error($curl);
-                        continue 2;
-                    }
-
-                    $info = curl_getinfo($curl);
-                    if ($info['http_code'] != '200') {
-                        $errors[] = 'SMS communication error. Http code: ' . $info['http_code'];
-                        continue 2;
-                    }
-
-                    curl_close($curl);
-
-                    if (preg_match('/^OK:/', $page)) {
-                        return MSG_SENT;
-                    }
-                    if (preg_match('/^ERROR:([0-9]+)/', $page, $matches)) {
-                        $errors[] = 'Smsapi error: ' . $matches[1];
-                        continue 2;
-                    }
-
-                    $errors[] = 'Smsapi error: message has not been sent!';
-                    continue 2;
                 default:
                     $errors[] = trans('Unknown SMS service!');
                     continue 2;
