@@ -194,6 +194,8 @@ version 26-git (????-??-??):
   - improvement: added customer flag filter in customer search form [chilan]
   - enhancement: lms-sms2rt.php backend script can be launched from within http server and handle
     incoming sms callback made from external device [chilan]
+  - devel/cleanup: serwersms.pl, sms.pl, smsapi.pl, smscenter.pl support moved to separate
+    plugins [chilan]
 
 version 25.0 (2020-05-15):
 
