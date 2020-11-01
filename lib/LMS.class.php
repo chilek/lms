@@ -2860,6 +2860,12 @@ class LMS
                         $headers['Queue'] = $queue;
                     }
 
+                    $delivery_reports = isset($sms_options['delivery_reports']) ? $sms_options['delivery_reports']
+                        : ConfigHelper::getConfig('sms.delivery_reports', 'false');
+                    if (ConfigHelper::checkValue($delivery_reports)) {
+                        $headers['Report'] = 'yes';
+                    }
+
                     $header = '';
                     array_walk($headers, function ($value, $key) use (&$header) {
                         $header .= $key . ': ' . $value . "\n";

@@ -2185,6 +2185,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'prefix' => 'sms-customers.prefix',
             'transliterate_message' => 'sms-customers.transliterate_message',
             'max_length' => 'sms-customers.max_length',
+            'delivery_reports' => 'sms-customers.delivery_reports',
             'smscenter_type' => 'sms-customers.smscenter_type',
             'smstools_outdir' => 'sms-customers.smstools_outdir',
             'queue' => 'sms-customers.queue',
