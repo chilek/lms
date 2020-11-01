@@ -2790,9 +2790,6 @@ class LMS
             $message = mb_substr($message, 0, $max_length - 6) . ' [...]';
         }
 
-        // recount message length after potential last changes made a few lines earlier
-        $msg_len = mb_strlen($message);
-
         $service = isset($sms_options['service']) ? $sms_options['service'] : ConfigHelper::getConfig('sms.service');
         if (empty($service)) {
             return trans('SMS "service" not set!');

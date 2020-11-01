@@ -758,7 +758,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
             }
         }
 
-        if ($message['type'] == MSG_SMS || $message['type'] == MSG_ANYSMS) {
+        if ($message['type'] == MSG_SMS) {
             $sms_options = $LMS->getCustomerSMSOptions();
         }
 
