@@ -12,15 +12,15 @@
 	<TR>
 		<TD style="width: 100%;" class="navigation" colspan="3">
 			{if $ticket.prev_ticketid != NULL}
-				<A href="?m=rtticketview&id={$ticket.prev_ticketid}"><i class="lms-ui-icon-previous"></i>&nbsp;{trans("Previous ticket")}</A>
+				<A href="?m=rtticketview&id={$ticket.prev_ticketid}">{icon name="previous" label="Previous ticket"}</A>
 			{else}
-				<i class="lms-ui-icon-previous"></i>&nbsp;{trans("Previous ticket")}
+				{icon name="previous" label="Previous ticket"}
 			{/if}
 			&nbsp;&nbsp;&nbsp;
 			{if $ticket.next_ticketid != NULL}
-				<A href="?m=rtticketview&id={$ticket.next_ticketid}">{trans("Next ticket")}&nbsp;<i class="lms-ui-icon-next"></i></A>
+				<A href="?m=rtticketview&id={$ticket.next_ticketid}">{icon name="next" label="Next ticket"}</A>
 			{else}
-				{trans("Next ticket")}&nbsp;<i class="lms-ui-icon-next"></i>
+				{icon name="next" label="Next ticket"}
 			{/if}
 		</TD>
 	</TR>

@@ -20,10 +20,9 @@
 					<COL style="width: 98%;">
 				</COLGROUP>
 				<TR>
-					<TD>
-						<i class="lms-ui-icon-content lms-ui-icon-queue"></i>
+					<TD class="nobr bold">
+						{icon name="queue" label="Name:"}
 					</TD>
-					<TD class="bold">{trans("Name:")}</TD>
 					<TD>
 						<INPUT TYPE="TEXT" NAME="queue[name]" VALUE="{$queue.name}" {tip text="Enter name" trigger="name" bold=1}>
 					</TD>
@@ -50,28 +49,25 @@
 								<COL style="width: 98px;">
 							</COLGROUP>
 							<TR>
-								<TD>
-									<i class="lms-ui-icon-content lms-ui-icon-mail"></i>
+								<TD class="nobr bold">
+									{icon name="mail" label="E-mail"}
 								</TD>
-								<TD class="bold">{trans("E-mail")}:</TD>
 								<TD>
 									<INPUT TYPE="email" SIZE="50" NAME="queue[email]" VALUE="{$queue.email}" {tip text="Enter e-mail address" trigger="email"}>
 								</TD>
 							</TR>
 							<TR>
-								<TD>
-									<i class="lms-ui-icon-content lms-ui-icon-description"></i>
+								<TD class="nobr bold">
+									{icon name="description" label="Description"}
 								</TD>
-								<TD class="bold">{trans("Description")}:</TD>
 								<TD>
 									<TEXTAREA NAME="queue[description]" COLS="50" ROWS="3" {tip text="Enter additional information (optional)"}>{$queue.description}</TEXTAREA>
 								</TD>
 							</TR>
                             <TR>
                                 <TD class="bold nobr">
-                                    <i class="lms-ui-icon-content lms-ui-icon-verifier"></i>
+                                    {icon name="verifier" label="<!rt>Verifier:"}
                                 </TD>
-								<TD class="bold">{trans("<!rt>Verifier:")}</TD>
                                 <TD>
                                     <SELECT size="1" name="queue[verifierid]" {tip text="Select user" trigger="verifierid"}>
                                         <OPTION value="">- {trans("select user")} -</OPTION>
@@ -82,10 +78,9 @@
                                 </TD>
                             </TR>
 							<TR>
-								<TD>
-									<i class="lms-ui-icon-content lms-ui-icon-user"></i>
+								<TD class="nobr bold">
+									{icon name="user" label="Permissions:"}
 								</TD>
-								<TD class="bold">{trans("Permissions:")}</TD>
 								<TD>
 									<TABLE class="lmsbox">
 										<COLGROUP>
@@ -227,7 +222,7 @@
 				<tr>
 					<td>
 						<FIELDSET>
-							<LEGEND><i class="lms-ui-icon-content lms-ui-icon-queue"></i><span class="bold">{trans("Default categories")}</span>
+							<LEGEND>{icon name="queue" label="Default categories"}
 								<label>
 									({trans("Check All")}
 									<input type="checkbox" id="checkall">)
@@ -248,8 +243,8 @@
 	</TR>
 	<TR>
 		<TD class="text-right">
-			<A HREF="javascript:document.queue.submit();" accesskey="s"><IMG src="img/save.gif" alt=""> {trans("Submit")}</A>
-			<A HREF="?m=rtqueuelist"><IMG src="img/cancel.gif" alt=""> {trans("Cancel")}</A>
+			{button type="submit" accesskey="s" label="Submit" icon="save"}
+			{button icon="cancel" label="Cancel" onclick="location.href = '?m=rtqueuelist'"}
 		</TD>
 	</TR>
     </TBODY>

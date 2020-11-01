@@ -17,14 +17,14 @@
     <THEAD>
 	<TR>
 		<TD colspan="2" class="bold nobr">
-			<i class="lms-ui-icon-helpdesk"></i> {t a=$note.ticketid|string_format:"%06d"}Ticket No. $a{/t}
+            {icon class="fa-fw" name="helpdesk"} {t a=$note.ticketid|string_format:"%06d"}Ticket No. $a{/t}
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	<TR id="note-template-row"{if empty($notetemplates)} style="display: none;"{/if}>
 		<TD class="bold nobr">
-			<i class="lms-ui-icon-document"></i> {trans("Note template:")}
+            {icon class="fa-fw" name="document" label="Note template:"}
 		</TD>
 		<td id="note-templates">
 			{include file="rt/rtmessagetemplates.html" templates=$notetemplates tip="Select note template"}
@@ -32,7 +32,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<i class="lms-ui-icon-note"></i> {trans("Note content:")}
+            {icon class="fa-fw" name="note" label="Note content:"}
 		</TD>
 		<TD>
 			<TEXTAREA name="note[body]" cols="50" rows="5" {tip text="Enter note content" trigger="body"} >{$note.body}</TEXTAREA>
@@ -40,7 +40,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr valign-top">
-			<i class="lms-ui-icon-upload"></i> {trans("Attachments:")}
+            {icon class="fa-fw" name="upload" label="Attachments:"}
 		</TD>
 		<TD>
 			{fileupload id="files" fileupload=$fileupload form="note-form"}
@@ -48,7 +48,7 @@
 	</TR>
 	<TR>
 		<TD colspan="2" class="buttons">
-			{button onclick="javascript: document.note.submit();" accesskey="s" icon="save" label="Submit"}
+			{button type="submit" accesskey="s" icon="save" label="Submit"}
 			{button type="link-button" href="?m=rtticketview&id={$note.ticketid}" icon="cancel" label="Cancel"}
 		</TD>
 	</TR>
@@ -63,7 +63,7 @@
     <TBODY>
 	<TR>
 		<TD class="bold nobr">
-			<i class="lms-ui-icon-mail"></i><label for="notify"> {trans("Notify users:")}</label>
+            {icon class="fa-fw" name="mail"}<label for="notify"> {trans("Notify users:")}</label>
 		</TD>
 		<TD>
 			<INPUT type="checkbox" name="note[notify]" id="notify" value="1"{if $note.notify} CHECKED{/if}>
@@ -71,7 +71,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<i class="lms-ui-icon-status"></i> {trans("Status:")}
+            {icon class="fa-fw" name="status" label="Status:"}
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="note[state]" id="state" {tip text="Select status" trigger="state"}>
@@ -88,7 +88,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<i class="lms-ui-icon-cause"></i> {trans("Cause:")}
+            {icon class="fa-fw" name="cause" label="Cause:"}
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="note[cause]" {tip text="Select ticket cause" trigger="cause"}>
@@ -100,7 +100,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<i class="lms-ui-icon-source"></i> {trans("Ticket source:")}
+            {icon class="fa-fw" name="source" label="Ticket source:"}
 		</TD>
 		<TD>
 			<SELECT size="1" name="note[source]" {tip text="Select ticket source" trigger="source"}>
@@ -112,7 +112,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<i class="lms-ui-icon-priority"></i> {trans("Priority:")}
+            {icon class="fa-fw" name="priority" label="Priority:"}
 		</TD>
 		<TD>
 			<SELECT size="1" name="note[priority]" {tip text="Set ticket priority" trigger="priority"}>
@@ -124,7 +124,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<i class="lms-ui-icon-queue"></i> {trans("Queue:")}
+            {icon class="fa-fw" name="queue" label="Queue:"}
 		</TD>
 		<TD>
 			<SELECT size="1" name="note[queueid]" {tip text="Select queue" trigger="queue"} onchange="xajax_queue_changed($(this).val(), $('#rtverifiers').val())">
@@ -136,7 +136,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<i class="lms-ui-icon-owner"></i> {trans("Owner:")}
+            {icon class="fa-fw" name="owner" label="Owner:"}
 		</TD>
 		<TD>
 			<SELECT size="1" name="note[owner]" {tip text="Select user" trigger="owner"}>
@@ -158,7 +158,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<i class="lms-ui-icon-verifier"></i> {trans("Verifier:")}
+            {icon class="fa-fw" name="verifier" label="Verifier:"}
 		</TD>
 		<TD>
 			{if !$ticket.verifierid || $ticket.verifierid == $layout.logid}
@@ -180,7 +180,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<i class="lms-ui-icon-deadline"></i> {trans("<!rt>Deadline:")}
+            {icon class="fa-fw" name="deadline" label="<!rt>Deadline:"}
 		</TD>
 		<TD>
 			{if ConfigHelper::checkConfig('phpui.helpdesk_allow_all_users_modify_deadline') || !$ticket.verifierid || $ticket.verifierid == $layout.logid}
@@ -195,7 +195,7 @@
 
 	<TR>
 		<td class="bold nobr">
-			<i class="lms-ui-icon-queue"></i> {trans("Category changes:")}
+            {icon class="fa-fw" name="queue" label="Category changes:"}
 		</td>
 		<td>
 			<SELECT name="note[category_change]" {tip text="Select category change type" trigger="category_change"}>
@@ -209,7 +209,7 @@
 
 	<TR id="categories">
 		<td class="bold nobr">
-			<i class="lms-ui-icon-categories"></i> {trans("Categories:")}
+            {icon class="fa-fw" name="categories" label="Categories:"}
 		</td>
 		<td>
 			{include file="rt/rtcategoryselection.html" name_prefix="note[categories]" categories=$categories}

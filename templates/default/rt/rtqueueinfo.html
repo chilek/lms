@@ -12,29 +12,25 @@
     <THEAD>
 	<TR>
 	    <TD>
-		<i class="lms-ui-icon-content lms-ui-icon-queue"></i>
+        {icon name="queue"}
 	    </TD>
-	    <TD class="bold" colspan="2">{$queue.name} ({$queue.id|string_format:"%04d"})</TD>
+	    <TD class="bold">{$queue.name} ({$queue.id|string_format:"%04d"})</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	{if $queue.email}
 	<TR>
-	    <TD>
-		<i class="lms-ui-icon-content lms-ui-icon-mail"></i>
+	    <TD class="nobr bold">
+        {icon name="mail" label="E-mail:"}
 	    </TD>
-	    <TD class="bold">{trans("E-mail:")}</TD>
 	    <TD>{$queue.email}</TD>
 	</TR>
 	{/if}
 	{if $queue.description}
 	<TR>
-	    <TD>
-			<i class="lms-ui-icon-content lms-ui-icon-description"></i>
+	    <TD class="nobr bold">
+            {icon name="description" label="Description:"}
 	    </TD>
-	    <TD class="bold">
-			{trans("Description:")}
-		</TD>
 	    <TD>
 		<TABLE cellpadding="5">
 		    <TR>
@@ -47,10 +43,8 @@
 	</TR>
 	{/if}
 	<TR>
-		<TD>
-			<i class="lms-ui-icon-content lms-ui-icon-verifier"></i>
-		</TD>
-		<TD class="bold">{trans("<!rt>Verifier:")}</TD>
+		<TD class="nobr bold">
+            {icon name="verifier" label="<!rt>Verifier:"}
 		<TD>
 		{if $queue.verifierid}
 			<a href="?m=userinfo&id={$queue.verifier.id}">{$queue.verifier.name}</a>
@@ -60,10 +54,9 @@
 		</TD>
 	</TR>
 	<TR>
-	    <TD>
-			<i class="lms-ui-icon-content lms-ui-icon-user"></i>
+	    <TD class="nobr bold">
+            {icon name="user" label="Privileges:"}
 	    </TD>
-	    <TD class="bold">{trans("Privileges:")}</TD>
 	    <TD>
 		    <TABLE class="lmsbox">
 				<COLGROUP>
@@ -91,7 +84,7 @@
 						</TD>
 						{foreach $_RT_RIGHTS as $rightvalue => $label}
 						<TD class="text-center">
-							{if ($right.rights & $rightvalue) == $rightvalue}<IMG src="img/pass.gif" alt="">{/if}
+							{if ($right.rights & $rightvalue) == $rightvalue}{icon name="password"}{/if}
 						</TD>
 						{/foreach}
 					</TR>
@@ -103,11 +96,8 @@
 	</TR>
 	{if !empty($queue.categories)}
 	<TR>
-		<TD>
-			<i class="lms-ui-icon-content lms-ui-icon-queue"></i>
-		</TD>
-		<TD class="bold nobr">
-			{trans("Default categories:")}
+		<TD class="nobr bold">
+            {icon name="queue" label="Default categories:"}
 		</TD>
 		<TD>
 			<FIELDSET>
@@ -118,10 +108,9 @@
 	{/if}
 	{if $queue.newticketsubject}
 	<TR>
-		<TD>
-			<i class="lms-ui-icon-content lms-ui-icon-mail"></i>
+		<TD class="nobr bold">
+            {icon name="mail" label="New ticket customer notification subject:"}
 		</TD>
-		<TD class="bold nobr">{trans("New ticket customer notification subject:")}</TD>
 		<TD>
 			{$queue.newticketsubject|replace:"\n":"<BR>"}
 		</TD>
@@ -130,9 +119,8 @@
 	{if $queue.newticketbody}
 	<TR>
 		<TD>
-			<IMG src="img/edit.gif" ALT="">
+            {icon name="edit" label="New ticket customer notification body:"}
 		</TD>
-		<TD class="bold nobr">{trans("New ticket customer notification body:")}</TD>
 		<TD>
 			<TABLE width="100%" cellpadding="5">
 				<TR>
@@ -146,10 +134,9 @@
 	{/if}
 	{if $queue.newmessagesubject}
 	<TR>
-		<TD>
-			<i class="lms-ui-icon-content lms-ui-icon-mail"></i>
+		<TD class="nobr bold">
+            {icon name="mail" label="New message customer notification subject:"}
 		</TD>
-		<TD class="bold nobr">{trans("New message customer notification subject:")}</TD>
 		<TD>
 			{$queue.newmessagesubject|replace:"\n":"<BR>"}
 		</TD>
@@ -157,10 +144,9 @@
 	{/if}
 	{if $queue.newmessagebody}
 	<TR>
-		<TD>
-			<IMG src="img/edit.gif" ALT="">
+		<TD class="nobr bold">
+            {icon name="edit" label="New message customer notification body:"}
 		</TD>
-		<TD class="bold nobr">{trans("New message customer notification body:")}</TD>
 		<TD>
 			<TABLE cellpadding="5">
 				<TR>
@@ -175,9 +161,8 @@
 	{if $queue.resolveticketsubject}
 	<TR>
 		<TD style="width: 1%;">
-			<i class="lms-ui-icon-content lms-ui-icon-mail"></i>
+            {icon name="mail" label="Resolve ticket customer notification subject:"}
 		</TD>
-		<TD class="bold nobr">{trans("Resolve ticket customer notification subject:")}</TD>
 		<TD>
 			{$queue.resolveticketsubject|replace:"\n":"<BR>"}
 		</TD>
@@ -185,10 +170,9 @@
 	{/if}
 	{if $queue.resolveticketbody}
 	<TR>
-		<TD>
-			<IMG src="img/edit.gif" ALT="">
+		<TD class="nobr bold">
+            {icon name="edit" label="Resolve ticket customer notification body:"}
 		</TD>
-		<TD class="bold nobr">{trans("Resolve ticket customer notification body:")}</TD>
 		<TD>
 			<TABLE cellpadding="5">
 				<TR>
@@ -202,10 +186,9 @@
 	{/if}
 	{if $queue.verifierticketsubject}
 	<TR>
-		<TD>
-			<IMG src="img/edit.gif" ALT="">
+		<TD class="nobr bold">
+            {icon name="edit" label="Ticket verifier notification subject:"}
 		</TD>
-		<TD class="bold nobr">{trans("Ticket verifier notification subject:")}</TD>
 		<TD>
 			<TABLE cellpadding="5">
 				<TR>
@@ -219,10 +202,9 @@
 	{/if}
 	{if $queue.verifierticketbody}
 	<TR>
-		<TD>
-			<IMG src="img/edit.gif" ALT="">
+		<TD class="nobr bold">
+            {icon name="edit" label="Ticket verifier notification body:"}
 		</TD>
-		<TD class="bold nobr">{trans("Ticket verifier notification body:")}</TD>
 		<TD>
 			<TABLE cellpadding="5">
 				<TR>
@@ -236,13 +218,13 @@
 	{/if}
 	<TR>
 	    <TD COLSPAN="3" class="text-right">
-	        <A HREF="?m=rtqueueview&id={$queue.id}"><IMG src="img/view.gif" alt=""> {trans("Browse")}</A>
-	    	<A HREF="?m=rtqueueedit&id={$queue.id}"><IMG src="img/save.gif" alt=""> {trans("Edit")}</A>
+			{button label="Browse" icon="view" onclick="location.href='?m=rtqueueview&id={$queue.id}'"}
+	    	{button label="Edit" icon="edit" onclick="location.href='?m=rtqueueedit&id={$queue.id}'"}
 		{if $queue.deleted == 1 && $queue.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
-			<A id="restore-rtqueue" HREF="?m=rtrestore&id={$queue.id}&qaction=restore" data-name="{$queue.name}"><IMG src="img/reload.gif" alt="{trans("Restore<!RT>")}" title="{trans("Restore<!RT>")}"> {trans("Restore<!RT>")}</A>
-			<A id="remove-rtqueue" HREF="?m=rtremove&id={$queue.id}&qaction=delperm" data-name="{$queue.name}"><IMG src="img/delete.gif" alt="{trans("Delete permanently")}" title="{trans("Delete permanently")}"> {trans("Delete permanently")}</A>
+			{button icon="restore" label="Restore" id="restore-rtqueue" onclick="location.href='?m=rtrestore&id={$queue.id}&qaction=restore'" data-name="{$queue.name}"}
+			{button icon="delete" label="Delete" id="remove-rtqueue" onclick="location.href='?m=rtqueuedel&id={$queue.id}&qaction=delperm'" data-name="{$queue.name}"}
 		{else}
-			<A id="delete-rtqueue" HREF="?m=rtqueuedel&id={$queue.id}&qaction=delete" data-name="{$queue.name}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"> {trans("Delete")}</A>
+			{button icon="delete" label="Delete" id="delete-rtqueue" onclick="location.href='?m=rtqueuedel&id={$queue.id}&qaction=delete'" data-name="{$queue.name}"}
 		{/if}
 	    </TD>
 	</TR>

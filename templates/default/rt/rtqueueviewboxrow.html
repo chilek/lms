@@ -54,11 +54,11 @@
 	</TD>
 	<TD class="nobr valign-middle ticket-location">
 		{if $ticket.netnodeid}
-			<a href="?m=netnodeinfo&id={$ticket.netnodeid}"><i class="lms-ui-icon-content lms-ui-icon-netnode"></i>{$ticket.netnode_name}</a>
+			<a href="?m=netnodeinfo&id={$ticket.netnodeid}">{icon name="netnode"} {$ticket.netnode_name}</a>
 		{/if}
 		{if $ticket.netdevid && $ticket.netnodeid }<br>{/if}
 		{if $ticket.netdevid}
-			<a href="?m=netdevinfo&id={$ticket.netdevid}"><i class="lms-ui-icon-content lms-ui-icon-netdevice"></i>{$ticket.netdev_name}</a>
+			<a href="?m=netdevinfo&id={$ticket.netdevid}">{icon name="netdevice"} {$ticket.netdev_name}</a>
 		{/if}
 		{if $ticket.netdevid || $ticket.netnodeid }<br>{/if}
 		{if $ticket.address_id}

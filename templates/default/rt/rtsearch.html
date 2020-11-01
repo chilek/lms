@@ -21,8 +21,7 @@
     <TBODY>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/ticket.gif" alt="">
-			{trans("Subject:")}
+            {icon name="helpdesk" label="Subject:" class="fa-fw"}
 		</TD>
 		<TD>
 			<INPUT type="search" size="50" name="search[subject]" value="{$search.subject}" {tip text="Enter subject"}>
@@ -30,8 +29,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/mail.gif" alt="">
-			{trans("Body:")}
+            {icon name="mail" label="Body:" class="fa-fw"}
 		</TD>
 		<TD>
 			<INPUT type="search" size="50" name="search[body][pattern]" value="{$search.body.pattern}" {tip text="Enter body fragment"}>
@@ -43,8 +41,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/customer.gif" alt="">
-			{trans("Requestor:")}
+            {icon name="customer" label="Requestor:" class="fa-fw"}
 		</TD>
 		<TD>
 			<TABLE width="100%" cellpadding="1">
@@ -66,8 +63,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/home.gif" alt="">
-			{trans("Address:")}
+            {icon name="location" label="Address:" class="fa-fw"}
 		</TD>
 		<TD class="nobr">
 			<INPUT type="text" name="search[address]" VALUE="{$search.address}">
@@ -77,8 +73,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/users.gif" alt="">
-			{trans("Owner:")}
+            {icon name="owner" label="Owner:" class="fa-fw"}
 		</TD>
 		<TD>
 			<SELECT size="1" name="search[owner]" {tip text="Select user/owner of the ticket"}>
@@ -91,8 +86,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/queue.gif" alt="">
-			{trans("Queue:")}
+            {icon name="queue" label="Queue:" class="fa-fw"}
 		</TD>
 		<TD>
 			<SELECT size="1" name="search[queue][]" {tip text="Select queue" class="lms-ui-multiselect" trigger="queue"} multiple data-default-value="{trans("- all -")}">
@@ -104,8 +98,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/dead.gif" alt="">
-			{trans("Status:")}
+            {icon name="status" label="Status" class="fa-fw"}
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="search[state]" {tip text="Select ticket status"}>
@@ -118,8 +111,7 @@
 		</TD>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/service-type.png" alt="">
-			{trans("Service:")}
+            {icon name="service" label="Service:"  class="fa-fw"}
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="search[service]" {tip text="Select ticket service" }>
@@ -131,8 +123,7 @@
 		</TD>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/ticket-type.png" alt="">
-			{trans("Ticket type:")}
+        {icon name="type" label="Ticket type:" class="fa-fw"}
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="search[type]" {tip text="Select ticket type" }>
@@ -145,8 +136,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/report.gif" alt="">
-			{trans("Priority:")}
+            {icon name="priority" label="Priority:" class="fa-fw"}
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="search[priority]" {tip text="Select ticket priority"}>
@@ -159,8 +149,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/time.gif" alt="">
-			{trans("Min. Uptime")}
+            {icon name="uptime" label="Min. Uptime" class="fa-fw"}
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="search[uptime]" {tip text="Select ticket uptime"}>
@@ -173,8 +162,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr valign-top">
-			<IMG src="img/queue.gif" alt="">
-			{trans("Categories:")}
+            {icon name="queue" label="Categories:" class="fa-fw"}
 		</TD>
 		<TD class="nobr">
 			{include file="rt/rtcategoryselection.html" name_prefix="search[categories]" categories=$categories}
@@ -183,8 +171,7 @@
 	{if ConfigHelper::checkPrivilege('helpdesk_advanced_operations')}
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/dead.gif" alt="">
-			{trans("Removed:")}
+            {icon name="delete" label="Removed:" class="fa-fw"}
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="search[removed]" {tip text="Select ticket status"}>
@@ -196,7 +183,7 @@
 	</TR>
 	{/if}
 	<TR>
-        <TD class="bold nobr"><img src="img/netnode.png" alt=""> {trans("Network node:")}</TD>
+        <TD class="bold nobr">{icon name="netnode" label="Network node:" class="fa-fw"}</TD>
 		<TD class="nobr">
 			<SELECT name="search[netnodeid]" {tip text="Select network node (optional)" trigger="netnodeid"} onchange="xajax_netnode_changed($(this).val(), $('#netdevid').val())">
 				<OPTION value="">{trans("- none -")}</OPTION>
@@ -207,31 +194,35 @@
 		</TD>
 	</TR>
 	<TR>
-        <TD class="bold nobr"><img src="img/netdev.gif" alt=""> {trans("Device:")}</TD>
+        <TD class="bold nobr">{icon name="netdev" label="Device:" class="fa-fw"}</TD>
 		<TD class="nobr" id="rtnetdevs">
 			{include file="rt/rtnetdevs.html" form="search"}
 		</TD>
 	</TR>
-        <TR>
-		<TD class="bold nobr">{box_row icon="verifier" label="Verifier:" field_id="rtverifiers"}{/box_row}</TD>
-		<TD>
-                        <SELECT size="1" name="search[verifierid]" {tip text="Select user/owner of the ticket"}>
-                                <OPTION value="0">{trans("- all owners -")}</OPTION>
-                                {foreach $userlist as $item}
-                                <OPTION value="{$item.id}" {if $item.id == $search.verifierid}SELECTED{/if}>{$item.rname}</OPTION>
-                                {/foreach}
-                        </SELECT>
+    <TR>
+		<TD class="bold nobr">
+            {icon name="verifier" label="Verifier:" field_id="rtverifiers"}
 		</TD>
-        </TR>
-        <TR>
-		<TD class="bold nobr"><img src="img/calendar.gif" alt=""> {trans("Deadline expired:")}</TD>
+		<TD>
+			<SELECT size="1" name="search[verifierid]" {tip text="Select user/owner of the ticket"}>
+				<OPTION value="0">{trans("- all owners -")}</OPTION>
+				{foreach $userlist as $item}
+				<OPTION value="{$item.id}" {if $item.id == $search.verifierid}SELECTED{/if}>{$item.rname}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+    </TR>
+    <TR>
+		<TD class="bold nobr">
+            {icon name="deadline" label="Deadline expired:" class="fa-fw"}
+		</TD>
 		<TD>
 			<INPUT TYPE="checkbox" NAME="search[expired]" VALUE="1" {tip text="Check if ticket is expired" trigger="expired"}>
 		</TD>
-        </TR>
+    </TR>
 	<TR>
 		<TD class="buttons" colspan="2">
-			<A href="javascript:document.search.submit();" accesskey="s"><IMG src="img/search.gif" alt=""> {trans("Search")}</A>
+			{button type="submit" label="Search" icon="search"}
 		</TD>
 	</TR>
     </TBODY>

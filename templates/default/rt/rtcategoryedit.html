@@ -13,10 +13,9 @@
 	</COLSPAN>
     <THEAD>
 	<TR>
-	    <TD>
-		<IMG src="img/queue.gif" ALT="">
+	    <TD class="nobr bold">
+            {icon name="queue" label="Name:"}
 	    </TD>
-	    <TD class="bold">{trans("Name:")}</TD>
 	    <TD class="bold">
 		<INPUT TYPE="TEXT" NAME="category[name]" VALUE="{$category.name}" {tip text="Enter category name" trigger="name" bold=1}>({$category.id|string_format:"%04d"})
 	    </TD>
@@ -24,17 +23,16 @@
     </THEAD>
     <TBODY>
 	<TR>
-	    <TD>
-		<IMG src="img/info1.gif" ALT="">
+	    <TD class="nobr bold">
+            {icon name="descripton" label="Description:"}
 	    </TD>
-	    <TD class="bold">{trans("Description:")}</TD>
 	    <TD>
 		<TEXTAREA NAME="category[description]" COLS="50" ROWS="2" {tip text="Enter additional information (optional)"}>{$category.description}</TEXTAREA>
 	    </TD>
 	</TR>
 	<TR>
 		<TD>
-			<IMG src="img/queue.gif" ALT="">
+            {icon name="queue"}
 		</TD>
 		<TD class="bold">
 			<label for="background-style">
@@ -47,7 +45,7 @@
 	</TR>
 	<TR>
 		<TD>
-			<IMG src="img/queue.gif" ALT="">
+            {icon name="queue"}
 		</TD>
 		<TD class="bold">
 			<label for="text-style">
@@ -60,9 +58,8 @@
 	</TR>
 	<TR>
 	    <TD>
-		<IMG src="img/users.gif" ALT="">
+            {icon name="user" label="Users:"}
 	    </TD>
-	    <TD><B>{trans("Users:")}</B></TD>
 	    <TD>
 		    <TABLE class="lmsbox">
 			<COLSPAN>

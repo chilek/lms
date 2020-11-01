@@ -37,7 +37,7 @@
 	<THEAD>
 	<TR>
 		<TD style="width: 1%;" class="bold nobr">
-			<i class="lms-ui-icon-message"></i> <B>{trans("Ticket History")}</B>
+            {icon name="message" label="Ticket History"}
 		</TD>
 		<TD style="width: 99%;" class="text-right nobr" colspan="2">
 			{button icon="note" label="New Note" onclick="window.location.href = '?m=rtnoteadd&ticketid={$ticket.ticketid}';"}
@@ -83,7 +83,7 @@
 								{/if}
 							{/if}
 							{if $message.phonefrom}
-							&nbsp;&nbsp;&nbsp;<A class="phone_number" href="tel:{$message.phonefrom}"><i class="lms-ui-icon-phone"></i> {$message.phonefrom}</A>
+							&nbsp;&nbsp;&nbsp;<A class="phone_number" href="tel:{$message.phonefrom}">{icon name="phone"} {$message.phonefrom}</A>
 							{/if}
 						<BR>
 						{$message.subject|escape}
@@ -124,14 +124,14 @@
 							<div class="message-attachments">
 								{if !empty($message.images) && count($message.images)}
 									<a href="#" class="attachment-gallery lms-ui-button" data-gallery='{json_encode($message.images)}'>
-										<i class="lms-ui-icon-gallery"></i>
+										{icon name="gallery"}
 									</a>
 								{/if}
 								{if $message.attachments}
 									{foreach $message.attachments as $attachment}
 										{documentview id="{$message.id}-{$attachment@index}" type=$attachment.contenttype name=$attachment.filename
 											url="?m=rtmessageview&tid={$ticket.ticketid}&mid={$message.id}&file={urlencode($attachment.filename)}&api=1"
-											text="<i class='lms-ui-icon-upload'></i> {$attachment.filename}"}
+											text="{icon name='upload'} {$attachment.filename}"}
 									{/foreach}
 								{/if}
 							</div>

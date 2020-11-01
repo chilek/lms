@@ -6,7 +6,7 @@
 	<THEAD>
 	<TR>
 		<TD class="bold" colspan="2">
-			{icon name="helpdesk" class="fa-fw"} {t a=$ticket.ticketid|string_format:"%06d"}Ticket No. $a{/t}
+            {icon name="helpdesk" class="fa-fw"} {t a=$ticket.ticketid|string_format:"%06d"}Ticket No. $a{/t}
 		</TD>
 	</TR>
 	</THEAD>
@@ -14,7 +14,7 @@
 	{if $ticket.creatorid}
 	<TR>
 		<TD class="bold nobr">
-			{icon name="user" label="Created by:" class="fa-fw"}
+            {icon name="user" label="Created by:" class="fa-fw"}
 		</TD>
 		<TD>
 			<A href="?m=userinfo&id={$ticket.creatorid}">{$ticket.creator}</a>
@@ -24,7 +24,7 @@
 	{if $ticket.createtime}
 	<TR>
 		<TD class="bold nobr">
-			{icon name="uptime" label="Creation time:" class="fa-fw"}
+            {icon name="uptime" label="Creation time:" class="fa-fw"}
 		</TD>
 		<TD>
 			{$ticket.createtime|date_format:"%Y/%m/%d %H:%M:%S"}
@@ -34,7 +34,7 @@
 	{if $ticket.invprojectid}
 	<TR>
 		<TD class="bold nobr">
-			{icon name="money" label="Investment project:" class="fa-fw"}
+            {icon name="money" label="Investment project:" class="fa-fw"}
 		</TD>
 		<TD>
 			{$ticket.invproject_name} ({$ticket.invprojectid})
@@ -43,7 +43,7 @@
 	{/if}
 	<TR>
 		<TD class="bold nobr">
-			{icon name="uptime" label="Uptime:" class="fa-fw"}
+            {icon name="uptime" label="Uptime:" class="fa-fw"}
 		</TD>
 		<TD>
 			{$ticket.uptime}
@@ -51,7 +51,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			{icon name="cause" label="Cause:" class="fa-fw"}
+            {icon name="cause" label="Cause:" class="fa-fw"}
 		</TD>
 		<TD>
 			{if $ticket.cause==2}{trans("company's side")}
@@ -61,7 +61,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			{icon name="priority" label="Priority:" class="fa-fw"}
+            {icon name="priority" label="Priority:" class="fa-fw"}
 		</TD>
 		<TD>
 			{$_RT_PRIORITIES[$ticket.priority]}
@@ -70,7 +70,7 @@
 	{if $ticket.parentid}
 	<TR>
 		<TD class="bold nobr">
-			{icon name="parentticket" label="Parent ticket:"}
+            {icon name="parentticket" label="Parent ticket:"}
 		</TD>
 		<TD>
 			<A href="?m=rtticketview&id={$ticket.parentid}">{t a=$ticket.parentid|string_format:"%06d"}$a{/t}</A><br>
@@ -80,7 +80,7 @@
 	{if $ticket.relatedtickets}
 	<TR>
 		<TD class="bold nobr">
-			{icon name="relatedticket" label="Related tickets:"}
+            {icon name="relatedticket" label="Related tickets:"}
 		</TD>
 		<TD>
 			{foreach $ticket.relatedtickets as $i}
@@ -92,7 +92,7 @@
 	{if $ticket.childtickets}
 	<TR>
 		<TD class="bold nobr">
-			{icon name="childticket" label="Child tickets:" class="fa-fw"}
+            {icon name="childticket" label="Child tickets:" class="fa-fw"}
 		</TD>
 		<TD>
 			{foreach $ticket.childtickets as $i}
@@ -104,7 +104,7 @@
 	{if $ticket.message}
 	<TR>
 		<TD class="bold">
-			{icon name="info" label="Body:" class="fa-fw"}
+            {icon name="info" label="Body:" class="fa-fw"}
 		</TD>
 		<TD class="fall superlight">
 			{$ticket.message|replace:"\n":"<BR>"}

@@ -18,15 +18,12 @@
 	</COLGROUP>
     <THEAD>
 	<TR>
+		<TD></TD>
 		<TD class="bold nobr">
-			<i class="lms-ui-icon-content lms-ui-icon-queue"></i>
+            {icon name="queue" label="Queue"}
 		</TD>
 		<TD class="bold nobr">
-			{trans("Queue")}:
-		</TD>
-		<TD>
-			<i class="lms-ui-icon-content lms-ui-icon-description"></i>
-			{trans("Description")}:
+            {icon name="description" label="Description"}
 		</TD>
 		<TD class="text-right nobr bold">
 			{trans("E-mail:")}
@@ -76,12 +73,12 @@
 		data-popup-menu-title="{t a=$queue.name}Queue $a{/t}">
 		<TD class="nobr bold">
 		{if $queue.critical != 0}
-			<i class="lms-ui-icon-content lms-ui-icon-critical"></i>
+            {icon name="critical"}
 		{else}
 			{if $queue.unread}
-				<i class="lms-ui-icon-content lms-ui-icon-unread"></i>
+				{icon name="unread"}
 			{else}
-				<i class="lms-ui-icon-content lms-ui-icon-queue"></i>
+				{icon name="queue"}
 			{/if}
 		{/if}
 		</TD>
@@ -90,7 +87,7 @@
 		</TD>
 		<TD>
 			{if $queue.description}
-				<i class="lms-ui-icon-content lms-ui-icon-description"></i>{$queue.description}
+				{icon name="description"} {$queue.description}
 			{/if}
 		<TD>
 			<A HREF="mailto:{$queue.email}">{$queue.email}</A>
@@ -138,8 +135,7 @@
         <TFOOT>
 	<TR class="lms-ui-button-panel">
 		<TD COLSPAN="4" class="text-right bold">
-			<i class="lms-ui-icon-content lms-ui-icon-count"></i>
-			{trans("Total:")}
+            {icon name="count" label="Total:"}
 		</TD>
 		<TD class="text-center bold">
 			{sum array=$queues column=new}

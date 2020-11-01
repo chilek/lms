@@ -12,7 +12,7 @@
     <THEAD>
 	<TR>
 	    <TD>
-		<IMG src="img/queue.gif" ALT="">
+            {icon name="queue"}
 	    </TD>
 	    <TD class="bold" colspan="2">{$category.name} ({$category.id|string_format:"%04d"})</TD>
 	</TR>
@@ -21,9 +21,8 @@
 	{if $category.description}
 	<TR>
 	    <TD>
-		<IMG src="img/info1.gif" ALT="">
+            {icon name="description" label="Description:"}
 	    </TD>
-	    <TD class="bold">{trans("Description:")}</TD>
 	    <TD>
 		<TABLE cellpadding="5">
 		    <TR>
@@ -36,12 +35,10 @@
 	</TR>
 	{/if}
         <TR>
-            <TD>
-                <IMG src="img/queue.gif" ALT="">
+            <TD class="nobr bold">
+                {icon name="queue" label="<!rt-category>Look:"}
             </TD>
-            <TD class="bold">{trans("<!rt-category>Look:")}
-	    </TD>
-            <TD class="bold">
+            <TD>
 				<div class="lms-ui-category-label" style="{$category.style}">
 					{$category.name}
 				</div>
@@ -49,9 +46,8 @@
         </TR>
 	<TR>
 	    <TD>
-		<IMG src="img/users.gif" ALT="">
+            {icon name="user" label="Users:"}
 	    </TD>
-	    <TD class="bold">{trans("Users:")}</TD>
 	    <TD>
 		    <TABLE class="lmsbox">
                         <THEAD>
@@ -70,7 +66,7 @@
 				<INPUT type="hidden" name="category[usernames][{$right.id}]" value="{$right.name}">
 			    </TD>
 			    <TD class="text-center">
-				{if $owner.owner > 0}<IMG src="img/pass.gif" alt="">{/if}
+				{if $owner.owner > 0}{icon name="password"}{/if}
 			    </TD>
 			</TR>
 			{/if}

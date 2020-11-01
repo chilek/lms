@@ -172,7 +172,7 @@
 		<TD class="HEAD text-right">
 			{if $message.attachments}
 				{foreach $message.attachments as $attachment}
-					{$attachment.filename} <IMG src="img/attach.gif" alt=""><br>
+					{$attachment.filename} {icon name="fileupload"}<br>
 				{/foreach}
 			{/if}
 		</TD>

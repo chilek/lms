@@ -44,7 +44,7 @@
 {/if}
 <INPUT type="hidden" name="message[customerid]" value ="{$message.customerid}">
 {box_container id="message"}
-	{box_header icon="img/mail.gif" label="Subject:"}
+	{box_header icon="mail" label="Subject:"}
 		<INPUT type="text" size="75" name="message[subject]" maxlength="255" value="{$message.subject}" {tip text="Enter message subject" trigger="subject"}>
 	{/box_header}
 
@@ -52,26 +52,26 @@
 		{box_panel}
 
 {if !$group_action}
-			{box_row icon="img/users.gif" label="Requestor:"}
+			{box_row icon="user" label="Requestor:"}
 				<INPUT class="radio light" type="radio" name="message[sender]" id="sender0" value="user" CHECKED><label for="sender0">{trans("user")}</label>
 				<INPUT class="radio light" type="radio" name="message[sender]" id="sender1" value="customer" {if $message.sender == 'customer'}CHECKED{/if}><label for="sender1">{trans("customer")}</label>
 			{/box_row}
 
-			{box_row icon="img/email.gif" label="Recipient's e-mail:"}
+			{box_row icon="mail" label="Recipient's e-mail:"}
 				<INPUT type="text" size="25" name="message[destination]" value="{$message.destination|escape}" {tip text="Enter recipient's e-mail - if sender is an user and message should be sent (optional)" trigger="destination"}>
 			{/box_row}
 {/if}
-			{box_row icon="img/docum.gif" label="Message template:" id="message-template-row" field_id="message-templates"
+			{box_row icon="document" label="Message template:" id="message-template-row" field_id="message-templates"
 				visible=!empty($messagetemplates)}
 				{include file="rt/rtmessagetemplates.html" templates=$messagetemplates}
 			{/box_row}
 
 			{block name="rtmessageadd-content"}
-			{box_row icon="img/edit.gif" label="Content:"}
+			{box_row icon="edit" label="Content:"}
 				<TEXTAREA name="message[body]" cols="75" rows="10" {tip text="Enter message content" trigger="body"}>{$message.body}</TEXTAREA>
 			{/box_row}
 			{/block}
-			{box_row icon="img/attach.gif" label="Attachments:"}
+			{box_row icon="fileupload" label="Attachments:"}
 				{fileupload id="files" fileupload=$fileupload form="message-form"}
 			{/box_row}
 
@@ -89,22 +89,22 @@
 	{box_contents}
 		{box_panel}
 
-			{box_row icon="img/mail.gif" label="Notify users:" labelid="notify"}
+			{box_row icon="mail" icon_class="fa-fw" label="Notify users:" labelid="notify"}
 				<INPUT type="checkbox" name="message[notify]" id="notify" value="1"{if $message.notify} CHECKED{/if}>
 			{/box_row}
 
-			{box_row id="customernotify-row" icon="img/mail.gif" label="Notify customer:" labelid="customernotify"}
+			{box_row id="customernotify-row" icon="mail" icon_class="fa-fw" label="Notify customer:" labelid="customernotify"}
 				<INPUT type="checkbox" name="message[customernotify]" id="customernotify" value="1"{if isset($message.customernotify)} checked{/if}>
 			{/box_row}
 
 {if !empty($contacts) || $group_action}
-			{box_row icon="img/phone.gif" label="Notify customer via SMS:" labelid="smsnotify"}
+			{box_row icon="phone" icon_class="fa-fw" label="Notify customer via SMS:" labelid="smsnotify"}
 				<INPUT type="checkbox" name="message[smsnotify]" id="smsnotify" value="1"{if $message.smsnotify} checked{/if}>
 				<input type="hidden" name="message[phonefrom]" value="{if $group_action}-1{else}{$message.phonefrom}{/if}">
 			{/box_row}
 
 			{if !$group_action}
-				{box_row id="smsnotify-contacts" visible=!empty($message.smsnotify)}
+				{box_row id="smsnotify-contacts" icon_class="fa-fw" visible=!empty($message.smsnotify)}
 					{foreach $contacts as $contact}
 						<label>
 							<input type="checkbox" name="message[contacts][{$contact@index}]" value="{$contact.contact}"
@@ -116,7 +116,7 @@
 			{/if}
 {/if}
 
-			{box_row icon="img/dead.gif" label="Status:"}
+			{box_row icon="status" icon_class="fa-fw" label="Status:"}
 				<SELECT SIZE="1" name="message[state]" id="state" {tip text="Select status" trigger="state"}>
 					{if $group_action}
 					<option value="-1"{if $message.state == -1} selected{/if}>{trans("- no changes -")}</option>
@@ -132,7 +132,7 @@
 				</label>
 			{/box_row}
 
-			{box_row icon="img/desc.gif" label="Cause:"}
+			{box_row icon="cause" icon_class="fa-fw" label="Cause:"}
 				<SELECT SIZE="1" name="message[cause]" {tip text="Select ticket cause" trigger="cause"}>
 					{if $group_action}
 					<option value="-1"{if $message.cause == -1} selected{/if}>{trans("- no changes -")}</option>
@@ -144,7 +144,7 @@
 			{/box_row}
 
 {if !$group_action}
-			{box_row icon="img/volcano.png" label="Ticket source:"}
+			{box_row icon="source" icon_class="fa-fw" label="Ticket source:"}
 				<SELECT size="1" name="message[source]" {tip text="Select ticket source" trigger="source"}>
 					{foreach $_RT_SOURCES as $sourceidx => $status}
 					<OPTION value="{$sourceidx}"{if $message.source == $sourceidx} selected{/if}>{$status}</OPTION>
@@ -153,7 +153,7 @@
 			{/box_row}
 {/if}
 
-			{box_row icon="img/report.gif" label="Priority:"}
+			{box_row icon="priority" icon_class="fa-fw" label="Priority:"}
 				<SELECT size="1" name="message[priority]" {tip text="Set ticket priority" trigger="priority"}>
 					{if $group_action}
 					<option value="-100"{if $message.priority == -100} selected{/if}>{trans("- no changes -")}</option>
@@ -164,7 +164,7 @@
 				</SELECT>
 			{/box_row}
 
-			{box_row icon="img/queue.gif" label="Queue:"}
+			{box_row icon="queue" icon_class="fa-fw" label="Queue:"}
 				<SELECT size="1" name="message[queueid]" {tip text="Select queue" trigger="queue"} onchange="xajax_queue_changed($(this).val(), $('#rtverifiers').val())">
 					{if $group_action}
 						<option value="-100"{if $message.queueid == -100} selected{/if} data-newmessage-notify="1">{trans("- no changes -")}</option>
@@ -175,7 +175,7 @@
 				</SELECT>
 			{/box_row}
 
-			{box_row icon="img/users.gif" label="Owner:"}
+			{box_row icon="user" icon_class="fa-fw" label="Owner:"}
 				<SELECT size="1" name="message[owner]" {tip text="Select user" trigger="owner"}>
 					<OPTION value="0">- {trans("select user")} -</OPTION>
 					{if $group_action}
@@ -196,7 +196,7 @@
 				</label>
 			{/box_row}
 
-			{box_row icon="verifier" label="Verifier:" field_id="rtverifiers"}
+			{box_row icon="verifier" icon_class="fa-fw" label="Verifier:" field_id="rtverifiers"}
 				{if $group_action || !$ticket.verifierid || $ticket.verifierid == $layout.logid}
 					<SELECT size="1" name="message[verifierid]" {tip text="Select user" trigger="verifierid"}>
 						<OPTION value="0">- {trans("select user")} -</OPTION>
@@ -217,7 +217,7 @@
 				{/if}
 			{/box_row}
 
-			{box_row icon="img/calendar.gif" label="<!rt>Deadline:"}
+			{box_row icon="timetable" icon_class="fa-fw" label="<!rt>Deadline:"}
 				{if $group_action || ConfigHelper::checkConfig('phpui.helpdesk_allow_all_users_modify_deadline') || !$ticket.verifierid || $ticket.verifierid == $layout.logid}
 					<INPUT TYPE="TEXT" NAME="message[deadline]" VALUE="{if $message.deadline}{$message.deadline|date_format:"%Y/%m/%d %H:%M"}{/if}"
 							SIZE="20" {tip text="Enter deadline in YYYY/MM/DD HH:MM format or click to select it from applet" class="lms-ui-datetime" trigger="deadline"}>
@@ -227,7 +227,7 @@
 				{/if}
 			{/box_row}
 
-			{box_row icon="img/queue.gif" label="Category changes:"}
+			{box_row icon="queue" icon_class="fa-fw" label="Category changes:"}
 				<SELECT name="message[category_change]" {tip text="Select category change type" trigger="category_change"}>
 					<option value="0"{if $message.category_change == 0} selected{/if}>{trans("- no changes -")}</option>
 					<option value="1"{if $message.category_change == 1} selected{/if}>{trans("- replace -")}</option>
@@ -236,7 +236,7 @@
 				</SELECT>
 			{/box_row}
 
-			{box_row id="categories" icon="img/queue.gif" label="Categories:" class="categories"}
+			{box_row id="categories" icon="queue" icon_class="fa-fw" label="Categories:" class="categories"}
 				{include file="rt/rtcategoryselection.html" name_prefix="message[categories]" categories=$categories}
 			{/box_row}
 

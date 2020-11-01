@@ -11,11 +11,8 @@
 	</COLGROUP>
     <THEAD>
         <TR>
-		<TD>
-		        {icon name="helpdesk"}
-		</TD>
-		<TD class="bold">
-			{trans("Subject:")}
+		<TD class="nobr bold">
+		    {icon name="helpdesk" label="Subject:"}
 		</TD>
 		<TD class="bold">
 			{$message.subject|escape}
@@ -25,10 +22,7 @@
     <TBODY>
 	<TR>
 		<TD>
-			{icon name="uptime"}
-		</TD>
-		<TD class="bold">
-			{trans("Date:")}
+            {icon name="uptime" label="Date:"}
 		</TD>
 		<TD class="nobr">
 			{$message.createtime|date_format:"%Y/%m/%d %H:%M.%S"}
@@ -39,11 +33,8 @@
 		    {if $message.userid}
 				{icon name="user"}
 			{else}
-				{icon name="requestor" class="fa-fw"}
+				{icon name="requestor" class="fa-fw" label="Requestor:"}
 			{/if}
-		</TD>
-		<TD class="nobr bold">
-			{trans("Requestor:")}
 		</TD>
 		<TD>
 			{if $message.customerid}
@@ -61,11 +52,8 @@
 	</TR>
 	{if $message.headers}
 	<TR>
-		<TD>
-			{icon name="message"}
-		</TD>
-		<TD class="bold">
-			{trans("Headers:")}
+		<TD class="nobr bold">
+            {icon name="message" label="Headers:"}
 		</TD>
 		<TD>
 			<TEXTAREA rows="5" cols="100" readonly>{$message.headers|escape}</TEXTAREA>
@@ -74,11 +62,8 @@
 	{/if}
 	{if $message.messageid}
 	<TR>
-		<TD>
-			{icon name="message"}
-		</TD>
 		<TD class="nobr bold">
-			Message-Id:
+            {icon name="message" label="Message-Id:"}
 		</TD>
 		<TD>
 			{$message.messageid|escape}
@@ -87,11 +72,8 @@
 	{/if}
 	{if $message.replyto}
 	<TR>
-		<TD>
-			{icon name="message"}
-		</TD>
 		<TD class="nobr bold">
-			Reply-To:
+            {icon name="message" label="Reply-To:"}
 		</TD>
 		<TD>
 			{$message.replyto|escape}
@@ -101,10 +83,7 @@
 	{if $message.inreplyto}
 	<TR>
 		<TD>
-			{icon name="message"}
-		</TD>
-		<TD class="nobr">
-			In-Reply-To:
+            {icon name="message" label="In-Reply-To:"}
 		</TD>
 		<TD>
 			<A href="?m=rtmessageview&id={$message.inreplyto}">{$message.inreplytoid|escape}</A>
@@ -113,10 +92,7 @@
 	{/if}
 	<TR>
 		<TD>
-			{icon name="edit"}
-		</TD>
-		<TD class="bold">
-			{trans("Message:")}
+            {icon name="edit" label="Message:"}
 		</TD>
 		<TD>
 			<TEXTAREA rows="5" cols="100" readonly>{$message.body|escape}</TEXTAREA>
@@ -125,10 +101,7 @@
 	{if $message.attachments}
 	<TR>
 		<TD>
-			{icon name="fileupload"}
-		</TD>
-		<TD class="bold">
-			{trans("Attachments:")}
+            {icon name="fileupload" label="Attachments:"}
 		</TD>
 		<TD>
 			{foreach from=$message.attachments item=a}

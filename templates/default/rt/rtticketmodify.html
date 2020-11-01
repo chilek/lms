@@ -245,7 +245,7 @@
 {/if}
 
 			{$visibility=(!empty($nodes) && $layout.module != 'eventadd')}
-			{box_row class="node-row" icon="img/node.gif" label="Node:" visible=$visibility}
+			{box_row class="node-row" icon="node" label="Node:" visible=$visibility}
 				<select class="node-list" name="ticket[nodeid]" {tip text="Select node" trigger="nodeid"}>
 					<option value="">{trans("- none -")}</option>
 					{if !empty($nodes)}
@@ -270,7 +270,7 @@
 				{include file="rt/rtnetdevs.html" form="ticket"}
 			{/box_row}
 
-			{box_row id="customernotify-row" icon="img/mail.gif" label="Notify customer:" labelid="customernotify"}
+			{box_row id="customernotify-row" icon="mail" label="Notify customer:" labelid="customernotify"}
 				<input type="checkbox" id="customernotify" name="ticket[customernotify]" value="1"{if isset($ticket.customernotify)} checked{/if}>
 			{/box_row}
 

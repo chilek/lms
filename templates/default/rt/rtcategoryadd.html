@@ -13,10 +13,9 @@
 	</COLGROUP>
     <THEAD>
 	<TR>
-	    <TD>
-		{icon name="queue"}
+	    <TD class="nobr bold">
+        {icon name="queue" label="Name:"}
 	    </TD>
-	    <TD class="bold">{trans("Name:")}</TD>
 	    <TD>
 		<INPUT TYPE="TEXT" NAME="category[name]" VALUE="{$category.name}" {tip text="Enter name" trigger="name" bold=1}>
 	    </TD>
@@ -24,17 +23,16 @@
     </THEAD>
     <TBODY class="lms-ui-multi-check">
 	<TR>
-	    <TD>
-		{icon name="optional-info"}
+	    <TD class="nobr bold">
+        {icon name="optional-info" label="Description"}
 	    </TD>
-	    <TD class="bold">{trans("Description")}:</TD>
 	    <TD>
 		<TEXTAREA NAME="category[description]" COLS="50" ROWS="2" {tip text="Enter additional information (optional)"}>{$category.description}</TEXTAREA>
 	    </TD>
 	</TR>
 	<TR>
 	    <TD>
-			{icon name="queue"}
+            {icon name="queue"}
 	    </TD>
 	    <TD class="bold">
 			<label for="background-style">
@@ -47,7 +45,7 @@
 	</TR>
 	<TR>
 		<TD>
-			{icon name="queue"}
+            {icon name="queue"}
 		</TD>
 		<TD class="bold">
 			<label for="text-style">
@@ -59,10 +57,9 @@
 		</TD>
 	</TR>
 	<TR>
-	    <TD>
-		{icon name="owner"}
+	    <TD class="nobr bold">
+            {icon name="owner" label="Users:"}
 	    </TD>
-	    <TD class="bold">{trans("Users:")}</TD>
 	    <TD>
 		    <TABLE class="lmsbox">
 			<COLGROUP>

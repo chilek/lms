@@ -15,18 +15,15 @@
 	</COLSPAN>
 	<THEAD>
 	<TR>
-		<TD COLSPAN="2" class="nobr">
-			{icon name="queue"}
-			<B>{trans("Category")}:</B><BR>
-			{icon name="optional-info"}
-			{trans("Description")}:
+		<TD COLSPAN="2" class="nobr bold">
+            {icon name="queue" label="Category"}
+            {icon name="optional-info" label="Description"}
 		</TD>
 		<TD class="bold text-center">
 			{trans("<!rt-category>Look:")}
 		</TD>
-		<TD class="nobr">
-			{icon name="owner"}
-			<B>{trans("Owners")}:</B>
+		<TD class="nobr bold">
+            {icon name="owner" label="Owners"}
 		</TD>
 		<TD class="text-center">
 			{trans("New:")}
@@ -45,9 +42,9 @@
     <TBODY>
 	{foreach $categories as $category}
 	<TR class="highlight" data-target-url="?m=rtqueueview&catid={$category.id}" data-name="{$category.name}">
-		<TD COLSPAN="2">
-			{icon name="queue"}
-			<B>{$category.name}</B><BR>
+		<TD COLSPAN="2" class="bold">
+            {icon name="queue"}
+			{$category.name}<BR>
 			{if $category.description}
 				{icon name="optional-info"} {$category.description}
 			{/if}
@@ -89,8 +86,7 @@
         <TFOOT>
 	<TR>
 		<TD COLSPAN="4" class="text-right bold">
-			{icon name="info"}
-			{trans("Total:")}
+            {icon name="info" label="Total:"}
 		</TD>
 		<TD class="bold text-center">
 			{sum array=$categories column=new}

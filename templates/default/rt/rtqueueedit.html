@@ -20,10 +20,9 @@
 					<COL style="width: 98%">
 				</COLGROUP>
 				<TR>
-					<TD>
-						<i class="lms-ui-icon-content lms-ui-icon-queue"></i>
+					<TD class="nobr bold">
+						{icon class="fa-fw" name="queue" label="Name:"}
 					</TD>
-					<TD class="bold">{trans("Name:")}</TD>
 					<TD>
 						<INPUT TYPE="TEXT" NAME="queue[name]" VALUE="{$queue.name}" {tip text="Enter queue name" trigger="name" bold=1}><span class="bold"> ({$queue.id|string_format:"%04d"})</span>
 					</TD>
@@ -48,28 +47,25 @@
 							<COL style="width: 1px;">
 							<COL style="width: 98px;">
 							<TR>
-								<TD>
-									<i class="lms-ui-icon-content lms-ui-icon-mail"></i>
+								<TD class="bold nobr">
+									{icon class="fa-fw" name="mail" label="E-mail:"}
 								</TD>
-								<TD class="bold">{trans("E-mail:")}</TD>
 								<TD>
 									<INPUT TYPE="email" SIZE="50" NAME="queue[email]" VALUE="{$queue.email}" {tip text="Enter e-mail address" trigger="email"}>
 								</TD>
 							</TR>
 							<TR>
-								<TD>
-									<i class="lms-ui-icon-content lms-ui-icon-description"></i>
+								<TD class="bold nobr">
+									{icon class="fa-fw" name="description" label="Description:"}
 								</TD>
-								<TD class="bold">{trans("Description:")}</TD>
 								<TD>
 									<TEXTAREA NAME="queue[description]" COLS="50" ROWS="3" {tip text="Enter additional information (optional)"}>{$queue.description}</TEXTAREA>
 								</TD>
 							</TR>
 							<TR>
 								<TD class="bold nobr">
-									<i class="lms-ui-icon-content lms-ui-icon-verifier"></i>
+									{icon class="fa-fw" name="verifier" label="<!rt>Verifier:"}
 								</TD>
-								<TD class="bold">{trans("<!rt>Verifier:")}</TD>
 								<TD>
                                     <SELECT size="1" name="queue[verifierid]" {tip text="Select user" trigger="verifierid"}>
                                         <OPTION value="">- {trans("select user")} -</OPTION>
@@ -80,10 +76,9 @@
 								</TD>
 							</TR>
 							<TR>
-								<TD>
-									<i class="lms-ui-icon-content lms-ui-icon-user"></i>
+								<TD class="bold nobr">
+									{icon class="fa-fw" name="user" label="Privileges:"}
 								</TD>
-								<TD class="bold">{trans("Privileges:")}</TD>
 								<TD>
 									<TABLE class="lmsbox">
 										<COLGROUP>
@@ -226,7 +221,7 @@
 				<tr>
 					<td>
 						<FIELDSET>
-							<LEGEND><i class="lms-ui-icon-content lms-ui-icon-queue"></i><span class="bold">{trans("Default categories")}</span>
+							<LEGEND>{icon class="fa-fw" name="queue" label="Default categories"}
 								<label>
 									({trans("Check All")}
 									<input type="checkbox" id="checkall">)
@@ -247,9 +242,9 @@
 	</TR>
 	<TR>
 		<TD class="text-right">
-			<A HREF="javascript:document.queue.submit();" accesskey="s"><IMG src="img/save.gif" alt=""> {trans("Submit")}</A>
-			<A id="delete-rtqueue" HREF="?m=rtqueuedel&id={$queue.id}&qaction=delete" accesskey="d" data-name="{$queue.name}"><IMG src="img/delete.gif" alt=""> {trans("Delete")}</A>
-			<A HREF="?m=rtqueuelist"><IMG src="img/cancel.gif" alt=""> {trans("Cancel")}</A>
+			{button type="submit" icon="save" label="Submit"}
+			{button id="delete-rtqueue" onclick='location.href="?m=rtqueuedel&id={$queue.id}&qaction=delete"' accesskey="d" data-name="{$queue.name}" icon="delete" label="Delete"}
+			{button icon="cancel" label="Cancel" onclick="location.href = '?m=rtqueuelist'"}
 		</TD>
 	</TR>
     </TBODY>
