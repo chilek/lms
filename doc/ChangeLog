@@ -184,10 +184,21 @@ version 26-git (????-??-??):
   - improvement: invoices: show iban bank accounts with country codes if seller and buyer are
     from different countries [chilan]
   - enhancement: added new 'VAT payer' customer flag [chilan]
-  - enhancement: lms-vies.php backend script allows to update VAT payer customer flag
-    using public VIES webapi [chilan]
+  - enhancement: lms-vat-payers.php backend script allows to update VAT payer customer flag
+    using public VIES webapi and MF.GOV.PL REST api [chilan]
+  - enhancement: present VAR reg. no. (TEN's) in full format with country code when invoice
+    is export document [chilan]
+  - enhancement: 'invoices.check_customer_vat_payer_flag_for_telecom_service' configuration variable
+    with default 'false' value controls if invoices issued for telecom services are flagged
+    as JPK-EE for customers which are not active VAT payers [chilan]
+  - improvement: added customer flag filter in customer search form [chilan]
+  - enhancement: lms-sms2rt.php backend script can be launched from within http server and handle
+    incoming sms callback made from external device [chilan]
+  - devel/cleanup: serwersms.pl, sms.pl, smsapi.pl, smscenter.pl support moved to separate
+    plugins [chilan]
   - enhancement: chaning ticket queues resets ticket state to NEW
     (if config variable: rt.ticket_queue_change_resets_ticket_state is set) [interduo]
+   
 
 version 25.0 (2020-05-15):
 

@@ -189,8 +189,12 @@ $host = isset($options['host']) ? mb_strtoupper($options['host']) : null;
 
 $existing_networks = $DB->GetCol(
     "SELECT n.name FROM networks n"
-    . ($host ? " JOIN hosts h ON h.id = n.hostid WHERE h.name = '" . $host . "'" : '')
+    . ($host ? " JOIN hosts h ON h.id = n.hostid WHERE UPPER(h.name) = '" . $host . "'" : '')
 );
+
+if ($host && empty($existing_networks)) {
+    die("No networks assigned to selected host '" . $host . "'!" . PHP_EOL);
+}
 
 // get selected networks from ini file
 $networks = ConfigHelper::getConfig('tcnew.networks', '', true);

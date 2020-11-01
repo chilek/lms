@@ -31,45 +31,52 @@
 // *EXACTLY* WHAT ARE YOU DOING!!!
 // *******************************************************************
 
-ini_set('error_reporting', E_ALL&~E_NOTICE);
+ini_set('error_reporting', E_ALL & ~E_NOTICE);
 
-$parameters = array(
-    'config-file:' => 'C:',
-    'quiet' => 'q',
-    'help' => 'h',
-    'version' => 'v',
-    'section:' => 's:',
-    'message-file:' => 'm:',
-);
+$http_mode = isset($_SERVER['HTTP_HOST']);
 
-$long_to_shorts = array();
-foreach ($parameters as $long => $short) {
-    $long = str_replace(':', '', $long);
-    if (isset($short)) {
-        $short = str_replace(':', '', $short);
+if ($http_mode) {
+    ob_clean();
+    $options = array();
+} else {
+    $parameters = array(
+        'config-file:' => 'C:',
+        'quiet' => 'q',
+        'help' => 'h',
+        'version' => 'v',
+        'section:' => 's:',
+        'message-file:' => 'm:',
+    );
+
+    $long_to_shorts = array();
+    foreach ($parameters as $long => $short) {
+        $long = str_replace(':', '', $long);
+        if (isset($short)) {
+            $short = str_replace(':', '', $short);
+        }
+        $long_to_shorts[$long] = $short;
     }
-    $long_to_shorts[$long] = $short;
-}
 
-$options = getopt(
-    implode(
-        '',
-        array_filter(
-            array_values($parameters),
-            function ($value) {
-                return isset($value);
-            }
-        )
-    ),
-    array_keys($parameters)
-);
+    $options = getopt(
+        implode(
+            '',
+            array_filter(
+                array_values($parameters),
+                function ($value) {
+                    return isset($value);
+                }
+            )
+        ),
+        array_keys($parameters)
+    );
 
-foreach (array_flip(array_filter($long_to_shorts, function ($value) {
-    return isset($value);
-})) as $short => $long) {
-    if (array_key_exists($short, $options)) {
-        $options[$long] = $options[$short];
-        unset($options[$short]);
+    foreach (array_flip(array_filter($long_to_shorts, function ($value) {
+        return isset($value);
+    })) as $short => $long) {
+        if (array_key_exists($short, $options)) {
+            $options[$long] = $options[$short];
+            unset($options[$short]);
+        }
     }
 }
 
@@ -100,7 +107,7 @@ EOF;
 }
 
 $quiet = array_key_exists('quiet', $options);
-if (!$quiet) {
+if (!$quiet && !$http_mode) {
     print <<<EOF
 lms-sms2rt.php
 (C) 2001-2020 LMS Developers
@@ -112,11 +119,15 @@ $config_section = isset($options['section']) && preg_match('/^[a-z0-9-_]+$/i', $
 
 if (array_key_exists('config-file', $options)) {
     $CONFIG_FILE = $options['config-file'];
+} elseif ($http_mode && is_readable('lms.ini')) {
+    $CONFIG_FILE = 'lms.ini';
+} elseif ($http_mode && is_readable(DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini')) {
+    $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini';
 } else {
     $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
 }
 
-if (!$quiet) {
+if (!$quiet && !$http_mode) {
     echo "Using file ".$CONFIG_FILE." as config." . PHP_EOL;
 }
 
@@ -189,10 +200,47 @@ $newticket_notify = ConfigHelper::checkConfig('phpui.newticket_notify');
 $helpdesk_customerinfo = ConfigHelper::checkConfig('phpui.helpdesk_customerinfo');
 $helpdesk_sendername = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
 
-if (isset($options['message-file'])) {
-    $message_file = $options['message-file'];
+// Load plugin files and register hook callbacks
+$plugin_manager = new LMSPluginManager();
+$LMS->setPluginManager($plugin_manager);
+
+if ($http_mode) {
+    // call external incoming SMS handler(s)
+    $errors = array();
+    $content = null;
+
+    foreach (explode(',', $service) as $single_service) {
+        $data = $LMS->executeHook(
+            'parse_incoming_sms',
+            array(
+                'service' => $single_service
+            )
+        );
+        if (isset($data['error'])) {
+            $errors[$single_service] = $data['error'];
+            continue;
+        }
+        if ($data['content']) {
+            $content = $data['content'];
+            break;
+        }
+    }
+
+    if (!isset($content)) {
+        foreach ($errors as $single_service => $error) {
+            echo $single_service . ': ' . $error . '<br>';
+        }
+        die;
+    }
+
+    $message_file = tempnam('/tmp', 'LMS_INCOMING_MESSAGE');
+    file_put_contents($message_file, $content);
 } else {
-    die("Required message file parameter!" . PHP_EOL);
+    if (isset($options['message-file'])) {
+        $message_file = $options['message-file'];
+    } else {
+        die("Required message file parameter!" . PHP_EOL);
+    }
 }
 
 if (($queueid = $DB->GetOne(
@@ -201,10 +249,6 @@ if (($queueid = $DB->GetOne(
 )) == null) {
     die("Undefined queue!" . PHP_EOL);
 }
-
-// Load plugin files and register hook callbacks
-$plugin_manager = new LMSPluginManager();
-$LMS->setPluginManager($plugin_manager);
 
 $plugins = $plugin_manager->getAllPluginInfo(LMSPluginManager::OLD_STYLE);
 if (!empty($plugins)) {
@@ -383,6 +427,8 @@ if (($fh = fopen($message_file, "r")) != null) {
     die("Message file doesn't exist!" . PHP_EOL);
 }
 
-$DB->Destroy();
+if ($http_mode) {
+    @unlink($message_file);
+}
 
-?>
+$DB->Destroy();

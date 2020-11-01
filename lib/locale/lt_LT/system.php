@@ -148,6 +148,15 @@ self::addLanguageFunctions(
                 return preg_replace('/(..)(....)(....)(....)(....)/i', '${1} ${2} ${3} ${4} ${5}', $account);
             }
         },
+        'format_ten' => function ($ten, $country_code = false) {
+            if ($country_code) {
+                $ten = preg_replace('/[ \-]/', '', $ten);
+            }
+            if (strpos($ten, 'LT') === 0) {
+                $ten = substr($ten, 2);
+            }
+            return ($country_code ? 'LT' : '') . $ten;
+        },
         'getHolidays' => function ($year = null) {
             return array();
         },

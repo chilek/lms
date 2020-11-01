@@ -121,7 +121,7 @@
         "pragmarx/google2fa": "^6",
         "galleriajs/galleria": "^1",
         "rzani/zbar-qrdecoder": "^2",
-        "dragonbe/vies": "^2"
+        "dragonbe/vies": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "^4",

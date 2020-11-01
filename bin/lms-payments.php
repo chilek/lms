@@ -194,6 +194,7 @@ $prefer_netto = ConfigHelper::checkConfig('payments.prefer_netto');
 $customergroups = ConfigHelper::getConfig('payments.customergroups', '', true);
 
 $force_telecom_service_flag = ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.force_telecom_service_flag', 'true'));
+$check_customer_vat_payer_flag_for_telecom_service = ConfigHelper::checkConfig('invoices.check_customer_vat_payer_flag_for_telecom_service');
 
 function localtime2()
 {
@@ -456,7 +457,8 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 		(CASE WHEN c.type = ? THEN 0 ELSE (CASE WHEN a.liabilityid IS NULL THEN t.splitpayment ELSE l.splitpayment END) END) AS splitpayment,
 		(CASE WHEN a.liabilityid IS NULL THEN t.taxcategory ELSE l.taxcategory END) AS taxcategory,
 		t.description AS description, a.id AS assignmentid,
-		c.divisionid, c.paytype, a.paytype AS a_paytype, a.numberplanid, a.attribute,
+		c.divisionid, c.paytype, c.flags AS customerflags,
+		a.paytype AS a_paytype, a.numberplanid, a.attribute,
 		d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
 		(CASE WHEN a.liabilityid IS NULL THEN t.type ELSE l.type END) AS tarifftype,
 		(CASE WHEN a.liabilityid IS NULL THEN t.name ELSE l.name END) AS name,
@@ -508,7 +510,8 @@ $query = "SELECT
 			(CASE WHEN c.type = ? THEN 0 ELSE t.splitpayment END) AS splitpayment,
 			t.taxcategory AS taxcategory,
 			t.description AS description, a.id AS assignmentid,
-			c.divisionid, c.paytype, a.paytype AS a_paytype, a.numberplanid, a.attribute,
+			c.divisionid, c.paytype, c.flags AS customerflags,
+			a.paytype AS a_paytype, a.numberplanid, a.attribute,
 			d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
 			t.taxid AS taxid, '' as prodid, voipcost.value, t.currency, voipphones.phones,
 			'set' AS liabilityid, '$billing_invoice_description' AS name,
@@ -1086,7 +1089,9 @@ foreach ($assigns as $assign) {
 
         $val = str_replace(',', '.', sprintf("%.2f", $val));
 
-        $telecom_service = $force_telecom_service_flag && $assign['customertype'] == CTYPES_PRIVATE && $assign['tarifftype'] != SERVICE_OTHER;
+        $telecom_service = $force_telecom_service_flag && $assign['tarifftype'] != SERVICE_OTHER
+            && ($assign['customertype'] == CTYPES_PRIVATE || ($check_customer_vat_payer_flag_for_telecom_service
+                && !($assign['customerflags'] & CUSTOMER_FLAG_VAT_PAYER)));
 
         if ($assign['invoice']) {
             if ($assign['a_paytype']) {

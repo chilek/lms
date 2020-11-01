@@ -150,12 +150,17 @@ if ($id && !isset($_POST['ticket'])) {
                 break;
             case 'resolve':
                 $ticket = $LMS->GetTicketContents($id);
-
-                if ($ticket['state'] == RT_RESOLVED) {
-                    $SESSION->redirect('?m=rtticketview&id=' . $id);
+                if (ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events') && !empty($ticket['openeventcount'])) {
+                    die(trans("Ticket have open assigned events!"));
+                } else {
+                    if ($ticket['state'] != RT_RESOLVED) {
+                        $SESSION->redirect('?m=rtticketview&id=' . $id);
+                    } else {
+                        $SESSION->redirect('?m=rtqueueview'
+                            . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
+                    }
+                    $LMS->TicketChange($id, array('state' => RT_RESOLVED));
                 }
-
-                $LMS->TicketChange($id, array('state' => RT_RESOLVED));
 
                 $queue = $LMS->GetQueueByTicketId($id);
                 $user = $LMS->GetUserInfo(Auth::GetCurrentUser());

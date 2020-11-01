@@ -60,6 +60,15 @@ self::addLanguageFunctions(
         'format_bankaccount' => function ($account, $country_code = false) {
             return $account;
         },
+        'format_ten' => function ($ten, $country_code = false) {
+            if ($country_code) {
+                $ten = preg_replace('/[ \-]/', '', $ten);
+            }
+            if (strpos($ten, 'RO') === 0) {
+                $ten = substr($ten, 2);
+            }
+            return ($country_code ? 'RO' : '') . $ten;
+        },
         'getHolidays' => function ($year = null) {
             return array();
         },

@@ -57,6 +57,9 @@ self::addLanguageFunctions(
         'format_bankaccount' => function ($account, $country_code = false) {
             return $account;
         },
+        'format_ten' => function ($ten, $country_code = false) {
+            return $ten;
+        },
         'getHolidays' => function ($year = null) {
             return array();
         },

@@ -102,7 +102,7 @@
 			{textformat assign="account_text" wrap=5000}
 				{if $use_alert_color}<span style="color:red">{/if}{implode('<br>', $accounts)}{if $use_alert_color}</span>{/if}
 			{/textformat}
-			{$tmp = $invoice.division_header}
+			{$tmp = str_replace('%ten%', format_ten($invoice.division_ten, $invoice.export), $invoice.division_header)}
 			{$tmp = str_replace("\n", '<br>', $tmp)}
 			{$tmp = str_replace('%bankaccount', $account_text, $tmp)}
 			{$tmp = str_replace('%bankname', $invoice.div_bank, $tmp)}
@@ -121,7 +121,12 @@
 			{$invoice.name}<BR>
 			{$invoice.address}<BR>
 			{$invoice.zip} {$invoice.city}{if $invoice.export}, {trans($invoice.country)}{/if}<BR>
-			{if $invoice.ten != ""}{trans("TEN:")} {$invoice.ten}<BR>{elseif !ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.hide_ssn', true)) && $invoice.ssn != ""}{trans("SSN:")} {$invoice.ssn}<BR>{/if}
+			{if $invoice.ten != ""}{trans("TEN:")}
+				{$currentSystemLanguage = Localisation::getCurrentSystemLanguage()}
+				{Localisation::setSystemLanguage($invoice.lang)}
+				{format_ten($invoice.ten, $invoice.export)}<BR>
+				{Localisation::setSystemLanguage($currentSystemLanguage)}
+			{elseif !ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.hide_ssn', true)) && $invoice.ssn != ""}{trans("SSN:")} {$invoice.ssn}<BR>{/if}
 
 			<BR>
 

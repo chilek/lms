@@ -46,6 +46,7 @@ class Auth
     public $lastip;
     private $passwdrequiredchange = false;
     private $twofactorauthrequiredchange = false;
+    private $twofactorauth = null;
     private $twofactorauthsecretkey = null;
     public $error;
     public $_version = '1.11-git';
@@ -221,7 +222,10 @@ class Auth
             return true;
         }
 
-        $this->error = trans('Wrong password or login.');
+        if (empty($this->twofactorauth) || empty($this->twofactorauthsecretkey)) {
+            $this->error = trans('Wrong password or login.');
+        }
+
         return false;
     }
 
@@ -337,8 +341,9 @@ class Auth
                         $this->lastip
                     )
                 ) < 10) {
+                    $this->SESSION->restore('session_passverified', $this->passverified);
                     $google2fa = new Google2FA();
-                    if ($google2fa->verifyKey($user['twofactorauthsecretkey'], $this->authcode)) {
+                    if ($this->passverified && $google2fa->verifyKey($user['twofactorauthsecretkey'], $this->authcode)) {
                         $this->DB->Execute(
                             'DELETE FROM twofactorauthcodehistory WHERE userid = ? AND success = ? AND uts < ?NOW? - 3 * 60',
                             array($this->id, 1)
@@ -379,10 +384,15 @@ class Auth
                 $this->access = $this->VerifyAccess($user['access']);
                 $this->accessfrom = $this->VerifyAccessFrom($user['accessfrom']);
                 $this->accessto = $this->VerifyAccessTo($user['accessto']);
-                $this->islogged = ($this->passverified && $this->hostverified && $this->access && $this->accessfrom && $this->accessto);
+                if (empty($user['twofactorauth']) || empty($user['twofactorauthsecretkey'])) {
+                    $this->islogged = ($this->passverified && $this->hostverified && $this->access && $this->accessfrom && $this->accessto);
+                } else {
+                    $this->islogged = ($this->hostverified && $this->access && $this->accessfrom && $this->accessto);
+                    $this->SESSION->save('session_passverified', $this->passverified);
+                }
 
                 if ($this->islogged && !empty($user['twofactorauth']) && !empty($user['twofactorauthsecretkey'])) {
-                    if ($this->isTrustedDevice()) {
+                    if ($this->isTrustedDevice() && $this->passverified) {
                         $this->authcoderequired = '';
                     } else {
                         $this->authcoderequired = $this->login;

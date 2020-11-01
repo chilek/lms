@@ -1273,7 +1273,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $a['pdiscount'] = ($a['discount_type'] == DISCOUNT_PERCENTAGE ? floatval($a['discount']) : 0);
             $a['vdiscount'] = ($a['discount_type'] == DISCOUNT_AMOUNT ? floatval($a['discount']) : 0);
         }
-        if ($a['pdiscount'] < 0 || $a['pdiscount'] > 99.99) {
+        if ($a['pdiscount'] < 0 || $a['pdiscount'] > 100) {
             $error['discount'] = trans('Wrong discount value!');
         }
 
@@ -2303,7 +2303,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 $result['division_header'] = $result['division_name'] . "\n"
                         . $result['division_address'] . "\n" . $result['division_zip'] . ' ' . $result['division_city']
                         . ($result['division_countryid'] && $result['countryid'] && $result['division_countryid'] != $result['countryid'] ? "\n" . trans($location_manager->GetCountryName($result['division_countryid'])) : '')
-                        . ($result['division_ten'] != '' ? "\n" . trans('TEN') . ' ' . $result['division_ten'] : '');
+                        . ($result['division_ten'] != '' ? "\n" . trans('TEN') . ' ' . '%ten%' : '');
             }
 
             if ($result['content'] = $this->db->GetAllByKey('SELECT invoicecontents.value AS value,
