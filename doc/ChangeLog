@@ -196,6 +196,7 @@ version 26-git (????-??-??):
     incoming sms callback made from external device [chilan]
   - devel/cleanup: serwersms.pl, sms.pl, smsapi.pl, smscenter.pl support moved to separate
     plugins [chilan]
+  - enhancement: new smstools php backend scripts replace old perl lms-smstools script [chilan]
 
 version 25.0 (2020-05-15):
 
