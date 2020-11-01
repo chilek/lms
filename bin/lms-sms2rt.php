@@ -210,7 +210,12 @@ if ($http_mode) {
     $content = null;
 
     foreach (explode(',', $service) as $single_service) {
-        $data = $LMS->executeHook('parse_incoming_sms', $single_service);
+        $data = $LMS->executeHook(
+            'parse_incoming_sms',
+            array(
+                'service' => $single_service
+            )
+        );
         if (isset($data['error'])) {
             $errors[$single_service] = $data['error'];
             continue;
