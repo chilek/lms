@@ -2790,9 +2790,6 @@ class LMS
             $message = mb_substr($message, 0, $max_length - 6) . ' [...]';
         }
 
-        // recount message length after potential last changes made a few lines earlier
-        $msg_len = mb_strlen($message);
-
         $service = isset($sms_options['service']) ? $sms_options['service'] : ConfigHelper::getConfig('sms.service');
         if (empty($service)) {
             return trans('SMS "service" not set!');
@@ -2858,6 +2855,12 @@ class LMS
                         : ConfigHelper::getConfig('sms.queue', '', true);
                     if (!empty($queue)) {
                         $headers['Queue'] = $queue;
+                    }
+
+                    $delivery_reports = isset($sms_options['delivery_reports']) ? $sms_options['delivery_reports']
+                        : ConfigHelper::getConfig('sms.delivery_reports', 'false');
+                    if (ConfigHelper::checkValue($delivery_reports)) {
+                        $headers['Report'] = 'yes';
                     }
 
                     $header = '';
