@@ -155,7 +155,6 @@ if ($id && !isset($_POST['ticket'])) {
                 } else {
                     if ($ticket['state'] != RT_RESOLVED) {
                         $LMS->TicketChange($id, array('state' => RT_RESOLVED));
-                        $SESSION->redirect('?m=rtticketview&id=' . $id);
                     } else {
                         $SESSION->redirect('?m=rtqueueview'
                             . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
