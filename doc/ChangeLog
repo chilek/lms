@@ -197,6 +197,8 @@ version 26-git (????-??-??):
   - devel/cleanup: serwersms.pl, sms.pl, smsapi.pl, smscenter.pl support moved to separate
     plugins [chilan]
   - enhancement: new smstools php backend scripts replace old perl lms-smstools script [chilan]
+  - improvement: don't show document promotion schema selection tab/box when template is not selected
+    or selected template doesn't require this [chilan]
 
 version 25.0 (2020-05-15):
 
