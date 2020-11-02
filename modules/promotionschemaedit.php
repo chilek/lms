@@ -263,10 +263,12 @@ if (isset($_POST['schema'])) {
     }
 
     if (!$error) {
+        $length = 0;
         $data = array();
         foreach ($schema['periods'] as $period) {
             if ($period = intval($period)) {
                 $data[] = $period;
+                $length += intval($period);
             } else {
                 break;
             }
@@ -280,7 +282,7 @@ if (isset($_POST['schema'])) {
             'data' => implode(';', $data),
             SYSLOG::RES_PROMOSCHEMA => $schema['id']
         );
-        $DB->Execute('UPDATE promotionschemas SET name = ?, description = ?, data = ?
+        $DB->Execute('UPDATE promotionschemas SET name = ?, description = ?, data = ?, length = ?
 			WHERE id = ?', array_values($args));
 
         if ($SYSLOG) {
