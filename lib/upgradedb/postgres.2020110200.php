@@ -23,7 +23,6 @@
 
 $this->BeginTrans();
 
-/*
 $this->Execute("
     ALTER TABLE promotionschemas ADD COLUMN deleted smallint DEFAULT 0 NOT NULL;
     ALTER TABLE promotionschemas ADD COLUMN length smallint DEFAULT NULL;
@@ -31,7 +30,6 @@ $this->Execute("
     ALTER TABLE assignments ADD CONSTRAINT assignments_promotionschemaid_fkey
         FOREIGN KEY (promotionschemaid) REFERENCES promotionschemas (id) ON DELETE RESTRICT ON UPDATE CASCADE
 ");
-*/
 
 $schemas = $this->GetAll("SELECT id, data FROM promotionschemas WHERE data <> ''");
 if (!empty($schemas)) {
