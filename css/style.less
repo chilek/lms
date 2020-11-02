@@ -623,6 +623,13 @@ INPUT {
 		vertical-align: middle;
 		background-color: @light;
 	}
+	&[readonly] {
+		color: @blend !important;
+		cursor: no-drop;
+		&:hover {
+			text-decoration: none;
+		}
+	}
 }
 
 TEXTAREA {
@@ -2024,6 +2031,9 @@ div.lms-ui-persistent-filter {
 
 .scombobox {
 	margin: 0;
+	&-disabled .scombobox-display {
+		cursor: no-drop;
+	}
 }
 
 .scombobox-dropdown-background {

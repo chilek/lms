@@ -4735,4 +4735,19 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             array($id)
         ) > 0);
     }
+
+    public function getPromotionSchema($id)
+    {
+        return $this->db->GetRow(
+            'SELECT s.*, a.assignmentcount
+            FROM promotionschemas s
+            LEFT JOIN (
+                SELECT promotionschemaid, COUNT(*) AS assignmentcount
+                FROM assignments
+                GROUP BY promotionschemaid
+            ) a ON a.promotionschemaid = s.id
+            WHERE s.id = ?',
+            array($id)
+        );
+    }
 }
