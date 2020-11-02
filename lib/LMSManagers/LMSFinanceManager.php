@@ -4168,7 +4168,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			) AS tariffs
 			FROM promotions p
 			JOIN promotionschemas s ON (p.id = s.promotionid)
-			WHERE p.disabled <> 1 AND s.disabled <> 1
+			WHERE p.disabled <> 1 AND s.disabled <> 1 AND s.deleted = 0
 				AND EXISTS (SELECT 1 FROM promotionassignments
 				WHERE promotionschemaid = s.id LIMIT 1)
 			ORDER BY p.name, s.name');
