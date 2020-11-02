@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-
 $promotion = $DB->GetRow(
     'SELECT * FROM promotions WHERE id = ?',
     array(intval($_GET['id']))
@@ -37,7 +36,8 @@ if (!$promotion) {
 $promotion['schemas'] = $DB->GetAllByKey(
     'SELECT
     s.name, s.disabled, s.description, s.id
-    FROM promotionschemas s WHERE s.promotionid = ?
+    FROM promotionschemas s
+    WHERE s.promotionid = ? AND deleted = 0
     ORDER BY name',
     'id',
     array($promotion['id'])

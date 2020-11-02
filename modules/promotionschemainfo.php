@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -28,7 +28,7 @@ $schema = $DB->GetRow(
     'SELECT s.*, p.id AS pid, p.name AS promotion
     FROM promotionschemas s
     JOIN promotions p ON (p.id = s.promotionid)
-    WHERE s.id = ?',
+    WHERE s.id = ? AND deleted = 0',
     array(intval($_GET['id']))
 );
 

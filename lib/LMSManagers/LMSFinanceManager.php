@@ -113,6 +113,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                             (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END) * a.count AS value,
                                             (CASE WHEN t.currency IS NULL THEN l.currency ELSE t.currency END) AS currency,
                                             (CASE WHEN t.name IS NULL THEN l.name ELSE t.name END) AS name,
+                                            p.name AS promotion_name, ps.name AS promotion_schema_name, ps.length AS promotion_schema_length,
                                             d.number AS docnumber, d.type AS doctype, d.cdate, np.template,
                                             d.fullnumber,
                                             (CASE WHEN (a.dateto > ' . $now . ' OR a.dateto = 0) AND (a.at >= ' . $now . ' OR a.at < 531) THEN 0 ELSE 1 END) AS expired,
@@ -121,6 +122,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                             assignments a
                                             LEFT JOIN tariffs t     ON (a.tariffid = t.id)
                                             LEFT JOIN liabilities l ON (a.liabilityid = l.id)
+                                            LEFT JOIN promotionschemas ps ON ps.id = a.promotionschemaid
+                                            LEFT JOIN promotions p ON p.id = ps.promotionid
                                             LEFT JOIN documents d ON d.id = a.docid
                                             LEFT JOIN numberplans np ON np.id = d.numberplanid
                                           WHERE a.customerid=? ' . ($show_approved ? 'AND a.commited = 1 ' : '')
@@ -644,6 +647,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                     SYSLOG::RES_LIAB => null,
                                     'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
                                     'docid' => empty($data['docid']) ? null : $data['docid'],
+                                    'promotionschemaid' => $data['schemaid'],
                                     'commited' => $commited,
                                 );
 
@@ -727,6 +731,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                 SYSLOG::RES_LIAB    => null,
                                 'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
                                 'docid'             => empty($data['docid']) ? null : $data['docid'],
+                                'promotionschemaid' => $data['schemaid'],
                                 'commited'          => $commited,
                             );
 
@@ -764,6 +769,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             SYSLOG::RES_LIAB => empty($lid) ? null : $lid,
                             'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
                             'docid' => empty($data['docid']) ? null : $data['docid'],
+                            'promotionschemaid' => $data['schemaid'],
                             'commited' => $commited,
                         );
 
@@ -876,6 +882,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         SYSLOG::RES_LIAB    => !isset($lid) || empty($lid) ? null : $lid,
                         'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
                         'docid'             => empty($data['docid']) ? null : $data['docid'],
+                        'promotionschemaid' => null,
                         'commited'          => $commited,
                     );
 
@@ -944,6 +951,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         SYSLOG::RES_LIAB    => !isset($lid) || empty($lid) ? null : $lid,
                         'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
                         'docid'             => empty($data['docid']) ? null : $data['docid'],
+                        'promotionschemaid' => null,
                         'commited'          => $commited,
                     );
 
@@ -999,6 +1007,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     SYSLOG::RES_LIAB => !isset($lid) || empty($lid) ? null : $lid,
                     'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
                     'docid' => empty($data['docid']) ? null : $data['docid'],
+                    'promotionschemaid' => null,
                     'commited' => $commited,
                 );
 
@@ -1025,8 +1034,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 (tariffid, customerid, period, backwardperiod, at, count, invoice, separatedocument,
                 settlement, numberplanid,
                 paytype, datefrom, dateto, pdiscount, vdiscount, attribute, liabilityid, recipient_address_id,
-                docid, commited)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                docid, promotionschemaid, commited)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             array_values($args)
         );
 

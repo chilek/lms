@@ -199,6 +199,10 @@ version 26-git (????-??-??):
   - enhancement: new smstools php backend scripts replace old perl lms-smstools script [chilan]
   - improvement: don't show document promotion schema selection tab/box when template is not selected
     or selected template doesn't require this [chilan]
+  - enhancement: implemented promotion schema <-> assignments bindings - new special symbols
+    '%promotion_name', '%promotion_schema_name' and '%promotion_schema_length' are supported for
+    'payments.comment', 'payments.backward_comment' and 'payment.settlement_comment' configuration
+    variables [chilan]
 
 version 25.0 (2020-05-15):
 
