@@ -41,6 +41,7 @@ if (isset($_GET['template'])) {
             header('Content-Type: text/javascript');
             echo file_get_contents($file);
         }
+        echo '$("#documentpromotions").toggle(true);';
     }
     die;
 }
@@ -68,7 +69,7 @@ function GenerateAttachmentHTML($template_dir, $engine, $selected)
 function GetPlugin($template, $customer, $update_title, $JSResponse)
 {
     global $documents_dirs;
-    
+
     $result = '';
 
     foreach ($documents_dirs as $doc) {
@@ -109,6 +110,8 @@ function GetPlugin($template, $customer, $update_title, $JSResponse)
     if ($update_title) {
         $JSResponse->assign('title', 'value', isset($engine['form_title']) ? $engine['form_title'] : $engine['title']);
     }
+
+    $JSResponse->script('$("#documentpromotions").toggle(' . (empty($engine['promotion-schema-selection']) ? 'false' : 'true') . ')');
 }
 
 function GetDocumentTemplates($rights, $type = null)
@@ -305,6 +308,8 @@ function DocTypeChanged($doctype, $numberplanid, $customerid)
     _GetNumberPlans($doctype, $numberplanid, $customerid, $JSResponse);
     GetTemplates($doctype, null, $JSResponse);
     GetReferenceDocuments(null, $customerid, $JSResponse);
+
+    $JSResponse->script('$("#documentpromotions").toggle(false)');
 
     return $JSResponse;
 }
