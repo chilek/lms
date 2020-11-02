@@ -905,6 +905,8 @@ class LMSSmartyPlugins
         $tip = isset($params['tip']) ? trans($params['tip']) : null;
         // optional - text label
         $label = isset($params['label']) ? trans($params['label']) : null;
+        // optional - css style around text label
+        $label_style = isset($params['label_style']) ? $params['label_style'] : null;
 
         $data_attributes = '';
         foreach ($params as $key => $value) {
@@ -923,7 +925,9 @@ class LMSSmartyPlugins
             . (isset($tip) ? ' title="' . $tip . '"' : '')
             . $data_attributes
         . '></i>'
-            . (isset($label) ? ' ' . $label : '');
+            . (isset($label_style) ? '<span style="' . $label_style . '">' : '')
+            . (isset($label) ? ' ' . $label : '')
+            . (isset($label_style) ? '</span>' : '');
     }
 
     public static function paytypesFunction(array $params, $template)
