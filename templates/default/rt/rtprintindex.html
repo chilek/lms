@@ -8,15 +8,15 @@
 <table class="lmsbox">
     <thead>
 		<tr>
-			<td class="bold nobr" colspan="2">
-				{icon name="helpdesk" label="List of Requests"}
+			<td class="nobr" colspan="2">
+				{icon name="helpdesk" label="List of Requests" label_class="bold"}
 			</td>
 		</tr>
 	</thead>
     <tbody>
 		<tr>
-			<td class="bold nobr">
-				{icon name="calendar" label="Period:"}
+			<td class="nobr">
+				{icon name="calendar" label="Period:" label_class="bold"}
 			</td>
 			<td class="nobr">
 				<label>
@@ -30,16 +30,16 @@
 			</>
 		</tr>
 		<tr>
-			<td class="bold nobr">
-				{icon name="location" label="Address:"}
+			<td class="nobr">
+				{icon name="location" label="Address:" label_class="bold"}
 			</td>
 			<td class="nobr">
 				<input type="text" name="address" placeholder="{trans("Address:")}"> <input type="text" name="city" placeholder="{trans("City:")}"> <input type="text" name="zip" size="10" placeholder="{trans("Postcode:")}">
 			</td>
 		</tr>
 		<tr>
-			<td class="bold nobr">
-				{icon name="queue" label="Queue:"}
+			<td class="nobr">
+				{icon name="queue" label="Queue:" label_class="bold"}
 			</td>
 			<td class="bold nobr">
 				<select size="1" name="queue" {tip text="You can select queue to limit results"}>
@@ -50,24 +50,24 @@
 				</select>
 			</td>
 		<tr>
-			<td class="bold nobr">
-				{icon name="customer" label="Customer:"}
+			<td class="nobr">
+				{icon name="customer" label="Customer:" label_class="bold"}
 			</td>
 			<td class="nobr">
 				{customerlist form="ticketslist" customers=$customers selectname="cust" inputname="customer" firstoption="- all customers -" selecttip="You can select customer to limit results" inputtip="Enter customer ID or leave empty for all customers"}
 			</td>
 		</tr>
 		<tr>
-			<td class="nobr bold">
-				{icon name="helpdesk" label="Subject:"}
+			<td class="nobr">
+				{icon name="helpdesk" label="Subject:" label_class="bold"}
 			</td>
 			<td class="nobr">
 				<input type="text" name="subject" size="30" {tip text="Enter subject"}>
 			</td>
 		</tr>
 		<tr>
-			<td class="nobr bold">
-				{icon name="status" label="Status:"}
+			<td class="nobr">
+				{icon name="status" label="Status:" label_class="bold"}
 			</td>
 			<td>
 				<select size="1" name="status" {tip text="You can select status to limit results"}>
@@ -80,8 +80,8 @@
 			</td>
 		</tr>
 		<tr>
-			<td class="nobr bold">
-				{icon name="uptime" label="Uptime:"}
+			<td class="nobr">
+				{icon name="uptime" label="Uptime:" label_class="bold"}
 			</td>
 			<td class="nobr bold">
 				<input type="text" name="days" size="3"> {trans("days")}
@@ -89,8 +89,8 @@
 		</tr>
 		{if ConfigHelper::checkPrivilege('helpdesk_advanced_operations')}
 		<tr>
-			<td class="nobr bold">
-				{icon name="delete" label="Removed:"}
+			<td class="nobr">
+				{icon name="delete" label="Removed:" label_class="bold"}
 			</td>
 			<td>
 				<select size="1" name="removed" {tip text="You can select status to limit results"}>
@@ -102,8 +102,8 @@
 		</tr>
 		{/if}
 		<tr>
-			<td class="nobr bold">
-				{icon name="queue" label="Categories:"}
+			<td class="nobr">
+				{icon name="queue" label="Categories:" label_class="bold"}
 			</td>
 			<td>
 				<table>
@@ -146,15 +146,15 @@
 	<table class="lmsbox">
 		<thead>
 			<tr>
-				<td class="nobr bold" colspan="2">
-					{icon name="helpdesk" label="Requests Stats"}
+				<td class="nobr" colspan="2">
+					{icon name="helpdesk" label="Requests Stats" label_class="bold"}
 				</td>
 			</tr>
 		</thead>
     	<tbody>
 			<tr>
-				<td class="nobr bold">
-					{icon name="timetable" label="Period:"}
+				<td class="nobr">
+					{icon name="timetable" label="Period:" label_class="bold"}
 				</td>
 				<td class="nobr bold">
 					<label>
@@ -170,8 +170,8 @@
 				</td>
 			</tr>
 			<tr>
-				<td class="nobr bold">
-					{icon name="queue" label="Queue:"}
+				<td class="nobr">
+					{icon name="queue" label="Queue:" label_class="bold"}
 				</td>
 				<td>
 					<select size="1" name="queue" {tip text="You can select queue to limit results"}>
@@ -183,8 +183,8 @@
 				</td>
 			</tr>
 			<tr>
-				<td class="nobr bold">
-					{icon name="customer" label="Customers:"}
+				<td class="nobr">
+					{icon name="customer" label="Customers:" label_class="bold"}
 				</td>
 				<td class="nobr bold">
 					{t a="<input type=\"text\" name=\"times\" size=\"3\">" b="<input type=\"text\" name=\"days\" size=\"3\">"}Customers requesting more than $a times in last $b days{/t}
@@ -192,8 +192,8 @@
 			</tr>
 			{if ConfigHelper::checkPrivilege('helpdesk_advanced_operations')}
 			<tr>
-				<td class="nobr bold">
-					{icon name="delete" label="Removed:"}
+				<td class="nobr">
+					{icon name="delete" label="Removed:" label_class="bold"}
 				</td>
 				<td>
 					<select size="1" name="removed" {tip text="You can select status to limit results"}>
@@ -205,8 +205,8 @@
 			</tr>
 			{/if}
 			<tr>
-				<td class="nobr bold">
-					{icon name="queue" label="Categories:"}
+				<td class="nobr">
+					{icon name="queue" label="Categories:" label_class="bold"}
 				</td>
 				<td>
 					<table>

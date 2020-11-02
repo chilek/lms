@@ -20,16 +20,16 @@
     </THEAD>
     <TBODY>
 	<TR>
-		<TD class="bold nobr">
-            {icon name="helpdesk" label="Subject:" class="fa-fw"}
+		<TD class="nobr">
+            {icon name="helpdesk" label="Subject:" class="fa-fw" label_class="bold"}
 		</TD>
 		<TD>
 			<INPUT type="search" size="50" name="search[subject]" value="{$search.subject}" {tip text="Enter subject"}>
 		</TD>
 	</TR>
 	<TR>
-		<TD class="bold nobr">
-            {icon name="mail" label="Body:" class="fa-fw"}
+		<TD class="nobr">
+            {icon name="mail" label="Body:" class="fa-fw" label_class="bold"}
 		</TD>
 		<TD>
 			<INPUT type="search" size="50" name="search[body][pattern]" value="{$search.body.pattern}" {tip text="Enter body fragment"}>
@@ -40,8 +40,8 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD class="bold nobr">
-            {icon name="customer" label="Requestor:" class="fa-fw"}
+		<TD class="nobr">
+            {icon name="customer" label="Requestor:" class="fa-fw" label_class="bold"}
 		</TD>
 		<TD>
 			<TABLE width="100%" cellpadding="1">
@@ -62,8 +62,8 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD class="bold nobr">
-            {icon name="location" label="Address:" class="fa-fw"}
+		<TD class="nobr">
+            {icon name="location" label="Address:" class="fa-fw" label_class="bold"}
 		</TD>
 		<TD class="nobr">
 			<INPUT type="text" name="search[address]" VALUE="{$search.address}">
@@ -72,8 +72,8 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD class="bold nobr">
-            {icon name="owner" label="Owner:" class="fa-fw"}
+		<TD class="nobr">
+            {icon name="owner" label="Owner:" class="fa-fw" label_class="bold"}
 		</TD>
 		<TD>
 			<SELECT size="1" name="search[owner]" {tip text="Select user/owner of the ticket"}>
@@ -85,8 +85,8 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD class="bold nobr">
-            {icon name="queue" label="Queue:" class="fa-fw"}
+		<TD class="nobr">
+            {icon name="queue" label="Queue:" class="fa-fw" label_class="bold"}
 		</TD>
 		<TD>
 			<SELECT size="1" name="search[queue][]" {tip text="Select queue" class="lms-ui-multiselect" trigger="queue"} multiple data-default-value="{trans("- all -")}">
@@ -97,8 +97,8 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD class="bold nobr">
-            {icon name="status" label="Status" class="fa-fw"}
+		<TD class="nobr">
+            {icon name="status" label="Status" class="fa-fw" label_class="bold"}
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="search[state]" {tip text="Select ticket status"}>
@@ -110,8 +110,8 @@
 			</SELECT>
 		</TD>
 	<TR>
-		<TD class="bold nobr">
-            {icon name="service" label="Service:"  class="fa-fw"}
+		<TD class="nobr">
+            {icon name="service" label="Service:"  class="fa-fw" label_class="bold"}
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="search[service]" {tip text="Select ticket service" }>
@@ -122,8 +122,8 @@
 			</SELECT>
 		</TD>
 	<TR>
-		<TD class="bold nobr">
-        {icon name="type" label="Ticket type:" class="fa-fw"}
+		<TD class="nobr">
+        {icon name="type" label="Ticket type:" class="fa-fw" label_class="bold"}
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="search[type]" {tip text="Select ticket type" }>
@@ -135,8 +135,8 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD class="bold nobr">
-            {icon name="priority" label="Priority:" class="fa-fw"}
+		<TD class="nobr">
+            {icon name="priority" label="Priority:" class="fa-fw" label_class="bold"}
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="search[priority]" {tip text="Select ticket priority"}>
@@ -148,8 +148,8 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD class="bold nobr">
-            {icon name="uptime" label="Min. Uptime" class="fa-fw"}
+		<TD class="nobr">
+            {icon name="uptime" label="Min. Uptime" class="fa-fw" label_class="bold"}
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="search[uptime]" {tip text="Select ticket uptime"}>
@@ -161,8 +161,8 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD class="bold nobr valign-top">
-            {icon name="queue" label="Categories:" class="fa-fw"}
+		<TD class="nobr valign-top">
+            {icon name="queue" label="Categories:" class="fa-fw" label_class="bold"}
 		</TD>
 		<TD class="nobr">
 			{include file="rt/rtcategoryselection.html" name_prefix="search[categories]" categories=$categories}
@@ -170,8 +170,8 @@
 	</TR>
 	{if ConfigHelper::checkPrivilege('helpdesk_advanced_operations')}
 	<TR>
-		<TD class="bold nobr">
-            {icon name="delete" label="Removed:" class="fa-fw"}
+		<TD class="nobr">
+            {icon name="delete" label="Removed:" class="fa-fw" label_class="bold"}
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="search[removed]" {tip text="Select ticket status"}>
@@ -183,7 +183,7 @@
 	</TR>
 	{/if}
 	<TR>
-        <TD class="bold nobr">{icon name="netnode" label="Network node:" class="fa-fw"}</TD>
+        <TD class="nobr">{icon name="netnode" label="Network node:" class="fa-fw" label_class="bold"}</TD>
 		<TD class="nobr">
 			<SELECT name="search[netnodeid]" {tip text="Select network node (optional)" trigger="netnodeid"} onchange="xajax_netnode_changed($(this).val(), $('#netdevid').val())">
 				<OPTION value="">{trans("- none -")}</OPTION>
@@ -194,14 +194,14 @@
 		</TD>
 	</TR>
 	<TR>
-        <TD class="bold nobr">{icon name="netdev" label="Device:" class="fa-fw"}</TD>
+        <TD class="nobr">{icon name="netdev" label="Device:" class="fa-fw" label_class="bold"}</TD>
 		<TD class="nobr" id="rtnetdevs">
 			{include file="rt/rtnetdevs.html" form="search"}
 		</TD>
 	</TR>
     <TR>
-		<TD class="bold nobr">
-            {icon name="verifier" label="Verifier:" field_id="rtverifiers"}
+		<TD class="nobr">
+            {icon name="verifier" label="Verifier:" field_id="rtverifiers" label_class="bold"}
 		</TD>
 		<TD>
 			<SELECT size="1" name="search[verifierid]" {tip text="Select user/owner of the ticket"}>
@@ -213,8 +213,8 @@
 		</TD>
     </TR>
     <TR>
-		<TD class="bold nobr">
-            {icon name="deadline" label="Deadline expired:" class="fa-fw"}
+		<TD class="nobr">
+            {icon name="deadline" label="Deadline expired:" class="fa-fw" label_class="bold"}
 		</TD>
 		<TD>
 			<INPUT TYPE="checkbox" NAME="search[expired]" VALUE="1" {tip text="Check if ticket is expired" trigger="expired"}>

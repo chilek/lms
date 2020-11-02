@@ -14,11 +14,11 @@
 </TABLE>
 <TABLE WIDTH="640" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
 	<TR>
-		<TD CLASS="HEAD" ALIGN="CENTER" WIDTH="1%">
-			<B>{trans("No.")}</B>
+		<TD class="head bold" ALIGN="CENTER" WIDTH="1%">
+			{trans("No.")}
 		</TD>
-		<TD CLASS="HEAD" ALIGN="CENTER" WIDTH="1%">
-			<B>{trans("Ticket No.")}</B>
+		<TD class="head bold" ALIGN="CENTER" WIDTH="1%">
+			{trans("Ticket No.")}
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER" WIDTH="1%">
 			{trans("Request date")}
@@ -36,8 +36,8 @@
 		<TD ALIGN="CENTER">
 			{counter}.
 		</TD>
-		<TD ALIGN="CENTER">
-			<B>{$ticket.id|string_format:"%08d"}</B>
+		<TD class="bold" ALIGN="CENTER">
+			{$ticket.id|string_format:"%08d"}
 		</TD>
 		<TD ALIGN="CENTER">
 			{$ticket.createtime|date_format:"%Y/%m/%d"}

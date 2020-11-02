@@ -20,8 +20,8 @@
 					<COL style="width: 98%;">
 				</COLGROUP>
 				<TR>
-					<TD class="nobr bold">
-						{icon name="queue" label="Name:"}
+					<TD class="nobr">
+						{icon name="queue" label="Name:" label_class="bold"}
 					</TD>
 					<TD>
 						<INPUT TYPE="TEXT" NAME="queue[name]" VALUE="{$queue.name}" {tip text="Enter name" trigger="name" bold=1}>
@@ -49,24 +49,24 @@
 								<COL style="width: 98px;">
 							</COLGROUP>
 							<TR>
-								<TD class="nobr bold">
-									{icon name="mail" label="E-mail"}
+								<TD class="nobr">
+									{icon name="mail" label="E-mail" label_class="bold"}
 								</TD>
 								<TD>
 									<INPUT TYPE="email" SIZE="50" NAME="queue[email]" VALUE="{$queue.email}" {tip text="Enter e-mail address" trigger="email"}>
 								</TD>
 							</TR>
 							<TR>
-								<TD class="nobr bold">
-									{icon name="description" label="Description"}
+								<TD class="nobr">
+									{icon name="description" label="Description" label_class="bold"}
 								</TD>
 								<TD>
 									<TEXTAREA NAME="queue[description]" COLS="50" ROWS="3" {tip text="Enter additional information (optional)"}>{$queue.description}</TEXTAREA>
 								</TD>
 							</TR>
                             <TR>
-                                <TD class="bold nobr">
-                                    {icon name="verifier" label="<!rt>Verifier:"}
+                                <TD class="nobr">
+                                    {icon name="verifier" label="<!rt>Verifier:" label_class="bold"}
                                 </TD>
                                 <TD>
                                     <SELECT size="1" name="queue[verifierid]" {tip text="Select user" trigger="verifierid"}>
@@ -78,8 +78,8 @@
                                 </TD>
                             </TR>
 							<TR>
-								<TD class="nobr bold">
-									{icon name="user" label="Permissions:"}
+								<TD class="nobr">
+									{icon name="user" label="Permissions:" label_class="bold"}
 								</TD>
 								<TD>
 									<TABLE class="lmsbox">

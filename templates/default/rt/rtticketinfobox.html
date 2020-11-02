@@ -47,8 +47,8 @@
 					<TD style="width: 50%;">
 						<TABLE>
 							<TR>
-								<TD style="width: 1%;" class="bold nobr">
-									{icon class="fa-fw" name="subject" label="Subject:"}
+								<TD style="width: 1%;" class="nobr">
+									{icon class="fa-fw" name="subject" label="Subject:" label_class="bold"}
 								</TD>
 								<TD style="width: 99%;" class="nobr">
 									{$ticket.subject|escape|truncate:50:"...":true}
@@ -56,8 +56,8 @@
 							</TR>
 							{if $ticket.service != SERVICE_OTHER}
 							<TR>
-								<TD style="width: 1%;" class="bold nobr">
-									{icon class="fa-fw" name="service" label="Service type:"}
+								<TD style="width: 1%;" class="nobr">
+									{icon class="fa-fw" name="service" label="Service type:" label_class="bold"}
 								</TD>
 								<TD style="width: 99%;" class="nobr">
                                     {$_SERVICETYPES[$ticket.service]}
@@ -66,8 +66,8 @@
 							{/if}
 							{if $ticket.type != RT_TYPE_OTHER}
 							<TR>
-								<TD style="width: 1%;" class="bold nobr">
-									{icon class="fa-fw" name="type" label="Ticket type:"}
+								<TD style="width: 1%;" class="nobr">
+									{icon class="fa-fw" name="type" label="Ticket type:" label_class="bold"}
 								</TD>
 								<TD style="width: 99%;" class="nobr">
                                     {$_RT_TYPES[$ticket.type].label}
@@ -76,8 +76,8 @@
 							{/if}
 							{if $ticket.customerid}
 							<TR>
-								<TD style="width: 1%;" class="bold nobr">
-									{icon class="fa-fw" name="customer" label="Customer:"}
+								<TD style="width: 1%;" class="nobr">
+									{icon class="fa-fw" name="customer" label="Customer:" label_class="bold"}
 								</TD>
 								<TD style="width: 99%;" class="nobr">
 									<A href="?m=customerinfo&amp;id={$ticket.customerid}">{$ticket.customername|escape} ({$ticket.customerid|string_format:"%04d"})</A>
@@ -86,8 +86,8 @@
 							{/if}
 							{if $ticket.requestor_userid || $ticket.requestor_name || $ticket.requestor_mail || $ticket.requestor_phone}
 							<TR>
-								<TD style="width: 1%;" class="bold nobr">
-									{icon class="fa-fw" name="requestor" label="Requestor:"}
+								<TD style="width: 1%;" class="nobr">
+									{icon class="fa-fw" name="requestor" label="Requestor:" label_class="bold"}
 								</TD>
 								<TD style="width: 99%;" class="nobr">
 									{if $ticket.requestor_userid}
@@ -105,8 +105,8 @@
 							</TR>
 							{/if}
 							<TR>
-								<TD style="width: 1%;" class="bold nobr">
-									{icon class="fa-fw" name="timetable" label="Create time:"}
+								<TD style="width: 1%;" class="nobr">
+									{icon class="fa-fw" name="timetable" label="Create time:" label_class="bold"}
 								</TD>
 								<TD style="width: 99%;">
 									{$ticket.createtime|date_format:"%Y/%m/%d %H:%M:%S"}
@@ -114,8 +114,8 @@
 							</TR>
 							{if $ticket.creatorid}
 							<TR>
-								<TD style="width: 1%;" class="bold nobr">
-									{icon class="fa-fw" name="user" label="Created by:"}
+								<TD style="width: 1%;" class="nobr">
+									{icon class="fa-fw" name="user" label="Created by:" label_class="bold"}
 								</TD>
 								<TD style="width: 99%;">
 									<A href="?m=userinfo&amp;id={$ticket.creatorid}">{$ticket.creator}</a>
@@ -123,8 +123,8 @@
 							</TR>
 							{/if}
 							<TR>
-								<TD style="width: 1%;" class="bold nobr">
-									{icon class="fa-fw" name="uptime" label="Uptime:"}
+								<TD style="width: 1%;" class="nobr">
+									{icon class="fa-fw" name="uptime" label="Uptime:" label_class="bold"}
 								</TD>
 								<TD style="width: 99%;">
 									{$ticket.uptime}
@@ -132,8 +132,8 @@
 							</TR>
 							{if !empty($ticket.categories)}
 							<TR>
-								<TD style="width: 1%;" class="valign-top bold nobr">
-									{icon class="fa-fw" name="categories" label="Categories:"}
+								<TD style="width: 1%;" class="valign-top nobr">
+									{icon class="fa-fw" name="categories" label="Categories:" label_class="bold"}
 								</TD>
 								<TD style="width: 99%;" class="nobr">
 									{foreach from=$categories item=category}
@@ -149,8 +149,8 @@
 					<TD style="width: 50%;" class="valign-top">
 						<TABLE>
 							<TR>
-								<TD style="width: 1%;" class="bold nobr">
-									{icon class="fa-fw" name="owner" label="Owner:"}
+								<TD style="width: 1%;" class="nobr">
+									{icon class="fa-fw" name="owner" label="Owner:" label_class="bold"}
 								</TD>
 								<TD style="width: 99%;">
 									{if $ticket.owner}
@@ -161,8 +161,8 @@
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 1%;" class="bold nobr">
-									{icon class="fa-fw" name="verifier" label="Verifier:"}
+								<TD style="width: 1%;" class="nobr">
+									{icon class="fa-fw" name="verifier" label="Verifier:" label_class="bold"}
 								</TD>
 								<TD style="width: 99%;">
 									{if $ticket.verifierid}
@@ -174,8 +174,8 @@
 							</TR>
 							{if $ticket.deadline}
 							<TR>
-								<TD style="width: 1%;" class="bold nobr">
-									{icon class="fa-fw" name="timetable" label="<!rt>Deadline:"}
+								<TD style="width: 1%;" class="nobr">
+									{icon class="fa-fw" name="timetable" label="<!rt>Deadline:" label_class="bold"}
 								</TD>
 								<TD style="width: 99%;">
 									{if $ticket.deadline}
@@ -187,16 +187,16 @@
 							</TR>
 							{/if}
 							<TR>
-								<TD style="width: 1%;" class="bold nobr">
-									{icon class="fa-fw" name="queue" label="Queue:"}
+								<TD style="width: 1%;" class="nobr">
+									{icon class="fa-fw" name="queue" label="Queue:" label_class="bold"}
 								</TD>
 								<TD style="width: 99%;">
 									<A href="?m=rtqueueview&amp;id={$ticket.queueid}">{$ticket.queuename}</A>
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 1%;" class="bold nobr">
-									{icon class="fa-fw" name="status" label="Status:"}
+								<TD style="width: 1%;" class="nobr">
+									{icon class="fa-fw" name="status" label="Status:" label_class="bold"}
 								</TD>
 								<TD style="width: 99%;">
 									{$_RT_STATES[$ticket.state].label}
@@ -204,8 +204,8 @@
 							</TR>
 							{if $ticket.cause}
 							<TR>
-								<TD style="width: 1%;" class="bold nobr">
-									{icon class="fa-fw" name="cause" label="Cause:"}
+								<TD style="width: 1%;" class="nobr">
+									{icon class="fa-fw" name="cause" label="Cause:" label_class="bold"}
 								</TD>
 								<TD style="width: 99%;">
 									{if $ticket.cause==2}{trans("company's side")}
@@ -216,16 +216,16 @@
 							{/if}
 							{if $ticket.deleted == 1 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
 							<TR>
-								<TD style="width: 1%;" class="bold nobr">
-									{icon class="fa-fw" name="user" label="Remover:"}
+								<TD style="width: 1%;" class="nobr">
+									{icon class="fa-fw" name="user" label="Remover:" label_class="bold"}
 								</TD>
 								<TD style="width: 99%;">
 									<A href="?m=userinfo&id={$ticket.deluserid}">{$ticket.delusername|escape}</A>
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 1%;" class="bold nobr">
-									{icon class="fa-fw" name="remove" label="Remove date:"}
+								<TD style="width: 1%;" class="nobr">
+									{icon class="fa-fw" name="remove" label="Remove date:" label_class="bold"}
 								</TD>
 								<TD style="width: 99%;">
 									{$ticket.deltime|date_format:"%Y/%m/%d %H:%M.%S"}
@@ -234,8 +234,8 @@
 							{/if}
 							{if $ticket.source}
 							<TR>
-								<TD class="bold nobr">
-									{icon class="fa-fw" name="source" label="Ticket source:"}
+								<TD class="nobr">
+									{icon class="fa-fw" name="source" label="Ticket source:" label_class="bold"}
 								</TD>
 								<TD>
 									{$_RT_SOURCES[$ticket.source]}
@@ -244,8 +244,8 @@
 							{/if}
 							{if $ticket.priority}
 							<TR>
-								<TD class="bold nobr">
-									{icon class="fa-fw" name="priority" label="Priority:"}
+								<TD class="nobr">
+									{icon class="fa-fw" name="priority" label="Priority:" label_class="bold"}
 								</TD>
 								<TD>
 									<span style="{$_RT_PRIORITY_STYLES[$ticket.priority]}">{$_RT_PRIORITIES[$ticket.priority]}</span>
@@ -254,8 +254,8 @@
 							{/if}
 							{if $ticket.address_id}
 							<TR>
-								<TD class="bold nobr">
-									{icon class="fa-fw" name="location" label="Location:"}
+								<TD class="nobr">
+									{icon class="fa-fw" name="location" label="Location:" label_class="bold"}
 								</TD>
 								<TD>
 									{$ticket.location}
@@ -264,8 +264,8 @@
 							{/if}
 							{if $ticket.nodeid}
 							<TR>
-								<TD class="bold nobr">
-									{icon class="fa-fw" name="node" label="Node:"}
+								<TD class="nobr">
+									{icon class="fa-fw" name="node" label="Node:" label_class="bold"}
 								</TD>
 								<TD>
 									<a href="?m=nodeinfo&id={$ticket.nodeid}">
@@ -276,8 +276,8 @@
 							{/if}
 							{if $ticket.netnodeid}
 							<TR>
-								<TD class="bold nobr">
-									{icon class="fa-fw" name="netnode" label="Network Device Node:"}
+								<TD class="nobr">
+									{icon class="fa-fw" name="netnode" label="Network Device Node:" label_class="bold"}
 								</TD>
 								<TD>
 									<A href="?m=netnodeinfo&id={$ticket.netnodeid}">{$ticket.netnode_name}</A>
@@ -286,8 +286,8 @@
 							{/if}
 							{if $ticket.netdevid}
 							<TR>
-								<TD class="bold nobr">
-									{icon class="fa-fw" name="netdev" label="Device:"}
+								<TD class="nobr">
+									{icon class="fa-fw" name="netdev" label="Device:" label_class="bold"}
 								</TD>
 								<TD>
 									<A href="?m=netdevinfo&id={$ticket.netdevid}">{$ticket.netdev_name}</A>
@@ -296,8 +296,8 @@
 							{/if}
 							{if $ticket.invprojectid}
 							<TR>
-								<TD class="bold nobr">
-									{icon class="fa-fw" name="invproject" label="Investment project:"}
+								<TD class="nobr">
+									{icon class="fa-fw" name="invproject" label="Investment project:" label_class="bold"}
 								</TD>
 								<TD>
 									{$ticket.invproject_name}</A>
@@ -306,8 +306,8 @@
 							{/if}
 							{if $ticket.parentid}
 							<TR>
-								<TD class="bold">
-									{icon class="fa-fw" name="parentticket" label="Parent ticket:"}
+								<TD>
+									{icon class="fa-fw" name="parentticket" label="Parent ticket:" label_class="bold"}
 								</TD>
 								<TD>
 									#{$ticket.parent.id|string_format:"%06d"} <a href="?m=rtticketview&id={$ticket.parent.id}">{$ticket.parent.name}</a><br>
@@ -316,8 +316,8 @@
 							{/if}
 							{if $ticket.childtickets}
                                                         <TR>
-                                                                <TD class="bold">
-                                                                    {icon class="fa-fw" name="childticket" label="Child tickets:"}
+                                                                <TD>
+                                                                    {icon class="fa-fw" name="childticket" label="Child tickets:" label_class="bold"}
                                                                 </TD>
 								<TD>
 								{foreach $ticket.childtickets as $t}
@@ -328,8 +328,8 @@
                                                         {/if}
 							{if $ticket.relatedtickets}
 							<TR>
-								<TD class="bold nobr">
-									{icon class="fa-fw" name="relatedticket" label="Related tickets:"}
+								<TD class="nobr">
+									{icon class="fa-fw" name="relatedticket" label="Related tickets:" label_class="bold"}
 								</TD>
 								<TD>
 									{foreach $ticket.relatedtickets as $i}

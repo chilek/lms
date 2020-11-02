@@ -13,8 +13,8 @@
 	</COLSPAN>
     <THEAD>
 	<TR>
-	    <TD class="nobr bold">
-            {icon name="queue" label="Name:"}
+	    <TD class="nobr">
+            {icon name="queue" label="Name:" label_class="bold"}
 	    </TD>
 	    <TD class="bold">
 		<INPUT TYPE="TEXT" NAME="category[name]" VALUE="{$category.name}" {tip text="Enter category name" trigger="name" bold=1}>({$category.id|string_format:"%04d"})
@@ -23,8 +23,8 @@
     </THEAD>
     <TBODY>
 	<TR>
-	    <TD class="nobr bold">
-            {icon name="descripton" label="Description:"}
+	    <TD class="nobr">
+            {icon name="description" label="Description:" label_class="bold"}
 	    </TD>
 	    <TD>
 		<TEXTAREA NAME="category[description]" COLS="50" ROWS="2" {tip text="Enter additional information (optional)"}>{$category.description}</TEXTAREA>
@@ -32,33 +32,25 @@
 	</TR>
 	<TR>
 		<TD>
-            {icon name="queue"}
+            {icon name="queue" label="<!rt-category>Background:" label_class="bold"}
 		</TD>
 		<TD class="bold">
-			<label for="background-style">
-				{trans("<!rt-category>Background:")}
-			</label>
-		</TD>
-		<TD class="bold">
+			<label for="background-style"></label>
 			<input id="background-style" type="color" name="category[background-style]" value="{if empty($category['background-style'])}#ffffff{else}{$category['background-style']}{/if}">
 		</TD>
 	</TR>
 	<TR>
 		<TD>
-            {icon name="queue"}
+            {icon name="queue" label="<!rt-category>Text:" label_class="bold"}
 		</TD>
 		<TD class="bold">
-			<label for="text-style">
-				{trans("<!rt-category>Text:")}
-			</label>
-		</TD>
-		<TD class="bold">
+			<label for="text-style"></label>
 			<input id="text-style" type="color" name="category[text-style]" value="{if empty($category['text-style'])}#000000{else}{$category['text-style']}{/if}">
 		</TD>
 	</TR>
 	<TR>
 	    <TD>
-            {icon name="user" label="Users:"}
+            {icon name="user" label="Users:" label_class="bold"}
 	    </TD>
 	    <TD>
 		    <TABLE class="lmsbox">
@@ -97,7 +89,7 @@
 	    </TD>
 	</TR>
 	<TR>
-		<TD COLSPAN="3" class="lms-ui-box-buttons">
+		<TD COLSPAN="2" class="lms-ui-box-buttons">
 			{button type="submit" icon="save" label="Submit"}
 			{button id="delete-rtcategory" icon="delete" label="Delete" data_name="{$category.name}"
 				href="?m=rtcategorydel&id={$category.id}" data-name="{$category.name}"}

@@ -11,18 +11,15 @@
 	</COLGROUP>
     <THEAD>
         <TR>
-		<TD class="nobr bold">
-		    {icon name="helpdesk" label="Subject:"}
-		</TD>
-		<TD class="bold">
-			{$message.subject|escape}
+		<TD colspan="2" class="nobr">
+		    {icon name="helpdesk" label="{t}Subject:{/t} {$message.subject|escape}" label_class="bold"}
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	<TR>
 		<TD>
-            {icon name="uptime" label="Date:"}
+            {icon name="uptime" label="Date:" label_class="bold" class="fa-fw"}
 		</TD>
 		<TD class="nobr">
 			{$message.createtime|date_format:"%Y/%m/%d %H:%M.%S"}
@@ -33,7 +30,7 @@
 		    {if $message.userid}
 				{icon name="user"}
 			{else}
-				{icon name="requestor" class="fa-fw" label="Requestor:"}
+				{icon name="requestor" class="fa-fw" label="Requestor:" label_class="bold"}
 			{/if}
 		</TD>
 		<TD>
@@ -52,8 +49,8 @@
 	</TR>
 	{if $message.headers}
 	<TR>
-		<TD class="nobr bold">
-            {icon name="message" label="Headers:"}
+		<TD class="nobr">
+            {icon name="message" label="Headers:" label_class="bold"}
 		</TD>
 		<TD>
 			<TEXTAREA rows="5" cols="100" readonly>{$message.headers|escape}</TEXTAREA>
@@ -62,8 +59,8 @@
 	{/if}
 	{if $message.messageid}
 	<TR>
-		<TD class="nobr bold">
-            {icon name="message" label="Message-Id:"}
+		<TD class="nobr">
+            {icon name="message" label="Message-Id:" label_class="bold" class="fa-fw"}
 		</TD>
 		<TD>
 			{$message.messageid|escape}
@@ -72,8 +69,8 @@
 	{/if}
 	{if $message.replyto}
 	<TR>
-		<TD class="nobr bold">
-            {icon name="message" label="Reply-To:"}
+		<TD class="nobr">
+            {icon name="message" label="Reply-To:" label_class="bold" class="fa-fw"}
 		</TD>
 		<TD>
 			{$message.replyto|escape}
@@ -83,7 +80,7 @@
 	{if $message.inreplyto}
 	<TR>
 		<TD>
-            {icon name="message" label="In-Reply-To:"}
+            {icon name="message" label="In-Reply-To:" label_class="bold" class="fa-fw"}
 		</TD>
 		<TD>
 			<A href="?m=rtmessageview&id={$message.inreplyto}">{$message.inreplytoid|escape}</A>
@@ -92,7 +89,7 @@
 	{/if}
 	<TR>
 		<TD>
-            {icon name="edit" label="Message:"}
+            {icon name="edit" label="Message:" label_class="bold" class="fa-fw"}
 		</TD>
 		<TD>
 			<TEXTAREA rows="5" cols="100" readonly>{$message.body|escape}</TEXTAREA>
@@ -101,7 +98,7 @@
 	{if $message.attachments}
 	<TR>
 		<TD>
-            {icon name="fileupload" label="Attachments:"}
+            {icon name="fileupload" label="Attachments:" label_class="bold" class="fa-fw"}
 		</TD>
 		<TD>
 			{foreach from=$message.attachments item=a}
@@ -116,10 +113,7 @@
 	{if $message.deleted == 1 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
 	<TR>
 		<TD class="nobr">
-
-		</TD>
-		<TD class="nobr bold">
-			{trans("Remover:")}
+			{icon name="user" label="Remover:" label_class="bold fa-fw"}
 		</TD>
 		<TD>
 			<A href="?m=userinfo&id={$message.deluserid}">{$message.delusername|escape}</A>
@@ -127,10 +121,7 @@
 	</TR>
 	<TR>
 		<TD class="nobr">
-
-		</TD>
-		<TD class="nobr bold">
-			{trans("Remove date:")}
+			{icon name="timetable" label="Remove date:" label_class="bold fa-fw"}
 		</TD>
 		<TD>
 			{$message.deltime|date_format:"%Y/%m/%d %H:%M.%S"}
@@ -138,7 +129,7 @@
 	</TR>
 	{/if}
 	<TR>
-		<TD colspan="3" class="nobr text-right">
+		<TD colspan="2" class="nobr text-right">
 			{button type="link-button" href="?m=rtmessageadd&id={$message.id}&ticketid={$message.ticketid}" icon="message" label="Reply"}
 			{button type="link-button" href="?m=rtticketview&id={$message.ticketid}" icon="cancel" label="Cancel"}
 		</TD>

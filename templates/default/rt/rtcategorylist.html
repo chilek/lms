@@ -19,11 +19,11 @@
             {icon name="queue" label="Category"}
             {icon name="optional-info" label="Description"}
 		</TD>
-		<TD class="bold text-center">
+		<TD class="text-center bold">
 			{trans("<!rt-category>Look:")}
 		</TD>
-		<TD class="nobr bold">
-            {icon name="owner" label="Owners"}
+		<TD class="nobr">
+            {icon name="owner" label="Owners" label_class="bold"}
 		</TD>
 		<TD class="text-center">
 			{trans("New:")}
@@ -46,7 +46,7 @@
             {icon name="queue"}
 			{$category.name}<BR>
 			{if $category.description}
-				{icon name="optional-info"} {$category.description}
+                {icon name="optional-info" label="{$category.description}"}
 			{/if}
 		</TD>
 		<TD class="bold text-center">

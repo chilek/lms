@@ -120,10 +120,10 @@
 			{trans("Requests causes (last year):")}
 		</TD>
 		<TD>
-			{trans("company's side")}: <B>{$stats.2.num|default:0}</B>,
-			{trans("customer's side")}: <B>{$stats.1.num|default:0}</B>,
-			{trans("unknown/other<!plural>")}: <B>{$stats.0.num|default:0}</B>,
-			{trans("all")}: <B>{$stats.0.num+$stats.1.num+$stats.2.num}</B>
+			{trans("company's side")}: {$stats.2.num|default:0},
+			{trans("customer's side")}: {$stats.1.num|default:0},
+			{trans("unknown/other<!plural>")}: {$stats.0.num|default:0},
+			{trans("all")}: {$stats.0.num+$stats.1.num+$stats.2.num}
 		</TD>
 	</TR>
 </TABLE>

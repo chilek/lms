@@ -14,8 +14,8 @@
 </TABLE>
 <TABLE WIDTH="640" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
 	<TR>
-		<TD CLASS="HEAD" ALIGN="CENTER" WIDTH="1%">
-			<B>{trans("No.")}</B>
+		<TD class="bold head" align="center">
+			{trans("No.")}
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER" WIDTH="95%">
 			{trans("Customer")}
@@ -39,8 +39,8 @@
 		<TD ALIGN="CENTER">
 			{counter}
 		</TD>
-		<TD>
-			<B>{$list[list].customername|truncate:"50":"...":true} ({$list[list].customerid|string_format:"%04d"})</B>
+		<TD class="bold">
+			{$list[list].customername|truncate:"50":"...":true} ({$list[list].customerid|string_format:"%04d"})
 		</TD>
 		<TD ALIGN="RIGHT">
 			{$list[list].total}
@@ -63,11 +63,11 @@
 	</TR>
 	{/section}
 	<TR class="grey">
-		<TD COLSPAN="2" ALIGN="RIGHT"><B>{trans("Total:")}</B></TD>
-		<TD ALIGN="RIGHT"><B>{sum array=$list column="total"}</B></TD>
-		<TD ALIGN="RIGHT"><B>{sum array=$list column="customer"}</B></TD>
-		<TD ALIGN="RIGHT"><B>{sum array=$list column="company"}</B></TD>
-		<TD ALIGN="RIGHT"><B>{sum array=$list column="other"}</B></TD>
+		<TD class="bold" COLSPAN="2" ALIGN="RIGHT">{trans("Total:")}</TD>
+		<TD class="bold" ALIGN="RIGHT">{sum array=$list column="total"}</TD>
+		<TD class="bold" ALIGN="RIGHT">{sum array=$list column="customer"}</TD>
+		<TD class="bold" ALIGN="RIGHT">{sum array=$list column="company"}</TD>
+		<TD class="bold" ALIGN="RIGHT">{sum array=$list column="other"}</TD>
 	</TR>
 </TABLE>
 {include file="clearfooter.html"}

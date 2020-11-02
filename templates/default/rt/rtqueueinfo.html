@@ -11,25 +11,24 @@
 	</COLGROUP>
     <THEAD>
 	<TR>
-	    <TD>
-        {icon name="queue"}
+	    <TD colspan="2">
+            {icon name="queue" label="{$queue.name} ({$queue.id|string_format:"%04d"})" label_class="bold"}
 	    </TD>
-	    <TD class="bold">{$queue.name} ({$queue.id|string_format:"%04d"})</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	{if $queue.email}
 	<TR>
-	    <TD class="nobr bold">
-        {icon name="mail" label="E-mail:"}
+	    <TD class="nobr">
+            {icon name="mail" label="E-mail:" label_class="bold"}
 	    </TD>
 	    <TD>{$queue.email}</TD>
 	</TR>
 	{/if}
 	{if $queue.description}
 	<TR>
-	    <TD class="nobr bold">
-            {icon name="description" label="Description:"}
+	    <TD class="nobr">
+            {icon name="description" label="Description:" label_class="bold"}
 	    </TD>
 	    <TD>
 		<TABLE cellpadding="5">
@@ -43,8 +42,8 @@
 	</TR>
 	{/if}
 	<TR>
-		<TD class="nobr bold">
-            {icon name="verifier" label="<!rt>Verifier:"}
+		<TD class="nobr">
+            {icon name="verifier" label="<!rt>Verifier:" label_class="bold"}
 		<TD>
 		{if $queue.verifierid}
 			<a href="?m=userinfo&id={$queue.verifier.id}">{$queue.verifier.name}</a>
@@ -54,8 +53,8 @@
 		</TD>
 	</TR>
 	<TR>
-	    <TD class="nobr bold">
-            {icon name="user" label="Privileges:"}
+	    <TD class="nobr">
+            {icon name="user" label="Privileges:" label_class="bold"}
 	    </TD>
 	    <TD>
 		    <TABLE class="lmsbox">
@@ -96,8 +95,8 @@
 	</TR>
 	{if !empty($queue.categories)}
 	<TR>
-		<TD class="nobr bold">
-            {icon name="queue" label="Default categories:"}
+		<TD class="nobr">
+            {icon name="queue" label="Default categories:" label_class="bold"}
 		</TD>
 		<TD>
 			<FIELDSET>
@@ -108,7 +107,7 @@
 	{/if}
 	{if $queue.newticketsubject}
 	<TR>
-		<TD class="nobr bold">
+		<TD class="nobr">
             {icon name="mail" label="New ticket customer notification subject:"}
 		</TD>
 		<TD>
@@ -134,8 +133,8 @@
 	{/if}
 	{if $queue.newmessagesubject}
 	<TR>
-		<TD class="nobr bold">
-            {icon name="mail" label="New message customer notification subject:"}
+		<TD class="nobr">
+            {icon name="mail" label="New message customer notification subject:" label_class="bold"}
 		</TD>
 		<TD>
 			{$queue.newmessagesubject|replace:"\n":"<BR>"}
@@ -144,8 +143,8 @@
 	{/if}
 	{if $queue.newmessagebody}
 	<TR>
-		<TD class="nobr bold">
-            {icon name="edit" label="New message customer notification body:"}
+		<TD class="nobr">
+            {icon name="edit" label="New message customer notification body:" label_class="bold"}
 		</TD>
 		<TD>
 			<TABLE cellpadding="5">
@@ -170,8 +169,8 @@
 	{/if}
 	{if $queue.resolveticketbody}
 	<TR>
-		<TD class="nobr bold">
-            {icon name="edit" label="Resolve ticket customer notification body:"}
+		<TD class="nobr">
+            {icon name="edit" label="Resolve ticket customer notification body:" label_class="bold"}
 		</TD>
 		<TD>
 			<TABLE cellpadding="5">
@@ -186,8 +185,8 @@
 	{/if}
 	{if $queue.verifierticketsubject}
 	<TR>
-		<TD class="nobr bold">
-            {icon name="edit" label="Ticket verifier notification subject:"}
+		<TD class="nobr">
+            {icon name="edit" label="Ticket verifier notification subject:" label_class="bold"}
 		</TD>
 		<TD>
 			<TABLE cellpadding="5">
@@ -202,8 +201,8 @@
 	{/if}
 	{if $queue.verifierticketbody}
 	<TR>
-		<TD class="nobr bold">
-            {icon name="edit" label="Ticket verifier notification body:"}
+		<TD class="nobr">
+            {icon name="edit" label="Ticket verifier notification body:" label_class="bold"}
 		</TD>
 		<TD>
 			<TABLE cellpadding="5">

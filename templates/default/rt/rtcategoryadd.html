@@ -13,8 +13,8 @@
 	</COLGROUP>
     <THEAD>
 	<TR>
-	    <TD class="nobr bold">
-        {icon name="queue" label="Name:"}
+	    <TD class="nobr">
+            {icon name="queue" label="Name:" label_class="bold"}
 	    </TD>
 	    <TD>
 		<INPUT TYPE="TEXT" NAME="category[name]" VALUE="{$category.name}" {tip text="Enter name" trigger="name" bold=1}>
@@ -23,8 +23,8 @@
     </THEAD>
     <TBODY class="lms-ui-multi-check">
 	<TR>
-	    <TD class="nobr bold">
-        {icon name="optional-info" label="Description"}
+	    <TD class="nobr">
+            {icon name="optional-info" label="Description" label_class="bold"}
 	    </TD>
 	    <TD>
 		<TEXTAREA NAME="category[description]" COLS="50" ROWS="2" {tip text="Enter additional information (optional)"}>{$category.description}</TEXTAREA>
@@ -32,12 +32,8 @@
 	</TR>
 	<TR>
 	    <TD>
-            {icon name="queue"}
-	    </TD>
-	    <TD class="bold">
-			<label for="background-style">
-				{trans("<!rt-category>Background:")}
-			</label>
+			{icon name="queue" label_class="bold" label="<!rt-category>Background:"}
+			<label for="background-style"></label>
 	    </TD>
 	    <TD class="bold">
 			<input id="background-style" type="color" name="category[background-style]" value="{if empty($category['background-style'])}#ffffff{else}{$category['background-style']}{/if}">
@@ -45,20 +41,16 @@
 	</TR>
 	<TR>
 		<TD>
-            {icon name="queue"}
-		</TD>
-		<TD class="bold">
-			<label for="text-style">
-				{trans("<!rt-category>Text:")}
-			</label>
+			{icon name="queue" label="<!rt-category>Text:" label_class="bold"}
+			<label for="text-style"></label>
 		</TD>
 		<TD class="bold">
 			<input id="text-style" type="color" name="category[text-style]" value="{if empty($category['text-style'])}#000000{else}{$category['text-style']}{/if}">
 		</TD>
 	</TR>
 	<TR>
-	    <TD class="nobr bold">
-            {icon name="owner" label="Users:"}
+	    <TD class="nobr">
+            {icon name="owner" label="Users:" label_class="bold"}
 	    </TD>
 	    <TD>
 		    <TABLE class="lmsbox">
@@ -98,7 +90,7 @@
 	    </TD>
 	</TR>
 	<TR>
-		<TD COLSPAN="3" class="lms-ui-box-buttons">
+		<TD COLSPAN="2" class="lms-ui-box-buttons">
 			{button type="submit" icon="save" label="Submit"}
 			{button icon="cancel" label="Cancel" onclick="location.href = '?m=rtcategorylist';"}
 		</TD>

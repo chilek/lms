@@ -18,11 +18,11 @@
 		<TD CLASS="grey bb fleftu" ALIGN="CENTER" WIDTH="1%" NOWRAP>
             {icon name="helpdesk"}
 		</TD>
-		<TD CLASS="grey bb fbt" ALIGN="CENTER" WIDTH="1%" NOWRAP>
-			<B>{$ticket.id|string_format:"%08d"}:</B>
+		<TD CLASS="grey bb fbt bold" ALIGN="CENTER" WIDTH="1%" NOWRAP>
+			{$ticket.id|string_format:"%08d"}:
 		</TD>
-		<TD CLASS="grey bb fbt" WIDTH="97%">
-			<B>{$ticket.subject|escape}</B>
+		<TD CLASS="grey bb fbt bold" WIDTH="97%">
+			{$ticket.subject|escape}
 		</TD>
 		<TD CLASS="grey bb frightu" ALIGN="CENTER" WIDTH="1%">
 			#{counter}

@@ -19,11 +19,11 @@
     <THEAD>
 	<TR>
 		<TD></TD>
-		<TD class="bold nobr">
-            {icon name="queue" label="Queue"}
+		<TD class="nobr">
+            {icon name="queue" label="Queue" label_class="bold"}
 		</TD>
-		<TD class="bold nobr">
-            {icon name="description" label="Description"}
+		<TD class="nobr">
+            {icon name="description" label="Description" label_class="bold"}
 		</TD>
 		<TD class="text-right nobr bold">
 			{trans("E-mail:")}
@@ -71,7 +71,7 @@
 	<TR class="highlight lms-ui-resource{if $queue.deleted == 1 && $queue.deltime != 0}-deleted{elseif $queue.delcount != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}-partly-deleted{else}{/if}"
 		data-target-url="?m=rtqueueview&id={$queue.id}" data-name="{$queue.name}"
 		data-popup-menu-title="{t a=$queue.name}Queue $a{/t}">
-		<TD class="nobr bold">
+		<TD class="nobr">
 		{if $queue.critical != 0}
             {icon name="critical"}
 		{else}
@@ -87,7 +87,7 @@
 		</TD>
 		<TD>
 			{if $queue.description}
-				{icon name="description"} {$queue.description}
+				{icon name="description" label="{$queue.description}"}
 			{/if}
 		<TD>
 			<A HREF="mailto:{$queue.email}">{$queue.email}</A>

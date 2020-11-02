@@ -23,24 +23,24 @@
     </THEAD>
     <TBODY>
 	<TR id="note-template-row"{if empty($notetemplates)} style="display: none;"{/if}>
-		<TD class="bold nobr">
-            {icon class="fa-fw" name="document" label="Note template:"}
+		<TD class="nobr">
+            {icon class="fa-fw" name="document" label="Note template:" label_class="bold"}
 		</TD>
 		<td id="note-templates">
 			{include file="rt/rtmessagetemplates.html" templates=$notetemplates tip="Select note template"}
 		</td>
 	</TR>
 	<TR>
-		<TD class="bold nobr">
-            {icon class="fa-fw" name="note" label="Note content:"}
+		<TD class="nobr">
+            {icon class="fa-fw" name="note" label="Note content:" label_class="bold"}
 		</TD>
 		<TD>
 			<TEXTAREA name="note[body]" cols="50" rows="5" {tip text="Enter note content" trigger="body"} >{$note.body}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR>
-		<TD class="bold nobr valign-top">
-            {icon class="fa-fw" name="upload" label="Attachments:"}
+		<TD class="nobr valign-top">
+            {icon class="fa-fw" name="upload" label="Attachments:" label_class="bold"}
 		</TD>
 		<TD>
 			{fileupload id="files" fileupload=$fileupload form="note-form"}
@@ -62,7 +62,7 @@
 	</COLGROUP>
     <TBODY>
 	<TR>
-		<TD class="bold nobr">
+		<TD class="nobr">
             {icon class="fa-fw" name="mail"}<label for="notify"> {trans("Notify users:")}</label>
 		</TD>
 		<TD>
@@ -70,8 +70,8 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD class="bold nobr">
-            {icon class="fa-fw" name="status" label="Status:"}
+		<TD class="nobr">
+            {icon class="fa-fw" name="status" label="Status:" label_class="bold"}
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="note[state]" id="state" {tip text="Select status" trigger="state"}>
@@ -87,8 +87,8 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD class="bold nobr">
-            {icon class="fa-fw" name="cause" label="Cause:"}
+		<TD class="nobr">
+            {icon class="fa-fw" name="cause" label="Cause:" label_class="bold"}
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="note[cause]" {tip text="Select ticket cause" trigger="cause"}>
@@ -99,8 +99,8 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD class="bold nobr">
-            {icon class="fa-fw" name="source" label="Ticket source:"}
+		<TD class="nobr">
+            {icon class="fa-fw" name="source" label="Ticket source:" label_class="bold"}
 		</TD>
 		<TD>
 			<SELECT size="1" name="note[source]" {tip text="Select ticket source" trigger="source"}>
@@ -111,8 +111,8 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD class="bold nobr">
-            {icon class="fa-fw" name="priority" label="Priority:"}
+		<TD class="nobr">
+            {icon class="fa-fw" name="priority" label="Priority:" label_class="bold"}
 		</TD>
 		<TD>
 			<SELECT size="1" name="note[priority]" {tip text="Set ticket priority" trigger="priority"}>
@@ -123,8 +123,8 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD class="bold nobr">
-            {icon class="fa-fw" name="queue" label="Queue:"}
+		<TD class="nobr">
+            {icon class="fa-fw" name="queue" label="Queue:" label_class="bold"}
 		</TD>
 		<TD>
 			<SELECT size="1" name="note[queueid]" {tip text="Select queue" trigger="queue"} onchange="xajax_queue_changed($(this).val(), $('#rtverifiers').val())">
@@ -135,8 +135,8 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD class="bold nobr">
-            {icon class="fa-fw" name="owner" label="Owner:"}
+		<TD class="nobr">
+            {icon class="fa-fw" name="owner" label="Owner:" label_class="bold"}
 		</TD>
 		<TD>
 			<SELECT size="1" name="note[owner]" {tip text="Select user" trigger="owner"}>
@@ -157,8 +157,8 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD class="bold nobr">
-            {icon class="fa-fw" name="verifier" label="Verifier:"}
+		<TD class="nobr">
+            {icon class="fa-fw" name="verifier" label="Verifier:" label_class="bold"}
 		</TD>
 		<TD>
 			{if !$ticket.verifierid || $ticket.verifierid == $layout.logid}
@@ -179,8 +179,8 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD class="bold nobr">
-            {icon class="fa-fw" name="deadline" label="<!rt>Deadline:"}
+		<TD class="nobr">
+            {icon class="fa-fw" name="deadline" label="<!rt>Deadline:" label_class="bold"}
 		</TD>
 		<TD>
 			{if ConfigHelper::checkConfig('phpui.helpdesk_allow_all_users_modify_deadline') || !$ticket.verifierid || $ticket.verifierid == $layout.logid}
@@ -194,8 +194,8 @@
 	</TR>
 
 	<TR>
-		<td class="bold nobr">
-            {icon class="fa-fw" name="queue" label="Category changes:"}
+		<td class="nobr">
+            {icon class="fa-fw" name="queue" label="Category changes:" label_class="bold"}
 		</td>
 		<td>
 			<SELECT name="note[category_change]" {tip text="Select category change type" trigger="category_change"}>
@@ -208,8 +208,8 @@
 	</TR>
 
 	<TR id="categories">
-		<td class="bold nobr">
-            {icon class="fa-fw" name="categories" label="Categories:"}
+		<td class="nobr">
+            {icon class="fa-fw" name="categories" label="Categories:" label_class="bold"}
 		</td>
 		<td>
 			{include file="rt/rtcategoryselection.html" name_prefix="note[categories]" categories=$categories}

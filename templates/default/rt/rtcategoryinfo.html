@@ -11,10 +11,9 @@
 	</COLSPAN>
     <THEAD>
 	<TR>
-	    <TD>
-            {icon name="queue"}
+	    <TD colspan="2">
+            {icon name="queue" label="{$category.name} ({$category.id|string_format:"%04d"})" label_class="bold"}
 	    </TD>
-	    <TD class="bold" colspan="2">{$category.name} ({$category.id|string_format:"%04d"})</TD>
 	</TR>
     </THEAD>
     <TBODY>
@@ -35,8 +34,8 @@
 	</TR>
 	{/if}
         <TR>
-            <TD class="nobr bold">
-                {icon name="queue" label="<!rt-category>Look:"}
+            <TD class="nobr">
+                {icon name="queue" label="<!rt-category>Look:" label_class="bold"}
             </TD>
             <TD>
 				<div class="lms-ui-category-label" style="{$category.style}">
@@ -46,7 +45,7 @@
         </TR>
 	<TR>
 	    <TD>
-            {icon name="user" label="Users:"}
+            {icon name="user" label="Users:" label_class="bold"}
 	    </TD>
 	    <TD>
 		    <TABLE class="lmsbox">
@@ -76,7 +75,7 @@
 	    </TD>
 	</TR>
 	<TR>
-		<TD COLSPAN="3" class="lms-ui-box-buttons">
+		<TD COLSPAN="2" class="lms-ui-box-buttons">
 			{button icon="helpdesk" label="Tickets" onclick="location.href = '?m=rtqueueview&catid={$category.id}';"}
 			{button icon="save" label="Edit" onclick="location.href = '?m=rtcategoryedit&id={$category.id}';"}
 			{button id="delete-rtcategory" icon="delete" label="Delete" data_name="{$category.name}"
