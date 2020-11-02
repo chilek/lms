@@ -41,7 +41,7 @@ if (isset($_GET['template'])) {
             header('Content-Type: text/javascript');
             echo file_get_contents($file);
         }
-        echo '$("#documentpromotions").toggle(true);';
+        echo '$("#documentpromotions").toggle(' . (empty($engine['promotion-schema-selection']) ? 'false' : 'true'). ');';
     }
     die;
 }
