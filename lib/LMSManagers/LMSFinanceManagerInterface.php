@@ -165,4 +165,6 @@ interface LMSFinanceManagerInterface
     public function isTariffEditable($id);
 
     public function getPromotionSchema($id);
+
+    public function getPromotion($id);
 }

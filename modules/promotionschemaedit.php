@@ -262,7 +262,8 @@ if (isset($_POST['schema'])) {
             array($schema['name'], $oldschema['promotionid'], $schema['id'])
         )) {
             $error['name'] = trans('Specified name is in use!');
-        } elseif (!empty($oldschema['assignmentcount']) && $oldschema['name'] != $schema['name'] && ConfigHelper::checkPrivilege('superuser') && !isset($warnings['schema-name-'])) {
+        } elseif (!empty($oldschema['assignmentcount']) && $oldschema['name'] != $schema['name']
+                && ConfigHelper::checkPrivilege('superuser') && !isset($warnings['schema-name-'])) {
             $warning['schema[name]'] = trans('Schema is assigned to liabilities, change its name can have impact on existing assignments!');
         }
     } else {

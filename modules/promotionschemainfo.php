@@ -28,7 +28,7 @@ $schema = $DB->GetRow(
     'SELECT s.*, p.id AS pid, p.name AS promotion
     FROM promotionschemas s
     JOIN promotions p ON (p.id = s.promotionid)
-    WHERE s.id = ? AND deleted = 0',
+    WHERE s.id = ? AND s.deleted = 0 AND p.deleted = 0',
     array(intval($_GET['id']))
 );
 

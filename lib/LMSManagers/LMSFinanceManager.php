@@ -4150,7 +4150,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     {
         $promotions = $this->db->GetAllByKey('SELECT id, name, description,
 				(CASE WHEN datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?) THEN 1 ELSE 0 END) AS valid
-			FROM promotions WHERE disabled <> 1 ORDER BY name', 'id');
+			FROM promotions WHERE disabled <> 1 AND deleted = 0 ORDER BY name', 'id');
 
         if (empty($promotions)) {
             return array();
@@ -4168,7 +4168,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			) AS tariffs
 			FROM promotions p
 			JOIN promotionschemas s ON (p.id = s.promotionid)
-			WHERE p.disabled <> 1 AND s.disabled <> 1 AND s.deleted = 0
+			WHERE p.disabled <> 1 AND p.deleted = 0 AND s.disabled <> 1 AND s.deleted = 0
 				AND EXISTS (SELECT 1 FROM promotionassignments
 				WHERE promotionschemaid = s.id LIMIT 1)
 			ORDER BY p.name, s.name');
@@ -4747,6 +4747,22 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 GROUP BY promotionschemaid
             ) a ON a.promotionschemaid = s.id
             WHERE s.id = ?',
+            array($id)
+        );
+    }
+
+    public function getPromotion($id)
+    {
+        return $this->db->GetRow(
+            'SELECT p.*, a.assignmentcount
+            FROM promotions p
+            LEFT JOIN (
+                SELECT promotionid, COUNT(*) AS assignmentcount
+                FROM promotionschemas s
+                JOIN assignments ON s.id = assignments.promotionschemaid
+                GROUP BY promotionid
+            ) a ON a.promotionid = p.id
+            WHERE p.id = ?',
             array($id)
         );
     }

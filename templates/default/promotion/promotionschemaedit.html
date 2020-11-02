@@ -41,7 +41,7 @@
 		<TD>
 			<INPUT type="text" name="schema[name]" value="{$schema.name}" size="40"
 				   {if !empty($schema.assignmentcount) && !ConfigHelper::checkPrivilege('superuser')}
-						readonly {tip text="Schema is assigned to liablities, so name edit is disabled!" trigger="name" bold=1}
+						readonly {tip text="Schema is assigned to liabilities, so name change is disabled!" trigger="name" bold=1}
 				   {else}
 					   {tip text="Enter schema name" trigger="name" bold=1}
 				   {/if}>
@@ -61,7 +61,7 @@
 				<SELECT name="schema[periods][]"
 						{if !empty($schema.assignmentcount) && !ConfigHelper::checkPrivilege('superuser')}
 							data-options='{ "disabled": true }'
-							{tip class="lms-ui-combobox" text="Schema is assigned to liabilities, so period edit is disabled!" bold=1}
+							{tip class="lms-ui-combobox" text="Schema is assigned to liabilities, so periods change is disabled!" bold=1}
 						{else}
 							{tip class="lms-ui-combobox" text="Select length of the period (in months)"}
 						{/if}

@@ -3353,6 +3353,12 @@ class LMS
         return $manager->getPromotionSchema($id);
     }
 
+    public function getPromotion($id)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->getPromotion($id);
+    }
+
     /**
      * VoIP functions
      */

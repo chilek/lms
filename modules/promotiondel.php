@@ -27,9 +27,13 @@
 $id = intval($_GET['id']);
 
 if ($id) {
-    $args = array(SYSLOG::RES_PROMO => $id);
+    $args = array(
+        SYSLOG::RES_PROMO => $id,
+        'deleted' => 1,
+    );
     if ($SYSLOG) {
-        $SYSLOG->AddMessage(SYSLOG::RES_PROMO, SYSLOG::OPER_DELETE, $args);
+        $SYSLOG->AddMessage(SYSLOG::RES_PROMO, SYSLOG::OPER_UPDATE, $args);
+        unset($args['deleted']);
         $schemas = $DB->GetCol('SELECT id FROM promotionschemas
 			WHERE promotionid = ?', array_values($args));
         if (!empty($schemas)) {
@@ -47,7 +51,7 @@ if ($id) {
             }
         }
     }
-    $DB->Execute('DELETE FROM promotions WHERE id = ?', array($id));
+    $DB->Execute('UPDATE promotions SET deleted = 1 WHERE id = ?', array($id));
 }
 
 $SESSION->redirect('?m=promotionlist');

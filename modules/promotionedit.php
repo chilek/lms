@@ -27,9 +27,12 @@
 $promotion = isset($_POST['promotion']) ? $_POST['promotion'] : null;
 $action = isset($_GET['action']) ? $_GET['action'] : null;
 
-if ($action == 'tariffdel' && ($tariffid = intval($_GET['tid']))) {
-    $promotionid = intval($_GET['id']);
+$promotionid = intval($_GET['id']);
+if (!$promotionid) {
+    $SESSION->redirect('?m=promotionlist');
+}
 
+if ($action == 'tariffdel' && ($tariffid = intval($_GET['tid']))) {
     $args = array(
         SYSLOG::RES_TARIFF => $tariffid,
         SYSLOG::RES_PROMO => $promotionid
@@ -65,15 +68,24 @@ if ($promotion) {
         $SESSION->redirect('?m=promotionlist');
     }
 
-    $promotion['id'] = intval($_GET['id']);
+    $promotion['id'] = $promotionid;
 
-    if ($promotion['name'] == '') {
-        $error['name'] = trans('Promotion name is required!');
-    } else if ($DB->GetOne(
-        'SELECT id FROM promotions WHERE name = ? AND id <> ?',
-        array($promotion['name'], $promotion['id'])
-    )) {
-        $error['name'] = trans('Specified name is in use!');
+    $oldpromotion = $LMS->getPromotion($promotionid);
+
+    if (empty($oldpromotion['assignmentcount']) || ConfigHelper::checkPrivilege('superuser')) {
+        if ($promotion['name'] == '') {
+            $error['name'] = trans('Promotion name is required!');
+        } else if ($DB->GetOne(
+            'SELECT id FROM promotions WHERE name = ? AND id <> ?',
+            array($promotion['name'], $promotion['id'])
+        )) {
+            $error['name'] = trans('Specified name is in use!');
+        } elseif (!empty($oldpromotion['assignmentcount']) && $oldpromotion['name'] != $promotion['name']
+                && ConfigHelper::checkPrivilege('superuser') && !isset($warnings['promotion-name-'])) {
+            $warning['promotion[name]'] = trans('Promotion is indirectly assigned to liabilities, change its name can have impact on existing assignments!');
+        }
+    } else {
+        $promotion['name'] = $oldpromotion['name'];
     }
 
     if (empty($promotion['datefrom'])) {
@@ -98,7 +110,7 @@ if ($promotion) {
         $error['dateto'] = trans('Incorrect date range!');
     }
 
-    if (!$error) {
+    if (!$error && !$warning) {
         $args = array(
             'name' => $promotion['name'],
             'description' => $promotion['description'],
@@ -116,10 +128,7 @@ if ($promotion) {
         $SESSION->redirect('?m=promotioninfo&id=' . $promotion['id']);
     }
 } else {
-    $promotion = $DB->GetRow(
-        'SELECT * FROM promotions WHERE id = ?',
-        array(intval($_GET['id']))
-    );
+    $promotion = $LMS->getPromotion($promotionid);
 
     if ($promotion['datefrom']) {
         $promotion['datefrom'] = date('Y/m/d', $promotion['datefrom']);
@@ -133,5 +142,6 @@ if ($promotion) {
 $layout['pagetitle'] = trans('Promotion Edit: $a', $promotion['name']);
 
 $SMARTY->assign('error', $error);
+$SMARTY->assign('warning', $warning);
 $SMARTY->assign('promotion', $promotion);
 $SMARTY->display('promotion/promotionedit.html');

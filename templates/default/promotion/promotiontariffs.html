@@ -12,9 +12,9 @@
 	<TBODY>
 	<TR id="promotiontariffs" style="display:none;">
 		<TD style="width: 100%;">
-			<TABLE class="lmsbox-inner">
+			<TABLE class="lmsbox-inner lms-ui-background-cycle">
 				<THEAD>
-				<TR>
+				<TR class="fbottom">
 					<TD style="width: 95%;" class="bold nobr">{trans("Name:")}</TD>
 					<TD style="width: 1%;" class="text-right nobr">{trans("ID:")}</TD>
 					<TD style="width: 1%;" class="text-right bold nobr">{trans("Value")}:</TD>
@@ -24,9 +24,8 @@
 				</TR>
 				</THEAD>
 				<TBODY>
-				{cycle values="light,lucid" print=false name=tariffs}
 				{foreach from=$promotion.tariffs item=tariff}
-				<TR class="highlight {cycle name=tariffs}"  >
+				<TR class="highlight">
 					<TD class="bold nobr" onClick="return self.location.href='?m=tariffinfo&id={$tariff.id}';">
 						{$tariff.name}
 					</TD>
