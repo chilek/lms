@@ -28,6 +28,15 @@
 <button id="lms-ui-back-to-top" class="lms-ui-button no-print">
 	<i class="lms-ui-icon-back"></i> {trans("Back to top")}
 </button>
+
+<script>
+
+	$(window).resize(function() {
+		var back_button = $("#lms-ui-back-to-top");
+		back_button.css('transform', 'translateX(' + back_button.outerWidth() + 'px)');
+	})
+
+</script>
 <script src="js/overlib.js"></script>
 
 {include file="modal-dialogs.html"}

@@ -113,6 +113,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                             (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END) * a.count AS value,
                                             (CASE WHEN t.currency IS NULL THEN l.currency ELSE t.currency END) AS currency,
                                             (CASE WHEN t.name IS NULL THEN l.name ELSE t.name END) AS name,
+                                            p.name AS promotion_name, ps.name AS promotion_schema_name, ps.length AS promotion_schema_length,
                                             d.number AS docnumber, d.type AS doctype, d.cdate, np.template,
                                             d.fullnumber,
                                             (CASE WHEN (a.dateto > ' . $now . ' OR a.dateto = 0) AND (a.at >= ' . $now . ' OR a.at < 531) THEN 0 ELSE 1 END) AS expired,
@@ -121,6 +122,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                             assignments a
                                             LEFT JOIN tariffs t     ON (a.tariffid = t.id)
                                             LEFT JOIN liabilities l ON (a.liabilityid = l.id)
+                                            LEFT JOIN promotionschemas ps ON ps.id = a.promotionschemaid
+                                            LEFT JOIN promotions p ON p.id = ps.promotionid
                                             LEFT JOIN documents d ON d.id = a.docid
                                             LEFT JOIN numberplans np ON np.id = d.numberplanid
                                           WHERE a.customerid=? ' . ($show_approved ? 'AND a.commited = 1 ' : '')
@@ -644,6 +647,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                     SYSLOG::RES_LIAB => null,
                                     'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
                                     'docid' => empty($data['docid']) ? null : $data['docid'],
+                                    'promotionschemaid' => $data['schemaid'],
                                     'commited' => $commited,
                                 );
 
@@ -727,6 +731,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                 SYSLOG::RES_LIAB    => null,
                                 'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
                                 'docid'             => empty($data['docid']) ? null : $data['docid'],
+                                'promotionschemaid' => $data['schemaid'],
                                 'commited'          => $commited,
                             );
 
@@ -764,6 +769,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             SYSLOG::RES_LIAB => empty($lid) ? null : $lid,
                             'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
                             'docid' => empty($data['docid']) ? null : $data['docid'],
+                            'promotionschemaid' => $data['schemaid'],
                             'commited' => $commited,
                         );
 
@@ -876,6 +882,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         SYSLOG::RES_LIAB    => !isset($lid) || empty($lid) ? null : $lid,
                         'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
                         'docid'             => empty($data['docid']) ? null : $data['docid'],
+                        'promotionschemaid' => null,
                         'commited'          => $commited,
                     );
 
@@ -944,6 +951,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         SYSLOG::RES_LIAB    => !isset($lid) || empty($lid) ? null : $lid,
                         'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
                         'docid'             => empty($data['docid']) ? null : $data['docid'],
+                        'promotionschemaid' => null,
                         'commited'          => $commited,
                     );
 
@@ -999,6 +1007,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     SYSLOG::RES_LIAB => !isset($lid) || empty($lid) ? null : $lid,
                     'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
                     'docid' => empty($data['docid']) ? null : $data['docid'],
+                    'promotionschemaid' => null,
                     'commited' => $commited,
                 );
 
@@ -1025,8 +1034,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 (tariffid, customerid, period, backwardperiod, at, count, invoice, separatedocument,
                 settlement, numberplanid,
                 paytype, datefrom, dateto, pdiscount, vdiscount, attribute, liabilityid, recipient_address_id,
-                docid, commited)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                docid, promotionschemaid, commited)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             array_values($args)
         );
 
@@ -3752,7 +3761,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $where = ' AND address ?LIKE? ' . $this->db->Escape('%' . $search . '%');
                     break;
                 case 'positions':
-                    $where = ' AND EXISTS (SELECT 1 FROM receiptcontents WHERE description ?LIKE? ' . $this->db->Escape('%' . $search . '%') . ')';
+                    $where = ' AND docid IN (SELECT docid FROM receiptcontents WHERE description ?LIKE? ' . $this->db->Escape('%' . $search . '%') . ')';
                     break;
             }
         }
@@ -3776,19 +3785,20 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				FROM documents
 				LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 				LEFT JOIN vusers ON (userid = vusers.id)
+				LEFT JOIN receiptcontents ON documents.id = docid
 				JOIN (
 					SELECT documents.id AS id,
 						(CASE WHEN SUM(value * documents.currencyvalue) > 0 THEN SUM(value * documents.currencyvalue) ELSE 0 END) AS income,
 						(CASE WHEN SUM(value * documents.currencyvalue) < 0 THEN -SUM(value * documents.currencyvalue) ELSE 0 END) AS expense 
 					FROM documents
-					JOIN receiptcontents ON documents.id = docid AND type = ?
+					JOIN receiptcontents ON documents.id = docid
 					WHERE regid = ?
 					GROUP BY documents.id '
                     . $having . '
 				) d ON d.id = documents.id
 				WHERE documents.type = ?'
                 .$where,
-                array(DOC_RECEIPT, $registry, DOC_RECEIPT)
+                array($registry, DOC_RECEIPT)
             );
             if (empty($summary)) {
                 return array('total' => 0, 'totalincome' => 0, 'totalexpense' => 0);
@@ -3803,7 +3813,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			FROM documents
 			LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 			LEFT JOIN vusers ON (userid = vusers.id)
-			LEFT JOIN receiptcontents ON (documents.id = docid AND type = ?)
+			LEFT JOIN receiptcontents ON (documents.id = docid)
 			WHERE regid = ?'
             .$where
             .' GROUP BY documents.id, currency, currencyvalue, number, cdate, customerid, documents.name, address, zip, city, numberplans.template,
@@ -3812,7 +3822,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             .($sqlord != '' ? $sqlord : '')
             . (isset($limit) ? ' LIMIT ' . $limit : '')
             . (isset($offset) ? ' OFFSET ' . $offset : ''),
-            array(DOC_RECEIPT, $registry)
+            array($registry)
         )) {
             foreach ($list as $idx => &$row) {
                 $row['number'] = docnumber(array(
@@ -4141,7 +4151,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     {
         $promotions = $this->db->GetAllByKey('SELECT id, name, description,
 				(CASE WHEN datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?) THEN 1 ELSE 0 END) AS valid
-			FROM promotions WHERE disabled <> 1 ORDER BY name', 'id');
+			FROM promotions WHERE disabled <> 1 AND deleted = 0 ORDER BY name', 'id');
 
         if (empty($promotions)) {
             return array();
@@ -4159,7 +4169,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			) AS tariffs
 			FROM promotions p
 			JOIN promotionschemas s ON (p.id = s.promotionid)
-			WHERE p.disabled <> 1 AND s.disabled <> 1
+			WHERE p.disabled <> 1 AND p.deleted = 0 AND s.disabled <> 1 AND s.deleted = 0
 				AND EXISTS (SELECT 1 FROM promotionassignments
 				WHERE promotionschemaid = s.id LIMIT 1)
 			ORDER BY p.name, s.name');
@@ -4725,5 +4735,36 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             WHERE tariffid = ?',
             array($id)
         ) > 0);
+    }
+
+    public function getPromotionSchema($id)
+    {
+        return $this->db->GetRow(
+            'SELECT s.*, a.assignmentcount
+            FROM promotionschemas s
+            LEFT JOIN (
+                SELECT promotionschemaid, COUNT(*) AS assignmentcount
+                FROM assignments
+                GROUP BY promotionschemaid
+            ) a ON a.promotionschemaid = s.id
+            WHERE s.id = ?',
+            array($id)
+        );
+    }
+
+    public function getPromotion($id)
+    {
+        return $this->db->GetRow(
+            'SELECT p.*, a.assignmentcount
+            FROM promotions p
+            LEFT JOIN (
+                SELECT promotionid, COUNT(*) AS assignmentcount
+                FROM promotionschemas s
+                JOIN assignments ON s.id = assignments.promotionschemaid
+                GROUP BY promotionid
+            ) a ON a.promotionid = p.id
+            WHERE p.id = ?',
+            array($id)
+        );
     }
 }

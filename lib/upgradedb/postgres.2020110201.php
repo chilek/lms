@@ -23,6 +23,8 @@
 
 $this->BeginTrans();
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('%version%', 'dbversion'));
+$this->Execute("ALTER TABLE promotions ADD COLUMN deleted smallint DEFAULT 0 NOT NULL");
+
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020110201', 'dbversion'));
 
 $this->CommitTrans();

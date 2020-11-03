@@ -3347,6 +3347,18 @@ class LMS
         return $manager->isTariffEditable($id);
     }
 
+    public function getPromotionSchema($id)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->getPromotionSchema($id);
+    }
+
+    public function getPromotion($id)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->getPromotion($id);
+    }
+
     /**
      * VoIP functions
      */

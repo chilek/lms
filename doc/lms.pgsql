@@ -879,6 +879,65 @@ CREATE TABLE liabilities (
 	PRIMARY KEY (id)
 );
 
+/* --------------------------------------------------------
+  Structure of table "promotions"
+-------------------------------------------------------- */
+DROP SEQUENCE IF EXISTS promotions_id_seq;
+CREATE SEQUENCE promotions_id_seq;
+DROP TABLE IF EXISTS promotions CASCADE;
+CREATE TABLE promotions (
+    id integer          DEFAULT nextval('promotions_id_seq'::text) NOT NULL,
+    name varchar(255)   NOT NULL,
+    description text    DEFAULT NULL,
+    disabled smallint   DEFAULT 0 NOT NULL,
+    deleted smallint    DEFAULT 0 NOT NULL,
+    datefrom integer	DEFAULT 0 NOT NULL,
+    dateto integer		DEFAULT 0 NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE (name)
+);
+
+/* --------------------------------------------------------
+  Structure of table "promotionschemas"
+-------------------------------------------------------- */
+DROP SEQUENCE IF EXISTS promotionschemas_id_seq;
+CREATE SEQUENCE promotionschemas_id_seq;
+DROP TABLE IF EXISTS promotionschemas CASCADE;
+CREATE TABLE promotionschemas (
+    id integer          DEFAULT nextval('promotionschemas_id_seq'::text) NOT NULL,
+    name varchar(255)   NOT NULL,
+    description text    DEFAULT NULL,
+    data text           DEFAULT NULL,
+    promotionid integer DEFAULT NULL
+        REFERENCES promotions (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    disabled smallint   DEFAULT 0 NOT NULL,
+    deleted smallint    DEFAULT 0 NOT NULL,
+    length smallint     DEFAULT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT promotionschemas_promotionid_key UNIQUE (promotionid, name)
+);
+
+/* --------------------------------------------------------
+  Structure of table "promotionassignments"
+-------------------------------------------------------- */
+DROP SEQUENCE IF EXISTS promotionassignments_id_seq;
+CREATE SEQUENCE promotionassignments_id_seq;
+DROP TABLE IF EXISTS promotionassignments CASCADE;
+CREATE TABLE promotionassignments (
+    id integer          DEFAULT nextval('promotionassignments_id_seq'::text) NOT NULL,
+    promotionschemaid integer DEFAULT NULL
+        REFERENCES promotionschemas (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    tariffid integer    DEFAULT NULL
+        REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    data text           DEFAULT NULL,
+    optional smallint   DEFAULT 0 NOT NULL,
+    label varchar(60) DEFAULT NULL,
+    orderid integer     NOT NULL DEFAULT 0,
+    backwardperiod smallint DEFAULT 0 NOT NULL,
+    PRIMARY KEY (id)
+);
+CREATE INDEX promotionassignments_tariffid_idx ON promotionassignments (tariffid);
+
 /* ----------------------------------------------------
  Structure of table "assignments"
 ---------------------------------------------------*/
@@ -914,6 +973,8 @@ CREATE TABLE assignments (
 	commited smallint DEFAULT 1 NOT NULL,
 	separatedocument smallint DEFAULT 0 NOT NULL,
 	count numeric(9,3) DEFAULT 1 NOT NULL,
+	promotionschemaid integer DEFAULT NULL
+		CONSTRAINT assignments_promotionschemaid_fkey REFERENCES promotionschemas (id) ON DELETE RESTRICT ON UPDATE CASCADE,
 	PRIMARY KEY (id)
 );
 CREATE INDEX assignments_tariffid_idx ON assignments (tariffid);
@@ -1548,62 +1609,6 @@ CREATE TABLE tariffassignments (
 );
 
 CREATE INDEX tariffassignments_tarifftagid_idx ON tariffassignments (tarifftagid);
-
-/* --------------------------------------------------------
-  Structure of table "promotions"
--------------------------------------------------------- */
-DROP SEQUENCE IF EXISTS promotions_id_seq;
-CREATE SEQUENCE promotions_id_seq;
-DROP TABLE IF EXISTS promotions CASCADE;
-CREATE TABLE promotions (
-    id integer          DEFAULT nextval('promotions_id_seq'::text) NOT NULL,
-    name varchar(255)   NOT NULL,
-    description text    DEFAULT NULL,
-    disabled smallint   DEFAULT 0 NOT NULL,
-    datefrom integer	DEFAULT 0 NOT NULL,
-    dateto integer		DEFAULT 0 NOT NULL,
-    PRIMARY KEY (id),
-    UNIQUE (name)
-);
-
-/* --------------------------------------------------------
-  Structure of table "promotionschemas"
--------------------------------------------------------- */
-DROP SEQUENCE IF EXISTS promotionschemas_id_seq;
-CREATE SEQUENCE promotionschemas_id_seq;
-DROP TABLE IF EXISTS promotionschemas CASCADE;
-CREATE TABLE promotionschemas (
-    id integer          DEFAULT nextval('promotionschemas_id_seq'::text) NOT NULL,
-    name varchar(255)   NOT NULL,
-    description text    DEFAULT NULL,
-    data text           DEFAULT NULL,
-    promotionid integer DEFAULT NULL
-        REFERENCES promotions (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    disabled smallint   DEFAULT 0 NOT NULL,
-    PRIMARY KEY (id),
-    CONSTRAINT promotionschemas_promotionid_key UNIQUE (promotionid, name)
-);
-
-/* --------------------------------------------------------
-  Structure of table "promotionassignments"
--------------------------------------------------------- */
-DROP SEQUENCE IF EXISTS promotionassignments_id_seq;
-CREATE SEQUENCE promotionassignments_id_seq;
-DROP TABLE IF EXISTS promotionassignments CASCADE;
-CREATE TABLE promotionassignments (
-    id integer          DEFAULT nextval('promotionassignments_id_seq'::text) NOT NULL,
-    promotionschemaid integer DEFAULT NULL
-        REFERENCES promotionschemas (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    tariffid integer    DEFAULT NULL
-        REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    data text           DEFAULT NULL,
-    optional smallint   DEFAULT 0 NOT NULL,
-    label varchar(60) DEFAULT NULL,
-    orderid integer     NOT NULL DEFAULT 0,
-    backwardperiod smallint DEFAULT 0 NOT NULL,
-    PRIMARY KEY (id)
-);
-CREATE INDEX promotionassignments_tariffid_idx ON promotionassignments (tariffid);
 
 /* ---------------------------------------------------------
   Structure of table "payments"
@@ -3877,6 +3882,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020102200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020110201');
 
 COMMIT;

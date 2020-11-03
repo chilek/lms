@@ -135,9 +135,15 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 	right: 1.8em;
 	bottom: 0.6em;
 	z-index: 60;
+	transform: translateX(120px);
+	transition: transform 400ms 300ms;
+	will-change: transform;
+	&:hover {
+		transform: translateX(10px) !important;
+	}
 
 	@media screen and (max-width: @mobile-max-width) {
-		font-size: 120%;
+		font-size: 130%;
 	}
 }
 
@@ -622,6 +628,13 @@ INPUT {
 		border-width: 1px;
 		vertical-align: middle;
 		background-color: @light;
+	}
+	&[readonly] {
+		color: @blend !important;
+		cursor: no-drop;
+		&:hover {
+			text-decoration: none;
+		}
 	}
 }
 
@@ -2024,6 +2037,9 @@ div.lms-ui-persistent-filter {
 
 .scombobox {
 	margin: 0;
+	&-disabled .scombobox-display {
+		cursor: no-drop;
+	}
 }
 
 .scombobox-dropdown-background {

@@ -154,12 +154,11 @@ if ($id && !isset($_POST['ticket'])) {
                     die(trans("Ticket have open assigned events!"));
                 } else {
                     if ($ticket['state'] != RT_RESOLVED) {
-                        $SESSION->redirect('?m=rtticketview&id=' . $id);
+                        $LMS->TicketChange($id, array('state' => RT_RESOLVED));
                     } else {
                         $SESSION->redirect('?m=rtqueueview'
                             . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
                     }
-                    $LMS->TicketChange($id, array('state' => RT_RESOLVED));
                 }
 
                 $queue = $LMS->GetQueueByTicketId($id);

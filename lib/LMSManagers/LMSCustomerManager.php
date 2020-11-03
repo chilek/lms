@@ -839,8 +839,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         }
 
         $flagmask = 0;
-        foreach ($flags as $flag) {
-            $flagmask |= intval($flag);
+        if (!empty($flags)) {
+            foreach ($flags as $flag) {
+                $flagmask |= intval($flag);
+            }
         }
         if ($flagmask) {
             $flag_condition = '(c.flags & ' . $flagmask . ($flagsqlskey == 'AND' ? ' = ' . $flagmask : ' > 0') . ')';
