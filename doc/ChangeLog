@@ -205,6 +205,8 @@ version 26-git (????-??-??):
     variables [chilan]
   - enhancement: promotions are in fact not deleted, but only marked as deleted [chilan]
   - improvement: improvement: auto-hide 'back to top' button [chilan]
+  - improvement: '%last_N_in_a_table' is supported in much more convenient way - symbol itself
+    represents whole table [chilan]
 
 version 25.0 (2020-05-15):
 

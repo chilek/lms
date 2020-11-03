@@ -368,9 +368,41 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         return $result;
     }
 
-    public function getLastNInTable($body, $customerid, $eol, $aggregate_documents = false)
+    public function getLastNInTable($body, $customerid, $format, $aggregate_documents = false)
     {
+        static $cols = null;
+
         if (preg_match('/%last_(?<number>[0-9]+)_in_a_table/', $body, $m)) {
+            if (empty($cols)) {
+                $cols = array(
+                    'date' => array(
+                        'length' => 0,
+                        'label' => trans('Date'),
+                        'align' => 'left',
+                    ),
+                    'liability' => array(
+                        'length' => 0,
+                        'label' => trans('Liability'),
+                        'align' => 'right',
+                    ),
+                    'payment' => array(
+                        'length' => 0,
+                        'label' => trans('Payment'),
+                        'align' => 'right',
+                    ),
+                    'balance' => array(
+                        'length' => 0,
+                        'label' => trans('Balance'),
+                        'align' => 'right',
+                    ),
+                    'description' => array(
+                        'length' => 53,
+                        'label' => trans('Description'),
+                        'align' => 'left',
+                    ),
+                );
+            }
+
             if ($aggregate_documents) {
                 $lastN = $this->GetCustomerShortBalanceList($customerid, 0, 'DESC', $aggregate_documents);
                 $lastN = array_slice($lastN, 0, $m['number']);
@@ -381,21 +413,63 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 $lN = '';
             } else {
                 // ok, now we are going to rise up system's load
-                $lN = '-----------+--------------+--------------+--------------+------------------------------------------------------------------------------' . $eol;
-                foreach ($lastN as $row_s) {
-                    $op_time = strftime("%Y/%m/%d ", $row_s['time']);
-                    if ($row_s['value'] < 0) {
-                        $op_liability = sprintf("%9.2f %s ", $row_s['value'], $row_s['currency']);
-                        $op_payment = '              ';
-                    } else {
-                        $op_liability = '              ';
-                        $op_payment = sprintf("%9.2f %s ", $row_s['value'], $row_s['currency']);
+                if ($format == 'html') {
+                    $lN = '<table><thead><tr>' . PHP_EOL;
+                    foreach ($cols as $col_name => $col) {
+                        $lN .= '<th style="border: 1px solid black; white-space: nowrap; padding: 0.3em; text-align: ' . $col['align'] . '; vertical-align: middle;">' . $col['label'] . '</th>' . PHP_EOL;
                     }
-                    $op_after = sprintf("%9.2f %s ", $row_s['after'], Localisation::getCurrentCurrency());
-                    $for_what = sprintf(" %-52s", $row_s['comment']);
-                    $lN .= $op_time . '|' . $op_liability . '|' . $op_payment . '|' . $op_after . '|' . $for_what . $eol;
+                    $lN .= '</thead><tbody>' . PHP_EOL;
+                } else {
+                    $chunks = array();
+                    $titles = array();
+                    foreach ($cols as $col_name => $col) {
+                        $cols[$col_name]['length'] = $col_length = max(mb_strlen($col['label']) + 2, 13, $col['length']);
+                        $chunks[] = str_repeat('-', $col_length);
+                        $titles[] = ' ' . str_pad($col['label'], $col_length - 2 + strlen($col['label']) - mb_strlen($col['label']), ' ', $col['align'] == 'right' ? STR_PAD_LEFT : STR_PAD_RIGHT) . ' ';
+                    }
+                    $horizontal_line = implode('+', $chunks);
+                    $lN = $horizontal_line . PHP_EOL;
+                    $lN .= implode('|', $titles) . PHP_EOL;
+                    $lN .= $horizontal_line . PHP_EOL;
                 }
-                $lN .= '-----------+--------------+--------------+--------------+------------------------------------------------------------------------------' . $eol;
+                foreach ($lastN as $row_s) {
+                    $cols['date']['value'] = strftime('%Y/%m/%d', $row_s['time']);
+                    if ($row_s['value'] < 0) {
+                        $cols['liability']['value'] = moneyf($row_s['value'] * -1, $row_s['currency']);
+                        $cols['payment']['value'] = '';
+                    } else {
+                        $cols['liability']['value'] = '';
+                        $cols['payment']['value'] = moneyf($row_s['value'], $row_s['currency']);
+                    }
+                    $cols['balance']['value'] = moneyf($row_s['after'], Localisation::getCurrentCurrency());
+                    $cols['description']['value'] = $row_s['comment'];
+                    if ($format == 'html') {
+                        $lN .= '<tr>' . PHP_EOL
+                            . '<td style="border: 1px solid black; white-space: nowrap; padding: 0.3em; text-align: center; vertical-align: middle;">'
+                                . $cols['date']['value'] . '</td>' . PHP_EOL . '
+                            <td style="border: 1px solid black; white-space: nowrap; padding: 0.3em; text-align: right; vertical-align: middle;">'
+                                . $cols['liability']['value'] . '</td>' . PHP_EOL . '
+                            <td style="border: 1px solid black; white-space: nowrap; padding: 0.3em; text-align: right; vertical-align: middle;'
+                                . ($cols['payment']['value'] > 0 ? ' color: green;' : ($cols['payment'] < 0 ? 'color: red;' : '')) . '">'
+                                . ($cols['payment']['value'] > 0 ? '+' : '') . $cols['payment']['value'] . '</td>' . PHP_EOL . '
+                            <td style="border: 1px solid black; white-space: nowrap; padding: 0.3em; text-align: right; vertical-align: middle;'
+                                . ($cols['balance']['value'] < 0 ? 'color: red;' : '') . '">' . $cols['balance']['value'] . '</td>' . PHP_EOL . '
+                            <td style="border: 1px solid black; white-space: nowrap; padding: 0.3em; text-align: left; vertical-align: middle;">'
+                                . $cols['description']['value'] . '</td>' . PHP_EOL
+                        . '</tr>' . PHP_EOL;
+                    } else {
+                        $chunks = array();
+                        foreach ($cols as $col_name => $col) {
+                            $chunks[] = ' ' . str_pad($col['value'], $col['length'] - 2, ' ', $col['align'] == 'right' ? STR_PAD_LEFT : STR_PAD_RIGHT) . ' ';
+                        }
+                        $lN .= implode('|', $chunks) . PHP_EOL;
+                    }
+                }
+                if ($format == 'html') {
+                    $lN .= '</tbody></table>' . PHP_EOL;
+                } else {
+                    $lN .= $horizontal_line . PHP_EOL;
+                }
             }
             $body = preg_replace('/%last_[0-9]+_in_a_table/', $lN, $body);
         }
