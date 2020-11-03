@@ -3785,20 +3785,20 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				FROM documents
 				LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 				LEFT JOIN vusers ON (userid = vusers.id)
-				LEFT JOIN receiptcontents ON documents.id = docid AND type = ?
+				LEFT JOIN receiptcontents ON documents.id = docid
 				JOIN (
 					SELECT documents.id AS id,
 						(CASE WHEN SUM(value * documents.currencyvalue) > 0 THEN SUM(value * documents.currencyvalue) ELSE 0 END) AS income,
 						(CASE WHEN SUM(value * documents.currencyvalue) < 0 THEN -SUM(value * documents.currencyvalue) ELSE 0 END) AS expense 
 					FROM documents
-					JOIN receiptcontents ON documents.id = docid AND type = ?
+					JOIN receiptcontents ON documents.id = docid
 					WHERE regid = ?
 					GROUP BY documents.id '
                     . $having . '
 				) d ON d.id = documents.id
 				WHERE documents.type = ?'
                 .$where,
-                array(DOC_RECEIPT, DOC_RECEIPT, $registry, DOC_RECEIPT)
+                array($registry, DOC_RECEIPT)
             );
             if (empty($summary)) {
                 return array('total' => 0, 'totalincome' => 0, 'totalexpense' => 0);
@@ -3813,7 +3813,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			FROM documents
 			LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 			LEFT JOIN vusers ON (userid = vusers.id)
-			LEFT JOIN receiptcontents ON (documents.id = docid AND type = ?)
+			LEFT JOIN receiptcontents ON (documents.id = docid)
 			WHERE regid = ?'
             .$where
             .' GROUP BY documents.id, currency, currencyvalue, number, cdate, customerid, documents.name, address, zip, city, numberplans.template,
@@ -3822,7 +3822,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             .($sqlord != '' ? $sqlord : '')
             . (isset($limit) ? ' LIMIT ' . $limit : '')
             . (isset($offset) ? ' OFFSET ' . $offset : ''),
-            array(DOC_RECEIPT, $registry)
+            array($registry)
         )) {
             foreach ($list as $idx => &$row) {
                 $row['number'] = docnumber(array(
