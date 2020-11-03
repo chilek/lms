@@ -298,7 +298,8 @@ if (isset($_POST['schema'])) {
             'name' => $schema['name'],
             'description' => $schema['description'],
             'data' => empty($oldschema['assignmentcount']) || ConfigHelper::checkPrivilege('superuser') ? implode(';', $data) : $oldschema['data'],
-            SYSLOG::RES_PROMOSCHEMA => $schema['id']
+            'length' => $length,
+            SYSLOG::RES_PROMOSCHEMA => $schema['id'],
         );
         $DB->Execute('UPDATE promotionschemas SET name = ?, description = ?, data = ?, length = ?
 			WHERE id = ?', array_values($args));
