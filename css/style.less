@@ -135,9 +135,15 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 	right: 1.8em;
 	bottom: 0.6em;
 	z-index: 60;
+	transform: translateX(120px);
+	transition: transform 400ms 300ms;
+	will-change: transform;
+	&:hover {
+		transform: translateX(10px) !important;
+	}
 
 	@media screen and (max-width: @mobile-max-width) {
-		font-size: 120%;
+		font-size: 130%;
 	}
 }
 
