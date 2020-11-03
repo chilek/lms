@@ -3761,7 +3761,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $where = ' AND address ?LIKE? ' . $this->db->Escape('%' . $search . '%');
                     break;
                 case 'positions':
-                    $where = ' AND EXISTS (SELECT 1 FROM receiptcontents WHERE description ?LIKE? ' . $this->db->Escape('%' . $search . '%') . ')';
+                    $where = ' AND docid IN (SELECT docid FROM receiptcontents WHERE description ?LIKE? ' . $this->db->Escape('%' . $search . '%') . ')';
                     break;
             }
         }
@@ -3785,6 +3785,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				FROM documents
 				LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 				LEFT JOIN vusers ON (userid = vusers.id)
+				LEFT JOIN receiptcontents ON documents.id = docid AND type = ?
 				JOIN (
 					SELECT documents.id AS id,
 						(CASE WHEN SUM(value * documents.currencyvalue) > 0 THEN SUM(value * documents.currencyvalue) ELSE 0 END) AS income,
@@ -3797,7 +3798,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				) d ON d.id = documents.id
 				WHERE documents.type = ?'
                 .$where,
-                array(DOC_RECEIPT, $registry, DOC_RECEIPT)
+                array(DOC_RECEIPT, DOC_RECEIPT, $registry, DOC_RECEIPT)
             );
             if (empty($summary)) {
                 return array('total' => 0, 'totalincome' => 0, 'totalexpense' => 0);
