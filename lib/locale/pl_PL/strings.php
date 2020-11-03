@@ -4945,3 +4945,5 @@ $_LANG['File name:'] = 'Nazwa pliku:';
 $_LANG['$a issued on $b for $c'] = '$a z dnia $b dla $c';
 $_LANG['$a issued on $b for $c (already assigned)'] = '$a z dnia $b dla $c (już przypisany)';
 $_LANG['No PHP Imagick extension installed!'] = 'Brak zainstalowanego rozszerzenia PHP Imagick!';
+
+$_LANG['indefinite period'] = 'czas nieokreślony';
