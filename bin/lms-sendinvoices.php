@@ -46,6 +46,7 @@ $parameters = array(
     'no-attachments' => 'n',
     'customerid:' => null,
     'customergroups:' => null,
+    'customer-status:' => null,
 );
 
 $long_to_shorts = array();
@@ -115,6 +116,8 @@ lms-sendinvoices.php
     --customergroups=<group1,group2,...>
                                 allow to specify customer groups to which notified customers
                                 should be assigned
+    --customer-status=<status1,status2,...>
+                                send invoices of customers with specified status only
 
 EOF;
     exit(0);
@@ -288,6 +291,19 @@ if ($backup || $archive) {
     $mdn_email = ConfigHelper::getConfig('sendinvoices.mdn_email', '', true);
     $part_size = isset($options['part-size']) ? $options['part-size'] : ConfigHelper::getConfig('sendinvoices.limit', '0');
 
+    $allowed_customer_status = Utils::determineAllowedCustomerStatus(
+        isset($options['customer-status'])
+            ? $options['customer-status']
+            : ConfigHelper::getConfig('sendinvoices.allowed_customer_status', ''),
+        -1
+    );
+
+    if (empty($allowed_customer_status)) {
+        $customer_status_condition = '';
+    } else {
+        $customer_status_condition = ' AND c.status IN (' . implode(',', $allowed_customer_status) . ')';
+    }
+
     if (isset($options['interval'])) {
         $interval = $options['interval'];
     } else {
@@ -298,7 +314,6 @@ if ($backup || $archive) {
     } else {
         $interval = intval($interval);
     }
-
 
     if (empty($sender_email)) {
         die("Fatal error: sender_email unset! Can't continue, exiting." . PHP_EOL);
@@ -443,7 +458,9 @@ $query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctyp
         . ($backup || $archive ? '' : " JOIN (SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
 				FROM customercontacts WHERE (type & ?) = ? GROUP BY customerid) m ON m.customerid = c.id")
         . " LEFT JOIN numberplans n ON n.id = d.numberplanid 
-		WHERE " . ($customerid ? 'c.id = ' . $customerid . ' AND ' : '') . "c.deleted = 0 AND d.cancelled = 0 AND d.type IN (?, ?, ?, ?)" . ($backup || $archive ? '' : " AND c.invoicenotice = 1")
+		WHERE 1 = 1" . $customer_status_condition
+            . ($customerid ? ' AND c.id = ' . $customerid : '')
+            . " AND c.deleted = 0 AND d.cancelled = 0 AND d.type IN (?, ?, ?, ?)" . ($backup || $archive ? '' : " AND c.invoicenotice = 1")
             . ($archive ? " AND d.archived = 0" : '') . "
 			AND d.cdate >= $daystart AND d.cdate <= $dayend"
             . ($customergroups ?: '')

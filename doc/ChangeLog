@@ -220,6 +220,8 @@ version 26-git (????-??-??):
     burdens [chilan]
   - enhancement: 'notify.allowed_customer_status' specified list of statuses which are required
     from customers to send them notifications (all statuses by default) [chilan]
+  - enhancement: 'sendinvoices.allowed_customer_status' specified list of statuses which
+    are required from customers to send them invoices [chilan]
 
 version 25.0 (2020-05-15):
 

@@ -460,9 +460,9 @@ $allowed_customer_status = Utils::determineAllowedCustomerStatus(
 );
 
 if (empty($allowed_customer_status)) {
-    $customer_where_condition = '';
+    $customer_status_condition = '';
 } else {
-    $customer_where_condition = ' AND c.status IN (' . implode(',', $allowed_customer_status) . ')';
+    $customer_status_condition = ' AND c.status IN (' . implode(',', $allowed_customer_status) . ')';
 }
 
 // let's go, fetch *ALL* assignments in given day
@@ -504,7 +504,7 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 	LEFT JOIN liabilities l ON (a.liabilityid = l.id)
 	LEFT JOIN divisions d ON (d.id = c.divisionid)
 	WHERE 1 = 1 " . ($customerid ? ' AND c.id = ' . $customerid : '')
-        . $customer_where_condition . "
+        . $customer_status_condition . "
 		AND a.commited = 1
 		AND ((a.period = ? AND at = ?)
 			OR ((a.period = ?
@@ -587,7 +587,7 @@ $query = "SELECT
 			LEFT JOIN liabilities l ON (a.liabilityid = l.id)
 			LEFT JOIN divisions d ON (d.id = c.divisionid)
 	    WHERE 1 = 1" . ($customerid ? ' AND c.id = ' . $customerid : '')
-          . $customer_where_condition . "
+          . $customer_status_condition . "
 	      AND t.type = ? AND
 	      a.commited = 1 AND
 		  ((a.period = ? AND at = ?) OR
