@@ -1210,6 +1210,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         $ticket['parent'] = $this->getTickets($ticket['parentid']);
         $ticket['relatedtickets'] = $this->GetRelatedTickets($id);
+        $ticket['subject'] = htmlspecialchars_decode($ticket['subject']);
 
         if (!$short) {
             $ticket['messages'] = $this->db->GetAll(

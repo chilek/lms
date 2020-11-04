@@ -51,7 +51,7 @@
 									<i class="lms-ui-icon-content lms-ui-icon-subject"></i>{trans("Subject:")}
 								</TD>
 								<TD style="width: 99%;" class="nobr">
-									{$ticket.subject|escape|truncate:50:"...":true}
+									{$ticket.subject|truncate:50:"...":true}
 								</TD>
 							</TR>
 							{if $ticket.service != SERVICE_OTHER}
