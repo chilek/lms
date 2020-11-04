@@ -293,7 +293,7 @@
 			var fromDate = parseInt($('[name="document[fromdate]"]').val());
 			$('#confirmdate').prop(
 				'required',
-				fromDate && fromDate > (Date.now() / 1000) + documentConfirmDateRequired * 86400
+				!$('#closed').prop('checked') && fromDate && fromDate > (Date.now() / 1000) + documentConfirmDateRequired * 86400
 			);
 		}
 
