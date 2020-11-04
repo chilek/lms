@@ -564,8 +564,8 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                     sort($tax_categories, SORT_NUMERIC);
                     if (!empty($tax_categories)) {
                         foreach ($tax_categories as $idx => $tax_category) {
-                            $jpk_data .= "\t\t<GTU_" . sprintf("%02d", $idx + 1)
-                                . ">1</GTU_" . sprintf("%02d", $idx + 1) . ">\n";
+                            $jpk_data .= "\t\t<GTU_" . sprintf("%02d", $tax_category)
+                                . ">1</GTU_" . sprintf("%02d", $tax_category) . ">\n";
                         }
                     }
 
