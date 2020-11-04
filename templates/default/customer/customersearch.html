@@ -60,6 +60,10 @@
 <INPUT type="submit" class="hiddenbtn">
 </p>
 <TABLE class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 99%;">
+	</colgroup>
 	<THEAD>
 	<TR>
 		<TD colspan="2" class="bold">
@@ -69,11 +73,20 @@
 	</THEAD>
 	<TBODY>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/customer.gif" alt=""> {trans("First/last or Company name:")}
 		</TD>
-		<TD style="width: 99%;">
+		<TD>
 			<INPUT type="text" name="search[customername]" VALUE="{$search.customername}">
+		</TD>
+	</TR>
+	<TR>
+		<TD class="bold nobr">
+			{icon name="karma" class="fw-fw"} {trans("Karma:")}
+		</TD>
+		<TD>
+			<INPUT type="text" name="search[karma]" VALUE="{$search.karma}"
+				{tip text="Negative value means customers with karma less or equal than specified, but positive means greater or equal then specified"}>
 		</TD>
 	</TR>
 	<TR>

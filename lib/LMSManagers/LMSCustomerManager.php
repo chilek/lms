@@ -1134,6 +1134,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         case 'ten':
                             $searchargs[] = "REPLACE(REPLACE(ten, '-', ''), ' ', '') ?LIKE? " . $this->db->Escape('%' . preg_replace('/[\- ]/', '', $value) . '%');
                             break;
+                        case 'karma':
+                            if (intval($value)) {
+                                $searchargs[] = 'c.karma ' . ($value > 0 ? '>' : '<') . '= ' . $value;
+                            }
+                            break;
                         default:
                             $searchargs[] = "$key ?LIKE? " . $this->db->Escape("%$value%");
                     }
@@ -2607,7 +2612,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         if (isset($timestamp) && time() - $timestamp <= $customerKarmaChangeInterval) {
             return array(
                 'karma' => $karma,
-                'error' => trans('You can\'t change karma so often!'),
+                'error' => trans('Karma is changed too often!'),
             );
         }
 

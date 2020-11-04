@@ -4951,4 +4951,5 @@ $_LANG['indefinite period'] = 'czas nieokreślony';
 $_LANG['Raise'] = 'Zwiększ';
 $_LANG['Lower'] = 'Obniż';
 $_LANG['Karma'] = 'Karma';
-$_LANG['You can\'t change karma so often!'] = 'Nie możesz zmieniać karmy tak często!';
+$_LANG['Karma is changed too often!'] = 'Zbyt częsta zmiana karmy!';
+$_LANG['Negative value means customers with karma less or equal than specified, but positive means greater or equal then specified'] = 'Wartość ujemna oznacz wyszukiwanie klientów z karmą mniejszą lub równą od podanej, zaś dodatna większą lub równą od podanej';
