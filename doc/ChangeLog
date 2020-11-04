@@ -213,6 +213,8 @@ version 26-git (????-??-??):
   - enhancement: imeplemented customer karma support; 'phpui.customer_karma_change_interval'
     configuration value ('86400' by default) control how ofter user can change karma for given
     customer [chilan]
+  - improvement: 'phpui.default_existing_assignment_operation' variable (with default 'keep' value)
+    controls what operations are applied to currently existing assignments [chilan]
 
 version 25.0 (2020-05-15):
 
