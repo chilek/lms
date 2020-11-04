@@ -39,6 +39,7 @@ $parameters = array(
     'channel:' => 'c:',
     'actions:' => 'a:',
     'customergroups:' => 'g:',
+    'customer-status:' => null,
 );
 
 $long_to_shorts = array();
@@ -104,6 +105,8 @@ lms-notify.php
 -g, --customergroups=<group1,group2,...>
                                 allow to specify customer groups to which notified customers
                                 should be assigned
+    --customer-status=<status1,status2,...>
+                                notify only customers with specified status
 
 EOF;
     exit(0);
@@ -296,7 +299,14 @@ $content_type = $format == 'html' ? 'text/html' : 'text/plain';
 $mail_content_type = $mail_format == 'html' ? 'text/html' : 'text/plain';
 $customergroups = ConfigHelper::getConfig($config_section . '.customergroups', '', true);
 $ignore_customer_consents = ConfigHelper::checkConfig($config_section . '.ignore_customer_consents');
-$allowed_customer_status = Utils::determineAllowedCustomerStatus(ConfigHelper::getConfig($config_section . '.allowed_customer_status', ''), -1);
+
+$allowed_customer_status =
+Utils::determineAllowedCustomerStatus(
+    isset($options['customer-status'])
+        ? $options['customer-status']
+        : ConfigHelper::getConfig($config_section . '.allowed_customer_status', ''),
+    -1
+);
 
 $content_types = array(
     MSG_MAIL => $mail_content_type,

@@ -420,7 +420,8 @@ class Utils
                     CSTATUS_DEBT_COLLECTION,
                 );
             }
-            return $statuses;
+
+            return array_keys($statuses);
         }
     }
 }

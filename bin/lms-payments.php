@@ -41,6 +41,7 @@ $parameters = array(
     'fakedate:' => 'f:',
     'customerid:' => null,
     'customergroups:' => 'g:',
+    'customer-status:' => null,
 );
 
 $long_to_shorts = array();
@@ -95,8 +96,10 @@ lms-payments.php
 -f, --fakedate=YYYY/MM/DD       override system date;
     --customerid=<id>           limit assignments to to specifed customer
 -g, --customergroups=<group1,group2,...>
-                                allow to specify customer groups to which notified customers
+                                allow to specify customer groups to which customers
                                 should be assigned
+    --customer-status=<status1,status2,...>
+                                take assignment of customers with specified status only
 
 EOF;
     exit(0);
@@ -450,7 +453,17 @@ if (!empty($assigns)) {
     }
 }
 
-$allowed_customer_status = array_flip(Utils::determineAllowedCustomerStatus(ConfigHelper::getConfig('payments.allowed_customer_status', '')));
+$allowed_customer_status = Utils::determineAllowedCustomerStatus(
+    isset($options['customer-status'])
+        ? $options['customer-status']
+        : ConfigHelper::getConfig('payments.allowed_customer_status', '')
+);
+
+if (empty($allowed_customer_status)) {
+    $customer_where_condition = '';
+} else {
+    $customer_where_condition = ' AND c.status IN (' . implode(',', $allowed_customer_status) . ')';
+}
 
 // let's go, fetch *ALL* assignments in given day
 $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_address_id,
@@ -490,7 +503,8 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 	LEFT JOIN tariffs t ON (a.tariffid = t.id)
 	LEFT JOIN liabilities l ON (a.liabilityid = l.id)
 	LEFT JOIN divisions d ON (d.id = c.divisionid)
-	WHERE " . ($customerid ? 'c.id = ' . $customerid . ' AND ' : '') . "c.status IN ?
+	WHERE 1 = 1 " . ($customerid ? ' AND c.id = ' . $customerid : '')
+        . $customer_where_condition . "
 		AND a.commited = 1
 		AND ((a.period = ? AND at = ?)
 			OR ((a.period = ?
@@ -505,7 +519,6 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 $services = $DB->GetAll(
     $query,
     array(
-        $allowed_customer_status,
         DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $last_dom ? 0 : $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
         $currtime, $currtime
     )
@@ -573,9 +586,9 @@ $query = "SELECT
 			LEFT JOIN tariffs t ON (a.tariffid = t.id)
 			LEFT JOIN liabilities l ON (a.liabilityid = l.id)
 			LEFT JOIN divisions d ON (d.id = c.divisionid)
-	    WHERE " . ($customerid ? 'c.id = ' . $customerid . ' AND ' : '') . "
-	      c.status IN ? AND
-	      t.type = ? AND
+	    WHERE 1 = 1" . ($customerid ? ' AND c.id = ' . $customerid : '')
+          . $customer_where_condition . "
+	      AND t.type = ? AND
 	      a.commited = 1 AND
 		  ((a.period = ? AND at = ?) OR
 		  ((a.period = ? OR
@@ -592,7 +605,7 @@ $query = "SELECT
 $billings = $DB->GetAll(
     $query,
     array(
-        CTYPES_PRIVATE, 1, $allowed_customer_status, SERVICE_PHONE,
+        CTYPES_PRIVATE, 1, SERVICE_PHONE,
         DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $last_dom ? 0 : $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
         $currtime, $currtime
     )
