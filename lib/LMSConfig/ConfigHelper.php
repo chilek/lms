@@ -111,7 +111,7 @@ class ConfigHelper
             return $value;
         }
 
-        if ($value === '' || is_null($value) ) {
+        if ($value === '' || is_null($value)) {
             return $default;
         }
 
