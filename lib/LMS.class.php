@@ -807,6 +807,18 @@ class LMS
         return $manager->delCustomerNote($id);
     }
 
+    public function raiseCustomerKarma($id)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->raiseCustomerKarma($id);
+    }
+
+    public function lowerCustomerKarma($id)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->lowerCustomerKarma($id);
+    }
+
     /*
      * Customer groups
      */

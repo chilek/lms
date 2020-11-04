@@ -950,4 +950,20 @@ class LMSSmartyPlugins
             . $options
             . '</select>';
     }
+
+    public static function karmaFunction(array $params, $template)
+    {
+        $id = isset($params['id']) ? $params['id'] : 'id';
+        $value = isset($params['value']) ? intval($params['value']) : 0;
+        $title = Localisation::trans(isset($params['title']) ? $params['title'] : 'Counter');
+        $handler = isset($params['handler']) ? $params['handler'] : '';
+        return '
+            <div class="lms-ui-karma-container" data-handler="' . $handler . '" data-id="' . $id . '">
+                <i class="lms-ui-icon-star" title="' . $title . '"></i>
+                (<span class="lms-ui-counter">' . $value . '</span>)
+                <i class="lms-ui-karma-button lms-ui-karma-raise lms-ui-icon-finger-up" title="' . Localisation::trans('Raise') . '"></i>
+                <i class="lms-ui-karma-button lms-ui-karma-lower lms-ui-icon-finger-down" title="' . Localisation::trans('Lower') . '"></i>
+            </div>
+        ';
+    }
 }

@@ -4947,3 +4947,8 @@ $_LANG['$a issued on $b for $c (already assigned)'] = '$a z dnia $b dla $c (już
 $_LANG['No PHP Imagick extension installed!'] = 'Brak zainstalowanego rozszerzenia PHP Imagick!';
 
 $_LANG['indefinite period'] = 'czas nieokreślony';
+
+$_LANG['Raise'] = 'Zwiększ';
+$_LANG['Lower'] = 'Obniż';
+$_LANG['Karma'] = 'Karma';
+$_LANG['You can\'t change karma so often!'] = 'Nie możesz zmieniać karmy tak często!';

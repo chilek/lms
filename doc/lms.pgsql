@@ -314,6 +314,7 @@ CREATE TABLE customers (
     paytype smallint 	DEFAULT NULL,
     documentmemo text   DEFAULT NULL,
     flags smallint NOT NULL DEFAULT 0,
+    karma smallint NOT NULL DEFAULT 0,
 	PRIMARY KEY (id)
 );
 CREATE INDEX customers_lastname_idx ON customers (lastname, name);
@@ -344,6 +345,21 @@ CREATE TABLE customernotes (
     message text NOT NULL,
     PRIMARY KEY (id)
 );
+
+/* --------------------------------------------------------
+  Structure of table "customerkarmalastchanges" (customerkarmalastchanges)
+-------------------------------------------------------- */
+CREATE SEQUENCE customerkarmalastchanges_id_seq;
+CREATE TABLE customerkarmalastchanges (
+    id integer NOT NULL DEFAULT nextval('customerkarmalastchanges_id_seq'::text),
+    timestamp integer NOT NULL,
+    customerid integer NOT NULL
+        CONSTRAINT customerkarmalastchanges_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    userid integer NOT NULL
+        CONSTRAINT customerkarmalastchanges_userid_fkey REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (id)
+);
+CREATE INDEX customerkarmalastchanges_timestamp_idx ON customerkarmalastchanges (timestamp);
 
 /* --------------------------------------------------------
   Structure of table "numberplans"
@@ -3882,6 +3898,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020110201');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020110400');
 
 COMMIT;

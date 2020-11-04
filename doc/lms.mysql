@@ -147,6 +147,7 @@ DROP TABLE IF EXISTS customer_addresses;
 DROP TABLE IF EXISTS zipcodes;
 DROP TABLE IF EXISTS states;
 DROP TABLE IF EXISTS numberplans;
+DROP TABLE IF EXISTS customerkarmalastchanges;
 DROP TABLE IF EXISTS customernotes;
 DROP TABLE IF EXISTS customerconsents;
 DROP TABLE IF EXISTS customers;
@@ -462,6 +463,7 @@ CREATE TABLE customers (
   paytype smallint  DEFAULT NULL,
   documentmemo text DEFAULT NULL,
   flags smallint NOT NULL DEFAULT 0,
+  karma smallint NOT NULL DEFAULT 0,
   PRIMARY KEY  (id),
   INDEX name (lastname, name),
   CONSTRAINT customers_creatorid_fkey
@@ -503,6 +505,23 @@ CREATE TABLE customernotes (
     CONSTRAINT customernotes_customerid_fkey
         FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+# --------------------------------------------------------
+#
+# Structure of table numberplans
+#
+CREATE TABLE customerkarmalastchanges (
+    id int(11) NOT NULL DEFAULT auto_increment,
+    timestamp int(11) NOT NULL,
+    customerid int(11) NOT NULL,
+    userid int(11) NOT NULL,
+    PRIMARY KEY (id),
+    INDEX customerkarmalastchanges_timestamp_idx (timestamp),
+    CONSTRAINT customerkarmalastchanges_customerid_fkey
+        FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT customerkarmalastchanges_userid_fkey
+        FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
+) Engine=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -3849,4 +3868,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020110201');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020110400');

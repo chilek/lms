@@ -129,4 +129,8 @@ interface LMSCustomerManagerInterface
     public function addCustomerNote($params);
 
     public function delCustomerNote($id);
+
+    public function raiseCustomerKarma($id);
+
+    public function lowerCustomerKarma($id);
 }

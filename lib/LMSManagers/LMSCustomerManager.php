@@ -2574,4 +2574,70 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         return $res;
     }
+
+    private function changeCustomerKarma($id, $diff)
+    {
+        $karma = $this->db->GetOne(
+            'SELECT karma FROM customerview WHERE id = ?',
+            array($id)
+        );
+        if (!isset($karma)) {
+            return array(
+                'karma' => 0,
+                'error' => trans('Access denied!'),
+            );
+        }
+
+        $customerKarmaChangeInterval = intval(ConfigHelper::getConfig('phpui.customer_karma_change_interval', '86400'));
+        if (!$customerKarmaChangeInterval) {
+            $customerKarmaChangeInterval = 86400;
+        }
+
+        $userid = Auth::GetCurrentUser();
+
+        $timestamp = $this->db->GetOne(
+            'SELECT timestamp
+            FROM customerkarmalastchanges
+            WHERE customerid = ? AND userid = ?',
+            array($id, $userid)
+        );
+        if (isset($timestamp) && time() - $timestamp <= $customerKarmaChangeInterval) {
+            return array(
+                'karma' => $karma,
+                'error' => trans('You can\'t change karma so often!'),
+            );
+        }
+
+        $karma += $diff;
+        $this->db->Execute(
+            'UPDATE customers SET karma = ? WHERE id = ?',
+            array($karma, $id)
+        );
+
+        if (isset($timestamp)) {
+            $this->db->Execute(
+                'UPDATE customerkarmalastchanges SET timestamp = ?NOW? WHERE customerid = ? AND userid = ?',
+                array($id, $userid)
+            );
+        } else {
+            $this->db->Execute(
+                'INSERT INTO customerkarmalastchanges (timestamp, customerid, userid) VALUES (?NOW?, ?, ?)',
+                array($id, $userid)
+            );
+        }
+
+        return array(
+            'karma' => $karma,
+        );
+    }
+
+    public function raiseCustomerKarma($id)
+    {
+        return $this->changeCustomerKarma($id, 1);
+    }
+
+    public function lowerCustomerKarma($id)
+    {
+        return $this->changeCustomerKarma($id, -1);
+    }
 }

@@ -35,7 +35,9 @@
 				<div class="bold">
 					{icon name="customer" class="{if $customerpanel} lms-ui-sortable-handle{/if}"}
 					{if $customerpanel}{trans("Owner:")}{/if}
-					{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}{if $customerinfo.extid} / {$customerinfo.extid}{/if}){if $customerinfo.deleted} <span class="lms-ui-alert">({trans("deleted customer")})</span>{/if}
+					{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}{if $customerinfo.extid} / {$customerinfo.extid}{/if})
+					{karma title="Karma" value=$customerinfo.karma handler="?m=customeredit&id={$customerinfo.id}&op=changekarma"}
+					{if $customerinfo.deleted} <span class="lms-ui-alert">({trans("deleted customer")})</span>{/if}
 				</div>
 				<div>
 					{if $customerpanel}<a href="?m=customerinfo&amp;id={$customerinfo.id}">{trans('Navigate to the customer')} &raquo;</a>{/if}&nbsp;
