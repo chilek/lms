@@ -166,11 +166,23 @@ if (array_key_exists('message-file', $options)) {
     die("Required message file parameter!" . PHP_EOL);
 }
 
-$fname = basename($message_file);
-if (preg_match('/lms-([0-9]+)-([0-9]+)/', $fname, $matches)) {
+if (!($lines = @file($message_file))) {
+    die("Message file doesn't exist!" . PHP_EOL);
+}
+
+$msgitemid = preg_grep('/^Msgid: ([0-9]+)$/', $lines);
+$phone = preg_grep('/^To: \+?([0-9]+)$/', $lines);
+if (!empty($msgitemid) && !empty($phone)) {
+    $msgitemid = preg_replace('/^Msgid:\s*/', '', trim(reset($msgitemid)));
+    $phone = preg_replace('/^To:\s*\+?/', '', trim(reset($phone)));
+}
+
+if (empty($msgitemid) && preg_match('/lms-([0-9]+)-([0-9]+)/', basename($message_file), $matches)) {
     $msgitemid = $matches[1];
     $phone = $matches[2];
+}
 
+if ($msgitemid && $phone) {
     if ($lines = @file($message_file)) {
         $line = preg_grep('/^Message_id:\s*/', $lines);
         if (!empty($line)) {

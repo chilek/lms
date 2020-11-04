@@ -205,9 +205,13 @@ version 26-git (????-??-??):
     variables [chilan]
   - enhancement: promotions are in fact not deleted, but only marked as deleted [chilan]
   - improvement: improvement: auto-hide 'back to top' button [chilan]
-  - enhancement: chaning ticket queues resets ticket state to NEW
-    (if config variable: rt.ticket_queue_change_resets_ticket_state is set) [interduo]
-
+  - improvement: '%last_N_in_a_table' is supported in much more convenient way - symbol itself
+    represents whole table [chilan]
+  - enhancement: new configuration variable 'phpui.tariff_presentation_format' ('%name' by default)
+    allows to change  tariff presentation form (some special symbols related to promotions
+    are supported) [chilan]
+  - enhancement: changing ticket queues resets ticket state to NEW
+    ('rt.ticket_queue_change_resets_ticket_state', default:false) [interduo]
 
 version 25.0 (2020-05-15):
 

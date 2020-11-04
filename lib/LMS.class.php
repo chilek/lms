@@ -645,10 +645,10 @@ class LMS
         return $manager->getCustomerShortBalanceList($customerid, $limit, $order);
     }
 
-    public function getLastNInTable($body, $customerid, $eol, $aggregate_documents = false)
+    public function getLastNInTable($body, $customerid, $format, $aggregate_documents = false)
     {
         $manager = $this->getCustomerManager();
-        return $manager->getLastNInTable($body, $customerid, $eol, $aggregate_documents);
+        return $manager->getLastNInTable($body, $customerid, $format, $aggregate_documents);
     }
 
     public function CustomerStats()
@@ -4460,7 +4460,7 @@ class LMS
             list ($now_y, $now_m) = explode('/', strftime("%Y/%m", time()));
             $body = preg_replace('/%lastday/', strftime("%d", mktime(12, 0, 0, $now_m + 1, 0, $now_y)), $body);
 
-            $body = $this->getLastNInTable($body, $doc['customerid'], '<eol>', $aggregate_documents);
+            $body = $this->getLastNInTable($body, $doc['customerid'], $mail_format, $aggregate_documents);
 
             $mailto = array();
             $mailto_qp_encoded = array();

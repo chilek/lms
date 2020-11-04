@@ -351,7 +351,10 @@ class LMSTcpdfTransferForm extends LMSDocument
         $this->data['division_city'] = $division['city'];
 
         // customer data
-        if ($customerinfo['accounts']) {
+        $customerinfo['accounts'] = array_filter($customerinfo['accounts'], function ($account) {
+            return ($account['type'] & CONTACT_INVOICES) > 0;
+        });
+        if (!empty($customerinfo['accounts'])) {
             $account = $customerinfo['accounts'][0]['account'];
         } else {
             $account = bankaccount($data['customerid'], $customerinfo['account'], isset($data['export']) ? $data['export'] : false);

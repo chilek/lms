@@ -86,6 +86,31 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             GROUP BY ca.currency', 'currency', array($id));
     }
 
+    private function getTariffPresentation($tariff)
+    {
+        static $tariffPresentationFormat = null;
+
+        if (!isset($tariffPresentationFormat)) {
+            $tariffPresentationFormat = ConfigHelper::getConfig('phpui.tariff_presentation_format', '%name');
+        }
+
+        return str_replace(
+            array(
+                '%name',
+                '%promotion_name',
+                '%promotion_schema_name',
+                '%promotion_schema_length',
+            ),
+            array(
+                $tariff['name'],
+                $tariff['promotion_name'],
+                $tariff['promotion_schema_name'],
+                empty($tariff['promotion_schema_length']) ? trans('indefinite period') : trans('$a months', $tariff['promotion_schema_length']),
+            ),
+            $tariffPresentationFormat
+        );
+    }
+
     public function GetCustomerAssignments($id, $show_expired = false, $show_approved = true)
     {
         $now = mktime(0, 0, 0, date('n'), date('d'), date('Y'));
@@ -167,6 +192,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         $row['period'] = trans('yearly');
                         break;
                 }
+
+                $row['name'] = $this->getTariffPresentation($row);
 
                 $row['docnumber'] = docnumber(array(
                     'number' => $row['docnumber'],

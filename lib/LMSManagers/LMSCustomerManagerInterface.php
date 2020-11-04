@@ -56,7 +56,7 @@ interface LMSCustomerManagerInterface
 
     public function GetCustomerShortBalanceList($customerid, $limit = 10, $order = 'DESC');
 
-    public function getLastNInTable($body, $customerid, $eol, $aggregate_documents = false);
+    public function getLastNInTable($body, $customerid, $format, $aggregate_documents = false);
 
     public function customerStats();
 
