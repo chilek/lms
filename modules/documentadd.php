@@ -78,13 +78,13 @@ if (isset($_POST['document'])) {
         $error['number'] = trans('Document with specified number exists!');
     }
 
-    if (!preg_match('/^[0-9]+$/', $document['fromdate'])) {
+    if (!preg_match('/^[0-9]*$/', $document['fromdate'])) {
         $error['fromdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
     } else {
         $document['fromdate'] = 0;
     }
 
-    if (!preg_match('/^[0-9]+$/', $document['todate'])) {
+    if (!preg_match('/^[0-9]*$/', $document['todate'])) {
         $error['todate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
     } else {
         $document['todate'] = 0;
@@ -94,7 +94,7 @@ if (isset($_POST['document'])) {
         $error['todate'] = trans('Start date can\'t be greater than end date!');
     }
 
-    if (!preg_match('/^[0-9]+$/', $document['confirmdate']) && !isset($document['closed'])) {
+    if (!preg_match('/^[0-9]*$/', $document['confirmdate']) && !isset($document['closed'])) {
         $error['confirmdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
     } else {
         $document['confirmdate'] = 0;

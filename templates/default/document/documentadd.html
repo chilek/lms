@@ -283,19 +283,20 @@
 			$('#document-file-row').toggle(parseInt($(this).val()) != 0);
 		});
 
-		$('#closed').change(function() {
-			$('#confirmdate').closest('tr').toggle(!$(this).prop('checked'));
-		});
-
 		var documentConfirmDateRequired = parseInt({$document_confirm_date_required});
 
 		function confirmDateRequired() {
 			var fromDate = parseInt($('[name="document[fromdate]"]').val());
 			$('#confirmdate').prop(
-				'required',
-				!$('#closed').prop('checked') && fromDate && fromDate > (Date.now() / 1000) + documentConfirmDateRequired * 86400
+					'required',
+					!$('#closed').prop('checked') && fromDate && fromDate > (Date.now() / 1000) + documentConfirmDateRequired * 86400
 			);
 		}
+
+		$('#closed').change(function() {
+			confirmDateRequired();
+			$('#confirmdate').closest('tr').toggle(!$(this).prop('checked'));
+		});
 
 		$('#fromdate').change(confirmDateRequired).change();
 	});
