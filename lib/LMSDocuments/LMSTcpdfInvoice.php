@@ -402,7 +402,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         $tmp = str_replace('%ten%', format_ten($this->data['division_ten'], $this->data['export']), $this->data['division_header']);
 
         if (!ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')
-            || empty($this->data['bankccounts'])) {
+            || empty($this->data['bankaccounts'])) {
             $accounts = array(bankaccount($this->data['customerid'], $this->data['account'], $this->data['export']));
         } else {
             $accounts = array();
