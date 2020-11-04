@@ -1044,6 +1044,13 @@ define('EXISTINGASSIGNMENT_SUSPEND', 1);
 define('EXISTINGASSIGNMENT_CUT', 2);
 define('EXISTINGASSIGNMENT_DELETE', 3);
 
+$EXISTINGASSIGNMENTS = array(
+    EXISTINGASSIGNMENT_KEEP => trans('<!existingassignment>keep'),
+    EXISTINGASSIGNMENT_SUSPEND => trans('<!existingassignment>suspend'),
+    EXISTINGASSIGNMENT_CUT => trans('<!existingassignment>cut'),
+    EXISTINGASSIGNMENT_DELETE => trans('<!existingassignment>delete'),
+);
+
 $CURRENCIES = array(
     'AUD' => 'AUD',
     'BGN' => 'BGN',
@@ -1084,13 +1091,6 @@ $CURRENCIES = array(
     'USD' => 'USD',
     'XDR' => 'XOR',
     'ZAR' => 'ZAR',
-);
-
-$EXISTINGASSIGNMENTS = array(
-    EXISTINGASSIGNMENT_KEEP => trans('<!existingassignment>keep'),
-    EXISTINGASSIGNMENT_SUSPEND => trans('<!existingassignment>suspend'),
-    EXISTINGASSIGNMENT_CUT => trans('<!existingassignment>cut'),
-    EXISTINGASSIGNMENT_DELETE => trans('<!existingassignment>delete'),
 );
 
 $TAX_CATEGORIES = array(

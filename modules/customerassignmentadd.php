@@ -167,6 +167,19 @@ if (isset($_POST['assignment'])) {
     $default_assignment_discount_type = ConfigHelper::getConfig('phpui.default_assignment_discount_type', 'percentage');
     $a['discount_type'] = $default_assignment_discount_type == 'percentage' ? DISCOUNT_PERCENTAGE : DISCOUNT_AMOUNT;
 
+    $default_existing_assignment_operation = ConfigHelper::getConfig('phpui.default_existing_assignment_operation', 'keep');
+    $existing_assignment_operation_map = array(
+        'keep' => EXISTINGASSIGNMENT_KEEP,
+        'suspend' => EXISTINGASSIGNMENT_SUSPEND,
+        'cut' => EXISTINGASSIGNMENT_CUT,
+        'delete' => EXISTINGASSIGNMENT_DELETE,
+    );
+    if (isset($existing_assignment_operation_map[$default_existing_assignment_operation])) {
+        $a['existing_assignments']['operation'] = $existing_assignment_operation_map[$default_existing_assignment_operation];
+    } else {
+        $a['existing_assignments']['operation'] = EXISTINGASSIGNMENT_KEEP;
+    }
+
     $a['count'] = 1;
     $a['currency'] = Localisation::getDefaultCurrency();
 }
