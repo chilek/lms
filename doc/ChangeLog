@@ -215,7 +215,9 @@ version 26-git (????-??-??):
     customer [chilan]
   - improvement: 'phpui.default_existing_assignment_operation' variable (with default 'keep' value)
     controls what operations are applied to currently existing assignments [chilan]
-
+  - enhancement: 'payments.allowed_customer_status' specified list of statuses which are required
+    from customers to generate financial burdens [chilan]
+ 
 version 25.0 (2020-05-15):
 
   - improvement: introduced invoices.hide_ssn configuration variable which allows to hide SSN

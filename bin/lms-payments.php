@@ -450,6 +450,8 @@ if (!empty($assigns)) {
     }
 }
 
+$allowed_customer_status = array_flip(Utils::determineAllowedCustomerStatus(ConfigHelper::getConfig('payments.allowed_customer_status', '')));
+
 // let's go, fetch *ALL* assignments in given day
 $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_address_id,
 		a.period, a.backwardperiod, a.at, a.suspended, a.settlement, a.datefrom, a.dateto, a.pdiscount, a.vdiscount,
@@ -488,7 +490,7 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 	LEFT JOIN tariffs t ON (a.tariffid = t.id)
 	LEFT JOIN liabilities l ON (a.liabilityid = l.id)
 	LEFT JOIN divisions d ON (d.id = c.divisionid)
-	WHERE " . ($customerid ? 'c.id = ' . $customerid . ' AND ' : '') . "(c.status = ? OR c.status = ?)
+	WHERE " . ($customerid ? 'c.id = ' . $customerid . ' AND ' : '') . "c.status IN ?
 		AND a.commited = 1
 		AND ((a.period = ? AND at = ?)
 			OR ((a.period = ?
@@ -500,9 +502,14 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 			AND a.datefrom <= ? AND (a.dateto > ? OR a.dateto = 0)))"
         . ($customergroups ? str_replace('%customerid_alias%', 'c.id', $customergroups) : '')
     ." ORDER BY a.customerid, a.recipient_address_id, a.invoice,  a.paytype, a.numberplanid, a.separatedocument, currency, value DESC, a.id";
-$services = $DB->GetAll($query, array(CTYPES_PRIVATE, CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION,
-    DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $last_dom ? 0 : $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
-    $currtime, $currtime));
+$services = $DB->GetAll(
+    $query,
+    array(
+        $allowed_customer_status,
+        DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $last_dom ? 0 : $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
+        $currtime, $currtime
+    )
+);
 
 $billing_invoice_description = ConfigHelper::getConfig('payments.billing_invoice_description', 'Phone calls between %backward_periods (for %phones)');
 
@@ -567,7 +574,7 @@ $query = "SELECT
 			LEFT JOIN liabilities l ON (a.liabilityid = l.id)
 			LEFT JOIN divisions d ON (d.id = c.divisionid)
 	    WHERE " . ($customerid ? 'c.id = ' . $customerid . ' AND ' : '') . "
-	      (c.status  = ? OR c.status = ?) AND
+	      c.status IN ? AND
 	      t.type = ? AND
 	      a.commited = 1 AND
 		  ((a.period = ? AND at = ?) OR
@@ -582,9 +589,14 @@ $query = "SELECT
         . ($customergroups ? str_replace('%customerid_alias%', 'c.id', $customergroups) : '')
     ." ORDER BY a.customerid, a.recipient_address_id, a.invoice, a.paytype, a.numberplanid, a.separatedocument, currency, voipcost.value DESC, a.id";
 
-$billings = $DB->GetAll($query, array(CTYPES_PRIVATE, 1, CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION, SERVICE_PHONE,
-    DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $last_dom ? 0 : $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
-    $currtime, $currtime));
+$billings = $DB->GetAll(
+    $query,
+    array(
+        CTYPES_PRIVATE, 1, $allowed_customer_status, SERVICE_PHONE,
+        DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $last_dom ? 0 : $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
+        $currtime, $currtime
+    )
+);
 
 $assigns = array();
 
