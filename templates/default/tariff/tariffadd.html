@@ -87,7 +87,7 @@
 				    </TD>
 				    <TD WIDTH="1%" NOWRAP><B>{trans("Tax:")}</B></TD>
 				    <TD WIDTH="98%">
-						<SELECT SIZE="1" NAME="tariff[taxid]" {tip text="Select Tax rate" trigger="taxid"} required>
+						<SELECT SIZE="1" NAME="tariff[taxid]" {tip text="Select Tax rate" trigger="taxid"}{if empty($taxeslist)} required{/if}>
 							{foreach $taxeslist as $tax}
 								<OPTION VALUE="{$tax.id}"{if $tax.value == $default_taxrate || $tax.id == $tariff.taxid} selected{/if}>{$tax.label}</OPTION>
 							{foreachelse}
