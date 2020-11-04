@@ -409,7 +409,11 @@ class Utils
                 }
             }
 
-            $statuses = array_diff(array_intersect($all_statuses, $normal), $negated);
+            if (empty($normal)) {
+                $statuses = array_diff($all_statuses, $negated);
+            } else {
+                $statuses = array_diff(array_intersect($all_statuses, $normal), $negated);
+            }
             if (empty($statuses)) {
                 return array(
                     CSTATUS_CONNECTED,
