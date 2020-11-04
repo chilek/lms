@@ -385,16 +385,31 @@ class Utils
         }
         if (empty($value)) {
             if (empty($default) || !is_array($default)) {
-                return array(
-                    CSTATUS_CONNECTED,
-                    CSTATUS_DEBT_COLLECTION,
-                );
+                if ($default === -1) {
+                    return null;
+                } else {
+                    return array(
+                        CSTATUS_CONNECTED,
+                        CSTATUS_DEBT_COLLECTION,
+                    );
+                }
             } else {
                 return $default;
             }
         } else {
             $all_statuses = self::array_column($CSTATUSES, 'alias');
-            $statuses = array_intersect($all_statuses, $value);
+
+            $normal = array();
+            $negated = array();
+            foreach ($value as $status) {
+                if (strpos($status, '!') === 0) {
+                    $negated[] = substr($status, 1);
+                } else {
+                    $normal[] = $status;
+                }
+            }
+
+            $statuses = array_diff(array_intersect($all_statuses, $normal), $negated);
             if (empty($statuses)) {
                 return array(
                     CSTATUS_CONNECTED,
