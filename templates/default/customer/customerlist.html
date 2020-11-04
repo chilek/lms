@@ -262,6 +262,10 @@
 			<i class="lms-ui-icon-customer-status-{$_CSTATUSES[$customer.status].alias}"></i>
 			{if $customer.info}&nbsp;<i class="lms-ui-icon-optional-info" title="{nl2br(htmlspecialchars($customer.info))}"></i>{/if}
 			<A name="{$customer.id}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$customer.id}">&nbsp;<span class="bold">{$customer.customername|escape}</span></A>
+			{if !empty($customer.karma)}
+				<i class="lms-ui-icon-star{if $customer.karma > 0} green{else} red{/if}" title="{trans('Karma')}"></i>
+				(<span class="lms-ui-counter">{$customer.karma}</span>)
+			{/if}
 			<BR>
 			<i class="lms-ui-icon-home"></i>&nbsp;{$customer.full_address}{if $customer.country != ""}, {t}{$customer.country}{/t}{/if}
 		</TD>
