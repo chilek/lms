@@ -2613,6 +2613,14 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'UPDATE customers SET karma = ? WHERE id = ?',
             array($karma, $id)
         );
+        if ($this->syslog) {
+            $args = array(
+                SYSLOG::RES_CUST => $id,
+                SYSLOG::RES_USER => $userid,
+                'karma' => $karma,
+            );
+            $this->syslog->AddMessage(SYSLOG::RES_CUST, SYSLOG::OPER_UPDATE, $args);
+        }
 
         if (isset($timestamp)) {
             $this->db->Execute(
