@@ -86,12 +86,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             GROUP BY ca.currency', 'currency', array($id));
     }
 
-    private function getTariffPresentation($tariff)
+    private function getAssignmentPresentation($tariff)
     {
-        static $tariffPresentationFormat = null;
+        static $assignmentPresentationFormat = null;
 
-        if (!isset($tariffPresentationFormat)) {
-            $tariffPresentationFormat = ConfigHelper::getConfig('phpui.tariff_presentation_format', '%name');
+        if (!isset($assignmentPresentationFormat)) {
+            $assignmentPresentationFormat = ConfigHelper::getConfig('phpui.assignment_presentation_format', '%name');
         }
 
         return str_replace(
@@ -107,7 +107,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 $tariff['promotion_schema_name'],
                 empty($tariff['promotion_schema_length']) ? trans('indefinite period') : trans('$a months', $tariff['promotion_schema_length']),
             ),
-            $tariffPresentationFormat
+            $assignmentPresentationFormat
         );
     }
 
@@ -193,7 +193,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         break;
                 }
 
-                $row['name'] = $this->getTariffPresentation($row);
+                $row['name'] = $this->getAssignmentPresentation($row);
 
                 $row['docnumber'] = docnumber(array(
                     'number' => $row['docnumber'],

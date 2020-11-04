@@ -207,7 +207,7 @@ version 26-git (????-??-??):
   - improvement: improvement: auto-hide 'back to top' button [chilan]
   - improvement: '%last_N_in_a_table' is supported in much more convenient way - symbol itself
     represents whole table [chilan]
-  - enhancement: new configuration variable 'phpui.tariff_presentation_format' ('%name' by default)
+  - enhancement: new configuration variable 'phpui.assignment_presentation_format' ('%name' by default)
     allows to change  tariff presentation form (some special symbols related to promotions
     are supported) [chilan]
 
