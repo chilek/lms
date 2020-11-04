@@ -259,7 +259,7 @@ function init_datepickers(selector) {
 				dt = new Date();
 				dt.setTime($(this).val() * 1000);
 			}
-			var tselem = $(this).clone(true).removeData().attr('type', 'hidden');
+			var tselem = $(this).clone(true).removeData().attr('type', 'hidden').removeAttr('id');
 			tselem.insertBefore($(this).removeAttr('name'));
 			if ($(this).val() == '0') {
 				$(this).val('');

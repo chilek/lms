@@ -1,11 +1,26 @@
 {extends file="layout.html"}
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
+{$document_confirm_date_required = intval(ConfigHelper::getConfig('phpui.document_confirm_date_required'))}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 {$xajax}
-<script type="text/javascript">
-<!--
+
+<style>
+
+	#document-button-panel,
+	#document-button-panel > div {
+		display: inline-block;
+	}
+
+	#document-button-panel > div:first-child {
+		padding-bottom: 0.3em;
+	}
+
+</style>
+
+<script>
+
 	function DocTemplateChanged() {
 		reset_login_timeout();
 		xajax_DocTemplateChanged($('[name="document[type]"]').val(),
@@ -15,8 +30,10 @@
 
 	function print_document()
 	{
-		document.forms['documentadd'].action += '&print=1';
-		$('#submit-button').trigger('click');
+		if ($('#documentadd-form')[0].checkValidity()) {
+			document.forms['documentadd'].action += '&print=1';
+			$('#submit-button').trigger('click');
+		}
 	}
 
 	function DocTypeChanged() {
@@ -40,7 +57,7 @@
 			customer_assignment_helper.setCustomer($('[name="customerid"]').val());
 		}
 	}
-//-->
+
 </script>
 <FORM name="documentadd" method="POST" id="documentadd-form" action="?m=documentadd">
 <INPUT type="submit" class="hiddenbtn">
@@ -84,8 +101,18 @@
 			{trans("Period:")}
 		</TD>
 		<TD>
-			{trans("from:")} <INPUT type="TEXT" name="document[fromdate]" value="{if $document.fromdate}{$document.fromdate}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter start date in YYYY/MM/DD format (optional)" trigger="fromdate"} size="10">&nbsp;
-			{trans("to:")} <INPUT type="TEXT" name="document[todate]" value="{if $document.todate}{$document.todate}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter end date in YYYY/MM/DD format (optional)" trigger="todate"} size="10"><BR>
+			{trans("from:")}
+			<input type="text" name="document[fromdate]" id="fromdate"
+				value="{if $document.fromdate}{$document.fromdate}{/if}"
+				placeholder="{trans("yyyy/mm/dd")}"
+				{tip class="lms-ui-date lms-ui-date-unix" text="Enter start date in YYYY/MM/DD format (optional)" trigger="fromdate"}
+				size="10">&nbsp;
+			{trans("to:")}
+			<input type="text" name="document[todate]" id="todate"
+				value="{if $document.todate}{$document.todate}{/if}"
+				placeholder="{trans("yyyy/mm/dd")}"
+				{tip class="lms-ui-date lms-ui-date-unix" text="Enter end date in YYYY/MM/DD format (optional)" trigger="todate"}
+				size="10">
 		</TD>
 	</TR>
 	<TR{if $document.closed} style="display: none;"{/if}>
@@ -96,9 +123,11 @@
 			{trans("Wait for customer action till:")}
 		</TD>
 		<TD>
-			<INPUT type="TEXT" name="document[confirmdate]" id="confirmdate" value="{if $document.confirmdate}{$document.confirmdate}{/if}"
-					placeholder="{trans("yyyy/mm/dd")}"
-					{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format we wait for customer action till (optional)" trigger="confirmdate"} size="10">
+			<input type="text" name="document[confirmdate]" id="confirmdate"
+				value="{if $document.confirmdate}{$document.confirmdate}{/if}"
+				placeholder="{trans("yyyy/mm/dd")}"
+				{tip class="lms-ui-date lms-ui-date-unix" text="Enter date in YYYY/MM/DD format we wait for customer action till (optional)" trigger="confirmdate"}
+				size="10">
 		</TD>
 	</TR>
 	<TR>
@@ -195,18 +224,24 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD colspan="3" class="buttons">
-			{*
-			<A href="#" id="submit-button" class="lms-ui-button-submit">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
-			*}
-			<A href="#" id="submit-button">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
-			<A href="javascript: print_document();">{trans("Print")} <IMG SRC="img/print.gif" alt=""></A>
-			<A href="?m=documentlist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A><BR>
-			<label>
-				<input type="checkbox" id="new-window-toggle">
-				{trans("new window")}
-			</label>
-			<INPUT type="checkbox" name="document[reuse]" ID="reuse" value="ON" {if $document.reuse}checked{/if}> <label for="reuse">{trans("Display this form again, when that document is saved")}</label>
+		<TD colspan="3" class="lms-ui-box-buttons">
+			<div id="document-button-panel">
+				<div>
+					{button type="submit" icon="save" id="submit-button" label="Submit"}
+					{button type="submit" icon="print" label="Print" onclick="print_document()"}
+					{button icon="cancel" label="Cancel" onclick="location.href = '?m=documentlist';"}
+				</div>
+				<div>
+					<label>
+						<input type="checkbox" id="new-window-toggle">
+						{trans("new window")}
+					</label>
+					<label>
+						<input type="checkbox" name="document[reuse]" value="on" {if $document.reuse}checked{/if}>
+						{trans("Display this form again, when that document is saved")}
+					</label>
+				</div>
+			</div>
 		</TD>
 	</TR>
     </TBODY>
@@ -228,8 +263,11 @@
 		$('form[name="documentadd"] [name="document[title]"]').focus();
 
 		{if empty($promotions)}
-		$('#submit-button').click(function() {
-			document.documentadd.submit();
+			$('#submit-button').click(function() {
+				if ($('#documentadd-form')[0].checkValidity()) {
+					document.documentadd.submit();
+				}
+			});
 		});
 		{/if}
 
@@ -248,6 +286,18 @@
 		$('#closed').change(function() {
 			$('#confirmdate').closest('tr').toggle(!$(this).prop('checked'));
 		});
+
+		var documentConfirmDateRequired = parseInt({$document_confirm_date_required});
+
+		function confirmDateRequired() {
+			var fromDate = parseInt($('[name="document[fromdate]"]').val());
+			$('#confirmdate').prop(
+				'required',
+				fromDate && fromDate > (Date.now() / 1000) + documentConfirmDateRequired * 86400
+			);
+		}
+
+		$('#fromdate').change(confirmDateRequired).change();
 	});
 	//setnumberplans();
 

@@ -222,6 +222,9 @@ version 26-git (????-??-??):
     from customers to send them notifications (all statuses by default) [chilan]
   - enhancement: 'sendinvoices.allowed_customer_status' specified list of statuses which
     are required from customers to send them invoices [chilan]
+  - enhancement: 'phpui.document_confirm_date_required' forces confirm date requirement
+    if from date is later than days count in ther future (default '0' values menas that feature
+    is disabled) [chilan]
 
 version 25.0 (2020-05-15):
 

@@ -78,24 +78,14 @@ if (isset($_POST['document'])) {
         $error['number'] = trans('Document with specified number exists!');
     }
 
-    if ($document['fromdate']) {
-        $date = explode('/', $document['fromdate']);
-        if (checkdate($date[1], $date[2], $date[0])) {
-            $document['fromdate'] = mktime(0, 0, 0, $date[1], $date[2], $date[0]);
-        } else {
-            $error['fromdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
-        }
+    if (!preg_match('/^[0-9]+$/', $document['fromdate'])) {
+        $error['fromdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
     } else {
         $document['fromdate'] = 0;
     }
 
-    if ($document['todate']) {
-        $date = explode('/', $document['todate']);
-        if (checkdate($date[1], $date[2], $date[0])) {
-            $document['todate'] = mktime(23, 59, 59, $date[1], $date[2], $date[0]);
-        } else {
-            $error['todate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
-        }
+    if (!preg_match('/^[0-9]+$/', $document['todate'])) {
+        $error['todate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
     } else {
         $document['todate'] = 0;
     }
@@ -104,13 +94,8 @@ if (isset($_POST['document'])) {
         $error['todate'] = trans('Start date can\'t be greater than end date!');
     }
 
-    if ($document['confirmdate'] && !isset($document['closed'])) {
-        $date = explode('/', $document['confirmdate']);
-        if (checkdate($date[1], $date[2], $date[0])) {
-            $document['confirmdate'] = mktime(0, 0, 0, $date[1], $date[2], $date[0]);
-        } else {
-            $error['confirmdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
-        }
+    if (!preg_match('/^[0-9]+$/', $document['confirmdate']) && !isset($document['closed'])) {
+        $error['confirmdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
     } else {
         $document['confirmdate'] = 0;
     }
