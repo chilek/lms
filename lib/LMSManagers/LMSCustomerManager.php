@@ -746,6 +746,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             case 'extid':
                 $sqlord = ' ORDER BY extid';
                 break;
+            case 'karma':
+                $sqlord = ' ORDER BY karma';
+                break;
             default:
                 $sqlord = ' ORDER BY customername';
                 break;

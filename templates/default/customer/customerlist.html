@@ -79,8 +79,23 @@
         {block name="customerlist-list-header"}
 	<TR {tip text="Click on column name to change sorting order"}>
 		<td scope="col" class="nobr">
-			<i class="lms-ui-icon-customer"></i> <a href="?m={$layout.module}&amp;s={$filter.state}&amp;o=customername{if $filter.direction == "asc" && $filter.order == "customername"},desc{/if}">{trans("First/last or Company name")}</A> {if $filter.order == "customername"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<i class="lms-ui-icon-home"></i> <a href="?m={$layout.module}&amp;s={$filter.state}&amp;o=address{if $filter.direction == "asc" && $filter.order == "address"},desc{/if}">{trans("Address:")}</A> {if $filter.order == "address"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			{icon name="customer"}
+			<a href="?m={$layout.module}&amp;s={$filter.state}&amp;o=customername{if $filter.direction == "asc" && $filter.order == "customername"},desc{/if}">
+				{trans("First/last or Company name")}
+			</A>
+			{if $filter.order == "customername"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			/
+			{icon name="karma"}
+			<a href="?m={$layout.module}&s={$filter.state}&o=karma{if $filter.direction == "asc" && $filter.order == "karma"},desc{/if}">
+				{trans("Karma")}
+			</A>
+			{if $filter.order == "karma"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<br>
+			{icon name="home"}
+			<a href="?m={$layout.module}&amp;s={$filter.state}&amp;o=address{if $filter.direction == "asc" && $filter.order == "address"},desc{/if}">
+				{trans("Address:")}
+			</A>
+			{if $filter.order == "address"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</td>
 		<td scope="col" class="text-right nobr">
 			<a href="?m={$layout.module}&amp;s={$filter.state}&amp;o=extid{if $filter.direction == "asc" && $filter.order == "extid"},desc{/if}"><span class="bold">{trans("External ID:")}</span></A> {if $filter.order == "extid"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
