@@ -959,7 +959,7 @@ class LMSSmartyPlugins
         $handler = isset($params['handler']) ? $params['handler'] : '';
         return '
             <div class="lms-ui-karma-container" data-handler="' . $handler . '" data-id="' . $id . '">
-                <i class="lms-ui-icon-star" title="' . $title . '"></i>
+                <i class="lms-ui-icon-star'  . ($value > 0 ? ' green' : ($value < 0 ? ' red' : '')) . '" title="' . $title . '"></i>
                 (<span class="lms-ui-counter">' . $value . '</span>)
                 <i class="lms-ui-karma-button lms-ui-karma-raise lms-ui-icon-finger-up" title="' . Localisation::trans('Raise') . '"></i>
                 <i class="lms-ui-karma-button lms-ui-karma-lower lms-ui-icon-finger-down" title="' . Localisation::trans('Lower') . '"></i>
