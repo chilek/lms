@@ -462,7 +462,10 @@ class LMSSmartyPlugins
         echo '<tr>
               <td>' . trans('City') . '</td>
               <td>
-                  <input type="text"   value="' . (!empty($params['location_city_name']) ? htmlspecialchars($params['location_city_name']) : '' ) . '" size="' . INPUT_SIZE . '" data-address="city" name="' . $input_name_city . '" maxlength="32">
+                  <input type="text"   value="'
+                    . (!empty($params['location_city_name']) ? htmlspecialchars($params['location_city_name']) : '' )
+                    . '" size="' . INPUT_SIZE . '" data-address="city" name="' . $input_name_city . '" maxlength="32"'
+                    . ($params['location_address_type'] == BILLING_ADDRESS ? ' required' : '') . '>
                   <input type="hidden" value="' . (!empty($params['location_city'])      ? $params['location_city']      : '' ) . '" data-address="city-hidden" name="' . $input_name_city_id . '">
               </td>
           </tr>';
