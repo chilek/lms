@@ -33,10 +33,6 @@ include(MODULES_DIR . DIRECTORY_SEPARATOR . 'document.inc.php');
 if (isset($_POST['document'])) {
     $document = $_POST['document'];
 
-    $oldfromdate = $document['fromdate'];
-    $oldtodate = $document['todate'];
-    $oldconfirmdate = $document['confirmdate'];
-
     $document['customerid'] = isset($_POST['customerid']) ? intval($_POST['customerid']) : intval($_POST['customer']);
 
     if (!$LMS->CustomerExists(intval($document['customerid']))) {
@@ -78,34 +74,34 @@ if (isset($_POST['document'])) {
         $error['number'] = trans('Document with specified number exists!');
     }
 
-    if (!preg_match('/^[0-9]*$/', $document['fromdate'])) {
-        $error['fromdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
-    } else {
+    if (empty($document['fromdate'])) {
         $document['fromdate'] = 0;
+    } elseif (!preg_match('/^[0-9]+$/', $document['fromdate'])) {
+        $error['fromdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
     }
 
-    if (!preg_match('/^[0-9]*$/', $document['todate'])) {
-        $error['todate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
-    } else {
+    if (empty($document['todate'])) {
         $document['todate'] = 0;
+    } elseif (!preg_match('/^[0-9]+$/', $document['todate'])) {
+        $error['todate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
     }
 
     if ($document['fromdate'] > $document['todate'] && $document['todate'] != 0) {
         $error['todate'] = trans('Start date can\'t be greater than end date!');
     }
 
-    if (!preg_match('/^[0-9]*$/', $document['confirmdate']) && !isset($document['closed'])) {
-        $error['confirmdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
-    } else {
+    if (empty($document['confirmdate'])) {
         $document['confirmdate'] = 0;
+    } elseif (!preg_match('/^[0-9]+$/', $document['confirmdate']) && !isset($document['closed'])) {
+        $error['confirmdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
     }
 
     // validate tariff selection list when promotions are active only
     if (isset($document['assignment']) && !empty($document['assignment']['schemaid'])) {
         // validate selected promotion schema properties
         $selected_assignment = $document['assignment'];
-        $selected_assignment['datefrom'] = $oldfromdate;
-        $selected_assignment['dateto'] = $oldtodate;
+        $selected_assignment['datefrom'] = $document['fromdate'];
+        $selected_assignment['dateto'] = $document['todate'];
 
         $result = $LMS->ValidateAssignment($selected_assignment);
         extract($result);
@@ -391,9 +387,6 @@ if (isset($_POST['document'])) {
         unset($document['fromdate']);
         unset($document['todate']);
     } else {
-        $document['fromdate'] = $oldfromdate;
-        $document['todate'] = $oldtodate;
-        $document['confirmdate'] = $oldconfirmdate;
         if (isset($autonumber)) {
             $document['number'] = '';
         }

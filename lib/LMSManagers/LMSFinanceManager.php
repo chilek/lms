@@ -1267,14 +1267,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         if (isset($a['datefrom'])) {
             if ($a['datefrom'] == '') {
                 $from = 0;
-            } elseif (preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $a['datefrom'])) {
-                list($y, $m, $d) = explode('/', $a['datefrom']);
-
-                if (checkdate($m, $d, $y)) {
-                    $from = mktime(0, 0, 0, $m, $d, $y);
-                } else {
-                    $error['datefrom'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
-                }
+            } elseif (preg_match('/^[0-9]+$/', $a['datefrom'])) {
+                $from = $a['datefrom'];
             } else {
                 $error['datefrom'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
             }
@@ -1283,14 +1277,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         if (isset($a['dateto'])) {
             if ($a['dateto'] == '') {
                 $to = 0;
-            } elseif (preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $a['dateto'])) {
-                list($y, $m, $d) = explode('/', $a['dateto']);
-
-                if (checkdate($m, $d, $y)) {
-                    $to = mktime(23, 59, 59, $m, $d, $y);
-                } else {
-                    $error['dateto'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
-                }
+            } elseif (preg_match('/^[0-9]+$/', $a['dateto'])) {
+                $to = $a['dateto'];
             } else {
                 $error['dateto'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
             }
