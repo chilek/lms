@@ -1003,7 +1003,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 if (empty($node['ownerid']) || $node['id'] != $nodeid) {
                     continue;
                 }
-                $node_assignments[] = $assignment;
+                $node_assignments[$nodeid][] = $assignment;
                 break;
             }
         }
