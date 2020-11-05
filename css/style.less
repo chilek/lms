@@ -608,23 +608,23 @@ input {
 			box-shadow: @warning-box-shadow-focus;
 		}
 	}
-	&[type="checkbox"] {
-		&.alert,
-		&.lms-ui-error {
-			outline: @error-outline;
-		}
-		&.lms-ui-warning {
-			outline: @warning-outline;
-		}
-	}
+	&[type="checkbox"],
 	&[type="radio"] {
 		&.alert,
 		&.lms-ui-error,
 		&:invalid {
-			outline: @error-outline;
+			outline: none;
+			box-shadow: @error-radiocheckbox-box-shadow;
+			&:focus {
+				box-shadow: @error-radiocheckbox-box-shadow-focus;
+			}
 		}
 		&.lms-ui-warning {
-			outline: @warning-outline;
+			outline: none;
+			box-shadow: @warning-radiocheckbox-box-shadow;
+			&:focus {
+				box-shadow: @warning-radiocheckbox-box-shadow-focus;
+			}
 		}
 	}
 	&.hiddenbtn {
