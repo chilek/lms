@@ -1,0 +1,175 @@
+/*
+ * LMS version 1.11-git
+ *
+ *  (C) Copyright 2001-2020 LMS Developers
+ *
+ *  Please, see the doc/AUTHORS for more information about authors!
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License Version 2 as
+ *  published by the Free Software Foundation.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ *  USA.
+ *
+ *  $Id$
+ */
+
+.chosen-container {
+  text-align: left;
+  min-width: 250px;
+  font-size: @font-size;
+  //	background-color: @lucid;
+  //	margin: 0 4px 0 4px;
+  .chosen-results {
+    color: black;
+    li.no-results {
+      color: black;
+      background: @light;
+    }
+    li {
+      padding: 1px 6px;
+      em {
+        background-color: @dark;
+        font-weight: bold;
+        text-decoration: none;
+      }
+    }
+  }
+  .chosen-drop {
+    background-color: @lucid;
+    width: auto;
+    li {
+      white-space: nowrap;
+    }
+  }
+}
+
+.chosen-container-active.chosen-with-drop .chosen-single {
+  background-image: none;
+  div b {
+    background-position-x: -12px;
+    background-position-y: -2px;
+  }
+}
+
+.chosen-container-single {
+  .chosen-single {
+    color: black;
+    background-color: @lucid;
+    background-image: none;
+    line-height: normal;
+    height: 16px;
+    border-radius: unset;
+    div {
+      b {
+        background-position-x: 6px;
+        background-position-y: -2px;
+      }
+    }
+  }
+  &.alert,
+  &.lms-ui-error,
+  &:invalid {
+    .chosen-single {
+      border: @error-outline;
+      box-shadow: @error-box-shadow;
+
+      &:focus {
+        border: @error-outline-focus;
+        box-shadow: @error-box-shadow-focus;
+        outline: none;
+      }
+    }
+  }
+  &.lms-ui-warning .chosen-single {
+    border: @warning-outline;
+    background-color: @warning-background;
+    box-shadow: @warning-box-shadow;
+    &:focus {
+      border: @warning-outline-focus;
+      background-color: @warning-background;
+      box-shadow: @warning-box-shadow-focus;
+    }
+  }
+
+  /*
+  .chosen-search input[type=text] {
+      padding: 2px 20px 2px 5px;
+      background: url('@{lms-img-path}/chosen-sprite.png') no-repeat 100% -23px;
+  }
+  */
+  .chosen-drop {
+    border-radius: unset;
+  }
+  .chosen-single-with-deselect span {
+    margin-right: 2em;
+  }
+  .chosen-single {
+    abbr {
+      top: 2px;
+      right: 12px;
+    }
+    div {
+      width: 18px;
+    }
+  }
+}
+
+.chosen-container-multi {
+  .chosen-choices {
+    color: black;
+    background-color: @lucid;
+    background-image: none;
+    line-height: normal;
+    border-radius: unset;
+    div {
+      b {
+        background-position-x: 6px;
+        background-position-y: -2px;
+      }
+    }
+    li.search-choice {
+      background-color: @light;
+      background-image: none;
+      font-weight: bold;
+      border: 1px solid @darkbrown;
+    }
+  }
+
+  &.alert,
+  &.lms-ui-error,
+  &:invalid {
+    .chosen-choices {
+      border: @error-outline;
+      box-shadow: @error-box-shadow;
+
+      &:focus {
+        border: @error-outline-focus;
+        box-shadow: @error-box-shadow-focus;
+        outline: none;
+      }
+    }
+  }
+  &.lms-ui-warning .chosen-choices {
+    border: @warning-outline;
+    background-color: @warning-background;
+    box-shadow: @warning-box-shadow;
+    &:focus {
+      border: @warning-outline-focus;
+      background-color: @warning-background;
+      box-shadow: @warning-box-shadow-focus;
+    }
+  }
+
+  .chosen-drop .result-selected {
+    color: @blend;
+  }
+}
