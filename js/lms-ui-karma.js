@@ -24,7 +24,8 @@
 
 $(function() {
     $('.lms-ui-karma-container').each(function() {
-        $(this).find('.lms-ui-karma-button').click(function() {
+        $(this).find('.lms-ui-karma-button').click(function(e) {
+            e.stopPropagation();
             if ($(this).is('.disabled')) {
                 return;
             }
