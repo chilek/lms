@@ -36,6 +36,8 @@
 @import "less/multiselect";
 @import "less/menu";
 @import "less/modal-dialog";
+@import "less/advanced-select";
+@import "less/combobox";
 
 html {
 	height: 100%;
@@ -1900,123 +1902,6 @@ table.dataTable {
 	visibility: hidden !important;
 }
 
-.chosen-container {
-	text-align: left;
-	min-width: 250px;
-	font-size: @font-size;
-	//	background-color: @lucid;
-	//	margin: 0 4px 0 4px;
-	.chosen-results {
-		color: black;
-		li.no-results {
-			color: black;
-			background: @light;
-		}
-		li {
-			padding: 1px 6px;
-			em {
-				background-color: @dark;
-				font-weight: bold;
-				text-decoration: none;
-			}
-		}
-	}
-	.chosen-drop {
-		background-color: @lucid;
-		width: auto;
-		li {
-			white-space: nowrap;
-		}
-	}
-}
-
-.chosen-container-active.chosen-with-drop .chosen-single {
-	background-image: none;
-	div b {
-		background-position-x: -12px;
-		background-position-y: -2px;
-	}
-}
-
-.chosen-container-single {
-	.chosen-single {
-		color: black;
-		background-color: @lucid;
-		background-image: none;
-		line-height: normal;
-		height: 16px;
-		border-radius: unset;
-		div {
-			b {
-				background-position-x: 6px;
-				background-position-y: -2px;
-			}
-		}
-	}
-	&.lms-ui-error .chosen-single {
-		color: @error-text;
-		background-color: @error-background;
-	}
-	&.lms-ui-warning .chosen-single {
-		color: @warning-text;
-		background-color: @warning-background;
-	}
-	/*
-	.chosen-search input[type=text] {
-		padding: 2px 20px 2px 5px;
-		background: url('@{lms-img-path}/chosen-sprite.png') no-repeat 100% -23px;
-	}
-	*/
-	.chosen-drop {
-		border-radius: unset;
-	}
-	.chosen-single-with-deselect span {
-		margin-right: 2em;
-	}
-	.chosen-single {
-		abbr {
-			top: 2px;
-			right: 12px;
-		}
-		div {
-			width: 18px;
-		}
-	}
-}
-
-.chosen-container-multi {
-	.chosen-choices {
-		color: black;
-		background-color: @lucid;
-		background-image: none;
-		line-height: normal;
-		border-radius: unset;
-		div {
-			b {
-				background-position-x: 6px;
-				background-position-y: -2px;
-			}
-		}
-		li.search-choice {
-			background-color: @light;
-			background-image: none;
-			font-weight: bold;
-			border: 1px solid @darkbrown;
-		}
-	}
-	&.lms-ui-error .chosen-choices {
-		color: @error-text;
-		background-color: @error-background;
-	}
-	&.lms-ui-warning .chosen-choices {
-		color: @warning-text;
-		background-color: @warning-background;
-	}
-	.chosen-drop .result-selected {
-		color: @blend;
-	}
-}
-
 div.lms-ui-filter-container {
 	display: flex;
 	justify-content: space-between;
@@ -2050,43 +1935,6 @@ div.lms-ui-persistent-filter {
 	.lms-ui-button {
 		width: 22px;
 		height: 22px;
-	}
-}
-
-.scombobox {
-	margin: 0;
-	&-disabled .scombobox-display {
-		cursor: no-drop;
-	}
-}
-
-.scombobox-dropdown-background {
-	background-color: transparent;
-	border: unset;
-}
-
-.scombobox-display {
-	border-radius: unset;
-	padding: 0px 19px 0px 4px;
-}
-
-.scombobox-list {
-	border-color: black;
-	background-color: @lucid;
-	border-radius: unset;
-	p {
-		padding: 1px;
-	}
-	p:hover {
-		background-color: @superdark;
-		color: white;
-	}
-	p.scombobox-hovered {
-		background-color: @dark;
-		&:hover {
-			background-color: @superdark;
-			color: white;
-		}
 	}
 }
 
