@@ -573,7 +573,7 @@ INPUT[type="tel"],
 INPUT[type="password"],
 INPUT[type="submit"],
 INPUT[type="button"] {
-	border: solid 2px black;
+	border: solid 1px black;
 	background-color: @lucid;
 }
 
@@ -589,13 +589,22 @@ input {
 	&.lms-ui-error,
 	&:invalid {
 		border: @error-outline;
+		box-shadow: @error-box-shadow;
 		&:focus {
 			border: @error-outline-focus;
+			box-shadow: @error-box-shadow-focus;
 			outline: none;
 		}
 	}
 	&.lms-ui-warning {
+		border: @warning-outline;
 		background-color: @warning-background;
+		box-shadow: @warning-box-shadow;
+		&:focus {
+			border: @warning-outline-focus;
+			background-color: @warning-background;
+			box-shadow: @warning-box-shadow-focus;
+		}
 	}
 	&[type="checkbox"] {
 		&.alert,
@@ -649,20 +658,26 @@ textarea {
 	border-width: 1pt;
 	background-color: @lucid;
 	vertical-align: middle;
-	&.lms-ui-warning {
-		border: @warning-outline;
-		background-color: @warning-background;
-		&:focus {
-			border: @warning-outline-focus;
-			outline: none;
-		}
-	}
+
 	&.alert,
 	&.lms-ui-error,
 	&:invalid {
 		border: @error-outline;
+		box-shadow: @error-box-shadow;
 		&:focus {
 			border: @error-outline-focus;
+			box-shadow: @error-box-shadow-focus;
+			outline: none;
+		}
+	}
+
+	&.lms-ui-warning {
+		border: @warning-outline;
+		box-shadow: @warning-box-shadow;
+		background-color: @warning-background;
+		&:focus {
+			border: @warning-outline-focus;
+			box-shadow: @warning-box-shadow-focus;
 			outline: none;
 		}
 	}
@@ -690,16 +705,21 @@ select {
 	&.lms-ui-error,
 	&:invalid {
 		border: @error-outline;
+		box-shadow: @error-box-shadow;
 		&:focus {
 			border: @error-outline-focus;
+			box-shadow: @error-box-shadow-focus;
 			outline: none;
 		}
 	}
+
 	&.lms-ui-warning {
 		border: @warning-outline;
+		box-shadow: @warning-box-shadow;
 		background-color: @warning-background;
 		&:focus {
 			border: @warning-outline-focus;
+			box-shadow: @warning-box-shadow-focus;
 			outline: none;
 		}
 	}
