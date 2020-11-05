@@ -545,6 +545,10 @@
                 });
 			return false;
 		});
+
+		$('[name="customerdata[type]"]').change(function() {
+			$('[name="customerdata[name]"]').prop('required', $('#private').prop('checked'));
+		}).change();
 	});
 //-->
 </SCRIPT>

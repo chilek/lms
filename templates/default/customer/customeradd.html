@@ -557,6 +557,10 @@
 				});
 			return;
 		});
+
+		$('[name="customeradd[type]"]').change(function() {
+			$('[name="customeradd[name]"]').prop('required', $('#private').prop('checked'));
+		}).change();
 	});
 
 	if(document.forms['customeradd'].elements['customeradd[pin]'].value == '') randomize();
