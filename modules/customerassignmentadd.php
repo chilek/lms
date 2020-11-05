@@ -109,7 +109,6 @@ if (isset($_POST['assignment'])) {
                 $tariffid = $LMS->AddAssignment($copy_a);
             }
         } else {
-            $LMS->UpdateExistingAssignments($a);
             $tariffid = $LMS->AddAssignment($a);
         }
 
