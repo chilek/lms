@@ -573,7 +573,7 @@ INPUT[type="tel"],
 INPUT[type="password"],
 INPUT[type="submit"],
 INPUT[type="button"] {
-	border: solid 1px black;
+	border: solid 2px black;
 	background-color: @lucid;
 }
 
@@ -581,14 +581,18 @@ INPUT[type="radio"] {
     vertical-align: text-bottom;
 }
 
-INPUT {
+input {
 	font-size: @font-size;
 	font-family: @fonts;
 	vertical-align: middle;
 	&.alert,
 	&.lms-ui-error,
 	&:invalid {
-		background-color: @error-background;
+		border: @error-outline;
+		&:focus {
+			border: @error-outline-focus;
+			outline: none;
+		}
 	}
 	&.lms-ui-warning {
 		background-color: @warning-background;
@@ -638,73 +642,67 @@ INPUT {
 	}
 }
 
-TEXTAREA {
+textarea {
 	font-size: @font-size;
 	font-family: @fonts;
 	border-style: solid;
 	border-width: 1pt;
 	background-color: @lucid;
 	vertical-align: middle;
-	&.alert,
-	&.lms-ui-error,
-	&.lms-ui-warning,
-	&:invalid {
-		font-size: @font-size;
-		font-family: @fonts;
-		border-style: solid;
-		border-width: 1pt;
-		vertical-align: middle;
-	}
-	&.alert,
-	&.lms-ui-error,
-	&:invalid {
-		background-color: @error-background;
-	}
 	&.lms-ui-warning {
+		border: @warning-outline;
 		background-color: @warning-background;
+		&:focus {
+			border: @warning-outline-focus;
+			outline: none;
+		}
 	}
-}
-
-SELECT {
-	font-size: @font-size;
-	font-family: @fonts;
-	background-color: @lucid;
-	vertical-align: middle;
 	&.alert,
 	&.lms-ui-error,
-	&.lms-ui-warning,
 	&:invalid {
-		font-size: @font-size;
-		font-family: @fonts;
-		border-style: solid;
-		border-width: 1pt;
-		vertical-align: middle;
-	}
-	&.alert,
-	&.lms-ui-error,
-	&:invalid,
-	&[required] {
-		background-color: @error-background;
-	}
-	&.lms-ui-warning {
-		background-color: @warning-background;
+		border: @error-outline;
+		&:focus {
+			border: @error-outline-focus;
+			outline: none;
+		}
 	}
 }
 
 select {
+	font-size: @font-size;
+	font-family: @fonts;
+	background-color: @lucid;
+	vertical-align: middle;
+
 	-moz-appearance: none;
 	-webkit-appearance: none;
 	appearance: none;
 	background-image: url('@{lms-img-path}/1.png');
 	background-repeat: no-repeat;
 	background-position: right top;
-	border: @select-border;
-	&[required] {
-		color: @error-text;
-	}
 	background-size: 16px;
 	padding-right: 16px;
 	padding-left: 3px;
+
+	border: @select-border;
+
+	&.alert,
+	&.lms-ui-error,
+	&:invalid {
+		border: @error-outline;
+		&:focus {
+			border: @error-outline-focus;
+			outline: none;
+		}
+	}
+	&.lms-ui-warning {
+		border: @warning-outline;
+		background-color: @warning-background;
+		&:focus {
+			border: @warning-outline-focus;
+			outline: none;
+		}
+	}
 }
 
 BUTTON		{ font-size:  @font-size; font-family: @fonts; font-weight: bold; padding: 5px; }
@@ -843,7 +841,7 @@ IMG		{ vertical-align: middle; border: 0; }
 .alert,
 .lms-ui-error,
 input:invalid {
-	color: @error-text !important;
+	//color: @error-text !important;
 }
 .lms-ui-warning {
 	color: @warning-text !important;
