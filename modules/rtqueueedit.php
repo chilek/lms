@@ -137,6 +137,9 @@ if (isset($_POST['queue'])) {
 
         $SESSION->redirect('?m=rtqueueinfo&id='.$queue['id']);
     }
+
+    $oldqueue = $LMS->GetQueue($_GET['id']);
+    $queue['rights'] = $oldqueue['rights'];
 } else {
     $queue = $LMS->GetQueue($_GET['id']);
     $categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
