@@ -42,10 +42,13 @@ if (isset($_POST['queue'])) {
         $error['email'] = trans('Incorrect email!');
     }
 
-    if (isset($queue['users'])) {
-        foreach ($queue['users'] as $key => $value) {
-            $queue['rights'][] = array('id' => $key, 'rights' => array_sum($value), 'name' => $queue['usernames'][$key]);
-        }
+    foreach ($queue['usernames'] as $key => $rname) {
+        $queue['rights'][] = array(
+            'id' => $key,
+            'rights' => isset($queue['users'][$key]) ? array_sum($queue['users'][$key]) : 0,
+            'rname' => $rname,
+            'login' => $queue['userlogins'][$key],
+        );
     }
 
     if ($queue['newticketsubject'] && !$queue['newticketbody']) {
@@ -129,15 +132,13 @@ if (isset($_POST['queue'])) {
     }
 } else {
     $categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
-}
 
-$users = $LMS->GetUserNames();
-
-foreach ($users as $user) {
-    $user['rights'] = isset($queue['users'][$user['id']]) ? $queue['users'][$user['id']] : null;
-    $queue['nrights'][] = $user;
+    $users = $LMS->GetUserNames();
+    $queue['rights'] = array();
+    foreach ($users as $user) {
+        $queue['rights'][] = array_merge($user, array('rights' => 0));
+    }
 }
-$queue['rights'] = $queue['nrights'];
 
 $layout['pagetitle'] = trans('New Queue');
 

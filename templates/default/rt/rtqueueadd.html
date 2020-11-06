@@ -124,7 +124,8 @@
 											<TR class="highlight lms-ui-row-all-check">
 												<TD class="nobr">
 													<A href="?m=userinfo&amp;id={$right.id}">{$right.rname} ({$right.login})</A>
-													<INPUT type="hidden" name="queue[usernames][{$right.id}]" value="{$right.name}">
+													<INPUT type="hidden" name="queue[usernames][{$right.id}]" value="{$right.rname}">
+													<INPUT type="hidden" name="queue[userlogins][{$right.id}]" value="{$right.login}">
 												</TD>
 												{foreach $_RT_RIGHTS as $rightvalue => $label}
 												<TD class="text-center">
