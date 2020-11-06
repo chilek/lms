@@ -243,9 +243,13 @@ if (isset($_POST['ticket'])) {
                 $emails = array_map(function ($contact) {
                         return $contact['fullname'];
                 }, $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_EMAIL));
+                $all_phones = $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_LANDLINE | CONTACT_MOBILE);
                 $phones = array_map(function ($contact) {
                         return $contact['fullname'];
-                }, $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_LANDLINE | CONTACT_MOBILE));
+                }, $all_phones);
+                $mobile_phones = array_filter($all_phones, function ($contact) {
+                    return $contact['type'] & (CONTACT_MOBILE | CONTACT_DISABLED) == CONTACT_MOBILE;
+                }, $all_phones);
 
                 if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
                     $params = array(
@@ -265,28 +269,42 @@ if (isset($_POST['ticket'])) {
                     );
                 }
 
-                if (isset($ticket['customernotify']) && !empty($queuedata['newticketsubject']) && !empty($queuedata['newticketbody'])
-                    && !empty($emails)) {
+                if (isset($ticket['customernotify'])) {
                     $ticketid = sprintf("%06d", $id);
-                    $custmail_subject = $queuedata['newticketsubject'];
-                    $custmail_subject = str_replace('%tid', $ticketid, $custmail_subject);
-                    $custmail_subject = str_replace('%title', $ticket['subject'], $custmail_subject);
-                    $custmail_body = $queuedata['newticketbody'];
-                    $custmail_body = str_replace('%tid', $ticketid, $custmail_body);
-                    $custmail_body = str_replace('%cid', $ticket['customerid'], $custmail_body);
-                    $custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
-                    $custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
-                    $custmail_body = str_replace('%title', $ticket['subject'], $custmail_body);
-                    $custmail_body = str_replace('%service', $ticket['service'], $custmail_body);
-                    $custmail_headers = array(
-                        'From' => $headers['From'],
-                        'Reply-To' => $headers['From'],
-                        'Subject' => $custmail_subject,
-                    );
-                    $smtp_options = $LMS->GetRTSmtpOptions();
-                    foreach ($emails as $email) {
-                        $custmail_headers['To'] = '<' . $info['email'] . '>';
-                        $LMS->SendMail($email, $custmail_headers, $custmail_body, null, null, $smtp_options);
+                    if (!empty($queuedata['newticketsubject']) && !empty($queuedata['newticketbody']) && !empty($emails)) {
+                        $custmail_subject = $queuedata['newticketsubject'];
+                        $custmail_subject = str_replace('%tid', $ticketid, $custmail_subject);
+                        $custmail_subject = str_replace('%title', $ticket['subject'], $custmail_subject);
+                        $custmail_body = $queuedata['newticketbody'];
+                        $custmail_body = str_replace('%tid', $ticketid, $custmail_body);
+                        $custmail_body = str_replace('%cid', $ticket['customerid'], $custmail_body);
+                        $custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
+                        $custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
+                        $custmail_body = str_replace('%title', $ticket['subject'], $custmail_body);
+                        $custmail_body = str_replace('%service', $ticket['service'], $custmail_body);
+                        $custmail_headers = array(
+                            'From' => $headers['From'],
+                            'Reply-To' => $headers['From'],
+                            'Subject' => $custmail_subject,
+                        );
+                        $smtp_options = $LMS->GetRTSmtpOptions();
+                        foreach ($emails as $email) {
+                            $custmail_headers['To'] = '<' . $info['email'] . '>';
+                            $LMS->SendMail($email, $custmail_headers, $custmail_body, null, null, $smtp_options);
+                        }
+                    }
+                    if (!empty($queuedata['newticketsmsbody']) && !empty($mobile_phones)) {
+                        $custsms_body = $queuedata['newticketsmsbody'];
+                        $custsms_body = str_replace('%tid', $ticketid, $custsms_body);
+                        $custsms_body = str_replace('%cid', $ticket['customerid'], $custsms_body);
+                        $custsms_body = str_replace('%pin', $info['pin'], $custsms_body);
+                        $custsms_body = str_replace('%customername', $info['customername'], $custsms_body);
+                        $custsms_body = str_replace('%title', $ticket['subject'], $custsms_body);
+                        $custsms_body = str_replace('%service', $ticket['service'], $custsms_body);
+
+                        foreach ($mobile_phones as $phone) {
+                            $LMS->SendSMS($phone['contact'], $custsms_body);
+                        }
                     }
                 }
             } elseif (!empty($requestor) && ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
@@ -366,13 +384,13 @@ if (isset($_POST['ticket'])) {
             $queue = $firstqueue['id'];
         }
         $ticket['verifierid'] = $LMS->GetQueueVerifier($queue);
-        if ($firstqueue['newticketsubject'] && $firstqueue['newticketbody']) {
+        if (($firstqueue['newticketsubject'] && $firstqueue['newticketbody']) || $firstqueue['newticketsmsbody']) {
             $ticket['customernotify'] = 1;
         }
     } elseif ($queue) {
         $queuedata = $LMS->GetQueue($queue);
         $ticket['verifierid'] = empty($queuedata['verifier']) ? 0 : $queuedata['verifier']['id'];
-        if ($queuedata['newticketsubject'] && $queuedata['newticketbody']) {
+        if (($queuedata['newticketsubject'] && $queuedata['newticketbody']) || $queuedata['newticketsmsbody']) {
             $ticket['customernotify'] = 1;
         }
     }

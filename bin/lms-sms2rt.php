@@ -356,9 +356,16 @@ if (($fh = fopen($message_file, "r")) != null) {
             $emails = array_map(function ($contact) {
                     return $contact['fullname'];
             }, $LMS->GetCustomerContacts($customer['cid'], CONTACT_EMAIL));
+
+            $all_phones = $LMS->GetCustomerContacts($customer['cid'], CONTACT_LANDLINE | CONTACT_MOBILE);
+
             $phones = array_map(function ($contact) {
                     return $contact['fullname'];
-            }, $LMS->GetCustomerContacts($customer['cid'], CONTACT_LANDLINE | CONTACT_MOBILE));
+            }, $all_phones);
+
+            $mobile_phones = array_filter($all_phones, function ($contact) {
+                return $contact['type'] & (CONTACT_MOBILE | CONTACT_DISABLED) == CONTACT_MOBILE;
+            }, $all_phones);
 
             if ($helpdesk_customerinfo) {
                 $params = array(
@@ -392,6 +399,18 @@ if (($fh = fopen($message_file, "r")) != null) {
                 foreach ($emails as $email) {
                     $custmail_headers['To'] = '<' . $email . '>';
                     $LMS->SendMail($email, $custmail_headers, $custmail_body, null, null, $LMS->GetRTSmtpOptions());
+                }
+            }
+            if (!empty($queuedata['newticketsmsbody']) && !empty($mobile_phones)) {
+                $custsms_body = $queuedata['newticketsmsbody'];
+                $custsms_body = str_replace('%tid', $ticketid, $custsms_body);
+                $custsms_body = str_replace('%cid', $ticket['customerid'], $custsms_body);
+                $custsms_body = str_replace('%pin', $info['pin'], $custsms_body);
+                $custsms_body = str_replace('%customername', $info['customername'], $custsms_body);
+                $custsms_body = str_replace('%title', $mh_subject, $custsms_body);
+
+                foreach ($mobile_phones as $phone) {
+                    $LMS->SendSMS($phone['contact'], $custsms_body);
                 }
             }
         } elseif ($helpdesk_customerinfo) {
