@@ -182,7 +182,9 @@
 										</TR>
 										<tr>
 											<TD class="valign-top">
-												<INPUT type="text" name="queue[newticketsubject]" value="{$queue.newticketsubject}" size="60" {tip text="Subject of mail sent after new ticket is created" trigger="newticketsubject"}>
+												{capture assign="tip"}{trans("Subject of mail sent after new ticket is created")}<br><br>{trans("<!customer-notification-subject>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%title</strong> - ticket title.<br>")}{/capture}
+												<INPUT type="text" name="queue[newticketsubject]" value="{$queue.newticketsubject}"
+													size="60" {tip text=$tip trigger="newticketsubject"}>
 											</TD>
 										</tr>
 										<TR>
@@ -192,7 +194,10 @@
 										</TR>
 										<TR>
 											<TD class="valign-top">
-												<TEXTAREA name="queue[newticketbody]" cols="60" rows="10" {tip text="Body of mail sent after new ticket is created" trigger="newticketbody"}>{$queue.newticketbody}</TEXTAREA>
+												{capture assign="tip"}{trans("Body of mail sent after new ticket is created")}<br><br>{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title.<br>")}{/capture}
+												<TEXTAREA name="queue[newticketbody]" cols="60" rows="10"
+													{tip text=$tip trigger="newticketbody"}
+													>{$queue.newticketbody}</TEXTAREA>
 											</TD>
 										</TR>
 										<TR>
@@ -201,7 +206,9 @@
 											</TD>
 										<TR>
 											<TD class="valign-top">
-												<INPUT type="text" name="queue[newmessagesubject]" value="{$queue.newmessagesubject}" size="60" {tip text="Subject of mail sent after new message is added" trigger="newmessagesubject"}>
+												{capture assign="tip"}{trans("Subject of mail sent after new message is added")}<br><br>{trans("<!customer-notification-subject>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%title</strong> - ticket title.<br>")}{/capture}
+												<INPUT type="text" name="queue[newmessagesubject]" value="{$queue.newmessagesubject}"
+													size="60" {tip text=$tip trigger="newmessagesubject"}>
 											</TD>
 										</TR>
 										<TR>
@@ -211,7 +218,10 @@
 										</TR>
 										<TR>
 											<TD class="valign-top">
-												<TEXTAREA name="queue[newmessagebody]" cols="60" rows="10" {tip text="Body of mail sent after new message is added" trigger="newmessagebody"}>{$queue.newmessagebody}</TEXTAREA>
+												{capture assign="tip"}{trans("Body of mail sent after new message is added")}<br><br>{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title.<br>")}{/capture}
+												<TEXTAREA name="queue[newmessagebody]" cols="60" rows="10"
+													{tip text=$tip trigger="newmessagebody"}
+													>{$queue.newmessagebody}</TEXTAREA>
 											</TD>
 										</TR>
 										<TR>
@@ -221,7 +231,9 @@
 										</TR>
 										<TR>
 											<TD class="valign-top">
-												<INPUT type="text" name="queue[resolveticketsubject]" value="{$queue.resolveticketsubject}" size="60" {tip text="Subject of mail sent after ticket is resolved" trigger="resolveticketsubject"}>
+												{capture assign="tip"}{trans("Subject of mail sent after ticket is resolved")}<br><br>{trans("<!customer-notification-subject>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%title</strong> - ticket title.<br>")}{/capture}
+												<INPUT type="text" name="queue[resolveticketsubject]" value="{$queue.resolveticketsubject}"
+													size="60" {tip text=$tip trigger="resolveticketsubject"}>
 											</TD>
 										</TR>
 										<TR>
@@ -231,7 +243,10 @@
 										</TR>
 										<TR>
 											<TD class="valign-top">
-												<TEXTAREA name="queue[resolveticketbody]" cols="60" rows="10" {tip text="Body of mail sent after ticket is resolved" trigger="resolveticketbody"}>{$queue.resolveticketbody}</TEXTAREA>
+												{capture assign="tip"}{trans("Body of mail sent after ticket is resolved")}<br><br>{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title.<br>")}{/capture}
+												<TEXTAREA name="queue[resolveticketbody]" cols="60" rows="10"
+													{tip text=$tip trigger="resolveticketbody"}
+													>{$queue.resolveticketbody}</TEXTAREA>
 											</TD>
 										</TR>
 									</TABLE>
@@ -245,7 +260,10 @@
 										</TR>
 										<TR>
 											<TD class="valign-top">
-												<TEXTAREA name="queue[newticketsmsbody]" cols="60" rows="10" {tip text="SMS sent after new ticket is created" trigger="newticketsmsbody"}>{$queue.newticketsmsbody}</TEXTAREA>
+												{capture assign="tip"}{trans("SMS sent after new ticket is created")}<br><br>{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title.<br>")}{/capture}
+												<TEXTAREA name="queue[newticketsmsbody]" cols="60" rows="10"
+													{tip text=$tip trigger="newticketsmsbody"}
+													>{$queue.newticketsmsbody}</TEXTAREA>
 											</TD>
 										</TR>
 										<TR>
@@ -255,7 +273,10 @@
 										</TR>
 										<TR>
 											<TD class="valign-top">
-												<TEXTAREA name="queue[newmessagesmsbody]" cols="60" rows="10" {tip text="SMS sent after new message is added" trigger="newmessagesmsbody"}>{$queue.newmessagesmsbody}</TEXTAREA>
+												{capture assign="tip"}{trans("SMS sent after new message is added")}<br><br>{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title.<br>")}{/capture}
+												<TEXTAREA name="queue[newmessagesmsbody]" cols="60" rows="10"
+													{tip text=$tip trigger="newmessagesmsbody"}
+													>{$queue.newmessagesmsbody}</TEXTAREA>
 											</TD>
 										</TR>
 										<TR>
@@ -265,7 +286,10 @@
 										</TR>
 										<TR>
 											<TD class="valign-top">
-												<TEXTAREA name="queue[resolveticketsmsbody]" cols="60" rows="10" {tip text="SMS sent after ticket is resolved" trigger="resolveticketsmsbody"}>{$queue.resolveticketsmsbody}</TEXTAREA>
+												{capture assign="tip"}{trans("SMS sent after ticket is resolved")}<br><br>{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title.<br>")}{/capture}
+												<TEXTAREA name="queue[resolveticketsmsbody]" cols="60" rows="10"
+													{tip text=$tip trigger="resolveticketsmsbody"}
+													>{$queue.resolveticketsmsbody}</TEXTAREA>
 											</TD>
 										</TR>
 									</TABLE>
@@ -282,7 +306,9 @@
 								</tr>
 								<TR>
 									<TD class="valign-top">
-										<INPUT type="text" name="queue[verifierticketsubject]" value="{$queue.verifierticketsubject}" size="60" {tip text="Subject of mail sent to verifier after ticket is transferred to him" trigger="verifierticketsubject"}>
+										{capture assign="tip"}{trans("Subject of mail sent to verifier after ticket is transferred to him")}<br><br>{trans("<!customer-notification-subject>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%title</strong> - ticket title.<br>")}{/capture}
+										<INPUT type="text" name="queue[verifierticketsubject]" value="{$queue.verifierticketsubject}"
+											size="60" {tip text=$tip trigger="verifierticketsubject"}>
 									</TD>
 								</TR>
 								<TR>
@@ -292,7 +318,10 @@
 								</TR>
 								<TR>
 									<TD class="valign-top">
-										<TEXTAREA name="queue[verifierticketbody]" cols="60" rows="10" {tip text="Body of mail sent to verifier after ticket is transferred to him" trigger="verifierticketbody"}>{$queue.verifierticketbody}</TEXTAREA>
+										{capture assign="tip"}{trans("Body of mail sent to verifier after ticket is transferred to him")}<br><br>{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title.<br>")}{/capture}
+										<TEXTAREA name="queue[verifierticketbody]" cols="60" rows="10"
+											{tip text=$tip trigger="verifierticketbody"}
+											>{$queue.verifierticketbody}</TEXTAREA>
 									</TD>
 								</TR>
 							</table>

@@ -58,6 +58,30 @@
         box-shadow: @warning-box-shadow-focus;
       }
     }
+
+    &.ui-tabs-tab {
+      background-color: #CEBD9B;
+      box-shadow: inset 1px 1px 4px 0 rgba(0, 0, 0, .4);
+    }
+
+    &.ui-tabs-active {
+      .ui-tabs-anchor {
+        color: black;
+        font-weight: bold;
+        outline: none;
+      }
+      &.ui-tabs-tab {
+        background-color: #DFD5BD;
+        border: 1px solid #615847;
+        border-bottom: none;
+        box-shadow: unset;
+      }
+      &:focus {
+        border: 1px solid #615847;
+        border-bottom: none;
+        //outline: none;
+      }
+    }
   }
 }
 

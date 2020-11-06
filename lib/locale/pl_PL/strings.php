@@ -4961,3 +4961,23 @@ $_LANG['Negative value means customers with karma less or equal than specified, 
 
 $_LANG['Customer notifications'] = 'Powiadomienia klienta';
 $_LANG['Verifier notifications'] = 'Powiadomienia weryfikatora';
+
+$_LANG['<!customer-notification-subject>The following special symbols are supported:<br>'
+    . '<strong>%tid</strong> - ticket identifier,<br>'
+    . '<strong>%title</strong> - ticket title.<br>'] =
+    'Obsługiwane są następujące symbole specjalne:<br>'
+    . '<strong>%tid</strong> - identyfikator zgłoszenia,<br>'
+    . '<strong>%title</strong> - tytuł zgłoszenia.<br>';
+
+$_LANG['<!customer-notification-body>The following special symbols are supported:<br>'
+    . '<strong>%tid</strong> - ticket identifier,<br>'
+    . '<strong>%cid</strong> - customer identifier,<br>'
+    . '<strong>%pin</strong> - customer PIN,<br>'
+    . '<strong>%customername</strong> - customer full name,<br>'
+    . '<strong>%title</strong> - ticket title.<br>'] =
+    'Obsługiwane są następujące symbole specjalne:<br>'
+    . '<strong>%tid</strong> - identyfikator zgłoszenia,<br>'
+    . '<strong>%cid</strong> - identyfikator klienta,<br>'
+    . '<strong>%pin</strong> - PIN klienta,<br>'
+    . '<strong>%customername</strong> - pełna nazwa klienta,<br>'
+    . '<strong>%title</strong> - tytuł zgłoszenia.<br>';
