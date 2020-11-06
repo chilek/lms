@@ -46,15 +46,13 @@ if (isset($_POST['queue'])) {
         $error['email'] = trans('Incorrect email!');
     }
 
-    if (isset($queue['users'])) {
-        foreach ($queue['users'] as $key => $value) {
-            $queue['rights'][] = array(
-                'id' => $key,
-                'rights' => array_sum($value),
-                'rname' => $queue['usernames'][$key],
-                'login' => $queue['userlogins'][$key],
-            );
-        }
+    foreach ($queue['usernames'] as $key => $rname) {
+        $queue['rights'][] = array(
+            'id' => $key,
+            'rights' => isset($queue['users'][$key]) ? array_sum($queue['users'][$key]) : 0,
+            'rname' => $rname,
+            'login' => $queue['userlogins'][$key],
+        );
     }
 
     if ($queue['newticketsubject'] && !$queue['newticketbody']) {
