@@ -95,7 +95,7 @@
 								</TD>
 								<TD class="bold">{trans("Privileges:")}</TD>
 								<TD>
-									<TABLE class="lmsbox">
+									<TABLE class="lmsbox lms-ui-background-cycle">
 										<COLGROUP>
 											<COL style="width: {100-count($_RT_RIGHTS)}%">
 											{foreach $_RT_RIGHTS as $label}
@@ -111,9 +111,8 @@
 											</TR>
 										</THEAD>
 										<TBODY>
-											{cycle values="light,lucid" print=false}
 											{foreach from=$queue.rights item=right}
-											<TR class="highlight {cycle} lms-ui-row-all-check">
+											<TR class="highlight lms-ui-row-all-check">
 												<TD>
 													<A href="?m=userinfo&id={$right.id}" class="nobr">{$right.rname} ({$right.login})</A>
 													<INPUT type="hidden" name="queue[usernames][{$right.id}]" value="{$right.name}">
@@ -125,7 +124,7 @@
 												{/foreach}
 											</TR>
 											{/foreach}
-											<TR class="highlight {cycle}">
+											<TR class="highlight">
 												<TD class="nobr text-right">
 													{trans("Check All")}
 												</TD>
