@@ -519,7 +519,7 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 $services = $DB->GetAll(
     $query,
     array(
-        DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $last_dom ? 0 : $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
+        CTYPES_PRIVATE, DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $last_dom ? 0 : $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
         $currtime, $currtime
     )
 );
