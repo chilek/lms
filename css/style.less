@@ -849,14 +849,14 @@ IMG		{ vertical-align: middle; border: 0; }
 .brown		{ color: #A52A2A; }
 .white		{ color: #FFFFFF; }
 
-.mce-tinymce.mce-container.mce-panel {
-	.lms-ui-error {
-		border-width: 2px !important;
-		border-color: @error-background !important;
+.tox-tinymce {
+	&.lms-ui-error,
+	&.invalid {
+		box-shadow: @error-box-shadow-tinymce;
 	}
-	.lms-ui-warning {
-		border-width: 2px !important;
-		border-color: @warning-background !important;
+	&.lms-ui-warning,
+	&:invalid {
+		box-shadow: @warning-box-shadow-tinymce;
 	}
 }
 

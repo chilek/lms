@@ -111,7 +111,7 @@
         "tecnickcom/tc-lib-barcode": "^1",
         "zenorocha/clipboardjs": "^2.0",
         "harvesthq/chosen": "^1.8",
-        "tinymce/tinymce": "^4",
+        "tinymce/tinymce": "^5",
         "ccampbell/mousetrap": "^1",
         "westonganger/input-autogrow": "^1",
         "ivkremer/jquery-simple-combobox": "^1",

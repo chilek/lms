@@ -225,6 +225,7 @@ version 26-git (????-??-??):
   - enhancement: 'phpui.document_confirm_date_required' forces confirm date requirement
     if from date is later than days count in ther future (default '0' values menas that feature
     is disabled) [chilan]
+  - improvement/devel: migrated from tinymce 4 to 5 [chilan]
 
 version 25.0 (2020-05-15):
 
