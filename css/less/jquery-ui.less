@@ -31,6 +31,9 @@
 }
 
 .ui-tabs {
+  .ui-tabs-nav {
+    border-bottom: 1px dotted grey;
+  }
   &.ui-widget.ui-widget-content {
     border: 0;
   }
@@ -39,9 +42,11 @@
   }
   .ui-widget-header {
     background-color: transparent;
+    padding: 0;
   }
   .ui-tabs-panel {
     border: 1px dotted grey;
+    border-top: none;
   }
   .ui-tab {
     .alert,
@@ -61,7 +66,8 @@
 
     &.ui-tabs-tab {
       background-color: #CEBD9B;
-      box-shadow: inset 1px 1px 4px 0 rgba(0, 0, 0, .4);
+      box-shadow: none;
+      margin-left: -0.1em;
     }
 
     &.ui-tabs-active {
@@ -72,7 +78,7 @@
       }
       &.ui-tabs-tab {
         background-color: #DFD5BD;
-        border: 1px solid #615847;
+        border: 1px dotted grey;
         border-bottom: none;
         box-shadow: unset;
       }
