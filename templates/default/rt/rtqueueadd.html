@@ -2,6 +2,18 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
+
+<style>
+
+	fieldset {
+		margin-top: 2em;
+		margin-right: 2em;
+		margin-bottom: 2em;
+		vertical-align: top;
+	}
+
+</style>
+
 <H1>{$layout.pagetitle}</H1>
 <FORM METHOD="POST" NAME="queue" ACTION="?m=rtqueueadd">
 <INPUT type="submit" class="hiddenbtn">
@@ -43,7 +55,7 @@
 				</COLGROUP>
 				<TR>
 					<TD class="valign-top">
-						<TABLE cellpadding="3">
+						<TABLE cellpadding="3" style="display: inline-block;">
 							<COLGROUP>
 								<COL style="width: 1px;">
 								<COL style="width: 1px;">
@@ -131,125 +143,165 @@
 									</TABLE>
 								</TD>
 							</TR>
+							<tr>
+								<td colspan="2">
+								</td>
+								<td>
+									<FIELDSET>
+										<LEGEND><i class="lms-ui-icon-content lms-ui-icon-queue"></i><span class="bold">{trans("Default categories")}</span>
+											<input type="checkbox" id="checkall">
+										</LEGEND>
+										<table>
+											<tr>
+												<td>
+													{include file="rt/rtcategoryselection.html" id="categories" name_prefix="queue[categories]" categories=$categories}
+												</td>
+											</tr>
+										</table>
+									</FIELDSET>
+								</td>
+							</tr>
 						</TABLE>
-					</TD>
-					<TD></TD>
-					<TD class="valign-top">
-						<TABLE cellpadding="3">
-							<TR>
-								<TD class="bold valign-top nobr">
-									{trans("New ticket customer notification subject:")}
-								</TD>
-							</TR>
-							<TR>
-								<TD class="valign-top">
-									<INPUT type="text" name="queue[newticketsubject]" value="{$queue.newticketsubject}" size="60" {tip text="Subject of mail which is sent to customer when new ticket is created" trigger="newticketsubject"}>
-								</TD>
-							</TR>
-							<TR>
-								<TD class="bold valign-top nobr">
-									{trans("New ticket customer notification body:")}
-								</TD>
-							</TR>
-							<TR>
-								<TD class="valign-top">
-									<TEXTAREA name="queue[newticketbody]" cols="63" rows="10" {tip text="Body of mail which is sent to customer when new ticket is created" trigger="newticketbody"}>{$queue.newticketbody}</TEXTAREA>
-								</TD>
-							</TR>
-							<TR>
-								<TD class="bold valign-top nobr">
-									{trans("New message customer notification subject:")}
-								</TD>
-							<TR>
-								<TD class="valign-top">
-									<INPUT type="text" name="queue[newmessagesubject]" value="{$queue.newmessagesubject}" size="60" {tip text="Subject of mail which is sent to customer when new message is added" trigger="newmessagesubject"}>
-								</TD>
-							</TR>
-							<TR>
-								<TD class="bold valign-top nobr">
-									{trans("New message customer notification body:")}
-								</TD>
-							</TR>
-							<TR>
-								<TD class="valign-top">
-									<TEXTAREA name="queue[newmessagebody]" cols="63" rows="10" {tip text="Body of mail which is sent to customer when new message is added" trigger="newmessagebody"}>{$queue.newmessagebody}</TEXTAREA>
-								</TD>
-							</TR>
-							<TR>
-								<TD class="bold valign-top nobr">
-									{trans("Resolve ticket customer notification subject:")}
-								</TD>
-							</TR>
-							<TR>
-								<TD class="valign-top">
-									<INPUT type="text" name="queue[resolveticketsubject]" value="{$queue.resolveticketsubject}" size="60" {tip text="Subject of mail which is sent to customer when the ticket is resolved" trigger="resolveticketsubject"}>
-								</TD>
-							</TR>
-							<TR>
-								<TD class="bold valign-top nobr">
-									{trans("Resolve ticket customer notification body:")}
-								</TD>
-							</TR>
-							<TR>
-								<TD class="valign-top">
-									<TEXTAREA name="queue[resolveticketbody]" cols="63" rows="10" {tip text="Body of mail which is sent to customer when the ticket is resolved" trigger="resolveticketbody"}>{$queue.resolveticketbody}</TEXTAREA>
-								</TD>
-							</TR>
-							<TR>
-								<TD class="bold valign-top nobr">
-									{trans("Ticket verifier notification subject:")}
-								</TD>
-							</TR>
-							<TR>
-								<TD class="valign-top">
-									<INPUT type="text" name="queue[verifierticketsubject]" value="{$queue.verifierticketsubject}" size="60" {tip text="Subject of mail which is sent to verifier when the ticket is transfered to him" trigger="verifierticketsubject"}>
-								</TD>
-							</TR>
-							<TR>
-								<TD class="bold valign-top nobr">
-									{trans("Ticket verifier notification body:")}
-								</TD>
-							</TR>
-							<TR>
-								<TD class="valign-top">
-									<TEXTAREA name="queue[verifierticketbody]" cols="63" rows="10" {tip text="Body of mail which is sent to verifier when the ticket is transfered to him" trigger="verifierticketbody"}>{$queue.verifierticketbody}</TEXTAREA>
-								</TD>
-							</TR>
-						</TABLE>
+						<fieldset>
+							<legend>{icon name="notifications"} <strong>{trans("Customer notifications")}</strong></legend>
+							<div id="notification-tabs">
+								<ul>
+									<li><a href="#notification-tab-email">{trans("Email")}</a></li>
+									<li><a href="#notification-tab-sms">{trans("SMS")}</a></li>
+								</ul>
+								<div id="notification-tab-email" class="notification-tab">
+									<TABLE cellpadding="3">
+										<TR>
+											<TD class="bold valign-top">
+												{trans("Subject (new ticket)")}
+											</TD>
+										</TR>
+										<tr>
+											<TD class="valign-top">
+												<INPUT type="text" name="queue[newticketsubject]" value="{$queue.newticketsubject}" size="60" {tip text="Subject of mail sent after new ticket is created" trigger="newticketsubject"}>
+											</TD>
+										</tr>
+										<TR>
+											<TD class="bold valign-top">
+												{trans("Body (new ticket)")}
+											</TD>
+										</TR>
+										<TR>
+											<TD class="valign-top">
+												<TEXTAREA name="queue[newticketbody]" cols="60" rows="10" {tip text="Body of mail sent after new ticket is created" trigger="newticketbody"}>{$queue.newticketbody}</TEXTAREA>
+											</TD>
+										</TR>
+										<TR>
+											<TD class="bold valign-top">
+												{trans("Subject (new message)")}
+											</TD>
+										<TR>
+											<TD class="valign-top">
+												<INPUT type="text" name="queue[newmessagesubject]" value="{$queue.newmessagesubject}" size="60" {tip text="Subject of mail sent after new message is added" trigger="newmessagesubject"}>
+											</TD>
+										</TR>
+										<TR>
+											<TD class="bold valign-top">
+												{trans("Body (new message)")}
+											</TD>
+										</TR>
+										<TR>
+											<TD class="valign-top">
+												<TEXTAREA name="queue[newmessagebody]" cols="60" rows="10" {tip text="Body of mail sent after new message is added" trigger="newmessagebody"}>{$queue.newmessagebody}</TEXTAREA>
+											</TD>
+										</TR>
+										<TR>
+											<TD class="bold valign-top">
+												{trans("Subject (resolve ticket)")}
+											</TD>
+										</TR>
+										<TR>
+											<TD class="valign-top">
+												<INPUT type="text" name="queue[resolveticketsubject]" value="{$queue.resolveticketsubject}" size="60" {tip text="Subject of mail sent after ticket is resolved" trigger="resolveticketsubject"}>
+											</TD>
+										</TR>
+										<TR>
+											<TD class="bold valign-top">
+												{trans("Body (resolve ticket)")}
+											</TD>
+										</TR>
+										<TR>
+											<TD class="valign-top">
+												<TEXTAREA name="queue[resolveticketbody]" cols="60" rows="10" {tip text="Body of mail sent after ticket is resolved" trigger="resolveticketbody"}>{$queue.resolveticketbody}</TEXTAREA>
+											</TD>
+										</TR>
+									</TABLE>
+								</div>
+								<div id="notification-tab-sms" class="notification-tab">
+									<TABLE cellpadding="3">
+										<TR>
+											<TD class="bold valign-top">
+												{trans("Body (new ticket)")}
+											</TD>
+										</TR>
+										<TR>
+											<TD class="valign-top">
+												<TEXTAREA name="queue[newticketsmsbody]" cols="60" rows="10" {tip text="SMS sent after new ticket is created" trigger="newticketsmsbody"}>{$queue.newticketsmsbody}</TEXTAREA>
+											</TD>
+										</TR>
+										<TR>
+											<TD class="bold valign-top">
+												{trans("Body (new message)")}
+											</TD>
+										</TR>
+										<TR>
+											<TD class="valign-top">
+												<TEXTAREA name="queue[newmessagesmsbody]" cols="60" rows="10" {tip text="SMS sent after new message is added" trigger="newmessagesmsbody"}>{$queue.newmessagesmsbody}</TEXTAREA>
+											</TD>
+										</TR>
+										<TR>
+											<TD class="bold valign-top">
+												{trans("Body (resolve ticket)")}
+											</TD>
+										</TR>
+										<TR>
+											<TD class="valign-top">
+												<TEXTAREA name="queue[resolveticketsmsbody]" cols="60" rows="10" {tip text="SMS sent after ticket is resolved" trigger="resolveticketsmsbody"}>{$queue.resolveticketsmsbody}</TEXTAREA>
+											</TD>
+										</TR>
+									</TABLE>
+								</div>
+							</div>
+						</fieldset>
+						<fieldset>
+							<legend>{icon name="verifier"} <strong>{trans("Verifier notifications")}</strong></legend>
+							<table>
+								<tr>
+									<td>
+										{trans("Subject (ticket verifier)")}
+									</td>
+								</tr>
+								<TR>
+									<TD class="valign-top">
+										<INPUT type="text" name="queue[verifierticketsubject]" value="{$queue.verifierticketsubject}" size="60" {tip text="Subject of mail sent to verifier after ticket is transferred to him" trigger="verifierticketsubject"}>
+									</TD>
+								</TR>
+								<TR>
+									<TD class="bold valign-top">
+										{trans("Body (ticket verifier)")}
+									</TD>
+								</TR>
+								<TR>
+									<TD class="valign-top">
+										<TEXTAREA name="queue[verifierticketbody]" cols="60" rows="10" {tip text="Body of mail sent to verifier after ticket is transferred to him" trigger="verifierticketbody"}>{$queue.verifierticketbody}</TEXTAREA>
+									</TD>
+								</TR>
+							</table>
+						</fieldset>
 					</TD>
 				</TR>
 			</TABLE>
 		</TD>
 	</TR>
 	<TR>
-		<TD>
-			<table>
-				<tr>
-					<td>
-						<FIELDSET>
-							<LEGEND><i class="lms-ui-icon-content lms-ui-icon-queue"></i><span class="bold">{trans("Default categories")}</span>
-								<label>
-									({trans("Check All")}
-									<input type="checkbox" id="checkall">)
-								</label>
-							</LEGEND>
-							<table>
-								<tr>
-									<td>
-										{include file="rt/rtcategoryselection.html" id="categories" name_prefix="queue[categories]" categories=$categories}
-									</td>
-								</tr>
-							</table>
-						</FIELDSET>
-					</td>
-				</tr>
-			</table>
-		</TD>
-	</TR>
-	<TR>
-		<TD class="text-right">
-			<A HREF="javascript:document.queue.submit();" accesskey="s"><IMG src="img/save.gif" alt=""> {trans("Submit")}</A>
-			<A HREF="?m=rtqueuelist"><IMG src="img/cancel.gif" alt=""> {trans("Cancel")}</A>
+		<TD class="lms-ui-box-buttons">
+			{button id="submit-button" type="submit" icon="save" label="Submit" onclick="javascript:document.queue.submit();"}
+			{button icon="cancel" label="Cancel" onclick="location.href='?m=rtqueuelist';"}
 		</TD>
 	</TR>
     </TBODY>
@@ -273,6 +325,44 @@
 		$('#checkall').prop('checked', categories.length == categories.filter(':selected').length);
 		$('#categories').change(function() {
 			$('#checkall').prop('checked', categories.length == categories.filter(':selected').length);
+		});
+
+		$('[name="queue"]').submit(function() {
+			window.sessionStorage.setItem('rtqueuemodify-active-notification-tab', $('.notification-tab:visible').attr('id'));
+		});
+
+		var activeNotificationTab = window.sessionStorage.getItem('rtqueuemodify-active-notification-tab');
+		if (activeNotificationTab) {
+			window.sessionStorage.removeItem('rtqueuemodify-active-notification-tab');
+		}
+
+		var errors = [];
+		$('.notification-tab').each(function() {
+			if ($(this).find('.lms-ui-error').length) {
+				errors.push($(this).attr('id'));
+			}
+		});
+
+		var newActiveNotificationTab;
+
+		if (activeNotificationTab) {
+			newActiveNotificationTab = activeNotificationTab;
+		}
+		if (errors.length && errors.indexOf(activeNotificationTab) == -1) {
+			newActiveNotificationTab = errors[0];
+		}
+
+		if (newActiveNotificationTab) {
+			newActiveNotificationTab = $('.notification-tab').index('#' + newActiveNotificationTab);
+		} else {
+			newActiveNotificationTab = $('.notification-tab').first();
+		}
+		$('#notification-tabs').tabs({
+			active: newActiveNotificationTab
+		});
+
+		$.each(errors, function(index, value) {
+			$('[href="#' + value + '"]').closest('.ui-tab').addClass('lms-ui-error');
 		});
 	});
 

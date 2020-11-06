@@ -86,14 +86,21 @@ if (isset($_POST['queue'])) {
             'UPDATE rtqueues SET name=?, email=?, description=?,
 				newticketsubject=?, newticketbody=?,
 				newmessagesubject=?, newmessagebody=?,
-				resolveticketsubject=?, resolveticketbody=?, verifierticketsubject=?, verifierticketbody=?, verifierid=? WHERE id=?',
-            array(trim($queue['name']),
-                    $queue['email'], $queue['description'],
-                    $queue['newticketsubject'], $queue['newticketbody'],
-                    $queue['newmessagesubject'], $queue['newmessagebody'],
-                    $queue['resolveticketsubject'], $queue['resolveticketbody'], $queue['verifierticketsubject'], $queue['verifierticketbody'],
-                    !empty($queue['verifierid']) ? $queue['verifierid'] : null,
-                    $queue['id'])
+				resolveticketsubject=?, resolveticketbody=?, verifierticketsubject=?, verifierticketbody=?, verifierid=?,
+				newticketsmsbody = ?, newmessagesmsbody = ?, resolveticketsmsbody = ?
+				WHERE id=?',
+            array(
+                trim($queue['name']),
+                $queue['email'], $queue['description'],
+                $queue['newticketsubject'], $queue['newticketbody'],
+                $queue['newmessagesubject'], $queue['newmessagebody'],
+                $queue['resolveticketsubject'], $queue['resolveticketbody'], $queue['verifierticketsubject'], $queue['verifierticketbody'],
+                !empty($queue['verifierid']) ? $queue['verifierid'] : null,
+                empty($queue['newticketsmsbody']) ? null : $queue['newticketsmsbody'],
+                empty($queue['newmessagesmsbody']) ? null : $queue['newmessagesmsbody'],
+                empty($queue['resolveticketsmsbody']) ? null : $queue['resolveticketsmsbody'],
+                $queue['id']
+            )
         );
 
         $DB->Execute('DELETE FROM rtrights WHERE queueid=?', array($queue['id']));

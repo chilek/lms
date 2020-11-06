@@ -227,6 +227,7 @@ version 26-git (????-??-??):
     is disabled) [chilan]
   - improvement/devel: migrated from tinymce 4 to 5 [chilan]
   - improvement: helpdesk ticket type list is sorted according to current localisation [chilan]
+  - enhancement: ticket change sms customer notification support [chilan]
 
 version 25.0 (2020-05-15):
 

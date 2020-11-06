@@ -100,10 +100,6 @@ $_LANG['verified'] = 'weryfikowany';
 $_LANG['Ticket has been transferred to verifier'] = 'Zgłoszenie zostało przekazane do weryfikatora';
 $_LANG['Ticket has been transferred to verifier.'] = 'Zgłoszenie zostało przekazane do weryfikatora.';
 $_LANG['Ticket is already transferred to verifier!'] = 'Zgłoszenie zostało już wcześniej przekazane do weryfikatora!';
-$_LANG['Ticket verifier notification subject:'] = 'Temat listu z powiadomieniem dla weryfikatora:';
-$_LANG['Subject of mail which is sent to verifier when the ticket is transfered to him'] = 'Temat listu z powiadomieniem wysyłanym do weryfikatora, gdy zgłoszenie zostanie mu przekazane';
-$_LANG['Ticket verifier notification body:'] = 'Treść listu z powiadomieniem dla weryfikatora:';
-$_LANG['Body of mail which is sent to verifier when the ticket is transfered to him'] = 'Treść listu z powiadomieniem wysyłanym do weryfikatora, gdy zgłoszenie zostanie mu przekazane';
 $_LANG['Verifier ticket subject should not be empty if you set verifier ticket body!'] = 'Temat listu z powiadomieniem dla weryfikatora nie może być pusty, gdy treść jest uzupełniona!';
 $_LANG['Verifier ticket body should not be empty if you set verifier ticket subject!'] = 'Treść listu z powiadomieniem dla weryfikatora nie może być pusta, gdy temat jest uzupełniony!';
 $_LANG['Transfer to verifier'] = 'Przekaż do weryfikatora';
@@ -3515,20 +3511,29 @@ $_LANG['Last read on:'] = 'Ostatnio czytana dnia:';
 $_LANG['Was confirm on:'] = 'Potwierdzona dnia:';
 $_LANG['only userpanel message'] = 'tylko wiadomości panelu klienta';
 
-$_LANG['New ticket customer notification subject:'] = 'Temat listu z powiadomieniem klienta o nowym zgłoszeniu:';
-$_LANG['New ticket customer notification body:'] = 'Treść listu z powiadomieniem klienta o nowym zgłoszeniu:';
-$_LANG['Subject of mail which is sent to customer when new ticket is created'] = 'Temat listu wysyłanego do klienta, gdy tworzone jest nowe zgłoszenie';
-$_LANG['Body of mail which is sent to customer when new ticket is created'] = 'Treść listu wysyłanego do klienta, gdy tworzone jest nowe zgłoszenie';
+$_LANG['Subject (new ticket)'] = 'Temat (nowe zgłoszenie)';
+$_LANG['Subject of mail sent after new ticket is created'] = 'Temat listu wysyłanego po utworzeniu nowego zgłoszenia';
+$_LANG['Body (new ticket)'] = 'Treść (nowe zgłoszenie)';
+$_LANG['Body of mail sent after new ticket is created'] = 'Treść listu wysyłanego po utworzeniu nowego zgłoszenia';
 
-$_LANG['New message customer notification subject:'] = 'Temat listu z powiadomieniem klienta o nowej wiadomości:';
-$_LANG['New message customer notification body:'] = 'Treść listu z powiadomieniem klienta o nowej wiadomości:';
-$_LANG['Subject of mail which is sent to customer when new message is added'] = 'Temat listu wysyłanego do klienta, gdy dodawana jest wiadomość do zgłoszenia';
-$_LANG['Body of mail which is sent to customer when new message is added'] = 'Treść listu wysyłanego do klienta, gdy dodawana jest wiadomość do zgłoszenia';
+$_LANG['Subject (new message)'] = 'Temat (nowa wiadomość)';
+$_LANG['Subject of mail sent after new message is added'] = 'Temat listu wysyłanego po dodaniu wiadomości do zgłoszenia';
+$_LANG['Body (new message)'] = 'Treść (nowa wiadomość)';
+$_LANG['Body of mail sent after new message is added'] = 'Treść listu wysyłanego po dodaniu wiadomości do zgłoszenia';
 
-$_LANG['Resolve ticket customer notification subject:'] = 'Temat listu z powiadomieniem klienta o rozwiązaniu zgłoszenia:';
-$_LANG['Resolve ticket customer notification body:'] = 'Treść listu z powiadomieniem klienta o rozwiązaniu zgłoszenia:';
-$_LANG['Subject of mail which is sent to customer when the ticket is resolved'] = 'Temat listu wysyłanego do klienta, gdy zgłoszenie jest rozwiązywane';
-$_LANG['Body of mail which is sent to customer when the ticket is resolved'] = 'Treść listu wysyłanego do klienta, gdy zgłoszenie jest rozwiązywane';
+$_LANG['Subject (resolve ticket)'] = 'Temat (rozwiązanie zgłoszenia)';
+$_LANG['Subject of mail sent after ticket is resolved'] = 'Temat listu wysyłanego, gdy zgłoszenie jest rozwiązywane';
+$_LANG['Body (resolve ticket)'] = 'Treść (rozwiązanie zgłoszenia)';
+$_LANG['Body of mail sent after ticket is resolved'] = 'Treść listu wysyłanego, gdy zgłoszenie jest rozwiązywane';
+
+$_LANG['Subject (ticket verifier)'] = 'Temat (weryfikator zgłoszenia)';
+$_LANG['Subject of mail sent to verifier after ticket is transferred to him'] = 'Temat listu wysyłanego do weryfikatora, gdy zgłoszenie zostanie mu przekazane';
+$_LANG['Body (ticket verifier)'] = 'Treść (weryfikator zgłoszenia)';
+$_LANG['Body of mail sent to verifier after ticket is transferred to him'] = 'Treść listu wysyłanego do weryfikatora, gdy zgłoszenie zostanie mu przekazane';
+
+$_LANG['SMS sent after new ticket is created'] = 'SMS wysyłany po utworzeniu nowego zgłoszenia';
+$_LANG['SMS sent after new message is added'] = 'SMS wysyłany po dodaniu wiadomości do zgłoszenia';
+$_LANG['SMS sent after ticket is resolved'] = 'SMS wysyłany, gdy zgłoszenie jest rozwiązywane';
 
 $_LANG['backup access forbidden'] = 'brak dostępu do kopii zapasowych';
 
@@ -4953,3 +4958,6 @@ $_LANG['Lower'] = 'Obniż';
 $_LANG['Karma'] = 'Karma';
 $_LANG['Karma is changed too often!'] = 'Zbyt częsta zmiana karmy!';
 $_LANG['Negative value means customers with karma less or equal than specified, but positive means greater or equal then specified'] = 'Wartość ujemna oznacz wyszukiwanie klientów z karmą mniejszą lub równą od podanej, zaś dodatna większą lub równą od podanej';
+
+$_LANG['Customer notifications'] = 'Powiadomienia klienta';
+$_LANG['Verifier notifications'] = 'Powiadomienia weryfikatora';

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -23,15 +23,12 @@
  *
  *  $Id$
  */
+
 $userlist = $LMS->getUserList();
 unset($userlist['total']);
 
 if (isset($_POST['queue'])) {
     $queue = $_POST['queue'];
-
-    if ($queue['name']=='' && $queue['email']=='' && $queue['description']=='') {
-        $SESSION->redirect('?m=rtqueuelist');
-    }
 
     if ($queue['name'] == '') {
         $error['name'] = trans('Queue name must be defined!');
@@ -89,14 +86,21 @@ if (isset($_POST['queue'])) {
     if (!$error) {
         $DB->Execute(
             'INSERT INTO rtqueues (name, email, description, newticketsubject, newticketbody,
-				newmessagesubject, newmessagebody, resolveticketsubject, resolveticketbody, verifierticketsubject, verifierticketbody, verifierid)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-            array(trim($queue['name']), $queue['email'], $queue['description'],
-                    $queue['newticketsubject'], $queue['newticketbody'],
-                    $queue['newmessagesubject'], $queue['newmessagebody'],
-                    $queue['resolveticketsubject'], $queue['resolveticketbody'], $queue['verifierticketsubject'],
-                    $queue['verifierticketbody'],
-            !empty($queue['verifierid']) ? $queue['verifierid'] : null )
+				newmessagesubject, newmessagebody, resolveticketsubject, resolveticketbody,
+				verifierticketsubject, verifierticketbody, verifierid,
+				newticketsmsbody, newmessagesmsbody, resolveticketsmsbody)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            array(
+                trim($queue['name']), $queue['email'], $queue['description'],
+                $queue['newticketsubject'], $queue['newticketbody'],
+                $queue['newmessagesubject'], $queue['newmessagebody'],
+                $queue['resolveticketsubject'], $queue['resolveticketbody'], $queue['verifierticketsubject'],
+                $queue['verifierticketbody'],
+                !empty($queue['verifierid']) ? $queue['verifierid'] : null,
+                empty($queue['newticketsmsbody']) ? null : $queue['newticketsmsbody'],
+                empty($queue['newmessagesmsbody']) ? null : $queue['newmessagesmsbody'],
+                empty($queue['resolveticketsmsbody']) ? null : $queue['resolveticketsmsbody'],
+            )
         );
 
         $id = $DB->GetLastInsertId('rtqueues');
