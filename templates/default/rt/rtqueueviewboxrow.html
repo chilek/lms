@@ -25,7 +25,7 @@
 	</TD>
 	<TD class="text-center">
 		<span>{$_SERVICETYPES[$ticket.service]}</span>
-		<span><br>{$_RT_TYPES[$ticket.type].label}</span>
+		<span><br>{trans($_RT_TYPES[$ticket.type].label)}</span>
 	</TD>
 	<TD class="valign-middle">
 		<span class="bold">{$ticket.subject|escape|truncate:"100":"..."|default:"&nbsp;"}</span>

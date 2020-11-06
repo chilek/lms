@@ -137,7 +137,7 @@
 		<TD>
 			<SELECT SIZE="1" name="search[type]" {tip text="Select ticket type" }>
 				<OPTION value="" {if $search.type==""}SELECTED{/if}>{trans("- all -")}</OPTION>
-				{foreach $_RT_TYPES as $key => $tt}
+				{foreach Localisation::arraySort($_RT_TYPES, 'label') as $key => $tt}
 				<OPTION value="{$key}" {if is_array($queuedata.type) && in_array($key, $queuedata.type)} SELECTED{/if}>{$tt.label}</OPTION>
 				{/foreach}
 			</SELECT>

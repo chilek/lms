@@ -507,7 +507,7 @@ class LMSSmartyPlugins
 
         if (empty($countries)) {
             $countries = $lms->GetCountries();
-            Localisation::arraySort($countries, 'name');
+            $countries = Localisation::arraySort($countries, 'name');
         }
 
         if ($countries) {
@@ -934,8 +934,7 @@ class LMSSmartyPlugins
         static $paytypes = array();
 
         if (empty($paytypes)) {
-            $paytypes = $GLOBALS['PAYTYPES'];
-            Localisation::arraySort($paytypes);
+            $paytypes = Localisation::arraySort($GLOBALS['PAYTYPES']);
         }
 
         $elemname = $params['elemname'];
