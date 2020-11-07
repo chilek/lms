@@ -64,10 +64,13 @@ class LMSSmartyPlugins
             }
         }
 
-        return '<' . ($type == 'link' || $type == 'link-button' ? 'a' : 'button type="' . $type . '"') . ($href ? ' href="' . $href . '"' : '')
+        return '<' . ($type == 'link' || $type == 'link-button' ? 'a' : 'button type="' . $type . '"')
+            . ($type == 'link' || $type == 'link-button'
+                ? ($href ? ' href="' . $href . '"' : '')
+                : ($onclick || !$href ? '' : ' onclick="location.href = \'' . $href . '\';"'))
             . ' class="lms-ui-button' . ($type == 'link-button' ? ' lms-ui-link-button ' : '')
             . ($class ? ' ' . $class : '') . '"'
-            . ($id ? ' id="' . $id . '"' : '') . ($onclick ? ' onclick="' . $onclick . '"' : '')
+            . ($id ? ' id="' . $id . '"' : '') . ((($type == 'button' && empty($href)) || $type != 'button') && $onclick ? ' onclick="' . $onclick . '"' : '')
             . ($form ? ' form="' . $form . '"' : '')
             . ($tip ? ' title="' . $tip . '" data-title="' . $tip . '"' : '')
             . ($external ? ' rel="external"' : '')
