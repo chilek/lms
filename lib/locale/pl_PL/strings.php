@@ -1428,6 +1428,7 @@ $_LANG['Period:'] = 'Okres:';
 $_LANG['Allow nodes addition with duplicated MAC address (not checking that some computer have that MAC yet). Default: 0 (off).'] = 'Zezwolenie na dodawanie komputerów ze zduplikowanymi adresami MAC (LMS nie sprawdza, czy inny komputer nie ma już przypisanego danego adresu MAC). Domyślnie: 0 (wyłączone).';
 $_LANG['Percentage of suspended liabilities. Default: 0'] = 'Wartość procentowa zawieszonych zobowiązań. Domyślnie: 0';
 $_LANG['Permissions:'] = 'Prawa:';
+$_LANG['Permissions'] = 'Uprawnienia';
 $_LANG['Phone'] = 'Telefon';
 $_LANG['Phone:'] = 'Telefon:';
 $_LANG['Pool numbers'] = 'Pule numeracyjne';

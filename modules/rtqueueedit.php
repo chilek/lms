@@ -166,4 +166,4 @@ $SMARTY->assign('queue', $queue);
 $SMARTY->assign('userlist', $userlist);
 $SMARTY->assign('categories', $categories);
 $SMARTY->assign('error', $error);
-$SMARTY->display('rt/rtqueueedit.html');
+$SMARTY->display('rt/rtqueuemodify.html');

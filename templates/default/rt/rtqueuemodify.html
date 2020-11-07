@@ -122,11 +122,24 @@
 		min-width: 20em;
 	}
 
+	.rotation-wrapper-container {
+		position: relative;
+		padding: 0.5em 0.7em 0.5em 0.7em !important;
+	}
+
+	.rotation-wrapper-element {
+		writing-mode: vertical-rl;
+		transform: rotate(0deg);
+		white-space: nowrap;
+		display: inline-block;
+		overflow: visible;
+	}
+
 </style>
 
 <H1>{$layout.pagetitle}</H1>
 
-<form METHOD="POST" NAME="queue" ACTION="?m=rtqueueedit&id={$queue.id}">
+<form METHOD="POST" NAME="queue" ACTION="?m={$layout.module}{if isset($queue.id)}&id={$queue.id}{/if}">
 <INPUT type="submit" class="hiddenbtn">
 
 <div class="lms-ui-form">
@@ -135,7 +148,10 @@
 			{icon name="queue" class="fa-fw"}
 			<strong>{trans("Name:")}</strong>
 			<INPUT TYPE="TEXT" NAME="queue[name]" VALUE="{$queue.name}"
-				{tip text="Enter queue name" trigger="name" bold=1}><span class="bold"> ({$queue.id|string_format:"%04d"})</span>
+				{tip text="Enter queue name" trigger="name" bold=1}>
+			{if isset($queue.id)}
+				<strong>({$queue.id|string_format:"%04d"})</strong>
+			{/if}
 		</label>
 	</div>
 	<div class="lms-ui-form-body">
@@ -176,7 +192,7 @@
 							name="queue[verifierid]" {tip text="Select user" trigger="verifierid"}>
 						<OPTION value="">- {trans("select user")} -</OPTION>
 						{foreach $userlist as $user}
-							<OPTION value="{$user.id}" {if $user.id == $queue.verifier.id} selected{/if}>{$user.rname}
+							<OPTION value="{$user.id}" {if $user.id == $queue.verifierid} selected{/if}>{$user.rname}
 								({$user.login})
 							</OPTION>
 						{/foreach}
@@ -198,7 +214,7 @@
 			<div class="lms-ui-form-field">
 				<div class="lms-ui-form-field-label">
 					{icon name="user" class="fa-fw"}
-					<strong>{trans("Privileges:")}</strong>
+					<strong>{trans("Permissions")}</strong>
 				</div>
 				<div class="lms-ui-form-field-value">
 					<TABLE class="lmsbox lms-ui-background-cycle">
@@ -212,7 +228,11 @@
 						<TR>
 							<TD class="bold nobr">{trans("User")}</TD>
 							{foreach $_RT_RIGHTS as $label}
-								<TD class="text-center bold nobr">{$label}</TD>
+								<TD class="bold rotation-wrapper-container">
+									<div class="rotation-wrapper-element">
+										{$label}
+									</div>
+								</div>
 							{/foreach}
 						</TR>
 						</THEAD>
@@ -422,8 +442,10 @@
 	</div>
 	<div class="lms-ui-form-buttons">
 		{button type="submit" icon="save" label="Submit" onclick="javascript:document.queue.submit()"}
-		{button id="delete-rtqueue" icon="delete" label="Delete"
-			onclick="location.href=='?m=rtqueuedel&id={$queue.id}&qaction=delete';" data_name=$queue.name}
+		{if $layout.module == 'rtqueueedit'}
+			{button id="delete-rtqueue" icon="delete" label="Delete"
+				onclick="location.href=='?m=rtqueuedel&id={$queue.id}&qaction=delete';" data_name=$queue.name}
+		{/if}
 		{button icon="cancel" label="Cancel" onclick="location.href='?m=rtqueuelist';"}
 	</div>
 </div>
