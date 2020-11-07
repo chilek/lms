@@ -224,11 +224,7 @@
 		min-width: 20em;
 	}
 
-	.rotation-wrapper-container {
-		position: relative;
-	}
-
-	.rotation-wrapper-element {
+	.lms-ui-box-header .lms-ui-box-field.permission {
 		writing-mode: vertical-rl;
 		transform: rotate(0deg);
 		white-space: nowrap;
@@ -385,12 +381,10 @@
 									{*<COL style="width: {100-count($_RT_RIGHTS)}%">*}
 								</div>
 								{foreach $_RT_RIGHTS as $label}
-									<div class="lms-ui-box-field permission rotation-wrapper-container">
-										<div class="rotation-wrapper-element">
-											<strong>
-												{$label}
-											</strong>
-										</div>
+									<div class="lms-ui-box-field permission">
+										<strong>
+											{$label}
+										</strong>
 									</div>
 								{/foreach}
 							</div>
