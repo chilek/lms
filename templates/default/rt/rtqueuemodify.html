@@ -12,11 +12,6 @@
 		background-color: #DFD5BD;
 	}
 
-	.lms-ui-box-body {
-		padding-top: 0.7em;
-		padding-bottom: 0.7em;
-	}
-
 	.lms-ui-box-header {
 		padding-top: 0.7em;
 		padding-bottom: 0.3em;
@@ -35,6 +30,11 @@
 
 		display: flex;
 		flex-grow: 1;
+	}
+
+	.lms-ui-box-footer {
+		background-color: #CEBD9B;
+		border-top: 1px dotted black;
 	}
 
 	.lms-ui-box-body {
@@ -83,6 +83,7 @@
 	.lms-ui-box-right-panel .lms-ui-box-row fieldset {
 		display: flex;
 		margin-bottom: 1em;
+		margin-top: 0.7em;
 		flex-grow: 1;
 	}
 
@@ -109,7 +110,7 @@
 		padding-bottom: 0.3em;
 	}
 
-	.lms-ui-background-cycle .lms-ui-box-body .lms-ui-box-row {
+	.lms-ui-background-cycle .lms-ui-box-body .lms-ui-box-row:not(:last-child) {
 		border-bottom: 1px dotted grey;
 	}
 
