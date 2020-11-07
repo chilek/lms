@@ -33,8 +33,13 @@
 		flex-direction: column;
 	}
 
+	#left-panel {
+		flex-grow: 2;
+	}
+
 	#right-panel {
 		flex-wrap: nowrap;
+		flex-grow: 3;
 	}
 
 	#right-panel .lms-ui-form-field fieldset {
@@ -56,6 +61,19 @@
 		margin-right: 0.2em;
 	}
 
+	.lms-ui-form-field input[type="text"]:not(.chosen-search-input),
+	.lms-ui-form-field input[type="email"] {
+		width: 100%;
+		min-width: 20em;
+		max-width: 40em;
+	}
+
+	.lms-ui-form-field textarea {
+		width: 100%;
+		min-width: 20em;
+		max-width: 40em;
+	}
+
 	#verifier-notifications {
 		margin: 1.8em;
 	}
@@ -70,6 +88,34 @@
 
 	.lms-ui-form-buttons > *:not(:first-child) {
 		margin-left: 0.3em;
+	}
+
+	#notification-tabs {
+		width: 100%;
+	}
+
+	#notification-tabs table {
+		width: 100%;
+	}
+
+	#notification-tabs input[type="text"] {
+		width: 100%;
+		min-width: 20em;
+	}
+
+	#notification-tabs textarea {
+		width: 100%;
+		min-width: 20em;
+	}
+
+	#verifier-notifications input[type="text"] {
+		width: 100%;
+		min-width: 20em;
+	}
+
+	#verifier-notifications textarea {
+		width: 100%;
+		min-width: 20em;
 	}
 
 </style>
@@ -89,7 +135,7 @@
 		</label>
 	</div>
 	<div class="lms-ui-form-body">
-		<div class="lms-ui-form-panel">
+		<div class="lms-ui-form-panel" id="left-panel">
 			<div class="lms-ui-form-field">
 				<div class="lms-ui-form-field-label">
 					<label for="queue-email">
@@ -98,7 +144,7 @@
 					</label>
 				</div>
 				<div class="lms-ui-form-field-value">
-					<input TYPE="email" SIZE="50" NAME="queue[email]" id="queue-email" VALUE="{$queue.email}"
+					<input TYPE="email" NAME="queue[email]" id="queue-email" VALUE="{$queue.email}"
 						{tip text="Enter e-mail address" trigger="email"}>
 				</div>
 			</div>
@@ -110,7 +156,7 @@
 					</label>
 				</div>
 				<div class="lms-ui-form-field-value">
-					<TEXTAREA NAME="queue[description]" COLS="50" ROWS="3" id="queue-description"
+					<TEXTAREA NAME="queue[description]" ROWS="3" id="queue-description"
 						{tip text="Enter additional information (optional)"}>{$queue.description}</TEXTAREA>
 				</div>
 			</div>
@@ -219,7 +265,7 @@
 									<TD class="valign-top">
 										{capture assign="tip"}{trans("Subject of mail sent after new ticket is created")}<br><br>{trans("<!customer-notification-subject>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%title</strong> - ticket title.<br>")}{/capture}
 										<INPUT type="text" name="queue[newticketsubject]" value="{$queue.newticketsubject}"
-											size="60" {tip text=$tip trigger="newticketsubject"}>
+											{tip text=$tip trigger="newticketsubject"}>
 									</TD>
 								</tr>
 								<TR>
@@ -230,7 +276,7 @@
 								<TR>
 									<TD class="valign-top">
 										{capture assign="tip"}{trans("Body of mail sent after new ticket is created")}<br><br>{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title.<br>")}{/capture}
-										<TEXTAREA name="queue[newticketbody]" cols="60" rows="10"
+										<TEXTAREA name="queue[newticketbody]" rows="10"
 											{tip text=$tip trigger="newticketbody"}
 											>{$queue.newticketbody}</TEXTAREA>
 									</TD>
@@ -243,7 +289,7 @@
 									<TD class="valign-top">
 										{capture assign="tip"}{trans("Subject of mail sent after new message is added")}<br><br>{trans("<!customer-notification-subject>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%title</strong> - ticket title.<br>")}{/capture}
 										<INPUT type="text" name="queue[newmessagesubject]" value="{$queue.newmessagesubject}"
-											size="60" {tip text=$tip trigger="newmessagesubject"}>
+											{tip text=$tip trigger="newmessagesubject"}>
 									</TD>
 								</TR>
 								<TR>
@@ -254,7 +300,7 @@
 								<TR>
 									<TD class="valign-top">
 										{capture assign="tip"}{trans("Body of mail sent after new message is added")}<br><br>{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title.<br>")}{/capture}
-										<TEXTAREA name="queue[newmessagebody]" cols="60" rows="10"
+										<TEXTAREA name="queue[newmessagebody]" rows="10"
 											{tip text=$tip trigger="newmessagebody"}
 											>{$queue.newmessagebody}</TEXTAREA>
 									</TD>
@@ -268,7 +314,7 @@
 									<TD class="valign-top">
 										{capture assign="tip"}{trans("Subject of mail sent after ticket is resolved")}<br><br>{trans("<!customer-notification-subject>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%title</strong> - ticket title.<br>")}{/capture}
 										<INPUT type="text" name="queue[resolveticketsubject]" value="{$queue.resolveticketsubject}"
-											size="60" {tip text=$tip trigger="resolveticketsubject"}>
+											{tip text=$tip trigger="resolveticketsubject"}>
 									</TD>
 								</TR>
 								<TR>
@@ -279,7 +325,7 @@
 								<TR>
 									<TD class="valign-top">
 										{capture assign="tip"}{trans("Body of mail sent after ticket is resolved")}<br><br>{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title.<br>")}{/capture}
-										<TEXTAREA name="queue[resolveticketbody]" cols="60" rows="10"
+										<TEXTAREA name="queue[resolveticketbody]" rows="10"
 											{tip text=$tip trigger="resolveticketbody"}
 											>{$queue.resolveticketbody}</TEXTAREA>
 									</TD>
@@ -296,7 +342,7 @@
 								<TR>
 									<TD class="valign-top">
 										{capture assign="tip"}{trans("SMS sent after new ticket is created")}<br><br>{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title.<br>")}{/capture}
-										<TEXTAREA name="queue[newticketsmsbody]" cols="60" rows="10"
+										<TEXTAREA name="queue[newticketsmsbody]" rows="10"
 											{tip text=$tip trigger="newticketsmsbody"}
 											>{$queue.newticketsmsbody}</TEXTAREA>
 									</TD>
@@ -309,7 +355,7 @@
 								<TR>
 									<TD class="valign-top">
 										{capture assign="tip"}{trans("SMS sent after new message is added")}<br><br>{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title.<br>")}{/capture}
-										<TEXTAREA name="queue[newmessagesmsbody]" cols="60" rows="10"
+										<TEXTAREA name="queue[newmessagesmsbody]" rows="10"
 											{tip text=$tip trigger="newmessagesmsbody"}
 											>{$queue.newmessagesmsbody}</TEXTAREA>
 									</TD>
@@ -322,7 +368,7 @@
 								<TR>
 									<TD class="valign-top">
 										{capture assign="tip"}{trans("SMS sent after ticket is resolved")}<br><br>{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title.<br>")}{/capture}
-										<TEXTAREA name="queue[resolveticketsmsbody]" cols="60" rows="10"
+										<TEXTAREA name="queue[resolveticketsmsbody]" rows="10"
 											{tip text=$tip trigger="resolveticketsmsbody"}
 											>{$queue.resolveticketsmsbody}</TEXTAREA>
 									</TD>
@@ -346,7 +392,7 @@
 							<TD class="valign-top">
 								{capture assign="tip"}{trans("Subject of mail sent to verifier after ticket is transferred to him")}<br><br>{trans("<!customer-notification-subject>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%title</strong> - ticket title.<br>")}{/capture}
 								<INPUT type="text" name="queue[verifierticketsubject]" value="{$queue.verifierticketsubject}"
-									size="60" {tip text=$tip trigger="verifierticketsubject"}>
+									{tip text=$tip trigger="verifierticketsubject"}>
 							</TD>
 						</TR>
 						<TR>
@@ -357,7 +403,7 @@
 						<TR>
 							<TD class="valign-top">
 								{capture assign="tip"}{trans("Body of mail sent to verifier after ticket is transferred to him")}<br><br>{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title.<br>")}{/capture}
-								<TEXTAREA name="queue[verifierticketbody]" cols="60" rows="10"
+								<TEXTAREA name="queue[verifierticketbody]" rows="10"
 									{tip text=$tip trigger="verifierticketbody"}
 									>{$queue.verifierticketbody}</TEXTAREA>
 							</TD>
