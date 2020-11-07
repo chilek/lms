@@ -664,19 +664,20 @@
 		</div>
 	</div>
 	<div class="lms-ui-box-buttons">
-		{button type="submit" icon="save" label="Submit" onclick="javascript:document.queue.submit()"}
+		{button type="submit" icon="save" label="Submit"
+			onclick="javascript:document.queue.submit()" form="queue-form"}
 		{if $layout.module == 'rtqueueedit'}
 			{button id="delete-rtqueue" icon="delete" label="Delete"
-				onclick="location.href=='?m=rtqueuedel&id={$queue.id}&qaction=delete';" data_name=$queue.name}
+				href="?m=rtqueuedel&id={$queue.id}&qaction=delete" data_name=$queue.name}
 		{/if}
-		{button icon="cancel" label="Cancel" onclick="location.href='?m=rtqueuelist';"}
+		{button icon="cancel" label="Cancel" href="?m=rtqueuelist"}
 	</div>
 </div>
 
 <script>
 
 	$(function() {
-		$('form[name="queue"] [name="queue[name]"]').focus();
+		$('#queue-name').focus();
 
 		for (var i = 0; i < {count($_RT_RIGHTS)}; i++) {
 			$('input:checkbox[name="allbox[' + Math.pow(2, i) + ']"]').click(function() {
