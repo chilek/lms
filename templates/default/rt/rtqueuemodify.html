@@ -5,34 +5,47 @@
 
 <style>
 
-	.lms-ui-form {
+	.lms-ui-box,
+	.lms-ui-box-row-nested-box {
 		border: 1px solid black;
 		border-radius: 5px;
 		background-color: #DFD5BD;
 	}
 
-	.lms-ui-form-header {
+	.lms-ui-box-header,
+	.lms-ui-box-body,
+	.lms-ui-box-footer {
+		padding: 0.7em;
+	}
+
+	.lms-ui-box-header {
 		border-bottom: 1px solid black;
 		border-top-left-radius: 4px;
 		border-top-right-radius: 4px;
-		padding: 0.3em;
 		background-color: #CEBD9B;
+
+		display: flex;
+		flex-grow: 1;
 	}
 
-	.lms-ui-form-body {
-		padding: 0.7em;
+	.lms-ui-box-body {
 		display: flex;
 		flex-grow: 1;
 		flex-wrap: wrap;
 		justify-content: space-between;
 	}
 
-	.lms-ui-form-panel {
+	.lms-ui-box-body.lms-ui-box-flex-column {
+		flex-direction: column;
+	}
+
+	.lms-ui-box-panel {
 		padding: 1em;
 		padding-top: 0;
 		padding-bottom: 0;
 		display: flex;
 		flex-direction: column;
+		width: fit-content;
 	}
 
 	#left-panel {
@@ -44,52 +57,103 @@
 		flex-grow: 3;
 	}
 
-	#right-panel .lms-ui-form-field fieldset {
+	#right-panel .lms-ui-box-row fieldset {
 		display: flex;
 		margin-bottom: 1em;
+		flex-grow: 1;
 	}
 
-	.lms-ui-form-field {
+	.lms-ui-box-row {
+		display: flex;
+		justify-content: stretch;
+		flex-grow: 1;
+	}
+
+	.lms-ui-box-row-field {
+		padding: 0.5em 0.7em 0.5em 0.7em;
+	}
+
+	.lms-ui-box-row-field {
+		display: flex;
+	}
+
+	.lms-ui-box-body .lms-ui-box-row-field {
 		padding-top: 0.3em;
 		padding-bottom: 0.3em;
 	}
 
-	.lms-ui-form-field-label {
+	.lms-ui-background-cycle .lms-ui-box-body .lms-ui-box-row {
+		border-bottom: 1px dotted grey;
+	}
+
+	.lms-ui-background-cycle .lms-ui-box-body .lms-ui-box-row:nth-child(even) {
+		background-color: #EBE4D6;
+	}
+
+	.lms-ui-background-cycle .lms-ui-box-body .lms-ui-box-row:nth-child(odd) {
+		background-color: #DFD5BD;
+	}
+
+	.lms-ui-box-row-field-label {
 		padding-top: 0.5em;
 		padding-bottom: 0.5em;
 	}
 
-	.lms-ui-form-field-label i {
+	.lms-ui-box-row-field-label i {
 		margin-right: 0.2em;
 	}
 
-	.lms-ui-form-field input[type="text"]:not(.chosen-search-input),
-	.lms-ui-form-field input[type="email"] {
+	.lms-ui-box-row-field,
+	.lms-ui-box-row-field input[type="text"]:not(.chosen-search-input),
+	.lms-ui-box-row-field input[type="email"] {
 		width: 100%;
 		min-width: 20em;
-		max-width: 50em;
+		/*max-width: 50em;*/
 	}
 
-	.lms-ui-form-field textarea {
+	.lms-ui-box-row-field {
+		flex-direction: column;
+	}
+
+	.lms-ui-box-row-field.single-line {
+		flex-direction: row;
+	}
+
+	.lms-ui-box-row-field.single-line > *:not(:first-child) {
+		margin-left: 0.5em;
+	}
+
+	.lms-ui-box-row-nested-box .lms-ui-box-row {
+		width: 100%;
+	}
+
+	.lms-ui-box-row-nested-box .lms-ui-box-row-field {
+		min-width: unset;
+	}
+
+	.lms-ui-box-row-field textarea {
 		width: 100%;
 		min-width: 20em;
-		max-width: 50em;
+		/*max-width: 50em;*/
 	}
+
+	.lms-ui-box-buttons {
+		background-image: linear-gradient(to right, black 33%, rgba(255,255,255,0) 0%);
+		background-position: left 0.5em;
+		background-size: 3px 1px;
+		background-repeat: repeat-x;
+		padding: 1em 0.5em 0.5em 0.5em;
+	}
+
+	.lms-ui-box-buttons > *:not(:first-child) {
+		margin-left: 0.3em;
+	}
+
+
+
 
 	#verifier-notifications {
 		margin: 1.8em;
-	}
-
-	.lms-ui-form-buttons {
-		 background-image: linear-gradient(to right, black 33%, rgba(255,255,255,0) 0%);
-		 background-position: left 0.5em;
-		 background-size: 3px 1px;
-		 background-repeat: repeat-x;
-		 padding: 1em 0.5em 0.5em 0.5em;
-	}
-
-	.lms-ui-form-buttons > *:not(:first-child) {
-		margin-left: 0.3em;
 	}
 
 	#notification-tabs {
@@ -126,7 +190,6 @@
 
 	.rotation-wrapper-container {
 		position: relative;
-		padding: 0.5em 0.7em 0.5em 0.7em !important;
 	}
 
 	.rotation-wrapper-element {
@@ -137,6 +200,33 @@
 		overflow: visible;
 	}
 
+	.lms-ui-box-body .username,
+	.lms-ui-box-body .permission {
+		align-self: flex-end;
+		align-items: flex-start;
+	}
+
+	.lms-ui-box-body .permission {
+		flex-grow: 1;
+	}
+
+	.lms-ui-box-footer .username {
+		text-align: right;
+	}
+
+	.username {
+		width: 15em;
+	}
+
+	.user-login {
+		transform: scale(0.8);
+		transform-origin: left;
+	}
+
+	.permission {
+		width: 2em;
+	}
+
 </style>
 
 <H1>{$layout.pagetitle}</H1>
@@ -144,136 +234,149 @@
 <form METHOD="POST" NAME="queue" ACTION="?m={$layout.module}{if isset($queue.id)}&id={$queue.id}{/if}">
 <INPUT type="submit" class="hiddenbtn">
 
-<div class="lms-ui-form">
-	<div class="lms-ui-form-header">
-		<label>
-			{icon name="queue" class="fa-fw"}
-			<strong>{trans("Name:")}</strong>
-			<INPUT TYPE="TEXT" NAME="queue[name]" VALUE="{$queue.name}"
-				{tip text="Enter queue name" trigger="name" bold=1}>
-			{if isset($queue.id)}
-				<strong>({$queue.id|string_format:"%04d"})</strong>
-			{/if}
-		</label>
+<div class="lms-ui-box">
+	<div class="lms-ui-box-header">
+		<div class="lms-ui-box-row">
+			<div class="lms-ui-box-row-field single-line">
+				<label for="queue-name">
+					{icon name="queue" class="fa-fw"}
+					<strong>{trans("Name")}</strong>
+				</label>
+				<input type="text" name="queue[name]" value="{$queue.name}" id="queue-name"
+						{tip text="Enter queue name" trigger="name" bold=1}>
+				{if isset($queue.id)}
+					<strong>({$queue.id|string_format:"%04d"})</strong>
+				{/if}
+			</div>
+		</div>
 	</div>
-	<div class="lms-ui-form-body">
-		<div class="lms-ui-form-panel" id="left-panel">
-			<div class="lms-ui-form-field">
-				<div class="lms-ui-form-field-label">
-					<label for="queue-email">
-						{icon name="mail" class="fa-fw"}
-						<strong>{trans("E-mail")}</strong>
-					</label>
-				</div>
-				<div class="lms-ui-form-field-value">
-					<input TYPE="email" NAME="queue[email]" id="queue-email" VALUE="{$queue.email}"
-						{tip text="Enter e-mail address" trigger="email"}>
-				</div>
-			</div>
-			<div class="lms-ui-form-field">
-				<div class="lms-ui-form-field-label">
-					<label for="queue-description">
-						{icon name="description" class="fa-fw"}
-						<strong>{trans("Description")}</strong>
-					</label>
-				</div>
-				<div class="lms-ui-form-field-value">
-					<TEXTAREA NAME="queue[description]" ROWS="3" id="queue-description"
-						{tip text="Enter additional information (optional)"}>{$queue.description}</TEXTAREA>
+	<div class="lms-ui-box-body lms-ui-box-flex-row">
+		<div class="lms-ui-box-panel" id="left-panel">
+			<div class="lms-ui-box-row">
+				<div class="lms-ui-box-row-field">
+					<div class="lms-ui-box-row-field-label">
+						<label for="queue-email">
+							{icon name="mail" class="fa-fw"}
+							<strong>{trans("E-mail")}</strong>
+						</label>
+					</div>
+					<div class="lms-ui-box-row-field-value">
+						<input TYPE="email" NAME="queue[email]" id="queue-email" VALUE="{$queue.email}"
+							{tip text="Enter e-mail address" trigger="email"}>
+					</div>
 				</div>
 			</div>
-			<div class="lms-ui-form-field">
-				<div class="lms-ui-form-field-label">
-					<label for="queue-verifierid">
-						{icon name="verifier" class="fa-fw"}
-						<strong>{trans("<!rt>Verifier")}</strong>
-					</label>
-				</div>
-				<div class="lms-ui-form-field-value">
-					<SELECT size="1" id="queue-verifierid"
-							name="queue[verifierid]" {tip text="Select user" trigger="verifierid"}>
-						<OPTION value="">- {trans("select user")} -</OPTION>
-						{foreach $userlist as $user}
-							<OPTION value="{$user.id}" {if $user.id == $queue.verifierid} selected{/if}>{$user.rname}
-								({$user.login})
-							</OPTION>
-						{/foreach}
-					</SELECT>
+			<div class="lms-ui-box-row">
+				<div class="lms-ui-box-row-field">
+					<div class="lms-ui-box-row-field-label">
+						<label for="queue-description">
+							{icon name="description" class="fa-fw"}
+							<strong>{trans("Description")}</strong>
+						</label>
+					</div>
+					<div class="lms-ui-box-row-field-value">
+						<TEXTAREA NAME="queue[description]" ROWS="3" id="queue-description"
+							{tip text="Enter additional information (optional)"}>{$queue.description}</TEXTAREA>
+					</div>
 				</div>
 			</div>
-			<div class="lms-ui-form-field">
-				<div class="lms-ui-form-field-label">
-					<label>
-						{icon name="queue" class="fa-fw"}
-						<strong>{trans("Default categories")}</strong>
-						<input type="checkbox" id="checkall">
-					</label>
-				</div>
-				<div class="lms-ui-form-field-value">
-					{include file="rt/rtcategoryselection.html" id="categories" name_prefix="queue[categories]" categories=$categories}
-				</div>
-			</div>
-			<div class="lms-ui-form-field">
-				<div class="lms-ui-form-field-label">
-					{icon name="user" class="fa-fw"}
-					<strong>{trans("Permissions")}</strong>
-				</div>
-				<div class="lms-ui-form-field-value">
-					<TABLE class="lmsbox lms-ui-background-cycle">
-						<COLGROUP>
-							<COL style="width: {100-count($_RT_RIGHTS)}%">
-							{foreach $_RT_RIGHTS as $label}
-								<COL style="width: 1%;">
+			<div class="lms-ui-box-row">
+				<div class="lms-ui-box-row-field">
+					<div class="lms-ui-box-row-field-label">
+						<label for="queue-verifierid">
+							{icon name="verifier" class="fa-fw"}
+							<strong>{trans("<!rt>Verifier")}</strong>
+						</label>
+					</div>
+					<div class="lms-ui-box-row-field-value">
+						<SELECT size="1" id="queue-verifierid"
+								name="queue[verifierid]" {tip text="Select user" trigger="verifierid"}>
+							<OPTION value="">- {trans("select user")} -</OPTION>
+							{foreach $userlist as $user}
+								<OPTION value="{$user.id}" {if $user.id == $queue.verifierid} selected{/if}>{$user.rname}
+									({$user.login})
+								</OPTION>
 							{/foreach}
-						</COLGROUP>
-						<THEAD>
-						<TR>
-							<TD>
-								<strong>{trans("User")}</strong>
-							</TD>
-							{foreach $_RT_RIGHTS as $label}
-								<TD class="rotation-wrapper-container">
-									<div class="rotation-wrapper-element">
-										<strong>
-											{$label}
-										</strong>
+						</SELECT>
+					</div>
+				</div>
+			</div>
+			<div class="lms-ui-box-row">
+				<div class="lms-ui-box-row-field">
+					<div class="lms-ui-box-row-field-label">
+						<label>
+							{icon name="queue" class="fa-fw"}
+							<strong>{trans("Default categories")}</strong>
+							<input type="checkbox" id="checkall">
+						</label>
+					</div>
+					<div class="lms-ui-box-row-field-value">
+						{include file="rt/rtcategoryselection.html" id="categories" name_prefix="queue[categories]" categories=$categories}
+					</div>
+				</div>
+			</div>
+			<div class="lms-ui-box-row">
+				<div class="lms-ui-box-row-field">
+					<div class="lms-ui-box-row-field-label">
+						{icon name="user" class="fa-fw"}
+						<strong>{trans("Permissions")}</strong>
+					</div>
+					<div class="lms-ui-box-row-field-value lms-ui-box-row-nested-box lms-ui-background-cycle">
+						<div class="lms-ui-box-header">
+							<div class="lms-ui-box-row">
+								<div class="lms-ui-box-row-field username">
+									<strong>{trans("User")}</strong>
+									{*<COL style="width: {100-count($_RT_RIGHTS)}%">*}
+								</div>
+								{foreach $_RT_RIGHTS as $label}
+									<div class="lms-ui-box-row-field permission rotation-wrapper-container">
+										<div class="rotation-wrapper-element">
+											<strong>
+												{$label}
+											</strong>
+										</div>
 									</div>
+								{/foreach}
+							</div>
+						</div>
+						<div class="lms-ui-box-body lms-ui-box-flex-column">
+							{foreach $queue.rights as $right}
+								<div class="lms-ui-box-row highlight lms-ui-row-all-check">
+									<div class="lms-ui-box-row-field username">
+										<a href="?m=userinfo&id={$right.id}">{$right.rname}</a>
+										<span class="user-login">({$right.login})</span>
+										<INPUT type="hidden" name="queue[usernames][{$right.id}]" value="{$right.rname}">
+										<INPUT type="hidden" name="queue[userlogins][{$right.id}]" value="{$right.login}">
+									</div>
+									{foreach $_RT_RIGHTS as $rightvalue => $label}
+										<div class="lms-ui-box-row-field permission">
+											<input type="checkbox" name="queue[users][{$right.id}][{$rightvalue}]"
+												value="{$rightvalue}"{if ($right.rights & $rightvalue) == $rightvalue} checked{/if}>
+										</div>
+									{/foreach}
 								</div>
 							{/foreach}
-						</TR>
-						</THEAD>
-						<TBODY>
-						{foreach from=$queue.rights item=right}
-							<TR class="highlight lms-ui-row-all-check">
-								<TD>
-									<A href="?m=userinfo&id={$right.id}" class="nobr">{$right.rname} ({$right.login})</A>
-									<INPUT type="hidden" name="queue[usernames][{$right.id}]" value="{$right.rname}">
-									<INPUT type="hidden" name="queue[userlogins][{$right.id}]" value="{$right.login}">
-								</TD>
+						</div>
+						<div class="lms-ui-box-footer">
+							<div class="lms-ui-box-row">
+								<div class="lms-ui-box-row-field username">
+									<strong>
+										{trans("Check All")}
+									</strong>
+								</div>
 								{foreach $_RT_RIGHTS as $rightvalue => $label}
-									<TD class="text-center">
-										<INPUT type="checkbox" name="queue[users][{$right.id}][{$rightvalue}]" value="{$rightvalue}"{if ($right.rights & $rightvalue) == $rightvalue} checked{/if}>
-									</TD>
+									<div class="lms-ui-box-row-field permission">
+										<input TYPE="checkbox" NAME="allbox[{$rightvalue}]" data-value="{$rightvalue}">
+									</div>
 								{/foreach}
-							</TR>
-						{/foreach}
-						<TR class="highlight">
-							<TD class="nobr text-right">
-								{trans("Check All")}
-							</TD>
-							{foreach $_RT_RIGHTS as $rightvalue => $label}
-								<TD class="text-center">
-									<INPUT TYPE="checkbox" NAME="allbox[{$rightvalue}]" data-value="{$rightvalue}">
-								</TD>
-							{/foreach}
-						</TR>
-						</TBODY>
-					</TABLE>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
-		<div class="lms-ui-form-panel" id="right-panel">
-			<div class="lms-ui-form-field">
+		<div class="lms-ui-box-panel" id="right-panel">
+			<div class="lms-ui-box-row">
 				<fieldset>
 					<legend>
 						{icon name="notifications"}
@@ -425,6 +528,8 @@
 						</div>
 					</div>
 				</fieldset>
+			</div>
+			<div class="lms-ui-box-row">
 				<fieldset>
 					<legend>
 						{icon name="verifier"}
@@ -464,11 +569,11 @@
 				</fieldset>
 			</div>
 		</div>
-		<div class="lms-ui-form-panel">
+		<div class="lms-ui-box-panel">
 			&nbsp;
 		</div>
 	</div>
-	<div class="lms-ui-form-buttons">
+	<div class="lms-ui-box-buttons">
 		{button type="submit" icon="save" label="Submit" onclick="javascript:document.queue.submit()"}
 		{if $layout.module == 'rtqueueedit'}
 			{button id="delete-rtqueue" icon="delete" label="Delete"
