@@ -19,6 +19,14 @@
 	}
 
 	.lms-ui-box-header {
+		padding-bottom: 0.3em;
+	}
+
+	.lms-ui-box-footer:not(:first-child) {
+		padding-top: 0;
+	}
+
+	.lms-ui-box-header {
 		border-bottom: 1px solid black;
 		border-top-left-radius: 4px;
 		border-top-right-radius: 4px;
@@ -234,10 +242,12 @@
 
 	.lms-ui-box-body .permission {
 		align-self: center;
+		align-items: flex-end;
+		flex-grow: 1;
 	}
 
-	.lms-ui-box-body .permission {
-		flex-grow: 1;
+	.lms-ui-box-header .permission {
+		align-self: flex-end;
 	}
 
 	.lms-ui-box-footer .username {
