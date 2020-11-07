@@ -6,8 +6,8 @@
 <style>
 
 	.lms-ui-box,
-	.lms-ui-box-row-nested-box {
-		border: 1px solid black;
+	.lms-ui-box-nested-box {
+		border: 1px dotted black;
 		border-radius: 5px;
 		background-color: #DFD5BD;
 	}
@@ -35,7 +35,13 @@
 		justify-content: space-between;
 	}
 
-	.lms-ui-box-body.lms-ui-box-flex-column {
+	.lms-ui-flex-row {
+		display: flex;
+		flex-direction: row;
+	}
+
+	.lms-ui-flex-column {
+		display: flex;
 		flex-direction: column;
 	}
 
@@ -48,19 +54,31 @@
 		width: fit-content;
 	}
 
-	#left-panel {
+	.lms-ui-box-panel:first-child {
+		padding-left: 0;
+	}
+
+	.lms-ui-box-panel:last-child {
+		padding-right: 0.4em;
+	}
+
+	.lms-ui-box-left-panel {
 		flex-grow: 2;
 	}
 
-	#right-panel {
+	.lms-ui-box-right-panel {
 		flex-wrap: nowrap;
 		flex-grow: 3;
 	}
 
-	#right-panel .lms-ui-box-row fieldset {
+	.lms-ui-box-right-panel .lms-ui-box-row fieldset {
 		display: flex;
 		margin-bottom: 1em;
 		flex-grow: 1;
+	}
+
+	.lms-ui-box-panel > .lms-ui-box-row {
+		flex-grow: 0;
 	}
 
 	.lms-ui-box-row {
@@ -69,15 +87,15 @@
 		flex-grow: 1;
 	}
 
-	.lms-ui-box-row-field {
+	.lms-ui-box-field {
 		padding: 0.5em 0.7em 0.5em 0.7em;
 	}
 
-	.lms-ui-box-row-field {
+	.lms-ui-box-field {
 		display: flex;
 	}
 
-	.lms-ui-box-body .lms-ui-box-row-field {
+	.lms-ui-box-body .lms-ui-box-field {
 		padding-top: 0.3em;
 		padding-bottom: 0.3em;
 	}
@@ -90,48 +108,60 @@
 		background-color: #EBE4D6;
 	}
 
+	.lms-ui-background-cycle .lms-ui-box-body .lms-ui-box-row:nth-child(even).highlight:hover {
+		background-color: #CFC;
+	}
+
 	.lms-ui-background-cycle .lms-ui-box-body .lms-ui-box-row:nth-child(odd) {
 		background-color: #DFD5BD;
 	}
 
-	.lms-ui-box-row-field-label {
+	.lms-ui-background-cycle .lms-ui-box-body .lms-ui-box-row:nth-child(odd).highlight:hover {
+		background-color: #CFC;
+	}
+
+	.lms-ui-box-field-label {
 		padding-top: 0.5em;
 		padding-bottom: 0.5em;
 	}
 
-	.lms-ui-box-row-field-label i {
+	.lms-ui-box-field-label i {
 		margin-right: 0.2em;
 	}
 
-	.lms-ui-box-row-field,
-	.lms-ui-box-row-field input[type="text"]:not(.chosen-search-input),
-	.lms-ui-box-row-field input[type="email"] {
+	.lms-ui-box-field,
+	.lms-ui-box-field input[type="text"]:not(.chosen-search-input),
+	.lms-ui-box-field input[type="email"] {
 		width: 100%;
 		min-width: 20em;
 		/*max-width: 50em;*/
 	}
 
-	.lms-ui-box-row-field {
+	.lms-ui-box-field {
 		flex-direction: column;
 	}
 
-	.lms-ui-box-row-field.single-line {
+	.lms-ui-box-field.single-line {
 		flex-direction: row;
 	}
 
-	.lms-ui-box-row-field.single-line > *:not(:first-child) {
+	.lms-ui-box-field.single-line > *:not(:first-child) {
 		margin-left: 0.5em;
 	}
 
-	.lms-ui-box-row-nested-box .lms-ui-box-row {
+	.lms-ui-box-nested-box .lms-ui-box-header {
+		border-bottom: 1px dotted black;
+	}
+
+	.lms-ui-box-nested-box .lms-ui-box-row {
 		width: 100%;
 	}
 
-	.lms-ui-box-row-nested-box .lms-ui-box-row-field {
+	.lms-ui-box-nested-box .lms-ui-box-field {
 		min-width: unset;
 	}
 
-	.lms-ui-box-row-field textarea {
+	.lms-ui-box-field textarea {
 		width: 100%;
 		min-width: 20em;
 		/*max-width: 50em;*/
@@ -153,14 +183,10 @@
 
 
 	#verifier-notifications {
-		margin: 1.8em;
+		margin: 0.3em;
 	}
 
 	#notification-tabs {
-		width: 100%;
-	}
-
-	#notification-tabs table {
 		width: 100%;
 	}
 
@@ -176,6 +202,7 @@
 
 	#verifier-notifications {
 		width: 100%;
+		border: 1px dotted grey;
 	}
 
 	#verifier-notifications input[type="text"] {
@@ -200,10 +227,13 @@
 		overflow: visible;
 	}
 
-	.lms-ui-box-body .username,
-	.lms-ui-box-body .permission {
+	.lms-ui-box-body .username {
 		align-self: flex-end;
 		align-items: flex-start;
+	}
+
+	.lms-ui-box-body .permission {
+		align-self: center;
 	}
 
 	.lms-ui-box-body .permission {
@@ -231,6 +261,7 @@
 		width: 1em;
 	}
 
+
 </style>
 
 <H1>{$layout.pagetitle}</H1>
@@ -242,7 +273,7 @@
 <div class="lms-ui-box">
 	<div class="lms-ui-box-header">
 		<div class="lms-ui-box-row">
-			<div class="lms-ui-box-row-field single-line">
+			<div class="lms-ui-box-field single-line">
 				<label for="queue-name">
 					{icon name="queue" class="fa-fw"}
 					<strong>{trans("Name")}</strong>
@@ -256,17 +287,17 @@
 			</div>
 		</div>
 	</div>
-	<div class="lms-ui-box-body lms-ui-box-flex-row">
-		<div class="lms-ui-box-panel" id="left-panel">
+	<div class="lms-ui-box-body lms-ui-flex-row">
+		<div class="lms-ui-box-panel lms-ui-box-left-panel">
 			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-field">
-					<div class="lms-ui-box-row-field-label">
+				<div class="lms-ui-box-field">
+					<div class="lms-ui-box-field-label">
 						<label for="queue-email">
 							{icon name="mail" class="fa-fw"}
 							<strong>{trans("E-mail")}</strong>
 						</label>
 					</div>
-					<div class="lms-ui-box-row-field-value">
+					<div class="lms-ui-box-field-value">
 						<input type="email" name="queue[email]" form="queue-form"
 							id="queue-email" value="{$queue.email}"
 							{tip text="Enter e-mail address" trigger="email"}>
@@ -274,28 +305,28 @@
 				</div>
 			</div>
 			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-field">
-					<div class="lms-ui-box-row-field-label">
+				<div class="lms-ui-box-field">
+					<div class="lms-ui-box-field-label">
 						<label for="queue-description">
 							{icon name="description" class="fa-fw"}
 							<strong>{trans("Description")}</strong>
 						</label>
 					</div>
-					<div class="lms-ui-box-row-field-value">
+					<div class="lms-ui-box-field-value">
 						<textarea name="queue[description]" rows="3" id="queue-description" form="queue-form"
 							{tip text="Enter additional information (optional)"}>{$queue.description}</textarea>
 					</div>
 				</div>
 			</div>
 			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-field">
-					<div class="lms-ui-box-row-field-label">
+				<div class="lms-ui-box-field">
+					<div class="lms-ui-box-field-label">
 						<label for="queue-verifierid">
 							{icon name="verifier" class="fa-fw"}
 							<strong>{trans("<!rt>Verifier")}</strong>
 						</label>
 					</div>
-					<div class="lms-ui-box-row-field-value">
+					<div class="lms-ui-box-field-value">
 						<select size="1" id="queue-verifierid" form="queue-form"
 								name="queue[verifierid]" {tip text="Select user" trigger="verifierid"}>
 							<option value="">- {trans("select user")} -</option>
@@ -309,34 +340,34 @@
 				</div>
 			</div>
 			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-field">
-					<div class="lms-ui-box-row-field-label">
+				<div class="lms-ui-box-field">
+					<div class="lms-ui-box-field-label">
 						<label>
 							{icon name="queue" class="fa-fw"}
 							<strong>{trans("Default categories")}</strong>
 							<input type="checkbox" id="checkall">
 						</label>
 					</div>
-					<div class="lms-ui-box-row-field-value">
+					<div class="lms-ui-box-field-value">
 						{include file="rt/rtcategoryselection.html" id="categories" name_prefix="queue[categories]" categories=$categories}
 					</div>
 				</div>
 			</div>
 			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-field">
-					<div class="lms-ui-box-row-field-label">
+				<div class="lms-ui-box-field">
+					<div class="lms-ui-box-field-label">
 						{icon name="user" class="fa-fw"}
 						<strong>{trans("Permissions")}</strong>
 					</div>
-					<div class="lms-ui-box-row-field-value lms-ui-box-row-nested-box lms-ui-background-cycle">
+					<div class="lms-ui-box-field-value lms-ui-box-nested-box lms-ui-background-cycle">
 						<div class="lms-ui-box-header">
 							<div class="lms-ui-box-row">
-								<div class="lms-ui-box-row-field username">
+								<div class="lms-ui-box-field username">
 									<strong>{trans("User")}</strong>
 									{*<COL style="width: {100-count($_RT_RIGHTS)}%">*}
 								</div>
 								{foreach $_RT_RIGHTS as $label}
-									<div class="lms-ui-box-row-field permission rotation-wrapper-container">
+									<div class="lms-ui-box-field permission rotation-wrapper-container">
 										<div class="rotation-wrapper-element">
 											<strong>
 												{$label}
@@ -346,10 +377,10 @@
 								{/foreach}
 							</div>
 						</div>
-						<div class="lms-ui-box-body lms-ui-box-flex-column">
+						<div class="lms-ui-box-body lms-ui-flex-column">
 							{foreach $queue.rights as $right}
 								<div class="lms-ui-box-row highlight lms-ui-row-all-check">
-									<div class="lms-ui-box-row-field username">
+									<div class="lms-ui-box-field username">
 										<a href="?m=userinfo&id={$right.id}">{$right.rname}</a>
 										<span class="user-login">({$right.login})</span>
 										<input type="hidden" name="queue[usernames][{$right.id}]"
@@ -358,7 +389,7 @@
 											value="{$right.login}" form="queue-form">
 									</div>
 									{foreach $_RT_RIGHTS as $rightvalue => $label}
-										<div class="lms-ui-box-row-field permission">
+										<div class="lms-ui-box-field permission">
 											<input type="checkbox" name="queue[users][{$right.id}][{$rightvalue}]"
 												form="queue-form"
 												value="{$rightvalue}"{if ($right.rights & $rightvalue) == $rightvalue} checked{/if}>
@@ -369,13 +400,13 @@
 						</div>
 						<div class="lms-ui-box-footer">
 							<div class="lms-ui-box-row">
-								<div class="lms-ui-box-row-field username">
+								<div class="lms-ui-box-field username">
 									<strong>
 										{trans("Check All")}
 									</strong>
 								</div>
 								{foreach $_RT_RIGHTS as $rightvalue => $label}
-									<div class="lms-ui-box-row-field permission">
+									<div class="lms-ui-box-field permission">
 										<input type="checkbox" name="allbox[{$rightvalue}]"
 											data-value="{$rightvalue}">
 									</div>
@@ -386,7 +417,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="lms-ui-box-panel" id="right-panel">
+		<div class="lms-ui-box-panel lms-ui-box-right-panel">
 			<div class="lms-ui-box-row">
 				<fieldset>
 					<legend>
@@ -398,192 +429,184 @@
 							<li><a href="#notification-tab-email">{trans("Email")}</a></li>
 							<li><a href="#notification-tab-sms">{trans("SMS")}</a></li>
 						</ul>
-						<div id="notification-tab-email" class="notification-tab">
-							<TABLE cellpadding="3">
-								<TR>
-									<TD>
-										<strong>
-											{trans("Subject (new ticket)")}
-										</strong>
-									</TD>
-								</TR>
-								<tr>
-									<TD>
-										{capture assign="tip"}
-											{trans("Subject of mail sent after new ticket is created")}
-											<br>
-											<br>
-											{trans("<!customer-notification-subject>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%title</strong> - ticket title.<br>")}
-										{/capture}
-										<input type="text" name="queue[newticketsubject]"
-											form="queue-form" value="{$queue.newticketsubject}"
-											{tip text=$tip trigger="newticketsubject"}>
-									</TD>
-								</tr>
-								<TR>
-									<TD>
-										<strong>
-											{trans("Body (new ticket)")}
-										</strong>
-									</TD>
-								</TR>
-								<TR>
-									<TD>
-										{capture assign="tip"}
-											{trans("Body of mail sent after new ticket is created")}
-											<br>
-											<br>
-											{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title.<br>")}
-										{/capture}
-										<textarea name="queue[newticketbody]" rows="10" form="queue-form"
-											{tip text=$tip trigger="newticketbody"}
-											>{$queue.newticketbody}</textarea>
-									</TD>
-								</TR>
-								<TR>
-									<TD>
-										<strong>
-											{trans("Subject (new message)")}
-										</strong>
-									</TD>
-								<TR>
-									<TD>
-										{capture assign="tip"}
-											{trans("Subject of mail sent after new message is added")}
-											<br>
-											<br>
-											{trans("<!customer-notification-subject>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%title</strong> - ticket title.<br>")}
-										{/capture}
-										<input type="text" name="queue[newmessagesubject]"
-											form="queue-form" value="{$queue.newmessagesubject}"
-											{tip text=$tip trigger="newmessagesubject"}>
-									</TD>
-								</TR>
-								<TR>
-									<TD>
-										<strong>
-											{trans("Body (new message)")}
-										</strong>
-									</TD>
-								</TR>
-								<TR>
-									<TD>
-										{capture assign="tip"}
-											{trans("Body of mail sent after new message is added")}
-											<br>
-											<br>
-											{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title.<br>")}
-										{/capture}
-										<textarea name="queue[newmessagebody]" rows="10" form="queue-form"
-											{tip text=$tip trigger="newmessagebody"}
-											>{$queue.newmessagebody}</textarea>
-									</TD>
-								</TR>
-								<TR>
-									<TD>
-										<strong>
-											{trans("Subject (resolve ticket)")}
-										</strong>
-									</TD>
-								</TR>
-								<TR>
-									<TD>
-										{capture assign="tip"}
-											{trans("Subject of mail sent after ticket is resolved")}
-											<br>
-											<br>
-											{trans("<!customer-notification-subject>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%title</strong> - ticket title.<br>")}
-										{/capture}
-										<input type="text" name="queue[resolveticketsubject]"
-											form="queue-form" value="{$queue.resolveticketsubject}"
-											{tip text=$tip trigger="resolveticketsubject"}>
-									</TD>
-								</TR>
-								<TR>
-									<TD>
-										<strong>
-											{trans("Body (resolve ticket)")}
-										</strong>
-									</TD>
-								</TR>
-								<TR>
-									<TD>
-										{capture assign="tip"}
-											{trans("Body of mail sent after ticket is resolved")}
-											<br>
-											<br>
-											{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title.<br>")}
-										{/capture}
-										<textarea name="queue[resolveticketbody]" rows="10" form="queue-form"
-											{tip text=$tip trigger="resolveticketbody"}
-											>{$queue.resolveticketbody}</textarea>
-									</TD>
-								</TR>
-							</TABLE>
+						<div id="notification-tab-email" class="lms-ui-box notification-tab">
+							<div class="lms-ui-box-body lms-ui-flex-column">
+								<div class="lms-ui-box-row">
+									<div class="lms-ui-box-field">
+										<div class="lms-ui-box-field-label">
+											<strong>
+												{trans("Subject (new ticket)")}
+											</strong>
+										</div>
+										<div class="lms-ui-box-field-value">
+											{capture assign="tip"}
+												{trans("Subject of mail sent after new ticket is created")}
+												<br>
+												{trans("<!customer-notification-subject>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%title</strong> - ticket title.<br>")}
+											{/capture}
+											<input type="text" name="queue[newticketsubject]"
+												   form="queue-form" value="{$queue.newticketsubject}"
+													{tip text=$tip trigger="newticketsubject"}>
+										</div>
+									</div>
+								</div>
+								<div class="lms-ui-box-row">
+									<div class="lms-ui-box-field">
+										<div class="lms-ui-box-field-label">
+											<strong>
+												{trans("Body (new ticket)")}
+											</strong>
+										</div>
+										<div class="lms-ui-box-field-value">
+											{capture assign="tip"}
+												{trans("Body of mail sent after new ticket is created")}
+												<br>
+												{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title.<br>")}
+											{/capture}
+											<textarea name="queue[newticketbody]" rows="10" form="queue-form"
+												{tip text=$tip trigger="newticketbody"}
+												>{$queue.newticketbody}</textarea>
+										</div>
+									</div>
+								</div>
+								<div class="lms-ui-box-row">
+									<div class="lms-ui-box-field">
+										<div class="lms-ui-box-field-label">
+											<strong>
+												{trans("Subject (new message)")}
+											</strong>
+										</div>
+										<div class="lms-ui-box-field-value">
+											{capture assign="tip"}
+												{trans("Subject of mail sent after new message is added")}
+												<br>
+												{trans("<!customer-notification-subject>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%title</strong> - ticket title.<br>")}
+											{/capture}
+											<input type="text" name="queue[newmessagesubject]"
+												   form="queue-form" value="{$queue.newmessagesubject}"
+													{tip text=$tip trigger="newmessagesubject"}>
+										</div>
+									</div>
+								</div>
+								<div class="lms-ui-box-row">
+									<div class="lms-ui-box-field">
+										<div class="lms-ui-box-field-label">
+											<strong>
+												{trans("Body (new message)")}
+											</strong>
+										</div>
+										<div class="lms-ui-box-field-value">
+											{capture assign="tip"}
+												{trans("Body of mail sent after new message is added")}
+												<br>
+												{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title.<br>")}
+											{/capture}
+											<textarea name="queue[newmessagebody]" rows="10" form="queue-form"
+												{tip text=$tip trigger="newmessagebody"}
+												>{$queue.newmessagebody}</textarea>
+										</div>
+									</div>
+								</div>
+								<div class="lms-ui-box-row">
+									<div class="lms-ui-box-field">
+										<div class="lms-ui-box-field-label">
+											<strong>
+												{trans("Subject (resolve ticket)")}
+											</strong>
+										</div>
+										<div class="lms-ui-box-field-value">
+											{capture assign="tip"}
+												{trans("Subject of mail sent after ticket is resolved")}
+												<br>
+												{trans("<!customer-notification-subject>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%title</strong> - ticket title.<br>")}
+											{/capture}
+											<input type="text" name="queue[resolveticketsubject]"
+												   form="queue-form" value="{$queue.resolveticketsubject}"
+													{tip text=$tip trigger="resolveticketsubject"}>
+										</div>
+									</div>
+								</div>
+								<div class="lms-ui-box-row">
+									<div class="lms-ui-box-field">
+										<div class="lms-ui-box-field-label">
+											<strong>
+												{trans("Body (resolve ticket)")}
+											</strong>
+										</div>
+										<div class="lms-ui-box-field-value">
+											{capture assign="tip"}
+												{trans("Body of mail sent after ticket is resolved")}
+												<br>
+												{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title.<br>")}
+											{/capture}
+											<textarea name="queue[resolveticketbody]" rows="10" form="queue-form"
+												{tip text=$tip trigger="resolveticketbody"}
+												>{$queue.resolveticketbody}</textarea>
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
-						<div id="notification-tab-sms" class="notification-tab">
-							<TABLE cellpadding="3">
-								<TR>
-									<TD>
-										<strong>
-											{trans("Body (new ticket)")}
-										</strong>
-									</TD>
-								</TR>
-								<TR>
-									<TD>
-										{capture assign="tip"}
-											{trans("SMS sent after new ticket is created")}
-											<br>
-											<br>
-											{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title.<br>")}
-										{/capture}
-										<textarea name="queue[newticketsmsbody]" rows="10" form="queue-form"
-											{tip text=$tip trigger="newticketsmsbody"}
-											>{$queue.newticketsmsbody}</textarea>
-									</TD>
-								</TR>
-								<TR>
-									<TD>
-										<strong>
-											{trans("Body (new message)")}
-										</strong>
-									</TD>
-								</TR>
-								<TR>
-									<TD>
-										{capture assign="tip"}
-											{trans("SMS sent after new message is added")}
-											<br>
-											<br>
-											{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title.<br>")}
-										{/capture}
-										<textarea name="queue[newmessagesmsbody]" rows="10" form="queue-form"
+						<div id="notification-tab-sms" class="lms-ui-box notification-tab">
+							<div class="lms-ui-box-body lms-ui-flex-column">
+								<div class="lms-ui-box-row">
+									<div class="lms-ui-box-field">
+										<div class="lms-ui-box-field-label">
+											<strong>
+												{trans("Body (new ticket)")}
+											</strong>
+										</div>
+										<div class="lms-ui-box-field-value">
+											{capture assign="tip"}
+												{trans("SMS sent after new ticket is created")}
+												<br>
+												{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title.<br>")}
+											{/capture}
+											<textarea name="queue[newticketsmsbody]" rows="10" form="queue-form"
+												{tip text=$tip trigger="newticketsmsbody"}
+												>{$queue.newticketsmsbody}</textarea>
+										</div>
+									</div>
+								</div>
+								<div class="lms-ui-box-row">
+									<div class="lms-ui-box-field">
+										<div class="lms-ui-box-field-label">
+											<strong>
+												{trans("Body (new message)")}
+											</strong>
+										</div>
+										<div class="lms-ui-box-field-value">
+											{capture assign="tip"}
+												{trans("SMS sent after new message is added")}
+												<br>
+												{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title.<br>")}
+											{/capture}
+											<textarea name="queue[newmessagesmsbody]" rows="10" form="queue-form"
 											{tip text=$tip trigger="newmessagesmsbody"}
 											>{$queue.newmessagesmsbody}</textarea>
-									</TD>
-								</TR>
-								<TR>
-									<TD>
-										<strong>
-											{trans("Body (resolve ticket)")}
-										</strong>
-									</TD>
-								</TR>
-								<TR>
-									<TD>
-										{capture assign="tip"}
-											{trans("SMS sent after ticket is resolved")}
-											<br>
-											<br>
-											{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title.<br>")}
-										{/capture}
-										<textarea name="queue[resolveticketsmsbody]" rows="10" form="queue-form"
-											{tip text=$tip trigger="resolveticketsmsbody"}
-											>{$queue.resolveticketsmsbody}</textarea>
-									</TD>
-								</TR>
-							</TABLE>
+										</div>
+									</div>
+								</div>
+								<div class="lms-ui-box-row">
+									<div class="lms-ui-box-field">
+										<div class="lms-ui-box-field-label">
+											<strong>
+												{trans("Body (resolve ticket)")}
+											</strong>
+										</div>
+										<div class="lms-ui-box-field-value">
+											{capture assign="tip"}
+												{trans("SMS sent after ticket is resolved")}
+												<br>
+												{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title.<br>")}
+											{/capture}
+											<textarea name="queue[resolveticketsmsbody]" rows="10" form="queue-form"
+												{tip text=$tip trigger="resolveticketsmsbody"}
+												>{$queue.resolveticketsmsbody}</textarea>
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</fieldset>
@@ -594,53 +617,50 @@
 						{icon name="verifier"}
 						<strong>{trans("Verifier notifications")}</strong>
 					</legend>
-					<table id="verifier-notifications">
-						<tr>
-							<td>
-								<strong>
-									{trans("Subject (ticket verifier)")}
-								</strong>
-							</td>
-						</tr>
-						<TR>
-							<TD>
-								{capture assign="tip"}
-									{trans("Subject of mail sent to verifier after ticket is transferred to him")}
-									<br>
-									<br>
-									{trans("<!customer-notification-subject>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%title</strong> - ticket title.<br>")}
-								{/capture}
-								<input type="text" name="queue[verifierticketsubject]"
-									form="queue-form" value="{$queue.verifierticketsubject}"
-									{tip text=$tip trigger="verifierticketsubject"}>
-							</TD>
-						</TR>
-						<TR>
-							<TD>
-								<strong>
-									{trans("Body (ticket verifier)")}
-								</strong>
-							</TD>
-						</TR>
-						<TR>
-							<TD>
-								{capture assign="tip"}
-									{trans("Body of mail sent to verifier after ticket is transferred to him")}
-									<br>
-									<br>
-									{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title.<br>")}
-								{/capture}
-								<textarea name="queue[verifierticketbody]" rows="10" form="queue-form"
-									{tip text=$tip trigger="verifierticketbody"}
-									>{$queue.verifierticketbody}</textarea>
-							</TD>
-						</TR>
-					</table>
+					<div id="verifier-notifications" class="lms-ui-box">
+						<div class="lms-ui-box-body lms-ui-flex-column">
+							<div class="lms-ui-box-row">
+								<div class="lms-ui-box-field">
+									<div class="lms-ui-box-field-label">
+										<strong>
+											{trans("Subject (ticket verifier)")}
+										</strong>
+									</div>
+									<div class="lms-ui-box-field-value">
+										{capture assign="tip"}
+											{trans("Subject of mail sent to verifier after ticket is transferred to him")}
+											<br>
+											{trans("<!customer-notification-subject>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%title</strong> - ticket title.<br>")}
+										{/capture}
+										<input type="text" name="queue[verifierticketsubject]"
+											form="queue-form" value="{$queue.verifierticketsubject}"
+											{tip text=$tip trigger="verifierticketsubject"}>
+									</div>
+								</div>
+							</div>
+							<div class="lms-ui-box-row">
+								<div class="lms-ui-box-field">
+									<div class="lms-ui-box-field-label">
+										<strong>
+											{trans("Body (ticket verifier)")}
+										</strong>
+									</div>
+									<div class="lms-ui-box-field-value">
+											{capture assign="tip"}
+												{trans("Body of mail sent to verifier after ticket is transferred to him")}
+												<br>
+												{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title.<br>")}
+											{/capture}
+											<textarea name="queue[verifierticketbody]" rows="10" form="queue-form"
+												{tip text=$tip trigger="verifierticketbody"}
+												>{$queue.verifierticketbody}</textarea>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 				</fieldset>
 			</div>
-		</div>
-		<div class="lms-ui-box-panel">
-			&nbsp;
 		</div>
 	</div>
 	<div class="lms-ui-box-buttons">
@@ -652,7 +672,6 @@
 		{button icon="cancel" label="Cancel" onclick="location.href='?m=rtqueuelist';"}
 	</div>
 </div>
-</form>
 
 <script>
 
