@@ -218,6 +218,10 @@
 		width: 15em;
 	}
 
+	#queue-name {
+		max-width: 40em;
+	}
+
 	.user-login {
 		transform: scale(0.8);
 		transform-origin: left;
@@ -243,7 +247,7 @@
 					<strong>{trans("Name")}</strong>
 				</label>
 				<input type="text" name="queue[name]" value="{$queue.name}" id="queue-name"
-						{tip text="Enter queue name" trigger="name" bold=1}>
+					{tip text="Enter queue name" trigger="name" bold=1}>
 				{if isset($queue.id)}
 					<strong>({$queue.id|string_format:"%04d"})</strong>
 				{/if}
