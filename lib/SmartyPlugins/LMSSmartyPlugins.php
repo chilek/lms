@@ -227,7 +227,7 @@ class LMSSmartyPlugins
             }
             $result .= '</SELECT>&nbsp;' . trans("or Customer ID:");
         } else {
-            $result .= trans("ID:");
+            $result .= '<span>' . trans("ID") . '</span>';
             $timer_var = 'customerlist_timer_' . md5($params['inputname']);
         }
         $result .= '<div class="lms-ui-customer-search-container">';
