@@ -270,7 +270,7 @@ class LMSSmartyPlugins
         }
 
         if (empty($params['customers'])) {
-            $result .= '&nbsp;&nbsp;&nbsp;<span class="customername"></span>';
+            $result .= '<span class="customername"></span>';
         }
 
         return $result;
