@@ -2448,10 +2448,13 @@ fieldset {
 	}
 }
 
-.lms-ui-customer-search-container {
+.lms-ui-customer-select-container {
 	display: inline;
 	margin-left: 0.5em;
-	white-space: normal;
+	white-space: nowrap;
+	> span {
+		padding-right: 0.5em;
+	}
 	input {
 		box-sizing: border-box;
 		width: 7em;
@@ -2473,7 +2476,7 @@ fieldset {
 	&:hover div {
 		visibility: visible;
 	}
-	.customername {
+	&+.customername {
 		display: inline-block;
 		white-space: normal;
 		vertical-align: middle;

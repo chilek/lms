@@ -182,6 +182,8 @@ class LMSSmartyPlugins
             $params['selected'] = '';
         }
 
+        $result .= '<div class="lms-ui-customer-select-container">';
+
         if (!empty($params['customers'])) {
             $result .= sprintf('<SELECT name="%s" value="%s" ', $params['selectname'], $params['selected']);
 
@@ -230,7 +232,6 @@ class LMSSmartyPlugins
             $result .= '<span>' . trans("ID") . '</span>';
             $timer_var = 'customerlist_timer_' . md5($params['inputname']);
         }
-        $result .= '<div class="lms-ui-customer-search-container">';
         $result .= '<input type="text" name="' . $params['inputname'] . '" value="' . $params['selected'] . '" data-prev-value="' . $params['selected'] . '" size="5" ';
 
         if (!empty($params['input_id'])) {
@@ -268,6 +269,8 @@ class LMSSmartyPlugins
                 . ($customername ? ' var cid = $(\'[name="' . $params['inputname']. '"]\'); if (cid.val()) getCustomerNameDeferred(cid.get(0));' : '')
                 . '</script>';
         }
+
+        $result .= '</div>';
 
         if (empty($params['customers'])) {
             $result .= '<span class="customername"></span>';
