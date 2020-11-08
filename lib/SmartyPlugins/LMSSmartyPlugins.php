@@ -255,8 +255,8 @@ class LMSSmartyPlugins
             $result .= ' ' . self::tipFunction(array('text' => 'Enter customer ID', 'trigger' => 'customerid'), $template);
         }
 
-        $result .= '>';
-        $result .= '<div class="lms-ui-customer-search-button" ' . self::tipFunction(array('text' => 'Click to search customer'), $template) . '>' . PHP_EOL
+        $result .= '>' . PHP_EOL;
+        $result .= '<div ' . self::tipFunction(array('text' => 'Click to search customer', 'class' => 'lms-ui-customer-search-button'), $template) . '>' . PHP_EOL
             . '<i class="lms-ui-icon-search fa-fw"></i>' . PHP_EOL . '</div>' . PHP_EOL;
 
         $result .= '</div>' . PHP_EOL;
@@ -723,7 +723,9 @@ class LMSSmartyPlugins
                 $error = str_replace("\n", '<BR>', $error);
 
                 $result .= ' title="' . $error . '" ';
-                $result .= ' class="' . (empty($class) ? '' : $class) . ($params['bold'] ? ' lms-ui-error bold" ' : ' lms-ui-error" ');
+                if ($params['bold'] || !empty($class)) {
+                    $result .= ' class="' . (empty($class) ? '' : $class) . ($params['bold'] ? ' lms-ui-error bold" ' : ' lms-ui-error" ');
+                }
             } else {
                 $warnings = $template->getTemplateVars('warning');
                 if (isset($params['trigger']) && isset($warnings[$params['trigger']])) {
@@ -733,7 +735,9 @@ class LMSSmartyPlugins
                     $error = str_replace("\n", '<BR>', $error);
 
                     $result .= ' title="' . $error . '" ';
-                    $result .= ' class="' . (empty($class) ? '' : $class) . ($params['bold'] ? ' lms-ui-warning bold" ' : ' lms-ui-warning" ');
+                    if ($params['bold'] || !empty($class)) {
+                        $result .= ' class="' . (empty($class) ? '' : $class) . ($params['bold'] ? ' lms-ui-warning bold" ' : ' lms-ui-warning" ');
+                    }
                 } else {
                     if ($params['text'] != '') {
                         $text = $params['text'];
@@ -747,7 +751,9 @@ class LMSSmartyPlugins
 
                         $result .= ' title="' . $text . '" ';
                     }
-                    $result .= ' class="' . (empty($class) ? '' : $class) . (isset($params['bold']) && $params['bold'] ? ' bold' : '') . '" ';
+                    if (isset($params['bold']) || !empty($class)) {
+                        $result .= ' class="' . (empty($class) ? '' : $class) . (isset($params['bold']) && $params['bold'] ? ' bold' : '') . '" ';
+                    }
                 }
             }
 
