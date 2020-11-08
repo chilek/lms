@@ -443,7 +443,7 @@ if ($backup || $archive) {
 
             $part_size = floor(($percent * $count) / 100);
             $part_offset = $part_number * $part_size;
-            if ($part_offset >= $count) {
+            if ((!$part_offset && !$part_limit && $part_number) || $part_offset >= $count) {
                 die;
             }
         }
