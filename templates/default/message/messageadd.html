@@ -9,8 +9,13 @@
 		border: 0;
 	}
 
-	.customer-contact {
-		margin-left: 2em;
+	.customer-contact-wrapper {
+		margin-left: 1em;
+		display: flex;
+	}
+
+	.customer-contact-wrapper label {
+		margin-left: 0.3em;
 	}
 
 	.customers {
@@ -35,7 +40,13 @@
 	}
 
 	.customer-list-item {
-		display: inline-block;
+		display: flex;
+		flex-direction: column;
+		break-inside: avoid;
+	}
+
+	.customer-list-item label {
+		white-space: normal;
 	}
 
 	.customer-list-item:hover {
@@ -345,13 +356,15 @@
 								<a href="?m=customerinfo&id={$customerid}">(#{$customerid|string_format:"%04d"}) {$customer.name|truncate:50:"..."}</a>
 								{foreach $customer.emails as $email}
 									{if !empty($email.checked)}{$selected_contacts = $selected_contacts + 1}{/if}
-									<br>
-									<input type="hidden" name="message[customers][{$customerid}][emails][{$email.id}]" value="0">
-									<label class="customer-contact">
-										<INPUT type="checkbox" name="message[customers][{$customerid}][emails][{$email.id}]" value="{$email.contact}"
-												{if !empty($email.checked)}checked{/if}>
-										{$email.contact}{if $email.name} ({$email.name}){/if}
-									</label>
+									<div class="customer-contact-wrapper">
+										<input type="hidden" name="message[customers][{$customerid}][emails][{$email.id}]" value="0">
+										<INPUT type="checkbox" name="message[customers][{$customerid}][emails][{$email.id}]"
+											value="{$email.contact}" id="customer-contact-{$email.id}" class="customer-contact"
+											{if !empty($email.checked)}checked{/if}>
+										<label for="customer-contact-{$email.id}">
+											{$email.contact}{if $email.name} ({$email.name}){/if}
+										</label>
+									</div>
 								{/foreach}
 							</div>
 							{$total_customers = $total_customers + 1}
@@ -395,13 +408,15 @@
 								<a href="?m=customerinfo&id={$customerid}">(#{$customerid|string_format:"%04d"}) {$customer.name|truncate:50:"..."}</a>
 								{foreach $customer.phones as $phone}
 									{if !empty($phone.checked)}{$selected_contacts = $selected_contacts + 1}{/if}
-									<br>
-									<input type="hidden" name="message[customers][{$customerid}][phones][{$phone.id}]" value="0">
-									<label class="customer-contact">
-										<INPUT type="checkbox" name="message[customers][{$customerid}][phones][{$phone.id}]" value="{$phone.contact}"
-												{if !empty($phone.checked)}checked{/if}>
-										{$phone.contact}{if $phone.name} ({$phone.name}){/if}
-									</label>
+									<div class="customer-contact-wrapper">
+										<input type="hidden" name="message[customers][{$customerid}][phones][{$phone.id}]" value="0">
+										<INPUT type="checkbox" name="message[customers][{$customerid}][phones][{$phone.id}]"
+											value="{$phone.contact}" id="customer-contact-{$phone.id}" class="customer-contact"
+											{if !empty($phone.checked)}checked{/if}>
+										<label for="customer-contact-{$phone.id}">
+											{$phone.contact}{if $phone.name} ({$phone.name}){/if}
+										</label>
+									</div>
 								{/foreach}
 							</div>
 							{$total_customers = $total_customers + 1}
