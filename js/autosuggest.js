@@ -127,6 +127,7 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 			case RET:
 				clearTimeout(me.timer);
 				me.useSuggestion();
+				ev.preventDefault();
 			break;
 
 			case TAB:
