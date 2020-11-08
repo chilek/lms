@@ -2447,3 +2447,27 @@ fieldset {
 		}
 	}
 }
+
+.lms-ui-customer-search-container {
+	display: inline-block;
+	margin-left: 0.5em;
+	input {
+		box-sizing: border-box;
+		width: 7em;
+		padding-right: 1.4em;
+
+		&:focus+div {
+			visibility: visible;
+		}
+	}
+	div {
+		display: inline-block;
+		margin-left: -1.8em;
+		vertical-align: middle;
+		cursor: pointer;
+		visibility: hidden;
+	}
+	&:hover div {
+		visibility: visible;
+	}
+}

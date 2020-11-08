@@ -230,7 +230,8 @@ class LMSSmartyPlugins
             $result .= trans("ID:");
             $timer_var = 'customerlist_timer_' . md5($params['inputname']);
         }
-        $result .= '&nbsp;<INPUT type="text" name="' . $params['inputname'] . '" value="' . $params['selected'] . '" data-prev-value="' . $params['selected'] . '" size="5" ';
+        $result .= '<div class="lms-ui-customer-search-container">';
+        $result .= '<input type="text" name="' . $params['inputname'] . '" value="' . $params['selected'] . '" data-prev-value="' . $params['selected'] . '" size="5" ';
 
         if (!empty($params['input_id'])) {
             $result .= 'id="' . $params['input_id'] . '" ';
@@ -258,13 +259,15 @@ class LMSSmartyPlugins
         }
 
         $result .= '>';
+        $result .= '<div class="lms-ui-customer-search-button" ' . self::tipFunction(array('text' => 'Click to search customer'), $template)
+            . ' onClick="return customerchoosewin(document.forms[\'' . $params['form'] . '\'].elements[\'' . $params['inputname'] . '\']);">'
+            . '<i class="lms-ui-icon-search fa-fw"></i></div>';
+
         if (empty($params['customers'])) {
-            $result .= '<script type="text/javascript">var ' . $timer_var . ';'
+            $result .= '<script>var ' . $timer_var . ';'
                 . ($customername ? ' var cid = $(\'[name="' . $params['inputname']. '"]\'); if (cid.val()) getCustomerNameDeferred(cid.get(0));' : '')
                 . '</script>';
         }
-        $result .= '<a class="lms-ui-button lms-ui-customer-search-button" href="javascript: void(0);" onClick="return customerchoosewin(document.forms[\'' . $params['form'] . '\'].elements[\'' . $params['inputname'] . '\']);">';
-        $result .= '<i class="lms-ui-icon-search" ' . self::tipFunction(array('text' => 'Click to search customer'), $template) . '></i></a>';
 
         if (empty($params['customers'])) {
             $result .= '&nbsp;&nbsp;&nbsp;<span class="customername"></span>';
