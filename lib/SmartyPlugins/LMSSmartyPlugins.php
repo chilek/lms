@@ -232,7 +232,9 @@ class LMSSmartyPlugins
                 . '<span>' . trans("or Customer ID:") . '</span>' . PHP_EOL;
         } else {
             $result .=  '<div class="lms-ui-customer-select">' . PHP_EOL;
-            $result .= '<span>' . trans($version == 2 ? 'Search for customer' : 'ID') . '</span>' . PHP_EOL;
+            if ($version < 2) {
+                $result .= '<span>' . trans('ID') . '</span>' . PHP_EOL;
+            }
         }
 
         $result .= '<input type="text" name="' . $params['inputname'] . '" value="'
@@ -262,7 +264,8 @@ class LMSSmartyPlugins
 
         if ($version == 2) {
             $result .= '<div class="lms-ui-customer-select-suggestion-container"></div>' . PHP_EOL
-                . '<input type="text" class="lms-ui-customer-select-suggestion-input lms-ui-autogrow">' . PHP_EOL;
+                . '<input type="text" class="lms-ui-customer-select-suggestion-input lms-ui-autogrow"'
+                . ' placeholder="' . trans('Search for customer') . '">' . PHP_EOL;
             $result .= '<div ' . self::tipFunction(array('text' => 'Click to reset customer selection', 'class' => 'lms-ui-customer-function-button'), $template) . '>' . PHP_EOL
                 . '<i class="lms-ui-icon-clear fa-fw"></i>' . PHP_EOL . '</div>' . PHP_EOL;
         } else {
