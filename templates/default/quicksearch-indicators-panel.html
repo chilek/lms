@@ -10,12 +10,18 @@
 		<div id="autosuggest" class="lms-ui-popup">
 		</div>
 	</div>
-	{/block}
-    {if $itl = ConfigHelper::getConfig('phpui.instance_label')}
-        <div style="margin-left: 10px;">
-            {$itl}
-        </div>
-    {/if}
+    {/block}
+    <div style="margin-left: 10px;">
+            <script type="text/javascript">
+            if (!window.screenTop && !window.screenY) {
+                {if $itl != ConfigHelper::getConfig('phpui.instance_label')}
+                    document.write("{$itl}");
+                {else}
+                    document.write("{$smarty.server.SERVER_NAME}");
+                {/if}
+            }
+            </script>
+    </div>
 	{if ! ConfigHelper::checkConfig('phpui.hide_indicators')}
 		{block name=indicators}
 		<div id="lms-ui-indicators">
