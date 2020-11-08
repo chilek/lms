@@ -263,9 +263,9 @@ class LMSSmartyPlugins
                 . ($customername ? ' var cid = $(\'[name="' . $params['inputname']. '"]\'); if (cid.val()) getCustomerNameDeferred(cid.get(0));' : '')
                 . '</script>';
         }
-        $result .= '<a href="javascript: void(0);" onClick="return customerchoosewin(document.forms[\'' . $params['form'] . '\'].elements[\'' . $params['inputname'] . '\']);" ';
-        $result .= self::tipFunction(array('text' => 'Click to search customer'), $template) . '>&nbsp;';
-        $result .= trans("Search") . '&nbsp;&raquo;&raquo;&raquo;</A>';
+        $result .= '<a class="lms-ui-button lms-ui-customer-search-button" href="javascript: void(0);" onClick="return customerchoosewin(document.forms[\'' . $params['form'] . '\'].elements[\'' . $params['inputname'] . '\']);" ';
+        $result .= self::tipFunction(array('text' => 'Click to search customer'), $template) . '>';
+        $result .= '<i class="lms-ui-icon-search" title="' . self::tipFunction(array('text' => 'Search'), $template) . '"></i></a>';
 
         if (empty($params['customers'])) {
             $result .= '&nbsp;&nbsp;&nbsp;<span class="customername"></span>';
