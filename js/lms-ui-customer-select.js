@@ -100,6 +100,7 @@ $(function() {
                 return customerchoosewin(input.get(0));
             } else {
                 customerNameLink.find('a').attr('href', '').html('');
+                suggestionInput.val('');
                 input.val(0).trigger('change');
             }
         });
