@@ -2168,6 +2168,8 @@ $_LANG['Enter receipt number. WARNING! Changing this number can be DANGEROUS!'] 
 $_LANG['continuously'] = 'ciągle';
 $_LANG['Difference value:'] = 'Wartość różnicy:';
 $_LANG['Click to search customer'] = 'Kliknij tutaj, aby wyszukać klienta';
+$_LANG['Click to reset customer selection'] = 'Kliknij tutaj, aby wyczyścić wybór klienta';
+$_LANG['Search for customer'] = 'Wyszukaj klienta';
 $_LANG['Enter customer and/or node data and press Enter.'] = 'Wprowadź dane klienta i/lub komputera i naciśnij Enter.';
 $_LANG['Enter unitary value without discount'] = 'Wprowadź wartość jednostkową bez rabatu';
 $_LANG['Export'] = 'Eksport';

@@ -763,7 +763,7 @@ function initAutoGrow(selector) {
 			$(this).autoHeight();
 		} else {
 			$(this).inputAutogrow({
-				minWidth: 200,
+				minWidth: 150,
 				maxWidth: 500
 			}).addClass('lms-ui-autogrow-initiated');
 		}

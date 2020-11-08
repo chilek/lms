@@ -176,13 +176,15 @@ class LMSSmartyPlugins
     {
         $result = '';
 
+        $version = isset($params['version']) && intval($params['version']) ? intval($params['version']) : 1;
+
         $customername = !isset($params['customername']) || $params['customername'];
 
         if (isset($params['selected']) && !preg_match('/^[0-9]+$/', $params['selected'])) {
             $params['selected'] = '';
         }
 
-        $result .= '<div class="lms-ui-customer-select-container">' . PHP_EOL;
+        $result .= '<div class="lms-ui-customer-select-container" data-version="' . $version . '">' . PHP_EOL;
 
         if (!empty($params['customers'])) {
             $result .= sprintf('<select name="%s" value="%s" ', $params['selectname'], $params['selected']);
@@ -230,10 +232,11 @@ class LMSSmartyPlugins
                 . '<span>' . trans("or Customer ID:") . '</span>' . PHP_EOL;
         } else {
             $result .=  '<div class="lms-ui-customer-select">' . PHP_EOL;
-            $result .= '<span>' . trans("ID") . '</span>' . PHP_EOL;
+            $result .= '<span>' . trans($version == 2 ? 'Search for customer' : 'ID') . '</span>' . PHP_EOL;
         }
 
-        $result .= '<input type="text" name="' . $params['inputname'] . '" value="' . $params['selected'] . '" data-prev-value="' . $params['selected'] . '" size="5"';
+        $result .= '<input type="text" name="' . $params['inputname'] . '" value="'
+            . $params['selected'] . '" class="lms-ui-customer-select-customerid" data-prev-value="' . $params['selected'] . '" size="5"';
 
         if (!empty($params['input_id'])) {
             $result .= ' id="' . $params['input_id'] . '"';
@@ -256,13 +259,22 @@ class LMSSmartyPlugins
         }
 
         $result .= '>' . PHP_EOL;
-        $result .= '<div ' . self::tipFunction(array('text' => 'Click to search customer', 'class' => 'lms-ui-customer-search-button'), $template) . '>' . PHP_EOL
-            . '<i class="lms-ui-icon-search fa-fw"></i>' . PHP_EOL . '</div>' . PHP_EOL;
+
+        if ($version == 2) {
+            $result .= '<div class="lms-ui-customer-select-suggestion-container"></div>' . PHP_EOL
+                . '<input type="text" class="lms-ui-customer-select-suggestion-input lms-ui-autogrow">' . PHP_EOL;
+            $result .= '<div ' . self::tipFunction(array('text' => 'Click to reset customer selection', 'class' => 'lms-ui-customer-function-button'), $template) . '>' . PHP_EOL
+                . '<i class="lms-ui-icon-clear fa-fw"></i>' . PHP_EOL . '</div>' . PHP_EOL;
+        } else {
+            $result .= '<div ' . self::tipFunction(array('text' => 'Click to search customer', 'class' => 'lms-ui-customer-function-button'), $template) . '>' . PHP_EOL
+                . '<i class="lms-ui-icon-search fa-fw"></i>' . PHP_EOL . '</div>' . PHP_EOL;
+        }
 
         $result .= '</div>' . PHP_EOL;
 
         if (empty($params['customers'])) {
-            $result .= '<span class="lms-ui-customer-select-name"></span>' . PHP_EOL;
+            $result .= '<span class="lms-ui-customer-select-name">' . PHP_EOL
+                . ($version == 2 ? '<a href=""></a>' : '') . '</span>' . PHP_EOL;
         }
 
         $result .= '</div>' . PHP_EOL;

@@ -230,6 +230,8 @@ version 26-git (????-??-??):
   - enhancement: ticket change sms customer notification support [chilan]
   - improvement: customer search link replace by icon displayed inside customer id input
     when container is hovered or focused [chilan]
+  - enhancement: new customer selection ui control which allows to select customer using quick
+    search mechanism and suggestion popup [chilan]
 
 version 25.0 (2020-05-15):
 

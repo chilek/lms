@@ -241,9 +241,11 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 				$(me.elem).focus();
 			},0);
 			//Same applies to Enter key.
-			this.form.onsubmit = function () { return false; };
-			setTimeout(function() {
-				me.form.onsubmit = function() {
+			this.form.onsubmit = function () {
+				return false;
+			};
+			setTimeout(function () {
+				me.form.onsubmit = function () {
 					return true;
 				}
 			}, 10);
@@ -251,7 +253,7 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 			if (this.autosubmit) {
 				location.href = gotothisuri;
 			}
-			if (this.onSubmit) {
+			if (typeof(this.onSubmit) == 'function') {
 				(this.onSubmit)(submit_data);
 			}
 		}

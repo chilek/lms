@@ -2466,28 +2466,39 @@ fieldset {
 			padding-right: 0.5em;
 		}
 
-		input {
+		.lms-ui-customer-select-customerid,
+		.lms-ui-customer-select-suggestion-input {
 			box-sizing: border-box;
 			width: 7em;
-			padding-right: 1.4em;
 			margin-top: 0.5em;
 			margin-bottom: 0.5em;
+			padding-right: 0;
 
-			&:focus + div {
-				visibility: visible;
+			&:focus {
+				padding-right: 1.4em;
+				& + .lms-ui-customer-function-button {
+					visibility: visible;
+				}
 			}
 		}
 
-		div {
+		.lms-ui-customer-function-button {
 			display: inline-block;
-			margin-left: -1.8em;
+			margin-left: -2.3em;
 			vertical-align: middle;
 			cursor: pointer;
 			visibility: hidden;
 		}
 
-		&:hover div {
-			visibility: visible;
+		&:hover {
+			& .lms-ui-customer-select-customerid,
+			& .lms-ui-customer-select-suggestion-input {
+				padding-right: 1.4em;
+				& + .lms-ui-customer-function-button,
+				& + .lms-ui-customer-function-button {
+					visibility: visible;
+				}
+			}
 		}
 	}
 	.lms-ui-customer-select-name {
@@ -2495,5 +2506,17 @@ fieldset {
 		padding-left: 0.5em;
 		padding-right: 0.5em;
 		flex-grow: 1;
+	}
+
+	&[data-version="2"] {
+		.lms-ui-customer-select {
+			.lms-ui-customer-select-customerid,
+			.lms-ui-customer-select-suggestion-container {
+				display: none;
+			}
+			.lms-ui-customer-select-suggestion-input {
+				min-width: 10em;
+			}
+		}
 	}
 }

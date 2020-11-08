@@ -25,11 +25,14 @@
 $(function() {
     $('.lms-ui-customer-select-container').each(function () {
         var container = $(this);
-        var input = container.find('.lms-ui-customer-select input');
+        var version = parseInt(container.attr('data-version'));
+        var input = container.find('.lms-ui-customer-select-customerid');
+        var suggestionInput = container.find('.lms-ui-customer-select-suggestion-input');
         var select = container.find('select');
-        var customerid = parseInt(input.val());
-        var customername = input.attr('data-customer-name');
-        var button = container.find('.lms-ui-customer-search-button');
+        var customerId = parseInt(input.val());
+        var customerName = input.attr('data-customer-name');
+        var customerNameLink = container.find('.lms-ui-customer-select-name')
+        var button = container.find('.lms-ui-customer-function-button');
         var selectChange = false;
 
         if (select.length) {
@@ -54,31 +57,51 @@ $(function() {
                 }
             });
         } else {
-            if (customername) {
+            if (customerName) {
+                var timer;
                 input.on('blur focus input', function () {
-                    var timer;
                     var elem = $(this);
                     if (elem.val() != elem.attr('data-prev-value')) {
-                        timer = elem.data('timer');
                         if (timer) {
                             clearTimeout(timer);
                         }
-                        elem.data('timer', setTimeout(function () {
+                        timer = setTimeout(function () {
                             getCustomerName(elem[0]);
                             elem.attr('data-prev-value', elem.val());
-                            elem.removeData('timer');
-                        }, 500));
+                            timer = 0;
+                        }, 500);
                     }
                 });
 
-                if (customerid) {
+                if (customerId) {
                     getCustomerNameDeferred(input[0]);
                 }
             }
         }
 
+        if (version == 2) {
+            suggestionInput.one('focus', function() {
+                new AutoSuggest({
+                    form: suggestionInput[0].form,
+                    elem: suggestionInput[0],
+                    uri: '?m=quicksearch&mode=customer&ajax=1&api=1&what=',
+                    suggestionContainer: container.find('.lms-ui-customer-select-suggestion-container'),
+                    onSubmit: function (data) {
+                        suggestionInput.val('');
+                        customerNameLink.find('a').attr('href', data.action).html(data.name);
+                        input.val(data.id).trigger('change');
+                    }
+                });
+            });
+        }
+
         button.on('click', function() {
-            return customerchoosewin(input.get(0));
+            if ($(this).find('.lms-ui-icon-search').length) {
+                return customerchoosewin(input.get(0));
+            } else {
+                customerNameLink.find('a').attr('href', '').html('');
+                input.val(0).trigger('change');
+            }
         });
     });
 });

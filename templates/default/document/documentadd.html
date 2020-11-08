@@ -90,7 +90,8 @@
 			{trans("Customer:")}
 		</TD>
 		<TD>
-			{customerlist form="documentadd" customers=$customers selected=$cid selectname="customer" inputname="customerid" required=true customOnChange="CustomerChanged();"}
+			{customerlist form="documentadd" customers=$customers selected=$cid version=2
+				selectname="customer" inputname="customerid" required=true customOnChange="CustomerChanged();"}
 		</TD>
 	</TR>
 	<TR>
