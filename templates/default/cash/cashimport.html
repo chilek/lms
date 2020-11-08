@@ -96,8 +96,8 @@
 			<TD class="text-left">
 				{$item.description}
 			</TD>
-			<TD class="text-left">
-				{customerlist form="cashimport" customers=$customerlist selected=$item.customerid selectname="custid[{$item.id}]" inputname="customer[{$item.id}]"}
+			<TD class="text-left lms-ui-multi-check-ignore">
+				{customerlist form="cashimport" customers=$customerlist selected=$item.customerid selectname="custid[{$item.id}]" inputname="customer[{$item.id}]" version=2}
 			</TD>
 			<TD class="text-right">
 				<INPUT TYPE="checkbox" NAME="marks[{$item.id}]" VALUE="{$item.id}" class="lms-ui-multi-check">
