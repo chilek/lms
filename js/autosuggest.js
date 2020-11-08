@@ -240,15 +240,17 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 			setTimeout(function() {
 				$(me.elem).focus();
 			},0);
-			//Same applies to Enter key.
-			this.form.onsubmit = function () {
-				return false;
-			};
-			setTimeout(function () {
-				me.form.onsubmit = function () {
-					return true;
-				}
-			}, 10);
+			if (typeof(this.onSubmit) != 'function') {
+				//Same applies to Enter key.
+				this.form.onsubmit = function () {
+					return false;
+				};
+				setTimeout(function () {
+					me.form.onsubmit = function () {
+						return true;
+					}
+				}, 10);
+			}
 			//Go to search results.
 			if (this.autosubmit) {
 				location.href = gotothisuri;
