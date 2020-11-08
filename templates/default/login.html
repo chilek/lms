@@ -67,6 +67,12 @@
 		</span>
 		<form method="post" name="loginform" action="{$target}">
 			<table>
+                {if $itl = ConfigHelper::getConfig('phpui.instance_label')}
+                    <tr>
+                        <td class="text-center">{icon name="description"}</td>
+                        <td class="bold">{$itl}</td>
+                    </tr>
+                {/if}
 				<tr>
 					<td class="text-right bold">
 						<i class="lms-ui-icon-user"></i>

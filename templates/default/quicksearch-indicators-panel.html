@@ -11,6 +11,11 @@
 		</div>
 	</div>
 	{/block}
+    {if $itl = ConfigHelper::getConfig('phpui.instance_label')}
+        <div style="margin-left: 10px;">
+            {$itl}
+        </div>
+    {/if}
 	{if ! ConfigHelper::checkConfig('phpui.hide_indicators')}
 		{block name=indicators}
 		<div id="lms-ui-indicators">
