@@ -2449,37 +2449,42 @@ fieldset {
 }
 
 .lms-ui-customer-select-container {
-	display: inline;
-	margin-left: 0.5em;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
 	white-space: nowrap;
-	> span {
-		padding-right: 0.5em;
-	}
-	input {
-		box-sizing: border-box;
-		width: 7em;
-		padding-right: 1.4em;
-		margin-top: 0.5em;
-		margin-bottom: 0.5em;
+	.lms-ui-customer-select {
+		display: inline-block;
+		> span {
+			padding-right: 0.5em;
+		}
 
-		&:focus+div {
+		input {
+			box-sizing: border-box;
+			width: 7em;
+			padding-right: 1.4em;
+			margin-top: 0.5em;
+			margin-bottom: 0.5em;
+
+			&:focus + div {
+				visibility: visible;
+			}
+		}
+
+		div {
+			display: inline-block;
+			margin-left: -1.8em;
+			vertical-align: middle;
+			cursor: pointer;
+			visibility: hidden;
+		}
+
+		&:hover div {
 			visibility: visible;
 		}
 	}
-	div {
-		display: inline-block;
-		margin-left: -1.8em;
-		vertical-align: middle;
-		cursor: pointer;
-		visibility: hidden;
-	}
-	&:hover div {
-		visibility: visible;
-	}
-	&+.customername {
-		display: inline-block;
+	.lms-ui-customer-select-name {
 		white-space: normal;
-		vertical-align: middle;
 		padding-left: 0.5em;
 		padding-right: 0.5em;
 	}

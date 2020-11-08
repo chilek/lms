@@ -182,7 +182,8 @@ class LMSSmartyPlugins
             $params['selected'] = '';
         }
 
-        $result .= '<div class="lms-ui-customer-select-container">';
+        $result .= '<div class="lms-ui-customer-select-container">'
+            . '<div class="lms-ui-customer-select">';
 
         if (!empty($params['customers'])) {
             $result .= sprintf('<SELECT name="%s" value="%s" ', $params['selectname'], $params['selected']);
@@ -273,8 +274,10 @@ class LMSSmartyPlugins
         $result .= '</div>';
 
         if (empty($params['customers'])) {
-            $result .= '<span class="customername"></span>';
+            $result .= '<span class="lms-ui-customer-select-name"></span>';
         }
+
+        $result .= '</div>';
 
         return $result;
     }
