@@ -182,11 +182,10 @@ class LMSSmartyPlugins
             $params['selected'] = '';
         }
 
-        $result .= '<div class="lms-ui-customer-select-container">'
-            . '<div class="lms-ui-customer-select">';
+        $result .= '<div class="lms-ui-customer-select-container">' . PHP_EOL;
 
         if (!empty($params['customers'])) {
-            $result .= sprintf('<SELECT name="%s" value="%s" ', $params['selectname'], $params['selected']);
+            $result .= sprintf('<select name="%s" value="%s" ', $params['selectname'], $params['selected']);
 
             if (!empty($params['select_id'])) {
                 $result .= 'id="' . $params['select_id'] . '" ';
@@ -198,86 +197,75 @@ class LMSSmartyPlugins
                 $result .= self::tipFunction(array('text' => 'Select customer (optional)'), $template);
             }
 
-            $result .= sprintf('onChange="reset_customer(\'%s\', \'%s\', \'%s\'); ', $params['form'], $params['selectname'], $params['inputname']);
-
             if (!empty($params['customOnChange'])) {
-                $result .= $params['customOnChange'];
+                $result .= ' onChange="' . $params['customOnChange'] . '"';
             }
 
-            $result .= '">';
+            $result .= '">' . PHP_EOL;
 
             if (isset($params['firstoption'])) {
                 if (!empty($params['firstoption'])) {
-                    $result .= '<OPTION value="0"';
+                    $result .= '<option value="0"';
                     if (empty($params['selected'])) {
                         $result .= ' selected';
                     }
-                    $result .= '>' . trans($params['firstoption']) . '</OPTION>';
+                    $result .= '>' . trans($params['firstoption']) . '</option>';
                 }
             } else {
-                $result .= '<OPTION value="0"';
+                $result .= '<option value="0"';
                 if (empty($params['selected'])) {
                     $result .= ' selected';
                 }
-                $result .= '>' . trans("- select customer -") . '</OPTION>';
+                $result .= '>' . trans("- select customer -") . '</option>';
             }
             foreach ($params['customers'] as $customer) {
-                $result .= '<OPTION value="' . $customer['id'] . '"';
+                $result .= '<option value="' . $customer['id'] . '"';
                 if ($customer['id'] == $params['selected']) {
                     $result .= ' selected';
                 }
-                $result .= '>' . mb_substr($customer['customername'], 0, 40) . ' (' . sprintf("%04d", $customer['id']) . ')</OPTION>';
+                $result .= '>' . mb_substr($customer['customername'], 0, 40) . '</option>' . PHP_EOL;
             }
-            $result .= '</SELECT>&nbsp;' . trans("or Customer ID:");
+            $result .= '</select>' . PHP_EOL
+                . '<div class="lms-ui-customer-select">' . PHP_EOL
+                . '<span>' . trans("or Customer ID:") . '</span>' . PHP_EOL;
         } else {
-            $result .= '<span>' . trans("ID") . '</span>';
-            $timer_var = 'customerlist_timer_' . md5($params['inputname']);
+            $result .=  '<div class="lms-ui-customer-select">' . PHP_EOL;
+            $result .= '<span>' . trans("ID") . '</span>' . PHP_EOL;
         }
-        $result .= '<input type="text" name="' . $params['inputname'] . '" value="' . $params['selected'] . '" data-prev-value="' . $params['selected'] . '" size="5" ';
+
+        $result .= '<input type="text" name="' . $params['inputname'] . '" value="' . $params['selected'] . '" data-prev-value="' . $params['selected'] . '" size="5"';
 
         if (!empty($params['input_id'])) {
-            $result .= 'id="' . $params['input_id'] . '" ';
+            $result .= ' id="' . $params['input_id'] . '"';
         }
 
         if (isset($params['required']) && $params['required']) {
-            $result .= 'required ';
+            $result .= ' required';
         }
 
-        $on_change = !empty($params['customOnChange']) ? $params['customOnChange'] : '';
-
-        if (!empty($params['customers'])) {
-            $reset_customer = "if (this.value != \$(this).attr('data-prev-value')) { reset_customer('${params['form']}', '${params['inputname']}', '${params['selectname']}'); ${on_change}; \$(this).attr('data-prev-value', this.value); }";
-            $result .= "onChange=\"${reset_customer}\" onFocus=\"${reset_customer}\"";
-        } else {
-            $result .= sprintf(' onblur="%1$s" onfocus="%1$s" oninput="%1$s" ', 'if (this.value != $(this).attr(\'data-prev-value\')) {'
-                . 'var elem=this; clearTimeout(' . $timer_var . '); ' . $timer_var . '=setTimeout(function(){'
-                . $on_change . ';' . ($customername ? 'getCustomerName(elem);' : '') . ' $(elem).attr(\'data-prev-value\', elem.value);}, 500);}');
+        if (!empty($params['customOnChange'])) {
+            $result .= ' onChange="' . $params['customOnChange'] . '"';
         }
+
+        $result .= empty($params['customers']) && $customername ? ' data-customer-name="1"' : '';
 
         if (!empty($params['inputtip'])) {
-            $result .= self::tipFunction(array('text' => $params['inputtip']), $template);
+            $result .= ' ' . self::tipFunction(array('text' => $params['inputtip']), $template);
         } else {
-            $result .= self::tipFunction(array('text' => 'Enter customer ID', 'trigger' => 'customerid'), $template);
+            $result .= ' ' . self::tipFunction(array('text' => 'Enter customer ID', 'trigger' => 'customerid'), $template);
         }
 
         $result .= '>';
-        $result .= '<div class="lms-ui-customer-search-button" ' . self::tipFunction(array('text' => 'Click to search customer'), $template)
-            . ' onClick="return customerchoosewin(document.forms[\'' . $params['form'] . '\'].elements[\'' . $params['inputname'] . '\']);">'
-            . '<i class="lms-ui-icon-search fa-fw"></i></div>';
+        $result .= '<div class="lms-ui-customer-search-button" ' . self::tipFunction(array('text' => 'Click to search customer'), $template) . '>' . PHP_EOL
+            . '<i class="lms-ui-icon-search fa-fw"></i>' . PHP_EOL . '</div>' . PHP_EOL;
+
+        $result .= '</div>' . PHP_EOL;
 
         if (empty($params['customers'])) {
-            $result .= '<script>var ' . $timer_var . ';'
-                . ($customername ? ' var cid = $(\'[name="' . $params['inputname']. '"]\'); if (cid.val()) getCustomerNameDeferred(cid.get(0));' : '')
-                . '</script>';
+            $result .= '<span class="lms-ui-customer-select-name"></span>' . PHP_EOL;
         }
 
-        $result .= '</div>';
-
-        if (empty($params['customers'])) {
-            $result .= '<span class="lms-ui-customer-select-name"></span>';
-        }
-
-        $result .= '</div>';
+        $result .= '</div>' . PHP_EOL;
 
         return $result;
     }

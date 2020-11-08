@@ -583,16 +583,6 @@ function changeMacFormat(id)
 	elem.innerHTML = curmac;
 }
 
-function reset_customer(form, elemname1, elemname2) {
-
-	if (document.forms[form].elements[elemname1].value) {
-		document.forms[form].elements[elemname2].value = document.forms[form].elements[elemname1].value;
-
-		$( document.forms[form].elements[elemname1] ).trigger( 'keyup' );
-		$( document.forms[form].elements[elemname2] ).trigger( 'reset_customer' );
-	}
-}
-
 function generate_random_string(length, characters) {
 	if (typeof length === 'undefined')
 		length = 10;
@@ -669,8 +659,7 @@ function getCustomerName(elem) {
 			: '<a href="?m=customerinfo&id=' + $(elem).val() + '">' + data.customernames[$(elem).val()] + '</a>');
 	});
 
-	$(elem).trigger('reset_customer');
-	$(elem).trigger('change');
+	//$(elem).trigger('change');
 }
 
 var customerinputs = [];
