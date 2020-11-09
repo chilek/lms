@@ -86,6 +86,7 @@ $(function() {
                     elem: suggestionInput[0],
                     uri: '?m=quicksearch&mode=customer&ajax=1&api=1&what=',
                     suggestionContainer: container.find('.lms-ui-customer-select-suggestion-container'),
+                    autoSubmitForm: false,
                     onSubmit: function (data) {
                         suggestionInput.val('');
                         customerNameLink.find('a').attr('href', data.action).html(data.name);

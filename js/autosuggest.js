@@ -20,6 +20,7 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 		this.uri = form.uri;
 		this.formData = form.hasOwnProperty('formData') ? form.formData : {};
 		this.autosubmit = form.hasOwnProperty('autosubmit') && (form.autosubmit == 1 || form.autosubmit == 'true');
+		this.autoSubmitForm = !form.hasOwnProperty('autoSubmitForm') || form.autoSubmitForm == 1 || form.autoSubmitForm == 'true';
 		this.onSubmit = form.hasOwnProperty('onSubmit') ? form.onSubmit : null;
 		this.onLoad = form.hasOwnProperty('onLoad') ? form.onLoad : null;
 		this.onAjax = form.hasOwnProperty('onAjax') ? form.onAjax : '';
@@ -36,6 +37,7 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 		this.uri = uri;
 		this.formData = {};
 		this.autosubmit = (typeof(autosubmit) !== 'undefined' && (autosubmit == 1 || autosubmit == 'true'));
+		this.autoSubmitForm = true;
 		this.onSubmit = onSubmit;
 		this.onLoad = onLoad;
 		this.class = '';
@@ -127,7 +129,9 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 			case RET:
 				clearTimeout(me.timer);
 				me.useSuggestion();
-				ev.preventDefault();
+				if (!me.autoSubmitForm) {
+					ev.preventDefault();
+				}
 			break;
 
 			case TAB:
