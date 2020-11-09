@@ -324,7 +324,7 @@ if (isset($_POST['message'])) {
                     $props['deadline'] = empty($message['deadline']) ? null : $deadline;
                 }
             } else {
-                if (!$owner) {
+                if (!$owner && empty($message['owner'])) {
                     $message['owner'] = Auth::GetCurrentUser();
                 }
                 $props = array(
