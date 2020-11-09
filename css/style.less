@@ -1344,7 +1344,7 @@ table.lmsbox {
 		& > thead {
 			background-color: @superdark;
 			& > .lmsbox-titlebar {
-				i {
+				*:not(.lms-ui-button) > i {
 					width: 1.3em;
 					text-align: center;
 					margin-right: 0.5em;
@@ -1352,6 +1352,9 @@ table.lmsbox {
 				.lms-ui-karma-container i {
 					width: auto;
 					margin-right: 0;
+				}
+				& > td:last-child {
+					padding-right: 0.5em;
 				}
 			}
 		}
