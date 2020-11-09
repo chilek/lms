@@ -122,12 +122,12 @@
 			</label>
 		</TD>
 		<TD class="text-center nobr" colspan="2">
-			<A href="?m=cashimport&action=txt">{trans("Download all (TXT)")}</a> <IMG src="img/save.gif" alt="">
+			{button icon="save" label="Download all (TXT)" href="?m=cashimport&action=txt"}
 		</TD>
 		<TD class="text-right nobr" colspan="2">
-			<A HREF="javascript:Delete();">{trans("Delete")} <IMG src="img/delete.gif" ALT=""></A>
-			<A HREF="javascript:Save();">{trans("Save")} <IMG src="img/save.gif" ALT=""></A>
-			<A href="#" id="import-button">{trans("<!do>Import")} <IMG src="img/save.gif" ALT=""></A>
+			{button icon="delete" label="delete" onclick="Delete();"}
+			{button icon="save" label="Save" onclick="Save();"}
+			{button id="import-button" icon="save" label="<!do>Import"}
 		</TD>
 	</TR>
     </TFOOT>
@@ -232,7 +232,7 @@
 	</TR>
 	<TR>
 		<TD colspan="2" class="buttons">
-			<A href="javascript:document.parser.submit();">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
+			{button icon="save" label="Submit" onclick="document.parser.submit();"}
 		</TD>
 	</TR>
     </TBODY>
@@ -281,7 +281,7 @@
 					<TD class="text-center nobr">{$item.username}</TD>
 					<TD class="text-center">{$item.count|default:0}</TD>
 					<TD class="text-right">
-						<A class="delete-cashpackage" href="?m=cashpackagedel&id={$item.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+						{button type="link" class="delete-cashpackage" tip="Delete" icon="delete" href="?m=cashpackagedel&id={$item.id}"}
 					</TD>
 				</TR>
 				{/foreach}
