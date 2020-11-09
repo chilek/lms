@@ -948,13 +948,14 @@
 	</TR>
 	<TR>
 		<TD style="width: 100%;" colspan="2" align="right">
-			<label>
+			<label style="display: none;">
 				{trans("JPK format:")}
 				<SELECT name="format">
 					<OPTION value="xml">{trans("XML")}</OPTION>
 					<OPTION value="csv">{trans("CSV")}</OPTION>
 				</SELECT>
 			</label>
+			<input type="hidden" name="format" value="xml">
 			<a class="export_to_jpk" href="javascript:export_to_jpk('fa');">{trans("Export to JPK-FA format")} <img src="img/docum.gif" alt=""></a>
 			<a class="export_to_jpk" href="javascript:export_to_jpk('vat');">{trans("Export to JPK-VAT format")} <img src="img/docum.gif" alt=""></a>
 			<a href="javascript:print_forms();">{trans("Print form of cash transfer")} <img src="img/print.gif" alt=""></a>
