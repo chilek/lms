@@ -184,7 +184,8 @@ class LMSSmartyPlugins
             $params['selected'] = '';
         }
 
-        $result .= '<div class="lms-ui-customer-select-container" data-version="' . $version . '">' . PHP_EOL;
+        $result .= '<div class="lms-ui-customer-select-container" data-version="' . $version . '"'
+            . ($version == 2 ? ' data-show-id="1"' : '') . '>' . PHP_EOL;
 
         if (!empty($params['customers'])) {
             $result .= sprintf('<select name="%s" value="%s" ', $params['selectname'], $params['selected']);
