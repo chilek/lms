@@ -1,3 +1,8 @@
+<style>
+    div.instance_label {
+        margin-left: 10px;
+    }
+</style>
 <div id="lms-ui-quicksearch-indicators-panel" class="lms-ui-tool-panel no-print">
 	{block name=quicksearch}
 	<div class="lms-ui-quick-search">
@@ -11,13 +16,13 @@
 		</div>
 	</div>
 	{/block}
-    <div style="margin-left: 10px;">
+        <div id="instance_label">
             <script type="text/javascript">
-            if (!window.screenTop && !window.screenY) {
-                document.write("{$instance_label}");
-            }
+                if (!window.screenTop && !window.screenY) {
+                    document.write("{$instance_label}");
+                }
             </script>
-    </div>
+        </div>
 	{if ! ConfigHelper::checkConfig('phpui.hide_indicators')}
 		{block name=indicators}
 		<div id="lms-ui-indicators">
