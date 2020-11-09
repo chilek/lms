@@ -38,6 +38,7 @@
 @import "less/modal-dialog";
 @import "less/advanced-select";
 @import "less/combobox";
+@import "less/customer-select";
 
 html {
 	height: 100%;
@@ -2444,79 +2445,6 @@ fieldset {
 		&.disabled {
 			color: @blend;
 			cursor: no-drop;
-		}
-	}
-}
-
-.lms-ui-customer-select-container {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-
-	select {
-		margin-right: 0.5em;
-		max-width: 35em;
-	}
-
-	.lms-ui-customer-select {
-		display: inline-block;
-		white-space: nowrap;
-
-		> span {
-			padding-right: 0.5em;
-		}
-
-		.lms-ui-customer-select-customerid,
-		.lms-ui-customer-select-suggestion-input {
-			box-sizing: border-box;
-			width: 7em;
-			margin-top: 0.5em;
-			margin-bottom: 0.5em;
-			padding-right: 0;
-
-			&:focus {
-				padding-right: 1.4em;
-				& + .lms-ui-customer-function-button {
-					visibility: visible;
-				}
-			}
-		}
-
-		.lms-ui-customer-function-button {
-			display: inline-block;
-			margin-left: -2.3em;
-			vertical-align: middle;
-			cursor: pointer;
-			visibility: hidden;
-		}
-
-		&:hover {
-			& .lms-ui-customer-select-customerid,
-			& .lms-ui-customer-select-suggestion-input {
-				padding-right: 1.4em;
-				& + .lms-ui-customer-function-button,
-				& + .lms-ui-customer-function-button {
-					visibility: visible;
-				}
-			}
-		}
-	}
-	.lms-ui-customer-select-name {
-		white-space: normal;
-		padding-left: 0.5em;
-		padding-right: 0.5em;
-		flex-grow: 1;
-	}
-
-	&[data-version="2"] {
-		.lms-ui-customer-select {
-			.lms-ui-customer-select-customerid,
-			.lms-ui-customer-select-suggestion-container {
-				display: none;
-			}
-			.lms-ui-customer-select-suggestion-input {
-				min-width: 10em;
-			}
 		}
 	}
 }
