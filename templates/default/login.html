@@ -68,13 +68,11 @@
 		<form method="post" name="loginform" action="{$target}">
 			<table>
                 <tr>
-                    <td class="text-center">{icon name="description"}</td>
+                    <td class="text-center">
+                        {icon name="description"}
+                    </td>
                     <td class="bold">
-                        {if $itl = ConfigHelper::getConfig('phpui.instance_label')}
-                            {$itl}
-                        {else}
-                            {$smarty.server.SERVER_NAME}
-                        {/if}
+                        {$instance_label}
                     </td>
                 </tr>
 				<tr>
