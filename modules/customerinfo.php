@@ -41,7 +41,7 @@ if (isset($_GET['ajax'])) {
         }
         $customername = $LMS->GetCustomerName($id);
         if (!empty($customername)) {
-            $customernames[$id] = '(#' . $id . ') ' . $customername;
+            $customernames[$id] = $customername;
         }
     }
     header('Content-Type: application/json');
