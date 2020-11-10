@@ -289,6 +289,7 @@
 			uri: '?m=quicksearch&ajax=1&api=1&mode=config&what=',
 			emptyValue: true,
 			class: 'config-var-suggestion',
+			autoSubmitForm: false,
 			onSubmit: function (data) {
 				$('[name="config[var]"]').val(data.name).trigger('autogrow');
 				$('[name="config[section]"]').scombobox('val', data.section);
