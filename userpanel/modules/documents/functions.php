@@ -26,12 +26,11 @@
 
 function module_main()
 {
-    global $SESSION;
+    global $SESSION, $LMS;
 
     $op = isset($_GET['op']) ? $_GET['op'] : '';
 
     $DB = LMSDB::getInstance();
-    $LMS = LMS::getInstance();
     $SMARTY = LMSSmarty::getInstance();
 
     $sms_contacts = $LMS->GetCustomerContacts($SESSION->id, CONTACT_MOBILE);
