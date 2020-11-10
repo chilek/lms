@@ -2023,7 +2023,6 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     }
                 }
 
-                $recipients = array('chilek@chilan.com');
                 foreach ($recipients as $email) {
                     $params['mail_headers']['To'] = '<' . $email . '>';
                     $LMS->SendMail(
