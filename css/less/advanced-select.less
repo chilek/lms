@@ -25,8 +25,11 @@
 .chosen-container {
   text-align: left;
   min-width: 250px;
-  font-size: @font-size-normal;
-  @media screen and (max-width: @mobile-max-width) {
+  font-size: @font-size-high;
+  @media screen and (max-width: @font-size-normal-max-width) {
+    font-size: @font-size-normal;
+  }
+  @media screen and (max-width: @font-size-mobile-max-width) {
     font-size: @font-size-mobile;
   }
   //	background-color: @lucid;

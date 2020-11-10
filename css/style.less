@@ -51,8 +51,11 @@ html {
 }
 
 body {
-	font-size: @font-size-normal;
-	@media screen and (max-width: @mobile-max-width) {
+	font-size: @font-size-high;
+	@media screen and (max-width: @font-size-normal-max-width) {
+		font-size: @font-size-normal;
+	}
+	@media screen and (max-width: @font-size-mobile-max-width) {
 		font-size: @font-size-mobile;
 	}
 
@@ -469,8 +472,11 @@ form.lms-ui-quick-search {
 .bottomline { border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: @dark; }
 
 TD {
-	font-size: @font-size-normal;
-	@media screen and (max-width: @mobile-max-width) {
+	font-size: @font-size-high;
+	@media screen and (max-width: @font-size-normal-max-width) {
+		font-size: @font-size-normal;
+	}
+	@media screen and (max-width: @font-size-mobile-max-width) {
 		font-size: @font-size-mobile;
 	}
 	font-family: @fonts;
@@ -556,29 +562,44 @@ TR,.lms-ui-tab-table-row {
 }
 
 P {
-	font-size: @font-size-normal;
+	font-size: @font-size-high;
+	@media screen and (max-width: @font-size-normal-max-width) {
+		font-size: @font-size-normal;
+	}
+	@media screen and (max-width: @font-size-mobile-max-width) {
+		font-size: @font-size-mobile;
+	}
 	@media screen and (max-width: @mobile-max-width) {
 		font-size: @font-size-mobile;
 	}
 	font-family: @fonts;
 	&.nor {
-		font-size: @font-size-normal;
-		@media screen and (max-width: @mobile-max-width) {
+		font-size: @font-size-high;
+		@media screen and (max-width: @font-size-normal-max-width) {
+			font-size: @font-size-normal;
+		}
+		@media screen and (max-width: @font-size-mobile-max-width) {
 			font-size: @font-size-mobile;
 		}
 		font-family: @fonts;
 	}
 	&.txt {
-		font-size: @font-size-normal;
-		@media screen and (max-width: @mobile-max-width) {
+		font-size: @font-size-high;
+		@media screen and (max-width: @font-size-normal-max-width) {
+			font-size: @font-size-normal;
+		}
+		@media screen and (max-width: @font-size-mobile-max-width) {
 			font-size: @font-size-mobile;
 		}
 		font-family: @fonts;
 		text-align: justify;
 	}
 	&.separated {
-		font-size: @font-size-normal;
-		@media screen and (max-width: @mobile-max-width) {
+		font-size: @font-size-high;
+		@media screen and (max-width: @font-size-normal-max-width) {
+			font-size: @font-size-normal;
+		}
+		@media screen and (max-width: @font-size-mobile-max-width) {
 			font-size: @font-size-mobile;
 		}
 		font-family: @fonts;
@@ -609,8 +630,11 @@ INPUT[type="radio"] {
 }
 
 input {
-	font-size: @font-size-normal;
-	@media screen and (max-width: @mobile-max-width) {
+	font-size: @font-size-high;
+	@media screen and (max-width: @font-size-normal-max-width) {
+		font-size: @font-size-normal;
+	}
+	@media screen and (max-width: @font-size-mobile-max-width) {
 		font-size: @font-size-mobile;
 	}
 	font-family: @fonts;
@@ -682,8 +706,11 @@ input {
 }
 
 textarea {
-	font-size: @font-size-normal;
-	@media screen and (max-width: @mobile-max-width) {
+	font-size: @font-size-high;
+	@media screen and (max-width: @font-size-normal-max-width) {
+		font-size: @font-size-normal;
+	}
+	@media screen and (max-width: @font-size-mobile-max-width) {
 		font-size: @font-size-mobile;
 	}
 	font-family: @fonts;
@@ -717,8 +744,11 @@ textarea {
 }
 
 select {
-	font-size: @font-size-normal;
-	@media screen and (max-width: @mobile-max-width) {
+	font-size: @font-size-high;
+	@media screen and (max-width: @font-size-normal-max-width) {
+		font-size: @font-size-normal;
+	}
+	@media screen and (max-width: @font-size-mobile-max-width) {
 		font-size: @font-size-mobile;
 	}
 	font-family: @fonts;
@@ -906,8 +936,11 @@ IMG		{ vertical-align: middle; border: 0; }
 .crossed	{ text-decoration: line-through; }
 
 .pre {
-	font-size: @font-size-normal;
-	@media screen and (max-width: @mobile-max-width) {
+	font-size: @font-size-high;
+	@media screen and (max-width: @font-size-normal-max-width) {
+		font-size: @font-size-normal;
+	}
+	@media screen and (max-width: @font-size-mobile-max-width) {
 		font-size: @font-size-mobile;
 	}
 	font-family: Courier, Courier New;
