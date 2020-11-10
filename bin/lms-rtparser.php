@@ -33,6 +33,8 @@ $parameters = array(
     'help' => 'h',
     'version' => 'v',
     'queue:' => 'q:',
+    'message-file:' => '-f:',
+    'use-html' => null,
 );
 
 $long_to_shorts = array();
@@ -194,6 +196,8 @@ $subject_ticket_regexp_match = ConfigHelper::getConfig('rt.subject_ticket_regexp
 
 $stderr = fopen('php://stderr', 'w');
 
+$use_html = isset($options['use-html']);
+
 if ($smtp_options['auth'] && !preg_match('/^(LOGIN|PLAIN|CRAM-MD5|NTLM)$/i', $smtp_options['auth'])) {
     fprintf($stderr, "Fatal error: smtp_auth setting not supported! Can't continue, exiting." . PHP_EOL);
     exit(1);
@@ -218,7 +222,15 @@ if ($mail === false) {
     exit(3);
 }
 
-$buffer = file_get_contents('php://stdin');
+if (isset($options['message-file'])) {
+    if (!is_readable($options['message-file'])) {
+        die('Cannot read message file \'' . $options['message-file'] . '\'!' . PHP_EOL);
+    }
+    $buffer = file_get_contents($options['message-file']);
+} else {
+    $buffer = file_get_contents('php://stdin');
+}
+
 if (!preg_match('/\r?\n$/', $buffer)) {
     $buffer .= "\n";
 }
@@ -261,13 +273,48 @@ unset($decoded_mail_headers);
 
 $image_max_size = ConfigHelper::getConfig('phpui.uploaded_image_max_size');
 
+$url_props = parse_url($lms_url);
+
+class HTMLPurifier_URIScheme_cid extends \HTMLPurifier_URIScheme
+{
+    public $browsable = true;
+    public $may_omit_host = true;
+
+    public function doValidate(&$uri, $config, $context)
+    {
+        $uri->scheme = $GLOBALS['url_props']['scheme'];
+        $uri->host = $GLOBALS['url_props']['host'];
+        $uri->path = rtrim($GLOBALS['url_props']['path'], '/') . '/?m=rtmessageview&tid=%tid%&mid=%mid%&cid=' . $uri->path;
+
+        return true;
+    }
+}
+
+if ($use_html) {
+    $hm_config = HTMLPurifier_Config::createDefault();
+    $hm_config->set('URI.AllowedSchemes', array(
+        'http' => true,
+        'https' => true,
+        'mailto' => true,
+        'ftp' => true,
+        'nntp' => true,
+        'news' => true,
+        'tel' => true,
+        'cid' => true,
+    ));
+    //$hm_config->set('URI.Base', 'https://demo.lms.org.pl');
+    //$hm_config->set('URI.MakeAbsolute', true);
+    HTMLPurifier_URISchemeRegistry::instance()->register('cid', new HTMLPurifier_URIScheme_cid());
+    $hm_purifier = new HTMLPurifier($hm_config);
+}
+
 if (preg_match('#multipart/#', $partdata['content-type']) && !empty($parts)) {
     $mail_body = '';
     while (!empty($parts)) {
         $partid = array_shift($parts);
         $part = mailparse_msg_get_part($mail, $partid);
         $partdata = mailparse_msg_get_part_data($part);
-        if (preg_match('/text/', $partdata['content-type']) && $mail_body == '') {
+        if (preg_match('/text/', $partdata['content-type']) && ($use_html || $mail_body == '')) {
             $mail_body = substr($buffer, $partdata['starting-pos-body'], $partdata['ending-pos-body'] - $partdata['starting-pos-body']);
             $charset = $partdata['content-charset'];
             $transfer_encoding = isset($partdata['transfer-encoding']) ? $partdata['transfer-encoding'] : '';
@@ -280,9 +327,17 @@ if (preg_match('#multipart/#', $partdata['content-type']) && !empty($parts)) {
                     break;
             }
             $mail_body = iconv($charset, 'UTF-8', $mail_body);
+
+            $contenttype = 'text/plain';
+
             if ($partdata['content-type'] == 'text/html') {
-                $html2text = new \Html2Text\Html2Text($mail_body, array());
-                $mail_body = $html2text->getText();
+                if ($use_html) {
+                    $contenttype = 'text/html';
+                    $mail_body = $hm_purifier->purify($mail_body);
+                } else {
+                    $html2text = new \Html2Text\Html2Text($mail_body, array());
+                    $mail_body = $html2text->getText();
+                }
             }
         } elseif (preg_match('#multipart/alternative#', $partdata['content-type']) && $mail_body == '') {
             while (!empty($parts) && strpos($parts[0], $partid . '.') === 0) {
@@ -302,9 +357,17 @@ if (preg_match('#multipart/#', $partdata['content-type']) && !empty($parts)) {
                             break;
                     }
                     $mail_body = iconv($charset, 'UTF-8', $mail_body);
+
+                    $contenttype = 'text/plain';
+
                     if ($subpartdata['content-type'] == 'text/html') {
-                        $html2text = new \Html2Text\Html2Text($mail_body, array());
-                        $mail_body = $html2text->getText();
+                        if ($use_html) {
+                            $contenttype = 'text/html';
+                            $mail_body = $hm_purifier->purify($mail_body);
+                        } else {
+                            $html2text = new \Html2Text\Html2Text($mail_body, array());
+                            $mail_body = $html2text->getText();
+                        }
                     }
                 }
             }
@@ -350,11 +413,13 @@ if (preg_match('#multipart/#', $partdata['content-type']) && !empty($parts)) {
                 'name' => $file_name,
                 'type' => $partdata['content-type'],
                 'content' => &$file_content,
+                'content-id' => isset($partdata['content-id']) ? $partdata['content-id'] : null,
             );
             $attachments[] = array(
                 'content_type' => $partdata['content-type'],
                 'filename' => $file_name,
                 'data' => &$file_content,
+                'content-id' => isset($partdata['content-id']) ? $partdata['content-id'] : null,
             );
             unset($file_content);
         }
@@ -374,9 +439,17 @@ if (preg_match('#multipart/#', $partdata['content-type']) && !empty($parts)) {
     }
 
     $mail_body = iconv($charset, 'UTF-8', $mail_body);
+
+    $contenttype = 'text/plain';
+
     if ($partdata['content-type'] == 'text/html') {
-        $html2text = new \Html2Text\Html2Text($mail_body, array());
-        $mail_body = $html2text->getText();
+        if ($use_html) {
+            $contenttype = 'text/html';
+            $mail_body = $hm_purifier->purify($mail_body);
+        } else {
+            $html2text = new \Html2Text\Html2Text($mail_body, array());
+            $mail_body = $html2text->getText();
+        }
     }
 }
 
@@ -499,8 +572,11 @@ if (!$prev_tid) { // generate new ticket if previous not found
         'replyto' => $mh_replyto,
         'messageid' => $mh_msgid,
         'headers' => $mail_headers,
+        'contenttype' => $contenttype,
         'body' => $mail_body,
         'categories' => $cats), $files);
+
+    $message_id = $LMS->GetLastMessageID();
 
     if ($autoreply) {
         $ticketid = sprintf("%06d", $ticket_id);
@@ -548,6 +624,7 @@ if (!$prev_tid) { // generate new ticket if previous not found
             'messageid' => $mh_msgid,
             'replyto' => $mh_replyto,
             'headers' => $mail_headers,
+            'contenttype' => $contenttype,
             'body' => $mail_body,
             'inreplyto' => $inreplytoid,
         ), $files);

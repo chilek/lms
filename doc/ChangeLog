@@ -232,6 +232,7 @@ version 26-git (????-??-??):
     when container is hovered or focused [chilan]
   - enhancement: new customer selection ui control which allows to select customer using quick
     search mechanism and suggestion popup [chilan]
+  - enhancement: lms-rtparser.php supports html message receive [chilan]
 
 version 25.0 (2020-05-15):
 

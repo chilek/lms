@@ -983,8 +983,11 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                         continue;
                     }
                 }
-                $this->db->Execute('INSERT INTO rtattachments (messageid, filename, contenttype)
-					VALUES (?,?,?)', array($messageid, $filename, $file['type']));
+                $this->db->Execute(
+                    'INSERT INTO rtattachments (messageid, filename, contenttype, cid)
+					VALUES (?, ?, ?, ?)',
+                    array($messageid, $filename, $file['type'], isset($file['content-id']) ? $file['content-id'] : null)
+                );
             }
             if (!empty($dirs_to_be_deleted)) {
                 $dirs_to_be_deleted = array_unique($dirs_to_be_deleted);
@@ -1015,8 +1018,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         $this->db->Execute(
             'INSERT INTO rtmessages (ticketid, createtime, subject, body, userid, customerid, mailfrom,
-			inreplyto, messageid, replyto, headers, type, phonefrom)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			inreplyto, messageid, replyto, headers, type, phonefrom, contenttype)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             array(
                 $message['ticketid'],
                 $createtime,
@@ -1032,6 +1035,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 $headers,
                 isset($message['type']) ? $message['type'] : RTMESSAGE_REGULAR,
                 isset($message['phonefrom']) && $message['phonefrom'] != -1 ? $message['phonefrom'] : '',
+                isset($message['contenttype']) ? $message['contenttype'] : 'text/plan',
             )
         );
         $msgid = $this->db->GetLastInsertID('rtmessages');
@@ -1092,18 +1096,25 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         $this->lastmessageid = '<msg.' . $ticket['queue'] . '.' . $id . '.' . time() . '@rtsystem.' . gethostname() . '>';
 
+        if ($ticket['contenttype'] == 'text/html') {
+            $body = str_replace('tid=%tid%', 'tid=' . $id, $ticket['body']);
+        } else {
+            $body = str_replace("\r", "", $ticket['body']);
+        }
+
         $this->db->Execute('INSERT INTO rtmessages (ticketid, customerid, createtime,
-				subject, body, mailfrom, phonefrom, messageid, replyto, headers)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($id,
+				subject, body, mailfrom, phonefrom, messageid, replyto, headers, contenttype)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($id,
             empty($ticket['customerid']) ? null : $ticket['customerid'],
             $createtime,
             $ticket['subject'],
-            preg_replace("/\r/", "", $ticket['body']),
+            $body,
             empty($ticket['mailfrom']) ? '' : $ticket['mailfrom'],
             empty($ticket['phonefrom']) || $ticket['phonefrom'] == -1 ? '' : $ticket['phonefrom'],
             isset($ticket['messageid']) ? $ticket['messageid'] : $this->lastmessageid,
             isset($ticket['replyto']) ? $ticket['replyto'] : '',
             isset($ticket['headers']) ? $ticket['headers'] : '',
+            isset($ticket['contenttype']) ? $ticket['contenttype'] : 'text/plain',
         ));
 
         if ($ticket['note']) {
@@ -1124,6 +1135,11 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         }
 
         $msgid = $this->db->GetLastInsertID('rtmessages');
+
+        if ($ticket['contenttype'] == 'text/html') {
+            $body = str_replace('mid=%mid%', 'mid=' . $msgid, $body);
+            $this->db->Execute('UPDATE rtmessages SET body = ? WHERE id = ?', array($body, $msgid));
+        }
 
         if (!empty($ticket['categories'])) {
             foreach (array_keys($ticket['categories']) as $catid) {
@@ -1213,7 +1229,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         if (!$short) {
             $ticket['messages'] = $this->db->GetAll(
-                '(SELECT rtmessages.id AS id, phonefrom, mailfrom, subject, body, createtime, '
+                '(SELECT rtmessages.id AS id, phonefrom, mailfrom, subject, body, contenttype, createtime, '
                 . $this->db->Concat('customers.lastname', "' '", 'customers.name') . ' AS customername,
 					userid, vusers.name AS username, customerid, rtmessages.type, rtmessages.deleted, rtmessages.deltime, rtmessages.deluserid
 					FROM rtmessages
@@ -1227,7 +1243,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             );
 
             foreach ($ticket['messages'] as $idx => $message) {
-                $ticket['messages'][$idx]['attachments'] = $this->db->GetAll('SELECT filename, contenttype FROM rtattachments WHERE messageid = ?', array($message['id']));
+                $ticket['messages'][$idx]['attachments'] = $this->db->GetAll(
+                    'SELECT filename, contenttype, cid FROM rtattachments WHERE messageid = ? AND cid IS NULL',
+                    array($message['id'])
+                );
             }
         }
 

@@ -33,7 +33,7 @@
 		<TD class="nobr">
 			{$message.createtime|date_format:"%Y/%m/%d %H:%M.%S"}
 		</TD>
-	</TR>	
+	</TR>
 	<TR>
 		<TD class="nobr">
 		    {if $message.userid}
@@ -119,7 +119,11 @@
 			{trans("Message:")}
 		</TD>
 		<TD>
-			<TEXTAREA rows="5" cols="100" readonly>{$message.body|escape}</TEXTAREA>
+				{if $message.contentype == 'text/plain'}
+					<textarea rows="5" cols="100" readonly>{$message.body|escape|replace:"\n":'<br>'|message_quote}</textarea>
+				{else}
+					{$message.body|message_quote}
+				{/if}
 		</TD>
 	</TR>
 	{if $message.attachments}
