@@ -625,6 +625,14 @@ $DOCTYPES = array(
 define('DOC_FLAG_RECEIPT', 1);
 define('DOC_FLAG_TELECOM_SERVICE', 2);
 define('DOC_FLAG_RELATED_ENTITY', 4);
+define('DOC_FLAG_SPLIT_PAYMENT', 8);
+
+$DOC_FLAGS = array(
+    DOC_FLAG_RECEIPT => trans('FP'),
+    DOC_FLAG_TELECOM_SERVICE => trans('EE'),
+    DOC_FLAG_RELATED_ENTITY => trans('TP'),
+    DOC_FLAG_SPLIT_PAYMENT => trans('MPP'),
+);
 
 define('DOC_ENTITY_ORIGINAL', 1);
 define('DOC_ENTITY_COPY', 2);

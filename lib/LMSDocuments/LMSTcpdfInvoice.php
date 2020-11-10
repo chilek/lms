@@ -345,6 +345,33 @@ class LMSTcpdfInvoice extends LMSInvoice
         }
     }
 
+    protected function invoice_jpk_flags()
+    {
+        global $DOC_FLAGS;
+        $flags = array();
+
+        if (!empty($this->data['splitpayment'])) {
+            $flags[] = $DOC_FLAGS[DOC_FLAG_SPLIT_PAYMENT];
+        }
+
+        foreach ($this->data['flags'] as $flag => $value) {
+            if (!empty($value)) {
+                $flags[] = $DOC_FLAGS[$flag];
+            }
+        }
+
+        if (!empty($this->data['taxcategories'])) {
+            foreach ($this->data['taxcategories'] as $taxcategory) {
+                $flags[] = sprintf('GTU_%02d', $taxcategory);
+            }
+        }
+
+        if (!empty($flags)) {
+            $this->backend->SetFont(self::TCPDF_FONT, '', 9);
+            $this->backend->writeHTMLCell(0, 0, '', 3, trans('JPK:') . ' <b>' . implode(', ', $flags) . '</b>', 0, 1, 0, true, 'C');
+        }
+    }
+
     protected function invoice_date()
     {
         $this->backend->SetFont(self::TCPDF_FONT, '', 8);
@@ -878,6 +905,10 @@ class LMSTcpdfInvoice extends LMSInvoice
     {
         if (!empty($this->data['div_ccode'])) {
             Localisation::setSystemLanguage($this->data['div_ccode']);
+        }
+
+        if (ConfigHelper::checkConfig('invoices.jpk_flags')) {
+            $this->invoice_jpk_flags();
         }
 
         $this->invoice_cancelled();

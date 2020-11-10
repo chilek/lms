@@ -159,6 +159,38 @@ class LMSEzpdfInvoice extends LMSInvoice
         }
     }
 
+    protected function invoice_jpk_flags()
+    {
+        global $DOC_FLAGS;
+        $flags = array();
+
+        if (!empty($this->data['splitpayment'])) {
+            $flags[] = $DOC_FLAGS[DOC_FLAG_SPLIT_PAYMENT];
+        }
+
+        foreach ($this->data['flags'] as $flag => $value) {
+            if (!empty($value)) {
+                $flags[] = $DOC_FLAGS[$flag];
+            }
+        }
+
+        if (!empty($this->data['taxcategories'])) {
+            foreach ($this->data['taxcategories'] as $taxcategory) {
+                $flags[] = sprintf('GTU_%02d', $taxcategory);
+            }
+        }
+
+        if (!empty($flags)) {
+            $this->backend->text_align_center(
+                $this->backend->ez['pageWidth'] / 2,
+                $this->backend->ez['pageHeight'] - 15,
+                10,
+                trans('JPK:') . ' <b>' . implode(', ', $flags) . '</b>'
+            );
+        }
+    }
+
+
     protected function invoice_dates($x, $y)
     {
         $font_size = 12;
@@ -1267,7 +1299,13 @@ class LMSEzpdfInvoice extends LMSInvoice
         }
 
         $page = $this->backend->ezStartPageNumbers($this->backend->ez['pageWidth']-50, 20, 8, 'right', trans('Page $a of $b', '{PAGENUM}', '{TOTALPAGENUM}'), 1);
+
+        if (ConfigHelper::checkConfig('invoices.jpk_flags')) {
+            $this->invoice_jpk_flags();
+        }
+
         $top = $this->backend->ez['pageHeight'] - 50;
+
         $this->invoice_cancelled();
         $this->invoice_no_accountant();
         $header_image = $this->invoice_header_image(30, $top - (self::HEADER_IMAGE_HEIGHT / 2));
@@ -1335,7 +1373,13 @@ class LMSEzpdfInvoice extends LMSInvoice
         }
 
         $page = $this->backend->ezStartPageNumbers($this->backend->ez['pageWidth']/2+10, $this->backend->ez['pageHeight']-30, 8, '', trans('Page $a of $b', '{PAGENUM}', '{TOTALPAGENUM}'), 1);
+
+        if (ConfigHelper::checkConfig('invoices.jpk_flags')) {
+            $this->invoice_jpk_flags();
+        }
+
         $top = $this->backend->ez['pageHeight'] - 50;
+
         $this->invoice_cancelled();
         $this->invoice_no_accountant();
         $header_image = $this->invoice_header_image(30, $top - (self::HEADER_IMAGE_HEIGHT / 2));
