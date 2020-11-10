@@ -999,7 +999,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $document = $this->db->GetRow('SELECT d.type AS doctype, filename, contenttype, md5sum, a.cdate
 			FROM documents d
 			JOIN documentattachments a ON a.docid = d.id
-			WHERE docid = ? AND type = ?', array($docid, 1));
+			WHERE docid = ? AND a.type = ?', array($docid, 1));
 
         $filename = DOC_DIR . DIRECTORY_SEPARATOR . substr($document['md5sum'], 0, 2)
             . DIRECTORY_SEPARATOR . $document['md5sum'];
