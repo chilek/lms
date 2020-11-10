@@ -302,8 +302,6 @@ if ($use_html) {
         'tel' => true,
         'cid' => true,
     ));
-    //$hm_config->set('URI.Base', 'https://demo.lms.org.pl');
-    //$hm_config->set('URI.MakeAbsolute', true);
     HTMLPurifier_URISchemeRegistry::instance()->register('cid', new HTMLPurifier_URIScheme_cid());
     $hm_purifier = new HTMLPurifier($hm_config);
 }
@@ -344,7 +342,7 @@ if (preg_match('#multipart/#', $partdata['content-type']) && !empty($parts)) {
                 $subpartid = array_shift($parts);
                 $subpart = mailparse_msg_get_part($mail, $subpartid);
                 $subpartdata = mailparse_msg_get_part_data($subpart);
-                if (preg_match('/text/', $subpartdata['content-type']) && trim($mail_body) == '') {
+                if (preg_match('/text/', $subpartdata['content-type']) && ($use_html || trim($mail_body) == '')) {
                     $mail_body = substr($buffer, $subpartdata['starting-pos-body'], $subpartdata['ending-pos-body'] - $subpartdata['starting-pos-body']);
                     $charset = $subpartdata['content-charset'];
                     $transfer_encoding = isset($subpartdata['transfer-encoding']) ? $subpartdata['transfer-encoding'] : '';
