@@ -53,7 +53,10 @@
 
     .lms-ui-multiselect-launcher-label {
       //overflow: hidden;
-      font-size:  @font-size;
+      font-size: @font-size-normal;
+      @media screen and (max-width: @mobile-max-width) {
+        font-size: @font-size-mobile;
+      }
       font-family: @fonts;
       vertical-align: middle;
       cursor: default;

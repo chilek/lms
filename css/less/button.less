@@ -23,7 +23,10 @@
  */
 
 button {
-  font-size: @font-size;
+  font-size: @font-size-normal;
+  @media screen and (max-width: @mobile-max-width) {
+    font-size: @font-size-mobile;
+  }
 }
 
 button.lms-ui-button {

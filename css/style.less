@@ -51,7 +51,11 @@ html {
 }
 
 body {
-	font-size: @font-size;
+	font-size: @font-size-normal;
+	@media screen and (max-width: @mobile-max-width) {
+		font-size: @font-size-mobile;
+	}
+
 	font-family: @fonts;
 	background-color: @lucid;
 	margin: 0;
@@ -464,7 +468,15 @@ form.lms-ui-quick-search {
 
 .bottomline { border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: @dark; }
 
-TD		{ font-size: @font-size; font-family: @fonts; vertical-align: middle; border-color: black; }
+TD {
+	font-size: @font-size-normal;
+	@media screen and (max-width: @mobile-max-width) {
+		font-size: @font-size-mobile;
+	}
+	font-family: @fonts;
+	vertical-align: middle;
+	border-color: black;
+}
 td[onclick]	{ cursor: pointer; }
 .fleft           { border-left-width: 1pt; border-left-style: solid; }
 .fright          { border-right-width: 1pt; border-right-style: solid; }
@@ -544,19 +556,31 @@ TR,.lms-ui-tab-table-row {
 }
 
 P {
-	font-size:  @font-size;
+	font-size: @font-size-normal;
+	@media screen and (max-width: @mobile-max-width) {
+		font-size: @font-size-mobile;
+	}
 	font-family: @fonts;
 	&.nor {
-		font-size:  @font-size;
+		font-size: @font-size-normal;
+		@media screen and (max-width: @mobile-max-width) {
+			font-size: @font-size-mobile;
+		}
 		font-family: @fonts;
 	}
 	&.txt {
-		font-size: @font-size;
+		font-size: @font-size-normal;
+		@media screen and (max-width: @mobile-max-width) {
+			font-size: @font-size-mobile;
+		}
 		font-family: @fonts;
 		text-align: justify;
 	}
 	&.separated {
-		font-size: @font-size;
+		font-size: @font-size-normal;
+		@media screen and (max-width: @mobile-max-width) {
+			font-size: @font-size-mobile;
+		}
 		font-family: @fonts;
 		margin-top: 5px;
 		margin-bottom: 5px;
@@ -585,7 +609,10 @@ INPUT[type="radio"] {
 }
 
 input {
-	font-size: @font-size;
+	font-size: @font-size-normal;
+	@media screen and (max-width: @mobile-max-width) {
+		font-size: @font-size-mobile;
+	}
 	font-family: @fonts;
 	vertical-align: middle;
 	&.alert,
@@ -655,7 +682,10 @@ input {
 }
 
 textarea {
-	font-size: @font-size;
+	font-size: @font-size-normal;
+	@media screen and (max-width: @mobile-max-width) {
+		font-size: @font-size-mobile;
+	}
 	font-family: @fonts;
 	border-style: solid;
 	border-width: 1pt;
@@ -687,7 +717,10 @@ textarea {
 }
 
 select {
-	font-size: @font-size;
+	font-size: @font-size-normal;
+	@media screen and (max-width: @mobile-max-width) {
+		font-size: @font-size-mobile;
+	}
 	font-family: @fonts;
 	background-color: @lucid;
 	vertical-align: middle;
@@ -872,7 +905,13 @@ input:invalid {
 .bold		{ font-weight: bold; }
 .crossed	{ text-decoration: line-through; }
 
-.pre		{ font-size:  @font-size; font-family: Courier, Courier New; }
+.pre {
+	font-size: @font-size-normal;
+	@media screen and (max-width: @mobile-max-width) {
+		font-size: @font-size-mobile;
+	}
+	font-family: Courier, Courier New;
+}
 
 .lms-ui-suggestion-container {
 	background-color: @lucid;

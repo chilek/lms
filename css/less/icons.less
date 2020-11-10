@@ -25,7 +25,10 @@
 .lms-ui-icon {
   line-height: unset;
   vertical-align: unset;
-  font-size: 130%;
+  font-size: @fa-icon-size-normal;
+  @media screen and (max-width: @mobile-max-width) {
+    font-size: @fa-icon-size-mobile;
+  }
 }
 
 .lms-ui-icon-fixed-width {

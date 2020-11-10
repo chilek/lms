@@ -25,7 +25,10 @@
 .chosen-container {
   text-align: left;
   min-width: 250px;
-  font-size: @font-size;
+  font-size: @font-size-normal;
+  @media screen and (max-width: @mobile-max-width) {
+    font-size: @font-size-mobile;
+  }
   //	background-color: @lucid;
   //	margin: 0 4px 0 4px;
   .chosen-results {
