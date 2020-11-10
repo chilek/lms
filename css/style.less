@@ -623,6 +623,9 @@ INPUT[type="submit"],
 INPUT[type="button"] {
 	border: solid 1px black;
 	background-color: @lucid;
+	min-height: 1.4em;
+	padding: 0.1em;
+	box-sizing: border-box;
 }
 
 INPUT[type="radio"] {
@@ -751,6 +754,8 @@ select {
 	@media screen and (max-width: @font-size-mobile-max-width) {
 		font-size: @font-size-mobile;
 	}
+
+	min-height: 1.6em;
 	font-family: @fonts;
 	background-color: @lucid;
 	vertical-align: middle;
@@ -760,8 +765,8 @@ select {
 	appearance: none;
 	background-image: url('@{lms-img-path}/1.png');
 	background-repeat: no-repeat;
-	background-position: right top;
-	background-size: 16px;
+	background-position: right center;
+	//background-size: 16px;
 	padding-right: 16px;
 	padding-left: 3px;
 
