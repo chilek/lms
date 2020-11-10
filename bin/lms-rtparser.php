@@ -282,10 +282,6 @@ class HTMLPurifier_URIScheme_cid extends \HTMLPurifier_URIScheme
 
     public function doValidate(&$uri, $config, $context)
     {
-        $uri->scheme = $GLOBALS['url_props']['scheme'];
-        $uri->host = $GLOBALS['url_props']['host'];
-        $uri->path = rtrim($GLOBALS['url_props']['path'], '/') . '/?m=rtmessageview&tid=%tid%&mid=%mid%&cid=' . $uri->path;
-
         return true;
     }
 }

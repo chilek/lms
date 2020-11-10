@@ -1096,10 +1096,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         $this->lastmessageid = '<msg.' . $ticket['queue'] . '.' . $id . '.' . time() . '@rtsystem.' . gethostname() . '>';
 
-        if ($ticket['contenttype'] == 'text/html') {
-            $body = str_replace('tid=%tid%', 'tid=' . $id, $ticket['body']);
-        } else {
+        if ($ticket['contenttype'] == 'text/plain') {
             $body = str_replace("\r", "", $ticket['body']);
+        } else {
+            $body = $ticket['body'];
         }
 
         $this->db->Execute('INSERT INTO rtmessages (ticketid, customerid, createtime,
@@ -1137,7 +1137,17 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         $msgid = $this->db->GetLastInsertID('rtmessages');
 
         if ($ticket['contenttype'] == 'text/html') {
-            $body = str_replace('mid=%mid%', 'mid=' . $msgid, $body);
+            $body = str_replace(
+                array(
+                    '%tid%',
+                    '%mid%'
+                ),
+                array(
+                    $id,
+                    $msgid
+                ),
+                $body
+            );
             $this->db->Execute('UPDATE rtmessages SET body = ? WHERE id = ?', array($body, $msgid));
         }
 
@@ -1242,11 +1252,30 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 array($id)
             );
 
-            foreach ($ticket['messages'] as $idx => $message) {
-                $ticket['messages'][$idx]['attachments'] = $this->db->GetAll(
-                    'SELECT filename, contenttype, cid FROM rtattachments WHERE messageid = ? AND cid IS NULL',
+            foreach ($ticket['messages'] as &$message) {
+                $message['attachments'] = array();
+                $attachments = $this->db->GetAll(
+                    'SELECT filename, contenttype, cid FROM rtattachments WHERE messageid = ?',
                     array($message['id'])
                 );
+                if ($attachments) {
+                    if ($message['contenttype'] == 'text/html') {
+                        $url_prefix = 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://'
+                            . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1);
+                    }
+
+                    foreach ($attachments as $attachment) {
+                        if (empty($attachment['cid'])) {
+                            $message['attachments'][] = $attachment;
+                        } elseif ($message['contenttype'] == 'text/html') {
+                            $message['body'] = str_ireplace(
+                                '"CID:' . $attachment['cid'] . '"',
+                                '"' . $url_prefix . '/?m=rtmessageview&cid=' . $attachment['cid'] . '&tid=' . $id . '&mid=' . $message['id'] . '"',
+                                $message['body']
+                            );
+                        }
+                    }
+                }
             }
         }
 
@@ -1263,7 +1292,27 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     public function GetMessage($id)
     {
         if ($message = $this->db->GetRow('SELECT * FROM rtmessages WHERE id=?', array($id))) {
-            $message['attachments'] = $this->db->GetAll('SELECT * FROM rtattachments WHERE messageid = ?', array($id));
+            $message['attachments'] = array();
+
+            $attachments = $this->db->GetAll('SELECT * FROM rtattachments WHERE messageid = ?', array($id));
+            if ($attachments) {
+                if ($message['contenttype'] == 'text/html') {
+                    $url_prefix = 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://'
+                        . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1);
+                }
+
+                foreach ($attachments as $attachment) {
+                    if (empty($attachment['cid'])) {
+                        $message['attachments'][] = $attachment;
+                    } elseif ($message['contenttype'] == 'text/html') {
+                        $message['body'] = str_ireplace(
+                            '"CID:' . $attachment['cid'] . '"',
+                            '"' . $url_prefix . '/?m=rtmessageview&cid=' . $attachment['cid'] . '&tid=' . $id . '&mid=' . $message['id'] . '"',
+                            $message['body']
+                        );
+                    }
+                }
+            }
 
             $references = array();
             $reply = $message;
