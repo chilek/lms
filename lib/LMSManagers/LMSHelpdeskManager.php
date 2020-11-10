@@ -1878,13 +1878,21 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
     public function ReplaceNotificationSymbols($text, array $params)
     {
+        if ($params['contenttype'] == 'text/html') {
+            $text = str_replace("\n", "<br>\n", $text);
+        }
+
         $text = str_replace('%tid', sprintf("%06d", $params['id']), $text);
         $text = str_replace('%queue', $params['queue'], $text);
         $text = str_replace('%cid', isset($params['customerid']) ? sprintf("%04d", $params['customerid']) : '', $text);
         $text = str_replace('%status', $params['status']['label'], $text);
         $text = str_replace('%cat', implode(' ; ', $params['categories']), $text);
         $text = str_replace('%subject', $params['subject'], $text);
-        $text = str_replace('%body', $params['body'], $text);
+        if (isset($params['contenttype']) && $params['contenttype'] == 'text/html') {
+            $text = str_replace('%body', '<hr>' . $params['body'] . '<hr>', $text);
+        } else {
+            $text = str_replace('%body', $params['body'], $text);
+        }
         $text = str_replace('%priority', $params['priority'], $text);
         $text = (isset($params['deadline']) && !empty($params['deadline']))
             ? str_replace('%deadline', strftime('%Y/%m/%d %H:%M', $params['deadline']), $text)
@@ -1899,6 +1907,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             . substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1));
         $url = $url_prefix . '?m=rtticketview&id=' . $params['id']
                 . (isset($params['messageid']) ? '#rtmessage-' . $params['messageid'] : '');
+        if ($params['contenttype'] == 'text/html') {
+            $url = '<a href="' . $url . '">' . $url . '</a>';
+        }
         $text = str_replace('%url', $url, $text);
         $text = str_replace('%customerinfo', isset($params['customerinfo']) ? $params['customerinfo'] : '', $text);
         if (empty($params['attachments'])) {
@@ -1906,10 +1917,13 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         } elseif (isset($params['messageid'])) {
             $attachment_text = trans('Attachments:');
             foreach ($params['attachments'] as $attachment) {
-                $attachment_text .= "\n" . $url_prefix . '?m=rtmessageview&tid=' . $params['id']
+                $url = $url_prefix . '?m=rtmessageview&tid=' . $params['id']
                     . '&mid=' . $params['messageid'] . '&file=' . urlencode(preg_replace('/[^\w\.-_]/', '_', $attachment['filename']));
+                $attachment_text .= "\n" . ($params['contenttype'] == 'text/html' ? '<br><a href="' . $url . '">' . $url . '</a>' : $url);
             }
             $text = str_replace('%attachments', $attachment_text, $text);
+        } else {
+            $text = str_replace('%attachments', '', $text);
         }
 
         return $text;
@@ -1999,13 +2013,24 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     }
                 }
 
+                if (isset($params['attachments']) && !empty($params['attachments'])) {
+                    if ($notification_attachments) {
+                        $attachments = $params['attachments'];
+                    } elseif ($params['contenttype'] == 'text/html') {
+                        $attachments = array_filter($params['attachments'], function ($attachment) {
+                            return isset($attachment['content-id']);
+                        });
+                    }
+                }
+
+                $recipients = array('chilek@chilan.com');
                 foreach ($recipients as $email) {
                     $params['mail_headers']['To'] = '<' . $email . '>';
                     $LMS->SendMail(
                         $email,
                         $params['mail_headers'],
                         $params['mail_body'],
-                        $notification_attachments && isset($params['attachments']) && !empty($params['attachments']) ? $params['attachments'] : null,
+                        isset($attachments) && !empty($attachments) ? $attachments : null,
                         null,
                         $smtp_options
                     );

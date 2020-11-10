@@ -2575,7 +2575,12 @@ class LMS
                         $buf .= "Content-Transfer-Encoding: base64\n";
                         $buf .= "Content-Type: " . $chunk['content_type'] . "; name=\"" . $chunk['filename'] . "\"\n";
                         $buf .= "Content-Description:\n";
-                        $buf .= "Content-Disposition: attachment; filename=\"" . $chunk['filename'] . "\"\n\n";
+                        if ($headers['X-LMS-Format'] == 'html' && isset($chunk['content-id'])) {
+                            $buf .= "Content-ID: <" . $chunk['content-id'] . ">\n";
+                            $buf .= "Content-Disposition: inline; filename=\"" . $chunk['filename'] . "\"\n\n";
+                        } else {
+                            $buf .= "Content-Disposition: attachment; filename=\"" . $chunk['filename'] . "\"\n\n";
+                        }
                         $buf .= chunk_split(base64_encode($chunk['data']), 60, "\n");
                     }
                 }
@@ -2696,7 +2701,22 @@ class LMS
 
             if ($files) {
                 foreach ($files as $chunk) {
-                    $this->mail_object->AddStringAttachment($chunk['data'], $chunk['filename'], 'base64', $chunk['content_type']);
+                    if ($headers['X-LMS-Format'] == 'html' && isset($chunk['content-id'])) {
+                        $this->mail_object->addStringEmbeddedImage(
+                            $chunk['data'],
+                            $chunk['content-id'],
+                            $chunk['filename'],
+                            \PHPMailer\PHPMailer\PHPMailer::ENCODING_BASE64,
+                            $chunk['content_type']
+                        );
+                    } else {
+                        $this->mail_object->AddStringAttachment(
+                            $chunk['data'],
+                            $chunk['filename'],
+                            \PHPMailer\PHPMailer\PHPMailer::ENCODING_BASE64,
+                            $chunk['content_type']
+                        );
+                    }
                 }
             }
 
