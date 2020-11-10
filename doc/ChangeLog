@@ -233,6 +233,8 @@ version 26-git (????-??-??):
   - enhancement: new customer selection ui control which allows to select customer using quick
     search mechanism and suggestion popup [chilan]
   - enhancement: lms-rtparser.php supports html message receive [chilan]
+  - improvement: 'invoices.jpk_flags' toggles JPK flags presentation on generated invoice
+    ('false' by default) [chilan]
 
 version 25.0 (2020-05-15):
 
