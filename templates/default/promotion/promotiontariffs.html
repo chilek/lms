@@ -42,7 +42,8 @@
 						{if $tariff.upceil}{$tariff.upceil} kbit/s{else}-{/if}
 					</TD>
 					<TD>
-						<A class="delete-promotiontariff" href="?m=promotionedit&action=tariffdel&id={$promotion.id}&tid={$tariff.id}"><IMG src="img/delete.gif" alt="{trans("Delete assignment")}" title="{trans("Delete assignment")}"></A>
+						{button type="link" class="delete-promotiontariff" icon="delete" tip="Delete assignment"
+							href="?m=promotionedit&action=tariffdel&id={$promotion.id}&tid={$tariff.id}"}
 					</TD>
 				</TR>
 				{foreachelse}
@@ -58,14 +59,17 @@
 	</TR>
 	</TBODY>
 </TABLE>
-<SCRIPT>
-if (getCookie('promotiontariffs') == '1')
-	document.getElementById('promotiontariffs').style.display = '';
+<script>
 
-$('.delete-promotiontariff').click(function() {
-	confirmDialog($t("Are you sure, you want to delete this assignment?"), this).done(function() {
-		location.href = $(this).attr('href');
+	if (getCookie('promotiontariffs') == '1') {
+		$('#promotiontariffs').show();
+	}
+
+	$('.delete-promotiontariff').click(function() {
+		confirmDialog($t("Are you sure, you want to delete this assignment?"), this).done(function() {
+			location.href = $(this).attr('data-href');
+		});
+		return false;
 	});
-	return false;
-});
-</SCRIPT>
+
+</script>

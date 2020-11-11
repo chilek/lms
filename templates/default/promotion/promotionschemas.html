@@ -7,8 +7,8 @@
 			{if empty($promotion.schemas)}{$count = 0}{else}{$count = count($promotion.schemas)}{/if}
 			<B>{t a=$count}Promotion's Schemas ($a):{/t}</B>
 		</TD>
-		<TD width="1%" align="right" nowrap>
-			<A HREF="?m=promotionschemaadd&id={$promotion.id}">{trans("New Schema")} &raquo;</A>&nbsp;
+		<TD width="1%" class="text-right nobr">
+			{button type="link-button" icon="add" label="New Schema" href="?m=promotionschemaadd&id={$promotion.id}"}
 		</TD>
 	</TR>
     </THEAD>

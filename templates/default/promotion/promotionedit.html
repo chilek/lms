@@ -44,17 +44,17 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD class="buttons" colspan="3">
-			<A href="javascript:document.promotionedit.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
-			<A href="?m=promotionlist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A><BR>
+		<TD class="lms-ui-box-buttons" colspan="3">
+			{button icon="save" label="Submit" onclick="document.promotionedit.submit();"}
+			{button icon="cancel" label="Cancel" href="?m=promotionlist"}
 		</TD>
 	</TR>
 	</TBODY>
 </TABLE>
 </FORM>
-<SCRIPT type="text/javascript">
-<!--
-document.forms['promotionedit'].elements['promotion[name]'].focus();
-//-->
-</SCRIPT>
+<script>
+
+	document.forms['promotionedit'].elements['promotion[name]'].focus();
+
+</script>
 {/block}

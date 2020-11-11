@@ -92,9 +92,9 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD class="buttons" colspan="3">
-			<A href="javascript:document.schemaedit.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
-			<A href="?m=promotionschemainfo&amp;id={$schema.id}">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A><BR>
+		<TD class="lms-ui-box-buttons" colspan="3">
+			{button icon="save" label="Submit" onclick="document.schemaedit.submit();"}
+			{button icon="cancel" label="Cancel" href="?m=promotionschemainfo&id={$schema.id}"}
 		</TD>
 	</TR>
 	</TBODY>

@@ -30,7 +30,7 @@
 			{trans("Tariffs:")}
 		</TD>
 		<TD class="text-right nobr">
-			<A href="?m=promotionadd">{trans("Add promotion")} <IMG src="img/save.gif" alt=""> </A>
+			{button icon="add" label="Add promotion" href="?m=promotionadd"}
 		</TD>
 	</TR>
     </THEAD>
@@ -61,11 +61,15 @@
 			{$promo.tariffs|default:"-"}
 		</TD>
 		<TD class="text-right nobr">
-			<A HREF="?m=promotionset&amp;id={$promo.id}&amp;access={$promo.disabled}">{if $promo.disabled}<IMG src="img/noaccess.gif" alt="{trans("Enable")}" title="{trans("Enable")}">{else}<IMG src="img/access.gif" alt="{trans("Disable")}" title="{trans("Disable")}">{/if}</A>
-			<A class="delete-promotion" HREF="?m=promotiondel&id={$promo.id}"><IMG SRC="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
-			<A HREF="?m=promotionclone&id={$promo.id}"><IMG SRC="img/clone.gif" alt="{trans("Clone")}" title="{trans("Clone")}"></A>
-			<A HREF="?m=promotionedit&amp;id={$promo.id}"><IMG SRC="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
-			<A HREF="?m=promotioninfo&amp;id={$promo.id}"><IMG SRC="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
+			{if $promo.disabled}
+				{button type="link" icon="disconnected" tip="Enable" href="?m=promotionset&id={$promo.id}&access={$promo.disabled}"}
+			{else}
+				{button type="link" icon="connected" tip="Disable" href="?m=promotionset&id={$promo.id}&access={$promo.disabled}"}
+			{/if}
+			{button type="link" icon="delete" tip="Delete" href="?m=promotiondel&id={$promo.id}"}
+			{button type="link" icon="clone" tip="Clone" href="?m=promotionclone&id={$promo.id}"}
+			{button type="link" icon="edit" tip="Edit" href="?m=promotionedit&id={$promo.id}"}
+			{button type="link" icon="info" tip="Info" href="?m=promotioninfo&id={$promo.id}"}
 		</TD>
 	</TR>
 	{foreachelse}
@@ -87,7 +91,7 @@
 		</TD>
 		<TD COLSPAN="2"></TD>
 		<TD class="text-right">
-			<A href="?m=promotionadd">{trans("Add promotion")} <IMG src="img/save.gif" alt=""></A>
+			{button icon="add" label="Add promotion" href="?m=promotionadd"}
 		</TD>
 	</TR>
     </TFOOT>
