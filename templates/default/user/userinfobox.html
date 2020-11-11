@@ -284,15 +284,15 @@
 			<TD COLSPAN="3" class="lms-ui-box-buttons">
 				{if $layout.logid ne $userinfo.id}
 					{if !$userinfo.access}
-						{button label="Connect" icon="disconnected" onclick="location.href = '?m=useraccess&id={$userinfo.id}&access=1';"}
+						{button label="Connect" icon="disconnected" href="?m=useraccess&id={$userinfo.id}&access=1"}
 					{else}
-						{button label="Disconnect" icon="connected" onclick="location.href = '?m=useraccess&id={$userinfo.id}&access=0';"}
+						{button label="Disconnect" icon="connected" href="?m=useraccess&id={$userinfo.id}&access=0"}
 					{/if}
 				{/if}
 				{button type="link-button" label="Edit" icon="edit" href="?m=useredit&id={$userinfo.id}"}
-				{button label="Delete" icon="delete" id="delete-user" href="?m=userdel&id={$userinfo.id}"}
+				{button label="Delete" icon="delete" id="delete-user" data_href="?m=userdel&id={$userinfo.id}"}
 				{if $layout.logid ne $userinfo.id}
-					{button label="Force password change" icon="password" onclick="location.href = '?m=useredit&id={$userinfo.id}&forcepasswdchange=1';"}
+					{button label="Force password change" icon="password" href="?m=useredit&id={$userinfo.id}&forcepasswdchange=1"}
 				{/if}
 				{button type="link-button" label="Change password" icon="password" href="?m=userpasswd&id={$userinfo.id}"}
 				{button type="link-button" label="User list" icon="list" href="?m=userlist"}
@@ -304,7 +304,7 @@
 
 	$('#delete-user').click(function() {
 		confirmDialog($t("Are you sure, you want to irreversibly delete that user account?"), this).done(function() {
-			location.href = $(this).attr('href');
+			location.href = $(this).attr('data-href');
 		});
 		return false;
 	});

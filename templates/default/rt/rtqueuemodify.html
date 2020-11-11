@@ -655,7 +655,7 @@
 			onclick="javascript:document.queue.submit()" form="queue-form"}
 		{if $layout.module == 'rtqueueedit'}
 			{button id="delete-rtqueue" icon="delete" label="Delete"
-				href="?m=rtqueuedel&id={$queue.id}&qaction=delete" data_name=$queue.name}
+				data_href="?m=rtqueuedel&id={$queue.id}&qaction=delete" data_name=$queue.name}
 		{/if}
 		{button icon="cancel" label="Cancel" href="?m=rtqueuelist"}
 	</div>
@@ -685,7 +685,7 @@
 		$('#delete-rtqueue').click(function() {
 			var name = $(this).attr('data-name');
 			confirmDialog($t("Are you sure, you want to remove queue '$a' and all assigned tickets and messages?", name), this).done(function() {
-				location.href = $(this).attr('href');
+				location.href = $(this).attr('data-href');
 			});
 			return false;
 		});
