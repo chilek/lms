@@ -410,7 +410,7 @@ if (isset($_POST['message'])) {
 
                     $mobile_phones = array_filter($all_phones, function ($contact) {
                         return $contact['type'] & (CONTACT_MOBILE | CONTACT_DISABLED) == CONTACT_MOBILE;
-                    }, $all_phones);
+                    });
 
                     if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
                         $params = array(
