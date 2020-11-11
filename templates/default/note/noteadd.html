@@ -102,9 +102,11 @@ window.open('?m=note&id={$newnoteid}');
 		</TD>
 		<TD style="width: 99%;" class="nobr">
 			{if isset($customer.id)}
-			{customerlist form="setcustomer" customers=$customers selected=$customer.id selectname="customer" inputname="customerid"}
+				{customerlist form="setcustomer" customers=$customers selected=$customer.id version=2
+					selectname="customer" inputname="customerid"}
 			{else}
-			{customerlist form="setcustomer" customers=$customers selected=$note.customerid selectname="customer" inputname="customerid"}
+				{customerlist form="setcustomer" customers=$customers selected=$note.customerid version=2
+					selectname="customer" inputname="customerid"}
 			{/if}
 		</TD>
 	</TR>

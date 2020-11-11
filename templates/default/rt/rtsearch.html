@@ -50,7 +50,10 @@
 			<TABLE width="100%" cellpadding="1">
 				<TR>
 			    	<TD width="100%" colspan="2" class="nobr">
-						{customerlist form="search" customers=$customerlist selected=$search.customerid selectname="search[customerid]" inputname="search[custid]" firstoption="- all customers -" selecttip="select customer from list or enter his data if is not a customer" inputtip="select customer from list or enter his data if is not a customer"}
+						{customerlist form="search" customers=$customerlist selected=$search.customerid version=2
+							selectname="search[customerid]" inputname="search[custid]" firstoption="- all customers -"
+							selecttip="select customer from list or enter his data if is not a customer"
+							inputtip="select customer from list or enter his data if is not a customer"}
 					</TD>
 			    </TR>
 			    <TR>

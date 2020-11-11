@@ -155,7 +155,9 @@
 			{trans("Customer:")}
 		</TD>
 		<TD class="nobr">
-			{customerlist form="setcustomer" customers=$customers selected=$customerid selectname="customer" inputname="customerid" customOnChange="GetNumberPlans();customer_change();" select_id="ownerid_select" input_id="ownerid_input"}
+			{customerlist form="setcustomer" customers=$customers selected=$customerid selectname="customer" version="2"
+				inputname="customerid" customOnChange="GetNumberPlans();customer_change();"
+				select_id="ownerid_select" input_id="ownerid_input"}
 		</TD>
 	</TR>
 	<tr>
