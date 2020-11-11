@@ -33,7 +33,7 @@ $parameters = array(
     'help' => 'h',
     'version' => 'v',
     'queue:' => 'q:',
-    'message-file:' => '-f:',
+    'message-file:' => '-m:',
     'use-html' => null,
 );
 
@@ -85,9 +85,12 @@ lms-rtparser.php
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
 -v, --version                   print version info and exit;
--s, --silent                    suppress any output, except errors
+-s, --silent                    suppress any output, except errors;
 -q, --queue=<queueid>           queue ID (it means, QUEUE ID, numeric! NOT NAME! also
-                                its required to run!)
+                                its required to run!);
+-m, --message-file=<messag-file>
+                                use message file instead of standard input;
+    --use-html                  use html content type and load it to database if it's present
 
 EOF;
     exit(0);
