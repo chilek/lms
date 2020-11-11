@@ -368,8 +368,8 @@ if (preg_match('#multipart/#', $partdata['content-type']) && !empty($parts)) {
                     }
                 }
             }
-        } elseif (isset($partdata['content-disposition']) && ($partdata['content-disposition'] == 'attachment'
-                || $partdata['content-disposition'] == 'inline')) {
+        } elseif ((isset($partdata['content-disposition']) && ($partdata['content-disposition'] == 'attachment'
+                || $partdata['content-disposition'] == 'inline')) || isset($partdata['content-id'])) {
             $file_content = substr($buffer, $partdata['starting-pos-body'], $partdata['ending-pos-body'] - $partdata['starting-pos-body']);
             $transfer_encoding = isset($partdata['transfer-encoding']) ? $partdata['transfer-encoding'] : '';
             switch ($transfer_encoding) {
@@ -388,7 +388,7 @@ if (preg_match('#multipart/#', $partdata['content-type']) && !empty($parts)) {
             }
             $file_name = iconv_mime_decode($file_name);
 
-            if ($image_max_size && class_exists('Imagick') && strpos($partdata['content-type'], 'image/') === 0) {
+            if (!isset($partdata['content-id']) && $image_max_size && class_exists('Imagick') && strpos($partdata['content-type'], 'image/') === 0) {
                 $imagick = new \Imagick();
                 $imagick->readImageBlob($file_content);
                 $width = $imagick->getImageWidth();
