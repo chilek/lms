@@ -33,7 +33,7 @@ $parameters = array(
     'help' => 'h',
     'version' => 'v',
     'queue:' => 'q:',
-    'message-file:' => '-m:',
+    'message-file:' => 'm:',
     'use-html' => null,
 );
 
