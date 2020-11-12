@@ -162,14 +162,14 @@
 							{$message.body|escape|replace:"\n":"<BR>"}
 						</td>
 						<td width="1%" class="fbt nobr">
-                        {if ConfigHelper::checkConfig('rt.allow_remove_technical_messages') && ConfigHelper::checkPrivilege('superuser')}
-                            {if $message.deleted == 1 && $message.deltime != 0}
-                                {button type='link' icon="restore" class="restore-rtmessage" href="?m=rtrestore&id={$message.id}&maction=restore" tip="Restore"}
-                                {button type='link' icon="delete" class="remove-rtmessage" href="?m=rtremove&id={$message.id}&maction=delperm" tip="Delete permanently"}
-                            {else}
-                                {button type='link' icon="trash" class="delete-rtmessage" href="?m=rtmessagedel&id={$message.id}&maction=delete"}
-                            {/if}
-                        {/if}
+						{if ConfigHelper::checkConfig('rt.allow_remove_technical_messages') && ConfigHelper::checkPrivilege('superuser')}
+							{if $message.deleted == 1 && $message.deltime != 0}
+								{button type='link' icon="restore" class="restore-rtmessage" href="?m=rtrestore&id={$message.id}&maction=restore" tip="Restore"}
+								{button type='link' icon="delete" class="remove-rtmessage" href="?m=rtremove&id={$message.id}&maction=delperm" tip="Delete permanently"}
+							{else}
+								{button type='link' icon="trash" class="delete-rtmessage" href="?m=rtmessagedel&id={$message.id}&maction=delete"}
+							{/if}
+						{/if}
 						</td>
 					</tr>
 				</TBODY>
