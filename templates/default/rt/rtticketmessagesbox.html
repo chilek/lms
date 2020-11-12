@@ -146,7 +146,7 @@
 				<TBODY>
 				<TR>
 					<TD colspan="4" {if $message.deleted == 1 && $message.deltime != 0}
-						class="lucid{if $message.contenttype == 'text/plain'} message-body{else}message-html-body{/if} lms-ui-rtmessage-deleted fbt lms-ui-autolinker" {else} class="fbt superlight lms-ui-autolinker{if $message.type == $smarty.const.RTMESSAGE_NOTE} blend{/if}"{/if}>
+						class="lucid{if $message.contenttype == 'text/plain'} message-body{else}message-html-body{/if} lms-ui-rtmessage-deleted ftop lms-ui-autolinker" {else} class="ftop superlight lms-ui-autolinker{if $message.type == $smarty.const.RTMESSAGE_NOTE} blend{/if}"{/if}>
 						{if $message.contentype == 'text/plain'}
 							{$message.body|escape|replace:"\n":'<br>'|replace:"[matched-text]":"<span class=\"lms-ui-matched-text\">"|replace:"[/matched-text]":"</span>"|message_quote}
 						{else}
@@ -159,13 +159,13 @@
 				{else}
 				<TBODY>
 					<tr id="rtmessage-{$message.id}" class="blend">
-						<td width="1%" class="fbt text-right bold nobr valign-top">
+						<td width="1%" class="ftop text-right bold nobr valign-top">
 							{$message.createtime|date_format:"%Y/%m/%d %H:%M"}
 						</td>
-						<td width="1%" class="fbt text-right bold nobr valign-top">
+						<td width="1%" class="ftop text-right bold nobr valign-top">
 							{trans("From:")}
 						</td>
-						<td width="98%" colspan="2" class="fbt lms-ui-autolinker">
+						<td width="98%" colspan="2" class="ftop lms-ui-autolinker">
 							<A href="?m=userinfo&id={$message.userid}">{$message.username}</A><BR>
 							{$message.body|escape|replace:"\n":"<BR>"}
 						</td>
