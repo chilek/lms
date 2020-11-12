@@ -163,10 +163,10 @@
 						</td>
 						<td width="1%" class="fbt nobr">
 						{if $message.deleted == 1 && $message.deltime != 0 && ConfigHelper::checkConfig('rt.allow_remove_technical_messages') && ConfigHelper::checkPrivilege('superuser')}
-							{button type='link' icon="restore" class="restore-rtmessage" resourceid="?m=rtrestore&id={$message.id}&maction=restore" tip="Restore"}
-							{button type='link' icon="delete" class="remove-rtmessage" resourceid="?m=rtremove&id={$message.id}&maction=delperm" tip="Delete permanently"}
+							{button type='link' icon="restore" class="restore-rtmessage" href="?m=rtrestore&id={$message.id}&maction=restore" tip="Restore"}
+							{button type='link' icon="delete" class="remove-rtmessage" href="?m=rtremove&id={$message.id}&maction=delperm" tip="Delete permanently"}
 						{else}
-							{button type='link' icon="trash" class="delete-rtmessage" resourceid="?m=rtmessagedel&id={$message.id}&maction=delete"}
+							{button type='link' icon="trash" class="delete-rtmessage" href="?m=rtmessagedel&id={$message.id}&maction=delete"}
 						{/if}
 						</td>
 					</tr>
