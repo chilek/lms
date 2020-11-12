@@ -197,7 +197,13 @@
 			{/if}
 		</TD>
 		<TD class="nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');">
-			{$doc.username}{if $doc.cuserid} / {$doc.cusername}{/if}
+			{$doc.username}
+			{if $doc.cuserid} / {$doc.cusername}{/if}
+			{if $doc.closed == 3}
+				{trans("(customer/sms)")}
+			{elseif $doc.closed == 2}
+				{trans("(customer/scans)")}
+			{/if}
 			<BR><B>{assign var=type value=$doc.type}{$_DOCTYPES.$type}</B>
 		</TD>
 		<TD class="nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');">

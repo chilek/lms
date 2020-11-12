@@ -79,7 +79,13 @@
 						</div>
 						<div class="lms-ui-tab-table-wrapper col-2">
 							<div class="lms-ui-tab-table-column created-by" onclick="window.open('?m=documentview&id={$doc.docid}');">
-								{$doc.username}{if $doc.cusername} / {$doc.cusername}{/if}
+								{$doc.username}
+								{if $doc.cusername} / {$doc.cusername}{/if}
+								{if $doc.closed == 3}
+									{trans("(customer/sms)")}
+								{elseif $doc.closed == 2}
+									{trans("(customer/scans)")}
+								{/if}
 							</div>
 							<div class="lms-ui-tab-table-column type" onclick="window.open('?m=documentview&id={$doc.docid}');">
 								<strong>{assign var=type value=$doc.type}{$_DOCTYPES.$type}</strong>
