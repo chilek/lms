@@ -73,7 +73,10 @@
 						{trans("Customer:")}
 					</TD>
 					<TD style="width: 1%;" class="nobr" colspan="2">
-						{customerlist form="ticketslist" customers=$customers selectname="cust" inputname="customer" firstoption="- all customers -" selecttip="You can select customer to limit results" inputtip="Enter customer ID or leave empty for all customers"}
+						{customerlist form="ticketslist" customers=$customers selectname="cust" inputname="customer"
+							version=2
+							firstoption="- all customers -" selecttip="You can select customer to limit results"
+							inputtip="Enter customer ID or leave empty for all customers"}
 					</TD>
 					<TD width="1%" nowrap>
 						<IMG src="img/ticket.gif" alt="">

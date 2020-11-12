@@ -215,6 +215,12 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
         }
 
         $event['wholedays'] = $event['endtime'] == 86400;
+        $event['multiday'] = false;
+
+        if ($event['enddate'] && ($event['enddate'] - $event['date'])) {
+            $event['multiday'] = round(($event['enddate'] - $event['date']) / 86400) > 0;
+        }
+
         $event['helpdesk'] = !empty($event['ticketid']);
         $event['userlist'] = $this->db->GetCol('SELECT userid AS id
 			FROM vusers, eventassignments
@@ -595,17 +601,18 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 
         extract($params);
         if (empty($enddate)) {
-            $enddate = $begindate;
+            $enddate = $date;
         }
         $users = Utils::filterIntegers($users);
 
         return $this->db->GetCol(
             'SELECT DISTINCT a.userid FROM events e
                         JOIN eventassignments a ON a.eventid = e.id
-                        WHERE a.userid IN (' . implode(',', $users) . ')
+                        WHERE ' . (isset($params['ignoredevent']) ? 'e.id <> ' . intval($params['ignoredevent']) . ' AND ' : '')
+                            . 'a.userid IN (' . implode(',', $users) . ')
                                 AND (date < ? OR (date = ? AND begintime < ?))
                                 AND (enddate > ? OR (enddate = ? AND endtime > ?))',
-            array($enddate, $enddate, $endtime, $begindate, $begindate, $begintime)
+            array($enddate, $enddate, $endtime, $date, $date, $begintime)
         );
     }
 

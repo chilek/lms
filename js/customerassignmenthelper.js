@@ -54,7 +54,9 @@ function CustomerAssignmentHelper(options) {
 
 	this.initEventHandlers = function() {
 		$('#submit-button').click(function () {
-			$('.schema-tariff-checkbox[data-mandatory]:checkbox').removeAttr('disabled');
+			if ($(this)[0].form.checkValidity()) {
+				$('.schema-tariff-checkbox[data-mandatory]:checkbox').removeAttr('disabled');
+			}
 		});
 
 		$('#promotion-select').change(this.promotionSelectionHandler);
@@ -519,10 +521,10 @@ function tariffSelectionHandler() {
 	}
 
 	if (val == '') {
-		$('#a_tax,#a_value,#a_taxcategory,#a_productid,#a_name').show();
+		$('#a_tax,#a_type,#a_value,#a_taxcategory,#a_productid,#a_name').show();
 		$('#a_attribute').hide();
 	} else {
-		$('#a_tax,#a_value,#a_taxcategory,#a_productid,#a_name').hide();
+		$('#a_tax,#a_type,#a_value,#a_taxcategory,#a_productid,#a_name').hide();
 		if (val == -1) {
 			$('#a_attribute').hide();
 		} else {

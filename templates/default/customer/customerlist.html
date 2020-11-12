@@ -79,8 +79,23 @@
         {block name="customerlist-list-header"}
 	<TR {tip text="Click on column name to change sorting order"}>
 		<td scope="col" class="nobr">
-			<i class="lms-ui-icon-customer"></i> <a href="?m={$layout.module}&amp;s={$filter.state}&amp;o=customername{if $filter.direction == "asc" && $filter.order == "customername"},desc{/if}">{trans("First/last or Company name")}</A> {if $filter.order == "customername"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<i class="lms-ui-icon-home"></i> <a href="?m={$layout.module}&amp;s={$filter.state}&amp;o=address{if $filter.direction == "asc" && $filter.order == "address"},desc{/if}">{trans("Address:")}</A> {if $filter.order == "address"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			{icon name="customer"}
+			<a href="?m={$layout.module}&amp;s={$filter.state}&amp;o=customername{if $filter.direction == "asc" && $filter.order == "customername"},desc{/if}">
+				{trans("First/last or Company name")}
+			</A>
+			{if $filter.order == "customername"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			/
+			{icon name="karma"}
+			<a href="?m={$layout.module}&s={$filter.state}&o=karma{if $filter.direction == "asc" && $filter.order == "karma"},desc{/if}">
+				{trans("Karma")}
+			</A>
+			{if $filter.order == "karma"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<br>
+			{icon name="home"}
+			<a href="?m={$layout.module}&amp;s={$filter.state}&amp;o=address{if $filter.direction == "asc" && $filter.order == "address"},desc{/if}">
+				{trans("Address:")}
+			</A>
+			{if $filter.order == "address"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</td>
 		<td scope="col" class="text-right nobr">
 			<a href="?m={$layout.module}&amp;s={$filter.state}&amp;o=extid{if $filter.direction == "asc" && $filter.order == "extid"},desc{/if}"><span class="bold">{trans("External ID:")}</span></A> {if $filter.order == "extid"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
@@ -122,8 +137,11 @@
 					<option value="71"{if $filter.state == 71} selected{/if}>{trans("overdue receivables")}</option>
 				{/if}
 				<OPTION value="59"{if $filter.state == 59} SELECTED{/if}>{trans("without contracts")}</OPTION>
+				<OPTION value="76"{if $filter.state == 76} SELECTED{/if}>{trans("without active contracts")}</OPTION>
 				<OPTION value="60"{if $filter.state == 60} SELECTED{/if}>{trans("with expired contracts")}</OPTION>
+				<OPTION value="77"{if $filter.state == 77} SELECTED{/if}>{trans("with expired, active contracts")}</OPTION>
 				<OPTION value="61"{if $filter.state == 61} SELECTED{/if}>{trans("with expiring contracts")}</OPTION>
+				<OPTION value="78"{if $filter.state == 78} SELECTED{/if}>{trans("with expiring, active contracts")}</OPTION>
 				<OPTION value="73"{if $filter.state == 73} SELECTED{/if}>{trans("with unarchived documents")}</OPTION>
 				<OPTION VALUE="53"{if $filter.state == 53} SELECTED{/if}>{trans("online")}</OPTION>
 				<OPTION VALUE="54"{if $filter.state == 54} SELECTED{/if}>{trans("without group")}</OPTION>
@@ -134,6 +152,7 @@
 				<OPTION VALUE="64"{if $filter.state == 64} SELECTED{/if}>{trans("with nodes")}</OPTION>
 				<OPTION VALUE="65"{if $filter.state == 65} SELECTED{/if}>{trans("without nodes")}</OPTION>
 				<OPTION VALUE="66"{if $filter.state == 66} SELECTED{/if}>{trans("without invoice flag")}</OPTION>
+				<OPTION VALUE="75"{if $filter.state == 75} SELECTED{/if}>{trans("with discount")}</OPTION>
 				<OPTION VALUE="67"{if $filter.state == 67} SELECTED{/if}>{trans("without building number")}</OPTION>
 				<OPTION VALUE="68"{if $filter.state == 68} SELECTED{/if}>{trans("without zip")}</OPTION>
 				<OPTION VALUE="69"{if $filter.state == 69} SELECTED{/if}>{trans("without city")}</OPTION>
@@ -258,6 +277,10 @@
 			<i class="lms-ui-icon-customer-status-{$_CSTATUSES[$customer.status].alias}"></i>
 			{if $customer.info}&nbsp;<i class="lms-ui-icon-optional-info" title="{nl2br(htmlspecialchars($customer.info))}"></i>{/if}
 			<A name="{$customer.id}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$customer.id}">&nbsp;<span class="bold">{$customer.customername|escape}</span></A>
+			{if !empty($customer.karma)}
+				<i class="lms-ui-icon-star{if $customer.karma > 0} green{else} red{/if}" title="{trans('Karma')}"></i>
+				(<span class="lms-ui-counter">{$customer.karma}</span>)
+			{/if}
 			<BR>
 			<i class="lms-ui-icon-home"></i>&nbsp;{$customer.full_address}{if $customer.country != ""}, {t}{$customer.country}{/t}{/if}
 		</TD>

@@ -118,7 +118,24 @@
 				</SELECT>
 				<INPUT type="checkbox" name="groupexclude" id="groupexclude"{if $listdata.groupexclude} CHECKED{/if}><label for="groupexclude">{trans("exclude group")}</label>
 				<INPUT type="checkbox" name="hideclosed" id="hideclosed"{if $listdata.hideclosed} CHECKED{/if}><label for="hideclosed">{trans("hide accounted<!plural>")}</label>
-				&nbsp;<A href="javascript:filter();">&raquo;&raquo;&raquo;</A>
+				<label {tip text="translates into JPK MPP flag"}>
+					<INPUT type="checkbox" name="splitpayment"{if $listdata.splitpayment} checked{/if}>
+					{trans("split payment")}
+				</label>
+				<label {tip text="translates into JPK FP flag"}>
+					<INPUT type="checkbox" name="withreceipt"{if $listdata.withreceipt} checked{/if}>
+					{trans("with receipt<!plural>")}
+				</label>
+				<label {tip text="translates into JPK EE flag"}>
+					<INPUT type="checkbox" name="telecomservice"{if $listdata.telecomservice} checked{/if}>
+					{trans("<!invoice>telecommunication service")}
+				</label>
+				<label {tip text="translates into JPK TP flag"}>
+					<INPUT type="checkbox" name="relatedentity"{if $listdata.relatedentity} checked{/if}>
+					{trans("related entity")}
+				</label>
+				&nbsp;
+				<A href="javascript:filter();">&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	{if $pagination->getTotal() != 0}

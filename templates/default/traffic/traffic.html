@@ -28,7 +28,7 @@
 					</TD>
 					<TD CLASS="fright hand" WIDTH="99%" NOWRAP>
 						<IMG SRC="img/redpx.gif" HEIGHT="12" WIDTH="{$download.bar[download]}" BORDER="1" ALT="" {tip a=$download.nodeid[download] b=$bar c=$datefrom d=$dateto sticky=1 popup='?m=trafficgraph&nodeid=$a&amp;bar=$b&from=$c&to=$d'}>
-						{$download.data[download]|string_format:"%.2f"}&nbsp;{$download.unit[download]} ({$download.avg[download]|string_format:"%d"}&nbsp;kbit/s) 
+						{$download.data[download]|string_format:"%.2f"}&nbsp;{$download.unit[download]} ({$download.avg[download]|string_format:"%d"}&nbsp;kbit/s)
 					</TD>
 				</TR>
 				{/section}
@@ -59,7 +59,7 @@
 					</TD>
 					<TD CLASS="fright hand" WIDTH="99%" NOWRAP>
 						<IMG SRC="img/bluepx.gif" HEIGHT="12" WIDTH="{$upload.bar[upload]}" BORDER="1" ALT="" {tip a=$upload.nodeid[upload] b=$bar c=$datefrom d=$dateto sticky=1 popup='?m=trafficgraph&nodeid=$a&amp;bar=$b&from=$c&to=$d'}>
-						{$upload.data[upload]|string_format:"%.2f"}&nbsp;{$upload.unit[upload]} ({$upload.avg[upload]|string_format:"%d"}&nbsp;kbit/s) 
+						{$upload.data[upload]|string_format:"%.2f"}&nbsp;{$upload.unit[upload]} ({$upload.avg[upload]|string_format:"%d"}&nbsp;kbit/s)
 					</TD>
 				</TR>
 				{/section}
@@ -140,7 +140,8 @@
 			{trans("Customer:")}
 		</TD>
 		<TD>
-			{customerlist form="traffic" customers=$customers selectname="custid" inputname="customerid" firstoption="- all customers -"}
+			{customerlist form="traffic" customers=$customers selectname="custid" version=2
+				inputname="customerid" firstoption="- all customers -"}
 		</TD>
 	</TR>
 	<TR {tip text="Select results sorting order"}>

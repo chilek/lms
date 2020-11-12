@@ -49,6 +49,7 @@ class Localisation
                 'money_format' => '%01.2f zł',
                 'money_format_in_words' => '%s %s %s/100',
                 'currency' => 'PLN',
+                'vies_code' => 'PL',
                 //'mobile' => '(88[0-9]|5[01][0-9]|6[069][0-9]|7[2789][0-9])[0-9]{6}',
             ),
             'pl' => 'pl_PL',
@@ -61,6 +62,7 @@ class Localisation
                 'money_format' => '%01.2f EUR',
                 'money_format_in_words' => '%s %s %s/100',
                 'currency' => 'EUR',
+                'vies_code' => 'LT',
                 //'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
             ),
             'lt' => 'lt_LT',
@@ -96,6 +98,7 @@ class Localisation
                 'money_format' => '%01.2f EUR',
                 'money_format_in_words' => '%s %s %s/100',
                 'currency' => 'EUR',
+                'vies_code' => 'SK',
                 //'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
             ),
             'sk' => 'sk_SK',
@@ -108,6 +111,7 @@ class Localisation
                 'money_format' => '%01.2f RON',
                 'money_format_in_words' => '%s %s %s/100',
                 'currency' => 'RON',
+                'vies_code' => 'RO',
                 //'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
             ),
             'ro' => 'ro_RO',
@@ -120,6 +124,7 @@ class Localisation
                 'money_format' => '%01.2f Kč',
                 'money_format_in_words' => '%s %s %s/100',
                 'currency' => 'CZK',
+                'vies_code' => 'CZ',
                 //'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
             ),
             'cs' => 'cs_CZ',
@@ -235,6 +240,17 @@ class Localisation
     public static function getCurrentMoneyFormatInWords()
     {
         return self::$langDefs[self::$systemLanguage]['money_format_in_words'];
+    }
+
+    public static function getCurrentViesCode()
+    {
+        return isset(self::$langDefs[self::$systemLanguage]['vies_code']) ? self::$langDefs[self::$systemLanguage]['vies_code'] : null;
+    }
+
+    public static function getViesCodeByCountryCode($countryCode)
+    {
+        $lang = self::checkLanguage($countryCode);
+        return isset(self::$langDefs[$lang]['vies_code']) ? self::$langDefs[$lang]['vies_code'] : null;
     }
 
     public static function getCurrentHtmlCharset()
@@ -406,7 +422,7 @@ class Localisation
         return call_user_func_array('Localisation::callFunction', $args);
     }
 
-    public static function arraySort(array &$array, $key = null)
+    public static function arraySort(array $array, $key = null)
     {
         foreach ($array as &$item) {
             if (isset($key)) {
@@ -423,5 +439,7 @@ class Localisation
                 return strcoll($a, $b);
             }
         });
+
+        return $array;
     }
 }

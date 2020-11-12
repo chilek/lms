@@ -101,6 +101,8 @@ function lmsFileUpload(elemid, formid) {
 	}
 
 	function prepare_files() {
+		formdata = new FormData(formelem.get(0));
+
 		var left = files.length;
 		$(files).each(function(index, file) {
 			var fileReader = new FileReader();

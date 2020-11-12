@@ -26,12 +26,11 @@
 
 function module_main()
 {
-    global $SESSION;
+    global $SESSION, $LMS;
 
     $op = isset($_GET['op']) ? $_GET['op'] : '';
 
     $DB = LMSDB::getInstance();
-    $LMS = LMS::getInstance();
     $SMARTY = LMSSmarty::getInstance();
 
     $sms_contacts = $LMS->GetCustomerContacts($SESSION->id, CONTACT_MOBILE);
@@ -97,7 +96,7 @@ function module_main()
 
                                 // commit customer document only if it's owned by this customer
                                 // and is prepared for customer action
-                                $LMS->CommitDocuments(array($documentid));
+                                $LMS->CommitDocuments(array($documentid), true);
                             } else {
                                 echo trans('Authorization code you entered is invalid!');
                             }

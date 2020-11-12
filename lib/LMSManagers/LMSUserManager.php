@@ -111,14 +111,14 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
      */
     public function getUserNames()
     {
-        return $this->db->GetAll('SELECT id, login, name, rname,
+        return $this->db->GetAll('SELECT id, login, name, rname, login,
 				(CASE WHEN access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0) THEN 1 ELSE 0 END) AS access
 			FROM vusers WHERE deleted=0 ORDER BY rname ASC');
     }
 
     public function getUserNamesIndexedById()
     {
-        return $this->db->GetAllByKey('SELECT id, name, rname,
+        return $this->db->GetAllByKey('SELECT id, name, rname, login,
 				(CASE WHEN access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0) THEN 1 ELSE 0 END) AS access
 			FROM vusers WHERE deleted=0 ORDER BY rname ASC', 'id');
     }
@@ -507,6 +507,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             if (!empty($user['diff_division_del'])) {
                 foreach ($user['diff_division_del'] as $divisiondelid) {
                     $this->db->Execute('DELETE FROM userdivisions WHERE userid = ? AND divisionid = ?', array($user['id'], $divisiondelid));
+                    $this->db->Execute('DELETE FROM uiconfig WHERE userid = ? AND divisionid = ?', array($user['id'], $divisiondelid));
                 }
             }
 

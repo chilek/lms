@@ -111,7 +111,7 @@
                                 <TD>{trans("Tax category:")}</TD>
                                 <TD>
                                     {if $tariff.taxcategory}
-                                        <span {tip text=$_TAX_CATEGORIES[$tariff.taxcategory].description}>{$_TAX_CATEGORIES[$tariff.taxcategory].label}</span>
+                                        <span {tip text=$_TAX_CATEGORIES[$tariff.taxcategory].description}>({sprintf('%02d', $tariff.taxcategory)}) {$_TAX_CATEGORIES[$tariff.taxcategory].label}</span>
                                     {else}
                                         {trans("- none -")}
                                     {/if}
@@ -387,7 +387,7 @@
                 {button type="link-button" label="Edit" icon="edit" href="?m=tariffedit&id={$tariff.id}"}
             {/if}
             {if $tariff.count == 0}
-                {button id="delete-tariff" label="Delete" icon="delete" onclick="location.href = '?m=tariffdel&id={$tariff.id}';"}
+                {button id="delete-tariff" label="Delete" icon="delete"}
             {/if}
         </TD>
     </TR>
@@ -475,7 +475,7 @@
     <script>
         $('#delete-tariff').click(function() {
             confirmDialog($t("Are you sure, you want to delete that tariff?"), this).done(function() {
-                location.href = $(this).attr('href');
+                location.href = '?m=tariffdel&id={$tariff.id}';
             });
             return false;
         });

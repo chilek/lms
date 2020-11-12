@@ -31,6 +31,19 @@ $SMARTY->assign('xajax', $LMS->RunXajax());
 
 $aee = ConfigHelper::getConfig('phpui.allow_modify_closed_events_newer_than', 604800);
 
+if (isset($_GET['id'])) {
+    $event = $LMS->GetEvent($_GET['id']);
+    if (!empty($event['ticketid'])) {
+        $event['ticket'] = $LMS->getTickets($event['ticketid']);
+    }
+
+    if (empty($event['enddate'])) {
+        $event['enddate'] = $event['date'];
+    }
+    $event['begin'] = date('Y/m/d H:i', $event['date'] + $event['begintime']);
+    $event['end'] = date('Y/m/d H:i', $event['enddate'] + ($event['endtime'] == 86400 ? 0 : $event['endtime']));
+}
+
 switch ($_GET['action']) {
     case 'open':
         if (($event['closed'] == 1 && $aee && ((time() - $event['closeddate']) < $aee)) || ConfigHelper::checkPrivilege('superuser')) {
@@ -38,7 +51,7 @@ switch ($_GET['action']) {
             $SESSION->redirect('?'.$SESSION->get('backto')
                 . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
         } else {
-            die("Cannot open event - event closed too long ago.");
+            die(trans('Cannot open event - event closed too long ago.'));
         }
         break;
     case 'close':
@@ -69,19 +82,6 @@ switch ($_GET['action']) {
             die("Cannot unassign from event - event closed too long ago.");
         }
         break;
-}
-
-if (isset($_GET['id'])) {
-    $event = $LMS->GetEvent($_GET['id']);
-    if (!empty($event['ticketid'])) {
-        $event['ticket'] = $LMS->getTickets($event['ticketid']);
-    }
-
-    if (empty($event['enddate'])) {
-        $event['enddate'] = $event['date'];
-    }
-    $event['begin'] = date('Y/m/d H:i', $event['date'] + $event['begintime']);
-    $event['end'] = date('Y/m/d H:i', $event['enddate'] + ($event['endtime'] == 86400 ? 0 : $event['endtime']));
 }
 
 $userlist = $LMS->GetUserNames();
@@ -154,16 +154,18 @@ if (isset($_POST['event'])) {
 
     if (ConfigHelper::checkConfig('phpui.event_overlap_warning')
         && !$error && empty($event['overlapwarned']) && ($users = $LMS->EventOverlaps(array(
-            'date' => $data,
+            'date' => $date,
             'begintime' => $begintime,
             'enddate' => $enddate,
             'endtime' => $endtime,
             'users' => $event['userlist'],
+            'ignoredevent' => $event['id'],
         )))) {
-        $users = array_map(function ($userid) use ($userlist) {
-            return $userlist[$userid]['rname'];
+        $users_by_id = Utils::array_column($userlist, 'rname', 'id');
+        $users = array_map(function ($userid) use ($users_by_id) {
+            return $users_by_id[$userid];
         }, $users);
-        $error['begin'] = $error['endd'] =
+        $error['begin'] = $error['end'] =
             trans(
                 'Event is assigned to users which already have assigned an event in the same time: $a!',
                 implode(', ', $users)

@@ -69,12 +69,13 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
                 $sqlord = ' ORDER BY name';
                 break;
             default:
-                $sqlord = ' ORDER BY shortname';
+                $sqlord = ' ORDER BY (CASE WHEN vd.label IS NULL THEN vd.shortname ELSE vd.label END)';
                 break;
         }
 
         return $this->db->GetAllByKey(
-            'SELECT vd.*' . (isset($userid) ? ', vd.id as divisionid ' : '') . 'FROM vdivisions vd'
+            'SELECT vd.*,  (CASE WHEN vd.label IS NULL THEN vd.shortname ELSE vd.label END) AS label'
+            . (isset($userid) ? ', vd.id as divisionid' : '') . ' FROM vdivisions vd'
             . (isset($userid) ? ' JOIN userdivisions ud ON vd.id = ud.divisionid' : '') .
             ' WHERE 1=1'
             . (isset($status) ? ' AND vd.status = ' . intval($status) : '')
@@ -103,12 +104,13 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
         $user_divisions = implode(',', array_keys($this->GetDivisions(array('userid' => Auth::GetCurrentUser()))));
 
         return $this->db->GetAll(
-            'SELECT d.id, d.name, d.shortname, d.status, (SELECT COUNT(*) FROM customers WHERE divisionid = d.id) AS cnt
+            'SELECT d.id, d.name, d.shortname, (CASE WHEN d.label IS NULL THEN d.shortname ELSE d.label END) AS label,
+                d.status, (SELECT COUNT(*) FROM customers WHERE divisionid = d.id) AS cnt
             FROM divisions d
             WHERE 1 = 1'
             . ((isset($superuser) && empty($superuser)) || !isset($superuser) ? ' AND id IN (' . $user_divisions . ')' : '')
             . (isset($exludedDivisions) && !empty($exludedDivisions) ? ' AND id NOT IN (' . $exludedDivisions . ')' : '') .
-            ' ORDER BY d.shortname'
+            ' ORDER BY (CASE WHEN d.label IS NULL THEN d.shortname ELSE d.label END)'
             . (isset($limit) ? ' LIMIT ' . $limit : '')
             . (isset($offset) ? ' OFFSET ' . $offset : '')
         );
@@ -122,6 +124,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
         $args = array(
             'name'            => $division['name'],
             'shortname'       => $division['shortname'],
+            'label'           => empty($division['label']) ? null : $division['label'],
             'ten'             => $division['ten'],
             'regon'           => $division['regon'],
             'rbe'             => $division['rbe'],
@@ -141,10 +144,10 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
             'address_id'      => ($address_id >= 0 ? $address_id : null)
         );
 
-        $this->db->Execute('INSERT INTO divisions (name, shortname,
+        $this->db->Execute('INSERT INTO divisions (name, shortname, label,
 			ten, regon, rbe, rbename, telecomnumber, bank, account, inv_header, inv_footer, inv_author,
 			inv_cplace, inv_paytime, inv_paytype, email, description, tax_office_code, address_id)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
         $divisionid = $this->db->GetLastInsertID('divisions');
 
@@ -198,6 +201,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
         $args = array(
             'name'        => $division['name'],
             'shortname'   => $division['shortname'],
+            'label'       => empty($division['label']) ? null : $division['label'],
             'ten'         => $division['ten'],
             'regon'       => $division['regon'],
             'rbe'         => $division['rbe'] ? $division['rbe'] : '',
@@ -218,7 +222,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
             SYSLOG::RES_DIV   => $division['id']
         );
 
-        $this->db->Execute('UPDATE divisions SET name=?, shortname=?,
+        $this->db->Execute('UPDATE divisions SET name=?, shortname=?, label = ?,
 			ten=?, regon=?, rbe=?, rbename=?, telecomnumber=?, bank=?, account=?, inv_header=?,
 			inv_footer=?, inv_author=?, inv_cplace=?, inv_paytime=?,
 			inv_paytype=?, email=?, description=?, status=?, tax_office_code = ?

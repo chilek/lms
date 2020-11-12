@@ -157,6 +157,13 @@ if (!isset($resource_tabs['nodegroups']) || $resource_tabs['nodegroups']) {
 if (!isset($resource_tabs['managementurls']) || $resource_tabs['managementurls']) {
     $SMARTY->assign('mgmurls', $LMS->GetManagementUrls(LMSNetDevManager::NODE_URL, $nodeinfo['id']));
 }
+
+if (!isset($resource_tabs['routednetworks']) || $resource_tabs['routednetworks']) {
+    $SMARTY->assign('routednetworks', $LMS->getNodeRoutedNetworks($nodeinfo['id']));
+    $SMARTY->assign('notroutednetworks', $LMS->getNodeNotRoutedNetworks($nodeinfo['id']));
+    $SMARTY->assign('nodeid', $nodeinfo['id']);
+}
+
 $SMARTY->assign('nodeinfo', $nodeinfo);
 $SMARTY->assign('objectid', $nodeinfo['id']);
 $SMARTY->assign('nodeinfo_sortable_order', $SESSION->get_persistent_setting('nodeinfo-sortable-order'));

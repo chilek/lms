@@ -194,30 +194,20 @@ if (isset($_POST['assignment'])) {
         }
     }
 
-    if ($a['datefrom'] == '') {
+    if (empty($a['datefrom'])) {
         $from = 0;
-    } elseif (preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $a['datefrom'])) {
-        list($y, $m, $d) = explode('/', $a['datefrom']);
-        if (checkdate($m, $d, $y)) {
-            $from = mktime(0, 0, 0, $m, $d, $y);
-        } else {
-            $error['datefrom'] = trans('Incorrect charging start time!');
-        }
+    } elseif (!preg_match('/^[0-9]+$/', $a['datefrom'])) {
+        $error['datefrom'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
     } else {
-        $error['datefrom'] = trans('Incorrect charging start time!');
+        $from = $a['datefrom'];
     }
 
-    if ($a['dateto'] == '') {
+    if (empty($a['dateto'])) {
         $to = 0;
-    } elseif (preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $a['dateto'])) {
-        list($y, $m, $d) = explode('/', $a['dateto']);
-        if (checkdate($m, $d, $y)) {
-            $to = mktime(23, 59, 59, $m, $d, $y);
-        } else {
-            $error['dateto'] = trans('Incorrect charging end time!');
-        }
+    } elseif (!preg_match('/^[0-9]+$/', $a['dateto'])) {
+        $error['dateto'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
     } else {
-        $error['dateto'] = trans('Incorrect charging end time!');
+        $to = $a['dateto'];
     }
 
     if ($to < $from && $to != 0 && $from != 0) {
@@ -325,9 +315,10 @@ if (isset($_POST['assignment'])) {
                     'name' => $a['name'],
                     SYSLOG::RES_TAX => intval($a['taxid']),
                     'prodid' => $a['prodid'],
+                    'type' => $a['type'],
                     SYSLOG::RES_LIAB => $a['liabilityid']
                 );
-                $DB->Execute('UPDATE liabilities SET value=?, splitpayment=?, taxcategory=?, currency=?, name=?, taxid=?, prodid=? WHERE id=?', array_values($args));
+                $DB->Execute('UPDATE liabilities SET value=?, splitpayment=?, taxcategory=?, currency=?, name=?, taxid=?, prodid=?, type = ? WHERE id=?', array_values($args));
                 if ($SYSLOG) {
                     $args[SYSLOG::RES_CUST] = $customer['id'];
                     $SYSLOG->AddMessage(SYSLOG::RES_LIAB, SYSLOG::OPER_UPDATE, $args);
@@ -341,10 +332,11 @@ if (isset($_POST['assignment'])) {
                 'taxcategory' => $a['taxcategory'],
                 'currency' => $a['currency'],
                 SYSLOG::RES_TAX => intval($a['taxid']),
-                'prodid' => $a['prodid']
+                'prodid' => $a['prodid'],
+                'type' => $a['type'],
             );
-            $DB->Execute('INSERT INTO liabilities (name, value, splitpayment, taxcategory, currency, taxid, prodid)
-				VALUES (?, ?, ?, ?, ?, ?, ?)', array_values($args));
+            $DB->Execute('INSERT INTO liabilities (name, value, splitpayment, taxcategory, currency, taxid, prodid, type)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
             $a['liabilityid'] = $DB->GetLastInsertID('liabilities');
 
@@ -458,6 +450,7 @@ if (isset($_POST['assignment'])) {
     $a = $DB->GetRow('SELECT a.id AS id, a.customerid, a.tariffid, a.period, a.backwardperiod,
 				a.at, a.count, a.datefrom, a.dateto, a.numberplanid, a.paytype,
 				a.invoice, a.separatedocument,
+				liabilities.type,
 				(CASE WHEN liabilityid IS NULL THEN tariffs.splitpayment ELSE liabilities.splitpayment END) AS splitpayment,
 				(CASE WHEN liabilityid IS NULL THEN tariffs.taxcategory ELSE liabilities.taxcategory END) AS taxcategory,
 				a.settlement, a.pdiscount, a.vdiscount, a.attribute, a.liabilityid,
@@ -479,14 +472,6 @@ if (isset($_POST['assignment'])) {
     } elseif (!empty($a['vdiscount'])) {
         $a['discount'] = $a['vdiscount'];
         $a['discount_type'] = DISCOUNT_AMOUNT;
-    }
-
-    if ($a['dateto']) {
-        $a['dateto'] = date('Y/m/d', $a['dateto']);
-    }
-
-    if ($a['datefrom']) {
-        $a['datefrom'] = date('Y/m/d', $a['datefrom']);
     }
 
     switch ($a['period']) {

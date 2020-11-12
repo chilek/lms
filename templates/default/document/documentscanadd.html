@@ -1,0 +1,219 @@
+{extends file="layout.html"}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+
+<style>
+
+	#file-list {
+		padding: 1.2em;
+	}
+
+	#file-list > table {
+		border: 1px dotted black;
+	}
+
+	#file-list > table thead td {
+		border-bottom: 1px solid black;
+	}
+
+	.document-list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		margin-top: 0.3em;
+		margin-bottom: 0.3em;
+	}
+
+	.document-list.lms-ui-multi-check-ignore {
+		display: inline-block;
+	}
+
+	label.lms-ui-multi-check-ignore {
+		padding-left: 0.5em;
+	}
+
+	.lms-ui-multi-check.radio-buttons {
+		vertical-align: super;
+	}
+
+	.checkbox-placeholder {
+		visibility: hidden;
+	}
+
+</style>
+
+<FORM name="documentscanadd" method="POST" id="documentscanadd-form" action="?m=documentscanadd">
+<INPUT type="submit" class="hiddenbtn">
+<input type="hidden" name="documentscans" value="1">
+<TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 98%;">
+	</COLGROUP>
+    <THEAD>
+	<TR>
+		<TD>
+			<IMG src="img/docum.gif" alt="">
+		</TD>
+		<TD class="bold nobr" colspan="2">
+			{trans("Select files with document scans")}
+		</TD>
+	</TR>
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD>
+			{icon name="upload"}
+		</TD>
+		<TD class="bold">
+			{trans("Files:")}
+		</TD>
+		<TD>
+			{fileupload id="attachments" fileupload=$fileupload form="documentscanadd-form"}
+		</TD>
+	</TR>
+	{if !empty($files)}
+	<tr>
+		<td colspan="3" id="file-list">
+			<table class="lmsbox-inner lms-ui-background-cycle lms-ui-multi-check">
+				<colgroup>
+					<col style="width: 1%;">
+					<col style="width: 1%;">
+					<col style="width: 98%;">
+				</colgroup>
+				<thead>
+					<tr>
+						<td class="bold nobr">
+							{trans("File name:")}
+						</td>
+						<td class="bold nobr">
+							{trans("Recognised document number:")}
+						</td>
+						<td class="bold nobr">
+							{trans("Matched documents:")}
+						</td>
+					</tr>
+				</thead>
+				<tbody>
+					{$matches = 0}
+					{foreach $files as $file}
+						<tr>
+							<td>
+								{$file.name}
+							</td>
+							<td>
+								{if isset($file.fullnumber)}
+									{$file.fullnumber}
+								{else}
+									-
+								{/if}
+							</td>
+							<td>
+								{if !empty($file.duplicates)}
+									<ul class="document-list">
+										{foreach $file.duplicates as $document}
+										<li class="blend">
+											<input type="checkbox" class="checkbox-placeholder">
+											{capture assign="customerlink"}
+												<a href="?m=customerinfo&id={$document.customerid}">{$document.name} (#{$document.customerid})</a>
+											{/capture}
+											{t a=$_DOCTYPES[$document.type] b=$document.cdate|date_format:"%Y/%m/%d" c=$customerlink}$a issued on $b for $c (already assigned){/t}
+										</li>
+										{/foreach}
+									</ul>
+								{/if}
+								{if !empty($file.documents)}
+									{$matches = $matches + 1}
+									{if count($file.documents) > 1}
+										{$first = reset($file.documents)}
+										<input type="checkbox" class="lms-ui-multi-check radio-buttons"
+											   name="documents[{$file.name}]" value="{$first.id}">
+									{/if}
+									<ul class="document-list{if count($file.documents) > 1} lms-ui-multi-check-ignore{/if}">
+										{foreach $file.documents as $document}
+											<li>
+												{if count($file.documents) == 1}
+													<input type="checkbox" class="lms-ui-multi-check"
+														id="document-{$file@index}-{$document@index}"
+														name="documents[{$file.name}]" value="{$document.id}">
+												{else}
+													<input type="radio" name="radio[{$file.name}]"
+														id="document-{$file@index}-{$document@index}"
+														class="document-selector" value="{$document.id}"
+														{if $document@first} checked{/if}>
+												{/if}
+												<label class="lms-ui-multi-check-ignore" for="document-{$file@index}-{$document@index}">
+													{capture assign="customerlink"}
+														<a href="?m=customerinfo&id={$document.customerid}">{$document.name} (#{$document.customerid})</a>
+													{/capture}
+													{t a=$_DOCTYPES[$document.type] b=$document.cdate|date_format:"%Y/%m/%d" c=$customerlink}$a issued on $b for $c{/t}
+												</label>
+											</li>
+										{/foreach}
+									</ul>
+								{elseif empty($file.duplicates)}
+									-
+								{/if}
+							</td>
+						</tr>
+					{foreachelse}
+						<tr>
+							<td colspan="3" class="empty-table">
+								{trans("No matched documents!")}
+							</td>
+						</tr>
+					{/foreach}
+				</tbody>
+				{if $matches}
+				<tfoot>
+					<tr>
+						<td colspan="2">
+							&nbsp;
+						</td>
+						<td class="nobr">
+							<label>
+								<input type="checkbox" class="lms-ui-multi-check-all">
+								{trans("Check All")}
+							</label>
+						</td>
+					</tr>
+				</tfoot>
+				{/if}
+			</table>
+		</td>
+	</tr>
+	{/if}
+	<TR>
+		<TD colspan="3" class="lms-ui-box-buttons">
+			{button type="submit" icon="save" label="Submit"}
+			{button icon="clear" label="Clear" data_action="clear"}
+			{button icon="cancel" label="Cancel" data_action="cancel"}
+		</TD>
+	</TR>
+    </TBODY>
+</TABLE>
+
+</FORM>
+
+<script>
+
+	$(function() {
+		$('[data-action]').click(function() {
+			var form = $('#documentscanadd-form');
+			form.attr('action', form.attr('action') + '&action=' + $(this).attr('data-action')).submit();
+		});
+
+		$('.document-selector').click(function() {
+			$(this).closest('.document-list').siblings('.lms-ui-multi-check').val($(this).val());
+			var checkbox = $(this).closest('.document-list').siblings('.lms-ui-multi-check');
+			if (!checkbox.prop('checked')) {
+				checkbox.click();
+			}
+		});
+	});
+
+</script>
+{/block}

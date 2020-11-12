@@ -65,7 +65,8 @@
 							<label for="customeradd[lastname]" class="nobr"><strong>{trans("Name/Surname:")}</strong></label>
 						</td>
 						<td>
-							<INPUT type="text" name="customeradd[lastname]" value="{$customeradd.lastname}" required
+							<INPUT type="text" name="customeradd[lastname]" maxlength="128"
+									value="{$customeradd.lastname}" required
 									{tip class="lms-ui-autogrow" text="Enter customer last name or company name" trigger="lastname" bold=1}>
 						</td>
 					</tr>
@@ -74,7 +75,7 @@
 							<label for="customeradd[name]" class="nobr"><strong>{trans("First name:")}</strong>
 						</td>
 						<td>
-							<INPUT type="text" name="customeradd[name]" value="{$customeradd.name}"
+							<INPUT type="text" name="customeradd[name]" maxlength="128" value="{$customeradd.name}"
 									{tip class="lms-ui-autogrow" text="Enter customer name" trigger="name" bold=1}></label>
 						</td>
 					</tr>
@@ -122,8 +123,8 @@
 					</TD>
 					<TD>
 						<SELECT size="1" name="customeradd[divisionid]" {tip text="Select division" trigger="divisionid"}>
-							{foreach from=$divisions item=item}{if !$item.status}
-							<OPTION value="{$item.id}"{if $customeradd.divisionid == $item.id} SELECTED{/if}>{$item.shortname}</OPTION>
+							{foreach $divisions as $item}{if !$item.status}
+								<option value="{$item.id}"{if $customeradd.divisionid == $item.id} selected{/if}>{$item.label}</option>
 							{/if}{/foreach}
 						</SELECT>
 					</TD>
@@ -153,6 +154,24 @@
 						<INPUT type="radio" name="customeradd[type]" value="{$smarty.const.CTYPES_COMPANY}" id="company" {tip text="Select legal personality type" trigger="type"}{if $customeradd.type == $smarty.const.CTYPES_COMPANY} CHECKED{/if}><label for="company">{assign var='type' value=$smarty.const.CTYPES_COMPANY}{$_CTYPES.$type}</label>
 					</TD>
 				</TR>
+
+				<TR>
+					<TD>
+						<i class="lms-ui-icon-legal-personality"></i>
+					</TD>
+					<TD>
+						<select name="customeradd[flags][]" {tip text="Select customer flags (optional)" class="lms-ui-multiselect"}
+								multiple>
+							{foreach $_CUSTOMERFLAGS as $cflag => $flag}
+								<option value="{$cflag}"
+										{if is_array($customeradd.flags) && in_array($cflag, $customeradd.flags)} selected{/if}
+										title="{$flag.tip}"
+								>{$flag.label}</option>
+							{/foreach}
+						</select>
+					</TD>
+				</TR>
+
 
 				{$addr_counter = 0}
 
@@ -538,6 +557,10 @@
 				});
 			return;
 		});
+
+		$('[name="customeradd[type]"]').change(function() {
+			$('[name="customeradd[name]"]').prop('required', $('#private').prop('checked'));
+		}).change();
 	});
 
 	if(document.forms['customeradd'].elements['customeradd[pin]'].value == '') randomize();

@@ -37,8 +37,6 @@ if (isset($_GET['oper']) && $_GET['oper'] == 'loadtransactionlist') {
             )
         );
         $SMARTY->assign('transactions', $trans);
-        $SMARTY->assign('resourcetype', SYSLOG::RES_CUST);
-        $SMARTY->assign('resourceid', $customerid);
         die($SMARTY->fetch('transactionlist.html'));
     }
 
@@ -79,6 +77,12 @@ if (!isset($resource_tabs['customerbalancebox']) || $resource_tabs['customerbala
 if (!isset($resource_tabs['customervoipaccountsbox']) || $resource_tabs['customervoipaccountsbox']) {
     $customervoipaccounts = $LMS->GetCustomerVoipAccounts($customerid);
 }
+
+if ($SYSLOG && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.transaction_logs'))) {
+    $SMARTY->assign('resourcetype', SYSLOG::RES_CUST);
+    $SMARTY->assign('resourceid', $customerid);
+}
+
 if (!isset($resource_tabs['customerdocuments']) || $resource_tabs['customerdocuments']) {
     $documents = $LMS->GetDocuments($customerid, 10);
 

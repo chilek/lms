@@ -116,7 +116,8 @@
 			{trans("Customer:")}
 		</TD>
 		<TD class="nobr">
-			{customerlist form="event" customers=$customerlist selected=$event.customerid selectname="event[customerid]" inputname="event[custid]" customOnChange="change_customer(this);"}
+			{customerlist form="event" customers=$customerlist selected=$event.customerid version=2
+				selectname="event[customerid]" inputname="event[custid]" customOnChange="change_customer(this);"}
 		</TD>
 	</TR>
 	<TR>

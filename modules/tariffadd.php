@@ -282,6 +282,8 @@ if (isset($_POST['tariff'])) {
         $tariff['quota_' . $type['alias'] . '_limit'] = 0;
     }
 
+    $tariff['type'] = intval(ConfigHelper::getConfig('phpui.default_tariff_type', '-1'));
+
     $default_assignment_period = ConfigHelper::getConfig('phpui.default_assignment_period');
     if (!empty($default_assignment_period)) {
         $tariff['period'] = $default_assignment_period;

@@ -100,10 +100,12 @@ if (isset($_GET['ajax']) && (isset($_POST['what']) || isset($_GET['what']))) {
         }
 
         $list = $DB->GetAll('SELECT c.id, c.name,
+                ct.name AS citytype,
                 b.name AS borough, b.type AS btype,
                 d.name AS district, d.id AS districtid,
                 s.name AS state, s.id AS stateid
             FROM location_cities c
+            LEFT JOIN location_city_types ct ON ct.id = c.type
             JOIN location_boroughs b ON (c.boroughid = b.id)
             JOIN location_districts d ON (b.districtid = d.id)
             JOIN location_states s ON (d.stateid = s.id)
@@ -117,8 +119,22 @@ if (isset($_GET['ajax']) && (isset($_POST['what']) || isset($_GET['what']))) {
         $result = array();
         if ($list) {
             foreach ($list as $idx => $row) {
-                $name = sprintf('%s (%s%s, %s)', $row['name'], $row['btype'] < 4 ?
-                    trans('<!borough_abbr>') : '', $row['borough'], trans('<!district_abbr>') . $row['district']);
+                $name_alternative = sprintf(
+                    '%s (%s)<br><span class="terc">%s, %s%s, %s</span>',
+                    preg_replace('/(' . $what . ')/i', '<strong>$1</strong>', $row['name']),
+                    empty($row['citytype']) ? '-' : $row['citytype'],
+                    trans('<!state_abbr>') . ' ' . mb_strtoupper($row['state']),
+                    $row['btype'] < 4 ? trans('<!borough_abbr>') . ' ' : '',
+                    $row['borough'],
+                    trans('<!district_abbr>') . ' ' . $row['district']
+                );
+
+                $name = sprintf(
+                    '%s (%s)',
+                    $row['name'],
+                    empty($row['citytype']) ? '-' : $row['citytype']
+                );
+
                 $name_class = '';
                 $description = $description_class = '';
                 $action = array(
@@ -127,7 +143,7 @@ if (isset($_GET['ajax']) && (isset($_POST['what']) || isset($_GET['what']))) {
                     'stateid' => $row['stateid'],
                 );
 
-                $result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
+                $result[$row['id']] = compact('name', 'name_alternative', 'name_class', 'description', 'description_class', 'action');
             }
         }
     } elseif (isset($_GET['id']) && isset($_GET['what'])) {

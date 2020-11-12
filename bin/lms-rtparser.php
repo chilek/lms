@@ -32,8 +32,9 @@ $parameters = array(
     'silent' => 's',
     'help' => 'h',
     'version' => 'v',
-    'debug' => 'd',
     'queue:' => 'q:',
+    'message-file:' => '-m:',
+    'use-html' => null,
 );
 
 $long_to_shorts = array();
@@ -84,11 +85,12 @@ lms-rtparser.php
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
 -v, --version                   print version info and exit;
--s, --silent                    suppress any output, except errors
--d, --debug                     print out debug information, do not log any messages into
-                                system;
+-s, --silent                    suppress any output, except errors;
 -q, --queue=<queueid>           queue ID (it means, QUEUE ID, numeric! NOT NAME! also
-                                its required to run!)
+                                its required to run!);
+-m, --message-file=<messag-file>
+                                use message file instead of standard input;
+    --use-html                  use html content type and load it to database if it's present
 
 EOF;
     exit(0);
@@ -197,6 +199,8 @@ $subject_ticket_regexp_match = ConfigHelper::getConfig('rt.subject_ticket_regexp
 
 $stderr = fopen('php://stderr', 'w');
 
+$use_html = isset($options['use-html']);
+
 if ($smtp_options['auth'] && !preg_match('/^(LOGIN|PLAIN|CRAM-MD5|NTLM)$/i', $smtp_options['auth'])) {
     fprintf($stderr, "Fatal error: smtp_auth setting not supported! Can't continue, exiting." . PHP_EOL);
     exit(1);
@@ -221,7 +225,15 @@ if ($mail === false) {
     exit(3);
 }
 
-$buffer = file_get_contents('php://stdin');
+if (isset($options['message-file'])) {
+    if (!is_readable($options['message-file'])) {
+        die('Cannot read message file \'' . $options['message-file'] . '\'!' . PHP_EOL);
+    }
+    $buffer = file_get_contents($options['message-file']);
+} else {
+    $buffer = file_get_contents('php://stdin');
+}
+
 if (!preg_match('/\r?\n$/', $buffer)) {
     $buffer .= "\n";
 }
@@ -264,13 +276,42 @@ unset($decoded_mail_headers);
 
 $image_max_size = ConfigHelper::getConfig('phpui.uploaded_image_max_size');
 
+$url_props = parse_url($lms_url);
+
+class HTMLPurifier_URIScheme_cid extends \HTMLPurifier_URIScheme
+{
+    public $browsable = true;
+    public $may_omit_host = true;
+
+    public function doValidate(&$uri, $config, $context)
+    {
+        return true;
+    }
+}
+
+if ($use_html) {
+    $hm_config = HTMLPurifier_Config::createDefault();
+    $hm_config->set('URI.AllowedSchemes', array(
+        'http' => true,
+        'https' => true,
+        'mailto' => true,
+        'ftp' => true,
+        'nntp' => true,
+        'news' => true,
+        'tel' => true,
+        'cid' => true,
+    ));
+    HTMLPurifier_URISchemeRegistry::instance()->register('cid', new HTMLPurifier_URIScheme_cid());
+    $hm_purifier = new HTMLPurifier($hm_config);
+}
+
 if (preg_match('#multipart/#', $partdata['content-type']) && !empty($parts)) {
     $mail_body = '';
     while (!empty($parts)) {
         $partid = array_shift($parts);
         $part = mailparse_msg_get_part($mail, $partid);
         $partdata = mailparse_msg_get_part_data($part);
-        if (preg_match('/text/', $partdata['content-type']) && $mail_body == '') {
+        if (preg_match('/text/', $partdata['content-type']) && ($use_html || $mail_body == '')) {
             $mail_body = substr($buffer, $partdata['starting-pos-body'], $partdata['ending-pos-body'] - $partdata['starting-pos-body']);
             $charset = $partdata['content-charset'];
             $transfer_encoding = isset($partdata['transfer-encoding']) ? $partdata['transfer-encoding'] : '';
@@ -283,16 +324,24 @@ if (preg_match('#multipart/#', $partdata['content-type']) && !empty($parts)) {
                     break;
             }
             $mail_body = iconv($charset, 'UTF-8', $mail_body);
+
+            $contenttype = 'text/plain';
+
             if ($partdata['content-type'] == 'text/html') {
-                $html2text = new \Html2Text\Html2Text($mail_body, array());
-                $mail_body = $html2text->getText();
+                if ($use_html) {
+                    $contenttype = 'text/html';
+                    $mail_body = $hm_purifier->purify($mail_body);
+                } else {
+                    $html2text = new \Html2Text\Html2Text($mail_body, array());
+                    $mail_body = $html2text->getText();
+                }
             }
         } elseif (preg_match('#multipart/alternative#', $partdata['content-type']) && $mail_body == '') {
             while (!empty($parts) && strpos($parts[0], $partid . '.') === 0) {
                 $subpartid = array_shift($parts);
                 $subpart = mailparse_msg_get_part($mail, $subpartid);
                 $subpartdata = mailparse_msg_get_part_data($subpart);
-                if (preg_match('/text/', $subpartdata['content-type']) && trim($mail_body) == '') {
+                if (preg_match('/text/', $subpartdata['content-type']) && ($use_html || trim($mail_body) == '')) {
                     $mail_body = substr($buffer, $subpartdata['starting-pos-body'], $subpartdata['ending-pos-body'] - $subpartdata['starting-pos-body']);
                     $charset = $subpartdata['content-charset'];
                     $transfer_encoding = isset($subpartdata['transfer-encoding']) ? $subpartdata['transfer-encoding'] : '';
@@ -305,14 +354,22 @@ if (preg_match('#multipart/#', $partdata['content-type']) && !empty($parts)) {
                             break;
                     }
                     $mail_body = iconv($charset, 'UTF-8', $mail_body);
+
+                    $contenttype = 'text/plain';
+
                     if ($subpartdata['content-type'] == 'text/html') {
-                        $html2text = new \Html2Text\Html2Text($mail_body, array());
-                        $mail_body = $html2text->getText();
+                        if ($use_html) {
+                            $contenttype = 'text/html';
+                            $mail_body = $hm_purifier->purify($mail_body);
+                        } else {
+                            $html2text = new \Html2Text\Html2Text($mail_body, array());
+                            $mail_body = $html2text->getText();
+                        }
                     }
                 }
             }
-        } elseif (isset($partdata['content-disposition']) && ($partdata['content-disposition'] == 'attachment'
-                || $partdata['content-disposition'] == 'inline')) {
+        } elseif ((isset($partdata['content-disposition']) && ($partdata['content-disposition'] == 'attachment'
+                || $partdata['content-disposition'] == 'inline')) || isset($partdata['content-id'])) {
             $file_content = substr($buffer, $partdata['starting-pos-body'], $partdata['ending-pos-body'] - $partdata['starting-pos-body']);
             $transfer_encoding = isset($partdata['transfer-encoding']) ? $partdata['transfer-encoding'] : '';
             switch ($transfer_encoding) {
@@ -331,7 +388,7 @@ if (preg_match('#multipart/#', $partdata['content-type']) && !empty($parts)) {
             }
             $file_name = iconv_mime_decode($file_name);
 
-            if ($image_max_size && class_exists('Imagick') && strpos($partdata['content-type'], 'image/') === 0) {
+            if (!isset($partdata['content-id']) && $image_max_size && class_exists('Imagick') && strpos($partdata['content-type'], 'image/') === 0) {
                 $imagick = new \Imagick();
                 $imagick->readImageBlob($file_content);
                 $width = $imagick->getImageWidth();
@@ -353,11 +410,13 @@ if (preg_match('#multipart/#', $partdata['content-type']) && !empty($parts)) {
                 'name' => $file_name,
                 'type' => $partdata['content-type'],
                 'content' => &$file_content,
+                'content-id' => isset($partdata['content-id']) ? $partdata['content-id'] : null,
             );
             $attachments[] = array(
                 'content_type' => $partdata['content-type'],
                 'filename' => $file_name,
                 'data' => &$file_content,
+                'content-id' => isset($partdata['content-id']) ? $partdata['content-id'] : null,
             );
             unset($file_content);
         }
@@ -377,9 +436,17 @@ if (preg_match('#multipart/#', $partdata['content-type']) && !empty($parts)) {
     }
 
     $mail_body = iconv($charset, 'UTF-8', $mail_body);
+
+    $contenttype = 'text/plain';
+
     if ($partdata['content-type'] == 'text/html') {
-        $html2text = new \Html2Text\Html2Text($mail_body, array());
-        $mail_body = $html2text->getText();
+        if ($use_html) {
+            $contenttype = 'text/html';
+            $mail_body = $hm_purifier->purify($mail_body);
+        } else {
+            $html2text = new \Html2Text\Html2Text($mail_body, array());
+            $mail_body = $html2text->getText();
+        }
     }
 }
 
@@ -502,8 +569,11 @@ if (!$prev_tid) { // generate new ticket if previous not found
         'replyto' => $mh_replyto,
         'messageid' => $mh_msgid,
         'headers' => $mail_headers,
+        'contenttype' => $contenttype,
         'body' => $mail_body,
         'categories' => $cats), $files);
+
+    $message_id = $LMS->GetLastMessageID();
 
     if ($autoreply) {
         $ticketid = sprintf("%06d", $ticket_id);
@@ -551,6 +621,7 @@ if (!$prev_tid) { // generate new ticket if previous not found
             'messageid' => $mh_msgid,
             'replyto' => $mh_replyto,
             'headers' => $mail_headers,
+            'contenttype' => $contenttype,
             'body' => $mail_body,
             'inreplyto' => $inreplytoid,
         ), $files);
@@ -656,17 +727,27 @@ if ($notify) {
         'attachments' => &$attachments,
         'url' => $lms_url,
     );
+
     $headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject'), $params);
+
     $params['customerinfo'] = isset($mail_customerinfo) ? $mail_customerinfo : null;
+    $params['contenttype'] = $contenttype;
     $body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body'), $params);
+
     $params['customerinfo'] = isset($sms_customerinfo) ? $sms_customerinfo : null;
+    $params['contenttype'] = 'text/plain';
     $sms_body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body'), $params);
+
+    if ($contenttype == 'text/html') {
+        $headers['X-LMS-Format'] = 'html';
+    }
 
     $LMS->NotifyUsers(array(
         'queue' => $queue,
         'mail_headers' => $headers,
         'mail_body' => $body,
         'sms_body' => $sms_body,
+        'contenttype' => $contenttype,
         'attachments' => &$attachments,
     ));
 }

@@ -391,6 +391,13 @@ if (!isset($resource_tabs['nodegroups']) || $resource_tabs['nodegroups']) {
 if (!isset($resource_tabs['managementurls']) || $resource_tabs['managementurls']) {
     $SMARTY->assign('mgmurls', $LMS->GetManagementUrls(LMSNetDevManager::NODE_URL, $nodeid));
 }
+
+if (!isset($resource_tabs['routednetworks']) || $resource_tabs['routednetworks']) {
+    $SMARTY->assign('routednetworks', $LMS->getNodeRoutedNetworks($nodeid));
+    $SMARTY->assign('notroutednetworks', $LMS->getNodeNotRoutedNetworks($nodeid));
+    $SMARTY->assign('nodeid', $nodeid);
+}
+
 $SMARTY->assign('error', $error);
 $SMARTY->assign('nodeinfo', $nodeinfo);
 $SMARTY->assign('objectid', $nodeinfo['id']);

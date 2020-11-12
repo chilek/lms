@@ -44,7 +44,8 @@ function smarty_function_tax_category_selection($params, $template)
     foreach ($GLOBALS['TAX_CATEGORIES'] as $categoryid => $category) {
         $result .= '<option value="' . $categoryid . '"'
             . ($categoryid == $selected ? ' selected' : '') . ' '
-            . LMSSmartyPlugins::tipFunction(array('text' => $category['description']), $template) . '>' . $category['label'] . '</option>';
+            . LMSSmartyPlugins::tipFunction(array('text' => $category['description']), $template) . '>'
+            . '(' . sprintf('%02d', $categoryid) . ') ' . $category['label'] . '</option>';
     }
     $result .= '</select>';
 

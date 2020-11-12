@@ -107,9 +107,13 @@
 				</TD>
 				<TD style="width: 99%;">
 					{if isset($customer.id)}
-					{customerlist form="setcustomer" customers=$customerlist selected=$customer.id selectname="customer" inputname="customerid" customOnChange="document.getElementById('radio_customer').checked=true;"}
+						{customerlist form="setcustomer" customers=$customerlist selected=$customer.id version=2
+							selectname="customer" inputname="customerid"
+							customOnChange="document.getElementById('radio_customer').checked=true;"}
 					{else}
-					{customerlist form="setcustomer" customers=$customerlist selected=$receipt.customerid selectname="customer" inputname="customerid" customOnChange="document.getElementById('radio_customer').checked=true;"}
+					{customerlist form="setcustomer" customers=$customerlist selected=$receipt.customerid version=2
+						selectname="customer" inputname="customerid"
+						customOnChange="document.getElementById('radio_customer').checked=true;"}
 					{/if}
 				</TD>
 			</TR>

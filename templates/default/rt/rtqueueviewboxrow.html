@@ -25,7 +25,7 @@
 	</TD>
 	<TD class="text-center">
 		<span>{$_SERVICETYPES[$ticket.service]}</span>
-		<span><br>{$_RT_TYPES[$ticket.type].label}</span>
+		<span><br>{trans($_RT_TYPES[$ticket.type].label)}</span>
 	</TD>
 	<TD class="valign-middle">
 		<span class="bold">{$ticket.subject|escape|truncate:"100":"..."|default:"&nbsp;"}</span>
@@ -105,12 +105,17 @@
 			{if !$ticket.ownerid && Auth::GetCurrentUser() != $ticket.verifierid}
 				{button type="link" icon="owner" class="ticket-assign-to-me" tip="Assign to me as owner" href="?m=rtqueueview&ticketid={$ticket.id}&action=assign"}
 			{/if}
+			{if $ticket.priority != $smaty.const.RT_PRIORITY_NORMAL}
+				{button type="link" icon="priority" class="ticket-reset-priority" tip="Reset ticket priority" href="?m=rtticketedit&id={$ticket.id}&action=resetpriority"}
+			{/if}
 			{if ($ticket.state != $smarty.const.RT_RESOLVED && !$ticket.verifierid && Auth::GetCurrentUser() != $ticket.ownerid)}
 				{button type="link" icon="verifier" class="ticket-assign2-to-me" tip="Assign to me as verifier" href="?m=rtqueueview&ticketid={$ticket.id}&action=assign2"}
 			{/if}
 			{if $ticket.state != $smarty.const.RT_RESOLVED}
 				{if $ticket.verifierid && $ticket.verifierid != Auth::GetCurrentUser() &&  $ticket.state != $smarty.const.RT_VERIFIED}
-					{button type="link" icon="verifier" tip="Transfer to verifier" href="?m=rtqueueview&ticketid={$ticket.id}&action=verify"}
+					{button type="link" icon="verifier" tip="Transfer to verifier" href="?m=rtticketedit&id={$ticket.id}&action=verify"}
+				{elseif (ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events') && $ticket['openeventcount'] !== 0)}
+					{button type="link" icon="close" tip="Resolve" href="?m=rtticketedit&id={$ticket.id}&action=resolve" class="disabled" tip="Ticket have open assigned events!"}
 				{else}
 					{button type="link" icon="close" tip="Resolve" href="?m=rtticketedit&id={$ticket.id}&action=resolve"}
 				{/if}
@@ -118,12 +123,6 @@
 
 			{button type="link" icon="print" class="ticket-print" tip="Print" href="?m=rtticketprint&id={$ticket.id}"}
 			{button type="link" icon="clone" href="?m=rtticketadd&ticketid={$ticket.id}" tip="Clone"}
-			{if $ticket.deleted == 1 && $ticket.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
-				{button type="link" icon="reload" href="?m=rtrestore&id={$ticket.id}&taction=restore" tip="Restore<!RT>"}
-				{button type="link" icon="delete" href="?m=rtremove&id={$ticket.id}&taction=delperm" tip="Delete permanently"}
-			{else}
-				{button type="link" icon="delete" href="?m=rtticketdel&id={$ticket.id}&taction=delete" tip="Delete"}
-			{/if}
 
 			{if ($ticket.state != $smarty.const.RT_RESOLVED || ($ticket.state == $smarty.const.RT_RESOLVED && $aet && ($smarty.now - $ticket.resolvetime) < $aet)) || (ConfigHelper::checkPrivilege('superuser'))}
 				{button type="link" icon="edit" href="?m=rtticketedit&id={$ticket.id}" tip="Edit"}
@@ -131,6 +130,12 @@
 			{button type="link" icon="note" href="?m=rtnoteadd&ticketid={$ticket.id}" tip="New Note"}
 			{if ($ticket.state != $smarty.const.RT_RESOLVED || ($ticket.state == $smarty.const.RT_RESOLVED && $aet && ($smarty.now - $ticket.resolvetime) < $aet)) || (ConfigHelper::checkPrivilege('superuser'))}
 				{button type="link" icon="message" href="?m=rtmessageadd&ticketid={$ticket.id}" tip="New Message"}
+			{/if}
+			{if $ticket.deleted == 1 && $ticket.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
+				{button type="link" icon="reload" href="?m=rtrestore&id={$ticket.id}&taction=restore" tip="Restore<!RT>"}
+				{button type="link" icon="delete" href="?m=rtremove&id={$ticket.id}&taction=delperm" tip="Delete permanently"}
+			{else}
+				{button type="link" icon="delete" href="?m=rtticketdel&id={$ticket.id}&taction=delete" tip="Delete"}
 			{/if}
 		{/buttons}
 		<input type="checkbox" class="lms-ui-multi-check" name="ticketid[]" value="{$ticket.id}">

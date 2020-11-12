@@ -38,17 +38,18 @@ function smarty_function_persistent_filter($params, $template)
         $persistent_filter = $filter[$filter_id]['persistent_filter'];
     }
 
+    $filters = '';
+
     if (!empty($persistent_filters) && is_array($persistent_filters)) {
         foreach ($persistent_filters as $key => $row) {
             $text[$key] = $row['text'];
         }
         array_multisort($text, SORT_ASC, $persistent_filters);
-    }
 
-    $filters = '';
-    foreach ($persistent_filters as $filter) {
-        $filters .= '<option value="' . $filter['value'] . '"' . ($filter['value'] == $persistent_filter ? ' selected' : '')
-            . '>' . $filter['text'] . '</option >';
+        foreach ($persistent_filters as $filter) {
+            $filters .= '<option value="' . $filter['value'] . '"' . ($filter['value'] == $persistent_filter ? ' selected' : '')
+                . '>' . $filter['text'] . '</option >';
+        }
     }
 
     return '

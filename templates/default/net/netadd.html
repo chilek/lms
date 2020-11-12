@@ -65,7 +65,9 @@
 			<img src="img/customer.gif" alt=""> {trans("Customer:")}
 		</td>
 		<TD colspan="3">
-			{customerlist form="netadd" customers=$customers selected=$netadd.ownerid selectname="netadd[customerid]" inputname="netadd[ownerid]" selecttip="Assign network to customer" inputtip="Enter customer ID (optional)"}
+			{customerlist form="netadd" customers=$customers selected=$netadd.ownerid version=2
+				selectname="netadd[customerid]" inputname="netadd[ownerid]" selecttip="Assign network to customer"
+				inputtip="Enter customer ID (optional)"}
 		</td>
 	</tr>
 	<TR>

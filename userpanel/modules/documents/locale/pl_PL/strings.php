@@ -30,7 +30,7 @@ $_LANG['Document management'] = 'Zarządzanie dokumentami';
 $_LANG['This module allows to view documents'] = 'Moduł pozwala przeglądać dokumenty';
 
 $_LANG['Hide customer document box'] = 'Ukryj okno dokumentów klienta';
-$_LANG['Don\'t show customer document box if he hasn\'t any documents'] = 'Jeśli klient nie posiada dokumentów ukrywa całkowicie okno informacji o dokumentach';
+$_LANG['Don\'t show customer document box if he hasn\'t any documents'] = 'Jeśli klient nie posiada dokumentów, ukrywa całkowicie okno informacji o dokumentach';
 $_LANG['Your documents'] = 'Twoje dokumenty';
 $_LANG['No such documents on your account.'] = 'Nie ma żadnych dokumentów na Twoim koncie.';
 $_LANG['not approved'] = 'niezatwierdzony';
@@ -62,20 +62,20 @@ $_LANG['Enter document approval customer notification mail subject'] = 'Wprowad�
 $_LANG['Enter document approval customer notification mail body'] = 'Wprowadź treść listu z powiadomieniem klienta o skanie podpisanego dokumentu';
 
 $_LANG['Sender name:'] = 'Nazwa nadawcy:';
-$_LANG['Sender mail address:'] = 'Adres mail nadawcy:';
+$_LANG['Sender mail address:'] = 'Adres e-mail nadawcy:';
 
 $_LANG['DSN address:'] = 'Adres DSN:';
-$_LANG['Enter document notification mail DSN (Delivery Status Notification) address'] = 'Podaj adres email DSN (powiadomień o statusie dostarczenia) powiadomienia o dokumencie';
+$_LANG['Enter document notification mail DSN (Delivery Status Notification) address'] = 'Podaj adres e-mail DSN (powiadomień o statusie dostarczenia) powiadomienia o dokumencie';
 
 $_LANG['MDN address:'] = 'Adres MDN:';
-$_LANG['Enter document notification mail MDN (Message Delivery Notification) address'] = 'Podaj adres email MDN (powiadomień o odebraniu wiadomości) powiadomienia o dokumencie';
+$_LANG['Enter document notification mail MDN (Message Delivery Notification) address'] = 'Podaj adres e-mail MDN (powiadomień o odebraniu wiadomości) powiadomienia o dokumencie';
 
 $_LANG['Reply address:'] = 'Adres do odpowiedzi:';
-$_LANG['Enter document notification mail reply address'] = 'Podaj adres do odpowiedzi na powiadomienia o dokumencie';
+$_LANG['Enter document notification mail reply address'] = 'Podaj adres e-mail do odpowiedzi na powiadomienia o dokumencie';
 
 $_LANG['Authorization'] = 'Autoryzacja';
 $_LANG['Enter code:'] = 'Wprowadź kod:';
-$_LANG['... which you received on your mobile phone'] = '... który otrzymałeś w Twoim telefonie komórkowym';
+$_LANG['... which you received on your mobile phone'] = '… który otrzymałeś w Twoim telefonie komórkowym';
 
 $_LANG['Your previous authorization code is still valid. Please wait a minute until it expires.'] = 'Twój poprzedni kod autoryzacyjny jest wciąż ważny. Poczekaj minutę, aby wygasł.';
 $_LANG['Your authorization code has expired! Try again in a moment.'] = 'Wygasł Twój kod autoryzacyjny! Spróbuj ponownie za moment.';

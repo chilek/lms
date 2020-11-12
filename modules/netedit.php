@@ -183,8 +183,16 @@ if (isset($_POST['networkdata'])) {
         }
     }
 
-    if (!empty($networkdata['ownerid']) && !$LMS->CustomerExists($networkdata['ownerid'])) {
-        $error['ownerid'] = trans('Customer with the specified ID does not exist');
+    $networkdata['removeroutednetworks'] = false;
+
+    if (!empty($networkdata['ownerid'])) {
+        if (!$LMS->CustomerExists($networkdata['ownerid'])) {
+            $error['ownerid'] = trans('Customer with the specified ID does not exist');
+        } else {
+            if ($networkdata['ownerid'] != $network['ownerid']) {
+                $networkdata['removeroutednetworks'] = true;
+            }
+        }
     }
 
     $authtype = 0;
@@ -198,6 +206,13 @@ if (isset($_POST['networkdata'])) {
     if (!$error) {
         if (isset($networkdata['needshft']) && $networkdata['needshft']) {
             $LMS->NetworkShift($networkdata['id'], $network['address'], $network['mask'], $networkdata['addresslong'] - $network['addresslong']);
+        }
+
+        if ($networkdata['removeroutednetworks']) {
+            $LMS->deleteNodeRoutedNetworks(array(
+                'nodeid' => null,
+                'networks' => array($networkdata['id']),
+            ));
         }
 
         if ($networkdata['ownerid'] != $network['ownerid']) {

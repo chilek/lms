@@ -83,6 +83,20 @@ $CSTATUSES = array(
     ),
 );
 
+define('CUSTOMER_FLAG_RELATED_ENTITY', 1);
+define('CUSTOMER_FLAG_VAT_PAYER', 2);
+
+$CUSTOMERFLAGS = array(
+    CUSTOMER_FLAG_RELATED_ENTITY => array(
+        'label' => trans('related entity'),
+        'tip' => trans('translates into JPK TP flag'),
+    ),
+    CUSTOMER_FLAG_VAT_PAYER => array(
+        'label' => trans('VAT payer'),
+        'tip' => trans('if customer is not VAT payer, then his telecommunication services are reported with JPK EE flag'),
+    ),
+);
+
 // customer consents
 define('CCONSENT_DATE', 1);
 define('CCONSENT_INVOICENOTICE', 2);
@@ -224,7 +238,7 @@ $RT_STATES = array(
         'name' => 'RT_EXPIRED'
     ),
     RT_VERIFIED => array(
-        'label' => trans('Verified'),
+        'label' => trans('verified'),
         'color' => 'green',
         'img' => 'img/verifier.png',
         'name' => 'RT_VERIFIED'
@@ -374,62 +388,62 @@ define('RT_TYPE_TRANSFER', 12);
 
 $RT_TYPES = array(
     RT_TYPE_OTHER => array(
-        'label' => trans('Other'),
+        'label' => 'Other',
         'class' => 'lms-ui-rt-ticket-type-other',
         'name' => 'RT_TYPE_OTHER'
     ),
     RT_TYPE_OFFER => array(
-        'label' => trans('Offer'),
+        'label' => 'Offer',
         'class' => 'lms-ui-rt-ticket-type-offer',
         'name' => 'RT_TYPE_OFFER'
     ),
     RT_TYPE_DOCS => array(
-        'label' => trans('Documents'),
+        'label' => 'Documents',
         'class' => 'lms-ui-rt-ticket-type-docs',
         'name' => 'RT_TYPE_DOCS'
     ),
     RT_TYPE_FAULT => array(
-        'label' => trans('Fault'),
+        'label' => 'Fault',
         'class' => 'lms-ui-rt-ticket-type-fault',
         'name' => 'RT_TYPE_FAULT'
     ),
     RT_TYPE_INST => array(
-        'label' => trans('Instalation'),
+        'label' => 'Instalation',
         'class' => 'lms-ui-rt-ticket-type-inst',
         'name' => 'RT_TYPE_INST'
     ),
     RT_TYPE_MOD => array(
-        'label' => trans('Modification'),
+        'label' => 'Modification',
         'class' => 'lms-ui-rt-ticket-type-mod',
         'name' => 'RT_TYPE_MOD'
     ),
     RT_TYPE_CONF => array(
-        'label' => trans('Configuration'),
+        'label' => 'Configuration',
         'class' => 'lms-ui-rt-ticket-type-conf',
         'name' => 'RT_TYPE_CONF'
     ),
     RT_TYPE_START => array(
-        'label' => trans('Start service'),
+        'label' => 'Start service',
         'class' => 'lms-ui-rt-ticket-type-start',
         'name' => 'RT_TYPE_START'
     ),
     RT_TYPE_STOP => array(
-        'label' => trans('Hold service'),
+        'label' => 'Hold service',
         'class' => 'lms-ui-rt-ticket-type-stop',
         'name' => 'RT_TYPE_STOP'
     ),
     RT_TYPE_TRANSFER => array(
-      'label' => trans('Transfer service'),
+      'label' => 'Transfer service',
       'class' => 'lms-ui-rt-ticket-type-transfer',
       'name' => 'RT_TYPE_TRANSFER'
     ),
     RT_TYPE_REMOVE => array(
-        'label' => trans('Deinstalation'),
+        'label' => 'Deinstalation',
         'class' => 'lms-ui-rt-ticket-type-remove',
         'name' => 'RT_TYPE_REMOVE'
     ),
     RT_TYPE_PAYMENT => array(
-        'label' => trans('Payment'),
+        'label' => 'Payment',
         'class' => 'lms-ui-rt-ticket-type-payment',
         'name' => 'RT_TYPE_PAYMENT'
     ),
@@ -609,6 +623,16 @@ $DOCTYPES = array(
 );
 
 define('DOC_FLAG_RECEIPT', 1);
+define('DOC_FLAG_TELECOM_SERVICE', 2);
+define('DOC_FLAG_RELATED_ENTITY', 4);
+define('DOC_FLAG_SPLIT_PAYMENT', 8);
+
+$DOC_FLAGS = array(
+    DOC_FLAG_RECEIPT => trans('FP'),
+    DOC_FLAG_TELECOM_SERVICE => trans('EE'),
+    DOC_FLAG_RELATED_ENTITY => trans('TP'),
+    DOC_FLAG_SPLIT_PAYMENT => trans('MPP'),
+);
 
 define('DOC_ENTITY_ORIGINAL', 1);
 define('DOC_ENTITY_COPY', 2);
@@ -1028,6 +1052,13 @@ define('EXISTINGASSIGNMENT_SUSPEND', 1);
 define('EXISTINGASSIGNMENT_CUT', 2);
 define('EXISTINGASSIGNMENT_DELETE', 3);
 
+$EXISTINGASSIGNMENTS = array(
+    EXISTINGASSIGNMENT_KEEP => trans('<!existingassignment>keep'),
+    EXISTINGASSIGNMENT_SUSPEND => trans('<!existingassignment>suspend'),
+    EXISTINGASSIGNMENT_CUT => trans('<!existingassignment>cut'),
+    EXISTINGASSIGNMENT_DELETE => trans('<!existingassignment>delete'),
+);
+
 $CURRENCIES = array(
     'AUD' => 'AUD',
     'BGN' => 'BGN',
@@ -1070,49 +1101,50 @@ $CURRENCIES = array(
     'ZAR' => 'ZAR',
 );
 
-$EXISTINGASSIGNMENTS = array(
-    EXISTINGASSIGNMENT_KEEP => trans('<!existingassignment>keep'),
-    EXISTINGASSIGNMENT_SUSPEND => trans('<!existingassignment>suspend'),
-    EXISTINGASSIGNMENT_CUT => trans('<!existingassignment>cut'),
-    EXISTINGASSIGNMENT_DELETE => trans('<!existingassignment>delete'),
-);
-
 $TAX_CATEGORIES = array(
-    10 => array(
-        'label' => 'budynek lub grunt',
-        'description' => 'Dostawa budynków, budowli i gruntów',
-    ),
-    9 => array(
-        'label' => 'lek lub wybór medyczny',
-        'description' => 'Dostawa leków oraz wyrobów medycznych - produktów leczniczych, środków spożywczych specjalnego przeznaczenia żywieniowego oraz wyrobów medycznych, objętych obowiązkiem zgłoszenia, o którym mowa w art. 37av ust. 1 ustawy z dnia 6 września 2001 r. - Prawo farmaceutyczne (Dz. U. z 2019 r. poz. 499, z późn. zm.)',
-    ),
-    8 => array(
-        'label' => 'metal szlachetny lub nieszlachetny',
-        'description' => 'Dostawa metali szlachetnych oraz nieszlachetnych - wyłącznie określonych w poz. 1-3 załącznika nr 12 do ustawy oraz w poz. 12-25, 33-40, 45, 46, 56 i 78 załącznika nr 15 do ustawy',
-    ),
     1 => array(
         'label' => 'napój alkoholowy',
         'description' => 'Dostawa napojów alkoholowych - alkoholu etylowego, piwa, wina, napojów fermentowanych i wyrobów pośrednich, w rozumieniu przepisów o podatku akcyzowym',
-    ),
-    5 => array(
-        'label' => 'odpad',
-        'description' => 'Dostawa odpadów - wyłącznie określonych w poz. 79-91 załącznika nr 15 do ustawy',
-    ),
-    3 => array(
-        'label' => 'olej opałowy',
-        'description' => 'Dostawa oleju opałowego w rozumieniu przepisów o podatku akcyzowym oraz olejów smarowych, pozostałych olejów o kodach CN od 2710 19 71 do 2710 19 99, z wyłączeniem wyrobów o kodzie CN 2710 19 85 (oleje białe, parafina ciekła) oraz smarów plastycznych zaliczanych do kodu CN 2710 19 99, olejów smarowych o kodzie CN 2710 20 90, preparatów smarowych objętych pozycją CN 3403, z wyłączeniem smarów plastycznych objętych tą pozycją',
     ),
     2 => array(
         'label' => 'paliwo',
         'description' => 'Dostawa towarów, o których mowa w art. 103 ust. 5aa ustawy',
     ),
-    7 => array(
-        'label' => 'pojazd samochodowy',
-        'description' => 'Dostawa pojazdów oraz części samochodowych o kodach wyłącznie CN 8701 - 8708 oraz CN 8708 10',
+    3 => array(
+        'label' => 'olej opałowy',
+        'description' => 'Dostawa oleju opałowego w rozumieniu przepisów o podatku akcyzowym oraz olejów smarowych, pozostałych olejów o kodach CN od 2710 19 71 do 2710 19 99, z wyłączeniem wyrobów o kodzie CN 2710 19 85 (oleje białe, parafina ciekła) oraz smarów plastycznych zaliczanych do kodu CN 2710 19 99, olejów smarowych o kodzie CN 2710 20 90, preparatów smarowych objętych pozycją CN 3403, z wyłączeniem smarów plastycznych objętych tą pozycją',
+    ),
+    4 => array(
+        'label' => 'wyrób nikotynowy',
+        'description' => 'Dostawa wyrobów tytoniowych, suszu tytoniowego, płynu do papierosów elektronicznych i wyrobów nowatorskich, w rozumieniu przepisów o podatku akcyzowym',
+    ),
+    5 => array(
+        'label' => 'odpad',
+        'description' => 'Dostawa odpadów - wyłącznie określonych w poz. 79-91 załącznika nr 15 do ustawy',
     ),
     6 => array(
         'label' => 'urządzenie elektroniczne',
         'description' => 'Dostawa urządzeń elektronicznych oraz części i materiałów do nich, wyłącznie określonych w poz. 7-9, 59-63, 65, 66, 69 i 94-96 załącznika nr 15 do ustawy',
+    ),
+    7 => array(
+        'label' => 'pojazd samochodowy',
+        'description' => 'Dostawa pojazdów oraz części samochodowych o kodach wyłącznie CN 8701 - 8708 oraz CN 8708 10',
+    ),
+    8 => array(
+        'label' => 'metal szlachetny lub nieszlachetny',
+        'description' => 'Dostawa metali szlachetnych oraz nieszlachetnych - wyłącznie określonych w poz. 1-3 załącznika nr 12 do ustawy oraz w poz. 12-25, 33-40, 45, 46, 56 i 78 załącznika nr 15 do ustawy',
+    ),
+    9 => array(
+        'label' => 'lek lub wybór medyczny',
+        'description' => 'Dostawa leków oraz wyrobów medycznych - produktów leczniczych, środków spożywczych specjalnego przeznaczenia żywieniowego oraz wyrobów medycznych, objętych obowiązkiem zgłoszenia, o którym mowa w art. 37av ust. 1 ustawy z dnia 6 września 2001 r. - Prawo farmaceutyczne (Dz. U. z 2019 r. poz. 499, z późn. zm.)',
+    ),
+    10 => array(
+        'label' => 'budynek lub grunt',
+        'description' => 'Dostawa budynków, budowli i gruntów',
+    ),
+    11 => array(
+        'label' => 'usługa związana z gazami cieplarnianymi',
+        'description' => 'Świadczenie usług w zakresie przenoszenia uprawnień do emisji gazów cieplarnianych, o których mowa w ustawie z dnia 12 czerwca 2015 r. o systemie handlu uprawnieniami do emisji gazów cieplarnianych (Dz. U. z 2018 r. poz. 1201 i 2538 oraz z 2019 r. poz. 730, 1501 i 1532)',
     ),
     12 => array(
         'label' => 'usługa o charakterze niematerialnym',
@@ -1122,20 +1154,13 @@ $TAX_CATEGORIES = array(
         'label' => 'usługa transportowa lub gospodarki magazynowej',
         'description' => 'Świadczenie usług transportowych i gospodarki magazynowej - Sekcja H PKWiU 2015 symbol ex 49.4, ex 52.1',
     ),
-    11 => array(
-        'label' => 'usługa związana z gazami cieplarnianymi',
-        'description' => 'Świadczenie usług w zakresie przenoszenia uprawnień do emisji gazów cieplarnianych, o których mowa w ustawie z dnia 12 czerwca 2015 r. o systemie handlu uprawnieniami do emisji gazów cieplarnianych (Dz. U. z 2018 r. poz. 1201 i 2538 oraz z 2019 r. poz. 730, 1501 i 1532)',
-    ),
-    4 => array(
-        'label' => 'wyrób nikotynowy',
-        'description' => 'Dostawa wyrobów tytoniowych, suszu tytoniowego, płynu do papierosów elektronicznych i wyrobów nowatorskich, w rozumieniu przepisów o podatku akcyzowym',
-    ),
 );
 
 if (isset($SMARTY)) {
     $SMARTY->assign('_NETWORK_INTERFACE_TYPES', $NETWORK_INTERFACE_TYPES);
     $SMARTY->assign('_CTYPES', $CTYPES);
     $SMARTY->assign('_CSTATUSES', $CSTATUSES);
+    $SMARTY->assign('_CUSTOMERFLAGS', $CUSTOMERFLAGS);
     $SMARTY->assign('_CCONSENTS', $CCONSENTS);
     $SMARTY->assign('_MESSAGETEMPLATES', $MESSAGETEMPLATES);
     $SMARTY->assign('_ACCOUNTTYPES', $ACCOUNTTYPES);

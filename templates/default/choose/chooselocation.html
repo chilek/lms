@@ -18,6 +18,14 @@
 		z-index: 1;
 	}
 
+	#location-box-autosuggest .lms-ui-suggestion-item:not(:hover):nth-child(even) {
+		background-color: #F4F0EC;
+	}
+
+	#location-box-autosuggest .lms-ui-suggestion-item .terc {
+		font-size: 80%;
+	}
+
 	@media screen and (max-width: 800px) {
 		#location-box-autosuggest .lms-ui-suggestion-list {
 			overflow: initial;
@@ -53,6 +61,8 @@
 		uri: '?m=chooselocation&ajax=1&mode=city&what=',
 		autosubmit: 0,
 		suggestionContainer: '#location-box-autosuggest',
+		suggestMaxLength: 0,
+		autoSubmitForm: false,
 		onSubmit: function(data) {
 			if (data.hasOwnProperty('action')) {
 				search_update(data.action.cityid, data.action.districtid, data.action.stateid);

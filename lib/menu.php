@@ -488,6 +488,12 @@ $menu = array(
                     'tip' => trans('Allows you to add new document'),
                     'prio' => 20,
                 ),
+                'documentscanadd' => array(
+                    'name' => trans('Add Scans'),
+                    'link' => '?m=documentscanadd',
+                    'tip' => trans('Allow you to attach scan to existing document'),
+                    'prio' => 25,
+                ),
 //              'documentsearch' => array(
 //                  'name' => trans('Search'),
 //                  'link' => '?m=documentsearch',

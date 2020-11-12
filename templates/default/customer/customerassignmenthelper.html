@@ -438,10 +438,17 @@
 								</TD>
 								<TD>
 									{trans("from:")}
-									<INPUT type="TEXT" name="{$variable_prefix}[datefrom]" value="{if $variables.datefrom}{$variables.datefrom}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter accounting start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="datefrom"} SIZE="10">
-
+									<input type="text" name="{$variable_prefix}[datefrom]"
+										value="{if $variables.datefrom}{$variables.datefrom}{/if}"
+										placeholder="{trans("yyyy/mm/dd")}"
+										{tip class="lms-ui-date lms-ui-date-unix" text="Enter accounting start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="datefrom"}
+										size="10">
 									{trans("to:")}
-									<INPUT type="TEXT" name="{$variable_prefix}[dateto]" value="{if $variables.dateto}{$variables.dateto}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter accounting end date in YYYY/MM/DD format. Leave this field empty if you don't want to set expiration date" trigger="dateto"} SIZE="10">
+									<input type="text" name="{$variable_prefix}[dateto]"
+										value="{if $variables.dateto}{$variables.dateto}{/if}"
+										placeholder="{trans("yyyy/mm/dd")}"
+										{tip class="lms-ui-date lms-ui-date-unix" text="Enter accounting end date in YYYY/MM/DD format. Leave this field empty if you don't want to set expiration date" trigger="dateto"}
+										size="10">
 								</TD>
 							</TR>
 
@@ -480,6 +487,21 @@
 									</SELECT>
 								</TD>
 							</TR>
+
+							<TR id="a_type" style="display: none;">
+								<TD>
+									<IMG SRC="img/money.gif" alt="">
+								</TD>
+								<TD>
+									{trans("Type:")}
+								</TD>
+								<TD>
+									<SELECT id="tariff-type" size="1" name="{$variable_prefix}[type]" {tip text="Select liability type" trigger="type"}>
+										{foreach $_SERVICETYPES as $key => $item}
+											<OPTION VALUE="{$key}"{if $variables.type == $key} selected{/if}>{$item}</OPTION>
+										{/foreach}
+									</SELECT>
+								</TD>
 
 							<TR id="a_tax" style="display: none;">
 								<TD>

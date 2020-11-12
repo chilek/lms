@@ -139,7 +139,7 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
         } elseif ($this->data['ssn']) {
             $recipient .= trans('SSN') . ': ' . $this->data['ssn'];
         }
-        $this->backend->SetFont(self::TCPDF_FONT, '', 10);
+        $this->backend->SetFont(self::TCPDF_FONT, '', 8);
         $this->backend->writeHTMLCell(80, '', 15, 80.5, $recipient, 0, 1, 0, true, 'L');
 
         $y = $this->backend->GetY();

@@ -2,20 +2,45 @@
 <html>
 <head>
 <title>{trans("Contract")}</title>
-<STYLE type="text/css">
-<!--
+<style>
+
 BODY		{ font-size: 12pt; font-family: LiberationSans, sans-serif; }
 H1		{ font-size: 14pt; text-align: center; }
 H2		{ font-size: 12pt; text-align: center; color: red;}
 TD		{ font-size: 12pt; font-family: LiberationSans, sans-serif; }
 TABLE		{ border-collapse: collapse; }
 P		{ font-size: 12pt; font-family: LiberationSans, sans-serif; text-align: center; }
--->
-</STYLE>
+
+.barcode {
+	display: flex;
+	background-color: white;
+	font-size: 12pt;
+	font-weight: bold;
+	padding-top: 0.2cm;
+	padding-bottom: 0.2cm;
+	align-items: center;
+	justify-content: center;
+	flex-wrap: wrap;
+}
+
+.barcode span {
+	width: 100%;
+	text-align: center;
+}
+
+</style>
 <meta http-equiv="Content-Type" content="text/html; charset={Localisation::getCurrentHtmlCharset()}">
 </head>
 <body>
-<h1>{$engine.title} {$document.nr}</h1>
+<h1>
+	{if isset($document.barcode)}
+		<div class="barcode">
+			<img src="data:image/png;base64,{$document.barcode}">
+			<span>{$document.nr}</span>
+		</div>
+	{/if}
+	{$engine.title} {$document.nr}
+</h1>
 <h2>{trans("Warning! This is example document (default template). You can create your own template in documents/templates/ directory.")}</h2>
 <p>Zawarta w dniu {$smarty.now|date_format:"%Y-%m-%d"} w <s>Miasto</s> pomiędzy
 <s>{$division.name}</s> z siedzibą w <s>{$division.address}</s> wpisanym do rejestru KRS pod

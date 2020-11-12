@@ -56,7 +56,7 @@ interface LMSCustomerManagerInterface
 
     public function GetCustomerShortBalanceList($customerid, $limit = 10, $order = 'DESC');
 
-    public function getLastNInTable($body, $customerid, $eol, $aggregate_documents = false);
+    public function getLastNInTable($body, $customerid, $format, $aggregate_documents = false);
 
     public function customerStats();
 
@@ -100,6 +100,8 @@ interface LMSCustomerManagerInterface
 
     public function isSplitPaymentSuggested($customerid, $cdate, $value);
 
+    public function isTelecomServiceSuggested($customerid);
+
     public function getCustomerSMSOptions();
 
     public function GetCustomerAddressesWithoutEndPoints($customerid);
@@ -127,4 +129,8 @@ interface LMSCustomerManagerInterface
     public function addCustomerNote($params);
 
     public function delCustomerNote($id);
+
+    public function raiseCustomerKarma($id);
+
+    public function lowerCustomerKarma($id);
 }

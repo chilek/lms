@@ -360,7 +360,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             //$jpk_vat_version = $datefrom < mktime(0, 0, 0, 1, 1, 2018) ? 2 : 3;
             // if current date is earlier than 1 I 2018
             //$jpk_vat_version = time() < mktime(0, 0, 0, 1, 1, 2018) ? 2 : 3;
-            $jpk_vat_version = (time() < mktime(0, 0, 0, 10, 1, 2020) ? 3 : 4);
+            $jpk_vat_version = (time() < mktime(0, 0, 0, 11, 1, 2020) ? 3 : 4);
         } else {
             // if date from for report is earlier than 2 XII 2019
             //$jpk_fa_version = $datefrom < mktime(0, 0, 0, 12, 2, 2019) ? 2 : 3;
@@ -564,9 +564,17 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                     sort($tax_categories, SORT_NUMERIC);
                     if (!empty($tax_categories)) {
                         foreach ($tax_categories as $idx => $tax_category) {
-                            $jpk_data .= "\t\t<GTU_" . sprintf("%02d", $idx + 1)
-                                . ">1</GTU_" . sprintf("%02d", $idx + 1) . ">\n";
+                            $jpk_data .= "\t\t<GTU_" . sprintf("%02d", $tax_category)
+                                . ">1</GTU_" . sprintf("%02d", $tax_category) . ">\n";
                         }
+                    }
+
+                    if (!empty($invoice['flags'][DOC_FLAG_TELECOM_SERVICE])) {
+                        $jpk_data .= "\t\t<EE>1</EE>\n";
+                    }
+
+                    if (!empty($invoice['flags'][DOC_FLAG_RELATED_ENTITY])) {
+                        $jpk_data .= "\t\t<TP>1</TP>\n";
                     }
 
                     $splitpayment = isset($invoice['splitpayment']) && !empty($invoice['splitpayment']);
