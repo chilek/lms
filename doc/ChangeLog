@@ -236,6 +236,8 @@ version 26-git (????-??-??):
   - improvement: 'invoices.jpk_flags' toggles JPK flags presentation on generated invoice
     ('false' by default) [chilan]
   - enhancement: helpdesk ticket regular messages can use html format [chilan]
+  - improvement: 'rt.default_editor' has similar role to 'phpui.default_editor' setting, but
+    the first one controls default editor in helpdesk forms ('html' by default) [chilan]
 
 version 25.0 (2020-05-15):
 
