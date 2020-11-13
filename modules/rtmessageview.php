@@ -29,7 +29,7 @@ if (isset($_GET['file']) || isset($_GET['cid'])) {
         access_denied();
     }
 
-    if (isset($GET['file'])) {
+    if (isset($_GET['file'])) {
         $filename = urldecode($_GET['file']);
         $attach = $DB->GetRow('SELECT * FROM rtattachments WHERE messageid = ? AND filename = ?', array(intval($_GET['mid']), $filename));
     } else {
