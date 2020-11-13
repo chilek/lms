@@ -179,7 +179,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
                 accessfrom, accessto, rname, twofactorauth
             FROM vallusers
             WHERE deleted = 0'
-                . (isset($access) ? ' AND access = ' . $access : '' )
+                . (isset($access) ? ' AND access = ' . intval($access) : '' )
                 . (isset($divisions) && !empty($divisions) ? ' AND id IN (SELECT userid
                     FROM userdivisions
                     WHERE divisionid IN (' . $divisions . ')
