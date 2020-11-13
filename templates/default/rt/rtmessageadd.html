@@ -69,7 +69,7 @@
 			{block name="rtmessageadd-content"}
 			{box_row icon="img/edit.gif" label="Content:"}
 				<TEXTAREA name="message[body]" cols="75" rows="10"
-					{tip class="lms-ui-wysiwyg-editor" text="Enter message content" trigger="body"}
+					{tip class="lms-ui-wysiwyg-editor lms-ui-helpdesk" text="Enter message content" trigger="body"}
 					{if isset($message.wysiwyg.body)} data-wysiwyg="{$message.wysiwyg.body}"{/if}
 					>{$message.body}</TEXTAREA>
 			{/box_row}
