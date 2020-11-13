@@ -33,7 +33,7 @@ $parameters = array(
     'help' => 'h',
     'version' => 'v',
     'queue:' => 'q:',
-    'message-file:' => '-m:',
+    'message-file:' => 'm:',
     'use-html' => null,
 );
 
@@ -301,6 +301,8 @@ if ($use_html) {
         'tel' => true,
         'cid' => true,
     ));
+    $hm_config->set('CSS.MaxImgLength', null);
+    $hm_config->set('HTML.MaxImgLength', null);
     HTMLPurifier_URISchemeRegistry::instance()->register('cid', new HTMLPurifier_URIScheme_cid());
     $hm_purifier = new HTMLPurifier($hm_config);
 }
