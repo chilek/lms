@@ -127,9 +127,9 @@
 		<TD class="bold">
 			{trans("Message:")}
 		</TD>
-		<TD class="message-html-body">
-			{if $message.contentype == 'text/plain'}
-				<textarea rows="5" cols="100" readonly>{$message.body|escape|replace:"\n":'<br>'|message_quote}</textarea>
+		<TD{if $message.contenttype == 'text/html'} class="message-html-body"{/if}>
+			{if $message.contenttype == 'text/plain'}
+				<textarea rows="5" cols="100" readonly>{$message.body|trim|escape|message_quote}</textarea>
 			{else}
 				{$message.body|message_quote}
 			{/if}
