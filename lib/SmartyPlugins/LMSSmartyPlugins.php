@@ -559,7 +559,7 @@ class LMSSmartyPlugins
         echo '<tr>
               <td colspan="2">
                   <label><input type="checkbox" name="' . $input_name_teryt . '" class="lms-ui-address-teryt-checkbox" ' . (!empty($params['teryt']) ? 'checked' : '') . ' data-address="teryt-checkbox">' . trans("TERRIT-DB") . '</label>
-                  ' . self::buttonFunction(array('icon' => 'popup', 'class' => 'teryt-address-button'), $template) . '
+                  ' . self::functionButton(array('icon' => 'popup', 'class' => 'teryt-address-button'), $template) . '
               </td>
           </tr>';
 
@@ -662,15 +662,15 @@ class LMSSmartyPlugins
             echo '<input type="hidden" value="' . LOCATION_ADDRESS .                          '" name="' . $params['data']['prefix'] . '[location_address_type]" data-address="address_type">';
         }
 
-        $params['data']['buttons'] = self::buttonFunction(array('icon' => 'clear', 'tip' => 'Clear', 'class' => 'clear-location-box'), $template);
+        $params['data']['buttons'] = self::functionButton(array('icon' => 'clear', 'tip' => 'Clear', 'class' => 'clear-location-box'), $template);
         if (isset($params['data']['delete_button'])) {
-            $params['data']['buttons'] .= self::buttonFunction(array('icon' => 'trash', 'tip' => 'Delete', 'class' => 'delete-location-box'), $template);
+            $params['data']['buttons'] .= self::functionButton(array('icon' => 'trash', 'tip' => 'Delete', 'class' => 'delete-location-box'), $template);
         }
         if (isset($params['data']['billing_address_button'])) {
-            $params['data']['buttons'] .= self::buttonFunction(array('icon' => 'home', 'tip' => 'Copy from billing address', 'class' => 'copy-address', 'data_type' => BILLING_ADDRESS), $template);
+            $params['data']['buttons'] .= self::functionButton(array('icon' => 'home', 'tip' => 'Copy from billing address', 'class' => 'copy-address', 'data_type' => BILLING_ADDRESS), $template);
         }
         if (isset($params['data']['post_address_button'])) {
-            $params['data']['buttons'] .= self::buttonFunction(array('icon' => 'mail', 'tip' => 'Copy from post address', 'class' => 'copy-address', 'data_type' => POSTAL_ADDRESS), $template);
+            $params['data']['buttons'] .= self::functionButton(array('icon' => 'mail', 'tip' => 'Copy from post address', 'class' => 'copy-address', 'data_type' => POSTAL_ADDRESS), $template);
         }
 
         self::locationBoxFunction($params['data'], $template);
@@ -739,9 +739,7 @@ class LMSSmartyPlugins
                 $error = str_replace("\n", '<BR>', $error);
 
                 $result .= ' title="' . $error . '" ';
-                if ($params['bold'] || !empty($class)) {
-                    $result .= ' class="' . (empty($class) ? '' : $class) . ($params['bold'] ? ' lms-ui-error bold" ' : ' lms-ui-error" ');
-                }
+                $result .= ' class="' . (empty($class) ? '' : $class) . ($params['bold'] ? ' lms-ui-error bold" ' : ' lms-ui-error" ');
             } else {
                 $warnings = $template->getTemplateVars('warning');
                 if (isset($params['trigger']) && isset($warnings[$params['trigger']])) {
@@ -751,9 +749,7 @@ class LMSSmartyPlugins
                     $error = str_replace("\n", '<BR>', $error);
 
                     $result .= ' title="' . $error . '" ';
-                    if ($params['bold'] || !empty($class)) {
-                        $result .= ' class="' . (empty($class) ? '' : $class) . ($params['bold'] ? ' lms-ui-warning bold" ' : ' lms-ui-warning" ');
-                    }
+                    $result .= ' class="' . (empty($class) ? '' : $class) . ($params['bold'] ? ' lms-ui-warning bold" ' : ' lms-ui-warning" ');
                 } else {
                     if ($params['text'] != '') {
                         $text = $params['text'];
@@ -767,9 +763,7 @@ class LMSSmartyPlugins
 
                         $result .= ' title="' . $text . '" ';
                     }
-                    if (isset($params['bold']) || !empty($class)) {
-                        $result .= ' class="' . (empty($class) ? '' : $class) . (isset($params['bold']) && $params['bold'] ? ' bold' : '') . '" ';
-                    }
+                    $result .= ' class="' . (empty($class) ? '' : $class) . (isset($params['bold']) && $params['bold'] ? ' bold' : '') . '" ';
                 }
             }
 
@@ -820,7 +814,7 @@ class LMSSmartyPlugins
     public static function buttonsBlock($params, $content, $template, $repeat)
     {
         if (!$repeat) {
-            return '<div class="lms-ui-responsive-buttons">' . self::buttonFunction(
+            return '<div class="lms-ui-responsive-buttons">' . self::functionButton(
                 array(
                     'type' => 'link',
                     'icon' => isset($params['icon']) ? $params['icon'] : 'additional-selection',
@@ -828,7 +822,7 @@ class LMSSmartyPlugins
                 ),
                 $template
             ) . (isset($params['secondary']) && $params['secondary'] ?
-                self::buttonFunction(
+                self::functionButton(
                     array(
                         'type' => 'link',
                         'icon' => isset($params['icon']) ? $params['icon'] : 'additional-selection',
