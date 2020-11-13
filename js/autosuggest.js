@@ -20,6 +20,7 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 		this.uri = form.uri;
 		this.formData = form.hasOwnProperty('formData') ? form.formData : {};
 		this.autosubmit = form.hasOwnProperty('autosubmit') && (form.autosubmit == 1 || form.autosubmit == 'true');
+		this.autoSubmitForm = !form.hasOwnProperty('autoSubmitForm') || form.autoSubmitForm == 1 || form.autoSubmitForm == 'true';
 		this.onSubmit = form.hasOwnProperty('onSubmit') ? form.onSubmit : null;
 		this.onLoad = form.hasOwnProperty('onLoad') ? form.onLoad : null;
 		this.onAjax = form.hasOwnProperty('onAjax') ? form.onAjax : '';
@@ -36,6 +37,7 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 		this.uri = uri;
 		this.formData = {};
 		this.autosubmit = (typeof(autosubmit) !== 'undefined' && (autosubmit == 1 || autosubmit == 'true'));
+		this.autoSubmitForm = true;
 		this.onSubmit = onSubmit;
 		this.onLoad = onLoad;
 		this.class = '';
@@ -127,6 +129,9 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 			case RET:
 				clearTimeout(me.timer);
 				me.useSuggestion();
+				if (!me.autoSubmitForm) {
+					ev.preventDefault();
+				}
 			break;
 
 			case TAB:
@@ -240,18 +245,22 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 			setTimeout(function() {
 				$(me.elem).focus();
 			},0);
-			//Same applies to Enter key.
-			this.form.onsubmit = function () { return false; };
-			setTimeout(function() {
-				me.form.onsubmit = function() {
-					return true;
-				}
-			}, 10);
+			if (typeof(this.onSubmit) != 'function') {
+				//Same applies to Enter key.
+				this.form.onsubmit = function () {
+					return false;
+				};
+				setTimeout(function () {
+					me.form.onsubmit = function () {
+						return true;
+					}
+				}, 10);
+			}
 			//Go to search results.
 			if (this.autosubmit) {
 				location.href = gotothisuri;
 			}
-			if (this.onSubmit) {
+			if (typeof(this.onSubmit) == 'function') {
 				(this.onSubmit)(submit_data);
 			}
 		}

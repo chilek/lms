@@ -132,14 +132,30 @@ self::addLanguageFunctions(
 
             return preg_match('/^[0-9]{8}$/i', $icn);
         },
-        'bankaccount' => function ($id, $account = null) {
-            return iban_account('LT', 18, $id, $account);
+        'bankaccount' => function ($id, $account = null, $country_code = false) {
+            return ($country_code && strpos($account, 'LT') !== 0 ? 'LT' : '') . iban_account('LT', 18, $id, $account);
         },
         'check_bankaccount' => function ($account) {
+            if (strpos($account, 'LT') === 0) {
+                $account = substr($account, 2);
+            }
             return iban_check_account('LT', 18, $account);
         },
-        'format_bankaccount' => function ($account) {
-            return preg_replace('/(..)(....)(....)(....)(....)/i', '${1} ${2} ${3} ${4} ${5}', $account);
+        'format_bankaccount' => function ($account, $country_code = false) {
+            if ($country_code) {
+                return preg_replace('/(....)(....)(....)(....)(....)/i', '${1} ${2} ${3} ${4} ${5}', $account);
+            } else {
+                return preg_replace('/(..)(....)(....)(....)(....)/i', '${1} ${2} ${3} ${4} ${5}', $account);
+            }
+        },
+        'format_ten' => function ($ten, $country_code = false) {
+            if ($country_code) {
+                $ten = preg_replace('/[ \-]/', '', $ten);
+            }
+            if (strpos($ten, 'LT') === 0) {
+                $ten = substr($ten, 2);
+            }
+            return ($country_code ? 'LT' : '') . $ten;
         },
         'getHolidays' => function ($year = null) {
             return array();

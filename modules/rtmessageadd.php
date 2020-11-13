@@ -324,7 +324,7 @@ if (isset($_POST['message'])) {
                     $props['deadline'] = empty($message['deadline']) ? null : $deadline;
                 }
             } else {
-                if (!$owner) {
+                if (!$owner && empty($message['owner'])) {
                     $message['owner'] = Auth::GetCurrentUser();
                 }
                 $props = array(
@@ -401,9 +401,16 @@ if (isset($_POST['message'])) {
                     $emails = array_map(function ($contact) {
                         return $contact['fullname'];
                     }, $LMS->GetCustomerContacts($ticketdata['customerid'], CONTACT_EMAIL));
+
+                    $all_phones = $LMS->GetCustomerContacts($ticketdata['customerid'], CONTACT_LANDLINE | CONTACT_MOBILE);
+
                     $phones = array_map(function ($contact) {
                         return $contact['fullname'];
-                    }, $LMS->GetCustomerContacts($ticketdata['customerid'], CONTACT_LANDLINE | CONTACT_MOBILE));
+                    }, $all_phones);
+
+                    $mobile_phones = array_filter($all_phones, function ($contact) {
+                        return $contact['type'] & (CONTACT_MOBILE | CONTACT_DISABLED) == CONTACT_MOBILE;
+                    });
 
                     if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
                         $params = array(
@@ -418,28 +425,42 @@ if (isset($_POST['message'])) {
                     }
 
                     $queuedata = $LMS->GetQueueByTicketId($ticketid);
-                    if (isset($message['customernotify']) && !empty($queuedata['newmessagesubject']) && !empty($queuedata['newmessagebody'])
-                        && !empty($emails)) {
+                    if (isset($message['customernotify'])) {
                         $ticket_id = sprintf("%06d", $id);
                         $title = $DB->GetOne('SELECT subject FROM rtmessages WHERE ticketid = ?
 							ORDER BY id LIMIT 1', array($ticketid));
-                        $custmail_subject = $queuedata['newmessagesubject'];
-                        $custmail_subject = str_replace('%tid', $ticket_id, $custmail_subject);
-                        $custmail_subject = str_replace('%title', $title, $custmail_subject);
-                        $custmail_body = $queuedata['newmessagebody'];
-                        $custmail_body = str_replace('%tid', $ticket_id, $custmail_body);
-                        $custmail_body = str_replace('%cid', $ticketdata['customerid'], $custmail_body);
-                        $custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
-                        $custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
-                        $custmail_body = str_replace('%title', $title, $custmail_body);
-                        $custmail_headers = array(
-                            'From' => $headers['From'],
-                            'Reply-To' => $headers['From'],
-                            'Subject' => $custmail_subject,
-                        );
-                        foreach ($emails as $email) {
-                            $custmail_headers['To'] = '<' . $email . '>';
-                            $LMS->SendMail($email, $custmail_headers, $custmail_body, null, null, $smtp_options);
+                        if (!empty($queuedata['newmessagesubject']) && !empty($queuedata['newmessagebody']) && !empty($emails)) {
+                            $custmail_subject = $queuedata['newmessagesubject'];
+                            $custmail_subject = str_replace('%tid', $ticket_id, $custmail_subject);
+                            $custmail_subject = str_replace('%title', $title, $custmail_subject);
+                            $custmail_body = $queuedata['newmessagebody'];
+                            $custmail_body = str_replace('%tid', $ticket_id, $custmail_body);
+                            $custmail_body = str_replace('%cid', $ticketdata['customerid'], $custmail_body);
+                            $custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
+                            $custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
+                            $custmail_body = str_replace('%title', $title, $custmail_body);
+                            $custmail_headers = array(
+                                'From' => $headers['From'],
+                                'Reply-To' => $headers['From'],
+                                'Subject' => $custmail_subject,
+                            );
+                            foreach ($emails as $email) {
+                                $custmail_headers['To'] = '<' . $email . '>';
+                                $LMS->SendMail($email, $custmail_headers, $custmail_body, null, null, $smtp_options);
+                            }
+                        }
+                        if (!empty($queuedata['newmessagesmsbody']) && !empty($mobile_phones)) {
+                            $custsms_body = $queuedata['newmessagesmsbody'];
+                            $custsms_body = str_replace('%tid', $ticket_id, $custsms_body);
+                            $custsms_body = str_replace('%cid', $ticketdata['customerid'], $custsms_body);
+                            $custsms_body = str_replace('%pin', $info['pin'], $custsms_body);
+                            $custsms_body = str_replace('%customername', $info['customername'], $custsms_body);
+                            $custsms_body = str_replace('%title', $title, $custsms_body);
+                            $custsms_body = str_replace('%service', $ticket['service'], $custsms_body);
+
+                            foreach ($mobile_phones as $phone) {
+                                $LMS->SendSMS($phone['contact'], $custsms_body);
+                            }
                         }
                     }
                 } elseif (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
@@ -525,7 +546,7 @@ if (isset($_POST['message'])) {
             if ($message['state'] == RT_NEW) {
                 $message['state'] = RT_OPEN;
             }
-            if ($queue['newmessagesubject'] && $queue['newmessagebody']) {
+            if (($queue['newmessagesubject'] && $queue['newmessagebody']) || $queue['newmessagesmsbody']) {
                 $message['customernotify'] = 1;
             }
             $aet = ConfigHelper::getConfig('rt.allow_modify_resolved_tickets_newer_than', 86400);

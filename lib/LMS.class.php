@@ -645,10 +645,10 @@ class LMS
         return $manager->getCustomerShortBalanceList($customerid, $limit, $order);
     }
 
-    public function getLastNInTable($body, $customerid, $eol, $aggregate_documents = false)
+    public function getLastNInTable($body, $customerid, $format, $aggregate_documents = false)
     {
         $manager = $this->getCustomerManager();
-        return $manager->getLastNInTable($body, $customerid, $eol, $aggregate_documents);
+        return $manager->getLastNInTable($body, $customerid, $format, $aggregate_documents);
     }
 
     public function CustomerStats()
@@ -805,6 +805,18 @@ class LMS
     {
         $manager = $this->getCustomerManager();
         return $manager->delCustomerNote($id);
+    }
+
+    public function raiseCustomerKarma($id)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->raiseCustomerKarma($id);
+    }
+
+    public function lowerCustomerKarma($id)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->lowerCustomerKarma($id);
     }
 
     /*
@@ -2563,7 +2575,12 @@ class LMS
                         $buf .= "Content-Transfer-Encoding: base64\n";
                         $buf .= "Content-Type: " . $chunk['content_type'] . "; name=\"" . $chunk['filename'] . "\"\n";
                         $buf .= "Content-Description:\n";
-                        $buf .= "Content-Disposition: attachment; filename=\"" . $chunk['filename'] . "\"\n\n";
+                        if ($headers['X-LMS-Format'] == 'html' && isset($chunk['content-id'])) {
+                            $buf .= "Content-ID: <" . $chunk['content-id'] . ">\n";
+                            $buf .= "Content-Disposition: inline; filename=\"" . $chunk['filename'] . "\"\n\n";
+                        } else {
+                            $buf .= "Content-Disposition: attachment; filename=\"" . $chunk['filename'] . "\"\n\n";
+                        }
                         $buf .= chunk_split(base64_encode($chunk['data']), 60, "\n");
                     }
                 }
@@ -2684,7 +2701,22 @@ class LMS
 
             if ($files) {
                 foreach ($files as $chunk) {
-                    $this->mail_object->AddStringAttachment($chunk['data'], $chunk['filename'], 'base64', $chunk['content_type']);
+                    if ($headers['X-LMS-Format'] == 'html' && isset($chunk['content-id'])) {
+                        $this->mail_object->addStringEmbeddedImage(
+                            $chunk['data'],
+                            $chunk['content-id'],
+                            $chunk['filename'],
+                            \PHPMailer\PHPMailer\PHPMailer::ENCODING_BASE64,
+                            $chunk['content_type']
+                        );
+                    } else {
+                        $this->mail_object->AddStringAttachment(
+                            $chunk['data'],
+                            $chunk['filename'],
+                            \PHPMailer\PHPMailer\PHPMailer::ENCODING_BASE64,
+                            $chunk['content_type']
+                        );
+                    }
                 }
             }
 
@@ -2790,9 +2822,6 @@ class LMS
             $message = mb_substr($message, 0, $max_length - 6) . ' [...]';
         }
 
-        // recount message length after potential last changes made a few lines earlier
-        $msg_len = mb_strlen($message);
-
         $service = isset($sms_options['service']) ? $sms_options['service'] : ConfigHelper::getConfig('sms.service');
         if (empty($service)) {
             return trans('SMS "service" not set!');
@@ -2805,6 +2834,8 @@ class LMS
                 'message' => $message,
                 'messageid' => $messageid,
                 'service' => $service,
+                'transliterate_message' => $transliterate_message,
+                'sms_options' => $sms_options,
             );
 
             // call external SMS handler(s)
@@ -2815,6 +2846,9 @@ class LMS
                 if (is_string($data['result'])) {
                     $errors[] = $data['result'];
                     continue;
+                } elseif (is_array($data['result'])) {
+                    $errors = array_merge($errors, $data['result']);
+                    continue;
                 } else {
                     return $data['result'];
                 }
@@ -2824,135 +2858,7 @@ class LMS
             $message = $data['message'];
             $messageid = $data['messageid'];
 
-            if (in_array($service, array('smscenter', 'serwersms', 'smsapi'))) {
-                if (!function_exists('curl_init')) {
-                    $errors[] = trans('Curl extension not loaded!');
-                    continue;
-                }
-                $username = isset($sms_options['username']) ? $sms_options['username'] : ConfigHelper::getConfig('sms.username');
-                if (empty($username)) {
-                    $errors[] = trans('SMSCenter username not set!');
-                    continue;
-                }
-                $password = isset($sms_options['password']) ? $sms_options['password'] : ConfigHelper::getConfig('sms.password');
-                if (empty($password)) {
-                    $errors[] = trans('SMSCenter username not set!');
-                    continue;
-                }
-                $from = isset($sms_options['from']) ? $sms_options['from'] : ConfigHelper::getConfig('sms.from');
-                if (empty($from)) {
-                    $errors[] = trans('SMS "from" not set!');
-                    continue;
-                }
-
-                if (strlen($number) > 16 || strlen($number) < 4) {
-                    $errors[] = trans('Wrong phone number format!');
-                    continue;
-                }
-            }
-
             switch ($service) {
-                case 'smscenter':
-                    if (ConfigHelper::checkValue($transliterate_message)) {
-                        if ($msg_len < 160) {
-                            $type_sms = 'sms';
-                        } else if ($msg_len <= 459) {
-                            $type_sms = 'concat';
-                        } else {
-                            $errors[] = trans('SMS Message too long!');
-                            continue 2;
-                        }
-                    } else {
-                        if ($msg_len <= 70) {
-                            $type_sms = 'unicode';
-                        } else if ($msg_len <= 201) {
-                            $type_sms = 'unicode_concat';
-                        } else {
-                            $errors[] = trans('SMS Message too long!');
-                            continue 2;
-                        }
-                    }
-
-                    $type = isset($sms_options['smscenter_type']) ? $sms_options['smscenter_type']
-                        : ConfigHelper::getConfig('sms.smscenter_type', 'dynamic');
-                    $message .= ($type == 'static') ? "\n\n" . $from : '';
-
-                    $args = array(
-                        'user' => $username,
-                        'pass' => $password,
-                        'type' => $type_sms,
-                        'number' => $number,
-                        'text' => $message,
-                        'from' => $from
-                    );
-
-                    $encodedargs = array();
-                    foreach (array_keys($args) as $thiskey) {
-                        array_push($encodedargs, urlencode($thiskey) . "=" . urlencode($args[$thiskey]));
-                    }
-                    $encodedargs = implode('&', $encodedargs);
-
-                    $curl = curl_init();
-                    curl_setopt($curl, CURLOPT_URL, 'http://api.statsms.net/send.php');
-                    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-                    curl_setopt($curl, CURLOPT_POST, 1);
-                    curl_setopt($curl, CURLOPT_POSTFIELDS, $encodedargs);
-                    curl_setopt($curl, CURLOPT_TIMEOUT, 10);
-
-                    $page = curl_exec($curl);
-                    if (curl_error($curl)) {
-                        $errors[] = 'SMS communication error. ' . curl_error($curl);
-                        continue 2;
-                    }
-
-                    $info = curl_getinfo($curl);
-                    if ($info['http_code'] != '200') {
-                        $errors[] = 'SMS communication error. Http code: ' . $info['http_code'];
-                        continue 2;
-                    }
-
-                    curl_close($curl);
-                    $smsc = explode(', ', $page);
-                    $smsc_result = array();
-
-                    foreach ($smsc as $element) {
-                        $tmp = explode(': ', $element);
-                        array_push($smsc_result, $tmp[1]);
-                    }
-
-                    switch ($smsc_result[0]) {
-                        case '002':
-                        case '003':
-                        case '004':
-                        case '008':
-                        case '011':
-                            return MSG_SENT;
-                        case '001':
-                            $errors[] = 'Smscenter error 001, Incorrect login or password';
-                            continue 3;
-                        case '009':
-                            $errors[] = 'Smscenter error 009, GSM network error (probably wrong prefix number)';
-                            continue 3;
-                        case '012':
-                            $errors[] = 'Smscenter error 012, System error please contact smscenter administrator';
-                            continue 3;
-                        case '104':
-                            $errors[] = 'Smscenter error 104, Incorrect sender field or field empty';
-                            continue 3;
-                        case '201':
-                            $errors[] = 'Smscenter error 201, System error please contact smscenter administrator';
-                            continue 3;
-                        case '202':
-                            $errors[] = 'Smscenter error 202, Unsufficient funds on account to send this text';
-                            continue 3;
-                        case '204':
-                            $errors[] = 'Smscenter error 204, Account blocked';
-                            continue 3;
-                        default:
-                            $errors[] = 'Smscenter error ' . $smsc_result[0] . '. Please contact smscenter administrator';
-                            continue 3;
-                    }
-                    break;
                 case 'smstools':
                     $dir = isset($sms_options['smstools_outdir']) ? $sms_options['smstools_outdir']
                         : ConfigHelper::getConfig('sms.smstools_outdir', DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'spool' . DIRECTORY_SEPARATOR . 'sms' . DIRECTORY_SEPARATOR . 'outgoing');
@@ -2983,6 +2889,12 @@ class LMS
                         $headers['Queue'] = $queue;
                     }
 
+                    $delivery_reports = isset($sms_options['delivery_reports']) ? $sms_options['delivery_reports']
+                        : ConfigHelper::getConfig('sms.delivery_reports', 'false');
+                    if (ConfigHelper::checkValue($delivery_reports)) {
+                        $headers['Report'] = 'yes';
+                    }
+
                     $header = '';
                     array_walk($headers, function ($value, $key) use (&$header) {
                         $header .= $key . ': ' . $value . "\n";
@@ -3000,118 +2912,6 @@ class LMS
                     }
 
                     return MSG_NEW;
-                case 'serwersms':
-                    $args = array(
-                        'username' => $username,
-                        'password' => $password,
-                        'phone' => $number,
-                        'text' => $message,
-                    );
-
-                    if ($from != 'ECO') {
-                        $args['sender'] = $from;
-                    }
-
-                    if (!ConfigHelper::checkValue($transliterate_message)) {
-                        $trans_message = iconv('UTF-8', 'ASCII//TRANSLIT', $message);
-                        if (strlen($message) != strlen($trans_message)) {
-                            $args['utf'] = 'true';
-                        }
-                    }
-                    if ($messageid) {
-                        $args['unique_id'] = $messageid;
-                    }
-                    $fast = isset($sms_options['fast']) ? $sms_options['fast'] : ConfigHelper::getConfig('sms.fast', 'false');
-                    if (ConfigHelper::checkValue($fast)) {
-                        $args['speed'] = 1;
-                    }
-
-                    $encodedargs = http_build_query($args);
-
-                    $curl = curl_init();
-                    curl_setopt($curl, CURLOPT_URL, 'https://api2.serwersms.pl/messages/send_sms');
-                    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-                    curl_setopt($curl, CURLOPT_POST, 1);
-                    curl_setopt($curl, CURLOPT_POSTFIELDS, $encodedargs);
-                    curl_setopt($curl, CURLOPT_TIMEOUT, 10);
-
-                    $result = curl_exec($curl);
-                    if (curl_error($curl)) {
-                        $errors[] = 'SMS communication error. ' . curl_error($curl);
-                        continue 2;
-                    }
-
-                    $info = curl_getinfo($curl);
-                    if ($info['http_code'] != '200') {
-                        $errors[] = 'SMS communication error. Http code: ' . $info['http_code'];
-                        continue 2;
-                    }
-
-                    curl_close($curl);
-
-                    $result = json_decode($result, true);
-
-                    if (isset($result['error'])) {
-                        $errors[] = 'Serwersms error: code=' . $result['error']['code'] . ', type="' . $result['error']['type'] . '" message="' . $result['error']['message'] . '"';
-                        continue 2;
-                    }
-
-                    if (empty($result['queued'])) {
-                        $errors[] = 'Serwersms error: message has not been sent!';
-                        continue 2;
-                    }
-
-                    return MSG_SENT;
-                case 'smsapi':
-                    $args = array(
-                        'username' => $username,
-                        'password' => md5($password),
-                        'to' => $number,
-                        'message' => $message,
-                        'from' => !empty($from) ? $from : 'ECO',
-                        'encoding' => 'utf-8',
-                    );
-                    $fast = isset($sms_options['fast']) ? $sms_options['fast'] : ConfigHelper::getConfig('sms.fast');
-                    if (ConfigHelper::checkValue($fast)) {
-                        $args['fast'] = 1;
-                    }
-                    if ($messageid) {
-                        $args['idx'] = $messageid;
-                    }
-
-                    $encodedargs = http_build_query($args);
-
-                    $curl = curl_init();
-                    curl_setopt($curl, CURLOPT_URL, 'https://ssl.smsapi.pl/sms.do');
-                    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-                    curl_setopt($curl, CURLOPT_POST, 1);
-                    curl_setopt($curl, CURLOPT_POSTFIELDS, $encodedargs);
-                    curl_setopt($curl, CURLOPT_TIMEOUT, 10);
-
-                    $page = curl_exec($curl);
-                    if (curl_error($curl)) {
-                        $errors[] = 'SMS communication error. ' . curl_error($curl);
-                        continue 2;
-                    }
-
-                    $info = curl_getinfo($curl);
-                    if ($info['http_code'] != '200') {
-                        $errors[] = 'SMS communication error. Http code: ' . $info['http_code'];
-                        continue 2;
-                    }
-
-                    curl_close($curl);
-
-                    if (preg_match('/^OK:/', $page)) {
-                        return MSG_SENT;
-                    }
-                    if (preg_match('/^ERROR:([0-9]+)/', $page, $matches)) {
-                        $errors[] = 'Smsapi error: ' . $matches[1];
-                        continue 2;
-                    }
-
-                    $errors[] = 'Smsapi error: message has not been sent!';
-                    continue 2;
                 default:
                     $errors[] = trans('Unknown SMS service!');
                     continue 2;
@@ -3234,10 +3034,10 @@ class LMS
         return $manager->DocumentExists($properties);
     }
 
-    public function CommitDocuments(array $ids)
+    public function CommitDocuments(array $ids, $userpanel = false)
     {
         $manager = $this->getDocumentManager();
-        return $manager->CommitDocuments($ids);
+        return $manager->CommitDocuments($ids, $userpanel);
     }
 
     public function ArchiveDocuments(array $ids)
@@ -3322,6 +3122,24 @@ class LMS
     {
         $manager = $this->getDocumentManager();
         return $manager->CopyDocumentPermissions($src_userid, $dst_userid);
+    }
+
+    public function getDocumentsByFullNumber($full_number, $all_types = false)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->getDocumentsByFullNumber($full_number, $all_types);
+    }
+
+    public function getDocumentsByChecksum($checksum, $all_types = false)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->getDocumentsByChecksum($checksum, $all_types);
+    }
+
+    public function isDocumentAccessible($docid)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->isDocumentAccessible($docid);
     }
 
     /*
@@ -3559,6 +3377,18 @@ class LMS
     {
         $manager = $this->getFinanceManager();
         return $manager->isTariffEditable($id);
+    }
+
+    public function getPromotionSchema($id)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->getPromotionSchema($id);
+    }
+
+    public function getPromotion($id)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->getPromotion($id);
     }
 
     /**
@@ -4662,7 +4492,7 @@ class LMS
             list ($now_y, $now_m) = explode('/', strftime("%Y/%m", time()));
             $body = preg_replace('/%lastday/', strftime("%d", mktime(12, 0, 0, $now_m + 1, 0, $now_y)), $body);
 
-            $body = $this->getLastNInTable($body, $doc['customerid'], '<eol>', $aggregate_documents);
+            $body = $this->getLastNInTable($body, $doc['customerid'], $mail_format, $aggregate_documents);
 
             $mailto = array();
             $mailto_qp_encoded = array();

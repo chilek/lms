@@ -25,7 +25,10 @@
 .lms-ui-icon {
   line-height: unset;
   vertical-align: unset;
-  font-size: 140%;
+  font-size: @fa-icon-size-normal;
+  @media screen and (max-width: @mobile-max-width) {
+    font-size: @fa-icon-size-mobile;
+  }
 }
 
 .lms-ui-icon-fixed-width {
@@ -120,6 +123,15 @@
   .lms-ui-icon;
   &:before {
     content: @fa-var-file-invoice;
+  }
+}
+
+.lms-ui-icon-import {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-file-import;
   }
 }
 
@@ -1522,5 +1534,45 @@
   .lms-ui-icon;
   &:before {
     content: @fa-var-route;
+  }
+}
+
+.lms-ui-icon-finger-up {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-hand-point-up;
+  }
+}
+
+.lms-ui-icon-finger-down {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-hand-point-down;
+  }
+}
+
+.lms-ui-icon-star,
+.lms-ui-icon-karma {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-star;
+  }
+}
+
+.lms-ui-icon-notify,
+.lms-ui-icon-notification,
+.lms-ui-icon-notifications,
+.lms-ui-icon-bell {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-bell;
   }
 }

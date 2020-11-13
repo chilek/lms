@@ -184,7 +184,17 @@ if (isset($_POST['document'])) {
             'customerid' => $document['customerid'],
         ));
 
-        $closed = $documentedit['closed'] ? ($document['confirmdate'] == -1 && $document['closed'] != 2 ? 2 : 1) : 0;
+        if ($documentedit['closed']) {
+            if ($document['confirmdate'] == -1 && $document['closed'] < 2) {
+                $closed = 2;
+            } elseif ($document['closed'] == 3) {
+                $closed = 3;
+            } else {
+                $closed = 1;
+            }
+        } else {
+            $closed = 0;
+        }
 
         $DB->Execute(
             'UPDATE documents SET type=?, closed=?, sdate=?, cuserid=?, confirmdate = ?,

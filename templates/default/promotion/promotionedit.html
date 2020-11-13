@@ -8,43 +8,53 @@
 <INPUT type="submit" class="hiddenbtn">
 </p>
 <TABLE class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 98%;">
+	</colgroup>
 	<THEAD>
 	<TR>
-		<TD style="width: 1%;">
+		<TD>
 			<IMG src="img/promo.gif" alt="">
 		</TD>
-		<TD style="width: 1%;" class="bold">
+		<TD class="bold">
 			{trans("Name:")}
 		</TD>
-		<TD style="width: 98%;">
-			<INPUT type="TEXT" name="promotion[name]" value="{$promotion.name}" size="40" {tip text="Enter promotion name" trigger="name" bold=1}>
+		<TD>
+			<INPUT type="TEXT" name="promotion[name]" value="{$promotion.name}" size="40"
+				{if !empty($promotion.assignmentcount) && !ConfigHelper::checkPrivilege('superuser')}
+					readonly {tip text="Promotion is indirectly assigned to liabilities, so name change is disabled!" trigger="name" bold=1}
+				{else}
+					{tip text="Enter promotion name" trigger="name" bold=1}
+				{/if}>
 		</TD>
 	</TR>
 	</THEAD>
 	<TBODY>
 	<TR>
-		<TD style="width: 1%;">
+		<TD>
 			<IMG src="img/info1.gif" alt="">
 		</TD>
-		<TD style="width: 1%;" class="bold">
+		<TD class="bold">
 			{trans("Description:")}
 		</TD>
-		<TD style="width: 98%;">
+		<TD>
 			<TEXTAREA name="promotion[description]" cols="50" rows="5" {tip text="Enter additional information (optional)"}>{$promotion.description}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 100%;" class="text-right" colspan="3"> 
-			<A href="javascript:document.promotionedit.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
-			<A href="?m=promotionlist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A><BR>
+		<TD class="lms-ui-box-buttons" colspan="3">
+			{button icon="save" label="Submit" onclick="document.promotionedit.submit();"}
+			{button icon="cancel" label="Cancel" href="?m=promotionlist"}
 		</TD>
 	</TR>
 	</TBODY>
 </TABLE>
 </FORM>
-<SCRIPT type="text/javascript">
-<!--
-document.forms['promotionedit'].elements['promotion[name]'].focus();
-//-->
-</SCRIPT>
+<script>
+
+	document.forms['promotionedit'].elements['promotion[name]'].focus();
+
+</script>
 {/block}

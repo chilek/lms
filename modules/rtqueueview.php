@@ -180,29 +180,29 @@ if (isset($_GET['pids'])) {
 }
 
 // customerid
-if (empty($_GET['cid'])) {
-    $filter['cid'] = null;
-} else {
+if (isset($_GET['cid'])) {
     $filter['cid'] = intval($_GET['cid']);
+} elseif (!isset($filter['cid'])) {
+    $filter['cid'] = null;
 }
 
 // subject
-if (empty($_GET['subject'])) {
-    $filter['subject'] = null;
-} else {
+if (isset($_GET['subject'])) {
     $filter['subject'] = $_GET['subject'];
+} elseif (!isset($filter['subject'])) {
+    $filter['subject'] = null;
 }
 
 // created from and created to dates
-if (empty($_GET['fromdate'])) {
-    $filter['fromdate'] = null;
-} else {
+if (isset($_GET['fromdate'])) {
     $filter['fromdate'] = datetime_to_timestamp($_GET['fromdate']);
+} elseif (!isset($filter['fromdate'])) {
+    $filter['fromdate'] = null;
 }
-if (empty($_GET['todate'])) {
-    $filter['todate'] = null;
-} else {
+if (isset($_GET['todate'])) {
     $filter['todate'] = datetime_to_timestamp($_GET['todate']);
+} elseif (!isset($filter['todate'])) {
+    $filter['todate'] = null;
 }
 
 // types

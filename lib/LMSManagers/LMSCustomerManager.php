@@ -368,9 +368,41 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         return $result;
     }
 
-    public function getLastNInTable($body, $customerid, $eol, $aggregate_documents = false)
+    public function getLastNInTable($body, $customerid, $format, $aggregate_documents = false)
     {
+        static $cols = null;
+
         if (preg_match('/%last_(?<number>[0-9]+)_in_a_table/', $body, $m)) {
+            if (empty($cols)) {
+                $cols = array(
+                    'date' => array(
+                        'length' => 0,
+                        'label' => trans('Date'),
+                        'align' => 'left',
+                    ),
+                    'liability' => array(
+                        'length' => 0,
+                        'label' => trans('Liability'),
+                        'align' => 'right',
+                    ),
+                    'payment' => array(
+                        'length' => 0,
+                        'label' => trans('Payment'),
+                        'align' => 'right',
+                    ),
+                    'balance' => array(
+                        'length' => 0,
+                        'label' => trans('Balance'),
+                        'align' => 'right',
+                    ),
+                    'description' => array(
+                        'length' => 53,
+                        'label' => trans('Description'),
+                        'align' => 'left',
+                    ),
+                );
+            }
+
             if ($aggregate_documents) {
                 $lastN = $this->GetCustomerShortBalanceList($customerid, 0, 'DESC', $aggregate_documents);
                 $lastN = array_slice($lastN, 0, $m['number']);
@@ -381,21 +413,63 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 $lN = '';
             } else {
                 // ok, now we are going to rise up system's load
-                $lN = '-----------+--------------+--------------+--------------+------------------------------------------------------------------------------' . $eol;
-                foreach ($lastN as $row_s) {
-                    $op_time = strftime("%Y/%m/%d ", $row_s['time']);
-                    if ($row_s['value'] < 0) {
-                        $op_liability = sprintf("%9.2f %s ", $row_s['value'], $row_s['currency']);
-                        $op_payment = '              ';
-                    } else {
-                        $op_liability = '              ';
-                        $op_payment = sprintf("%9.2f %s ", $row_s['value'], $row_s['currency']);
+                if ($format == 'html') {
+                    $lN = '<table><thead><tr>' . PHP_EOL;
+                    foreach ($cols as $col_name => $col) {
+                        $lN .= '<th style="border: 1px solid black; white-space: nowrap; padding: 0.3em; text-align: ' . $col['align'] . '; vertical-align: middle;">' . $col['label'] . '</th>' . PHP_EOL;
                     }
-                    $op_after = sprintf("%9.2f %s ", $row_s['after'], Localisation::getCurrentCurrency());
-                    $for_what = sprintf(" %-52s", $row_s['comment']);
-                    $lN .= $op_time . '|' . $op_liability . '|' . $op_payment . '|' . $op_after . '|' . $for_what . $eol;
+                    $lN .= '</thead><tbody>' . PHP_EOL;
+                } else {
+                    $chunks = array();
+                    $titles = array();
+                    foreach ($cols as $col_name => $col) {
+                        $cols[$col_name]['length'] = $col_length = max(mb_strlen($col['label']) + 2, 13, $col['length']);
+                        $chunks[] = str_repeat('-', $col_length);
+                        $titles[] = ' ' . str_pad($col['label'], $col_length - 2 + strlen($col['label']) - mb_strlen($col['label']), ' ', $col['align'] == 'right' ? STR_PAD_LEFT : STR_PAD_RIGHT) . ' ';
+                    }
+                    $horizontal_line = implode('+', $chunks);
+                    $lN = $horizontal_line . PHP_EOL;
+                    $lN .= implode('|', $titles) . PHP_EOL;
+                    $lN .= $horizontal_line . PHP_EOL;
                 }
-                $lN .= '-----------+--------------+--------------+--------------+------------------------------------------------------------------------------' . $eol;
+                foreach ($lastN as $row_s) {
+                    $cols['date']['value'] = strftime('%Y/%m/%d', $row_s['time']);
+                    if ($row_s['value'] < 0) {
+                        $cols['liability']['value'] = moneyf($row_s['value'] * -1, $row_s['currency']);
+                        $cols['payment']['value'] = '';
+                    } else {
+                        $cols['liability']['value'] = '';
+                        $cols['payment']['value'] = moneyf($row_s['value'], $row_s['currency']);
+                    }
+                    $cols['balance']['value'] = moneyf($row_s['after'], Localisation::getCurrentCurrency());
+                    $cols['description']['value'] = $row_s['comment'];
+                    if ($format == 'html') {
+                        $lN .= '<tr>' . PHP_EOL
+                            . '<td style="border: 1px solid black; white-space: nowrap; padding: 0.3em; text-align: center; vertical-align: middle;">'
+                                . $cols['date']['value'] . '</td>' . PHP_EOL . '
+                            <td style="border: 1px solid black; white-space: nowrap; padding: 0.3em; text-align: right; vertical-align: middle;">'
+                                . $cols['liability']['value'] . '</td>' . PHP_EOL . '
+                            <td style="border: 1px solid black; white-space: nowrap; padding: 0.3em; text-align: right; vertical-align: middle;'
+                                . ($cols['payment']['value'] > 0 ? ' color: green;' : ($cols['payment'] < 0 ? 'color: red;' : '')) . '">'
+                                . ($cols['payment']['value'] > 0 ? '+' : '') . $cols['payment']['value'] . '</td>' . PHP_EOL . '
+                            <td style="border: 1px solid black; white-space: nowrap; padding: 0.3em; text-align: right; vertical-align: middle;'
+                                . ($cols['balance']['value'] < 0 ? 'color: red;' : '') . '">' . $cols['balance']['value'] . '</td>' . PHP_EOL . '
+                            <td style="border: 1px solid black; white-space: nowrap; padding: 0.3em; text-align: left; vertical-align: middle;">'
+                                . $cols['description']['value'] . '</td>' . PHP_EOL
+                        . '</tr>' . PHP_EOL;
+                    } else {
+                        $chunks = array();
+                        foreach ($cols as $col_name => $col) {
+                            $chunks[] = ' ' . str_pad($col['value'], $col['length'] - 2, ' ', $col['align'] == 'right' ? STR_PAD_LEFT : STR_PAD_RIGHT) . ' ';
+                        }
+                        $lN .= implode('|', $chunks) . PHP_EOL;
+                    }
+                }
+                if ($format == 'html') {
+                    $lN .= '</tbody></table>' . PHP_EOL;
+                } else {
+                    $lN .= $horizontal_line . PHP_EOL;
+                }
             }
             $body = preg_replace('/%last_[0-9]+_in_a_table/', $lN, $body);
         }
@@ -672,6 +746,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             case 'extid':
                 $sqlord = ' ORDER BY extid';
                 break;
+            case 'karma':
+                $sqlord = ' ORDER BY karma';
+                break;
             default:
                 $sqlord = ' ORDER BY customername';
                 break;
@@ -685,12 +762,23 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $state = array($state);
         }
 
+        if (!isset($flagsqlskey)) {
+            $flagsqlskey = 'AND';
+        }
+
+        if (!is_array($flags) && !empty($flags)) {
+            $flags = array($flags);
+        }
+
         $customer_statuses = array();
         $state_conditions = array();
 
         if (!isset($state) || !is_array($state)) {
             $state = array();
         }
+
+        $archived_document_condition = '';
+
         foreach ($state as $state_item) {
             switch ($state_item) {
                 case 50:
@@ -746,9 +834,19 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 case 59:
                 case 60:
                 case 61:
-                    $contracts = $state_item - 58;
-                    $contracts_days = intval(ConfigHelper::getConfig('contracts.contracts_days'));
+                case 76:
+                case 77:
+                case 78:
                     $contracts_expiration_type = ConfigHelper::getConfig('contracts.expiration_type', 'documents');
+                    if ($state_item >= 76) {
+                        $contracts = $state_item - 75;
+                        if ($contracts_expiration_type == 'documents') {
+                            $archived_document_condition = ' AND d.archived = 0';
+                        }
+                    } else {
+                        $contracts = $state_item - 58;
+                    }
+                    $contracts_days = intval(ConfigHelper::getConfig('contracts.contracts_days'));
                     if ($contracts == 1) {
                         if ($contracts_expiration_type == 'documents') {
                             $state_conditions[] = 'd.customerid IS NULL';
@@ -815,6 +913,18 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         }
         if (!empty($customer_statuses)) {
             $state_conditions[] = '((c.status = ' . implode(' ' . $statesqlskey . ' c.status = ', $customer_statuses) . ') AND c.deleted = 0)';
+        }
+
+        $flagmask = 0;
+        if (!empty($flags)) {
+            foreach ($flags as $flag) {
+                $flagmask |= intval($flag);
+            }
+        }
+        if ($flagmask) {
+            $flag_condition = '(c.flags & ' . $flagmask . ($flagsqlskey == 'AND' ? ' = ' . $flagmask : ' > 0') . ')';
+        } else {
+            $flag_condition = '';
         }
 
         if (isset($assignments)) {
@@ -1024,6 +1134,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         case 'ten':
                             $searchargs[] = "REPLACE(REPLACE(ten, '-', ''), ' ', '') ?LIKE? " . $this->db->Escape('%' . preg_replace('/[\- ]/', '', $value) . '%');
                             break;
+                        case 'karma':
+                            if (intval($value)) {
+                                $searchargs[] = 'c.karma ' . ($value > 0 ? '>' : '<') . '= ' . $value;
+                            }
+                            break;
                         default:
                             $searchargs[] = "$key ?LIKE? " . $this->db->Escape("%$value%");
                     }
@@ -1046,7 +1161,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         } else {
             $capitalize_customer_names = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.capitalize_customer_names', true));
             $sql .= 'SELECT DISTINCT c.id AS id, c.lastname, c.name, ' . $this->db->Concat($capitalize_customer_names ? 'UPPER(lastname)' : 'lastname', "' '", 'c.name') . ' AS customername,
-                c.type, c.deleted,
+                c.karma, c.type, c.deleted,
                 status, full_address, post_full_address, c.address, c.zip, c.city, countryid, countries.name AS country, cc.email, ccp.phone, ten, ssn, c.info AS info,
                 extid, message, c.divisionid, c.paytime AS paytime, COALESCE(b.balance, 0) AS balance,
                 COALESCE(t.value, 0) AS tariffvalue, s.account, s.warncount, s.online,
@@ -1146,8 +1261,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         'LEFT JOIN (
 							SELECT COUNT(*), d.customerid FROM documents d
 							JOIN documentcontents dc ON dc.docid = d.id
-							WHERE d.type IN (' . DOC_CONTRACT . ',' . DOC_ANNEX . ')
-							GROUP BY d.customerid
+							WHERE d.type IN (' . DOC_CONTRACT . ',' . DOC_ANNEX . ')'
+                            . $archived_document_condition
+                            . ' GROUP BY d.customerid
 						) d ON d.customerid = c.id' :
                         'LEFT JOIN (
 							SELECT customerid
@@ -1163,9 +1279,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 								SUM(CASE WHEN dc.todate > ?NOW? THEN 1 ELSE 0 END),
 								d.customerid FROM documents d
 							JOIN documentcontents dc ON dc.docid = d.id
-							WHERE d.type IN (' . DOC_CONTRACT . ',' . DOC_ANNEX . ')
-							GROUP BY d.customerid
-							HAVING SUM(CASE WHEN dc.todate < ?NOW? THEN 1 ELSE 0 END) > 0
+							WHERE d.type IN (' . DOC_CONTRACT . ',' . DOC_ANNEX . ')'
+                            . $archived_document_condition
+                            . ' GROUP BY d.customerid
+							HAVING SUM(CASE WHEN dc.todate > 0 AND dc.todate < ?NOW? THEN 1 ELSE 0 END) > 0
 								AND SUM(CASE WHEN dc.todate >= ?NOW? THEN 1 ELSE 0 END) = 0
 						) d ON d.customerid = c.id' :
                         'JOIN (
@@ -1181,7 +1298,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 							SELECT DISTINCT d.customerid FROM documents d
 							JOIN documentcontents dc ON dc.docid = d.id
 							WHERE dc.todate >= ?NOW? AND dc.todate <= ?NOW? + 86400 * ' . $contracts_days . '
-								AND type IN (' . DOC_CONTRACT . ',' . DOC_ANNEX . ')
+								AND type IN (' . DOC_CONTRACT . ',' . DOC_ANNEX . ')'
+                                . $archived_document_condition
+                            . '
 						) d ON d.customerid = c.id' :
                         'JOIN (
 							SELECT customerid
@@ -1192,6 +1311,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 						) ass ON ass.customerid = c.id') : '')))
                 . ' WHERE '
                 . (empty($state_conditions) ? '1 = 1' : implode(' ' . $statesqlskey . ' ', $state_conditions))
+                . ($flag_condition ? ' AND ' . $flag_condition : '')
                 . ($division ? ' AND c.divisionid = ' . intval($division) : '')
                 . ($assignment ? ' AND c.id IN ('.$assignment.')' : '')
                 . ($network ? ' AND (EXISTS (SELECT 1 FROM vnodes WHERE ownerid = c.id
@@ -2126,9 +2246,13 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         $customerid = intval($customerid);
 
+        $check_customer_vat_payer_flag_for_telecom_service =
+            ConfigHelper::checkConfig('invoices.check_customer_vat_payer_flag_for_telecom_service');
+
         return $this->db->GetOne(
             'SELECT c.id FROM customers c
-            WHERE c.id = ? AND c.type = ?',
+            WHERE c.id = ? AND (c.type = ? OR '
+            . ($check_customer_vat_payer_flag_for_telecom_service ? 'c.flags & ' . CUSTOMER_FLAG_VAT_PAYER . ' = 0' : ' 1 = 0') . ')',
             array($customerid, CTYPES_PRIVATE)
         ) > 0;
     }
@@ -2145,6 +2269,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'prefix' => 'sms-customers.prefix',
             'transliterate_message' => 'sms-customers.transliterate_message',
             'max_length' => 'sms-customers.max_length',
+            'delivery_reports' => 'sms-customers.delivery_reports',
             'smscenter_type' => 'sms-customers.smscenter_type',
             'smstools_outdir' => 'sms-customers.smstools_outdir',
             'queue' => 'sms-customers.queue',
@@ -2456,5 +2581,79 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $res = $this->db->Execute('DELETE FROM customernotes WHERE id = ?', array($id));
 
         return $res;
+    }
+
+    private function changeCustomerKarma($id, $diff)
+    {
+        $karma = $this->db->GetOne(
+            'SELECT karma FROM customerview WHERE id = ?',
+            array($id)
+        );
+        if (!isset($karma)) {
+            return array(
+                'karma' => 0,
+                'error' => trans('Access denied!'),
+            );
+        }
+
+        $customerKarmaChangeInterval = intval(ConfigHelper::getConfig('phpui.customer_karma_change_interval', '86400'));
+        if (!$customerKarmaChangeInterval) {
+            $customerKarmaChangeInterval = 86400;
+        }
+
+        $userid = Auth::GetCurrentUser();
+
+        $timestamp = $this->db->GetOne(
+            'SELECT timestamp
+            FROM customerkarmalastchanges
+            WHERE customerid = ? AND userid = ?',
+            array($id, $userid)
+        );
+        if (isset($timestamp) && time() - $timestamp <= $customerKarmaChangeInterval) {
+            return array(
+                'karma' => $karma,
+                'error' => trans('Karma is changed too often!'),
+            );
+        }
+
+        $karma += $diff;
+        $this->db->Execute(
+            'UPDATE customers SET karma = ? WHERE id = ?',
+            array($karma, $id)
+        );
+        if ($this->syslog) {
+            $args = array(
+                SYSLOG::RES_CUST => $id,
+                SYSLOG::RES_USER => $userid,
+                'karma' => $karma,
+            );
+            $this->syslog->AddMessage(SYSLOG::RES_CUST, SYSLOG::OPER_UPDATE, $args);
+        }
+
+        if (isset($timestamp)) {
+            $this->db->Execute(
+                'UPDATE customerkarmalastchanges SET timestamp = ?NOW? WHERE customerid = ? AND userid = ?',
+                array($id, $userid)
+            );
+        } else {
+            $this->db->Execute(
+                'INSERT INTO customerkarmalastchanges (timestamp, customerid, userid) VALUES (?NOW?, ?, ?)',
+                array($id, $userid)
+            );
+        }
+
+        return array(
+            'karma' => $karma,
+        );
+    }
+
+    public function raiseCustomerKarma($id)
+    {
+        return $this->changeCustomerKarma($id, 1);
+    }
+
+    public function lowerCustomerKarma($id)
+    {
+        return $this->changeCustomerKarma($id, -1);
     }
 }

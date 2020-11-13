@@ -152,6 +152,8 @@
 							<OPTION value="-1">- {trans("all")} - </OPTION>
 							<OPTION value="0"{if $filter.status == 0} selected{/if}>{trans("unconfirmed")}</OPTION>
 							<OPTION value="1"{if $filter.status == 1} selected{/if}>{trans("confirmed")}</OPTION>
+							<OPTION value="4"{if $filter.status == 4} selected{/if}>{trans("confirmed (signed document scan)")}</OPTION>
+							<OPTION value="5"{if $filter.status == 5} selected{/if}>{trans("confirmed (sms authorization)")}</OPTION>
 							<OPTION value="2"{if $filter.status == 2} selected{/if}>{trans("review (signed document scan)")}</OPTION>
 							<OPTION value="3"{if $filter.status == 3} selected{/if}>{trans("waiting for signed document scan")}</OPTION>
 						</SELECT>
@@ -195,7 +197,13 @@
 			{/if}
 		</TD>
 		<TD class="nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');">
-			{$doc.username}{if $doc.cuserid} / {$doc.cusername}{/if}
+			{$doc.username}
+			{if $doc.cuserid} / {$doc.cusername}{/if}
+			{if $doc.closed == 3}
+				{trans("(customer/sms)")}
+			{elseif $doc.closed == 2}
+				{trans("(customer/scans)")}
+			{/if}
 			<BR><B>{assign var=type value=$doc.type}{$_DOCTYPES.$type}</B>
 		</TD>
 		<TD class="nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');">

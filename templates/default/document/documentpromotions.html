@@ -1,5 +1,5 @@
 <!--// $Id$ //-->
-<TABLE class="lmsbox" id="documentpromotions">
+<TABLE class="lmsbox" id="documentpromotions" style="display: none;">
 	<COLGROUP>
 		<COL style="width: 100%;">
 	</COLGROUP>
@@ -59,7 +59,7 @@
 
 	$(function() {
 		$('#submit-button').click(function (e) {
-			if (parseInt($('#promotion-select').val()) && !customer_assignment_helper.validate(e)) {
+			if (!$(this)[0].form.checkValidity() || (parseInt($('#promotion-select').val()) && !customer_assignment_helper.validate(e))) {
 				return;
 			}
 			document.documentadd.submit();

@@ -32,7 +32,7 @@
 		{box_header icon="type" label="Ticket type:" icon_class="fa-fw"}
                         <SELECT name="ticket[type]" id="ticket-type" {tip class="lms-ui-advanced-select" text="Choose ticket type" trigger="type"}{if ConfigHelper::checkConfig('rt.ticket_type_required')}required{/if}>
 					<OPTION value="" selected hidden>{trans("select")}</OPTION>
-				{foreach $_RT_TYPES as $key => $type}
+				{foreach Localisation::arraySort($_RT_TYPES, 'label') as $key => $type}
 					<OPTION value="{$key}"{if $key == $ticket.type} selected{/if}>{$type.label}</OPTION>
 				{/foreach}
 			</SELECT>

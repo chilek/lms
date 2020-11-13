@@ -172,7 +172,71 @@ version 26-git (????-??-??):
   - devel/improvement: bumped used serwersms API from v1 to v2 [chilan]
   - enhancement: 'phpui.timetable_user_row_limit' (default: '4') configuration variable to hide
     assigned users to event when there is too many user assigned [interduo]
+  - enhancement: added text label property to divisions which is presented in user interface
+    in division selection list [chilan]
+  - enhancement: added some new customer search status filters - expiring/expired/without
+    and active (unarchived) document flags [chilan]
+  - improvement: lms-maketcnew.php support --host parameter which allows to limit selected
+    networks to those assigned to specified host [chilan]
+  - enhancement: implemented document scan upload with automatic document number recognition
+    basing on bar code placed on document [chilan]
+  - improvement: document number bar code generation for all document templates [chilan]
+  - improvement: invoices: show iban bank accounts with country codes if seller and buyer are
+    from different countries [chilan]
+  - enhancement: added new 'VAT payer' customer flag [chilan]
+  - enhancement: lms-vat-payers.php backend script allows to update VAT payer customer flag
+    using public VIES webapi and MF.GOV.PL REST api [chilan]
+  - enhancement: present VAR reg. no. (TEN's) in full format with country code when invoice
+    is export document [chilan]
+  - enhancement: 'invoices.check_customer_vat_payer_flag_for_telecom_service' configuration variable
+    with default 'false' value controls if invoices issued for telecom services are flagged
+    as JPK-EE for customers which are not active VAT payers [chilan]
+  - improvement: added customer flag filter in customer search form [chilan]
+  - enhancement: lms-sms2rt.php backend script can be launched from within http server and handle
+    incoming sms callback made from external device [chilan]
+  - devel/cleanup: serwersms.pl, sms.pl, smsapi.pl, smscenter.pl support moved to separate
+    plugins [chilan]
+  - enhancement: new smstools php backend scripts replace old perl lms-smstools script [chilan]
+  - improvement: don't show document promotion schema selection tab/box when template is not selected
+    or selected template doesn't require this [chilan]
+  - enhancement: implemented promotion schema <-> assignments bindings - new special symbols
+    '%promotion_name', '%promotion_schema_name' and '%promotion_schema_length' are supported for
+    'payments.comment', 'payments.backward_comment' and 'payment.settlement_comment' configuration
+    variables [chilan]
+  - enhancement: promotions are in fact not deleted, but only marked as deleted [chilan]
+  - improvement: improvement: auto-hide 'back to top' button [chilan]
+  - improvement: '%last_N_in_a_table' is supported in much more convenient way - symbol itself
+    represents whole table [chilan]
+  - enhancement: new configuration variable 'phpui.assignment_presentation_format' ('%name' by default)
+    allows to change  tariff presentation form (some special symbols related to promotions
+    are supported) [chilan]
+  - enhancement: imeplemented customer karma support; 'phpui.customer_karma_change_interval'
+    configuration value ('86400' by default) control how ofter user can change karma for given
+    customer [chilan]
+  - improvement: 'phpui.default_existing_assignment_operation' variable (with default 'keep' value)
+    controls what operations are applied to currently existing assignments [chilan]
+  - enhancement: 'payments.allowed_customer_status' ('connected,debtcollection' by default)
+    specified list of statuses which are required from customers to generate financial
+    burdens [chilan]
+  - enhancement: 'notify.allowed_customer_status' specified list of statuses which are required
+    from customers to send them notifications (all statuses by default) [chilan]
+  - enhancement: 'sendinvoices.allowed_customer_status' specified list of statuses which
+    are required from customers to send them invoices [chilan]
+  - enhancement: 'phpui.document_confirm_date_required' forces confirm date requirement
+    if from date is later than days count in ther future (default '0' values menas that feature
+    is disabled) [chilan]
+  - improvement/devel: migrated from tinymce 4 to 5 [chilan]
+  - improvement: helpdesk ticket type list is sorted according to current localisation [chilan]
+  - enhancement: ticket change sms customer notification support [chilan]
+  - improvement: customer search link replace by icon displayed inside customer id input
+    when container is hovered or focused [chilan]
+  - enhancement: new customer selection ui control which allows to select customer using quick
+    search mechanism and suggestion popup [chilan]
+  - enhancement: lms-rtparser.php supports html message receive [chilan]
+  - improvement: 'invoices.jpk_flags' toggles JPK flags presentation on generated invoice
+    ('false' by default) [chilan]
   - improvement: implemented phpui.timetable_hide_disabled_users for eventschedule module [interduo]
+
 
 version 25.0 (2020-05-15):
 

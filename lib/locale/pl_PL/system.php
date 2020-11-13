@@ -145,14 +145,30 @@ self::addLanguageFunctions(
 
             return preg_match('/^[A-Z]{2}[0-9]{7}$/i', $icn) || preg_match('/^[A-Z]{3}[0-9]{6}$/i', $icn);
         },
-        'bankaccount' => function ($id, $account = null) {
-            return iban_account('PL', 26, $id, $account);
+        'bankaccount' => function ($id, $account = null, $country_code = false) {
+            return ($country_code && strpos($account, 'PL') !== 0 ? 'PL' : '') . iban_account('PL', 26, $id, $account);
         },
         'check_bankaccount' => function ($account) {
+            if (strpos($account, 'PL') === 0) {
+                $account = substr($account, 2);
+            }
             return iban_check_account('PL', 26, $account);
         },
-        'format_bankaccount' => function ($account) {
-            return preg_replace('/(..)(....)(....)(....)(....)(....)(....)/i', '${1} ${2} ${3} ${4} ${5} ${6} ${7}', $account);
+        'format_bankaccount' => function ($account, $country_code = false) {
+            if ($country_code) {
+                return preg_replace('/(....)(....)(....)(....)(....)(....)(....)/i', '${1} ${2} ${3} ${4} ${5} ${6} ${7}', $account);
+            } else {
+                return preg_replace('/(..)(....)(....)(....)(....)(....)(....)/i', '${1} ${2} ${3} ${4} ${5} ${6} ${7}', $account);
+            }
+        },
+        'format_ten' => function ($ten, $country_code = false) {
+            if ($country_code) {
+                $ten = preg_replace('/[ \-]/', '', $ten);
+            }
+            if (strpos($ten, 'PL') === 0) {
+                $ten = substr($ten, 2);
+            }
+            return ($country_code ? 'PL' : '') . $ten;
         },
         'getHolidays' => function ($year = null) {
             if (!$year) {

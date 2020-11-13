@@ -34,17 +34,20 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 100%;" class="text-right" colspan="3">
-			<A href="javascript:document.promotionadd.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
-			<A href="?m=promotionlist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="promotion[reuse]" value="ON" id="reuse" {if $promotion.reuse} checked{/if}><label for="reuse">{trans("Display this form again, when this promotion is saved")}</label>
+		<TD class="lms-ui-box-buttons" colspan="3">
+			{button icon="save" label="Submit" onclick="document.promotionadd.submit();"}
+			{button icon="cancel" label="Cancel" href="?m=promotionlist"}
+			<label>
+				<INPUT type="checkbox" name="promotion[reuse]" value="ON" id="reuse" {if $promotion.reuse} checked{/if}>
+				{trans("Display this form again, when this promotion is saved")}
+			</label>
 		</TD>
 	</TR>
 	</TBODY>
 </TABLE></FORM>
-<SCRIPT type="text/javascript">
-<!--
-document.forms['promotionadd'].elements['promotion[name]'].focus();
-//-->
-</SCRIPT>
+<script>
+
+	document.forms['promotionadd'].elements['promotion[name]'].focus();
+
+</script>
 {/block}

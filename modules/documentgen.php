@@ -224,7 +224,26 @@ if (isset($_POST['document'])) {
             $files = array();
             unset($docfile);
 
+            if ($customernumtemplate) {
+                $document['number'] = $LMS->GetNewDocumentNumber(array(
+                    'doctype' => $document['type'],
+                    'planid' => $document['numberplanid'],
+                    'customerid' => $document['customerid'],
+                ));
+            }
+
+            $fullnumber = docnumber(array(
+                'number' => $document['number'],
+                'template' => $numtemplate,
+                'cdate' => $time,
+                'customerid' => $document['customerid'],
+            ));
+
             if ($document['templ']) {
+                $barcode = new \Com\Tecnick\Barcode\Barcode();
+                $bobj = $barcode->getBarcodeObj('C128', iconv('UTF-8', 'ASCII//TRANSLIT', $fullnumber), -1, -30, 'black');
+                $document['barcode'] = base64_encode($bobj->getPngData());
+
                 // run template engine
                 if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
                     . $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php')) {
@@ -283,20 +302,6 @@ if (isset($_POST['document'])) {
 
             $division = $LMS->GetDivision($gencust['divisionid']);
 
-            if ($customernumtemplate) {
-                $document['number'] = $LMS->GetNewDocumentNumber(array(
-                    'doctype' => $document['type'],
-                    'planid' => $document['numberplanid'],
-                    'customerid' => $document['customerid'],
-                ));
-            }
-
-            $fullnumber = docnumber(array(
-                'number' => $document['number'],
-                'template' => $numtemplate,
-                'cdate' => $time,
-                'customerid' => $document['customerid'],
-            ));
             $DB->Execute('INSERT INTO documents (type, number, numberplanid, cdate, customerid, userid, divisionid, name, address, zip, city, ten, ssn, closed,
 					div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 					div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber, template)
@@ -353,12 +358,7 @@ if (isset($_POST['document'])) {
 
             $DB->CommitTrans();
 
-            $genresult .= docnumber(array(
-                    'number' => $document['number'],
-                    'template' => $numtemplate,
-                    'cdate' => $time,
-                    'customerid' => $document['customerid'],
-                )) . '.<br>';
+            $genresult .= $fullnumber . '.<br>';
             if (!$customernumtemplate) {
                 $document['number']++;
             }

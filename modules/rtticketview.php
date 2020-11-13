@@ -67,6 +67,13 @@ if (!empty($ticket['childtickets'])) {
     unset($childticketscontent['type']);
     unset($childticketscontent['unread']);
     unset($childticketscontent['rights']);
+    unset($childticketscontent['verifier']);
+    unset($childticketscontent['netnode']);
+    unset($childticketscontent['projectids']);
+    unset($childticketscontent['cid']);
+    unset($childticketscontent['subject']);
+    unset($childticketscontent['fromdate']);
+    unset($childticketscontent['todate']);
 }
 
 if (!empty($ticket['relatedtickets'])) {

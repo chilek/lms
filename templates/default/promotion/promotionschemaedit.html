@@ -25,30 +25,46 @@
 
 
 <TABLE class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 98%;">
+	</colgroup>
 	<THEAD>
 	<TR>
-		<TD style="width: 1%;">
+		<TD>
 			<IMG src="img/promoschema.gif" alt="">
 		</TD>
-		<TD style="width: 1%;" class="bold">
+		<TD class="bold">
 			{trans("Name:")}
 		</TD>
-		<TD style="width: 98%;">
-			<INPUT type="text" name="schema[name]" value="{$schema.name}" size="40" {tip text="Enter schema name" trigger="name" bold=1}>
+		<TD>
+			<INPUT type="text" name="schema[name]" value="{$schema.name}" size="40"
+				   {if !empty($schema.assignmentcount) && !ConfigHelper::checkPrivilege('superuser')}
+						readonly {tip text="Schema is assigned to liabilities, so name change is disabled!" trigger="name" bold=1}
+				   {else}
+					   {tip text="Enter schema name" trigger="name" bold=1}
+				   {/if}>
 		</TD>
 	</TR>
 	</THEAD>
 	<TBODY>
 	<TR>
-		<TD style="width: 1%;">
+		<TD>
 			<IMG src="img/calendar.gif" alt="">
 		</TD>
-		<TD style="width: 1%;" class="bold">
+		<TD class="bold">
 			{trans("Periods:")}
 		</TD>
 		<TD id="periodcont">
 			{foreach $schema.periods as $key => $period}
-				<SELECT name="schema[periods][]" {tip class="lms-ui-combobox" text="Select length of the period (in months)"}
+				<SELECT name="schema[periods][]"
+						{if !empty($schema.assignmentcount) && !ConfigHelper::checkPrivilege('superuser')}
+							data-options='{ "disabled": true }'
+							{tip class="lms-ui-combobox" text="Schema is assigned to liabilities, so periods change is disabled!" bold=1}
+						{else}
+							{tip class="lms-ui-combobox" text="Select length of the period (in months)"}
+						{/if}
 					data-value="{$period}">
 					{if !$key && count($schema.periods) == 1}
 						<OPTION value="0"{if !$period} selected{/if}>- {trans("unlimited")} -</OPTION>
@@ -58,25 +74,27 @@
 					{/foreach}
 				</SELECT>
 			{/foreach}
-			<A href="#" id="perioddel" {if count($schema.periods) < 2}style="display: none;"{/if}><IMG src="img/delete.gif" alt="" {tip text="Delete"}></A>
-			<A href="#" id="periodadd"><IMG src="img/add.gif" alt="" {tip text="Add"}></A>
+			{if empty($schema.assignmentcount) || ConfigHelper::checkPrivilege('superuser')}
+				<A href="#" id="perioddel" {if count($schema.periods) < 2}style="display: none;"{/if}><IMG src="img/delete.gif" alt="" {tip text="Delete"}></A>
+				<A href="#" id="periodadd"><IMG src="img/add.gif" alt="" {tip text="Add"}></A>
+			{/if}
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;">
+		<TD>
 			<IMG src="img/info1.gif" alt="">
 		</TD>
-		<TD style="width: 1%;" class="bold">
+		<TD class="bold">
 			{trans("Description:")}
 		</TD>
-		<TD style="width: 98%;">
+		<TD>
 			<TEXTAREA name="schema[description]" cols="50" rows="5" {tip text="Enter additional information (optional)"}>{$schema.description}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 100%;" class="text-right" colspan="3">
-			<A href="javascript:document.schemaedit.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
-			<A href="?m=promotionschemainfo&amp;id={$schema.id}">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A><BR>
+		<TD class="lms-ui-box-buttons" colspan="3">
+			{button icon="save" label="Submit" onclick="document.schemaedit.submit();"}
+			{button icon="cancel" label="Cancel" href="?m=promotionschemainfo&id={$schema.id}"}
 		</TD>
 	</TR>
 	</TBODY>

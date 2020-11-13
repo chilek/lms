@@ -63,9 +63,13 @@
 
 				{box_row icon="img/customer.gif" label="Owner:"}
 					{if isset($customer.id)}
-						{customerlist form="netdev" customers=$customers selected=$customer.id selectname="customer" inputname="netdev[ownerid]" select_id="ownerid_select" input_id="ownerid_input" customOnChange="customerChanged()"}
+						{customerlist form="netdev" customers=$customers selected=$customer.id version=2
+							selectname="customer" inputname="netdev[ownerid]" select_id="ownerid_select"
+							input_id="ownerid_input" customOnChange="customerChanged()"}
 					{else}
-						{customerlist form="netdev" customers=$customers selected=$netdev.ownerid selectname="customer" inputname="netdev[ownerid]" select_id="ownerid_select" input_id="ownerid_input" customOnChange="customerChanged()"}
+						{customerlist form="netdev" customers=$customers selected=$netdev.ownerid version=2
+							selectname="customer" inputname="netdev[ownerid]" select_id="ownerid_select"
+							input_id="ownerid_input" customOnChange="customerChanged()"}
 					{/if}
 				{/box_row}
 

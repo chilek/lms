@@ -193,13 +193,19 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 $status_sql = ' AND d.closed = 0 AND d.confirmdate >= 0 AND (d.confirmdate = 0 OR d.confirmdate < ?NOW?)';
                 break;
             case 1:
-                $status_sql = ' AND d.closed = 1';
+                $status_sql = ' AND d.closed > 0';
                 break;
             case 2:
                 $status_sql = ' AND d.closed = 0 AND d.confirmdate = -1';
                 break;
             case 3:
                 $status_sql = ' AND d.closed = 0 AND d.confirmdate > 0 AND d.confirmdate > ?NOW?';
+                break;
+            case 4:
+                $status_sql = ' AND d.closed = 2';
+                break;
+            case 5:
+                $status_sql = ' AND d.closed = 3';
                 break;
             default:
                 $status_sql = '';
@@ -690,7 +696,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         );
     }
 
-    public function CommitDocuments(array $ids)
+    public function CommitDocuments(array $ids, $userpanel = false)
     {
         function parse_notification_mail($string, $data)
         {
@@ -751,7 +757,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
  				adate = ?, auserid = ? WHERE id = ?',
                 array(
                     $userid,
-                    empty($doc['customerawaits']) ? 1 : 2,
+                    empty($doc['customerawaits']) ? ($userpanel ? 3 : 1) : 2,
                     $doc['customerawaits'] ? 0 : $doc['confirmdate'],
                     0,
                     null,
@@ -993,7 +999,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $document = $this->db->GetRow('SELECT d.type AS doctype, filename, contenttype, md5sum, a.cdate
 			FROM documents d
 			JOIN documentattachments a ON a.docid = d.id
-			WHERE docid = ? AND type = ?', array($docid, 1));
+			WHERE docid = ? AND a.type = ?', array($docid, 1));
 
         $filename = DOC_DIR . DIRECTORY_SEPARATOR . substr($document['md5sum'], 0, 2)
             . DIRECTORY_SEPARATOR . $document['md5sum'];
@@ -1435,5 +1441,41 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             (SELECT ?, doctype, rights FROM docrights WHERE userid = ?)',
             array($dst_userid, $src_userid)
         );
+    }
+
+    public function getDocumentsByFullNumber($full_number, $all_types = false)
+    {
+        return $this->db->GetAllByKey(
+            'SELECT d.* FROM documents d
+            JOIN customerview c ON c.id = d.customerid
+            WHERE d.fullnumber = ?'
+            . ($all_types ? '' : ' AND d.type < 0'),
+            'id',
+            array($full_number)
+        );
+    }
+
+    public function getDocumentsByChecksum($checksum, $all_types = false)
+    {
+        return $this->db->GetAllByKey(
+            'SELECT d.* FROM documents d
+            JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND r.rights & ' . DOCRIGHT_EDIT . ' > 0)
+            JOIN customerview c ON c.id = d.customerid
+            WHERE EXISTS (SELECT a.id FROM documentattachments a WHERE a.docid = d.id AND a.md5sum = ?)'
+            . ($all_types ? '' : ' AND d.type < 0'),
+            'id',
+            array(Auth::GetCurrentUser(), $checksum)
+        );
+    }
+
+    public function isDocumentAccessible($docid)
+    {
+        return $this->db->GetOne(
+            'SELECT d.id FROM documents d
+            JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND r.rights & ' . DOCRIGHT_EDIT . ' > 0)
+            JOIN customerview c ON c.id = d.customerid
+            WHERE d.id = ?',
+            array(Auth::GetCurrentUser(), $docid)
+        ) > 0;
     }
 }

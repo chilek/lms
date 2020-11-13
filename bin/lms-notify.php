@@ -39,6 +39,7 @@ $parameters = array(
     'channel:' => 'c:',
     'actions:' => 'a:',
     'customergroups:' => 'g:',
+    'customer-status:' => null,
 );
 
 $long_to_shorts = array();
@@ -104,6 +105,8 @@ lms-notify.php
 -g, --customergroups=<group1,group2,...>
                                 allow to specify customer groups to which notified customers
                                 should be assigned
+    --customer-status=<status1,status2,...>
+                                notify only customers with specified status
 
 EOF;
     exit(0);
@@ -297,6 +300,14 @@ $mail_content_type = $mail_format == 'html' ? 'text/html' : 'text/plain';
 $customergroups = ConfigHelper::getConfig($config_section . '.customergroups', '', true);
 $ignore_customer_consents = ConfigHelper::checkConfig($config_section . '.ignore_customer_consents');
 
+$allowed_customer_status =
+Utils::determineAllowedCustomerStatus(
+    isset($options['customer-status'])
+        ? $options['customer-status']
+        : ConfigHelper::getConfig($config_section . '.allowed_customer_status', ''),
+    -1
+);
+
 $content_types = array(
     MSG_MAIL => $mail_content_type,
     MSG_SMS => 'text/plain',
@@ -398,7 +409,7 @@ $sms_options = $LMS->getCustomerSMSOptions();
 
 //include(LIB_DIR . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'mtsms.php');
 
-function parse_customer_data($data, $row)
+function parse_customer_data($data, $format, $row)
 {
     global $LMS;
     $DB = LMSDB::getInstance();
@@ -465,7 +476,7 @@ function parse_customer_data($data, $row)
         $data = preg_replace("/\%abonament/", empty($saldo) ? '0' : implode(', ', $saldo), $data);
     }
 
-    $data = $LMS->getLastNInTable($data, $row['id'], '<eol>', $row['aggregate_documents']);
+    $data = $LMS->getLastNInTable($data, $row['id'], $format, $row['aggregate_documents']);
 
     // invoices, debit notes
     $data = preg_replace("/\%invoice/", $row['doc_number'], $data);
@@ -500,8 +511,8 @@ function create_message($type, $subject, $template)
         VALUES (?, ?NOW?, ?, ?, ?)",
         array(
             $type,
-            str_replace('<eol>', $content_types[$type] == 'text/html' ? '<br>' : "\n", $subject),
-            str_replace('<eol>', $content_types[$type] == 'text/html' ? '<br>' : "\n", $template),
+            $subject,
+            $template,
             $content_types[$type]
         )
     );
@@ -522,9 +533,6 @@ function send_mail($msgid, $cid, $rmail, $rname, $subject, $body)
         array($msgid, $cid, $rmail, 1)
     );
     $msgitemid = $DB->GetLastInsertID('messageitems');
-
-    $subject = str_replace('<eol>', $content_types[MSG_MAIL] == 'text/html' ? '<br>' : "\n", $subject);
-    $body = str_replace('<eol>', $content_types[MSG_MAIL] == 'text/html' ? '<br>' : "\n", $body);
 
     $headers = array(
         'From' => empty($dsn_email) ? $mail_from : $dsn_email,
@@ -581,7 +589,7 @@ function send_sms($msgid, $cid, $phone, $data)
     );
     $msgitemid = $DB->GetLastInsertID('messageitems');
 
-    $result = $LMS->SendSMS(str_replace(' ', '', $phone), str_replace('<eol>', "\n", $data), $msgitemid, $sms_options);
+    $result = $LMS->SendSMS(str_replace(' ', '', $phone), $data, $msgitemid, $sms_options);
     $query = "UPDATE messageitems
         SET status = ?, lastdate = ?NOW?, error = ?
         WHERE messageid = ? AND customerid = ? AND id = ?";
@@ -662,6 +670,12 @@ if (!empty($customergroups)) {
     $customergroups = ' AND (' . implode(' OR ', $customergroup_ORs) . ')';
 }
 
+if (empty($allowed_customer_status)) {
+    $customer_status_condition = '';
+} else {
+    $customer_status_condition = ' AND c.status IN (' . implode(',', $allowed_customer_status) . ')';
+}
+
 // ------------------------------------------------------------------------
 // ACTIONS
 // ------------------------------------------------------------------------
@@ -685,7 +699,7 @@ if (empty($types) || in_array('timetable', $types)) {
 
         $contents = '';
         $events = $DB->GetAll(
-            "SELECT DISTINCT title, description, date, begintime, enddate, endtime,
+            "SELECT DISTINCT title, description, note, date, begintime, enddate, endtime,
             customerid, UPPER(lastname) AS lastname, c.name AS name, address
             FROM events
             LEFT JOIN customeraddressview c ON (c.id = customerid)
@@ -738,6 +752,8 @@ if (empty($types) || in_array('timetable', $types)) {
                 $sms_contents .= $event['title'];
                 $mail_contents .= trans('Description:') . "\t" . $event['description'] . PHP_EOL;
                 $sms_contents .= ' (' . $event['description'] . ')';
+                $mail_contents .= trans('Note:') . "\t" . $event['note'] . PHP_EOL;
+                $sms_contents .= ' (' . $event['note'] . ')';
                 if ($event['customerid']) {
                     $mail_contents .= trans('Customer:') . "\t" . $event['lastname'] . " " . $event['name']
                         . ", " . $event['address'] . PHP_EOL;
@@ -804,7 +820,7 @@ if (empty($types) || in_array('documents', $types)) {
             WHERE (type & ?) = ?
             GROUP BY customerid
         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
-        WHERE d.type IN (?, ?) AND dc.todate >= $daystart + ? * 86400
+        WHERE 1 = 1" . $customer_status_condition . " AND d.type IN (?, ?) AND dc.todate >= $daystart + ? * 86400
             AND dc.todate < $daystart + (? + 1) * 86400"
             . ($notifications['documents']['deleted_customers'] ? '' : ' AND c.deleted = 0')
             . ($customergroups ?: ''),
@@ -825,8 +841,15 @@ if (empty($types) || in_array('documents', $types)) {
         foreach ($customers as $row) {
             $notifications['documents']['customers'][] = $row['id'];
             $row['aggregate_documents'] = $notifications['documents']['aggregate_documents'];
-            $message = parse_customer_data($notifications['documents']['message'], $row);
-            $subject = parse_customer_data($notifications['documents']['subject'], $row);
+
+            unset($message, $message_html, $message_text);
+            if ($format == $mail_format) {
+                $message = parse_customer_data($notifications['documents']['message'], $format, $row);
+            } else {
+                $message_html = parse_customer_data($notifications['documents']['message'], 'html', $row);
+                $message_text = parse_customer_data($notifications['documents']['message'], 'text', $row);
+            }
+            $subject = parse_customer_data($notifications['documents']['subject'], 'text', $row);
 
             $recipient_name = $row['lastname'] . ' ' . $row['name'];
 
@@ -880,7 +903,11 @@ if (empty($types) || in_array('documents', $types)) {
 
             if (!$debug) {
                 if (in_array('mail', $channels) && !empty($recipient_mails)) {
-                    $msgid = create_message(MSG_MAIL, $subject, $message);
+                    $msgid = create_message(
+                        MSG_MAIL,
+                        $subject,
+                        isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
+                    );
                     foreach ($recipient_mails as $recipient_mail) {
                         send_mail(
                             $msgid,
@@ -888,22 +915,39 @@ if (empty($types) || in_array('documents', $types)) {
                             $recipient_mail,
                             $recipient_name,
                             $subject,
-                            $message
+                            isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
                         );
                     }
                 }
                 if (in_array('sms', $channels) && !empty($recipient_phones)) {
-                    $msgid = create_message(MSG_SMS, $subject, $message);
+                    $msgid = create_message(
+                        MSG_SMS,
+                        $subject,
+                        isset($message) ? $message : $message_text
+                    );
                     foreach ($recipient_phones as $recipient_phone) {
-                        send_sms($msgid, $row['id'], $recipient_phone, $message);
+                        send_sms(
+                            $msgid,
+                            $row['id'],
+                            $recipient_phone,
+                            isset($message) ? $message : $message_text
+                        );
                     }
                 }
                 if (in_array('userpanel', $channels)) {
-                    $msgid = create_message(MSG_USERPANEL, $subject, $message);
+                    $msgid = create_message(
+                        MSG_USERPANEL,
+                        $subject,
+                        isset($message) ? $message : ($format == 'html' ? $message_html : $message_text)
+                    );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel'));
                 }
                 if (in_array('userpanel-urgent', $channels)) {
-                    $msgid = create_message(MSG_USERPANEL_URGENT, $subject, $message);
+                    $msgid = create_message(
+                        MSG_USERPANEL_URGENT,
+                        $subject,
+                        isset($message) ? $message : ($format == 'html' ? $message_html : $message_text)
+                    );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel urgent'));
                 }
             }
@@ -945,7 +989,7 @@ if (empty($types) || in_array('contracts', $types)) {
             WHERE (type & ?) = ?
             GROUP BY customerid
         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
-        WHERE d.dateto >= $daystart + ? * 86400 AND d.dateto < $daystart + (? + 1) * 86400"
+        WHERE 1 = 1" . $customer_status_condition . " AND d.dateto >= $daystart + ? * 86400 AND d.dateto < $daystart + (? + 1) * 86400"
             . ($notifications['contracts']['deleted_customers'] ? '' : ' AND c.deleted = 0')
             . ($customergroups ?: '')
         . " GROUP BY c.id, c.pin, c.lastname, c.name, d.dateto, m.email, x.phone",
@@ -964,8 +1008,15 @@ if (empty($types) || in_array('contracts', $types)) {
         foreach ($customers as $row) {
             $notifications['contracts']['customers'][] = $row['id'];
             $row['aggregate_documents'] = $notifications['contacts']['aggregate_documents'];
-            $message = parse_customer_data($notifications['contracts']['message'], $row);
-            $subject = parse_customer_data($notifications['contracts']['subject'], $row);
+
+            unset($message, $message_html, $message_text);
+            if ($format == $mail_format) {
+                $message = parse_customer_data($notifications['contacts']['message'], $format, $row);
+            } else {
+                $message_html = parse_customer_data($notifications['contacts']['message'], 'html', $row);
+                $message_text = parse_customer_data($notifications['contacts']['message'], 'text', $row);
+            }
+            $subject = parse_customer_data($notifications['contracts']['subject'], 'text', $row);
 
             $recipient_name = $row['lastname'] . ' ' . $row['name'];
 
@@ -1019,7 +1070,11 @@ if (empty($types) || in_array('contracts', $types)) {
 
             if (!$debug) {
                 if (in_array('mail', $channels) && !empty($recipient_mails)) {
-                    $msgid = create_message(MSG_MAIL, $subject, $message);
+                    $msgid = create_message(
+                        MSG_MAIL,
+                        $subject,
+                        isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
+                    );
                     foreach ($recipient_mails as $recipient_mail) {
                         send_mail(
                             $msgid,
@@ -1027,22 +1082,39 @@ if (empty($types) || in_array('contracts', $types)) {
                             $recipient_mail,
                             $recipient_name,
                             $subject,
-                            $message
+                            isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
                         );
                     }
                 }
                 if (in_array('sms', $channels) && !empty($recipient_phones)) {
-                    $msgid = create_message(MSG_SMS, $subject, $message);
+                    $msgid = create_message(
+                        MSG_SMS,
+                        $subject,
+                        isset($message) ? $message : $message_text
+                    );
                     foreach ($recipient_phones as $recipient_phone) {
-                        send_sms($msgid, $row['id'], $recipient_phone, $message);
+                        send_sms(
+                            $msgid,
+                            $row['id'],
+                            $recipient_phone,
+                            isset($message) ? $message : $message_text
+                        );
                     }
                 }
                 if (in_array('userpanel', $channels)) {
-                    $msgid = create_message(MSG_USERPANEL, $subject, $message);
+                    $msgid = create_message(
+                        MSG_USERPANEL,
+                        $subject,
+                        isset($message) ? $message : ($format == 'html' ? $message_html : $message_text)
+                    );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel'));
                 }
                 if (in_array('userpanel-urgent', $channels)) {
-                    $msgid = create_message(MSG_USERPANEL_URGENT, $subject, $message);
+                    $msgid = create_message(
+                        MSG_USERPANEL_URGENT,
+                        $subject,
+                        isset($message) ? $message : ($format == 'html' ? $message_html : $message_text)
+                    );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel urgent'));
                 }
             }
@@ -1093,7 +1165,8 @@ if (empty($types) || in_array('debtors', $types)) {
             WHERE (type & ?) = ?
             GROUP BY customerid
         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
-        WHERE c.status <> ? AND c.cutoffstop < $currtime AND b2.balance " . ($limit > 0 ? '>' : '<') . " ?"
+        WHERE 1 = 1" . $customer_status_condition
+            . " AND c.cutoffstop < $currtime AND b2.balance " . ($limit > 0 ? '>' : '<') . " ?"
             . ($notifications['debtors']['deleted_customers'] ? '' : ' AND c.deleted = 0')
             . ($customergroups ?: ''),
         array(
@@ -1110,7 +1183,6 @@ if (empty($types) || in_array('debtors', $types)) {
             CONTACT_EMAIL | CONTACT_NOTIFICATIONS,
             CONTACT_MOBILE | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
             CONTACT_MOBILE | CONTACT_NOTIFICATIONS,
-            CSTATUS_DISCONNECTED,
             $limit
         )
     );
@@ -1120,8 +1192,15 @@ if (empty($types) || in_array('debtors', $types)) {
         foreach ($customers as $row) {
             $notifications['debtors']['customers'][] = $row['id'];
             $row['aggregate_documents'] = $notifications['debtors']['aggregate_documents'];
-            $message = parse_customer_data($notifications['debtors']['message'], $row);
-            $subject = parse_customer_data($notifications['debtors']['subject'], $row);
+
+            unset($message, $message_html, $message_text);
+            if ($format == $mail_format) {
+                $message = parse_customer_data($notifications['debtors']['message'], $format, $row);
+            } else {
+                $message_html = parse_customer_data($notifications['debtors']['message'], 'html', $row);
+                $message_text = parse_customer_data($notifications['debtors']['message'], 'text', $row);
+            }
+            $subject = parse_customer_data($notifications['debtors']['subject'], 'text', $row);
 
             $recipient_name = $row['lastname'] . ' ' . $row['name'];
 
@@ -1182,7 +1261,11 @@ if (empty($types) || in_array('debtors', $types)) {
 
             if (!$debug) {
                 if (in_array('mail', $channels) && !empty($recipient_mails)) {
-                    $msgid = create_message(MSG_MAIL, $subject, $message);
+                    $msgid = create_message(
+                        MSG_MAIL,
+                        $subject,
+                        isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
+                    );
                     foreach ($recipient_mails as $recipient_mail) {
                         send_mail(
                             $msgid,
@@ -1190,22 +1273,39 @@ if (empty($types) || in_array('debtors', $types)) {
                             $recipient_mail,
                             $recipient_name,
                             $subject,
-                            $message
+                            isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
                         );
                     }
                 }
                 if (in_array('sms', $channels) && !empty($recipient_phones)) {
-                    $msgid = create_message(MSG_SMS, $subject, $message);
+                    $msgid = create_message(
+                        MSG_SMS,
+                        $subject,
+                        isset($message) ? $message : $message_text
+                    );
                     foreach ($recipient_phones as $recipient_phone) {
-                        send_sms($msgid, $row['id'], $recipient_phone, $message);
+                        send_sms(
+                            $msgid,
+                            $row['id'],
+                            $recipient_phone,
+                            isset($message) ? $message : $message_text
+                        );
                     }
                 }
                 if (in_array('userpanel', $channels)) {
-                    $msgid = create_message(MSG_USERPANEL, $subject, $message);
+                    $msgid = create_message(
+                        MSG_USERPANEL,
+                        $subject,
+                        isset($message) ? $message : ($format == 'html' ? $message_html : $message_text)
+                    );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel'));
                 }
                 if (in_array('userpanel-urgent', $channels)) {
-                    $msgid = create_message(MSG_USERPANEL_URGENT, $subject, $message);
+                    $msgid = create_message(
+                        MSG_USERPANEL_URGENT,
+                        $subject,
+                        isset($message) ? $message : ($format == 'html' ? $message_html : $message_text)
+                    );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel urgent'));
                 }
             }
@@ -1263,7 +1363,7 @@ if (empty($types) || in_array('reminder', $types)) {
             GROUP BY docid, currency
         ) v ON (v.docid = d.id)
         LEFT JOIN numberplans n ON (d.numberplanid = n.id)
-        WHERE d.type IN (?, ?, ?) AND d.closed = 0 AND b2.balance < ?
+        WHERE 1 = 1" . $customer_status_condition . " AND d.type IN (?, ?, ?) AND d.closed = 0 AND b2.balance < ?
             AND (d.cdate + (d.paytime - ? + 1) * 86400) >= $daystart
             AND (d.cdate + (d.paytime - ? + 1) * 86400) < $dayend"
             . ($notifications['reminder']['deleted_customers'] ? '' : ' AND c.deleted = 0')
@@ -1301,8 +1401,15 @@ if (empty($types) || in_array('reminder', $types)) {
             ));
 
             $row['aggregate_documents'] = $notifications['reminder']['aggregate_documents'];
-            $message = parse_customer_data($notifications['reminder']['message'], $row);
-            $subject = parse_customer_data($notifications['reminder']['subject'], $row);
+
+            unset($message, $message_html, $message_text);
+            if ($format == $mail_format) {
+                $message = parse_customer_data($notifications['reminder']['message'], $format, $row);
+            } else {
+                $message_html = parse_customer_data($notifications['reminder']['message'], 'html', $row);
+                $message_text = parse_customer_data($notifications['reminder']['message'], 'text', $row);
+            }
+            $subject = parse_customer_data($notifications['reminder']['subject'], 'text', $row);
 
             if (empty($row['email'])) {
                 $recipient_mails = null;
@@ -1366,7 +1473,11 @@ if (empty($types) || in_array('reminder', $types)) {
 
             if (!$debug) {
                 if (in_array('mail', $channels) && !empty($recipient_mails)) {
-                    $msgid = create_message(MSG_MAIL, $subject, $message);
+                    $msgid = create_message(
+                        MSG_MAIL,
+                        $subject,
+                        isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
+                    );
                     foreach ($recipient_mails as $recipient_mail) {
                         send_mail(
                             $msgid,
@@ -1374,22 +1485,39 @@ if (empty($types) || in_array('reminder', $types)) {
                             $recipient_mail,
                             $row['name'],
                             $subject,
-                            $message
+                            isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
                         );
                     }
                 }
                 if (in_array('sms', $channels) && !empty($recipient_phones)) {
-                    $msgid = create_message(MSG_SMS, $subject, $message);
+                    $msgid = create_message(
+                        MSG_SMS,
+                        $subject,
+                        isset($message) ? $message : $message_text
+                    );
                     foreach ($recipient_phones as $recipient_phone) {
-                        send_sms($msgid, $row['id'], $recipient_phone, $message);
+                        send_sms(
+                            $msgid,
+                            $row['id'],
+                            $recipient_phone,
+                            isset($message) ? $message : $message_text
+                        );
                     }
                 }
                 if (in_array('userpanel', $channels)) {
-                    $msgid = create_message(MSG_USERPANEL, $subject, $message);
+                    $msgid = create_message(
+                        MSG_USERPANEL,
+                        $subject,
+                        isset($message) ? $message : ($format == 'html' ? $message_html : $message_text)
+                    );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel'));
                 }
                 if (in_array('userpanel-urgent', $channels)) {
-                    $msgid = create_message(MSG_USERPANEL_URGENT, $subject, $message);
+                    $msgid = create_message(
+                        MSG_USERPANEL_URGENT,
+                        $subject,
+                        isset($message) ? $message : ($format == 'html' ? $message_html : $message_text)
+                    );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel urgent'));
                 }
             }
@@ -1441,7 +1569,8 @@ if (empty($types) || in_array('income', $types)) {
             WHERE (type & ?) = ?
             GROUP BY customerid
         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
-        WHERE cash.type = 1 AND cash.value > 0 AND cash.time >= $daystart + (? * 86400) AND cash.time < $daystart + (? + 1) * 86400"
+        WHERE 1 = 1" . $customer_status_condition
+            . " AND cash.type = 1 AND cash.value > 0 AND cash.time >= $daystart + (? * 86400) AND cash.time < $daystart + (? + 1) * 86400"
             . ($notifications['income']['deleted_customers'] ? '' : ' AND c.deleted = 0')
             . ($customergroups ?: ''),
         array(
@@ -1467,8 +1596,15 @@ if (empty($types) || in_array('income', $types)) {
             $notifications['income']['customers'][] = $row['id'];
 
             $row['aggregate_documents'] = $notifications['income']['aggregate_documents'];
-            $message = parse_customer_data($notifications['income']['message'], $row);
-            $subject = parse_customer_data($notifications['income']['subject'], $row);
+
+            unset($message, $message_html, $message_text);
+            if ($format == $mail_format) {
+                $message = parse_customer_data($notifications['income']['message'], $format, $row);
+            } else {
+                $message_html = parse_customer_data($notifications['income']['message'], 'html', $row);
+                $message_text = parse_customer_data($notifications['income']['message'], 'text', $row);
+            }
+            $subject = parse_customer_data($notifications['income']['subject'], 'text', $row);
 
             if (empty($row['email'])) {
                 $recipient_mails = null;
@@ -1524,7 +1660,11 @@ if (empty($types) || in_array('income', $types)) {
 
             if (!$debug) {
                 if (in_array('mail', $channels) && !empty($recipient_mails)) {
-                    $msgid = create_message(MSG_MAIL, $subject, $message);
+                    $msgid = create_message(
+                        MSG_MAIL,
+                        $subject,
+                        isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
+                    );
                     foreach ($recipient_mails as $recipient_mail) {
                         send_mail(
                             $msgid,
@@ -1532,22 +1672,39 @@ if (empty($types) || in_array('income', $types)) {
                             $recipient_mail,
                             $row['name'],
                             $subject,
-                            $message
+                            isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
                         );
                     }
                 }
                 if (in_array('sms', $channels) && !empty($recipient_phones)) {
-                    $msgid = create_message(MSG_SMS, $subject, $message);
+                    $msgid = create_message(
+                        MSG_SMS,
+                        $subject,
+                        isset($message) ? $message : $message_text
+                    );
                     foreach ($recipient_phones as $recipient_phone) {
-                        send_sms($msgid, $row['id'], $recipient_phone, $message);
+                        send_sms(
+                            $msgid,
+                            $row['id'],
+                            $recipient_phone,
+                            isset($message) ? $message : $message_text
+                        );
                     }
                 }
                 if (in_array('userpanel', $channels)) {
-                    $msgid = create_message(MSG_USERPANEL, $subject, $message);
+                    $msgid = create_message(
+                        MSG_USERPANEL,
+                        $subject,
+                        isset($message) ? $message : ($format == 'html' ? $message_html : $message_text)
+                    );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel'));
                 }
                 if (in_array('userpanel-urgent', $channels)) {
-                    $msgid = create_message(MSG_USERPANEL_URGENT, $subject, $message);
+                    $msgid = create_message(
+                        MSG_USERPANEL_URGENT,
+                        $subject,
+                        isset($message) ? $message : ($format == 'html' ? $message_html : $message_text)
+                    );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel urgent'));
                 }
             }
@@ -1583,7 +1740,8 @@ if (empty($types) || in_array('invoices', $types)) {
             FROM cash
             GROUP BY customerid
         ) ca ON (ca.customerid = d.customerid)
-        WHERE (c.invoicenotice IS NULL OR c.invoicenotice = 0) AND d.type IN (?, ?, ?)
+        WHERE 1 = 1" . $customer_status_condition
+            . " AND (c.invoicenotice IS NULL OR c.invoicenotice = 0) AND d.type IN (?, ?, ?)
             AND d.cdate >= ? AND d.cdate <= ?"
             . ($notifications['invoices']['deleted_customers'] ? '' : ' AND c.deleted = 0')
             . ($customergroups ?: ''),
@@ -1612,8 +1770,15 @@ if (empty($types) || in_array('invoices', $types)) {
             ));
 
             $row['aggregate_documents'] = $notifications['invoices']['aggregate_documents'];
-            $message = parse_customer_data($notifications['invoices']['message'], $row);
-            $subject = parse_customer_data($notifications['invoices']['subject'], $row);
+
+            unset($message, $message_html, $message_text);
+            if ($format == $mail_format) {
+                $message = parse_customer_data($notifications['invoices']['message'], $format, $row);
+            } else {
+                $message_html = parse_customer_data($notifications['invoices']['message'], 'html', $row);
+                $message_text = parse_customer_data($notifications['invoices']['message'], 'text', $row);
+            }
+            $subject = parse_customer_data($notifications['invoices']['subject'], 'text', $row);
 
             if (empty($row['email'])) {
                 $recipient_mails = null;
@@ -1669,7 +1834,11 @@ if (empty($types) || in_array('invoices', $types)) {
 
             if (!$debug) {
                 if (in_array('mail', $channels) && !empty($recipient_mails)) {
-                    $msgid = create_message(MSG_MAIL, $subject, $message);
+                    $msgid = create_message(
+                        MSG_MAIL,
+                        $subject,
+                        isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
+                    );
                     foreach ($recipient_mails as $recipient_mail) {
                         send_mail(
                             $msgid,
@@ -1677,22 +1846,39 @@ if (empty($types) || in_array('invoices', $types)) {
                             $recipient_mail,
                             $row['name'],
                             $subject,
-                            $message
+                            isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
                         );
                     }
                 }
                 if (in_array('sms', $channels) && !empty($recipient_phones)) {
-                    $msgid = create_message(MSG_SMS, $subject, $message);
+                    $msgid = create_message(
+                        MSG_SMS,
+                        $subject,
+                        isset($message) ? $message : $message_text
+                    );
                     foreach ($recipient_phones as $recipient_phone) {
-                        send_sms($msgid, $row['id'], $recipient_phone, $message);
+                        send_sms(
+                            $msgid,
+                            $row['id'],
+                            $recipient_phone,
+                            isset($message) ? $message : $message_text
+                        );
                     }
                 }
                 if (in_array('userpanel', $channels)) {
-                    $msgid = create_message(MSG_USERPANEL, $subject, $message);
+                    $msgid = create_message(
+                        MSG_USERPANEL,
+                        $subject,
+                        isset($message) ? $message : ($format == 'html' ? $message_html : $message_text)
+                    );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel'));
                 }
                 if (in_array('userpanel-urgent', $channels)) {
-                    $msgid = create_message(MSG_USERPANEL_URGENT, $subject, $message);
+                    $msgid = create_message(
+                        MSG_USERPANEL_URGENT,
+                        $subject,
+                        isset($message) ? $message : ($format == 'html' ? $message_html : $message_text)
+                    );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel urgent'));
                 }
             }
@@ -1728,7 +1914,8 @@ if (empty($types) || in_array('notes', $types)) {
             FROM cash
             GROUP BY customerid
         ) ca ON (ca.customerid = d.customerid)
-        WHERE (c.invoicenotice IS NULL OR c.invoicenotice = 0) AND d.type = ?
+        WHERE 1 = 1" . $customer_status_condition
+            . " AND (c.invoicenotice IS NULL OR c.invoicenotice = 0) AND d.type = ?
             AND d.cdate >= ? AND d.cdate <= ?"
             . ($notifications['notes']['deleted_customers'] ? '' : ' AND c.deleted = 0')
             . ($customergroups ?: ''),
@@ -1754,8 +1941,15 @@ if (empty($types) || in_array('notes', $types)) {
             ));
 
             $row['aggregate_documents'] = $notifications['notes']['aggregate_documents'];
-            $message = parse_customer_data($notifications['notes']['message'], $row);
-            $subject = parse_customer_data($notifications['notes']['subject'], $row);
+
+            unset($message, $message_html, $message_text);
+            if ($format == $mail_format) {
+                $message = parse_customer_data($notifications['notes']['message'], $format, $row);
+            } else {
+                $message_html = parse_customer_data($notifications['notes']['message'], 'html', $row);
+                $message_text = parse_customer_data($notifications['notes']['message'], 'text', $row);
+            }
+            $subject = parse_customer_data($notifications['notes']['subject'], 'text', $row);
 
             if (empty($row['email'])) {
                 $recipient_mails = null;
@@ -1811,7 +2005,11 @@ if (empty($types) || in_array('notes', $types)) {
 
             if (!$debug) {
                 if (in_array('mail', $channels) && !empty($recipient_mails)) {
-                    $msgid = create_message(MSG_MAIL, $subject, $message);
+                    $msgid = create_message(
+                        MSG_MAIL,
+                        $subject,
+                        isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
+                    );
                     foreach ($recipient_mails as $recipient_mail) {
                         send_mail(
                             $msgid,
@@ -1819,22 +2017,39 @@ if (empty($types) || in_array('notes', $types)) {
                             $recipient_mail,
                             $row['name'],
                             $subject,
-                            $message
+                            isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
                         );
                     }
                 }
                 if (in_array('sms', $channels) && !empty($recipient_phones)) {
-                    $msgid = create_message(MSG_SMS, $subject, $message);
+                    $msgid = create_message(
+                        MSG_SMS,
+                        $subject,
+                        isset($message) ? $message : $message_text
+                    );
                     foreach ($recipient_phones as $recipient_phone) {
-                        send_sms($msgid, $row['id'], $recipient_phone, $message);
+                        send_sms(
+                            $msgid,
+                            $row['id'],
+                            $recipient_phone,
+                            isset($message) ? $message : $message_text
+                        );
                     }
                 }
                 if (in_array('userpanel', $channels)) {
-                    $msgid = create_message(MSG_USERPANEL, $subject, $message);
+                    $msgid = create_message(
+                        MSG_USERPANEL,
+                        $subject,
+                        isset($message) ? $message : ($format == 'html' ? $message_html : $message_text)
+                    );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel'));
                 }
                 if (in_array('userpanel-urgent', $channels)) {
-                    $msgid = create_message(MSG_USERPANEL_URGENT, $subject, $message);
+                    $msgid = create_message(
+                        MSG_USERPANEL_URGENT,
+                        $subject,
+                        isset($message) ? $message : ($format == 'html' ? $message_html : $message_text)
+                    );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel urgent'));
                 }
             }
@@ -1858,7 +2073,8 @@ if (empty($types) || in_array('birthday', $types)) {
             WHERE (type & ?) = ?
             GROUP BY customerid
         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
-        WHERE " . $DB->RegExp('c.ssn', '[0-9]{2}(' . $cmonth . '|' . sprintf('%02d', $cmonth + 20) . ')' . date('d', $daystart) . '[0-9]{5}')
+        WHERE 1 = 1" . $customer_status_condition
+        . ' AND ' . $DB->RegExp('c.ssn', '[0-9]{2}(' . $cmonth . '|' . sprintf('%02d', $cmonth + 20) . ')' . date('d', $daystart) . '[0-9]{5}')
         . ($notifications['birthday']['deleted_customers'] ? '' : ' AND c.deleted = 0')
         . ($customergroups ?: ''),
         array(
@@ -1878,8 +2094,14 @@ if (empty($types) || in_array('birthday', $types)) {
             $month = intval(substr($row['ssn'], 2, 2));
             $row['age'] = round(date('Y') - (1900 + floor($month / 20) * 100) - $year);
 
-            $message = parse_customer_data($notifications['birthday']['message'], $row);
-            $subject = parse_customer_data($notifications['birthday']['subject'], $row);
+            unset($message, $message_html, $message_text);
+            if ($format == $mail_format) {
+                $message = parse_customer_data($notifications['birthday']['message'], $format, $row);
+            } else {
+                $message_html = parse_customer_data($notifications['birthday']['message'], 'html', $row);
+                $message_text = parse_customer_data($notifications['birthday']['message'], 'text', $row);
+            }
+            $subject = parse_customer_data($notifications['birthday']['subject'], 'text', $row);
 
             if (empty($row['email'])) {
                 $recipient_mails = null;
@@ -1935,7 +2157,11 @@ if (empty($types) || in_array('birthday', $types)) {
 
             if (!$debug) {
                 if (in_array('mail', $channels) && !empty($recipient_mails)) {
-                    $msgid = create_message(MSG_MAIL, $subject, $message);
+                    $msgid = create_message(
+                        MSG_MAIL,
+                        $subject,
+                        isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
+                    );
                     foreach ($recipient_mails as $recipient_mail) {
                         send_mail(
                             $msgid,
@@ -1943,22 +2169,39 @@ if (empty($types) || in_array('birthday', $types)) {
                             $recipient_mail,
                             $row['name'],
                             $subject,
-                            $message
+                            isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
                         );
                     }
                 }
                 if (in_array('sms', $channels) && !empty($recipient_phones)) {
-                    $msgid = create_message(MSG_SMS, $subject, $message);
+                    $msgid = create_message(
+                        MSG_SMS,
+                        $subject,
+                        isset($message) ? $message : $message_text
+                    );
                     foreach ($recipient_phones as $recipient_phone) {
-                        send_sms($msgid, $row['id'], $recipient_phone, $message);
+                        send_sms(
+                            $msgid,
+                            $row['id'],
+                            $recipient_phone,
+                            isset($message) ? $message : $message_text
+                        );
                     }
                 }
                 if (in_array('userpanel', $channels)) {
-                    $msgid = create_message(MSG_USERPANEL, $subject, $message);
+                    $msgid = create_message(
+                        MSG_USERPANEL,
+                        $subject,
+                        isset($message) ? $message : ($format == 'html' ? $message_html : $message_text)
+                    );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel'));
                 }
                 if (in_array('userpanel-urgent', $channels)) {
-                    $msgid = create_message(MSG_USERPANEL_URGENT, $subject, $message);
+                    $msgid = create_message(
+                        MSG_USERPANEL_URGENT,
+                        $subject,
+                        isset($message) ? $message : ($format == 'html' ? $message_html : $message_text)
+                    );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel urgent'));
                 }
             }
@@ -1987,7 +2230,8 @@ if (empty($types) || in_array('warnings', $types)) {
             FROM cash
             GROUP BY customerid
         ) ca ON (ca.customerid = c.id)
-        WHERE c.id IN (SELECT DISTINCT ownerid FROM vnodes WHERE warning = 1)"
+        WHERE 1 = 1" . $customer_status_condition
+            . " AND c.id IN (SELECT DISTINCT ownerid FROM vnodes WHERE warning = 1)"
             . ($notifications['warnings']['deleted_customers'] ? '' : ' AND c.deleted = 0')
             . ($customergroups ?: ''),
         array(
@@ -2003,8 +2247,15 @@ if (empty($types) || in_array('warnings', $types)) {
         foreach ($customers as $row) {
             $notifications['warnings']['customers'][] = $row['id'];
             $row['aggregate_documents'] = $notifications['warnings']['aggregate_documents'];
-            $message = parse_customer_data($row['message'], $row);
-            $subject = parse_customer_data($notifications['warnings']['subject'], $row);
+
+            unset($message, $message_html, $message_text);
+            if ($format == $mail_format) {
+                $message = parse_customer_data($notifications['warnings']['message'], $format, $row);
+            } else {
+                $message_html = parse_customer_data($notifications['warnings']['message'], 'html', $row);
+                $message_text = parse_customer_data($notifications['warnings']['message'], 'text', $row);
+            }
+            $subject = parse_customer_data($notifications['warnings']['subject'], 'text', $row);
 
             if (empty($row['email'])) {
                 $recipient_mails = null;
@@ -2056,7 +2307,11 @@ if (empty($types) || in_array('warnings', $types)) {
 
             if (!$debug) {
                 if (in_array('mail', $channels) && !empty($recipient_mails)) {
-                    $msgid = create_message(MSG_MAIL, $subject, $message);
+                    $msgid = create_message(
+                        MSG_MAIL,
+                        $subject,
+                        isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
+                    );
                     foreach ($recipient_mails as $recipient_mail) {
                         send_mail(
                             $msgid,
@@ -2064,22 +2319,39 @@ if (empty($types) || in_array('warnings', $types)) {
                             $recipient_mail,
                             $row['name'],
                             $subject,
-                            $message
+                            isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
                         );
                     }
                 }
                 if (in_array('sms', $channels) && !empty($recipient_phones)) {
-                    $msgid = create_message(MSG_SMS, $subject, $message);
+                    $msgid = create_message(
+                        MSG_SMS,
+                        $subject,
+                        isset($message) ? $message : $message_text
+                    );
                     foreach ($recipient_phones as $recipient_phone) {
-                        send_sms($msgid, $row['id'], $recipient_phone, $message);
+                        send_sms(
+                            $msgid,
+                            $row['id'],
+                            $recipient_phone,
+                            isset($message) ? $message : $message_text
+                        );
                     }
                 }
                 if (in_array('userpanel', $channels)) {
-                    $msgid = create_message(MSG_USERPANEL, $subject, $message);
+                    $msgid = create_message(
+                        MSG_USERPANEL,
+                        $subject,
+                        isset($message) ? $message : ($format == 'html' ? $message_html : $message_text)
+                    );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel'));
                 }
                 if (in_array('userpanel-urgent', $channels)) {
-                    $msgid = create_message(MSG_USERPANEL_URGENT, $subject, $message);
+                    $msgid = create_message(
+                        MSG_USERPANEL_URGENT,
+                        $subject,
+                        isset($message) ? $message : ($format == 'html' ? $message_html : $message_text)
+                    );
                     send_to_userpanel($msgid, $row['id'], trans('userpanel urgent'));
                 }
             }
@@ -2134,7 +2406,7 @@ if (empty($types) || in_array('events', $types)) {
                             WHERE (type & ?) = ?
                             GROUP BY customerid
                         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
-                        WHERE c.id = ?",
+                        WHERE 1 = 1" . $customer_status_condition . " AND c.id = ?",
                         array(
                             CONTACT_EMAIL | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
                             CONTACT_EMAIL | CONTACT_NOTIFICATIONS,
@@ -2615,7 +2887,7 @@ if (!empty($intersect)) {
 
                     $customers = $DB->GetCol(
                         'SELECT c.id FROM customers c
-                        WHERE 1 = 1'
+                        WHERE 1 = 1' . $customer_status_condition
                         . (empty($customers) ? '' : ' AND c.id NOT IN (' . implode(',', $customers) . ')')
                         . ' AND (' . implode(' AND ', $where) . ')'
                         . ($customergroups ?: '')

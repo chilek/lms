@@ -34,8 +34,8 @@
 		<tr class="dark">
 			<td width="100%" class="fall text-right" colspan="2">
 				{block name="netdevproducer-buttons"}
-					{button icon="save" label="Save" onclick="xajax_save_producer(xajax.getFormValues('produceredit'));" href="javascript:void(0);"}
-					{button icon="cancel" label="Cancel" onclick="xajax_cancel_producer();" href="javascript:void(0);"}
+					{button icon="save" label="Save" onclick="xajax_save_producer(xajax.getFormValues('produceredit'));"}
+					{button icon="cancel" label="Cancel" onclick="xajax_cancel_producer();"}
 				{/block}
 			</td>
 		</tr>
@@ -85,15 +85,15 @@
 			<td class="nobr text-right">
 				{block name="netdevmodel-producer-buttons"}
 				{if $listdata.pid}
-					{button id="delete-producer" icon="delete" label="Delete" onclick="delproducer({$listdata.pid});" href="javascript:void(0);"}
-					{button icon="edit" label="Edit" onclick="xajax_edit_producer({$listdata.pid});" href="javascript:void(0);"}
+					{button id="delete-producer" icon="delete" label="Delete" onclick="delproducer({$listdata.pid});"}
+					{button icon="edit" label="Edit" onclick="xajax_edit_producer({$listdata.pid});"}
 				{/if}
 				{/block}
 			</td>
 		</tr>
 		<tr class="lms-ui-button-panel">
 			<td colspan="2" class="fall text-right">
-				{button icon="add" label="Add producer" onclick="xajax_add_producer();" href="javascript:void(0);"}
+				{button icon="add" label="Add producer" onclick="xajax_add_producer();"}
 			</td>
 		</tr>
 		</tbody>
@@ -130,8 +130,8 @@
 		<tr class="dark">
 			<td width="100%" class="fall text-right" colspan="2">
 				{block name="netdevmodel-buttons"}
-					{button icon="save" label="Save" onclick="xajax_save_model(xajax.getFormValues('modeledit'));" href="javascript:void(0);"}
-					{button icon="cancel" label="Cancel" onclick="xajax_cancel_model();" href="javascript:void(0);"}
+					{button icon="save" label="Save" onclick="xajax_save_model(xajax.getFormValues('modeledit'));"}
+					{button icon="cancel" label="Cancel" onclick="xajax_cancel_model();"}
 				{/block}
 			</td>
 		</tr>
@@ -174,7 +174,7 @@
 		<td class="bold">{trans("Alternative name")}</td>
 		<td class="text-center nobr bold">{trans("Network devices")}</td>
 		<td class="text-right nobr">
-			{button icon="add" label="Add model" onclick="xajax_add_model();" href="javascript:void(0);"}
+			{button icon="add" label="Add model" onclick="xajax_add_model();"}
 		</td>
 	</tr>
 	{section name=modellist loop=$modellist start=$start max=$pagelimit}
@@ -232,7 +232,7 @@
 			<p>
 			{trans("There are no models matching to defined filter or model list is empty")}
 			</p>
-			{button icon="add" label="Add new model" onclick="xajax_add_model();" href="javascript:void(0);"}
+			{button icon="add" label="Add new model" onclick="xajax_add_model();"}
 			<br>
 			<br>
 		</td>

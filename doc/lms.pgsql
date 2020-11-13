@@ -253,6 +253,7 @@ CREATE TABLE divisions (
 	id 		integer 	NOT NULL DEFAULT nextval('divisions_id_seq'::text),
 	shortname 	varchar(255) 	NOT NULL DEFAULT '',
 	name 		text 		NOT NULL DEFAULT '',
+	label varchar(100) DEFAULT NULL,
 	ten		varchar(50)	NOT NULL DEFAULT '',
 	regon		varchar(255)	NOT NULL DEFAULT '',
 	rbe			varchar(255)	NOT NULL DEFAULT '',
@@ -313,6 +314,7 @@ CREATE TABLE customers (
     paytype smallint 	DEFAULT NULL,
     documentmemo text   DEFAULT NULL,
     flags smallint NOT NULL DEFAULT 0,
+    karma smallint NOT NULL DEFAULT 0,
 	PRIMARY KEY (id)
 );
 CREATE INDEX customers_lastname_idx ON customers (lastname, name);
@@ -343,6 +345,21 @@ CREATE TABLE customernotes (
     message text NOT NULL,
     PRIMARY KEY (id)
 );
+
+/* --------------------------------------------------------
+  Structure of table "customerkarmalastchanges" (customerkarmalastchanges)
+-------------------------------------------------------- */
+CREATE SEQUENCE customerkarmalastchanges_id_seq;
+CREATE TABLE customerkarmalastchanges (
+    id integer NOT NULL DEFAULT nextval('customerkarmalastchanges_id_seq'::text),
+    timestamp integer NOT NULL,
+    customerid integer NOT NULL
+        CONSTRAINT customerkarmalastchanges_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    userid integer NOT NULL
+        CONSTRAINT customerkarmalastchanges_userid_fkey REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (id)
+);
+CREATE INDEX customerkarmalastchanges_timestamp_idx ON customerkarmalastchanges (timestamp);
 
 /* --------------------------------------------------------
   Structure of table "numberplans"
@@ -878,6 +895,65 @@ CREATE TABLE liabilities (
 	PRIMARY KEY (id)
 );
 
+/* --------------------------------------------------------
+  Structure of table "promotions"
+-------------------------------------------------------- */
+DROP SEQUENCE IF EXISTS promotions_id_seq;
+CREATE SEQUENCE promotions_id_seq;
+DROP TABLE IF EXISTS promotions CASCADE;
+CREATE TABLE promotions (
+    id integer          DEFAULT nextval('promotions_id_seq'::text) NOT NULL,
+    name varchar(255)   NOT NULL,
+    description text    DEFAULT NULL,
+    disabled smallint   DEFAULT 0 NOT NULL,
+    deleted smallint    DEFAULT 0 NOT NULL,
+    datefrom integer	DEFAULT 0 NOT NULL,
+    dateto integer		DEFAULT 0 NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE (name)
+);
+
+/* --------------------------------------------------------
+  Structure of table "promotionschemas"
+-------------------------------------------------------- */
+DROP SEQUENCE IF EXISTS promotionschemas_id_seq;
+CREATE SEQUENCE promotionschemas_id_seq;
+DROP TABLE IF EXISTS promotionschemas CASCADE;
+CREATE TABLE promotionschemas (
+    id integer          DEFAULT nextval('promotionschemas_id_seq'::text) NOT NULL,
+    name varchar(255)   NOT NULL,
+    description text    DEFAULT NULL,
+    data text           DEFAULT NULL,
+    promotionid integer DEFAULT NULL
+        REFERENCES promotions (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    disabled smallint   DEFAULT 0 NOT NULL,
+    deleted smallint    DEFAULT 0 NOT NULL,
+    length smallint     DEFAULT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT promotionschemas_promotionid_key UNIQUE (promotionid, name)
+);
+
+/* --------------------------------------------------------
+  Structure of table "promotionassignments"
+-------------------------------------------------------- */
+DROP SEQUENCE IF EXISTS promotionassignments_id_seq;
+CREATE SEQUENCE promotionassignments_id_seq;
+DROP TABLE IF EXISTS promotionassignments CASCADE;
+CREATE TABLE promotionassignments (
+    id integer          DEFAULT nextval('promotionassignments_id_seq'::text) NOT NULL,
+    promotionschemaid integer DEFAULT NULL
+        REFERENCES promotionschemas (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    tariffid integer    DEFAULT NULL
+        REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    data text           DEFAULT NULL,
+    optional smallint   DEFAULT 0 NOT NULL,
+    label varchar(60) DEFAULT NULL,
+    orderid integer     NOT NULL DEFAULT 0,
+    backwardperiod smallint DEFAULT 0 NOT NULL,
+    PRIMARY KEY (id)
+);
+CREATE INDEX promotionassignments_tariffid_idx ON promotionassignments (tariffid);
+
 /* ----------------------------------------------------
  Structure of table "assignments"
 ---------------------------------------------------*/
@@ -913,6 +989,8 @@ CREATE TABLE assignments (
 	commited smallint DEFAULT 1 NOT NULL,
 	separatedocument smallint DEFAULT 0 NOT NULL,
 	count numeric(9,3) DEFAULT 1 NOT NULL,
+	promotionschemaid integer DEFAULT NULL
+		CONSTRAINT assignments_promotionschemaid_fkey REFERENCES promotionschemas (id) ON DELETE RESTRICT ON UPDATE CASCADE,
 	PRIMARY KEY (id)
 );
 CREATE INDEX assignments_tariffid_idx ON assignments (tariffid);
@@ -1548,62 +1626,6 @@ CREATE TABLE tariffassignments (
 
 CREATE INDEX tariffassignments_tarifftagid_idx ON tariffassignments (tarifftagid);
 
-/* --------------------------------------------------------
-  Structure of table "promotions"
--------------------------------------------------------- */
-DROP SEQUENCE IF EXISTS promotions_id_seq;
-CREATE SEQUENCE promotions_id_seq;
-DROP TABLE IF EXISTS promotions CASCADE;
-CREATE TABLE promotions (
-    id integer          DEFAULT nextval('promotions_id_seq'::text) NOT NULL,
-    name varchar(255)   NOT NULL,
-    description text    DEFAULT NULL,
-    disabled smallint   DEFAULT 0 NOT NULL,
-    datefrom integer	DEFAULT 0 NOT NULL,
-    dateto integer		DEFAULT 0 NOT NULL,
-    PRIMARY KEY (id),
-    UNIQUE (name)
-);
-
-/* --------------------------------------------------------
-  Structure of table "promotionschemas"
--------------------------------------------------------- */
-DROP SEQUENCE IF EXISTS promotionschemas_id_seq;
-CREATE SEQUENCE promotionschemas_id_seq;
-DROP TABLE IF EXISTS promotionschemas CASCADE;
-CREATE TABLE promotionschemas (
-    id integer          DEFAULT nextval('promotionschemas_id_seq'::text) NOT NULL,
-    name varchar(255)   NOT NULL,
-    description text    DEFAULT NULL,
-    data text           DEFAULT NULL,
-    promotionid integer DEFAULT NULL
-        REFERENCES promotions (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    disabled smallint   DEFAULT 0 NOT NULL,
-    PRIMARY KEY (id),
-    CONSTRAINT promotionschemas_promotionid_key UNIQUE (promotionid, name)
-);
-
-/* --------------------------------------------------------
-  Structure of table "promotionassignments"
--------------------------------------------------------- */
-DROP SEQUENCE IF EXISTS promotionassignments_id_seq;
-CREATE SEQUENCE promotionassignments_id_seq;
-DROP TABLE IF EXISTS promotionassignments CASCADE;
-CREATE TABLE promotionassignments (
-    id integer          DEFAULT nextval('promotionassignments_id_seq'::text) NOT NULL,
-    promotionschemaid integer DEFAULT NULL
-        REFERENCES promotionschemas (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    tariffid integer    DEFAULT NULL
-        REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    data text           DEFAULT NULL,
-    optional smallint   DEFAULT 0 NOT NULL,
-    label varchar(60) DEFAULT NULL,
-    orderid integer     NOT NULL DEFAULT 0,
-    backwardperiod smallint DEFAULT 0 NOT NULL,
-    PRIMARY KEY (id)
-);
-CREATE INDEX promotionassignments_tariffid_idx ON promotionassignments (tariffid);
-
 /* ---------------------------------------------------------
   Structure of table "payments"
 --------------------------------------------------------- */
@@ -1796,6 +1818,9 @@ CREATE TABLE rtqueues (
   resolveticketbody text NOT NULL DEFAULT '',
   verifierticketsubject varchar(255) NOT NULL DEFAULT '',
   verifierticketbody text NOT NULL DEFAULT '',
+  newticketsmsbody text DEFAULT NULL,
+  newmessagesmsbody text DEFAULT NULL,
+  resolveticketsmsbody text DEFAULT NULL,
   deleted smallint	DEFAULT 0 NOT NULL,
   deltime integer	DEFAULT 0 NOT NULL,
   deluserid integer	DEFAULT NULL
@@ -1898,6 +1923,7 @@ CREATE TABLE rtmessages (
   deltime integer	DEFAULT 0 NOT NULL,
   deluserid integer	DEFAULT NULL
 	CONSTRAINT rtmessages_deluserid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+  contenttype varchar(255) DEFAULT 'text/plain',
   PRIMARY KEY (id)
 );
 
@@ -1922,7 +1948,8 @@ CREATE TABLE rtattachments (
 	messageid integer 	    NOT NULL
 	    REFERENCES rtmessages (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	filename varchar(255) 	DEFAULT '' NOT NULL,
-	contenttype varchar(255) DEFAULT '' NOT NULL
+	contenttype varchar(255) DEFAULT '' NOT NULL,
+	cid varchar(255) DEFAULT NULL
 );
 
 CREATE INDEX rtattachments_message_idx ON rtattachments (messageid);
@@ -3876,6 +3903,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020100100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020111000');
 
 COMMIT;

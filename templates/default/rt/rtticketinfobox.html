@@ -70,7 +70,7 @@
 									<i class="lms-ui-icon-content lms-ui-icon-type"></i>{trans("Ticket type:")}
 								</TD>
 								<TD style="width: 99%;" class="nobr">
-                                    {$_RT_TYPES[$ticket.type].label}
+                                    {trans($_RT_TYPES[$ticket.type].label)}
 								</TD>
 							</TR>
 							{/if}
@@ -385,10 +385,10 @@
 			{/if}
 			{button type="link-button" icon="clone" label="Clone" href="?m=rtticketadd&ticketid={$ticket.ticketid}"}
 			{if $ticket.deleted == 1 && $ticket.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
-				{button id="restore-rtticket" icon="restore" label="Restore<!RT>" href="?m=rtrestore&id={$ticket.ticketid}&taction=restore"}
-				{button id="remove-rtticket" icon="delete" label="Delete permanently" href="?m=rtticketdel&id={$ticket.ticketid}&taction=delperm"}
+				{button id="restore-rtticket" icon="restore" label="Restore<!RT>" data_href="?m=rtrestore&id={$ticket.ticketid}&taction=restore"}
+				{button id="remove-rtticket" icon="delete" label="Delete permanently" data_href="?m=rtticketdel&id={$ticket.ticketid}&taction=delperm"}
 			{else}
-				{button id="delete-rtticket" icon="delete" label="Delete" href="?m=rtticketdel&id={$ticket.ticketid}&taction=delete"}
+				{button id="delete-rtticket" icon="delete" label="Delete" data_href="?m=rtticketdel&id={$ticket.ticketid}&taction=delete"}
 			{/if}
 			{if $ticket.state != $smarty.const.RT_RESOLVED || ($ticket.state == $smarty.const.RT_RESOLVED && $aet && ($smarty.now - $ticket.resolvetime) < $aet) || (ConfigHelper::checkPrivilege('superuser'))}
 			    {button type="link-button" icon="edit" label="Edit" href="?m=rtticketedit&id={$ticket.ticketid}"}
@@ -468,19 +468,19 @@
 	$(function() {
 		$('#delete-rtticket').click(function () {
 			confirmDialog($t("Are you sure, you want to remove ticket '$a'?", sprintf("%06d", {$ticket.ticketid})), this).done(function () {
-				location.href = $(this).attr('href');
+				location.href = $(this).attr('data-href');
 			});
 			return false;
 		});
 		$('#restore-rtticket').click(function () {
 			confirmDialog($t("Are you sure, you want to restore ticket $a?", sprintf("%06d", {$ticket.ticketid})), this).done(function () {
-				location.href = $(this).attr('href');
+				location.href = $(this).attr('data-href');
 			});
 			return false;
 		});
 		$('#remove-rtticket').click(function () {
 			confirmDialog($t("Are you sure, you want to permanently remove ticket $a?", sprintf("%06d", {$ticket.ticketid})), this).done(function () {
-				location.href = $(this).attr('href');
+				location.href = $(this).attr('data-href');
 			});
 			return false;
 		});

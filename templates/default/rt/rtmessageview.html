@@ -2,6 +2,15 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!-- $Id$ -->
+
+<style>
+
+	table.lmsbox td.message-html-body td {
+		padding: 0;
+	}
+
+</style>
+
 <H1>{$layout.pagetitle}</H1>
 <TABLE class="lmsbox">
         <COLGROUP>
@@ -33,7 +42,7 @@
 		<TD class="nobr">
 			{$message.createtime|date_format:"%Y/%m/%d %H:%M.%S"}
 		</TD>
-	</TR>	
+	</TR>
 	<TR>
 		<TD class="nobr">
 		    {if $message.userid}
@@ -118,8 +127,12 @@
 		<TD class="bold">
 			{trans("Message:")}
 		</TD>
-		<TD>
-			<TEXTAREA rows="5" cols="100" readonly>{$message.body|escape}</TEXTAREA>
+		<TD class="message-html-body">
+			{if $message.contentype == 'text/plain'}
+				<textarea rows="5" cols="100" readonly>{$message.body|escape|replace:"\n":'<br>'|message_quote}</textarea>
+			{else}
+				{$message.body|message_quote}
+			{/if}
 		</TD>
 	</TR>
 	{if $message.attachments}

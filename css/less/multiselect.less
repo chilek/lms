@@ -24,6 +24,8 @@
 
 .lms-ui-multiselect-container {
   display: inline-block;
+  vertical-align: middle;
+  min-height: 1.8em;
 
   select,
   .lms-ui-multiselect-label-workaround {
@@ -34,21 +36,35 @@
     color: unset !important;
 
     .lms-ui-multiselect-launcher {
-      background-color: @error-background;
-      color: @error-text;
+      border: @error-outline;
+      box-shadow: @error-box-shadow;
+      &:focus {
+        border: @error-outline-focus;
+        box-shadow: @error-box-shadow-focus;
+        outline: none;
+      }
     }
   }
 
   .lms-ui-multiselect-launcher {
     vertical-align: middle;
-    display: block;
     background-color: @lucid;
     border: solid 1px @blend;
-    min-height: 1.4em;
+    min-height: 1.6em;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
 
     .lms-ui-multiselect-launcher-label {
       //overflow: hidden;
-      font-size:  @font-size;
+      font-size: @font-size-high;
+      @media screen and (max-width: @font-size-normal-max-width) {
+        font-size: @font-size-normal;
+      }
+      @media screen and (max-width: @font-size-mobile-max-width) {
+        font-size: @font-size-mobile;
+      }
       font-family: @fonts;
       vertical-align: middle;
       cursor: default;

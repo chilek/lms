@@ -47,10 +47,12 @@ if ($schema) {
     }
 
     if (!$error) {
+        $length = 0;
         $data = array();
         foreach ($schema['periods'] as $period) {
             if ($period = intval($period)) {
                 $data[] = $period;
+                $length += intval($period);
             } else {
                 break;
             }
@@ -62,10 +64,11 @@ if ($schema) {
             'name' => $schema['name'],
             'description' => $schema['description'],
             'data' => $data,
+            'length' => $length,
         );
         $DB->Execute('INSERT INTO promotionschemas (promotionid, name,
-			description, data)
-			VALUES (?, ?, ?, ?)', array_values($args));
+			description, data, length)
+			VALUES (?, ?, ?, ?, ?)', array_values($args));
 
         $sid = $DB->GetLastInsertId('promotionschemas');
 

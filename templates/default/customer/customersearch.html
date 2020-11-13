@@ -60,6 +60,10 @@
 <INPUT type="submit" class="hiddenbtn">
 </p>
 <TABLE class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 99%;">
+	</colgroup>
 	<THEAD>
 	<TR>
 		<TD colspan="2" class="bold">
@@ -69,11 +73,20 @@
 	</THEAD>
 	<TBODY>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/customer.gif" alt=""> {trans("First/last or Company name:")}
 		</TD>
-		<TD style="width: 99%;">
+		<TD>
 			<INPUT type="text" name="search[customername]" VALUE="{$search.customername}">
+		</TD>
+	</TR>
+	<TR>
+		<TD class="bold nobr">
+			{icon name="karma" class="fw-fw"} {trans("Karma:")}
+		</TD>
+		<TD>
+			<INPUT type="text" name="search[karma]" VALUE="{$search.karma}"
+				{tip text="Negative value means customers with karma less or equal than specified, but positive means greater or equal then specified"}>
 		</TD>
 	</TR>
 	<TR>
@@ -185,6 +198,28 @@
 				<OPTION VALUE="0">{trans("private person")}</OPTION>
 				<OPTION VALUE="1">{trans("legal entity")}</OPTION>
 			</SELECT>
+		</TD>
+	</TR>
+	<TR>
+		<TD class="bold nobr">
+			<i class="lms-ui-icon-legal-personality fa-fw"></i> {trans("Flags:")}
+		</TD>
+		<TD>
+			<input type="hidden" name="flags[]" value="0">
+			<select name="flags[]" {tip text="Select customer flags (optional)" class="lms-ui-multiselect"}
+					multiple data-default-value="{trans("- all -")}">
+				{foreach $_CUSTOMERFLAGS as $cflag => $flag}
+					<option value="{$cflag}" title="{$flag.tip}">{$flag.label}</option>
+				{/foreach}
+			</select>
+			<label>
+				<INPUT class="radio" type="radio" value="AND" name="fk"{if $fk != 'OR'} checked{/if}>
+				{trans("and")}
+			</label>
+			<label>
+				<INPUT class="radio" type="radio" value="OR" name="fk"{if $fk == 'OR'} checked{/if}>
+				{trans("or")}
+			</label>
 		</TD>
 	</TR>
 	<TR>
@@ -359,8 +394,11 @@
 				<OPTION VALUE="55">{trans("without tariff")}</OPTION>
 				<OPTION VALUE="56">{trans("suspended<!plural>")}</OPTION>
 				<OPTION value="59">{trans("without contracts")}</OPTION>
+				<OPTION value="76">{trans("without active contracts")}</OPTION>
 				<OPTION value="60">{trans("with expired contracts")}</OPTION>
+				<OPTION value="77">{trans("with expired, active contracts")}</OPTION>
 				<OPTION value="61">{trans("with expiring contracts")}</OPTION>
+				<OPTION value="78">{trans("with expiring, active contracts")}</OPTION>
 				<OPTION VALUE="75">{trans("with discount")}</OPTION>
 				<OPTION VALUE="70">{trans("TERRIT not specified")}</OPTION>
 				<OPTION VALUE="74">{trans("ZIP code not specified")}</OPTION>

@@ -33,10 +33,6 @@ include(MODULES_DIR . DIRECTORY_SEPARATOR . 'document.inc.php');
 if (isset($_POST['document'])) {
     $document = $_POST['document'];
 
-    $oldfromdate = $document['fromdate'];
-    $oldtodate = $document['todate'];
-    $oldconfirmdate = $document['confirmdate'];
-
     $document['customerid'] = isset($_POST['customerid']) ? intval($_POST['customerid']) : intval($_POST['customer']);
 
     if (!$LMS->CustomerExists(intval($document['customerid']))) {
@@ -78,49 +74,34 @@ if (isset($_POST['document'])) {
         $error['number'] = trans('Document with specified number exists!');
     }
 
-    if ($document['fromdate']) {
-        $date = explode('/', $document['fromdate']);
-        if (checkdate($date[1], $date[2], $date[0])) {
-            $document['fromdate'] = mktime(0, 0, 0, $date[1], $date[2], $date[0]);
-        } else {
-            $error['fromdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
-        }
-    } else {
+    if (empty($document['fromdate'])) {
         $document['fromdate'] = 0;
+    } elseif (!preg_match('/^[0-9]+$/', $document['fromdate'])) {
+        $error['fromdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
     }
 
-    if ($document['todate']) {
-        $date = explode('/', $document['todate']);
-        if (checkdate($date[1], $date[2], $date[0])) {
-            $document['todate'] = mktime(23, 59, 59, $date[1], $date[2], $date[0]);
-        } else {
-            $error['todate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
-        }
-    } else {
+    if (empty($document['todate'])) {
         $document['todate'] = 0;
+    } elseif (!preg_match('/^[0-9]+$/', $document['todate'])) {
+        $error['todate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
     }
 
     if ($document['fromdate'] > $document['todate'] && $document['todate'] != 0) {
         $error['todate'] = trans('Start date can\'t be greater than end date!');
     }
 
-    if ($document['confirmdate'] && !isset($document['closed'])) {
-        $date = explode('/', $document['confirmdate']);
-        if (checkdate($date[1], $date[2], $date[0])) {
-            $document['confirmdate'] = mktime(0, 0, 0, $date[1], $date[2], $date[0]);
-        } else {
-            $error['confirmdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
-        }
-    } else {
+    if (empty($document['confirmdate'])) {
         $document['confirmdate'] = 0;
+    } elseif (!preg_match('/^[0-9]+$/', $document['confirmdate']) && !isset($document['closed'])) {
+        $error['confirmdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
     }
 
     // validate tariff selection list when promotions are active only
     if (isset($document['assignment']) && !empty($document['assignment']['schemaid'])) {
         // validate selected promotion schema properties
         $selected_assignment = $document['assignment'];
-        $selected_assignment['datefrom'] = $oldfromdate;
-        $selected_assignment['dateto'] = $oldtodate;
+        $selected_assignment['datefrom'] = $document['fromdate'];
+        $selected_assignment['dateto'] = $document['todate'];
 
         $result = $LMS->ValidateAssignment($selected_assignment);
         extract($result);
@@ -140,6 +121,13 @@ if (isset($_POST['document'])) {
 				WHERE id = ?', array($document['reference']));
         }
         $SMARTY->assignByRef('document', $document);
+
+        $fullnumber = docnumber(array(
+            'number' => $document['number'],
+            'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($document['numberplanid'])),
+            'cdate' => time(),
+            'customerid' => $document['customerid'],
+        ));
 
         if ($document['templ']) {
             foreach ($documents_dirs as $doc) {
@@ -176,6 +164,10 @@ if (isset($_POST['document'])) {
                 $engine,
                 isset($document['attachments']) ? $document['attachments'] : array()
             ));
+
+            $barcode = new \Com\Tecnick\Barcode\Barcode();
+            $bobj = $barcode->getBarcodeObj('C128', iconv('UTF-8', 'ASCII//TRANSLIT', $fullnumber), -1, -30, 'black');
+            $document['barcode'] = base64_encode($bobj->getPngData());
 
             // run template engine
             if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
@@ -255,13 +247,6 @@ if (isset($_POST['document'])) {
         $DB->BeginTrans();
 
         $division = $LMS->GetDivision($customer['divisionid']);
-
-        $fullnumber = docnumber(array(
-            'number' => $document['number'],
-            'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($document['numberplanid'])),
-            'cdate' => $time,
-            'customerid' => $document['customerid'],
-        ));
 
         // if document will not be closed now we should store commit flags in documents table
         // to allow restore commit flags later during document close process
@@ -402,9 +387,6 @@ if (isset($_POST['document'])) {
         unset($document['fromdate']);
         unset($document['todate']);
     } else {
-        $document['fromdate'] = $oldfromdate;
-        $document['todate'] = $oldtodate;
-        $document['confirmdate'] = $oldconfirmdate;
         if (isset($autonumber)) {
             $document['number'] = '';
         }

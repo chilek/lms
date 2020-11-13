@@ -74,7 +74,8 @@
 						{if $layout.module == 'eventedit' || (empty($event.ticketid) && empty($event.customerid))}
 							{$customer_selector='[name=&quot;event[custid]&quot;]'}
 							{$address_selector='[name=&quot;event[address_id]&quot;]'}
-							{customerlist form="event" customers=$customerlist selected=$event.customerid selectname="event[customerid]" inputname="event[custid]" customOnChange="change_customer('{$customer_selector}', '{$address_selector}');"}
+							{customerlist form="event" customers=$customerlist selected=$event.customerid version=2
+								selectname="event[customerid]" inputname="event[custid]" customOnChange="change_customer('{$customer_selector}', '{$address_selector}');"}
 						{else}
 							{if !empty($event.customerid)}
 								{$event.customername} ({$event.customerid})

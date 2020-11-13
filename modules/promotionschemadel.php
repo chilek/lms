@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -25,15 +25,19 @@
  */
 
 $id = intval($_GET['id']);
-$promotionid = $DB->GetOne('SELECT promotionid FROM promotionschemas
-    WHERE id = ?', array($id));
+$promotionid = $DB->GetOne(
+    'SELECT promotionid FROM promotionschemas
+    WHERE id = ?',
+    array($id)
+);
 
 if ($SYSLOG) {
     $args = array(
         SYSLOG::RES_PROMOSCHEMA => $id,
         SYSLOG::RES_PROMO => $promotionid,
+        'deleted' => 1,
     );
-    $SYSLOG->AddMessage(SYSLOG::RES_PROMOSCHEMA, SYSLOG::OPER_DELETE, $args);
+    $SYSLOG->AddMessage(SYSLOG::RES_PROMOSCHEMA, SYSLOG::OPER_UPDATE, $args);
     $assigns = $DB->GetAll(
         'SELECT id, tariffid FROM promotionassignments WHERE promotionschemaid = ?',
         array($id)
@@ -46,6 +50,6 @@ if ($SYSLOG) {
         }
     }
 }
-$DB->Execute('DELETE FROM promotionschemas WHERE id = ?', array($id));
+$DB->Execute('UPDATE promotionschemas SET deleted = 1 WHERE id = ?', array($id));
 
 $SESSION->redirect('?m=promotioninfo&id=' . $promotionid);

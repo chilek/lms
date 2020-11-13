@@ -65,8 +65,11 @@
 										<OPTION value="57">{trans("in debt above 100%")}</OPTION>
 										<OPTION value="58">{trans("in debt above 200%")}</OPTION>
 										<OPTION value="59">{trans("without contracts")}</OPTION>
+										<OPTION value="76">{trans("without active contracts")}</OPTION>
 										<OPTION value="60">{trans("with expired contracts")}</OPTION>
+										<OPTION value="77">{trans("with expired, active contracts")}</OPTION>
 										<OPTION value="61">{trans("with expiring contracts")}</OPTION>
+										<OPTION value="78">{trans("with expiring, active contracts")}</OPTION>
 										<OPTION VALUE="75">{trans("with discount")}</OPTION>
 										<OPTION value="73">{trans("with unarchived documents")}</OPTION>
 										<OPTION value="-1" data-exclusive>{trans("without nodes")}</OPTION>
@@ -87,8 +90,8 @@
 								<TD style="width: 98%;" class="nobr">
 									<SELECT size="1" name="division" {tip text="Select division"}>
 										<OPTION value="0">- {trans("all")} -</OPTION>
-										{foreach from=$divisions item=item}
-										<OPTION value="{$item.id}">{$item.shortname}</OPTION>
+										{foreach $divisions as $item}
+											<OPTION value="{$item.id}">{$item.label}</OPTION>
 										{/foreach}
 									</SELECT>
 								</TD>
@@ -330,10 +333,10 @@
 						    </TD>
 						    <TD style="width: 98%;" class="nobr">
 							<SELECT size="1" name="division" {tip text="Select division"}>
-							    <OPTION value="0">- {trans("all")} -</OPTION>
-                    					    {foreach from=$divisions item=item}
-			                            	    <OPTION value="{$item.id}">{$item.shortname}</OPTION>
-							    {/foreach}
+								<OPTION value="0">- {trans("all")} -</OPTION>
+								{foreach $divisions as $item}
+									<OPTION value="{$item.id}">{$item.label}</OPTION>
+								{/foreach}
 							</SELECT>
 						    </TD>
 						</TR>
@@ -458,7 +461,8 @@
 						{trans("Customer:")}
 					</TD>
 					<TD style="width: 1%;" class="nobr">
-						{customerlist form="printcustomerbalance" customers=$customers selectname="cust" inputname="customer" firstoption=""}
+						{customerlist form="printcustomerbalance" customers=$customers version=2
+							selectname="cust" inputname="customer" firstoption=""}
 					</TD>
 					<TD style="width: 1%;">
 						<IMG src="img/calendar.gif" alt="">
@@ -533,10 +537,10 @@
 						    </TD>
 						    <TD style="width: 98%;" colspan="2" class="nobr">
 							<SELECT size="1" name="division" {tip text="Select division"}>
-							    <OPTION value="0">- {trans("all")} -</OPTION>
-                    					{foreach from=$divisions item=item}
-			                            	    <OPTION value="{$item.id}">{$item.shortname}</OPTION>
-							{/foreach}
+								<OPTION value="0">- {trans("all")} -</OPTION>
+								{foreach $divisions as $item}
+									<OPTION value="{$item.id}">{$item.label}</OPTION>
+								{/foreach}
 							</SELECT>
 						    </TD>
 						</TR>
@@ -829,7 +833,7 @@
 								<SELECT size="1" name="division" {tip text="Select division"}>
 									<OPTION value="0">- {trans("all")} -</OPTION>
 									{foreach $divisions as $division}
-									<OPTION value="{$division.id}">{$division.shortname}</OPTION>
+									<OPTION value="{$division.id}">{$division.label}</OPTION>
 									{/foreach}
 								</SELECT>
 							</TD>
@@ -842,7 +846,8 @@
 								{trans("Customer:")}
 							</TD>
 							<TD style="width: 98%;" class="nobr">
-								{customerlist form="printinvoices" customers=$customers selectname="cust" inputname="customer" firstoption="- all customers -" selecttip="You can select customer to limit results" inputtip="Enter customer ID or leave empty for all customers"}
+								{customerlist form="printinvoices" customers=$customers version=2
+									selectname="cust" inputname="customer" firstoption="- all customers -" selecttip="You can select customer to limit results" inputtip="Enter customer ID or leave empty for all customers"}
 							</TD>
 						</TR>
 						<tr>
@@ -945,13 +950,14 @@
 	</TR>
 	<TR>
 		<TD style="width: 100%;" colspan="2" align="right">
-			<label>
+			<label style="display: none;">
 				{trans("JPK format:")}
 				<SELECT name="format">
 					<OPTION value="xml">{trans("XML")}</OPTION>
 					<OPTION value="csv">{trans("CSV")}</OPTION>
 				</SELECT>
 			</label>
+			<input type="hidden" name="format" value="xml">
 			<a class="export_to_jpk" href="javascript:export_to_jpk('fa');">{trans("Export to JPK-FA format")} <img src="img/docum.gif" alt=""></a>
 			<a class="export_to_jpk" href="javascript:export_to_jpk('vat');">{trans("Export to JPK-VAT format")} <img src="img/docum.gif" alt=""></a>
 			<a href="javascript:print_forms();">{trans("Print form of cash transfer")} <img src="img/print.gif" alt=""></a>
@@ -995,7 +1001,10 @@
 								{trans("Customer:")}
 							</TD>
 							<TD style="width: 98%;" class="nobr">
-								{customerlist form="printforms" customers=$customers selectname="cust" inputname="customer" firstoption="- all customers -" selecttip="You can select customer to limit results" inputtip="Enter customer ID or leave empty for all customers"}
+								{customerlist form="printforms" customers=$customers version=2
+									selectname="cust" inputname="customer" firstoption="- all customers -"
+									selecttip="You can select customer to limit results"
+									inputtip="Enter customer ID or leave empty for all customers"}
 							</TD>
 						</TR>
 						<TR>
@@ -1124,7 +1133,7 @@
 									<SELECT size="1" name="division" {tip text="Select division"}>
 										<OPTION value="0">- {trans("all")} -</OPTION>
 										{foreach $divisions as $division}
-										<OPTION value="{$division.id}">{$division.shortname}</OPTION>
+										<OPTION value="{$division.id}">{$division.label}</OPTION>
 										{/foreach}
 									</SELECT>
 								</TD>
@@ -1137,7 +1146,9 @@
 									{trans("Customer:")}
 								</TD>
 								<TD class="nobr">
-									{customerlist form="liabilityreport" customers=$customers selectname="cust" inputname="customer" firstoption="- all customers -" inputtip="Enter customer ID or leave empty for all customers"}
+									{customerlist form="liabilityreport" customers=$customers version=2
+										selectname="cust" inputname="customer" firstoption="- all customers -"
+										inputtip="Enter customer ID or leave empty for all customers"}
 								</TD>
 							</TR>
 						</table>
@@ -1382,7 +1393,8 @@
 						{trans("Customer:")}
 					</TD>
 					<TD style="width: 1%;" class="nobr">
-						{customerlist form="printcustomertraffic" customers=$customers selectname="cust" inputname="customer" firstoption=""}
+						{customerlist form="printcustomertraffic" customers=$customers version=2
+							selectname="cust" inputname="customer" firstoption=""}
 					</TD>
 					<TD style="width: 1%;">
 						<IMG src="img/calendar.gif" alt="">
@@ -1468,7 +1480,7 @@
 								<SELECT size="1" name="division" {tip text="Select division"}>
 									<OPTION value="0">{trans("- none -")}</OPTION>
 									{foreach $divisions as $item}
-										<OPTION value="{$item.id}">{$item.shortname}</OPTION>
+										<OPTION value="{$item.id}">{$item.label}</OPTION>
 									{/foreach}
 								</SELECT>
 							</TD>
@@ -1688,7 +1700,7 @@
 					<option value="">{trans("- all -")}</option>
 					{foreach $divisions as $division}
 						<option value="{$division.id}"{if isset($filter['uke-income']['division']) && $filter['uke-income']['division'] == $division.id} selected{/if}
-							>{$division.shortname}</option>
+							>{$division.label}</option>
 					{/foreach}
 				</select>
 			</td>

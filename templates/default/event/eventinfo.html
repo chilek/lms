@@ -273,10 +273,11 @@
 		<TD class="text-right" colspan="3">
 			{if !$event.closed}
 			    {button type="link-button" href="?m=eventedit&id={$event.id}&action=close" icon="close" label="Close"}
+			{else}
+				{button type="link-button" href="?m=eventedit&id={$event.id}&action=open" icon="open" label="Open"}
 			{/if}
                         {if !$event.closed || ($event.closed && ConfigHelper::getConfig('phpui.allow_modify_closed_events_newer_than', 604800) && ($smarty.now - $event.closeddate < ConfigHelper::getConfig('phpui.allow_modify_closed_events_newer_than', 604800)))|| ConfigHelper::checkPrivilege('superuser')}
 			    {button type="link-button" href="?m=eventedit&id={$event.id}" icon="edit" label="Edit"}
-			    {button type="link-button" href="?m=eventedit&id={$event.id}&action=open" icon="open" label="Open"}
 			    {button type="link-button" href="?m=eventdel&id={$event.id}" icon="delete" label="Delete" class="delete-event"}
                         {/if}
 		</TD>

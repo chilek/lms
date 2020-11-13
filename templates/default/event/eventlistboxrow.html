@@ -76,7 +76,8 @@
                 </a>
                 {if ConfigHelper::checkPrivilege('timetable_management')}
                     {if ($event.closed)}
-                        {if !ConfigHelper::getConfig('phpui.allow_modify_closed_events_newer_than', 604800) || ($smarty.now - $event.closeddate < ConfigHelper::getConfig('phpui.allow_modify_closed_events_newer_than', 604800)) || ConfigHelper::checkPrivilege('superuser')}
+                        {$allow_modify = intval(ConfigHelper::getConfig('phpui.allow_modify_closed_events_newer_than', 604800))}
+                        {if !$allow_modify || ($smarty.now - $event.closeddate < $allow_modify) || ConfigHelper::checkPrivilege('superuser')}
                             {button type="link" icon="open" onclick="location.href = '?m=eventedit&id={$event.id}&action=open&backid=' + $(this).closest('.event-day-table').attr('id');" tip="Open"}
                         {/if}
                     {else}

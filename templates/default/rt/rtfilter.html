@@ -30,7 +30,7 @@
                 {trans("Ticket type:")}
                 <input type="hidden" name="tt" value="all">
                 <SELECT size="1" name="tt[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect lms-ui-multiselect-filter" data-default-value="{trans("- all -")}">
-                {foreach $_RT_TYPES as $key => $tt}
+                {foreach Localisation::arraySort($_RT_TYPES, 'label') as $key => $tt}
                     <OPTION value="{$key}"{if is_array($filter.typeids) && in_array($key, $filter.typeids)} SELECTED{/if}>{$tt.label}</OPTION>
                 {/foreach}
                 </SELECT>
@@ -163,18 +163,18 @@
                 </SELECT>
             </label>
             <label class="nobr">
-                <input type="text" name="cid" value="{$queue.cid}" placeholder="{trans("Customer ID:")}" onChange="document.filter.submit();">
+                <input type="text" name="cid" value="{$filter.cid}" placeholder="{trans("Customer ID:")}" onChange="document.filter.submit();">
             </label>
             <label class="nobr">
-                <input type="text" name="subject" value="{$queue.subject}" placeholder="{trans("Subject:")}" onChange="document.filter.submit();">
+                <input type="text" name="subject" value="{$filter.subject}" placeholder="{trans("Subject:")}" onChange="document.filter.submit();">
             </label>
             <label class="nobr">
                 {trans("Created:")}
-                <input type="text" name="fromdate" SIZE="14" maxlength="16" value="{$queue.fromdate}"
-                    placeholder="{if $filter.fromdate}{$filter.fromdate|date_format:"%Y/%m/%d %H:%M"}{else}{trans("yyyy/mm/dd hh:mm")}{/if}"
+                <input type="text" name="fromdate" SIZE="14" maxlength="16" value="{if $filter.fromdate}{$filter.fromdate|date_format:"%Y/%m/%d %H:%M"}{/if}"
+                    placeholder="{trans("yyyy/mm/dd hh:mm")}"
                     {tip class="lms-ui-datetime"} onChange="document.filter.submit();">
-                <input type="text" name="todate" size="14" maxlength="16" value="{$queue.todate}"
-                    placeholder="{if $filter.todate}{$filter.todate|date_format:"%Y/%m/%d %H:%M"}{else}{trans("yyyy/mm/dd hh:mm")}{/if}"
+                <input type="text" name="todate" size="14" maxlength="16" value="{if $filter.todate}{$filter.todate|date_format:"%Y/%m/%d %H:%M"}{/if}"
+                    placeholder="{trans("yyyy/mm/dd hh:mm")}"
                     {tip class="lms-ui-datetime"} onChange="document.filter.submit();">
             </label>
         </FORM>

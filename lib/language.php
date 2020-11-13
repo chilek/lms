@@ -61,9 +61,9 @@ function check_icn($icn)
     return Localisation::CallSystemFunction('check_icn', $icn);
 }
 
-function bankaccount($id, $account = null)
+function bankaccount($id, $account = null, $country_code = false)
 {
-    return Localisation::CallSystemFunction('bankaccount', $id, $account);
+    return Localisation::CallSystemFunction('bankaccount', $id, $account, $country_code);
 }
 
 function check_bankaccount($account)
@@ -71,9 +71,14 @@ function check_bankaccount($account)
     return Localisation::CallSystemFunction('check_bankaccount', $account);
 }
 
-function format_bankaccount($account)
+function format_bankaccount($account, $country_code = false)
 {
-    return Localisation::CallSystemFunction('format_bankaccount', $account);
+    return Localisation::CallSystemFunction('format_bankaccount', $account, $country_code);
+}
+
+function format_ten($ten, $country_code = false)
+{
+    return Localisation::CallSystemFunction('format_ten', $ten, $country_code);
 }
 
 function getHolidays($year = null)

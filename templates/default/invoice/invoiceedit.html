@@ -138,9 +138,13 @@
 		</TD>
 		<TD class="nobr">
 			{if isset($customer.id)}
-			{customerlist form="setcustomer" customers=$customers selected=$customer.id selectname="customer" inputname="customerid" customOnChange="GetNumberPlans();customer_change();" select_id="ownerid_select" input_id="ownerid_input"}
+				{customerlist form="setcustomer" customers=$customers selected=$customer.id version=2
+					selectname="customer" inputname="customerid" customOnChange="GetNumberPlans();customer_change();"
+					select_id="ownerid_select" input_id="ownerid_input"}
 			{else}
-			{customerlist form="setcustomer" customers=$customers selected=$invoice.customerid selectname="customer" inputname="customerid" customOnChange="GetNumberPlans();customer_change();" select_id="ownerid_select" input_id="ownerid_input"}
+				{customerlist form="setcustomer" customers=$customers selected=$invoice.customerid version=2
+					selectname="customer" inputname="customerid" customOnChange="GetNumberPlans();customer_change();"
+					select_id="ownerid_select" input_id="ownerid_input"}
 			{/if}
 		</TD>
 	</TR>

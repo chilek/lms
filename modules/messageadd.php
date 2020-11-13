@@ -245,7 +245,7 @@ function GetCustomers($customers)
     );
 }
 
-function BodyVars(&$body, $data, $eol)
+function BodyVars(&$body, $data, $format)
 {
     global $LMS;
 
@@ -295,17 +295,18 @@ function BodyVars(&$body, $data, $eol)
         );
     }
 
-    $body = $LMS->getLastNInTable($body, $data['id'], $eol, ConfigHelper::checkConfig('phpui.aggregate_documents'));
+    $body = $LMS->getLastNInTable($body, $data['id'], $format, ConfigHelper::checkConfig('phpui.aggregate_documents'));
 
     if (strpos($body, '%services') !== false) {
         $services = $data['services'];
         $lN = '';
         if (!empty($services)) {
-            $lN .= strtoupper(trans("Total:"))  . " " . sprintf("%2s", sprintf(Localisation::getCurrentMoneyFormat(), $services['total_value'])) . $eol;
+            $lN .= strtoupper(trans("Total:"))  . " " . moneyf($services['total_value'], Localisation::getCurrentCurrency())
+                . ($format == 'html' ? '<br>' : PHP_EOL);
             unset($services['total_value']);
             foreach ($services as $row) {
                 $lN .= strtoupper($row['tarifftypename']) .": ";
-                $lN .= sprintf("%2s", sprintf(Localisation::getCurrentMoneyFormat(), $row['sumvalue'])) . $eol;
+                $lN .= moneyf($row['sumvalue'], Localisation::getCurrentCurrency()) . ($format == 'html' ? '<br>' : PHP_EOL);
             }
         }
         $body = str_replace('%services', $lN, $body);
@@ -567,11 +568,14 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
             $customers = array();
             if (!empty($message['customers'])) {
                 foreach ($message['customers'] as $customerid => &$customer) {
-                    foreach ($customer[$message['type'] == MSG_SMS ? 'phones' : 'emails'] as $contactid => $contact) {
-                        if (!empty($contact)) {
-                            $customers[] = $customerid;
-                        } else {
-                            unset($customer[$message['type'] == MSG_SMS ? 'phones' : 'emails'][$contactid]);
+                    $msg_idx = $message['type'] == MSG_SMS ? 'phones' : 'emails';
+                    if (!empty($customer[$msg_idx])) {
+                        foreach ($customer[$msg_idx] as $contactid => $contact) {
+                            if (!empty($contact)) {
+                                $customers[] = $customerid;
+                            } else {
+                                unset($customer[$message['type'] == MSG_SMS ? 'phones' : 'emails'][$contactid]);
+                            }
                         }
                     }
                 }
@@ -581,7 +585,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 
             $recipients = GetCustomers($customers);
 
-            if (count($recipients) == 1 && !empty($message['nodeid'])) {
+            if (isset($recipients) && count($recipients) == 1 && !empty($message['nodeid'])) {
                 $recipient = array_shift($recipients);
                 $recipient['node'] = $LMS->GetNode($message['nodeid']);
                 $recipients[$recipient['id']] = $recipient;
@@ -639,7 +643,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
         $message['body'] = str_replace("\r", '', $message['body']);
 
         $html_format = isset($message['wysiwyg']) && isset($message['wysiwyg']['mailbody']) && ConfigHelper::checkValue($message['wysiwyg']['mailbody']);
-        $eol = $html_format ? '<br>' : "\n";
+        $format = $html_format ? 'html' : 'text';
 
         if ($message['type'] == MSG_MAIL) {
             if (!$html_format) {
@@ -758,7 +762,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
             }
         }
 
-        if ($message['type'] == MSG_SMS || $message['type'] == MSG_ANYSMS) {
+        if ($message['type'] == MSG_SMS) {
             $sms_options = $LMS->getCustomerSMSOptions();
         }
 
@@ -772,9 +776,9 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                 $plain_body = $body;
 
                 if ($message['type'] == MSG_ANYSMS && isset($customer)) {
-                    BodyVars($body, $customer, $eol);
+                    BodyVars($body, $customer, $format);
                 } else {
-                    BodyVars($body, $row, $eol);
+                    BodyVars($body, $row, $format);
                 }
 
                 $LMS->updateMessageItems(array(

@@ -7,52 +7,55 @@
 			{if empty($promotion.schemas)}{$count = 0}{else}{$count = count($promotion.schemas)}{/if}
 			<B>{t a=$count}Promotion's Schemas ($a):{/t}</B>
 		</TD>
-		<TD width="1%" align="right" nowrap>
-			<A HREF="?m=promotionschemaadd&id={$promotion.id}">{trans("New Schema")} &raquo;</A>&nbsp;
+		<TD width="1%" class="text-right nobr">
+			{button type="link-button" icon="add" label="New Schema" href="?m=promotionschemaadd&id={$promotion.id}"}
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
         <TR id="promotionschemas" style="display:none;">
 	        <TD WIDTH="100%" colspan="2">
-		    <TABLE class="lmsbox-inner">
-                        <THEAD>
-		        <TR>
-	                <TD WIDTH="98%"><B>{trans("Name:")}</B></TD>
-		    	    <TD WIDTH="1%">{trans("Description:")}</TD>
-		    	    <TD WIDTH="1%">&nbsp;</TD>
-			</TR>
-                        </THEAD>
-                        <TBODY>
-			{cycle values="light,lucid" print=false name=schemas}
+		    <TABLE class="lmsbox-inner lms-ui-background-cycle">
+			<THEAD>
+				<TR class="fbottom">
+					<TD WIDTH="98%"><B>{trans("Name:")}</B></TD>
+					<TD WIDTH="1%">{trans("Description:")}</TD>
+					<TD WIDTH="1%">&nbsp;</TD>
+				</TR>
+			</THEAD>
+			<TBODY>
 			{foreach from=$promotion.schemas item=schema}
-    		<TR class="highlight {cycle name=schemas}{if $schema.disabled} blend{/if}" data-name="{$schema.name}">
+    		<TR class="highlight{if $schema.disabled} blend{/if}" data-name="{$schema.name}">
 			    <TD onClick="return self.location.href='?m=promotionschemainfo&id={$schema.id}';" NOWRAP>
 				    <B>{$schema.name}</B>
 			    </TD>
 			    <TD onClick="return self.location.href='?m=promotionschemainfo&id={$schema.id}';">
 				    {$schema.description}
 			    </TD>
-			    <TD NOWRAP>
-				<A HREF="?m=promotionschemaset&id={$schema.id}&access={$schema.disabled}">{if $schema.disabled}<IMG src="img/noaccess.gif" alt="{trans("Enable")}" title="{trans("Enable")}">{else}<IMG src="img/access.gif" alt="{trans("Disable")}" title="{trans("Disable")}">{/if}</A>
-				<A class="delete-promotion" HREF="?m=promotionschemadel&id={$schema.id}"><IMG SRC="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
-                               <A HREF="?m=promotionschemaclone&id={$schema.id}"><IMG SRC="img/clone.gif" alt="{trans("Clone")}" title="{trans("Clone")}"></A>
-                               {button type='link-button' icon="edit" href="?m=promotionschemainfo&id={$schema.id}" tip="Edit schema tariffs"}
-                               <A HREF="?m=promotionschemaedit&id={$schema.id}"><IMG SRC="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
-				<A HREF="?m=promotionschemainfo&id={$schema.id}"><IMG SRC="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
+			    <TD class="nobr">
+					{if $schema.disabled}
+						{button type="link" icon="disconnected" tip="Enable" href="?m=promotionschemaset&id={$schema.id}&access={$schema.disabled}"}
+					{else}
+						{button type="link" icon="connected" tip="Disable" href="?m=promotionschemaset&id={$schema.id}&access={$schema.disabled}"}
+					{/if}
+					{button type="link" class="delete-promotion" href="?m=promotionschemadel&id={$schema.id}"
+						icon="delete" tip="Delete"}
+					{button type="link" href="?m=promotionschemaclone&id={$schema.id}" icon="clone" tip="Clone"}
+					{button type='link' icon="edit" href="?m=promotionschemaedit&id={$schema.id}" tip="Edit schema tariffs"}
+					{button type="link" icon="view" href="?m=promotionschemainfo&id={$schema.id}" tip="Info"}
 			    </TD>
 			</TR>
 			{foreachelse}
 			<TR>
-			    <TD COLSPAN="3" class="empty-table">
-				<p>{trans("This promotion hasn't got any schemas.")}</p>
-			    </TD>
+				<TD COLSPAN="3" class="empty-table">
+					<p>{trans("This promotion hasn't got any schemas.")}</p>
+				</TD>
 			</TR>
 			{/foreach}
-                        </TBODY>
-		    </TABLE>
-		</TD>
-	</TR>
+			</TBODY>
+			</TABLE>
+			</TD>
+		</TR>
     </TBODY>
 </TABLE>
 <SCRIPT>

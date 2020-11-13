@@ -50,9 +50,9 @@
 	</TR>
 	{/if}
 	<TR>
-		<TD style="width: 100%;" class="text-right" colspan="3">
-			<A href="?m=promotionschemaedit&amp;id={$schema.id}">{trans("Edit")} <IMG src="img/edit.gif" alt=""></A>
-			<A id="delete-promotionschema" href="?m=promotionschemadel&id={$schema.id}">{trans("Delete")} <IMG src="img/delete.gif" alt=""></A>
+		<TD class="lms-ui-box-buttons" colspan="3">
+			{button icon="edit" label="Edit" href="?m=promotionschemaedit&id={$schema.id}"}
+			{button icon="delete" label="Delete" id="delete-promotionschema" data_href="?m=promotionschemadel&id={$schema.id}"}
 		</TD>
 	</TR>
 	</TBODY>
@@ -60,7 +60,7 @@
 <script>
 	$('#delete-promotionschema').click(function() {
 		confirmDialog($t("Are you sure, you want to delete this schema?"), this).done(function() {
-			location.href = $(this).attr('href');
+			location.href = $(this).attr('data-href');
 		});
 		return false;
 	});

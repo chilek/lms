@@ -22,30 +22,40 @@
  *  $Id$
  */
 
-button.lms-ui-button {
-  min-height: 2.5em;
-  padding: 0.33em;
-  padding-top: 0.15em;
-  padding-bottom: 0.15em;
+button {
+  font-size: @font-size-high;
+  @media screen and (max-width: @font-size-normal-max-width) {
+    font-size: @font-size-normal;
+  }
+  @media screen and (max-width: @font-size-mobile-max-width) {
+    font-size: @font-size-mobile;
+  }
 }
 
-a.lms-ui-button {
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
+button.lms-ui-button {
+  display: inline-flex;
+  align-items: center;
+}
+
+button.lms-ui-link-button {
+  display: inline-block;
 }
 
 a.lms-ui-link-button {
-  min-height: 1.95em;
   vertical-align: top;
-  padding: 0.33em;
-  padding-top: 0.35em;
-  padding-bottom: 0em;
+  display: inline-flex;
+  align-items: center;
 }
 
 button.lms-ui-button,
 a.lms-ui-link-button {
-  display: inline-block;
-  margin-top: 0.5em;
+  box-sizing: border-box;
+  padding: 0.33em;
+  padding-top: 0.15em;
+  padding-bottom: 0.15em;
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+  min-height: 2.5em;
   border: 1px solid @darkbrown;
   color: black !important;
   text-decoration: none;
@@ -69,6 +79,13 @@ a.lms-ui-link-button {
     }
     &:hover {
       box-shadow: 0px 0px 3px 1px black;
+      &.alert,
+      &.lms-ui-error {
+        box-shadow: @error-box-shadow;
+      }
+      &.lms-ui-warning {
+        box-shadow: @warning-box-shadow;
+      }
     }
   }
   &[disabled] {
@@ -78,9 +95,27 @@ a.lms-ui-link-button {
       color: @blend !important;
     }
   }
-  i + .lms-ui-label {
-    padding-left: 0.3em;
+  &.alert,
+  &.lms-ui-error {
+    box-shadow: @error-box-shadow;
+    &:focus {
+      border: @error-outline-focus;
+      box-shadow: @error-box-shadow-focus;
+    }
+  }
+  &.lms-ui-warning {
+    box-shadow: @warning-box-shadow;
+    &:focus {
+      border: @warning-outline-focus;
+      box-shadow: @warning-box-shadow-focus;
+    }
+  }
+  .lms-ui-label {
     font-weight: 700;
+    vertical-align: middle;
+  }
+  i + .lms-ui-label {
+    padding-left: 0.5em;
   }
 }
 
@@ -135,4 +170,8 @@ a.lms-ui-link-button + button.lms-ui-button {
       }
     }
   }
+}
+
+td > button:last-child {
+  margin-right: 0.5em;
 }

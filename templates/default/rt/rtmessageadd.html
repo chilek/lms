@@ -176,7 +176,7 @@
 			{/box_row}
 
 			{box_row icon="img/users.gif" label="Owner:"}
-				<SELECT size="1" name="message[owner]" {tip text="Select user" trigger="owner"}>
+				<SELECT size="1" name="message[owner]" {tip text="Select user" trigger="owner" class="lms-ui-advanced-select"}>
 					<OPTION value="0">- {trans("select user")} -</OPTION>
 					{if $group_action}
 						<option value="-100"{if $message.owner == -100} selected{/if}>{trans("- no changes -")}</option>
@@ -314,6 +314,7 @@
 			} else {
 				select.val($(this).attr('data-old-userid'));
 			}
+			updateAdvancedSelects(select);
 		});
 
 		$('body').on('change', '.template-selector', function() {
