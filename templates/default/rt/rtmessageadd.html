@@ -68,7 +68,10 @@
 
 			{block name="rtmessageadd-content"}
 			{box_row icon="img/edit.gif" label="Content:"}
-				<TEXTAREA name="message[body]" cols="75" rows="10" {tip text="Enter message content" trigger="body"}>{$message.body}</TEXTAREA>
+				<TEXTAREA name="message[body]" cols="75" rows="10"
+					{tip class="lms-ui-wysiwyg-editor" text="Enter message content" trigger="body"}
+					{if isset($message.wysiwyg.body)} data-wysiwyg="{$message.wysiwyg.body}"{/if}
+					>{$message.body}</TEXTAREA>
 			{/box_row}
 			{/block}
 			{box_row icon="img/attach.gif" label="Attachments:"}
@@ -323,7 +326,12 @@
 				return;
 			}
 			$('[name="message[subject]"]').val(Base64.decode(selected.attr('data-subject')));
-			$('[name="message[body]"]').val(Base64.decode(selected.attr('data-message')));
+
+			var message = Base64.decode(selected.attr('data-message'));
+			if (tinyMCE.editors.length) {
+				tinyMCE.editors[0].setContent(message);
+			}
+			$('[name="message[body]"]').val(message);
 		});
 
 		{if isset($citing)}

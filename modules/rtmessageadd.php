@@ -122,6 +122,9 @@ if (isset($_POST['message'])) {
     $error = $hook_data['error'];
 
     if (!$error) {
+        $message['contenttype'] = isset($message['wysiwyg']) && isset($message['wysiwyg']['body']) && ConfigHelper::checkValue($message['wysiwyg']['body'])
+            ? 'text/html' : 'text/plain';
+
         $message['categories'] = is_array($message['categories']) ? array_flip($message['categories']) : array();
 
         $user = $LMS->GetUserInfo(Auth::GetCurrentUser());
@@ -187,7 +190,8 @@ if (isset($_POST['message'])) {
 
                 if ($message['references']) {
                     $headers['References'] = $message['references'];
-                    $headers['In-Reply-To'] = array_pop(explode(' ', $message['references']));
+                    $references = explode(' ', $message['references']);
+                    $headers['In-Reply-To'] = array_pop($references);
                 }
                 $headers['Message-ID'] = $message['messageid'];
 
@@ -257,7 +261,8 @@ if (isset($_POST['message'])) {
                 $headers['Subject'] = $message['subject'];
                 if ($message['references']) {
                     $headers['References'] = $message['references'];
-                    $headers['In-Reply-To'] = array_pop(explode(' ', $message['references']));
+                    $references = explode(' ', $message['references']);
+                    $headers['In-Reply-To'] = array_pop($references);
                 }
                 $headers['Message-ID'] = $message['messageid'];
                 $headers['Reply-To'] = $headers['From'];
@@ -483,9 +488,18 @@ if (isset($_POST['message'])) {
                 );
                 $headers['X-Priority'] = $RT_MAIL_PRIORITIES[$ticketdata['priority']];
                 $headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject'), $params);
+
                 $params['customerinfo'] = isset($mail_customerinfo) ? $mail_customerinfo : null;
+                $params['contenttype'] = $message['contenttype'];
                 $body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body'), $params);
+
+                if ($message['contenttype'] == 'text/html') {
+                    $params['body'] = trans('(HTML content has been omitted)');
+                    $headers['X-LMS-Format'] = 'html';
+                }
+
                 $params['customerinfo'] = isset($sms_customerinfo) ? $sms_customerinfo : null;
+                $params['contenttype'] = 'text/plain';
                 $sms_body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body'), $params);
 
                 $LMS->NotifyUsers(array(
@@ -494,6 +508,7 @@ if (isset($_POST['message'])) {
                     'mail_headers' => $headers,
                     'mail_body' => $body,
                     'sms_body' => $sms_body,
+                    'contenttype' => $message['contenttype'],
                     'attachments' => &$attachments,
                 ));
             }

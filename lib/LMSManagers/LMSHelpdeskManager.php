@@ -1035,7 +1035,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 $headers,
                 isset($message['type']) ? $message['type'] : RTMESSAGE_REGULAR,
                 isset($message['phonefrom']) && $message['phonefrom'] != -1 ? $message['phonefrom'] : '',
-                isset($message['contenttype']) ? $message['contenttype'] : 'text/plan',
+                isset($message['contenttype']) ? $message['contenttype'] : 'text/plain',
             )
         );
         $msgid = $this->db->GetLastInsertID('rtmessages');

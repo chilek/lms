@@ -235,6 +235,7 @@ version 26-git (????-??-??):
   - enhancement: lms-rtparser.php supports html message receive [chilan]
   - improvement: 'invoices.jpk_flags' toggles JPK flags presentation on generated invoice
     ('false' by default) [chilan]
+  - enhancement: helpdesk ticket regular messages can use html format [chilan]
 
 version 25.0 (2020-05-15):
 

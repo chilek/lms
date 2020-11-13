@@ -4988,3 +4988,5 @@ $_LANG['<!customer-notification-body>The following special symbols are supported
     . '<strong>%pin</strong> - PIN klienta,<br>'
     . '<strong>%customername</strong> - pełna nazwa klienta,<br>'
     . '<strong>%title</strong> - tytuł zgłoszenia.<br>';
+
+$_LANG['(HTML content has been omitted)'] = '(Treść HTML została pominięta)';
