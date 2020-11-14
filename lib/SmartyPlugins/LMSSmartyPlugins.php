@@ -255,18 +255,29 @@ class LMSSmartyPlugins
 
         $result .= empty($params['customers']) && $customername ? ' data-customer-name="1"' : '';
 
-        if (!empty($params['inputtip'])) {
-            $result .= ' ' . self::tipFunction(array('text' => $params['inputtip']), $template);
-        } else {
-            $result .= ' ' . self::tipFunction(array('text' => 'Enter customer ID', 'trigger' => 'customerid'), $template);
+        if ($version < 2) {
+            if (!empty($params['inputtip'])) {
+                $result .= ' ' . self::tipFunction(array('text' => $params['inputtip']), $template);
+            } else {
+                $result .= ' ' . self::tipFunction(array('text' => 'Enter customer ID', 'trigger' => 'customerid'), $template);
+            }
         }
 
         $result .= '>' . PHP_EOL;
 
         if ($version == 2) {
-            $result .= '<div class="lms-ui-customer-select-suggestion-container"></div>' . PHP_EOL
-                . '<input type="text" class="lms-ui-customer-select-suggestion-input lms-ui-autogrow"'
-                . ' placeholder="' . trans('Search for customer') . '">' . PHP_EOL;
+            $result .= '<div class="lms-ui-customer-select-suggestion-container "></div>' . PHP_EOL
+                . '<input type="text"'
+                . ' placeholder="' . trans('Search for customer')
+                . '" ' . self::tipFunction(
+                    array(
+                        'text' => 'Search for customer',
+                        'trigger' => 'customerid',
+                        'class' => 'lms-ui-customer-select-suggestion-input lms-ui-autogrow'
+                    ),
+                    $template
+                )
+                . '">' . PHP_EOL;
             $result .= '<div ' . self::tipFunction(array('text' => 'Click to reset customer selection', 'class' => 'lms-ui-customer-function-button'), $template) . '>' . PHP_EOL
                 . '<i class="lms-ui-icon-clear fa-fw"></i>' . PHP_EOL . '</div>' . PHP_EOL;
         } else {
