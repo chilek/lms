@@ -21,6 +21,10 @@
 		max-width: 35vw;
 	}
 
+	.customer-options td:last-child {
+		padding-left: 0;
+	}
+
 </style>
 
 <TABLE class="lmsbox{if $customerpanel} lms-ui-tab-container lms-ui-sortable{/if}" id="customerinfobox"{if $customerpanel} data-label="{trans("Customer Info")}"{/if}>
@@ -264,7 +268,7 @@
 								</TD>
 							</TR>
 						{/if}
-							<TR>
+							<TR class="customer-options">
 								<TD WIDTH="1%" style="vertical-align: top">
 									{icon name="paytype"}
 								</TD>
@@ -302,7 +306,7 @@
 									</TABLE>
 								</TD>
 							</TR>
-							<TR>
+							<TR class="customer-options">
 								<TD WIDTH="1%" style="vertical-align: top">
 									{icon name="consent"}
 								</TD>
