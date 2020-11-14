@@ -44,15 +44,30 @@
 		padding: 0;
 	}
 
-	.lmsbox .lmsbox-inner thead,
-	.lmsbox .lmsbox-inner tbody:not(:last-child) {
+	.lmsbox .lmsbox-inner:not(:last-child) {
+		margin-bottom: 0.5em;
 		border-bottom-width: 1px;
 		border-bottom-style: solid;
 	}
 
-	.lmsbox .lmsbox-inner thead td,
-	.lmsbox .lmsbox-inner tbody td {
+	.lmsbox .lmsbox-inner.lms-ui-rtmessage-current,
+	.lmsbox .lmsbox-inner.lms-ui-rtsystemmessage-current {
+		margin-bottom: 0.5em;
+	}
+
+	.lmsbox .lmsbox-inner > thead {
+		border-bottom-width: 1px;
+		border-bottom-style: solid;
+	}
+
+	.lmsbox .lmsbox-inner > thead > td,
+	.lmsbox .lmsbox-inner > tbody > td:not(.message-html-body) {
 		padding: 0.6em;
+	}
+
+	.lmsbox .lmsbox-inner:not(:last-child) > tbody {
+		border-bottom-width: 1px;
+		border-bottom-style: solid;
 	}
 
 </style>
@@ -74,18 +89,18 @@
 	<TBODY>
 	<TR>
 		<TD style="width: 100%;" colspan="3">
-			<TABLE class="lmsbox-inner">
+			{counter start=0 skip=1 print=false assign=msgidx}
+			{foreach $ticket.messages as $message}
+			<TABLE class="lmsbox-inner" id="rtmessage-{$message.id}">
 				<colgroup>
 					<col style="width: 1%;">
 					<col style="width: 1%;">
 					<col style="width: 1%;">
 					<col style="width: 97%;">
 				</colgroup>
-				{counter start=0 skip=1 print=false assign=msgidx}
-				{foreach $ticket.messages as $message}
 				{if $message.type == $smarty.const.RTMESSAGE_REGULAR || $message.type == $smarty.const.RTMESSAGE_NOTE}
 				<THEAD>
-				<TR id="rtmessage-{$message.id}"{if $message.deleted == 1 && $message.deltime != 0} class="light lms-ui-rtmessage-deleted"{/if}>
+				<TR {if $message.deleted == 1 && $message.deltime != 0} class="light lms-ui-rtmessage-deleted"{/if}>
 					<TD class="valign-top text-right bold nobr">
 						{$message.createtime|date_format:"%Y/%m/%d %H:%M"}
 					</TD>
@@ -178,7 +193,7 @@
 				{counter print=false}
 				{else}
 				<TBODY>
-					<tr id="rtmessage-{$message.id}" class="blend">
+					<tr class="blend">
 						<td width="1%" class="text-right bold nobr valign-top">
 							{$message.createtime|date_format:"%Y/%m/%d %H:%M"}
 						</td>
@@ -192,8 +207,8 @@
 					</tr>
 				</TBODY>
 				{/if}
-				{/foreach}
 			</TABLE>
+			{/foreach}
 		</TD>
 	</TR>
 	</TBODY>
@@ -201,9 +216,8 @@
 <script>
 
 	if (location.hash.length) {
-		$('tr' + location.hash).parent('thead').addClass('lms-ui-rtmessage-current')
-			.next('tbody').addClass('lms-ui-rtmessage-current');
-		$('tr' + location.hash).parent('tbody').addClass('lms-ui-rtsystemmessage-current');
+		$('table' + location.hash).addClass('lms-ui-rtmessage-current');
+		$('table' + location.hash).addClass('lms-ui-rtsystemmessage-current');
 	}
 	$('.delete-rtmessage').click(function() {
 		confirmDialog($t("Are you sure, you want to delete that message?"), this).done(function() {

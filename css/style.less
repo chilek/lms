@@ -1323,32 +1323,9 @@ a.lms-ui-button:not(.lms-ui-link-button) {
 	}
 }
 
-.lms-ui-rtmessage-current {
-	& td:first-child {
-		border-left: @rtmessage-current;
-	}
-	& td:last-child {
-		border-right: @rtmessage-current;
-	}
-	thead& td {
-		border-top: @rtmessage-current;
-	}
-	tbody& td {
-		border-bottom: @rtmessage-current;
-	}
-}
-
+.lms-ui-rtmessage-current,
 .lms-ui-rtsystemmessage-current {
-	& td:first-child {
-		border-left: @rtmessage-current;
-	}
-	& td:last-child {
-		border-right: @rtmessage-current;
-	}
-	tbody& td {
-		border-top: @rtmessage-current;
-		border-bottom: @rtmessage-current;
-	}
+	box-shadow: @rtmessage-current;
 }
 
 .lms-ui-multi-check-all {
