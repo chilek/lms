@@ -1278,7 +1278,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             if ($a['dateto'] == '') {
                 $to = 0;
             } elseif (preg_match('/^[0-9]+$/', $a['dateto'])) {
-                $to = $a['dateto'];
+                $to = $a['dateto'] + 86399;
             } else {
                 $error['dateto'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
             }
