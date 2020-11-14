@@ -40,6 +40,21 @@
 		padding: 0;
 	}
 
+	.lmsbox > tbody > tr > td {
+		padding: 0;
+	}
+
+	.lmsbox .lmsbox-inner thead,
+	.lmsbox .lmsbox-inner tbody:not(:last-child) {
+		border-bottom-width: 1px;
+		border-bottom-style: solid;
+	}
+
+	.lmsbox .lmsbox-inner thead td,
+	.lmsbox .lmsbox-inner tbody td {
+		padding: 0.6em;
+	}
+
 </style>
 
 <TABLE class="lmsbox lms-ui-tab-container">
@@ -150,7 +165,7 @@
 				</THEAD>
 				<TBODY>
 				<TR>
-					<TD colspan="4" class="ftop lms-ui-autolinker {if $message.contenttype == 'text/plain'}message-body{else}message-html-body{/if}{if $message.deleted == 1 && $message.deltime != 0}
+					<TD colspan="4" class="lms-ui-autolinker {if $message.contenttype == 'text/plain'}message-body{else}message-html-body{/if}{if $message.deleted == 1 && $message.deltime != 0}
 						lucid lms-ui-rtmessage-deleted{else} superlight{if $message.type == $smarty.const.RTMESSAGE_NOTE} blend{/if}{/if}">
 						{if $message.contenttype == 'text/plain'}
 							{$message.body|trim|escape|regex_replace:"/\r?\n/":'<br>'|replace:"[matched-text]":"<span class=\"lms-ui-matched-text\">"|replace:"[/matched-text]":"</span>"|message_quote}
@@ -164,13 +179,13 @@
 				{else}
 				<TBODY>
 					<tr id="rtmessage-{$message.id}" class="blend">
-						<td width="1%" class="ftop text-right bold nobr valign-top">
+						<td width="1%" class="text-right bold nobr valign-top">
 							{$message.createtime|date_format:"%Y/%m/%d %H:%M"}
 						</td>
-						<td width="1%" class="ftop text-right bold nobr valign-top">
+						<td width="1%" class="text-right bold nobr valign-top">
 							{trans("From:")}
 						</td>
-						<td width="98%" colspan="2" class="ftop lms-ui-autolinker">
+						<td width="98%" colspan="2" class="lms-ui-autolinker">
 							<A href="?m=userinfo&id={$message.userid}">{$message.username}</A><BR>
 							{$message.body|escape|replace:"\n":"<BR>"}
 						</td>
