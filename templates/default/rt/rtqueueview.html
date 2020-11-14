@@ -14,6 +14,21 @@
 		}
 	}
 
+	.ticket-list-buttons > div {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+	}
+
+	.ticket-list-buttons > div > * {
+		margin-left: 0.2em;
+		margin-right: 0.2em;
+	}
+
+	.ticket-list-buttons > div > :last-child {
+		margin-right: 0.5em;
+	}
+
 </style>
 
 <TABLE class="lmsbox lms-ui-background-cycle lms-ui-multi-check">
@@ -38,12 +53,15 @@
                 {/if}
             </TD>
 			<TD class="lms-ui-pagination text-right ticket-list-buttons" colspan="4">
-				<label> <input type="checkbox" class="lms-ui-multi-check-all">
-					{trans("Check All")}
-				</label>
-				{button icon="fas fa-reply-all" class="group-action-run" label="Run group action"}
-				{button icon="add" onclick="location.href = '?m=rtticketadd{if $filter.ids}{if !is_array($filter.ids)}&id={$filter.ids}{else}{if count($filter.ids) == 1}&id={$filter.ids[0]}{/if}{/if}{/if}';"
-					label="New Ticket"}
+				<div>
+					<label>
+						<input type="checkbox" class="lms-ui-multi-check-all">
+						{trans("Check All")}
+					</label>
+					{button icon="fas fa-reply-all" class="group-action-run" label="Run group action"}
+					{button icon="add" href="?m=rtticketadd{if $filter.ids}{if !is_array($filter.ids)}&id={$filter.ids}{else}{if count($filter.ids) == 1}&id={$filter.ids[0]}{/if}{/if}{/if}"
+						label="New Ticket"}
+				</div>
 			</TD>
 		</TR>
         {include file="rt/rtheader.html"}
@@ -59,12 +77,15 @@
                 {/if}
             </TD>
 			<TD class="lms-ui-pagination text-right ticket-list-buttons" colspan="4">
-				<label> <input type="checkbox" class="lms-ui-multi-check-all">
-					{trans("Check all")}
-				</label>
-				{button icon="fas fa-reply-all" class="group-action-run" label="Run group action"}
-				{button icon="add" onclick="location.href = '?m=rtticketadd{if $filter.ids}{if !is_array($filter.ids)}&id={$filter.ids}{else}{if count($filter.ids) == 1}&id={$filter.ids[0]}{/if}{/if}{/if}';"
-					label="New Ticket"}
+				<div>
+					<label>
+						<input type="checkbox" class="lms-ui-multi-check-all">
+						{trans("Check all")}
+					</label>
+					{button icon="fas fa-reply-all" class="group-action-run" label="Run group action"}
+					{button icon="add" href="?m=rtticketadd{if $filter.ids}{if !is_array($filter.ids)}&id={$filter.ids}{else}{if count($filter.ids) == 1}&id={$filter.ids[0]}{/if}{/if}{/if}"
+						label="New Ticket"}
+				</div>
 			</TD>
 		</TR>
     </TFOOT>
