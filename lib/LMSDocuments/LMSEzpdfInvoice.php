@@ -142,21 +142,28 @@ class LMSEzpdfInvoice extends LMSInvoice
         );
         $this->backend->text_autosize(15*$scale+$x, 372*$scale+$y, 30*$scale, $this->data['name'], 950*$scale);
         $this->backend->text_autosize(15*$scale+$x, 312*$scale+$y, 30*$scale, $this->data['address']." ".$this->data['zip']." ".$this->data['city'], 950*$scale);
-        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false))) {
-            $this->backend->text_autosize(15*$scale+$x, 250*$scale+$y, 30*$scale, trans('Payment for liabilities'), 950*$scale);
-        } else {
-            $tmp = docnumber(array(
-                'number' => $this->data['number'],
-                'template' => $this->data['template'],
-                'cdate' => $this->data['cdate'],
-                'customerid' => $this->data['customerid'],
-            ));
-            if ($this->data['doctype'] == DOC_INVOICE_PRO) {
-                $this->backend->text_autosize(15*$scale+$x, 250*$scale+$y, 30*$scale, trans('Payment for pro forma invoice No. $a', $tmp), 950*$scale);
+
+        $payment_title = ConfigHelper::getConfig('invoices.payment_title', null, true);
+        if (empty($payment_title)) {
+            if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false))) {
+                $payment_title = trans('Payment for liabilities');
             } else {
-                $this->backend->text_autosize(15*$scale+$x, 250*$scale+$y, 30*$scale, trans('Payment for invoice No. $a', $tmp), 950*$scale);
+                $tmp = docnumber(array(
+                    'number' => $this->data['number'],
+                    'template' => $this->data['template'],
+                    'cdate' => $this->data['cdate'],
+                    'customerid' => $this->data['customerid'],
+                ));
+                if ($this->data['doctype'] == DOC_INVOICE_PRO) {
+                    $payment_title = trans('Payment for pro forma invoice No. $a', $tmp);
+                } else {
+                    $payment_title = trans('Payment for invoice No. $a', $tmp);
+                }
             }
+        } else {
+            $payment_title = str_replace('%cid', $this->data['customerid'], $payment_title);
         }
+        $this->backend->text_autosize(15 * $scale + $x, 250 * $scale + $y, 30 * $scale, $payment_title, 950 * $scale);
     }
 
     protected function invoice_jpk_flags()
