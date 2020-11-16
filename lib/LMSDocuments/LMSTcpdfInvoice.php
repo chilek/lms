@@ -795,6 +795,10 @@ class LMSTcpdfInvoice extends LMSInvoice
             Localisation::setSystemLanguage($this->data['div_ccode']);
         }
 
+        if (ConfigHelper::checkConfig('invoices.jpk_flags')) {
+            $this->invoice_jpk_flags();
+        }
+
         $this->invoice_cancelled();
         $this->invoice_no_accountant();
         $this->invoice_header_image();
