@@ -27,6 +27,7 @@
 $_LANG['(customer/sms)'] = '(klient/SMS)';
 $_LANG['(customer/scans)'] = '(klient/skany)';
 
+$_LANG['Please define email address in division properties!'] = 'Proszę zdefiniować adres e-mail we właściwościach firmy!';
 $_LANG['<!invoice>telecommunication service'] = 'usługa telekomunikacyjna';
 $_LANG['Select customer flags (optional)'] = 'Wybierz flagi klienta (opcjonalne)';
 $_LANG['related entity'] = 'podmiot powiązany';
