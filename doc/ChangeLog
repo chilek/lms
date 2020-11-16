@@ -238,6 +238,8 @@ version 26-git (????-??-??):
   - enhancement: helpdesk ticket regular messages can use html format [chilan]
   - improvement: 'rt.default_editor' has similar role to 'phpui.default_editor' setting, but
     the first one controls default editor in helpdesk forms ('html' by default) [chilan]
+  - enhancement: 'invoices.payment_title' allows to define own title on transfer forms
+    (not defined by default what means to use hardcoded title) [chilan]
 
 version 25.0 (2020-05-15):
 
