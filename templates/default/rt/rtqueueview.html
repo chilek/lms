@@ -7,7 +7,6 @@
 <style>
 
 	@media screen and (max-width: 1200px) {
-		.ticket-location,
 		.ticket-deadline,
 		.ticket-events {
 			display: none;
@@ -173,9 +172,9 @@
 
 		$(window).resize(function() {
 			if (parseInt($(this).outerWidth()) <= 1200) {
-				$('.ticket-list-filter').attr('colspan', 7);
+				$('.ticket-list-filter').attr('colspan', 8);
 				$('.ticket-list-pagination').attr('colspan', 4);
-				$('.ticket-list-buttons').attr('colspan', 3);
+				$('.ticket-list-buttons').attr('colspan', 4);
 			} else {
 				$('.ticket-list-filter').attr('colspan', 10);
 				$('.ticket-list-pagination').attr('colspan', 6);
