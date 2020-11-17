@@ -889,7 +889,14 @@ class LMSTcpdfInvoice extends LMSInvoice
                 $payment_title = trans('Payment for invoice No. $a', $payment_docnumber);
             }
         } else {
-            $payment_title = str_replace('%cid', $this->data['customerid'], $payment_title);
+            $customerid = $this->data['customerid'];
+            $payment_title = preg_replace_callback(
+                '/%(\\d*)cid/',
+                function ($m) use ($customerid) {
+                    return sprintf('%0' . $m[1] . 'd', $customerid);
+                },
+                $payment_title
+            );
         }
 
         if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false))) {

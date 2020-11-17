@@ -161,7 +161,14 @@ class LMSEzpdfInvoice extends LMSInvoice
                 }
             }
         } else {
-            $payment_title = str_replace('%cid', $this->data['customerid'], $payment_title);
+            $customerid = $this->data['customerid'];
+            $payment_title = preg_replace_callback(
+                '/%(\\d*)cid/',
+                function ($m) use ($customerid) {
+                    return sprintf('%0' . $m[1] . 'd', $customerid);
+                },
+                $payment_title
+            );
         }
         $this->backend->text_autosize(15 * $scale + $x, 250 * $scale + $y, 30 * $scale, $payment_title, 950 * $scale);
     }
