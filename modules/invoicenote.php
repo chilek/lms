@@ -503,7 +503,10 @@ switch ($action) {
             break;
         }
 
-        $cnote['currencyvalue'] = $LMS->getCurrencyValue($cnote['currency'], $cnote['sdate']);
+        $cnote['currencyvalue'] = $LMS->getCurrencyValue(
+            $cnote['currency'],
+            strtotime('yesterday', min($cnote['sdate'], $cnote['cdate'], time()))
+        );
         if (!isset($cnote['currencyvalue'])) {
             die('Fatal error: couldn\'t get quote for ' . $cnote['currency'] . ' currency!<br>');
         }

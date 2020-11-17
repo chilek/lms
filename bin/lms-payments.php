@@ -659,22 +659,28 @@ $currencyvalues = array();
 // which have estimated currency value earlier (in the moment of document issue)
 $daystart = mktime(0, 0, 0, date('n', $currtime), date('j', $currtime), date('Y', $currtime));
 $dayend = $daystart + 86399;
+$currencydaystart = strtotime('yesterday', $daystart);
+$currencycurrtime = strtotime('yesterday', $currtime);
+$currencydayend = strtotime('yesterday', $dayend);
 
 $documents = $DB->GetAll(
     'SELECT d.id, d.currency FROM documents d
-    WHERE ' . ($customerid ? 'd.customerid = ' . $customerid . ' AND ' : '') . '((d.type IN (?, ?, ?) AND sdate >= ? AND sdate <= ?)
-        OR (d.type IN (?, ?) AND cdate >= ? AND cdate <= ?))
+    WHERE ' . ($customerid ? 'd.customerid = ' . $customerid . ' AND ' : '')
+        . '(d.type IN (?, ?, ?, ?, ?) AND ((sdate = 0 AND cdate >= ? AND cdate <= ?)
+        OR (sdate > 0 AND ((sdate < cdate  AND sdate >= ? AND sdate <= ?) OR (sdate >= cdate AND cdate >= ? AND cdate <= ?))))
         AND currency <> ?',
     array(
         DOC_INVOICE,
         DOC_CNOTE,
         DOC_INVOICE_PRO,
-        $daystart,
-        $dayend,
         DOC_RECEIPT,
         DOC_DNOTE,
-        $daystart,
-        $dayend,
+        $currencydaystart,
+        $currencydayend,
+        $currencydaystart,
+        $currencydayend,
+        $currencydaystart,
+        $currencydayend,
         Localisation::getCurrentCurrency(),
     )
 );
@@ -685,7 +691,7 @@ if (!empty($documents)) {
             continue;
         }
         if (!isset($currencyvalues[$currency])) {
-            $currencyvalues[$currency] = $LMS->getCurrencyValue($currency, $daystart);
+            $currencyvalues[$currency] = $LMS->getCurrencyValue($currency, $currencydaystart);
             if (!isset($currencyvalues[$currency])) {
                 echo 'Unable to determine currency value for document ID ' . $document['id'] . ' and currency ' . $currency . '.' . PHP_EOL;
                 continue;
@@ -716,11 +722,12 @@ if (!empty($documents)) {
 
 $cashes = $DB->GetAll(
     'SELECT id, currency FROM cash
-    WHERE ' . ($customerid ? 'customerid = ' . $customerid . ' AND ' : '') . 'currency <> ? AND time >= ? AND time <= ?',
+    WHERE ' . ($customerid ? 'customerid = ' . $customerid . ' AND ' : '')
+    . 'docid IS NULL AND currency <> ? AND time >= ? AND time <= ?',
     array(
         Localisation::getCurrentCurrency(),
-        $daystart,
-        $dayend,
+        $currencydaystart,
+        $currencydayend,
     )
 );
 if (!empty($cashes)) {
@@ -730,7 +737,7 @@ if (!empty($cashes)) {
             continue;
         }
         if (!isset($currencyvalues[$currency])) {
-            $currencyvalues[$currency] = $LMS->getCurrencyValue($currency, $daystart);
+            $currencyvalues[$currency] = $LMS->getCurrencyValue($currency, $currencydaystart);
             if (!isset($currencyvalues[$currency])) {
                 echo 'Unable to determine currency value for cash ID ' . $cash['id'] . ' and currency ' . $currency . '.' . PHP_EOL;
                 continue;
@@ -961,7 +968,7 @@ foreach ($assigns as &$assign) {
     }
     if ($currency != Localisation::getCurrentCurrency()) {
         if (!isset($currencyvalues[$currency])) {
-            $currencyvalues[$currency] = $LMS->getCurrencyValue($currency, $currtime);
+            $currencyvalues[$currency] = $LMS->getCurrencyValue($currency, $currencycurrtime);
             if (!isset($currencyvalues[$currency])) {
                 die('Fatal error: couldn\'t get quote for ' . $currency . ' currency!' . PHP_EOL);
             }

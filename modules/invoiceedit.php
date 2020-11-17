@@ -505,7 +505,10 @@ switch ($action) {
         $paytime = round(($deadline - $cdate) / 86400);
         $iid   = $invoice['id'];
 
-        $invoice['currencyvalue'] = $LMS->getCurrencyValue($invoice['currency'], $sdate);
+        $invoice['currencyvalue'] = $LMS->getCurrencyValue(
+            $invoice['currency'],
+            strtotime('yesterday', min($sdate, $cdate, time()))
+        );
         if (!isset($invoice['currencyvalue'])) {
             die('Fatal error: couldn\'t get quote for ' . $invoice['currency'] . ' currency!<br>');
         }
