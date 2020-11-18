@@ -666,7 +666,7 @@ $currencydayend = strtotime('yesterday', $dayend);
 $documents = $DB->GetAll(
     'SELECT d.id, d.currency FROM documents d
     WHERE ' . ($customerid ? 'd.customerid = ' . $customerid . ' AND ' : '')
-        . '(d.type IN (?, ?, ?, ?, ?) AND ((sdate = 0 AND cdate >= ? AND cdate <= ?)
+        . 'd.type IN (?, ?, ?, ?, ?) AND ((sdate = 0 AND cdate >= ? AND cdate <= ?)
         OR (sdate > 0 AND ((sdate < cdate  AND sdate >= ? AND sdate <= ?) OR (sdate >= cdate AND cdate >= ? AND cdate <= ?))))
         AND currency <> ?',
     array(
