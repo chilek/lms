@@ -172,9 +172,15 @@ if (!($lines = @file($message_file))) {
 
 $msgitemid = preg_grep('/^Msgid: ([0-9]+)$/', $lines);
 $phone = preg_grep('/^To: \+?([0-9]+)$/', $lines);
+$error = preg_grep('/^Fail_reason: (.*)$/', $lines);
+
 if (!empty($msgitemid) && !empty($phone)) {
     $msgitemid = preg_replace('/^Msgid:\s*/', '', trim(reset($msgitemid)));
     $phone = preg_replace('/^To:\s*\+?/', '', trim(reset($phone)));
+}
+
+if (!empty($error)) {
+    $error = preg_replace('/^Fail_reason: /', '', trim(reset($error)));
 }
 
 if (empty($msgitemid) && preg_match('/lms-([0-9]+)-([0-9]+)/', basename($message_file), $matches)) {
@@ -207,13 +213,13 @@ if ($msgitemid && $phone) {
         if ($number == $phone) {
             if (isset($externalmsgid)) {
                 $DB->Execute(
-                    'UPDATE messageitems SET status = ?, externalmsgid = ? WHERE id = ?',
-                    array((array_key_exists('ok', $options) ? MSG_SENT : MSG_ERROR), $externalmsgid, $msgitemid)
+                    'UPDATE messageitems SET status = ?, externalmsgid = ?, error = ? WHERE id = ?',
+                    array((array_key_exists('ok', $options) ? MSG_SENT : MSG_ERROR), $externalmsgid, empty($error) ? null : $error, $msgitemid)
                 );
             } else {
                 $DB->Execute(
-                    'UPDATE messageitems SET status = ? WHERE id = ?',
-                    array((array_key_exists('ok', $options) ? MSG_SENT : MSG_ERROR), $msgitemid)
+                    'UPDATE messageitems SET status = ?, error = ? WHERE id = ?',
+                    array((array_key_exists('ok', $options) ? MSG_SENT : MSG_ERROR), empty($error) ? null : $error, $msgitemid)
                 );
             }
         }
