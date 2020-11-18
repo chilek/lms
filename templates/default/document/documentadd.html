@@ -295,11 +295,15 @@
 		}
 
 		$('#closed').change(function() {
-			confirmDateRequired();
+			if (documentConfirmDateRequired) {
+				confirmDateRequired();
+			}
 			$('#confirmdate').closest('tr').toggle(!$(this).prop('checked'));
 		});
 
-		$('#fromdate').change(confirmDateRequired).change();
+		if (documentConfirmDateRequired) {
+			$('#fromdate').change(confirmDateRequired).change();
+		}
 	});
 	//setnumberplans();
 
