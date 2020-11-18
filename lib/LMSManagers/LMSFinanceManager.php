@@ -1265,7 +1265,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         }
 
         if (isset($a['datefrom'])) {
-            if ($a['datefrom'] == '') {
+            if (empty($a['datefrom'])) {
                 $from = 0;
             } elseif (preg_match('/^[0-9]+$/', $a['datefrom'])) {
                 $from = $a['datefrom'];
@@ -1275,7 +1275,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         }
 
         if (isset($a['dateto'])) {
-            if ($a['dateto'] == '') {
+            if (empty($a['dateto'])) {
                 $to = 0;
             } elseif (preg_match('/^[0-9]+$/', $a['dateto'])) {
                 $to = $a['dateto'] + 86399;
