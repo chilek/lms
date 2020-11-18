@@ -363,7 +363,7 @@
 			<br>
 
 			{if ($ticket.owner != $layout.logid && $ticket.state != $smarty.const.RT_RESOLVED) || ConfigHelper::checkPrivilege('superuser')}
-				{button id="ticket-assign-to-me" icon="user" label="Assign to me" href="?m=rtticketedit&id={$ticket.ticketid}&action=assign"}
+				{button id="ticket-assign-to-me" icon="user" label="Assign to me" data_href="?m=rtticketedit&id={$ticket.ticketid}&action=assign"}
 			{/if}
 			{if (!$ticket.verifier && $ticket.owner != $layout.logid && $ticket.state != $smarty.const.RT_RESOLVED) || ConfigHelper::checkPrivilege('superuser')}
 				{button id="ticket-assign2-to-me" type='link-button' icon="user" label="Assign to me as verifier" href="?m=rtticketedit&id={$ticket.ticketid}&action=assign2"}
@@ -488,7 +488,7 @@
 		$('#ticket-assign-to-me').click(function() {
 			var link = $(this);
 			$.ajax(
-				link.attr('href') + '&check-conflict=1',
+				link.attr('data-href') + '&check-conflict=1',
 				{
 					async: true,
 					method: "GET",
@@ -496,10 +496,10 @@
 					success: function(data) {
 						if (data) {
 							confirmDialog($t("Ticket has already been assigned to other user in mean-time. Are you sure you want to re-assign ticket to you?"), link).done(function() {
-								location.href = link.attr('href');
+								location.href = link.attr('data-href');
 							});
 						} else {
-							location.href = link.attr('href');
+							location.href = link.attr('data-href');
 						}
 					}
 				}
