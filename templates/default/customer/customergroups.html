@@ -83,14 +83,9 @@
 
 		{tab_button_panel}
 			{tab_buttons}
-				<button type="button" class="lms-ui-button" id="delete-groups">
-					<i class="lms-ui-icon-delete"></i> {trans("Delete")}
-				</button>
+				{button icon="delete" label="Delete" id="delete-groups"}
 {if !empty($othercustomergroups)}
-				<button type="button" class="lms-ui-button" id="add-groups"
-						{tip text="Add customer to groups"}>
-					<i class="lms-ui-icon-add"></i> {trans("Add")}
-				</button>
+				{button icon="add" label="Add" id="add-groups" tip="Add customer to groups"}
 				<SELECT NAME="customergroupid[]" {tip text="Select group to attribute to customer" class="lms-ui-multiselect"}
 						form="customergroupassignment" multiple>
 					{foreach $othercustomergroups as $customergroup}
