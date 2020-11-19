@@ -171,21 +171,11 @@
 {if !empty($documents) && count($documents)}
 		{tab_button_panel}
 			{tab_buttons}
-				<button type="button" id="send-documents" class="lms-ui-button" data-send-documents="{$customerinfo.senddocuments}">
-					<i class="lms-ui-icon-mail"></i> {trans("Send documents")}
-				</button>
-				<button type="button" id="print-docs" class="lms-ui-button">
-					<i class="lms-ui-icon-print"></i> {trans("Print")}
-				</button>
-				<button type="button" id="confirm-docs" class="lms-ui-button">
-					<i class="lms-ui-icon-confirm"></i> {trans("Confirm")}
-				</button>
-				<button type="button" id="archive-docs" class="lms-ui-button">
-					<i class="lms-ui-icon-archive"></i> {trans("Archive")}
-				</button>
-				<button type="button" id="delete-docs" class="lms-ui-button">
-					<i class="lms-ui-icon-delete"></i> {trans("Delete")}
-				</button>
+				{button id="send-documents" icon="mail" label="Send documents" data_send_documents="{$customerinfo.senddocuments}"}
+				{button id="print-docs" icon="print" label="Print"}
+				{button id="confirm-docs" icon="confirm" label="Confirm"}
+				{button id="archive-docs" icon="archive" label="Archive"}
+				{button id="delete-docs" icon="delete" label="Delete"}
 			{/tab_buttons}
 			{tab_buttons}
 				<label>
