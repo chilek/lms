@@ -453,17 +453,12 @@ if (!empty($assigns)) {
     }
 }
 
-$allowed_customer_status = Utils::determineAllowedCustomerStatus(
-    isset($options['customer-status'])
-        ? $options['customer-status']
-        : ConfigHelper::getConfig('payments.allowed_customer_status', '')
-);
 
-if (empty($allowed_customer_status)) {
-    $customer_status_condition = '';
-} else {
-    $customer_status_condition = ' AND c.status IN (' . implode(',', $allowed_customer_status) . ')';
-}
+            $penalty_off = "UPDATE assignments SET suspended = 1 WHERE id = ?";
+            $DB->Execute($penalty_off, array($aid));
+        }
+    }
+echo "Penalties done, proceeding:\n";
 
 // let's go, fetch *ALL* assignments in given day
 $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_address_id,
