@@ -1088,7 +1088,13 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 foreach ($invoice['content'] as $idx => $position) {
                     $jpk_data .= "\t<FakturaWiersz" . ($jpk_fa_version == 2 ? ' typ="G"' : '') . ">\n";
                     $jpk_data .= "\t\t<P_2B>" . $invoice['fullnumber'] . "</P_2B>\n";
-                    $jpk_data .= "\t\t<P_7>" . htmlspecialchars($position['description']) . "</P_7>\n";
+                    $jpk_data .= "\t\t<P_7>"
+                        . htmlspecialchars(
+                            mb_strlen($position['description']) > 240
+                                ? mb_substr($position['description'], 0, 240) . ' ...'
+                                : $position['description']
+                        )
+                        . "</P_7>\n";
                     $jpk_data .= "\t\t<P_8A>" . htmlspecialchars($position['content']) . "</P_8A>\n";
 
                     if (isset($invoice['invoice'])) {
