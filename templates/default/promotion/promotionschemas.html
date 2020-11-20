@@ -16,17 +16,22 @@
         <TR id="promotionschemas" style="display:none;">
 	        <TD WIDTH="100%" colspan="2">
 		    <TABLE class="lmsbox-inner lms-ui-background-cycle">
+				<colgroup>
+					<col style="width: 1%;">
+					<col style="width: 98%;">
+					<col style="width: 1%;">
+				</colgroup>
 			<THEAD>
 				<TR class="fbottom">
-					<TD WIDTH="98%"><B>{trans("Name:")}</B></TD>
-					<TD WIDTH="1%">{trans("Description:")}</TD>
-					<TD WIDTH="1%">&nbsp;</TD>
+					<TD class="bold">{trans("Name:")}</TD>
+					<TD>{trans("Description:")}</TD>
+					<TD>&nbsp;</TD>
 				</TR>
 			</THEAD>
 			<TBODY>
 			{foreach from=$promotion.schemas item=schema}
     		<TR class="highlight{if $schema.disabled} blend{/if}" data-name="{$schema.name}">
-			    <TD onClick="return self.location.href='?m=promotionschemainfo&id={$schema.id}';" NOWRAP>
+			    <TD onClick="return self.location.href='?m=promotionschemainfo&id={$schema.id}';" class="nobr">
 				    <B>{$schema.name}</B>
 			    </TD>
 			    <TD onClick="return self.location.href='?m=promotionschemainfo&id={$schema.id}';">
