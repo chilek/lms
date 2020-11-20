@@ -145,7 +145,6 @@ switch ($mode) {
                     if ($row['deleted']) {
                         $name_classes[] = 'blend';
                     }
-                    //$name_classes[] = 'lms-ui-suggestion-customer-status-' . $CSTATUSES[$row['status']]['alias'];
                     $name_class = implode(' ', $name_classes);
 
                     $description = '';
@@ -189,7 +188,7 @@ switch ($mode) {
                     }
 
                     $result[$row['id']] = array_merge(
-                        compact('name', 'name_class', 'description', 'description_class', 'action'),
+                        compact('name', 'icon', 'name_class', 'description', 'description_class', 'action'),
                         array('id' => $row['id'])
                     );
                 }
