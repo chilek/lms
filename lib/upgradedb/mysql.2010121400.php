@@ -21,6 +21,8 @@
  *
  */
 
+$lang = $this->GetOne("SELECT value FROM uiconfig WHERE section = ? AND var = ? AND disabled = ?", array('phpui', 'lang', 0));
+
 $this->BeginTrans();
 
 $this->Execute("DELETE FROM customercontacts WHERE customerid NOT IN (SELECT id FROM customers)");
@@ -35,8 +37,6 @@ $this->Execute("ALTER TABLE imessengers ALTER customerid DROP DEFAULT");
 
 $this->Execute("ALTER TABLE customercontacts ADD type smallint DEFAULT NULL");
 $this->Execute("UPDATE customercontacts SET type = 2 WHERE name LIKE '%fax%'");
-
-$lang = $this->GetOne("SELECT value FROM uiconfig WHERE section = ? AND var = ?", array('phpui', 'lang'));
 
 if ($lang == 'pl') {
     $this->Execute("UPDATE customercontacts SET type = COALESCE(type, 0) + 1

@@ -24,6 +24,11 @@
  *  $Id$
  */
 
+$lang = $this->GetOne(
+    "SELECT value FROM uiconfig WHERE section = ? AND var = ? AND disabled = ?",
+    array('phpui', 'lang', 0)
+);
+
 $this->Execute("
 CREATE TABLE states (
     	id int(11) NOT NULL auto_increment,
@@ -46,8 +51,7 @@ CREATE TABLE zipcodes (
 $this->Execute("ALTER TABLE customers ADD INDEX zip (zip)");
 $this->Execute("INSERT INTO zipcodes (zip) SELECT DISTINCT zip FROM customers");
 
-if (ConfigHelper::getConfig('phpui.lang') == 'pl'
-    || $this->GetOne("SELECT 1 FROM uiconfig WHERE var='lang' AND section='phpui' AND disabled=0 AND value='pl'")) {
+if ($lang == 'pl') {
     $this->Execute("INSERT INTO states (name) VALUES ('dolnośląskie')");
     $this->Execute("INSERT INTO states (name) VALUES ('kujawsko-pomorskie')");
     $this->Execute("INSERT INTO states (name) VALUES ('lubelskie')");
