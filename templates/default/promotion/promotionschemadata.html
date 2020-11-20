@@ -178,22 +178,17 @@
 					</TD>
 					{/foreach}
 					<TD class="nobr">
-						<A class="tariff-view button-del" href="#" data-href="?m=promotionschemaedit&action=tariffdel&id={$schema.id}&aid={$tariff.id}"
-								{if $error && $formdata.aid == $tariff.id} style="display: none;"{/if}>
-							<IMG src="img/delete.gif" alt="{trans("Delete assignment")}" title="{trans("Delete assignment")}">
-						</A>
-						<A class="tariff-view button-edit"
-								{if $error && $formdata.aid == $tariff.id} style="display: none;"{/if}>
-							<IMG src="img/edit.gif" alt="{trans("Edit assignment")}" title="{trans("Edit assignment")}">
-						</A>
-						<A class="tariff-edit button-cancel"
-								{if !$error || $formdata.aid != $tariff.id} style="display: none;"{/if}>
-							<IMG src="img/cancel.gif" alt="{trans("Cancel")}" title="{trans("Cancel")}">
-						</A>
-						<A class="tariff-edit button-save" href="javascript:save_tariff({$tariff.id})"
-								{if !$error || $formdata.aid != $tariff.id} style="display: none;"{/if}>
-							<IMG src="img/save.gif" alt="{trans("Save")}" title="{trans("Save")}">
-						</A>
+						{if $error && $formdata.aid == $tariff.id}
+							{$edit_mode = true}
+						{else}
+							{$edit_mode = false}
+						{/if}
+						{button type="link" class="tariff-view button-del" icon="delete" tip="Delete assignments" visible=!$edit_mode
+							data_href="?m=promotionschemaedit&action=tariffdel&id={$schema.id}&aid={$tariff.id}"}
+						{button type="link" class="tariff-view button-edit" icon="edit" tip="Edit assignment" visible=!$edit_mode}
+						{button type="link" class="tariff-edit button-cancel" icon="cancel" tip="Cancel" visible=$edit_mode}
+						{button type="link" class="tariff-edit button-save" icon="save" tip="Save" visible=$edit_mode
+							onclick="save_tariff({$tariff.id})"}
 					</TD>
 				</TR>
 				{foreachelse}
@@ -321,7 +316,7 @@
 					</TD>
 					{/foreach}
 					<TD class="ftop text-right valign-top">
-						<A href="javascript:document.tariffs.submit()"><IMG src="img/save.gif" alt="{trans("Add assignment")}" title="{trans("Add assignment")}"></A>
+						{button type="link" icon="save" tip="Add assignment" onclick="document.tariffs.submit()"}
 					</TD>
 				</TR>
 				{/if}
