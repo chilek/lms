@@ -1350,6 +1350,14 @@ table.lmsbox {
 				& > *:not(:first-child) {
 					margin-left: 0.3em;
 				}
+				& .lms-ui-box-button-container {
+					display: flex;
+					flex-wrap: wrap;
+					align-items: center;
+					& > *:not(:first-child) {
+						margin-left: 0.3em;
+					}
+				}
 			}
 		}
 		& > thead {
@@ -2172,15 +2180,15 @@ div.lms-ui-wysiwyg-editor {
 		}
 	}
 	.lms-ui-box-buttons {
-		align-self: stretch;
-		flex-direction: row;
-		justify-content: flex-end;
-		align-items: center;
-		background-image: linear-gradient(to right, black 33%, rgba(255,255,255,0) 0%);
+		background-image: linear-gradient(to right, black 33%, rgba(255, 255, 255, 0) 0%);
 		background-position: left 0.5em;
 		background-size: 3px 1px;
 		background-repeat: repeat-x;
 		padding: 1em 0.5em 0.5em 0.5em;
+		align-self: stretch;
+		flex-direction: row;
+		justify-content: flex-end;
+		align-items: center;
 		& > *:not(:first-child) {
 			margin-left: 0.3em;
 		}
