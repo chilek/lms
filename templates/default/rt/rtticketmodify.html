@@ -46,7 +46,10 @@
 			{box_row icon="customer" label="Customer:" icon_class="fa-fw"}
 				{$customer_selector='[name=&quot;ticket[custid]&quot;]'}
 				{$address_selector='[name=&quot;ticket[address_id]&quot;]'}
-				{customerlist form="ticket" customers=$customerlist selected=$customerid selectname="ticket[customerid]" inputname="ticket[custid]" selecttip="Select customer from list or enter his data if is not a customer" customOnChange="change_customer('{$customer_selector}', '{$address_selector}');"}
+				{customerlist form="ticket" customers=$customerlist selected=$customerid version=2
+					selectname="ticket[customerid]" inputname="ticket[custid]"
+					selecttip="Select customer from list or enter his data if is not a customer"
+					customOnChange="change_customer('{$customer_selector}', '{$address_selector}');"}
 			{/box_row}
 			{/if}
 
