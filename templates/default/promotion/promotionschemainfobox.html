@@ -1,46 +1,57 @@
 <!-- $Id$ -->
 <TABLE class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 98%;">
+	</colgroup>
 	<THEAD>
 	<TR>
-		<TD style="width: 1%;">
+		<TD>
 			{icon name="money" class="fa-fw"}
 		</TD>
-		<TD style="width: 98%;" class="bold" colspan="2">
+		<TD class="bold" colspan="2">
 			{$schema.name} ({$schema.id|string_format:"%04d"})
 		</TD>
 	</TR>
 	</THEAD>
 	<TBODY>
 	<TR>
-		<TD style="width: 1%;">
-			<IMG src="img/calendar.gif" alt="">
+		<TD>
+			{icon name="calendar" class="fa-fw"}
 		</TD>
-		<TD style="width: 99%;" class="nobr" colspan="2">
+		<TD class="nobr" colspan="2">
 			{if $schema.data}{$schema.data}{else}{trans("unlimited")}{/if}
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;">
-			<A href="?m=promotionschemaset&amp;id={$schema.id}&amp;access={$schema.disabled}"><IMG src="img/{if $schema.disabled}no{/if}access.gif" alt=""></A>
+		<TD>
+			<A href="?m=promotionschemaset&id={$schema.id}&access={$schema.disabled}">
+				{if $schema.disabled}
+					{icon name="disconnected" class="fa-fw"}
+				{else}
+					{icon name="connected" class="fa-fw"}
+				{/if}
+			</A>
 		</TD>
-		<TD style="width: 99%;" class="nobr" colspan="2">
+		<TD class="nobr" colspan="2">
 			{if $schema.disabled}{trans("disabled")}{else}{trans("enabled")}{/if}
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;">
-			<IMG src="img/promo.gif" alt="">
+		<TD>
+			{icon name="money" class="fa-fw"}
 		</TD>
-		<TD style="width: 99%;" class="nobr" colspan="2">
+		<TD class="nobr" colspan="2">
 			<A href="?m=promotioninfo&amp;id={$schema.pid}">{$schema.promotion}</A>
 		</TD>
 	</TR>
 	{if $schema.description}
 	<TR>
-		<TD style="width: 1%;">
-			<IMG src="img/info1.gif" alt="">
+		<TD>
+			{icon name="info" class="fa-fw"}
 		</TD>
-		<TD style="width: 98%;" colspan="2">
+		<TD colspan="2">
 			<TABLE width="100%" cellpadding="5">
 				<TR><TD class="fall superlight">
 					{$schema.description|replace:"\n":"<BR>"}
