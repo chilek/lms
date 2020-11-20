@@ -3,7 +3,7 @@
     <THEAD>
 	<TR>
 		<TD width="99%" class="hand" onclick="showOrHide('promotionschemas');">
-			<IMG SRC="img/promoschema.gif" alt="">
+			{icon name="money" class="fa-fw"}
 			{if empty($promotion.schemas)}{$count = 0}{else}{$count = count($promotion.schemas)}{/if}
 			<B>{t a=$count}Promotion's Schemas ($a):{/t}</B>
 		</TD>
