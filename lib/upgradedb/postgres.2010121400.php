@@ -38,7 +38,7 @@ $this->Execute("
     UPDATE customercontacts SET type = 2 WHERE name ILIKE '%fax%';
 ");
 
-$lang = ConfigHelper::getConfig('phpui.lang');
+$lang = $this->GetOne("SELECT value FROM uiconfig WHERE section = ? AND var = ?", array('phpui', 'lang'));
 
 if ($lang == 'pl') {
     $this->Execute("UPDATE customercontacts SET type = COALESCE(type, 0) + 1
