@@ -29,6 +29,11 @@
 		align-items: flex-start;
 	}
 
+	#carbon-copy .lms-ui-box-row-field {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
 </style>
 <H1>{$layout.pagetitle}</H1>
 <FORM method="POST" name="message" id="message-form" action="?m=rtmessageadd">
@@ -57,9 +62,24 @@
 				<INPUT class="radio light" type="radio" name="message[sender]" id="sender1" value="customer" {if $message.sender == 'customer'}CHECKED{/if}><label for="sender1">{trans("customer")}</label>
 			{/box_row}
 
-			{box_row icon="img/email.gif" label="Recipient's e-mail:"}
-				<INPUT type="text" size="25" name="message[destination]" value="{$message.destination|escape}" {tip text="Enter recipient's e-mail - if sender is an user and message should be sent (optional)" trigger="destination"}>
+			{box_row icon="mail" label="Recipient's e-mail:"}
+				<INPUT type="text" size="25" name="message[destination]"
+					value="{$message.destination|escape}" class="lms-ui-autogrow"
+					{tip text="Enter recipient's e-mail - if sender is an user and message should be sent (optional)" trigger="destination"}
+				>
 			{/box_row}
+
+			{if !empty($message.cc)}
+				{box_row icon="mail" id="carbon-copy" label="<!mail>Copy"}
+					{foreach $message.cc as $cc}
+						<label>
+							<input type="checkbox" name="message[cc][{$cc.address|escape}]" value="{$cc.address|escape}"
+								{if !empty($cc.checked)}checked{/if}>
+							{if !empty($cc.display)}{$cc.display} {/if}&lt;{$cc.address}&gt;
+						</label>
+					{/foreach}
+				{/box_row}
+			{/if}
 {/if}
 			{box_row icon="img/docum.gif" label="Message template:" id="message-template-row" field_id="message-templates"
 				visible=!empty($messagetemplates)}

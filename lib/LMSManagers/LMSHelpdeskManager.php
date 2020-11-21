@@ -1329,6 +1329,20 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 $references[] = $reply['messageid'];
             }
             $message['references'] = array_reverse($references);
+
+            $message['cc']  = array();
+            if (!empty($message['customerid']) && function_exists('imap_rfc822_parse_headers')) {
+                $headers = imap_rfc822_parse_headers($message['headers']);
+                if (!empty($headers) && isset($headers->cc)) {
+                    foreach ($headers->cc as $cc) {
+                        $email = $cc->mailbox . '@' . $cc->host;
+                        $message['cc'][$email] = array(
+                            'display' => iconv_mime_decode($cc->personal),
+                            'address' => $email,
+                        );
+                    }
+                }
+            }
         }
         return $message;
     }

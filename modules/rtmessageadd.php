@@ -121,6 +121,15 @@ if (isset($_POST['message'])) {
     $message = $hook_data['message'];
     $error = $hook_data['error'];
 
+    $reply = $LMS->GetMessage($message['inreplyto']);
+    if (!empty($reply['cc'])) {
+        foreach ($reply['cc'] as &$cc) {
+            $cc['checked'] = isset($message['cc'][$cc['address']]);
+        }
+        unset($cc);
+    }
+    $message['cc'] = $reply['cc'];
+
     if (!$error) {
         $message['contenttype'] = isset($message['wysiwyg']) && isset($message['wysiwyg']['body']) && ConfigHelper::checkValue($message['wysiwyg']['body'])
             ? 'text/html' : 'text/plain';
@@ -209,6 +218,16 @@ if (isset($_POST['message'])) {
                     $headers['Subject'] = $message['subject'];
                     $headers['Reply-To'] = $headers['From'];
 
+                    $ccemails = array();
+                    foreach ($message['cc'] as $cc) {
+                        if ($cc['checked']) {
+                            $ccemails[] = (empty($cc['display']) ? '' : qp_encode($cc['display']) . ' ') . '<' . $cc['address'] . '>';
+                        }
+                    }
+                    if (!empty($ccemails)) {
+                        $headers['Cc'] = implode(',', $ccemails);
+                    }
+
                     $body = $message['body'];
 
                     $LMS->SendMail($recipients, $headers, $body, $attachments, null, $smtp_options);
@@ -266,6 +285,16 @@ if (isset($_POST['message'])) {
                 }
                 $headers['Message-ID'] = $message['messageid'];
                 $headers['Reply-To'] = $headers['From'];
+
+                $ccemails = array();
+                foreach ($message['cc'] as $cc) {
+                    if ($cc['checked']) {
+                        $ccemails[] = (empty($cc['display']) ? '' : qp_encode($cc['display']) . ' ') . '<' . $cc['address'] . '>';
+                    }
+                }
+                if (!empty($ccemails)) {
+                    $headers['Cc'] = implode(',', $ccemails);
+                }
 
                 // message to customer is written to database
                 if ($message['userid'] && $addmsg) {
@@ -592,6 +621,10 @@ if (isset($_POST['message'])) {
 
         if (isset($_GET['id'])) {
             $reply = $LMS->GetMessage($_GET['id']);
+            foreach ($reply['cc'] as &$cc) {
+                $cc['checked'] = true;
+            }
+            unset($cc);
 
             if ($reply['replyto']) {
                 $message['destination'] = preg_replace('/^.* <(.+@.+)>/', '\1', $reply['replyto']);
@@ -616,6 +649,7 @@ if (isset($_POST['message'])) {
             $message['subject'] = 'Re: ' . $reply['subject'];
             $message['inreplyto'] = $reply['id'];
             $message['references'] = implode(' ', $reply['references']);
+            $message['cc'] = $reply['cc'];
 
             if (ConfigHelper::checkConfig('phpui.helpdesk_reply_body') || isset($_GET['citing'])) {
                 $body = explode("\n", textwrap(strip_tags($reply['body']), 74));

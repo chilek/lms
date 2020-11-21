@@ -4991,3 +4991,5 @@ $_LANG['<!customer-notification-body>The following special symbols are supported
     . '<strong>%title</strong> - tytuł zgłoszenia.<br>';
 
 $_LANG['(HTML content has been omitted)'] = '(Treść HTML została pominięta)';
+
+$_LANG['<!mail>Copy'] = 'Kopia';
