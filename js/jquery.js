@@ -247,7 +247,7 @@ function init_datepickers(selector) {
 
 	if (!lmsSettings.openCalendarOnInputClick) {
 		options.showOn = 'button';
-		options.buttonText = '<i class="fas fa-calendar-alt" title="' + $t('Click here to open calendar') + '"></i>';
+		options.buttonText = '<i class="lms-ui-icon-calendar" title="' + $t('Click here to open calendar') + '"></i>';
 	}
 
 	$(selector).each(function() {
@@ -1049,7 +1049,7 @@ $(function() {
 				$(this).datetimepicker('toggle');
 			});
 		} else {
-			$('<i class="fas fa-calendar-alt ui-datepicker-trigger" title="' + $t('Click here to open calendar') + '"></i>')
+			$('<i class="lms-ui-icon-calendar ui-datepicker-trigger" title="' + $t('Click here to open calendar') + '"></i>')
 				.insertAfter(this).click(function () {
 				$(this).prev().datetimepicker('toggle');
 			});
