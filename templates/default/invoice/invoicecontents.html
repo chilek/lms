@@ -330,18 +330,17 @@
                                         {if preg_match('/duplicate/i', $default_printpage)} checked{/if}>
                                 {$_DOCENTITIES[$smarty.const.DOC_ENTITY_DUPLICATE]}
                             </label>
-                            &nbsp;
-                            <A HREF="?m=invoicelist{if $invoice.proforma}&proforma=1{/if}">{trans("Cancel")} <IMG src="img/cancel.gif"></A>
-                            <A href="?m={$layout.module}&action=init{if $layout.module == 'invoiceedit'}&id={$invoice.id}{/if}">{trans("Clear Contents")} <IMG src="img/delete.gif" alt=""></A>
+                            {button icon="cancel" label="Cancel" href="?m=invoicelist{if $invoice.proforma}&proforma=1{/if}"}
+                            {button icon="delete" label="Clear Contents" href="?m={$layout.module}&action=init{if $layout.module == 'invoiceedit'}&id={$invoice.id}{/if}"}
                             {if !$customer}
-                                <A class="customer-alert" href="#">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
-                                <A class="customer-alert" href="#">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
+                                {button icon="save" label="Save" class="customer-alert"}
+                                {button icon="print" label="Save & Print" class="customer-alert"}
                             {elseif !$contents}
-                                <A class="invoice-alert" href="#">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
-                                <A class="invoice-alert" href="#">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
+                                {button icon="save" label="Save" class="invoice-alert"}
+                                {button icon="print" label="Save & Print" class="invoice-alert"}
                             {else}
-                            <A HREF="javascript:saveInvoice()">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
-                            <A HREF="javascript:printInvoice()">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
+                                {button icon="save" label="Save" onclick="saveInvoice();"}
+                                {button icon="print" label="Save & Print" onclick="printInvoice();"}
                             {/if}
                         </TD>
                     </TR>

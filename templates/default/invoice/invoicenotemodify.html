@@ -446,9 +446,9 @@
 						{if preg_match('/copy/i', $default_printpage)} checked{/if}>
 				{$_DOCENTITIES[$smarty.const.DOC_ENTITY_COPY]}
 			</label>&nbsp;
-			<A HREF="?m=invoicelist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
-			<A HREF="javascript:saveInvoice()">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
-			<A HREF="javascript:printInvoice()">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
+			{button icon="cancel" label="Cancel" href="?m=invoicelist"}
+			{button icon="save" label="Save" onclick="saveInvoice();"}
+			{button icon="print" label="Save & Print" onclick="printInvoice();"}
 		</TD>
 	</TR>
 	</TBODY>
