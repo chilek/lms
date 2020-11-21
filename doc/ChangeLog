@@ -241,6 +241,7 @@ version 26-git (????-??-??):
   - enhancement: 'invoices.payment_title' allows to define own title on transfer forms
     (not defined by default what means to use hardcoded title) [chilan]
   - enhancement: lms-rtparser.php backend script support imap mode [chilan]
+  - improvement: alternative invoice deadline selection counted in days for convenience [chilan]
 
 version 25.0 (2020-05-15):
 

@@ -994,4 +994,38 @@ class LMSSmartyPlugins
             </div>
         ';
     }
+
+    public static function deadlineSelectionFunction(array $params, $template)
+    {
+        $name = $params['name'];
+        $cdate_selector = isset($params['cdate_selector']) ? $params['cdate_selector'] : '#cdate';
+        $value = isset($params['value']) ? $params['value'] : '';
+        if (!empty($params['value']) && preg_match('/^[0-9]+$/', $value)) {
+            $value = date('Y/m/d', $value);
+        }
+
+        return '
+            <div class="lms-ui-deadline-selection" data-cdate-selector="' . $cdate_selector . '">
+                <input type="text" class="lms-ui-deadline-selection-date" name="' . $name . '" value="' . $value . '"
+                    size="12" placeholder="' . trans('yyyy/mm/dd') . '"
+                    ' . self::tipFunction(
+                        array(
+                            'class' => 'lms-ui-date',
+                            'text' => 'Enter deadline date in YYYY/MM/DD format (empty field means default deadline) or click to select it from calendar',
+                            'trigger' => $name,
+                        ),
+                        $template
+                    ) . '>
+                ' . trans('days') . '
+                <select class="lms-ui-deadline-selection-days" lms-ui-combobox">
+                    <option value="7">7</option>
+                    <option value="14">14</option>
+                    <option value="21">21</option>
+                    <option value="31">31</option>
+                    <option value="60">60</option>
+                    <option value="90">90</option>
+                </select>
+			</div>
+        ';
+    }
 }

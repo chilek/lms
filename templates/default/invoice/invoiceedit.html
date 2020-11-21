@@ -4,6 +4,7 @@
 {$xajax}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
+<script src="js/lms-ui-deadline-selection.js"></script>
 <script>
 
 	function saveheader() {
@@ -93,7 +94,7 @@
 			{trans("Deadline:")}
 		</TD>
 		<TD class="nobr">
-			<input type="text" name="invoice[deadline]" value="{$invoice.deadline|date_format:"%Y/%m/%d"}" size="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter deadline date in YYYY/MM/DD format (empty field means default deadline) or click to select it from calendar" trigger="deadline"}>
+			{deadline_selection name="invoice[deadline]" cdate_selector="#cdate" value=$invoice.deadline}
 		</TD>
 	</TR>
 	<TR>
