@@ -401,9 +401,9 @@
 			<TD class="nobr">
 				{if $refdoc.closed}
 				{elseif $item.deleted}
-					<A HREF="?m={$layout.module}&action=recoverpos&itemid={$itemid}"><IMG SRC="img/recover.gif" {tip text="Recover this item"}></A>
+					{button type="link" icon="recover" tip="Recover this item" href="?m={$layout.module}&action=recoverpos&itemid={$itemid}"}
 				{else}
-					<A HREF="?m={$layout.module}&action=deletepos&itemid={$itemid}"><IMG SRC="img/delete.gif" {tip text="Remove this item"}></A>
+					{button type="link" icon="delete" tip="Remove this item" href="?m={$layout.module}&action=deletepos&itemid={$itemid}"}
 				{/if}
 			</TD>
 		</TR>

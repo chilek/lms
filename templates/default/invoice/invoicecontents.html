@@ -190,10 +190,13 @@
             <TD class="text-right nobr" class="invoice-contents-buttons">
                 <input type="hidden" class="invoice-contents-posuid" name="invoice-contents[{$posuid}][posuid]" value="{$posuid}">
                 {if !$invoice.closed}
-                <A HREF="javascript:editItem({$posuid});" class="invoice-contents-field-value"><IMG SRC="img/edit.gif" {tip text="Edit this item"}></A>
-                <A HREF="javascript:saveItem({$posuid});" class="invoice-contents-field-edit" style="display: none;"><IMG SRC="img/save.gif" {tip text="Save this item"}></A>
-                <A HREF="javascript:cancelEditItem({$posuid});" class="invoice-contents-field-edit" style="display: none;"><IMG SRC="img/cancel.gif" {tip text="Cancel changes"}></A>
-                <A HREF="javascript:delItem({$posuid});"><IMG SRC="img/delete.gif" {tip text="Remove this item from list"}></A>
+                    {button type="link" icon="edit" tip="Edit this item" onclick="editItem({$posuid});"
+                        class="invoice-contents-field-value"}
+                    {button type="link" icon="save" tip="Save this item" onclick="saveItem({$posuid});"
+                        class="invoice-contents-field-edit" visible=false}
+                    {button type="link" icon="cancel" tip="Cancel changes" onclick="cancelEditItem({$posuid});"
+                        class="invoice-contents-field-edit" visible=false}
+                    {button type="link" icon="delete" tip="Remove this item from list" onclick="delItem({$posuid});"}
                 {/if}
             </TD>
         </TR>
@@ -292,7 +295,7 @@
                    value="{if isset($itemdata) && !isset($error.posuid)}{$itemdata.valuebrutto}{/if}">
             </TD>
             <TD>
-                <A HREF="javascript:addItem();"><IMG SRC="img/save.gif" ALT="" {tip text="Add item"}></A>
+                {button type="link" icon="save" tip="Add item" onclick="addItem();"}
             </TD>
         </TR>
         {/if}
