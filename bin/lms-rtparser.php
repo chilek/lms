@@ -306,6 +306,12 @@ if ($mode == MODE_IMAP) {
 while (isset($buffer) || $postid !== false) {
     if ($postid !== false) {
         $buffer = imap_fetchbody($ih, $postid, '');
+
+        if ($rtparser_use_seen_flag) {
+            imap_setflag_full($ih, $postid, "\\Seen");
+        } else {
+            imap_clearflag_full($ih, $postid, "\\Seen");
+        }
     }
 
     if (!empty($buffer)) {
