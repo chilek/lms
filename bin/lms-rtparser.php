@@ -227,8 +227,8 @@ if ($smtp_options['auth'] && !preg_match('/^(LOGIN|PLAIN|CRAM-MD5|NTLM)$/i', $sm
 if (!$autoreply_body) {
     $autoreply_body = "Your request was registered in our system.\n"
         . "Ticket identifier RT#%tid has been assigned to this request.\n\n"
-        . "Please, attach string [RT#%tid] in subject field of any\n"
-        . "subsequent post related to this request.\n";
+        . "Please, include string [RT#%tid] in subject field of any\n"
+        . "subsequent posts related to this request.\n";
 }
 $autoreply_body = str_replace("\\n", "\n", $autoreply_body);
 
