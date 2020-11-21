@@ -34,7 +34,6 @@ $(function() {
         $(cdate_elem).change(function() {
             var ddt = new Date();
             var deadline = deadline_days_elem.scombobox('val');
-            console.log(deadline);
             if (!deadline.match(/^[0-9]+$/)) {
                 return;
             }
