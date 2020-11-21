@@ -1049,6 +1049,7 @@ $(function() {
 				$(this).datetimepicker('toggle');
 			});
 		} else {
+			$(this).wrap('<div class="lms-ui-datetime-container"/>');
 			$('<i class="lms-ui-icon-calendar ui-datepicker-trigger" title="' + $t('Click here to open calendar') + '"></i>')
 				.insertAfter(this).click(function () {
 				$(this).prev().datetimepicker('toggle');
