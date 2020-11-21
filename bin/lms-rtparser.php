@@ -578,6 +578,7 @@ while (isset($buffer) || $postid !== false) {
 
         if (!$queue) {
             if ($mode == MODE_IMAP) {
+                $postid = next($posts);
                 continue;
             }
             fprintf($stderr, "Fatal error: Queue ID not found, exiting." . PHP_EOL);
