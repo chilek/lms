@@ -568,18 +568,34 @@ while (isset($buffer) || $postid !== false) {
             $toemails[] = $mh_to;
         }
 
-        if (preg_match('/^.*<(?<address>.+@.+)>$/', $mh_cc, $m)) {
-            $toemails[] = $m['address'];
-        } elseif (!empty($mh_cc)) {
-            $toemails[] = $mh_cc;
+        $ccemails = array();
+        $_ccemails = preg_split('/\s*,\s*/', $mh_cc, null, PREG_SPLIT_NO_EMPTY);
+        if (!empty($_ccemails)) {
+            foreach ($_ccemails as $ccemail) {
+                if (preg_match('/^(?<display>.*)<(?<address>.+@.+)>$/', $ccemail, $m)) {
+                    $ccemails[$m['address']] = $m['display'];
+                } else {
+                    $ccemails[$ccemail] = '';
+                }
+            }
         }
 
         // find queue ID if not specified
-        if (!$queue && !empty($toemails)) {
-            $queue = $DB->GetOne(
-                "SELECT id FROM rtqueues WHERE email IN (" . implode(',', array_fill(1, count($toemails), '?')) . ")",
-                $toemails
+        if (!$queue && (!empty($toemails) || !empty($ccemails))) {
+            $queue = $DB->GetRow(
+                "SELECT id, email FROM rtqueues WHERE email IN ? LIMIT 1",
+                array(array_keys($toemails) + array_keys($ccemails))
             );
+            if (!empty($queue)) {
+                $_ccemails = array();
+                foreach ($ccemails as $ccaddress => $ccdisplay) {
+                    if ($ccaddress != $queue['email']) {
+                        $_ccemails[$ccaddress] = $ccdisplay;
+                    }
+                }
+                $ccemails = $_ccemails;
+                $queue = $queue['id'];
+            }
         }
 
         if (!$queue) {
@@ -659,6 +675,16 @@ while (isset($buffer) || $postid !== false) {
                     'In-Reply-To' => $mh_msgid,
                     'Message-ID' => "<confirm.$ticket_id.$queue.$timestamp@rtsystem.$hostname>",
                 );
+
+                if (!empty($ccemails)) {
+                    $headers['Cc'] = implode(
+                        ', ',
+                        array_map(function ($address, $display) {
+                            return (empty($display) ? '' : $display . ' ') . '<' . $address . '>';
+                        }, array_keys($ccemails), array_values($ccemails))
+                    );
+                }
+
                 $LMS->SendMail($mailto, $headers, $autoreply_body, null, null, $smtp_options);
             }
 
