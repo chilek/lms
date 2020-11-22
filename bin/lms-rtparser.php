@@ -35,6 +35,7 @@ $parameters = array(
     'queue:' => 'q:',
     'message-file:' => 'm:',
     'use-html' => null,
+    'prefer-html' => null,
     'imap' => null,
 );
 
@@ -212,7 +213,8 @@ $url_props = parse_url($lms_url);
 
 $stderr = fopen('php://stderr', 'w');
 
-$use_html = isset($options['use-html']);
+$prefer_html = isset($options['prefer-html']);
+$use_html = isset($options['use-html']) || $prefer_html;
 
 define('MODE_FILE', 1);
 define('MODE_IMAP', 2);
@@ -368,8 +370,9 @@ while (isset($buffer) || $postid !== false) {
                 $partid = array_shift($parts);
                 $part = mailparse_msg_get_part($mail, $partid);
                 $partdata = mailparse_msg_get_part_data($part);
+                $html = strpos($partdata['content-type'], 'html') !== false;
                 if (preg_match('/text/', $partdata['content-type'])
-                    && (($use_html && strpos($partdata['content-type'], 'html') !== false) || $mail_body == '')) {
+                    && ($mail_body == '' || ($html && $prefer_html) || (!$html && !$use_html))) {
                     $mail_body = substr($buffer, $partdata['starting-pos-body'], $partdata['ending-pos-body'] - $partdata['starting-pos-body']);
                     $charset = $partdata['content-charset'];
                     $transfer_encoding = isset($partdata['transfer-encoding']) ? $partdata['transfer-encoding'] : '';
@@ -399,8 +402,9 @@ while (isset($buffer) || $postid !== false) {
                         $subpartid = array_shift($parts);
                         $subpart = mailparse_msg_get_part($mail, $subpartid);
                         $subpartdata = mailparse_msg_get_part_data($subpart);
+                        $html = strpos($subpartdata['content-type'], 'html') !== false;
                         if (preg_match('/text/', $subpartdata['content-type'])
-                            && (($use_html && strpos($subpartdata['content-type'], 'html') !== false) || trim($mail_body) == '')) {
+                            && (trim($mail_body) == '' || ($html && $prefer_html) || (!$html && !$use_html))) {
                             $mail_body = substr($buffer, $subpartdata['starting-pos-body'], $subpartdata['ending-pos-body'] - $subpartdata['starting-pos-body']);
                             $charset = $subpartdata['content-charset'];
                             $transfer_encoding = isset($subpartdata['transfer-encoding']) ? $subpartdata['transfer-encoding'] : '';
