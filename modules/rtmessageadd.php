@@ -228,6 +228,10 @@ if (isset($_POST['message'])) {
                         $headers['Cc'] = implode(',', $ccemails);
                     }
 
+                    if ($message['contenttype'] == 'text/html') {
+                        $headers['X-LMS-Format'] = 'html';
+                    }
+
                     $body = $message['body'];
 
                     $LMS->SendMail($recipients, $headers, $body, $attachments, null, $smtp_options);
@@ -308,6 +312,10 @@ if (isset($_POST['message'])) {
                     $body .= "\n\nhttp" . ($_SERVER['HTTPS'] == 'on' ? 's' : '') . '://'
                         . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
                         . '?m=rtticketview&id=' . $ticketid . (isset($msgid) ? '#rtmessage-' . $msgid : '');
+                }
+
+                if ($message['contenttype'] == 'text/html') {
+                    $headers['X-LMS-Format'] = 'html';
                 }
 
                 $LMS->SendMail($recipients, $headers, $body, $attachments, null, $smtp_options);
