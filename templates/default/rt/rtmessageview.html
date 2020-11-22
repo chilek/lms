@@ -56,12 +56,20 @@
 		</TD>
 		<TD>
 			{if $message.customerid}
+				{if $message.mailfrom}
+					{icon name="mail"}
+				{elseif $message.phonefrom}
+					{icon name="sms"}
+				{/if}
 				<A href="?m=customerinfo&id={$message.customerid}">{$message.customername} ({$message.customerid|escape|string_format:"%04d"})</A>
 			{elseif $message.userid}
+				{icon name="user"}
 				<A href="?m=userinfo&id={$message.userid}">{$message.username}</A>
 			{elseif $message.mailfrom}
+				{icon name="mail"}
 				<A href="mailto:{$message.mailfrom|escape}">{$message.mailfrom|escape}</A>
 			{elseif $message.phonefrom}
+				{icon name="phone"}
 				<A class="phone_number" href="tel:{$message.phonefrom}">{$message.phonefrom}</A>
 			{else}
 				{$message.requestor|escape}
