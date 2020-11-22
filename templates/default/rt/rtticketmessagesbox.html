@@ -149,7 +149,9 @@
 								{$message.createtime|date_format:"%Y/%m/%d %H:%M"}
 							</div>
 							<div class="message-from-subject">
-								<div>
+								<div{if $message.type != $smarty.const.RTMESSAGE_REGULAR
+									|| (!$message.customerid && !$message.userid && !$message.mailfrom
+										&& !$ticket.requestor && !$message.phonefrom)} style="display: none;"{/if}>
 									<div>
 										<strong>{trans("From:")}</strong>
 									</div>
