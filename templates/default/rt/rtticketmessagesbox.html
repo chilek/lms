@@ -170,6 +170,7 @@
 													{$message.username}
 												</A>
 											{elseif $message.mailfrom}
+												{icon name="mail"}
 												<A href="mailto:{$message.mailfrom|escape}">{$message.mailfrom|escape}</A>
 											{else}
 												{$ticket.requestor|escape}
