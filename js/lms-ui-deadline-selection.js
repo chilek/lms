@@ -42,6 +42,9 @@ $(function() {
         });
 
         $(deadline_date_elem).change(function() {
+            if (!cdate_elem.val().length || !$(this).val().length) {
+                return;
+            }
             var cdt = new Date();
             var ddt = new Date();
             cdt.setTime(Date.parse(cdate_elem.val()));
@@ -52,13 +55,18 @@ $(function() {
         }).change();
 
         deadline_days_elem.scombobox('change', function () {
-            var ddt = new Date();
-            var cdt = Date.parse(cdate_elem.val());
+            var cdt = new Date();
+            if (cdate_elem.val().length) {
+                cdt.setTime(Date.parse(cdate_elem.val()));
+            } else {
+                cdate_elem.val(sprintf("%04d/%02d/%02d", cdt.getFullYear(), cdt.getMonth() + 1, cdt.getDate()));
+            }
             var diffDays = deadline_days_elem.scombobox('val');
             if (!diffDays.match(/^[0-9]+$/)) {
                 return;
             }
-            ddt.setTime(cdt + parseInt(diffDays) * 86400 * 1000);
+            var ddt = new Date();
+            ddt.setTime(cdt.getTime() + parseInt(diffDays) * 86400 * 1000);
             deadline_date_elem.val(sprintf("%04d/%02d/%02d", ddt.getFullYear(), ddt.getMonth() + 1, ddt.getDate()));
         });
     });
