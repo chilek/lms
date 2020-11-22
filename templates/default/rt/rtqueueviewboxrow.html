@@ -138,9 +138,9 @@
 				{button type="link" icon="delete" href="?m=rtticketdel&id={$ticket.id}&taction=delete" tip="Delete"}
 			{/if}
 		{/buttons}
-		<input type="checkbox" class="lms-ui-multi-check" name="ticketid[]" value="{$ticket.id}">
+		<input type="checkbox" class="lms-ui-multi-check" name="ticketid[]" value="{$ticket.id}"
+			data-deleted="{if $ticket.deleted == 1 && $ticket.deltime != 0}1{else}0{/if}">
 	</TD>
 </TR>
 
 {/block}
-

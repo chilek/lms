@@ -244,6 +244,7 @@ version 26-git (????-??-??):
   - improvement: alternative invoice deadline selection counted in days for convenience [chilan]
   - enhancement: added support for CC mail headers while communicate through helpdesk
     with customer [chilan]
+  - enhancement: implemented bulk delete of selected tickets on queue view ticket list [chilan]
 
 version 25.0 (2020-05-15):
 
