@@ -144,6 +144,16 @@
 			});
 		});
 
+		$('.group-action-delete-permanently').click(function () {
+			confirmDialog($t('Are you sure, you want to permanently remove all selected tickets?'), this).done(function() {
+				var ticketid = [];
+				$('[name="ticketid[]"]:checked[data-deleted="1"]').each(function () {
+					ticketid.push($(this).val());
+				});
+				location.href = '?m=rtticketdel&taction=delperm&id[]=' + ticketid.join('&id[]=');
+			});
+		});
+
 		$('.delete-ticket').click(function() {
 			var link = $(this).attr('href');
 			var fulllink = link + get_backid(this);
