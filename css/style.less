@@ -1655,6 +1655,14 @@ tr.space_row > td {
 .lms-ui-pagination {
 	background-color: @dark;
 	text-align: center;
+	> span {
+		display: inline-flex;
+		align-items: center;
+		> * {
+			padding-left: 0.2em;
+			padding-right: 0.2em;
+		}
+	}
 }
 
 td.empty-table {
