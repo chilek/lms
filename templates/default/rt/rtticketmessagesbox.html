@@ -156,13 +156,17 @@
 									<div>
 										{if $message.type == $smarty.const.RTMESSAGE_REGULAR}
 											{if $message.customerid}
+												{if $message.mailfrom}
+													{icon name="mail"}
+												{elseif $message.phonefrom}
+													{icon name="sms"}
+												{/if}
 												<A href="?m=customerinfo&id={$message.customerid}">
-													{icon name="external"}
 													{$message.customername}
 												</A>
 											{elseif $message.userid}
+												{icon name="user"}
 												<A href="?m=userinfo&id={$message.userid}">
-													{icon name="user"}
 													{$message.username}
 												</A>
 											{elseif $message.mailfrom}
@@ -174,7 +178,10 @@
 												{/if}
 											{/if}
 											{if $message.phonefrom}
-												&nbsp;&nbsp;&nbsp;<A class="phone_number" href="tel:{$message.phonefrom}"><i class="lms-ui-icon-phone"></i> {$message.phonefrom}</A>
+												{icon name="phone"}
+												<A class="phone_number" href="tel:{$message.phonefrom}">
+													{$message.phonefrom}
+												</A>
 											{/if}
 										{else}
 											<A href="?m=userinfo&id={$message.userid}">{$message.username}</A>
