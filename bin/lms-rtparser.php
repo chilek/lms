@@ -368,7 +368,8 @@ while (isset($buffer) || $postid !== false) {
                 $partid = array_shift($parts);
                 $part = mailparse_msg_get_part($mail, $partid);
                 $partdata = mailparse_msg_get_part_data($part);
-                if (preg_match('/text/', $partdata['content-type']) && ($use_html || $mail_body == '')) {
+                if (preg_match('/text/', $partdata['content-type'])
+                    && (($use_html && strpos($partdata['content-type'], 'html') !== false) || $mail_body == '')) {
                     $mail_body = substr($buffer, $partdata['starting-pos-body'], $partdata['ending-pos-body'] - $partdata['starting-pos-body']);
                     $charset = $partdata['content-charset'];
                     $transfer_encoding = isset($partdata['transfer-encoding']) ? $partdata['transfer-encoding'] : '';
@@ -398,7 +399,8 @@ while (isset($buffer) || $postid !== false) {
                         $subpartid = array_shift($parts);
                         $subpart = mailparse_msg_get_part($mail, $subpartid);
                         $subpartdata = mailparse_msg_get_part_data($subpart);
-                        if (preg_match('/text/', $subpartdata['content-type']) && ($use_html || trim($mail_body) == '')) {
+                        if (preg_match('/text/', $subpartdata['content-type'])
+                            && (($use_html && strpos($subpartdata['content-type'], 'html') !== false) || trim($mail_body) == '')) {
                             $mail_body = substr($buffer, $subpartdata['starting-pos-body'], $subpartdata['ending-pos-body'] - $subpartdata['starting-pos-body']);
                             $charset = $subpartdata['content-charset'];
                             $transfer_encoding = isset($subpartdata['transfer-encoding']) ? $subpartdata['transfer-encoding'] : '';
