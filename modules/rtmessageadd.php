@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -35,7 +35,10 @@ if (empty($categories)) {
     $categories = array();
 }
 
-$contacts = array();
+$contacts = array(
+    'mails' => array(),
+    'phones' => array(),
+);
 
 if (isset($_POST['message'])) {
     $message = $_POST['message'];
@@ -121,15 +124,6 @@ if (isset($_POST['message'])) {
     $message = $hook_data['message'];
     $error = $hook_data['error'];
 
-    $reply = $LMS->GetMessage($message['inreplyto']);
-    if (!empty($reply['cc'])) {
-        foreach ($reply['cc'] as &$cc) {
-            $cc['checked'] = isset($message['cc'][$cc['address']]);
-        }
-        unset($cc);
-    }
-    $message['cc'] = $reply['cc'];
-
     if (!$error) {
         $message['contenttype'] = isset($message['wysiwyg']) && isset($message['wysiwyg']['body']) && ConfigHelper::checkValue($message['wysiwyg']['body'])
             ? 'text/html' : 'text/plain';
@@ -160,26 +154,15 @@ if (isset($_POST['message'])) {
                 $queue = $LMS->GetQueue($message['queueid'], true);
             }
 
+            $requestor_mail = $LMS->GetTicketRequestorMail($ticketid);
+
             $message['queue'] = $queue;
 
             $message['messageid'] = '<msg.' . $queue['id'] . '.' . $ticketid . '.' . time()
                 . '@rtsystem.' . gethostname() . '>';
 
-            if ($message['sender'] == 'user') {
-                $message['userid'] = Auth::GetCurrentUser();
-                $message['customerid'] = null;
-            } else {
-                $message['userid'] = null;
-                if (!$message['customerid']) {
-                    $message['mailfrom'] = $DB->GetOne(
-                        'SELECT requestor_mail FROM rttickets WHERE id = ?',
-                        array($ticketid)
-                    );
-                    if (!check_email($message['mailfrom'])) {
-                        $message['mailfrom'] = '';
-                    }
-                }
-            }
+            $message['userid'] = Auth::GetCurrentUser();
+            $message['customerid'] = null;
 
             $mailfname = '';
 
@@ -194,132 +177,59 @@ if (isset($_POST['message'])) {
                 $mailfname = '"' . $mailfname . '"';
             }
 
-            if (!ConfigHelper::checkConfig('phpui.helpdesk_backend_mode') || $message['destination'] == '') {
-                $headers = array();
+            $headers = array();
 
-                if ($message['references']) {
-                    $headers['References'] = $message['references'];
-                    $references = explode(' ', $message['references']);
-                    $headers['In-Reply-To'] = array_pop($references);
-                }
-                $headers['Message-ID'] = $message['messageid'];
+            if ($message['references']) {
+                $headers['References'] = $message['references'];
+                $references = explode(' ', $message['references']);
+                $headers['In-Reply-To'] = array_pop($references);
+            }
+            $headers['Message-ID'] = $message['messageid'];
 
-                if ($message['destination'] && $message['userid']
-                    && ($user['email'] || $queue['email'])
-                    && $message['destination'] != $queue['email']) {
-                    $recipients = $message['destination'];
+            if ($message['userid'] && ($user['email'] || $queue['email'])) {
+                $mailfrom = $LMS->DetermineSenderEmail($user['email'], $queue['email'], $requestor_mail);
 
-                    $mailfrom = $LMS->DetermineSenderEmail($user['email'], $queue['email'], $ticket['requestor_mail']);
-
-                    $message['mailfrom'] = $mailfrom;
-                    $headers['Date'] = date('r');
-                    $headers['From'] = $mailfname . ' <' . $message['mailfrom'] . '>';
-                    $headers['To'] = '<' . $message['destination'] . '>';
-                    $headers['Subject'] = $message['subject'];
-                    $headers['Reply-To'] = $headers['From'];
-
-                    $ccemails = array();
-                    foreach ($message['cc'] as $cc) {
-                        if ($cc['checked']) {
-                            $ccemails[] = (empty($cc['display']) ? '' : qp_encode($cc['display']) . ' ') . '<' . $cc['address'] . '>';
-                        }
-                    }
-                    if (!empty($ccemails)) {
-                        $headers['Cc'] = implode(',', $ccemails);
-                    }
-
-                    if ($message['contenttype'] == 'text/html') {
-                        $headers['X-LMS-Format'] = 'html';
-                    }
-
-                    $body = $message['body'];
-
-                    $LMS->SendMail($recipients, $headers, $body, $attachments, null, $smtp_options);
-                } else {
-                    if ($message['customerid'] || $message['userid']) {
-                        $message['mailfrom'] = '';
-                    }
-                    $message['headers'] = '';
-                    $message['replyto'] = '';
-                }
-
-                $message['headers'] = $headers;
-                $message['ticketid'] = $ticketid;
-                $msgid = $LMS->TicketMessageAdd($message, $files);
-            } else { //sending to backend
-                $addmsg = ($message['destination'] != '');
-
-                if ($message['destination'] == '') {
-                    $message['destination'] = $queue['email'];
-                }
-                $recipients = $message['destination'];
-
-                if ($message['userid']) {
-                    if ($addmsg) {
-                        $message['mailfrom'] = $LMS->DetermineSenderEmail(
-                            $user['email'],
-                            $queue['email'],
-                            $ticket['requestor_mail'],
-                            $forced_order = 'queue,user,ticket'
-                        );
-                    } else {
-                        $message['mailfrom'] = $LMS->DetermineSenderEmail(
-                            $user['email'],
-                            $queue['email'],
-                            $ticket['requestor_mail']
-                        );
-                    }
-                }
-
-                if ($message['customerid']) {
-                    $message['mailfrom'] = $LMS->GetCustomerEmail($message['customerid']);
-                    if (!empty($message['mailfrom'])) {
-                        $message['mailfrom'] = $message['mailfrom'][0];
-                    }
-                }
-
+                $message['mailfrom'] = $mailfrom;
                 $headers['Date'] = date('r');
                 $headers['From'] = $mailfname . ' <' . $message['mailfrom'] . '>';
-                $headers['To'] = '<' . $message['destination'] . '>';
                 $headers['Subject'] = $message['subject'];
-                if ($message['references']) {
-                    $headers['References'] = $message['references'];
-                    $references = explode(' ', $message['references']);
-                    $headers['In-Reply-To'] = array_pop($references);
-                }
-                $headers['Message-ID'] = $message['messageid'];
                 $headers['Reply-To'] = $headers['From'];
-
-                $ccemails = array();
-                foreach ($message['cc'] as $cc) {
-                    if ($cc['checked']) {
-                        $ccemails[] = (empty($cc['display']) ? '' : qp_encode($cc['display']) . ' ') . '<' . $cc['address'] . '>';
-                    }
-                }
-                if (!empty($ccemails)) {
-                    $headers['Cc'] = implode(',', $ccemails);
-                }
-
-                // message to customer is written to database
-                if ($message['userid'] && $addmsg) {
-                    $message['headers'] = $headers;
-                    $message['ticketid'] = $ticketid;
-                    $msgid = $LMS->TicketMessageAdd($message, $files);
-                }
-
-                $body = $message['body'];
-                if ($message['destination'] == $queue['email'] || $message['destination'] == $user['email']) {
-                    $body .= "\n\nhttp" . ($_SERVER['HTTPS'] == 'on' ? 's' : '') . '://'
-                        . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
-                        . '?m=rtticketview&id=' . $ticketid . (isset($msgid) ? '#rtmessage-' . $msgid : '');
-                }
 
                 if ($message['contenttype'] == 'text/html') {
                     $headers['X-LMS-Format'] = 'html';
                 }
 
-                $LMS->SendMail($recipients, $headers, $body, $attachments, null, $smtp_options);
+                if (isset($message['contacts']['mails']) && !empty($message['contacts']['mails'])) {
+                    $toemails = array();
+                    $ccemails = array();
+                    foreach ($message['contacts']['mails'] as $address => $contact) {
+                        $display = empty($message['contacts']['maildisplays'][$address]) ? '' : qp_encode($contact['display']) . ' ';
+                        $message_source = $message['contacts']['mailsources'][$address];
+                        if ($message_source == 'requestor_mail' || $message_source == 'mailfrom') {
+                            $toemails[] = $display . '<' . $contact . '>';
+                        } else {
+                            $ccemails[] = $display . '<' . $contact . '>';
+                        }
+                    }
+                    if (!empty($toemails)) {
+                        $headers['To'] = implode(',', $toemails);
+                    }
+                    if (!empty($ccemails)) {
+                        $headers['Cc'] = implode(',', $ccemails);
+                    }
+                }
+            } else {
+                if ($message['customerid'] || $message['userid']) {
+                    $message['mailfrom'] = '';
+                }
+                $message['headers'] = '';
+                $message['replyto'] = '';
             }
+
+            $message['headers'] = $headers;
+            $message['ticketid'] = $ticketid;
+            $msgid = $LMS->TicketMessageAdd($message, $files);
+
 
             $hook_data = $LMS->executeHook(
                 'rtmessageadd_after_submit',
@@ -388,6 +298,23 @@ if (isset($_POST['message'])) {
 
             $LMS->TicketChange($ticketid, $props);
 
+            // customer notification via e-mail
+            if (isset($message['mailnotify'])) {
+                if ($group_reply) {
+                    if (!empty($requestor_mail)) {
+                        $headers['To'] = $requestor_mail;
+                        $recipients = $requestor_mail;
+                    } else {
+                        $recipients = '';
+                    }
+                } else {
+                    $recipients = $headers['To'];
+                }
+                if (!$recipients) {
+                    $LMS->SendMail($recipients, $headers, $message['body'], $attachments, null, $smtp_options);
+                }
+            }
+
             $service = ConfigHelper::getConfig('sms.service');
 
             // customer notification via sms when we reply to ticket message created from customer sms
@@ -399,8 +326,8 @@ if (isset($_POST['message'])) {
                         $phones[] = $phone;
                     }
                 } else {
-                    if (isset($message['contacts'])) {
-                        foreach ($message['contacts'] as $phone) {
+                    if (isset($message['contacts']['phones'])) {
+                        foreach ($message['contacts']['phones'] as $phone) {
                             $phones[] = $phone;
                         }
                     }
@@ -629,15 +556,33 @@ if (isset($_POST['message'])) {
 
         if (isset($_GET['id'])) {
             $reply = $LMS->GetMessage($_GET['id']);
-            foreach ($reply['cc'] as &$cc) {
-                $cc['checked'] = true;
-            }
-            unset($cc);
 
-            if ($reply['replyto']) {
-                $message['destination'] = preg_replace('/^.* <(.+@.+)>/', '\1', $reply['replyto']);
-            } else {
-                $message['destination'] = preg_replace('/^.* <(.+@.+)>/', '\1', $reply['mailfrom']);
+            $message['mailfrom'] = array();
+
+            if (!empty($reply['mailfrom']) && !empty($reply['customerid'])
+                && preg_match('/^(?:(?<name>.*) )?<?(?<mail>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $reply['mailfrom'], $m)) {
+                $message['mailfrom'] = array(
+                    $m['mail'] => array(
+                        'contact' => $m['mail'],
+                        'display' => $m['name'],
+                        'source' => 'mailfrom',
+                    )
+                );
+            }
+
+            if (!empty($reply['cc'])) {
+                foreach ($reply['cc'] as &$cc) {
+                    $cc['contact'] = $cc['address'];
+                    $cc['source'] = 'carbon-copy';
+                }
+                unset($cc);
+
+                $message['mailfrom'] = array_merge($message['mailfrom'], $reply['cc']);
+            }
+
+
+            if (!empty($message['mailfrom']) && ConfigHelper::checkConfig('phpui.helpdesk_customer_notify')) {
+                $message['mailnotify'] = true;
             }
 
             if ($reply['phonefrom']) {
@@ -708,21 +653,64 @@ if (!is_array($message['ticketid'])) {
         }
     }
 
+    // collect carbon copy email addresses from ticket, message to which you reply and customer email contacts
+    if (!empty($message['customerid'])) {
+        $customercontacts = $LMS->GetCustomerContacts($message['customerid'], CONTACT_EMAIL);
+        if (empty($customercontacts)) {
+            $customercontacts = array();
+        }
+        foreach ($customercontacts as &$customercontact) {
+            if (($customercontact['type'] & (CONTACT_NOTIFICATIONS | CONTACT_DISABLED)) == CONTACT_NOTIFICATIONS) {
+                $customercontact['checked'] = 0;
+                $customercontact['display'] = $customercontact['name'];
+                $customercontact['source'] = 'customer';
+                $contacts['mails'][$customercontact['contact']] = $customercontact;
+            }
+        }
+        unset($customercontact);
+    }
+
+    if (!empty($ticket['requestor_mail'])) {
+        $contacts['mails'][$ticket['requestor_mail']] = array(
+            'contact' => $ticket['requestor_mail'],
+            'name' => trans('from ticket'),
+            'display' => $ticket['requestor'],
+            'source' => 'requestor_mail',
+            'checked' => 0,
+        );
+    }
+
+    if (isset($message['mailfrom']) && !empty($message['mailfrom'])) {
+        $customer_mails = !empty($contact['mails']);
+        foreach ($message['mailfrom'] as $address) {
+            $contacts['mails'][$address['contact']] = array(
+                'contact' => $address['contact'],
+                'name' => $address['source'] == 'carbon-copy' ? trans('from message "Copy" header') : trans('from message "From" header'),
+                'display' => $address['display'],
+                'source' => $address['source'],
+                'checked' => $customer_mails ? 0 : 1,
+            );
+        }
+    }
+
     // collect phone numbers from ticket, message to which you reply and customer mobile phone contacts
     if (!empty($ticket['requestor_phone'])) {
-        $contacts[] = array(
+        $contacts['phones'][$ticket['requestor_phone']] = array(
             'contact' => $ticket['requestor_phone'],
             'name' => trans('from ticket'),
+            'source' => 'ticket',
             'checked' => 1,
         );
     }
     if (isset($message['phonefrom']) && !empty($message['phonefrom'])) {
-        $contacts[] = array(
+        $contacts['phones'][$message['phonefrom']] = array(
             'contact' => $message['phonefrom'],
             'name' => trans('from message'),
-            'checked' => empty($contacts) ? 1 : 0,
+            'source' => 'message',
+            'checked' => empty($contacts['phones']) ? 1 : 0,
         );
     }
+
     if (!empty($message['customerid'])) {
         $customercontacts = $LMS->GetCustomerContacts($message['customerid'], CONTACT_MOBILE);
         if (empty($customercontacts)) {
@@ -731,7 +719,7 @@ if (!is_array($message['ticketid'])) {
         foreach ($customercontacts as &$customercontact) {
             if (($customercontact['type'] & (CONTACT_NOTIFICATIONS | CONTACT_DISABLED)) == CONTACT_NOTIFICATIONS) {
                 $customercontact['checked'] = 0;
-                $contacts[] = $customercontact;
+                $contacts['phones'][$customercontact['contact']] = $customercontact;
             }
         }
         unset($customercontact);
@@ -739,14 +727,21 @@ if (!is_array($message['ticketid'])) {
 
     if (isset($_POST['message'])) {
         if (!isset($message['contacts'])) {
-            $message['contacts'] = array();
+            $message['contacts'] = array(
+                'mails' => array(),
+                'phones' => array(),
+            );
         }
-        foreach ($contacts as $contactidx => &$contact) {
-            $contact['checked'] = isset($message['contacts'][$contactidx]) ? 1 : 0;
+        foreach (array('mails', 'phones') as $contact_type) {
+            foreach ($contacts[$contact_type] as $contactidx => &$contact) {
+                $contact['name'] = isset($message['contacts']['mailnames'][$contactidx]) ? $message['contacts']['mailnames'][$contactidx] : '';
+                $contact['checked'] = isset($message['contacts'][$contact_type][$contactidx]) ? 1 : 0;
+            }
+            unset($contact);
         }
-        unset($contact);
-    } elseif (!empty($contacts) && ConfigHelper::checkConfig('phpui.helpdesk_customer_notify')) {
-        $message['smsnotify'] = true;
+    } elseif (ConfigHelper::checkConfig('phpui.helpdesk_customer_notify')) {
+        $message['mailnotify'] = !empty($contacts['mails']);
+        $message['smsnotify'] = !empty($contacts['phones']);
     }
 
     $SMARTY->assign('queuelist', $LMS->LimitQueuesToUserpanelEnabled($LMS->GetQueueList(array('stats' => false)), $message['queueid']));

@@ -2262,6 +2262,25 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         return $mailfrom;
     }
 
+    public function GetTicketRequestorMail($ticketid)
+    {
+        $mail = $this->db->GetOne(
+            'SELECT requestor_mail FROM rttickets
+			WHERE id = ? AND requestor_mail <> ?',
+            array($ticketid, '')
+        );
+        if (empty($phone)) {
+            return $this->db->GetOne(
+                'SELECT mailfrom FROM rtmessages
+                    WHERE ticketid = ? AND mailfrom <> ?
+                    LIMIT 1',
+                array($ticketid, '')
+            );
+        } else {
+            return $mail;
+        }
+    }
+
     public function GetTicketRequestorPhone($ticketid)
     {
         $phone = $this->db->GetOne(

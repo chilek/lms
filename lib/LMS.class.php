@@ -2160,6 +2160,12 @@ class LMS
         return $manager->DetermineSenderEmail($queue_email, $ticket_email, $user_email, $forced_order);
     }
 
+    public function GetTicketRequestorMail($ticketid)
+    {
+        $manager = $this->getHelpdeskManager();
+        return $manager->GetTicketRequestorMail($ticketid);
+    }
+
     public function GetTicketRequestorPhone($ticketid)
     {
         $manager = $this->getHelpdeskManager();

@@ -29,9 +29,14 @@
 		align-items: flex-start;
 	}
 
-	#carbon-copy .lms-ui-box-row-field {
+	#mailnotify-contacts .lms-ui-box-row-field {
 		flex-direction: column;
 		align-items: flex-start;
+	}
+
+	#mailnotify-row > *,
+	#smsnotify-row > * {
+		align-self: center;
 	}
 
 </style>
@@ -56,7 +61,9 @@
 	{box_contents}
 		{box_panel}
 
+{*
 {if !$group_action}
+
 			{box_row icon="img/users.gif" label="Requestor:"}
 				<INPUT class="radio light" type="radio" name="message[sender]" id="sender0" value="user" CHECKED><label for="sender0">{trans("user")}</label>
 				<INPUT class="radio light" type="radio" name="message[sender]" id="sender1" value="customer" {if $message.sender == 'customer'}CHECKED{/if}><label for="sender1">{trans("customer")}</label>
@@ -68,19 +75,9 @@
 					{tip text="Enter recipient's e-mail - if sender is an user and message should be sent (optional)" trigger="destination"}
 				>
 			{/box_row}
-
-			{if !empty($message.cc)}
-				{box_row icon="mail" id="carbon-copy" label="<!mail>Copy"}
-					{foreach $message.cc as $cc}
-						<label>
-							<input type="checkbox" name="message[cc][{$cc.address|escape}]" value="{$cc.address|escape}"
-								{if !empty($cc.checked)}checked{/if}>
-							{if !empty($cc.display)}{$cc.display} {/if}&lt;{$cc.address}&gt;
-						</label>
-					{/foreach}
-				{/box_row}
-			{/if}
 {/if}
+*}
+
 			{box_row icon="img/docum.gif" label="Message template:" id="message-template-row" field_id="message-templates"
 				visible=!empty($messagetemplates)}
 				{include file="rt/rtmessagetemplates.html" templates=$messagetemplates}
@@ -112,7 +109,7 @@
 	{box_contents}
 		{box_panel}
 
-			{box_row icon="img/mail.gif" label="Notify users:" labelid="notify"}
+			{box_row icon="user" icon_class="fa-fw"  label="Notify users:" labelid="notify"}
 				<INPUT type="checkbox" name="message[notify]" id="notify" value="1"{if $message.notify} CHECKED{/if}>
 			{/box_row}
 
@@ -120,23 +117,43 @@
 				<INPUT type="checkbox" name="message[customernotify]" id="customernotify" value="1"{if isset($message.customernotify)} checked{/if}>
 			{/box_row}
 
-{if !empty($contacts) || $group_action}
-			{box_row icon="img/phone.gif" label="Notify customer via SMS:" labelid="smsnotify"}
-				<INPUT type="checkbox" name="message[smsnotify]" id="smsnotify" value="1"{if $message.smsnotify} checked{/if}>
-				<input type="hidden" name="message[phonefrom]" value="{if $group_action}-1{else}{$message.phonefrom}{/if}">
+{if $group_action || !empty($contacts.mails)}
+			{box_row icon="mail" icon_class="fa-fw" id="mailnotify-row" label="Notify customer via e-mail" labelid="mailnotify"}
+				<input type="checkbox" name="message[mailnotify]" id="mailnotify" value="1"{if $message.mailnotify} checked{/if}>
 			{/box_row}
+{/if}
 
-			{if !$group_action}
-				{box_row id="smsnotify-contacts" visible=!empty($message.smsnotify)}
-					{foreach $contacts as $contact}
-						<label>
-							<input type="checkbox" name="message[contacts][{$contact@index}]" value="{$contact.contact}"
-								{if $contact.checked} checked{/if}>
-							{$contact.contact}{if $contact.name} ({$contact.name}){/if}
-						</label>
-					{/foreach}
-				{/box_row}
-			{/if}
+{if !$group_action && !empty($contacts.mails)}
+			{box_row id="mailnotify-contacts" visible=!empty($message.mailnotify)}
+				{foreach $contacts.mails as $contact}
+					<label>
+						<input type="checkbox" name="message[contacts][mails][{$contact.contact|escape}]" value="{$contact.contact|escape}"
+							{if $contact.checked} checked{/if}>
+						{$contact.contact}{if $contact.name} ({$contact.name}){/if}
+						<input type="hidden" name="message[contacts][mailsources][{$contact.contact|escape}]" value="{$contact.source}">
+						<input type="hidden" name="message[contacts][mailnames][{$contact.contact|escape}]" value="{$contact.name|escape}">
+						<input type="hidden" name="message[contacts][maildisplays][{$contact.contact|escape}]" value="{$contact.display|escape}">
+					</label>
+				{/foreach}
+			{/box_row}
+{/if}
+
+{if $group_action || !empty($contacts.phones)}
+			{box_row icon="sms" icon_class="fa-fw" id="smsnotify-row" label="Notify customer via SMS" labelid="smsnotify"}
+				<input type="checkbox" name="message[smsnotify]" id="smsnotify" value="1"{if $message.smsnotify} checked{/if}>
+			{/box_row}
+{/if}
+
+{if !$group_action || !empty($contacts.phones)}
+			{box_row id="smsnotify-contacts" visible=!empty($message.smsnotify)}
+				{foreach $contacts.phones as $contact}
+					<label>
+						<input type="checkbox" name="message[contacts][phones][{$contact.contact}]" value="{$contact.contact}"
+							{if $contact.checked} checked{/if}>
+						{$contact.contact}{if $contact.name} ({$contact.name}){/if}
+					</label>
+				{/foreach}
+			{/box_row}
 {/if}
 
 			{box_row icon="img/dead.gif" label="Status:"}
@@ -296,6 +313,10 @@
 			$('#customernotify-row').show();
 		}
 		{/if}
+
+		$('#mailnotify').change(function() {
+			$('#mailnotify-contacts').toggle($(this).prop('checked'));
+		});
 
 		$('#smsnotify').change(function() {
 			$('#smsnotify-contacts').toggle($(this).prop('checked'));

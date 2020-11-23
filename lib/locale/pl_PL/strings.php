@@ -207,7 +207,8 @@ $_LANG['Enter Tax Office Code (optional)'] = 'Wprowadź Kod Urzędu Podatkowego 
 $_LANG['Invalid format of Tax Office Code!'] = 'Niepoprawny format Kodu Urzędu Podatkowego!';
 
 $_LANG['Notify customer:'] = 'Powiadom klienta:';
-$_LANG['Notify customer via SMS:'] = 'Powiadom klienta SMS-em:';
+$_LANG['Notify customer via e-mail'] = 'Powiadom klienta e-mailem';
+$_LANG['Notify customer via SMS'] = 'Powiadom klienta SMS-em';
 
 $_LANG['billing'] = 'billing';
 $_LANG['Billing'] = 'Billing';
@@ -4795,6 +4796,8 @@ $_LANG['Ticket access denied!'] = 'Odmowa dostępu do zgłoszenia!';
 
 $_LANG['from ticket'] = 'ze zgłoszenia';
 $_LANG['from message'] = 'z wiadomości';
+$_LANG['from message "Copy" header'] = 'z nagłówka "Kopia" wiadomości';
+$_LANG['from message "From" header'] = 'z nagłówka "Od" wiadomości';
 
 $_LANG['No location has been selected!'] = 'Nie wybrano lokalizacji!';
 
