@@ -117,7 +117,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             }
         }
 
-        if (isset($this->data['invoice']['content'])) {
+        if (isset($this->data['invoice']['content']) && $this->data['doctype'] == DOC_CNOTE) {
             foreach ($this->data['invoice']['content'] as $item) {
                 $t_width['no'] = 7;
                 $t_width['name'] = $this->backend->getStringWidth($item['description']);
@@ -182,7 +182,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         $this->backend->SetFont(self::TCPDF_FONT, '', 7);
 
         /* invoice correction data */
-        if (isset($this->data['invoice'])) {
+        if (isset($this->data['invoice']) && $this->data['doctype'] == DOC_CNOTE) {
             $this->backend->Ln(3);
             $this->backend->writeHTMLCell(0, 0, '', '', '<b>' . trans('Was:') . '</b>', 0, 1, 0, true, 'L');
             $this->backend->Ln(3);
@@ -327,7 +327,7 @@ class LMSTcpdfInvoice extends LMSInvoice
 
         $this->backend->Ln(3);
         /* difference between the invoice and the invoice correction */
-        if (isset($this->data['invoice'])) {
+        if (isset($this->data['invoice']) && $this->data['doctype'] == DOC_CNOTE) {
             $total = $this->data['total'] - $this->data['invoice']['total'];
             $totalbase = $this->data['totalbase'] - $this->data['invoice']['totalbase'];
             $totaltax = $this->data['totaltax'] - $this->data['invoice']['totaltax'];
@@ -391,7 +391,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             'cdate' => $this->data['cdate'],
             'customerid' => $this->data['customerid'],
         ));
-        if (isset($this->data['invoice'])) {
+        if (isset($this->data['invoice']) && $this->data['doctype'] == DOC_CNOTE) {
             $title = trans('Credit Note No. $a', $docnumber);
         } elseif ($this->data['doctype'] == DOC_INVOICE) {
             $title = trans('Invoice No. $a', $docnumber);
@@ -400,7 +400,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         }
         $this->backend->Write(0, $title, '', 0, 'C', true, 0, false, false, 0);
 
-        if (isset($this->data['invoice'])) {
+        if (isset($this->data['invoice']) && $this->data['doctype'] == DOC_CNOTE) {
             $this->backend->SetFont(self::TCPDF_FONT, 'B', 12);
             $docnumber = docnumber(array(
                 'number' => $this->data['invoice']['number'],

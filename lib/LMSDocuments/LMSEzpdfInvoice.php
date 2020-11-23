@@ -312,7 +312,7 @@ class LMSEzpdfInvoice extends LMSInvoice
             'customerid' => $this->data['customerid'],
         ));
 
-        if (isset($this->data['invoice'])) {
+        if (isset($this->data['invoice']) && $this->data['doctype'] == DOC_CNOTE) {
             $y=$y - $this->backend->text_align_left($x, $y, $font_size, '<b>' . trans('Credit Note No. $a', $tmp) . '</b>');
         } elseif ($this->data['doctype'] == DOC_INVOICE_PRO) {
             $y=$y - $this->backend->text_align_left($x, $y, $font_size, '<b>' . trans('Pro Forma Invoice No. $a', $tmp) . '</b>');
@@ -320,7 +320,7 @@ class LMSEzpdfInvoice extends LMSInvoice
             $y=$y - $this->backend->text_align_left($x, $y, $font_size, '<b>' . trans('Invoice No. $a', $tmp) . '</b>');
         }
 
-        if (isset($this->data['invoice'])) {
+        if (isset($this->data['invoice']) && $this->data['doctype'] == DOC_CNOTE) {
             $font_size = 12;
             $y += 8;
             $tmp = docnumber(array(
@@ -345,7 +345,7 @@ class LMSEzpdfInvoice extends LMSInvoice
 
         $y -= 5;
 
-        if (isset($this->data['invoice'])) {
+        if (isset($this->data['invoice']) && $this->data['doctype'] == DOC_CNOTE) {
             $y += 10;
         }
         return $y;
@@ -541,7 +541,7 @@ class LMSEzpdfInvoice extends LMSInvoice
             }
         }
 
-        if (isset($this->data['invoice']['content'])) {
+        if (isset($this->data['invoice']['content']) && $this->data['doctype'] == DOC_CNOTE) {
             foreach ($this->data['invoice']['content'] as $item) {
                 $v = 2;
                 $tt_width[$v++] = $this->backend->getTextWidth($font_size, $item['description']);
@@ -599,7 +599,7 @@ class LMSEzpdfInvoice extends LMSInvoice
         $t_justify[11] = $t_justify[10] = $t_justify[9] = $t_justify[8] = $t_justify[7] = $t_justify[6] = $t_justify[5] = "right";
         $t_justify[2] = 'left';
 
-        if (isset($this->data['invoice'])) {
+        if (isset($this->data['invoice']) && $this->data['doctype'] == DOC_CNOTE) {
             // we have credit note, so first print corrected invoice data
             $xx = $x;
             $y = $y - $this->backend->text_align_left($x, $y - 10, $font_size, '<b>' . trans('Was:') . '</b>');
@@ -767,7 +767,7 @@ class LMSEzpdfInvoice extends LMSInvoice
             }
         }
 
-        if (isset($this->data['invoice'])) {
+        if (isset($this->data['invoice']) && $this->data['doctype'] == DOC_CNOTE) {
             $total = $this->data['total'] - $this->data['invoice']['total'];
             $totalbase = $this->data['totalbase'] - $this->data['invoice']['totalbase'];
             $totaltax = $this->data['totaltax'] - $this->data['invoice']['totaltax'];
@@ -878,7 +878,7 @@ class LMSEzpdfInvoice extends LMSInvoice
             }
         }
 
-        if (isset($this->data['invoice']['content'])) {
+        if (isset($this->data['invoice']['content']) && $this->data['doctype'] == DOC_CNOTE) {
             foreach ($this->data['invoice']['content'] as $item) {
                 $tt_width['name'] = $this->backend->getTextWidth($font_size, $item['description']);
                 if (!$hide_prodid) {
@@ -965,7 +965,7 @@ class LMSEzpdfInvoice extends LMSInvoice
             'cols' => $cols2,
         );
 
-        if (isset($this->data['invoice'])) {
+        if (isset($this->data['invoice']) && $this->data['doctype'] == DOC_CNOTE) {
             // we have credit note, so first print corrected invoice data
 
             $y -= 20;
@@ -1126,7 +1126,7 @@ class LMSEzpdfInvoice extends LMSInvoice
             $data2 = array();
         }
 
-        if (isset($this->data['invoice'])) {
+        if (isset($this->data['invoice']) && $this->data['doctype'] == DOC_CNOTE) {
             $total = $this->data['total'] - $this->data['invoice']['total'];
             $totalbase = $this->data['totalbase'] - $this->data['invoice']['totalbase'];
             $totaltax = $this->data['totaltax'] - $this->data['invoice']['totaltax'];

@@ -2342,7 +2342,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 						ORDER BY itemid', 'itemid', array($invoiceid))
             ) {
                 foreach ($result['content'] as $idx => $row) {
-                    if (isset($result['invoice'])) {
+                    if (isset($result['invoice']) && $result['doctype'] == DOC_CNOTE) {
                         $row['value'] += $result['invoice']['content'][$idx]['value'];
                         $row['count'] += $result['invoice']['content'][$idx]['count'];
                     }
@@ -2358,7 +2358,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $result['content'][$idx]['totaltax'] = round($result['content'][$idx]['total'] - $result['content'][$idx]['totalbase'], 2);
                     $result['content'][$idx]['value'] = $row['value'];
                     $result['content'][$idx]['count'] = $row['count'];
-                    if (isset($result['invoice']) && empty($row['count'])) {
+                    if (isset($result['invoice']) && $result['doctype'] == DOC_CNOTE && empty($row['count'])) {
                         $result['content'][$idx]['basevalue'] = $result['invoice']['content'][$idx]['basevalue'];
                     } else {
                         $result['content'][$idx]['basevalue'] = round($result['content'][$idx]['totalbase'] / $row['count'], 2);
@@ -2395,7 +2395,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $result['taxcategories'] = array_unique($result['taxcategories']);
 
             $result['pdate'] = $result['cdate'] + ($result['paytime'] * 86400);
-            $result['value'] = $result['total'] - (isset($result['invoice']) ? $result['invoice']['total'] : 0);
+            $result['value'] = $result['total'] - (isset($result['invoice']) && $result['doctype'] == DOC_CNOTE ? $result['invoice']['total'] : 0);
 
             if ($result['value'] < 0) {
                 $result['value'] = abs($result['value']);
