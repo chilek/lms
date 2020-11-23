@@ -203,9 +203,18 @@ $subject_ticket_regexp_match = ConfigHelper::getConfig('rt.subject_ticket_regexp
 
 $image_max_size = ConfigHelper::getConfig('phpui.uploaded_image_max_size');
 
-$rtparser_server = ConfigHelper::getConfig('rt.imap_server');
-$rtparser_username = ConfigHelper::getConfig('rt.imap_username');
-$rtparser_password = ConfigHelper::getConfig('rt.imap_password');
+$rtparser_server = ConfigHelper::getConfig(
+    'rt.imap_server',
+    isset($smtp_options['host']) ? $smtp_options['host'] : ConfigHelper::GetConfig('mail.smtp_host')
+);
+$rtparser_username = ConfigHelper::getConfig(
+    'rt.imap_username',
+    isset($smtp_options['user']) ? $smtp_options['user'] : ConfigHelper::GetConfig('mail.smtp_username')
+);
+$rtparser_password = ConfigHelper::getConfig(
+    'rt.imap_password',
+    isset($smtp_options['pass']) ? $smtp_options['pass'] : ConfigHelper::GetConfig('mail.smtp_password')
+);
 $rtparser_use_seen_flag = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.imap_use_seen_flag', true));
 $rtparser_folder = ConfigHelper::getConfig('rt.imap_folder', 'INBOX');
 
