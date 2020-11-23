@@ -578,9 +578,9 @@ while (isset($buffer) || $postid !== false) {
         $toemails = array();
 
         if (preg_match('/^.*<(?<address>.+@.+)>$/', $mh_to, $m)) {
-            $toemails[] = $m['address'];
+            $toemails[$m['address']] = $m['address'];
         } elseif (!empty($mh_to)) {
-            $toemails[] = $mh_to;
+            $toemails[$mh_to] = $mh_to;
         }
 
         $ccemails = array();
