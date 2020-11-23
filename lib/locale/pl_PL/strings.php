@@ -4998,3 +4998,5 @@ $_LANG['(HTML content has been omitted)'] = '(Treść HTML została pominięta)'
 $_LANG['<!mail>Copy'] = 'Kopia';
 $_LANG['Are you sure, you want to remove all selected tickets?'] = 'Jesteś pewien, że chcesz usunąć wszystkie zaznaczone zgłoszenia?';
 $_LANG['Are you sure, you want to permanently remove all selected tickets?'] = 'Jesteś pewien, że chcesz trwale usunąć wszystkie zaznaczone zgłoszenia?';
+
+$_LANG['Message #$a'] = 'Wiadomość #$a';
