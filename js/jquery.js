@@ -1541,8 +1541,8 @@ $(function() {
 			//plugins: "preview,autoresize,contextmenu,fullscreen,searchreplace,table,image,link,anchor,textcolor,autosave,paste",
 			// TinyMCE 5
 			skin_url: 'css/tinymce5',
-			//content_css: 'css/tinymce5/content.css',
-			plugins: "preview,autoresize,fullscreen,searchreplace,table,image,link,anchor,autosave,paste",
+//			content_css: 'css/tinymce5/content.min.css',
+			plugins: "preview,autoresize,fullscreen,searchreplace,table,image,imagetools,link,anchor,autosave,paste",
 			//fullscreen_native: true,
 			// #########
 			toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor | link anchor image ' +
@@ -1558,6 +1558,7 @@ $(function() {
 			remove_script_host : false,
 			forced_root_block : false,
 			entity_encoding: 'raw',
+
 			file_picker_callback: function(callback, value, meta) {
 				if (meta.filetype == 'image') {
 					$('#tinymce-image-upload').trigger('click');
