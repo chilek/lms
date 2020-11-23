@@ -32,41 +32,51 @@
 		<TD colspan="5" class="nobr">
 			<FORM METHOD="POST" NAME="page" action="?m=messagelist" id="messagelist">
 			<INPUT type="submit" class="hiddenbtn">
-			<B>{trans("Filter:")} </B>
-			<INPUT type="text" name="search" value="{$listdata.search}" {tip text="Enter value of searching data and select category"}>&nbsp;
-			<SELECT size="1" name="cat">
-				<OPTION value=""{if $listdata.cat == ""} SELECTED{/if}>{trans("- select filter category -")}</OPTION>
-				<OPTION value="subject"{if $listdata.cat == "subject"} SELECTED{/if}>{trans("subject")}</OPTION>
-				<OPTION value="name"{if $listdata.cat == "name"} SELECTED{/if}>{trans("customer name")}</OPTION>
-				<OPTION value="customerid"{if $listdata.cat == "customerid"} SELECTED{/if}>{trans("customer ID")}</OPTION>
-				<OPTION value="username"{if $listdata.cat == "username"} SELECTED{/if}>{trans("user name")}</OPTION>
-				<OPTION value="userid"{if $listdata.cat == "userid"} SELECTED{/if}>{trans("user ID")}</OPTION>
-				<OPTION value="destination"{if $listdata.cat == "destination"} SELECTED{/if}>{trans("destination number/email")}</OPTION>
-				<OPTION value="date"{if $listdata.cat == "date"} SELECTED{/if}>{trans("date (YYYY/MM/DD)")}</OPTION>
-			</SELECT>&nbsp;
-			{trans("Type:")}
-			<SELECT size="1" name="type">
-				<OPTION value="0"{if !$listdata.type} SELECTED{/if}>{trans("- all types -")}</OPTION>
-				<OPTION value="{$smarty.const.MSG_MAIL}"{if $listdata.type == $smarty.const.MSG_MAIL} SELECTED{/if}>{trans("email")}</OPTION>
-				<OPTION value="{$smarty.const.MSG_SMS}"{if $listdata.type == $smarty.const.MSG_SMS} SELECTED{/if}>{trans("sms")}</OPTION>
-				<OPTION value="{$smarty.const.MSG_ANYSMS}"{if $listdata.type == $smarty.const.MSG_ANYSMS} SELECTED{/if}>{trans("any sms")}</OPTION>
-				<OPTION value="{$smarty.const.MSG_WWW}"{if $listdata.type == $smarty.const.MSG_WWW} SELECTED{/if}>{trans("www")}</OPTION>
-				<OPTION value="{$smarty.const.MSG_USERPANEL}"{if $listdata.type == $smarty.const.MSG_USERPANEL} SELECTED{/if}>{trans("userpanel")}</OPTION>
-				<OPTION value="{$smarty.const.MSG_USERPANEL_URGENT}"{if $listdata.type == $smarty.const.MSG_USERPANEL_URGENT} SELECTED{/if}>{trans("userpanel urgent")}</OPTION>
-			</SELECT>&nbsp;
-			{trans("Status:")}
-			<SELECT size="1" name="status">
-				<OPTION value=""{if !$listdata.status} SELECTED{/if}>{trans("- all statuses -")}</OPTION>
-				<OPTION value="{$smarty.const.MSG_NEW}"{if $listdata.status == $smarty.const.MSG_NEW} SELECTED{/if}>{trans("waiting<!plural>")}</OPTION>
-			{*
-				<OPTION value="{$smarty.const.MSG_DRAFT}"{if $listdata.status == $smarty.const.MSG_DRAFT} SELECTED{/if}>{trans("drafts")}</OPTION>
-			*}
-				<OPTION value="{$smarty.const.MSG_SENT}"{if $listdata.status == $smarty.const.MSG_SENT} SELECTED{/if}>{trans("sent<!plural>")}</OPTION>
-				<OPTION value="{$smarty.const.MSG_ERROR}"{if $listdata.status == $smarty.const.MSG_ERROR} SELECTED{/if}>{trans("errornous<!plural>")}</OPTION>
-				<OPTION value="{$smarty.const.MSG_DELIVERED}"{if $listdata.status == $smarty.const.MSG_DELIVERED} SELECTED{/if}>{trans("delivered<!plural>")}</OPTION>
-			</SELECT>
-			&nbsp;<A href="javascript: document.page.submit();">&raquo;&raquo;&raquo;</A>
-			</FORM>
+			<div class="lms-ui-filter-container">
+				<div class="lms-ui-filter-definition">
+					<label>
+						<strong>{trans("Filter:")}</strong>
+						<INPUT type="text" name="search" value="{$listdata.search}" {tip text="Enter value of searching data and select category"}>&nbsp;
+						<SELECT size="1" name="cat">
+							<OPTION value=""{if $listdata.cat == ""} SELECTED{/if}>{trans("- select filter category -")}</OPTION>
+							<OPTION value="subject"{if $listdata.cat == "subject"} SELECTED{/if}>{trans("subject")}</OPTION>
+							<OPTION value="name"{if $listdata.cat == "name"} SELECTED{/if}>{trans("customer name")}</OPTION>
+							<OPTION value="customerid"{if $listdata.cat == "customerid"} SELECTED{/if}>{trans("customer ID")}</OPTION>
+							<OPTION value="username"{if $listdata.cat == "username"} SELECTED{/if}>{trans("user name")}</OPTION>
+							<OPTION value="userid"{if $listdata.cat == "userid"} SELECTED{/if}>{trans("user ID")}</OPTION>
+							<OPTION value="destination"{if $listdata.cat == "destination"} SELECTED{/if}>{trans("destination number/email")}</OPTION>
+							<OPTION value="date"{if $listdata.cat == "date"} SELECTED{/if}>{trans("date (YYYY/MM/DD)")}</OPTION>
+						</SELECT>
+					</label>
+					<label>
+						{trans("Type:")}
+						<SELECT size="1" name="type">
+							<OPTION value="0"{if !$listdata.type} SELECTED{/if}>{trans("- all types -")}</OPTION>
+							<OPTION value="{$smarty.const.MSG_MAIL}"{if $listdata.type == $smarty.const.MSG_MAIL} SELECTED{/if}>{trans("email")}</OPTION>
+							<OPTION value="{$smarty.const.MSG_SMS}"{if $listdata.type == $smarty.const.MSG_SMS} SELECTED{/if}>{trans("sms")}</OPTION>
+							<OPTION value="{$smarty.const.MSG_ANYSMS}"{if $listdata.type == $smarty.const.MSG_ANYSMS} SELECTED{/if}>{trans("any sms")}</OPTION>
+							<OPTION value="{$smarty.const.MSG_WWW}"{if $listdata.type == $smarty.const.MSG_WWW} SELECTED{/if}>{trans("www")}</OPTION>
+							<OPTION value="{$smarty.const.MSG_USERPANEL}"{if $listdata.type == $smarty.const.MSG_USERPANEL} SELECTED{/if}>{trans("userpanel")}</OPTION>
+							<OPTION value="{$smarty.const.MSG_USERPANEL_URGENT}"{if $listdata.type == $smarty.const.MSG_USERPANEL_URGENT} SELECTED{/if}>{trans("userpanel urgent")}</OPTION>
+						</SELECT>
+					</label>
+					<label>
+						{trans("Status:")}
+						<SELECT size="1" name="status">
+							<OPTION value=""{if !$listdata.status} SELECTED{/if}>{trans("- all statuses -")}</OPTION>
+							<OPTION value="{$smarty.const.MSG_NEW}"{if $listdata.status == $smarty.const.MSG_NEW} SELECTED{/if}>{trans("waiting<!plural>")}</OPTION>
+						{*
+							<OPTION value="{$smarty.const.MSG_DRAFT}"{if $listdata.status == $smarty.const.MSG_DRAFT} SELECTED{/if}>{trans("drafts")}</OPTION>
+						*}
+							<OPTION value="{$smarty.const.MSG_SENT}"{if $listdata.status == $smarty.const.MSG_SENT} SELECTED{/if}>{trans("sent<!plural>")}</OPTION>
+							<OPTION value="{$smarty.const.MSG_ERROR}"{if $listdata.status == $smarty.const.MSG_ERROR} SELECTED{/if}>{trans("errornous<!plural>")}</OPTION>
+							<OPTION value="{$smarty.const.MSG_DELIVERED}"{if $listdata.status == $smarty.const.MSG_DELIVERED} SELECTED{/if}>{trans("delivered<!plural>")}</OPTION>
+						</SELECT>
+						<A href="javascript: document.page.submit();">&raquo;&raquo;&raquo;</A>
+					</label>
+				</div>
+				</FORM>
+			</div>
 		</TD>
 	</TR>
 	{if $pagination->getTotal() != 0}
