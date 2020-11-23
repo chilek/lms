@@ -599,7 +599,7 @@ while (isset($buffer) || $postid !== false) {
         if (!$queue && (!empty($toemails) || !empty($ccemails))) {
             $queue = $DB->GetRow(
                 "SELECT id, email FROM rtqueues WHERE email IN ? LIMIT 1",
-                array(array_keys($toemails) + array_keys($ccemails))
+                array(array_merge(array_keys($toemails), array_keys($ccemails)))
             );
             if (!empty($queue)) {
                 $_ccemails = array();
