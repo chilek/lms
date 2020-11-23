@@ -247,6 +247,7 @@ version 26-git (????-??-??):
   - enhancement: implemented bulk delete of selected tickets on queue view ticket list [chilan]
   - enhancement: new ticket message form: allow to select which customer mails should be used
     to send them submitted reply [chilan]
+  - improvement: search customers by non-empty ten/vat reg no. [chilan]
 
 version 25.0 (2020-05-15):
 
