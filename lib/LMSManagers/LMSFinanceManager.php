@@ -1969,7 +1969,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         }
 
         $doc_comment = $invoice['invoice']['comment'];
-        if (isset($invoice['invoice']['proformanumber'])) {
+        if (isset($invoice['invoice']['proformanumber']) && $invoice['invoice']['type'] == DOC_INVOICE) {
             $comment = ConfigHelper::getConfig('invoices.proforma_conversion_comment_format', '%comment');
             $comment = str_replace(
                 array(
