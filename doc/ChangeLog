@@ -248,6 +248,9 @@ version 26-git (????-??-??):
   - enhancement: new ticket message form: allow to select which customer mails should be used
     to send them submitted reply [chilan]
   - improvement: search customers by non-empty ten/vat reg no. [chilan]
+  - improvement: 'phpui.supported_customer_contact_types' configuration variable controls
+    what customer contact types are supported by system (by default all contact types
+    which are implemented) [chilan]
 
 version 25.0 (2020-05-15):
 
