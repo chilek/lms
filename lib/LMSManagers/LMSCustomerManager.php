@@ -1132,7 +1132,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         case 'balance_date':
                             break;
                         case 'ten':
-                            $searchargs[] = "REPLACE(REPLACE(ten, '-', ''), ' ', '') ?LIKE? " . $this->db->Escape('%' . preg_replace('/[\- ]/', '', $value) . '%');
+                            if ($value == '*') {
+                                $searchargs[] = "ten <> ''";
+                            } else {
+                                $searchargs[] = "REPLACE(REPLACE(ten, '-', ''), ' ', '') ?LIKE? " . $this->db->Escape('%' . preg_replace('/[\- ]/', '', $value) . '%');
+                            }
                             break;
                         case 'karma':
                             if (intval($value)) {
