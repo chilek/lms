@@ -157,7 +157,8 @@
 				<input type="checkbox" id="non-empty-ten">
 				<span>{trans("non-empty")}</span>
 			</label>
-			<input type="hidden" name="search[ten]" value="*">
+			<input type="hidden" name="search[ten]" id="search-non-empty-ten"
+				value="*"{if $search.ten != '*'} disabled{/if}>
 		</TD>
 	</TR>
 	<TR>
@@ -493,6 +494,7 @@
 
 		$('#non-empty-ten').change(function() {
 			$('#search-ten').prop('disabled', $(this).prop('checked'));
+			$('#search-non-empty-ten').prop('disabled', !$(this).prop('checked'));
 		});
 	});
 
