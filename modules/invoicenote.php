@@ -155,16 +155,10 @@ $layout['pagetitle'] = trans('Credit Note for Invoice: $a', $ntempl);
 
 switch ($action) {
     case 'deletepos':
-        if ($invoice['closed']) {
-            break;
-        }
         $contents[$_GET['itemid']]['deleted'] = true;
         break;
 
     case 'recoverpos':
-        if ($invoice['closed']) {
-            break;
-        }
         $contents[$_GET['itemid']]['deleted'] = false;
         break;
 

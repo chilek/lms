@@ -291,9 +291,7 @@
 				{$itemid}.
 			</TD>
 			<TD>
-				{if $refdoc.closed}
-					{$item.name}
-				{elseif $item.deleted}
+				{if $item.deleted}
 					<INPUT TYPE="hidden" VALUE="{$item.name|escape}" NAME="name[{$itemid}]">{$item.name}
 				{else}
 					<INPUT TYPE="text" VALUE="{$item.name|escape}" NAME="name[{$itemid}]" SIZE="48" style="width: 100%">
@@ -303,15 +301,7 @@
 				{/if}
 			</TD>
 			<TD>
-				{if $refdoc.closed}
-					{if $item.taxcategory}
-						<span {tip text=$_TAX_CATEGORIES[$item.taxcategory].description}>
-							({sprintf('%02d', $item.taxcategory)}) {$_TAX_CATEGORIES[$item.taxcategory].label}
-						</span>
-					{else}
-						{trans("- none -")}
-					{/if}
-				{elseif $item.deleted}
+				{if $item.deleted}
 					<INPUT TYPE="hidden" VALUE="{$item.taxcategory}" NAME="taxcategory[{$itemid}]">
 					{if $item.taxcategory}
 						<span {tip text=$_TAX_CATEGORIES[$item.taxcategory].description}>
@@ -326,18 +316,14 @@
 				{/if}
 			</TD>
 			<TD class="nobr">
-				{if $refdoc.closed}
-					{$item.prodid}
-				{elseif $item.deleted}
+				{if $item.deleted}
 					<INPUT TYPE="hidden" VALUE="{$item.prodid}" NAME="prodid[{$itemid}]">{$item.prodid}
 				{else}
 					<INPUT TYPE="text" VALUE="{$item.prodid}" NAME="prodid[{$itemid}]" SIZE="6">
 				{/if}
 			</TD>
 			<TD>
-				{if $refdoc.closed}
-					{$item.count|string_format:"%.3f"}<BR>{$item.content}
-				{elseif $item.deleted}
+				{if $item.deleted}
 					<INPUT TYPE="hidden" VALUE="{$item.count}" NAME="count[{$itemid}]">{$item.count|string_format:"%.3f"}
 					<INPUT TYPE="hidden" VALUE="{$item.content}" NAME="content[{$itemid}]">{$item.content}
 				{else}
@@ -346,9 +332,7 @@
 				{/if}
 			</TD>
 			<TD class="text-right nobr">
-				{if $refdoc.closed}
-					{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f%%"}{else}{if $item.vdiscount != 0}{$item.vdiscount|string_format:"%.2f"}{/if}{/if}
-				{elseif $item.deleted}
+				{if $item.deleted}
 					<INPUT TYPE="hidden" VALUE="{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f"}{else}{if $item.vdiscount != 0}{$item.vdiscount|string_format:"%.2f"}{/if}{/if}" NAME="discount[{$itemid}]">
 					<INPUT TYPE="hidden" VALUE="{if $item.pdiscount != 0}{$smarty.const.DISCOUNT_PERCENTAGE}{else}{if $item.vdiscount != 0}{$smarty.const.DISCOUNT_AMOUNT}{/if}{/if}" NAME="discount_type[{$itemid}]">
 					{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f%%"}{else}{if $item.vdiscount != 0}{$item.vdiscount|money_format}{/if}{/if}
@@ -362,9 +346,7 @@
 				{/if}
 			</TD>
 			<TD class="text-right nobr">
-				{if $refdoc.closed}
-					{$item.valuenetto|money_format}
-				{elseif $item.deleted}
+				{if $item.deleted}
 					<INPUT TYPE="hidden" VALUE="{$item.valuenetto}" NAME="valuenetto[{$itemid}]">{$item.valuenetto|money_format}
 				{else}
 					<INPUT TYPE="text" VALUE="{$item.valuenetto|string_format:"%.2f"}" NAME="valuenetto[{$itemid}]" SIZE="6">
@@ -374,9 +356,7 @@
 				{/if}
 			</TD>
 			<TD class="text-right nobr">
-				{if $refdoc.closed}
-					{$item.tax}
-				{elseif $item.deleted}
+				{if $item.deleted}
 					<INPUT TYPE="hidden" VALUE="{$item.taxid}" NAME="taxid[{$itemid}]">{$item.tax}
 				{else}
 					<SELECT size="1" name="taxid[{$itemid}]" {tip text="Select Tax rate"}>
@@ -387,9 +367,7 @@
 				{/if}
 			</TD>
 			<TD class="text-right nobr">
-				{if $refdoc.closed}
-					{$item.valuebrutto|money_format}
-				{elseif $item.deleted}
+				{if $item.deleted}
 					<INPUT TYPE="hidden" VALUE="{if !empty($item.valuebrutto)}{$item.valuebrutto}{/if}" NAME="valuebrutto[{$itemid}]">{if !empty($item.valuebrutto)}{$item.valuebrutto|money_format}{/if}
 				{else}
 					<INPUT TYPE="text" VALUE="{if !empty($item.valuebrutto)}{$item.valuebrutto|string_format:"%.2f"}{/if}" NAME="valuebrutto[{$itemid}]" SIZE="6"><BR>
@@ -399,8 +377,7 @@
 				{/if}
 			</TD>
 			<TD class="nobr">
-				{if $refdoc.closed}
-				{elseif $item.deleted}
+				{if $item.deleted}
 					{button type="link" icon="recover" tip="Recover this item" href="?m={$layout.module}&action=recoverpos&itemid={$itemid}"}
 				{else}
 					{button type="link" icon="delete" tip="Remove this item" href="?m={$layout.module}&action=deletepos&itemid={$itemid}"}
