@@ -551,6 +551,9 @@ class SYSLOG
                     $data['value'] = $data['value'];
                 }
                 break;
+            case 'twofactorauthsecretkey':
+                $data['value'] = '***';
+                break;
             default:
                 if (strpos($data['name'], 'chkconsent') === 0) {
                     $data['value'] = !empty($data['value']) ? $data['value'] = date('Y.m.d', $data['value']) : $data['value'];
