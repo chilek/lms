@@ -163,7 +163,7 @@
                 </SELECT>
             </label>
             <label class="nobr">
-                <input type="text" name="cid" value="{$filter.cid}" placeholder="{trans("Customer ID:")}" onChange="document.filter.submit();">
+                <input type="text" name="cid" value="{if !empty($filter.cid)}{$filter.cid}{/if}" placeholder="{trans("Customer ID:")}" onChange="document.filter.submit();">
             </label>
             <label class="nobr">
                 <input type="text" name="subject" value="{$filter.subject}" placeholder="{trans("Subject:")}" onChange="document.filter.submit();">
