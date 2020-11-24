@@ -37,6 +37,7 @@ $parameters = array(
     'use-html' => null,
     'prefer-html' => null,
     'imap' => null,
+    'check-mail' => null,
 );
 
 $long_to_shorts = array();
@@ -224,6 +225,7 @@ $stderr = fopen('php://stderr', 'w');
 
 $prefer_html = isset($options['prefer-html']);
 $use_html = isset($options['use-html']) || $prefer_html;
+$check_mail = isset($options['check-mail']);
 
 define('MODE_FILE', 1);
 define('MODE_IMAP', 2);
@@ -596,12 +598,13 @@ while (isset($buffer) || $postid !== false) {
         }
 
         // find queue ID if not specified
-        if (!$queue && (!empty($toemails) || !empty($ccemails))) {
+        if ((!$queue || $check_mail) && (!empty($toemails) || !empty($ccemails))) {
+            $queueid = $queue;
             $queue = $DB->GetRow(
                 "SELECT id, email FROM rtqueues WHERE email IN ? LIMIT 1",
                 array(array_merge(array_keys($toemails), array_keys($ccemails)))
             );
-            if (!empty($queue)) {
+            if (!empty($queue) && (!$check_mail || $queue['id'] == $queueid)) {
                 $_ccemails = array();
                 foreach ($ccemails as $ccaddress => $ccdisplay) {
                     if ($ccaddress != $queue['email']) {
@@ -610,6 +613,8 @@ while (isset($buffer) || $postid !== false) {
                 }
                 $ccemails = $_ccemails;
                 $queue = $queue['id'];
+            } else {
+                $queue = 0;
             }
         }
 
