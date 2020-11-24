@@ -561,6 +561,10 @@ while (isset($buffer) || $postid !== false) {
             }
         }
 
+        if ($prev_tid) {
+            $queue = $LMS->GetQueueByTicketId($prev_tid);
+        }
+
         $mail_mh_subject = $mh_subject;
         $reqcustid = 0;
         $requserid = null;

@@ -148,6 +148,8 @@ if (isset($_POST['message'])) {
 
         $smtp_options = $LMS->GetRTSmtpOptions();
 
+        $customer_notification_mail_subject = ConfigHelper::getConfig('phpui.helpdesk_customer_notification_mail_subject', '[RT#%tid] %subject');
+
         foreach ($tickets as $ticketid) {
             $queue = $LMS->GetQueueByTicketId($ticketid);
             if ($message['queueid'] != -100 && $message['queueid'] != $queue['id']) {
@@ -192,7 +194,11 @@ if (isset($_POST['message'])) {
                 $message['mailfrom'] = $mailfrom;
                 $headers['Date'] = date('r');
                 $headers['From'] = $mailfname . ' <' . $message['mailfrom'] . '>';
-                $headers['Subject'] = $message['subject'];
+                $headers['Subject'] = str_replace(
+                    array('%tid', '%subject'),
+                    array($ticketid, $message['subject']),
+                    $customer_notification_mail_subject
+                );
                 $headers['Reply-To'] = $headers['From'];
 
                 if ($message['contenttype'] == 'text/html') {
