@@ -96,6 +96,8 @@ lms-rtparser.php
     --use-html                  use html content type and load it to database if it's present
     --imap
                                 fetch posts using imap protocol
+    --check-mail
+                                check if mail from 'To' header matches selected queue mail address
 
 EOF;
     exit(0);
