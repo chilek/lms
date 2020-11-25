@@ -137,6 +137,17 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
     $SMARTY->assign('nodelinktechnology', $SESSION->get('nodelinktechnology'));
     $SMARTY->assign('nodelinkspeed', $SESSION->get('nodelinkspeed'));
 
+    $SMARTY->assign(
+        'targetnetdevs',
+        $DB->GetAll(
+            'SELECT n.name, n.id, n.producer, n.model, va.location, n.ports
+            FROM netdevices n
+            LEFT JOIN vaddresses va ON va.id = n.address_id
+            WHERE n.id <> ' . intval($id)
+            . ' ORDER BY name'
+        )
+    );
+
     $hook_data = $LMS->executeHook(
         'netdevinfo_before_display',
         array(

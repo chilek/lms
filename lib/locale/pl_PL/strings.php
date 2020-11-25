@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$_LANG['- select target network device -'] = '- wybierz docelowe urządzenie sieciowe -';
+
 $_LANG['(customer/sms)'] = '(klient/SMS)';
 $_LANG['(customer/scans)'] = '(klient/skany)';
 
