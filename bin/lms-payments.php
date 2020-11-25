@@ -1534,11 +1534,28 @@ foreach ($assigns as $assign) {
                     if ($assign['invoice'] == DOC_DNOTE) {
                         $tmp_itemid = 0;
                     } else {
-                        $tmp_itemid = $DB->GetOne(
-                            "SELECT itemid FROM invoicecontents
-						WHERE tariffid = ? AND value = ? AND docid = ? AND description = ?",
-                            array($assign['tariffid'], str_replace(',', '.', $value / $assign['count']), $invoices[$cid], $sdesc)
-                        );
+                        if (empty($assign['tariffid'])) {
+                            $tmp_itemid = $DB->GetOne(
+                                "SELECT itemid FROM invoicecontents
+                                WHERE tariffid IS NULL AND value = ? AND docid = ? AND description = ?",
+                                array(
+                                    str_replace(',', '.', $value / $assign['count']),
+                                    $invoices[$cid],
+                                    $sdesc
+                                )
+                            );
+                        } else {
+                            $tmp_itemid = $DB->GetOne(
+                                "SELECT itemid FROM invoicecontents
+                                WHERE tariffid = ? AND value = ? AND docid = ? AND description = ?",
+                                array(
+                                    $assign['tariffid'],
+                                    str_replace(',', '.', $value / $assign['count']),
+                                    $invoices[$cid],
+                                    $sdesc
+                                )
+                            );
+                        }
                     }
 
                     if ($tmp_itemid != 0) {
