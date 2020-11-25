@@ -105,7 +105,7 @@
 			{if !$ticket.ownerid && Auth::GetCurrentUser() != $ticket.verifierid}
 				{button type="link" icon="owner" class="ticket-assign-to-me" tip="Assign to me as owner" href="?m=rtqueueview&ticketid={$ticket.id}&action=assign"}
 			{/if}
-			{if $ticket.priority != $smaty.const.RT_PRIORITY_NORMAL}
+			{if $ticket.state != $smarty.const.RT_RESOLVED && $ticket.priority != $smaty.const.RT_PRIORITY_NORMAL}
 				{button type="link" icon="priority" class="ticket-reset-priority" tip="Reset ticket priority" href="?m=rtticketedit&id={$ticket.id}&action=resetpriority"}
 			{/if}
 			{if ($ticket.state != $smarty.const.RT_RESOLVED && !$ticket.verifierid && Auth::GetCurrentUser() != $ticket.ownerid)}
