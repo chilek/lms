@@ -254,6 +254,8 @@ version 26-git (????-??-??):
   - improvement: 'phpui.helpdesk_customer_notification_mail_subject' allows to format message subject
     of post sent to customer during new ticket message creation
     (default: '[RT#%tid] %subject') [chilan]
+  - improvement: replaced choose target network device selection popup by lms-ui-advanced-select
+    ui control [chilan]
 
 version 25.0 (2020-05-15):
 
