@@ -1059,7 +1059,7 @@ $(function() {
 
 	init_multiselects('select.lms-ui-multiselect');
 
-	$(document).on('mouseup', '[data-target-url]',
+	$(document).on('dblclick mouseup', '[data-target-url]',
 		function(e) {
 			var elem = $(this);
 			var target = $(e.target);
@@ -1067,7 +1067,10 @@ $(function() {
 			var link = target.closest('a');
 			var ifLink = (link.length && elem.find(link).length > 0);
 			var ifButton = elem.find(target.closest('button')).length > 0;
-			var ifNewWindow = (e.which == 2 || e.ctrlKey);
+			var ifNewWindow = false;
+			if (e.type == 'mouseup' && (e.which == 2 || e.ctrlKey)) {
+				ifNewWindow = true;
+			}
 			var column = target.closest('td,.lms-ui-tab-table-column');
 
 			if (ifButton || (ifLink && link.attr('href')) ||
@@ -1083,7 +1086,9 @@ $(function() {
 				window.open(url);
 				sessionStorage.setItem('tabId', lmsTabId);
 			} else {
-				location.href = url;
+				if (e.type == 'dblclick') {
+					location.href = url;
+				}
 			}
 		}
 	);
