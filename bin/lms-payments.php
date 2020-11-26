@@ -478,6 +478,7 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 		a.paytype AS a_paytype, a.numberplanid, a.attribute,
 		p.name AS promotion_name, ps.name AS promotion_schema_name, ps.length AS promotion_schema_length,
 		d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
+		t.flags,
 		(CASE WHEN a.liabilityid IS NULL THEN t.type ELSE l.type END) AS tarifftype,
 		(CASE WHEN a.liabilityid IS NULL THEN t.name ELSE l.name END) AS name,
 		(CASE WHEN a.liabilityid IS NULL THEN t.taxid ELSE l.taxid END) AS taxid,
@@ -954,6 +955,91 @@ if ($prefer_netto) {
     $taxeslist = $LMS->GetTaxes();
 }
 
+// find assignments with tariff reward/penalty flag
+// and check if customer applies to this
+$reward_to_check = array();
+$reward_period_to_check = array();
+foreach ($assigns as $assign) {
+    $cid = $assign['customerid'];
+    if (isset($reward_to_check[$cid]) || ($assign['flags'] & TARIFF_FLAG_REWARD_PENALTY)) {
+        $reward_to_check[$cid] = $cid;
+    }
+    if ($reward_to_check[$cid]) {
+        if (!isset($reward_period_to_check[$cid])) {
+            $reward_period_to_check[$cid] = DAILY;
+        }
+        if ($assign['period'] >= WEEKLY && $assign['period'] <= YEARLY) {
+            $reward_period_to_check[$cid] = max($reward_period_to_check[$cid], $assign['period']);
+        } elseif ($assign['period'] == HALFYEARLY && $reward_period_to_check[$cid] < YEARLY) {
+            $reward_period_to_check[$cid] = HALFYEARLY;
+        }
+    }
+}
+
+$period_end = mktime(0, 0, 0, date('m', $currtime), date('d', $currtime), date('Y', $currtime));
+$period_starts = array(
+    DAILY => strtotime('yesterday', $period_end),
+    WEEKLY => strtotime('1 week ago', $period_end),
+    MONTHLY => strtotime('1 month ago', $period_end),
+    QUARTERLY => strtotime('3 months ago', $period_end),
+    HALFYEARLY => strtotime('6 months ago', $period_end),
+    YEARLY => strtotime('1 year ago', $period_end),
+);
+
+$rewards = array();
+foreach ($reward_to_check as $cid) {
+    $period_start = $period_starts[$reward_period_to_check[$cid]];
+    $balance = $LMS->GetCustomerBalance($cid, $period_start);
+    if ($balance < 0) {
+        $rewards[$cid] = false;
+        continue;
+    }
+    $history = $DB->GetAll(
+        'SELECT (CASE WHEN d.id IS NULL THEN c.time ELSE c.time + d.paytime * 86400 END) AS time,
+            d.id AS docid,
+            (c.value * c.currencyvalue) AS value
+        FROM cash c
+        LEFT JOIN documents d ON d.id = c.docid AND d.type IN ?
+        WHERE c.customerid = ?
+            AND c.time > ? AND c.time < ?
+        ORDER BY time',
+        array(
+            array(DOC_INVOICE, DOC_CNOTE, DOC_DNOTE, DOC_INVOICE_PRO),
+            $cid,
+            $period_start,
+            $period_end,
+        )
+    );
+    $rewards[$cid] = true;
+    if (!empty($history)) {
+        foreach ($history as &$record) {
+            if (!empty($record['docid'])) {
+                $record['time'] = mktime(
+                    23,
+                    59,
+                    59,
+                    date('m', $record['time']),
+                    date('d', $record['time']),
+                    date('Y', $record['time'])
+                ) + 1;
+            }
+        }
+        unset($record);
+        usort($history, function ($a, $b) {
+            return $a['time'] - $b['time'];
+        });
+        foreach ($history as $record) {
+            $balance += $record['value'];
+            if (empty($record['docid'])) {
+                continue;
+            }
+            if ($balance < 0) {
+                $rewards[$cid] = false;
+            }
+        }
+    }
+}
+
 // determine currency values for assignments with foreign currency
 // if payments.prefer_netto = true, use value netto+tax
 foreach ($assigns as &$assign) {
@@ -993,6 +1079,12 @@ foreach ($assigns as $assign) {
 
     $assign['value'] = str_replace(',', '.', floatval($assign['value']));
     if (empty($assign['value'])) {
+        continue;
+    }
+
+    if (($assign['flags'] & TARIFF_FLAG_REWARD_PENALTY)
+        && ($assign['value'] < 0 && !$rewards[$cid]
+            || $assign['value'] > 0 && $rewards[$cid])) {
         continue;
     }
 

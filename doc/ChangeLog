@@ -256,6 +256,7 @@ version 26-git (????-??-??):
     (default: '[RT#%tid] %subject') [chilan]
   - improvement: replaced choose target network device selection popup by lms-ui-advanced-select
     ui control [chilan]
+  - enhancement: implemented reward/penalty flag for tariffs [chilan]
 
 version 25.0 (2020-05-15):
 
