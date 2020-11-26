@@ -257,6 +257,7 @@ version 26-git (????-??-??):
   - improvement: replaced choose target network device selection popup by lms-ui-advanced-select
     ui control [chilan]
   - enhancement: implemented reward/penalty flag for tariffs [chilan]
+  - enhancement: added type property to network device models [chilan]
 
 version 25.0 (2020-05-15):
 
