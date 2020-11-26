@@ -203,7 +203,7 @@ $allowed_customer_status =
 Utils::determineAllowedCustomerStatus(
     isset($options['customer-status'])
         ? $options['customer-status']
-        : ConfigHelper::getConfig($config_section . '.allowed_customer_status', ''),
+        : ConfigHelper::getConfig('payments.allowed_customer_status', ''),
     -1
 );
 
