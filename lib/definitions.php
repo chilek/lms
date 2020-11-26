@@ -711,6 +711,9 @@ define('SERVICE_PHONE', 4);
 define('SERVICE_TV', 5);
 define('SERVICE_TRANSMISSION', 6);
 
+// Tariff flags
+define('TARIFF_FLAG_REWARD_PENALTY', 1);
+
 // VoIP call types
 define('CALL_INCOMING', 1);
 define('CALL_OUTGOING', 2);

@@ -49,6 +49,14 @@
             				<OPTION value="{$key}"{if $tariff.period == $key} SELECTED{/if}>{$item}</OPTION>
 			            	{/if}{/foreach}
 			            </SELECT>
+
+						<label>
+							<input type="checkbox" name="tariff[flags][{$smarty.const.TARIFF_FLAG_REWARD_PENALTY}]"
+								value="{$smarty.const.TARIFF_FLAG_REWARD_PENALTY}"
+								{if isset($tariff.flags[$smarty.const.TARIFF_FLAG_REWARD_PENALTY])}checked{/if}
+								{tip text="If tariff value is negative then this is effectively penalty flag, otherwise it is reward flag"}>
+							{trans("reward/penalty")}
+						</label>
 				    </TD>
 				</TR>
 

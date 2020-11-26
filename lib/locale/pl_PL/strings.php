@@ -5004,3 +5004,8 @@ $_LANG['Are you sure, you want to permanently remove all selected tickets?'] = '
 $_LANG['Message #$a'] = 'Wiadomość #$a';
 
 $_LANG['non-empty'] = 'niepusty';
+
+$_LANG['reward/penalty'] = 'nagroda/kara';
+$_LANG['If tariff value is negative then this is effectively penalty flag, otherwise it is reward flag'] = 'Jeśli wartość taryfy jest ujemna oznacza efektywnie karę, a w przeciwnym wypadku nagrodę';
+$_LANG['reward'] = 'nagroda';
+$_LANG['penalty'] = 'kara';
