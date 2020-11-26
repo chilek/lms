@@ -199,6 +199,20 @@ $customergroups = ConfigHelper::getConfig('payments.customergroups', '', true);
 $force_telecom_service_flag = ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.force_telecom_service_flag', 'true'));
 $check_customer_vat_payer_flag_for_telecom_service = ConfigHelper::checkConfig('invoices.check_customer_vat_payer_flag_for_telecom_service');
 
+$allowed_customer_status =
+Utils::determineAllowedCustomerStatus(
+    isset($options['customer-status'])
+        ? $options['customer-status']
+        : ConfigHelper::getConfig($config_section . '.allowed_customer_status', ''),
+    -1
+);
+
+if (empty($allowed_customer_status)) {
+    $customer_status_condition = '';
+} else {
+    $customer_status_condition = ' AND c.status IN (' . implode(',', $allowed_customer_status) . ')';
+}
+
 function localtime2()
 {
     global $fakedate;
@@ -452,13 +466,6 @@ if (!empty($assigns)) {
         }
     }
 }
-
-
-            $penalty_off = "UPDATE assignments SET suspended = 1 WHERE id = ?";
-            $DB->Execute($penalty_off, array($aid));
-        }
-    }
-echo "Penalties done, proceeding:\n";
 
 // let's go, fetch *ALL* assignments in given day
 $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_address_id,
