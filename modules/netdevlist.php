@@ -46,35 +46,42 @@ if ($api) {
     } else {
         $s = $_GET['s'];
     }
-        $SESSION->save('ndfs', $s);
+    $SESSION->save('ndfs', $s);
 
     if (!isset($_GET['p'])) {
         $SESSION->restore('ndfp', $p);
     } else {
         $p = $_GET['p'];
     }
-        $SESSION->save('ndfp', $p);
+    $SESSION->save('ndfp', $p);
 
     if (!isset($_GET['n'])) {
         $SESSION->restore('ndfn', $n);
     } else {
         $n = $_GET['n'];
     }
-        $SESSION->save('ndfn', $n);
+    $SESSION->save('ndfn', $n);
+
+    if (!isset($_GET['type'])) {
+        $SESSION->restore('ndftype', $type);
+    } else {
+        $type = $_GET['type'];
+    }
+    $SESSION->save('ndftype', $type);
 
     if (!isset($_GET['producer'])) {
         $SESSION->restore('ndfproducer', $producer);
     } else {
         $producer = $_GET['producer'];
     }
-        $SESSION->save('ndfproducer', $producer);
+    $SESSION->save('ndfproducer', $producer);
 
     if (!isset($_GET['model'])) {
         $SESSION->restore('ndfmodel', $model);
     } else {
         $model = $_GET['model'];
     }
-        $SESSION->save('ndfmodel', $model);
+    $SESSION->save('ndfmodel', $model);
 
     if (empty($model)) {
         $model = -1;
@@ -83,8 +90,8 @@ if ($api) {
         $producer = -1;
     }
 
-        $producers = $DB->GetCol("SELECT DISTINCT UPPER(TRIM(producer)) AS producer FROM netdevices WHERE producer <> '' ORDER BY producer");
-        $models = $DB->GetCol("SELECT DISTINCT UPPER(TRIM(model)) AS model FROM netdevices WHERE model <> ''"
+    $producers = $DB->GetCol("SELECT DISTINCT UPPER(TRIM(producer)) AS producer FROM netdevices WHERE producer <> '' ORDER BY producer");
+    $models = $DB->GetCol("SELECT DISTINCT UPPER(TRIM(model)) AS model FROM netdevices WHERE model <> ''"
         . ($producer != '-1' ? " AND UPPER(TRIM(producer)) = " . $DB->Escape($producer == '-2' ? '' : $producer) : '') . " ORDER BY model");
     if (!preg_match('/^-[0-9]+$/', $model) && !in_array($model, $models)) {
         $SESSION->save('ndfmodel', '-1');
@@ -99,6 +106,7 @@ if ($api) {
         'status' => $s,
         'project' => $p,
         'netnode' => $n,
+        'type' => $type,
         'producer' => $producer,
         'model' => $model,
         'count' => true,
@@ -129,6 +137,7 @@ if (!$api) {
     $listdata['status'] = $s;
     $listdata['invprojectid'] = $p;
     $listdata['netnode'] = $n;
+    $listdata['type'] = $type;
     $listdata['producer'] = $producer;
     $listdata['model'] = $model;
 }

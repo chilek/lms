@@ -647,6 +647,11 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                         $where[] = 'd.netnodeid IS NULL';
                     }
                     break;
+                case 'type':
+                    if (!empty($type)) {
+                        $where[] = 'm.type = ' . intval($type);
+                    }
+                    break;
                 case 'producer':
                 case 'model':
                     if (!preg_match('/^-[0-9]+$/', $value)) {

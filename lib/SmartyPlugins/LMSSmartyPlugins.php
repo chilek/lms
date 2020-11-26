@@ -1051,7 +1051,8 @@ class LMSSmartyPlugins
             $options .= '<option value="' . $item['id'] . '"' . ($selected == $item['id'] ? ' selected' : '') . '>' . trans($item['name']) . '</option>';
         }
         return '<select name="' . $elemname . '"' . (isset($params['id']) ? ' id="' . $params['id'] . '"' : '')
-            . ' ' . self::tipFunction(array('text' => $tip, 'trigger' => $trigger), $template) . '>
+            . ' ' . self::tipFunction(array('text' => $tip, 'trigger' => $trigger), $template)
+            . (isset($params['onchange']) ? ' onChange="' . $params['onchange'] . '"' : '') . '>
 			<option value=""' . (!$selected ? ' selected' : '') . '> ' . trans('<!netdevtype>- undefined -') . '</option>'
             . $options
             . '</select>';

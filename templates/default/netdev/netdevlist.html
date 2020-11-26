@@ -70,6 +70,8 @@
 				<OPTION VALUE="{$netnode.id}"{if $listdata.netnode == $netnode.id} selected{/if}>{$netnode.name}</OPTION>
 				{/foreach}
 			</SELECT>
+			{trans("Type")}
+			{networkDeviceTypes elemname="type" selected=$listdata.type onchange="document.choosefilter.submit();"}
 			{trans("Producer:")}
 			<SELECT SIZE="1" NAME="producer" ONCHANGE="document.choosefilter.submit();">
 				<OPTION VALUE="-1"{if $listdata.producer == -1} selected{/if}>- {trans("all")} -</OPTION>
