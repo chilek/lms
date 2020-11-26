@@ -41,7 +41,12 @@ if (!isset($_GET['page'])) {
 }
 
 if ($pid) {
-    $producerinfo = $DB->GetRow('SELECT p.id , p.alternative_name FROM netdeviceproducers p WHERE p.id = ?', array($pid));
+    $producerinfo = $DB->GetRow(
+        'SELECT p.id , p.alternative_name
+        FROM netdeviceproducers p
+        WHERE p.id = ?',
+        array($pid)
+    );
 } else {
     $producerinfo = array();
 }
@@ -226,6 +231,7 @@ function cancel_model()
     $obj->assign("id_model", "value", "");
     $obj->assign("id_modelname", "value", "");
     $obj->assign("id_model_alternative_name", "value", "");
+    $obj->assign("id_model_type", "value", "");
     $obj->script("removeClass(xajax.$('id_model_name'),'alert');");
     $obj->script("xajax.$('div_modeledit').style.display='none';");
 
@@ -241,6 +247,7 @@ function add_model()
     $obj->assign("id_model_action_name", "innerHTML", trans("New model"));
     $obj->assign("id_model", "value", "");
     $obj->assign("id_model_name", "value", "");
+    $obj->assign("id_model_type", "value", "");
     $obj->assign("id_model_alternative_name", "value", "");
     $obj->script("xajax.$('id_model_name').focus();");
 
@@ -273,6 +280,7 @@ function edit_model($id)
     $obj->assign("id_model", "value", $model['id']);
     $obj->assign("id_model_name", "value", $model['name']);
     $obj->assign("id_model_alternative_name", "value", $model['alternative_name']);
+    $obj->script('$("#id_model_type").val("' . $model['type'] . '")');
     $obj->script("$('#id_model_name').focus();");
     $SMARTY->assign('restore', 1);
     $SMARTY->assign('attachmenttype', "netdevmodelid");
@@ -348,9 +356,10 @@ function save_model($forms)
     } else {
         if ($formid) {
             $DB->Execute(
-                'UPDATE netdevicemodels SET name = ?, alternative_name = ? WHERE id = ?',
+                'UPDATE netdevicemodels SET name = ?, alternative_name = ?, type = ? WHERE id = ?',
                 array($form['name'],
                     ($form['alternative_name'] ? $form['alternative_name'] : null),
+                    $form['type'] ?: null,
                     $formid,
                 )
             );
@@ -358,10 +367,11 @@ function save_model($forms)
             $obj->script("self.location.href='?m=netdevmodels&page=1&p_id=$pid';");
         } else {
             $DB->Execute(
-                'INSERT INTO netdevicemodels (netdeviceproducerid, name, alternative_name) VALUES (?, ?, ?)',
+                'INSERT INTO netdevicemodels (netdeviceproducerid, name, alternative_name, type) VALUES (?, ?, ?, ?)',
                 array($pid,
                     $form['name'],
                     ($form['alternative_name'] ? $form['alternative_name'] : null),
+                    $form['type'] ?: null,
                 )
             );
             $form['id'] = $DB->GetLastInsertID('netdevicemodels');

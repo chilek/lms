@@ -977,14 +977,18 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
     {
         if (!empty($producerid)) {
             return $this->db->GetAll(
-                'SELECT id, name FROM netdevicemodels ORDER BY name ASC',
+                'SELECT m.id, m.name, m.type, t.name AS typename
+                FROM netdevicemodels m
+                LEFT JOIN netdevicetypes t ON t.id = m.type
+                ORDER BY m.name ASC',
                 array($producerid)
             );
         }
 
-        $models = $this->db->GetAll('SELECT m.id, p.id AS producerid, m.name
+        $models = $this->db->GetAll('SELECT m.id, p.id AS producerid, m.name, m.type, t.name AS typename
 			FROM netdevicemodels m
 			JOIN netdeviceproducers p ON p.id = m.netdeviceproducerid
+			LEFT JOIN netdevicetypes t ON t.id = m.type
 			ORDER BY p.id, m.name');
         if (empty($models)) {
             return array();
@@ -1008,9 +1012,10 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         }
 
         $list = $this->db->GetAll(
-            'SELECT m.id, m.name, m.alternative_name,
+            'SELECT m.id, m.name, m.alternative_name, m.type, t.name AS typename,
 			(SELECT COUNT(i.id) FROM netdevices i WHERE i.netdevicemodelid = m.id) AS netdevcount
 			FROM netdevicemodels m
+			LEFT JOIN netdevicetypes t ON t.id = m.type
 			WHERE m.netdeviceproducerid = ?
 			ORDER BY m.name ASC',
             array($pid)

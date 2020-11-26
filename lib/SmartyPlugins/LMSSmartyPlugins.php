@@ -1028,4 +1028,32 @@ class LMSSmartyPlugins
 			</div>
         ';
     }
+
+    public static function networkDeviceTypesFunction(array $params, $template)
+    {
+        static $types = array();
+
+        if (empty($types)) {
+            $DB = LMSDB::getInstance();
+            $types = Localisation::arraySort(
+                $DB->GetAll('SELECT id, name FROM netdevicetypes'),
+                'name'
+            );
+        }
+
+        $elemname = $params['elemname'];
+        $selected = isset($params['selected']) && !empty($params['selected']) ? $params['selected'] : 0;
+        $tip = isset($params['tip']) ? $params['tip'] : trans('Select network device type');
+        $trigger = isset($params['trigger']) ? $params['trigger'] : 'netdevtype';
+
+        $options = '';
+        foreach ($types as $item) {
+            $options .= '<option value="' . $item['id'] . '"' . ($selected == $item['id'] ? ' selected' : '') . '>' . trans($item['name']) . '</option>';
+        }
+        return '<select name="' . $elemname . '"' . (isset($params['id']) ? ' id="' . $params['id'] . '"' : '')
+            . ' ' . self::tipFunction(array('text' => $tip, 'trigger' => $trigger), $template) . '>
+			<option value=""' . (!$selected ? ' selected' : '') . '> ' . trans('<!netdevtype>- undefined -') . '</option>'
+            . $options
+            . '</select>';
+    }
 }
