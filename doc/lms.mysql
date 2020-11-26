@@ -104,6 +104,7 @@ DROP TABLE IF EXISTS nodes;
 DROP TABLE IF EXISTS netradiosectors;
 DROP TABLE IF EXISTS netdevices;
 DROP TABLE IF EXISTS netdevicemodels;
+DROP TABLE IF EXISTS netdevicetypes;
 DROP TABLE IF EXISTS netdeviceproducers;
 DROP TABLE IF EXISTS netnodes;
 DROP TABLE IF EXISTS invprojects;
@@ -1464,6 +1465,17 @@ CREATE TABLE netdeviceproducers (
 
 # --------------------------------------------------------
 #
+# Structure of table netdevicetypes
+#
+CREATE TABLE netdevicetypes (
+    id int(11) NOT NULL auto_increment,
+    name varchar(50) NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY netdevicetypes_name_ukey (name)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
 # Structure of table netdevicemodels
 #
 CREATE TABLE netdevicemodels (
@@ -1471,8 +1483,10 @@ CREATE TABLE netdevicemodels (
 	netdeviceproducerid int(11) NOT NULL,
 	name varchar(255) NOT NULL,
 	alternative_name varchar(255),
+	type int(11) DEFAULT NULL,
 	PRIMARY KEY (id),
 	FOREIGN KEY (netdeviceproducerid) REFERENCES netdeviceproducers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (type) REFERENCES netdevicetypes (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	UNIQUE (name, netdeviceproducerid)
 ) ENGINE=INNODB;
 
@@ -3728,6 +3742,18 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('mANT30 PA', NULL, 1),
 ('mANT30', NULL, 1);
 
+INSERT INTO netdevicetypes (name) VALUES
+('router'),
+('switch'),
+('antenna'),
+('access-point'),
+('PON olt'),
+('PON onu'),
+('PON splitter'),
+('GSM modem'),
+('DSL modem'),
+('power line adapter');
+
 INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('3391-A', 'SR71A', 2),
 ('AF-24', 'AIRFIBER 1.4GBPS+ BACKHAUL 24GHZ (SHIPPED AS SINGLES)', 2),
@@ -3874,4 +3900,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020112600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020112601');
