@@ -22,7 +22,8 @@
 				<div class="lms-ui-tab-table-wrapper col-6">
 					<div class="lms-ui-tab-table-wrapper col-2">
 						<div class="lms-ui-tab-table-column name">
-							{trans("Name:")}
+							<span>{trans("Name:")}</span>
+							<span>{trans("Model")}</span>
 						</div>
 						<div class="lms-ui-tab-table-column description">
 							{trans("Description:")}
@@ -61,15 +62,27 @@
 				<div class="lms-ui-tab-table-wrapper col-6">
 					<div class="lms-ui-tab-table-wrapper col-2">
 						<div class="lms-ui-tab-table-column name">
-							<i class="lms-ui-icon-netdev"></i>
-							<strong>{$customerdevice.name}</strong>
-							{if $customerdevice.location}<BR>
-								{if empty($customerdevice.location_city)}
-									{$customerdevice.location|truncate:60:"...":true}
-								{else}
-									{t a=$customerdevice.location|truncate:60:"...":true}$a (TERRIT){/t}
+							<span>
+								<i class="lms-ui-icon-netdev"></i>
+								<strong>{$customerdevice.name}</strong>
+							</span>
+							<span>
+								{if $customerdevice.producer}
+									{if $customerdevice.devtypename}
+										{trans($customerdevice.devtypename)}
+									{/if}
+									{$customerdevice.producer} {if $customerdevice.model}/ {$customerdevice.model}{/if}
 								{/if}
-							{/if}
+							</span>
+							<span>
+								{if $customerdevice.location}
+									{if empty($customerdevice.location_city)}
+										{$customerdevice.location|truncate:60:"...":true}
+									{else}
+										{t a=$customerdevice.location|truncate:60:"...":true}$a (TERRIT){/t}
+									{/if}
+								{/if}
+							</span>
 						</div>
 						<div class="lms-ui-tab-table-column description">
 							{$customerdevice.description|default:"-"}
