@@ -151,8 +151,7 @@ function save_producer($forms)
     $error = $hook_data['error'];
 
     if ($error) {
-        $obj->script("addClass(xajax.$('id_producername'),'alert');");
-        $obj->script("xajax.$('id_producername').focus();");
+        $obj->script('$("#id_producername").addClass("lms-ui-error").removeAttr("data-tooltip").attr("title", "' . $error['id_producername'] . '").focus();');
     } else {
         if ($form['id']) {
             $DB->Execute(
@@ -351,8 +350,7 @@ function save_model($forms)
     $error = $hook_data['error'];
 
     if ($error) {
-        $obj->script("addClass(xajax.$('id_model_name'),'alert');");
-        $obj->script("xajax.$('id_model_name').focus();");
+        $obj->script('$("#id_model_name").addClass("lms-ui-error").removeAttr("data-tooltip").attr("title", "' . $error['id_model_name'] . '").focus();');
     } else {
         if ($formid) {
             $DB->Execute(
