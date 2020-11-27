@@ -43,7 +43,7 @@ $this->Execute("
 $this->Execute(
     "INSERT INTO netdevicetypes (name)
         VALUES (?), (?), (?), (?), (?), (?), (?), (?), (?), (?)",
-    array('router', 'switch', 'antenna', 'access-point', 'PON olt', 'PON onu', 'PON splitter', 'GSM modem', 'DSL modem', 'power line adapter'),
+    array('router', 'switch', 'antenna', 'access-point', 'PON olt', 'PON onu', 'PON splitter', 'GSM modem', 'DSL modem', 'power line adapter')
 );
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020112601', 'dbversion'));
