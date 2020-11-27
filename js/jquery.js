@@ -1059,10 +1059,19 @@ $(function() {
 
 	init_multiselects('select.lms-ui-multiselect');
 
-	$(document).on('mouseup', '[data-target-url]',
+	$(document).on('mousedown mouseup', '[data-target-url]',
 		function(e) {
 			var elem = $(this);
 			var target = $(e.target);
+			if (e.type == 'mousedown') {
+				elem.data('mousedown', Date.now());
+				return;
+			} else {
+				if (Date.now() - parseInt(elem.data('mousedown')) >= 500) {
+					e.preventDefault();
+					return;
+				}
+			}
 			var url = $(this).attr('data-target-url');
 			var link = target.closest('a');
 			var ifLink = (link.length && elem.find(link).length > 0);
