@@ -132,6 +132,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                             downceil AS unitary_downceil,
                                             ROUND(t.downrate * a.count) AS downrate,
                                             downrate AS unitary_downrate,
+                                            t.flags,
                                             (CASE WHEN t.type IS NULL THEN l.type ELSE t.type END) AS tarifftype,
                                             (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END) AS unitary_value,
                                             a.count,
