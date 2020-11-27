@@ -5009,6 +5009,8 @@ $_LANG['reward/penalty'] = 'nagroda/kara';
 $_LANG['If tariff value is negative then this is effectively penalty flag, otherwise it is reward flag'] = 'Jeśli wartość taryfy jest ujemna oznacza efektywnie karę, a w przeciwnym wypadku nagrodę';
 $_LANG['reward'] = 'nagroda';
 $_LANG['penalty'] = 'kara';
+$_LANG['Reward'] = 'Nagroda';
+$_LANG['Penalty'] = 'Kara';
 
 $_LANG['Select network device type'] = 'Wybierz typ urządzenia sieciowego';
 $_LANG['<!netdevtype>- undefined -'] = '- nieokreślony -';
