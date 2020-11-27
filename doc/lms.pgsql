@@ -3778,12 +3778,13 @@ INSERT INTO netdevicetypes (name) VALUES
 ('switch'),
 ('antenna'),
 ('access-point'),
-('PON olt'),
-('PON onu'),
+('PON OLT'),
+('PON ONT'),
 ('PON splitter'),
 ('GSM modem'),
 ('DSL modem'),
-('power line adapter');
+('power line adapter'),
+('IPTV decoder');
 
 INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('3391-A', 'SR71A', 2),
