@@ -227,10 +227,10 @@
 			<A name="{$node.id}">
 			{if $node.lastonline}
 				{if ($smarty.now-$node.lastonline) > $lastonline_limit}
-					{capture assign="lastonline"}{tip a=$node.lastonlinedate text="Last online: \$a"}{/capture}
+					{capture assign="lastonline"}{t a=$node.lastonlinedate}Last online: $a{/t}{/capture}
 					{icon name="nodeoff" class="fa-fw" tip=$lastonline}
 				{else}
-					{capture assign="lastonline"}{tip a="on-line" text="Last online: \$a"}{/capture}
+					{capture assign="lastonline"}{t a="on-line"}Last online: $a{/t}{/capture}
 					{icon name="nodeon" class="fa-fw" tip=$lastonline}
 				{/if}
 			{else}
