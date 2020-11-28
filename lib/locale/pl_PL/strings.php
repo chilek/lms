@@ -1879,6 +1879,7 @@ $_LANG['Write down network address and select mask'] = 'Wpisz adres sieci i wybi
 $_LANG['Write (+R)'] = 'Zapis (+O)';
 $_LANG['Wrong discount value!'] = 'Błędna wartość rabatu!';
 $_LANG['Wrong password or login.'] = 'Złe hasło lub login.';
+$_LANG['The user has no assigned company.'] = 'Użytkownik nie ma przypisanej firmy.';
 $_LANG['www'] = 'WWW';
 $_LANG['half-yearly'] = 'półrocznie';
 $_LANG['half-yearly ($a)'] = 'półrocznie ($a)';
