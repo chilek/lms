@@ -55,7 +55,9 @@
 		</TD>
 		<TD class="lms-ui-buttons text-right nobr">
 			{button type="link" icon="lock" tip="{if $division.status}{trans("Unlock")}{else}{trans("Lock")}{/if}" href="?m=divisionedit&amp;id={$division.id}&amp;changestatus=1"}
-			{button type="link" icon="delete" tip="Delete" class="delete-division" href="?m=divisiondel&id={$division.id}"}
+			{if isset($division.unblock_delete)}
+				{button type="link" icon="delete" tip="Delete" class="delete-division" href="?m=divisiondel&id={$division.id}"}
+			{/if}
 			{button type="link" icon="clone" tip="Clone" class="clone-division" href="?m=divisionclone&id={$division.id}"}
 			{button type="link" icon="edit" tip="Edit" href="?m=divisionedit&id={$division.id}"}
 		</TD>

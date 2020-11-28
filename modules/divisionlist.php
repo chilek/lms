@@ -48,6 +48,15 @@ $params['limit'] = $limit;
 $divisionlist = $LMS->getDivisionList($params);
 $pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
 
+if ($divisionlist) {
+    foreach ($divisionlist as $idx => $division) {
+        $divisionUsers = $LMS->GetUserList(array('divisions' => $division['id']));
+        if ($divisionUsers['total'] == 0) {
+            $divisionlist[$idx]['unblock_delete'] = 1;
+        }
+    }
+}
+
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SESSION->save('backto', $_SERVER['QUERY_STRING'], true);
 

@@ -2763,7 +2763,7 @@ CREATE TABLE userdivisions (
 	CONSTRAINT userdivisions_userid_fkey
 		FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT userdivisions_divisionid_fkey
-		FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE RESTRICT ON UPDATE CASCADE,
 	UNIQUE KEY userdivisions_userid_divisionid_ukey (userid, divisionid)
 ) ENGINE=InnoDB;
 
@@ -3901,4 +3901,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020112601');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020112800');
