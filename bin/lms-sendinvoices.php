@@ -104,7 +104,7 @@ lms-sendinvoices.php
 -p, --part-number=NN            defines which part of invoices that should be sent;
 -g, --fakehour=HH               override system hour; if no fakehour is present - current hour will be used;
                                 (deprecated - use --part-number instead of);
--s, --part-size=NN              defines part size of invoices that should be sent
+-l, --part-size=NN              defines part size of invoices that should be sent
                                 (can be specified as percentage value);
 -i, --interval=ms               force delay interval between subsequent posts
     --ignore-send-date          send documents which have already been sent earlier;
