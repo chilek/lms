@@ -4261,6 +4261,12 @@ class LMS
         return $manager->GetDivisionByName($name);
     }
 
+    public function getDivisionIdByShortName($shortname)
+    {
+        $manager = $this->getDivisionManager();
+        return $manager->getDivisionIdByShortName($shortname);
+    }
+
     public function GetDivisions($params = array())
     {
         $manager = $this->getDivisionManager();

@@ -40,6 +40,7 @@ $parameters = array(
     'version' => 'v',
     'fakedate:' => 'f:',
     'customerid:' => null,
+    'division:' => null,
     'customergroups:' => 'g:',
     'customer-status:' => null,
 );
@@ -94,7 +95,10 @@ lms-payments.php
 -v, --version                   print version info and exit;
 -q, --quiet                     suppress any output, except errors;
 -f, --fakedate=YYYY/MM/DD       override system date;
-    --customerid=<id>           limit assignments to to specifed customer
+    --customerid=<id>           limit assignments to specifed customer
+    --division=<shortname>
+                                limit assignments to customers which belong to specified
+                                division
 -g, --customergroups=<group1,group2,...>
                                 allow to specify customer groups to which customers
                                 should be assigned
@@ -178,6 +182,11 @@ $LMS = new LMS($DB, $AUTH, $SYSLOG);
 
 $plugin_manager = new LMSPluginManager();
 $LMS->setPluginManager($plugin_manager);
+
+$divisionid = isset($options['division']) ? $LMS->getDivisionIdByShortName($options['division']) : null;
+if (!empty($divisionid)) {
+    ConfigHelper::setFilter($divisionid);
+}
 
 $deadline = ConfigHelper::getConfig('payments.deadline', 14);
 $sdate_next = ConfigHelper::checkConfig('payments.saledate_next_month');
@@ -506,9 +515,10 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 	LEFT JOIN tariffs t ON (a.tariffid = t.id)
 	LEFT JOIN liabilities l ON (a.liabilityid = l.id)
 	LEFT JOIN divisions d ON (d.id = c.divisionid)
-	WHERE 1 = 1 " . ($customerid ? ' AND c.id = ' . $customerid : '')
-        . $customer_status_condition . "
-		AND a.commited = 1
+	WHERE " . ($customerid ? 'c.id = ' . $customerid : '1 = 1')
+        . $customer_status_condition
+        . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
+        . " AND a.commited = 1
 		AND ((a.period = ? AND at = ?)
 			OR ((a.period = ?
 			OR (a.period = ? AND at = ?)
@@ -589,9 +599,10 @@ $query = "SELECT
 			LEFT JOIN tariffs t ON (a.tariffid = t.id)
 			LEFT JOIN liabilities l ON (a.liabilityid = l.id)
 			LEFT JOIN divisions d ON (d.id = c.divisionid)
-	    WHERE 1 = 1" . ($customerid ? ' AND c.id = ' . $customerid : '')
-          . $customer_status_condition . "
-	      AND t.type = ? AND
+	    WHERE " . ($customerid ? 'c.id = ' . $customerid : '1 = 1')
+           . $customer_status_condition
+           . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
+           . " AND t.type = ? AND
 	      a.commited = 1 AND
 		  ((a.period = ? AND at = ?) OR
 		  ((a.period = ? OR
@@ -668,8 +679,9 @@ $currencydayend = strtotime('yesterday', $dayend);
 
 $documents = $DB->GetAll(
     'SELECT d.id, d.currency FROM documents d
-    WHERE ' . ($customerid ? 'd.customerid = ' . $customerid . ' AND ' : '')
-        . 'd.type IN (?, ?, ?, ?, ?) AND ((sdate = 0 AND cdate >= ? AND cdate <= ?)
+    WHERE ' . ($customerid ? 'd.customerid = ' . $customerid : '1 = 1')
+        . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
+        . ' AND d.type IN (?, ?, ?, ?, ?) AND ((sdate = 0 AND cdate >= ? AND cdate <= ?)
         OR (sdate > 0 AND ((sdate < cdate  AND sdate >= ? AND sdate <= ?) OR (sdate >= cdate AND cdate >= ? AND cdate <= ?))))
         AND currency <> ?',
     array(
@@ -725,8 +737,9 @@ if (!empty($documents)) {
 
 $cashes = $DB->GetAll(
     'SELECT id, currency FROM cash
-    WHERE ' . ($customerid ? 'customerid = ' . $customerid . ' AND ' : '')
-    . 'docid IS NULL AND currency <> ? AND time >= ? AND time <= ?',
+    WHERE ' . ($customerid ? 'customerid = ' . $customerid : '1 = 1')
+    . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
+    . ' AND docid IS NULL AND currency <> ? AND time >= ? AND time <= ?',
     array(
         Localisation::getCurrentCurrency(),
         $currencydaystart,

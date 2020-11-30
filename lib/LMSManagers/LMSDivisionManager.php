@@ -52,6 +52,11 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
         return $this->db->GetRow('SELECT * FROM vdivisions WHERE shortname = ?', array($name));
     }
 
+    public function getDivisionIdByShortName($shortname)
+    {
+        return $this->db->GetOne('SELECT id FROM divisions WHERE UPPER(shortname) = UPPER(?)', array($shortname));
+    }
+
     public function GetDivisions($params = array())
     {
         extract($params);

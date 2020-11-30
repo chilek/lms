@@ -258,6 +258,8 @@ version 26-git (????-??-??):
     ui control [chilan]
   - enhancement: implemented reward/penalty flag for tariffs [chilan]
   - enhancement: added type property to network device models [chilan]
+  - enhancement: added --division parameter support for lms-payments.php
+    and lms-sendinvoices.php [chilan]
 
 version 25.0 (2020-05-15):
 

@@ -45,6 +45,7 @@ $parameters = array(
     'output-directory:' => 'o:',
     'no-attachments' => 'n',
     'customerid:' => null,
+    'division:' => null,
     'customergroups:' => null,
     'customer-status:' => null,
 );
@@ -113,6 +114,9 @@ lms-sendinvoices.php
 -o, --output-directory=/path    output directory for document backup
 -n, --no-attachments            dont attach documents
     --customerid=<id>           limit invoices to specifed customer
+    --division=<shortname>
+                                limit assignments to customers which belong to specified
+                                division
     --customergroups=<group1,group2,...>
                                 allow to specify customer groups to which notified customers
                                 should be assigned
@@ -236,6 +240,18 @@ require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 
 $SYSLOG = SYSLOG::getInstance();
+
+// Initialize Session, Auth and LMS classes
+$AUTH = null;
+$LMS = new LMS($DB, $AUTH, $SYSLOG);
+
+$plugin_manager = new LMSPluginManager();
+$LMS->setPluginManager($plugin_manager);
+
+$divisionid = isset($options['division']) ? $LMS->getDivisionIdByShortName($options['division']) : null;
+if (!empty($divisionid)) {
+    ConfigHelper::setFilter($divisionid);
+}
 
 if (!$no_attachments) {
     // Set some template and layout variables
@@ -402,15 +418,6 @@ if ($backup || $archive) {
     }
 }
 
-// Initialize Session, Auth and LMS classes
-
-$SYSLOG = null;
-$AUTH = null;
-$LMS = new LMS($DB, $AUTH, $SYSLOG);
-
-$plugin_manager = new LMSPluginManager();
-$LMS->setPluginManager($plugin_manager);
-
 if (!$no_attachments) {
     $plugin_manager->executeHook('smarty_initialized', $SMARTY);
 }
@@ -443,7 +450,7 @@ if ($backup || $archive) {
 
             $part_size = floor(($percent * $count) / 100);
             $part_offset = $part_number * $part_size;
-            if ((!$part_offset && !$part_limit && $part_number) || $part_offset >= $count) {
+            if ((!$part_offset && $part_number) || $part_offset >= $count) {
                 die;
             }
         }
@@ -458,8 +465,9 @@ $query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctyp
         . ($backup || $archive ? '' : " JOIN (SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
 				FROM customercontacts WHERE (type & ?) = ? GROUP BY customerid) m ON m.customerid = c.id")
         . " LEFT JOIN numberplans n ON n.id = d.numberplanid 
-		WHERE 1 = 1" . $customer_status_condition
-            . ($customerid ? ' AND c.id = ' . $customerid : '')
+		WHERE " . ($customerid ? 'c.id = ' . $customerid : '1 = 1')
+            . $customer_status_condition
+            . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
             . " AND c.deleted = 0 AND d.cancelled = 0 AND d.type IN (?, ?, ?, ?)" . ($backup || $archive ? '' : " AND c.invoicenotice = 1")
             . ($archive ? " AND d.archived = 0" : '') . "
 			AND d.cdate >= $daystart AND d.cdate <= $dayend"
