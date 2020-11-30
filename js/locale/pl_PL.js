@@ -23,6 +23,8 @@
  *  $Id$
  */
 
+$_LANG['- select target network device -'] = '- wybierz docelowe urządzenie sieciowe -';
+
 $_LANG['(customer/sms)'] = '(klient/SMS)';
 $_LANG['(customer/scans)'] = '(klient/skany)';
 
@@ -72,10 +74,6 @@ $_LANG['<!uke-income>Service type'] = 'Typ usługi';
 $_LANG['Generate XML report'] = 'Generuj raport XML';
 $_LANG['Phone contacts:'] = 'Telefony kontaktowe:';
 $_LANG['(undefined)'] = '(nieokreślone)';
-
-$_LANG['other<!singular>'] = 'pozostały';
-$_LANG['other<!plural>'] = 'pozostali';
-$_LANG['Other:<!summary>'] = 'Pozostali:';
 
 $_LANG['Networks don\'t have the same mask!'] = 'Sieci nie posiadają tej samej maski!';
 $_LANG['Source address $a ($b) collides with destination address $c ($d)!'] = 'Adres źródłowy $a ($b) koliduje z docelowym $c ($d)!';
@@ -210,7 +208,8 @@ $_LANG['Enter Tax Office Code (optional)'] = 'Wprowadź Kod Urzędu Podatkowego 
 $_LANG['Invalid format of Tax Office Code!'] = 'Niepoprawny format Kodu Urzędu Podatkowego!';
 
 $_LANG['Notify customer:'] = 'Powiadom klienta:';
-$_LANG['Notify customer via SMS:'] = 'Powiadom klienta SMS-em:';
+$_LANG['Notify customer via e-mail'] = 'Powiadom klienta e-mailem';
+$_LANG['Notify customer via SMS'] = 'Powiadom klienta SMS-em';
 
 $_LANG['billing'] = 'billing';
 $_LANG['Billing'] = 'Billing';
@@ -1879,6 +1878,7 @@ $_LANG['Write down network address and select mask'] = 'Wpisz adres sieci i wybi
 $_LANG['Write (+R)'] = 'Zapis (+O)';
 $_LANG['Wrong discount value!'] = 'Błędna wartość rabatu!';
 $_LANG['Wrong password or login.'] = 'Złe hasło lub login.';
+$_LANG['The user has no assigned company.'] = 'Użytkownik nie ma przypisanej firmy.';
 $_LANG['www'] = 'WWW';
 $_LANG['half-yearly'] = 'półrocznie';
 $_LANG['half-yearly ($a)'] = 'półrocznie ($a)';
@@ -4798,6 +4798,8 @@ $_LANG['Ticket access denied!'] = 'Odmowa dostępu do zgłoszenia!';
 
 $_LANG['from ticket'] = 'ze zgłoszenia';
 $_LANG['from message'] = 'z wiadomości';
+$_LANG['from message "Copy" header'] = 'z nagłówka "Kopia" wiadomości';
+$_LANG['from message "From" header'] = 'z nagłówka "Od" wiadomości';
 
 $_LANG['No location has been selected!'] = 'Nie wybrano lokalizacji!';
 
@@ -4998,3 +5000,17 @@ $_LANG['(HTML content has been omitted)'] = '(Treść HTML została pominięta)'
 $_LANG['<!mail>Copy'] = 'Kopia';
 $_LANG['Are you sure, you want to remove all selected tickets?'] = 'Jesteś pewien, że chcesz usunąć wszystkie zaznaczone zgłoszenia?';
 $_LANG['Are you sure, you want to permanently remove all selected tickets?'] = 'Jesteś pewien, że chcesz trwale usunąć wszystkie zaznaczone zgłoszenia?';
+
+$_LANG['Message #$a'] = 'Wiadomość #$a';
+
+$_LANG['non-empty'] = 'niepusty';
+
+$_LANG['reward/penalty'] = 'nagroda/kara';
+$_LANG['If tariff value is negative then this is effectively penalty flag, otherwise it is reward flag'] = 'Jeśli wartość taryfy jest ujemna oznacza efektywnie karę, a w przeciwnym wypadku nagrodę';
+$_LANG['reward'] = 'nagroda';
+$_LANG['penalty'] = 'kara';
+$_LANG['Reward'] = 'Nagroda';
+$_LANG['Penalty'] = 'Kara';
+
+$_LANG['Select network device type'] = 'Wybierz typ urządzenia sieciowego';
+$_LANG['<!netdevtype>- undefined -'] = '- nieokreślony -';
