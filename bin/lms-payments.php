@@ -679,6 +679,7 @@ $currencydayend = strtotime('yesterday', $dayend);
 
 $documents = $DB->GetAll(
     'SELECT d.id, d.currency FROM documents d
+    JOIN customers c ON c.id = d.customerid
     WHERE ' . ($customerid ? 'd.customerid = ' . $customerid : '1 = 1')
         . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
         . ' AND d.type IN (?, ?, ?, ?, ?) AND ((sdate = 0 AND cdate >= ? AND cdate <= ?)
@@ -736,10 +737,11 @@ if (!empty($documents)) {
 }
 
 $cashes = $DB->GetAll(
-    'SELECT id, currency FROM cash
-    WHERE ' . ($customerid ? 'customerid = ' . $customerid : '1 = 1')
+    'SELECT cash.id, cash.currency FROM cash
+    LEFT JOIN customers c ON c.id = cash.customerid
+    WHERE ' . ($customerid ? 'cash.customerid = ' . $customerid : '1 = 1')
     . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
-    . ' AND docid IS NULL AND currency <> ? AND time >= ? AND time <= ?',
+    . ' AND cash.docid IS NULL AND cash.currency <> ? AND cash.time >= ? AND cash.time <= ?',
     array(
         Localisation::getCurrentCurrency(),
         $currencydaystart,
