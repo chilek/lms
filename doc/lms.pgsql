@@ -2682,9 +2682,9 @@ DROP TABLE IF EXISTS userdivisions CASCADE;
 CREATE TABLE userdivisions (
     id integer DEFAULT nextval('userdivisions_id_seq'::text) NOT NULL,
     userid      integer     NOT NULL
-        CONSTRAINT users_userid_fkey REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+        CONSTRAINT userdivisions_userid_fkey REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
     divisionid  integer     NOT NULL
-        CONSTRAINT divisions_divisionid_fkey REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE,
+        CONSTRAINT userdivisions_divisionid_fkey REFERENCES divisions (id) ON DELETE RESTRICT ON UPDATE CASCADE,
     PRIMARY KEY (id),
     CONSTRAINT userdivisions_userid_divisionid_ukey UNIQUE (userid, divisionid)
 );
@@ -3932,6 +3932,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020112601');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020112800');
 
 COMMIT;
