@@ -439,13 +439,15 @@ if (!empty($customergroups)) {
 if ($check_invoices) {
     $DB->Execute(
         "UPDATE documents SET closed = 1
-		WHERE customerid IN (
-			SELECT c.customerid
-			FROM cash c
-			WHERE c.time <= ?NOW?
-				" . ($customergroups ? str_replace('%customerid_alias%', 'c.customerid', $customergroups) : '') . "
-			GROUP BY c.customerid
-			HAVING SUM(c.value * c.currencyvalue) >= 0
+		WHERE " . ($customerid ? 'customerid = ' . $customerid : '1 = 1') . " AND customerid IN (
+			SELECT cash.customerid
+			FROM cash
+			JOIN customers c ON c.id = cash.customerid
+			WHERE cash.time <= ?NOW?"
+                . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
+                . ($customergroups ? str_replace('%customerid_alias%', 'cash.customerid', $customergroups) : '') . "
+			GROUP BY cash.customerid
+			HAVING SUM(cash.value * cash.currencyvalue) >= 0
 		) AND type IN (?, ?, ?)
 			AND cdate <= ?NOW?
 			AND closed = 0",
@@ -1774,13 +1776,15 @@ foreach ($assigns as $assign) {
 if ($check_invoices) {
     $DB->Execute(
         "UPDATE documents SET closed = 1
-		WHERE " . ($customerid ? 'customerid = ' . $customerid . ' AND ' : '') . "customerid IN (
-			SELECT c.customerid
-			FROM cash c
-			WHERE c.time <= ?NOW?
-				" . ($customergroups ? str_replace('%customerid_alias%', 'c.customerid', $customergroups) : '') . "
-			GROUP BY c.customerid
-			HAVING SUM(c.value * c.currencyvalue) >= 0
+		WHERE " . ($customerid ? 'customerid = ' . $customerid : '1 = 1') . " AND customerid IN (
+			SELECT cash.customerid
+			FROM cash
+			JOIN customers c ON c.id = cash.customerid
+			WHERE cash.time <= ?NOW?"
+                . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
+                . ($customergroups ? str_replace('%customerid_alias%', 'cash.customerid', $customergroups) : '') . "
+			GROUP BY cash.customerid
+			HAVING SUM(cash.value * cash.currencyvalue) >= 0
 		) AND type IN (?, ?, ?)
 			AND cdate <= ?NOW?
 			AND closed = 0",
@@ -1792,16 +1796,21 @@ if ($delete_old_assignments_after_days) {
     // delete old assignments
     $DB->Execute(
         "DELETE FROM liabilities WHERE id IN (
-			SELECT liabilityid FROM assignments
-				WHERE " . ($customerid ? 'customerid = ' . $customerid . ' AND ' : '') . "((dateto <> 0 AND dateto < $today - ? * 86400
-						OR (period = ? AND at < $today - ? * 86400))
-					AND liabilityid IS NOT NULL)
+			SELECT a.liabilityid FROM assignments a
+			JOIN customers c ON c.id = a.customerid
+            WHERE " . ($customerid ? 'a.customerid = ' . $customerid : '1 = 1')
+                . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
+                . " AND ((a.dateto <> 0 AND a.dateto < $today - ? * 86400
+                    OR (a.period = ? AND a.at < $today - ? * 86400))
+                AND a.liabilityid IS NOT NULL)
 		)",
         array($delete_old_assignments_after_days, DISPOSABLE, $delete_old_assignments_after_days)
     );
     $DB->Execute(
         "DELETE FROM assignments
-		WHERE " . ($customerid ? 'customerid = ' . $customerid . ' AND ' : '') . "((dateto <> 0 AND dateto < $today - ? * 86400)
+		WHERE " . ($customerid ? 'customerid = ' . $customerid : '1 = 1')
+            . ($divisionid ? ' AND EXISTS (SELECT c.id FROM customers c WHERE c.divisionid = ' . $divisionid . ' AND c.id = customerid)' : '')
+            . " AND ((dateto <> 0 AND dateto < $today - ? * 86400)
 			OR (period = ? AND at < $today - ? * 86400))",
         array($delete_old_assignments_after_days, DISPOSABLE, $delete_old_assignments_after_days)
     );
