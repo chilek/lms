@@ -293,10 +293,11 @@ function netDevForNetNodeChooseWin(netnodeid) {
 
 function sendvalue(targetfield, value)
 {
-	$(targetfield).val(value);
+	targetfield.value = value;
 	// close popup
 	window.parent.parent.popclick();
-	$(targetfield).change().focus();
+	targetfield.dispatchEvent(new Event('change'))
+	targetfield.focus();
 }
 
 function showOrHide(elementslist)
