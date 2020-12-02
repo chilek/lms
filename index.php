@@ -212,10 +212,10 @@ $layout['dbdebug'] = isset($_DBDEBUG) ? $_DBDEBUG : false;
 $layout['popup'] = isset($_GET['popup']) ? true : false;
 
 $il = $LMS->ReplaceInstanceLabelSymbols(ConfigHelper::getConfig('phpui.instance_label'));
-if (empty($il)) {
-    $il = $layout['hostname'];
+
+if (!empty($il)) {
+    $SMARTY->assign(instance_label, $il);
 }
-$SMARTY->assign(instance_label, $il);
 
 if (!$api) {
     $SMARTY->assignByRef('layout', $layout);
