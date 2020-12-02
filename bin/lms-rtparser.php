@@ -38,6 +38,7 @@ $parameters = array(
     'prefer-html' => null,
     'imap' => null,
     'check-mail' => null,
+    'match-queueid-by-mailheaders' => null,
 );
 
 $long_to_shorts = array();
@@ -98,6 +99,8 @@ lms-rtparser.php
                                 fetch posts using imap protocol
     --check-mail
                                 check if mail from 'To' header matches selected queue mail address
+    --match-queueid-by-mailheaders
+                                matches queue by queue email and mail headers
 
 EOF;
     exit(0);
@@ -177,19 +180,6 @@ if (empty($hostname)) {
 
 $smtp_options = $LMS->GetRTSmtpOptions();
 
-$queue = 0;
-if (isset($options['queue'])) {
-    $queue = $options['queue'];
-}
-$queue = ConfigHelper::getConfig('rt.default_queue', $queue);
-if (preg_match('/^[0-9]+$/', $queue)) {
-    $queue = intval($queue);
-    if ($queue && !$LMS->QueueExists($queue)) {
-        $queue = 0;
-    }
-} else {
-    $queue = $LMS->GetQueueIdByName($queue);
-}
 $categories = ConfigHelper::getConfig('rt.default_categories', 'default');
 $categories = preg_split('/\s*,\s*/', trim($categories));
 $auto_open = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.auto_open', '0'));
@@ -604,23 +594,44 @@ while (isset($buffer) || $postid !== false) {
         }
 
         // find queue ID if not specified
-        if ((!$queue || $check_mail) && (!empty($toemails) || !empty($ccemails))) {
-            $queueid = $queue;
-            $queue = $DB->GetRow(
-                "SELECT id, email FROM rtqueues WHERE email IN ? LIMIT 1",
-                array(array_merge(array_keys($toemails), array_keys($ccemails)))
-            );
-            if (!empty($queue) && (!$check_mail || $queue['id'] == $queueid)) {
-                $_ccemails = array();
-                foreach ($ccemails as $ccaddress => $ccdisplay) {
-                    if ($ccaddress != $queue['email']) {
-                        $_ccemails[$ccaddress] = $ccdisplay;
-                    }
+        if (array_key_exists('match-queueid-by-mailheaders', $options)) {
+            $queue = $DB->GetRow("SELECT id, email FROM rtqueues WHERE email IN ? LIMIT 1",
+                array(array_merge(array_keys($toemails), array_keys($ccemails))));
+            if (empty($queue)) {
+                $queue = ConfigHelper::getConfig(rt.parser_default_queue);
+            }
+        } else {
+            $queue = 0;
+            if (isset($options['queue'])) {
+                $queue = $options['queue'];
+            }
+            $queue = ConfigHelper::getConfig('rt.parser_default_queue', $queue);
+            if (preg_match('/^[0-9]+$/', $queue)) {
+                $queue = intval($queue);
+                if ($queue && !$LMS->QueueExists($queue)) {
+                    $queue = 0;
                 }
-                $ccemails = $_ccemails;
-                $queue = $queue['id'];
             } else {
-                $queue = 0;
+                $queue = $LMS->GetQueueIdByName($queue);
+            }
+            if ((!$queue || $check_mail) && (!empty($toemails) || !empty($ccemails))) {
+                $queueid = $queue;
+                $queue = $DB->GetRow(
+                    "SELECT id, email FROM rtqueues WHERE email IN ? LIMIT 1",
+                    array(array_merge(array_keys($toemails), array_keys($ccemails)))
+                );
+                if (!empty($queue) && (!$check_mail || $queue['id'] == $queueid)) {
+                    $_ccemails = array();
+                    foreach ($ccemails as $ccaddress => $ccdisplay) {
+                        if ($ccaddress != $queue['email']) {
+                            $_ccemails[$ccaddress] = $ccdisplay;
+                        }
+                    }
+                    $ccemails = $_ccemails;
+                    $queue = $queue['id'];
+                } else {
+                    $queue = 0;
+                }
             }
         }
 
@@ -646,7 +657,7 @@ while (isset($buffer) || $postid !== false) {
         if (!$autoreply_from) {
             $queue_autoreply = $DB->GetRow(
                 "SELECT email, name FROM rtqueues WHERE id = ?",
-                array($queue)
+                array($queue['id'])
             );
             if (!empty($queue_autoreply)) {
                 $autoreply_from = $queue_autoreply['email'];
@@ -663,7 +674,7 @@ while (isset($buffer) || $postid !== false) {
             }
 
             $ticket_id = $LMS->TicketAdd(array(
-                'queue' => $queue,
+                'queue' => $queue['id'],
                 'requestor' => $mh_from,
                 'customerid' => $reqcustid,
                 'subject' => $mh_subject,
