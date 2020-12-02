@@ -26,6 +26,8 @@
 $id = intval($_GET['id']);
 $division = $LMS->GetDivision($id);
 
+$address_id = $division['address_id'] ? $LMS->CopyAddress($division['address_id']) : null;
+
 $args = array(
     'name'            => $division['name'],
     'shortname'       => $division['shortname'] . ' (copy)',
@@ -42,7 +44,7 @@ $args = array(
     'inv_paytype'     => $division['inv_paytype'] ? $division['inv_paytype'] : null,
     'description'     => $division['description'],
     'tax_office_code' => $division['tax_office_code'],
-    'address_id'      => $division['address_id'] ? $division['address_id'] : null
+    'address_id'      => $address_id ?: null
 );
 
 $DB->Execute('INSERT INTO divisions (name, shortname,
