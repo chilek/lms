@@ -191,7 +191,6 @@ if (preg_match('/^[0-9]+$/', $queue)) {
 } else {
     $queue = $LMS->GetQueueIdByName($queue);
 }
-
 $categories = ConfigHelper::getConfig('rt.default_categories', 'default');
 $categories = preg_split('/\s*,\s*/', trim($categories));
 $auto_open = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.auto_open', '0'));
