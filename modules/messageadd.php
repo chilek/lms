@@ -568,11 +568,14 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
             $customers = array();
             if (!empty($message['customers'])) {
                 foreach ($message['customers'] as $customerid => &$customer) {
-                    foreach ($customer[$message['type'] == MSG_SMS ? 'phones' : 'emails'] as $contactid => $contact) {
-                        if (!empty($contact)) {
-                            $customers[] = $customerid;
-                        } else {
-                            unset($customer[$message['type'] == MSG_SMS ? 'phones' : 'emails'][$contactid]);
+                    $msg_idx = $message['type'] == MSG_SMS ? 'phones' : 'emails';
+                    if (!empty($customer[$msg_idx])) {
+                        foreach ($customer[$msg_idx] as $contactid => $contact) {
+                            if (!empty($contact)) {
+                                $customers[] = $customerid;
+                            } else {
+                                unset($customer[$message['type'] == MSG_SMS ? 'phones' : 'emails'][$contactid]);
+                            }
                         }
                     }
                 }

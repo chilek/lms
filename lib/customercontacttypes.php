@@ -385,6 +385,17 @@ $CUSTOMERCONTACTTYPES = array(
     ),
 );
 
+$supported_customer_contact_types = ConfigHelper::getConfig(
+    'phpui.supported_customer_contact_types',
+    implode(',', array_keys($CUSTOMERCONTACTTYPES))
+);
+$supported_customer_contact_types = array_flip(preg_split('/\s*(\r?\n|[;,])\s*/', $supported_customer_contact_types, 0, PREG_SPLIT_NO_EMPTY));
+foreach ($CUSTOMERCONTACTTYPES as $contact_type => $contact_type_description) {
+    if (!isset($supported_customer_contact_types[$contact_type])) {
+        unset($CUSTOMERCONTACTTYPES[$contact_type]);
+    }
+}
+
 global $SMARTY;
 
 if (isset($SMARTY)) {

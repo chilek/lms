@@ -1,46 +1,57 @@
 <!-- $Id$ -->
 <TABLE class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 98%;">
+	</colgroup>
 	<THEAD>
 	<TR>
-		<TD style="width: 1%;">
-			<IMG src="img/promoschema.gif" alt="">
+		<TD>
+			{icon name="money" class="fa-fw"}
 		</TD>
-		<TD style="width: 98%;" class="bold" colspan="2">
+		<TD class="bold" colspan="2">
 			{$schema.name} ({$schema.id|string_format:"%04d"})
 		</TD>
 	</TR>
 	</THEAD>
 	<TBODY>
 	<TR>
-		<TD style="width: 1%;">
-			<IMG src="img/calendar.gif" alt="">
+		<TD>
+			{icon name="calendar" class="fa-fw"}
 		</TD>
-		<TD style="width: 99%;" class="nobr" colspan="2">
+		<TD class="nobr" colspan="2">
 			{if $schema.data}{$schema.data}{else}{trans("unlimited")}{/if}
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;">
-			<A href="?m=promotionschemaset&amp;id={$schema.id}&amp;access={$schema.disabled}"><IMG src="img/{if $schema.disabled}no{/if}access.gif" alt=""></A>
+		<TD>
+			<A href="?m=promotionschemaset&id={$schema.id}&access={$schema.disabled}">
+				{if $schema.disabled}
+					{icon name="disconnected" class="fa-fw"}
+				{else}
+					{icon name="connected" class="fa-fw"}
+				{/if}
+			</A>
 		</TD>
-		<TD style="width: 99%;" class="nobr" colspan="2">
+		<TD class="nobr" colspan="2">
 			{if $schema.disabled}{trans("disabled")}{else}{trans("enabled")}{/if}
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;">
-			<IMG src="img/promo.gif" alt="">
+		<TD>
+			{icon name="money" class="fa-fw"}
 		</TD>
-		<TD style="width: 99%;" class="nobr" colspan="2">
+		<TD class="nobr" colspan="2">
 			<A href="?m=promotioninfo&amp;id={$schema.pid}">{$schema.promotion}</A>
 		</TD>
 	</TR>
 	{if $schema.description}
 	<TR>
-		<TD style="width: 1%;">
-			<IMG src="img/info1.gif" alt="">
+		<TD>
+			{icon name="info" class="fa-fw"}
 		</TD>
-		<TD style="width: 98%;" colspan="2">
+		<TD colspan="2">
 			<TABLE width="100%" cellpadding="5">
 				<TR><TD class="fall superlight">
 					{$schema.description|replace:"\n":"<BR>"}
@@ -50,9 +61,9 @@
 	</TR>
 	{/if}
 	<TR>
-		<TD style="width: 100%;" class="text-right" colspan="3">
-			<A href="?m=promotionschemaedit&amp;id={$schema.id}">{trans("Edit")} <IMG src="img/edit.gif" alt=""></A>
-			<A id="delete-promotionschema" href="?m=promotionschemadel&id={$schema.id}">{trans("Delete")} <IMG src="img/delete.gif" alt=""></A>
+		<TD class="lms-ui-box-buttons" colspan="3">
+			{button icon="edit" label="Edit" href="?m=promotionschemaedit&id={$schema.id}"}
+			{button icon="delete" label="Delete" id="delete-promotionschema" data_href="?m=promotionschemadel&id={$schema.id}"}
 		</TD>
 	</TR>
 	</TBODY>
@@ -60,7 +71,7 @@
 <script>
 	$('#delete-promotionschema').click(function() {
 		confirmDialog($t("Are you sure, you want to delete this schema?"), this).done(function() {
-			location.href = $(this).attr('href');
+			location.href = $(this).attr('data-href');
 		});
 		return false;
 	});

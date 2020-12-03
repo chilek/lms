@@ -807,6 +807,18 @@ class LMS
         return $manager->delCustomerNote($id);
     }
 
+    public function raiseCustomerKarma($id)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->raiseCustomerKarma($id);
+    }
+
+    public function lowerCustomerKarma($id)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->lowerCustomerKarma($id);
+    }
+
     /*
      * Customer groups
      */
@@ -2148,6 +2160,12 @@ class LMS
         return $manager->DetermineSenderEmail($queue_email, $ticket_email, $user_email, $forced_order);
     }
 
+    public function GetTicketRequestorMail($ticketid)
+    {
+        $manager = $this->getHelpdeskManager();
+        return $manager->GetTicketRequestorMail($ticketid);
+    }
+
     public function GetTicketRequestorPhone($ticketid)
     {
         $manager = $this->getHelpdeskManager();
@@ -2563,7 +2581,12 @@ class LMS
                         $buf .= "Content-Transfer-Encoding: base64\n";
                         $buf .= "Content-Type: " . $chunk['content_type'] . "; name=\"" . $chunk['filename'] . "\"\n";
                         $buf .= "Content-Description:\n";
-                        $buf .= "Content-Disposition: attachment; filename=\"" . $chunk['filename'] . "\"\n\n";
+                        if ($headers['X-LMS-Format'] == 'html' && isset($chunk['content-id'])) {
+                            $buf .= "Content-ID: <" . $chunk['content-id'] . ">\n";
+                            $buf .= "Content-Disposition: inline; filename=\"" . $chunk['filename'] . "\"\n\n";
+                        } else {
+                            $buf .= "Content-Disposition: attachment; filename=\"" . $chunk['filename'] . "\"\n\n";
+                        }
                         $buf .= chunk_split(base64_encode($chunk['data']), 60, "\n");
                     }
                 }
@@ -2668,12 +2691,14 @@ class LMS
             } else {
                 if (isset($headers['Cc'])) {
                     foreach (explode(',', $headers['Cc']) as $cc) {
-                        $this->mail_object->addCC($cc);
+                        preg_match('/^(?:(?<name>.*) )?<?(?<mail>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $cc, $m);
+                        $this->mail_object->addCC($m['mail'], isset($m['name']) ? trim($m['name'], "\"") : '');
                     }
                 }
                 if (isset($headers['Bcc'])) {
                     foreach (explode(',', $headers['Bcc']) as $bcc) {
-                        $this->mail_object->addBCC($bcc);
+                        preg_match('/^(?:(?<name>.*) )?<?(?<mail>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $bcc, $m);
+                        $this->mail_object->addBCC($m['mail'], isset($m['name']) ? trim($m['name'], "\"") : '');
                     }
                 }
             }
@@ -2684,7 +2709,22 @@ class LMS
 
             if ($files) {
                 foreach ($files as $chunk) {
-                    $this->mail_object->AddStringAttachment($chunk['data'], $chunk['filename'], 'base64', $chunk['content_type']);
+                    if ($headers['X-LMS-Format'] == 'html' && isset($chunk['content-id'])) {
+                        $this->mail_object->addStringEmbeddedImage(
+                            $chunk['data'],
+                            $chunk['content-id'],
+                            $chunk['filename'],
+                            \PHPMailer\PHPMailer\PHPMailer::ENCODING_BASE64,
+                            $chunk['content_type']
+                        );
+                    } else {
+                        $this->mail_object->AddStringAttachment(
+                            $chunk['data'],
+                            $chunk['filename'],
+                            \PHPMailer\PHPMailer\PHPMailer::ENCODING_BASE64,
+                            $chunk['content_type']
+                        );
+                    }
                 }
             }
 
@@ -4219,6 +4259,12 @@ class LMS
     {
         $manager = $this->getDivisionManager();
         return $manager->GetDivisionByName($name);
+    }
+
+    public function getDivisionIdByShortName($shortname)
+    {
+        $manager = $this->getDivisionManager();
+        return $manager->getDivisionIdByShortName($shortname);
     }
 
     public function GetDivisions($params = array())

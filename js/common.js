@@ -296,6 +296,7 @@ function sendvalue(targetfield, value)
 	targetfield.value = value;
 	// close popup
 	window.parent.parent.popclick();
+	targetfield.dispatchEvent(new Event('change'))
 	targetfield.focus();
 }
 
@@ -583,16 +584,6 @@ function changeMacFormat(id)
 	elem.innerHTML = curmac;
 }
 
-function reset_customer(form, elemname1, elemname2) {
-
-	if (document.forms[form].elements[elemname1].value) {
-		document.forms[form].elements[elemname2].value = document.forms[form].elements[elemname1].value;
-
-		$( document.forms[form].elements[elemname1] ).trigger( 'keyup' );
-		$( document.forms[form].elements[elemname2] ).trigger( 'reset_customer' );
-	}
-}
-
 function generate_random_string(length, characters) {
 	if (typeof length === 'undefined')
 		length = 10;
@@ -636,78 +627,6 @@ function get_size_unit(size) {
 			size: size,
 			unit: 'B'
 		};
-}
-
-function _getCustomerNames(ids, success) {
-	if (!ids || String(ids).length == 0)
-		return 0;
-
-	$.ajax('?m=customerinfo&api=1&ajax=1', {
-		async: true,
-		method: 'POST',
-		data: {
-			id: ids
-		},
-		dataType: 'json',
-		success: success
-	});
-}
-
-function getCustomerName(elem) {
-	if ( $(elem).val().length == 0 ) {
-		$(elem).nextAll('.customername').html('');
-		return 0;
-	}
-
-	_getCustomerNames([ $(elem).val() ], function(data, textStatus, jqXHR) {
-		if (typeof data.error !== 'undefined') {
-			$(elem).nextAll('.customername').html( data.error );
-			return 0;
-		}
-
-		$(elem).nextAll('.customername').html(data.customernames[$(elem).val()] === undefined ? ''
-			: '<a href="?m=customerinfo&id=' + $(elem).val() + '">' + data.customernames[$(elem).val()] + '</a>');
-	});
-
-	$(elem).trigger('reset_customer');
-	$(elem).trigger('change');
-}
-
-var customerinputs = [];
-
-function getCustomerNameDeferred(elem) {
-	customerinputs.push(elem);
-}
-
-if (typeof $ !== 'undefined') {
-	$(function() {
-		var cids = [];
-		$.each(customerinputs, function(index, elem) {
-			cids.push($(elem).val());
-		});
-		_getCustomerNames(cids, function(data, textStatus, jqXHR) {
-			$.each(customerinputs, function(index, elem) {
-				if ( $(elem).val().length == 0 ) {
-					$(elem).nextAll('.customername').html('');
-					return 0;
-				}
-
-				if (data.error != undefined) {
-					$(elem).nextAll('.customername').html( data.error );
-					return 0;
-				}
-
-				$(elem).nextAll('.customername').html(data.customernames[$(elem).val()] === undefined ?
-					'' : '<a href="?m=customerinfo&id=' + $(elem).val() + '">' + data.customernames[$(elem).val()] + '</a>');
-			});
-		});
-
-		$('a[rel="external"]')
-			.on('click keypress', function() {
-				window.open(this.href);
-				return false;
-			});
-	});
 }
 
 /*!

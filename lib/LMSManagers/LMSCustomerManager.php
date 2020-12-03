@@ -746,6 +746,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             case 'extid':
                 $sqlord = ' ORDER BY extid';
                 break;
+            case 'karma':
+                $sqlord = ' ORDER BY karma';
+                break;
             default:
                 $sqlord = ' ORDER BY customername';
                 break;
@@ -1129,7 +1132,16 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         case 'balance_date':
                             break;
                         case 'ten':
-                            $searchargs[] = "REPLACE(REPLACE(ten, '-', ''), ' ', '') ?LIKE? " . $this->db->Escape('%' . preg_replace('/[\- ]/', '', $value) . '%');
+                            if ($value == '*') {
+                                $searchargs[] = "ten <> ''";
+                            } else {
+                                $searchargs[] = "REPLACE(REPLACE(ten, '-', ''), ' ', '') ?LIKE? " . $this->db->Escape('%' . preg_replace('/[\- ]/', '', $value) . '%');
+                            }
+                            break;
+                        case 'karma':
+                            if (intval($value)) {
+                                $searchargs[] = 'c.karma ' . ($value > 0 ? '>' : '<') . '= ' . $value;
+                            }
                             break;
                         default:
                             $searchargs[] = "$key ?LIKE? " . $this->db->Escape("%$value%");
@@ -1153,7 +1165,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         } else {
             $capitalize_customer_names = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.capitalize_customer_names', true));
             $sql .= 'SELECT DISTINCT c.id AS id, c.lastname, c.name, ' . $this->db->Concat($capitalize_customer_names ? 'UPPER(lastname)' : 'lastname', "' '", 'c.name') . ' AS customername,
-                c.type, c.deleted,
+                c.karma, c.type, c.deleted,
                 status, full_address, post_full_address, c.address, c.zip, c.city, countryid, countries.name AS country, cc.email, ccp.phone, ten, ssn, c.info AS info,
                 extid, message, c.divisionid, c.paytime AS paytime, COALESCE(b.balance, 0) AS balance,
                 COALESCE(t.value, 0) AS tariffvalue, s.account, s.warncount, s.online,
@@ -2573,5 +2585,79 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $res = $this->db->Execute('DELETE FROM customernotes WHERE id = ?', array($id));
 
         return $res;
+    }
+
+    private function changeCustomerKarma($id, $diff)
+    {
+        $karma = $this->db->GetOne(
+            'SELECT karma FROM customerview WHERE id = ?',
+            array($id)
+        );
+        if (!isset($karma)) {
+            return array(
+                'karma' => 0,
+                'error' => trans('Access denied!'),
+            );
+        }
+
+        $customerKarmaChangeInterval = intval(ConfigHelper::getConfig('phpui.customer_karma_change_interval', '86400'));
+        if (!$customerKarmaChangeInterval) {
+            $customerKarmaChangeInterval = 86400;
+        }
+
+        $userid = Auth::GetCurrentUser();
+
+        $timestamp = $this->db->GetOne(
+            'SELECT timestamp
+            FROM customerkarmalastchanges
+            WHERE customerid = ? AND userid = ?',
+            array($id, $userid)
+        );
+        if (isset($timestamp) && time() - $timestamp <= $customerKarmaChangeInterval) {
+            return array(
+                'karma' => $karma,
+                'error' => trans('Karma is changed too often!'),
+            );
+        }
+
+        $karma += $diff;
+        $this->db->Execute(
+            'UPDATE customers SET karma = ? WHERE id = ?',
+            array($karma, $id)
+        );
+        if ($this->syslog) {
+            $args = array(
+                SYSLOG::RES_CUST => $id,
+                SYSLOG::RES_USER => $userid,
+                'karma' => $karma,
+            );
+            $this->syslog->AddMessage(SYSLOG::RES_CUST, SYSLOG::OPER_UPDATE, $args);
+        }
+
+        if (isset($timestamp)) {
+            $this->db->Execute(
+                'UPDATE customerkarmalastchanges SET timestamp = ?NOW? WHERE customerid = ? AND userid = ?',
+                array($id, $userid)
+            );
+        } else {
+            $this->db->Execute(
+                'INSERT INTO customerkarmalastchanges (timestamp, customerid, userid) VALUES (?NOW?, ?, ?)',
+                array($id, $userid)
+            );
+        }
+
+        return array(
+            'karma' => $karma,
+        );
+    }
+
+    public function raiseCustomerKarma($id)
+    {
+        return $this->changeCustomerKarma($id, 1);
+    }
+
+    public function lowerCustomerKarma($id)
+    {
+        return $this->changeCustomerKarma($id, -1);
     }
 }

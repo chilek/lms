@@ -91,6 +91,14 @@
                                             {/if}
                                         {/foreach}
                                     </SELECT>
+
+                                    <label>
+                                        <input type="checkbox" name="tariff[flags][{$smarty.const.TARIFF_FLAG_REWARD_PENALTY}]"
+                                            value="{$smarty.const.TARIFF_FLAG_REWARD_PENALTY}"
+                                            {if isset($tariff.flags[$smarty.const.TARIFF_FLAG_REWARD_PENALTY])}checked{/if}
+                                            {tip text="If tariff value is negative then this is effectively penalty flag, otherwise it is reward flag"}>
+                                        {trans("reward/penalty")}
+                                    </label>
                                 </TD>
                             </TR>
                             <tr>
@@ -124,7 +132,7 @@
                                 <TD><IMG SRC="img/tax.gif" ALT=""></TD>
                                 <TD>{trans("Tax:")}</TD>
                                 <TD>
-                                    <SELECT SIZE="1" NAME="tariff[taxid]" {tip text="Select Tax rate" trigger="taxid"} required>
+                                    <SELECT SIZE="1" NAME="tariff[taxid]" {tip text="Select Tax rate" trigger="taxid"}{if empty($taxeslist)} required{/if}>
                                         {foreach $taxeslist as $tax}
                                             <OPTION VALUE="{$tax.id}"{if $tariff.taxid == $tax.id} selected{/if}>{$tax.label}</OPTION>
                                         {foreachelse}

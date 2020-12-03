@@ -12,9 +12,13 @@
     <THEAD>
 	<TR {tip text="Click on column name to change sorting order"}>
 		<TD width="95%">
-			<IMG src="img/netdev.gif" ALT="">&nbsp;<A href="?m=netdevlist&amp;o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order == "name"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<IMG src="img/producer.gif" ALT="">&nbsp;<A href="?m=netdevlist&amp;o=producer{if $listdata.direction == "asc" && $listdata.order == "producer"},desc{/if}">{trans("Manufacturer:")}</A> {if $listdata.order == "producer"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} /
-			<A href="?m=netdevlist&amp;o=model{if $listdata.direction == "asc" && $listdata.order == "model"},desc{/if}">{trans("Model:")}</A> {if $listdata.order == "model"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<IMG src="img/netdev.gif" ALT="">
+			<A href="?m=netdevlist&o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order == "name"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<br>
+			<IMG src="img/producer.gif" ALT="">
+			<a href="?m=netdevlist&o=type{if $listdata.direction == "asc" && $listdata.order == "type"},desc{/if}">{trans("Type")}</a> {if $listdata.order == "type"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=netdevlist&o=producer{if $listdata.direction == "asc" && $listdata.order == "producer"},desc{/if}">{trans("Manufacturer:")}</A> {if $listdata.order == "producer"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} /
+			<A href="?m=netdevlist&o=model{if $listdata.direction == "asc" && $listdata.order == "model"},desc{/if}">{trans("Model:")}</A> {if $listdata.order == "model"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<td width="1%" class="nobr valign-top">
 			<A href="?m=netdevlist&amp;o=location{if $listdata.direction == "asc" && $listdata.order == "location"},desc{/if}">
@@ -66,6 +70,8 @@
 				<OPTION VALUE="{$netnode.id}"{if $listdata.netnode == $netnode.id} selected{/if}>{$netnode.name}</OPTION>
 				{/foreach}
 			</SELECT>
+			{trans("Type")}
+			{networkDeviceTypes elemname="type" selected=$listdata.type onchange="document.choosefilter.submit();"}
 			{trans("Producer:")}
 			<SELECT SIZE="1" NAME="producer" ONCHANGE="document.choosefilter.submit();">
 				<OPTION VALUE="-1"{if $listdata.producer == -1} selected{/if}>- {trans("all")} -</OPTION>
@@ -107,9 +113,13 @@
 			{/if}
 			<A href="?m=netdevinfo&amp;id={$netdev.id}" name="{$netdev.id}"
 					title="{$netdev.description|replace:"\n":"<br>"|default:trans("- no description -")}">
-				<B>{$netdev.name}</B></A><BR>
+				<B>{$netdev.name}</B></A>
+			<br>
 			{if $netdev.producer}
 				<IMG src="img/producer.gif" ALT="">
+				{if $netdev.devtypename}
+					{trans($netdev.devtypename)}
+				{/if}
 				{$netdev.producer} {if $netdev.model}/ {$netdev.model}{/if}
 			{else}
 				<br>

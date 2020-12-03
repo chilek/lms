@@ -3,7 +3,7 @@
     <THEAD>
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/promo.gif" ALT="">
+			{icon name="money" class="fa-fw"}
 		</TD>
 		<TD WIDTH="98%" COLSPAN="2">
 			<B>{$promotion.name} ({$promotion.id|string_format:"%04d"})</B>
@@ -34,9 +34,9 @@
 	</TR>
 	{/if}
 	<TR>
-		<TD WIDTH="100%" COLSPAN="3" ALIGN="RIGHT">
-			<A HREF="?m=promotionedit&id={$promotion.id}">{trans("Edit")} <IMG SRC="img/edit.gif" alt=""></A>
-			<A id="delete-promotion" HREF="?m=promotiondel&id={$promotion.id}">{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>
+		<TD colspan="3" class="lms-ui-box-buttons">
+			{button icon="edit" label="Edit" href="?m=promotionedit&id={$promotion.id}"}
+			{button icon="delete" label="Delete" id="delete-promotion" data_href="?m=promotiondel&id={$promotion.id}"}
 			</FORM>
 		</TD>
 	</TR>
@@ -45,7 +45,7 @@
 <script>
 	$('#delete-promotion').click(function() {
 		confirmDialog($t("Are you sure, you want to delete this promotion?"), this).done(function() {
-			location.href = $(this).attr('href');
+			location.href = $(this).attr('data-href');
 		});
 		return false;
 	});

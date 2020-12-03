@@ -78,8 +78,9 @@ if (isset($_GET['id']) && $action == 'edit') {
             $nitem['s_valuebrutto'] = $iitem['total'];
         } else {
             $nitem['count']     = str_replace(',', '.', $item['count']);
-            $nitem['discount']  = (!empty(floatval($item['pdiscount'])) ? str_replace(',', '.', $item['pdiscount']) : str_replace(',', '.', $item['vdiscount']));
-            $nitem['discount_type'] = (!empty(floatval($item['pdiscount'])) ? DISCOUNT_PERCENTAGE : DISCOUNT_AMOUNT);
+            $pdiscount = floatval($item['pdiscount']);
+            $nitem['discount']  = (!empty($pdiscount) ? str_replace(',', '.', $item['pdiscount']) : str_replace(',', '.', $item['vdiscount']));
+            $nitem['discount_type'] = (!empty($pdiscount) ? DISCOUNT_PERCENTAGE : DISCOUNT_AMOUNT);
             $nitem['pdiscount'] = str_replace(',', '.', $item['pdiscount']);
             $nitem['vdiscount'] = str_replace(',', '.', $item['vdiscount']);
             $nitem['content']       = str_replace(',', '.', $item['content']);
@@ -507,7 +508,11 @@ switch ($action) {
             break;
         }
 
-        $cnote['currencyvalue'] = $LMS->getCurrencyValue($cnote['currency'], $sdate);
+        $cnote['currencyvalue'] = $LMS->getCurrencyValue(
+            $cnote['currency'],
+            strtotime('yesterday', min($sdate, $cdate, time()))
+        );
+
         if (!isset($cnote['currencyvalue'])) {
             die('Fatal error: couldn\'t get quote for ' . $cnote['currency'] . ' currency!<br>');
         }
@@ -563,7 +568,7 @@ switch ($action) {
             'flags' => (empty($cnote['flags'][DOC_FLAG_RECEIPT]) ? 0 : DOC_FLAG_RECEIPT)
                 + (empty($cnote['flags'][DOC_FLAG_TELECOM_SERVICE]) || $customer['type'] == CTYPES_COMPANY ? 0 : DOC_FLAG_TELECOM_SERVICE)
                 + ($use_current_customer_data
-                    ? ($customer['type'] == CTYPES_COMPANY && isset($customer['flags'][CUSTOMER_FLAG_RELATED_ENTITY]) ? DOC_FLAG_RELATED_ENTITY : 0)
+                    ? (isset($customer['flags'][CUSTOMER_FLAG_RELATED_ENTITY]) ? DOC_FLAG_RELATED_ENTITY : 0)
                     : (!empty($cnote['oldflags'][DOC_FLAG_RELATED_ENTITY]) ? DOC_FLAG_RELATED_ENTITY : 0)
                 ),
             SYSLOG::RES_CUST => $cnote['customerid'],

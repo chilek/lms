@@ -24,6 +24,47 @@
  *  $Id$
  */
 
+$shortname = $this->GetOne(
+    "SELECT value FROM uiconfig WHERE section = ? AND var = ? AND disabled = ?",
+    array('finances', 'shortname', 0)
+);
+$header = $this->GetOne(
+    "SELECT value FROM uiconfig WHERE section = ? AND var = ? AND disabled = ?",
+    array('finances', 'header', 0)
+);
+$footer = $this->GetOne(
+    "SELECT value FROM uiconfig WHERE section = ? AND var = ? AND disabled = ?",
+    array('finances', 'footer', 0)
+);
+$default_author = $this->GetOne(
+    "SELECT value FROM uiconfig WHERE section = ? AND var = ? AND disabled = ?",
+    array('finances', 'default_author', 0)
+);
+$cplace = $this->GetOne(
+    "SELECT value FROM uiconfig WHERE section = ? AND var = ? AND disabled = ?",
+    array('finances', 'cplace', 0)
+);
+$name = $this->GetOne(
+    "SELECT value FROM uiconfig WHERE section = ? AND var = ? AND disabled = ?",
+    array('finances', 'name', 0)
+);
+$address = $this->GetOne(
+    "SELECT value FROM uiconfig WHERE section = ? AND var = ? AND disabled = ?",
+    array('finances', 'address', 0)
+);
+$city = $this->GetOne(
+    "SELECT value FROM uiconfig WHERE section = ? AND var = ? AND disabled = ?",
+    array('finances', 'city', 0)
+);
+$zip = $this->GetOne(
+    "SELECT value FROM uiconfig WHERE section = ? AND var = ? AND disabled = ?",
+    array('finances', 'zip', 0)
+);
+$account = $this->GetOne(
+    "SELECT value FROM uiconfig WHERE section = ? AND var = ? AND disabled = ?",
+    array('finances', 'account', 0)
+);
+
 $this->Execute("CREATE TABLE divisions (
     	id int(11) NOT NULL auto_increment,
 	shortname       varchar(255) NOT NULL DEFAULT '',
@@ -57,16 +98,6 @@ $this->Execute("CREATE VIEW customersview AS
 	        WHERE e.userid = lms_current_user() AND a.customerid = c.id);
 ");
 
-$shortname = ConfigHelper::getConfig('finances.shortname');
-$header = ConfigHelper::getConfig('invoices.header');
-$footer = ConfigHelper::getConfig('invoices.footer');
-$default_author = ConfigHelper::getConfig('invoices.default_author');
-$cplace = ConfigHelper::getConfig('invoices.cplace');
-$name = ConfigHelper::getConfig('finances.name');
-$address = ConfigHelper::getConfig('finances.address');
-$city = ConfigHelper::getConfig('finances.city');
-$zip = ConfigHelper::getConfig('finances.zip');
-$account = ConfigHelper::getConfig('finances.account');
 $this->Execute(
     "INSERT INTO divisions (shortname, inv_header, inv_footer, inv_author, inv_cplace, name, 
 	address, city, zip, account) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",

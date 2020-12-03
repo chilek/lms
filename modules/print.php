@@ -73,7 +73,7 @@ switch ($type) {
         if ($tslist = $DB->GetAll('SELECT c.id AS id, time, c.type, c.value AS value,
                     c.currency, c.currencyvalue,
 				    taxes.label AS taxlabel, c.customerid, c.comment, vusers.name AS username,
-				    c.docid, d.number, d.cdate, d.type AS doctype, numberplans.template
+				    c.docid, d.number, d.fullnumber, d.cdate, d.type AS doctype, numberplans.template
 				    FROM cash c
 				    LEFT JOIN documents d ON d.id = c.docid
 				    LEFT JOIN numberplans ON numberplans.id = d.numberplanid
@@ -112,6 +112,7 @@ switch ($type) {
                     $list['value'][] = $saldolist['value'][$i];
                     $list['taxlabel'][] = $saldolist['taxlabel'][$i];
                     $list['date'][] = date('Y/m/d H:i', $saldolist['time'][$i]);
+                    $list['fullnumber'][] = $saldolist['fullnumber'][$i];
                     $list['username'][] = $saldolist['username'][$i];
                     $list['comment'][] = $saldolist['comment'][$i];
                     $list['currency'][] = $saldolist['currency'][$i];

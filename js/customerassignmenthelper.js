@@ -54,7 +54,9 @@ function CustomerAssignmentHelper(options) {
 
 	this.initEventHandlers = function() {
 		$('#submit-button').click(function () {
-			$('.schema-tariff-checkbox[data-mandatory]:checkbox').removeAttr('disabled');
+			if ($(this)[0].form.checkValidity()) {
+				$('.schema-tariff-checkbox[data-mandatory]:checkbox').removeAttr('disabled');
+			}
 		});
 
 		$('#promotion-select').change(this.promotionSelectionHandler);

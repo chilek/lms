@@ -539,7 +539,10 @@ switch ($action) {
             break;
         }
 
-        $invoice['currencyvalue'] = $LMS->getCurrencyValue($invoice['currency'], $invoice['sdate']);
+        $invoice['currencyvalue'] = $LMS->getCurrencyValue(
+            $invoice['currency'],
+            strtotime('yesterday', min($invoice['sdate'], $invoice['cdate'], time()))
+        );
         if (!isset($invoice['currencyvalue'])) {
             die('Fatal error: couldn\'t get quote for ' . $invoice['currency'] . ' currency!<br>');
         }

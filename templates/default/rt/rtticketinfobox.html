@@ -70,7 +70,7 @@
 									<i class="lms-ui-icon-content lms-ui-icon-type"></i>{trans("Ticket type:")}
 								</TD>
 								<TD style="width: 99%;" class="nobr">
-                                    {$_RT_TYPES[$ticket.type].label}
+                                    {trans($_RT_TYPES[$ticket.type].label)}
 								</TD>
 							</TR>
 							{/if}
@@ -363,7 +363,7 @@
 			<br>
 
 			{if ($ticket.owner != $layout.logid && $ticket.state != $smarty.const.RT_RESOLVED) || ConfigHelper::checkPrivilege('superuser')}
-				{button id="ticket-assign-to-me" icon="user" label="Assign to me" href="?m=rtticketedit&id={$ticket.ticketid}&action=assign"}
+				{button id="ticket-assign-to-me" icon="user" label="Assign to me" data_href="?m=rtticketedit&id={$ticket.ticketid}&action=assign"}
 			{/if}
 			{if (!$ticket.verifier && $ticket.owner != $layout.logid && $ticket.state != $smarty.const.RT_RESOLVED) || ConfigHelper::checkPrivilege('superuser')}
 				{button id="ticket-assign2-to-me" type='link-button' icon="user" label="Assign to me as verifier" href="?m=rtticketedit&id={$ticket.ticketid}&action=assign2"}
@@ -385,10 +385,10 @@
 			{/if}
 			{button type="link-button" icon="clone" label="Clone" href="?m=rtticketadd&ticketid={$ticket.ticketid}"}
 			{if $ticket.deleted == 1 && $ticket.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
-				{button id="restore-rtticket" icon="restore" label="Restore<!RT>" href="?m=rtrestore&id={$ticket.ticketid}&taction=restore"}
-				{button id="remove-rtticket" icon="delete" label="Delete permanently" href="?m=rtticketdel&id={$ticket.ticketid}&taction=delperm"}
+				{button id="restore-rtticket" icon="restore" label="Restore<!RT>" data_href="?m=rtrestore&id={$ticket.ticketid}&taction=restore"}
+				{button id="remove-rtticket" icon="delete" label="Delete permanently" data_href="?m=rtticketdel&id={$ticket.ticketid}&taction=delperm"}
 			{else}
-				{button id="delete-rtticket" icon="delete" label="Delete" href="?m=rtticketdel&id={$ticket.ticketid}&taction=delete"}
+				{button id="delete-rtticket" icon="delete" label="Delete" data_href="?m=rtticketdel&id={$ticket.ticketid}&taction=delete"}
 			{/if}
 			{if $ticket.state != $smarty.const.RT_RESOLVED || ($ticket.state == $smarty.const.RT_RESOLVED && $aet && ($smarty.now - $ticket.resolvetime) < $aet) || (ConfigHelper::checkPrivilege('superuser'))}
 			    {button type="link-button" icon="edit" label="Edit" href="?m=rtticketedit&id={$ticket.ticketid}"}
@@ -468,19 +468,19 @@
 	$(function() {
 		$('#delete-rtticket').click(function () {
 			confirmDialog($t("Are you sure, you want to remove ticket '$a'?", sprintf("%06d", {$ticket.ticketid})), this).done(function () {
-				location.href = $(this).attr('href');
+				location.href = $(this).attr('data-href');
 			});
 			return false;
 		});
 		$('#restore-rtticket').click(function () {
 			confirmDialog($t("Are you sure, you want to restore ticket $a?", sprintf("%06d", {$ticket.ticketid})), this).done(function () {
-				location.href = $(this).attr('href');
+				location.href = $(this).attr('data-href');
 			});
 			return false;
 		});
 		$('#remove-rtticket').click(function () {
 			confirmDialog($t("Are you sure, you want to permanently remove ticket $a?", sprintf("%06d", {$ticket.ticketid})), this).done(function () {
-				location.href = $(this).attr('href');
+				location.href = $(this).attr('data-href');
 			});
 			return false;
 		});
@@ -488,7 +488,7 @@
 		$('#ticket-assign-to-me').click(function() {
 			var link = $(this);
 			$.ajax(
-				link.attr('href') + '&check-conflict=1',
+				link.attr('data-href') + '&check-conflict=1',
 				{
 					async: true,
 					method: "GET",
@@ -496,10 +496,10 @@
 					success: function(data) {
 						if (data) {
 							confirmDialog($t("Ticket has already been assigned to other user in mean-time. Are you sure you want to re-assign ticket to you?"), link).done(function() {
-								location.href = link.attr('href');
+								location.href = link.attr('data-href');
 							});
 						} else {
-							location.href = link.attr('href');
+							location.href = link.attr('data-href');
 						}
 					}
 				}

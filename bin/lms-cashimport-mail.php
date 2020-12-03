@@ -238,20 +238,27 @@ foreach ($posts as $postid) {
                     }
                 } elseif (strtolower($part->subtype) == 'mixed' && isset($part->parts)) {
                     foreach ($part->parts as $subpartid => $subpart) {
-                        if ($subpart->type == 3 && $subpart->ifdisposition
-                            && in_array(strtolower($subpart->disposition), array('attachment', 'inline'))
-                            && $subpart->ifdparameters) {
-                            foreach ($subpart->dparameters as $dparameter) {
-                                if (strtolower($dparameter->attribute) == 'filename') {
-                                    if (preg_match('/^=\?/', $dparameter->value)) {
-                                        $elems = imap_mime_header_decode($dparameter->value);
+                        if ($subpart->type == 3
+                            && (($subpart->ifdisposition
+                                && in_array(strtolower($subpart->disposition), array('attachment', 'inline'))
+                                && $subpart->ifdparameters)
+                            || (!$subpart->ifdisposition && !$subpart->ifdparameters && $subpart->ifparameters))) {
+                            if ($subpart->ifdparameters) {
+                                $parameters = $subpart->dparameters;
+                            } else {
+                                $parameters = $subpart->parameters;
+                            }
+                            foreach ($parameters as $parameter) {
+                                if (strtolower($parameter->attribute) == 'filename' || strtolower($parameter->attribute) == 'name') {
+                                    if (preg_match('/^=\?/', $parameter->value)) {
+                                        $elems = imap_mime_header_decode($parameter->value);
                                         if ($elems[0]->charset != 'default') {
                                             $fname = iconv($elems[0]->charset, 'utf-8', $elems[0]->text);
                                         } else {
                                             $fname = $elems[0]->text;
                                         }
                                     } else {
-                                        $fname = $dparameter->value;
+                                        $fname = $parameter->value;
                                     }
                                     $body = imap_fetchbody($ih, $postid, ($partid + 1) . '.' . ($subpartid + 1));
                                     if ($subpart->encoding == 3) {

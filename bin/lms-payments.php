@@ -40,7 +40,9 @@ $parameters = array(
     'version' => 'v',
     'fakedate:' => 'f:',
     'customerid:' => null,
+    'division:' => null,
     'customergroups:' => 'g:',
+    'customer-status:' => null,
 );
 
 $long_to_shorts = array();
@@ -93,10 +95,15 @@ lms-payments.php
 -v, --version                   print version info and exit;
 -q, --quiet                     suppress any output, except errors;
 -f, --fakedate=YYYY/MM/DD       override system date;
-    --customerid=<id>           limit assignments to to specifed customer
+    --customerid=<id>           limit assignments to specifed customer
+    --division=<shortname>
+                                limit assignments to customers which belong to specified
+                                division
 -g, --customergroups=<group1,group2,...>
-                                allow to specify customer groups to which notified customers
+                                allow to specify customer groups to which customers
                                 should be assigned
+    --customer-status=<status1,status2,...>
+                                take assignment of customers with specified status only
 
 EOF;
     exit(0);
@@ -176,6 +183,11 @@ $LMS = new LMS($DB, $AUTH, $SYSLOG);
 $plugin_manager = new LMSPluginManager();
 $LMS->setPluginManager($plugin_manager);
 
+$divisionid = isset($options['division']) ? $LMS->getDivisionIdByShortName($options['division']) : null;
+if (!empty($divisionid)) {
+    ConfigHelper::setFilter($divisionid);
+}
+
 $deadline = ConfigHelper::getConfig('payments.deadline', 14);
 $sdate_next = ConfigHelper::checkConfig('payments.saledate_next_month');
 $paytype = ConfigHelper::getConfig('payments.paytype', 2); // TRANSFER
@@ -195,6 +207,20 @@ $customergroups = ConfigHelper::getConfig('payments.customergroups', '', true);
 
 $force_telecom_service_flag = ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.force_telecom_service_flag', 'true'));
 $check_customer_vat_payer_flag_for_telecom_service = ConfigHelper::checkConfig('invoices.check_customer_vat_payer_flag_for_telecom_service');
+
+$allowed_customer_status =
+Utils::determineAllowedCustomerStatus(
+    isset($options['customer-status'])
+        ? $options['customer-status']
+        : ConfigHelper::getConfig('payments.allowed_customer_status', ''),
+    -1
+);
+
+if (empty($allowed_customer_status)) {
+    $customer_status_condition = '';
+} else {
+    $customer_status_condition = ' AND c.status IN (' . implode(',', $allowed_customer_status) . ')';
+}
 
 function localtime2()
 {
@@ -413,13 +439,15 @@ if (!empty($customergroups)) {
 if ($check_invoices) {
     $DB->Execute(
         "UPDATE documents SET closed = 1
-		WHERE customerid IN (
-			SELECT c.customerid
-			FROM cash c
-			WHERE c.time <= ?NOW?
-				" . ($customergroups ? str_replace('%customerid_alias%', 'c.customerid', $customergroups) : '') . "
-			GROUP BY c.customerid
-			HAVING SUM(c.value * c.currencyvalue) >= 0
+		WHERE " . ($customerid ? 'customerid = ' . $customerid : '1 = 1') . " AND customerid IN (
+			SELECT cash.customerid
+			FROM cash
+			JOIN customers c ON c.id = cash.customerid
+			WHERE cash.time <= ?NOW?"
+                . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
+                . ($customergroups ? str_replace('%customerid_alias%', 'cash.customerid', $customergroups) : '') . "
+			GROUP BY cash.customerid
+			HAVING SUM(cash.value * cash.currencyvalue) >= 0
 		) AND type IN (?, ?, ?)
 			AND cdate <= ?NOW?
 			AND closed = 0",
@@ -461,6 +489,7 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 		a.paytype AS a_paytype, a.numberplanid, a.attribute,
 		p.name AS promotion_name, ps.name AS promotion_schema_name, ps.length AS promotion_schema_length,
 		d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
+		t.flags,
 		(CASE WHEN a.liabilityid IS NULL THEN t.type ELSE l.type END) AS tarifftype,
 		(CASE WHEN a.liabilityid IS NULL THEN t.name ELSE l.name END) AS name,
 		(CASE WHEN a.liabilityid IS NULL THEN t.taxid ELSE l.taxid END) AS taxid,
@@ -488,8 +517,10 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 	LEFT JOIN tariffs t ON (a.tariffid = t.id)
 	LEFT JOIN liabilities l ON (a.liabilityid = l.id)
 	LEFT JOIN divisions d ON (d.id = c.divisionid)
-	WHERE " . ($customerid ? 'c.id = ' . $customerid . ' AND ' : '') . "(c.status = ? OR c.status = ?)
-		AND a.commited = 1
+	WHERE " . ($customerid ? 'c.id = ' . $customerid : '1 = 1')
+        . $customer_status_condition
+        . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
+        . " AND a.commited = 1
 		AND ((a.period = ? AND at = ?)
 			OR ((a.period = ?
 			OR (a.period = ? AND at = ?)
@@ -500,9 +531,13 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 			AND a.datefrom <= ? AND (a.dateto > ? OR a.dateto = 0)))"
         . ($customergroups ? str_replace('%customerid_alias%', 'c.id', $customergroups) : '')
     ." ORDER BY a.customerid, a.recipient_address_id, a.invoice,  a.paytype, a.numberplanid, a.separatedocument, currency, value DESC, a.id";
-$services = $DB->GetAll($query, array(CTYPES_PRIVATE, CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION,
-    DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $last_dom ? 0 : $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
-    $currtime, $currtime));
+$services = $DB->GetAll(
+    $query,
+    array(
+        CTYPES_PRIVATE, DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $last_dom ? 0 : $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
+        $currtime, $currtime
+    )
+);
 
 $billing_invoice_description = ConfigHelper::getConfig('payments.billing_invoice_description', 'Phone calls between %backward_periods (for %phones)');
 
@@ -566,9 +601,10 @@ $query = "SELECT
 			LEFT JOIN tariffs t ON (a.tariffid = t.id)
 			LEFT JOIN liabilities l ON (a.liabilityid = l.id)
 			LEFT JOIN divisions d ON (d.id = c.divisionid)
-	    WHERE " . ($customerid ? 'c.id = ' . $customerid . ' AND ' : '') . "
-	      (c.status  = ? OR c.status = ?) AND
-	      t.type = ? AND
+	    WHERE " . ($customerid ? 'c.id = ' . $customerid : '1 = 1')
+           . $customer_status_condition
+           . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
+           . " AND t.type = ? AND
 	      a.commited = 1 AND
 		  ((a.period = ? AND at = ?) OR
 		  ((a.period = ? OR
@@ -582,9 +618,14 @@ $query = "SELECT
         . ($customergroups ? str_replace('%customerid_alias%', 'c.id', $customergroups) : '')
     ." ORDER BY a.customerid, a.recipient_address_id, a.invoice, a.paytype, a.numberplanid, a.separatedocument, currency, voipcost.value DESC, a.id";
 
-$billings = $DB->GetAll($query, array(CTYPES_PRIVATE, 1, CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION, SERVICE_PHONE,
-    DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $last_dom ? 0 : $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
-    $currtime, $currtime));
+$billings = $DB->GetAll(
+    $query,
+    array(
+        CTYPES_PRIVATE, 1, SERVICE_PHONE,
+        DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $last_dom ? 0 : $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
+        $currtime, $currtime
+    )
+);
 
 $assigns = array();
 
@@ -634,22 +675,30 @@ $currencyvalues = array();
 // which have estimated currency value earlier (in the moment of document issue)
 $daystart = mktime(0, 0, 0, date('n', $currtime), date('j', $currtime), date('Y', $currtime));
 $dayend = $daystart + 86399;
+$currencydaystart = strtotime('yesterday', $daystart);
+$currencycurrtime = strtotime('yesterday', $currtime);
+$currencydayend = strtotime('yesterday', $dayend);
 
 $documents = $DB->GetAll(
     'SELECT d.id, d.currency FROM documents d
-    WHERE ' . ($customerid ? 'd.customerid = ' . $customerid . ' AND ' : '') . '((d.type IN (?, ?, ?) AND sdate >= ? AND sdate <= ?)
-        OR (d.type IN (?, ?) AND cdate >= ? AND cdate <= ?))
+    JOIN customers c ON c.id = d.customerid
+    WHERE ' . ($customerid ? 'd.customerid = ' . $customerid : '1 = 1')
+        . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
+        . ' AND d.type IN (?, ?, ?, ?, ?) AND ((sdate = 0 AND cdate >= ? AND cdate <= ?)
+        OR (sdate > 0 AND ((sdate < cdate  AND sdate >= ? AND sdate <= ?) OR (sdate >= cdate AND cdate >= ? AND cdate <= ?))))
         AND currency <> ?',
     array(
         DOC_INVOICE,
         DOC_CNOTE,
         DOC_INVOICE_PRO,
-        $daystart,
-        $dayend,
         DOC_RECEIPT,
         DOC_DNOTE,
-        $daystart,
-        $dayend,
+        $currencydaystart,
+        $currencydayend,
+        $currencydaystart,
+        $currencydayend,
+        $currencydaystart,
+        $currencydayend,
         Localisation::getCurrentCurrency(),
     )
 );
@@ -660,7 +709,7 @@ if (!empty($documents)) {
             continue;
         }
         if (!isset($currencyvalues[$currency])) {
-            $currencyvalues[$currency] = $LMS->getCurrencyValue($currency, $daystart);
+            $currencyvalues[$currency] = $LMS->getCurrencyValue($currency, $currencydaystart);
             if (!isset($currencyvalues[$currency])) {
                 echo 'Unable to determine currency value for document ID ' . $document['id'] . ' and currency ' . $currency . '.' . PHP_EOL;
                 continue;
@@ -690,12 +739,15 @@ if (!empty($documents)) {
 }
 
 $cashes = $DB->GetAll(
-    'SELECT id, currency FROM cash
-    WHERE ' . ($customerid ? 'customerid = ' . $customerid . ' AND ' : '') . 'currency <> ? AND time >= ? AND time <= ?',
+    'SELECT cash.id, cash.currency FROM cash
+    LEFT JOIN customers c ON c.id = cash.customerid
+    WHERE ' . ($customerid ? 'cash.customerid = ' . $customerid : '1 = 1')
+    . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
+    . ' AND cash.docid IS NULL AND cash.currency <> ? AND cash.time >= ? AND cash.time <= ?',
     array(
         Localisation::getCurrentCurrency(),
-        $daystart,
-        $dayend,
+        $currencydaystart,
+        $currencydayend,
     )
 );
 if (!empty($cashes)) {
@@ -705,7 +757,7 @@ if (!empty($cashes)) {
             continue;
         }
         if (!isset($currencyvalues[$currency])) {
-            $currencyvalues[$currency] = $LMS->getCurrencyValue($currency, $daystart);
+            $currencyvalues[$currency] = $LMS->getCurrencyValue($currency, $currencydaystart);
             if (!isset($currencyvalues[$currency])) {
                 echo 'Unable to determine currency value for cash ID ' . $cash['id'] . ' and currency ' . $currency . '.' . PHP_EOL;
                 continue;
@@ -920,6 +972,91 @@ if ($prefer_netto) {
     $taxeslist = $LMS->GetTaxes();
 }
 
+// find assignments with tariff reward/penalty flag
+// and check if customer applies to this
+$reward_to_check = array();
+$reward_period_to_check = array();
+foreach ($assigns as $assign) {
+    $cid = $assign['customerid'];
+    if (isset($reward_to_check[$cid]) || ($assign['flags'] & TARIFF_FLAG_REWARD_PENALTY)) {
+        $reward_to_check[$cid] = $cid;
+    }
+    if ($reward_to_check[$cid]) {
+        if (!isset($reward_period_to_check[$cid])) {
+            $reward_period_to_check[$cid] = DAILY;
+        }
+        if ($assign['period'] >= WEEKLY && $assign['period'] <= YEARLY) {
+            $reward_period_to_check[$cid] = max($reward_period_to_check[$cid], $assign['period']);
+        } elseif ($assign['period'] == HALFYEARLY && $reward_period_to_check[$cid] < YEARLY) {
+            $reward_period_to_check[$cid] = HALFYEARLY;
+        }
+    }
+}
+
+$period_end = mktime(0, 0, 0, date('m', $currtime), date('d', $currtime), date('Y', $currtime));
+$period_starts = array(
+    DAILY => strtotime('yesterday', $period_end),
+    WEEKLY => strtotime('1 week ago', $period_end),
+    MONTHLY => strtotime('1 month ago', $period_end),
+    QUARTERLY => strtotime('3 months ago', $period_end),
+    HALFYEARLY => strtotime('6 months ago', $period_end),
+    YEARLY => strtotime('1 year ago', $period_end),
+);
+
+$rewards = array();
+foreach ($reward_to_check as $cid) {
+    $period_start = $period_starts[$reward_period_to_check[$cid]];
+    $balance = $LMS->GetCustomerBalance($cid, $period_start);
+    if ($balance < 0) {
+        $rewards[$cid] = false;
+        continue;
+    }
+    $history = $DB->GetAll(
+        'SELECT (CASE WHEN d.id IS NULL THEN c.time ELSE c.time + d.paytime * 86400 END) AS time,
+            d.id AS docid,
+            (c.value * c.currencyvalue) AS value
+        FROM cash c
+        LEFT JOIN documents d ON d.id = c.docid AND d.type IN ?
+        WHERE c.customerid = ?
+            AND c.time > ? AND c.time < ?
+        ORDER BY time',
+        array(
+            array(DOC_INVOICE, DOC_CNOTE, DOC_DNOTE, DOC_INVOICE_PRO),
+            $cid,
+            $period_start,
+            $period_end,
+        )
+    );
+    $rewards[$cid] = true;
+    if (!empty($history)) {
+        foreach ($history as &$record) {
+            if (!empty($record['docid'])) {
+                $record['time'] = mktime(
+                    23,
+                    59,
+                    59,
+                    date('m', $record['time']),
+                    date('d', $record['time']),
+                    date('Y', $record['time'])
+                ) + 1;
+            }
+        }
+        unset($record);
+        usort($history, function ($a, $b) {
+            return $a['time'] - $b['time'];
+        });
+        foreach ($history as $record) {
+            $balance += $record['value'];
+            if (empty($record['docid'])) {
+                continue;
+            }
+            if ($balance < 0) {
+                $rewards[$cid] = false;
+            }
+        }
+    }
+}
+
 // determine currency values for assignments with foreign currency
 // if payments.prefer_netto = true, use value netto+tax
 foreach ($assigns as &$assign) {
@@ -936,7 +1073,7 @@ foreach ($assigns as &$assign) {
     }
     if ($currency != Localisation::getCurrentCurrency()) {
         if (!isset($currencyvalues[$currency])) {
-            $currencyvalues[$currency] = $LMS->getCurrencyValue($currency, $currtime);
+            $currencyvalues[$currency] = $LMS->getCurrencyValue($currency, $currencycurrtime);
             if (!isset($currencyvalues[$currency])) {
                 die('Fatal error: couldn\'t get quote for ' . $currency . ' currency!' . PHP_EOL);
             }
@@ -959,6 +1096,12 @@ foreach ($assigns as $assign) {
 
     $assign['value'] = str_replace(',', '.', floatval($assign['value']));
     if (empty($assign['value'])) {
+        continue;
+    }
+
+    if (($assign['flags'] & TARIFF_FLAG_REWARD_PENALTY)
+        && ($assign['value'] < 0 && !$rewards[$cid]
+            || $assign['value'] > 0 && $rewards[$cid])) {
         continue;
     }
 
@@ -1258,7 +1401,7 @@ foreach ($assigns as $assign) {
                         $currencyvalues[$currency],
                         empty($customer['documentmemo']) ? null : $customer['documentmemo'],
                         ($telecom_service ? DOC_FLAG_TELECOM_SERVICE : 0)
-                            + ($customer['flags'] & CUSTOMER_FLAG_RELATED_ENTITY && $customer['type'] == CTYPES_COMPANY ? DOC_FLAG_RELATED_ENTITY : 0),
+                            + ($customer['flags'] & CUSTOMER_FLAG_RELATED_ENTITY ? DOC_FLAG_RELATED_ENTITY : 0),
                     )
                 );
 
@@ -1507,11 +1650,28 @@ foreach ($assigns as $assign) {
                     if ($assign['invoice'] == DOC_DNOTE) {
                         $tmp_itemid = 0;
                     } else {
-                        $tmp_itemid = $DB->GetOne(
-                            "SELECT itemid FROM invoicecontents
-						WHERE tariffid = ? AND value = ? AND docid = ? AND description = ?",
-                            array($assign['tariffid'], str_replace(',', '.', $value / $assign['count']), $invoices[$cid], $sdesc)
-                        );
+                        if (empty($assign['tariffid'])) {
+                            $tmp_itemid = $DB->GetOne(
+                                "SELECT itemid FROM invoicecontents
+                                WHERE tariffid IS NULL AND value = ? AND docid = ? AND description = ?",
+                                array(
+                                    str_replace(',', '.', $value / $assign['count']),
+                                    $invoices[$cid],
+                                    $sdesc
+                                )
+                            );
+                        } else {
+                            $tmp_itemid = $DB->GetOne(
+                                "SELECT itemid FROM invoicecontents
+                                WHERE tariffid = ? AND value = ? AND docid = ? AND description = ?",
+                                array(
+                                    $assign['tariffid'],
+                                    str_replace(',', '.', $value / $assign['count']),
+                                    $invoices[$cid],
+                                    $sdesc
+                                )
+                            );
+                        }
                     }
 
                     if ($tmp_itemid != 0) {
@@ -1616,13 +1776,15 @@ foreach ($assigns as $assign) {
 if ($check_invoices) {
     $DB->Execute(
         "UPDATE documents SET closed = 1
-		WHERE " . ($customerid ? 'customerid = ' . $customerid . ' AND ' : '') . "customerid IN (
-			SELECT c.customerid
-			FROM cash c
-			WHERE c.time <= ?NOW?
-				" . ($customergroups ? str_replace('%customerid_alias%', 'c.customerid', $customergroups) : '') . "
-			GROUP BY c.customerid
-			HAVING SUM(c.value * c.currencyvalue) >= 0
+		WHERE " . ($customerid ? 'customerid = ' . $customerid : '1 = 1') . " AND customerid IN (
+			SELECT cash.customerid
+			FROM cash
+			JOIN customers c ON c.id = cash.customerid
+			WHERE cash.time <= ?NOW?"
+                . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
+                . ($customergroups ? str_replace('%customerid_alias%', 'cash.customerid', $customergroups) : '') . "
+			GROUP BY cash.customerid
+			HAVING SUM(cash.value * cash.currencyvalue) >= 0
 		) AND type IN (?, ?, ?)
 			AND cdate <= ?NOW?
 			AND closed = 0",
@@ -1634,16 +1796,21 @@ if ($delete_old_assignments_after_days) {
     // delete old assignments
     $DB->Execute(
         "DELETE FROM liabilities WHERE id IN (
-			SELECT liabilityid FROM assignments
-				WHERE " . ($customerid ? 'customerid = ' . $customerid . ' AND ' : '') . "((dateto <> 0 AND dateto < $today - ? * 86400
-						OR (period = ? AND at < $today - ? * 86400))
-					AND liabilityid IS NOT NULL)
+			SELECT a.liabilityid FROM assignments a
+			JOIN customers c ON c.id = a.customerid
+            WHERE " . ($customerid ? 'a.customerid = ' . $customerid : '1 = 1')
+                . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
+                . " AND ((a.dateto <> 0 AND a.dateto < $today - ? * 86400
+                    OR (a.period = ? AND a.at < $today - ? * 86400))
+                AND a.liabilityid IS NOT NULL)
 		)",
         array($delete_old_assignments_after_days, DISPOSABLE, $delete_old_assignments_after_days)
     );
     $DB->Execute(
         "DELETE FROM assignments
-		WHERE " . ($customerid ? 'customerid = ' . $customerid . ' AND ' : '') . "((dateto <> 0 AND dateto < $today - ? * 86400)
+		WHERE " . ($customerid ? 'customerid = ' . $customerid : '1 = 1')
+            . ($divisionid ? ' AND EXISTS (SELECT c.id FROM customers c WHERE c.divisionid = ' . $divisionid . ' AND c.id = customerid)' : '')
+            . " AND ((dateto <> 0 AND dateto < $today - ? * 86400)
 			OR (period = ? AND at < $today - ? * 86400))",
         array($delete_old_assignments_after_days, DISPOSABLE, $delete_old_assignments_after_days)
     );

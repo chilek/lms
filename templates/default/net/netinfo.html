@@ -133,7 +133,9 @@
 		</td>
 		<TD colspan="3">
 			{if $unlockedit}
-				{customerlist form="netedit" customers=$customers selected=$network.ownerid selectname="networkdata[customerid]" inputname="networkdata[ownerid]" selecttip="Assign network to customer" inputtip="Enter customer ID (optional)"}
+				{customerlist form="netedit" customers=$customers selected=$network.ownerid version=2
+					selectname="networkdata[customerid]" inputname="networkdata[ownerid]"
+					selecttip="Assign network to customer" inputtip="Enter customer ID (optional)"}
 			{else}
 				<a href="?m=customerinfo&id={$network.ownerid}">{$network.customername}</a>
 			{/if}

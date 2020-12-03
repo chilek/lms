@@ -97,6 +97,13 @@
                                     {else}
                                         <span class="blend">({trans("period undefined")})</span>
                                     {/if}
+                                    {if $tariff.flags}
+                                        {if $tariff.value < 0}
+                                            {icon name="reward" tip="reward"}
+                                        {else}
+                                            {icon name="penalty" tip="penalty"}
+                                        {/if}
+                                    {/if}
                                 </TD>
                             </TR>
                             <TR>

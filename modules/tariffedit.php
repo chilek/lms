@@ -42,7 +42,7 @@ if (isset($_POST['tariff'])) {
     $limit = isset($_POST['limit']) ? $_POST['limit'] : array();
 
     foreach ($tariff as $key => $value) {
-        if ($key != 'authtype' && $key != 'tags') {
+        if ($key != 'authtype' && $key != 'tags' && $key != 'flags') {
             $tariff[$key] = trim($value);
         }
     }

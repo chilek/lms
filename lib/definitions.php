@@ -388,62 +388,62 @@ define('RT_TYPE_TRANSFER', 12);
 
 $RT_TYPES = array(
     RT_TYPE_OTHER => array(
-        'label' => trans('Other'),
+        'label' => 'Other',
         'class' => 'lms-ui-rt-ticket-type-other',
         'name' => 'RT_TYPE_OTHER'
     ),
     RT_TYPE_OFFER => array(
-        'label' => trans('Offer'),
+        'label' => 'Offer',
         'class' => 'lms-ui-rt-ticket-type-offer',
         'name' => 'RT_TYPE_OFFER'
     ),
     RT_TYPE_DOCS => array(
-        'label' => trans('Documents'),
+        'label' => 'Documents',
         'class' => 'lms-ui-rt-ticket-type-docs',
         'name' => 'RT_TYPE_DOCS'
     ),
     RT_TYPE_FAULT => array(
-        'label' => trans('Fault'),
+        'label' => 'Fault',
         'class' => 'lms-ui-rt-ticket-type-fault',
         'name' => 'RT_TYPE_FAULT'
     ),
     RT_TYPE_INST => array(
-        'label' => trans('Instalation'),
+        'label' => 'Instalation',
         'class' => 'lms-ui-rt-ticket-type-inst',
         'name' => 'RT_TYPE_INST'
     ),
     RT_TYPE_MOD => array(
-        'label' => trans('Modification'),
+        'label' => 'Modification',
         'class' => 'lms-ui-rt-ticket-type-mod',
         'name' => 'RT_TYPE_MOD'
     ),
     RT_TYPE_CONF => array(
-        'label' => trans('Configuration'),
+        'label' => 'Configuration',
         'class' => 'lms-ui-rt-ticket-type-conf',
         'name' => 'RT_TYPE_CONF'
     ),
     RT_TYPE_START => array(
-        'label' => trans('Start service'),
+        'label' => 'Start service',
         'class' => 'lms-ui-rt-ticket-type-start',
         'name' => 'RT_TYPE_START'
     ),
     RT_TYPE_STOP => array(
-        'label' => trans('Hold service'),
+        'label' => 'Hold service',
         'class' => 'lms-ui-rt-ticket-type-stop',
         'name' => 'RT_TYPE_STOP'
     ),
     RT_TYPE_TRANSFER => array(
-      'label' => trans('Transfer service'),
+      'label' => 'Transfer service',
       'class' => 'lms-ui-rt-ticket-type-transfer',
       'name' => 'RT_TYPE_TRANSFER'
     ),
     RT_TYPE_REMOVE => array(
-        'label' => trans('Deinstalation'),
+        'label' => 'Deinstalation',
         'class' => 'lms-ui-rt-ticket-type-remove',
         'name' => 'RT_TYPE_REMOVE'
     ),
     RT_TYPE_PAYMENT => array(
-        'label' => trans('Payment'),
+        'label' => 'Payment',
         'class' => 'lms-ui-rt-ticket-type-payment',
         'name' => 'RT_TYPE_PAYMENT'
     ),
@@ -625,6 +625,14 @@ $DOCTYPES = array(
 define('DOC_FLAG_RECEIPT', 1);
 define('DOC_FLAG_TELECOM_SERVICE', 2);
 define('DOC_FLAG_RELATED_ENTITY', 4);
+define('DOC_FLAG_SPLIT_PAYMENT', 8);
+
+$DOC_FLAGS = array(
+    DOC_FLAG_RECEIPT => trans('FP'),
+    DOC_FLAG_TELECOM_SERVICE => trans('EE'),
+    DOC_FLAG_RELATED_ENTITY => trans('TP'),
+    DOC_FLAG_SPLIT_PAYMENT => trans('MPP'),
+);
 
 define('DOC_ENTITY_ORIGINAL', 1);
 define('DOC_ENTITY_COPY', 2);
@@ -702,6 +710,9 @@ define('SERVICE_SERVICE', 3);
 define('SERVICE_PHONE', 4);
 define('SERVICE_TV', 5);
 define('SERVICE_TRANSMISSION', 6);
+
+// Tariff flags
+define('TARIFF_FLAG_REWARD_PENALTY', 1);
 
 // VoIP call types
 define('CALL_INCOMING', 1);
@@ -1044,6 +1055,13 @@ define('EXISTINGASSIGNMENT_SUSPEND', 1);
 define('EXISTINGASSIGNMENT_CUT', 2);
 define('EXISTINGASSIGNMENT_DELETE', 3);
 
+$EXISTINGASSIGNMENTS = array(
+    EXISTINGASSIGNMENT_KEEP => trans('<!existingassignment>keep'),
+    EXISTINGASSIGNMENT_SUSPEND => trans('<!existingassignment>suspend'),
+    EXISTINGASSIGNMENT_CUT => trans('<!existingassignment>cut'),
+    EXISTINGASSIGNMENT_DELETE => trans('<!existingassignment>delete'),
+);
+
 $CURRENCIES = array(
     'AUD' => 'AUD',
     'BGN' => 'BGN',
@@ -1084,13 +1102,6 @@ $CURRENCIES = array(
     'USD' => 'USD',
     'XDR' => 'XOR',
     'ZAR' => 'ZAR',
-);
-
-$EXISTINGASSIGNMENTS = array(
-    EXISTINGASSIGNMENT_KEEP => trans('<!existingassignment>keep'),
-    EXISTINGASSIGNMENT_SUSPEND => trans('<!existingassignment>suspend'),
-    EXISTINGASSIGNMENT_CUT => trans('<!existingassignment>cut'),
-    EXISTINGASSIGNMENT_DELETE => trans('<!existingassignment>delete'),
 );
 
 $TAX_CATEGORIES = array(

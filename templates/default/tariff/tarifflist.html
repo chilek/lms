@@ -26,10 +26,10 @@
 	<THEAD>
 	<TR {tip text="Click on column name to change sorting order"}>
 		<TD class="nobr">
-			<IMG SRC="img/money.gif" ALT=""> <A href="?m=tarifflist&amp;o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order == "name"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			{icon name="money" class="fa-fw"} <A href="?m=tarifflist&amp;o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order == "name"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 			({trans("Effective date")})
 			<BR>
-			<IMG SRC="img/info1.gif" ALT=""> <A href="?m=tarifflist&amp;o=description{if $listdata.direction == "asc" && $listdata.order == "description"},desc{/if}">{trans("Description:")}</A> {if $listdata.order == "description"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			{icon name="info" class="fa-fw"} <A href="?m=tarifflist&amp;o=description{if $listdata.direction == "asc" && $listdata.order == "description"},desc{/if}">{trans("Description:")}</A> {if $listdata.order == "description"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="text-right nobr">
 			<A href="?m=tarifflist&amp;o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order == "id"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
@@ -122,7 +122,8 @@
 	{foreach $tarifflist as $tariff}
 	<TR class="highlight{if $tariff.disabled == 1 && !$listdata.state} blend{/if}" data-target-url="?m=tariffinfo&id={$tariff.id}" data-name="{$tariff.name}">
 		<TD>
-			<IMG SRC="img/money.gif" ALT="">&nbsp;<a href="?m=tariffinfo&amp;id={$tariff.id}"><B>{$tariff.name}</B></a>
+			{icon name="money" class="fa-fw"}
+			<a href="?m=tariffinfo&id={$tariff.id}"><B>{$tariff.name}</B></a>
 			{if $tariff.datefrom || $tariff.dateto}
 				{if $tariff.datefrom}
 				({trans("from:")} {$tariff.datefrom|date_format:"%Y/%m/%d"}{if !$tariff.dateto}){/if}
@@ -132,7 +133,10 @@
 				{/if}
 			{/if}
 			<BR>
-			{if $tariff.description}<IMG SRC="img/info1.gif" ALT="">&nbsp;{$tariff.description}{/if}
+			{if $tariff.description}
+				{icon name="info" class="fa-fw"}
+				{$tariff.description}
+			{/if}
 			{if !empty($tariff.tags)}
 			<br>
 			{trans("Tags:")}
@@ -171,23 +175,21 @@
 			{/if}
 		</TD>
 		<TD class="lms-ui-buttons text-right nobr">
-				<a href="?m=tariffedit&amp;set&amp;id={$tariff.id}">
-					{if $tariff.disabled == 0}
-						<img src="img/access.gif" alt="{t}Disable{/t}" title="{t}Disable{/t}" />
-					{else}
-						<img src="img/noaccess.gif" alt="{t}Enable{/t}" title="{t}Enable{/t}" />
-					{/if}
-				</a>
-				{if $tariff.customers}
-					<A class="delete-tariff-alert" href="#">
-				{else}
-					<A class="delete-tariff" HREF="?m=tariffdel&id={$tariff.id}">
-				{/if}<IMG SRC="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
-				{if empty($tariff.customers) || ConfigHelper::checkPrivilege('used_tariff_edit')}
-					<A HREF="?m=tariffedit&id={$tariff.id}"><IMG SRC="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
-				{/if}
-				<A HREF="?m=tariffadd&amp;id={$tariff.id}"><IMG SRC="img/clone.gif" alt="{trans("Clone")}" title="{trans("Clone")}"></A>
-				<A HREF="?m=tariffinfo&amp;id={$tariff.id}"><IMG SRC="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
+			{if $tariff.disabled == 0}
+				{button type="link" icon="connected" tip="Disable" href="?m=tariffedit&set&id={$tariff.id}"}
+			{else}
+				{button type="link" icon="disconnected" tip="Enable" href="?m=tariffedit&set&id={$tariff.id}"}
+			{/if}
+			{if $tariff.customers}
+				{button type="link" icon="delete" tip="Delete" class="delete-tariff-alert"}
+			{else}
+				{button type="link" icon="delete" tip="Delete" class="delete-tariff" data_href="?m=tariffdel&id={$tariff.id}"}
+			{/if}
+			{if empty($tariff.customers) || ConfigHelper::checkPrivilege('used_tariff_edit')}
+				{button type="link" icon="edit" tip="Edit" href="?m=tariffedit&id={$tariff.id}"}
+			{/if}
+			{button type="link" icon="clone" tip="Clone" href="?m=tariffadd&id={$tariff.id}"}
+			{button type="link" icon="info" tip="Info" href="?m=tariffinfo&id={$tariff.id}"}
 		</TD>
 	</TR>
 	{foreachelse}
@@ -221,9 +223,8 @@
 	<script>
 		$('.delete-tariff').click(function() {
 			var name = $(this).closest('tr').attr('data-name');
-			console.log('name=', name);
 			confirmDialog($t("Are you sure, you want to delete tariff '$a'?", name), this).done(function() {
-				location.href = $(this).attr('href');
+				location.href = $(this).attr('data-href');
 			});
 			return false;
 		});

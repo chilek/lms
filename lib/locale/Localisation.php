@@ -422,7 +422,7 @@ class Localisation
         return call_user_func_array('Localisation::callFunction', $args);
     }
 
-    public static function arraySort(array &$array, $key = null)
+    public static function arraySort(array $array, $key = null)
     {
         foreach ($array as &$item) {
             if (isset($key)) {
@@ -439,5 +439,7 @@ class Localisation
                 return strcoll($a, $b);
             }
         });
+
+        return $array;
     }
 }

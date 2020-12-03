@@ -3,6 +3,7 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
+<script src="js/lms-ui-deadline-selection.js"></script>
 <script>
 
 	function saveInvoice() {
@@ -113,13 +114,15 @@
 		</TD>
 		<TD class="nobr">
 			{if ConfigHelper::checkPrivilege("invoice_consent_date")}
-				<INPUT TYPE="TEXT" NAME="cnote[cdate]" id="cdate" VALUE="{$cnote.cdate|date_format:"%Y/%m/%d"}" SIZE="10"
-						placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
+				<INPUT type="text" name="cnote[cdate]" id="cdate" value="{$cnote.cdate|date_format:"%Y/%m/%d"}" size="12"
+					placeholder="{trans("yyyy/mm/dd")}"
+					{tip class="lms-ui-date" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}
+				>
 				{if $cnote.cdatewarning}
-					<INPUT TYPE="HIDDEN" NAME="cnote[cdatewarning]" VALUE="1">
+					<INPUT type="hidden" name="cnote[cdatewarning]" value="1">
 				{/if}
 			{else}
-				<INPUT TYPE="hidden" NAME="cnote[cdate]" id="cdate" VALUE="{$cnote.cdate|date_format:"%Y/%m/%d"}">
+				<INPUT type="hidden" name="cnote[cdate]" id="cdate" value="{$cnote.cdate|date_format:"%Y/%m/%d"}">
 				{$cnote.cdate|date_format:"%Y/%m/%d"}
 			{/if}
 		</TD>
@@ -130,10 +133,12 @@
 		</TD>
 		<TD class="nobr">
 			{if ConfigHelper::checkPrivilege("invoice_sale_date")}
-				<INPUT TYPE="TEXT" NAME="cnote[sdate]" VALUE="{$cnote.sdate|date_format:"%Y/%m/%d"}" SIZE="10"
-						placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"}>
+				<INPUT type="text" name="cnote[sdate]" value="{$cnote.sdate|date_format:"%Y/%m/%d"}" size="12"
+					placeholder="{trans("yyyy/mm/dd")}"
+					{tip class="lms-ui-date" text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"}
+				>
 			{else}
-				<INPUT TYPE="hidden" NAME="cnote[sdate]" VALUE="{$cnote.sdate|date_format:"%Y/%m/%d"}">
+				<INPUT type="hidden" name="cnote[sdate]" value="{$cnote.sdate|date_format:"%Y/%m/%d"}">
 				{$cnote.sdate|date_format:"%Y/%m/%d"}
 			{/if}
 		</TD>
@@ -143,8 +148,7 @@
 			{trans("Deadline:")}
 		</TD>
 		<TD class="nobr">
-			<input type="text" name="cnote[deadline]" value="{$cnote.deadline|date_format:"%Y/%m/%d"}" size="10"
-					placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter deadline date in YYYY/MM/DD format (empty field means default deadline) or click to select it from calendar" trigger="deadline"}>
+			{deadline_selection name="cnote[deadline]" cdate_selector="#cdate" value=$cnote.deadline}
 		</TD>
 	</TR>
 	<TR>
@@ -222,8 +226,8 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD class="buttons" COLSPAN="2">
-			<A HREF="javascript:document.setheader.submit();">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
+		<TD class="lms-ui-box-buttons" COLSPAN="2">
+			{button type="submit" icon="save" label="Submit"}
 		</TD>
 	</TR>
 	</TBODY>
@@ -287,9 +291,7 @@
 				{$itemid}.
 			</TD>
 			<TD>
-				{if $refdoc.closed}
-					{$item.name}
-				{elseif $item.deleted}
+				{if $item.deleted}
 					<INPUT TYPE="hidden" VALUE="{$item.name|escape}" NAME="name[{$itemid}]">{$item.name}
 				{else}
 					<INPUT TYPE="text" VALUE="{$item.name|escape}" NAME="name[{$itemid}]" SIZE="48" style="width: 100%">
@@ -299,15 +301,7 @@
 				{/if}
 			</TD>
 			<TD>
-				{if $refdoc.closed}
-					{if $item.taxcategory}
-						<span {tip text=$_TAX_CATEGORIES[$item.taxcategory].description}>
-							({sprintf('%02d', $item.taxcategory)}) {$_TAX_CATEGORIES[$item.taxcategory].label}
-						</span>
-					{else}
-						{trans("- none -")}
-					{/if}
-				{elseif $item.deleted}
+				{if $item.deleted}
 					<INPUT TYPE="hidden" VALUE="{$item.taxcategory}" NAME="taxcategory[{$itemid}]">
 					{if $item.taxcategory}
 						<span {tip text=$_TAX_CATEGORIES[$item.taxcategory].description}>
@@ -322,18 +316,14 @@
 				{/if}
 			</TD>
 			<TD class="nobr">
-				{if $refdoc.closed}
-					{$item.prodid}
-				{elseif $item.deleted}
+				{if $item.deleted}
 					<INPUT TYPE="hidden" VALUE="{$item.prodid}" NAME="prodid[{$itemid}]">{$item.prodid}
 				{else}
 					<INPUT TYPE="text" VALUE="{$item.prodid}" NAME="prodid[{$itemid}]" SIZE="6">
 				{/if}
 			</TD>
 			<TD>
-				{if $refdoc.closed}
-					{$item.count|string_format:"%.3f"}<BR>{$item.content}
-				{elseif $item.deleted}
+				{if $item.deleted}
 					<INPUT TYPE="hidden" VALUE="{$item.count}" NAME="count[{$itemid}]">{$item.count|string_format:"%.3f"}
 					<INPUT TYPE="hidden" VALUE="{$item.content}" NAME="content[{$itemid}]">{$item.content}
 				{else}
@@ -342,9 +332,7 @@
 				{/if}
 			</TD>
 			<TD class="text-right nobr">
-				{if $refdoc.closed}
-					{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f%%"}{else}{if $item.vdiscount != 0}{$item.vdiscount|string_format:"%.2f"}{/if}{/if}
-				{elseif $item.deleted}
+				{if $item.deleted}
 					<INPUT TYPE="hidden" VALUE="{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f"}{else}{if $item.vdiscount != 0}{$item.vdiscount|string_format:"%.2f"}{/if}{/if}" NAME="discount[{$itemid}]">
 					<INPUT TYPE="hidden" VALUE="{if $item.pdiscount != 0}{$smarty.const.DISCOUNT_PERCENTAGE}{else}{if $item.vdiscount != 0}{$smarty.const.DISCOUNT_AMOUNT}{/if}{/if}" NAME="discount_type[{$itemid}]">
 					{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f%%"}{else}{if $item.vdiscount != 0}{$item.vdiscount|money_format}{/if}{/if}
@@ -358,9 +346,7 @@
 				{/if}
 			</TD>
 			<TD class="text-right nobr">
-				{if $refdoc.closed}
-					{$item.valuenetto|money_format}
-				{elseif $item.deleted}
+				{if $item.deleted}
 					<INPUT TYPE="hidden" VALUE="{$item.valuenetto}" NAME="valuenetto[{$itemid}]">{$item.valuenetto|money_format}
 				{else}
 					<INPUT TYPE="text" VALUE="{$item.valuenetto|string_format:"%.2f"}" NAME="valuenetto[{$itemid}]" SIZE="6">
@@ -370,9 +356,7 @@
 				{/if}
 			</TD>
 			<TD class="text-right nobr">
-				{if $refdoc.closed}
-					{$item.tax}
-				{elseif $item.deleted}
+				{if $item.deleted}
 					<INPUT TYPE="hidden" VALUE="{$item.taxid}" NAME="taxid[{$itemid}]">{$item.tax}
 				{else}
 					<SELECT size="1" name="taxid[{$itemid}]" {tip text="Select Tax rate"}>
@@ -383,9 +367,7 @@
 				{/if}
 			</TD>
 			<TD class="text-right nobr">
-				{if $refdoc.closed}
-					{$item.valuebrutto|money_format}
-				{elseif $item.deleted}
+				{if $item.deleted}
 					<INPUT TYPE="hidden" VALUE="{if !empty($item.valuebrutto)}{$item.valuebrutto}{/if}" NAME="valuebrutto[{$itemid}]">{if !empty($item.valuebrutto)}{$item.valuebrutto|money_format}{/if}
 				{else}
 					<INPUT TYPE="text" VALUE="{if !empty($item.valuebrutto)}{$item.valuebrutto|string_format:"%.2f"}{/if}" NAME="valuebrutto[{$itemid}]" SIZE="6"><BR>
@@ -395,11 +377,10 @@
 				{/if}
 			</TD>
 			<TD class="nobr">
-				{if $refdoc.closed}
-				{elseif $item.deleted}
-					<A HREF="?m={$layout.module}&action=recoverpos&itemid={$itemid}"><IMG SRC="img/recover.gif" {tip text="Recover this item"}></A>
+				{if $item.deleted}
+					{button type="link" icon="recover" tip="Recover this item" href="?m={$layout.module}&action=recoverpos&itemid={$itemid}"}
 				{else}
-					<A HREF="?m={$layout.module}&action=deletepos&itemid={$itemid}"><IMG SRC="img/delete.gif" {tip text="Remove this item"}></A>
+					{button type="link" icon="delete" tip="Remove this item" href="?m={$layout.module}&action=deletepos&itemid={$itemid}"}
 				{/if}
 			</TD>
 		</TR>
@@ -442,9 +423,9 @@
 						{if preg_match('/copy/i', $default_printpage)} checked{/if}>
 				{$_DOCENTITIES[$smarty.const.DOC_ENTITY_COPY]}
 			</label>&nbsp;
-			<A HREF="?m=invoicelist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
-			<A HREF="javascript:saveInvoice()">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
-			<A HREF="javascript:printInvoice()">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
+			{button icon="cancel" label="Cancel" href="?m=invoicelist"}
+			{button icon="save" label="Save" onclick="saveInvoice();"}
+			{button icon="print" label="Save & Print" onclick="printInvoice();"}
 		</TD>
 	</TR>
 	</TBODY>

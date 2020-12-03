@@ -194,30 +194,20 @@ if (isset($_POST['assignment'])) {
         }
     }
 
-    if ($a['datefrom'] == '') {
+    if (empty($a['datefrom'])) {
         $from = 0;
-    } elseif (preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $a['datefrom'])) {
-        list($y, $m, $d) = explode('/', $a['datefrom']);
-        if (checkdate($m, $d, $y)) {
-            $from = mktime(0, 0, 0, $m, $d, $y);
-        } else {
-            $error['datefrom'] = trans('Incorrect charging start time!');
-        }
+    } elseif (!preg_match('/^[0-9]+$/', $a['datefrom'])) {
+        $error['datefrom'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
     } else {
-        $error['datefrom'] = trans('Incorrect charging start time!');
+        $from = $a['datefrom'];
     }
 
-    if ($a['dateto'] == '') {
+    if (empty($a['dateto'])) {
         $to = 0;
-    } elseif (preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $a['dateto'])) {
-        list($y, $m, $d) = explode('/', $a['dateto']);
-        if (checkdate($m, $d, $y)) {
-            $to = mktime(23, 59, 59, $m, $d, $y);
-        } else {
-            $error['dateto'] = trans('Incorrect charging end time!');
-        }
+    } elseif (!preg_match('/^[0-9]+$/', $a['dateto'])) {
+        $error['dateto'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
     } else {
-        $error['dateto'] = trans('Incorrect charging end time!');
+        $to = $a['dateto'] + 86399;
     }
 
     if ($to < $from && $to != 0 && $from != 0) {
@@ -482,14 +472,6 @@ if (isset($_POST['assignment'])) {
     } elseif (!empty($a['vdiscount'])) {
         $a['discount'] = $a['vdiscount'];
         $a['discount_type'] = DISCOUNT_AMOUNT;
-    }
-
-    if ($a['dateto']) {
-        $a['dateto'] = date('Y/m/d', $a['dateto']);
-    }
-
-    if ($a['datefrom']) {
-        $a['datefrom'] = date('Y/m/d', $a['datefrom']);
     }
 
     switch ($a['period']) {

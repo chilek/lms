@@ -28,8 +28,22 @@
     <THEAD>
 	<TR {tip text="Click on column name to change sorting order"}>
 		<TD width="97%">
-			<img src="img/customer.gif" ALT="">&nbsp;<a href="?m=customersearch&search=1&o=customername{if $listdata.direction == "asc" && $listdata.order == "customername"},desc{/if}">{trans("First/last or Company name:")}</A></B> {if $listdata.order == "customername"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<img src="img/home.gif" ALT="">&nbsp;<a href="?m=customersearch&search=1&o=address{if $listdata.direction == "asc" && $listdata.order == "address"},desc{/if}">{trans("Address:")}</A> {if $listdata.order == "address"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			{icon name="customer"}
+			<a href="?m=customersearch&search=1&o=customername{if $listdata.direction == "asc" && $listdata.order == "customername"},desc{/if}">
+				{trans("First/last or Company name:")}
+			</A>
+			{if $listdata.order == "customername"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			{icon name="karma"}
+			<a href="?m=customersearch&search=1&o=karma{if $listdata.direction == "asc" && $listdata.order == "karma"},desc{/if}">
+				{trans("Karma")}
+			</A>
+			{if $filter.order == "karma"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<BR>
+			{icon name="home"}
+			<a href="?m=customersearch&search=1&o=address{if $listdata.direction == "asc" && $listdata.order == "address"},desc{/if}">
+				{trans("Address:")}
+			</A>
+			{if $listdata.order == "address"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD align="right" width="1%" valign="top">
 			<a href="?m=customersearch&search=1&o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">{trans("ID:")}</A></B> {if $listdata.order == "id"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
@@ -60,7 +74,12 @@
 	{section name=customerlist loop=$customerlist start=$start max=$pagelimit}
 	<TR class="highlight {if $customerlist[customerlist].deleted} lms-ui-resource-deleted{/if} {if $customerlist[customerlist].account && !$customerlist[customerlist].nodeac} blend{/if}" data-name="{$customerlist[customerlist].customername|escape:"javascript"|escape:"html"}">
 		<TD onClick="return self.location.href='?m=customerinfo&id={$customerlist[customerlist].id}';" valign="top">
-			<IMG src="img/{$_CSTATUSES[$customerlist[customerlist].status].img}" alt="">{if $customerlist[customerlist].info} <img src="img/info1.gif" ALT="" {tip text=$customerlist[customerlist].info}>{/if} <A name="{$customerlist[customerlist].id}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$customerlist[customerlist].id}"><B>{$customerlist[customerlist].customername}</B></A><BR>
+			<IMG src="img/{$_CSTATUSES[$customerlist[customerlist].status].img}" alt="">{if $customerlist[customerlist].info} <img src="img/info1.gif" ALT="" {tip text=$customerlist[customerlist].info}>{/if} <A name="{$customerlist[customerlist].id}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$customerlist[customerlist].id}"><B>{$customerlist[customerlist].customername}</B></A>
+			{if !empty($customerlist[customerlist].karma)}
+				<i class="lms-ui-icon-star{if $customerlist[customerlist].karma > 0} green{else} red{/if}" title="{trans('Karma')}"></i>
+				(<span class="lms-ui-counter">{$customerlist[customerlist].karma}</span>)
+			{/if}
+			<BR>
 			<IMG src="img/home.gif" alt="">&nbsp;{$customerlist[customerlist].full_address}{if $customerlist[customerlist].country != ""}, {t}{$customerlist[customerlist].country}{/t}{/if}
 		</TD>
 		<TD valign="top" align="right" NOWRAP>

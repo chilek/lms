@@ -374,4 +374,54 @@ class Utils
 
         return $result['result']['subject']['statusVat'] == 'Czynny';
     }
+
+    public static function determineAllowedCustomerStatus($value, $default = null)
+    {
+        global $CSTATUSES;
+
+        if (!empty($value)) {
+            $value = preg_replace('/\s+/', ',', $value);
+            $value = preg_split('/\s*[,;]\s*/', $value, -1, PREG_SPLIT_NO_EMPTY);
+        }
+        if (empty($value)) {
+            if (empty($default) || !is_array($default)) {
+                if ($default === -1) {
+                    return null;
+                } else {
+                    return array(
+                        CSTATUS_CONNECTED,
+                        CSTATUS_DEBT_COLLECTION,
+                    );
+                }
+            } else {
+                return $default;
+            }
+        } else {
+            $all_statuses = self::array_column($CSTATUSES, 'alias');
+
+            $normal = array();
+            $negated = array();
+            foreach ($value as $status) {
+                if (strpos($status, '!') === 0) {
+                    $negated[] = substr($status, 1);
+                } else {
+                    $normal[] = $status;
+                }
+            }
+
+            if (empty($normal)) {
+                $statuses = array_diff($all_statuses, $negated);
+            } else {
+                $statuses = array_diff(array_intersect($all_statuses, $normal), $negated);
+            }
+            if (empty($statuses)) {
+                return array(
+                    CSTATUS_CONNECTED,
+                    CSTATUS_DEBT_COLLECTION,
+                );
+            }
+
+            return array_keys($statuses);
+        }
+    }
 }

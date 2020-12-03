@@ -234,8 +234,8 @@
 		<TR>
 			<TD class="lms-ui-box-buttons">
 				{button type="submit" onclick="document.config.submit();" icon="save" label="Submit"}
-				{button id="delete-config" href="?m=configdel&id={$config.id}" icon="delete" label="Delete"}
-				{button type="link-button" onclick="location.href = '{$backurl}';" icon="cancel" label="Cancel"}
+				{button id="delete-config" data_href="?m=configdel&id={$config.id}" icon="delete" label="Delete"}
+				{button type="link-button" href="{$backurl}" icon="cancel" label="Cancel"}
 			</TD>
 		</TR>
     </TBODY>
@@ -278,7 +278,7 @@
 		$('#delete-config').click(function() {
 			var name = '{$config.section}.{$config.var}';
 			confirmDialog($t("Are you sure, you want to delete option '$a' from database?\n\nThis action will remove this option for all users.", name), this).done(function() {
-				location.href = $(this).attr('href');
+				location.href = $(this).attr('data-href');
 			});
 			return false;
 		});
@@ -289,6 +289,7 @@
 			uri: '?m=quicksearch&ajax=1&api=1&mode=config&what=',
 			emptyValue: true,
 			class: 'config-var-suggestion',
+			autoSubmitForm: false,
 			onSubmit: function (data) {
 				$('[name="config[var]"]').val(data.name).trigger('autogrow');
 				$('[name="config[section]"]').scombobox('val', data.section);

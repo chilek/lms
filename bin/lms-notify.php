@@ -39,6 +39,7 @@ $parameters = array(
     'channel:' => 'c:',
     'actions:' => 'a:',
     'customergroups:' => 'g:',
+    'customer-status:' => null,
 );
 
 $long_to_shorts = array();
@@ -104,6 +105,8 @@ lms-notify.php
 -g, --customergroups=<group1,group2,...>
                                 allow to specify customer groups to which notified customers
                                 should be assigned
+    --customer-status=<status1,status2,...>
+                                notify only customers with specified status
 
 EOF;
     exit(0);
@@ -296,6 +299,14 @@ $content_type = $format == 'html' ? 'text/html' : 'text/plain';
 $mail_content_type = $mail_format == 'html' ? 'text/html' : 'text/plain';
 $customergroups = ConfigHelper::getConfig($config_section . '.customergroups', '', true);
 $ignore_customer_consents = ConfigHelper::checkConfig($config_section . '.ignore_customer_consents');
+
+$allowed_customer_status =
+Utils::determineAllowedCustomerStatus(
+    isset($options['customer-status'])
+        ? $options['customer-status']
+        : ConfigHelper::getConfig($config_section . '.allowed_customer_status', ''),
+    -1
+);
 
 $content_types = array(
     MSG_MAIL => $mail_content_type,
@@ -659,6 +670,12 @@ if (!empty($customergroups)) {
     $customergroups = ' AND (' . implode(' OR ', $customergroup_ORs) . ')';
 }
 
+if (empty($allowed_customer_status)) {
+    $customer_status_condition = '';
+} else {
+    $customer_status_condition = ' AND c.status IN (' . implode(',', $allowed_customer_status) . ')';
+}
+
 // ------------------------------------------------------------------------
 // ACTIONS
 // ------------------------------------------------------------------------
@@ -803,7 +820,7 @@ if (empty($types) || in_array('documents', $types)) {
             WHERE (type & ?) = ?
             GROUP BY customerid
         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
-        WHERE d.type IN (?, ?) AND dc.todate >= $daystart + ? * 86400
+        WHERE 1 = 1" . $customer_status_condition . " AND d.type IN (?, ?) AND dc.todate >= $daystart + ? * 86400
             AND dc.todate < $daystart + (? + 1) * 86400"
             . ($notifications['documents']['deleted_customers'] ? '' : ' AND c.deleted = 0')
             . ($customergroups ?: ''),
@@ -972,7 +989,7 @@ if (empty($types) || in_array('contracts', $types)) {
             WHERE (type & ?) = ?
             GROUP BY customerid
         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
-        WHERE d.dateto >= $daystart + ? * 86400 AND d.dateto < $daystart + (? + 1) * 86400"
+        WHERE 1 = 1" . $customer_status_condition . " AND d.dateto >= $daystart + ? * 86400 AND d.dateto < $daystart + (? + 1) * 86400"
             . ($notifications['contracts']['deleted_customers'] ? '' : ' AND c.deleted = 0')
             . ($customergroups ?: '')
         . " GROUP BY c.id, c.pin, c.lastname, c.name, d.dateto, m.email, x.phone",
@@ -1148,7 +1165,8 @@ if (empty($types) || in_array('debtors', $types)) {
             WHERE (type & ?) = ?
             GROUP BY customerid
         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
-        WHERE c.id = 20 AND c.status <> ? AND c.cutoffstop < $currtime AND b2.balance " . ($limit > 0 ? '>' : '<') . " ?"
+        WHERE 1 = 1" . $customer_status_condition
+            . " AND c.cutoffstop < $currtime AND b2.balance " . ($limit > 0 ? '>' : '<') . " ?"
             . ($notifications['debtors']['deleted_customers'] ? '' : ' AND c.deleted = 0')
             . ($customergroups ?: ''),
         array(
@@ -1165,7 +1183,6 @@ if (empty($types) || in_array('debtors', $types)) {
             CONTACT_EMAIL | CONTACT_NOTIFICATIONS,
             CONTACT_MOBILE | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
             CONTACT_MOBILE | CONTACT_NOTIFICATIONS,
-            CSTATUS_DISCONNECTED,
             $limit
         )
     );
@@ -1346,7 +1363,7 @@ if (empty($types) || in_array('reminder', $types)) {
             GROUP BY docid, currency
         ) v ON (v.docid = d.id)
         LEFT JOIN numberplans n ON (d.numberplanid = n.id)
-        WHERE d.type IN (?, ?, ?) AND d.closed = 0 AND b2.balance < ?
+        WHERE 1 = 1" . $customer_status_condition . " AND d.type IN (?, ?, ?) AND d.closed = 0 AND b2.balance < ?
             AND (d.cdate + (d.paytime - ? + 1) * 86400) >= $daystart
             AND (d.cdate + (d.paytime - ? + 1) * 86400) < $dayend"
             . ($notifications['reminder']['deleted_customers'] ? '' : ' AND c.deleted = 0')
@@ -1552,7 +1569,8 @@ if (empty($types) || in_array('income', $types)) {
             WHERE (type & ?) = ?
             GROUP BY customerid
         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
-        WHERE cash.type = 1 AND cash.value > 0 AND cash.time >= $daystart + (? * 86400) AND cash.time < $daystart + (? + 1) * 86400"
+        WHERE 1 = 1" . $customer_status_condition
+            . " AND cash.type = 1 AND cash.value > 0 AND cash.time >= $daystart + (? * 86400) AND cash.time < $daystart + (? + 1) * 86400"
             . ($notifications['income']['deleted_customers'] ? '' : ' AND c.deleted = 0')
             . ($customergroups ?: ''),
         array(
@@ -1722,7 +1740,8 @@ if (empty($types) || in_array('invoices', $types)) {
             FROM cash
             GROUP BY customerid
         ) ca ON (ca.customerid = d.customerid)
-        WHERE (c.invoicenotice IS NULL OR c.invoicenotice = 0) AND d.type IN (?, ?, ?)
+        WHERE 1 = 1" . $customer_status_condition
+            . " AND (c.invoicenotice IS NULL OR c.invoicenotice = 0) AND d.type IN (?, ?, ?)
             AND d.cdate >= ? AND d.cdate <= ?"
             . ($notifications['invoices']['deleted_customers'] ? '' : ' AND c.deleted = 0')
             . ($customergroups ?: ''),
@@ -1895,7 +1914,8 @@ if (empty($types) || in_array('notes', $types)) {
             FROM cash
             GROUP BY customerid
         ) ca ON (ca.customerid = d.customerid)
-        WHERE (c.invoicenotice IS NULL OR c.invoicenotice = 0) AND d.type = ?
+        WHERE 1 = 1" . $customer_status_condition
+            . " AND (c.invoicenotice IS NULL OR c.invoicenotice = 0) AND d.type = ?
             AND d.cdate >= ? AND d.cdate <= ?"
             . ($notifications['notes']['deleted_customers'] ? '' : ' AND c.deleted = 0')
             . ($customergroups ?: ''),
@@ -2053,7 +2073,8 @@ if (empty($types) || in_array('birthday', $types)) {
             WHERE (type & ?) = ?
             GROUP BY customerid
         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
-        WHERE " . $DB->RegExp('c.ssn', '[0-9]{2}(' . $cmonth . '|' . sprintf('%02d', $cmonth + 20) . ')' . date('d', $daystart) . '[0-9]{5}')
+        WHERE 1 = 1" . $customer_status_condition
+        . ' AND ' . $DB->RegExp('c.ssn', '[0-9]{2}(' . $cmonth . '|' . sprintf('%02d', $cmonth + 20) . ')' . date('d', $daystart) . '[0-9]{5}')
         . ($notifications['birthday']['deleted_customers'] ? '' : ' AND c.deleted = 0')
         . ($customergroups ?: ''),
         array(
@@ -2209,7 +2230,8 @@ if (empty($types) || in_array('warnings', $types)) {
             FROM cash
             GROUP BY customerid
         ) ca ON (ca.customerid = c.id)
-        WHERE c.id IN (SELECT DISTINCT ownerid FROM vnodes WHERE warning = 1)"
+        WHERE 1 = 1" . $customer_status_condition
+            . " AND c.id IN (SELECT DISTINCT ownerid FROM vnodes WHERE warning = 1)"
             . ($notifications['warnings']['deleted_customers'] ? '' : ' AND c.deleted = 0')
             . ($customergroups ?: ''),
         array(
@@ -2384,7 +2406,7 @@ if (empty($types) || in_array('events', $types)) {
                             WHERE (type & ?) = ?
                             GROUP BY customerid
                         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
-                        WHERE c.id = ?",
+                        WHERE 1 = 1" . $customer_status_condition . " AND c.id = ?",
                         array(
                             CONTACT_EMAIL | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
                             CONTACT_EMAIL | CONTACT_NOTIFICATIONS,
@@ -2865,7 +2887,7 @@ if (!empty($intersect)) {
 
                     $customers = $DB->GetCol(
                         'SELECT c.id FROM customers c
-                        WHERE 1 = 1'
+                        WHERE 1 = 1' . $customer_status_condition
                         . (empty($customers) ? '' : ' AND c.id NOT IN (' . implode(',', $customers) . ')')
                         . ' AND (' . implode(' AND ', $where) . ')'
                         . ($customergroups ?: '')

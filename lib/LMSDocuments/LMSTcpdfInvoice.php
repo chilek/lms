@@ -117,7 +117,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             }
         }
 
-        if (isset($this->data['invoice']['content'])) {
+        if (isset($this->data['invoice']['content']) && $this->data['doctype'] == DOC_CNOTE) {
             foreach ($this->data['invoice']['content'] as $item) {
                 $t_width['no'] = 7;
                 $t_width['name'] = $this->backend->getStringWidth($item['description']);
@@ -182,7 +182,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         $this->backend->SetFont(self::TCPDF_FONT, '', 7);
 
         /* invoice correction data */
-        if (isset($this->data['invoice'])) {
+        if (isset($this->data['invoice']) && $this->data['doctype'] == DOC_CNOTE) {
             $this->backend->Ln(3);
             $this->backend->writeHTMLCell(0, 0, '', '', '<b>' . trans('Was:') . '</b>', 0, 1, 0, true, 'L');
             $this->backend->Ln(3);
@@ -327,7 +327,7 @@ class LMSTcpdfInvoice extends LMSInvoice
 
         $this->backend->Ln(3);
         /* difference between the invoice and the invoice correction */
-        if (isset($this->data['invoice'])) {
+        if (isset($this->data['invoice']) && $this->data['doctype'] == DOC_CNOTE) {
             $total = $this->data['total'] - $this->data['invoice']['total'];
             $totalbase = $this->data['totalbase'] - $this->data['invoice']['totalbase'];
             $totaltax = $this->data['totaltax'] - $this->data['invoice']['totaltax'];
@@ -342,6 +342,33 @@ class LMSTcpdfInvoice extends LMSInvoice
             $this->backend->Cell($h_width['totaltax'], 5, sprintf('%01.2f', $totaltax), 1, 0, 'R', 0, '', 1);
             $this->backend->Cell($h_width['total'], 5, sprintf('%01.2f', $total), 1, 0, 'R', 0, '', 1);
             $this->backend->Ln();
+        }
+    }
+
+    protected function invoice_jpk_flags()
+    {
+        global $DOC_FLAGS;
+        $flags = array();
+
+        if (!empty($this->data['splitpayment'])) {
+            $flags[] = $DOC_FLAGS[DOC_FLAG_SPLIT_PAYMENT];
+        }
+
+        foreach ($this->data['flags'] as $flag => $value) {
+            if (!empty($value)) {
+                $flags[] = $DOC_FLAGS[$flag];
+            }
+        }
+
+        if (!empty($this->data['taxcategories'])) {
+            foreach ($this->data['taxcategories'] as $taxcategory) {
+                $flags[] = sprintf('GTU_%02d', $taxcategory);
+            }
+        }
+
+        if (!empty($flags)) {
+            $this->backend->SetFont(self::TCPDF_FONT, '', 9);
+            $this->backend->writeHTMLCell(0, 0, '', 3, trans('JPK:') . ' <b>' . implode(', ', $flags) . '</b>', 0, 1, 0, true, 'C');
         }
     }
 
@@ -364,7 +391,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             'cdate' => $this->data['cdate'],
             'customerid' => $this->data['customerid'],
         ));
-        if (isset($this->data['invoice'])) {
+        if (isset($this->data['invoice']) && $this->data['doctype'] == DOC_CNOTE) {
             $title = trans('Credit Note No. $a', $docnumber);
         } elseif ($this->data['doctype'] == DOC_INVOICE) {
             $title = trans('Invoice No. $a', $docnumber);
@@ -373,7 +400,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         }
         $this->backend->Write(0, $title, '', 0, 'C', true, 0, false, false, 0);
 
-        if (isset($this->data['invoice'])) {
+        if (isset($this->data['invoice']) && $this->data['doctype'] == DOC_CNOTE) {
             $this->backend->SetFont(self::TCPDF_FONT, 'B', 12);
             $docnumber = docnumber(array(
                 'number' => $this->data['invoice']['number'],
@@ -402,7 +429,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         $tmp = str_replace('%ten%', format_ten($this->data['division_ten'], $this->data['export']), $this->data['division_header']);
 
         if (!ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')
-            || empty($this->data['bankccounts'])) {
+            || empty($this->data['bankaccounts'])) {
             $accounts = array(bankaccount($this->data['customerid'], $this->data['account'], $this->data['export']));
         } else {
             $accounts = array();
@@ -768,6 +795,10 @@ class LMSTcpdfInvoice extends LMSInvoice
             Localisation::setSystemLanguage($this->data['div_ccode']);
         }
 
+        if (ConfigHelper::checkConfig('invoices.jpk_flags')) {
+            $this->invoice_jpk_flags();
+        }
+
         $this->invoice_cancelled();
         $this->invoice_no_accountant();
         $this->invoice_header_image();
@@ -850,11 +881,27 @@ class LMSTcpdfInvoice extends LMSInvoice
             'customerid' => $this->data['customerid'],
         ));
 
+        $payment_title = ConfigHelper::getConfig('invoices.payment_title', null, true);
+        if (empty($payment_title)) {
+            if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false))) {
+                $payment_title = trans('Payment for liabilities');
+            } else {
+                $payment_title = trans('Payment for invoice No. $a', $payment_docnumber);
+            }
+        } else {
+            $customerid = $this->data['customerid'];
+            $payment_title = preg_replace_callback(
+                '/%(\\d*)cid/',
+                function ($m) use ($customerid) {
+                    return sprintf('%0' . $m[1] . 'd', $customerid);
+                },
+                $payment_title
+            );
+        }
+
         if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false))) {
-            $payment_title = trans('Payment for liabilities');
             $payment_value = ($this->data['customerbalance'] / $this->data['currencyvalue']) * -1;
         } else {
-            $payment_title = trans('Payment for invoice No. $a', $payment_docnumber);
             $payment_value = $this->data['value'];
             $payment_barcode = $payment_docnumber;
         }
@@ -878,6 +925,10 @@ class LMSTcpdfInvoice extends LMSInvoice
     {
         if (!empty($this->data['div_ccode'])) {
             Localisation::setSystemLanguage($this->data['div_ccode']);
+        }
+
+        if (ConfigHelper::checkConfig('invoices.jpk_flags')) {
+            $this->invoice_jpk_flags();
         }
 
         $this->invoice_cancelled();

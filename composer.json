@@ -111,7 +111,7 @@
         "tecnickcom/tc-lib-barcode": "^1",
         "zenorocha/clipboardjs": "^2.0",
         "harvesthq/chosen": "^1.8",
-        "tinymce/tinymce": "^4",
+        "tinymce/tinymce": "^5",
         "ccampbell/mousetrap": "^1",
         "westonganger/input-autogrow": "^1",
         "ivkremer/jquery-simple-combobox": "^1",
@@ -121,7 +121,8 @@
         "pragmarx/google2fa": "^6",
         "galleriajs/galleria": "^1",
         "rzani/zbar-qrdecoder": "^2",
-        "dragonbe/vies": "*"
+        "dragonbe/vies": "*",
+        "ezyang/htmlpurifier": "^4.13"
     },
     "require-dev": {
         "phpunit/phpunit": "^4",

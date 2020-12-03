@@ -22,7 +22,7 @@ Kroki odtwarzające błędne zachowanie:
 4. Zaobserwuj błąd.
 
 **Oczekiwane zachowanie**
-Jasny i precyzyjny opis tego czego oczekujesz by miało miejsce.
+Jasny i precyzyjny opis tego, czego oczekujesz by miało miejsce.
 
 **Zrzuty ekranu**
 Jeśli dotyczy prosimy o dodanie zrzutów ekranu, które pomogą wyjaśnić Twój problem.

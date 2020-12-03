@@ -43,7 +43,8 @@ $(function() {
 
 
     $(document).click(function(e) {
-        if (!$(e.target).is('.lms-ui-dropdown-toggle') && !$(e.target).closest('.lms-ui-dropdown-toggle').length &&
+        if ((!$(e.target).is('.lms-ui-dropdown-toggle') || popup_menu.is('open')) &&
+            !$(e.target).closest('.lms-ui-dropdown-toggle').length &&
             !$(e.target).closest('#lms-ui-popup-menu').length &&
             popup_menu.is(':visible')) {
             popup_menu.removeClass('fullscreen-popup open');

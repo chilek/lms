@@ -26,7 +26,8 @@
 	<div class="lms-ui-gallery"></div>
 </div>
 <button id="lms-ui-back-to-top" class="lms-ui-button no-print">
-	<i class="lms-ui-icon-back"></i> {trans("Back to top")}
+	<i class="lms-ui-icon-back"></i>
+	<span class="lms-ui-label">{trans("Back to top")}</span>
 </button>
 
 <script>
@@ -97,6 +98,12 @@
 
 			$(window).focus(function() {
 				setCookie('tabId', lmsTabId);
+
+				// check if login timeout condition is met - in newer web browser
+				// timers are not active when window is not visible
+				if (Date.now() > lms_login_timeout_ts) {
+					window.location.assign(window.location.href);
+				}
 			});
 
 		</script>

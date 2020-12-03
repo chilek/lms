@@ -88,6 +88,20 @@ if (isset($_GET['search'])) {
     }
 }
 
+if (isset($_GET['oper'])) {
+    switch ($_GET['oper']) {
+        case 'karma-raise':
+            header('Content-Type: application/json');
+            $result = $LMS->raiseCustomerKarma($_GET['id']);
+            die(json_encode($result));
+            break;
+        case 'karma-lower':
+            header('Content-Type: application/json');
+            $result = $LMS->lowerCustomerKarma($_GET['id']);
+            die(json_encode($result));
+            break;
+    }
+}
 if (!isset($_POST['xjxfun'])) {
     require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
 

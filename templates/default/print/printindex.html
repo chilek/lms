@@ -461,7 +461,8 @@
 						{trans("Customer:")}
 					</TD>
 					<TD style="width: 1%;" class="nobr">
-						{customerlist form="printcustomerbalance" customers=$customers selectname="cust" inputname="customer" firstoption=""}
+						{customerlist form="printcustomerbalance" customers=$customers version=2
+							selectname="cust" inputname="customer" firstoption=""}
 					</TD>
 					<TD style="width: 1%;">
 						<IMG src="img/calendar.gif" alt="">
@@ -845,7 +846,8 @@
 								{trans("Customer:")}
 							</TD>
 							<TD style="width: 98%;" class="nobr">
-								{customerlist form="printinvoices" customers=$customers selectname="cust" inputname="customer" firstoption="- all customers -" selecttip="You can select customer to limit results" inputtip="Enter customer ID or leave empty for all customers"}
+								{customerlist form="printinvoices" customers=$customers version=2
+									selectname="cust" inputname="customer" firstoption="- all customers -" selecttip="You can select customer to limit results" inputtip="Enter customer ID or leave empty for all customers"}
 							</TD>
 						</TR>
 						<tr>
@@ -948,13 +950,14 @@
 	</TR>
 	<TR>
 		<TD style="width: 100%;" colspan="2" align="right">
-			<label>
+			<label style="display: none;">
 				{trans("JPK format:")}
 				<SELECT name="format">
 					<OPTION value="xml">{trans("XML")}</OPTION>
 					<OPTION value="csv">{trans("CSV")}</OPTION>
 				</SELECT>
 			</label>
+			<input type="hidden" name="format" value="xml">
 			<a class="export_to_jpk" href="javascript:export_to_jpk('fa');">{trans("Export to JPK-FA format")} <img src="img/docum.gif" alt=""></a>
 			<a class="export_to_jpk" href="javascript:export_to_jpk('vat');">{trans("Export to JPK-VAT format")} <img src="img/docum.gif" alt=""></a>
 			<a href="javascript:print_forms();">{trans("Print form of cash transfer")} <img src="img/print.gif" alt=""></a>
@@ -998,7 +1001,10 @@
 								{trans("Customer:")}
 							</TD>
 							<TD style="width: 98%;" class="nobr">
-								{customerlist form="printforms" customers=$customers selectname="cust" inputname="customer" firstoption="- all customers -" selecttip="You can select customer to limit results" inputtip="Enter customer ID or leave empty for all customers"}
+								{customerlist form="printforms" customers=$customers version=2
+									selectname="cust" inputname="customer" firstoption="- all customers -"
+									selecttip="You can select customer to limit results"
+									inputtip="Enter customer ID or leave empty for all customers"}
 							</TD>
 						</TR>
 						<TR>
@@ -1140,7 +1146,9 @@
 									{trans("Customer:")}
 								</TD>
 								<TD class="nobr">
-									{customerlist form="liabilityreport" customers=$customers selectname="cust" inputname="customer" firstoption="- all customers -" inputtip="Enter customer ID or leave empty for all customers"}
+									{customerlist form="liabilityreport" customers=$customers version=2
+										selectname="cust" inputname="customer" firstoption="- all customers -"
+										inputtip="Enter customer ID or leave empty for all customers"}
 								</TD>
 							</TR>
 						</table>
@@ -1385,7 +1393,8 @@
 						{trans("Customer:")}
 					</TD>
 					<TD style="width: 1%;" class="nobr">
-						{customerlist form="printcustomertraffic" customers=$customers selectname="cust" inputname="customer" firstoption=""}
+						{customerlist form="printcustomertraffic" customers=$customers version=2
+							selectname="cust" inputname="customer" firstoption=""}
 					</TD>
 					<TD style="width: 1%;">
 						<IMG src="img/calendar.gif" alt="">

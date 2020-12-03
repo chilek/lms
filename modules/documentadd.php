@@ -33,10 +33,6 @@ include(MODULES_DIR . DIRECTORY_SEPARATOR . 'document.inc.php');
 if (isset($_POST['document'])) {
     $document = $_POST['document'];
 
-    $oldfromdate = $document['fromdate'];
-    $oldtodate = $document['todate'];
-    $oldconfirmdate = $document['confirmdate'];
-
     $document['customerid'] = isset($_POST['customerid']) ? intval($_POST['customerid']) : intval($_POST['customer']);
 
     if (!$LMS->CustomerExists(intval($document['customerid']))) {
@@ -78,49 +74,36 @@ if (isset($_POST['document'])) {
         $error['number'] = trans('Document with specified number exists!');
     }
 
-    if ($document['fromdate']) {
-        $date = explode('/', $document['fromdate']);
-        if (checkdate($date[1], $date[2], $date[0])) {
-            $document['fromdate'] = mktime(0, 0, 0, $date[1], $date[2], $date[0]);
-        } else {
-            $error['fromdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
-        }
-    } else {
+    if (empty($document['fromdate'])) {
         $document['fromdate'] = 0;
+    } elseif (!preg_match('/^[0-9]+$/', $document['fromdate'])) {
+        $error['fromdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
     }
 
-    if ($document['todate']) {
-        $date = explode('/', $document['todate']);
-        if (checkdate($date[1], $date[2], $date[0])) {
-            $document['todate'] = mktime(23, 59, 59, $date[1], $date[2], $date[0]);
-        } else {
-            $error['todate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
-        }
-    } else {
+    if (empty($document['todate'])) {
         $document['todate'] = 0;
+    } elseif (!preg_match('/^[0-9]+$/', $document['todate'])) {
+        $error['todate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+    } else {
+        $document['todate'] += 86399;
     }
 
     if ($document['fromdate'] > $document['todate'] && $document['todate'] != 0) {
         $error['todate'] = trans('Start date can\'t be greater than end date!');
     }
 
-    if ($document['confirmdate'] && !isset($document['closed'])) {
-        $date = explode('/', $document['confirmdate']);
-        if (checkdate($date[1], $date[2], $date[0])) {
-            $document['confirmdate'] = mktime(0, 0, 0, $date[1], $date[2], $date[0]);
-        } else {
-            $error['confirmdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
-        }
-    } else {
+    if (empty($document['confirmdate'])) {
         $document['confirmdate'] = 0;
+    } elseif (!preg_match('/^[0-9]+$/', $document['confirmdate']) && !isset($document['closed'])) {
+        $error['confirmdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
     }
 
     // validate tariff selection list when promotions are active only
     if (isset($document['assignment']) && !empty($document['assignment']['schemaid'])) {
         // validate selected promotion schema properties
         $selected_assignment = $document['assignment'];
-        $selected_assignment['datefrom'] = $oldfromdate;
-        $selected_assignment['dateto'] = $oldtodate;
+        $selected_assignment['datefrom'] = $document['fromdate'];
+        $selected_assignment['dateto'] = $document['todate'];
 
         $result = $LMS->ValidateAssignment($selected_assignment);
         extract($result);
@@ -406,9 +389,6 @@ if (isset($_POST['document'])) {
         unset($document['fromdate']);
         unset($document['todate']);
     } else {
-        $document['fromdate'] = $oldfromdate;
-        $document['todate'] = $oldtodate;
-        $document['confirmdate'] = $oldconfirmdate;
         if (isset($autonumber)) {
             $document['number'] = '';
         }
@@ -444,6 +424,19 @@ if (isset($_POST['document'])) {
 
     $document['assignment']['check_all_terminals'] =
         ConfigHelper::checkConfig('phpui.promotion_schema_all_terminal_check');
+
+    $default_existing_assignment_operation = ConfigHelper::getConfig('phpui.default_existing_assignment_operation', 'keep');
+    $existing_assignment_operation_map = array(
+        'keep' => EXISTINGASSIGNMENT_KEEP,
+        'suspend' => EXISTINGASSIGNMENT_SUSPEND,
+        'cut' => EXISTINGASSIGNMENT_CUT,
+        'delete' => EXISTINGASSIGNMENT_DELETE,
+    );
+    if (isset($existing_assignment_operation_map[$default_existing_assignment_operation])) {
+        $document['assignment']['existing_assignments']['operation'] = $existing_assignment_operation_map[$default_existing_assignment_operation];
+    } else {
+        $document['assignment']['existing_assignments']['operation'] = EXISTINGASSIGNMENT_KEEP;
+    }
 }
 
 $SMARTY->setDefaultResourceType('extendsall');

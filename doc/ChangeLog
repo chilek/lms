@@ -207,12 +207,62 @@ version 26-git (????-??-??):
   - improvement: improvement: auto-hide 'back to top' button [chilan]
   - improvement: '%last_N_in_a_table' is supported in much more convenient way - symbol itself
     represents whole table [chilan]
-  - enhancement: new configuration variable 'phpui.tariff_presentation_format' ('%name' by default)
+  - enhancement: new configuration variable 'phpui.assignment_presentation_format' ('%name' by default)
     allows to change  tariff presentation form (some special symbols related to promotions
     are supported) [chilan]
+  - enhancement: imeplemented customer karma support; 'phpui.customer_karma_change_interval'
+    configuration value ('86400' by default) control how ofter user can change karma for given
+    customer [chilan]
+  - improvement: 'phpui.default_existing_assignment_operation' variable (with default 'keep' value)
+    controls what operations are applied to currently existing assignments [chilan]
+  - enhancement: 'payments.allowed_customer_status' ('connected,debtcollection' by default)
+    specified list of statuses which are required from customers to generate financial
+    burdens [chilan]
+  - enhancement: 'notify.allowed_customer_status' specified list of statuses which are required
+    from customers to send them notifications (all statuses by default) [chilan]
+  - enhancement: 'sendinvoices.allowed_customer_status' specified list of statuses which
+    are required from customers to send them invoices [chilan]
+  - enhancement: 'phpui.document_confirm_date_required' forces confirm date requirement
+    if from date is later than days count in ther future (default '0' values menas that feature
+    is disabled) [chilan]
+  - improvement/devel: migrated from tinymce 4 to 5 [chilan]
+  - improvement: helpdesk ticket type list is sorted according to current localisation [chilan]
+  - enhancement: ticket change sms customer notification support [chilan]
+  - improvement: customer search link replace by icon displayed inside customer id input
+    when container is hovered or focused [chilan]
+  - enhancement: new customer selection ui control which allows to select customer using quick
+    search mechanism and suggestion popup [chilan]
+  - enhancement: lms-rtparser.php supports html message receive [chilan]
+  - improvement: 'invoices.jpk_flags' toggles JPK flags presentation on generated invoice
+    ('false' by default) [chilan]
+  - enhancement: helpdesk ticket regular messages can use html format [chilan]
+  - improvement: 'rt.default_editor' has similar role to 'phpui.default_editor' setting, but
+    the first one controls default editor in helpdesk forms ('html' by default) [chilan]
+  - enhancement: 'invoices.payment_title' allows to define own title on transfer forms
+    (not defined by default what means to use hardcoded title) [chilan]
+  - enhancement: lms-rtparser.php backend script support imap mode [chilan]
+  - improvement: alternative invoice deadline selection counted in days for convenience [chilan]
+  - enhancement: added support for CC mail headers while communicate through helpdesk
+    with customer [chilan]
+  - enhancement: implemented bulk delete of selected tickets on queue view ticket list [chilan]
+  - enhancement: new ticket message form: allow to select which customer mails should be used
+    to send them submitted reply [chilan]
+  - improvement: search customers by non-empty ten/vat reg no. [chilan]
+  - improvement: 'phpui.supported_customer_contact_types' configuration variable controls
+    what customer contact types are supported by system (by default all contact types
+    which are implemented) [chilan]
+  - improvement: 'phpui.helpdesk_customer_notification_mail_subject' allows to format message subject
+    of post sent to customer during new ticket message creation
+    (default: '[RT#%tid] %subject') [chilan]
+  - improvement: replaced choose target network device selection popup by lms-ui-advanced-select
+    ui control [chilan]
+  - enhancement: implemented reward/penalty flag for tariffs [chilan]
+  - enhancement: added type property to network device models [chilan]
+  - enhancement: added --division parameter support for lms-payments.php
+    and lms-sendinvoices.php [chilan]
   - enhancement: changing ticket queue resets ticket state to NEW
     ('rt.ticket_queue_change_resets_ticket_state', default:false) [interduo]
-
+    
 version 25.0 (2020-05-15):
 
   - improvement: introduced invoices.hide_ssn configuration variable which allows to hide SSN

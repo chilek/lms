@@ -141,6 +141,13 @@
 										</A>
 										{if $a.attribute} - {$a.attribute}{/if}
 									</strong>
+									{if $a.flags & $smarty.const.TARIFF_FLAG_REWARD_PENALTY}
+										{if $a.value < 0}
+											{icon name="reward" tip="reward"}
+										{else}
+											{icon name="penalty" tip="penalty"}
+										{/if}
+									{/if}
 								{else}
 									{$a.name}
 								{/if}

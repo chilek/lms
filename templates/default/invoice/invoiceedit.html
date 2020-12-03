@@ -4,6 +4,7 @@
 {$xajax}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
+<script src="js/lms-ui-deadline-selection.js"></script>
 <script>
 
 	function saveheader() {
@@ -63,8 +64,10 @@
 		</TD>
 		<TD class="nobr">
 			{if ConfigHelper::checkPrivilege("invoice_consent_date")}
-				<INPUT TYPE="TEXT" NAME="invoice[cdate]" id="cdate" VALUE="{$invoice.cdate|date_format:"%Y/%m/%d"}" SIZE="10"
-						placeholder="{trans("yyyy/mm/dd")}" date-cdate="{$invoice.cdate}" {tip class="lms-ui-date" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
+				<INPUT type="text" name="invoice[cdate]" id="cdate" value="{$invoice.cdate|date_format:"%Y/%m/%d"}" size="12"
+					placeholder="{trans("yyyy/mm/dd")}" date-cdate="{$invoice.cdate}"
+					{tip class="lms-ui-date" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}
+				>
 				{if $invoice.cdatewarning}
 					<INPUT TYPE="HIDDEN" NAME="invoice[cdatewarning]" VALUE="1">
 				{/if}
@@ -80,8 +83,10 @@
 		</TD>
 		<TD class="nobr">
 			{if ConfigHelper::checkPrivilege("invoice_sale_date")}
-				<INPUT TYPE="TEXT" NAME="invoice[sdate]" VALUE="{$invoice.sdate|date_format:"%Y/%m/%d"}" SIZE="10"
-						placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"}>
+				<INPUT type="text" name="invoice[sdate]" value="{$invoice.sdate|date_format:"%Y/%m/%d"}" size="12"
+					placeholder="{trans("yyyy/mm/dd")}"
+					{tip class="lms-ui-date" text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"}
+				>
 			{else}
 				<input type="hidden" name="invoice[sdate]" value="{$invoice.sdate|date_format:"%Y/%m/%d"}">
 				{$invoice.sdate|date_format:"%Y/%m/%d"}
@@ -93,7 +98,7 @@
 			{trans("Deadline:")}
 		</TD>
 		<TD class="nobr">
-			<input type="text" name="invoice[deadline]" value="{$invoice.deadline|date_format:"%Y/%m/%d"}" size="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter deadline date in YYYY/MM/DD format (empty field means default deadline) or click to select it from calendar" trigger="deadline"}>
+			{deadline_selection name="invoice[deadline]" cdate_selector="#cdate" value=$invoice.deadline}
 		</TD>
 	</TR>
 	<TR>
@@ -138,9 +143,13 @@
 		</TD>
 		<TD class="nobr">
 			{if isset($customer.id)}
-			{customerlist form="setcustomer" customers=$customers selected=$customer.id selectname="customer" inputname="customerid" customOnChange="GetNumberPlans();customer_change();" select_id="ownerid_select" input_id="ownerid_input"}
+				{customerlist form="setcustomer" customers=$customers selected=$customer.id version=2
+					selectname="customer" inputname="customerid" customOnChange="GetNumberPlans();customer_change();"
+					select_id="ownerid_select" input_id="ownerid_input"}
 			{else}
-			{customerlist form="setcustomer" customers=$customers selected=$invoice.customerid selectname="customer" inputname="customerid" customOnChange="GetNumberPlans();customer_change();" select_id="ownerid_select" input_id="ownerid_input"}
+				{customerlist form="setcustomer" customers=$customers selected=$invoice.customerid version=2
+					selectname="customer" inputname="customerid" customOnChange="GetNumberPlans();customer_change();"
+					select_id="ownerid_select" input_id="ownerid_input"}
 			{/if}
 		</TD>
 	</TR>
@@ -177,8 +186,8 @@
         </td>
     </tr>
 	<TR>
-		<TD class="buttons" colspan="2">
-			<A HREF="javascript: saveheader();">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
+		<TD class="lms-ui-box-buttons" colspan="2">
+			{button icon="save" label="Submit" onclick="saveheader();"}
 		</TD>
 	</TR>
     </TBODY>

@@ -21,6 +21,10 @@
 		max-width: 35vw;
 	}
 
+	.customer-options td:last-child {
+		padding-left: 0;
+	}
+
 </style>
 
 <TABLE class="lmsbox{if $customerpanel} lms-ui-tab-container lms-ui-sortable{/if}" id="customerinfobox"{if $customerpanel} data-label="{trans("Customer Info")}"{/if}>
@@ -35,7 +39,9 @@
 				<div class="bold">
 					{icon name="customer" class="{if $customerpanel} lms-ui-sortable-handle{/if}"}
 					{if $customerpanel}{trans("Owner:")}{/if}
-					{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}{if $customerinfo.extid} / {$customerinfo.extid}{/if}){if $customerinfo.deleted} <span class="lms-ui-alert">({trans("deleted customer")})</span>{/if}
+					{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}{if $customerinfo.extid} / {$customerinfo.extid}{/if})
+					{karma title="Karma" value=$customerinfo.karma handler="?m=customeredit&id={$customerinfo.id}&op=changekarma"}
+					{if $customerinfo.deleted} <span class="lms-ui-alert">({trans("deleted customer")})</span>{/if}
 				</div>
 				<div>
 					{if $customerpanel}<a href="?m=customerinfo&amp;id={$customerinfo.id}">{trans('Navigate to the customer')} &raquo;</a>{/if}&nbsp;
@@ -262,7 +268,7 @@
 								</TD>
 							</TR>
 						{/if}
-							<TR>
+							<TR class="customer-options">
 								<TD WIDTH="1%" style="vertical-align: top">
 									{icon name="paytype"}
 								</TD>
@@ -300,7 +306,7 @@
 									</TABLE>
 								</TD>
 							</TR>
-							<TR>
+							<TR class="customer-options">
 								<TD WIDTH="1%" style="vertical-align: top">
 									{icon name="consent"}
 								</TD>
@@ -485,9 +491,9 @@
 			{block name="customerinfobox-buttons"}
 			{if $customerinfo.deleted}
 				{if ConfigHelper::checkPrivilege('permanent_customer_removal')}
-					{button id="remove-button" icon="remove" label="Remove permanently" href="?m=customerdel&id={$customerinfo.id}&type=permanent"}
+					{button id="remove-button" icon="remove" label="Remove permanently" data_href="?m=customerdel&id={$customerinfo.id}&type=permanent"}
 				{/if}
-				{button id="restore-button" icon="restore" label="Restore" onclick="location.href = '?m=customeredit&id={$customerinfo.id}&action=recover';"}
+				{button id="restore-button" icon="restore" label="Restore" href="?m=customeredit&id={$customerinfo.id}&action=recover"}
 			{else}
 				{button type="link-button" id="rtsearch-button" class="{if $customerstats['tickets']['notresolved']}bold{/if}" icon="timetable"
 					label="{trans("Tickets")}{if $customerstats['tickets']} ({$customerstats['tickets']['all']}{if $customerstats['tickets']['notresolved']} / {$customerstats['tickets']['notresolved']}{/if}){/if}"
@@ -500,7 +506,7 @@
 					href="?m=trafficprint&type=customertraffic&customer={$customerinfo.id}"}
 				{button type="link-button" id="edit-button" icon="edit" label="Edit" href="?m=customeredit&id={$customerinfo.id}"}
 				{if ConfigHelper::checkPrivilege('customer_removal')}
-					{button id="delete-button" icon="delete" label="Delete" href="?m=customerdel&id={$customerinfo.id}"}
+					{button id="delete-button" icon="delete" label="Delete" data_href="?m=customerdel&id={$customerinfo.id}"}
 				{/if}
 			{/if}
 			{if $info_link}
@@ -522,13 +528,13 @@
 	$(function() {
 		$('#delete-button').click(function() {
 			confirmDialog($t("Are you sure, you want to remove customer '$a' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!", "{$customerinfo.customername|escape}"), this).done(function() {
-				location.href = $(this).attr('href');
+				location.href = $(this).attr('data-href');
 			});
 		});
 
 		$('#remove-button').click(function() {
 			confirmDialog($t("Do you want to permanently remove $a customer?", "{$customerinfo.customername|escape}"), this).done(function() {
-				location.href = $(this).attr('href');
+				location.href = $(this).attr('data-href');
 			});
 		});
 	});
