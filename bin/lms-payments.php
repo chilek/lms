@@ -1143,7 +1143,7 @@ foreach ($assigns as $assign) {
             '%prev_period',
             // better use this
             '%forward_periods',
-            'forward_aligned_periods',
+            '%forward_aligned_periods',
             '%backward_periods',
             '%backward_aligned_periods',
             // for backward references
