@@ -13,7 +13,7 @@
 			{if $ticket.state != $smarty.const.RT_RESOLVED}
 				{button icon="add" label="Add"
 					onclick="location.href='?m=eventadd&ticketid={$ticket.ticketid}{if $ticket.customerid}&customerid={$ticket.customerid}{/if}';"}
-				{if $openeventcount}
+				{if $ticket.openeventcount}
 					{button icon="close" label="Close all"
 						onclick="location.href='?m=eventedit&action=close&ticketid={$ticket.ticketid}';"}
 				{/if}
