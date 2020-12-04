@@ -607,7 +607,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             unset($ticket);
         }
 
-	if (!$short) {
+        if (!$short) {
             $result['total'] = empty($result) ? 0 : count($result);
             $result['state'] = $state;
             $result['order'] = $order;
@@ -622,7 +622,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $result['rights'] = $rights;
             $result['fromdate'] = $fromdate;
             $result['todate'] = $todate;
-	}
+        }
 
         return $result;
     }
