@@ -101,19 +101,7 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
         }
     }
 
-    $queue = $LMS->GetQueueContents(array('netdevids' => $id));
-    unset($queue['total']);
-    unset($queue['state']);
-    unset($queue['order']);
-    unset($queue['direction']);
-    unset($queue['owner']);
-    unset($queue['removed']);
-    unset($queue['priority']);
-    unset($queue['deadline']);
-    unset($queue['service']);
-    unset($queue['type']);
-    unset($queue['unread']);
-    unset($queue['rights']);
+    $queue = $LMS->GetQueueContents(array('netdevids' => $id, 'short'=> 1));
 
     $start = 0;
     $pagelimit = ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $queue['total']);

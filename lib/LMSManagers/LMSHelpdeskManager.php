@@ -606,20 +606,22 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             unset($ticket);
         }
 
-        $result['total'] = empty($result) ? 0 : count($result);
-        $result['state'] = $state;
-        $result['order'] = $order;
-        $result['direction'] = $direction;
-        $result['owner'] = $owner;
-        $result['removed'] = $removed;
-        $result['priority'] = $priority;
-        $result['deadline'] = $deadline;
-        $result['service'] = $serviceids;
-        $result['type'] = $typeids;
-        $result['unread'] = $unread;
-        $result['rights'] = $rights;
-        $result['fromdate'] = $fromdate;
-        $result['todate'] = $todate;
+	if (!$short) {
+            $result['total'] = empty($result) ? 0 : count($result);
+            $result['state'] = $state;
+            $result['order'] = $order;
+            $result['direction'] = $direction;
+            $result['owner'] = $owner;
+            $result['removed'] = $removed;
+            $result['priority'] = $priority;
+            $result['deadline'] = $deadline;
+            $result['service'] = $serviceids;
+            $result['type'] = $typeids;
+            $result['unread'] = $unread;
+            $result['rights'] = $rights;
+            $result['fromdate'] = $fromdate;
+            $result['todate'] = $todate;
+	}
 
         return $result;
     }
