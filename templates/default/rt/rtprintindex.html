@@ -134,35 +134,23 @@
 
 				</TR>
 				{/if}
-				<TR>
-					<TD width="1%" COLSPAN="2" NOWRAP>
-						<IMG src="img/queue.gif" alt=""><B>{trans("Categories:")}</B>
-					</TD>
-					<TD width="1%">
-						<TABLE>
-							<TBODY class="lms-ui-multi-check">
-							{foreach $categories as $category}
-							<TR>
-								<TD width="1%" align="center">
-									<INPUT type="checkbox" name="categories[{$category.id}]" class="lms-ui-multi-check" value="1" CHECKED>
-								</TD>
-								<TD width="1%">
-									<label for="cat1{$category.id}">{$category.name}</label>
-								</TD>
-							</TR>
+				<tr>
+					<td width="1%">
+						{icon name="helpdesk"}
+					</td>
+					<td class="bold nobr">
+					    {trans("Category")}
+					</td>
+					<td>
+						<input type="hidden" name="catids" value="all">
+						<select size="1" name="catids[]" multiple class="lms-ui-multiselect lms-ui-multiselect-filter" data-default-value="{trans("- all -")}">
+							<option value="-1">{trans('- no categories -')}</option>
+							{foreach $categories $c}
+								<option value="{$c.id}">{$c.name}</option>
 							{/foreach}
-							<TR>
-								<TD width="1%" align="center" class="ftop">
-									<INPUT TYPE="checkbox" NAME="allbox" id="allbox-1" class="lms-ui-multi-check-all" VALUE="1" CHECKED>
-								</TD>
-								<TD width="1%" class="ftop">
-									<label for="allbox-1">{trans("Check All")}</label>
-								</TD>
-							</TR>
-							</TBODY>
-						</TABLE>
-					</TD>
-				</TR>
+						</select>
+					</td>
+				</tr>
 			</TABLE>
 		</TD>
 	</TR>
@@ -252,35 +240,19 @@
 
 				</TR>
 				{/if}
-				<TR>
-					<TD width="1%" COLSPAN="2" NOWRAP>
-						<IMG src="img/queue.gif" alt=""><B>{trans("Categories:")}</B>
-					</TD>
-					<TD width="1%">
-						<TABLE>
-							<tbody class="lms-ui-multi-check">
-							{foreach $categories as $category}
-							<TR>
-								<TD width="1%" align="center">
-									<INPUT type="checkbox" name="categories[{$category.id}]" class="lms-ui-multi-check" value="1" CHECKED>
-								</TD>
-								<TD width="1%">
-									<label for="cat2{$category.id}">{$category.name}</label>
-								</TD>
-							</TR>
+				<tr>
+					<td>{icon name="helpdesk"}</td>
+					<td class="bold">{trans("Category")}</td>
+					<td>
+						<input type="hidden" name="catids" value="all">
+						<select size="1" name="catids[]" multiple class="lms-ui-multiselect lms-ui-multiselect-filter" data-default-value="{trans("- all -")}">
+							<option value="-1">{trans('- no categories -')}</option>
+							{foreach $categories $c}
+								<option value="{$c.id}">{$c.name}</option>
 							{/foreach}
-							<TR>
-								<TD width="1%" align="center" class="ftop">
-									<INPUT TYPE="checkbox" NAME="allbox" id="allbox-2" class="lms-ui-multi-check-all" VALUE="1" CHECKED>
-								</TD>
-								<TD width="1%"  class="ftop">
-									<label for="allbox-2">{trans("Check All")}</label>
-								</TD>
-							</TR>
-							</tbody>
-						</TABLE>
-					</TD>
-				</TR>
+						</select>
+					</td>
+				</tr>
 			</TABLE>
 		</TD>
 	</TR>
