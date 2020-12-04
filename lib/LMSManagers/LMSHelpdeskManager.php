@@ -121,6 +121,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
      *              type, createtime,
      *          supported orders:
      *          asc = ascending, desc = descending
+     *      short - returned only ticket data (default: null, type: boolean)-
      * @return mixed
      */
     public function GetQueueContents(array $params)
