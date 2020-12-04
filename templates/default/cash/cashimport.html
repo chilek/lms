@@ -29,7 +29,7 @@
 </script>
 <FORM NAME="cashimport" ACTION="?m=cashimport" METHOD="post">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-background-cycle">
 	<COLGROUP>
 		<COL style="width: 1%;">
 		<COL style="width: 1%;">
@@ -65,18 +65,18 @@
 	</TR>
     </THEAD>
     <TBODY class="lms-ui-multi-check">
-	{foreach from=$divisions item=division}{if $division.list}
-	<TR class="dark">
-		<TD colspan="4" class="bold">
-			<IMG src="img/division.gif" alt=""> {$division.name}
-		</TD>
-		<TD colspan="3" class="text-right">
-			<A href="?m=cashimport&action=csv&division={$division.id}">{trans("Download (CSV)")}</a> <IMG src="img/save.gif" alt="">
-		</TD>
-	</TR>
-		{cycle values="light,lucid" print=false}
-		{foreach from=$division.list item=item}
-		<TR class="{cycle}">
+	{foreach $divisions as $division}{if $division.list}
+		<TR>
+			<TD colspan="4" class="dark bold">
+				{icon name="division" class="fa-fw"}
+				{$division.name}
+			</TD>
+			<TD colspan="3" class="dark text-right">
+				{button icon="csv" label="Download (CSV)" href="?m=cashimport&action=csv&division={$division.id}"}
+			</TD>
+		</TR>
+		{foreach $division.list as $item}
+		<TR>
 			<TD>
 				{$item.id|string_format:"%04d"}
 			</TD>
@@ -100,14 +100,14 @@
 				{customerlist form="cashimport" customers=$customerlist selected=$item.customerid selectname="custid[{$item.id}]" inputname="customer[{$item.id}]" version=2}
 			</TD>
 			<TD class="text-right">
-				<INPUT TYPE="checkbox" NAME="marks[{$item.id}]" VALUE="{$item.id}" class="lms-ui-multi-check">
+				<INPUT type="checkbox" name="marks[{$item.id}]" value="{$item.id}" class="lms-ui-multi-check">
 			</TD>
 		</TR>
 		{/foreach}
 	{/if}{/foreach}
 	{if !$listdata.total}
 	<TR>
-		<TD class="empty-table" COLSPAN="7">
+		<TD class="empty-table" colspan="7">
 			<p>{trans("No cash operations to import.")}</p>
 		</TD>
 	</TR>
@@ -125,7 +125,7 @@
 			{button icon="save" label="Download all (TXT)" href="?m=cashimport&action=txt"}
 		</TD>
 		<TD class="text-right nobr" colspan="2">
-			{button icon="delete" label="delete" onclick="Delete();"}
+			{button icon="delete" label="Delete" onclick="Delete();"}
 			{button icon="save" label="Save" onclick="Save();"}
 			{button id="import-button" icon="import" label="<!do>Import"}
 		</TD>

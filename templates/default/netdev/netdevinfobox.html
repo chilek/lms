@@ -354,29 +354,56 @@
 	<TR>
 		<TD WIDTH="100%" COLSPAN="2" class="lms-ui-box-buttons">
 {/if}
-			{block name="netdevinfobox-buttons"}
-				{button icon="clone" id="clone-netdev" onclick="location.href = '?m=netdevadd&id={$netdev.id}&clone=1';" label="Clone"}
-				{button icon="convert" id="replace-netdev" onclick="javascript:openSelectWindow('?m=choosenetdevreplace&id={$netdev.id}', 'Replace netdev', 600, 290, 1, 1);" label="Replace"}
-				{button icon="edit" id="edit-netdev" onclick="location.href = '?m=netdevedit&id={$netdev.id}';" label="Edit" accesskey="E"}
-				{button icon="delete" id="delete-netdev" label="Delete" data_name="{$netdev.name}"}
-			{/block}
+			<div class="lms-ui-box-button-container">
+				{block name="netdevinfobox-buttons"}
+					{button icon="clone" id="clone-netdev" onclick="location.href = '?m=netdevadd&id={$netdev.id}&clone=1';" label="Clone"}
+					{button icon="edit" id="edit-netdev" onclick="location.href = '?m=netdevedit&id={$netdev.id}';" label="Edit" accesskey="E"}
+					{button icon="delete" id="delete-netdev" label="Delete" data_name="{$netdev.name}"}
+				{/block}
+			</div>
+			{if !empty($targetnetdevs)}
+			<div class="lms-ui-box-button-container">
+				{button icon="convert" id="replace-netdev" label="Replace"}
+				<select id="target-netdev" class="lms-ui-advanced-select">
+					<option value="">{trans("- select target network device -")}</option>
+					{foreach $targetnetdevs as $targetnetdev}
+						<option value="{$targetnetdev.id}" title="{$targetnetdev.producer} / {$targetnetdev.model}"
+							{if $netdev.ports > $targetnetdev.ports}disabled{/if}
+							>{$targetnetdev.name}{if !empty($targetnetdev.location)} ({$targetnetdev.location}){/if}</option>
+					{/foreach}
+				</select>
+			</div>
+			{/if}
 		</TD>
 	</TR>
     </TBODY>
 </TABLE>
 {if $devicepanel}
-<SCRIPT>
-if (getCookie('devicepanel') == '1') {
-	$('#devicepanel').show();
-}
-</SCRIPT>
+<script>
+
+	if (getCookie('devicepanel') == '1') {
+		$('#devicepanel').show();
+	}
+
+</script>
 {/if}
 <script>
-	$('#delete-netdev').click(function() {
-		var name = $(this).attr('data-name');
-		confirmDialog($t("Are you sure, you want to remove device '$a' from database?", name), this).done(function() {
-			location.href = '?m=netdevdel&id={$netdev.id}&is_sure=1';
+
+	$(function() {
+		$('#delete-netdev').click(function () {
+			var name = $(this).attr('data-name');
+			confirmDialog($t("Are you sure, you want to remove device '$a' from database?", name), this).done(function () {
+				location.href = '?m=netdevdel&id={$netdev.id}&is_sure=1';
+			});
+			return false;
 		});
-		return false;
+
+		$('#replace-netdev').click(function() {
+			var targetNetDev = parseInt($('#target-netdev').val());
+			if (targetNetDev) {
+				location.href = '?m=netdevedit&action=replace&id={$netdev.id}&netdev=' + targetNetDev;
+			}
+		});
 	});
+
 </script>

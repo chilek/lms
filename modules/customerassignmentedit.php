@@ -207,7 +207,7 @@ if (isset($_POST['assignment'])) {
     } elseif (!preg_match('/^[0-9]+$/', $a['dateto'])) {
         $error['dateto'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
     } else {
-        $to = $a['dateto'];
+        $to = $a['dateto'] + 86399;
     }
 
     if ($to < $from && $to != 0 && $from != 0) {

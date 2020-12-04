@@ -187,6 +187,12 @@ html .ui-button.ui-state-disabled:active {
 
 .ui-tooltip {
   background-color: @light;
+  &.lms-ui-error {
+    color: @error-text;
+  }
+  &.lms-ui-warning {
+    color: @warning-text;
+  }
 }
 
 .ui-datepicker {
@@ -210,7 +216,7 @@ html .ui-button.ui-state-disabled:active {
 .ui-datepicker-trigger {
   border: none;
   background: none;
-  margin-left: 0.4em;
+  margin-left: 0.3em;
   padding: 0;
 }
 

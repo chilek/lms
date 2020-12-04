@@ -211,7 +211,7 @@ if (isset($_GET['search'])) {
             'SELECT customerid, (' . $DB->GroupConcat('contact') . ') AS phone
 			FROM customercontacts WHERE contact <> \'\' AND type & ? > 0 GROUP BY customerid',
             'customerid',
-            array(CONTACT_MOBILE | CONTACT_LANDLINE | CONTACT_LINE)
+            array(CONTACT_MOBILE | CONTACT_LANDLINE)
         ));
 
         $filename = 'customers-' . date('YmdHis') . '.csv';

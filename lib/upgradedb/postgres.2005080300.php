@@ -24,6 +24,23 @@
  *  $Id$
  */
 
+$invoice_number_template = $this->GetOne(
+    "SELECT value FROM uiconfig WHERE section = ? AND var = ? AND disabled = ?",
+    array('invoices', 'number_template', 0)
+);
+$invoice_monthly_numbering = $this->GetOne(
+    "SELECT value FROM uiconfig WHERE section = ? AND var = ? AND disabled = ?",
+    array('invoices', 'monthly_numbering', 0)
+);
+$receipt_number_template = $this->GetOne(
+    "SELECT value FROM uiconfig WHERE section = ? AND var = ? AND disabled = ?",
+    array('receipts', 'number_template', 0)
+);
+$receipt_monthly_numbering = $this->GetOne(
+    "SELECT value FROM uiconfig WHERE section = ? AND var = ? AND disabled = ?",
+    array('receipts', 'monthly_numbering', 0)
+);
+
 $this->BeginTrans();
 
 $this->Execute("
@@ -39,11 +56,11 @@ $this->Execute("
 
 $this->Execute(
     "INSERT INTO numberplans (template, period, doctype, isdefault) VALUES(?,?,1,1)",
-    array(str_replace('%M', '%m', ConfigHelper::getConfig('invoices.number_template')), ConfigHelper::getConfig('invoices.monthly_numbering') ? 3 : 5)
+    array(str_replace('%M', '%m', $invoice_number_template), $invoice_monthly_numbering ? 3 : 5)
 );
 $this->Execute(
     "INSERT INTO numberplans (template, period, doctype, isdefault) VALUES(?,?,2,1)",
-    array(str_replace('%M', '%m', ConfigHelper::getConfig('receipts.number_template')), ConfigHelper::getConfig('receipts.monthly_numbering') ? 3 : 5)
+    array(str_replace('%M', '%m', $receipt_number_template), $receipt_monthly_numbering ? 3 : 5)
 );
 
 $this->Execute("

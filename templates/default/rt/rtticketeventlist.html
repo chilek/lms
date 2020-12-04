@@ -52,7 +52,12 @@
 		</TD>
 	</TR>
 </TABLE>
-<SCRIPT type="text/javascript">
-	if (getCookie('eventpanel-{$layout.module}') == '1')
-		document.getElementById('eventpanel-{$layout.module}').style.display = '';
-</SCRIPT>
+
+<script>
+
+	if (getCookie('eventpanel-{$layout.module}') == '1') {
+		$('#eventpanel-{$layout.module}').show();
+	}
+
+</script>
+<script src="js/templates/event/eventlist.js"></script>

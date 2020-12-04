@@ -247,7 +247,7 @@ function init_datepickers(selector) {
 
 	if (!lmsSettings.openCalendarOnInputClick) {
 		options.showOn = 'button';
-		options.buttonText = '<i class="fas fa-calendar-alt" title="' + $t('Click here to open calendar') + '"></i>';
+		options.buttonText = '<i class="lms-ui-icon-calendar" title="' + $t('Click here to open calendar') + '"></i>';
 	}
 
 	$(selector).each(function() {
@@ -1049,7 +1049,8 @@ $(function() {
 				$(this).datetimepicker('toggle');
 			});
 		} else {
-			$('<i class="fas fa-calendar-alt ui-datepicker-trigger" title="' + $t('Click here to open calendar') + '"></i>')
+			$(this).wrap('<div class="lms-ui-datetime-container"/>');
+			$('<i class="lms-ui-icon-calendar ui-datepicker-trigger" title="' + $t('Click here to open calendar') + '"></i>')
 				.insertAfter(this).click(function () {
 				$(this).prev().datetimepicker('toggle');
 			});
@@ -1058,10 +1059,19 @@ $(function() {
 
 	init_multiselects('select.lms-ui-multiselect');
 
-	$(document).on('mouseup', '[data-target-url]',
+	$(document).on('mousedown mouseup', '[data-target-url]',
 		function(e) {
 			var elem = $(this);
 			var target = $(e.target);
+			if (e.type == 'mousedown') {
+				elem.data('mousedown', Date.now());
+				return;
+			} else {
+				if (Date.now() - parseInt(elem.data('mousedown')) >= 500) {
+					e.preventDefault();
+					return;
+				}
+			}
 			var url = $(this).attr('data-target-url');
 			var link = target.closest('a');
 			var ifLink = (link.length && elem.find(link).length > 0);
@@ -1540,8 +1550,8 @@ $(function() {
 			//plugins: "preview,autoresize,contextmenu,fullscreen,searchreplace,table,image,link,anchor,textcolor,autosave,paste",
 			// TinyMCE 5
 			skin_url: 'css/tinymce5',
-			//content_css: 'css/tinymce5/content.css',
-			plugins: "preview,autoresize,fullscreen,searchreplace,table,image,link,anchor,autosave,paste",
+//			content_css: 'css/tinymce5/content.min.css',
+			plugins: "preview,autoresize,fullscreen,searchreplace,table,image,imagetools,link,anchor,autosave,paste",
 			//fullscreen_native: true,
 			// #########
 			toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor | link anchor image ' +
@@ -1557,6 +1567,7 @@ $(function() {
 			remove_script_host : false,
 			forced_root_block : false,
 			entity_encoding: 'raw',
+
 			file_picker_callback: function(callback, value, meta) {
 				if (meta.filetype == 'image') {
 					$('#tinymce-image-upload').trigger('click');
@@ -1622,7 +1633,9 @@ $(function() {
 			var textareaid = $(this).uniqueId().attr('id');
 			var wysiwyg = $(this).attr('data-wysiwyg');
 			var inputname;
-			wysiwyg = (wysiwyg !== undefined && wysiwyg == 'true') || (wysiwyg === undefined && lmsSettings.wysiwygEditor);
+			var helpdesk = $(this).is('.lms-ui-helpdesk');
+			wysiwyg = (wysiwyg !== undefined && wysiwyg == 'true') || (wysiwyg === undefined &&
+				((helpdesk && lmsSettings.helpdeskWysiwygEditor) || (!helpdesk && lmsSettings.wysiwygEditor)));
 			$(this).data('wysiwyg', wysiwyg);
 			if ($(this).attr('name').match(/^([^\[]+)(\[[^\[]+\])$/i)) {
 				inputname = RegExp.$1 + '[wysiwyg]' + RegExp.$2;

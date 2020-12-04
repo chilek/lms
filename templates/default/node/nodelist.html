@@ -75,8 +75,15 @@
 	{block name="nodelist-list-header"}
 	<TR {tip text="Click on column name to change sorting order"}>
 		<td scope="col">
-			<SPAN class="nobr"><img src="img/node.gif" alt=""> <A href="?m=nodelist&amp;o=name{if $filter.direction == "asc" && $filter.order == "name"},desc{/if}">{trans("Name:")}</A>{if $filter.order == "name"} <IMG SRC="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</SPAN><BR>
-			<SPAN class="nobr lighter"><img src="img/customer.gif" alt=""> <A href="?m=nodelist&amp;o=owner{if $filter.direction == "asc" && $filter.order == "owner"},desc{/if}">{trans("Customer:")}</A>{if $filter.order == "owner"} <IMG SRC="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</SPAN>
+			<span class="nobr">
+				{icon name="node" class="fa-fw"}
+				<A href="?m=nodelist&o=name{if $filter.direction == "asc" && $filter.order == "name"},desc{/if}">{trans("Name:")}</A>{if $filter.order == "name"} <IMG SRC="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			</span>
+			<br>
+			<span class="nobr lighter">
+				{icon name="customer" class="fa-fw"}
+				<A href="?m=nodelist&o=owner{if $filter.direction == "asc" && $filter.order == "owner"},desc{/if}">{trans("Customer:")}</A>{if $filter.order == "owner"} <IMG SRC="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			</span>
 		</td>
 		<td scope="col">
 		<SPAN class="nobr"><A href="?m=nodelist&amp;o=location{if $filter.direction == "asc" && $filter.order == "location"},desc{/if}">{trans("Location:")}</A>{if $filter.order == "location"} <IMG SRC="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</SPAN>
@@ -86,8 +93,16 @@
 			<img src="img/empty.gif" alt="" width="1" height="16"><A href="?m=nodelist&amp;o=ownerid{if $filter.direction == "asc" && $filter.order == "ownerid"},desc{/if}">{trans("Customer ID:")}</A>{if $filter.order == "ownerid"} <IMG SRC="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</td>
 		<td scope="col" class="lighter nobr">
-			<img src="img/ip.gif" alt=""> {trans("Network:")} / <A href="?m=nodelist&amp;o=ip{if $filter.direction == "asc" && $filter.order == "ip"},desc{/if}">{trans("IP address:")}</A>{if $filter.order == "ip"} <IMG SRC="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<A href="?m=nodelist&amp;o=ip_pub{if $filter.direction == "asc" && $filter.order == "ip_pub"},desc{/if}">({trans("Pub. IP address:")})</A> {if $filter.order == "ip_pub"}<IMG SRC="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<img src="img/mac.gif" alt=""> <A href="?m=nodelist&amp;o=mac{if $filter.direction == "asc" && $filter.order == "mac"},desc{/if}">{trans("MAC address:")}</A>{if $filter.order == "mac"} <IMG SRC="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			{icon name="ipnetwork" class="fa-fw"}
+			{trans("Network:")} /
+			<a href="?m=nodelist&o=ip{if $filter.direction == "asc" && $filter.order == "ip"},desc{/if}">{trans("IP address:")}</a>
+			{if $filter.order == "ip"} <img src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<a href="?m=nodelist&o=ip_pub{if $filter.direction == "asc" && $filter.order == "ip_pub"},desc{/if}">({trans("Pub. IP address:")})</a>
+			{if $filter.order == "ip_pub"}<img src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<br>
+			{icon name="mac" class="fa-fw"}
+			<a href="?m=nodelist&o=mac{if $filter.direction == "asc" && $filter.order == "mac"},desc{/if}">{trans("MAC address:")}</a>
+			{if $filter.order == "mac"} <img src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</td>
 		<td scope="col" class="text-right nobr">
 			{t a=$pagination->getTotal()}Total: $a{/t}
@@ -212,18 +227,24 @@
 			<A name="{$node.id}">
 			{if $node.lastonline}
 				{if ($smarty.now-$node.lastonline) > $lastonline_limit}
-					<i class="lms-ui-icon-nodeoff" {tip a=$node.lastonlinedate text="Last online: \$a"}></i>
+					{capture assign="lastonline"}{t a=$node.lastonlinedate}Last online: $a{/t}{/capture}
+					{icon name="nodeoff" class="fa-fw" tip=$lastonline}
 				{else}
-					<i class="lms-ui-icon-nodeon" {tip a="on-line" text="Last online: \$a"}></i>
+					{capture assign="lastonline"}{t a="on-line"}Last online: $a{/t}{/capture}
+					{icon name="nodeon" class="fa-fw" tip=$lastonline}
 				{/if}
 			{else}
-				<i class="lms-ui-icon-nodeunk"></i>
+				{icon name="nodeunk" class="fa-fw"}
 			{/if}
 			{if $node.info}
-			    <IMG src="img/info1.gif" alt="" {tip text=$node.info}>
+			    {icon name="info" tip=$node.info}
 			{/if}
-			{$node.name}</A></span><BR>
-			<span class="nobr{if ! $node.access} blend{/if}"><img src="img/customer.gif" alt=""> <A href="?m=customerinfo&amp;id={$node.ownerid}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$node.ownerid}">{$node.owner|truncate:40:"...":true|replace:" ":"&nbsp;"}</A></span>
+			{$node.name}</A></span>
+			<br>
+			<span class="nobr{if ! $node.access} blend{/if}">
+				{icon name="customer" class="fa-fw"}
+				<a href="?m=customerinfo&id={$node.ownerid}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$node.ownerid}">{$node.owner|truncate:40:"...":true|replace:" ":"&nbsp;"}</a>
+			</span>
 		</TD>
 		<TD class="nobr">
 		{$node.location}{if $node.borough_name}<br><span class="blend">({$node.state_name} / {$node.district_name} / {$_BOROUGHTYPES[$node.borough_type]} {$node.borough_name})</span>{/if}
@@ -233,15 +254,26 @@
 			<SPAN class="blend">({$node.ownerid|string_format:"%04d"})</span>
 		</TD>
 		<TD class="nobr">
-			<img src="img/ip.gif" alt=""> {$node.netname} / {$node.ip} {if $node.ip_pub != "0.0.0.0"}({$node.ip_pub}){/if}<BR>
-			<img src="img/mac.gif" alt="">&nbsp;{$node.mac|replace:",":"</SPAN><BR><SPAN class=\"nobr\"><img src=\"img/mac.gif\" alt=\"\"> "}
+			{icon name="ipnetwork" class="fa-fw"}
+			{$node.netname} / {$node.ip} {if $node.ip_pub != "0.0.0.0"}({$node.ip_pub}){/if}
+			<br>
+			{icon name="mac" class="fa-fw"}
+			{$node.mac|replace:",":"</span><br><span class=\"nobr\"><i class=\"lms-ui-icon-mac fa-fw\"></i>"}
 		</TD>
 		<TD class="lms-ui-buttons nobr">
-			<a href="?m=nodeset&amp;id={$node.id}"><img src="img/{if ! $node.access}no{/if}access.gif" alt="{if ! $node.access}{trans("Connect")}{else}{trans("Disconnect")}{/if}" title="{if ! $node.access}{trans("Connect")}{else}{trans("Disconnect")}{/if}"></A>
-			<a href="?m=nodewarn&amp;id={$node.id}"><img src="img/warning{if ! $node.warning}off{else}on{/if}.gif" alt="{if ! $node.warning}{trans("Enable notice")}{else}{trans("Disable notice")}{/if}" title="{if ! $node.warning}{trans("Enable notice")}{else}{trans("Disable notice")}{/if}"></A>
-			<a class="delete-node" href="?m=nodedel&id={$node.id}"><img src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
-			<a href="?m=nodeedit&amp;id={$node.id}"><img src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
-			<a href="?m=nodeinfo&amp;id={$node.id}"><img src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
+			{if $node.access}
+				{button type="link" icon="connected" tip="Disconnect" href="?m=nodeset&id={$node.id}"}
+			{else}
+				{button type="link" icon="disconnected" tip="Disconnect" href="?m=nodeset&id={$node.id}"}
+			{/if}
+			{if $node.warning}
+				{button type="link" icon="warnon" tip="Disable notice" href="?m=nodewarn&id={$node.id}"}
+			{else}
+				{button type="link" icon="warnoff" tip="Enable notice" href="?m=nodewarn&id={$node.id}"}
+			{/if}
+			{button type="link" icon="delete" class="delete-node=" href="?m=nodedel&id={$node.id}"}
+			{button type="link" icon="edit" href="?m=nodeedit&id={$node.id}"}
+			{button type="link" icon="info" href="?m=nodeinfo&id={$node.id}"}
 		</TD>
 	</TR>
 	{if $nodelist[nodelist.index_next].ownerid == $node.ownerid && $filter.order == "owner"}{cycle print=false}{/if}

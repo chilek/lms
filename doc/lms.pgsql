@@ -820,6 +820,7 @@ CREATE TABLE tariffs (
 	dateto integer		NOT NULL DEFAULT 0,
 	authtype smallint 	DEFAULT 0 NOT NULL,
     currency varchar(3),
+    flags smallint DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id),
 	CONSTRAINT tariffs_name_key UNIQUE (name, value, currency, period)
 );
@@ -1335,6 +1336,19 @@ CREATE TABLE netdeviceproducers (
 );
 
 /* ---------------------------------------------------
+ Structure of table "netdevicetypes"
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS netdevicetypes_id_seq;
+CREATE SEQUENCE netdevicetypes_id_seq;
+DROP TABLE IF EXISTS netdevicetypes CASCADE;
+CREATE TABLE netdevicetypes (
+    id integer DEFAULT nextval('netdevicetypes_id_seq'::text) NOT NULL,
+    name varchar(50) NOT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT netdevicetypes_name_ukey UNIQUE (name)
+);
+
+/* ---------------------------------------------------
  Structure of table "netdevicemodels"
 ------------------------------------------------------*/
 DROP SEQUENCE IF EXISTS netdevicemodels_id_seq;
@@ -1345,6 +1359,8 @@ CREATE TABLE netdevicemodels (
 	netdeviceproducerid integer NOT NULL,
 	name varchar(255) NOT NULL,
 	alternative_name VARCHAR(255),
+	type integer DEFAULT NULL
+		CONSTRAINT netdevicemodels_type_fkey REFERENCES netdevicetypes (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	PRIMARY KEY (id),
 	FOREIGN KEY (netdeviceproducerid)
 		REFERENCES netdeviceproducers(id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -2666,9 +2682,9 @@ DROP TABLE IF EXISTS userdivisions CASCADE;
 CREATE TABLE userdivisions (
     id integer DEFAULT nextval('userdivisions_id_seq'::text) NOT NULL,
     userid      integer     NOT NULL
-        CONSTRAINT users_userid_fkey REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+        CONSTRAINT userdivisions_userid_fkey REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
     divisionid  integer     NOT NULL
-        CONSTRAINT divisions_divisionid_fkey REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE,
+        CONSTRAINT userdivisions_divisionid_fkey REFERENCES divisions (id) ON DELETE RESTRICT ON UPDATE CASCADE,
     PRIMARY KEY (id),
     CONSTRAINT userdivisions_userid_divisionid_ukey UNIQUE (userid, divisionid)
 );
@@ -3757,6 +3773,19 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('mANT30 PA', NULL, 1),
 ('mANT30', NULL, 1);
 
+INSERT INTO netdevicetypes (name) VALUES
+('router'),
+('switch'),
+('antenna'),
+('access-point'),
+('PON OLT'),
+('PON ONT'),
+('PON splitter'),
+('GSM modem'),
+('DSL modem'),
+('power line adapter'),
+('IPTV decoder');
+
 INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('3391-A', 'SR71A', 2),
 ('AF-24', 'AIRFIBER 1.4GBPS+ BACKHAUL 24GHZ (SHIPPED AS SINGLES)', 2),
@@ -3903,6 +3932,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020111000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020112800');
 
 COMMIT;

@@ -42,7 +42,7 @@ if (isset($_GET['action'])) {
                 $error[$_GET['action'] . '-template-subject'] = trans('Empty message template subject!');
             }
 
-            if ($p['type'] == TMPL_SMS || $p['type'] == TMPL_HELPDESK) {
+            if ($p['type'] == TMPL_SMS) {
                 $body_type = 'text';
             } else {
                 $body_type = 'html';

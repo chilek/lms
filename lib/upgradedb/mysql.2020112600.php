@@ -3,9 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
- *
- *  Please, see the doc/AUTHORS for more information about authors!
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License Version 2 as
@@ -21,17 +19,12 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id$
  */
 
-$layout['pagetitle'] = trans('Select net device');
+$this->BeginTrans();
 
-$list = $DB->GetAll("SELECT n.name, n.id, n.producer, n.model, va.location
-	FROM netdevices n
-	LEFT JOIN vaddresses va ON va.id = n.address_id
-	WHERE n.id <> " . intval($_GET['id']) . " ORDER BY NAME");
-$list['total'] = count($list);
+$this->Execute("ALTER TABLE tariffs ADD COLUMN flags tinyint(1) DEFAULT 0 NOT NULL");
 
-$SMARTY->assign('netdevlist', $list);
-$SMARTY->assign('objectid', $_GET['id']);
-$SMARTY->display('choose/choosenetdevreplace.html');
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020112600', 'dbversion'));
+
+$this->CommitTrans();

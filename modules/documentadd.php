@@ -84,6 +84,8 @@ if (isset($_POST['document'])) {
         $document['todate'] = 0;
     } elseif (!preg_match('/^[0-9]+$/', $document['todate'])) {
         $error['todate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+    } else {
+        $document['todate'] += 86399;
     }
 
     if ($document['fromdate'] > $document['todate'] && $document['todate'] != 0) {
@@ -422,6 +424,19 @@ if (isset($_POST['document'])) {
 
     $document['assignment']['check_all_terminals'] =
         ConfigHelper::checkConfig('phpui.promotion_schema_all_terminal_check');
+
+    $default_existing_assignment_operation = ConfigHelper::getConfig('phpui.default_existing_assignment_operation', 'keep');
+    $existing_assignment_operation_map = array(
+        'keep' => EXISTINGASSIGNMENT_KEEP,
+        'suspend' => EXISTINGASSIGNMENT_SUSPEND,
+        'cut' => EXISTINGASSIGNMENT_CUT,
+        'delete' => EXISTINGASSIGNMENT_DELETE,
+    );
+    if (isset($existing_assignment_operation_map[$default_existing_assignment_operation])) {
+        $document['assignment']['existing_assignments']['operation'] = $existing_assignment_operation_map[$default_existing_assignment_operation];
+    } else {
+        $document['assignment']['existing_assignments']['operation'] = EXISTINGASSIGNMENT_KEEP;
+    }
 }
 
 $SMARTY->setDefaultResourceType('extendsall');

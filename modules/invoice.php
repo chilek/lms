@@ -29,7 +29,9 @@ use setasign\Fpdi\PdfParser\StreamReader;
 
 function invoice_body($document, $invoice)
 {
-    Localisation::setUiLanguage($invoice['lang']);
+    if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.use_customer_lang', true))) {
+        Localisation::setUiLanguage($invoice['lang']);
+    }
     $document->Draw($invoice);
     if (!isset($invoice['last'])) {
         $document->NewPage();
@@ -395,6 +397,10 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 				LEFT JOIN location_states ls ON ls.id = ld.stateid
 				WHERE d.id = ?", array($divisionid));
 
+        if ($jpk_type == 'vat' && $jpk_vat_version == 4 && empty($division['email'])) {
+            die(trans('Please define email address in division properties!'));
+        }
+
         // JPK header
         $jpk_data .= "\t<Naglowek>\n";
         if ($jpk_type == 'vat') {
@@ -539,7 +545,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 $jpkrow++;
                 $ten = empty($invoice['ten']) ? 'brak' : preg_replace('/[\s\-]/', '', $invoice['ten']);
                 $jpk_data .= "\t\t<NrKontrahenta>" . $ten . "</NrKontrahenta>\n";
-                $jpk_data .= "\t\t<NazwaKontrahenta>" . htmlspecialchars($invoice['name']) . "</NazwaKontrahenta>\n";
+                $jpk_data .= "\t\t<NazwaKontrahenta><![CDATA[" . $invoice['name'] . "]]></NazwaKontrahenta>\n";
                 if ($jpk_vat_version == 3) {
                     $jpk_data .= "\t\t<AdresKontrahenta>" . ($invoice['postoffice'] && $invoice['postoffice'] != $invoice['city'] && $invoice['street'] ? $invoice['city'] . ', ' : '')
                         . $invoice['address'] . ', ' . (empty($invoice['zip']) ? '' : $invoice['zip'] . ' ') . ($invoice['postoffice'] ? $invoice['postoffice'] : $invoice['city']) . "</AdresKontrahenta>\n";
@@ -1082,7 +1088,13 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 foreach ($invoice['content'] as $idx => $position) {
                     $jpk_data .= "\t<FakturaWiersz" . ($jpk_fa_version == 2 ? ' typ="G"' : '') . ">\n";
                     $jpk_data .= "\t\t<P_2B>" . $invoice['fullnumber'] . "</P_2B>\n";
-                    $jpk_data .= "\t\t<P_7>" . htmlspecialchars($position['description']) . "</P_7>\n";
+                    $jpk_data .= "\t\t<P_7>"
+                        . htmlspecialchars(
+                            mb_strlen($position['description']) > 240
+                                ? mb_substr($position['description'], 0, 240) . ' ...'
+                                : $position['description']
+                        )
+                        . "</P_7>\n";
                     $jpk_data .= "\t\t<P_8A>" . htmlspecialchars($position['content']) . "</P_8A>\n";
 
                     if (isset($invoice['invoice'])) {

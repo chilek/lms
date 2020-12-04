@@ -133,6 +133,9 @@ if (isset($_POST['ticket'])) {
     }
 
     if (!$error) {
+        $ticket['contenttype'] = isset($ticket['wysiwyg']) && isset($ticket['wysiwyg']['body']) && ConfigHelper::checkValue($ticket['wysiwyg']['body'])
+            ? 'text/html' : 'text/plain';
+
         if (!$ticket['customerid']) {
             if ($ticket['requestor_name'] == '' && $ticket['requestor_phone'] == '' && $ticket['requestor_mail'] == '') {
                 $userinfo = $LMS->GetUserInfo(Auth::GetCurrentUser());
@@ -328,9 +331,18 @@ if (isset($_POST['ticket'])) {
             );
             $headers['X-Priority'] = $RT_MAIL_PRIORITIES[$ticketdata['priority']];
             $headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject'), $params);
+
             $params['customerinfo'] = isset($mail_customerinfo) ? $mail_customerinfo : null;
+            $params['contenttype'] = $ticket['contenttype'];
             $body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body'), $params);
+
+            if ($ticket['contenttype'] == 'text/html') {
+                $params['body'] = trans('(HTML content has been omitted)');
+                $headers['X-LMS-Format'] = 'html';
+            }
+
             $params['customerinfo'] = isset($sms_customerinfo) ? $sms_customerinfo : null;
+            $params['contenttype'] = 'text/plain';
             $sms_body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body'), $params);
 
             $LMS->NotifyUsers(array(
@@ -339,6 +351,7 @@ if (isset($_POST['ticket'])) {
                 'mail_headers' => $headers,
                 'mail_body' => $body,
                 'sms_body' => $sms_body,
+                'contenttype' => $ticket['contenttype'],
                 'attachments' => &$attachments,
             ));
         }

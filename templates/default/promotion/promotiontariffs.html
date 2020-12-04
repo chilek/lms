@@ -3,7 +3,7 @@
 	<THEAD>
 	<TR>
 		<TD style="width: 100%;" class="hand text-left bold nobr" onClick="showOrHide('promotiontariffs');">
-			<IMG src="img/money.gif" alt="">
+			{icon name="money" class="fa-fw"}
 			{if empty($promotion.tariffs)}{$count = 0}{else}{$count = count($promotion.tariffs)}{/if}
 			{t a=$count}Promotion's Tariffs ($a):{/t}
 		</TD>

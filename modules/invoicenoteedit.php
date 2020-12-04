@@ -78,8 +78,9 @@ if (isset($_GET['id']) && $action == 'edit') {
             $nitem['s_valuebrutto'] = $iitem['total'];
         } else {
             $nitem['count']     = str_replace(',', '.', $item['count']);
-            $nitem['discount']  = (!empty(floatval($item['pdiscount'])) ? str_replace(',', '.', $item['pdiscount']) : str_replace(',', '.', $item['vdiscount']));
-            $nitem['discount_type'] = (!empty(floatval($item['pdiscount'])) ? DISCOUNT_PERCENTAGE : DISCOUNT_AMOUNT);
+            $pdiscount = floatval($item['pdiscount']);
+            $nitem['discount']  = (!empty($pdiscount) ? str_replace(',', '.', $item['pdiscount']) : str_replace(',', '.', $item['vdiscount']));
+            $nitem['discount_type'] = (!empty($pdiscount) ? DISCOUNT_PERCENTAGE : DISCOUNT_AMOUNT);
             $nitem['pdiscount'] = str_replace(',', '.', $item['pdiscount']);
             $nitem['vdiscount'] = str_replace(',', '.', $item['vdiscount']);
             $nitem['content']       = str_replace(',', '.', $item['content']);
@@ -103,6 +104,7 @@ if (isset($_GET['id']) && $action == 'edit') {
     $cnote['oldcustomerid'] = $cnote['customerid'];
     $cnote['oldflags'] = $cnote['flags'];
     $cnote['oldcurrency'] = $cnote['currency'];
+    $cnote['oldcurrencyvalue'] = $cnote['currencyvalue'];
 
     $hook_data = array(
         'contents' => $cnotecontents,
@@ -152,6 +154,7 @@ switch ($action) {
         $oldcustomerid = $cnote['oldcustomerid'];
         $oldflags = $cnote['oldflags'];
         $oldcurrency = $cnote['oldcurrency'];
+        $oldcurrencyvalue = $cnote['oldcurrencyvalue'];
 
         $oldcnote = $cnote;
         $cnote = null;
@@ -182,6 +185,7 @@ switch ($action) {
         $cnote['oldcustomerid'] = $oldcustomerid;
         $cnote['oldflags'] = $oldflags;
         $cnote['oldcurrency'] = $oldcurrency;
+        $cnote['oldcurrencyvalue'] = $oldcurrencyvalue;
 
         $invoice = $oldcnote['invoice'];
 
@@ -289,6 +293,7 @@ switch ($action) {
         }
 
         $cnote['currency'] = $cnote['oldcurrency'];
+        $cnote['currencyvalue'] = $cnote['oldcurrencyvalue'];
 
         $deadline = $cnote['deadline'] ? $cnote['deadline'] : $currtime;
         $paytime = $cnote['paytime'] = round(($cnote['deadline'] - $cnote['cdate']) / 86400);
@@ -507,11 +512,6 @@ switch ($action) {
             break;
         }
 
-        $cnote['currencyvalue'] = $LMS->getCurrencyValue($cnote['currency'], $sdate);
-        if (!isset($cnote['currencyvalue'])) {
-            die('Fatal error: couldn\'t get quote for ' . $cnote['currency'] . ' currency!<br>');
-        }
-
         $DB->BeginTrans();
 
         $use_current_customer_data = isset($cnote['use_current_customer_data']);
@@ -563,7 +563,7 @@ switch ($action) {
             'flags' => (empty($cnote['flags'][DOC_FLAG_RECEIPT]) ? 0 : DOC_FLAG_RECEIPT)
                 + (empty($cnote['flags'][DOC_FLAG_TELECOM_SERVICE]) || $customer['type'] == CTYPES_COMPANY ? 0 : DOC_FLAG_TELECOM_SERVICE)
                 + ($use_current_customer_data
-                    ? ($customer['type'] == CTYPES_COMPANY && isset($customer['flags'][CUSTOMER_FLAG_RELATED_ENTITY]) ? DOC_FLAG_RELATED_ENTITY : 0)
+                    ? (isset($customer['flags'][CUSTOMER_FLAG_RELATED_ENTITY]) ? DOC_FLAG_RELATED_ENTITY : 0)
                     : (!empty($cnote['oldflags'][DOC_FLAG_RELATED_ENTITY]) ? DOC_FLAG_RELATED_ENTITY : 0)
                 ),
             SYSLOG::RES_CUST => $cnote['customerid'],

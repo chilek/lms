@@ -632,7 +632,12 @@ INPUT[type="button"] {
 	background-color: @lucid;
 	min-height: 1.4em;
 	padding: 0.1em;
+	padding-left: 0.4em;
 	box-sizing: border-box;
+}
+
+input[type="text"][disabled] {
+	border: 1px dashed grey;
 }
 
 INPUT[type="radio"] {
@@ -1282,10 +1287,11 @@ IMG		{ vertical-align: middle; border: 0; }
 }
 
 .lms-ui-fileupload {
-	display: inline-block;
+	display: inline-flex;
+	flex-direction: column;
+	justify-content: center;
 
 	.lms-ui-button-fileupload-container {
-		padding-bottom: 3px;
 	}
 
 	.lms-ui-button-fileupload {
@@ -1295,11 +1301,12 @@ IMG		{ vertical-align: middle; border: 0; }
 	}
 
 	.fileupload-files {
-		margin-top: 0.5em;
-		margin-bottom: 0.5em;
+		display: flex;
+		flex-direction: column;
 
 		> div {
 			margin-top: 0.3em;
+			margin-bottom: 0.3em;
 		}
 	}
 }
@@ -1323,32 +1330,9 @@ a.lms-ui-button:not(.lms-ui-link-button) {
 	}
 }
 
-.lms-ui-rtmessage-current {
-	& td:first-child {
-		border-left: @rtmessage-current;
-	}
-	& td:last-child {
-		border-right: @rtmessage-current;
-	}
-	thead& td {
-		border-top: @rtmessage-current;
-	}
-	tbody& td {
-		border-bottom: @rtmessage-current;
-	}
-}
-
+.lms-ui-rtmessage-current,
 .lms-ui-rtsystemmessage-current {
-	& td:first-child {
-		border-left: @rtmessage-current;
-	}
-	& td:last-child {
-		border-right: @rtmessage-current;
-	}
-	tbody& td {
-		border-top: @rtmessage-current;
-		border-bottom: @rtmessage-current;
-	}
+	box-shadow: @rtmessage-current;
 }
 
 .lms-ui-multi-check-all {
@@ -1371,6 +1355,14 @@ table.lmsbox {
 				padding: 1em 0.5em 0.5em 0.5em;
 				& > *:not(:first-child) {
 					margin-left: 0.3em;
+				}
+				& .lms-ui-box-button-container {
+					display: flex;
+					flex-wrap: wrap;
+					align-items: center;
+					& > *:not(:first-child) {
+						margin-left: 0.3em;
+					}
 				}
 			}
 		}
@@ -1669,6 +1661,15 @@ tr.space_row > td {
 .lms-ui-pagination {
 	background-color: @dark;
 	text-align: center;
+	> span {
+		display: inline-flex;
+		flex-wrap: wrap;
+		align-items: center;
+		> * {
+			padding-left: 0.2em;
+			padding-right: 0.2em;
+		}
+	}
 }
 
 td.empty-table {
@@ -2025,10 +2026,6 @@ div.lms-ui-persistent-filter {
 	.lms-ui-filter-name {
 		display: none;
 	}
-	.lms-ui-button {
-		width: 22px;
-		height: 22px;
-	}
 }
 
 .lms-ui-matched-text {
@@ -2041,6 +2038,9 @@ div.lms-ui-wysiwyg-editor {
 	flex-direction: column;
 	justify-content: flex-start;
 	align-items: flex-start;
+	> label {
+		padding-bottom: 0.5em;
+	}
 }
 
 .lms-ui-dragslider-slave {
@@ -2195,15 +2195,15 @@ div.lms-ui-wysiwyg-editor {
 		}
 	}
 	.lms-ui-box-buttons {
-		align-self: stretch;
-		flex-direction: row;
-		justify-content: flex-end;
-		align-items: center;
-		background-image: linear-gradient(to right, black 33%, rgba(255,255,255,0) 0%);
+		background-image: linear-gradient(to right, black 33%, rgba(255, 255, 255, 0) 0%);
 		background-position: left 0.5em;
 		background-size: 3px 1px;
 		background-repeat: repeat-x;
 		padding: 1em 0.5em 0.5em 0.5em;
+		align-self: stretch;
+		flex-direction: row;
+		justify-content: flex-end;
+		align-items: center;
 		& > *:not(:first-child) {
 			margin-left: 0.3em;
 		}
@@ -2488,8 +2488,10 @@ fieldset {
 	}
 }
 
-.lms-ui-date-container {
-	display: inline;
+.lms-ui-date-container,
+.lms-ui-datetime-container {
+	display: inline-flex;
+	padding-right: 0.4em;
 }
 
 .lms-ui-category-label {
@@ -2532,5 +2534,13 @@ fieldset {
 			color: @blend;
 			cursor: no-drop;
 		}
+	}
+}
+
+.lms-ui-deadline-selection {
+	display: inline;
+	.scombobox {
+		width: 5em;
+		display: inline-block;
 	}
 }

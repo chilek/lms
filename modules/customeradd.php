@@ -356,6 +356,8 @@ if (isset($_POST['customeradd'])) {
         )
     );
 
+    $customeradd['status'] = intval(ConfigHelper::getConfig('phpui.default_status'));
+
     $customeradd['divisionid'] = intval(ConfigHelper::getConfig('phpui.default_divisionid'));
 
     $customeradd['documentmemo'] = ConfigHelper::getConfig('phpui.default_customer_document_memo', '', true);

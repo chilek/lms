@@ -106,6 +106,7 @@ if (isset($_GET['id']) && $action == 'init') {
     );
     $cnote['currency'] = $invoice['currency'];
     $cnote['oldcurrency'] = $invoice['currency'];
+    $cnote['oldcurrencyvalue'] = $invoice['currencyvalue'];
 
     $t = $invoice['cdate'] + $invoice['paytime'] * 86400;
     $deadline = mktime(23, 59, 59, date('m', $t), date('d', $t), date('Y', $t));
@@ -155,21 +156,16 @@ $layout['pagetitle'] = trans('Credit Note for Invoice: $a', $ntempl);
 
 switch ($action) {
     case 'deletepos':
-        if ($invoice['closed']) {
-            break;
-        }
         $contents[$_GET['itemid']]['deleted'] = true;
         break;
 
     case 'recoverpos':
-        if ($invoice['closed']) {
-            break;
-        }
         $contents[$_GET['itemid']]['deleted'] = false;
         break;
 
     case 'setheader':
         $oldcurrency = $cnote['oldcurrency'];
+        $oldcurrencyvalue = $cnote['oldcurrencyvalue'];
 
         $cnote = null;
         $error = null;
@@ -253,6 +249,7 @@ switch ($action) {
 
         $cnote['currency'] = $oldcurrency;
         $cnote['oldcurrency'] = $oldcurrency;
+        $cnote['oldcurrencyvalue'] = $oldcurrencyvalue;
 
         // finally check if selected customer can use selected numberplan
         $divisionid = !empty($cnote['use_current_division']) ? $invoice['current_divisionid'] : $invoice['divisionid'];
@@ -475,6 +472,7 @@ switch ($action) {
         $cnote['paytime'] = round(($cnote['deadline'] - $cnote['cdate']) / 86400);
 
         $cnote['currency'] = $cnote['oldcurrency'];
+        $cnote['currencyvalue'] = $cnote['oldcurrencyvalue'];
 
         $hook_data = array(
             'invoice' => $invoice,
@@ -501,11 +499,6 @@ switch ($action) {
                 $contents[$idx]['valuenetto'] = $newcontents['valuenetto'][$idx];
             }
             break;
-        }
-
-        $cnote['currencyvalue'] = $LMS->getCurrencyValue($cnote['currency'], $cnote['sdate']);
-        if (!isset($cnote['currencyvalue'])) {
-            die('Fatal error: couldn\'t get quote for ' . $cnote['currency'] . ' currency!<br>');
         }
 
         $DB->BeginTrans();
@@ -583,7 +576,7 @@ switch ($action) {
             'flags' => (empty($cnote['flags'][DOC_FLAG_RECEIPT]) ? 0 : DOC_FLAG_RECEIPT)
                 + (empty($cnote['flags'][DOC_FLAG_TELECOM_SERVICE]) || $customer['type'] == CTYPES_COMPANY ? 0 : DOC_FLAG_TELECOM_SERVICE)
                 + ($use_current_customer_data
-                    ? ($customer['type'] == CTYPES_COMPANY && isset($customer['flags'][CUSTOMER_FLAG_RELATED_ENTITY]) ? DOC_FLAG_RELATED_ENTITY : 0)
+                    ? (isset($customer['flags'][CUSTOMER_FLAG_RELATED_ENTITY]) ? DOC_FLAG_RELATED_ENTITY : 0)
                     : (!empty($invoice['flags'][DOC_FLAG_RELATED_ENTITY]) ? DOC_FLAG_RELATED_ENTITY : 0)
                 ),
             SYSLOG::RES_USER => Auth::GetCurrentUser(),

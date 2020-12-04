@@ -526,6 +526,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             if (!empty($nodelist)) {
                 foreach ($nodelist as &$row) {
                     ($row['access']) ? $totalon++ : $totaloff++;
+                    $row['lastonlinedate'] = lastonline_date($row['lastonline']);
 
                     // if location is empty and owner is set then heirdom address from owner
                     if (!$row['location'] && $row['ownerid']) {

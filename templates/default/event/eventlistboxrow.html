@@ -75,6 +75,7 @@
                    {icon name="clipboard"}
                 </a>
                 {if ConfigHelper::checkPrivilege('timetable_management')}
+                    {button type="link" icon="clone" href="?m=eventadd&id={$event.id}" tip="Clone"}
                     {if ($event.closed)}
                         {$allow_modify = intval(ConfigHelper::getConfig('phpui.allow_modify_closed_events_newer_than', 604800))}
                         {if !$allow_modify || ($smarty.now - $event.closeddate < $allow_modify) || ConfigHelper::checkPrivilege('superuser')}
@@ -87,7 +88,6 @@
                             {button type="link" icon="owner" onclick="location.href = '?m=eventedit&id={$event.id}&action=assign&backid=' + $(this).closest('.event-day-table').attr('id');" tip="<!event>Assign"}
                         {/if}
                         {button type="link" icon="close" onclick="location.href = '?m=eventedit&id={$event.id}&action=close&backid=' + $(this).closest('.event-day-table').attr('id');" tip="Close"}
-                        {button type="link" icon="clone" href="?m=eventadd&id={$event.id}" tip="Clone"}
                         {button type="link" class="event-edit" icon="edit" href="?m=eventedit&id={$event.id}&backid=" tip="Edit"}
                         {button type="link" icon="note" onclick="location.href = '?m=eventnote&id={$event.id}&backid=' + $(this).closest('.event-day-table').attr('id');" tip="Add Note"}
                         {button type="link" icon="delete" class="delete-event" href="?m=eventdel&id={$event.id}" tip="Delete permanently"}

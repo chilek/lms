@@ -296,6 +296,7 @@ function sendvalue(targetfield, value)
 	targetfield.value = value;
 	// close popup
 	window.parent.parent.popclick();
+	targetfield.dispatchEvent(new Event('change'))
 	targetfield.focus();
 }
 

@@ -121,6 +121,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
      *              type, createtime,
      *          supported orders:
      *          asc = ascending, desc = descending
+     *      short - returned only ticket data (default: null, type: boolean)-
      * @return mixed
      */
     public function GetQueueContents(array $params)
@@ -606,20 +607,22 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             unset($ticket);
         }
 
-        $result['total'] = empty($result) ? 0 : count($result);
-        $result['state'] = $state;
-        $result['order'] = $order;
-        $result['direction'] = $direction;
-        $result['owner'] = $owner;
-        $result['removed'] = $removed;
-        $result['priority'] = $priority;
-        $result['deadline'] = $deadline;
-        $result['service'] = $serviceids;
-        $result['type'] = $typeids;
-        $result['unread'] = $unread;
-        $result['rights'] = $rights;
-        $result['fromdate'] = $fromdate;
-        $result['todate'] = $todate;
+        if (!$short) {
+            $result['total'] = empty($result) ? 0 : count($result);
+            $result['state'] = $state;
+            $result['order'] = $order;
+            $result['direction'] = $direction;
+            $result['owner'] = $owner;
+            $result['removed'] = $removed;
+            $result['priority'] = $priority;
+            $result['deadline'] = $deadline;
+            $result['service'] = $serviceids;
+            $result['type'] = $typeids;
+            $result['unread'] = $unread;
+            $result['rights'] = $rights;
+            $result['fromdate'] = $fromdate;
+            $result['todate'] = $todate;
+        }
 
         return $result;
     }
@@ -728,7 +731,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     public function GetEventsByTicketId($id)
     {
         $events = $this->db->GetAll('SELECT events.id as id, title, description, note, date, begintime, endtime, '
-                . 'userid, customerid, private, closed, closeduserid, events.type, ticketid, va.location, '
+                . 'userid, customerid, private, closed, closeddate, closeduserid, events.type, ticketid, va.location, '
                 . ''.$this->db->Concat('customers.name', "' '", 'customers.lastname').' AS customername, '
                 . ''.$this->db->Concat('users.firstname', "' '", 'users.lastname').' AS username, '
                 . ''.$this->db->Concat('u.firstname', "' '", 'u.lastname').' AS closedusername, vn.name AS node_name, '
@@ -1035,7 +1038,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 $headers,
                 isset($message['type']) ? $message['type'] : RTMESSAGE_REGULAR,
                 isset($message['phonefrom']) && $message['phonefrom'] != -1 ? $message['phonefrom'] : '',
-                isset($message['contenttype']) ? $message['contenttype'] : 'text/plan',
+                isset($message['contenttype']) ? $message['contenttype'] : 'text/plain',
             )
         );
         $msgid = $this->db->GetLastInsertID('rtmessages');
@@ -1329,6 +1332,20 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 $references[] = $reply['messageid'];
             }
             $message['references'] = array_reverse($references);
+
+            $message['cc']  = array();
+            if (!empty($message['customerid']) && function_exists('imap_rfc822_parse_headers')) {
+                $headers = imap_rfc822_parse_headers($message['headers']);
+                if (!empty($headers) && isset($headers->cc)) {
+                    foreach ($headers->cc as $cc) {
+                        $email = $cc->mailbox . '@' . $cc->host;
+                        $message['cc'][$email] = array(
+                            'display' => iconv_mime_decode($cc->personal),
+                            'address' => $email,
+                        );
+                    }
+                }
+            }
         }
         return $message;
     }
@@ -2246,6 +2263,25 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $attribute = next($attributes);
         }
         return $mailfrom;
+    }
+
+    public function GetTicketRequestorMail($ticketid)
+    {
+        $mail = $this->db->GetOne(
+            'SELECT requestor_mail FROM rttickets
+			WHERE id = ? AND requestor_mail <> ?',
+            array($ticketid, '')
+        );
+        if (empty($phone)) {
+            return $this->db->GetOne(
+                'SELECT mailfrom FROM rtmessages
+                    WHERE ticketid = ? AND mailfrom <> ?
+                    LIMIT 1',
+                array($ticketid, '')
+            );
+        } else {
+            return $mail;
+        }
     }
 
     public function GetTicketRequestorPhone($ticketid)

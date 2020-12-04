@@ -56,12 +56,20 @@
 		</TD>
 		<TD>
 			{if $message.customerid}
+				{if $message.mailfrom}
+					{icon name="mail"}
+				{elseif $message.phonefrom}
+					{icon name="sms"}
+				{/if}
 				<A href="?m=customerinfo&id={$message.customerid}">{$message.customername} ({$message.customerid|escape|string_format:"%04d"})</A>
 			{elseif $message.userid}
+				{icon name="user"}
 				<A href="?m=userinfo&id={$message.userid}">{$message.username}</A>
 			{elseif $message.mailfrom}
+				{icon name="mail"}
 				<A href="mailto:{$message.mailfrom|escape}">{$message.mailfrom|escape}</A>
 			{elseif $message.phonefrom}
+				{icon name="phone"}
 				<A class="phone_number" href="tel:{$message.phonefrom}">{$message.phonefrom}</A>
 			{else}
 				{$message.requestor|escape}
@@ -127,9 +135,9 @@
 		<TD class="bold">
 			{trans("Message:")}
 		</TD>
-		<TD class="message-html-body">
-			{if $message.contentype == 'text/plain'}
-				<textarea rows="5" cols="100" readonly>{$message.body|escape|replace:"\n":'<br>'|message_quote}</textarea>
+		<TD{if $message.contenttype == 'text/html'} class="message-html-body"{/if}>
+			{if $message.contenttype == 'text/plain'}
+				<textarea rows="5" cols="100" readonly>{$message.body|trim|escape|message_quote}</textarea>
 			{else}
 				{$message.body|message_quote}
 			{/if}
@@ -178,9 +186,9 @@
 	</TR>
 	{/if}
 	<TR>
-		<TD colspan="3" class="nobr text-right">
+		<TD colspan="3" class="lms-ui-box-buttons">
 			{button type="link-button" href="?m=rtmessageadd&id={$message.id}&ticketid={$message.ticketid}" icon="message" label="Reply"}
-			{button type="link-button" href="?m=rtticketview&id={$message.ticketid}" icon="cancel" label="Cancel"}
+			{button type="link-button" href="?m=rtticketview&id={$message.ticketid}" icon="back" label="Back"}
 		</TD>
 	</TR>
     </TBODY>

@@ -2,11 +2,40 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
+<style>
+
+	#accesslist {
+		column-width: 30vh;
+	}
+
+	#accesslist label {
+		display: block;
+		width: fit-content;
+		white-space: normal;
+		padding-left: 2.3em;
+		text-indent: -2.3em;
+		break-inside: avoid;
+	}
+
+	#copy-rights {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+	}
+
+	#copy-rights *:not(:first-child) {
+		padding-left: 0.5em;
+	}
+
+	#copy-rights label {
+		white-space: normal;
+	}
+
+</style>
+
 <H1>{$layout.pagetitle}</H1>
 <FORM name="useradd" method="post" action="?m=useradd">
-<p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
-</p>
 <TABLE class="lmsbox">
 	<THEAD>
 	<TR>
@@ -174,16 +203,19 @@
 				<tbody>
 					<tr>
 						<td colspan="2">
-							{button icon="clone" id="copy-rights" label="Copy rights"}
-							&nbsp;{trans("of selected user:")}
-							&nbsp;
-							<select id="from-user" name="useradd[src_userid]">
-								<option value="">{trans("<!access-rights>- empty -")}</option>
-								{foreach $users as $user}
-									<option value="{$user.id}"
-											{if isset($useradd.src_userid) && $useradd.src_userid == $user.id} selected{/if}>{$user.rname} ({$user.login})</option>
-								{/foreach}
-							</select>
+							<div id="copy-rights">
+								{button icon="clone" id="copy-rights" label="Copy rights"}
+								<label>
+									{trans("of selected user:")}
+									<select id="from-user" name="useradd[src_userid]">
+										<option value="">{trans("<!access-rights>- empty -")}</option>
+										{foreach $users as $user}
+											<option value="{$user.id}"
+													{if isset($useradd.src_userid) && $useradd.src_userid == $user.id} selected{/if}>{$user.rname} ({$user.login})</option>
+										{/foreach}
+									</select>
+								</label>
+							</div>
 						</td>
 					</tr>
 					<tr>
@@ -192,26 +224,19 @@
 						</td>
 					</tr>
 					<tr id="user-rights">
-						<td class="valign-top nobr">
-							{foreach $accesslist as $name => $access}
-								{if $access@index <= floor($access@total / 2) - 1}
+						<td class="valign-top" colspan="2">
+							<div id="accesslist">
+								{foreach $accesslist as $name => $access}
 									{if !empty($access.name)}
-									<INPUT type="checkbox" data-right-name="{$name}" id="acl_{$access@index}"
-									   name="acl[{$name}]" value="1" {if $access.enabled} checked{/if}> <label for="acl_{$access@index}">{$access.name}</label><BR>
+										<label>
+											<input type="checkbox" data-right-name="{$name}" id="acl_{$access@index}"
+												   name="acl[{$name}]" value="1"{if $access.enabled} checked{/if}>
+											{$access.name}
+										</label>
 									{/if}
-								{/if}
-							{/foreach}
-						</td>
-						<td class="valign-top nobr">
-							{foreach $accesslist as $name => $access}
-								{if $access@index > floor($access@total / 2) - 1}
-									{if !empty($access.name)}
-									<INPUT type="checkbox" data-right-name="{$name}" id="acl_{$access@index}"
-										   name="acl[{$name}]" value="1" {if $access.enabled} checked{/if}> <label for="acl_{$access@index}">{$access.name}</label><BR>
-									{/if}
-								{/if}
-							{/foreach}
-							{assign var="name" value=""}
+								{/foreach}
+								{$name = ""}
+							</div>
 						</td>
 					</tr>
 				</tbody>
