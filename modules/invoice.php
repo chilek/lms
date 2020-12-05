@@ -29,8 +29,8 @@ use setasign\Fpdi\PdfParser\StreamReader;
 
 function invoice_body($document, $invoice)
 {
-    if(ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.use_customer_lang', true))){
-	Localisation::setUiLanguage($invoice['lang']);
+    if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.use_customer_lang', true))) {
+        Localisation::setUiLanguage($invoice['lang']);
     }
     $document->Draw($invoice);
     if (!isset($invoice['last'])) {

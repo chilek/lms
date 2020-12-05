@@ -23,10 +23,10 @@
  */
 
 $(function() {
-  $('.delete-event').click(function() {
-      confirmDialog($t("Are you sure, you want to delete that event?"), this).done(function() {
-      location.href = $(this).attr('href');
-      });
-      return false;
-  });
+    $('.delete-event').click(function () {
+        confirmDialog($t("Are you sure, you want to delete that event?"), this).done(function () {
+            location.href = $(this).attr('href');
+        });
+        return false;
+    });
 });

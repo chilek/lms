@@ -179,6 +179,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
                 accessfrom, accessto, rname, twofactorauth
             FROM vallusers
             WHERE deleted = 0'
+                . (isset($access) ? ' AND access = ' . intval($access) : '' )
                 . (isset($divisions) && !empty($divisions) ? ' AND id IN (SELECT userid
                     FROM userdivisions
                     WHERE divisionid IN (' . $divisions . ')
@@ -192,6 +193,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
                     accessfrom, accessto, rname, twofactorauth
                 FROM vusers
                 WHERE deleted = 0'
+                . (isset($access) ? ' AND access = ' . intval($access) : '' )
                 . (isset($divisions) && !empty($divisions) ? ' AND id IN (SELECT userid
                         FROM userdivisions
                         WHERE divisionid IN (' . $divisions . ')
@@ -245,8 +247,9 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             }
             unset($row);
         }
-
-        $userlist['total'] = empty($userlist) ? 0 : count($userlist);
+        if (empty($short)) {
+            $userlist['total'] = empty($userlist) ? 0 : count($userlist);
+        }
         return $userlist;
     }
 

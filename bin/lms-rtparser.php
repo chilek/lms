@@ -181,7 +181,8 @@ $queue = 0;
 if (isset($options['queue'])) {
     $queue = $options['queue'];
 }
-$queue = ConfigHelper::getConfig('rt.default_queue', $queue);
+$queue = ConfigHelper::getConfig('rt.parser_default_queue', ConfigHelper::getConfig('rt.default_queue', $queue));
+
 if (preg_match('/^[0-9]+$/', $queue)) {
     $queue = intval($queue);
     if ($queue && !$LMS->QueueExists($queue)) {

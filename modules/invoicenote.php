@@ -106,6 +106,7 @@ if (isset($_GET['id']) && $action == 'init') {
     );
     $cnote['currency'] = $invoice['currency'];
     $cnote['oldcurrency'] = $invoice['currency'];
+    $cnote['oldcurrencyvalue'] = $invoice['currencyvalue'];
 
     $t = $invoice['cdate'] + $invoice['paytime'] * 86400;
     $deadline = mktime(23, 59, 59, date('m', $t), date('d', $t), date('Y', $t));
@@ -164,6 +165,7 @@ switch ($action) {
 
     case 'setheader':
         $oldcurrency = $cnote['oldcurrency'];
+        $oldcurrencyvalue = $cnote['oldcurrencyvalue'];
 
         $cnote = null;
         $error = null;
@@ -247,6 +249,7 @@ switch ($action) {
 
         $cnote['currency'] = $oldcurrency;
         $cnote['oldcurrency'] = $oldcurrency;
+        $cnote['oldcurrencyvalue'] = $oldcurrencyvalue;
 
         // finally check if selected customer can use selected numberplan
         $divisionid = !empty($cnote['use_current_division']) ? $invoice['current_divisionid'] : $invoice['divisionid'];
@@ -469,6 +472,7 @@ switch ($action) {
         $cnote['paytime'] = round(($cnote['deadline'] - $cnote['cdate']) / 86400);
 
         $cnote['currency'] = $cnote['oldcurrency'];
+        $cnote['currencyvalue'] = $cnote['oldcurrencyvalue'];
 
         $hook_data = array(
             'invoice' => $invoice,
@@ -495,14 +499,6 @@ switch ($action) {
                 $contents[$idx]['valuenetto'] = $newcontents['valuenetto'][$idx];
             }
             break;
-        }
-
-        $cnote['currencyvalue'] = $LMS->getCurrencyValue(
-            $cnote['currency'],
-            strtotime('yesterday', min($cnote['sdate'], $cnote['cdate'], time()))
-        );
-        if (!isset($cnote['currencyvalue'])) {
-            die('Fatal error: couldn\'t get quote for ' . $cnote['currency'] . ' currency!<br>');
         }
 
         $DB->BeginTrans();

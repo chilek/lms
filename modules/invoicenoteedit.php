@@ -104,6 +104,7 @@ if (isset($_GET['id']) && $action == 'edit') {
     $cnote['oldcustomerid'] = $cnote['customerid'];
     $cnote['oldflags'] = $cnote['flags'];
     $cnote['oldcurrency'] = $cnote['currency'];
+    $cnote['oldcurrencyvalue'] = $cnote['currencyvalue'];
 
     $hook_data = array(
         'contents' => $cnotecontents,
@@ -153,6 +154,7 @@ switch ($action) {
         $oldcustomerid = $cnote['oldcustomerid'];
         $oldflags = $cnote['oldflags'];
         $oldcurrency = $cnote['oldcurrency'];
+        $oldcurrencyvalue = $cnote['oldcurrencyvalue'];
 
         $oldcnote = $cnote;
         $cnote = null;
@@ -183,6 +185,7 @@ switch ($action) {
         $cnote['oldcustomerid'] = $oldcustomerid;
         $cnote['oldflags'] = $oldflags;
         $cnote['oldcurrency'] = $oldcurrency;
+        $cnote['oldcurrencyvalue'] = $oldcurrencyvalue;
 
         $invoice = $oldcnote['invoice'];
 
@@ -290,6 +293,7 @@ switch ($action) {
         }
 
         $cnote['currency'] = $cnote['oldcurrency'];
+        $cnote['currencyvalue'] = $cnote['oldcurrencyvalue'];
 
         $deadline = $cnote['deadline'] ? $cnote['deadline'] : $currtime;
         $paytime = $cnote['paytime'] = round(($cnote['deadline'] - $cnote['cdate']) / 86400);
@@ -506,15 +510,6 @@ switch ($action) {
                 $contents[$idx]['valuenetto'] = $newcontents['valuenetto'][$idx];
             }
             break;
-        }
-
-        $cnote['currencyvalue'] = $LMS->getCurrencyValue(
-            $cnote['currency'],
-            strtotime('yesterday', min($sdate, $cdate, time()))
-        );
-
-        if (!isset($cnote['currencyvalue'])) {
-            die('Fatal error: couldn\'t get quote for ' . $cnote['currency'] . ' currency!<br>');
         }
 
         $DB->BeginTrans();
