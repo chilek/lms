@@ -260,6 +260,7 @@ version 26-git (????-??-??):
   - enhancement: added type property to network device models [chilan]
   - enhancement: added --division parameter support for lms-payments.php
     and lms-sendinvoices.php [chilan]
+  - improvement: implemented phpui.timetable_hide_disabled_users for eventschedule module [interduo]
 
 version 25.0 (2020-05-15):
 
