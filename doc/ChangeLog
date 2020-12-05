@@ -261,6 +261,8 @@ version 26-git (????-??-??):
   - enhancement: added --division parameter support for lms-payments.php
     and lms-sendinvoices.php [chilan]
   - improvement: implemented phpui.timetable_hide_disabled_users for eventschedule module [interduo]
+  - enhancement: changing ticket queue resets ticket state to NEW
+    ('rt.ticket_queue_change_resets_ticket_state', default:false) [interduo]
 
 version 25.0 (2020-05-15):
 

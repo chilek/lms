@@ -1449,6 +1449,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         if ($ticket['queueid'] != $props['queueid'] && isset($props['queueid'])) {
             $notes[] = trans('Ticket has been moved from queue $a to queue $b.', $LMS->GetQueueName($ticket['queueid']), $LMS->GetQueueName($props['queueid']));
             $type = $type | RTMESSAGE_QUEUE_CHANGE;
+            if (ConfigHelper::checkConfig('rt.ticket_queue_change_resets_ticket_state') && ticket['state'] != RT_VERIFIED && ticket['state'] != RT_RESOLVED) {
+                $props['state'] = RT_NEW;
+            }
         } else {
             $props['queueid'] = $ticket['queueid'];
         }
