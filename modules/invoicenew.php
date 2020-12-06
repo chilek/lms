@@ -247,27 +247,6 @@ switch ($action) {
                 trans('Tax category selection is required!');
         }
 
-        $hook_data = array(
-            'customer' => $customer,
-            'contents' => $contents,
-            'itemdata' => $itemdata,
-            'invoice' => $invoice,
-        );
-        $hook_data = $LMS->ExecuteHook('invoicenew_savepos_validation', $hook_data);
-        if (isset($hook_data['error']) && is_array($hook_data['error'])) {
-            $error = array_merge($error, $hook_data['error']);
-        }
-
-        if (!empty($error)) {
-            $SMARTY->assign('itemdata', $hook_data['itemdata']);
-            if (isset($posuid)) {
-                $error['posuid'] = $posuid;
-            }
-            break;
-        }
-
-        $itemdata = $hook_data['itemdata'];
-
         foreach (array('pdiscount', 'vdiscount', 'valuenetto', 'valuebrutto') as $key) {
             $itemdata[$key] = f_round($itemdata[$key]);
         }
@@ -294,6 +273,27 @@ switch ($action) {
             $itemdata['pdiscount'] = f_round($itemdata['pdiscount']);
             $itemdata['vdiscount'] = f_round($itemdata['vdiscount']);
             $itemdata['tax'] = isset($itemdata['taxid']) ? $taxeslist[$itemdata['taxid']]['label'] : '';
+
+            $hook_data = array(
+                'customer' => $customer,
+                'contents' => $contents,
+                'itemdata' => $itemdata,
+                'invoice' => $invoice,
+            );
+            $hook_data = $LMS->ExecuteHook('invoicenew_savepos_validation', $hook_data);
+            if (isset($hook_data['error']) && is_array($hook_data['error'])) {
+                $error = array_merge($error, $hook_data['error']);
+            }
+
+            if (!empty($error)) {
+                $SMARTY->assign('itemdata', $hook_data['itemdata']);
+                if (isset($posuid)) {
+                    $error['posuid'] = $posuid;
+                }
+                break;
+            }
+
+            $itemdata = $hook_data['itemdata'];
 
             if ($action == 'savepos') {
                 $contents[$posuid] = $itemdata;
