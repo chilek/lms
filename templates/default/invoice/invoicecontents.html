@@ -99,6 +99,9 @@
                        value="{htmlspecialchars($row.name)}" data-old-value="{htmlspecialchars($item.name)}"
                        {tip text="Enter description"}>
                 <span class="invoice-contents-field-value">{$item.name}</span>
+                {if isset($item.name_custom_contents)}
+                    {$item.name_custom_contents}
+                {/if}
             </TD>
             <TD class="nobr">
                 {tax_category_selection class="invoice-contents-field-edit" elementname="invoice-contents["|cat:$posuid|cat:"][taxcategory]"
