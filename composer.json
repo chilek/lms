@@ -92,6 +92,8 @@
         "ext-soap": "*",
         "ext-openssl": "*",
         "ext-zip": "*",
+        "ext-imap": "*",
+        "ext-iconv": "*",
         "phine/observer": "2.0",
         "phine/exception": "1.0",
         "phpmailer/phpmailer": "^6",
