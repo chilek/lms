@@ -166,6 +166,16 @@
         </TR>
         <TR>
             <TD scope="col" class="nobr">
+                <label for="pin_validation">{trans("PIN validation")}</label>
+            </TD>
+            <TD scope="col">
+                <input type="checkbox" name="pin_validation" id="pin_validation"
+                    {if !empty($pin_validation)} checked{/if}
+                    {tip text="Userpanel PIN validation"}>
+            </TD>
+        </TR>
+        <TR>
+            <TD scope="col" class="nobr">
                 <label for="force_ssl">{trans("Force SSL:")}</label>
             </TD>
             <TD scope="col">

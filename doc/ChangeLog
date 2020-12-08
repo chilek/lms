@@ -263,6 +263,9 @@ version 26-git (????-??-??):
   - improvement: implemented phpui.timetable_hide_disabled_users for eventschedule module [interduo]
   - enhancement: changing ticket queue resets ticket state to NEW
     ('rt.ticket_queue_change_resets_ticket_state', default:false) [interduo]
+  - enhancement: userpanel configuration: allow to disable pin validation during authentication
+    (it doesn't disable whole userpanel authentication process, but it only disables pin checks
+    with 'phpui.pin_*' usage) [chilan]
 
 version 25.0 (2020-05-15):
 

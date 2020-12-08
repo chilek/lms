@@ -122,3 +122,6 @@ $_LANG['SMS credential reminders'] = 'Przypomnienia SMS z danymi do logowania';
 $_LANG['Mail credential reminders:'] = 'Przypomnienia mailowe z danymi do logowania:';
 $_LANG['Mail credential reminders'] = 'Przypomnienia mailowe z danymi do logowania';
 $_LANG['Logged as:'] = 'Zalogowany jako:';
+
+$_LANG['PIN validation'] = 'Walidacja PIN';
+$_LANG['Userpanel PIN validation'] = 'Walidacja PIN przy logowaniu do Panelu klienta';
