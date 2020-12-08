@@ -121,14 +121,14 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
      *              type, createtime,
      *          supported orders:
      *          asc = ascending, desc = descending
-     *      short - returned only ticket data (default: null, type: boolean)-
+     *      short - returned only ticket data (default: null, type: boolean),
      * @return mixed
      */
     public function GetQueueContents(array $params)
     {
         extract($params);
         foreach (array('ids', 'state', 'priority', 'owner', 'catids', 'removed', 'netdevids', 'netnodeids', 'deadline',
-            'serviceids', 'typeids', 'unread', 'parentids', 'verifierids', 'rights', 'projectids', 'cid', 'subject', 'fromdate', 'todate') as $var) {
+            'serviceids', 'typeids', 'unread', 'parentids', 'verifierids', 'rights', 'projectids', 'cid', 'subject', 'fromdate', 'todate', 'short') as $var) {
             if (!isset($$var)) {
                 $$var = null;
             }
@@ -209,11 +209,11 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         }
 
         if (empty($netdevids)) {
-                        $netdevidsfilter = '';
+            $netdevidsfilter = '';
         } elseif (is_array($netdevids)) {
-                        $netdevidsfilter = ' AND t.netdevid IN (' . implode(',', $netdevids) . ')';
+            $netdevidsfilter = ' AND t.netdevid IN (' . implode(',', $netdevids) . ')';
         } else {
-            $netdevidsfilter = ' AND t.netdevid = '.$netdevids;
+            $netdevidsfilter = ' AND t.netdevid = ' . $netdevids;
         }
 
         if (empty($netnodeids)) {
