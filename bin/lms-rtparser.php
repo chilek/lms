@@ -319,7 +319,7 @@ if ($mode == MODE_IMAP) {
     }
 }
 
-while (isset($buffer) || ($postid !== false && $postid !== null) {
+while (isset($buffer) || ($postid !== false && $postid !== null)) {
     if ($postid !== false && $postid !== null) {
         $buffer = imap_fetchbody($ih, $postid, '');
 
