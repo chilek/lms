@@ -319,8 +319,8 @@ if ($mode == MODE_IMAP) {
     }
 }
 
-while (isset($buffer) || $postid !== false) {
-    if ($postid !== false) {
+while (isset($buffer) || ($postid !== false && $postid !== null) {
+    if ($postid !== false && $postid !== null) {
         $buffer = imap_fetchbody($ih, $postid, '');
 
         if ($rtparser_use_seen_flag) {
@@ -868,7 +868,7 @@ while (isset($buffer) || $postid !== false) {
         }
     }
 
-    if ($postid !== false) {
+    if ($postid !== false && $postid !== null) {
         if ($rtparser_use_seen_flag) {
             imap_setflag_full($ih, $postid, "\\Seen");
         } else {
