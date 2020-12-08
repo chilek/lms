@@ -209,11 +209,11 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         }
 
         if (empty($netdevids)) {
-                        $netdevidsfilter = '';
+            $netdevidsfilter = '';
         } elseif (is_array($netdevids)) {
-                        $netdevidsfilter = ' AND t.netdevid IN (' . implode(',', $netdevids) . ')';
+            $netdevidsfilter = ' AND t.netdevid IN (' . implode(',', $netdevids) . ')';
         } else {
-            $netdevidsfilter = ' AND t.netdevid = '.$netdevids;
+            $netdevidsfilter = ' AND t.netdevid = ' . $netdevids;
         }
 
         if (empty($netnodeids)) {
