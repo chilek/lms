@@ -91,7 +91,7 @@ lms-rtparser.php
 -s, --silent                    suppress any output, except errors;
 -q, --queue=<queueid>           queue ID (it means, QUEUE ID, numeric! NOT NAME! also
                                 its required to run!);
--m, --message-file=<messag-file>
+-m, --message-file=<message-file>
                                 use message file instead of standard input;
     --use-html                  use html content type and load it to database if it's present
     --imap
