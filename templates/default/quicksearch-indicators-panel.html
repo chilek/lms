@@ -16,13 +16,13 @@
 		</div>
 	</div>
 	{/block}
-        <div id="instance_label">
-            <script type="text/javascript">
-                if (!window.screenTop && !window.screenY) {
-                    document.write("{$instance_label}");
-                }
-            </script>
-        </div>
+	<div id="instance_label">
+		<script type="text/javascript">
+		if (!window.screenTop && !window.screenY) {
+			document.write("{$instance_label}");
+		}
+		</script>
+	</div>
 	{if ! ConfigHelper::checkConfig('phpui.hide_indicators')}
 		{block name=indicators}
 		<div id="lms-ui-indicators">
