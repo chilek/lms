@@ -1252,7 +1252,7 @@ if ($jpk) {
 
     echo $jpk_data;
 } else {
-    $document->WriteToBrowser($attachment_name);
+    $document->WriteToBrowser($attachment_name . '.' . ($invoice_type == 'pdf' ? 'pdf' : 'html'));
 }
 
 if (!$dontpublish && isset($ids) && !empty($ids)) {
