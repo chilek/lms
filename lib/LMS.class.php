@@ -2433,7 +2433,7 @@ class LMS
         $search = array(
             '%hostname',
             '%dbversion',
-	    '%phpversion',
+            '%phpversion',
         );
         $replace = array(
             gethostname(),
