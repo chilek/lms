@@ -2438,7 +2438,7 @@ class LMS
         $replace = array(
             gethostname(),
             $this->DB->GetVersion(),
-	    phpversion(),
+            phpversion(),
         );
 
         return str_replace($search, $replace, $text);
