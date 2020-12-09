@@ -1212,6 +1212,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 if (!is_null($attachment_name) && isset($docnumber)) {
     $attachment_name = str_replace('%number', $docnumber, $attachment_name);
     $attachment_name = preg_replace('/[^[:alnum:]_\.]/i', '_', $attachment_name);
+    $attachment_name .= '.' . ($invoice_type == 'pdf' ? 'pdf' : 'html');
 } elseif ($jpk) {
     if ($jpk_type == 'fa') {
         $attachment_name = 'JPK_FA_' . date('Y-m-d', $datefrom) . '_' . date('Y-m-d', $dateto)
@@ -1252,7 +1253,7 @@ if ($jpk) {
 
     echo $jpk_data;
 } else {
-    $document->WriteToBrowser($attachment_name . '.' . ($invoice_type == 'pdf' ? 'pdf' : 'html'));
+    $document->WriteToBrowser($attachment_name);
 }
 
 if (!$dontpublish && isset($ids) && !empty($ids)) {
