@@ -5015,3 +5015,5 @@ $_LANG['Penalty'] = 'Kara';
 
 $_LANG['Select network device type'] = 'Wybierz typ urządzenia sieciowego';
 $_LANG['<!netdevtype>- undefined -'] = '- nieokreślony -';
+
+$_LANG['Starting balance at $a'] = 'Saldo początkowe na dzień $a';
