@@ -266,6 +266,8 @@ version 26-git (????-??-??):
   - enhancement: userpanel configuration: allow to disable pin validation during authentication
     (it doesn't disable whole userpanel authentication process, but it only disables pin checks
     with 'phpui.pin_*' usage) [chilan]
+  - improvement: 'phpui.validate_changed_pin' with default 'false' value allows to enable pin
+    validation only when customer pin is changed [chilan]
 
 version 25.0 (2020-05-15):
 
