@@ -67,7 +67,8 @@ if (isset($_GET['id']) && ($action == 'edit' || $action == 'init')) {
 
     $invoicecontents = array();
     foreach ($invoice['content'] as $item) {
-        $invoicecontents[] = array(
+        $invoicecontents[$item['itemid']] = array(
+            'itemid' => $item['itemid'],
             'tariffid' => $item['tariffid'],
             'name' => $item['description'],
             'prodid' => $item['prodid'],
@@ -137,7 +138,7 @@ function changeContents($contents, $newcontents)
 
     foreach ($newcontents as $posuid => &$newposition) {
         if (isset($contents[$posuid])) {
-            $result[] = $contents[$posuid];
+            $result[$posuid] = $contents[$posuid];
         }
     }
     unset($newposition);
