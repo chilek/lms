@@ -4975,6 +4975,10 @@ $_LANG['Karma is changed too often!'] = 'Zbyt częsta zmiana karmy!';
 $_LANG['Negative value means customers with karma less or equal than specified, but positive means greater or equal then specified'] = 'Wartość ujemna oznacz wyszukiwanie klientów z karmą mniejszą lub równą od podanej, zaś dodatna większą lub równą od podanej';
 
 $_LANG['Customer notifications'] = 'Powiadomienia klienta';
+$_LANG['New ticket customer notification subject'] = 'Temat powiadomienia klienta o nowym zgłoszeniu';
+$_LANG['New ticket customer notification body'] = 'Treść powiadomienia klienta o nowym zgłoszeniu';
+$_LANG['New message customer notification subject'] = 'Temat powiadomienia klienta o nowej wiadomości';
+$_LANG['New message customer notification body'] = 'Treść powiadomienia klienta o nowej wiadomości';
 $_LANG['Verifier notifications'] = 'Powiadomienia weryfikatora';
 
 $_LANG['<!customer-notification-subject>The following special symbols are supported:<br>'
