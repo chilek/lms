@@ -819,6 +819,12 @@ class LMS
         return $manager->lowerCustomerKarma($id);
     }
 
+    public function getCustomerPin($id)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->getCustomerPin($id);
+    }
+
     /*
      * Customer groups
      */
