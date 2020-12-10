@@ -131,6 +131,9 @@
 			{if ($ticket.state != $smarty.const.RT_RESOLVED || ($ticket.state == $smarty.const.RT_RESOLVED && $aet && ($smarty.now - $ticket.resolvetime) < $aet)) || (ConfigHelper::checkPrivilege('superuser'))}
 				{button type="link" icon="message" href="?m=rtmessageadd&ticketid={$ticket.id}" tip="New Message"}
 			{/if}
+			{if $ticket.state != $smarty.const.RT_RESOLVED}
+				{button type="link" icon="childticket" href="?m=rtticketadd&parentid={$ticket.ticketid}" tip="Create child ticket"}
+			{/if}
 			{if $ticket.deleted == 1 && $ticket.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
 				{button type="link" icon="reload" href="?m=rtrestore&id={$ticket.id}&taction=restore" tip="Restore<!RT>"}
 				{button type="link" icon="delete" href="?m=rtremove&id={$ticket.id}&taction=delperm" tip="Delete permanently"}

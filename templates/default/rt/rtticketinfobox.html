@@ -393,7 +393,9 @@
 			{if $ticket.state != $smarty.const.RT_RESOLVED || ($ticket.state == $smarty.const.RT_RESOLVED && $aet && ($smarty.now - $ticket.resolvetime) < $aet) || (ConfigHelper::checkPrivilege('superuser'))}
 			    {button type="link-button" icon="edit" label="Edit" href="?m=rtticketedit&id={$ticket.ticketid}"}
 			{/if}
-
+			{if $ticket.state != $smarty.const.RT_RESOLVED}
+				{button type="link-button" icon="childticket" label="Create child ticket" href="?m=rtticketadd&parentid={$ticket.ticketid}"}
+			{/if}
 			{if count($ticket.images)}
 				{button id="ticket-gallery-button" icon="gallery" label="Attachment gallery" data_gallery="{json_encode($ticket.images)}"}
 			{/if}

@@ -102,6 +102,7 @@ $_LANG['There is no related tickets'] = 'Brak powiązanych zgłoszeń';
 $_LANG['There is no child tickets'] = 'Brak zgłoszeń podrzędnych';
 $_LANG['Related tickets:'] = 'Powiązane zgłoszenia:';
 $_LANG['Child tickets:'] = 'Podrzędne zgłoszenia:';
+$_LANG['Create child ticket'] = 'Utwórz podrzędne zgłoszenie';
 $_LANG['verified'] = 'weryfikowany';
 $_LANG['Ticket has been transferred to verifier'] = 'Zgłoszenie zostało przekazane do weryfikatora';
 $_LANG['Ticket has been transferred to verifier.'] = 'Zgłoszenie zostało przekazane do weryfikatora.';
