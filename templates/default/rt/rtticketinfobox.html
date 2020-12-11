@@ -361,44 +361,45 @@
 			{button id="print-anchor" icon="print" label="Print" href="?m=rtticketprint&id={$ticket.ticketid}"}
 
 			<br>
-
-			{if ($ticket.owner != $layout.logid && $ticket.state != $smarty.const.RT_RESOLVED) || ConfigHelper::checkPrivilege('superuser')}
-				{button id="ticket-assign-to-me" icon="user" label="Assign to me" data_href="?m=rtticketedit&id={$ticket.ticketid}&action=assign"}
-			{/if}
-			{if (!$ticket.verifier && $ticket.owner != $layout.logid && $ticket.state != $smarty.const.RT_RESOLVED) || ConfigHelper::checkPrivilege('superuser')}
-				{button id="ticket-assign2-to-me" type='link-button' icon="user" label="Assign to me as verifier" href="?m=rtticketedit&id={$ticket.ticketid}&action=assign2"}
+			{if $ticket.state != $smarty.const.RT_RESOLVED || ($ticket.state == $smarty.const.RT_RESOLVED && $aet && ($smarty.now - $ticket.resolvetime) < $aet) || (ConfigHelper::checkPrivilege('superuser'))}
+				{button type="link-button" icon="edit" tip= "Edit" label="Edit" href="?m=rtticketedit&id={$ticket.ticketid}"}
 			{/if}
 			{if $ticket.state != $smarty.const.RT_RESOLVED}
 				{if (ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events')) && !empty($ticket['openeventcount'])}
-					<span class="blend"><i class="lms-ui-icon-status-resolved"></i>{trans("Ticket have open assigned events!")}</A></span>
+					{button icon="status-resolved" label="Ticket have open assigned events!" tip="Ticket have open assigned events!" class="blend disabled"}
 				{else}
 					{if empty($ticket['verifier_rtime']) && $ticket['verifierid'] != Auth::GetCurrentUser() && $ticket['verifierid']}
-						{button icon="verifier" label="Transfer to verifier" onclick="location.href='?m=rtticketedit&id={$ticket.ticketid}&action=verify';"}
+						{button icon="verifier" label="Transfer to verifier" tip="Transfer to verifier" onclick="location.href='?m=rtticketedit&id={$ticket.ticketid}&action=verify';"}
 					{else}
 						{if !empty($ticket['verifier_rtime']) && $ticket['verifierid'] != Auth::GetCurrentUser()}
 							<i class="lms-ui-icon-verifier"></i><span style="color: {$_RT_STATES[$smarty.const.RT_VERIFIED].color}"> {trans("Ticket has been transferred to verifier")}</span>
 						{else}
-							{button icon="status-resolved" label="Resolve" onclick="location.href='?m=rtticketedit&id={$ticket.ticketid}&action=resolve';"}
+							{button icon="status-resolved" label="Resolve" tip="Resolve" onclick="location.href='?m=rtticketedit&id={$ticket.ticketid}&action=resolve';"}
 						{/if}
 					{/if}
 				{/if}
 			{/if}
-			{button type="link-button" icon="clone" label="Clone" href="?m=rtticketadd&ticketid={$ticket.ticketid}"}
-			{if $ticket.state != $smarty.const.RT_RESOLVED || ($ticket.state == $smarty.const.RT_RESOLVED && $aet && ($smarty.now - $ticket.resolvetime) < $aet) || (ConfigHelper::checkPrivilege('superuser'))}
-			    {button type="link-button" icon="edit" label="Edit" href="?m=rtticketedit&id={$ticket.ticketid}"}
-			{/if}
-			{if $ticket.state != $smarty.const.RT_RESOLVED}
-				{button type="link-button" icon="childticket" label="Create child ticket" href="?m=rtticketadd&parentid={$ticket.ticketid}"}
-			{/if}
-			{if count($ticket.images)}
-				{button id="ticket-gallery-button" icon="gallery" label="Attachment gallery" data_gallery="{json_encode($ticket.images)}"}
-			{/if}
-			{if $ticket.deleted == 1 && $ticket.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
-				{button id="restore-rtticket" icon="restore" label="Restore<!RT>" data_href="?m=rtrestore&id={$ticket.ticketid}&taction=restore"}
-				{button id="remove-rtticket" icon="delete" label="Delete permanently" data_href="?m=rtticketdel&id={$ticket.ticketid}&taction=delperm"}
-			{else}
-				{button id="delete-rtticket" icon="delete" label="Delete" data_href="?m=rtticketdel&id={$ticket.ticketid}&taction=delete"}
-			{/if}
+			{buttons}
+				{if ($ticket.owner != $layout.logid && $ticket.state != $smarty.const.RT_RESOLVED) || ConfigHelper::checkPrivilege('superuser')}
+					{button id="ticket-assign-to-me" icon="user" label="Assign to me" tip="Assign to me" data_href="?m=rtticketedit&id={$ticket.ticketid}&action=assign"}
+				{/if}
+				{if (!$ticket.verifier && $ticket.owner != $layout.logid && $ticket.state != $smarty.const.RT_RESOLVED) || ConfigHelper::checkPrivilege('superuser')}
+					{button id="ticket-assign2-to-me" type='link-button' icon="user" label="Assign to me as verifier" tip="Assign to me as verifier" href="?m=rtticketedit&id={$ticket.ticketid}&action=assign2"}
+				{/if}
+				{button type="link-button" icon="clone" label="Clone" tip="Clone" href="?m=rtticketadd&ticketid={$ticket.ticketid}"}
+				{if $ticket.state != $smarty.const.RT_RESOLVED}
+					{button type="link-button" icon="childticket" label="Create child ticket" tip="Create child ticket" href="?m=rtticketadd&parentid={$ticket.ticketid}"}
+				{/if}
+				{if count($ticket.images)}
+					{button id="ticket-gallery-button" icon="gallery" label="Attachment gallery" tip="Attachment gallery" data_gallery="{json_encode($ticket.images)}"}
+				{/if}
+				{if $ticket.deleted == 1 && $ticket.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
+					{button id="restore-rtticket" icon="restore" label="Restore<!RT>" tip="Restore<!RT>" data_href="?m=rtrestore&id={$ticket.ticketid}&taction=restore"}
+					{button id="remove-rtticket" icon="delete" label="Delete permanently" tip="Delete permanently" data_href="?m=rtticketdel&id={$ticket.ticketid}&taction=delperm"}
+				{else}
+					{button id="delete-rtticket" icon="delete" label="Delete" tip="Delete" data_href="?m=rtticketdel&id={$ticket.ticketid}&taction=delete"}
+				{/if}
+			{/buttons}
 		</TD>
 	</TR>
 	</TBODY>
