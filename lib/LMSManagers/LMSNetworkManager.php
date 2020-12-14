@@ -373,7 +373,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 				address AS addresslong, mask, interface, gateway, dns, dns2, 
 				domain, wins, dhcpstart, dhcpend, inet_ntoa(snat) AS snat,
 				mask2prefix(inet_aton(mask)) AS prefix,
-				broadcast(address, inet_aton(mask)) AS broadcastlong, vlanid,
+				broadcast(address, inet_aton(mask)) AS broadcastlong, vl.vlanid AS vlanid,
 				inet_ntoa(broadcast(address, inet_aton(mask))) AS broadcast,
 				pow(2,(32 - mask2prefix(inet_aton(mask)))) AS size, disabled,
 				(SELECT COUNT(*) 
@@ -388,7 +388,8 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 						AND (?NOW? - lastonline < ?)
 				) AS online
 			FROM networks n
-			LEFT JOIN hosts h ON h.id = n.hostid'
+			LEFT JOIN hosts h ON h.id = n.hostid
+			LEFT JOIN vlans vl ON n.vlanid = vl.id'
             . ($sqlwhere != ' WHERE' ? $sqlwhere : '')
             . ($sqlord != '' ? $sqlord . ' ' . $direction : '')
             . (isset($search['limit']) ? ' LIMIT ' . $search['limit'] : '')
@@ -714,13 +715,14 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 
     public function GetNetworkRecord($id, $page = 0, $plimit = 4294967296, $firstfree = false)
     {
-        $network = $this->db->GetRow('SELECT no.ownerid, ne.id, ne.name, ne.vlanid, inet_ntoa(ne.address) AS address,
+        $network = $this->db->GetRow('SELECT no.ownerid, ne.id, ne.name, ne.vlanid, vl.vlanid, inet_ntoa(ne.address) AS address,
                 ne.address AS addresslong, ne.mask, ne.interface, ne.gateway, ne.dns, ne.dns2,
                 ne.domain, ne.wins, ne.dhcpstart, ne.dhcpend, ne.hostid, ne.authtype, inet_ntoa(ne.snat) AS snat,
                 mask2prefix(inet_aton(ne.mask)) AS prefix, ne.notes, ne.pubnetid,
                 inet_ntoa(broadcast(ne.address, inet_aton(ne.mask))) AS broadcast
             FROM networks ne
             LEFT JOIN nodes no ON (no.netid = ne.id AND no.ipaddr = 0 AND no.ipaddr_pub = 0)
+            LEFT JOIN vlans vl ON (vl.id = ne.vlanid)
             WHERE ne.id = ?', array($id));
 
         if ($network['ownerid']) {
@@ -878,5 +880,87 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             }
         }
         return $ip;
+    }
+
+    public function GetVlanList()
+    {
+        return $this->db->GetAll(
+            'SELECT vl.id, vlanid, description, customerid, '
+            . $this->db->Concat('cv.lastname', "' '", 'cv.name') . ' AS customername
+            FROM vlans AS vl
+            LEFT JOIN customers cv ON (vl.customerid = cv.id)
+            ORDER BY vlanid'
+        );
+    }
+
+    public function GetVlanInfo($id)
+    {
+        return $this->db->GetRow(
+            'SELECT vl.id, vlanid, description, customerid, '
+            . $this->db->Concat('cv.lastname', "' '", 'cv.name') . ' AS customername
+            FROM vlans AS vl
+            LEFT JOIN customers cv ON (vl.customerid = cv.id)
+            WHERE vl.id = ?',
+            array($id)
+        );
+    }
+
+    public function AddVlan($args)
+    {
+        $args = array(
+            'vlanid' => $args['vlanid'],
+            'description' => $args['description'],
+            'customerid' => !empty($args['customerid']) ? $args['customerid'] : null,
+        );
+
+        $result = $this->db->Execute(
+            'INSERT INTO vlans (vlanid, description, customerid) VALUES (?, ?, ?)',
+            array($args['vlanid'], $args['description'], $args['customerid'])
+        );
+
+        $args['id'] = $this->db->GetLastInsertID('vlans');
+
+        if ($args && $this->syslog) {
+            $this->syslog->AddMessage(SYSLOG::RES_VLAN, SYSLOG::OPER_ADD, $args);
+        }
+        return $result;
+    }
+
+    public function DeleteVlan($id)
+    {
+        $vlaninfo = $this->GetVlanInfo($id);
+        $result = $this->db->Execute('DELETE FROM vlans WHERE id = ?', array($id));
+
+        if ($vlaninfo && $this->syslog) {
+            $this->syslog->AddMessage(SYSLOG::RES_VLAN, SYSLOG::OPER_DELETE, $vlaninfo);
+        }
+
+        return $result;
+    }
+
+    public function UpdateVlan($props)
+    {
+        if (!empty($props['id'])) {
+            $props = array(
+                'id' => $props['id'],
+                'vlanid' => isset($props['vlanid']) ? $props['vlanid'] : null,
+                'description' => isset($props['description']) ? $props['description'] : null,
+                'customerid' => empty($props['customerid']) ? null : $props['customerid'],
+            );
+
+            $vlaninfo = $this->GetVlanInfo($props['id']);
+            $result = $this->db->Execute(
+                'UPDATE vlans SET vlanid = ?, description = ?, customerid = ? WHERE id = ?',
+                array($props['vlanid'], $props['description'], $props['customerid'], $props['id'])
+            );
+            $vlaninfo2 = $this->GetVlanInfo($props['id']);
+            $diff = array_diff($vlaninfo2, $vlaninfo);
+
+            if ($diff && $this->syslog) {
+                $this->syslog->AddMessage(SYSLOG::RES_VLAN, SYSLOG::OPER_UPDATE, $diff);
+            }
+
+            return $result;
+        };
     }
 }

@@ -270,7 +270,8 @@ version 26-git (????-??-??):
     validation only when customer pin is changed [chilan]
   - enhancement: lms-cleanup.php backend script provides preliminary support for cleaning up
     old resources from system (for now 'finances' resources only) [chilan]
-
+  - enhancement: added network vlan list [interduo]
+  
 version 25.0 (2020-05-15):
 
   - improvement: introduced invoices.hide_ssn configuration variable which allows to hide SSN

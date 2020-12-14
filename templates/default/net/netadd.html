@@ -41,10 +41,21 @@
 		<TD class="bold nobr"><IMG src="img/mac.gif" alt=""> {trans("Interface:")}</TD>
 		<TD colspan="3">
 			<INPUT type="text" size="23" name="netadd[interface]" value="{$netadd.interface}" {tip text="Enter network interface (optional)" trigger="interface"}>
-			<span class="bold">{trans("vlan:")}</span>
-			<INPUT type="text" size="5" name="netadd[vlanid]" value="{if $netadd.vlanid}{$netadd.vlanid}{/if}" maxlength="4" {tip text="Enter vlan ID (optional)" trigger="vlanid"}>
-		</TD>
-	</TR>
+        </TD>
+    </TR>
+    <TR>
+        <TD class="bold">
+            {icon name="vlan" label="VLAN"}
+        </TD>
+        <TD colspan="3">
+            <select name="netadd[vlanid]" class="lms-ui-advanced-select">
+                {foreach $vlanlist as $v}
+                <option value="{$v.id}">#{$v.vlanid}{if $v.description}, {$v.description|truncate:'20':''}{/if}{if $v.customerid}, {$v.customername}(#{$v.customerid}){/if}</option>
+                {/foreach}
+                <option>{trans("None")}</option>
+            </select>
+        </TD>
+    </TR>
 	<TR>
 		<TD class="bold nobr"><IMG src="img/gateway.gif" alt=""> Gateway:</TD>
 		<TD><INPUT type="text" size="23" name="netadd[gateway]" value="{$netadd.gateway}" {tip text="Enter gateway address (optional)" trigger="gateway"}></TD>

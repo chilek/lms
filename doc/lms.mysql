@@ -108,6 +108,7 @@ DROP TABLE IF EXISTS netdevicetypes;
 DROP TABLE IF EXISTS netdeviceproducers;
 DROP TABLE IF EXISTS netnodes;
 DROP TABLE IF EXISTS invprojects;
+DROP TABLE IF EXISTS vlans;
 DROP TABLE IF EXISTS networks;
 DROP TABLE IF EXISTS hosts;
 DROP TABLE IF EXISTS ewx_stm_channels;
@@ -1376,6 +1377,23 @@ CREATE TABLE hosts (
 
 # --------------------------------------------------------
 #
+# Structure of table vlans
+#
+CREATE TABLE vlans (
+    id smallint NOT NULL auto_increment,
+    vlanid smallint NOT NULL,
+    description varchar(254) DEFAULT NULL,
+    customerid int(11) DEFAULT NULL,
+    CONSTRAINT vlans_customerid_fkey
+        FOREIGN KEY (customerid) REFERENCES customers (id) ON UPDATE CASCADE ON DELETE SET NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY vlans_ukey (vlanid, customerid)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+
+# --------------------------------------------------------
+#
 # Structure of table  networks
 #
 CREATE TABLE networks (
@@ -1403,7 +1421,9 @@ CREATE TABLE networks (
   UNIQUE KEY address (address, hostid),
   FOREIGN KEY (hostid) REFERENCES hosts (id) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT networks_pubnetid_fkey
-    FOREIGN KEY (pubnetid) REFERENCES networks (id) ON DELETE SET NULL ON UPDATE CASCADE
+    FOREIGN KEY (pubnetid) REFERENCES networks (id) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT networks_vlanid_fkey
+    FOREIGN KEY (vlanid) REFERENCES vlans (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -3902,4 +3922,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020120800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020121500');

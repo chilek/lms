@@ -1241,6 +1241,22 @@ CREATE TABLE hosts (
 );
 
 /* --------------------------------------------------------
+Structure of table "vlans"
+-------------------------------------------------------- */
+DROP SEQUENCE IF EXISTS vlans_id_seq;
+CREATE SEQUENCE vlans_id_seq;
+DROP TABLE IF EXISTS vlans CASCADE;
+CREATE TABLE vlans (
+    id smallint DEFAULT nextval('vlans_id_seq'::text) NOT NULL,
+    vlanid smallint NOT NULL,
+    description varchar(254) DEFAULT NULL,
+    customerid smallint DEFAULT NULL
+        CONSTRAINT vlans_customerid_fkey REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    PRIMARY KEY (id),
+    CONSTRAINT vlans_ukey UNIQUE (vlanid, customerid)
+);
+
+/* --------------------------------------------------------
   Structure of table "networks"
 -------------------------------------------------------- */
 DROP SEQUENCE IF EXISTS networks_id_seq;
@@ -1262,7 +1278,8 @@ CREATE TABLE networks (
 	dhcpend varchar(16) 	DEFAULT '' NOT NULL,
 	disabled smallint 	DEFAULT 0 NOT NULL,
 	notes text		DEFAULT '' NOT NULL,
-	vlanid smallint DEFAULT NULL,
+	vlanid smallint DEFAULT NULL
+	    CONSTRAINT networks_vlanid_fkey REFERENCES vlans (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	hostid integer NULL
 		REFERENCES hosts (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	authtype smallint 	DEFAULT 0 NOT NULL,
@@ -3933,6 +3950,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020120800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020121500');
 
 COMMIT;
