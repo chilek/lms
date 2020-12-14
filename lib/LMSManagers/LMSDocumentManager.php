@@ -735,18 +735,23 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             return;
         }
 
+        $userpanel_enabled_modules = ConfigHelper::getConfig('userpanel.enabled_modules');
+        $userpanel = empty($userpanel_enabled_modules) || strpos($userpanel_enabled_modules, 'documents') !== false;
+
         $finance_manager = new LMSFinanceManager($this->db, $this->auth, $this->cache, $this->syslog);
 
         $this->db->BeginTrans();
 
-        $mail_dsn = ConfigHelper::getConfig('userpanel.document_notification_mail_dsn_address', '', true);
-        $mail_mdn = ConfigHelper::getConfig('userpanel.document_notification_mail_mdn_address', '', true);
-        $mail_sender_name = ConfigHelper::getConfig('userpanel.document_notification_mail_sender_name', '', true);
-        $mail_sender_address = ConfigHelper::getConfig('userpanel.document_notification_mail_sender_address', ConfigHelper::getConfig('mail.smtp_username'));
-        $mail_reply_address = ConfigHelper::getConfig('userpanel.document_notification_mail_reply_address', '', true);
-        $mail_format = ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_format', 'text');
-        $mail_subject = ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_subject');
-        $mail_body = ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_body');
+        if ($userpanel) {
+            $mail_dsn = ConfigHelper::getConfig('userpanel.document_notification_mail_dsn_address', '', true);
+            $mail_mdn = ConfigHelper::getConfig('userpanel.document_notification_mail_mdn_address', '', true);
+            $mail_sender_name = ConfigHelper::getConfig('userpanel.document_notification_mail_sender_name', '', true);
+            $mail_sender_address = ConfigHelper::getConfig('userpanel.document_notification_mail_sender_address', ConfigHelper::getConfig('mail.smtp_username'));
+            $mail_reply_address = ConfigHelper::getConfig('userpanel.document_notification_mail_reply_address', '', true);
+            $mail_format = ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_format', 'text');
+            $mail_subject = ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_subject');
+            $mail_body = ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_body');
+        }
 
         $customerinfos = array();
         $mail_contacts = array();
@@ -780,6 +785,10 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 'UPDATE assignments SET commited = 1 WHERE docid = ? AND commited = 0',
                 array($docid)
             );
+
+            if (!$userpanel) {
+                continue;
+            }
 
             // customer awaits for signed document scan approval
             // so we should probably notify him about document confirmation
