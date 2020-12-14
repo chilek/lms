@@ -886,6 +886,201 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $this->db->CommitTrans();
     }
 
+    public function NewDocumentCustomerNotifications(array $document)
+    {
+        global $LMS;
+
+        function parse_notification($string, $data)
+        {
+            $customerinfo = $data['customerinfo'];
+            $string = str_replace(
+                array(
+                    '%cid%',
+                    '%pin%',
+                    '%customername%',
+                ),
+                array(
+                    $customerinfo['id'],
+                    $customerinfo['pin'],
+                    $customerinfo['customername'],
+                ),
+                $string
+            );
+
+            $document = $data['document'];
+            $string = str_replace(
+                array(
+                    '%docid%',
+                    '%date-y%',
+                    '%date-m%',
+                    '%date-d%',
+                ),
+                array(
+                    $document['id'],
+                    date('Y', $document['confirmdate']),
+                    date('m', $document['confirmdate']),
+                    date('d', $document['confirmdate']),
+                ),
+                $string
+            );
+
+            return $string;
+        }
+
+        if (!$LMS->checkCustomerConsent($document['customerid'], CCONSENT_USERPANEL_SCAN)
+            && !$LMS->checkCustomerConsent($document['customerid'], CCONSENT_USERPANEL_SMS)) {
+            return;
+        }
+
+        $mail_dsn = ConfigHelper::getConfig('userpanel.document_notification_mail_dsn_address', '', true);
+        $mail_mdn = ConfigHelper::getConfig('userpanel.document_notification_mail_mdn_address', '', true);
+        $mail_sender_name = ConfigHelper::getConfig('userpanel.document_notification_mail_sender_name', '', true);
+        $mail_sender_address = ConfigHelper::getConfig('userpanel.document_notification_mail_sender_address', ConfigHelper::getConfig('mail.smtp_username'));
+        $mail_reply_address = ConfigHelper::getConfig('userpanel.document_notification_mail_reply_address', '', true);
+
+        $new_document_mail_subject = ConfigHelper::getConfig('userpanel.new_document_customer_notification_mail_subject', '', true);
+        $new_document_mail_body = ConfigHelper::getConfig('userpanel.new_document_customer_notification_mail_body', '', true);
+        $new_document_mail_format = ConfigHelper::getConfig('userpanel.new_document_customer_notification_mail_format', '', true);
+
+        if (!empty($mail_sender_address) && !empty($new_document_mail_subject) && !empty($new_document_mail_body)) {
+            $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
+            $message_manager = new LMSMessageManager($this->db, $this->auth, $this->cache, $this->syslog);
+
+            $customerinfo = $customer_manager->GetCustomer($document['customerid']);
+            $mail_recipients = $customer_manager->GetCustomerContacts($document['customerid'], CONTACT_EMAIL);
+
+            if (!empty($mail_recipients)) {
+                $destinations = array();
+                foreach ($mail_recipients as $mail_recipient) {
+                    if (($mail_recipient['type'] & (CONTACT_NOTIFICATIONS | CONTACT_DISABLED)) == CONTACT_NOTIFICATIONS) {
+                        $destinations[] = $mail_recipient['contact'];
+                    }
+                }
+                if (!empty($destinations)) {
+                    $mail_subject = parse_notification(
+                        $new_document_mail_subject,
+                        array(
+                            'customerinfo' => $customerinfo,
+                            'document' => $document,
+                        )
+                    );
+                    $mail_body = parse_notification(
+                        $new_document_mail_body,
+                        array(
+                            'customerinfo' => $customerinfo,
+                            'document' => $document,
+                        )
+                    );
+
+                    $recipients = array(
+                        array(
+                            'id' => $document['customerid'],
+                            'email' => implode(',', $destinations),
+                        )
+                    );
+                    $message = $message_manager->addMessage(array(
+                        'type' => MSG_MAIL,
+                        'subject' => $mail_subject,
+                        'body' => $mail_body,
+                        'sender' => array(
+                            'name' => $mail_sender_name,
+                            'mail' => $mail_sender_address,
+                        ),
+                        'contenttype' => $new_document_mail_format == 'text' ? 'text/plain' : 'text/html',
+                        'recipients' => $recipients,
+                    ));
+
+                    $sender = ($mail_sender_name ? '"' . $mail_sender_name . '" ' : '') . '<' . $mail_sender_address . '>';
+                    $headers = array(
+                        'From' => $sender,
+                        'Recipient-Name' => $customerinfo['customername'],
+                        'Subject' => $mail_subject,
+                        'X-LMS-Format' => $new_document_mail_format,
+                    );
+                    if (!empty($mail_reply_address) && $mail_reply_address != $mail_sender_address) {
+                        $headers['Reply-To'] = $mail_reply_address;
+                    }
+                    if (!empty($mail_mdn)) {
+                        $headers['Return-Receipt-To'] = $mail_mdn;
+                        $headers['Disposition-Notification-To'] = $mail_mdn;
+                    }
+                    if (!empty($mail_dsn)) {
+                        $headers['Delivery-Status-Notification-To'] = true;
+                    }
+                    foreach ($destinations as $destination) {
+                        if (!empty($mail_dsn) || !empty($mail_mdn)) {
+                            $headers['X-LMS-Message-Item-Id'] = $message['items'][$document['customerid']][$destination];
+                            $headers['Message-ID'] = '<messageitem-' . $message['items'][$document['customerid']][$destination] . '@rtsystem.' . gethostname() . '>';
+                        }
+                        $LMS->SendMail($destination, $headers, $mail_body);
+                    }
+                }
+            }
+        }
+
+        $new_document_sms_body = ConfigHelper::getConfig('userpanel.new_document_customer_notification_sms_body', '', true);
+
+        if (!empty($new_document_sms_body)) {
+            $sms_options = $LMS->getCustomerSMSOptions();
+            $sms_active = !empty($sms_options) && isset($sms_options['service']) && !empty($sms_options['service']);
+            if (!$sms_active) {
+                $sms_service = ConfigHelper::getConfig('sms.service', '', true);
+                $sms_active = !empty($sms_service);
+            }
+
+            if ($sms_active) {
+                if (!isset($customer_manager)) {
+                    $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
+                    $message_manager = new LMSMessageManager($this->db, $this->auth, $this->cache, $this->syslog);
+
+                    $customerinfo = $customer_manager->GetCustomer($document['customerid']);
+                }
+
+                $phone_recipients = $customer_manager->GetCustomerContacts($document['customerid'], CONTACT_MOBILE);
+                if (!empty($phone_recipients)) {
+                    $destinations = array();
+                    foreach ($phone_recipients as $phone_recipient) {
+                        if (($phone_recipient['type'] & (CONTACT_NOTIFICATIONS | CONTACT_DISABLED)) == CONTACT_NOTIFICATIONS) {
+                            $destinations[] = $phone_recipient['contact'];
+                        }
+                    }
+                }
+
+                if (!empty($destinations)) {
+                    $sms_body = parse_notification(
+                        $new_document_sms_body,
+                        array(
+                            'customerinfo' => $customerinfo,
+                            'document' => $document,
+                        )
+                    );
+
+                    $recipients = array(
+                        array(
+                            'id' => $document['customerid'],
+                            'phone' => implode(',', $destinations),
+                        )
+                    );
+
+                    $message = $message_manager->addMessage(array(
+                        'type' => MSG_SMS,
+                        'subject' => trans('new document customer notification'),
+                        'body' => $sms_body,
+                        'recipients' => $recipients,
+                    ));
+
+                    $error = array();
+                    foreach ($destinations as $destination) {
+                        $res = $LMS->SendSMS($destination, $sms_body, $message['items'][$document['customerid']][$destination], $sms_options);
+                        if (is_string($res)) {
+                            $error[] = $res;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public function ArchiveDocuments(array $ids)
     {
         $userid = Auth::GetCurrentUser();

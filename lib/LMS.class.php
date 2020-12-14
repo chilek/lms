@@ -3054,6 +3054,12 @@ class LMS
         return $manager->CommitDocuments($ids, $userpanel);
     }
 
+    public function NewDocumentCustomerNotifications(array $document)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->NewDocumentCustomerNotifications($document);
+    }
+
     public function ArchiveDocuments(array $ids)
     {
         $manager = $this->getDocumentManager();

@@ -42,6 +42,8 @@ interface LMSDocumentManagerInterface
 
     public function CommitDocuments(array $ids, $userpanel = false);
 
+    public function NewDocumentCustomerNotifications(array $document);
+
     public function ArchiveDocuments(array $ids);
 
     public function UpdateDocumentPostAddress($docid, $customerid);
