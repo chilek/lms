@@ -122,6 +122,9 @@
             <TD class="text-right">
                 <INPUT TYPE="text" class="invoice-contents-field-edit" NAME="invoice-contents[{$posuid}][count]" SIZE="3"
                        VALUE="{$row.count}" data-old-value="{$item.count}" style="display: none;">
+                {if isset($item.count_custom_contents)}
+                    {$item.count_custom_contents}
+                {/if}
                 <INPUT TYPE="text" class="invoice-contents-field-edit" NAME="invoice-contents[{$posuid}][jm]" SIZE="3"
                        VALUE="{$row.jm}" data-old-value="{$item.jm}" style="display: none;">
                 <span class="invoice-contents-field-value nobr">
