@@ -3563,6 +3563,10 @@ URL: %url
 ('userpanel', 'document_notification_mail_reply_address', '', '', 0),
 ('userpanel', 'document_notification_mail_sender_name', '', '', 0),
 ('userpanel', 'document_notification_mail_sender_address', '', '', 0),
+('userpanel', 'new_document_customer_notification_mail_format', 'text', '', 0),
+('userpanel', 'new_document_customer_notification_mail_subject', '', '', 0),
+('userpanel', 'new_document_customer_notification_mail_body', '', '', 0),
+('userpanel', 'new_document_customer_notification_sms_body', '', '', 0),
 ('userpanel', 'signed_document_scan_operator_notification_mail_recipient', '', '', 0),
 ('userpanel', 'signed_document_scan_operator_notification_mail_format', 'text', '', 0),
 ('userpanel', 'signed_document_scan_operator_notification_mail_subject', '', '', 0),
@@ -3933,6 +3937,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020120800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020121400');
 
 COMMIT;
