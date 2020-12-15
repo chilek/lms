@@ -829,7 +829,7 @@ class LMSSmartyPlugins
                 array(
                     'type' => 'link',
                     'icon' => isset($params['icon']) ? $params['icon'] : 'additional-selection',
-                    'class' => 'lms-ui-dropdown-toggle',
+                    'class' => isset($params['class']) ? $params['class'] : 'lms-ui-dropdown-toggle',
                 ),
                 $template
             ) . (isset($params['secondary']) && $params['secondary'] ?
