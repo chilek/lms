@@ -345,7 +345,7 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD class="lms-ui-box-buttons" colspan="3">
+		<TD class="lms-ui-box-buttons" colspan="3" data-popup-menu-title="{t a=$ticket.ticketid|string_format:"#%06d"}Ticket $a{/t}">
 			<label>
 				<input type="checkbox" id="messages-chkbox">
 				{trans("Messages")}
@@ -379,7 +379,7 @@
 					{/if}
 				{/if}
 			{/if}
-			{buttons}
+			{buttons icon="dropdown2"}
 				{if ($ticket.owner != $layout.logid && $ticket.state != $smarty.const.RT_RESOLVED) || ConfigHelper::checkPrivilege('superuser')}
 					{button id="ticket-assign-to-me" icon="user" label="Assign to me" tip="Assign to me" data_href="?m=rtticketedit&id={$ticket.ticketid}&action=assign"}
 				{/if}
