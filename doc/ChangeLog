@@ -1,6 +1,8 @@
 $Id$
 
-version 26-git (????-??-??):
+version 27-git (????-??-??):
+
+version 26.0 (2020-12-15):
 
   - enhancement: 'invoices.proforma_conversion_comment_format' allows to define comment format
     in invoice created from pro forma invoice [chilan]
