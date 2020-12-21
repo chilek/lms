@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$_LANG['new document customer notification'] = 'powiadomienie klienta o nowym dokumencie';
+
 $_LANG['- select target network device -'] = '- wybierz docelowe urządzenie sieciowe -';
 
 $_LANG['(customer/sms)'] = '(klient/SMS)';

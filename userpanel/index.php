@@ -269,6 +269,8 @@ if ($SESSION->islogged) {
     }
 
     if ($module_dir !== null) {
+        $SMARTY->assign('customername', $LMS->GetCustomerName($SESSION->id));
+
         include($module_dir . $module . DIRECTORY_SEPARATOR . 'functions.php');
 
         $function = isset($_GET['f']) && $_GET['f']!='' ? $_GET['f'] : 'main';

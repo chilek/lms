@@ -1,6 +1,8 @@
 $Id$
 
-version 26-git (????-??-??):
+version 27-git (????-??-??):
+
+version 26.0 (2020-12-15):
 
   - enhancement: 'invoices.proforma_conversion_comment_format' allows to define comment format
     in invoice created from pro forma invoice [chilan]
@@ -270,8 +272,10 @@ version 26-git (????-??-??):
     validation only when customer pin is changed [chilan]
   - enhancement: lms-cleanup.php backend script provides preliminary support for cleaning up
     old resources from system (for now 'finances' resources only) [chilan]
+  - enhancement: new document customer notifications (document which awaits for customer
+    decision to be made from userpanel) [chilan]
   - enhancement: added network vlan list [interduo]
-  
+
 version 25.0 (2020-05-15):
 
   - improvement: introduced invoices.hide_ssn configuration variable which allows to hide SSN
