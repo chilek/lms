@@ -920,7 +920,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 
         $args['id'] = $this->db->GetLastInsertID('vlans');
 
-        if ($args && $this->syslog) {
+        if ($result && $this->syslog) {
             $this->syslog->AddMessage(SYSLOG::RES_VLAN, SYSLOG::OPER_ADD, $args);
         }
         return $result;
