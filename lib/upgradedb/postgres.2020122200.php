@@ -23,26 +23,27 @@
 
 $this->BeginTrans();
 
+$this->Execute("CREATE SEQUENCE vlans_id_seq");
+
 $this->Execute("
     CREATE TABLE vlans (
-        id smallint NOT NULL auto_increment,
-        vlanid smallint NOT NULL,
-        description varchar(254) DEFAULT NULL,
-        customerid int(11) DEFAULT NULL
-        PRIMARY KEY (id),
-        CONSTRAINT vlans_customerid_fkey
-            FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
-        UNIQUE KEY vlans_ukey (vlanid, customerid)
+	    id smallint DEFAULT nextval('vlans_id_seq'::text) NOT NULL,
+	    vlanid smallint NOT NULL,
+	    description varchar(254) DEFAULT NULL,
+	    customerid smallint DEFAULT NULL
+            CONSTRAINT vlans_customerid_fkey REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,   
+	    PRIMARY KEY (id),
+        CONSTRAINT vlans_ukey UNIQUE (vlanid, customerid)
     );
 ");
 
-$this->Execute("INSERT INTO vlans (vlanid) SELECT DISTINCT vlanid FROM networks WHERE vlanid IS NOT NULL");
+$this->Execute("INSERT INTO vlans (vlanid) (SELECT DISTINCT vlanid FROM networks WHERE vlanid IS NOT NULL)");
 
 $this->Execute("UPDATE networks SET vlanid = (SELECT id FROM vlans WHERE vlans.vlanid = networks.vlanid)");
 
 $this->Execute("ALTER TABLE networks ADD CONSTRAINT networks_vlanid_fkey
                     FOREIGN KEY (vlanid) REFERENCES vlans (id) ON DELETE SET NULL ON UPDATE CASCADE");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020121500', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020122200', 'dbversion'));
 
 $this->CommitTrans();
