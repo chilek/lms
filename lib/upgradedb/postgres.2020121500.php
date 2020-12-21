@@ -37,7 +37,7 @@ $this->Execute("
     );
 ");
 
-$this->Execute("INSERT INTO vlans (vlanid) SELECT DISTINCT vlanid FROM networks WHERE vlanid IS NOT NULL");
+$this->Execute("INSERT INTO vlans (vlanid) (SELECT DISTINCT vlanid FROM networks WHERE vlanid IS NOT NULL)");
 
 $this->Execute("UPDATE networks SET vlanid = (SELECT id FROM vlans WHERE vlans.vlanid = networks.vlanid)");
 
