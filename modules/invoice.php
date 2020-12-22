@@ -362,7 +362,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             //$jpk_vat_version = $datefrom < mktime(0, 0, 0, 1, 1, 2018) ? 2 : 3;
             // if current date is earlier than 1 I 2018
             //$jpk_vat_version = time() < mktime(0, 0, 0, 1, 1, 2018) ? 2 : 3;
-            $jpk_vat_version = (time() < mktime(0, 0, 0, 11, 1, 2020) ? 3 : 4);
+            $jpk_vat_version = ($dateto < mktime(0, 0, 0, 11, 1, 2020) ? 3 : 4);
         } else {
             // if date from for report is earlier than 2 XII 2019
             //$jpk_fa_version = $datefrom < mktime(0, 0, 0, 12, 2, 2019) ? 2 : 3;
