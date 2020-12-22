@@ -164,6 +164,7 @@ $_LANG['Modification'] = 'Modyfikacja';
 $_LANG['Service Start'] = 'Uruchomienie usługi';
 $_LANG['Service Hold'] = 'Wstrzymanie usługi';
 $_LANG['Service Transfer'] = 'Przeniesienie usługi';
+$_LANG['No service'] = 'Brak usługi';
 $_LANG['Overdue events'] = 'Zaległe zdarzenia';
 $_LANG['Overdue events assigned to You'] = 'Zaległe zdarzenia przypisane do Ciebie';
 $_LANG['Copy'] = 'Kopiuj';
