@@ -24,6 +24,10 @@
  *  $Id$
  */
 
+if (!ConfigHelper::checkPrivilege('network_management')) {
+    access_denied();
+}
+
 $action = $_GET['action'];
 $id = $_GET['id'];
 
