@@ -460,13 +460,14 @@ if (isset($_POST['ticket'])) {
         // we notify about new ticket after queue change
         $newticket_notify = ConfigHelper::checkConfig('phpui.newticket_notify');
         $ticket_property_change_notify = ConfigHelper::checkConfig('phpui.ticket_property_change_notify');
-        if (($ticket_property_change_notify && ($ticket['state'] != $ticketedit['state']
+        if (isset($ticketedit['notify'])
+            && (($ticket_property_change_notify && ($ticket['state'] != $ticketedit['state']
                 || $ticket['owner'] != $ticketedit['owner']
                 || $ticket['deadline'] != $ticketedit['deadline']
                 || $ticket['priority'] != $ticketedit['priority']
                 || $ticket['parentid'] != $ticketedit['parentid']))
             || ($ticket['queueid'] != $ticketedit['queue'] && !empty($newticket_notify))
-            || ($ticket['verifierid'] != $ticketedit['verifierid'] && !empty($ticketedit['verifierid']))) {
+            || ($ticket['verifierid'] != $ticketedit['verifierid'] && !empty($ticketedit['verifierid'])))) {
             $user = $LMS->GetUserInfo(Auth::GetCurrentUser());
             $queue = $LMS->GetQueueByTicketId($ticket['ticketid']);
             $verifierid = $ticket['verifierid'];
