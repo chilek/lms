@@ -884,12 +884,11 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 
     public function GetVlanList()
     {
-        return $this->db->GetAll(
+        return $this->db->GetAllByKey(
             'SELECT vl.id, vlanid, description, customerid, '
             . $this->db->Concat('cv.lastname', "' '", 'cv.name') . ' AS customername
             FROM vlans AS vl
-            LEFT JOIN customers cv ON (vl.customerid = cv.id)
-            ORDER BY vlanid'
+            LEFT JOIN customers cv ON (vl.customerid = cv.id)', 'id'
         );
     }
 
@@ -931,7 +930,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
         $vlaninfo = $this->GetVlanInfo($id);
         $result = $this->db->Execute('DELETE FROM vlans WHERE id = ?', array($id));
 
-        if ($vlaninfo && $this->syslog) {
+        if ($result && $this->syslog) {
             $this->syslog->AddMessage(SYSLOG::RES_VLAN, SYSLOG::OPER_DELETE, $vlaninfo);
         }
 
@@ -949,15 +948,18 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             );
 
             $vlaninfo = $this->GetVlanInfo($props['id']);
-            $result = $this->db->Execute(
-                'UPDATE vlans SET vlanid = ?, description = ?, customerid = ? WHERE id = ?',
-                array($props['vlanid'], $props['description'], $props['customerid'], $props['id'])
-            );
-            $vlaninfo2 = $this->GetVlanInfo($props['id']);
-            $diff = array_diff($vlaninfo2, $vlaninfo);
+            unset($vlaninfo['customername']);
+            $diff = array_diff($props, $vlaninfo);
 
-            if ($diff && $this->syslog) {
-                $this->syslog->AddMessage(SYSLOG::RES_VLAN, SYSLOG::OPER_UPDATE, $diff);
+            if (!empty($diff)) {
+                $diff['id'] = $props['id'];
+                $result = $this->db->Execute(
+                    'UPDATE vlans SET vlanid = ?, description = ?, customerid = ? WHERE id = ?',
+                    array($props['vlanid'], $props['description'], $props['customerid'], $props['id'])
+                );
+                if ($this->syslog) {
+                    $this->syslog->AddMessage(SYSLOG::RES_VLAN, SYSLOG::OPER_UPDATE, $diff);
+                }
             }
 
             return $result;
