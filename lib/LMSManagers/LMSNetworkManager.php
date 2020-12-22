@@ -888,7 +888,8 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             'SELECT vl.id, vlanid, description, customerid, '
             . $this->db->Concat('cv.lastname', "' '", 'cv.name') . ' AS customername
             FROM vlans AS vl
-            LEFT JOIN customers cv ON (vl.customerid = cv.id)', 'id'
+            LEFT JOIN customers cv ON (vl.customerid = cv.id)',
+            'id'
         );
     }
 
