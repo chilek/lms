@@ -958,7 +958,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
                     'UPDATE vlans SET vlanid = ?, description = ?, customerid = ? WHERE id = ?',
                     array($props['vlanid'], $props['description'], $props['customerid'], $props['id'])
                 );
-                if ($this->syslog) {
+                if ($result && $this->syslog) {
                     $this->syslog->AddMessage(SYSLOG::RES_VLAN, SYSLOG::OPER_UPDATE, $diff);
                 }
             }
