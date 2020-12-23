@@ -274,6 +274,7 @@ version 26.0 (2020-12-15):
     old resources from system (for now 'finances' resources only) [chilan]
   - enhancement: new document customer notifications (document which awaits for customer
     decision to be made from userpanel) [chilan]
+  - enhancement: added network vlan list [interduo]
 
 version 25.0 (2020-05-15):
 

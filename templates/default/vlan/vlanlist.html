@@ -1,0 +1,54 @@
+{extends file="layout.html"}
+{block name=title}{$layout.pagetitle|striphtml}{/block}
+{block name=module_content}
+
+<h1>{$pagetitle}</h1>
+
+<table class="lmsbox lms-ui-background-cycle">
+    <thead>
+        <tr class="bold">
+            <td>
+                {icon name="id" label="ID"}
+            </td>
+            <td>
+                {icon name="vlan" label="VID"}
+            </td>
+            <td>
+                {icon name="description" label="Description"}
+            </td>
+            <td>
+                {icon name="customer" label="Assigned Customer"}
+            </td>
+            <td class="text-right">
+                {button type='link' name="addvlan" id="addvlanbtn" icon="add"}
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        {foreach $vlanlist as $v}
+        <tr>
+            <td>
+                {$v.id}
+            </td>
+            <td>
+                {$v.vlanid}
+            </td>
+            <td>
+                {$v.description}
+            </td>
+            <td>
+                <a href="?m=customerinfo&id={$v.customerid}">{$v.customername|truncate:'20':''}</a>
+            </td>
+            <td class="buttons">
+                {button type="link" icon="edit" href="?m=vlanlist&action=modify&id={$v.id}" tip="Edit"}
+                {button type="link" icon="delete" href="?m=vlanlist&action=delete&id={$v.id}" tip="Delete"}
+            </td>
+        </tr>
+        {/foreach}
+    </tbody>
+</table>
+
+{include file="vlan/vlanmodify-dialog.html"}
+
+{/block}
+

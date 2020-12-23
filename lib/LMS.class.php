@@ -1647,6 +1647,36 @@ class LMS
         return $manager->getFirstFreeAddress($netid);
     }
 
+    public function GetVlanList()
+    {
+        $manager = $this->getNetworkManager();
+        return $manager->GetVlanList();
+    }
+
+    public function GetVlanInfo($id)
+    {
+        $manager = $this->getNetworkManager();
+        return $manager->GetVlanInfo($id);
+    }
+
+    public function AddVlan($args)
+    {
+        $manager = $this->getNetworkManager();
+        return $manager->AddVlan($args);
+    }
+
+    public function DeleteVlan($id)
+    {
+        $manager = $this->getNetworkManager();
+        return $manager->DeleteVlan($id);
+    }
+
+    public function UpdateVlan($args)
+    {
+        $manager = $this->getNetworkManager();
+        return $manager->UpdateVlan($args);
+    }
+
     /*
      *   Network Devices
      */
