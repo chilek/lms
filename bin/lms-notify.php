@@ -785,7 +785,7 @@ if (empty($types) || in_array('timetable', $types)) {
                     send_mail_to_user($user['email'], $user['name'], $subject, $mail_contents);
                 }
             }
-            if (!empty($user['sms'])) {
+            if (!empty($user['phone'])) {
                 if (!$quiet) {
                     printf("[timetable/sms] %s (%04d): %s" . PHP_EOL, $user['name'], $user['id'], $user['phone']);
                 }
