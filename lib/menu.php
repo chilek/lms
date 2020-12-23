@@ -308,7 +308,7 @@ $menu = array(
                 'vlanlist' => array(
                     'name' => trans('VLAN List'),
                     'link' => '?m=vlanlist',
-                    'tip' => trans('Allows you to display VLAN List used in networks.'),
+                    'tip' => trans('Allows you to display VLANs used in networks'),
                     'prio' => 90,
                 ),
             ),
