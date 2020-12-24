@@ -30,7 +30,9 @@ $id = $_GET['id'];
 $addvlan = $_POST['addvlan'];
 $layout['pagetitle'] = trans('VLAN List');
 
-$vlanlist = $LMS->GetVlanList();
+$params['orderby'] = $_GET['orderby'];
+
+$vlanlist = $LMS->GetVlanList($params);
 $vlaninfo = $LMS->GetVlanInfo($id);
 
 switch ($action) {

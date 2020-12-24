@@ -19,7 +19,14 @@
             <td>
                 {icon name="customer" label="Assigned Customer"}
             </td>
-            <td class="text-right">
+            <td class="text-right" class="lms-ui-box-buttons" data-popup-menu-title="{trans('sort by')}">
+                {buttons}
+                    {button type='link' icon="id" tip="ID" href="?m=vlanlist"}
+                    {button type='link' icon="vlan" tip="VLAN ID" href="?m=vlanlist&orderby=vlanid"}
+                    {button type='link' icon="description" tip="VLAN Description" href="?m=vlanlist&orderby=description"}
+                    {button type='link' icon="customer" tip="Customer ID" href="?m=vlanlist&orderby=customerid"}
+                {/buttons}
+
                 {button type='link' name="addvlan" id="addvlanbtn" icon="add"}
             </td>
         </tr>

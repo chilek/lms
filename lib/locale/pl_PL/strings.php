@@ -2578,6 +2578,7 @@ $_LANG['customers to groups assignment'] = 'przypisywanie klientów do grup';
 $_LANG['Assigned Customer'] = 'Przypisany klient';
 $_LANG['VLAN List'] = 'Lista VLAN-ów';
 $_LANG['VLAN Description'] = 'Opis VLAN-u';
+$_LANG['VLAN ID'] = 'Identyfikator VLAN-u';
 $_LANG['Add VLAN'] = 'Dodaj VLAN';
 $_LANG['Modify VLAN'] = 'Modyfikuj VLAN';
 $_LANG['nodes to groups assignment'] = 'przypisywanie komputerów do grup';

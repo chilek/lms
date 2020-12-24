@@ -882,13 +882,36 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
         return $ip;
     }
 
-    public function GetVlanList()
+    public function GetVlanList($params)
     {
+        if (!empty($params)) {
+            extract($params);
+        }
+
+        switch ($orderby) {
+            case 'id':
+                $orderby = ' ORDER BY vl.id ';
+                break;
+            case 'vlanid':
+                $orderby = ' ORDER BY vlanid ';
+                break;
+            case 'description':
+                $orderby = ' ORDER BY description ';
+                break;
+            case 'customerid':
+                $orderby = ' ORDER BY customerid ';
+                break;
+            default:
+                $orderby = ' ORDER BY id ';
+                break;
+        }
+
         return $this->db->GetAllByKey(
             'SELECT vl.id, vlanid, description, customerid, '
             . $this->db->Concat('cv.lastname', "' '", 'cv.name') . ' AS customername
             FROM vlans AS vl
-            LEFT JOIN customers cv ON (vl.customerid = cv.id)',
+            LEFT JOIN customers cv ON (vl.customerid = cv.id)'
+            . $orderby,
             'id'
         );
     }
