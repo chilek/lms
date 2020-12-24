@@ -25,8 +25,8 @@ $this->BeginTrans();
 
 if (!$this->GetOne(
     "SELECT id FROM uiconfig WHERE section = ? AND var = ?",
-    array('userpanel', 'new_document_customer_nofitication_mail_subject'
-))) {
+    array('userpanel', 'new_document_customer_nofitication_mail_subject')
+)) {
     $this->Execute("
         INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
             ('userpanel', 'new_document_customer_notification_mail_format', 'text', '', 0),
