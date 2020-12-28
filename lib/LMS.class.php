@@ -1647,10 +1647,10 @@ class LMS
         return $manager->getFirstFreeAddress($netid);
     }
 
-    public function GetVlanList()
+    public function GetVlanList($params)
     {
         $manager = $this->getNetworkManager();
-        return $manager->GetVlanList();
+        return $manager->GetVlanList($params);
     }
 
     public function GetVlanInfo($id)
