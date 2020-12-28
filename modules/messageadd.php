@@ -778,6 +778,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                 if ($message['type'] == MSG_ANYSMS && isset($customer)) {
                     BodyVars($body, $customer, $format);
                 } else {
+                    $row['contenttype'] = $message['contenttype'];
                     BodyVars($body, $row, $format);
                 }
 

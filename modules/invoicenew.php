@@ -273,7 +273,6 @@ switch ($action) {
             $itemdata['pdiscount'] = f_round($itemdata['pdiscount']);
             $itemdata['vdiscount'] = f_round($itemdata['vdiscount']);
             $itemdata['tax'] = isset($itemdata['taxid']) ? $taxeslist[$itemdata['taxid']]['label'] : '';
-
         }
 
         $hook_data = array(

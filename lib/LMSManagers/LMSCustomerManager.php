@@ -2660,4 +2660,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     {
         return $this->changeCustomerKarma($id, -1);
     }
+
+    public function getCustomerPin($id)
+    {
+        return $this->db->GetOne('SELECT pin FROM customers WHERE id = ?', array($id));
+    }
 }

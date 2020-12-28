@@ -562,7 +562,7 @@ function send_mail($msgid, $cid, $rmail, $rname, $subject, $body)
         $headers['Message-ID'] = '<messageitem-' . $msgitemid . '@rtsystem.' . gethostname() . '>';
     }
 
-    $result = $LMS->SendMail($rmail, $headers, $body, null, $smtp_options);
+    $result = $LMS->SendMail($rmail, $headers, $body, null, null, $smtp_options);
 
     $query = "UPDATE messageitems
         SET status = ?, lastdate = ?NOW?, error = ?
@@ -626,7 +626,7 @@ function send_mail_to_user($rmail, $rname, $subject, $body)
     if (!empty($notify_email)) {
         $headers['Cc'] = $notify_email;
     }
-    $result = $LMS->SendMail($rmail, $headers, $body, null, $smtp_options);
+    $result = $LMS->SendMail($rmail, $headers, $body, null, null, $smtp_options);
 }
 
 function send_sms_to_user($phone, $data)
@@ -785,7 +785,7 @@ if (empty($types) || in_array('timetable', $types)) {
                     send_mail_to_user($user['email'], $user['name'], $subject, $mail_contents);
                 }
             }
-            if (!empty($user['sms'])) {
+            if (!empty($user['phone'])) {
                 if (!$quiet) {
                     printf("[timetable/sms] %s (%04d): %s" . PHP_EOL, $user['name'], $user['id'], $user['phone']);
                 }

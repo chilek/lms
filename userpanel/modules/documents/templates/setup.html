@@ -114,6 +114,54 @@
 			<TD class="nobr" colspan="2">
 				<fieldset>
 					<legend class="bold">
+						{trans("New document customer notifications")}
+					</legend>
+					<table>
+						<TR>
+							<TD class="nobr">
+								<label for="new_document_customer_notification_mail_subject">{trans("Mail subject:")}</label>
+							</TD>
+							<TD>
+								<INPUT type="text" size="50"
+									   name="moduleconfig[new_document_customer_notification_mail_subject]"
+									   id="new_document_customer_notification_mail_subject"
+									   value="{$moduleconfig.new_document_customer_notification_mail_subject}"
+										{tip text="Enter new document customer notification mail subject"}>
+							</TD>
+						</TR>
+						<TR>
+							<TD class="nobr">
+								<label for="new_document_customer_notification_mail_body">{trans("Mail body:")}</label>
+							</TD>
+							<TD>
+								<TEXTAREA name="moduleconfig[new_document_customer_notification_mail_body]"
+										  id="new_document_customer_notification_mail_body"
+										  class="lms-ui-wysiwyg-editor"
+										  data-wysiwyg="{if $moduleconfig.new_document_customer_notification_mail_format == 'html'}true{else}false{/if}"
+										  cols="60" rows="7" {tip text="Enter new document customer notification mail body"}
+									>{$moduleconfig.new_document_customer_notification_mail_body}</TEXTAREA>
+							</TD>
+						</TR>
+						<TR>
+							<TD class="nobr">
+								<label for="new_document_customer_notification_sms_body">{trans("SMS body")}</label>
+							</TD>
+							<TD>
+								<TEXTAREA name="moduleconfig[new_document_customer_notification_sms_body]"
+										  id="new_document_customer_notification_sms_body"
+										  cols="60" rows="7" {tip text="Enter new document customer notification sms body"}
+									>{$moduleconfig.new_document_customer_notification_sms_body}</TEXTAREA>
+							</TD>
+						</TR>
+					</table>
+				</fieldset>
+			</TD>
+		</TR>
+
+		<TR>
+			<TD class="nobr" colspan="2">
+				<fieldset>
+					<legend class="bold">
 						{trans("Signed document scan operator notifications")}
 					</legend>
 					<table>

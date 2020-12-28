@@ -294,7 +294,7 @@
 				{if $item.deleted}
 					<INPUT TYPE="hidden" VALUE="{$item.name|escape}" NAME="name[{$itemid}]">{$item.name}
 				{else}
-					<INPUT TYPE="text" VALUE="{$item.name|escape}" NAME="name[{$itemid}]" SIZE="48" style="width: 100%">
+					<INPUT TYPE="text" VALUE="{$item.name|escape}" NAME="name[{$itemid}]" SIZE="48">
 				{/if}
 				{if isset($item.name_custom_contents)}
 					{$item.name_custom_contents}

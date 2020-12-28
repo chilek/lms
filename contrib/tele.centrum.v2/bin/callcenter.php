@@ -25,8 +25,6 @@
  *  $Id$
  */
 
-$creatorid = ConfigHelper::getConfig('callcenter.queueuser');
-
 ini_set('error_reporting', E_ALL&~E_NOTICE);
 
 $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
@@ -84,6 +82,8 @@ $AUTH = null;
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
 
 /* CODE */
+
+$creatorid = ConfigHelper::getConfig('callcenter.queueuser');
 
 $hostname = "{".ConfigHelper::getConfig('callcenter.hostname')."}INBOX";
 $username = ConfigHelper::getConfig('callcenter.user');

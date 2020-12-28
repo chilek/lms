@@ -384,7 +384,7 @@ define('RT_TYPE_OTHER', 9);
 define('RT_TYPE_CONF', 10);
 define('RT_TYPE_PAYMENT', 11);
 define('RT_TYPE_TRANSFER', 12);
-
+define('RT_TYPE_NO_SERVICE', 13);
 
 $RT_TYPES = array(
     RT_TYPE_OTHER => array(
@@ -423,17 +423,17 @@ $RT_TYPES = array(
         'name' => 'RT_TYPE_CONF'
     ),
     RT_TYPE_START => array(
-        'label' => 'Start service',
+        'label' => 'Service Start',
         'class' => 'lms-ui-rt-ticket-type-start',
         'name' => 'RT_TYPE_START'
     ),
     RT_TYPE_STOP => array(
-        'label' => 'Hold service',
+        'label' => 'Service Hold',
         'class' => 'lms-ui-rt-ticket-type-stop',
         'name' => 'RT_TYPE_STOP'
     ),
     RT_TYPE_TRANSFER => array(
-      'label' => 'Transfer service',
+      'label' => 'Service Transfer',
       'class' => 'lms-ui-rt-ticket-type-transfer',
       'name' => 'RT_TYPE_TRANSFER'
     ),
@@ -446,6 +446,11 @@ $RT_TYPES = array(
         'label' => 'Payment',
         'class' => 'lms-ui-rt-ticket-type-payment',
         'name' => 'RT_TYPE_PAYMENT'
+    ),
+    RT_TYPE_NO_SERVICE => array(
+        'label' => 'No Service',
+        'class' => 'lms-ui-rt-ticket-type-no-service',
+        'name' => 'RT_TYPE_NO_SERVICE'
     ),
 );
 

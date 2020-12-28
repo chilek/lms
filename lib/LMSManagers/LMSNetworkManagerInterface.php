@@ -84,4 +84,14 @@ interface LMSNetworkManagerInterface
     public function GetPublicNetworkID($netid);
 
     public function getFirstFreeAddress($netid);
+
+    public function GetVlanList();
+
+    public function GetVlanInfo($id);
+
+    public function AddVlan($args);
+
+    public function DeleteVlan($id);
+
+    public function UpdateVlan($args);
 }

@@ -263,7 +263,8 @@ if (!isset($_POST['xjxfun'])) {
 
             if ($customerdata['pin'] == '') {
                 $error['pin'] = trans('PIN code is required!');
-            } elseif (!validate_random_string($customerdata['pin'], $pin_min_size, $pin_max_size, $pin_allowed_characters)) {
+            } elseif ((!ConfigHelper::checkConfig('phpui.validate_changed_pin') || $customerdata['pin'] != $LMS->getCustomerPin($_GET['id']))
+                && !validate_random_string($customerdata['pin'], $pin_min_size, $pin_max_size, $pin_allowed_characters)) {
                 $error['pin'] = trans('Incorrect PIN code!');
             }
 

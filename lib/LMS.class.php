@@ -30,7 +30,7 @@
 class LMS
 {
     const SOFTWARE_NAME = 'LMS';
-    const SOFTWARE_VERSION = '26-git';
+    const SOFTWARE_VERSION = '27-git';
     const SOFTWARE_REVISION = '$Format:%cI$'; // %H for last commit checksum
 
     public $DB;   // database object
@@ -817,6 +817,12 @@ class LMS
     {
         $manager = $this->getCustomerManager();
         return $manager->lowerCustomerKarma($id);
+    }
+
+    public function getCustomerPin($id)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->getCustomerPin($id);
     }
 
     /*
@@ -1639,6 +1645,36 @@ class LMS
     {
         $manager = $this->getNetworkManager();
         return $manager->getFirstFreeAddress($netid);
+    }
+
+    public function GetVlanList()
+    {
+        $manager = $this->getNetworkManager();
+        return $manager->GetVlanList();
+    }
+
+    public function GetVlanInfo($id)
+    {
+        $manager = $this->getNetworkManager();
+        return $manager->GetVlanInfo($id);
+    }
+
+    public function AddVlan($args)
+    {
+        $manager = $this->getNetworkManager();
+        return $manager->AddVlan($args);
+    }
+
+    public function DeleteVlan($id)
+    {
+        $manager = $this->getNetworkManager();
+        return $manager->DeleteVlan($id);
+    }
+
+    public function UpdateVlan($args)
+    {
+        $manager = $this->getNetworkManager();
+        return $manager->UpdateVlan($args);
     }
 
     /*
@@ -3046,6 +3082,12 @@ class LMS
     {
         $manager = $this->getDocumentManager();
         return $manager->CommitDocuments($ids, $userpanel);
+    }
+
+    public function NewDocumentCustomerNotifications(array $document)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->NewDocumentCustomerNotifications($document);
     }
 
     public function ArchiveDocuments(array $ids)

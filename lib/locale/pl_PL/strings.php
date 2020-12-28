@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$_LANG['new document customer notification'] = 'powiadomienie klienta o nowym dokumencie';
+
 $_LANG['- select target network device -'] = '- wybierz docelowe urządzenie sieciowe -';
 
 $_LANG['(customer/sms)'] = '(klient/SMS)';
@@ -159,9 +161,10 @@ $_LANG['If verifier is set then he\'s the only person who can change deadline!']
 $_LANG['Instalation'] = 'Instalacja';
 $_LANG['Deinstalation'] = 'Demontaż';
 $_LANG['Modification'] = 'Modyfikacja';
-$_LANG['Start service'] = 'Uruchomienie usługi';
-$_LANG['Hold service'] = 'Wstrzymanie usługi';
-$_LANG['Transfer service'] = 'Przeniesienie usługi';
+$_LANG['Service Start'] = 'Uruchomienie usługi';
+$_LANG['Service Hold'] = 'Wstrzymanie usługi';
+$_LANG['Service Transfer'] = 'Przeniesienie usługi';
+$_LANG['No Service'] = 'Brak usługi';
 $_LANG['Overdue events'] = 'Zaległe zdarzenia';
 $_LANG['Overdue events assigned to You'] = 'Zaległe zdarzenia przypisane do Ciebie';
 $_LANG['Copy'] = 'Kopiuj';
@@ -1839,8 +1842,8 @@ $_LANG['users edition and addition forbidden'] = ' brak dostępu do edycji i dod
 $_LANG['Users List'] = 'Lista użytkowników';
 $_LANG['Users logged in:'] = 'Użytkownicy zalogowani:';
 $_LANG['User with specified login exists or that login was used in the past!'] = 'Użytkownik o podanym loginie istnieje lub login ten był wykorzystany w przeszłości!';
-$_LANG['Vlan ID must be integer!'] = 'Numer vlanu musi być liczbą całkowitą!';
-$_LANG['Vlan ID must be between 1 and 4094!'] = 'Numer vlanu musi być z przedziału od 1 do 4094!';
+$_LANG['Vlan ID must be integer!'] = 'Identyfikator VLAN-u musi być liczbą całkowitą!';
+$_LANG['Vlan ID must be between 1 and 4094!'] = 'Identyfikator VLAN-u musi być z przedziału od 1 do 4094!';
 $_LANG['value'] = 'wartość';
 $_LANG['Value'] = 'Wartość';
 $_LANG['Value:'] = 'Wartość:';
@@ -2067,8 +2070,8 @@ $_LANG['Enter accounting time. For disposable accounting enter date in format YY
 $_LANG['Enter liability name/description (tariffless liabilities only)'] = 'Wprowadź nazwę/opis zobowiązania (tylko zobowiązania beztaryfowe)';
 $_LANG['Enter liability Product ID (tariffless liabilities only)'] = 'Wprowadź symbol PKWiU (tylko zobowiązania beztaryfowe)';
 $_LANG['Enter liability value (tariffless liabilities only)'] = 'Wprowadź kwotę zobowiązania (tylko zobowiązania beztaryfowe)';
-$_LANG['Enter vlan ID (optional)'] = 'Wprowadź ID vlan\'u (opcjonalnie)';
-$_LANG['vlan id'] = 'vlan id';
+$_LANG['Enter vlan ID (optional)'] = 'Wprowadź identyfikator VLAN-u (opcjonalnie)';
+$_LANG['vlan id'] = 'VLAN ID';
 $_LANG['Incorrect charging time!'] = 'Niepoprawny czas naliczania!';
 $_LANG['Incorrect date!'] = 'Niewłaściwa data!';
 $_LANG['Liability:'] = 'Zobowiązanie:';
@@ -2572,6 +2575,12 @@ $_LANG['Select country state (optional)'] = 'Wybierz województwo (opcjonalnie)'
 $_LANG['- all states -'] = '- wszystkie -';
 $_LANG['Country state:'] = 'Województwo:';
 $_LANG['customers to groups assignment'] = 'przypisywanie klientów do grup';
+$_LANG['Assigned Customer'] = 'Przypisany klient';
+$_LANG['VLAN List'] = 'Lista VLAN-ów';
+$_LANG['VLAN Description'] = 'Opis VLAN-u';
+$_LANG['Add VLAN'] = 'Dodaj VLAN';
+$_LANG['Modify VLAN'] = 'Modyfikuj VLAN';
+$_LANG['Allows you to display VLANs used in networks'] = 'Wyświetla VLAN-y używane w sieci';
 $_LANG['nodes to groups assignment'] = 'przypisywanie komputerów do grup';
 $_LANG['Address is required!'] = 'Adres jest wymagany!';
 $_LANG['Add division'] = 'Nowa firma';
@@ -5015,3 +5024,5 @@ $_LANG['Penalty'] = 'Kara';
 
 $_LANG['Select network device type'] = 'Wybierz typ urządzenia sieciowego';
 $_LANG['<!netdevtype>- undefined -'] = '- nieokreślony -';
+
+$_LANG['Starting balance at $a'] = 'Saldo początkowe na dzień $a';

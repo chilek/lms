@@ -42,7 +42,7 @@ $access_table = array(
             'customers' => array('customerlist', 'customersearch', 'customergrouplist'),
             'nodes' => array('nodelist', 'nodesearch', 'nodegrouplist', 'nodesessionlist'),
             'VoIP' => array('voipaccountlist', 'voipaccountbillinglist', 'tarifflist', 'voippricelist', 'voippoolnumberlist', 'voipaccountsearch'),
-            'netdevices' => array('netdevlist', 'netdevsearch', 'netnodelist', 'netdevmap'),
+            'netdevices' => array('netdevlist', 'netdevsearch', 'netnodelist', 'netdevmap', 'vlanlist'),
             'networks' => array('netlist', 'netsearch'),
             'finances' => array('tarifflist', 'paymentlist', 'balancelist', 'invoicelist', 'invoicelist-proforma', 'notelist', 'cashreglist', 'tarifftaglist'),
             'documents' => array('documentlist'),
@@ -180,7 +180,7 @@ $access_table = array(
     'network_management' => array(
         'label' => trans('networks and devices management'),
         'allow_regexp' => '^((net|netdev|ewxch)(info|list|edit|add|del|print|cmp|map(refresh|)|remap|search)|choose(mac|ip|gpscoords|netdevfrommap|netdevfornetnode|netdevmodel|netdevreplace)|ewxnodelist|ewxdevlist|chooselocation|ping'
-            . '|netnode(add|adddev|del|deldev|edit|info|list)|netdevmodels|netlinkproperties|netusage|attachments|routednetworks)$',
+            . '|netnode(add|adddev|del|deldev|edit|info|list)|netdevmodels|netlinkproperties|netusage|attachments|routednetworks|vlanlist)$',
         'allow_menu_items' => array(
             'networks' => Permission::MENU_ALL,
             'netdevices' => Permission::MENU_ALL,
