@@ -3166,6 +3166,7 @@ $_LANG['Enter category name'] = 'Podaj nazwę kategorii';
 $_LANG['Owners:'] = 'Właściciele:';
 $_LANG['Are you sure, you want to remove category \'$a\'?'] = 'Jesteś pewien, że chcesz usunąć kategorię \'$a\'?';
 $_LANG['Categories:'] = 'Kategorie:';
+$_LANG['Categories'] = 'Kategorie';
 $_LANG['Category'] = 'Kategoria';
 $_LANG['Category:'] = 'Kategoria';
 $_LANG['Owners'] = 'Właściciele';
