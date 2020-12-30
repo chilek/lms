@@ -24,7 +24,7 @@
 $this->BeginTrans();
 
 $this->Execute("ALTER TABLE rtqueues ADD COLUMN verifierticketsubject varchar(255) NOT NULL DEFAULT ''");
-$this->Execute("ALTER TABLE rttickets ADD COLUMN verifierticketbody text NOT NULL DEFAULT ''");
+$this->Execute("ALTER TABLE rtqueues ADD COLUMN verifierticketbody text NOT NULL DEFAULT ''");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018121200', 'dbversion'));
 
