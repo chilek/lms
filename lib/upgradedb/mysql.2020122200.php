@@ -28,7 +28,7 @@ $this->Execute("
         id smallint NOT NULL auto_increment,
         vlanid smallint NOT NULL,
         description varchar(254) DEFAULT NULL,
-        customerid int(11) DEFAULT NULL
+        customerid int(11) DEFAULT NULL,
         PRIMARY KEY (id),
         CONSTRAINT vlans_customerid_fkey
             FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
