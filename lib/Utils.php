@@ -69,6 +69,22 @@ class Utils
         return $result;
     }
 
+    public static function array_keys_add_prefix(array $array)
+    {
+        if (!is_array($array)) {
+            return $array;
+        }
+        $result = array();
+
+        function addkeyprefix($k)
+        {
+            return 'old_'.$k;
+        }
+
+        $result = array_combine(array_map('addkeyprefix', array_keys($array)), $array);
+        return $result;
+    }
+
     // taken from RoundCube
     /**
      * Generate a random string
