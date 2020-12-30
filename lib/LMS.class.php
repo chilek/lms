@@ -1647,7 +1647,7 @@ class LMS
         return $manager->getFirstFreeAddress($netid);
     }
 
-    public function GetVlanList($params)
+    public function GetVlanList($params = array())
     {
         $manager = $this->getNetworkManager();
         return $manager->GetVlanList($params);

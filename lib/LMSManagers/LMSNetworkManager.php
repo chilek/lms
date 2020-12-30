@@ -882,7 +882,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
         return $ip;
     }
 
-    public function GetVlanList($params)
+    public function GetVlanList($params = array())
     {
         if (!empty($params)) {
             extract($params);
