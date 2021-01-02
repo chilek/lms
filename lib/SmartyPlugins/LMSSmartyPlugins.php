@@ -827,9 +827,10 @@ class LMSSmartyPlugins
         if (!$repeat) {
             return '<div class="lms-ui-responsive-buttons">' . self::buttonFunction(
                 array(
-                    'type' => 'link',
+                    'type' => isset($params['type']) ? $params['type'] : 'link',
                     'icon' => isset($params['icon']) ? $params['icon'] : 'additional-selection',
                     'class' => 'lms-ui-dropdown-toggle',
+                    'label' => isset($params['label']) ? $params['label'] : '',
                 ),
                 $template
             ) . (isset($params['secondary']) && $params['secondary'] ?

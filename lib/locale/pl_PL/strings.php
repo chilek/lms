@@ -4161,7 +4161,7 @@ $_LANG['Confirmed by<!document>'] = 'Zatwierdzono przez';
 $_LANG['Notes<!rt>'] = 'Notatki';
 $_LANG['History<!rt>'] = 'Historia';
 
-$_LANG['sort by'] = 'sortuj wg';
+$_LANG['Sort by'] = 'Sortuj wg';
 $_LANG['Select sort cryterion'] = 'Wybierz kryterium sortowania';
 $_LANG['Document number'] = 'Numer dokumentu';
 
