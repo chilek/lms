@@ -356,7 +356,9 @@ switch ($mode) {
                     } else {
                         $action = '?m=customerinfo&id=' . $row['id'];
                     }
-                    $name = truncate_str($row['customername'], 50);
+
+                    $name = '(#' . $row['id'] . ') ' . truncate_str($row['customername'], 50);
+
                     if (isset($row['number'])) {
                         $description = trans('VoIP number:') . ' ' . $row['number'];
                         $name_class = 'lms-ui-suggestion-phone';
