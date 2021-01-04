@@ -177,7 +177,7 @@ $(function() {
             } else {
                 customerNameLink.find('a').attr('href', '').html('');
                 suggestionInput.val('');
-                input.val(0).trigger('change');
+                input.val('').trigger('change');
             }
         });
     });

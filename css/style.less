@@ -1954,12 +1954,23 @@ table.dataTable {
 
 	&.alert,
 	&.lms-ui-error {
-		background-color: @error-background !important;
-		color: @error-text !important;
+		border: @error-outline !important;
+		box-shadow: @error-box-shadow !important;
+		&:focus {
+			border: @error-outline-focus !important;
+			box-shadow: @error-box-shadow-focus !important;
+			outline: none;
+		}
 	}
 	&.lms-ui-warning {
+		border: @warning-outline !important;
 		background-color: @warning-background !important;
-		color: @warning-text !important;
+		box-shadow: @warning-box-shadow !important;
+		&:focus {
+			border: @warning-outline-focus !important;
+			background-color: @warning-background !important;
+			box-shadow: @warning-box-shadow-focus !important;
+		}
 	}
 }
 
