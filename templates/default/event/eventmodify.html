@@ -114,7 +114,8 @@
 					{/box_row}
 
 					{box_row icon="user" label="Users:" field_class="multiselect" icon_class="fa-fw"}
-						<SELECT name="event[userlist][]" class="lms-ui-multiselect" id="userlist" multiple data-default-value="{trans("- select user -")}" data-shorten-to-default-value="false">
+						<SELECT name="event[userlist][]" class="lms-ui-multiselect" id="userlist" multiple data-default-value="{trans("- select user -")}"
+								data-shorten-to-default-value="false" {if !empty(ConfigHelper::checkConfig('phpui.event_user_required'))}required{/if}>
 							{foreach $userlist as $user}
 								{if !ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users') || (ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users')
 									&& $user.access) || is_array($filter.owner) && in_array($user.id, $filter.owner)}

@@ -1,6 +1,7 @@
 $Id$
 
 version 27-git (????-??-??):
+- enhancement: require user selection in event(add/edit) forms, (variable: phpui.event_user_required, default: not set) [interduo]
 
 version 26.0 (2020-12-15):
 
