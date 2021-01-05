@@ -7,6 +7,9 @@
 		{$pin_tip=trans("Enter \$a to \$b characters PIN code", $pin_min_size, $pin_max_size)}
 	{/if}
 {/if}
+
+{$gusapi_key = ConfigHelper::getConfig('phpui.gusapi_key')}
+
 <script type="text/javascript" src="js/location_box_expandable.js"></script>
 <SCRIPT>
 	function randomize() {
@@ -269,7 +272,7 @@
 						</TD>
 						<TD>
 							<INPUT type="text" required name="customerdata[pin]" size="{$pin_max_size}" value="{if $customerinfo.pin}{$customerinfo.pin}{/if}" {tip text=$pin_tip trigger="pin"}>&nbsp;
-							<A id="randomize" href="javascript:randomize()" {tip text="Generate PIN"}>&raquo;&raquo;&raquo;</A>
+							{button href="javascript:randomize()" label="Generate PIN" icon="generate"}
 						</TD>
 					</TR>
 					<TR>
@@ -314,14 +317,18 @@
 										{if $customerinfo.tenexistencewarning}
 										<INPUT type="hidden" name="customerdata[tenexistencewarning]" value="1">
 										{/if}
-										<a class="gusapi-button" data-type="{\GusApi\SearchType::NIP}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
+										{if !empty($gusapi_key)}
+											{button label="GUS API" icon="sync" class="gusapi-button" data-type="{\GusApi\SearchType::NIP}" href="#" tip="Click here to autocomplete company data from GUS REGON database"}
+										{/if}
 									</TD>
 								</TR>
 								<TR>
 									<TD>{trans("REGON")}:</TD>
 									<TD>
 										<INPUT type="text" value="{$customerinfo.regon}" name="customerdata[regon]" size="30" {tip text="Enter Business Registration Number (optional)" trigger="regon"}>
-										<a class="gusapi-button" data-type="{\GusApi\SearchType::REGON}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
+										{if !empty($gusapi_key)}
+											{button label="GUS API" icon="sync" class="gusapi-button" data-type="{\GusApi\SearchType::REGON}" href="#" tip="Click here to autocomplete company data from GUS REGON database"}
+										{/if}
 									</TD>
 								</TR>
 								<TR>
@@ -334,7 +341,9 @@
 									<TD>{trans("RBE")}:</TD>
 									<TD>
 										<INPUT type="text" value="{$customerinfo.rbe}" name="customerdata[rbe]" size="30" {tip text="Enter National Court Register / Register of Business Entities Number (optional)" trigger="rbe"}>
-										<a class="gusapi-button" data-type="{\GusApi\SearchType::KRS}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
+										{if !empty($gusapi_key)}
+											{button label="GUS API" icon="sync" class="gusapi-button" data-type="{\GusApi\SearchType::KRS}" href="#" tip="Click here to autocomplete company data from GUS REGON database"}
+										{/if}
 									</TD>
 								</TR>
 							</TABLE>
