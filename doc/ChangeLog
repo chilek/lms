@@ -2,6 +2,8 @@ $Id$
 
 version 27-git (????-??-??):
 
+  - enhancement: require user selection in event(add/edit) forms, (variable: phpui.event_user_required, default: not set) [interduo]
+
 version 26.0 (2020-12-15):
 
   - enhancement: 'invoices.proforma_conversion_comment_format' allows to define comment format
