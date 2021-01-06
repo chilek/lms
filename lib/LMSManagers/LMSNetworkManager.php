@@ -932,7 +932,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
     {
         $args = array(
             'vlanid' => $args['vlanid'],
-            'description' => $args['description'],
+            'description' => !empty($args['description']) ? $args['description'] : null,
             'customerid' => !empty($args['customerid']) ? $args['customerid'] : null,
         );
 
@@ -967,20 +967,23 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             $props = array(
                 'id' => $props['id'],
                 'vlanid' => isset($props['vlanid']) ? $props['vlanid'] : null,
-                'description' => isset($props['description']) ? $props['description'] : null,
-                'customerid' => empty($props['customerid']) ? null : $props['customerid'],
+                'description' => !empty($props['description']) ? $props['description'] : null,
+                'customerid' => !empty($props['customerid']) ? $props['customerid'] : null
             );
 
             $vlaninfo = $this->GetVlanInfo($props['id']);
             unset($vlaninfo['customername']);
-            $diff = array_diff($props, $vlaninfo);
 
-            if (!empty($diff)) {
-                $diff['id'] = $props['id'];
+            $diff = array_diff($vlaninfo, $props);
+            $diff2 = array_diff($props, $vlaninfo);
+            if (!empty($diff) || !empty($diff2)) {
                 $result = $this->db->Execute(
                     'UPDATE vlans SET vlanid = ?, description = ?, customerid = ? WHERE id = ?',
                     array($props['vlanid'], $props['description'], $props['customerid'], $props['id'])
                 );
+                $diff = Utils::array_keys_add_prefix($diff);
+                $diff = array_merge($diff, $diff2);
+                $diff['id'] = $props['id'];
                 if ($result && $this->syslog) {
                     $this->syslog->AddMessage(SYSLOG::RES_VLAN, SYSLOG::OPER_UPDATE, $diff);
                 }

@@ -49,10 +49,10 @@
 		</TD>
 		<TD colspan="3">
 			<select name="netadd[vlanid]" class="lms-ui-advanced-select">
+				<option value="">{trans("None")}</option>
 				{foreach $vlanlist as $v}
 				<option value="{$v.id}">#{$v.vlanid}{if $v.description}, {$v.description|truncate:'20':''}{/if}{if $v.customerid}, {$v.customername}(#{$v.customerid}){/if}</option>
 				{/foreach}
-				<option>{trans("None")}</option>
 			</select>
 		</TD>
 	</TR>
