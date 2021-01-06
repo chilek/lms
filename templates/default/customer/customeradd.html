@@ -349,7 +349,7 @@
 									<INPUT type="hidden" name="customeradd[tenexistencewarning]" value="1">
 									{/if}
 									{if !empty($gusapi_key)}
-										{button label="GUS" icon="sync" class="gusapi-button" data-type="{\GusApi\SearchType::NIP}" href="#" tip="Click here to autocomplete company data from GUS REGON database"}
+										{button label="GUS" icon="search" class="gusapi-button" data-type="{\GusApi\SearchType::NIP}" href="#" tip="Click here to autocomplete company data from GUS REGON database"}
 									{/if}
 								</TD>
 							</TR>
@@ -358,7 +358,7 @@
 								<TD>
 									<INPUT type="text" size="30" value="{$customeradd.regon}" name="customeradd[regon]" {tip text="Enter Business Registration Number (optional)" trigger="regon"}>
 									{if !empty($gusapi_key)}
-										{button label="GUS" icon="sync" class="gusapi-button" data-type="{\GusApi\SearchType::REGON}" href="#" tip="Click here to autocomplete company data from GUS REGON database"}
+										{button label="GUS" icon="search" class="gusapi-button" data-type="{\GusApi\SearchType::REGON}" href="#" tip="Click here to autocomplete company data from GUS REGON database"}
 									{/if}
 								</TD>
 							</TR>
@@ -373,7 +373,7 @@
 								<TD>
 									<INPUT type="text" size="30" value="{$customeradd.rbe}" name="customeradd[rbe]" {tip text="Enter National Court Register / Register of Business Entities Number (optional)" trigger="rbe"}>
 									{if !empty($gusapi_key)}
-										{button label="GUS" icon="sync" class="gusapi-button" data-type="{\GusApi\SearchType::KRS}" href="#" tip="Click here to autocomplete company data from GUS REGON database"}
+										{button label="GUS" icon="search" class="gusapi-button" data-type="{\GusApi\SearchType::KRS}" href="#" tip="Click here to autocomplete company data from GUS REGON database"}
 									{/if}
 								</TD>
 							</TR>
