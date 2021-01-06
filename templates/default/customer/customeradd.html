@@ -555,9 +555,13 @@
 		});
 
 		$('.gusapi-button').click(function() {
+			var identifier = $(this).siblings('input[type="text"]').val().replace(/-/g, '');
+			if (!identifier.length) {
+				return;
+			}
 			GusApiGetCompanyDetails(
 				$(this).attr('data-type'),
-				$(this).siblings('input[type="text"]').val().replace(/-/g, ''),
+				identifier,
 				function(data) {
 					GusApiFinished('customeradd', data);
 				});
