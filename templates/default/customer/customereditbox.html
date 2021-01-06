@@ -139,8 +139,18 @@
 							<i class="lms-ui-icon-legal-personality"></i>
 						</TD>
 						<TD>
-							<INPUT type="radio" name="customerdata[type]" value="{$smarty.const.CTYPES_PRIVATE}" id="private" {tip text="Select legal personality type" trigger="type"}{if $customerinfo.type == $smarty.const.CTYPES_PRIVATE} CHECKED{/if}><label for="private">{assign var='type' value=$smarty.const.CTYPES_PRIVATE}{$_CTYPES.$type}</label>
-							<INPUT type="radio" name="customerdata[type]" value="{$smarty.const.CTYPES_COMPANY}" id="company" {tip text="Select legal personality type" trigger="type"}{if $customerinfo.type == $smarty.const.CTYPES_COMPANY} CHECKED{/if}><label for="company">{assign var='type' value=$smarty.const.CTYPES_COMPANY}{$_CTYPES.$type}</label>
+							<label>
+								<input type="radio" name="customerdata[type]" value="{$smarty.const.CTYPES_PRIVATE}" id="private"
+									{tip text="Select legal personality type" trigger="type"}
+									{if $customerinfo.type == $smarty.const.CTYPES_PRIVATE} checked{/if}>
+								{$_CTYPES[$smarty.const.CTYPES_PRIVATE]}
+							</label>
+							<label>
+								<input type="radio" name="customerdata[type]" value="{$smarty.const.CTYPES_COMPANY}" id="company"
+									{tip text="Select legal personality type" trigger="type"}
+									{if $customerinfo.type == $smarty.const.CTYPES_COMPANY} checked{/if}>
+								{$_CTYPES[$smarty.const.CTYPES_COMPANY]}
+							</label>
 						</TD>
 					</TR>
 
@@ -500,14 +510,10 @@
 	</TBODY>
 </TABLE>
 </FORM>
-<SCRIPT type="text/javascript">
-<!--
+<script>
+
 	$('[name="customerdata[type]"]').change(function() {
-		if ($(this).val() == {$smarty.const.CTYPES_PRIVATE}) {
-			$('.gusapi-button').hide();
-		} else {
-			$('.gusapi-button').show();
-		}
+		$('.gusapi-button').toggle(!$('#private').prop('checked'));
 	}).filter(':checked').change();
 
 	function init_email_validators() {
@@ -550,5 +556,5 @@
 			$('[name="customerdata[name]"]').prop('required', $('#private').prop('checked'));
 		}).change();
 	});
-//-->
-</SCRIPT>
+
+</script>
