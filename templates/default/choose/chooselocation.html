@@ -283,6 +283,8 @@ function submit_location() {
 		if (street_parts[0].match(/^rynek$/i) &&
 			(street_parts[1].match(/^rynek/i) || (street_parts.length == 3 && street_parts[2].match(/^rynek/i)))) {
 			street_parts.shift();
+		} else if (street_parts.length == 2 && street_parts[1].match(/^[0-9]+(\.|-go)?$/)) {
+			street_parts.reverse();
 		}
     	location_box.find( "input[data-address='street']"        ).val( street_parts.join(' ') );
         location_box.find( "input[data-address='street-hidden']" ).val( street_option.val() );
