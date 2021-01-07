@@ -379,7 +379,7 @@
 					{/if}
 				{/if}
 			{/if}
-			{buttons icon="dropdown2"}
+			{buttons type="button" icon="dropdown2" label="Additional options"}
 				{if ($ticket.owner != $layout.logid && $ticket.state != $smarty.const.RT_RESOLVED) || ConfigHelper::checkPrivilege('superuser')}
 					{button id="ticket-assign-to-me" icon="user" label="Assign to me" tip="Assign to me" data_href="?m=rtticketedit&id={$ticket.ticketid}&action=assign"}
 				{/if}
