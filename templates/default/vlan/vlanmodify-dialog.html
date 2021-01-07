@@ -1,0 +1,60 @@
+<div id="addvlanmodal" class="lms-ui-dialog" title="{if $action == 'modify'}{trans("Modify VLAN")} {$vlaninfo.id}{else}{trans("Add VLAN")}{/if}">
+    <form method="POST" action="?m=vlanlist&action={if $action == 'modify'}modify&id={$vlaninfo.id}{else}add{/if}"
+              name="addvlan" id="addvlan-form">
+        <table>
+            <tbody>
+                <tr>
+                    {if $action == 'modify'}
+                    <td>
+                        <input type="text" name="addvlan[id]" value="{$vlaninfo.id}" hidden>
+                    </td>
+                    {/if}
+                </tr>
+                <tr>
+                    <td>
+                        {icon name="vlan" label="VLAN ID:"}
+                    </td>
+                    <td>
+                        <input type="text" name="addvlan[vlanid]" value="{$vlaninfo.vlanid}" required>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="nobr">
+                        {icon name="description" label="VLAN Description"}
+                    </td>
+                    <td>
+                        <input type="text" name="addvlan[description]" value="{$vlaninfo.description}">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {icon name="customer" label="Customer"}
+                    </td>
+                    <td>
+                        {customerlist form="addvlan" selected="{$vlaninfo.customerid}" inputname="addvlan[customerid]"}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="text-center">
+                        {button type="submit" label="Submit" icon="submit"}
+                        {button label="Cancel" icon="cancel" id="close"}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        </form>
+</div>
+
+<script>
+    $( "#addvlanmodal" ).dialog( {
+        autoOpen: {if $action == modify}true{else}false{/if}
+    });
+
+    $( "#addvlanbtn" ).click(function() {
+        $( "#addvlanmodal" ).dialog( "open" );
+    });
+
+    $( "#close" ).click(function() {
+        $( "#addvlanmodal" ).dialog( "close" );
+    });
+</script>

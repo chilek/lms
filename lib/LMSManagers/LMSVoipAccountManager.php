@@ -88,7 +88,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
         $voipaccountlist = $this->db->GetAll(
             'SELECT v.id, v.login, v.passwd, v.ownerid, '
                 . $this->db->Concat('c.lastname', "' '", 'c.name')
-                . ' AS owner, v.access,
+                . ' AS owner, v.access, v.description,
 				lb.name AS borough_name, ld.name AS district_name, lst.name AS state_name,
 				lc.name AS city_name,
 				(CASE WHEN ls.name2 IS NOT NULL THEN ' . $this->db->Concat('ls.name2', "' '", 'ls.name') . ' ELSE ls.name END) AS street_name,

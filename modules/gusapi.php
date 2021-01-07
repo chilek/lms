@@ -31,7 +31,7 @@ use GusApi\Exception\InvalidUserKeyException;
 use GusApi\ReportTypes;
 use GusApi\ReportTypeMapper;
 
-if (!isset($_GET['searchtype']) || !isset($_GET['searchdata'])) {
+if (!isset($_GET['searchtype']) || !isset($_GET['searchdata']) || empty($_GET['searchdata'])) {
     return;
 }
 

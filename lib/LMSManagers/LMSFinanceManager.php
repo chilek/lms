@@ -392,13 +392,20 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             if ($activation_at_next_day == 'business') {
                                 $datefrom = Utils::findNextBusinessDay($datefrom);
                             }
+                            $at = $datefrom;
                         } elseif (($data['at'] === 0 && $start_day >= date('j', mktime(12, 0, 0, $start_month + 1, 0, $start_year)))
                             || ($data['at'] > 0 && $start_day >= $data['at'])) {
                             $_datefrom = $data['datefrom'];
                             $datefrom = mktime(0, 0, 0, $start_month + ($data['at'] === 0 ? 2 : 1), $data['at'], $start_year);
+                            if ($_datefrom > strtotime(date('Y/m/d')) && $start_day >= $data['at']) {
+                                $at = $_datefrom;
+                            } else {
+                                $at = $datefrom;
+                            }
                         } elseif ($data['at'] === 0) {
                             $_datefrom = $data['datefrom'];
                             $datefrom = mktime(0, 0, 0, $start_month + 1, 0, $start_year);
+                            $at = $datefrom;
                         }
 
                         // check if current promotion schema tariff has only activation value defined
@@ -502,7 +509,6 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         }
 
                         $period   = DISPOSABLE;
-                        $at = $datefrom;
                     } else {
                         continue;
                     }

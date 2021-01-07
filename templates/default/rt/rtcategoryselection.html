@@ -3,7 +3,8 @@
 {/if}
 
 {if count($categories) > intval(ConfigHelper::getConfig('rt.category_selection_checkbox_limit', 0, true))}
-    <select id="{$id}" name="{$name_prefix}[]" multiple {tip class="lms-ui-advanced-select" trigger=$id}>
+    <select id="{$id}" name="{$name_prefix}[]" multiple {tip class="lms-ui-advanced-select" trigger=$id}
+        {if isset($form)} form="{$form}"{/if}>
         {foreach $categories as $category}
             <option value="{$category.id}"{if $category.checked > 0} selected{/if}>{$category.name}</option>
         {/foreach}

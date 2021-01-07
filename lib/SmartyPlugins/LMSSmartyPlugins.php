@@ -238,8 +238,12 @@ class LMSSmartyPlugins
             }
         }
 
-        $result .= '<input type="text" name="' . $params['inputname'] . '" value="'
-            . $params['selected'] . '" class="lms-ui-customer-select-customerid" data-prev-value="' . $params['selected'] . '" size="5"';
+        if ($version == 2) {
+            $result .= '<div class="lms-ui-customer-select-suggestion-container"></div>' . PHP_EOL;
+        }
+
+        $result .= '<input type="text" name="' . $params['inputname'] . '"' . (empty($params['selected']) ? '' : ' value="'
+            . $params['selected'] . '"') . ' class="lms-ui-customer-select-customerid" data-prev-value="' . $params['selected'] . '" size="5"';
 
         if (!empty($params['input_id'])) {
             $result .= ' id="' . $params['input_id'] . '"';
@@ -266,8 +270,7 @@ class LMSSmartyPlugins
         $result .= '>' . PHP_EOL;
 
         if ($version == 2) {
-            $result .= '<div class="lms-ui-customer-select-suggestion-container "></div>' . PHP_EOL
-                . '<input type="text"'
+            $result .= '<input type="text"'
                 . ' placeholder="' . trans('Search for customer')
                 . '" ' . self::tipFunction(
                     array(
@@ -827,9 +830,10 @@ class LMSSmartyPlugins
         if (!$repeat) {
             return '<div class="lms-ui-responsive-buttons">' . self::buttonFunction(
                 array(
-                    'type' => 'link',
+                    'type' => isset($params['type']) ? $params['type'] : 'link',
                     'icon' => isset($params['icon']) ? $params['icon'] : 'additional-selection',
                     'class' => isset($params['class']) ? $params['class'] : 'lms-ui-dropdown-toggle',
+                    'label' => isset($params['label']) ? $params['label'] : '',
                 ),
                 $template
             ) . (isset($params['secondary']) && $params['secondary'] ?

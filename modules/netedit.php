@@ -120,14 +120,6 @@ if (isset($_POST['networkdata'])) {
         $error['interface'] = trans('Incorrect interface name!');
     }
 
-    if ($networkdata['vlanid'] != '') {
-        if (!is_numeric($networkdata['vlanid'])) {
-            $error['vlanid'] = trans('Vlan ID must be integer!');
-        } elseif ($networkdata['vlanid'] < 1 || $networkdata['vlanid'] > 4094) {
-            $error['vlanid'] = trans('Vlan ID must be between 1 and 4094!');
-        }
-    }
-
     if ($networkdata['name']=='') {
         $error['name'] = trans('Network name is required!');
     } elseif (!preg_match('/^[._a-z0-9-]+$/i', $networkdata['name'])) {
@@ -273,6 +265,7 @@ if (!ConfigHelper::checkConfig('phpui.big_networks')) {
 
 $layout['pagetitle'] = trans('Network Edit: $a', $network['name']);
 
+$SMARTY->assign('vlanlist', $LMS->GetVlanList());
 $SMARTY->assign('unlockedit', true);
 $SMARTY->assign('network', $network);
 $SMARTY->assign('networks', $networks);

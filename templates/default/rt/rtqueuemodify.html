@@ -349,7 +349,8 @@
 						<input type="checkbox" id="checkall">
 					</label>
 					<div class="lms-ui-box-field-value">
-						{include file="rt/rtcategoryselection.html" id="categories" name_prefix="queue[categories]" categories=$categories}
+						{include file="rt/rtcategoryselection.html" id="categories" name_prefix="queue[categories]"
+							categories=$categories form="queue-form"}
 					</div>
 				</div>
 			</div>
@@ -729,7 +730,6 @@
 		});
 
 		$('.lms-ui-box-field-label').click(function() {
-			console.log($(this).siblings('.lms-ui-box-field-value'));
 			$(this).siblings('.lms-ui-box-field-value').focus();
 		});
 	});

@@ -133,4 +133,6 @@ interface LMSCustomerManagerInterface
     public function raiseCustomerKarma($id);
 
     public function lowerCustomerKarma($id);
+
+    public function getCustomerPin($id);
 }

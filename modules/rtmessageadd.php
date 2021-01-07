@@ -459,7 +459,9 @@ if (isset($_POST['message'])) {
                 $headers['X-Priority'] = $RT_MAIL_PRIORITIES[$ticketdata['priority']];
                 $headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject'), $params);
 
-                $params['customerinfo'] = isset($mail_customerinfo) ? $mail_customerinfo : null;
+                $params['customerinfo'] = isset($mail_customerinfo)
+                    ? ($message['contenttype'] == 'text/html' ? str_replace("\n", '<br>', $mail_customerinfo) : $mail_customerinfo)
+                    : null;
                 $params['contenttype'] = $message['contenttype'];
                 $body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body'), $params);
 

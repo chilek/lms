@@ -305,6 +305,12 @@ $menu = array(
                     'tip' => trans('Lists and reports printing'),
                     'prio' => 80,
                 ),
+                'vlanlist' => array(
+                    'name' => trans('VLAN List'),
+                    'link' => '?m=vlanlist',
+                    'tip' => trans('VLAN List'),
+                    'prio' => 90,
+                ),
             ),
         ),
 
