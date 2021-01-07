@@ -388,7 +388,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         $activation_at_next_day = ConfigHelper::getConfig('phpui.promotion_activation_at_next_day', '', true);
                         if (ConfigHelper::checkValue($activation_at_next_day) || preg_match('/^(absolute|business)$/', $activation_at_next_day)) {
                             $_datefrom = $data['datefrom'];
-                            $datefrom = strtotime('tomorrow'):
+                            $datefrom = strtotime('tomorrow');
                             if ($activation_at_next_day == 'business') {
                                 $datefrom = Utils::findNextBusinessDay($datefrom);
                             }
