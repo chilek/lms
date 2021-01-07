@@ -599,6 +599,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'regon'          => $customeradd['regon'],
             'rbename'        => $customeradd['rbename'],
             'rbe'            => $customeradd['rbe'],
+            'ict'            => $customeradd['ict'],
             'icn'            => $customeradd['icn'],
             'cutoffstop'     => $customeradd['cutoffstop'],
             SYSLOG::RES_DIV  => empty($customeradd['divisionid']) ? null : $customeradd['divisionid'],
@@ -628,12 +629,15 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $args[SYSLOG::RES_CUST] = $id;
         }
 
-        $result = $this->db->Execute('INSERT INTO customers (extid, name, lastname, type,
-                        ten, ssn, status, creationdate,
-                        creatorid, info, notes, message, documentmemo, pin, regon, rbename, rbe,
-                        icn, cutoffstop, divisionid, paytime, paytype, flags' . ($reuse_customer_id ? ', id' : ''). ')
-                    VALUES (?, ?, ' . ($capitalize_customer_names ? 'UPPER(?)' : '?') . ', ?, ?, ?, ?, ?NOW?,
-                        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?' . ($reuse_customer_id ? ', ?' : '') . ')', array_values($args));
+        $result = $this->db->Execute(
+            'INSERT INTO customers (extid, name, lastname, type,
+            ten, ssn, status, creationdate,
+            creatorid, info, notes, message, documentmemo, pin, regon, rbename, rbe,
+            ict, icn, cutoffstop, divisionid, paytime, paytype, flags' . ($reuse_customer_id ? ', id' : ''). ')
+            VALUES (?, ?, ' . ($capitalize_customer_names ? 'UPPER(?)' : '?') . ', ?, ?, ?, ?, ?NOW?,
+                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?' . ($reuse_customer_id ? ', ?' : '') . ')',
+            array_values($args)
+        );
 
         if ($reuse_customer_id) {
             $this->db->UnLockTables();
@@ -1077,6 +1081,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                             break;
                         case 'type':
                             $searchargs[] = 'type = ' . intval($value);
+                            break;
+                        case 'ict':
+                            $searchargs[] = 'ict = ' . intval($value);
                             break;
                         case 'linktype':
                             $searchargs[] = 'EXISTS (SELECT 1 FROM vnodes
@@ -1723,6 +1730,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'documentmemo'   => empty($customerdata['documentmemo']) ? null : $customerdata['documentmemo'],
             'pin'            => $customerdata['pin'],
             'regon'          => $customerdata['regon'],
+            'ict'            => $customerdata['ict'],
             'icn'            => $customerdata['icn'],
             'rbename'        => $customerdata['rbename'],
             'rbe'            => $customerdata['rbe'],
@@ -1768,12 +1776,15 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $capitalize_customer_names = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.capitalize_customer_names', true));
 
         // UPDATE CUSTOMER FIELDS
-        $res = $this->db->Execute('UPDATE customers SET extid=?, status=?, type=?,
-                               ten=?, ssn=?, moddate=?NOW?, modid=?,
-                               info=?, notes=?, lastname=' . ($capitalize_customer_names ? 'UPPER(?)' : '?') . ', name=?,
-                               deleted=0, message=?, documentmemo=?, pin=?, regon=?, icn=?, rbename=?, rbe=?,
-                               cutoffstop=?, divisionid=?, paytime=?, paytype=?, flags = ?
-                               WHERE id=?', array_values($args));
+        $res = $this->db->Execute(
+            'UPDATE customers SET extid=?, status=?, type=?,
+            ten=?, ssn=?, moddate=?NOW?, modid=?,
+            info=?, notes=?, lastname=' . ($capitalize_customer_names ? 'UPPER(?)' : '?') . ', name=?,
+            deleted=0, message=?, documentmemo=?, pin=?, regon=?, ict=?, icn=?, rbename=?, rbe=?,
+            cutoffstop=?, divisionid=?, paytime=?, paytype=?, flags = ?
+            WHERE id=?',
+            array_values($args)
+        );
 
         if ($res) {
             if ($this->syslog) {

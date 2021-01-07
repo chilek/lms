@@ -197,7 +197,15 @@
 									{icon name="user-id-number"}
 								</TD>
 								<TD WIDTH="99%">
-									{trans("ICN")}: {$customerinfo.icn}
+									{trans("Identity type:")}: {trans($_IDENTITY_TYPES[$customerinfo.ict])}
+								</TD>
+							</TR>
+							<TR>
+								<TD WIDTH="1%">
+									{icon name="user-id-number"}
+								</TD>
+								<TD WIDTH="99%">
+									{trans("Identity number:")}: {$customerinfo.icn}
 								</TD>
 							</TR>
 						{/if}

@@ -294,12 +294,20 @@
 									<COL style="width: 99%;">
 								</COLGROUP>
 								<TR>
-									<TD>{trans("ICN")}:</TD>
+									<TD class="nobr">{trans("Identity type:")}</TD>
+									<TD>
+										{identitytypes elemname="customerdata[ict]" selected=$customerinfo.ict
+											tip="Select identity type" trigger="ict"}
+									</TD>
+								</TR>
+								<TR>
+									<TD class="nobr">{trans("Identity number:")}</TD>
 									<TD>
 										{if $customerinfo.icnwarning}
 										<INPUT type="hidden" name="customerdata[icnwarning]" value="1">
 										{/if}
-										<INPUT type="text" value="{$customerinfo.icn}" name="customerdata[icn]" size="30" {tip text="Enter Identity Card Number (optional)" trigger="icn"}>
+										<INPUT type="text" value="{$customerinfo.icn}" name="customerdata[icn]" size="30"
+											{tip text="Enter identity number (optional)" trigger="icn"}>
 									</TD>
 								</TR>
 								<TR>

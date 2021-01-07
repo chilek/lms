@@ -130,9 +130,18 @@
 		</TD>
 	</TR>
 	*}
+
 	<TR>
-		<TD class="bold nobr">
-			<IMG src="img/serialnumber.gif" width="16" alt=""> {trans("ICN:")}
+		<TD class="nobr bold">
+			{icon name="user-id-number"} {trans("Identity type:")}
+		</TD>
+		<TD>
+			{identitytypes elemname="search[ict]" selected=$search.ict}
+		</TD>
+	</TR>
+	<TR>
+		<TD class="nobr bold">
+			{icon name="user-id-number"} {trans("Identity number:")}
 		</TD>
 		<TD>
 			<INPUT type="text" name="search[icn]" VALUE="{$search.icn}">

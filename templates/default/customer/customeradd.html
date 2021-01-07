@@ -324,13 +324,21 @@
                                 <COL style="width: 1%;">
                                 <COL style="width: 99%;">
                             </COLGROUP>
-                            <TR>
-								<TD>{trans("ICN")}:</TD>
+							<TR>
+								<TD class="nobr">{trans("Identity type:")}</TD>
 								<TD>
-									{if $customeradd.icnwarning}
-									<INPUT type="hidden" name="customeradd[icnwarning]" value="1">
+									{identitytypes elemname="customeradd[ict]" selected=$customerinfo.ict
+									tip="Select identity type" trigger="ict"}
+								</TD>
+							</TR>
+							<TR>
+								<TD class="nobr">{trans("Identity number:")}</TD>
+								<TD>
+									{if $customerinfo.icnwarning}
+										<INPUT type="hidden" name="customeradd[icnwarning]" value="1">
 									{/if}
-									<INPUT type="text" size="30" value="{$customeradd.icn}" name="customeradd[icn]" {tip text="Enter Identity Card Number (optional)" trigger="icn"}>
+									<INPUT type="text" value="{$customeradd.icn}" name="customeradd[icn]" size="30"
+											{tip text="Enter identity number (optional)" trigger="icn"}>
 								</TD>
 							</TR>
 							<TR>

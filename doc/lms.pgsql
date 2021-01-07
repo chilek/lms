@@ -295,7 +295,8 @@ CREATE TABLE customers (
 	regon varchar(255) 	DEFAULT '' NOT NULL,
 	rbe varchar(255) 	DEFAULT '' NOT NULL, -- EDG/KRS
 	rbename varchar(255)	DEFAULT '' NOT NULL,
-	icn varchar(255) 	DEFAULT '' NOT NULL, -- dow.os.
+    ict smallint        DEFAULT 0 NOT NULL, -- typ dokumentu tożsamości
+	icn varchar(255) 	DEFAULT '' NOT NULL, -- numer dokumentu tożsamości
 	info text		DEFAULT '' NOT NULL,
 	notes text		DEFAULT '' NOT NULL,
 	creationdate integer 	DEFAULT 0 NOT NULL,
@@ -3954,6 +3955,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020122200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021010700');
 
 COMMIT;
