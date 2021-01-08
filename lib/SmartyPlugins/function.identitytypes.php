@@ -26,5 +26,5 @@
 
 function smarty_function_identitytypes(array $params, Smarty_Internal_Template $template)
 {
-    return LMSSmartyPlugins::identitytypesFunction($params, $template);
+    return LMSSmartyPlugins::identityTypesFunction($params, $template);
 }

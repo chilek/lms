@@ -1062,7 +1062,7 @@ class LMSSmartyPlugins
             . '</select>';
     }
 
-    public static function identitytypesFunction(array $params, $template)
+    public static function identityTypesFunction(array $params, $template)
     {
         static $identityTypes = array();
 
