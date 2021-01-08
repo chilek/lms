@@ -91,7 +91,15 @@
 			{icon name="user-id-number" class="fa-fw"}
 		</TD>
 		<TD class="nobr">
-			{trans("ICN")}: {$customerinfo.icn}
+			{trans("Identity type:")}: {trans($_IDENTITY_TYPES[$customerinfo.ict])}
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			{icon name="user-id-number" class="fa-fw"}
+		</TD>
+		<TD class="nobr">
+			{trans("Identity number:")}: {$customerinfo.icn}
 		</TD>
 	</TR>
 {/if}

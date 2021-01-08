@@ -449,6 +449,7 @@ CREATE TABLE customers (
   regon varchar(255) 	NOT NULL DEFAULT '',
   rbe varchar(255)	NOT NULL DEFAULT '',
   rbename varchar(255)	NOT NULL DEFAULT '',
+  ict smallint NOT NULL DEFAULT 0,
   icn varchar(255) 	NOT NULL DEFAULT '',
   info text 		NOT NULL,
   notes text 		NOT NULL DEFAULT '',
@@ -3926,4 +3927,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2020122200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021010700');

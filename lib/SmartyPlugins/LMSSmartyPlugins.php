@@ -1061,4 +1061,27 @@ class LMSSmartyPlugins
             . $options
             . '</select>';
     }
+
+    public static function identityTypesFunction(array $params, $template)
+    {
+        static $identityTypes = array();
+
+        if (empty($identityTypes)) {
+            $identityTypes = Localisation::arraySort($GLOBALS['IDENTITY_TYPES']);
+        }
+
+        $elemname = $params['elemname'];
+        $selected = isset($params['selected']) && !empty($params['selected']) ? $params['selected'] : 0;
+        $tip = isset($params['tip']) ? $params['tip'] : trans('Select identity type');
+        $trigger = isset($params['trigger']) ? $params['trigger'] : 'ict';
+
+        $options = '';
+        foreach ($identityTypes as $key => $item) {
+            $item = trans($item);
+            $options .= '<option value="' . $key . '"' . ($selected == $key ? ' selected' : '') . '>' . $item . '</option>';
+        }
+        return '<select name="' . $elemname . '" ' . self::tipFunction(array('text' => $tip, 'trigger' => $trigger), $template) . '>'
+            . $options
+            . '</select>';
+    }
 }

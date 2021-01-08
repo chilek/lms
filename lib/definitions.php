@@ -1164,6 +1164,15 @@ $TAX_CATEGORIES = array(
     ),
 );
 
+// Identity types
+$IDENTITY_TYPES = array(
+    0   => 'ID card',
+    1   => 'driving license',
+    2   => 'passport',
+    3   => 'residence card',
+    4   => 'permanent residence card',
+);
+
 if (isset($SMARTY)) {
     $SMARTY->assign('_NETWORK_INTERFACE_TYPES', $NETWORK_INTERFACE_TYPES);
     $SMARTY->assign('_CTYPES', $CTYPES);
@@ -1205,6 +1214,7 @@ if (isset($SMARTY)) {
     $SMARTY->assign('_EXISTINGASSIGNMENTS', $EXISTINGASSIGNMENTS);
     $SMARTY->assign('_CURRENCIES', $CURRENCIES);
     $SMARTY->assign('_TAX_CATEGORIES', $TAX_CATEGORIES);
+    $SMARTY->assign('_IDENTITY_TYPES', $IDENTITY_TYPES);
 }
 
 define('DEFAULT_NUMBER_TEMPLATE', '%N/LMS/%Y');
