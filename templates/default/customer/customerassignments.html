@@ -330,10 +330,10 @@
 		});
 		documents.sort();
 
-		var selected_type = getCookie('{$tab_id}_tariff_type_{$customerinfo.id}');
-		var selected_document = getCookie('{$tab_id}_document_{$customerinfo.id}');
-		var expired_checked = getCookie('{$tab_id}_expired_{$customerinfo.id}');
-		var commited_checked = getCookie('{$tab_id}_commited_{$customerinfo.id}');
+		var selected_type = getStorageItem('{$tab_id}_tariff_type_{$customerinfo.id}');
+		var selected_document = getStorageItem('{$tab_id}_document_{$customerinfo.id}');
+		var expired_checked = getStorageItem('{$tab_id}_expired_{$customerinfo.id}');
+		var commited_checked = getStorageItem('{$tab_id}_commited_{$customerinfo.id}');
 
 		$.each(assignment_types, function (key, value) {
 			tab_elem.find('.assignment-type').append('<option value="' + value + '"'
@@ -432,10 +432,10 @@
 				tab_elem.find('.lms-ui-tab-table-row[data-tariff-type]').closest('.lms-ui-tab-contents').get(0).updateCheckAll();
 			}
 
-			setCookie('{$tab_id}_tariff_type_{$customerinfo.id}', selected_type);
-			setCookie('{$tab_id}_document_{$customerinfo.id}', selected_document);
-			setCookie('{$tab_id}_expired_{$customerinfo.id}', expired_checked ? 1 : 0);
-			setCookie('{$tab_id}_commited_{$customerinfo.id}', commited_checked ? 1 : 0);
+			setStorageItem('{$tab_id}_tariff_type_{$customerinfo.id}', selected_type);
+			setStorageItem('{$tab_id}_document_{$customerinfo.id}', selected_document);
+			setStorageItem('{$tab_id}_expired_{$customerinfo.id}', expired_checked ? 1 : 0);
+			setStorageItem('{$tab_id}_commited_{$customerinfo.id}', commited_checked ? 1 : 0);
 		}
 
 		// don't allow to trigger click event on title bar

@@ -356,6 +356,28 @@ function setCookie(name, value, permanent)
 	document.cookie = cookie;
 }
 
+function getStorageItem(name, type)
+{
+	var storage;
+	if (typeof(type) === 'undefined' || type == 'session') {
+		storage = sessionStorage;
+	} else {
+		storage = localStorage;
+	}
+	return storage.getItem(name);
+}
+
+function setStorageItem(name, value, type)
+{
+	var storage;
+	if (typeof(type) === 'undefined' || type == 'session') {
+		storage = sessionStorage;
+	} else {
+		storage = localStorage;
+	}
+	storage.setItem(name, value);
+}
+
 if (typeof String.prototype.trim == 'undefined')
 {
 	String.prototype.trim = function()
