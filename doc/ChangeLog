@@ -2,8 +2,10 @@ $Id$
 
 version 27-git (????-??-??):
 
-  - enhancement: require user selection in event(add/edit) forms, (variable: phpui.event_user_required, default: not set) [interduo]
+  - enhancement: require user selection in event(add/edit) forms,
+    (variable: phpui.event_user_required, default: not set) [interduo]
   - enhancement: allow to choose identity type for customer [ravvar]
+  - improvement: 'invoices.hide_ssn' support for debit notes [chilan]
 
 version 26.0 (2020-12-15):
 
