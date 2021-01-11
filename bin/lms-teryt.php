@@ -440,7 +440,7 @@ function get_teryt_file($ch, $type, $outfile)
     $continue = false;
     do {
         curl_setopt_array($ch, array(
-            CURLOPT_URL => 'http://eteryt.stat.gov.pl/eTeryt/rejestr_teryt/udostepnianie_danych/baza_teryt/uzytkownicy_indywidualni/pobieranie/pliki_pelne.aspx',
+            CURLOPT_URL => 'https://eteryt.stat.gov.pl/eTeryt/rejestr_teryt/udostepnianie_danych/baza_teryt/uzytkownicy_indywidualni/pobieranie/pliki_pelne.aspx',
             CURLOPT_POST => true,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_POSTFIELDS => array(
