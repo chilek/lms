@@ -226,7 +226,7 @@ class LMSSmartyPlugins
                 if ($customer['id'] == $params['selected']) {
                     $result .= ' selected';
                 }
-                $result .= '>' . mb_substr($customer['customername'], 0, 40) . '</option>' . PHP_EOL;
+                $result .= '>' . mb_substr($customer['customername'], 0, 40) . ' (' . sprintf("%04d", $customer['id']) . ')</option>' . PHP_EOL;
             }
             $result .= '</select>' . PHP_EOL
                 . '<div class="lms-ui-customer-select">' . PHP_EOL
