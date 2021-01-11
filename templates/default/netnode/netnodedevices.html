@@ -32,7 +32,8 @@
 				<TR class="lms-ui-header-panel">
 					<TD class="nobr">
 						<img src="img/node.gif" ALT=""> <span class="bold">{trans("Name:")}</span><BR>
-						<img src="img/producer.gif" ALT=""> {trans("Manufacturer:")}/{trans("Model:")}/{trans("Location:")}
+						<img src="img/producer.gif" ALT=""> {trans("Manufacturer:")}/{trans("Model:")}<br>
+						<img src="img/home.gif" alt=""> {trans("Location:")}
 					</TD>
 					<TD class="text-right nobr">
 						{trans("ID:")}
@@ -44,30 +45,50 @@
 				</TR>
 				</THEAD>
 				<TBODY>
-				{section name=netdevlist loop=$netdevlist start=$start}
-				<tr class="highlight"  id="ndsp{$netdevlist[netdevlist].id}" onclick="window.location='?m=netdevinfo&id={$netdevlist[netdevlist].id}'" data-name="{$netdevlist[netdevlist].name}">
-					<td class="valign-top nobr">
-						<img src="img/netdev.gif" alt=""> <b>{$netdevlist[netdevlist].name}</b><br>
-							<img src="img/producer.gif" alt=""> {$netdevlist[netdevlist].producer} / {$netdevlist[netdevlist].model} /	{if $netdevlist[netdevlist].location} {$netdevlist[netdevlist].location|truncate:60:"...":true}	{/if}
+				{foreach $netdevlist as $netdev}
+				<tr class="highlight"  id="ndsp{$netdev.id}" onclick="window.location='?m=netdevinfo&id={$netdev.id}'" data-name="{$netdev.name}">
+					<td class="valign-top">
+						<span class="bold nobr">
+							<img src="img/netdev.gif" alt=""> {$netdev.name}
+						</span>
+						<br>
+						<span class="nobr">
+							<img src="img/producer.gif" alt="">
+							{$netdev.producer} / {$netdev.model}
+						</span>
+						<br>
+						<span class="nobr">
+							<img src="img/home.gif" alt="">
+							{if $netdev.location}
+								{$netdev.location|truncate:60:"...":true}
+								{if $netdev.borough_name}
+								</span>
+								<span class="blend nobr">
+									({$netdev.state_name} / {$netdev.district_name} / {$_BOROUGHTYPES[$netdev.borough_type]} {$netdev.borough_name})
+							{/if}
+							{else}
+								-
+							{/if}
+						</span>
 					</td>
 					<td>
-						{$netdevlist[netdevlist].id|string_format:"%04d"}
+						{$netdev.id|string_format:"%04d"}
 					</td>
 					<td>
-						{$netdevlist[netdevlist].serialnumber}
+						{$netdev.serialnumber}
 					</td>
 					<td class="nobr">
-						<A class="delete-netnodedev" href="?m=netnodedeldev&id={$objectid}&did={$netdevlist[netdevlist].id}"><img src="img/delete.gif"  alt="{trans("Delete")}" title="{trans("Delete")}"></A>
-						<a href="?m=netdevinfo&id={$netdevlist[netdevlist].id}"><img src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
+						<A class="delete-netnodedev" href="?m=netnodedeldev&id={$objectid}&did={$netdev.id}"><img src="img/delete.gif"  alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+						<a href="?m=netdevinfo&id={$netdev.id}"><img src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
 					</td>
 				</tr>
-				{sectionelse}
+				{foreachelse}
 				<TR>
 					<TD colspan="4" class="empty-table">
 						<p>{trans("No assigned devices.")}</p>
 					</TD>
 				</TR>
-				{/section}
+				{/foreach}
 				</TBODY>
 			</TABLE>
 		</TD>
