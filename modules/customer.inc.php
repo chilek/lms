@@ -104,7 +104,9 @@ if (!isset($resource_tabs['customerevents']) || $resource_tabs['customerevents']
         $params['datefrom'] = date_to_timestamp($_GET['events-from-date']);
         $SMARTY->assign('events_from_date', $_GET['events-from-date']);
     }
-    $allevents = isset($_GET['allevents']) && !empty($_GET['allevents']);
+    $allevents = (isset($_GET['allevents']) && !empty($_GET['allevents']))
+        || ((!isset($_GET['allevents']) && ConfigHelper::getConfig('phpui.show_closed_events', 0)));
+
     if ($allevents) {
         $params['closed'] = '';
     }
