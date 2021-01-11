@@ -529,6 +529,19 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
 
         mailparse_msg_free($mail);
 
+        if ($contenttype != 'text/html') {
+            if (!empty($files)) {
+                foreach ($files as &$file) {
+                    unset($file['content-id']);
+                }
+                unset($file);
+                foreach ($attachments as &$attachment) {
+                    unset($attachment['content-id']);
+                }
+                unset($attachment);
+            }
+        }
+
         $timestamp = time();
 
         /*
