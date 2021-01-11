@@ -6,7 +6,7 @@ version 27-git (????-??-??):
     (variable: phpui.event_user_required, default: not set) [interduo]
   - enhancement: allow to choose identity type for customer [ravvar]
   - improvement: 'invoices.hide_ssn' support for debit notes [chilan]
-  - improvement: introduce 'phpui.show_closed_events' config variable i.e. it allows
+  - improvement: introduce 'phpui.default_show_closed_events' config variable i.e. it allows
     to control events displaying in customer timetable [ravvar]
 
 version 26.0 (2020-12-15):
