@@ -94,6 +94,8 @@ lms-rtparser.php
 -m, --message-file=<message-file>
                                 use message file instead of standard input;
     --use-html                  use html content type and load it to database if it's present
+    --prefer-html               force html content usage; without this html content is used
+                                only if text/plain content is not present in handled post
     --imap
                                 fetch posts using imap protocol
     --check-mail
