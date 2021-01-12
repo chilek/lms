@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -87,6 +87,14 @@ if (!isset($_POST['loginform']) && !empty($_POST)) {
     $filter['type'] = isset($_POST['type']) ? $_POST['type'] : null;
     $filter['privacy'] = isset($_POST['privacy']) ? intval($_POST['privacy']) : null;
     $filter['closed'] = isset($_POST['closed']) ? $_POST['closed'] : null;
+
+    if (isset($_POST['switchToTimetable'])) {
+        $SESSION->save('schedulerFiler', $filter, true);
+        $SESSION->redirect('?m=eventlist&switchToTimetable=1');
+        die();
+    }
+} elseif (isset($_GET['switchToSchedule'])) {
+    $SESSION->restore('timetableFiler', $filter, true);
 } else {
     if ($SESSION->is_set('eld')) {
         $filter = array_merge($filter, $SESSION->get('eld'));
@@ -167,6 +175,7 @@ $eventlist = $LMS->GetEventList($filter);
 $eventlistIds = Utils::array_column($eventlist, 'id', 'id');
 
 $userid = $filter['userid'];
+$userlistcount = count($userid);
 
 $params['short'] = 1;
 if (ConfigHelper::getConfig('phpui.timetable_hide_disabled_users')) {
@@ -179,6 +188,7 @@ if (is_array($userid) && in_array('-1', $userid)) {
     $userlist[-1]['id'] = -1;
     $userlist[-1]['name'] = trans("unassigned");
 }
+
 $usereventlist = array();
 if (!isset($userid) || empty($userid)) {
     unset($filter['userid']);
@@ -357,6 +367,7 @@ $SMARTY->assign('period', $DB->GetRow('SELECT MIN(date) AS fromdate, MAX(date) A
 $SMARTY->assign('eventlist', $eventlist);
 $SMARTY->assign('usereventlist', $usereventlist);
 $SMARTY->assign('usereventlistcount', $usereventlistcount);
+$SMARTY->assign('userlistcount', $userlistcount);
 $SMARTY->assign('usereventlistdates', $usereventlistdates);
 $SMARTY->assign('usereventlistgrid', $usereventlistgrid);
 

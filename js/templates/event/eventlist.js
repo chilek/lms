@@ -22,6 +22,11 @@
  *  $Id$
  */
 
+function showSchedule() {
+    $('#filter').append('<input type="hidden" name="switchToSchedule" value="1">');
+    document.filter.submit();
+}
+
 $(function() {
     $('.delete-event').click(function () {
         confirmDialog($t("Are you sure, you want to delete that event?"), this).done(function () {

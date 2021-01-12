@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -62,6 +62,14 @@ if (!isset($_POST['loginform']) && !empty($_POST)) {
     $filter['type'] = isset($_POST['type']) ? $_POST['type'] : null;
     $filter['privacy'] = isset($_POST['privacy']) ? intval($_POST['privacy']) : null;
     $filter['closed'] = isset($_POST['closed']) ? $_POST['closed'] : null;
+
+    if (isset($_POST['switchToSchedule'])) {
+        $SESSION->save('timetableFiler', $filter, true);
+        $SESSION->redirect('?m=eventschedule&switchToSchedule=1');
+        die();
+    }
+} elseif (isset($_GET['switchToTimetable'])) {
+    $SESSION->restore('schedulerFiler', $filter, true);
 } else {
     if ($SESSION->is_set('eld')) {
         $filter = array_merge($filter, $SESSION->get('eld'));
