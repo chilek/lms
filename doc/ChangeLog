@@ -8,6 +8,8 @@ version 27-git (????-??-??):
   - improvement: 'invoices.hide_ssn' support for debit notes [chilan]
   - improvement: introduce 'phpui.default_show_closed_events' config variable i.e. it allows
     to control events displaying in customer timetable [ravvar]
+  - improvement: improvement: add support to scheduler form filter which allows
+    display only events which were simultaneously assigned to many users [ravvar]
 
 version 26.0 (2020-12-15):
 

@@ -82,8 +82,8 @@ if (!isset($_POST['loginform']) && !empty($_POST)) {
     }
 
     $filter['userand'] = isset($_POST['userand']) ? intval($_POST['userand']) : 0;
-    $filter['userid'] = isset($_POST['a']) ? $_POST['a'] : null;
-    $filter['customerid'] = isset($_POST['u']) ? $_POST['u'] : null;
+    $filter['userid'] = isset($_POST['userid']) ? $_POST['userid'] : null;
+    $filter['customerid'] = isset($_POST['customerid']) ? $_POST['customerid'] : null;
     $filter['type'] = isset($_POST['type']) ? $_POST['type'] : null;
     $filter['privacy'] = isset($_POST['privacy']) ? intval($_POST['privacy']) : null;
     $filter['closed'] = isset($_POST['closed']) ? $_POST['closed'] : null;
@@ -114,12 +114,12 @@ if (!isset($_POST['loginform']) && !empty($_POST)) {
 
     $filter['userand'] = isset($_GET['userand']) ? intval($_GET['userand']) : 0;
 
-    if (isset($_GET['a'])) {
-        $filter['userid'] = $_GET['a'];
+    if (isset($_GET['userid'])) {
+        $filter['userid'] = $_GET['userid'];
     }
 
-    if (isset($_GET['u'])) {
-        $filter['customerid'] = $_GET['u'] == 'all' ? null : $_GET['u'];
+    if (isset($_GET['customerid'])) {
+        $filter['customerid'] = $_GET['customerid'] == 'all' ? null : $_GET['customerid'];
     }
 
     if (isset($_GET['type'])) {
@@ -164,6 +164,7 @@ $layout['pagetitle'] = trans('Schedule');
 
 $filter['forward'] = ConfigHelper::getConfig('phpui.timetable_days_forward');
 $eventlist = $LMS->GetEventList($filter);
+$eventlistIds = array_column($eventlist, 'id', 'id');
 
 $userid = $filter['userid'];
 
@@ -199,6 +200,13 @@ if (!isset($userid) || empty($userid)) {
             $filter['userid'] = $user['id'];
             $usereventlist[$user['id']]['events'] = $LMS->GetEventList($filter);
             $usereventlist[$user['id']]['username'] = $user['name'];
+            if ($filter['userand']) {
+                foreach ($usereventlist[$user['id']]['events'] as $ekey => $event) {
+                    if (!isset($eventlistIds[$event['id']])) {
+                        unset($usereventlist[$user['id']]['events'][$ekey]);
+                    }
+                }
+            }
         }
     }
     $filter['userid'] = $userid;
