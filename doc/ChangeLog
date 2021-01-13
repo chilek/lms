@@ -13,7 +13,8 @@ version 27-git (????-??-??):
   - enhancement: add possibility to switch via button between timetable and scheduler
     with preserved filter settings [ravvar]
   - enhancement: allow to control period alignment for assignment bulk creation basing on promotion
-    schema [chilan]
+    schema - 'phpui.default_assignment_align_periods' configuration variable control this mechanism
+    ('true' by default to mimic previous behavior) [chilan]
 
 version 26.0 (2020-12-15):
 
