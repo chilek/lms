@@ -28,7 +28,7 @@
                     {/if}
                     <br>
                     <a href="?m=userinfo&amp;id={$user.id}"
-                       style="font-weight: normal">{$user.name|truncate:"25":"...":true}</a>
+                       style="font-weight: normal;{if isset($user.noaccess)} color: #888;{/if}">{$user.name|truncate:"25":"...":true}</a>
                 {/foreach}
             {else}
                 <br>

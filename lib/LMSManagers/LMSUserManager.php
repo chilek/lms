@@ -179,7 +179,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
                 accessfrom, accessto, rname, twofactorauth
             FROM vallusers
             WHERE deleted = 0'
-                . (isset($access) ? ' AND access = ' . intval($access) : '' )
+                . (isset($userAccess) ? ' AND access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0)' : '' )
                 . (isset($divisions) && !empty($divisions) ? ' AND id IN (SELECT userid
                     FROM userdivisions
                     WHERE divisionid IN (' . $divisions . ')
@@ -193,7 +193,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
                     accessfrom, accessto, rname, twofactorauth
                 FROM vusers
                 WHERE deleted = 0'
-                . (isset($access) ? ' AND access = ' . intval($access) : '' )
+                . (isset($userAccess) ? ' AND access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0)' : '' )
                 . (isset($divisions) && !empty($divisions) ? ' AND id IN (SELECT userid
                         FROM userdivisions
                         WHERE divisionid IN (' . $divisions . ')
@@ -395,6 +395,26 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
     public function userAccess($id, $access)
     {
         $this->db->Execute('UPDATE users SET access = ? WHERE id = ?', array($access, $id));
+    }
+
+    /**
+     * Check user access
+     *
+     * @param int $id User id
+     * @return int
+     */
+    public function checkUserAccess($id)
+    {
+        return $this->db->Execute(
+            'SELECT 1
+            FROM users 
+            WHERE id = ?
+            AND deleted = 0
+            AND access = 1
+            AND accessfrom <= ?NOW?
+            AND (accessto >= ?NOW? OR accessto = 0)',
+            array($id)
+        );
     }
 
     /**
