@@ -6,10 +6,22 @@
 <H1>{$layout.pagetitle}</H1>
 <TABLE class="lmsbox">
     <THEAD>
+    <tr>
+        <td class="text-right">
+            {button icon="timetable" label="Show timetable" onclick="showTimetable();"}
+        </td>
+    </tr>
         {include file="event/eventschedulefilter.html"}
     </THEAD>
 </TABLE>
 <div>
     {include file="event/eventschedulebox.html" overdue="0"}
 </div>
+
+<script>
+    function showTimetable() {
+        $('#filter').append('<input type="hidden" name="switchToTimetable" value="1">');
+        document.filter.submit();
+    }
+</script>
 {/block}

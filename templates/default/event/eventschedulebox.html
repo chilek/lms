@@ -1,19 +1,22 @@
 {block name="schedulebox"}
-<style>
-    .event-single-sortable-handler {
-        cursor: grab;
-    }
-</style>
+    <style>
+        .event-day > tr > td {
+            padding-right: 0.5em;
+        }
+    </style>
 {foreach $daylist as $day}
 <TABLE id="event-day-{$day}" class="lmsbox lms-ui-background-cycle event-day-table">
     <COLGROUP>
-        <COL style="width: 180px; vertical-align: top;">
+        <COL style="width: 1%; vertical-align: top; text-align: center;">
         {for $foo=1 to ($usereventlistcount - 1)}
         <COL style="width: 1%; vertical-align: top;">
         {/for}
     </COLGROUP>
     <THEAD>
-        <TR{if $day == $today} class="superdark"{/if}>
+        <TR {if $day == $today} class="superdark"{/if}>
+            <td>
+                &nbsp;
+            </td>
             <TD class="bold nobr" align="left">
                 <i class="lms-ui-icon-content lms-ui-icon-timetable"></i>{$day|date_format:"%A"}&nbsp;
                 <span class="bold">({$day|date_format:"%x"})</span>&nbsp;
@@ -22,10 +25,10 @@
                 {/if}
                 <a href="?m=eventsearch&datefrom={$day|date_format:"%Y/%m/%d"}&dateto={$day|date_format:"%Y/%m/%d"}">&raquo;&raquo;&raquo;</a>
             </TD>
-            <TD class="text-right nobr" colspan="{$usereventlistcount}">
+            <TD class="text-right nobr">
                 <div class="no-print">
-					{button icon="add" onclick="window.location.href='?m=eventadd&day={$day|date_format:"%d"}&month={$day|date_format:"%m"}&year={$day|date_format:"%Y"}';"
-						external=true label="Add Event"}
+                    {button icon="add" onclick="window.location.href='?m=eventadd&day={$day|date_format:"%d"}&month={$day|date_format:"%m"}&year={$day|date_format:"%Y"}';"
+                       external=true label="Add Event"}
                 </div>
             </TD>
         </TR>
@@ -36,7 +39,7 @@
             &nbsp;
         </td>
         {foreach $usereventlistgrid as $userevents}
-            <td style="border-left: dotted 1px; text-align: center;">
+            <td style="border-left: dotted 1px; text-align: center;" {if $userlistcount == 1}colspan="2"{/if}>
                 <strong>{$userevents.username}</strong>
             </td>
         {/foreach}
@@ -47,7 +50,7 @@
                 <strong>{$time|truncate:6:" "}</strong>
             </td>
             {foreach $usereventlistgrid as $userevents}
-                <td style="border-left: dotted 1px;">
+                <td style="border-left: dotted 1px;" {if $userlistcount == 1}colspan="2"{/if}>
                     {foreach $userevents['eventsgrid'] as $edate => $dateevents}
                         {if $edate == $day}
                             <table style="border-collapse: separate;">
