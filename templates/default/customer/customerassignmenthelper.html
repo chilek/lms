@@ -652,6 +652,13 @@
 							<INPUT type="checkbox" name="{$variable_prefix}[last-settlement]" value="1"{if $variables['last-settlement']} checked{/if}>
 							{trans("with settlement of last deficient period")}
 						</label>
+						<span id="a_align_periods">
+							<br>
+							<label>
+								<INPUT type="checkbox" name="{$variable_prefix}[align-periods]" value="1"{if $variables['align-periods']} checked{/if}>
+								{trans("align periods")}
+							</label>
+						</span>
 						{/if}
 					</TD>
 				</TR>

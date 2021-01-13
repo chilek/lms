@@ -352,6 +352,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         // Create assignments according to promotion schema
         if (!empty($data['promotionassignmentid']) && !empty($data['schemaid'])) {
+            $align_periods = !isset($data['align-periods']) || !empty($data['align-periods']);
+
             $tariff = $this->db->GetRow('SELECT a.data, s.data AS sdata, t.name, t.type, t.value, t.currency, t.period,
                                             t.id, t.prodid, t.taxid, t.splitpayment, t.taxcategory
 					                     FROM
@@ -363,7 +365,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
             $data_schema = explode(';', $tariff['sdata']);
             $data_tariff = explode(';', $tariff['data']);
-            $datefrom    = $data['datefrom'];
+            $orig_datefrom = $datefrom = $data['datefrom'];
             $cday        = date('d', $datefrom);
 
             $use_discounts = ConfigHelper::checkConfig('phpui.promotion_use_discounts');
@@ -379,15 +381,14 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 if (!$idx) {
                     // if activation value specified, create disposable liability
                     if (f_round($value)) {
-                        $start_day   = date('d', $data['datefrom']);
-                        $start_month = date('n', $data['datefrom']);
-                        $start_year  = date('Y', $data['datefrom']);
+                        $start_day   = date('d', $orig_datefrom);
+                        $start_month = date('n', $orig_datefrom);
+                        $start_year  = date('Y', $orig_datefrom);
 
                         // payday is before the start of the period
                         // set activation payday to next month's payday
                         $activation_at_next_day = ConfigHelper::getConfig('phpui.promotion_activation_at_next_day', '', true);
                         if (ConfigHelper::checkValue($activation_at_next_day) || preg_match('/^(absolute|business)$/', $activation_at_next_day)) {
-                            $_datefrom = $data['datefrom'];
                             $datefrom = strtotime('tomorrow');
                             if ($activation_at_next_day == 'business') {
                                 $datefrom = Utils::findNextBusinessDay($datefrom);
@@ -395,7 +396,6 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             $at = $datefrom;
                         } elseif (($data['at'] === 0 && $start_day >= date('j', mktime(12, 0, 0, $start_month + 1, 0, $start_year)))
                             || ($data['at'] > 0 && $start_day >= $data['at'])) {
-                            $_datefrom = $data['datefrom'];
                             $datefrom = mktime(0, 0, 0, $start_month + ($data['at'] === 0 ? 2 : 1), $data['at'], $start_year);
                             if ($_datefrom > strtotime(date('Y/m/d')) && $start_day >= $data['at']) {
                                 $at = $_datefrom;
@@ -403,10 +403,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                 $at = $datefrom;
                             }
                         } elseif ($data['at'] === 0) {
-                            $_datefrom = $data['datefrom'];
                             $datefrom = mktime(0, 0, 0, $start_month + 1, 0, $start_year);
                             $at = $datefrom;
                         }
+                        $_datefrom = $orig_datefrom;
 
                         // check if current promotion schema tariff has only activation value defined
                         $only_activation = true;
@@ -616,7 +616,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     }
 
                     // creates assignment record for starting partial period
-                    if (isset($data['settlement']) && $data['settlement'] == 2 && $idx == 1 && $period == MONTHLY) {
+                    if (isset($data['settlement']) && $data['settlement'] == 2 && $period == MONTHLY && ($align_periods && $idx == 1 || !$align_periods)) {
                         $val = $value;
                         if ($tariff['period'] && $period != DISPOSABLE
                             && $tariff['period'] != $period) {
@@ -642,10 +642,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         }
                         $discounted_val = $val;
 
-                        list ($year, $month, $dom) = explode('/', date('Y/m/d', $data['datefrom']));
+                        list ($year, $month, $dom) = explode('/', date('Y/m/d', $orig_datefrom));
                         $nextperiod = mktime(0, 0, 0, $month + 1, 1, $year);
                         $partial_dateto = !empty($data['dateto']) && $nextperiod > $data['dateto'] ? $data['dateto'] + 1 : $nextperiod;
-                        $diffdays = ($partial_dateto - $data['datefrom']) / 86400;
+                        $diffdays = ($partial_dateto - $orig_datefrom) / 86400;
                         if ($diffdays > 0) {
                             list ($y, $m) = explode('/', date('Y/m', $partial_dateto - 1));
                             $month_days = strftime("%d", mktime(0, 0, 0, $m + 1, 0, $y));
@@ -696,16 +696,21 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     }
 
                     // assume $data['at'] == 1, set last day of the specified month
-                    $dateto = mktime(23, 59, 59, $month + (empty($length) ? 0 : $length) + ($cday && $cday != 1 ? 1 : 0), 0, $year);
-                    $cday = 0;
+                    if (!$align_periods) {
+                        $dateto = mktime(23, 59, 59, $month + (empty($length) ? 0 : $length), 0, $year);
+                    } else {
+                        $dateto = mktime(23, 59, 59, $month + (empty($length) ? 0 : $length) + ($cday && $cday != 1 ? 1 : 0), 0, $year);
+                        $cday = 0;
+                    }
                 }
 
                 if (!empty($lid) || $value != 'NULL') {
                     $ending_period_date = 0;
 
                     // creates assignment record for ending partial period
-                    if ($idx && $idx == count($data_tariff) - 1 && $period == MONTHLY && isset($data['last-settlement'])
-                        && $data['dateto'] && $data['dateto'] > $dateto) {
+                    if ($idx && $period == MONTHLY
+                        && (($idx == count($data_tariff) - 1 && isset($data['last-settlement']) && $align_periods && $data['dateto'] && $data['dateto'] > $dateto)
+                            || ($idx < count($data_tariff) - 1 && !$align_periods))) {
                         $val = $value;
                         if ($tariff['period'] && $period != DISPOSABLE
                             && $tariff['period'] != $period) {
@@ -731,9 +736,18 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         }
                         $discounted_val = $val;
 
-                        list ($year, $month, $dom) = explode('/', date('Y/m/d', $data['dateto']));
-                        $prevperiod = mktime(0, 0, 0, $month, 1, $year);
-                        $diffdays = sprintf("%d", ($data['dateto'] + 1 - $prevperiod) / 86400);
+                        if ($align_periods) {
+                            list ($year, $month, $dom) = explode('/', date('Y/m/d', $data['dateto']));
+                            $prevperiod = mktime(0, 0, 0, $month, 1, $year);
+                            $diffdays = sprintf("%d", ($data['dateto'] + 1 - $prevperiod) / 86400);
+                            $_dateto = $data['dateto'];
+                        } else {
+                            list ($year, $nonth, $dom) = explode('/', date('Y/m/d', $dateto + 1));
+                            $prevperiod = mktime(0, 0, 0, $month, 1, $year);
+                            $diffdays = $cday - 1;
+                            $_dateto = mktime(23, 59, 59, $month, $diffdays, $year);
+                        }
+
                         if ($diffdays > 0) {
                             $month_days = strftime("%d", mktime(0, 0, 0, $month + 1, 0, $year));
                             $v = $diffdays * $discounted_val / $month_days;
@@ -750,7 +764,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                 SYSLOG::RES_CUST    => $data['customerid'],
                                 'period'            => $period,
                                 'backwardperiod'    => $data['backwardperiod'],
-                                'at'                => $partial_at,
+                                'at'                => $align_periods ? $partial_at : $data['at'],
                                 'count'             => $data['count'],
                                 'invoice'           => isset($data['invoice']) ? $data['invoice'] : 0,
                                 'separatedocument'  => isset($data['separatedocument']) ? 1 : 0,
@@ -758,7 +772,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                 SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : null,
                                 'paytype'           => !empty($data['paytype']) ? $data['paytype'] : null,
                                 'datefrom'          => $partial_datefrom,
-                                'dateto'            => $data['dateto'],
+                                'dateto'            => $_dateto,
                                 'pdiscount'         => 0,
                                 'vdiscount'         => str_replace(',', '.', ($use_discounts ? $tariff['value'] - $val : 0) + $partial_vdiscount),
                                 'attribute'         => !empty($data['attribute']) ? $data['attribute'] : null,
@@ -780,6 +794,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
                     $__datefrom = $idx ? $datefrom : 0;
                     $__dateto = $idx && ($idx < count($data_tariff) - 1) ? $dateto : $ending_period_date;
+                    if (!$align_periods) {
+                         $dateto = $_dateto;
+                    }
 
                     if ($__datefrom < $__dateto || !$__dateto) {
                         // creates assignment record for schema period
@@ -792,7 +809,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             'count' => $data['count'],
                             'invoice' => isset($data['invoice']) ? $data['invoice'] : 0,
                             'separatedocument' => isset($data['separatedocument']) ? 1 : 0,
-                            'settlement' => isset($data['settlement']) && $data['settlement'] == 1 && $idx == 1 ? 1 : 0,
+                            'settlement' => isset($data['settlement']) && $data['settlement'] == 1 && ($idx == 1 || !$align_periods) ? 1 : 0,
                             SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : null,
                             'paytype' => !empty($data['paytype']) ? $data['paytype'] : null,
                             'datefrom' => $__datefrom,
@@ -815,7 +832,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 }
 
                 if ($idx) {
-                    $datefrom = $dateto + 1;
+                    $datefrom = $orig_datefrom = $dateto + 1;
                 }
             }
         } else {
