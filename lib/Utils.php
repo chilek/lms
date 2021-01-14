@@ -441,23 +441,26 @@ class Utils
         }
     }
 
-    public static function removeInsecureHtmlElements($html)
+    public static function removeInsecureHtml($html)
     {
-        $dom = new DOMDocument();
-
-        $dom->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', "UTF-8"), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-
-        $scripts = $dom->getElementsByTagName('script');
-
-        $remove = array();
-        foreach ($scripts as $item) {
-            $remove[] = $item;
+        static $hm_purifier;
+        if (!isset($hm_purifier)) {
+            $hm_config = HTMLPurifier_Config::createDefault();
+            $hm_config->set('URI.AllowedSchemes', array(
+                'http' => true,
+                'https' => true,
+                'mailto' => true,
+                'ftp' => true,
+                'nntp' => true,
+                'news' => true,
+                'tel' => true,
+                'cid' => true,
+            ));
+            $hm_config->set('CSS.MaxImgLength', null);
+            $hm_config->set('HTML.MaxImgLength', null);
+            $hm_purifier = new HTMLPurifier($hm_config);
         }
 
-        foreach ($remove as $item) {
-            $item->parentNode->removeChild($item);
-        }
-
-        return trim($dom->saveHTML());
+        return $hm_purifier->purify($html);
     }
 }
