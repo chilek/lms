@@ -1,4 +1,9 @@
 {block name=eventlistfilter}
+	<style>
+		.test span {
+			color: #888;
+		}
+	</style>
 	<TR>
 		<TD colspan="6" class="text-center nobr no-print">
 			<A href="?m=eventlist&day=1&month={if $filter.month == 1}12{else}{math equation="x-1" x=$filter.month}{/if}&amp;year={if $filter.month == 1}{math equation="x-1" x=$filter.year}{else}{$filter.year}{/if}">&laquo;&laquo;&laquo;&nbsp;</A>
@@ -38,8 +43,11 @@
 							</OPTION>
 							{foreach $userlist as $user}
 								{if !ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users') || (ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users') && $user.access) || is_array($filter.owner) && in_array($user.id, $filter.owner)}
-									<OPTION{if !$user.access} disabled{/if}
-											value="{$user.id}" {if is_array($filter.userid) && in_array($user.id, $filter.userid)}} selected{/if}>{$user.rname|truncate:40:"...":true} ({$user.login})</OPTION>
+									<OPTION value="{$user.id}"
+										{if is_array($filter.userid) && in_array($user.id, $filter.userid)}} selected{/if}
+										{if !$user.access} data-blended{/if}>
+											{$user.rname|truncate:40:"...":true} ({$user.login})
+									</OPTION>
 								{/if}
 							{/foreach}
 						</SELECT>
