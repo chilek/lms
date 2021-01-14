@@ -202,7 +202,7 @@
 							</TR>
 							<TR>
 								<TD WIDTH="1%">
-									{icon name="user-id-number"}
+									{icon name="user-id-number" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.icn}
 								</TD>
 								<TD WIDTH="99%">
 									{trans("Identity number:")} {htmlspecialchars($customerinfo.icn)}
@@ -212,7 +212,7 @@
 						{if $customerinfo.ssn != ""}
 							<TR>
 								<TD WIDTH="1%">
-									{icon name="user-id-number"}
+									{icon name="user-id-number" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.ssn}
 								</TD>
 								<TD WIDTH="99%">
 									{trans("SSN")}: {htmlspecialchars($customerinfo.ssn)}
@@ -222,7 +222,7 @@
 						{if $customerinfo.ten != ""}
 							<TR>
 								<TD WIDTH="1%">
-									{icon name="user-id-number"}
+									{icon name="user-id-number" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.ten}
 								</TD>
 								<TD WIDTH="99%">
 									{trans("TEN")}: {$customerinfo.ten}
@@ -232,7 +232,7 @@
 						{if $customerinfo.regon != ""}
 							<TR>
 								<TD WIDTH="1%">
-									{icon name="user-id-number"}
+									{icon name="user-id-number" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.regon}
 								</TD>
 								<TD WIDTH="99%">
 									{trans("REGON")}: {$customerinfo.regon}
@@ -242,7 +242,7 @@
 						{if $customerinfo.rbename != ""}
 							<TR>
 								<TD style="width: 1%;" class="valign-top">
-									{icon name="user-id-number"}
+									{icon name="user-id-number" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.rbename}
 								</TD>
 								<TD style="width: 99%;">
 									{trans("RBE Name:")}
@@ -259,7 +259,7 @@
 						{if $customerinfo.rbe != ""}
 							<TR>
 								<TD style="width: 1%;">
-									{icon name="user-id-number"}
+									{icon name="user-id-number" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.rbe}
 								</TD>
 								<TD style="width: 99%;">
 									{trans("RBE")}: {htmlspecialchars($customerinfo.rbe)}
@@ -269,7 +269,7 @@
 						{if $customerinfo.bankaccount}
 							<TR>
 								<TD WIDTH="1%">
-									{icon name="account-number"}
+									{icon name="account-number" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.bankaccount}
 								</TD>
 								<TD WIDTH="99%" NOWRAP>
 									{format_bankaccount($customerinfo.bankaccount)}
