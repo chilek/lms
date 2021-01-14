@@ -1,9 +1,4 @@
 {block name=eventlistfilter}
-	<style>
-		.test span {
-			color: #888;
-		}
-	</style>
 	<TR>
 		<TD colspan="6" class="text-center nobr no-print">
 			<A href="?m=eventlist&day=1&month={if $filter.month == 1}12{else}{math equation="x-1" x=$filter.month}{/if}&amp;year={if $filter.month == 1}{math equation="x-1" x=$filter.year}{else}{$filter.year}{/if}">&laquo;&laquo;&laquo;&nbsp;</A>
