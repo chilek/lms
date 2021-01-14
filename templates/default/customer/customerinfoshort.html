@@ -45,7 +45,7 @@
 			{icon name="mail" class="fa-fw"}
 		</TD>
 		<TD class="nobr">
-			{if $customerinfo.post_name != ""}{$customerinfo.post_name}{/if}
+			{if $customerinfo.post_name != ""}{htmlspecialchars($customerinfo.post_name)}{/if}
 			{if $customerinfo.post_address != ""}{if $customerinfo.post_name != ""}<BR>{/if}
 				{if $customerinfo.post_postoffice && $customerinfo.post_postoffice != $customerinfo.post_city && $customerinfo.post_street}{$customerinfo.post_city}, {/if}
 				{$customerinfo.post_address}
@@ -71,9 +71,9 @@
 							<TR{if ($contact.type & $smarty.const.CONTACT_DISABLED) == $smarty.const.CONTACT_DISABLED} class="blend"{/if}>
 								<TD class="customer-contact">
 									<div>
-										{if isset($properties.formatter)}{call_user_func($properties['formatter'], $contact)}{else}{$contact.contact}{/if}
+										{if isset($properties.formatter)}{call_user_func($properties['formatter'], $contact)}{else}{htmlspecialchars($contact.contact)}{/if}
 										{if $contact.typestr}[{$contact.typestr}]{/if}
-										{if $contact.name} ({$contact.name|truncate:"40":"...":true}){/if}
+										{if $contact.name} ({htmlspecialchars($contact.name)|truncate:"40":"...":true}){/if}
 									</div>
 								</TD>
 							</TR>
@@ -99,7 +99,7 @@
 			{icon name="user-id-number" class="fa-fw"}
 		</TD>
 		<TD class="nobr">
-			{trans("Identity number:")}: {$customerinfo.icn}
+			{trans("Identity number:")}: {htmlspecialchars($customerinfo.icn)}
 		</TD>
 	</TR>
 {/if}
@@ -109,7 +109,7 @@
 			{icon name="user-id-number" class="fa-fw"}
 		</TD>
 		<TD class="nobr">
-			{trans("SSN")}: {$customerinfo.ssn}
+			{trans("SSN")}: {htmlspecialchars($customerinfo.ssn)}
 		</TD>
 	</TR>
 {/if}
@@ -139,7 +139,7 @@
 			{icon name="user-id-number" class="fa-fw"}
 		</TD>
 		<TD class="nobr">
-			{trans("RBE")}: {$customerinfo.rbe}
+			{trans("RBE")}: {htmlspecialchars($customerinfo.rbe)}
 		</TD>
 	</TR>
 {/if}
