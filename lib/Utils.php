@@ -454,7 +454,7 @@ class Utils
                 'nntp' => true,
                 'news' => true,
                 'tel' => true,
-                'cid' => true,
+                'data' => true,
             ));
             $hm_config->set('CSS.MaxImgLength', null);
             $hm_config->set('HTML.MaxImgLength', null);
