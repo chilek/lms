@@ -106,6 +106,7 @@ $_LANG['There is no related tickets'] = 'Brak powiązanych zgłoszeń';
 $_LANG['There is no child tickets'] = 'Brak zgłoszeń podrzędnych';
 $_LANG['Related tickets:'] = 'Powiązane zgłoszenia:';
 $_LANG['Child tickets:'] = 'Podrzędne zgłoszenia:';
+$_LANG['Create child ticket'] = 'Utwórz podrzędne zgłoszenie';
 $_LANG['verified'] = 'weryfikowany';
 $_LANG['Ticket has been transferred to verifier'] = 'Zgłoszenie zostało przekazane do weryfikatora';
 $_LANG['Ticket has been transferred to verifier.'] = 'Zgłoszenie zostało przekazane do weryfikatora.';
@@ -4456,6 +4457,7 @@ $_LANG['<!qs>node name'] = 'nazwa komputera';
 $_LANG['<!qs>ip address'] = 'adres IP';
 $_LANG['<!qs>public ip address'] = 'adres publiczny IP';
 $_LANG['<!qs>mac address'] = 'adres MAC';
+$_LANG['Additional options'] = 'Opcje dodatkowe';
 
 $_LANG['<!qs>device id'] = 'identyfikator urządzenia';
 $_LANG['<!qs>device name'] = 'nazwa urządzenia';
@@ -4997,6 +4999,10 @@ $_LANG['Karma is changed too often!'] = 'Zbyt częsta zmiana karmy!';
 $_LANG['Negative value means customers with karma less or equal than specified, but positive means greater or equal then specified'] = 'Wartość ujemna oznacz wyszukiwanie klientów z karmą mniejszą lub równą od podanej, zaś dodatna większą lub równą od podanej';
 
 $_LANG['Customer notifications'] = 'Powiadomienia klienta';
+$_LANG['New ticket customer notification subject'] = 'Temat powiadomienia klienta o nowym zgłoszeniu';
+$_LANG['New ticket customer notification body'] = 'Treść powiadomienia klienta o nowym zgłoszeniu';
+$_LANG['New message customer notification subject'] = 'Temat powiadomienia klienta o nowej wiadomości';
+$_LANG['New message customer notification body'] = 'Treść powiadomienia klienta o nowej wiadomości';
 $_LANG['Verifier notifications'] = 'Powiadomienia weryfikatora';
 
 $_LANG['<!customer-notification-subject>The following special symbols are supported:<br>'
