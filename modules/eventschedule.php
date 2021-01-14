@@ -82,7 +82,7 @@ if (!isset($_POST['loginform']) && !empty($_POST)) {
     }
 
     $filter['userand'] = isset($_POST['userand']) ? intval($_POST['userand']) : 0;
-    $filter['userid'] = isset($_POST['userid']) ? $_POST['userid'] : null;
+    $filter['userid'] = isset($_POST['userid']) ? $_POST['userid'] : array();
     $filter['customerid'] = isset($_POST['customerid']) ? $_POST['customerid'] : null;
     $filter['type'] = isset($_POST['type']) ? $_POST['type'] : null;
     $filter['privacy'] = isset($_POST['privacy']) ? intval($_POST['privacy']) : null;
@@ -178,8 +178,8 @@ $userid = $filter['userid'];
 $userlistcount = count($userid);
 
 $params['short'] = 1;
-if (ConfigHelper::getConfig('phpui.timetable_hide_disabled_users')) {
-    $params['access'] = 1;
+if (ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users')) {
+    $params['userAccess'] = 1;
 }
 $userlist = $LMS->GetUserList($params);
 
