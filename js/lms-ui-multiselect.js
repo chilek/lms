@@ -278,7 +278,7 @@ function multiselect(options) {
 			var exclusive = $(this).attr('data-exclusive');
 			var selected = $(this).is(':selected');
 			var disabled = $(this).is(':disabled');
-			var blended = $(this).attr('data-blended');
+			var crossed = $(this).attr('data-crossed');
 			var class_name = 'visible' + (exclusive === '' ? ' exclusive' : '');
 
 			var data = '';
@@ -299,7 +299,7 @@ function multiselect(options) {
 			if (!text) {
 				text = $(this).text();
 			}
-			list += '<span '+ (blended === '' ? ' class="blend"' : '')+'>' + text.trim() + '</span>';
+			list += '<span '+ (crossed === '' ? ' class="crossed"' : '')+'>' + text.trim() + '</span>';
 
 			list += '</li>';
 		});
