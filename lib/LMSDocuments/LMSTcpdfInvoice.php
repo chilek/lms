@@ -522,7 +522,7 @@ class LMSTcpdfInvoice extends LMSInvoice
                     strlen($this->data['customerpin']) < 4 ? sprintf('%04d', $this->data['customerpin']) : $this->data['customerpin']
                 ),
                 ConfigHelper::getConfig(
-                    'invoice.customer_credentials_format',
+                    'invoices.customer_credentials_format',
                     '<b>' . trans('Customer ID: %cid') . '</b><br>'
                     . '<b>' . trans('PIN: %pin') . '</b><br>'
                 )
