@@ -440,4 +440,24 @@ class Utils
             return array_keys($statuses);
         }
     }
+
+    public static function removeInsecureHtmlElements($html)
+    {
+        $dom = new DOMDocument();
+
+        $dom->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', "UTF-8"), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+
+        $scripts = $dom->getElementsByTagName('script');
+
+        $remove = array();
+        foreach ($scripts as $item) {
+            $remove[] = $item;
+        }
+
+        foreach ($remove as $item) {
+            $item->parentNode->removeChild($item);
+        }
+
+        return trim($dom->saveHTML());
+    }
 }

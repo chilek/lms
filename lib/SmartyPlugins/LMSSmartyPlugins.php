@@ -611,11 +611,11 @@ class LMSSmartyPlugins
 
         $uid = uniqid();
         $location_str = $params['data']['location_address_type'] == BILLING_ADDRESS ? ''
-            : (empty($params['data']['location_name']) ? '' : $params['data']['location_name'] . ', ');
+            : (empty($params['data']['location_name']) ? '' : htmlspecialchars($params['data']['location_name']) . ', ');
 
         $location_str .= $params['data']['location']
             ? ($params['data']['teryt']
-                ? trans('$a (TERRIT)', $params['data']['location']) : $params['data']['location'])
+                ? trans('$a (TERRIT)', htmlspecialchars($params['data']['location'])) : htmlspecialchars($params['data']['location']))
             : '...';
 
         $title = '';

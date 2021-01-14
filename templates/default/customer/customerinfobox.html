@@ -103,7 +103,7 @@
 								<tr>
 									<td style="width: 1%;">{icon name="home" class="fa-fw" tip="billing address"}</td>
 									<td style="width: 99%;">
-										<span title="{trans('billing address')}">{if $v.teryt}{t a=$v.location}$a (TERRIT){/t}{else}{$v.location}{/if}
+										<span title="{trans('billing address')}">{if $v.teryt}{t a=htmlspecialchars($v.location)}$a (TERRIT){/t}{else}{htmlspecialchars($v.location)}{/if}
 											<a href="https://www.google.com/maps/place/{$v.location}" title="{trans("Google Maps")}">{icon name="location"}</a>
 										</span>
 									</td>
@@ -117,7 +117,7 @@
 								<tr>
 									<td style="width: 1%;">{icon name="mail" class="fa-fw" tip="postal address"}</td>
 									<td style="width: 99%;">
-										<span title="{trans('postal address')}">{if $v.location_name}{$v.location_name}, {/if}{if $v.teryt}{t a=$v.location}$a (TERRIT){/t}{else}{$v.location}{/if}
+										<span title="{trans('postal address')}">{if $v.location_name}{htmlspecialchars($v.location_name)}, {/if}{if $v.teryt}{t a=htmlspecialchars($v.location)}$a (TERRIT){/t}{else}{htmlspecialchars($v.location)}{/if}
 											<a href="https://www.google.com/maps/place/{$v.location}" title="{trans("Google Maps")}">{icon name="location"}</a>
 										</span>
 									</td>
@@ -141,7 +141,7 @@
 										{icon class=$icon tip=$title}
 									</td>
 									<td style="width: 99%;">
-										<span title="{$title}">{if $v.location_name}{$v.location_name}, {/if}{if $v.teryt}{t a=$v.location}$a (TERRIT){/t}{else}{$v.location}{/if}
+										<span title="{$title}">{if $v.location_name}{htmlspecialchars($v.location_name)}, {/if}{if $v.teryt}{t a=htmlspecialchars($v.location)}$a (TERRIT){/t}{else}{htmlspecialchars($v.location)}{/if}
 											<a href="https://www.google.com/maps/place/{$v.location}" title="{trans("Google Maps")}">{icon name="location"}</a>
 										</span>
 									</td>
@@ -166,7 +166,7 @@
 													<div>
 													{if isset($properties.formatter)}{call_user_func($properties['formatter'], $contact)}{else}{$contact.contact}{/if}
 													{if $contact.typestr}[{$contact.typestr}]{/if}
-													{if $contact.name} ({$contact.name|truncate:"40":"...":true}){/if}
+													{if $contact.name} ({htmlspecialchars($contact.name)|truncate:"40":"...":true}){/if}
 													</div>
 												</TD>
 											</TR>
@@ -205,7 +205,7 @@
 									{icon name="user-id-number"}
 								</TD>
 								<TD WIDTH="99%">
-									{trans("Identity number:")} {$customerinfo.icn}
+									{trans("Identity number:")} {htmlspecialchars($customerinfo.icn)}
 								</TD>
 							</TR>
 						{/if}
@@ -215,7 +215,7 @@
 									{icon name="user-id-number"}
 								</TD>
 								<TD WIDTH="99%">
-									{trans("SSN")}: {$customerinfo.ssn}
+									{trans("SSN")}: {htmlspecialchars($customerinfo.ssn)}
 								</TD>
 							</TR>
 						{/if}
@@ -249,7 +249,7 @@
 									<TABLE CELLPADDING="5">
 										<TR>
 											<TD CLASS="fall superlight">
-												{$customerinfo.rbename|replace:"\n":"<BR>"}
+												{htmlspecialchars($customerinfo.rbename)|replace:"\n":"<BR>"}
 											</TD>
 										</TR>
 									</TABLE>
@@ -262,7 +262,7 @@
 									{icon name="user-id-number"}
 								</TD>
 								<TD style="width: 99%;">
-									{trans("RBE")}: {$customerinfo.rbe}
+									{trans("RBE")}: {htmlspecialchars($customerinfo.rbe)}
 								</TD>
 							</TR>
 						{/if}
