@@ -82,7 +82,7 @@ if (!isset($_POST['loginform']) && !empty($_POST)) {
     }
 
     $filter['userand'] = isset($_POST['userand']) ? intval($_POST['userand']) : 0;
-    $filter['userid'] = isset($_POST['userid']) ? $_POST['userid'] : null;
+    $filter['userid'] = isset($_POST['userid']) ? $_POST['userid'] : array();
     $filter['customerid'] = isset($_POST['customerid']) ? $_POST['customerid'] : null;
     $filter['type'] = isset($_POST['type']) ? $_POST['type'] : null;
     $filter['privacy'] = isset($_POST['privacy']) ? intval($_POST['privacy']) : null;
@@ -178,8 +178,8 @@ $userid = $filter['userid'];
 $userlistcount = count($userid);
 
 $params['short'] = 1;
-if (ConfigHelper::getConfig('phpui.timetable_hide_disabled_users')) {
-    $params['access'] = 1;
+if (ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users')) {
+    $params['userAccess'] = 1;
 }
 $userlist = $LMS->GetUserList($params);
 
@@ -196,6 +196,9 @@ if (!isset($userid) || empty($userid)) {
         $filter['userid'] = $user['id'];
         $usereventlist[$user['id']]['events'] = $LMS->GetEventList($filter);
         $usereventlist[$user['id']]['username'] = $user['name'];
+        if (!$LMS->checkUserAccess($user['id'])) {
+            $usereventlist[$user['id']]['noaccess'] = 1;
+        }
     }
     unset($filter['userid']);
     $filter['userid'] = '-1';
@@ -210,6 +213,9 @@ if (!isset($userid) || empty($userid)) {
             $filter['userid'] = $user['id'];
             $usereventlist[$user['id']]['events'] = $LMS->GetEventList($filter);
             $usereventlist[$user['id']]['username'] = $user['name'];
+            if (!$LMS->checkUserAccess($user['id'])) {
+                $usereventlist[$user['id']]['noaccess'] = 1;
+            }
             if ($filter['userand']) {
                 foreach ($usereventlist[$user['id']]['events'] as $ekey => $event) {
                     if (!isset($eventlistIds[$event['id']])) {
@@ -228,6 +234,9 @@ $usereventlistcount = count($usereventlist);
 $usereventlistdates = array();
 foreach ($usereventlist as $userid => $userevents) {
     $usereventlistdates[$userid]['username'] = $userevents['username'];
+    if (isset($userevents['noaccess'])) {
+        $usereventlistdates[$userid]['noaccess'] = $userevents['noaccess'];
+    }
     if ($userevents['events']) {
         foreach ($userevents['events'] as $event) {
             $usereventlistdates[$userid]['events'][$event['date']][] = $event;

@@ -455,6 +455,12 @@ class LMS
         return $manager->userAccess($id, $access);
     }
 
+    public function checkUserAccess($id)
+    {
+        $manager = $this->getUserManager();
+        return $manager->checkUserAccess($id);
+    }
+
     public function GetUserInfo($id)
     {
         $manager = $this->getUserManager();

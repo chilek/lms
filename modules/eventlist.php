@@ -148,6 +148,25 @@ $layout['pagetitle'] = trans('Timetable');
 $filter['forward'] = ConfigHelper::getConfig('phpui.timetable_days_forward');
 $eventlist = $LMS->GetEventList($filter);
 
+if ($eventlist) {
+    foreach ($eventlist as $ekey => &$item) {
+        if ($item['userlist']) {
+            $usersWithoutAccess = 0;
+            $usersCount = count($item['userlist']);
+            foreach ($item['userlist'] as $uidx => $user) {
+                if (!$LMS->checkUserAccess($user['id'])) {
+                        $usersWithoutAccess++;
+                        $item['userlist'][$uidx]['noaccess'] = 1;
+                }
+            }
+            if (ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users') && $usersWithoutAccess == $usersCount) {
+                $item['hide'] = 1;
+            }
+        }
+    }
+    unset($item);
+}
+
 $overdue_events_only = isset($_GET['overdue_events_only']) ? 1 : 0;
 $force_overdue_events = isset($_GET['force_overdue_events']) ? 1 : 0;
 

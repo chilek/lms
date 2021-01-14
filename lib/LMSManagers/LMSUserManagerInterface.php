@@ -56,6 +56,8 @@ interface LMSUserManagerInterface
 
     public function userAccess($id, $access);
 
+    public function checkUserAccess($id);
+
     public function getUserInfo($id);
 
     public function userUpdate($user);
