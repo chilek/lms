@@ -222,6 +222,10 @@ class Auth
             return true;
         }
 
+        if (md5($this->passwd) == $dbpasswd) {
+            return true;
+        }
+
         if (empty($this->twofactorauth) || empty($this->twofactorauthsecretkey)) {
             $this->error = trans('Wrong password or login.');
         }
