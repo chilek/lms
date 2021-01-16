@@ -228,8 +228,8 @@
 										{trans("Modified:")}
 									</td>
 									<td>
-										{$nodeipdata.createdby}, {$nodeipdata.creationdateh}<br>
-										{if $nodeipdata.moddate}{$nodeipdata.modifiedby}, {$nodeipdata.moddateh}{else}-{/if}
+										{$nodeipdata.createdby|escape}, {$nodeipdata.creationdateh}<br>
+										{if $nodeipdata.moddate}{$nodeipdata.modifiedby|escape}, {$nodeipdata.moddateh}{else}-{/if}
 									</td>
 								</tr>
 	                        </TABLE>

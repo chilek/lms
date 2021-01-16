@@ -482,8 +482,8 @@
 							{trans("Modified:")}</B>
 						</TD>
 						<TD WIDTH="98%">
-							{$customerinfo.createdby}, {$customerinfo.creationdateh}<BR>
-							{if $customerinfo.moddate}{$customerinfo.modifiedby}, {$customerinfo.moddateh}{else}-{/if}
+							{$customerinfo.createdby|escape}, {$customerinfo.creationdateh}<BR>
+							{if $customerinfo.moddate}{$customerinfo.modifiedby|escape}, {$customerinfo.moddateh}{else}-{/if}
 						</TD>
 					</TR>
 					{/block}

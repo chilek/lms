@@ -440,8 +440,8 @@
 									</td>
 									<td class="cell-flex">
 										<div>
-											{$nodeinfo.createdby}, {$nodeinfo.creationdateh}<br>
-											{if $nodeinfo.moddate}{$nodeinfo.modifiedby}, {$nodeinfo.moddateh}{else}-{/if}
+											{$nodeinfo.createdby|escape}, {$nodeinfo.creationdateh}<br>
+											{if $nodeinfo.moddate}{$nodeinfo.modifiedby|escape}, {$nodeinfo.moddateh}{else}-{/if}
 										</div>
 									</td>
 								</tr>
