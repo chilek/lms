@@ -52,7 +52,7 @@
 			<SELECT SIZE="1" NAME="d" ONCHANGE="document.choosefilter.submit();">
 				<OPTION VALUE="-1" {if $listdata.divisionid==-1} SELECTED {/if} >- {trans("all")} -</OPTION>
 				{foreach $divisions as $division}
-					<OPTION VALUE="{$division.id}"{if $listdata.divisionid == $division.id} SELECTED{/if} >{$division.shortname}</OPTION>
+					<OPTION VALUE="{$division.id}"{if $listdata.divisionid == $division.id} SELECTED{/if} >{$division.label|escape}</OPTION>
 				{/foreach}
 			</SELECT>
 			{/if}

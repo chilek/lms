@@ -46,7 +46,7 @@
 						<SELECT size="1" name="division" {tip text="Select division"}>
 							<OPTION value="0">- {trans("all")} -</OPTION>
 							{foreach $divisions as $division}
-							<OPTION value="{$division.id}">{$division.shortname}</OPTION>
+								<OPTION value="{$division.id}">{$division.label|escape}</OPTION>
 							{/foreach}
 						</SELECT>
 					</TD>

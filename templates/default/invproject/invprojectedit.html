@@ -12,12 +12,12 @@
 		<TD width="1%"><img src="img/division.gif" alt=""></TD>
 		<TD width="1%">{trans("Division:")}</TD>
 		<TD style="width: 1%;">
-                	<SELECT size="1" name="invprojectedit[divisionid]" {tip text="Select division" trigger="divisionid"}>
-                        	{foreach from=$divisions item=item}
-                                <OPTION value="{$item.id}"{if $invprojectedit.divisionid ==$item.id} selected{/if}>{$item.shortname}</OPTION>
-                                {/foreach}
-                        </SELECT>
-                </TD>
+			<SELECT size="1" name="invprojectedit[divisionid]" {tip text="Select division" trigger="divisionid"}>
+				{foreach $divisions as $item}
+					<OPTION value="{$item.id}"{if $invprojectedit.divisionid == $item.id} selected{/if}>{$item.label|escape}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
 		{/if}
 		<TD width="1%"><img src="img/money.gif" alt=""></TD>
 		<TD width="1%"><B>{trans("Name:")}</B></TD>

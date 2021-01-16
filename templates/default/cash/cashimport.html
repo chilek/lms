@@ -69,7 +69,7 @@
 		<TR>
 			<TD colspan="4" class="dark bold">
 				{icon name="division" class="fa-fw"}
-				{$division.name}
+				{$division.name|escape}
 			</TD>
 			<TD colspan="3" class="dark text-right">
 				{button icon="csv" label="Download (CSV)" href="?m=cashimport&action=csv&division={$division.id}"}

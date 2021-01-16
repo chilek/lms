@@ -34,8 +34,8 @@
 		{if $divisions}
 		<TD onClick="return self.location.href='?m=invprojectedit&id={$invproject.id}';" nowrap><img src="img/division.gif" alt=""></TD>
 		<TD onClick="return self.location.href='?m=invprojectedit&id={$invproject.id}';" nowrap>
-			{foreach from=$divisions item=division}
-			{if $division.id==$invproject.divisionid}<B>{$division.shortname}</B>{/if}
+			{foreach $divisions as $division}
+				{if $division.id == $invproject.divisionid}<B>{$division.label|escape}</B>{/if}
 			{/foreach}
 		</TD>
 		{/if}

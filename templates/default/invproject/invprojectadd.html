@@ -13,8 +13,8 @@
 		<TD width="1%">{trans("Division:")}</TD>
 		<TD style="width: 1%;">
 			<SELECT size="1" name="invprojectadd[divisionid]" {tip text="Select division" trigger="divisionid"}>
-				{foreach from=$divisions item=item}
-				<OPTION value="{$item.id}"{if $invprojectadd.division ==$item.id} selected{/if}>{$item.shortname}</OPTION>
+				{foreach $divisions as $item}
+					<OPTION value="{$item.id}"{if $invprojectadd.division == $item.id} selected{/if}>{$item.label|escape}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>
