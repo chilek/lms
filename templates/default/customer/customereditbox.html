@@ -87,7 +87,8 @@
 					<tr>
 						<td>
 							<label for="customerdata[extid]"><strong>{trans("External system identifier:")}</strong>
-								<input type="text" maxlength="20" name="customerdata[extid]" value="{$customerinfo.extid}" {tip text="Enter customer identifier in external system (optional)" trigger="extid"}>
+								<input type="text" maxlength="20" name="customerdata[extid]" value="{$customerinfo.extid|escape}"
+									{tip text="Enter customer identifier in external system (optional)" trigger="extid"}>
 							</label>
 						</td>
 					</tr>

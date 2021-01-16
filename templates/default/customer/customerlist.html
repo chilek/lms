@@ -285,7 +285,7 @@
 			<i class="lms-ui-icon-home"></i>&nbsp;{$customer.full_address}{if $customer.country != ""}, {t}{$customer.country}{/t}{/if}
 		</TD>
 		<TD class="text-right nobr">
-			({if $customer.extid}{$customer.extid} / {/if}{$customer.id|string_format:"%04d"})
+			({if $customer.extid}{$customer.extid|escape} / {/if}{$customer.id|string_format:"%04d"})
 			<BR>
 			{if $customer.account}
 				<i class="lms-ui-tooltip-nodelist lms-ui-icon-node{if !$customer.online}off{else}on{/if}" data-resourceid="{$customer.id}"></i>
