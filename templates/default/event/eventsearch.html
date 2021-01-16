@@ -130,7 +130,7 @@
 		<TD class="multiselect nobr">
 			<SELECT name="event[userid][]" class="lms-ui-multiselect" multiple data-default-value="{trans("- select user -")}" data-shorten-to-default-value="false">
 				{foreach $userlist as $user}
-				<OPTION value="{$user.id}">{$user.name}</OPTION>
+				<OPTION value="{$user.id}">{$user.name|escape}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>

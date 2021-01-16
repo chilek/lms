@@ -173,7 +173,7 @@
 											{elseif $message.userid}
 												{icon name="user"}
 												<A href="?m=userinfo&id={$message.userid}">
-													{$message.username}
+													{$message.username|escape}
 												</A>
 											{elseif $message.mailfrom}
 												{icon name="mail"}
@@ -191,7 +191,7 @@
 												</A>
 											{/if}
 										{else}
-											<A href="?m=userinfo&id={$message.userid}">{$message.username}</A>
+											<A href="?m=userinfo&id={$message.userid}">{$message.username|escape}</A>
 										{/if}
 									</div>
 								</div>
@@ -277,7 +277,7 @@
 							{trans("From:")}
 						</td>
 						<td width="98%" colspan="2" class="lms-ui-autolinker">
-							<A href="?m=userinfo&id={$message.userid}">{$message.username}</A><BR>
+							<A href="?m=userinfo&id={$message.userid}">{$message.username|escape}</A><BR>
 							{$message.body|escape|replace:"\n":"<BR>"}
 						</td>
 					</tr>

@@ -197,7 +197,7 @@
 			{/if}
 		</TD>
 		<TD class="nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');">
-			{$doc.username}
+			{$doc.username|escape}
 			{if $doc.cuserid} / {$doc.cusername}{/if}
 			{if $doc.closed == 3}
 				{trans("(customer/sms)")}

@@ -154,7 +154,7 @@
 				{if $message.customerid}
 					{$message.customername}
 				{elseif $message.userid}
-					{$message.username}
+					{$message.username|escape}
 				{elseif $message.mailfrom}
 					{$message.mailfrom|escape}
 				{else}
@@ -166,7 +166,7 @@
 			<BR>
 			{$message.subject|escape}
 			{else}
-			{$message.username}
+			{$message.username|escape}
 			{/if}
 		</TD>
 		<TD class="HEAD text-right">
@@ -195,7 +195,7 @@
 				{trans("From:")}
 			</td>
 			<td colspan="2" class="fbt">
-				{$message.username}<BR>
+				{$message.username|escape}<BR>
 				{$message.body}
 			</td>
 		</tr>

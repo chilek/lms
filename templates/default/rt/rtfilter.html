@@ -77,7 +77,7 @@
                         {if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
                             || (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
                             || (is_array($filter.owner) && in_array($user.id, $filter.owner))}
-                            <OPTION{if !$user.access} disabled{/if} value="{$user.id}"{if is_array($filter.owner) && in_array($user.id, $filter.owner)} selected{/if}>{$user.rname|truncate:40:"...":true} ({$user.login})</OPTION>
+                            <OPTION{if !$user.access} disabled{/if} value="{$user.id}"{if is_array($filter.owner) && in_array($user.id, $filter.owner)} selected{/if}>{$user.rname|escape|truncate:40:"...":true} ({$user.login})</OPTION>
                         {/if}
                     {/foreach}
                 </SELECT>
@@ -93,7 +93,7 @@
                         {if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
                             || (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
                             || (is_array($filter.verifierids) && in_array($user.id, $filter.verifierids))}
-                            <OPTION{if !$user.access} disabled{/if} value="{$user.id}"{if is_array($filter.verifierids) && in_array($user.id, $filter.verifierids)} SELECTED{/if}>{$user.rname|truncate:40:"...":true} ({$user.login})</OPTION>
+                            <OPTION{if !$user.access} disabled{/if} value="{$user.id}"{if is_array($filter.verifierids) && in_array($user.id, $filter.verifierids)} SELECTED{/if}>{$user.rname|escape|truncate:40:"...":true} ({$user.login})</OPTION>
                         {/if}
                     {/foreach}
                 </SELECT>
@@ -166,7 +166,7 @@
                 <input type="text" name="cid" value="{if !empty($filter.cid)}{$filter.cid}{/if}" placeholder="{trans("Customer ID:")}" onChange="document.filter.submit();">
             </label>
             <label class="nobr">
-                <input type="text" name="subject" value="{htmlspecialchars($filter.subject)}" placeholder="{trans("Subject:")}" onChange="document.filter.submit();">
+                <input type="text" name="subject" value="{$filter.subject|escape}" placeholder="{trans("Subject:")}" onChange="document.filter.submit();">
             </label>
             <label class="nobr">
                 {trans("Created:")}

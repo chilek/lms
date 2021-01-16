@@ -40,7 +40,7 @@
         </td>
         {foreach $usereventlistgrid as $userevents}
             <td style="border-left: dotted 1px; text-align: center;" {if $userlistcount == 1}colspan="2"{/if} {if isset($userevents.noaccess)} class="blend"{/if}>
-                <strong>{$userevents.username}</strong>
+                <strong>{$userevents.username|escape}</strong>
             </td>
         {/foreach}
     </tr>

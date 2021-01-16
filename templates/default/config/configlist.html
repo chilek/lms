@@ -215,7 +215,7 @@
 							<div class="import-container-select">
 								<SELECT size="1" id="import-user" {tip text="Select user" trigger="user"}>
 									{foreach $users as $user}
-										<OPTION value="{$user.id}">{$user.login} / {$user.rname}</OPTION>
+										<OPTION value="{$user.id}">{$user.login} / {$user.rname|escape}</OPTION>
 									{/foreach}
 								</SELECT>
 							</div>
@@ -283,7 +283,7 @@
 							<div class="clone-container-select">
 								<SELECT size="1" id="user-name" {tip text="Select user" trigger="user"}>
 									{foreach $users as $user}
-										<OPTION value="{$user.id}">{$user.login} / {$user.rname}</OPTION>
+										<OPTION value="{$user.id}">{$user.login} / {$user.rname|escape}</OPTION>
 									{/foreach}
 								</SELECT>
 							</div>

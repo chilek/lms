@@ -211,7 +211,7 @@
 										<option value="">{trans("<!access-rights>- empty -")}</option>
 										{foreach $users as $user}
 											<option value="{$user.id}"
-													{if isset($useradd.src_userid) && $useradd.src_userid == $user.id} selected{/if}>{$user.rname} ({$user.login})</option>
+													{if isset($useradd.src_userid) && $useradd.src_userid == $user.id} selected{/if}>{$user.rname|escape} ({$user.login})</option>
 										{/foreach}
 									</select>
 								</label>

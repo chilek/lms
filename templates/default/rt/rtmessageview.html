@@ -64,7 +64,7 @@
 				<A href="?m=customerinfo&id={$message.customerid}">{$message.customername} ({$message.customerid|escape|string_format:"%04d"})</A>
 			{elseif $message.userid}
 				{icon name="user"}
-				<A href="?m=userinfo&id={$message.userid}">{$message.username}</A>
+				<A href="?m=userinfo&id={$message.userid}">{$message.username|escape}</A>
 			{elseif $message.mailfrom}
 				{icon name="mail"}
 				<A href="mailto:{$message.mailfrom|escape}">{$message.mailfrom|escape}</A>

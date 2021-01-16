@@ -334,7 +334,7 @@
 							name="queue[verifierid]" {tip text="Select user" trigger="verifierid"}>
 						<option value="">- {trans("select user")} -</option>
 						{foreach $userlist as $user}
-							<option value="{$user.id}" {if $user.id == $queue.verifierid} selected{/if}>{$user.rname}
+							<option value="{$user.id}" {if $user.id == $queue.verifierid} selected{/if}>{$user.rname|escape}
 								({$user.login})
 							</option>
 						{/foreach}

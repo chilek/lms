@@ -362,7 +362,7 @@
 											value="{$email.contact}" id="customer-contact-{$email.id}" class="customer-contact"
 											{if !empty($email.checked)}checked{/if}>
 										<label for="customer-contact-{$email.id}">
-											{$email.contact}{if $email.name} ({$email.name}){/if}
+											{$email.contact|escape}{if $email.name} ({$email.name|escape}){/if}
 										</label>
 									</div>
 								{/foreach}
@@ -414,7 +414,7 @@
 											value="{$phone.contact}" id="customer-contact-{$phone.id}" class="customer-contact"
 											{if !empty($phone.checked)}checked{/if}>
 										<label for="customer-contact-{$phone.id}">
-											{$phone.contact}{if $phone.name} ({$phone.name}){/if}
+											{$phone.contact|escape}{if $phone.name} ({$phone.name|escape}){/if}
 										</label>
 									</div>
 								{/foreach}
@@ -474,7 +474,7 @@
 			<select size="4" name="message[users][]" id="user-selection" multiple class="lms-ui-multiselect"
 					{tip text="Select users"} data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
 				{foreach $users as $user}
-				<OPTION value="{$user.id}"{if isset($message.users) && in_array($user.id, $message.users)} selected{/if}>{$user.name|truncate:30:"...":true}</OPTION>
+				<OPTION value="{$user.id}"{if isset($message.users) && in_array($user.id, $message.users)} selected{/if}>{$user.name|escape|truncate:30:"...":true}</OPTION>
 				{/foreach}
 			</select>
 			<span class="bold">{trans("user group:")}</span>

@@ -231,7 +231,7 @@
 										{foreach $users as $user}
 											{if $user.id != $userinfo.id}
 												<option value="{$user.id}"
-														{if isset($userinfo.src_userid) && $userinfo.src_userid == $user.id} selected{/if}>{$user.rname} ({$user.login})</option>
+														{if isset($userinfo.src_userid) && $userinfo.src_userid == $user.id} selected{/if}>{$user.rname|escape} ({$user.login})</option>
 											{/if}
 										{/foreach}
 									</select>
