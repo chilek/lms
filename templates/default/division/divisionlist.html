@@ -37,7 +37,7 @@
     </THEAD>
     <TBODY>
 	{foreach $divisionlist as $division}
-	<TR class="{if $division.status} blend{/if}" data-name="{$division.shortname}">
+	<TR class="{if $division.status} blend{/if}" data-name="{$division.shortname|escape}">
 		<TD class="bold nobr" onclick="return self.location.href='?m=divisionedit&amp;id={$division.id}';">
 			<IMG src="img/division.gif" alt=""> {$division.shortname|escape}
 		</TD>
