@@ -51,7 +51,7 @@
 		</TD>
 		<TD WIDTH="1%" class="nobr bold">{trans("Project:")}</TD>
 		<TD WIDTH="98%">
-			{if ($nodeinfo.invprojectid == '')}{trans("none")}{else}{$nodeinfo.projectname}{/if}
+			{if ($nodeinfo.invprojectid == '')}{trans("none")}{else}{$nodeinfo.projectname|escape}{/if}
 		</TD>
 	</TR>
 

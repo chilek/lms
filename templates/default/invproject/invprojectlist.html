@@ -39,8 +39,8 @@
 			{/foreach}
 		</TD>
 		{/if}
-		<TD onClick="return self.location.href='?m=invprojectedit&id={$invproject.id}';" nowrap>
-			<B>{$invproject.name}</B>
+		<TD onClick="return self.location.href='?m=invprojectedit&id={$invproject.id}';" class="bold nobr">
+			{$invproject.name|escape}
 		</TD>
 		<TD class="text-center" onClick="return self.location.href='?m=invprojectedit&id={$invproject.id}';" nowrap>
 			{$invproject.nodes}

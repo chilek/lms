@@ -205,16 +205,17 @@
 							{/if}
 							<TR>
 								<TD>
-									<IMG SRC="img/money.gif" ALT="{trans("Investment project:")}">
+									<IMG SRC="img/money.gif" ALT="{tran("Investment project:")}">
 								</TD>
 								<TD>
 									<SELECT NAME="nodedata[invprojectid]" ID="project" VALUE="{$nodedata.invprojectid}" {tip text="Select project"}>
 										<OPTION value="-2" {if ($nodedata.invprojectid == '-2' ) } selected="selected" {/if} >- {trans("none")} -</OPTION>
 										<OPTION value="-1" {if ($nodedata.invprojectid == '-1' ) } selected="selected" {/if}>{trans("New project")}</OPTION>
 										<OPTION value="1" {if ($nodedata.invprojectid == '1' ) } selected="selected" {/if}>{trans("From root device")}</OPTION>
-										{section name=project loop=$NNprojects}
-										<OPTION VALUE="{$NNprojects[project].id}" {if ($nodedata.invprojectid == $NNprojects[project].id ) } selected="selected" {/if} >{$NNprojects[project].name}</OPTION>
-										{/section}
+										{foreach $NNprojects as $project}
+											<OPTION value="{$project.id}"{if ($nodedata.invprojectid == $project.id)} selected{/if}
+												>{$project.name|escape}</OPTION>
+										{/foreach}
 									</SELECT>
 									<INPUT TYPE="TEXT" NAME="nodedata[projectname]" VALUE="{$nodedata.projectname}"
 										{tip text="Enter new project name" trigger="projectname" } id="projectname"

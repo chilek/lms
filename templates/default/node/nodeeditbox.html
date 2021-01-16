@@ -259,7 +259,7 @@
 											<option value="-1" {if ($nodeinfo.invprojectid == '-1' ) } selected="selected" {/if}>{trans("New project")}</option>
 											<option value="1" {if ($nodeinfo.invprojectid == '1' ) } selected="selected" {/if}>{trans("From root device")}</option>
 											{foreach $NNprojects as $project}
-											<option value="{$project.id}"{if ($nodeinfo.invprojectid == $project.id)} selected{/if}>{$project.name}</option>
+												<option value="{$project.id}"{if ($nodeinfo.invprojectid == $project.id)} selected{/if}>{$project.name|escape}</option>
 											{/foreach}
 										</select>
 										<input type="text" name="nodeedit[projectname]" value="{$nodeinfo.projectname}"
