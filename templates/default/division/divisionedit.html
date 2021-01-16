@@ -11,7 +11,7 @@
 
 </style>
 
-<H1>{$layout.pagetitle}</H1>
+<H1>{$layout.pagetitle|escape}</H1>
 <script src="js/location_box.js"></script>
 <FORM method="POST" action="?m=divisionedit&id={$division.id}" name="division">
 <INPUT type="submit" class="hiddenbtn">
@@ -30,7 +30,8 @@
 			{trans("Name:")}
 		</TD>
 		<TD>
-			<INPUT type="text" name="division[shortname]" value="{$division.shortname|escape}" size="40" {tip text="Enter division short name" trigger="shortname" bold=1}>
+			<INPUT type="text" name="division[shortname]" value="{$division.shortname|escape}" size="40"
+				{tip text="Enter division short name" trigger="shortname" bold=1}>
 		</TD>
 	</TR>
     </THEAD>
@@ -43,7 +44,8 @@
 			{trans("Long name:")}
 		</TD>
 		<TD>
-			<TEXTAREA NAME="division[name]" COLS="45" ROWS="4" {tip text="Enter division long name" trigger="name"}>{$division.name}</TEXTAREA>
+			<TEXTAREA NAME="division[name]" COLS="45" ROWS="4" {tip text="Enter division long name" trigger="name"}
+				>{$division.name|escape}</TEXTAREA>
 		</TD>
 	</TR>
 	<tr>

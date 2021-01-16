@@ -60,7 +60,7 @@
 								<td>
 									<SELECT size="1" name="config[divisionid]" {tip text="Select division" trigger="divisionid"}>
 										{foreach $divisionslist as $division}
-											<OPTION value="{$division.id}"{if $config.division == $division.id} selected{/if}>{$division.shortname}</OPTION>
+											<OPTION value="{$division.id}"{if $config.division == $division.id} selected{/if}>{$division.label|escape}</OPTION>
 										{/foreach}
 									</SELECT>
 								</td>

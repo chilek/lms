@@ -151,10 +151,10 @@ class LMSSmartyPlugins
                     . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '')
                     . ($onchange ? ' onchange="' . $onchange . '"' : '')
                     . '>';
-                $result .= '<option VALUE=""' . (!$selected ? ' selected' : '') . '>- ' . trans("all") . ' -</option>';
+                $result .= '<option value=""' . (!$selected ? ' selected' : '') . '>- ' . trans("all") . ' -</option>';
                 foreach ($user_divisions as $division) {
                     $result .= '<option value="' . $division['id'] . '"'
-                        . ($selected == $division['id'] ? ' selected' : '') . '>' . $division['label'] . '</option>';
+                        . ($selected == $division['id'] ? ' selected' : '') . '>' . htmlspecialchars($division['label']) . '</option>';
                 }
                 $result .= '</select>';
                 $result .= ($label ? '</label>' : '');

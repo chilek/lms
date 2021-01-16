@@ -40,7 +40,7 @@
     {foreach $relatedoptions.divisions as $relatedoption}
         <TR class="highlight {if $relatedoption.disabled} blend{/if}" data-target-url="?m=configedit&id={$relatedoption.id}">
             <TD class="valign-top" style="padding-top: 1em;">
-                <strong>{$relatedoption.shortname}</strong><BR>
+                <strong>{$relatedoption.shortname|escape}</strong><BR>
             </TD>
             <TD class="nobr valign-top" style="padding-top: 1em;">
                 {$relatedoption.description} <br><br>

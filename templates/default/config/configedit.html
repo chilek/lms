@@ -74,7 +74,7 @@
 									{trans("Division")}
 								</td>
 								<td>
-									<strong>{$divisioninfo.shortname}</strong>
+									<strong>{$divisioninfo.shortname|escape}</strong>
 									<INPUT type="hidden" name="config[divisionid]" value="{$config.divisionid}">
 								</td>
 							</tr>

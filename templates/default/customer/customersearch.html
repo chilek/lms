@@ -378,8 +378,9 @@
 		<TD>
 			<SELECT SIZE="1" name="d">
 				<OPTION VALUE="">- {trans("all")} -</OPTION>
-				{foreach from=$divisions item=division}
-					<OPTION VALUE="{$division.id}"{if $listdata.division==$division.id} SELECTED{/if}>{$division.shortname|truncate:30:"...":true}</OPTION>
+				{foreach $divisions as $division}
+					<OPTION VALUE="{$division.id}"{if $listdata.division==$division.id} selected{/if}
+						>{$division.shortname|escape|truncate:30:"...":true}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>

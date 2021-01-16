@@ -258,7 +258,7 @@
 			<td>
 				{foreach $user_divisions as $item}
 					{if $item@first}<ul>{/if}
-					<li><a href="?m=divisionedit&id={$item.id}">{$item.shortname}</a></li>
+					<li><a href="?m=divisionedit&id={$item.id}">{$item.label|escape}</a></li>
 					{if $item@last}</ul>{/if}
 				{/foreach}
 			</td>

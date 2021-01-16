@@ -162,7 +162,7 @@
 			{if $config.userid}{$config.login} - {$config.firstname} {$config.lastname}{else}{trans('<!filter>- none -')}{/if}
 		</TD>
 		<TD>
-			{if $config.divisionid}{$config.shortname}{else}{trans('<!filter>- none -')}{/if}
+			{if $config.divisionid}{$config.shortname|escape}{else}{trans('<!filter>- none -')}{/if}
 		</TD>
 		<TD class="lms-ui-buttons text-right nobr">
 			{if $config.disabled}
@@ -228,7 +228,7 @@
 							<div class="import-container-select">
 								<SELECT size="1" id="import-division" {tip text="Select division" trigger="division"}>
 									{foreach $divisions as $division}
-										<OPTION value="{$division.id}">{$division.shortname}</OPTION>
+										<OPTION value="{$division.id}">{$division.label|escape}</OPTION>
 									{/foreach}
 								</SELECT>
 							</div>
@@ -296,7 +296,7 @@
 							<div class="clone-container-select">
 								<SELECT size="1" id="division-name" {tip text="Select user" trigger="division"}>
 									{foreach $divisions as $division}
-										<OPTION value="{$division.id}">{$division.shortname}</OPTION>
+										<OPTION value="{$division.id}">{$division.label|escape}</OPTION>
 									{/foreach}
 								</SELECT>
 							</div>
