@@ -952,6 +952,12 @@ IMG		{ vertical-align: middle; border: 0; }
 .bold		{ font-weight: bold; }
 .crossed	{ text-decoration: line-through; }
 
+.lms-ui-crossed	{
+	text-decoration: @crossed-text-decoration;
+	text-decoration-color: @crossed-text-decoration-color;
+	text-decoration-thickness: @crossed-text-decoration-thickness;
+}
+
 .pre {
 	font-size: @font-size-high;
 	@media screen and (max-width: @font-size-normal-max-width) {
