@@ -49,7 +49,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             'access'            => $nodedata['access'],
             'warning'           => $nodedata['warning'],
             SYSLOG::RES_CUST    => empty($nodedata['ownerid']) ? null : $nodedata['ownerid'],
-            'info'              => $nodedata['info'],
+            'info'              => Utils::removeInsecureHtml($nodedata['info']),
             'chkmac'            => $nodedata['chkmac'],
             'halfduplex'        => $nodedata['halfduplex'],
             'linktype'          => isset($nodedata['linktype']) ? intval($nodedata['linktype']) : 0,
@@ -730,7 +730,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             SYSLOG::RES_USER    => Auth::GetCurrentUser(),
             'access'            => $nodedata['access'],
             'warning'           => $nodedata['warning'],
-            'info'              => $nodedata['info'],
+            'info'              => Utils::removeInsecureHtml($nodedata['info']),
             SYSLOG::RES_NETDEV  => empty($nodedata['netdev']) ? null : $nodedata['netdev'],
             'linktype'          => isset($nodedata['linktype']) ? intval($nodedata['linktype']) : 0,
             'linkradiosector'   => (isset($nodedata['linktype']) && intval($nodedata['linktype']) == 1 ?
