@@ -174,7 +174,7 @@
 						<OPTION VALUE="-1"{if $filter.search.project == -1} selected{/if}>- {trans("all")} -</OPTION>
 						<OPTION VALUE="-2"{if $filter.search.project == -2} selected{/if}>- {trans("without project")} -</OPTION>
 						{foreach $NNprojects as $project}
-						<OPTION VALUE="{$project.id}"{if $filter.search.project == $project.id} selected{/if}>{$project.name}</OPTION>
+							<OPTION value="{$project.id}"{if $filter.search.project == $project.id} selected{/if}>{$project.name|escape}</OPTION>
 						{/foreach}
 					</SELECT>
 					</label>

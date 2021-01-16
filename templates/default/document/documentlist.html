@@ -101,7 +101,7 @@
 						<input type="hidden" name="u[]" value="0">
 						<SELECT name="u[]" onChange="javascript:applyFilter();" multiple class="lms-ui-multiselect" data-default-value="{trans("- all -")}">
 							{foreach $users as $user}
-							<option value="{$user.id}"{if is_array($filter.userid) && in_array($user.id, $filter.userid)} selected{/if}>{$user.name}</option>
+							<option value="{$user.id}"{if is_array($filter.userid) && in_array($user.id, $filter.userid)} selected{/if}>{$user.name|escape}</option>
 							{/foreach}
 						</SELECT>
 					</span>
