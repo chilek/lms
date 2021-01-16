@@ -243,8 +243,8 @@
                                                 {/if}
                                             </td>
                                             <td>
-                                                {$voipaccountinfo.createdby}, {$voipaccountinfo.creationdateh}
-                                                {if $voipaccountinfo.moddate}<br>{$voipaccountinfo.modifiedby}, {$voipaccountinfo.moddateh}{/if}
+                                                {$voipaccountinfo.createdby|escape}, {$voipaccountinfo.creationdateh}
+                                                {if $voipaccountinfo.moddate}<br>{$voipaccountinfo.modifiedby|escape}, {$voipaccountinfo.moddateh}{/if}
                                             </td>
                                         </tr>
                                         {/block}

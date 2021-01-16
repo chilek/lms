@@ -76,7 +76,8 @@
 			<SELECT SIZE="1" NAME="p[]" ONCHANGE="document.choosefilter.submit();" multiple class="lms-ui-multiselect" data-default-value="- {trans("all")} -">
 				<OPTION VALUE="-2"{if is_array($listdata.invprojectid) && in_array(-2, $listdata.invprojectid)} selected{/if} data-exclusive>- {trans("without project")} -</OPTION>
 				{foreach $NNprojects as $project}
-				<OPTION VALUE="{$project.id}"{if is_array($listdata.invprojectid) && in_array($project.id, $listdata.invprojectid)} selected{/if}>{$project.name}</OPTION>
+					<OPTION VALUE="{$project.id}"{if is_array($listdata.invprojectid) && in_array($project.id, $listdata.invprojectid)} selected{/if}
+						>{$project.name|escape}</OPTION>
 				{/foreach}
 			</SELECT>
 			{trans("Ownership:")}
@@ -115,7 +116,7 @@
 			{/if}
 		</TD>
 		<TD class="text-center">
-			{if ($item.invprojectid==1)} Brak {else}{$item.project}{/if}
+			{if ($item.invprojectid==1)}{trans("- none -")}{else}{$item.project|escape}{/if}
 		</TD>
 		<TD class="nobr text-center">
 			({$item.id|string_format:"%04d"})

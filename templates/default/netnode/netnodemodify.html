@@ -63,7 +63,7 @@
 				<select id="project" data-value="{$netdev.project}" data-alt-field="#projectid-value" data-alt-invalid-field="#project-value" {tip class="lms-ui-combobox" text="Select project for this node"} trigger="project">
 					<option value="0" {if !$netdev.invprojectid} selected{/if}>- {trans("none")} -</option>
 					{foreach $NNprojects as $project}
-						<option value="{$project.id}" {if ($netnode.invprojectid == $project.id)} selected{/if}>{$project.name}</option>
+						<option value="{$project.id}" {if ($netnode.invprojectid == $project.id)} selected{/if}>{$project.name|escape}</option>
 					{/foreach}
 				</select>
 			{/box_row}

@@ -79,7 +79,7 @@
 		{/if}
 	</TD>
 	<TD class="nobr">
-		{if $ticket.ownername}{$ticket.ownername|truncate:25:"...":true}{else}-{/if}<br>
+		{if $ticket.ownername}{$ticket.ownername|escape|truncate:25:"...":true}{else}-{/if}<br>
 		{$ticket.lastmodified|date_format:"%Y/%m/%d %H:%M:%S"|default:"-"}
 	</TD>
 	<TD class="text-center nobr ticket-events">

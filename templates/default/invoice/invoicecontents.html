@@ -96,7 +96,7 @@
             </TD>
             <TD class="invoice-contents-sortable-handler">
                 <INPUT TYPE="text" class="invoice-contents-field-edit" NAME="invoice-contents[{$posuid}][name]" SIZE="40" style="width: 300px; display: none;"
-                       value="{htmlspecialchars($row.name)}" data-old-value="{htmlspecialchars($item.name)}"
+                       value="{$row.name|escape}" data-old-value="{$item.name|escape}"
                        {tip text="Enter description"}>
                 <span class="invoice-contents-field-value">{$item.name}</span>
                 {if isset($item.name_custom_contents)}

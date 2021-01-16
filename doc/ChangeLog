@@ -15,6 +15,10 @@ version 27-git (????-??-??):
   - enhancement: allow to control period alignment for assignment bulk creation basing on promotion
     schema - 'phpui.default_assignment_align_periods' configuration variable control this mechanism
     ('true' by default to mimic previous behavior) [chilan]
+  - improvement: 'invoices.customer_credentials_format' specifies userpanel credentials format
+    presented on TCPDF invoices [chilan]
+  - improvement: MD5 encrypted user password support - this allows to use password imported
+    from external systems such as Pyxis4SQL [chilan]
 
 version 26.0 (2020-12-15):
 

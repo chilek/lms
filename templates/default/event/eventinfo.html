@@ -104,7 +104,7 @@
 			{trans("Created by:")}
 		</TD>
 		<TD class="nobr">
-			<A href="?m=userinfo&id={$event.userid}">{$event.username}</A>
+			<A href="?m=userinfo&id={$event.userid}">{$event.username|escape}</A>
 		</TD>
 	</TR>
 {if $event.creationdate != 0}
@@ -251,7 +251,7 @@
 		</TD>
 		<TD class="nobr">
 			{foreach $event.userlist as $userid}
-				<A href="?m=userinfo&id={$userid}">{$userlist[$userid].rname}</A><BR>
+				<A href="?m=userinfo&id={$userid}">{$userlist[$userid].rname|escape}</A><BR>
 			{/foreach}
 		</TD>
 	</TR>

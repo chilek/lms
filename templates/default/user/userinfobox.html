@@ -42,7 +42,7 @@
 				{trans("First name:")}
 			</TD>
 			<TD class="bold">
-				{$userinfo.firstname}
+				{$userinfo.firstname|escape}
 			</TD>
 		</TR>
 		<TR>
@@ -53,7 +53,7 @@
 				{trans("Last name:")}
 			</TD>
 			<TD class="bold">
-				{$userinfo.lastname}
+				{$userinfo.lastname|escape}
 			</TD>
 		</TR>
 {if $userinfo.position}

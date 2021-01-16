@@ -500,8 +500,8 @@
 							<i class="lms-ui-icon-modified-date"></i>
 						</TD>
 						<TD>
-							<span class="bold">{trans("Created:")}</span> {$customerinfo.createdby}, {$customerinfo.creationdateh}<BR>
-							<span class="bold">{trans("Modified:")}</span> {if $customerinfo.moddate}{$customerinfo.modifiedby}, {$customerinfo.moddateh}{else}-{/if}
+							<span class="bold">{trans("Created:")}</span> {$customerinfo.createdby|escape}, {$customerinfo.creationdateh}<BR>
+							<span class="bold">{trans("Modified:")}</span> {if $customerinfo.moddate}{$customerinfo.modifiedby|escape}, {$customerinfo.moddateh}{else}-{/if}
 						</TD>
 					</TR>
 					{/block}

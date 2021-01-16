@@ -92,7 +92,7 @@
 									<td>
 										<SELECT size="1" name="config[userid]" {tip text="Select user" trigger="userid"}>
 											{foreach $userslist as $user}
-												<OPTION value="{$user.id}"{if $config.user == $user.id} selected{/if}>{$user.login} / {$user.name}</OPTION>
+												<OPTION value="{$user.id}"{if $config.user == $user.id} selected{/if}>{$user.login} / {$user.name|escape}</OPTION>
 											{/foreach}
 										</SELECT>
 									</td>

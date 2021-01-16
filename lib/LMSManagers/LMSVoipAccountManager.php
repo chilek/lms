@@ -268,7 +268,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                 $voipaccountdata['flags']      ? $voipaccountdata['flags']      : ConfigHelper::getConfig('voip.default_account_flags', 0),
                 $voipaccountdata['cost_limit'] ? $voipaccountdata['cost_limit'] : null,
                 $voipaccountdata['address_id'] ? $voipaccountdata['address_id'] : null,
-                isset($voipaccountdata['description']) ? $voipaccountdata['description'] : '',
+                isset($voipaccountdata['description']) ? Utils::removeInsecureHtml($voipaccountdata['description']) : '',
             )
         );
 
@@ -453,7 +453,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                 $data['balance']    ? $data['balance']    : 0,
                 $data['cost_limit'] ? $data['cost_limit'] : null,
                 $data['address_id'] ? $data['address_id'] : null,
-                isset($data['description']) ? $data['description'] : '',
+                isset($data['description']) ? Utils::removeInsecureHtml($data['description']) : '',
                 $data['id'],
              )
         );

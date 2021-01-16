@@ -48,7 +48,7 @@
 		</TD>
 		<TD>
 			{if $message.userid}
-			<a href="?m=userinfo&id={$message.userid}">{$message.username}</a>
+			<a href="?m=userinfo&id={$message.userid}">{$message.username|escape}</a>
 			{else}LMS{/if}
 		</TD>
 	</TR>

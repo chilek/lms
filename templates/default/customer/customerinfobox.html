@@ -103,7 +103,7 @@
 								<tr>
 									<td style="width: 1%;">{icon name="home" class="fa-fw" tip="billing address"}</td>
 									<td style="width: 99%;">
-										<span title="{trans('billing address')}">{if $v.teryt}{t a=htmlspecialchars($v.location)}$a (TERRIT){/t}{else}{htmlspecialchars($v.location)}{/if}
+										<span title="{trans('billing address')}">{if $v.teryt}{t a=htmlspecialchars($v.location)}$a (TERRIT){/t}{else}{$v.location|escape}{/if}
 											<a href="https://www.google.com/maps/place/{$v.location}" title="{trans("Google Maps")}">{icon name="location"}</a>
 										</span>
 									</td>
@@ -117,7 +117,7 @@
 								<tr>
 									<td style="width: 1%;">{icon name="mail" class="fa-fw" tip="postal address"}</td>
 									<td style="width: 99%;">
-										<span title="{trans('postal address')}">{if $v.location_name}{htmlspecialchars($v.location_name)}, {/if}{if $v.teryt}{t a=htmlspecialchars($v.location)}$a (TERRIT){/t}{else}{htmlspecialchars($v.location)}{/if}
+										<span title="{trans('postal address')}">{if $v.location_name}{$v.location_name|escape}, {/if}{if $v.teryt}{t a=htmlspecialchars($v.location)}$a (TERRIT){/t}{else}{$v.location|escape}{/if}
 											<a href="https://www.google.com/maps/place/{$v.location}" title="{trans("Google Maps")}">{icon name="location"}</a>
 										</span>
 									</td>
@@ -141,7 +141,7 @@
 										{icon class=$icon tip=$title}
 									</td>
 									<td style="width: 99%;">
-										<span title="{$title}">{if $v.location_name}{htmlspecialchars($v.location_name)}, {/if}{if $v.teryt}{t a=htmlspecialchars($v.location)}$a (TERRIT){/t}{else}{htmlspecialchars($v.location)}{/if}
+										<span title="{$title}">{if $v.location_name}{$v.location_name|escape}, {/if}{if $v.teryt}{t a=htmlspecialchars($v.location)}$a (TERRIT){/t}{else}{$v.location|escape}{/if}
 											<a href="https://www.google.com/maps/place/{$v.location}" title="{trans("Google Maps")}">{icon name="location"}</a>
 										</span>
 									</td>
@@ -164,9 +164,9 @@
 											<TR{if ($contact.type & $smarty.const.CONTACT_DISABLED) == $smarty.const.CONTACT_DISABLED} class="blend"{/if}>
 												<TD class="customer-contact">
 													<div>
-													{if isset($properties.formatter)}{call_user_func($properties['formatter'], $contact)}{else}{htmlspecialchars($contact.contact)}{/if}
+													{if isset($properties.formatter)}{call_user_func($properties['formatter'], $contact)}{else}{$contact.contact|escape}{/if}
 													{if $contact.typestr}[{$contact.typestr}]{/if}
-													{if $contact.name} ({htmlspecialchars($contact.name)|truncate:"40":"...":true}){/if}
+													{if $contact.name} ({$contact.name|escape|truncate:"40":"...":true}){/if}
 													</div>
 												</TD>
 											</TR>
@@ -205,7 +205,7 @@
 									{icon name="user-id-number" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.icn}
 								</TD>
 								<TD WIDTH="99%">
-									{trans("Identity number:")} {htmlspecialchars($customerinfo.icn)}
+									{trans("Identity number:")} {$customerinfo.icn|escape}
 								</TD>
 							</TR>
 						{/if}
@@ -215,7 +215,7 @@
 									{icon name="user-id-number" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.ssn}
 								</TD>
 								<TD WIDTH="99%">
-									{trans("SSN")}: {htmlspecialchars($customerinfo.ssn)}
+									{trans("SSN")}: {$customerinfo.ssn|escape}
 								</TD>
 							</TR>
 						{/if}
@@ -249,7 +249,7 @@
 									<TABLE CELLPADDING="5">
 										<TR>
 											<TD CLASS="fall superlight">
-												{htmlspecialchars($customerinfo.rbename)|replace:"\n":"<BR>"}
+												{$customerinfo.rbename|escape|replace:"\n":"<BR>"}
 											</TD>
 										</TR>
 									</TABLE>
@@ -262,7 +262,7 @@
 									{icon name="user-id-number" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.rbe}
 								</TD>
 								<TD style="width: 99%;">
-									{trans("RBE")}: {htmlspecialchars($customerinfo.rbe)}
+									{trans("RBE")}: {$customerinfo.rbe|escape}
 								</TD>
 							</TR>
 						{/if}
@@ -482,8 +482,8 @@
 							{trans("Modified:")}</B>
 						</TD>
 						<TD WIDTH="98%">
-							{$customerinfo.createdby}, {$customerinfo.creationdateh}<BR>
-							{if $customerinfo.moddate}{$customerinfo.modifiedby}, {$customerinfo.moddateh}{else}-{/if}
+							{$customerinfo.createdby|escape}, {$customerinfo.creationdateh}<BR>
+							{if $customerinfo.moddate}{$customerinfo.modifiedby|escape}, {$customerinfo.moddateh}{else}-{/if}
 						</TD>
 					</TR>
 					{/block}

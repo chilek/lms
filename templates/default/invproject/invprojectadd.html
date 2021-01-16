@@ -14,14 +14,14 @@
 		<TD style="width: 1%;">
 			<SELECT size="1" name="invprojectadd[divisionid]" {tip text="Select division" trigger="divisionid"}>
 				{foreach from=$divisions item=item}
-				<OPTION value="{$item.id}"{if $invprojectadd.division ==$item.id} selected{/if}>{$item.shortname}</OPTION> 
+				<OPTION value="{$item.id}"{if $invprojectadd.division ==$item.id} selected{/if}>{$item.shortname}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>
 		{/if}
 		<TD width="1%"><img src="img/money.gif" alt=""></TD>
 		<TD width="1%"><B>{trans("Name:")}</B></TD>
-		<TD width="96%"><INPUT type="text" size="40" name="invprojectadd[project]" value="{$invprojectadd.project}" {tip text="Enter investment project name" trigger="project" bold=1}></TD>
+		<TD width="96%"><INPUT type="text" size="40" name="invprojectadd[project]" value="{$invprojectadd.project|escape}" {tip text="Enter investment project name" trigger="project" bold=1}></TD>
 	</TR>
     </THEAD>
     <TBODY>
