@@ -107,7 +107,11 @@
 			{icon name="info" label="Body:" class="fa-fw"}
 		</TD>
 		<TD class="fall superlight">
-			{$ticket.message|escape|replace:"\n":"<BR>"}
+			{if $ticket.contenttype == 'text/html'}
+				{$ticket.message}
+			{else}
+				{$ticket.message|escape|replace:"\n":"<BR>"}
+			{/if}
 		</TD>
 	</TR>
 	{/if}
