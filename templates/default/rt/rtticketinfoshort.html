@@ -107,7 +107,7 @@
 			{icon name="info" label="Body:" class="fa-fw"}
 		</TD>
 		<TD class="fall superlight">
-			{$ticket.message|replace:"\n":"<BR>"}
+			{$ticket.message|escape|replace:"\n":"<BR>"}
 		</TD>
 	</TR>
 	{/if}
