@@ -274,8 +274,8 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
     {
         $args = array(
             'login' => $user['login'],
-            'firstname' => $user['firstname'],
-            'lastname' => $user['lastname'],
+            'firstname' => Utils::removeInsecureHtml($user['firstname']),
+            'lastname' => Utils::removeInsecureHtml($user['lastname']),
             'email' => $user['email'],
             'passwd' => crypt($user['password']),
             'rights' => $user['rights'],
@@ -505,8 +505,8 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
     {
         $args = array(
             'login' => $user['login'],
-            'firstname' => $user['firstname'],
-            'lastname' => $user['lastname'],
+            'firstname' => Utils::removeInsecureHtml($user['firstname']),
+            'lastname' => Utils::removeInsecureHtml($user['lastname']),
             'email' => $user['email'],
             'rights' => $user['rights'],
             'hosts' => $user['hosts'],
