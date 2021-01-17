@@ -128,7 +128,7 @@
 							<SELECT size="1" name="customerdata[divisionid]" {tip text="Select division" trigger="divisionid"}>
 								{foreach $divisions as $item}
 									{if !$item.status || $item.id == $customerinfo.divisionid}
-										<option value="{$item.id}"{if $customerinfo.divisionid == $item.id} selected{/if}>{$item.label}</option>
+										<option value="{$item.id}"{if $customerinfo.divisionid == $item.id} selected{/if}>{$item.label|escape}</option>
 									{/if}
 								{/foreach}
 							</SELECT>
