@@ -378,7 +378,8 @@
 									{trans("Name:")}
 								</TD>
 								<TD>
-									<INPUT type="text" name="{$variable_prefix}[name]" value="{if $variables.tariffid<=0}{$variables.name}{/if}" size="30" {tip text="Enter liability name/description (tariffless liabilities only)" trigger="name"}>
+									<INPUT type="text" name="{$variable_prefix}[name]" value="{if $variables.tariffid<=0}{$variables.name|escape}{/if}"
+										size="30" {tip text="Enter liability name/description (tariffless liabilities only)" trigger="name"}>
 								</TD>
 							</TR>
 
@@ -542,7 +543,8 @@
 									{trans("Product ID:")}
 								</TD>
 								<TD>
-									<INPUT type="text" name="{$variable_prefix}[prodid]" value="{$variables.prodid}" size="10" {tip text="Enter liability Product ID (tariffless liabilities only)"}>
+									<INPUT type="text" name="{$variable_prefix}[prodid]" value="{$variables.prodid|escape}"
+										size="10" {tip text="Enter liability Product ID (tariffless liabilities only)"}>
 								</TD>
 							</TR>
 
@@ -703,7 +705,7 @@
 						<span data-tariffaccess="{$customernode.authtype}" class="global-node-checkbox">
 							<label>
 								<input type="checkbox" name="{$variable_prefix}[nodes][{$customernode.id}]" value="{$customernode.id}"{if isset($variables.nodes[$customernode.id])} checked{/if}>
-								<span class="bold">{$customernode.name}</span> ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}
+								<span class="bold">{$customernode.name}</span> ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|escape|truncate:"60":"...":true}{/if}
 							</label>
 							{if isset($variables.node_warns[$customernode.id])}
 								<input type="hidden" name="{$variable_prefix}[node_warns][{$customernode.id}]" value="{$customernode.id}">
@@ -728,7 +730,7 @@
 						<span data-tariffaccess="{$customernode.authtype}" class="global-node-checkbox">
 							<label>
 								<input type="checkbox" name="{$variable_prefix}[nodes][{$customernode.id}]" value="{$customernode.id}"{if isset($variables.nodes[$customernode.id])} checked{/if}>
-								<span class="bold">{$customernode.name}</span> {if !empty($customernode.netdev_name)} / {$customernode.netdev_name}{/if}  ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}
+								<span class="bold">{$customernode.name}</span> {if !empty($customernode.netdev_name)} / {$customernode.netdev_name}{/if}  ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|escape|truncate:"60":"...":true}{/if}
 							</label>
 							{if isset($variables.node_warns[$customernode.id])}
 								<input type="hidden" name="{$variable_prefix}[node_warns][{$customernode.id}]" value="{$customernode.id}">

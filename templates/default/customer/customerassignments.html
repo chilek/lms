@@ -139,7 +139,7 @@
 										<A href="?m=tariffinfo&id={$a.tariffid}">
 											{$a.name} {if count($assignments)>1} ({$a.id}){/if}
 										</A>
-										{if $a.attribute} - {$a.attribute}{/if}
+										{if $a.attribute} - {$a.attribute|escape}{/if}
 									</strong>
 									{if $a.flags & $smarty.const.TARIFF_FLAG_REWARD_PENALTY}
 										{if $a.value < 0}
