@@ -19,7 +19,7 @@
 			{trans("Title:")}
 		</TD>
 		<TD class="bold">
-			{$event.title}
+			{$event.title|escape}
 		</TD>
 	</TR>
     </THEAD>
@@ -129,7 +129,7 @@
 			<B>{trans("Last modified by:")}</B>
 		</TD>
 		<TD class="nobr">
-			<A href="?m=userinfo&id={$event.moduserid}">{$event.modusername}</A>
+			<A href="?m=userinfo&id={$event.moduserid}">{$event.modusername|escape}</A>
 		</TD>
 	</TR>
 {/if}
@@ -155,7 +155,7 @@
 			<B>{trans("Closed by")}:</B>
 		</TD>
 		<TD class="nobr">
-			<A href="?m=userinfo&id={$event.closeduserid}">{$event.closedusername}</A>
+			<A href="?m=userinfo&id={$event.closeduserid}">{$event.closedusername|escape}</A>
 		</TD>
 	</TR>
 {/if}
@@ -192,18 +192,18 @@
 		</TD>
 		<TD class="nobr">
 		{if $event.netnode_name}
-		{icon name="netnode"} <a href="?m=netnodeinfo&id={$event.netnode_id}">{$event.netnode_name}</a>
+		{icon name="netnode"} <a href="?m=netnodeinfo&id={$event.netnode_id}">{$event.netnode_name|escape}</a>
 		{if !empty($event.netnode_location)}
-		    <br>{icon name="location"} {$event.netnode_location}{/if}
+		    <br>{icon name="location"} {$event.netnode_location|escape}{/if}
                 {else}
                     {if $event.customername}
                         {icon name="customer"} <A href="?m=customerinfo&amp;id={$event.customerid}">{$event.customername|truncate:"30":"...":true}</A><br>
                        {if !empty($event.address_id)}
-                            {icon name="location"} {$event.location}
+                            {icon name="location"} {$event.location|escape}
                        {elseif !empty($event.nodeid)}
-                       <a href="?m=nodeinfo&id={$event.nodeid}"> {$event.nodelocation}</a>
+                       <a href="?m=nodeinfo&id={$event.nodeid}"> {$event.nodelocation|escape}</a>
                        {else}
-                           {icon name="location"} {$event.customerlocation}
+                           {icon name="location"} {$event.customerlocation|escape}
                        {/if}
                     {/if}
                 {/if}
@@ -218,7 +218,7 @@
 			{trans("Node:")}
 		</TD>
 		<TD class="nobr">
-			<a href="?m=nodeinfo&id={$event.nodeid}">{$event.node_name}: {$event.node_location}</a>
+			<a href="?m=nodeinfo&id={$event.nodeid}">{$event.node_name}: {$event.node_location|escape}</a>
 		</TD>
 	</TR>
 	{/if}
@@ -234,7 +234,7 @@
 			<TABLE WIDTH="95%" CELLPADDING="5">
 				<TR>
 					<TD class="fall superlight">
-						{$event.note|replace:"\n":"<BR>"}
+						{$event.note|escape|replace:"\n":"<BR>"}
 					</TD>
 				</TR>
 			</TABLE>

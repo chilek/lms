@@ -34,7 +34,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
     {
         $args = array(
             'title' => $event['title'],
-            'description' => $event['description'],
+            'description' => Utils::removeInsecureHtml($event['description']),
             'date' => $event['date'],
             'begintime' => $event['begintime'],
             'enddate' => $event['enddate'],
@@ -89,7 +89,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
     {
         $args = array(
             'title' => $event['title'],
-            'description' => $event['description'],
+            'description' => Utils::removeInsecureHtml($event['description']),
             'date' => $event['date'],
             'begintime' => $event['begintime'],
             'enddate' => $event['enddate'],

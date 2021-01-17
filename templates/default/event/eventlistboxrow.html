@@ -38,9 +38,9 @@
         {/if}
     </TD>
     <TD data-target-url="?m=eventinfo&id={$event.id}">
-        <a href="?m=eventinfo&id={$event.id}"><i class="lms-ui-icon-timetable lms-ui-tooltip-eventinfoshort" data-resourceid="{$event.id}"></i> <span class="bold" {if !$event.closed}style="color:black"{/if}>{$event.title}</span></a>
+        <a href="?m=eventinfo&id={$event.id}"><i class="lms-ui-icon-timetable lms-ui-tooltip-eventinfoshort" data-resourceid="{$event.id}"></i> <span class="bold" {if !$event.closed}style="color:black"{/if}>{$event.title|escape}</span></a>
         {if !ConfigHelper::checkConfig('phpui.timetable_hide_description')}{if $event.description != ''}<br>{icon name="description"} {$event.description}{/if}{/if}
-        {if $event.note != ''}<span{if !$event.closed} style="color: red;"{/if}><br>{icon name="note"} {$event.note}</span>{/if}
+        {if $event.note != ''}<span{if !$event.closed} style="color: red;"{/if}><br>{icon name="note"} {$event.note|escape}</span>{/if}
     </TD>
     <TD class="nobr" colspan="2" data-target-url="?m=eventinfo&id={$event.id}">
         {if $event.netnode_name}
@@ -50,11 +50,11 @@
         {if $event.customername}
             {icon name="customer"} <A href="?m=customerinfo&amp;id={$event.customerid}">{$event.customername|truncate:"30":"...":true}</A><br>
         {if !empty($event.address_id)}
-            {icon name="location"} {$event.location}
+            {icon name="location"} {$event.location|escape}
         {elseif !empty($event.nodeid)}
-            <a href="?m=nodeinfo&id={$event.nodeid}"> {$event.nodelocation}</a>
+            <a href="?m=nodeinfo&id={$event.nodeid}"> {$event.nodelocation|escape}</a>
         {else}
-            {icon name="location"} {$event.customerlocation}
+            {icon name="location"} {$event.customerlocation|escape}
         {/if}
         {/if}
         {/if}
