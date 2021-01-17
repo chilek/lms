@@ -109,7 +109,7 @@
 			{/if}
 		</TD>
 		<TD class="bold">
-			{$message.subject}
+			{$message.subject|escape}
 		</TD>
 		<TD class="lms-ui-buttons text-right nobr">
 			{$message.cnt|default:0}

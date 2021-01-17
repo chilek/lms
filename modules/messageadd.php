@@ -458,8 +458,10 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
         $error['group'] = trans('Incorrect customers group!');
     }
 
+    $html_format = isset($message['wysiwyg']) && isset($message['wysiwyg']['mailbody']) && ConfigHelper::checkValue($message['wysiwyg']['mailbody']);
+
     if ($message['type'] == MSG_MAIL) {
-        $message['body'] = $message['mailbody'];
+        $message['body'] = $html_format ? Utils::removeInsecureHtml($message['mailbody']) : $message['mailbody'];
         if ($message['sender'] == '') {
             $error['sender'] = trans('Sender e-mail is required!');
         } elseif (!check_email($message['sender'])) {
@@ -469,7 +471,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
             $error['from'] = trans('Sender name is required!');
         }
     } elseif ($message['type'] == MSG_WWW || $message['type'] == MSG_USERPANEL || $message['type'] == MSG_USERPANEL_URGENT) {
-        $message['body'] = $message['mailbody'];
+        $message['body'] = $html_format ? Utils::removeInsecureHtml($message['mailbody']) : $message['mailbody'];
     } else {
         $message['body'] = $message['smsbody'];
         $message['sender'] = '';
@@ -642,7 +644,6 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 
         $message['body'] = str_replace("\r", '', $message['body']);
 
-        $html_format = isset($message['wysiwyg']) && isset($message['wysiwyg']['mailbody']) && ConfigHelper::checkValue($message['wysiwyg']['mailbody']);
         $format = $html_format ? 'html' : 'text';
 
         if ($message['type'] == MSG_MAIL) {

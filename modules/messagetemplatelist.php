@@ -54,6 +54,7 @@ if (isset($_GET['action'])) {
             if ($error) {
                 die(json_encode(array('error' => $error)));
             } else {
+                $body = $body_type == 'html' ? Utils::removeInsecureHtml($p[$body_type . '-body']) : $p[$body_type . '-body'];
                 if ($_GET['action'] == 'add') {
                     $id = $LMS->AddMessageTemplate(
                         $p['type'],
@@ -61,7 +62,7 @@ if (isset($_GET['action'])) {
                         $p['subject'],
                         $p['helpdesk-queues'],
                         $p['helpdesk-message-types'],
-                        $p[$body_type . '-body']
+                        $body
                     );
                 } else {
                     $id = $LMS->UpdateMessageTemplate(
@@ -71,7 +72,7 @@ if (isset($_GET['action'])) {
                         $p['subject'],
                         $p['helpdesk-queues'],
                         $p['helpdesk-message-types'],
-                        $p[$body_type . '-body']
+                        $body
                     );
                 }
 

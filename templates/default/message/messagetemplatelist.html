@@ -64,11 +64,11 @@
 			<TD class="nobr text-center" data-template-type="{$template.type}">
 				<i class="{$_MESSAGETEMPLATES[$template.type].class}" title="{$_MESSAGETEMPLATES[$template.type].label}"></i>
 			</TD>
-			<TD class="nobr" data-template-name="{$template.name}">
-				{$template.name}
+			<TD class="nobr" data-template-name="{$template.name|escape}">
+				{$template.name|escape}
 			</TD>
-			<TD class="nobr" data-template-subject="{$template.subject}">
-				{$template.subject}
+			<TD class="nobr" data-template-subject="{$template.subject|escape}">
+				{$template.subject|escape}
 			</TD>
 			<TD>
 				{$template.message|truncate:5000:"..."|replace:"\n":"<BR>"}
