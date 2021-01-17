@@ -32,35 +32,46 @@
 		$('#search,#cat').change(function() {
 			$('#sourcefileid').val('');
 		});
+
+		$('#print-invoices').click(function() {
+			var print_invoices = $(this).is('#print-invoices');
+			if ((print_invoices && !$('tr[data-doctype="{$smarty.const.DOC_INVOICE}"] :checked').length
+					&& !$('tr[data-doctype="{$smarty.const.DOC_CNOTE}"] :checked').length)
+					|| (!print_invoices && !$('tr[data-doctype="{$smarty.const.DOC_DNOTE}"] :checked').length)) {
+				alertDialog($t('No document of given type has been selected!'), this);
+				return;
+			}
+
+			var add = "";
+			var which = 0;
+			$('form[name="page"] [name^="which"]:checked').each(function() {
+				which += parseInt($(this).val());
+			});
+			add += "&which=" + which;
+
+			document.page.action="?m=invoice&print=cached&cash=1" + add;
+			document.page.target="_blank";
+			document.page.submit();
+		});
+
+		$('#print-receipts').click(function() {
+			if (!$('tr[data-doctype="{$smarty.const.DOC_RECEIPT}"] :checked').length) {
+				alertDialog($t('No document of given type has been selected!'), this);
+				return;
+			}
+
+			var add = "";
+			var which = 0;
+			$('form[name="page"] [name^="which"]:checked').each(function() {
+				which += parseInt($(this).val());
+			});
+			add += "&which=" + which;
+
+			document.page.action = "?m=receipt&print=cached&cash=1" + add;
+			document.page.target = "_blank";
+			document.page.submit();
+		});
 	});
-
-	function printr()
-	{
-		var add = "";
-		var which = 0;
-		$('form[name="page"] [name^="which"]:checked').each(function() {
-			which += parseInt($(this).val());
-		});
-		add += "&which=" + which;
-
-		document.page.action = "?m=receipt&print=cached&cash=1" + add;
-		document.page.target = "_blank";
-		document.page.submit();
-	}
-
-	function printi()
-	{
-		var add = "";
-		var which = 0;
-		$('form[name="page"] [name^="which"]:checked').each(function() {
-			which += parseInt($(this).val());
-		});
-		add += "&which=" + which;
-
-		document.page.action="?m=invoice&print=cached&cash=1" + add;
-		document.page.target="_blank";
-		document.page.submit();
-	}
 
 	function filter()
 	{
@@ -182,9 +193,10 @@
     </THEAD>
     <TBODY class="lms-ui-multi-check">
 	{foreach $balancelist as $balance}
-	<TR class="highlight"{if $balance.docid} data-published="{$balance.published}"{/if}>
+	<TR class="highlight"{if $balance.docid} data-published="{$balance.published}"
+			data-doctype="{$balance.doctype}"{/if}>
 		<TD class="nobr">
-                        {$balance.time|date_format:"%Y/%m/%d %H:%M"}
+			{$balance.time|date_format:"%Y/%m/%d %H:%M"}
 		</TD>
 		<TD class="nobr">
 			{if $balance.userid}{$balance.user|truncate:16:"...":true}{else}-{/if}
@@ -214,21 +226,35 @@
 			{if $balance.docid}
 				{if $balance.doctype==$smarty.const.DOC_INVOICE}
 					{if !$balance.published || ConfigHelper::checkPrivilege('published_document_modification')}
-						<A HREF="?m=invoice&id={$balance.docid}&dontpublish=1" class="lms-ui-tooltip-docnumber" data-resourceid="{$balance.docid}" rel="external"><IMG SRC="img/view.gif" ALT="{trans("View")}"></A>
+						{button type="link" icon="view" class="print-invoice lms-ui-tooltip-invoiceinfo"
+							href="?m=invoice&id={$balance.docid}&dontpublish=1"
+							resourceid="{$balance.docid}" external=true icon_tip="View"}
 					{/if}
-					<A HREF="?m=invoice&id={$balance.docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$balance.docid}" rel="external"><IMG SRC="img/print.gif" ALT="{trans("Invoice")}"></A>
+					{button type="link" icon="print" class="print-invoice lms-ui-tooltip-invoiceinfo"
+						href="?m=invoice&id={$balance.docid}"
+						resourceid="{$balance.docid}" external=true icon_tip="Invoice"}
 				{elseif $balance.doctype==$smarty.const.DOC_CNOTE}
 					{if !$balance.published || ConfigHelper::checkPrivilege('published_document_modification')}
-						<A HREF="?m=invoice&id={$balance.docid}&dontpublish=1" class="lms-ui-tooltip-docnumber" data-resourceid="{$balance.docid}" rel="external"><IMG SRC="img/view.gif" ALT="{trans("View")}"></A>
+						{button type="link" icon="view" class="print-invoice lms-ui-tooltip-docnumber"
+							href="?m=invoice&id={$balance.docid}&dontpublish=1"
+							resourceid="{$balance.docid}" external=true icon_tip="View"}
 					{/if}
-					<A HREF="?m=invoice&id={$balance.docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$balance.docid}" rel="external"><IMG SRC="img/printn.gif" alt="{trans("Credit note")}"></A>
+					{button type="link" icon="print" class="print-invoice lms-ui-tooltip-docnumber"
+						href="?m=invoice&id={$balance.docid}"
+						resourceid="{$balance.docid}" external=true icon_tip="Credit note"}
 				{elseif $balance.doctype==$smarty.const.DOC_RECEIPT}
-					<A HREF="?m=receipt&id={$balance.docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$balance.docid}" rel="external"><IMG SRC="img/printr.gif" alt="{trans("Cash receipt")}"></A>
+					{button type="link" icon="print" class="lms-ui-tooltip-docnumber"
+						href="?m=receipt&id={$balance.docid}"
+						resourceid="{$balance.docid}" external=true icon_tip="Cash receipt"}
 				{elseif $balance.doctype==$smarty.const.DOC_DNOTE}
 					{if !$balance.published || ConfigHelper::checkPrivilege('published_document_modification')}
-						<A HREF="?m=note&id={$balance.docid}&dontpublish=1" class="lms-ui-tooltip-docnumber" data-resourceid="{$balance.docid}" rel="external"><IMG SRC="img/view.gif" ALT="{trans("View")}"></A>
+						{button type="link" icon="view" class="lms-ui-tooltip-docnumber"
+							href="?m=note&id={$balance.docid}&dontpublish=1"
+							resourceid="{$balance.docid}" external=true icon_tip="View"}
 					{/if}
-					<A HREF="?m=note&id={$balance.docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$balance.docid}" rel="external"><IMG SRC="img/printd.gif" alt="{trans("Debit note")}"></A>
+					{button type="link" icon="print" class="lms-ui-tooltip-docnumber"
+						href="?m=note&id={$balance.docid}"
+						resourceid="{$balance.docid}" external=true icon_tip="Debit note"}
 				{/if}
 			{/if}
 			<INPUT TYPE="checkbox" class="lms-ui-multi-check" NAME="marks[{$balance.id}]" VALUE="{$balance.id}">
@@ -245,9 +271,10 @@
     <TFOOT>
 	<TR>
 		<TD COLSPAN="8" class="nobr">
-			<A id="deletemarked" HREF="#">{trans("Delete")} <IMG SRC="img/delete.gif" ALT="{trans("Delete")}" HSPACE="2"></A>&nbsp;
-			<A HREF="javascript:printi();">{trans("Print invoices")} <IMG SRC="img/print.gif" ALT="" HSPACE="2"></A>&nbsp;
-			<A HREF="javascript:printr();">{trans("Print cash receipts")} <IMG SRC="img/printr.gif" ALT="" HSPACE="2"></A>&nbsp;
+			{button id="deletemarked" icon="delete" label="Delete"}
+			{trans("Print")}
+			{button icon="print" label="invoices" id="print-invoices"}
+			{button icon="cash" label="cash receipts" id="print-receipts"}
 			<label>
 				<INPUT type="checkbox" name="which[{$smarty.const.DOC_ENTITY_ORIGINAL}]"
 						value="{$smarty.const.DOC_ENTITY_ORIGINAL}"
@@ -294,7 +321,7 @@
 		<TD class="text-right bold nobr">
 			{$listdata.expense|money_format}
 		</TD>
-                <TD colspan="2">&nbsp;</TD>
+		<TD colspan="2">&nbsp;</TD>
 		<TD class="text-right bold nobr">
 			{trans("Balance:")}
 		</TD>
