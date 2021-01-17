@@ -333,7 +333,7 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 			var name = elem.name;
 			var effectiveName = escapeHtml(elem.hasOwnProperty('name_alternative') ? elem.name_alternative : elem.name);
 			var name_class = elem.name_class;
-			var desc = elem.description ? escapeHtml(elem.description) : '';
+			var desc = elem.description ? elem.description : '';
 			var desc_class = elem.description_class;
 			var action = elem.action ? elem.action : '';
 			var tip = elem.hasOwnProperty('tip') ? elem.tip : null;
