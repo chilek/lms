@@ -217,7 +217,7 @@
 												>{$project.name|escape}</OPTION>
 										{/foreach}
 									</SELECT>
-									<INPUT TYPE="TEXT" NAME="nodedata[projectname]" VALUE="{$nodedata.projectname}"
+									<INPUT TYPE="TEXT" NAME="nodedata[projectname]" VALUE="{$nodedata.projectname|escape}"
 										{tip text="Enter new project name" trigger="projectname" } id="projectname"
 										{if !isset($nodedata.invprojectid) || empty($nodedata.invprojectid)} style="display: none;"{/if}>
 
