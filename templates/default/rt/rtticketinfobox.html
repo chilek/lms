@@ -118,7 +118,7 @@
 									<i class="lms-ui-icon-content lms-ui-icon-user"></i>{trans("Created by:")}
 								</TD>
 								<TD style="width: 99%;">
-									<A href="?m=userinfo&amp;id={$ticket.creatorid}">{$ticket.creator}</a>
+									<A href="?m=userinfo&amp;id={$ticket.creatorid}">{$ticket.creator|escape}</a>
 								</TD>
 							</TR>
 							{/if}
@@ -258,7 +258,7 @@
 									<i class="lms-ui-icon-content lms-ui-icon-location"></i>{trans("Location:")}
 								</TD>
 								<TD>
-									{$ticket.location}
+									{$ticket.location|escape}
 								</TD>
 							</TR>
 							{/if}
@@ -280,7 +280,7 @@
 									<i class="lms-ui-icon-content lms-ui-icon-netnode"></i>{trans("Network Device Node:")}
 								</TD>
 								<TD>
-									<A href="?m=netnodeinfo&id={$ticket.netnodeid}">{$ticket.netnode_name}</A>
+									<A href="?m=netnodeinfo&id={$ticket.netnodeid}">{$ticket.netnode_name|escape}</A>
 								</TD>
 							</TR>
 							{/if}
@@ -290,7 +290,7 @@
 									<i class="lms-ui-icon-content lms-ui-icon-netdev"></i>{trans("Device:")}
 								</TD>
 								<TD>
-									<A href="?m=netdevinfo&id={$ticket.netdevid}">{$ticket.netdev_name}</A>
+									<A href="?m=netdevinfo&id={$ticket.netdevid}">{$ticket.netdev_name|escape}</A>
 								</TD>
 							</TR>
 							{/if}
@@ -300,7 +300,7 @@
 									{icon name="invproject" label="Investment project:"}
 								</TD>
 								<TD>
-									{$ticket.invproject_name}</A>
+									{$ticket.invproject_name|escape}</A>
 								</TD>
 							</TR>
 							{/if}
@@ -310,22 +310,24 @@
 									{icon name="parentticket" label="Parent ticket:"}
 								</TD>
 								<TD>
-									#{$ticket.parent.id|string_format:"%06d"} <a href="?m=rtticketview&id={$ticket.parent.id}">{$ticket.parent.name}</a><br>
+									#{$ticket.parent.id|string_format:"%06d"} <a href="?m=rtticketview&id={$ticket.parent.id}">{$ticket.parent.name|escape}</a><br>
 								</TD>
 							</TR>
 							{/if}
 							{if $ticket.childtickets}
-                                                        <TR>
-                                                                <TD class="bold">
-                                                                        {icon name="childticket" label="Child tickets:"}
-                                                                </TD>
-								<TD>
-								{foreach $ticket.childtickets as $t}
-                                                                        #{$t.id|string_format:"%06d"} <a href="?m=rtticketview&id={$t.id}">{$t.subject}</a><br>
-								{/foreach}
-                                                                </TD>
-                                                        </TR>
-                                                        {/if}
+								<TR>
+									<TD class="bold">
+										{icon name="childticket" label="Child tickets:"}
+									</TD>
+									<TD>
+										{foreach $ticket.childtickets as $t}
+											#{$t.id|string_format:"%06d"}
+											<a href="?m=rtticketview&id={$t.id}">{$t.subject|escape}</a>
+											<br>
+										{/foreach}
+									</TD>
+								</TR>
+							{/if}
 							{if $ticket.relatedtickets}
 							<TR>
 								<TD class="bold nobr">
@@ -333,7 +335,7 @@
 								</TD>
 								<TD>
 									{foreach $ticket.relatedtickets as $i}
-										#{$i.id|string_format:"%06d"} <a href="?m=rtticketview&id={$i.id}">{$i.name}</a><br>
+										#{$i.id|string_format:"%06d"} <a href="?m=rtticketview&id={$i.id}">{$i.name|escape}</a><br>
 									{/foreach}
 								</TD>
 							</TR>
