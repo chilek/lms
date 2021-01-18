@@ -136,7 +136,7 @@
 							{else}
 								{if $a.tariffid}
 									<strong>
-										<A href="?m=tariffinfo&id={$a.tariffid}">
+										<A href="?m=tariffinfo&id={$a.tariffid}" {if !$a.commited} class="lms-ui-assignment-not-commited"{/if}>
 											{$a.name} {if count($assignments)>1} ({$a.id}){/if}
 										</A>
 										{if $a.attribute} - {$a.attribute|escape}{/if}
