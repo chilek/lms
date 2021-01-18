@@ -3102,6 +3102,7 @@ $_LANG['Promotion is indirectly assigned to liabilities, so name change is disab
 $_LANG['Promotion is indirectly assigned to liabilities, change its name can have impact on existing assignments!'] = 'Promocja jest pośrednio przypisana do zobowiązań, zatem zmiana jej nazwy może mieć wpływ na istniejące zobowiązania';
 $_LANG['Schemas:'] = 'Schematy:';
 $_LANG['Schema\'s Tariffs ($a):'] = 'Taryfy schematu ($a)';
+$_LANG['Edit schema'] = 'Edytuj schemat';
 $_LANG['Edit schema tariffs'] = 'Edytuj taryfy schematu';
 $_LANG['Schema Edit: $a'] = 'Edycja schematu: $a';
 $_LANG['Schema Info: $a'] = 'Informacje o schemacie: $a';

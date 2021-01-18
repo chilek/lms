@@ -7,7 +7,8 @@
 	<COLGROUP>
 		<COL style="width: 1%;">
 		<COL style="width: 1%;">
-		<COL style="width: 95%;">
+		<COL style="width: 94%;">
+		<COL style="width: 1%;">
 		<COL style="width: 1%;">
 		<COL style="width: 1%;">
 		<COL style="width: 1%;">
@@ -30,13 +31,16 @@
 			{trans("Tariffs:")}
 		</TD>
 		<TD class="text-right nobr">
+			{trans("Assignments:")}
+		</TD>
+		<TD class="text-right nobr">
 			{button icon="add" label="Add promotion" href="?m=promotionadd"}
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	{foreach $promotionlist as $promo}
-	<TR class="highlight {if $promo.disabled} blend{/if}" data-name="{$promo.name}">
+	<TR class="highlight {if $promo.disabled} blend{/if}{if $promo.deleted} lms-ui-resource-deleted{/if}" data-name="{$promo.name}">
 		<TD nowrap onClick="return self.location.href='?m=promotioninfo&amp;id={$promo.id}';">
 			<IMG src="img/promo.gif" ALT=""> <B>{$promo.name}</B>
 			{if $promo.datefrom || $promo.dateto}
@@ -61,12 +65,17 @@
 			{$promo.tariffs|default:"-"}
 		</TD>
 		<TD class="text-right nobr">
+			{$promo.assignments|default:"-"}
+		</TD>
+		<TD class="text-right nobr">
 			{if $promo.disabled}
 				{button type="link" icon="disconnected" tip="Enable" href="?m=promotionset&id={$promo.id}&access={$promo.disabled}"}
 			{else}
 				{button type="link" icon="connected" tip="Disable" href="?m=promotionset&id={$promo.id}&access={$promo.disabled}"}
 			{/if}
-			{button type="link" icon="delete" tip="Delete" href="?m=promotiondel&id={$promo.id}"}
+			{if !$promo.deleted || !$promo.assignments}
+				{button type="link" icon="delete" tip="Delete" href="?m=promotiondel&id={$promo.id}"}
+			{/if}
 			{button type="link" icon="clone" tip="Clone" href="?m=promotionclone&id={$promo.id}"}
 			{button type="link" icon="edit" tip="Edit" href="?m=promotionedit&id={$promo.id}"}
 			{button type="link" icon="info" tip="Info" href="?m=promotioninfo&id={$promo.id}"}
@@ -74,7 +83,7 @@
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD colspan="6" class="empty-table">
+		<TD colspan="7" class="empty-table">
 			<p>{trans("There are no promotions in database.")}</p>
 		</TD>
 	</TR>
@@ -89,7 +98,7 @@
 		<TD class="bold nobr">
 			{$listdata.total|default:"0"}
 		</TD>
-		<TD COLSPAN="2"></TD>
+		<TD COLSPAN="3"></TD>
 		<TD class="text-right">
 			{button icon="add" label="Add promotion" href="?m=promotionadd"}
 		</TD>
