@@ -974,7 +974,7 @@ if (empty($types) || in_array('contracts', $types)) {
                 HAVING MAX(a.dateto) >= $daystart + $days * 86400 AND MAX(a.dateto) < $daystart + ($days + 1) * 86400
             ) d ON d.customerid = c.id" :
             "JOIN (
-                SELECT DISTINCT customerid, 0 AS dateto FROM documents
+                SELECT DISTINCT customerid, dc.todate AS dateto FROM documents
                 JOIN documentcontents dc ON dc.docid = documents.id
                 WHERE dc.todate >= $daystart + $days * 86400 AND dc.todate < $daystart + ($days + 1) * 86400
                     AND documents.type IN (" . DOC_CONTRACT . ',' . DOC_ANNEX . ")
