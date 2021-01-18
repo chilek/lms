@@ -181,6 +181,7 @@ $params['short'] = 1;
 if (ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users')) {
     $params['userAccess'] = 1;
 }
+$params['withDeleted'] = 1;
 $userlist = $LMS->GetUserList($params);
 
 $SMARTY->assign('userlist', $userlist);

@@ -19,6 +19,8 @@ version 27-git (????-??-??):
     presented on TCPDF invoices [chilan]
   - improvement: MD5 encrypted user password support - this allows to use password imported
     from external systems such as Pyxis4SQL [chilan]
+  - improvement: add support for filtering events in timetable and schedule
+    that are assigned to users which are deleted or have no access [ravvar]
 
 version 26.0 (2020-12-15):
 

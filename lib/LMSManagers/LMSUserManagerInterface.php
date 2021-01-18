@@ -38,7 +38,7 @@ interface LMSUserManagerInterface
 
     public function getUserName($id = null);
 
-    public function getUserNames();
+    public function getUserNames($params = array());
 
     public function getUserNamesIndexedById();
 

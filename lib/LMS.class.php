@@ -401,10 +401,10 @@ class LMS
         return $manager->getUserName($id);
     }
 
-    public function GetUserNames()
+    public function GetUserNames($params = array())
     {
         $manager = $this->getUserManager();
-        return $manager->getUserNames();
+        return $manager->getUserNames($params);
     }
 
     public function getUserNamesIndexedById()
