@@ -292,7 +292,7 @@
 									data-tooltip-message="modifiable by selected users:<br><strong>$a</strong>" data-separator="<br>"
 									multiple>
 								{foreach $users as $user}
-								<option value="{$user.id}"{if isset($formdata.users[$key]) && in_array($user.id, $formdata.users[$key])} selected{/if}>{user.rname|escape}</option>
+								<option value="{$user.id}"{if isset($formdata.users[$key]) && in_array($user.id, $formdata.users[$key])} selected{/if}>{$user.rname|escape}</option>
 								{/foreach}
 							</SELECT>
 						</div>
