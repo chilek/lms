@@ -297,9 +297,11 @@ function multiselect(options) {
 
 			var text = $(this).attr('data-html-content');
 			if (!text) {
-				text = $(this).text();
+				text = escapeHtml($(this).text().trim());
+			} else {
+				text = text.trim();
 			}
-			list += '<span '+ (crossed === '' ? ' class="lms-ui-crossed"' : '')+'>' + escapeHtml(text.trim()) + '</span>';
+			list += '<span '+ (crossed === '' ? ' class="lms-ui-crossed"' : '')+'>' + text + '</span>';
 
 			list += '</li>';
 		});
