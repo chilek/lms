@@ -352,7 +352,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         // Create assignments according to promotion schema
         if (!empty($data['promotionassignmentid']) && !empty($data['schemaid'])) {
-            $align_periods = !isset($data['align-periods']) || !empty($data['align-periods']);
+            $align_periods = isset($data['align-periods']) && !empty($data['align-periods']);
 
             $tariff = $this->db->GetRow('SELECT a.data, s.data AS sdata, t.name, t.type, t.value, t.currency, t.period,
                                             t.id, t.prodid, t.taxid, t.splitpayment, t.taxcategory
