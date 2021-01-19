@@ -209,6 +209,18 @@
 			{currency_selection selected=$cnote.currency elementname="cnote[currency]" locked=true}
 		</td>
 	</tr>
+	<tr>
+		<td class="bold">{trans("Recipient address:")}</td>
+		<td>
+			{if $cnote.customerid && $cnote.recipient_address_id}
+				{$selected_address_id = $cnote.recipient_address_id}
+			{else}
+				{$selected_address_id = null}
+			{/if}
+			{include file="customer/customeraddresses.html" id="customer_addresses" name="cnote[recipient_address_id]"
+				trigger="address_id" selected_address_id=$selected_address_id preselection=false}
+		</td>
+	</tr>
 	<TR{if empty($messagetemplates)} style="display: none;"{/if}>
 		<td class="bold nobr">
 			{trans("Reason template:")}
@@ -431,4 +443,10 @@
 	</TBODY>
 </TABLE>
 </FORM>
+<script>
+
+	var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
+	customer_addresses.init();
+
+</script>
 {/block}

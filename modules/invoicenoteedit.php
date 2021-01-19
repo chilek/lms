@@ -514,6 +514,28 @@ switch ($action) {
 
         $DB->BeginTrans();
 
+        // updates customer recipient address stored in document
+        $prev_rec_addr = $DB->GetOne('SELECT recipient_address_id FROM documents WHERE id = ?', array($iid));
+        if (empty($prev_rec_addr)) {
+            $prev_rec_addr = -1;
+        }
+
+        if ($prev_rec_addr != $cnote['recipient_address_id']) {
+            if ($prev_rec_addr > 0) {
+                $DB->Execute('DELETE FROM addresses WHERE id = ?', array($prev_rec_addr));
+            }
+
+            if ($cnote['recipient_address_id'] > 0) {
+                $DB->Execute(
+                    'UPDATE documents SET recipient_address_id = ? WHERE id = ?',
+                    array(
+                        $LMS->CopyAddress($cnote['recipient_address_id']),
+                        $iid,
+                    )
+                );
+            }
+        }
+
         $use_current_customer_data = isset($cnote['use_current_customer_data']);
         if ($use_current_customer_data) {
             $customer = $LMS->GetCustomer($cnote['customerid'], true);
@@ -735,6 +757,15 @@ $hook_data = array(
 $hook_data = $LMS->ExecuteHook('invoicenoteedit_before_display', $hook_data);
 $contents = $hook_data['contents'];
 $cnote = $hook_data['cnote'];
+
+$addresses = $LMS->getCustomerAddresses($cnote['customerid']);
+if (isset($cnote['recipient_address'])) {
+    $addresses = array_replace(
+        array($cnote['recipient_address']['address_id'] => $cnote['recipient_address']),
+        $addresses
+    );
+}
+$SMARTY->assign('addresses', $addresses);
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('contents', $contents);

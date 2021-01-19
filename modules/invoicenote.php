@@ -96,6 +96,7 @@ if (isset($_GET['id']) && $action == 'init') {
     $cnote['cdate'] = $currtime;
     //$cnote['sdate'] = $currtime;
     $cnote['sdate'] = $invoice['sdate'];
+    $cnote['customerid'] = $invoice['customerid'];
     $cnote['reason'] = '';
     $cnote['paytype'] = $invoice['paytype'];
     $cnote['splitpayment'] = $invoice['splitpayment'];
@@ -119,6 +120,8 @@ if (isset($_GET['id']) && $action == 'init') {
     $cnote['deadline'] = $cnote['cdate'] + $cnote['paytime'] * 86400;
 
     $cnote['use_current_division'] = true;
+
+    $cnote['recipient_address_id'] = $invoice['recipient_address_id'];
 
     $hook_data = array(
         'invoice' => $invoice,
@@ -250,6 +253,7 @@ switch ($action) {
         $cnote['currency'] = $oldcurrency;
         $cnote['oldcurrency'] = $oldcurrency;
         $cnote['oldcurrencyvalue'] = $oldcurrencyvalue;
+        $cnote['customerid'] = $invoice['customerid'];
 
         // finally check if selected customer can use selected numberplan
         $divisionid = !empty($cnote['use_current_division']) ? $invoice['current_divisionid'] : $invoice['divisionid'];
@@ -547,10 +551,10 @@ switch ($action) {
             $fullnumber = null;
         }
 
-        if (!empty($invoice['recipient_address_id'])) {
-            $invoice['recipient_address_id'] = $LMS->CopyAddress($invoice['recipient_address_id']);
+        if (!empty($cnote['recipient_address_id'])) {
+            $cnote['recipient_address_id'] = $LMS->CopyAddress($cnote['recipient_address_id']);
         } else {
-            $invoice['recipient_address_id'] = null;
+            $cnote['recipient_address_id'] = null;
         }
 
         if (empty($invoice['post_address_id'])) {
@@ -610,7 +614,7 @@ switch ($action) {
             'div_inv_author' => $division['inv_author'] ? $division['inv_author'] : '',
             'div_inv_cplace' => $division['inv_cplace'] ? $division['inv_cplace'] : '',
             'fullnumber' => $fullnumber,
-            'recipient_address_id' => $invoice['recipient_address_id'],
+            'recipient_address_id' => $cnote['recipient_address_id'],
             'post_address_id' => $invoice['post_address_id'],
             'currency' => $cnote['currency'],
             'currencyvalue' => $cnote['currencyvalue'],
@@ -735,6 +739,15 @@ $hook_data = array(
 $hook_data = $LMS->ExecuteHook('invoicenote_before_display', $hook_data);
 $contents = $hook_data['contents'];
 $invoice = $hook_data['invoice'];
+
+$addresses = $LMS->getCustomerAddresses($invoice['customerid']);
+if (isset($invoice['recipient_address'])) {
+    $addresses = array_replace(
+        array($invoice['recipient_address']['address_id'] => $invoice['recipient_address']),
+        $addresses
+    );
+}
+$SMARTY->assign('addresses', $addresses);
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('contents', $contents);
