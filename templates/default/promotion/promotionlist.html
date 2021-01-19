@@ -68,16 +68,20 @@
 			{$promo.assignments|default:"-"}
 		</TD>
 		<TD class="text-right nobr">
-			{if $promo.disabled}
-				{button type="link" icon="disconnected" tip="Enable" href="?m=promotionset&id={$promo.id}&access={$promo.disabled}"}
-			{else}
-				{button type="link" icon="connected" tip="Disable" href="?m=promotionset&id={$promo.id}&access={$promo.disabled}"}
+			{if !$promo.deleted}
+				{if $promo.disabled}
+					{button type="link" icon="disconnected" tip="Enable" href="?m=promotionset&id={$promo.id}&access={$promo.disabled}"}
+				{else}
+					{button type="link" icon="connected" tip="Disable" href="?m=promotionset&id={$promo.id}&access={$promo.disabled}"}
+				{/if}
 			{/if}
 			{if !$promo.deleted || !$promo.assignments}
 				{button type="link" icon="delete" tip="Delete" href="?m=promotiondel&id={$promo.id}"}
 			{/if}
 			{button type="link" icon="clone" tip="Clone" href="?m=promotionclone&id={$promo.id}"}
-			{button type="link" icon="edit" tip="Edit" href="?m=promotionedit&id={$promo.id}"}
+			{if !$promo.deleted}
+				{button type="link" icon="edit" tip="Edit" href="?m=promotionedit&id={$promo.id}"}
+			{/if}
 			{button type="link" icon="info" tip="Info" href="?m=promotioninfo&id={$promo.id}"}
 		</TD>
 	</TR>

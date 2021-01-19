@@ -43,17 +43,21 @@
 					{$schema.assignments|default:"-"}
 				</td>
 			    <TD class="nobr">
-					{if $schema.disabled}
-						{button type="link" icon="disconnected" tip="Enable" href="?m=promotionschemaset&id={$schema.id}&access={$schema.disabled}"}
-					{else}
-						{button type="link" icon="connected" tip="Disable" href="?m=promotionschemaset&id={$schema.id}&access={$schema.disabled}"}
+					{if !$schema.deleted}
+						{if $schema.disabled}
+							{button type="link" icon="disconnected" tip="Enable" href="?m=promotionschemaset&id={$schema.id}&access={$schema.disabled}"}
+						{else}
+							{button type="link" icon="connected" tip="Disable" href="?m=promotionschemaset&id={$schema.id}&access={$schema.disabled}"}
+						{/if}
 					{/if}
 					{if !$schema.deleted || !$schema.assignments}
 						{button type="link" class="delete-promotion" href="?m=promotionschemadel&id={$schema.id}"
 							icon="delete" tip="Delete"}
 					{/if}
 					{button type="link" href="?m=promotionschemaclone&id={$schema.id}" icon="clone" tip="Clone"}
-					{button type='link' icon="edit" href="?m=promotionschemaedit&id={$schema.id}" tip="Edit schema"}
+					{if !$schema.deleted}
+						{button type='link' icon="edit" href="?m=promotionschemaedit&id={$schema.id}" tip="Edit schema"}
+					{/if}
 					{button type="link" icon="view" href="?m=promotionschemainfo&id={$schema.id}" tip="Info"}
 			    </TD>
 			</TR>
