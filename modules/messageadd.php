@@ -209,12 +209,12 @@ function GetRecipients($filter, $type = MSG_MAIL)
         .($disabled ? ' AND EXISTS (SELECT 1 FROM vnodes WHERE ownerid = c.id
 			GROUP BY ownerid HAVING (SUM(access) != COUNT(access)))' : '')
         . ($indebted ? ' AND COALESCE(b.value, 0) < 0' : '')
-        . ($indebted2 ? ' AND COALESCE(b.value, 0) < -t.value' : '')
-        . ($indebted3 ? ' AND COALESCE(b.value, 0) < -t.value * 2' : '')
+        . ($indebted2 ? ' AND t.value > 0 AND COALESCE(b.value, 0) < -t.value' : '')
+        . ($indebted3 ? ' AND t.value > 0 AND COALESCE(b.value, 0) < -t.value * 2' : '')
         . ($notindebted ? ' AND COALESCE(b.value, 0) >= 0' : '')
         . ($expired_indebted ? ' AND COALESCE(b2.value, 0) < 0' : '')
-        . ($expired_indebted2 ? ' AND COALESCE(b2.value, 0) < -t.value' : '')
-        . ($expired_indebted3 ? ' AND COALESCE(b2.value, 0) < -t.value * 2' : '')
+        . ($expired_indebted2 ? ' AND t.value > 0 AND COALESCE(b2.value, 0) < -t.value' : '')
+        . ($expired_indebted3 ? ' AND t.value > 0 AND COALESCE(b2.value, 0) < -t.value * 2' : '')
         . ($expired_notindebted ? ' AND COALESCE(b2.value, 0) >= 0' : '')
         . ($opened_documents ? ' AND c.id IN (SELECT DISTINCT customerid FROM documents
 			WHERE documents.closed = 0
