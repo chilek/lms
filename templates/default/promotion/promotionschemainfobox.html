@@ -12,6 +12,7 @@
 		</TD>
 		<TD class="bold" colspan="2">
 			{$schema.name} ({$schema.id|string_format:"%04d"})
+			{if $schema.deleted} <span class="lms-ui-alert">({trans("deleted promotion schema")})</span>{/if}
 		</TD>
 	</TR>
 	</THEAD>
@@ -62,8 +63,12 @@
 	{/if}
 	<TR>
 		<TD class="lms-ui-box-buttons" colspan="3">
-			{button icon="edit" label="Edit" href="?m=promotionschemaedit&id={$schema.id}"}
-			{button icon="delete" label="Delete" id="delete-promotionschema" data_href="?m=promotionschemadel&id={$schema.id}"}
+			{if !$schema.deleted}
+				{button icon="edit" label="Edit" href="?m=promotionschemaedit&id={$schema.id}"}
+			{/if}
+			{if !$schema.deleted || !$schema.assignments}
+				{button icon="delete" label="Delete" id="delete-promotionschema" data_href="?m=promotionschemadel&id={$schema.id}"}
+			{/if}
 		</TD>
 	</TR>
 	</TBODY>

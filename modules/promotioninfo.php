@@ -25,7 +25,14 @@
  */
 
 $promotion = $DB->GetRow(
-    'SELECT * FROM promotions WHERE id = ?',
+    'SELECT
+        p.id, p.name, p.description, p.disabled, p.datefrom, p.dateto, p.deleted,
+        COUNT(a.*) AS assignments
+    FROM promotions p
+    LEFT JOIN promotionschemas s ON s.promotionid = p.id
+    LEFT JOIN assignments a ON a.promotionschemaid = s.id    
+    WHERE p.id = ?
+    GROUP BY p.id, p.name, p.description, p.disabled, p.datefrom, p.dateto, p.deleted',
     array(intval($_GET['id']))
 );
 

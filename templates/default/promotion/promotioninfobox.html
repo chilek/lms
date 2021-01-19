@@ -7,6 +7,7 @@
 		</TD>
 		<TD WIDTH="98%" COLSPAN="2">
 			<B>{$promotion.name} ({$promotion.id|string_format:"%04d"})</B>
+			{if $promotion.deleted} <span class="lms-ui-alert">({trans("deleted promotion")})</span>{/if}
 		</TD>
 	</TR>
     </THEAD>
@@ -35,9 +36,12 @@
 	{/if}
 	<TR>
 		<TD colspan="3" class="lms-ui-box-buttons">
-			{button icon="edit" label="Edit" href="?m=promotionedit&id={$promotion.id}"}
-			{button icon="delete" label="Delete" id="delete-promotion" data_href="?m=promotiondel&id={$promotion.id}"}
-			</FORM>
+			{if !$promotion.deleted}
+				{button icon="edit" label="Edit" href="?m=promotionedit&id={$promotion.id}"}
+			{/if}
+			{if !$promotion.deleted || !$promotion.assignments}
+				{button icon="delete" label="Delete" id="delete-promotion" data_href="?m=promotiondel&id={$promotion.id}"}
+			{/if}
 		</TD>
 	</TR>
     </TBODY>

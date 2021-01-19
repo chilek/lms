@@ -28,7 +28,7 @@ $id = intval($_GET['id']);
 
 if ($id) {
     $assignments = $DB->GetOne(
-        'SELECT COUNT(a.id) FROM assignment a
+        'SELECT COUNT(a.id) FROM assignments a
         JOIN promotionschemas s ON s.id = a.promotionschemaid
         WHERE s.promotionid = ?',
         array($id)

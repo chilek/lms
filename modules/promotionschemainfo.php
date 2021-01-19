@@ -25,10 +25,16 @@
  */
 
 $schema = $DB->GetRow(
-    'SELECT s.*, p.id AS pid, p.name AS promotion
+    'SELECT
+        s.id, s.name, s.description, s.data, s.disabled, s.deleted, s.length,
+        p.id AS pid, p.name AS promotion,
+        COUNT(a.*) AS assignments
     FROM promotionschemas s
     JOIN promotions p ON (p.id = s.promotionid)
-    WHERE s.id = ? AND s.deleted = 0 AND p.deleted = 0',
+    LEFT JOIN assignments a ON a.promotionschemaid = s.id
+    WHERE s.id = ?
+    GROUP BY s.id, s.name, s.description, s.data, s.disabled, qs.deleted, s.length,
+        p.id, p.name',
     array(intval($_GET['id']))
 );
 
