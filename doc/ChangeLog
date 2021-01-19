@@ -21,6 +21,8 @@ version 27-git (????-??-??):
     from external systems such as Pyxis4SQL [chilan]
   - improvement: add support for filtering events in timetable and schedule
     that are assigned to users which are deleted or have no access [ravvar]
+  - improvement: change the management of assigned users in the event
+    for disabled or deleted users [ravvar]
 
 version 26.0 (2020-12-15):
 
