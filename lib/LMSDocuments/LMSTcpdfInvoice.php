@@ -967,13 +967,13 @@ class LMSTcpdfInvoice extends LMSInvoice
         $this->invoice_memo();
         if (($this->data['customerbalance'] < 0 || ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.always_show_form', true)))
             && !isset($this->data['rebate'])) {
-            if ($this->backend->GetY() > 180) {
-                $this->backend->AppendPage();
-            }
-
             /* FT-0100 form */
             $lms = LMS::getInstance();
             if ($lms->checkCustomerConsent($this->data['customerid'], CCONSENT_TRANSFERFORM)) {
+                if ($this->backend->GetY() > 180) {
+                    $this->backend->AppendPage();
+                }
+
                 $this->invoice_transferform(new LMSTcpdfTransferForm('Transfer form', $pagesize = 'A4', $orientation = 'portrait'));
             }
         }
