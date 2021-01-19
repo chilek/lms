@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -84,8 +84,8 @@ switch ($_GET['action']) {
         break;
 }
 
-$userlist = $LMS->GetUserNames();
-unset($userlist['total']);
+$params['withDeleted'] = 1;
+$userlist = $LMS->GetUserNames($params);
 
 if (isset($_POST['event'])) {
     $event = $_POST['event'];
