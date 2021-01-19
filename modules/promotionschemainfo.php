@@ -33,7 +33,7 @@ $schema = $DB->GetRow(
     JOIN promotions p ON (p.id = s.promotionid)
     LEFT JOIN assignments a ON a.promotionschemaid = s.id
     WHERE s.id = ?
-    GROUP BY s.id, s.name, s.description, s.data, s.disabled, qs.deleted, s.length,
+    GROUP BY s.id, s.name, s.description, s.data, s.disabled, s.deleted, s.length,
         p.id, p.name',
     array(intval($_GET['id']))
 );
