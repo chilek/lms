@@ -23,6 +23,7 @@ version 27-git (????-??-??):
     that are assigned to users which are deleted or have no access [ravvar]
   - improvement: change the management of assigned users in the event
     for disabled or deleted users [ravvar]
+  - improvement: allow to change recipient address during invoice note create or edit [chilan]
 
 version 26.0 (2020-12-15):
 
