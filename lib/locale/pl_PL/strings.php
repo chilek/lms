@@ -26,7 +26,7 @@
 
 $_LANG['ignore'] = 'ignoruj';
 
-$_LANG['full calendarperiods'] = 'pełne okresy kalendarzowe';
+$_LANG['full calendar periods'] = 'pełne okresy kalendarzowe';
 
 $_LANG['new document customer notification'] = 'powiadomienie klienta o nowym dokumencie';
 
