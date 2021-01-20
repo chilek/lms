@@ -3,6 +3,23 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
+
+<style>
+
+	#consent-table {
+		padding-right: 2em;
+	}
+
+	#consent-table > .lmsbox-inner {
+		border: 1px dotted black;
+	}
+
+	#consent-table > .lmsbox-inner > tfoot {
+		border: 0;
+	}
+
+</style>
+
 <script>
 
 	function PrintList() {
@@ -236,6 +253,54 @@
 			</label>
 		</TD>
 	</TR>
+
+	<TR>
+		<TD class="bold nobr">
+			{icon name="consent"} {trans("Consents:")}
+		</TD>
+		<TD id="consent-table">
+			<table class="lmsbox-inner lms-ui-background-cycle">
+				<colgroup>
+					<col style="width: 70%;">
+					<col style="width: 30%;">
+				</colgroup>
+				<tbody>
+					{foreach $_CCONSENTS as $consentid => $consent}
+					<tr class="highlight">
+						<td>
+							{$consent.label}
+						</td>
+						<td>
+							<label>
+								<input type="radio" class="cconsent" name="consents[{$consentid}]" value="-1"
+									{if !isset($consents[$consentid]) || $consents[$consentid] == -1} checked{/if}>
+								{trans("ignore")}
+							</label>
+							<label>
+								<input type="radio" class="cconsent" name="consents[{$consentid}]" value="1"
+										{if isset($consents[$consentid]) && $consents[$consentid] == 1} checked{/if}>
+								{trans("yes")}
+							</label>
+							<label>
+								<input type="radio" class="cconsent" name="consents[{$consentid}]" value="0"
+										{if isset($consents[$consentid]) && $consents[$consentid] == 0} checked{/if}>
+								{trans("no")}
+							</label>
+						</td>
+					</tr>
+					{/foreach}
+				</tbody>
+				<tfoot>
+					<tr class="dark">
+						<td colspan="2" class="text-center">
+							{button icon="reload" label="Reset" id="reset-consents"}
+						</td>
+					</tr>
+				</tfoot>
+			</table>
+		</TD>
+	</TR>
+
 	<TR>
 		<TD class="bold nobr">
 			<IMG src="img/state.gif" alt=""> {trans("Country state:")}
@@ -505,6 +570,10 @@
 		$('#non-empty-ten').change(function() {
 			$('#search-ten').prop('disabled', $(this).prop('checked'));
 			$('#search-non-empty-ten').prop('disabled', !$(this).prop('checked'));
+		});
+
+		$('#reset-consents').click(function() {
+			$('.cconsent[value="-1"]').prop('checked', true);
 		});
 	});
 

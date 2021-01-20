@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$_LANG['ignore'] = 'ignoruj';
+
 $_LANG['align periods'] = 'wyrównuj okresy';
 
 $_LANG['new document customer notification'] = 'powiadomienie klienta o nowym dokumencie';

@@ -100,6 +100,13 @@ if (!isset($_POST['fk'])) {
 }
 $SESSION->save('cslfk', $flagsqlskey);
 
+if (!isset($_POST['consents'])) {
+    $SESSION->restore('csconsents', $consents);
+} else {
+    $consents = $_POST['consents'];
+}
+$SESSION->save('csconsents', $consents);
+
 if (!isset($_POST['karma'])) {
     $SESSION->restore('cslkarma', $karma);
 } else {
@@ -156,6 +163,7 @@ if (isset($_GET['search'])) {
         "statesqlskey",
         "flags",
         "flagsqlskey",
+        "consents",
         "karma",
         "network",
         "customergroup",

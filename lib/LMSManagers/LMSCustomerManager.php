@@ -777,6 +777,21 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $customer_statuses = array();
         $state_conditions = array();
 
+        $consent_condition = '';
+        if (!empty($consents)) {
+            $consent_conditions = array();
+            foreach ($consents as $consentid => $consent) {
+                if ($consent >= 0) {
+                    $consent_conditions[] = ($consent == 1 ? '' : 'NOT ')
+                        . 'EXISTS (SELECT customerid FROM customerconsents cc
+                        WHERE type = ' . intval($consentid) . ' AND customerid = c.id)';
+                }
+            }
+            if (!empty($consent_conditions)) {
+                $consent_condition = '(' . implode(' AND ', $consent_conditions) . ')';
+            }
+        }
+
         if (!isset($state) || !is_array($state)) {
             $state = array();
         }
@@ -1338,6 +1353,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 . ($nodegroup ? ' AND EXISTS (SELECT 1 FROM nodegroupassignments na
                     JOIN vnodes n ON (n.id = na.nodeid)
                     WHERE n.ownerid = c.id AND na.nodegroupid = ' . intval($nodegroup) . ')' : '')
+                . (!empty($consent_condition) ? ' AND ' . $consent_condition : '')
                 . (isset($sqlsarg) ? ' AND (' . $sqlsarg . ')' : '')
                 . ($sqlord != ''  && !$count ? $sqlord . ' ' . $direction : '')
                 . ($limit !== null && !$count ? ' LIMIT ' . $limit : '')
