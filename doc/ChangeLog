@@ -26,6 +26,7 @@ version 27-git (????-??-??):
   - improvement: allow to change recipient address during invoice note create or edit [chilan]
   - enhancement: allow to search customers by different consent states [chilan]
   - improvement: logo and name on top menu panel points to default LMS module [chilan]
+  - enhancement: implemented expired debt by more than 30 and 60 days in new message filter [chilan]
 
 version 26.0 (2020-12-15):
 
