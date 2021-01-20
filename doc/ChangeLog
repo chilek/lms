@@ -27,6 +27,8 @@ version 27-git (????-??-??):
   - enhancement: allow to search customers by different consent states [chilan]
   - improvement: logo and name on top menu panel points to default LMS module [chilan]
   - enhancement: implemented expired debt by more than 30 and 60 days in new message filter [chilan]
+  - enhancement: 'mail.smime_certificate', 'mail.smime_key', 'mail.smime_ca_chain'
+    and 'mail.smime_sender_email' configuration settings control S/MIME mailing signing [chilan]
 
 version 26.0 (2020-12-15):
 
