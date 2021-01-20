@@ -271,11 +271,13 @@ switch ($type) {
             $customergroups = array();
         }
 
-        $customers = $DB->GetCol(
-            'SELECT DISTINCT c.id FROM customers c
+        $customers = $DB->GetAllByKey(
+            'SELECT DISTINCT c.id, c.lastname, c.name FROM customers c
                 ' . (empty($customergroups) ? '' : 'JOIN customerassignments ca ON ca.customerid = c.id') . '
-                WHERE c.deleted = 0 AND c.divisionid = ? AND c.type = ? AND c.status = ? AND c.name <> ?
-                    ' . (empty($customergroups) ? '' : ' AND ca.customergroupid IN (' . implode(',', $customergroups) . ') ORDER BY lastname, name ASC'),
+                WHERE c.deleted = 0 AND c.divisionid = ? AND c.type = ? AND c.status = ? AND c.name <> ?'
+                    . (empty($customergroups) ? '' : ' AND ca.customergroupid IN (' . implode(',', $customergroups) . ')')
+                    . ' ORDER BY c.lastname, c.name ASC',
+            'id',
             array($division, CTYPES_PRIVATE, CSTATUS_CONNECTED, '')
         );
 
@@ -311,7 +313,7 @@ switch ($type) {
             'id'
         );
 
-        foreach ($customers as $customerid) {
+        foreach ($customers as $customerid => $customer) {
             $customer = $LMS->GetCustomer($customerid);
             $content .= "\t\t\t<Abonent>\n";
             $content .= "\t\t\t\t<Nazwisko>" . htmlspecialchars($customer['lastname']) . "</Nazwisko>\n";
