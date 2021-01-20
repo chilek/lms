@@ -84,7 +84,19 @@ function GetRecipients($filter, $type = MSG_MAIL)
     $indebted3 = ($group == 58) ? 1 : 0;
     $opened_documents = ($group == 59) ? 1 : 0;
 
-    $expired_indebted = ($group == 61) ? 1 : 0;
+    $expired_indebted = ($group == 61 || $group == 64 || $group == 65) ? 1 : 0;
+    switch ($group) {
+        case 61:
+            $expired_days = 0;
+            break;
+        case 64:
+            $expired_days = 30;
+            break;
+        case 65:
+            $expired_days = 60;
+            break;
+    }
+
     $expired_notindebted = ($group == 60) ? 1 : 0;
     $expired_indebted2 = ($group == 62) ? 1 : 0;
     $expired_indebted3 = ($group == 63) ? 1 : 0;
@@ -134,9 +146,11 @@ function GetRecipients($filter, $type = MSG_MAIL)
 				LEFT JOIN documents d ON d.id = cash.docid
 				WHERE (cash.docid IS NULL AND ((cash.type <> 0 AND cash.time < ?NOW?)
 						OR (cash.type = 0 AND cash.time + ((CASE c.paytime WHEN -1 THEN
-							(CASE WHEN divisions.inv_paytime IS NULL THEN $deadline ELSE divisions.inv_paytime END) ELSE c.paytime END)) * 86400 < ?NOW?)))
+							(CASE WHEN divisions.inv_paytime IS NULL THEN $deadline"  . ($expired_indebted ? ' + ' . $expired_days : '')
+                            . " ELSE divisions.inv_paytime END) ELSE c.paytime END)) * 86400 < ?NOW?)))
 					OR (cash.docid IS NOT NULL AND ((d.type IN (" . DOC_RECEIPT . ',' . DOC_CNOTE . ") AND cash.time < ?NOW?
-						OR (d.type IN (" . DOC_INVOICE . ',' . DOC_DNOTE . ") AND d.cdate + d.paytime * 86400 < ?NOW?))))
+						OR (d.type IN (" . DOC_INVOICE . ',' . DOC_DNOTE . ") AND d.cdate
+						+ (d.paytime" . ($expired_indebted ? ' + ' . $expired_days : '') . ") * 86400 < ?NOW?))))
 				GROUP BY cash.customerid
 			) b2 ON (b2.customerid = c.id)";
     } else {
@@ -453,7 +467,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
         $message['type'] = MSG_USERPANEL_URGENT;
     }
 
-    if (empty($message['customerid']) && ($message['group'] < 0 || $message['group'] > 63
+    if (empty($message['customerid']) && ($message['group'] < 0 || $message['group'] > 65
         || ($message['group'] > CSTATUS_LAST && $message['group'] < 50))) {
         $error['group'] = trans('Incorrect customers group!');
     }
