@@ -27,7 +27,7 @@
 $promotion = $DB->GetRow(
     'SELECT
         p.id, p.name, p.description, p.disabled, p.datefrom, p.dateto, p.deleted,
-        COUNT(a.*) AS assignments
+        COUNT(a.id) AS assignments
     FROM promotions p
     LEFT JOIN promotionschemas s ON s.promotionid = p.id
     LEFT JOIN assignments a ON a.promotionschemaid = s.id    

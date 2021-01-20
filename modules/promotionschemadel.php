@@ -26,7 +26,7 @@
 
 $id = intval($_GET['id']);
 $schema = $DB->GetRow(
-    'SELECT s.promotionid, s.deleted, COUNT(a.*) AS assignments
+    'SELECT s.promotionid, s.deleted, COUNT(a.id) AS assignments
     FROM promotionschemas s
     LEFT JOIN assignments a ON a.promotionschemaid = s.id
     WHERE s.id = ?
