@@ -25,6 +25,7 @@ version 27-git (????-??-??):
     for disabled or deleted users [ravvar]
   - improvement: allow to change recipient address during invoice note create or edit [chilan]
   - enhancement: allow to search customers by different consent states [chilan]
+  - improvement: logo and name on top menu panel points to default LMS module [chilan]
 
 version 26.0 (2020-12-15):
 
