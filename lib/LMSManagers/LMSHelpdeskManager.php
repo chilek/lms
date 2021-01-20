@@ -2426,6 +2426,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             'ssl_verify_peer' => 'rt.smtp_ssl_verify_peer',
             'ssl_verify_peer_name' => 'rt.smtp_ssl_verify_peer_name',
             'ssl_allow_self_signed' => 'rt.smtp_ssl_allow_self_signed',
+            'smime_certificate' => 'rt.smime_certificate',
+            'smime_key' => 'rt.smime_key',
+            'smime_ca_chain' => 'rt.smime_ca_chain',
+            'smime_sender_email' => 'rt.smime_sender_email',
         );
 
         foreach ($variable_mapping as $option_name => $variable_name) {

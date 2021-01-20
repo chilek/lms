@@ -2721,6 +2721,7 @@ class LMS
             $this->mail_object->dsn = isset($headers['Delivery-Status-Notification-To']) ? 'SUCCESS,FAILURE' : '';
 
             preg_match('/^(?:(?<name>.*) )?<?(?<mail>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $headers['From'], $from);
+            $sender_email = $from['mail'];
             $this->mail_object->setFrom($from['mail'], isset($from['name']) ? trim($from['name'], "\"") : '');
             $this->mail_object->addReplyTo($headers['Reply-To']);
             $this->mail_object->CharSet = 'UTF-8';
@@ -2797,13 +2798,32 @@ class LMS
                 }
             }
 
-            // setup your cert & key file
-            $cert = LIB_DIR . DIRECTORY_SEPARATOR . 'lms-mail.cert';
-            $key = LIB_DIR . DIRECTORY_SEPARATOR . 'lms.key';
+
+            $smime = array(
+                'cert' => !isset($smtp_options['smime_certificate'])
+                    ? ConfigHelper::getConfig('mail.smime_certificate', LIB_DIR . DIRECTORY_SEPARATOR . 'lms-mail.cert')
+                    : $smtp_options['smime_certificate'],
+                'key' => !isset($smtp_options['smime_key'])
+                    ? ConfigHelper::getConfig('mail.smime_key', LIB_DIR . DIRECTORY_SEPARATOR . 'lms.key')
+                    : $smtp_options['smime_key'],
+                'ca_chain' => !isset($smtp_options['smime_ca_chain'])
+                    ? ConfigHelper::getConfig('mail.smime_ca_chain', '')
+                    : $smtp_options['smime_ca_chain'],
+                'sender_email' => !isset($smtp_options['smime_sender_email'])
+                    ? ConfigHelper::getConfig('mail.smime_sender_email', $sender_email)
+                    : $smtp_options['smime_sender_email'],
+            );
 
             // set email digital signature
-            if (file_exists($cert) && file_exists($key)) {
-                $this->mail_object->sign($cert, $key, null);
+            if (file_exists($smime['cert']) && file_exists($smime['key'])
+                && (empty($smime['ca_chain']) || file_exists($smime['ca_chain']))
+                && (!empty($smime['sender_email']) && $smime['sender_email'] == $sender_email)) {
+                $this->mail_object->sign(
+                    $smime['cert'],
+                    $smime['key'],
+                    '',
+                    $smime['ca_chain']
+                );
             }
 
             $this->executeHook('email_before_send', array('email' => $this->mail_object, 'backend' => 'phpmailer'));
