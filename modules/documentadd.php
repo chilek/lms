@@ -347,7 +347,7 @@ if (isset($_POST['document'])) {
                 $selected_assignment['period'] = $period;
                 $selected_assignment['at'] = $at;
                 $selected_assignment['commited'] = isset($document['closed']) ? 1 : 0;
-                $selected_assignment['align-periods'] = isset($document['align-periods']);
+                $selected_assignment['align-periods'] = isset($document['assignment']['align-periods']);
 
                 if (is_array($selected_assignment['sassignmentid'][$schemaid])) {
                     $modifiedvalues = $selected_assignment['values'][$schemaid];
