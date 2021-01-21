@@ -91,7 +91,7 @@ class LMSSmartyPlugins
             ? $params['selected'] : null;
         $locked = isset($params['locked']) && $params['locked'];
         if (function_exists('get_currency_value') && !$locked) {
-            $result = '<select name="' . $elementname . '" ' . self::tipFunction(array('text' => 'Select currency'), $template)
+            $result = '<select class="'. (!$selected ? 'alert' : '') .'" name="' . $elementname . '" ' . self::tipFunction(array('text' => 'Select currency'), $template)
                 . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '') . '>';
             foreach ($GLOBALS['CURRENCIES'] as $currency) {
                 $result .= '<option value="' . $currency . '"'
