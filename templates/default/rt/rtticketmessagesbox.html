@@ -5,6 +5,10 @@
 		$('.attachment-gallery').click(function() {
 			showGallery(JSON.parse($(this).attr('data-gallery')));
 		});
+
+		$('#system-message-toggle').change(function() {
+			$('.system-message').toggle($(this).prop('checked'));
+		});
 	});
 
 </script>
@@ -125,6 +129,11 @@
 			<i class="lms-ui-icon-message"></i> <B>{trans("Ticket History")}</B>
 		</TD>
 		<TD style="width: 99%;" class="text-right nobr" colspan="2">
+			<label>
+				<input id="system-message-toggle" type="checkbox"
+					{if !ConfigHelper::checkConfig('rt.default_hide_system_messages')} checked{/if}>
+				{trans("system messages")}
+			</label>
 			{button icon="note" label="New Note" onclick="window.location.href = '?m=rtnoteadd&ticketid={$ticket.ticketid}';"}
 			{if ($ticket.state != $smarty.const.RT_RESOLVED || ($ticket.state == $smarty.const.RT_RESOLVED && $aet && ($smarty.now - $ticket.resolvetime) < $aet)) || (ConfigHelper::checkPrivilege('superuser'))}
 				{button icon="message" label="New Message" onclick="window.location.href = '?m=rtmessageadd&ticketid={$ticket.ticketid}';"}
@@ -137,7 +146,9 @@
 		<TD style="width: 100%;" colspan="3">
 			{counter start=0 skip=1 print=false assign=msgidx}
 			{foreach $ticket.messages as $message}
-			<TABLE class="lmsbox-inner" id="rtmessage-{$message.id}">
+			<TABLE class="lmsbox-inner {if $message.type == $smarty.const.RTMESSAGE_REGULAR || $message.type == $smarty.const.RTMESSAGE_NOTE}regular-message{else}system-message{/if}"
+				id="rtmessage-{$message.id}"
+				{if $message.type != $smarty.const.RTMESSAGE_REGULAR && $message.type != $smarty.const.RTMESSAGE_NOTE && ConfigHelper::checkConfig('rt.default_hide_system_messages')} style="display: none;"{/if}>
 				<colgroup>
 					<col style="width: 1%;">
 					<col style="width: 1%;">
