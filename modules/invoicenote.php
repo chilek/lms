@@ -551,7 +551,7 @@ switch ($action) {
             $fullnumber = null;
         }
 
-        if (!empty($cnote['recipient_address_id'])) {
+        if (!empty($cnote['recipient_address_id']) && $cnote['recipient_address_id'] != -1) {
             $cnote['recipient_address_id'] = $LMS->CopyAddress($cnote['recipient_address_id']);
         } else {
             $cnote['recipient_address_id'] = null;
