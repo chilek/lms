@@ -3080,7 +3080,6 @@ $_LANG['Are you sure, you want to remove schema \'$a\'?'] = 'Czy na pewno chcesz
 $_LANG['Display this form again, when this promotion is saved'] = 'Wyświetl formularz ponownie po dodaniu tej promocji';
 $_LANG['Display this form again, when this schema is saved'] = 'Wyświetl formularz ponownie po dodaniu tego schematu';
 $_LANG['Edit assignment'] = 'Edytuj powiązanie';
-$_LANG['Delete assignment'] = 'Usuń powiązanie';
 $_LANG['Enter activation value'] = 'Wprowadź kwotę opłaty aktywacyjnej';
 $_LANG['Enter promotion name'] = 'Wprowadź nazwę promocji';
 $_LANG['Enter schema name'] = 'Wprowadź nazwę schematu';
