@@ -3841,6 +3841,7 @@ $_LANG['Customer e-mail:'] = 'E-mail klienta:';
 $_LANG['SSN/TEN:'] = 'PESEL/NIP:';
 $_LANG['SSN/TEN and PIN'] = 'PESEL/NIP i PIN';
 
+$_LANG['Contracts'] = 'Umowy';
 $_LANG['without contracts'] = 'bez umów';
 $_LANG['without active contracts'] = 'bez aktywnych umów';
 $_LANG['Without Contracts'] = 'bez umów';

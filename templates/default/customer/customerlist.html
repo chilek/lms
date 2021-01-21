@@ -124,40 +124,54 @@
 			<label for="s">{trans("Customers:")}
 			<SELECT SIZE="1" NAME="s" ONCHANGE="document.choosefilter.submit();">
 				<OPTION VALUE="0"{if $filter.state == 0} SELECTED{/if}>{trans("- all customers -")}</OPTION>
-				{foreach $_CSTATUSES as $statusidx => $status}
-				<OPTION VALUE="{$statusidx}"{if $filter.state == $statusidx} selected{/if}>{$status.plurallabel}</OPTION>
-				{/foreach}
-				<OPTION VALUE="50"{if $filter.state == 50} SELECTED{/if}>{trans("deleted<!plural>")}</OPTION>
-				<OPTION VALUE="72"{if $filter.state == 72} SELECTED{/if}>{trans("existing<!plural>")}</OPTION>
-				<OPTION VALUE="51"{if $filter.state == 51} SELECTED{/if}>{trans("with disconnected nodes")}</OPTION>
-				{if !ConfigHelper::checkPrivilege('hide_finances')}
-					<OPTION VALUE="52"{if $filter.state == 52} SELECTED{/if}>{trans("in debt")}</OPTION>
-					<OPTION VALUE="57"{if $filter.state == 57} SELECTED{/if}>{trans("in debt above 100%")}</OPTION>
-					<OPTION VALUE="58"{if $filter.state == 58} SELECTED{/if}>{trans("in debt above 200%")}</OPTION>
-					<option value="71"{if $filter.state == 71} selected{/if}>{trans("overdue receivables")}</option>
-				{/if}
-				<OPTION value="59"{if $filter.state == 59} SELECTED{/if}>{trans("without contracts")}</OPTION>
-				<OPTION value="76"{if $filter.state == 76} SELECTED{/if}>{trans("without active contracts")}</OPTION>
-				<OPTION value="60"{if $filter.state == 60} SELECTED{/if}>{trans("with expired contracts")}</OPTION>
-				<OPTION value="77"{if $filter.state == 77} SELECTED{/if}>{trans("with expired, active contracts")}</OPTION>
-				<OPTION value="61"{if $filter.state == 61} SELECTED{/if}>{trans("with expiring contracts")}</OPTION>
-				<OPTION value="78"{if $filter.state == 78} SELECTED{/if}>{trans("with expiring, active contracts")}</OPTION>
-				<OPTION value="73"{if $filter.state == 73} SELECTED{/if}>{trans("with unarchived documents")}</OPTION>
-				<OPTION VALUE="53"{if $filter.state == 53} SELECTED{/if}>{trans("online")}</OPTION>
-				<OPTION VALUE="54"{if $filter.state == 54} SELECTED{/if}>{trans("without group")}</OPTION>
-				<OPTION VALUE="55"{if $filter.state == 55} SELECTED{/if}>{trans("without tariff")}</OPTION>
-				<OPTION VALUE="56"{if $filter.state == 56} SELECTED{/if}>{trans("suspended<!plural>")}</OPTION>
-				<OPTION VALUE="62"{if $filter.state == 62} SELECTED{/if}>{trans("with e-invoice")}</OPTION>
-				<OPTION VALUE="63"{if $filter.state == 63} SELECTED{/if}>{trans("with connected nodes")}</OPTION>
-				<OPTION VALUE="64"{if $filter.state == 64} SELECTED{/if}>{trans("with nodes")}</OPTION>
-				<OPTION VALUE="65"{if $filter.state == 65} SELECTED{/if}>{trans("without nodes")}</OPTION>
-				<OPTION VALUE="66"{if $filter.state == 66} SELECTED{/if}>{trans("without invoice flag")}</OPTION>
-				<OPTION VALUE="75"{if $filter.state == 75} SELECTED{/if}>{trans("with discount")}</OPTION>
-				<OPTION VALUE="67"{if $filter.state == 67} SELECTED{/if}>{trans("without building number")}</OPTION>
-				<OPTION VALUE="68"{if $filter.state == 68} SELECTED{/if}>{trans("without zip")}</OPTION>
-				<OPTION VALUE="69"{if $filter.state == 69} SELECTED{/if}>{trans("without city")}</OPTION>
-				<OPTION VALUE="70"{if $filter.state == 70} SELECTED{/if}>{trans("TERRIT not specified")}</OPTION>
-				<OPTION VALUE="74"{if $filter.state == 74} SELECTED{/if}>{trans("ZIP code not specified")}</OPTION>
+				<optgroup label="Status">
+					{foreach $_CSTATUSES as $statusidx => $status}
+						<OPTION VALUE="{$statusidx}"{if $filter.state == $statusidx} selected{/if}>{$status.plurallabel}</OPTION>
+					{/foreach}
+				</optgroup>
+				<optgroup label="{trans("Customers")}">
+					<OPTION VALUE="50"{if $filter.state == 50} SELECTED{/if}>{trans("deleted<!plural>")}</OPTION>
+					<OPTION VALUE="72"{if $filter.state == 72} SELECTED{/if}>{trans("existing<!plural>")}</OPTION>
+					<OPTION VALUE="53"{if $filter.state == 53} SELECTED{/if}>{trans("online")}</OPTION>
+					<OPTION VALUE="56"{if $filter.state == 56} SELECTED{/if}>{trans("suspended<!plural>")}</OPTION>
+					<OPTION VALUE="54"{if $filter.state == 54} SELECTED{/if}>{trans("without group")}</OPTION>
+				</optgroup>
+				<optgroup label="{trans("Documents")}">
+					<OPTION value="73"{if $filter.state == 73} SELECTED{/if}>{trans("with unarchived documents")}</OPTION>
+				</optgroup>
+				<optgroup label="{trans("Nodes")}">
+					<OPTION VALUE="63"{if $filter.state == 63} SELECTED{/if}>{trans("with connected nodes")}</OPTION>
+					<OPTION VALUE="51"{if $filter.state == 51} SELECTED{/if}>{trans("with disconnected nodes")}</OPTION>
+					<OPTION VALUE="64"{if $filter.state == 64} SELECTED{/if}>{trans("with nodes")}</OPTION>
+					<OPTION VALUE="65"{if $filter.state == 65} SELECTED{/if}>{trans("without nodes")}</OPTION>
+				</optgroup>
+				<optgroup label="{trans("Contracts")}">
+					<OPTION value="59"{if $filter.state == 59} SELECTED{/if}>{trans("without contracts")}</OPTION>
+					<OPTION value="76"{if $filter.state == 76} SELECTED{/if}>{trans("without active contracts")}</OPTION>
+					<OPTION value="60"{if $filter.state == 60} SELECTED{/if}>{trans("with expired contracts")}</OPTION>
+					<OPTION value="77"{if $filter.state == 77} SELECTED{/if}>{trans("with expired, active contracts")}</OPTION>
+					<OPTION value="61"{if $filter.state == 61} SELECTED{/if}>{trans("with expiring contracts")}</OPTION>
+					<OPTION value="78"{if $filter.state == 78} SELECTED{/if}>{trans("with expiring, active contracts")}</OPTION>
+				</optgroup>
+				<optgroup label="{trans("Finances")}">
+					{if !ConfigHelper::checkPrivilege('hide_finances')}
+						<OPTION VALUE="52"{if $filter.state == 52} SELECTED{/if}>{trans("in debt")}</OPTION>
+						<OPTION VALUE="57"{if $filter.state == 57} SELECTED{/if}>{trans("in debt above 100%")}</OPTION>
+						<OPTION VALUE="58"{if $filter.state == 58} SELECTED{/if}>{trans("in debt above 200%")}</OPTION>
+						<option value="71"{if $filter.state == 71} selected{/if}>{trans("overdue receivables")}</option>
+					{/if}
+					<OPTION VALUE="55"{if $filter.state == 55} SELECTED{/if}>{trans("without tariff")}</OPTION>
+					<OPTION VALUE="62"{if $filter.state == 62} SELECTED{/if}>{trans("with e-invoice")}</OPTION>
+					<OPTION VALUE="66"{if $filter.state == 66} SELECTED{/if}>{trans("without invoice flag")}</OPTION>
+					<OPTION VALUE="75"{if $filter.state == 75} SELECTED{/if}>{trans("with discount")}</OPTION>
+				</optgroup>
+				<optgroup label="{trans("Addresses")}">
+					<OPTION VALUE="67"{if $filter.state == 67} SELECTED{/if}>{trans("without building number")}</OPTION>
+					<OPTION VALUE="68"{if $filter.state == 68} SELECTED{/if}>{trans("without zip")}</OPTION>
+					<OPTION VALUE="69"{if $filter.state == 69} SELECTED{/if}>{trans("without city")}</OPTION>
+					<OPTION VALUE="70"{if $filter.state == 70} SELECTED{/if}>{trans("TERRIT not specified")}</OPTION>
+					<OPTION VALUE="74"{if $filter.state == 74} SELECTED{/if}>{trans("ZIP code not specified")}</OPTION>
+				</optgroup>
 			</SELECT>
 			</label>
 
