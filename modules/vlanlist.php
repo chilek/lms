@@ -34,6 +34,7 @@ $params['orderby'] = $_GET['orderby'];
 
 $vlanlist = $LMS->GetVlanList($params);
 $vlaninfo = $LMS->GetVlanInfo($id);
+$netnodelist = $LMS->GetNetNodes();
 
 switch ($action) {
     case 'add':
@@ -59,6 +60,7 @@ switch ($action) {
 }
 $SMARTY->assign('action', $action);
 $SMARTY->assign('vlanlist', $vlanlist);
+$SMARTY->assign('netnodelist', $netnodelist);
 if ($action == 'modify') {
     $SMARTY->assign('vlaninfo', $vlaninfo);
 }

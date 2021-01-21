@@ -890,27 +890,31 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 
         switch ($orderby) {
             case 'id':
-                $orderby = ' ORDER BY vl.id ';
+                $orderby = ' ORDER BY vl.id';
                 break;
             case 'vlanid':
-                $orderby = ' ORDER BY vlanid ';
+                $orderby = ' ORDER BY vlanid';
                 break;
             case 'description':
-                $orderby = ' ORDER BY description ';
+                $orderby = ' ORDER BY description';
                 break;
             case 'customerid':
-                $orderby = ' ORDER BY customerid ';
+                $orderby = ' ORDER BY customerid';
+                break;
+            case 'netnodeid':
+                $orderby = ' ORDER BY netnodeid';
                 break;
             default:
-                $orderby = ' ORDER BY id ';
+                $orderby = ' ORDER BY id';
                 break;
         }
 
         return $this->db->GetAllByKey(
-            'SELECT vl.id, vlanid, description, customerid, '
+            'SELECT vl.id, vlanid, description, customerid, netnodeid, nn.name AS netnodename, '
             . $this->db->Concat('cv.lastname', "' '", 'cv.name') . ' AS customername
             FROM vlans AS vl
-            LEFT JOIN customers cv ON (vl.customerid = cv.id)'
+            LEFT JOIN customers cv ON (vl.customerid = cv.id)
+            LEFT JOIN netnodes nn ON (vl.netnodeid = nn.id)'
             . $orderby,
             'id'
         );
@@ -919,10 +923,11 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
     public function GetVlanInfo($id)
     {
         return $this->db->GetRow(
-            'SELECT vl.id, vlanid, description, customerid, '
+            'SELECT vl.id, vlanid, description, customerid, netnodeid, nn.name AS netnodename, '
             . $this->db->Concat('cv.lastname', "' '", 'cv.name') . ' AS customername
             FROM vlans AS vl
             LEFT JOIN customers cv ON (vl.customerid = cv.id)
+            LEFT JOIN netnodes nn ON (vl.netnodeid = nn.id)
             WHERE vl.id = ?',
             array($id)
         );
@@ -934,11 +939,12 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             'vlanid' => $args['vlanid'],
             'description' => !empty($args['description']) ? $args['description'] : null,
             'customerid' => !empty($args['customerid']) ? $args['customerid'] : null,
+            'netnodeid' => !empty($args['netnodeid']) ? $args['netnodeid'] : null,
         );
 
         $result = $this->db->Execute(
-            'INSERT INTO vlans (vlanid, description, customerid) VALUES (?, ?, ?)',
-            array($args['vlanid'], $args['description'], $args['customerid'])
+            'INSERT INTO vlans (vlanid, description, customerid, netnodeid) VALUES (?, ?, ?, ?)',
+            array($args['vlanid'], $args['description'], $args['customerid'], $args['netnodeid'])
         );
 
         $args['id'] = $this->db->GetLastInsertID('vlans');
@@ -967,19 +973,21 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             $props = array(
                 'id' => $props['id'],
                 'vlanid' => isset($props['vlanid']) ? $props['vlanid'] : null,
-                'description' => !empty($props['description']) ? $props['description'] : null,
-                'customerid' => !empty($props['customerid']) ? $props['customerid'] : null
+                'description' => isset($props['description']) ? $props['description'] : null,
+                'customerid' => empty($props['customerid']) ? null : $props['customerid'],
+                'netnodeid' => empty($props['netnodeid']) ? null : $props['netnodeid'],
             );
 
             $vlaninfo = $this->GetVlanInfo($props['id']);
             unset($vlaninfo['customername']);
+            unset($vlaninfo['netnodename']);
 
             $diff = array_diff($vlaninfo, $props);
             $diff2 = array_diff($props, $vlaninfo);
             if (!empty($diff) || !empty($diff2)) {
                 $result = $this->db->Execute(
-                    'UPDATE vlans SET vlanid = ?, description = ?, customerid = ? WHERE id = ?',
-                    array($props['vlanid'], $props['description'], $props['customerid'], $props['id'])
+                    'UPDATE vlans SET vlanid = ?, description = ?, customerid = ?, netnodeid = ? WHERE id = ?',
+                    array($props['vlanid'], $props['description'], $props['customerid'], $props['netnodeid'], $props['id'])
                 );
                 $diff = Utils::array_keys_add_prefix($diff);
                 $diff = array_merge($diff, $diff2);

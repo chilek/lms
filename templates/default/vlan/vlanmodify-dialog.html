@@ -12,7 +12,7 @@
                 </tr>
                 <tr>
                     <td>
-                        {icon name="vlan" label="VLAN ID:"}
+                        {icon name="vlan" label="VLAN ID:" class="fa-fw"}
                     </td>
                     <td>
                         <input type="text" name="addvlan[vlanid]" value="{$vlaninfo.vlanid}" required>
@@ -20,7 +20,7 @@
                 </tr>
                 <tr>
                     <td class="nobr">
-                        {icon name="description" label="VLAN Description"}
+                        {icon name="description" label="VLAN Description" class="fa-fw"}
                     </td>
                     <td>
                         <input type="text" name="addvlan[description]" value="{$vlaninfo.description}">
@@ -28,10 +28,23 @@
                 </tr>
                 <tr>
                     <td>
-                        {icon name="customer" label="Customer"}
+                        {icon name="customer" label="Customer" class="fa-fw"}
                     </td>
                     <td>
-                        {customerlist form="addvlan" selected="{$vlaninfo.customerid}" inputname="addvlan[customerid]"}
+                        {customerlist form="addvlan" selected="{$vlaninfo.customerid}" inputname="addvlan[customerid]" version=2}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="nobr">
+                        {icon name="netnode" label="Network Node" class="fa-fw"}
+                    </td>
+                    <td>
+                        <select name="addvlan[netnodeid]">
+                            <option value="">{trans("- none -")}</option>
+                            {foreach $netnodelist as $nn}
+                                <option value="{$nn.id}" {if $nn.id == $vlaninfo.netnodeid} selected{/if}>{$nn.name} ({$nn.id})</option>
+                            {/foreach}
+                        </select>
                     </td>
                 </tr>
                 <tr>

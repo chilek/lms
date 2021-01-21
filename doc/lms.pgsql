@@ -1253,8 +1253,11 @@ CREATE TABLE vlans (
     description varchar(254) DEFAULT NULL,
     customerid smallint DEFAULT NULL
         CONSTRAINT vlans_customerid_fkey REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    netnodeid smallint DEFAULT NULL
+        CONSTRAINT vlans_netnodeid_fkey REFERENCES netnodes (id) ON DELETE SET NULL ON UPDATE CASCADE,
     PRIMARY KEY (id),
-    CONSTRAINT vlans_ukey UNIQUE (vlanid, customerid)
+    CONSTRAINT vlans_customerid_ukey UNIQUE (vlanid, customerid),
+    CONSTRAINT vlans_netnodeid_ukey UNIQUE (vlanid, netnodeid)
 );
 
 /* --------------------------------------------------------
@@ -3955,6 +3958,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021010700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021012100');
 
 COMMIT;

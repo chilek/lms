@@ -1378,57 +1378,6 @@ CREATE TABLE hosts (
 
 # --------------------------------------------------------
 #
-# Structure of table vlans
-#
-CREATE TABLE vlans (
-    id smallint NOT NULL auto_increment,
-    vlanid smallint NOT NULL,
-    description varchar(254) DEFAULT NULL,
-    customerid int(11) DEFAULT NULL,
-    CONSTRAINT vlans_customerid_fkey
-        FOREIGN KEY (customerid) REFERENCES customers (id) ON UPDATE CASCADE ON DELETE SET NULL,
-    PRIMARY KEY (id),
-    UNIQUE KEY vlans_ukey (vlanid, customerid)
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-
-# --------------------------------------------------------
-#
-# Structure of table  networks
-#
-CREATE TABLE networks (
-  id int(11) NOT NULL auto_increment,
-  name varchar(128) NOT NULL DEFAULT '',
-  address int(16) unsigned NOT NULL DEFAULT '0',
-  snat int(16) unsigned DEFAULT NULL,
-  mask varchar(16) NOT NULL DEFAULT '',
-  gateway varchar(16) NOT NULL DEFAULT '',
-  interface varchar(16) NOT NULL DEFAULT '',
-  dns varchar(16) NOT NULL DEFAULT '',
-  dns2 varchar(16) NOT NULL DEFAULT '',
-  domain varchar(64) NOT NULL DEFAULT '',
-  wins varchar(16) NOT NULL DEFAULT '',
-  dhcpstart varchar(16) NOT NULL DEFAULT '',
-  dhcpend varchar(16) NOT NULL DEFAULT '',
-  disabled tinyint(1) NOT NULL DEFAULT '0',
-  notes text NOT NULL DEFAULT '',
-  vlanid smallint DEFAULT NULL,
-  hostid int(11) DEFAULT NULL,
-  authtype tinyint(1) NOT NULL DEFAULT '0',
-  pubnetid int(11) DEFAULT NULL,
-  PRIMARY KEY  (id),
-  UNIQUE KEY name (name),
-  UNIQUE KEY address (address, hostid),
-  FOREIGN KEY (hostid) REFERENCES hosts (id) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT networks_pubnetid_fkey
-    FOREIGN KEY (pubnetid) REFERENCES networks (id) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT networks_vlanid_fkey
-    FOREIGN KEY (vlanid) REFERENCES vlans (id) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
 # Structure of table invprojects
 #
 CREATE TABLE invprojects (
@@ -1471,6 +1420,59 @@ CREATE TABLE netnodes (
 	CONSTRAINT netnodes_ownerid_fkey
 		FOREIGN KEY (ownerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=INNODB;
+
+# --------------------------------------------------------
+#
+# Structure of table vlans
+#
+CREATE TABLE vlans (
+    id smallint NOT NULL auto_increment,
+    vlanid smallint NOT NULL,
+    description varchar(254) DEFAULT NULL,
+    customerid int(11) DEFAULT NULL,
+    netnodeid int(11) DEFAULT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY vlans_customerid_ukey (vlanid, customerid),
+    UNIQUE KEY vlans_netnodeid_ukey (vlanid, netnodeid),
+    CONSTRAINT vlans_customerid_fkey
+        FOREIGN KEY (customerid) REFERENCES customers (id) ON UPDATE CASCADE ON DELETE SET NULL,
+    CONSTRAINT vlans_netnodeid_fkey
+        FOREIGN KEY (netnodeid) REFERENCES netnodes (id) ON UPDATE CASCADE ON DELETE SET NULL
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table  networks
+#
+CREATE TABLE networks (
+  id int(11) NOT NULL auto_increment,
+  name varchar(128) NOT NULL DEFAULT '',
+  address int(16) unsigned NOT NULL DEFAULT '0',
+  snat int(16) unsigned DEFAULT NULL,
+  mask varchar(16) NOT NULL DEFAULT '',
+  gateway varchar(16) NOT NULL DEFAULT '',
+  interface varchar(16) NOT NULL DEFAULT '',
+  dns varchar(16) NOT NULL DEFAULT '',
+  dns2 varchar(16) NOT NULL DEFAULT '',
+  domain varchar(64) NOT NULL DEFAULT '',
+  wins varchar(16) NOT NULL DEFAULT '',
+  dhcpstart varchar(16) NOT NULL DEFAULT '',
+  dhcpend varchar(16) NOT NULL DEFAULT '',
+  disabled tinyint(1) NOT NULL DEFAULT '0',
+  notes text NOT NULL DEFAULT '',
+  vlanid smallint DEFAULT NULL,
+  hostid int(11) DEFAULT NULL,
+  authtype tinyint(1) NOT NULL DEFAULT '0',
+  pubnetid int(11) DEFAULT NULL,
+  PRIMARY KEY  (id),
+  UNIQUE KEY name (name),
+  UNIQUE KEY address (address, hostid),
+  FOREIGN KEY (hostid) REFERENCES hosts (id) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT networks_pubnetid_fkey
+    FOREIGN KEY (pubnetid) REFERENCES networks (id) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT networks_vlanid_fkey
+    FOREIGN KEY (vlanid) REFERENCES vlans (id) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -3927,4 +3929,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021010700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021012100');

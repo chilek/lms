@@ -29,6 +29,7 @@ version 27-git (????-??-??):
   - enhancement: implemented expired debt by more than 30 and 60 days in new message filter [chilan]
   - enhancement: 'mail.smime_certificate', 'mail.smime_key', 'mail.smime_ca_chain'
     and 'mail.smime_sender_email' configuration settings control S/MIME mailing signing [chilan]
+  - enhancement: allow to tie vlans with netnodes [interduo]
 
 version 26.0 (2020-12-15):
 
