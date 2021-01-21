@@ -331,7 +331,7 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 		$.each(this.suggestions, function(i, elem) {
 			var icon = elem.hasOwnProperty('icon') ? elem.icon : null;
 			var name = elem.name;
-			var effectiveName = elem.hasOwnProperty('name_alternative') ? elem.name_alternative : escapeHtml(elem.name);
+			var effectiveName = escapeHtml(elem.hasOwnProperty('name_alternative') ? elem.name_alternative : elem.name);
 			var name_class = elem.name_class;
 			var desc = elem.description ? elem.description : '';
 			var desc_class = elem.description_class;
