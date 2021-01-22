@@ -1373,7 +1373,7 @@ if (isset($options['buildings'])) {
                 continue;
             }
 
-            if ($ulic == '99999') {
+            if ($ulic == '' || $city == '99999') {
                 $street = array('id' => '0');
             } else {
                 $street = $location_cache->getStreetByIdent($city['id'], $ulic);
