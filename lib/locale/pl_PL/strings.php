@@ -4783,6 +4783,7 @@ $_LANG['Copy rights'] = 'Kopiuj uprawnienia';
 $_LANG['of selected user:'] = 'wybranego użytkownika:';
 
 $_LANG['Select currency'] = 'Wybierz walutę';
+$_LANG['Select currency and save'] = 'Wybierz walutę i zapisz';
 $_LANG['Invalid currency selection!'] = 'Błędny wybór waluty!';
 $_LANG['Currency:'] = 'Waluta:';
 
