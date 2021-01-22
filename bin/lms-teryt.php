@@ -353,8 +353,8 @@ ini_set('memory_limit', '512M');
 $stderr = fopen('php://stderr', 'w');
 
 define('PROGRESS_ROW_COUNT', 1000);
-define('BUILDING_BASE_ZIP_NAME', 'baza_punktow_adresowych_2019.zip');
-define('BUILDING_BASE_ZIP_URL', 'https://form.teleinfrastruktura.gov.pl/help-files/baza_punktow_adresowych_2019.zip');
+define('BUILDING_BASE_ZIP_NAME', 'baza_punktow_adresowych_2020.zip');
+define('BUILDING_BASE_ZIP_URL', 'https://form.teleinfrastruktura.gov.pl/help-files/baza_punktow_adresowych_2020.zip');
 
 $only_unique_city_matches = isset($options['only-unique-city-matches']);
 
@@ -411,7 +411,7 @@ if (empty($teryt_dir)) {
     die;
 }
 
-$building_base_name = $teryt_dir . DIRECTORY_SEPARATOR . 'baza_punktow_adresowych_2019.csv';
+$building_base_name = $teryt_dir . DIRECTORY_SEPARATOR . 'baza_punktow_adresowych_2020.csv';
 
 //==============================================================================
 // Download required files
@@ -604,16 +604,15 @@ if (isset($options['fetch'])) {
 
         if ($numFiles == 1) {
             $building_base_name = $zip->getNameIndex(0);
+            $zip->extractTo($teryt_dir . DIRECTORY_SEPARATOR);
         } else if ($numFiles > 1) {
+            $fh = fopen($building_base_name, 'w');
             for ($i = 0; $i < $numFiles; ++$i) {
-                if (preg_match('/siis_adresy/', $v)) {
-                    $building_base_name = $v;
-                    break;
-                }
+                fwrite($fh, $zip->getFromIndex($i));
             }
+            fclose($fh);
         }
 
-        $zip->extractTo($teryt_dir . DIRECTORY_SEPARATOR);
         unset($numFiles);
     } else {
         fprintf($stderr, "Error: Can't unzip %s or file doesn't exist." . PHP_EOL, BUILDING_BASE_ZIP_NAME);
