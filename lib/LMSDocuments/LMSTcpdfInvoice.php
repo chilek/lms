@@ -919,7 +919,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         $tranferform_common_data = $transferform->GetCommonData(array('customerid' => $this->data['customerid'], 'export' => $this->data['export']));
         $tranferform_custom_data = array(
             'title' => $payment_title,
-            'value' => $payment_value,
+            'value' => $payment_value < 0 ? 0 : $payment_value,
             'export' => $this->data['export'],
             'currency' => $this->data['currency'],
             'paytype' => $this->data['paytype'],
