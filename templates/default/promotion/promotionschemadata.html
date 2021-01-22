@@ -119,7 +119,7 @@
 							{if $tariff.label}{$tariff.label}{/if}
 						</SPAN>
 						<span class="tariff-edit"{if !$error || $formdata.aid != $tariff.id} style="display: none;"{/if}>
-							<SELECT name="form[{$tariff.id}][selectable]" class="selectable selectable-edit" {tip text="Choose selection list"}>
+							<SELECT name="form[{$tariff.id}][selectable]" class="selectable selectable-edit" {tip text="Choose tag from list"}>
 								<OPTION value="0"{if !$formdata[$tariff.id].selectable} selected{/if}>{trans("<!promotionassignment>- none -")}</OPTION>
 								<OPTION value="-1"{if $formdata[$tariff.id].selectable == -1} selected{/if}>{trans("<!promotionassignment>- new -")}</OPTION>
 								{foreach $schema.selections as $selid}
@@ -139,7 +139,7 @@
 								data-value="{$tariff.data.value[$key]}" data-period="{$tariff.data.period[$key]}"
 								data-users="{implode(',', $tariff.data.users[$key])}">
 							{if !empty($tariff.data.users[$key])}
-								<i class="lms-ui-icon-user" title="{t a=$tariff.data.users_text[$key]}modifiable by selected users:<br><strong>$a</strong>{/t}"></i>
+								<i class="lms-ui-icon-user" title="{t a=$tariff.data.users_text[$key]}Modifiable by selected users:<br><strong>$a</strong>{/t}"></i>
 							{/if}
 							{if $tariff.data.value[$key] != 'NULL'}{$tariff.data.value[$key]|string_format:"%.2f"}{/if}
 							{if $tariff.data.period[$key]}({$_PERIODS[$tariff.data.period[$key]]}){/if}
@@ -148,7 +148,7 @@
 							<div style="display: inline-block; vertical-align: middle;">
 								<SELECT name="form[{$tariff.id}][users][{$key}][]" class="lms-ui-multiselect-deferred user-edit" data-type="tiny"
 										data-button='<i class="lms-ui-icon-user"></i>'
-										data-tooltip-message="modifiable by selected users:<br><strong>$a</strong>" data-separator="<br>"
+										data-tooltip-message="Modifiable by selected users:<br><strong>$a</strong>" data-separator="<br>"
 										multiple>
 									{foreach $users as $user}
 									<option value="{$user.id}"{if isset($formdata[$tariff.id].users[$key]) && in_array($user.id, $formdata[$tariff.id].users[$key])} selected{/if}>{$user.rname|escape}</option>
@@ -183,7 +183,7 @@
 						{else}
 							{$edit_mode = false}
 						{/if}
-						{button type="link" class="tariff-view button-del" icon="delete" tip="Delete assignments" visible=!$edit_mode
+						{button type="link" class="tariff-view button-del" icon="delete" tip="Delete assignment" visible=!$edit_mode
 							data_href="?m=promotionschemaedit&action=tariffdel&id={$schema.id}&aid={$tariff.id}"}
 						{button type="link" class="tariff-view button-edit" icon="edit" tip="Edit assignment" visible=!$edit_mode}
 						{button type="link" class="tariff-edit button-cancel" icon="cancel" tip="Cancel" visible=$edit_mode}
@@ -273,7 +273,7 @@
 								{if $formdata.optional} checked{/if}>
 					</TD>
 					<TD class="ftop text-right valign-top nobr">
-						<SELECT name="form[selectable]" class="selectable" {tip text="Choose selection list"}>
+						<SELECT name="form[selectable]" class="selectable" {tip text="Choose tag from list"}>
 							<OPTION value="0" {if !$formdata.selectable}selected{/if}>{trans("<!promotionassignment>- none -")}</OPTION>
 							<OPTION value="-1" {if $formdata.selectable == -1}selected{/if}>{trans("<!promotionassignment>- new -")}</OPTION>
 							{foreach $schema.selections as $selid}
@@ -289,7 +289,7 @@
 						<div style="display: inline-block; vertical-align: middle;">
 							<SELECT name="form[users][{$key}][]" class="lms-ui-multiselect-deferred" data-type="tiny"
 									data-button='<i class="lms-ui-icon-user"></i>'
-									data-tooltip-message="modifiable by selected users:<br><strong>$a</strong>" data-separator="<br>"
+									data-tooltip-message="Modifiable by selected users:<br><strong>$a</strong>" data-separator="<br>"
 									multiple>
 								{foreach $users as $user}
 								<option value="{$user.id}"{if isset($formdata.users[$key]) && in_array($user.id, $formdata.users[$key])} selected{/if}>{$user.rname|escape}</option>

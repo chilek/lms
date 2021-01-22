@@ -3601,7 +3601,7 @@ $_LANG['Does this LMS have transaction log support (not opensource). Default: fa
 $_LANG['Optional'] = 'Opcjonalna';
 $_LANG['Selection list'] = 'Lista wyboru';
 $_LANG['Check if tariff should be optional'] = 'Zaznacz, jeśli taryfa powinna być opcjonalna';
-$_LANG['Choose selection list'] = 'Wybierz listę wyboru';
+$_LANG['Choose tag from list'] = 'Wybierz etykietę z listy';
 
 $_LANG['<!neuter>enabled'] = 'włączone';
 $_LANG['<!neuter>disabled'] = 'wyłączone';
@@ -3844,6 +3844,7 @@ $_LANG['Customer e-mail:'] = 'E-mail klienta:';
 $_LANG['SSN/TEN:'] = 'PESEL/NIP:';
 $_LANG['SSN/TEN and PIN'] = 'PESEL/NIP i PIN';
 
+$_LANG['Contracts'] = 'Umowy';
 $_LANG['without contracts'] = 'bez umów';
 $_LANG['without active contracts'] = 'bez aktywnych umów';
 $_LANG['Without Contracts'] = 'bez umów';
@@ -4636,7 +4637,7 @@ $_LANG['Cannot write new archived document!'] = 'Nie można zapisać nowego doku
 
 $_LANG['Preserve pro forma'] = 'Zachowaj pro formę';
 
-$_LANG['modifiable by selected users:<br><strong>$a</strong>'] = 'modyfikowalne przez wybranych użytkowników:<br><strong>$a</strong>';
+$_LANG['Modifiable by selected users:<br><strong>$a</strong>'] = 'Modyfikowalne przez wybranych użytkowników:<br><strong>$a</strong>';
 $_LANG['Illegal promotion schema period value modification!'] = 'Nielegalna modyfikacja wartości okresowych schematu promocyjnego!';
 
 $_LANG['New invoice'] = 'Nowa faktura';
@@ -4788,6 +4789,7 @@ $_LANG['of selected user:'] = 'wybranego użytkownika:';
 $_LANG['Select currency'] = 'Wybierz walutę';
 $_LANG['Invalid currency selection!'] = 'Błędny wybór waluty!';
 $_LANG['Currency:'] = 'Waluta:';
+$_LANG['No currency assigned!'] = 'Brak przypisanej waluty!';
 
 $_LANG['last day of month'] = 'ostatni dzień miesiąca';
 $_LANG['last day'] = 'ostatni dzień';
@@ -5058,3 +5060,5 @@ $_LANG['Select network device type'] = 'Wybierz typ urządzenia sieciowego';
 $_LANG['<!netdevtype>- undefined -'] = '- nieokreślony -';
 
 $_LANG['Starting balance at $a'] = 'Saldo początkowe na dzień $a';
+
+$_LANG['system messages'] = 'wiadomości systemowe';

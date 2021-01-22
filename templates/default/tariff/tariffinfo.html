@@ -91,7 +91,11 @@
                                 <TD><IMG SRC="img/value.gif" ALT=""></TD>
                                 <TD>{trans("Value:")}</TD>
                                 <TD>
-                                    {moneyf($tariff.value, $tariff.currency)}
+                                    {if $tariff.currency}
+                                        {moneyf($tariff.value, $tariff.currency)}
+                                    {else}
+                                        {$tariff.value|string_format:"%.2f "} <span class="alert">{trans('No currency assigned!')}</span>
+                                    {/if}
                                     {if $tariff.period}
                                         {assign var=tperiod value=$tariff.period}({$_PERIODS.$tperiod})
                                     {else}
