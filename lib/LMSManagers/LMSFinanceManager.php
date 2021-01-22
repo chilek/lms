@@ -654,7 +654,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             if (($data['at'] > 0 && $data['at'] >= $dom + 1) || ($data['at'] === 0 && $month_days >= $dom + 1)) {
                                 $partial_at = $data['at'];
                             } else {
-                                $partial_at = $dom + 1;
+                                $tomorrow = strtotime('tomorrow');
+                                $partial_at = $orig_datefrom < $tomorrow ? date('d', $tomorrow) : $dom + 1;
                             }
 
                             if ($value != 'NULL') {
