@@ -88,7 +88,7 @@
 				{foreach $schema.tariffs as $tariff}
 				<TR class="highlight schematariff" data-assignment="{$tariff.id}">
 					<TD class="valign-top">
-						<img src="img/money.gif" class="drag-icon">&nbsp;<A href="?m=tariffinfo&id={$tariff.tariffid}" class="bold">{$tariff.name}</A>
+						{icon name="money" class="drag-icon fa-fw"}&nbsp;<A href="?m=tariffinfo&id={$tariff.tariffid}" class="bold">{$tariff.name}</A>
 					</TD>
 					<TD class="text-right valign-top bold nobr">
 						{$tariff.value|string_format:"%.2f"}
