@@ -56,9 +56,9 @@
 		<TD class="text-right">
 			{if ConfigHelper::checkPrivilege('full_access')}
 				{if $plugin.enabled}
-				<a onclick="javascript:togglePlugin('{$name}', false);"><img src="img/access.gif" alt="{trans("Disable")}" title="{trans("Disable")}"></a>
+				{button type="link" icon="connected" tip="{trans("Disable")}" onclick="javascript:togglePlugin('{$name}', false);"}
 				{else}
-				<a onclick="javascript:togglePlugin('{$name}', true);"><img src="img/noaccess.gif" alt="{trans("Enable")}" title="{trans("Enable")}"></a>
+				{button type="link" icon="disconnected" tip="{trans("Enable")}" onclick="javascript:togglePlugin('{$name}', true);"}
 				{/if}
 			{/if}
 		</TD>
