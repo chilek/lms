@@ -14,7 +14,11 @@
     <TBODY>
 	<TR>
 		<TD WIDTH="1%">
-			<A HREF="?m=promotionset&id={$promotion.id}&access={$promotion.disabled}"><IMG SRC="img/{if $promotion.disabled}no{/if}access.gif" ALT=""></A>
+			{if $promotion.disabled}
+				{button type="link" icon="disconnected" tip="Enable" href="?m=promotionset&id={$promotion.id}&access={$promotion.disabled}"}
+			{else}
+				{button type="link" icon="connected" tip="Disable" href="?m=promotionset&id={$promotion.id}&access={$promotion.disabled}"}
+			{/if}
 		</TD>
 		<TD WIDTH="99%" NOWRAP colspan="2">
 			{if $promotion.disabled}{trans("disabled")}{else}{trans("enabled")}{/if}
@@ -23,7 +27,7 @@
 	{if $promotion.description}
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/info1.gif" ALT="">
+			{icon name="optional-info" class="fa-fw"}
 		</TD>
 		<TD WIDTH="98%" COLSPAN="2">
 			<TABLE WIDTH="100%" CELLPADDING="5">
@@ -54,4 +58,3 @@
 		return false;
 	});
 </script>
-

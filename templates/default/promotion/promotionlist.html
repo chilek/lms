@@ -16,7 +16,7 @@
     <THEAD>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/promo.gif" ALT=""> {trans("Name:")} ({trans("Effective date")})
+			{icon name="money" class="fa-fw"} {trans("Name:")} ({trans("Effective date")})
 		</TD>
 		<TD class="text-right nobr">
 			{trans("ID:")}
@@ -42,7 +42,7 @@
 	{foreach $promotionlist as $promo}
 	<TR class="highlight {if $promo.disabled} blend{/if}{if $promo.deleted} lms-ui-resource-deleted{/if}" data-name="{$promo.name}">
 		<TD nowrap onClick="return self.location.href='?m=promotioninfo&amp;id={$promo.id}';">
-			<IMG src="img/promo.gif" ALT=""> <B>{$promo.name}</B>
+			{icon name="money" class="fa-fw"} <B>{$promo.name}</B>
 			{if $promo.datefrom || $promo.dateto}
 				{if $promo.datefrom}
 				({trans("from:")} {$promo.datefrom|date_format:"%Y/%m/%d"}{if !$promo.dateto}){/if}
@@ -96,7 +96,7 @@
     <TFOOT>
 	<TR>
 		<TD COLSPAN="2" class="bold text-right">
-			<IMG src="img/info2.gif" ALT="">
+			{icon name="optional-info" class="fa-fw"}
 			{trans("Total:")}
 		</TD>
 		<TD class="bold nobr">
