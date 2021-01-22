@@ -15,7 +15,7 @@
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" name="plugins[name]" value="">
 <INPUT type="hidden" name="plugins[toggle]" value="">
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-background-cycle">
     <THEAD>
 	<TR>
 		<TD style="width: 30%;" class="bold nobr">
@@ -33,9 +33,8 @@
 	</TR>
     </THEAD>
     <TBODY>
-	{cycle values="light,lucid" print=false}
 	{foreach $plugins as $name => $plugin}
-	<TR class="highlight {cycle}{if !$plugin.enabled} blend{/if}">
+	<TR class="highlight{if !$plugin.enabled} blend{/if}">
 		<TD{if ConfigHelper::checkPrivilege('full_access')} onClick="javascript:togglePlugin('{$name}', {if $plugin.enabled}false{else}true{/if});"{/if}>
 			<span class="bold nobr">{if $plugin.fullname}{$plugin.fullname}{else}{$name}{/if}</span><br>
 			{$plugin.description}
