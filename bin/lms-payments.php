@@ -268,7 +268,8 @@ if ($month > 6) {
     $halfyear = $dom + ($month - 1) * 100;
 }
 
-$date_format = ConfigHelper::getConfig('payments.date_format');
+$date_format = ConfigHelper::getConfig('payments.date_format', '%Y/%m/%d');
+
 $forward_periods = array(
     DAILY      => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)),
     WEEKLY     => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month, $dom+6, $year)),
@@ -1177,11 +1178,11 @@ foreach ($assigns as $assign) {
 
     if (strpos($comment, '%aligned_partial_period') !== false) {
         if ($assign['datefrom']) {
-            $datefrom = explode('/', date(str_replace('%', '', $date_format), $assign['datefrom']));
+            $datefrom = explode('/', date('Y/m/d', $assign['datefrom']));
         }
         if ($assign['dateto']) {
-            $dateto = explode('/', date(str_replace('%', '', $date_format), $assign['dateto']));
-            $dateto_nextday = explode('/', date(str_replace('%', '', $date_format), $assign['dateto'] + 1));
+            $dateto = explode('/', date('Y/m/d', $assign['dateto']));
+            $dateto_nextday = explode('/', date('Y/m/d', $assign['dateto'] + 1));
         }
         if (isset($datefrom) && intval($datefrom[2]) != 1 && intval($datefrom[1]) == intval($month) && intval($datefrom[0]) == intval($year)) {
             $first_aligned_partial_period = array(
