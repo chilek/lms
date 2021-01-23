@@ -2,7 +2,7 @@
 {block name=title}{$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 
-<h1>{$pagetitle}</h1>
+<h1>{$pagetitle|escape}</h1>
 
 <table class="lmsbox lms-ui-background-cycle">
     <thead>
@@ -45,7 +45,7 @@
                 {$v.vlanid}
             </td>
             <td {tip text=$v.description}>
-                {$v.description|truncate:40:" ...":true|escape}
+                {$v.description|escape|truncate:40:" ...":true}
             </td>
             <td {tip text=$v.customername}>
                 <a href="?m=customerinfo&id={$v.customerid}">{$v.customername|truncate:20:" ...":true}</a>
