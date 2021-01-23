@@ -2,7 +2,7 @@
 {block name=title}{$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 
-<h1>{$pagetitle}</h1>
+<h1>{$pagetitle|escape}</h1>
 
 <table class="lmsbox lms-ui-background-cycle">
     <thead>
@@ -19,12 +19,16 @@
             <td>
                 {icon name="customer" label="Assigned Customer"}
             </td>
+            <td>
+                {icon name="netnode" label="Assigned Network node"}
+            </td>
             <td class="text-right" class="lms-ui-box-buttons" data-popup-menu-title="{trans('Sort by')}">
-                {buttons label="Sort by" type="button"}
+                {buttons label="Sort by" type="button" icon="sorting"}
                     {button type='link' icon="id" tip="ID" href="?m=vlanlist"}
                     {button type='link' icon="vlan" tip="VLAN ID" href="?m=vlanlist&orderby=vlanid"}
                     {button type='link' icon="description" tip="VLAN Description" href="?m=vlanlist&orderby=description"}
                     {button type='link' icon="customer" tip="Customer ID" href="?m=vlanlist&orderby=customerid"}
+                    {button type='link' icon="netnode" tip="Network Node ID" href="?m=vlanlist&orderby=netnodeid"}
                 {/buttons}
 
                 {button name="addvlan" id="addvlanbtn" icon="add" accesskey="v" label="Add"}
@@ -33,18 +37,21 @@
     </thead>
     <tbody>
         {foreach $vlanlist as $v}
-        <tr>
+        <tr class="highlight">
             <td>
                 {$v.id}
             </td>
             <td>
                 {$v.vlanid}
             </td>
-            <td>
-                {$v.description}
+            <td {tip text=$v.description}>
+                {$v.description|escape|truncate:40:" ...":true}
             </td>
-            <td>
-                <a href="?m=customerinfo&id={$v.customerid}">{$v.customername|truncate:'20':''}</a>
+            <td {tip text=$v.customername}>
+                <a href="?m=customerinfo&id={$v.customerid}">{$v.customername|truncate:20:" ...":true}</a>
+            </td>
+            <td {tip text=$v.netnodename}>
+                <a href="?m=netnodeinfo&id={$v.netnodeid}">{$v.netnodename|truncate:20:" ...":true}</a>
             </td>
             <td class="buttons">
                 {button type="link" icon="edit" href="?m=vlanlist&action=modify&id={$v.id}" tip="Edit"}

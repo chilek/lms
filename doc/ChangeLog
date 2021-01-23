@@ -31,6 +31,7 @@ version 27-git (????-??-??):
     and 'mail.smime_sender_email' configuration settings control S/MIME mailing signing [chilan]
   - improvement: allow to hide system messages in ticket message history; 'rt.default_hide_system_messages'
     configuration variable controls default state of this option ('false' by default) [chilan]
+  - enhancement: allow to tie vlans with netnodes [interduo]
 
 version 26.0 (2020-12-15):
 
