@@ -42,7 +42,7 @@
                         <select name="addvlan[netnodeid]">
                             <option value="">{trans("- none -")}</option>
                             {foreach $netnodelist as $nn}
-                                <option value="{$nn.id}" {if $nn.id == $vlaninfo.netnodeid} selected{/if}>{$nn.name} ({$nn.id})</option>
+                                <option value="{$nn.id}" {if $nn.id == $vlaninfo.netnodeid} selected{/if}>{$nn.name|escape} ({$nn.id})</option>
                             {/foreach}
                         </select>
                     </td>
