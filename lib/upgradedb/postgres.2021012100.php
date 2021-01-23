@@ -23,7 +23,9 @@
 
 $this->BeginTrans();
 
-$this->Execute("ALTER TABLE vlans ADD COLUMN netnodeid smallint DEFAULT NULL");
+$this->Execute("ALTER TABLE vlans ALTER COLUMN customerid integer DEFAULT NULL");
+
+$this->Execute("ALTER TABLE vlans ADD COLUMN netnodeid integer DEFAULT NULL");
 $this->Execute("ALTER TABLE vlans ADD CONSTRAINT vlans_netnodeid_fkey 
                     FOREIGN KEY (netnodeid) REFERENCES netnodes(id) ON DELETE SET NULL ON UPDATE CASCADE");
 

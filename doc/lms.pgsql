@@ -1251,9 +1251,9 @@ CREATE TABLE vlans (
     id smallint DEFAULT nextval('vlans_id_seq'::text) NOT NULL,
     vlanid smallint NOT NULL,
     description varchar(254) DEFAULT NULL,
-    customerid smallint DEFAULT NULL
+    customerid integer DEFAULT NULL
         CONSTRAINT vlans_customerid_fkey REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
-    netnodeid smallint DEFAULT NULL
+    netnodeid integer DEFAULT NULL
         CONSTRAINT vlans_netnodeid_fkey REFERENCES netnodes (id) ON DELETE SET NULL ON UPDATE CASCADE,
     PRIMARY KEY (id),
     CONSTRAINT vlans_customerid_ukey UNIQUE (vlanid, customerid),
