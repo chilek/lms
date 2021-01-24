@@ -98,7 +98,7 @@ class LMSSmartyPlugins
                 . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '') . '>';
             foreach ($GLOBALS['CURRENCIES'] as $currency) {
                 $result .= '<option value="' . $currency . '"'
-                    . ($currency == $selected || $currency == $defaultSelected ? ' selected' : '') . '>' . $currency . '</option>';
+                . (($selected && $currency == $selected) || (!$selected && $currency == $defaultSelected)  ? ' selected' : '') . '>' . $currency . '</option>';
             }
             $result .= '</select>';
         } else {
