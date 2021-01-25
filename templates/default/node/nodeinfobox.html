@@ -127,7 +127,7 @@
 									</td>
 									<td>
 										{if ConfigHelper::checkConfig('phpui.protect_passwords')}
-										<button class="lms-ui-button-clipboard lms-ui-button" data-clipboard-text="{$nodeinfo.passwd}">
+										<button class="lms-ui-button-clipboard lms-ui-button" data-clipboard-text="{$nodeinfo.passwd|escape}">
 											<i class="lms-ui-icon-clipboard"></i>
 											{trans("Copy")}
 										</button>

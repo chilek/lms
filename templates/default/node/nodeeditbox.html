@@ -187,7 +187,7 @@
 										{trans("Password:")}
 									</td>
 									<td>
-										<input type="text" name="nodeedit[passwd]" value="{$nodeinfo.passwd}" id="passwordcontainer" {tip text="Enter password (optional)" trigger="passwd"}>
+										<input type="text" name="nodeedit[passwd]" value="{$nodeinfo.passwd|escape}" id="passwordcontainer" {tip text="Enter password (optional)" trigger="passwd"}>
 										<a href="#" id="genpasswd"  {tip text="Click to generate random password"}>&raquo;&raquo;&raquo;</a>
 									</td>
 								</tr>
