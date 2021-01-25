@@ -34,6 +34,8 @@ version 27-git (????-??-??):
   - enhancement: allow to tie vlans with netnodes [interduo]
   - improvement: 'phpui.nodepassword_allowed_characters' controls allowed character set in generated
     node password [chilan]
+  - improvement: implemented 'with active tariffless liabilities' and 'with tariffless liabilities'
+    customer filters [chilan]
 
 version 26.0 (2020-12-15):
 
