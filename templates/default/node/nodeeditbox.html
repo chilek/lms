@@ -523,12 +523,12 @@
 		}
 		if ($('#passwordcontainer').val().length > 0) {
 			confirmDialog($t("Are you sure, you want to generate new password?"), this).done(function() {
-				$( '#passwordcontainer' ).val( generate_random_string(length) );
+				$( '#passwordcontainer' ).val(generate_random_string(length, "{ConfigHelper::getConfig('phpui.nodepassword_allowed_characters', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')|replace:'"':'\"'}"));
 				event.preventDefault();
 			});
 			return false;
 		} else {
-			$( '#passwordcontainer' ).val( generate_random_string(length) );
+			$( '#passwordcontainer' ).val(generate_random_string(length, "{ConfigHelper::getConfig('phpui.nodepassword_allowed_characters', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')|replace:'"':'\"'}"));
 			return false;
 		}
 	});
