@@ -71,7 +71,7 @@
     <THEAD>
 	<TR>
 		<TD>
-			<IMG src="img/docum.gif" alt="">
+			{icon name="document" class="fa-fw"}
 		</TD>
 		<TD class="bold nobr">
 			{trans("Title:")}
@@ -84,7 +84,7 @@
     <TBODY>
 	<TR id="customerselection">
 		<TD>
-			<IMG src="img/customer.gif" ALT="">
+			{icon name="customer" class="fa-fw"}
 		</TD>
 		<TD class="bold nobr">
 			{trans("Customer:")}
@@ -96,7 +96,7 @@
 	</TR>
 	<TR>
 		<TD>
-			<IMG src="img/calendar.gif" alt="">
+			{icon name="period" class="fa-fw"}
 		</TD>
 		<TD class="bold">
 			{trans("Period:")}
@@ -118,7 +118,7 @@
 	</TR>
 	<TR{if $document.closed} style="display: none;"{/if}>
 		<TD>
-			<IMG src="img/calendar.gif" alt="">
+			{icon name="period" class="fa-fw"}
 		</TD>
 		<TD class="bold">
 			{trans("Wait for customer action till:")}
@@ -133,7 +133,7 @@
 	</TR>
 	<TR>
 		<TD>
-			<IMG src="img/info.gif" alt="">
+			{icon name="description" class="fa-fw"}
 		</TD>
 		<TD class="bold">
 			{trans("Description:")}
@@ -144,14 +144,14 @@
 	</TR>
 	<TR>
 		<TD>
-			<IMG src="img/info.gif" alt="">
+			{icon name="type" class="fa-fw"}
 		</TD>
 		<TD class="bold">
 			{trans("Type:")}
 		</TD>
 		<TD>
 			<SELECT SIZE="1" NAME="document[type]" onchange="DocTypeChanged();" {tip class="lms-ui-advanced-select" text="Select document type" trigger="type"} required>
-				<OPTION VALUE="0">... {trans("select type")} ...</OPTION>
+				<OPTION VALUE="0">{trans("select type")}</OPTION>
 				{foreach from=$_DOCTYPES key=key item=item}{if $key < 0 && in_array($key, $docrights)}
 				<OPTION VALUE="{$key}"{if $document.type==$key} SELECTED{/if}>{$item}</OPTION>
 				{/if}{/foreach}
@@ -160,7 +160,7 @@
 	</TR>
 	<TR id="templates" style="display:{if $document.type<0}table-row{else}none{/if}">
 		<TD>
-			<IMG src="img/class.gif" alt="">
+			{icon name="template" class="fa-fw"}
 		</TD>
 		<TD class="bold">
 			{trans("Template:")}
@@ -179,7 +179,7 @@
 	</tr>
 	<TR id="document-file-row"{if !$document.type} style="display: none;"{/if}>
 		<TD>
-			<IMG src="img/save.gif" alt="">
+			{icon name="import" class="fa-fw"}
 		</TD>
 		<TD class="bold">
 			{trans("Files:")}
@@ -190,7 +190,7 @@
 	</TR>
 	<TR id="attachment-row"{if !$attachment_result} style="display: none;"{/if}>
 		<TD>
-			<img src="img/attach.gif">
+			{icon name="import" class="fa-fw"}
 		</TD>
 		<TD class="bold nobr">
 			{trans("Document attachments:")}
@@ -201,7 +201,7 @@
 	</TR>
 	<TR>
 		<TD>
-			<IMG src="img/docum.gif" alt="">
+			{icon name="id" class="fa-fw"}
 		</TD>
 		<TD class="bold">
 			{trans("Number:")}
@@ -215,7 +215,7 @@
 	</TR>
 	<TR>
 		<TD>
-			<IMG src="img/confirm.gif" ALT="">
+			{icon name="confirm" class="fa-fw"}
 		</TD>
 		<TD class="bold nobr">
 			<label for="closed">{trans("Confirmed:")}</label>
