@@ -32,6 +32,8 @@ version 27-git (????-??-??):
   - improvement: allow to hide system messages in ticket message history; 'rt.default_hide_system_messages'
     configuration variable controls default state of this option ('false' by default) [chilan]
   - enhancement: allow to tie vlans with netnodes [interduo]
+  - improvement: 'phpui.nodepassword_allowed_characters' controls allowed character set in generated
+    node password [chilan]
 
 version 26.0 (2020-12-15):
 
