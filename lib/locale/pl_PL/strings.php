@@ -5065,3 +5065,6 @@ $_LANG['<!netdevtype>- undefined -'] = '- nieokreślony -';
 $_LANG['Starting balance at $a'] = 'Saldo początkowe na dzień $a';
 
 $_LANG['system messages'] = 'wiadomości systemowe';
+
+$_LANG['with active tariffless liabilities'] = 'z aktywnymi zobowiązaniami beztaryfowymi';
+$_LANG['with tariffless liabilities'] = 'z zobowiązaniami beztaryfowymi';

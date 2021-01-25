@@ -923,6 +923,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 case 75:
                     $state_conditions[] = 'c.id IN (SELECT DISTINCT customerid FROM assignments WHERE commited = 1 AND (vdiscount > 0 OR pdiscount > 0))';
                     break;
+                case 79:
+                    $state_conditions[] = 'c.id IN (SELECT DISTINCT customerid FROM assignments WHERE commited = 1 AND tariffid IS NULL AND datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?))';
+                    break;
+                case 80:
+                    $state_conditions[] = 'c.id IN (SELECT DISTINCT customerid FROM assignments WHERE commited = 1 AND tariffid IS NULL)';
+                    break;
                 default:
                     if ($state_item > 0 && $state_item < 50 && intval($state_item)) {
                         $customer_statuses[] = intval($state_item);

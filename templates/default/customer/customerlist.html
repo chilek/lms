@@ -164,6 +164,8 @@
 					<OPTION VALUE="62"{if $filter.state == 62} SELECTED{/if}>{trans("with e-invoice")}</OPTION>
 					<OPTION VALUE="66"{if $filter.state == 66} SELECTED{/if}>{trans("without invoice flag")}</OPTION>
 					<OPTION VALUE="75"{if $filter.state == 75} SELECTED{/if}>{trans("with discount")}</OPTION>
+					<option value="79"{if $filter.state == 79} selected{/if}>{trans("with active tariffless liabilities")}</option>
+					<option value="80"{if $filter.state == 80} selected{/if}>{trans("with tariffless liabilities")}</option>
 				</optgroup>
 				<optgroup label="{trans("Addresses")}">
 					<OPTION VALUE="67"{if $filter.state == 67} SELECTED{/if}>{trans("without building number")}</OPTION>
