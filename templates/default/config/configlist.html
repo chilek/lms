@@ -124,7 +124,7 @@
 			{trans("Comment:")}
 		</TH>
 		<TH scope="col" class="valign-bottom nobr" data-searchable="true" data-select-value="true" data-filter-id="type-filter">
-			{trans("Type:")}
+			{trans("Scope:")}
 		</TH>
 		<TH scope="col" class="valign-bottom nobr" data-searchable="true" data-select-value="true" data-filter-id="user-filter">
 			{trans("User:")}
@@ -195,7 +195,7 @@
 
 						<div class="import-container-type">
 							<div class="import-container-center">
-								{trans('Target variables type:')}
+								{trans('Target variables scope:')}
 							</div>
 							<div class="import-container-select">
 								<SELECT size="1" id="import-type" {tip text="Select variables type" trigger="type"}>
@@ -393,12 +393,33 @@
 				var division_filer = $('#division-filter').val();
 				var export_args = '';
 
-				if (type_filer === $t("global value")) {
-					export_args += '&source-type=' + type_filer + '';
+				if (typeof(type_filer) === 'undefined'
+						|| (
+								type_filer === $t("global value")
+								&& (
+										typeof(division_filer) === 'undefined'
+										|| division_filer === $t("<!filter>- none -")
+										|| (typeof(division_filer) !== 'undefined' && division_filer.length === 0)
+								)
+								&& (
+										typeof(user_filer) === 'undefined'
+										|| user_filer === $t("<!filter>- none -")
+										|| (typeof(user_filer) !== 'undefined' && user_filer.length === 0)
+								)
+						)
+				) {
+					var export_type_filter = $t("global value");
+					export_args += '&source-type=' + export_type_filter + '';
 				}
 				if (type_filer === $t("division value")
-						&& division_filer != $t("<!filter>- none -") && division_filer.length > 0
-						&& (user_filer === $t("<!filter>- none -") || user_filer.length === 0)) {
+					&& division_filer != $t("<!filter>- none -")
+					&& division_filer.length > 0
+					&& (
+						typeof(user_filer) === 'undefined'
+						|| user_filer === $t("<!filter>- none -")
+						|| (typeof(user_filer) !== 'undefined' && user_filer.length === 0)
+					)
+				) {
 					export_args += '&source-division=' + division_filer + '';
 				}
 
@@ -410,8 +431,14 @@
 				}
 
 				if (type_filer === $t("user value")
-						&& user_filer !== $t("<!filter>- none -") && user_filer.length > 0
-						&& (division_filer === $t("<!filter>- none -") || division_filer.length === 0)) {
+					&& user_filer !== $t("<!filter>- none -")
+					&& user_filer.length > 0
+					&& (
+						typeof(division_filer) === 'undefined'
+						|| division_filer === $t("<!filter>- none -")
+						|| (typeof(division_filer) !== 'undefined' && division_filer.length === 0)
+					)
+				) {
 					export_args += '&source-user=' + user_filer + '';
 				}
 				document.configform.action = '?m=configexport' + export_args + '';
@@ -585,15 +612,35 @@
 				var user_filer = $('#user-filter').val();
 				var division_filer = $('#division-filter').val();
 
-				if (type_filer === $t("global value")) {
+				if (typeof(type_filer) === 'undefined'
+					|| (
+						type_filer === $t("global value")
+						&& (
+							typeof(division_filer) === 'undefined'
+							|| division_filer === $t("<!filter>- none -")
+							|| (typeof(division_filer) !== 'undefined' && division_filer.length === 0)
+						)
+						&& (
+							typeof(user_filer) === 'undefined'
+							|| user_filer === $t("<!filter>- none -")
+							|| (typeof(user_filer) !== 'undefined' && user_filer.length === 0)
+						)
+					)
+				) {
 					$('#export, #clone, .clone-container-section-input, .withchildbindings').show();
 					$('.clone-container-section-select, .clone-container-user, .clone-container-division, .withparentbindings, .override').hide();
 					return;
 				}
 
 				if (type_filer === $t("division value")
-						&& division_filer != $t("<!filter>- none -") && division_filer.length > 0
-						&& (user_filer === $t("<!filter>- none -") || user_filer.length === 0)) {
+					&& division_filer != $t("<!filter>- none -")
+					&& division_filer.length > 0
+					&& (
+						typeof(user_filer) === 'undefined'
+						|| user_filer === $t("<!filter>- none -")
+						|| (typeof(user_filer) !== 'undefined' && user_filer.length === 0)
+					)
+				) {
 					$('#export, #clone, .clone-container-section-select, .clone-container-division, .withchildbindings, .withparentbindings, .override').show();
 					$('.clone-container-section-input, .clone-container-user').hide();
 					return;
@@ -608,8 +655,14 @@
 				}
 
 				if (type_filer === $t("user value")
-						&& user_filer !== $t("<!filter>- none -") && user_filer.length > 0
-						&& (division_filer === $t("<!filter>- none -") || division_filer.length === 0)) {
+					&& user_filer !== $t("<!filter>- none -")
+					&& user_filer.length > 0
+					&& (
+						typeof(division_filer) === 'undefined'
+						|| division_filer === $t("<!filter>- none -")
+						|| (typeof(division_filer) !== 'undefined' && division_filer.length === 0)
+					)
+				) {
 					$('#export, #clone, .clone-container-section-select, .clone-container-user, .withparentbindings, .override').show();
 					$('.clone-container-section-input, .clone-container-division, .withchildbindings').hide();
 					return;
