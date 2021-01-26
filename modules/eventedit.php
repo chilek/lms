@@ -91,7 +91,7 @@ if (isset($_POST['event'])) {
     $event = $_POST['event'];
 
     if (!isset($event['usergroup'])) {
-        $event['usergroup'] = 0;
+        $event['usergroup'] = -2;
     }
     //$SESSION->save('eventgid', $event['usergroup']);
 
@@ -249,7 +249,7 @@ if (isset($event['customerid']) && intval($event['customerid'])) {
 }
 
 if (!isset($event['usergroup'])) {
-    $event['usergroup'] = -2;
+    $event['usergroup'] = 0;
 }
     //$SESSION->restore('eventgid', $event['usergroup']);
 
