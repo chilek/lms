@@ -249,7 +249,7 @@ if (isset($event['customerid']) && intval($event['customerid'])) {
 }
 
 if (!isset($event['usergroup'])) {
-    $event['usergroup'] = 0;
+    $event['usergroup'] = -2;
 }
     //$SESSION->restore('eventgid', $event['usergroup']);
 
