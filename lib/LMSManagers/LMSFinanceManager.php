@@ -522,7 +522,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
                     $datefrom  = !empty($_datefrom) ? $_datefrom : $datefrom;
                     $_datefrom = 0;
-                    $at        = (ConfigHelper::checkConfig('phpui.promotion_preserve_at_day') && $data['at'] !== '')
+                    $at        = (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.promotion_preserve_at_day', true)) && $data['at'] !== '')
                                                ? $data['at'] : $this->CalcAt($period, $datefrom);
 
                     $length    = $data_schema[$idx - 1];

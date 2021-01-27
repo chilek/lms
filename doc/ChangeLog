@@ -37,6 +37,8 @@ version 27-git (????-??-??):
   - improvement: implemented 'with active tariffless liabilities' and 'with tariffless liabilities'
     customer filters [chilan]
   - improvement: 'phpui.ui_lang' setting allow to force UI language selection [chilan]
+  - improvement: changed default value of 'phpui.promotion_preserve_at_day' from 'false'
+    to 'true' [chilan]
 
 version 26.0 (2020-12-15):
 
