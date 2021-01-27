@@ -64,7 +64,7 @@ $schema['periods'][] = trans('Months $a-', $mon);
 
 $schema['data'] = implode(' &raquo; ', (array)$schema['data']);
 
-$schema['tariffs'] = $DB->GetAll('SELECT t.name, t.value,
+$schema['tariffs'] = $DB->GetAll('SELECT t.name, t.value, t.type,
     a.tariffid, a.id, a.data, a.backwardperiod, a.optional, a.label
     FROM promotionassignments a
     JOIN tariffs t ON (a.tariffid = t.id)

@@ -68,20 +68,34 @@
 		<TD style="width: 100%;">
 			<FORM method="post" name="tariffs" action="?m=promotionschemaedit&id={$schema.id}&action=tariff">
 			<TABLE class="lmsbox-inner lms-ui-background-cycle" id="schematariffs">
+				<colgroup>
+					<col style="width: {math equation="94-x" x=$periodcnt}%;">
+					<col style="width: 1%;">
+					<col style="width: 1%;">
+					<col style="width: 1%;">
+					<col style="width: 1%;">
+					{foreach $schema.periods as $period}
+						<col style="width: 1%;">
+					{/foreach}
+					<col style="width: 1%;">
+				</colgroup>
 				<THEAD>
 				<TR>
-					<TD style="width: {math equation="95-x" x=$periodcnt}%;" class="bold nobr">
+					<TD class="bold nobr">
 						<INPUT type="submit" class="hiddenbtn">
 						{trans("Name:")}
 					</TD>
-					<TD style="width: 1%;" class="text-right bold nobr">{trans("Value")}:</TD>
-					<TD style="width: 1%;" class="text-right nobr">{trans("<!assignment>Backward:")}</TD>
-					<TD style="width: 1%;" class="text-right nobr">{trans("Optional")}:</TD>
-					<TD style="width: 1%;" class="text-right nobr">{trans("<!promotionassignment>Label")}:</TD>
-					{foreach from=$schema.periods item=period}
-					<TD style="width: 1%;" class="text-right nobr">{$period}:</TD>
+					<TD class="nobr">
+						{trans("Type")}
+					</TD>
+					<TD class="text-right bold nobr">{trans("Value")}:</TD>
+					<TD class="text-right nobr">{trans("<!assignment>Backward:")}</TD>
+					<TD class="text-right nobr">{trans("Optional")}:</TD>
+					<TD class="text-right nobr">{trans("<!promotionassignment>Label")}:</TD>
+					{foreach $schema.periods as $period}
+						<TD class="text-right nobr">{$period}:</TD>
 					{/foreach}
-					<TD style="width: 1%;">&nbsp;</TD>
+					<TD>&nbsp;</TD>
 				</TR>
 				</THEAD>
 				<TBODY>
@@ -89,6 +103,9 @@
 				<TR class="highlight schematariff" data-assignment="{$tariff.id}">
 					<TD class="valign-top">
 						{icon name="money" class="drag-icon fa-fw"}&nbsp;<A href="?m=tariffinfo&id={$tariff.tariffid}" class="bold">{$tariff.name}</A>
+					</TD>
+					<TD class="nobr">
+						{$_SERVICETYPES[$tariff.type]}
 					</TD>
 					<TD class="text-right valign-top bold nobr">
 						{$tariff.value|string_format:"%.2f"}
@@ -193,7 +210,7 @@
 				</TR>
 				{foreachelse}
 				<TR>
-					<TD colspan="{$periodcnt+6}" class="empty-table">
+					<TD colspan="{$periodcnt+7}" class="empty-table">
 						<p>{trans("This schema has no assigned tariffs.")}</p>
 					</TD>
 				</TR>
@@ -202,7 +219,7 @@
 				{if $tariffs}
 				<TFOOT>
 				<TR>
-					<TD colspan="2" class="ftop valign-top">
+					<TD colspan="3" class="ftop valign-top">
 						<div class="promoschema-tariff-selection-header">
 							<div class="promoschema-tariff-selection-header-row">
 								<div class="promoschema-tariff-selection-header-cell">
