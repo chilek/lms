@@ -40,7 +40,7 @@
 	<TR class="highlight" data-target-url="?m=customergroupinfo&id={$customergroup.id}" data-name="{$customergroup.name}">
 		<TD>
 			<IMG src="img/group.gif" alt="">&nbsp;<span class="bold">{$customergroup.name}</span><BR>
-			{if $customergroup.description}<IMG src="img/info1.gif" alt="">&nbsp;{$customergroup.description}{/if}
+			{if $customergroup.description}<IMG src="img/info1.gif" alt="">&nbsp;{$customergroup.description|escape|replace:"\n":"<BR>"}{/if}
 		</TD>
 		<TD class="text-right">
 			({$customergroup.id|string_format:"%04d"})
