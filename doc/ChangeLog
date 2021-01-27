@@ -36,6 +36,7 @@ version 27-git (????-??-??):
     node password [chilan]
   - improvement: implemented 'with active tariffless liabilities' and 'with tariffless liabilities'
     customer filters [chilan]
+  - improvement: 'phpui.ui_lang' setting allow to force UI language selection [chilan]
 
 version 26.0 (2020-12-15):
 
