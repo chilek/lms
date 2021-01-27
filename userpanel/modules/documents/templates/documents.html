@@ -69,6 +69,9 @@
 				$.ajax({
 					method: "POST",
 					url: '?m=documents&smsauth=1&send=1',
+					data: {
+						documentid: parseInt($('#authcode-dialog .documentid').val())
+					},
 					success: function (data) {
 						if (data.length) {
 							$('#authcode-status').removeClass('authcode-alert').addClass('authcode-error').html(data).show();
