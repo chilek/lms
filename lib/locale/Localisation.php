@@ -158,10 +158,9 @@ class Localisation
 
     private static function detectUiLanguage()
     {
+        $langs = ConfigHelper::getConfig('phpui.ui_lang', '');
         if (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-            $langs = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
-        } else {
-            $langs = '';
+            $langs = (empty($langs) ? '' : $langs . ',') . $_SERVER['HTTP_ACCEPT_LANGUAGE'];
         }
 
         $langs = explode(',', $langs);
@@ -169,7 +168,7 @@ class Localisation
         foreach ($langs as $val) {
             self::$defaultUiLanguage = self::$uiLanguage = self::checkLanguage($val);
             if (isset(self::$defaultUiLanguage)) {
-                break;
+                return;
             }
         }
     }
