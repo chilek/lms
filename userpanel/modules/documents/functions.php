@@ -285,7 +285,11 @@ function module_main()
             }
         }
     } else {
-        $documentid = 0;
+        if (isset($_GET['documentid'])) {
+            $documentid = intval($_GET['documentid']);
+        } else {
+            $documentid = 0;
+        }
     }
 
     $documents = $DB->GetAll('SELECT d.id, d.number, d.type, c.title, c.fromdate, c.todate, 
