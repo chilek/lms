@@ -458,6 +458,9 @@ class Utils
             ));
             $hm_config->set('CSS.MaxImgLength', null);
             $hm_config->set('HTML.MaxImgLength', null);
+            if (defined('CACHE_DIR')) {
+                $hm_config->set('Cache.SerializerPath', CACHE_DIR . DIRECTORY_SEPARATOR . 'htmlpurifier');
+            }
             $hm_purifier = new HTMLPurifier($hm_config);
         }
 
