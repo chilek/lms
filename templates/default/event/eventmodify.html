@@ -121,7 +121,7 @@
 									{if $user.access}
 										<OPTION value="{$user.id}"
 											{if is_array($event.userlist) && in_array($user.id, $event.userlist)}selected{/if}>
-												{$user.rname|escape|truncate:40:"...":true} ({$user.login})
+												{$user.rname|truncate:40:"...":true|escape} ({$user.login})
 										</OPTION>
 									{/if}
 								{else}
@@ -129,7 +129,7 @@
 										<OPTION value="{$user.id}"
 											{if !$user.access} data-crossed{/if}
 											{if is_array($event.userlist) && in_array($user.id, $event.userlist)}selected{/if}>
-												{$user.rname|escape|truncate:40:"...":true} ({$user.login})
+												{$user.rname|truncate:40:"...":true|escape} ({$user.login})
 										</OPTION>
 									{/if}
 								{/if}

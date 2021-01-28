@@ -445,7 +445,7 @@
 				<OPTION VALUE="">- {trans("all")} -</OPTION>
 				{foreach $divisions as $division}
 					<OPTION VALUE="{$division.id}"{if $listdata.division==$division.id} selected{/if}
-						>{$division.shortname|escape|truncate:30:"...":true}</OPTION>
+						>{$division.shortname|truncate:30:"...":true|escape}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>

@@ -26,7 +26,7 @@
 			{trans("Subject:")}
 		</TD>
 		<TD class="bold nobr">
-			{$ticket.subject|escape|truncate:50:"..."}
+			{$ticket.subject|truncate:50:"..."|escape}
 		</TD>
 	</TR>
 	<TR>

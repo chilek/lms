@@ -41,7 +41,7 @@
 									<OPTION value="{$user.id}"
 										{if is_array($filter.userid) && in_array($user.id, $filter.userid)}} selected{/if}
 										{if !$user.access} data-crossed{/if}>
-											{$user.rname|escape|truncate:40:"...":true} ({$user.login})
+											{$user.rname|truncate:40:"...":true|escape} ({$user.login})
 									</OPTION>
 								{/if}
 							{/foreach}

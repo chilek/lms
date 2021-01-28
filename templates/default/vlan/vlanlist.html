@@ -45,7 +45,7 @@
                 {$v.vlanid}
             </td>
             <td {tip text=$v.description}>
-                {$v.description|escape|truncate:40:" ...":true}
+                {$v.descriptione|truncate:40:" ...":true|escape}
             </td>
             <td {tip text=$v.customername}>
                 <a href="?m=customerinfo&id={$v.customerid}">{$v.customername|truncate:20:" ...":true}</a>

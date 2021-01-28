@@ -316,7 +316,7 @@
 						data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
 					{foreach $divisions as $division}
 						<option value="{$division.id}" {if isset($user_divisions) && in_array($division.id, $user_divisions)} selected{/if}>
-							{$division.label|escape|truncate:30:"...":true}
+							{$division.label|truncate:30:"...":true|escape}
 						</option>
 					{/foreach}
 				</select>

@@ -84,7 +84,7 @@
 				<select size="1" id="select_context_division" name="select_context_division" {tip text="Global division context"}>
 					{foreach $context_divisions as $division}
 						<option value="{$division.id}" {if $division.id == $division_context}selected{/if}>
-							{$division.label|escape|truncate:30:"...":true}
+							{$division.label|truncate:30:"...":true|escape}
 						</option>
 					{/foreach}
 				</select>
