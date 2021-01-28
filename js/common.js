@@ -945,3 +945,15 @@ function escapeHtml(text) {
 
 	return text.replace(/[&<>"']/g, function(m) { return map[m]; });
 }
+
+function unescapeHtml(text) {
+	var map = {
+		'&amp;': '&',
+		'&lt;': '<',
+		'&gt;': '>',
+		'&quot;': '"',
+		'&#039;': "'"
+	};
+
+	return text.replace(/&(amp|lt|gt|quot|#039);/g, function(m) { return map[m]; });
+}
