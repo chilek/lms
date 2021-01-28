@@ -4749,9 +4749,9 @@ class LMS
                         if ($interval == -1) {
                             $delay = mt_rand(500, 5000);
                         } else {
-                            $delay = intval($interval) * 1000;
+                            $delay = intval($interval);
                         }
-                        usleep($delay);
+                        usleep($delay * 1000);
                     }
                 }
             }
