@@ -112,8 +112,21 @@ function validate_customer_emails(&$customerdata, &$contacts, &$error)
     foreach ($customerdata['emails'] as $idx => &$val) {
         $email = trim($val['contact']);
         $name = trim($val['name']);
+        $properties = !empty($val['properties']) ? $val['properties'] : array();
         $type = !empty($val['type']) ? array_sum($val['type']) : null;
         $type |= CONTACT_EMAIL;
+
+        if (!empty($properties)) {
+            foreach ($properties as $pkey => $property) {
+                $propertyName = Utils::removeInsecureHtml($property['name']);
+                $propertyValue = Utils::removeInsecureHtml($property['value']);
+
+                if (empty($propertyName) || empty($propertyValue)) {
+                    unset($properties[$pkey]);
+                }
+                unset($propertyName, $propertyValue);
+            }
+        }
 
         if ($type & (CONTACT_INVOICES | CONTACT_DISABLED)) {
             $emaileinvoice = true;
@@ -126,7 +139,8 @@ function validate_customer_emails(&$customerdata, &$contacts, &$error)
         } elseif ($name && !$email) {
             $error['email' . $idx] = trans('Email address is required!');
         } elseif ($email) {
-            $contacts[] = array('name' => $name, 'contact' => $email, 'type' => $type);
+            $contacts[] = array('name' => $name, 'contact' => $email, 'type' => $type, 'properties' => $properties);
+
         }
     }
 }

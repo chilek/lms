@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,7 +24,12 @@
  *  $Id$
  */
 
-$_LANG['ignore'] = 'ignoruj';
+$_LANG['Properties:'] = 'Właściwości:';
+$_LANG['Add property'] = 'Dodaj właściwość';
+$_LANG['Property name:'] = 'Nazwa własciwości:';
+$_LANG['Property name'] = 'Nazwa własciwości';
+$_LANG['Property value:'] = 'Wartość własciwości:';
+$_LANG['Property value'] = 'Wartość własciwości';
 
 $_LANG['full calendar periods'] = 'pełne okresy kalendarzowe';
 

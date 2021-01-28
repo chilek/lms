@@ -4721,45 +4721,122 @@ class LMS
                 $body = $data['body'];
                 $headers = $data['headers'];
 
-                if ($add_message) {
-                    $this->DB->Execute(
-                        'INSERT INTO messages (subject, body, cdate, type, userid, contenttype)
-						VALUES (?, ?, ?NOW?, ?, ?, ?)',
-                        array($subject, $body, MSG_MAIL, Auth::GetCurrentUser(), $content_type)
-                    );
-                    $msgid = $this->DB->GetLastInsertID('messages');
+//                if ($add_message) {
+//                    $this->DB->Execute(
+//                        'INSERT INTO messages (subject, body, cdate, type, userid, contenttype)
+//						VALUES (?, ?, ?NOW?, ?, ?, ?)',
+//                        array($subject, $body, MSG_MAIL, Auth::GetCurrentUser(), $content_type)
+//                    );
+//                    $msgid = $this->DB->GetLastInsertID('messages');
+//
+//                    if ($message_attachments) {
+//                        if (!empty($files)) {
+//                            foreach ($files as &$file) {
+//                                $file['name'] = $file['filename'];
+//                                $file['type'] = $file['content_type'];
+//                            }
+//                            unset($file);
+//                            $this->AddFileContainer(array(
+//                                'description' => 'message-' . $msgid,
+//                                'files' => $files,
+//                                'type' => 'messageid',
+//                                'resourceid' => $msgid,
+//                            ));
+//                        }
+//                    }
+//
+//                    foreach (explode(',', $custemail) as $email) {
+//                        $this->DB->Execute(
+//                            'INSERT INTO messageitems (messageid, customerid, destination, lastdate, status)
+//							VALUES (?, ?, ?, ?NOW?, ?)',
+//                            array($msgid, $doc['customerid'], $email, MSG_NEW)
+//                        );
+//                        $msgitemid = $this->DB->GetLastInsertID('messageitems');
+//                        if (!isset($msgitems[$doc['customerid']])) {
+//                            $msgitems[$doc['customerid']] = array();
+//                        }
+//                        $msgitems[$doc['customerid']][$email] = $msgitemid;
+//                    }
+//                }
 
-                    if ($message_attachments) {
-                        if (!empty($files)) {
-                            foreach ($files as &$file) {
-                                $file['name'] = $file['filename'];
-                                $file['type'] = $file['content_type'];
-                            }
-                            unset($file);
-                            $this->AddFileContainer(array(
-                                'description' => 'message-' . $msgid,
-                                'files' => $files,
-                                'type' => 'messageid',
-                                'resourceid' => $msgid,
-                            ));
-                        }
-                    }
-
-                    foreach (explode(',', $custemail) as $email) {
-                        $this->DB->Execute(
-                            'INSERT INTO messageitems (messageid, customerid, destination, lastdate, status)
-							VALUES (?, ?, ?, ?NOW?, ?)',
-                            array($msgid, $doc['customerid'], $email, MSG_NEW)
-                        );
-                        $msgitemid = $this->DB->GetLastInsertID('messageitems');
-                        if (!isset($msgitems[$doc['customerid']])) {
-                            $msgitems[$doc['customerid']] = array();
-                        }
-                        $msgitems[$doc['customerid']][$email] = $msgitemid;
-                    }
-                }
-
+                $messages = array();
                 foreach (explode(',', $custemail) as $email) {
+                    $mailSubject = $subject;
+                    $headers['Subject'] = $mailSubject;
+
+                    // get email properties
+                    $emailProperties = $this->DB->GetAllByKey(
+                        'SELECT ccp.name AS name, ccp.value AS value
+                        FROM customercontacts cc
+                        LEFT JOIN customercontactsproperties ccp ON cc.id = ccp.contactid
+                        WHERE cc.contact = ?',
+                        'name',
+                        array($email)
+                    );
+
+                    if ($emailProperties && isset($emailProperties['email-subject'])) {
+                        $customSubject = $emailProperties['email-subject']['value'];
+                        $customSubject = preg_replace('/%original/', $subject, $customSubject);
+                        $customSubject = preg_replace('/%invoice/', $invoice_number, $customSubject);
+                        $mailSubject = $customSubject;
+                        $headers['Subject'] = $mailSubject;
+                    }
+
+                    if ($add_message) {
+                        if (!isset($messages[$mailSubject])) {
+                            $this->DB->Execute(
+                                'INSERT INTO messages (subject, body, cdate, type, userid, contenttype)
+                                    VALUES (?, ?, ?NOW?, ?, ?, ?)',
+                                array($mailSubject, $body, MSG_MAIL, Auth::GetCurrentUser(), $content_type)
+                            );
+                            $msgid = $this->DB->GetLastInsertID('messages');
+
+                            $messages[$mailSubject]['msgid'] = $msgid;
+
+                            if ($message_attachments) {
+                                if (!empty($files)) {
+                                    foreach ($files as &$file) {
+                                        $file['name'] = $file['filename'];
+                                        $file['type'] = $file['content_type'];
+                                    }
+                                    unset($file);
+                                    $this->AddFileContainer(array(
+                                        'description' => 'message-' . $msgid,
+                                        'files' => $files,
+                                        'type' => 'messageid',
+                                        'resourceid' => $msgid,
+                                    ));
+                                }
+                            }
+
+                            $this->DB->Execute(
+                                'INSERT INTO messageitems (messageid, customerid, destination, lastdate, status)
+                                    VALUES (?, ?, ?, ?NOW?, ?)',
+                                array($msgid, $doc['customerid'], $email, MSG_NEW)
+                            );
+
+                            $msgitemid = $this->DB->GetLastInsertID('messageitems');
+                            if (!isset($msgitems[$doc['customerid']])) {
+                                $msgitems[$doc['customerid']] = array();
+                            }
+                            $msgitems[$doc['customerid']][$email] = $msgitemid;
+                        } else {
+                            $msgid = $messages[$mailSubject]['msgid'];
+
+                            $this->DB->Execute(
+                                'INSERT INTO messageitems (messageid, customerid, destination, lastdate, status)
+                                VALUES (?, ?, ?, ?NOW?, ?)',
+                                array($msgid, $doc['customerid'], $email, MSG_NEW)
+                            );
+
+                            $msgitemid = $this->DB->GetLastInsertID('messageitems');
+                            if (!isset($msgitems[$doc['customerid']])) {
+                                $msgitems[$doc['customerid']] = array();
+                            }
+                            $msgitems[$doc['customerid']][$email] = $msgitemid;
+                        }
+                    }
+
                     if ($add_message && (!empty($dsn_email) || !empty($mdn_email))) {
                         $headers['X-LMS-Message-Item-Id'] = $msgitems[$doc['customerid']][$email];
                         $headers['Message-ID'] = '<messageitem-' . $headers['X-LMS-Message-Item-Id'] . '@rtsystem.' . gethostname() . '>';

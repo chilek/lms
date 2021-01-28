@@ -1662,6 +1662,18 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 					WHERE customerid = ? AND type & ? > 0 ORDER BY id',
                     array($result['id'], $properties['flagmask'])
                 );
+
+                if ($contacttype == 'email' && $result[$contacttype . 's']) {
+                    foreach ($result[$contacttype . 's'] as $key => $item) {
+                        $result[$contacttype . 's'][$key]['properties'] = $this->db->GetAll(
+                            'SELECT name, value
+                            FROM customercontactsproperties
+                            WHERE contactid = ? ORDER BY name',
+                            array($item['id'])
+                        );
+                    }
+                    unset($key, $item);
+                }
             }
 
             $result['sendinvoices'] = false;

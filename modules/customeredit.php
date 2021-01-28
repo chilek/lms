@@ -382,6 +382,22 @@ if (!isset($_POST['xjxfun'])) {
                             'INSERT INTO customercontacts (customerid, contact, name, type) VALUES (?, ?, ?, ?)',
                             array($customerdata['id'], $contact['contact'], $contact['name'], $contact['type'])
                         );
+
+                        if ($contact['type'] & CONTACT_EMAIL && !empty($contact['properties'])) {
+                            $contactid = $DB->GetLastInsertID('customercontacts');
+                            foreach ($contact['properties'] as $property) {
+                                $DB->Execute(
+                                    'INSERT INTO customercontactsproperties (contactid, name, value)
+                                    VALUES (?, ?, ?)',
+                                    array(
+                                        $contactid,
+                                        $property['name'],
+                                        $property['value']
+                                    )
+                                );
+                            }
+                        }
+
                         if ($SYSLOG) {
                             $contactid = $DB->GetLastInsertID('customercontacts');
                             $args = array(
@@ -390,6 +406,7 @@ if (!isset($_POST['xjxfun'])) {
                                 'contact' => $contact['contact'],
                                 'name' => $contact['name'],
                                 'type' => $contact['type'],
+                                'properties' => serialize($contact['properties']),
                             );
                             $SYSLOG->AddMessage(SYSLOG::RES_CUSTCONTACT, SYSLOG::OPER_ADD, $args);
                         }
