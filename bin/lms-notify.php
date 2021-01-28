@@ -1007,14 +1007,14 @@ if (empty($types) || in_array('contracts', $types)) {
         $notifications['contracts']['customers'] = array();
         foreach ($customers as $row) {
             $notifications['contracts']['customers'][] = $row['id'];
-            $row['aggregate_documents'] = $notifications['contacts']['aggregate_documents'];
+            $row['aggregate_documents'] = $notifications['contracts']['aggregate_documents'];
 
             unset($message, $message_html, $message_text);
             if ($format == $mail_format) {
-                $message = parse_customer_data($notifications['contacts']['message'], $format, $row);
+                $message = parse_customer_data($notifications['contracts']['message'], $format, $row);
             } else {
-                $message_html = parse_customer_data($notifications['contacts']['message'], 'html', $row);
-                $message_text = parse_customer_data($notifications['contacts']['message'], 'text', $row);
+                $message_html = parse_customer_data($notifications['contracts']['message'], 'html', $row);
+                $message_text = parse_customer_data($notifications['contracts']['message'], 'text', $row);
             }
             $subject = parse_customer_data($notifications['contracts']['subject'], 'text', $row);
 
