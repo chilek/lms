@@ -491,10 +491,11 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 		p.name AS promotion_name, ps.name AS promotion_schema_name, ps.length AS promotion_schema_length,
 		d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
 		t.flags,
-		(CASE WHEN a.liabilityid IS NULL THEN t.type ELSE l.type END) AS tarifftype,
+		(CASE WHEN a.tariffid IS NULL THEN l.type ELSE t.type END) AS tarifftype,
 		(CASE WHEN a.liabilityid IS NULL THEN t.name ELSE l.name END) AS name,
 		(CASE WHEN a.liabilityid IS NULL THEN t.taxid ELSE l.taxid END) AS taxid,
 		(CASE WHEN a.liabilityid IS NULL THEN t.prodid ELSE l.prodid END) AS prodid,
+		voipphones.phones,
 		ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN t.value ELSE l.value END)) / 100) - a.vdiscount) *
 			(CASE a.suspended WHEN 0
 				THEN 1.0
@@ -517,6 +518,12 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 	LEFT JOIN promotions p ON p.id = ps.promotionid
 	LEFT JOIN tariffs t ON (a.tariffid = t.id)
 	LEFT JOIN liabilities l ON (a.liabilityid = l.id)
+	LEFT JOIN (
+		SELECT vna.assignment_id, " . $DB->GroupConcat('vn.phone', ', ') . " AS phones
+		FROM voip_number_assignments vna
+		LEFT JOIN voip_numbers vn ON vn.id = vna.number_id
+		GROUP BY vna.assignment_id
+	) voipphones ON voipphones.assignment_id = a.id
 	LEFT JOIN divisions d ON (d.id = c.divisionid)
 	WHERE " . ($customerid ? 'c.id = ' . $customerid : '1 = 1')
         . $customer_status_condition
