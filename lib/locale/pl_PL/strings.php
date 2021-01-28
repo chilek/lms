@@ -89,7 +89,7 @@ $_LANG['Network readdressing errors'] = 'Błędy przeadresowania sieci';
 
 $_LANG['split payment'] = 'podzielona płatność';
 $_LANG['Split payment:'] = 'Podzielona płatność:';
-$_LANG['(split payment)'] = '(podzielona płatność)';
+$_LANG['(split payment)'] = '(mechanizm podzielonej płatności)';
 
 $_LANG['There is no assigned parent ticket.'] = 'Nie ma przypisanego zgłoszenia nadrzędnego.';
 $_LANG['Are you sure, you want to unlink ticket \'$a\'?'] = 'Czy jesteś pewien, że chcesz odwiązać zgłoszenie \'$a\'?';
