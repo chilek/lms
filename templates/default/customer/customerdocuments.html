@@ -83,10 +83,10 @@
 								{if $doc.cuserid} / {$doc.cusername|escape}{/if}
 								{if $doc.closed == 3}
 									{if !$doc.cuserid}
-										{trans("(customer/sms)")}
+										{icon name="sms" tip="customer has accepted document via sms"}
 									{/if}
 								{elseif $doc.closed == 2}
-									{trans("(customer/scans)")}
+									{icon name="sign" tip="attached document scans with customer signature"}
 								{/if}
 							</div>
 							<div class="lms-ui-tab-table-column type" onclick="window.open('?m=documentview&id={$doc.docid}');">

@@ -32,8 +32,8 @@ $_LANG['new document customer notification'] = 'powiadomienie klienta o nowym do
 
 $_LANG['- select target network device -'] = '- wybierz docelowe urządzenie sieciowe -';
 
-$_LANG['(customer/sms)'] = '(klient/SMS)';
-$_LANG['(customer/scans)'] = '(klient/skany)';
+$_LANG['customer has accepted document via sms'] = 'klient zaakceptował dokument SMS-em';
+$_LANG['attached document scans with customer signature'] = 'dołączone skany dokumentów z podpisem klienta';
 
 $_LANG['Please define email address in division properties!'] = 'Proszę zdefiniować adres e-mail we właściwościach firmy!';
 $_LANG['<!invoice>telecommunication service'] = 'usługa telekomunikacyjna';
