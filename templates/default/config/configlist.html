@@ -152,8 +152,8 @@
 			{$config.value|escape}
 		</TD>
 		<TD>
-			{$config.description|truncate:5000:"..."}
-			{if $config.usercomment != ''}<p><SPAN class="bold">{trans("Comment:")}</SPAN> {$config.usercomment|truncate:2000:"..."}</p>{/if}
+			{$config.description|truncate:5000:"&hellip;"}
+			{if $config.usercomment != ''}<p><SPAN class="bold">{trans("Comment:")}</SPAN> {$config.usercomment|truncate:2000:"&hellip;"}</p>{/if}
 		</TD>
 		<TD>
 			{trans($config.reftypedescription)}

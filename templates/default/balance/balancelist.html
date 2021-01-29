@@ -166,7 +166,7 @@
 			<SELECT size="1" name="group">
 				<OPTION value="0"{if !$listdata.group} SELECTED{/if}>{trans("- all groups -")}</OPTION>
 				{section name="grouplist" loop=$grouplist}
-					<OPTION value="{$grouplist[grouplist].id}"{if $listdata.group == $grouplist[grouplist].id} SELECTED{/if}>{$grouplist[grouplist].name|truncate:40:"...":true}</OPTION>
+					<OPTION value="{$grouplist[grouplist].id}"{if $listdata.group == $grouplist[grouplist].id} SELECTED{/if}>{$grouplist[grouplist].name|truncate:40:"&hellip;":true}</OPTION>
 				{/section}
 			</SELECT>
 			<INPUT type="checkbox" name="groupexclude" id="groupexclude"{if $listdata.groupexclude} CHECKED{/if}><label
@@ -199,7 +199,7 @@
 			{$balance.time|date_format:"%Y/%m/%d %H:%M"}
 		</TD>
 		<TD class="nobr">
-			{if $balance.userid}{$balance.user|truncate:16:"...":true}{else}-{/if}
+			{if $balance.userid}{$balance.user|truncate:16:"&hellip;":true}{else}-{/if}
 		</TD>
 		<TD class="text-right nobr">
 			{if $balance.covenant}{moneyf($balance.value*-1, $balance.currency)}{else}-{/if}
@@ -217,7 +217,7 @@
                         {if $balance.covenant}-{else}{moneyf($balance.after)}{/if}
 		</TD>
 		<TD class="text-right nobr">
-			{if $balance.customerid}<A HREF="?m=customerinfo&id={$balance.customerid}">{$balance.customername|truncate:20:"...":true|escape}</A>{else} - {/if}
+			{if $balance.customerid}<A HREF="?m=customerinfo&id={$balance.customerid}">{$balance.customername|truncate:20:"&hellip;":true|escape}</A>{else} - {/if}
 		</TD>
 		<TD>
 			{$balance.comment}

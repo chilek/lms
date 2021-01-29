@@ -113,7 +113,7 @@
 					<select name="fvoipaccid" class="lms-ui-advanced-select">
 						<option value="" {if !$listdata.fvoipaccid}selected{/if}>{trans("- all -")}</option>
 						{foreach from=$voipaccounts item=vacc}
-						<option value="{$vacc.id}" {if $listdata.fvoipaccid == $vacc.id} selected{/if}>{$vacc.owner|truncate:40:"...":true} ({$vacc.login})</option>
+						<option value="{$vacc.id}" {if $listdata.fvoipaccid == $vacc.id} selected{/if}>{$vacc.owner|truncate:40:"&hellip;":true} ({$vacc.login})</option>
 						{/foreach}
 					</select>
 

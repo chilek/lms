@@ -134,7 +134,7 @@
 					<SELECT SIZE="1" NAME="n" ONCHANGE="document.choosefilter.submit();">
 						<OPTION value="0" {if !$filter.network} SELECTED {/if}>{trans("- all networks -")}</OPTION>
 						{section name=networks loop=$networks}
-						<OPTION value="{$networks[networks].id}" {if $filter.network == $networks[networks].id} SELECTED {/if}>{$networks[networks].name|truncate:30:"...":true}</OPTION>
+						<OPTION value="{$networks[networks].id}" {if $filter.network == $networks[networks].id} SELECTED {/if}>{$networks[networks].name|truncate:30:"&hellip;":true}</OPTION>
 						{/section}
 					</SELECT>
 					</label>
@@ -147,7 +147,7 @@
 					<SELECT SIZE="1" NAME="ng" ONCHANGE="document.choosefilter.submit();">
 						<OPTION value="" {if !$filter.nodegroup} SELECTED {/if}>{trans("- all groups -")}</OPTION>
 						{foreach from=$nodegroups item=nodegroup}
-						<OPTION value="{$nodegroup.id}" {if $filter.nodegroup == $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"...":true}</OPTION>
+						<OPTION value="{$nodegroup.id}" {if $filter.nodegroup == $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"&hellip;":true}</OPTION>
 						{/foreach}
 					</SELECT>
 					</label>
@@ -160,7 +160,7 @@
 					<SELECT SIZE="1" NAME="g" ONCHANGE="document.choosefilter.submit();">
 						<OPTION value="" {if !$filter.customergroup} SELECTED {/if}>{trans("- all groups -")}</OPTION>
 						{section name=customergroups loop=$customergroups}
-						<OPTION value="{$customergroups[customergroups].id}" {if $filter.customergroup == $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:30:"...":true}</OPTION>
+						<OPTION value="{$customergroups[customergroups].id}" {if $filter.customergroup == $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:30:"&hellip;":true}</OPTION>
 						{/section}
 					</SELECT>
 					</label>
@@ -243,7 +243,7 @@
 			<br>
 			<span class="nobr{if ! $node.access} blend{/if}">
 				{icon name="customer" class="fa-fw"}
-				<a href="?m=customerinfo&id={$node.ownerid}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$node.ownerid}">{$node.owner|truncate:40:"...":true|replace:" ":"&nbsp;"}</a>
+				<a href="?m=customerinfo&id={$node.ownerid}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$node.ownerid}">{$node.owner|truncate:40:"&hellip;":true|replace:" ":"&nbsp;"}</a>
 			</span>
 		</TD>
 		<TD class="nobr">

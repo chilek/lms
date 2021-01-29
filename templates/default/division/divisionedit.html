@@ -300,7 +300,7 @@
 				<select SIZE="4" NAME="division[users][]" multiple {tip text="Select users" class="lms-ui-multiselect"} data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
 					{foreach $userslist as $user}
 						<option value="{$user.id}" {if !empty($division_users) && in_array($user.id, $division_users)} selected{/if}>
-							{$user.login|truncate:30:"...":true}
+							{$user.login|truncate:30:"&hellip;":true}
 						</option>
 					{/foreach}
 				</select>

@@ -45,13 +45,13 @@
                 {$v.vlanid}
             </td>
             <td {tip text=$v.description}>
-                {$v.description|truncate:40:" ...":true|escape}
+                {$v.description|truncate:40:"&hellip;":true|escape}
             </td>
             <td {tip text=$v.customername}>
-                <a href="?m=customerinfo&id={$v.customerid}">{$v.customername|truncate:20:" ...":true}</a>
+                <a href="?m=customerinfo&id={$v.customerid}">{$v.customername|truncate:20:"&hellip;":true}</a>
             </td>
             <td {tip text=$v.netnodename}>
-                <a href="?m=netnodeinfo&id={$v.netnodeid}">{$v.netnodename|truncate:20:" ...":true}</a>
+                <a href="?m=netnodeinfo&id={$v.netnodeid}">{$v.netnodename|truncate:20:"&hellip;":true}</a>
             </td>
             <td class="buttons">
                 {button type="link" icon="edit" href="?m=vlanlist&action=modify&id={$v.id}" tip="Edit"}

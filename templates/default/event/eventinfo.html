@@ -197,7 +197,7 @@
 		    <br>{icon name="location"} {$event.netnode_location|escape}{/if}
                 {else}
                     {if $event.customername}
-                        {icon name="customer"} <A href="?m=customerinfo&amp;id={$event.customerid}">{$event.customername|truncate:"30":"...":true}</A><br>
+                        {icon name="customer"} <A href="?m=customerinfo&amp;id={$event.customerid}">{$event.customername|truncate:"30":"&hellip;":true}</A><br>
                        {if !empty($event.address_id)}
                             {icon name="location"} {$event.location|escape}
                        {elseif !empty($event.nodeid)}

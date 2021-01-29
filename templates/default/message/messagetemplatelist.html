@@ -71,7 +71,7 @@
 				{$template.subject|escape}
 			</TD>
 			<TD>
-				{$template.message|truncate:5000:"..."|replace:"\n":"<BR>"}
+				{$template.message|truncate:5000:"&hellip;"|replace:"\n":"<BR>"}
 				<div style="display: none;" class="data-template-message">{$template.message}</div>
 			</TD>
 			<TD data-template-helpdesk-queues="{$template.queues}">

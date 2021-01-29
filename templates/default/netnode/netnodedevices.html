@@ -60,7 +60,7 @@
 						<span class="nobr">
 							<img src="img/home.gif" alt="">
 							{if $netdev.location}
-								{$netdev.location|truncate:60:"...":true}
+								{$netdev.location|truncate:60:"&hellip;":true}
 								{if $netdev.borough_name}
 								</span>
 								<span class="blend nobr">
