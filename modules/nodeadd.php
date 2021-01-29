@@ -169,8 +169,16 @@ if (isset($_POST['nodedata'])) {
     }
     $nodedata['macs'] = $macs;
 
+    $password_required = ConfigHelper::getConfig('phpui.nodepassword_required', 'false');
+
     if (strlen($nodedata['passwd']) > 32) {
         $error['passwd'] = trans('Password is too long (max.32 characters)!');
+    } elseif (!strlen($nodedata['passwd']) && $password_required != 'false') {
+        if ($password_required == 'error') {
+            $error['passwd'] = trans('Entered password is required!');
+        } elseif ($password_required == 'warning' && !isset($warnings['nodedata-passwd-'])) {
+            $warning['nodedata[passwd]'] = trans('Entered password is empty!');
+        }
     }
 
     if (!$nodedata['ownerid']) {

@@ -157,7 +157,9 @@
 									<IMG SRC="img/passwd.gif" ALT="{trans("Password:")}">
 								</TD>
 								<TD>
-									<INPUT TYPE="TEXT" NAME="nodedata[passwd]" VALUE="{$nodedata.passwd|escape}" {tip text="Enter password (optional)" trigger="passwd"}> <a href="javascript:GenPasswd();" {tip text="Click to generate random password"}>&raquo;&raquo;&raquo;</A>
+									<INPUT type="text" name="nodedata[passwd]" value="{$nodedata.passwd|escape}"
+										{tip text="Enter password (optional)" trigger="passwd"}>
+									<a href="javascript:GenPasswd();" {tip text="Click to generate random password"}>&raquo;&raquo;&raquo;</A>
 								</TD>
 							</TR>
 

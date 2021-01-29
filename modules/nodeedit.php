@@ -183,8 +183,16 @@ if (isset($_POST['nodeedit'])) {
         $error['name'] = trans('Specified name is in use!');
     }
 
+    $password_required = ConfigHelper::getConfig('phpui.nodepassword_required', 'false');
+
     if (strlen($nodeedit['passwd']) > 32) {
         $error['passwd'] = trans('Password is too long (max.32 characters)!');
+    } elseif (!strlen($nodeedit['passwd']) && $password_required != 'false') {
+        if ($password_required == 'error') {
+            $error['passwd'] = trans('Entered password is required!');
+        } elseif ($password_required == 'warning' && !isset($warnings['nodeedit-passwd-'])) {
+            $warning['nodeedit[passwd]'] = trans('Entered password is empty!');
+        }
     }
 
     if (!isset($nodeedit['access'])) {
@@ -275,7 +283,7 @@ if (isset($_POST['nodeedit'])) {
     $nodeedit = $hook_data['nodeedit'];
     $error = $hook_data['error'];
 
-    if (!$error) {
+    if (!$error && !$warning) {
         $nodeedit = $LMS->ExecHook('node_edit_before', $nodeedit);
 
         $ipi = $nodeedit['invprojectid'];
