@@ -1345,12 +1345,12 @@ if (isset($options['buildings'])) {
                 continue;
             }
 
-            if ($v['id'] == 'ID') {
+            if ($v['woj'] == 'ID' || $v['woj'] == 'wojewodztwo') {
                 continue;
             }
 
             if (isset($state_list)) {
-                $state_ident = $state_name_to_ident[$v['woj']];
+                $state_ident = $state_name_to_ident[mb_strtoupper($v['woj'])];
 
                 if (!isset($state_list[intval($state_ident)])) {
                     continue;
