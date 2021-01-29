@@ -452,27 +452,30 @@
 					</TD>
 					<TD>
 						<TABLE cellpadding="0" class="lms-ui-separated-rows">
-							<TR>
-								<TD class="bold">
-									{trans("Consents:")}
-								</TD>
-								<TD>
-								</TD>
-							</TR>
-							{block name="customeradd-options"}
-								{foreach $_CCONSENTS as $type => $consent}
-									<TR>
-										<TD>
-											<label for="chkconsent{$type}">{$consent.label}</label>
-										</TD>
-										<TD>
-											<INPUT type="checkbox" name="customeradd[consents][{$type}]" id="chkconsent{$type}"
-												   value="{$smarty.now}"{if isset($customeradd.consents[$type])} checked{/if}
-													{tip trigger="chkconsent"|cat:$type}>
-										</TD>
-									</TR>
-								{/foreach}
-							{/block}
+							<tbody class="lms-ui-multi-check">
+								<TR>
+									<TD class="bold">
+										{trans("Consents:")}
+									</TD>
+									<TD>
+										<INPUT type="checkbox" class="lms-ui-multi-check-all" value="1">
+									</TD>
+								</TR>
+								{block name="customeradd-options"}
+									{foreach $_CCONSENTS as $type => $consent}
+										<TR>
+											<TD>
+												<label for="chkconsent{$type}">{$consent.label}</label>
+											</TD>
+											<TD>
+												<INPUT type="checkbox" name="customeradd[consents][{$type}]" id="chkconsent{$type}"
+													value="{$smarty.now}"{if isset($customeradd.consents[$type])} checked{/if}
+													{tip trigger="chkconsent"|cat:$type class="lms-ui-multi-check"}>
+											</TD>
+										</TR>
+									{/foreach}
+								{/block}
+							</tbody>
 						</TABLE>
 					</TD>
 				</TR>
