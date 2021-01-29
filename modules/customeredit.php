@@ -371,6 +371,7 @@ if (!isset($_POST['xjxfun'])) {
                     }
                 }
 
+                $DB->BeginTrans();
                 $DB->Execute('DELETE FROM customercontacts WHERE customerid = ?', array($customerdata['id']));
                 if (!empty($contacts)) {
                     foreach ($contacts as $contact) {
@@ -394,6 +395,7 @@ if (!isset($_POST['xjxfun'])) {
                         }
                     }
                 }
+                $DB->CommitTrans();
 
                 $SESSION->redirect($backurl);
             } else {
