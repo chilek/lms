@@ -445,7 +445,7 @@
 				<OPTION VALUE="">- {trans("all")} -</OPTION>
 				{foreach $divisions as $division}
 					<OPTION VALUE="{$division.id}"{if $listdata.division==$division.id} selected{/if}
-						>{$division.shortname|truncate:30:"...":true|escape}</OPTION>
+						>{$division.shortname|truncate:30:"&hellip;":true|escape}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>
@@ -522,7 +522,7 @@
 			<input type="hidden" name="n" value="all">
 			<SELECT SIZE="1" name="n[]" class="lms-ui-multiselect" data-default-value="{trans("- all networks -")}" multiple>
 				{foreach $networks as $network}
-				<OPTION value="{$network.id}"{if $listdata.network && in_array($network.id, $listdata.network)} selected{/if}>{$network.name|truncate:50:"...":true}</OPTION>
+				<OPTION value="{$network.id}"{if $listdata.network && in_array($network.id, $listdata.network)} selected{/if}>{$network.name|truncate:50:"&hellip;":true}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>
@@ -536,7 +536,7 @@
 				<OPTION value=""{if ! is_array($listdata.customergroup) && !$listdata.customergroup} selected{/if} data-exclusive>{trans("- all groups -")}</OPTION>
 				<OPTION value="-1"{if !is_array($listdata.customergroup) && $listdata.customergroup == -1} selected{/if} data-exclusive>{trans("- without assigned groups -")}</OPTION>
 				{foreach $customergroups as $customergroup}
-				<OPTION value="{$customergroup.id}"{if is_array($listdata.customergroup) && in_array($customergroup.id, $listdata.customergroup)} selected{/if}>{$customergroup.name|truncate:50:"...":true}</OPTION>
+				<OPTION value="{$customergroup.id}"{if is_array($listdata.customergroup) && in_array($customergroup.id, $listdata.customergroup)} selected{/if}>{$customergroup.name|truncate:50:"&hellip;":true}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>
@@ -549,7 +549,7 @@
 			<SELECT SIZE="1" name="ng">
 				<OPTION value="" {if !$listdata.nodegroup} SELECTED {/if}>{trans("- all groups -")}</OPTION>
 				{foreach from=$nodegroups item=nodegroup}
-				<OPTION value="{$nodegroup.id}" {if $listdata.nodegroup == $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"...":true}</OPTION>
+				<OPTION value="{$nodegroup.id}" {if $listdata.nodegroup == $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"&hellip;":true}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>

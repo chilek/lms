@@ -77,9 +77,9 @@
 							<span>
 								{if $customerdevice.location}
 									{if empty($customerdevice.location_city)}
-										{$customerdevice.location|truncate:60:"...":true}
+										{$customerdevice.location|truncate:60:"&hellip;":true}
 									{else}
-										{t a=$customerdevice.location|truncate:60:"...":true}$a (TERRIT){/t}
+										{t a=$customerdevice.location|truncate:60:"&hellip;":true}$a (TERRIT){/t}
 									{/if}
 								{/if}
 							</span>

@@ -83,7 +83,7 @@
 				<SELECT SIZE="1" NAME="p" ONCHANGE="document.choosefilter.submit();">
 					<OPTION value="0"{if !$listdata.promotionid} SELECTED{/if}>{trans("- all -")}</OPTION>
 					{section name=promotions loop=$promotions}
-					<OPTION value="{$promotions[promotions].id}" {if $listdata.promotionid == $promotions[promotions].id} SELECTED {/if}>{$promotions[promotions].name|truncate:50:"...":true}</OPTION>
+					<OPTION value="{$promotions[promotions].id}" {if $listdata.promotionid == $promotions[promotions].id} SELECTED {/if}>{$promotions[promotions].name|truncate:50:"&hellip;":true}</OPTION>
 					{/section}
 				</SELECT>
 				{trans("Status:")}
@@ -97,7 +97,7 @@
 					<SELECT SIZE="1" NAME="g" ONCHANGE="document.choosefilter.submit();">
 						<OPTION value="0"{if !$listdata.customergroupid} SELECTED{/if}>{trans("- all -")}</OPTION>
 						{section name=customergroups loop=$customergroups}
-						<OPTION value="{$customergroups[customergroups].id}" {if $listdata.customergroupid == $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:50:"...":true}</OPTION>
+						<OPTION value="{$customergroups[customergroups].id}" {if $listdata.customergroupid == $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:50:"&hellip;":true}</OPTION>
 						{/section}
 					</SELECT>
 				{else}

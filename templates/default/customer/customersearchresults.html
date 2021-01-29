@@ -189,7 +189,7 @@
 					<SELECT SIZE="1" class="lms-ui-multiselect-deferred" NAME="setwarnings[customergroup][]"
 							id="customergroups" style="display: none;" multiple>
 						{foreach $customergroups as $customergroup}
-							<OPTION value="{$customergroup.id}"{if isset($groups[$customergroup.id])} selected{/if}>{$customergroup.name|truncate:50:"...":true}</OPTION>
+							<OPTION value="{$customergroup.id}"{if isset($groups[$customergroup.id])} selected{/if}>{$customergroup.name|truncate:50:"&hellip;":true}</OPTION>
 						{/foreach}
 					</SELECT>
 				{/if}

@@ -77,7 +77,7 @@
                         {if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
                             || (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
                             || (is_array($filter.owner) && in_array($user.id, $filter.owner))}
-                            <OPTION{if !$user.access} disabled{/if} value="{$user.id}"{if is_array($filter.owner) && in_array($user.id, $filter.owner)} selected{/if}>{$user.rname|truncate:40:"...":true|escape} ({$user.login})</OPTION>
+                            <OPTION{if !$user.access} disabled{/if} value="{$user.id}"{if is_array($filter.owner) && in_array($user.id, $filter.owner)} selected{/if}>{$user.rname|truncate:40:"&hellip;":true|escape} ({$user.login})</OPTION>
                         {/if}
                     {/foreach}
                 </SELECT>
@@ -93,7 +93,7 @@
                         {if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
                             || (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
                             || (is_array($filter.verifierids) && in_array($user.id, $filter.verifierids))}
-                            <OPTION{if !$user.access} disabled{/if} value="{$user.id}"{if is_array($filter.verifierids) && in_array($user.id, $filter.verifierids)} SELECTED{/if}>{$user.rname|truncate:40:"...":true|escape} ({$user.login})</OPTION>
+                            <OPTION{if !$user.access} disabled{/if} value="{$user.id}"{if is_array($filter.verifierids) && in_array($user.id, $filter.verifierids)} SELECTED{/if}>{$user.rname|truncate:40:"&hellip;":true|escape} ({$user.login})</OPTION>
                         {/if}
                     {/foreach}
                 </SELECT>
@@ -158,7 +158,7 @@
                 <input type="hidden" name="pids" value="all">
                 <SELECT size="1" name="pids[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect" data-default-value="{trans("No filter")}">
                 {foreach $projects as $project}
-                    <OPTION value="{$project.id}"{if is_array($filter.projectids) && in_array($project.id, $filter.projectids)} selected{/if}>{$project.name|truncate:40:"...":true}</OPTION>
+                    <OPTION value="{$project.id}"{if is_array($filter.projectids) && in_array($project.id, $filter.projectids)} selected{/if}>{$project.name|truncate:40:"&hellip;":true}</OPTION>
                 {/foreach}
                 </SELECT>
             </label>

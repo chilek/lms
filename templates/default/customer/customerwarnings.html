@@ -82,7 +82,7 @@
 					<TD>
 						<SELECT size="30" name="setwarnings[mcustomerid][]" id="customerslist" multiple {tip text="Select customers"}>
 							{foreach from=$customerlist key=key item=item}
-							<OPTION value="{$key}"{if $item.warning} class="red"{/if}{if isset($selected.$key)} selected{/if}>{$item.customername|truncate:40:"...":true} ({$key|string_format:"%04d"})</OPTION>
+							<OPTION value="{$key}"{if $item.warning} class="red"{/if}{if isset($selected.$key)} selected{/if}>{$item.customername|truncate:40:"&hellip;":true} ({$key|string_format:"%04d"})</OPTION>
 							{/foreach}
 						</SELECT>
 					</TD>

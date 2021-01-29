@@ -52,7 +52,7 @@
 						</div>
 
 						<div class="lms-ui-tab-table-column comment"{if mb_strlen($network.comment) > 36} title="{$network.comment}"{/if}>
-							{$network.comment|default:"-"|truncate:40:" ..."}
+							{$network.comment|default:"-"|truncate:40:"&hellip;"}
 						</div>
 					</div>
 

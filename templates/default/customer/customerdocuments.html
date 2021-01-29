@@ -97,7 +97,7 @@
 
 					<div class="lms-ui-tab-table-wrapper col-3">
 						<div class="lms-ui-tab-table-column title" onclick="window.open('?m=documentview&id={$doc.docid}');">
-							{$doc.title|truncate:40:"...":true}
+							{$doc.title|truncate:40:"&hellip;":true}
 						</div>
 						<div class="lms-ui-tab-table-column description">
 							{if $doc.description}

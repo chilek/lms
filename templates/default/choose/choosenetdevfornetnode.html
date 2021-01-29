@@ -118,7 +118,7 @@
 			{if $netdevlist[netdevlist].location}
 			<br>
 			<img src="img/home.gif" alt="">
-			{$netdevlist[netdevlist].location|truncate:60:"...":true}
+			{$netdevlist[netdevlist].location|truncate:60:"&hellip;":true}
 			{/if}
 		</td>
 		<td class="text-right nobr" onclick="document.getElementById('nd{$netdevlist[netdevlist].id}').checked=!document.getElementById('nd{$netdevlist[netdevlist].id}').checked">

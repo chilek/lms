@@ -307,7 +307,7 @@
 				<OPTION VALUE="0">{trans("- select registry -")}</OPTION>
 				{foreach from=$cashreglist item=c}
 				{if $c.id != $receipt.regid}
-				<OPTION VALUE="{$c.id}">{$c.name|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
+				<OPTION VALUE="{$c.id}">{$c.name|truncate:40:"&hellip;":true} ({$c.id|string_format:"%04d"})</OPTION>
 				{/if}
 				{/foreach}
 			</SELECT>

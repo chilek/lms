@@ -62,7 +62,7 @@
 						<SELECT size="1" name="queue" {tip text="You can select queue to limit results"}>
 							<OPTION value="0">{trans("- all queues -")}</OPTION>
 							{section name=queues loop=$queues}
-							<OPTION value="{$queues[queues].id}">{$queues[queues].name|truncate:40:"...":true}</OPTION>
+							<OPTION value="{$queues[queues].id}">{$queues[queues].name|truncate:40:"&hellip;":true}</OPTION>
 							{/section}
 						</SELECT>
 					</TD>
@@ -223,7 +223,7 @@
 						<SELECT size="1" name="queue" {tip text="You can select queue to limit results"}>
 							<OPTION value="0">{trans("- all queues -")}</OPTION>
 							{section name=queues loop=$queues}
-							<OPTION value="{$queues[queues].id}">{$queues[queues].name|truncate:40:"...":true}</OPTION>
+							<OPTION value="{$queues[queues].id}">{$queues[queues].name|truncate:40:"&hellip;":true}</OPTION>
 							{/section}
 						</SELECT>
 					</TD>

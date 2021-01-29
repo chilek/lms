@@ -157,7 +157,7 @@
 							{assign var=netdevname value=$dev.name}
 							{if $dev.producer}{assign var=netdevname value=$netdevname|cat:" / "|cat:$dev.producer}{/if}
 							{if $dev.location}{assign var=netdevname value=$netdevname|cat:" ("|cat:$dev.location|cat:")"}{/if}
-							<OPTION VALUE="{$dev.id}"{if $connect.id == $dev.id} selected{/if}>{$netdevname|truncate:120:"...":true}</OPTION>
+							<OPTION VALUE="{$dev.id}"{if $connect.id == $dev.id} selected{/if}>{$netdevname|truncate:120:"&hellip;":true}</OPTION>
 							{/foreach}
 						</SELECT>
 						<a href="javascript: void(0);" onclick="return netDevChooseWin(document.connect.elements['netdev'], {$netdev.id});" {tip trigger="netdev" text="Search device"}>&raquo;&raquo;&raquo;</A>

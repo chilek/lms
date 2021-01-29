@@ -263,7 +263,7 @@
 													data-tarifftags="{$tariff.tags}" data-valid="{$tariff.valid}"
 													{if !$tariff.valid} class="blend"{if !$formdata.alltariffs} style="display: none;"{/if}{/if}
 											>
-												{$tariff.name|truncate:40:"...":true} ({moneyf($tariff.value, $tariff.currency)}{if $tariff.upceil || $tariff.downceil}, {convert_to_units($tariff.downceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/{convert_to_units($tariff.upceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}{/if})
+												{$tariff.name|truncate:40:"&hellip;":true} ({moneyf($tariff.value, $tariff.currency)}{if $tariff.upceil || $tariff.downceil}, {convert_to_units($tariff.downceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/{convert_to_units($tariff.upceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}{/if})
 											</OPTION>
 										{/foreach}
 									</SELECT>

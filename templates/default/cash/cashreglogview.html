@@ -47,7 +47,7 @@
 			{$cashreglog[cashreglog].snapshot|money_format}
 		</TD>
 		<TD align="left" NOWRAP onclick="location.href='?m=cashregloginfo&id={$cashreglog[cashreglog].id}'">
-			<A href="?m=userinfo&id={$cashreglog[cashreglog].userid}">{$cashreglog[cashreglog].username|truncate:16:"...":true}</A>
+			<A href="?m=userinfo&id={$cashreglog[cashreglog].userid}">{$cashreglog[cashreglog].username|truncate:16:"&hellip;":true}</A>
 		</TD>
 		<TD align="left" NOWRAP onclick="location.href='?m=cashregloginfo&id={$cashreglog[cashreglog].id}'">
 			{$cashreglog[cashreglog].description|replace:"\n":"<BR>"}

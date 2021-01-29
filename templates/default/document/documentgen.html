@@ -186,7 +186,7 @@
 			<SELECT size="1" name="network" {tip text="Select network" trigger="customer"}>
 				<OPTION value="0">{trans("- all networks -")}</OPTION>
 				{foreach $networks as $net}
-				<OPTION value="{$net.id}"{if $network == $net.id} selected{/if}>{$net.name|truncate:40:"...":true}</OPTION>
+				<OPTION value="{$net.id}"{if $network == $net.id} selected{/if}>{$net.name|truncate:40:"&hellip;":true}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>
@@ -202,7 +202,7 @@
 			<SELECT size="1" name="customergroup" {tip text="Select group" trigger="customer"}>
 				<OPTION value="0" SELECTED>{trans("- all groups -")}</OPTION>
 				{foreach $customergroups as $group}
-				<OPTION value="{$group.id}"{if $customergroup == $group.id} selected{/if}>{$group.name|truncate:40:"...":true}</OPTION>
+				<OPTION value="{$group.id}"{if $customergroup == $group.id} selected{/if}>{$group.name|truncate:40:"&hellip;":true}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>

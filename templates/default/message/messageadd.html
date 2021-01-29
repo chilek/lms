@@ -261,7 +261,7 @@
 							<TD class="multiselect">
 								<SELECT name="message[customergroup][]" multiple class="lms-ui-multiselect" {tip trigger="customergroup" text="Select customers group"} data-default-value="{trans("- all groups -")}">
 									{foreach $customergroups as $customergroup}
-										<option value="{$customergroup.id}"{if isset($message.customergroup) && in_array($customergroup.id, $message.customergroup)} selected{/if}>{$customergroup.name|truncate:"30":"...":true}</option>
+										<option value="{$customergroup.id}"{if isset($message.customergroup) && in_array($customergroup.id, $message.customergroup)} selected{/if}>{$customergroup.name|truncate:"30":"&hellip;":true}</option>
 									{/foreach}
 								</SELECT>
 							</TD>
@@ -270,7 +270,7 @@
 								<SELECT name="message[network]" {tip trigger="network" text="Select IP network"}>
 									<option value="0">{trans("- all networks -")}</option>
 									{section name="networks" loop=$networks}
-										<option value="{$networks[networks].id}"{if $message.network == $networks[networks].id} selected{/if}>{$networks[networks].name|truncate:"30":"...":true}</option>
+										<option value="{$networks[networks].id}"{if $message.network == $networks[networks].id} selected{/if}>{$networks[networks].name|truncate:"30":"&hellip;":true}</option>
 									{/section}
 								</SELECT>
 							</TD>
@@ -290,7 +290,7 @@
 								<SELECT size="1" name="message[nodegroup]" {tip trigger="nodegroup" text="Select nodes group"}>
 									<OPTION value="" {if !$listdata.nodegroup} selected{/if}>{trans("- all groups -")}</OPTION>
 									{foreach from=$nodegroups item=nodegroup}
-										<OPTION value="{$nodegroup.id}" {if $message.nodegroup == $nodegroup.id} selected{/if}>{$nodegroup.name|truncate:30:"...":true}</OPTION>
+										<OPTION value="{$nodegroup.id}" {if $message.nodegroup == $nodegroup.id} selected{/if}>{$nodegroup.name|truncate:30:"&hellip;":true}</OPTION>
 									{/foreach}
 								</SELECT>
 							</TD>
@@ -355,7 +355,7 @@
 					{foreach $message.customers as $customerid => $customer}
 						{if !empty($customer.emails)}
 							<div class="customer-list-item">
-								<a href="?m=customerinfo&id={$customerid}">(#{$customerid|string_format:"%04d"}) {$customer.name|truncate:50:"..."}</a>
+								<a href="?m=customerinfo&id={$customerid}">(#{$customerid|string_format:"%04d"}) {$customer.name|truncate:50:"&hellip;"}</a>
 								{foreach $customer.emails as $email}
 									{if !empty($email.checked)}{$selected_contacts = $selected_contacts + 1}{/if}
 									<div class="customer-contact-wrapper">
@@ -407,7 +407,7 @@
 					{foreach $message.customers as $customerid => $customer}
 						{if !empty($customer.phones)}
 							<div class="customer-list-item">
-								<a href="?m=customerinfo&id={$customerid}">(#{$customerid|string_format:"%04d"}) {$customer.name|truncate:50:"..."}</a>
+								<a href="?m=customerinfo&id={$customerid}">(#{$customerid|string_format:"%04d"}) {$customer.name|truncate:50:"&hellip;"}</a>
 								{foreach $customer.phones as $phone}
 									{if !empty($phone.checked)}{$selected_contacts = $selected_contacts + 1}{/if}
 									<div class="customer-contact-wrapper">
@@ -476,7 +476,7 @@
 			<select size="4" name="message[users][]" id="user-selection" multiple class="lms-ui-multiselect"
 					{tip text="Select users"} data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
 				{foreach $users as $user}
-				<OPTION value="{$user.id}"{if isset($message.users) && in_array($user.id, $message.users)} selected{/if}>{$user.name|truncate:30:"...":true|escape}</OPTION>
+				<OPTION value="{$user.id}"{if isset($message.users) && in_array($user.id, $message.users)} selected{/if}>{$user.name|truncate:30:"&hellip;":true|escape}</OPTION>
 				{/foreach}
 			</select>
 			<span class="bold">{trans("user group:")}</span>

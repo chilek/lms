@@ -93,14 +93,14 @@
 							{if $node.location}<BR>
 								<span class="nobr">
 									{if $node.teryt}
-										{t a=$node.location|truncate:60:"...":true}$a (TERRIT){/t}
+										{t a=$node.location|truncate:60:"&hellip;":true}$a (TERRIT){/t}
 									{else}
-										{$node.location|truncate:60:"...":true}
+										{$node.location|truncate:60:"&hellip;":true}
 									{/if}
 								</span>
 							{/if}
 							{if $node.info}<BR>
-								<span class="nobr">{$node.info|truncate:60:"...":true}</span>
+								<span class="nobr">{$node.info|truncate:60:"&hellip;":true}</span>
 							{/if}
 						</div>
 						<div class="lms-ui-tab-table-column id">
@@ -109,7 +109,7 @@
 						{if $ewx}
 							<div class="lms-ui-tab-table-column channel">
 								{if $node.channelname}
-									<a href="?m=ewxchinfo&amp;id={$node.channelid}">{$node.channelname|truncate:30:"...":true}</a>
+									<a href="?m=ewxchinfo&amp;id={$node.channelid}">{$node.channelname|truncate:30:"&hellip;":true}</a>
 								{elseif $node.channelid}
 									{if !$node.cid}
 										<a href="?m=ewxchinfo&amp;id=0">[{trans("default")}]</a>
@@ -141,9 +141,9 @@
 							</div>
 							<div class="lms-ui-tab-table-column network">
 								<strong>
-									<A href="?m=netinfo&amp;id={$node.netid}">{$node.netname|truncate:"20":"...":true}</A>
+									<A href="?m=netinfo&amp;id={$node.netid}">{$node.netname|truncate:"20":"&hellip;":true}</A>
 									{if $node.network_pub}
-										(<A href="?m=netinfo&amp;id={$node.network_pub.id}">{$node.network_pub.name|truncate:"20":"...":true}</A>)
+										(<A href="?m=netinfo&amp;id={$node.network_pub.id}">{$node.network_pub.name|truncate:"20":"&hellip;":true}</A>)
 									{/if}
 								</strong>
 							</div>
@@ -196,7 +196,7 @@
 				<SELECT SIZE="1" id="groupselect">
 					{foreach $allnodegroups as $nodegroup}
 						<OPTION value="{$nodegroup.id}"{if $listdata.nodegroup == $nodegroup.id} selected{/if}>
-							{$nodegroup.name|truncate:30:"...":true}
+							{$nodegroup.name|truncate:30:"&hellip;":true}
 						</OPTION>
 					{/foreach}
 				</SELECT>
