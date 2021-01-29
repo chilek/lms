@@ -1021,6 +1021,16 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
         }
     }
 
+    if (isset($_GET['messageid'])) {
+        $msg = $LMS->getSingleMessage($_GET['messageid']);
+        $message['type'] = $msg['type'];
+        $message['subject'] = !empty($msg['subject']) ? $msg['subject'] : '';
+        $message['body'] = !empty($msg['body']) ? $msg['body'] : '';
+        if ($msg['contenttype'] == 'text/html') {
+            $message['wysiwyg']['mailbody'] = 'true';
+        }
+    }
+
     $message['type'] = isset($_GET['type']) ? intval($_GET['type'])
         : (empty($message['emailcount']) ? (empty($message['phonecount']) ? MSG_WWW : MSG_SMS) : MSG_MAIL);
     $message['usergroup'] = isset($_GET['usergroupid']) ? intval($_GET['usergroupid']) : 0;
