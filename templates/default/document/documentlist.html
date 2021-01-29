@@ -200,7 +200,9 @@
 			{$doc.username|escape}
 			{if $doc.cuserid} / {$doc.cusername|escape}{/if}
 			{if $doc.closed == 3}
-				{trans("(customer/sms)")}
+				{if !$doc.cuserid}
+					{trans("(customer/sms)")}
+				{/if}
 			{elseif $doc.closed == 2}
 				{trans("(customer/scans)")}
 			{/if}
