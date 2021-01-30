@@ -577,7 +577,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                 $prev_tid = 0;
             } else {
                 $prev_tid_contents = $LMS->GetTicketContents($prev_tid);
-                $queue = $LMS->GetQueueByTicketId($prev_tid);
+                $queue = $prev_tid_contents['queueid'];
             }
         }
 
