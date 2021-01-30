@@ -206,6 +206,7 @@ $autoreply_subject = ConfigHelper::getConfig('rt.autoreply_subject', "[RT#%tid] 
 $autoreply_body = ConfigHelper::getConfig('rt.autoreply_body', '', true);
 $autoreply = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.autoreply', '1'));
 $subject_ticket_regexp_match = ConfigHelper::getConfig('rt.subject_ticket_regexp_match', 'RT#(?<ticketid>[0-9]{6,})');
+$modify_ticket_timeframe = ConfigHelper::getConfig('rt.allow_modify_resolved_tickets_newer_than', 604800);
 
 $image_max_size = ConfigHelper::getConfig('phpui.uploaded_image_max_size');
 
@@ -572,13 +573,12 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         // check email subject
         if (!$prev_tid && preg_match('/' . $subject_ticket_regexp_match . '/', $mh_subject, $matches)) {
             $prev_tid = sprintf('%d', $matches['ticketid']);
-            if (!$DB->GetOne("SELECT id FROM rttickets WHERE id = ?", array($prev_tid))) {
+            if (!$LMS->TicketExists($prev_tid)) {
                 $prev_tid = 0;
+            } else {
+                $prev_tid_contents = $LMS->GetTicketContents($prev_tid);
+                $queue = $prev_tid_contents['queueid'];
             }
-        }
-
-        if ($prev_tid) {
-            $queue = $LMS->GetQueueByTicketId($prev_tid);
         }
 
         $mail_mh_subject = $mh_subject;
@@ -670,7 +670,41 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             }
         }
 
-        if (!$prev_tid) { // generate new ticket if previous not found
+        // add new message or create new ticket
+        if ($prev_tid && ($prev_tid_contents['state'] != RT_RESOLVED || $prev_tid_contents['resolvetime'] + $modify_ticket_timeframe > time())) {
+            // find userid
+            $requserid = $DB->GetOne(
+                "SELECT id FROM vusers WHERE email = ?",
+                array($fromemail)
+            );
+            if (empty($requserid)) {
+                $requserid = null;
+            }
+
+            $msgid = $LMS->TicketMessageAdd(array(
+                'ticketid' => $prev_tid,
+                'mailfrom' => $mh_from,
+                'customerid' => $reqcustid,
+                'userid' => $requserid,
+                'subject' => $mh_subject,
+                'messageid' => $mh_msgid,
+                'replyto' => $mh_replyto,
+                'headers' => $mail_headers,
+                'contenttype' => $contenttype,
+                'body' => $mail_body,
+                'inreplyto' => $inreplytoid,
+            ), $files);
+
+            if ($auto_open) {
+                $DB->Execute(
+                    "UPDATE rttickets SET state = ? WHERE id = ? AND state > ?",
+                    array(RT_OPEN, $prev_tid, RT_OPEN)
+                );
+            }
+
+            $ticket_id = $prev_tid;
+            $new_ticket = false;
+        } else {
             $cats = array();
             foreach ($categories as $category) {
                 if (($catid = $LMS->GetCategoryIdByName($category)) != null) {
@@ -733,39 +767,6 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             }
 
             $new_ticket = true;
-        } else {
-            // find userid
-            $requserid = $DB->GetOne(
-                "SELECT id FROM vusers WHERE email = ? AND email <> ''",
-                array($fromemail)
-            );
-            if (empty($requserid)) {
-                $requserid = null;
-            }
-
-            $msgid = $LMS->TicketMessageAdd(array(
-                'ticketid' => $prev_tid,
-                'mailfrom' => $mh_from,
-                'customerid' => $reqcustid,
-                'userid' => $requserid,
-                'subject' => $mh_subject,
-                'messageid' => $mh_msgid,
-                'replyto' => $mh_replyto,
-                'headers' => $mail_headers,
-                'contenttype' => $contenttype,
-                'body' => $mail_body,
-                'inreplyto' => $inreplytoid,
-            ), $files);
-
-            if ($auto_open) {
-                $DB->Execute(
-                    "UPDATE rttickets SET state = ? WHERE id = ? AND state > ?",
-                    array(RT_OPEN, $prev_tid, RT_OPEN)
-                );
-            }
-
-            $ticket_id = $prev_tid;
-            $new_ticket = false;
         }
 
         if ($notify) {
