@@ -153,15 +153,11 @@
 						<IMG SRC="img/folder.gif" alt="">
 					</TD>
 					<TD>
-						<label>
+						<label {tip text="Select legal personality type" trigger="type"}>
 							<input type="radio" name="customeradd[type]" value="{$smarty.const.CTYPES_PRIVATE}" id="private"
-								{tip text="Select legal personality type" trigger="type"}
-								{if $customeradd.type == $smarty.const.CTYPES_PRIVATE} checked{/if}>
+								{if isset($customeradd.type) && $customeradd.type == $smarty.const.CTYPES_PRIVATE} checked{/if} required>
 							{$_CTYPES[$smarty.const.CTYPES_PRIVATE]}
-						</label>
-						<label>
 							<input type="radio" name="customeradd[type]" value="{$smarty.const.CTYPES_COMPANY}" id="company"
-								{tip text="Select legal personality type" trigger="type"}
 								{if $customeradd.type == $smarty.const.CTYPES_COMPANY} checked{/if}>
 							{$_CTYPES[$smarty.const.CTYPES_COMPANY]}
 						</label>
