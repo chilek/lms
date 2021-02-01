@@ -85,7 +85,7 @@ function update_netlink_properties($id, $devid, $link)
                 : ($srcradiosectorname || $dstradiosectorname ? ' ('
                     . ($srcradiosectorname ? $srcradiosectorname : '-')
                     . '/' . ($dstradiosectorname ? $dstradiosectorname : '-') . ')' : ''))
-            : '');
+            : '-');
 
     $speed_content = $LINKSPEEDS[$link['speed']];
 
@@ -98,7 +98,14 @@ function update_netlink_properties($id, $devid, $link)
             . trans("Link speed:") . ' ' . $LINKSPEEDS[$link['speed']]
             . '</span>"></i>';
 
-    $result->call('update_netlink_info', $tech_content, $speed_content, $port_content);
+    $result->call(
+        'update_netlink_info',
+        $tech_content,
+        $speed_content,
+        $port_content,
+        isset($link['srcport']) ? $link['srcport'] : (isset($link['port']) ? $link['port'] : 0),
+        isset($link['dstport']) ? $link['dstport'] : 0
+    );
 
     return $result;
 }
@@ -148,7 +155,7 @@ if ($isnetlink) {
     $link = $LMS->GetNetDevLinkType($id, $devid);
 } else {
     $link = $DB->GetRow("SELECT linktype AS type, linktechnology AS technology,
-		linkspeed AS speed, linkradiosector AS radiosector FROM nodes
+		linkspeed AS speed, linkradiosector AS radiosector, port FROM nodes
 		WHERE netdev = ? AND id = ?", array($id, $devid));
 }
 

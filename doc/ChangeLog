@@ -42,6 +42,7 @@ version 27-git (????-??-??):
   - improvement: allow to check/uncheck all consent checkboxes with single click [chilan]
   - improvement: 'phpui.nodepassword_required' allows to make password required
     or recommended ('false' by default) [chilan]
+  - enhancement: allow to change ports in network link properties popup [chilan]
 
 version 26.0 (2020-12-15):
 

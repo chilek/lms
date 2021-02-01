@@ -6,8 +6,9 @@
 	{include file="language.html"}
     <title>::: LMS :{if $layout.pagetitle != ""} {$layout.pagetitle} :{/if}::</title>
     <link href="css/style.css" rel="stylesheet" type="text/css">
-    <script type="text/javascript" src="js/common.js"></script>
-    {$xajax}
+	<script type="text/javascript" src="js/common.js"></script>
+	<script src="js/jquery/jquery.min.js"></script>
+	{$xajax}
 </head>
 <body class="light lms-ui-popup">
 <div id="overDiv" style="position: absolute; visibility: hidden; z-index: 100;"></div>
@@ -26,6 +27,13 @@
 		</tr>
 		{if $link.isnetlink}
 		<tr class="light">
+			<td class="nobr">{trans("Port")}</td>
+			<td>
+				<input type="text" name="srcport" value="{if $link.srcport}{$link.srcport}{/if}" size="2"
+					{tip text="Enter port number in device for connection (optional)" trigger="srcport"}>
+			</td>
+		</tr>
+		<tr class="light">
 			<td class="nobr">{trans("Radio sector:")}</td>
 			<td>
 				<SELECT NAME="srcradiosector" id="srcradiosector" {tip trigger="srcradiosector" text="Select radio sector"}{if $link.type != 1} disabled{/if}>
@@ -34,6 +42,13 @@
 					<OPTION value="{$radiosector.id}"{if $link.type == 1 && $radiosectors.srcradiosector == $radiosector.id} selected{/if}>{$radiosector.name}</OPTION>
 					{/foreach}
 				</SELECT>
+			</td>
+		</tr>
+		<tr class="light">
+			<td class="nobr">{trans("Dest. port")}</td>
+			<td>
+				<input type="text" name="dstport" value="{if $link.dstport}{$link.dstport}{/if}" size="2"
+					{tip text="Enter port number in device to which device will be connected (optional)" trigger="dstport"}>
 			</td>
 		</tr>
 		<tr class="light">
@@ -48,6 +63,13 @@
 			</td>
 		</tr>
 		{else}
+		<tr class="light">
+			<td class="nobr">{trans("Dest. port")}</td>
+			<td>
+				<input type="text" name="port" value="{if $link.port}{$link.port}{/if}" size="2"
+					{tip text="Enter port number in device (optional)" trigger="port"}>
+			</td>
+		</tr>
 		<tr class="light">
 			<td class="nobr">{trans("Radio sector:")}</td>
 			<td>
@@ -173,6 +195,8 @@
 		var radiosector = (form.elements['radiosector'] != null ? form.elements['radiosector'].value : null);
 		var srcradiosector = (form.elements['srcradiosector'] != null ? form.elements['srcradiosector'].value : null);
 		var dstradiosector = (form.elements['dstradiosector'] != null ? form.elements['dstradiosector'].value : null);
+		var srcport = (form.elements['srcport'] != null ? form.elements['srcport'].value : null);
+		var dstport = (form.elements['dstport'] != null ? form.elements['dstport'].value : null);
 		var linktechnology = form.elements['linktechnology'].value;
 		var linkspeed = form.elements['linkspeed'].value;
 
@@ -181,21 +205,26 @@
 				radiosector: radiosector,
 				srcradiosector: srcradiosector,
 				dstradiosector: dstradiosector,
+				srcport: srcport,
+				dstport: dstport,
 				technology: linktechnology,
 				speed: linkspeed
 			} );
 	}
 
-	function update_netlink_info(tech_content, speed_content, port_content) {
-		var elem = window.parent.document.getElementById(
-			'{if $link.isnetlink}dev{else}node{/if}-link-tech-' + '{$link.devid}');
-		elem.innerHTML = tech_content;
-		elem = window.parent.document.getElementById(
-			'{if $link.isnetlink}dev{else}node{/if}-link-speed-' + '{$link.devid}');
-		elem.innerHTML = speed_content;
-		elem = window.parent.document.getElementById(
-			'{if $link.isnetlink}dev{else}node{/if}-link-port-' + '{$link.devid}');
-		elem.innerHTML = port_content;
+	function update_netlink_info(tech_content, speed_content, port_content, srcport, dstport) {
+		var document = $(window.parent.document);
+
+		document.find('#{if $link.isnetlink}dev{else}node{/if}-link-tech-{$link.devid}').html(tech_content);
+		document.find('#{if $link.isnetlink}dev{else}node{/if}-link-speed-{$link.devid}').html(speed_content);
+		document.find('#{if $link.isnetlink}dev{else}node{/if}-link-port-{$link.devid}').html(port_content);
+
+		{if $link.isnetlink}
+			$(window.parent.document).find('#dev-link-srcport-{$link.devid}').html('[' + (srcport ? srcport : '-') + ']');
+			$(window.parent.document).find('#dev-link-dstport-{$link.devid}').html('[' + (dstport ? dstport : '-') + ']');
+		{else}
+			$(window.parent.document).find('#node-link-port-{$link.devid}').html('[' + (srcport ? srcport : '-') + ']');
+		{/if}
 
 		window.parent.popclick();
 	}

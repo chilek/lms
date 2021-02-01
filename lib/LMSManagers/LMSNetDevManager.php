@@ -105,12 +105,16 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             $type = 0;
             $srcradiosector = null;
             $dstradiosector = null;
+            $srcport = 0;
+            $dstport = 0;
             $technology = 0;
             $speed = 100000;
         } else {
             $type = isset($link['type']) ? $link['type'] : 0;
             $srcradiosector = isset($link['srcradiosector']) ? (intval($link['srcradiosector']) ? intval($link['srcradiosector']) : null) : null;
             $dstradiosector = isset($link['dstradiosector']) ? (intval($link['dstradiosector']) ? intval($link['dstradiosector']) : null) : null;
+            $srcport = isset($link['srcport']) ? intval($link['srcport']) : 0;
+            $dstport = isset($link['dstport']) ? intval($link['dstport']) : 0;
             $technology = isset($link['technology']) ? $link['technology'] : 0;
             $speed = isset($link['speed']) ? $link['speed'] : 100000;
         }
@@ -119,24 +123,28 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             'type' => $type,
             'src_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR) => $srcradiosector,
             'dst_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR) => $dstradiosector,
+            'srcport' => $srcport,
+            'dstport' => $dstport,
             'technology' => $technology,
             'speed' => $speed,
             'src_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV) => $dev2,
             'dst_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV) => $dev1,
         );
-        $res = $this->db->Execute('UPDATE netlinks SET type=?, srcradiosector=?, dstradiosector=?, technology=?, speed=?
+        $res = $this->db->Execute('UPDATE netlinks SET type=?, srcradiosector=?, dstradiosector=?, srcport=?, dstport=?, technology=?, speed=?
 			WHERE src=? AND dst=?', array_values($args));
         if (!$res) {
             $args = array(
                 'type' => $type,
                 'src_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR) => $srcradiosector,
                 'dst_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR) => $dstradiosector,
+                'srcport' => $srcport,
+                'dstport' => $dstport,
                 'technology' => $technology,
                 'speed' => $speed,
                 'src_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV) => $dev1,
                 'dst_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV) => $dev2,
             );
-            $res = $this->db->Execute('UPDATE netlinks SET type=?, dstradiosector=?, srcradiosector=?, technology=?, speed=?
+            $res = $this->db->Execute('UPDATE netlinks SET type=?, dstradiosector=?, srcradiosector=?, srcport=?, dstport=?, technology=?, speed=?
 				WHERE src=? AND dst=?', array_values($args));
         }
         if ($this->syslog && $res) {
@@ -146,10 +154,11 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                 SYSLOG::RES_NETLINK,
                 SYSLOG::OPER_UPDATE,
                 $args,
-                array('src_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV),
-                'dst_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV),
-                'src_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR),
-                'dst_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR),
+                array(
+                    'src_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV),
+                    'dst_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV),
+                    'src_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR),
+                    'dst_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR),
                 )
             );
         }
@@ -513,7 +522,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
     public function GetNetDevLinkType($dev1, $dev2)
     {
         return $this->db->GetRow(
-            'SELECT type, technology, speed FROM netlinks
+            'SELECT type, technology, speed, srcport, dstport FROM netlinks
 			WHERE (src=? AND dst=?) OR (dst=? AND src=?)',
             array($dev1, $dev2, $dev1, $dev2)
         );

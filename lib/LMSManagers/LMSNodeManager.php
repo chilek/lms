@@ -840,10 +840,12 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             $type = 0;
             $technology = 0;
             $radiosector = null;
+            $port = 0;
             $speed = 100000;
         } else {
             $type = isset($link['type']) ? intval($link['type']) : 0;
             $radiosector = isset($link['radiosector']) ? intval($link['radiosector']) : null;
+            $port = isset($link['port']) ? intval($link['port']) : 0;
             if ($type != 1 || $radiosector == 0) {
                 $radiosector = null;
             }
@@ -852,8 +854,8 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         }
 
         $res = $this->db->Execute(
-            'UPDATE nodes SET linktype=?, linkradiosector = ?, linktechnology=?, linkspeed=? WHERE id=?',
-            array($type, $radiosector, $technology, $speed, $node)
+            'UPDATE nodes SET port=?, linktype=?, linkradiosector = ?, linktechnology=?, linkspeed=? WHERE id=?',
+            array($port, $type, $radiosector, $technology, $speed, $node)
         );
         if ($this->syslog && $res) {
             $nodedata = $this->db->GetRow('SELECT ownerid, netdev FROM vnodes WHERE id=?', array($node));
@@ -861,6 +863,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 SYSLOG::RES_NODE => $node,
                 SYSLOG::RES_CUST => $nodedata['ownerid'],
                 SYSLOG::RES_NETDEV => $nodedata['netdev'],
+                'port' => $port,
                 'linktype' => $type,
                 'linkradiosector' => $radiosector,
                 'linktechnology' => $technology,
