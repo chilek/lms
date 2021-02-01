@@ -1,4 +1,16 @@
-<div id="addvlanmodal" class="lms-ui-dialog" title="{if $action == 'modify'}{trans("Modify VLAN")} {$vlaninfo.id}{else}{trans("Add VLAN")}{/if}">
+<style>
+    #addvlanmodal {
+        overflow: visible;
+    }
+    input {
+        margin-top: 5px;
+    }
+    .button-bar {
+        padding-top: 20px;
+    }
+</style>
+
+<div id="addvlanmodal" class="lms-ui-modal-dialog">
     <form method="POST" action="?m=vlanlist&action={if $action == 'modify'}modify&id={$vlaninfo.id}{else}add{/if}"
               name="addvlan" id="addvlan-form">
         <table>
@@ -39,7 +51,7 @@
                         {icon name="netnode" label="Network Node" class="fa-fw"}
                     </td>
                     <td>
-                        <select name="addvlan[netnodeid]">
+                        <select name="addvlan[netnodeid]" class="lms-ui-advanced-select">
                             <option value="">{trans("- none -")}</option>
                             {foreach $netnodelist as $nn}
                                 <option value="{$nn.id}" {if $nn.id == $vlaninfo.netnodeid} selected{/if}>{$nn.name|escape} ({$nn.id})</option>
@@ -48,7 +60,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="2" class="text-center">
+                    <td colspan="2" class="button-bar text-center">
                         {button type="submit" label="Submit" icon="submit"}
                         {button label="Cancel" icon="cancel" id="close"}
                     </td>
@@ -60,7 +72,11 @@
 
 <script>
     $( "#addvlanmodal" ).dialog( {
-        autoOpen: {if $action == modify}true{else}false{/if}
+        autoOpen: {if $action}true{else}false{/if},
+        resizable: false,
+        minWidth: 390,
+        modal: true,
+        title: "{if $action == 'modify'}{trans("Modify VLAN")} {$vlaninfo.id}{else}{trans("Add VLAN")}{/if}"
     });
 
     $( "#addvlanbtn" ).click(function() {
