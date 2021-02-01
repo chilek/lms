@@ -519,7 +519,7 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 	LEFT JOIN tariffs t ON (a.tariffid = t.id)
 	LEFT JOIN liabilities l ON (a.liabilityid = l.id)
 	LEFT JOIN (
-		SELECT vna.assignment_id, " . $DB->GroupConcat('vn.phone', ', ') . " AS phones
+		SELECT vna.assignment_id, " . $DB->GroupConcat('vn.phone', ',') . " AS phones
 		FROM voip_number_assignments vna
 		LEFT JOIN voip_numbers vn ON vn.id = vna.number_id
 		GROUP BY vna.assignment_id
