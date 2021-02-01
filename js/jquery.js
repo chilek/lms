@@ -939,32 +939,35 @@ $(function() {
 			}
 		}
 
-		if (period == 'previous-month' || typeof(period) === 'undefined') {
+		if (period === 'previous-month' || typeof(period) === 'undefined') {
 			fromdate.setDate(0);
 			fromdate.setDate(1);
 			todate.setDate(0);
-		} else if (period == 'current-month') {
+		} else if (period === 'current-month') {
 			fromdate = new Date();
 			todate = new Date();
 			fromdate.setDate(1);
-			todate.setMonth(todate.getMonth() + 1);
-			todate.setDate(0);
-		} else if (period == 'next-month') {
+			if (fromdate.getMonth() === 0) {
+				todate.setDate(0);
+				todate.setMonth(todate.getMonth() + 1);
+			} else {
+				todate.setMonth(todate.getMonth() + 1);
+				todate.setDate(0);
+			}
+		} else if (period === 'next-month') {
 			fromdate.setMonth(fromdate.getMonth() + 1);
 			fromdate.setDate(1);
 			todate.setMonth(fromdate.getMonth() + 1);
 			todate.setDate(0);
-		} else if (period == 'current-year') {
-			fromdate = new Date();
-			todate = new Date();
+		} else if (period === 'current-year') {
 			fromdate.setMonth(0);
 			fromdate.setDate(1);
 			todate.setMonth(11);
 			todate.setDate(31);
-		} else if (period == 'previous-year' || period == 'next-year') {
+		} else if (period === 'previous-year' || period === 'next-year') {
 			fromdate.setMonth(0);
 			fromdate.setDate(1);
-			if (period == 'previous-year') {
+			if (period === 'previous-year') {
 				fromdate.setFullYear(fromdate.getFullYear() - 1);
 			} else {
 				fromdate.setFullYear(fromdate.getFullYear() + 1);
