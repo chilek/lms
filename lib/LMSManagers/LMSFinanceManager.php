@@ -352,6 +352,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         // Create assignments according to promotion schema
         if (!empty($data['promotionassignmentid']) && !empty($data['schemaid'])) {
+            $now = strtotime('now');
+
             $align_periods = isset($data['align-periods']) && !empty($data['align-periods']);
 
             $tariff = $this->db->GetRow('SELECT a.data, s.data AS sdata, t.name, t.type, t.value, t.currency, t.period,
@@ -389,7 +391,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         // set activation payday to next month's payday
                         $activation_at_next_day = ConfigHelper::getConfig('phpui.promotion_activation_at_next_day', '', true);
                         if (ConfigHelper::checkValue($activation_at_next_day) || preg_match('/^(absolute|business)$/', $activation_at_next_day)) {
-                            $datefrom = strtotime('tomorrow');
+                            if ($datefrom < $now) {
+                                $datefrom = strtotime('tomorrow');
+                            }
                             if ($activation_at_next_day == 'business') {
                                 $datefrom = Utils::findNextBusinessDay($datefrom);
                             }
@@ -654,8 +658,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             if (($data['at'] > 0 && $data['at'] >= $dom + 1) || ($data['at'] === 0 && $month_days >= $dom + 1)) {
                                 $partial_at = $data['at'];
                             } else {
-                                $tomorrow = strtotime('tomorrow');
-                                $partial_at = $orig_datefrom < $tomorrow ? date('d', $tomorrow) : $dom + 1;
+                                $partial_at = $orig_datefrom <= $now ? date('d', strtotime('tomorrow')) : $dom;
                             }
 
                             if ($value != 'NULL') {
