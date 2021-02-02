@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2018 LMS Developers
+ *  Copyright (C) 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -99,6 +99,85 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         return $res;
     }
 
+    public function ValidateNetDevLink($dev1, $dev2, $link = null)
+    {
+        $error = array();
+
+        if ($this->db->GetOne(
+            'SELECT id
+            FROM netlinks
+            WHERE (src = ? AND srcport = ? AND dst <> ?) OR (dst = ? AND dstport = ? AND src <> ?)',
+            array(
+                $dev1,
+                $link['srcport'],
+                $dev2,
+                $dev2,
+                $link['srcport'],
+                $dev1,
+            )
+        )) {
+            $error['srcport'] = trans('Selected port number is taken by other device!');
+        }
+
+        if ($this->db->GetOne(
+            'SELECT id
+            FROM netlinks
+            WHERE (src = ? AND srcport = ? AND dst <> ?) OR (dst = ? AND dstport = ? AND src <> ?)',
+            array(
+                $dev1,
+                $link['dstport'],
+                $dev2,
+                $dev2,
+                $link['dstport'],
+                $dev1,
+            )
+        )) {
+            $error['dstport'] = trans('Selected port number is taken by other device!');
+        }
+
+        if ($this->db->GetOne(
+            'SELECT id
+            FROM nodes
+            WHERE port = ? AND netdev IN ?',
+            array(
+                $link['srcport'],
+                array($dev1, $dev2),
+            )
+        )) {
+            $error['srcport'] = trans('Selected port number is taken by node!');
+        }
+
+        if ($this->db->GetOne(
+            'SELECT id
+            FROM nodes
+            WHERE port = ? AND netdev IN ?',
+            array(
+                $link['dstport'],
+                array($dev1, $dev2),
+            )
+        )) {
+            $error['dstport'] = trans('Selected port number is taken by node!');
+        }
+
+        $ports = $this->db->GetOne('SELECT ports FROM netdevices WHERE id = ?', array($dev1));
+        if (!empty($ports) && $ports < intval($link['dstport'])) {
+            return array(
+                'dstport' => trans('Incorrect port number!'),
+            );
+        }
+
+        $ports = $this->db->GetOne('SELECT ports FROM netdevices WHERE id = ?', array($dev2));
+        if (!empty($ports) && $ports < intval($link['srcport'])) {
+            $error['srcport'] = trans('Incorrect port number!');
+        }
+
+        if (empty($error)) {
+            return true;
+        } else {
+            return $error;
+        }
+    }
+
     public function SetNetDevLinkType($dev1, $dev2, $link = null)
     {
         if (empty($link)) {
@@ -125,18 +204,22 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         );
         if (isset($link['srcport']) && isset($link['dstport'])) {
             $query .= ', srcport = ?, dstport = ?';
-            $args['srcport'] = intval($link['srcport']);
-            $args['dstport'] = intval($link['dstport']);
+            $args['srcport'] = intval($link['dstport']);
+            $args['dstport'] = intval($link['srcport']);
         }
         $query .= ' WHERE src = ? AND dst = ?';
 
-        $args['src_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV)] = $dev2;
-        $args['dst_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV)] = $dev1;
+        $args['src_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV)] = $dev1;
+        $args['dst_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV)] = $dev2;
         $res = $this->db->Execute($query, array_values($args));
 
         if (!$res) {
-            $args['src_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV)] = $dev1;
-            $args['dst_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV)] = $dev2;
+            if (isset($link['srcport']) && isset($link['dstport'])) {
+                $args['srcport'] = intval($link['srcport']);
+                $args['dstport'] = intval($link['dstport']);
+            }
+            $args['src_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV)] = $dev2;
+            $args['dst_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV)] = $dev1;
             $res = $this->db->Execute($query, array_values($args));
         }
 

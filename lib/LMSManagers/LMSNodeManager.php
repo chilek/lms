@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2017 LMS Developers
+ *  Copyright (C) 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -854,6 +854,34 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         }
 
         return $link;
+    }
+
+    public function ValidateNodeLink($node, $link)
+    {
+        $netdev = $this->db->GetOne('SELECT netdev FROM nodes WHERE id  = ?', array($node));
+        if (!$netdev) {
+            return trans('Unknown error!');
+        }
+
+        if ($this->db->GetOne(
+            'SELECT id
+            FROM netlinks
+            WHERE (src = ? AND srcport = ?) OR (dst = ? AND dstport = ?)',
+            array($netdev, $link['port'], $netdev, $link['port'])
+        ) || $this->db->GetOne(
+            'SELECT id
+            FROM nodes
+            WHERE port = ? AND id <> ?',
+            array($link['port'], $node)
+        )) {
+            return trans('Selected port number is taken by other device or node!');
+        }
+
+        if ($this->db->GetOne('SELECT ports FROM netdevices WHERE id = ?', array($netdev)) < intval($link['port'])) {
+            return trans('Incorrect port number!');
+        }
+
+        return true;
     }
 
     public function SetNodeLinkType($node, $link = null)

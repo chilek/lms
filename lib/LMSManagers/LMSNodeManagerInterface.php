@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C); 2001-2013 LMS Developers
+ *  Copyright (C); 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,7 +27,6 @@
 /**
  * LMSNodeManagerInterface
  *
- * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
 interface LMSNodeManagerInterface
 {
@@ -80,6 +79,8 @@ interface LMSNodeManagerInterface
     public function NodeStats();
 
     public function GetNodeLinkType($devid, $nodeid);
+
+    public function ValidateNodeLink($node, $link);
 
     public function SetNodeLinkType($node, $link = null);
 

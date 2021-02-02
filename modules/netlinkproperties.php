@@ -31,9 +31,22 @@ function update_netlink_properties($id, $devid, $link)
     $result = new xajaxResponse();
 
     $isnetlink = intval($_GET['isnetlink']);
+
     if ($isnetlink) {
+        $res = $LMS->ValidateNetDevLink($id, $devid, $link);
+        if (is_array($res)) {
+            foreach ($res as $name => $error) {
+                $result->script("$('[name=\"" . $name . "\"]').addClass('lms-ui-error').removeAttr('data-tooltip').attr('title', '" . $error . "');");
+            }
+            return $result;
+        }
         $LMS->SetNetDevLinkType($id, $devid, $link);
     } else {
+        $res = $LMS->ValidateNodeLink($devid, $link);
+        if (is_string($res)) {
+            $result->script("$('[name=\"port\"]').addClass('lms-ui-error').removeAttr('data-tooltip').attr('title', '" . $res . "');");
+            return $result;
+        }
         $LMS->SetNodeLinkType($devid, $link);
     }
 
