@@ -103,7 +103,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
     {
         $error = array();
 
-        if ($this->db->GetOne(
+        if (intval($link['srcport']) && $this->db->GetOne(
             'SELECT id
             FROM netlinks
             WHERE (src = ? AND srcport = ? AND dst <> ?) OR (dst = ? AND dstport = ? AND src <> ?)',
@@ -119,7 +119,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             $error['srcport'] = trans('Selected port number is taken by other device!');
         }
 
-        if ($this->db->GetOne(
+        if (intval($link['dstport']) && $this->db->GetOne(
             'SELECT id
             FROM netlinks
             WHERE (src = ? AND srcport = ? AND dst <> ?) OR (dst = ? AND dstport = ? AND src <> ?)',
@@ -135,7 +135,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             $error['dstport'] = trans('Selected port number is taken by other device!');
         }
 
-        if ($this->db->GetOne(
+        if (intval($link['srcport']) && $this->db->GetOne(
             'SELECT id
             FROM nodes
             WHERE port = ? AND netdev IN ?',
@@ -147,7 +147,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             $error['srcport'] = trans('Selected port number is taken by node!');
         }
 
-        if ($this->db->GetOne(
+        if (intval($link['dstport']) && $this->db->GetOne(
             'SELECT id
             FROM nodes
             WHERE port = ? AND netdev IN ?',
