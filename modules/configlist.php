@@ -187,17 +187,7 @@ function GetConfigList()
 
     $config = $DB->GetAll(
         'SELECT c.id, c.section, c.var, c.value, c.description as usercomment, c.disabled, c.userid, c.divisionid, c.configid,
-        u.login, u.firstname, u.lastname, d.shortname,
-        (CASE WHEN c.divisionid IS NOT NULL AND c.userid IS NULL 
-                THEN \'division value\'
-            WHEN c.divisionid IS NOT NULL AND c.userid IS NOT NULL 
-                THEN \'user in division value\' 
-            WHEN c.divisionid IS NULL AND c.userid IS NOT NULL 
-                THEN \'user value\'
-            WHEN c.divisionid IS NULL AND c.userid IS NULL 
-                THEN \'global value\'
-            END
-        ) AS configtypedesc
+        u.login, u.firstname, u.lastname, d.shortname
         FROM uiconfig c
         LEFT JOIN users u on c.userid = u.id
         LEFT JOIN divisions d on c.divisionid = d.id
@@ -219,6 +209,20 @@ function GetConfigList()
             if (!empty($item['usercomment'])) {
                 $item['usercomment'] = str_replace("\n", '<br>', $item['usercomment']);
             }
+
+            if (!empty($item['divisionid']) && empty($item['userid'])) {
+                $item['reftype'] = 'division';
+                $item['reftypedescription'] = 'division value';
+            } elseif (!empty($item['divisionid']) && !empty($item['userid'])) {
+                $item['reftype'] = 'divisionuser';
+                $item['reftypedescription'] = 'user in division value';
+            } elseif (empty($item['divisionid']) && !empty($item['userid'])) {
+                $item['reftype'] = 'user';
+                $item['reftypedescription'] = 'user value';
+            } else {
+                $item['reftype'] = null;
+                $item['reftypedescription'] = 'global value';
+            }
         }
         unset($item);
     }
@@ -235,7 +239,9 @@ $pagelimit = ConfigHelper::getConfig('phpui.configlist_pagelimit', count($config
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SESSION->save('backto', $_SERVER['QUERY_STRING'], true);
 
+$SMARTY->assign('users', $LMS->getUsers(array('superuser' => 1)));
 $SMARTY->assign('sections', $LMS->GetConfigSections());
+$SMARTY->assign('divisions', $LMS->GetDivisions());
 $SMARTY->assign('pagelimit', $pagelimit);
 $SMARTY->assign('configlist', $configlist);
 $SMARTY->assign('section', isset($_GET['s']) ? $_GET['s'] : '');

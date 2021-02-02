@@ -96,11 +96,18 @@ if (isset($_GET['id']) && $action == 'init') {
     $cnote['cdate'] = $currtime;
     //$cnote['sdate'] = $currtime;
     $cnote['sdate'] = $invoice['sdate'];
+    $cnote['customerid'] = $invoice['customerid'];
     $cnote['reason'] = '';
     $cnote['paytype'] = $invoice['paytype'];
     $cnote['splitpayment'] = $invoice['splitpayment'];
+    $cnote['flags'] = array(
+        DOC_FLAG_RECEIPT => empty($invoice['flags'][DOC_FLAG_RECEIPT]) ? 0 : 1,
+        DOC_FLAG_TELECOM_SERVICE => empty($invoice['flags'][DOC_FLAG_TELECOM_SERVICE]) ? 0 : 1,
+        DOC_FLAG_RELATED_ENTITY => empty($invoice['flags'][DOC_FLAG_RELATED_ENTITY]) ? 0 : 1,
+    );
     $cnote['currency'] = $invoice['currency'];
     $cnote['oldcurrency'] = $invoice['currency'];
+    $cnote['oldcurrencyvalue'] = $invoice['currencyvalue'];
 
     $t = $invoice['cdate'] + $invoice['paytime'] * 86400;
     $deadline = mktime(23, 59, 59, date('m', $t), date('d', $t), date('Y', $t));
@@ -113,6 +120,8 @@ if (isset($_GET['id']) && $action == 'init') {
     $cnote['deadline'] = $cnote['cdate'] + $cnote['paytime'] * 86400;
 
     $cnote['use_current_division'] = true;
+
+    $cnote['recipient_address_id'] = $invoice['recipient_address_id'];
 
     $hook_data = array(
         'invoice' => $invoice,
@@ -150,21 +159,16 @@ $layout['pagetitle'] = trans('Credit Note for Invoice: $a', $ntempl);
 
 switch ($action) {
     case 'deletepos':
-        if ($invoice['closed']) {
-            break;
-        }
         $contents[$_GET['itemid']]['deleted'] = true;
         break;
 
     case 'recoverpos':
-        if ($invoice['closed']) {
-            break;
-        }
         $contents[$_GET['itemid']]['deleted'] = false;
         break;
 
     case 'setheader':
         $oldcurrency = $cnote['oldcurrency'];
+        $oldcurrencyvalue = $cnote['oldcurrencyvalue'];
 
         $cnote = null;
         $error = null;
@@ -248,6 +252,8 @@ switch ($action) {
 
         $cnote['currency'] = $oldcurrency;
         $cnote['oldcurrency'] = $oldcurrency;
+        $cnote['oldcurrencyvalue'] = $oldcurrencyvalue;
+        $cnote['customerid'] = $invoice['customerid'];
 
         // finally check if selected customer can use selected numberplan
         $divisionid = !empty($cnote['use_current_division']) ? $invoice['current_divisionid'] : $invoice['divisionid'];
@@ -470,6 +476,7 @@ switch ($action) {
         $cnote['paytime'] = round(($cnote['deadline'] - $cnote['cdate']) / 86400);
 
         $cnote['currency'] = $cnote['oldcurrency'];
+        $cnote['currencyvalue'] = $cnote['oldcurrencyvalue'];
 
         $hook_data = array(
             'invoice' => $invoice,
@@ -496,11 +503,6 @@ switch ($action) {
                 $contents[$idx]['valuenetto'] = $newcontents['valuenetto'][$idx];
             }
             break;
-        }
-
-        $cnote['currencyvalue'] = $LMS->getCurrencyValue($cnote['currency'], $cnote['sdate']);
-        if (!isset($cnote['currencyvalue'])) {
-            die('Fatal error: couldn\'t get quote for ' . $cnote['currency'] . ' currency!<br>');
         }
 
         $DB->BeginTrans();
@@ -549,10 +551,10 @@ switch ($action) {
             $fullnumber = null;
         }
 
-        if (!empty($invoice['recipient_address_id'])) {
-            $invoice['recipient_address_id'] = $LMS->CopyAddress($invoice['recipient_address_id']);
+        if (!empty($cnote['recipient_address_id']) && $cnote['recipient_address_id'] != -1) {
+            $cnote['recipient_address_id'] = $LMS->CopyAddress($cnote['recipient_address_id']);
         } else {
-            $invoice['recipient_address_id'] = null;
+            $cnote['recipient_address_id'] = null;
         }
 
         if (empty($invoice['post_address_id'])) {
@@ -575,6 +577,12 @@ switch ($action) {
             'paytime' => $cnote['paytime'],
             'paytype' => $cnote['paytype'],
             'splitpayment' => empty($cnote['splitpayment']) ? 0 : 1,
+            'flags' => (empty($cnote['flags'][DOC_FLAG_RECEIPT]) ? 0 : DOC_FLAG_RECEIPT)
+                + (empty($cnote['flags'][DOC_FLAG_TELECOM_SERVICE]) || $customer['type'] == CTYPES_COMPANY ? 0 : DOC_FLAG_TELECOM_SERVICE)
+                + ($use_current_customer_data
+                    ? (isset($customer['flags'][CUSTOMER_FLAG_RELATED_ENTITY]) ? DOC_FLAG_RELATED_ENTITY : 0)
+                    : (!empty($invoice['flags'][DOC_FLAG_RELATED_ENTITY]) ? DOC_FLAG_RELATED_ENTITY : 0)
+                ),
             SYSLOG::RES_USER => Auth::GetCurrentUser(),
             SYSLOG::RES_CUST => $invoice['customerid'],
             'name' => $use_current_customer_data ? $customer['customername'] : $invoice['name'],
@@ -606,18 +614,18 @@ switch ($action) {
             'div_inv_author' => $division['inv_author'] ? $division['inv_author'] : '',
             'div_inv_cplace' => $division['inv_cplace'] ? $division['inv_cplace'] : '',
             'fullnumber' => $fullnumber,
-            'recipient_address_id' => $invoice['recipient_address_id'],
+            'recipient_address_id' => $cnote['recipient_address_id'],
             'post_address_id' => $invoice['post_address_id'],
             'currency' => $cnote['currency'],
             'currencyvalue' => $cnote['currencyvalue'],
             'memo' => $use_current_customer_data ? (empty($customer['documentmemo']) ? null : $customer['documentmemo']) : $invoice['memo'],
         );
-        $DB->Execute('INSERT INTO documents (number, numberplanid, type, cdate, sdate, paytime, paytype, splitpayment,
+        $DB->Execute('INSERT INTO documents (number, numberplanid, type, cdate, sdate, paytime, paytype, splitpayment, flags,
 				userid, customerid, name, address, ten, ssn, zip, city, countryid, reference, reason, divisionid,
 				div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 				div_bank, div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
 				recipient_address_id, post_address_id, currency, currencyvalue, memo)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
 					?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
         $id = $DB->GetOne(
@@ -732,6 +740,15 @@ $hook_data = $LMS->ExecuteHook('invoicenote_before_display', $hook_data);
 $contents = $hook_data['contents'];
 $invoice = $hook_data['invoice'];
 
+$addresses = $LMS->getCustomerAddresses($invoice['customerid']);
+if (isset($invoice['recipient_address'])) {
+    $addresses = array_replace(
+        array($invoice['recipient_address']['address_id'] => $invoice['recipient_address']),
+        $addresses
+    );
+}
+$SMARTY->assign('addresses', $addresses);
+
 $SMARTY->assign('error', $error);
 $SMARTY->assign('contents', $contents);
 $SMARTY->assign('cnote', $cnote);
@@ -748,10 +765,13 @@ if (!empty($contents)) {
     }
 }
 
-$SMARTY->assign('is_split_payment_suggested', $LMS->isSplitPaymentSuggested(
-    $invoice['customerid'],
-    date('Y/m/d', $cnote['cdate']),
-    $total_value
+$SMARTY->assign('suggested_flags', array(
+    'splitpayment' => $LMS->isSplitPaymentSuggested(
+        $invoice['customerid'],
+        date('Y/m/d', $cnote['cdate']),
+        $total_value
+    ),
+    'telecomservice' => true,
 ));
 
 $SMARTY->display('invoice/invoicenotemodify.html');

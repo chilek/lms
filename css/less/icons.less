@@ -25,7 +25,10 @@
 .lms-ui-icon {
   line-height: unset;
   vertical-align: unset;
-  font-size: 140%;
+  font-size: @fa-icon-size-normal;
+  @media screen and (max-width: @mobile-max-width) {
+    font-size: @fa-icon-size-mobile;
+  }
 }
 
 .lms-ui-icon-fixed-width {
@@ -120,6 +123,15 @@
   .lms-ui-icon;
   &:before {
     content: @fa-var-file-invoice;
+  }
+}
+
+.lms-ui-icon-import {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-file-import;
   }
 }
 
@@ -373,6 +385,15 @@
   .lms-ui-icon;
   &:before {
     content: @fa-var-sort-down;
+  }
+}
+
+.lms-ui-icon-sorting {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-sort;
   }
 }
 
@@ -679,6 +700,33 @@
   }
 }
 
+.lms-ui-icon-vlan {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-project-diagram;
+  }
+}
+
+.lms-ui-icon-id {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-list-ol;
+  }
+}
+
+.lms-ui-icon-window-close {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-window-close;
+  }
+}
+
 .lms-ui-icon-node {
   .fa-icon;
   .fas;
@@ -744,6 +792,15 @@
   .lms-ui-icon;
   &:before {
     content: @fa-var-undo-alt;
+  }
+}
+
+.lms-ui-icon-recover {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-trash-restore;
   }
 }
 
@@ -970,6 +1027,15 @@
   }
 }
 
+.lms-ui-icon-dropdown2 {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-ellipsis-h;
+  }
+}
+
 .lms-ui-icon-reload {
   .fa-icon;
   .fas;
@@ -1084,6 +1150,15 @@
   }
 }
 
+.lms-ui-icon-invproject {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-money-bill;
+  }
+}
+
 .lms-ui-icon-status {
   .fa-icon;
   .fas;
@@ -1179,7 +1254,8 @@
   }
 }
 
-.lms-ui-icon-popup {
+.lms-ui-icon-popup,
+.lms-ui-icon-external {
   .fa-icon;
   .fas;
   .lms-ui-icon;
@@ -1503,5 +1579,158 @@
   .lms-ui-icon;
   &:before {
     content: @fa-var-bars;
+  }
+}
+
+.lms-ui-icon-routing,
+.lms-ui-icon-routed {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-route;
+  }
+}
+
+.lms-ui-icon-finger-up {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-hand-point-up;
+  }
+}
+
+.lms-ui-icon-finger-down {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-hand-point-down;
+  }
+}
+
+.lms-ui-icon-star,
+.lms-ui-icon-karma {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-star;
+  }
+}
+
+.lms-ui-icon-notify,
+.lms-ui-icon-notification,
+.lms-ui-icon-notifications,
+.lms-ui-icon-bell {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-bell;
+  }
+}
+
+.lms-ui-icon-palette,
+.lms-ui-icon-colour,
+.lms-ui-icon-color {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-palette;
+  }
+}
+
+.lms-ui-icon-csv {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-file-csv;
+  }
+}
+
+.lms-ui-icon-reward {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-trophy;
+  }
+}
+
+.lms-ui-icon-penalty {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-skull-crossbones;
+  }
+}
+
+.lms-ui-icon-mac,
+.lms-ui-icon-hardware {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-microchip;
+  }
+}
+
+.lms-ui-icon-period,
+.lms-ui-icon-accounting {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-clock;
+  }
+}
+
+.lms-ui-icon-recipient {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-id-badge;
+  }
+}
+
+.lms-ui-icon-discount {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-percent;
+  }
+}
+
+.lms-ui-icon-quantity {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-grip-horizontal;
+  }
+}
+
+.lms-ui-icon-template {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-stamp;
+  }
+}
+
+.lms-ui-icon-permissions {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-user-lock;
   }
 }

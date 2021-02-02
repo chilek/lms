@@ -57,6 +57,7 @@ function module_setup()
     $SMARTY->assign('timeout', intval(ConfigHelper::getConfig('userpanel.timeout')));
     $SMARTY->assign('sms_credential_reminders', ConfigHelper::checkConfig('userpanel.sms_credential_reminders'));
     $SMARTY->assign('mail_credential_reminders', ConfigHelper::checkConfig('userpanel.mail_credential_reminders'));
+    $SMARTY->assign('pin_validation', ConfigHelper::checkConfig('userpanel.pin_validation'));
     $enabled_modules = ConfigHelper::getConfig('userpanel.enabled_modules', null, true);
     if (is_null($enabled_modules)) {
         $enabled_modules = array();
@@ -185,6 +186,12 @@ function module_submit_setup()
         $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'timeout', ?)", array(intval($_POST['timeout'])));
     }
 
+    if ($DB->GetOne("SELECT 1 FROM uiconfig WHERE section = 'userpanel' AND var = 'pin_validation'")) {
+        $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'pin_validation'", array(isset($_POST['pin_validation']) ? 'true' : 'false'));
+    } else {
+        $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'pin_validation', ?)", array(isset($_POST['pin_validation']) ? 'true' : 'false'));
+    }
+
     foreach (array('sms_credential_reminders', 'mail_credential_reminders') as $var) {
         if ($DB->GetOne(
             "SELECT 1 FROM uiconfig WHERE section = ? AND var = ?",
@@ -224,6 +231,7 @@ function module_submit_setup()
     LMSConfig::getConfig(array(
         'force' => true,
         'force_ui_only' => true,
+        'invalidate_cache' => true,
     ));
 
     module_setup();

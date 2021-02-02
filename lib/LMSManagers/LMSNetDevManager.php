@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2018 LMS Developers
+ *  Copyright (C) 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -99,6 +99,85 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         return $res;
     }
 
+    public function ValidateNetDevLink($dev1, $dev2, $link = null)
+    {
+        $error = array();
+
+        if ($this->db->GetOne(
+            'SELECT id
+            FROM netlinks
+            WHERE (src = ? AND srcport = ? AND dst <> ?) OR (dst = ? AND dstport = ? AND src <> ?)',
+            array(
+                $dev1,
+                $link['srcport'],
+                $dev2,
+                $dev2,
+                $link['srcport'],
+                $dev1,
+            )
+        )) {
+            $error['srcport'] = trans('Selected port number is taken by other device!');
+        }
+
+        if ($this->db->GetOne(
+            'SELECT id
+            FROM netlinks
+            WHERE (src = ? AND srcport = ? AND dst <> ?) OR (dst = ? AND dstport = ? AND src <> ?)',
+            array(
+                $dev1,
+                $link['dstport'],
+                $dev2,
+                $dev2,
+                $link['dstport'],
+                $dev1,
+            )
+        )) {
+            $error['dstport'] = trans('Selected port number is taken by other device!');
+        }
+
+        if ($this->db->GetOne(
+            'SELECT id
+            FROM nodes
+            WHERE port = ? AND netdev IN ?',
+            array(
+                $link['srcport'],
+                array($dev1, $dev2),
+            )
+        )) {
+            $error['srcport'] = trans('Selected port number is taken by node!');
+        }
+
+        if ($this->db->GetOne(
+            'SELECT id
+            FROM nodes
+            WHERE port = ? AND netdev IN ?',
+            array(
+                $link['dstport'],
+                array($dev1, $dev2),
+            )
+        )) {
+            $error['dstport'] = trans('Selected port number is taken by node!');
+        }
+
+        $ports = $this->db->GetOne('SELECT ports FROM netdevices WHERE id = ?', array($dev1));
+        if (!empty($ports) && $ports < intval($link['dstport'])) {
+            return array(
+                'dstport' => trans('Incorrect port number!'),
+            );
+        }
+
+        $ports = $this->db->GetOne('SELECT ports FROM netdevices WHERE id = ?', array($dev2));
+        if (!empty($ports) && $ports < intval($link['srcport'])) {
+            $error['srcport'] = trans('Incorrect port number!');
+        }
+
+        if (empty($error)) {
+            return true;
+        } else {
+            return $error;
+        }
+    }
+
     public function SetNetDevLinkType($dev1, $dev2, $link = null)
     {
         if (empty($link)) {
@@ -115,30 +194,35 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             $speed = isset($link['speed']) ? $link['speed'] : 100000;
         }
 
+        $query = 'UPDATE netlinks SET type = ?, srcradiosector = ?, dstradiosector = ?, technology = ?, speed = ?';
         $args = array(
             'type' => $type,
             'src_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR) => $srcradiosector,
             'dst_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR) => $dstradiosector,
             'technology' => $technology,
             'speed' => $speed,
-            'src_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV) => $dev2,
-            'dst_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV) => $dev1,
         );
-        $res = $this->db->Execute('UPDATE netlinks SET type=?, srcradiosector=?, dstradiosector=?, technology=?, speed=?
-			WHERE src=? AND dst=?', array_values($args));
-        if (!$res) {
-            $args = array(
-                'type' => $type,
-                'src_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR) => $srcradiosector,
-                'dst_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR) => $dstradiosector,
-                'technology' => $technology,
-                'speed' => $speed,
-                'src_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV) => $dev1,
-                'dst_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV) => $dev2,
-            );
-            $res = $this->db->Execute('UPDATE netlinks SET type=?, dstradiosector=?, srcradiosector=?, technology=?, speed=?
-				WHERE src=? AND dst=?', array_values($args));
+        if (isset($link['srcport']) && isset($link['dstport'])) {
+            $query .= ', srcport = ?, dstport = ?';
+            $args['srcport'] = intval($link['dstport']);
+            $args['dstport'] = intval($link['srcport']);
         }
+        $query .= ' WHERE src = ? AND dst = ?';
+
+        $args['src_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV)] = $dev1;
+        $args['dst_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV)] = $dev2;
+        $res = $this->db->Execute($query, array_values($args));
+
+        if (!$res) {
+            if (isset($link['srcport']) && isset($link['dstport'])) {
+                $args['srcport'] = intval($link['srcport']);
+                $args['dstport'] = intval($link['dstport']);
+            }
+            $args['src_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV)] = $dev2;
+            $args['dst_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV)] = $dev1;
+            $res = $this->db->Execute($query, array_values($args));
+        }
+
         if ($this->syslog && $res) {
             $args[SYSLOG::RES_NETLINK] =
                 $this->db->GetOne('SELECT id FROM netlinks WHERE (src=? AND dst=?) OR (dst=? AND src=?)', array($dev1, $dev2, $dev1, $dev2));
@@ -146,10 +230,11 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                 SYSLOG::RES_NETLINK,
                 SYSLOG::OPER_UPDATE,
                 $args,
-                array('src_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV),
-                'dst_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV),
-                'src_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR),
-                'dst_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR),
+                array(
+                    'src_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV),
+                    'dst_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV),
+                    'src_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR),
+                    'dst_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR),
                 )
             );
         }
@@ -512,11 +597,38 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
     public function GetNetDevLinkType($dev1, $dev2)
     {
-        return $this->db->GetRow(
-            'SELECT type, technology, speed FROM netlinks
-			WHERE (src=? AND dst=?) OR (dst=? AND src=?)',
-            array($dev1, $dev2, $dev1, $dev2)
+        $link = $this->db->GetRow(
+            'SELECT type, technology, speed,
+                (CASE src WHEN ? THEN srcport ELSE dstport END) AS dstport,
+                (CASE src WHEN ? THEN dstport ELSE srcport END) AS srcport,
+                (CASE src WHEN ? THEN dstradiosector ELSE srcradiosector END) AS srcradiosector,
+                (CASE src WHEN ? THEN srcradiosector ELSE dstradiosector END) AS dstradiosector
+            FROM netlinks
+            WHERE (src = ? AND dst = ?) OR (dst = ? AND src = ?)',
+            array($dev1, $dev1, $dev1, $dev1, $dev1, $dev2, $dev1, $dev2)
         );
+        if (empty($link)) {
+            $link = array();
+        } else {
+            $link['radiosectors'] = array(
+                'srcradiosector' => $link['srcradiosector'],
+                'dstradiosector' => $link['dstradiosector'],
+                'dst' => $this->db->GetAll(
+                    'SELECT id, name FROM netradiosectors WHERE netdev = ? '
+                    . ($link['type'] == LINKTYPE_WIRELESS && $link['technology'] ? ' AND (technology = 0 OR technology = ' . intval($link['technology']) . ')' : '')
+                    . ' ORDER BY name',
+                    array($dev1)
+                ),
+                'src' => $this->db->GetAll(
+                    'SELECT id, name FROM netradiosectors WHERE netdev = ? '
+                    . ($link['type'] == LINKTYPE_WIRELESS && $link['technology'] ? ' AND (technology = 0 OR technology = ' . intval($link['technology']) . ')' : '')
+                    . ' ORDER BY name',
+                    array($dev2)
+                ),
+            );
+        }
+
+        return $link;
     }
 
     public function GetNetDevConnectedNames($id)
@@ -597,6 +709,9 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             case 'netnode':
                 $sqlord = ' ORDER BY netnode';
                 break;
+            case 'type':
+                $sqlord = ' ORDER BY t.name';
+                break;
             default:
                 $sqlord = ' ORDER BY name';
                 break;
@@ -644,6 +759,11 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                         $where[] = 'd.netnodeid IS NULL';
                     }
                     break;
+                case 'type':
+                    if (!empty($type)) {
+                        $where[] = 'm.type = ' . intval($type);
+                    }
+                    break;
                 case 'producer':
                 case 'model':
                     if (!preg_match('/^-[0-9]+$/', $value)) {
@@ -680,7 +800,8 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         }
 
         $netdevlist = $this->db->GetAll('SELECT d.id, d.name' . ($short ? '' : ',
-				d.description, d.producer, d.model, d.serialnumber, d.ports, d.ownerid,
+				d.description, d.producer, d.model, m.type AS devtype, t.name AS devtypename,
+				d.serialnumber, d.ports, d.ownerid,
 				d.invprojectid, p.name AS project, d.status,
 				(SELECT COUNT(*) FROM nodes WHERE ipaddr <> 0 AND netdev=d.id AND ownerid IS NOT NULL)
 				+ (SELECT COUNT(*) FROM netlinks WHERE src = d.id OR dst = d.id)
@@ -708,6 +829,8 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 				LEFT JOIN vaddresses addr       ON d.address_id = addr.id
 				LEFT JOIN invprojects p         ON p.id = d.invprojectid
 				LEFT JOIN netnodes n            ON n.id = d.netnodeid
+				LEFT JOIN netdevicemodels m     ON m.id = d.netdevicemodelid
+				LEFT JOIN netdevicetypes t      ON t.id = m.type
 				LEFT JOIN location_streets lst  ON lst.id = addr.street_id
 				LEFT JOIN location_cities lc    ON lc.id = addr.city_id
 				LEFT JOIN location_boroughs lb  ON lb.id = lc.boroughid
@@ -977,14 +1100,18 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
     {
         if (!empty($producerid)) {
             return $this->db->GetAll(
-                'SELECT id, name FROM netdevicemodels ORDER BY name ASC',
+                'SELECT m.id, m.name, m.type, t.name AS typename
+                FROM netdevicemodels m
+                LEFT JOIN netdevicetypes t ON t.id = m.type
+                ORDER BY m.name ASC',
                 array($producerid)
             );
         }
 
-        $models = $this->db->GetAll('SELECT m.id, p.id AS producerid, m.name
+        $models = $this->db->GetAll('SELECT m.id, p.id AS producerid, m.name, m.type, t.name AS typename
 			FROM netdevicemodels m
 			JOIN netdeviceproducers p ON p.id = m.netdeviceproducerid
+			LEFT JOIN netdevicetypes t ON t.id = m.type
 			ORDER BY p.id, m.name');
         if (empty($models)) {
             return array();
@@ -1008,9 +1135,10 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         }
 
         $list = $this->db->GetAll(
-            'SELECT m.id, m.name, m.alternative_name,
+            'SELECT m.id, m.name, m.alternative_name, m.type, t.name AS typename,
 			(SELECT COUNT(i.id) FROM netdevices i WHERE i.netdevicemodelid = m.id) AS netdevcount
 			FROM netdevicemodels m
+			LEFT JOIN netdevicetypes t ON t.id = m.type
 			WHERE m.netdeviceproducerid = ?
 			ORDER BY m.name ASC',
             array($pid)
@@ -1275,5 +1403,15 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         }
 
         return $netdev_assignments;
+    }
+
+    public function getNetDevOwnerByNodeId($nodeid)
+    {
+        return $this->db->GetOne(
+            'SELECT nd.ownerid FROM netdevices nd
+            JOIN nodes n ON n.netdev = nd.id AND n.ownerid IS NULL
+            WHERE n.id = ?',
+            array($nodeid)
+        );
     }
 }

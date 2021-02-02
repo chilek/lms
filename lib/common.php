@@ -816,7 +816,7 @@ function location_str($data)
         $location .= ' ' . $h;
     }
 
-    return htmlentities($location, ENT_COMPAT, 'UTF-8', false);
+    return $location;
 }
 
 function document_address($data)

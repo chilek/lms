@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2020 LMS Developers
+ *  Copyright (C) 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -33,6 +33,8 @@ interface LMSNetDevManagerInterface
     public function GetNetDevLinkedNodes($id);
 
     public function NetDevLinkNode($id, $devid, $link = null);
+
+    public function ValidateNetDevLink($dev1, $dev2, $link = null);
 
     public function SetNetDevLinkType($dev1, $dev2, $link = null);
 
@@ -93,4 +95,6 @@ interface LMSNetDevManagerInterface
     public function updateManagementUrl($type, $id, array $url);
 
     public function getNetDevCustomerAssignments($netdevid, $assignments);
+
+    public function getNetDevOwnerByNodeId($nodeid);
 }

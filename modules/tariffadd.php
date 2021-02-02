@@ -29,7 +29,7 @@ if (isset($_POST['tariff'])) {
     $limit = isset($_POST['limit']) ? $_POST['limit'] : array();
 
     foreach ($tariff as $key => $value) {
-        if ($key != 'authtype' && $key != 'tags') {
+        if ($key != 'authtype' && $key != 'tags' && $key != 'flags') {
             $tariff[$key] = trim($value);
         }
     }
@@ -281,6 +281,8 @@ if (isset($_POST['tariff'])) {
         $tariff[$type['alias'] . '_limit'] = 0;
         $tariff['quota_' . $type['alias'] . '_limit'] = 0;
     }
+
+    $tariff['type'] = intval(ConfigHelper::getConfig('phpui.default_tariff_type', '-1'));
 
     $default_assignment_period = ConfigHelper::getConfig('phpui.default_assignment_period');
     if (!empty($default_assignment_period)) {

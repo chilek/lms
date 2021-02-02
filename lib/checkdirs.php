@@ -50,6 +50,14 @@ if (!is_writable(DOC_DIR)) {
     $startup_errors[] = 'chown -R '.posix_geteuid().':'.posix_getegid().' '.DOC_DIR."\nchmod -R 755 ".DOC_DIR;
 }
 
+if (!is_dir(CACHE_DIR)) {
+    $startup_errors[] = 'mkdir ' . CACHE_DIR;
+}
+
+if (!is_writable(CACHE_DIR)) {
+    $startup_errors[] = 'chown -R '.posix_geteuid().':'.posix_getegid().' '.CACHE_DIR."\nchmod -R 755 ".CACHE_DIR;
+}
+
 $__xajax_deferred_dir = SYS_DIR . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'xajax_js' . DIRECTORY_SEPARATOR . 'deferred';
 
 if (!is_dir($__xajax_deferred_dir)) {

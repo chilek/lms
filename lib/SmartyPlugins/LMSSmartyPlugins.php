@@ -64,10 +64,13 @@ class LMSSmartyPlugins
             }
         }
 
-        return '<' . ($type == 'link' || $type == 'link-button' ? 'a' : 'button type="' . $type . '"') . ($href ? ' href="' . $href . '"' : '')
+        return '<' . ($type == 'link' || $type == 'link-button' ? 'a' : 'button type="' . $type . '"')
+            . ($type == 'link' || $type == 'link-button'
+                ? ($href ? ' href="' . $href . '"' : '')
+                : ($onclick || !$href ? '' : ' onclick="location.href = \'' . $href . '\';"'))
             . ' class="lms-ui-button' . ($type == 'link-button' ? ' lms-ui-link-button ' : '')
             . ($class ? ' ' . $class : '') . '"'
-            . ($id ? ' id="' . $id . '"' : '') . ($onclick ? ' onclick="' . $onclick . '"' : '')
+            . ($id ? ' id="' . $id . '"' : '') . ((($type == 'button' && empty($href)) || $type != 'button') && $onclick ? ' onclick="' . $onclick . '"' : '')
             . ($form ? ' form="' . $form . '"' : '')
             . ($tip ? ' title="' . $tip . '" data-title="' . $tip . '"' : '')
             . ($external ? ' rel="external"' : '')
@@ -86,13 +89,16 @@ class LMSSmartyPlugins
         $elementname = isset($params['elementname']) ? $params['elementname'] : 'currency';
         $selected = isset($params['selected']) && isset($GLOBALS['CURRENCIES'][$params['selected']])
             ? $params['selected'] : null;
+        $defaultSelected = Localisation::getCurrentCurrency();
         $locked = isset($params['locked']) && $params['locked'];
         if (function_exists('get_currency_value') && !$locked) {
-            $result = '<select name="' . $elementname . '" ' . self::tipFunction(array('text' => 'Select currency'), $template)
+            $result = '<select class="'. (!$selected ? 'lms-ui-warning' : '')
+                .'" name="' . $elementname . '" '
+                . self::tipFunction(array('text' => !$selected ? 'Select currency and save' : 'Select currency'), $template)
                 . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '') . '>';
             foreach ($GLOBALS['CURRENCIES'] as $currency) {
                 $result .= '<option value="' . $currency . '"'
-                    . ($currency == $selected ? ' selected' : '') . '>' . $currency . '</option>';
+                . (($selected && $currency == $selected) || (!$selected && $currency == $defaultSelected)  ? ' selected' : '') . '>' . $currency . '</option>';
             }
             $result .= '</select>';
         } else {
@@ -121,7 +127,6 @@ class LMSSmartyPlugins
         $selected = isset($params['selected']) ? $params['selected'] : null;
         $superuser = isset($params['superuser']) && !empty($params['superuser']) ? $params['superuser'] : null;
         $onchange = isset($params['onchange']) && !empty($params['onchange']) ? $params['onchange'] : null;
-        $division_selection = isset($params['division_selection']) && !empty($params['division_selection']) ? $params['division_selection'] : null;
 
         if (isset($user_divisions) && empty($user_divisions)) {
             if ($force_global_division_context) {
@@ -148,12 +153,11 @@ class LMSSmartyPlugins
                 $result .= '<select class="division-context" id="' . $id . '" name="' . $name . '" ' . self::tipFunction(array('text' => 'Select division'), $template)
                     . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '')
                     . ($onchange ? ' onchange="' . $onchange . '"' : '')
-                    . ($division_selection ? ' division_selection="' . $division_selection . '"' : '')
                     . '>';
-                $result .= '<option VALUE=""' . (!$selected ? ' selected' : '') . '>- ' . trans("all") . ' -</option>';
+                $result .= '<option value=""' . (!$selected ? ' selected' : '') . '>- ' . trans("all") . ' -</option>';
                 foreach ($user_divisions as $division) {
                     $result .= '<option value="' . $division['id'] . '"'
-                        . ($selected == $division['id'] ? ' selected' : '') . '>' . $division['shortname'] . '</option>';
+                        . ($selected == $division['id'] ? ' selected' : '') . '>' . htmlspecialchars($division['label']) . '</option>';
                 }
                 $result .= '</select>';
                 $result .= ($label ? '</label>' : '');
@@ -175,14 +179,19 @@ class LMSSmartyPlugins
     {
         $result = '';
 
+        $version = isset($params['version']) && intval($params['version']) ? intval($params['version']) : 1;
+
         $customername = !isset($params['customername']) || $params['customername'];
 
         if (isset($params['selected']) && !preg_match('/^[0-9]+$/', $params['selected'])) {
             $params['selected'] = '';
         }
 
+        $result .= '<div class="lms-ui-customer-select-container" data-version="' . $version . '"'
+            . ($version == 2 ? ' data-show-id="1"' : '') . '>' . PHP_EOL;
+
         if (!empty($params['customers'])) {
-            $result .= sprintf('<SELECT name="%s" value="%s" ', $params['selectname'], $params['selected']);
+            $result .= sprintf('<select name="%s" value="%s" ', $params['selectname'], $params['selected']);
 
             if (!empty($params['select_id'])) {
                 $result .= 'id="' . $params['select_id'] . '" ';
@@ -194,81 +203,102 @@ class LMSSmartyPlugins
                 $result .= self::tipFunction(array('text' => 'Select customer (optional)'), $template);
             }
 
-            $result .= sprintf('onChange="reset_customer(\'%s\', \'%s\', \'%s\'); ', $params['form'], $params['selectname'], $params['inputname']);
-
             if (!empty($params['customOnChange'])) {
-                $result .= $params['customOnChange'];
+                $result .= ' onChange="' . $params['customOnChange'] . '"';
             }
 
-            $result .= '">';
+            $result .= '">' . PHP_EOL;
 
             if (isset($params['firstoption'])) {
                 if (!empty($params['firstoption'])) {
-                    $result .= '<OPTION value="0"';
+                    $result .= '<option value="0"';
                     if (empty($params['selected'])) {
                         $result .= ' selected';
                     }
-                    $result .= '>' . trans($params['firstoption']) . '</OPTION>';
+                    $result .= '>' . trans($params['firstoption']) . '</option>';
                 }
             } else {
-                $result .= '<OPTION value="0"';
+                $result .= '<option value="0"';
                 if (empty($params['selected'])) {
                     $result .= ' selected';
                 }
-                $result .= '>' . trans("- select customer -") . '</OPTION>';
+                $result .= '>' . trans("- select customer -") . '</option>';
             }
             foreach ($params['customers'] as $customer) {
-                $result .= '<OPTION value="' . $customer['id'] . '"';
+                $result .= '<option value="' . $customer['id'] . '"';
                 if ($customer['id'] == $params['selected']) {
                     $result .= ' selected';
                 }
-                $result .= '>' . mb_substr($customer['customername'], 0, 40) . ' (' . sprintf("%04d", $customer['id']) . ')</OPTION>';
+                $result .= '>' . mb_substr($customer['customername'], 0, 40) . ' (' . sprintf("%04d", $customer['id']) . ')</option>' . PHP_EOL;
             }
-            $result .= '</SELECT>&nbsp;' . trans("or Customer ID:");
+            $result .= '</select>' . PHP_EOL
+                . '<div class="lms-ui-customer-select">' . PHP_EOL
+                . '<span>' . trans("or Customer ID:") . '</span>' . PHP_EOL;
         } else {
-            $result .= trans("ID:");
-            $timer_var = 'customerlist_timer_' . md5($params['inputname']);
+            $result .=  '<div class="lms-ui-customer-select">' . PHP_EOL;
+            if ($version < 2) {
+                $result .= '<span>' . trans('ID') . '</span>' . PHP_EOL;
+            }
         }
-        $result .= '&nbsp;<INPUT type="text" name="' . $params['inputname'] . '" value="' . $params['selected'] . '" data-prev-value="' . $params['selected'] . '" size="5" ';
+
+        if ($version == 2) {
+            $result .= '<div class="lms-ui-customer-select-suggestion-container"></div>' . PHP_EOL;
+        }
+
+        $result .= '<input type="text" name="' . $params['inputname'] . '"' . (empty($params['selected']) ? '' : ' value="'
+            . $params['selected'] . '"') . ' class="lms-ui-customer-select-customerid" data-prev-value="' . $params['selected'] . '" size="5"';
 
         if (!empty($params['input_id'])) {
-            $result .= 'id="' . $params['input_id'] . '" ';
+            $result .= ' id="' . $params['input_id'] . '"';
         }
 
         if (isset($params['required']) && $params['required']) {
-            $result .= 'required ';
+            $result .= ' required';
         }
 
-        $on_change = !empty($params['customOnChange']) ? $params['customOnChange'] : '';
+        if (!empty($params['customOnChange'])) {
+            $result .= ' onChange="' . $params['customOnChange'] . '"';
+        }
 
-        if (!empty($params['customers'])) {
-            $reset_customer = "if (this.value != \$(this).attr('data-prev-value')) { reset_customer('${params['form']}', '${params['inputname']}', '${params['selectname']}'); ${on_change}; \$(this).attr('data-prev-value', this.value); }";
-            $result .= "onChange=\"${reset_customer}\" onFocus=\"${reset_customer}\"";
+        $result .= empty($params['customers']) && $customername ? ' data-customer-name="1"' : '';
+
+        if ($version < 2) {
+            if (!empty($params['inputtip'])) {
+                $result .= ' ' . self::tipFunction(array('text' => $params['inputtip']), $template);
+            } else {
+                $result .= ' ' . self::tipFunction(array('text' => 'Enter customer ID', 'trigger' => 'customerid'), $template);
+            }
+        }
+
+        $result .= '>' . PHP_EOL;
+
+        if ($version == 2) {
+            $result .= '<input type="text"'
+                . ' placeholder="' . trans('Search for customer')
+                . '" ' . self::tipFunction(
+                    array(
+                        'text' => 'Search for customer',
+                        'trigger' => 'customerid',
+                        'class' => 'lms-ui-customer-select-suggestion-input lms-ui-autogrow'
+                    ),
+                    $template
+                )
+                . '">' . PHP_EOL;
+            $result .= '<div ' . self::tipFunction(array('text' => 'Click to reset customer selection', 'class' => 'lms-ui-customer-function-button'), $template) . '>' . PHP_EOL
+                . '<i class="lms-ui-icon-clear fa-fw"></i>' . PHP_EOL . '</div>' . PHP_EOL;
         } else {
-            $result .= sprintf(' onblur="%1$s" onfocus="%1$s" oninput="%1$s" ', 'if (this.value != $(this).attr(\'data-prev-value\')) {'
-                . 'var elem=this; clearTimeout(' . $timer_var . '); ' . $timer_var . '=setTimeout(function(){'
-                . $on_change . ';' . ($customername ? 'getCustomerName(elem);' : '') . ' $(elem).attr(\'data-prev-value\', elem.value);}, 500);}');
+            $result .= '<div ' . self::tipFunction(array('text' => 'Click to search customer', 'class' => 'lms-ui-customer-function-button'), $template) . '>' . PHP_EOL
+                . '<i class="lms-ui-icon-search fa-fw"></i>' . PHP_EOL . '</div>' . PHP_EOL;
         }
 
-        if (!empty($params['inputtip'])) {
-            $result .= self::tipFunction(array('text' => $params['inputtip']), $template);
-        } else {
-            $result .= self::tipFunction(array('text' => 'Enter customer ID', 'trigger' => 'customerid'), $template);
-        }
-
-        $result .= '>';
-        if (empty($params['customers'])) {
-            $result .= '<script type="text/javascript">var ' . $timer_var . ';'
-                . ($customername ? ' var cid = $(\'[name="' . $params['inputname']. '"]\'); if (cid.val()) getCustomerNameDeferred(cid.get(0));' : '')
-                . '</script>';
-        }
-        $result .= '<a href="javascript: void(0);" onClick="return customerchoosewin(document.forms[\'' . $params['form'] . '\'].elements[\'' . $params['inputname'] . '\']);" ';
-        $result .= self::tipFunction(array('text' => 'Click to search customer'), $template) . '>&nbsp;';
-        $result .= trans("Search") . '&nbsp;&raquo;&raquo;&raquo;</A>';
+        $result .= '</div>' . PHP_EOL;
 
         if (empty($params['customers'])) {
-            $result .= '&nbsp;&nbsp;&nbsp;<span class="customername"></span>';
+            $result .= '<span class="lms-ui-customer-select-name">' . PHP_EOL
+                . ($version == 2 ? '<a href=""></a>' : '') . '</span>' . PHP_EOL;
         }
+
+        $result .= '</div>' . PHP_EOL;
 
         return $result;
     }
@@ -309,7 +339,7 @@ class LMSSmartyPlugins
 			</div>
 			<div class="lms-ui-button-fileupload-container">
 				<button type="button" class="lms-ui-button-fileupload lms-ui-button' . (isset($error_tip_params) ? ' lms-ui-error' : '') . '" id="' . $id . '_button" '
-            . (isset($error_tip_params) ? self::tipFunction($error_tip_params, $template) : '') . '><i class="lms-ui-icon-fileupload"></i> ' . trans("Select files") . '</button>
+            . (isset($error_tip_params) ? self::tipFunction($error_tip_params, $template) : '') . '><i class="lms-ui-icon-fileupload"></i><span class="lms-ui-label">' . trans("Select files") . '</span></button>
 				<INPUT name="' . $id . '[]" type="file" multiple class="fileupload-select-btn" style="display: none;" ' . ($form ? ' form="' . $form . '"' : '') . '>
 				' . (ConfigHelper::getConfig('phpui.uploaded_image_max_size', 0)
                     ? '<label><input type="checkbox" class="dont-scale-images" value="1">' . trans("don't scale images") . '</label>'
@@ -464,7 +494,10 @@ class LMSSmartyPlugins
         echo '<tr>
               <td>' . trans('City') . '</td>
               <td>
-                  <input type="text"   value="' . (!empty($params['location_city_name']) ? htmlspecialchars($params['location_city_name']) : '' ) . '" size="' . INPUT_SIZE . '" data-address="city" name="' . $input_name_city . '" maxlength="32">
+                  <input type="text"   value="'
+                    . (!empty($params['location_city_name']) ? htmlspecialchars($params['location_city_name']) : '' )
+                    . '" size="' . INPUT_SIZE . '" data-address="city" name="' . $input_name_city . '" maxlength="32"'
+                    . ($params['location_address_type'] == BILLING_ADDRESS ? ' required' : '') . '>
                   <input type="hidden" value="' . (!empty($params['location_city'])      ? $params['location_city']      : '' ) . '" data-address="city-hidden" name="' . $input_name_city_id . '">
               </td>
           </tr>';
@@ -506,7 +539,7 @@ class LMSSmartyPlugins
 
         if (empty($countries)) {
             $countries = $lms->GetCountries();
-            Localisation::arraySort($countries, 'name');
+            $countries = Localisation::arraySort($countries, 'name');
         }
 
         if ($countries) {
@@ -581,11 +614,11 @@ class LMSSmartyPlugins
 
         $uid = uniqid();
         $location_str = $params['data']['location_address_type'] == BILLING_ADDRESS ? ''
-            : (empty($params['data']['location_name']) ? '' : $params['data']['location_name'] . ', ');
+            : (empty($params['data']['location_name']) ? '' : htmlspecialchars($params['data']['location_name']) . ', ');
 
         $location_str .= $params['data']['location']
             ? ($params['data']['teryt']
-                ? trans('$a (TERRIT)', $params['data']['location']) : $params['data']['location'])
+                ? trans('$a (TERRIT)', htmlspecialchars($params['data']['location'])) : htmlspecialchars($params['data']['location']))
             : '...';
 
         $title = '';
@@ -774,9 +807,10 @@ class LMSSmartyPlugins
             return '
 			<div' . ($id ? ' id="' . $id . '"' : '') . ' class="lms-ui-box-row' . ($class ? ' ' . $class : '') . '"'
                 . ($visible ? '' : ' style="display: none;"') . ($tip ? ' title="' . trans($tip) . '"' : '') . '>
-				<div class="lms-ui-box-row-icon' . ($icon_class ? ' ' . $icon_class : '') . '">
+				<div class="lms-ui-box-row-icon' . '">
 					' . ($icon ? (strpos($icon, '/') !== false ? '<IMG src="' . $icon . '" alt="">'
                     : '<i class="'
+                    . ($icon_class ? $icon_class . ' ' : '')
                     . (strpos($icon, 'lms-ui-icon-') === 0 || strpos($icon, 'fa') === 0 ? $icon : 'lms-ui-icon-' . $icon)
                     . '"></i>') : '') . '
 				</div>
@@ -799,9 +833,10 @@ class LMSSmartyPlugins
         if (!$repeat) {
             return '<div class="lms-ui-responsive-buttons">' . self::buttonFunction(
                 array(
-                    'type' => 'link',
+                    'type' => isset($params['type']) ? $params['type'] : 'link',
                     'icon' => isset($params['icon']) ? $params['icon'] : 'additional-selection',
-                    'class' => 'lms-ui-dropdown-toggle',
+                    'class' => isset($params['class']) ? $params['class'] : 'lms-ui-dropdown-toggle',
+                    'label' => isset($params['label']) ? $params['label'] : '',
                 ),
                 $template
             ) . (isset($params['secondary']) && $params['secondary'] ?
@@ -932,8 +967,7 @@ class LMSSmartyPlugins
         static $paytypes = array();
 
         if (empty($paytypes)) {
-            $paytypes = $GLOBALS['PAYTYPES'];
-            Localisation::arraySort($paytypes);
+            $paytypes = Localisation::arraySort($GLOBALS['PAYTYPES']);
         }
 
         $elemname = $params['elemname'];
@@ -948,6 +982,108 @@ class LMSSmartyPlugins
         }
         return '<select name="' . $elemname . '" ' . self::tipFunction(array('text' => $tip, 'trigger' => $trigger), $template) . '>
 			<option value=""' . (!$selected ? ' selected' : '') . '>- ' . trans("default") . '-</option>'
+            . $options
+            . '</select>';
+    }
+
+    public static function karmaFunction(array $params, $template)
+    {
+        $id = isset($params['id']) ? $params['id'] : 'id';
+        $value = isset($params['value']) ? intval($params['value']) : 0;
+        $title = Localisation::trans(isset($params['title']) ? $params['title'] : 'Counter');
+        $handler = isset($params['handler']) ? $params['handler'] : '';
+        return '
+            <div class="lms-ui-karma-container" data-handler="' . $handler . '" data-id="' . $id . '">
+                <i class="lms-ui-icon-star'  . ($value > 0 ? ' green' : ($value < 0 ? ' red' : '')) . '" title="' . $title . '"></i>
+                (<span class="lms-ui-counter">' . $value . '</span>)
+                <i class="lms-ui-karma-button lms-ui-karma-raise lms-ui-icon-finger-up" title="' . Localisation::trans('Raise') . '"></i>
+                <i class="lms-ui-karma-button lms-ui-karma-lower lms-ui-icon-finger-down" title="' . Localisation::trans('Lower') . '"></i>
+            </div>
+        ';
+    }
+
+    public static function deadlineSelectionFunction(array $params, $template)
+    {
+        $name = $params['name'];
+        $cdate_selector = isset($params['cdate_selector']) ? $params['cdate_selector'] : '#cdate';
+        $value = isset($params['value']) ? $params['value'] : '';
+        if (!empty($params['value']) && preg_match('/^[0-9]+$/', $value)) {
+            $value = date('Y/m/d', $value);
+        }
+
+        return '
+            <div class="lms-ui-deadline-selection" data-cdate-selector="' . $cdate_selector . '">
+                <input type="text" class="lms-ui-deadline-selection-date" name="' . $name . '" value="' . $value . '"
+                    size="12" placeholder="' . trans('yyyy/mm/dd') . '"
+                    ' . self::tipFunction(
+                        array(
+                            'class' => 'lms-ui-date',
+                            'text' => 'Enter deadline date in YYYY/MM/DD format (empty field means default deadline) or click to select it from calendar',
+                            'trigger' => $name,
+                        ),
+                        $template
+                    ) . '>
+                ' . trans('days') . '
+                <select class="lms-ui-deadline-selection-days" lms-ui-combobox">
+                    <option value="7">7</option>
+                    <option value="14">14</option>
+                    <option value="21">21</option>
+                    <option value="31">31</option>
+                    <option value="60">60</option>
+                    <option value="90">90</option>
+                </select>
+			</div>
+        ';
+    }
+
+    public static function networkDeviceTypesFunction(array $params, $template)
+    {
+        static $types = array();
+
+        if (empty($types)) {
+            $DB = LMSDB::getInstance();
+            $types = Localisation::arraySort(
+                $DB->GetAll('SELECT id, name FROM netdevicetypes'),
+                'name'
+            );
+        }
+
+        $elemname = $params['elemname'];
+        $selected = isset($params['selected']) && !empty($params['selected']) ? $params['selected'] : 0;
+        $tip = isset($params['tip']) ? $params['tip'] : trans('Select network device type');
+        $trigger = isset($params['trigger']) ? $params['trigger'] : 'netdevtype';
+
+        $options = '';
+        foreach ($types as $item) {
+            $options .= '<option value="' . $item['id'] . '"' . ($selected == $item['id'] ? ' selected' : '') . '>' . trans($item['name']) . '</option>';
+        }
+        return '<select name="' . $elemname . '"' . (isset($params['id']) ? ' id="' . $params['id'] . '"' : '')
+            . ' ' . self::tipFunction(array('text' => $tip, 'trigger' => $trigger), $template)
+            . (isset($params['onchange']) ? ' onChange="' . $params['onchange'] . '"' : '') . '>
+			<option value=""' . (!$selected ? ' selected' : '') . '> ' . trans('<!netdevtype>- undefined -') . '</option>'
+            . $options
+            . '</select>';
+    }
+
+    public static function identityTypesFunction(array $params, $template)
+    {
+        static $identityTypes = array();
+
+        if (empty($identityTypes)) {
+            $identityTypes = Localisation::arraySort($GLOBALS['IDENTITY_TYPES']);
+        }
+
+        $elemname = $params['elemname'];
+        $selected = isset($params['selected']) && !empty($params['selected']) ? $params['selected'] : 0;
+        $tip = isset($params['tip']) ? $params['tip'] : trans('Select identity type');
+        $trigger = isset($params['trigger']) ? $params['trigger'] : 'ict';
+
+        $options = '';
+        foreach ($identityTypes as $key => $item) {
+            $item = trans($item);
+            $options .= '<option value="' . $key . '"' . ($selected == $key ? ' selected' : '') . '>' . $item . '</option>';
+        }
+        return '<select name="' . $elemname . '" ' . self::tipFunction(array('text' => $tip, 'trigger' => $trigger), $template) . '>'
             . $options
             . '</select>';
     }

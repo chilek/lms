@@ -22,7 +22,7 @@
 <H1>{$layout.pagetitle}</H1>
 <P class="txt">
 {if $message.from}<B>{trans("Sender:")}</B> {$message.from} &lt;{$message.sender}&gt;<BR>{/if}
-<B>{trans("Subject:")}</B> {$message.subject}<BR>
+<B>{trans("Subject:")}</B> {$message.subject|escape}<BR>
 <B>{trans("Message:")}</B><BR>
 <TABLE CELLPADDING="5" width="100%">
 	<TR>

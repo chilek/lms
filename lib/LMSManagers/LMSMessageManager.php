@@ -460,7 +460,7 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 
     public function updateMessageItems(array $params)
     {
-        if (!strcmp($params['original_body'], $params['real_body'])) {
+        if (strcmp($params['original_body'], $params['real_body'])) {
             return $this->db->Execute(
                 'UPDATE messageitems SET body = ?
                 WHERE messageid = ? AND customerid '

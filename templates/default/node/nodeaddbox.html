@@ -157,7 +157,9 @@
 									<IMG SRC="img/passwd.gif" ALT="{trans("Password:")}">
 								</TD>
 								<TD>
-									<INPUT TYPE="TEXT" NAME="nodedata[passwd]" VALUE="{$nodedata.passwd}" {tip text="Enter password (optional)" trigger="passwd"}> <a href="javascript:GenPasswd();" {tip text="Click to generate random password"}>&raquo;&raquo;&raquo;</A>
+									<INPUT type="text" name="nodedata[passwd]" value="{$nodedata.passwd|escape}"
+										{tip text="Enter password (optional)" trigger="passwd"}>
+									<a href="javascript:GenPasswd();" {tip text="Click to generate random password"}>&raquo;&raquo;&raquo;</A>
 								</TD>
 							</TR>
 
@@ -212,11 +214,12 @@
 										<OPTION value="-2" {if ($nodedata.invprojectid == '-2' ) } selected="selected" {/if} >- {trans("none")} -</OPTION>
 										<OPTION value="-1" {if ($nodedata.invprojectid == '-1' ) } selected="selected" {/if}>{trans("New project")}</OPTION>
 										<OPTION value="1" {if ($nodedata.invprojectid == '1' ) } selected="selected" {/if}>{trans("From root device")}</OPTION>
-										{section name=project loop=$NNprojects}
-										<OPTION VALUE="{$NNprojects[project].id}" {if ($nodedata.invprojectid == $NNprojects[project].id ) } selected="selected" {/if} >{$NNprojects[project].name}</OPTION>
-										{/section}
+										{foreach $NNprojects as $project}
+											<OPTION value="{$project.id}"{if ($nodedata.invprojectid == $project.id)} selected{/if}
+												>{$project.name|escape}</OPTION>
+										{/foreach}
 									</SELECT>
-									<INPUT TYPE="TEXT" NAME="nodedata[projectname]" VALUE="{$nodedata.projectname}"
+									<INPUT TYPE="TEXT" NAME="nodedata[projectname]" VALUE="{$nodedata.projectname|escape}"
 										{tip text="Enter new project name" trigger="projectname" } id="projectname"
 										{if !isset($nodedata.invprojectid) || empty($nodedata.invprojectid)} style="display: none;"{/if}>
 
@@ -238,6 +241,7 @@
 										selecttip  = "Assign node to customer"
 										required   = true
 										customOnChange = "customer_change();"
+										version = 2
 									}
 								</td>
 							</tr>
@@ -401,7 +405,7 @@
 		if (length > 32) length = 32;
 
 		document.forms['nodeadd'].elements['nodedata[passwd]'].value =
-			generate_random_string(length, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
+			generate_random_string(length, "{ConfigHelper::getConfig('phpui.nodepassword_allowed_characters', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')|replace:'"':'\"'}");
 	}
 
 	function change_wholenetwork() {

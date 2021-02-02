@@ -60,7 +60,7 @@
 								<td>
 									<SELECT size="1" name="config[divisionid]" {tip text="Select division" trigger="divisionid"}>
 										{foreach $divisionslist as $division}
-											<OPTION value="{$division.id}"{if $config.division == $division.id} selected{/if}>{$division.shortname}</OPTION>
+											<OPTION value="{$division.id}"{if $config.division == $division.id} selected{/if}>{$division.label|escape}</OPTION>
 										{/foreach}
 									</SELECT>
 								</td>
@@ -92,7 +92,7 @@
 									<td>
 										<SELECT size="1" name="config[userid]" {tip text="Select user" trigger="userid"}>
 											{foreach $userslist as $user}
-												<OPTION value="{$user.id}"{if $config.user == $user.id} selected{/if}>{$user.login} / {$user.name}</OPTION>
+												<OPTION value="{$user.id}"{if $config.user == $user.id} selected{/if}>{$user.login} / {$user.name|escape}</OPTION>
 											{/foreach}
 										</SELECT>
 									</td>
@@ -286,6 +286,7 @@
 			uri: '?m=quicksearch&ajax=1&api=1&mode=config&what=',
 			emptyValue: true,
 			class: 'config-var-suggestion',
+			autoSubmitForm: false,
 			onSubmit: function (data) {
 				$('[name="config[section]"]').scombobox('val', data.section);
 				$('[name="config[var]"]').val(data.name).trigger('autogrow');

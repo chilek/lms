@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -42,7 +42,7 @@ $access_table = array(
             'customers' => array('customerlist', 'customersearch', 'customergrouplist'),
             'nodes' => array('nodelist', 'nodesearch', 'nodegrouplist', 'nodesessionlist'),
             'VoIP' => array('voipaccountlist', 'voipaccountbillinglist', 'tarifflist', 'voippricelist', 'voippoolnumberlist', 'voipaccountsearch'),
-            'netdevices' => array('netdevlist', 'netdevsearch', 'netnodelist', 'netdevmap'),
+            'netdevices' => array('netdevlist', 'netdevsearch', 'netnodelist', 'netdevmap', 'vlanlist'),
             'networks' => array('netlist', 'netsearch'),
             'finances' => array('tarifflist', 'paymentlist', 'balancelist', 'invoicelist', 'invoicelist-proforma', 'notelist', 'cashreglist', 'tarifftaglist'),
             'documents' => array('documentlist'),
@@ -57,6 +57,13 @@ $access_table = array(
     'node_connections' => array(
         'label' => trans('nodes connection/disconnection'),
         'allow_regexp' => '^nodeset$',
+    ),
+    'financial_operations' => array(
+        'label' => trans('financial operations'),
+        'allow_regexp' => '^((customerassignment)(add|info|list|move|edit|del)|(balance|customerbalance)(new|add|ok|del|)|(cashreg(info))|(invoice|invoice(new|edit|del|note|paid|info|send))|(note|note(add|edit|del|paid))|number|customertransferform)$',
+        'allow_menu_items' => array(
+            'finances' => array('balancenew', 'invoicenew', 'invoicenew-proforma', 'noteadd', 'receiptadd'),
+        ),
     ),
     'finances_management' => array(
         'label' => trans('finances management'),
@@ -103,7 +110,7 @@ $access_table = array(
     ),
     'customer_management' => array(
         'label' => trans('customers management'),
-        'allow_regexp' => '^((customer|document)(add|edit|info|infoshort|list|print|search|warn|cutoffstop|group)|documentdel|customertransferform|customeraddresses|customernote|customerassignmenthelper|documentsend|documentgen|documentview|nodewarn|choosenode|gusapi)$',
+        'allow_regexp' => '^((customer|document)(add|edit|info|infoshort|list|print|search|warn|cutoffstop|group)|documentdel|documentscanadd|customertransferform|customeraddresses|customernote|customerassignmenthelper|documentsend|documentgen|documentview|nodewarn|choosenode|gusapi|number|invoiceinfo)$',
         'allow_menu_items' => array(
             'customers' => Permission::MENU_ALL,
             'documents' => Permission::MENU_ALL,
@@ -119,7 +126,7 @@ $access_table = array(
     ),
     'node_management' => array(
         'label' => trans('nodes management'),
-        'allow_regexp' => '^(node(add|info|infoshort|list|listshort|scan|search|del|edit|print|warn|sessionlist)|choose(mac|ip|location|gpscoords|netdevice)|ping)|customeraddresses$',
+        'allow_regexp' => '^(node(add|info|infoshort|list|listshort|scan|search|del|edit|print|warn|sessionlist)|choose(mac|ip|location|gpscoords|netdevice)|ping)|customeraddresses|routednetworks$',
         'allow_menu_items' => array(
             'nodes' => Permission::MENU_ALL,
         ),
@@ -173,7 +180,7 @@ $access_table = array(
     'network_management' => array(
         'label' => trans('networks and devices management'),
         'allow_regexp' => '^((net|netdev|ewxch)(info|list|edit|add|del|print|cmp|map(refresh|)|remap|search)|choose(mac|ip|gpscoords|netdevfrommap|netdevfornetnode|netdevmodel|netdevreplace)|ewxnodelist|ewxdevlist|chooselocation|ping'
-            . '|netnode(add|adddev|del|deldev|edit|info|list)|netdevmodels|netlinkproperties|netusage|attachments)$',
+            . '|netnode(add|adddev|del|deldev|edit|info|list)|netdevmodels|netlinkproperties|netusage|attachments|routednetworks|vlanlist)$',
         'allow_menu_items' => array(
             'networks' => Permission::MENU_ALL,
             'netdevices' => Permission::MENU_ALL,

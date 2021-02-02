@@ -40,7 +40,7 @@
                                                 <OPTION value=""{if $listdata.customer == ""} SELECTED{/if}>{trans("- all owners -")}</OPTION>
                                                 <OPTION value="0"{if $listdata.customer == "0"} SELECTED{/if}>{trans("SYSTEM DOMAIN")}</OPTION>
                                                 {foreach from=$customerlist item=customer}
-                                                <OPTION value="{$customer.id}"{if $customer.id == $listdata.customer} SELECTED{/if}>{$customer.customername|truncate:40:"..."}</OPTION>
+                                                <OPTION value="{$customer.id}"{if $customer.id == $listdata.customer} SELECTED{/if}>{$customer.customername|truncate:40:"&hellip;"}</OPTION>
                                                 {/foreach}
                                         </SELECT>&nbsp;
                                         {trans("Domain:")}

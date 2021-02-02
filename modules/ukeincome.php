@@ -158,18 +158,20 @@ if ($bandwidths) {
 
     $customer_links = $DB->GetAll(
         'SELECT ' . ($type == 'linktechnologies' ? 'cash.linktechnology' : 't.type') . ' AS type,
-            t.downceil, t.upceil,
+            t.downceil,
             SUM(CASE WHEN c.type = 0 THEN ROUND(ic.count) ELSE 0 END) AS private,
             SUM(CASE WHEN c.type = 1 THEN ROUND(ic.count) ELSE 0 END) AS bussiness,
-            COUNT(*) AS total
+            SUM(ROUND(ic.count)) AS total
         FROM cash
         JOIN customers c ON c.id = cash.customerid
         JOIN invoicecontents ic ON ic.docid = cash.docid AND ic.itemid = cash.itemid
         JOIN tariffs t ON t.id = ic.tariffid
         WHERE ' . ($type == 'linktechnologies' ? 't.type = ' . SERVICE_INTERNET . ' AND cash.linktechnology IS NOT NULL' : '1=1') . '
             AND t.downceil > 0 AND t.upceil > 0
-            AND cash.time >= ? AND cash.time <= ?
-        GROUP BY ' . ($type == 'linktechnologies' ? 'cash.linktechnology' : 't.type') . ', t.downceil, t.upceil
+            AND cash.time >= ? AND cash.time <= ? '
+        . ($division ? ' AND ((cash.docid IS NOT NULL AND d.divisionid = ' . $division . ')
+            OR (cash.docid IS NULL AND c.divisionid = ' . $division . '))' : '') . '
+        GROUP BY ' . ($type == 'linktechnologies' ? 'cash.linktechnology' : 't.type') . ', t.downceil
         ORDER BY ' . ($type == 'linktechnologies' ? 'cash.linktechnology' : 't.type'),
         array($unixfrom, $unixto)
     );
@@ -182,7 +184,7 @@ if ($bandwidths) {
             $downceil = intval($customer_link['downceil']);
             foreach ($bandwidth_variation[$bandwidth_type] as $label => &$bandwidth_interval) {
                 if ($downceil >= $bandwidth_interval['min']
-                    && (!isset($bandwidth_interval['max']) || $downceil <= $bandwidth_interval['max'])) {
+                    && (!isset($bandwidth_interval['max']) || $downceil < $bandwidth_interval['max'])) {
                     $bandwidth_interval['total'] += $customer_link['total'];
                     $bandwidth_interval['private'] += $customer_link['private'];
                     $bandwidth_interval['bussiness'] += $customer_link['bussiness'];

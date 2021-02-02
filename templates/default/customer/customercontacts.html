@@ -154,7 +154,7 @@
 		<span class="contacttype-hidden bold" data-type="{$type}"{if isset($customerinfo[$ctype]) && count($customerinfo[$ctype])} style="display: none;"{/if}>
 			<a class="contacttype-show" data-type="{$type}">{$properties.ui.legend.text} &raquo;&raquo;&raquo;</a>
 		</span>
-		<fieldset class="contacttype-visible" ata-type="{$type}" style="{if !isset($customerinfo[$ctype]) || !count($customerinfo[$ctype])} display: none;{/if}">
+		<fieldset class="contacttype-visible" data-type="{$type}" style="{if !isset($customerinfo[$ctype]) || !count($customerinfo[$ctype])} display: none;{/if}">
 			<legend class="bold">
 				<a class="contacttype-hide" data-type="{$type}">{$properties.ui.legend.text} &laquo;&laquo;&laquo;</a>
 			</legend>

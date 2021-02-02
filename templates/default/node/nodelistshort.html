@@ -26,7 +26,7 @@
 			{/if}
 			<B>{$node.name}</B><BR>
 			{$node.ip} {if $node.ip_pub!="0.0.0.0"} ({$node.ip_pub}) {/if} / {$node.mac}<BR>
-			{$node.info|truncate:40:"...":true}
+			{$node.info|truncate:40:"&hellip;":true}
 		</TD>
 	</TR>
 	{foreachelse}

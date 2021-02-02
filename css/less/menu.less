@@ -73,8 +73,10 @@ body {
 
 #lms-ui-menu-panel {
   //	align-self: flex-start;
-  z-index: 1;
-  box-shadow: 1em 0 0.9em @lucid;
+  z-index: 2;
+  @media screen and (min-width: @mobile-max-width + 1px) {
+    box-shadow: 1em 0 0.9em @lucid;
+  }
   background-color: @dark;
   overflow: hidden;
   border: 1px solid black;
@@ -127,6 +129,13 @@ body {
         margin-left: 0.3em;
         font-weight: bold;
         align-self: flex-end;
+      }
+
+      a {
+        color: initial;
+        &:hover {
+          text-decoration: initial;
+        }
       }
     }
 
@@ -184,7 +193,7 @@ body {
   width: 0.8em;
   height: 0.8em;
   cursor: pointer;
-  z-index: 2;
+  z-index: 3;
 
   &:not(.visible) {
     background-color: @superdark;

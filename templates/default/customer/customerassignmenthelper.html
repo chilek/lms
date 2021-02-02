@@ -135,7 +135,7 @@
 						<table id="a_promotions" style="display: none;">
 							<TR>
 								<TD>
-									<IMG src="img/promoschema.gif" alt="">
+									{icon name="money" class="fa-fw"}
 								</TD>
 								<TD class="bold">
 									{trans("Schema")}:
@@ -146,16 +146,16 @@
 										<option value="0">{trans("<!promotionschema>- none -")}</option>
 										{/if}
 										{foreach $promotions as $promotion}
-										<optgroup title="{$promotion.description|escape|truncate:512:"...":true}"
+										<optgroup title="{$promotion.description|truncate:512:"&hellip;":true|escape}"
 											label="{$promotion.name}" data-valid="{$promotion.valid}"
 											{if !$promotion.valid} class="blend"
 											{if !$variables.alltariffs} style="display: none;"{/if}{/if}
 										>
 										{foreach $promotion.schemas as $schemaid => $schema}
-										<OPTION title="{$schema.description|escape|truncate:512:"...":true}"
+										<OPTION title="{$schema.description|truncate:512:"&hellip;":true|escape}"
 											value="{$schemaid}"{if $variables.schemaid == $schemaid} SELECTED{/if}
 											data-valid="{$promotion.valid}"{if !$promotion.valid} class="blend"{/if}
-										>{$schema.name|truncate:40:"...":true}</OPTION>
+										>{$schema.name|truncate:40:"&hellip;":true}</OPTION>
 										{/foreach}
 										</optgroup>
 										{/foreach}
@@ -165,7 +165,7 @@
 							</TR>
 							<tr id="a_location" style="display: none;">
 								<td>
-									<img src="img/location.png" alt="">
+									{icon name="location" class="fa-fw"}
 								</td>
 								<td class="bold">
 									{trans("Location:")}
@@ -360,7 +360,7 @@
 
 							<TR id="a_count" style="display: none;">
 								<TD>
-									<IMG src="img/values.gif" alt="">
+									{icon name="quantity" class="fa-fw"}
 								</TD>
 								<TD class="bold nobr">
 									{trans("Count:")}
@@ -372,31 +372,32 @@
 
 							<TR id="a_name" style="display: none;">
 								<TD>
-									<IMG src="img/money.gif" alt="">
+									{icon name="description" class="fa-fw"}
 								</TD>
 								<TD class="bold nobr">
 									{trans("Name:")}
 								</TD>
 								<TD>
-									<INPUT type="text" name="{$variable_prefix}[name]" value="{if $variables.tariffid<=0}{$variables.name}{/if}" size="30" {tip text="Enter liability name/description (tariffless liabilities only)" trigger="name"}>
+									<INPUT type="text" name="{$variable_prefix}[name]" value="{if $variables.tariffid<=0}{$variables.name|escape}{/if}"
+										size="30" {tip text="Enter liability name/description (tariffless liabilities only)" trigger="name"}>
 								</TD>
 							</TR>
 
 							<TR id="a_attribute" style="display: none;">
 								<TD>
-									<IMG src="img/money.gif" alt="">
+									{icon name="tags" class="fa-fw"}
 								</TD>
 								<TD class="bold nobr">
 									{trans("Attribute:")}
 								</TD>
 								<TD>
-									<INPUT type="text" name="{$variable_prefix}[attribute]" value="{if $variables.attribute}{htmlspecialchars($variables.attribute)}{/if}" size="30" {tip text="Enter tariff attribute" trigger="attribute"}>
+									<INPUT type="text" name="{$variable_prefix}[attribute]" value="{if $variables.attribute}{$variables.attribute|escape}{/if}" size="30" {tip text="Enter tariff attribute" trigger="attribute"}>
 								</TD>
 							</TR>
 
 							<TR id="a_day" style="display: none;">
 								<TD>
-									<IMG src="img/calendar.gif" alt="">
+									{icon name="accounting" class="fa-fw"}
 								</TD>
 								<TD class="bold nobr">
 									{trans("Accounting:")}
@@ -431,23 +432,30 @@
 
 							<TR id="a_period">
 								<TD>
-									<IMG src="img/calendar.gif" alt="">
+									{icon name="period" class="fa-fw"}
 								</TD>
 								<TD class="bold nobr">
 									{trans("Period:")}
 								</TD>
 								<TD>
 									{trans("from:")}
-									<INPUT type="TEXT" name="{$variable_prefix}[datefrom]" value="{if $variables.datefrom}{$variables.datefrom}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter accounting start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="datefrom"} SIZE="10">
-
+									<input type="text" name="{$variable_prefix}[datefrom]"
+										value="{if $variables.datefrom}{$variables.datefrom}{/if}"
+										placeholder="{trans("yyyy/mm/dd")}"
+										{tip class="lms-ui-date lms-ui-date-unix" text="Enter accounting start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="datefrom"}
+										size="10">
 									{trans("to:")}
-									<INPUT type="TEXT" name="{$variable_prefix}[dateto]" value="{if $variables.dateto}{$variables.dateto}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter accounting end date in YYYY/MM/DD format. Leave this field empty if you don't want to set expiration date" trigger="dateto"} SIZE="10">
+									<input type="text" name="{$variable_prefix}[dateto]"
+										value="{if $variables.dateto}{$variables.dateto}{/if}"
+										placeholder="{trans("yyyy/mm/dd")}"
+										{tip class="lms-ui-date lms-ui-date-unix" text="Enter accounting end date in YYYY/MM/DD format. Leave this field empty if you don't want to set expiration date" trigger="dateto"}
+										size="10">
 								</TD>
 							</TR>
 
 							<TR id="a_value" style="display: none;">
 								<TD>
-									<IMG src="img/value.gif" alt="">
+									{icon name="money" class="fa-fw"}
 								</TD>
 								<TD class="bold">
 									{trans("Value:")}
@@ -466,7 +474,7 @@
 
 							<TR id="a_discount" style="display: none;">
 								<TD style="{if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
-									<IMG src="img/value.gif" alt="">
+									{icon name="discount" class="fa-fw"}
 								</TD>
 								<TD class="bold" style="{if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
 									<span class="bold">{trans("Discount:")}</span>
@@ -481,9 +489,24 @@
 								</TD>
 							</TR>
 
+							<TR id="a_type" style="display: none;">
+								<TD>
+									{icon name="type" class="fa-fw"}
+								</TD>
+								<TD>
+									{trans("Type:")}
+								</TD>
+								<TD>
+									<SELECT id="tariff-type" size="1" name="{$variable_prefix}[type]" {tip text="Select liability type" trigger="type"}>
+										{foreach $_SERVICETYPES as $key => $item}
+											<OPTION VALUE="{$key}"{if $variables.type == $key} selected{/if}>{$item}</OPTION>
+										{/foreach}
+									</SELECT>
+								</TD>
+
 							<TR id="a_tax" style="display: none;">
 								<TD>
-									<IMG src="img/tax.gif" alt="">
+									{icon name="money" class="fa-fw"}
 								</TD>
 								<TD class="bold">
 									{trans("Tax:")}
@@ -499,7 +522,7 @@
 
 							<TR id="a_taxcategory" style="display: none;">
 								<TD>
-									<IMG src="img/tax.gif" alt="">
+									{icon name="money" class="fa-fw"}
 								</TD>
 								<TD class="bold">
 									<label for="taxcategory">
@@ -514,19 +537,20 @@
 
 							<TR id="a_productid" style="display: none;">
 								<TD>
-									<IMG src="img/class.gif" alt="">
+									{icon name="optional-info" class="fa-fw"}
 								</TD>
 								<TD class="bold">
 									{trans("Product ID:")}
 								</TD>
 								<TD>
-									<INPUT type="text" name="{$variable_prefix}[prodid]" value="{$variables.prodid}" size="10" {tip text="Enter liability Product ID (tariffless liabilities only)"}>
+									<INPUT type="text" name="{$variable_prefix}[prodid]" value="{$variables.prodid|escape}"
+										size="10" {tip text="Enter liability Product ID (tariffless liabilities only)"}>
 								</TD>
 							</TR>
 
 							<TR id="a_numberplan" style="display: none;">
 								<TD>
-									<IMG src="img/id.gif" alt="">
+									{icon name="id" class="fa-fw"}
 								</TD>
 								<TD class="bold nobr">
 									{trans("Numbering Plan:")}
@@ -545,7 +569,7 @@
 
 							<TR id="a_paytype" style="display: none;">
 								<TD>
-									<IMG src="img/print.gif" alt="">
+									{icon name="paytype" class="fa-fw"}
 								</TD>
 								<TD class="bold nobr">
 									{trans("Payment Type:")}
@@ -557,7 +581,7 @@
 
 							<tr id="a_address" style="display: none;">
 								<td>
-									<img src="img/info3.gif" alt="">
+									{icon name="recipient" class="fa-fw"}
 								</td>
 								<td class="bold">
 									<span class="bold">{trans("Recipient:")}</span>
@@ -590,7 +614,7 @@
 				<TBODY>
 				<TR id="a_options" style="display: none;">
 					<TD>
-						<IMG src="img/options.gif" alt="">
+						{icon name="options" class="fa-fw"}
 					</TD>
 					<TD class="bold">
 						{trans("Options:")}
@@ -630,13 +654,20 @@
 							<INPUT type="checkbox" name="{$variable_prefix}[last-settlement]" value="1"{if $variables['last-settlement']} checked{/if}>
 							{trans("with settlement of last deficient period")}
 						</label>
+						<span id="a_align_periods">
+							<br>
+							<label>
+								<INPUT type="checkbox" name="{$variable_prefix}[align-periods]" value="1"{if $variables['align-periods']} checked{/if}>
+								{trans("full calendar periods")}
+							</label>
+						</span>
 						{/if}
 					</TD>
 				</TR>
 
 				<TR id="a_existingassignments" style="display: none;">
 					<TD>
-						<IMG src="img/money.gif" alt="">
+						{icon name="assignment" class="fa-fw"}
 					</TD>
 					<TD class="bold">
 						{trans("Existing assignments:")}
@@ -664,7 +695,7 @@
 				{if $customernodes}
 				<tr id="a_nodes" style="display: none;">
 					<td>
-						<img src="img/node.gif" alt="">
+						{icon name="node" class="fa-fw"}
 					</td>
 					<td class="bold">
 						{trans("Nodes:")}
@@ -674,7 +705,7 @@
 						<span data-tariffaccess="{$customernode.authtype}" class="global-node-checkbox">
 							<label>
 								<input type="checkbox" name="{$variable_prefix}[nodes][{$customernode.id}]" value="{$customernode.id}"{if isset($variables.nodes[$customernode.id])} checked{/if}>
-								<span class="bold">{$customernode.name}</span> ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}
+								<span class="bold">{$customernode.name}</span> ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"&hellip;":true|escape}{/if}
 							</label>
 							{if isset($variables.node_warns[$customernode.id])}
 								<input type="hidden" name="{$variable_prefix}[node_warns][{$customernode.id}]" value="{$customernode.id}">
@@ -689,7 +720,7 @@
 				{if $customernetdevnodes}
 				<tr id="a_netdevnodes" style="display: none;">
 					<td>
-						<img src="img/netdev.gif" alt="">
+						{icon name="netdev" class="fa-fw"}
 					</td>
 					<td class="bold">
 						{trans("Network Devices:")}
@@ -699,7 +730,7 @@
 						<span data-tariffaccess="{$customernode.authtype}" class="global-node-checkbox">
 							<label>
 								<input type="checkbox" name="{$variable_prefix}[nodes][{$customernode.id}]" value="{$customernode.id}"{if isset($variables.nodes[$customernode.id])} checked{/if}>
-								<span class="bold">{$customernode.name}</span> {if !empty($customernode.netdev_name)} / {$customernode.netdev_name}{/if}  ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}
+								<span class="bold">{$customernode.name}</span> {if !empty($customernode.netdev_name)} / {$customernode.netdev_name}{/if}  ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"&hellip;":true|escape}{/if}
 							</label>
 							{if isset($variables.node_warns[$customernode.id])}
 								<input type="hidden" name="{$variable_prefix}[node_warns][{$customernode.id}]" value="{$customernode.id}">
@@ -714,7 +745,7 @@
 				{if $voipaccounts}
 				<tr id="a_phones" style="display: none;">
 					<td>
-						<img src="img/voip.gif" alt="">
+						{icon name="phone" class="fa-fw"}
 					</td>
 					<td class="bold">
 						{trans("Phones:")}

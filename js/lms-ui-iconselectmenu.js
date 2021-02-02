@@ -28,7 +28,7 @@ $.widget( "custom.iconselectmenu", $.ui.selectmenu, {
             '>');
 	    var wrapper = '<div>' + (item.element.attr("data-icon") ? '<i class="' +
             (item.element.attr("data-class") ? item.element.attr("data-class") : '') +
-            ' ' + item.element.attr("data-icon") + '"></i>' : '') + item.label + '</div>';
+            ' ' + item.element.attr("data-icon") + '"></i>' : '') + escapeHtml(item.label) + '</div>';
 
         return li.append(wrapper).appendTo(ul);
     },

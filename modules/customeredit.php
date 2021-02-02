@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -88,6 +88,20 @@ if (isset($_GET['search'])) {
     }
 }
 
+if (isset($_GET['oper'])) {
+    switch ($_GET['oper']) {
+        case 'karma-raise':
+            header('Content-Type: application/json');
+            $result = $LMS->raiseCustomerKarma($_GET['id']);
+            die(json_encode($result));
+            break;
+        case 'karma-lower':
+            header('Content-Type: application/json');
+            $result = $LMS->lowerCustomerKarma($_GET['id']);
+            die(json_encode($result));
+            break;
+    }
+}
 if (!isset($_POST['xjxfun'])) {
     require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
 
@@ -240,7 +254,7 @@ if (!isset($_POST['xjxfun'])) {
                 $error['regon'] = trans('Incorrect Business Registration Number!');
             }
 
-            if ($customerdata['icn'] != '' && !isset($customerdata['icnwarning']) && !check_icn($customerdata['icn'])) {
+            if ($customerdata['icn'] != '' && $customerdata['ict'] == 0 && !isset($customerdata['icnwarning']) && !check_icn($customerdata['icn'])) {
                 $warning['icn'] = trans('Incorrect Identity Card Number! If you are sure you want to accept, then click "Submit" again.');
                 $icnwarning = 1;
             }
@@ -249,7 +263,8 @@ if (!isset($_POST['xjxfun'])) {
 
             if ($customerdata['pin'] == '') {
                 $error['pin'] = trans('PIN code is required!');
-            } elseif (!validate_random_string($customerdata['pin'], $pin_min_size, $pin_max_size, $pin_allowed_characters)) {
+            } elseif ((!ConfigHelper::checkConfig('phpui.validate_changed_pin') || $customerdata['pin'] != $LMS->getCustomerPin($_GET['id']))
+                && !validate_random_string($customerdata['pin'], $pin_min_size, $pin_max_size, $pin_allowed_characters)) {
                 $error['pin'] = trans('Incorrect PIN code!');
             }
 
@@ -356,6 +371,7 @@ if (!isset($_POST['xjxfun'])) {
                     }
                 }
 
+                $DB->BeginTrans();
                 $DB->Execute('DELETE FROM customercontacts WHERE customerid = ?', array($customerdata['id']));
                 if (!empty($contacts)) {
                     foreach ($contacts as $contact) {
@@ -379,6 +395,7 @@ if (!isset($_POST['xjxfun'])) {
                         }
                     }
                 }
+                $DB->CommitTrans();
 
                 $SESSION->redirect($backurl);
             } else {

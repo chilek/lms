@@ -15,7 +15,7 @@
 		<TD class="nobr no-print">
 			<div class="lms-ui-filter-container">
 				<div class="lms-ui-filter-definition">
-					<FORM method="POST" action="?m=eventschedule" name="filter">
+					<FORM method="POST" action="?m=eventschedule" name="filter" id="filter">
 						<INPUT type="submit" class="hiddenbtn"> <INPUT type="HIDDEN" name="m" value="eventschedule">
 						<span class="bold">{trans("Filter:")} </span>
 						{trans("Type:")}
@@ -25,10 +25,24 @@
 							{/foreach}
 						</SELECT>
 						{trans("User:")}
-						<SELECT size="1" name="a[]" OnChange="document.filter.submit();" class="lms-ui-multiselect lms-ui-multiselect-filter" multiple data-default-value="{trans("- all -")}">
-							<OPTION value="-1" {if is_array($filter.userid) && in_array('-1', $filter.userid)} selected{/if}>- {trans("unassigned")} -</OPTION>
+						<label>
+							{trans("AND")}
+							<input type="hidden" name="userand" value="0">
+							<input type="checkbox" name="userand" value="1" onchange="document.filter.submit();"{if isset($filter.userand) && $filter.userand} checked{/if}>
+						</label>
+						<SELECT size="1" name="userid[]" OnChange="document.filter.submit();"
+								class="lms-ui-multiselect lms-ui-multiselect-filter" multiple
+								data-default-value="{trans("- all -")}">
+							<OPTION value="-1" {if is_array($filter.userid) && in_array('-1', $filter.userid)} selected{/if}
+									data-exclusive>- {trans("unassigned")} -</OPTION>
 							{foreach $userlist as $user}
-								<OPTION value="{$user.id}"{if is_array($filter.userid) && in_array($user.id, $filter.userid)} SELECTED{/if}{if !$user.access} disabled{/if}>{$user.rname|truncate:40:"...":true} ({$user.login})</OPTION>
+								{if !ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users') || (ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users') && $user.access) || is_array($filter.owner) && in_array($user.id, $filter.owner)}
+									<OPTION value="{$user.id}"
+										{if is_array($filter.userid) && in_array($user.id, $filter.userid)}} selected{/if}
+										{if !$user.access} data-crossed{/if}>
+											{$user.rname|truncate:40:"&hellip;":true|escape} ({$user.login})
+									</OPTION>
+								{/if}
 							{/foreach}
 						</SELECT>
 						{trans("Privacy:")}
@@ -38,7 +52,7 @@
 							<OPTION value="2"{if $filter.privacy == "2"} selected{/if}>{trans("private")}</OPTION>
 						</SELECT>
 						{trans("Customer:")}
-						{customerlist form="filter" customers=$customers selected=$filter.customerid selectname="u" inputname="u" customOnChange="document.filter.submit();" customername=false}
+						{customerlist form="filter" customers=$customers selected=$filter.customerid selectname="customerid" inputname="customerid" customOnChange="document.filter.submit();" customername=false}
 						{button label="Today" onclick="location.href='?m=eventschedule&day={$smarty.now|date_format:"%d"}&month={$smarty.now|date_format:"%m"}&year={$smarty.now|date_format:"%Y"}';"}
 						<input type="text" name="date" class="lms-ui-date" value="{if $filter.year}{sprintf("%04d/%02d/%02d", $filter.year, $filter.month, $filter.day)}{/if}" onchange="document.filter.submit();">
 						{trans("Status:")}

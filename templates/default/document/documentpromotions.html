@@ -1,12 +1,12 @@
 <!--// $Id$ //-->
-<TABLE class="lmsbox" id="documentpromotions">
+<TABLE class="lmsbox" id="documentpromotions" style="display: none;">
 	<COLGROUP>
 		<COL style="width: 100%;">
 	</COLGROUP>
 	<THEAD>
 	<TR class="hand lmsbox-titlebar" data-lmsbox-content="documentpromotionpanel">
 		<TD>
-			<IMG src="img/promoschema.gif" alt="">
+			{icon name="money" class="fa-fw"}
 			<span class="bold">{trans("Promotion Schema:")}</span>
 		</TD>
 	</TR>
@@ -59,7 +59,7 @@
 
 	$(function() {
 		$('#submit-button').click(function (e) {
-			if (parseInt($('#promotion-select').val()) && !customer_assignment_helper.validate(e)) {
+			if (!$(this)[0].form.checkValidity() || (parseInt($('#promotion-select').val()) && !customer_assignment_helper.validate(e))) {
 				return;
 			}
 			document.documentadd.submit();

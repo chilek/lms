@@ -38,7 +38,7 @@
     </THEAD>
     <TBODY class="event-day" data-event-day="{$day}">
         {foreach $eventlist as $event}
-        {if $event.date == $day}
+        {if $event.date == $day && !isset($event.hide)}
             {include file="event/eventlistboxrow.html"}
         {/if}
         {/foreach}

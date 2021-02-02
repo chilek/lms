@@ -101,6 +101,8 @@ function lmsFileUpload(elemid, formid) {
 	}
 
 	function prepare_files() {
+		formdata = new FormData(formelem.get(0));
+
 		var left = files.length;
 		$(files).each(function(index, file) {
 			var fileReader = new FileReader();
@@ -108,6 +110,13 @@ function lmsFileUpload(elemid, formid) {
 				if (file.type.match('^image/.*')) {
 					var image = new Image();
 					var imageUrl = readerEvent.target.result;
+					image.onerror = function() {
+						formdata.append(elemid + '[]', file);
+						left--;
+						if (!left) {
+							upload_files();
+						}
+					};
 					image.onload = function() {
 						// Resize the image
 						var canvas = document.createElement('canvas'),

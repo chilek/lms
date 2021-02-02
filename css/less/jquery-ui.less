@@ -30,6 +30,72 @@
   border: 1px solid @darkbrown;
 }
 
+.ui-tabs {
+  .ui-tabs-nav {
+    border-top: 0;
+    border-right: 0;
+    border-bottom: 1px dotted grey;
+    border-bottom-right-radius: 0;
+    margin-right: 0.4em
+  }
+  &.ui-widget.ui-widget-content {
+    border: 0;
+  }
+  &.ui-widget-content {
+    background-color: transparent;
+  }
+  .ui-widget-header {
+    background-color: transparent;
+    padding: 0;
+  }
+  .ui-tabs-panel {
+    border: 1px dotted grey;
+    border-top: none;
+    border-top-left-radius: 0;
+  }
+  .ui-tab {
+    .alert,
+    &.lms-ui-error,
+    &:invalid {
+      box-shadow: @error-box-shadow !important;
+      &:focus {
+        box-shadow: @error-box-shadow-focus !important;
+      }
+    }
+    &.lms-ui-warning {
+      box-shadow: @warning-box-shadow !important;
+      &:focus {
+        box-shadow: @warning-box-shadow-focus !important;
+      }
+    }
+
+    &.ui-tabs-tab {
+      background-color: #CEBD9B;
+      box-shadow: none;
+      margin-left: -0.1em;
+    }
+
+    &.ui-tabs-active {
+      .ui-tabs-anchor {
+        color: black;
+        font-weight: bold;
+        outline: none;
+      }
+      &.ui-tabs-tab {
+        background-color: #DFD5BD;
+        border: 1px dotted grey;
+        border-bottom: none;
+        box-shadow: unset;
+      }
+      &:focus {
+        border: 1px solid #615847;
+        border-bottom: none;
+        //outline: none;
+      }
+    }
+  }
+}
+
 .ui-widget-overlay {
   opacity: .5;
 }
@@ -121,6 +187,12 @@ html .ui-button.ui-state-disabled:active {
 
 .ui-tooltip {
   background-color: @light;
+  &.lms-ui-error {
+    color: @error-text;
+  }
+  &.lms-ui-warning {
+    color: @warning-text;
+  }
 }
 
 .ui-datepicker {
@@ -144,7 +216,7 @@ html .ui-button.ui-state-disabled:active {
 .ui-datepicker-trigger {
   border: none;
   background: none;
-  margin-left: 0.2em;
+  margin-left: 0.3em;
   padding: 0;
 }
 

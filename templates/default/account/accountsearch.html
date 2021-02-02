@@ -52,7 +52,7 @@
     				<OPTION VALUE="">{trans("- all owners -")}</OPTION>
 				<OPTION VALUE="0">{trans("SYSTEM ACCOUNT")}</OPTION>
 				{foreach from=$customerlist item=item}
-				<OPTION VALUE="{$item.id}">{$item.customername|truncate:40:" ...":true} ({$item.id|string_format:"%04d"})</OPTION>
+				<OPTION VALUE="{$item.id}">{$item.customername|truncate:40:"&hellip;":true} ({$item.id|string_format:"%04d"})</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>
@@ -137,7 +137,7 @@ $(function() {
     				<OPTION VALUE="">{trans("- all owners -")}</OPTION>
 				<OPTION VALUE="0">{trans("SYSTEM DOMAIN")}</OPTION>
 				{foreach from=$customerlist item=item}
-				<OPTION VALUE="{$item.id}">{$item.customername|truncate:40:" ...":true} ({$item.id|string_format:"%04d"})</OPTION>
+				<OPTION VALUE="{$item.id}">{$item.customername|truncate:40:"&hellip;":true} ({$item.id|string_format:"%04d"})</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>
@@ -187,7 +187,7 @@ $(function() {
     				<OPTION VALUE="">{trans("- all owners -")}</OPTION>
 				<OPTION VALUE="0">{trans("SYSTEM ACCOUNT")}</OPTION>
 				{foreach from=$customerlist item=item}
-				<OPTION VALUE="{$item.id}">{$item.customername|truncate:40:" ...":true} ({$item.id|string_format:"%04d"})</OPTION>
+				<OPTION VALUE="{$item.id}">{$item.customername|truncate:40:"&hellip;":true} ({$item.id|string_format:"%04d"})</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>

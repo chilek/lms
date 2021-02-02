@@ -47,7 +47,8 @@ class UserpanelNoticeHandler
     public function getUrgentNotice()
     {
         return $this->db->GetRow(
-            'SELECT m.subject, m.cdate, m.body, m.type, mi.id, mi.messageid, mi.destination, mi.status
+            'SELECT m.subject, m.cdate, (CASE WHEN mi.body IS NULL THEN m.body ELSE mi.body END) AS body,
+                m.type, mi.id, mi.messageid, mi.destination, mi.status
 				FROM messageitems mi, messages m
 				WHERE m.id = mi.messageid
                     AND m.type = ?

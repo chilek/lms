@@ -46,7 +46,7 @@ class UiConfigProvider implements ConfigProviderInterface
         $divisionid = strval(isset($options['division_id']) ? $options['division_id'] : 0);
 
         $configs = array();
-        if (empty($ui_config_cache)) {
+        if (empty($ui_config_cache) || (isset($options['invalidate_cache']) && !empty($options['invalidate_cache']))) {
             $results = $db->GetAll('SELECT * FROM uiconfig WHERE disabled = 0');
 
             if (!empty($results)) {

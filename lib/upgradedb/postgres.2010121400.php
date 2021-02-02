@@ -21,6 +21,8 @@
  *
  */
 
+$lang = $this->GetOne("SELECT value FROM uiconfig WHERE section = ? AND var = ? AND disabled = 0", array('phpui', 'lang', 0));
+
 $this->BeginTrans();
 
 $this->Execute("
@@ -37,8 +39,6 @@ $this->Execute("
     ALTER TABLE customercontacts ADD type smallint DEFAULT NULL;
     UPDATE customercontacts SET type = 2 WHERE name ILIKE '%fax%';
 ");
-
-$lang = ConfigHelper::getConfig('phpui.lang');
 
 if ($lang == 'pl') {
     $this->Execute("UPDATE customercontacts SET type = COALESCE(type, 0) + 1

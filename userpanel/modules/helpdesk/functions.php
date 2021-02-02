@@ -582,7 +582,7 @@ function module_attachment()
 {
     global $DB, $SESSION;
     $attach = $DB->GetRow(
-        'SELECT ticketid, filename, contenttype FROM rtattachments a
+        'SELECT ticketid, filename, a.contenttype FROM rtattachments a
 		JOIN rtmessages m ON m.id = a.messageid
 		JOIN rttickets t ON t.id = m.ticketid
 		WHERE t.customerid = ? AND a.messageid = ? AND filename = ?',

@@ -86,6 +86,8 @@ class SYSLOG
     const RES_DOCCONTENT = 58;
     const RES_CUSTCONSENT = 59;
     const RES_CUSTNOTE = 60;
+    const RES_ROUTEDNET = 61;
+    const RES_VLAN = 62;
 
     const OPER_ADD = 1;
     const OPER_DELETE = 2;
@@ -159,6 +161,8 @@ class SYSLOG
         self::RES_DOCCONTENT => 'document content<!syslog>',
         self::RES_CUSTCONSENT => 'customer consent<!syslog>',
         self::RES_CUSTNOTE => 'customer note<!syslog>',
+        self::RES_ROUTEDNET => 'routed network<!syslog>',
+        self::RES_VLAN => 'vlan<!syslog>',
     );
     private static $resource_keys = array(
         self::RES_USER => 'userid',
@@ -221,6 +225,8 @@ class SYSLOG
         self::RES_DOCCONTENT => 'documentcontentid',
         self::RES_CUSTCONSENT => 'customerconsentid',
         self::RES_CUSTNOTE => 'customernoteid',
+        self::RES_ROUTEDNET => 'routednetworkid',
+        self::RES_VLAN => 'vlanid',
     );
     private static $operations = array(
         self::OPER_ADD => 'addition<!syslog>',
@@ -547,6 +553,9 @@ class SYSLOG
                 } else {
                     $data['value'] = $data['value'];
                 }
+                break;
+            case 'twofactorauthsecretkey':
+                $data['value'] = '***';
                 break;
             default:
                 if (strpos($data['name'], 'chkconsent') === 0) {

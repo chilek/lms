@@ -45,12 +45,12 @@
 
     {if $reftype == division}
         {foreach $relatedoptions.divisions[0].users as $relatedoptionuser}
-            <TR class="highlight {if $relatedoptionuser.disabled} blend{/if}">
+            <TR class="highlight {if $relatedoptionuser.disabled} blend{/if}" data-target-url="?m=configedit&id={$relatedoptionuser.id}">
                 <TD class="nobr">
                     <strong>{$relatedoptionuser.login}</strong><BR>
                 </TD>
                 <TD class="nobr">
-                    {$relatedoptionuser.name}
+                    {$relatedoptionuser.name|escape}
                 </TD>
                 <TD class="nobr">
                     {$relatedoptionuser.description}
@@ -77,12 +77,12 @@
         {/foreach}
     {else}
         {foreach $relatedoption.users as $relatedoptionuser}
-            <TR class="highlight {if $relatedoptionuser.disabled} blend{/if}">
+            <TR class="highlight {if $relatedoptionuser.disabled} blend{/if}" data-target-url="?m=configedit&id={$relatedoptionuser.id}">
                 <TD class="nobr">
                     <strong>{$relatedoptionuser.login}</strong><BR>
                 </TD>
                 <TD class="nobr">
-                    {$relatedoptionuser.name}
+                    {$relatedoptionuser.name|escape}
                 </TD>
                 <TD class="nobr">
                     {$relatedoptionuser.description}
@@ -102,8 +102,8 @@
             </TR>
             {foreachelse}
             <TR>
-                <TD COLSPAN="5" class="fall" align="center">
-                    <p><strong>{t}No data{/t}</strong></p>
+                <TD COLSPAN="5" class="empty-table" align="center">
+                    <strong>{trans("No data")}</strong>
                 </TD>
             </TR>
         {/foreach}

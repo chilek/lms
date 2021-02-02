@@ -1,0 +1,83 @@
+/*
+ * LMS version 1.11-git
+ *
+ *  (C) Copyright 2001-2020 LMS Developers
+ *
+ *  Please, see the doc/AUTHORS for more information about authors!
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License Version 2 as
+ *  published by the Free Software Foundation.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ *  USA.
+ *
+ *  $Id$
+ */
+
+.scombobox {
+  margin: 0;
+  &-disabled .scombobox-display {
+    cursor: no-drop;
+  }
+}
+
+.scombobox-dropdown-background {
+  background-color: transparent;
+  border: unset;
+}
+
+.scombobox-display {
+  border-radius: unset;
+  padding: 0px 19px 0px 4px;
+  min-height: 1.6em;
+
+  &.alert,
+  &.lms-ui-error,
+  &:invalid {
+    border: @error-outline;
+    box-shadow: @error-box-shadow;
+    &:focus {
+      border: @error-outline-focus;
+      box-shadow: @error-box-shadow-focus;
+      outline: none;
+    }
+  }
+  &.lms-ui-warning {
+    border: @warning-outline;
+    background-color: @warning-background;
+    box-shadow: @warning-box-shadow;
+    &:focus {
+      border: @warning-outline-focus;
+      background-color: @warning-background;
+      box-shadow: @warning-box-shadow-focus;
+    }
+  }
+}
+
+.scombobox-list {
+  border-color: black;
+  background-color: @lucid;
+  border-radius: unset;
+  p {
+    padding: 1px;
+  }
+  p:hover {
+    background-color: @superdark;
+    color: white;
+  }
+  p.scombobox-hovered {
+    background-color: @dark;
+    &:hover {
+      background-color: @superdark;
+      color: white;
+    }
+  }
+}

@@ -2,7 +2,7 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
+<H1>{$layout.pagetitle|escape}</H1>
 <style>
 
 	.lms-ui-button-fileupload {
@@ -19,33 +19,42 @@
     <THEAD>
 	<TR>
 		<TD>
-			<IMG SRC="img/{if $message.type == $smarty.const.MSG_SMS}sms{elseif $message.type == $smarty.const.MSG_WWW}network{elseif $message.type == $smarty.const.MSG_USERPANEL || $message.type == $smarty.const.MSG_USERPANEL_URGENT}cms{else}email{/if}.gif" ALT="">
+			{if $message.type == $smarty.const.MSG_SMS}
+				{$icon = "sms"}
+			{elseif $message.type == $smarty.const.MSG_WWW}
+				{$icon = "www"}
+			{elseif $message.type == $smarty.const.MSG_USERPANEL || $message.type == $smarty.const.MSG_USERPANEL_URGENT}
+				{$icon = "userpanel"}
+			{else}
+				{$icon = "mail"}
+			{/if}
+			{icon name=$icon class="fa-fw"}
 		</TD>
 		<TD class="bold nobr">
 			{trans("Subject:")}
 		</TD>
 		<TD>
-			{$message.subject}
+			{$message.subject|escape}
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	<TR>
 		<TD>
-			<IMG SRC="img/users.gif" ALT="">
+			{icon name="user" class="fa-fw"}
 		</TD>
 		<TD class="bold">
 			{trans("User:")}
 		</TD>
 		<TD>
 			{if $message.userid}
-			<a href="?m=userinfo&id={$message.userid}">{$message.username}</a>
+			<a href="?m=userinfo&id={$message.userid}">{$message.username|escape}</a>
 			{else}LMS{/if}
 		</TD>
 	</TR>
 	<TR>
 		<TD>
-			<IMG SRC="img/time.gif" ALT="">
+			{icon name="calendar" class="fa-fw"}
 		</TD>
 		<TD class="bold">
 			{trans("Creation date:")}
@@ -57,7 +66,7 @@
 {if $message.sender}
 	<TR>
 		<TD>
-			<IMG SRC="img/mail.gif" ALT="">
+			{icon name="mail" class="fa-fw"}
 		</TD>
 		<TD class="bold">
 			{trans("Sender:")}
@@ -69,7 +78,7 @@
 {/if}
 	<TR>
 		<TD>
-			<IMG SRC="img/edit.gif" ALT="">
+			{icon name="edit" class="fa-fw"}
 		</TD>
 		<TD class="bold nobr">
 			{trans("Message body:")}
@@ -93,7 +102,7 @@
 	{if $filecontainers}
 		<TR>
 			<TD class="valign-top">
-				<IMG SRC="img/mail.gif" ALT="">
+				{icon name="upload" class="fa-fw"}
 			</TD>
 			<TD class="bold valign-top">
 				{trans("Attachments:")}
@@ -191,7 +200,7 @@
 	<TR class="{if $item.body}showitem{/if} {if $item.status==$smarty.const.MSG_ERROR} lms-ui-alert{elseif $item.status==$smarty.const.MSG_SENT} blend{elseif $item.status==$smarty.const.MSG_DELIVERED} green{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')" data-itemid="{$item.id}">
 		<TD class="nobr valign-top">
 			{if $item.customerid}
-				<A href="?m=customerinfo&id={$item.customerid}">{$item.customer|truncate:45:"...":true} ({$item.customerid|string_format:"%04d"})</A>
+				<A href="?m=customerinfo&id={$item.customerid}">{$item.customer|truncate:45:"&hellip;":true} ({$item.customerid|string_format:"%04d"})</A>
 			{else}
 				{trans("none")}
 			{/if}

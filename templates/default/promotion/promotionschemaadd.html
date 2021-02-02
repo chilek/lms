@@ -23,25 +23,30 @@
 <INPUT type="submit" class="hiddenbtn">
 </p>
 <TABLE class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 98%;">
+	</colgroup>
 	<THEAD>
 	<TR>
-		<TD style="width: 1%;">
-			<IMG src="img/promoschema.gif" alt="">
+		<TD>
+			{icon name="money" class="fa-fw"}
 		</TD>
-		<TD style="width: 1%;" class="bold">
+		<TD class="bold">
 			{trans("Name:")}
 		</TD>
-		<TD style="width: 98%;">
+		<TD>
 			<INPUT type="text" name="schema[name]" value="{$schema.name}" size="40" {tip text="Enter schema name" trigger="name" bold=1}>
 		</TD>
 	</TR>
 	</THEAD>
 	<TBODY>
 	<TR>
-		<TD style="width: 1%;">
-			<IMG src="img/calendar.gif" alt="">
+		<TD>
+			{icon name="calendar" class="fa-fw"}
 		</TD>
-		<TD style="width: 1%;" class="bold">
+		<TD class="bold">
 			{trans("Periods:")}
 		</TD>
 		<TD id="periodcont">
@@ -56,26 +61,36 @@
 					{/foreach}
 				</SELECT>
 			{/foreach}
-			<A href="#" id="perioddel"{if count($schema.periods) < 2} style="display:none"{/if}><IMG src="img/delete.gif" alt="" {tip text="Delete"}></A>
-			<A href="#" id="periodadd"><IMG src="img/add.gif" alt="" {tip text="Add"}></A>
+			{if count($schema.periods) < 2}
+				{$visible = false}
+			{else}
+				{$visible = true}
+			{/if}
+			{button type="link" icon="delete" tip="Delete" id="perioddel" visible=$visible}
+			{button type="link" icon="add" tip="Add" id="periodadd"}
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;">
-			<IMG src="img/info1.gif" alt="">
+		<TD>
+			{icon name="info" class="fa-fw"}
 		</TD>
-		<TD style="width: 1%;" class="bold">
+		<TD class="bold">
 			{trans("Description:")}
 		</TD>
-		<TD style="width: 98%;">
+		<TD>
 			<TEXTAREA name="schema[description]" cols="50" rows="5" {tip text="Enter additional information (optional)"}>{$schema.description}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 100%;" class="text-right" colspan="3">
-			<A href="javascript:document.schemaadd.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
-			<A href="?m=promotioninfo&amp;id={$schema.promotionid}">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="schema[reuse]" value="ON" id="reuse" {if $schema.reuse} checked{/if}><label for="reuse">{trans("Display this form again, when this schema is saved")}</label>
+		<TD class="lms-ui-box-buttons" colspan="3">
+			<div class="lms-ui-box-button-container">
+				{button type="submit" iocn="save" label="Submit"}
+				{button icon="cancel" label="Cancel" href="?m=promotioninfo&amp;id={$schema.promotionid}"}
+				<label>
+					<INPUT type="checkbox" name="schema[reuse]" value="ON"{if $schema.reuse} checked{/if}>
+					{trans("Display this form again, when this schema is saved")}
+				</label>
+			</div>
 		</TD>
 	</TR>
 	</TBODY>

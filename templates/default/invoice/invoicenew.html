@@ -11,6 +11,7 @@
 
 </SCRIPT>
 {/if}
+<script src="js/lms-ui-deadline-selection.js"></script>
 <script>
 
     function saveheader() {
@@ -73,7 +74,9 @@
 		<TD class="nobr">
 			{if ConfigHelper::checkPrivilege("invoice_consent_date")}
 				<INPUT type="text" name="invoice[cdate]" id="cdate" value="{$invoice.cdate|date_format:"%Y/%m/%d"}" size="12"
-						placeholder="{trans("yyyy/mm/dd")}" data-cdate="{$invoice.cdate}" {tip class="lms-ui-date" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
+					placeholder="{trans("yyyy/mm/dd")}" data-cdate="{$invoice.cdate}"
+					{tip class="lms-ui-date" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}
+				>
 				{if $invoice.cdatewarning}
 					<INPUT type="hidden" name="invoice[cdatewarning]" value="1">
 				{/if}
@@ -90,7 +93,9 @@
 		<TD class="nobr">
 			{if ConfigHelper::checkPrivilege("invoice_sale_date")}
 				<INPUT type="text" name="invoice[sdate]" value="{$invoice.sdate|date_format:"%Y/%m/%d"}" size="12"
-						placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"}>
+					placeholder="{trans("yyyy/mm/dd")}"
+					{tip class="lms-ui-date" text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"}
+				>
 			{else}
 				<input type="hidden" name="invoice[sdate]" value="{$invoice.sdate|date_format:"%Y/%m/%d"}">
 				{$invoice.sdate|date_format:"%Y/%m/%d"}
@@ -102,7 +107,7 @@
 			{trans("Deadline:")}
 		</TD>
 		<TD class="nobr">
-			<input type="text" name="invoice[deadline]" value="{$invoice.deadline|date_format:"%Y/%m/%d"}" size="12" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter deadline date in YYYY/MM/DD format (empty field means default deadline) or click to select it from calendar" trigger="deadline"}>
+			{deadline_selection name="invoice[deadline]" cdate_selector="#cdate" value=$invoice.deadline}
 		</TD>
 	</TR>
 	<TR>
@@ -111,9 +116,29 @@
 		</TD>
 		<TD class="nobr">
 			{paytypes elemname="invoice[paytype]" selected=$invoice.paytype}
-			<label id="splitpayment"{if !$is_split_payment_suggested} style="display: none;"{/if}>
-				<input type="checkbox" name="invoice[splitpayment]" value="1"{if $is_split_payment_suggested && $invoice.splitpayment} checked{/if}>
+		</TD>
+	</TR>
+	<TR>
+		<TD class="bold nobr">
+			{trans("Document flags:")}
+		</TD>
+		<TD class="nobr">
+			<label id="splitpayment" {tip text="translates into JPK MPP flag"}
+					{if empty($suggested_flags.splitpayment)} style="display: none;"{/if}>
+				<input type="checkbox" name="invoice[splitpayment]" value="1"
+						{if !empty($suggested_flags.splitpayment) && $invoice.splitpayment} checked{/if}>
 				{trans("split payment")}
+			</label>
+			<label {tip text="translates into JPK FP flag"}>
+				<input type="checkbox" name="invoice[flags][{$smarty.const.DOC_FLAG_RECEIPT}]" value="1"
+						{if $invoice.flags[$smarty.const.DOC_FLAG_RECEIPT]} checked{/if}>
+				{trans("<!invoice>receipt")}
+			</label>
+			<label id="telecomservice" {tip text="translates into JPK EE flag"}
+					{if empty($suggested_flags.telecomservice)} style="display: none;"{/if}>
+				<input type="checkbox" name="invoice[flags][{$smarty.const.DOC_FLAG_TELECOM_SERVICE}]" value="1"
+						{if $invoice.flags[$smarty.const.DOC_FLAG_TELECOM_SERVICE]} checked{/if}>
+				{trans("<!invoice>telecommunication service")}
 			</label>
 		</TD>
 	</TR>
@@ -135,7 +160,9 @@
 			{trans("Customer:")}
 		</TD>
 		<TD class="nobr">
-			{customerlist form="setcustomer" customers=$customers selected=$customerid selectname="customer" inputname="customerid" customOnChange="GetNumberPlans();customer_change();" select_id="ownerid_select" input_id="ownerid_input"}
+			{customerlist form="setcustomer" customers=$customers selected=$customerid selectname="customer" version="2"
+				inputname="customerid" customOnChange="GetNumberPlans();customer_change();"
+				select_id="ownerid_select" input_id="ownerid_input"}
 		</TD>
 	</TR>
 	<tr>
@@ -163,8 +190,8 @@
 		</td>
 	</tr>
 	<TR>
-		<TD class="text-right" colspan="2">
-			<A href="javascript:saveheader();">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
+		<TD class="lms-ui-box-buttons" colspan="2">
+			{button icon="save" label="Submit" onclick="saveheader();"}
 		</TD>
 	</TR>
     </TBODY>
@@ -185,10 +212,11 @@
 				<col style="width: 1%;">
 				<col style="width: 1%;">
 				<col style="width: 1%;">
+				<col style="width: 1%;">
 			</colgroup>
 			<thead>
 				<tr>
-					<th colspan="9">
+					<th colspan="10">
 						<IMG src="img/money.gif" alt="">
 						{trans("Invoiceless liabilities:")}
 					</th>
@@ -196,6 +224,7 @@
 				<TR>
 					<th scope="col">{trans("Date:")}</th>
 					<th scope="col">{trans("Name of product, commodity or service:")}</th>
+					<th scope="col" class="nobr">{trans("Tax Category:")}</th>
 					<th scope="col" class="text-right nobr">{trans("Product ID:")}</th>
 					<th scope="col" class="text-right">{trans("Amount:")}</th>
 					<th scope="col" class="text-right">{trans("Unit:")}</th>
@@ -210,6 +239,10 @@
 				<TR class="highlight {cycle}">
 					<TD class="nobr">{$covenantlist[covenantlist].time|date_format:"%Y/%m/%d"}</TD>
 					<TD>{$covenantlist[covenantlist].comment}</TD>
+					<td>
+						{tax_category_selection elementname="l_taxcategory[{$covenantlist[covenantlist].cashid}]"
+							tip="Select tax category"}
+					</td>
 					<TD class="text-right"><INPUT type="text" name="l_prodid[{$covenantlist[covenantlist].cashid}]" value="{ConfigHelper::getConfig('phpui.default_prodid', '', true)}" size="6"></TD>
 					<TD class="text-right"><INPUT type="text" name="l_count[{$covenantlist[covenantlist].cashid}]" value="1" size="3"></TD>
 					<TD class="text-right"><INPUT type="text" name="l_jm[{$covenantlist[covenantlist].cashid}]" value="{trans(ConfigHelper::getConfig('payments.default_unit_name'))}" size="3"></TD>
@@ -225,7 +258,7 @@
 				<TD colspan="2" class="nobr">
 					<INPUT type="checkbox" name="allbox" id="allbox" onchange="CheckAll('additemlist', this)" value="1"><label for="allbox">{trans("Check All")}</label>
 				</TD>
-				<TD class="text-right nobr" colspan="7">
+				<TD class="text-right nobr" colspan="8">
 					<A href="javascript:document.additemlist.submit();">{trans("Add items")} <IMG src="img/save.gif" alt=""></A>
 				</TD>
 			</TR>
@@ -244,10 +277,10 @@
 	 * Using when big_networks is set as false.
 	 */
 
-	function isSplitPaymentSuggested() {
+	function updateDocumentFlags() {
 		$.ajax({
 			data: {
-				splitpaymentcheck: 1,
+				updatedocumentflags: 1,
 				customerid: $('#ownerid_input').val(),
 				cdate: $('#cdate').val(),
 				value: $('#s-valuebrutto').val()
@@ -256,7 +289,11 @@
 			success: function(result) {
 				$('#splitpayment').toggle(result.splitpayment);
 				if (!result.splitpayment) {
-					$('[name="invoice[splitpayment]"]').prop('checked', false);
+					$('#splitpayment :checkbox').prop('checked', false);
+				}
+				//$('#telecomservice').toggle(result.telecomservice);
+				if (!result.telecomservice) {
+					$('#telecomservice :checkbox').prop('checked', false);
 				}
 			}
 		});
@@ -266,7 +303,7 @@
 		getCustomerAddresses($('#ownerid_input').val(), function(addresses) {
 			customer_addresses.setAddressList( addresses, false );
 		});
-		isSplitPaymentSuggested();
+		updateDocumentFlags()
 	}
 
 	customer_addresses.init();
@@ -275,7 +312,7 @@
 		$('form[name="setcustomer"] [name="invoice[number]"]').focus();
 
 		$('[name="invoice[cdate]"]').change(function() {
-			isSplitPaymentSuggested();
+			updateDocumentFlags()
 		});
 	});
 

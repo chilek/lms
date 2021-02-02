@@ -268,6 +268,10 @@ class Session
 
     private function validPIN()
     {
+        if (!ConfigHelper::checkConfig('userpanel.pin_validation')) {
+            return true;
+        }
+
         $string = $this->passwd;
         for ($i = 0; $i < strlen($this->pin_allowed_characters); $i++) {
             $string = str_replace($this->pin_allowed_characters[$i], '', $string);

@@ -165,10 +165,11 @@ $posts = imap_search($ih, 'ALL');
 if (!empty($posts)) {
     foreach ($posts as $postid) {
         $post = imap_fetchstructure($ih, $postid);
+        $headers = imap_fetchheader($ih, $postid);
         if ($post->subtype != 'REPORT') {
             continue;
         }
-        if (count($post->parts) < 2 || count($post->parts) > 3) {
+        if ((count($post->parts) < 2 || count($post->parts) > 3) && preg_match('/In-Reply-To:[[:blank:]]+<messageitem-(?<msgitemid>[0-9]+)@.+>/', $headers) === 0) {
             continue;
         }
         $parts = $post->parts;
@@ -183,41 +184,56 @@ if (!empty($posts)) {
             switch ($part->subtype) {
                 case 'PLAIN':
                     $headers = imap_fetchheader($ih, $postid);
-                    if (preg_match('/Date:\s+(?<date>.+)\r\n?/', $headers, $m)) {
+                    if (preg_match('/Date:[[:blank:]]+(?<date>.+)\r\n?/', $headers, $m)) {
                         $lastdate = strtotime($m['date']);
                     }
                     break;
                 case 'DELIVERY-STATUS':
                     $body = imap_fetchbody($ih, $postid, $partid + 1);
-                    if (preg_match('/Status:\s+(?<status>[0-9]+\.[0-9]+\.[0-9]+)/', $body, $m)) {
+                    if (preg_match('/Status:[[:blank:]]+(?<status>[0-9]+\.[0-9]+\.[0-9]+)/', $body, $m)) {
                         $code = explode('.', $m['status']);
                         $status = intval($code[0]);
                     }
-                    if (preg_match('/Diagnostic-Code:\s+(?<code>.+\r\n?(?:\s+[^\s]+.+\r\n?)*)/m', $body, $m)) {
+                    if (preg_match('/Diagnostic-Code:[[:blank:]]+(?<code>.+\r\n?(?:\s+[^\s]+.+\r\n?)*)/m', $body, $m)) {
                         $diag_code = $m['code'];
                     }
                     break;
                 case 'DISPOSITION-NOTIFICATION':
                     $body = imap_fetchbody($ih, $postid, $partid + 1);
-                    if (preg_match('/Disposition:\s+(?<disposition>.+)\r\n?/', $body, $m)) {
+                    if (preg_match('/Disposition:[[:blank:]]+(?<disposition>.+)\r\n?/', $body, $m)) {
                         $disposition = $m['disposition'];
                     }
-                    if (preg_match('/.*Message-ID:\s+<messageitem-(?<msgitemid>[0-9]+)@.+>/', $body, $m)) {
+                    if (preg_match('/.*Message-ID:[[:blank:]]+<messageitem-(?<msgitemid>[0-9]+)@.+>/', $body, $m)) {
                         $msgitemid = intval($m['msgitemid']);
                     }
                     $headers = imap_fetchheader($ih, $postid);
-                    if (preg_match('/Date:\s+(?<date>.+)\r\n?/', $headers, $m)) {
+                    if (preg_match('/Date:[[:blank:]]+(?<date>.+)\r\n?/', $headers, $m)) {
                         $readdate = strtotime($m['date']);
                     }
                     break;
                 case 'RFC822-HEADERS':
                 case 'RFC822':
                     $body = imap_fetchbody($ih, $postid, $partid + 1);
-                    if (preg_match('/X-LMS-Message-Item-Id:\s+(?<msgitemid>[0-9]+)/', $body, $m)) {
+                    if (preg_match('/X-LMS-Message-Item-Id:[[:blank:]]+(?<msgitemid>[0-9]+)/', $body, $m)) {
                         $msgitemid = intval($m['msgitemid']);
                     }
-                    if (preg_match('/.*Message-ID:\s+<messageitem-(?<msgitemid>[0-9]+)@.+>/', $body, $m)) {
+                    if (preg_match('/.*Message-ID:[[:blank:]]+<messageitem-(?<msgitemid>[0-9]+)@.+>/', $body, $m)) {
                         $msgitemid = intval($m['msgitemid']);
+                    }
+                    break;
+                case 'HTML':
+                    $headers = imap_fetchheader($ih, $postid);
+                    if (preg_match('/Content-Type: .*report.+/', $headers) === 0) {
+                        break;
+                    }
+                    if (preg_match('/Date:[[:blank:]]+(?<date>.+)\r\n?/', $headers, $m)) {
+                        $readdate = strtotime($m['date']);
+                    }
+                    if (preg_match('/In-Reply-To:[[:blank:]]+<messageitem-(?<msgitemid>[0-9]+)@.+>/', $headers, $m)) {
+                        $msgitemid = intval($m['msgitemid']);
+                    }
+                    if (preg_match('/.*report-type=(?<disposition>disposition-notification).+/', $headers, $m)) {
+                        $disposition = $m['disposition'];
                     }
                     break;
             }
@@ -245,7 +261,7 @@ if (!empty($posts)) {
                 'UPDATE messageitems SET status = ?, error = ?, lastdate = ? WHERE id = ?',
                 array($status, $status == MSG_ERROR && !empty($diag_code) ? $diag_code : null,
                     $lastdate,
-                $msgitemid)
+                    $msgitemid)
             );
         } elseif (!empty($disposition) && !empty($readdate)) {
             $DB->Execute(
@@ -264,5 +280,3 @@ if (!empty($posts)) {
 }
 
 imap_close($ih, CL_EXPUNGE);
-
-?>

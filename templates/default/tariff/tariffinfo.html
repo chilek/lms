@@ -91,11 +91,22 @@
                                 <TD><IMG SRC="img/value.gif" ALT=""></TD>
                                 <TD>{trans("Value:")}</TD>
                                 <TD>
-                                    {moneyf($tariff.value, $tariff.currency)}
+                                    {if $tariff.currency}
+                                        {moneyf($tariff.value, $tariff.currency)}
+                                    {else}
+                                        {$tariff.value|string_format:"%.2f "} <span class="alert">{trans('No currency assigned!')}</span>
+                                    {/if}
                                     {if $tariff.period}
                                         {assign var=tperiod value=$tariff.period}({$_PERIODS.$tperiod})
                                     {else}
                                         <span class="blend">({trans("period undefined")})</span>
+                                    {/if}
+                                    {if $tariff.flags}
+                                        {if $tariff.value < 0}
+                                            {icon name="reward" tip="reward"}
+                                        {else}
+                                            {icon name="penalty" tip="penalty"}
+                                        {/if}
                                     {/if}
                                 </TD>
                             </TR>
@@ -111,7 +122,7 @@
                                 <TD>{trans("Tax category:")}</TD>
                                 <TD>
                                     {if $tariff.taxcategory}
-                                        <span {tip text=$_TAX_CATEGORIES[$tariff.taxcategory].description}>{$_TAX_CATEGORIES[$tariff.taxcategory].label}</span>
+                                        <span {tip text=$_TAX_CATEGORIES[$tariff.taxcategory].description}>({sprintf('%02d', $tariff.taxcategory)}) {$_TAX_CATEGORIES[$tariff.taxcategory].label}</span>
                                     {else}
                                         {trans("- none -")}
                                     {/if}
@@ -387,7 +398,7 @@
                 {button type="link-button" label="Edit" icon="edit" href="?m=tariffedit&id={$tariff.id}"}
             {/if}
             {if $tariff.count == 0}
-                {button id="delete-tariff" label="Delete" icon="delete" onclick="location.href = '?m=tariffdel&id={$tariff.id}';"}
+                {button id="delete-tariff" label="Delete" icon="delete"}
             {/if}
         </TD>
     </TR>
@@ -409,7 +420,7 @@
                                 <OPTION value="0" {if !$netid}SELECTED{/if}>{trans("- all networks -")}</OPTION>
                                 {section name=networks loop=$networks}
                                     <OPTION value="{$networks[networks].id}" {if $networks[networks].id == $netid}SELECTED{/if}>
-                                    {$networks[networks].name|truncate:30:"...":true}
+                                    {$networks[networks].name|truncate:30:"&hellip;":true}
                                     </OPTION>
                                 {/section}
                             </SELECT>
@@ -426,7 +437,7 @@
                         <IMG SRC="img/customer.gif" ALT="">
                         <A HREF="?m=customerinfo&id={$tariff.customers[l2].id}"{if !$tariff.customers[l2].active} class="blend"{/if}>
                             ({$tariff.customers[l2].id|string_format:"%04d"})
-                            {$tariff.customers[l2].customername|truncate:50:" ..."}
+                            {$tariff.customers[l2].customername|truncate:50:"&hellip;"}
                             {if $tariff.customers[l2].cnt > 1}({$tariff.customers[l2].cnt}){/if}
                         </A>
                     </TD>
@@ -475,7 +486,7 @@
     <script>
         $('#delete-tariff').click(function() {
             confirmDialog($t("Are you sure, you want to delete that tariff?"), this).done(function() {
-                location.href = $(this).attr('href');
+                location.href = '?m=tariffdel&id={$tariff.id}';
             });
             return false;
         });

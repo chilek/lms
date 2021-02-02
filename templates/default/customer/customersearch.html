@@ -3,8 +3,25 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<SCRIPT type="text/javascript">
-<!--
+
+<style>
+
+	#consent-table {
+		padding-right: 2em;
+	}
+
+	#consent-table > .lmsbox-inner {
+		border: 1px dotted black;
+	}
+
+	#consent-table > .lmsbox-inner > tfoot {
+		border: 0;
+	}
+
+</style>
+
+<script>
+
 	function PrintList() {
 		document.customersearch.action = "?m=customersearch&search=1&print=1";
 		document.customersearch.target = "_BLANK";
@@ -53,13 +70,15 @@
 				break;
 		}
 	}
-//-->
-</SCRIPT>
+
+</script>
 <FORM method="post" action="?m=customersearch&amp;search=1" name="customersearch" id="customersearch">
-<p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
-</p>
 <TABLE class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 99%;">
+	</colgroup>
 	<THEAD>
 	<TR>
 		<TD colspan="2" class="bold">
@@ -69,11 +88,20 @@
 	</THEAD>
 	<TBODY>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/customer.gif" alt=""> {trans("First/last or Company name:")}
 		</TD>
-		<TD style="width: 99%;">
+		<TD>
 			<INPUT type="text" name="search[customername]" VALUE="{$search.customername}">
+		</TD>
+	</TR>
+	<TR>
+		<TD class="bold nobr">
+			{icon name="karma" class="fw-fw"} {trans("Karma:")}
+		</TD>
+		<TD>
+			<INPUT type="text" name="search[karma]" VALUE="{$search.karma}"
+				{tip text="Negative value means customers with karma less or equal than specified, but positive means greater or equal then specified"}>
 		</TD>
 	</TR>
 	<TR>
@@ -94,92 +122,108 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/phone.gif" alt=""> {trans("Phone:")}
 		</TD>
-		<TD style="width: 99%;" class="nobr">
+		<TD class="nobr">
 			<INPUT type="tel" name="search[phone]" VALUE="{$search.phone}">
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/mail.gif" alt=""> {trans("E-mail:")}
 		</TD>
-		<TD style="width: 99%;">
+		<TD>
 			<INPUT type="email" name="search[email]" VALUE="{$search.email}">
 		</TD>
 	</TR>
 	{*
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/gg.gif" alt=""> {trans("IM:")}
 		</TD>
-		<TD style="width: 99%;">
+		<TD>
 			<INPUT type="text" name="search[im]" VALUE="{$search.im}">
 		</TD>
 	</TR>
 	*}
+
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
-			<IMG src="img/serialnumber.gif" width="16" alt=""> {trans("ICN:")}
+		<TD class="nobr bold">
+			{icon name="user-id-number"} {trans("Identity type:")}
 		</TD>
-		<TD style="width: 99%;">
+		<TD>
+			{identitytypes elemname="search[ict]" selected=$search.ict}
+		</TD>
+	</TR>
+	<TR>
+		<TD class="nobr bold">
+			{icon name="user-id-number"} {trans("Identity number:")}
+		</TD>
+		<TD>
 			<INPUT type="text" name="search[icn]" VALUE="{$search.icn}">
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/empty.gif" width="16" alt=""> {trans("SSN:")}
 		</TD>
-		<TD style="width: 99%;">
+		<TD>
 			<INPUT type="text" name="search[ssn]" VALUE="{$search.ssn}">
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/empty.gif" width="16" alt=""> {trans("TEN:")}
 		</TD>
-		<TD style="width: 99%;">
-			<INPUT type="text" name="search[ten]" VALUE="{$search.ten}">
+		<TD>
+			<input type="text" name="search[ten]" id="search-ten"
+				{if $search.ten != '*'} value="{$search.ten}"{else} disabled{/if}>
+			<label>
+				<input type="checkbox" id="non-empty-ten">
+				<span>{trans("non-empty")}</span>
+			</label>
+			<input type="hidden" name="search[ten]" id="search-non-empty-ten"
+				value="*"{if $search.ten != '*'} disabled{/if}>
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/empty.gif" width="16" alt=""> {trans("REGON:")}
 		</TD>
-		<TD style="width: 99%;">
+		<TD>
 			<INPUT type="text" name="search[regon]" VALUE="{$search.regon}">
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/report.gif" alt=""> {trans("RBE:")}
 		</TD>
-		<TD style="width: 99%;">
+		<TD>
 			<INPUT type="text" name="search[rbe]" VALUE="{$search.rbe}">
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/note.gif" alt=""> {trans("Notes:")}
 		</TD>
-		<TD style="width: 99%;">
+		<TD>
 			<INPUT type="text" name="search[notes]" VALUE="{$search.notes}">
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/info1.gif" alt=""> {trans("Additional information:")}
 		</TD>
-		<TD style="width: 99%;">
+		<TD>
 			<INPUT type="text" name="search[info]" VALUE="{$search.info}">
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/folder.gif" alt=""> {trans("Legal personality:")}
 		</TD>
-		<TD style="width: 99%;">
+		<TD>
 			<SELECT SIZE="1" name="search[type]">
 				<OPTION VALUE="">{trans("- all -")}</OPTION>
 				<OPTION VALUE="0">{trans("private person")}</OPTION>
@@ -188,10 +232,80 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
+			<i class="lms-ui-icon-legal-personality fa-fw"></i> {trans("Flags:")}
+		</TD>
+		<TD>
+			<input type="hidden" name="flags[]" value="0">
+			<select name="flags[]" {tip text="Select customer flags (optional)" class="lms-ui-multiselect"}
+					multiple data-default-value="{trans("- all -")}">
+				{foreach $_CUSTOMERFLAGS as $cflag => $flag}
+					<option value="{$cflag}" title="{$flag.tip}">{$flag.label}</option>
+				{/foreach}
+			</select>
+			<label>
+				<INPUT class="radio" type="radio" value="AND" name="fk"{if $fk != 'OR'} checked{/if}>
+				{trans("and")}
+			</label>
+			<label>
+				<INPUT class="radio" type="radio" value="OR" name="fk"{if $fk == 'OR'} checked{/if}>
+				{trans("or")}
+			</label>
+		</TD>
+	</TR>
+
+	<TR>
+		<TD class="bold nobr">
+			{icon name="consent"} {trans("Consents:")}
+		</TD>
+		<TD id="consent-table">
+			<table class="lmsbox-inner lms-ui-background-cycle">
+				<colgroup>
+					<col style="width: 70%;">
+					<col style="width: 30%;">
+				</colgroup>
+				<tbody>
+					{foreach $_CCONSENTS as $consentid => $consent}
+					<tr class="highlight">
+						<td>
+							{$consent.label}
+						</td>
+						<td>
+							<label>
+								<input type="radio" class="cconsent" name="consents[{$consentid}]" value="-1"
+									{if !isset($consents[$consentid]) || $consents[$consentid] == -1} checked{/if}>
+								{trans("ignore")}
+							</label>
+							<label>
+								<input type="radio" class="cconsent" name="consents[{$consentid}]" value="1"
+										{if isset($consents[$consentid]) && $consents[$consentid] == 1} checked{/if}>
+								{trans("yes")}
+							</label>
+							<label>
+								<input type="radio" class="cconsent" name="consents[{$consentid}]" value="0"
+										{if isset($consents[$consentid]) && $consents[$consentid] == 0} checked{/if}>
+								{trans("no")}
+							</label>
+						</td>
+					</tr>
+					{/foreach}
+				</tbody>
+				<tfoot>
+					<tr class="dark">
+						<td colspan="2" class="text-center">
+							{button icon="reload" label="Reset" id="reset-consents"}
+						</td>
+					</tr>
+				</tfoot>
+			</table>
+		</TD>
+	</TR>
+
+	<TR>
+		<TD class="bold nobr">
 			<IMG src="img/state.gif" alt=""> {trans("Country state:")}
 		</TD>
-		<TD style="width: 99%;">
+		<TD>
 			<SELECT name="search[stateid]" {tip text="Select country state"}>
 				<OPTION value="">{trans("- all states -")}</OPTION>
 				{foreach from=$cstateslist item=item key=key}
@@ -201,10 +315,10 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/netdev.gif" alt=""> {trans("Link type:")}
 		</TD>
-		<TD style="width: 99%;">
+		<TD>
 			<SELECT SIZE="1" name="search[linktype]" onchange="change_linktype(this.options[this.selectedIndex].value)">
 				<OPTION VALUE="">{trans("- all -")}</OPTION>
 				{foreach from=$_LINKTYPES item=item key=key}
@@ -214,10 +328,10 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/netdev.gif" alt=""> {trans("Link technology:")}
 		</TD>
-		<TD style="width: 99%;">
+		<TD>
 			<SELECT SIZE="1" name="search[linktechnology]" id="linktechnology">
 				<OPTION VALUE="">{trans("- all -")}</OPTION>
 				{foreach array(0, 1, 2) as $linktype}
@@ -229,10 +343,10 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/netdev.gif" alt=""> {trans("Link speed:")}
 		</TD>
-		<TD style="width: 99%;">
+		<TD>
 			<SELECT SIZE="1" name="search[linkspeed]">
 				<OPTION VALUE="">{trans("- all -")}</OPTION>
 				{foreach from=$_LINKSPEEDS item=item key=key}
@@ -242,10 +356,10 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/money.gif" alt=""> {trans("Tariffs:")}
 		</TD>
-		<TD style="width: 99%;" class="multiselect">
+		<TD class="multiselect">
 			<SELECT SIZE="1" name="search[tariffs][]" class="lms-ui-multiselect" multiple data-default-value="{trans("- all -")}">
 				{foreach $tariffs as $item}
 				<OPTION VALUE="{$item.id}">{$item.name}</OPTION>
@@ -260,10 +374,10 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/money.gif" alt=""> {trans("Tariff type:")}
 		</TD>
-		<TD style="width: 99%;">
+		<TD>
 			<SELECT SIZE="1" name="search[tarifftype]">
 				<OPTION VALUE="" SELECTED>{trans("- all -")}</OPTION>
 				{foreach $_SERVICETYPES as $id => $name}
@@ -273,10 +387,10 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/money.gif" alt=""> {trans("Assignments:")}
 		</TD>
-		<TD style="width: 99%;">
+		<TD>
 			<select size="1" name="search[assignments]">
 				<option value="0">{trans('- all -')}</option>
 				<option value="7">{trans('expire in $a days', 7)}</option>
@@ -291,55 +405,56 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/empty.gif" width="16" alt=""> {trans("Created:")}
 		</TD>
-		<TD style="width: 99%;">
+		<TD>
 			{date_period_preset from="#customersearch [name=\"search[createdfrom]\"]" to="#customersearch [name=\"search[createdto]\"]"}
 			{trans("from")} <INPUT type="text" class="lms-ui-date" value="" name="search[createdfrom]" size="10" placeholder="{trans("yyyy/mm/dd")}">
 			{trans("to")} <INPUT type="text" class="lms-ui-date" value="" name="search[createdto]" size="10" placeholder="{trans("yyyy/mm/dd")}">
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/empty.gif" width="16" alt=""> {trans("Deleted:")}
 		</TD>
-		<TD style="width: 99%;">
+		<TD>
 			{date_period_preset from="#customersearch [name=\"search[deletedfrom]\"]" to="#customersearch [name=\"search[deletedto]\"]"}
 			{trans("from")} <INPUT type="text" class="lms-ui-date" value="" name="search[deletedfrom]" size="10" placeholder="{trans("yyyy/mm/dd")}">
 			{trans("to")} <INPUT type="text" class="lms-ui-date" value="" name="search[deletedto]" size="10" placeholder="{trans("yyyy/mm/dd")}">
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/empty.gif" width="16" alt=""> {trans("Qualification operator:")}
 		</TD>
-		<TD style="width: 99%;">
+		<TD>
 			<INPUT class="radio light" type="radio" id="operator0" value="AND" name="k"{if $k!='OR'} CHECKED{/if}><label for="operator0">{trans("and")}</label>
 			<INPUT class="radio light" type="radio" id="operator1" value="OR" name="k"{if $k=='OR'} CHECKED{/if}><label for="operator1">{trans("or")}</label>
 		</TD>
 	</TR>
 	<TR>
-		<TD class="flr" style="width: 100%;" colspan="2">&nbsp;</TD>
+		<TD class="flr" colspan="2">&nbsp;</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/division.gif" width="16" alt=""> {trans("Division")}:
 		</TD>
-		<TD style="width: 99%;">
+		<TD>
 			<SELECT SIZE="1" name="d">
 				<OPTION VALUE="">- {trans("all")} -</OPTION>
-				{foreach from=$divisions item=division}
-					<OPTION VALUE="{$division.id}"{if $listdata.division==$division.id} SELECTED{/if}>{$division.shortname|truncate:30:"...":true}</OPTION>
+				{foreach $divisions as $division}
+					<OPTION VALUE="{$division.id}"{if $listdata.division==$division.id} selected{/if}
+						>{$division.shortname|truncate:30:"&hellip;":true|escape}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/access.gif" width="16" alt=""> {trans("Status:")}
 		</TD>
-		<TD style="width: 99%;">
+		<TD>
 			<input type="hidden" name="s[]" value="0">
 			<SELECT SIZE="1" name="s[]" class="lms-ui-multiselect" multiple data-default-value="{trans("- all -")}">
 				{foreach $_CSTATUSES as $statusidx => $status}
@@ -354,13 +469,19 @@
 					<OPTION VALUE="58">{trans("in debt above 200%")}</OPTION>
 					<option value="71">{trans("overdue receivables")}</option>
 				{/if}
+				<OPTION VALUE="55">{trans("without tariff")}</OPTION>
+				<OPTION VALUE="75">{trans("with discount")}</OPTION>
+				<option value="79">{trans("with active tariffless liabilities")}</option>
+				<option value="80">{trans("with tariffless liabilities")}</option>
 				<OPTION VALUE="53">{trans("online")}</OPTION>
 				<OPTION VALUE="54">{trans("without group")}</OPTION>
-				<OPTION VALUE="55">{trans("without tariff")}</OPTION>
 				<OPTION VALUE="56">{trans("suspended<!plural>")}</OPTION>
 				<OPTION value="59">{trans("without contracts")}</OPTION>
+				<OPTION value="76">{trans("without active contracts")}</OPTION>
 				<OPTION value="60">{trans("with expired contracts")}</OPTION>
+				<OPTION value="77">{trans("with expired, active contracts")}</OPTION>
 				<OPTION value="61">{trans("with expiring contracts")}</OPTION>
+				<OPTION value="78">{trans("with expiring, active contracts")}</OPTION>
 				<OPTION VALUE="70">{trans("TERRIT not specified")}</OPTION>
 				<OPTION VALUE="74">{trans("ZIP code not specified")}</OPTION>
 				<OPTION value="73">{trans("with unarchived documents")}</OPTION>
@@ -394,60 +515,69 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/network.gif" alt=""> {trans("Network:")}
 		</TD>
-		<TD style="width: 99%;">
+		<TD>
 			<input type="hidden" name="n" value="all">
 			<SELECT SIZE="1" name="n[]" class="lms-ui-multiselect" data-default-value="{trans("- all networks -")}" multiple>
 				{foreach $networks as $network}
-				<OPTION value="{$network.id}"{if $listdata.network && in_array($network.id, $listdata.network)} selected{/if}>{$network.name|truncate:50:"...":true}</OPTION>
+				<OPTION value="{$network.id}"{if $listdata.network && in_array($network.id, $listdata.network)} selected{/if}>{$network.name|truncate:50:"&hellip;":true}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/group.gif" alt=""> {trans("Group:")}
 		</TD>
-		<TD style="width: 99%;">
+		<TD>
 			<SELECT SIZE="1" name="g[]" multiple class="lms-ui-multiselect">
 				<OPTION value=""{if ! is_array($listdata.customergroup) && !$listdata.customergroup} selected{/if} data-exclusive>{trans("- all groups -")}</OPTION>
 				<OPTION value="-1"{if !is_array($listdata.customergroup) && $listdata.customergroup == -1} selected{/if} data-exclusive>{trans("- without assigned groups -")}</OPTION>
 				{foreach $customergroups as $customergroup}
-				<OPTION value="{$customergroup.id}"{if is_array($listdata.customergroup) && in_array($customergroup.id, $listdata.customergroup)} selected{/if}>{$customergroup.name|truncate:50:"...":true}</OPTION>
+				<OPTION value="{$customergroup.id}"{if is_array($listdata.customergroup) && in_array($customergroup.id, $listdata.customergroup)} selected{/if}>{$customergroup.name|truncate:50:"&hellip;":true}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/nodegroup.gif" alt=""> {trans("Nodes Group:")}
 		</TD>
-		<TD style="width: 99%;">
+		<TD>
 			<SELECT SIZE="1" name="ng">
 				<OPTION value="" {if !$listdata.nodegroup} SELECTED {/if}>{trans("- all groups -")}</OPTION>
 				{foreach from=$nodegroups item=nodegroup}
-				<OPTION value="{$nodegroup.id}" {if $listdata.nodegroup == $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"...":true}</OPTION>
+				<OPTION value="{$nodegroup.id}" {if $listdata.nodegroup == $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"&hellip;":true}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 100%;" class="text-right" colspan="2">
-			<A accesskey="S" href="javascript:Search();">{trans("Search")} <IMG src="img/search.gif" alt=""></A>&nbsp;
-			<A href="javascript:ExportCSV();">{trans("Download (CSV)")} <IMG src="img/save.gif" alt=""></A>&nbsp;
-			<A href="javascript:PrintList();">{trans("Print")} <IMG src="img/print.gif" alt=""></A>
+		<TD class="lms-ui-box-buttons" colspan="2">
+			{button icon="search" label="Search" onclick="Search();"}
+			{button icon="csv" label="Download (CSV)" onclick="ExportCSV();"}
+			{button icon="print" label="Print" onclick="PrintList();"}
 		</TD>
 	</TR>
 	</TBODY>
 </TABLE>
 </FORM>
-<SCRIPT type="text/javascript">
-<!--
+<script>
+
 	$(function() {
 		$('form[name="customersearch"] [name="search[customername]"]').focus();
+
+		$('#non-empty-ten').change(function() {
+			$('#search-ten').prop('disabled', $(this).prop('checked'));
+			$('#search-non-empty-ten').prop('disabled', !$(this).prop('checked'));
+		});
+
+		$('#reset-consents').click(function() {
+			$('.cconsent[value="-1"]').prop('checked', true);
+		});
 	});
-//-->
-</SCRIPT>
+
+</script>
 {/block}

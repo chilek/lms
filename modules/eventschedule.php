@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -82,11 +82,19 @@ if (!isset($_POST['loginform']) && !empty($_POST)) {
     }
 
     $filter['userand'] = isset($_POST['userand']) ? intval($_POST['userand']) : 0;
-    $filter['userid'] = isset($_POST['a']) ? $_POST['a'] : null;
-    $filter['customerid'] = isset($_POST['u']) ? $_POST['u'] : null;
+    $filter['userid'] = isset($_POST['userid']) ? $_POST['userid'] : array();
+    $filter['customerid'] = isset($_POST['customerid']) ? $_POST['customerid'] : null;
     $filter['type'] = isset($_POST['type']) ? $_POST['type'] : null;
     $filter['privacy'] = isset($_POST['privacy']) ? intval($_POST['privacy']) : null;
     $filter['closed'] = isset($_POST['closed']) ? $_POST['closed'] : null;
+
+    if (isset($_POST['switchToTimetable'])) {
+        $SESSION->save('schedulerFiler', $filter, true);
+        $SESSION->redirect('?m=eventlist&switchToTimetable=1');
+        die();
+    }
+} elseif (isset($_GET['switchToSchedule'])) {
+    $SESSION->restore('timetableFiler', $filter, true);
 } else {
     if ($SESSION->is_set('eld')) {
         $filter = array_merge($filter, $SESSION->get('eld'));
@@ -114,12 +122,12 @@ if (!isset($_POST['loginform']) && !empty($_POST)) {
 
     $filter['userand'] = isset($_GET['userand']) ? intval($_GET['userand']) : 0;
 
-    if (isset($_GET['a'])) {
-        $filter['userid'] = $_GET['a'];
+    if (isset($_GET['userid'])) {
+        $filter['userid'] = $_GET['userid'];
     }
 
-    if (isset($_GET['u'])) {
-        $filter['customerid'] = $_GET['u'] == 'all' ? null : $_GET['u'];
+    if (isset($_GET['customerid'])) {
+        $filter['customerid'] = $_GET['customerid'] == 'all' ? null : $_GET['customerid'];
     }
 
     if (isset($_GET['type'])) {
@@ -164,15 +172,24 @@ $layout['pagetitle'] = trans('Schedule');
 
 $filter['forward'] = ConfigHelper::getConfig('phpui.timetable_days_forward');
 $eventlist = $LMS->GetEventList($filter);
+$eventlistIds = Utils::array_column($eventlist, 'id', 'id');
 
 $userid = $filter['userid'];
+$userlistcount = empty($userid) ? 0 : count($userid);
 
-$userlist = $LMS->GetUserNames();
+$params['short'] = 1;
+if (ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users')) {
+    $params['userAccess'] = 1;
+}
+$params['withDeleted'] = 1;
+$userlist = $LMS->GetUserList($params);
+
 $SMARTY->assign('userlist', $userlist);
 if (is_array($userid) && in_array('-1', $userid)) {
     $userlist[-1]['id'] = -1;
     $userlist[-1]['name'] = trans("unassigned");
 }
+
 $usereventlist = array();
 if (!isset($userid) || empty($userid)) {
     unset($filter['userid']);
@@ -180,6 +197,9 @@ if (!isset($userid) || empty($userid)) {
         $filter['userid'] = $user['id'];
         $usereventlist[$user['id']]['events'] = $LMS->GetEventList($filter);
         $usereventlist[$user['id']]['username'] = $user['name'];
+        if (!$LMS->checkUserAccess($user['id'])) {
+            $usereventlist[$user['id']]['noaccess'] = 1;
+        }
     }
     unset($filter['userid']);
     $filter['userid'] = '-1';
@@ -194,17 +214,30 @@ if (!isset($userid) || empty($userid)) {
             $filter['userid'] = $user['id'];
             $usereventlist[$user['id']]['events'] = $LMS->GetEventList($filter);
             $usereventlist[$user['id']]['username'] = $user['name'];
+            if (!$LMS->checkUserAccess($user['id'])) {
+                $usereventlist[$user['id']]['noaccess'] = 1;
+            }
+            if ($filter['userand']) {
+                foreach ($usereventlist[$user['id']]['events'] as $ekey => $event) {
+                    if (!isset($eventlistIds[$event['id']])) {
+                        unset($usereventlist[$user['id']]['events'][$ekey]);
+                    }
+                }
+            }
         }
     }
     $filter['userid'] = $userid;
 }
 
-$usereventlistcount = count($usereventlist);
+$usereventlistcount = empty($usereventlist) ? 0 : count($usereventlist);
 
 //<editor-fold desc="group events by days">
 $usereventlistdates = array();
 foreach ($usereventlist as $userid => $userevents) {
     $usereventlistdates[$userid]['username'] = $userevents['username'];
+    if (isset($userevents['noaccess'])) {
+        $usereventlistdates[$userid]['noaccess'] = $userevents['noaccess'];
+    }
     if ($userevents['events']) {
         foreach ($userevents['events'] as $event) {
             $usereventlistdates[$userid]['events'][$event['date']][] = $event;
@@ -344,6 +377,7 @@ $SMARTY->assign('period', $DB->GetRow('SELECT MIN(date) AS fromdate, MAX(date) A
 $SMARTY->assign('eventlist', $eventlist);
 $SMARTY->assign('usereventlist', $usereventlist);
 $SMARTY->assign('usereventlistcount', $usereventlistcount);
+$SMARTY->assign('userlistcount', $userlistcount);
 $SMARTY->assign('usereventlistdates', $usereventlistdates);
 $SMARTY->assign('usereventlistgrid', $usereventlistgrid);
 

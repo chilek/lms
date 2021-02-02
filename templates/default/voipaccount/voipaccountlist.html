@@ -59,7 +59,7 @@
                             <option value="" {if !$listdata.customergroup} selected {/if}>{trans("- all groups -")}</option>
                             {section name=customergroups loop=$customergroups}
                             <option value="{$customergroups[customergroups].id}" {if $listdata.customergroup == $customergroups[customergroups].id} selected {/if}>
-                                {$customergroups[customergroups].name|truncate:30:"...":true}
+                                {$customergroups[customergroups].name|truncate:30:"&hellip;":true}
                             </option>
                             {/section}
                         </select>
@@ -90,7 +90,7 @@
 		<br>
                 <img src="img/customer.gif" alt="">&nbsp;
                 <a href="?m=customerinfo&id={$voipaccountlist[voipaccountlist].ownerid}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$voipaccountlist[voipaccountlist].ownerid}">
-                    {$voipaccountlist[voipaccountlist].owner|truncate:40:"...":true|replace:" ":"&nbsp;"} ({$voipaccountlist[voipaccountlist].ownerid|string_format:"%04d"})
+                    {$voipaccountlist[voipaccountlist].owner|truncate:40:"&hellip;":true|replace:" ":"&nbsp;"} ({$voipaccountlist[voipaccountlist].ownerid|string_format:"%04d"})
                 </a>
             </td>
             <td onClick="return self.location.href = '?m=voipaccountinfo&amp;id={$voipaccountlist[voipaccountlist].id}';" valign="top" nowrap>

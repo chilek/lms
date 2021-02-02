@@ -101,19 +101,7 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
         }
     }
 
-    $queue = $LMS->GetQueueContents(array('netdevids' => $id));
-    unset($queue['total']);
-    unset($queue['state']);
-    unset($queue['order']);
-    unset($queue['direction']);
-    unset($queue['owner']);
-    unset($queue['removed']);
-    unset($queue['priority']);
-    unset($queue['deadline']);
-    unset($queue['service']);
-    unset($queue['type']);
-    unset($queue['unread']);
-    unset($queue['rights']);
+    $queue = $LMS->GetQueueContents(array('netdevids' => $id, 'short'=> 1));
 
     $start = 0;
     $pagelimit = ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $queue['total']);
@@ -136,6 +124,17 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
     $SMARTY->assign('nodelinktype', $SESSION->get('nodelinktype'));
     $SMARTY->assign('nodelinktechnology', $SESSION->get('nodelinktechnology'));
     $SMARTY->assign('nodelinkspeed', $SESSION->get('nodelinkspeed'));
+
+    $SMARTY->assign(
+        'targetnetdevs',
+        $DB->GetAll(
+            'SELECT n.name, n.id, n.producer, n.model, va.location, n.ports
+            FROM netdevices n
+            LEFT JOIN vaddresses va ON va.id = n.address_id
+            WHERE n.id <> ' . intval($id)
+            . ' ORDER BY name'
+        )
+    );
 
     $hook_data = $LMS->executeHook(
         'netdevinfo_before_display',
@@ -161,6 +160,11 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
         $SMARTY->assign('nodeipdata', $LMS->GetNode($_GET['ip']));
         $SMARTY->assign('nodesessions', $LMS->GetNodeSessions($_GET['ip']));
         $SMARTY->assign('netdevauthtype', $netdevauthtype);
+
+        $SMARTY->assign('routednetworks', $LMS->getNodeRoutedNetworks($_GET['ip']));
+        $SMARTY->assign('notroutednetworks', $LMS->getNodeNotRoutedNetworks($_GET['ip']));
+        $SMARTY->assign('nodeid', $_GET['ip']);
+
         $SMARTY->display('netdev/netdevipinfo.html');
     } else {
         $SMARTY->assign('netdevinfo_sortable_order', $SESSION->get_persistent_setting('netdevinfo-sortable-order'));

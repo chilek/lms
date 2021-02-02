@@ -37,8 +37,6 @@ if (isset($_GET['oper']) && $_GET['oper'] == 'loadtransactionlist') {
             )
         );
         $SMARTY->assign('transactions', $trans);
-        $SMARTY->assign('resourcetype', SYSLOG::RES_CUST);
-        $SMARTY->assign('resourceid', $customerid);
         die($SMARTY->fetch('transactionlist.html'));
     }
 
@@ -79,6 +77,12 @@ if (!isset($resource_tabs['customerbalancebox']) || $resource_tabs['customerbala
 if (!isset($resource_tabs['customervoipaccountsbox']) || $resource_tabs['customervoipaccountsbox']) {
     $customervoipaccounts = $LMS->GetCustomerVoipAccounts($customerid);
 }
+
+if ($SYSLOG && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.transaction_logs'))) {
+    $SMARTY->assign('resourcetype', SYSLOG::RES_CUST);
+    $SMARTY->assign('resourceid', $customerid);
+}
+
 if (!isset($resource_tabs['customerdocuments']) || $resource_tabs['customerdocuments']) {
     $documents = $LMS->GetDocuments($customerid, 10);
 
@@ -100,7 +104,9 @@ if (!isset($resource_tabs['customerevents']) || $resource_tabs['customerevents']
         $params['datefrom'] = date_to_timestamp($_GET['events-from-date']);
         $SMARTY->assign('events_from_date', $_GET['events-from-date']);
     }
-    $allevents = isset($_GET['allevents']) && !empty($_GET['allevents']);
+    $allevents = (isset($_GET['allevents']) && !empty($_GET['allevents']))
+        || ((!isset($_GET['allevents']) && ConfigHelper::checkConfig('phpui.default_show_closed_events')));
+
     if ($allevents) {
         $params['closed'] = '';
     }

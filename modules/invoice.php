@@ -29,7 +29,9 @@ use setasign\Fpdi\PdfParser\StreamReader;
 
 function invoice_body($document, $invoice)
 {
-    Localisation::setUiLanguage($invoice['lang']);
+    if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.use_customer_lang', true))) {
+        Localisation::setUiLanguage($invoice['lang']);
+    }
     $document->Draw($invoice);
     if (!isset($invoice['last'])) {
         $document->NewPage();
@@ -360,7 +362,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             //$jpk_vat_version = $datefrom < mktime(0, 0, 0, 1, 1, 2018) ? 2 : 3;
             // if current date is earlier than 1 I 2018
             //$jpk_vat_version = time() < mktime(0, 0, 0, 1, 1, 2018) ? 2 : 3;
-            $jpk_vat_version = (time() < mktime(0, 0, 0, 10, 1, 2020) ? 3 : 4);
+            $jpk_vat_version = ($dateto < mktime(0, 0, 0, 10, 1, 2020) ? 3 : 4);
         } else {
             // if date from for report is earlier than 2 XII 2019
             //$jpk_fa_version = $datefrom < mktime(0, 0, 0, 12, 2, 2019) ? 2 : 3;
@@ -377,13 +379,13 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 $jpk_data .= "<JPK xmlns=\"http://jpk.mf.gov.pl/wzor/2017/11/13/1113/\""
                     . " xmlns:etd=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2016/01/25/eD/DefinicjeTypy/\">\n";
             } else {
-                $jpk_data .= "<JPK xmlns=\"http://crd.gov.pl/wzor/2020/02/25/9142/\""
-                    . " xmlns:etd=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2018/08/24/eD/DefinicjeTypy/\">\n";
+                $jpk_data .= "<JPK xmlns=\"http://crd.gov.pl/wzor/2020/05/08/9393/\""
+                    . " xmlns:etd=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2020/03/11/eD/DefinicjeTypy/\">\n";
             }
         }
 
         $divisionid = intval($_GET['divisionid']);
-        $division = $DB->GetRow("SELECT d.name, shortname, va.address, va.city,
+        $division = $DB->GetRow("SELECT d.name, shortname, d.email, va.address, va.city,
 				va.zip, va.countryid, ten, regon,
 				account, inv_header, inv_footer, inv_author, inv_cplace, va.location_city,
 				va.location_street, tax_office_code,
@@ -394,6 +396,10 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 				LEFT JOIN location_districts ld ON ld.id = lb.districtid
 				LEFT JOIN location_states ls ON ls.id = ld.stateid
 				WHERE d.id = ?", array($divisionid));
+
+        if ($jpk_type == 'vat' && $jpk_vat_version == 4 && empty($division['email'])) {
+            die(trans('Please define email address in division properties!'));
+        }
 
         // JPK header
         $jpk_data .= "\t<Naglowek>\n";
@@ -407,7 +413,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 $jpk_data .= "\t\t<DataDo>" . strftime('%Y-%m-%d', $dateto) . "</DataDo>\n";
                 $jpk_data .= "\t\t<NazwaSystemu>LMS</NazwaSystemu>\n";
             } else {
-                $jpk_data .= "\t\t<KodFormularza kodSystemowy=\"JPK_V7M (1)\" wersjaSchemy=\"1-0\">JPK_VAT</KodFormularza>\n";
+                $jpk_data .= "\t\t<KodFormularza kodSystemowy=\"JPK_V7M (1)\" wersjaSchemy=\"1-2E\">JPK_VAT</KodFormularza>\n";
                 $jpk_data .= "\t\t<WariantFormularza>1</WariantFormularza>\n";
                 $jpk_data .= "\t\t<DataWytworzeniaJPK>" . strftime('%Y-%m-%dT%H:%M:%S') . "</DataWytworzeniaJPK>\n";
                 $jpk_data .= "\t\t<NazwaSystemu>LMS</NazwaSystemu>\n";
@@ -488,6 +494,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 $jpk_data .= "\t\t\t<Email>" . $division['email'] . "</Email>\n";
                 $jpk_data .= "\t\t</OsobaNiefizyczna>\n";
                 $jpk_data .= "\t</Podmiot1>\n";
+                $jpk_data .= "\t<Ewidencja>\n";
             }
         }
 
@@ -538,7 +545,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 $jpkrow++;
                 $ten = empty($invoice['ten']) ? 'brak' : preg_replace('/[\s\-]/', '', $invoice['ten']);
                 $jpk_data .= "\t\t<NrKontrahenta>" . $ten . "</NrKontrahenta>\n";
-                $jpk_data .= "\t\t<NazwaKontrahenta>" . htmlspecialchars($invoice['name']) . "</NazwaKontrahenta>\n";
+                $jpk_data .= "\t\t<NazwaKontrahenta><![CDATA[" . $invoice['name'] . "]]></NazwaKontrahenta>\n";
                 if ($jpk_vat_version == 3) {
                     $jpk_data .= "\t\t<AdresKontrahenta>" . ($invoice['postoffice'] && $invoice['postoffice'] != $invoice['city'] && $invoice['street'] ? $invoice['city'] . ', ' : '')
                         . $invoice['address'] . ', ' . (empty($invoice['zip']) ? '' : $invoice['zip'] . ' ') . ($invoice['postoffice'] ? $invoice['postoffice'] : $invoice['city']) . "</AdresKontrahenta>\n";
@@ -549,6 +556,10 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 $jpk_data .= "\t\t<DataSprzedazy>" . strftime('%Y-%m-%d', $invoice['sdate']) . "</DataSprzedazy>\n";
 
                 if ($jpk_vat_version == 4) {
+                    if (!empty($invoice['flags'][DOC_FLAG_RECEIPT])) {
+                        $jpk_data .= "\t\t<TypDokumentu>FP</TypDokumentu>\n";
+                    }
+
                     $tax_categories = array();
                     foreach ($invoice['content'] as $item) {
                         if (!empty($item['taxcategory'])) {
@@ -559,9 +570,17 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                     sort($tax_categories, SORT_NUMERIC);
                     if (!empty($tax_categories)) {
                         foreach ($tax_categories as $idx => $tax_category) {
-                            $jpk_data .= "\t\t<GTU_" . sprintf("%02d", $idx + 1)
-                                . ">1</GTU_" . sprintf("%02d", $idx + 1) . ">\n";
+                            $jpk_data .= "\t\t<GTU_" . sprintf("%02d", $tax_category)
+                                . ">1</GTU_" . sprintf("%02d", $tax_category) . ">\n";
                         }
+                    }
+
+                    if (!empty($invoice['flags'][DOC_FLAG_TELECOM_SERVICE])) {
+                        $jpk_data .= "\t\t<EE>1</EE>\n";
+                    }
+
+                    if (!empty($invoice['flags'][DOC_FLAG_RELATED_ENTITY])) {
+                        $jpk_data .= "\t\t<TP>1</TP>\n";
                     }
 
                     $splitpayment = isset($invoice['splitpayment']) && !empty($invoice['splitpayment']);
@@ -1037,6 +1056,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 $jpk_data .= "\t\t<LiczbaWierszyZakupow>0</LiczbaWierszyZakupow>\n";
                 $jpk_data .= "\t\t<PodatekNaliczony>0</PodatekNaliczony>\n";
                 $jpk_data .= "\t</ZakupCtrl>\n";
+                $jpk_data .= "\t</Ewidencja>\n";
             }
         } else {
             $jpk_data .= "\t<FakturaCtrl>\n";
@@ -1066,10 +1086,16 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             $positions = 0;
             foreach ($invoices as $invoice) {
                 foreach ($invoice['content'] as $idx => $position) {
-                    $jpk_data .="\t<FakturaWiersz" . ($jpk_fa_version == 2 ? ' typ="G"' : '') . ">\n";
-                    $jpk_data .="\t\t<P_2B>" . $invoice['fullnumber'] . "</P_2B>\n";
-                    $jpk_data .="\t\t<P_7>" . htmlspecialchars($position['description']) . "</P_7>\n";
-                    $jpk_data .="\t\t<P_8A>" . htmlspecialchars($position['content']) . "</P_8A>\n";
+                    $jpk_data .= "\t<FakturaWiersz" . ($jpk_fa_version == 2 ? ' typ="G"' : '') . ">\n";
+                    $jpk_data .= "\t\t<P_2B>" . $invoice['fullnumber'] . "</P_2B>\n";
+                    $jpk_data .= "\t\t<P_7>"
+                        . htmlspecialchars(
+                            mb_strlen($position['description']) > 240
+                                ? mb_substr($position['description'], 0, 240) . ' ...'
+                                : $position['description']
+                        )
+                        . "</P_7>\n";
+                    $jpk_data .= "\t\t<P_8A>" . htmlspecialchars($position['content']) . "</P_8A>\n";
 
                     if (isset($invoice['invoice'])) {
                         $count = $position['count'] - $invoice['invoice']['content'][$idx]['count'];
@@ -1186,6 +1212,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 if (!is_null($attachment_name) && isset($docnumber)) {
     $attachment_name = str_replace('%number', $docnumber, $attachment_name);
     $attachment_name = preg_replace('/[^[:alnum:]_\.]/i', '_', $attachment_name);
+    $attachment_name .= '.' . ($invoice_type == 'pdf' ? 'pdf' : 'html');
 } elseif ($jpk) {
     if ($jpk_type == 'fa') {
         $attachment_name = 'JPK_FA_' . date('Y-m-d', $datefrom) . '_' . date('Y-m-d', $dateto)

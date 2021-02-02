@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,9 +24,15 @@
  *  $Id$
  */
 
-
 $promotion = $DB->GetRow(
-    'SELECT * FROM promotions WHERE id = ?',
+    'SELECT
+        p.id, p.name, p.description, p.disabled, p.datefrom, p.dateto, p.deleted,
+        COUNT(a.id) AS assignments
+    FROM promotions p
+    LEFT JOIN promotionschemas s ON s.promotionid = p.id
+    LEFT JOIN assignments a ON a.promotionschemaid = s.id    
+    WHERE p.id = ?
+    GROUP BY p.id, p.name, p.description, p.disabled, p.datefrom, p.dateto, p.deleted',
     array(intval($_GET['id']))
 );
 
@@ -36,8 +42,12 @@ if (!$promotion) {
 
 $promotion['schemas'] = $DB->GetAllByKey(
     'SELECT
-    s.name, s.disabled, s.description, s.id
-    FROM promotionschemas s WHERE s.promotionid = ?
+        s.name, s.disabled, s.description, s.id, s.deleted,
+        COUNT(a.id) AS assignments
+    FROM promotionschemas s
+    LEFT JOIN assignments a ON a.promotionschemaid = s.id
+    WHERE s.promotionid = ?
+    GROUP BY s.name, s.disabled, s.description, s.id, s.deleted
     ORDER BY name',
     'id',
     array($promotion['id'])
@@ -47,7 +57,7 @@ if (!empty($promotion['schemas'])) {
     $schemas = implode(', ', array_keys($promotion['schemas']));
     $promotion['tariffs'] = $DB->GetAll(
         'SELECT
-        t.name, t.id, t.value, t.upceil, t.downceil
+        t.name, t.id, t.type, t.value, t.upceil, t.downceil
         FROM tariffs t
         WHERE t.id IN (SELECT DISTINCT tariffid
             FROM promotionassignments

@@ -15,7 +15,7 @@
 		<TD colspan="6" class="nobr no-print">
 			<div class="lms-ui-filter-container">
 				<div class="lms-ui-filter-definition">
-					<FORM method="POST" action="?m=eventlist" name="filter">
+					<FORM method="POST" action="?m=eventlist" name="filter" id="filter">
 						<INPUT type="submit" class="hiddenbtn"> <INPUT type="HIDDEN" name="m" value="eventlist">
 						<span class="bold">{trans("Filter:")} </span>
 						{trans("Type:")}
@@ -38,8 +38,11 @@
 							</OPTION>
 							{foreach $userlist as $user}
 								{if !ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users') || (ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users') && $user.access) || is_array($filter.owner) && in_array($user.id, $filter.owner)}
-									<OPTION{if !$user.access} disabled{/if}
-											value="{$user.id}" {if is_array($filter.userid) && in_array($user.id, $filter.userid)}} selected{/if}>{$user.rname|truncate:40:"...":true} ({$user.login})</OPTION>
+									<OPTION value="{$user.id}"
+										{if is_array($filter.userid) && in_array($user.id, $filter.userid)}} selected{/if}
+										{if !$user.access} data-crossed{/if}>
+											{$user.rname|truncate:40:"&hellip;":true|escape} ({$user.login})
+									</OPTION>
 								{/if}
 							{/foreach}
 						</SELECT>

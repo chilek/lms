@@ -107,18 +107,26 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
     /**
      * Returns active users names
      *
+     * @param array $params Parameters
      * @return array Users names
      */
-    public function getUserNames()
+    public function getUserNames($params = array())
     {
-        return $this->db->GetAll('SELECT id, login, name, rname,
-				(CASE WHEN access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0) THEN 1 ELSE 0 END) AS access
-			FROM vusers WHERE deleted=0 ORDER BY rname ASC');
+        extract($params);
+
+        return $this->db->GetAll(
+            'SELECT id, login, name, rname, login,
+            (CASE WHEN access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0) THEN 1 ELSE 0 END) AS access
+            FROM vusers
+            WHERE deleted = 0'
+            . (isset($withDeleted) ? ' OR deleted = 1' : '' )
+            . ' ORDER BY rname ASC'
+        );
     }
 
     public function getUserNamesIndexedById()
     {
-        return $this->db->GetAllByKey('SELECT id, name, rname,
+        return $this->db->GetAllByKey('SELECT id, name, rname, login,
 				(CASE WHEN access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0) THEN 1 ELSE 0 END) AS access
 			FROM vusers WHERE deleted=0 ORDER BY rname ASC', 'id');
     }
@@ -179,6 +187,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
                 accessfrom, accessto, rname, twofactorauth
             FROM vallusers
             WHERE deleted = 0'
+                . (isset($userAccess) ? ' AND access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0)' : '' )
                 . (isset($divisions) && !empty($divisions) ? ' AND id IN (SELECT userid
                     FROM userdivisions
                     WHERE divisionid IN (' . $divisions . ')
@@ -192,6 +201,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
                     accessfrom, accessto, rname, twofactorauth
                 FROM vusers
                 WHERE deleted = 0'
+                . (isset($userAccess) ? ' AND access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0)' : '' )
                 . (isset($divisions) && !empty($divisions) ? ' AND id IN (SELECT userid
                         FROM userdivisions
                         WHERE divisionid IN (' . $divisions . ')
@@ -245,8 +255,9 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             }
             unset($row);
         }
-
-        $userlist['total'] = empty($userlist) ? 0 : count($userlist);
+        if (empty($short)) {
+            $userlist['total'] = empty($userlist) ? 0 : count($userlist);
+        }
         return $userlist;
     }
 
@@ -271,8 +282,8 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
     {
         $args = array(
             'login' => $user['login'],
-            'firstname' => $user['firstname'],
-            'lastname' => $user['lastname'],
+            'firstname' => Utils::removeInsecureHtml($user['firstname']),
+            'lastname' => Utils::removeInsecureHtml($user['lastname']),
             'email' => $user['email'],
             'passwd' => crypt($user['password']),
             'rights' => $user['rights'],
@@ -395,6 +406,26 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
     }
 
     /**
+     * Check user access
+     *
+     * @param int $id User id
+     * @return int
+     */
+    public function checkUserAccess($id)
+    {
+        return $this->db->Execute(
+            'SELECT 1
+            FROM users 
+            WHERE id = ?
+            AND deleted = 0
+            AND access = 1
+            AND accessfrom <= ?NOW?
+            AND (accessto >= ?NOW? OR accessto = 0)',
+            array($id)
+        );
+    }
+
+    /**
      * Returns user data
      *
      * @param int $id User id
@@ -482,8 +513,8 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
     {
         $args = array(
             'login' => $user['login'],
-            'firstname' => $user['firstname'],
-            'lastname' => $user['lastname'],
+            'firstname' => Utils::removeInsecureHtml($user['firstname']),
+            'lastname' => Utils::removeInsecureHtml($user['lastname']),
             'email' => $user['email'],
             'rights' => $user['rights'],
             'hosts' => $user['hosts'],
@@ -507,6 +538,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             if (!empty($user['diff_division_del'])) {
                 foreach ($user['diff_division_del'] as $divisiondelid) {
                     $this->db->Execute('DELETE FROM userdivisions WHERE userid = ? AND divisionid = ?', array($user['id'], $divisiondelid));
+                    $this->db->Execute('DELETE FROM uiconfig WHERE userid = ? AND divisionid = ?', array($user['id'], $divisiondelid));
                 }
             }
 

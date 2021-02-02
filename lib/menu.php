@@ -305,6 +305,12 @@ $menu = array(
                     'tip' => trans('Lists and reports printing'),
                     'prio' => 80,
                 ),
+                'vlanlist' => array(
+                    'name' => trans('VLAN List'),
+                    'link' => '?m=vlanlist',
+                    'tip' => trans('VLAN List'),
+                    'prio' => 90,
+                ),
             ),
         ),
 
@@ -487,6 +493,12 @@ $menu = array(
                     'link' => '?m=documentadd',
                     'tip' => trans('Allows you to add new document'),
                     'prio' => 20,
+                ),
+                'documentscanadd' => array(
+                    'name' => trans('Add Scans'),
+                    'link' => '?m=documentscanadd',
+                    'tip' => trans('Allow you to attach scan to existing document'),
+                    'prio' => 25,
                 ),
 //              'documentsearch' => array(
 //                  'name' => trans('Search'),

@@ -54,19 +54,7 @@ if (isset($_GET['ajax']) && isset($_GET['op'])) {
 $ticket['childtickets'] = $LMS->GetChildTickets($id);
 
 if (!empty($ticket['childtickets'])) {
-    $childticketscontent = $LMS->GetQueueContents(array('parentids' => $id, 'count' => false, 'rights' => true));
-    unset($childticketscontent['total']);
-    unset($childticketscontent['state']);
-    unset($childticketscontent['order']);
-    unset($childticketscontent['direction']);
-    unset($childticketscontent['owner']);
-    unset($childticketscontent['removed']);
-    unset($childticketscontent['priority']);
-    unset($childticketscontent['deadline']);
-    unset($childticketscontent['service']);
-    unset($childticketscontent['type']);
-    unset($childticketscontent['unread']);
-    unset($childticketscontent['rights']);
+    $childticketscontent = $LMS->GetQueueContents(array('parentids' => $id, 'count' => false, 'rights' => true, 'short' => true));
 }
 
 if (!empty($ticket['relatedtickets'])) {

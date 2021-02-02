@@ -29,7 +29,8 @@
 			<B>{trans("Description:")}</B>
 		</TD>
 		<TD WIDTH="98%">
-			<TEXTAREA ROWS="5" COLS="50" NAME="customergroup[description]" {tip text="Enter additional information (optional)"}>{$customergroup.description}</TEXTAREA>
+			<TEXTAREA ROWS="5" COLS="50" NAME="customergroup[description]" {tip text="Enter additional information (optional)"}
+				>{$customergroup.description|escape}</TEXTAREA>
 		</TD>
 	</TR>
 </FORM>

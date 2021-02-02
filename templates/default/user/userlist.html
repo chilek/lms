@@ -63,7 +63,7 @@
 			{$user.login}
 		</TD>
 		<TD class="nobr">
-			{$user.name}
+			{$user.name|escape}
 		</TD>
 		<TD class="nobr">
 			{if $user.phone}{$user.phone}{else} - {/if}

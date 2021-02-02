@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -47,5 +47,5 @@ $_LANG['Submit'] = 'Zapisz';
 $_LANG['There is no Help Center tree. Use $athis form$b to add root item.'] = 'Nie ma jeszcze struktury Centrum Pomocy. Użyj $atego formularza$b aby dodać główną pozycję.';
 $_LANG['This cannot be empty'] = 'To nie może być puste';
 $_LANG['This module is not configured yet.'] = 'Ten moduł nie jest jeszcze skonfigurowany.';
-$_LANG['This module shows problems solving center'] = 'Moduł ten wyświetla centrum rozwiązywania problemów';
+$_LANG['This module shows problems solving center'] = 'Ten moduł wyświetla centrum rozwiązywania problemów';
 $_LANG['Title:'] = 'Tytuł:';

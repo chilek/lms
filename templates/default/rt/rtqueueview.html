@@ -7,11 +7,33 @@
 <style>
 
 	@media screen and (max-width: 1200px) {
-		.ticket-location,
 		.ticket-deadline,
 		.ticket-events {
 			display: none;
 		}
+	}
+
+	.ticket-list-buttons > div {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		flex-wrap: wrap;
+	}
+
+	@media screen and (max-width: 1000px) {
+		.ticket-list-buttons > div {
+			flex-direction: column;
+			align-items: flex-end;
+		}
+	}
+
+	.ticket-list-buttons > div > * {
+		margin-left: 0.2em;
+		margin-right: 0.2em;
+	}
+
+	.ticket-list-buttons > div > :last-child {
+		margin-right: 0.5em;
 	}
 
 </style>
@@ -38,12 +60,19 @@
                 {/if}
             </TD>
 			<TD class="lms-ui-pagination text-right ticket-list-buttons" colspan="4">
-				<label> <input type="checkbox" class="lms-ui-multi-check-all">
-					{trans("Check All")}
-				</label>
-				{button icon="fas fa-reply-all" class="group-action-run" label="Run group action"}
-				{button icon="add" onclick="location.href = '?m=rtticketadd{if $filter.ids}{if !is_array($filter.ids)}&id={$filter.ids}{else}{if count($filter.ids) == 1}&id={$filter.ids[0]}{/if}{/if}{/if}';"
-					label="New Ticket"}
+				<div>
+					<label>
+						<input type="checkbox" class="lms-ui-multi-check-all">
+						{trans("Check All")}
+					</label>
+					{button icon="fas fa-reply-all" class="group-action-run" label="Run group action"}
+					{if ConfigHelper::checkPrivilege('helpdesk_advanced_operations')}
+						{button icon="delete" class="group-action-delete" label="Delete"}
+						{button icon="delete" class="group-action-delete-permanently" label="Delete permanently"}
+					{/if}
+					{button icon="add" href="?m=rtticketadd{if $filter.ids}{if !is_array($filter.ids)}&id={$filter.ids}{else}{if count($filter.ids) == 1}&id={$filter.ids[0]}{/if}{/if}{/if}"
+						label="New Ticket"}
+				</div>
 			</TD>
 		</TR>
         {include file="rt/rtheader.html"}
@@ -59,12 +88,19 @@
                 {/if}
             </TD>
 			<TD class="lms-ui-pagination text-right ticket-list-buttons" colspan="4">
-				<label> <input type="checkbox" class="lms-ui-multi-check-all">
-					{trans("Check all")}
-				</label>
-				{button icon="fas fa-reply-all" class="group-action-run" label="Run group action"}
-				{button icon="add" onclick="location.href = '?m=rtticketadd{if $filter.ids}{if !is_array($filter.ids)}&id={$filter.ids}{else}{if count($filter.ids) == 1}&id={$filter.ids[0]}{/if}{/if}{/if}';"
-					label="New Ticket"}
+				<div>
+					<label>
+						<input type="checkbox" class="lms-ui-multi-check-all">
+						{trans("Check all")}
+					</label>
+					{button icon="fas fa-reply-all" class="group-action-run" label="Run group action"}
+					{if ConfigHelper::checkPrivilege('helpdesk_advanced_operations')}
+						{button icon="delete" class="group-action-delete" label="Delete"}
+						{button icon="delete" class="group-action-delete-permanently" label="Delete permanently"}
+					{/if}
+					{button icon="add" href="?m=rtticketadd{if $filter.ids}{if !is_array($filter.ids)}&id={$filter.ids}{else}{if count($filter.ids) == 1}&id={$filter.ids[0]}{/if}{/if}{/if}"
+						label="New Ticket"}
+				</div>
 			</TD>
 		</TR>
     </TFOOT>
@@ -81,12 +117,8 @@
 
 	$(function() {
 		function disableLink() {
-			var disabled = $('.lms-ui-multi-check:checked').length < 2;
-			if (disabled) {
-				$('.group-action-run').prop('disabled', true);
-			} else {
-				$('.group-action-run').prop('disabled', false);
-			}
+			$('.group-action-run,.group-action-delete').prop('disabled', $('.lms-ui-multi-check:checked').length < 2);
+			$('.group-action-delete-permanently').prop('disabled', $('.lms-ui-multi-check:checked[data-deleted="1"]').length < 2);
 		};
 		disableLink();
 
@@ -100,6 +132,26 @@
 				ticketid.push($(this).val());
 			});
 			location.href = '?m=rtmessageadd&ticketid[]=' + ticketid.join('&ticketid[]=');
+		});
+
+		$('.group-action-delete').click(function () {
+			confirmDialog($t('Are you sure, you want to remove all selected tickets?'), this).done(function() {
+				var ticketid = [];
+				$('[name="ticketid[]"]:checked').each(function () {
+					ticketid.push($(this).val());
+				});
+				location.href = '?m=rtticketdel&taction=delete&id[]=' + ticketid.join('&id[]=');
+			});
+		});
+
+		$('.group-action-delete-permanently').click(function () {
+			confirmDialog($t('Are you sure, you want to permanently remove all selected tickets?'), this).done(function() {
+				var ticketid = [];
+				$('[name="ticketid[]"]:checked[data-deleted="1"]').each(function () {
+					ticketid.push($(this).val());
+				});
+				location.href = '?m=rtticketdel&taction=delperm&id[]=' + ticketid.join('&id[]=');
+			});
 		});
 
 		$('.delete-ticket').click(function() {
@@ -152,9 +204,9 @@
 
 		$(window).resize(function() {
 			if (parseInt($(this).outerWidth()) <= 1200) {
-				$('.ticket-list-filter').attr('colspan', 7);
+				$('.ticket-list-filter').attr('colspan', 8);
 				$('.ticket-list-pagination').attr('colspan', 4);
-				$('.ticket-list-buttons').attr('colspan', 3);
+				$('.ticket-list-buttons').attr('colspan', 4);
 			} else {
 				$('.ticket-list-filter').attr('colspan', 10);
 				$('.ticket-list-pagination').attr('colspan', 6);

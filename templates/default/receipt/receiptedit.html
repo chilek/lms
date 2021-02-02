@@ -55,7 +55,7 @@
 		<TD WIDTH="99%" NOWRAP>
 			<SELECT SIZE="1" NAME="receipt[regid]" {tip text="Select cash registry" trigger="regid"}>
 				{foreach from=$cashreglist item=c}
-				<OPTION VALUE="{$c.id}"{if $c.id == $receipt.regid} SELECTED{/if}>{$c.name|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
+				<OPTION VALUE="{$c.id}"{if $c.id == $receipt.regid} SELECTED{/if}>{$c.name|truncate:40:"&hellip;":true} ({$c.id|string_format:"%04d"})</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>
@@ -107,9 +107,13 @@
 				</TD>
 				<TD style="width: 99%;">
 					{if isset($customer.id)}
-					{customerlist form="setcustomer" customers=$customerlist selected=$customer.id selectname="customer" inputname="customerid" customOnChange="document.getElementById('radio_customer').checked=true;"}
+						{customerlist form="setcustomer" customers=$customerlist selected=$customer.id version=2
+							selectname="customer" inputname="customerid"
+							customOnChange="document.getElementById('radio_customer').checked=true;"}
 					{else}
-					{customerlist form="setcustomer" customers=$customerlist selected=$receipt.customerid selectname="customer" inputname="customerid" customOnChange="document.getElementById('radio_customer').checked=true;"}
+					{customerlist form="setcustomer" customers=$customerlist selected=$receipt.customerid version=2
+						selectname="customer" inputname="customerid"
+						customOnChange="document.getElementById('radio_customer').checked=true;"}
 					{/if}
 				</TD>
 			</TR>

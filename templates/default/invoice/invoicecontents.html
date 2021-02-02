@@ -96,16 +96,19 @@
             </TD>
             <TD class="invoice-contents-sortable-handler">
                 <INPUT TYPE="text" class="invoice-contents-field-edit" NAME="invoice-contents[{$posuid}][name]" SIZE="40" style="width: 300px; display: none;"
-                       value="{htmlspecialchars($row.name)}" data-old-value="{htmlspecialchars($item.name)}"
+                       value="{$row.name|escape}" data-old-value="{$item.name|escape}"
                        {tip text="Enter description"}>
                 <span class="invoice-contents-field-value">{$item.name}</span>
+                {if isset($item.name_custom_contents)}
+                    {$item.name_custom_contents}
+                {/if}
             </TD>
             <TD class="nobr">
                 {tax_category_selection class="invoice-contents-field-edit" elementname="invoice-contents["|cat:$posuid|cat:"][taxcategory]"
                     selected=$row.taxcategory visible=false tip="Select tax category" data_old_value=$item.taxcategory}
                 <span class="invoice-contents-field-value"{if $item.taxcategory} title="{$_TAX_CATEGORIES[$item.taxcategory].description}"{/if}>
                     {if $item.taxcategory}
-                        {$_TAX_CATEGORIES[$item.taxcategory].label}
+                        ({sprintf('%02d', $item.taxcategory)}) {$_TAX_CATEGORIES[$item.taxcategory].label}
                     {else}
                         {trans("- none -")}
                     {/if}
@@ -119,6 +122,9 @@
             <TD class="text-right">
                 <INPUT TYPE="text" class="invoice-contents-field-edit" NAME="invoice-contents[{$posuid}][count]" SIZE="3"
                        VALUE="{$row.count}" data-old-value="{$item.count}" style="display: none;">
+                {if isset($item.count_custom_contents)}
+                    {$item.count_custom_contents}
+                {/if}
                 <INPUT TYPE="text" class="invoice-contents-field-edit" NAME="invoice-contents[{$posuid}][jm]" SIZE="3"
                        VALUE="{$row.jm}" data-old-value="{$item.jm}" style="display: none;">
                 <span class="invoice-contents-field-value nobr">
@@ -190,10 +196,13 @@
             <TD class="text-right nobr" class="invoice-contents-buttons">
                 <input type="hidden" class="invoice-contents-posuid" name="invoice-contents[{$posuid}][posuid]" value="{$posuid}">
                 {if !$invoice.closed}
-                <A HREF="javascript:editItem({$posuid});" class="invoice-contents-field-value"><IMG SRC="img/edit.gif" {tip text="Edit this item"}></A>
-                <A HREF="javascript:saveItem({$posuid});" class="invoice-contents-field-edit" style="display: none;"><IMG SRC="img/save.gif" {tip text="Save this item"}></A>
-                <A HREF="javascript:cancelEditItem({$posuid});" class="invoice-contents-field-edit" style="display: none;"><IMG SRC="img/cancel.gif" {tip text="Cancel changes"}></A>
-                <A HREF="javascript:delItem({$posuid});"><IMG SRC="img/delete.gif" {tip text="Remove this item from list"}></A>
+                    {button type="link" icon="edit" tip="Edit this item" onclick="editItem({$posuid});"
+                        class="invoice-contents-field-value"}
+                    {button type="link" icon="save" tip="Save this item" onclick="saveItem({$posuid});"
+                        class="invoice-contents-field-edit" visible=false}
+                    {button type="link" icon="cancel" tip="Cancel changes" onclick="cancelEditItem({$posuid});"
+                        class="invoice-contents-field-edit" visible=false}
+                    {button type="link" icon="delete" tip="Remove this item from list" onclick="delItem({$posuid});"}
                 {/if}
             </TD>
         </TR>
@@ -292,7 +301,7 @@
                    value="{if isset($itemdata) && !isset($error.posuid)}{$itemdata.valuebrutto}{/if}">
             </TD>
             <TD>
-                <A HREF="javascript:addItem();"><IMG SRC="img/save.gif" ALT="" {tip text="Add item"}></A>
+                {button type="link" icon="save" tip="Add item" onclick="addItem();"}
             </TD>
         </TR>
         {/if}
@@ -327,18 +336,17 @@
                                         {if preg_match('/duplicate/i', $default_printpage)} checked{/if}>
                                 {$_DOCENTITIES[$smarty.const.DOC_ENTITY_DUPLICATE]}
                             </label>
-                            &nbsp;
-                            <A HREF="?m=invoicelist{if $invoice.proforma}&proforma=1{/if}">{trans("Cancel")} <IMG src="img/cancel.gif"></A>
-                            <A href="?m={$layout.module}&action=init{if $layout.module == 'invoiceedit'}&id={$invoice.id}{/if}">{trans("Clear Contents")} <IMG src="img/delete.gif" alt=""></A>
+                            {button icon="cancel" label="Cancel" href="?m=invoicelist{if $invoice.proforma}&proforma=1{/if}"}
+                            {button icon="delete" label="Clear Contents" href="?m={$layout.module}&action=init{if $layout.module == 'invoiceedit'}&id={$invoice.id}{/if}"}
                             {if !$customer}
-                                <A class="customer-alert" href="#">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
-                                <A class="customer-alert" href="#">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
+                                {button icon="save" label="Save" class="customer-alert"}
+                                {button icon="print" label="Save & Print" class="customer-alert"}
                             {elseif !$contents}
-                                <A class="invoice-alert" href="#">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
-                                <A class="invoice-alert" href="#">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
+                                {button icon="save" label="Save" class="invoice-alert"}
+                                {button icon="print" label="Save & Print" class="invoice-alert"}
                             {else}
-                            <A HREF="javascript:saveInvoice()">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
-                            <A HREF="javascript:printInvoice()">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
+                                {button icon="save" label="Save" onclick="saveInvoice();"}
+                                {button icon="print" label="Save & Print" onclick="printInvoice();"}
                             {/if}
                         </TD>
                     </TR>

@@ -38,13 +38,16 @@ $parameters = array(
     'fakehour:' => 'g:',
     'part-size:' => 'l:',
     'interval:' => 'i:',
+    'ignore-send-date' => null,
     'extra-file:' => 'e:',
     'backup' => 'b',
     'archive' => 'a',
     'output-directory:' => 'o:',
     'no-attachments' => 'n',
     'customerid:' => null,
+    'division:' => null,
     'customergroups:' => null,
+    'customer-status:' => null,
 );
 
 $long_to_shorts = array();
@@ -101,18 +104,24 @@ lms-sendinvoices.php
 -p, --part-number=NN            defines which part of invoices that should be sent;
 -g, --fakehour=HH               override system hour; if no fakehour is present - current hour will be used;
                                 (deprecated - use --part-number instead of);
--s, --part-size=NN              defines part size of invoices that should be sent
+-l, --part-size=NN              defines part size of invoices that should be sent
                                 (can be specified as percentage value);
 -i, --interval=ms               force delay interval between subsequent posts
+    --ignore-send-date          send documents which have already been sent earlier;
 -e, --extra-file=/tmp/file.pdf  send additional file as attachment
 -b, --backup                    make financial document file backup
 -a, --archive                   archive financial documents in documents directory
 -o, --output-directory=/path    output directory for document backup
 -n, --no-attachments            dont attach documents
     --customerid=<id>           limit invoices to specifed customer
+    --division=<shortname>
+                                limit assignments to customers which belong to specified
+                                division
     --customergroups=<group1,group2,...>
                                 allow to specify customer groups to which notified customers
                                 should be assigned
+    --customer-status=<status1,status2,...>
+                                send invoices of customers with specified status only
 
 EOF;
     exit(0);
@@ -232,6 +241,18 @@ include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 
 $SYSLOG = SYSLOG::getInstance();
 
+// Initialize Session, Auth and LMS classes
+$AUTH = null;
+$LMS = new LMS($DB, $AUTH, $SYSLOG);
+
+$plugin_manager = new LMSPluginManager();
+$LMS->setPluginManager($plugin_manager);
+
+$divisionid = isset($options['division']) ? $LMS->getDivisionIdByShortName($options['division']) : null;
+if (!empty($divisionid)) {
+    ConfigHelper::setFilter($divisionid);
+}
+
 if (!$no_attachments) {
     // Set some template and layout variables
 
@@ -286,6 +307,19 @@ if ($backup || $archive) {
     $mdn_email = ConfigHelper::getConfig('sendinvoices.mdn_email', '', true);
     $part_size = isset($options['part-size']) ? $options['part-size'] : ConfigHelper::getConfig('sendinvoices.limit', '0');
 
+    $allowed_customer_status = Utils::determineAllowedCustomerStatus(
+        isset($options['customer-status'])
+            ? $options['customer-status']
+            : ConfigHelper::getConfig('sendinvoices.allowed_customer_status', ''),
+        -1
+    );
+
+    if (empty($allowed_customer_status)) {
+        $customer_status_condition = '';
+    } else {
+        $customer_status_condition = ' AND c.status IN (' . implode(',', $allowed_customer_status) . ')';
+    }
+
     if (isset($options['interval'])) {
         $interval = $options['interval'];
     } else {
@@ -296,7 +330,6 @@ if ($backup || $archive) {
     } else {
         $interval = intval($interval);
     }
-
 
     if (empty($sender_email)) {
         die("Fatal error: sender_email unset! Can't continue, exiting." . PHP_EOL);
@@ -385,15 +418,6 @@ if ($backup || $archive) {
     }
 }
 
-// Initialize Session, Auth and LMS classes
-
-$SYSLOG = null;
-$AUTH = null;
-$LMS = new LMS($DB, $AUTH, $SYSLOG);
-
-$plugin_manager = new LMSPluginManager();
-$LMS->setPluginManager($plugin_manager);
-
 if (!$no_attachments) {
     $plugin_manager->executeHook('smarty_initialized', $SMARTY);
 }
@@ -426,14 +450,14 @@ if ($backup || $archive) {
 
             $part_size = floor(($percent * $count) / 100);
             $part_offset = $part_number * $part_size;
-            if ($part_offset >= $count) {
+            if ((!$part_offset && $part_number) || $part_offset >= $count) {
                 die;
             }
         }
     }
 }
 
-$ignore_send_date = ConfigHelper::checkConfig('sendinvoices.ignore_send_date');
+$ignore_send_date = isset($options['ignore-send-date']) || ConfigHelper::checkConfig('sendinvoices.ignore_send_date');
 
 $query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctype, d.archived, d.senddate, n.template" . ($backup || $archive ? '' : ', m.email') . "
 		FROM documents d
@@ -441,7 +465,10 @@ $query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctyp
         . ($backup || $archive ? '' : " JOIN (SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
 				FROM customercontacts WHERE (type & ?) = ? GROUP BY customerid) m ON m.customerid = c.id")
         . " LEFT JOIN numberplans n ON n.id = d.numberplanid 
-		WHERE " . ($customerid ? 'c.id = ' . $customerid . ' AND ' : '') . "c.deleted = 0 AND d.cancelled = 0 AND d.type IN (?, ?, ?, ?)" . ($backup || $archive ? '' : " AND c.invoicenotice = 1")
+		WHERE " . ($customerid ? 'c.id = ' . $customerid : '1 = 1')
+            . $customer_status_condition
+            . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
+            . " AND c.deleted = 0 AND d.cancelled = 0 AND d.type IN (?, ?, ?, ?)" . ($backup || $archive ? '' : " AND c.invoicenotice = 1")
             . ($archive ? " AND d.archived = 0" : '') . "
 			AND d.cdate >= $daystart AND d.cdate <= $dayend"
             . ($customergroups ?: '')
