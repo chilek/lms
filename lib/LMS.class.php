@@ -1162,6 +1162,12 @@ class LMS
         return $manager->SetNetDevLinkType($dev1, $dev2, $link);
     }
 
+    public function GetNodeLinkType($devid, $nodeid)
+    {
+        $manager = $this->getNodeManager();
+        return $manager->GetNodeLinkType($devid, $nodeid);
+    }
+
     public function SetNodeLinkType($node, $link)
     {
         $manager = $this->getNodeManager();

@@ -79,6 +79,8 @@ interface LMSNodeManagerInterface
 
     public function NodeStats();
 
+    public function GetNodeLinkType($devid, $nodeid);
+
     public function SetNodeLinkType($node, $link = null);
 
     public function updateNodeField($nodeid, $field, $value);

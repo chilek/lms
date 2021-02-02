@@ -834,18 +834,38 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         return $result;
     }
 
+    public function GetNodeLinkType($devid, $nodeid)
+    {
+        $link = $this->db->GetRow(
+            'SELECT linktype AS type, linktechnology AS technology,
+            linkspeed AS speed, linkradiosector AS radiosector, port FROM nodes
+            WHERE netdev = ? AND id = ?',
+            array($devid, $nodeid)
+        );
+        if (empty($link)) {
+            $link = array();
+        } else {
+            $link['radiosectors'] = $this->db->GetAll(
+                'SELECT id, name FROM netradiosectors WHERE netdev = ?'
+                . ($link['technology'] ? ' AND (technology = ' . $link['technology'] . ' OR technology = 0)' : '')
+                . ' ORDER BY name',
+                array($devid)
+            );
+        }
+
+        return $link;
+    }
+
     public function SetNodeLinkType($node, $link = null)
     {
         if (empty($link)) {
             $type = 0;
             $technology = 0;
             $radiosector = null;
-            $port = 0;
             $speed = 100000;
         } else {
             $type = isset($link['type']) ? intval($link['type']) : 0;
             $radiosector = isset($link['radiosector']) ? intval($link['radiosector']) : null;
-            $port = isset($link['port']) ? intval($link['port']) : 0;
             if ($type != 1 || $radiosector == 0) {
                 $radiosector = null;
             }
@@ -853,17 +873,22 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             $speed = isset($link['speed']) ? intval($link['speed']) : 100000;
         }
 
-        $res = $this->db->Execute(
-            'UPDATE nodes SET port=?, linktype=?, linkradiosector = ?, linktechnology=?, linkspeed=? WHERE id=?',
-            array($port, $type, $radiosector, $technology, $speed, $node)
-        );
+        $query = 'UPDATE nodes SET linktype = ?, linkradiosector = ?, linktechnology = ?, linkspeed = ?';
+        $args = array($type, $radiosector, $technology, $speed);
+        if (isset($link['port'])) {
+            $query .= ', port = ?';
+            $args[] = intval($link['port']);
+        }
+        $query .= ' WHERE id=?';
+        $args[] = $node;
+        $res = $this->db->Execute($query, $args);
+
         if ($this->syslog && $res) {
             $nodedata = $this->db->GetRow('SELECT ownerid, netdev FROM vnodes WHERE id=?', array($node));
             $args = array(
                 SYSLOG::RES_NODE => $node,
                 SYSLOG::RES_CUST => $nodedata['ownerid'],
                 SYSLOG::RES_NETDEV => $nodedata['netdev'],
-                'port' => $port,
                 'linktype' => $type,
                 'linkradiosector' => $radiosector,
                 'linktechnology' => $technology,

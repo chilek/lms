@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -23,31 +23,6 @@
  *
  *  $Id$
  */
-
-function GetNetLinkRadioSectors($link)
-{
-    global $DB;
-
-    $result = $DB->GetRow(
-        'SELECT (CASE src WHEN ? THEN dstradiosector ELSE srcradiosector END) AS srcradiosector,
-		(CASE src WHEN ? THEN srcradiosector ELSE dstradiosector END) AS dstradiosector
-		FROM netlinks
-		WHERE (src = ? AND dst = ?) OR (dst = ? AND src = ?)',
-        array($link['id'], $link['id'], $link['id'], $link['devid'], $link['id'], $link['devid'])
-    );
-    if (empty($result)) {
-        $result = array();
-    }
-
-    $result['dst'] = $DB->GetAll('SELECT id, name FROM netradiosectors WHERE netdev = ? '
-        . ($link['type'] == 1 && $link['technology'] ? ' AND (technology = 0 OR technology = ' . intval($link['technology']) . ')' : '')
-        . ' ORDER BY name', array($link['id']));
-    $result['src'] = $DB->GetAll('SELECT id, name FROM netradiosectors WHERE netdev = ? '
-        . ($link['type'] == 1 && $link['technology'] ? ' AND (technology = 0 OR technology = ' . intval($link['technology']) . ')' : '')
-        . ' ORDER BY name', array($link['devid']));
-
-    return $result;
-}
 
 function update_netlink_properties($id, $devid, $link)
 {
@@ -154,9 +129,7 @@ $isnetlink = isset($_GET['isnetlink']) ? intval($_GET['isnetlink']) : 0;
 if ($isnetlink) {
     $link = $LMS->GetNetDevLinkType($id, $devid);
 } else {
-    $link = $DB->GetRow("SELECT linktype AS type, linktechnology AS technology,
-		linkspeed AS speed, linkradiosector AS radiosector, port FROM nodes
-		WHERE netdev = ? AND id = ?", array($id, $devid));
+    $link = $LMS->GetNodeLinkType($id, $devid);
 }
 
 $link['id'] = $id;
@@ -164,12 +137,8 @@ $link['devid'] = $devid;
 $link['isnetlink'] = $isnetlink;
 
 $SMARTY->assign('link', $link);
-if ($isnetlink) {
-    $radiosectors = GetNetLinkRadioSectors($link);
-} else {
-    $radiosectors = $DB->GetAll('SELECT id, name FROM netradiosectors WHERE netdev = ?'
-        . ($link['technology'] ? ' AND (technology = ' . $link['technology'] . ' OR technology = 0)' : '')
-        . ' ORDER BY name', array($id));
-}
+
+$radiosectors = isset($link['radiosectors']) ? $link['radiosectors'] : array();
+
 $SMARTY->assign('radiosectors', $radiosectors);
 $SMARTY->display('netdev/netlinkproperties.html');
