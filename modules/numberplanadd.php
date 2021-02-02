@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -29,10 +29,6 @@ $numberplanadd = isset($_POST['numberplanadd']) ? $_POST['numberplanadd'] : null
 if (!empty($numberplanadd) && count($numberplanadd)) {
     $numberplanadd['template'] = trim($numberplanadd['template']);
 
-    if ($numberplanadd['template']=='' && $numberplanadd['doctype']==0 && $numberplanadd['period']==0) {
-        $SESSION->redirect('?m=numberplanlist');
-    }
-
     if ($numberplanadd['template'] == '') {
         $error['template'] = trans('Number template is required!');
     } elseif (!preg_match('/%[1-9]{0,1}N/', $numberplanadd['template'])
@@ -52,11 +48,11 @@ if (!empty($numberplanadd) && count($numberplanadd)) {
         if ($DB->GetOne(
             'SELECT 1 FROM numberplans n
 			WHERE doctype = ? AND isdefault = 1'
-            .(!empty($_POST['selected']) ? ' AND EXISTS (
-			        SELECT 1 FROM numberplanassignments WHERE planid = n.id
-			        AND divisionid IN ('.implode(',', array_keys($_POST['selected'])).'))'
-            : ' AND NOT EXISTS (SELECT 1 FROM numberplanassignments
-				WHERE planid = n.id)'),
+            . (!empty($numberplanadd['divisions']) ? ' AND EXISTS (
+                SELECT 1 FROM numberplanassignments WHERE planid = n.id
+                    AND divisionid IN (' . implode(',', Utils::filterIntegers($numberplanadd['divisions'])) . '))'
+                : ' AND NOT EXISTS (SELECT 1 FROM numberplanassignments
+                WHERE planid = n.id)'),
             array($numberplanadd['doctype'])
         )) {
             $error['doctype'] = trans('Selected document type has already defined default plan!');
@@ -64,37 +60,7 @@ if (!empty($numberplanadd) && count($numberplanadd)) {
     }
 
     if (!$error) {
-        $args = array(
-            'template' => $numberplanadd['template'],
-            'doctype' => $numberplanadd['doctype'],
-            'period' => $numberplanadd['period'],
-            'isdefault' => isset($numberplanadd['isdefault']) ? 1 : 0
-        );
-        $DB->Execute('INSERT INTO numberplans (template, doctype, period, isdefault)
-				VALUES (?,?,?,?)', array_values($args));
-
-        $id = $DB->GetLastInsertID('numberplans');
-
-        if ($SYSLOG) {
-            $args[SYSLOG::RES_NUMPLAN] = $id;
-            $SYSLOG->AddMessage(SYSLOG::RES_NUMPLAN, SYSLOG::OPER_ADD, $args);
-        }
-
-        if (!empty($_POST['selected'])) {
-            foreach ($_POST['selected'] as $idx => $name) {
-                $DB->Execute('INSERT INTO numberplanassignments (planid, divisionid)
-						VALUES (?, ?)', array($id, intval($idx)));
-                if ($SYSLOG) {
-                    $planassignid = $DB->GetLastInsertID('numberplanassignments');
-                    $args = array(
-                        SYSLOG::RES_NUMPLANASSIGN => $planassignid,
-                        SYSLOG::RES_NUMPLAN => $id,
-                        SYSLOG::RES_DIV => intval($idx)
-                    );
-                    $SYSLOG->AddMessage(SYSLOG::RES_NUMPLANASSIGN, SYSLOG::OPER_ADD, $args);
-                }
-            }
-        }
+        $LMS->addNumberPlan($numberplanadd);
 
         if (!isset($numberplanadd['reuse'])) {
             $SESSION->redirect('?m=numberplanlist');
@@ -104,14 +70,13 @@ if (!empty($numberplanadd) && count($numberplanadd)) {
         unset($numberplanadd['period']);
         unset($numberplanadd['doctype']);
         unset($numberplanadd['isdefault']);
+        $numberplanadd['divisions'] = array();
     } else {
-        $numberplanadd['selected'] = array();
-        if (isset($_POST['selected'])) {
-            foreach ($_POST['selected'] as $idx => $name) {
-                        $numberplanadd['selected'][$idx]['id'] = $idx;
-                        $numberplanadd['selected'][$idx]['name'] = $name;
-            }
+        $divisions = array();
+        if (!empty($numberplanadd['divisions'])) {
+            $divisions = array_flip($numberplanadd['divisions']);
         }
+        $numberplanadd['divisions'] = $divisions;
     }
 }
 
@@ -120,6 +85,6 @@ $layout['pagetitle'] = trans('New Numbering Plan');
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('numberplanadd', $numberplanadd);
-$SMARTY->assign('available', $LMS->GetDivisions(array('status' => 0)));
+$SMARTY->assign('divisions', $LMS->GetDivisions(array('status' => 0)));
 $SMARTY->assign('error', $error);
 $SMARTY->display('numberplan/numberplanadd.html');

@@ -3413,6 +3413,30 @@ class LMS
         return $manager->GetPromotions();
     }
 
+    public function getNumberPlan($id)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->getNumberPlan($id);
+    }
+
+    public function addNumberPlan(array $numberplan)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->addNumberPlan($numberplan);
+    }
+
+    public function updateNumberPlan(array $numberplan)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->updateNumberPlan($numberplan);
+    }
+
+    public function deleteNumberPlan($id)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->deleteNumberPlan($id);
+    }
+
     public function AggregateDocuments($list)
     {
         $manager = $this->getFinanceManager();

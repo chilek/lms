@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,8 +24,7 @@
  *  $Id$
  */
 
-$numberplan = $DB->GetRow('SELECT id, period, template, doctype, isdefault
-			    FROM numberplans WHERE id=?', array($_GET['id']));
+$numberplan = $LMS->getNumberPlan($_GET['id']);
 
 $template = $numberplan['template'];
 
@@ -58,11 +57,11 @@ if (is_array($numberplanedit) && count($numberplanedit)) {
         if ($DB->GetOne(
             'SELECT 1 FROM numberplans n
 			WHERE doctype = ? AND isdefault = 1 AND n.id != ?'
-            .(!empty($_POST['selected']) ? ' AND EXISTS (
-				SELECT 1 FROM numberplanassignments WHERE planid = n.id
-				AND divisionid IN ('.implode(',', array_keys($_POST['selected'])).'))'
-            : ' AND NOT EXISTS (SELECT 1 FROM numberplanassignments
-			        WHERE planid = n.id)'),
+            . (!empty($numberplanedit['divisions']) ? ' AND EXISTS (
+                SELECT 1 FROM numberplanassignments WHERE planid = n.id
+                    AND divisionid IN (' . implode(',', Utils::filterIntegers($numberplanedit['divisions'])) . '))'
+                : ' AND NOT EXISTS (SELECT 1 FROM numberplanassignments
+                WHERE planid = n.id)'),
             array($numberplanedit['doctype'], $numberplanedit['id'])
         )) {
             $error['doctype'] = trans('Selected document type has already defined default plan!');
@@ -70,73 +69,17 @@ if (is_array($numberplanedit) && count($numberplanedit)) {
     }
 
     if (!$error) {
-        $DB->BeginTrans();
-
-        $args = array(
-            'template' => $numberplanedit['template'],
-            'doctype' => $numberplanedit['doctype'],
-            'period' => $numberplanedit['period'],
-            'isdefault' => $numberplanedit['isdefault'],
-            SYSLOG::RES_NUMPLAN => $numberplanedit['id']
-        );
-        $DB->Execute(
-            'UPDATE numberplans SET template=?, doctype=?, period=?, isdefault=? WHERE id=?',
-            array_values($args)
-        );
-
-        if ($SYSLOG) {
-            $SYSLOG->AddMessage(SYSLOG::RES_NUMPLAN, SYSLOG::OPER_UPDATE, $args);
-            $assigns = $DB->GetAll(
-                'SELECT * FROM numberplanassignments WHERE planid = ?',
-                array($numberplanedit['id'])
-            );
-            if (!empty($assigns)) {
-                foreach ($assigns as $assign) {
-                    $args = array(
-                    SYSLOG::RES_NUMPLANASSIGN => $assign['id'],
-                    SYSLOG::RES_NUMPLAN => $assign['planid'],
-                    SYSLOG::RES_DIV => $assign['divisionid']
-                    );
-                    $SYSLOG->AddMessage(SYSLOG::RES_NUMPLANASSIGN, SYSLOG::OPER_DELETE, $args);
-                }
-            }
-        }
-
-        $DB->Execute('DELETE FROM numberplanassignments WHERE planid = ?', array($numberplanedit['id']));
-
-        if (!empty($_POST['selected'])) {
-            foreach ($_POST['selected'] as $idx => $name) {
-                $DB->Execute('INSERT INTO numberplanassignments (planid, divisionid)
-					VALUES (?, ?)', array($numberplanedit['id'], intval($idx)));
-                if ($SYSLOG) {
-                    $id = $DB->GetLastInsertID('numberplanassignments');
-                    $args = array(
-                        SYSLOG::RES_NUMPLANASSIGN => $id,
-                        SYSLOG::RES_NUMPLAN => $numberplanedit['id'],
-                        SYSLOG::RES_DIV => intval($idx)
-                    );
-                    $SYSLOG->AddMessage(SYSLOG::RES_NUMPLANASSIGN, SYSLOG::OPER_ADD, $args);
-                }
-            }
-        }
-
-        $DB->CommitTrans();
+        $LMS->updateNumberPlan($numberplanedit);
 
         $SESSION->redirect('?m=numberplanlist');
     } else {
-        $numberplanedit['selected'] = array();
-        if (isset($_POST['selected'])) {
-            foreach ($_POST['selected'] as $idx => $name) {
-                    $numberplanedit['selected'][$idx]['id'] = $idx;
-                    $numberplanedit['selected'][$idx]['name'] = $name;
-            }
+        $divisions = array();
+        if (!empty($numberplanedit['divisions'])) {
+            $divisions = array_flip($numberplanedit['divisions']);
         }
+        $numberplanedit['divisions'] = $divisions;
     }
     $numberplan = $numberplanedit;
-} else {
-    $numberplan['selected'] = $DB->GetAllByKey('SELECT d.id, d.shortname AS name
-		FROM numberplanassignments, divisions d
-		WHERE d.id = divisionid AND planid = ?', 'id', array($numberplan['id']));
 }
 
 $layout['pagetitle'] = trans('Numbering Plan Edit: $a', $template);
@@ -144,9 +87,6 @@ $layout['pagetitle'] = trans('Numbering Plan Edit: $a', $template);
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('numberplanedit', $numberplan);
-$SMARTY->assign('available', $DB->GetAllByKey('SELECT id, shortname AS name
-		FROM divisions WHERE status = 0'
-        . (!empty($numberplan['selected']) ? ' OR id IN ('.implode(',', array_keys($numberplan['selected'])).')' : '')
-        . ' ORDER BY shortname', 'id'));
+$SMARTY->assign('divisions', $LMS->GetDivisions());
 $SMARTY->assign('error', $error);
 $SMARTY->display('numberplan/numberplanedit.html');

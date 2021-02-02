@@ -72,7 +72,7 @@ function updatehidden(suffix)
 		<td>
 			<select size="{if $height}{$height}{else}5{/if}" name="available{$name}[]" id="available{$name}" class="multiselect" multiple ondblclick="moveto({if $name}'{$name}'{/if});" style="width:250px;" {tip trigger="available"}>
 				{foreach from=$available item=item key=key}
-				{if !$selected.$key}<option value="{$item.id}">{$item.name|truncate:35:"&hellip;":true}</option>{/if}
+				{if !$selected.$key}<option value="{$item.id}">{$item.name|truncate:35:"&hellip;":true|escape}</option>{/if}
 				{/foreach}
 			</select>
 		</td>
@@ -84,7 +84,7 @@ function updatehidden(suffix)
 		<td>
 			<select size="{if $height}{$height}{else}5{/if}" name="selected{$name}[]" id="selected{$name}" class="multiselect" multiple ondblclick="movefrom({if $name}'{$name}'{/if});" style="width:250px;" {tip trigger="selected"}>
 				{foreach from=$selected item=item}
-				<option value="{$item.id}">{$item.name|truncate:35:"&hellip;":true}</option>
+				<option value="{$item.id}">{$item.name|truncate:35:"&hellip;":true|escape}</option>
 				{/foreach}
 			</select>
 		</td>

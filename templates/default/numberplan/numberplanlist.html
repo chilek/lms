@@ -3,88 +3,105 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-background-cycle">
+	<colgroup>
+		<col style="width: 93%;">
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+	</colgroup>
     <THEAD>
-	<TR>
-		<TD width="93%" NOWRAP><IMG src="img/id.gif" alt=""> <B>{trans("Template:")}</B></TD>
-		<TD width="1%" align="right" NOWRAP>{trans("ID:")}</TD>
-		<TD width="1%" align="right" NOWRAP>{trans("Example (next) number:")}</TD>
-		<TD width="1%" align="right" NOWRAP>{trans("No. of issued documents:")}</TD>
-		<TD width="1%" align="right" NOWRAP>{trans("Document type:")}</TD>
-		<TD width="1%" align="right" NOWRAP>{trans("Period:")}</TD>
-		<TD width="1%" align="right" NOWRAP>{trans("Default:")}</TD>
-		<TD width="1%" align="right"  NOWRAP><a href="?m=numberplanadd">{trans("Add plan")} <img src="img/save.gif" alt=""></a></TD>
-	</TR>
-	{if $listdata.total != 0}
-	<TR>
-		<TD class="lms-ui-pagination" COLSPAN="8">
-			{include file="scroller.html" loop=$numberplanlist}
-		</TD>
-	</TR>
-	{/if}
+		<TR>
+			<TD class="bold nobr">
+				{icon name="id" class="fa-fw"}
+				{trans("Template:")}
+			</TD>
+			<TD class="text-right nobr">{trans("ID:")}</TD>
+			<TD class="text-right-nobr">{trans("Example (next) number:")}</TD>
+			<TD class="text-right-nobr">{trans("No. of issued documents:")}</TD>
+			<TD class="text-right-nobr">{trans("Document type:")}</TD>
+			<TD class="text-right-nobr">{trans("Period:")}</TD>
+			<TD class="text-right-nobr">{trans("Default:")}</TD>
+			<TD class="text-right-nobr">
+				{button icon="add" label="Add plan" href="?m=numberplanadd"}
+			</TD>
+		</TR>
+		{if $listdata.total != 0}
+		<TR>
+			<TD class="lms-ui-pagination" COLSPAN="8">
+				{include file="scroller.html" loop=$numberplanlist}
+			</TD>
+		</TR>
+		{/if}
     </THEAD>
     <TBODY>
-	{cycle values="light,lucid" print=false}
-	{section name=numberplanlist loop=$numberplanlist}
-	<TR class="highlight {cycle}{if ($numberplanlist[numberplanlist].validfrom !=0 && $numberplanlist[numberplanlist].validfrom > $smarty.now) || ($numberplanlist[numberplanlist].validto !=0 && $numberplanlist[numberplanlist].validto < $smarty.now)} blend{/if}" data-name="{$numberplanlist[numberplanlist].template}">
-		<TD NOWRAP onClick="return self.location.href='?m=numberplanedit&amp;id={$numberplanlist[numberplanlist].id}';">
-			<IMG src="img/id.gif" alt=""> <B>{$numberplanlist[numberplanlist].template}</B>
-		</TD>
-		<TD align="right" NOWRAP onClick="return self.location.href='?m=numberplanedit&amp;id={$numberplanlist[numberplanlist].id}';">
-			({$numberplanlist[numberplanlist].id|string_format:"%04d"})
-		</TD>
-		<TD align="right" NOWRAP onClick="return self.location.href='?m=numberplanedit&amp;id={$numberplanlist[numberplanlist].id}';">
-			{number number=$numberplanlist[numberplanlist].next template=$numberplanlist[numberplanlist].template time=$smarty.now}
-		</TD>
-		<TD align="right" NOWRAP onClick="return self.location.href='?m=numberplanedit&amp;id={$numberplanlist[numberplanlist].id}';">
-			{$numberplanlist[numberplanlist].issued|default:"0"}
-		</TD>
-		<TD align="right" NOWRAP onClick="return self.location.href='?m=numberplanedit&amp;id={$numberplanlist[numberplanlist].id}';">
-			{assign var="doctype" value=$numberplanlist[numberplanlist].doctype}
-			{$_DOCTYPES.$doctype}
-		</TD>
-		<TD align="right" NOWRAP onClick="return self.location.href='?m=numberplanedit&amp;id={$numberplanlist[numberplanlist].id}';">
-			{assign var="period" value=$numberplanlist[numberplanlist].period}
-			{$_NUM_PERIODS.$period}
-		</TD>
-		<TD align="right" NOWRAP onClick="return self.location.href='?m=numberplanedit&amp;id={$numberplanlist[numberplanlist].id}';">
-			{if $numberplanlist[numberplanlist].isdefault}{trans("yes")}{/if}
-		</TD>
-		<TD align="right" NOWRAP>
-			<A class="delete-numberplan" href="?m=numberplandel&id={$numberplanlist[numberplanlist].id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
-			<A href="?m=numberplanedit&amp;id={$numberplanlist[numberplanlist].id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
-		</TD>
-	</TR>
-	{sectionelse}
-	<TR>
-		<TD colspan="8" class="empty-table">
-			<p>{trans("No such numbering plans in database.")}</p>
-		</TD>
-	</TR>
-	{/section}
+		{foreach $numberplanlist as $plan}
+		<TR class="highlight {if ($plan.validfrom !=0 && $plan.validfrom > $smarty.now) || ($plan.validto !=0 && $plan.validto < $smarty.now)} blend{/if}" data-name="{$plan.template}">
+			<TD class="bold nobr" data-target-url="?m=numberplanedit&id={$plan.id}">
+				{icon name="id" class="fa-fw"}
+				{$plan.template}
+			</TD>
+			<TD class="text-right nobr" data-target-url="?m=numberplanedit&id={$plan.id}">
+				({$plan.id|string_format:"%04d"})
+			</TD>
+			<TD class="text-right nobr" data-target-url="?m=numberplanedit&id={$plan.id}">
+				{number number=$plan.next template=$plan.template time=$smarty.now}
+			</TD>
+			<TD class="text-right nobr" data-target-url="?m=numberplanedit&id={$plan.id}">
+				{$plan.issued|default:"0"}
+			</TD>
+			<TD class="text-right nobr" data-target-url="?m=numberplanedit&id={$plan.id}">
+				{assign var="doctype" value=$plan.doctype}
+				{$_DOCTYPES.$doctype}
+			</TD>
+			<TD class="text-right nobr" data-target-url="?m=numberplanedit&id={$plan.id}">
+				{assign var="period" value=$plan.period}
+				{$_NUM_PERIODS.$period}
+			</TD>
+			<TD class="text-right nobr" data-target-url="?m=numberplanedit&id={$plan.id}">
+				{if $plan.isdefault}{trans("yes")}{/if}
+			</TD>
+			<TD class="text-right nobr">
+				{button type="link" icon="delete" tip="Delete" class="delete-numberplan" href="?m=numberplandel&id={$plan.id}"}
+				{button type="link" icon="edit" tip="Edit" href="?m=numberplanedit&id={$plan.id}"}
+			</TD>
+		</TR>
+		{foreachelse}
+		<TR>
+			<TD colspan="8" class="empty-table">
+				<p>{trans("No such numbering plans in database.")}</p>
+			</TD>
+		</TR>
+		{/foreach}
     </TBODY>
     <TFOOT>
-	{if $listdata.total != 0}
-	<TR>
-		<TD class="lms-ui-pagination" COLSPAN="8">
-			{include file="scroller.html" loop=$numberplanlist}
-		</TD>
-	</TR>
-	{/if}
-	<TR>
-		<TD colspan="8" align="right">
-			<a href="?m=numberplanadd">{trans("Add plan")} <img src="img/save.gif" alt=""></a>
-		</TD>
-	</TR>
+		{if $listdata.total != 0}
+		<TR>
+			<TD class="lms-ui-pagination" COLSPAN="8">
+				{include file="scroller.html" loop=$numberplanlist}
+			</TD>
+		</TR>
+		{/if}
+		<TR>
+			<TD colspan="8" class="text-right">
+				{button icon="add" label="Add plan" href="?m=numberplanadd"}
+			</TD>
+		</TR>
     </TFOOT>
 </TABLE>
-	<script>
-		$('.delete-numberplan').click(function() {
-			var name = $(this).closest('tr').attr('data-name');
-			confirmDialog($t("Are you sure, you want to delete numberplan '$a'?", name), this).done(function() {
-				location.href = $(this).attr('href');
-			});
-			return false;
+<script>
+
+	$('.delete-numberplan').click(function() {
+		var name = $(this).closest('tr').attr('data-name');
+		confirmDialog($t("Are you sure, you want to delete numberplan '$a'?", name), this).done(function() {
+			location.href = $(this).attr('href');
 		});
-	</script>
+		return false;
+	});
+
+</script>
 {/block}

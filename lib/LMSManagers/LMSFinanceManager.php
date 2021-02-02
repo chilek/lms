@@ -4819,4 +4819,177 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             array($id)
         );
     }
+
+    public function getNumberPlan($id)
+    {
+        $numberplan = $this->db->GetRow(
+            'SELECT id, period, template, doctype, isdefault
+			FROM numberplans
+            WHERE id = ?',
+            array($id)
+        );
+
+        $divisions = $this->db->GetCol(
+            'SELECT d.id
+            FROM numberplanassignments
+            JOIN divisions d ON d.id = divisionid
+            WHERE planid = ?',
+            array($id)
+        );
+        $numberplan['divisions'] = empty($divisions) ? array() : array_flip($divisions);
+
+        return $numberplan;
+    }
+
+    public function addNumberPlan(array $numberplan)
+    {
+        $this->db->BeginTrans();
+
+        $args = array(
+            'template' => $numberplan['template'],
+            'doctype' => $numberplan['doctype'],
+            'period' => $numberplan['period'],
+            'isdefault' => isset($numberplan['isdefault']) ? 1 : 0
+        );
+        $this->db->Execute(
+            'INSERT INTO numberplans (template, doctype, period, isdefault)
+			VALUES (?, ?, ?, ?)',
+            array_values($args)
+        );
+
+        $id = $this->db->GetLastInsertID('numberplans');
+
+        if ($id && $this->syslog) {
+            $args[SYSLOG::RES_NUMPLAN] = $id;
+            $this->syslog->AddMessage(SYSLOG::RES_NUMPLAN, SYSLOG::OPER_ADD, $args);
+        }
+
+        if (!empty($numberplan['divisions'])) {
+            foreach ($numberplan['divisions'] as $divisionid) {
+                $res = $this->db->Execute(
+                    'INSERT INTO numberplanassignments (planid, divisionid)
+					VALUES (?, ?)',
+                    array($id, $divisionid)
+                );
+                if ($res && $this->syslog) {
+                    $args = array(
+                        SYSLOG::RES_NUMPLANASSIGN => $this->db->GetLastInsertID('numberplanassignments'),
+                        SYSLOG::RES_NUMPLAN => $id,
+                        SYSLOG::RES_DIV => $divisionid
+                    );
+                    $this->syslog->AddMessage(SYSLOG::RES_NUMPLANASSIGN, SYSLOG::OPER_ADD, $args);
+                }
+            }
+        }
+
+        $this->db->CommitTrans();
+    }
+
+    public function updateNumberPlan(array $numberplan)
+    {
+        $this->db->BeginTrans();
+
+        $args = array(
+            'template' => $numberplan['template'],
+            'doctype' => $numberplan['doctype'],
+            'period' => $numberplan['period'],
+            'isdefault' => $numberplan['isdefault'],
+            SYSLOG::RES_NUMPLAN => $numberplan['id']
+        );
+        $res = $this->db->Execute(
+            'UPDATE numberplans SET template = ?, doctype = ?, period = ?, isdefault = ? WHERE id = ?',
+            array_values($args)
+        );
+        if ($res && $this->syslog) {
+            $this->syslog->AddMessage(SYSLOG::RES_NUMPLAN, SYSLOG::OPER_UPDATE, $args);
+        }
+
+        $old_divisions = $this->db->GetCol(
+            'SELECT d.id
+            FROM divisions d
+            JOIN numberplanassignments a ON a.divisionid = d.id
+            WHERE a.planid = ?',
+            array($numberplan['id'])
+        );
+        if (empty($old_divisions)) {
+            $old_divisions = array();
+        }
+
+        if (empty($numberplan['divisions'])) {
+            $numberplan['divisions'] = array();
+        }
+
+        $divisions_to_add = array_diff($numberplan['divisions'], $old_divisions);
+        $divisions_to_remove = array_diff($old_divisions, $numberplan['divisions']);
+
+        if (!empty($divisions_to_add)) {
+            foreach ($divisions_to_add as $divisionid) {
+                $res = $this->db->Execute(
+                    'INSERT INTO numberplanassignments (planid, divisionid) VALUES (?, ?)',
+                    array($numberplan['id'], $divisionid)
+                );
+
+                if ($res && $this->syslog) {
+                    $args = array(
+                        SYSLOG::RES_NUMPLANASSIGN => $this->db->GetLastInsertID('numberplanassignments'),
+                        SYSLOG::RES_NUMPLAN => $numberplan['id'],
+                        SYSLOG::RES_DIV => $divisionid,
+                    );
+                    $this->syslog->AddMessage(SYSLOG::RES_NUMPLANASSIGN, SYSLOG::OPER_ADD, $args);
+                }
+            }
+        }
+
+        if (!empty($divisions_to_remove)) {
+            foreach ($divisions_to_remove as $divisionid) {
+                if ($this->syslog) {
+                    $assign = $this->db->GetRow(
+                        'SELECT * FROM numberplanassignments WHERE planid = ? AND divisionid = ?',
+                        array($numberplan['id'], $divisionid)
+                    );
+                }
+
+                $res = $this->db->Execute(
+                    'DELETE FROM numberplanassignments WHERE planid = ? AND divisionid = ?',
+                    array($numberplan['id'], $divisionid)
+                );
+
+                if ($res && $assign && $this->syslog) {
+                    $args = array(
+                        SYSLOG::RES_NUMPLANASSIGN => $assign['id'],
+                        SYSLOG::RES_NUMPLAN => $assign['planid'],
+                        SYSLOG::RES_DIV => $assign['divisionid']
+                    );
+                    $this->syslog->AddMessage(SYSLOG::RES_NUMPLANASSIGN, SYSLOG::OPER_DELETE, $args);
+                }
+            }
+        }
+
+        $this->db->CommitTrans();
+    }
+
+    public function deleteNumberPlan($id)
+    {
+        $this->db->BeginTrans();
+
+        if ($this->syslog) {
+            $args = array(SYSLOG::RES_NUMPLAN => $id);
+            $this->syslog->AddMessage(SYSLOG::RES_NUMPLAN, SYSLOG::OPER_DELETE, $args);
+            $assigns = $this->db->GetAll('SELECT * FROM numberplanassignments WHERE planid = ?', array($id));
+            if (!empty($assigns)) {
+                foreach ($assigns as $assign) {
+                    $args = array(
+                        SYSLOG::RES_NUMPLANASSIGN => $assign['id'],
+                        SYSLOG::RES_NUMPLAN => $assign['planid'],
+                        SYSLOG::RES_DIV => $assign['divisionid']
+                    );
+                    $this->syslog->AddMessage(SYSLOG::RES_NUMPLANASSIGN, SYSLOG::OPER_DELETE, $args);
+                }
+            }
+        }
+        $this->db->Execute('DELETE FROM numberplanassignments WHERE planid = ?', array($id));
+        $this->db->Execute('DELETE FROM numberplans WHERE id = ?', array($id));
+
+        $this->db->CommitTrans();
+    }
 }
