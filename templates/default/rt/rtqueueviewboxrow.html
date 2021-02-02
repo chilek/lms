@@ -42,13 +42,13 @@
 		{/if}
 		{if $ticket.requestor_userid}
 		<br>
-		<A href="?m=userinfo&id={$ticket.requestor_userid}">{$ticket.requestor_name}</A>
+		<A href="?m=userinfo&id={$ticket.requestor_userid}">{$ticket.requestor_name|escape}</A>
 		{elseif $ticket.req || $ticket.requestor_mail || $ticket.requestor_phone}
 			<br>
 			{$ticket.req|escape}
-			{if $ticket.requestor_phone}<BR>{$ticket.requestor_phone}{/if}
+			{if $ticket.requestor_phone}<BR>{$ticket.requestor_phone|escape}{/if}
 			{if $ticket.requestor_mail}<BR>
-			<A href="mailto:{$ticket.requestor_mail}""> &lt;{$ticket.requestor_mail}&gt;</A>
+			<A href="mailto:{$ticket.requestor_mail}""> &lt;{$ticket.requestor_mail|escape}&gt;</A>
 			{/if}
 		{/if}
 	</TD>
