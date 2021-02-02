@@ -197,8 +197,8 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         $query = 'UPDATE netlinks SET type = ?, srcradiosector = ?, dstradiosector = ?, technology = ?, speed = ?';
         $args = array(
             'type' => $type,
-            'src_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR) => $srcradiosector,
-            'dst_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR) => $dstradiosector,
+            'src_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR) => $dstradiosector,
+            'dst_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR) => $srcradiosector,
             'technology' => $technology,
             'speed' => $speed,
         );
@@ -214,6 +214,8 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         $res = $this->db->Execute($query, array_values($args));
 
         if (!$res) {
+            $args['src_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR)] = $srcradiosector;
+            $args['dst_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR)] = $dstradiosector;
             if (isset($link['srcport']) && isset($link['dstport'])) {
                 $args['srcport'] = intval($link['srcport']);
                 $args['dstport'] = intval($link['dstport']);
