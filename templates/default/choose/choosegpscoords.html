@@ -59,6 +59,13 @@
 {if $part == "main"}
 <body onload="init()" class="lms-ui-popup">
 <div id="map" class="smallmap"></div>
+<script>
+
+	document.querySelector('#map').onmousewheel = function(e) {
+		e.preventDefault();
+	}
+
+</script>
 </body>
 {/if}
 {if $part == "top"}
