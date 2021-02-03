@@ -44,6 +44,14 @@
 			<TD class="bold nobr" data-target-url="?m=numberplanedit&id={$plan.id}">
 				{icon name="id" class="fa-fw"}
 				{$plan.template}
+				{if !empty($plan.divisions)}
+					{capture assign="tip"}{foreach $plan.divisions as $division}{if !$division@first}<br>{/if}{$division.shortname|escape|escape}{/foreach}{/capture}
+					{icon name="division" class="fa-fw" tip=$tip}
+				{/if}
+				{if !empty($plan.users)}
+					{capture assign="tip"}{foreach $plan.users as $user}{if !$user@first}<br>{/if}{$user.rname|escape|escape} ({$user.login|escape|escape}){/foreach}{/capture}
+					{icon name="user" class="fa-fw" tip=$tip}
+				{/if}
 			</TD>
 			<TD class="text-right nobr" data-target-url="?m=numberplanedit&id={$plan.id}">
 				({$plan.id|string_format:"%04d"})

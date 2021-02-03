@@ -24,6 +24,38 @@
  *  $Id$
  */
 
+function getUsers($alldivisions, $selecteddivisions)
+{
+    $LMS = LMS::getInstance();
+
+    if (empty($selecteddivisions)) {
+        $divisions = $alldivisions;
+    } else {
+        $selecteddivisions = array_flip($selecteddivisions);
+        $divisions = array_filter(
+            $alldivisions,
+            function ($division) use ($selecteddivisions) {
+                return isset($selecteddivisions[$division['id']]);
+            }
+        );
+    }
+
+    $users = $LMS->GetUsers(array(
+        'divisions' => implode(',', array_keys($divisions)),
+        'order' => 'rname,asc',
+    ));
+    if (empty($users)) {
+        $users = array();
+    }
+
+    return $users;
+}
+
+if (isset($_GET['op']) && $_GET['op'] == 'updateusers') {
+    header('Content-Type: application/json');
+    die(json_encode(getUsers($LMS->GetDivisions(), $_POST['divisions'])));
+}
+
 $numberplanadd = isset($_POST['numberplanadd']) ? $_POST['numberplanadd'] : null;
 
 if (!empty($numberplanadd) && count($numberplanadd)) {
@@ -44,9 +76,8 @@ if (!empty($numberplanadd) && count($numberplanadd)) {
         $error['period'] = trans('Numbering period is required!');
     }
 
-    if ($numberplanadd['doctype'] && isset($numberplanadd['isdefault']) && !$LMS->validateNumberPlan($numberplanadd)) {
-        $error['doctype'] = trans('Selected document type has already defined default plan!');
-    }
+    $result = $LMS->validateNumberPlan($numberplanadd);
+    $error = array_merge($error ?: array(), $result);
 
     if (!$error) {
         $LMS->addNumberPlan($numberplanadd);
@@ -61,11 +92,8 @@ if (!empty($numberplanadd) && count($numberplanadd)) {
         unset($numberplanadd['isdefault']);
         $numberplanadd['divisions'] = array();
     } else {
-        $divisions = array();
-        if (!empty($numberplanadd['divisions'])) {
-            $divisions = array_flip($numberplanadd['divisions']);
-        }
-        $numberplanadd['divisions'] = $divisions;
+        $numberplanadd['divisions'] = array_flip(empty($numberplanadd['divisions']) ? array() : $numberplanadd['divisions']);
+        $numberplanadd['users'] = array_flip(empty($numberplanadd['users']) ? array() : $numberplanadd['users']);
     }
 }
 
@@ -73,7 +101,11 @@ $layout['pagetitle'] = trans('New Numbering Plan');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
+$divisions = $LMS->GetDivisions(array('status' => 0));
+$users = getUsers($divisions, $numberplanadd['divisions']);
+
 $SMARTY->assign('numberplanadd', $numberplanadd);
-$SMARTY->assign('divisions', $LMS->GetDivisions(array('status' => 0)));
+$SMARTY->assign('divisions', $divisions);
+$SMARTY->assign('users', $users);
 $SMARTY->assign('error', $error);
 $SMARTY->display('numberplan/numberplanadd.html');

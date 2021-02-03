@@ -140,6 +140,13 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
     {
         extract($params);
 
+        if (isset($order)) {
+            list ($column, $asc) = explode(',', $order);
+            $sqlord = $column . ' ' . ($asc == 'desc' ? 'DESC' : 'ASC');
+        } else {
+            $sqlord = 'login ASC';
+        }
+
         if (isset($superuser)) {
             $userlist = $this->db->GetAllByKey(
                 'SELECT id, login, name, phone, lastlogindate, lastloginip, passwdexpiration, passwdlastchange, access,
@@ -151,7 +158,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
                     WHERE divisionid IN (' . $divisions . ')
                     )' : '')
                 . (isset($excludedUsers) && !empty($excludedUsers) ? ' AND id NOT IN (' . $excludedUsers . ')' : '') .
-                ' ORDER BY login ASC',
+                ' ORDER BY ' . $sqlord,
                 'id'
             );
         } else {
@@ -165,7 +172,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
                         WHERE divisionid IN (' . $divisions . ')
                         )' : '')
                 . (isset($excludedUsers) && !empty($excludedUsers) ? ' AND id NOT IN (' . $excludedUsers . ')' : '') .
-                ' ORDER BY login ASC',
+                ' ORDER BY ' . $sqlord,
                 'id'
             );
         }
