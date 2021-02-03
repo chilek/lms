@@ -4961,7 +4961,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $selectedusers = Utils::filterIntegers(empty($numberplan['users']) ? array() : $numberplan['users']);
 
         if ($numberplan['doctype'] && $numberplan['isdefault']) {
-            if (empty($seletedusers)) {
+            if (empty($selectedusers)) {
                 if ($this->db->GetOne(
                     'SELECT 1 FROM numberplans n
                     WHERE doctype = ? AND isdefault = 1' . (empty($numberplan['id']) ? '' : ' AND n.id <> ' . intval($numberplan['id']))
