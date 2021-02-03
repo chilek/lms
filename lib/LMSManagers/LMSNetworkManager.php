@@ -746,8 +746,8 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 
         $hook_data = $LMS->executeHook(
             'networkrecord_after_get',
-                compact("id", "network", "nodes")
-            );
+            compact("id", "network", "nodes")
+        );
         extract($hook_data);
 
         if ($network['hostid']) {
