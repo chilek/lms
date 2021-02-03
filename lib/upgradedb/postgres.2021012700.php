@@ -24,15 +24,15 @@
 $this->BeginTrans();
 
 $this->Execute("
-    CREATE TABLE customercontactsproperties (
+    CREATE TABLE customercontactproperties (
     contactid   integer         NOT NULL
-        CONSTRAINT customercontactsproperties_contactid_fkey REFERENCES customercontacts (id) ON DELETE CASCADE ON UPDATE CASCADE,
+        CONSTRAINT customercontactproperties_contactid_fkey REFERENCES customercontacts (id) ON DELETE CASCADE ON UPDATE CASCADE,
     name        varchar(255)    NOT NULL DEFAULT '',
     value       varchar(255)    NOT NULL DEFAULT '',
-    CONSTRAINT customercontactsproperties_contactid_name_ukey UNIQUE (contactid, name)
+    CONSTRAINT customercontactproperties_contactid_name_ukey UNIQUE (contactid, name)
     );
-    CREATE INDEX customercontactsproperties_name_idx ON customercontactsproperties (name);
-    CREATE INDEX customercontactsproperties_value_idx ON customercontactsproperties (value);
+    CREATE INDEX customercontactproperties_name_idx ON customercontactproperties (name);
+    CREATE INDEX customercontactproperties_value_idx ON customercontactproperties (value);
 ");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021012700', 'dbversion'));

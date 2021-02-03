@@ -4730,7 +4730,7 @@ class LMS
                     $emailProperties = $this->DB->GetAllByKey(
                         'SELECT ccp.name AS name, ccp.value AS value
                         FROM customercontacts cc
-                        LEFT JOIN customercontactsproperties ccp ON cc.id = ccp.contactid
+                        LEFT JOIN customercontactproperties ccp ON cc.id = ccp.contactid
                         WHERE cc.contact = ?',
                         'name',
                         array($email)

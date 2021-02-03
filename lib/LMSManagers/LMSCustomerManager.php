@@ -1667,12 +1667,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     foreach ($result[$contacttype . 's'] as $key => $item) {
                         $result[$contacttype . 's'][$key]['properties'] = $this->db->GetAll(
                             'SELECT name, value
-                            FROM customercontactsproperties
+                            FROM customercontactproperties
                             WHERE contactid = ? ORDER BY name',
                             array($item['id'])
                         );
                     }
-                    unset($key, $item);
                 }
             }
 

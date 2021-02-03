@@ -26,9 +26,7 @@
 
 $_LANG['Properties:'] = 'Właściwości:';
 $_LANG['Add property'] = 'Dodaj właściwość';
-$_LANG['Property name:'] = 'Nazwa własciwości:';
 $_LANG['Property name'] = 'Nazwa własciwości';
-$_LANG['Property value:'] = 'Wartość własciwości:';
 $_LANG['Property value'] = 'Wartość własciwości';
 
 $_LANG['full calendar periods'] = 'pełne okresy kalendarzowe';

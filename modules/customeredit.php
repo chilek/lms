@@ -387,7 +387,7 @@ if (!isset($_POST['xjxfun'])) {
                             $contactid = $DB->GetLastInsertID('customercontacts');
                             foreach ($contact['properties'] as $property) {
                                 $DB->Execute(
-                                    'INSERT INTO customercontactsproperties (contactid, name, value)
+                                    'INSERT INTO customercontactproperties (contactid, name, value)
                                     VALUES (?, ?, ?)',
                                     array(
                                         $contactid,

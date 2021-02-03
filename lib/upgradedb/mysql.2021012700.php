@@ -24,15 +24,15 @@
 $this->BeginTrans();
 
 $this->Execute("
-    CREATE TABLE customercontactsproperties (
+    CREATE TABLE customercontactproperties (
         contactid   int(11)         NOT NULL,
         name        varchar(255)    NOT NULL DEFAULT '',
         value       varchar(255)    NOT NULL DEFAULT '',
-        CONSTRAINT customercontactsproperties_contactid_fkey
+        CONSTRAINT customercontactproperties_contactid_fkey
             FOREIGN KEY (contactid) REFERENCES customercontacts (id) ON DELETE CASCADE ON UPDATE CASCADE,
-        KEY customercontactsproperties_name_idx (name),
-        KEY customercontactsproperties_value_idx (value),
-        UNIQUE KEY customercontactsproperties_contactid_name_ukey (contactid, name)
+        KEY customercontactproperties_name_idx (name),
+        KEY customercontactproperties_value_idx (value),
+        UNIQUE KEY customercontactproperties_contactid_name_ukey (contactid, name)
     ) ENGINE=InnoDB
 ");
 
