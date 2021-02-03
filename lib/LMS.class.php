@@ -4721,44 +4721,6 @@ class LMS
                 $body = $data['body'];
                 $headers = $data['headers'];
 
-//                if ($add_message) {
-//                    $this->DB->Execute(
-//                        'INSERT INTO messages (subject, body, cdate, type, userid, contenttype)
-//						VALUES (?, ?, ?NOW?, ?, ?, ?)',
-//                        array($subject, $body, MSG_MAIL, Auth::GetCurrentUser(), $content_type)
-//                    );
-//                    $msgid = $this->DB->GetLastInsertID('messages');
-//
-//                    if ($message_attachments) {
-//                        if (!empty($files)) {
-//                            foreach ($files as &$file) {
-//                                $file['name'] = $file['filename'];
-//                                $file['type'] = $file['content_type'];
-//                            }
-//                            unset($file);
-//                            $this->AddFileContainer(array(
-//                                'description' => 'message-' . $msgid,
-//                                'files' => $files,
-//                                'type' => 'messageid',
-//                                'resourceid' => $msgid,
-//                            ));
-//                        }
-//                    }
-//
-//                    foreach (explode(',', $custemail) as $email) {
-//                        $this->DB->Execute(
-//                            'INSERT INTO messageitems (messageid, customerid, destination, lastdate, status)
-//							VALUES (?, ?, ?, ?NOW?, ?)',
-//                            array($msgid, $doc['customerid'], $email, MSG_NEW)
-//                        );
-//                        $msgitemid = $this->DB->GetLastInsertID('messageitems');
-//                        if (!isset($msgitems[$doc['customerid']])) {
-//                            $msgitems[$doc['customerid']] = array();
-//                        }
-//                        $msgitems[$doc['customerid']][$email] = $msgitemid;
-//                    }
-//                }
-
                 $messages = array();
                 foreach (explode(',', $custemail) as $email) {
                     $mailSubject = $subject;
@@ -4786,7 +4748,7 @@ class LMS
                         if (!isset($messages[$mailSubject])) {
                             $this->DB->Execute(
                                 'INSERT INTO messages (subject, body, cdate, type, userid, contenttype)
-                                    VALUES (?, ?, ?NOW?, ?, ?, ?)',
+                                VALUES (?, ?, ?NOW?, ?, ?, ?)',
                                 array($mailSubject, $body, MSG_MAIL, Auth::GetCurrentUser(), $content_type)
                             );
                             $msgid = $this->DB->GetLastInsertID('messages');
@@ -4811,7 +4773,7 @@ class LMS
 
                             $this->DB->Execute(
                                 'INSERT INTO messageitems (messageid, customerid, destination, lastdate, status)
-                                    VALUES (?, ?, ?, ?NOW?, ?)',
+                                VALUES (?, ?, ?, ?NOW?, ?)',
                                 array($msgid, $doc['customerid'], $email, MSG_NEW)
                             );
 

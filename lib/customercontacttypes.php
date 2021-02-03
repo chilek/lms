@@ -140,7 +140,6 @@ function validate_customer_emails(&$customerdata, &$contacts, &$error)
             $error['email' . $idx] = trans('Email address is required!');
         } elseif ($email) {
             $contacts[] = array('name' => $name, 'contact' => $email, 'type' => $type, 'properties' => $properties);
-
         }
     }
 }
