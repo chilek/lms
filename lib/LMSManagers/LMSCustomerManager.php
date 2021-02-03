@@ -1187,12 +1187,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $sql = '';
 
         if ($count) {
-            $sql .= 'SELECT COUNT(DISTINCT c.id) AS total,
+            $sql .= 'SELECT COUNT(c.id) AS total,
             	SUM(CASE WHEN b.balance > 0 THEN b.balance ELSE 0 END) AS balanceover,
             	SUM(CASE WHEN b.balance < 0 THEN b.balance ELSE 0 END) AS balancebelow ';
         } else {
             $capitalize_customer_names = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.capitalize_customer_names', true));
-            $sql .= 'SELECT DISTINCT c.id AS id, c.lastname, c.name, ' . $this->db->Concat($capitalize_customer_names ? 'UPPER(lastname)' : 'lastname', "' '", 'c.name') . ' AS customername,
+            $sql .= 'SELECT c.id AS id, c.lastname, c.name, ' . $this->db->Concat($capitalize_customer_names ? 'UPPER(lastname)' : 'lastname', "' '", 'c.name') . ' AS customername,
                 c.karma, c.type, c.deleted,
                 status, full_address, post_full_address, c.address, c.zip, c.city, countryid, countries.name AS country, cc.email, ccp.phone, ten, ssn, c.info AS info,
                 extid, message, c.divisionid, c.paytime AS paytime, COALESCE(b.balance, 0) AS balance,
