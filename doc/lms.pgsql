@@ -1698,6 +1698,19 @@ CREATE TABLE numberplanassignments (
 CREATE INDEX numberplanassignments_divisionid_idx ON numberplanassignments (divisionid);
 
 /* --------------------------------------------------------
+  Structure of table "numberplanusers"
+-------------------------------------------------------- */
+DROP TABLE IF EXISTS numberplanusers CASCADE;
+CREATE TABLE numberplanusers (
+    planid integer NOT NULL
+       CONSTRAINT numberplanusers_planid_fkey REFERENCES numberplans (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    userid integer NOT NULL
+       CONSTRAINT numberplanusers_userid_fkey REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT numberplanusers_userid_ukey UNIQUE (planid, userid)
+);
+CREATE INDEX numberplanusers_userid_idx ON numberplanusers (userid);
+
+/* --------------------------------------------------------
   Structure of table "customergroups"
 -------------------------------------------------------- */
 DROP SEQUENCE IF EXISTS customergroups_id_seq;
@@ -3958,6 +3971,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021012100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021020300');
 
 COMMIT;
