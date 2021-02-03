@@ -744,6 +744,12 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 				FROM vnodes WHERE ipaddr_pub > ? AND ipaddr_pub < ?', 'ipaddr', array($id, $network['addresslong'], ip_long($network['broadcast']),
             $network['addresslong'], ip_long($network['broadcast'])));
 
+        $hook_data = $LMS->executeHook(
+            'networkrecord_after_get',
+                compact("id", "network", "nodes")
+            );
+        extract($hook_data);
+
         if ($network['hostid']) {
             $network['hostname'] = $this->db->GetOne('SELECT name FROM hosts WHERE id=?', array($network['hostid']));
         }
