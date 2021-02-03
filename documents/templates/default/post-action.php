@@ -1,5 +1,5 @@
 <?php
-
+;
 /*
  * LMS version 1.11-git
  *
@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-/* 
+/*
     post action example: here you can e.g. execute some SQL queries, send mail or sth
 */
-
-?>

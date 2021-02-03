@@ -26,7 +26,7 @@
 
 /**
  * LMSNetworkManagerInterface
- * 
+ *
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
 interface LMSNetworkManagerInterface
@@ -61,7 +61,7 @@ interface LMSNetworkManagerInterface
 
     public function GetNetworkList(array $search);
 
-    public function IsIPValid($ip, $checkbroadcast = FALSE, $ignoreid = 0);
+    public function IsIPValid($ip, $checkbroadcast = false, $ignoreid = 0);
 
     public function NetworkOverlaps($network, $mask, $hostid, $ignorenet = 0);
 
@@ -73,11 +73,25 @@ interface LMSNetworkManagerInterface
 
     public function NetworkRemap($src, $dst);
 
+    public function MoveHostsBetweenNetworks($src, $dst);
+
     public function GetNetworkRecord($id, $page = 0, $plimit = 4294967296, $firstfree = false);
-    
+
     public function ScanNodes();
 
-	public function GetNetworkPageForIp($netid, $ip);
+    public function GetNetworkPageForIp($netid, $ip);
 
-	public function GetPublicNetworkID($netid);
+    public function GetPublicNetworkID($netid);
+
+    public function getFirstFreeAddress($netid);
+
+    public function GetVlanList($params = array());
+
+    public function GetVlanInfo($id);
+
+    public function AddVlan($args);
+
+    public function DeleteVlan($id);
+
+    public function UpdateVlan($args);
 }

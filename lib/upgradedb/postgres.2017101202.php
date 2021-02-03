@@ -45,18 +45,16 @@ $this->Execute("
 
 $userids = $this->GetCol("SELECT id FROM users");
 if (!empty($userids)) {
-	$sql_userids = implode(',', $userids);
-	$this->Execute("UPDATE customers SET creatorid = NULL WHERE creatorid = 0 OR creatorid NOT IN (" . $sql_userids . ")");
-	$this->Execute("UPDATE customers SET modid = NULL WHERE modid = 0 OR modid NOT IN (" . $sql_userids . ")");
-	$this->Execute("UPDATE nodes SET creatorid = NULL WHERE creatorid = 0 OR creatorid NOT IN (" . $sql_userids . ")");
-	$this->Execute("UPDATE nodes SET modid = NULL WHERE modid = 0 OR modid NOT IN (" . $sql_userids . ")");
-	$this->Execute("UPDATE voipaccounts SET creatorid = NULL WHERE creatorid = 0 OR creatorid NOT IN (" . $sql_userids . ")");
-	$this->Execute("UPDATE voipaccounts SET modid = NULL WHERE modid = 0 OR modid NOT IN (" . $sql_userids . ")");
-	$this->Execute("UPDATE rttickets SET creatorid = NULL WHERE creatorid = 0 OR creatorid NOT IN (" . $sql_userids . ")");
+    $sql_userids = implode(',', $userids);
+    $this->Execute("UPDATE customers SET creatorid = NULL WHERE creatorid = 0 OR creatorid NOT IN (" . $sql_userids . ")");
+    $this->Execute("UPDATE customers SET modid = NULL WHERE modid = 0 OR modid NOT IN (" . $sql_userids . ")");
+    $this->Execute("UPDATE nodes SET creatorid = NULL WHERE creatorid = 0 OR creatorid NOT IN (" . $sql_userids . ")");
+    $this->Execute("UPDATE nodes SET modid = NULL WHERE modid = 0 OR modid NOT IN (" . $sql_userids . ")");
+    $this->Execute("UPDATE voipaccounts SET creatorid = NULL WHERE creatorid = 0 OR creatorid NOT IN (" . $sql_userids . ")");
+    $this->Execute("UPDATE voipaccounts SET modid = NULL WHERE modid = 0 OR modid NOT IN (" . $sql_userids . ")");
+    $this->Execute("UPDATE rttickets SET creatorid = NULL WHERE creatorid = 0 OR creatorid NOT IN (" . $sql_userids . ")");
 }
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017101202', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

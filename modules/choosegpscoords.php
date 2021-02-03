@@ -29,21 +29,16 @@ $layout['pagetitle'] = trans('Select gps coordinates');
 $p = isset($_GET['p']) ? $_GET['p'] : '';
 $js = '';
 
-if(!$p)
-{
-	$js = 'var targetfield1 = window.parent.targetfield1;';
-	$js .= 'var targetfield2 = window.parent.targetfield2;';
-}
-elseif($p == 'main')
-{
-	$js = 'var targetfield1 = window.parent.targetfield1;';
-	$js .= 'var targetfield2 = window.parent.targetfield2;';
+if (!$p) {
+    $js = 'var targetfield1 = window.parent.targetfield1;';
+    $js .= 'var targetfield2 = window.parent.targetfield2;';
+} elseif ($p == 'main') {
+    $js = 'var targetfield1 = window.parent.targetfield1;';
+    $js .= 'var targetfield2 = window.parent.targetfield2;';
 
-	include(MODULES_DIR.'/map.inc.php');
+    include(MODULES_DIR.'/map.inc.php');
 }
 
 $SMARTY->assign('part', $p);
 $SMARTY->assign('js', $js);
 $SMARTY->display('choose/choosegpscoords.html');
-
-?>

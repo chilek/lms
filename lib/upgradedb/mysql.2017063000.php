@@ -24,19 +24,20 @@
 $this->BeginTrans();
 
 $ident_lengths = array(
-	'location_states' => 2,
-	'location_districts' => 2,
-	'location_boroughs' => 2,
-	'location_cities' => 7,
-	'location_streets' => 5,
+    'location_states' => 2,
+    'location_districts' => 2,
+    'location_boroughs' => 2,
+    'location_cities' => 7,
+    'location_streets' => 5,
 );
 
-foreach ($ident_lengths as $table => $length)
-	$this->Execute("UPDATE $table SET ident = LPAD(ident, ?, '0') WHERE LENGTH(ident) < ?",
-		array($length, $length));
+foreach ($ident_lengths as $table => $length) {
+    $this->Execute(
+        "UPDATE $table SET ident = LPAD(ident, ?, '0') WHERE LENGTH(ident) < ?",
+        array($length, $length)
+    );
+}
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017063000', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

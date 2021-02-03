@@ -28,5 +28,3 @@ $this->Execute("UPDATE documents SET type = ? WHERE type = ?", array('-128', '-1
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014040400', 'dbversion'));
 $this->CommitTrans();
-
-?>

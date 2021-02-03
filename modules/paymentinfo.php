@@ -24,18 +24,15 @@
  *  $Id$
  */
 
-if(!$LMS->PaymentExists($_GET['id']))
-{
-	$SESSION->redirect('?m=paymentlist');
+if (!$LMS->PaymentExists($_GET['id'])) {
+    $SESSION->redirect('?m=paymentlist');
 }
 
 $payment = $LMS->GetPayment($_GET['id']);
 
-$layout['pagetitle'] = trans('Payment Info: $a',$payment['name']);
+$layout['pagetitle'] = trans('Payment Info: $a', $payment['name']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$SMARTY->assign('payment',$payment);
+$SMARTY->assign('payment', $payment);
 $SMARTY->display('payment/paymentinfo.html');
-
-?>

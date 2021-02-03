@@ -24,13 +24,12 @@
  *  $Id$
  */
 
-function smarty_block_tab_buttons($params, $content, $template, $repeat) {
-	if (!$repeat) {
-		return '
+function smarty_block_tab_buttons($params, $content, $template, $repeat)
+{
+    if (!$repeat) {
+        return '
 			<div class="lms-ui-tab-buttons">
 				' . $content . '
 			</div>';
-	}
+    }
 }
-
-?>

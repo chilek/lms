@@ -24,40 +24,40 @@
  *  $Id$
  */
 
-$stateadd = isset($_POST['stateadd']) ? $_POST['stateadd'] : NULL;
+$stateadd = isset($_POST['stateadd']) ? $_POST['stateadd'] : null;
 
-if(count($stateadd)) 
-{
-	$stateadd['name'] = trim($stateadd['name']);
+if (count($stateadd)) {
+    $stateadd['name'] = trim($stateadd['name']);
 
-	if($stateadd['name']=='' && $stateadd['description']=='')
-	{
-		$SESSION->redirect('?m=statelist');
-	}
-	
-	if($stateadd['name'] == '')
-		$error['name'] = trans('State name is required!');
+    if ($stateadd['name']=='' && $stateadd['description']=='') {
+        $SESSION->redirect('?m=statelist');
+    }
+    
+    if ($stateadd['name'] == '') {
+        $error['name'] = trans('State name is required!');
+    }
 
-	if (!$error) {
-		$args = array(
-			'name' => $stateadd['name'],
-			'description' => $stateadd['description']
-		);
-		$DB->Execute('INSERT INTO states (name, description)
+    if (!$error) {
+        $args = array(
+            'name' => $stateadd['name'],
+            'description' => $stateadd['description']
+        );
+        $DB->Execute('INSERT INTO states (name, description)
 				VALUES (?,?)', array_values($args));
 
-		if ($SYSLOG) {
-			$args[SYSLOG::RES_STATE] = $DB->GetLastInsertID('states');
-			$SYSLOG->AddMessage(SYSLOG::RES_STATE, SYSLOG::OPER_ADD, $args);
-		}
+        if ($SYSLOG) {
+            $args[SYSLOG::RES_STATE] = $DB->GetLastInsertID('states');
+            $SYSLOG->AddMessage(SYSLOG::RES_STATE, SYSLOG::OPER_ADD, $args);
+        }
 
-		if (!isset($stateadd['reuse']))
-			$SESSION->redirect('?m=statelist');
+        if (!isset($stateadd['reuse'])) {
+            $SESSION->redirect('?m=statelist');
+        }
 
-		unset($stateadd['name']);
-		unset($stateadd['description']);
-	}
-}	
+        unset($stateadd['name']);
+        unset($stateadd['description']);
+    }
+}
 
 $layout['pagetitle'] = trans('New State');
 
@@ -66,5 +66,3 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SMARTY->assign('stateadd', $stateadd);
 $SMARTY->assign('error', $error);
 $SMARTY->display('state/stateadd.html');
-
-?>

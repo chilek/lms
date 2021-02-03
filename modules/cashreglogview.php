@@ -24,67 +24,68 @@
  *  $Id$
  */
 
-function GetCashLog($order='time,asc', $regid=0)
+function GetCashLog($order = 'time,asc', $regid = 0)
 {
-	global $DB;
+    global $DB;
 
-	list($order,$direction) = sscanf($order, '%[^,],%s');
+    list($order,$direction) = sscanf($order, '%[^,],%s');
 
-	($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
+    ($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
 
-	switch($order)
-	{
-		case 'value':
-			$sqlord = " ORDER BY value $direction";
-		break;
-		case 'snapshot':
-			$sqlord = " ORDER BY snapshot $direction";
-		break;
-		case 'description':
-			$sqlord = " ORDER BY description $direction";
-		break;
-		case 'username':
-			$sqlord = " ORDER BY username $direction";
-		break;
-		default:
-			$sqlord = " ORDER BY time $direction";
-		break;
-	}
+    switch ($order) {
+        case 'value':
+            $sqlord = " ORDER BY value $direction";
+            break;
+        case 'snapshot':
+            $sqlord = " ORDER BY snapshot $direction";
+            break;
+        case 'description':
+            $sqlord = " ORDER BY description $direction";
+            break;
+        case 'username':
+            $sqlord = " ORDER BY username $direction";
+            break;
+        default:
+            $sqlord = " ORDER BY time $direction";
+            break;
+    }
 
-	$list = $DB->GetAll('SELECT cashreglog.id, time, value, description,
+    $list = $DB->GetAll(
+        'SELECT cashreglog.id, time, value, description,
 				    snapshot, userid, vusers.name AS username
 			    FROM cashreglog
 			    LEFT JOIN vusers ON (userid = vusers.id)
 			    WHERE regid = ?
 			    '.($sqlord != '' ? $sqlord : ''),
-			    array($regid));
+        array($regid)
+    );
 
-	$list['total'] = count($list);
-	$list['order'] = $order;
-	$list['direction'] = $direction;
+    $list['total'] = count($list);
+    $list['order'] = $order;
+    $list['direction'] = $direction;
 
-	return $list;
+    return $list;
 }
 
-if(!isset($_GET['o']))
-	$SESSION->restore('crlo', $o);
-else
-	$o = $_GET['o'];
+if (!isset($_GET['o'])) {
+    $SESSION->restore('crlo', $o);
+} else {
+    $o = $_GET['o'];
+}
 $SESSION->save('crlo', $o);
 
-if(!isset($_GET['regid']))
-	$SESSION->restore('crlr', $regid);
-else
-	$regid = $_GET['regid'];
+if (!isset($_GET['regid'])) {
+    $SESSION->restore('crlr', $regid);
+} else {
+    $regid = $_GET['regid'];
+}
 $SESSION->save('crlr', $regid);
 
-if(!$regid)
-{
+if (!$regid) {
         $SESSION->redirect('?m=cashreglist');
 }
 
-if(! $DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array(Auth::GetCurrentUser(), $regid)) )
-{
+if (! $DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array(Auth::GetCurrentUser(), $regid))) {
         $SMARTY->display('noaccess.html');
         $SESSION->close();
         die;
@@ -101,8 +102,9 @@ unset($cashreglog['total']);
 unset($cashreglog['order']);
 unset($cashreglog['direction']);
 
-if ($SESSION->is_set('crlp') && !isset($_GET['page']))
-	$SESSION->restore('crlp', $_GET['page']);
+if ($SESSION->is_set('crlp') && !isset($_GET['page'])) {
+    $SESSION->restore('crlp', $_GET['page']);
+}
 
 $page = (!isset($_GET['page']) ? 1 : $_GET['page']);
 $pagelimit = ConfigHelper::getConfig('phpui.cashreglog_pagelimit', $listdata['total']);
@@ -113,7 +115,7 @@ $SESSION->save('crlp', $page);
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $layout['pagetitle'] = trans('Cash History of Registry:').
-		' <A href="?m=receiptlist&regid='.$regid.'">'.$DB->GetOne('SELECT name FROM cashregs WHERE id = ?', array($regid)).'</A>';
+        ' <A href="?m=receiptlist&regid='.$regid.'">'.$DB->GetOne('SELECT name FROM cashregs WHERE id = ?', array($regid)).'</A>';
 
 $SMARTY->assign('pagelimit', $pagelimit);
 $SMARTY->assign('page', $page);
@@ -121,5 +123,3 @@ $SMARTY->assign('start', $start);
 $SMARTY->assign('cashreglog', $cashreglog);
 $SMARTY->assign('listdata', $listdata);
 $SMARTY->display('cash/cashreglogview.html');
-
-?>

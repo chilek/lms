@@ -24,11 +24,11 @@
 $this->BeginTrans();
 
 define('CONFIG_TYPE_POSITIVE_INTEGER', 2);
-$this->Execute("INSERT INTO uiconfig (section, var, value, type) VALUES (?, ?, ?, ?)",
-	array('phpui', 'networklist_pagelimit', 100, CONFIG_TYPE_POSITIVE_INTEGER));
+$this->Execute(
+    "INSERT INTO uiconfig (section, var, value, type) VALUES (?, ?, ?, ?)",
+    array('phpui', 'networklist_pagelimit', 100, CONFIG_TYPE_POSITIVE_INTEGER)
+);
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018110700', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

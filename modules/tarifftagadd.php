@@ -27,8 +27,9 @@
 if (isset($_POST['tarifftagadd'])) {
     $tarifftagadd = $_POST['tarifftagadd'];
 
-    foreach ($tarifftagadd as $key => $value)
+    foreach ($tarifftagadd as $key => $value) {
         $tarifftagadd[$key] = trim($value);
+    }
 
     if ($tarifftagadd['name'] == '' && $tarifftagadd['description'] == '') {
         $SESSION->redirect('?m=tarifftaglist');
@@ -54,5 +55,3 @@ if (isset($_POST['tarifftagadd'])) {
 
 $layout['pagetitle'] = trans('New tag');
 $SMARTY->display('tariff/tarifftagadd.html');
-
-?>

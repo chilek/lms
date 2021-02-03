@@ -28,5 +28,3 @@ $this->Execute("ALTER TABLE voip_numbers RENAME COLUMN \"index\" TO number_index
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016100600', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

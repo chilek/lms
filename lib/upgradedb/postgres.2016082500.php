@@ -26,12 +26,15 @@ $this->BeginTrans();
 $this->Execute("ALTER TABLE rtmessages ADD COLUMN type smallint DEFAULT 0 NOT NULL");
 
 $rtnotes = $this->GetAll("SELECT * FROM rtnotes");
-if (!empty($rtnotes))
-	foreach ($rtnotes as $rtnote) {
-		$this->Execute("INSERT INTO rtmessages (ticketid, body, createtime, userid, type)
+if (!empty($rtnotes)) {
+    foreach ($rtnotes as $rtnote) {
+        $this->Execute(
+            "INSERT INTO rtmessages (ticketid, body, createtime, userid, type)
 			VALUES (?, ?, ?, ?, ?)",
-			array($rtnote['ticketid'], $rtnote['body'], $rtnote['createtime'], $rtnote['userid'], $rtnote['type']));
-	}
+            array($rtnote['ticketid'], $rtnote['body'], $rtnote['createtime'], $rtnote['userid'], $rtnote['type'])
+        );
+    }
+}
 
 $this->Execute("DROP TABLE rtnotes");
 $this->Execute("DROP SEQUENCE rtnotes_id_seq");
@@ -39,5 +42,3 @@ $this->Execute("DROP SEQUENCE rtnotes_id_seq");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016082500', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

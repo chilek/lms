@@ -26,22 +26,22 @@
 
 $id = ($_GET['id']);
 $DB->Execute('INSERT INTO promotions (name, description, disabled)
-	SELECT ' . $DB->Concat('name',"' (".trans('copy').")'"). ', description, disabled
+	SELECT ' . $DB->Concat('name', "' (".trans('copy').")'"). ', description, disabled
 	FROM promotions WHERE id = ?', array($id));
 $newid = $DB->GetLastInsertID('promotions');
 $schemas = $DB->GetAll('SELECT * FROM promotionschemas WHERE promotionid = ?', array($id));
-if($schemas) foreach ($schemas as $schema) {
-    $DB->Execute('INSERT INTO promotionschemas (name, description, data, promotionid, disabled) VALUES (?, ?, ?, ?, ?)
+if ($schemas) {
+    foreach ($schemas as $schema) {
+        $DB->Execute('INSERT INTO promotionschemas (name, description, data, promotionid, disabled) VALUES (?, ?, ?, ?, ?)
     ', array(
         $schema['name'], $schema['description'],
         $schema['data'], $newid, $schema['disabled'],
-    ));
-    $schemaid = $DB->GetLastInsertID('promotionschemas');
-    $DB->Execute('INSERT INTO promotionassignments (promotionschemaid, tariffid, data, optional, label, orderid)
+        ));
+            $schemaid = $DB->GetLastInsertID('promotionschemas');
+            $DB->Execute('INSERT INTO promotionassignments (promotionschemaid, tariffid, data, optional, label, orderid)
         SELECT ?, tariffid, data, optional, label, orderid
         FROM promotionassignments WHERE promotionschemaid = ?', array($schemaid, $schema['id']));
+    }
 }
 
 $SESSION->redirect('?m=promotionlist');
-
-?>

@@ -24,10 +24,10 @@
  *  $Id$
  */
 
-$netid = isset($_GET['netid']) ? intval($_GET['netid']) : NULL;
-$id = isset($_GET['id']) ? intval($_GET['id']) : NULL;
+$netid = isset($_GET['netid']) ? intval($_GET['netid']) : null;
+$id = isset($_GET['id']) ? intval($_GET['id']) : null;
 
-if(!$LMS->TariffExists($_GET['id']) || ($netid != 0 && !$LMS->NetworkExists($netid))) {
+if (!$LMS->TariffExists($_GET['id']) || ($netid != 0 && !$LMS->NetworkExists($netid))) {
        $SESSION->redirect('?m=tarifflist');
 }
 
@@ -40,16 +40,17 @@ $tariff['promotions'] = $DB->GetAll('SELECT DISTINCT p.name, p.id
     WHERE a.tariffid = ?
     ORDER BY p.name', array($tariff['id']));
 
-if (!empty($tariff['numberplanid']))
-	$tariff['numberplan'] = $DB->GetRow('SELECT template, period FROM numberplans WHERE id = ?', array($tariff['numberplanid']));
+if (!empty($tariff['numberplanid'])) {
+    $tariff['numberplan'] = $DB->GetRow('SELECT template, period FROM numberplans WHERE id = ?', array($tariff['numberplanid']));
+}
 
-$layout['pagetitle'] = trans('Subscription Info: $a',$tariff['name']);
+$layout['pagetitle'] = trans('Subscription Info: $a', $tariff['name']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 // if selected tariff is phone tariff then load prefixes assigned to this tariff
 if ($tariff['type'] == SERVICE_PHONE) {
-	$SMARTY->assign('voip_fields', $DB->GetRow("SELECT
+    $SMARTY->assign('voip_fields', $DB->GetRow("SELECT
                                                     vt.name as pricelist, vt.id as pricelist_id,
                                                     vr.name as rule_name, vr.id as rule_name_id
                                                 FROM
@@ -61,9 +62,7 @@ if ($tariff['type'] == SERVICE_PHONE) {
 }
 
 $SMARTY->assign('netid', $netid);
-$SMARTY->assign('tariff',$tariff);
-$SMARTY->assign('tariffs',$LMS->GetTariffs());
-$SMARTY->assign('networks',$LMS->GetNetworks());
+$SMARTY->assign('tariff', $tariff);
+$SMARTY->assign('tariffs', $LMS->GetTariffs());
+$SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->display('tariff/tariffinfo.html');
-
-?>

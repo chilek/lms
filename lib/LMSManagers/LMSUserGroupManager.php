@@ -24,13 +24,16 @@
  *  $Id$
  */
 
-class LMSUserGroupManager extends LMSManager implements LMSUserGroupManagerInterface{
+class LMSUserGroupManager extends LMSManager implements LMSUserGroupManagerInterface
+{
 
-    public function UsergroupGetId($name){
+    public function UsergroupGetId($name)
+    {
         return $this->db->GetOne('SELECT id FROM usergroups WHERE name=?', array($name));
     }
 
-    public function UsergroupAdd($usergroupdata){
+    public function UsergroupAdd($usergroupdata)
+    {
         if ($this->db->Execute('INSERT INTO usergroups (name, description) VALUES (?, ?)', array($usergroupdata['name'], $usergroupdata['description']))) {
             $id = $this->db->GetLastInsertID('usergroups');
             if ($this->syslog) {
@@ -43,20 +46,25 @@ class LMSUserGroupManager extends LMSManager implements LMSUserGroupManagerInter
             }
             return $id;
         } else {
-            return FALSE;
+            return false;
         }
     }
 
-    public function UsergroupGetList(){
-        if ($usergrouplist = $this->db->GetAll('SELECT id, name, description,
+    public function UsergroupGetList()
+    {
+        if ($usergrouplist = $this->db->GetAll('SELECT u.id, u.name, u.description,
 				(SELECT COUNT(*)
 					FROM userassignments
-					WHERE usergroupid = usergroups.id
-				) AS userscount
-				FROM usergroups ORDER BY name ASC')) {
+					WHERE usergroupid = u.id
+				) AS userscount,
+				' . $this->db->GroupConcat('ua.userid') . ' AS users
+				FROM usergroups u
+				LEFT JOIN userassignments ua ON ua.usergroupid = u.id
+				GROUP BY u.id, u.name, u.description
+				ORDER BY u.name ASC')) {
             $totalcount = 0;
 
-            foreach ($usergrouplist as $idx => $row) {
+            foreach ($usergrouplist as $row) {
                 $totalcount += $row['userscount'];
             }
 
@@ -67,7 +75,8 @@ class LMSUserGroupManager extends LMSManager implements LMSUserGroupManagerInter
         return $usergrouplist;
     }
 
-    public function UsergroupGet($id){
+    public function UsergroupGet($id)
+    {
         $result = $this->db->GetRow('SELECT id, name, description FROM usergroups WHERE id=?', array($id));
         $result['users'] = $this->db->GetAll('SELECT vu.id AS id, vu.name AS username FROM userassignments, vusers vu '
                 . 'WHERE vu.id = userid AND usergroupid = ? '
@@ -78,11 +87,13 @@ class LMSUserGroupManager extends LMSManager implements LMSUserGroupManagerInter
         return $result;
     }
 
-    public function UsergroupExists($id){
-        return ($this->db->GetOne('SELECT id FROM usergroups WHERE id=?', array($id)) ? TRUE : FALSE);
+    public function UsergroupExists($id)
+    {
+        return ($this->db->GetOne('SELECT id FROM usergroups WHERE id=?', array($id)) ? true : false);
     }
 
-    public function GetUserWithoutGroupNames($groupid){
+    public function GetUserWithoutGroupNames($groupid)
+    {
         return $this->db->GetAll('SELECT vu.id AS id, vu.name AS username FROM vusers vu WHERE vu.deleted = 0
 	    AND vu.id NOT IN (
 		SELECT userid FROM userassignments WHERE usergroupid = ?)
@@ -90,8 +101,9 @@ class LMSUserGroupManager extends LMSManager implements LMSUserGroupManagerInter
 	    ORDER BY vu.name', array($groupid));
     }
 
-    public function UserassignmentDelete($userassignmentdata){
-        if ($this->syslog){
+    public function UserassignmentDelete($userassignmentdata)
+    {
+        if ($this->syslog) {
             $assign = $this->db->GetRow('SELECT id, userid FROM userassignments WHERE usergroupid = ? AND userid = ?', array($userassignmentdata['usergroupid'], $userassignmentdata['userid']));
             if ($assign) {
                 $args = array(
@@ -105,11 +117,13 @@ class LMSUserGroupManager extends LMSManager implements LMSUserGroupManagerInter
         return $this->db->Execute('DELETE FROM userassignments WHERE usergroupid=? AND userid=?', array($userassignmentdata['usergroupid'], $userassignmentdata['userid']));
     }
 
-    public function UserassignmentExist($groupid, $userid){
+    public function UserassignmentExist($groupid, $userid)
+    {
         return $this->db->GetOne('SELECT 1 FROM userassignments WHERE usergroupid=? AND userid=?', array($groupid, $userid));
     }
 
-    public function UserassignmentAdd($userassignmentdata){
+    public function UserassignmentAdd($userassignmentdata)
+    {
         $res = $this->db->Execute('INSERT INTO userassignments (usergroupid, userid) VALUES (?, ?)', array($userassignmentdata['usergroupid'], $userassignmentdata['userid']));
         if ($this->syslog && $res) {
             $id = $this->db->GetLastInsertID('userassignments');
@@ -123,46 +137,64 @@ class LMSUserGroupManager extends LMSManager implements LMSUserGroupManagerInter
         return $res;
     }
 
-    public function UsergroupDelete($id){
+    public function getUserAssignments($userid)
+    {
+        $result = $this->db->GetAllByKey(
+            'SELECT ug.id, ug.name, ug.description
+            FROM userassignments ua
+            JOIN usergroups ug ON ug.id = ua.usergroupid
+            WHERE ua.userid = ?',
+            'id',
+            array($userid)
+        );
+        return $result ?: array();
+    }
+
+    public function UsergroupDelete($id)
+    {
         if (!$this->UsergroupWithUserGet($id)) {
             if ($this->syslog) {
                 $userassigns = $this->db->GetAll('SELECT id, userid, usergroupid FROM userassignments WHERE usergroupid = ?', array($id));
-                if (!empty($userassigns))
+                if (!empty($userassigns)) {
                     foreach ($userassigns as $userassign) {
                         $args = array(
-                            SYSLOG::RES_USERASSIGN => $userassign['id'],
-                            SYSLOG::RES_USER => $userassign['userid'],
-                            SYSLOG::RES_USERGROUP => $userassign['usergroupid']
+                        SYSLOG::RES_USERASSIGN => $userassign['id'],
+                        SYSLOG::RES_USER => $userassign['userid'],
+                        SYSLOG::RES_USERGROUP => $userassign['usergroupid']
                         );
                         $this->syslog->AddMessage(SYSLOG::RES_USERASSIGN, SYSLOG::OPER_DELETE, $args);
                     }
+                }
                 $this->syslog->AddMessage(SYSLOG::RES_USERGROUP, SYSLOG::OPER_DELETE, array(SYSLOG::RES_USERGROUP => $id));
             }
             $this->db->Execute('DELETE FROM usergroups WHERE id=?', array($id));
-            return TRUE;
+            return true;
+        } else {
+            return false;
         }
-	else
-	    return FALSE;
     }
 
-    public function UsergroupWithUserGet($id){
+    public function UsergroupWithUserGet($id)
+    {
         return $this->db->GetOne('SELECT COUNT(*) FROM userassignments WHERE usergroupid = ?', array($id));
     }
 
-    public function UsergroupUpdate($usergroupdata){
+    public function UsergroupUpdate($usergroupdata)
+    {
         $args = array(
             'name' => $usergroupdata['name'],
             'description' => $usergroupdata['description'],
             SYSLOG::RES_USERGROUP => $usergroupdata['id']
         );
-        if ($this->syslog)
+        if ($this->syslog) {
             $this->syslog->AddMessage(SYSLOG::RES_USERGROUP, SYSLOG::OPER_UPDATE, $args);
+        }
         return $this->db->Execute('UPDATE usergroups SET name=?, description=? WHERE id=?', array_values($args));
     }
 
-    public function UsergroupGetAll(){
-        return $this->db->GetAll('SELECT g.id, g.name, g.description FROM usergroups g ORDER BY g.name ASC');
+    public function getAllUserGroups()
+    {
+        $result = $this->db->GetAllByKey('SELECT g.id, g.name, g.description FROM usergroups g ORDER BY g.name ASC', 'id');
+        return $result ?: array();
     }
-
 }
-

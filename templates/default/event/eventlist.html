@@ -1,11 +1,16 @@
 {extends file="layout.html"}
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
+<script src="js/templates/event/eventlist.js"></script>
 <!--// $Id$ //-->
 {if !empty($overdue_events)}
     <H1>{trans("Overdue events")}</H1>
     {include file="event/eventlistbox_overdue.html" overdue="1"}
 {/if}
+
+{if empty($overdue_events_only)}
+
+{$eventlist_mode = true}
 
 <H1>{$layout.pagetitle}</H1>
 
@@ -25,4 +30,5 @@
         {include file="event/eventlistbox.html" overdue="0"}
     </TBODY>
 </TABLE>
+{/if}
 {/block}

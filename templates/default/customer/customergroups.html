@@ -7,7 +7,7 @@
 	<input type="hidden" class="customerid" value="{$customerinfo.id}">
 </FORM>
 
-{tab_container id="customergroups"}
+{tab_container id="customergroups" label="Customer Groups"}
 
 	{tab_header content_id="groupspanel"}
 		{tab_header_cell icon="lms-ui-icon-cg"}
@@ -54,7 +54,7 @@
 							</strong>
 						</div>
 						<div class="lms-ui-tab-table-column description">
-							{$customergroup.description|default:"-"}
+							{$customergroup.description|escape|default:"-"}
 						</div>
 					</div>
 
@@ -64,9 +64,12 @@
 				</div>
 
 				<div class="lms-ui-tab-table-column buttons">
-					{button type="link" icon="delete" onclick="return confirmLink(this, '{trans("Are you sure, you want to remove customer from group?")}')"
-						href="?m=customergroup&customergroupid={$customergroup.id}&action=delete&id={$customerinfo.id}"
-						tip="Remove customer from group"}
+					{textformat assign="onclick" wrap=5000}
+						confirmDialog($t('Are you sure, you want to remove customer from group?'), this).done(function() {
+							location.href = '?m=customergroup&customergroupid={$customergroup.id}&action=delete&id={$customerinfo.id}';
+						});
+					{/textformat}
+					{button type="link" icon="delete" onclick=$onclick tip="Remove customer from group"}
 					<input type="checkbox" name="markedcustomergroupid[{$customergroup.id}]"
 							value="{$customergroup.id}" class="lms-ui-multi-check" form="customergroupassignment">
 				</div>
@@ -80,14 +83,9 @@
 
 		{tab_button_panel}
 			{tab_buttons}
-				<button type="button" class="lms-ui-button lms-ui-button-delete" id="delete-groups">
-					<i></i> {trans("Delete")}
-				</button>
+				{button icon="delete" label="Delete" id="delete-groups"}
 {if !empty($othercustomergroups)}
-				<button type="button" class="lms-ui-button lms-ui-button-add" id="add-groups"
-						{tip text="Add customer to groups"}>
-					<i></i> {trans("Add")}
-				</button>
+				{button icon="add" label="Add" id="add-groups" tip="Add customer to groups"}
 				<SELECT NAME="customergroupid[]" {tip text="Select group to attribute to customer" class="lms-ui-multiselect"}
 						form="customergroupassignment" multiple>
 					{foreach $othercustomergroups as $customergroup}

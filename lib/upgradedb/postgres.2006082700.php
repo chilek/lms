@@ -37,17 +37,17 @@ $this->Execute("CREATE TABLE nodeassignments (
 	UNIQUE (nodeid, assignmentid))
 ");
 
-if($assign = $this->GetAll('SELECT id, nodeid FROM assignments WHERE nodeid>0'))
-{
-	foreach($assign as $item)
-		$this->Execute('INSERT INTO nodeassignments (nodeid, assignmentid) VALUES (?,?)',
-			array($item['nodeid'], $item['id']));
+if ($assign = $this->GetAll('SELECT id, nodeid FROM assignments WHERE nodeid>0')) {
+    foreach ($assign as $item) {
+        $this->Execute(
+            'INSERT INTO nodeassignments (nodeid, assignmentid) VALUES (?,?)',
+            array($item['nodeid'], $item['id'])
+        );
+    }
 }
 
 $this->Execute("ALTER TABLE assignments DROP COLUMN nodeid");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2006082700', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2006082700', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

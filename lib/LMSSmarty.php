@@ -24,34 +24,43 @@
  *  $Id$
  */
 
-class LMSSmarty extends Smarty {
-	private $plugin_manager;
-	private static $smarty = null;
+class LMSSmarty extends Smarty
+{
+    private $plugin_manager;
+    private static $smarty = null;
 
-	public function __construct() {
-		parent::__construct();
-		self::$smarty = $this;
-	}
+    public function __construct()
+    {
+        parent::__construct();
+        self::$smarty = $this;
+    }
 
-	public static function getInstance() {
-		return self::$smarty;
-	}
+    public static function getInstance()
+    {
+        return self::$smarty;
+    }
 
-	public function setPluginManager(LMSPluginManager $plugin_manager) {
-		$this->plugin_manager = $plugin_manager;
-	}
+    public function setPluginManager(LMSPluginManager $plugin_manager)
+    {
+        $this->plugin_manager = $plugin_manager;
+    }
 
-	public function display($template = null, $cache_id = null, $compile_id = null, $parent = null) {
-		$layout = $this->getTemplateVars('layout');
-		if (!empty($layout))
-			if (array_key_exists('module', $layout))
-				$this->plugin_manager->ExecuteHook($layout['module'] . '_before_module_display',
-					array('smarty' => $this));
-			elseif (array_key_exists('userpanel_module', $layout) && array_key_exists('userpanel_function', $layout))
-				$this->plugin_manager->ExecuteHook('userpanel_' . $layout['userpanel_module'] . '_' . $layout['userpanel_function'] . '_before_module_display',
-					array('smarty' => $this));
-		parent::display($template, $cache_id, $compile_id, $parent);
-	}
+    public function display($template = null, $cache_id = null, $compile_id = null, $parent = null)
+    {
+        $layout = $this->getTemplateVars('layout');
+        if (!empty($layout)) {
+            if (array_key_exists('module', $layout)) {
+                $this->plugin_manager->ExecuteHook(
+                    $layout['module'] . '_before_module_display',
+                    array('smarty' => $this)
+                );
+            } elseif (array_key_exists('userpanel_module', $layout) && array_key_exists('userpanel_function', $layout)) {
+                $this->plugin_manager->ExecuteHook(
+                    'userpanel_' . $layout['userpanel_module'] . '_' . $layout['userpanel_function'] . '_before_module_display',
+                    array('smarty' => $this)
+                );
+            }
+        }
+        parent::display($template, $cache_id, $compile_id, $parent);
+    }
 }
-
-?>

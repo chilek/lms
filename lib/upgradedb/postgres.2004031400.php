@@ -127,7 +127,7 @@ $this->Execute("
 	ALTER TABLE nodes ADD UNIQUE (name);
 	ALTER TABLE nodes ADD UNIQUE (mac);	
 	ALTER TABLE nodes ADD UNIQUE (ipaddr);	
-");	
+");
 $this->Execute("
 	ALTER TABLE payments ALTER description SET DEFAULT '';
 	UPDATE payments SET description='' WHERE description IS NULL;
@@ -199,4 +199,3 @@ $this->Execute("
 $this->Execute("UPDATE dbinfo SET keyvalue='2004031400' WHERE keytype='dbversion'");
 
 $this->Execute("COMMIT");
-?>

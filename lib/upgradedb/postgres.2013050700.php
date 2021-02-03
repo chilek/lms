@@ -38,10 +38,14 @@ $this->Execute("ALTER TABLE nodes ADD CONSTRAINT nodes_ipaddr_key UNIQUE (ipaddr
 $nodes = $this->GetAll("SELECT n.id, INET_NTOA(n.ipaddr) AS ipaddr, net.id AS netid
 	FROM nodes n JOIN networks net ON net.address = n.ipaddr & INET_ATON(net.mask)
 	ORDER BY net.id");
-if (!empty($nodes))
-	foreach ($nodes as $node)
-		$this->Execute("UPDATE nodes SET netid = ? WHERE id = ?",
-			array($node['netid'], $node['id']));
+if (!empty($nodes)) {
+    foreach ($nodes as $node) {
+        $this->Execute(
+            "UPDATE nodes SET netid = ? WHERE id = ?",
+            array($node['netid'], $node['id'])
+        );
+    }
+}
 
 $this->Execute("ALTER TABLE nodes ADD CONSTRAINT nodes_netid_fkey FOREIGN KEY (netid) REFERENCES networks (id) ON DELETE CASCADE ON UPDATE CASCADE");
 
@@ -60,5 +64,3 @@ $this->Execute("
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013050700', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

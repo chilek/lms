@@ -22,7 +22,7 @@
 		</TD>
 		<TD WIDTH="1%" class="nobr bold">{trans("Division:")}</TD>
 		<TD WIDTH="98%">
-		        {$nodeinfo.division}
+		        {$nodeinfo.division|escape}
 		</TD>
 	</TR>
         {/if}
@@ -44,14 +44,14 @@
 		        {$_NETELEMENTSTATUSES[$nodeinfo.status]}
 		</TD>
 	</TR>
-	
+
 	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/producer.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" class="nobr bold">{trans("Project:")}</TD>
 		<TD WIDTH="98%">
-			{if ($nodeinfo.invprojectid == '')}{trans("none")}{else}{$nodeinfo.projectname}{/if}
+			{if ($nodeinfo.invprojectid == '')}{trans("none")}{else}{$nodeinfo.projectname|escape}{/if}
 		</TD>
 	</TR>
 
@@ -62,7 +62,10 @@
 		</TD>
 		<TD WIDTH="1%" class="nobr bold">{trans("Location:")}</TD>
 		<TD WIDTH="98%">
-			{$nodeinfo.location}{if $nodeinfo.borough_name} ({$nodeinfo.state_name} / {$nodeinfo.district_name} / {$_BOROUGHTYPES[$nodeinfo.borough_type]} {$nodeinfo.borough_name}){/if}
+			{if $nodeinfo.location_name}{$nodeinfo.location_name}, {/if}{$nodeinfo.location}
+			{if $nodeinfo.location_borough_name}
+				({$nodeinfo.location_state_name} / {$nodeinfo.location_district_name} / {$_BOROUGHTYPES[$nodeinfo.location_borough_type]} {$nodeinfo.location_borough_name})
+			{/if}
 		</TD>
 	</TR>
 	{/if}
@@ -171,18 +174,25 @@
 	        <TD WIDTH="100%" COLSPAN="2" ALIGN="RIGHT">
 {/if}
 			<A href="?m=netnodeedit&id={$nodeinfo.id}" ACCESSKEY="E">{trans("Edit")} <IMG src="img/edit.gif" ALT="{trans("Edit")}"></A>
-			<A href="?m=netnodedel&id={$nodeinfo.id}" OnClick="return confirmLink(this, '{t a=$nodeinfo.name}Are you sure, you want to remove net device node \'$a\' from database?{/t}');">{trans("Delete")} <img src="img/delete.gif" ALT=""></A>
+			<A id="delete-netnode" href="?m=netnodedel&id={$nodeinfo.id}" data-name="{$nodeinfo.name}">{trans("Delete")} <img src="img/delete.gif" ALT=""></A>
 		</TD>
 	</TR>
     </TBODY>
 </TABLE>
 {if $devicepanel}
-<SCRIPT type="text/javascript">
-<!--
+<SCRIPT>
 if (getCookie('devicepanel') == '1')
 {
 	document.getElementById('devicepanel').style.display = '';
 }
-//-->
 </SCRIPT>
 {/if}
+<script>
+	$('#delete-netnode').click(function() {
+		var name = $(this).attr('data-name');
+		confirmDialog($t("Are you sure, you want to remove net device node '$a' from database?", name), this).done(function() {
+			location.href = $(this).attr('href');
+		});
+		return false;
+	});
+</script>

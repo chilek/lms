@@ -27,6 +27,4 @@
 $this->Execute("ALTER TABLE netlinks ADD COLUMN type TINYINT(1) NOT NULL DEFAULT '0'");
 $this->Execute("ALTER TABLE nodes ADD COLUMN linktype TINYINT(1) NOT NULL DEFAULT '0'");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004101800', 'dbversion'));
-
-?>
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2004101800', 'dbversion'));

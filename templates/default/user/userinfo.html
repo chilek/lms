@@ -4,19 +4,29 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <TABLE style="width: 100%;" CELLPADDING="3">
+	<COLGROUP>
+		<COL style="width: 100%;">
+	</COLGROUP>
 	<TR>
-		<TD style="width: 100%;">
+		<TD>
 			{include file="user/userinfobox.html"}
 		</TD>
 	</TR>
-        {block name="transactions"}
-	{if ConfigHelper::checkConfig('phpui.logging') && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.transaction_logs'))}
+	{if count($userinfo.trusteddevices)}
 	<TR>
-		<TD style="width: 100%;">
-			{include file="transactions.html"}
+		<TD>
+			{include file="twofactorauth/twofactorauthtrusteddevices.html" remove_trusted_device_module="useredit"}
 		</TD>
 	</TR>
 	{/if}
-        {/block}
+	{block name="transactions"}
+		{if ConfigHelper::checkConfig('phpui.logging') && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.transaction_logs'))}
+			<TR>
+				<TD>
+					{include file="transactions.html"}
+				</TD>
+			</TR>
+		{/if}
+	{/block}
 </TABLE>
 {/block}

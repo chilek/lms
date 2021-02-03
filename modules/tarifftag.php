@@ -48,11 +48,11 @@ if ($action == 'delete') {
         $assignment['tarifftagid'] = $_GET['id'];
         foreach ($tariffassignments['mtariffid'] as $value) {
             $assignment['tariffid'] = $value;
-            if (!$LMS->TariffassignmentExist($assignment['tarifftagid'], $value))
+            if (!$LMS->TariffassignmentExist($assignment['tarifftagid'], $value)) {
                 $LMS->TariffassignmentAdd($assignment);
+            }
         }
     }
 }
 
 $SESSION->redirect('?' . $SESSION->get('backto'));
-?>

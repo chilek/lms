@@ -18,27 +18,29 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
  *  $Id$
  */
-
-// REPLACE THIS WITH PATH TO YOU CONFIG FILE
-
-$CONFIG_FILE = '';
 
 // PLEASE DO NOT MODIFY ANYTHING BELOW THIS LINE UNLESS YOU KNOW
 // *EXACTLY* WHAT ARE YOU DOING!!!
 // *******************************************************************
 ini_set('error_reporting', E_ALL&~E_NOTICE);
 
-if(is_readable('/etc/lms/lms-'.$_SERVER['HTTP_HOST'].'.ini'))
-        $CONFIG_FILE = '/etc/lms/lms-'.$_SERVER['HTTP_HOST'].'.ini';
-elseif(is_readable('/etc/lms/lms.ini'))
-        $CONFIG_FILE = '/etc/lms/lms.ini';
-elseif (!is_readable($CONFIG_FILE))
-        die('Unable to read configuration file ['.$CONFIG_FILE.']!');
+$CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
+
+// find alternative config files:
+if (is_readable('lms.ini')) {
+    $CONFIG_FILE = 'lms.ini';
+} elseif (is_readable(DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . ':' . $_SERVER['SERVER_PORT'] . '.ini')) {
+    $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . ':' . $_SERVER['SERVER_PORT'] . '.ini';
+} elseif (is_readable(DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini')) {
+    $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini';
+} elseif (!is_readable($CONFIG_FILE)) {
+    die('Unable to read configuration file [' . $CONFIG_FILE . ']!');
+}
 
 define('CONFIG_FILE', $CONFIG_FILE);
 
@@ -77,11 +79,11 @@ if (file_exists($composer_autoload_path)) {
 $DB = null;
 
 try {
-	$DB = LMSDB::getInstance();
+    $DB = LMSDB::getInstance();
 } catch (Exception $ex) {
-	trigger_error($ex->getMessage(), E_USER_WARNING);
-	// can't working without database
-	die("Fatal error: cannot connect to database!" . PHP_EOL);
+    trigger_error($ex->getMessage(), E_USER_WARNING);
+    // can't working without database
+    die("Fatal error: cannot connect to database!" . PHP_EOL);
 }
 
 // Initialize templates engine
@@ -92,31 +94,26 @@ $SMARTY->addPluginsDir(LIB_DIR . DIRECTORY_SEPARATOR . 'SmartyPlugins');
 
 // Include required files (including sequence is important)
 
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'unstrip.php');
+$_SERVER['REMOTE_ADDR'] = str_replace("::ffff:", "", $_SERVER['REMOTE_ADDR']);
+
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 
 // Initialize LMS class
 
-$AUTH = NULL;
+$AUTH = null;
 $SYSLOG = null;
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
-$LMS->ui_lang = $_ui_language;
-$LMS->lang = $_language;
 
 $plugin_manager = new LMSPluginManager();
 $LMS->setPluginManager($plugin_manager);
 
 // set some template and layout variables
 
-$SMARTY->assignByRef('_LANG', $_LANG);
-$SMARTY->assignByRef('LANGDEFS', $LANGDEFS);
-$SMARTY->assignByRef('_ui_language', $LMS->ui_lang);
-$SMARTY->assignByRef('_language', $LMS->lang);
 $SMARTY->template_dir = getcwd();
 $SMARTY->compile_dir = SMARTY_COMPILE_DIR;
-@include('locale' .  DIRECTORY_SEPARATOR . $LMS->ui_lang . DIRECTORY_SEPARATOR . 'strings.php');
+Localisation::appendUiLanguage('locale');
 
 $layout['lmsv'] = '1.11-git';
 
@@ -126,12 +123,11 @@ $plugin_manager->executeHook('smarty_initialized', $SMARTY);
 
 header('X-Powered-By: LMS/'.$layout['lmsv']);
 
-$_SERVER['REMOTE_ADDR'] = str_replace('::ffff:','',$_SERVER['REMOTE_ADDR']);
+$_SERVER['REMOTE_ADDR'] = str_replace('::ffff:', '', $_SERVER['REMOTE_ADDR']);
 
-if($customerid = $LMS->GetNodeOwner($LMS->GetNodeIDByIP($_SERVER['REMOTE_ADDR'])))
-{
-	$balance = $LMS->GetCustomerBalanceList($customerid);
-	$customerinfo = $LMS->GetCustomer($customerid);
+if ($customerid = $LMS->GetNodeOwner($LMS->GetNodeIDByIP($_SERVER['REMOTE_ADDR']))) {
+    $balance = $LMS->GetCustomerBalanceList($customerid);
+    $customerinfo = $LMS->GetCustomer($customerid);
 
     $customerinfo['tariffsvalue'] = $LMS->GetCustomerTariffsValue($customerid);
 }
@@ -141,5 +137,3 @@ $LMS->executeHook('customer_before_display', array('smarty' => $SMARTY, 'custome
 $SMARTY->assign('customerinfo', $customerinfo);
 $SMARTY->assign('balance', $balance);
 $SMARTY->display('customer.html');
-
-?>

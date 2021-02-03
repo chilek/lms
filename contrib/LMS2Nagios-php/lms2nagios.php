@@ -2,271 +2,342 @@
 <?php
 
 require realpath(dirname(__FILE__) . "/conf/conf.php");
-$l2n= new lms2nagios($db_ip, $db_name, $db_user, $db_pass,$start_id_netdevices,$mapimages,$logoimages,$nagios_path_conf,$nagios_hosts_file,$pnp4nagios,$link_to_LMS);
+$l2n= new lms2nagios($db_ip, $db_name, $db_user, $db_pass, $start_id_netdevices, $mapimages, $logoimages, $nagios_path_conf, $nagios_hosts_file, $pnp4nagios, $link_to_LMS);
 
-class lms2nagios {
-	private $t1 = array();
-	private $t2 = array();
+class lms2nagios
+{
+    private $t1 = array();
+    private $t2 = array();
 
-	private $network= array();
-	private $mapimages = array();
-	private $logoimages = array();
+    private $network= array();
+    private $mapimages = array();
+    private $logoimages = array();
 
-	private $group_members_LMS = array();
+    private $group_members_LMS = array();
 
-	private $nagios_path_conf=null;
-	private $nagios_hosts_file=null;
+    private $nagios_path_conf=null;
+    private $nagios_hosts_file=null;
 
-	private $pnp4nagios=false;
-	private $pingonly=array();
+    private $pnp4nagios=false;
+    private $pingonly=array();
 
-	private $link_to_LMS=null;
-	
-	public function __construct($db_ip, $db_name, $db_user, $db_pass, $start_id_netdevices,$mapimages,$logoimages,$nagios_path_conf,$nagios_hosts_file,$pnp4nagios,$link_to_LMS) {
-		if (isset($db_ip) && isset($db_name) && isset($db_user) && isset($db_pass))  {
-			$this->db_ip=$db_ip;
-			$this->db_name=$db_name;
-			$this->db_user=$db_user;
-			$this->db_pass=$db_pass;
-		} else die("Błąd w pliku konfiguracyjnym!\n");
-		if (isset($start_id_netdevices) && is_numeric($start_id_netdevices)) $this->t1=array($start_id_netdevices); else die("Błąd w pliku konfiguracyjnym!\n");
-		if (isset($mapimages) && count($mapimages)>0) $this->mapimages=$mapimages; else $this->mapimages=array();
-		if (isset($logoimages) && count($logoimages)>0) $this->logoimages=$logoimages; else $this->logoimages=array();
-		if (isset($nagios_path_conf) && $nagios_path_conf!="") $this->nagios_path_conf=$nagios_path_conf; else $this->nagios_path_conf='generated';
-		if (isset($nagios_hosts_file) && $nagios_hosts_file!="") $this->nagios_hosts_file=$nagios_hosts_file; else $this->nagios_hosts_file='hosts_lms_nagios2.cfg';
-		if (isset($pnp4nagios) && $pnp4nagios==true) $this->pnp4nagios=$pnp4nagios; else $this->pnp4nagios=false;
-		if (isset($link_to_LMS)) $this->link_to_LMS=$link_to_LMS; else $this->link_to_LMS=null;
-		$this->nagios_hosts_file=$this->nagios_path_conf."/".$this->nagios_hosts_file;
-		$this->start();
-		//var_dump($this->group_members_LMS);
-	}
+    private $link_to_LMS=null;
+    
+    public function __construct($db_ip, $db_name, $db_user, $db_pass, $start_id_netdevices, $mapimages, $logoimages, $nagios_path_conf, $nagios_hosts_file, $pnp4nagios, $link_to_LMS)
+    {
+        if (isset($db_ip) && isset($db_name) && isset($db_user) && isset($db_pass)) {
+            $this->db_ip=$db_ip;
+            $this->db_name=$db_name;
+            $this->db_user=$db_user;
+            $this->db_pass=$db_pass;
+        } else {
+            die("Błąd w pliku konfiguracyjnym!\n");
+        }
+        if (isset($start_id_netdevices) && is_numeric($start_id_netdevices)) {
+            $this->t1=array($start_id_netdevices);
+        } else {
+            die("Błąd w pliku konfiguracyjnym!\n");
+        }
+        if (isset($mapimages) && count($mapimages)>0) {
+            $this->mapimages=$mapimages;
+        } else {
+            $this->mapimages=array();
+        }
+        if (isset($logoimages) && count($logoimages)>0) {
+            $this->logoimages=$logoimages;
+        } else {
+            $this->logoimages=array();
+        }
+        if (isset($nagios_path_conf) && $nagios_path_conf!="") {
+            $this->nagios_path_conf=$nagios_path_conf;
+        } else {
+            $this->nagios_path_conf='generated';
+        }
+        if (isset($nagios_hosts_file) && $nagios_hosts_file!="") {
+            $this->nagios_hosts_file=$nagios_hosts_file;
+        } else {
+            $this->nagios_hosts_file='hosts_lms_nagios2.cfg';
+        }
+        if (isset($pnp4nagios) && $pnp4nagios==true) {
+            $this->pnp4nagios=$pnp4nagios;
+        } else {
+            $this->pnp4nagios=false;
+        }
+        if (isset($link_to_LMS)) {
+            $this->link_to_LMS=$link_to_LMS;
+        } else {
+            $this->link_to_LMS=null;
+        }
+        $this->nagios_hosts_file=$this->nagios_path_conf."/".$this->nagios_hosts_file;
+        $this->start();
+        //var_dump($this->group_members_LMS);
+    }
 
 
-	private function start() {
-		array_map('unlink', glob($this->nagios_path_conf."/*.cfg"));
-		$this->information();
-		$this->getNetlinksFromLMS();
-		$this->createRelationChildToParent();
-		$this->writeHostGroupsToFile();
-		//$this->serviceForNagios();
-	}
+    private function start()
+    {
+        array_map('unlink', glob($this->nagios_path_conf."/*.cfg"));
+        $this->information();
+        $this->getNetlinksFromLMS();
+        $this->createRelationChildToParent();
+        $this->writeHostGroupsToFile();
+        //$this->serviceForNagios();
+    }
 
-	private function information() {
-		$handle = fopen($this->nagios_hosts_file, "w");
-		$tofile="#Do not change this file. Auto Generated by lms2nagios\n";
-		fwrite($handle, $tofile);
-		fclose($handle);
-	}
+    private function information()
+    {
+        $handle = fopen($this->nagios_hosts_file, "w");
+        $tofile="#Do not change this file. Auto Generated by lms2nagios\n";
+        fwrite($handle, $tofile);
+        fclose($handle);
+    }
 
-	private function getNetlinksFromLMS() {
-		$t2=array();
-		$netdev=$this->QueryMysql("SELECT id FROM netdevices");
-		$x=mysql_num_rows($netdev);
-		if ($x>0) {
-			for ($i = 0; $i< $x; $i++) {
-				$row = mysql_fetch_array($netdev);
-				$netlinks = $this->QueryMysql("SELECT src,dst FROM netlinks WHERE src=".$row['id']." OR dst=".$row['id']." ");
-				$y=mysql_num_rows($netlinks);
-				if ($y>0) {
-					$t10=array();
-					for ($j = 0; $j< $y; $j++) {
-						$row1 = mysql_fetch_array($netlinks);
-						if ($row['id']==$row1['src']) {
-							$t10[]=$row1['dst'];
-						}
-						if ($row['id']==$row1['dst']) {
-							$t10[]=$row1['src'];
-						}
-					}
-					$t2[$row['id']]=$t10;
-				}
-			}
+    private function getNetlinksFromLMS()
+    {
+        $t2=array();
+        $netdev=$this->QueryMysql("SELECT id FROM netdevices");
+        $x=mysql_num_rows($netdev);
+        if ($x>0) {
+            for ($i = 0; $i< $x; $i++) {
+                $row = mysql_fetch_array($netdev);
+                $netlinks = $this->QueryMysql("SELECT src,dst FROM netlinks WHERE src=".$row['id']." OR dst=".$row['id']." ");
+                $y=mysql_num_rows($netlinks);
+                if ($y>0) {
+                    $t10=array();
+                    for ($j = 0; $j< $y; $j++) {
+                        $row1 = mysql_fetch_array($netlinks);
+                        if ($row['id']==$row1['src']) {
+                            $t10[]=$row1['dst'];
+                        }
+                        if ($row['id']==$row1['dst']) {
+                            $t10[]=$row1['src'];
+                        }
+                    }
+                    $t2[$row['id']]=$t10;
+                }
+            }
+        }
+        $this->t2=$t2;
+    }
 
-		}
-		$this->t2=$t2;
-	}
+    private function createRelationChildToParent()
+    {
+        $this->createHostForNagios($this->t1[0], null);
+        for ($i=0; $i<count($this->t1); $i++) {
+            if (array_key_exists($this->t1[$i], $this->t2)) {
+                for ($j=0; $j<count($this->t2[$this->t1[$i]]); $j++) {
+                    if (!in_array($this->t2[$this->t1[$i]][$j], $this->t1)) {
+                        $this->createHostForNagios($this->t2[$this->t1[$i]][$j], $this->t1[$i]);
+                        $this->t1[]=$this->t2[$this->t1[$i]][$j];
+                    }
+                }
+            }
+        }
+    }
 
-	private function createRelationChildToParent() {
-		$this->createHostForNagios($this->t1[0],NULL);
-		for ($i=0;$i<count($this->t1);$i++) {
-			if (array_key_exists($this->t1[$i],$this->t2)) {
-				for ($j=0;$j<count ($this->t2[$this->t1[$i]]);$j++) {
-					if (!in_array($this->t2[$this->t1[$i]][$j], $this->t1)) {
-						$this->createHostForNagios($this->t2[$this->t1[$i]][$j],$this->t1[$i]);
-						$this->t1[]=$this->t2[$this->t1[$i]][$j];
-					}
-				}
-			}
-
-		}
-	}
-
-	private function serviceForNagios() {
-		if  (count($this->omd_pingonly)>=1) {
-			$handle = fopen($this->nagios_path_conf."/default_service_lms2nagios.cfg", "a");
-			$members=null;
-			$tofile=null;
-			for ($i=0;$i<count($this->omd_pingonly);$i++) {
-				$members.=$this->omd_pingonly[$i];
-				if ((count($this->omd_pingonly)-1)==$i)
-				$members.="\n";
-				else
-				$members.=", ";
-			}
-			$tofile.="define service {
+    private function serviceForNagios()
+    {
+        if (count($this->omd_pingonly)>=1) {
+            $handle = fopen($this->nagios_path_conf."/default_service_lms2nagios.cfg", "a");
+            $members=null;
+            $tofile=null;
+            for ($i=0; $i<count($this->omd_pingonly); $i++) {
+                $members.=$this->omd_pingonly[$i];
+                if ((count($this->omd_pingonly)-1)==$i) {
+                    $members.="\n";
+                } else {
+                    $members.=", ";
+                }
+            }
+            $tofile.="define service {
  host_name\t\t".$members."
  name\t\t\tpingonly
  use\t\t\tcheck_mk_pingonly
  check_command\t\tcheck-mk-ping!
 }";
-			fwrite($handle, $tofile);
-			fclose($handle);
-		}
-	}
+            fwrite($handle, $tofile);
+            fclose($handle);
+        }
+    }
 
-	private function createHostForNagios ($child,$parent) {
+    private function createHostForNagios($child, $parent)
+    {
 
-		$child_data=$this->getData($child);
-		//var_dump($child_data);
-		if ($parent) $parent_data=$this->getData($parent);
-		if ($child_data['name']) {
-			$this->addToArrayMembersLMS($child_data['producer'], $child_data['name']);
-			$handle = fopen($this->nagios_hosts_file, "a");
-			$tofile="define host {\n";
-			if (isset($parent_data['name'])) $parents=" parents ".$parent_data['name']."\n"; else $parents=null;
-			$check_command=" check_command check-host-alive";
-			if ($this->pnp4nagios==true) $host_pnp=',host-pnp'; else $host_pnp='';
-			if (isset($child_data['generic-host'])) $use=" use ".$child_data['generic-host']."".$host_pnp."\n"; else $use=" use generic-host".$host_pnp."\n";
-			$host_name=" host_name ".trim($child_data['name'])."\n";
-			if ($this->link_to_LMS!=null) $link_to_LMS='<a href="'.$this->link_to_LMS.'/?m=netdevinfo&id='.$child_data['netdev'].'" target="_blank">[ LMS ]</a>'; else $link_to_LMS='';
-			if (isset($child_data['location'])) $alias=" alias ".$child_data['producer']." ".$child_data['model']."<br>".$child_data['location']."<br>".$link_to_LMS."\n"; else $alias=" alias ".$host_name."\n";
-			if (($child_data['ip']) && (count($child_data['ip']>=1))) {
-				$address=" address ".$this->selectIP($child_data['ip'],$child_data['netdev'])."\n";
-				$this->pingonly[]=trim($child_data['name']);
-			}else {
-				$address=null;
-				$tofile.="active_checks_enabled\t0\n";
-			}
-			$tofile.=$use;
-			$tofile.=$host_name;
-			$tofile.=$alias;
-			$tofile.=$address;
-			$tofile.=$parents;
+        $child_data=$this->getData($child);
+        //var_dump($child_data);
+        if ($parent) {
+            $parent_data=$this->getData($parent);
+        }
+        if ($child_data['name']) {
+            $this->addToArrayMembersLMS($child_data['producer'], $child_data['name']);
+            $handle = fopen($this->nagios_hosts_file, "a");
+            $tofile="define host {\n";
+            if (isset($parent_data['name'])) {
+                $parents=" parents ".$parent_data['name']."\n";
+            } else {
+                $parents=null;
+            }
+            $check_command=" check_command check-host-alive";
+            if ($this->pnp4nagios==true) {
+                $host_pnp=',host-pnp';
+            } else {
+                $host_pnp='';
+            }
+            if (isset($child_data['generic-host'])) {
+                $use=" use ".$child_data['generic-host']."".$host_pnp."\n";
+            } else {
+                $use=" use generic-host".$host_pnp."\n";
+            }
+            $host_name=" host_name ".trim($child_data['name'])."\n";
+            if ($this->link_to_LMS!=null) {
+                $link_to_LMS='<a href="'.$this->link_to_LMS.'/?m=netdevinfo&id='.$child_data['netdev'].'" target="_blank">[ LMS ]</a>';
+            } else {
+                $link_to_LMS='';
+            }
+            if (isset($child_data['location'])) {
+                $alias=" alias ".$child_data['producer']." ".$child_data['model']."<br>".$child_data['location']."<br>".$link_to_LMS."\n";
+            } else {
+                $alias=" alias ".$host_name."\n";
+            }
+            if (($child_data['ip']) && (count($child_data['ip']>=1))) {
+                $address=" address ".$this->selectIP($child_data['ip'], $child_data['netdev'])."\n";
+                $this->pingonly[]=trim($child_data['name']);
+            } else {
+                $address=null;
+                $tofile.="active_checks_enabled\t0\n";
+            }
+            $tofile.=$use;
+            $tofile.=$host_name;
+            $tofile.=$alias;
+            $tofile.=$address;
+            $tofile.=$parents;
 
-			$mapimage=$this->icon_image($child_data['model']);
-			if (isset($mapimage)) $tofile.=" icon_image lms_img/".$mapimage."\n";
-			$statusmap_image=$this->statusmap_image($child_data['model']);
-			if (isset($statusmap_image)) $tofile.=" statusmap_image lms_img/".$statusmap_image."\n";
-			$tofile.="}\n";
-			fwrite($handle, $tofile);
-			fclose($handle);
-		}
-	}
+            $mapimage=$this->icon_image($child_data['model']);
+            if (isset($mapimage)) {
+                $tofile.=" icon_image lms_img/".$mapimage."\n";
+            }
+            $statusmap_image=$this->statusmap_image($child_data['model']);
+            if (isset($statusmap_image)) {
+                $tofile.=" statusmap_image lms_img/".$statusmap_image."\n";
+            }
+            $tofile.="}\n";
+            fwrite($handle, $tofile);
+            fclose($handle);
+        }
+    }
 
 
-	private function addToArrayMembersLMS($producer,$name) {
-		if (array_key_exists($producer, $this->group_members_LMS)) {
-			$this->group_members_LMS[$producer][]=$name;
-		} else {
-			$this->group_members_LMS[$producer]=array($name);
-		}
-	}
+    private function addToArrayMembersLMS($producer, $name)
+    {
+        if (array_key_exists($producer, $this->group_members_LMS)) {
+            $this->group_members_LMS[$producer][]=$name;
+        } else {
+            $this->group_members_LMS[$producer]=array($name);
+        }
+    }
 
-	private function writeHostGroupsToFile(){
-		if(count($this->group_members_LMS)>0) {
-			foreach ($this->group_members_LMS as $nameGroup => $arrayGroup) {
-				for ($i=0;$i<count($arrayGroup);$i++) {
-					$handle = fopen($this->nagios_path_conf."/hostgroup_".$nameGroup."_lms2nagios.cfg", "a");
-					$tofile="#HostGroup ".$nameGroup." generated from LMS by lms2nagios.php
+    private function writeHostGroupsToFile()
+    {
+        if (count($this->group_members_LMS)>0) {
+            foreach ($this->group_members_LMS as $nameGroup => $arrayGroup) {
+                for ($i=0; $i<count($arrayGroup); $i++) {
+                    $handle = fopen($this->nagios_path_conf."/hostgroup_".$nameGroup."_lms2nagios.cfg", "a");
+                    $tofile="#HostGroup ".$nameGroup." generated from LMS by lms2nagios.php
 define hostgroup {
  hostgroup_name  ".$nameGroup."
- alias           ".$nameGroup." generated from LMS\n"; 
-					$members=null;
-					for ($i=0;$i<count($arrayGroup);$i++) {
-						$members.=$arrayGroup[$i];
-						if ((count($arrayGroup)-1)==$i)
-						$members.="\n";
-						else
-						$members.=", ";
-					}
-					$tofile.=" members         ".$members."}\n";
-					fwrite($handle, $tofile);
-					fclose($handle);
-				}
+ alias           ".$nameGroup." generated from LMS\n";
+                    $members=null;
+                    for ($i=0; $i<count($arrayGroup); $i++) {
+                        $members.=$arrayGroup[$i];
+                        if ((count($arrayGroup)-1)==$i) {
+                            $members.="\n";
+                        } else {
+                            $members.=", ";
+                        }
+                    }
+                    $tofile.=" members         ".$members."}\n";
+                    fwrite($handle, $tofile);
+                    fclose($handle);
+                }
+            }
+        }
+    }
 
-			}
-		}
-	}
+    private function icon_image($name)
+    {
+        if ($name) {
+            if (array_key_exists($name, $this->mapimages)) {
+                return $this->mapimages[trim($name)];
+            }
+            return null;
+        }
+    }
 
-	private function icon_image($name) {
-		if ($name) {
-			if (array_key_exists($name, $this->mapimages)) {
-				return $this->mapimages[trim($name)];
-			}
-			return null;
-		}
-	}
+    private function statusmap_image($name)
+    {
+        if ($name) {
+            if (array_key_exists($name, $this->mapimages)) {
+                return $this->mapimages[trim($name)];
+            }
+            return null;
+        }
+    }
 
-	private function statusmap_image($name) {
-		if ($name) {
-			if (array_key_exists($name, $this->mapimages)) {
-				return $this->mapimages[trim($name)];
-			}
-			return null;
-		}
-	}
+    private function selectIP($ip, $netdev)
+    {
+        $url = $this->QueryMysql("SELECT url FROM managementurls WHERE netdevid=".$netdev." AND comment='nagios'");
+        if (mysql_num_rows($url)) {
+            $row = mysql_fetch_array($url);
+            return substr(trim($row['url']), 7);
+        } else {
+            return $ip[0];
+        }
+    }
 
-	private function selectIP($ip,$netdev) {
-		$url = $this->QueryMysql("SELECT url FROM managementurls WHERE netdevid=".$netdev." AND comment='nagios'");
-		if (mysql_num_rows($url)) {
-			$row = mysql_fetch_array($url);
-			return substr(trim($row['url']),7);
-		} else {
-			return $ip[0];
-		}
-	}
+    private function getData($data)
+    {
+        $ip=array();
+        $q1=$this->QueryMysql("SELECT name,location,producer,model FROM netdevices WHERE id=".$data."");
+        $q2=$this->QueryMysql("SELECT inet_ntoa( n.ipaddr ) as ip FROM vnodes as n WHERE n.netdev=".$data." AND n.ownerid=0");
+        if (mysql_num_rows($q1)==1) {
+            $row=mysql_fetch_array($q1);
+            $name= $row['name'];
+            $y=mysql_num_rows($q2);
+            if ($y >=1) {
+                for ($j = 0; $j< $y; $j++) {
+                    $row1=mysql_fetch_array($q2);
+                    $ip[]= $row1['ip'];
+                }
+            }
+            return array('name'=>$row['name'], 'location'=>$row['location'], 'producer'=>$row['producer'], 'model'=>$row['model'],'ip'=>$ip, 'netdev'=>$data);
+        } else {
+            return null;
+        }
+    }
 
-	private function getData($data){
-		$ip=array();
-		$q1=$this->QueryMysql("SELECT name,location,producer,model FROM netdevices WHERE id=".$data."");
-		$q2=$this->QueryMysql("SELECT inet_ntoa( n.ipaddr ) as ip FROM vnodes as n WHERE n.netdev=".$data." AND n.ownerid=0");
-		if (mysql_num_rows($q1)==1 ) {
-			$row=mysql_fetch_array($q1);
-			$name= $row['name'];
-			$y=mysql_num_rows($q2);
-			if ($y >=1 ) {
-				for ($j = 0; $j< $y; $j++) {
-					$row1=mysql_fetch_array($q2);
-					$ip[]= $row1['ip'];
-				}
-			}
-			return array('name'=>$row['name'], 'location'=>$row['location'], 'producer'=>$row['producer'], 'model'=>$row['model'],'ip'=>$ip, 'netdev'=>$data);
-		} else return null;
-	}
+    public function ConnectToMysql()
+    {
+        @ $connect= mysql_pconnect($this->db_ip, $this->db_user, $this->db_pass);
+        $db=mysql_select_db($this->db_name);
+        if ($connect && $db) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-	public function ConnectToMysql() {
-		@ $connect= mysql_pconnect($this->db_ip,$this->db_user,$this->db_pass);
-		$db=mysql_select_db ($this->db_name);
-		if ($connect && $db) {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-
-	public function QueryMysql($query){
-		if(($this->ConnectToMysql())==true) {
-			//echo $query."\n";
-			mysql_query('SET character_set_connection=utf8');
-			mysql_query('SET character_set_client=utf8');
-			mysql_query('SET character_set_results=utf8');
-			return mysql_query($query);
-		}
-		else {
-			echo "Połącznie z bazą nie może być teraz zrealizowane";
-			die();
-		}
-	}
+    public function QueryMysql($query)
+    {
+        if (($this->ConnectToMysql())==true) {
+            //echo $query."\n";
+            mysql_query('SET character_set_connection=utf8');
+            mysql_query('SET character_set_client=utf8');
+            mysql_query('SET character_set_results=utf8');
+            return mysql_query($query);
+        } else {
+            echo "Połącznie z bazą nie może być teraz zrealizowane";
+            die();
+        }
+    }
 }
 ?>

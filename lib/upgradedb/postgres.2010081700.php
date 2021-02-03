@@ -28,5 +28,3 @@ $this->Execute("DROP INDEX stats_nodeid_idx");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010081700', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

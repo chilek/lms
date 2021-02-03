@@ -4,8 +4,8 @@
 	<TR>
 		<TD WIDTH="800" ALIGN="LEFT">
 			<P class="hdf"><B>{$layout.pagetitle}</B>
-			{if $layout.division}<BR><font class="sdr"><B>{$layout.division}</B></font>{/if}
-			{if $layout.group}<BR><font class="sdr"><B>{$layout.group}</B></font>{/if}
+			{if $layout.division}<BR><span class="sdr"><B>{$layout.division}</B></span>{/if}
+			{if $layout.group}<BR><span class="sdr"><B>{$layout.group}</B></span>{/if}
 			</P>
 		</TD>
 		<TD WIDTH="200" ALIGN="RIGHT" NOWRAP>
@@ -53,7 +53,7 @@
 	</TR>
 	{if !isset($printonlysummary)}
 	{cycle values="grey,white" print=false}
-	{foreach item=invoice from=$invoicelist}
+	{foreach $invoicelist as $invoice}
 	<TR class="{cycle}">
 		<TD ALIGN="CENTER">
 			{counter}.
@@ -71,22 +71,26 @@
 			{$invoice.custaddress}
 		</TD>
 		<TD ALIGN="RIGHT">
-			{$invoice.brutto|string_format:"%01.2f"}
+			{($invoice.brutto * $invoice.currencyvalue)|string_format:"%01.2f"}
+			{if $invoice.currency != Localisation::getCurrentCurrency()}<br>({moneyf($invoice.brutto, $invoice.currency)}){/if}
 		</TD>
 		{if !in_array(DOC_DNOTE, $doctypes)}
 		{foreach item=tax from=$taxes}
 		{assign var=taxid value=$tax.id}
 		<TD ALIGN="RIGHT">
-			{$invoice.$taxid.val|string_format:"%01.2f"}
+			{($invoice.$taxid.val * $invoice.currencyvalue)|string_format:"%01.2f"}
+			{if $invoice.currency != Localisation::getCurrentCurrency()}<br>({moneyf($invoice.$taxid.val, $invoice.currency)}){/if}
 		</TD>
 		{if $tax.value}
 		<TD ALIGN="RIGHT">
-			{$invoice.$taxid.tax|string_format:"%01.2f"}
+			{($invoice.$taxid.tax * $invoice.currencyvalue)|string_format:"%01.2f"}
+			{if $invoice.currency != Localisation::getCurrentCurrency()}<br>({moneyf($invoice.$taxid.tax, $invoice.currency)}){/if}
 		</TD>
 		{/if}
 		{/foreach}
 		<TD ALIGN="RIGHT">
-			{$invoice.tax|string_format:"%01.2f"}
+			{($invoice.tax * $invoice.currencyvalue)|string_format:"%01.2f"}
+			{if $invoice.currency != Localisation::getCurrentCurrency()}<br>({moneyf($invoice.tax, $invoice.currency)}){/if}
 		</TD>
 		{/if}
 	</TR>
@@ -101,6 +105,50 @@
 	<TR>
 		<TD CLASS="HEADGREY" COLSPAN="4" ALIGN="RIGHT">
 			<B>{trans("Total:")}</B>
+		</TD>
+		<TD CLASS="HEADGREY" ALIGN="RIGHT">
+			<B>{($listdata.brutto+$listdata.brutto_receipt)|string_format:"%01.2f"}</B>
+		</TD>
+		{foreach item=tax from=$taxes}
+			{assign var=taxid value=$tax.id}
+			<TD CLASS="HEADGREY" ALIGN="RIGHT">
+				<B>{($listdata.$taxid.val+$listdata.$taxid.val_receipt)|string_format:"%01.2f"}</B>
+			</TD>
+			{if $tax.value}
+				<TD CLASS="HEADGREY" ALIGN="RIGHT">
+					<B>{($listdata.$taxid.tax+$listdata.$taxid.tax_receipt)|string_format:"%01.2f"}</B>
+				</TD>
+				{/if}
+			{/foreach}
+		<TD CLASS="HEADGREY" ALIGN="RIGHT">
+			<B>{($listdata.tax+$listdata.tax_receipt)|string_format:"%01.2f"}</B>
+		</TD>
+	</TR>
+	<TR>
+		<TD CLASS="HEADGREY" COLSPAN="4" ALIGN="RIGHT">
+			<B>{trans("<!invoice>With receipt:")}</B>
+		</TD>
+		<TD CLASS="HEADGREY" ALIGN="RIGHT">
+			<B>{$listdata.brutto_receipt|string_format:"%01.2f"}</B>
+		</TD>
+		{foreach item=tax from=$taxes}
+			{assign var=taxid value=$tax.id}
+			<TD CLASS="HEADGREY" ALIGN="RIGHT">
+				<B>{$listdata.$taxid.val_receipt|string_format:"%01.2f"}</B>
+			</TD>
+			{if $tax.value}
+				<TD CLASS="HEADGREY" ALIGN="RIGHT">
+					<B>{$listdata.$taxid.tax_receipt|string_format:"%01.2f"}</B>
+				</TD>
+				{/if}
+			{/foreach}
+		<TD CLASS="HEADGREY" ALIGN="RIGHT">
+			<B>{$listdata.tax_receipt|string_format:"%01.2f"}</B>
+		</TD>
+	</TR>
+	<TR>
+		<TD CLASS="HEADGREY" COLSPAN="4" ALIGN="RIGHT">
+			<B>{trans("<!invoice>Without receipt:")}</B>
 		</TD>
 		<TD CLASS="HEADGREY" ALIGN="RIGHT">
 			<B>{$listdata.brutto|string_format:"%01.2f"}</B>

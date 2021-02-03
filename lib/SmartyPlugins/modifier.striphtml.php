@@ -24,38 +24,39 @@
  *  $Id$
  */
 
-function smarty_modifier_striphtml($args) {
-	$search = array ("'<script[^>]*?>.*?</script>'si",  // Strip out javascript
-			"'<[\/\!]*?[^<>]*?>'si",           // Strip out html tags
-			"'([\r\n])[\s]+'",                 // Strip out white space
-			"'&(quot|#34);'i",                 // Replace html entities
-			"'&(amp|#38);'i",
-			"'&(lt|#60);'i",
-			"'&(gt|#62);'i",
-			"'&(nbsp|#160);'i",
-			"'&(iexcl|#161);'i",
-			"'&(cent|#162);'i",
-			"'&(pound|#163);'i",
-			"'&(copy|#169);'i");
+function smarty_modifier_striphtml($args)
+{
+    $search = array ("'<script[^>]*?>.*?</script>'si",  // Strip out javascript
+            "'<[\/\!]*?[^<>]*?>'si",           // Strip out html tags
+            "'([\r\n])[\s]+'",                 // Strip out white space
+            "'&(quot|#34);'i",                 // Replace html entities
+            "'&(amp|#38);'i",
+            "'&(lt|#60);'i",
+            "'&(gt|#62);'i",
+            "'&(nbsp|#160);'i",
+            "'&(iexcl|#161);'i",
+            "'&(cent|#162);'i",
+            "'&(pound|#163);'i",
+            "'&(copy|#169);'i");
 
-	$replace = array ("",
-			"\\1",
-			"\"",
-			"&",
-			"<",
-			">",
-			" ",
-			chr(161),
-			chr(162),
-			chr(163),
-			chr(169));
+    $replace = array ("",
+            "\\1",
+            "\"",
+            "&",
+            "<",
+            ">",
+            " ",
+            chr(161),
+            chr(162),
+            chr(163),
+            chr(169));
 
-	$args = preg_replace ($search, $replace, $args);
-	return preg_replace_callback("'&#(\d+);'",
-		function($m) {
-			return chr($m[1]);
-		},
-		$args);
+    $args = preg_replace($search, $replace, $args);
+    return preg_replace_callback(
+        "'&#(\d+);'",
+        function ($m) {
+            return chr($m[1]);
+        },
+        $args
+    );
 }
-
-?>

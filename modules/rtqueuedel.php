@@ -28,23 +28,19 @@ $queue = intval($_GET['id']);
 $qaction = ($_GET['qaction']);
 $ticket = $DB->GetOne('SELECT id FROM rttickets WHERE queueid = ?', array($queue));
 
-if ($qaction == 'delete')
-{
-	$del = 1;
-	$nodel = 0;
-	$deltime = time();
-	$DB->BeginTrans();
-	$DB->Execute('UPDATE rtqueues SET deleted=?, deltime=?, deluserid=? WHERE id = ?', array($del, $deltime, Auth::GetCurrentUser(), $queue));
-	$DB->Execute('UPDATE rttickets SET deleted=?, deluserid=? WHERE deleted=? and queueid = ?', array($del, Auth::GetCurrentUser(), $nodel, $queue));
-	if ($deltickets = $DB->GetCol('SELECT id FROM rttickets WHERE queueid = ?', array($queue)))
-	{
-		foreach ($deltickets as $delticket) {
-			$DB->Execute('UPDATE rtmessages SET deleted=?, deluserid=? WHERE deleted=? and ticketid = ?', array($del, Auth::GetCurrentUser(), $nodel, $delticket));
-		}
-	}
-	$DB->CommitTrans();
+if ($qaction == 'delete') {
+    $del = 1;
+    $nodel = 0;
+    $deltime = time();
+    $DB->BeginTrans();
+    $DB->Execute('UPDATE rtqueues SET deleted=?, deltime=?, deluserid=? WHERE id = ?', array($del, $deltime, Auth::GetCurrentUser(), $queue));
+    $DB->Execute('UPDATE rttickets SET deleted=?, deluserid=? WHERE deleted=? and queueid = ?', array($del, Auth::GetCurrentUser(), $nodel, $queue));
+    if ($deltickets = $DB->GetCol('SELECT id FROM rttickets WHERE queueid = ?', array($queue))) {
+        foreach ($deltickets as $delticket) {
+            $DB->Execute('UPDATE rtmessages SET deleted=?, deluserid=? WHERE deleted=? and ticketid = ?', array($del, Auth::GetCurrentUser(), $nodel, $delticket));
+        }
+    }
+    $DB->CommitTrans();
 }
 
 $SESSION->redirect('?m=rtqueuelist');
-
-?>

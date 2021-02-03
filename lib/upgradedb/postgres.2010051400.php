@@ -37,5 +37,3 @@ SELECT n.*, m.mac
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010051400', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

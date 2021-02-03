@@ -29,65 +29,68 @@ $layout['pagetitle'] = trans('Debit Notes List<!long>');
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SESSION->restore('dnlm', $marks);
-if(isset($_POST['marks']))
-	foreach($_POST['marks'] as $id => $mark)
-		$marks[$id] = $mark;
+if (isset($_POST['marks'])) {
+    foreach ($_POST['marks'] as $id => $mark) {
+        $marks[$id] = $mark;
+    }
+}
 $SESSION->save('dnlm', $marks);
 
-if(isset($_POST['search']))
-	$s = $_POST['search'];
-else
-	$SESSION->restore('dnls', $s);
+if (isset($_POST['search'])) {
+    $s = $_POST['search'];
+} else {
+    $SESSION->restore('dnls', $s);
+}
 $SESSION->save('dnls', $s);
 
-if(isset($_GET['o']))
-	$o = $_GET['o'];
-else
-	$SESSION->restore('dnlo', $o);
+if (isset($_GET['o'])) {
+    $o = $_GET['o'];
+} else {
+    $SESSION->restore('dnlo', $o);
+}
 $SESSION->save('dnlo', $o);
 
-if(isset($_POST['cat']))
-	$c = $_POST['cat'];
-else
-	$SESSION->restore('dnlc', $c);
+if (isset($_POST['cat'])) {
+    $c = $_POST['cat'];
+} else {
+    $SESSION->restore('dnlc', $c);
+}
 $SESSION->save('dnlc', $c);
 
-if (isset($_POST['search']))
-	$h = isset($_POST['hideclosed']);
-elseif (($h = $SESSION->get('dnlh')) === NULL)
-	$h = ConfigHelper::checkConfig('notes.hide_closed');
+if (isset($_POST['search'])) {
+    $h = isset($_POST['hideclosed']);
+} elseif (($h = $SESSION->get('dnlh')) === null) {
+    $h = ConfigHelper::checkConfig('notes.hide_closed');
+}
 $SESSION->save('dnlh', $h);
 
-if(isset($_POST['group'])) {
-	$g = $_POST['group'];
-	$ge = isset($_POST['groupexclude']) ? $_POST['groupexclude'] : NULL;
+if (isset($_POST['group'])) {
+    $g = $_POST['group'];
+    $ge = isset($_POST['groupexclude']) ? $_POST['groupexclude'] : null;
 } else {
-	$SESSION->restore('dnlg', $g);
-	$SESSION->restore('dnlge', $ge);
+    $SESSION->restore('dnlg', $g);
+    $SESSION->restore('dnlge', $ge);
 }
 $SESSION->save('dnlg', $g);
 $SESSION->save('dnlge', $ge);
 
-if($c == 'cdate' && $s && preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $s))
-{
-	list($year, $month, $day) = explode('/', $s);
-	$s = mktime(0,0,0, $month, $day, $year);
-}
-elseif($c == 'month' && $s && preg_match('/^[0-9]{4}\/[0-9]{2}$/', $s))
-{
-	list($year, $month) = explode('/', $s);
-        $s = mktime(0,0,0, $month, 1, $year);
+if ($c == 'cdate' && $s && preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $s)) {
+    list($year, $month, $day) = explode('/', $s);
+    $s = mktime(0, 0, 0, $month, $day, $year);
+} elseif ($c == 'month' && $s && preg_match('/^[0-9]{4}\/[0-9]{2}$/', $s)) {
+    list($year, $month) = explode('/', $s);
+        $s = mktime(0, 0, 0, $month, 1, $year);
 }
 
 $total = intval($LMS->GetNoteList(array('search' => $s, 'cat' => $c, 'group' => $g, 'exclude' => $ge,
-	'hideclosed' => $h, 'order' => $o, 'count' => true)));
+    'hideclosed' => $h, 'order' => $o, 'count' => true)));
 
 $limit = intval(ConfigHelper::getConfig('phpui.debitnotelist_pagelimit', $total));
 $page = !isset($_GET['page']) ? 1 : intval($_GET['page']);
 $offset = ($page - 1) * $limit;
 
 $notelist = $LMS->GetNoteList(array('search' => $s, 'cat' => $c, 'group' => $g, 'exclude' => $ge,
-	'hideclosed' => $h, 'order' => $o, 'count' => false, 'offset' => $offset, 'limit' => $limit));
+    'hideclosed' => $h, 'order' => $o, 'count' => false, 'offset' => $offset, 'limit' => $limit));
 
 $pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
 
@@ -103,8 +106,7 @@ $listdata['direction'] = $notelist['direction'];
 unset($notelist['order']);
 unset($notelist['direction']);
 
-if($note = $SESSION->get('noteprint'))
-{
+if ($note = $SESSION->get('noteprint')) {
         $SMARTY->assign('note', $note);
         $SESSION->remove('noteprint');
 }
@@ -115,5 +117,3 @@ $SMARTY->assign('marks', $marks);
 $SMARTY->assign('grouplist', $LMS->CustomergroupGetAll());
 $SMARTY->assign('notelist', $notelist);
 $SMARTY->display('note/notelist.html');
-
-?>

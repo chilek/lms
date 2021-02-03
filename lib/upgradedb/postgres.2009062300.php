@@ -44,5 +44,3 @@ CREATE TABLE debitnotecontents (
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009062300', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

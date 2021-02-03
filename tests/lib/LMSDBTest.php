@@ -67,5 +67,4 @@ class LMSDBTest extends \PHPUnit_Framework_TestCase
         $db = \LMSDB::destroyInstance();
         $this->assertEquals($db, null);
     }
-
 }

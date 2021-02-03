@@ -27,6 +27,4 @@
 $this->Execute("ALTER TABLE stats CHANGE upload upload BIGINT DEFAULT '0'");
 $this->Execute("ALTER TABLE stats CHANGE download download BIGINT DEFAULT '0'");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004071400', 'dbversion'));
-
-?>
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2004071400', 'dbversion'));

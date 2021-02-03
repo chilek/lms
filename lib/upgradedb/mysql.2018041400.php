@@ -28,5 +28,3 @@ $this->Execute("ALTER TABLE records MODIFY COLUMN content text");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018041400', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

@@ -82,7 +82,7 @@
 		</TD>
 		<TD class="text-right nobr">
 			{if $channels[channels].id}
-			<A HREF="?m=ewxchdel&id={$channels[channels].id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete this channel?")}');"><IMG SRC="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A class="delete-ewxch" HREF="?m=ewxchdel&id={$channels[channels].id}"><IMG SRC="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 			<A HREF="?m=ewxchedit&id={$channels[channels].id}"><IMG SRC="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 			{/if}
 			<A HREF="?m=ewxchinfo&id={$channels[channels].id}"><IMG SRC="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
@@ -114,4 +114,12 @@
 	</TR>
     </TFOOT>
 </TABLE>
+	<script>
+		$('.delete-ewxch').click(function() {
+			confirmDialog($t("Are you sure, you want to delete this channel?"), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	</script>
 {/block}

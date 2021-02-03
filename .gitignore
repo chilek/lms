@@ -23,5 +23,9 @@ rtattachments/*
 *.swp
 *.swo
 
+# nodejs files
+**/node_modules
+**/package-lock.json
+
 /components/*
 /vendor/

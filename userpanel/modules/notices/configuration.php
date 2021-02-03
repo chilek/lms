@@ -24,11 +24,34 @@
  *  $Id$
  */
 
-$USERPANEL->AddModule(trans('Notices'),	// Display name
-		    'notices', 		// Module name - must be the same as directory name
-		    trans('Shows notices'), // Tip 
-		    40,			// Priority
-		    trans('This module is for showing notices for your customer')	// Description
-		    );
+$USERPANEL->AddModule(
+    trans('Notices'), // Display name
+    'notices',      // Module name - must be the same as directory name
+    trans('Shows notices'), // Tip
+    40,         // Priority
+    trans('This module is for showing notices for your customer'),   // Description
+    null,
+    'lms-userpanel-notices'
+);
 
-?>
+require_once('UserpanelNoticeHandler.php');
+$notice_handler = new UserpanelNoticeHandler($DB, $SMARTY, $SESSION->id);
+
+$USERPANEL->registerCallback('notices', function ($db, $smarty, $mod_dir) use ($notice_handler) {
+    $urgent_notice = $notice_handler->getUrgentNotice();
+    $notice_handler->markNoticeAsRead($urgent_notice['id']);
+    $smarty->assign('urgent_notice', $urgent_notice);
+
+    $unread_notices = $notice_handler->getUnreadNotices();
+    $smarty->assign('unread_notices', $unread_notices);
+
+    global $module_dir;
+    $old_module_dir = $module_dir;
+    $module_dir = $mod_dir;
+
+    $html = $smarty->fetch('module:notices-callback-handler.html');
+
+    $module_dir = $old_module_dir;
+
+    return $html;
+});

@@ -24,34 +24,33 @@
  *  $Id$
  */
 
-function GetNumberPlans($proforma, $invoice, $customerid = null) {
-	global $LMS, $SMARTY;
+function GetNumberPlans($proforma, $invoice, $customerid = null)
+{
+    global $LMS, $SMARTY;
 
-	$result = new xajaxResponse();
+    $result = new xajaxResponse();
 
-	$DB = LMSDB::getInstance();
+    $DB = LMSDB::getInstance();
 
-	$args = array(
-		'doctype' => $proforma ? DOC_INVOICE_PRO : DOC_INVOICE,
-		'cdate' => date('Y/m', $invoice['cdate']),
-	);
-	if (isset($customerid) && !empty($customerid)) {
-		$SMARTY->assign('customerid', $customerid);
-		$args['customerid'] = $customerid;
-		$args['division'] = $DB->GetOne('SELECT divisionid FROM customers WHERE id = ?', array($customerid));
-	}
-	$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans($args));
+    $args = array(
+        'doctype' => $proforma ? DOC_INVOICE_PRO : DOC_INVOICE,
+        'cdate' => date('Y/m', $invoice['cdate']),
+    );
+    if (isset($customerid) && !empty($customerid)) {
+        $SMARTY->assign('customerid', $customerid);
+        $args['customerid'] = $customerid;
+        $args['division'] = $DB->GetOne('SELECT divisionid FROM customers WHERE id = ?', array($customerid));
+    }
+    $SMARTY->assign('numberplanlist', $LMS->GetNumberPlans($args));
 
-	$SMARTY->assign('invoice', $invoice);
+    $SMARTY->assign('invoice', $invoice);
 
-	$contents = $SMARTY->fetch('invoice/invoicenumberplans.html');
-	$result->assign('invoicenumberplans', 'innerHTML', $contents);
+    $contents = $SMARTY->fetch('invoice/invoicenumberplans.html');
+    $result->assign('invoicenumberplans', 'innerHTML', $contents);
 
-	return $result;
+    return $result;
 }
 
 $LMS->InitXajax();
 $LMS->RegisterXajaxFunction('GetNumberPlans');
 $SMARTY->assign('xajax', $LMS->RunXajax());
-
-?>

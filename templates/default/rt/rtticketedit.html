@@ -6,7 +6,7 @@
 
 {$xajax}
 
-<FORM method="POST" name="ticket" id="ticket-form" action="?m=rtticketedit&id={$ticket.ticketid}">
+<FORM method="POST" name="ticket" id="ticket-form" action="?m=rtticketedit&id={$ticket.ticketid}{if isset($backid)}&backid={$backid}{/if}">
 	{include file="rt/rtticketmodify.html"}
 </FORM>
 
@@ -23,7 +23,7 @@
 		{/if}
 	});
 
-	initCustomerSelection({if intval($customerid)}{$customerid}{else}0{/if}, '{$ticket.address_id}');
+	initCustomerSelection();
 
 </script>
 

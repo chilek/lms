@@ -35,12 +35,12 @@ class IniConfigProvider implements ConfigProviderInterface
     
     /**
      * Loads ini file and returns it as raw config
-     * 
+     *
      * Avaliable options are:
      * ini_file_path - path to ini file
-     * 
+     *
      * By default searches for ini file in defined CONFIG_FILE path.
-     * 
+     *
      * @param array $options Associative array of options
      * @return array Raw config
      * @throws Exception Throws exception when unable to read ini file

@@ -32,5 +32,3 @@ $this->Execute("ALTER TABLE documents ALTER COLUMN city SET DEFAULT NULL;");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017021400', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

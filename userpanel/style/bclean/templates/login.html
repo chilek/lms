@@ -4,10 +4,11 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-	<title>{if $page_header}{$page_header}{else}{trans("Virtual Customer Service")}{/if}</title>
+        <title>{if $page_header}{$page_header}{else}{trans("Virtual Customer Service")}{/if}</title>
         <link rel="stylesheet" href="style/bclean/vendor/twbs/bootstrap/dist/css/bootstrap.min.css">
         <link type="text/css" rel="stylesheet" href="{stylefile}">
-        {include file="jquery.html" language=$_ui_language}
+        <link href="{ConfigHelper::getConfig('userpanel.shortcut_icon', 'img/lms-net.gif')}" rel="shortcut icon">
+        {include file="jquery.html" language=Localisation::getCurrentHtmlLanguage() lms_language=Localisation::getCurrentUiLanguage()}
         {$google_recaptcha_sitekey = ConfigHelper::getConfig('userpanel.google_recaptcha_sitekey')}
         {if $google_recaptcha_sitekey}
         <script>
@@ -79,7 +80,7 @@
     <body>
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col">
                     <h2 class="form-signin text-center">
 						{if $company_logo}
 							<img src="{$company_logo}">
@@ -94,10 +95,25 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-12">
+                <div class="col">
+                    {if $error}
+                        <div aria-live="polite" aria-atomic="true" class="d-flex justify-content-center align-items-center">
+                            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="10000">
+                                <div class="toast-header bg-light">
+                                    <span class="badge badge-warning mr-1">&nbsp;</span>
+                                    <strong class="mr-auto">{trans("Notification")}</strong>
+                                    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="toast-body">
+                                    {$error}
+                                </div>
+                            </div>
+                        </div>
+                    {/if}
                     {$auth_type=ConfigHelper::getConfig('userpanel.auth_type', 1)}
                     <form id="login" class="form-signin" method="post" action="{$target}">
-                        {if $error}<div class="alert alert-danger">{$error}</div>{/if}
                         <fieldset class="form-group">
                             <label for="inputLogin">{$_USERPANEL_AUTH_TYPES[$auth_type].label}</label>
                             <input type="text"  name="loginform[login]" id="inputLogin" class="form-control" required autofocus>
@@ -110,41 +126,56 @@
                         <div id="login-recaptcha" class="g-recaptcha"></div>
                         {/if}
                         <button class="btn btn-lg btn-primary btn-block{if $google_recaptcha_sitekey} disabled{/if}" name="loginform[submit]" type="submit"{if $google_recaptcha_sitekey} disabled{/if}>{trans('Login')}</button>
-                        <a href="javascript:switch_form('remind');">{trans("Remind credentials")}</a>
-                    </form>
-                    <form id="remind" class="form-signin" method="post" action="{$target}" style="display:none;">
-                        <input type="hidden" name="remindform[type]" id="remindType" value="1">
-						{$sms_service = ConfigHelper::getConfig('sms.service', '', true)}
-						{if !empty($sms_service)}
-                        <ul class="nav nav-tabs">
-                            <li class="nav-item">
-                                <a id="remindMail" class="nav-link active" onclick="javascript:show_email_phone('email');">{trans('E-mail')}</a>
-                            </li>
-                            <li class="nav-item">
-                                <a id="remindPhone" class="nav-link"  onclick="javascript:show_email_phone('phone');">{trans('SMS')}</a>
-                            </li>
-                        </ul>
-                        <hr/>
-						{/if}
-                        <fieldset id="email" class="form-group">
-                            <label>{trans('E-Mail:')} <input type="text" name="remindform[email]" class="form-control"></label>
-                        </fieldset>
-                        <fieldset id="phone" class="form-group" style="display:none;">
-                            <label>{trans('Phone:')} <input type="text" name="remindform[phone]"  class="form-control"></label>
-                        </fieldset>
-                        <fieldset class="form-group">
-                            <label>{trans('SSN or TEN:')} <input type="text" name="remindform[ten]" id="inputSsnOrTen" class="form-control"></label>
-                        </fieldset>
-                        {if $google_recaptcha_sitekey}
-                        <div id="remind-recaptcha" class="g-recaptcha"></div>
+                        {if ConfigHelper::checkConfig('userpanel.sms_credential_reminders')
+                            || ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}
+                            <a href="javascript:switch_form('remind');">{trans("Remind credentials")}</a>
                         {/if}
-                        <button class="btn btn-lg btn-primary btn-block{if $google_recaptcha_sitekey} disabled{/if}" type="submit" name="remindform[submit]" value="{trans('Remind')}"{if $google_recaptcha_sitekey} disabled{/if}>{trans('Remind')}</button>
-                        <p><a href="javascript:switch_form('login');">{trans('Login form')}</a></p>
                     </form>
+                    {if ConfigHelper::checkConfig('userpanel.sms_credential_reminders')
+                        || ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}
+                        <form id="remind" class="form-signin" method="post" action="{$target}" style="display:none;">
+                            <input type="hidden" name="remindform[type]" id="remindType" value="1">
+                            {$sms_service = ConfigHelper::getConfig('sms.service', '', true)}
+                            {if !empty($sms_service) && ConfigHelper::checkConfig('userpanel.sms_credential_reminders')
+                                && ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}
+                                <ul class="nav nav-tabs">
+                                    <li class="nav-item">
+                                        <a id="remindMail" class="nav-link active" onclick="javascript:show_email_phone('email');">{trans('E-mail')}</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a id="remindPhone" class="nav-link"  onclick="javascript:show_email_phone('phone');">{trans('SMS')}</a>
+                                    </li>
+                                </ul>
+                                <hr>
+                            {/if}
+                            {if ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}
+                                <fieldset id="email" class="form-group">
+                                    <label>{trans('E-Mail:')} <input type="text" name="remindform[email]" class="form-control"></label>
+                                </fieldset>
+                            {/if}
+                            {if ConfigHelper::checkConfig('userpanel.sms_credential_reminders')}
+                                <fieldset id="phone" class="form-group" style="{if ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}display:none;{/if}">
+                                    <label>{trans('Phone:')} <input type="text" name="remindform[phone]"  class="form-control"></label>
+                                </fieldset>
+                            {/if}
+                            <fieldset class="form-group">
+                                <label>{trans('SSN or TEN:')} <input type="text" name="remindform[ten]" id="inputSsnOrTen" class="form-control"></label>
+                            </fieldset>
+                            {if $google_recaptcha_sitekey}
+                                <div id="remind-recaptcha" class="g-recaptcha"></div>
+                            {/if}
+                            <button class="btn btn-lg btn-primary btn-block{if $google_recaptcha_sitekey} disabled{/if}" type="submit" name="remindform[submit]" value="{trans('Remind')}"{if $google_recaptcha_sitekey} disabled{/if}>{trans('Remind')}</button>
+                            <p><a href="javascript:switch_form('login');">{trans('Login form')}</a></p>
+                        </form>
+                    {/if}
                 </div>
             </div>
         </div> <!-- /container -->
+        <script src="style/bclean/vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js" type="text/javascript"></script>
         <script>
+        $(document).ready(function(){
+            $('.toast').toast('show');
+        });
 			function switch_form(type) {
 				if (type == 'login') {
 					document.getElementById('login').style.display = '';

@@ -8,31 +8,7 @@
 	</div>
 	{/box}
 {/if}
-{if $notice_urgent}
-	<SCRIPT type="text/javascript">
-<!--
-		xajax_setNoticeRead({$notice_urgent.id});
-//-->
-	</SCRIPT>
-	<div id="dialog">
-		<div id="dialog-bg">
-			<div id="dialog-title">{$notice_urgent.cdate|date_format:"%Y/%m/%d %H:%M"}<br />{$notice_urgent.subject}</div>
-			<div id="dialog-description">
-				{box}
-				<table style="width: 100%;" cellpadding="3" class="light">
-					<tr>
-						<td style="word-break:break-all;">{$notice_urgent.body}</td>
-					</tr>
-					<tr class="darkest">
-						<td align="center"><a href="?m=notices&amp;confirm_urgent={$notice_urgent.id}">{trans("I confirm reading")}</a></td>
-					</tr>
-				</table>
-				{/box}
-			</div>
-		</div>
-	</div>
-</div>
-{/if}
+
 {box title="Notice to you"}
 {if $notice}
 	<div class="table-responsive">
@@ -46,15 +22,44 @@
 			{foreach $notice as $items}
 				<tr class="{if $items.status==$smarty.const.MSG_ERROR}text-danger{elseif $items.status==$smarty.const.MSG_SENT}text-muted{/if}" onCLick="ReadNotice('{$items.id}');">
 					<td>{$items.cdate|date_format:"%Y/%m/%d %H:%M"}</td>
-					<td>{if $items.type==6 }<strong>{trans("Urgent")}</strong>{else}{trans("Casual")}{/if}</td>
+					<td>{if $items.type == $smarty.const.MSG_USERPANEL_URGENT}<strong>{trans("Urgent")}</strong>{else}{trans("Casual")}{/if}</td>
 					<td>{$items.subject}</td>
-					<td>{if $items.type==6 && $items.status==1}{trans("Unread")}{elseif $items.type==6 && $items.status==2}{trans("Was read on:")}<br />{$items.lastdate|date_format:"%Y/%m/%d %H:%M"}{elseif $items.type==5 && $items.status==1}{trans("Unread")}{elseif $items.type==5 && $items.status==2}{trans("Was read on:")}<br />{$items.lastdate|date_format:"%Y/%m/%d %H:%M"}{else}&nbsp;{/if}</td>
+					<td>
+						{if $items.type == $smarty.const.MSG_USERPANEL_URGENT || $items.type == $smarty.const.MSG_USERPANEL}
+							{if $items.status == $smarty.const.MSG_SENT && !$items.lastreaddate}
+								{trans("Unread")}
+							{elseif $items.status == $smarty.const.MSG_SENT || $items.status == $smarty.const.MSG_DELIVERED}
+								{trans("Was read on:")}<br />
+								{$items.lastreaddate|date_format:"%Y/%m/%d %H:%M"}
+							{/if}
+						{/if}
+					</td>
 				</tr>
 				<tr id="{$items.id}" style="display:none;">
 					<td colspan="4" >
 						<h3>{trans("Body:")}</h3>
-						{$items.body}<br /><br />
-						{if $items.status !=2}<a class="btn btn-primary" href="?m=notices&amp;confirm={$items.id}">{trans("I confirm reading")}</a>{/if}</td>
+						{if $items.mibody}
+							{if $items.contenttype == 'text/plain'}
+								{nl2br(htmlspecialchars($items.mibody), false)}
+							{elseif $items.contenttype == 'text/html'}
+								{$items.mibody}
+							{else}
+								{nl2br($items.mibody, false)}
+							{/if}
+						{else}
+							{if $items.contenttype == 'text/plain'}
+								{nl2br(htmlspecialchars($items.body), false)}
+							{elseif $items.contenttype == 'text/html'}
+								{$items.body}
+							{else}
+								{nl2br($items.body, false)}
+							{/if}
+						{/if}
+						<br><br>
+						{if $items.status != $smarty.const.MSG_DELIVERED}
+							<a class="btn btn-primary" href="?m=notices&confirm={$items.id}">{trans("I confirm reading")}</a>
+						{/if}
+					</td>
 				</tr>
 				<SCRIPT type="text/javascript">
 					<!--

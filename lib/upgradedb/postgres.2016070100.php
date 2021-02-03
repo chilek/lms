@@ -27,5 +27,3 @@ $this->Execute("ALTER TABLE voipaccounts ADD COLUMN cost_limit numeric(12,2) NUL
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016070100', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

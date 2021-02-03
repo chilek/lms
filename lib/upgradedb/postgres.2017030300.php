@@ -28,5 +28,3 @@ $this->Execute("ALTER TABLE rtmessages ADD COLUMN phonefrom varchar(20) DEFAULT 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017030300', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

@@ -1,7 +1,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -72,7 +72,7 @@ function showAddRadioSector() {
 
 function hideAddRadioSector() {
 	$('#add_radio_sector').hide().find('.radio-sector-edit-field').each(function() {
-		$(this).val($(this).attr('data-old-value')).removeAttr('data-tooltip').removeClass('alert')
+		$(this).val($(this).attr('data-old-value')).removeAttr('data-tooltip').removeClass('lms-ui-error')
 			.attr('title', $(this).attr('data-old-tooltip'));
 	});
 	$('#radio_sector_buttons').show();
@@ -91,7 +91,7 @@ function updateRadioSector(id) {
 
 function radioSectorErrors(errors) {
 	$.each(errors, function (index, value) {
-		$('#radiosectorpanel #' + index).addClass('alert')
+		$('#radiosectorpanel #' + index).addClass('lms-ui-error')
 			.removeAttr('data-tooltip').attr('title', value);
 	});
 }

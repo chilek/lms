@@ -45,4 +45,3 @@ $this->Execute("CREATE TABLE tariffassignments (
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016070700', 'dbversion'));
 
 $this->CommitTrans();
-?>

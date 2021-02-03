@@ -24,20 +24,23 @@
  *  $Id$
  */
 
-interface LMSNetNodeManagerInterface {
-	public function GetNetNode($id);
+interface LMSNetNodeManagerInterface
+{
+    public function GetNetNode($id);
 
-	public function GetNetNodes();
+    public function GetNetNodeName($id);
 
-	public function GetNetNodeList($search, $order);
+    public function GetNetNodes();
 
-	public function NetNodeAdd($netnodedata);
+    public function GetNetNodeList($search, $order);
 
-	public function NetNodeExists($id);
+    public function NetNodeAdd($netnodedata);
 
-	public function NetNodeDelete($id);
+    public function NetNodeExists($id);
 
-	public function NetNodeUpdate($netnodedata);
+    public function NetNodeDelete($id);
 
-	public function GetCustomerNetNodes($id);
+    public function NetNodeUpdate($netnodedata);
+
+    public function GetCustomerNetNodes($id);
 }

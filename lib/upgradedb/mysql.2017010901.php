@@ -29,5 +29,3 @@ $this->Execute("ALTER TABLE promotions ADD COLUMN dateto integer NOT NULL DEFAUL
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017010901', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

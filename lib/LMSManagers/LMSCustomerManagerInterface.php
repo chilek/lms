@@ -26,7 +26,7 @@
 
 /**
  * LMSCustomerManagerInterface
- * 
+ *
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
  * @author Tomasz Chiliński <tomasz.chilinski@chilan.com>
  */
@@ -34,7 +34,7 @@ interface LMSCustomerManagerInterface
 {
     public function getCustomerName($id);
 
-    public function getCustomerEmail($id);
+    public function getCustomerEmail($id, $requiredFlags = 0, $forbiddenFlags = 0);
 
     public function customerExists($id);
 
@@ -50,13 +50,17 @@ interface LMSCustomerManagerInterface
 
     public function getCustomerNodesAC($id);
 
-    public function getCustomerBalance($id, $totime = null);
+    public function getCustomerBalance($id, $totime = null, $expired = false);
 
     public function getCustomerBalanceList($id, $totime = null, $direction = 'ASC', $aggregate_documents = false);
 
-	public function GetCustomerShortBalanceList($customerid, $limit = 10, $order = 'DESC');
+    public function GetCustomerShortBalanceList($customerid, $limit = 10, $order = 'DESC');
+
+    public function getLastNInTable($body, $customerid, $format, $aggregate_documents = false);
 
     public function customerStats();
+
+    public function updateCustomerConsents($customerid, $current_consents, $new_consents);
 
     public function customerAdd($customeradd);
 
@@ -64,9 +68,11 @@ interface LMSCustomerManagerInterface
 
     public function getCustomerNodes($id, $count = null);
 
-    public function getCustomerNetDevs( $customer_id );
+    public function getCustomerNetDevs($customer_id);
 
     public function GetCustomerNetworks($id, $count = null);
+
+    public function getCustomerConsents($id);
 
     public function GetCustomer($id, $short = false);
 
@@ -78,13 +84,55 @@ interface LMSCustomerManagerInterface
 
     public function checkCustomerAddress($a_id, $c_id);
 
-    public function getCustomerAddresses( $id, $hide_deleted );
+    public function determineDefaultCustomerAddress(array &$caddr);
 
-    public function getAddressForCustomerStuff( $customer_id );
+    public function getCustomerAddresses($id, $hide_deleted);
 
-    public function getFullAddressForCustomerStuff( $customer_id );
+    public function getAddressForCustomerStuff($customer_id);
 
-	public function GetCustomerContacts($id, $mask = null);
+    public function getFullAddressForCustomerStuff($customer_id);
 
-	public function GetCustomerDivision($id);
+    public function isTerritAddress($address_id);
+
+    public function GetCustomerContacts($id, $mask = null);
+
+    public function GetCustomerDivision($id);
+
+    public function isSplitPaymentSuggested($customerid, $cdate, $value);
+
+    public function isTelecomServiceSuggested($customerid);
+
+    public function getCustomerSMSOptions();
+
+    public function GetCustomerAddressesWithoutEndPoints($customerid);
+
+    public function checkCustomerTenExistence($customerid, $ten, $divisionid = null);
+
+    public function checkCustomerSsnExistence($customerid, $ssn, $divisionid = null);
+
+    public function checkCustomerConsent($customerid, $consent);
+
+    public function customerNotificationReplaceSymbols($string, $data);
+
+    public function addCustomerConsents($customerid, $consents);
+
+    public function removeCustomerConsents($customerid, $consents);
+
+    public function addCustomerContactFlags($customerid, $type, $flags);
+
+    public function removeCustomerContactFlags($customerid, $type, $flags);
+
+    public function getCustomerNotes($cid);
+
+    public function getCustomerNote($id);
+
+    public function addCustomerNote($params);
+
+    public function delCustomerNote($id);
+
+    public function raiseCustomerKarma($id);
+
+    public function lowerCustomerKarma($id);
+
+    public function getCustomerPin($id);
 }

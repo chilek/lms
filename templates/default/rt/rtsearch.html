@@ -50,7 +50,10 @@
 			<TABLE width="100%" cellpadding="1">
 				<TR>
 			    	<TD width="100%" colspan="2" class="nobr">
-						{customerlist form="search" customers=$customerlist selected=$search.customerid selectname="search[customerid]" inputname="search[custid]" firstoption="- all customers -" selecttip="select customer from list or enter his data if is not a customer" inputtip="select customer from list or enter his data if is not a customer"}
+						{customerlist form="search" customers=$customerlist selected=$search.customerid version=2
+							selectname="search[customerid]" inputname="search[custid]" firstoption="- all customers -"
+							selecttip="select customer from list or enter his data if is not a customer"
+							inputtip="select customer from list or enter his data if is not a customer"}
 					</TD>
 			    </TR>
 			    <TR>
@@ -82,9 +85,9 @@
 		</TD>
 		<TD>
 			<SELECT size="1" name="search[owner]" {tip text="Select user/owner of the ticket"}>
-				<OPTION value="0">{trans("- all owners -")}</OPTION>
+				<OPTION value="all">{trans("- all owners -")}</OPTION>
 				{foreach $userlist as $item}
-				<OPTION value="{$item.id}" {if $item.id == $search.owner}SELECTED{/if}>{$item.name}</OPTION>
+				<OPTION value="{$item.id}" {if $item.id == $search.owner}SELECTED{/if}>{$item.rname|escape}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>
@@ -137,7 +140,7 @@
 		<TD>
 			<SELECT SIZE="1" name="search[type]" {tip text="Select ticket type" }>
 				<OPTION value="" {if $search.type==""}SELECTED{/if}>{trans("- all -")}</OPTION>
-				{foreach $_RT_TYPES as $key => $tt}
+				{foreach Localisation::arraySort($_RT_TYPES, 'label') as $key => $tt}
 				<OPTION value="{$key}" {if is_array($queuedata.type) && in_array($key, $queuedata.type)} SELECTED{/if}>{$tt.label}</OPTION>
 				{/foreach}
 			</SELECT>
@@ -177,13 +180,7 @@
 			{trans("Categories:")}
 		</TD>
 		<TD class="nobr">
-			{foreach $categories as $category}
-			<label>
-				<INPUT type="checkbox" name="search[categories][{$category.id}]" value="1"{if $category.checked > 0} checked{/if}>
-				{$category.name}
-			</label>
-			{if !$category@last}<br>{/if}
-			{/foreach}
+			{include file="rt/rtcategoryselection.html" name_prefix="search[categories]" categories=$categories}
 		</TD>
 	</TR>
 	{if ConfigHelper::checkPrivilege('helpdesk_advanced_operations')}
@@ -219,12 +216,12 @@
 		</TD>
 	</TR>
         <TR>
-		<TD class="bold nobr"><img src="img/verifier.png" alt=""> {trans("Verifier:")}</TD>
+		<TD class="bold nobr">{box_row icon="verifier" label="Verifier:" field_id="rtverifiers"}{/box_row}</TD>
 		<TD>
                         <SELECT size="1" name="search[verifierid]" {tip text="Select user/owner of the ticket"}>
                                 <OPTION value="0">{trans("- all owners -")}</OPTION>
                                 {foreach $userlist as $item}
-                                <OPTION value="{$item.id}" {if $item.id == $search.verifierid}SELECTED{/if}>{$item.name}</OPTION>
+                                <OPTION value="{$item.id}" {if $item.id == $search.verifierid}SELECTED{/if}>{$item.rname|escape}</OPTION>
                                 {/foreach}
                         </SELECT>
 		</TD>

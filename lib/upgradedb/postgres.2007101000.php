@@ -31,5 +31,3 @@ $this->Execute("ALTER TABLE nodes ALTER name TYPE varchar(32)");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007101000', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

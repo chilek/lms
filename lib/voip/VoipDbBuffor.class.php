@@ -4,7 +4,8 @@
  * \class VoipDbBuffor
  * \brief Class responsibile for optimize SQL queries to database.
  */
-class VoipDbBuffor {
+class VoipDbBuffor
+{
 
     /*!
      * \brief Container for cdr records.
@@ -21,19 +22,20 @@ class VoipDbBuffor {
     /*!
      * \brief Method of providing information for the class.
      */
-    private $provider = NULL;
+    private $provider = null;
 
     /*!
      * \brief Container for estimate class.
      */
-    private $estimate = NULL;
+    private $estimate = null;
 
     /*!
      * \brief Pattern for changing cdr text to array.
      */
     private $pattern = '';
 
-    public function __construct(VoipDataProvider $p) {
+    public function __construct(VoipDataProvider $p)
+    {
         $this->provider = $p;
         $this->estimate = new Estimate($p);
 
@@ -59,13 +61,15 @@ class VoipDbBuffor {
      *
      * \param  array/string $c cdr data
      * \return boolean         when all good
-     * \return string       $e error message 
+     * \return string       $e error message
      */
-    public function appendCdr($c) {
-        if (is_array($c))
+    public function appendCdr($c)
+    {
+        if (is_array($c)) {
             $cdr = $c;
-        else if (is_string($c))
+        } else if (is_string($c)) {
             $cdr = $this->parseRecord($c);
+        }
 
         $cdr['call_type']   = $this->parseCallType($cdr['call_type']);
         $cdr['call_status'] = $this->parseCallStatus($cdr['call_status']);
@@ -73,31 +77,32 @@ class VoipDbBuffor {
         switch ($cdr['call_type']) {
             case CALL_INCOMING: //no payments for incoming call
                 $cdr['price'] = 0;
-            break;
+                break;
 
             case CALL_OUTGOING:
                 if (isset($cdr['billedtime']) && $cdr['billedtime'] > 0) {
                     $info  = $this->estimate->getCallCost($cdr['caller'], $cdr['callee'], $cdr['billedtime']);
 
-                if ($info['used_rules'])
-                    foreach ($info['used_rules'] as $r) {
-                        if (isset($this->used_rules[$cdr['caller']][$r['ruleid']]))
+                    if ($info['used_rules']) {
+                        foreach ($info['used_rules'] as $r) {
+                            if (isset($this->used_rules[$cdr['caller']][$r['ruleid']])) {
                                 $this->used_rules[$cdr['caller']][$r['rule_id']]['used_units'] += $r['used_units'];
-                            else {
+                            } else {
                                 $this->used_rules[$cdr['caller']][$r['rule_id']] = $r;
                             }
                         }
+                    }
 
                     $cdr['price'] = $info['price'];
                 } else {
                     $cdr['price'] = 0;
                 }
-            break;
+                break;
         }
 
-        if (($e = $this->validRecord($cdr)) === TRUE) {
+        if (($e = $this->validRecord($cdr)) === true) {
             $this->cdr_container[] = $cdr;
-            return TRUE;
+            return true;
         }
 
           return $e;
@@ -110,7 +115,8 @@ class VoipDbBuffor {
      * \param int $r_id tariff rule id
      * \param int $u    used units
      */
-    public function appendRuleState($v_id, $r_id, $u) {
+    public function appendRuleState($v_id, $r_id, $u)
+    {
         if (isset($this->rule_states[$v_id][$r_id])) {
             $this->rule_states[$v_id][$r_id] += $u;
         } else {
@@ -121,18 +127,21 @@ class VoipDbBuffor {
     /*!
      * \brief Method insert appended informations to data base.
      */
-    public function insert() {
+    public function insert()
+    {
         $P         = $this->provider;
         $insert    = array();
         $cust_load = array();
 
         foreach ($this->cdr_container as $c) {
             $caller    = $P->getCustomerByPhone($c['caller']);
-            if (empty($caller))
+            if (empty($caller)) {
                 $caller['phone'] = $c['caller'];
+            }
             $callee    = $P->getCustomerByPhone($c['callee']);
-            if (empty($callee))
+            if (empty($callee)) {
                 $callee['phone'] = $c['callee'];
+            }
             $caller_gr = $P->getPrefixGroupName($caller['phone'], $caller['tariffid']);
             $callee_gr = $P->getPrefixGroupName($callee['phone'], $caller['tariffid']);
 
@@ -153,10 +162,11 @@ class VoipDbBuffor {
                                $c['uniqueid']           . ')';
 
             if ($c['price'] > 0) {
-                if (isset($cust_load[$caller['voipaccountid']]))
+                if (isset($cust_load[$caller['voipaccountid']])) {
                     $cust_load[$caller['voipaccountid']] += $c['price'];
-                else
+                } else {
                     $cust_load[$caller['voipaccountid']] = $c['price'];
+                }
             }
         }
 
@@ -171,30 +181,33 @@ class VoipDbBuffor {
                       VALUES ' . implode(',', $insert));
 
         //update customer account balance
-        foreach ($cust_load as $k=>$v) {
+        foreach ($cust_load as $k => $v) {
             $DB->Execute("UPDATE voipaccounts SET balance=balance-$v WHERE id = " . $caller['voipaccountid']);
         }
 
         //update customer tariff rules
         $new_rules = array();
         foreach ($this->used_rules as $rule_list) {
-
             foreach ($rule_list as $r) {
-                $exists = $DB->GetOne('SELECT 1
+                $exists = $DB->GetOne(
+                    'SELECT 1
                                        FROM 
                                           voip_rule_states
                                         WHERE
                                              voip_account_id = ? AND
                                              rule_id         = ?',
-                                        array($r['voip_acc_id'], $r['rule_id']));
+                    array($r['voip_acc_id'], $r['rule_id'])
+                );
 
                 if ($exists) {
-                    $DB->Execute('UPDATE voip_rule_states
+                    $DB->Execute(
+                        'UPDATE voip_rule_states
                                   SET units_left = units_left - ?
                                   WHERE
                                       voip_account_id = ? AND
                                       rule_id         = ?',
-                                  array($r['used_units'], $r['voip_acc_id'], $r['rule_id']));
+                        array($r['used_units'], $r['voip_acc_id'], $r['rule_id'])
+                    );
                 } else {
                     $new_rules[] = '(' . $r['voip_acc_id'] . ','
                                        . $r['rule_id']     . ','
@@ -221,12 +234,15 @@ class VoipDbBuffor {
      * \return int       number assigned to call type
      * \return exception when can't match string to call type
      */
-    public function parseCallType($type) {
-        if (preg_match("/incoming/i", $type))
+    public function parseCallType($type)
+    {
+        if (preg_match("/incoming/i", $type)) {
             return CALL_INCOMING;
+        }
 
-        if (preg_match("/outgoing/i", $type))
+        if (preg_match("/outgoing/i", $type)) {
             return CALL_OUTGOING;
+        }
 
         return 'incorrect';
     }
@@ -238,18 +254,23 @@ class VoipDbBuffor {
      * \return int number assigned to call status
      * \return php_function die when can't match string to call type
      */
-    public function parseCallStatus($type) {
-        if (preg_match("/busy/i", $type))
+    public function parseCallStatus($type)
+    {
+        if (preg_match("/busy/i", $type)) {
             return CALL_BUSY;
+        }
 
-        if (preg_match("/answered/i", $type))
+        if (preg_match("/answered/i", $type)) {
             return CALL_ANSWERED;
+        }
 
-        if (preg_match("/(noanswer|no answer)/i", $type))
+        if (preg_match("/(noanswer|no answer)/i", $type)) {
             return CALL_NO_ANSWER;
+        }
 
-        if (preg_match("/fail/i", $type))
+        if (preg_match("/fail/i", $type)) {
             return CALL_SERVER_FAILED;
+        }
 
         return 'incorect';
     }
@@ -260,21 +281,25 @@ class VoipDbBuffor {
      * \param  string $r string to parse
      * \return array     associative array with paremeters
      */
-    private function parseRecord($r) {
+    private function parseRecord($r)
+    {
         preg_match($this->pattern, $r, $matches);
 
-        $matches['call_start'] = mktime($matches['call_start_hour'],
-                                        $matches['call_start_min'],
-                                        $matches['call_start_sec'],
-                                        $matches['call_start_month'],
-                                        $matches['call_start_day'],
-                                        $matches['call_start_year']);
+        $matches['call_start'] = mktime(
+            $matches['call_start_hour'],
+            $matches['call_start_min'],
+            $matches['call_start_sec'],
+            $matches['call_start_month'],
+            $matches['call_start_day'],
+            $matches['call_start_year']
+        );
 
-        foreach ($matches as $k=>$v) {
-            if (is_numeric($k))
+        foreach ($matches as $k => $v) {
+            if (is_numeric($k)) {
                 unset($matches[$k]);
-            else if (!$matches[$k])
+            } else if (!$matches[$k]) {
                 $matches[$k] = 0;
+            }
         }
 
         return $matches;
@@ -287,50 +312,59 @@ class VoipDbBuffor {
      * \return true      when everything is fine
      * \return string    first founded error description
      */
-    private function validRecord($r) {
+    private function validRecord($r)
+    {
 
-        if (empty($r['caller']))
+        if (empty($r['caller'])) {
             return "Caller phone number isn't set.";
-        if (!preg_match("/([0-9]+|anonymous|unavailable)/", $r['caller']))
+        }
+        if (!preg_match("/([0-9]+|anonymous|unavailable)/", $r['caller'])) {
             return "Caller phone number has incorrect format.";
+        }
 
-        if (empty($r['callee']))
+        if (empty($r['callee'])) {
             return "Callee phone number isn't set.";
-        if (!is_numeric($r['callee']))
+        }
+        if (!is_numeric($r['callee'])) {
             return "Callee phone number has incorrect format.";
+        }
 
-        if (empty($r['call_type']))
+        if (empty($r['call_type'])) {
             return "Call type isn't set.";
-        else if (!is_int($r['call_type']))
+        } else if (!is_int($r['call_type'])) {
             return "Call type has incorrect format.";
+        }
 
-        if (!isset($r['call_start']))
+        if (!isset($r['call_start'])) {
             return "Call start isn't set.";
-        else if (!is_numeric($r['call_start']))
+        } else if (!is_numeric($r['call_start'])) {
             return "Call start time has incorrect format.";
+        }
 
-        if (!isset($r['totaltime']))
+        if (!isset($r['totaltime'])) {
             return "Totaltime isn't set.";
-        else if (!is_numeric($r['totaltime']))
+        } else if (!is_numeric($r['totaltime'])) {
             return "Totaltime has incorrect format.";
+        }
 
-        if (!isset($r['billedtime']))
+        if (!isset($r['billedtime'])) {
             return "Billedtime isn't set.";
-        else if (!is_numeric($r['billedtime']))
+        } else if (!is_numeric($r['billedtime'])) {
             return "Billedtime has incorract format.";
+        }
 
-        if (empty($r['uniqueid']))
+        if (empty($r['uniqueid'])) {
             return "Call unique id isn't set.";
-        else if (!preg_match("/[0-9]*\.[0-9]*/i", $r['uniqueid']))
+        } else if (!preg_match("/[0-9]*\.[0-9]*/i", $r['uniqueid'])) {
             return "Call unique id has incorrect format.";
+        }
 
-        if (!isset($r['price']))
+        if (!isset($r['price'])) {
             return "Price ist't set.";
-        else if (!is_numeric($r['price']))
+        } else if (!is_numeric($r['price'])) {
             return "Price has incorrect format.";
+        }
 
         return true;
     }
 }
-
-?>

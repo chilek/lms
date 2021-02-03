@@ -26,48 +26,48 @@
 
 $useradd = isset($_POST['useradd']) ? $_POST['useradd'] : array();
 
-if(count($useradd))
-{
-	foreach($useradd as $key => $value)
-		$useradd[$key] = trim($value);
-	
-	if($useradd['login']=='' && $useradd['name']=='' && $useradd['password']=='' && $useradd['confirm']=='')
-	{
-		$SESSION->redirect('?m=users&a=add');
-	}
-	
-	if($useradd['login']=='')
-		$error['login'] = trans('Login can\'t be empty!');
-	elseif(!eregi('^[a-z0-9.-_]+$', $useradd['login']))
-		$error['login'] = trans('Login contains forbidden characters!');
-	elseif($LMS->GetUserIDByLogin($useradd['login']))
-		$error['login'] = trans('User with specified login exists or that login was used in the past!');
-	
-	if($useradd['email']!='' && !check_email($useradd['email']))
-		$error['email'] = trans('E-mail isn\'t correct!');
+if (count($useradd)) {
+    foreach ($useradd as $key => $value) {
+        $useradd[$key] = trim($value);
+    }
+    
+    if ($useradd['login']=='' && $useradd['name']=='' && $useradd['password']=='' && $useradd['confirm']=='') {
+        $SESSION->redirect('?m=users&a=add');
+    }
+    
+    if ($useradd['login']=='') {
+        $error['login'] = trans('Login can\'t be empty!');
+    } elseif (!eregi('^[a-z0-9.-_]+$', $useradd['login'])) {
+        $error['login'] = trans('Login contains forbidden characters!');
+    } elseif ($LMS->GetUserIDByLogin($useradd['login'])) {
+        $error['login'] = trans('User with specified login exists or that login was used in the past!');
+    }
+    
+    if ($useradd['email']!='' && !check_email($useradd['email'])) {
+        $error['email'] = trans('E-mail isn\'t correct!');
+    }
 
-	if($useradd['name']=='')
-		$error['name'] = trans('You have to enter first and lastname!');
+    if ($useradd['name']=='') {
+        $error['name'] = trans('You have to enter first and lastname!');
+    }
 
-	if($useradd['password']=='')
-		$error['password'] = trans('Empty passwords are not allowed!');
-	elseif($useradd['password']!=$useradd['confirm'])
-		$error['password'] = trans('Passwords does not match!');
+    if ($useradd['password']=='') {
+        $error['password'] = trans('Empty passwords are not allowed!');
+    } elseif ($useradd['password']!=$useradd['confirm']) {
+        $error['password'] = trans('Passwords does not match!');
+    }
 
-	$useradd['rights'] = '';
-	
-	if(!$error)
-	{
-		$id = $LMS->UserAdd($useradd);
-		
-		$REDIRECT = '?m=users&a=info&id='.$id;
-		return;
-	}
+    $useradd['rights'] = '';
+    
+    if (!$error) {
+        $id = $LMS->UserAdd($useradd);
+        
+        $REDIRECT = '?m=users&a=info&id='.$id;
+        return;
+    }
 }
 
 $layout['pagetitle'] = trans('New User');
 
 $SMARTY->assign('useradd', $useradd);
 $SMARTY->assign('error', $error);
-
-?>

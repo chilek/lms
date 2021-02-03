@@ -32,5 +32,3 @@ $this->Execute("ALTER TABLE divisions ADD regon varchar(255) NOT NULL DEFAULT ''
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008102700', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

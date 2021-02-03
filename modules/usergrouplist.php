@@ -16,5 +16,3 @@ unset($usergrouplist['totalcount']);
 $SMARTY->assign('usergrouplist', $usergrouplist);
 $SMARTY->assign('listdata', $listdata);
 $SMARTY->display('user/usergrouplist.html');
-
-?>

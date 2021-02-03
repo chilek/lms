@@ -26,20 +26,22 @@
 
 function smarty_function_sum($params, $template)
 {
-	$array = $params['array'];
-	$format = (isset($params['string_format']) ? $params['string_format'] : '%d');
-	$default = (isset($params['default']) ? $params['default'] : 0);
-	if($array)
-		foreach($array as $row)
-			if(is_array($row))
-				$result += $row[$params['column']];
+    $array = $params['array'];
+    $format = (isset($params['string_format']) ? $params['string_format'] : '%d');
+    $default = (isset($params['default']) ? $params['default'] : 0);
+    if ($array) {
+        foreach ($array as $row) {
+            if (is_array($row)) {
+                $result += $row[$params['column']];
+            }
+        }
+    }
 
-	$result = isset($result) ? $result : $default;
+    $result = isset($result) ? $result : $default;
 
-	if(isset($params['assign']))
-		$template->assign($params['assign'], $result);
-	else
-		return sprintf($format, $result);
+    if (isset($params['assign'])) {
+        $template->assign($params['assign'], $result);
+    } else {
+        return sprintf($format, $result);
+    }
 }
-
-?>

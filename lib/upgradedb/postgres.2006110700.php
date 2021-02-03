@@ -34,5 +34,3 @@ $this->Execute("ALTER TABLE rttickets ALTER COLUMN cause SET DEFAULT 0");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2006110700', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

@@ -27,8 +27,6 @@
 $this->BeginTrans();
 
 $this->Execute("ALTER TABLE documents ADD COLUMN extnumber varchar(255) NOT NULL DEFAULT ''");
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2006011200', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2006011200', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

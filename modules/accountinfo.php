@@ -25,16 +25,15 @@
  */
 
 // LEFT join with domains for bckward compat.
-$account = $DB->GetRow('SELECT p.*, d.name AS domain, ' 
-		.$DB->Concat('c.lastname', "' '", 'c.name').' AS customername 
+$account = $DB->GetRow('SELECT p.*, d.name AS domain, '
+        .$DB->Concat('c.lastname', "' '", 'c.name').' AS customername 
 		FROM passwd p
 		LEFT JOIN domains d ON (p.domainid = d.id)
 		LEFT JOIN customers c ON (c.id = p.ownerid)
 		WHERE p.id = ?', array(intval($_GET['id'])));
 
-if(!$account)
-{
-	$SESSION->redirect('?'.$SESSION->get('backto'));
+if (!$account) {
+    $SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
 $account['aliases'] = $DB->GetAll('SELECT a.id, a.login, d.name AS domain 
@@ -48,5 +47,3 @@ $layout['pagetitle'] = trans('Account Info: $a', $account['login'].'@'.$account[
 
 $SMARTY->assign('account', $account);
 $SMARTY->display('account/accountinfo.html');
-
-?>

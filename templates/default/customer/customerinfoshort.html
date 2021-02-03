@@ -1,161 +1,168 @@
+<style>
+
+	.customer-contact {
+		display: flex;
+	}
+
+</style>
+
 <TABLE class="lmsbox-inner" id="table">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 99%;">
+	</colgroup>
     <THEAD>
 	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/customer.gif" ALT="">
+		<TD>
+			{icon name="customer" class="fa-fw"}
 		</TD>
-		<TD WIDTH="99%">
-			<B>{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}){if $customerinfo.deleted} <span COLOR="RED">({trans("deleted customer")})</span>{/if}</B>
+		<TD>
+			<strong>{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}){if $customerinfo.deleted} <span class="alert">({trans("deleted customer")})</span>{/if}</strong>
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	<TR>
-		<TD WIDTH="1%">
-			<IMG src="img/{$_CSTATUSES[$customerinfo.status].img}" alt="">
+		<TD>
+			{icon name="customer-status-{$_CSTATUSES[$customerinfo.status].alias}" class="fa-fw"}
 		</TD>
-		<TD WIDTH="99%" class="bold">
+		<TD class="bold">
 			{$_CSTATUSES[$customerinfo.status].singularlabel}
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%" >
-			<IMG SRC="img/home.gif" ALT="">
+		<TD>
+			{icon name="homr" class="fa-fw"}
 		</TD>
-		<TD WIDTH="99%" NOWRAP>
+		<TD class="nobr">
 			{if $customerinfo.postoffice && $customerinfo.postoffice != $customerinfo.city && $customerinfo.street}{$customerinfo.city}, {/if}{$customerinfo.address}<BR>
 			{$customerinfo.zip} {if $customerinfo.postoffice}{$customerinfo.postoffice}{else}{$customerinfo.city}{/if}
 		</TD>
 	</TR>
 {if $customerinfo.post_name != "" || $customerinfo.post_address != ""}
 	<TR>
-		<TD WIDTH="1%" >
-			<IMG SRC="img/post.gif" ALT="">
+		<TD>
+			{icon name="mail" class="fa-fw"}
 		</TD>
-		<TD WIDTH="99%" NOWRAP>
-			{if $customerinfo.post_name != ""}{$customerinfo.post_name}{/if}
-			{if $customerinfo.post_address != ""}<BR>
+		<TD class="nobr">
+			{if $customerinfo.post_name != ""}{$customerinfo.post_name|escape}{/if}
+			{if $customerinfo.post_address != ""}{if $customerinfo.post_name != ""}<BR>{/if}
 				{if $customerinfo.post_postoffice && $customerinfo.post_postoffice != $customerinfo.post_city && $customerinfo.post_street}{$customerinfo.post_city}, {/if}
 				{$customerinfo.post_address}
 			{/if}
-			<BR>{$customerinfo.post_zip} {if $customerinfo.post_postoffice}{$customerinfo.post_postoffice}{else}{$customerinfo.post_city}{/if}
+			<br>
+			{$customerinfo.post_zip} {if $customerinfo.post_postoffice}{$customerinfo.post_postoffice}{else}{$customerinfo.post_city}{/if}
 		</TD>
 	</TR>
 {/if}
-{foreach $customerinfo.contacts as $item}
-	<TR>
-		<TD style="width: 1%;">
-			<IMG SRC="img/phone.gif" ALT="">
-		</TD>
-		<TD style="width: 99%;" class="nobr">
-		    {$item.phone}
-		    {if $item.typestr}[{$item.typestr}]{/if}
-		    {if $item.name} ({$item.name|truncate:"40":"...":true}){/if}
-		</TD>
-	</TR>
+
+{foreach $_CUSTOMERCONTACTTYPES as $type => $properties}
+	{if isset($customerinfo[$type|cat:"s"])}
+		<TR>
+			<TD></TD>
+			<TD class="customer-contact">
+				<fieldset style="width: auto;">
+					<legend class="bold nobr">
+						{icon name="{$properties.ui.legend.icon}" class="fa-fw"}
+						{$properties.ui.legend.text}
+					</legend>
+					<TABLE>
+						{foreach $customerinfo[$type|cat:"s"] as $contact}
+							<TR{if ($contact.type & $smarty.const.CONTACT_DISABLED) == $smarty.const.CONTACT_DISABLED} class="blend"{/if}>
+								<TD class="customer-contact">
+									<div>
+										{if isset($properties.formatter)}{call_user_func($properties['formatter'], $contact)}{else}{$contact.contact|escape}{/if}
+										{if $contact.typestr}[{$contact.typestr}]{/if}
+										{if $contact.name} ({$contact.name|truncate:"40":"&hellip;":true|escape}){/if}
+									</div>
+								</TD>
+							</TR>
+						{/foreach}
+					</TABLE>
+				</fieldset>
+			</TD>
+		</TR>
+	{/if}
 {/foreach}
-{if !empty($customerinfo.emails)}
-	<TR>
-		<TD style="width: 1%;">
-			<IMG SRC="img/mail.gif" ALT="">
-		</TD>
-		<TD style="width: 99%;" class="nobr">
-			{foreach $customerinfo.emails as $email}
-			<A HREF="mailto:{$email.email}">{$email.email}</A>
-			{if $email.name} ({$email.name|truncate:"40":"...":true}){/if}
-			{if !$email@last}<br>{/if}
-			{/foreach}
-		</TD>
-	</TR>
-{/if}
-{if !empty($customerinfo.ims)}
-	<TR>
-		<TD>
-			<IMG src="img/skype.gif" alt="">
-		</TD>
-		<TD class="nobr">
-			{$properties = $_CUSTOMERCONTACTTYPES['im']}
-			{foreach $customerinfo.ims as $im}
-				<span{if ($im.type & $smarty.const.CONTACT_DISABLED) == $smarty.const.CONTACT_DISABLED} class="blend"{/if}>
-				{if isset($properties.formatter)}{call_user_func($properties['formatter'], $im)}{else}{$im.contact}{/if}
-				{if $im.typestr}[{$im.typestr}]{/if}
-				{if $im.name} ({$im.name|truncate:"40":"...":true}){/if}
-				</span>
-				{if !$im@last}<br>{/if}
-			{/foreach}
-		</TD>
-	</TR>
-{/if}
+
 {if $customerinfo.icn != ""}
 	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/serialnumber.gif" ALT="">
+		<TD>
+			{icon name="user-id-number" class="fa-fw"}
 		</TD>
-		<TD WIDTH="99%" NOWRAP>
-			{trans("ICN")}: {$customerinfo.icn}
+		<TD class="nobr">
+			{trans("Identity type:")}: {trans($_IDENTITY_TYPES[$customerinfo.ict])}
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			{icon name="user-id-number" class="fa-fw"}
+		</TD>
+		<TD class="nobr">
+			{trans("Identity number:")}: {$customerinfo.icn|escape}
 		</TD>
 	</TR>
 {/if}
 {if $customerinfo.ssn != ""}
 	<TR">
-		<TD WIDTH="1%">
-			<IMG SRC="img/serialnumber.gif" ALT="">
+		<TD>
+			{icon name="user-id-number" class="fa-fw"}
 		</TD>
-		<TD WIDTH="99%" NOWRAP>
-			{trans("SSN")}: {$customerinfo.ssn}
+		<TD class="nobr">
+			{trans("SSN")}: {$customerinfo.ssn|escape}
 		</TD>
 	</TR>
 {/if}
 {if $customerinfo.ten != ""}
 	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/serialnumber.gif" ALT="">
+		<TD>
+			{icon name="user-id-number" class="fa-fw"}
 		</TD>
-		<TD WIDTH="99%" NOWRAP>
+		<TD class="nobr">
 			{trans("TEN")}: {$customerinfo.ten}
 		</TD>
 	</TR>
 {/if}
 {if $customerinfo.regon != ""}
 	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/serialnumber.gif" ALT="">
+		<TD>
+			{icon name="user-id-number" class="fa-fw"}
 		</TD>
-		<TD WIDTH="99%" NOWRAP>
+		<TD class="nobr">
 			{trans("REGON")}: {$customerinfo.regon}
 		</TD>
 	</TR>
 {/if}
 {if $customerinfo.rbe != ""}
 	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/serialnumber.gif" ALT="">
+		<TD>
+			{icon name="user-id-number" class="fa-fw"}
 		</TD>
-		<TD WIDTH="99%" NOWRAP>
-			{trans("RBE")}: {$customerinfo.rbe}
+		<TD class="nobr">
+			{trans("RBE")}: {$customerinfo.rbe|escape}
 		</TD>
 	</TR>
 {/if}
 {if $customergroups}
 	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/group.gif" ALT="">
+		<TD>
+			{icon name="customergroup" class="fa-fw"}
 		</TD>
-		<TD WIDTH="99%">
+		<TD>
 			{foreach from=$customergroups item=customergroup name=customergroup}
-				{$customergroup.name}{if !$smarty.foreach.customergroup.last},{/if} 
+				{$customergroup.name}{if !$smarty.foreach.customergroup.last},{/if}
 			{/foreach}
 		</TD>
 	</TR>
 {/if}
 {if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/money.gif" ALT="">
+		<TD>
+			{icon name="money" class="fa-fw"}
 		</TD>
-		<TD WIDTH="99%" NOWRAP>
-			<B>{trans("Balance:")}</B>
-			{if $customerinfo.balance < 0}<span class="alert">{$customerinfo.balance|money_format}</span>{else}{$customerinfo.balance|default:"0"|money_format}{/if}
+		<TD class="nobr">
+			<strong>{trans("Balance:")}</strong>
+			{if $customerinfo.balance < 0}<span class="lms-ui-alert">{$customerinfo.balance|money_format}</span>{else}{$customerinfo.balance|default:"0"|money_format}{/if}
 		</TD>
 	</TR>
 {/if}

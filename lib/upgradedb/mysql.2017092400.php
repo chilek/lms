@@ -28,5 +28,3 @@ $this->Execute("ALTER TABLE rttickets ADD COLUMN netnodeid int(11)");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017092400', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

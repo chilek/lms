@@ -23,11 +23,11 @@
 
 $this->BeginTrans();
 
-$this->Execute("INSERT INTO uiconfig (section, var, value) VALUES (?, ?, ?)",
-	array('userpanel', 'aggregate_documents', '0'));
+$this->Execute(
+    "INSERT INTO uiconfig (section, var, value) VALUES (?, ?, ?)",
+    array('userpanel', 'aggregate_documents', '0')
+);
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019012100', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

@@ -11,11 +11,6 @@
 			<a class="nav-link" data-toggle="tab" href="#usernodesbox" role="tab">{trans("Your computers")}</a>
 		</li>
 	{/if}
-	{if (is_array($documents) && count($documents)) && !ConfigHelper::checkConfig('userpanel.hide_documentbox')}
-		<li class="nav-item">
-			<a class="nav-link" data-toggle="tab" href="#userdocsbox" role="tab">{trans("Your documents")}</a>
-		</li>
-	{/if}
 	<li class="nav-item">
 		<a class="nav-link" data-toggle="tab" href="#userloginbox" role="tab">{trans("Login data")}</a>
 	</li>
@@ -28,11 +23,6 @@
 	{if (is_array($usernodes) && count($usernodes)) && !ConfigHelper::checkConfig('userpanel.hide_nodesbox')}
 		<div class="tab-pane" id="usernodesbox" role="tabpanel">
 			{include file="module:usernodesbox.html"}
-		</div>
-	{/if}
-	{if (is_array($documents) && count($documents)) && !ConfigHelper::checkConfig('userpanel.hide_documentbox')}
-		<div class="tab-pane" id="userdocsbox" role="tabpanel">
-			{include file="module:userdocsbox.html"}
 		</div>
 	{/if}
 	<div class="tab-pane" id="userloginbox" role="tabpanel">

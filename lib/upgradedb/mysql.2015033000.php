@@ -32,5 +32,3 @@ $this->Execute("ALTER TABLE netnodes ADD FOREIGN KEY (location_street) REFERENCE
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015033000', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

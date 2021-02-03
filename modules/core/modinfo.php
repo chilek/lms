@@ -25,114 +25,113 @@
  */
 
 $_MODINFO['core'] = array(
-		'summary' => array( 
-			'en' => 'Core module',
-			'pl' => 'Moduł główny'
-			),
-		'version' => '1.11-git',
-		'description' => array(
-			'en' => 'Core module for LMS. Contains very basic actions and items.',
-			'pl' => 'Główny moduł LMS. Zawiera bardzo podstawowe akcje i elementy.'
-			),
-		'author' => 'LMS-developers',
-		'revision' => '$Revision$',
-		'notpublic' => FALSE,
-		'priority' => 0,
-		'url' => 'http://www.lms.org.pl',
-		'default' => TRUE,
-		'actions' => array(
-			'init' => array(
-				'description' => array(
-					'en' => 'System and basic classes initialization',
-					'pl' => 'Inicjalizacja systemu i klas podstawowych',
-					),
-				'notpublic' => TRUE,
-				'bindings' => array(
-					'pre/*:*', 
-					),
-				'notemplate' => TRUE,
-				),
-			'end' => array(
-				'notpublic' => TRUE,
-				'bindings' => array(
-					'post/*:*', 
-					),
-				'notemplate' => TRUE,
-				),
-			'logout' => array(
-				'description' => array(
-					'en' => 'System log out',
-					'pl' => 'Wylogowanie z systemu',
-					),
-				'notemplate' => TRUE,
-				'hidden' => TRUE,
-				),
-			'header' => array(
-				'description' => array(
-					'en' => 'Header pseudo action',
-					'pl' => 'Pseudo-akcja nagłówka'
-					),
-				'bindings' => array(
-					'post/core:init', 
-					),
-				'notpublic' => TRUE,
-				'dontexec' => TRUE, // don't execute action script
-				),
-			'footer' => array(
-				'description' => array(
-					'en' => 'Footer pseudo action',
-					'pl' => 'Pseudo-akcja stopki'
-					),
-				'bindings' => array(
-					'pre/core:end'
-					),
-				'notpublic' => TRUE,
-				'dontexec' => TRUE,
-				),
-			'menu' => array(
-				'bindings' => array(
-					'post/core:header'
-					),
-				'notpublic' => TRUE,
-				),
-			'install' => array(
-				'description' => array(
-					'en' => 'Post-install system initialization',
-					'pl' => 'Poinstalacyjna inicjalizacja systemu',
-					),
-				'notemplate' => TRUE,
-				),
-			'dberrorhandler' => array(
-				'bindings' => array(
-					'pre/core:footer',
-				),
-				'notpublic' => TRUE,
-				),
-			'err_actionnotfound' => array(
-				'notpublic' => TRUE,
-				'dontexec' => TRUE,
-				),
-			'err_actionnotpublic' => array(
-				'notpublic' => TRUE,
-				'dontexec' => TRUE,
-				),
-			'err_modulenotfound' => array(
-				'notpublic' => TRUE,
-				'dontexec' => TRUE,
-				),
-			'err_modulenotpublic' => array(
-				'notpublic' => TRUE,
-				'dontexec' => TRUE,
-				),
-			'err_loginform' => array(
-				'notpublic' => TRUE,
-				'onlogin' => TRUE,
-				),
-			'copyrights' => array(
-				'default' => TRUE,
-				),
-			),
-		);
+        'summary' => array(
+            'en' => 'Core module',
+            'pl' => 'Moduł główny'
+            ),
+        'version' => '1.11-git',
+        'description' => array(
+            'en' => 'Core module for LMS. Contains very basic actions and items.',
+            'pl' => 'Główny moduł LMS. Zawiera bardzo podstawowe akcje i elementy.'
+            ),
+        'author' => 'LMS-developers',
+        'revision' => '$Revision$',
+        'notpublic' => false,
+        'priority' => 0,
+        'url' => 'http://www.lms.org.pl',
+        'default' => true,
+        'actions' => array(
+            'init' => array(
+                'description' => array(
+                    'en' => 'System and basic classes initialization',
+                    'pl' => 'Inicjalizacja systemu i klas podstawowych',
+                    ),
+                'notpublic' => true,
+                'bindings' => array(
+                    'pre/*:*',
+                    ),
+                'notemplate' => true,
+                ),
+            'end' => array(
+                'notpublic' => true,
+                'bindings' => array(
+                    'post/*:*',
+                    ),
+                'notemplate' => true,
+                ),
+            'logout' => array(
+                'description' => array(
+                    'en' => 'System log out',
+                    'pl' => 'Wylogowanie z systemu',
+                    ),
+                'notemplate' => true,
+                'hidden' => true,
+                ),
+            'header' => array(
+                'description' => array(
+                    'en' => 'Header pseudo action',
+                    'pl' => 'Pseudo-akcja nagłówka'
+                    ),
+                'bindings' => array(
+                    'post/core:init',
+                    ),
+                'notpublic' => true,
+                'dontexec' => true, // don't execute action script
+                ),
+            'footer' => array(
+                'description' => array(
+                    'en' => 'Footer pseudo action',
+                    'pl' => 'Pseudo-akcja stopki'
+                    ),
+                'bindings' => array(
+                    'pre/core:end'
+                    ),
+                'notpublic' => true,
+                'dontexec' => true,
+                ),
+            'menu' => array(
+                'bindings' => array(
+                    'post/core:header'
+                    ),
+                'notpublic' => true,
+                ),
+            'install' => array(
+                'description' => array(
+                    'en' => 'Post-install system initialization',
+                    'pl' => 'Poinstalacyjna inicjalizacja systemu',
+                    ),
+                'notemplate' => true,
+                ),
+            'dberrorhandler' => array(
+                'bindings' => array(
+                    'pre/core:footer',
+                ),
+                'notpublic' => true,
+                ),
+            'err_actionnotfound' => array(
+                'notpublic' => true,
+                'dontexec' => true,
+                ),
+            'err_actionnotpublic' => array(
+                'notpublic' => true,
+                'dontexec' => true,
+                ),
+            'err_modulenotfound' => array(
+                'notpublic' => true,
+                'dontexec' => true,
+                ),
+            'err_modulenotpublic' => array(
+                'notpublic' => true,
+                'dontexec' => true,
+                ),
+            'err_loginform' => array(
+                'notpublic' => true,
+                'onlogin' => true,
+                ),
+            'copyrights' => array(
+                'default' => true,
+                ),
+            ),
+        );
 
 // vi:encoding=utf-8:termencoding=iso-8859-2:syn=php:cindent:showmatch:
-?>

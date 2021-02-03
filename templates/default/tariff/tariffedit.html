@@ -81,6 +81,8 @@
                                 <TD>
                                     <INPUT TYPE="TEXT" VALUE="{$tariff.value}" SIZE="8" NAME="tariff[value]" {tip text="Enter value" trigger="value"}>
 
+                                    {currency_selection selected=$tariff.currency elementname="tariff[currency]"}
+
                                     <SELECT size="1" name="tariff[period]" {tip text="Select time period of tariff accounting"}>
                                         <OPTION value=""{if $tariff.period == $key} SELECTED{/if}>{trans("undefined")}</OPTION>
                                         {foreach from=$_PERIODS key=key item=item}
@@ -89,16 +91,53 @@
                                             {/if}
                                         {/foreach}
                                     </SELECT>
+
+                                    <label>
+                                        <input type="checkbox" name="tariff[flags][{$smarty.const.TARIFF_FLAG_REWARD_PENALTY}]"
+                                            value="{$smarty.const.TARIFF_FLAG_REWARD_PENALTY}"
+                                            {if isset($tariff.flags[$smarty.const.TARIFF_FLAG_REWARD_PENALTY])}checked{/if}
+                                            {tip text="If tariff value is negative then this is effectively penalty flag, otherwise it is reward flag"}>
+                                        {trans("reward/penalty")}
+                                    </label>
                                 </TD>
                             </TR>
+                            <tr>
+                                <TD>
+                                    <IMG SRC="img/tax.gif" ALT="">
+                                </TD>
+                                <TD class="bold nobr">
+                                    <label for="splitpayment">
+                                        {trans("Split payment:")}
+                                    </label>
+                                </TD>
+                                <td>
+                                    <input type="checkbox" id="splitpayment" name="tariff[splitpayment]" value="1"{if $tariff.splitpayment} checked{/if}>
+                                </td>
+                            </tr>
+                            <tr>
+                                <TD>
+                                    <IMG SRC="img/tax.gif" ALT="">
+                                </TD>
+                                <TD class="bold nobr">
+                                    <label for="taxcategory">
+                                        {trans("Tax category:")}
+                                    </label>
+                                </TD>
+                                <td>
+                                    {tax_category_selection id="taxcategory" elementname="tariff[taxcategory]"
+                                        selected=$tariff.taxcategory tip="Select tax category"}
+                                </td>
+                            </tr>
                             <TR>
                                 <TD><IMG SRC="img/tax.gif" ALT=""></TD>
                                 <TD>{trans("Tax:")}</TD>
                                 <TD>
-                                    <SELECT SIZE="1" NAME="tariff[taxid]" {tip text="Select Tax rate" trigger="taxid"}>
-                                    {foreach item=tax from=$taxeslist}
-                                        <OPTION VALUE="{$tax.id}"{if $tariff.taxid == $tax.id} selected{/if}>{$tax.label}</OPTION>
-                                    {/foreach}
+                                    <SELECT SIZE="1" NAME="tariff[taxid]" {tip text="Select Tax rate" trigger="taxid"}{if empty($taxeslist)} required{/if}>
+                                        {foreach $taxeslist as $tax}
+                                            <OPTION VALUE="{$tax.id}"{if $tariff.taxid == $tax.id} selected{/if}>{$tax.label}</OPTION>
+                                        {foreachelse}
+                                            <option value="">{trans("- no tax rates defined -")}</option>
+                                        {/foreach}
                                     </SELECT>
                                 </TD>
                             </TR>
@@ -113,6 +152,18 @@
                                     </SELECT>
                                 </TD>
                             </TR>
+                            <TR>
+                                <TD><i class="lms-ui-icon-tags"></i></TD>
+                                <TD class="bold">{trans("Tags:")}</TD>
+                                <TD>
+                                    <SELECT ID="tariff-tags" SIZE="1" NAME="tariff[tags][]"
+                                            {tip class="lms-ui-multiselect" text="Select tariff tags" trigger="tags"} multiple>
+                                        {foreach $tarifftags as $tarifftag}
+                                            <OPTION VALUE="{$tarifftag.id}"{if isset($tariff.tags[$tarifftag.id])} selected{/if}>{$tarifftag.name}</OPTION>
+                                        {/foreach}
+                                    </SELECT>
+                                </TD>
+                            </TR>
 							<TR>
 								<TD>
 									<IMG src="img/calendar.gif" alt="">
@@ -122,9 +173,9 @@
 								</TD>
 								<TD class="nobr">
 									{trans("from:")}
-									<INPUT type="TEXT" name="tariff[datefrom]" value="{if $tariff.datefrom}{$tariff.datefrom}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter tariff start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="datefrom"} SIZE="10">
+									<INPUT type="TEXT" name="tariff[datefrom]" value="{if $tariff.datefrom}{$tariff.datefrom}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter tariff start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="datefrom"} SIZE="10">
 									{trans("to:")}
-									<INPUT type="TEXT" name="tariff[dateto]" value="{if $tariff.dateto}{$tariff.dateto}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter tariff end date in YYYY/MM/DD format. Leave this field empty if you don't want to set expiration date" trigger="dateto"} SIZE="10">
+									<INPUT type="TEXT" name="tariff[dateto]" value="{if $tariff.dateto}{$tariff.dateto}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter tariff end date in YYYY/MM/DD format. Leave this field empty if you don't want to set expiration date" trigger="dateto"} SIZE="10">
 								</TD>
 							</TR>
                             <TR>
@@ -155,8 +206,8 @@
                                 <TD>
                                     <img src="img/netdev.gif" alt="">
                                 </TD>
-                                <TD class="nobr">
-                                    {trans("Type:")}
+                                <TD class="bold nobr">
+                                    {trans("Purpose:")}
                                 </TD>
                                 <TD class="nobr">
                                     {foreach $_SESSIONTYPES as $idx => $sessiontype}
@@ -335,9 +386,9 @@
     </TR>
 
     <TR>
-        <TD WIDTH="100%" ALIGN="RIGHT">
-            <A HREF="javascript:document.tariff.submit();" ACCESSKEY="S">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
-            <A HREF="?m=tariffinfo&id={$tariff.id}">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A>
+        <TD colspan="3" class="lms-ui-box-buttons">
+            {button type="submit" label="Submit" icon="save"}
+            {button label="Cancel" icon="cancel" onclick="location.href='?m=tariffinfo&id={$tariff.id}';"}
         </TD>
     </TR>
     </TBODY>

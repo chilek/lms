@@ -51,4 +51,3 @@ $this->Execute("CREATE INDEX tariffassignments_tarifftagid_idx ON tariffassignme
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016070700', 'dbversion'));
 
 $this->CommitTrans();
-?>

@@ -39,5 +39,3 @@ $_LANG['We are please for punctual payment in value: <B>$a</B> with comment: $b'
 $_LANG['You have no outstandings towards as.'] = 'Nie posiadasz zaległości wobec nas.';
 $_LANG['You have overpayments on value: $a, they will be moved as payments for future subscriptions or services.'] = 'Posiadasz nadpłaty w wysokości: $a, zostaną one rozliczone jako płatności za przyszły abonament lub usługę.';
 $_LANG['Account:'] = 'Konto:';
-
-?>

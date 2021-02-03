@@ -24,10 +24,10 @@
  *  $Id$
  */
 
-if(!is_dir(SMARTY_COMPILE_DIR))
-	die('Missing directory <B>'.SMARTY_COMPILE_DIR.'</B>. Can enybody make them?');
+if (!is_dir(SMARTY_COMPILE_DIR)) {
+    die('Missing directory <B>'.SMARTY_COMPILE_DIR.'</B>. Can enybody make them?');
+}
 
-if(!is_writable(SMARTY_COMPILE_DIR))
-	die('Can\'t write to directory <B>'.SMARTY_COMPILE_DIR.'</B>. Can you run: <BR><PRE>chown '.posix_geteuid().':'.posix_getegid().' '.SMARTY_COMPILE_DIR."\nchmod 755 ".SMARTY_COMPILE_DIR.'</PRE>This helps me to work. Thanks.');
-
-?>
+if (!is_writable(SMARTY_COMPILE_DIR)) {
+    die('Can\'t write to directory <B>'.SMARTY_COMPILE_DIR.'</B>. Can you run: <BR><PRE>chown '.posix_geteuid().':'.posix_getegid().' '.SMARTY_COMPILE_DIR."\nchmod 755 ".SMARTY_COMPILE_DIR.'</PRE>This helps me to work. Thanks.');
+}

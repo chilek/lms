@@ -31,5 +31,3 @@ $this->Execute("ALTER TABLE rttickets ADD cause tinyint(4) NOT NULL DEFAULT '0'"
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2006110700', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

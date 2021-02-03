@@ -32,5 +32,3 @@ $this->Execute("ALTER TABLE plicbdoperators DROP INDEX id");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015090400', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

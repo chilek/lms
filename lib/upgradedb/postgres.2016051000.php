@@ -28,5 +28,3 @@ $this->Execute("ALTER TABLE events ADD COLUMN creationdate integer DEFAULT 0 NOT
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016051000', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

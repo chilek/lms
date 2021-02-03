@@ -24,64 +24,84 @@
  *  $Id$
  */
 
-if (isset($_GET['file'])) {
-	if (!($LMS->CheckTicketAccess($_GET['tid']) & RT_RIGHT_READ))
-		access_denied();
+if (isset($_GET['file']) || isset($_GET['cid'])) {
+    if (!($LMS->CheckTicketAccess($_GET['tid']) & RT_RIGHT_READ)) {
+        access_denied();
+    }
 
-	$filename = urldecode($_GET['file']);
-	if($attach = $DB->GetRow('SELECT * FROM rtattachments WHERE messageid = ? AND filename = ?', array(intval($_GET['mid']), $filename)))
-	{
-		$file = ConfigHelper::getConfig('rt.mail_dir') . DIRECTORY_SEPARATOR . sprintf('%06d' . DIRECTORY_SEPARATOR . '%06d' . DIRECTORY_SEPARATOR . '%s',
-			$_GET['tid'], $_GET['mid'], $filename);
-		if(file_exists($file))
-		{
-			$size = @filesize($file);
-			header('Content-Length: '.$size.' bytes');
-			header('Content-Type: '.$attach['contenttype']);
-			header('Cache-Control: private');
-			header('Content-Disposition: ' . ($attach['contenttype'] == 'application/pdf' ? 'inline' : 'attachment') . '; filename='.$filename);
-			@readfile($file);
-		}
-		$SESSION->close();
-		die;
-	}
+    if (isset($_GET['file'])) {
+        $filename = urldecode($_GET['file']);
+        $attach = $DB->GetRow('SELECT * FROM rtattachments WHERE messageid = ? AND filename = ?', array(intval($_GET['mid']), $filename));
+    } else {
+        $cid = urldecode($_GET['cid']);
+        $attach = $DB->GetRow('SELECT * FROM rtattachments WHERE messageid = ? AND cid = ?', array(intval($_GET['mid']), $cid));
+    }
+
+    if ($attach) {
+        $file = ConfigHelper::getConfig('rt.mail_dir') . DIRECTORY_SEPARATOR . sprintf(
+            '%06d' . DIRECTORY_SEPARATOR . '%06d' . DIRECTORY_SEPARATOR . '%s',
+            $_GET['tid'],
+            $_GET['mid'],
+            $attach['filename']
+        );
+        if (file_exists($file)) {
+            if (isset($_GET['thumbnail']) && ($width = intval($_GET['thumbnail'])) > 0
+                && class_exists('Imagick') && strpos($attach['contenttype'], 'image/') === 0) {
+                $imagick = new \Imagick($file);
+                $imagick->scaleImage($width, 0);
+                header('Content-Type: ' . $attach['contenttype']);
+                header('Cache-Control: private');
+                header('Content-Disposition: ' . ($attach['contenttype'] == 'application/pdf' ? 'inline' : 'attachment') . '; filename=' . $filename);
+                echo $imagick->getImageBlob();
+            } else {
+                header('Content-Type: ' . $attach['contenttype']);
+                header('Cache-Control: private');
+                header('Content-Disposition: ' . ($attach['contenttype'] == 'application/pdf' ? 'inline' : 'attachment') . '; filename=' . $filename);
+                echo @file_get_contents($file);
+            }
+        }
+        $SESSION->close();
+        die;
+    }
 }
 
-if(!isset($_GET['id']))
-{
-	$SESSION->redirect('?'.$SESSION->get('backto'));
+if (!isset($_GET['id'])) {
+    $SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
-if (!($LMS->CheckTicketAccess($_GET['id']) & RT_RIGHT_READ))
-	access_denied();
+$message = $LMS->GetMessage($_GET['id']);
 
-	$message = $LMS->GetMessage($_GET['id']);
-if($message['userid'])
-	$message['username'] = $LMS->GetUserName($message['userid']);
-
-if($message['deluserid'])
-	$message['delusername'] = $LMS->GetUserName($message['deluserid']);
-
-if($message['customerid'])
-	$message['customername'] = $LMS->GetCustomerName($message['customerid']);
-	
-if (!empty($message['attachments']) && count($message['attachments']))
-	foreach($message['attachments'] as $key => $val) 
-	{
-		list($size, $unit) = setunits(@filesize(ConfigHelper::getConfig('rt.mail_dir') . DIRECTORY_SEPARATOR
-			. sprintf('%06d' . DIRECTORY_SEPARATOR . '%06d' . DIRECTORY_SEPARATOR . '%s', $message['ticketid'], $message['id'], $val['filename'])));
-		$message['attachments'][$key]['size'] = $size;
-		$message['attachments'][$key]['unit'] = $unit;
-	}
-if($message['inreplyto'])
-{
-	$reply = $LMS->GetMessage($message['inreplyto']);
-	$message['inreplytoid'] = $reply['subject'];
+if (!($LMS->CheckTicketAccess($message['ticketid']) & RT_RIGHT_READ)) {
+    access_denied();
 }
 
-if(!$message['customerid'] && !$message['userid'] && !$message['mailfrom'] && !$message['phonefrom'])
-{
-	$message['requestor'] = $DB->GetOne('SELECT requestor FROM rttickets WHERE id=?', array($message['ticketid']));
+if ($message['userid']) {
+    $message['username'] = $LMS->GetUserName($message['userid']);
+}
+
+if ($message['deluserid']) {
+    $message['delusername'] = $LMS->GetUserName($message['deluserid']);
+}
+
+if ($message['customerid']) {
+    $message['customername'] = $LMS->GetCustomerName($message['customerid']);
+}
+
+if (!empty($message['attachments']) && count($message['attachments'])) {
+    foreach ($message['attachments'] as $key => $val) {
+        list($size, $unit) = setunits(@filesize(ConfigHelper::getConfig('rt.mail_dir') . DIRECTORY_SEPARATOR
+        . sprintf('%06d' . DIRECTORY_SEPARATOR . '%06d' . DIRECTORY_SEPARATOR . '%s', $message['ticketid'], $message['id'], $val['filename'])));
+        $message['attachments'][$key]['size'] = $size;
+        $message['attachments'][$key]['unit'] = $unit;
+    }
+}
+if ($message['inreplyto']) {
+    $reply = $LMS->GetMessage($message['inreplyto']);
+    $message['inreplytoid'] = $reply['subject'];
+}
+
+if (!$message['customerid'] && !$message['userid'] && !$message['mailfrom'] && !$message['phonefrom']) {
+    $message['requestor'] = $DB->GetOne('SELECT requestor FROM rttickets WHERE id=?', array($message['ticketid']));
 }
 
 $layout['pagetitle'] = trans('Ticket Review');
@@ -90,5 +110,3 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('message', $message);
 $SMARTY->display('rt/rtmessageview.html');
-
-?>

@@ -35,7 +35,5 @@ $this->Execute("
 	ALTER TABLE invoices ALTER zip SET NOT NULL;
 ");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005021500', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005021500', 'dbversion'));
 $this->CommitTrans();
-
-?>

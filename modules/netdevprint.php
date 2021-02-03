@@ -24,31 +24,38 @@
  *  $Id$
  */
 
-if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkConfig('privileges.reports'))
-	access_denied();
+if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkConfig('privileges.reports')) {
+    access_denied();
+}
 
 $type = isset($_GET['type']) ? $_GET['type'] : '';
 
-switch($type) {
-	case 'uke': /***********************************************/
-		if (isset($_POST['invprojects'])) {
-			$invprojects = $_POST['invprojects'];
-			if (!is_array($invprojects))
-				$invprojects = array();
-		} else
-			$invprojects = array();
-		include(MODULES_DIR . '/uke.php');
-		die;
-	break;
+switch ($type) {
+    case 'uke-siis':
+        /***********************************************/
+        if (isset($_POST['invprojects'])) {
+            $invprojects = $_POST['invprojects'];
+            if (!is_array($invprojects)) {
+                $invprojects = array();
+            }
+        } else {
+            $invprojects = array();
+        }
+        include(MODULES_DIR . DIRECTORY_SEPARATOR . 'ukesiis.php');
+        break;
 
-	default:
-		$layout['pagetitle'] = trans('Reports');
+    case 'uke-income':
+        /***********************************************/
+        include(MODULES_DIR . DIRECTORY_SEPARATOR . 'ukeincome.php');
+        break;
 
-		$SMARTY->assign('invprojects', $LMS->GetProjects());
-		$SMARTY->assign('printmenu'  , 'netdev');
-		$SMARTY->assign('linktypes'  , $LINKTYPES);
-		$SMARTY->display('print/printindex.html');
-	break;
+    default:
+        $layout['pagetitle'] = trans('Reports');
+
+        $SMARTY->assign('divisions', $LMS->GetDivisions());
+        $SMARTY->assign('invprojects', $LMS->GetProjects());
+        $SMARTY->assign('printmenu', 'netdev');
+        $SMARTY->assign('linktypes', $LINKTYPES);
+        $SMARTY->display('print/printindex.html');
+        break;
 }
-
-?>

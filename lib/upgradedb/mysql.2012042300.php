@@ -47,5 +47,3 @@ $this->Execute("CREATE INDEX nodesessionid ON stats(nodesessionid)");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012042300', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

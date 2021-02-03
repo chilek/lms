@@ -29,5 +29,3 @@ $this->Execute("ALTER TABLE voip_number_assignments ADD CONSTRAINT voip_number_a
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018032100', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

@@ -15,18 +15,19 @@
 			    <IMG SRC="modules/auth/img/plain.gif" ALT=""> <B>[{$key}]</B>
 			</TD>
 			<TD width="98%" class="hand" onClick="showOrHide('{$key}');" nowrap {tip text="Click on record to see list of selected module actions"}>
-				<B> 
+				<B>
+				{$_ui_language = Localisation::getCurrentUiLanguage()}
 				{if $module.summary}
 					{if $module.summary.$_ui_language}{$module.summary.$_ui_language|truncate:"70":"..."}{else}{$module.summary.$_ui_language|truncate:"70":"..."}{/if}
 				{else}
 					{if $module.description.$_ui_language}{$module.description.$_ui_language|truncate:"70":"..."}{else}{$module.description.$_ui_language|truncate:"70":"..."}{/if}
 				{/if}
 				</B>
-			</TD> 
+			</TD>
 			<TD width="1%">
 				{cycle print=false}
 				<INPUT type="checkbox" class="box {cycle}" name="rights[{$key}]" value="1" {if count($rights.$key)==$module.count || $rights.$key == 1}CHECKED{/if}>
-			</TD> 
+			</TD>
 		    </TR>
 		    {cycle print=false}
 		    <TR CLASS="{cycle}" id="{$key}" style="display:none;">
@@ -34,10 +35,10 @@
 			    <TABLE width="98%" align="right">
 				{foreach from=$module.actions item=action key=akey}
 				<TR onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-				    <TD width="1%">[{$akey}]</TD> 
+				    <TD width="1%">[{$akey}]</TD>
 				    <TD width="98%" nowrap>
 					{if $action.description.$_ui_language}{$action.description.$_ui_language|truncate:"70":"..."}{else}{$action.description.$_ui_language|truncate:"70":"..."}{/if}
-				    </TD> 
+				    </TD>
 				    <TD width="1%" nowrap>
 					<INPUT type="checkbox" class="box {cycle}" name="rights[{$key}][{$akey}]" value="1" {if !is_array($rights.$key) || $rights.$key.$akey}CHECKED{/if}>
 				    </TD>
@@ -46,7 +47,7 @@
 			    </TABLE>
 			</TD>
 		    </TR>
-		    
+
 		    {/if}
 		    {/foreach}
 		</TABLE>

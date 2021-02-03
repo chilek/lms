@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,19 +26,17 @@
 
 $id = intval($_GET['id']);
 
-if ($_GET['is_sure'] == 1 && $id) {
-	if (($DB->GetOne('SELECT 1 FROM cash WHERE taxid=? LIMIT 1', array($id))
-		+ $DB->GetOne('SELECT 1 FROM tariffs WHERE taxid=? LIMIT 1', array($id))
-		+ $DB->GetOne('SELECT 1 FROM invoicecontents WHERE taxid=? LIMIT 1', array($id))
-		) == 0) {
-		$DB->Execute('DELETE FROM taxes WHERE id=?', array($id));
-		if ($SYSLOG) {
-			$args = array(SYSLOG::RES_TAX => $id);
-			$SYSLOG->AddMessage(SYSLOG::RES_TAX, SYSLOG::OPER_DELETE, $args);
-		}
-	}
+if ($id) {
+    if (($DB->GetOne('SELECT 1 FROM cash WHERE taxid=? LIMIT 1', array($id))
+        + $DB->GetOne('SELECT 1 FROM tariffs WHERE taxid=? LIMIT 1', array($id))
+        + $DB->GetOne('SELECT 1 FROM invoicecontents WHERE taxid=? LIMIT 1', array($id))
+        ) == 0) {
+        $DB->Execute('DELETE FROM taxes WHERE id=?', array($id));
+        if ($SYSLOG) {
+            $args = array(SYSLOG::RES_TAX => $id);
+            $SYSLOG->AddMessage(SYSLOG::RES_TAX, SYSLOG::OPER_DELETE, $args);
+        }
+    }
 }
 
 $SESSION->redirect('?'.$SESSION->get('backto'));
-
-?>

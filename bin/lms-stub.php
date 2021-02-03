@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -19,7 +19,7 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
  *  $Id$
@@ -28,37 +28,56 @@
 ini_set('error_reporting', E_ALL&~E_NOTICE);
 
 $parameters = array(
-	'C:' => 'config-file:',
-	'q' => 'quiet',
-	'h' => 'help',
-	'v' => 'version',
+    'config-file:' => 'C:',
+    'quiet' => 'q',
+    'help' => 'h',
+    'version' => 'v',
 );
 
-foreach ($parameters as $key => $val) {
-	$val = preg_replace('/:/', '', $val);
-	$newkey = preg_replace('/:/', '', $key);
-	$short_to_longs[$newkey] = $val;
+$long_to_shorts = array();
+foreach ($parameters as $long => $short) {
+    $long = str_replace(':', '', $long);
+    if (isset($short)) {
+        $short = str_replace(':', '', $short);
+    }
+    $long_to_shorts[$long] = $short;
 }
-$options = getopt(implode('', array_keys($parameters)), $parameters);
-foreach ($short_to_longs as $short => $long)
-	if (array_key_exists($short, $options)) {
-		$options[$long] = $options[$short];
-		unset($options[$short]);
-	}
+
+$options = getopt(
+    implode(
+        '',
+        array_filter(
+            array_values($parameters),
+            function ($value) {
+                return isset($value);
+            }
+        )
+    ),
+    array_keys($parameters)
+);
+
+foreach (array_flip(array_filter($long_to_shorts, function ($value) {
+    return isset($value);
+})) as $short => $long) {
+    if (array_key_exists($short, $options)) {
+        $options[$long] = $options[$short];
+        unset($options[$short]);
+    }
+}
 
 if (array_key_exists('version', $options)) {
-	print <<<EOF
+    print <<<EOF
 lms-stub.php
-(C) 2001-2016 LMS Developers
+(C) 2001-2020 LMS Developers
 
 EOF;
-	exit(0);
+    exit(0);
 }
 
 if (array_key_exists('help', $options)) {
-	print <<<EOF
+    print <<<EOF
 lms-stub.php
-(C) 2001-2016 LMS Developers
+(C) 2001-2020 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
@@ -66,28 +85,31 @@ lms-stub.php
 -q, --quiet                     suppress any output, except errors
 
 EOF;
-	exit(0);
+    exit(0);
 }
 
 $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
-	print <<<EOF
+    print <<<EOF
 lms-stub.php
-(C) 2001-2016 LMS Developers
+(C) 2001-2020 LMS Developers
 
 EOF;
 }
 
-if (array_key_exists('config-file', $options))
-	$CONFIG_FILE = $options['config-file'];
-else
-	$CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
+if (array_key_exists('config-file', $options)) {
+    $CONFIG_FILE = $options['config-file'];
+} else {
+    $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
+}
 
-if (!$quiet)
-	echo "Using file ".$CONFIG_FILE." as config." . PHP_EOL;
+if (!$quiet) {
+    echo "Using file ".$CONFIG_FILE." as config." . PHP_EOL;
+}
 
-if (!is_readable($CONFIG_FILE))
-	die("Unable to read configuration file [".$CONFIG_FILE."]!" . PHP_EOL);
+if (!is_readable($CONFIG_FILE)) {
+    die("Unable to read configuration file [".$CONFIG_FILE."]!" . PHP_EOL);
+}
 
 define('CONFIG_FILE', $CONFIG_FILE);
 
@@ -113,11 +135,11 @@ if (file_exists($composer_autoload_path)) {
 $DB = null;
 
 try {
-	$DB = LMSDB::getInstance();
+    $DB = LMSDB::getInstance();
 } catch (Exception $ex) {
-	trigger_error($ex->getMessage(), E_USER_WARNING);
-	// can't working without database
-	die("Fatal error: cannot connect to database!" . PHP_EOL);
+    trigger_error($ex->getMessage(), E_USER_WARNING);
+    // can't working without database
+    die("Fatal error: cannot connect to database!" . PHP_EOL);
 }
 
 /* ****************************************
@@ -130,20 +152,14 @@ try {
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'unstrip.php');
 
 $SYSLOG = SYSLOG::getInstance();
 
 // Initialize Session, Auth and LMS classes
 
-$AUTH = NULL;
+$AUTH = null;
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
-$LMS->ui_lang = $_ui_language;
-$LMS->lang = $_language;
 
 /* ********************************************************************
    We should have all hard work here which is being done by our script!
    ********************************************************************/
-
-
-?>

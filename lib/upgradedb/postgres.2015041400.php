@@ -28,11 +28,8 @@ $this->BeginTrans();
 
 $this->Execute("
 	ALTER TABLE netradiosectors RENAME radius TO width;
-	ALTER TABLE netradiosectors ADD COLUMN technology integer DEFAULT 0 NOT NULL"
-);
+	ALTER TABLE netradiosectors ADD COLUMN technology integer DEFAULT 0 NOT NULL");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015041400', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

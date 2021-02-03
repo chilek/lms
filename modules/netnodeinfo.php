@@ -32,11 +32,12 @@ $layout['pagetitle'] = trans('Net Device Node Info: $a', $info['name']);
 
 $result = $LMS->GetNetNode($id);
 
-if (!$result)
-	$SESSION->redirect('?m=netnodelist');
+if (!$result) {
+    $SESSION->redirect('?m=netnodelist');
+}
 
 if ($nodeinfo['ownerid']) {
-	$nodeinfo['owner'] = $LMS->getCustomerName( $nodeinfo['ownerid'] );
+    $nodeinfo['owner'] = $LMS->getCustomerName($nodeinfo['ownerid']);
 }
 
 $SMARTY->assign('nodeinfo', $result);
@@ -44,26 +45,49 @@ $SMARTY->assign('objectid', $result['id']);
 
 $attachmenttype = 'netnodeid';
 $attachmentresourceid = $id;
+$SMARTY->assign('attachmenttype', $attachmenttype);
+$SMARTY->assign('attachmentresourceid', $attachmentresourceid);
+
+$filecontainers = array(
+    'netnodeid' => array(
+        'id' => $id,
+        'prefix' => trans('Node attachments'),
+        'containers' => $LMS->GetFileContainers('netnodeid', $id),
+    ),
+);
+$SMARTY->assign('filecontainers', $filecontainers);
+
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'attachments.php');
 
-$nlist = $DB->GetAll("SELECT * FROM netdevices WHERE netnodeid=? ORDER BY name", array($id));
-$SMARTY->assign('netdevlist', $nlist);
+$netdevlist = $DB->GetAll(
+    'SELECT d.*, addr.location,
+        lb.name AS borough_name, lb.type AS borough_type, lb.ident AS borough_ident,
+        ld.name AS district_name, ld.ident AS district_ident,
+        ls.name AS state_name, ls.ident AS state_ident
+    FROM netdevices d
+    LEFT JOIN vaddresses addr       ON d.address_id = addr.id
+    LEFT JOIN location_streets lst  ON lst.id = addr.street_id
+    LEFT JOIN location_cities lc    ON lc.id = addr.city_id
+    LEFT JOIN location_boroughs lb  ON lb.id = lc.boroughid
+    LEFT JOIN location_districts ld ON ld.id = lb.districtid
+    LEFT JOIN location_states ls    ON ls.id = ld.stateid
+    WHERE d.netnodeid = ?
+    ORDER BY name',
+    array(
+        $id
+    )
+);
+if (!empty($netdevlist)) {
+    foreach ($netdevlist as &$netdev) {
+        if (!$netdev['location'] && $netdev['ownerid']) {
+            $netdev['location'] = $LMS->getAddressForCustomerStuff($netdev['ownerid']);
+        }
+    }
+    unset($netdev);
+}
+$SMARTY->assign('netdevlist', $netdevlist);
 
-$queue = $LMS->GetQueueContents(array('ids' => null, 'order' => null, 'state' => null, 'priority' => null,
-	'owner' => -1, 'catids' => null, 'removed' => null, 'netdevids' => null, 'netnodeids' => $id));
-$total = $queue['total'];
-unset($queue['total']);
-unset($queue['state']);
-unset($queue['order']);
-unset($queue['direction']);
-unset($queue['owner']);
-unset($queue['removed']);
-unset($queue['priority']);
-unset($queue['deadline']);
-unset($queue['service']);
-unset($queue['type']);
-unset($queue['unread']);
-unset($queue['rights']);
+$queue = $LMS->GetQueueContents(array('removed' => 0, 'netnodeids' => $id, 'short' => 1));
 
 $SMARTY->assign('queue', $queue);
 
@@ -74,5 +98,3 @@ $SMARTY->assign('pagelimit', $pagelimit);
 
 $SMARTY->assign('netnodeinfo_sortable_order', $SESSION->get_persistent_setting('netnodeinfo-sortable-order'));
 $SMARTY->display('netnode/netnodeinfo.html');
-
-?>

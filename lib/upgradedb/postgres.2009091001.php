@@ -40,5 +40,3 @@ SELECT c.* FROM customers c
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009091001', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

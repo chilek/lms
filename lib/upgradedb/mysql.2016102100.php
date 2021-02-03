@@ -31,5 +31,3 @@ $this->Execute("ALTER TABLE netdevices ADD CONSTRAINT ownerid_fk
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016102100', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

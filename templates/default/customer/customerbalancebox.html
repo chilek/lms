@@ -8,7 +8,12 @@
 <FORM name="addbalance" method="POST" id="addbalance-form" action="?m=balanceadd&id={$balancelist.customerid}">
 </FORM>
 
-{tab_container id="customerbalancebox"}
+<FORM method="post" name="printcustomerbalance" id="printcustomerbalance" action="?m=print&type=customerbalance"
+	target="_blank">
+	<input type="hidden" name="customer" value="{$balancelist.customerid}">
+</FORM>
+
+{tab_container id="customerbalancebox" label="Customer Account"}
 
 	{if $limit}
 		{$content_id="customerbalancepanel"}
@@ -27,13 +32,21 @@
 				<input type="checkbox" name="aggregate_documents" value="1"
 						{if $aggregate_documents} checked{/if}>
 			</label>
+
+			{trans("From")}&nbsp;<INPUT type="text" name="from" size="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}"
+				{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means 1970/01/01) or click to choose it from calendar"}
+				form="printcustomerbalance">&nbsp;
+			{trans("To")}&nbsp;<INPUT type="text" name="to" size="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}"
+				{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}
+				form="printcustomerbalance">
+			<a href="javascript:document.printcustomerbalance.submit();">{trans("Customer Balance Sheet")}</a>
 		{/tab_header_cell}
 		{tab_header_cell}
-			<A id="newtransferformanchor" rel="external" href="?m=customertransferform&id={$balancelist.customerid}&type={LMSHtmlTransferForm::VALUE_ASSIGNMENTS}">{trans("Transfer form:")}</A>
+			<A id="newtransferformanchor" rel="external" href="?m=customertransferform&id={$balancelist.customerid}&type={LMSTcpdfTransferForm::VALUE_ASSIGNMENTS}">{trans("Transfer form:")}</A>
 			<SELECT name="newtransferform" onchange="javascript:new_transfer_form_type_changed()" form="addbalance-form">
-				<OPTION value="{LMSHtmlTransferForm::VALUE_ASSIGNMENTS}">{trans("<!transferform>assignments")}</OPTION>
-				<OPTION value="{LMSHtmlTransferForm::VALUE_BALANCE}">{trans("<!transferform>balance")}</OPTION>
-				<OPTION value="{LMSHtmlTransferForm::VALUE_CUSTOM}">{trans("<!transferform>custom")}</OPTION>
+				<OPTION value="{LMSTcpdfTransferForm::VALUE_ASSIGNMENTS}">{trans("<!transferform>assignments")}</OPTION>
+				<OPTION value="{LMSTcpdfTransferForm::VALUE_BALANCE}">{trans("<!transferform>balance")}</OPTION>
+				<OPTION value="{LMSTcpdfTransferForm::VALUE_CUSTOM}">{trans("<!transferform>custom")}</OPTION>
 			</SELECT>
 			<input type="text" name="newtransferformcustomvalue" pattern="[0-9]+(\.[0-9]{literal}{1,2}{/literal})?" size="5" style="display: none;" form="addbalance-form">
 			<A id="newdocanchor" href="?m=invoicenew&action=init&customerid={$balancelist.customerid}">{trans("New document:")}</A>
@@ -60,8 +73,11 @@
 
 		{tab_table}
 
-			{$datatables_max_records=intval(ConfigHelper::getConfig('phpui.datatables_max_records', 300))}
-			<TABLE id="customerbalancebox-datatable" class="lmsbox-inner{if !empty($balancelist.list) && count($balancelist.list) < $datatables_max_records} lms-ui-datatable{else} lms-ui-background-cycle{/if}"{if !empty($balancelist.list) && count($balancelist.list) < $datatables_max_records} data-page-length="{$n}" data-display-start="{$n = count($balancelist.list) + $limit}{if $n < 0}0{else}{$n}{/if}" style="display: none;"{/if} width="100%">
+			{$datatables_max_records=intval(ConfigHelper::getConfig('phpui.datatables_max_records', 0, true))}
+			<TABLE id="customerbalancebox-datatable" class="lmsbox-inner{if !$datatables_max_records || empty($balancelist.list) || count($balancelist.list) < $datatables_max_records} lms-ui-datatable{else} lms-ui-background-cycle{/if}"
+					{if !$datatables_max_records || empty($balancelist.list) || count($balancelist.list) < $datatables_max_records} data-page-length="{$n}"
+					data-empty-table-message="{trans("That customer hasn't got any transactions.")}"
+					data-display-start="{if empty($balancelist.list)}{$n = $limit}{else}{$n = count($balancelist.list) + $limit}{/if}{if $n < 0}0{else}{$n}{/if}" style="display: none;"{/if} width="100%">
 				<COLGROUP>
 					<COL style="width: 1%;">
 					<COL style="width: 1%;">
@@ -88,22 +104,27 @@
 				</THEAD>
 				<TBODY>
 				{foreach $balancelist.list as $item}
-				{if count($balancelist.list) >= $datatables_max_records}
+				{if $datatables_max_records && count($balancelist.list) >= $datatables_max_records}
 					{if $limit < 0 && $item@iteration <= count($balancelist.list) + $limit}
 					{continue}
 					{elseif $limit > 0 && $item@iteration > $limit}
 					{continue}
 					{/if}
 				{/if}
-				<TR{if $item.docid} data-published="{$item.published}"{if $item.doctype == $smarty.const.DOC_INVOICE_PRO} class="teal"{/if}{if $item.closed && ($item.doctype == $smarty.const.DOC_INVOICE || $item.doctype == $smarty.const.DOC_CNOTE || $item.doctype == $smarty.const.DOC_DNOTE)} class="blend"{/if}{/if}>
+				<TR{if $item.docid} data-published="{$item.published}" data-doctype="{$item.doctype}" data-senddate="{if $item.senddate}{$item.senddate|date_format:"%Y/%m/%d %H:%M"}{else}{$item.senddate}{/if}"
+					class="{if $item.doctype == $smarty.const.DOC_INVOICE_PRO} teal{if $item.referenced} transformed{/if}{/if}
+					{if $item.closed && ($item.doctype == $smarty.const.DOC_INVOICE || $item.doctype == $smarty.const.DOC_CNOTE || $item.doctype == $smarty.const.DOC_DNOTE)} blend{/if}"
+					{/if}>
 					<TD class="nobr">{$item.date}</TD>
-					<TD class="nobr">{$item.username|truncate:16:"...":true}</TD>
-					<TD class="text-right nobr">{if !$item.type}{($item.value*-1)|money_format}{else}-{/if}</TD>
-					<TD class="text-right nobr{if $item.type && $item.value > 0} green{/if}">{if $item.type && $item.value > 0}+{$item.value|money_format}{else}-{/if}</TD>
-					<TD class="text-right nobr">{if $item.type && $item.value < 0}{($item.value*-1)|money_format}{else}-{/if}</TD>
+					<TD class="nobr">{$item.username|truncate:16:"&hellip;":true}</TD>
+					<TD class="text-right nobr">{if !$item.type}{moneyf($item.value*-1, $item.currency)}{else}-{/if}</TD>
+					<TD class="text-right nobr{if $item.type && $item.value > 0} green{/if}">{if $item.type && $item.value > 0}+{moneyf($item.value, $item.currency)}{else}-{/if}</TD>
+					<TD class="text-right nobr">{if $item.type && $item.value < 0}{moneyf($item.value*-1, $item.currency)}{else}-{/if}</TD>
 					<TD class="text-center">&raquo;</TD>
-					<TD class="text-right nobr{if $item.after < 0} red{/if}">{$item.after|money_format}</TD>
-					<TD>{$item.comment}</TD>
+					<TD class="text-right nobr{if $item.after < 0} red{/if}">{moneyf($item.after)}</TD>
+					<TD class="comment"
+						{if $item.doctype == $smarty.const.DOC_INVOICE && !empty($item.reference) && $aggregate_documents && !empty($item.documentcomment)} title="{$item.documentcomment}"{/if}
+						>{$item.comment}</TD>
 					<TD class="text-right nobr">
 						{foreach $item.customlinks as $link}
 							<A {if isset($link.url)} href="{$link.url}" {/if} rel="external" {if isset($link.onclick)} onclick="{$link.onclick}"{/if}>{if isset($link.icon)}<IMG src="{$link.icon}" alt="{$link.label}" {$link.tip}>{else}{$link.label}{/if}</A>
@@ -112,93 +133,173 @@
 						{if $item.docid}
 							{if $item.doctype == $smarty.const.DOC_INVOICE_PRO}
 								{button type="link" icon="transform" external=true
-									href="?m=invoiceedit&id={$item.docid}&action=convert&proforma=1"
+									href="?m=invoicenew&id={$item.docid}&action=init"
 									tip="Convert to invoice"}
 							{/if}
 							{if ($customerinfo.sendinvoices || $balancelist.sendinvoices) && ($item.doctype == $smarty.const.DOC_INVOICE
-								|| $item.doctype == $smarty.const.DOC_CNOTE || $item.doctype == $smarty.const.DOC_INVOICE_PRO)}
-								{button type="link" icon="mail" class="invoicesend" href="?m=invoicesend&id={$item.docid}"
-									tip="Send invoice"}
+								|| $item.doctype == $smarty.const.DOC_CNOTE || $item.doctype == $smarty.const.DOC_INVOICE_PRO
+								|| $item.doctype == $smarty.const.DOC_DNOTE)}
+								{textformat assign="tip" wrap=5000}
+									{if $item.senddate}{trans("Send invoice again")}<br><strong>{t a=$item.senddate|date_format:"%Y/%m/%d %H:%M"}(already sent on $a){/t}</strong>{else}{trans("Send invoice")}{/if}
+								{/textformat}
+								{button type="link" icon="{if $item.senddate}mailsent{else}mail{/if}" class="send-invoice"
+									href="?m=invoicesend&id={$item.docid}" tip=$tip}
 							{/if}
 							{if $item.doctype == $smarty.const.DOC_INVOICE}
-								{if !$item.referenced}
+								{if !$item.cancelled}
+									{button type="link" icon="clone" href="?m=invoicenew&action=init&id={$item.docid}&clone=1"
+										tip="Clone"}
 									{button type="link" icon="correction" href="?m=invoicenote&id={$item.docid}&action=init"
 										tip="Revise"}
 								{/if}
-								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
-									{button type="link" icon="view" class="lms-ui-tooltip-invoiceinfo"
-										href="?m=invoice&id={$item.docid}&dontpublish=1"
-										resourceid="{$item.docid}" external=true icon_tip="View"}
-								{/if}
-								{button type="link" icon="print" class="lms-ui-tooltip-invoiceinfo"
-									href="?m=invoice&id={$item.docid}"
-									resourceid="{$item.docid}" external=true icon_tip="Invoice"}
-								{if !$item.referenced && (!$item.published || ConfigHelper::checkPrivilege('published_document_modification'))}
-									{if $item.published}
-										{$onclick="return confirmLink(this, '{trans("Document has been published already! Are you sure you want to edit it despite this?")}');"}
-									{else}
-										{$onclick=""}
-									{/if}
+								{if !$item.closed && !$item.cancelled && !$item.archived && !$item.referenced && (!$item.published || ConfigHelper::checkPrivilege('published_document_modification'))}
+									{textformat assign="onclick" wrap=5000}
+										{if $item.published}
+											confirmDialog($t('Document has been published already! Are you sure you want to edit it despite this?'), this)
+												.done(function() {
+													window.open($(this).attr('href'));
+												});
+										{else}
+											window.open($(this).attr('href'));
+										{/if}
+										return false;
+									{/textformat}
 									{button type="link" icon="edit" class="lms-ui-tooltip-docnumber"
-										href="?m=invoiceedit&id={$item.docid}&action=edit" external=true
+										href="?m=invoiceedit&id={$item.docid}&action=edit"
 										onclick=$onclick resourceid="{$item.docid}" icon_tip="Invoice"}
 								{/if}
-							{elseif $item.doctype == $smarty.const.DOC_INVOICE_PRO}
-								{if !$item.referenced}
-									{button type="link" icon="correction" href="?m=invoicenote&id={$item.docid}&action=init"
-										tip="Revise"}
-								{/if}
-								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
-									{button type="link" icon="view" class="lms-ui-tooltip-invoiceinfo"
-										href="?m=invoice&id={$item.docid}&dontpublish=1"
-										resourceid="{$item.docid}" external=true icon_tip="View"}
-								{/if}
-								{button type="link" icon="print" class="lms-ui-tooltip-invoiceinfo"
-									href="?m=invoice&id={$item.docid}"
-									resourceid="{$item.docid}" external=true icon_tip="pro forma invoice"}
-								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
-									{if $item.published}
-										{$onclick="return confirmLink(this, '{trans("Document has been published already! Are you sure you want to edit it despite this?")}');"}
+								{if !$item.cancelled}
+									{if !$item.archived}
+										{if ConfigHelper::checkPrivilege('trade_document_archiving')}
+											{button type="link" icon="archive" href="?m=invoicearchive&id={$item.docid}" tip="Archive"}
+										{/if}
 									{else}
-										{$onclick=""}
+										{if ConfigHelper::checkPrivilege('trade_document_unarchiving')}
+											{button type="link" icon="restore" href="?m=invoiceunarchive&id={$item.docid}" tip="Unarchive"}
+										{/if}
 									{/if}
+								{/if}
+								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
+									{button type="link" icon="view" class="print-invoice lms-ui-tooltip-invoiceinfo"
+										href="?m=invoice&id={$item.docid}&dontpublish=1"
+										resourceid="{$item.docid}" icon_tip="View"}
+								{/if}
+								{button type="link" icon="print" class="print-invoice lms-ui-tooltip-invoiceinfo"
+									href="?m=invoice&id={$item.docid}"
+									resourceid="{$item.docid}" icon_tip="Invoice"}
+							{elseif $item.doctype == $smarty.const.DOC_INVOICE_PRO}
+								{if !$item.cancelled && !$item.archived && (!$item.published || ConfigHelper::checkPrivilege('published_document_modification'))}
+									{textformat assign="onclick" wrap=5000}
+										{if $item.published}
+											confirmDialog($t('Document has been published already! Are you sure you want to edit it despite this?'), this)
+												.done(function() {
+													window.open($(this).attr('href'));
+												});
+										{else}
+											window.open($(this).attr('href'));
+										{/if}
+										return false;
+									{/textformat}
 									{button type="link" icon="edit" class="lms-ui-tooltip-docnumber"
 										href="?m=invoiceedit&id={$item.docid}&action=edit&proforma=1"
 										onclick=$onclick
-										resourceid="{$item.docid}" external=true icon_tip="pro forma invoice"}
+										resourceid="{$item.docid}" icon_tip="pro forma invoice"}
 								{/if}
-							{elseif $item.doctype == $smarty.const.DOC_CNOTE}
-								{if !$item.referenced}
-									{button type="link" icon="correction" href="?m=invoicenote&id={$item.docid}&action=init"
-									tip="Revise"}
+								{if !$item.cancelled}
+									{if !$item.archived}
+										{if ConfigHelper::checkPrivilege('trade_document_archiving')}
+											{button type="link" icon="archive" href="?m=invoicearchive&id={$item.docid}" tip="Archive"}
+										{/if}
+									{else}
+										{if ConfigHelper::checkPrivilege('trade_document_unarchiving')}
+											{button type="link" icon="restore" href="?m=invoicunearchive&id={$item.docid}" tip="Unarchive"}
+										{/if}
+									{/if}
 								{/if}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
-									{button type="link" icon="view" class="lms-ui-tooltip-docnumber"
+									{button type="link" icon="view" class="print-invoice lms-ui-tooltip-invoiceinfo"
 										href="?m=invoice&id={$item.docid}&dontpublish=1"
-										resourceid="{$item.docid}" external=true icon_tip="View"}
+										resourceid="{$item.docid}" icon_tip="View"}
 								{/if}
-								{button type="link" icon="print" class="lms-ui-tooltip-docnumber"
+								{button type="link" icon="print" class="print-invoice lms-ui-tooltip-invoiceinfo"
 									href="?m=invoice&id={$item.docid}"
-									resourceid="{$item.docid}" external=true icon_tip="Credit note"}
-								{if !$item.referenced && (!$item.published || ConfigHelper::checkPrivilege('published_document_modification'))}
-									{if $item.published}
-										{$onclick="return confirmLink(this, '{trans("Document has been published already! Are you sure you want to edit it despite this?")}');"}
-									{else}
-										{$onclick=""}
-									{/if}
-									{button type="link" icon="edit" class="lms-ui-tooltip-docnumber"
-										href="?m=invoicenoteedit&id={$item.docid}&action=edit"
-										onclick=$onclick
-										resourceid="{$item.docid}" external=true icon_tip="Invoice"}
+									resourceid="{$item.docid}" icon_tip="pro forma invoice"}
+							{elseif $item.doctype == $smarty.const.DOC_CNOTE}
+								{if !$item.cancelled && !$item.referenced}
+									{button type="link" icon="correction" href="?m=invoicenote&id={$item.docid}&action=init"
+										tip="Revise"}
 								{/if}
+								{if !$item.archived && !$item.referenced && (!$item.published || ConfigHelper::checkPrivilege('published_document_modification'))}
+									{textformat assign="onclick" wrap=5000}
+										{if $item.published}
+											confirmDialog($t('Document has been published already! Are you sure you want to edit it despite this?'), this)
+											.done(function() {
+											window.open($(this).attr('href'));
+											});
+										{else}
+											window.open($(this).attr('href'));
+										{/if}
+										return false;
+									{/textformat}
+									{button type="link" icon="edit" class="lms-ui-tooltip-docnumber"
+									href="?m=invoicenoteedit&id={$item.docid}&action=edit"
+									onclick=$onclick resourceid="{$item.docid}" icon_tip="Invoice"}
+								{/if}
+								{if !$item.cancelled}
+									{if !$item.archived}
+										{if ConfigHelper::checkPrivilege('trade_document_archiving')}
+											{button type="link" icon="archive" href="?m=invoicearchive&id={$item.docid}" tip="Archive"}
+										{/if}
+									{else}
+										{if ConfigHelper::checkPrivilege('trade_document_unarchiving')}
+											{button type="link" icon="restore" href="?m=invoiceunarchive&id={$item.docid}" tip="Unarchive"}
+										{/if}
+									{/if}
+								{/if}
+								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
+									{button type="link" icon="view" class="print-invoice lms-ui-tooltip-docnumber"
+										href="?m=invoice&id={$item.docid}&dontpublish=1"
+										resourceid="{$item.docid}" icon_tip="View"}
+								{/if}
+								{button type="link" icon="print" class="print-invoice lms-ui-tooltip-docnumber"
+									href="?m=invoice&id={$item.docid}"
+									resourceid="{$item.docid}" icon_tip="Credit note"}
 							{elseif $item.doctype == $smarty.const.DOC_RECEIPT}
-								{button type="link" icon="print" class="lms-ui-tooltip-docnumber"
-									href="?m=receipt&id={$item.docid}"
-									resourceid="{$item.docid}" external=true icon_tip="Cash receipt"}
 								{button type="link" icon="edit" class="lms-ui-tooltip-docnumber"
 									href="?m=receiptedit&id={$item.docid}"
 									resourceid="{$item.docid}" externa=true icon_tip="Cash receipt"}
+								{button type="link" icon="print" class="lms-ui-tooltip-docnumber"
+									href="?m=receipt&id={$item.docid}"
+									resourceid="{$item.docid}" external=true icon_tip="Cash receipt"}
 							{elseif $item.doctype == $smarty.const.DOC_DNOTE}
+								{if !$item.cancelled && !$item.archived && (!$item.published || ConfigHelper::checkPrivilege('published_document_modification'))}
+									{textformat assign="onclick" wrap=5000}
+										{if $item.published}
+											confirmDialog($t('Document has been published already! Are you sure you want to edit it despite this?'), this)
+												.done(function() {
+													window.open($(this).attr('href'));
+												});
+										{else}
+											window.open($(this).attr('href'));
+										{/if}
+										return false;
+									{/textformat}
+									{button type="link" icon="edit" class="lms-ui-tooltip-docnumber"
+									href="?m=noteedit&id={$item.docid}&action=edit"
+									onclick=$onclick resourceid="{$item.docid}" icon_tip="Invoice"}
+								{/if}
+								{if !$item.cancelled}
+									{if !$item.archived}
+										{if ConfigHelper::checkPrivilege('trade_document_archiving')}
+											{button type="link" icon="archive" href="?m=notearchive&id={$item.docid}" tip="Archive"}
+										{/if}
+									{else}
+										{if ConfigHelper::checkPrivilege('trade_document_unarchiving')}
+											{button type="link" icon="restore" href="?m=noteunarchive&id={$item.docid}" tip="Unarchive"}
+										{/if}
+									{/if}
+
+								{/if}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
 									{button type="link" icon="view" class="lms-ui-tooltip-docnumber"
 										href="?m=note&id={$item.docid}&dontpublish=1"
@@ -209,13 +310,9 @@
 									resourceid="{$item.docid}" external=true icon_tip="Debit note"}
 							{/if}
 						{/if}
-						<INPUT type="checkbox" form="addbalance-form" NAME="marks{if $item.doctype == $smarty.const.DOC_INVOICE_PRO && !ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment')}[proforma][{$item.docid}]{/if}[{$item.id}]" value="{$item.id}" class="lms-ui-multi-check">
-					</TD>
-				</TR>
-				{foreachelse}
-				<TR>
-					<TD class="empty-table" colspan="9">
-						<p>{trans("That customer hasn't got any transactions.")}</p>
+						<INPUT type="checkbox" form="addbalance-form"
+								NAME="marks{if $aggregate_documents}{if $item.doctype == $smarty.const.DOC_INVOICE || $item.doctype == $smarty.const.DOC_INVOICE_PRO || $item.doctype == $smarty.const.DOC_CNOTE}[invoice][{$item.docid}]{elseif $item.doctype == $smarty.const.DOC_RECEIPT}[receipt][{$item.docid}]{elseif $item.doctype == $smarty.const.DOC_DNOTE}[note][{$item.docid}]{else}[{$item.id}]{/if}{else}{if $item.doctype == $smarty.const.DOC_INVOICE_PRO && !ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment')}[proforma][{$item.docid}]{/if}[{$item.id}]{/if}"
+								value="{$item.id}" class="lms-ui-multi-check">
 					</TD>
 				</TR>
 				{/foreach}
@@ -228,25 +325,43 @@
 
 			{tab_buttons}
 				{if ConfigHelper::checkConfig('phpui.delete_link_in_customerbalancebox')}
-				{button icon="delete" onclick="javascript:delpos();" label="Delete"}
+					{button icon="delete" id="delete-invoices" label="Delete"}
 				{/if}
-				{button icon="mail" class="multiinvoicesend" label="Send invoices"}
+				{button icon="mail" id="send-invoices" label="Send invoices"}
+				{if ConfigHelper::checkPrivilege('trade_document_archiving')}
+					{button icon="archive" id="archive-invoices" label="Archive"}&nbsp;
+				{/if}
+				{if ConfigHelper::checkPrivilege('trade_document_uarchiving')}
+					{button icon="restore" id="unarchive-invoices" label="Unarchive"}&nbsp;
+				{/if}
 				{trans("Print")}:
-				{button icon="print" label="invoices" onclick="javascript:print_doc('invoice')"}
-				{button icon="cash" label="cash receipt" onclick="javascript:printr();"}
-				{button icon="dnote" label="debit notes" onclick="javascript:print_doc('note');"}
+				{button icon="print" label="invoices" id="print-invoices"}
+				{button icon="cash" label="cash receipt" id="print-receipts"}
+				{button icon="dnote" label="debit notes" id="print-notes"}
 				<label>
-					<INPUT type="checkbox" form="addbalance-form" name="original" {if preg_match('/original/i', $default_printpage)} checked{/if}>
-					{trans("original")}
+					<INPUT type="checkbox" form="addbalance-form" name="which[{$smarty.const.DOC_ENTITY_ORIGINAL}]"
+							value="{$smarty.const.DOC_ENTITY_ORIGINAL}"
+							{if preg_match('/original/i', $default_printpage)} checked{/if}>
+					{$_DOCENTITIES[$smarty.const.DOC_ENTITY_ORIGINAL]}
 				</label>
 				<label>
-					<INPUT type="checkbox" form="addbalance-form" name="copy" {if preg_match('/copy/i', $default_printpage)} checked{/if}>
-					{trans("copy")}
+					<INPUT type="checkbox" form="addbalance-form" name="which[{$smarty.const.DOC_ENTITY_COPY}]"
+							value="{$smarty.const.DOC_ENTITY_COPY}"
+							{if preg_match('/copy/i', $default_printpage)} checked{/if}>
+					{$_DOCENTITIES[$smarty.const.DOC_ENTITY_COPY]}
 				</label>
-				<label>
-					<INPUT type="checkbox" form="addbalance-form" name="duplicate" {if preg_match('/duplicate/i', $default_printpage)} checked{/if}>
-					{trans("duplicate")}
-				</label>
+				<div id="duplicate-box">
+					<label>
+						<INPUT type="checkbox" form="addbalance-form" name="which[{$smarty.const.DOC_ENTITY_DUPLICATE}]" id="duplicate-checkbox"
+								value="{$smarty.const.DOC_ENTITY_DUPLICATE}"
+								{if preg_match('/duplicate/i', $default_printpage)} checked{/if}>
+						{$_DOCENTITIES[$smarty.const.DOC_ENTITY_DUPLICATE]}
+					</label>
+					<div id="duplicate-box-date-selector"
+							{if !preg_match('/duplicate/i', $default_printpage)} style="display: none;"{/if}>
+						<input type="text" form="addbalance-form" name="duplicate-date" class="lms-ui-date lms-ui-date-unix">
+					</div>
+				</div>
 			{/tab_buttons}
 
 			{tab_buttons}
@@ -262,9 +377,10 @@
 			{tab_buttons}
 				<div class="addbalance-form-cell">
 					<INPUT type="hidden" form="addbalance-form" name="addbalance[customerid]" value="{$balancelist.customerid}">
-					<INPUT type="text" form="addbalance-form" name="addbalance[time]" size="15" maxlength="16" {tip class="calendar-time" text="Enter transaction time in 'yyyy/mm/dd hh:mm' format (empty field means current time). Click to select date from calendar."} {if $time}value="{$time|date_format:"%Y/%m/%d %H:%M"}"{/if}>
-					{$layout.logname|truncate:16:"...":true}
+					<INPUT type="text" form="addbalance-form" name="addbalance[time]" size="15" maxlength="16" {tip class="lms-ui-datetime" text="Enter transaction time in 'yyyy/mm/dd hh:mm' format (empty field means current time). Click to select date from calendar."} {if $time}value="{$time|date_format:"%Y/%m/%d %H:%M"}"{/if}>
+					{$layout.logname|truncate:16:"&hellip;":true}
 					<INPUT type="text" size="8" form="addbalance-form" name="addbalance[value]" accesskey="s" {if $value}value="{$value}"{/if} {tip text="Enter transaction value"}>&nbsp;
+					{currency_selection selected=Localisation::getDefaultCurrency() elementname="addbalance[currency]" form="addbalance-form"}
 					<SELECT SIZE="1" form="addbalance-form" name="addbalance[taxid]" {tip text="Select Tax value"}>
 						{foreach item=tax from=$taxeslist}
 						<OPTION value="{$tax.id}" {if ($taxid && $tax.id == $taxid) || (!$taxid && $tax.value == $default_taxrate)}selected{/if}>{$tax.label}</OPTION>
@@ -282,8 +398,8 @@
 						{trans("income/expense")}
 					</label>
 					{if $sourcelist}
-					<div class="isource lms-ui-button-isource">
-						<i></i>
+					<div class="isource">
+						<i class="lms-ui-icon-isource"></i>
 						<SELECT form="addbalance-form" name="addbalance[sourceid]" {tip text="Select import source (optional)" trigger="source"}>
 							<OPTION value="0">{trans("- none -")}</OPTION>
 							{foreach $sourcelist as $source}
@@ -327,11 +443,11 @@
 
 	function AddBalance(with_receipt) {
 		if (document.forms['addbalance'].elements['addbalance[value]'].value == '') {
-			alert($t("Enter transaction value") + '!');
+			alertDialog($t("Enter transaction value") + '!');
 			return;
 		}
 		if (document.forms['addbalance'].elements['addbalance[comment]'].value == '') {
-			alert($t("Enter transaction comment") + '!');
+			alertDialog($t("Enter transaction comment") + '!');
 			return;
 		}
 		if (typeof(with_receipt) == 'boolean' && with_receipt)
@@ -339,49 +455,72 @@
 		document.addbalance.submit();
 	}
 
-	function printr()
-	{
+	$('#print-receipts').click(function() {
+		if (!$('tr[data-doctype="{$smarty.const.DOC_RECEIPT}"] :checked').length) {
+			alertDialog($t('No document of given type has been selected!'), this);
+			return;
+		}
+
 		var add = "";
-		if(document.addbalance.original.checked && document.addbalance.copy.checked)
-			add = "&which=original,copy";
-		else if(document.addbalance.original.checked && !document.addbalance.copy.checked)
-			add = "&which=original";
-		else if(!document.addbalance.original.checked && document.addbalance.copy.checked)
-			add = "&which=copy";
+		var which = 0;
+		$('[form="addbalance-form"][name^="which"]:checked').each(function() {
+			which += parseInt($(this).val());
+		});
+		add += "&which=" + which;
 
 		document.addbalance.action = "?m=receipt&print=cached&cash=1" + add;
 		document.addbalance.target = "_blank";
 		document.addbalance.submit();
-	}
+	});
 
-	function print_doc(type)
-	{
+	$('.print-invoice').click(function() {
 		var add = "";
-		if(document.addbalance.original.checked)
-			add = "&original=1";
-		if(document.addbalance.copy.checked)
-			add += "&copy=1";
-		if(document.addbalance.duplicate.checked)
-			add += "&duplicate=1";
+		var which = 0;
+		$('[form="addbalance-form"][name^="which"]:checked').each(function() {
+			which += parseInt($(this).val());
+		});
+		add += "&which=" + which;
+		if (which & {$smarty.const.DOC_ENTITY_DUPLICATE}) {
+			var duplicate_date = parseInt($('[name="duplicate-date"]').val());
+			if (duplicate_date > 0) {
+				add += "&duplicate-date=" + duplicate_date;
+			}
+		}
 
-		document.addbalance.action="?m=" + type + "&print=cached&cash=1" + add;
-		document.addbalance.target="_blank";
-		document.addbalance.submit();
-	}
+		window.open($(this).attr('href') + add);
+		return false;
+	});
 
-	function send_invoices() {
-		var add = "";
-		if(document.addbalance.original.checked)
-			add = "&original=1";
-		if(document.addbalance.copy.checked)
-			add += "&copy=1";
-		if(document.addbalance.duplicate.checked)
-			add += "&duplicate=1";
+	$('#print-invoices,#print-notes').click(function() {
+		var print_invoices = $(this).is('#print-invoices');
+		if ((print_invoices && !$('tr[data-doctype="{$smarty.const.DOC_INVOICE}"] :checked').length
+			&& !$('tr[data-doctype="{$smarty.const.DOC_CNOTE}"] :checked').length)
+			|| (!print_invoices && !$('tr[data-doctype="{$smarty.const.DOC_DNOTE}"] :checked').length)) {
+			alertDialog($t('No document of given type has been selected!'), this);
+			return;
+		}
 
-		document.addbalance.action="?m=invoicesend&marks=cash" + add;
-		document.addbalance.target="_blank";
-		document.addbalance.submit();
-	}
+		function print_doc(type) {
+			var add = "";
+			var which = 0;
+			$('[form="addbalance-form"][name^="which"]:checked').each(function() {
+				which += parseInt($(this).val());
+			});
+			add += "&which=" + which;
+			if (which & {$smarty.const.DOC_ENTITY_DUPLICATE}) {
+				var duplicate_date = parseInt($('[name="duplicate-date"]').val());
+				if (duplicate_date > 0) {
+					add += "&duplicate-date=" + duplicate_date;
+				}
+			}
+
+			document.addbalance.action="?m=" + type + "&print=cached&cash=1" + add;
+			document.addbalance.target="_blank";
+			document.addbalance.submit();
+		}
+
+		print_doc(print_invoices ? 'invoice' : 'note');
+	});
 
 	function show_list()
 	{
@@ -407,8 +546,8 @@
 	function new_transfer_form_type_changed() {
 		var type = $('[name="newtransferform"]').val();
 		$('#newtransferformanchor').attr('href', '?m=customertransferform&id={$balancelist.customerid}&type=' + type +
-			'value=' + $('[name="newtransferformcustomvalue"]').val());
-		if (type == {LMSHtmlTransferForm::VALUE_CUSTOM}) {
+			'&value=' + $('[name="newtransferformcustomvalue"]').val());
+		if (type == {LMSTcpdfTransferForm::VALUE_CUSTOM}) {
 			$('[name="newtransferformcustomvalue"]').show().focus();
 		} else {
 			$('[name="newtransferformcustomvalue"]').hide();
@@ -429,51 +568,151 @@
 		});
 
 		$('[name="aggregate_documents"]:checkbox').click(function() {
-			location.href = '?m={$layout.module}&id={$id}&aggregate_documents=' +
+			location.href = '?m={$layout.module}&id={$objectid}&aggregate_documents=' +
 				($(this).prop('checked') ? '1' : '0');
 		});
 	});
 
 	{if ConfigHelper::checkConfig('phpui.delete_link_in_customerbalancebox')}
-	function delpos()
-	{
+	$('#delete-invoices').click(function() {
+		if (!$(this).closest('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			return;
+		}
+
 		if ($('tr[data-published="1"] :checked').length) {
 			{if ConfigHelper::checkPrivilege('published_document_modification')}
-			if (!confirm($t("Some documents have been published already! Are you sure you want to delete them despite this?"))) {
-				return;
-			}
+			confirmDialog($t("Some documents have been published already! Are you sure you want to delete them despite this?"), this)
+				.done(function () {
+					confirmDialog($t("Are you sure, you want to delete selected operation(s) and document item(s)?"), this)
+						.done(function () {
+							document.addbalance.action = "?m=balancedel";
+							document.addbalance.target = "";
+							document.addbalance.submit();
+						});
+				});
+			return;
 			{else}
-			alert($t("Some documents have been published already!"));
+			alertDialog($t("Some documents have been published already!"), this);
 			return;
 			{/if}
 		}
 
-		if (!confirm($t("Are you sure, you want to delete selected operation(s) and document item(s)?")))
-			return;
-
-		document.addbalance.action="?m=balancedel";
-		document.addbalance.target="";
-		document.addbalance.submit();
-	}
+		confirmDialog($t("Are you sure, you want to delete selected operation(s) and document item(s)?"), this)
+			.done(function() {
+				document.addbalance.action = "?m=balancedel";
+				document.addbalance.target = "";
+				document.addbalance.submit();
+			});
+	});
 	{/if}
 
-	$('.invoicesend').click(function(e) {
-		if (confirm('{t a=$customerinfo.customername|escape:"javascript"|escape:"html"}Are you sure, you want to send invoice to customer \'$a\'?{/t}')) {
-			window.open($(this).attr('href'));
+	$('.send-invoice').click(function(e) {
+		var senddate = $(this).closest('tr').attr('data-senddate');
+		if (parseInt(senddate) === 0) {
+			confirmDialog($t('Are you sure, you want to send invoice to customer \'$a\'?', '{$customerinfo.customername|escape:"javascript"|escape:"html"}'), this)
+				.done(function() {
+					var add = "";
+					var which = 0;
+					$('[form="addbalance-form"][name^="which"]:checked').each(function() {
+						which += parseInt($(this).val());
+					});
+					add += "&which=" + which;
+					if (which & {$smarty.const.DOC_ENTITY_DUPLICATE}) {
+						var duplicate_date = parseInt($('[name="duplicate-date"]').val());
+						if (duplicate_date > 0) {
+							add += "&duplicate-date=" + duplicate_date;
+						}
+					}
+					window.open($(this).attr('href') + add);
+				});
+		} else {
+			confirmDialog($t("Invoice was sent to customer '$a' already on $b. Are you sure, you want to send invoice again?", '{$customerinfo.customername|escape:"javascript"|escape:"html"}', senddate), this)
+			.done(function() {
+					var add = "";
+					var which = 0;
+					$('[form="addbalance-form"][name^="which"]:checked').each(function() {
+						which += parseInt($(this).val());
+					});
+					add += "&which=" + which;
+					if (which & {$smarty.const.DOC_ENTITY_DUPLICATE}) {
+						var duplicate_date = parseInt($('[name="duplicate-date"]').val());
+						if (duplicate_date > 0) {
+							add += "&duplicate-date=" + duplicate_date;
+						}
+					}
+					window.open($(this).attr('href') + add);
+				});
 		}
-		e.preventDefault();
+		return false;
 	});
 
-	$('.multiinvoicesend').click(function() {
-		if (confirm($t("Are you sure, you want to send invoices to customer?"))) {
-			send_invoices();
+	$('#send-invoices').click(function() {
+		if (!$('tr[data-doctype="{$smarty.const.DOC_INVOICE}"] :checked').length
+				&& !$('tr[data-doctype="{$smarty.const.DOC_CNOTE}"] :checked').length
+				&& !$('tr[data-doctype="{$smarty.const.DOC_DNOTE}"] :checked').length) {
+			alertDialog($t('No document of given type has been selected!'), this);
+			return;
 		}
+
+		confirmDialog($t("Are you sure, you want to send invoices to customer?"), this).done(function() {
+			var add = "";
+			var which = 0;
+			$('[form="addbalance-form"][name^="which"]:checked').each(function() {
+				which += parseInt($(this).val());
+			});
+			add += "&which=" + which;
+			if (which & {$smarty.const.DOC_ENTITY_DUPLICATE}) {
+				var duplicate_date = parseInt($('[name="duplicate-date"]').val());
+				if (duplicate_date > 0) {
+					add += "&duplicate-date=" + duplicate_date;
+				}
+			}
+
+			document.addbalance.action="?m=invoicesend&marks=cash" + add;
+			document.addbalance.target="_blank";
+			document.addbalance.submit();
+		});
+	});
+
+	$('#archive-invoices').click(function() {
+		if (!$('tr[data-doctype="{$smarty.const.DOC_INVOICE}"] :checked').length
+				&& !$('tr[data-doctype="{$smarty.const.DOC_CNOTE}"] :checked').length
+				&& !$('tr[data-doctype="{$smarty.const.DOC_DNOTE}"] :checked').length) {
+			alertDialog($t('No document of given type has been selected!'), this);
+			return;
+		}
+
+		confirmDialog($t("Are you sure, you want to archive selected documents?"), this).done(function() {
+			document.addbalance.action="?m=invoicearchive&marks=cash";
+			document.addbalance.target="";
+			document.addbalance.submit();
+		});
+	});
+
+	$('#unarchive-invoices').click(function() {
+		if (!$('tr[data-doctype="{$smarty.const.DOC_INVOICE}"] :checked').length
+				&& !$('tr[data-doctype="{$smarty.const.DOC_CNOTE}"] :checked').length
+				&& !$('tr[data-doctype="{$smarty.const.DOC_DNOTE}"] :checked').length) {
+			alertDialog($t('No document of given type has been selected!'), this);
+			return;
+		}
+
+		confirmDialog($t("Are you sure, you want to unarchive selected documents?"), this).done(function() {
+			document.addbalance.action="?m=invoiceunarchive&marks=cash";
+			document.addbalance.target="";
+			document.addbalance.submit();
+		});
 	});
 
 	$('#clear-account').click(function() {
-		if (confirm('{t a=$customerinfo.customername|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$a\'?{/t}')) {
-			location.href = '?m=customerbalanceok&id={$customerinfo.id}';
-		}
+		confirmDialog($t("Are you sure, you want to account ALL debts of customer '$a'?", '{$customerinfo.customername|escape:"javascript"|escape:"html"}'), this)
+			.done(function() {
+				location.href = '?m=customerbalanceok&id={$customerinfo.id}';
+			});
+	});
+
+	$('#duplicate-checkbox').click(function() {
+		$('#duplicate-box-date-selector').toggle($(this).prop('checked'));
 	});
 
 	new_doc_type_changed($("[name=newdocument]").val());

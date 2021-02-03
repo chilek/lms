@@ -26,7 +26,5 @@
 
 function smarty_function_bankaccount($params, $template)
 {
-	return bankaccount($params['id'], $params['account']);
+    return bankaccount($params['id'], $params['account']);
 }
-
-?>

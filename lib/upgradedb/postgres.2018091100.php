@@ -28,5 +28,3 @@ $this->Execute("UPDATE events SET endtime = begintime WHERE endtime = 0 AND date
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018091100', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

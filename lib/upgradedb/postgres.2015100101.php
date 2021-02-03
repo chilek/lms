@@ -28,5 +28,3 @@ $this->Execute("ALTER TABLE messageitems ADD COLUMN externalmsgid smallint DEFAU
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015100101', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

@@ -19,9 +19,9 @@
             "type": "package",
             "package": {
                 "name": "alexei/sprintf.js",
-                "version": "1.1.1",
+                "version": "1.1.2",
                 "dist": {
-                    "url": "https://github.com/alexei/sprintf.js/archive/1.1.1.zip",
+                    "url": "https://github.com/alexei/sprintf.js/archive/1.1.2.zip",
                     "type": "zip"
                 }
             }
@@ -30,9 +30,20 @@
             "type": "package",
             "package": {
                 "name": "ccampbell/mousetrap",
-                "version": "1.6.2",
+                "version": "1.6.5",
                 "dist": {
-                    "url": "https://github.com/ccampbell/mousetrap/archive/1.6.2.zip",
+                    "url": "https://github.com/ccampbell/mousetrap/archive/1.6.5.zip",
+                    "type": "zip"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "westonganger/input-autogrow",
+                "version": "1.1.1",
+                "dist": {
+                    "url": "https://github.com/westonganger/input-autogrow/archive/v1.1.1.zip",
                     "type": "zip"
                 }
             }
@@ -52,42 +63,67 @@
             "type": "package",
             "package": {
                 "name": "fortawesome/font-awesome",
-                "version": "5.3.1",
+                "version": "5.15.1",
                 "source": {
                     "url": "https://github.com/FortAwesome/Font-Awesome.git",
                     "type": "git",
-                    "reference": "5.3.1"
+                    "reference": "5.15.1"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "galleriajs/galleria",
+                "version": "1.6.1",
+                "dist": {
+                    "url": "https://github.com/GalleriaJS/galleria/archive/1.6.1.zip",
+                    "type": "zip"
                 }
             }
         }
     ],
     "require": {
-	"php" : ">=5.3",
+        "php" : ">=7.1",
+        "ext-mbstring": "*",
+        "ext-xml": "*",
+        "ext-json": "*",
+        "ext-bcmath": "*",
+        "ext-soap": "*",
+        "ext-openssl": "*",
+        "ext-zip": "*",
+        "ext-iconv": "*",
         "phine/observer": "2.0",
         "phine/exception": "1.0",
-        "phpmailer/phpmailer": "^5.2",
-        "tecnickcom/tcpdf": "^6.2",
+        "phpmailer/phpmailer": "^6",
+        "tecnickcom/tcpdf": "6.2.21",
         "spipu/html2pdf": "^4.5",
         "components/normalize.css": "^3.0",
-        "smarty/smarty": "3.1.33",
+        "smarty/smarty": "3.1.36",
         "rospdf/pdf-php": "^0.12",
         "components/jqueryui": "^1",
         "xdan/datetimepicker": "^2",
         "alexei/sprintf.js": "^1",
         "datatables/datatables": "^1.10",
-        "setasign/fpdi-tcpdf": "^1.6",
+        "setasign/fpdi-tcpdf": "^2",
         "pear/mail": "^1.3",
-        "gusapi/gusapi": "^3",
+        "gusapi/gusapi": "^5",
         "erusev/parsedown": "^1",
         "tecnickcom/tc-lib-barcode": "^1",
         "zenorocha/clipboardjs": "^2.0",
         "harvesthq/chosen": "^1.8",
-        "tinymce/tinymce": "^4",
+        "tinymce/tinymce": "^5",
         "ccampbell/mousetrap": "^1",
+        "westonganger/input-autogrow": "^1",
         "ivkremer/jquery-simple-combobox": "^1",
-		"fortawesome/font-awesome": "^5",
+        "fortawesome/font-awesome": "^5",
         "html2text/html2text": "^4",
-        "drmonty/datatables-responsive": "^2.2"
+        "drmonty/datatables-responsive": "^2.2",
+        "pragmarx/google2fa": "^6",
+        "galleriajs/galleria": "^1",
+        "rzani/zbar-qrdecoder": "^2",
+        "dragonbe/vies": "*",
+        "ezyang/htmlpurifier": "^4.13"
     },
     "require-dev": {
         "phpunit/phpunit": "^4",

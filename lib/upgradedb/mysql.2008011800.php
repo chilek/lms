@@ -30,8 +30,6 @@ $this->Execute("ALTER TABLE nodes ADD port smallint NOT NULL DEFAULT '0'");
 $this->Execute("ALTER TABLE netlinks ADD srcport smallint NOT NULL DEFAULT '0'");
 $this->Execute("ALTER TABLE netlinks ADD dstport smallint NOT NULL DEFAULT '0'");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2008011800', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008011800', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

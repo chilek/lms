@@ -38,6 +38,4 @@ $this->Execute("
 	    UNIQUE KEY docid (docid))
 ");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005072000', 'dbversion'));
-
-?>
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005072000', 'dbversion'));

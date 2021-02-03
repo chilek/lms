@@ -26,21 +26,26 @@
 
 function GetOptionList($instanceid)
 {
-	global $DB;
-	$list = $DB->GetAll('SELECT id, var, value, description, disabled
+    global $DB;
+    $list = $DB->GetAll('SELECT id, var, value, description, disabled
 		FROM daemonconfig
 		WHERE instanceid = ?
 		ORDER BY var', array($instanceid));
-	return $list;
+    return $list;
 }
 
-$instance = $DB->GetRow('SELECT i.id, hosts.id AS hostid, i.name, hosts.name AS hostname
+$instance = $DB->GetRow(
+    'SELECT i.id, hosts.id AS hostid, i.name, hosts.name AS hostname
 	FROM daemoninstances i, hosts
 	WHERE hosts.id = i.hostid AND i.id = ?',
-	array($_GET['id']));
+    array($_GET['id'])
+);
 
-$layout['pagetitle'] = trans('Configuration of Instance: $a/$b', $instance['name'],
-	'<A href="?m=daemoninstancelist&id='.$instance['hostid'].'">'.$instance['hostname'].'</A>');
+$layout['pagetitle'] = trans(
+    'Configuration of Instance: $a/$b',
+    $instance['name'],
+    '<A href="?m=daemoninstancelist&id='.$instance['hostid'].'">'.$instance['hostname'].'</A>'
+);
 
 $optionlist = GetOptionList($instance['id']);
 
@@ -49,5 +54,3 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SMARTY->assign('optionlist', $optionlist);
 $SMARTY->assign('instance', $instance);
 $SMARTY->display('daemon/daemoninstanceview.html');
-
-?>

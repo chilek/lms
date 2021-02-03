@@ -2,55 +2,48 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
+
+<style>
+
+	#action-panel {
+		display: flex;
+		align-items: center;
+		padding-top: 0.3em;
+		padding-bottom: 0.3em;
+	}
+
+	#action-panel > * {
+		margin-left: 0.7em;
+	}
+
+	#action-panel button {
+		margin-top: 0;
+	}
+
+</style>
+
 <H1>{$layout.pagetitle}</H1>
-<SCRIPT>
-
-	function setWarnings(on)
-	{
-		if (on == 1)
-		{
-			document.getElementById('warnon').value = 1;
-			document.getElementById('warnoff').value = 0;
-		}
-		else
-		{
-			document.getElementById('warnon').value = 0;
-			document.getElementById('warnoff').value = 1;
-		}
-		document.setwarnings.submit();
-	}
-
-	function changeCustomerGroups(oper) {
-		var action = null;
-
-		switch (oper) {
-			case 1:
-				action = '?m=customergroup&oper=addtogroups';
-				break;
-			case 0:
-				action = '?m=customergroup&oper=removefromgroups';
-				break;
-			case 2:
-				action = '?m=customergroup&oper=changegroups';
-				break;
-		}
-
-		if (action === null) {
-			return false;
-		}
-
-		document.setwarnings.action = action;
-		document.setwarnings.submit();
-	}
-
-</SCRIPT>
 <FORM NAME="setwarnings" ID="customersearchresults" METHOD="POST" ACTION="?m=customerwarn&search=0">
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-background-cycle">
     <THEAD>
 	<TR {tip text="Click on column name to change sorting order"}>
 		<TD width="97%">
-			<img src="img/customer.gif" ALT="">&nbsp;<a href="?m=customersearch&search=1&o=customername{if $listdata.direction == "asc" && $listdata.order == "customername"},desc{/if}">{trans("First/last or Company name:")}</A></B> {if $listdata.order == "customername"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<img src="img/home.gif" ALT="">&nbsp;<a href="?m=customersearch&search=1&o=address{if $listdata.direction == "asc" && $listdata.order == "address"},desc{/if}">{trans("Address:")}</A> {if $listdata.order == "address"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			{icon name="customer"}
+			<a href="?m=customersearch&search=1&o=customername{if $listdata.direction == "asc" && $listdata.order == "customername"},desc{/if}">
+				{trans("First/last or Company name:")}
+			</A>
+			{if $listdata.order == "customername"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			{icon name="karma"}
+			<a href="?m=customersearch&search=1&o=karma{if $listdata.direction == "asc" && $listdata.order == "karma"},desc{/if}">
+				{trans("Karma")}
+			</A>
+			{if $filter.order == "karma"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<BR>
+			{icon name="home"}
+			<a href="?m=customersearch&search=1&o=address{if $listdata.direction == "asc" && $listdata.order == "address"},desc{/if}">
+				{trans("Address:")}
+			</A>
+			{if $listdata.order == "address"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD align="right" width="1%" valign="top">
 			<a href="?m=customersearch&search=1&o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">{trans("ID:")}</A></B> {if $listdata.order == "id"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
@@ -75,14 +68,18 @@
 	{/if}
     </THEAD>
     <TBODY>
-	{section name=customerlist loop=$customerlist}
-	<INPUT type="hidden" class="hiddenbtn" name="setwarnings[mcustomerid][]" value="{$customerlist[customerlist].id}">
-	{/section}
-	{cycle values="light,lucid" print=false}
+	{foreach $customerlist as $customer}
+		<INPUT type="hidden" class="hiddenbtn customer-item" name="setwarnings[mcustomerid][]" value="{$customer.id}">
+	{/foreach}
 	{section name=customerlist loop=$customerlist start=$start max=$pagelimit}
-	<TR class="highlight {cycle}{if $customerlist[customerlist].account && !$customerlist[customerlist].nodeac} blend{/if}"  >
+	<TR class="highlight {if $customerlist[customerlist].deleted} lms-ui-resource-deleted{/if} {if $customerlist[customerlist].account && !$customerlist[customerlist].nodeac} blend{/if}" data-name="{$customerlist[customerlist].customername|escape:"javascript"|escape:"html"}">
 		<TD onClick="return self.location.href='?m=customerinfo&id={$customerlist[customerlist].id}';" valign="top">
-			<IMG src="img/{$_CSTATUSES[$customerlist[customerlist].status].img}" alt="">{if $customerlist[customerlist].info} <img src="img/info1.gif" ALT="" {tip text=$customerlist[customerlist].info}>{/if} <A name="{$customerlist[customerlist].id}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$customerlist[customerlist].id}"><B>{$customerlist[customerlist].customername}</B>{if $customerlist[customerlist].deleted} (<span class="red">{trans("deleted customer")}</span>){/if}</A><BR>
+			<IMG src="img/{$_CSTATUSES[$customerlist[customerlist].status].img}" alt="">{if $customerlist[customerlist].info} <img src="img/info1.gif" ALT="" {tip text=$customerlist[customerlist].info}>{/if} <A name="{$customerlist[customerlist].id}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$customerlist[customerlist].id}"><B>{$customerlist[customerlist].customername}</B></A>
+			{if !empty($customerlist[customerlist].karma)}
+				<i class="lms-ui-icon-star{if $customerlist[customerlist].karma > 0} green{else} red{/if}" title="{trans('Karma')}"></i>
+				(<span class="lms-ui-counter">{$customerlist[customerlist].karma}</span>)
+			{/if}
+			<BR>
 			<IMG src="img/home.gif" alt="">&nbsp;{$customerlist[customerlist].full_address}{if $customerlist[customerlist].country != ""}, {t}{$customerlist[customerlist].country}{/t}{/if}
 		</TD>
 		<TD valign="top" align="right" NOWRAP>
@@ -98,7 +95,7 @@
 		</TD>
 		<TD class="text-right nobr">
 			{if $customerlist[customerlist].balance < 0}
-				<A href="?m=customerbalanceok&id={$customerlist[customerlist].id}" OnClick="return confirmLink(this, '{t a=$customerlist[customerlist].customername|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$a\'?{/t}');"><IMG src="img/pay.gif" alt="{trans("Account")}" title="{trans("Account")}"></A>
+				<A class="balanceok-customer" href="?m=customerbalanceok&id={$customerlist[customerlist].id}"><IMG src="img/pay.gif" alt="{trans("Account")}" title="{trans("Account")}"></A>
 			{/if}
 			{if $customerlist[customerlist].account}
 				{if $customerlist[customerlist].status == $smarty.const.CSTATUS_CONNECTED}
@@ -127,9 +124,9 @@
 			{if $listdata.state == 50}
 			<A href="?m=customeredit&id={$customerlist[customerlist].id}&action=recover"><IMG src="img/recover.gif" alt="{trans("Recover")}" title="{trans("Recover")}"></A>
 			{else}
-			<A href="?m=customerdel&id={$customerlist[customerlist].id}" OnClick="return confirmLink(this, '{t a=$customerlist[customerlist].customername|escape:"javascript"|escape:"html"}Are you sure, you want to remove customer \'$a\' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!{/t}');"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A class="delete-customer" href="?m=customerdel&id={$customerlist[customerlist].id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 			<A href="?m=customeredit&id={$customerlist[customerlist].id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
-			{/if} 
+			{/if}
 			<A href="?m=customerinfo&id={$customerlist[customerlist].id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
 		</TD>
 	</TR>
@@ -149,28 +146,70 @@
 		</TD>
 	</TR>
 	<TR class="ftop">
-		<TD width="100%" align="left" COLSPAN="4" nowrap>
-			<IMG SRC="img/warningon.gif"> <A HREF="javascript:setWarnings(1);">{trans("Enable")}</A> / <A HREF="javascript:setWarnings(0);">{trans("Disable")}</A>&nbsp;
-			<IMG SRC="img/mail.gif"> <A HREF="?m=customerwarn&search=1">{trans("Set notice content")}</A>
-		</TD>
-	</TR>
-	<TR class="ftop">
-		<TD width="100%" align="left" COLSPAN="4" nowrap>
-			<IMG SRC="img/group.gif"> <A HREF="javascript:changeCustomerGroups(1);">{trans("Add")}</A>
-			/
-			<A HREF="javascript:changeCustomerGroups(0);">{trans("Remove")}</A>
-			/
-			<A HREF="javascript:changeCustomerGroups(2);">{trans("Change Groups")}</A>:
-			{if is_array($listdata.customergroup)}
-				{$groups=array_flip($listdata.customergroup)}
-			{else}
-				{$groups=array()}
-			{/if}
-			<SELECT SIZE="1" class="lms-ui-multiselect" NAME="setwarnings[customergroup][]" multiple>
-				{foreach $customergroups as $customergroup}
-				<OPTION value="{$customergroup.id}"{if isset($groups[$customergroup.id])} selected{/if}>{$customergroup.name|truncate:50:"...":true}</OPTION>
+		<TD COLSPAN="4" class="nobr">
+			<div id="action-panel">
+				<span class="bold">{trans("<!customersearch>Action:")}</span>
+				<select id="customer-action">
+					<optgroup label="{trans("Warnings")}">
+						<option value="1">{trans("<!customersearch>Enable warning")}</option>
+						<option value="2">{trans("<!customersearch>Disable warning")}</option>
+						<option value="3">{trans("Set notice content")}</option>
+					</optgroup>
+					{if is_array($listdata.customergroup)}
+						<optgroup label="{trans("Customer groups")}">
+							{$groups = array_flip($listdata.customergroup)}
+							<option value="4">{trans("<!customersearch>Add to groups")}</option>
+							<option value="9">{trans("<!customersearch>Create new group")}</option>
+							<option value="5">{trans("<!customersearch>Remove from groups")}</option>
+							<option value="6">{trans("<!customersearch>Replace groups")}</option>
+						</optgroup>
+					{/if}
+					<optgroup label="{trans("Customer consents")}">
+						<option value="7">{trans("<!customersearch>Add consents")}</option>
+						<option value="8">{trans("<!customersearch>Remove consents")}</option>
+					</optgroup>
+					{if ConfigHelper::checkPrivilege("messaging")}
+						<optgroup label="{trans("<!customersearch>Messages")}">
+							<option value="10">{trans("<!customersearch>New email message")}</option>
+							<option value="11">{trans("<!customersearch>New sms message")}</option>
+						</optgroup>
+					{/if}
+					{foreach $_CUSTOMERCONTACTTYPES as $contacttypeidx => $contacttype}
+						<optgroup label="{$contacttype.ui.legend.text}">
+							<option value="{$contacttypeidx}-1" data-resource="{$contacttypeidx}" data-operation="1"
+								data-target-multiselect="#contactflags-{$contacttypeidx}"
+								>{trans("<!customersearch>Add flags")}</option>
+							<option value="{$contacttypeidx}-2" data-resource="{$contacttypeidx}" data-operation="2"
+								data-target-multiselect="#contactflags-{$contacttypeidx}"
+								>{trans("<!customersearch>Remove flags")}</option>
+						</optgroup>
+					{/foreach}
+				</select>
+				{if isset($groups)}
+					<SELECT SIZE="1" class="lms-ui-multiselect-deferred" NAME="setwarnings[customergroup][]"
+							id="customergroups" style="display: none;" multiple>
+						{foreach $customergroups as $customergroup}
+							<OPTION value="{$customergroup.id}"{if isset($groups[$customergroup.id])} selected{/if}>{$customergroup.name|truncate:50:"&hellip;":true}</OPTION>
+						{/foreach}
+					</SELECT>
+				{/if}
+				<input type="text" id="newcustomergroup" name="setwarnings[newcustomergroup]" style="display: none;">
+				<select class="lms-ui-multiselect-deferred" name="consents[]" data-separator="<hr>"
+						id="customerconsents" style="display: none;" multiple>
+					{foreach $_CCONSENTS as $type => $consent}
+						<option value="{$type}">{$consent.label}</option>
+					{/foreach}
+				</select>
+				{foreach $_CUSTOMERCONTACTTYPES as $contacttypeidx => $contacttype}
+					<select class="lms-ui-multiselect-deferred" name="contactflags[{$contacttypeidx}][]"
+							id="contactflags-{$contacttypeidx}" style="display: none;" multiple>
+						{foreach $contacttype.ui.flags as $flagidx => $flag}
+							<option value="{$flagidx}">{$flag.label}</option>
+						{/foreach}
+					</select>
 				{/foreach}
-			</SELECT>
+				{button icon="apply" label="Apply" id="customer-action-apply"}
+			</div>
 		</TD>
 	</TR>
 	{/if}
@@ -197,4 +236,222 @@
     </TFOOT>
 </TABLE>
 </FORM>
+<script>
+
+	$(function() {
+		var customergroups = [];
+		{foreach $customergroups as $customergroup}
+			customergroups.push('{$customergroup.name}');
+		{/foreach}
+
+		function setWarnings(on) {
+			if (on == 1) {
+				$('#warnon').val(1);
+				$('#warnoff').val(0);
+			} else {
+				$('#warnon').val(0);
+				$('#warnoff').val(1);
+			}
+			$('#customersearchresults').submit();
+		}
+
+		function changeCustomerGroups(oper) {
+			var action = null;
+
+			switch (oper) {
+				case 1:
+					action = '?m=customergroup&oper=addtogroups';
+					break;
+				case 0:
+					action = '?m=customergroup&oper=removefromgroups';
+					break;
+				case 2:
+					action = '?m=customergroup&oper=changegroups';
+					break;
+				case 3:
+					var newgroup = $('#newcustomergroup').val();
+					if (!newgroup.length) {
+						alertDialog($t("<!customersearch>New customer group name cannot be empty!"), $('#newcustomergroup'));
+						return false;
+					}
+					if (customergroups.indexOf(newgroup) != -1) {
+						alertDialog($t("<!customersearch>Customer group with specified name already exists!"), $('#newcustomergroup'));
+						return false;
+					}
+					action = '?m=customergroup&oper=addtogroups';
+					break;
+			}
+
+			if (action === null) {
+				return false;
+			}
+
+			$('#customersearchresults').attr('action', action).submit();
+		}
+
+		function changeCustomerConsents(oper) {
+			var action = null;
+
+			switch (oper) {
+				case 1:
+					action = '?m=customeredit&search=1&oper=addconsents';
+					break;
+				case 2:
+					action = '?m=customeredit&search=1&oper=removeconsents';
+					break;
+			}
+
+			if (action === null) {
+				return false;
+			}
+
+			$('#customersearchresults').attr('action', action).submit();
+		}
+
+		function sendMessage(type) {
+			var action = null;
+
+			switch (type) {
+				case 'sms':
+					action = '?m=messageadd&type={$smarty.const.MSG_SMS}';
+					break;
+				case 'email':
+					action = '?m=messageadd&type={$smarty.const.MSG_MAIL}';
+					break;
+			}
+
+			if (action === null) {
+				return false;
+			}
+
+			$('.customer-item').each(function() {
+				$(this).attr('name', $(this).attr('name').replace('setwarnings[mcustomerid]', 'customers'));
+			});
+
+			$('#customersearchresults').attr('action', action).submit();
+		}
+
+		function changeContactFlags(type, operation) {
+			var action = null;
+
+			switch (operation) {
+				case 1:
+					action = '?m=customeredit&search=1&type=' + type + '&oper=addflags';
+					break;
+				case 2:
+					action = '?m=customeredit&search=1&type=' + type + '&oper=removeflags';
+					break;
+			}
+
+			if (action === null) {
+				return false;
+			}
+
+			$('#customersearchresults').attr('action', action).submit();
+		}
+
+		$('#customer-action').change(function() {
+			var action = parseInt($(this).val());
+
+			if ($('#customergroups').parent('.lms-ui-multiselect-container').length) {
+				$('#customergroups').parent('.lms-ui-multiselect-container').toggle(action >= 4 && action <= 6);
+			} else if (action >= 4 && action <= 6) {
+				$('#customergroups').show();
+				init_multiselects('#customergroups');
+			}
+
+			$('#newcustomergroup').toggle(action == 9);
+			if (action == 9) {
+				initAutoGrow('#newcustomergroup');
+			}
+
+			if ($('#customerconsents').parent('.lms-ui-multiselect-container').length) {
+				$('#customerconsents').parent('.lms-ui-multiselect-container').toggle(action >= 7 && action <= 8);
+			} else if (action >= 7 && action <= 8) {
+				$('#customerconsents').show();
+				init_multiselects('#customerconsents');
+			}
+
+			var target_multiselect = $('option:selected', this).attr('data-target-multiselect');
+			$('[id|="contactflags"]').each(function() {
+				if (target_multiselect && '#' + $(this).attr('id') == target_multiselect) {
+					if ($(this).parent('.lms-ui-multiselect-container').length) {
+						$(this).parent('.lms-ui-multiselect-container').show();
+					} else {
+						$(this).show();
+						init_multiselects(target_multiselect);
+					}
+				} else {
+					$(this).parent('.lms-ui-multiselect-container').hide();
+				}
+			});
+		});
+
+		$('#customer-action-apply').click(function() {
+			var action = parseInt($('#customer-action').val());
+			switch (action) {
+				case 1:
+					setWarnings(1);
+					break;
+				case 2:
+					setWarnings(0);
+					break;
+				case 3:
+					location.href = '?m=customerwarn&search=1';
+					break;
+				case 4:
+					changeCustomerGroups(1);
+					break;
+				case 5:
+					changeCustomerGroups(0);
+					break;
+				case 6:
+					changeCustomerGroups(2);
+					break;
+				case 7:
+					changeCustomerConsents(1);
+					break;
+				case 8:
+					changeCustomerConsents(2);
+					break;
+				case 9:
+					changeCustomerGroups(3);
+					break;
+				case 10:
+					sendMessage('email');
+					break;
+				case 11:
+					sendMessage('sms');
+					break;
+				default:
+					var option = $('#customer-action option:selected');
+					var resource = option.attr('data-resource');
+					var operation = option.attr('data-operation');
+					if (resource && operation) {
+						changeContactFlags(resource, parseInt(operation));
+					}
+					break;
+			}
+		});
+
+		$('.balanceok-customer').click(function () {
+			var name = $(this).closest('tr').attr('data-name');
+			console.log('name=', name);
+			confirmDialog($t("Are you sure, you want to account ALL debts of customer \'$a\'?", name), this).done(function () {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+
+		$('.delete-customer').click(function () {
+			var name = $(this).closest('tr').attr('data-name');
+			console.log('name=', name);
+			confirmDialog($t("Are you sure, you want to remove customer '$a' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!", name), this).done(function () {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	})
+
+</script>
 {/block}

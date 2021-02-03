@@ -26,73 +26,59 @@
 
 $layout['pagetitle'] = trans('Database Backups');
 
-if ($handle = opendir(ConfigHelper::getConfig('directories.backup_dir')))
-{
-	while (false !== ($file = readdir($handle)))
-	{
-		if ($file != '.' && $file != '..')
-		{
-			$path = pathinfo($file);
-			
-			if(!isset($path['extension']))
-				continue;
-			
-			if($path['extension'] == 'sql')
-			{
-				if(substr($path['basename'],0,4) == 'lms-')
-				{
-					$name = substr(basename($file,'.sql'),4,25);
-					if($pos = strpos($name,'-'))
-					{
-						$dblist['dbv'][]  = substr($name, $pos+1);
-						$dblist['time'][] = substr($name, 0, $pos);
-					} 
-					else
-					{
-						$dblist['dbv'][]  = '';
-						$dblist['time'][] = (int) $name;
-					}
-					
-					$dblist['name'][] = $name;
-					$dblist['size'][] = $filesize = filesize(ConfigHelper::getConfig('directories.backup_dir').'/'.$file);
-					list ($hsize, $hunit) = setunits($filesize);
-					$dblist['hsize'][] = f_round($hsize) . ' ' . $hunit;
-					$dblist['type'][] = 'plain';
-				}
-			}
-			elseif(extension_loaded('zlib'))
-			{
-				if((($path['extension'] == 'gz')&&(strstr($file, "sql.gz")))&& (substr($path['basename'],0,4) == 'lms-'))
-				{
-					$name = substr(basename($file,'.sql.gz'),4,25);
-					if($pos = strpos($name,'-'))
-					{
-						$dblist['dbv'][]  = substr($name, $pos+1);
-						$dblist['time'][] = substr($name, 0, $pos);
-					} 
-					else
-					{
-						$dblist['dbv'][]  = FALSE;
-						$dblist['time'][] = (int) $name;
-					}
-					$dblist['name'][] = $name;
-					$dblist['size'][] = $filesize = filesize(ConfigHelper::getConfig('directories.backup_dir').'/'.$file);
-					list ($hsize, $hunit) = setunits($filesize);
-					$dblist['hsize'][] = f_round($hsize) . ' ' . $hunit;
-					$dblist['type'][] = 'gz';
-				}
-			}
-		}
-	}
-	closedir($handle);
+if ($handle = opendir(ConfigHelper::getConfig('directories.backup_dir'))) {
+    while (false !== ($file = readdir($handle))) {
+        if ($file != '.' && $file != '..') {
+            $path = pathinfo($file);
+            
+            if (!isset($path['extension'])) {
+                continue;
+            }
+            
+            if ($path['extension'] == 'sql') {
+                if (substr($path['basename'], 0, 4) == 'lms-') {
+                    $name = substr(basename($file, '.sql'), 4, 25);
+                    if ($pos = strpos($name, '-')) {
+                        $dblist['dbv'][]  = substr($name, $pos+1);
+                        $dblist['time'][] = substr($name, 0, $pos);
+                    } else {
+                        $dblist['dbv'][]  = '';
+                        $dblist['time'][] = (int) $name;
+                    }
+                    
+                    $dblist['name'][] = $name;
+                    $dblist['size'][] = $filesize = filesize(ConfigHelper::getConfig('directories.backup_dir').'/'.$file);
+                    list ($hsize, $hunit) = setunits($filesize);
+                    $dblist['hsize'][] = f_round($hsize) . ' ' . $hunit;
+                    $dblist['type'][] = 'plain';
+                }
+            } elseif (extension_loaded('zlib')) {
+                if ((($path['extension'] == 'gz')&&(strstr($file, "sql.gz")))&& (substr($path['basename'], 0, 4) == 'lms-')) {
+                    $name = substr(basename($file, '.sql.gz'), 4, 25);
+                    if ($pos = strpos($name, '-')) {
+                        $dblist['dbv'][]  = substr($name, $pos+1);
+                        $dblist['time'][] = substr($name, 0, $pos);
+                    } else {
+                        $dblist['dbv'][]  = false;
+                        $dblist['time'][] = (int) $name;
+                    }
+                    $dblist['name'][] = $name;
+                    $dblist['size'][] = $filesize = filesize(ConfigHelper::getConfig('directories.backup_dir').'/'.$file);
+                    list ($hsize, $hunit) = setunits($filesize);
+                    $dblist['hsize'][] = f_round($hsize) . ' ' . $hunit;
+                    $dblist['type'][] = 'gz';
+                }
+            }
+        }
+    }
+    closedir($handle);
 }
 
-if(isset($dblist['time']))
-	array_multisort($dblist['time'],$dblist['size'],$dblist['type'],$dblist['dbv'],$dblist['name'],$dblist['hsize']);
+if (isset($dblist['time'])) {
+    array_multisort($dblist['time'], $dblist['size'], $dblist['type'], $dblist['dbv'], $dblist['name'], $dblist['hsize']);
+}
 
 $dblist['total'] = isset($dblist['time']) ? count($dblist['time']) : 0;
 
 $SMARTY->assign('dblist', $dblist);
 $SMARTY->display('dblist.html');
-
-?>

@@ -40,5 +40,3 @@ $this->Execute("CREATE TABLE location_buildings (
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016121400', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

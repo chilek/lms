@@ -24,6 +24,47 @@
  *  $Id$
  */
 
+$shortname = $this->GetOne(
+    "SELECT value FROM uiconfig WHERE section = ? AND var = ? AND disabled = ?",
+    array('finances', 'shortname', 0)
+);
+$header = $this->GetOne(
+    "SELECT value FROM uiconfig WHERE section = ? AND var = ? AND disabled = ?",
+    array('finances', 'header', 0)
+);
+$footer = $this->GetOne(
+    "SELECT value FROM uiconfig WHERE section = ? AND var = ? AND disabled = ?",
+    array('finances', 'footer', 0)
+);
+$default_author = $this->GetOne(
+    "SELECT value FROM uiconfig WHERE section = ? AND var = ? AND disabled = ?",
+    array('finances', 'default_author', 0)
+);
+$cplace = $this->GetOne(
+    "SELECT value FROM uiconfig WHERE section = ? AND var = ? AND disabled = ?",
+    array('finances', 'cplace', 0)
+);
+$name = $this->GetOne(
+    "SELECT value FROM uiconfig WHERE section = ? AND var = ? AND disabled = ?",
+    array('finances', 'name', 0)
+);
+$address = $this->GetOne(
+    "SELECT value FROM uiconfig WHERE section = ? AND var = ? AND disabled = ?",
+    array('finances', 'address', 0)
+);
+$city = $this->GetOne(
+    "SELECT value FROM uiconfig WHERE section = ? AND var = ? AND disabled = ?",
+    array('finances', 'city', 0)
+);
+$zip = $this->GetOne(
+    "SELECT value FROM uiconfig WHERE section = ? AND var = ? AND disabled = ?",
+    array('finances', 'zip', 0)
+);
+$account = $this->GetOne(
+    "SELECT value FROM uiconfig WHERE section = ? AND var = ? AND disabled = ?",
+    array('finances', 'account', 0)
+);
+
 $this->BeginTrans();
 
 $this->Execute("
@@ -64,32 +105,22 @@ SELECT c.* FROM customers c
 
 ");
 
-$shortname = ConfigHelper::getConfig('finances.shortname');
-$header = ConfigHelper::getConfig('invoices.header');
-$footer = ConfigHelper::getConfig('invoices.footer');
-$default_author = ConfigHelper::getConfig('invoices.default_author');
-$cplace = ConfigHelper::getConfig('invoices.cplace');
-$name = ConfigHelper::getConfig('finances.name');
-$address = ConfigHelper::getConfig('finances.address');
-$city = ConfigHelper::getConfig('finances.city');
-$zip = ConfigHelper::getConfig('finances.zip');
-$account = ConfigHelper::getConfig('finances.account');
-$this->Execute("INSERT INTO divisions (shortname, inv_header, inv_footer, inv_author, inv_cplace, name, 
+$this->Execute(
+    "INSERT INTO divisions (shortname, inv_header, inv_footer, inv_author, inv_cplace, name, 
 	address, city, zip, account) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-	array(!empty($shortname) && $shortname != 'finances/shortname' ? $shortname : 'default',
-		!empty($header) ? str_replace("\\n", "\n", $header) : '',
-		!empty($footer) ? str_replace("\\n", "\n", $footer) : '',
-		!empty($default_author) ? $default_author : '',
-		!empty($cplace) ? $cplace : '',
-		!empty($name) && $name != 'finances/name' ? $name : 'default',
-		!empty($address) && $address != 'finances/address'  ? $address : '',
-		!empty($city) && $city != 'finances/city'  ? $city : '',
-		!empty($zip) && $zip != 'finances/zip'  ? $zip : '',
-		!empty($account) ? $account : '',
-	));
+    array(!empty($shortname) && $shortname != 'finances/shortname' ? $shortname : 'default',
+        !empty($header) ? str_replace("\\n", "\n", $header) : '',
+        !empty($footer) ? str_replace("\\n", "\n", $footer) : '',
+        !empty($default_author) ? $default_author : '',
+        !empty($cplace) ? $cplace : '',
+        !empty($name) && $name != 'finances/name' ? $name : 'default',
+        !empty($address) && $address != 'finances/address'  ? $address : '',
+        !empty($city) && $city != 'finances/city'  ? $city : '',
+        !empty($zip) && $zip != 'finances/zip'  ? $zip : '',
+        !empty($account) ? $account : '',
+    )
+);
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008102000', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

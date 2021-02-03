@@ -7,7 +7,7 @@
 			<IMG SRC="img/warning.png" alt="{t}Error!{/t}">
 		</TD>
 		<TD WIDTH="99%" CLASS="frightu">
-			<FONT class="alert bold">{t}Database errors occurred!{/t}</FONT><BR>
+			<span class="alert bold">{t}Database errors occurred!{/t}</span><BR>
 			{foreach from=$layout.dberrors item=dberror}
 				<B>{t}Query:{/t}</B> {$dberror.query}<BR>
 				<B>{t}Error:{/t}</B> {$dberror.error}<BR>

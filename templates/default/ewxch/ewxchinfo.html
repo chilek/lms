@@ -71,7 +71,7 @@
         <TD width="100%" CLASS="fbottomu" COLSPAN="2" align="right">
             {if $channel.id}
             <A HREF="?m=ewxchedit&id={$channel.id}" accesskey="E">{trans("Edit")} <IMG SRC="img/edit.gif" ALT=""></A>
-			<A HREF="?m=ewxchdel&id={$channel.id}" onclick="return confirmLink(this,'{trans("Are you sure, you want to delete this channel?")}');">{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>
+			<A id="delete-ewxch" HREF="?m=ewxchdel&id={$channel.id}">{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>
             {/if}
         </TD>
     </TR>
@@ -117,7 +117,7 @@
 					</TD>
 					<TD align="right">
 					    {if $channel.id}
-						<A href="?m=ewxchedit&action=remove&id={$channel.id}&devid={$item.id}" onClick="return confirmLink(this, '{trans("Are you sure, you want to remove this assignment?")}')"  {tip text="Remove this device from the channel"}><IMG SRC="img/delete.gif" ALT="{trans("Delete")}"></A>
+						<A class="remove-ewxch" href="?m=ewxchedit&action=remove&id={$channel.id}&devid={$item.id}" {tip text="Remove this device from the channel"}><IMG SRC="img/delete.gif" ALT="{trans("Delete")}"></A>
 					    {/if}
 					</TD>
 				</TR>
@@ -152,4 +152,18 @@
 	</TR>
     </TBODY>
 </TABLE>
+	<script>
+		$('#delete-ewxch').click(function() {
+			confirmDialog($t("Are you sure, you want to delete this channel?"), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+		$('.remove-ewxch').click(function() {
+			confirmDialog($t("Are you sure, you want to remove this assignment?"), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	</script>
 {/block}

@@ -61,5 +61,3 @@ $this->EXECUTE("ALTER TABLE excludedgroups ADD FOREIGN KEY (customergroupid)
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010121000', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

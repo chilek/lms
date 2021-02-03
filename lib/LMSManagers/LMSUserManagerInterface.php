@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C); 2001-2013 LMS Developers
+ *  Copyright (C); 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,18 +26,25 @@
 
 /**
  * LMSUserManagerInterface
- * 
- * @author Maciej Lew <maciej.lew.1987@gmail.com>
+ *
  */
 interface LMSUserManagerInterface
 {
     public function setUserPassword($id, $passwd);
 
+    public function forcePasswordChange($id);
+
+    public function SetUserAuthentication($id, $twofactorauth, $twofactorauthsecretkey);
+
     public function getUserName($id = null);
 
-    public function getUserNames();
+    public function getUserNames($params = array());
 
-    public function getUserList();
+    public function getUserNamesIndexedById();
+
+    public function getUserList($params = array());
+
+    public function getUsers($params = array());
 
     public function getUserIDByLogin($login);
 
@@ -49,11 +56,15 @@ interface LMSUserManagerInterface
 
     public function userAccess($id, $access);
 
+    public function checkUserAccess($id);
+
     public function getUserInfo($id);
 
     public function userUpdate($user);
 
     public function getUserRights($id);
-    
+
     public function PasswdExistsInHistory($id, $passwd);
+
+    public function checkPassword($password);
 }

@@ -24,12 +24,11 @@
  *  $Id$
  */
 
-function smarty_block_box_panel($params, $content, $template, $repeat) {
-	if (!$repeat) {
-		return '<div class="lms-ui-box-panel">
+function smarty_block_box_panel($params, $content, $template, $repeat)
+{
+    if (!$repeat) {
+        return '<div class="lms-ui-box-panel">
 				' . $content . '
 			</div>';
-	}
+    }
 }
-
-?>

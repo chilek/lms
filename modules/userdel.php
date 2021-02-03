@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,11 +24,12 @@
  *  $Id$
  */
 
-if($_GET['is_sure']=='1')
-{
-	$LMS->UserDelete($_GET['id']);
+$LMS->UserDelete($_GET['id']);
+
+if ($SESSION->is_set('backto', true)) {
+    $SESSION->redirect('?' . $SESSION->get('backto', true));
+} elseif ($SESSION->is_set('backto')) {
+    $SESSION->redirect('?' . $SESSION->get('backto'));
+} else {
+    $SESSION->redirect('?m=userlist');
 }
-
-header('Location: ?m='.$SESSION->get('lastmodule'));
-
-?>

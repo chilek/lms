@@ -28,5 +28,3 @@ $this->Execute("ALTER TABLE users ADD COLUMN persistentsettings text NOT NULL DE
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016092100', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,9 +26,14 @@
 
 $id = intval($_GET['id']);
 
-if (isset($_GET['is_sure']) && $_GET['is_sure'] == 1 && $id)
-	$LMS->DeleteDivision($id);
+if ($id) {
+    $LMS->DeleteDivision($id);
+}
 
-$SESSION->redirect('?'.$SESSION->get('backto'));
-
-?>
+if ($SESSION->is_set('backto', true)) {
+    $SESSION->redirect('?' . $SESSION->get('backto', true));
+} elseif ($SESSION->is_set('backto')) {
+    $SESSION->redirect('?' . $SESSION->get('backto'));
+} else {
+    $SESSION->redirect('?m=divisionlist');
+}

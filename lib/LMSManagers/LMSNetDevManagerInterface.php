@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2018 LMS Developers
+ *  Copyright (C) 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,65 +26,75 @@
 
 /**
  * LMSNetDevManagerInterface
- * 
+ *
  */
 interface LMSNetDevManagerInterface
 {
     public function GetNetDevLinkedNodes($id);
 
-    public function NetDevLinkNode($id, $devid, $link = NULL);
+    public function NetDevLinkNode($id, $devid, $link = null);
 
-    public function SetNetDevLinkType($dev1, $dev2, $link = NULL);
-    
+    public function ValidateNetDevLink($dev1, $dev2, $link = null);
+
+    public function SetNetDevLinkType($dev1, $dev2, $link = null);
+
     public function IsNetDevLink($dev1, $dev2);
-    
+
     public function NetDevLink($dev1, $dev2, $link);
-    
+
     public function NetDevUnLink($dev1, $dev2);
-    
+
     public function NetDevUpdate($data);
-    
+
     public function NetDevAdd($data);
-    
+
     public function DeleteNetDev($id);
-    
+
     public function NetDevDelLinks($id);
-    
+
     public function GetNetDev($id);
-    
+
     public function GetNotConnectedDevices($id);
-    
+
     public function GetNetDevNames();
-    
+
+    public function GetNetDevName($id);
+
     public function GetNetDevList($order = 'name,asc');
-    
+
     public function GetNetDevConnectedNames($id);
-    
+
     public function GetNetDevLinkType($dev1, $dev2);
-    
+
     public function CountNetDevLinks($id);
-    
+
     public function GetNetDevIDByNode($id);
-    
+
     public function NetDevExists($id);
 
-	public function GetProducers();
+    public function GetProducers();
 
-	public function GetModels($producerid = null);
+    public function GetModels($producerid = null);
 
-	public function GetRadioSectors($netdevid, $technology = 0);
+    public function GetModelList($pid = null);
 
-	public function AddRadioSector($netdevid, array $radiosector);
+    public function GetRadioSectors($netdevid, $technology = 0);
 
-	public function DeleteRadioSector($id);
+    public function AddRadioSector($netdevid, array $radiosector);
 
-	public function UpdateRadioSector($id, array $radiosector);
+    public function DeleteRadioSector($id);
 
-	public function GetManagementUrls($type, $id);
+    public function UpdateRadioSector($id, array $radiosector);
 
-	public function AddManagementUrl($type, $id, array $url);
+    public function GetManagementUrls($type, $id);
 
-	public function DeleteManagementUrl($type, $id);
+    public function AddManagementUrl($type, $id, array $url);
 
-	public function updateManagementUrl($type, $id, array $url);
+    public function DeleteManagementUrl($type, $id);
+
+    public function updateManagementUrl($type, $id, array $url);
+
+    public function getNetDevCustomerAssignments($netdevid, $assignments);
+
+    public function getNetDevOwnerByNodeId($nodeid);
 }

@@ -35,23 +35,23 @@
 		<COL style="width: 1%;">
 		<COL style="width: 98%;">
 	</COLGROUP>
-    <THEAD>
+	<THEAD>
 	<TR>
 		<TD>
-			<IMG src="img/docum.gif" alt="">
+			{icon name="document" class="fa-fw"}
 		</TD>
 		<TD class="bold nobr">
 			{trans("Title:")}
 		</TD>
 		<TD class="nobr">
-			<INPUT type="text" id="title" name="document[title]" value="{$document.title}" {tip text="Enter document title" trigger="title"} size="40">
+			<INPUT type="text" id="title" name="document[title]" value="{$document.title}" {tip text="Enter document title" trigger="title"} size="40" required>
 		</TD>
 	</TR>
-    </THEAD>
-    <TBODY>
+	</THEAD>
+	<TBODY>
 	<TR>
 		<TD>
-			<IMG src="img/docum.gif" alt="">
+			{icon name="document" class="fa-fw"}
 		</TD>
 		<TD class="bold nobr">
 			{trans("First number:")}
@@ -65,19 +65,19 @@
 	</TR>
 	<TR>
 		<TD>
-			<IMG src="img/calendar.gif" alt="">
+			{icon name="period" class="fa-fw"}
 		</TD>
 		<TD class="bold">
 			{trans("Period:")}
 		</TD>
 		<TD>
-			{trans("from:")} <INPUT type="TEXT" name="document[fromdate]" value="{if $document.fromdate}{$document.fromdate}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter start date in YYYY/MM/DD format (optional)" trigger="fromdate"} size="10">&nbsp;
-			{trans("to:")} <INPUT type="TEXT" name="document[todate]" value="{if $document.todate}{$document.todate}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter end date in YYYY/MM/DD format (optional)" trigger="todate"} size="10"><BR>
+			{trans("from:")} <INPUT type="TEXT" name="document[fromdate]" value="{if $document.fromdate}{$document.fromdate}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter start date in YYYY/MM/DD format (optional)" trigger="fromdate"} size="10">&nbsp;
+			{trans("to:")} <INPUT type="TEXT" name="document[todate]" value="{if $document.todate}{$document.todate}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter end date in YYYY/MM/DD format (optional)" trigger="todate"} size="10"><BR>
 		</TD>
 	</TR>
 	<TR>
 		<TD>
-			<IMG src="img/info.gif" alt="">
+			{icon name="description" class="fa-fw"}
 		</TD>
 		<TD class="bold">
 			{trans("Description:")}
@@ -88,14 +88,15 @@
 	</TR>
 	<TR>
 		<TD>
-			<IMG src="img/info.gif" alt="">
+			{icon name="type" class="fa-fw"}
 		</TD>
 		<TD class="bold">
 			{trans("Type:")}
 		</TD>
 		<TD>
-			<SELECT SIZE="1" NAME="document[type]" class="lms-ui-advanced-select" {tip text="Select document type" trigger="type"} onchange="DocTypeChanged();">
-				<OPTION VALUE="0">... {trans("select type")} ...</OPTION>
+			<SELECT SIZE="1" NAME="document[type]" onchange="DocTypeChanged();"
+					{tip class="lms-ui-advanced-select" text="Select document type" trigger="type"} required>
+				<OPTION VALUE="0">{trans("select type")}</OPTION>
 				{foreach from=$_DOCTYPES key=key item=item}{if $key < 0 && in_array($key, $docrights)}
 				<OPTION VALUE="{$key}"{if $document.type==$key} SELECTED{/if}>{$item}</OPTION>
 				{/if}{/foreach}
@@ -104,7 +105,7 @@
 	</TR>
 	<TR>
 		<TD>
-			<IMG src="img/class.gif" alt="">
+			{icon name="template" class="fa-fw"}
 		</TD>
 		<TD class="bold">
 			{trans("Template:")}
@@ -118,9 +119,9 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR>
+	<TR id="document-file-row"{if !$document.type} style="display: none;"{/if}>
 		<TD>
-			<IMG src="img/save.gif" alt="">
+			{icon name="import" class="fa-fw"}
 		</TD>
 		<TD class="bold">
 			{trans("Files:")}
@@ -131,7 +132,7 @@
 	</TR>
 	<TR id="attachment-row"{if !$attachment_result} style="display: none;"{/if}>
 		<TD>
-			<img src="img/attach.gif">
+			{icon name="import" class="fa-fw"}
 		</TD>
 		<TD class="bold nobr">
 			{trans("Document attachments:")}
@@ -142,7 +143,7 @@
 	</TR>
 	<TR>
 		<TD>
-			<IMG src="img/confirm.gif" ALT="">
+			{icon name="confirm" class="fa-fw"}
 		</TD>
 		<TD class="bold nobr">
 			<label for="closed">{trans("Confirmed:")}</label>
@@ -153,7 +154,7 @@
 	</TR>
 	<TR>
 		<TD>
-			<IMG src="img/customer.gif" ALT="">
+			{icon name="customer" class="fa-fw"}
 		</TD>
 		<TD class="bold nobr">
 			{trans("Customers:")}
@@ -170,48 +171,69 @@
 						<label class="nobr"><INPUT class="radio light" type="radio" name="filter" value="-1"{if isset($filter) && $filter == -1} checked{/if}>{trans("without nodes")}</label><BR>
 						<label class="nobr"><INPUT class="radio light" type="radio" name="filter" value="0"{if isset($filter) && $filter == 0} checked{/if}>{trans("all<!customers>")}</label>
 					</TD>
-					<TD width="5%">&nbsp;</TD>
-					<TD width="1%" class="nobr">
-						<IMG src="img/network.gif" alt=""> <B>{trans("Network:")}</B><BR><BR>
-						<IMG src="img/group.gif" alt=""> <B>{trans("Group:")}</B>
-					</TD>
-					<TD width="97%">
-						<SELECT size="1" name="network" {tip text="Select network" trigger="customer"}>
-							<OPTION value="0">{trans("- all networks -")}</OPTION>
-							{foreach $networks as $net}
-							<OPTION value="{$net.id}"{if $network == $net.id} selected{/if}>{$net.name|truncate:40:"...":true}</OPTION>
-							{/foreach}
-						</SELECT>
-						<BR><BR>
-						<SELECT size="1" name="customergroup" {tip text="Select group" trigger="customer"}>
-							<OPTION value="0" SELECTED>{trans("- all groups -")}</OPTION>
-							{foreach $customergroups as $group}
-							<OPTION value="{$group.id}"{if $customergroup == $group.id} selected{/if}>{$group.name|truncate:40:"...":true}</OPTION>
-							{/foreach}
-						</SELECT>
-					</TD>
 				</TR>
 			</TABLE>
 		</TD>
 	</TR>
 	<TR>
-		<TD colspan="3" class="buttons">
-			<A href="javascript:document.documentgen.submit();">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>&nbsp;
-		{*	<A href="?m=">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A> *}
-			<A href="javascript:printdoc();">{trans("Print")} <IMG src="img/print.gif" alt=""></A>
+		<TD>
+			{icon name="ipnetwork" class="fa-fw"}
+		</TD>
+		<TD class="bold nobr">
+			{trans("Network:")}
+		</TD>
+		<TD>
+			<SELECT size="1" name="network" {tip text="Select network" trigger="customer"}>
+				<OPTION value="0">{trans("- all networks -")}</OPTION>
+				{foreach $networks as $net}
+				<OPTION value="{$net.id}"{if $network == $net.id} selected{/if}>{$net.name|truncate:40:"&hellip;":true}</OPTION>
+				{/foreach}
+			</SELECT>
 		</TD>
 	</TR>
-    </TBODY>
+	<TR>
+		<TD>
+			{icon name="customergroup" class="fa-fw"}
+		</TD>
+		<TD class="bold nobr">
+			{trans("Group:")}
+		</TD>
+		<TD>
+			<SELECT size="1" name="customergroup" {tip text="Select group" trigger="customer"}>
+				<OPTION value="0" SELECTED>{trans("- all groups -")}</OPTION>
+				{foreach $customergroups as $group}
+				<OPTION value="{$group.id}"{if $customergroup == $group.id} selected{/if}>{$group.name|truncate:40:"&hellip;":true}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR>
+		<TD colspan="3" class="lms-ui-box-buttons">
+			<div id="document-button-panel">
+				<div>
+					{button type="submit" icon="save" id="submit-button" label="Submit"}
+					{button type="submit" icon="print" label="Print" onclick="printdoc()"}
+					{button icon="cancel" label="Cancel" onclick="location.href = '?m=documentlist';"}
+				</div>
+			</div>
+		</TD>
+	</TR>
+	</TBODY>
 </TABLE>
 <BR>
 <DIV id="plugin" name="plugin">{$plugin_result}</DIV>
 {$script_result}
 </FORM>
-<SCRIPT type="text/javascript">
-<!--
+
+<script>
+
 	$(function() {
 		$('form[name="documentgen"] [name="document[title]"]').focus();
+
+		$('[name="document[type]"]').change(function() {
+			$('#document-file-row').toggle(parseInt($(this).val()) != 0);
+		});
 	});
-//-->
-</SCRIPT>
+
+</script>
 {/block}

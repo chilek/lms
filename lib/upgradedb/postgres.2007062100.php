@@ -31,5 +31,3 @@ $this->Execute("DROP TABLE timestamps");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007062100', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

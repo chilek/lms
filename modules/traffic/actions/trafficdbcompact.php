@@ -25,5 +25,3 @@
  */
 
 $layout['pagetitle'] = trans('Network Statistics Compacting');
-
-?>

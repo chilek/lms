@@ -28,5 +28,3 @@ $this->Execute("ALTER TABLE promotionassignments CHANGE selectionid label varcha
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017110300', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

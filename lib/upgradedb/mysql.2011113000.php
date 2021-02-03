@@ -31,8 +31,6 @@ $this->Execute("ALTER TABLE invoicecontents CHANGE discount pdiscount decimal(4,
 $this->Execute("ALTER TABLE assignments ADD vdiscount decimal(9, 2) NOT NULL DEFAULT '0'");
 $this->Execute("ALTER TABLE invoicecontents ADD vdiscount decimal(9, 2) NOT NULL DEFAULT '0'");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2011113000', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011113000', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

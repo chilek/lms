@@ -19,6 +19,14 @@
         <TBODY>
         <tr>
             <td scope="col" class="nobr">
+                <label for="timeout">{trans("Session timeout:")}</label>
+            </td>
+            <td scope="col">
+                <input type="number" size="20" name="timeout" id="timeout" value="{$timeout}">
+            </td>
+        </tr>
+        <tr>
+            <td scope="col" class="nobr">
                 <label for="page_header">{trans("Page header")}:</label>
             </td>
             <td scope="col">
@@ -32,6 +40,15 @@
             <td>
                 <input type="text" size="50" name="company_logo" id="company_logo" value="{$company_logo}"
                        placeholder="{trans("Enter path to your company logo")}">
+            </td>
+        </tr>
+        <tr>
+            <td class="nobr">
+                <label for="shortcut_icon">{trans("Web browser icon")}:</label>
+            </td>
+            <td>
+                <input type="text" size="50" name="shortcut_icon" id="shortcut_icon" value="{$shortcut_icon}"
+                        placeholder="{trans("Web browser icon")}" title="{trans("Enter full or relative URL address of web browser icon")}">
             </td>
         </tr>
         <TR>
@@ -59,16 +76,40 @@
             </TD>
         </TR>
         <TR>
+            <TD scope="col" class="text-left nobr">
+                {trans("Startup module:")}
+            </TD>
+            <TD scope="col">
+                <SELECT name="startupmodule" SIZE="1">
+                    {$menu2 = $menu}
+                    {array_multisort(Utils::array_column($menu2, 'name'), SORT_LOCALE_STRING, $menu2)}
+                    {foreach $menu2 as $m}
+                        {if $m.module !== "logout"}
+                            <OPTION value="{$m.module}" {if $startupmodule == $m.module}selected{/if}>{$m.name}</OPTION>
+                        {/if}
+                    {/foreach}
+                </SELECT>
+            </TD>
+        </TR>
+        <TR>
             <TD scope="col" class="nobr">
                 <label for="hide_nodes_modules">{trans("Disabling modules:")}</label>
             </TD>
             <TD scope="col">
-                <INPUT class="box light" type="checkbox" name="hide_nodes_modules" id="hide_nodes_modules" value="1" {if
-                       $hide_nodes_modules} checked{/if} {tip text="Hiding some modules useless when customer hasn't got
-                any nodes"}>
+                <INPUT class="box light" type="checkbox" name="hide_nodes_modules" id="hide_nodes_modules" value="1"
+                        {if $hide_nodes_modules} checked{/if} {tip text="Hiding some modules useless when customer hasn't got any nodes"}>
             </TD>
         </TR>
         <TR>
+            <TD scope="col" class="nobr">
+                <label for="mail_credential_reminders">{trans("Mail credential reminders:")}</label>
+            </TD>
+            <TD scope="col">
+                <input type="checkbox" id="mail_credential_reminders" name="mail_credential_reminders" {tip text="Mail credential reminders" }
+                       value="1"{if $mail_credential_reminders} checked{/if}>
+            </TD>
+        </TR>
+        <TR class="mail-credential-reminders">
             <TD scope="col" class="nobr">
                 <label for="reminder_mail_sender">{trans("Reminder mail sender:")}</label>
             </TD>
@@ -77,7 +118,7 @@
                        value="{$reminder_mail_sender}" {tip text="Enter reminder mail sender" }>
             </TD>
         </TR>
-        <TR>
+        <TR class="mail-credential-reminders">
             <TD scope="col" class="nobr">
                 <label for="reminder_mail_subject">{trans("Reminder mail subject:")}</label>
             </TD>
@@ -86,7 +127,7 @@
                        value="{$reminder_mail_subject}" {tip text="Enter reminder mail subject" }>
             </TD>
         </TR>
-        <TR>
+        <TR class="mail-credential-reminders">
             <TD scope="col" class="nobr">
                 <label for="reminder_mail_body">{trans("Reminder mail body:")}</label>
             </TD>
@@ -95,6 +136,15 @@
             </TD>
         </TR>
         <TR>
+            <TD scope="col" class="nobr">
+                <label for="sms_credential_reminders">{trans("SMS credential reminders:")}</label>
+            </TD>
+            <TD scope="col">
+                <input type="checkbox" id="sms_credential_reminders" name="sms_credential_reminders" {tip text="SMS credential reminders" }
+                       value="1"{if $sms_credential_reminders} checked{/if}>
+            </TD>
+        </TR>
+        <TR class="sms-credential-reminders">
             <TD scope="col" class="nobr">
                 <label for="reminder_sms_body">{trans("Reminder sms body:")}</label>
             </TD>
@@ -116,13 +166,21 @@
         </TR>
         <TR>
             <TD scope="col" class="nobr">
+                <label for="pin_validation">{trans("PIN validation")}</label>
+            </TD>
+            <TD scope="col">
+                <input type="checkbox" name="pin_validation" id="pin_validation"
+                    {if !empty($pin_validation)} checked{/if}
+                    {tip text="Userpanel PIN validation"}>
+            </TD>
+        </TR>
+        <TR>
+            <TD scope="col" class="nobr">
                 <label for="force_ssl">{trans("Force SSL:")}</label>
             </TD>
             <TD scope="col">
-                <INPUT type="checkbox" name="force_ssl" id="force_ssl" value="1" {if $force_ssl}
-                       checked{/if} {tip text="SSL Enforcing. Setting this option to 1 will effect with that LMS will
-                enforce SSL connection with redirect to \'https://\'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] at every
-                request without SSL. Default: 0 (off)."}>
+                <INPUT type="checkbox" name="force_ssl" id="force_ssl" value="1" {if $force_ssl} checked{/if}
+                        {tip text="SSL Enforcing. Setting this option to 1 will effect with that LMS will enforce SSL connection with redirect to \'https://\'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] at every request without SSL. Default: 0 (off)."}>
             </TD>
         </TR>
 
@@ -204,8 +262,8 @@
         </TFOOT>
     </table>
 </FORM>
-<script type="text/javascript">
-	<!--
+<script>
+
 	$(function () {
 		$('#userpanel-modules').sortable({
 			items: 'tbody > tr[data-module]',
@@ -237,7 +295,15 @@
 				});
 			}
 		});
+
+        $('#mail_credential_reminders').change(function() {
+            $('.mail-credential-reminders').toggle($(this).prop('checked'));
+        }).trigger('change');
+
+        $('#sms_credential_reminders').change(function() {
+            $('.sms-credential-reminders').toggle($(this).prop('checked'));
+        }).trigger('change');
 	});
-	//-->
+
 </script>
 {/block}

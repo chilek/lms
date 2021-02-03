@@ -23,33 +23,38 @@
  *
  */
 
-if(!isset($_GET['d']))
-	$SESSION->restore('ald', $d);
-else
-	$d = $_GET['d'];
+if (!isset($_GET['d'])) {
+    $SESSION->restore('ald', $d);
+} else {
+    $d = $_GET['d'];
+}
 $SESSION->save('ald', $d);
 
 // this may happen after logout
-if (!$d)
-	$d = $DB->GetOne('SELECT id FROM domains ORDER BY name LIMIT 1');
+if (!$d) {
+    $d = $DB->GetOne('SELECT id FROM domains ORDER BY name LIMIT 1');
+}
 
-$recordslist = $DB->GetAll('SELECT *,
+$recordslist = $DB->GetAll(
+    'SELECT *,
 	(CASE WHEN type=\'TXT\' THEN 1
 		WHEN type=\'MX\' THEN 2
 		WHEN type=\'NS\' THEN 3
 		WHEN type=\'SOA\' THEN 4
 		ELSE 0 END) AS ord
 	FROM records WHERE domain_id = ? ORDER BY ord desc, prio, name',
-	array($d));
+    array($d)
+);
 
 $listdata['total'] = count($recordslist);
 $listdata['domain'] = $d;
 $listdata['domainName'] = $domain['name'];
 
-if ($domain['type'] == 'SLAVE')
-	$showAddEdit = false;
-else
-	$showAddEdit = true;
+if ($domain['type'] == 'SLAVE') {
+    $showAddEdit = false;
+} else {
+    $showAddEdit = true;
+}
 
 $page = (!isset($_GET['page']) ? 1 : $_GET['page']);
 $pagelimit = ConfigHelper::getConfig('phpui.recordlist_pagelimit', $listdata['total']);
@@ -69,5 +74,3 @@ $SMARTY->assign('listdata', $listdata);
 $SMARTY->assign('showaddedit', $showAddEdit);
 $SMARTY->assign('domainlist', $DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
 $SMARTY->display('record/recordlist.html');
-
-?>

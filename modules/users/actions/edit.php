@@ -24,54 +24,55 @@
  *  $Id$
  */
 
-if(!$LMS->UserExists($_GET['id']))
-{
-	$SESSION->redirect('?m=users&a=list');
+if (!$LMS->UserExists($_GET['id'])) {
+    $SESSION->redirect('?m=users&a=list');
 }
 
-$userinfo = isset($_POST['userinfo']) ? $_POST['userinfo'] : FALSE;
+$userinfo = isset($_POST['userinfo']) ? $_POST['userinfo'] : false;
 
-if($userinfo)
-{
-	$userinfo['id'] = $_GET['id'];
-	
-	foreach($userinfo as $key => $value)
-		$userinfo[$key] = trim($value);
+if ($userinfo) {
+    $userinfo['id'] = $_GET['id'];
+    
+    foreach ($userinfo as $key => $value) {
+        $userinfo[$key] = trim($value);
+    }
 
-	if($userinfo['login'] == '')
-		$error['login'] = trans('Login can\'t be empty!');
-	elseif(!eregi('^[a-z0-9.-_]+$',$userinfo['login']))
-		$error['login'] = trans('Login contains forbidden characters!');
-	elseif($LMS->GetUserIDByLogin($userinfo['login']) && $LMS->GetUserIDByLogin($userinfo['login']) != $_GET['id'])
-		$error['login'] = trans('User with specified login exists or that login was used in the past!');
+    if ($userinfo['login'] == '') {
+        $error['login'] = trans('Login can\'t be empty!');
+    } elseif (!eregi('^[a-z0-9.-_]+$', $userinfo['login'])) {
+        $error['login'] = trans('Login contains forbidden characters!');
+    } elseif ($LMS->GetUserIDByLogin($userinfo['login']) && $LMS->GetUserIDByLogin($userinfo['login']) != $_GET['id']) {
+        $error['login'] = trans('User with specified login exists or that login was used in the past!');
+    }
 
-	if($userinfo['name'] == '')
-		$error['name'] = trans('You have to enter first and lastname!');
+    if ($userinfo['name'] == '') {
+        $error['name'] = trans('You have to enter first and lastname!');
+    }
 
-	if($userinfo['email']!='' && !check_email($userinfo['email']))
-		$error['email'] = trans('E-mail isn\'t correct!');
-				
-	$userinfo['rights'] = '';
+    if ($userinfo['email']!='' && !check_email($userinfo['email'])) {
+        $error['email'] = trans('E-mail isn\'t correct!');
+    }
+                
+    $userinfo['rights'] = '';
 
-	if(!$error)
-	{
-		$LMS->UserUpdate($userinfo);
+    if (!$error) {
+        $LMS->UserUpdate($userinfo);
 
-		$REDIRECT = '?m=users&a=info&id='.$userinfo['id'];
+        $REDIRECT = '?m=users&a=info&id='.$userinfo['id'];
                 return;
-	}
+    }
 }
 
-foreach($LMS->GetUserInfo($_GET['id']) as $key => $value)
-	if(!isset($userinfo[$key]))
-		$userinfo[$key] = $value;
+foreach ($LMS->GetUserInfo($_GET['id']) as $key => $value) {
+    if (!isset($userinfo[$key])) {
+        $userinfo[$key] = $value;
+    }
+}
 
 $layout['pagetitle'] = trans('User Edit: $a', $userinfo['login']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$SMARTY->assign('userinfo',$userinfo);
-$SMARTY->assign('unlockedit',TRUE);
-$SMARTY->assign('error',$error);
-
-?>
+$SMARTY->assign('userinfo', $userinfo);
+$SMARTY->assign('unlockedit', true);
+$SMARTY->assign('error', $error);

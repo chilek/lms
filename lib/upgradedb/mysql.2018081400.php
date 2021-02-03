@@ -28,5 +28,3 @@ $this->Execute("ALTER TABLE rtmessages MODIFY COLUMN type int(11)");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018081400', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

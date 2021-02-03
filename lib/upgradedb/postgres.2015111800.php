@@ -28,5 +28,3 @@ $this->Execute("ALTER TABLE events ADD COLUMN type smallint NOT NULL DEFAULT 1")
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015111800', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

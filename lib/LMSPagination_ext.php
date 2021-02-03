@@ -4,12 +4,13 @@
  * \class LMSPagination_ext
  * \brief Class responsibility for page numbering.
  */
-class LMSPagination_ext {
+class LMSPagination_ext
+{
 
     /*
      * \brief Number of items per page.
      */
-    private $perPage = NULL;
+    private $perPage = null;
 
     /*
      * \brief Total number of items.
@@ -19,23 +20,25 @@ class LMSPagination_ext {
     /*
      * \brief Range (limit) for page numbering.
      */
-    private $range = NULL;
+    private $range = null;
 
     /*
      * \brief Number of current selected page.
      */
-    private $currentPage = NULL;
+    private $currentPage = null;
 
     /*
      * \brief $_GET query with deleted page variable.
      */
     private $link = '';
 
-    public function __construct() {
+    public function __construct()
+    {
         $tmp = $_GET;
 
-        if (!empty($tmp['page']))
+        if (!empty($tmp['page'])) {
             unset($tmp['page']);
+        }
 
         $this->link = http_build_query($tmp);
     }
@@ -45,7 +48,8 @@ class LMSPagination_ext {
      *
      * \return string
      */
-    public function getLink() {
+    public function getLink()
+    {
         return $this->link;
     }
 
@@ -54,7 +58,8 @@ class LMSPagination_ext {
      *
      * \param $v int number of items on single page.
      */
-    public function setItemsPerPage($v) {
+    public function setItemsPerPage($v)
+    {
         $v = (int) $v;
 
         if ($v > 0) {
@@ -67,7 +72,8 @@ class LMSPagination_ext {
      *
      * \return int
      */
-    public function getItemsPerPage() {
+    public function getItemsPerPage()
+    {
         return $this->perPage;
     }
 
@@ -76,7 +82,8 @@ class LMSPagination_ext {
      *
      * \param $v int
      */
-    public function setItemsCount($v) {
+    public function setItemsCount($v)
+    {
         $v = (int) $v;
 
         if ($v > 0) {
@@ -89,7 +96,8 @@ class LMSPagination_ext {
      *
      * \return int
      */
-    public function getItemsCount() {
+    public function getItemsCount()
+    {
         return $this->items;
     }
 
@@ -99,7 +107,8 @@ class LMSPagination_ext {
      *
      * \param $v int range for left and right side to display page numbers.
      */
-    public function setRange($v) {
+    public function setRange($v)
+    {
         $v = (int) $v;
 
         if ($v > 0) {
@@ -112,7 +121,8 @@ class LMSPagination_ext {
      *
      * \param $v int
      */
-    public function setCurrentPage($v) {
+    public function setCurrentPage($v)
+    {
         $v = (int) $v;
 
         if ($v > 0) {
@@ -125,7 +135,8 @@ class LMSPagination_ext {
      *
      * \return int
      */
-    public function getCurrentPage() {
+    public function getCurrentPage()
+    {
         return $this->currentPage;
     }
 
@@ -134,7 +145,8 @@ class LMSPagination_ext {
      *
      * \return array
      */
-    public function getPages() {
+    public function getPages()
+    {
         $pages        = array();
         $pages_count  = ceil($this->items/$this->perPage);
         $range        = ($this->range)       ? $this->range       : 0;
@@ -153,13 +165,13 @@ class LMSPagination_ext {
 
             $steps = 2*$range - count(array_slice($pages, $current_page, $range));
             $left  = array();
-            while (($prev = prev($pages)) !== FALSE && $steps>0) {
+            while (($prev = prev($pages)) !== false && $steps>0) {
                 array_unshift($left, $prev);
                 --$steps;
             }
 
             $right = array_slice($pages, $current_page, 2*$range-count($left));
-            $pages = array_merge($left,array($pages[$current_page-1]),$right);
+            $pages = array_merge($left, array($pages[$current_page-1]), $right);
         }
 
         $result['pages'] = $pages;
@@ -169,5 +181,3 @@ class LMSPagination_ext {
         return $result;
     }
 }
-
-?>

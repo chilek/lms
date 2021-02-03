@@ -24,17 +24,16 @@
  *  $Id$
  */
 
-function smarty_block_tab_header($params, $content, $template, $repeat) {
-	if (!$repeat) {
-		$content_id = isset($params['content_id']) ? $params['content_id'] : null;
+function smarty_block_tab_header($params, $content, $template, $repeat)
+{
+    if (!$repeat) {
+        $content_id = isset($params['content_id']) ? $params['content_id'] : null;
 
-		return '
+        return '
 			<div class="lms-ui-tab-header' . ($content_id ? ' lmsbox-titlebar' : '') . '"'
-				. ($content_id ? ' data-lmsbox-content="'
-					. $content_id . '"' : '') . '>
+                . ($content_id ? ' data-lmsbox-content="'
+                    . $content_id . '"' : '') . '>
 				' . $content . '
 			</div>';
-	}
+    }
 }
-
-?>

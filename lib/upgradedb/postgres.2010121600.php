@@ -57,16 +57,16 @@ function parse_address_tmp($addr)
         $tmp = explode("\n", $street);
         $street = trim(reset($tmp));
 
-        if ($street)
+        if ($street) {
             return array($zip, $city, $street);
-    }
-    else {
+        }
+    } else {
         // first line only
         $tmp = explode("\n", $addr);
         $addr = trim(reset($tmp));
-        return array(NULL, NULL, $addr);
+        return array(null, null, $addr);
     }
-    return NULL;
+    return null;
 }
 
 $data = $this->GetAll("SELECT id, serviceaddr FROM customers WHERE serviceaddr <> ''");
@@ -117,5 +117,3 @@ $this->Execute("
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010121600', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

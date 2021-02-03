@@ -40,7 +40,7 @@
 			    <input type="hidden" name="is_sure" value="1">
 		            <input type="hidden" name="m" value="nodegroupmove">
 			    <input type="hidden" name="from" value="{$nodegroup.id}">
-	    		    <A HREF="javascript:document.tmove.submit();" onclick="return confirm('{trans("Are you sure, you want to move members to selected group?")}')">{trans("Move members to group:")}</A>
+	    		    <A id="move-members" HREF="#">{trans("Move members to group:")}</A>
 			    <SELECT SIZE="1" NAME="to" {tip text="Select group to which you want to move members"}>
 		            {foreach from=$nodegroups item=item}{if $item.id != $nodegroup.id}
 			            <OPTION VALUE="{$item.id}">{$item.name}</OPTION>
@@ -49,17 +49,23 @@
 			</FORM>
 			{/if}
 			<A HREF="javascript:document.tedit.submit();" ACCESSKEY="S">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
-			<A HREF="?m=nodegroupinfo&amp;id={$nodegroup.id}{if $membersnetid}&membersnetid={$membersnetid}{/if}{if $othersnetid}&othersnetid={$othersnetid}{/if}">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A> 
+			<A HREF="?m=nodegroupinfo&amp;id={$nodegroup.id}{if $membersnetid}&membersnetid={$membersnetid}{/if}{if $othersnetid}&othersnetid={$othersnetid}{/if}">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A>
 		</TD>
 	</TR>
     </TBODY>
 </TABLE>
-<SCRIPT type="text/javascript">
-<!--
+<SCRIPT>
 $(function() {
 	$('forms[name="tedit"] [name="nodegroup[name]"]').focus();
 });
-//-->
+
+$('#move-members').click(function() {
+	confirmDialog($t("Are you sure, you want to move members to selected group?"), this).done(function() {
+		document.tmove.submit();
+	});
+	return false;
+});
+
 </SCRIPT>
 {include file="node/nodegroupassignments.html"}
 {/block}

@@ -28,5 +28,3 @@ $this->Execute("ALTER TABLE location_buildings ADD COLUMN updated integer DEFAUL
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016121401', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

@@ -24,14 +24,16 @@
  *  $Id$
  */
 
-class NetContainer {
+class NetContainer
+{
     private $networks;
 
     private $ip_start;
     private $ip_end;
     private $netsize2mask;
 
-    public function __construct( $ip_start, $ip_end ) {
+    public function __construct($ip_start, $ip_end)
+    {
         $this->networks = array();
         $this->networks[$ip_start] = array();
 
@@ -57,9 +59,10 @@ class NetContainer {
         );
     }
 
-    public function add( array $n ) {
-        for ( $i=$n['ip_long']; $i<=$n['br_long']; ++$i ) {
-            if ( isset($this->networks[$i]) ) {
+    public function add(array $n)
+    {
+        for ($i=$n['ip_long']; $i<=$n['br_long']; ++$i) {
+            if (isset($this->networks[$i])) {
                 $this->networks[$i][] = array('host'=>$n['host'], 'net_name'=>$n['net_name']);
             } else {
                 $this->networks[$i] = array(array('host'=>$n['host'], 'net_name'=>$n['net_name']));
@@ -67,32 +70,33 @@ class NetContainer {
         }
     }
 
-    public function fetchNetworks() {
+    public function fetchNetworks()
+    {
         ksort($this->networks);
 
         $spaces  = array();
         $curr_ip = $this->ip_start;
         $end     = $this->ip_end + 1;
 
-        for ( $i=$this->ip_start+1; $i<=$end; ++$i ) {
-            if ( $this->networks[$i-1] != $this->networks[$i] || $i==$end ) {
+        for ($i=$this->ip_start+1; $i<=$end; ++$i) {
+            if ($this->networks[$i-1] != $this->networks[$i] || $i==$end) {
                 $size          = $i - $curr_ip;
                 $matched_masks = array();
 
-                foreach ( $this->netsize2mask as $s=>$m ) {
-                    if ( $size < $s ) {
+                foreach ($this->netsize2mask as $s => $m) {
+                    if ($size < $s) {
                         continue;
                     }
 
                     $size -= $s;
                     $matched_masks[] = array('mask'=>$m, 'size'=>$s);
 
-                    if ( $size == 0 ) {
+                    if ($size == 0) {
                         break;
                     }
                 }
 
-                foreach ( array_reverse($matched_masks) as $v ) {
+                foreach (array_reverse($matched_masks) as $v) {
                     $spaces[] = array(
                         'ip'    => long_ip($curr_ip),
                         'mask'  => $v['mask'],
@@ -116,11 +120,12 @@ class NetContainer {
  * \param  string $host Optional parameter for narrow netowrks to single host.
  * \return array
  */
-function getNetworks( $ip, $br, $host = null ) {
+function getNetworks($ip, $br, $host = null)
+{
     $ip_long = ip_long($ip); // network address
     $br_long = ip_long($br); // broadcast address
 
-    if ( $host ) {
+    if ($host) {
         $sql  = 'AND h.name ?LIKE? ?';
         $data =  array($ip_long, $br_long, $host);
     } else {
@@ -135,18 +140,17 @@ function getNetworks( $ip, $br, $host = null ) {
         FROM networks n
             LEFT JOIN hosts h ON n.hostid = h.id
         WHERE address >= ? AND address < ? ' . $sql . '
-        ORDER BY ip_long;', $data
-    );
+        ORDER BY ip_long;', $data);
 
-    foreach ( $networks as $k=>$v ) {
+    foreach ($networks as $k => $v) {
         $networks[$k]['ip']      = long_ip($networks[$k]['ip_long']);
         $networks[$k]['br_long'] = ip_long(getbraddr(long_ip($v['ip_long']), $v['mask_ip']));
 
-        if ( $v['ip_long'] < $ip_long ) {
+        if ($v['ip_long'] < $ip_long) {
             $ip_long = $v['ip_long'];
         }
 
-        if ( $networks[$k]['br_long'] > $br_long ) {
+        if ($networks[$k]['br_long'] > $br_long) {
             $br_long = $networks[$k]['br_long'];
         }
     }
@@ -157,10 +161,11 @@ function getNetworks( $ip, $br, $host = null ) {
         $nc->add($v);
     }
 
-    return $nc->fetchNetworks();;
+    return $nc->fetchNetworks();
+    ;
 }
 
-if ( isset($_GET['ajax']) ) {
+if (isset($_GET['ajax'])) {
     $ip   = $_POST['ip'];
     $mask = intval($_POST['mask']);
     $host = empty($_POST['host']) ? null : trim($_POST['host']);
@@ -168,12 +173,12 @@ if ( isset($_GET['ajax']) ) {
 
     $SMARTY->assign('ip', $ip);
 
-    if ( $mask < 24 ) {
+    if ($mask < 24) {
         $SMARTY->assign('mask', 24);
 
         $counter = 2 * pow(2, 24-$mask-1) - 1;
         for ($i=0; $i<=$counter; ++$i) {
-            $SMARTY->assign('ip'   , long_ip(ip_long($ip) + $i * 256));
+            $SMARTY->assign('ip', long_ip(ip_long($ip) + $i * 256));
             $SMARTY->assign('hosts', array(array('host'=>$host, 'net_name'=>$_POST['netname'])));
 
             $html .= $SMARTY->fetch('net/network_container.html');
@@ -184,7 +189,7 @@ if ( isset($_GET['ajax']) ) {
         $data     = array($ip_start , $ip_end);
 
         // if host is set then get only networks for specified host
-        if ( $host ) {
+        if ($host) {
             $data[] = $host;
         }
 
@@ -199,29 +204,28 @@ if ( isset($_GET['ajax']) ) {
                 LEFT JOIN hosts h       ON h.id = net.hostid
             WHERE
                 nod.ipaddr >= ? AND
-                nod.ipaddr <= ? ' . ($host ? ' AND h.name ?LIKE? ?' : ''), 'ip', $data
-        );
+                nod.ipaddr <= ? ' . ($host ? ' AND h.name ?LIKE? ?' : ''), 'ip', $data);
 
         $full_network = $DB->GetRow('SELECT * FROM networks WHERE name ?LIKE? ?', array($_POST['netname']));
 
-        $SMARTY->assign('used_ips' , $used_ips);
-        $SMARTY->assign('pool'     , array('start'=>$ip_start, 'end'=>$ip_end));
-        $SMARTY->assign('network'  , $ip_start == $full_network['address'] ? 1 : 0);
+        $SMARTY->assign('used_ips', $used_ips);
+        $SMARTY->assign('pool', array('start'=>$ip_start, 'end'=>$ip_end));
+        $SMARTY->assign('network', $ip_start == $full_network['address'] ? 1 : 0);
         $SMARTY->assign('broadcast', long_ip($ip_end) == getbraddr(long_ip($ip_start), $full_network['mask']) ? 1 : 0);
-        $SMARTY->assign('hostid'   , $full_network['id'] );
+        $SMARTY->assign('hostid', $full_network['id']);
 
         $html .= $SMARTY->fetch('net/network_container.html');
     }
 
-    die( $html );
+    die($html);
 }
 
-if ( isset($_POST['ip']) && isset($_POST['mask']) ) {
+if (isset($_POST['ip']) && isset($_POST['mask'])) {
     $ip   = getnetaddr($_POST['ip'], $_POST['mask']);
     $br   = getbraddr($_POST['ip'], $_POST['mask']);
     $host = isset($_POST['host']) ? trim($_POST['host']) : null;
 
-    if ( !$ip ) {
+    if (!$ip) {
         $error['ip'] = trans('Incorrect IP address or mask');
         $SMARTY->assign('error', $error);
     } else {
@@ -231,11 +235,9 @@ if ( isset($_POST['ip']) && isset($_POST['mask']) ) {
 
 $layout['pagetitle'] = trans('IP Network Search');
 
-$SMARTY->assign('host_list'    , $DB->GetAll('SELECT name FROM hosts;'));
+$SMARTY->assign('host_list', $DB->GetAll('SELECT name FROM hosts;'));
 $SMARTY->assign('selected_host', $_POST['host']);
-$SMARTY->assign('mask'         , isset($_POST['mask']) ? mask2prefix($_POST['mask']) : 24 );
-$SMARTY->assign('ip'           , !empty($ip) ? $ip : $_POST['ip']);
+$SMARTY->assign('mask', isset($_POST['mask']) ? mask2prefix($_POST['mask']) : 24);
+$SMARTY->assign('ip', !empty($ip) ? $ip : $_POST['ip']);
 
 $SMARTY->display('net/netusage.html');
-
-?>

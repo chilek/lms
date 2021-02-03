@@ -21,6 +21,9 @@
 		<TD WIDTH="45" CLASS="HEAD" ALIGN="CENTER">
 			{trans("Date")}
 		</TD>
+		<TD WIDTH="45" CLASS="HEAD" ALIGN="CENTER">
+			{trans("Invoice No.")}
+		</TD>
 		<TD WIDTH="60" CLASS="HEAD" ALIGN="CENTER">
 			{trans("Liability")}
 		</TD>
@@ -46,14 +49,17 @@
 		<TD ALIGN="CENTER" NOWRAP>
 			{$balancelist.date[balancelist]}
 		</TD>
-		<TD ALIGN="RIGHT" NOWRAP>
-			{if !$balancelist.type[balancelist]}{($balancelist.value[balancelist]*-1)|money_format}{else}-{/if}
+		<TD ALIGN="CENTER" NOWRAP>
+			{$balancelist.fullnumber[balancelist]}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{if $balancelist.type[balancelist] && $balancelist.value[balancelist] > 0}{$balancelist.value[balancelist]|money_format}{else}-{/if}
+			{if !$balancelist.type[balancelist]}{moneyf($balancelist.value[balancelist]*-1, $balancelist.currency[balancelist])}{else}-{/if}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{if $balancelist.type[balancelist] && $balancelist.value[balancelist] < 0}{($balancelist.value[balancelist]*-1)|money_format}{else}-{/if}
+			{if $balancelist.type[balancelist] && $balancelist.value[balancelist] > 0}{moneyf($balancelist.value[balancelist], $balancelist.currency[balancelist])}{else}-{/if}
+		</TD>
+		<TD ALIGN="RIGHT" NOWRAP>
+			{if $balancelist.type[balancelist] && $balancelist.value[balancelist] < 0}{moneyf($balancelist.value[balancelist]*-1, $balancelist.currency[balancelist])}{else}-{/if}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
 			{$balancelist.after[balancelist]|money_format}
@@ -64,13 +70,13 @@
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD COLSPAN="7" class="empty-table">
+		<TD COLSPAN="8" class="empty-table">
 			<p>{trans("No such transactions")}</p>
 		</TD>
 	</TR>
 	{/section}
 	<TR>
-		<TD CLASS="HEADGREY" ALIGN="right" COLSPAN="2">
+		<TD CLASS="HEADGREY" ALIGN="right" COLSPAN="3">
 			<B>{trans("Total:")}</B>
 		</TD>
 		<TD CLASS="HEADGREY" ALIGN="right" nowrap>

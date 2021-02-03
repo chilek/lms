@@ -24,15 +24,14 @@
  *  $Id$
  */
 
-if($DB->GetOne('SELECT COUNT(id) FROM users')==0)
-{
-	// adding default admin
-	$DB->Execute('INSERT INTO users (login, name, passwd) VALUES(?, ?, ?)',
-			array('admin', 'Administrator', crypt('admin')));
+if ($DB->GetOne('SELECT COUNT(id) FROM users')==0) {
+    // adding default admin
+    $DB->Execute(
+        'INSERT INTO users (login, name, passwd) VALUES(?, ?, ?)',
+        array('admin', 'Administrator', crypt('admin'))
+    );
 
-	// redirect to login page
-	$REDIRECT = '?';
-	return;
+    // redirect to login page
+    $REDIRECT = '?';
+    return;
 }
-
-?>

@@ -28,10 +28,11 @@
 						<B>{trans("Period:")}&nbsp;</B>
 					</TD>
 					<TD style="width: 1%;" class="nobr">
-						{trans("From")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+						{date_period_preset from="#invoicereport [name=\"from\"]" to="#invoicereport [name=\"to\"]"}
+						{trans("From")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 					</TD>
 					<TD style="width: 97%;" class="nobr">
-						{trans("To")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+						{trans("To")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 					</TD>
 				</TR>
 				<TR>
@@ -45,7 +46,7 @@
 						<SELECT size="1" name="division" {tip text="Select division"}>
 							<OPTION value="0">- {trans("all")} -</OPTION>
 							{foreach $divisions as $division}
-							<OPTION value="{$division.id}">{$division.shortname}</OPTION>
+								<OPTION value="{$division.id}">{$division.label|escape}</OPTION>
 							{/foreach}
 						</SELECT>
 					</TD>
@@ -89,7 +90,7 @@
 						<SELECT SIZE="1" NAME="registry" {tip text="Select cash registry"}>
 					    		<OPTION VALUE="0">{trans("- select registry -")}</OPTION>
 						        {foreach from=$cashreglist item=c}
-							<OPTION VALUE="{$c.id}">{$c.name|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
+							<OPTION VALUE="{$c.id}">{$c.name|truncate:40:"&hellip;":true} ({$c.id|string_format:"%04d"})</OPTION>
 						        {/foreach}
 						</SELECT>
 					</TD>
@@ -98,8 +99,9 @@
 					</TD>
 					<TD width="1%" nowrap>
 						<B>{trans("Period:")}</B>&nbsp;
-						{trans("From")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-						{trans("To")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+						{date_period_preset from="#receiptlist [name=\"from\"]" to="#receiptlist [name=\"to\"]"}
+						{trans("From")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+						{trans("To")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 					</TD>
 					<TD width="1%">
 						<IMG src="img/users.gif" alt="">
@@ -111,7 +113,7 @@
 						<SELECT size="1" name="user" {tip text="You can select user to limit results"}>
 							<OPTION value="">{trans("- all users -")}</OPTION>
 							{section name="users" loop=$users}
-							<OPTION value="{$users[users].id}">{$users[users].name|truncate:40:"...":true}</OPTION>
+							<OPTION value="{$users[users].id}">{$users[users].name|truncate:40:"&hellip;":true}</OPTION>
 							{/section}
 						</SELECT>
 					</TD>

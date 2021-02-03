@@ -24,72 +24,78 @@
  *  $Id$
  */
 
-class LMSEzpdfTransferForm extends LMSDocument {
-	protected $id;
+class LMSEzpdfTransferForm extends LMSDocument
+{
+    protected $id;
 
-	public function __construct($title, $pagesize = 'A4', $orientation = 'portrait') {
-		parent::__construct('LMSEzpdfBackend', $title, $pagesize, $orientation);
+    public function __construct($title, $pagesize = 'A4', $orientation = 'portrait')
+    {
+        parent::__construct('LMSEzpdfBackend', $title, $pagesize, $orientation);
 
-		$this->backend->setLineStyle(2);
-	}
+        $this->backend->setLineStyle(2);
+    }
 
-	private function truncate($str, $max = 60) {
-		$len = strlen($str);
-		if(!$max || $max >= $len)
-			return $str;
+    private function truncate($str, $max = 60)
+    {
+        $len = strlen($str);
+        if (!$max || $max >= $len) {
+            return $str;
+        }
 
-		// musimy pokombinowac bo nie mamy czcionki o stalym rozmiarze,
-		// ten sposob i tak jest do kitu, ale dziala lepiej niz staly limit
-		for ($i = 0; $i < $len; $i++) {
-			if (ctype_upper($str[$i]))
-				$l += 1.4;
-			else
-				$l += 1;
-		}
-		$max = $max * ($len / $l);
+        // musimy pokombinowac bo nie mamy czcionki o stalym rozmiarze,
+        // ten sposob i tak jest do kitu, ale dziala lepiej niz staly limit
+        for ($i = 0; $i < $len; $i++) {
+            if (ctype_upper($str[$i])) {
+                $l += 1.4;
+            } else {
+                $l += 1;
+            }
+        }
+        $max = $max * ($len / $l);
 
-		return substr($str, 0, $max);
-	}
+        return substr($str, 0, $max);
+    }
 
-	protected function main_form($x, $y) {
-		$balance = $this->data['balance'] < 0 ? - $this->data['balance'] : $this->data['balance'];
+    protected function main_form($x, $y)
+    {
+        $balance = $this->data['balance'] < 0 ? - $this->data['balance'] : $this->data['balance'];
 
-		$font_size = 14;
-		$lineh = 25;
-		$x += ConfigHelper::getConfig('finances.leftmargin', 0, true);
-		$y += ConfigHelper::getConfig('finances.bottommargin', 0, true);
+        $font_size = 14;
+        $lineh = 25;
+        $x += ConfigHelper::getConfig('finances.leftmargin', 0, true);
+        $y += ConfigHelper::getConfig('finances.bottommargin', 0, true);
 
-		$y += 275;
-		$this->backend->addText($x, $y, $font_size, $this->data['d_name']);
-		$y -= $lineh;
-		$this->backend->addText($x, $y, $font_size, trim($this->data['d_zip'] . ' ' . $this->data['d_city'] . ' ' . $this->data['d_address']));
-		$y -= $lineh;
-		$this->backend->addText($x, $y, $font_size, format_bankaccount(bankaccount($this->data['id'], $this->data['account'])));
-		$y -= $lineh;
-		$this->backend->addText($x + 220, $y, $font_size, sprintf('%.2f', $balance));
-		$y -= $lineh;
-		$this->backend->addText($x, $y, $font_size, moneyf_in_words($balance));
-		$y -= $lineh;
-		$this->backend->addText($x, $y, $font_size, $this->truncate($this->data['customername']));
-		$y -= $lineh;
-		$this->backend->addText($x, $y, $font_size, $this->truncate(trim($this->data['zip'] . ' ' . $this->data['city'] . ' ' . $this->data['address'])));
-		$y -= $lineh;
-		$this->backend->addText($x, $y, $font_size, ConfigHelper::getConfig('finances.pay_title', trans('Not set')));
-		$y -= $lineh;
-		$this->backend->addText($x, $y, $font_size, trans('Customer ID: $a', sprintf('%04d', $this->data['id'])));
-	}
+        $y += 275;
+        $this->backend->addText($x, $y, $font_size, $this->data['d_name']);
+        $y -= $lineh;
+        $this->backend->addText($x, $y, $font_size, trim($this->data['d_zip'] . ' ' . $this->data['d_city'] . ' ' . $this->data['d_address']));
+        $y -= $lineh;
+        $this->backend->addText($x, $y, $font_size, format_bankaccount(bankaccount($this->data['id'], $this->data['account'])));
+        $y -= $lineh;
+        $this->backend->addText($x + 220, $y, $font_size, sprintf('%.2f', $balance));
+        $y -= $lineh;
+        $this->backend->addText($x, $y, $font_size, moneyf_in_words($balance));
+        $y -= $lineh;
+        $this->backend->addText($x, $y, $font_size, $this->truncate($this->data['customername']));
+        $y -= $lineh;
+        $this->backend->addText($x, $y, $font_size, $this->truncate(trim($this->data['zip'] . ' ' . $this->data['city'] . ' ' . $this->data['address'])));
+        $y -= $lineh;
+        $this->backend->addText($x, $y, $font_size, ConfigHelper::getConfig('finances.pay_title', trans('Not set')));
+        $y -= $lineh;
+        $this->backend->addText($x, $y, $font_size, trans('Customer ID: $a', sprintf('%04d', $this->data['id'])));
+    }
 
-	public function Draw($data) {
-		parent::Draw($data);
+    public function Draw($data)
+    {
+        parent::Draw($data);
 
-		$this->main_form(0, 0);
-		$this->main_form(0, 310);
-		$this->main_form(440, 0);
-		$this->main_form(440, 310);
+        $this->main_form(0, 0);
+        $this->main_form(0, 310);
+        $this->main_form(440, 0);
+        $this->main_form(440, 310);
 
-		if (!$this->data['last'])
-			$this->id = $this->backend->newPage(1, $this->id);
-	}
+        if (!$this->data['last']) {
+            $this->id = $this->backend->newPage(1, $this->id);
+        }
+    }
 }
-
-?>

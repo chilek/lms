@@ -36,7 +36,7 @@ class UserRightsConfigParser implements ConfigParserInterface
     
     /**
      * Converts user rights array into it's object representation
-     * 
+     *
      * @param array $raw_config Raw config
      * @param array $options Associative array of options
      * @return \ConfigContainer Config object
@@ -54,8 +54,9 @@ class UserRightsConfigParser implements ConfigParserInterface
             if ($right === 'full_access') {
                 $variables[] = new ConfigVariable('superuser', true);
             }
-            if ($access->checkPrivilege($right))
+            if ($access->checkPrivilege($right)) {
                 $variables[] = new ConfigVariable($right, true);
+            }
         }
 
         $section = new ConfigSection('privileges');

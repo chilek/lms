@@ -28,52 +28,67 @@ function module_main()
 {
     global $DB,$LMS,$SESSION,$SMARTY;
 
-  if(isset($_GET['confirm_old']))
-    {
-       $DB->Execute('UPDATE nodes SET warning=0 WHERE ownerid = ?', array($SESSION->id));
-    }
-    elseif($DB->GetOne('SELECT MAX(warning) FROM vnodes WHERE ownerid = ?', array($SESSION->id)))
-    {
-       $warning = $LMS->GetCustomerMessage($SESSION->id);
-       $SMARTY->assign('warning', $warning);
+    if (isset($_GET['confirm_old'])) {
+         $DB->Execute('UPDATE nodes SET warning=0 WHERE ownerid = ?', array($SESSION->id));
+    } elseif ($DB->GetOne('SELECT MAX(warning) FROM vnodes WHERE ownerid = ?', array($SESSION->id))) {
+        $warning = $LMS->GetCustomerMessage($SESSION->id);
+        $SMARTY->assign('warning', $warning);
     }
 
 
-	if (isset($_GET['confirm'])) {
-		$confirm = $_GET['confirm'];
-		$DB->Execute('UPDATE messageitems SET status = ?, lastdate = ?NOW? WHERE id = ?',
-			array(MSG_DELIVERED, $confirm));
-		header('Location: ?m=notices');
-	} else {
-		$notice = $DB->GetAll('SELECT m.subject, m.cdate, m.body, m.type, mi.id, mi.messageid, mi.destination, mi.status, mi.lastdate
+    if (isset($_GET['confirm'])) {
+        $confirm = $_GET['confirm'];
+        $DB->Execute(
+            'UPDATE messageitems SET status = ?, lastdate = ?NOW? WHERE id = ?',
+            array(MSG_DELIVERED, $confirm)
+        );
+        header('Location: ?m=notices');
+    } else {
+        $notice = $DB->GetAll(
+            'SELECT m.subject, m.cdate, (CASE WHEN mi.body IS NULL THEN m.body ELSE mi.body END) AS body,
+                m.type, m.contenttype, mi.id, mi.messageid, mi.destination, mi.status,
+                mi.lastdate, mi.lastreaddate, mi.body as mibody
 			FROM customers c
 			JOIN messageitems mi ON mi.customerid = c.id
 			JOIN messages m ON m.id = mi.messageid
 			WHERE m.type in (?, ?) AND c.id = ?
 			ORDER BY mi.status asc, m.cdate desc',
-			array(MSG_USERPANEL, MSG_USERPANEL_URGENT, $SESSION->id));
-		$SMARTY->assign('notice', $notice);
-	}
+            array(MSG_USERPANEL, MSG_USERPANEL_URGENT, $SESSION->id)
+        );
+        $SMARTY->assign('notice', $notice);
+    }
 
-	if (isset($_GET['confirm_urgent'])) {
-		$confirm_urgent = $_GET['confirm_urgent'];
-		$DB->Execute('UPDATE messageitems SET status = ?, lastdate = ?NOW? WHERE id = ?',
-			array(MSG_DELIVERED, $confirm_urgent));
-		header('Location: ?m=notices');
-	}
-	$SMARTY->display('module:notices.html');
+    if (isset($_GET['confirm_urgent'])) {
+        $notice_handler = UserpanelNoticeHandler::getInstance();
+        $notice_handler->markNoticeAsDelivered($_GET['confirm_urgent']);
+        if (isset($_GET['ajax'])) {
+            header('Content-Type: application/json');
+            print json_encode(array(
+                'urgent_notice' => $notice_handler->getUrgentNotice(),
+                'unread_notices' => $notice_handler->getUnreadNotices(),
+            ));
+            return;
+        }
+        header('Location: ?m=notices');
+    }
+    $SMARTY->display('module:notices.html');
 }
 
 function setNoticeRead($noticeid)
 {
-	global $DB;
-	$result = new xajaxResponse();
-	$DB->Execute('UPDATE messageitems SET lastreaddate = ?NOW? WHERE id = ?', array($noticeid));
-	return $result;
+    $db = LMSDB::getInstance();
+    $result = new xajaxResponse();
+
+    $notice_handler = UserpanelNoticeHandler::getInstance();
+    $notice_handler->markNoticeAsRead($noticeid);
+    $unread_notices = $notice_handler->getUnreadNotices();
+    if (empty($unread_notices)) {
+        $result->script("$('.lms-userpanel-notices').removeClass('lms-userpanel-icon-warning');");
+    }
+
+    return $result;
 }
 
 $LMS->InitXajax();
 $LMS->RegisterXajaxFunction('setNoticeRead');
 $SMARTY->assign('xajax', $LMS->RunXajax());
-
-?>

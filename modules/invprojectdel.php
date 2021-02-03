@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,9 +26,8 @@
 
 $id = intval($_GET['id']);
 
-if (isset($_GET['is_sure']) && $_GET['is_sure'] == 1 && $id)
-	$LMS->DeleteProject($id);
+if ($id) {
+    $LMS->DeleteProject($id);
+}
 
 $SESSION->redirect('?'.$SESSION->get('backto'));
-
-?>

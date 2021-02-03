@@ -31,5 +31,3 @@ $this->Execute("ALTER TABLE networks ADD COLUMN disabled smallint NOT NULL DEFAU
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008042400', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

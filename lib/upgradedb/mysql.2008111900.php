@@ -40,5 +40,3 @@ CREATE TABLE voipaccounts (
 ");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008111900', 'dbversion'));
-
-?>

@@ -24,10 +24,8 @@
 
 $allTables=$this->ListTables();
 
-foreach ($allTables as $table){
-  $this->Execute("ALTER TABLE $table engine=innodb");
-  }
+foreach ($allTables as $table) {
+    $this->Execute("ALTER TABLE $table engine=innodb");
+}
   
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009111000', 'dbversion'));
-
-?>

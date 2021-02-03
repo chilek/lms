@@ -44,5 +44,3 @@ $this->Execute("ALTER TABLE nodes DROP mac");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010050600', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

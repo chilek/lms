@@ -21,20 +21,21 @@
  *
  */
 
-function splitNameToFirstAndLastName($users_before) {
-	if (!$users_before) {
-		return array();
-	}
+function splitNameToFirstAndLastName($users_before)
+{
+    if (!$users_before) {
+        return array();
+    }
 
-	foreach ($users_before as $id => $user) {
-		$parts = explode(' ', $user['name']);
-		$lastname = array_pop($parts);
-		$firstname = implode(' ', $parts);
-		$users[$id]['id'] = $user['id'];
-		$users[$id]['firstname'] = $firstname;
-		$users[$id]['lastname'] = $lastname;
-	}
-	return $users;
+    foreach ($users_before as $id => $user) {
+        $parts = explode(' ', $user['name']);
+        $lastname = array_pop($parts);
+        $firstname = implode(' ', $parts);
+        $users[$id]['id'] = $user['id'];
+        $users[$id]['firstname'] = $firstname;
+        $users[$id]['lastname'] = $lastname;
+    }
+    return $users;
 }
 
 $this->BeginTrans();
@@ -46,9 +47,9 @@ $users_before = $this->GetAll('SELECT id, name FROM users');
 $users = splitNameToFirstAndLastName($users_before);
 
 if ($users) {
-	foreach ($users as $user) {
-		$this->Execute("UPDATE users SET firstname=?, lastname=? WHERE id = ?", array($user['firstname'], $user['lastname'], $user['id']));
-	}
+    foreach ($users as $user) {
+        $this->Execute("UPDATE users SET firstname=?, lastname=? WHERE id = ?", array($user['firstname'], $user['lastname'], $user['id']));
+    }
 }
 
 $this->Execute("ALTER TABLE users DROP COLUMN name");
@@ -58,4 +59,3 @@ $this->Execute("CREATE VIEW vusers AS SELECT *, " . $this->Concat('firstname', "
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016102500', 'dbversion'));
 
 $this->CommitTrans();
-?>

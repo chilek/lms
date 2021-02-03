@@ -1,7 +1,31 @@
 <!--// $Id$ //-->
-{css}
 
-{tab_container id="customerevents"}
+{css}
+{js}
+
+<script>
+
+	$(function() {
+		$('[name="customer-events-from-date"]').change(function() {
+			location.href = '?m={$layout.module}&id={$objectid}&events-from-date=' +
+				$(this).val();
+		});
+
+		$('#show-in-timetable').click(function() {
+			var from_date = $('[name="customer-events-from-date"]').val();
+			if (from_date != '') {
+				var date = from_date.split('/');
+				location.href = $(this).attr('href') + '&day=' + date[2] + '&month=' + date[1] + '&year=' + date[0];
+			} else {
+				location.href = $(this).attr('href');
+			}
+			return false;
+		});
+	});
+
+</script>
+
+{tab_container id="customerevents" label="Customer Timetable"}
 
 	{tab_header content_id="eventspanel"}
 		{tab_header_cell icon="lms-ui-icon-calendar"}
@@ -9,9 +33,13 @@
 			{if $limit}
 				({t a=$limit}last $a events{/t})
 			{/if}
+			{trans("From")}&nbsp;<INPUT type="text" name="customer-events-from-date" size="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}"
+				{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means 1970/01/01) or click to choose it from calendar"}
+				value="{$events_from_date}">
 		{/tab_header_cell}
 		{tab_header_cell}
 			<A href="?m=eventadd&customerid={$customerinfo.id}">{trans("New Event")} &raquo;</A>
+			<a id="show-in-timetable" href="?m=eventlist&u={$customerinfo.id}">{trans("Show in timetable")} &raquo;</a>
 			<A href="?m={$layout.module}&id={if $nodeinfo.id}{$nodeinfo.id}{else}{$customerinfo.id}{/if}&allevents={if $allevents}0{else}1{/if}">{if $allevents}{trans("Hide closed")}{else}{trans("Show closed")}{/if} &raquo;</A>
 		{/tab_header_cell}
 	{/tab_header}
@@ -66,7 +94,7 @@
 						</div>
 						<div class="lms-ui-tab-table-wrapper title-description col-2">
 							<div class="lms-ui-tab-table-column title">
-								{$event.title}
+								{$event.title|escape}
 							</div>
 							<div class="lms-ui-tab-table-column description">
 								{$event.description|default:"-"}
@@ -81,15 +109,18 @@
 							{button type="link" icon="open" href="?m=eventedit&id={$event.id}&action=close"
 								tip="Close"}
 						{/if}
-						{button type="link" icon="delete" href="?m=eventdel&id={$event.id}"
-							onclick="return confirmLink(this, '{trans("Are you sure, you want to delete that event?")}')"
+						{button type="link" class="delete-event" href="?m=eventdel&id={$event.id}" icon="delete"
 							tip="Delete"}
 						{button type="link" icon="edit" href="?m=eventedit&id={$event.id}" tip="Edit"}
 					</div>
 				</div>
 			{sectionelse}
 				<div class="lms-ui-tab-empty-table">
-					{trans("There are no events in timetable.")}
+					{if $allevents}
+						{trans("There are no events in timetable.")}
+					{else}
+						{trans("There are no open events in timetable.")}
+					{/if}
 				</div>
 			{/section}
 		{/tab_table}

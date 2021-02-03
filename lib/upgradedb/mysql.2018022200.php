@@ -39,5 +39,3 @@ $this->Execute("CREATE INDEX pna_tonumber_idx ON pna (tonumber)");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018022200', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

@@ -29,36 +29,33 @@ $layout['pagetitle'] = trans('Select MAC address');
 $p = isset($_GET['p']) ? $_GET['p'] : '';
 $js = '';
 
-if(!$p)
-	$js = 'var targetfield = window.parent.targetfield;';
-elseif($p == 'main')
-{
-	$js = 'var targetfield = window.parent.targetfield;';
+if (!$p) {
+    $js = 'var targetfield = window.parent.targetfield;';
+} elseif ($p == 'main') {
+    $js = 'var targetfield = window.parent.targetfield;';
 
-	$maclist = $LMS->GetMACs();
+    $maclist = $LMS->GetMACs();
 
-	if (ConfigHelper::getConfig('phpui.arpd_servers'))
-	{
-		$servers = preg_split('/[\t ]+/', ConfigHelper::getConfig('phpui.arpd_servers'));
-		foreach($servers as $server)
-		{
-			$res = explode(':', $server);
-			if(!isset($res[1]) || $res[1] == '')
-				$res[1] = 1029;
+    if (ConfigHelper::getConfig('phpui.arpd_servers')) {
+        $servers = preg_split('/[\t ]+/', ConfigHelper::getConfig('phpui.arpd_servers'));
+        foreach ($servers as $server) {
+            $res = explode(':', $server);
+            if (!isset($res[1]) || $res[1] == '') {
+                $res[1] = 1029;
+            }
 
-			$remote = $LMS->GetRemoteMACs($res[0], $res[1]);
-			$maclist = array_merge($maclist, $remote);
-		}
-	}
+            $remote = $LMS->GetRemoteMACs($res[0], $res[1]);
+            $maclist = array_merge($maclist, $remote);
+        }
+    }
 
-	if(count($maclist))
-		array_multisort($maclist['longip'],$maclist['mac'],$maclist['ip'],$maclist['nodename']);
+    if (count($maclist)) {
+        array_multisort($maclist['longip'], $maclist['mac'], $maclist['ip'], $maclist['nodename']);
+    }
 
-	$SMARTY->assign('maclist',$maclist);
+    $SMARTY->assign('maclist', $maclist);
 }
 
 $SMARTY->assign('part', $p);
 $SMARTY->assign('js', $js);
 $SMARTY->display('choose/choosemac.html');
-
-?>

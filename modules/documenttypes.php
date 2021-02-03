@@ -26,16 +26,19 @@
 
 $typelist = $DOCTYPES;
 
-foreach($typelist as $idx => $name)
-	if($idx >= 0)
-		unset($typelist[$idx]);
+foreach ($typelist as $idx => $name) {
+    if ($idx >= 0) {
+        unset($typelist[$idx]);
+    }
+}
 
-if ($SESSION->is_set('dtlp') && !isset($_GET['page']))
-	$SESSION->restore('dtlp', $_GET['page']);
+if ($SESSION->is_set('dtlp') && !isset($_GET['page'])) {
+    $SESSION->restore('dtlp', $_GET['page']);
+}
 
 $listdata['total'] = count($typelist);
 
-$page = (!isset($_GET['page']) ? 1 : $_GET['page']); 
+$page = (!isset($_GET['page']) ? 1 : $_GET['page']);
 $pagelimit = ConfigHelper::getConfig('phpui.documenttypes_pagelimit', $listdata['total']);
 $start = ($page - 1) * $pagelimit;
 
@@ -51,5 +54,3 @@ $SMARTY->assign('start', $start);
 $SMARTY->assign('listdata', $listdata);
 $SMARTY->assign('typelist', $typelist);
 $SMARTY->display('document/documenttypes.html');
-
-?>

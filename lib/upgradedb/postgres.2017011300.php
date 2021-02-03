@@ -28,5 +28,3 @@ $this->Execute("UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?", ar
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017011300', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

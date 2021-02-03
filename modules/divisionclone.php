@@ -26,23 +26,25 @@
 $id = intval($_GET['id']);
 $division = $LMS->GetDivision($id);
 
+$address_id = $division['address_id'] ? $LMS->CopyAddress($division['address_id']) : null;
+
 $args = array(
-	'name'            => $division['name'],
-	'shortname'       => $division['shortname'] . ' (copy)',
-	'ten'             => $division['ten'],
-	'regon'           => $division['regon'],
-	'rbe'             => $division['rbe'] ? $division['rbe'] : '',
-	'rbename'         => $division['rbename'] ? $division['rbename'] : '',
-	'account'         => $division['account'],
-	'inv_header'      => $division['inv_header'],
-	'inv_footer'      => $division['inv_footer'],
-	'inv_author'      => $division['inv_author'],
-	'inv_cplace'      => $division['inv_cplace'],
-	'inv_paytime'     => $division['inv_paytime'],
-	'inv_paytype'     => $division['inv_paytype'] ? $division['inv_paytype'] : null,
-	'description'     => $division['description'],
-	'tax_office_code' => $division['tax_office_code'],
-	'address_id'      => $division['address_id'] ? $division['address_id'] : null
+    'name'            => $division['name'],
+    'shortname'       => $division['shortname'] . ' (copy)',
+    'ten'             => $division['ten'],
+    'regon'           => $division['regon'],
+    'rbe'             => $division['rbe'] ? $division['rbe'] : '',
+    'rbename'         => $division['rbename'] ? $division['rbename'] : '',
+    'account'         => $division['account'],
+    'inv_header'      => $division['inv_header'],
+    'inv_footer'      => $division['inv_footer'],
+    'inv_author'      => $division['inv_author'],
+    'inv_cplace'      => $division['inv_cplace'],
+    'inv_paytime'     => $division['inv_paytime'],
+    'inv_paytype'     => $division['inv_paytype'] ? $division['inv_paytype'] : null,
+    'description'     => $division['description'],
+    'tax_office_code' => $division['tax_office_code'],
+    'address_id'      => $address_id ?: null
 );
 
 $DB->Execute('INSERT INTO divisions (name, shortname,
@@ -51,10 +53,8 @@ $DB->Execute('INSERT INTO divisions (name, shortname,
 	VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
 if ($SYSLOG) {
-	$args[SYSLOG::RES_DIV] = $DB->GetLastInsertID('divisions');
-	$SYSLOG->AddMessage(SYSLOG::RES_DIV, SYSLOG::OPER_ADD, $args);
+    $args[SYSLOG::RES_DIV] = $DB->GetLastInsertID('divisions');
+    $SYSLOG->AddMessage(SYSLOG::RES_DIV, SYSLOG::OPER_ADD, $args);
 }
 
 $SESSION->redirect('?m=divisionlist');
-
-?>

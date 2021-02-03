@@ -29,5 +29,3 @@ $this->Execute("ALTER TABLE voip_cdr CHANGE time_answer_to_end billedtime int(11
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017030101', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

@@ -37,5 +37,3 @@ $this->Execute("ALTER TABLE cash CHANGE itemid itemid smallint NOT NULL DEFAULT 
 $this->Execute("UPDATE dbinfo SET keyvalue = '2005013000' WHERE keytype = 'dbversion'");
 
 $this->CommitTrans();
-
-?>

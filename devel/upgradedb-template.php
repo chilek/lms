@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License Version 2 as
@@ -26,5 +26,3 @@ $this->BeginTrans();
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('%version%', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

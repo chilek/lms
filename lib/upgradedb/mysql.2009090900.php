@@ -27,5 +27,3 @@
 $this->Execute("ALTER TABLE networks ADD notes text DEFAULT '' NOT NULL;");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009090900', 'dbversion'));
-
-?>

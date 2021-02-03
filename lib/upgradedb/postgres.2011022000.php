@@ -68,5 +68,3 @@ ALTER TABLE tariffs ADD CONSTRAINT tariffs_name_key UNIQUE(name, value, period);
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011022000', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

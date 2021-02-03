@@ -30,14 +30,16 @@
  * \param  int    $id number of pool type
  * \return string empty string if not found, string contains name if exists
  */
-function getPoolTypeNameByNumber( $number ) {
-	global $VOIP_POOL_NUMBER_TYPES;
-	$name = '';
+function getPoolTypeNameByNumber($number)
+{
+    global $VOIP_POOL_NUMBER_TYPES;
+    $name = '';
 
-	if ( in_array($number, array_keys($VOIP_POOL_NUMBER_TYPES)) )
-		$name = $VOIP_POOL_NUMBER_TYPES[ $number ];
+    if (in_array($number, array_keys($VOIP_POOL_NUMBER_TYPES))) {
+        $name = $VOIP_POOL_NUMBER_TYPES[ $number ];
+    }
 
-	return $name;
+    return $name;
 }
 
 /*
@@ -50,7 +52,8 @@ function getPoolTypeNameByNumber( $number ) {
  * \return array  array with text messages
  * \return 0      no error
  */
-function valid_pool( $p, $id = 0 ) {
+function valid_pool($p, $id = 0)
+{
     $error = array();
     $DB    = LMSDB::getInstance();
     $id    = (int) $id;
@@ -89,24 +92,26 @@ function valid_pool( $p, $id = 0 ) {
         $error['poolstart'] = trans('Pool start must be lower that end!');
     }
 
-    if ( !getPoolTypeNameByNumber( $type ) )
+    if (!getPoolTypeNameByNumber($type)) {
         $error['pooltype'] = trans("Incorrect pool type!");
+    }
 
     foreach ($pool_list as $v) {
-        if ($id == $v['id'] || !$id)
+        if ($id == $v['id'] || !$id) {
             continue;
+        }
 
         $check1 = gmp_cmp($pstart, $v['poolstart']);
         $check2 = gmp_cmp($pstart, $v['poolend']);
 
-        if ( ($check1 == 1 || $check1 == 0) && ($check2 == -1 || $check2 == 0) ) {
+        if (($check1 == 1 || $check1 == 0) && ($check2 == -1 || $check2 == 0)) {
             $error['poolstart'] = trans('Number coincides with pool `$a` !', $v['name']);
         }
 
         $check1 = gmp_cmp($pend, $v['poolstart']);
         $check2 = gmp_cmp($pend, $v['poolend']);
 
-        if ( ($check1 == 1 || $check1 == 0) && ($check2 == -1 || $check2 == 0) ) {
+        if (($check1 == 1 || $check1 == 0) && ($check2 == -1 || $check2 == 0)) {
             $error['poolend'] = trans('Number coincides with pool `$a` !', $v['name']);
         }
 
@@ -125,9 +130,10 @@ function valid_pool( $p, $id = 0 ) {
  * \param $end   end number
  * return string pool range
  */
-function getPoolSize( $begin, $end ) {
+function getPoolSize($begin, $end)
+{
     // end - begin + 1
-    $size = gmp_add( gmp_sub($end, $begin), 1);
+    $size = gmp_add(gmp_sub($end, $begin), 1);
 
     return gmp_strval($size);
 }
@@ -136,22 +142,23 @@ if (empty($_GET['action'])) {
     $_GET['action'] = 'none';
 }
 
-switch($_GET['action']) {
-
+switch ($_GET['action']) {
     case 'add':
         $p     = array_map('trim', $_POST);
-        $error = valid_pool( $p );
+        $error = valid_pool($p);
 
         if ($error) {
-            die( json_encode($error) );
+            die(json_encode($error));
         }
 
         $DB->BeginTrans();
 
         $status = ($p['status'] == '1') ? 1 : 0;
 
-        $query = $DB->Execute('INSERT INTO voip_pool_numbers (disabled, name, poolstart, poolend, description, type) VALUES (?,?,?,?,?,?)',
-                               array($status, $p['name'], $p['poolstart'], $p['poolend'], $p['description'], $p['pooltype']));
+        $query = $DB->Execute(
+            'INSERT INTO voip_pool_numbers (disabled, name, poolstart, poolend, description, type) VALUES (?,?,?,?,?,?)',
+            array($status, $p['name'], $p['poolstart'], $p['poolend'], $p['description'], $p['pooltype'])
+        );
 
         if ($query == 1) {
             $DB->CommitTrans();
@@ -172,14 +179,14 @@ switch($_GET['action']) {
             }
 
             // return inserted pool data
-            die( json_encode( array('id'            => $DB->GetLastInsertID("voip_pool_numbers"),
+            die(json_encode(array('id'            => $DB->GetLastInsertID("voip_pool_numbers"),
                                     'size'          => getPoolSize($p['poolstart'], $p['poolend']),
                                     'phones_used'   => $phones_used,
-                                    'phones_unused' => gmp_strval( gmp_sub($size, $phones_used) ),
-                                    'type'          => getPoolTypeNameByNumber($p['pooltype']) ) ) );
+                                    'phones_unused' => gmp_strval(gmp_sub($size, $phones_used)),
+                                    'type'          => getPoolTypeNameByNumber($p['pooltype']) )));
         } else {
             $DB->RollbackTrans();
-            die( json_encode( array('name' => trans("Operation failed!")) ) );
+            die(json_encode(array('name' => trans("Operation failed!"))));
         }
 
         return 0;
@@ -189,27 +196,29 @@ switch($_GET['action']) {
         $id = (empty($_POST['poolid'])) ? 0 : intval($_POST['poolid']);
         $p  = array_map('trim', $_POST);
 
-        $error = valid_pool( $p, $id );
+        $error = valid_pool($p, $id);
 
         if ($error) {
-            die( json_encode($error) );
+            die(json_encode($error));
         }
 
         $DB->BeginTrans();
 
         $status = ($pool['status'] == '1') ? 1 : 0;
 
-        $query = $DB->Execute('UPDATE voip_pool_numbers SET
+        $query = $DB->Execute(
+            'UPDATE voip_pool_numbers SET
                                disabled = ?, name = ?, poolstart = ?, poolend = ?, description = ?, type = ?
                                WHERE id = ?',
-                               array($p['status'], $p['name'], $p['poolstart'], $p['poolend'], $p['description'], $p['pooltype'], $p['poolid']));
+            array($p['status'], $p['name'], $p['poolstart'], $p['poolend'], $p['description'], $p['pooltype'], $p['poolid'])
+        );
 
         if ($query == 1) {
             $DB->CommitTrans();
-            die( json_encode( array('id' => $p['poolid'], 'typeid' => $p['pooltype']) ) );
+            die(json_encode(array('id' => $p['poolid'], 'typeid' => $p['pooltype'])));
         } else {
             $DB->RollbackTrans();
-            die( json_encode( array('name' => trans("Operation failed!")) ) );
+            die(json_encode(array('name' => trans("Operation failed!"))));
         }
 
         return 0;
@@ -222,7 +231,7 @@ switch($_GET['action']) {
         $query = $DB->Execute("DELETE FROM voip_pool_numbers WHERE id = ?", array($id));
 
         if ($query == 0) {
-            die( json_encode( array( trans("Operation failed!")) ) );
+            die(json_encode(array( trans("Operation failed!"))));
             $DB->RollbackTrans();
         } else {
             $DB->CommitTrans();
@@ -239,7 +248,7 @@ switch($_GET['action']) {
         $query = $DB->Execute("UPDATE voip_pool_numbers SET disabled=? WHERE id=?", array($state, $id));
 
         if ($query == 0) {
-            echo json_encode( array( trans("Operation failed!") ) );
+            echo json_encode(array( trans("Operation failed!") ));
             $DB->RollbackTrans();
         } else {
             $DB->CommitTrans();
@@ -272,9 +281,9 @@ if ($pool_list) {
             }
         }
 
-        $pool_list[$i]['phones_unused'] = gmp_strval( gmp_sub($pool_list[$i]['size'], $pool_list[$i]['phones_used']) );
+        $pool_list[$i]['phones_unused'] = gmp_strval(gmp_sub($pool_list[$i]['size'], $pool_list[$i]['phones_used']));
 
-        if ( !empty($VOIP_POOL_NUMBER_TYPES[$pool_list[$i]['typeid']]) ) {
+        if (!empty($VOIP_POOL_NUMBER_TYPES[$pool_list[$i]['typeid']])) {
             $pool_list[$i]['type'] = $VOIP_POOL_NUMBER_TYPES[$pool_list[$i]['typeid']];
         } else {
             $pool_list[$i]['type'] = trans('undefined');
@@ -284,10 +293,8 @@ if ($pool_list) {
 
 $layout['pagetitle'] = trans('Pool numbers');
 
-$SMARTY->assign('pooltypes' , $VOIP_POOL_NUMBER_TYPES);
+$SMARTY->assign('pooltypes', $VOIP_POOL_NUMBER_TYPES);
 $SMARTY->assign('prefixlist', $LMS->GetPrefixList());
-$SMARTY->assign('pool_list' , $pool_list);
-$SMARTY->assign('hostlist'  , $LMS->DB->GetAll('SELECT id, name FROM hosts ORDER BY name'));
+$SMARTY->assign('pool_list', $pool_list);
+$SMARTY->assign('hostlist', $LMS->DB->GetAll('SELECT id, name FROM hosts ORDER BY name'));
 $SMARTY->display('voipaccount/voippoolnumberlist.html');
-
-?>

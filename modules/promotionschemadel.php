@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -25,28 +25,50 @@
  */
 
 $id = intval($_GET['id']);
-$promotionid = $DB->GetOne('SELECT promotionid FROM promotionschemas
-    WHERE id = ?', array($id));
+$schema = $DB->GetRow(
+    'SELECT s.promotionid, s.deleted, COUNT(a.id) AS assignments
+    FROM promotionschemas s
+    LEFT JOIN assignments a ON a.promotionschemaid = s.id
+    WHERE s.id = ?
+    GROUP BY s.promotionid, s.deleted',
+    array($id)
+);
 
-if ($_GET['is_sure'] == '1') {
-	if ($SYSLOG) {
-		$args = array(
-			SYSLOG::RES_PROMOSCHEMA => $id,
-			SYSLOG::RES_PROMO => $promotionid,
-		);
-		$SYSLOG->AddMessage(SYSLOG::RES_PROMOSCHEMA, SYSLOG::OPER_DELETE, $args);
-		$assigns = $DB->GetAll('SELECT id, tariffid FROM promotionassignments WHERE promotionschemaid = ?',
-			array($id));
-		if (!empty($assigns))
-			foreach ($assigns as $assign) {
-				$args[SYSLOG::RES_PROMOASSIGN] = $assign['id'];
-				$args[SYSLOG::RES_TARIFF] = $assign['tariffid'];
-				$SYSLOG->AddMessage(SYSLOG::RES_PROMOASSIGN, SYSLOG::OPER_DELETE, $args);
-			}
-	}
-	$DB->Execute('DELETE FROM promotionschemas WHERE id = ?', array($id));
+if (empty($schema['assignments'])) {
+    if ($SYSLOG) {
+        $args = array(
+            SYSLOG::RES_PROMOSCHEMA => $id,
+            SYSLOG::RES_PROMO => $schema['promotionid'],
+        );
+        $SYSLOG->AddMessage(SYSLOG::RES_PROMOSCHEMA, SYSLOG::OPER_DELETE, $args);
+    }
+} elseif ($SYSLOG) {
+    $args = array(
+        SYSLOG::RES_PROMOSCHEMA => $id,
+        SYSLOG::RES_PROMO => $schema['promotionid'],
+        'deleted' => 1,
+    );
+    $SYSLOG->AddMessage(SYSLOG::RES_PROMOSCHEMA, SYSLOG::OPER_UPDATE, $args);
 }
 
-$SESSION->redirect('?m=promotioninfo&id='.$promotionid);
+if ($SYSLOG) {
+    $assigns = $DB->GetAll(
+        'SELECT id, tariffid FROM promotionassignments WHERE promotionschemaid = ?',
+        array($id)
+    );
+    if (!empty($assigns)) {
+        foreach ($assigns as $assign) {
+            $args[SYSLOG::RES_PROMOASSIGN] = $assign['id'];
+            $args[SYSLOG::RES_TARIFF] = $assign['tariffid'];
+            $SYSLOG->AddMessage(SYSLOG::RES_PROMOASSIGN, SYSLOG::OPER_DELETE, $args);
+        }
+    }
+}
 
-?>
+if (empty($schema['assignments'])) {
+    $DB->Execute('DELETE FROM promotionschemas WHERE id = ?', array($id));
+} else {
+    $DB->Execute('UPDATE promotionschemas SET deleted = 1 WHERE id = ?', array($id));
+}
+
+$SESSION->redirect('?m=promotioninfo&id=' . $schema['promotionid']);

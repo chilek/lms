@@ -26,30 +26,33 @@
 
 $layout['pagetitle'] = trans('Price lists');
 
-$pricelist = (isset($_POST['pricelist'])) ? $_POST['pricelist'] : NULL;
+$pricelist = (isset($_POST['pricelist'])) ? $_POST['pricelist'] : null;
 $error = array();
 
-if (isset($_GET['id']))
+if (isset($_GET['id'])) {
     $pricelist_id = (int) $_GET['id'];
+}
 
 /*!
  * \brief Build groups based on array forwarded as parameter.
- * 
+ *
  * WARNING !
  * You will not see effect when group have one price within himself.
  *
  * \param  array &$result handle to array
  * \return array
  */
-function buildGroups(&$result) {
+function buildGroups(&$result)
+{
     $groups = array();
 
-    foreach ($result as $groupName=>$content) {
-        if (count($content) == 1)
+    foreach ($result as $groupName => $content) {
+        if (count($content) == 1) {
             $groups[$groupName] = $content;
-        else {
-            foreach ($content as $price => $groupContent)
+        } else {
+            foreach ($content as $price => $groupContent) {
                 $groups[$groupName." ($price)"][$price] = $groupContent;
+            }
         }
     }
 
@@ -62,15 +65,18 @@ function buildGroups(&$result) {
  *
  * \param int $id pricelist id to clear
  */
-function clearPricelist($id) {
+function clearPricelist($id)
+{
     $DB = LMSDB::getInstance();
-    $DB->Execute("DELETE FROM
+    $DB->Execute(
+        "DELETE FROM
                      voip_prefix_groups
                   WHERE
                      id in (SELECT prefix_group_id
                             FROM voip_price_groups
-                            WHERE voip_tariff_id = ?)"
-                  ,array($id));
+                            WHERE voip_tariff_id = ?)",
+        array($id)
+    );
 }
 
 /*!
@@ -79,7 +85,8 @@ function clearPricelist($id) {
  * \param string $row single row to parse
  * \return array associative array with paremeters
  */
-function parseRow($row) {
+function parseRow($row)
+{
     $pattern = '(?<prefix>.*)\|' .
                '(?<name>.*)\|' .
                '(?<unitsize>.*)\|' .
@@ -89,15 +96,17 @@ function parseRow($row) {
     $row = str_replace("\r", '', $row);
     preg_match('/^'.$pattern.'$/', $row, $matches);
 
-    foreach ($matches as $k=>$v) {
-        if (is_numeric($k))
+    foreach ($matches as $k => $v) {
+        if (is_numeric($k)) {
             unset($matches[$k]);
+        }
     }
 
     return $matches;
 }
 
-function loadFromFile($list_id) {
+function loadFromFile($list_id)
+{
     $prefixList = array();
     $error      = array();
     $lines      = file($_FILES['file']['tmp_name']);
@@ -107,8 +116,9 @@ function loadFromFile($list_id) {
     }
 
     while (($line = next($lines)) !== false) {
-        if (empty($line))
+        if (empty($line)) {
             continue;
+        }
 
         $row    = parseRow($line);
         $name   = $row['name'];
@@ -118,10 +128,11 @@ function loadFromFile($list_id) {
         $result[$name][$sell][] = $prefix;
 
         // CHECK FOR DUPLICATE PREFIXES
-        if (isset($prefixList[$prefix]))
+        if (isset($prefixList[$prefix])) {
             $error['duplicate_item'][] = $prefix;
-        else
+        } else {
             $prefixList[$prefix] = $name;
+        }
     }
 
     if ($error) {
@@ -135,8 +146,9 @@ function loadFromFile($list_id) {
     // GENERATE INSERT QUERY TO `voip_prefix_groups` TABLE
     // -----------------------------------------------------
     $voip_prefix_group = 'INSERT INTO voip_prefix_groups (name, description) VALUES ';
-    foreach ($groups as $groupName=>$prefixArray)
+    foreach ($groups as $groupName => $prefixArray) {
         $voip_prefix_group .= "('$groupName', ''),";
+    }
 
     $voip_prefix_group = rtrim($voip_prefix_group, ',') . ';';
     $DB->execute($voip_prefix_group);
@@ -147,11 +159,13 @@ function loadFromFile($list_id) {
     $groupHelperArray = $DB->GetAllByKey("SELECT id, name FROM voip_prefix_groups", "name");
     $voip_prefix = 'INSERT INTO voip_prefixes (prefix, groupid) VALUES ';
 
-    foreach ($groups as $groupName=>$v)
-        foreach ($v as $prefixArray)
+    foreach ($groups as $groupName => $v) {
+        foreach ($v as $prefixArray) {
             foreach ($prefixArray as $singlePrefix) {
                 $voip_prefix .= "('$singlePrefix', " . $groupHelperArray[$groupName]['id'] . "),";
             }
+        }
+    }
 
     $voip_prefix = rtrim($voip_prefix, ',') . ';';
     $DB->execute($voip_prefix);
@@ -161,7 +175,7 @@ function loadFromFile($list_id) {
     // -----------------------------------------------------
     $voip_tariff = 'INSERT INTO voip_price_groups (prefix_group_id, voip_tariff_id, price, unitsize) VALUES ';
 
-    foreach ($groups as $groupName=>$prefixArray) {
+    foreach ($groups as $groupName => $prefixArray) {
         $price = key($prefixArray);
         $voip_tariff .= '(' . $groupHelperArray[$groupName]['id'] . ", $list_id, $price, 60),";
     }
@@ -178,17 +192,20 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete') {
     $DB->Execute('DELETE FROM voip_tariffs WHERE id = ?', array($pricelist_id));
     unset($pricelist_id);
 } else if (!empty($pricelist)) {
-    $pricelist_exists = $DB->GetOne("SELECT id
+    $pricelist_exists = $DB->GetOne(
+        "SELECT id
                                      FROM voip_tariffs
                                      WHERE
                                         name = ? AND
                                         id != ?",
-                                     array($pricelist['name'], (int) $pricelist_id));
+        array($pricelist['name'], (int) $pricelist_id)
+    );
 
-    if (!$pricelist['name'])
+    if (!$pricelist['name']) {
         $error['name'] = trans("Price list name is required!");
-    else if ($pricelist_exists)
+    } else if ($pricelist_exists) {
         $error['name'] = trans("Price list with specified name already exists!");
+    }
 
     if (empty($_FILES['file']['name']) && !$pricelist_id) {
         $error['file'] = trans('Price list must contains at least one group!');
@@ -197,7 +214,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete') {
     if (!$error) {
         $DB->BeginTrans();
 
-        if ($pricelist_id == NULL) {
+        if ($pricelist_id == null) {
             $DB->Execute("INSERT INTO voip_tariffs (name, description)
                          VALUES (?, ?)", array($pricelist['name'], $pricelist['description']));
             $pricelist_id = $DB->GetOne("SELECT id FROM voip_tariffs WHERE name = ?", array($pricelist['name']));
@@ -214,9 +231,9 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete') {
             $file_err = loadFromFile($pricelist_id);
         }
 
-        if (!$error)
+        if (!$error) {
             $DB->CommitTrans();
-        else {
+        } else {
             $SMARTY->assign('file_err', $file_err);
             $DB->RollbackTrans();
         }
@@ -254,5 +271,3 @@ $SMARTY->assign('pricelist', $pricelist);
 $SMARTY->assign('price_list', $DB->GetAll('SELECT id, name FROM voip_tariffs'));
 $SMARTY->assign('error', $error);
 $SMARTY->display('voipaccount/voippricelist.html');
-
-?>

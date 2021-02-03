@@ -1,0 +1,196 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Nowe zgłoszenie</title>
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+	<script src="js/custom.js"></script>
+</head>
+<body>
+<form name="ticket" method="post">
+<table id="form">
+    <tr>
+	<td colspan="2" align="center"><font size="5"><b>System zgłoszeń</b><font size="3"><br>
+	Dla operatorów E-Południe Call Center<br><hr/></td>
+    </tr>
+	{if $warning}
+        <tr>
+            <td colspan="2" align="center"><font size="5" color="red">
+                <b>{$warning}</b><hr/>
+            </td>
+        </tr>
+    {/if}
+    <tr>
+	<td width="30%">Przedstawienie się</td>
+	<td align="center">
+		{$welcomeMsg}
+	</td>
+    </tr>
+    <tr>
+	<td>Określ temat rozmowy</td>
+	<td align="center">
+	<select name="queue" onchange="typ_zgloszenia(this.value)">
+	    <option value="1">Zgłoszenie awarii</option>
+	    <option value="2">Informacja handlowa</option>
+	    <option value="3">Sprawy finansowe</option>
+	</select>
+	</td>
+    </tr>
+    <tr id="zgloszenieawarii" style="display:;">
+	<td valign="top">Wybierz usługę która uległa awarii</td>
+	<td align="center">	
+			<label><input type="checkbox" name="internet" {if $ticket.internet} checked {/if} value="Internet">&nbsp;Internet</label>
+			<label><input type="checkbox" name="tv" {if $ticket.tv} checked {/if} value="TV">&nbsp;Telewizja</label>
+			<label><input type="checkbox" name="telefon" {if $ticket.telefon} checked {/if} value="telefon">&nbsp;Telefon</label>
+	<br>
+	Czy urządzenie końcowe jest podłączone do zasilania?<br>
+	Czy świecą się na nim jakieś diody?<br>
+	Czy było restartowane (wyłączone z prądu)?
+	</td>
+    </tr>
+    <tr id="zgloszenieawarii2">
+	<td>Określ szczegółowo usterkę</td>
+	<td align="center">Proszę podać informację co dokładnie się dzieje?<br>
+		<input type="text" name="body" value="{$ticket.body}" autofocus {if $error.body} class="error" {/if} size="80"/>
+	</td>
+    </tr>
+    <tr id="informacjahandlowa" style="display:none;">
+	<td>Informacja o ofercie handlowej</td>
+	<td align="center">Nasza oferta oraz aktualne promocję  znajduje się na stronie internetowej: www.telico.pl
+	Pełne informację może przekazać nasz dział handlowy, który pracuje od poniedziałku do piątku w godzinach od 8 do 20 oraz w soboty od 9 do 14<br>
+	Czy mogę przekazać Państwa dane oraz telefon kontaktowy w celu sprawdzenia możliwości instalacji i oddzwonienia do Państwa w późniejszym terminie?<br>
+	<br>
+	<input type="radio" name="kontakt" value="tak" onchange="ponowny_kontakt(this.value)">tak
+	<input type="radio" name="kontakt" value="nie" onchange="ponowny_kontakt(this.value)">nie
+    </td>
+    </tr>
+    <tr id="sprawyfinansowe" style="display:none;">
+	<td></td>
+	<td align="center">Czy chcą Państow odblokować usługę, zablokowaną z powodu braku płatności ?<br>
+	<br>
+	<input type="radio" name="odblokowanie_komunikatu" value="tak" onchange="blokowanie_komunikatu(this.value)">tak
+	<input type="radio" name="odblokowanie_komunikatu" value="nie" onchange="blokowanie_komunikatu(this.value)">nie
+	</td>
+    </tr>
+    <tr id="sprawyfinansowe3" style="display:none;">
+	<td></td>
+	<td align="center">Proszę o podanie na kogo zarejestrowana jest usługa oraz podanie adresu instalacji. Dane przekażę do działu technicznego, który odblokuje Państwa usługę.<br>
+	<br>
+    </tr>
+    <tr id="sprawyfinansowe4" style="display:none;">
+	<td></td>
+	<td align="center">Szczegółowe dane o Państwa rozliczeniach można zobaczyć na stronie WWW w Wirtualnym Biurze Obsługi Klienta, dostępnym na naszej stronie internetowej www.telico.pl w prawym górnym rogu.
+	Informacje finansowe może przekazać również nasz dział handlowy, który pracuje od poniedziałku do piątku w godzinach od 8 do 20 oraz w soboty od 9 do 14.<br>
+	<br>
+    </tr>
+    <tr id="dane_kontaktowe" style="display:;">
+	<td valign="top">Ustal dane abonenta oraz miejsce instalacji</td>
+	<td align="center">
+        {if $result}
+        	Czy abonent to:&nbsp;
+            <select id='customer' name="customer" onchange="changeFormValues()">
+                {foreach from=$result key=k item=res}
+                    <option  value="{$k}" {if $k==$ticket.customer} selected {/if}> {$res.username}</option>
+                {/foreach}
+            </select>
+			{if sizeof($result)>=2}
+            		<a style="color:#777;">{sizeof($result)} możliwych</a>
+            {/if}
+            <br>
+            Jeśli nie:&nbsp;<label><input type="checkbox" id="othercustomer" name="othercustomer" {if isset($ticket.othercustomer)} checked {/if} onchange="changeFormValues()">&nbsp;inny</label>
+            <br /><br />
+        {/if}
+	Proszę podać imię, nazwisko osoby na którą zawarta jest umowa.<br>
+	<input type="text" name="name" value="{$ticket.name}" autofocus {if $error.name} class="error" {/if} size="80"/>
+	<br><br>
+	Proszę podać adres instalacji<br>
+	<input type="text" name="address" value="{$ticket.address}" {if $error.address} class="error" {/if} autofocus size="80"/>
+	<br><br>
+    Numer telefonu dzwoniącego<br>
+    <input type="text" name="phone" readonly value="{$phone}" autofocus {if $error.phone} class="error" {/if} size="20"/><br>
+    <br>
+    <label><input type="checkbox" id="phonetype" onchange="phoneContact()" {if empty($ticket.contactphone)} checked {/if} name="phonetype" />&nbsp;Telefon kontaktowy jak numer dzwoniącego</label>
+    <div id="contact_phone" {if empty($ticket.contactphone)} style="display: none;" {else} style="display: block;"{/if}>
+    	<br>
+    	Proszę podać telefon kontaktowy<br>
+		<input type="text" name="contactphone" value="{$ticket.contactphone}" autofocus size="20" /><br>
+    </div>
+	</td>
+    </tr>
+    <tr id="zgloszenieawarii4" style="display:;">
+	<td>Informacje końcowe</td>
+	<td align="center">Przekazuję Państwa zgłoszenie do dyżurującego działu technicznego. Technik sprawdzi zgłoszenie i podejmie dalsze czynności w celu usunięcia usterki. Jeśli będzie konieczna wizyta techników, nasz dział obsługi klienta skontaktuje się z Państwem w celu umówienia odpowiadającego terminu.</td>
+    </tr>
+    <tr id="ponowny_kontakt_tak" style="display:none;">
+	<td>Pobranie danych teleadresowych</td>
+	<td align="center">
+	Dziękujemy za zostawienie informacji. Skontaktujemy się z Państwem w godzinach pracy Biura Obsługi Klienta w najbliższym możliwym terminie. Do widzenia.
+    </td>
+    </tr>
+    <tr id="ponowny_kontakt_nie" style="display:none;">
+	<td>Zakończenie rozmowy</td>
+	<td align="center">
+		Dziękuję za rozmowę. Jeśli będą Państwo zainteresowani naszymi usługami to proszę o telefon w godzinach pracy Biura Obsługi Klienta, czyli od poniedziałku do piątku od 8 do 21 oraz w soboty od 9 do 14. Do widzenia.
+    </td>
+    </tr>
+    <tr id="zapisanie" style="display:;">
+	<td></td>
+	<td align="center"><input id="zapisanie2" style="display:;" type="submit" value="Zapisz" />
+	</td>
+    </tr>
+    <tr id="zakonczenie" style="display:none;">
+	<td></td>
+	<td align="center"><input type="button" value="Zamknij okno" onclick="closeTHEwindow()">
+	</td>
+    </tr>
+</table>
+
+</form>
+
+<div class="showPanel">
+	<a id="showbtn" onclick="showPanel('show');">Pokaż</a><a id="hidebtn" style="display: none;" onclick="showPanel('hide');">Schowaj</a>
+</div>
+
+<div id="panel">
+	{$information}
+</div>
+
+<script type="text/javascript">
+{if $js_result}
+    var data = {$js_result};
+    var key =  0;
+	{if !empty($ticket.customer)} key = {$ticket.customer};  {/if} 
+    document.getElementsByName("name")[0].value  	= data[key]['username'];
+    document.getElementsByName("address")[0].value  = data[key]['city'] + ' ' + data[key]['address'];
+    document.getElementsByName("name")[0].readOnly  	= true;
+    document.getElementsByName("address")[0].readOnly  	= true;
+    document.getElementsByName("phone")[0].readOnly  	= true;
+
+    if(document.getElementById("othercustomer").checked){
+    	document.getElementById("customer").disabled = true;
+    	document.getElementsByName("name")[0].readOnly  	= false;
+    	document.getElementsByName("name")[0].value = "{$ticket.name}";
+    	document.getElementsByName("address")[0].readOnly  	= false;
+    	document.getElementsByName("address")[0].value = "{$ticket.address}";
+    }
+
+    function changeFormValues() {
+    	var value = document.getElementsByName("customer")[0].value;
+        if (document.getElementById("othercustomer").checked) {
+            document.getElementById("customer").disabled = true;
+            document.getElementsByName("name")[0].value     = '';
+            document.getElementsByName("address")[0].value  = '';
+            document.getElementsByName("name")[0].readOnly  	= false;
+   			document.getElementsByName("address")[0].readOnly  	= false;
+        } else {
+        	document.getElementById("customer").disabled = false;
+        	document.getElementsByName("name")[0].value     = data[value]['username'];
+            document.getElementsByName("address")[0].value  = data[value]['city'] + ' ' + data[value]['address'];
+            document.getElementsByName("name")[0].readOnly  	= true;
+     	 	document.getElementsByName("address")[0].readOnly  	= true;
+        }
+    }
+{/if}
+</script>
+
+</body>
+</html>

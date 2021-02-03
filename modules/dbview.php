@@ -24,46 +24,46 @@
  *  $Id$
  */
 
-function readfile_chunked($filename,$retbytes=true)
+function readfile_chunked($filename, $retbytes = true)
 {
-	$chunksize = 1*(1024*1024); // how many bytes per chunk
-	$buffer = '';
-	$cnt = 0;
-	$handle = fopen($filename, 'rb');
-	if ($handle === false)
-		return false;
-	while (!feof($handle))
-	{
-		$buffer = fread($handle, $chunksize);
-		echo $buffer;
-		flush();
-		if ($retbytes)
-			$cnt += strlen($buffer);
-	}
-	$status = fclose($handle);
-	if ($retbytes && $status)
-		return $cnt; // return num. bytes delivered like readfile() does.
-	return $status;
+    $chunksize = 1*(1024*1024); // how many bytes per chunk
+    $buffer = '';
+    $cnt = 0;
+    $handle = fopen($filename, 'rb');
+    if ($handle === false) {
+        return false;
+    }
+    while (!feof($handle)) {
+        $buffer = fread($handle, $chunksize);
+        echo $buffer;
+        flush();
+        if ($retbytes) {
+            $cnt += strlen($buffer);
+        }
+    }
+    $status = fclose($handle);
+    if ($retbytes && $status) {
+        return $cnt; // return num. bytes delivered like readfile() does.
+    }
+    return $status;
 }
 
-if (!preg_match('/^[0-9]+-[0-9]+$/', $_GET['db']))
-	die;
+if (!preg_match('/^[0-9]+-[0-9]+$/', $_GET['db'])) {
+    die;
+}
 
 $filename = ConfigHelper::getConfig('directories.backup_dir').'/lms-'.$_GET['db'].'.sql';
 
 header('Content-Type: application/octet-stream');
-if ((extension_loaded('zlib')) && (strstr($_GET['file'],"sql.gz")))
-{
-	$filename .= '.gz';
-	header('Content-Disposition: attachment; filename=lms-backup-'.date('Ymd-His',$_GET['db']).'.sql.gz');
+if ((extension_loaded('zlib')) && (strstr($_GET['file'], "sql.gz"))) {
+    $filename .= '.gz';
+    header('Content-Disposition: attachment; filename=lms-backup-'.date('Ymd-His', $_GET['db']).'.sql.gz');
+} else {
+    header('Content-Disposition: attachment; filename=lms-backup-'.date('Ymd-His', $_GET['db']).'.sql');
 }
-else
-	header('Content-Disposition: attachment; filename=lms-backup-'.date('Ymd-His',$_GET['db']).'.sql');
 header('Pragma: public');
 header('Content-Length: '.filesize($filename));
 set_time_limit(0);
 readfile_chunked($filename, false);
 
-return TRUE;
-
-?>
+return true;

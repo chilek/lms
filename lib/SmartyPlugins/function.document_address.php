@@ -24,21 +24,20 @@
  *  $Id$
  */
 
-function smarty_function_document_address($params, $template) {
-	$result = '';
+function smarty_function_document_address($params, $template)
+{
+    $result = '';
 
-	$lines = document_address(array(
-		'name' => $params['name'],
-		'address' => $params['address'],
-		'street' => $params['street'],
-		'zip' => $params['zip'],
-		'postoffice' => $params['postoffice'],
-		'city' => $params['city'],
-	));
+    $lines = document_address(array(
+        'name' => $params['name'],
+        'address' => $params['address'],
+        'street' => $params['street'],
+        'zip' => $params['zip'],
+        'postoffice' => $params['postoffice'],
+        'city' => $params['city'],
+    ));
 
-	$result .= implode('<br>', $lines);
+    $result .= implode('<br>', $lines);
 
-	return $result;
+    return $result;
 }
-
-?>

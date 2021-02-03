@@ -704,7 +704,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 						for (i in features) {
 							if (features[i].geometry.CLASS_NAME == "OpenLayers.Geometry.Point")
 								content += '<div class="lmsMapPopupName">' + features[i].data.name + '</div>' +
-									(features[i].data.ipaddr.length ? 
+									(features[i].data.ipaddr.length ?
 										'<div class="lmsMapPopupAddress">' + features[i].data.ipaddr.replace(/,/g,
 											'</div><div class="lmsMapPopupAddress">') + '</div>'
 										: '');
@@ -769,7 +769,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 					featureLonLat = new OpenLayers.LonLat(feature.data.lon, feature.data.lat);
 					featureLonLat.transform(lmsProjection, map.getProjectionObject());
 				}
-				else 
+				else
 					featureLonLat = map.getLonLatFromViewPortPx(this.handlers.feature.evt.xy);
 				var features = findFeaturesIntersection(this, feature, featureLonLat);
 				if (features.length > 1 || (features.length == 1 && features[0].geometry.CLASS_NAME == "OpenLayers.Geometry.Point")) {
@@ -838,18 +838,18 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 		selectlayer.activate();
 
 		var checkbutton = new OpenLayers.Control.Button({
-			displayClass: "lmsCheckButton", 
-			title: checkhostcaption,
+			displayClass: "lmsCheckButton",
+			title: $t("Check a host ..."),
 			command: 'check'});
 
 		var centerbutton = new OpenLayers.Control.Button({
-			displayClass: "lmsCenterButton", 
-			title: centermapcaption,
+			displayClass: "lmsCenterButton",
+			title: $t("Center map around network elements ..."),
 			command: 'center'});
 
 		var refreshbutton = new OpenLayers.Control.Button({
-			displayClass: "lmsRefreshButton", 
-			title: refreshmapcaption,
+			displayClass: "lmsRefreshButton",
+			title: $t("Refresh network state ..."),
 			command: 'refresh'});
 
 		var panel = new OpenLayers.Control.Panel({

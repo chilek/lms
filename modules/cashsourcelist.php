@@ -24,19 +24,19 @@
  *  $Id$
  */
 
-function GetSourceList() {
-	$DB = LMSDB::getInstance();
+function GetSourceList()
+{
+    $DB = LMSDB::getInstance();
 
-	$list = $DB->GetAll("SELECT id, name, description, account, deleted FROM cashsources ORDER BY name");
-	return $list;
+    $list = $DB->GetAll("SELECT id, name, description, account, deleted FROM cashsources ORDER BY name");
+    return $list;
 }
 
-if(isset($_GET['action'])){
-    if($_GET['action'] == 'enable'){
-	$DB->Execute("Update cashsources set deleted = 0 where id = ? ", array($_GET['id']));
-    }
-    elseif($_GET['action'] == 'disable'){
-	$DB->Execute("Update cashsources set deleted = 1 where id = ?", array($_GET['id']));
+if (isset($_GET['action'])) {
+    if ($_GET['action'] == 'enable') {
+        $DB->Execute("Update cashsources set deleted = 0 where id = ? ", array($_GET['id']));
+    } elseif ($_GET['action'] == 'disable') {
+        $DB->Execute("Update cashsources set deleted = 1 where id = ?", array($_GET['id']));
     }
     $SESSION->redirect('?m=cashsourcelist');
 }
@@ -50,5 +50,3 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('sourcelist', $sourcelist);
 $SMARTY->display('cash/cashsourcelist.html');
-
-?>

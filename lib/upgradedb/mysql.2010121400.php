@@ -21,6 +21,8 @@
  *
  */
 
+$lang = $this->GetOne("SELECT value FROM uiconfig WHERE section = ? AND var = ? AND disabled = ?", array('phpui', 'lang', 0));
+
 $this->BeginTrans();
 
 $this->Execute("DELETE FROM customercontacts WHERE customerid NOT IN (SELECT id FROM customers)");
@@ -36,8 +38,6 @@ $this->Execute("ALTER TABLE imessengers ALTER customerid DROP DEFAULT");
 $this->Execute("ALTER TABLE customercontacts ADD type smallint DEFAULT NULL");
 $this->Execute("UPDATE customercontacts SET type = 2 WHERE name LIKE '%fax%'");
 
-$lang = ConfigHelper::getConfig('phpui.lang');
-
 if ($lang == 'pl') {
     $this->Execute("UPDATE customercontacts SET type = COALESCE(type, 0) + 1
         WHERE REPLACE(REPLACE(phone, '-', ''), ' ', '') REGEXP '^(\\\\+?[0-9]{2}|0)?(88[0-9]|5[01][0-9]|6[069][0-9]|7[2789][0-9])[0-9]{6}$'");
@@ -46,5 +46,3 @@ if ($lang == 'pl') {
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010121400', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

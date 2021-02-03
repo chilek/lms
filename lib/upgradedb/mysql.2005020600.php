@@ -31,5 +31,3 @@ $this->Execute("CREATE INDEX invoiceid ON cash(invoiceid)");
 $this->Execute("UPDATE dbinfo SET keyvalue = '2005020600' WHERE keytype = 'dbversion'");
 
 $this->CommitTrans();
-
-?>

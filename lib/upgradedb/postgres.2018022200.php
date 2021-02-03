@@ -25,10 +25,11 @@ $this->BeginTrans();
 
 $this->Execute("DELETE FROM pna WHERE fromhouse ~ '[a-z]' OR tohouse ~ '[a-z]'");
 
-if ($this->ResourceExists('pna_zip_key', LMSDB::RESOURCE_TYPE_CONSTRAINT))
-	$this->Execute("ALTER TABLE pna DROP CONSTRAINT pna_zip_key");
-else
-	$this->Execute("ALTER TABLE pna DROP CONSTRAINT pna_zip_cityid_streetid_fromhouse_tohouse_parity_key");
+if ($this->ResourceExists('pna_zip_key', LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
+    $this->Execute("ALTER TABLE pna DROP CONSTRAINT pna_zip_key");
+} else {
+    $this->Execute("ALTER TABLE pna DROP CONSTRAINT pna_zip_cityid_streetid_fromhouse_tohouse_parity_key");
+}
 
 $this->Execute("
 	ALTER TABLE pna ALTER COLUMN fromhouse DROP DEFAULT;
@@ -53,5 +54,3 @@ $this->Execute("
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018022200', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

@@ -27,5 +27,3 @@ $this->Execute("ALTER TABLE netradiosectors ADD COLUMN type smallint DEFAULT 0 N
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018090800', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

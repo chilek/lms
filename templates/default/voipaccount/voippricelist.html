@@ -56,7 +56,7 @@
                                     {/if}
                                 </select>
                                 &nbsp;&nbsp;<a href="javascript:loadTariff();">{trans("load<!voip>")}</a>
-                                &nbsp;&nbsp;<a href="javascript:deleteTariff();">{trans("delete")}</a>
+                                &nbsp;&nbsp;<a id="delete-tariff" href="javascript:deleteTariff();">{trans("delete")}</a>
                             </td>
                         </tr>
                         <tr class="space_row">
@@ -149,8 +149,7 @@
     </table>
 </form>
 
-<SCRIPT type="text/javascript">
-<!--
+<SCRIPT>
     var table = document.getElementById("groups_table");
     var pricelist_list = document.getElementById("tariff_select");
 
@@ -171,10 +170,11 @@
         if (id == 0)
             return 0;
 
-        if (!confirm("{trans("Are you sure that you want remove tariff rule")} '" + pricelist_list[id].text + "' ?"))
-            return 0;
+        confirmDialog($t("Are you sure that you want remove tariff '$a'?", pricelist_list[id].text), $('#delete-tariff')).done(function() {
+            window.location.href = "?m=voippricelist&id=" + pricelist_list[id].value + "&action=delete";
+        });
+        return 0;
 
-        window.location.href = "?m=voippricelist&id=" + pricelist_list[id].value + "&action=delete";
     }
 
     // groups table is empty check
@@ -189,6 +189,5 @@
     }
 
     groupsTableInfoUpdate();
-//-->
 </SCRIPT>
 {/block}

@@ -24,30 +24,28 @@
  *  $Id$
  */
 
-if(!empty($_POST['invprojectadd'])) 
-{
-	$invproject = $_POST['invprojectadd'];
-			
-	if($invproject['project']=='')
-	{
-		$SESSION->redirect('?m=invprojectadd');
-	}
+if (!empty($_POST['invprojectadd'])) {
+    $invproject = $_POST['invprojectadd'];
+            
+    if ($invproject['project']=='') {
+        $SESSION->redirect('?m=invprojectadd');
+    }
 
-	if ($LMS->ProjectByNameExists($invproject['project']))
-		$error['project'] = trans('Investment project with specified name already exists!');
-		
-	if (!$error) {
-		$LMS->AddProject(array(
-			'project' => $invproject['project'],
-			'divisionid' => $invproject['divisionid'],
-		));
+    if ($LMS->ProjectByNameExists($invproject['project'])) {
+        $error['project'] = trans('Investment project with specified name already exists!');
+    }
+        
+    if (!$error) {
+        $LMS->AddProject(array(
+            'project' => $invproject['project'],
+            'divisionid' => $invproject['divisionid'],
+        ));
 
-		if(!isset($invproject['reuse']))
-		{
-			$SESSION->redirect('?m=invprojectlist');
-		}
-	}
-}	
+        if (!isset($invproject['reuse'])) {
+            $SESSION->redirect('?m=invprojectlist');
+        }
+    }
+}
 
 $layout['pagetitle'] = trans('New investment project');
 
@@ -57,5 +55,3 @@ $SMARTY->assign('invprojectadd', $invproject);
 $SMARTY->assign('divisions', $LMS->GetDivisions());
 $SMARTY->assign('error', $error);
 $SMARTY->display('invproject/invprojectadd.html');
-
-?>

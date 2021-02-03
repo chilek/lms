@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2013 LMS Developers
+ *  Copyright (C) 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,16 +26,39 @@
 
 /**
  * LMSConfigManagerInterface
- * 
- * @author Maciej Lew <maciej.lew.1987@gmail.com>
+ *
  */
 interface LMSConfigManagerInterface
 {
     public function GetConfigSections();
-    
-    public function GetConfigOptionId($var, $section);
+
+    public function ConfigOptionExists($params);
 
     public function GetConfigDefaultType($option);
-    
+
     public function CheckOption($option, $value, $type);
+
+    public function GetConfigVariable($config_id);
+
+    public function DeleteConfigOption($id);
+
+    public function cloneConfigs($params);
+
+    public function importConfigs($params);
+
+    public function getRelatedDivisions($id);
+
+    public function getRelatedUsers($id, $divisionid = null);
+
+    public function getRelatedOptions($id);
+
+    public function getOptionHierarchy($id);
+
+    public function addConfigOption($option);
+
+    public function editConfigOption($option);
+
+    public function getParentOption($id);
+
+    public function toggleConfigOption($id);
 }

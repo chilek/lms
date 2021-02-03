@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,16 +26,14 @@
 
 $id = intval($_GET['id']);
 
-if (isset($_GET['is_sure']) && $_GET['is_sure'] == 1 && $id) {
-	if (!$DB->GetOne('SELECT 1 FROM zipcodes WHERE stateid=? LIMIT 1', array($id))) {
-		$DB->Execute('DELETE FROM states WHERE id=?', array($id));
-		if ($SYSLOG) {
-			$args = array(SYSLOG::RES_STATE => $id);
-			$SYSLOG->AddMessage(SYSLOG::RES_STATE, SYSLOG::OPER_DELETE, $args);
-		}
-	}
+if ($id) {
+    if (!$DB->GetOne('SELECT 1 FROM zipcodes WHERE stateid=? LIMIT 1', array($id))) {
+        $DB->Execute('DELETE FROM states WHERE id=?', array($id));
+        if ($SYSLOG) {
+            $args = array(SYSLOG::RES_STATE => $id);
+            $SYSLOG->AddMessage(SYSLOG::RES_STATE, SYSLOG::OPER_DELETE, $args);
+        }
+    }
 }
 
 $SESSION->redirect('?'.$SESSION->get('backto'));
-
-?>

@@ -24,9 +24,8 @@
  *  $Id$
  */
 
-if(!$LMS->UserExists($_GET['id']))
-{
-	$SESSION->redirect('?m=users&a=list');
+if (!$LMS->UserExists($_GET['id'])) {
+    $SESSION->redirect('?m=users&a=list');
 }
 
 $userinfo = $LMS->GetUserInfo($_GET['id']);
@@ -36,5 +35,3 @@ $layout['pagetitle'] = trans('User Info: $a', $userinfo['login']);
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('userinfo', $userinfo);
-
-?>

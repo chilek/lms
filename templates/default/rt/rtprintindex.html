@@ -30,11 +30,11 @@
 					<TD class="nobr" colspan="8">
                                                 <label>
                                                 	{trans("From:")}
-                                                	<input type="text" size="10" name="datefrom" value="" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="datefrom"}>&nbsp;
+                                                	<input type="text" size="10" name="datefrom" value="" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="datefrom"}>&nbsp;
                                                 </label>
                                                 <label>
                                                 	{trans("To:")}
-                                                	<input type="text" size="10" name="dateto" value="" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="dateto"}>&nbsp;
+                                                	<input type="text" size="10" name="dateto" value="" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="dateto"}>&nbsp;
                                                 </label>
                                         </TD>
 				</TR>
@@ -62,7 +62,7 @@
 						<SELECT size="1" name="queue" {tip text="You can select queue to limit results"}>
 							<OPTION value="0">{trans("- all queues -")}</OPTION>
 							{section name=queues loop=$queues}
-							<OPTION value="{$queues[queues].id}">{$queues[queues].name|truncate:40:"...":true}</OPTION>
+							<OPTION value="{$queues[queues].id}">{$queues[queues].name|truncate:40:"&hellip;":true}</OPTION>
 							{/section}
 						</SELECT>
 					</TD>
@@ -73,7 +73,10 @@
 						{trans("Customer:")}
 					</TD>
 					<TD style="width: 1%;" class="nobr" colspan="2">
-						{customerlist form="ticketslist" customers=$customers selectname="cust" inputname="customer" firstoption="- all customers -" selecttip="You can select customer to limit results" inputtip="Enter customer ID or leave empty for all customers"}
+						{customerlist form="ticketslist" customers=$customers selectname="cust" inputname="customer"
+							version=2
+							firstoption="- all customers -" selecttip="You can select customer to limit results"
+							inputtip="Enter customer ID or leave empty for all customers"}
 					</TD>
 					<TD width="1%" nowrap>
 						<IMG src="img/ticket.gif" alt="">
@@ -201,11 +204,11 @@
 					<TD class="nobr" colspan="8">
                                                 <label>
                                                 	{trans("From:")}
-                                                	<input type="text" size="10" name="datefrom" value="" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="datefrom"}>&nbsp;
+                                                	<input type="text" size="10" name="datefrom" value="" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="datefrom"}>&nbsp;
                                                 </label>
                                                 <label
                                                 	>{trans("To:")}
-                                                	<input type="text" size="10" name="dateto" value="" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="dateto"}>&nbsp;
+                                                	<input type="text" size="10" name="dateto" value="" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="dateto"}>&nbsp;
                                                 </label>
                                         </TD>
 				</TR>
@@ -220,7 +223,7 @@
 						<SELECT size="1" name="queue" {tip text="You can select queue to limit results"}>
 							<OPTION value="0">{trans("- all queues -")}</OPTION>
 							{section name=queues loop=$queues}
-							<OPTION value="{$queues[queues].id}">{$queues[queues].name|truncate:40:"...":true}</OPTION>
+							<OPTION value="{$queues[queues].id}">{$queues[queues].name|truncate:40:"&hellip;":true}</OPTION>
 							{/section}
 						</SELECT>
 					</TD>

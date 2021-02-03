@@ -32,5 +32,3 @@ $this->Execute("ALTER TABLE documentcontents ADD INDEX todate (todate)");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007070400', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

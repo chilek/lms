@@ -28,5 +28,3 @@ $this->Execute("INSERT INTO uiconfig (section, var, value) VALUES ('phpui', 'set
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016071500', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

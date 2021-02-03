@@ -13,3 +13,4 @@ templates/default/**/*.js
 components/**
 **/js/lms-ui-combobox.js
 **/js/locale/*.js
+**/js/galleria/**

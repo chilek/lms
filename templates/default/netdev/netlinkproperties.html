@@ -1,31 +1,45 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!DOCTYPE html>
 <!--// $Id$ //-->
 <html>
 <head>
     <meta name="GENERATOR" content="LMS {$layout.lmsv}">
-    <meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
-    <meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
+	{include file="language.html"}
     <title>::: LMS :{if $layout.pagetitle != ""} {$layout.pagetitle} :{/if}::</title>
     <link href="css/style.css" rel="stylesheet" type="text/css">
-    <script type="text/javascript" src="js/common.js"></script>
-    {$xajax}
+	<script type="text/javascript" src="js/common.js"></script>
+	<script src="js/jquery/jquery.min.js"></script>
+	{$xajax}
 </head>
-<body class="light">
+<body class="light lms-ui-popup">
 <div id="overDiv" style="position: absolute; visibility: hidden; z-index: 100;"></div>
 <script type="text/javascript" src="js/overlib.js"></script>
 	<FORM name="netlinkproperties" method="GET">
-	<table id="propertiestable" style="width: 100%;" cellpadding="3">
+	<table id="propertiestable" class="lmsbox-inner" cellpadding="3">
 		<tr class="light">
 			<td style="width: 1%; white-space: nowrap;">{trans("Link type:")}</td>
 			<td style="width: 99%;">
 				<select name="linktype" id="linktype" {tip text="Select link type"} style="width: 100%;" onchange="change_linktype(this.options[this.selectedIndex].value)">
-					<option value="0"{if $link.type==0} selected{/if}>{trans("wire")}</option>
-					<option value="1"{if $link.type==1} selected{/if}>{trans("wireless")}</option>
-					<option value="2"{if $link.type==2} selected{/if}>{trans("fiber")}</option>
+					<option value="0"{if $link.type == $smarty.const.LINKTYPE_WIRE} selected{/if}>{trans("wire")}</option>
+					<option value="1"{if $link.type == $smarty.const.LINKTYPE_WIRELESS} selected{/if}>{trans("wireless")}</option>
+					<option value="2"{if $link.type == $smarty.const.LINKTYPE_FIBER} selected{/if}>{trans("fiber")}</option>
 				</select>
 			</td>
 		</tr>
 		{if $link.isnetlink}
+		<tr class="light">
+			<td class="nobr">{trans("Port")}</td>
+			<td>
+				<input type="text" name="srcport" value="{if $link.srcport}{$link.srcport}{/if}" size="2"
+					{tip text="Enter port number in device for connection (optional)" trigger="srcport"}>
+			</td>
+		</tr>
+		<tr class="light">
+			<td class="nobr">{trans("Dest. port")}</td>
+			<td>
+				<input type="text" name="dstport" value="{if $link.dstport}{$link.dstport}{/if}" size="2"
+						{tip text="Enter port number in device to which device will be connected (optional)" trigger="dstport"}>
+			</td>
+		</tr>
 		<tr class="light">
 			<td class="nobr">{trans("Radio sector:")}</td>
 			<td>
@@ -49,6 +63,13 @@
 			</td>
 		</tr>
 		{else}
+		<tr class="light">
+			<td class="nobr">{trans("Dest. port")}</td>
+			<td>
+				<input type="text" name="port" value="{if $link.port}{$link.port}{/if}" size="2"
+					{tip text="Enter port number in device (optional)" trigger="port"}>
+			</td>
+		</tr>
 		<tr class="light">
 			<td class="nobr">{trans("Radio sector:")}</td>
 			<td>
@@ -83,8 +104,8 @@
 			</td>
 		</tr>
 		<tr class="light">
-			<td colspan="2" style="text-align: right; white-space: nowrap;">
-				<a href="javascript:submit_netlink_properties()" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+			<td colspan="2" class="lms-ui-box-buttons">
+				{button icon="save" label="Submit" onclick="submit_netlink_properties();"}
 			</td>
 		</tr>
 	</table>
@@ -95,77 +116,56 @@
 
 	function change_linktype(linktype) {
 		linktype = parseInt(linktype);
-		var options = xjx.$('linktechnology').options;
-		while (options.length)
-			options.remove(0);
-		options.add(new Option('{trans("- unknown -")}', 0));
+		var select = $('#linktechnology');
+		var options = '<option value="0">{trans("- unknown -")}</option>';
 		switch (linktype) {
 			case 0:
 				{foreach $_LINKTECHNOLOGIES[0] as $linktechnologyidx => $linktechnology}
-				options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+					options += '<option value="{$linktechnologyidx}">{$linktechnology}</option>';
 				{/foreach}
 				break;
 			case 1:
 				{foreach $_LINKTECHNOLOGIES[1] as $linktechnologyidx => $linktechnology}
-				options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+					options += '<option value="{$linktechnologyidx}">{$linktechnology}</option>';
 				{/foreach}
 				break;
 			case 2:
 				{foreach $_LINKTECHNOLOGIES[2] as $linktechnologyidx => $linktechnology}
-				options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+					options += '<option value="{$linktechnologyidx}">{$linktechnology}</option>';
 				{/foreach}
 				break;
 		}
-		if (xjx.$('radiosector') != null) {
-			if (linktype != 1)
-				xjx.$('radiosector').selectedIndex = 0;
-			xjx.$('radiosector').disabled = (linktype != 1);
-		} else {
-			if (linktype != 1) {
-				xjx.$('srcradiosector').selectedIndex = 0;
-				xjx.$('dstradiosector').selectedIndex = 0;
-			}
-			xjx.$('srcradiosector').disabled = (linktype != 1);
-			xjx.$('dstradiosector').disabled = (linktype != 1);
+		select.html(options);
+		if (linktype != 1) {
+			$('#radiosector,#srcradiosector,#dstradiosector').val(0);
 		}
+		$('#radiosector,#srcradiosector,#dstradiosector').prop('disabled', linktype != 1);
 	}
 
 	function change_linktechnology(linktechnology) {
 		linktechnology = parseInt(linktechnology);
-		var linktype = xjx.$('linktype').options[xjx.$('linktype').selectedIndex].value;
-		if (linktype != 1)
+		var linktype = $('#linktype').val();
+		if (linktype != 1) {
 			return;
-		if (xjx.$('radiosector') != null)
-			xjx.$('radiosector').disabled = true;
-		else {
-			xjx.$('srcradiosector').disabled = true;
-			xjx.$('dstradiosector').disabled = true;
 		}
+		$('#radiosector,#srcradiosector,#dstradiosector').prop('disabled', true);
 		xajax_get_radio_sectors_for_technology(linktechnology);
 	}
 
 	function update_radio_sector_list(radiosectors) {
 		Object.keys(radiosectors).forEach(function(control) {
-			var options = xjx.$(control).options;
-			var oldvalue = options[xjx.$(control).selectedIndex].value;
-			while (options.length)
-				options.remove(0);
-			options.add(new Option('- {trans("none")} -', 0));
+			var select = $('#' + control);
+			var oldValue = select.val();
+			var options = '';
+			options += '<option value="0">- {trans("none")} -</option>';
 			if (radiosectors[control] !== null) {
 				radiosectors[control].forEach(function(elem) {
-					var option = new Option(elem.name, elem.id);
-					if (elem.id == oldvalue)
-						option.selected = true;
-					options.add(option);
+					options += '<option value="' + elem.id + '"' + (elem.id == oldValue ? ' selected' : '') + '>' + elem.name + '</option>';
 				});
 			}
+			select.html(options);
 		});
-		if (xjx.$('radiosector') != null)
-			xjx.$('radiosector').disabled = false;
-		else {
-			xjx.$('srcradiosector').disabled = false;
-			xjx.$('dstradiosector').disabled = false;
-		}
+		$('#radiosector,#srcradiosector,#dstradiosector').prop('disabled', false);
 	}
 
 	function submit_netlink_properties() {
@@ -174,6 +174,9 @@
 		var radiosector = (form.elements['radiosector'] != null ? form.elements['radiosector'].value : null);
 		var srcradiosector = (form.elements['srcradiosector'] != null ? form.elements['srcradiosector'].value : null);
 		var dstradiosector = (form.elements['dstradiosector'] != null ? form.elements['dstradiosector'].value : null);
+		var srcport = (form.elements['srcport'] != null ? form.elements['srcport'].value : null);
+		var dstport = (form.elements['dstport'] != null ? form.elements['dstport'].value : null);
+		var port = (form.elements['port'] != null ? form.elements['port'].value : null);
 		var linktechnology = form.elements['linktechnology'].value;
 		var linkspeed = form.elements['linkspeed'].value;
 
@@ -182,28 +185,34 @@
 				radiosector: radiosector,
 				srcradiosector: srcradiosector,
 				dstradiosector: dstradiosector,
+				srcport: srcport,
+				dstport: dstport,
+				port: port,
 				technology: linktechnology,
 				speed: linkspeed
 			} );
 	}
 
-	function update_netlink_info(tech_content, speed_content, port_content) {
-		var elem = window.parent.document.getElementById(
-			'{if $link.isnetlink}dev{else}node{/if}-link-tech-' + '{$link.devid}');
-		elem.innerHTML = tech_content;
-		elem = window.parent.document.getElementById(
-			'{if $link.isnetlink}dev{else}node{/if}-link-speed-' + '{$link.devid}');
-		elem.innerHTML = speed_content;
-		elem = window.parent.document.getElementById(
-			'{if $link.isnetlink}dev{else}node{/if}-link-port-' + '{$link.devid}');
-		elem.innerHTML = port_content;
+	function update_netlink_info(tech_content, speed_content, port_content, srcport, dstport) {
+		var document = $(window.parent.document);
+
+		document.find('#{if $link.isnetlink}dev{else}node{/if}-link-tech-{$link.devid}').html(tech_content);
+		document.find('#{if $link.isnetlink}dev{else}node{/if}-link-speed-{$link.devid}').html(speed_content);
+		document.find('#{if $link.isnetlink}dev{else}node{/if}-link-port-{$link.devid}').html(port_content);
+
+		{if $link.isnetlink}
+			$(window.parent.document).find('#dev-link-srcport-{$link.devid}').html('[' + (srcport ? srcport : '-') + ']');
+			$(window.parent.document).find('#dev-link-dstport-{$link.devid}').html('[' + (dstport ? dstport : '-') + ']');
+		{else}
+			$(window.parent.document).find('#node-link-srcport-{$link.devid}').html('[' + (srcport ? srcport : '-') + ']');
+		{/if}
 
 		window.parent.popclick();
 	}
 
 	function resize_frame() {
-		var pt = xjx.$('propertiestable'),
-		h = pt.offsetHeight;
+		var pt = $('#propertiestable'),
+		h = pt[0].offsetHeight;
 		autoiframe_setsize('autoiframe', 350, Math.max(h, 10));
 	}
 

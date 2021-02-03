@@ -10,7 +10,7 @@
 <TABLE WIDTH="100%" CELLPADDING="3" ALIGN="CENTER">
 	<TR>
 		<TD WIDTH="800" ALIGN="LEFT">
-			<font class="hdf"><B>{$layout.pagetitle}</B></font><font class="sdr">{if $pagescount} ({t a=$item b=$pagescount}Page $a from $b{/t}){/if}</font>
+			<span class="hdf"><B>{$layout.pagetitle}</B></span><span class="sdr">{if $pagescount} ({t a=$item b=$pagescount}Page $a from $b{/t}){/if}</span>
 		</TD>
 		<TD WIDTH="200" ALIGN="RIGHT" NOWRAP>
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
@@ -26,7 +26,7 @@
 			{trans("No.")}
 		</TD>
 		<TD WIDTH="100" CLASS="HEAD" ALIGN="CENTER">
-			{if $doctype == 'invoices'}{trans("Invoice No.")}{else}{trans("Debit Note No.")}{/if}<BR>
+			{if in_array(DOC_DNOTE, $doctypes)}{trans("Debit Note No.")}{else}{trans("Invoice No.")}{/if}<BR>
 			{trans("Draw-up date")}
 		</TD>
 		<TD WIDTH="100" CLASS="HEAD" ALIGN="CENTER">
@@ -36,7 +36,7 @@
 		<TD WIDTH="520" CLASS="HEAD" ALIGN="CENTER">
 			{trans("Contractor")}
 		</TD>
-		{if $doctype == 'invoices'}
+		{if !in_array(DOC_DNOTE, $doctypes)}
 		{foreach $taxes as $tax}
 		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
 			{trans("Net value")} {$tax.label}
@@ -49,9 +49,9 @@
 		{/foreach}
 		{/if}
 		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
-			{if $doctype == 'invoices'}{trans("Gross value")}{else}{trans("Value")}{/if}
+			{if in_array(DOC_DNOTE, $doctypes)}{trans("Value")}{else}{trans("Gross value")}{/if}
 		</TD>
-		{if $doctype == 'invoices'}
+		{if !in_array(DOC_DNOTE, $doctypes)}
 		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
 			{trans("Total Tax")}
 		</TD>
@@ -61,6 +61,7 @@
 	{cycle values="grey,white" print=false}
 	{math assign=start equation="(x-1)*y" x=$item y=$rows}
 	{section name=invoicelist loop=$invoicelist start=$start max=$rows}
+	{$invoice = $invoicelist[invoicelist]}
 	<TR class="{cycle}">
 		<TD ALIGN="CENTER">
 			{counter}.
@@ -77,25 +78,29 @@
 			<B>{$invoicelist[invoicelist].custname}</B> {if !isset($printcustomerid)}({$invoicelist[invoicelist].customerid|string_format:"%04d"}){/if}{if $invoicelist[invoicelist].ten}, {$invoicelist[invoicelist].ten}{/if}<BR>
 			{$invoicelist[invoicelist].custaddress}
 		</TD>
-		{if $doctype == 'invoices'}
+		{if !in_array(DOC_DNOTE, $doctypes)}
 		{foreach $taxes as $tax}
 		{assign var=taxid value=$tax.id}
 		<TD ALIGN="RIGHT">
-			{$invoicelist[invoicelist].$taxid.val|string_format:"%01.2f"}
+			{($invoice.$taxid.val * $invoice.currencyvalue)|string_format:"%01.2f"}
+			{if $invoice.currency != Localisation::getCurrentCurrency()}<br>({moneyf($invoice.$taxid.val, $invoice.currency)}){/if}
 		</TD>
 		{if $tax.value}
 		<TD ALIGN="RIGHT">
-			{$invoicelist[invoicelist].$taxid.tax|string_format:"%01.2f"}
+			{($invoice.$taxid.tax * $invoice.currencyvalue)|string_format:"%01.2f"}
+			{if $invoice.currency != Localisation::getCurrentCurrency()}<br>({moneyf($invoice.$taxid.tax, $invoice.currency)}){/if}
 		</TD>
 		{/if}
 		{/foreach}
 		{/if}
 		<TD ALIGN="RIGHT">
-			{$invoicelist[invoicelist].brutto|string_format:"%01.2f"}
+			{($invoice.brutto * $invoice.currencyvalue)|string_format:"%01.2f"}
+			{if $invoice.currency != Localisation::getCurrentCurrency()}<br>({moneyf($invoice.brutto, $invoice.currency)}){/if}
 		</TD>
-		{if $doctype == 'invoices'}
+		{if !in_array(DOC_DNOTE, $doctypes)}
 		<TD ALIGN="RIGHT">
-			{$invoicelist[invoicelist].tax|string_format:"%01.2f"}
+			{($invoice.tax * $invoice.currencyvalue)|string_format:"%01.2f"}
+			{if $invoice.currency != Localisation::getCurrentCurrency()}<br>({moneyf($invoice.tax, $invoice.currency)}){/if}
 		</TD>
 		{/if}
 	</TR>
@@ -105,7 +110,7 @@
 		<TD COLSPAN="4" ALIGN="RIGHT" class="HEADGREY">
 			<B>{trans("Page total:")}</B>
 		</TD>
-		{if $doctype == 'invoices'}
+		{if !in_array(DOC_DNOTE, $doctypes)}
 		{foreach $taxes as $tax}
 		{assign var=taxid value=$tax.id}
 		<TD ALIGN="RIGHT" class="HEADGREY">
@@ -121,7 +126,7 @@
 		<TD ALIGN="RIGHT" class="HEADGREY">
 			<B>{$totals.$item.total|string_format:"%01.2f"}</B>
 		</TD>
-		{if $doctype == 'invoices'}
+		{if !in_array(DOC_DNOTE, $doctypes)}
 		<TD ALIGN="RIGHT" class="HEADGREY">
 			<B>{$totals.$item.sumtax|string_format:"%01.2f"}</B>
 		</TD>
@@ -131,7 +136,7 @@
 		<TD COLSPAN="4" ALIGN="RIGHT" class="HEADGREY">
 			<B>{trans("Transfered from previous page:")}</B>
 		</TD>
-		{if $doctype == 'invoices'}
+		{if !in_array(DOC_DNOTE, $doctypes)}
 		{foreach $taxes as $tax}
 		{assign var=taxid value=$tax.id}
 		<TD ALIGN="RIGHT" class="HEADGREY">
@@ -147,7 +152,7 @@
 		<TD ALIGN="RIGHT" class="HEADGREY">
 			<B>{$totals.$previtem.alltotal|string_format:"%01.2f"}</B>
 		</TD>
-		{if $doctype == 'invoices'}
+		{if !in_array(DOC_DNOTE, $doctypes)}
 		<TD ALIGN="RIGHT" class="HEADGREY">
 			<B>{$totals.$previtem.allsumtax|string_format:"%01.2f"}</B>
 		</TD>
@@ -155,9 +160,31 @@
 	</TR>
 	<TR>
 		<TD COLSPAN="4" ALIGN="RIGHT" class="HEADGREY">
-			<B>{trans("Total from start of period:")}</B>
+			<B>{trans("Total from start of period (with receipt):")}</B>
 		</TD>
-		{if $doctype == 'invoices'}
+		{foreach item=tax from=$taxes}
+			{assign var=taxid value=$tax.id}
+			<TD ALIGN="RIGHT" class="HEADGREY">
+				<B>{$totals.$item.allval_receipt.$taxid|string_format:"%01.2f"}</B>
+			</TD>
+			{if $tax.value}
+				<TD ALIGN="RIGHT" class="HEADGREY">
+					<B>{$totals.$item.alltax_receipt.$taxid|string_format:"%01.2f"}</B>
+				</TD>
+			{/if}
+		{/foreach}
+		<TD ALIGN="RIGHT" class="HEADGREY">
+			<B>{$totals.$item.alltotal_receipt|string_format:"%01.2f"}</B>
+		</TD>
+		<TD ALIGN="RIGHT" class="HEADGREY">
+			<B>{$totals.$item.allsumtax_receipt|string_format:"%01.2f"}</B>
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN="4" ALIGN="RIGHT" class="HEADGREY">
+			<B>{trans("Total from start of period (without receipt):")}</B>
+		</TD>
+		{if !in_array(DOC_DNOTE, $doctypes)}
 		{foreach $taxes as $tax}
 		{assign var=taxid value=$tax.id}
 		<TD ALIGN="RIGHT" class="HEADGREY">
@@ -173,11 +200,33 @@
 		<TD ALIGN="RIGHT" class="HEADGREY">
 			<B>{$totals.$item.alltotal|string_format:"%01.2f"}</B>
 		</TD>
-		{if $doctype == 'invoices'}
+		{if !in_array(DOC_DNOTE, $doctypes)}
 		<TD ALIGN="RIGHT" class="HEADGREY">
 			<B>{$totals.$item.allsumtax|string_format:"%01.2f"}</B>
 		</TD>
 		{/if}
+	</TR>
+	<TR>
+		<TD COLSPAN="4" ALIGN="RIGHT" class="HEADGREY">
+			<B>{trans("Total from start of period:")}</B>
+		</TD>
+		{foreach item=tax from=$taxes}
+			{assign var=taxid value=$tax.id}
+			<TD ALIGN="RIGHT" class="HEADGREY">
+				<B>{($totals.$item.allval.$taxid+$totals.$item.allval_receipt.$taxid)|string_format:"%01.2f"}</B>
+			</TD>
+			{if $tax.value}
+				<TD ALIGN="RIGHT" class="HEADGREY">
+					<B>{($totals.$item.alltax.$taxid+$totals.$item.alltax_receipt.$taxid)|string_format:"%01.2f"}</B>
+				</TD>
+			{/if}
+			{/foreach}
+		<TD ALIGN="RIGHT" class="HEADGREY">
+			<B>{($totals.$item.alltotal+$totals.$item.alltotal_receipt)|string_format:"%01.2f"}</B>
+		</TD>
+		<TD ALIGN="RIGHT" class="HEADGREY">
+			<B>{($totals.$item.allsumtax+$totals.$item.allsumtax_receipt)|string_format:"%01.2f"}</B>
+		</TD>
 	</TR>
 </TABLE>
 {if $report_type == 'pdf'}
@@ -189,7 +238,7 @@
 <TABLE WIDTH="100%" CELLPADDING="3" ALIGN="CENTER">
 	<TR style="border-style: none;">
 		<TD WIDTH="800" ALIGN="LEFT">
-			<B><font class="sdr">{$layout.pagetitle}</font></B>
+			<B><span class="sdr">{$layout.pagetitle}</span></B>
 		</TD>
 		<TD WIDTH="200" ALIGN="RIGHT" NOWRAP>
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
@@ -205,7 +254,7 @@
 			{trans("No.")}
 		</TD>
 		<TD WIDTH="125" CLASS="HEAD" ALIGN="CENTER">
-			{if $doctype == 'invoices'}{trans("Invoice No.")}{else}{trans("Debit Note No.")}{/if}<BR>
+			{if in_array(DOC_DNOTE, $doctypes)}{trans("Debit Note No.")}{else}{trans("Invoice No.")}{/if}<BR>
 			{trans("Draw-up date")}
 		</TD>
 		<TD WIDTH="125" CLASS="HEAD" ALIGN="CENTER">
@@ -215,7 +264,7 @@
 		<TD WIDTH="520" CLASS="HEAD" ALIGN="CENTER">
 			{trans("Contractor")}
 		</TD>
-		{if $doctype == 'invoices'}
+		{if !in_array(DOC_DNOTE, $doctypes)}
 		{foreach $taxes as $tax}
 		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
 			{trans("Net value")} {$tax.label}
@@ -228,9 +277,9 @@
 		{/foreach}
 		{/if}
 		<TD WIDTH="100" CLASS="HEAD" ALIGN="CENTER">
-			{if $doctype == 'invoices'}{trans("Gross value")}{else}{trans("Value")}{/if}
+			{if in_array(DOC_DNOTE, $doctypes)}{trans("Value")}{else}{trans("Gross value")}{/if}
 		</TD>
-		{if $doctype == 'invoices'}
+		{if !in_array(DOC_DNOTE, $doctypes)}
 		<TD WIDTH="100" CLASS="HEAD" ALIGN="CENTER">
 			{trans("Total Tax")}
 		</TD>

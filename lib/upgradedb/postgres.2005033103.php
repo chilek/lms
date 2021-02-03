@@ -95,8 +95,6 @@ $this->Execute("
 	UNIQUE(instanceid, var))
 ");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005033103', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005033103', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

@@ -24,11 +24,9 @@
  *  $Id$
  */
 
-if($_GET['is_sure'] == '1') 
-{
-	$AUTH->LogOut();
-	header('Location: ?');
-} else
-	header('Location: ?m='.$SESSION->get('lastmodule'));
-
-?>
+if ($_GET['is_sure'] == '1') {
+    $AUTH->LogOut();
+    header('Location: ?');
+} else {
+    header('Location: ?m='.$SESSION->get('lastmodule'));
+}

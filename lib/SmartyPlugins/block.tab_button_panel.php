@@ -24,15 +24,14 @@
  *  $Id$
  */
 
-function smarty_block_tab_button_panel($params, $content, $template, $repeat) {
-	if (!$repeat) {
-		$id = isset($params['id']) ? $params['id'] : null;
+function smarty_block_tab_button_panel($params, $content, $template, $repeat)
+{
+    if (!$repeat) {
+        $id = isset($params['id']) ? $params['id'] : null;
 
-		return '
+        return '
 			<div class="lms-ui-tab-button-panel"' . ($id ? ' id="' . $id . '"' : '') . '>
 				' . $content . '
 			</div>';
-	}
+    }
 }
-
-?>

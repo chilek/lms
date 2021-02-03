@@ -13,7 +13,7 @@
 		</td>
 		<td width="98%">
 			{if $mail_err}
-			<b><font color="red">{$mail_err}</font></b>
+			<b><span style="color: red;">{$mail_err}</span></b>
 			{/if}
 			<input style="width:99%;" type="text" name="account[account]" maxlength="30" {userpaneltip text="Wprowadź nazwę konta - część przed (do 30 znaków) @" trigger="account"} />
 		</td>
@@ -27,7 +27,7 @@
 		</td>
 		<td width="98%">
 			{if $pass_err}
-			<b><font color="red">{$pass_err}</font></b>
+			<b><span style="color: red;">{$pass_err}</span></b>
 			{/if}
 			<input style="width:99%;" type="password" name="account[password1]" maxlength="30" {userpaneltip text="Wprowadź hasło" trigger="account"} />
 		</td>

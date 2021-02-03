@@ -31,5 +31,3 @@ $this->Execute("ALTER TABLE users ADD COLUMN swekey_id varchar(32) DEFAULT NULL;
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013040200', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

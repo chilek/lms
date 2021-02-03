@@ -53,5 +53,3 @@ $this->Execute("CREATE TABLE voip_tariff_rules (
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016062401', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

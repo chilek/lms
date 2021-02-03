@@ -191,7 +191,10 @@ function ClickShowHideMenu(params) {
 			openedSections = openedSections.split(';');
 			for (var i = 0; i < openedSections.length; i++) {
 				this.show(openedSections[i]);
-				document.getElementById(openedSections[i]).className = "box1-open";
+				var elem = document.getElementById(openedSections[i]);
+				if (elem) {
+					elem.className = "box1-open";
+				}
 			}
 		}
 	}

@@ -24,22 +24,38 @@
  *  $Id$
  */
 
-$id = intval($_GET['id']);
+if (isset($_POST['marks'])) {
+    $ids = $_POST['marks'];
+} else {
+    $ids = array($_GET['id']);
+}
+$ids = Utils::filterIntegers($ids);
+if (empty($ids)) {
+    return;
+}
 
-if ($id && $_GET['is_sure'] == '1') {
-	if ($LMS->isDocumentPublished($id) && !ConfigHelper::checkPrivilege('published_document_modification'))
-		return;
+foreach ($ids as $id) {
+    if ($LMS->isDocumentPublished($id) && !ConfigHelper::checkPrivilege('published_document_modification')) {
+        continue;
+    }
 
-	if ($LMS->isDocumentReferenced($_GET['id']))
-		return;
+    if ($LMS->isDocumentReferenced($id)) {
+        continue;
+    }
 
-	$hook_data = $LMS->executeHook('invoicedel_before_delete', array(
-		'id' => $id,
-	));
-	if (!isset($hook_data['continue']) || !empty($hook_data['continue']))
-		$LMS->InvoiceDelete($id);
+    if ($LMS->isArchiveDocument($id)) {
+        continue;
+    }
+
+    $hook_data = $LMS->executeHook('invoicedel_before_delete', array(
+        'id' => $id,
+    ));
+    if (isset($hook_data['continue']) && empty($hook_data['continue'])) {
+        continue;
+    }
+    $DB->BeginTrans();
+    $LMS->InvoiceDelete($id);
+    $DB->CommitTrans();
 }
 
 $SESSION->redirect($_SERVER['HTTP_REFERER']);
-
-?>

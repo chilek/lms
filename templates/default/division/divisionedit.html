@@ -2,7 +2,17 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
+
+<style>
+
+	[name="division[account]"] {
+		margin-top: 0.2em;
+	}
+
+</style>
+
+<H1>{$layout.pagetitle|escape}</H1>
+<script src="js/location_box.js"></script>
 <FORM method="POST" action="?m=divisionedit&id={$division.id}" name="division">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
@@ -20,7 +30,8 @@
 			{trans("Name:")}
 		</TD>
 		<TD>
-			<INPUT type="text" name="division[shortname]" value="{$division.shortname|escape}" size="40" {tip text="Enter division short name" trigger="shortname" bold=1}>
+			<INPUT type="text" name="division[shortname]" value="{$division.shortname|escape}" size="40"
+				{tip text="Enter division short name" trigger="shortname" bold=1}>
 		</TD>
 	</TR>
     </THEAD>
@@ -33,9 +44,22 @@
 			{trans("Long name:")}
 		</TD>
 		<TD>
-			<TEXTAREA NAME="division[name]" COLS="45" ROWS="4" {tip text="Enter division long name" trigger="name"}>{$division.name}</TEXTAREA>
+			<TEXTAREA NAME="division[name]" COLS="45" ROWS="4" {tip text="Enter division long name" trigger="name"}
+				>{$division.name|escape}</TEXTAREA>
 		</TD>
 	</TR>
+	<tr>
+		<td>
+			{icon name="label"}
+		</td>
+		<td class="bold nobr">
+			{trans("Text label:")}
+		</td>
+		<td>
+			<input type="text" name="division[label]" value="{$division.label|escape}" size="40"
+				   {tip text="Enter text label under which division is visible in user interface" trigger="label"}>
+		</td>
+	</tr>
 	<tr>
 		<td>
 			<IMG src="img/home.gif" alt="">
@@ -142,14 +166,29 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD>
+		<TD class="valign-top">
 			<IMG src="img/card.gif" alt="">
 		</TD>
-		<TD class="bold nobr">
+		<TD class="bold nobr valign-top">
 			{trans("Bank account:")}
 		</TD>
 		<TD>
+			{trans("Bank:")}
+			<input type="text" name="division[bank]" value="{$division.bank}" size="45" {tip text="Enter bank name (optional)" trigger="bank"}>
+			<br>
+			{trans("Number:")}
 			<INPUT type="text" name="division[account]" VALUE="{$division.account}" SIZE="45" {tip text="Enter bank account or mass payments account prefix (optional)" trigger="account"}>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<i class="lms-ui-icon-mail"></i>
+		</TD>
+		<TD class="bold nobr">
+			{trans("Email:")}
+		</TD>
+		<TD>
+			<INPUT type="text" value="{$division.email}" name="division[email]" size="40" {tip text="Enter e-mail address (optional)" trigger="email"}>
 		</TD>
 	</TR>
 	<TR>
@@ -226,12 +265,8 @@
 			{trans("Payment type:")}
 		</TD>
 		<TD>
-			<SELECT name="division[inv_paytype]" {tip text="Select default invoices payment type" trigger="paytype"}>
-				<OPTION value=""{if !$division.inv_paytype} selected{/if}>- {trans("default")} -</OPTION>
-				{foreach from=$_PAYTYPES item=item key=key}
-				<OPTION value="{$key}"{if $division.inv_paytype==$key} selected{/if}>{$item}</OPTION>
-				{/foreach}
-			</SELECT>
+			{paytypes elemname="division[inv_paytype]" selected=$division.inv_paytype
+				tip="Select default invoices payment type"}
 		</TD>
 	</TR>
 	<TR>
@@ -253,10 +288,29 @@
 			</SELECT>
 		</TD>
 	</TR>
+	<tr>
+		<td>
+			<IMG src="img/users.gif" alt="">
+		</td>
+		<td class="bold nobr">
+			{trans("Users:")}
+		</td>
+		<td>
+			<label for="division[users][]">
+				<select SIZE="4" NAME="division[users][]" multiple {tip text="Select users" class="lms-ui-multiselect"} data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
+					{foreach $userslist as $user}
+						<option value="{$user.id}" {if !empty($division_users) && in_array($user.id, $division_users)} selected{/if}>
+							{$user.login|truncate:30:"&hellip;":true}
+						</option>
+					{/foreach}
+				</select>
+			</label>
+		</td>
+	</tr>
 	<TR>
-		<TD align="right" colspan="3">
-			<A href="javascript:document.division.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
-			<A href="?m=divisionlist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A><BR>
+		<TD colspan="3" class="lms-ui-box-buttons">
+			{button type="submit" icon="save" label="Submit"}
+			{button type="link-button" icon="cancel" label="Cancel" href="?m=divisionlist"}
 		</TD>
 	</TR>
     </TBODY>

@@ -1,0 +1,82 @@
+<!--// $Id$ //-->
+
+{css}
+{js}
+
+<input type="hidden" id="remove-trusted-device-module" value="{$remove_trusted_device_module}">
+<input type="hidden" id="user-id" value="{$userinfo.id}">
+
+{tab_container id="trusteddevices"}
+
+    {tab_header content_id="trusteddevicespanel"}
+        {tab_header_cell icon="lms-ui-icon-trust"}
+            <strong>{t a=count($userinfo.trusteddevices)}Trusted devices ($a):{/t}</strong>
+        {/tab_header_cell}
+    {/tab_header}
+
+    {tab_contents id="trusteddevicespanel"}
+
+        {tab_table}
+
+            {if $userinfo.trusteddevices}
+            <div class="lms-ui-tab-table-row header">
+                <div class="lms-ui-tab-table-wrapper col-3">
+                    <div class="lms-ui-tab-table-column user-agent">
+                        {trans("<!trusteddevices>Web browser:")}
+                    </div>
+                    <div class="lms-ui-tab-table-wrapper col-2">
+                        <div class="lms-ui-tab-table-column ip-address">
+                            {trans("<!trusteddevices>Added from IP:")}
+                        </div>
+                        <div class="lms-ui-tab-table-column expires">
+                            {trans("<!trusteddevices>Expires:")}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lms-ui-tab-table-column buttons">
+                    &nbsp;
+                </div>
+            </div>
+            {/if}
+
+            {foreach $userinfo.trusteddevices as $trusteddevice}
+            <div class="lms-ui-tab-table-row" data-trusted-device-id="{$trusteddevice.id}">
+                <div class="lms-ui-tab-table-wrapper col-3">
+                    <div class="lms-ui-tab-table-column user-agent">
+                        {$trusteddevice.useragent}
+                    </div>
+                    <div class="lms-ui-tab-table-wrapper col-2">
+                        <div class="lms-ui-tab-table-column ip-address">
+                            {$trusteddevice.ip}
+                        </div>
+                        <div class="lms-ui-tab-table-column expires">
+                            {$trusteddevice.expires|date_format:"Y/m/d H:i:s"}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lms-ui-tab-table-column buttons">
+                    {button type="link" icon="delete" tip="Remove trusted device" class="delete-trusted-device"}
+                </div>
+            </div>
+            {foreachelse}
+            <div class="lms-ui-tab-empty-table">
+                {trans("No trusted devices in database.")}
+            </div>
+            {/foreach}
+
+        {/tab_table}
+
+        {if $userinfo.trusteddevices}
+            {tab_button_panel}
+                {tab_buttons}
+                {/tab_buttons}
+                {tab_buttons}
+                    {button id="delete-all-trusted-devices" icon="delete" label="Delete all"}
+                {/tab_buttons}
+            {/tab_button_panel}
+        {/if}
+
+    {/tab_contents}
+{/tab_container}

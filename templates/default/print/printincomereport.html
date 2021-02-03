@@ -35,7 +35,7 @@
 			{$incomelist[incomelist].date|date_format:"%d.%m.%Y"}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{$incomelist[incomelist].value|money_format}
+			{moneyf($incomelist[incomelist].value)}
 		</TD>
 	</TR>
 	{sectionelse}
@@ -51,7 +51,7 @@
 			<B>{trans("Total:")}</B>
 		</TD>
 		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
-			<B>{sum column=value array=$incomelist string_format=$LANGDEFS.$_language.money_format}</B>
+			<B>{sum column=value array=$incomelist assign="total_value"}{moneyf($total_value)}</B>
 		</TD>
 	</TR>
 </TABLE>

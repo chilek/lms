@@ -9,26 +9,52 @@
         font-weight: bold;
         white-space: nowrap;
     }
+
+    .cell-flex {
+		display: flex;
+        flex-wrap: wrap;
+	}
+
+	@media screen and (max-width: 400px) {
+		.tab-beautify tr td:nth-child(2) {
+			white-space: normal;
+		}
+
+		.cell-flex > div {
+			max-width: 145px;
+			white-space: normal;
+		}
+
+		.cell-flex > span {
+			max-width: 145px;
+			white-space: normal;
+		}
+
+		.cell-flex {
+			width: 145px;
+			white-space: normal;
+		}
+	}
+
 </style>
 
 <table class="lmsbox">
     <thead>
 		<tr>
-			<td style="width: 1%;">
+			<td style="width: 99%;" colspan="3">
 				<img src="img/node.gif" alt="">
-			</td>
-			<td style="width: 99%;" colspan="2">
 				<span class="bold">{$nodeinfo.name} ({$nodeinfo.id|string_format:"%04d"})</span>
 			</td>
 		</tr>
     </thead>
     <tbody>
 		<tr>
-			<td width="100%" colspan="3" class="container">
+			<td colspan="3" class="container">
 				<table style="width: 100%;" cellpadding="0">
 					<tr>
-						<td width="50%" class="valign-top">
-							<table style="width: 100%" class="tab-beautify">
+						<td class="tab-beautify lmsbox-panels">
+							<div class="lmsbox-panel">
+								<table>
 								<colgroup>
 									<col style="width: 1%;">
 									<col style="width: 1%;">
@@ -43,8 +69,8 @@
 									<td>
 										{trans("Network:")}
 									</td>
-									<td>
-										<a href="?m=netinfo&amp;id={$nodeinfo.netid}">{$nodeinfo.netname}</a>
+									<td class="cell-flex">
+										<span><a href="?m=netinfo&amp;id={$nodeinfo.netid}">{$nodeinfo.netname}</a></span>
 									</td>
 								</tr>
 								<tr>
@@ -62,7 +88,7 @@
 								{if $nodeinfo.ip_pub != "0.0.0.0"}
 								<tr>
 									<td>
-										<img src="img/ip_pub.gif" class="lms-ui-button-clipboard" data-clipboard-text="{$nodeinfo.ip_pub}"s alt="">
+										<img src="img/ip_pub.gif" class="lms-ui-button-clipboard" data-clipboard-text="{$nodeinfo.ip_pub}" alt="">
 									</td>
 									<td>
 										{trans("Pub. IP address:")}
@@ -101,7 +127,10 @@
 									</td>
 									<td>
 										{if ConfigHelper::checkConfig('phpui.protect_passwords')}
-										<button class="lms-ui-button-clipboard lms-ui-button" data-clipboard-text="{$nodeinfo.passwd}">{trans("Copy")}</button>
+										<button class="lms-ui-button-clipboard lms-ui-button" data-clipboard-text="{$nodeinfo.passwd|escape}">
+											<i class="lms-ui-icon-clipboard"></i>
+											{trans("Copy")}
+										</button>
 										{else}
 											{$nodeinfo.passwd}
 										{/if}
@@ -117,8 +146,15 @@
 									<td>
 										{trans("Location:")}
 									</td>
-									<td>
-										{if $nodeinfo.location_name}{$nodeinfo.location_name} ,{/if}{$nodeinfo.location}
+									<td class="cell-flex">
+                                        <div>
+										{if $nodeinfo.teryt}
+											{if $nodeinfo.location_name}{$nodeinfo.location_name} ,{/if}
+											{t a=$nodeinfo.location}$a (TERRIT){/t}
+										{else}
+											{if $nodeinfo.location_name}{$nodeinfo.location_name} ,{/if}{$nodeinfo.location}
+										{/if}
+                                        </div>
 									</td>
 								</tr>
 								{/if}
@@ -140,7 +176,7 @@
 										<td>
 											{trans("Net device:")}
 										</td>
-										<TD class="nobr">
+										<TD>
 											{if $nodeinfo.netdev}
 												<span class="bold">
 													<a href="?m=netdevinfo&amp;id={$netdevices.id}">{$netdevices.name} {$netdevices.producer}{if $netdevices.location} / {$netdevices.location}{/if}</A>
@@ -158,7 +194,7 @@
 															{assign var=netdevname value=$netdevices[netdev].name}
 															{if $netdevices[netdev].producer}{assign var=netdevname value=$netdevname|cat:" / "|cat:$netdevices[netdev].producer}{/if}
 															{if $netdevices[netdev].location}{assign var=netdevname value=$netdevname|cat:" ("|cat:$netdevices[netdev].location|cat:")"}{/if}
-															<OPTION value="{$netdevices[netdev].id}" {if $netdevices[netdev].id==$netdevice}SELECTED{/if}>{$netdevname|truncate:120:"...":true}</OPTION>
+															<OPTION value="{$netdevices[netdev].id}" {if $netdevices[netdev].id==$netdevice}SELECTED{/if}>{$netdevname|truncate:120:"&hellip;":true}</OPTION>
 														{/section}
 													</select>
 
@@ -209,7 +245,7 @@
 									     {trans("Investment project:")}
 									</td>
 									<td>
-										{$nodeinfo.projectname}
+										{$nodeinfo.projectname|escape}
 									</td>
 								</tr>
 
@@ -221,7 +257,7 @@
 									<td>
 										{trans("Options:")}
 									</td>
-									<td class="nobr">
+									<td>
 										{if $disable_active_links}
 											<ol class="lms-inline-list">
 												{if $nodeinfo.chkmac}<li>{trans("MAC checking")}</li>{/if}
@@ -250,7 +286,7 @@
 									<td>
 										{trans("Type:")}
 									</td>
-									<td class="nobr">
+									<td>
 										{if $disable_active_links}
 											<ol class="lms-inline-list">
 												{foreach $_SESSIONTYPES as $idx => $sessiontype}
@@ -277,9 +313,9 @@
 								{/if}
 								{/block}
 							</table>
-						</td>
-						<td width="50%" class="valign-top">
-							<table width="100%" id="nodeinfo" class="tab-beautify">
+							</div>
+							<div class="lmsbox-panel">
+								<table id="nodeinfo" class="tab-beautify">
 							{block name="nodeinfobox-rightcolumn"}
                                 <colgroup>
                                     <col style="width: 1%;">
@@ -295,14 +331,15 @@
 									<td>
 										{trans("Description:")}
 									</td>
-									<td>
-										<table style="width: 100%;" cellpadding="5">
+									<td class="cell-flex">
+										<div><table style="width: 100%;" cellpadding="5">
 											<tr>
 												<td class="fall superlight">
-													{$nodeinfo.info|replace:"\n":"<br>"}
+													<div>{$nodeinfo.info|replace:"\n":"<br>"}</div>
 												</td>
 											</tr>
 										</table>
+										</div>
 									</td>
 								</tr>
 								{/if}
@@ -331,7 +368,7 @@
 									<td>
 										{trans("GPS longitude:")}
 									</td>
-									<td class="nobr">
+									<td class="cell-flex">
 										{if $nodeinfo.longitude}{$nodeinfo.longitude}{else}{/if}
 										<input type="hidden" ID="longitude" name="longitude" value="{$nodeinfo.longitude}">
 									</td>
@@ -343,7 +380,7 @@
 									<td>
 										<span class="bold">{trans("GPS latitude:")}</span>
 									</td>
-									<td class="nobr">
+									<td class="cell-flex">
 										{if $nodeinfo.latitude}{$nodeinfo.latitude}{else}{/if}
 										<input type="hidden" ID="latitude" name="latitude" value="{$nodeinfo.latitude}">
 									</td>
@@ -351,7 +388,7 @@
 								<tr>
 									<td colspan="2">
 									</td>
-									<td>
+									<td class="cell-flex">
 										<a href="?m=netdevmap&nodeid={$nodeinfo.id}"><img src="img/network.gif" alt=""> {trans("Show on map")} &raquo;&raquo;&raquo;</a>
 									</td>
 								</tr>
@@ -385,8 +422,10 @@
 									<td>
 										{trans("last online:")}
 									</td>
-									<td>
+									<td class="cell-flex">
+										<div>
 										{$nodeinfo.lastonlinedate}
+										</div>
 									</td>
 								</tr>
 								{/if}
@@ -399,35 +438,35 @@
 										{trans("Created:")}<br>
 										{trans("Modified:")}
 									</td>
-									<td>
-										{$nodeinfo.createdby}, {$nodeinfo.creationdateh}<br>
-										{if $nodeinfo.moddate}{$nodeinfo.modifiedby}, {$nodeinfo.moddateh}{else}-{/if}
+									<td class="cell-flex">
+										<div>
+											{$nodeinfo.createdby|escape}, {$nodeinfo.creationdateh}<br>
+											{if $nodeinfo.moddate}{$nodeinfo.modifiedby|escape}, {$nodeinfo.moddateh}{else}-{/if}
+										</div>
 									</td>
 								</tr>
 							{/block}
 						</table>
+							</div>
 					</td>
 				</tr>
 			</TABLE>
 		</td>
 	</tr>
 	<tr>
-		<td style="width: 100%; text-align: right;" colspan="3">
+		<td style="width: 100%;" colspan="3" class="lms-ui-box-buttons">
 			{block name="nodeinfobox-buttons"}
-			<a href="?m=nodeadd&ownerid={$nodeinfo.ownerid}&premac[]={implode('&premac[]=', $macs)}&prename={t a=$nodeinfo.name}$a_clone{/t}{if $nodeinfo.address_id}&pre_address_id={$nodeinfo.address_id}{/if}">{trans("Clone")} <img src="img/clone.gif" alt="{trans("Clone")}" title="{trans("Clone")}"></a>
-			<a href="?m=nodeedit&amp;id={$nodeinfo.id}" ACCESSKEY="E">{trans("Edit")} <img src="img/edit.gif" alt=""></A>
-			<a href="?m=nodedel&amp;id={$nodeinfo.id}" onClick="return confirmLink(this, '{t a=$nodeinfo.name}Are you sure, you want to remove node \'$a\' from database?{/t}')">
-				{trans("Delete")}
-				<img src="img/delete.gif" alt="">
-			</a>
+				{button type="link-button" id="clone-button" icon="clone" label="Clone"
+					href="?m=nodeadd&ownerid={$nodeinfo.ownerid}&premac[]={implode('&premac[]=', $macs)}&prename={t a=$nodeinfo.name}$a_clone{/t}{if $nodeinfo.address_id}&pre_address_id={$nodeinfo.address_id}{/if}"}
+				{button type="link-button" id="edit-button" icon="edit" label="Edit" href="?m=nodeedit&id={$nodeinfo.id}"}
+				{button id="delete-node" icon="delete" label="Delete" onclick="javascript:delete_node('{$nodeinfo.id}', '{$nodeinfo.name}');"}
 			{/block}
 		</td>
 	</tr>
     </tbody>
 </table>
 
-<script type="text/javascript">
-<!--
+<script>
     xajax_getNodeStats({$nodeinfo.id});
 
     {if !$disable_active_links}
@@ -546,5 +585,12 @@
 	}
 
 	xajax_getRadioSectors({$nodeinfo.netdev}, {$nodeinfo.linktechnology});
-//-->
+
+	function delete_node(nodeid, nodename) {
+		confirmDialog($t("Are you sure, you want to remove node '$a' from database?", nodename), $('#delete-node')).done(function() {
+			location.href = '?m=nodedel&id='+nodeid;
+		});
+		return false;
+	}
+
 </script>

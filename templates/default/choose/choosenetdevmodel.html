@@ -1,12 +1,11 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!DOCTYPE html>
 <!--// $Id$ //-->
 <html>
     <head>
         <meta name="GENERATOR" content="LMS {$layout.lmsv}">
-        <meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        {include file="language.html"}
         <title>::: LMS :{if $layout.pagetitle != ""} {$layout.pagetitle} :{/if}::</title>
-        {include file="jquery.html" language=$LANGDEFS.$_ui_language.html}
+        {include file="jquery.html" language=Localisation::getCurrentHtmlLanguage() lms_language=Localisation::getCurrentUiLanguage()}
         <link href="css/style.css" rel="stylesheet" type="text/css">
         <script type="text/javascript" src="js/common.js"></script>
         <script type="text/javascript" src="js/autosuggest.js"></script>
@@ -73,7 +72,7 @@
         </table>
         <script type="text/javascript">
             <!--
-    
+
             function change_producer(elem)
             {
                 var model = document.getElementById('model');
@@ -115,11 +114,11 @@
 
                 if (producer.value !== '0') {
                     if (producer.value === '') {
-                        alert('{trans("Producer is required!")}');
+                        window.parent.alertDialog($t("Producer is required!"));
                         return;
                     }
                     if (model.value === '') {
-                        alert('{trans("Model is required")}');
+                        window.parent.alertDialog($t("Model is required"));
                         return;
                     }
                     netdevmodelform.elements[varname + '[producer]'].value = producer.options[producer.selectedIndex].text;

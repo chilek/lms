@@ -50,5 +50,3 @@ $this->Execute("ALTER TABLE passwd ADD description text NOT NULL DEFAULT ''");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008022000', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

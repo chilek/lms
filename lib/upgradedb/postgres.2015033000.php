@@ -32,5 +32,3 @@ $this->Execute("ALTER TABLE netnodes ADD CONSTRAINT netnodes_location_street_fke
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015033000', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

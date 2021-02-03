@@ -35,8 +35,7 @@ $this->Execute("
 		INDEX md5sum (md5sum),
 		UNIQUE KEY docid (docid, md5sum),
 		FOREIGN KEY (docid) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE
-	) ENGINE=InnoDB"
-);
+	) ENGINE=InnoDB");
 
 $this->Execute("DELETE FROM documentcontents WHERE docid NOT IN (SELECT id FROM documents)");
 $this->Execute("ALTER TABLE documentcontents CHANGE docid docid integer NOT NULL");
@@ -54,5 +53,3 @@ $this->Execute("ALTER TABLE documentcontents DROP COLUMN md5sum");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016082600', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

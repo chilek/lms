@@ -33,5 +33,3 @@ $this->Execute("ALTER TABLE netnodes ADD CONSTRAINT netnodes_divisions_fkey
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016020501', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

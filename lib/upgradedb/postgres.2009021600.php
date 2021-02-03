@@ -31,5 +31,3 @@ $this->Execute("ALTER TABLE ewx_pt_config ALTER COLUMN name TYPE varchar(32)");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009021600', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

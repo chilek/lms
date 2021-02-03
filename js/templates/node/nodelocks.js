@@ -1,7 +1,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -40,7 +40,14 @@ function delNodeLock(id) {
 	xajax_delNodeLock(id);
 }
 
-$("#nodelockspanel .lms-ui-button-delete").click(function() {
+function toggleNodeLock(id) {
+	$('#nodelocktable').prop('disabled', true);
+	$('#nodelockspanel #nodelocktable').html(
+		$('#nodelockspanel .lms-ui-tab-hourglass-template').html());
+	xajax_toggleNodeLock(id);
+}
+
+$("#nodelockspanel .delete-button").click(function() {
 	$(this).parent().find('[id*="lockdays_"]').prop('checked', false).end()
 		.find('select').val(0);
 });

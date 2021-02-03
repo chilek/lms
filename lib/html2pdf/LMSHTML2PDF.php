@@ -24,7 +24,8 @@
  *  $Id$
  */
 
-class LMSHTML2PDF extends HTML2PDF {
+class LMSHTML2PDF extends HTML2PDF
+{
     /**
      * class constructor
      *
@@ -37,7 +38,7 @@ class LMSHTML2PDF extends HTML2PDF {
      * @param  array       $marges      Default margins (left, top, right, bottom)
      * @return LMSHTML2PDF $this
      */
-    public function __construct($orientation = 'P', $format = 'A4', $langue='fr', $unicode=true, $encoding='UTF-8', $marges = array(5, 5, 5, 8))
+    public function __construct($orientation = 'P', $format = 'A4', $langue = 'fr', $unicode = true, $encoding = 'UTF-8', $marges = array(5, 5, 5, 8))
     {
         // init the page number
         $this->_page         = 0;
@@ -75,7 +76,9 @@ class LMSHTML2PDF extends HTML2PDF {
         $this->_subPart = false;
 
         // init the marges of the page
-        if (!is_array($marges)) $marges = array($marges, $marges, $marges, $marges);
+        if (!is_array($marges)) {
+            $marges = array($marges, $marges, $marges, $marges);
+        }
         $this->_setDefaultMargins($marges[0], $marges[1], $marges[2], $marges[3]);
         $this->_setMargins();
         $this->_marges = array();
@@ -86,5 +89,3 @@ class LMSHTML2PDF extends HTML2PDF {
         return $this;
     }
 }
-
-?>

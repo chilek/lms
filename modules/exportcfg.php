@@ -38,7 +38,7 @@
 %ADDRESS - adres klienta: ulica
 %ZIP - kod pocztowy
 %CITY - miasto
-%TEN - nip 
+%TEN - nip
 %I - kolejny numer wiersza (rekordu) w pliku exportu
 %TYPE - typ operacji: 3-KP, 4-KW, 5-przelew-wp³ata, 6-przelew-wyp³ata
 %CASHREG - nazwa rejestru kasowego
@@ -61,19 +61,19 @@ $inv_filename = 'export.txt';
 $cnote_type = '1'; // typ dokumentu: korekta (zmienna %TYPE)
 $invoice_type = '0'; // typ dokumentu: faktura (zmienna %TYPE)
 
-/* Zmienne dotycz±ce tylko exportu faktur 
+/* Zmienne dotycz±ce tylko exportu faktur
 
 %NETTO - warto¶æ netto (suma)
 %VAT - warto¶æ podatku (suma)
 
-%VATPx - stawka podatku 
+%VATPx - stawka podatku
 %NETTOx - warto¶æ netto
 %VATx - warto¶æ podatku
 
-%TAXEDx - czy dana stawka podatkowa jest zwolniona, w sumie to tylko jedna kombinacja 
-	taxed=1 i VATP=0.00 ma sens, no ale skoro juz jestesmy porzadni to niech tak bedzie
+%TAXEDx - czy dana stawka podatkowa jest zwolniona, w sumie to tylko jedna kombinacja
+    taxed=1 i VATP=0.00 ma sens, no ale skoro juz jestesmy porzadni to niech tak bedzie
 
-UWAGA: x zastêpujemy cyfr± od 1 do 8, która oznacza kolejn± stawkê, 
+UWAGA: x zastêpujemy cyfr± od 1 do 8, która oznacza kolejn± stawkê,
        np. %VATP1, %VATP2 itd.
 
 */
@@ -90,5 +90,3 @@ $cash_out_type = '4'; // typ dokumentu (zmienna %TYPE)
 $default_customer = ''; // domy¶lna warto¶æ zmiennej %CUSTOMER gdy pole jest puste (np. przeniesienie ¶rodków)
 
 $cash_record = '%I,%DATE,%ABSVALUE,"%NUMBER","%UID4",%TYPE,"%CASHREG","%CID4","%CUSTOMER","%DESC"';
-
-?>

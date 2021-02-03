@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,108 +26,146 @@
 
 check_file_uploads();
 
-if (isset($_GET['type']))
-	$attachmenttype = $_GET['type'];
-if (!preg_match('/^[a-z0-9_]+$/', $attachmenttype))
-	die;
+if (isset($_GET['type'])) {
+    $attachmenttype = $_GET['type'];
+}
+if (!preg_match('/^[a-z0-9_]+$/', $attachmenttype)) {
+    die;
+}
 
 switch ($attachmenttype) {
-	case 'netdevid':
-	case 'netnodeid':
-		if (!ConfigHelper::checkPrivilege('network_management'))
-			if (isset($_GET['type']))
-				access_denied();
-			else
-				return;
-		break;
+    case 'netdevid':
+    case 'netdevmodelid':
+    case 'netnodeid':
+        if (!ConfigHelper::checkPrivilege('network_management')) {
+            if (isset($_GET['type'])) {
+                access_denied();
+            } else {
+                return;
+            }
+        }
+        break;
+    case 'messageid':
+        if (!ConfigHelper::checkPrivilege('messaging')) {
+            if (isset($_GET['type'])) {
+                access_denied();
+            } else {
+                return;
+            }
+        }
+        break;
 }
 
 if (isset($_GET['attachmentaction'])) {
-	switch ($_GET['attachmentaction']) {
-		case 'updatecontainer':
-			header('Content-Type: application/json');
-			if ($LMS->UpdateFileContainer(array(
-					'id' => $_GET['id'],
-					'description' => $_POST['description'],
-				)))
-				die('[]');
-			else
-				die(json_encode(array(
-					'error' => trans('Cannot update file container description!'),
-				)));
-			break;
-		case 'deletecontainer':
-			$LMS->DeleteFileContainer($_GET['id']);
-			break;
-		case 'viewfile':
+    switch ($_GET['attachmentaction']) {
+        case 'updatecontainer':
+            header('Content-Type: application/json');
+            if ($LMS->UpdateFileContainer(array(
+                    'id' => $_GET['id'],
+                    'description' => $_POST['description'],
+                ))) {
+                die('[]');
+            } else {
+                die(json_encode(array(
+                    'error' => trans('Cannot update file container description!'),
+                )));
+            }
+            break;
+        case 'deletecontainer':
+            $LMS->DeleteFileContainer($_GET['id']);
+            break;
+        case 'viewfile':
+            $file = $LMS->GetFile($_GET['fileid']);
+            if (empty($file)) {
+                die;
+            }
 
-			$file = $LMS->GetFile($_GET['fileid']);
-			if (empty($file))
-				die;
+            header('Content-Type: ' . $file['contenttype']);
+            if (!preg_match('/^text/i', $file['contenttype'])) {
+                $pdf = preg_match('/pdf/i', $file['contenttype']);
+                if (!isset($_GET['save'])) {
+                    if ($pdf) {
+                        header('Content-Disposition: inline; filename="'.$file['filename'] . '"');
+                        header('Content-Transfer-Encoding: binary');
+                        header('Content-Length: ' . filesize($file['filepath']) . ' bytes');
+                    } else {
+                        if (isset($_GET['thumbnail']) && ($width = intval($_GET['thumbnail'])) > 0
+                            && class_exists('Imagick') && strpos($file['contenttype'], 'image/') === 0) {
+                            $imagick = new \Imagick($file['filepath']);
+                            $imagick->scaleImage($width, 0);
+                            echo $imagick->getImageBlob();
+                            die;
+                        } else {
+                            header('Content-Disposition: attachment; filename="' . $file['filename'] . '"');
+                        }
+                    }
+                } else {
+                    header('Content-Disposition: attachment; filename="' . $file['filename'] . '"');
+                }
+                header('Pragma: public');
+            }
+            echo @file_get_contents($file['filepath']);
+            die;
+            break;
 
-			header('Content-Type: ' . $file['contenttype']);
-			if (!preg_match('/^text/i', $file['contenttype'])) {
-				$pdf = preg_match('/pdf/i', $file['contenttype']);
-				if (!isset($_GET['save']))
-					if ($pdf) {
-						header('Content-Disposition: inline; filename="'.$file['filename'] . '"');
-						header('Content-Transfer-Encoding: binary');
-						header('Content-Length: ' . filesize($file['filepath']) . ' bytes');
-					} else
-						header('Content-Disposition: attachment; filename="' . $file['filename'] . '"');
-				else
-					header('Content-Disposition: attachment; filename="' . $file['filename'] . '"');
-				header('Pragma: public');
-			}
-			readfile($file['filepath']);
-			die;
-			break;
-
-		case 'downloadzippedcontainer':
-			$LMS->GetZippedFileContainer($_GET['id']);
-			die;
-			break;
-	}
-	$SESSION->redirect('?' . $SESSION->get('backto'));
+        case 'downloadzippedcontainer':
+            $LMS->GetZippedFileContainer($_GET['id']);
+            die;
+            break;
+    }
+    if (isset($_GET['restore']) && !empty($_GET['restore'])) {
+        $SESSION->redirect('?' . $SESSION->get('backto').'&restore=1&resourceid=' . $_GET['resourceid']);
+    } else {
+        $SESSION->redirect('?' . $SESSION->get('backto'));
+    }
 }
 
-if (isset($_GET['resourceid']))
-	$attachmentresourceid = $_GET['resourceid'];
-if (!preg_match('/^[0-9]+$/', $attachmentresourceid))
-	die;
+if (isset($_GET['resourceid'])) {
+    $attachmentresourceid = $_GET['resourceid'];
+}
+if (!preg_match('/^[0-9]+$/', $attachmentresourceid)) {
+    die;
+}
 
 if (isset($_POST['upload'])) {
-	$result = handle_file_uploads('files', $error);
-	extract($result);
-	$SMARTY->assign('fileupload', $fileupload);
+    $uploaded_attachmenttype = $_POST['upload']['attachmenttype'];
+    $files = 'files-' . $uploaded_attachmenttype;
+    $result = handle_file_uploads($files, $error);
+    extract($result);
+    $SMARTY->assign('fileupload', $fileupload);
 
-	$upload = $_POST['upload'];
+    $upload = $_POST['upload'];
 
-	if (!$error) {
-		if (!empty($files)) {
-			foreach ($files as &$file)
-				$file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
-			unset($file);
-			$LMS->AddFileContainer(array(
-				'description' => $upload['description'],
-				'files' => $files,
-				'type' => $attachmenttype,
-				'resourceid' => $attachmentresourceid,
-			));
-		}
+    header('Content-Type: application/json');
 
-		// deletes uploaded files
-		if (!empty($files))
-			rrmdir($tmppath);
+    if (!$error) {
+        $files = $result[$files];
+        if (!empty($files)) {
+            foreach ($files as &$file) {
+                $file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
+            }
+            unset($file);
+            $LMS->AddFileContainer(array(
+                'description' => $upload['description'],
+                'files' => $files,
+                'type' => $uploaded_attachmenttype,
+                'resourceid' => $attachmentresourceid,
+            ));
+        }
 
-		$SESSION->redirect('?' . $SESSION->get('backto'));
-	}
+        // deletes uploaded files
+        if (!empty($files)) {
+            rrmdir($tmppath);
+        }
 
-	$SMARTY->assign('upload', $upload);
+        if (isset($upload['restore']) && !empty($upload['restore'])) {
+            die(json_encode(array('url' => '?' . $SESSION->get('backto').'&restore=1&resourceid=' . $attachmentresourceid)));
+        } else {
+            die(json_encode(array('url' => '?' . $SESSION->get('backto'))));
+        }
+    }
+
+    die('{}');
 }
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
-
-$SMARTY->assign('attachmenttype', $attachmenttype);
-$SMARTY->assign('attachmentresourceid', $attachmentresourceid);
-$SMARTY->assign('filecontainers', $LMS->GetFileContainers($attachmenttype, $attachmentresourceid));

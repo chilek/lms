@@ -1,7 +1,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,17 +24,25 @@
 
 $(function() {
 	$('#add-nodegroups').click(function() {
-		if ($("input[name='nodegroupid[]']").filter(':checked').length) {
+		if ($("[name='nodegroupid[]'] option:selected").length) {
 			$('form#nodegroupassignment').submit();
 		}
 	});
 
+	$('.delete-nodegroup').click(function() {
+		confirmDialog($t('Are you sure, you want to remove node from group?'), this).done(function() {
+			location.href = $(this).attr('href');
+		});
+		return false;
+	});
+
 	$('#delete-nodegroups').click(function() {
-		if ($(this).closest('div.lms-ui-multi-check').find('input:checked').length &&
-			confirm($t("Are you sure, you want to remove node from selected groups?"))) {
-			$('form#nodegroupassignment').attr('action', '?m=nodegroup&action=delete&id=' +
-				$(this).prev().val() + '&is_sure=1')
-				.submit();
+		if ($(this).closest('div.lms-ui-multi-check').find('input:checked').length) {
+			confirmDialog($t("Are you sure, you want to remove node from selected groups?"), this).done(function() {
+				$('form#nodegroupassignment').attr('action', '?m=nodegroup&action=delete&id=' +
+					$(this).prev().val()).submit();
+
+			});
 		}
 	});
 });

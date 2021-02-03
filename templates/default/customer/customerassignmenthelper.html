@@ -1,4 +1,7 @@
+{$promotion_show_period_values = ConfigHelper::checkConfig('phpui.promotion_show_period_values')}
+
 <style>
+
     div.lms-ui-multiselect hr {
         margin-top: 0px;
         margin-bottom: 0px;
@@ -9,6 +12,108 @@
 		padding-top: 5px;
 		padding-bottom: 5px;
 	}
+
+	table.single-assignment {
+		border: 1px dotted;
+		margin-left: 2em;
+	}
+	table.single-assignment tr:not(:last-child) {
+		border-bottom: 1px dotted;
+	}
+	table.single-assignment td {
+		text-align: center;
+	}
+	table.single-assignment td:not(:last-child) {
+		border-right: 1px dotted;
+	}
+	table.single-assignment input[type="text"] {
+		width: 5em;
+		text-align: center;
+	}
+	table.single-assignment [data-restore-selector] {
+		cursor: pointer;
+	}
+
+	.customerassignment-data {
+		width: 100%;
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-start;
+		align-items: flex-start;
+		flex-wrap: wrap;
+	}
+
+	.customerassignment > div {
+		flex-grow: 1;
+	}
+
+	#customerassignment-right-panel {
+		margin-right: 2em;
+		flex-grow: 1;
+	}
+
+	#customerassignment-left-panel {
+		display: flex;
+		margin-right: 10em;
+		flex-grow: 1;
+	}
+
+	.schema-tariff-container-row {
+		display: flex;
+		flex-wrap: wrap;
+	}
+
+	.schema-tariff-container-row > td:first-child {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.schema-tariff-count {
+		padding-top: 0.5em;
+	}
+
+	.schema-tariff-count input {
+		width: 5em;
+	}
+
+	@media screen and (max-width: 600px) {
+		#customerassignment-left-panel {
+			margin-right: 0em;
+		}
+		#customerassignment-right-panel {
+			margin-right: 0em;
+		}
+	}
+
+	@media screen and (max-width: 450px) {
+		.customerdevices .lms-ui-multiselect-wrapper {
+			width: 170px;
+			div.lms-ui-multiselect {
+				min-width: 170px;
+			}
+		}
+
+		[name="assignment[name]"] {
+			width: 150px;
+		}
+
+		[name="assignment[numberplanid]"] {
+			width: 150px;
+		}
+
+		[name="assignment[attribute]"] {
+			width: 150px;
+		}
+
+		#recipient-select {
+			width: 150px;
+		}
+	}
+
+	#a_day > td > * {
+		margin-top: 0.3em;
+	}
+
 </style>
 
 {if isset($promotion_only)}
@@ -17,14 +122,12 @@
 </select>
 {/if}
 
-<table class="lmsbox-inner">
-	<COLGROUP>
-		<COL style="width: 50%;">
-		<COL style="width: 50%;">
-	</COLGROUP>
+<table class="lmsbox-inner" width="100%">
 	<TBODY>
 	<tr>
-		<td class="valign-top">
+		<td>
+		<div class="customerassignment-data">
+			<div id="customerassignment-left-panel">
 			<table width="100%;" cellpadding="3">
 				{if !empty($promotions)}
 				<tr>
@@ -32,29 +135,37 @@
 						<table id="a_promotions" style="display: none;">
 							<TR>
 								<TD>
-									<IMG src="img/promoschema.gif" alt="">
+									{icon name="money" class="fa-fw"}
 								</TD>
 								<TD class="bold">
 									{trans("Schema")}:
 								</TD>
 								<TD style="width: 98%;">
-									<SELECT size="1" name="{$variable_prefix}[schemaid]" id="promotion-select" {tip text="Select promotion schema"}>
+									<SELECT size="1" name="{$variable_prefix}[schemaid]" id="promotion-select" {tip text="Select promotion schema" trigger="promotion-select"}>
 										{if $promotion_only}
 										<option value="0">{trans("<!promotionschema>- none -")}</option>
 										{/if}
 										{foreach $promotions as $promotion}
-										<optgroup label="{$promotion.name}" data-valid="{$promotion.valid}"{if !$promotion.valid} class="blend"{if !$variables.alltariffs} style="display: none;"{/if}{/if}>
+										<optgroup title="{$promotion.description|truncate:512:"&hellip;":true|escape}"
+											label="{$promotion.name}" data-valid="{$promotion.valid}"
+											{if !$promotion.valid} class="blend"
+											{if !$variables.alltariffs} style="display: none;"{/if}{/if}
+										>
 										{foreach $promotion.schemas as $schemaid => $schema}
-										<OPTION value="{$schemaid}"{if $variables.schemaid == $schemaid} SELECTED{/if} data-valid="{$promotion.valid}"{if !$promotion.valid} class="blend"{/if}>{$schema.name|truncate:40:"...":true}</OPTION>
+										<OPTION title="{$schema.description|truncate:512:"&hellip;":true|escape}"
+											value="{$schemaid}"{if $variables.schemaid == $schemaid} SELECTED{/if}
+											data-valid="{$promotion.valid}"{if !$promotion.valid} class="blend"{/if}
+										>{$schema.name|truncate:40:"&hellip;":true}</OPTION>
 										{/foreach}
 										</optgroup>
 										{/foreach}
 									</SELECT>
+									<i id="promotion-schema-info" class="lms-ui-icon-info"></i>
 								</TD>
 							</TR>
 							<tr id="a_location" style="display: none;">
 								<td>
-									<img src="img/location.png" alt="">
+									{icon name="location" class="fa-fw"}
 								</td>
 								<td class="bold">
 									{trans("Location:")}
@@ -66,6 +177,17 @@
 										?m=customerassignmenthelper&api=1&customerid=... call
 										*}
 									</select>
+								</td>
+							</tr>
+							<tr id="a_check_all_terminals" style="display: none;">
+								<td colspan="2">
+								</td>
+								<td>
+									<label>
+										<input type="checkbox" id="check_all_terminals" name="{$variable_prefix}[check_all_terminals]"
+											value="1" {if $variables.check_all_terminals} checked{/if}>
+										{trans("all terminals")}
+									</label>
 								</td>
 							</tr>
 							<TR>
@@ -81,31 +203,127 @@
 												</td>
 												<td class="valign-top" style="padding-bottom: 10px; padding-top: 0;">
 													<table>
-														<tr>
+														<tr class="schema-tariff-container">
+															{textformat assign="countid"}counts-{$schemaid}-{iconv('UTF-8', 'ASCII//TRANSLIT', preg_replace('/[ _]/', '-', $label))}{/textformat}
 															{if isset($item.single)}
 															<td class="valign-top{if !$item.single.optional} blend{/if}">
-																<label>
-																	<input class="schema-tariff-checkbox" type="checkbox" name="{$variable_prefix}[stariffid][{$schemaid}][{$label}]"
-																		   value="{$item.single.tariffid}" data-label="{$label}"
-																		   data-tarifftype="{$item.single.type}"
-																		   {if isset($variables.stariffid[$schemaid][$label]) || !$item.single.optional} checked{/if}
-																	{if !$item.single.optional} disabled data-mandatory="1"{/if}
-																	data-tariffaccess="{$item.single.authtype}">
-																	{$item.single.tariff}
-																</label>
+																<table>
+																	<tr class="schema-tariff-container-row">
+																		<td>
+																			<label>
+																				<input class="schema-tariff-checkbox" type="checkbox" name="{$variable_prefix}[sassignmentid][{$schemaid}][{$label}]"
+																						value="{$item.single.assignmentid}" data-label="{$label}"
+																						data-tarifftype="{$item.single.type}"
+																						data-assignment-id="{$item.single.assignmentid}"
+																						{if isset($variables.sassignmentid[$schemaid][$label]) || !$item.single.optional} checked{/if}
+																				{if !$item.single.optional} disabled data-mandatory="1"{/if}
+																				data-tariffaccess="{$item.single.authtype}">
+																				{if $promotion_show_period_values}
+																					{t a=$item.single.tariff b=moneyf($item.single.value, $item.single.currency) c=implode(' / ', $item.single.periodvalues)}$a (default: $b; $c){/t}
+																				{else}
+																					{t a=$item.single.tariff b=moneyf($item.single.value, $item.single.currency)}$a (default: $b){/t}
+																				{/if}
+																			</label>
+																			<span class="schema-tariff-count">
+																				{trans("Count:")}
+																				<input type="number" name="{$variable_prefix}[counts][{$schemaid}][{$label}]"
+																					id="{$countid}" min="1" max="50" required
+																					value="{if isset($variables.counts[$schemaid][$label])}{$variables.counts[$schemaid][$label]}{else}1{/if}">
+																			</span>
+																			<input type="hidden" name="{$variable_prefix}[backwardperiods][{$schemaid}][{$label}][{$item.single.assignmentid}]"
+																				value="{$item.single.backwardperiod}">
+																		</td>
+																		<td>
+																			<table class="single-assignment" data-assignment-id="{$item.single.assignmentid}"
+																					{if !isset($variables.sassignmentid[$schemaid][$label]) && $item.single.optional}style="display: none;"{/if}>
+																				<tr>
+																					{foreach $item.single.periods as $period}
+																					<td>{$period.label}</td>
+																					{/foreach}
+																				</tr>
+																				<tr>
+																					{foreach $item.single.periods as $key => $period}
+																					<td>
+																						{if $period.modifiable}
+																							{textformat assign="elemid"}value-{$schemaid}-{iconv('UTF-8', 'ASCII//TRANSLIT', preg_replace('/[ _]/', '-', $label))}-{$item.single.assignmentid}-{$key}{/textformat}
+																							<input id="{$elemid}" type="text" name="{$variable_prefix}[values][{$schemaid}][{$label}][{$item.single.assignmentid}][{$key}]"
+																									value="{if isset($variables.values[$schemaid][$label][$item.single.assignmentid][$key])}{$variables.values[$schemaid][$label][$item.single.assignmentid][$key]}{else}{$period.value}{/if}"
+																									{tip trigger=$elemid}>
+																							<i class="lms-ui-icon-restore" data-restore-selector="#{$elemid}" data-restore-value="{$period.value}"></i>
+																						{else}
+																							{if $period.value == ''}
+																								-
+																							{else}
+																								{moneyf($period.value, $item.single.currency)}
+																							{/if}
+																						{/if}
+																					</td>
+																					{/foreach}
+																				</tr>
+																			</table>
+																		</td>
+																	</tr>
+																</table>
 															</td>
 															{else}
 															<td class="valign-top">
-																<select class="schema-tariff-selection" name="{$variable_prefix}[stariffid][{$schemaid}][{$label}]" data-label="{$label}">
-																	{if !$item.selection.required}
-																	<option value="0" data-tariffaccess="-1" data-tarifftype="0">{trans("- none -")}</option>
-																	{/if}
-																	{foreach $item.selection.items as $item}
-																	<option value="{$item.tariffid}" data-tariffaccess="{$item.authtype}"
-																			data-tarifftype="{$item.type}"
-																			{if in_array($item.tariffid, (array)$variables.stariffid[$schemaid])} selected{/if}>{$item.tariff}</option>
-																	{/foreach}
-																</select>
+																<table>
+																	<tr class="schema-tariff-container-row">
+																		<td>
+																			<select class="schema-tariff-selection" name="{$variable_prefix}[sassignmentid][{$schemaid}][{$label}]" data-label="{$label}">
+																				{if !$item.selection.required}
+																				<option value="0" data-tariffaccess="-1" data-tarifftype="0">{trans("- none -")}</option>
+																				{/if}
+																				{foreach $item.selection.items as $item}
+																				<option value="{$item.assignmentid}" data-tariffaccess="{$item.authtype}"
+																						data-tarifftype="{$item.type}" data-assignment-id="{$item.assignmentid}"
+																						{if in_array($item.assignmentid, (array)$variables.sassignmentid[$schemaid])} selected{/if}
+																					>{if $promotion_show_period_values}{t a=$item.tariff b=moneyf($item.value, $item.currency) c=implode(' / ', $item.periodvalues)}$a (default: $b; $c){/t}{else}{t a=$item.tariff b=moneyf($item.value, $item.currency)}$a (default: $b){/t}{/if}</option>
+																				{/foreach}
+																			</select>
+																			<span class="schema-tariff-count">
+																				{trans("Count:")}
+																				<input type="number" name="{$variable_prefix}[counts][{$schemaid}][{$label}]"
+																					id="{$countid}" min="1" max="50" required
+																					value="{if isset($variables.counts[$schemaid][$label])}{$variables.counts[$schemaid][$label]}{else}1{/if}">
+																			</span>
+																		</td>
+																		<td>
+																			{foreach $item.selection.items as $item}
+																			<table class="single-assignment" data-assignment-id="{$item.assignmentid}"
+																					{if !in_array($item.assignmentid, (array)$variables.sassignmentid[$schemaid])}style="display: none;"{/if}>
+																				<input type="hidden" name="{$variable_prefix}[backwardperiods][{$schemaid}][{$label}][{$item.assignmentid}]"
+																					   value="{$item.backwardperiod}">
+																				<tr>
+																					{foreach $item.periods as $period}
+																						<td>{$period.label}</td>
+																					{/foreach}
+																				</tr>
+																				<tr>
+																					{foreach $item.periods as $key => $period}
+																						<td>
+																							{if $period.modifiable}
+																								{textformat assign="elemid"}value-{$schemaid}-{iconv('UTF-8', 'ASCII//TRANSLIT', preg_replace('/[ _]/', '-', $label))}-{$item.assignmentid}-{$key}{/textformat}
+																								<input id="{$elemid}"
+																										type="text" name="{$variable_prefix}[values][{$schemaid}][{$label}][{$item.assignmentid}][{$key}]"
+																										value="{if isset($variables.values[$schemaid][$label][$item.assignmentid][$key])}{$variables.values[$schemaid][$label][$item.assignmentid][$key]}{else}{$period.value}{/if}"
+																										{tip trigger=$elemid}>
+																								<i class="lms-ui-icon-restore" data-restore-selector="#{$elemid}" data-restore-value="{$period.value}"></i>
+																							{else}
+																								{if $period.value == ''}
+																									-
+																								{else}
+																									{$period.value|money_format}
+																								{/if}
+																							{/if}
+																						</td>
+																					{/foreach}
+																				</tr>
+																			</table>
+																			{/foreach}
+																		</td>
+																	</tr>
+																</table>
 															</td>
 															{/if}
 														</tr>
@@ -140,45 +358,72 @@
 							<TBODY>
 							{block name="customerassignmenthelper-properties"}
 
+							<TR id="a_count" style="display: none;">
+								<TD>
+									{icon name="quantity" class="fa-fw"}
+								</TD>
+								<TD class="bold nobr">
+									{trans("Count:")}
+								</TD>
+								<TD>
+									<INPUT type="text" name="{$variable_prefix}[count]" value="{if $variables.count}{$variables.count}{else}1{/if}" size="15" pattern="[0-9]+([\.][0-9]+)?" formnovalidate {tip text="Enter count in numeric format" trigger="count"}>
+								</TD>
+							</TR>
+
 							<TR id="a_name" style="display: none;">
 								<TD>
-									<IMG src="img/money.gif" alt="">
+									{icon name="description" class="fa-fw"}
 								</TD>
 								<TD class="bold nobr">
 									{trans("Name:")}
 								</TD>
 								<TD>
-									<INPUT type="text" name="{$variable_prefix}[name]" value="{if $variables.tariffid<=0}{$variables.name}{/if}" size="30" {tip text="Enter liability name/description (tariffless liabilities only)" trigger="name"}>
+									<INPUT type="text" name="{$variable_prefix}[name]" value="{if $variables.tariffid<=0}{$variables.name|escape}{/if}"
+										size="30" {tip text="Enter liability name/description (tariffless liabilities only)" trigger="name"}>
 								</TD>
 							</TR>
 
 							<TR id="a_attribute" style="display: none;">
 								<TD>
-									<IMG src="img/money.gif" alt="">
+									{icon name="tags" class="fa-fw"}
 								</TD>
 								<TD class="bold nobr">
 									{trans("Attribute:")}
 								</TD>
 								<TD>
-									<INPUT type="text" name="{$variable_prefix}[attribute]" value="{if $variables.attribute}{htmlspecialchars($variables.attribute)}{/if}" size="30" {tip text="Enter tariff attribute" trigger="attribute"}>
+									<INPUT type="text" name="{$variable_prefix}[attribute]" value="{if $variables.attribute}{$variables.attribute|escape}{/if}" size="30" {tip text="Enter tariff attribute" trigger="attribute"}>
 								</TD>
 							</TR>
 
 							<TR id="a_day" style="display: none;">
 								<TD>
-									<IMG src="img/calendar.gif" alt="">
+									{icon name="accounting" class="fa-fw"}
 								</TD>
 								<TD class="bold nobr">
 									{trans("Accounting:")}
 								</TD>
 								<TD>
-									<SELECT size="1" name="{$variable_prefix}[period]" {tip text="Select time period to account liability"}>
+									<SELECT id="assignment-period" size="1" name="{$variable_prefix}[period]" {tip text="Select time period to account liability"}>
 										{foreach from=$_PERIODS key=key item=item}
 										<OPTION value="{$key}"{if $variables.period == $key} SELECTED{/if}>{$item}</OPTION>
 										{/foreach}
 									</SELECT>
-
-									<INPUT type="TEXT" name="{$variable_prefix}[at]" value="{if $variables.at}{$variables.at}{/if}" {tip text="Enter accounting time. For disposable accounting enter date in format YYYY/MM/DD, for weekly accounting enter day of week (Monday = 1), for monthly accounting enter day of month (1 to 28), for yearly accounting enter day and month in format DD/MM (15/09 means September 15th), for half-yearly DD/MM (MM <=6) and for quarterly DD/MM (MM <= 3)" trigger="at"} SIZE="8">
+									<label id="backward-period" {tip text="Check if tariff should be accounted backward"}>
+										<input type="checkbox" name="{$variable_prefix}[backwardperiod]" value="1"
+											{if !empty($variables.backwardperiod)} checked{/if}>
+										{trans("<!assignment>backward")}
+									</label>
+									<br>
+									<INPUT id="a-day-of-month" type="TEXT" name="{$variable_prefix}[at]"
+										value="{if $variables.at}{$variables.at}{/if}"
+										{tip text="Enter accounting time. For disposable accounting enter date in format YYYY/MM/DD, for weekly accounting enter day of week (Monday = 1), for monthly accounting enter day of month (1 to 28), for yearly accounting enter day and month in format DD/MM (15/09 means September 15th), for half-yearly DD/MM (MM <=6) and for quarterly DD/MM (MM <= 3)" trigger="at"}
+										{if $variables.at == 0 && $variables.at != ''} style="display: none;" disabled{/if}
+										SIZE="8">
+									<label{if $variables.period != $smarty.const.MONTHLY} style="display: none;"{/if}>
+										<input type="checkbox" id="last-day-of-month" name="{$variable_prefix}[at]" value="0"
+											{if $variables.period != $smarty.const.MONTHLY} disabled{else}{if $variables.at == 0 && $variables.at != ''} checked{/if}{/if}>
+										{trans("last day of month")}
+									</label>
 									{if $variables.atwarning}
 									<INPUT type="hidden" name="{$variable_prefix}[atwarning]" value="1">
 									{/if}
@@ -187,35 +432,49 @@
 
 							<TR id="a_period">
 								<TD>
-									<IMG src="img/calendar.gif" alt="">
+									{icon name="period" class="fa-fw"}
 								</TD>
 								<TD class="bold nobr">
 									{trans("Period:")}
 								</TD>
-								<TD class="nobr">
+								<TD>
 									{trans("from:")}
-									<INPUT type="TEXT" name="{$variable_prefix}[datefrom]" value="{if $variables.datefrom}{$variables.datefrom}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter accounting start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="datefrom"} SIZE="10">
-
+									<input type="text" name="{$variable_prefix}[datefrom]"
+										value="{if $variables.datefrom}{$variables.datefrom}{/if}"
+										placeholder="{trans("yyyy/mm/dd")}"
+										{tip class="lms-ui-date lms-ui-date-unix" text="Enter accounting start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="datefrom"}
+										size="10">
 									{trans("to:")}
-									<INPUT type="TEXT" name="{$variable_prefix}[dateto]" value="{if $variables.dateto}{$variables.dateto}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter accounting end date in YYYY/MM/DD format. Leave this field empty if you don't want to set expiration date" trigger="dateto"} SIZE="10">
+									<input type="text" name="{$variable_prefix}[dateto]"
+										value="{if $variables.dateto}{$variables.dateto}{/if}"
+										placeholder="{trans("yyyy/mm/dd")}"
+										{tip class="lms-ui-date lms-ui-date-unix" text="Enter accounting end date in YYYY/MM/DD format. Leave this field empty if you don't want to set expiration date" trigger="dateto"}
+										size="10">
 								</TD>
 							</TR>
 
 							<TR id="a_value" style="display: none;">
 								<TD>
-									<IMG src="img/value.gif" alt="">
+									{icon name="money" class="fa-fw"}
 								</TD>
 								<TD class="bold">
 									{trans("Value:")}
 								</TD>
 								<TD>
 									<INPUT type="text" name="{$variable_prefix}[value]" value="{if $variables.value}{$variables.value}{/if}" size="10" {tip text="Enter liability value (tariffless liabilities only)" trigger="value"}>
+
+									{currency_selection selected=$variables.currency elementname=$variable_prefix|cat:"[currency]"}
+
+									<label>
+										<input type="checkbox" name="{$variable_prefix}[splitpayment]" value="1"{if $variables.splitpayment} checked{/if}>
+										{trans("split payment")}
+									</label>
 								</TD>
 							</TR>
 
 							<TR id="a_discount" style="display: none;">
 								<TD style="{if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
-									<IMG src="img/value.gif" alt="">
+									{icon name="discount" class="fa-fw"}
 								</TD>
 								<TD class="bold" style="{if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
 									<span class="bold">{trans("Discount:")}</span>
@@ -230,9 +489,24 @@
 								</TD>
 							</TR>
 
+							<TR id="a_type" style="display: none;">
+								<TD>
+									{icon name="type" class="fa-fw"}
+								</TD>
+								<TD>
+									{trans("Type:")}
+								</TD>
+								<TD>
+									<SELECT id="tariff-type" size="1" name="{$variable_prefix}[type]" {tip text="Select liability type" trigger="type"}>
+										{foreach $_SERVICETYPES as $key => $item}
+											<OPTION VALUE="{$key}"{if $variables.type == $key} selected{/if}>{$item}</OPTION>
+										{/foreach}
+									</SELECT>
+								</TD>
+
 							<TR id="a_tax" style="display: none;">
 								<TD>
-									<IMG src="img/tax.gif" alt="">
+									{icon name="money" class="fa-fw"}
 								</TD>
 								<TD class="bold">
 									{trans("Tax:")}
@@ -246,21 +520,37 @@
 								</TD>
 							</TR>
 
+							<TR id="a_taxcategory" style="display: none;">
+								<TD>
+									{icon name="money" class="fa-fw"}
+								</TD>
+								<TD class="bold">
+									<label for="taxcategory">
+										{trans("Tax category:")}
+									</label>
+								</TD>
+								<TD>
+									{tax_category_selection id="taxcategory" elementname=$variable_prefix|cat:"[taxcategory]"
+										selected=$variables.taxcategory tip="Select tax category"}
+								</TD>
+							</TR>
+
 							<TR id="a_productid" style="display: none;">
 								<TD>
-									<IMG src="img/class.gif" alt="">
+									{icon name="optional-info" class="fa-fw"}
 								</TD>
 								<TD class="bold">
 									{trans("Product ID:")}
 								</TD>
 								<TD>
-									<INPUT type="text" name="{$variable_prefix}[prodid]" value="{$variables.prodid}" size="10" {tip text="Enter liability Product ID (tariffless liabilities only)"}>
+									<INPUT type="text" name="{$variable_prefix}[prodid]" value="{$variables.prodid|escape}"
+										size="10" {tip text="Enter liability Product ID (tariffless liabilities only)"}>
 								</TD>
 							</TR>
 
 							<TR id="a_numberplan" style="display: none;">
 								<TD>
-									<IMG src="img/id.gif" alt="">
+									{icon name="id" class="fa-fw"}
 								</TD>
 								<TD class="bold nobr">
 									{trans("Numbering Plan:")}
@@ -279,25 +569,19 @@
 
 							<TR id="a_paytype" style="display: none;">
 								<TD>
-									<IMG src="img/print.gif" alt="">
+									{icon name="paytype" class="fa-fw"}
 								</TD>
 								<TD class="bold nobr">
 									{trans("Payment Type:")}
 								</TD>
 								<TD>
-									<SELECT name="{$variable_prefix}[paytype]" {tip text="Select payment type" trigger="paytype"}>
-										<OPTION value=""{if !$variables.paytype} selected{/if}>- {trans("default")} -</OPTION>
-
-										{foreach from=$_PAYTYPES item=item key=key}
-										<OPTION value="{$key}"{if $variables.paytype==$key} selected{/if}>{$item}</OPTION>
-										{/foreach}
-									</SELECT>
+									{paytypes elemname="{$variable_prefix}[paytype]" selected=$variables.paytype}
 								</TD>
 							</TR>
 
 							<tr id="a_address" style="display: none;">
 								<td>
-									<img src="img/info3.gif" alt="">
+									{icon name="recipient" class="fa-fw"}
 								</td>
 								<td class="bold">
 									<span class="bold">{trans("Recipient:")}</span>
@@ -318,8 +602,8 @@
 					</td>
 				</tr>
 			</table>
-		</td>
-		<td class="valign-top">
+			</div>
+			<div id="customerassignment-right-panel">
 			<TABLE style="width: 100%;" cellpadding="3">
 				<COLGROUP>
 					<COL style="width: 1%;">
@@ -330,18 +614,19 @@
 				<TBODY>
 				<TR id="a_options" style="display: none;">
 					<TD>
-						<IMG src="img/options.gif" alt="">
+						{icon name="options" class="fa-fw"}
 					</TD>
 					<TD class="bold">
 						{trans("Options:")}
 					</TD>
-					<TD class="nobr">
+					<TD>
 						<label>
 							{trans("document type:")}&nbsp;
 							<SELECT name="{$variable_prefix}[invoice]">
 								<OPTION value="0">{trans("without document")}</OPTION>
 								<OPTION value="{$smarty.const.DOC_INVOICE}"{if $variables.invoice == $smarty.const.DOC_INVOICE} selected{/if}>{trans("invoice")}</OPTION>
 								<OPTION value="{$smarty.const.DOC_INVOICE_PRO}"{if $variables.invoice == $smarty.const.DOC_INVOICE_PRO} selected{/if}>{trans("pro forma invoice")}</OPTION>
+								<OPTION value="{$smarty.const.DOC_DNOTE}"{if $variables.invoice == $smarty.const.DOC_DNOTE} selected{/if}>{trans("debit note")}</OPTION>
 							</SELECT>
 						</label>
 						<br>
@@ -363,17 +648,31 @@
 							</SELECT>
 							{/if}
 						</label>
+						{if !$variables.id}
+						<br>
+						<label>
+							<INPUT type="checkbox" name="{$variable_prefix}[last-settlement]" value="1"{if $variables['last-settlement']} checked{/if}>
+							{trans("with settlement of last deficient period")}
+						</label>
+						<span id="a_align_periods">
+							<br>
+							<label>
+								<INPUT type="checkbox" name="{$variable_prefix}[align-periods]" value="1"{if $variables['align-periods']} checked{/if}>
+								{trans("full calendar periods")}
+							</label>
+						</span>
+						{/if}
 					</TD>
 				</TR>
 
 				<TR id="a_existingassignments" style="display: none;">
 					<TD>
-						<IMG src="img/money.gif" alt="">
+						{icon name="assignment" class="fa-fw"}
 					</TD>
 					<TD class="bold">
 						{trans("Existing assignments:")}
 					</TD>
-					<TD class="nobr">
+					<TD>
 						<select name="{$variable_prefix}[existing_assignments][operation]">
 							{foreach $_EXISTINGASSIGNMENTS as $operid => $operation}
 							<option value="{$operid}"{if $variables.existing_assignments.operation == $operid} selected{/if}>{$operation}</option>
@@ -396,18 +695,21 @@
 				{if $customernodes}
 				<tr id="a_nodes" style="display: none;">
 					<td>
-						<img src="img/node.gif" alt="">
+						{icon name="node" class="fa-fw"}
 					</td>
 					<td class="bold">
 						{trans("Nodes:")}
 					</td>
-					<td class="nobr" id="nodelist">
+					<td id="nodelist">
 						{foreach $customernodes as $customernode}
 						<span data-tariffaccess="{$customernode.authtype}" class="global-node-checkbox">
 							<label>
-								<input type="checkbox" name="{$variable_prefix}[nodes][{counter}]" value="{$customernode.id}"{if in_array($customernode.id, (array)$variables.nodes)} checked{/if}>
-								<span class="bold">{$customernode.name}</span> ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}
+								<input type="checkbox" name="{$variable_prefix}[nodes][{$customernode.id}]" value="{$customernode.id}"{if isset($variables.nodes[$customernode.id])} checked{/if}>
+								<span class="bold">{$customernode.name}</span> ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"&hellip;":true|escape}{/if}
 							</label>
+							{if isset($variables.node_warns[$customernode.id])}
+								<input type="hidden" name="{$variable_prefix}[node_warns][{$customernode.id}]" value="{$customernode.id}">
+							{/if}
 							<br>
 						</span>
 						{/foreach}
@@ -418,18 +720,21 @@
 				{if $customernetdevnodes}
 				<tr id="a_netdevnodes" style="display: none;">
 					<td>
-						<img src="img/netdev.gif" alt="">
+						{icon name="netdev" class="fa-fw"}
 					</td>
 					<td class="bold">
 						{trans("Network Devices:")}
 					</td>
-					<td class="nobr" id="nodelist">
+					<td id="nodelist">
 						{foreach $customernetdevnodes as $customernode}
 						<span data-tariffaccess="{$customernode.authtype}" class="global-node-checkbox">
 							<label>
-								<input type="checkbox" name="{$variable_prefix}[nodes][{counter}]" value="{$customernode.id}"{if in_array($customernode.id, (array)$variables.nodes)} checked{/if}>
-								<span class="bold">{$customernode.name}</span> {if !empty($customernode.netdev_name)} / {$customernode.netdev_name}{/if}  ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}
+								<input type="checkbox" name="{$variable_prefix}[nodes][{$customernode.id}]" value="{$customernode.id}"{if isset($variables.nodes[$customernode.id])} checked{/if}>
+								<span class="bold">{$customernode.name}</span> {if !empty($customernode.netdev_name)} / {$customernode.netdev_name}{/if}  ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"&hellip;":true|escape}{/if}
 							</label>
+							{if isset($variables.node_warns[$customernode.id])}
+								<input type="hidden" name="{$variable_prefix}[node_warns][{$customernode.id}]" value="{$customernode.id}">
+							{/if}
 							<br>
 						</span>
 						{/foreach}
@@ -440,12 +745,12 @@
 				{if $voipaccounts}
 				<tr id="a_phones" style="display: none;">
 					<td>
-						<img src="img/voip.gif" alt="">
+						{icon name="phone" class="fa-fw"}
 					</td>
 					<td class="bold">
 						{trans("Phones:")}
 					</td>
-					<td class="nobr" id="nodelist">
+					<td id="nodelist">
 						{foreach $voipaccounts as $account}
 						{foreach $account.phones as $phone}
 						<label>
@@ -472,6 +777,8 @@
 				{/if}
 				</TBODY>
 			</TABLE>
+			</div>
+		</div>
 		</td>
 	</tr>
 	</TBODY>

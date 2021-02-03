@@ -39,5 +39,3 @@ $this->Execute("ALTER TABLE voipaccounts ADD FOREIGN KEY (location_street) REFER
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015072300', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

@@ -25,8 +25,6 @@
  */
 
 
-$LMS->UserAccess(intval($_GET['id']),intval($_GET['access']));
+$LMS->UserAccess(intval($_GET['id']), intval($_GET['access']));
 
 $SESSION->redirect('?' . $SESSION->get('backto'));
-
-?>

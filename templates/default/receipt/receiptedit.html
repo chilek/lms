@@ -3,33 +3,29 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<SCRIPT type="text/javascript">
-<!--
+<SCRIPT>
 	function savereceipt(print)
 	{
-		var add = "";
-		if (document.additem.original.checked && document.additem.copy.checked)
-			add = "";
-		else if (document.additem.original.checked && !document.additem.copy.checked)
-			add = "&which=original";
-		else if (!document.additem.original.checked && document.additem.copy.checked)
-			add = "&which=copy";
+		var which = 0;
+		$('form[name="additem"] [name^="which"]:checked').each(function() {
+			which += parseInt($(this).val());
+		});
 
-		document.additem.action = "?m=receiptedit&action=save" + add;
+		document.additem.action = "?m=receiptedit&action=save&which=" + which;
 
 		if (print == 1) {
 			document.additem.action += "&print=1";
 		}
 		document.additem.submit();
 	}
-	
+
 	function additem()
 	{
 		document.additem.action = "?m=receiptedit&action=additem";
 		document.additem.target = "";
 		document.additem.submit();
 	}
-	
+
 	function saveheader()
 	{
 		if (document.setcustomer.customer)
@@ -37,7 +33,6 @@
 				document.setcustomer.customerid.value = document.setcustomer.customer.value;
 		document.setcustomer.submit();
 	}
-//-->
 </SCRIPT>
 {$default_printpage = ConfigHelper::getConfig('receipts.default_printpage')}
 <FORM NAME="setcustomer" METHOD="POST" ACTION="?m=receiptedit&action=setcustomer">
@@ -60,7 +55,7 @@
 		<TD WIDTH="99%" NOWRAP>
 			<SELECT SIZE="1" NAME="receipt[regid]" {tip text="Select cash registry" trigger="regid"}>
 				{foreach from=$cashreglist item=c}
-				<OPTION VALUE="{$c.id}"{if $c.id == $receipt.regid} SELECTED{/if}>{$c.name|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
+				<OPTION VALUE="{$c.id}"{if $c.id == $receipt.regid} SELECTED{/if}>{$c.name|truncate:40:"&hellip;":true} ({$c.id|string_format:"%04d"})</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>
@@ -75,7 +70,7 @@
 			        {trans("Additional number:")}
 				<INPUT TYPE="TEXT" NAME="receipt[extnumber]" VALUE="{$receipt.extnumber}" SIZE="40" {tip text="Enter additional document number" trigger="extnumber"}>
 			{/if}
-					
+
 		</TD>
 	</TR>
 	<TR>
@@ -83,12 +78,20 @@
 			<B>{trans("Settlement date:")}</B>
 		</TD>
 		<TD style="width: 99%;" class="nobr">
-			<INPUT TYPE="TEXT" NAME="receipt[cdate]" VALUE="{$receipt.cdate|date_format:"%Y/%m/%d"}" SIZE="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
+			<INPUT TYPE="TEXT" NAME="receipt[cdate]" VALUE="{$receipt.cdate|date_format:"%Y/%m/%d"}" SIZE="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
 			{if $receipt.cdatewarning}
 			<INPUT TYPE="HIDDEN" NAME="receipt[cdatewarning]" VALUE="1">
 			{/if}
 		</TD>
 	</TR>
+	<tr>
+		<td class="bold nobr">
+			{trans("Currency:")}
+		</td>
+		<td class="nobr">
+			{currency_selection elementname="receipt[currency]" selected=$receipt.currency}
+		</td>
+	</tr>
 	<TR>
 		<TD WIDTH="1%">
 			<B>{trans("Target:")}</B>
@@ -104,9 +107,13 @@
 				</TD>
 				<TD style="width: 99%;">
 					{if isset($customer.id)}
-					{customerlist form="setcustomer" customers=$customerlist selected=$customer.id selectname="customer" inputname="customerid" customOnChange="document.getElementById('radio_customer').checked=true;"}
+						{customerlist form="setcustomer" customers=$customerlist selected=$customer.id version=2
+							selectname="customer" inputname="customerid"
+							customOnChange="document.getElementById('radio_customer').checked=true;"}
 					{else}
-					{customerlist form="setcustomer" customers=$customerlist selected=$receipt.customerid selectname="customer" inputname="customerid" customOnChange="document.getElementById('radio_customer').checked=true;"}
+					{customerlist form="setcustomer" customers=$customerlist selected=$receipt.customerid version=2
+						selectname="customer" inputname="customerid"
+						customOnChange="document.getElementById('radio_customer').checked=true;"}
 					{/if}
 				</TD>
 			</TR>
@@ -137,7 +144,7 @@
     </TBODY>
 </TABLE>
 </FORM>
-{if $error.nocash}<h2 align="center"><font class="alert">{$error.nocash}</font></h2>{/if}
+{if $error.nocash}<h2 align="center"><span class="lms-ui-error">{$error.nocash}</span></h2>{/if}
 {if $receipt.selected && $customer}
 <P>
 <TABLE class="lmsbox">
@@ -248,11 +255,11 @@
 			{$item.description}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			{$item.value|money_format}<BR>
+			{$item.value|string_format:"%01.2f"}<BR>
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<A HREF="?m=receiptedit&action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Remove this item from list"}></A>
-		</TD>			
+		</TD>
 	</TR>
 	{foreachelse}
 	<TR>
@@ -267,7 +274,7 @@
 			<B>{trans("Total:")}</B>
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			{sum array=$contents column=value string_format=$LANGDEFS.$_language.money_format}
+			{sum array=$contents column=value assign="total_value"}{$total_value|string_format:"%01.2f"}
 		</TD>
 		<TD WIDTH="1%"></TD>
 	</TR>
@@ -293,28 +300,33 @@
 	<TR>
 		<TD COLSPAN="4" CLASS="{if $covenantlist}flr{else}fbottomu{/if}" ALIGN="RIGHT">
 			<label>
-				<INPUT type="checkbox" name="original"{if preg_match('/original/i', $default_printpage)} checked{/if}>
-				{trans("original")}
+				<INPUT type="checkbox" name="which[{$smarty.const.DOC_ENTITY_ORIGINAL}]"
+						value="{$smarty.const.DOC_ENTITY_ORIGINAL}"
+						{if preg_match('/original/i', $default_printpage)} checked{/if}>
+				{$_DOCENTITIES[$smarty.const.DOC_ENTITY_ORIGINAL]}
 			</label>
 			<label>
-				<INPUT type="checkbox" name="copy"{if preg_match('/copy/i', $default_printpage)} checked{/if}>
-				{trans("copy")}
+				<INPUT type="checkbox" name="which[{$smarty.const.DOC_ENTITY_COPY}]"
+						value="{$smarty.const.DOC_ENTITY_COPY}"
+						{if preg_match('/copy/i', $default_printpage)} checked{/if}>
+				{$_DOCENTITIES[$smarty.const.DOC_ENTITY_COPY]}
 			</label>
 			<A HREF="?m=receiptlist&regid={$receipt.regid}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>&nbsp;
 			{if !$customer && $receipt.o_type != "other" && $receipt.o_type != "advance"}
-			<A HREF="javascript:alert('{trans("Customer not selected!")}');">
+				<A HREF="javascript:alertDialog($t('Customer not selected!'));">
 			{elseif !$contents}
-			<A HREF="javascript:alert('{trans("Receipt have no items!")}');">
+				<A HREF="javascript:alertDialog($t('Receipt have no items!'));">
 			{else}
-			<A HREF="javascript:savereceipt(0);">
+				<A HREF="javascript:savereceipt(0);">
 			{/if}
 			{trans("Save")} <IMG src="img/save.gif" alt=""></A>&nbsp;
+
 			{if !$customer && $receipt.o_type != "other" && $receipt.o_type != "advance"}
-			<A HREF="javascript:alert('{trans("Customer not selected!")}');">
+				<A HREF="javascript:alertDialog($t('Customer not selected!'));">
 			{elseif !$contents}
-			<A HREF="javascript:alert('{trans("Receipt have no items!")}');">
+				<A HREF="javascript:alertDialog($t('Receipt have no items!'));">
 			{else}
-			<A HREF="javascript:savereceipt(1);">
+				<A HREF="javascript:savereceipt(1);">
 			{/if}
 			{trans("Save & Print")} <IMG src="img/save.gif" alt=""></A>
 		</TD>
@@ -323,11 +335,9 @@
     </TFOOT>
 </TABLE>
 </P>
-<SCRIPT type="text/javascript">
-<!--
+<SCRIPT>
 $(function() {
 	$('form[name="setcustomer"] [name="receipt[number]"]').focus();
 });
-//-->
 </SCRIPT>
 {/block}

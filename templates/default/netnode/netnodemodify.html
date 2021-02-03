@@ -17,6 +17,8 @@
 
 </style>
 
+<script type="text/javascript" src="js/location_box.js"></script>
+
 <FORM NAME="netnode" METHOD="POST" ACTION="?m={$layout.module}">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" name="id" value="{$netnode.id}">
@@ -33,7 +35,7 @@
 			{box_row icon="img/division.gif" label="Division:"}
 				<SELECT NAME="netnode[divisionid]"   {tip text="Select division"} >
 					{foreach $divisions as $division}
-					<OPTION VALUE="{$division.id}"{if $netnode.divisionid == $division.id} selected{/if}>{$division.shortname}</OPTION>
+					<OPTION VALUE="{$division.id}"{if $netnode.divisionid == $division.id} selected{/if}>{$division.label|escape}</OPTION>
 					{/foreach}
 				</SELECT>
 			{/box_row}
@@ -61,7 +63,7 @@
 				<select id="project" data-value="{$netdev.project}" data-alt-field="#projectid-value" data-alt-invalid-field="#project-value" {tip class="lms-ui-combobox" text="Select project for this node"} trigger="project">
 					<option value="0" {if !$netdev.invprojectid} selected{/if}>- {trans("none")} -</option>
 					{foreach $NNprojects as $project}
-						<option value="{$project.id}" {if ($netnode.invprojectid == $project.id)} selected{/if}>{$project.name}</option>
+						<option value="{$project.id}" {if ($netnode.invprojectid == $project.id)} selected{/if}>{$project.name|escape}</option>
 					{/foreach}
 				</select>
 			{/box_row}
@@ -75,19 +77,29 @@
 			{/box_row}
 
 			{box_row id="ownername" icon="img/division.gif" label="Owner identifier:"}
-				<INPUT TYPE="TEXT" NAME="netnode[coowner]" size="30" VALUE="{$netnode.coowner}" {tip trigger="coowner" text="Enter co-owner name"}>
+				<INPUT TYPE="TEXT" NAME="netnode[coowner]" size="30" VALUE="{$netnode.coowner|escape}" {tip trigger="coowner" text="Enter co-owner name"}>
 			{/box_row}
 
 			{box_row id="customer" icon="img/customer.gif" label="Owner:"}
 				{if isset($nodenode.id)}
-					{customerlist form="netnode" customers=$customers selected=$customer.id selectname="customer" inputname="netnode[ownerid]" select_id="ownerid_select" input_id="ownerid_input" customOnChange="customerChanged()"}
+					{customerlist form="netnode" customers=$customers selected=$customer.id version=2
+						selectname="customer" inputname="netnode[ownerid]" select_id="ownerid_select"
+						input_id="ownerid_input" customOnChange="customerChanged()"}
 				{else}
-					{customerlist form="netnode" customers=$customers selected=$netnode.ownerid selectname="customer" inputname="netnode[ownerid]" select_id="ownerid_select" input_id="ownerid_input" customOnChange="customerChanged()"}
+					{customerlist form="netnode" customers=$customers selected=$netnode.ownerid version=2
+						selectname="customer" inputname="netnode[ownerid]" select_id="ownerid_select"
+						input_id="ownerid_input" customOnChange="customerChanged()"}
 				{/if}
 			{/box_row}
 
 			{box_row id="location_select" icon="img/home.gif" label="Location:"}
-				<select id="customer_addresses" name="netdev[address_id]" {tip trigger="address_id"}></select>
+				{if $netnode.ownerid && $netnode.address_id > 0}
+					{$selected_address_id = $netnode.address_id}
+				{else}
+					{$selected_address_id = null}
+				{/if}
+				{include file="customer/customeraddresses.html" id="customer_addresses" name="netnode[customer_address_id]"
+					trigger="address_id" selected_address_id=$selected_address_id}
 			{/box_row}
 
 			{box_row id="location_box" icon="img/home.gif" label="Location:"}
@@ -163,7 +175,7 @@
 			{/box_row}
 
 			{box_row icon="img/calendar.gif" label="Last inspection:"}
-				<INPUT type="text" name="netnode[lastinspectiontime]" maxlength="10" VALUE="{$netnode.lastinspectiontime}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar unix" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar" trigger="lastinspectiontime"}>
+				<INPUT type="text" name="netnode[lastinspectiontime]" maxlength="10" VALUE="{$netnode.lastinspectiontime}" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date lms-ui-date-unix" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar" trigger="lastinspectiontime"}>
 			{/box_row}
 
 			{box_row icon="img/phone.gif" label="Administrative contact:"}
@@ -174,8 +186,7 @@
 	{/box_contents}
 
 	{box_buttons}
-		{button type="submit" icon="save" onclick="javascript:document.netnode.submit();"
-			accesskey="s" label="Submit"}
+		{button type="submit" icon="save" accesskey="s" label="Submit"}
 		{button icon="cancel" onclick="location.href='?m=netnodeinfo&id={$netnode.id}';" label="Cancel"}
 	{/box_buttons}
 {/box_container}
@@ -183,6 +194,7 @@
 <script>
 
 	var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
+
 	$('[name="netnode[name]"]').focus();
 
 	$('#ownership').change(function() {
@@ -206,8 +218,6 @@
 		$(hide_selectors.join(',')).hide();
 	}).change();
 
-	var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
-
 	function customerChanged() {
 		$('#ownership').change();
 
@@ -216,40 +226,39 @@
 		});
 	};
 
-	getCustomerAddresses( {intval($netnode.ownerid)}, function(addresses) {
-		customer_addresses.setAddressList( addresses );
-		{if $netdev.address_id && $netdev.ownerid}
-		$( '#customer_addresses' ).val( {$netdev.address_id} );
-		{/if}
-			customer_addresses.init();
-			customer_addresses.refresh();
-		});
+	customer_addresses.init();
 
 	/*
 	 * \brief Update address location update. Require google API key.
 	 */
 	$( '#set_gps' ).click( function() {
-		var box    = $( '.lmsui-address-box' ).first();
 
-		var state  = box.find( "input[data-address='state']"  ).val();
-		var zip    = box.find( "input[data-address='zip']"    ).val();
-		var city   = box.find( "input[data-address='city']"   ).val();
-		var street = box.find( "input[data-address='street']" ).val();
-		var house  = box.find( "input[data-address='house']"  ).val();
-		var flat   = box.find( "input[data-address='flat']"   ).val();
+		var location = null;
 
-		var location = location_str({
-			city: city,
-			street: street,
-			house: house,
-			flat: flat,
-			zip: zip,
-			state: state
-		});
-
-		if ( location.length > 0 ) {
-			setAddressLocation( location, "#latitude", "#longitude" );
+		if ($('[name="netnode[address_id]"]').val() > 0) {
+			location = {
+				address_id: $('[name="netnode[address_id]"]').val()
+			}
+		} else if ($('[data-address="city"]').val().length) {
+			location = {
+				street: $('[data-address="street"]').val(),
+				house: $('[data-address="house"]').val(),
+				flat: $('[data-address="flat"]').val()
+			}
+			if ($('[data-address="teryt-checkbox"]').prop('checked') && $('[data-address="city-hidden"]').val() > 0) {
+				location.city_id = $('[data-address="city-hidden"]').val();
+				location.street_id = $('[data-address="street-hidden"]').val();
+			} else {
+				location.state = $('[data-address="state"]').val();
+				location.zip = $('[data-address="zip"]').val();
+				location.city = $('[data-address="city"]').val();
+			}
 		}
+
+		if (location) {
+			xajax_get_gps_coordinates(location, '#latitude', '#longitude');
+		}
+
 	});
 
 </script>

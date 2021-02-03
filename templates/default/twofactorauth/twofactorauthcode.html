@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<!--// $Id$ //-->
+<html>
+<head>
+    <meta name="GENERATOR" content="LMS {$layout.lmsv}">
+	{include file="language.html"}
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	{include file="jquery.html" language=Localisation::getCurrentHtmlLanguage() lms_language=Localisation::getCurrentUiLanguage()}
+    <link href="{ConfigHelper::getConfig('phpui.style', 'css/style.css')}" rel="stylesheet" type="text/css">
+    <link href="img/lms-net.gif" rel="shortcut icon">
+    <title>::: {t a=LMS::SOFTWARE_NAME}Welcome to $a{/t} {$layout.lmsv} :::</title>
+	<style>
+		body {
+			justify-content: center;
+			align-items: center;
+			height: 100%;
+			display: flex;
+			padding: 0;
+		}
+
+		body > div {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+
+		.login-logo-container {
+			padding: 1em;
+			display: flex;
+			justify-content: center;
+		}
+
+		.login-logo-container > img {
+			width: 10em;
+		}
+
+		.login-box-container {
+			padding: 2em;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			margin: 1em;
+		}
+
+		.lms-ui-dberrors {
+
+		}
+
+		#loginform-button {
+			margin-top: 0.4em;
+		}
+
+		#trust-device-checkbox {
+			padding-top: 0.7em;
+		}
+
+	</style>
+</head>
+<body class="lms-ui-login-form">
+<div>
+	<div class="login-logo-container">
+		<img src="img/logo.png" alt="">
+	</div>
+	<div class="login-box-container loginform light">
+		<span class="bold text-center">
+			{t a=LMS::SOFTWARE_NAME}$a version{/t} {$layout.lmsv}{if $layout.lmsvr} ({$layout.lmsvr}){/if}<br><br>
+			&copy; 2001-{$smarty.now|date_format:'%Y'} LMS Developers
+		</span>
+		&nbsp;<br>
+		{if $error}<span class="lms-ui-alert bold">{$error}</span>{else}&nbsp;{/if}
+		&nbsp;<br>
+		<form method="post" name="authcodeform" action="{$target}">
+			<INPUT type="submit" class="hiddenbtn">
+			<input type="hidden" name="authcodeform[backtologinform]" value="0">
+			<table>
+				<tr>
+					<td class="text-right bold">
+						{trans("Authentication code:")}
+					</td>
+					<td>
+						<input class="bold" type="number" name="authcodeform[authcode]" size="10" accesskey="l" autofocus autocomplete="off">
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" id="trust-device-checkbox">
+						{$two_factor_auth_trust_device_time = ConfigHelper::getConfig('phpui.two_factor_auth_trust_device_time', 86400)}
+						<label>
+							<input type="checkbox" name="authcodeform[trusteddevice]" value="1">
+							{t a=date('Y/m/d H:m:s', time() + $two_factor_auth_trust_device_time)}trust this device till $a{/t}
+						</label>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						&nbsp;
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" class="text-center">
+						{button type="submit" label="Login"}
+						<br>
+						{button id="loginform-button" label="Login form"}
+					</td>
+				</tr>
+			</table>
+		</form>
+		<br>
+		<br>
+		<a href="doc/html/{Localisation::getCurrentUiLanguage()}/"><span class="blend">{trans("Documentation")}</span></a><br>
+		<a href="http://www.lms.org.pl/"><span class="blend">{trans("LMS Project Homepage")}</span></a>
+	</div>
+	{if $layout.dberrors}
+		{include file="dberrors.html"}
+	{/if}
+</div>
+<script>
+
+	document.forms['authcodeform'].elements['authcodeform[authcode]'].focus();
+
+	$(function() {
+		$('#loginform-button').click(function() {
+			$('[name="authcodeform[backtologinform]"]').val(1);
+			$('[name="authcodeform"]').submit();
+		});
+	});
+
+</script>
+</body>
+</html>

@@ -3,6 +3,9 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
+
+{$lastonline_limit=ConfigHelper::getConfig('phpui.lastonline_limit')}
+
 <TABLE class="lmsbox lms-ui-background-cycle">
     <COLGROUP>
 		<COL style="width: 95%;">
@@ -16,7 +19,7 @@
 	<TR {tip text="Click on column name to change sorting order"}>
 		<TD>
 			<IMG src="img/netdev.gif" ALT="">&nbsp;<A href="?m=netdevsearch&search&o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order == "name"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<IMG src="img/producer.gif" ALT="">&nbsp;<A href="?m=netdevsearch&search&o=producer{if $listdata.direction == "asc" && $listdata.order == "producer"},desc{/if}">{trans("Manufacturer:")}</A> {if $listdata.order == "producer"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} / 
+			<IMG src="img/producer.gif" ALT="">&nbsp;<A href="?m=netdevsearch&search&o=producer{if $listdata.direction == "asc" && $listdata.order == "producer"},desc{/if}">{trans("Manufacturer:")}</A> {if $listdata.order == "producer"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} /
 			<A href="?m=netdevsearch&search&o=model{if $listdata.direction == "asc" && $listdata.order == "model"},desc{/if}">{trans("Model:")}</A> {if $listdata.order == "model"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="valign-top nobr">
@@ -48,9 +51,18 @@
 	<TBODY>
 	{section name=netdevlist loop=$netdevlist start=$start max=$pagelimit}
 	{$netdev=$netdevlist[netdevlist]}
-	<TR class="highlight" data-target-url="?m=netdevinfo&id={$netdev.id}">
+	<TR class="highlight" data-target-url="?m=netdevinfo&id={$netdev.id}" data-name="{$netdev.name}">
 		<TD class="valign-top">
-			<IMG src="img/netdev.gif" ALT=""><a name="{$netdev.id}"
+			{if $netdev.lastonline}
+				{if ($smarty.now-$netdev.lastonline) > $lastonline_limit}
+					<i class="lms-ui-icon-netdevoff" {tip a=$netdev.lastonlinedate text="Last online: \$a"}></i>
+				{else}
+					<i class="lms-ui-icon-netdevon" {tip a="on-line" text="Last online: \$a"}></i>
+				{/if}
+			{else}
+				<i class="lms-ui-icon-netdevunk"></i>
+			{/if}
+			<a name="{$netdev.id}"
 					title="{$netdev.description|replace:"\n":"<br>"|default:trans("- no description -")}{if $netdev.filecontainers}<br><br><i class='lms-ui-icon-fileupload'></i>&nbsp;{implode('<br><i class=\'lms-ui-icon-fileupload\'></i>&nbsp;', $netdev.filecontainers)}{/if}"
 					><B>{$netdev.name}</B></A>
 			<BR>
@@ -86,7 +98,7 @@
 			<IMG src="img/serialnumber.gif" ALT=""> {$netdev.serialnumber}
 		</TD>
 		<TD class="text-right nobr">
-			<a href="?m=netdevdel&id={$netdev.id}" onClick="return confirmLink(this, '{t a=$netdev.name}Are you sure, you want to remove device \'$a\' from database?{/t}')"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<a class="delete-netdev" href="?m=netdevdel&id={$netdev.id}&is_sure=1"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 			<a href="?m=netdevedit&id={$netdev.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 			<a href="?m=netdevadd&id={$netdev.id}"><IMG src="img/clone.gif" alt="{trans("Clone")}" title="{trans("Clone")}"></A>
 			<a href="?m=netdevinfo&id={$netdev.id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
@@ -117,4 +129,13 @@
 	</TR>
     </TFOOT>
 </TABLE>
+	<script>
+		$('.delete-netdev').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			confirmDialog($t("Are you sure, you want to remove device '$a' from database?", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	</script>
 {/block}

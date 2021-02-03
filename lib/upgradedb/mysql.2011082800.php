@@ -107,12 +107,15 @@ $this->Execute("ALTER TABLE nodes ADD location varchar(255) DEFAULT NULL");
 
 $nodes = $this->GetAll("SELECT id, location_city AS city, location_address AS addr
     FROM nodes WHERE location_city <> '' OR location_address <> ''");
-if ($nodes) foreach ($nodes as $n) {
-    $loc = $n['addr'];
-    if ($n['city'] && strpos($loc, $n['city']) === false)
-        $loc = $n['city'] . ($loc ? ', ' . $loc : '');
+if ($nodes) {
+    foreach ($nodes as $n) {
+        $loc = $n['addr'];
+        if ($n['city'] && strpos($loc, $n['city']) === false) {
+            $loc = $n['city'] . ($loc ? ', ' . $loc : '');
+        }
 
-    $this->Execute("UPDATE nodes SET location = ? WHERE id = ?", array($loc, $n['id']));
+        $this->Execute("UPDATE nodes SET location = ? WHERE id = ?", array($loc, $n['id']));
+    }
 }
 
 // do we need zip code for node address? No.
@@ -180,5 +183,3 @@ $this->Execute("
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011082800', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

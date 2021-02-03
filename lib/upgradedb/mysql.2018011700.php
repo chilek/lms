@@ -28,5 +28,3 @@ $this->Execute("ALTER TABLE rttickets ADD COLUMN priority tinyint(4) DEFAULT 0 N
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018011700', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

@@ -1,0 +1,293 @@
+<style>
+
+    .eventinfoshort-textbox {
+        max-width: 30em;
+        padding: 0.3em;
+    }
+
+</style>
+<TABLE class="lmsbox-inner" id="table">
+{*
+    commented out as it causes strange table grow
+    <COLGROUP>
+        <COL style="width: 1%;">
+        <COL style="width: 1%;">
+        <COL style="width: 98%;">
+    </COLGROUP>
+*}
+    <THEAD>
+    <TR>
+        <TD>
+            {icon name="timetable"}
+        </TD>
+        <TD class="bold">
+            {trans("Title:")}
+        </TD>
+        <TD class="bold">
+            {$event.title|escape}
+        </TD>
+    </TR>
+    </THEAD>
+    <TBODY>
+    <TR>
+        <TD>
+            {icon name="uptime" class="fa-fw"}
+        </TD>
+        <TD class="bold nobr">
+            {trans("Begin time:")}
+        </TD>
+        <TD>
+            {$event.date|date_format:"%x (%A)"}
+            {($event.date + $event.begintime)|date_format:"%H:%M"}
+        </TD>
+    </TR>
+    {if $event.begintime != $event.endtime || $event.enddate > $event.date}
+        <TR>
+            <TD>
+                {icon name="uptime" class="fa-fw"}
+            </TD>
+            <TD class="bold nobr">
+                {trans("End time:")}
+            </TD>
+            <TD>
+                {if $event.enddate}
+                    {$event.enddate|date_format:"%x (%A)"}
+                    {($event.enddate + $event.endtime)|date_format:"%H:%M"}
+                {else}
+                    {$event.date|date_format:"%x (%A)"}
+                    {($event.date + $event.endtime)|date_format:"%H:%M"}
+                {/if}
+            </TD>
+        </TR>
+    {/if}
+    {if $event.description}
+        <TR>
+            <TD>
+                {icon name="description" class="fa-fw"}
+            </TD>
+            <TD class="bold nobr">
+                {trans("Description:")}
+            </TD>
+            <TD>
+                <div class="fall superlight eventinfoshort-textbox">
+                    {$event.description|replace:"\n":"<BR>"}
+                </div>
+            </TD>
+        </TR>
+    {/if}
+    <TR>
+        <TD>
+            {icon name="type" class="fa-fw"}
+        </TD>
+        <TD class="bold">
+            {trans("Type:")}
+        </TD>
+        <TD class="nobr">
+            {$_EVENTTYPES[$event.type]}
+        </TD>
+    </TR>
+    <TR>
+        <TD>
+            {icon name="status" class="fa-fw"}
+        </TD>
+        <TD class="bold">
+            {trans("Availability:")}
+        </TD>
+        <TD class="nobr">
+            {if $event.private}{trans("private")}{else}{trans("public")}{/if}
+        </TD>
+    </TR>
+    <TR>
+        <TD>
+            {icon name="user" class="fa-fw"}
+        </TD>
+        <TD class="bold">
+            {trans("Created by:")}
+        </TD>
+        <TD class="nobr">
+            <A href="?m=userinfo&id={$event.userid}">{$event.username|escape}</A>
+        </TD>
+    </TR>
+    {if $event.creationdate != 0}
+        <TR>
+            <TD>
+                {icon name="uptime" class="fa-fw"}
+            </TD>
+            <TD class="bold">
+                {trans("Creation time:")}
+            </TD>
+            <TD>
+                {$event.creationdate|date_format:"%x (%X)"}
+            </TD>
+        </TR>
+    {/if}
+    {if $event.moduserid != 0}
+        <TR>
+            <TD>
+                {icon name="user" class="fa-fw"}
+            </TD>
+            <TD class="bold">
+                {trans("Last modified by:")}
+            </TD>
+            <TD class="nobr">
+                <A href="?m=userinfo&id={$event.moduserid}">{$event.modusername|escape}</A>
+            </TD>
+        </TR>
+    {/if}
+    {if $event.moddate != 0}
+        <TR>
+            <TD>
+                {icon name="uptime" class="fa-fw"}
+            </TD>
+            <TD class="bold">
+                {trans("Last modification time:")}
+            </TD>
+            <TD>
+                {$event.moddate|date_format:"%x (%X)"}
+            </TD>
+        </TR>
+    {/if}
+    {if $event.closeduserid != 0}
+        <TR>
+            <TD>
+                {icon name="user" class="fa-fw"}
+            </TD>
+            <TD class="bold nobr">
+                {trans("Closed by")}:
+            </TD>
+            <TD class="nobr">
+                <A href="?m=userinfo&id={$event.closeduserid}">{$event.closedusername|escape}</A>
+            </TD>
+        </TR>
+    {/if}
+    {if $event.closeddate != 0}
+        <TR>
+            <TD>
+                {icon name="timetable" class="fa-fw"}
+            </TD>
+            <TD class="bold nobr">
+                {trans("Closed time")}:
+            </TD>
+            <TD>
+                {$event.closeddate|date_format:"%x (%X)"}
+            </TD>
+        </TR>
+    {/if}
+    {if $event.customername}
+    <TR>
+        <TD>
+	        {icon name="customer" class="fa-fw"}
+        </TD>
+        <TD class="bold">
+            {trans("Customer:")}
+        </TD>
+        <TD class="nobr">
+            <A href="?m=customerinfo&id={$event.customerid}">{$event.customername|escape}</A>
+        </TD>
+    </TR>
+    {/if}
+    {if $event.netnode_name || $event.customerlocation}
+    <TR>
+        <TD>
+            {icon name="location" class="fa-fw"}
+        </TD>
+        <TD class="bold">
+            {trans("Location:")}
+        </TD>
+        <TD class="nobr">
+        {if $event.netnode_name}
+            {icon name="netnode" class="fa-fw"}<a href="?m=netnodeinfo&id={$event.netnode_id}">{$event.netnode_name|escape}</a>
+            {if !empty($event.netnode_location)}<br>{$event.netnode_location|escape}{/if}
+        {else}
+            {if $event.customername}
+                {if !empty($event.address_id)}
+                    {$event.location|escape}
+                {elseif !empty($event.nodeid)}
+                    <a href="?m=nodeinfo&id={$event.nodeid}">{$event.nodelocation|escape}</a>
+                {else}
+		            {$event.customerlocation|escape}
+                {/if}
+            {/if}
+        {/if}
+        </TD>
+    </TR>
+    {/if}
+    {if !empty($event.nodeid)}
+        <TR>
+            <TD>
+                {icon name="node" class="fa-fw"}
+            </TD>
+            <TD class="bold">
+                {trans("Node:")}
+            </TD>
+            <TD class="nobr">
+                <a href="?m=nodeinfo&id={$event.nodeid}">{$event.node_name}: {$event.node_location|escape}</a>
+            </TD>
+        </TR>
+    {/if}
+    {if $event.note}
+        <TR>
+            <TD>
+                {icon name="note" class="fa-fw"}
+            </TD>
+            <TD class="bold nobr">
+                {trans("Note:")}
+            </TD>
+            <TD>
+                <div class="fall superlight eventinfoshort-textbox">
+                    {$event.note|escape|replace:"\n":"<BR>"}
+                </div>
+            </TD>
+        </TR>
+    {/if}
+    {if $event.userlist}
+        <TR>
+            <TD>
+                {icon name="user" class="fa-fw"}
+            </TD>
+            <TD class="bold">
+                {trans("Users:")}
+            </TD>
+            <TD class="nobr">
+                {foreach $event.userlist as $userid}
+                    <A href="?m=userinfo&id={$userid}">{$userlist[$userid].rname|escape}</A><BR>
+                {/foreach}
+            </TD>
+        </TR>
+    {/if}
+    {if isset($event.ticketid)}
+        <TR>
+            <TD>
+                {icon name="helpdesk" class="fa-fw"}
+            </TD>
+            <TD class="bold">
+                {trans("Helpdesk assignment:")}
+            </TD>
+            <TD>
+		    <a href="?m=rtticketview&id={$event.ticketid}">#{$event.ticketid}</a> ({$_RT_STATES[$event.ticket.state].label})
+            </TD>
+        </TR>
+	{if $event.ticket.state != $smarty.const.RT_RESOLVED}
+	<TR>
+		<TD colspan="3">
+                    {if ($ticket.state != $smarty.const.RT_RESOLVED || ($ticket.state == $smarty.const.RT_RESOLVED && $aet && ($smarty.now - $ticket.resolvetime) < $aet)) || (ConfigHelper::checkPrivilege('superuser'))}
+                        {button type="link-button" icon="message" label="New Message" href="?m=rtmessageadd&ticketid={$event.ticketid}"}
+                    {/if}
+                    {button type="link-button" icon="note" label="New Note" href="?m=rtnoteadd&ticketid={$event.ticketid}"}
+		</TD>
+	</TR>
+        {/if}
+    {/if}
+    <TR>
+        <TD class="text-right" colspan="3">
+            {button type='link-button' id='delete-event' href="?m=eventdel&id={$event.id}" label='Delete' icon='delete'}
+            {button type='link-button' href="?m=eventedit&id={$event.id}" label='Edit' icon='edit'}
+            {if !$event.closed}
+                {button type='link-button' href="?m=eventedit&id={$event.id}&action=close" label='Close' icon='close'}
+            {else}
+                {button type='link-button' href="?m=eventedit&id={$event.id}&action=open" label='Open' icon='open'}
+            {/if}
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>

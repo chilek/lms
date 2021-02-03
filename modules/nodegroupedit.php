@@ -24,9 +24,8 @@
  *  $Id$
  */
 
-if( !($id = $DB->GetOne('SELECT id FROM nodegroups WHERE id = ?', array(intval($_GET['id'])))))
-{
-	$SESSION->redirect('?m=nodegrouplist');
+if (!($id = $DB->GetOne('SELECT id FROM nodegroups WHERE id = ?', array(intval($_GET['id']))))) {
+    $SESSION->redirect('?m=nodegrouplist');
 }
 
 $membersnetid = isset($_GET['membersnetid']) ? $_GET['membersnetid'] : 0;
@@ -37,47 +36,48 @@ $nodes = $LMS->GetNodesWithoutGroup($id, $othersnetid);
 
 $layout['pagetitle'] = trans('Group Edit: $a', $nodegroup['name']);
 
-if(isset($_POST['nodegroup']))
-{
-	$nodegroupedit = $_POST['nodegroup'];
+if (isset($_POST['nodegroup'])) {
+    $nodegroupedit = $_POST['nodegroup'];
 
-	foreach($nodegroupedit as $key => $value)
-		$nodegroupedit[$key] = trim($value);
+    foreach ($nodegroupedit as $key => $value) {
+        $nodegroupedit[$key] = trim($value);
+    }
 
-	$nodegroupedit['id'] = $_GET['id'];
-	
-	if($nodegroupedit['name'] == '')
-		$error['name'] = trans('Group name required!');
-	elseif(strlen($nodegroupedit['name']) > 255)
-		$error['name'] = trans('Group name is too long!');
-	elseif(!preg_match('/^[._a-z0-9-]+$/i', $nodegroupedit['name']))
-		$error['name'] = trans('Invalid chars in group name!');
-	elseif( $id != $nodegroupedit['id'])
-		$error['name'] = trans('Group with name $a already exists!',$nodegroupedit['name']);
+    $nodegroupedit['id'] = $_GET['id'];
+    
+    if ($nodegroupedit['name'] == '') {
+        $error['name'] = trans('Group name required!');
+    } elseif (strlen($nodegroupedit['name']) > 255) {
+        $error['name'] = trans('Group name is too long!');
+    } elseif (!preg_match('/^[._a-z0-9-]+$/i', $nodegroupedit['name'])) {
+        $error['name'] = trans('Invalid chars in group name!');
+    } elseif ($id != $nodegroupedit['id']) {
+        $error['name'] = trans('Group with name $a already exists!', $nodegroupedit['name']);
+    }
 
-	if(!$error)
-	{
-		$args = array(
-			'name' => $nodegroupedit['name'],
-			'description' => $nodegroupedit['description'],
-			SYSLOG::RES_NODEGROUP => $nodegroupedit['id']
-		);
-		$LMS->DB->Execute('UPDATE nodegroups SET name=?, description=?
+    if (!$error) {
+        $args = array(
+            'name' => $nodegroupedit['name'],
+            'description' => $nodegroupedit['description'],
+            SYSLOG::RES_NODEGROUP => $nodegroupedit['id']
+        );
+        $LMS->DB->Execute('UPDATE nodegroups SET name=?, description=?
 				WHERE id=?', array_values($args));
-		if ($SYSLOG)
-			$SYSLOG->AddMessage(SYSLOG::RES_NODEGROUP, SYSLOG::OPER_UPDATE, $args);
+        if ($SYSLOG) {
+            $SYSLOG->AddMessage(SYSLOG::RES_NODEGROUP, SYSLOG::OPER_UPDATE, $args);
+        }
 
-		$SESSION->redirect('?m=nodegroupinfo&id='.$id);
-	}
+        $SESSION->redirect('?m=nodegroupinfo&id='.$id);
+    }
 
-	$nodegroup['description'] = $nodegroupedit['description'];
-	$nodegroup['name'] = $nodegroupedit['name'];
-	$SMARTY->assign('error', $error);
+    $nodegroup['description'] = $nodegroupedit['description'];
+    $nodegroup['name'] = $nodegroupedit['name'];
+    $SMARTY->assign('error', $error);
 }
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$SMARTY->assign('nodegroup',$nodegroup);
+$SMARTY->assign('nodegroup', $nodegroup);
 $SMARTY->assign('nodes', $nodes);
 $SMARTY->assign('nodescount', count($nodes));
 $SMARTY->assign('networks', $LMS->GetNetworks());
@@ -86,5 +86,3 @@ $SMARTY->assign('membersnetid', isset($membersnetid) ? $membersnetid : 0);
 $SMARTY->assign('othersnetid', isset($othersnetid) ? $othersnetid : 0);
 
 $SMARTY->display('node/nodegroupedit.html');
-
-?>

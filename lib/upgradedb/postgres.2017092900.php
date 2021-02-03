@@ -45,5 +45,3 @@ $this->Execute("ALTER TABLE debitnotecontents ADD CONSTRAINT debitnotecontents_d
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017092900', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

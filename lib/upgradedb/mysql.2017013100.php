@@ -28,57 +28,62 @@
  * \returns array  array with address fields
  * \returns null   can't explode string
  */
-function parse_address($address, $address_contains_city = true) {
-	$address = trim($address);
+function parse_address($address, $address_contains_city = true)
+{
+    $address = trim($address);
 
-	$parts = array();
+    $parts = array();
 
-	$address_parts = preg_split('/,\s*/', $address);
-	// if we have 3-part address then we have to search for postall address
-	if (count($address_parts) == 3) {
-		if (preg_match('/^[0-9]{2}-[0-9]{3}/', $address_parts[0])) {
-			$postal_address = array_shift($address_parts);
-		} elseif (preg_match('/^[0-9]{2}-[0-9]{3}/', $address_parts[count($address_parts) - 1])) {
-			$postal_address = array_pop($address_parts);
-		}
-		if (preg_match('/^(?<zip>[0-9]{2}-[0-9]{3})\s+(?<postalcity>.+)$/', $postal_address, $m)) {
-			$parts['zip'] = $m['zip'];
-			$parts['postalcity'] = $m['postalcity'];
-		} else
-			$parts['postalcity'] = $postal_address;
-	}
+    $address_parts = preg_split('/,\s*/', $address);
+    // if we have 3-part address then we have to search for postall address
+    if (count($address_parts) == 3) {
+        if (preg_match('/^[0-9]{2}-[0-9]{3}/', $address_parts[0])) {
+            $postal_address = array_shift($address_parts);
+        } elseif (preg_match('/^[0-9]{2}-[0-9]{3}/', $address_parts[count($address_parts) - 1])) {
+            $postal_address = array_pop($address_parts);
+        }
+        if (preg_match('/^(?<zip>[0-9]{2}-[0-9]{3})\s+(?<postalcity>.+)$/', $postal_address, $m)) {
+            $parts['zip'] = $m['zip'];
+            $parts['postalcity'] = $m['postalcity'];
+        } else {
+            $parts['postalcity'] = $postal_address;
+        }
+    }
 
-	// if we have (or still) 2-part address then we have to search for city
-	if (count($address_parts) == 2) {
-		$parts['city'] = array_shift($address_parts);
-	}
+    // if we have (or still) 2-part address then we have to search for city
+    if (count($address_parts) == 2) {
+        $parts['city'] = array_shift($address_parts);
+    }
 
-	// search for street, house and flat parts
-	if (!($res = preg_match('/^(?<street>.+)\s+(?<house>[0-9][0-9a-z]*(?:\/[0-9][0-9a-z]*)?)(?:\s+|\s*(?:\/|m\.?|lok\.?)\s*)(?<flat>[0-9a-z]+)$/i', $address_parts[0], $m)))
-		if (!($res = preg_match('/^(?<street>.+)\s+(?<house>[0-9][0-9a-z]*)$/i', $address_parts[0], $m))) {
-			$res = preg_match('/^(?<street>.+)$/i', $address_parts[0], $m);
-			if (!$res)
-				return null;
-		}
+    // search for street, house and flat parts
+    if (!($res = preg_match('/^(?<street>.+)\s+(?<house>[0-9][0-9a-z]*(?:\/[0-9][0-9a-z]*)?)(?:\s+|\s*(?:\/|m\.?|lok\.?)\s*)(?<flat>[0-9a-z]+)$/i', $address_parts[0], $m))) {
+        if (!($res = preg_match('/^(?<street>.+)\s+(?<house>[0-9][0-9a-z]*)$/i', $address_parts[0], $m))) {
+            $res = preg_match('/^(?<street>.+)$/i', $address_parts[0], $m);
+            if (!$res) {
+                return null;
+            }
+        }
+    }
 
-	$m = array_filter($m, 'strlen');
-	$m = array_filter($m, 'is_string');
+    $m = array_filter($m, 'strlen');
+    $m = array_filter($m, 'is_string');
 
-	foreach ($m as $k => $v) {
-		if (is_numeric($k)) {
-			unset($m[$k]);
-		}
-	}
+    foreach ($m as $k => $v) {
+        if (is_numeric($k)) {
+            unset($m[$k]);
+        }
+    }
 
-	$parts = array_merge($parts, $m);
-	if ($address_contains_city && !isset($parts['city'])) {
-		$parts['city'] = $parts['street'];
-		unset($parts['street']);
-	}
-	return $parts;
+    $parts = array_merge($parts, $m);
+    if ($address_contains_city && !isset($parts['city'])) {
+        $parts['city'] = $parts['street'];
+        unset($parts['street']);
+    }
+    return $parts;
 }
 
-function moveTableLocation( $DB, $table ) {
+function moveTableLocation($DB, $table)
+{
     $DB->Execute('ALTER TABLE ' . $table . ' ADD COLUMN address_id int(11), ADD FOREIGN KEY ' . $table . '_address_id_fk (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE');
 
     $locations = $DB->GetAll('SELECT id, location_city, location_street, location_house, location_flat
@@ -86,7 +91,7 @@ function moveTableLocation( $DB, $table ) {
                               WHERE location_city is not null OR location_street is not null OR
                                  location_house is not null OR location_flat is not null');
 
-    if ( $locations ) {
+    if ($locations) {
         foreach ($locations as $v) {
             $city   = ($v['location_city'])   ? $v['location_city']          : null;
             $street = ($v['location_street']) ? $v['location_street']        : null;
@@ -100,9 +105,9 @@ function moveTableLocation( $DB, $table ) {
 }
 
 // Address types
-define('POSTAL_ADDRESS'          , 0);
-define('BILLING_ADDRESS'         , 1);
-define('LOCATION_ADDRESS'        , 2);
+define('POSTAL_ADDRESS', 0);
+define('BILLING_ADDRESS', 1);
+define('LOCATION_ADDRESS', 2);
 define('DEFAULT_LOCATION_ADDRESS', 3);
 
 $this->BeginTrans();
@@ -155,46 +160,47 @@ $locations = $this->GetAll('SELECT id, location, location_city, location_street,
 
 $customer_nodes = array();
 
-if ( $locations ) {
+if ($locations) {
     foreach ($locations as $v) {
         $city   = ($v['location_city'])   ? $v['location_city']          : null;
         $street = ($v['location_street']) ? $v['location_street']        : null;
         $house  = ($v['location_house'])  ? $v['location_house'] : null;
         $flat   = ($v['location_flat'])   ? $v['location_flat']  : null;
-        $loc    = parse_address( $v['location'] );
+        $loc    = parse_address($v['location']);
 
-        if ( $city == null && $street == null && $house == null && $flat == null && !$v['location'] ) {
+        if ($city == null && $street == null && $house == null && $flat == null && !$v['location']) {
             continue;
         }
 
-        $tmp = strtolower( ((!empty($loc['city'])) ? $loc['city'] : '') . "|$city|" . ((!empty($loc['street'])) ? $loc['street'] : $v['location']) . "|$street|$house|$flat" );
+        $tmp = strtolower(((!empty($loc['city'])) ? $loc['city'] : '') . "|$city|" . ((!empty($loc['street'])) ? $loc['street'] : $v['location']) . "|$street|$house|$flat");
 
-        if ( $v['ownerid'] != 0 && isset($ADDRESSES[$v['ownerid']][$tmp]) ) {
+        if ($v['ownerid'] != 0 && isset($ADDRESSES[$v['ownerid']][$tmp])) {
             $addr_id = $ADDRESSES[$v['ownerid']][$tmp];
         } else {
-			if (isset($loc['zip']))
-				$args = array(
-					'zip' => $loc['zip'],
-				);
-			else
-				$args = array();
-			$args = array_merge($args, array(
-				'city' => isset($loc['city']) ? $loc['city'] : '',
-				'city_id'=> $city == null ? null : $city,
-				'street' => isset($loc['street']) ? $loc['street'] : (isset($loc['city']) ? '' : $v['location']),
-				'street_id' => $street == null ? null : $street,
-				'house' => $house,
-				'flat' => $flat,
-			));
-			$this->Execute('INSERT INTO addresses (' . implode(', ', array_keys($args)) . ') VALUES
+            if (isset($loc['zip'])) {
+                $args = array(
+                    'zip' => $loc['zip'],
+                );
+            } else {
+                $args = array();
+            }
+            $args = array_merge($args, array(
+                'city' => isset($loc['city']) ? $loc['city'] : '',
+                'city_id'=> $city == null ? null : $city,
+                'street' => isset($loc['street']) ? $loc['street'] : (isset($loc['city']) ? '' : $v['location']),
+                'street_id' => $street == null ? null : $street,
+                'house' => $house,
+                'flat' => $flat,
+            ));
+            $this->Execute('INSERT INTO addresses (' . implode(', ', array_keys($args)) . ') VALUES
 				(' . implode(', ', array_fill(0, count(array_keys($args)), '?')) . ')', array_values($args));
 
             $addr_id = $this->GetLastInsertID('addresses');
 
-            if ( $v['ownerid'] != 0 ) {
+            if ($v['ownerid'] != 0) {
                 $ADDRESSES[$v['ownerid']][$tmp] = $addr_id;
 
-                if ( isset($customer_nodes[ $v['ownerid'] ]) ) {
+                if (isset($customer_nodes[ $v['ownerid'] ])) {
                     $type = LOCATION_ADDRESS;
                 } else {
                     $customer_nodes[ $v['ownerid'] ] = 1;
@@ -223,29 +229,30 @@ $locations = $this->GetAll('SELECT id, location, location_city, location_street,
                                   location_house  is not null OR
                                   location_flat   is not null');
 
-if ( $locations ) {
+if ($locations) {
     foreach ($locations as $v) {
         $city   = ($v['location_city'])   ? $v['location_city']          : null;
         $street = ($v['location_street']) ? $v['location_street']        : null;
         $house  = ($v['location_house'])  ? $v['location_house'] : null;
         $flat   = ($v['location_flat'])   ? $v['location_flat']  : null;
-        $loc    = parse_address( $v['location'] );
+        $loc    = parse_address($v['location']);
 
-		if (isset($loc['zip']))
-			$args = array(
-				'zip' => $loc['zip'],
-			);
-		else
-			$args = array();
-		$args = array_merge($args, array(
-			'city' => isset($loc['city']) ? $loc['city'] : '',
-			'city_id'=> $city,
-			'street' => isset($loc['street']) ? $loc['street'] : (isset($loc['city']) ? '' : $v['location']),
-			'street_id' => $street,
-			'house' => $house,
-			'flat' => $flat,
-		));
-		$this->Execute('INSERT INTO addresses (' . implode(', ', array_keys($args)) . ') VALUES
+        if (isset($loc['zip'])) {
+            $args = array(
+                'zip' => $loc['zip'],
+            );
+        } else {
+            $args = array();
+        }
+        $args = array_merge($args, array(
+            'city' => isset($loc['city']) ? $loc['city'] : '',
+            'city_id'=> $city,
+            'street' => isset($loc['street']) ? $loc['street'] : (isset($loc['city']) ? '' : $v['location']),
+            'street_id' => $street,
+            'house' => $house,
+            'flat' => $flat,
+        ));
+        $this->Execute('INSERT INTO addresses (' . implode(', ', array_keys($args)) . ') VALUES
 			(' . implode(', ', array_fill(0, count(array_keys($args)), '?')) . ')', array_values($args));
 
         $this->Execute('UPDATE netnodes SET address_id = ? WHERE id = ?', array( $this->GetLastInsertID('addresses'), $v['id']));
@@ -266,42 +273,43 @@ $locations = $this->GetAll('SELECT id, location, location_city, location_street,
                                   location_house  is not null OR
                                   location_flat   is not null');
 
-if ( $locations ) {
+if ($locations) {
     foreach ($locations as $v) {
         $city   = ($v['location_city'])   ? $v['location_city']          : null;
         $street = ($v['location_street']) ? $v['location_street']        : null;
         $house  = ($v['location_house'])  ? $v['location_house'] : null;
         $flat   = ($v['location_flat'])   ? $v['location_flat']  : null;
-        $loc    = parse_address( $v['location'] );
+        $loc    = parse_address($v['location']);
 
-        $tmp = strtolower( ((!empty($loc['city'])) ? $loc['city'] : '') . "|$city|" . ((!empty($loc['street'])) ? $loc['street'] : $v['location']) . "|$street|$house|$flat" );
+        $tmp = strtolower(((!empty($loc['city'])) ? $loc['city'] : '') . "|$city|" . ((!empty($loc['street'])) ? $loc['street'] : $v['location']) . "|$street|$house|$flat");
 
-        if ( $v['ownerid'] != 0 && isset($ADDRESSES[$v['ownerid']][$tmp]) ) {
+        if ($v['ownerid'] != 0 && isset($ADDRESSES[$v['ownerid']][$tmp])) {
             $addr_id = $ADDRESSES[$v['ownerid']][$tmp];
         } else {
-			if (isset($loc['zip']))
-				$args = array(
-					'zip' => $loc['zip'],
-				);
-			else
-				$args = array();
-			$args = array_merge($args, array(
-				'city' => isset($loc['city']) ? $loc['city'] : '',
-				'city_id'=> $city,
-				'street' => isset($loc['street']) ? $loc['street'] : (isset($loc['city']) ? '' : $v['location']),
-				'street_id' => $street,
-				'house' => $house,
-				'flat' => $flat,
-			));
-			$this->Execute('INSERT INTO addresses (' . implode(', ', array_keys($args)) . ') VALUES
+            if (isset($loc['zip'])) {
+                $args = array(
+                    'zip' => $loc['zip'],
+                );
+            } else {
+                $args = array();
+            }
+            $args = array_merge($args, array(
+                'city' => isset($loc['city']) ? $loc['city'] : '',
+                'city_id'=> $city,
+                'street' => isset($loc['street']) ? $loc['street'] : (isset($loc['city']) ? '' : $v['location']),
+                'street_id' => $street,
+                'house' => $house,
+                'flat' => $flat,
+            ));
+            $this->Execute('INSERT INTO addresses (' . implode(', ', array_keys($args)) . ') VALUES
 				(' . implode(', ', array_fill(0, count(array_keys($args)), '?')) . ')', array_values($args));
 
             $addr_id = $this->GetLastInsertID('addresses');
 
-            if ( $v['ownerid'] != 0 ) {
+            if ($v['ownerid'] != 0) {
                 $ADDRESSES[$v['ownerid']][$tmp] = $addr_id;
 
-                if ( isset($customer_nodes[ $v['ownerid'] ]) ) {
+                if (isset($customer_nodes[ $v['ownerid'] ])) {
                     $type = LOCATION_ADDRESS;
                 } else {
                     $customer_nodes[ $v['ownerid'] ] = 1;
@@ -325,31 +333,32 @@ $this->Execute('ALTER TABLE divisions ADD CONSTRAINT divisions_address_id_fk FOR
 $locations = $this->GetAll('SELECT id, address, city, zip, countryid
                             FROM divisions');
 
-if ( $locations ) {
+if ($locations) {
     foreach ($locations as $v) {
         $city      = ($v['city'])      ? $v['city'] : null;
         $zip       = ($v['zip'])       ? $v['zip']  : null;
         $countryid = ($v['countryid']) ? $v['countryid']    : null;
 
-        $loc    = parse_address( $v['address'], false );
+        $loc    = parse_address($v['address'], false);
         $street = (!empty($loc['street'])) ? $loc['street'] : $v['address'];
         $house  = (!empty($loc['house']))  ? $loc['house']  : $v['house'];
         $flat   = (!empty($loc['flat']))   ? $loc['flat']   : null;
 
-		if (isset($loc['zip']))
-			$args = array(
-				'zip' => $loc['zip'],
-			);
-		else
-			$args = array();
-		$args = array_merge($args, array(
-			'city' => $city,
-			'street' => $street,
-			'house' => $house,
-			'flat' => $flat,
-			'country_id' => $countryid,
-		));
-		$this->Execute('INSERT INTO addresses (' . implode(', ', array_keys($args)) . ') VALUES
+        if (isset($loc['zip'])) {
+            $args = array(
+                'zip' => $loc['zip'],
+            );
+        } else {
+            $args = array();
+        }
+        $args = array_merge($args, array(
+            'city' => $city,
+            'street' => $street,
+            'house' => $house,
+            'flat' => $flat,
+            'country_id' => $countryid,
+        ));
+        $this->Execute('INSERT INTO addresses (' . implode(', ', array_keys($args)) . ') VALUES
 			(' . implode(', ', array_fill(0, count(array_keys($args)), '?')) . ')', array_values($args));
 
         $this->Execute('UPDATE divisions SET address_id = ? WHERE id = ?', array( $this->GetLastInsertID('addresses'), $v['id']));
@@ -370,42 +379,43 @@ $locations = $this->GetAll('SELECT id, location, location_city, location_street,
                                   location_house  is not null OR
                                   location_flat   is not null');
 
-if ( $locations ) {
+if ($locations) {
     foreach ($locations as $v) {
         $city   = ($v['location_city'])   ? $v['location_city']          : null;
         $street = ($v['location_street']) ? $v['location_street']        : null;
         $house  = ($v['location_house'])  ? $v['location_house'] : null;
         $flat   = ($v['location_flat'])   ? $v['location_flat']  : null;
-        $loc    = parse_address( $v['location'] );
+        $loc    = parse_address($v['location']);
 
-        $tmp = strtolower( ((!empty($loc['city'])) ? $loc['city'] : '') . "|$city|" . ((!empty($loc['street'])) ? $loc['street'] : $v['location']) . "|$street|$house|$flat" );
+        $tmp = strtolower(((!empty($loc['city'])) ? $loc['city'] : '') . "|$city|" . ((!empty($loc['street'])) ? $loc['street'] : $v['location']) . "|$street|$house|$flat");
 
-        if ( $v['ownerid'] != 0 && isset($ADDRESSES[$v['ownerid']][$tmp]) ) {
+        if ($v['ownerid'] != 0 && isset($ADDRESSES[$v['ownerid']][$tmp])) {
             $addr_id = $ADDRESSES[$v['ownerid']][$tmp];
         } else {
-			if (isset($loc['zip']))
-				$args = array(
-					'zip' => $loc['zip'],
-				);
-			else
-				$args = array();
-			$args = array_merge($args, array(
-				'city' => isset($loc['city']) ? $loc['city'] : '',
-				'city_id'=> $city,
-				'street' => isset($loc['street']) ? $loc['street'] : (isset($loc['city']) ? '' : $v['location']),
-				'street_id' => $street,
-				'house' => $house,
-				'flat' => $flat,
-			));
-			$this->Execute('INSERT INTO addresses (' . implode(', ', array_keys($args)) . ') VALUES
+            if (isset($loc['zip'])) {
+                $args = array(
+                    'zip' => $loc['zip'],
+                );
+            } else {
+                $args = array();
+            }
+            $args = array_merge($args, array(
+                'city' => isset($loc['city']) ? $loc['city'] : '',
+                'city_id'=> $city,
+                'street' => isset($loc['street']) ? $loc['street'] : (isset($loc['city']) ? '' : $v['location']),
+                'street_id' => $street,
+                'house' => $house,
+                'flat' => $flat,
+            ));
+            $this->Execute('INSERT INTO addresses (' . implode(', ', array_keys($args)) . ') VALUES
 				(' . implode(', ', array_fill(0, count(array_keys($args)), '?')) . ')', array_values($args));
 
             $addr_id = $this->GetLastInsertID('addresses');
 
-            if ( $v['ownerid'] != 0 ) {
+            if ($v['ownerid'] != 0) {
                 $ADDRESSES[$v['ownerid']][$tmp] = $addr_id;
 
-                if ( isset($customer_nodes[ $v['ownerid'] ]) ) {
+                if (isset($customer_nodes[ $v['ownerid'] ])) {
                     $type = LOCATION_ADDRESS;
                 } else {
                     $customer_nodes[ $v['ownerid'] ] = 1;
@@ -432,61 +442,61 @@ $customers_loc = $this->GetAll('SELECT id, zip, city, building, street, apartmen
                                    post_city, post_countryid
                                 FROM customers');
 
-if ( $customers_loc ) {
+if ($customers_loc) {
     foreach ($customers_loc as $v) {
         /* --- POSTAL ADDRESS --- */
         $any_to_up = false;
 
-        if ( $v['post_name'] ) {
+        if ($v['post_name']) {
             $post_name = "'".$v['post_name']."'";
             $any_to_up = true;
         } else {
             $post_name = 'null';
         }
 
-        if ( $v['post_street'] ) {
+        if ($v['post_street']) {
             $post_street = "'".$v['post_street']."'";
             $any_to_up = true;
         } else {
             $post_street = 'null';
         }
 
-        if ( $v['post_building'] ) {
+        if ($v['post_building']) {
             $post_building = "'".$v['post_building']."'";
             $any_to_up = true;
         } else {
             $post_building = 'null';
         }
 
-        if ( $v['post_apartment'] ) {
+        if ($v['post_apartment']) {
             $post_apartment = "'".$v['post_apartment']."'";
             $any_to_up = true;
         } else {
             $post_apartment = 'null';
         }
 
-        if ( $v['post_zip'] ) {
+        if ($v['post_zip']) {
             $post_zip = "'".$v['post_zip']."'";
             $any_to_up = true;
         } else {
             $post_zip = 'null';
         }
 
-        if ( $v['post_city'] ) {
+        if ($v['post_city']) {
             $post_city = "'".$v['post_city']."'";
             $any_to_up = true;
         } else {
             $post_city = 'null';
         }
 
-        if ( $v['post_countryid'] ) {
+        if ($v['post_countryid']) {
             $post_countryid = $v['post_countryid'];
             $any_to_up = true;
         } else {
             $post_countryid = 'null';
         }
 
-        if ( $any_to_up === true ) {
+        if ($any_to_up === true) {
             $this->Execute('INSERT INTO addresses (name, city, street, zip, country_id, house, flat)
                             VALUES (' . "$post_name,$post_city,$post_street,$post_zip,$post_countryid,$post_building,$post_apartment" . ')');
 
@@ -496,49 +506,49 @@ if ( $customers_loc ) {
         /* --- BILLING ADDRESS --- */
         $any_to_up = false;
 
-        if ( $v['street'] ) {
+        if ($v['street']) {
             $street = "'".$v['street']."'";
             $any_to_up = true;
         } else {
             $street = 'null';
         }
 
-        if ( $v['building'] ) {
+        if ($v['building']) {
             $building = "'".$v['building']."'";
             $any_to_up = true;
         } else {
             $building = 'null';
         }
 
-        if ( $v['apartment'] ) {
+        if ($v['apartment']) {
             $apartment = "'".$v['apartment']."'";
             $any_to_up = true;
         } else {
             $apartment = 'null';
         }
 
-        if ( $v['zip'] ) {
+        if ($v['zip']) {
             $zip = "'".$v['zip']."'";
             $any_to_up = true;
         } else {
             $zip = 'null';
         }
 
-        if ( $v['city'] ) {
+        if ($v['city']) {
             $city = "'".$v['city']."'";
             $any_to_up = true;
         } else {
             $city = 'null';
         }
 
-        if ( $v['countryid'] ) {
+        if ($v['countryid']) {
             $countryid = $v['countryid'];
             $any_to_up = true;
         } else {
             $countryid = 'null';
         }
 
-        if ( $any_to_up === true ) {
+        if ($any_to_up === true) {
             $this->Execute('INSERT INTO addresses (city, street, zip, country_id, house, flat)
                             VALUES (' . "$city,$street,$zip,$countryid,$building,$apartment" . ')');
 
@@ -549,7 +559,7 @@ if ( $customers_loc ) {
     }
 }
 
-unset( $customer_loc );
+unset($customer_loc);
 
 /* --------------------------------
     REWRITE VIEWS AND TABLES WHO USING OLD LOCATION FIELDS
@@ -578,5 +588,3 @@ $this->Execute("DROP INDEX location_city   ON netdevices;");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017013100', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

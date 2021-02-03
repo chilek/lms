@@ -30,5 +30,3 @@ $this->Execute("INSERT INTO uiconfig (section, var, value, type) VALUES('payment
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016012501', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

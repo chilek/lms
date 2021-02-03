@@ -30,53 +30,53 @@ $id      = isset($_GET['id']) ? $_GET['id'] : 0;
 
 // All customer's nodes
 if ($ownerid && $LMS->CustomerExists($ownerid)) {
-	$res = $LMS->NodeSetU($ownerid, $access);
+    $res = $LMS->NodeSetU($ownerid, $access);
 
-	if ($res) {
-		$data = array('ownerid' => $ownerid, 'access' => $access);
-		$LMS->ExecHook('node_set_after', $data);
+    if ($res) {
+        $data = array('ownerid' => $ownerid, 'access' => $access);
+        $LMS->ExecHook('node_set_after', $data);
 
-		$LMS->executeHook('nodeset_after_submit', $data);
-	}
+        $LMS->executeHook('nodeset_after_submit', $data);
+    }
 
-	$backid = $ownerid;
-	$redir = $SESSION->get('backto');
-	if($SESSION->get('lastmodule')=='customersearch')
-		$redir .= '&search=1';
+    $backid = $ownerid;
+    $redir = $SESSION->get('backto');
+    if ($SESSION->get('lastmodule')=='customersearch') {
+        $redir .= '&search=1';
+    }
 
-	$SESSION->redirect('?'.$redir.'#'.$backid);
+    $SESSION->redirect('?'.$redir.'#'.$backid);
 }
 
 // One node
 if ($id && $LMS->NodeExists($id)) {
-	$res = $LMS->NodeSet($id);
-	$backid = $id;
+    $res = $LMS->NodeSet($id);
+    $backid = $id;
 
-	if ($res) {
-		$data = array('nodeid' => $id);
-		$LMS->ExecHook('node_set_after', $data);
+    if ($res) {
+        $data = array('nodeid' => $id);
+        $LMS->ExecHook('node_set_after', $data);
 
-		$LMS->executeHook('nodeset_after_submit', $data);
-	}
-} else if(!empty($_POST['marks'])) {
+        $LMS->executeHook('nodeset_after_submit', $data);
+    }
+} else if (!empty($_POST['marks'])) {
 // Selected nodes
     $nodes = array();
-	foreach($_POST['marks'] as $id) {
-		if ($LMS->NodeSet($id, $access)) {
-		    $nodes[] = $id;
-		}
-	}
-	if (!empty($nodes)) {
-		$data = array('nodes' => $nodes);
-		$LMS->ExecHook('node_set_after', $data);
+    foreach ($_POST['marks'] as $id) {
+        if ($LMS->NodeSet($id, $access)) {
+            $nodes[] = $id;
+        }
+    }
+    if (!empty($nodes)) {
+        $data = array('nodes' => $nodes);
+        $LMS->ExecHook('node_set_after', $data);
 
-		$LMS->executeHook('nodeset_after_submit', $data);
-	}
+        $LMS->executeHook('nodeset_after_submit', $data);
+    }
 }
 
-if (!empty($_GET['shortlist']))
-	header('Location: ?m=nodelistshort&id='.$LMS->GetNodeOwner($id));
-else
-	header('Location: ?'.$SESSION->get('backto').(isset($backid) ? '#'.$backid : ''));
-
-?>
+if (!empty($_GET['shortlist'])) {
+    header('Location: ?m=nodelistshort&id='.$LMS->GetNodeOwner($id));
+} else {
+    header('Location: ?'.$SESSION->get('backto').(isset($backid) ? '#'.$backid : ''));
+}

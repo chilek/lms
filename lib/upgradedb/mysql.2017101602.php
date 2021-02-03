@@ -28,11 +28,11 @@ $this->Execute("ALTER TABLE ewx_stm_nodes ALTER COLUMN nodeid SET DEFAULT NULL")
 
 $this->Execute("UPDATE ewx_stm_nodes SET nodeid = NULL WHERE nodeid = 0");
 $ids = $this->GetCol("SELECT id FROM nodes");
-if (empty($ids))
-	$this->Execute("UPDATE ewx_stm_nodes SET nodeid = NULL WHERE nodeid IS NOT NULL");
-else {
-	$sql_ids = implode(',', $ids);
-	$this->Execute("UPDATE ewx_stm_nodes SET nodeid = NULL
+if (empty($ids)) {
+    $this->Execute("UPDATE ewx_stm_nodes SET nodeid = NULL WHERE nodeid IS NOT NULL");
+} else {
+    $sql_ids = implode(',', $ids);
+    $this->Execute("UPDATE ewx_stm_nodes SET nodeid = NULL
 		WHERE nodeid IS NOT NULL AND nodeid NOT IN (" . $sql_ids . ")");
 }
 
@@ -42,5 +42,3 @@ $this->Execute("ALTER TABLE ewx_stm_nodes ADD CONSTRAINT ewx_stm_nodes_nodeid_fk
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017101602', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

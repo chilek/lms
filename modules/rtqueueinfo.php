@@ -24,18 +24,15 @@
  *  $Id$
  */
 
-if(! $LMS->QueueExists($_GET['id']))
-{
-	$SESSION->redirect('?m=rtqueuelist');
+if (! $LMS->QueueExists($_GET['id'])) {
+    $SESSION->redirect('?m=rtqueuelist');
 }
 
 $queue = $LMS->GetQueue($_GET['id']);
 
-$layout['pagetitle'] = trans('Queue Info: $a',$queue['name']);
+$layout['pagetitle'] = trans('Queue Info: $a', $queue['name']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('queue', $queue);
 $SMARTY->display('rt/rtqueueinfo.html');
-
-?>

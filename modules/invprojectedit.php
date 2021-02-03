@@ -28,24 +28,24 @@ $id = intval($_GET['id']);
 
 $oldinv = $LMS->GetProject($id);
 
-if(!empty($_POST['invprojectedit'])) 
-{
-	$invproject = $_POST['invprojectedit'];
-	$invproject['id'] = $oldinv['id'];
-			
-	if($invproject['name']=='')
-		$error['name'] = trans('Investment project name is required!');
-	elseif($oldinv['name'] != $invproject['name'] && $LMS->ProjectByNameExists($invproject['name']))
-		$error['name'] = trans('Investment project with specified name already exists!');
+if (!empty($_POST['invprojectedit'])) {
+    $invproject = $_POST['invprojectedit'];
+    $invproject['id'] = $oldinv['id'];
+            
+    if ($invproject['name']=='') {
+        $error['name'] = trans('Investment project name is required!');
+    } elseif ($oldinv['name'] != $invproject['name'] && $LMS->ProjectByNameExists($invproject['name'])) {
+        $error['name'] = trans('Investment project with specified name already exists!');
+    }
 
-	if (!$error) {
-		$LMS->UpdateProject($invproject['id'], array(
-			'projectname' => $invproject['name'],
-			'divisionid' => $invproject['divisionid'],
-		));
-		$SESSION->redirect('?m=invprojectlist');
-	}
-}	
+    if (!$error) {
+        $LMS->UpdateProject($invproject['id'], array(
+            'projectname' => $invproject['name'],
+            'divisionid' => $invproject['divisionid'],
+        ));
+        $SESSION->redirect('?m=invprojectlist');
+    }
+}
 
 $layout['pagetitle'] = trans('Edit investment project: $a', $oldinv['name']);
 
@@ -54,5 +54,3 @@ $SMARTY->assign('invprojectedit', !empty($invproject) ? $invproject : $oldinv);
 $SMARTY->assign('divisions', $LMS->GetDivisions());
 $SMARTY->assign('error', $error);
 $SMARTY->display('invproject/invprojectedit.html');
-
-?>

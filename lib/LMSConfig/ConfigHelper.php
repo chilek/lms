@@ -27,13 +27,22 @@
 /**
  * ConfigHelper
  *
- * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
 class ConfigHelper
 {
+    public static function setFilter($divisionid = null, $userid = null)
+    {
+        LMSConfig::getConfig(array(
+            'force' => true,
+            'force_ui_only' => true,
+            'user_id' => $userid,
+            'division_id' => $divisionid,
+        ));
+    }
+
     /**
      * Returns config cariable value
-     * 
+     *
      * @param string $name Config variable name in section.variable format
      * @param string $default Default value
      * @return string
@@ -58,10 +67,10 @@ class ConfigHelper
 
         return $value == '' && !$allow_empty_value ? $default : $value;
     }
-    
+
     /**
      * Checks if config variable exists
-     * 
+     *
      * @param string $name Config variable name in section.variable format
      * @return boolean
      */
@@ -72,10 +81,10 @@ class ConfigHelper
         if (empty($variable_name)) {
             return false;
         }
-        
+
         if ($section_name === 'privileges') {
             $value = self::getConfig($name);
-	    return $value;
+            return $value;
         }
 
         if (!LMSConfig::getConfig()->hasSection($section_name)) {
@@ -85,13 +94,13 @@ class ConfigHelper
         if (!LMSConfig::getConfig()->getSection($section_name)->hasVariable($variable_name)) {
             return false;
         }
-        
+
         return self::checkValue(LMSConfig::getConfig()->getSection($section_name)->getVariable($variable_name)->getValue());
     }
-    
+
     /**
      * Determines if value equals true or false
-     * 
+     *
      * @param string $value Value to check
      * @param boolean $default Default flag
      * @return boolean
@@ -102,7 +111,7 @@ class ConfigHelper
             return $value;
         }
 
-        if ($value === '') {
+        if ($value === '' || is_null($value)) {
             return $default;
         }
 
@@ -114,37 +123,40 @@ class ConfigHelper
             return false;
         }
 
-        trigger_error('Incorrect option value: '.$value);
+        Utils::triggerError('Incorrect option value: ' . $value, E_USER_NOTICE, 15);
     }
 
-	public static function variableExists($name) {
-		list ($section_name, $variable_name) = explode('.', $name, 2);
+    public static function variableExists($name)
+    {
+        list ($section_name, $variable_name) = explode('.', $name, 2);
 
-		if (empty($variable_name)) {
-			return false;
-		}
+        if (empty($variable_name)) {
+            return false;
+        }
 
-		if (!LMSConfig::getConfig()->hasSection($section_name)) {
-			return false;
-		}
+        if (!LMSConfig::getConfig()->hasSection($section_name)) {
+            return false;
+        }
 
-		if (!LMSConfig::getConfig()->getSection($section_name)->hasVariable($variable_name)) {
-			return false;
-		}
+        if (!LMSConfig::getConfig()->getSection($section_name)->hasVariable($variable_name)) {
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	/**
-	 * Determines if user has got access privilege
-	 * 
-	 * @param string $privilege privilege to check
-	 * @param boolean $checkIfSuperUser check if full access privilege should be taken into account
-	 * @return boolean
-	*/
-	public static function checkPrivilege($privilege, $checkIfSuperUser = true) {
-		if ($checkIfSuperUser && self::checkConfig('privileges.superuser'))
-			return preg_match('/^hide_/', $privilege) ? false : true;
-		return self::checkConfig("privileges.$privilege");
-	}
+    /**
+     * Determines if user has got access privilege
+     *
+     * @param string $privilege privilege to check
+     * @param boolean $checkIfSuperUser check if full access privilege should be taken into account
+     * @return boolean
+    */
+    public static function checkPrivilege($privilege, $checkIfSuperUser = true)
+    {
+        if ($checkIfSuperUser && self::checkConfig('privileges.superuser')) {
+            return preg_match('/^hide_/', $privilege) ? false : true;
+        }
+        return self::checkConfig("privileges.$privilege");
+    }
 }

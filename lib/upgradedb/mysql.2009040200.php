@@ -61,5 +61,3 @@ $this->Execute("INSERT INTO nastypes (name) VALUES ('usrhiper')");
 $this->Execute("INSERT INTO nastypes (name) VALUES ('other')");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009040200', 'dbversion'));
-
-?>

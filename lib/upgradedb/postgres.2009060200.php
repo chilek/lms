@@ -57,5 +57,3 @@ CREATE INDEX cash_sourceid_idx ON cash (sourceid);
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009060200', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

@@ -28,5 +28,3 @@ $this->Execute("ALTER TABLE cashsources ADD COLUMN account varchar(48) NOT NULL 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016122100', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

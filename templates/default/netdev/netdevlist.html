@@ -4,14 +4,21 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <FORM method="get" action="?m=netdevlist" name="choosefilter">
+
+{$lastonline_limit=ConfigHelper::getConfig('phpui.lastonline_limit')}
+
 <INPUT type="hidden" NAME="m" VALUE="netdevlist">
 <TABLE class="lmsbox lms-ui-background-cycle">
     <THEAD>
 	<TR {tip text="Click on column name to change sorting order"}>
 		<TD width="95%">
-			<IMG src="img/netdev.gif" ALT="">&nbsp;<A href="?m=netdevlist&amp;o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order == "name"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<IMG src="img/producer.gif" ALT="">&nbsp;<A href="?m=netdevlist&amp;o=producer{if $listdata.direction == "asc" && $listdata.order == "producer"},desc{/if}">{trans("Manufacturer:")}</A> {if $listdata.order == "producer"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} / 
-			<A href="?m=netdevlist&amp;o=model{if $listdata.direction == "asc" && $listdata.order == "model"},desc{/if}">{trans("Model:")}</A> {if $listdata.order == "model"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<IMG src="img/netdev.gif" ALT="">
+			<A href="?m=netdevlist&o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order == "name"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<br>
+			<IMG src="img/producer.gif" ALT="">
+			<a href="?m=netdevlist&o=type{if $listdata.direction == "asc" && $listdata.order == "type"},desc{/if}">{trans("Type")}</a> {if $listdata.order == "type"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=netdevlist&o=producer{if $listdata.direction == "asc" && $listdata.order == "producer"},desc{/if}">{trans("Manufacturer:")}</A> {if $listdata.order == "producer"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} /
+			<A href="?m=netdevlist&o=model{if $listdata.direction == "asc" && $listdata.order == "model"},desc{/if}">{trans("Model:")}</A> {if $listdata.order == "model"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<td width="1%" class="nobr valign-top">
 			<A href="?m=netdevlist&amp;o=location{if $listdata.direction == "asc" && $listdata.order == "location"},desc{/if}">
@@ -35,7 +42,7 @@
 		</td>
 	</TR>
 	<TR>
-		<TD colspan="6" class="nobr">
+		<TD colspan="6">
 			<span class="bold">{trans("Filter:")}</span>
 			{trans("Status")}:
 			<SELECT SIZE="1" NAME="s" ONCHANGE="document.choosefilter.submit();">
@@ -44,13 +51,15 @@
 					<OPTION VALUE="{$idx}"{if $listdata.status == $idx} SELECTED{/if}>{$status}</OPTION>
 				{/foreach}
 				<OPTION value="100"{if $listdata.status == 100} selected{/if}>{trans("TERRIT not specified")}</OPTION>
+				<OPTION value="101"{if $listdata.status == 101} selected{/if}>{trans("online")}</OPTION>
+				<option value="102"{if $listdata.status == 102} selected{/if}>{trans("no connections")}</option>
 			</SELECT>
 			{trans("Project:")}
 			<SELECT SIZE="1" NAME="p" ONCHANGE="document.choosefilter.submit();">
 				<OPTION VALUE="-1"{if $listdata.invprojectid == -1} selected{/if}>- {trans("all")} -</OPTION>
 				<OPTION VALUE="-2"{if $listdata.invprojectid == -2} selected{/if}>- {trans("without project")} -</OPTION>
 				{foreach $NNprojects as $project}
-				<OPTION VALUE="{$project.id}"{if ($listdata.invprojectid == $project.id)} selected{/if}>{$project.name}</OPTION>
+					<OPTION value="{$project.id}"{if ($listdata.invprojectid == $project.id)} selected{/if}>{$project.name|escape}</OPTION>
 				{/foreach}
 			</SELECT>
 			{trans("Network node:")}
@@ -61,6 +70,8 @@
 				<OPTION VALUE="{$netnode.id}"{if $listdata.netnode == $netnode.id} selected{/if}>{$netnode.name}</OPTION>
 				{/foreach}
 			</SELECT>
+			{trans("Type")}
+			{networkDeviceTypes elemname="type" selected=$listdata.type onchange="document.choosefilter.submit();"}
 			{trans("Producer:")}
 			<SELECT SIZE="1" NAME="producer" ONCHANGE="document.choosefilter.submit();">
 				<OPTION VALUE="-1"{if $listdata.producer == -1} selected{/if}>- {trans("all")} -</OPTION>
@@ -89,13 +100,26 @@
     </THEAD>
     <TBODY>
 	{foreach $netdevlist as $netdev}
-	<TR class="highlight" data-target-url="?m=netdevinfo&id={$netdev.id}">
+	<TR class="highlight" data-target-url="?m=netdevinfo&id={$netdev.id}" data-name="{$netdev.name}">
 		<TD class="valign-top">
-			<IMG src="img/netdev.gif" ALT=""> <a href="?m=netdevinfo&amp;id={$netdev.id}" name="{$netdev.id}"
-					title="{$netdev.description|replace:"\n":"<br>"|default:trans("- no description -")}{if $netdev.filecontainers}<br><br><i class='lms-ui-icon-fileupload'></i>&nbsp;{implode('<br><i class=\'lms-ui-icon-fileupload\'></i>&nbsp;', $netdev.filecontainers)}{/if}"
-					><B>{$netdev.name}</B></A><BR>
+			{if $netdev.lastonline}
+				{if ($smarty.now-$netdev.lastonline) > $lastonline_limit}
+					<i class="lms-ui-icon-netdevoff" {tip a=$netdev.lastonlinedate text="Last online: \$a"}></i>
+				{else}
+					<i class="lms-ui-icon-netdevon" {tip a="on-line" text="Last online: \$a"}></i>
+				{/if}
+			{else}
+				<i class="lms-ui-icon-netdevunk"></i>
+			{/if}
+			<A href="?m=netdevinfo&amp;id={$netdev.id}" name="{$netdev.id}"
+					title="{$netdev.description|replace:"\n":"<br>"|default:trans("- no description -")}">
+				<B>{$netdev.name}</B></A>
+			<br>
 			{if $netdev.producer}
 				<IMG src="img/producer.gif" ALT="">
+				{if $netdev.devtypename}
+					{trans($netdev.devtypename)}
+				{/if}
 				{$netdev.producer} {if $netdev.model}/ {$netdev.model}{/if}
 			{else}
 				<br>
@@ -132,14 +156,30 @@
 			<IMG src="img/serialnumber.gif" ALT=""> {$netdev.serialnumber}
 		</TD>
 		<TD class="lms-ui-buttons text-right nobr">
+			{if $netdev.filecontainers}
+				{foreach $netdev.filecontainers as $filecontainer}
+					{if $filecontainer.files}
+						{button class="models-toggle-file-list" type="link" icon="fileupload" tip="Show file list" resourceid={$filecontainer.id} label="{$filecontainer.description|default:'---'}"}
+					{/if}
+					<div id="listfiles-{$filecontainer.id}" style="display: none;" class="files">
+						{foreach $filecontainer.files as $file}
+							{documentview id="{$filecontainer.id}-{$file.id}" type=$file.contenttype name=$file.filename
+								url="?m=attachments&attachmentaction=viewfile&type=messageid&id={$netdev.filecontainerid}&fileid={$file.id}" external=true
+								text="{$file.filename} <i class=\"lms-ui-icon-view{if preg_match('/pdf/',$file.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$file.contenttype)} xls{/if}\"></i>"}
+							<br>
+						{/foreach}
+					</div>
+				{/foreach}
+			{/if}
+
 			{foreach $netdev.customlinks as $link}
 			<A {if isset($link.url)} href="{$link.url}" {/if} rel="external" {if isset($link.onclick)} onclick="{$link.onclick}"{/if}>{if isset($link.icon)}<IMG src="{$link.icon}" alt="{$link.label}" {$link.tip}>{else}{$link.label}{/if}</A>
 			{if isset($link.extra)}{$link.extra}{/if}
 			{/foreach}
-			<a href="?m=netdevdel&amp;id={$netdev.id}" onClick="return confirmLink(this, '{t a=$netdev.name}Are you sure, you want to remove device \'$a\' from database?{/t}')"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
-			<a href="?m=netdevedit&amp;id={$netdev.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
-			<a href="?m=netdevadd&amp;id={$netdev.id}"><IMG src="img/clone.gif" alt="{trans("Clone")}" title="{trans("Clone")}"></A>
-			<a href="?m=netdevinfo&amp;id={$netdev.id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
+			{button type="link" icon="delete" class="delete-netdev" tip="Delete" href="?m=netdevdel&id={$netdev.id}&is_sure=1"}
+			{button type="link" icon="edit" tip="Edit" href="?m=netdevedit&id={$netdev.id}"}
+			{button type="link" icon="clone" tip="Clone" href="?m=netdevadd&id={$netdev.id}&clone=1"}
+			{button type="link" icon="info" tip="Info" href="?m=netdevinfo&id={$netdev.id}"}
 		</TD>
 	</TR>
 	{if $netdevlist[netdevlist.index_next].ownerid == $netdev.ownerid && $listdata.order == "owner"}{cycle print=false}{/if}
@@ -167,4 +207,22 @@
 	</TFOOT>
 </TABLE>
 </FORM>
+<script>
+	$('.delete-netdev').click(function() {
+		var name = $(this).closest('tr').attr('data-name');
+		confirmDialog($t("Are you sure, you want to remove device '$a' from database?", name), this).done(function() {
+			location.href = $(this).attr('href');
+		});
+		return false;
+	});
+
+	$(function () {
+		$('.models-toggle-file-list').click(function () {
+			var containerid = parseInt($(this).attr('data-resourceid'));
+			var elem = $('#listfiles-' + containerid);
+			elem.toggle();
+		});
+	});
+
+</script>
 {/block}

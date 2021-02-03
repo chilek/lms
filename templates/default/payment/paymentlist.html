@@ -27,7 +27,7 @@
 		</TD>
 		<TD class="text-right">
 			{trans("Value:")}
-		</TD>	
+		</TD>
 		<TD class="text-right nobr">
 			{trans("Payment day:")}
 		</TD>
@@ -38,7 +38,7 @@
     </THEAD>
     <TBODY>
 	{foreach $paymentlist as $payment}
-	<TR class="highlight" data-target-url="?m=paymentinfo&id={$payment.id}">
+	<TR class="highlight" data-target-url="?m=paymentinfo&id={$payment.id}" data-name="{$payment.name}">
 		<FORM NAME="addbalance{$payment@index}" METHOD="POST" ACTION="?m=balanceadd">
 		<TD>
 			<IMG SRC="img/payment.gif" ALT=""><BR>
@@ -52,10 +52,10 @@
 			({$payment.id|string_format:"%04d"})
 		</TD>
 		<TD class="text-right nobr">
-			{$payment.value|money_format} 
+			{$payment.value|money_format}
 		</TD>
 		<TD class="text-right nobr">
-			{$payment.payday} 
+			{$payment.payday}
 		</TD>
 		<TD class="lms-ui-buttons text-right nobr">
 			<INPUT type="submit" class="hiddenbtn">
@@ -63,7 +63,7 @@
 			<INPUT TYPE="HIDDEN" NAME="addbalance[value]" VALUE="{math equation="x*-1" x=$payment.value}">
 			<INPUT TYPE="HIDDEN" NAME="addbalance[comment]" VALUE="{$payment.name} / {$payment.creditor}">
 			<A HREF="javascript:document.addbalance{$smarty.section.payments.index}.submit();"><IMG src="img/pay.gif" alt="{trans("Account payment")}" title="{trans("Account payment")}"></A>
-			<A HREF="?m=paymentdel&id={$payment.id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that payment?")}');"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A class="delete-payment" HREF="?m=paymentdel&id={$payment.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 			<A HREF="?m=paymentedit&id={$payment.id}"><IMG SRC="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 			<A HREF="?m=paymentinfo&id={$payment.id}"><IMG SRC="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>&nbsp;
 		</TD>
@@ -91,4 +91,13 @@
 	</TR>
     </TFOOT>
 </TABLE>
+	<script>
+		$('.delete-payment').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			confirmDialog($t("Are you sure, you want to delete payment '$a'?", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	</script>
 {/block}

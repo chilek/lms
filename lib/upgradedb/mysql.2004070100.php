@@ -35,6 +35,4 @@ $this->Execute("CREATE TABLE rtrights (
 ");
 $this->Execute("ALTER TABLE rtqueues ADD description TEXT DEFAULT '' NOT NULL");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004070100', 'dbversion'));
-
-?>
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2004070100', 'dbversion'));

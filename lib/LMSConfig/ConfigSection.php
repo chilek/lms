@@ -43,7 +43,7 @@ class ConfigSection
     
     /**
      * Constructs config section variables container
-     * 
+     *
      * @param string $section_name Section name
      */
     public function __construct($section_name)
@@ -54,7 +54,7 @@ class ConfigSection
     
     /**
      * Returns section name
-     * 
+     *
      * @return string
      */
     public function getSectionName()
@@ -64,7 +64,7 @@ class ConfigSection
     
     /**
      * Appends config variable to section variables container
-     * 
+     *
      * @param ConfigVariable $config_variable Config variable
      */
     public function addVariable(ConfigVariable $config_variable)
@@ -74,7 +74,7 @@ class ConfigSection
     
     /**
      * Appends multiple config variables to section variables container
-     * 
+     *
      * @param ConfigVariable[] $config_variables Array of config variables
      */
     public function addVariables(array $config_variables)
@@ -88,7 +88,7 @@ class ConfigSection
     
     /**
      * Returns config variable if in section
-     * 
+     *
      * @param string $variable_name Config variable name
      * @return ConfigVariable Config variable
      * @throws Exception Throws exception when variable is unknown
@@ -104,7 +104,7 @@ class ConfigSection
     
     /**
      * Returns all config variables in section
-     * 
+     *
      * @return ConfigVariable[]
      */
     public function getVariables()
@@ -114,7 +114,7 @@ class ConfigSection
     
     /**
      * Checks if variable exists
-     * 
+     *
      * @param string $variable_name
      * @return boolean
      */

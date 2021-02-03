@@ -31,8 +31,6 @@ $this->Execute("ALTER TABLE invoicecontents RENAME discount TO pdiscount");
 $this->Execute("ALTER TABLE assignments ADD vdiscount numeric(9, 2) DEFAULT 0 NOT NULL");
 $this->Execute("ALTER TABLE invoicecontents ADD vdiscount numeric(9, 2) DEFAULT 0 NOT NULL");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2011113000', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011113000', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

@@ -33,8 +33,6 @@ $this->Execute("
     ALTER TABLE voipaccounts ALTER access SET DEFAULT 1;
 ");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2011091100', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011091100', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

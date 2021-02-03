@@ -1,46 +1,56 @@
 <table width="100%" cellspacing="0" cellpadding="0" style="background-image:url('style/default/keyboard.jpg'); background-repeat:no-repeat; background-color: #ECECEC;">
     <tr style="height:100px;">
-	<td align="right" style="padding-right:15px;">
-		<h2>
-		{if $company_logo}
-			<img src="{$company_logo}" alt=""/>
-		{/if}
-		{if $page_header}
-			{if $company_logo}<br/>{/if}{$page_header}
-		{/if}
-		{if !$page_header && !$company_logo}
-			LMS Userpanel {$layout.lmsv}{if $layout.lmsvr} ({$layout.lmsvr}){/if}<br/>
-			@ {$layout.hostname}
-		{/if}
-		</h2>
-	</td>
+		<td style="padding-left: 1em; padding-right: 1em;">
+			<h2>
+			{if $company_logo}
+				<img src="{$company_logo}" alt=""/>
+			{/if}
+			{if $page_header}
+				{if $company_logo}<br/>{/if}{$page_header}
+			{/if}
+			{if !$page_header && !$company_logo}
+				LMS Userpanel {$layout.lmsv}{if $layout.lmsvr} ({$layout.lmsvr}){/if}<br/>
+				@ {$layout.hostname}
+			{/if}
+			</h2>
+		</td>
+		<td class="text-right valign-top" style="padding: 1em 1em;">
+			{trans("Logged as:")} {$customername|truncate:60:"... "},<br>{trans("Session expires after:")}
+			<span id="lms-ui-session-expire">
+				{sprintf("%02d:%02d", floor($timeout / 60), $timeout % 60)}
+			</span>
+		</td>
     </tr>
-<tr><td>
+	<tr>
+		<td colspan="2">
 <table style="text-align: left; width: 100%; background-image: url(style/default/tabs_bg.gif); background-repeat: repeat-x;" cellspacing="0" cellpadding="0">
     <tr>
 	{foreach $modules as $menuitem}
 	{if $menuitem@first}
-	    <td style="vertical-align: top;" width="1px">
+	    <td style="vertical-align: top; width: 1px; white-space: nowrap;">
     	    <img src="style/default/{if $menuitem.selected}tabs_begin_sel.gif{else}tabs_begin_notsel.gif{/if}" alt=""/>
 	</td>
 	{else}
 	    {if $menuitem.selected}
-	    <td style="vertical-align: top;" width="1px">
+	    <td style="vertical-align: top; width: 1px; white-space: nowrap;">
     	    <img src="style/default/tabs_begin_tab_sel.gif" alt=""/>
 	    </td>
 	    {else}
 	    {if $display_spacer}
-	    <td style="vertical-align: top;" width="1px">
+	    <td style="vertical-align: top; width: 1px; white-space: nowrap;">
     	    <img src="style/default/tabs_spacer_notsel.gif" alt=""/>
 	    </td>
 	    {/if}
 	    {/if}
 	{/if}
-        <td style="vertical-align: top; background-image: url(style/default/{if $menuitem.selected}tabs_tab_sel.gif{else}tabs_tab_notsel.gif{/if}); background-repeat: repeat-x; padding-top: 2px;" width="1px">
-    	    <a href="?m={$menuitem.module}" {userpaneltip text=$menuitem.tip} class="{if $menuitem.selected}tabsel{else}tabnotsel{/if}">{$menuitem.name|replace:" ":"&nbsp;"}</a>
+        <td style="vertical-align: top; background-image: url(style/default/{if $menuitem.selected}tabs_tab_sel.gif{else}tabs_tab_notsel.gif{/if}); background-repeat: repeat-x; padding-top: 2px; width: 1px; white-space: nowrap;">
+    	    <a href="?m={$menuitem.module}" {userpaneltip text=$menuitem.tip} class="{if $menuitem.selected}tabsel{else}tabnotsel{/if} nobr">
+				{if $menuitem.icon}<i class="{$menuitem.icon}"></i>{/if}
+				{$menuitem.name|replace:" ":"&nbsp;"}
+			</a>
         </td>
 	{if $menuitem@last}
-	    <td style="vertical-align: top;" width="1px">
+	    <td style="vertical-align: top; width: 1px; white-space: nowrap;">
 	{if $menuitem.selected}
     	    <img src="style/default/tabs_end_sel.gif" alt=''/>
 	{else}
@@ -49,7 +59,7 @@
     	    </td>
 	{else}
 	{if $menuitem.selected}
-	    <td style="vertical-align: top;" width="1px">
+	    <td style="vertical-align: top; width: 1px; white-space: nowrap;">
     	    <img src="style/default/tabs_end_tab_sel.gif" alt=''/>
         </td>
 	{/if}
@@ -59,5 +69,7 @@
 	<td>&nbsp;</td>
     </tr>
 </table>
-</tr></td></table>
+		</td>
+	</tr>
+</table>
 <div style="margin:0px; background-image: url('style/default/grad.gif'); background-repeat: repeat-x; height: 400px">

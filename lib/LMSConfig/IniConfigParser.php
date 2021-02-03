@@ -35,7 +35,7 @@ class IniConfigParser implements ConfigParserInterface
     
     /**
      * Converts raw ini config into it's object representation
-     * 
+     *
      * @param array $raw_config Raw config
      * @param array $options Options
      * @return \ConfigContainer Config object
@@ -54,5 +54,4 @@ class IniConfigParser implements ConfigParserInterface
         
         return $config;
     }
-    
 }

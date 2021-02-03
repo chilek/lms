@@ -16,7 +16,6 @@ class ConfigVariableTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        
     }
 
     /**
@@ -25,7 +24,6 @@ class ConfigVariableTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        
     }
 
     /**
@@ -72,5 +70,4 @@ class ConfigVariableTest extends \PHPUnit_Framework_TestCase
         
         $this->assertEquals($config_variable->getComment(), $variable_comment);
     }
-
 }

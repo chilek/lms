@@ -24,40 +24,34 @@
  *  $Id$
  */
 
-if(!$error && isset($_POST['rights']))
-{
-	// $id is defined in users' add action
-	$userid = isset($_GET['id']) ? intval($_GET['id']) : $id;
+if (!$error && isset($_POST['rights'])) {
+    // $id is defined in users' add action
+    $userid = isset($_GET['id']) ? intval($_GET['id']) : $id;
 
-	// deleting old access rights
-	$DB->GetOne('DELETE FROM rights WHERE userid = ?', array($userid));
+    // deleting old access rights
+    $DB->GetOne('DELETE FROM rights WHERE userid = ?', array($userid));
 
-	// writing serialized access rights array
-	$DB->Execute('INSERT INTO rights (userid, data) VALUES (?, ?)',
-		    array($userid, serialize($_POST['rights'])));
+    // writing serialized access rights array
+    $DB->Execute(
+        'INSERT INTO rights (userid, data) VALUES (?, ?)',
+        array($userid, serialize($_POST['rights']))
+    );
+} elseif ($ExecStack->action=='install') {
+    if ($id = $DB->GetOne('SELECT id FROM users')) {
+        // build full access table for first (default) admin
+        if ($handle = opendir($ExecStack->modules_dir)) {
+            while (false !== ($file = readdir($handle))) {
+                if (is_dir($ExecStack->modules_dir.'/'.$file) && is_readable($ExecStack->modules_dir)) {
+                    if (file_exists($ExecStack->modules_dir.'/'.$file.'/modinfo.php')) {
+                        $rights[$file] = 1;
+                    }
+                }
+            }
+        }
+    
+        $DB->Execute(
+            'INSERT INTO rights (userid, data) VALUES (?, ?)',
+            array($id, serialize($rights))
+        );
+    }
 }
-elseif($ExecStack->action=='install')
-{
-	if($id = $DB->GetOne('SELECT id FROM users'))
-	{
-		// build full access table for first (default) admin
-		if($handle = opendir($ExecStack->modules_dir))
-		{
-	    	        while(false !== ($file = readdir($handle)))
-			{
-				if(is_dir($ExecStack->modules_dir.'/'.$file) && is_readable($ExecStack->modules_dir))
-				{
-					if(file_exists($ExecStack->modules_dir.'/'.$file.'/modinfo.php'))
-					{
-						$rights[$file] = 1;
-					}
-				}
-			}
-		}					
-	
-		$DB->Execute('INSERT INTO rights (userid, data) VALUES (?, ?)',
-				array($id, serialize($rights)));
-	}
-}
-
-?>

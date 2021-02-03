@@ -28,6 +28,4 @@
 
 $this->Execute("ALTER TABLE users ADD message TEXT DEFAULT '' NOT NULL");
 $this->Execute("ALTER TABLE nodes ADD warning BOOL DEFAULT '0' NOT NULL");
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004031000', 'dbversion'));
-
-?>
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2004031000', 'dbversion'));

@@ -31,10 +31,8 @@ $this->Execute("
     UPDATE assignments SET settlement = 0;
     ALTER TABLE assignments ALTER settlement SET NOT NULL;
     ALTER TABLE assignments ALTER settlement SET DEFAULT 0;
-");    
+");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2006011300', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2006011300', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

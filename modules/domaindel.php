@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,26 +26,22 @@
 
 $id = $_GET['id'];
 
-if($id && $_GET['is_sure']=='1')
-{
-	$DB->BeginTrans();
+if ($id) {
+    $DB->BeginTrans();
 
-	if($DB->Execute('DELETE FROM domains WHERE id = ?', array($id)))
-	{
-		$DB->Execute('DELETE FROM aliasassignments WHERE aliasid IN (
+    if ($DB->Execute('DELETE FROM domains WHERE id = ?', array($id))) {
+        $DB->Execute('DELETE FROM aliasassignments WHERE aliasid IN (
 			SELECT id FROM aliases WHERE domainid = ?)', array($id));
-		$DB->Execute('DELETE FROM aliasassignments WHERE accountid IN (
+        $DB->Execute('DELETE FROM aliasassignments WHERE accountid IN (
 			SELECT id FROM passwd WHERE domainid = ?)', array($id));
-		$DB->Execute('DELETE FROM passwd WHERE domainid = ?', array($id));
-		// ...aliases and orphaned aliases
-	        $DB->Execute('DELETE FROM aliases WHERE domainid = ? 
+        $DB->Execute('DELETE FROM passwd WHERE domainid = ?', array($id));
+        // ...aliases and orphaned aliases
+            $DB->Execute('DELETE FROM aliases WHERE domainid = ? 
 			OR NOT EXISTS (SELECT 1 FROM aliasassignments
 			        WHERE aliasid = aliases.id)', array($id));
-	}
+    }
 
-	$DB->CommitTrans();
+    $DB->CommitTrans();
 }
 
 header('Location: ?m=domainlist');
-
-?>

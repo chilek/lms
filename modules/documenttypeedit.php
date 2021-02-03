@@ -28,60 +28,56 @@
 
 $id = intval($_GET['id']);
 
-if(!$id || empty($DOCTYPES[$id]))
-{
-	$SESSION->redirect('?m=documenttypes');
+if (!$id || empty($DOCTYPES[$id])) {
+    $SESSION->redirect('?m=documenttypes');
 }
 
-if(isset($_POST['rights'])) 
-{
-	$rights = $_POST['rights'];
+if (isset($_POST['rights'])) {
+    $rights = $_POST['rights'];
 
-	if(!$error)
-	{
-		$DB->BeginTrans();
-		
-		$DB->Execute('DELETE FROM docrights WHERE doctype = ?', array($id));
-		
-		foreach($rights as $idx => $user)
-			$DB->Execute('INSERT INTO docrights (userid, doctype, rights)
+    if (!$error) {
+        $DB->BeginTrans();
+
+        $DB->Execute('DELETE FROM docrights WHERE doctype = ?', array($id));
+
+        foreach ($rights as $idx => $user) {
+            $DB->Execute(
+                'INSERT INTO docrights (userid, doctype, rights)
 				VALUES (?, ?, ?)',
-				array(
-					$idx,
-					$id,
-					array_sum($user)
-				));
-		
-		$DB->CommitTrans();
-		
-		$SESSION->redirect('?m=documenttypes');
-	}
-	else
-	{
-		$users = $DB->GetAllByKey('SELECT id, name FROM vusers
-			WHERE deleted = 0 ORDER BY name', 'id');
-	
-		foreach($users as $idx => $user)
-		{
-			if (!empty($rights[$idx]))
-				$rights[$idx]['rights'] = array_sum($rights[$idx]);
-			$rights[$idx]['name'] = $user['name'];
-		}
-	}
-}	
-else
-{
-	$rights = $DB->GetAllByKey('SELECT u.id, u.name, d.rights
+                array(
+                    $idx,
+                    $id,
+                    array_sum($user)
+                )
+            );
+        }
+
+        $DB->CommitTrans();
+
+        $SESSION->redirect('?m=documenttypes');
+    } else {
+        $users = $DB->GetAllByKey('SELECT id, name, rname, login FROM vusers
+			WHERE deleted = 0 ORDER BY rname', 'id');
+
+        foreach ($users as $idx => $user) {
+            if (!empty($rights[$idx])) {
+                $rights[$idx]['rights'] = array_sum($rights[$idx]);
+            }
+            $rights[$idx]['name'] = $user['name'];
+        }
+    }
+} else {
+    $rights = $DB->GetAllByKey('SELECT u.id, u.name, u.rname, u.login, d.rights
 		FROM vusers u
 		LEFT JOIN docrights d ON (u.id = d.userid AND d.doctype = ?)
 		WHERE u.deleted = 0
-		ORDER BY u.name', 'id', array($id));
+		ORDER BY u.rname', 'id', array($id));
 }
 
 $type = array(
-	'name' => $DOCTYPES[$id],
-	'rights' => $rights,
-	'id' => $id
+    'name' => $DOCTYPES[$id],
+    'rights' => $rights,
+    'id' => $id
 );
 
 $layout['pagetitle'] = trans('Document Type Edit: $a', $type['name']);
@@ -91,5 +87,3 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SMARTY->assign('documenttype', $type);
 $SMARTY->assign('error', $error);
 $SMARTY->display('document/documenttypeedit.html');
-
-?>

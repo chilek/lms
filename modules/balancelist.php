@@ -24,25 +24,42 @@
  *  $Id$
  */
 
-if(isset($_POST['search']))
-        $s = $_POST['search'];
-else
-	$SESSION->restore('bls', $s);
+$default_current_period = ConfigHelper::getConfig('phpui.balancelist_default_current_period', '', true);
+if (!preg_match('/^(day|month)$/', $default_current_period)) {
+    $default_current_period = '';
+}
 
-if(isset($_POST['cat']))
+if (isset($_POST['search'])) {
+        $s = $_POST['search'];
+} else {
+    $SESSION->restore('bls', $s);
+}
+if (!isset($s) && $default_current_period) {
+    list ($year, $month, $day) = explode('/', date('Y/m/d'));
+    if ($default_current_period == 'day') {
+        $s = date('Y/m/d', mktime(0, 0, 0, $month, $day, $year));
+    } else {
+        $s = date('Y/m', mktime(0, 0, 0, $month, 1, $year));
+    }
+}
+
+if (isset($_POST['cat'])) {
         $c = $_POST['cat'];
-else
-	$SESSION->restore('blc', $c);
-if (!isset($c))
-{
-$c="cdate";
+} else {
+    $SESSION->restore('blc', $c);
+}
+if (!isset($c) && $default_current_period) {
+    if ($default_current_period == 'day') {
+        $c = 'cdate';
+    } else {
+        $c = 'month';
+    }
 }
 $SESSION->save('blc', $c);
 
-if(isset($_POST['group']))
-{
+if (isset($_POST['group'])) {
         $g = $_POST['group'];
-	$ge = isset($_POST['groupexclude']) ? 1 : 0;
+    $ge = isset($_POST['groupexclude']) ? 1 : 0;
 } else {
         $SESSION->restore('blg', $g);
         $SESSION->restore('blge', $ge);
@@ -52,67 +69,104 @@ $SESSION->save('blge', $ge);
 
 $SESSION->save('bls', $s);
 
-if($c == 'cdate' && $s)
-{
-	$date = date_to_timestamp($s);
-	if (empty($date))
-		$s = mktime(0, 0, 0, date('n'), date('j'), date('Y'));
-	else
-		$s = $date;
+if (($c == 'cdate' || $c == 'month') && $s) {
+    if (preg_match('/^(?<year>[0-9]{4})\/(?<month>[0-9]{2})(?:\/(?<day>[0-9]{2}))?$/', $s, $m)) {
+        if (!isset($m['day'])) {
+            $m['day'] = 1;
+        }
+        if (checkdate($m['month'], $m['day'], $m['year'])) {
+            $s = $date = mktime(0, 0, 0, $m['month'], $m['day'], $m['year']);
+        }
+    }
+    if (!isset($date)) {
+        list ($year, $month, $day) = explode('/', date('Y/m/d'));
+        $s = mktime(0, 0, 0, $month, $c == 'cdate' ? $day : 1, $year);
+    }
 }
 
-if(!empty($_POST['from']))
-{
-	$from = datetime_to_timestamp($_POST['from']);
+if (!empty($_POST['from'])) {
+    if (strlen($_POST['from']) > 10) {
+        $from = datetime_to_timestamp($_POST['from']);
+    } else {
+        $from = date_to_timestamp($_POST['from']);
+    }
+} elseif ($SESSION->is_set('blf')) {
+    $SESSION->restore('blf', $from);
+} else {
+    $from = '';
 }
-elseif($SESSION->is_set('blf'))
-	$SESSION->restore('blf', $from);
-else
-	$from = '';
 
-if(!empty($_POST['to']))
-{
-    $to = datetime_to_timestamp($_POST['to']);
+if (!empty($_POST['to'])) {
+    if (strlen($_POST['to']) > 10) {
+        $to = datetime_to_timestamp($_POST['to']);
+    } else {
+        $to = date_to_timestamp($_POST['to']);
+    }
+} elseif ($SESSION->is_set('blt')) {
+    $SESSION->restore('blt', $to);
+} else {
+    $to = '';
 }
-elseif($SESSION->is_set('blt'))
-	$SESSION->restore('blt', $to);
-else
-	$to = '';
 
-if(!empty($from) && !empty($to)) {
-	if($from < $to) {
+if (!empty($from) && !empty($to)) {
+    if ($from < $to) {
+        $SESSION->save('blf', $from);
+        $SESSION->save('blt', $to);
+    }
+} elseif (!empty($from)) {
     $SESSION->save('blf', $from);
+} elseif (!empty($to)) {
     $SESSION->save('blt', $to);
 }
-}
-elseif(!empty($from))
-	$SESSION->save('blf', $from);
-elseif(!empty($to))
-    $SESSION->save('blt', $to);
 
 $pagelimit = ConfigHelper::getConfig('phpui.balancelist_pagelimit');
 $page = (empty($_GET['page']) ? 0 : intval($_GET['page']));
 
-if (isset($_GET['sourcefileid'])) {
-	$s = $DB->GetOne('SELECT name FROM sourcefiles WHERE id = ?', array($_GET['sourcefileid']));
-	$c = 'cashimport';
-	$SESSION->save('bls', $s);
-	$SESSION->save('blc', $c);
+if (isset($_GET['sourcefileid']) || $c == 'cashimport') {
+    if (isset($_GET['sourcefileid'])) {
+        $sourcefileid = intval($_GET['sourcefileid']);
+    } elseif (isset($_POST['sourcefileid']) && !empty($_POST['sourcefileid'])) {
+        $sourcefileid = intval($_POST['sourcefileid']);
+    } else {
+        $SESSION->restore('blsfid', $sourcefileid);
+        if ($sourcefileid) {
+            $sourcefileid = intval($sourcefileid);
+        } else {
+            $sourcefileid = 0;
+        }
+    }
+    if ($sourcefileid) {
+        $sourcefilename = $DB->GetOne('SELECT name FROM sourcefiles WHERE id = ?', array($sourcefileid));
+    } else {
+        $sourcefileid = $DB->GetCol('SELECT id FROM sourcefiles WHERE name = ?', array($s));
+        $sourcefilename = $s;
+    }
+    if (!empty($sourcefileid) && !empty($sourcefilename)) {
+        $SMARTY->assign('sourcefilename', $sourcefilename);
+        $s = $sourcefileid;
+        $c = 'cashimport';
+        $SESSION->save('bls', $s);
+        $SESSION->save('blc', $c);
+        $SESSION->save('blsfid', $sourcefileid);
+    }
+} elseif ($c != 'cashimport') {
+    $SESSION->remove('blsfid');
 }
 
 $summary = $LMS->GetBalanceList(array('search' => $s, 'cat' => $c, 'group' => $g, 'exclude'=> $ge,
-	'from' => $from, 'to' => $to, 'count' => true));
+    'from' => $from, 'to' => $to, 'count' => true));
 $total = intval($summary['total']);
 
 $limit = intval(ConfigHelper::getConfig('phpui.balancelist_pagelimit', 100));
 $page = !isset($_GET['page']) ? ceil($total / $limit) : $_GET['page'];
-if (empty($page))
-	$page = 1;
+if (empty($page)) {
+    $page = 1;
+}
 $page = intval($page);
 $offset = ($page - 1) * $limit;
 
 $balancelist = $LMS->GetBalanceList(array('search' => $s, 'cat' => $c, 'group' => $g, 'exclude'=> $ge,
-	'limit' => $limit, 'offset' => $offset, 'from' => $from, 'to' => $to, 'count' =>  false));
+    'limit' => $limit, 'offset' => $offset, 'from' => $from, 'to' => $to, 'count' =>  false));
 
 $pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
 
@@ -133,10 +187,8 @@ $layout['pagetitle'] = trans('Balance Sheet');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$SMARTY->assign('balancelist',$balancelist);
-$SMARTY->assign('listdata',$listdata);
+$SMARTY->assign('balancelist', $balancelist);
+$SMARTY->assign('listdata', $listdata);
 $SMARTY->assign('pagination', $pagination);
-$SMARTY->assign('grouplist',$LMS->CustomergroupGetAll());
+$SMARTY->assign('grouplist', $LMS->CustomergroupGetAll());
 $SMARTY->display('balance/balancelist.html');
-
-?>

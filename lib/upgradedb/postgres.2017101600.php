@@ -30,11 +30,11 @@ $this->Execute("
 
 $this->Execute("UPDATE ewx_stm_nodes SET channelid = NULL WHERE channelid = 0");
 $ids = $this->GetCol("SELECT id FROM ewx_stm_channels");
-if (empty($ids))
-	$this->Execute("UPDATE ewx_stm_nodes SET channelid = NULL WHERE channelid IS NOT NULL");
-else {
-	$sql_ids = implode(',', $ids);
-	$this->Execute("UPDATE ewx_stm_nodes SET channelid = NULL
+if (empty($ids)) {
+    $this->Execute("UPDATE ewx_stm_nodes SET channelid = NULL WHERE channelid IS NOT NULL");
+} else {
+    $sql_ids = implode(',', $ids);
+    $this->Execute("UPDATE ewx_stm_nodes SET channelid = NULL
 		WHERE channelid IS NOT NULL AND channelid NOT IN (" . $sql_ids . ")");
 }
 
@@ -44,5 +44,3 @@ $this->Execute("ALTER TABLE ewx_stm_nodes ADD CONSTRAINT ewx_stm_nodes_channelid
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017101600', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

@@ -42,5 +42,3 @@ $this->Execute("ALTER TABLE voip_rules CHANGE rule_settings settings text NULL")
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016080800', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

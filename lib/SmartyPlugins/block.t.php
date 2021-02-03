@@ -26,9 +26,7 @@
 
 function smarty_block_t($params, $content, $template, $repeat)
 {
-	if (!empty($content)) {
+    if (!empty($content)) {
         return trans(array_merge((array)$content, $params));
-	}
+    }
 }
-
-?>

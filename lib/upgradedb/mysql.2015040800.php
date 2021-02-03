@@ -36,5 +36,3 @@ $this->Execute("ALTER TABLE netlinks ADD FOREIGN KEY (dstradiosector) REFERENCES
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015040800', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

@@ -141,19 +141,80 @@ function locationchoosewin(varname, formname, city, street, default_city)
     return openSelectWindow('?m=chooselocation&name='+varname+'&form='+formname+'&city='+city+'&street='+street,'chooselocation',350,200,'true');
 }
 
+function openPopupWindow(options)
+{
+	if (typeof(options) !== 'object') {
+		console.log('openPopupWindow: missed "options" parameter!');
+		return;
+	}
+	if (!options.hasOwnProperty('url')) {
+		console.log('openPopupWindow: missed "url"!');
+		return;
+	}
+	if (!options.hasOwnProperty('selector')) {
+		console.log('openPopupWindow: missed "selector"!');
+		return;
+	}
+	if (!options.hasOwnProperty('onLoaded')) {
+		options.onLoaded = null;
+	}
+	if (!options.hasOwnProperty('title')) {
+		options.title = 'openPopupWindow';
+	}
+
+	$.ajax({
+		url: options.url,
+		async: true,
+		success: function(data) {
+			var dialog = $('<div/>').uniqueId().html(data).insertAfter(options.selector);
+			var dialogId = dialog.attr('id');
+			$(dialog).dialog({
+				autoOpen: true,
+				buttons: [],
+				closeText: $t("Close"),
+				dialogClass: 'lms-ui-popup',
+				closeOnEscape: true,
+				modal: true,
+				position: { my: "left top", at: "left bottom", of: options.selector },
+				resizable: true,
+				width: 'auto',
+				title: options.title,
+				open: function() {
+					$('.ui-widget-overlay').click(function() {
+						$( "#" + dialogId).dialog('destroy').remove();
+					})
+				},
+				close: function() {
+					$( "#" + dialogId).dialog('destroy').remove();
+				}
+			});
+			$(options.selector).attr('data-dialog-id', dialogId);
+
+			if (options.onLoaded) {
+				options.onLoaded();
+			}
+		}
+
+	});
+}
+
 if ( typeof $ !== 'undefined' ) {
     $(function() {
+    	$(document).on('mouseleave', '.lms-ui-popup', function(e) {
+    		e.stopImmediatePropagation();
+		});
+
         // open location dialog window if teryt is checked
         $('body').on('click', '.teryt-address-button', function() {
 
-            var box = $( this ).closest( ".lmsui-address-box" );
+            var box = $( this ).closest( ".lms-ui-address-box" );
 
             // if teryt checkbox is not checked during teryt button click then
             // we check it automatically for user convenience
             if ( ! box.find("input[data-address='teryt-checkbox']").is(':checked') ) {
                 box.find("input[data-address='teryt-checkbox']").prop('checked', true);
                 // simulate click for update input state
-                $( '.lmsui-address-teryt-checkbox' ).trigger( 'change' );
+                $( '.lms-ui-address-teryt-checkbox' ).trigger( 'change' );
             }
 
             var city   = box.find("input[data-address='city-hidden']").val();
@@ -162,12 +223,19 @@ if ( typeof $ !== 'undefined' ) {
             }
             var street = box.find("input[data-address='street-hidden']").val();
 
-            openSelectWindow('?m=chooselocation&city=' + city + '&street=' + street + "&boxid=" + box.attr('id'), 'chooselocation', 350, 200, 'true');
+			openPopupWindow({
+				url: '?m=chooselocation&city=' + city + '&street=' + street + "&boxid=" + box.attr('id'),
+				selector: this,
+				title: $t("Choose TERRIT location"),
+				onLoaded: function() {
+					$('#search [name="searchcity"]').focus();
+				}
+			});
         });
 
         // disable and enable inputs after click
-        $('body').on('change', '.lmsui-address-teryt-checkbox', function() {
-            var boxid = $( this ).closest( ".lmsui-address-box" ).attr( 'id' );
+        $('body').on('change', '.lms-ui-address-teryt-checkbox', function() {
+            var boxid = $( this ).closest( ".lms-ui-address-box" ).attr( 'id' );
 
             if ( $( this ).is(':checked') ) {
                 $("#" + boxid + " input[type=text]").prop("readonly", true);
@@ -184,7 +252,7 @@ if ( typeof $ !== 'undefined' ) {
         });
 
         // simulate click for update input state
-        $( '.lmsui-address-teryt-checkbox' ).trigger( 'change' );
+        $( '.lms-ui-address-teryt-checkbox' ).trigger( 'change' );
     });
 }
 
@@ -228,6 +296,7 @@ function sendvalue(targetfield, value)
 	targetfield.value = value;
 	// close popup
 	window.parent.parent.popclick();
+	targetfield.dispatchEvent(new Event('change'))
 	targetfield.focus();
 }
 
@@ -285,6 +354,28 @@ function setCookie(name, value, permanent)
 		cookie += '; expires=' + d.toUTCString();
 	}
 	document.cookie = cookie;
+}
+
+function getStorageItem(name, type)
+{
+	var storage;
+	if (typeof(type) === 'undefined' || type == 'session') {
+		storage = sessionStorage;
+	} else {
+		storage = localStorage;
+	}
+	return storage.getItem(name);
+}
+
+function setStorageItem(name, value, type)
+{
+	var storage;
+	if (typeof(type) === 'undefined' || type == 'session') {
+		storage = sessionStorage;
+	} else {
+		storage = localStorage;
+	}
+	storage.setItem(name, value);
 }
 
 if (typeof String.prototype.trim == 'undefined')
@@ -351,20 +442,56 @@ function CheckAll(form, elem, excl)
 
 var lms_login_timeout_value,
     lms_login_timeout,
-    lms_sticky_popup;
+    lms_login_timeout_update = 0,
+	lms_login_timeout_ts,
+    lms_sticky_popup,
+	lms_session_expire_elem;
 
 function start_login_timeout(sec)
 {
     if (!sec) sec = 600;
     lms_login_timeout_value = sec;
-    lms_login_timeout = window.setTimeout(function() {
+    lms_login_timeout_ts = Date.now() + sec * 1000;
+    lms_login_timeout = setTimeout(function() {
             window.location.assign(window.location.href);
-        }, (sec + 5) * 1000);
+        }, (sec + 1) * 1000);
+	lms_session_expire_elem = $('#lms-ui-session-expire');
+    if (lms_session_expire_elem.length) {
+	    lms_login_timeout_update = setInterval(function() {
+				var time_to_expire = lms_login_timeout_ts - Date.now();
+				if (time_to_expire < 0) {
+					time_to_expire = 0;
+				}
+				time_to_expire = Math.round(time_to_expire / 1000);
+	    		lms_session_expire_elem.text(sprintf("%02d:%02d",
+					Math.floor(time_to_expire / 60),
+					time_to_expire % 60
+				));
+	    		if (typeof(session_expiration_warning_handler) == 'function') {
+	    			session_expiration_warning_handler(time_to_expire);
+				}
+	    }, 1000);
+	}
 }
 
 function reset_login_timeout()
 {
-    window.clearTimeout(lms_login_timeout);
+    clearTimeout(lms_login_timeout);
+    if (lms_login_timeout_update) {
+		clearInterval(lms_login_timeout_update);
+		lms_login_timeout_update = 0;
+		if (lms_session_expire_elem.length) {
+			lms_session_expire_elem.text(sprintf("%02d:%02d",
+				Math.floor(lms_login_timeout_value / 60),
+				lms_login_timeout_value % 60
+			));
+		}
+	}
+
+    if (typeof(session_expiration_warning_reset) == 'function') {
+    	session_expiration_warning_reset();
+	}
+
     start_login_timeout(lms_login_timeout_value);
 }
 
@@ -479,16 +606,6 @@ function changeMacFormat(id)
 	elem.innerHTML = curmac;
 }
 
-function reset_customer(form, elemname1, elemname2) {
-
-	if (document.forms[form].elements[elemname1].value) {
-		document.forms[form].elements[elemname2].value = document.forms[form].elements[elemname1].value;
-
-		$( document.forms[form].elements[elemname1] ).trigger( 'keyup' );
-		$( document.forms[form].elements[elemname2] ).trigger( 'reset_customer' );
-	}
-}
-
 function generate_random_string(length, characters) {
 	if (typeof length === 'undefined')
 		length = 10;
@@ -532,78 +649,6 @@ function get_size_unit(size) {
 			size: size,
 			unit: 'B'
 		};
-}
-
-function _getCustomerNames(ids, success) {
-	if (!ids || String(ids).length == 0)
-		return 0;
-
-	$.ajax('?m=customerinfo&api=1&ajax=1', {
-		async: true,
-		method: 'POST',
-		data: {
-			id: ids
-		},
-		dataType: 'json',
-		success: success
-	});
-}
-
-function getCustomerName(elem) {
-	if ( $(elem).val().length == 0 ) {
-		$(elem).nextAll('.customername').html('');
-		return 0;
-	}
-
-	_getCustomerNames([ $(elem).val() ], function(data, textStatus, jqXHR) {
-		if (typeof data.error !== 'undefined') {
-			$(elem).nextAll('.customername').html( data.error );
-			return 0;
-		}
-
-		$(elem).nextAll('.customername').html(data.customernames[$(elem).val()] === undefined ? ''
-			: '<a href="?m=customerinfo&id=' + $(elem).val() + '">' + data.customernames[$(elem).val()] + '</a>');
-	});
-
-	$(elem).trigger('reset_customer');
-	$(elem).trigger('change');
-}
-
-var customerinputs = [];
-
-function getCustomerNameDeferred(elem) {
-	customerinputs.push(elem);
-}
-
-if (typeof $ !== 'undefined') {
-	$(function() {
-		var cids = [];
-		$.each(customerinputs, function(index, elem) {
-			cids.push($(elem).val());
-		});
-		_getCustomerNames(cids, function(data, textStatus, jqXHR) {
-			$.each(customerinputs, function(index, elem) {
-				if ( $(elem).val().length == 0 ) {
-					$(elem).nextAll('.customername').html('');
-					return 0;
-				}
-
-				if (data.error != undefined) {
-					$(elem).nextAll('.customername').html( data.error );
-					return 0;
-				}
-
-				$(elem).nextAll('.customername').html(data.customernames[$(elem).val()] === undefined ?
-					'' : '<a href="?m=customerinfo&id=' + $(elem).val() + '">' + data.customernames[$(elem).val()] + '</a>');
-			});
-		});
-
-		$('a[rel="external"]')
-			.on('click keypress', function() {
-				window.open(this.href);
-				return false;
-			});
-	});
 }
 
 /*!
@@ -656,28 +701,11 @@ window.onafterprint  = LMS_afterPrintEvent;
  * \return false    if id is incorrect
  */
 function getCustomerAddresses( id, on_success ) {
-    return _getAddressList( 'customeraddresses', id, on_success );
-}
-
-/*!
- * \brief Returns single address by id.
- *
- * \param  int   id address id
- * \return json     address data
- * \return false    if id is incorrect
- */
-function getSingleAddress( address_id, on_success ) {
-    return _getAddressList( 'singleaddress', address_id, on_success );
-}
-
-function _getAddressList( action, v, on_success ) {
-    action = action.toLowerCase();
-
     var addresses = [];
     var async = typeof on_success === 'function';
 
     // test to check if 'id' is integer
-    if ( Math.floor(v) != v || !$.isNumeric(v) ) {
+    if ( Math.floor(id) != id || !$.isNumeric(id) ) {
         if (async) {
             on_success(addresses);
         }
@@ -685,28 +713,15 @@ function _getAddressList( action, v, on_success ) {
     }
 
     // check id value
-    if ( v <= 0 ) {
+    if ( id <= 0 ) {
         if (async) {
             on_success(addresses);
         }
         return addresses;
     }
 
-    var url;
-
-    switch ( action ) {
-        case 'customeraddresses':
-            url = "?m=customeraddresses&action=getcustomeraddresses&api=1&id=" + v;
-        break;
-
-        case 'singleaddress':
-            url = "?m=customeraddresses&action=getsingleaddress&api=1&id=" + v;
-        break;
-    }
-
-
     $.ajax({
-        url    : url,
+        url    : "?m=customeraddresses&action=getcustomeraddresses&api=1&id=" + id,
         dataType: "json",
         async  : async
     }).done(function(data) {
@@ -731,22 +746,14 @@ function _getAddressList( action, v, on_success ) {
  * \param string latitude_id id of longitude input
  */
 function location_str(data) {
-	city = data.city;
-	street = data.street;
-	house = data.house;
-	flat = data.flat;
-	if (data.hasOwnProperty('zip'))
-		zip = data.zip;
-	else
-		zip = null;
-	if (data.hasOwnProperty('postoffice'))
-		postoffice = data.postoffice;
-	else
-		postoffice = null;
-	if (data.hasOwnProperty('state'))
-		state = data.state;
-	else
-		state = null;
+	var city = data.city;
+	var street = data.street;
+	var house = data.house;
+	var flat = data.flat;
+	var zip = data.hasOwnProperty('zip') ? data.zip : null;
+	var postoffice = data.hasOwnProperty('postoffice') ? data.postoffice : null;
+	var state = data.hasOwnProperty('state') ? data.state : null;
+	var teryt = data.hasOwnProperty('teryt') && data.teryt;
 
 	var location = '';
 
@@ -767,8 +774,9 @@ function location_str(data) {
 	}
 	if (street.length) {
 		location += street;
-	} else
+	} else {
 		location += city;
+	}
 
 	if (location.length) {
 		if (house.length && flat.length) {
@@ -776,6 +784,10 @@ function location_str(data) {
 		} else if (house.length) {
 			location += " " + house;
 		}
+	}
+
+	if (teryt) {
+		location = $t('$a (TERRIT)', location);
 	}
 
 	return location;
@@ -907,4 +919,41 @@ function convert_to_units(value, threshold, multiplier) {
 		return (Math.round(value * 100 / multiplier / multiplier / multiplier) / 100) +
 			' G' + unit_suffix;
 	}
+}
+
+function get_revdns(search) {
+	$.ajax({
+		url: '?m=dns&type=revdns&api=1',
+		method: "POST",
+		dataType: 'json',
+		data: search
+	}).done(function(data) {
+		$.each(data, function(key, value) {
+			$(key).html(value);
+		});
+	});
+}
+
+function escapeHtml(text) {
+	var map = {
+		'&': '&amp;',
+		'<': '&lt;',
+		'>': '&gt;',
+		'"': '&quot;',
+		"'": '&#039;'
+	};
+
+	return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
+
+function unescapeHtml(text) {
+	var map = {
+		'&amp;': '&',
+		'&lt;': '<',
+		'&gt;': '>',
+		'&quot;': '"',
+		'&#039;': "'"
+	};
+
+	return text.replace(/&(amp|lt|gt|quot|#039);/g, function(m) { return map[m]; });
 }

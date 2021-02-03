@@ -5,7 +5,7 @@
     }
 </style>
 {foreach $daylist as $day}
-<TABLE class="lmsbox lms-ui-background-cycle event-day-table">
+<TABLE id="event-day-{$day}" class="lmsbox lms-ui-background-cycle event-day-table">
     <COLGROUP>
         <COL style="width: 1%;">
         <COL style="width: 1%; min-width:90px;">
@@ -38,7 +38,7 @@
     </THEAD>
     <TBODY class="event-day" data-event-day="{$day}">
         {foreach $eventlist as $event}
-        {if $event.date == $day}
+        {if $event.date == $day && !isset($event.hide)}
             {include file="event/eventlistboxrow.html"}
         {/if}
         {/foreach}
@@ -73,21 +73,42 @@
 					$(this).show();
 				}
             });
-			var delta = ui.item.closest('.event-day').attr('data-event-day') - ui.sender.attr('data-event-day');
-			$('html,body').css('cursor', 'wait');
-			$.ajax('?m={$layout.module}&api=1', {
-                method: "GET",
-                data: {
-                	action: 'eventmove',
-                	id: eventid,
-                    delta: delta
-                },
-                complete: function() {
-                	$('html,body').css('cursor', 'auto');
-                }
-            });
+			var todate = ui.item.closest('.event-day').attr('data-event-day');
+			var fromdate = ui.sender.attr('data-event-day');
+			var fd = new Date(fromdate * 1000);
+			var td = new Date(todate * 1000);
+			if (confirm($t('Are you sure you want to move event from $a to $b?',
+				sprintf("%04d/%02d/%02d", fd.getFullYear(), fd.getMonth() + 1, fd.getDate()),
+				sprintf("%04d/%02d/%02d", td.getFullYear(), td.getMonth() + 1, td.getDate())
+			))) {
+				var delta = todate - fromdate;
+				$('html,body').css('cursor', 'wait');
+				$.ajax('?m={$layout.module}&api=1', {
+					method: "GET",
+					data: {
+						action: 'eventmove',
+						id: eventid,
+						delta: delta
+					},
+					complete: function () {
+						$('html,body').css('cursor', 'auto');
+					}
+				});
+			} else {
+				$(ui.sender).sortable('cancel');
+			}
 		}
     });
+
+    $(function() {
+        $('.event-day-table').each(function() {
+            var id = $(this).attr('id');
+            $(this).find('.event-edit').each(function() {
+                var href = $(this).attr('href');
+                $(this).attr('href', href + id);
+            });
+        });
+    })
 
 </script>
 {/block}

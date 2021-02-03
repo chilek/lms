@@ -24,19 +24,19 @@
  *  $Id$
  */
 
-$reglog = $DB->GetRow('SELECT l.*, vusers.name AS username
+$reglog = $DB->GetRow(
+    'SELECT l.*, vusers.name AS username
 			FROM cashreglog l
 			LEFT JOIN vusers ON (l.userid = vusers.id)
 			WHERE l.id = ?',
-			array(intval($_GET['id'])));
+    array(intval($_GET['id']))
+);
 
-if(!$reglog)
-{
+if (!$reglog) {
         $SESSION->redirect('?m=cashreglist');
 }
 
-if(!$DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array(Auth::GetCurrentUser(), $reglog['regid'])))
-{
+if (!$DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array(Auth::GetCurrentUser(), $reglog['regid']))) {
         $SMARTY->display('noaccess.html');
         $SESSION->close();
         die;
@@ -48,5 +48,3 @@ $layout['pagetitle'] = trans('Cash History Entry Info');
 
 $SMARTY->assign('reglog', $reglog);
 $SMARTY->display('cash/cashregloginfo.html');
-
-?>

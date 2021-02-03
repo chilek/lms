@@ -1,9 +1,9 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!DOCTYPE html>
 <!--// $Id$ //-->
 <html><head>
 <meta name="GENERATOR" content="LMS {$layout.lmsv}">
-<meta http-equiv="Content-Language" content="{$LANGDEFS.$_language.html}">
-<meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_language.charset}">
+<meta http-equiv="Content-Language" content="{Localisation::getCurrentHtmlLanguage()}">
+<meta http-equiv="Content-Type" content="text/html; charset={Localisation::getCurrentHtmlCharset()}">
 <title>::: LMS :{if $layout.pagetitle neq ""} {$layout.pagetitle} :{/if}::</title>
 <link href="css/style.css" rel="stylesheet" type="text/css">
 <script type="text/JavaScript" src="js/common.js"> </script>
@@ -46,7 +46,7 @@
 					    <TD width="1%"><nobr>{$balancelist.list[balancelist].date}</nobr></TD>
 					    <TD width="1%" align="right"><nobr>{$balancelist.list[balancelist].value|money_format}</nobr></TD>
 					    <TD width="1%" align="center">&raquo;</TD>
-					    <TD width="1%" align="right"><nobr>{if $balancelist.list[balancelist].after < 0}<FONT color="red">{/if}{$balancelist.list[balancelist].after|money_format}{if $balancelist.list[balancelist].after < 0}</FONT>{/if}</nobr></TD>
+					    <TD width="1%" align="right"><nobr>{if $balancelist.list[balancelist].after < 0}<span style="color: red;">{/if}{$balancelist.list[balancelist].after|money_format}{if $balancelist.list[balancelist].after < 0}</span>{/if}</nobr></TD>
 					    <TD width="95%">{$balancelist.list[balancelist].comment}</TD>
 					    <TD width="1%">
 						    {if $balancelist.list[balancelist].doctype==1}

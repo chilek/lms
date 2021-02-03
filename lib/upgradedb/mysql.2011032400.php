@@ -25,7 +25,9 @@ $this->BeginTrans();
 
 $this->Execute("DROP VIEW customersview");
 
-$this->Execute("ALTER TABLE customers ADD post_name varchar(255) DEFAULT NULL");
+if (!$this->ResourceExists('customers.post_name', LMSDB::RESOURCE_TYPE_COLUMN)) {
+    $this->Execute("ALTER TABLE customers ADD post_name varchar(255) DEFAULT NULL");
+}
 
 $this->Execute("CREATE VIEW customersview AS
     SELECT c.* FROM customers c
@@ -37,5 +39,3 @@ $this->Execute("CREATE VIEW customersview AS
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011032400', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

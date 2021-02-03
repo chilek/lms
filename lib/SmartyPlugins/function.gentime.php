@@ -26,7 +26,5 @@
 
 function smarty_function_gentime($params, $template)
 {
-	return sprintf('%.4f', microtime(true) - START_TIME);
+    return sprintf('%.4f', microtime(true) - START_TIME);
 }
-
-?>

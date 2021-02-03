@@ -23,15 +23,17 @@
 
 $this->BeginTrans();
 
-if ($this->ResourceExists('rttickets_address_id_fk', LMSDB::RESOURCE_TYPE_CONSTRAINT))
-	$this->Execute("ALTER TABLE rttickets DROP CONSTRAINT rttickets_address_id_fk");
-else
-	$this->Execute("ALTER TABLE rttickets DROP CONSTRAINT rttickets_address_id_fkey");
+if ($this->ResourceExists('rttickets_address_id_fk', LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
+    $this->Execute("ALTER TABLE rttickets DROP CONSTRAINT rttickets_address_id_fk");
+} else {
+    $this->Execute("ALTER TABLE rttickets DROP CONSTRAINT rttickets_address_id_fkey");
+}
 
-if ($this->ResourceExists('rttickets_nodeid_fk', LMSDB::RESOURCE_TYPE_CONSTRAINT))
-	$this->Execute("ALTER TABLE rttickets DROP CONSTRAINT rttickets_nodeid_fk");
-else
-	$this->Execute("ALTER TABLE rttickets DROP CONSTRAINT rttickets_nodeid_fkey");
+if ($this->ResourceExists('rttickets_nodeid_fk', LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
+    $this->Execute("ALTER TABLE rttickets DROP CONSTRAINT rttickets_nodeid_fk");
+} else {
+    $this->Execute("ALTER TABLE rttickets DROP CONSTRAINT rttickets_nodeid_fkey");
+}
 
 $this->Execute("ALTER TABLE rttickets ADD CONSTRAINT rttickets_address_id_fkey
 	FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE");
@@ -41,5 +43,3 @@ $this->Execute("ALTER TABLE rttickets ADD CONSTRAINT rttickets_nodeid_fkey
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018062000', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

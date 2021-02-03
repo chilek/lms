@@ -1,7 +1,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -71,7 +71,7 @@ function showAddManagementUrl() {
 
 function hideAddManagementUrl() {
 	$('#add_management_url').hide().find('.url-edit-field').each(function() {
-		$(this).val($(this).attr('data-old-value')).removeAttr('data-tooltip').removeClass('alert')
+		$(this).val($(this).attr('data-old-value')).removeAttr('data-tooltip').removeClass('lms-ui-error')
 			.attr('title', $(this).attr('data-old-tooltip'));
 	});
 	$('#management_url_buttons').show();
@@ -91,7 +91,7 @@ function updateManagementUrl(id) {
 
 function managementUrlErrors(errors) {
 	$.each(errors, function (index, value) {
-		$('#managementurlspanel #' + index).addClass('alert')
+		$('#managementurlspanel #' + index).addClass('lms-ui-error')
 			.removeAttr('data-tooltip').attr('title', value);
 	});
 }

@@ -30,12 +30,11 @@ $p = isset($_GET['p']) ? $_GET['p'] : '';
 $js = '';
 $customerid = intval($_GET['id']);
 
-if(!$p || $p == 'main')
+if (!$p || $p == 'main') {
         $SMARTY->assign('js', 'var targetfield = window.parent.targetfield;');
+}
 
 $SMARTY->assign('customerid', $customerid);
 $SMARTY->assign('part', $p);
-$SMARTY->assign('nodelist',$LMS->GetCustomerNodes(intval($_GET['id'])));
+$SMARTY->assign('nodelist', $LMS->GetCustomerNodes(intval($_GET['id'])));
 $SMARTY->display('choose/choosenode.html');
-
-?>

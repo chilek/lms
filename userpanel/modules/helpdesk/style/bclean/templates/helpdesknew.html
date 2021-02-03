@@ -1,3 +1,12 @@
+<style>
+
+	#file-status {
+		margin-top: 1em;
+		margin-bottom: 0;
+	}
+
+</style>
+
 <button type="button" class="btn btn-danger mb-1" data-toggle="modal" data-target="#newrequest" accesskey="N">
 	{trans("New Request")}
 </button>
@@ -26,7 +35,9 @@
 					{/if}
 					<div class="form-group">
 						<label for="subject" class="font-weight-bold">{trans("Subject:")}</label>
-						<input type="text" name="helpdesk[subject]" id="subject" value="{$helpdesk.subject}" {userpaneltip class="form-control" text="Enter request subject" trigger="subject"} placeholder="{trans("Enter request subject")}" required />
+						<input type="text" name="helpdesk[subject]" id="subject" value="{$helpdesk.subject}"
+								maxlength="{ConfigHelper::getConfig('rt.subject_max_length', 50)}"
+								{userpaneltip class="form-control" text="Enter request subject" trigger="subject"} placeholder="{trans("Enter request subject")}" required />
 					</div>
 
 					<div class="form-group">
@@ -39,7 +50,11 @@
 						<input type="file" name="files[]" id="attachments" {userpaneltip class="form-control-file" text="Enter path to file or click 'Browse' button" trigger="files"} multiple />
 						<input type="hidden" id="post_max_size" value="{$post_max_size.bytes}">
 						<input type="hidden" id="upload_max_filesize" value="{$upload_max_filesize.bytes}">
-						<div id="file-status" class="alert" style="display: none;"></div>
+						<div id="file-status" class="alert alert-danger"{if !isset($error.files)} style="display: none;"{/if}>
+							{if isset($error.files)}
+								{$error.files}
+							{/if}
+						</div>
 						<small class="form-text">
 							{t a=$post_max_size.text}Maximum total file size: $a{/t}
 						</small>
@@ -51,7 +66,7 @@
 				</form>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-danger submit-button" formnovalidate accesskey="S">{trans("Submit")}</button>
+				<button type="button" class="btn btn-danger submit-button" formnovalidate accesskey="S">{trans("<!helpdesk>Submit")}</button>
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">{trans("Close")}</button>
 				<input type="hidden" name="wyslane" value="1">
 			</div>
@@ -95,18 +110,16 @@
 		});
 
 		$('#newrequest .submit-button').click(function() {
+			if ($(this).is("[disabled]")) {
+				return false;
+			}
+			$(this).attr('disabled', 'disabled');
 			if (check_file_sizes()) {
 				document.helpdesk.submit();
+			} else {
+				$(this).removeAttr('disabled');
 			}
 		});
 	});
 
 </script>
-
-<style>
-
-	#file-status {
-		margin-bottom: 0;
-	}
-
-</style>

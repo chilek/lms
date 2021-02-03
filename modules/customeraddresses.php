@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,8 +24,7 @@
  *  $Id$
  */
 
-switch ( strtolower($_GET['action']) ) {
-
+switch (strtolower($_GET['action'])) {
     /*!
      * \brief Returns customer addresses.
      *
@@ -34,78 +33,13 @@ switch ( strtolower($_GET['action']) ) {
      * \return json
      */
     case 'getcustomeraddresses':
-        if ( empty($_GET['id']) ) {
-            return 0;
+        if (empty($_GET['id'])) {
+            die;
         }
 
-        $caddr = $LMS->getCustomerAddresses( (int) $_GET['id'], true );
-
-        if ( !$caddr ) {
-            die( json_encode( array() ) );
-        }
-
-        foreach ($caddr as $k => &$v) {
-            if ( empty($v['location']) ) {
-                unset( $caddr[$k] );
-                continue;
-            } elseif ($v['teryt']) {
-                $v['location'] = trans('$a (TERRIT)', $v['location']);
-            }
-            if ($v['location_address_type'] == BILLING_ADDRESS || empty($v['location_name']))
-                continue;
-            $v['location'] = $v['location_name'] . ', ' . $v['location'];
-        }
-        unset($v);
-
-        die( json_encode($caddr) );
-    break;
-
-    /*!
-     * \brief Returns single address by id.
-     *
-     * \param  int  $_GET['id'] customer id
-     * \return json
-     */
-    case 'getsingleaddress':
-        if ( empty($_GET['id']) ) {
-            return 0;
-        }
-
-        $addr = $DB->GetAllByKey('SELECT
-                                 id as address_id, name as location_name,
-                                 state as location_state_name, state_id as location_state,
-                                 city as location_city_name, city_id as location_city,
-                                 street as location_street_name, street_id as location_street,
-                                 house as location_house, zip as location_zip, postoffice AS location_postoffice,
-                                 country_id as location_country_id, flat as location_flat,
-                                 -1 as location_address_type
-                             FROM addresses
-                             WHERE id = ?', 'address_id',
-                             array((int) $_GET['id']));
-
-        if ( !$addr ) {
-            die( json_encode( array() ) );
-        }
-
-        foreach ( $addr as $k=>$v ) {
-            // generate address as single string
-            $location = location_str(array(
-                'city_name'      => $v['location_city_name'],
-                'postoffice'     => $v['location_postoffice'],
-                'street_name'    => $v['location_street_name'],
-                'location_house' => $v['location_house'],
-                'location_flat'  => $v['location_flat']
-            ));
-
-            if (strlen($location)) {
-                $addr[$k]['location'] = (empty($v['location_name']) ? '' : $v['location_name'] . ', ')
-                    . (empty($v['location_zip']) ? '' : $v['location_zip'] . ' ') . $location;
-            } else {
-                $addr[$k]['location'] = trans('undefined');
-            }
-        }
-
-        die( json_encode($addr) );
+        $caddr = $LMS->getCustomerAddresses(intval($_GET['id']), true);
+        $LMS->determineDefaultCustomerAddress($caddr);
+        die(json_encode($caddr));
     break;
 
     /*!
@@ -116,9 +50,9 @@ switch ( strtolower($_GET['action']) ) {
     case 'getlocationboxhtml':
         global $SMARTY;
 
-        if ( !function_exists('smarty_function_location_box_expandable') ) {
-            foreach ( $SMARTY->getPluginsDir() as $v ) {
-                if ( file_exists($v . 'function.location_box_expandable.php') ) {
+        if (!function_exists('smarty_function_location_box_expandable')) {
+            foreach ($SMARTY->getPluginsDir() as $v) {
+                if (file_exists($v . 'function.location_box_expandable.php')) {
                     require_once $v . 'function.location_box_expandable.php';
                 }
             }
@@ -126,35 +60,32 @@ switch ( strtolower($_GET['action']) ) {
 
         $params = array();
 
-        if ( !empty($_GET['prefix']) ) {
+        if (!empty($_GET['prefix'])) {
             $params['data']['prefix'] = $_GET['prefix'];
         }
 
-        if ( !empty($_GET['show']) ) {
+        if (!empty($_GET['show'])) {
             $params['data']['show'] = 1;
         }
 
-        if ( !empty($_GET['clear_button']) ) {
-            $params['data']['clear_button'] = 1;
-        }
+        $params['data']['delete_button'] = isset($_GET['delete_button']) ? 1 : 0;
+        $params['data']['billing_address_button'] = isset($_GET['billing_address_button']) ? 1 : 0;
+        $params['data']['post_address_button'] = isset($_GET['post_address_button']) ? 1 : 0;
 
-        if ( !empty($_GET['default_type']) ) {
+        if (!empty($_GET['default_type'])) {
             $params['data']['default_type'] = 1;
         }
 
-        smarty_function_location_box_expandable( $params, $SMARTY );
+        smarty_function_location_box_expandable($params, $SMARTY);
         die();
     break;
 
     case 'geocode':
-        if ( !empty($_GET['address']) ) {
-            die( json_encode( geocode(trim($_GET['address'])) ) );
+        if (!empty($_GET['address'])) {
+            die(json_encode(geocode(trim($_GET['address']))));
         }
-    break;
+        break;
 
     default:
         return 0;
 }
-
-?>
-

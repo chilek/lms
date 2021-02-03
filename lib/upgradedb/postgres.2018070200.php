@@ -29,7 +29,7 @@ $all_streets = $this->GetAllByKey("SELECT lst.id, lst.name, lst.name2, lstt.name
 	WHERE lst.name2 IS NOT NULL", 'id');
 
 if (!empty($all_streets)) {
-	$addresses = $this->GetAll("
+    $addresses = $this->GetAll("
 		(
 			SELECT a.id, a.street, a.street_id
 				FROM addresses a
@@ -51,23 +51,24 @@ if (!empty($all_streets)) {
 		)
 	");
 
-	if (!empty($addresses))
-		foreach ($addresses as $address) {
-			$address_id = $address['id'];
-			$street_id = $address['street_id'];
-			if (isset($all_streets[$street_id])) {
-				$street_name = $all_streets[$street_id]['typestr'] . ' '
-					. $all_streets[$street_id]['name2'] . ' ' . $all_streets[$street_id]['name'];
-				$this->Execute("UPDATE addresses
+    if (!empty($addresses)) {
+        foreach ($addresses as $address) {
+            $address_id = $address['id'];
+            $street_id = $address['street_id'];
+            if (isset($all_streets[$street_id])) {
+                $street_name = $all_streets[$street_id]['typestr'] . ' '
+                . $all_streets[$street_id]['name2'] . ' ' . $all_streets[$street_id]['name'];
+                $this->Execute(
+                    "UPDATE addresses
 					SET street = ?
 					WHERE id = ?",
-					array($street_name, $address_id));
-			}
-		}
+                    array($street_name, $address_id)
+                );
+            }
+        }
+    }
 }
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018070200', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

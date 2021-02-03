@@ -26,27 +26,35 @@
 
 $id = $_GET['id'];
 
-if(! $LMS->TicketExists($id))
-{
-	$SESSION->redirect('?m=rtqueuelist');
+if (! $LMS->TicketExists($id)) {
+    $SESSION->redirect('?m=rtqueuelist');
 }
 
-if (!$LMS->CheckTicketAccess($id))
-	access_denied();
+if (!$LMS->CheckTicketAccess($id)) {
+    access_denied();
+}
 
 //$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $ticket = $LMS->GetTicketContents($id);
-$ticket['relatedtickets'] = $LMS->GetRelatedTicketIds($id);
-$ticket['message'] = $DB->GetOne('SELECT body FROM rtmessages
-		    WHERE ticketid = ?
-		    ORDER BY createtime DESC LIMIT 1', 
-		    array($id));
+
+
+$ticket['relatedtickets'] = $LMS->GetRelatedTickets($id);
+$ticket['childtickets'] = $LMS->GetChildTickets($id);
+
+$ticket = array_merge(
+    $ticket,
+    $DB->GetRow(
+        'SELECT contenttype, body AS message FROM rtmessages
+                WHERE ticketid = ?
+                ORDER BY createtime DESC LIMIT 1',
+        array($id)
+    )
+);
 
 $ticket['uptime'] = uptimef($ticket['resolvetime'] ? $ticket['resolvetime'] - $ticket['createtime'] : time() - $ticket['createtime']);
+$aet = ConfigHelper::getConfig('rt.allow_modify_resolved_tickets_newer_than', 86400);
 
 $SMARTY->assign('ticket', $ticket);
-
+$SMARTY->assign('aet', $aet);
 $SMARTY->display('rt/rtticketinfoshort.html');
-
-?>

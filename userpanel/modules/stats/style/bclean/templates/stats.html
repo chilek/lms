@@ -9,7 +9,7 @@
 		<li class="breadcrumb-item{if $bar=='all'} active{/if}"><a href="?m=stats&amp;bar=all">{trans("All")}</a></li>
 	</ol>
 	<div class="row">
-		<div class="col-md-6">
+		<div class="col">
 			{box title="Download"}
 			<div class="table-responsive">
 				<table class="table">
@@ -28,7 +28,7 @@
 			{trans("Total:")} {$download.sum.data|string_format:"%.2f "}{$download.sum.unit} ({$download.avgsum|string_format:"%.2f"}&nbsp;kbit/s)
 			{/box}
 		</div>
-		<div class="col-md-6">
+		<div class="col">
 			{box title="Upload"}
 			<div class="table-responsive">
 				<table class="table">

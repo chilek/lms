@@ -24,28 +24,46 @@
  *  $Id$
  */
 
-function smarty_function_persistent_filter($params, $template) {
-	$layout = $template->getTemplateVars('layout');
-	$persistent_filters = $template->getTemplateVars('persistent_filters');
-	$persistent_filter = $template->getTemplateVars('persistent_filter');
+function smarty_function_persistent_filter($params, $template)
+{
+    $layout = $template->getTemplateVars('layout');
+    $filter_id = isset($params['id']) ? $params['id'] : null;
 
-	$filters = '';
-	foreach ($persistent_filters as $filter)
-		$filters .= '<option value="' . $filter['value'] . '"' . ($filter['value'] == $persistent_filter ? ' selected' : '')
-			. '>' . $filter['text'] . '</option >';
+    $persistent_filters = $template->getTemplateVars('persistent_filters');
+    $persistent_filter = $template->getTemplateVars('persistent_filter');
+    $filter = $template->getTemplateVars('filter');
 
-	return '
-		<div class="lms-ui-persistent-filter">
+    if (isset($filter_id)) {
+        $persistent_filters = $persistent_filters[$filter_id];
+        $persistent_filter = $filter[$filter_id]['persistent_filter'];
+    }
+
+    $filters = '';
+
+    if (!empty($persistent_filters) && is_array($persistent_filters)) {
+        foreach ($persistent_filters as $key => $row) {
+            $text[$key] = $row['text'];
+        }
+        array_multisort($text, SORT_ASC, $persistent_filters);
+
+        foreach ($persistent_filters as $filter) {
+            $filters .= '<option value="' . $filter['value'] . '"' . ($filter['value'] == $persistent_filter ? ' selected' : '')
+                . '>' . $filter['text'] . '</option >';
+        }
+    }
+
+    return '
+		<div class="lms-ui-persistent-filter"' . (isset($filter_id) ? ' data-filter-id="' . $filter_id . '"' : '') . '>
 			<select class="lms-ui-filter-selection lms-ui-combobox" title="' . trans("<!filter>Select filter") . '">
 				<option value="-1">' . trans("<!filter>- none -") . '</option>
 				' . $filters . '
 			</select>
-			<button class="lms-ui-button lms-ui-button-add lms-ui-filter-modify-button"'
-				. ($persistent_filter == -1 || empty($persistent_filter) ? ' disabled' : '') . ' title="'
-				. trans("<!filter>Update") . '"><i></i>
+			<button class="lms-ui-button lms-ui-filter-modify-button"'
+                . ($persistent_filter == -1 || empty($persistent_filter) ? ' disabled' : '') . ' title="'
+                . trans("<!filter>Update") . '"><i class="lms-ui-icon-add"></i>
 			</button>
 			<button class="lms-ui-button lms-ui-filter-delete-button" title="'
-				. trans("<!filter>Delete") . '"><i class="lms-ui-icon-trash"></i>
+                . trans("<!filter>Delete") . '"><i class="lms-ui-icon-trash"></i>
 			</button>
     	</div>
 	</form>';

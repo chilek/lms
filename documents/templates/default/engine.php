@@ -35,47 +35,45 @@ $division = $LMS->GetDivision($divisionid);
 
 unset($customernodes['total']);
 
-if($customernodes)
-	foreach($customernodes as $idx => $row)
-	{
-		$customernodes[$idx]['net'] = $DB->GetRow('SELECT *, inet_ntoa(address) AS ip FROM networks WHERE address = (inet_aton(mask) & ?)', array($row['ipaddr']));
-	}
+if ($customernodes) {
+    foreach ($customernodes as $idx => $row) {
+        $customernodes[$idx]['net'] = $DB->GetRow('SELECT *, inet_ntoa(address) AS ip FROM networks WHERE address = (inet_aton(mask) & ?)', array($row['ipaddr']));
+    }
+}
 
-if($customeraccounts = $DB->GetAll('SELECT passwd.*, domains.name AS domain
+if ($customeraccounts = $DB->GetAll('SELECT passwd.*, domains.name AS domain
 				FROM passwd LEFT JOIN domains ON (domainid = domains.id)
-				WHERE passwd.ownerid = ? ORDER BY login', array($cid)))
-	foreach($customeraccounts as $idx => $account)
-	{
-		$customeraccounts[$idx]['aliases'] = $DB->GetCol('SELECT login FROM aliases a 
+				WHERE passwd.ownerid = ? ORDER BY login', array($cid))) {
+    foreach ($customeraccounts as $idx => $account) {
+        $customeraccounts[$idx]['aliases'] = $DB->GetCol('SELECT login FROM aliases a 
 			LEFT JOIN aliasassignments aa ON a.id = aa.aliasid WHERE aa.accountid=?', array($account['id']));
-		/*// create random password
-		$pass = '';
-		for ($i = 0; $i < 8; $i++)
-		       $pass .= substr('0123456789abcdefghijklmnopqrstuvwxyz', rand(0,36), 1);
-		$customeraccounts[$idx]['password'] = $pass;
-		*/
-	}
+        /*// create random password
+        $pass = '';
+        for ($i = 0; $i < 8; $i++)
+               $pass .= substr('0123456789abcdefghijklmnopqrstuvwxyz', rand(0,36), 1);
+        $customeraccounts[$idx]['password'] = $pass;
+        */
+    }
+}
 
 $document['template'] = $DB->GetOne('SELECT template FROM numberplans WHERE id=?', array($document['numberplanid']));
 $document['nr'] = docnumber(array(
-	'number' => $document['number'],
-	'template' => $document['template'],
-	'customerid' => $document['customerid'],
+    'number' => $document['number'],
+    'template' => $document['template'],
+    'customerid' => $document['customerid'],
 ));
 
 $SMARTY->assign(
-		array(
-			'customernodes' => $customernodes,
-			'assignments' => $assignments,
-			'customerinfo' => $customerinfo,
-			'tariffs' => $tariffs,
-			'customeraccounts' => $customeraccounts,
-			'document' => $document,
-			'engine' => $engine,
-			'division' => $division,
-		     )
-		);
+    array(
+            'customernodes' => $customernodes,
+            'assignments' => $assignments,
+            'customerinfo' => $customerinfo,
+            'tariffs' => $tariffs,
+            'customeraccounts' => $customeraccounts,
+            'document' => $document,
+            'engine' => $engine,
+            'division' => $division,
+             )
+);
 
 $output = $SMARTY->fetch(DOC_DIR.'/templates/'.$engine['name'].'/'.$engine['template']);
-
-?>

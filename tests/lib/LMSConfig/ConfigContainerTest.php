@@ -25,7 +25,6 @@ class ConfigContainerTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        
     }
 
     /**
@@ -161,5 +160,4 @@ class ConfigContainerTest extends \PHPUnit_Framework_TestCase
             $this->object->addSection($section);
         }
     }
-    
 }

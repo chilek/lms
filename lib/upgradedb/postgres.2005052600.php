@@ -56,8 +56,6 @@ $this->Execute("
 	DROP TABLE users;
 ");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005052600', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005052600', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

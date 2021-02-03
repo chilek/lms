@@ -93,7 +93,13 @@
 										{trans("Password:")}
 									</td>
 									<td>
-										{$nodeipdata.passwd}
+										{if ConfigHelper::checkConfig('phpui.protect_passwords')}
+											<button class="lms-ui-button-clipboard lms-ui-button" data-clipboard-text="{$nodeipdata.passwd}">
+												<i class="lms-ui-icon-clipboard"></i> {trans("Copy")}
+											</button>
+										{else}
+											{$nodeipdata.passwd}
+										{/if}
 									</td>
 								</tr>
 								{/if}
@@ -165,7 +171,7 @@
                             </table>
 						</td>
 						<td width="50%" class="valign-top">
-							<table width="100%" class="tab-beautify">
+							<table width="100%" class="tab-beautify" id="netdevipinfo">
 								<colgroup>
 									<col style="width: 1%;">
 									<col style="width: 1%;">
@@ -222,8 +228,8 @@
 										{trans("Modified:")}
 									</td>
 									<td>
-										{$nodeipdata.createdby}, {$nodeipdata.creationdateh}<br>
-										{if $nodeipdata.moddate}{$nodeipdata.modifiedby}, {$nodeipdata.moddateh}{else}-{/if}
+										{$nodeipdata.createdby|escape}, {$nodeipdata.creationdateh}<br>
+										{if $nodeipdata.moddate}{$nodeipdata.modifiedby|escape}, {$nodeipdata.moddateh}{else}-{/if}
 									</td>
 								</tr>
 	                        </TABLE>
@@ -235,14 +241,17 @@
 		<tr>
 			<td width="100%" colspan="3" class="text-right">
 				<a href="?m=netdevedit&id={$netdev.id}&action=editip&ip={$nodeipdata.id}" ACCESSKEY="E">{trans("Edit")} <img src="img/edit.gif" alt=""></a>
-				<a href="?m=netdevedit&id={$netdev.id}&action=ipdel&ip={$nodeipdata.id}" onClick="return confirmLink(this, '{t a=$nodeipdata.name}Are you sure, you want to delete address \'$a\' from database?{/t}')">{trans("Delete")} <img src="img/delete.gif" alt=""></A>
+				<input type="hidden" value="{$nodeipdata.name}">
+				<a id="delete-address" href="?m=netdevedit&id={$netdev.id}&action=ipdel&ip={$nodeipdata.id}">{trans("Delete")} <img src="img/delete.gif" alt=""></A>
 			</td>
 		</tr>
     </tbody>
 </table>
 
-<script type="text/javascript">
-<!--
+<script>
+
+	xajax_getNodeStats({$nodeipdata.id});
+
     {if !$disable_active_links}
     $( function() {
         var link = '?m=netdevedit&id={$netdev.id}';
@@ -280,5 +289,12 @@
         });
     });
     {/if}
-//-->
+
+	$('#delete-address').click(function() {
+		confirmDialog($t("Are you sure, you want to delete address '$a' from database?", $(this).prev().val()), this).done(function() {
+			location.href = $(this).attr('href');
+		});
+		return false;
+	});
+
 </script>

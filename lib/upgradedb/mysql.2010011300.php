@@ -36,5 +36,3 @@ $this->Execute("ALTER TABLE nodeassignments ADD FOREIGN KEY (assignmentid)
 		REFERENCES assignments (id) ON DELETE CASCADE ON UPDATE CASCADE");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010011300', 'dbversion'));
-
-?>

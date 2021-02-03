@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2017 LMS Developers
+ *  Copyright (C) 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,31 +26,55 @@
 
 /**
  * LMSDocumentManagerInterface
- * 
+ *
  */
 interface LMSDocumentManagerInterface
 {
-    public function GetDocuments($customerid = NULL, $limit = NULL);
+    public function GetDocuments($customerid = null, $limit = null);
 
-	public function GetDocumentList(array $params);
+    public function GetDocumentList(array $params);
 
-	public function GetNumberPlans($properties);
+    public function GetNumberPlans($properties);
 
     public function GetNewDocumentNumber($properties);
 
     public function DocumentExists($properties);
 
-	public function CommitDocuments(array $ids);
+    public function CommitDocuments(array $ids, $userpanel = false);
 
-	public function UpdateDocumentPostAddress($docid, $customerid);
+    public function NewDocumentCustomerNotifications(array $document);
 
-	public function DeleteDocumentAddresses($docid);
+    public function ArchiveDocuments(array $ids);
 
-	public function AddDocumentFileAttachments(array $files);
+    public function UpdateDocumentPostAddress($docid, $customerid);
 
-	public function DocumentAttachmentExists($md5sum);
+    public function DeleteDocumentAddresses($docid);
 
-	public function GetDocumentFullContents($id);
+    public function isArchiveDocument($id);
 
-	public function SendDocuments($docs, $type, $params);
+    public function AddArchiveDocument($docid, $file);
+
+    public function GetArchiveDocument($docid);
+
+    public function AddDocumentFileAttachments(array $files);
+
+    public function AddDocumentAttachments($documentid, array $files);
+
+    public function AddDocumentScans($documentid, array $files);
+
+    public function DocumentAttachmentExists($md5sum);
+
+    public function GetDocumentFullContents($id);
+
+    public function SendDocuments($docs, $type, $params);
+
+    public function DeleteDocument($docid);
+
+    public function CopyDocumentPermissions($src_userid, $dst_userid);
+
+    public function getDocumentsByFullNumber($full_number, $all_types = false);
+
+    public function getDocumentsByChecksum($checksum, $all_types = false);
+
+    public function isDocumentAccessible($docid);
 }

@@ -59,9 +59,9 @@
 		</TD>
 		<TD class="text-right nobr">
 			{if $dblist.dbv[dblist] == $layout.dbschversion}
-			<a href="?m=dbrecover&amp;db={$dblist.name[dblist]}{if $dblist.type[dblist]=="gz"}&amp;gz=1{elseif $dblist.type[dblist]=="plain"}{/if}" onClick="return confirmLink(this, '{trans("Are you sure, you want to restore this database backup?")}\n{trans("WARNING! It will backup current database content automatically")}')"><IMG src="img/recover.gif" alt="{trans("Restore")}" title="{trans("Restore")}"></A>
+			<a class="recover-backup" href="?m=dbrecover&db={$dblist.name[dblist]}{if $dblist.type[dblist]=="gz"}&gz=1{elseif $dblist.type[dblist]=="plain"}{/if}"><IMG src="img/recover.gif" alt="{trans("Restore")}" title="{trans("Restore")}"></A>
 			{/if}
-			<a href="?m=dbdel&amp;db={$dblist.name[dblist]}" onClick="return confirmLink(this, '{trans("Are you sure, you want to delete this database backup?")}')"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<a class="delete-backup" href="?m=dbdel&db={$dblist.name[dblist]}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 			<a href="?m=dbview&amp;db={$dblist.name[dblist]}&amp;file=/lms-{$dblist.time[dblist]|date_format:"%Y%m%d-%H%M%S"}.sql{if $dblist.type[dblist]=="gz"}.gz{elseif $dblist.type[dblist]=="plain"}{/if}"><img src="img/save.gif" alt="{trans("Save")}" title="{trans("Save")}"></A>
 		</TD>
 	</TR>
@@ -76,11 +76,25 @@
 		<TD colspan="3" class="text-right">
 			<INPUT type="checkbox" name="attachstats" id="attachstats"> <label for="attachstats">{trans("Attach stats")}</label>&nbsp;
 			{trans("Create new")}
-			<A href="javascript:createBackup(false);">{trans("uncompressed")} <img src="img/dbnew.gif" alt=""></A> / 
+			<A href="javascript:createBackup(false);">{trans("uncompressed")} <img src="img/dbnew.gif" alt=""></A> /
 			<A href="javascript:createBackup(true);">{trans("compressed")} <img src="img/zipped.gif" alt=""></A>
 		</TD>
 	</TR>
 	</TBODY>
 </TABLE>
 </FORM>
+	<script>
+		$('.delete-backup').click(function() {
+			confirmDialog($t("Are you sure, you want to delete this database backup?"), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+		$('.recover-backup').click(function() {
+			confirmDialog($t("Are you sure, you want to restore this database backup?\n\nWARNING!\n\nIt will backup current database content automatically"), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	</script>
 {/block}

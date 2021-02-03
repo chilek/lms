@@ -29,5 +29,3 @@ $this->Execute("ALTER TABLE voip_cdr ALTER COLUMN callee_prefix_group TYPE varch
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016062300', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

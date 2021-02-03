@@ -24,15 +24,7 @@
  *  $Id$
  */
 
-function smarty_block_tab_container($params, $content, $template, $repeat) {
-	if (!$repeat) {
-		$id = isset($params['id']) ? $params['id'] : null;
-
-		return '
-			<div' . ($id ? ' id="' . $id . '"' : '') . ' class="lms-ui-tab-container lms-ui-sortable">
-				' . $content . '
-			</div>';
-	}
+function smarty_block_tab_container($params, $content, $template, $repeat)
+{
+    return LMSSmartyPlugins::tabContainerBlock($params, $content, $template, $repeat);
 }
-
-?>

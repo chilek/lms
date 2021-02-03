@@ -28,15 +28,17 @@ $this->Execute("ALTER TABLE rttickets ADD COLUMN requestor_phone varchar(32) DEF
 $this->Execute("ALTER TABLE rttickets ADD COLUMN requestor_userid int(11) DEFAULT NULL");
 $this->Execute("ALTER TABLE rttickets ADD CONSTRAINT rttickets_requestor_userid_fkey FOREIGN KEY (requestor_userid) REFERENCES users (id) ON UPDATE CASCADE ON DELETE SET NULL");
 
-if ($tickets = $this->GetAll("SELECT id, requestor FROM rttickets WHERE requestor ?LIKE? ?", array('%>%')))
-  foreach ($tickets as $ticket)
-    if (preg_match('/^(?<name>.+)\s+<(?<mail>[^>]+)>$/', $ticket['requestor'], $m))
-	$this->Execute("UPDATE rttickets SET requestor = ?, requestor_mail = ? WHERE id = ?",
-        array($m['name'], $m['mail'], $ticket['id']));
+if ($tickets = $this->GetAll("SELECT id, requestor FROM rttickets WHERE requestor ?LIKE? ?", array('%>%'))) {
+    foreach ($tickets as $ticket) {
+        if (preg_match('/^(?<name>.+)\s+<(?<mail>[^>]+)>$/', $ticket['requestor'], $m)) {
+            $this->Execute(
+                "UPDATE rttickets SET requestor = ?, requestor_mail = ? WHERE id = ?",
+                array($m['name'], $m['mail'], $ticket['id'])
+            );
+        }
+    }
+}
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017101800', 'dbversion'));
 
 $this->CommitTrans();
-
-?>
-

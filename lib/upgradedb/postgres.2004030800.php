@@ -68,6 +68,4 @@ $this->Execute("
 	PRIMARY KEY (id))
 ");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004030800', 'dbversion'));
-
-?>
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2004030800', 'dbversion'));

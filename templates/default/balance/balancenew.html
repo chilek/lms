@@ -2,8 +2,7 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-<SCRIPT type="text/javascript">
-<!--
+<SCRIPT>
 	function CountSelectedCustomers()
 	{
 		var j = 0;
@@ -16,12 +15,11 @@
 
 	function del(id)
 	{
-		if(confirm('{trans("Are you sure, you want to delete last operation?")}'))
-		{
+		confirmDialog($t("Are you sure, you want to delete last operation?"), $('#delete-lastoperation')).done(function() {
 			location.href = '?m=balancedel&id=' + id;
-		}
+		});
+		return false;
 	}
-//-->
 </SCRIPT>
 <H1>{$layout.pagetitle}</H1>
 <FORM NAME="addbalance" METHOD="POST" ACTION="?m=balanceadd">
@@ -43,7 +41,7 @@
 						{trans("Select customers which has to concern new payment or covenant operation or leave it not selected if you want to add network income/expense operation.")}<BR><BR>
 						<SELECT size="20" id="customerselect" name="addbalance[mcustomerid][]" onChange="javascript:CountSelectedCustomers();" multiple>
 							{foreach from=$customers item=customer}
-							<OPTION value="{$customer.id}">{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
+							<OPTION value="{$customer.id}">{$customer.customername|truncate:40:"&hellip;":true} ({$customer.id|string_format:"%04d"})</OPTION>
 							{/foreach}
 						</SELECT><BR>
 						{trans("Selected:")} <INPUT TYPE="text" NAME="selectededit" VALUE="0" SIZE="5" class="light" style="border: 0" readonly>
@@ -69,8 +67,9 @@
 					<TD WIDTH="1%">
 						<B>{trans("Value:")}</B>
 					</TD>
-					<TD WIDTH="98%">
-						<INPUT TYPE="TEXT" NAME="addbalance[value]" VALUE="{$value}" SIZE="15" {tip text="Enter value of operation"}><BR>
+					<TD WIDTH="98%" class="nobr">
+						<INPUT TYPE="TEXT" NAME="addbalance[value]" VALUE="{$value}" SIZE="15" {tip text="Enter value of operation"}>
+						{currency_selection selected=$currency elementname="addbalance[currency]"}
 					</TD>
 				</TR>
 				<TR>
@@ -108,7 +107,7 @@
 						<B>{trans("Date:")}</B>
 					</TD>
 					<TD WIDTH="98%">
-						<INPUT TYPE="TEXT" NAME="addbalance[time]" VALUE="{if $time}{$time|date_format:"%Y/%m/%d %H:%M"}{/if}" SIZE="15" maxlength="15" {tip class="calendar-time" text="Enter date in 'yyyy/mm/dd hh:mm' format (empty field means current date) or click to choose date from calendar"}>
+						<INPUT TYPE="TEXT" NAME="addbalance[time]" VALUE="{if $time}{$time|date_format:"%Y/%m/%d %H:%M"}{/if}" SIZE="15" maxlength="15" {tip class="lms-ui-datetime" text="Enter date in 'yyyy/mm/dd hh:mm' format (empty field means current date) or click to choose date from calendar"}>
 					</TD>
 				</TR>
 				{if $sourcelist}
@@ -121,7 +120,7 @@
 					</TD>
 					<TD width="98%" NOWRAP>
 						<SELECT name="addbalance[sourceid]" {tip text="Select import source (optional)" trigger="source"}>
-						<OPTION value="0">{trans("- none -")}</OPTION> 
+						<OPTION value="0">{trans("- none -")}</OPTION>
 						{foreach from=$sourcelist item=item}
 						<OPTION value="{$item.id}"{if $item.id == $sourceid} SELECTED{/if}>{$item.name}</OPTION>
 						{/foreach}
@@ -165,7 +164,7 @@
 						<B>{trans("Value:")}</B>
 					</TD>
 					<TD WIDTH="98%">
-						{$last.value|money_format}
+						{moneyf($last.value, $last.currency)}
 					</TD>
 				</TR>
 				{if $last.tax}
@@ -239,7 +238,7 @@
 				{/if}
 				<TR>
 					<TD ALIGN="right" COLSPAN="3">
-						<A HREF="javascript:del({$last.id});" ACCESSKEY="d" >{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>
+						<A id="delete-lastoperation" HREF="javascript:del({$last.id});" ACCESSKEY="d" >{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>
 					</TD>
 				</TR>
 			{/if}

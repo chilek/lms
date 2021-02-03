@@ -4,16 +4,15 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 {$xajax}
-<script type="text/javascript">
-<!--
-	function setnumberplans() {
-		reset_login_timeout();
-		xajax_GetNumberPlans(document.forms['documentedit'].elements['document[type]'].value,
-			document.forms['documentedit'].elements['document[numberplanid]'].value,
-			{$document.customerid});
+
+<style>
+
+	.docattachrow a:nth-child(2) {
+		margin-left: 0.5em;
 	}
-//-->
-</script>
+
+</style>
+
 <P><FORM name="documentedit" method="POST" id="documentedit-form" action="?m=documentedit&id={$document.id}" enctype="multipart/form-data">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" name="customerid" value="{$document.customerid}">
@@ -74,10 +73,30 @@
 			{trans("Period:")}
 		</TD>
 		<TD>
-			{trans("from:")} <INPUT type="TEXT" name="document[fromdate]" value="{if $document.fromdate}{$document.fromdate}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter start date in YYYY/MM/DD format (optional)" trigger="fromdate"} size="10">&nbsp;
-			{trans("to:")} <INPUT type="TEXT" name="document[todate]" value="{if $document.todate}{$document.todate}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter end date in YYYY/MM/DD format (optional)" trigger="todate"} size="10"><BR>
+			{trans("from:")} <INPUT type="TEXT" name="document[fromdate]" value="{if $document.fromdate}{$document.fromdate}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter start date in YYYY/MM/DD format (optional)" trigger="fromdate"} size="10">&nbsp;
+			{trans("to:")} <INPUT type="TEXT" name="document[todate]" value="{if $document.todate}{$document.todate}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter end date in YYYY/MM/DD format (optional)" trigger="todate"} size="10"><BR>
 		</TD>
 	</TR>
+	{if !$document.closed}
+	<TR>
+		<TD>
+			<IMG src="img/calendar.gif" alt="">
+		</TD>
+		<TD class="bold">
+			{trans("Wait for customer action till:")}
+		</TD>
+		<TD>
+			<INPUT type="TEXT" name="document[confirmdate]" id="confirmdate" value="{if $document.confirmdate > 0}{$document.confirmdatestring}{/if}"
+				   placeholder="{trans("yyyy/mm/dd")}"
+					{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format we wait for customer action till (optional)" trigger="confirmdate"} size="10">
+			{if $document.confirmdate == -1}
+				&nbsp;<span class="bold red">{trans("Warning! Customer submitted signed document scan. Consider to review it and then possibly confirm.")}</span>
+			{elseif $document.confirmdate && $document.confirmdate < $smarty.now}
+				&nbsp;<span class="bold red">{trans("Warning! Customer action time limit is expired is expired!")}</span>
+			{/if}
+		</TD>
+	</TR>
+	{/if}
 	<TR>
 		<TD>
 			<IMG src="img/info.gif" alt="">
@@ -109,24 +128,20 @@
 			{trans("Attached files:")}
 		</TD>
 		<TD class="nobr">
-			<script type="text/javascript">
-			<!--
-				$(function() {
-					$('.docattach').on('click', function() {
-						var elem = $(this);
-						elem.toggleClass('blend crossed');
-						elem.html('<img src="img/' + (elem.hasClass('blend') ? 'cancel' : 'delete') + '.gif"> ' + elem.attr('data-filename'));
-						elem.siblings('input').val(+ elem.hasClass('blend'));
-						return false;
-					});
-				});
-			//-->
-			</script>
 			{foreach $document.attachments as $docattach}
-			<div>
-				<a href="#" class="docattach{if $document.attachments[$docattach.id].deleted} blend crossed{/if}" data-filename="{$docattach.filename}">
-					<img src="img/{if $document.attachments[$docattach.id].deleted}cancel{else}delete{/if}.gif"> {$docattach.filename}
+			<div class="docattachrow{if $docattach.type <= 0} docattach{if $document.attachments[$docattach.id].deleted} blend crossed{/if}{/if}">
+				<a href="#">
+					<i class="fa-fw lms-ui-icon-{if $document.attachments[$docattach.id].deleted}cancel{else}delete{/if}"
+							{if $docattach.type == 1} style="visibility: hidden;"{/if}></i>
 				</a>
+				{$class = ""}
+				{if $document.attachments[$docattach.id].deleted}
+					{$class = "blend"}
+				{/if}
+				{documentview id="{$document.id}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
+					url="?m=documentview&id={$document.id}&attachmentid={$docattach.id}" external=true class=$class
+					text="{$docattach.filename} <i class=\"lms-ui-icon-view{if preg_match('/pdf/',$docattach.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)} xls{/if}\"></i>"}
+				{if $docattach.type == -1}<i class="lms-ui-icon-user" title="<strong>{t a=date("Y/m/d H:i", $docattach.cdate)}Sent by customer at $a{/t}</strong>"></i>{/if}
 				<input type="hidden" name="document[attachments][{$docattach.id}][deleted]" value="{$document.attachments[$docattach.id].deleted}">
 			</div>
 			{/foreach}
@@ -151,6 +166,7 @@
 		</TD>
 	</TR>
 *}
+	{if (!$document.closed && ($document.docrights & $smarty.const.DOCRIGHT_CONFIRM)) || ConfigHelper::checkPrivilege('full_access')}
 	<TR>
 		<TD>
 			<IMG src="img/confirm.gif" ALT="">
@@ -162,6 +178,20 @@
 			<INPUT type="checkbox" name="document[closed]" id="closed" value="1" {if $document.closed} checked{/if}>
 		</TD>
 	</TR>
+	{/if}
+	{if !empty($document.closed) && ($document.docrights && $smarty.const.DOCRIGHT_ARCHIVE)}
+	<TR>
+		<TD>
+			<IMG src="img/db.gif" ALT="">
+		</TD>
+		<TD class="bold nobr">
+			<label for="archived">{trans("Archived:")}</label>
+		</TD>
+		<TD>
+			<INPUT type="checkbox" name="document[archived]" id="archived" value="1" {if $document.archived} checked{/if}>
+		</TD>
+	</TR>
+	{/if}
 	<TR>
 		<TD colspan="3" class="buttons">
 			<A href="javascript: document.documentedit.submit();">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
@@ -171,11 +201,36 @@
     </TBODY>
 </TABLE>
 </FORM></P>
-<SCRIPT type="text/javascript">
-<!--
+
+<script>
+
+	function setnumberplans() {
+		reset_login_timeout();
+		xajax_GetNumberPlans(document.forms['documentedit'].elements['document[type]'].value,
+				document.forms['documentedit'].elements['document[numberplanid]'].value,
+				{$document.customerid});
+	}
+
 	$(function() {
 		$('form[name="documentedit"] [name="document[title]"]').focus();
+
+		$('.docattach').on('click', function() {
+			var elem = $(this);
+			elem.toggleClass('blend crossed').find('.lms-ui-button').toggleClass('blend')
+			elem.find('i').toggleClass('lms-ui-icon-delete').toggleClass('lms-ui-icon-cancel');
+			elem.find('input').val(+ elem.hasClass('blend'));
+			return false;
+		});
+
+		$('#closed').change(function() {
+			if ($('#archived').prop('checked') && !$(this).prop('checked')) {
+				$(this).prop('checked', true);
+				alertDialog($t("Cannot undo document confirmation while it is archived!"), this);
+			}
+			$('#archived').closest('tr').toggle($(this).prop('checked'));
+			$('#confirmdate').closest('tr').toggle(!$(this).prop('checked'));
+		});
 	});
-//-->
-</SCRIPT>
+
+</script>
 {/block}

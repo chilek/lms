@@ -42,6 +42,7 @@ $(function() {
 		} else {
 			select.val($(this).attr('data-old-userid'));
 		}
+		updateAdvancedSelects(select);
 	});
 
 	$('[name="ticket[queue]"]').change(function () {
@@ -62,6 +63,12 @@ $(function() {
 	} else {
 		$('#customernotify-row').show();
 	}
+
+	$('#parent-ticket').on('lms:list_updated', function(e, data) {
+		$('#related-tickets').toggleClass('disabled', !data.list.length)
+			.closest('.lms-ui-box-row').toggleClass('blend', !data.list.length)
+			.removeAttr('data-tooltip').attr('title', data.list.length ? '' : $t("No parent ticket is selected!"));
+	});
 });
 
 function change_customer(customer_selector, address_selector) {
@@ -90,18 +97,6 @@ var customer_addresses = new LmsUiIconSelectMenu("#customer_addresses", {
 	}
 });
 
-function initCustomerSelection(customerid, address_id) {
-	getCustomerAddresses(customerid, function (addresses) {
-		customer_addresses.setAddressList(addresses);
-
-		if (customerid) {
-			if (address_id) {
-				$('#customer_addresses').val(address_id);
-			} else if (Object.keys(addresses).length == 1) {
-				$('#customer_addresses').val($('#customer_addresses option:last-child').val());
-			}
-		}
-
-		customer_addresses.init();
-	});
+function initCustomerSelection() {
+	customer_addresses.init();
 }

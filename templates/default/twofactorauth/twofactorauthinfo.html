@@ -1,0 +1,33 @@
+{extends file="layout.html"}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+
+<style>
+
+    #qrcode-image {
+        margin-top: 0.4em;
+    }
+
+</style>
+
+<TABLE style="width: 100%;" CELLPADDING="3">
+    <COLGROUP>
+        <COL style="width: 100%;">
+    </COLGROUP>
+    <TR>
+        <TD>
+            {include file="twofactorauth/twofactorauthinfobox.html"}
+        </TD>
+    </TR>
+    {if $userinfo.trusteddevices}
+    <TR>
+        <TD>
+            {include file="twofactorauth/twofactorauthtrusteddevices.html" remove_trusted_device_module="twofactorauthedit"}
+        </TD>
+    </TR>
+    {/if}
+</TABLE>
+
+{/block}

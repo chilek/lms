@@ -26,9 +26,9 @@
 
 /**
  * LMSDBInterface
- * 
+ *
  * Interface for database access objects.
- * 
+ *
  * @package LMS
  */
 interface LMSDBInterface
@@ -38,21 +38,21 @@ interface LMSDBInterface
 
     public function Destroy();
 
-    public function Execute($query, array $inputarray = NULL);
+    public function Execute($query, array $inputarray = null);
 
-    public function MultiExecute($query, array $inputarray = NULL);
+    public function MultiExecute($query, array $inputarray = null);
 
-    public function GetAll($query = NULL, array $inputarray = NULL);
+    public function GetAll($query = null, array $inputarray = null);
 
-    public function GetAllByKey($query = NULL, $key = NULL, array $inputarray = NULL);
+    public function GetAllByKey($query = null, $key = null, array $inputarray = null);
 
-    public function GetRow($query = NULL, array $inputarray = NULL);
+    public function GetRow($query = null, array $inputarray = null);
 
-    public function GetCol($query = NULL, array $inputarray = NULL);
+    public function GetCol($query = null, array $inputarray = null);
 
-    public function GetOne($query = NULL, array $inputarray = NULL);
+    public function GetOne($query = null, array $inputarray = null);
 
-    public function Exec($query, array $inputarray = NULL);
+    public function Exec($query, array $inputarray = null);
 
     public function FetchRow($result);
 
@@ -60,11 +60,11 @@ interface LMSDBInterface
 
     public function Now();
 
-	public function Year($date);
+    public function Year($date);
 
-	public function Month($date);
+    public function Month($date);
 
-	public function Day($date);
+    public function Day($date);
 
     public function ListTables();
 
@@ -82,7 +82,7 @@ interface LMSDBInterface
 
     public function SetEncoding($name);
 
-    public function GetLastInsertID($table = NULL);
+    public function GetLastInsertID($table = null);
 
     public function Escape($input);
 
@@ -106,6 +106,5 @@ interface LMSDBInterface
 
     public function SetDebug($debug = true);
 
-	public function UpgradeDb($dbver = DBVERSION, $pluginclass = null, $libdir = null, $docdir = null);
-
+    public function UpgradeDb($dbver = DBVERSION, $pluginclass = null, $libdir = null, $docdir = null);
 }

@@ -31,5 +31,3 @@ $this->Execute("ALTER TABLE netnodes ADD FOREIGN KEY (divisionid) REFERENCES div
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016020501', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

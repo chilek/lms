@@ -49,6 +49,4 @@ $this->Execute("
 
 $this->Execute("CREATE INDEX events_date_idx ON events(date)");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005012600', 'dbversion'));
-
-?>
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005012600', 'dbversion'));

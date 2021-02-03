@@ -27,6 +27,4 @@
 $this->Execute("ALTER TABLE users ADD COLUMN pin INT(6) NOT NULL DEFAULT '0'");
 $this->Execute("UPDATE users SET pin=RAND()*10 + RAND()*100 + RAND()*1000 + RAND()*10000 + RAND()*100000-1");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004090800', 'dbversion'));
-
-?>
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2004090800', 'dbversion'));

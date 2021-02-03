@@ -90,11 +90,11 @@
 							</div>
 						</div>
 						<div class="lms-ui-tab-table-wrapper link col-2">
-							<div class="lms-ui-tab-table-column link-tech" id="dev-link-tech-{$netdevice.id}">
+							<div class="lms-ui-tab-table-column link-tech" id="dev-link-tech-{$netdevice.id}" data-target-url="?m=netdevinfo&id={$netdevice.id}">
 								{if $netdevice.linktechnology}{$_LINKTECHNOLOGIES[$netdevice.linktype][$netdevice.linktechnology]}{else}-{/if}
 								{if $netdevice.linktype == $smarty.const.LINKTYPE_WIRELESS && ($netdevice.srcradiosector || $netdevice.dstradiosector)} ({if $netdevice.srcradiosector}{$netdevice.srcradiosector}{else}-{/if}/{if $netdevice.dstradiosector}{$netdevice.dstradiosector}{/if}){/if}
 							</div>
-							<div class="lms-ui-tab-table-column link-speed" id="dev-link-speed-{$netdevice.id}">
+							<div class="lms-ui-tab-table-column link-speed" id="dev-link-speed-{$netdevice.id}" data-target-url="?m=netdevinfo&id={$netdevice.id}">
 								{if $netdevice.linkspeed}{$_LINKSPEEDS[$netdevice.linkspeed]}{else}-{/if}
 							</div>
 						</div>
@@ -104,30 +104,31 @@
 							<div class="lms-ui-tab-table-column id" data-target-url="?m=netdevinfo&id={$netdevice.id}">
 								({$netdevice.id|string_format:"%04d"})
 							</div>
-							<div class="lms-ui-tab-table-column port" data-target-url="?m=netdevinfo&id={$netdevice.id}">
+							<div class="lms-ui-tab-table-column port" data-target-url="?m=netdevinfo&id={$netdevice.id}" id="dev-link-srcport-{$netdevice.id}">
 								[{if $netdevice.srcport}{$netdevice.srcport}{else}-{/if}]
 							</div>
 						</div>
 						<div class="lms-ui-tab-table-wrapper taken-ports-used-ports col-2">
 							<div class="lms-ui-tab-table-column taken-ports">
-								<span id="dev-link-port-{$netdevice.id}" onClick="javascript:netlinkpropertieschoosewin('{$netdev.id}', '{$netdevice.id}', true);">
+								<span id="dev-link-port-{$netdevice.id}" class="dev-link-port"
+									onClick="javascript:netlinkpropertieschoosewin('{$netdev.id}', '{$netdevice.id}', true);">
 									<i class="{if $netdevice.linktype == $smarty.const.LINKTYPE_WIRELESS}lms-ui-icon-wireless{elseif $netdevice.linktype == $smarty.const.LINKTYPE_FIBER}lms-ui-icon-fiber{else}lms-ui-icon-wired{/if}"
 											{tip trigger="dev-link-port-{$netdevice.id}"
 												text="<span class=\"nobr\">{trans("Link type:")} {$_LINKTYPES[$netdevice.linktype]}<br>{if $netdevice.linktype == $smarty.const.LINKETYPE_WIRELESS}{if $netdevice.srcradiosector}{trans("Radio sector:")} {$netdevice.srcradiosector}<br>{/if}{if $netdevice.dstradiosector}{trans("Destination radio sector:")} {$netdevice.dstradiosector}<br>{/if}{/if}{if $netdevice.linktechnology}{trans("Link technology:")} {$_LINKTECHNOLOGIES[$netdevice.linktype][$netdevice.linktechnology]}<br>{/if}{trans("Link speed:")} {$_LINKSPEEDS[$netdevice.linkspeed]}</span>"}>
 									</i>
 								</span>
-								[{if $netdevice.dstport}{$netdevice.dstport}{else}-{/if}]
+								<span id="dev-link-dstport-{$netdevice.id}">
+									[{if $netdevice.dstport}{$netdevice.dstport}{else}-{/if}]
+								</span>
 							</div>
-							<div class="lms-ui-tab-table-column used-ports">
+							<div class="lms-ui-tab-table-column used-ports" data-target-url="?m=netdevinfo&id={$netdevice.id}">
 								<i class="lms-ui-icon-plug"></i> {$netdevice.ports} ({$netdevice.takenports})
 							</div>
 						</div>
 					</div>
 				</div>
 				<div class="lms-ui-tab-table-column buttons">
-					{button type="link" href="?m=netdevedit&action=disconnect&id={$netdev.id}&devid={$netdevice.id}"
-						onclick="return confirmLink(this, '{trans("Are you sure, you want to delete that connection?")}');"
-						icon="delete" tip="Delete connection"}
+					{button type="link" class="disconnectbox" href="?m=netdevedit&action=disconnect&id={$netdev.id}&devid={$netdevice.id}" icon="delete" tip="Delete connection"}
 				</div>
 			</div>
 			{foreachelse}
@@ -143,7 +144,7 @@
 			{tab_buttons}
 				{if $netdev.ports == $netdev.takenports}
 					<strong>{trans("All ports in that device are in use.")}</strong>
-				{elseif $nodelist == NULL}
+				{elseif $restnetdevlist == NULL}
 					<strong>{trans("No such devices for connection.")}</strong>
 				{else}
 					<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit" form="connect-form">
@@ -159,7 +160,7 @@
 							{assign var=netdevname value=$dev.name}
 							{if $dev.producer}{assign var=netdevname value=$netdevname|cat:" / "|cat:$dev.producer}{/if}
 							{if $dev.location}{assign var=netdevname value=$netdevname|cat:" ("|cat:$dev.location|cat:")"}{/if}
-							<OPTION VALUE="{$dev.id}"{if $connect.id == $dev.id} selected{/if}>{$netdevname|truncate:120:"...":true}</OPTION>
+							<OPTION VALUE="{$dev.id}"{if $connect.id == $dev.id} selected{/if}>{$netdevname|truncate:120:"&hellip;":true}</OPTION>
 							{/foreach}
 						</SELECT>
 						<a href="javascript: void(0);" onclick="return netDevChooseWin(document.connect.elements['netdev'], {$netdev.id});" {tip trigger="netdev" text="Search device"}>&raquo;&raquo;&raquo;</A>
@@ -253,7 +254,7 @@
 		}
 		xjx.$('connboxsrcradiosector').style.display = (linktype == 1 ? '' : 'none');
 		xjx.$('connboxdstradiosector').style.display = (linktype == 1 ? '' : 'none');
-	
+
 		if (linktype == 1) {
 			var selected = xjx.$('srcnetdev').selectedIndex;
 			if (selected) {
@@ -262,7 +263,7 @@
 			}
 		}
 	}
-	
+
 	function change_devlinktechnology(linktechnology) {
 		linktechnology = parseInt(linktechnology);
 		var linktype = xjx.$('connboxlinktype').options[xjx.$('connboxlinktype').selectedIndex].value;
@@ -276,17 +277,17 @@
 			xajax_getRadioSectorsForNetdev('radio_sectors_received_for_dstnetdev', {$netdev.id}, linktechnology);
 		}
 	}
-	
+
 	function get_radio_sectors_for_self_netdev() {
 		xjx.$('connboxdstradiosector').disabled = true;
 		xajax_getRadioSectorsForNetdev('radio_sectors_received_for_dstnetdev', {$netdev.id});
 	}
-	
+
 	function get_radio_sectors_for_netdev() {
 		xjx.$('connboxsrcradiosector').disabled = true;
 		xajax_getRadioSectorsForNetdev('radio_sectors_received_for_srcnetdev', xjx.$('srcnetdev').options[xjx.$('srcnetdev').selectedIndex].value);
 	}
-	
+
 	function radio_sectors_received_for_srcnetdev(radiosectors) {
 		var options = xjx.$('connboxsrcradiosector').options;
 		var oldvalue = options[xjx.$('connboxsrcradiosector').selectedIndex].value;
@@ -303,7 +304,7 @@
 		}
 		xjx.$('connboxsrcradiosector').disabled = false;
 	}
-	
+
 	function radio_sectors_received_for_dstnetdev(radiosectors) {
 		var options = xjx.$('connboxdstradiosector').options;
 		var oldvalue = options[xjx.$('connboxdstradiosector').selectedIndex].value;
@@ -320,9 +321,16 @@
 		}
 		xjx.$('connboxdstradiosector').disabled = false;
 	}
-	
+
 	{if $restnetdevlist[0]}
 	xajax_getRadioSectorsForNetdev('radio_sectors_received_for_srcnetdev', {$restnetdevlist[0].id});
 	{/if}
+
+	$('.disconnectbox').click(function() {
+		confirmDialog($t("Are you sure, you want to delete that connection?"), this).done(function() {
+			location.href = $(this).attr('href');
+		});
+		return false;
+	});
 
 </SCRIPT>

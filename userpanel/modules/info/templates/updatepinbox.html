@@ -1,5 +1,8 @@
 <form name="userpin" method="post" action="?m=info&f=updatepin">
 {box title="PIN Update"}
+
+{$pin_tip = ConfigHelper::getConfig('phpui.pin_restriction_description')}
+
 <table width="100%" CELLPADDING="3" class="light">
 	<colgroup>
 		<col style="width: 1%;">
@@ -18,7 +21,8 @@
 			<label for="pin">{trans("New PIN")}:</label>
 		</td>
 		<td>
-			<input id="pin" type="password" size="50" name="userdata[pin]" placeholder="{trans("Enter new PIN")}" {userpaneltip text="Enter new PIN" trigger="pin"}>
+			<input id="pin" type="password" size="50" name="userdata[pin]" placeholder="{trans("Enter new PIN")}"
+					{if $pin_tip}{userpaneltip text=$pin_tip trigger="pin"}{else}{userpaneltip text="Enter new PIN" trigger="pin"}{/if}>
 		</td>
 	</tr>
 	<tr>
@@ -26,7 +30,8 @@
 			<label for="pin2">{trans("New PIN confirm")}:</label>
 		</td>
 		<td>
-			<input id="pin2" type="password" size="50" name="userdata[pin2]" placeholder="{trans("Enter new PIN (again)")}" {userpaneltip text="Enter new PIN (again)" trigger="pin2"}>
+			<input id="pin2" type="password" size="50" name="userdata[pin2]" placeholder="{trans("Enter new PIN (again)")}"
+					{if $pin_tip}{userpaneltip text=$pin_tip trigger="pin2"}{userpaneltip text="Enter new PIN (again)" trigger="pin2"}{/if}>
 		</td>
 	</tr>
 	<tr>

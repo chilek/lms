@@ -23,11 +23,11 @@
 
 $this->BeginTrans();
 
-$this->Execute("UPDATE customercontacts SET type = ((type & ?) | ?) WHERE (type & ?) > 0",
-	array(~64, 16384, 64));
+$this->Execute(
+    "UPDATE customercontacts SET type = ((type & ?) | ?) WHERE (type & ?) > 0",
+    array(~64, 16384, 64)
+);
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016011200', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

@@ -27,14 +27,12 @@
 // modules/actions accessible for every user
 
 $AUTH_MODULES = array(
-	'core' => 1, 	// '1' for all actions in module (don't use '0', if you want
-			// disable some actions/modules just don't place them here)
-	'auth' => array(
-		'engine' => 1,
-		'noaccess' => 1,
-		'save' => 1,
-		)
-//	'users' => 1, // for testing
-	);
-
-?>
+    'core' => 1,    // '1' for all actions in module (don't use '0', if you want
+            // disable some actions/modules just don't place them here)
+    'auth' => array(
+        'engine' => 1,
+        'noaccess' => 1,
+        'save' => 1,
+        )
+//  'users' => 1, // for testing
+    );

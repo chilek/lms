@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,40 +24,23 @@
  *  $Id$
  */
 
-if(!$LMS->NetworkExists($_GET['id']))
-{
-	$SESSION->redirect('?m=netlist');
+if (!$LMS->NetworkExists($_GET['id'])) {
+    $SESSION->redirect('?m=netlist');
 }
 
 $network = $LMS->GetNetworkRecord($_GET['id']);
 
-if($network['assigned'])
-	$error['delete'] = TRUE;
-
-if(!$error)
-{
-	if($_GET['is_sure'])
-	{
-		$LMS->NetworkDelete($network['id']);
-		$SESSION->redirect('?m='.$SESSION->get('lastmodule').'&id='.$_GET['id']);
-	}
-	else
-	{
-		$layout['pagetitle'] = trans('Removing network $a', strtoupper($network['name']));
-		$SMARTY->display('header.html');
-		echo '<H1>'.$layout['pagetitle'].'</H1>';
-		echo '<P>'.trans('Are you sure, you want to delete that network?').'</P>';
-		echo '<A href="?m=netdel&id='.$network['id'].'&is_sure=1">'.trans('Yes, I am sure.').'</A>';
-		$SMARTY->display('footer.html');
-	}
-}
-else
-{
-	$layout['pagetitle'] = trans('Info Network: $a', $network['name']);
-	$SMARTY->assign('network',$network);
-	$SMARTY->assign('networks', $LMS->GetNetworks());
-	$SMARTY->assign('error',$error);
-	$SMARTY->display('net/netinfo.html');
+if ($network['assigned']) {
+    $error['delete'] = true;
 }
 
-?>
+if (!$error) {
+    $LMS->NetworkDelete($network['id']);
+    $SESSION->redirect('?m=' . $SESSION->get('lastmodule') . '&id=' . $_GET['id']);
+} else {
+    $layout['pagetitle'] = trans('Info Network: $a', $network['name']);
+    $SMARTY->assign('network', $network);
+    $SMARTY->assign('networks', $LMS->GetNetworks());
+    $SMARTY->assign('error', $error);
+    $SMARTY->display('net/netinfo.html');
+}

@@ -14,21 +14,24 @@
 		        <B>{trans("Type")}:</B>
 		</TD>
 		<TD width="98%">
-	    		<SELECT SIZE="1" NAME="record[type]" {tip text="Select record type" trigger="type"} onchange="change_rec_type(this)">
-                    	    <OPTION VALUE="A" {if $record.type == 'A'} SELECTED{/if}>A</OPTION>
-                    	    <OPTION VALUE="AAAA" {if $record.type == 'AAAA'} SELECTED{/if}>AAAA</OPTION>
-                    	    <OPTION VALUE="CNAME" {if $record.type == 'CNAME'} SELECTED{/if}>CNAME</OPTION>
-                    	    <OPTION VALUE="HINFO" {if $record.type == 'HINFO'} SELECTED{/if}>HINFO</OPTION>
-                    	    <OPTION VALUE="MX" {if $record.type == 'MX'} SELECTED{/if}>MX</OPTION>
-                    	    <OPTION VALUE="NAPTR" {if $record.type == 'NAPTR'} SELECTED{/if}>NAPTR</OPTION>
-                    	    <OPTION VALUE="NS" {if $record.type == 'NS'} SELECTED{/if}>NS</OPTION>
-                    	    <OPTION VALUE="PTR" {if $record.type == 'PTR' || (!$record.type && preg_match('/in-addr\.arpa$/', $record.domainname))} SELECTED{/if}>PTR</OPTION>
-                    	    <OPTION VALUE="SOA" {if $record.type == 'SOA'} SELECTED{/if}>SOA</OPTION>
-                    	    <OPTION VALUE="SPF" {if $record.type == 'SPF'} SELECTED{/if}>SPF</OPTION>
-                    	    <OPTION VALUE="SRV" {if $record.type == 'SRV'} SELECTED{/if}>SRV</OPTION>
-                    	    <OPTION VALUE="SSHFP" {if $record.type == 'SSHFP'} SELECTED{/if}>SSHFP</OPTION>
-                    	    <OPTION VALUE="TXT" {if $record.type == 'TXT'} SELECTED{/if}>TXT</OPTION>
-        		</SELECT>
+			<SELECT SIZE="1" NAME="record[type]" {tip text="Select record type" trigger="type"}
+					onchange="change_rec_type(this)">
+				<OPTION VALUE="A" {if $record.type == 'A'} SELECTED{/if}>A</OPTION>
+				<OPTION VALUE="AAAA" {if $record.type == 'AAAA'} SELECTED{/if}>AAAA</OPTION>
+				<OPTION VALUE="ALIAS" {if $record.type == 'ALIAS'} SELECTED{/if}>ALIAS</OPTION>
+				<OPTION VALUE="ANAME" {if $record.type == 'ANAME'} SELECTED{/if}>ANAME</OPTION>
+				<OPTION VALUE="CNAME" {if $record.type == 'CNAME'} SELECTED{/if}>CNAME</OPTION>
+				<OPTION VALUE="HINFO" {if $record.type == 'HINFO'} SELECTED{/if}>HINFO</OPTION>
+				<OPTION VALUE="MX" {if $record.type == 'MX'} SELECTED{/if}>MX</OPTION>
+				<OPTION VALUE="NAPTR" {if $record.type == 'NAPTR'} SELECTED{/if}>NAPTR</OPTION>
+				<OPTION VALUE="NS" {if $record.type == 'NS'} SELECTED{/if}>NS</OPTION>
+				<OPTION VALUE="PTR" {if $record.type == 'PTR' || (!$record.type && preg_match('/in-addr\.arpa$/', $record.domainname))} SELECTED{/if}>PTR</OPTION>
+				<OPTION VALUE="SOA" {if $record.type == 'SOA'} SELECTED{/if}>SOA</OPTION>
+				<OPTION VALUE="SPF" {if $record.type == 'SPF'} SELECTED{/if}>SPF</OPTION>
+				<OPTION VALUE="SRV" {if $record.type == 'SRV'} SELECTED{/if}>SRV</OPTION>
+				<OPTION VALUE="SSHFP" {if $record.type == 'SSHFP'} SELECTED{/if}>SSHFP</OPTION>
+				<OPTION VALUE="TXT" {if $record.type == 'TXT'} SELECTED{/if}>TXT</OPTION>
+			</SELECT>
 		</TD>
 	</TR>
     </THEAD>
@@ -41,7 +44,7 @@
 		        {trans("TTL")}:
 		</TD>
 		<TD width="98%">
-			<input type="text" size="7" value="{$record.ttl}" name="record[ttl]" {tip text="Enter record TTL" trigger="ttl"}>	
+			<input type="text" size="7" value="{$record.ttl}" name="record[ttl]" {tip text="Enter record TTL" trigger="ttl"}>
 		</TD>
 	</TD>
 	<TR id="name" style="display: none">
@@ -187,6 +190,8 @@ function change_rec_type(select)
 		records = {
 			'A': 	['name', 'ipdst'],
 			'AAAA':	['name', 'ipdst'],
+			'ALIAS': ['alias', 'domain'],
+			'ANAME': ['alias', 'domain'],
 			'NS': 	['name', 'ns'],
 			'MX':	['name', 'mailserver', 'prio'],
 			'CNAME':['alias', 'domain'],

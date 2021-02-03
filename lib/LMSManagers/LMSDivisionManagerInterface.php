@@ -26,18 +26,29 @@
 
 /**
  * LMSDivisionManagerInterface
- * 
+ *
  */
-interface LMSDivisionManagerInterface {
-	public function GetDivision($id);
+interface LMSDivisionManagerInterface
+{
+    public static function setCurrentDivision($division);
 
-	public function GetDivisionByName($name);
+    public static function getCurrentDivision();
 
-	public function GetDivisions($params = array());
+    public function GetDivision($id);
 
-	public function AddDivision($division);
+    public function GetDivisionByName($name);
 
-	public function DeleteDivision($id);
+    public function getDivisionIdByShortName($shortname);
 
-	public function UpdateDivision($division);
+    public function GetDivisions($params = array());
+
+    public function getDivisionList($params = array());
+
+    public function AddDivision($division);
+
+    public function DeleteDivision($id);
+
+    public function UpdateDivision($division);
+
+    public function checkDivisionsAccess($params);
 }

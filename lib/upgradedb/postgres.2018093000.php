@@ -23,12 +23,11 @@
 
 $this->BeginTrans();
 
-if ($this->ResourceExists('promotionassignments_promotionschemaid_key', LMSDB::RESOURCE_TYPE_CONSTRAINT))
-	$this->Execute('ALTER TABLE promotionassignments
+if ($this->ResourceExists('promotionassignments_promotionschemaid_key', LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
+    $this->Execute('ALTER TABLE promotionassignments
 		DROP CONSTRAINT promotionassignments_promotionschemaid_key');
+}
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018093000', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

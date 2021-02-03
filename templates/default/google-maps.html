@@ -1,2 +1,2 @@
-{$googlemaps_api_key = ConfigHelper::getConfig('phpui.googlemaps_api_key', '', true)}
+{$googlemaps_api_key = ConfigHelper::getConfig('google.maps_api_key', ConfigHelper::getConfig('phpui.googlemaps_api_key', '', true), true)}
 <script type="text/javascript" src="https://maps.google.com/maps/api/js?v=3{if !empty($googlemaps_api_key)}&key={$googlemaps_api_key}{/if}"></script>

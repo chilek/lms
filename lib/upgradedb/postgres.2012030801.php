@@ -59,5 +59,3 @@ $this->Execute("
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012030801', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

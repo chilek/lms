@@ -8,26 +8,71 @@ Licensed under GNU Lesser General Public License (LGPL).
 Modified by kondi for LMS project (mailto:lms@kondi.net).
 *******************************************************/
 
-function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
-
+function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 	//The 'me' variable allow you to access the AutoSuggest object
 	//from the elem's event handlers defined below.
 	var me = this;
 
-	//A reference to the element we're binding the list to.
-	this.elem = elem;
+	if (form.constructor.name !== 'HTMLFormElement') {
+		this.elem = $(form.elem)[0];
+		this.form = $(form.form)[0];
+		this.method = form.hasOwnProperty('method') ? form.method : "GET";
+		this.uri = form.uri;
+		this.formData = form.hasOwnProperty('formData') ? form.formData : {};
+		this.autosubmit = form.hasOwnProperty('autosubmit') && (form.autosubmit == 1 || form.autosubmit == 'true');
+		this.autoSubmitForm = !form.hasOwnProperty('autoSubmitForm') || form.autoSubmitForm == 1 || form.autoSubmitForm == 'true';
+		this.onSubmit = form.hasOwnProperty('onSubmit') ? form.onSubmit : null;
+		this.onLoad = form.hasOwnProperty('onLoad') ? form.onLoad : null;
+		this.onAjax = form.hasOwnProperty('onAjax') ? form.onAjax : '';
+		this.class = form.hasOwnProperty('class') ? form.class : '';
+		this.emptyValue = form.hasOwnProperty('emptyValue') && (form.emptyValue == 1 || form.emptyValue || form.emptyValue == 'true');
+		this.suggestionContainer = form.hasOwnProperty('suggestionContainer') ? form.suggestionContainer : '#autosuggest';
+		this.activeDescription = form.hasOwnProperty('activeDescription') ? form.activeDescription : false;
+		this.suggestMaxLength = form.hasOwnProperty('suggestMaxLength') ? parseInt(form.suggestMaxLength) : AUTOSUGGEST_MAX_LENGTH;
+	} else {
+		//A reference to the element we're binding the list to.
+		this.elem = elem;
+		this.form = form;
+		this.method = "GET";
+		this.uri = uri;
+		this.formData = {};
+		this.autosubmit = (typeof(autosubmit) !== 'undefined' && (autosubmit == 1 || autosubmit == 'true'));
+		this.autoSubmitForm = true;
+		this.onSubmit = onSubmit;
+		this.onLoad = onLoad;
+		this.class = '';
+		this.suggestionContainer = '#autosuggest';
+		this.activeDescription = false;
+		this.suggestMaxLength = AUTOSUGGEST_MAX_LENGTH;
+	}
+	this.class = 'lms-ui-suggestion-container ' + this.class;
+
+	this.my_at_map = {
+		left: {
+			my: 'right top',
+			at: 'left top'
+		},
+		right: {
+			my: 'left top',
+			at: 'right top'
+		},
+		top: {
+			my: 'left bottom',
+			at: 'left top'
+		},
+		bottom: {
+			my: 'left top',
+			at: 'left bottom'
+		}
+	}
 
 	this.request_delay = 250; // time in milliseconds
 
-	if (/autosuggest-(left|top|right|bottom)/i.exec(elem.className) !== null)
+	if (/autosuggest-(left|top|right|bottom)/i.exec(this.elem.className) !== null) {
 		this.placement = RegExp.$1;
-	else
+	} else {
 		this.placement = 'bottom';
-
-	this.form = form;
-	this.uri = uri;
-	this.autosubmit = (autosubmit == 1 || autosubmit == 'true');
-	this.onsubmit = onsubmit;
+	}
 
 	//Arrow to store a subset of eligible suggestions that match the user's input
 	this.suggestions = [];
@@ -39,7 +84,7 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 	this.highlighted = -1;
 
 	//A div to use to create the dropdown.
-	this.div = document.getElementById("autosuggest");
+	this.div = $(this.suggestionContainer)[0];
 
 	//Do you want to remember what keycode means what? Me neither.
 	var ENT = 3;
@@ -51,17 +96,17 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 	var KEYRIGHT = 39;
 	var KEYDN = 40;
 
-	//The browsers' own autocomplete feature can be problematic, since it will 
+	//The browsers' own autocomplete feature can be problematic, since it will
 	//be making suggestions from the users' past input.
 	//Setting this attribute should turn it off.
-	elem.setAttribute("autocomplete","off");
+	this.elem.setAttribute("autocomplete","off");
 
 	//We need to be able to reference the elem by id. If it doesn't have an id, set one.
-	if(!elem.id) {
+	if (!this.elem.id) {
 		var id = "autosuggest" + idCounter;
 		idCounter++;
 
-		elem.id = id;
+		this.elem.id = id;
 	}
 
 	/********************************************************
@@ -70,19 +115,23 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 	Esc key = get rid of the autosuggest dropdown
 	Up/down arrows = Move the highlight up and down in the suggestions.
 	********************************************************/
-	elem.onkeydown = function(ev) {
-		var key = me.getKeyCode(ev);
+	this.elem.onkeydown = function(ev) {
+		var key = ev.keyCode;
 		var suggest;
 
-		if (/autosuggest-(left|top|right|bottom)/i.exec(elem.className) !== null)
+		if (/autosuggest-(left|top|right|bottom)/i.exec(me.elem.className) !== null)
 			suggest = RegExp.$1;
 		else
 			suggest = 'bottom';
 
-		switch(key) {
+		switch (key) {
 			case ENT:
 			case RET:
+				clearTimeout(me.timer);
 				me.useSuggestion();
+				if (!me.autoSubmitForm) {
+					ev.preventDefault();
+				}
 			break;
 
 			case TAB:
@@ -93,7 +142,10 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 			break;
 
 			case ESC:
-				me.hideDiv();
+				if ($(me.div).is(':visible')) {
+					me.hideDiv();
+					ev.stopPropagation();
+				}
 			break;
 
 			case KEYUP:
@@ -117,7 +169,7 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 
 				me.changeHighlight(key);
 			break;
-			
+
 			case KEYLEFT:
 				if (suggest == 'left' && me.highlighted == -1 && me.highlighted < (me.suggestions.length - 1)) {
 					me.highlighted++;
@@ -128,7 +180,7 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 					me.changeHighlight(key);
 				}
 			break;
-			
+
 			case KEYRIGHT:
 				if (suggest == 'right' && me.highlighted == -1 && me.highlighted < (me.suggestions.length - 1)) {
 					me.highlighted++;
@@ -150,64 +202,66 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 	If the text is of sufficient length, and has been changed,
 	then display a list of eligible suggestions.
 	********************************************************/
-	elem.onkeyup = function(ev) {
-		var key = me.getKeyCode(ev);
-		switch(key) {
-		//The control keys were already handled by onkeydown, so do nothing.
-		case ENT:
-		case RET:
-		case TAB:
-		case ESC:
-		case KEYUP:
-		case KEYDN:
-			return;
-		default:
+	this.elem.onkeyup = function(ev) {
+		var key = ev.keyCode;
+		switch (key) {
+			//The control keys were already handled by onkeydown, so do nothing.
+			case ENT:
+			case RET:
+			case TAB:
+			case ESC:
+			case KEYUP:
+			case KEYDN:
+				return;
 
-			if (this.value != me.inputText && this.value.length > 0) {
+		default:
+			if (this.value != me.inputText && (me.emptyValue || this.value.length > 0)) {
 				clearTimeout(me.timer);
-				me.timer = setTimeout(function(){ me.HTTPpreload(); }, me.request_delay);
+				me.timer = setTimeout(function() {
+						me.getSuggestions();
+					}, me.request_delay);
 			} else {
+				if (!this.value.length) {
+					me.inputText = '';
+				}
 				me.hideDiv();
 			}
 		}
 	};
 
-	this.HTTPloaded = function () {
-		if ((xmlhttp) && (xmlhttp.readyState == 4)) {
-			me.inputText = this.value;
-			me.getSuggestions();
-			if (me.suggestions.length) {
-				me.createDiv();
-				me.positionDiv();
-				me.showDiv();
-			} else {
-				me.hideDiv();
-			}
-		}
-	}
-
 	/********************************************************
-	Insert the highlighted suggestion into the input box, and 
+	Insert the highlighted suggestion into the input box, and
 	remove the suggestion dropdown.
 	********************************************************/
 	this.useSuggestion = function() {
 		if (this.highlighted > -1 && this.div.style.display != 'none') {
+			var submit_data = this.suggestions[this.highlighted];
 			this.elem.value = this.suggestions[this.highlighted].name;
 			var gotothisuri = this.suggestions[this.highlighted].action;
 			this.hideDiv();
 			//It's impossible to cancel the Tab key's default behavior.
 			//So this undoes it by moving the focus back to our field right after
 			//the event completes.
-			setTimeout("document.getElementById('" + this.elem.id + "').focus()",0);
-			//Same applies to Enter key.
-			this.form.onsubmit = function () { return false; };
-			setTimeout("document.getElementById('" + this.form.id + "').onsubmit = function () { return true; }",10);
+			setTimeout(function() {
+				$(me.elem).focus();
+			},0);
+			if (typeof(this.onSubmit) != 'function') {
+				//Same applies to Enter key.
+				this.form.onsubmit = function () {
+					return false;
+				};
+				setTimeout(function () {
+					me.form.onsubmit = function () {
+						return true;
+					}
+				}, 10);
+			}
 			//Go to search results.
 			if (this.autosubmit) {
 				location.href = gotothisuri;
 			}
-			if (this.onsubmit !== undefined) {
-				(this.onsubmit)();
+			if (typeof(this.onSubmit) == 'function') {
+				(this.onSubmit)(submit_data);
 			}
 		}
 	};
@@ -215,75 +269,56 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 	/********************************************************
 	Display the dropdown. Pretty straightforward.
 	********************************************************/
-	this.showDiv = function() {	
-		this.div.style.visibility = 'hidden';
-		this.div.style.display = 'block';
-
-		var x = parseInt( this.div.style.left );
-		var y = parseInt( this.div.style.top );
-
-		switch (this.placement) {
-			case 'left':
-				x -= this.div.offsetWidth;
-				break;
-			case 'right':
-				x += this.elem.offsetWidth;
-				break;
-			case 'top':
-				y -= this.div.offsetHeight;
-				break;
-			default: // bottom
-				y += this.elem.offsetHeight;
-				break;
+	this.showDiv = function() {
+		$(this.div).show().data('autosuggest-input', this.elem);
+		if (!$('body').is('.lms-ui-mobile')) {
+			$(this.div).position($.extend(this.my_at_map[this.placement], {of: this.elem}));
+		} else {
+			$(this.div).position(null);
 		}
-
-		this.div.style.left = x + "px";
-		this.div.style.top = y + "px";
-		this.div.style.visibility = 'visible';
 	};
 
 	/********************************************************
 	Hide the dropdown and clear any highlight.
 	********************************************************/
 	this.hideDiv = function() {
-		this.div.style.display = 'none';
+		$(this.div).hide().removeData('autosuggest-input', null);
 		this.highlighted = -1;
 	};
 
 	/********************************************************
 	Modify the HTML in the dropdown to move the highlight.
 	********************************************************/
-	this.changeHighlight = function() {
-		$('li', this.div).each(function(i, elem) {
+	this.changeHighlight = function(key) {
+		var items = $('li', this.div);
+		items.each(function(i, elem) {
 			if (me.highlighted == i) {
 				$(elem).addClass('selected');
+
+				var meDiv = $(me.div);
+				var container_height = meDiv.height();
+				var container_top = meDiv.offset().top;
+				var elem_height = $(elem).outerHeight();
+				var elem_top = $(elem).offset().top;
+				if (key == KEYDN) {
+					if (!i) {
+						me.div.scrollTop = 0;
+					} else if (elem_top - container_top > container_height - elem_height) {
+						me.div.scrollTop += elem_height;
+					}
+				} else if (key == KEYUP) {
+					if (i == items.length - 1) {
+						me.div.scrollTop = elem_height * items.length;
+					} else {
+						if (elem_top - container_top < elem_height) {
+							me.div.scrollTop -= elem_height;
+						}
+					}
+				}
 			} else {
 				$(elem).removeClass('selected');
 			}
-
 		});
-	};
-
-	/********************************************************
-	Position the dropdown div below the input text field.
-	********************************************************/
-	this.positionDiv = function() {
-		var el = this.elem;
-		var x = 0;
-		var y = 0;
-
-		//Walk up the DOM and add up all of the offset positions.
-		while (el.offsetParent && el.tagName.toUpperCase() != 'BODY') {
-			x += el.offsetLeft;
-			y += el.offsetTop;
-			el = el.offsetParent;
-		}
-
-		x += el.offsetLeft;
-		y += el.offsetTop;
-
-		this.div.style.left = x + 'px';
-		this.div.style.top = y + 'px';
 	};
 
 	/********************************************************
@@ -292,27 +327,28 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 	this.createDiv = function() {
 		var ul = $('<ul class="lms-ui-suggestion-list" />').get(0);
 
-		function onClick() {
-			me.useSuggestion();
-		}
-
 		//Create an array of LI's for the words.
 		$.each(this.suggestions, function(i, elem) {
+			var icon = elem.hasOwnProperty('icon') ? elem.icon : null;
 			var name = elem.name;
+			var effectiveName = elem.hasOwnProperty('name_alternative') ? elem.name_alternative : escapeHtml(elem.name);
 			var name_class = elem.name_class;
 			var desc = elem.description ? elem.description : '';
 			var desc_class = elem.description_class;
 			var action = elem.action ? elem.action : '';
+			var tip = elem.hasOwnProperty('tip') ? elem.tip : null;
 
-			var name_elem = $('<div class="lms-ui-suggestion-name ' + name_class +'" />').get(0);
-			var desc_elem = $('<div class="lms-ui-suggestion-description ' + desc_class + '">' + desc + '</div>').get(0);
-			var li = $('<li class="lms-ui-suggestion-item" />').get(0);
+			var name_elem = $('<div class="lms-ui-suggestion-name ' + name_class + '" />').get(0);
+			var desc_elem = $('<div class="lms-ui-suggestion-description ' + desc_class + '">' +
+				(me.activeDescription && action ? '<a href="' + action + '">' : '') + desc + (me.activeDescription && action ? '</a>' : '') + '</div>').get(0);
+			var li = $('<li class="lms-ui-suggestion-item" />').attr('title', tip).get(0);
 
-			name_elem.innerHTML = name.length > AUTOSUGGEST_MAX_LENGTH ?
-				name.substring(0, AUTOSUGGEST_MAX_LENGTH) + " ..." : name;
+			var unescapedEffectiveName = unescapeHtml(effectiveName);
+			name_elem.innerHTML = (icon ? '<i class="' + icon + '"></i>' : '') + (me.suggestMaxLength && unescapedEffectiveName.length > me.suggestMaxLength ?
+				escapeHtml(unescapedEffectiveName.substring(0, me.suggestMaxLength)) + " ..." : effectiveName);
 
-			if (action && !me.autosubmit) {
-				var a = $('<a href="' + dest + '"/>').get(0);
+			if (action && !me.autosubmit && !me.onSubmit) {
+				var a = $('<a href="' + action + '"/>').get(0);
 				a.appendChild(name_elem);
 				a.appendChild(desc_elem);
 				li.appendChild(a);
@@ -320,7 +356,6 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 				li.appendChild(name_elem);
 				li.appendChild(desc_elem);
 			}
-			li.onclick = onClick;
 
 			if (me.highlighted == i) {
 				$(li).addClass('selected');
@@ -329,7 +364,9 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 			ul.appendChild(li);
 		});
 
-		this.div.replaceChild(ul,this.div.childNodes[0]);
+		$(ul).appendTo($(this.div).empty()).find('.lms-ui-suggestion-item').click(function() {
+			me.useSuggestion();
+		});
 
 		/********************************************************
 		mouseover handler for the dropdown ul
@@ -337,7 +374,7 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 		********************************************************/
 		ul.onmouseover = function(ev) {
 			//Walk up from target until you find the LI.
-			var target = me.getEventSource(ev);
+			var target = ev.target;
 			while (target.parentNode && target.tagName.toUpperCase() != 'LI') {
 				target = target.parentNode;
 			}
@@ -354,111 +391,64 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 			me.changeHighlight();
 		};
 
-		this.div.className = "suggestion_list";
-		this.div.style.position = 'absolute';
-
+		$(this.div).addClass(this.class);
 	};
 
-	/********************************************************
-	determine which of the suggestions matches the input (ajaxized)
-	********************************************************/
-	//Construct XMLHTTP handler.
-	this.setXMLHTTP = function () {
-  		var x = null;
-		try { x = new ActiveXObject("Msxml2.XMLHTTP") }
-  		  catch(e) {
-			try { x = new ActiveXObject("Microsoft.XMLHTTP") }
-			  catch(ee) { x = null; }
-		  }
-		if(!x && typeof XMLHttpRequest != "undefined") {
-			x = new XMLHttpRequest();
-  		}
-		return x;
-	}
-
-	this.HTTPpreload = function() {
-		xmlhttp=me.setXMLHTTP();
-		xmlhttp.onreadystatechange = this.HTTPloaded;
-		xmlhttp.open("GET", this.uri + encodeURIComponent(this.elem.value), true);
-		xmlhttp.send(null);
-	}
-
 	this.getSuggestions = function() {
-		try {
-			this.suggestions = JSON.parse(xmlhttp.responseText);
-		} catch(x) {
-			this.suggestions = [];
+		var uri = this.uri + encodeURIComponent(this.elem.value);
+		if (this.onAjax) {
+			uri = this.onAjax(uri);
 		}
+		$.ajax({
+			method: me.method,
+			url: uri,
+			data: me.formData,
+			dataType: "json",
+			success: function(data) {
+				me.inputText = $(me.elem).val();
+				me.parseSuggestions(data);
+				if (me.suggestions.length) {
+					me.createDiv();
+					me.showDiv();
+				} else {
+					me.hideDiv();
+				}
+			}
+		});
+	}
 
-		if (this.suggestions.length) {
-			$.each(this.suggestions, function(i, elem) {
+	this.parseSuggestions = function(data) {
+		me.suggestions = data ? data : [];
+		if (me.suggestions.length) {
+/*
+			$.each(me.suggestions, function(i, elem) {
 				var name = elem.name;
 				if (me.inputText && !name.toLowerCase().indexOf(me.inputText.toLowerCase())) {
 					me.suggestions.push(elem);
 				}
 			});
+*/
+			if (this.onLoad) {
+				var suggestions = (me.onLoad)(me.suggestions);
+				if (typeof(suggestions) === 'object') {
+					me.suggestions = suggestions;
+				}
+			}
 		}
 	};
-
-	/********************************************************
-	Helper function to determine the keycode pressed in a 
-	browser-independent manner.
-	********************************************************/
-	this.getKeyCode = function(ev) {
-		if(ev) {		//Moz
-			return ev.keyCode;
-		}
-		if(window.event) {	//IE
-			return window.event.keyCode;
-		}
-	};
-
-	/********************************************************
-	Helper function to determine the event source element in a
-	browser-independent manner.
-	********************************************************/
-	this.getEventSource = function(ev) {
-		if(ev) {		//Moz
-			return ev.target;
-		}
-		if(window.event) {	//IE
-			return window.event.srcElement;
-		}
-	};
-
-	/********************************************************
-	Helper function to cancel an event in a 
-	browser-independent manner.
-	(Returning false helps too).
-	********************************************************/
-	this.cancelEvent = function(ev) {
-		if(ev) {		//Moz
-			ev.preventDefault();
-			ev.stopPropagation();
-		}
-		if(window.event) {	//IE
-			window.event.returnValue = false;
-		}
-	}
 }
 
 //counter to help create unique ID's
 var idCounter = 0;
 
+
 // hide autosuggest after click out of the window
 $(document).click(function(e) {
-	var elem = e.target;
-	if (!$(elem).is('.lms-ui-quick-search,.lms-ui-suggestion-list *')) {
-		$('#autosuggest:visible').hide();
+	var autosuggest = $('.lms-ui-suggestion-container:visible');
+	if (!autosuggest.length || $(e.target).is(autosuggest.data('autosuggest-input'))) {
+		return;
 	}
-	return;
-});
 
-// hide autosuggest after escape key press
-$(document).keydown(function(e) {
-	var key = e.keyCode;
-	var elem = e.target;
-	if (key == 27 && !$(elem).is('.lms-ui-quick-search,.lms-ui-suggestion-list *')) {
-		$('#autosuggest:visible').hide();
-	}
+	autosuggest.hide().closest('.lms-ui-popup').removeClass('fullscreen-popup').hide();
+	disableFullScreenPopup();
 });

@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2018 LMS Developers
+ *  Copyright (C) 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,19 +26,29 @@
 
 /**
  * LMSMessageManagerInterface
- * 
+ *
  */
 interface LMSMessageManagerInterface
 {
-    public function GetMessages($customerid, $limit = NULL);
-    
-    public function AddMessageTemplate($type, $name, $subject, $message);
-    
-    public function UpdateMessageTemplate($id, $type, $name, $subject, $message);
+    public function GetMessages($customerid, $limit = null);
 
-	public function DeleteMessageTemplates(array $ids);
+    public function MessageTemplateExists($type, $name);
+
+    public function AddMessageTemplate($type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message);
+
+    public function UpdateMessageTemplate($id, $type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message);
+
+    public function DeleteMessageTemplates(array $ids);
 
     public function GetMessageTemplates($type = 0);
 
-	public function GetMessageList(array $params);
+    public function GetMessageTemplatesByQueueAndType($queueid, $type);
+
+    public function GetMessageList(array $params);
+
+    public function addMessage(array $params);
+
+    public function updateMessageItems(array $params);
+
+    public function getSingleMessage($id, $details = false);
 }

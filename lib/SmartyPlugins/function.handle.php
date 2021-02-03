@@ -26,20 +26,20 @@
 
 /*
     Returns registered template plugin(s) output.
-    Example of use: 
-    
+    Example of use:
+
     {handle name="nodeinfobox-end"}
 */
 function smarty_function_handle($params, $template)
 {
-	global $PLUGINS;  // or maybe $SMARTY->_tpl_vars['PLUGINS'] assigned by ref.
-	
-	$result = '';
-	if(isset($PLUGINS[$params['name']]))
-		foreach($PLUGINS[$params['name']] as $plugin)
-			$result .= $SMARTY->fetch($plugin);
+    global $PLUGINS;  // or maybe $SMARTY->_tpl_vars['PLUGINS'] assigned by ref.
+    
+    $result = '';
+    if (isset($PLUGINS[$params['name']])) {
+        foreach ($PLUGINS[$params['name']] as $plugin) {
+            $result .= $SMARTY->fetch($plugin);
+        }
+    }
 
-	return $result;
+    return $result;
 }
-
-?>

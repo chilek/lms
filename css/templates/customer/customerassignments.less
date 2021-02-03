@@ -1,7 +1,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -22,17 +22,30 @@
  *  $Id$
  */
 
-#customerassignmentpanel {
+.assignmentpanel {
 	.lms-ui-tab-table .footer .liability {
 		text-align: right;
 	}
 	.lms-ui-tab-button-panel {
-		border-top: 0;
-		height: 0.1em;
+		border-top: 0 !important;
+		height: 0.1em !important;
+		position: relative;
+
 		.lms-ui-tab-buttons:nth-child(2) {
-			position: relative;
-			top: -0.8em;
+			position: absolute;
+			bottom: 0;
+			right: 0;
+			margin-bottom: 0.5em;
+			flex-wrap: initial;
+
+			button.delete-assignments {
+				margin-bottom: 0;
+			}
 		}
+	}
+
+	.lms-ui-tab-table-row.footer {
+		min-height: 2.5em;
 	}
 
 	.liability {
@@ -130,5 +143,10 @@
 				width: 100% !important;
 			}
 		}
+	}
+
+	.delete-assignments {
+		margin-top: -0.7em;
+		margin-right: 0.5em;
 	}
 }

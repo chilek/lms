@@ -2,11 +2,20 @@
 {$disable_invoices = ConfigHelper::checkConfig('userpanel.disable_invoices')}
 
 <script>
+
 	$(function() {
 		$(".table-click[data-href] td:not(.buttons)").click(function() {
 			window.open($(this).closest('tr').attr("data-href"));
+			reset_login_timeout();
+		});
+
+		$(".table-click[data-href] td:last-child").click(function(e) {
+			if (!$(e.target).is('.custom-control-label') && !$(e.target).is('input')) {
+				$(this).find(':checkbox').trigger('click');
+			}
 		});
 	});
+
 </script>
 
 <style>
@@ -31,7 +40,7 @@
 
 </style>
 <div class="row">
-    <div class="col-md-12">
+    <div class="col">
         <form name="invoices" action="?m=finances&amp;f=invoice" method="POST" target="_blank">
 			<div class="table-responsive">
 				<table class="table table-sm table-hover table-bordered table-striped table-condensed">
@@ -56,26 +65,26 @@
 					{section name=balancelist loop=$balancelist.list step=-1}
 						{$item=$balancelist.list[balancelist]}
 						{if $item.time > $ldate}
-						<tr class="table-click align-middle {if $item.value > 0}table-success{else}table-danger{/if}"{if $item.doctype == $smarty.const.DOC_INVOICE || $item.doctype == $smarty.const.DOC_CNOTE} data-href="?m=finances&f=invoice&id={$item.docid}"{/if}>
-							<td class="text-right text-nowrap">{$item.date|date_format:"%Y-%m-%d"}</td>
+						<tr class="table-click"{if $item.doctype == $smarty.const.DOC_INVOICE || $item.doctype == $smarty.const.DOC_CNOTE} data-href="?m=finances&f=invoice&id={$item.docid}"{/if}>
+							<td class="text-center text-nowrap">{$item.date|date_format:"%Y-%m-%d"}</td>
 							{if $item.value > 0}
 								<td></td>
-								<td class="text-right text-nowrap text-success font-weight-bold">
+								<td class="text-center text-nowrap table-success text-success">
 									{if $item.value > 0 && $item.type != 4}+{/if}
-									{$item.value|money_format}
+									{moneyf($item.value, $item.currency)}
 								</td>
 							{else}
-								<td class="text-right text-nowrap text-danger font-weight-bold">
+								<td class="text-center text-nowrap table-danger text-danger">
 									{if $item.type == 4}-{/if}
-									{$item.value|money_format}
+									{moneyf($item.value, $item.currency)}
 								</td>
 								<td></td>
 							{/if}
 							<td class="text-right text-nowrap">
 								{if $item.after < 0}
-									<strong>{$item.after|money_format}</strong>
+									<strong>{moneyf($item.after)}</strong>
 								{else}
-									{$item.after|money_format}
+									{moneyf($item.after)}
 								{/if}
 							</td>
 							<td>{$item.comment}</td>
@@ -86,7 +95,7 @@
 									{if isset($link.extra)}{$link.extra}{/if}
 								{/foreach}
 								{if $item.doctype == $smarty.const.DOC_INVOICE || $item.doctype == $smarty.const.DOC_CNOTE}
-									<a class="btn btn-primary btn-sm" href="?m=finances&f=invoice&id={$item.docid}" role="button" target="_blank">
+									<a class="btn btn-primary btn-sm" onclick="reset_login_timeout();" href="?m=finances&f=invoice&id={$item.docid}" role="button" target="_blank">
 										{trans("Print")}
 									</a>
 								{else}

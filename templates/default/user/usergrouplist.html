@@ -32,7 +32,7 @@
 	</tfoot>
 	<tbody>
 	    {foreach $usergrouplist as $usergroup}
-		<tr class="highlight" data-target-url="?m=usergroupinfo&id={$usergroup.id}">
+		<tr class="highlight" data-target-url="?m=usergroupinfo&id={$usergroup.id}" data-name="{$usergroup.name}">
 		    <td>
 				<img src="img/group.gif" alt="">&nbsp;<span class="bold">{$usergroup.name}</span><br>
 				{if $usergroup.description}<img src="img/info1.gif" alt="">&nbsp;{$usergroup.description}{/if}
@@ -41,13 +41,13 @@
 				({$usergroup.id|string_format:"%04d"})
 		    </td>
 		    <td class="text-right">
-				{$usergroup.userscount} 
+				{$usergroup.userscount}
 		    </td>
 		    <td class="lms-ui-buttons text-right nobr">
 				{if $usergroup.userscount}
-				<a href="javascript:alert('{trans("Group with members cannot be deleted!")}');">
+				<A class="delete-usergroup-alert" href="#">
 				{else}
-				<a href="?m=usergroupdel&amp;id={$usergroup.id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to remove this group?")}');">
+				<a class="delete-usergroup" href="?m=usergroupdel&id={$usergroup.id}">
 				{/if}
 				<img src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></a>
 				<a href="?m=usergroupedit&amp;id={$usergroup.id}"><img src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></a>
@@ -63,4 +63,20 @@
 		{/foreach}
 	</tbody>
     </table>
+	<script>
+		$('.delete-usergroup').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			console.log('name=', name);
+			confirmDialog($t("Are you sure, you want to remove group '$a'?", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+		$('.delete-usergroup-alert').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			alertDialog($t("Group '$a' has members and cannot be deleted!", name), this);
+			return;
+		});
+	</script>
+
 {/block}

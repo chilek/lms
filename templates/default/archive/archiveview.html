@@ -57,9 +57,9 @@
 						<A href="javascript:clear_filter();"><IMG src="img/delete.gif" alt=""></A>
 						<span class="bold">{trans("Filter:")} </span>
 						<label for="datefrom">{trans("From:")}</label>
-						<input type="text" size="12" name="datefrom" id="datefrom" value="{$listdata.datefrom|date_format:"Y/m/d"}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="datefrom"}>&nbsp;
+						<input type="text" size="12" name="datefrom" id="datefrom" value="{$listdata.datefrom|date_format:"Y/m/d"}" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="datefrom"}>&nbsp;
 						<label for="dateto">{trans("To:")}</label>
-						<input type="text" size="12" name="dateto" id="dateto" value="{$listdata.dateto|date_format:"Y/m/d"}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="datefrom"}>&nbsp;
+						<input type="text" size="12" name="dateto" id="dateto" value="{$listdata.dateto|date_format:"Y/m/d"}" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="datefrom"}>&nbsp;
 						<label for="user">{trans("User:")}</label>
 						<SELECT size="1" name="user" id="user">
 							<OPTION value="0"{if $listdata.user == "0"} SELECTED{/if}>{trans("- all -")}</OPTION>
@@ -176,15 +176,12 @@
 		</TD>
 		<TD style="width: 97%;" class="valign-bottom">
 			{if $tr.messages}
-				{if count($tr.messages) > 10}{$start = 9 - count($tr.messages)}...<br>
-				{else}{$start=-1}{/if}
-				{section name=messages loop=$tr.messages start=$start step=-1}
-					{$message = $tr.messages[messages]}
+				{foreach $tr.messages as $messageid => $message}
 					<span class="bold">{SYSLOG::getResourceName($message.resource)}: <span style="{SYSLOG::getOperationStyle($message.operation)}">{SYSLOG::getOperationName($message.operation)}</span></span>
 					{foreach $message.keys as $key => $msgkey}{$key}: {if $msgkey.value}<a href="?m=archiveinfo&amp;type={$msgkey.type}&amp;id={$msgkey.value}&amp;date={$tr.time}">{/if}{$msgkey.value}{if $msgkey.value}</a>{/if}{if !$msgkey@last}, {/if}{/foreach}
-					{foreach $message.data as $key => $value}{$key}: {$value}{if !$value@last}, {/if}{/foreach}
-					{if !$messages@last}<br>{/if}
-				{/section}
+					{foreach $message.data as $key => $value}{$key}: {$value.value}{if !$value@last}, {/if}{/foreach}
+					{if !$message@last}<br>{/if}
+				{/foreach}
 			{/if}
 		</TD>
 	</TR>

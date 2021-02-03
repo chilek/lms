@@ -70,8 +70,6 @@ $this->Execute("
 	DROP TABLE admins;
 ");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005052700', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005052700', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

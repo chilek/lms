@@ -26,9 +26,9 @@
 
 /**
  * LMSDBDriverInterface
- * 
+ *
  * Interface for database drivers.
- * 
+ *
  * @package LMS
  */
 interface LMSDBDriverInterface extends LMSDBInterface
@@ -50,7 +50,7 @@ interface LMSDBDriverInterface extends LMSDBInterface
 
     public function _driver_multi_execute($query);
 
-    public function _driver_fetchrow_assoc($result = NULL);
+    public function _driver_fetchrow_assoc($result = null);
 
     public function _driver_fetchrow_num();
 
@@ -76,16 +76,15 @@ interface LMSDBDriverInterface extends LMSDBInterface
 
     public function _driver_unlocktables();
 
-    public function _driver_lastinsertid($table = NULL);
+    public function _driver_lastinsertid($table = null);
 
     public function _driver_groupconcat($field, $separator = ',');
 
     public function _driver_setencoding($name);
 
-	public function _driver_year($date);
+    public function _driver_year($date);
 
-	public function _driver_month($date);
+    public function _driver_month($date);
 
-	public function _driver_day($date);
-
+    public function _driver_day($date);
 }

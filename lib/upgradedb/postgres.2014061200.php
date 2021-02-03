@@ -28,5 +28,3 @@ $this->Execute("ALTER TABLE templates ADD subject varchar(255) NOT NULL DEFAULT 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014061200', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

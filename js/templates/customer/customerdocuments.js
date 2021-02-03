@@ -1,7 +1,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -32,36 +32,85 @@ function toggle_all_attachments(docid) {
 		toggle.html('<img src="img/asc_order.gif">');
 }
 
-function delete_docs() {
-	if (confirm($t("Are you sure, you want to delete selected documents?"))) {
-		document.customerdocuments.action = "?m=documentdel&is_sure=1";
-		document.customerdocuments.target = "";
-		document.customerdocuments.submit();
-	}
-}
-
-function print_docs() {
-	document.customerdocuments.action="?m=documentview";
-	document.customerdocuments.target="_blank";
-	document.customerdocuments.submit();
-}
-
-function mark_docs() {
-	document.customerdocuments.action="?m=documentedit&action=confirm";
-	document.customerdocuments.target="";
-	document.customerdocuments.submit();
-}
-
-function send_documents() {
-	document.customerdocuments.action="?m=documentsend";
-	document.customerdocuments.target="_blank";
-	document.customerdocuments.submit();
-}
-
 $(function() {
-	$('.documentsend').click(function () {
-		if (confirm($t("Are you sure, you want to send document to customer?"))) {
-			window.open($(this).attr('href'));
+	$('#send-documents').click(function() {
+		if (!$(this).closest('div.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			alertDialog($t('No document has been selected!'), this);
+			return;
+		}
+		if (!parseInt($(this).attr('data-send-documents'))) {
+			alertDialog($t('Customer has not any assigned email contacts with "documents" flag!'), this);
+			return;
+		}
+		confirmDialog($t('Are you sure, you want to send documents to customer?'), this).done(function() {
+			document.customerdocuments.action="?m=documentsend";
+			document.customerdocuments.target="_blank";
+			document.customerdocuments.submit();
+		});
+	});
+
+	$('#delete-docs').click(function() {
+		if (!$(this).closest('div.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			return;
+		}
+		confirmDialog($t("Are you sure, you want to delete selected documents?"), this).done(function() {
+			document.customerdocuments.action = "?m=documentdel";
+			document.customerdocuments.target = "";
+			document.customerdocuments.submit();
+		});
+	});
+
+	$('#print-docs').click(function() {
+		if (!$(this).closest('div.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			return;
+		}
+		document.customerdocuments.action="?m=documentview";
+		document.customerdocuments.target="_blank";
+		document.customerdocuments.submit();
+	});
+
+	$('#archive-docs').click(function() {
+		if (!$(this).closest('div.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			return;
+		}
+		document.customerdocuments.action="?m=documentedit&action=archive";
+		document.customerdocuments.target="";
+		document.customerdocuments.submit();
+	});
+
+	$('#confirm-docs').click(function() {
+		if (!$(this).closest('div.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			return;
+		}
+		document.customerdocuments.action="?m=documentedit&action=confirm";
+		document.customerdocuments.target="";
+		document.customerdocuments.submit();
+	});
+
+	$('.archive-doc').click(function() {
+		confirmDialog($t('Are you sure, you want to archive that document?'), this).done(function() {
+			location.href = $(this).attr('href');
+		});
+		return false;
+	});
+
+	$('.delete-doc').click(function() {
+		confirmDialog($t('Are you sure, you want to remove that document?'), this).done(function() {
+			location.href = $(this).attr('href');
+		});
+		return false;
+	});
+
+	$('.send-doc').click(function () {
+		var senddate = $(this).closest('div.lms-ui-tab-table-row').attr('data-senddate');
+		if (parseInt(senddate) === 0) {
+			confirmDialog($t("Are you sure, you want to send document to customer?"), this).done(function () {
+				window.open($(this).attr('href'));
+			});
+		} else {
+			confirmDialog($t("Document was sent to customer already on $a. Are you sure, you want to send document again?", senddate), this).done(function () {
+				window.open($(this).attr('href'));
+			});
 		}
 		return false;
 	});

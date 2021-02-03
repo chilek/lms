@@ -30,5 +30,3 @@ $this->Execute("UPDATE assignments SET separatedocument = 1, invoice = 1 WHERE i
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018010500', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

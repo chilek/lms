@@ -179,6 +179,7 @@
 				if ($options.length == 0) {
 					// TODO restore, using $p.data(pname).key if provided instead
 				} else { // here are options:
+					$div.empty();
 					$options.each(function () {
 						var $t = $(this);
 						var $p = $('<p />');
@@ -515,6 +516,9 @@
 			$(O.altField).val('');
 			$(O.altInvalidField).val(value);
 			$valueInput.val(value);
+			$valueInput.attr('name', function() {
+				return $select.attr('name') || '';
+			});
 			$display.val(value);
 			return;
 		}
@@ -1277,11 +1281,15 @@
 	 * @returns {Object|void} jQuery object on success. Throws error on undefined method.
 	 */
 	$.fn[pname] = function (actOrOpts) {
+		var $that = this;
 		if (typeof actOrOpts == 'string') {
 			if (!this.length) { // method called on empty collection
 				$.error('Calling ' + pname + '.' + actOrOpts + '() method on empty collection');
 			}
-			if (this.data(pname + '-init') == null) { // it can be legally false, but not undefined
+			if ($that.is('select')) {
+				$that = $that.closest('.scombobox');
+			}
+			if ($that.data(pname + '-init') == null) { // it can be legally false, but not undefined
 				$.error('Calling ' + pname + '.' + actOrOpts + '() method prior to initialization');
 			}
 			var method = methods[actOrOpts];
@@ -1295,7 +1303,7 @@
 			return this;
 		}
 		if (method) {
-			return method.apply(this, Array.prototype.slice.call(arguments, 1));
+			return method.apply($that, Array.prototype.slice.call(arguments, 1));
 		}
 		return this.each(function () {
 			var $t = $(this);

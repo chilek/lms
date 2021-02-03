@@ -149,5 +149,3 @@ CREATE VIEW vdivisions AS
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017032000', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

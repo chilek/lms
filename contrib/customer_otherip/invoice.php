@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,42 +27,44 @@
 include('class.php');
 session_start();
 
-if (!$_SESSION['uid'] || !$_GET['id'])
-	die;
+if (!$_SESSION['uid'] || !$_GET['id']) {
+    die;
+}
 
-if ($_SESSION['uid'] != $DB->GetOne('SELECT customerid FROM documents WHERE id=?', array($_GET['id'])))
-	die;
+if ($_SESSION['uid'] != $DB->GetOne('SELECT customerid FROM documents WHERE id=?', array($_GET['id']))) {
+    die;
+}
 
 $invoice_type = strtolower(ConfigHelper::getConfig('invoices.type'));
 $attachment_name = ConfigHelper::getConfig('invoices.attachment_name');
 
 if ($invoice_type == 'pdf') {
-	$pdf_type = ConfigHelper::getConfig('invoices.pdf_type', 'tcpdf');
-	$pdf_type = ucwords($pdf_type);
-	$classname = 'LMS' . $pdf_type . 'Invoice';
-	$document = new $classname('A4', 'portrait', trans('Invoices'));
-} else
-	$document = new LMSHtmlInvoice($SMARTY);
+    $pdf_type = ConfigHelper::getConfig('invoices.pdf_type', 'tcpdf');
+    $pdf_type = ucwords($pdf_type);
+    $classname = 'LMS' . $pdf_type . 'Invoice';
+    $document = new $classname('A4', 'portrait', trans('Invoices'));
+} else {
+    $document = new LMSHtmlInvoice($SMARTY);
+}
 
 $invoice = $LMS->GetInvoiceContent($_GET['id']);
 
 $docnumber = docnumber(array(
-	'number' => $invoice['number'],
-	'template' => $invoice['template'],
-	'cdate' => $invoice['cdate'],
+    'number' => $invoice['number'],
+    'template' => $invoice['template'],
+    'cdate' => $invoice['cdate'],
 ));
 $layout['pagetitle'] = trans('Invoice No. $a', $docnumber);
 $invoice['last'] = true;
-$invoice['type'] = trans('ORIGINAL');
+$invoice['type'] = DOC_ENTITY_ORIGINAL;
 
 $document->Draw($invoice);
 
 if (!is_null($attachment_name)) {
-	$attachment_name = str_replace('%number', $docnumber, $attachment_name);
-	$attachment_name = preg_replace('/[^[:alnum:]_\.]/i', '_', $attachment_name);
-} else
-	$attachment_name = 'invoices.pdf';
+    $attachment_name = str_replace('%number', $docnumber, $attachment_name);
+    $attachment_name = preg_replace('/[^[:alnum:]_\.]/i', '_', $attachment_name);
+} else {
+    $attachment_name = 'invoices.pdf';
+}
 
 $document->WriteToBrowser($attachment_name);
-
-?>

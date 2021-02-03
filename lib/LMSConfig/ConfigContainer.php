@@ -46,7 +46,7 @@ class ConfigContainer
     
     /**
      * Adds config section to sections container
-     * 
+     *
      * @param ConfigSection $section Config sections to add
      */
     public function addSection(ConfigSection $section)
@@ -56,7 +56,7 @@ class ConfigContainer
     
     /**
      * Adds multiple config sections to sections container
-     * 
+     *
      * @param ConfigSection[] $sections Config sections to add
      */
     public function addSections(array $sections)
@@ -68,7 +68,7 @@ class ConfigContainer
     
     /**
      * Returns config section
-     * 
+     *
      * @param string $section_name
      * @return ConfigSection
      * @throws Exception Throws exception when section is unknown
@@ -84,7 +84,7 @@ class ConfigContainer
     
     /**
      * Return config sections
-     * 
+     *
      * @return ConfigSection[]
      */
     public function getSections()
@@ -94,12 +94,12 @@ class ConfigContainer
     
     /**
      * Checks if section exists
-     * 
+     *
      * @param string $section_name
      * @return boolean
      */
-    public function hasSection($section_name) {
+    public function hasSection($section_name)
+    {
         return isset($this->config_sections[$section_name]);
     }
-    
 }

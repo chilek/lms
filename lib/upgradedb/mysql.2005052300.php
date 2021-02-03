@@ -35,6 +35,4 @@ $this->Execute("ALTER TABLE userassignments CHANGE userid customerid INT(11) DEF
 $this->Execute("ALTER TABLE userassignments DROP INDEX userassignment");
 $this->Execute("ALTER TABLE userassignments ADD UNIQUE (usergroupid, customerid)");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005052300', 'dbversion'));
-
-?>
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005052300', 'dbversion'));

@@ -18,6 +18,8 @@
 		<COL style="width: 1%;">
 		<COL style="width: 96%;">
 		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
 	</COLGROUP>
 	<THEAD>
 		<TR>
@@ -33,14 +35,20 @@
 			<TD class="nobr">
 				{trans("Message:")}
 			</TD>
+			<TD class="nobr">
+				{trans("Queues:")}
+			</TD>
+			<TD class="nobr">
+				{trans("<!message-type>Message types:")}
+			</TD>
 			<TD>
 				&nbsp;
 			</TD>
 		</TR>
 		<TR>
-			<td colspan="5">
+			<td colspan="7">
 				<span class="bold">{trans("Filter:")}</span> {trans("Type:")}
-				<select name="type" form="filter" onchange="javascript:document.filter.submit();">
+				<select name="type" id="template-type" form="filter" onchange="javascript:document.filter.submit();">
 					<option value="0">{trans("- all -")}</option>
 					{foreach $_MESSAGETEMPLATES as $template_type => $template}
 					<option value="{$template_type}"
@@ -54,29 +62,42 @@
 		{foreach $templates as $template}
 		<TR class="highlight" data-template-id="{$template.id}">
 			<TD class="nobr text-center" data-template-type="{$template.type}">
-				<i class="{$_MESSAGETEMPLATES[$template.type].class}" title="{$_MESSAGETEAMPLTES[$template.type].label}"></i>
+				<i class="{$_MESSAGETEMPLATES[$template.type].class}" title="{$_MESSAGETEMPLATES[$template.type].label}"></i>
 			</TD>
-			<TD class="nobr" data-template-name="{$template.name}">
-				{$template.name}
+			<TD class="nobr" data-template-name="{$template.name|escape}">
+				{$template.name|escape}
 			</TD>
-			<TD class="nobr" data-template-subject="{$template.subject}">
-				{$template.subject}
+			<TD class="nobr" data-template-subject="{$template.subject|escape}">
+				{$template.subject|escape}
 			</TD>
 			<TD>
-				{$template.message|truncate:5000:"..."|replace:"\n":"<BR>"}
+				{$template.message|truncate:5000:"&hellip;"|replace:"\n":"<BR>"}
 				<div style="display: none;" class="data-template-message">{$template.message}</div>
+			</TD>
+			<TD data-template-helpdesk-queues="{$template.queues}">
+				{$template.queuenames}
+			</TD>
+			<TD data-template-helpdesk-message-types="{$template.messagetypes}">
+				{if !empty($template.messagetypes)}
+					{foreach explode(',', $template.messagetypes) as $type}
+						{if $type == $smarty.const.RTMESSAGE_REGULAR}
+						{trans("<!message-type>message")}{if !$type@last},{/if}
+						{elseif $type == $smarty.const.RTMESSAGE_NOTE}
+						{trans("<!message-type>note")}{if !$type@last},{/if}
+						{/if}
+					{/foreach}
+				{/if}
 			</TD>
 			<TD class="text-right nobr">
 				{button type="link" class="edit-template-dialog-btn" icon="edit" tip="Edit"
 					onclick="javascript:open_edit_dialog({$template.id});"}
-				{button type="link" href="?m=messagetemplatedel&id={$template.id}" icon="delete" tip="Delete"
-					onclick="return confirmLink(this, '{t}Are you sure, you want to delete that message template?{/t}')"}
+				{button type="link" class="delete-messagetemplate" href="?m=messagetemplatedel&id={$template.id}" icon="delete" tip="Delete"}
 				<input type="checkbox" name="marks[{$template.id}]" value="{$template.id}" class="lms-ui-multi-check" form="messagetemplates">
 			</TD>
 		</TR>
 		{foreachelse}
 		<TR>
-			<TD colspan="5" class="empty-table">
+			<TD colspan="7" class="empty-table">
 				<p>{trans("No message templates in database.")}</p>
 			</TD>
 		</TR>
@@ -84,7 +105,7 @@
 	</TBODY>
 	<TFOOT>
 		<TR class="lms-ui-button-panel">
-			<TD colspan="3" class="nobr">
+			<TD colspan="5" class="nobr">
 				{button icon="add" class="add-template-dialog-btn" tip="Add" label="Add"
 					onclick="javascript:open_add_dialog();"}
 			</TD>
@@ -103,15 +124,21 @@
 {include file='message/messagetemplatedialog.html' operation="edit"}
 
 <script>
-
 	$(function() {
 		$('#delete-message-templates').click(function() {
-			if (!$(this).closest('tfoot').siblings('tbody.lms-ui-multi-check').find('input:checked').length
-				|| !confirm('{trans("Are you sure, you want to delete all selected message templates?")}'))
+			if ($(this).closest('tfoot').siblings('tbody.lms-ui-multi-check').find('input:checked').length) {
+				confirmDialog($t("Are you sure, you want to delete all selected message templates?"), this).done(function() {
+					$('form#messagetemplates').attr('action', '?m=messagetemplatedel').submit();
+				});
 				return false;
-			$('form#messagetemplates').attr('action', '?m=messagetemplatedel&is_sure=1').submit();
+			}
+		});
+		$('.delete-messagetemplate').click(function() {
+			confirmDialog($t("Are you sure, you want to delete that message template?"), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
 		});
 	});
-
 </script>
 {/block}

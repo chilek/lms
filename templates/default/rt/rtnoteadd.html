@@ -2,6 +2,7 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!-- $Id$ -->
+{$xajax}
 <H1>{$layout.pagetitle}</H1>
 <FORM method="POST" name="note" id="note-form" action="?m=rtnoteadd">
 <INPUT type="hidden" name="note[inreplyto]" value ="{$note.inreplyto|default:"0"}">
@@ -16,15 +17,24 @@
     <THEAD>
 	<TR>
 		<TD colspan="2" class="bold nobr">
-			<IMG src="img/ticket.gif" alt="">
+			{icon name="helpdesk" class="fa-fw"}
 			{t a=$note.ticketid|string_format:"%06d"}Ticket No. $a{/t}
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
+	<TR id="note-template-row"{if empty($notetemplates)} style="display: none;"{/if}>
+		<TD class="bold nobr">
+			{icon name="document" class="fa-fw"}
+			{trans("Note template:")}
+		</TD>
+		<td id="note-templates">
+			{include file="rt/rtmessagetemplates.html" templates=$notetemplates tip="Select note template"}
+		</td>
+	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/note.gif" alt="">
+			{icon name="note" class="fa-fw"}
 			{trans("Note content:")}
 		</TD>
 		<TD>
@@ -33,7 +43,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr valign-top">
-			<IMG src="img/attach.gif" alt="">
+			{icon name="upload" class="fa-fw"}
 			{trans("Attachments:")}
 		</TD>
 		<TD>
@@ -42,8 +52,8 @@
 	</TR>
 	<TR>
 		<TD colspan="2" class="buttons">
-			<A href="javascript: document.note.submit();" accesskey="s"><IMG src="img/save.gif" alt=""> {trans("Submit")}</A>
-			<A href="?m=rtticketview&id={$note.ticketid}"><IMG src="img/cancel.gif" alt=""> {trans("Cancel")}</A>
+			{button onclick="javascript: document.note.submit();" accesskey="s" icon="save" label="Submit"}
+			{button type="link-button" href="?m=rtticketview&id={$note.ticketid}" icon="cancel" label="Cancel"}
 		</TD>
 	</TR>
     </TBODY>
@@ -57,7 +67,8 @@
     <TBODY>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/mail.gif" alt=""> <label for="notify">{trans("Notify users:")}</label>
+			{icon name="mail" class="fa-fw"}
+			<label for="notify"> {trans("Notify users:")}</label>
 		</TD>
 		<TD>
 			<INPUT type="checkbox" name="note[notify]" id="notify" value="1"{if $note.notify} CHECKED{/if}>
@@ -65,7 +76,8 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/dead.gif" alt=""> {trans("Status:")}
+			{icon name="status" class="fa-fw"}
+			{trans("Status:")}
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="note[state]" id="state" {tip text="Select status" trigger="state"}>
@@ -82,7 +94,8 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/desc.gif" alt=""> {trans("Cause:")}
+			{icon name="cause" class="fa-fw"}
+			{trans("Cause:")}
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="note[cause]" {tip text="Select ticket cause" trigger="cause"}>
@@ -94,7 +107,8 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/volcano.png" alt="">{trans("Ticket source:")}
+			{icon name="source" class="fa-fw"}
+			{trans("Ticket source:")}
 		</TD>
 		<TD>
 			<SELECT size="1" name="note[source]" {tip text="Select ticket source" trigger="source"}>
@@ -106,7 +120,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/report.gif" alt="">
+			{icon name="priority" class="fa-fw"}
 			{trans("Priority:")}
 		</TD>
 		<TD>
@@ -119,10 +133,11 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/queue.gif" alt=""> {trans("Queue:")}
+			{icon name="queue" class="fa-fw"}
+			{trans("Queue:")}
 		</TD>
 		<TD>
-			<SELECT size="1" name="note[queueid]" {tip text="Select queue" trigger="queue"}>
+			<SELECT size="1" name="note[queueid]" {tip text="Select queue" trigger="queue"} onchange="xajax_queue_changed($(this).val(), $('#rtverifiers').val())">
 			{foreach from=$queuelist item=item}
 				<OPTION value="{$item.id}" {if $item.id == $note.queueid}SELECTED{/if}>{$item.name}</OPTION>
 			{/foreach}
@@ -131,7 +146,8 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/users.gif" alt=""> {trans("Owner:")}
+			{icon name="owner" class="fa-fw"}
+			{trans("Owner:")}
 		</TD>
 		<TD>
 			<SELECT size="1" name="note[owner]" {tip text="Select user" trigger="owner"}>
@@ -140,7 +156,7 @@
 				{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
 					|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
 					|| $user.id == $note.owner}
-				<OPTION value="{$user.id}"{if !$user.access} class="blend"{/if}{if $user.id == $note.owner} selected{/if}>{$user.name}</OPTION>
+				<OPTION value="{$user.id}"{if !$user.access} class="blend"{/if}{if $user.id == $note.owner} selected{/if}>{$user.name|escape} ({$user.login})</OPTION>
 				{/if}
 				{/foreach}
 			</SELECT>
@@ -153,18 +169,18 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/verifier.png" alt="">
+			{icon name="verifier" class="fa-fw"}
 			{trans("Verifier:")}
 		</TD>
 		<TD>
 			{if !$ticket.verifierid || $ticket.verifierid == $layout.logid}
-				<SELECT size="1" name="note[verifierid]" {tip text="Select user" trigger="verifierid"}>
+				<SELECT size="1" name="note[verifierid]" {tip text="Select user" trigger="verifierid"} id="rtverifiers">
 					<OPTION value="0">- {trans("select user")} -</OPTION>
 					{foreach $userlist as $user}
 						{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
 							|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
 							|| $user.id == $note.verifierid}
-							<OPTION value="{$user.id}"{if $user.id == $note.verifierid} selected{/if}{if !$user.access} class="blend"{/if}>{$user.name}</OPTION>
+							<OPTION value="{$user.id}"{if $user.id == $note.verifierid} selected{/if}{if !$user.access} class="blend"{/if}>{$user.name|escape} ({$user.login})</OPTION>
 						{/if}
 					{/foreach}
 				</SELECT>
@@ -176,19 +192,45 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/calendar.gif" alt="">
+			{icon name="deadline" class="fa-fw"}
 			{trans("<!rt>Deadline:")}
 		</TD>
 		<TD>
 			{if ConfigHelper::checkConfig('phpui.helpdesk_allow_all_users_modify_deadline') || !$ticket.verifierid || $ticket.verifierid == $layout.logid}
 				<INPUT TYPE="TEXT" NAME="note[deadline]" VALUE="{if $note.deadline}{$note.deadline|date_format:"%Y/%m/%d %H:%M"}{/if}"
-						SIZE="20" {tip text="Enter deadline in YYYY/MM/DD HH:MM format or click to select it from applet" class="calendar-time" trigger="deadline"}>
+						SIZE="20" {tip text="Enter deadline in YYYY/MM/DD HH:MM format or click to select it from applet" class="lms-ui-datetime" trigger="deadline"}>
 			{else}
 				<INPUT TYPE="hidden" NAME="note[deadline]" VALUE="{if $note.deadline}{$note.deadline|date_format:"%Y/%m/%d %H:%M"}{/if}">
 				<span title="{trans("Only verifier can change this")}">{if $note.deadline}{$note.deadline|date_format:"%Y/%m/%d %H:%M"}{else}{trans("<!rt>- none -")}{/if}</span>
 			{/if}
 		</TD>
 	</TR>
+
+	<TR>
+		<td class="bold nobr">
+			{icon name="queue" class="fa-fw"}
+			{trans("Category changes:")}
+		</td>
+		<td>
+			<SELECT name="note[category_change]" {tip text="Select category change type" trigger="category_change"}>
+				<option value="0"{if $note.category_change == 0} selected{/if}>{trans("- no changes -")}</option>
+				<option value="1"{if $note.category_change == 1} selected{/if}>{trans("- replace -")}</option>
+				<option value="2"{if $note.category_change == 2} selected{/if}>{trans("- append -")}</option>
+				<option value="3"{if $note.category_change == 3} selected{/if}>{trans("- remove -")}</option>
+			</SELECT>
+		</td>
+	</TR>
+
+	<TR id="categories">
+		<td class="bold nobr">
+			{icon name="categories" class="fa-fw"}
+			{trans("Categories:")}
+		</td>
+		<td>
+			{include file="rt/rtcategoryselection.html" name_prefix="note[categories]" categories=$categories}
+		</td>
+	</TR>
+
     </TBODY>
 </TABLE>
 </FORM>
@@ -199,6 +241,14 @@
 
 	$(function() {
 		$('form[name="note"] [name="note[body]"]').focus();
+
+		$('[name="note[category_change]"]').change(function() {
+			if (parseInt($(this).val())) {
+				$('#categories').show();
+			} else {
+				$('#categories').hide();
+			}
+		}).change();
 
 		$('#resolve').change(function() {
 			var stateelem = $('#state');
@@ -228,6 +278,14 @@
 			} else {
 				select.val($(this).attr('data-old-userid'));
 			}
+		});
+
+		$('body').on('change', '.template-selector', function() {
+			var selected = $('option:selected', this);
+			if (parseInt(selected.val()) == 0) {
+				return;
+			}
+			$('[name="note[body]"]').val(Base64.decode(selected.attr('data-message')));
 		});
 	});
 

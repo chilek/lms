@@ -2,7 +2,17 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
+
+<style>
+
+	[name="division[account]"] {
+		margin-top: 0.2em;
+	}
+
+</style>
+
 <H1>{$layout.pagetitle}</H1>
+<script src="js/location_box.js"></script>
 <FORM method="POST" action="?m=divisionadd" name="division">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
@@ -33,9 +43,22 @@
 			{trans("Long name:")}
 		</TD>
 		<TD>
-			<TEXTAREA NAME="division[name]" COLS="45" ROWS="4" {tip text="Enter division long name" trigger="name"}>{$division.name}</TEXTAREA>
+			<TEXTAREA NAME="division[name]" COLS="45" ROWS="4" {tip text="Enter division long name" trigger="name"}
+				>{$division.name|escape}</TEXTAREA>
 		</TD>
 	</TR>
+	<tr>
+		<td>
+			{icon name="label"}
+		</td>
+		<td class="bold nobr">
+			{trans("Text label:")}
+		</td>
+		<td>
+			<input type="text" name="division[label]" value="{$division.label|escape}" size="40"
+					{tip text="Enter text label under which division is visible in user interface" trigger="label"}>
+		</td>
+	</tr>
 	<tr>
 		<td>
 			<img src="img/home.gif" alt="">
@@ -141,14 +164,29 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD>
+		<TD class="valign-top">
 			<IMG src="img/card.gif" alt="">
 		</TD>
-		<TD class="bold nobr">
+		<TD class="bold nobr valign-top">
 			{trans("Bank account:")}
 		</TD>
 		<TD>
+			{trans("Bank:")}
+			<input type="text" name="division[bank]" value="{$division.bank}" size="45" {tip text="Enter bank name (optional)" trigger="bank"}>
+			<br>
+			{trans("Number:")}
 			<INPUT type="text" name="division[account]" VALUE="{$division.account}" SIZE="45" {tip text="Enter bank account or mass payments account prefix (optional)" trigger="account"}>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<i class="lms-ui-icon-mail"></i>
+		</TD>
+		<TD class="bold nobr">
+			{trans("Email:")}
+		</TD>
+		<TD>
+			<INPUT type="text" value="{$division.email}" name="division[email]" size="40" {tip text="Enter e-mail address (optional)" trigger="email"}>
 		</TD>
 	</TR>
 	<TR>
@@ -216,8 +254,8 @@
 		<TD>
 			<SELECT name="division[inv_paytype]" {tip text="Select default invoices payment type" trigger="paytype"}>
 				<OPTION value=""{if !$division.inv_paytype} selected{/if}>- {trans("default")} -</OPTION>
-				{foreach from=$_PAYTYPES item=item key=key}
-				<OPTION value="{$key}"{if $division.inv_paytype==$key} selected{/if}>{$item}</OPTION>
+				{foreach $_PAYTYPES as $key => $item}
+				<OPTION value="{$key}"{if $division.inv_paytype==$key} selected{/if}>{trans($item)}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>
@@ -241,14 +279,33 @@
 			</SELECT>
 		</TD>
 	</TR>
+	<tr>
+		<td class="bold nobr">
+			<IMG src="img/users.gif" alt="">
+		</td>
+		<td class="bold">
+			{trans("Users:")}
+		</td>
+		<td>
+			<label for="division[users][]">
+				<select SIZE="4" NAME="division[users][]" multiple {tip text="Select users" class="lms-ui-multiselect"} data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
+					{foreach $userslist as $user}
+						<option value="{$user.id}" {if isset($division.users) && in_array($user.id, $division.users)} selected{/if}>
+							{$user.login|truncate:30:"&hellip;":true}
+						</option>
+					{/foreach}
+				</select>
+			</label>
+		</td>
+	</tr>
 	<TR>
-		<TD align="right" colspan="3">
-			<A href="javascript:document.division.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
-			<A href="?m=divisionlist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="division[reuse]" id="division_reuse" value="ON" {if $division.reuse}checked{/if}> <label for="division_reuse">{trans("Display this form again, when this division is saved")}</label>
+		<TD colspan="3" class="lms-ui-box-buttons">
+			{button type="submit" icon="save" label="Submit"}
+			{button type="link-button" icon="cancel" label="Cancel" href="?m=divisionlist"}
+			<BR><INPUT type="checkbox" name="division[reuse]" id="division_reuse" value="ON" {if $division.reuse}checked{/if}> <label for="division_reuse">{trans("Display this form again, when this division is saved")}</label>
 		</TD>
 	</TR>
-    </TBODY>
+	</TBODY>
 </TABLE>
 <SCRIPT type="text/javascript">
 <!--
@@ -256,6 +313,10 @@ $(function() {
 	$('form[name="division"] [name="division[shortname]"]').focus();
 
 	check_teryt(['location', 'location_city'], true);
+
+	$('#submit-button').click(function() {
+		document.division.submit();
+	});
 });
 //-->
 </SCRIPT>

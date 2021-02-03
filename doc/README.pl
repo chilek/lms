@@ -160,6 +160,7 @@ Rozdział 1. Wstęp
        Tomasz 'Chilek' Chiliński
        Konrad 'kondi' Rzentarzewski
        Grzegorz 'Ceho' Chwesewicz
+       Rafał 'Ravvar' Pietraszewicz
      * Kod C:
 
        Aleksander 'A.L.E.C' Machniak
@@ -184,6 +185,7 @@ Rozdział 1. Wstęp
        Tomasz 'Chilek' Chiliński
        Konrad 'kondi' Rzentarzewski
        Grzegorz 'Ceho' Chwesewicz
+       Rafał 'Ravvar' Pietraszewicz
      * Grafika:
 
        Piotr 'Pierzak' Mierzeński
@@ -214,7 +216,7 @@ Rozdział 1. Wstęp
 1.2.2. Inni
 
    LMS zawiera fragmenty następującego oprogramowania: phpMyAdmin,
-   phpsysinfo, NewsPortal, overLIB, ezpdf, xajax, Tigra Calendar,
+   phpsysinfo, NewsPortal, overLIB, ezpdf, xajax,
    procedury konwersji liczb na postać słowną autorstwa Piotra Klebana
    oraz przykłady kodu zawarte w Podręczniku PHP.
      __________________________________________________________________

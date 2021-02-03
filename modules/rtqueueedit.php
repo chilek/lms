@@ -24,102 +24,138 @@
  *  $Id$
  */
 
-if(! $LMS->QueueExists($_GET['id']))
-{
-	$SESSION->redirect('?m=rtqueuelist');
+if (! $LMS->QueueExists($_GET['id'])) {
+    $SESSION->redirect('?m=rtqueuelist');
 }
 
 if (isset($_GET['unread'])) {
-	$LMS->MarkQueueAsRead($_GET['id']);
-	$SESSION->redirect('?' . $SESSION->get('backto'));
+    $LMS->MarkQueueAsRead($_GET['id']);
+    $SESSION->redirect('?' . $SESSION->get('backto'));
 }
 
-if(isset($_POST['queue']))
-{
-	$queue = $_POST['queue'];
+if (isset($_POST['queue'])) {
+    $queue = $_POST['queue'];
 
-	$queue['id'] = $_GET['id'];
-	
-	if($queue['name'] == '')
-		$error['name'] = trans('Queue name must be defined!');
+    $queue['id'] = $_GET['id'];
 
-	if($queue['email']!='' && !check_email($queue['email']))
-		$error['email'] = trans('Incorrect email!');
+    if ($queue['name'] == '') {
+        $error['name'] = trans('Queue name must be defined!');
+    }
 
-	if(isset($queue['users']))
-		foreach($queue['users'] as $key => $value)
-			$queue['rights'][] = array('id' => $key, 'rights' => array_sum($value), 'name' => $queue['usernames'][$key]);
+    if ($queue['email']!='' && !check_email($queue['email'])) {
+        $error['email'] = trans('Incorrect email!');
+    }
 
-	if ($queue['newticketsubject'] && !$queue['newticketbody'])
-		$error['newticketbody'] = trans('New ticket body should not be empty if you set new ticket subject!');
-	elseif (!$queue['newticketsubject'] && $queue['newticketbody'])
-		$error['newticketsubject'] = trans('New ticket subject should not be empty if you set new ticket body!');
+    foreach ($queue['usernames'] as $key => $rname) {
+        $queue['rights'][] = array(
+            'id' => $key,
+            'rights' => isset($queue['users'][$key]) ? array_sum($queue['users'][$key]) : 0,
+            'rname' => $rname,
+            'login' => $queue['userlogins'][$key],
+        );
+    }
 
-	if ($queue['newmessagesubject'] && !$queue['newmessagebody'])
-		$error['newmessagebody'] = trans('New message body should not be empty if you set new message subject!');
-	elseif (!$queue['newmessagesubject'] && $queue['newmessagebody'])
-		$error['newmessagesubject'] = trans('New message subject should not be empty if you set new message body!');
+    if ($queue['newticketsubject'] && !$queue['newticketbody']) {
+        $error['newticketbody'] = trans('New ticket body should not be empty if you set new ticket subject!');
+    } elseif (!$queue['newticketsubject'] && $queue['newticketbody']) {
+        $error['newticketsubject'] = trans('New ticket subject should not be empty if you set new ticket body!');
+    }
 
-	if ($queue['resolveticketsubject'] && !$queue['resolveticketbody'])
-		$error['resolveticketbody'] = trans('Resolve ticket body should not be empty if you set resolve ticket subject!');
-	elseif (!$queue['resolveticketsubject'] && $queue['resolveticketbody'])
-		$error['resolveticketsubject'] = trans('Resolve ticket subject should not be empty if you set resolve ticket body!');
+    if ($queue['newmessagesubject'] && !$queue['newmessagebody']) {
+        $error['newmessagebody'] = trans('New message body should not be empty if you set new message subject!');
+    } elseif (!$queue['newmessagesubject'] && $queue['newmessagebody']) {
+        $error['newmessagesubject'] = trans('New message subject should not be empty if you set new message body!');
+    }
 
-	$categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
-	if (isset($queue['categories'])) {
-		foreach ($categories as &$category)
-			if (isset($queue['categories'][$category['id']]))
-				$category['checked'] = 1;
-		unset($category);
-	}
+    if ($queue['resolveticketsubject'] && !$queue['resolveticketbody']) {
+        $error['resolveticketbody'] = trans('Resolve ticket body should not be empty if you set resolve ticket subject!');
+    } elseif (!$queue['resolveticketsubject'] && $queue['resolveticketbody']) {
+        $error['resolveticketsubject'] = trans('Resolve ticket subject should not be empty if you set resolve ticket body!');
+    }
 
-	if (!$error) {
-		$DB->Execute('UPDATE rtqueues SET name=?, email=?, description=?,
+    $categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
+    if (isset($queue['categories'])) {
+        $queue['categories'] = array_flip($queue['categories']);
+        foreach ($categories as &$category) {
+            if (isset($queue['categories'][$category['id']])) {
+                $category['checked'] = 1;
+            }
+        }
+        unset($category);
+    }
+
+    if (!$error) {
+        $DB->Execute(
+            'UPDATE rtqueues SET name=?, email=?, description=?,
 				newticketsubject=?, newticketbody=?,
 				newmessagesubject=?, newmessagebody=?,
-				resolveticketsubject=?, resolveticketbody=?, verifierticketsubject=?, verifierticketbody=?, verifierid=? WHERE id=?',
-				array(trim($queue['name']),
-					$queue['email'], $queue['description'],
-					$queue['newticketsubject'], $queue['newticketbody'],
-					$queue['newmessagesubject'], $queue['newmessagebody'],
-					$queue['resolveticketsubject'], $queue['resolveticketbody'], $queue['verifierticketsubject'], $queue['verifierticketbody'],
-					!empty($queue['verifierid']) ? $queue['verifierid'] : NULL,
-					$queue['id']));
+				resolveticketsubject=?, resolveticketbody=?, verifierticketsubject=?, verifierticketbody=?, verifierid=?,
+				newticketsmsbody = ?, newmessagesmsbody = ?, resolveticketsmsbody = ?
+				WHERE id=?',
+            array(
+                trim($queue['name']),
+                $queue['email'], $queue['description'],
+                $queue['newticketsubject'], $queue['newticketbody'],
+                $queue['newmessagesubject'], $queue['newmessagebody'],
+                $queue['resolveticketsubject'], $queue['resolveticketbody'], $queue['verifierticketsubject'], $queue['verifierticketbody'],
+                !empty($queue['verifierid']) ? $queue['verifierid'] : null,
+                empty($queue['newticketsmsbody']) ? null : $queue['newticketsmsbody'],
+                empty($queue['newmessagesmsbody']) ? null : $queue['newmessagesmsbody'],
+                empty($queue['resolveticketsmsbody']) ? null : $queue['resolveticketsmsbody'],
+                $queue['id']
+            )
+        );
 
-		$DB->Execute('DELETE FROM rtrights WHERE queueid=?', array($queue['id']));
-		
-		if($queue['rights'])
-		        foreach($queue['rights'] as $right)
-		                if($right['rights'])
-					$DB->Execute('INSERT INTO rtrights(queueid, userid, rights) VALUES(?, ?, ?)',
-				                array($queue['id'], $right['id'], $right['rights']));
+        $DB->Execute('DELETE FROM rtrights WHERE queueid=?', array($queue['id']));
 
-		foreach ($categories as $category) {
-			if ($category['checked']) {
-				if (!$DB->GetOne('SELECT id FROM rtqueuecategories WHERE queueid = ? AND categoryid = ?',
-					array($queue['id'], $category['id'])))
-					$DB->Execute('INSERT INTO rtqueuecategories (queueid, categoryid) VALUES (?, ?)',
-						array($queue['id'], $category['id']));
-			} else
-				$DB->Execute('DELETE FROM rtqueuecategories WHERE queueid = ? AND categoryid = ?',
-					array($queue['id'], $category['id']));
-		}
+        if ($queue['rights']) {
+            foreach ($queue['rights'] as $right) {
+                if ($right['rights']) {
+                    $DB->Execute(
+                        'INSERT INTO rtrights(queueid, userid, rights) VALUES(?, ?, ?)',
+                        array($queue['id'], $right['id'], $right['rights'])
+                    );
+                }
+            }
+        }
 
-		$SESSION->redirect('?m=rtqueueinfo&id='.$queue['id']);
-	}
+        foreach ($categories as $category) {
+            if ($category['checked']) {
+                if (!$DB->GetOne(
+                    'SELECT id FROM rtqueuecategories WHERE queueid = ? AND categoryid = ?',
+                    array($queue['id'], $category['id'])
+                )) {
+                    $DB->Execute(
+                        'INSERT INTO rtqueuecategories (queueid, categoryid) VALUES (?, ?)',
+                        array($queue['id'], $category['id'])
+                    );
+                }
+            } else {
+                $DB->Execute(
+                    'DELETE FROM rtqueuecategories WHERE queueid = ? AND categoryid = ?',
+                    array($queue['id'], $category['id'])
+                );
+            }
+        }
+
+        $SESSION->redirect('?m=rtqueueinfo&id='.$queue['id']);
+    }
 } else {
-	$queue = $LMS->GetQueue($_GET['id']);
-	$categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
-	$queuecategories = $LMS->GetQueueCategories($_GET['id']);
-	if (empty($categories))
-		$categories = array();
-	foreach ($categories as &$category)
-		if (isset($queuecategories[$category['id']]))
-			$category['checked'] = 1;
-	unset($category);
+    $queue = $LMS->GetQueue($_GET['id']);
+    $categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
+    $queuecategories = $LMS->GetQueueCategories($_GET['id']);
+    if (empty($categories)) {
+        $categories = array();
+    }
+    foreach ($categories as &$category) {
+        if (isset($queuecategories[$category['id']])) {
+            $category['checked'] = 1;
+        }
+    }
+    unset($category);
 }
 
-$userlist = $LMS->getUserList();
+$userlist = $LMS->getUserNamesIndexedById();
 unset($userlist['total']);
 
 $layout['pagetitle'] = trans('Queue Edit: $a', $queue['name']);
@@ -130,6 +166,4 @@ $SMARTY->assign('queue', $queue);
 $SMARTY->assign('userlist', $userlist);
 $SMARTY->assign('categories', $categories);
 $SMARTY->assign('error', $error);
-$SMARTY->display('rt/rtqueueedit.html');
-
-?>
+$SMARTY->display('rt/rtqueuemodify.html');

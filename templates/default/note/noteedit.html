@@ -63,7 +63,7 @@
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
 			{if ConfigHelper::checkPrivilege("invoice_consent_date")}
-				<INPUT TYPE="TEXT" NAME="note[cdate]" VALUE="{$note.cdate|date_format:"%Y/%m/%d"}" SIZE="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
+				<INPUT TYPE="TEXT" NAME="note[cdate]" VALUE="{$note.cdate|date_format:"%Y/%m/%d"}" SIZE="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
 				{if $note.cdatewarning}
 					<INPUT TYPE="HIDDEN" NAME="note[cdatewarning]" VALUE="1">
 				{/if}
@@ -88,12 +88,20 @@
 		</TD>
 		<TD style="width: 99%;" class="nobr">
 			{if isset($customer.id)}
-			{customerlist form="setcustomer" customers=$customers selected=$customer.id selectname="customer" inputname="customerid"}
+				{customerlist form="setcustomer" customers=$customers selected=$customer.id version=2
+					selectname="customer" inputname="customerid"}
 			{else}
-			{customerlist form="setcustomer" customers=$customers selected=$note.customerid selectname="customer" inputname="customerid"}
+				{customerlist form="setcustomer" customers=$customers selected=$note.customerid version=2
+					selectname="customer" inputname="customerid"}
 			{/if}
 		</TD>
 	</TR>
+	<tr>
+		<td class="bold">{trans("Currency:")}</td>
+		<td>
+			{currency_selection selected=$note.currency elementname="note[currency]"}
+		</td>
+	</tr>
 	<TR>
 		<TD WIDTH="100%" ALIGN="right" COLSPAN="2">
 			<A HREF="javascript: saveheader();">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
@@ -120,8 +128,8 @@
 </TABLE>
 </P>
 {/if}
-<P>	
-<TABLE class="lmsbox">
+<P>
+<TABLE class="lmsbox lms-ui-background-cycle">
     <THEAD>
 	<TR>
 		<TD WIDTH="1%">
@@ -140,9 +148,8 @@
     </THEAD>
     <TBODY>
 	{*{counter print=false}*}
-	{cycle values="light,lucid" print=false}
 	{foreach from=$contents item=item}
-	<TR class="highlight {cycle}"  >
+	<TR class="highlight">
 		<TD WIDTH="1%">
 			<B>{counter}.</B>
 		</TD>
@@ -150,11 +157,11 @@
 			{$item.description}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			{$item.value|string_format:"%.2f"}
+			{$item.value|string_format:"%01.2f"}
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<A HREF="?m=noteedit&action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Remove this item from list"}></A>
-		</TD>			
+		</TD>
 	</TR>
 	{foreachelse}
 	<TR>
@@ -194,15 +201,15 @@
 			<A HREF="javascript:document.additem.submit(); "><IMG SRC="img/save.gif" ALT="" {tip text="Add item"}></A>
 		</TD>
 	</TR>
-	<TR>
+	<TR class="lms-ui-button-panel">
 		<TD COLSPAN="4" ALIGN="RIGHT">
-			<A HREF="?m=notelist">{trans("Cancel")} <IMG src="img/cancel.gif"></A> 
+			<A HREF="?m=notelist">{trans("Cancel")} <IMG src="img/cancel.gif"></A>
 			{if !$customer}
-			<A HREF="javascript:alert('{trans("Customer not selected!")}');">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
-			<A HREF="javascript:alert('{trans("Customer not selected!")}');">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
+				<A class="customer-alert" href="#">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
+				<A class="customer-alert" href="#">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
 			{elseif !$contents}
-			<A HREF="javascript:alert('{trans("Document has no items!")}');">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
-			<A HREF="javascript:alert('{trans("Document has no items!")}');">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
+				<A class="document-alert" href="#">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
+				<A class="document-alert" href="#">{trans("Save & Print")} <IMG src="img/printd.gif" alt=""></A>
 			{else}
 			<A HREF="?m=noteedit&action=save">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
 			<A HREF="javascript:printnote()">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
@@ -212,11 +219,19 @@
 	</FORM>
     </TFOOT>
 </TABLE>
-<SCRIPT type="text/javascript">
-<!--
+<SCRIPT>
 $(function() {
 	$('form[name="setcustomer"] [name="note[number]"]').focus();
 });
-//-->
+
+$('.customer-alert').click(function() {
+	alertDialog($t("Customer not selected!"), this);
+	return;
+});
+$('.document-alert').click(function() {
+	alertDialog($t("Document has no items!"), this);
+	return;
+});
+
 </SCRIPT>
 {/block}

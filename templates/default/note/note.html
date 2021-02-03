@@ -4,6 +4,8 @@
 {trans("Draw-up date:")} {$note.cdate|date_format:"%Y/%m/%d"}{if $note.division_cplace != ""}, {$note.division_cplace}{/if}
 <BR>
 {trans("Deadline:")} {$note.pdate|date_format:"%Y/%m/%d"}
+<BR>
+{trans("Expositor:")} {if $note.user}{$note.user}{else}{$note.division_author}{/if}
 </DIV>
 
 <H2 align="center" class="hdf">
@@ -17,24 +19,75 @@
 
 <TABLE WIDTH="100%" CELLSPACING="3" class="sdr">
 	<TR>
-		<TD WIDTH="50%" class="sdr">
+		<TD WIDTH="54%" class="sdr valign-top">
 			<B>{trans("Note drawer:")}</B><BR>
+			{if !ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')
+				|| empty($note.bankccounts)}
+				{$accounts = array(bankaccount($note.customerid, $note.account))}
+			{else}
+				{$accounts = array()}
+			{/if}
+			{if ConfigHelper::checkConfig('invoices.show_all_accounts')
+				|| ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')}
+				{$accounts = array_merge($accounts, $note.bankaccounts)}
+			{/if}
+			{foreach $accounts as $accountidx => $account}
+				{$accounts[$accountidx] = format_bankaccount($account)}
+			{/foreach}
+			{textformat assign="account_text" wrap=5000}
+				{if $use_alert_color}<span style="color:red">{/if}{implode('<br>', $accounts)}{if $use_alert_color}</span>{/if}
+			{/textformat}
+			{$tmp = $note.division_header}
+			{$tmp = str_replace("\n", '<br>', $tmp)}
+			{$tmp = str_replace('%bankaccount', $account_text, $tmp)}
+			{$tmp = str_replace('%bankname', $note.div_bank, $tmp)}
+
+			{if ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_bankaccount', true))}
+				{textformat assign="tmp" wrap=5000}
+					{$tmp}<br>{trans('Bank account:')}<br><strong>{$account_text}</strong>
+				{/textformat}
+			{/if}
+
+			{$tmp}
 			<BR>
-			{$note.division_header|replace:"\n":"<BR>"}
-		</TD>
-		<TD WIDTH="50%" class="sdr">
+			<BR>
+			<BR>
 			<B>{trans("Note recipient:")}</B><BR>
-			<BR>
 			{$note.name}<BR>
 			{$note.address}<BR>
 			{$note.zip} {$note.city}
+			{if $note.ten}
+				<BR>{t a=$note.ten}TEN $a{/t}
+			{elseif !ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.hide_ssn', true)) && $note.ssn}
+				<br>{t a=$note.ssn}SSN $a{/t}
+			{/if}
+			{if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_credentials', true)))}
+				{if $note.customerpin}
+					<BR>
+					<strong>{trans("Customer ID:")} {$note.customerid|string_format:"%04d"}<BR>
+					PIN: {$note.customerpin|string_format:"%04d"}</strong>
+					<BR>
+				{/if}
+			{/if}
+		</TD>
+		<TD WIDTH="46%" class="mdf bold valign-top">
+			{if ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.post_address', true))}
+				<BR>
+				<BR>
+				<B>
+				{if $note.post_name || $note.post_address}
+					{if $note.post_name}{$name=$note.post_name}{else}{$name=$note.name}{/if}
+					{document_address name=$name address=$note.post_address street=$note.post_street zip=$note.post_zip postoffice=$note.post_postoffice city=$note.post_city}
+				{else}
+					{$note.name}<BR>
+					{$note.address}<BR>
+					{$note.zip} {$note.city}
+				{/if}</B>
+			{/if}
 		</TD>
 	</TR>
 </TABLE>
 <BR>
-<P class="sdr">
-Niniejszym, zgodnie z zawartą Umową, obciążamy Państwa należnościami wg poniższego zestawienia:
-</P>
 <TABLE WIDTH="100%" CELLPADDING="3">
     <TR CLASS="fall">
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
@@ -56,7 +109,7 @@ Niniejszym, zgodnie z zawartą Umową, obciążamy Państwa należnościami wg p
 		{$item.description}
 	</TD>
 	<TD CLASS="flr" ALIGN="RIGHT" NOWRAP>
-		{$item.value|money_format}
+		{$item.value|string_format:"%01.2f"}
 	</TD>
     </TR>
     {/foreach}
@@ -65,28 +118,21 @@ Niniejszym, zgodnie z zawartą Umową, obciążamy Państwa należnościami wg p
 		<P ALIGN="RIGHT"><B>{trans("Total:")}</B></P>
 	</TD>
 	<TD CLASS="fall" ALIGN="RIGHT" NOWRAP>
-		{$note.value|money_format}
+		{$note.value|string_format:"%01.2f"}
 	</TD>
     </TR>
 </TABLE>
 <BR>
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR>
-		<TD WIDTH="50%" ALIGN="CENTER" ROWSPAN="2" CLASS="sdr">
-			{trans("Expositor:")} {if $note.user}{$note.user}{else}{$note.division_author}{/if}
-		</TD>
 		<TD WIDTH="50%" ALIGN="RIGHT" CLASS="hdf">
-			{trans("To pay:")} {$note.value|money_format}
+			{trans("To pay:")} {moneyf($note.value, $note.currency)}
 		</TD>
 	</TR>
 	<TR>
 		<TD WIDTH="50%" ALIGN="RIGHT" CLASS="sdr">
 			{trans("In words:")}
-			{if ConfigHelper::checkConfig('phpui.to_words_short_version')}
-				{$note.value|string_format:"%d"|to_words:0:"":1} {$note.valuep|string_format:"%02d"}/100
-			{else}
-				{moneyf_in_words($note.value+($note.valuep/100))}
-			{/if}
+			{moneyf_in_words($note.value, $note.currency)}
 		</TD>
 	</TR>
 	<TR>
@@ -95,32 +141,16 @@ Niniejszym, zgodnie z zawartą Umową, obciążamy Państwa należnościami wg p
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="100%" COLSPAN="2">
-			<B>{trans("Cautions:")}</B><BR>
-			<BLOCKQUOTE>
-			{trans("If you have any questions or doubts, contact with our Customer Service Representative. Prepare your Customer ID, please.")}<BR>
-			{trans("You may use our automated Customer Care Web Panel, just remember your PIN (it's printed on the other side of this page)")}
-			</BLOCKQUOTE>
-			<BR>
+		<TD WIDTH="100%" ALIGN="center">
+			{$note.division_footer}
 		</TD>
 	</TR>
 </TABLE>
 </TD>
 </TR>
 
-<!-- The Other Page of Invoice customerbalancelist + customerpin -->
-<!-- insert page break here and buy auto-duplex printer :p -->
-{if (ConfigHelper::checkValue(ConfigHelper::getConfig('notes.customer_credentials', true)))}
-	{if $note.customerpin}
-		<BR><BR>
-		<B>{trans("Customer ID:")} {$note.customerid|string_format:"%04d"}</B><BR>
-		PIN: <CODE>{$note.customerpin|string_format:"%04d"}</CODE>
-		<BR><BR>
-	{/if}
-{/if}
-
-{* 
-customer's balance: {$note.customerbalancelist.balance} 
+{*
+customer's balance: {$note.customerbalancelist.balance}
 *}
 
 {if $note.customerbalancelist.list}
@@ -143,18 +173,32 @@ customer's balance: {$note.customerbalancelist.balance}
 	{$item=$note.customerbalancelist.list[balancelist]}
 	<TR>
 		<TD width="1%" class="nobr">{$item.date}</TD>
-		<TD width="1%" align="right" class="nobr">{if $item.value > 0}+{/if}{$item.value|money_format}</TD>
+		<TD width="1%" align="right" class="nobr">{if $item.value > 0}+{/if}{moneyf($item.value, $item.currency)}</TD>
 		<TD width="1%" align="right" class="nobr">{$item.tax}</TD>
 		<TD width="1%" align="center">&raquo;</TD>
 		<TD width="1%" align="right" class="nobr">
 			{if $item.after < 0}<STRONG>{/if}
-			    {$item.after|money_format}
+			    {moneyf($item.after)}
 			{if $item.after < 0}</STRONG>{/if}
 		</TD>
 		<TD width="93%">{$item.comment}</TD>
         </TR>
 	{/section}
-</TABLE>	
-{/if}	
+</TABLE>
+{/if}
 
+{if !ConfigHelper::checkConfig('notes.issuer_signature')}
+<table width="100%" style="margin-top:12em;">
+	<tbody>
+		<tr>
+			<td width="50%"></td>
+			<td width="27%" align="center" style="border-bottom:1px dotted #000;"></td>
+		</tr>
+		<tr>
+			<td width="50%"></td>
+			<td width="27%" align="center" class="sdr">{trans("issuer's signature")}</td>
+		</tr>
+	</tbody>
+</table>
+{/if}
 </DIV>

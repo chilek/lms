@@ -27,11 +27,8 @@
 $this->BeginTrans();
 
 $this->Execute("
-	ALTER TABLE netradiosectors ADD COLUMN bandwidth numeric(9,5) DEFAULT NULL"
-);
+	ALTER TABLE netradiosectors ADD COLUMN bandwidth numeric(9,5) DEFAULT NULL");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015041500', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

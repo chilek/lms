@@ -25,19 +25,24 @@
  */
 
 if (isset($_GET['live'])) {
-	$netdevmaprefresh_helper = ConfigHelper::getConfig('phpui.netdevmaprefresh_helper');
-	if (empty($netdevmaprefresh_helper))
-		$cmd = 'sudo /sbin/pinger-addresses';
-	else
-		$cmd = $netdevmaprefresh_helper;
-	exec($cmd, $output);
-	if (count($output)) {
-		$curtime = time();
-		foreach ($output as $ip)
-			if (check_ip($ip))
-				$DB->Execute('UPDATE nodes SET lastonline = ? WHERE ipaddr = INET_ATON(?)',
-					array($curtime, $ip));
-	}
+    $netdevmaprefresh_helper = ConfigHelper::getConfig('phpui.netdevmaprefresh_helper');
+    if (empty($netdevmaprefresh_helper)) {
+        $cmd = 'sudo /sbin/pinger-addresses';
+    } else {
+        $cmd = $netdevmaprefresh_helper;
+    }
+    exec($cmd, $output);
+    if (count($output)) {
+        $curtime = time();
+        foreach ($output as $ip) {
+            if (check_ip($ip)) {
+                $DB->Execute(
+                    'UPDATE nodes SET lastonline = ? WHERE ipaddr = INET_ATON(?)',
+                    array($curtime, $ip)
+                );
+            }
+        }
+    }
 }
 
 include(MODULES_DIR.'/map.inc.php');
@@ -45,5 +50,3 @@ include(MODULES_DIR.'/map.inc.php');
 header('Content-Type: text/plain');
 
 echo '{"devices":'.json_encode($devices).',"nodes":'.json_encode($nodes).'}';
-
-?>

@@ -25,7 +25,7 @@
 define('DOC_INVOICE', 1);
 define('DOC_CNOTE', 3);
 define('DOC_DNOTE', 5);
-define('DOC_INVOICE_PRO',6);
+define('DOC_INVOICE_PRO', 6);
 
 define('POSTAL_ADDRESS', 0);
 
@@ -41,18 +41,20 @@ $documents = $this->GetAllByKey("SELECT id, customerid FROM documents
 	WHERE type IN (?, ?, ?, ?)", 'id', array(DOC_INVOICE, DOC_CNOTE, DOC_DNOTE, DOC_INVOICE_PRO));
 
 if (!empty($post_addresses) && !empty($documents)) {
-	$location_manager = new LMSLocationManager($this);
-	foreach ($documents as $docid => $document)
-		if (isset($post_addresses[$document['customerid']])) {
-			$post_address_id = $location_manager->CopyAddress($post_addresses[$document['customerid']]['address_id']);
-			if (!empty($post_address_id))
-				$this->Execute("UPDATE documents SET post_address_id = ? WHERE id = ?",
-					array($post_address_id, $docid));
-		}
+    $location_manager = new LMSLocationManager($this);
+    foreach ($documents as $docid => $document) {
+        if (isset($post_addresses[$document['customerid']])) {
+            $post_address_id = $location_manager->CopyAddress($post_addresses[$document['customerid']]['address_id']);
+            if (!empty($post_address_id)) {
+                $this->Execute(
+                    "UPDATE documents SET post_address_id = ? WHERE id = ?",
+                    array($post_address_id, $docid)
+                );
+            }
+        }
+    }
 }
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017103101', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

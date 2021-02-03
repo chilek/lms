@@ -34,8 +34,8 @@
 			    <input type="hidden" name="is_sure" value="1">
 			    <input type="hidden" name="m" value="usergroupmove">
 			    <input type="hidden" name="from" value="{$usergroup.id}">
-			    <a href="javascript:document.tmove.submit();" onclick="return confirm('{trans("Are you sure, you want to move members to selected group?")}')">{trans("Move members to group:")}</a>
-			    <select size="1" name="to" {tip text="Select group to which you want to move members"}>
+			    <a id="move-members" href="#">{trans("Move members to group:")}</a>
+				<select size="1" name="to" {tip text="Select group to which you want to move members"}>
 				{foreach from=$usergroups item=item}{if $item.id != $usergroup.id}
 				<option value="{$item.id}">{$item.name}</option>
 				{/if}{/foreach}
@@ -43,17 +43,22 @@
 			</form>
 		    {/if}
 		    <a href="javascript:document.tedit.submit();" accesskey="S">{trans("Submit")} <img src="img/save.gif" alt=""></a>
-		    <a href="?m=usergroupinfo&id={$usergroup.id}">{trans("Cancel")} <img src="img/cancel.gif" ALT=""></a> 
+		    <a href="?m=usergroupinfo&id={$usergroup.id}">{trans("Cancel")} <img src="img/cancel.gif" ALT=""></a>
 		</td>
 	    </tr>
 	</tbody>
     </table>
-    <script type="text/javascript">
-	<!--
-		$(function() {
+	<script>
+		$(function () {
 			$('form[name="tedit"] [name="usergroup[name]"]').focus();
 		});
-	//-->
-    </script>
+
+		$('#move-members').click(function () {
+			confirmDialog($t("Are you sure, you want to move members to selected group?"), this).done(function () {
+				document.tmove.submit();
+			});
+			return false;
+		});
+	</script>
     {include file="user/usergroupassignments.html"}
 {/block}

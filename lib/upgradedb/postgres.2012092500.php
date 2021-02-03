@@ -29,5 +29,3 @@ $this->Execute("ALTER TABLE events ADD moduserid integer NOT NULL DEFAULT 0;");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012092500', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

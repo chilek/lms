@@ -33,8 +33,6 @@ $this->Execute("
 	ALTER TABLE nodes ALTER ipaddr_pub SET DEFAULT 0;
 ");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005042400', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005042400', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

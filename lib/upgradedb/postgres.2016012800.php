@@ -28,5 +28,3 @@ $this->Execute("ALTER TABLE invoicecontents ALTER COLUMN value TYPE numeric(12, 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016012800', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

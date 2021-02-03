@@ -33,7 +33,7 @@ class WelcomeHandler
 {
     /**
      * Example handler that does nothing
-     * 
+     *
      * @param mixed $hook_data
      */
     public function welcomeOnLoad($hook_data)
@@ -41,5 +41,4 @@ class WelcomeHandler
         error_log('welcome on load hook trigered');
         return $hook_data;
     }
-
 }

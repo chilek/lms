@@ -165,5 +165,3 @@ CREATE VIEW vnodealltariffs_tariffs AS
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017101205', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

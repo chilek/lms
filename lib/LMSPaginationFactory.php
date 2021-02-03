@@ -33,12 +33,12 @@ class LMSPaginationFactory
     
     /**
      * Returns pagination
-     * 
+     *
      * @param int $page Page
      * @param int $total Total
      * @param int $per_page Per page
      * @param boolean $short Short
-	 * @param string $instance_name Instance name
+     * @param string $instance_name Instance name
      * @return \LMSPagination Pagination
      */
     public static function getPagination($page, $total, $per_page, $short = false, $instance_name = null)

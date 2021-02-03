@@ -1,8 +1,42 @@
-<i id="lms-ui-menu-panel-toggle" class="fas fa-angle-left"></i>
-<nav id="lms-ui-menu-panel" class="no-print">
+<div id="lms-ui-mobile-menu-container" class="no-print">
+	<nav id="lms-ui-mobile-menu-panel">
+		{button type="link" id="lms-ui-mobile-menu-toggle" class="lms-ui-mobile-menu-item"
+			icon="menu" data_target="#lms-ui-menu-panel"}
+		{button type="link" id="lms-ui-mobile-menu-search" class="lms-ui-mobile-menu-item"
+			icon="search" data_target="#lms-ui-tool-panels"}
+	</nav>
+</div>
+
+<script>
+
+	$(function() {
+		$('#lms-ui-mobile-menu-panel .lms-ui-mobile-menu-item').click(function() {
+			var target = $(this).attr('data-target');
+			if ($(target).is(':visible')) {
+				$(target).removeClass('fullscreen-popup');
+				disableFullScreenPopup();
+			} else {
+				$(target).addClass('fullscreen-popup');
+				enableFullScreenPopup();
+			}
+
+			$(this).parent().find('.lms-ui-mobile-menu-item:not([data-target="' + target + '"])').each(function() {
+				$($(this).attr('data-target')).removeClass('fullscreen-popup');
+				disableFullScreenPopup();
+			});
+		});
+	});
+
+</script>
+
+<i id="lms-ui-menu-panel-toggle" class="fas fa-angle-left no-print"></i>
+<nav id="lms-ui-menu-panel" class="no-print lms-ui-popup">
 	<div id="lms-ui-menu-panel-container">
 	<div id="lms-ui-logo">
-		<img src="{ConfigHelper::getConfig('phpui.logo', 'img/logo-40.png')}" alt="LMS {$layout.lmsv}">
+		<a href="?m={ConfigHelper::getConfig('phpui.default_module')}">
+			<img src="{ConfigHelper::getConfig('phpui.logo', 'img/logo-40.png')}" title="LMS {$layout.lmsv}">
+			<span>{$layout.lmsv}</span>
+		</a>
 	</div>
 	<div id="lms-ui-main-menu">
 		<script>
@@ -10,60 +44,53 @@
 			var mainMenuVisible = getCookie('main-menu-visible');
 			mainMenuVisible = mainMenuVisible === null || mainMenuVisible == 'true';
 			if (mainMenuVisible) {
-				$('#lms-ui-menu-panel-toggle').addClass('visible');
+				$('body').addClass('main-menu-visible');
 			} else {
 				$('#lms-ui-menu-panel').hide();
 				$('#lms-ui-menu-panel-toggle').switchClass('fa-angle-left', 'fa-angle-right');
 			}
 
-
 			$('#lms-ui-menu-panel-toggle').click(function () {
 				var mainMenuVisible = $('#lms-ui-menu-panel').toggle().is(':visible');
 				if (mainMenuVisible) {
-					$('#lms-ui-menu-panel-toggle').addClass('visible')
+					$('body').addClass('main-menu-visible').find('#lms-ui-menu-panel-toggle')
 						.switchClass('fa-angle-right', 'fa-angle-left');
 				} else {
-					$('#lms-ui-menu-panel-toggle').removeClass('visible')
+					$('body').removeClass('main-menu-visible').find('#lms-ui-menu-panel-toggle')
 						.switchClass('fa-angle-left', 'fa-angle-right');
 				}
 				setCookie('main-menu-visible', mainMenuVisible);
 			});
 
-			if ($(window).width() <= 900) {
-				$('#lms-ui-menu-panel').addClass('mobile').css({
-					'min-width': 'unset',
-					'width' : '3em'
-				});
-			} else {
-				$('#lms-ui-menu-panel').removeClass('mobile').css({
-					'width': '12em',
-					'min-width': '12em'
-				});
-			}
+			$('body').toggleClass('lms-ui-mobile', parseInt($(window).outerWidth()) <= 800);
 
 			$(window).resize(function() {
-				if ($(window).width() <= 900) {
-					if (!$('#lms-ui-menu-panel').is('.mobile')) {
-						$('#lms-ui-menu-panel').addClass('mobile').css('min-width', 'unset')
-							.stop(true).animate({
-							width: '3em'
-						});
-					}
-				} else {
-					if ($('#lms-ui-menu-panel').is('.mobile')) {
-						$('#lms-ui-menu-panel').removeClass('mobile')
-							.stop(true).animate({
-							width: '12em'
-						}, {
-							complete: function () {
-								$(this).css('min-width', '12em');
-							}
-						});
-					}
-				}
+				var mobileMode = parseInt($(window).outerWidth()) <= 800;
+				$('body').toggleClass('lms-ui-mobile', mobileMode)
+					.css('margin-top', mobileMode ? '' : $('#lms-ui-tool-panels').outerHeight());
+				$('.lms-ui-popup:visible').toggleClass('fullscreen-popup', mobileMode);
+			})
+
+			$(function() {
+				setTimeout(function() {
+					$(window).resize();
+				}, 0);
 			});
 
 		</script>
+
+		{if is_array($context_divisions) && count($context_divisions) > 1}
+			<div id="lms-ui-division">
+				<select size="1" id="select_context_division" name="select_context_division" {tip text="Global division context"}>
+					{foreach $context_divisions as $division}
+						<option value="{$division.id}" {if $division.id == $division_context}selected{/if}>
+							{$division.label|truncate:30:"&hellip;":true|escape}
+						</option>
+					{/foreach}
+				</select>
+			</div>
+		{/if}
+
 		<div id="main-menu" class="click-menu">
 			{foreach $newmenu as $menuindex => $menuitem}
 			<div id="menu-{$menuindex}" class="lms-ui-menu-item">
@@ -94,10 +121,10 @@
 			{/foreach}
 			<div id="menu-logout" class="lms-ui-menu-item">
 				<div class="click-menu bottomline">
-					<div {tip class="tip" text="Allows you to logout" bold=1} onClick="{if ConfigHelper::getConfig('phpui.logout_confirmation')}if (confirm('{trans("Are you sure that you want to logout?")}')) { return self.location.href='?m=logout&amp;is_sure=1'; }{else}self.location.href='?m=logout&amp;is_sure=1';{/if}">
+					<div {tip class="tip" text="Allows you to logout" bold=1} onClick="{if ConfigHelper::getConfig('phpui.logout_confirmation')}confirmDialog('{trans("Are you sure that you want to logout?")}', this).done(function() { return location.href='?m=logout&is_sure=1'; });{else}location.href='?m=logout&is_sure=1';{/if}">
 						<div class="box1">
 							<i class="lms-ui-menu-item-icon lms-ui-icon-logout"></i>
-							{trans("Logout")} {$layout.logname|truncate:10:"..."}
+							{trans("Logout")} {$layout.logname|truncate:10:"&hellip;"}
 						</div>
 					</div>
 				</div>
@@ -116,7 +143,7 @@
 			handle: "i,img",
 			axis: "y",
 			opacity: 0.9,
-			update: function (event, ui) {
+			update: function () {
 				data = {};
 				data['main-menu-order'] = $(this).sortable("toArray").join(';');
 				savePersistentSettings(data);
@@ -125,7 +152,23 @@
 
 		restoreSortable('main-menu', '{$main_menu_sortable_order}');
 
+		$('#select_context_division').change(function () {
+			data = {};
+			data['division_context'] = $(this).val();
+			saveCurrentDivision(data).done(function () {
+				$('.division-context-selected').val(data['division_context']);
+				var divisionContext = $('.division-context');
+				if (divisionContext.length) {
+					divisionContext.trigger("lms:division_selection");
+				}
+			});
+		});
+
 		</script>
+	</div>
+	<div id="lms-ui-session-expire" title="{trans("Session expires after:")}">
+		{$timeout = ConfigHelper::getConfig('phpui.timeout')}
+		{sprintf("%02d:%02d", floor($timeout / 60), $timeout % 60)}
 	</div>
 	<div id="lms-ui-copyrights">
 		&copy; 2001-{$smarty.now|date_format:'%Y'}<br>
@@ -141,25 +184,39 @@
 
 	$(function() {
 		$('#lms-ui-menu-panel').on('mouseenter touchstart', function () {
-			if ($('#lms-ui-menu-panel').is('.mobile')) {
-				$(this).stop(true).animate({
-					width: '12em'
-				});
-			}
+			$('body').addClass('main-menu-mobile-wide');
 		}).on('mouseleave', function () {
-			if ($('#lms-ui-menu-panel').is('.mobile')) {
-				$(this).stop(true).animate({
-					width: '3em'
-				});
-			}
+			$('body').removeClass('main-menu-mobile-wide');
 		});
 		$('#lms-ui-contents').on('mouseenter touchstart', function () {
-			if ($('#lms-ui-menu-panel').is('.mobile')) {
-				$('#lms-ui-menu-panel').stop(true).animate({
-					width: '3em'
-				});
-			}
+			$('body').removeClass('main-menu-mobile-wide');
 		});
 	});
+
+	var lms_session_expiration_warning_interval = {intval(ConfigHelper::getConfig('phpui.session_expiration_warning_interval', 0))}
+	var lms_session_expiration_warning_dialog = false;
+
+	function session_expiration_warning_reset() {
+		lms_session_expiration_warning_dialog = false;
+	}
+
+	function session_expiration_warning_handler(time_to_expire) {
+		if (lms_session_expiration_warning_interval
+				&& lms_login_timeout_value - 10 >= lms_session_expiration_warning_interval
+				&& time_to_expire < lms_session_expiration_warning_interval) {
+			if (!lms_session_expiration_warning_dialog) {
+				lms_session_expiration_warning_dialog = true;
+				alertDialog($t('Your session is near to expiration! Click "OK" if you want to prevent logout.')).done(function () {
+					$.ajax('?', {
+						async: true,
+						method: 'GET',
+						success: function() {
+							reset_login_timeout();
+						}
+					});
+				});
+			}
+		}
+	}
 
 </script>

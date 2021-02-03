@@ -1,0 +1,296 @@
+{include file="header.html"}
+
+{box title="Your documents"}
+
+<style>
+
+	#file-status {
+		margin-top: 1em;
+	}
+
+	.awaits-scan {
+		margin-bottom: 0.5em;
+		margin-top: 0.5em;
+		margin-left: 1em;
+	}
+
+	.document-attachment:not(:last-child) {
+		margin-bottom: 0.6em;
+	}
+
+</style>
+
+{if $sms_active}
+<div class="modal fade" id="authcode-dialog" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="authcode-dialog" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">{trans("Authorization")}</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="alert" role="alert" style="display: none;">
+				</div>
+				<div class="form-group">
+					<form method="post" action="?m=documents&smsauth=1&check=1" name="authcode">
+						<label for="authcode" class="font-weight-bold">{trans("Enter code:")}</label>
+						<input type=text" name="authcode" id="authcode" autocomplete="off"
+							   placeholder="{trans("... which you received on your mobile phone")}"
+								{userpaneltip class="form-control" trigger="authcode"} />
+						<input type="hidden" name="documentid" class="documentid" value="{if isset($documentid)}{$documentid}{else}0{/if}">
+					</form>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-danger submit-button" formnovalidate accesskey="S">{trans("<!helpdesk>Submit")}</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">{trans("Close")}</button>
+			</div>
+		</div>
+	</div>
+</div>
+{/if}
+
+{if $scan_active}
+<div class="modal fade" id="newscan-dialog" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="newscan-dialog" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">{trans("Document submission")}</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+					<form method="post" action="?m=documents" name="newscan" enctype="multipart/form-data">
+						<label for="scans" class="font-weight-bold">{trans("Select scan file:")}</label>
+						<input type="file" name="files[]" id="scans" {userpaneltip class="form-control-file" text="Enter path to file or click 'Browse' button" trigger="files"} multiple />
+						<input type="hidden" id="post_max_size" value="{$post_max_size.bytes}">
+						<input type="hidden" id="upload_max_filesize" value="{$upload_max_filesize.bytes}">
+						<div id="file-status" class="alert alert-danger"{if !isset($error.files)} style="display: none;"{/if}>
+							{if isset($error.files)}
+								{$error.files}
+							{/if}
+						</div>
+						<small class="form-text">
+							{t a=$post_max_size.text}Maximum total file size: $a{/t}
+						</small>
+						<small class="form-text">
+							{t a=$upload_max_filesize.text}Maximum single file size: $a{/t}
+						</small>
+						<input type="hidden" name="documentid" class="documentid" value="{if isset($documentid)}{$documentid}{else}0{/if}">
+					</form>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-danger submit-button" formnovalidate accesskey="S">{trans("<!helpdesk>Submit")}</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">{trans("Close")}</button>
+			</div>
+		</div>
+	</div>
+</div>
+{/if}
+
+<div class="table-responsive">
+	<table class="table table-sm table-hover table-bordered table-striped table-condensed">
+		{if $documents}
+			<thead class="bg-secondary font-weight-bold lms-userpanel-table-header">
+				<th>{trans("Number:")}</th>
+				<th>{trans("Type:")}</th>
+				<th>{trans("Created:")}</th>
+				<th>{trans("Period:")}</th>
+				<th>&nbsp;</th>
+			</thead>
+		{/if}
+		{foreach $documents as $doc}
+			<tr class="align-middle p-2 {if !$doc.closed && ($doc.confirmdate <= 0 || $doc.confirmdate < $smarty.now)}text-muted{/if}">
+				<td>{number number=$doc.number template=$doc.template time=$doc.cdate}</td>
+				<td>{assign var=type value=$doc.type}{$_DOCTYPES.$type}</td>
+				<td>{$doc.cdate|date_format:"%d.%m.%Y"}</td>
+				<td>
+					{if ($doc.type == $smarty.const.DOC_CONTRACT) || ($doc.type == $smarty.const.DOC_ANNEX)}
+						{if $doc.fromdate}
+							{$doc.fromdate|date_format:"%d.%m.%Y"}
+						{/if}
+						{if $doc.todate}
+							- {$doc.todate|date_format:"%d.%m.%Y"}
+						{else}
+							{if $doc.fromdate}
+								-
+							{/if}
+							{trans("indefinitely")}
+						{/if}
+					{/if}
+				</td>
+				<td>
+					{if $doc.closed || ($doc.confirmdate > 0 && $doc.confirmdate >= $smarty.now) || $doc.confirmdate == -1}
+						<div class="container">
+							{foreach $doc.attachments as $docattach}
+								<div class="row document-attachment">
+									<div class="col-md-auto">
+										<a class="btn btn-primary" href="?m=documents&f=docview&id={$doc.id}&attachmentid={$docattach.id}" target="_blank">
+											{if $docattach.type == 1}
+												{trans("View")}
+											{else}
+												{$docattach.filename}
+											{/if}
+										</a>
+										{if !$doc.closed && $docattach.type == 1 && $doc.confirmdate != -1}
+											{if $scan_active}
+												<a class="btn btn-primary" href="#" data-toggle="modal" data-target="#newscan-dialog" data-document-id="{$doc.id}">
+													{trans("Submit scan")}
+												</a>
+											{/if}
+											{if $sms_active}
+												<a class="btn btn-primary" href="#" data-toggle="modal" data-target="#authcode-dialog" data-document-id="{$doc.id}">
+													{trans("Confirm")}
+												</a>
+											{/if}
+										{/if}
+									</div>
+								</div>
+								{if !$doc.closed && $docattach.type == 1}
+									<div class="row">
+										{if $scan_active}
+											<div class="awaits-scan col-md-auto alert alert-warning">
+												{if $doc.confirmdate == -1}
+													{trans("awaits for operator signed document scan review")}
+												{else}
+													{trans("awaits for signed document scan submission")}
+												{/if}
+											</div>
+										{/if}
+										{if $sms_active && $doc.confirmdate != -1}
+											<div class="awaits-scan col-md-auto alert alert-warning">
+												{trans("awaits for your approval")}
+											</div>
+										{/if}
+									</div>
+								{/if}
+							{/foreach}
+						</div>
+					{else}
+						{trans("not approved")}
+					{/if}
+				</td>
+			</tr>
+		{foreachelse}
+			<tr>
+				<td colspan="5" class="text-center">
+					{trans("No such documents on your account.")}
+				</td>
+			</tr>
+		{/foreach}
+	</table>
+</div>
+
+<script>
+
+	$(function() {
+		{if isset($error.files)}
+		$('[href="#userdocsbox"]').tab('show');
+		$('#newscan-dialog').modal('show');
+		{/if}
+
+		function check_file_sizes() {
+			var scans = $('#scans').get(0);
+			$('#file-status').hide().text();
+			if (scans.files.length) {
+				var error = '';
+				var post_max_size = parseInt($('#post_max_size').val());
+				var upload_max_filesize = parseInt($('#upload_max_filesize').val());
+				var total_size = 0;
+				$.each(scans.files, function (index, file) {
+					if (upload_max_filesize && file.size > upload_max_filesize) {
+						error = '{trans("One from files is too large!")}';
+					}
+					total_size += file.size;
+				});
+				if (post_max_size && total_size > post_max_size) {
+					error = '{trans("Total file size is too large!")}';
+				}
+				if (error.length) {
+					$('#file-status').text(error).show();
+					return false;
+				}
+			}
+			return true;
+		}
+
+		$('#scans').change(function() {
+			check_file_sizes();
+		});
+
+		$('#newscan-dialog .submit-button').click(function() {
+			if (check_file_sizes()) {
+				document.newscan.submit();
+			}
+		});
+
+		$('[data-target="#newscan-dialog"]').click(function() {
+			$('#newscan-dialog .documentid').val($(this).attr('data-document-id'));
+		});
+
+		$('[data-target="#authcode-dialog"]').click(function() {
+			$('#authcode-dialog .submit-button').attr('disabled', 'disabled');
+			$('#authcode-dialog .documentid').val($(this).attr('data-document-id'));
+			$.ajax({
+				method: "POST",
+				url: '?m=documents&smsauth=1&send=1',
+				data: {
+					documentid: parseInt($('#authcode-dialog .documentid').val())
+				},
+				success: function (data) {
+					if (data.length) {
+						$('#authcode-dialog .alert').removeClass('alert-primary').addClass('alert-danger').html(data).show();
+					} else {
+						$('#authcode-dialog .alert').removeClass('alert-danger').addClass('alert-primary')
+							.html("{trans("Authorization code has been sent to you mobile phone.")}").show();
+					}
+					$('#authcode-dialog .submit-button').removeAttr('disabled');
+				}
+			});
+		});
+
+		$('#authcode-dialog').on('hidden.bs.modal', function() {
+			if ($(this).find('.submit-button').length) {
+				$('#authcode-dialog .alert').html('').hide();
+				$('#authcode').val(null);
+			} else {
+				location.reload();
+			}
+		}).on('shown.bs.modal', function() {
+			$('#authcode').focus();
+		}).find('form').submit(function(e) {
+			$('#authcode-dialog .submit-button').attr('disabled', 'disabled');
+			$.ajax({
+				method: "POST",
+				url: $(this).attr('action'),
+				data: {
+					code: $('#authcode').val(),
+					documentid: parseInt($('#authcode-dialog .documentid').val())
+				},
+				success: function(data) {
+					if (data.length) {
+						$('#authcode-dialog .alert').removeClass('alert-primary').addClass('alert-danger').html(data).show();
+					} else {
+						$('#authcode-dialog .alert').removeClass('alert-danger').addClass('alert-primary')
+							.html("{trans("Authorization code is valid! Document has been confirmed and your services will be activated in a few moments.")}").show();
+						$('#authcode-dialog').find('.documentid').siblings().hide().end().end().find('.submit-button').remove();
+					}
+					$('#authcode-dialog .submit-button').removeAttr('disabled');
+				}
+			});
+			e.preventDefault();
+		}).end().find('.submit-button').click(function() {
+			$('#authcode-dialog .submit-button').attr('disabled', 'disabled');
+			$('#authcode-dialog form').submit();
+		});
+	});
+
+</script>
+{/box}
+
+{include file="footer.html"}

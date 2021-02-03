@@ -45,9 +45,8 @@ class LMSPaginationLongTest extends \PHPUnit_Framework_TestCase
     public function testDisplayLinkAlwaysReturnsTrue()
     {
         $pagination = new \LMSPaginationLong(1, 100, 1);
-        for ($i = 1 ; $i <= 100 ; $i++) {
+        for ($i = 1; $i <= 100; $i++) {
             $this->assertEquals($pagination->displayGoTo($i), false);
         }
     }
-    
 }

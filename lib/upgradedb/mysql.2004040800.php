@@ -25,6 +25,4 @@
  */
 
 $this->Execute("ALTER TABLE cash ADD taxvalue DECIMAL(9,2) DEFAULT 0.00");
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004040800', 'dbversion'));
-
-?>
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2004040800', 'dbversion'));

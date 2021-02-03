@@ -37,5 +37,3 @@ unset($customergrouplist['totalcount']);
 $SMARTY->assign('customergrouplist', $customergrouplist);
 $SMARTY->assign('listdata', $listdata);
 $SMARTY->display('customer/customergrouplist.html');
-
-?>

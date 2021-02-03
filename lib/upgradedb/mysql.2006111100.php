@@ -29,8 +29,6 @@ $this->BeginTrans();
 $this->Execute("ALTER TABLE rttickets ADD INDEX createtime (createtime)");
 $this->Execute("ALTER TABLE rttickets ADD INDEX customerid (customerid)");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2006111100', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2006111100', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

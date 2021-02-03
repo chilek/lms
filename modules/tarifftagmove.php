@@ -46,4 +46,3 @@ if ($LMS->TarifftagExists($from) && $LMS->TarifftagExists($to) && $_GET['is_sure
 } else {
     header("Location: ?" . $SESSION->get('backto'));
 }
-?>

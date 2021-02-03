@@ -81,5 +81,3 @@ $this->Execute("ALTER TABLE divisions ADD COLUMN rbename varchar(255) NOT NULL D
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017012400', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

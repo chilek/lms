@@ -34,5 +34,3 @@ $this->Execute("ALTER TABLE divisions ADD COLUMN tax_office_code varchar(8) DEFA
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016120600', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

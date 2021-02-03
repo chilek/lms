@@ -29,58 +29,57 @@ $reglog = $DB->GetRow('SELECT * FROM cashreglog WHERE id = ?', array(intval($_GE
 $regid = $reglog['regid'];
 $reglog['time'] = strftime('%Y/%m/%d %H:%M', $reglog['time']);
 
-if(!$regid)
-{
+if (!$regid) {
         $SESSION->redirect('?m=cashreglist');
 }
-	
-if($DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array(Auth::GetCurrentUser(), $regid))<256)
-{
+    
+if ($DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array(Auth::GetCurrentUser(), $regid))<256) {
         $SMARTY->display('noaccess.html');
         $SESSION->close();
         die;
 }
 
-if(isset($_POST['reglog']))
-{
-	$reglog = $_POST['reglog'];
-	
-	foreach($reglog as $key => $value)
-	        $reglog[$key] = trim($value);
+if (isset($_POST['reglog'])) {
+    $reglog = $_POST['reglog'];
+    
+    foreach ($reglog as $key => $value) {
+            $reglog[$key] = trim($value);
+    }
 
-	$reglog['value'] = str_replace(',','.', $reglog['value']);
+    $reglog['value'] = str_replace(',', '.', $reglog['value']);
 
-	if($reglog['value'] == '')
-		$error['value'] = trans('Cash state value is required!');
-	elseif(!preg_match('/^[-]?[0-9.,]+$/', $reglog['value']))
-	        $error['value'] = trans('Incorrect value!');
+    if ($reglog['value'] == '') {
+        $error['value'] = trans('Cash state value is required!');
+    } elseif (!preg_match('/^[-]?[0-9.,]+$/', $reglog['value'])) {
+            $error['value'] = trans('Incorrect value!');
+    }
 
-        if(!empty($reglog['time']))
-        {       
-                $time = datetime_to_timestamp($reglog['time']);
-                if(empty($time)) 
-                	$error['time'] = trans('Wrong datetime format!');
+    if (!empty($reglog['time'])) {
+            $time = datetime_to_timestamp($reglog['time']);
+        if (empty($time)) {
+            $error['time'] = trans('Wrong datetime format!');
         }
-        else
-                $time = time();
+    } else {
+        $time = time();
+    }
 
-	if (!$error) {
-		$args = array(
-			'time' => $time,
-			'description' => $reglog['description'],
-			'value' => $reglog['value'],
-			SYSLOG::RES_USER => Auth::GetCurrentUser(),
-			SYSLOG::RES_CASHREGHIST => intval($_GET['id'])
-		);
-		$DB->Execute('UPDATE cashreglog SET time=?, description=?, value=?, userid=?
+    if (!$error) {
+        $args = array(
+            'time' => $time,
+            'description' => $reglog['description'],
+            'value' => $reglog['value'],
+            SYSLOG::RES_USER => Auth::GetCurrentUser(),
+            SYSLOG::RES_CASHREGHIST => intval($_GET['id'])
+        );
+        $DB->Execute('UPDATE cashreglog SET time=?, description=?, value=?, userid=?
 				WHERE id=?', array_values($args));
-		if ($SYSLOG) {
-			$args[SYSLOG::RES_CASHREG] = $regid;
-			$SYSLOG->AddMessage(SYSLOG::RES_CASHREGHIST, SYSLOG::OPER_UPDATE, $args);
-		}
+        if ($SYSLOG) {
+            $args[SYSLOG::RES_CASHREG] = $regid;
+            $SYSLOG->AddMessage(SYSLOG::RES_CASHREGHIST, SYSLOG::OPER_UPDATE, $args);
+        }
 
-		$SESSION->redirect('?'.$SESSION->get('backto'));
-	}
+        $SESSION->redirect('?'.$SESSION->get('backto'));
+    }
 }
 
 $layout['pagetitle'] = trans('Cash History Entry Edit');
@@ -88,5 +87,3 @@ $layout['pagetitle'] = trans('Cash History Entry Edit');
 $SMARTY->assign('reglog', $reglog);
 $SMARTY->assign('error', $error);
 $SMARTY->display('cash/cashreglogedit.html');
-
-?>

@@ -24,11 +24,12 @@
  *  $Id$
  */
 
-$USERPANEL->AddModule(trans('Stats'),	// Display name
-		    'stats', 		// Module name - must be the same as directory name
-		    trans('Show bandwidth utilization stats'), // Tip 
-		    50,			// Priority
-		    trans('This module is for showing bandwidth utilization stats')	// Description
-		    );
-
-?>
+$USERPANEL->AddModule(
+    trans('Stats'),   // Display name
+    'stats',        // Module name - must be the same as directory name
+    trans('Show bandwidth utilization stats'), // Tip
+    50,         // Priority
+    trans('This module is for showing bandwidth utilization stats'), // Description
+    '',
+    'lms-ui-icon-stats'
+);

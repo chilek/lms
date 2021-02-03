@@ -25,17 +25,15 @@
  */
 
 $engine = array(
-	'name' => 'default', 	// template directory
-	'engine' => 'default', 	// engine.php directory
-				// you can use other engine
-	'type' => DOC_CONTRACT,			// it's also possible to use array of document types in this field
-	'template' => 'template.html', 		// template file (in 'name' dir)
-	'title' => trans('Default document'), 	// description for UI
-	'content_type' => 'text/html', 		// output file type
-	'output' => 'default.html', 		// output file name
-	'plugin' => 'plugin',			// form plugin (in 'name' dir)
-	'post-action' => 'post-action',		// action file executed after document addition (in transaction)
-	'attachments' => array(),		// associative array with directly pointed optional attachment files (key = label; value = full path file name)
-)
-
-?>
+    'name' => 'default',    // template directory
+    'engine' => 'default',  // engine.php directory
+                // you can use other engine
+    'type' => DOC_CONTRACT,         // it's also possible to use array of document types in this field
+    'template' => 'template.html',      // template file (in 'name' dir)
+    'title' => trans('Default document'),   // description for UI
+    'content_type' => 'text/html',      // output file type
+    'output' => 'default.html',         // output file name
+    'plugin' => 'plugin',           // form plugin (in 'name' dir)
+    'post-action' => 'post-action',     // action file executed after document addition (in transaction)
+    'attachments' => array(),       // associative array with directly pointed optional attachment files (key = label; value = full path file name)
+);

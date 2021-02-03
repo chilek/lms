@@ -24,9 +24,9 @@
 $this->BeginTrans();
 
 $DEFAULTS = array(
-	'phpui' => array(
-		'logout_confirmation' => 'false'
-	)
+    'phpui' => array(
+        'logout_confirmation' => 'false'
+    )
 );
 
 foreach ($DEFAULTS as $section => $values) {

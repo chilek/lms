@@ -64,8 +64,6 @@ $this->Execute("
     ALTER TABLE payments ALTER at SET DEFAULT 0;
 ");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005072300', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005072300', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

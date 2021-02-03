@@ -110,10 +110,16 @@
 		</TD>
 		<TD>
 			{if $netdev.location}
-			{if $netdev.location_name}{$netdev.location_name}, {/if}{$netdev.location}{if $netdev.borough_name} ({$netdev.state_name} / {$netdev.district_name} / {$_BOROUGHTYPES[$netdev.borough_type]} {$netdev.borough_name}){/if}
+				{if $netdev.location_name}{$netdev.location_name}, {/if}{$netdev.location}
+				{if $netdev.borough_name}
+					({$netdev.state_name} / {$netdev.district_name} / {$_BOROUGHTYPES[$netdev.borough_type]} {$netdev.borough_name})
+				{/if}
 			{else}
-			{$netdev.netnode.location}{if $netdev.netnode.location_borough_name} ({$netdev.netnode.location_state_name} / {$netdev.netnode.location_district_name} / {$_BOROUGHTYPES[$netdev.netnode.location_borough_type]} {$netdev.netnode.location_borough_name}){/if}
-			{trans("(from network node)")}
+				{$netdev.netnode.location}
+				{if $netdev.netnode.location_borough_name}
+					({$netdev.netnode.location_state_name} / {$netdev.netnode.location_district_name} / {$_BOROUGHTYPES[$netdev.netnode.location_borough_type]} {$netdev.netnode.location_borough_name})
+				{/if}
+				{trans("(from network node)")}
 			{/if}
 		</TD>
 	</TR>
@@ -201,18 +207,31 @@
 		</TD>
 	</TR>
 	{/if}
+	{if $netdev.login}
+		<TR>
+			<TD WIDTH="1%">
+				<IMG SRC="img/radius.gif" ALT="">
+			</TD>
+			<TD WIDTH="1%" class="bold nobr">
+				{trans("Login:")}
+			</TD>
+			<TD WIDTH="98%">
+				{$netdev.login}
+			</TD>
+		</TR>
+	{/if}
 	{if $netdev.secret}
 	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/radius.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%" class="nowrap bold">
+		<TD WIDTH="1%" class="bold nobr">
 			{trans("Secret:")}
 		</TD>
 		<TD WIDTH="98%">
 			{if ConfigHelper::checkConfig('phpui.protect_passwords')}
 				<button class="lms-ui-button-clipboard lms-ui-button" data-clipboard-text="{$netdev.secret}">
-					<i></i> {trans("Copy")}
+					<i class="lms-ui-icon-clipboard"></i> {trans("Copy")}
 				</button>
 			{else}
 				{$netdev.secret}
@@ -291,7 +310,7 @@
                 <TD WIDTH="99%" COLSPAN="2">
                         <TABLE WIDTH="100%" CELLPADDING="5">
                                 <TR>
-                                        <TD class="fall superlight">
+                                        <TD class="fall superlight lms-ui-autolinker">
 						{$netdev.description|escape|replace:"\n":"<BR>"}
                                         </TD>
                                 </TR>
@@ -333,24 +352,58 @@
     		</TD>
 	</TR>
 	<TR>
-	        <TD WIDTH="100%" COLSPAN="2" ALIGN="RIGHT">
+		<TD WIDTH="100%" COLSPAN="2" class="lms-ui-box-buttons">
 {/if}
-			{block name="netdevinfobox-buttons"}
-			<a href="?m=netdevadd&id={$netdev.id}">{trans("Clone")} <img src="img/clone.gif" alt="{trans("Clone")}"</a>
-			<A href="javascript:void(0);" onclick="javascript:openSelectWindow('?m=choosenetdevreplace&id={$netdev.id}', 'Replace netdev', 600, 290, 1, 1);">{trans("Replace")} <img src="img/alias.gif" ALT="{trans("Replace")}"></A>
-			<A href="?m=netdevedit&id={$netdev.id}" ACCESSKEY="E">{trans("Edit")} <IMG src="img/edit.gif" ALT="{trans("Edit")}"></A>
-			<A href="?m=netdevdel&id={$netdev.id}" OnClick="return confirmLink(this, '{t a=$netdev.name}Are you sure, you want to remove device \'$a\' from database?{/t}');">{trans("Delete")} <img src="img/delete.gif" ALT=""></A>
-			{/block}
+			<div class="lms-ui-box-button-container">
+				{block name="netdevinfobox-buttons"}
+					{button icon="clone" id="clone-netdev" onclick="location.href = '?m=netdevadd&id={$netdev.id}&clone=1';" label="Clone"}
+					{button icon="edit" id="edit-netdev" onclick="location.href = '?m=netdevedit&id={$netdev.id}';" label="Edit" accesskey="E"}
+					{button icon="delete" id="delete-netdev" label="Delete" data_name="{$netdev.name}"}
+				{/block}
+			</div>
+			{if !empty($targetnetdevs)}
+			<div class="lms-ui-box-button-container">
+				{button icon="convert" id="replace-netdev" label="Replace"}
+				<select id="target-netdev" class="lms-ui-advanced-select">
+					<option value="">{trans("- select target network device -")}</option>
+					{foreach $targetnetdevs as $targetnetdev}
+						<option value="{$targetnetdev.id}" title="{$targetnetdev.producer} / {$targetnetdev.model}"
+							{if $netdev.ports > $targetnetdev.ports}disabled{/if}
+							>{$targetnetdev.name}{if !empty($targetnetdev.location)} ({$targetnetdev.location}){/if}</option>
+					{/foreach}
+				</select>
+			</div>
+			{/if}
 		</TD>
 	</TR>
     </TBODY>
 </TABLE>
 {if $devicepanel}
-<SCRIPT type="text/javascript">
-<!--
-if (getCookie('devicepanel') == '1') {
-	$('#devicepanel').show();
-}
-//-->
-</SCRIPT>
+<script>
+
+	if (getCookie('devicepanel') == '1') {
+		$('#devicepanel').show();
+	}
+
+</script>
 {/if}
+<script>
+
+	$(function() {
+		$('#delete-netdev').click(function () {
+			var name = $(this).attr('data-name');
+			confirmDialog($t("Are you sure, you want to remove device '$a' from database?", name), this).done(function () {
+				location.href = '?m=netdevdel&id={$netdev.id}&is_sure=1';
+			});
+			return false;
+		});
+
+		$('#replace-netdev').click(function() {
+			var targetNetDev = parseInt($('#target-netdev').val());
+			if (targetNetDev) {
+				location.href = '?m=netdevedit&action=replace&id={$netdev.id}&netdev=' + targetNetDev;
+			}
+		});
+	});
+
+</script>

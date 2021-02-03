@@ -29,5 +29,3 @@ $this->Execute("ALTER TABLE aliases DROP INDEX login");
 $this->Execute("ALTER TABLE aliases ADD UNIQUE KEY (login, accountid)");
 $this->Execute("UPDATE dbinfo SET keyvalue = '2004120600' WHERE keytype = 'dbversion'");
 $this->CommitTrans();
-
-?>

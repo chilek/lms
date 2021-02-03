@@ -31,5 +31,3 @@ $SMARTY->display('header.html');
 // module body
 
 $SMARTY->display('footer.html');
-
-?>

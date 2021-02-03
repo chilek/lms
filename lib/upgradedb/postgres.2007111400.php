@@ -35,5 +35,3 @@ CREATE INDEX tariffs_type_idx ON tariffs (type);
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007111400', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

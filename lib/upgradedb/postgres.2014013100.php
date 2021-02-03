@@ -23,14 +23,15 @@
 
 $this->BeginTrans();
 
-if ($id = $this->GetOne("SELECT id FROM uiconfig WHERE section = ? AND var = ?", array('userpanel', 'default_queue')))
-	$this->Execute("UPDATE uiconfig SET var = ? WHERE id = ?", array('queues', $id));
-else
-	$this->Execute("INSERT INTO uiconfig (section, var, value) VALUES (?, ?, ?)",
-		array('userpanel', 'queues', '1'));
+if ($id = $this->GetOne("SELECT id FROM uiconfig WHERE section = ? AND var = ?", array('userpanel', 'default_queue'))) {
+    $this->Execute("UPDATE uiconfig SET var = ? WHERE id = ?", array('queues', $id));
+} else {
+    $this->Execute(
+        "INSERT INTO uiconfig (section, var, value) VALUES (?, ?, ?)",
+        array('userpanel', 'queues', '1')
+    );
+}
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014013100', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

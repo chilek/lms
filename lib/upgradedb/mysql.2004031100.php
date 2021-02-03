@@ -28,6 +28,4 @@ $this->Execute("ALTER TABLE rtmessages ADD createtime INT(11) DEFAULT 0 NOT NULL
 
 $this->Execute("CREATE TABLE rtattachments (messageid INT DEFAULT 0 NOT NULL, filename VARCHAR(255) NOT NULL, contenttype VARCHAR(255) NOT NULL)");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004031100', 'dbversion'));
-
-?>
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2004031100', 'dbversion'));

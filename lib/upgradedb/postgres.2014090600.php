@@ -32,5 +32,3 @@ $this->Execute("ALTER TABLE managementurls
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014090600', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

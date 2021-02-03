@@ -6,7 +6,7 @@
 {css}
 {js}
 
-{tab_container id="nodegroups"}
+{tab_container id="nodegroups" label="Node Groups"}
 
 	{tab_header content_id="nodegroupspanel"}
 		{tab_header_cell icon="lms-ui-icon-nodegroup"}
@@ -56,8 +56,7 @@
 				</div>
 
 				<div class="lms-ui-tab-table-column buttons">
-					{button type="link" icon="delete"
-						onclick="return confirmLink(this, '{trans("Are you sure, you want to remove node from group?")}')"
+					{button type="link" icon="delete" class="delete-nodegroup"
 						href="?m=nodegroup&action=delete&nodegroupid={$nodegroup.id}&id={$nodeinfo.id}"
 						tip="Remove assignment"}
 					<input type="checkbox" form="nodegroupassignment" name="markednodegroupid[{$nodegroup.id}]" value="{$nodegroup.id}" class="lms-ui-multi-check">

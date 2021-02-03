@@ -2,7 +2,8 @@
 
 {css}
 
-{tab_container id="nodesessions"}
+{if isset($nodeipdata.id)}{$label="Network Device Sessions"}{else}{$label="Node Sessions"}{/if}
+{tab_container id="nodesessions" label=$label}
 
 	{tab_header content_id="nodesessionpanel"}
 		{tab_header_cell icon="lms-ui-icon-nodesession"}

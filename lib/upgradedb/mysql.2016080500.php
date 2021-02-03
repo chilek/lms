@@ -78,5 +78,3 @@ $this->Execute("CREATE TABLE voip_rule_states (
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016080500', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

@@ -24,36 +24,36 @@
  *  $Id$
  */
 
-function GetChannelsList($order='name,asc')
+function GetChannelsList($order = 'name,asc')
 {
-	global $DB, $LMS;
+    global $DB, $LMS;
 
-	if($order=='')
+    if ($order=='') {
         $order='name,asc';
+    }
 
-	list($order,$direction) = sscanf($order, '%[^,],%s');
+    list($order,$direction) = sscanf($order, '%[^,],%s');
 
-	($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
+    ($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
 
-	switch($order)
-	{
-		case 'id':
-		case 'devcnt':
-		case 'nodecnt':
-		case 'downceil':
-		case 'upceil':
-		case 'downceil_n':
-		case 'upceil_n':
-		case 'cid':
-	        $sqlord = ' ORDER BY '.$order;
-		break;
-		default:
+    switch ($order) {
+        case 'id':
+        case 'devcnt':
+        case 'nodecnt':
+        case 'downceil':
+        case 'upceil':
+        case 'downceil_n':
+        case 'upceil_n':
+        case 'cid':
+            $sqlord = ' ORDER BY '.$order;
+            break;
+        default:
             $sqlord = ' ORDER BY name';
-		break;
-	}
+            break;
+    }
 
-	$channels = $DB->GetAll('('
-	    .'SELECT c.id, c.name, c.upceil, c.downceil,
+    $channels = $DB->GetAll('('
+        .'SELECT c.id, c.name, c.upceil, c.downceil,
 	    c.upceil_n, c.downceil_n, c.halfduplex, c2.id AS cid,
 		(SELECT COUNT(*) FROM netdevices WHERE channelid = c.id) AS devcnt,
 		(SELECT COUNT(*) FROM ewx_stm_nodes n
@@ -72,23 +72,25 @@ function GetChannelsList($order='name,asc')
 		    FROM ewx_stm_channels ch
 		    WHERE ch.cid = 0
 		)'
-		.($sqlord != '' ? $sqlord.' '.$direction : ''));
+        .($sqlord != '' ? $sqlord.' '.$direction : ''));
 
-	$channels['total'] = empty($channels) ? 0 : count($channels);
-	$channels['order'] = $order;
-	$channels['direction'] = $direction;
+    $channels['total'] = empty($channels) ? 0 : count($channels);
+    $channels['order'] = $order;
+    $channels['direction'] = $direction;
 
-	return $channels;
+    return $channels;
 }
 
-if(!isset($_GET['o']))
+if (!isset($_GET['o'])) {
         $SESSION->restore('eclo', $o);
-else
-        $o = $_GET['o'];
+} else {
+    $o = $_GET['o'];
+}
 $SESSION->save('eclo', $o);
 
-if ($SESSION->is_set('eclp') && !isset($_GET['page']))
+if ($SESSION->is_set('eclp') && !isset($_GET['page'])) {
         $SESSION->restore('eclp', $_GET['page']);
+}
 
 $channels = GetChannelsList($o);
 
@@ -116,5 +118,3 @@ $SMARTY->assign('start', $start);
 $SMARTY->assign('channels', $channels);
 $SMARTY->assign('listdata', $listdata);
 $SMARTY->display('ewxch/ewxchlist.html');
-
-?>

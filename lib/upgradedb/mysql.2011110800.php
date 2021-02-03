@@ -44,8 +44,6 @@ $this->Execute("CREATE VIEW vmacs AS
 $this->Execute("ALTER TABLE netdevices ADD longitude decimal(10, 6) DEFAULT NULL");
 $this->Execute("ALTER TABLE netdevices ADD latitude decimal(10, 6) DEFAULT NULL");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2011110800', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011110800', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

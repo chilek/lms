@@ -1630,7 +1630,10 @@ int del_node(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, struct 
    		for(vars = response->variables; vars; vars = vars->next_variable)
    			print_variable(vars->name, vars->name_length, vars);
 #endif
-		g->db->pexec(g->db->conn, "DELETE FROM ewx_stm_nodes WHERE nodeid = ?", itoa(h.id));
+		if (h.id)
+			g->db->pexec(g->db->conn, "DELETE FROM ewx_stm_nodes WHERE nodeid = ?", itoa(h.id));
+		else
+			g->db->pexec(g->db->conn, "DELETE FROM ewx_stm_nodes WHERE nodeid IS NULL");
 #ifdef DEBUG1
 		syslog(LOG_INFO, "DEBUG: [%s/ewx-stm-channels] Deleted node %s/%s (%05d)",
 		    ewx->base.instance, h.ip, h.mac, h.id);

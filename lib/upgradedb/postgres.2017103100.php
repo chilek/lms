@@ -29,20 +29,21 @@ $assignments = $this->GetAll("SELECT a.id, a.promotionschemaid AS schemaid, tari
 	JOIN tariffs t ON t.id = a.tariffid
 	ORDER BY a.promotionschemaid, t.name, t.value DESC");
 if (!empty($assignments)) {
-	$schemaid = 0;
-	foreach ($assignments as $a) {
-		if ($a['schemaid'] != $schemaid) {
-			$schemaid = $a['schemaid'];
-			$orderid = 1;
-		} else
-			$orderid++;
-		$this->Execute("UPDATE promotionassignments SET orderid = ? WHERE id = ?",
-			array($orderid, $a['id']));
-	}
+    $schemaid = 0;
+    foreach ($assignments as $a) {
+        if ($a['schemaid'] != $schemaid) {
+            $schemaid = $a['schemaid'];
+            $orderid = 1;
+        } else {
+            $orderid++;
+        }
+        $this->Execute(
+            "UPDATE promotionassignments SET orderid = ? WHERE id = ?",
+            array($orderid, $a['id'])
+        );
+    }
 }
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017103100', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

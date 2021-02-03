@@ -59,7 +59,7 @@ $this->Execute("INSERT INTO documents (id, type, number, cdate, paytime, paytype
 	GROUP BY invoices.id, number, cdate, paytime, paytype, invoices.customerid, cash.userid, name, address, zip, city, nip, pesel");
 $this->Execute("DROP TABLE invoices");
 $this->Execute("ALTER TABLE documents ADD INDEX cdate (cdate)");
-	
+    
 $this->Execute("CREATE TABLE receiptcontents (
 	docid INT(11) NOT NULL DEFAULT '0',
 	itemid TINYINT NOT NULL DEFAULT '0',
@@ -68,6 +68,4 @@ $this->Execute("CREATE TABLE receiptcontents (
 	INDEX docid (docid))
 ");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005060300', 'dbversion'));
-
-?>
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005060300', 'dbversion'));

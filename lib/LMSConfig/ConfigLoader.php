@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2013 LMS Developers
+ *  Copyright (C) 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,22 +26,20 @@
 
 /**
  * ConfigLoader
- *
- * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
 class ConfigLoader
 {
     /**
      * Loads config
-     * 
+     *
      * Avaliable options are:
      * provider - config provider name
      * parser - config parser name
      * ini_file_path - path to ini file
-     * 
-     * Retrieves raw config from provider, and passes it to parser. Returns 
+     *
+     * Retrieves raw config from provider, and passes it to parser. Returns
      * parser output.
-     * 
+     *
      * @param array $options Associative array of options
      * @return ConfigContainer Config
      */
@@ -50,16 +48,16 @@ class ConfigLoader
         $raw_config = $this->loadRawConfig($options);
         return $this->parseRawConfig($raw_config, $options);
     }
-    
+
     /**
      * Loads raw config
-     * 
+     *
      * Avaliable options are:
      * provider - config provider name
      * ini_file_path - path to ini file
-     * 
+     *
      * Choses provider and passes options to it.
-     * 
+     *
      * @param array $options Associative array of options
      * @return array Raw config
      * @throws Exception Throws exception when config provider is unknown
@@ -69,9 +67,9 @@ class ConfigLoader
         if (!isset($options['provider'])) {
             throw new Exception('Config provider not set!');
         }
-        
+
         $provider = null;
-        
+
         switch ($options['provider']) {
             case IniConfigProvider::NAME:
                 $provider = new IniConfigProvider();
@@ -85,18 +83,18 @@ class ConfigLoader
             default:
                 throw new Exception('Unknown config provider!');
         }
-        
+
         return $provider->load($options);
     }
-    
+
     /**
      * Parses raw config
-     * 
+     *
      * Avaliable options are:
      * parser - config parser name
-     * 
+     *
      * Choses provider, passes raw config to it and returns it's output.
-     * 
+     *
      * @param array $raw_config Raw config
      * @param array $options Associative array of options
      * @return ConfigContainer Config
@@ -107,9 +105,9 @@ class ConfigLoader
         if (!isset($options['parser'])) {
             throw new Exception('Config parser not set!');
         }
-        
+
         $parser = null;
-        
+
         switch ($options['parser']) {
             case IniConfigParser::NAME:
                 $parser = new IniConfigParser();
@@ -123,8 +121,7 @@ class ConfigLoader
             default:
                 throw new Exception('Unknown config parser!');
         }
-        
+
         return $parser->objectify($raw_config, $options);
     }
-    
 }

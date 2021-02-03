@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,14 +26,11 @@
 
 $id = $_GET['id'];
 
-if($id && $_GET['is_sure']=='1')
-{
-	$DB->BeginTrans();
-	$DB->Execute('DELETE FROM aliases WHERE id = ?', array($id));
-	$DB->Execute('DELETE FROM aliasassignments WHERE aliasid = ?', array($id));
-	$DB->CommitTrans();
+if ($id) {
+    $DB->BeginTrans();
+    $DB->Execute('DELETE FROM aliases WHERE id = ?', array($id));
+    $DB->Execute('DELETE FROM aliasassignments WHERE aliasid = ?', array($id));
+    $DB->CommitTrans();
 }
 
 $SESSION->redirect('?'.$SESSION->get('backto'));
-
-?>

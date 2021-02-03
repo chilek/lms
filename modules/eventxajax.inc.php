@@ -24,26 +24,28 @@
  *  $Id$
  */
 
-function getUsersForGroup($groupid) {
-	$DB = LMSDB::getInstance();
+function getUsersForGroup($groupid)
+{
+    $DB = LMSDB::getInstance();
 
-	$JSResponse = new xajaxResponse();
+    $JSResponse = new xajaxResponse();
 
-	if (empty($groupid))
-		$users = null;
-	elseif (intval($groupid) == -1)
-		$users = array(Auth::GetCurrentUser());
-	else
-		$users = $DB->GetCol('SELECT u.id FROM users u
+    if (empty($groupid)) {
+        $users = null;
+    } elseif (intval($groupid) == -1) {
+        $users = array(Auth::GetCurrentUser());
+    } else {
+        $users = $DB->GetCol(
+            'SELECT u.id FROM users u
 			JOIN userassignments ua ON ua.userid = u.id
 			WHERE u.deleted = 0 AND u.access = 1 AND ua.usergroupid = ?',
-			array($groupid));
+            array($groupid)
+        );
+    }
 
-	$JSResponse->call('update_user_selection', $users);
+    $JSResponse->call('update_user_selection', $users);
 
-	return $JSResponse;
+    return $JSResponse;
 }
 
 $LMS->RegisterXajaxFunction(array('getUsersForGroup'));
-
-?>

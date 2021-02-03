@@ -28,22 +28,26 @@ $alias = $DB->GetRow('SELECT a.id, a.login, a.domainid, d.name AS domain
 		FROM aliases a JOIN domains d ON (a.domainid = d.id)
 		WHERE a.id = ?', array(intval($_GET['id'])));
 
-if(!$alias)
-{
-	$SESSION->redirect('?'.$SESSION->get('backto'));
+if (!$alias) {
+    $SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
 $alias['accounts'] = $DB->GetAllByKey('SELECT p.id, p.login, d.name AS domain
 		FROM passwd p JOIN domains d ON (p.domainid = d.id)
 		WHERE p.id IN (SELECT accountid FROM aliasassignments
-			WHERE aliasid = ?)', 'id', array($alias['id'])); 
-$mailforwards = $DB->GetAllByKey('SELECT mail_forward
+			WHERE aliasid = ?)', 'id', array($alias['id']));
+$mailforwards = $DB->GetAllByKey(
+    'SELECT mail_forward
 		FROM aliasassignments WHERE aliasid = ? AND accountid IS NULL AND mail_forward <> \'\'',
-		'mail_forward', array($alias['id']));
+    'mail_forward',
+    array($alias['id'])
+);
 $alias['mailforwards'] = array();
-if(count($mailforwards))
-	foreach($mailforwards as $mailforward => $idx)
-		$alias['mailforwards'][] = $mailforward;
+if (count($mailforwards)) {
+    foreach ($mailforwards as $mailforward => $idx) {
+        $alias['mailforwards'][] = $mailforward;
+    }
+}
 
 $layout['pagetitle'] = trans('Alias Info: $a', $alias['login'] .'@'. $alias['domain']);
 
@@ -51,5 +55,3 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('alias', $alias);
 $SMARTY->display('alias/aliasinfo.html');
-
-?>

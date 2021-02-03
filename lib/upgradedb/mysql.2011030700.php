@@ -25,30 +25,38 @@ $this->BeginTrans();
 
 $s_arr = array();
 $schemas = $this->GetAll("SELECT * FROM promotionschemas");
-if ($schemas) foreach ($schemas as $schema) {
-    $data = explode(';', $schema['data']);
-    $cnt  = count($data);
+if ($schemas) {
+    foreach ($schemas as $schema) {
+        $data = explode(';', $schema['data']);
+        $cnt  = count($data);
 
-    if ($data[$cnt-1] == 0) {
-        $s_arr[] = $schema['id'];
-        array_pop($data);
-        $data = implode(';', $data);
-        $this->Execute("UPDATE promotionschemas SET data = ? WHERE id = ?",
-            array($data, $schema['id']));
+        if ($data[$cnt-1] == 0) {
+            $s_arr[] = $schema['id'];
+            array_pop($data);
+            $data = implode(';', $data);
+            $this->Execute(
+                "UPDATE promotionschemas SET data = ? WHERE id = ?",
+                array($data, $schema['id'])
+            );
+        }
     }
 }
 
 if (!empty($s_arr)) {
     $schemas = $this->GetAll("SELECT * FROM promotionassignments
         WHERE promotionschemaid IN (".implode(',', $s_arr).")");
-    if ($schemas) foreach ($schemas as $schema) {
-        $data = explode(';', $schema['data']);
-        $cnt  = count($data);
+    if ($schemas) {
+        foreach ($schemas as $schema) {
+            $data = explode(';', $schema['data']);
+            $cnt  = count($data);
 
-        array_pop($data);
-        $data = implode(';', $data);
-        $this->Execute("UPDATE promotionassignments SET data = ? WHERE id = ?",
-            array($data, $schema['id']));
+            array_pop($data);
+            $data = implode(';', $data);
+            $this->Execute(
+                "UPDATE promotionassignments SET data = ? WHERE id = ?",
+                array($data, $schema['id'])
+            );
+        }
     }
 }
 
@@ -61,5 +69,3 @@ $this->Execute("UPDATE promotionschemas SET continuation = 1");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011030700', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

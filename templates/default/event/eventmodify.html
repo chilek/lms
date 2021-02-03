@@ -18,29 +18,35 @@
 			align-items: flex-start !important;
 		}
 
+		#eventadd-ticket,
+		#eventedit-ticket {
+			display: flex;
+		}
+
 	</style>
 	<P class="text-center">
 	<FORM method="POST" action="?m={$layout.module}" name="event" id="event">
 		<INPUT type="hidden" name="event[id]" value="{$event.id}">
-		<INPUT type="hidden" name="event[ticketid]" value="{$event.ticketid}">
 		<INPUT type="hidden" name="event[overlapwarned]" value="{$event.overlapwarned}">
 		<INPUT type="submit" class="hiddenbtn">
 
 		{box_container id="event"}
-			{box_header icon="img/calendar.gif" label="Title:"}
-				<INPUT type="text" name="event[title]" id="event[title]" value="{$event.title}" size="50" required {tip text="Enter event title" trigger="title"}>
+			{box_header icon="timetable" label="Title:"}
+				<INPUT type="text" name="event[title]" id="event[title]" value="{$event.title}" required size="50" {tip text="Enter event title" trigger="title"}>
 			{/box_header}
 
 			{box_contents}
 				{box_panel}
 					{block name="eventmodify_left_panel"}
 
-					{box_row icon="img/time.gif" label="Time:"}
+					{box_row icon="uptime" label="Time:"}
 						{event_time_selection field_prefix="event" begin=$event.begin end=$event.end wholedays=$event.wholedays}
 					{/box_row}
 
-					{box_row icon="img/info.gif" label="Description:"}
-						<TEXTAREA name="event[description]" class="lms-ui-wysiwyg-editor" cols="50" rows="5" {tip text="Enter additional information (optional)"}{if isset($event.wysiwyg.description)} data-wysiwyg="{$event.wysiwyg.description}"{/if}>{$event.description}</TEXTAREA>
+					{box_row icon="description" label="Description:"}
+						<TEXTAREA name="event[description]" id="description" cols="50" rows="5"
+								{tip text="Enter additional information (optional)" class="lms-ui-wysiwyg-editor" trigger="description"}
+								{if isset($event.wysiwyg.description)} data-wysiwyg="{$event.wysiwyg.description}"{/if}>{$event.description}</TEXTAREA>
 					{/box_row}
 
 					{/block}
@@ -49,14 +55,14 @@
 				{box_panel}
 					{block name="eventmodify_right_panel"}
 
-					{box_row icon="img/access.gif" label="Status:"}
+					{box_row icon="status" label="Availability:" icon_class="fa-fw"}
 						<label>
 							<INPUT type="checkbox" name="event[private]" {tip text="Select event's status"}{if $event.private}CHECKED{/if}>
 							{trans("private")}
 						</label>
 					{/box_row}
 
-					{box_row icon="img/desc.gif" label="Type:"}
+					{box_row icon="type" label="Type:" icon_class="fa-fw"}
 						<SELECT name="event[type]" size="1">
 							{foreach from=$_EVENTTYPES key=key item=type}
 								<OPTION value="{$key}" {if $key == $event.type || (!$event.type && $key == $smarty.const.EVENT_OTHER)}SELECTED{/if}>{$type}</OPTION>
@@ -64,11 +70,12 @@
 						</SELECT>
 					{/box_row}
 
-					{box_row icon="img/customer.gif" label="Customer:"}
+					{box_row icon="customer" label="Customer:" icon_class="fa-fw"}
 						{if $layout.module == 'eventedit' || (empty($event.ticketid) && empty($event.customerid))}
 							{$customer_selector='[name=&quot;event[custid]&quot;]'}
 							{$address_selector='[name=&quot;event[address_id]&quot;]'}
-							{customerlist form="event" customers=$customerlist selected=$event.customerid selectname="event[customerid]" inputname="event[custid]" customOnChange="change_customer('{$customer_selector}', '{$address_selector}');"}
+							{customerlist form="event" customers=$customerlist selected=$event.customerid version=2
+								selectname="event[customerid]" inputname="event[custid]" customOnChange="change_customer('{$customer_selector}', '{$address_selector}');"}
 						{else}
 							{if !empty($event.customerid)}
 								{$event.customername} ({$event.customerid})
@@ -79,16 +86,16 @@
 						{/if}
 					{/box_row}
 
-					{box_row icon="img/home.gif" label="Location:"}
-						{if !isset($event.ticketid)}
-							<select id="customer_addresses" name="event[address_id]" {tip trigger="address_id"}> </select>
+					{box_row icon="location" label="Location:" icon_class="fa-fw"}
+						{if !isset($event.ticketid) || empty($event.ticket.address_id)}
+							{include file="customer/customeraddresses.html" id="customer_addresses" name="event[address_id]" trigger="address_id"}
 						{else}
-							{trans("Request not assigned to any customer location.")}
+							{t a=$event.ticket.location}$a (location cannot be changed as it is assigned to ticket){/t}
 						{/if}
 					{/box_row}
 
 					{$visibility=!empty($nodes)}
-					{box_row class="node-row" icon="img/node.gif" label="Node:" visible=$visibility}
+					{box_row class="node-row" icon="node" label="Node:" visible=$visibility}
 						{if !isset($event.ticketid)}
 							<select class="node-list" name="event[nodeid]" {tip text="Select node"}>
 								<option value="">{trans("- none -")}</option>
@@ -97,15 +104,34 @@
 								{/foreach}
 							</select>
 						{else}
-							{trans("Request not assigned to any node.")}
+							{if !empty($event.ticket.nodeid)}
+								{$event.ticket.node_name} ({$event.ticket.nodeid})
+								<input type="hidden" name="event[nodeid]" value="{$event.ticket.nodeid}">
+							{else}
+								{trans("Request not assigned to any node.")}
+							{/if}
 						{/if}
 					{/box_row}
 
-					{box_row icon="img/users.gif" label="Users:" field_class="multiselect"}
-						<SELECT name="event[userlist][]" class="lms-ui-multiselect" multiple data-default-value="{trans("- select user -")}" data-shorten-to-default-value="false">
+					{box_row icon="user" label="Users:" field_class="multiselect" icon_class="fa-fw"}
+						<SELECT name="event[userlist][]" class="lms-ui-multiselect" id="userlist" multiple data-default-value="{trans("- select user -")}"
+								data-shorten-to-default-value="false" {if !empty(ConfigHelper::checkConfig('phpui.event_user_required'))}required{/if}>
 							{foreach $userlist as $user}
-								{if $user.access}
-								<OPTION value="{$user.id}"{if !empty($event.userlist) && in_array($user.id, $event.userlist)} selected{/if}>{$user.name}</OPTION>
+								{if $layout.module == 'eventadd'}
+									{if $user.access}
+										<OPTION value="{$user.id}"
+											{if is_array($event.userlist) && in_array($user.id, $event.userlist)}selected{/if}>
+												{$user.rname|truncate:40:"&hellip;":true|escape} ({$user.login})
+										</OPTION>
+									{/if}
+								{else}
+									{if $user.access || (is_array($event.userlist) && in_array($user.id, $event.userlist))}
+										<OPTION value="{$user.id}"
+											{if !$user.access} data-crossed{/if}
+											{if is_array($event.userlist) && in_array($user.id, $event.userlist)}selected{/if}>
+												{$user.rname|truncate:40:"&hellip;":true|escape} ({$user.login})
+										</OPTION>
+									{/if}
 								{/if}
 							{/foreach}
 						</SELECT>
@@ -126,22 +152,48 @@
 						{/foreach}
 					{/box_row}
 
-{if $layout.module == 'eventedit'}
-						{box_row icon="img/note.gif" label="Note:"}
+					{function event_ticket_item_content}
+						{capture name="item_content_result" assign="item_content_result"}
+							{sprintf("#%06d", $item.id)}
+							<a href="?m=rtticketview&id={$item.id}">{$item.name}</a>
+						{/capture}
+					{/function}
+
+					{if $layout.module == 'eventedit'}
+						{box_row icon="note" label="Note:"}
 							<TEXTAREA name="event[note]" cols="50" rows="5" {tip text="Enter note (optional)"}>{$event.note}</TEXTAREA>
 						{/box_row}
 
-						{box_row icon="img/ticket.gif" label="Assign ticket" labelid="helpdesk-on"}
-							<input type="checkbox" id="helpdesk-on" name="event[helpdesk]" value="1"
-									{if isset($event.helpdesk) && $event.helpdesk} checked{/if}>
-							<input type="text" name="event[ticketid]" id="ticketid" value="{$event.ticketid}"
-									{if !isset($event.helpdesk) || !$event.helpdesk}style="display: none;"{/if} {tip trigger="ticketid"}>
+						{box_row icon="helpdesk" label="Assign ticket"}
+							<input type="hidden" name="event[ticketid]" value="0">
+							{list id="eventedit-ticket" tipid="ticketid" tip="Test" items=$event.ticket
+								field_name_pattern="event[ticketid]" item_content="event_ticket_item_content"}
 						{/box_row}
-{/if}
+					{/if}
 
-{if $layout.module == 'eventadd' && empty($event.ticketid)}
-						{box_row icon="img/ticket.gif" label="Create ticket" labelid="helpdesk-on"}
-							<input type="checkbox" id="helpdesk-on" name="event[helpdesk]" value="1"{if !empty($event['helpdesk'])} checked{/if}>
+{if $layout.module == 'eventadd'}
+						{box_row icon="helpdesk" label="<!ticket-event>Ticket:" icon_class="fa-fw"}
+							<label for="helpdesk-none">
+								<input type="radio" class="helpdesk-assign-selection" id="helpdesk-none" name="event[helpdesk]" value="none"{if $event.helpdesk == 'none'} checked{/if}>
+								{trans("<!ticket-event>none")}
+							</label>
+							<label for="helpdesk-new">
+								<input type="radio" class="helpdesk-assign-selection" id="helpdesk-new" name="event[helpdesk]" value="new"{if $event.helpdesk == 'new'} checked{/if}>
+								{trans("<!ticket-event>new")}
+							</label>
+							<label for="helpdesk-assign">
+								<input type="radio" class="helpdesk-assign-selection" id="helpdesk-assign" name="event[helpdesk]" value="assign"{if $event.helpdesk == 'assign'} checked{/if}>
+								{trans("<!ticket-event>assign")}
+							</label>
+							&nbsp;
+							<input type="hidden" name="event[ticketid]" value="0">
+							{if !isset($event.helpdesk) || $event.helpdesk != 'assign'}
+								{$visible = false}
+							{else}
+								{$visible = true}
+							{/if}
+							{list id="eventadd-ticket" tipid="ticketid" tip="Test" items=$event.ticket
+								field_name_pattern="event[ticketid]" item_content="event_ticket_item_content" visible=$visible}
 						{/box_row}
 {/if}
 
@@ -151,24 +203,29 @@
 
 			{box_buttons}
 				{if $layout.module == 'eventadd'}
-				<label {tip text="Display this form again, when this event is saved"}>
-					<INPUT type="checkbox" name="event[reuse]"{if $event.reuse} checked{/if}>
-					{trans("Reuse")}
-				</label>
+					<label {tip text="Display this form again, when this event is saved"}>
+						<INPUT type="checkbox" name="event[reuse]"{if $event.reuse} checked{/if}>
+						{trans("Reuse")}
+					</label>
 				{/if}
-				{button type="submit" icon="save" onclick="javascript:document.event.submit();"
-					accesskey="s" label="Submit"}
-				{button icon="cancel" onclick="location.href='?m=eventlist';" label="Cancel"}
+				<label>
+					<input type="checkbox" name="event[close]"{if $event.close} checked{/if} value="1">
+					{trans("close event")}
+				</label>
+				{button type="submit" icon="save" accesskey="s" label="Submit"}
+				{button icon="cancel" onclick="location.href='?m=eventlist{if isset($backid)}#{$backid}{/if}';" label="Cancel"}
 			{/box_buttons}
 		{/box_container}
-        <div id="row"{if $layout.module == 'eventedit' || empty($event.helpdesk)} style="display:none;"}{/if}>
-		{include file="rt/rtticketmodify.html"}
+        <div id="row"{if $layout.module == 'eventedit' || $event.helpdesk == 'none' || $event.helpdesk == 'assign'} style="display:none;"{/if}>
+			{if $layout.module == 'eventadd'}
+				{include file="rt/rtticketmodify.html"}
+			{/if}
         </div>
 	</form>
 	<script type="text/javascript" src="js/lms-ui-event-time-slider.js"></script>
 	<SCRIPT>
 
-		$(function () {
+		$(function() {
 			$('[name="event[title]"]').focus();
 
 			$('[name="event[rtqueue]"]').change(function () {
@@ -190,17 +247,57 @@
 				$('#customernotify-row').show();
 			}
 
-			$('#helpdesk-on').change(function () {
-				{if $layout.module == 'eventadd'}
-				$('#row').toggle();
-				{else}
-				$('#ticketid').toggle();
+			function updateTicketRequirements(assign_type) {
+				{if ConfigHelper::checkConfig('rt.ticket_service_required')}
+					$('#ticket-service').attr('required', function() {
+						return assign_type == 'new' ? '' : null;
+					});
 				{/if}
+				{if ConfigHelper::checkConfig('rt.ticket_type_required')}
+					$('#ticket-type').attr('required', function() {
+						return assign_type == 'new' ? '' : null;
+					});
+				{/if}
+			}
+
+			$('.helpdesk-assign-selection').change(function() {
+				var assign_type = $(this).val();
+				$('#row').toggle(assign_type == 'new');
+				updateTicketRequirements(assign_type)
+				var list_container = $('#eventadd-ticket,#eventedit-ticket');
+				list_container.toggle(assign_type == 'assign');
+				if (assign_type == 'assign' && !list_container.find('li').length) {
+					list_container.find('.lms-ui-item-suggestion-button').click();
+				}
+			});
+			{if isset($event.helpdesk)}
+				updateTicketRequirements('{$event.helpdesk}');
+			{/if}
+
+			initListQuickSearch({
+				selector: '#eventadd-ticket',
+				field_name_pattern: 'event[ticketid]',
+				single: true,
+				ajax: '?m=quicksearch&api=1&ajax=1&mode=ticket&what=',
+				item_content: function(item) {
+					return sprintf("#%06d", item.id) + ' <a href="?m=rtticketview&id=' + item.id + '">' +
+							item.name + '</a>';
+				}
+			});
+			initListQuickSearch({
+				selector: '#eventedit-ticket',
+				field_name_pattern: 'event[ticketid]',
+				single: true,
+				ajax: '?m=quicksearch&api=1&ajax=1&mode=ticket&what=',
+				item_content: function(item) {
+					return sprintf("#%06d", item.id) + ' <a href="?m=rtticketview&id=' + item.id + '">' +
+							item.name + '</a>';
+				}
 			});
 		});
 
 		function update_user_selection(users) {
-			var userms = $('.lms-ui-multiselect').data('multiselect-object');
+			var userms = $('#userlist').data('multiselect-object');
 			{if ConfigHelper::getConfig('phpui.event_usergroup_selection_type', 'update') == 'update'}
 			userms.updateSelection(users);
 			{else}
@@ -208,29 +305,35 @@
 			{/if}
 		}
 
+		{if intval($event.customerid)}
+			{if $event.address_id}
+				$('#customer_addresses').val( {$event.address_id} );
+			{elseif !empty($addresses) && count($addresses) == 1}
+				$('#customer_addresses').val($('#customer_addresses option:last-child').val());
+			{/if}
+		{/if}
+
 		var customer_addresses = new LmsUiIconSelectMenu("#customer_addresses", {
 			change: function (event, ui) {
 				xajax_select_location($('[name="event[custid]"]').val(), $(this).val());
 			}
 		});
 
-		getCustomerAddresses( {intval($event.customerid)}, function (addresses) {
-			customer_addresses.setAddressList(addresses);
+		customer_addresses.init();
 
-			{if intval($event.customerid)}
-			{if $event.address_id}
-			$('#customer_addresses').val( {$event.address_id} );
-			{else}
-			if (Object.keys(addresses).length == 1) {
-				$('#customer_addresses').val($('#customer_addresses option:last-child').val());
-			}
-			{/if}
-			{/if}
-
-			customer_addresses.init();
-		});
-
-		initCustomerSelection('{$event.customerid}', '{$ticket.address_id}');
+		{if $layout.module == 'eventedit'}
+		function change_customer(customer_selector, address_selector) {
+			getCustomerAddresses($(customer_selector).val(), function (addresses) {
+				customer_addresses.setAddressList(addresses);
+				if (Object.keys(addresses).length == 1) {
+					$('#customer_addresses').val($('#customer_addresses option:last-child').val());
+					customer_addresses.refresh();
+				}
+				xajax_select_location($(customer_selector).val(), $(address_selector).val());
+			});
+		}
+		{/if}
+		//initCustomerSelection('{$event.customerid}', '{$ticket.address_id}');
 
 	</SCRIPT>
 {/block}

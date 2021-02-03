@@ -68,5 +68,3 @@ INSERT INTO nastypes (name) VALUES ('other');
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009040200', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

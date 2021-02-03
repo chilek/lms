@@ -24,46 +24,47 @@
  *  $Id$
  */
 
-function GetTaxRateList($order='name,asc')
+function GetTaxRateList($order = 'name,asc')
 {
-	global $DB;
+    global $DB;
 
-	list($order,$direction) = sscanf($order, '%[^,],%s');
+    list($order,$direction) = sscanf($order, '%[^,],%s');
 
-	($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
+    ($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
 
-	switch($order)
-	{
-		case 'id':
-			$sqlord = " ORDER BY id $direction";
-		break;
-		case 'label':
-			$sqlord = " ORDER BY label $direction";
-		break;
-		default:
-			$sqlord = " ORDER BY value $direction";
-		break;
-	}
+    switch ($order) {
+        case 'id':
+            $sqlord = " ORDER BY id $direction";
+            break;
+        case 'label':
+            $sqlord = " ORDER BY label $direction";
+            break;
+        default:
+            $sqlord = " ORDER BY value $direction";
+            break;
+    }
 
-	$list = $DB->GetAll('SELECT * FROM taxes'.($sqlord != '' ? $sqlord : ''));
-	
-	$list['total'] = empty($list) ? 0 : count($list);
-	$list['order'] = $order;
-	$list['direction'] = $direction;
+    $list = $DB->GetAll('SELECT * FROM taxes'.($sqlord != '' ? $sqlord : ''));
+    
+    $list['total'] = empty($list) ? 0 : count($list);
+    $list['order'] = $order;
+    $list['direction'] = $direction;
 
-	return $list;
+    return $list;
 }
 
-if(!isset($_GET['o']))
-	$SESSION->restore('trlo', $o);
-else
-	$o = $_GET['o'];
+if (!isset($_GET['o'])) {
+    $SESSION->restore('trlo', $o);
+} else {
+    $o = $_GET['o'];
+}
 $SESSION->save('trlo', $o);
 
-if ($SESSION->is_set('trlp') && !isset($_GET['page']))
-	$SESSION->restore('trlp', $_GET['page']);
+if ($SESSION->is_set('trlp') && !isset($_GET['page'])) {
+    $SESSION->restore('trlp', $_GET['page']);
+}
 
-$page = (!isset($_GET['page']) ? 1 : $_GET['page']); 
+$page = (!isset($_GET['page']) ? 1 : $_GET['page']);
 $pagelimit = ConfigHelper::getConfig('phpui.taxratelist_pagelimit', $listdata['total']);
 $start = ($page - 1) * $pagelimit;
 
@@ -87,5 +88,3 @@ $SMARTY->assign('start', $start);
 $SMARTY->assign('taxratelist', $taxratelist);
 $SMARTY->assign('listdata', $listdata);
 $SMARTY->display('taxrate/taxratelist.html');
-
-?>

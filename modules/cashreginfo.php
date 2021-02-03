@@ -34,14 +34,12 @@ $registry = $DB->GetRow('SELECT reg.id AS id, reg.name AS name, reg.description 
 			LEFT JOIN numberplans o ON (out_numberplanid = o.id)
 			WHERE reg.id=?', array($id));
 
-if( !$registry )
-{
-	$SESSION->redirect('?m=cashreglist');
+if (!$registry) {
+    $SESSION->redirect('?m=cashreglist');
 }
 
 $users = $DB->GetAll('SELECT id, name FROM vusers WHERE deleted=0');
-foreach($users as $user)
-{
+foreach ($users as $user) {
         $user['rights'] = $DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($user['id'], $id));
         $registry['rights'][] = $user;
 }
@@ -52,5 +50,3 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('registry', $registry);
 $SMARTY->display('cash/cashreginfo.html');
-
-?>

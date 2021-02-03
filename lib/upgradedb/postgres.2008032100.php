@@ -31,5 +31,3 @@ $this->Execute("CREATE INDEX documents_closed_idx ON documents(closed)");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008032100', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

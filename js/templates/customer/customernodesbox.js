@@ -44,3 +44,12 @@ function setgroup(act) {
 	document.custnodeslist.action = '?m=nodegroup&action=' + act + '&groupid=' + $('#groupselect').val();
 	document.custnodeslist.submit();
 }
+
+$(function() {
+	$('.delete-node').click(function() {
+		confirmDialog($t("Are you sure, you want to remove node '$a' from database?", $(this).prev().val()), this).done(function () {
+			location.href = $(this).attr('href');
+		});
+		return false;
+	});
+});

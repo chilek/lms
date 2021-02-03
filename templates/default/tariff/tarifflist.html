@@ -8,6 +8,10 @@
 }
 </style>
 <H1>{$layout.pagetitle}</H1>
+
+{$speed_unit_type = ConfigHelper::getConfig('phpui.speed_unit_type', 1000)}
+{$speed_unit_aggregation_threshold = ConfigHelper::getConfig('phpui.speed_unit_aggregation_threshold', 5)}
+
 <TABLE class="lmsbox lms-ui-background-cycle">
     <COLGROUP>
 		<COl style="width: 93%;">
@@ -22,10 +26,10 @@
 	<THEAD>
 	<TR {tip text="Click on column name to change sorting order"}>
 		<TD class="nobr">
-			<IMG SRC="img/money.gif" ALT=""> <A href="?m=tarifflist&amp;o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order == "name"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			{icon name="money" class="fa-fw"} <A href="?m=tarifflist&amp;o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order == "name"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 			({trans("Effective date")})
 			<BR>
-			<IMG SRC="img/info1.gif" ALT=""> <A href="?m=tarifflist&amp;o=description{if $listdata.direction == "asc" && $listdata.order == "description"},desc{/if}">{trans("Description:")}</A> {if $listdata.order == "description"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			{icon name="info" class="fa-fw"} <A href="?m=tarifflist&amp;o=description{if $listdata.direction == "asc" && $listdata.order == "description"},desc{/if}">{trans("Description:")}</A> {if $listdata.order == "description"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="text-right nobr">
 			<A href="?m=tarifflist&amp;o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order == "id"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
@@ -79,7 +83,7 @@
 				<SELECT SIZE="1" NAME="p" ONCHANGE="document.choosefilter.submit();">
 					<OPTION value="0"{if !$listdata.promotionid} SELECTED{/if}>{trans("- all -")}</OPTION>
 					{section name=promotions loop=$promotions}
-					<OPTION value="{$promotions[promotions].id}" {if $listdata.promotionid == $promotions[promotions].id} SELECTED {/if}>{$promotions[promotions].name|truncate:50:"...":true}</OPTION>
+					<OPTION value="{$promotions[promotions].id}" {if $listdata.promotionid == $promotions[promotions].id} SELECTED {/if}>{$promotions[promotions].name|truncate:50:"&hellip;":true}</OPTION>
 					{/section}
 				</SELECT>
 				{trans("Status:")}
@@ -93,15 +97,18 @@
 					<SELECT SIZE="1" NAME="g" ONCHANGE="document.choosefilter.submit();">
 						<OPTION value="0"{if !$listdata.customergroupid} SELECTED{/if}>{trans("- all -")}</OPTION>
 						{section name=customergroups loop=$customergroups}
-						<OPTION value="{$customergroups[customergroups].id}" {if $listdata.customergroupid == $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:50:"...":true}</OPTION>
+						<OPTION value="{$customergroups[customergroups].id}" {if $listdata.customergroupid == $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:50:"&hellip;":true}</OPTION>
 						{/section}
 					</SELECT>
 				{else}
 					<input type="hidden" name="g" value="">
 				{/if}
 				{if !empty($tags) && count($tags)}
+					<input type="hidden" name="tg" value="">
 					{trans("Tags:")}
-					<SELECT size="5" name="tg[]" class="lms-ui-multiselect lms-ui-multiselect-filter" onchange="document.choosefilter.submit();" {tip text="Select tariff tags"} multiple data-default-value="{trans("- all -")}">
+					<SELECT size="5" name="tg[]" class="lms-ui-multiselect lms-ui-multiselect-filter"
+							onchange="document.choosefilter.submit();" {tip text="Select tariff tags"}
+							multiple data-shorten-to-default-value="false" data-default-value="{trans("- all -")}">
 						{foreach $tags as $tag}
 						<OPTION value="{$tag.id}"{if !empty($listdata.tags) && in_array($tag.id, $listdata.tags)} selected{/if}>{$tag.name}</OPTION>
 						{/foreach}
@@ -113,9 +120,10 @@
     </THEAD>
     <TBODY>
 	{foreach $tarifflist as $tariff}
-	<TR class="highlight{if $tariff.disabled == 1 && !$listdata.state} blend{/if}" data-target-url="?m=tariffinfo&id={$tariff.id}">
+	<TR class="highlight{if $tariff.disabled == 1 && !$listdata.state} blend{/if}" data-target-url="?m=tariffinfo&id={$tariff.id}" data-name="{$tariff.name}">
 		<TD>
-			<IMG SRC="img/money.gif" ALT="">&nbsp;<a href="?m=tariffinfo&amp;id={$tariff.id}"><B>{$tariff.name}</B></a>
+			{icon name="money" class="fa-fw"}
+			<a href="?m=tariffinfo&id={$tariff.id}"><B>{$tariff.name}</B></a>
 			{if $tariff.datefrom || $tariff.dateto}
 				{if $tariff.datefrom}
 				({trans("from:")} {$tariff.datefrom|date_format:"%Y/%m/%d"}{if !$tariff.dateto}){/if}
@@ -125,7 +133,10 @@
 				{/if}
 			{/if}
 			<BR>
-			{if $tariff.description}<IMG SRC="img/info1.gif" ALT="">&nbsp;{$tariff.description}{/if}
+			{if $tariff.description}
+				{icon name="info" class="fa-fw"}
+				{$tariff.description}
+			{/if}
 			{if !empty($tariff.tags)}
 			<br>
 			{trans("Tags:")}
@@ -138,19 +149,19 @@
 			({$tariff.id|string_format:"%04d"})
 		</TD>
 		<TD class="text-right nobr">
-			{if $tariff.downrate}{convert_to_units($tariff.downrate * 1000)}/s{else}-{/if}
-			{if $tariff.downrate_n}({convert_to_units($tariff.downrate_n * 1000)}/s){/if}<BR>
-			{if $tariff.uprate}{convert_to_units($tariff.uprate * 1000)}/s{else}-{/if}
-			{if $tariff.uprate_n}({convert_to_units($tariff.uprate_n * 1000)}/s){/if}
+			{if $tariff.downrate}{convert_to_units($tariff.downrate * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{else}-{/if}
+			{if $tariff.downrate_n}({convert_to_units($tariff.downrate_n * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s){/if}<BR>
+			{if $tariff.uprate}{convert_to_units($tariff.uprate * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{else}-{/if}
+			{if $tariff.uprate_n}({convert_to_units($tariff.uprate_n * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s){/if}
 		</TD>
 		<TD class="text-right nobr">
-			{if $tariff.downceil}{convert_to_units($tariff.downceil * 1000)}/s{else}-{/if}
-			{if $tariff.downceil_n}({convert_to_units($tariff.downceil_n * 1000)}/s){/if}<BR>
-			{if $tariff.upceil}{convert_to_units($tariff.upceil * 1000)}/s{else}-{/if}
-			{if $tariff.upceil_n}({convert_to_units($tariff.upceil_n * 1000)}/s){/if}
+			{if $tariff.downceil}{convert_to_units($tariff.downceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{else}-{/if}
+			{if $tariff.downceil_n}({convert_to_units($tariff.downceil_n * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s){/if}<BR>
+			{if $tariff.upceil}{convert_to_units($tariff.upceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{else}-{/if}
+			{if $tariff.upceil_n}({convert_to_units($tariff.upceil_n * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s){/if}
 		</TD>
 		<TD class="text-right nobr">
-			<B>{$tariff.value|money_format}</B><BR>
+			<B>{moneyf($tariff.value, $tariff.currency)}</B><BR>
 			{$tariff.tax}
 		</TD>
 		<TD class="text-right nobr">
@@ -160,21 +171,25 @@
 		</TD>
 		<TD class="text-right">
 			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_summaries')}
-			{$tariff.income|money_format}
+			{moneyf($tariff.income, $tariff.currency)}
 			{/if}
 		</TD>
 		<TD class="lms-ui-buttons text-right nobr">
-				<a href="?m=tariffedit&amp;set&amp;id={$tariff.id}">
-					{if $tariff.disabled == 0}
-						<img src="img/access.gif" alt="{t}Disable{/t}" title="{t}Disable{/t}" />
-					{else}
-						<img src="img/noaccess.gif" alt="{t}Enable{/t}" title="{t}Enable{/t}" />
-					{/if}
-				</a>
-				{if $tariff.customers}<A HREF="javascript:alert('{trans("Subscription with assigned customers cannot be deleted!")}');">{else}<A HREF="?m=tariffdel&amp;id={$tariff.id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that tariff?")}');">{/if}<IMG SRC="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
-				<A HREF="?m=tariffedit&amp;id={$tariff.id}"><IMG SRC="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
-				<A HREF="?m=tariffadd&amp;id={$tariff.id}"><IMG SRC="img/clone.gif" alt="{trans("Clone")}" title="{trans("Clone")}"></A>
-				<A HREF="?m=tariffinfo&amp;id={$tariff.id}"><IMG SRC="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
+			{if $tariff.disabled == 0}
+				{button type="link" icon="connected" tip="Disable" href="?m=tariffedit&set&id={$tariff.id}"}
+			{else}
+				{button type="link" icon="disconnected" tip="Enable" href="?m=tariffedit&set&id={$tariff.id}"}
+			{/if}
+			{if $tariff.customers}
+				{button type="link" icon="delete" tip="Delete" class="delete-tariff-alert"}
+			{else}
+				{button type="link" icon="delete" tip="Delete" class="delete-tariff" data_href="?m=tariffdel&id={$tariff.id}"}
+			{/if}
+			{if empty($tariff.customers) || ConfigHelper::checkPrivilege('used_tariff_edit')}
+				{button type="link" icon="edit" tip="Edit" href="?m=tariffedit&id={$tariff.id}"}
+			{/if}
+			{button type="link" icon="clone" tip="Clone" href="?m=tariffadd&id={$tariff.id}"}
+			{button type="link" icon="info" tip="Info" href="?m=tariffinfo&id={$tariff.id}"}
 		</TD>
 	</TR>
 	{foreachelse}
@@ -195,11 +210,27 @@
 		</TD>
 		<TD class="text-right nobr">
 			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_summaries')}
-			<B>{$listdata.totalincome|money_format}</B>
+				{foreach $listdata.totalincome as $currency => $totalincome}
+					{if !$totalincome@first}<br>{/if}
+					<B>{moneyf($totalincome, $currency)}</B>
+				{/foreach}
 			{/if}
 		</TD>
 		<TD>&nbsp;</TD>
 	</TR>
     </TFOOT>
 </TABLE>
+	<script>
+		$('.delete-tariff').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			confirmDialog($t("Are you sure, you want to delete tariff '$a'?", name), this).done(function() {
+				location.href = $(this).attr('data-href');
+			});
+			return false;
+		});
+		$('.delete-tariff-alert').click(function() {
+			alertDialog($t("Subscription with assigned customers cannot be deleted!"), this);
+			return;
+		});
+	</script>
 {/block}

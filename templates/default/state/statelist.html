@@ -22,7 +22,7 @@
     <TBODY>
 	{cycle values="light,lucid" print=false}
 	{section name=statelist loop=$statelist}
-	<TR class="highlight {cycle}"  >
+	<TR class="highlight {cycle}" data-name="{$statelist[statelist].name}">
 		<TD NOWRAP onClick="return self.location.href='?m=stateedit&id={$statelist[statelist].id}';">
 			<IMG src="img/state.gif" alt=""> <B>{$statelist[statelist].name}</B>
 		</TD>
@@ -33,7 +33,7 @@
 			{$statelist[statelist].description|replace:"\n":"<BR>"}
 		</TD>
 		<TD align="right" NOWRAP>
-			<A href="?m=statedel&id={$statelist[statelist].id}" OnClick="return confirmLink(this, '{t a=$statelist[statelist].name}Are you sure, you want to delete state \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A class="delete-state" href="?m=statedel&id={$statelist[statelist].id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 			<A href="?m=stateedit&id={$statelist[statelist].id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 		</TD>
 	</TR>
@@ -60,4 +60,13 @@
 	</TR>
     </TFOOT>
 </TABLE>
+	<script>
+		$('.delete-state').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			confirmDialog($t("Are you sure, you want to delete state '$a'?", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	</script>
 {/block}

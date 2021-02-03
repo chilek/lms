@@ -32,5 +32,3 @@ $this->Execute("CREATE INDEX nodes_ipaddr_pub_idx ON nodes (ipaddr_pub)");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007011200', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

@@ -29,5 +29,3 @@ $this->Execute("ALTER TABLE promotionassignments ADD selectionid smallint NOT NU
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014040700', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

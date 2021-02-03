@@ -7,7 +7,7 @@
 <!--
     function getText(index) {
         {section name=lt loop=$tariffs}
-        if (index == {$tariffs[lt].id}) return '{$tariffs[lt].name|escape} ({$tariffs[lt].value|money_format})';
+        if (index == {$tariffs[lt].id}) return '{$tariffs[lt].name|escape} ({moneyf($tariffs[lt].value, $tariffs[lt].currency)})';
         {/section}
     }
 
@@ -16,6 +16,9 @@
     }
 //-->
 </script>
+
+{$speed_unit_type = ConfigHelper::getConfig('phpui.speed_unit_type', 1000)}
+{$speed_unit_aggregation_threshold = ConfigHelper::getConfig('phpui.speed_unit_aggregation_threshold', 5)}
 
 <STYLE>
     .tariff_tab tr td {
@@ -30,11 +33,11 @@
 </STYLE>
 
 {function bitrate_restrictions}
-    {if $day}{convert_to_units($day * 1000)}/s{else}{trans("no limits")}{/if}
+    {if $day}{convert_to_units($day * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{else}{trans("no limits")}{/if}
 
     ({trans("night:")}
 
-    {if $night}{convert_to_units($night * 1000)}/s{else}{trans("not defined")}{/if})
+    {if $night}{convert_to_units($night * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{else}{trans("not defined")}{/if})
 {/function}
 
 {function restrictions}
@@ -88,11 +91,40 @@
                                 <TD><IMG SRC="img/value.gif" ALT=""></TD>
                                 <TD>{trans("Value:")}</TD>
                                 <TD>
-                                    {$tariff.value|money_format}
+                                    {if $tariff.currency}
+                                        {moneyf($tariff.value, $tariff.currency)}
+                                    {else}
+                                        {$tariff.value|string_format:"%.2f "} <span class="alert">{trans('No currency assigned!')}</span>
+                                    {/if}
                                     {if $tariff.period}
                                         {assign var=tperiod value=$tariff.period}({$_PERIODS.$tperiod})
                                     {else}
-                                        <font class="blend">({trans("period undefined")})</font>
+                                        <span class="blend">({trans("period undefined")})</span>
+                                    {/if}
+                                    {if $tariff.flags}
+                                        {if $tariff.value < 0}
+                                            {icon name="reward" tip="reward"}
+                                        {else}
+                                            {icon name="penalty" tip="penalty"}
+                                        {/if}
+                                    {/if}
+                                </TD>
+                            </TR>
+                            <TR>
+                                <TD><IMG SRC="img/tax.gif" ALT=""></TD>
+                                <TD>{trans("Split payment:")}</TD>
+                                <TD>
+                                    {if $tariff.splitpayment}{trans("yes")}{else}{trans("no")}{/if}
+                                </TD>
+                            </TR>
+                            <TR>
+                                <TD><IMG SRC="img/tax.gif" ALT=""></TD>
+                                <TD>{trans("Tax category:")}</TD>
+                                <TD>
+                                    {if $tariff.taxcategory}
+                                        <span {tip text=$_TAX_CATEGORIES[$tariff.taxcategory].description}>({sprintf('%02d', $tariff.taxcategory)}) {$_TAX_CATEGORIES[$tariff.taxcategory].label}</span>
+                                    {else}
+                                        {trans("- none -")}
                                     {/if}
                                 </TD>
                             </TR>
@@ -105,6 +137,19 @@
                                 <TD><IMG SRC="img/money.gif" ALT=""></TD>
                                 <TD>{trans("Type:")}</TD>
                                 <TD>{$_SERVICETYPES[$tariff.type]}</TD>
+                            </TR>
+
+                            <TR>
+                                <TD><i class="lms-ui-icon-tags"></i></TD>
+                                <TD>{trans("Tags:")}</TD>
+                                <TD>
+                                    {foreach $tariff.tags as $tarifftag}
+                                        <span class="dark tag-bar"><a href="?m=tarifftaginfo&id={$tarifftag.id}">{$tarifftag.name}</a></span>
+                                        {if !$tarifftag@last} / {/if}
+                                    {foreachelse}
+                                        -
+                                    {/foreach}
+                                </TD>
                             </TR>
 
                             {if isset($tariff.numberplan)}
@@ -151,7 +196,12 @@
                             <TR>
                                 <TD><IMG SRC="img/values.gif" ALT=""></TD>
                                 <TD>{trans("Avg. monthly income:")}</TD>
-                                <TD>{$tariff.totalval|money_format}</TD>
+                                <td>
+                                    {foreach $tariff.totalval as $currency => $totalval}
+                                        {if !$totalval@first}<br>{/if}
+                                        {moneyf($totalval, $currency)}
+                                    {/foreach}
+                                </td>
                             </TR>
                             {/if}
 
@@ -160,8 +210,8 @@
                                 <TD>
                                     <img src="img/netdev.gif">
                                 </TD>
-                                <TD>
-                                    {trans("Type:")}
+                                <TD class="bold">
+                                    {trans("Purpose:")}
                                 </TD>
                                 <TD>
                                     <ol class="lms-inline-list">
@@ -343,15 +393,12 @@
     {/if}
 
     <TR>
-        <TD ALIGN="RIGHT" COLSPAN="2">
-            <A HREF="?m=tariffedit&id={$tariff.id}" ACCESSKEY="E">
-                {trans("Edit")} <IMG SRC="img/edit.gif" ALT="">
-            </A>
-
+        <TD colspan="2" class="lms-ui-box-buttons">
+            {if !$tariff.count || ConfigHelper::checkPrivilege('used_tariff_edit')}
+                {button type="link-button" label="Edit" icon="edit" href="?m=tariffedit&id={$tariff.id}"}
+            {/if}
             {if $tariff.count == 0}
-            <A HREF="?m=tariffdel&id={$tariff.id}" onclick="return confirmLink(this,'{trans("Are you sure, you want to delete that tariff?")}');">
-                {trans("Delete")} <IMG SRC="img/delete.gif" ALT="">
-            </A>
+                {button id="delete-tariff" label="Delete" icon="delete"}
             {/if}
         </TD>
     </TR>
@@ -373,7 +420,7 @@
                                 <OPTION value="0" {if !$netid}SELECTED{/if}>{trans("- all networks -")}</OPTION>
                                 {section name=networks loop=$networks}
                                     <OPTION value="{$networks[networks].id}" {if $networks[networks].id == $netid}SELECTED{/if}>
-                                    {$networks[networks].name|truncate:30:"...":true}
+                                    {$networks[networks].name|truncate:30:"&hellip;":true}
                                     </OPTION>
                                 {/section}
                             </SELECT>
@@ -388,9 +435,9 @@
                     {section name=l2 loop=$tariff.customers start=$smarty.section.l1.index step=$tariff.rows}
                      <TD WIDTH="33%" class="highlight {cycle}" {cycle print=false} onclick="return self.location.href='?m=customerinfo&id={$tariff.customers[l2].id}'">
                         <IMG SRC="img/customer.gif" ALT="">
-                        <A HREF="?m=customerinfo&id={$tariff.customers[l2].id}">
+                        <A HREF="?m=customerinfo&id={$tariff.customers[l2].id}"{if !$tariff.customers[l2].active} class="blend"{/if}>
                             ({$tariff.customers[l2].id|string_format:"%04d"})
-                            {$tariff.customers[l2].customername|truncate:50:" ..."}
+                            {$tariff.customers[l2].customername|truncate:50:"&hellip;"}
                             {if $tariff.customers[l2].cnt > 1}({$tariff.customers[l2].cnt}){/if}
                         </A>
                     </TD>
@@ -423,7 +470,7 @@
                             <SELECT SIZE="1" NAME="to">
                                 {foreach from=$tariffs item=v}
                                     {if $v.id != $tariff.id}
-                                        <OPTION VALUE="{$v.id}">{$v.name} ({$v.value|money_format})</OPTION>
+                                        <OPTION VALUE="{$v.id}">{$v.name} ({moneyf($v.value, $v.currency)})</OPTION>
                                     {/if}
                                 {/foreach}
                             </SELECT>
@@ -436,5 +483,12 @@
     </TR>
     </TBODY>
 </TABLE>
-
+    <script>
+        $('#delete-tariff').click(function() {
+            confirmDialog($t("Are you sure, you want to delete that tariff?"), this).done(function() {
+                location.href = '?m=tariffdel&id={$tariff.id}';
+            });
+            return false;
+        });
+    </script>
 {/block}

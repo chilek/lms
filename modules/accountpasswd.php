@@ -32,35 +32,33 @@ $account = $DB->GetRow('SELECT p.id, p.login, d.name AS domain
 		LEFT JOIN domains d ON (p.domainid = d.id)
 		WHERE p.id = ?', array($id));
 
-if(!$account)
-{
-	$SESSION->redirect('?'.$SESSION->get('backto'));
+if (!$account) {
+    $SESSION->redirect('?'.$SESSION->get('backto'));
 }
-	
-if(isset($_POST['passwd']))
-{
-	$account['passwd1'] = $_POST['passwd']['passwd'];
-	$account['passwd2'] = $_POST['passwd']['confirm'];
-	
-	if($account['passwd1'] != $account['passwd2'])
-		$error['passwd'] = trans('Passwords does not match!'); 
-	elseif($account['passwd1'] == '') 
-		$error['passwd'] = trans('Empty passwords are not allowed!');
-	
-	if(!$error)
-	{
-		$DB->Execute('UPDATE passwd SET password = ? WHERE id = ?', 
-			array(crypt($account['passwd1']), $id));
-	
-		$SESSION->redirect('?'.$SESSION->get('backto'));
-	}
+    
+if (isset($_POST['passwd'])) {
+    $account['passwd1'] = $_POST['passwd']['passwd'];
+    $account['passwd2'] = $_POST['passwd']['confirm'];
+    
+    if ($account['passwd1'] != $account['passwd2']) {
+        $error['passwd'] = trans('Passwords does not match!');
+    } elseif ($account['passwd1'] == '') {
+        $error['passwd'] = trans('Empty passwords are not allowed!');
+    }
+    
+    if (!$error) {
+        $DB->Execute(
+            'UPDATE passwd SET password = ? WHERE id = ?',
+            array(crypt($account['passwd1']), $id)
+        );
+    
+        $SESSION->redirect('?'.$SESSION->get('backto'));
+    }
 }
 
-$layout['pagetitle'] = trans('Password Change for Account: $a',$account['login'].'@'.$account['domain']);
-		
+$layout['pagetitle'] = trans('Password Change for Account: $a', $account['login'].'@'.$account['domain']);
+        
 $SMARTY->assign('error', $error);
 $SMARTY->assign('account', $account);
 
 $SMARTY->display('account/accountpasswd.html');
-
-?>

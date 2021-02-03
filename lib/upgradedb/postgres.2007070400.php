@@ -29,8 +29,6 @@ $this->BeginTrans();
 $this->Execute("CREATE INDEX documentcontents_todate_idx ON documentcontents (todate)");
 $this->Execute("CREATE INDEX documentcontents_fromdate_idx ON documentcontents (fromdate)");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2007070400', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007070400', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

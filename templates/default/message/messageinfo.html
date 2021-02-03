@@ -2,7 +2,14 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
+<H1>{$layout.pagetitle|escape}</H1>
+<style>
+
+	.lms-ui-button-fileupload {
+		margin-top: 0.5em;
+	}
+
+</style>
 <TABLE class="lmsbox">
 	<COLGROUP>
 		<COL style="width: 1%;">
@@ -12,33 +19,42 @@
     <THEAD>
 	<TR>
 		<TD>
-			<IMG SRC="img/{if $message.type == $smarty.const.MSG_SMS}sms{elseif $message.type == $smarty.const.MSG_WWW}network{elseif $message.type == $smarty.const.MSG_USERPANEL || $message.type == $smarty.const.MSG_USERPANEL_URGENT}cms{else}email{/if}.gif" ALT="">
+			{if $message.type == $smarty.const.MSG_SMS}
+				{$icon = "sms"}
+			{elseif $message.type == $smarty.const.MSG_WWW}
+				{$icon = "www"}
+			{elseif $message.type == $smarty.const.MSG_USERPANEL || $message.type == $smarty.const.MSG_USERPANEL_URGENT}
+				{$icon = "userpanel"}
+			{else}
+				{$icon = "mail"}
+			{/if}
+			{icon name=$icon class="fa-fw"}
 		</TD>
 		<TD class="bold nobr">
 			{trans("Subject:")}
 		</TD>
 		<TD>
-			{$message.subject}
+			{$message.subject|escape}
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	<TR>
 		<TD>
-			<IMG SRC="img/users.gif" ALT=""> 
+			{icon name="user" class="fa-fw"}
 		</TD>
 		<TD class="bold">
 			{trans("User:")}
 		</TD>
 		<TD>
 			{if $message.userid}
-			<a href="?m=userinfo&id={$message.userid}">{$message.name}</a>
+			<a href="?m=userinfo&id={$message.userid}">{$message.username|escape}</a>
 			{else}LMS{/if}
 		</TD>
 	</TR>
 	<TR>
 		<TD>
-			<IMG SRC="img/time.gif" ALT=""> 
+			{icon name="calendar" class="fa-fw"}
 		</TD>
 		<TD class="bold">
 			{trans("Creation date:")}
@@ -50,7 +66,7 @@
 {if $message.sender}
 	<TR>
 		<TD>
-			<IMG SRC="img/mail.gif" ALT=""> 
+			{icon name="mail" class="fa-fw"}
 		</TD>
 		<TD class="bold">
 			{trans("Sender:")}
@@ -62,7 +78,7 @@
 {/if}
 	<TR>
 		<TD>
-			<IMG SRC="img/edit.gif" ALT=""> 
+			{icon name="edit" class="fa-fw"}
 		</TD>
 		<TD class="bold nobr">
 			{trans("Message body:")}
@@ -71,21 +87,50 @@
 			<TABLE WIDTH="100%" CELLPADDING="5">
 				<TR>
 					<TD CLASS="fall superlight">
-						{$message.body|replace:"\n":"<BR>"}
+						{if $message.contenttype == 'text/plain'}
+							{nl2br(htmlspecialchars($message.body), false)}
+						{elseif $message.contenttype == 'text/html'}
+							{$message.body}
+						{else}
+							{nl2br($message.body, false)}
+						{/if}
 					</TD>
 				</TR>
 			</TABLE>
 		</TD>
 	</TR>
+	{if $filecontainers}
+		<TR>
+			<TD class="valign-top">
+				{icon name="upload" class="fa-fw"}
+			</TD>
+			<TD class="bold valign-top">
+				{trans("Attachments:")}
+			</TD>
+			<TD>
+				{foreach $filecontainers as $container}
+						{foreach $container.files as $file}
+							{documentview id="{$container.id}-{$file.id}" type=$file.contenttype name=$file.filename
+								url="?m=attachments&attachmentaction=viewfile&type=messageid&id={$container.id}&fileid={$file.id}" external=true
+								text="{$file.filename} <i class=\"lms-ui-icon-view{if preg_match('/pdf/',$file.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$file.contenttype)} xls{/if}\"></i>"}
+							<br>
+						{/foreach}
+					{button id="downloadzippedcontainer" onclick="location.href = '?m=attachments&attachmentaction=downloadzippedcontainer&type=messageid&id={$container.id}';" label="Download as zip archive" icon="fileupload"}
+				{/foreach}
+			</TD>
+		</TR>
+	{/if}
 	<TR>
-		<TD COLSPAN="3" class="buttons">
-			<A HREF="?m=messagelist">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A>
+		<TD COLSPAN="3" class="lms-ui-box-buttons">
+			{button id="delete-message" icon="delete" label="Delete"}
+			{button icon="cancel" label="Cancel" onclick="location.href = '?m=messagelist';"}
+			{button icon="resend" label="Resend" onclick="location.href = '?m=messageadd&messageid={$message.id}';"}
 		</TD>
 	</TR>
     </TBODY>
 </TABLE>
 <BR>
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-background-cycle">
 	<COLGROUP>
 		<COL style="width: 1%;">
 		<COL style="width: 1%;">
@@ -140,7 +185,7 @@
 			&nbsp;<A href="javascript: document.page.submit();">&raquo;&raquo;&raquo;</A>
 			</FORM>
 		</TD>
-	</TR>		
+	</TR>
 	{if $listdata.total != 0}
 	<TR>
 		<TD class="lms-ui-pagination" COLSPAN="6">
@@ -150,21 +195,31 @@
 	{/if}
     </THEAD>
     <TBODY>
-	{cycle values="light,lucid" print=false}
 	{section name=itemlist loop=$itemlist start=$start max=$pagelimit}
 	{assign var=item value=$itemlist[itemlist]}
-	<TR class="{cycle}{if $item.status==$smarty.const.MSG_ERROR} alert{elseif $item.status==$smarty.const.MSG_SENT} blend{elseif $item.status==$smarty.const.MSG_DELIVERED} green{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-		<TD class="nobr">
+	<TR class="{if $item.body}showitem{/if} {if $item.status==$smarty.const.MSG_ERROR} lms-ui-alert{elseif $item.status==$smarty.const.MSG_SENT} blend{elseif $item.status==$smarty.const.MSG_DELIVERED} green{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')" data-itemid="{$item.id}">
+		<TD class="nobr valign-top">
 			{if $item.customerid}
-				<A href="?m=customerinfo&id={$item.customerid}">{$item.customer|truncate:45:"...":true} ({$item.customerid|string_format:"%04d"})</A>
+				<A href="?m=customerinfo&id={$item.customerid}">{$item.customer|truncate:45:"&hellip;":true} ({$item.customerid|string_format:"%04d"})</A>
 			{else}
 				{trans("none")}
 			{/if}
 		</TD>
-		<TD class="nobr">
+		<TD class="nobr valign-top">
 			{trans("{$item.destination|escape}")}
+			{if $item.body}
+				<div id="{$item.id}" style="display: none;" class="fall superlight">
+					{if $message.contenttype == 'text/plain'}
+						{nl2br(htmlspecialchars($item.body), false)}
+					{elseif $message.contenttype == 'text/html'}
+						{$item.body}
+					{else}
+						{nl2br($item.body, false)}
+					{/if}
+				</div>
+			{/if}
 		</TD>
-		<TD class="text-right">
+		<TD class="text-right valign-top">
 			{if $item.status == $smarty.const.MSG_SENT}
 				{trans("sent")}
 			{elseif $item.status == $smarty.const.MSG_ERROR}
@@ -175,7 +230,7 @@
 				{trans("waiting")}
 			{/if}
 		</TD>
-		<TD class="text-right">
+		<TD class="text-right valign-top">
 			{if $item.lastreaddate}{$item.lastreaddate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
 		</TD>
 		<TD class="text-right">
@@ -183,7 +238,10 @@
 				&& ($message.type == $smarty.const.MSG_USERPANEL || $message.type == $smarty.const.MSG_USERPANEL_URGENT || $message.type == $smarty.const.MSG_WWW)
 				&& $item.lastdate}{$item.lastdate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
 		</TD>
-		<TD class="text-right nobr">
+		<TD class="text-right nobr valign-top">
+			{if $item.body}
+				{button type="link" icon="info" tip="Show message body"}
+			{/if}
 		</TD>
 	</TR>
 	{sectionelse}
@@ -191,7 +249,7 @@
 		<TD COLSPAN="6" class="empty-table">
 			<p>{trans("No such recipients in database.")}</p>
 		</TD>
-	</TR>	
+	</TR>
 	{/section}
     </TBODY>
     <TFOOT>
@@ -209,4 +267,19 @@
 	</TR>
     </TFOOT>
 </TABLE>
+	<script>
+		$(function () {
+			$('.showitem').on('click', function () {
+				var itemid = $(this).attr('data-itemid');
+				$('#'+itemid).toggle();
+			});
+
+			$('#delete-message').click(function() {
+				confirmDialog($t("Are you sure, you want to delete that message?"), this).done(function() {
+					location.href =  '?m=messagedel&id={$message.id}';
+				});
+				return false;
+			});
+		});
+	</script>
 {/block}

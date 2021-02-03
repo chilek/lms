@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,16 +24,28 @@
  *  $Id$
  */
 
-$id = intval($_GET['id']);
-
-if ($id && $_GET['is_sure'] == '1') {
-	$DB->Execute('DELETE FROM uiconfig WHERE id = ?', array($id));
-	if ($SYSLOG) {
-		$args = array(SYSLOG::RES_UICONF => $id);
-		$SYSLOG->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_DELETE, $args);
-	}
+if (isset($_GET['id'])) {
+    $id = intval($_GET['id']);
+    if ($id) {
+        $DB->BeginTrans();
+        $LMS->DeleteConfigOption($id);
+        $DB->CommitTrans();
+    }
+} elseif (isset($_POST['marks'])) {
+    $options = Utils::filterIntegers($_POST['marks']);
+    if (!empty($options)) {
+        $DB->BeginTrans();
+        foreach ($options as $option) {
+            $LMS->DeleteConfigOption($option);
+        }
+        $DB->CommitTrans();
+    }
 }
 
-header('Location: ?m=configlist');
-
-?>
+if ($SESSION->is_set('backto', true)) {
+    $SESSION->redirect('?' . $SESSION->get('backto', true));
+} elseif ($SESSION->is_set('backto')) {
+    $SESSION->redirect('?' . $SESSION->get('backto'));
+} else {
+    $SESSION->redirect('?m=configlist');
+}

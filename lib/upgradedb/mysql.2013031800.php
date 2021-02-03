@@ -100,5 +100,3 @@ $this->Execute("ALTER TABLE managementurls ADD FOREIGN KEY (netdevid) REFERENCES
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013031800', 'dbversion'));
 $this->CommitTrans();
-
-?>
