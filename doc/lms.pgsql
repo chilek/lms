@@ -2461,18 +2461,18 @@ CREATE INDEX customercontacts_customerid_idx ON customercontacts (customerid);
 CREATE INDEX customercontacts_contact_idx ON customercontacts (contact);
 
 /* ---------------------------------------------------
- Structure of table "customercontactsproperties"
+ Structure of table "customercontactproperties"
 ------------------------------------------------------*/
-DROP TABLE IF EXISTS customercontactsproperties CASCADE;
-CREATE TABLE customercontactsproperties (
+DROP TABLE IF EXISTS customercontactproperties CASCADE;
+CREATE TABLE customercontactproperties (
     contactid   integer         NOT NULL
-        CONSTRAINT customercontactsproperties_contactid_fkey REFERENCES customercontacts (id) ON DELETE CASCADE ON UPDATE CASCADE,
+        CONSTRAINT customercontactproperties_contactid_fkey REFERENCES customercontacts (id) ON DELETE CASCADE ON UPDATE CASCADE,
     name        varchar(255)    NOT NULL DEFAULT '',
     value       varchar(255)    NOT NULL DEFAULT '',
-    CONSTRAINT customercontactsproperties_contactid_name_ukey UNIQUE (contactid, name)
+    CONSTRAINT customercontactproperties_contactid_name_ukey UNIQUE (contactid, name)
 );
-CREATE INDEX customercontactsproperties_name_idx ON customercontactsproperties (name);
-CREATE INDEX customercontactsproperties_value_idx ON customercontactsproperties (value);
+CREATE INDEX customercontactproperties_name_idx ON customercontactproperties (name);
+CREATE INDEX customercontactproperties_value_idx ON customercontactproperties (value);
 
 /* ---------------------------------------------------
  Structure of table "excludedgroups"
