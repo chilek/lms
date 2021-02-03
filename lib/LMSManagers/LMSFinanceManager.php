@@ -4830,18 +4830,16 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         );
 
         $divisions = $this->db->GetCol(
-            'SELECT d.id
+            'SELECT divisionid
             FROM numberplanassignments
-            JOIN divisions d ON d.id = divisionid
             WHERE planid = ?',
             array($id)
         );
         $numberplan['divisions'] = empty($divisions) ? array() : array_flip($divisions);
 
         $users = $this->db->GetCol(
-            'SELECT u.id
+            'SELECT userid
             FROM numberplanusers
-            JOIN users u ON u.id = userid
             WHERE planid = ?',
             array($id)
         );
@@ -4948,7 +4946,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 foreach ($users as $user) {
                     $planid = $user['planid'];
                     if (isset($list[$planid])) {
-                        $list[$planid]['users'][$division['id']] = $user;
+                        $list[$planid]['users'][$user['id']] = $user;
                     }
                 }
             }
