@@ -2564,8 +2564,8 @@ CREATE TABLE customercontacts (
 #
 CREATE TABLE customercontactproperties (
     contactid   int(11)         NOT NULL,
-    name        varchar(255)    NOT NULL DEFAULT '',
-    value       varchar(255)    NOT NULL DEFAULT '',
+    name        varchar(255)    NOT NULL,
+    value       varchar(255)    NOT NULL,
     CONSTRAINT customercontactproperties_contactid_fkey
         FOREIGN KEY (contactid) REFERENCES customercontacts (id) ON DELETE CASCADE ON UPDATE CASCADE,
     KEY customercontactproperties_name_idx (name),

@@ -2467,8 +2467,8 @@ DROP TABLE IF EXISTS customercontactproperties CASCADE;
 CREATE TABLE customercontactproperties (
     contactid   integer         NOT NULL
         CONSTRAINT customercontactproperties_contactid_fkey REFERENCES customercontacts (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    name        varchar(255)    NOT NULL DEFAULT '',
-    value       varchar(255)    NOT NULL DEFAULT '',
+    name        varchar(255)    NOT NULL,
+    value       varchar(255)    NOT NULL,
     CONSTRAINT customercontactproperties_contactid_name_ukey UNIQUE (contactid, name)
 );
 CREATE INDEX customercontactproperties_name_idx ON customercontactproperties (name);
