@@ -170,6 +170,10 @@ interface LMSFinanceManagerInterface
 
     public function getNumberPlan($id);
 
+    public function getNumberPlanList(array $params);
+
+    public function validateNumberPlan(array $numberplan);
+
     public function addNumberPlan(array $numberplan);
 
     public function updateNumberPlan(array $numberplan);

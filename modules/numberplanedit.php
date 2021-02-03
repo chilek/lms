@@ -53,19 +53,8 @@ if (is_array($numberplanedit) && count($numberplanedit)) {
         $error['period'] = trans('Numbering period is required!');
     }
 
-    if ($numberplanedit['doctype'] && $numberplanedit['isdefault']) {
-        if ($DB->GetOne(
-            'SELECT 1 FROM numberplans n
-			WHERE doctype = ? AND isdefault = 1 AND n.id != ?'
-            . (!empty($numberplanedit['divisions']) ? ' AND EXISTS (
-                SELECT 1 FROM numberplanassignments WHERE planid = n.id
-                    AND divisionid IN (' . implode(',', Utils::filterIntegers($numberplanedit['divisions'])) . '))'
-                : ' AND NOT EXISTS (SELECT 1 FROM numberplanassignments
-                WHERE planid = n.id)'),
-            array($numberplanedit['doctype'], $numberplanedit['id'])
-        )) {
-            $error['doctype'] = trans('Selected document type has already defined default plan!');
-        }
+    if ($numberplanedit['doctype'] && $numberplanedit['isdefault'] && !$LMS->validateNumberPlan($numberplanedit)) {
+        $error['doctype'] = trans('Selected document type has already defined default plan!');
     }
 
     if (!$error) {

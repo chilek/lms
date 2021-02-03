@@ -4824,7 +4824,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     {
         $numberplan = $this->db->GetRow(
             'SELECT id, period, template, doctype, isdefault
-			FROM numberplans
+            FROM numberplans
             WHERE id = ?',
             array($id)
         );
@@ -4841,6 +4841,94 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         return $numberplan;
     }
 
+    public function getNumberPlanList(array $params)
+    {
+        $currmonth = date('n');
+        switch ($currmonth) {
+            case 1:
+            case 2:
+            case 3:
+                $startq = 1;
+                break;
+            case 4:
+            case 5:
+            case 6:
+                $startq = 4;
+                break;
+            case 7:
+            case 8:
+            case 9:
+                $startq = 7;
+                break;
+            case 10:
+            case 11:
+            case 12:
+                $startq = 10;
+                break;
+        }
+
+        $yearstart = mktime(0, 0, 0, 1, 1);
+        $quarterstart = mktime(0, 0, 0, $startq, 1);
+        $monthstart = mktime(0, 0, 0, $currmonth, 1);
+        $weekstart = mktime(0, 0, 0, $currmonth, date('j') - strftime('%u') + 1);
+        $daystart = mktime(0, 0, 0);
+
+        if (!empty($params['count'])) {
+            return intval($this->db->GetOne('SELECT COUNT(id) FROM numberplans'));
+        }
+
+        if ($list = $this->db->GetAll(
+            'SELECT id, template, period, doctype, isdefault
+            FROM numberplans
+            ORDER BY id'
+            . (isset($params['limit']) ? ' LIMIT ' . intval($params['limit']) : '')
+            . (isset($params['offset']) ? ' OFFSET ' . intval($params['offset']) : '')
+        )) {
+            $count = $this->db->GetAllByKey(
+                'SELECT numberplanid AS id, COUNT(numberplanid) AS count
+                FROM documents
+                GROUP BY numberplanid',
+                'id'
+            );
+
+            $max = $this->db->GetAllByKey(
+                'SELECT numberplanid AS id, MAX(number) AS max 
+                FROM documents
+                LEFT JOIN numberplans ON (numberplanid = numberplans.id)
+                WHERE cdate >= (CASE period
+                    WHEN ' . YEARLY . ' THEN ' . $yearstart . '
+                    WHEN ' . QUARTERLY . ' THEN ' . $quarterstart . '
+                    WHEN ' . MONTHLY . ' THEN ' . $monthstart . '
+                    WHEN ' . WEEKLY . ' THEN ' . $weekstart . '
+                    WHEN ' . DAILY . ' THEN ' . $daystart . ' ELSE 0 END)
+                GROUP BY numberplanid',
+                'id'
+            );
+
+            foreach ($list as &$item) {
+                $item['next'] = isset($max[$item['id']]['max']) ? $max[$item['id']]['max']+1 : 1;
+                $item['issued'] = isset($count[$item['id']]['count']) ? $count[$item['id']]['count'] : 0;
+            }
+            unset($item);
+        }
+
+        return $list;
+    }
+
+    public function validateNumberPlan(array $numberplan)
+    {
+        return $this->db->GetOne(
+            'SELECT 1 FROM numberplans n
+            WHERE doctype = ? AND isdefault = 1' . (empty($numberplan['id']) ? '' : ' AND n.id <> ' . intval($numberplan['id']))
+            . (!empty($numberplan['divisions']) ? ' AND EXISTS (
+                SELECT 1 FROM numberplanassignments WHERE planid = n.id
+                    AND divisionid IN (' . implode(',', Utils::filterIntegers($numberplan['divisions'])) . '))'
+                : ' AND NOT EXISTS (SELECT 1 FROM numberplanassignments
+                WHERE planid = n.id)'),
+            array($numberplan['doctype'])
+        ) != 1;
+    }
+
     public function addNumberPlan(array $numberplan)
     {
         $this->db->BeginTrans();
@@ -4853,7 +4941,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         );
         $this->db->Execute(
             'INSERT INTO numberplans (template, doctype, period, isdefault)
-			VALUES (?, ?, ?, ?)',
+            VALUES (?, ?, ?, ?)',
             array_values($args)
         );
 
@@ -4868,7 +4956,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             foreach ($numberplan['divisions'] as $divisionid) {
                 $res = $this->db->Execute(
                     'INSERT INTO numberplanassignments (planid, divisionid)
-					VALUES (?, ?)',
+                    VALUES (?, ?)',
                     array($id, $divisionid)
                 );
                 if ($res && $this->syslog) {

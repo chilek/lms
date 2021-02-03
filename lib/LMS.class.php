@@ -3419,6 +3419,18 @@ class LMS
         return $manager->getNumberPlan($id);
     }
 
+    public function getNumberPlanList($params)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->getNumberPlanList($params);
+    }
+
+    public function validateNumberPlan(array $numberplan)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->validateNumberPlan($numberplan);
+    }
+
     public function addNumberPlan(array $numberplan)
     {
         $manager = $this->getFinanceManager();
