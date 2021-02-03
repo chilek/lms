@@ -25,17 +25,16 @@ $this->BeginTrans();
 
 $this->Execute("
     CREATE TABLE customercontactproperties (
-        contactid   int(11)         NOT NULL,
-        name        varchar(255)    NOT NULL,
-        value       varchar(255)    NOT NULL,
-        CONSTRAINT customercontactproperties_contactid_fkey
-            FOREIGN KEY (contactid) REFERENCES customercontacts (id) ON DELETE CASCADE ON UPDATE CASCADE,
-        KEY customercontactproperties_name_idx (name),
-        KEY customercontactproperties_value_idx (value),
-        UNIQUE KEY customercontactproperties_contactid_name_ukey (contactid, name)
-    ) ENGINE=InnoDB
+    contactid   integer         NOT NULL
+        CONSTRAINT customercontactproperties_contactid_fkey REFERENCES customercontacts (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    name        varchar(255)    NOT NULL,
+    value       varchar(255)    NOT NULL,
+    CONSTRAINT customercontactproperties_contactid_name_ukey UNIQUE (contactid, name)
+    );
+    CREATE INDEX customercontactproperties_name_idx ON customercontactproperties (name);
+    CREATE INDEX customercontactproperties_value_idx ON customercontactproperties (value);
 ");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021012700', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021020301', 'dbversion'));
 
 $this->CommitTrans();

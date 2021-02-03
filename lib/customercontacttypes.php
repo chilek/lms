@@ -124,7 +124,6 @@ function validate_customer_emails(&$customerdata, &$contacts, &$error)
                 if (empty($propertyName) || empty($propertyValue)) {
                     unset($properties[$pkey]);
                 }
-                unset($propertyName, $propertyValue);
             }
         }
 
