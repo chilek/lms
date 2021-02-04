@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2020 LMS Developers
+ *  Copyright (C) 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -77,4 +77,18 @@ interface LMSDocumentManagerInterface
     public function getDocumentsByChecksum($checksum, $all_types = false);
 
     public function isDocumentAccessible($docid);
+
+    public function checkNumberPlanAccess($id);
+
+    public function getNumberPlan($id);
+
+    public function getNumberPlanList(array $params);
+
+    public function validateNumberPlan(array $numberplan);
+
+    public function addNumberPlan(array $numberplan);
+
+    public function updateNumberPlan(array $numberplan);
+
+    public function deleteNumberPlan($id);
 }
