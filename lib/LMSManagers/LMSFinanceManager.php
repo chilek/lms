@@ -4835,7 +4835,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             WHERE planid = ?',
             array($id)
         );
-        $numberplan['divisions'] = empty($divisions) ? array() : array_flip($divisions);
+        $numberplan['divisions'] = $divisions ? array_flip($divisions) : array();
 
         $users = $this->db->GetCol(
             'SELECT userid
@@ -4843,7 +4843,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             WHERE planid = ?',
             array($id)
         );
-        $numberplan['users'] = empty($users) ? array() : array_flip($users);
+        $numberplan['users'] = $users ? array_flip($users) : array();
 
         return $numberplan;
     }
@@ -4961,20 +4961,60 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $selectedusers = Utils::filterIntegers(empty($numberplan['users']) ? array() : $numberplan['users']);
 
         if ($numberplan['doctype'] && $numberplan['isdefault']) {
-            if (empty($selectedusers)) {
-                if ($this->db->GetOne(
-                    'SELECT 1 FROM numberplans n
-                    WHERE doctype = ? AND isdefault = 1' . (empty($numberplan['id']) ? '' : ' AND n.id <> ' . intval($numberplan['id']))
-                    . (!empty($selecteddivisions) ? ' AND EXISTS (
-                        SELECT 1 FROM numberplanassignments WHERE planid = n.id
-                            AND divisionid IN (' . implode(',', $selecteddivisions) . '))'
-                        : ' AND NOT EXISTS (SELECT 1 FROM numberplanassignments
-                        WHERE planid = n.id)'),
-                    array($numberplan['doctype'])
-                )) {
-                    return array(
-                        'doctype' => trans('Selected document type has already defined default plan!'),
-                    );
+            if (empty($selecteddivisions)) {
+                if (empty($selectedusers)) {
+                    if ($this->db->GetOne(
+                        'SELECT 1 FROM numberplans n
+                        WHERE doctype = ? AND isdefault = 1' . (empty($numberplan['id']) ? '' : ' AND n.id <> ' . intval($numberplan['id']))
+                        . ' AND NOT EXISTS (SELECT 1 FROM numberplanassignments WHERE planid = n.id)',
+                        array($numberplan['doctype'])
+                    )) {
+                        return array(
+                            'doctype' => trans('Selected document type has already defined default plan!'),
+                        );
+                    }
+                } else {
+                    if ($this->db->GetOne(
+                        'SELECT 1 FROM numberplans n
+                        WHERE doctype = ? AND isdefault = 1' . (empty($numberplan['id']) ? '' : ' AND n.id <> ' . intval($numberplan['id']))
+                        . ' AND NOT EXISTS (SELECT 1 FROM numberplanassignments WHERE planid = n.id)
+                        AND NOT EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.in AND userid IN ?)',
+                        array($numberplan['doctype'], $selectedusers)
+                    )) {
+                        return array(
+                            'doctype' => trans('Selected document type for some of selected users has already defined default plan!'),
+                        );
+                    }
+                }
+            } else {
+                if (empty($selectedusers)) {
+                    if ($this->db->GetOne(
+                        'SELECT 1 FROM numberplans n
+                        WHERE doctype = ? AND isdefault = 1' . (empty($numberplan['id']) ? '' : ' AND n.id <> ' . intval($numberplan['id']))
+                        . ' AND EXISTS (
+                            SELECT 1 FROM numberplanassignments WHERE planid = n.id AND divisionid IN ?
+                        )',
+                        array($numberplan['doctype'], $selecteddivisions)
+                    )) {
+                        return array(
+                            'doctype' => trans('Selected document type for some of selected divisions has already defined default plan!'),
+                        );
+                    }
+                } else {
+                    if ($this->db->GetOne(
+                        'SELECT 1 FROM numberplans n
+                        WHERE doctype = ? AND isdefault = 1' . (empty($numberplan['id']) ? '' : ' AND n.id <> ' . intval($numberplan['id']))
+                        . ' AND EXISTS (
+                            SELECT 1 FROM numberplanassignments WHERE planid = n.id AND divisionid IN ?
+                        ) AND EXISTS (
+                            SELECT 1 FROM numberplanusers WHERE planid = n.id AND userid IN ?
+                        )',
+                        array($numberplan['doctype'], $selecteddivisions, $selectedusers)
+                    )) {
+                        return array(
+                            'doctype' => trans('Selected document type for some of selected divisions and users has already defined default plan!'),
+                        );
+                    }
                 }
             }
         }

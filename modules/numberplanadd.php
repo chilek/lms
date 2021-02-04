@@ -31,7 +31,6 @@ function getUsers($alldivisions, $selecteddivisions)
     if (empty($selecteddivisions)) {
         $divisions = $alldivisions;
     } else {
-        $selecteddivisions = array_flip($selecteddivisions);
         $divisions = array_filter(
             $alldivisions,
             function ($division) use ($selecteddivisions) {
@@ -53,7 +52,7 @@ function getUsers($alldivisions, $selecteddivisions)
 
 if (isset($_GET['op']) && $_GET['op'] == 'updateusers') {
     header('Content-Type: application/json');
-    die(json_encode(getUsers($LMS->GetDivisions(), $_POST['divisions'])));
+    die(json_encode(getUsers($LMS->GetDivisions(), array_flip($_POST['divisions']))));
 }
 
 $numberplanadd = isset($_POST['numberplanadd']) ? $_POST['numberplanadd'] : null;
@@ -92,8 +91,8 @@ if (!empty($numberplanadd) && count($numberplanadd)) {
         unset($numberplanadd['isdefault']);
         $numberplanadd['divisions'] = array();
     } else {
-        $numberplanadd['divisions'] = array_flip(empty($numberplanadd['divisions']) ? array() : $numberplanadd['divisions']);
-        $numberplanadd['users'] = array_flip(empty($numberplanadd['users']) ? array() : $numberplanadd['users']);
+        $numberplanadd['divisions'] = array_flip($numberplanadd['divisions'] ?: array());
+        $numberplanadd['users'] = array_flip($numberplanadd['users'] ?: array());
     }
 }
 

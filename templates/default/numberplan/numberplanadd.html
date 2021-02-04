@@ -65,8 +65,8 @@
 				{trans("Division")}
 			</TD>
 			<TD>
-				<select name="numberplanadd[divisions][]" id="divisions" class="lms-ui-multiselect" multiple
-						{tip text="Select division"}>
+				<select name="numberplanadd[divisions][]" id="divisions" multiple
+						{tip text="Select division" class="lms-ui-multiselect" trigger="divisions"}>
 					{foreach $divisions as $division}
 						<option value="{$division.id}"{if isset($numberplanadd.divisions[$division.id])} selected{/if}
 						>{$division.label|escape}</option>
@@ -82,8 +82,8 @@
 				{trans("User")}
 			</TD>
 			<TD>
-				<select name="numberplanadd[users][]" id="users" class="lms-ui-multiselect" multiple
-						{tip text="Select users" trigger="users"}>
+				<select name="numberplanadd[users][]" id="users" multiple
+						{tip text="Select users" class="lms-ui-multiselect" trigger="users"}>
 					{foreach $users as $user}
 						<option value="{$user.id}"{if isset($numberplanadd.users[$user.id])} selected{/if}
 						>{$user.rname|escape} ({$user.login})</option>
