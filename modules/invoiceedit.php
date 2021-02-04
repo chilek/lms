@@ -416,6 +416,12 @@ switch ($action) {
         $invoice['customerid'] = $_POST['customerid'];
         $invoice['closed']     = $closed;
 
+        if (($invoice['numberplanid'] && !$LMS->checkNumberPlanAccess($invoice['numberplanid']))
+            || ($invoice['oldnumberplanid'] && !$LMS->checkNumberPlanAccess($invoice['oldnumberplanid']))) {
+            $invoice['numberplanid'] = $invoice['oldnumberplanid'];
+            $error['numberplanid'] = trans('Persmission denied!');
+        }
+
         if ($invoice['number']) {
             if (!preg_match('/^[0-9]+$/', $invoice['number'])) {
                 $error['number'] = trans('Invoice number must be integer!');

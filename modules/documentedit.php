@@ -82,11 +82,13 @@ if (isset($_POST['document'])) {
         $error['title'] = trans('Document title is required!');
     }
 
-    if ($document['numberplanid'] && !$LMS->checkNumberPlanAccess($document['numberplanid'])) {
+    if (($documentedit['numberplanid'] && !$LMS->checkNumberPlanAccess($documentedit['numberplanid']))
+        || ($document['numberplanid'] && !$LMS->checkNumberPlanAccess($document['numberplanid']))) {
         $documentedit['numberplanid'] = $document['numberplanid'];
-    } elseif ($documentedit['numberplanid'] && !$LMS->checkNumberPlanAccess($documentedit['numberplanid'])) {
         $error['numberplanid'] = trans('Persmission denied!');
-    } else {
+    }
+
+    if (!isset($error['numberplanid'])) {
         // check if selected customer can use selected numberplan
         if ($documentedit['numberplanid'] && !$DB->GetOne('SELECT 1 FROM numberplanassignments
                 WHERE planid = ? AND divisionid = ?', array($documentedit['numberplanid'], $document['divisionid']))) {

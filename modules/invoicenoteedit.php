@@ -249,6 +249,11 @@ switch ($action) {
             $error['deadline'] = trans('Deadline date should be later than consent date!');
         }
 
+        if (($cnote['numberplanid'] && !$LMS->checkNumberPlanAccess($cnote['numberplanid']))
+            || ($cnote['oldnumberplanid'] && !$LMS->checkNumberPlanAccess($cnote['oldnumberplanid']))) {
+            $cnote['numberplanid'] = $cnote['oldnumberplanid'];
+        }
+
         if ($cnote['number']) {
             if (!preg_match('/^[0-9]+$/', $cnote['number'])) {
                 $error['number'] = trans('Credit note number must be integer!');
@@ -484,6 +489,12 @@ switch ($action) {
             $contents[$idx]['cash'] = str_replace(',', '.', $contents[$idx]['cash']);
             $contents[$idx]['valuebrutto'] = str_replace(',', '.', $contents[$idx]['valuebrutto']);
             $contents[$idx]['count'] = str_replace(',', '.', $contents[$idx]['count']);
+        }
+
+        if (($cnote['numberplanid'] && !$LMS->checkNumberPlanAccess($cnote['numberplanid']))
+            || ($cnote['oldnumberplanid'] && !$LMS->checkNumberPlanAccess($cnote['oldnumberplanid']))) {
+            $cnote['numberplanid'] = $cnote['oldnumberplanid'];
+            $error['numberplanid'] = trans('Persmission denied!');
         }
 
         $hook_data = array(
