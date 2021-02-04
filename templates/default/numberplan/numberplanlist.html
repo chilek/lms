@@ -67,6 +67,16 @@
 								{/foreach}
 							</select>
 						</label>
+						<label>
+							{trans("Type")}
+							<select name="type" form="numberplanlist" data-default-value="0">
+								<option value="0">{trans("- any -")}</option>
+								{foreach Localisation::arraySort($_DOCTYPES) as $key => $label}
+									<option value="{$key}"{if $key == $type} selected{/if}
+									>{$label|escape}</option>
+								{/foreach}
+							</select>
+						</label>
 						{icon name="clear" id="clear-filter"}
 					</div>
 				</div>

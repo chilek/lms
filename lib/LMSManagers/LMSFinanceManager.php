@@ -4930,6 +4930,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         ))')
                         . (empty($params['userid']) ? '' : ' AND EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.id AND userid = ' . intval($params['userid']) . ')')
                         . (empty($params['divisionid']) ? '' : ' AND EXISTS (SELECT 1 FROM numberplanassignments WHERE planid = n.id AND divisionid = ' . intval($params['divisionid']) . ')')
+                        . (empty($params['type']) ? '' : ' AND n.doctype = ' . intval($params['type']))
                 )
             );
         }
@@ -4949,7 +4950,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         SELECT 1 FROM numberplanusers u WHERE planid = n.id AND u.userid = ' . Auth::GetCurrentUser() . '
                     ))')
             . (empty($params['userid']) ? '' : ' AND EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.id AND userid = ' . intval($params['userid']) . ')')
-            . (empty($params['divisionid']) ? '' : ' AND EXISTS (SELECT 1 FROM numberplanassignments WHERE planid = n.id AND divisionid = ' . intval($params['divisionid']) . ')') . '
+            . (empty($params['divisionid']) ? '' : ' AND EXISTS (SELECT 1 FROM numberplanassignments WHERE planid = n.id AND divisionid = ' . intval($params['divisionid']) . ')')
+            . (empty($params['type']) ? '' : ' AND n.doctype = ' . intval($params['type'])) . '
             ORDER BY n.id'
             . (isset($params['limit']) ? ' LIMIT ' . intval($params['limit']) : '')
             . (isset($params['offset']) ? ' OFFSET ' . intval($params['offset']) : ''),
@@ -5029,7 +5031,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     if ($this->db->GetOne(
                         'SELECT 1 FROM numberplans n
                         WHERE doctype = ? AND isdefault = 1' . (empty($numberplan['id']) ? '' : ' AND n.id <> ' . intval($numberplan['id']))
-                        . ' AND NOT EXISTS (SELECT 1 FROM numberplanassignments WHERE planid = n.id)',
+                        . ' AND NOT EXISTS (SELECT 1 FROM numberplanassignments WHERE planid = n.id)
+                        AND NOT EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.id)',
                         array($numberplan['doctype'])
                     )) {
                         return array(
@@ -5056,6 +5059,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         WHERE doctype = ? AND isdefault = 1' . (empty($numberplan['id']) ? '' : ' AND n.id <> ' . intval($numberplan['id']))
                         . ' AND EXISTS (
                             SELECT 1 FROM numberplanassignments WHERE planid = n.id AND divisionid IN ?
+                        ) AND NOT EXISTS (
+                            SELECT 1 FROM numberplanusers WHERE planid = n.id
                         )',
                         array($numberplan['doctype'], $selecteddivisions)
                     )) {
