@@ -63,11 +63,28 @@
 				{trans("Division")}
 			</TD>
 			<TD>
-				<select name="numberplanedit[divisions][]" class="lms-ui-multiselect" multiple
-					{tip text="Select division"}>
+				<select name="numberplanedit[divisions][]" id="divisions" multiple
+					{tip text="Select division" class="lms-ui-multiselect" trigger="divisions"}>
 					{foreach $divisions as $division}
 						<option value="{$division.id}"{if isset($numberplanedit.divisions[$division.id])} selected{/if}
 							>{$division.label|escape}</option>
+					{/foreach}
+				</select>
+			</TD>
+		</TR>
+		<TR>
+			<TD class="valign-top">
+				{icon name="user" class="fa-fw"}
+			</TD>
+			<TD class="bold nobr valign-top">
+				{trans("User")}
+			</TD>
+			<TD>
+				<select name="numberplanedit[users][]" id="users" multiple
+						{tip text="Select users" class="lms-ui-multiselect" trigger="users"}>
+					{foreach $users as $user}
+						<option value="{$user.id}"{if isset($numberplanedit.users[$user.id])} selected{/if}
+							>{$user.rname|escape} ({$user.login})</option>
 					{/foreach}
 				</select>
 			</TD>
@@ -97,6 +114,25 @@
 
 	$(function() {
 		$('form[name="numberplanedit"] [name="numberplanedit[template]"]').focus();
+
+		$('#divisions').change(function() {
+			$.ajax('?m={$layout.module}&op=updateusers&api=1', {
+				method: "POST",
+				dataType: "json",
+				data: {
+					divisions: $(this).val()
+				}
+			}).done(function(data) {
+				var options = '';
+				var users = $('#users').val();
+				$.each(data, function(userid, user) {
+					options += '<option value="' + userid + '"' +
+						(users.indexOf(userid) == -1 ? '' : ' selected') +
+						'>' + user.rname + ' (' + user.login + ')</option>';
+				});
+				$('#users').html(options).trigger('lms:multiselect:updated');
+			});
+		});
 	});
 
 </script>

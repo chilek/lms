@@ -24,7 +24,41 @@
  *  $Id$
  */
 
+function getUsers($alldivisions, $selecteddivisions)
+{
+    $LMS = LMS::getInstance();
+
+    if (empty($selecteddivisions)) {
+        $divisions = $alldivisions;
+    } else {
+        $divisions = array_filter(
+            $alldivisions,
+            function ($division) use ($selecteddivisions) {
+                return isset($selecteddivisions[$division['id']]);
+            }
+        );
+    }
+
+    $users = $LMS->GetUsers(array(
+        'divisions' => implode(',', array_keys($divisions)),
+        'order' => 'rname,asc',
+    ));
+    if (empty($users)) {
+        $users = array();
+    }
+
+    return $users;
+}
+
+if (isset($_GET['op']) && $_GET['op'] == 'updateusers') {
+    header('Content-Type: application/json');
+    die(json_encode(getUsers($LMS->GetDivisions(), array_flip($_POST['divisions']))));
+}
+
 $numberplan = $LMS->getNumberPlan($_GET['id']);
+if (empty($numberplan)) {
+    access_denied();
+}
 
 $template = $numberplan['template'];
 
@@ -53,20 +87,16 @@ if (is_array($numberplanedit) && count($numberplanedit)) {
         $error['period'] = trans('Numbering period is required!');
     }
 
-    if ($numberplanedit['doctype'] && $numberplanedit['isdefault'] && !$LMS->validateNumberPlan($numberplanedit)) {
-        $error['doctype'] = trans('Selected document type has already defined default plan!');
-    }
+    $result = $LMS->validateNumberPlan($numberplanedit);
+    $error = array_merge($error ?: array(), $result);
 
     if (!$error) {
         $LMS->updateNumberPlan($numberplanedit);
 
         $SESSION->redirect('?m=numberplanlist');
     } else {
-        $divisions = array();
-        if (!empty($numberplanedit['divisions'])) {
-            $divisions = array_flip($numberplanedit['divisions']);
-        }
-        $numberplanedit['divisions'] = $divisions;
+        $numberplanedit['divisions'] = array_flip($numberplanedit['divisions'] ?: array());
+        $numberplanedit['users'] = array_flip($numberplanedit['users'] ?: array());
     }
     $numberplan = $numberplanedit;
 }
@@ -75,7 +105,11 @@ $layout['pagetitle'] = trans('Numbering Plan Edit: $a', $template);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
+$divisions = $LMS->GetDivisions();
+$users = getUsers($divisions, $numberplan['divisions']);
+
 $SMARTY->assign('numberplanedit', $numberplan);
-$SMARTY->assign('divisions', $LMS->GetDivisions());
+$SMARTY->assign('divisions', $divisions);
+$SMARTY->assign('users', $users);
 $SMARTY->assign('error', $error);
 $SMARTY->display('numberplan/numberplanedit.html');

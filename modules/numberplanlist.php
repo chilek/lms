@@ -28,23 +28,62 @@ if ($SESSION->is_set('nplp') && !isset($_GET['page'])) {
     $SESSION->restore('nplp', $_GET['page']);
 }
 
+if (!isset($_POST['divisionid'])) {
+    $SESSION->restore('npldivisionid', $divisionid);
+} else {
+    $divisionid = $_POST['divisionid'];
+}
+$SESSION->save('npldivisionid', $divisionid);
+
+if (!isset($_POST['userid'])) {
+    $SESSION->restore('npluserid', $userid);
+} else {
+    $userid = $_POST['userid'];
+}
+$SESSION->save('npluserid', $userid);
+
 $layout['pagetitle'] = trans('Numbering Plans List');
 
-$count = $LMS->getNumberPlanList(array('count' => true));
+$params = array(
+    'count' => true,
+    'divisionid' => $divisionid,
+    'userid' => $userid,
+);
+
+$count = $LMS->getNumberPlanList($params);
 
 $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
 $limit = intval(ConfigHelper::getConfig('phpui.numberplanlist_pagelimit', $count));
 $offset = ($page - 1) * $limit;
+if ($offset > $count) {
+    $offset = 0;
+    $page = 1;
+}
 
 $SESSION->save('nplp', $page);
 
 $pagination = LMSPaginationFactory::getPagination($page, $count, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
 
-$numberplanlist = $LMS->getNumberPlanList(array('count' => false, 'offset' => $offset, 'limit' => $limit));
+$params['count'] = false;
+$params['offset'] = $offset;
+$params['limit'] = $limit;
+
+$numberplanlist = $LMS->getNumberPlanList($params);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
+$divisions = $LMS->GetDivisions();
+$users = $LMS->GetUsers(array(
+    'divisions' => implode(',', array_keys($divisions)),
+    'order' => 'rname,asc',
+));
+
 $SMARTY->assign('pagination', $pagination);
+$SMARTY->assign('divisions', $divisions);
+$SMARTY->assign('divisionid', $divisionid);
+$SMARTY->assign('userid', $userid);
+$SMARTY->assign('users', $users);
+
 $SMARTY->assign('numberplanlist', $numberplanlist);
 
 $SMARTY->display('numberplan/numberplanlist.html');

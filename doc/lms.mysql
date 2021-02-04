@@ -90,6 +90,7 @@ DROP TABLE IF EXISTS stats;
 DROP TABLE IF EXISTS nodesessions;
 DROP TABLE IF EXISTS customerassignments;
 DROP TABLE IF EXISTS customergroups;
+DROP TABLE IF EXISTS numberplanusers;
 DROP TABLE IF EXISTS numberplanassignments;
 DROP TABLE IF EXISTS payments;
 DROP TABLE IF EXISTS tariffassignments;
@@ -1805,6 +1806,21 @@ CREATE TABLE numberplanassignments (
 		FOREIGN KEY (planid) REFERENCES numberplans (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT numberplanassignments_divisionid_fkey
 		FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table numberplanusers
+#
+CREATE TABLE numberplanusers (
+    planid int(11) NOT NULL,
+    userid int(11) NOT NULL,
+    UNIQUE KEY numberplanusers_userid_ukey (planid, userid),
+    INDEX numberplanusers_userid_idx (userid),
+    CONSTRAINT numberplanusers_planid_fkey
+       FOREIGN KEY (planid) REFERENCES numberplans (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT numberplanusers_userid_fkey
+       FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------

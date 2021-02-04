@@ -1698,6 +1698,19 @@ CREATE TABLE numberplanassignments (
 CREATE INDEX numberplanassignments_divisionid_idx ON numberplanassignments (divisionid);
 
 /* --------------------------------------------------------
+  Structure of table "numberplanusers"
+-------------------------------------------------------- */
+DROP TABLE IF EXISTS numberplanusers CASCADE;
+CREATE TABLE numberplanusers (
+    planid integer NOT NULL
+       CONSTRAINT numberplanusers_planid_fkey REFERENCES numberplans (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    userid integer NOT NULL
+       CONSTRAINT numberplanusers_userid_fkey REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT numberplanusers_userid_ukey UNIQUE (planid, userid)
+);
+CREATE INDEX numberplanusers_userid_idx ON numberplanusers (userid);
+
+/* --------------------------------------------------------
   Structure of table "customergroups"
 -------------------------------------------------------- */
 DROP SEQUENCE IF EXISTS customergroups_id_seq;

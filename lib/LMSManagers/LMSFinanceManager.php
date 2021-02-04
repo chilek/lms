@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2020 LMS Developers
+ *  Copyright (C) 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -4820,23 +4820,63 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         );
     }
 
+    public function checkNumberPlanAccess($id)
+    {
+        return $this->db->GetOne(
+            'SELECT 1 FROM numberplans n
+            WHERE id = ?'
+            . (ConfigHelper::checkPrivilege('superuser')
+                ? ''
+                : ' AND (NOT EXISTS (SELECT 1 FROM numberplanassignments WHERE planid = n.planid
+                    OR EXISTS (
+                        SELECT 1 FROM numberplanassignments a WHERE a.planid = n.planid
+                        JOIN userdivisions u ON u.divisionid = a.divisionid
+                        WHERE u.userid = ' . Auth::GetCurrentUser() . '
+                    )) AND (NOT EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.id
+                    OR EXISTS (
+                        SELECT 1 FROM numberplanusers u2
+                        WHERE u2.planid = n.planid AND u2.userid = ' . Auth::GetCurrentUser() . '
+                    ))'),
+            array($id)
+        ) > 0;
+    }
+
     public function getNumberPlan($id)
     {
         $numberplan = $this->db->GetRow(
             'SELECT id, period, template, doctype, isdefault
-            FROM numberplans
-            WHERE id = ?',
+            FROM numberplans n
+            WHERE id = ?'
+            . (ConfigHelper::checkPrivilege('superuser')
+                ? ''
+                : ' AND (NOT EXISTS (SELECT 1 FROM numberplanassignments WHERE planid = n.planid
+                    OR EXISTS (
+                        SELECT 1 FROM numberplanassignments a WHERE a.planid = n.planid
+                        JOIN userdivisions u ON u.divisionid = a.divisionid
+                        WHERE u.userid = ' . Auth::GetCurrentUser() . '
+                    )) AND (NOT EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.id
+                    OR EXISTS (
+                        SELECT 1 FROM numberplanusers u2
+                        WHERE u2.planid = n.planid AND u2.userid = ' . Auth::GetCurrentUser() . '
+                    ))'),
             array($id)
         );
 
         $divisions = $this->db->GetCol(
-            'SELECT d.id
+            'SELECT divisionid
             FROM numberplanassignments
-            JOIN divisions d ON d.id = divisionid
             WHERE planid = ?',
             array($id)
         );
-        $numberplan['divisions'] = empty($divisions) ? array() : array_flip($divisions);
+        $numberplan['divisions'] = $divisions ? array_flip($divisions) : array();
+
+        $users = $this->db->GetCol(
+            'SELECT userid
+            FROM numberplanusers
+            WHERE planid = ?',
+            array($id)
+        );
+        $numberplan['users'] = $users ? array_flip($users) : array();
 
         return $numberplan;
     }
@@ -4874,15 +4914,46 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $daystart = mktime(0, 0, 0);
 
         if (!empty($params['count'])) {
-            return intval($this->db->GetOne('SELECT COUNT(id) FROM numberplans'));
+            return intval(
+                $this->db->GetOne(
+                    'SELECT COUNT(n.id) FROM numberplans n
+                    WHERE' . (ConfigHelper::checkPrivilege('superuser')
+                            ? ' 1 = 1'
+                            : ' (NOT EXISTS (SELECT 1 FROM numberplanassignments WHERE planid = n.id)
+                        OR EXISTS (
+                            SELECT 1 FROM numberplanassignments a
+                            JOIN userdivisions ud ON ud.divisionid = a.divisionid
+                            WHERE a.planid = n.id
+                        )) AND (NOT EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.id)
+                        OR EXISTS (
+                            SELECT 1 FROM numberplanusers u WHERE planid = n.id AND u.userid = ' . Auth::GetCurrentUser() . '
+                        ))')
+                        . (empty($params['userid']) ? '' : ' AND EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.id AND userid = ' . intval($params['userid']) . ')')
+                        . (empty($params['divisionid']) ? '' : ' AND EXISTS (SELECT 1 FROM numberplanassignments WHERE planid = n.id AND divisionid = ' . intval($params['divisionid']) . ')')
+                )
+            );
         }
 
-        if ($list = $this->db->GetAll(
-            'SELECT id, template, period, doctype, isdefault
-            FROM numberplans
-            ORDER BY id'
+        if ($list = $this->db->GetAllByKey(
+            'SELECT n.id, n.template, n.period, n.doctype, n.isdefault
+            FROM numberplans n
+            WHERE' . (ConfigHelper::checkPrivilege('superuser')
+                ? ' 1 = 1'
+                : ' (NOT EXISTS (SELECT 1 FROM numberplanassignments WHERE planid = n.id)
+                    OR EXISTS (
+                        SELECT 1 FROM numberplanassignments a
+                        JOIN userdivisions ud ON ud.divisionid = a.divisionid
+                        WHERE a.planid = n.id
+                    )) AND (NOT EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.id)
+                    OR EXISTS (
+                        SELECT 1 FROM numberplanusers u WHERE planid = n.id AND u.userid = ' . Auth::GetCurrentUser() . '
+                    ))')
+            . (empty($params['userid']) ? '' : ' AND EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.id AND userid = ' . intval($params['userid']) . ')')
+            . (empty($params['divisionid']) ? '' : ' AND EXISTS (SELECT 1 FROM numberplanassignments WHERE planid = n.id AND divisionid = ' . intval($params['divisionid']) . ')') . '
+            ORDER BY n.id'
             . (isset($params['limit']) ? ' LIMIT ' . intval($params['limit']) : '')
-            . (isset($params['offset']) ? ' OFFSET ' . intval($params['offset']) : '')
+            . (isset($params['offset']) ? ' OFFSET ' . intval($params['offset']) : ''),
+            'id'
         )) {
             $count = $this->db->GetAllByKey(
                 'SELECT numberplanid AS id, COUNT(numberplanid) AS count
@@ -4892,7 +4963,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             );
 
             $max = $this->db->GetAllByKey(
-                'SELECT numberplanid AS id, MAX(number) AS max 
+                'SELECT numberplanid AS id, MAX(number) AS max
                 FROM documents
                 LEFT JOIN numberplans ON (numberplanid = numberplans.id)
                 WHERE cdate >= (CASE period
@@ -4910,6 +4981,38 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 $item['issued'] = isset($count[$item['id']]['count']) ? $count[$item['id']]['count'] : 0;
             }
             unset($item);
+
+            $divisions = $this->db->GetAll(
+                'SELECT a.planid, d.id, (CASE WHEN d.label <> \'\' THEN d.label ELSE d.shortname END) AS shortname
+                FROM numberplanassignments a
+                JOIN divisions d ON d.id = a.divisionid
+                ORDER BY a.planid'
+            );
+
+            if (!empty($divisions)) {
+                foreach ($divisions as $division) {
+                    $planid = $division['planid'];
+                    if (isset($list[$planid])) {
+                        $list[$planid]['divisions'][$division['id']] = $division;
+                    }
+                }
+            }
+
+            $users = $this->db->GetAll(
+                'SELECT a.planid, u.id, u.rname, u.name, u.login
+                FROM numberplanusers a
+                JOIN vusers u ON u.id = a.userid
+                ORDER BY a.planid'
+            );
+
+            if (!empty($users)) {
+                foreach ($users as $user) {
+                    $planid = $user['planid'];
+                    if (isset($list[$planid])) {
+                        $list[$planid]['users'][$user['id']] = $user;
+                    }
+                }
+            }
         }
 
         return $list;
@@ -4917,16 +5020,97 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function validateNumberPlan(array $numberplan)
     {
-        return $this->db->GetOne(
-            'SELECT 1 FROM numberplans n
-            WHERE doctype = ? AND isdefault = 1' . (empty($numberplan['id']) ? '' : ' AND n.id <> ' . intval($numberplan['id']))
-            . (!empty($numberplan['divisions']) ? ' AND EXISTS (
-                SELECT 1 FROM numberplanassignments WHERE planid = n.id
-                    AND divisionid IN (' . implode(',', Utils::filterIntegers($numberplan['divisions'])) . '))'
-                : ' AND NOT EXISTS (SELECT 1 FROM numberplanassignments
-                WHERE planid = n.id)'),
-            array($numberplan['doctype'])
-        ) != 1;
+        $selecteddivisions = Utils::filterIntegers(empty($numberplan['divisions']) ? array() : $numberplan['divisions']);
+        $selectedusers = Utils::filterIntegers(empty($numberplan['users']) ? array() : $numberplan['users']);
+
+        if ($numberplan['doctype'] && $numberplan['isdefault']) {
+            if (empty($selecteddivisions)) {
+                if (empty($selectedusers)) {
+                    if ($this->db->GetOne(
+                        'SELECT 1 FROM numberplans n
+                        WHERE doctype = ? AND isdefault = 1' . (empty($numberplan['id']) ? '' : ' AND n.id <> ' . intval($numberplan['id']))
+                        . ' AND NOT EXISTS (SELECT 1 FROM numberplanassignments WHERE planid = n.id)',
+                        array($numberplan['doctype'])
+                    )) {
+                        return array(
+                            'doctype' => trans('Selected document type has already defined default plan!'),
+                        );
+                    }
+                } else {
+                    if ($this->db->GetOne(
+                        'SELECT 1 FROM numberplans n
+                        WHERE doctype = ? AND isdefault = 1' . (empty($numberplan['id']) ? '' : ' AND n.id <> ' . intval($numberplan['id']))
+                        . ' AND NOT EXISTS (SELECT 1 FROM numberplanassignments WHERE planid = n.id)
+                        AND NOT EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.in AND userid IN ?)',
+                        array($numberplan['doctype'], $selectedusers)
+                    )) {
+                        return array(
+                            'doctype' => trans('Selected document type for some of selected users has already defined default plan!'),
+                        );
+                    }
+                }
+            } else {
+                if (empty($selectedusers)) {
+                    if ($this->db->GetOne(
+                        'SELECT 1 FROM numberplans n
+                        WHERE doctype = ? AND isdefault = 1' . (empty($numberplan['id']) ? '' : ' AND n.id <> ' . intval($numberplan['id']))
+                        . ' AND EXISTS (
+                            SELECT 1 FROM numberplanassignments WHERE planid = n.id AND divisionid IN ?
+                        )',
+                        array($numberplan['doctype'], $selecteddivisions)
+                    )) {
+                        return array(
+                            'doctype' => trans('Selected document type for some of selected divisions has already defined default plan!'),
+                        );
+                    }
+                } else {
+                    if ($this->db->GetOne(
+                        'SELECT 1 FROM numberplans n
+                        WHERE doctype = ? AND isdefault = 1' . (empty($numberplan['id']) ? '' : ' AND n.id <> ' . intval($numberplan['id']))
+                        . ' AND EXISTS (
+                            SELECT 1 FROM numberplanassignments WHERE planid = n.id AND divisionid IN ?
+                        ) AND EXISTS (
+                            SELECT 1 FROM numberplanusers WHERE planid = n.id AND userid IN ?
+                        )',
+                        array($numberplan['doctype'], $selecteddivisions, $selectedusers)
+                    )) {
+                        return array(
+                            'doctype' => trans('Selected document type for some of selected divisions and users has already defined default plan!'),
+                        );
+                    }
+                }
+            }
+        }
+
+        if (!empty($selecteddivisions)) {
+            $division_manager = new LMSDivisionManager($this->db, $this->auth, $this->cache, $this->syslog);
+            $divisions = $division_manager->GetDivisions();
+            if (empty($divisions)) {
+                $divisions = array();
+            }
+            if (count(array_intersect(array_keys($divisions), $selecteddivisions)) != count($selecteddivisions)) {
+                return array(
+                    'divisions' => trans('Permission denied!'),
+                );
+            }
+        }
+
+        if (!empty($selectedusers)) {
+            $user_manager = new LMSUserManager($this->db, $this->auth, $this->cache, $this->syslog);
+            $users = $user_manager->GetUsers(array(
+                'divisions' => empty($selecteddivisions) ? null : implode(',', $selecteddivisions),
+            ));
+            if (empty($users)) {
+                $users = array();
+            }
+            if (count(array_diff($selectedusers, array_keys($users)))) {
+                return array(
+                    'users' => trans('Permission denied!'),
+                );
+            }
+        }
+
+        return array();
     }
 
     public function addNumberPlan(array $numberplan)
@@ -4966,6 +5150,23 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         SYSLOG::RES_DIV => $divisionid
                     );
                     $this->syslog->AddMessage(SYSLOG::RES_NUMPLANASSIGN, SYSLOG::OPER_ADD, $args);
+                }
+            }
+        }
+
+        if (!empty($numberplan['users'])) {
+            foreach ($numberplan['users'] as $userid) {
+                $res = $this->db->Execute(
+                    'INSERT INTO numberplanusers (planid, userid)
+                    VALUES (?, ?)',
+                    array($id, $userid)
+                );
+                if ($res && $this->syslog) {
+                    $args = array(
+                        SYSLOG::RES_NUMPLAN => $id,
+                        SYSLOG::RES_USER => $userid
+                    );
+                    $this->syslog->AddMessage(SYSLOG::RES_NUMPLANUSER, SYSLOG::OPER_ADD, $args);
                 }
             }
         }
@@ -5031,8 +5232,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         if (!empty($divisions_to_remove)) {
             foreach ($divisions_to_remove as $divisionid) {
                 if ($this->syslog) {
-                    $assign = $this->db->GetRow(
-                        'SELECT * FROM numberplanassignments WHERE planid = ? AND divisionid = ?',
+                    $assignid = $this->db->GetOne(
+                        'SELECT id FROM numberplanassignments WHERE planid = ? AND divisionid = ?',
                         array($numberplan['id'], $divisionid)
                     );
                 }
@@ -5042,13 +5243,65 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     array($numberplan['id'], $divisionid)
                 );
 
-                if ($res && $assign && $this->syslog) {
+                if ($res && $assignid && $this->syslog) {
                     $args = array(
-                        SYSLOG::RES_NUMPLANASSIGN => $assign['id'],
-                        SYSLOG::RES_NUMPLAN => $assign['planid'],
-                        SYSLOG::RES_DIV => $assign['divisionid']
+                        SYSLOG::RES_NUMPLANASSIGN => $assignid,
+                        SYSLOG::RES_NUMPLAN => $numberplan['id'],
+                        SYSLOG::RES_DIV => $divisionid,
                     );
                     $this->syslog->AddMessage(SYSLOG::RES_NUMPLANASSIGN, SYSLOG::OPER_DELETE, $args);
+                }
+            }
+        }
+
+        $old_users = $this->db->GetCol(
+            'SELECT u.id
+            FROM users u
+            JOIN numberplanusers a ON a.userid = u.id
+            WHERE a.planid = ?',
+            array($numberplan['id'])
+        );
+        if (empty($old_users)) {
+            $old_users = array();
+        }
+
+        if (empty($numberplan['users'])) {
+            $numberplan['users'] = array();
+        }
+
+        $users_to_add = array_diff($numberplan['users'], $old_users);
+        $users_to_remove = array_diff($old_users, $numberplan['users']);
+
+        if (!empty($users_to_add)) {
+            foreach ($users_to_add as $userid) {
+                $res = $this->db->Execute(
+                    'INSERT INTO numberplanusers (planid, userid) VALUES (?, ?)',
+                    array($numberplan['id'], $userid)
+                );
+
+                if ($res && $this->syslog) {
+                    $args = array(
+                        SYSLOG::RES_NUMPLAN => $numberplan['id'],
+                        SYSLOG::RES_USER => $userid,
+                    );
+                    $this->syslog->AddMessage(SYSLOG::RES_NUMPLANUSER, SYSLOG::OPER_ADD, $args);
+                }
+            }
+        }
+
+        if (!empty($users_to_remove)) {
+            foreach ($users_to_remove as $userid) {
+                $res = $this->db->Execute(
+                    'DELETE FROM numberplanusers WHERE planid = ? AND userid = ?',
+                    array($numberplan['id'], $userid)
+                );
+
+                if ($res && $this->syslog) {
+                    $args = array(
+                        SYSLOG::RES_NUMPLAN => $numberplan['id'],
+                        SYSLOG::RES_USER => $userid,
+                    );
+                    $this->syslog->AddMessage(SYSLOG::RES_NUMPLANUSER, SYSLOG::OPER_DELETE, $args);
                 }
             }
         }
@@ -5063,19 +5316,30 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         if ($this->syslog) {
             $args = array(SYSLOG::RES_NUMPLAN => $id);
             $this->syslog->AddMessage(SYSLOG::RES_NUMPLAN, SYSLOG::OPER_DELETE, $args);
+
             $assigns = $this->db->GetAll('SELECT * FROM numberplanassignments WHERE planid = ?', array($id));
             if (!empty($assigns)) {
                 foreach ($assigns as $assign) {
                     $args = array(
                         SYSLOG::RES_NUMPLANASSIGN => $assign['id'],
-                        SYSLOG::RES_NUMPLAN => $assign['planid'],
-                        SYSLOG::RES_DIV => $assign['divisionid']
+                        SYSLOG::RES_NUMPLAN => $id,
+                        SYSLOG::RES_DIV => $assign['divisionid'],
                     );
                     $this->syslog->AddMessage(SYSLOG::RES_NUMPLANASSIGN, SYSLOG::OPER_DELETE, $args);
                 }
             }
+            $users = $this->db->GetAll('SELECT * FROM numberplanusers WHERE planid = ?', array($id));
+            if (!empty($users)) {
+                foreach ($users as $user) {
+                    $args = array(
+                        SYSLOG::RES_NUMPLAN => $id,
+                        SYSLOG::RES_USER => $user['userid'],
+                    );
+                    $this->syslog->AddMessage(SYSLOG::RES_NUMPLANUSER, SYSLOG::OPER_DELETE, $args);
+                }
+            }
         }
-        $this->db->Execute('DELETE FROM numberplanassignments WHERE planid = ?', array($id));
+
         $this->db->Execute('DELETE FROM numberplans WHERE id = ?', array($id));
 
         $this->db->CommitTrans();

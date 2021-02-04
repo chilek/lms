@@ -541,16 +541,17 @@ if ($type == 'openlayers') {
             $button->addAction(new SWFAction("this.getURL('?m=nodeinfo&id=".$nodeid."');"), SWFBUTTON_MOUSEDOWN); // press
             $i=$m->add($button);
             $i->moveTo($px, $py);
-        
+
             drawtext($px + 15, $py - 4, $n['ip'], 0, 0, 255);
             drawtext($px + 15, $py + 10, $n['name'], 0, 0, 0);
         }
     }
 
-    $devices = $DB->GetAllByKey('SELECT n.id, n.name, n.location, MAX(lastonline) AS lastonline 
-				    FROM netdevices n 
-				    LEFT JOIN vnodes ON (n.id = netdev)
-				    GROUP BY n.id, n.name, n.location', 'id');
+    $devices = $DB->GetAllByKey('SELECT n.id, n.name, a.location, MAX(lastonline) AS lastonline 
+                    FROM netdevices n
+                    LEFT JOIN vaddresses a ON a.id = n.address_id
+                    LEFT JOIN vnodes ON (n.id = netdev)
+                    GROUP BY n.id, n.name, a.location', 'id');
 
     foreach ($devicemap as $deviceid => $device) {
         $button = new SWFButton();
@@ -746,10 +747,11 @@ if ($type == 'openlayers') {
         }
     }
 
-    $devices = $DB->GetAllByKey('SELECT n.id, n.name, n.location, MAX(lastonline) AS lastonline 
-				    FROM netdevices n
-				    LEFT JOIN vnodes ON (n.id = netdev)
-				    GROUP BY n.id, n.name, n.location', 'id');
+    $devices = $DB->GetAllByKey('SELECT n.id, n.name, a.location, MAX(lastonline) AS lastonline 
+                    FROM netdevices n
+                    LEFT JOIN vaddresses a ON a.id = n.address_id
+                    LEFT JOIN vnodes ON (n.id = netdev)
+                    GROUP BY n.id, n.name, a.location', 'id');
 
     foreach ($devicemap as $deviceid => $device) {
         $celx = $device['x'];
