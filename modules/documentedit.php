@@ -82,30 +82,34 @@ if (isset($_POST['document'])) {
         $error['title'] = trans('Document title is required!');
     }
 
-    // check if selected customer can use selected numberplan
-    if ($documentedit['numberplanid'] && !$DB->GetOne('SELECT 1 FROM numberplanassignments
-	        WHERE planid = ? AND divisionid = ?', array($documentedit['numberplanid'], $document['divisionid']))) {
-        $error['number'] = trans('Selected numbering plan doesn\'t match customer\'s division!');
-    } elseif (!$documentedit['number']) {
-        if ($document['numberplanid'] != $documentedit['numberplanid']) {
-            $tmp = $LMS->GetNewDocumentNumber(array(
+    if ($documentedit['numberplanid'] && !$LMS->checkNumberPlanAccess($documentedit['numberplanid'])) {
+        $error['numberplanid'] = trans('Persmission denied!');
+    } else {
+        // check if selected customer can use selected numberplan
+        if ($documentedit['numberplanid'] && !$DB->GetOne('SELECT 1 FROM numberplanassignments
+                WHERE planid = ? AND divisionid = ?', array($documentedit['numberplanid'], $document['divisionid']))) {
+            $error['number'] = trans('Selected numbering plan doesn\'t match customer\'s division!');
+        } elseif (!$documentedit['number']) {
+            if ($document['numberplanid'] != $documentedit['numberplanid']) {
+                $tmp = $LMS->GetNewDocumentNumber(array(
+                    'doctype' => $documentedit['type'],
+                    'planid' => $documentedit['numberplanid'],
+                    'customerid' => $document['customerid'],
+                ));
+                $documentedit['number'] = $tmp ? $tmp : 1;
+            } else {
+                $documentedit['number'] = $document['number'];
+            }
+        } elseif (!preg_match('/^[0-9]+$/', $documentedit['number'])) {
+            $error['number'] = trans('Document number must be an integer!');
+        } elseif ($document['number'] != $documentedit['number'] || $document['numberplanid'] != $documentedit['numberplanid']) {
+            if ($LMS->DocumentExists(array(
+                'number' => $documentedit['number'],
                 'doctype' => $documentedit['type'],
                 'planid' => $documentedit['numberplanid'],
-                'customerid' => $document['customerid'],
-            ));
-            $documentedit['number'] = $tmp ? $tmp : 1;
-        } else {
-            $documentedit['number'] = $document['number'];
-        }
-    } elseif (!preg_match('/^[0-9]+$/', $documentedit['number'])) {
-        $error['number'] = trans('Document number must be an integer!');
-    } elseif ($document['number'] != $documentedit['number'] || $document['numberplanid'] != $documentedit['numberplanid']) {
-        if ($LMS->DocumentExists(array(
-            'number' => $documentedit['number'],
-            'doctype' => $documentedit['type'],
-            'planid' => $documentedit['numberplanid'],
-        ))) {
-            $error['number'] = trans('Document with specified number exists!');
+            ))) {
+                $error['number'] = trans('Document with specified number exists!');
+            }
         }
     }
 
