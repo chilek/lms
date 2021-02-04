@@ -167,18 +167,4 @@ interface LMSFinanceManagerInterface
     public function getPromotionSchema($id);
 
     public function getPromotion($id);
-
-    public function checkNumberPlanAccess($id);
-
-    public function getNumberPlan($id);
-
-    public function getNumberPlanList(array $params);
-
-    public function validateNumberPlan(array $numberplan);
-
-    public function addNumberPlan(array $numberplan);
-
-    public function updateNumberPlan(array $numberplan);
-
-    public function deleteNumberPlan($id);
 }

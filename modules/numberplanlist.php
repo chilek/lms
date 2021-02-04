@@ -42,12 +42,20 @@ if (!isset($_POST['userid'])) {
 }
 $SESSION->save('npluserid', $userid);
 
+if (!isset($_POST['type'])) {
+    $SESSION->restore('npltype', $type);
+} else {
+    $type = $_POST['type'];
+}
+$SESSION->save('npltype', $type);
+
 $layout['pagetitle'] = trans('Numbering Plans List');
 
 $params = array(
     'count' => true,
     'divisionid' => $divisionid,
     'userid' => $userid,
+    'type' => $type,
 );
 
 $count = $LMS->getNumberPlanList($params);
@@ -83,6 +91,7 @@ $SMARTY->assign('divisions', $divisions);
 $SMARTY->assign('divisionid', $divisionid);
 $SMARTY->assign('userid', $userid);
 $SMARTY->assign('users', $users);
+$SMARTY->assign('type', $type);
 
 $SMARTY->assign('numberplanlist', $numberplanlist);
 

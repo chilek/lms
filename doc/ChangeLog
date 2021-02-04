@@ -44,6 +44,7 @@ version 27-git (????-??-??):
     or recommended ('false' by default) [chilan]
   - enhancement: allow to change ports in network link properties popup [chilan]
   - enhancement: introduce support for customer email address properties to support EPIX MdO [ravvar]
+  - enhancement: number plan user assignment support [chilan]
 
 version 26.0 (2020-12-15):
 

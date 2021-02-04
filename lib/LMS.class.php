@@ -3110,6 +3110,48 @@ class LMS
         return $manager->GetNumberPlans($properties);
     }
 
+    public function checkNumberPlanAccess($id)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->checkNumberPlanAccess($id);
+    }
+
+    public function getNumberPlan($id)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->getNumberPlan($id);
+    }
+
+    public function getNumberPlanList($params)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->getNumberPlanList($params);
+    }
+
+    public function validateNumberPlan(array $numberplan)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->validateNumberPlan($numberplan);
+    }
+
+    public function addNumberPlan(array $numberplan)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->addNumberPlan($numberplan);
+    }
+
+    public function updateNumberPlan(array $numberplan)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->updateNumberPlan($numberplan);
+    }
+
+    public function deleteNumberPlan($id)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->deleteNumberPlan($id);
+    }
+
     public function GetNewDocumentNumber($properties)
     {
         $manager = $this->getDocumentManager();
@@ -3411,48 +3453,6 @@ class LMS
     {
         $manager = $this->getFinanceManager();
         return $manager->GetPromotions();
-    }
-
-    public function checkNumberPlanAccess($id)
-    {
-        $manager = $this->getFinanceManager();
-        return $manager->checkNumberPlanAccess($id);
-    }
-
-    public function getNumberPlan($id)
-    {
-        $manager = $this->getFinanceManager();
-        return $manager->getNumberPlan($id);
-    }
-
-    public function getNumberPlanList($params)
-    {
-        $manager = $this->getFinanceManager();
-        return $manager->getNumberPlanList($params);
-    }
-
-    public function validateNumberPlan(array $numberplan)
-    {
-        $manager = $this->getFinanceManager();
-        return $manager->validateNumberPlan($numberplan);
-    }
-
-    public function addNumberPlan(array $numberplan)
-    {
-        $manager = $this->getFinanceManager();
-        return $manager->addNumberPlan($numberplan);
-    }
-
-    public function updateNumberPlan(array $numberplan)
-    {
-        $manager = $this->getFinanceManager();
-        return $manager->updateNumberPlan($numberplan);
-    }
-
-    public function deleteNumberPlan($id)
-    {
-        $manager = $this->getFinanceManager();
-        return $manager->deleteNumberPlan($id);
     }
 
     public function AggregateDocuments($list)
