@@ -2474,6 +2474,20 @@ CREATE INDEX customercontacts_customerid_idx ON customercontacts (customerid);
 CREATE INDEX customercontacts_contact_idx ON customercontacts (contact);
 
 /* ---------------------------------------------------
+ Structure of table "customercontactproperties"
+------------------------------------------------------*/
+DROP TABLE IF EXISTS customercontactproperties CASCADE;
+CREATE TABLE customercontactproperties (
+    contactid   integer         NOT NULL
+        CONSTRAINT customercontactproperties_contactid_fkey REFERENCES customercontacts (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    name        varchar(255)    NOT NULL,
+    value       varchar(255)    NOT NULL,
+    CONSTRAINT customercontactproperties_contactid_name_ukey UNIQUE (contactid, name)
+);
+CREATE INDEX customercontactproperties_name_idx ON customercontactproperties (name);
+CREATE INDEX customercontactproperties_value_idx ON customercontactproperties (value);
+
+/* ---------------------------------------------------
  Structure of table "excludedgroups"
 ------------------------------------------------------*/
 DROP SEQUENCE IF EXISTS excludedgroups_id_seq;
@@ -3971,6 +3985,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021020300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021020301');
 
 COMMIT;

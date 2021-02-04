@@ -15,6 +15,7 @@
 
 	.customer-contact {
 		display: flex;
+		max-width: 98%;
 	}
 
 	.limit-width {
@@ -170,6 +171,17 @@
 													</div>
 												</TD>
 											</TR>
+											{if $type == 'email' && !empty($contact.properties)}
+												<tr>
+													<td class="customer-contact">
+														<div style="padding-left: 0.5em;">
+															{foreach $contact.properties as $property}
+																<strong>{$property.name}:</strong> {$property.value}<br>
+															{/foreach}
+														</div>
+													</td>
+												</tr>
+											{/if}
 											{/foreach}
 										</TABLE>
 									</fieldset>

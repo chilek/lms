@@ -56,6 +56,7 @@ DROP TABLE IF EXISTS messageitems;
 DROP TABLE IF EXISTS messages;
 DROP TABLE IF EXISTS excludedgroups;
 DROP TABLE IF EXISTS customercontacts;
+DROP TABLE IF EXISTS customercontactproperties;
 DROP TABLE IF EXISTS dbinfo;
 DROP TABLE IF EXISTS ewx_pt_config;
 DROP TABLE IF EXISTS cashreglog;
@@ -2575,6 +2576,21 @@ CREATE TABLE customercontacts (
 
 # --------------------------------------------------------
 #
+# Structure of table "customercontactproperties"
+#
+CREATE TABLE customercontactproperties (
+    contactid   int(11)         NOT NULL,
+    name        varchar(255)    NOT NULL,
+    value       varchar(255)    NOT NULL,
+    CONSTRAINT customercontactproperties_contactid_fkey
+        FOREIGN KEY (contactid) REFERENCES customercontacts (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    KEY customercontactproperties_name_idx (name),
+    KEY customercontactproperties_value_idx (value),
+    UNIQUE KEY customercontactproperties_contactid_name_ukey (contactid, name)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
 # Structure of table excludedgroups
 #
 CREATE TABLE excludedgroups (
@@ -3945,4 +3961,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021020300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021020301');
