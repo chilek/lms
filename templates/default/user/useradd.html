@@ -281,7 +281,7 @@
 				<select SIZE="4" NAME="useradd[divisions][]" id="divisions" multiple {tip text="Select divisions" class="lms-ui-multiselect" trigger="division"} data-default-value="{trans("- none -")}" data-shorten-to-default-value="false" required>
 					{foreach $divisions as $division}
 						<option value="{$division.id}" {if isset($useradd.divisions) && in_array($division.id, $useradd.divisions)} selected{/if}>
-							{$division.label|truncate:30:"&hellip;":true|escape}
+							{$division.label|trunescape:30}
 						</option>
 					{/foreach}
 				</select>

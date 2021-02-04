@@ -146,13 +146,13 @@
 										<option value="0">{trans("<!promotionschema>- none -")}</option>
 										{/if}
 										{foreach $promotions as $promotion}
-										<optgroup title="{$promotion.description|truncate:512:"&hellip;":true|escape}"
+										<optgroup title="{$promotion.description|trunescape:512}"
 											label="{$promotion.name}" data-valid="{$promotion.valid}"
 											{if !$promotion.valid} class="blend"
 											{if !$variables.alltariffs} style="display: none;"{/if}{/if}
 										>
 										{foreach $promotion.schemas as $schemaid => $schema}
-										<OPTION title="{$schema.description|truncate:512:"&hellip;":true|escape}"
+										<OPTION title="{$schema.description|trunescape:512}"
 											value="{$schemaid}"{if $variables.schemaid == $schemaid} SELECTED{/if}
 											data-valid="{$promotion.valid}"{if !$promotion.valid} class="blend"{/if}
 										>{$schema.name|truncate:40:"&hellip;":true}</OPTION>
@@ -705,7 +705,7 @@
 						<span data-tariffaccess="{$customernode.authtype}" class="global-node-checkbox">
 							<label>
 								<input type="checkbox" name="{$variable_prefix}[nodes][{$customernode.id}]" value="{$customernode.id}"{if isset($variables.nodes[$customernode.id])} checked{/if}>
-								<span class="bold">{$customernode.name}</span> ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"&hellip;":true|escape}{/if}
+								<span class="bold">{$customernode.name}</span> ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|trunescape:60}{/if}
 							</label>
 							{if isset($variables.node_warns[$customernode.id])}
 								<input type="hidden" name="{$variable_prefix}[node_warns][{$customernode.id}]" value="{$customernode.id}">
@@ -730,7 +730,7 @@
 						<span data-tariffaccess="{$customernode.authtype}" class="global-node-checkbox">
 							<label>
 								<input type="checkbox" name="{$variable_prefix}[nodes][{$customernode.id}]" value="{$customernode.id}"{if isset($variables.nodes[$customernode.id])} checked{/if}>
-								<span class="bold">{$customernode.name}</span> {if !empty($customernode.netdev_name)} / {$customernode.netdev_name}{/if}  ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"&hellip;":true|escape}{/if}
+								<span class="bold">{$customernode.name}</span> {if !empty($customernode.netdev_name)} / {$customernode.netdev_name}{/if}  ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|trunescape:60}{/if}
 							</label>
 							{if isset($variables.node_warns[$customernode.id])}
 								<input type="hidden" name="{$variable_prefix}[node_warns][{$customernode.id}]" value="{$customernode.id}">
