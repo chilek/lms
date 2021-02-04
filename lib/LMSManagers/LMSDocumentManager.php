@@ -462,6 +462,41 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         return $list;
     }
 
+    public function getDefaultNumberPlanID($doctype, $divisionid = null)
+    {
+        if (!empty($divisionid)) {
+            return $this->db->GetOne(
+                'SELECT n.id,
+                    (CASE WHEN a.planid IS NULL THEN (CASE WHEN u.planid IS NULL THEN 3 ELSE 1 END) ELSE (CASE WHEN u.planid IS NULL THEN 2 ELSE 0 END) END) AS idx
+                FROM numberplans n
+                LEFT JOIN numberplanassignments a ON a.planid = n.id AND a.divisionid = ?
+                LEFT JOIN numberplanusers u ON u.planid = n.id AND u.userid = ?
+                WHERE n.doctype = ? AND n.isdefault = 1
+                ORDER BY idx
+                LIMIT 1',
+                array(
+                    $divisionid,
+                    Auth::getCurrentUser(),
+                    $doctype,
+                )
+            );
+        } else {
+            return $this->db->GetOne(
+                'SELECT n.id,
+                    (CASE WHEN u.planid IS NULL THEN 1 ELSE 0 END) AS idx
+                FROM numberplans n
+                LEFT JOIN numberplanusers u ON u.planid = n.id AND u.userid = ?
+                WHERE n.doctype = ? AND n.isdefault = 1
+                ORDER BY idx
+                LIMIT 1',
+                array(
+                    Auth::getCurrentUser(),
+                    $doctype,
+                )
+            );
+        }
+    }
+
     public function checkNumberPlanAccess($id)
     {
         return $this->db->GetOne(

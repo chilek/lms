@@ -3110,6 +3110,12 @@ class LMS
         return $manager->GetNumberPlans($properties);
     }
 
+    public function getDefaultNumberPlanID($doctype, $divisionid = null)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->getDefaultNumberPlanID($doctype, $divisionid);
+    }
+
     public function checkNumberPlanAccess($id)
     {
         $manager = $this->getDocumentManager();

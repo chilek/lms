@@ -160,19 +160,10 @@ switch ($action) {
             $invoice['deadline'] = $currtime + $paytime * 86400;
         }
 
-        if (isset($customer)) {
-            $invoice['numberplanid'] = $DB->GetOne(
-                'SELECT n.id FROM numberplans n
-				JOIN numberplanassignments a ON (n.id = a.planid)
-				WHERE n.doctype = ? AND n.isdefault = 1 AND a.divisionid = ?',
-                array($invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE, $customer['divisionid'])
-            );
-        }
-
-        if (empty($invoice['numberplanid'])) {
-            $invoice['numberplanid'] = $DB->GetOne('SELECT id FROM numberplans
-				WHERE doctype = ? AND isdefault = 1', array($invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE));
-        }
+        $invoice['numberplanid'] = $LMS->getDefaultNumberPlanID(
+            $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE,
+            empty($customer) ? null : $customer['divisionid']
+        );
 
         $hook_data = array(
             'invoice' => $invoice,
@@ -525,6 +516,10 @@ switch ($action) {
 
         if (!isset($CURRENCIES[$invoice['currency']])) {
             $error['currency'] = trans('Invalid currency selection!');
+        }
+
+        if (!empty($invoice['numberplanid']) && !$LMS->checkNumberPlanAccess($invoice['numberplanid'])) {
+            $error['numberplanid'] = trans('Permission denied!');
         }
 
         $hook_data = array(

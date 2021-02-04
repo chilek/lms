@@ -77,20 +77,10 @@ if (isset($_GET['id']) && $action == 'init') {
     }
     $invoice['content'] = $invoicecontents;
 
-    if (empty($invoice['divisionid'])) {
-        $cnote['numberplanid'] = $DB->GetOne(
-            'SELECT id FROM numberplans
-			WHERE doctype = ? AND isdefault = 1',
-            array(DOC_CNOTE)
-        );
-    } else {
-        $cnote['numberplanid'] = $DB->GetOne(
-            'SELECT p.id FROM numberplans p
-			JOIN numberplanassignments a ON a.planid = p.id
-			WHERE doctype = ? AND a.divisionid = ? AND isdefault = 1',
-            array(DOC_CNOTE, $invoice['divisionid'])
-        );
-    }
+    $invoice['numberplanid'] = $LMS->getDefaultNumberPlanID(
+        DOC_CNOTE,
+        empty($invoice['divisionid']) ? null : $invoice['divisionid']
+    );
 
     $currtime = time();
     $cnote['cdate'] = $currtime;
@@ -477,6 +467,10 @@ switch ($action) {
 
         $cnote['currency'] = $cnote['oldcurrency'];
         $cnote['currencyvalue'] = $cnote['oldcurrencyvalue'];
+
+        if (!empty($cnote['numberplanid']) && !$LMS->checkNumberPlanAccess($cnote['numberplanid'])) {
+            $error['numberplanid'] = trans('Permission denied!');
+        }
 
         $hook_data = array(
             'invoice' => $invoice,

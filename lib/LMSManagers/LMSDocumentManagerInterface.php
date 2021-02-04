@@ -78,6 +78,8 @@ interface LMSDocumentManagerInterface
 
     public function isDocumentAccessible($docid);
 
+    public function getDefaultNumberPlanID($doctype, $divisionid = null);
+
     public function checkNumberPlanAccess($id);
 
     public function getNumberPlan($id);
