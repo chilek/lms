@@ -699,6 +699,12 @@ class LMS
         return $manager->getFullAddressForCustomerStuff($customer_id);
     }
 
+    public function detectCustomerLocationAddress($customer_id)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->detectCustomerLocationAddress($customer_id);
+    }
+
     public function isTerritAddress($address_id)
     {
         $manager = $this->getCustomerManager();

@@ -45,6 +45,8 @@ version 27-git (????-??-??):
   - enhancement: allow to change ports in network link properties popup [chilan]
   - enhancement: introduce support for customer email address properties to support EPIX MdO [ravvar]
   - enhancement: number plan user assignment support [chilan]
+  - enhancement: 'rt.detect_customer_location_address' controls location address automatic detection
+    of newly created helpdesk ticket ('false' by default) [chilan]
 
 version 26.0 (2020-12-15):
 

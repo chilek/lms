@@ -2231,6 +2231,41 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         return null;
     }
 
+    public function detectCustomerLocationAddress($customer_id)
+    {
+        $addresses = $this->db->GetAll(
+            'SELECT ca.address_id, ca.type
+            FROM customer_addresses ca
+            WHERE ca.customer_id = ?
+            ORDER BY ca.type DESC',
+            array($customer_id)
+        );
+
+        if (!empty($addresses)) {
+            $locations = 0;
+            $location_address_id = null;
+            foreach ($addresses as $address) {
+                switch ($address['type']) {
+                    case DEFAULT_LOCATION_ADDRESS:
+                        return $address['address_id'];
+                    case BILLING_ADDRESS:
+                        if ($locations == 1) {
+                            return $location_address_id;
+                        } else {
+                            return $address['address_id'];
+                        }
+                        break;
+                    case LOCATION_ADDRESS:
+                        $location_address_id = $address['address_id'];
+                        $locations++;
+                        break;
+                }
+            }
+        }
+
+        return null;
+    }
+
     public function isTerritAddress($address_id)
     {
         return $this->db->GetOne('SELECT id FROM addresses WHERE city_id IS NOT NULL AND house IS NOT NULL AND id = ?', array($address_id)) > 0;

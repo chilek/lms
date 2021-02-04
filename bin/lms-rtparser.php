@@ -208,6 +208,8 @@ $autoreply = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.autoreply', '1
 $subject_ticket_regexp_match = ConfigHelper::getConfig('rt.subject_ticket_regexp_match', 'RT#(?<ticketid>[0-9]{6,})');
 $modify_ticket_timeframe = ConfigHelper::getConfig('rt.allow_modify_resolved_tickets_newer_than', 604800);
 
+$detect_customer_location_address = ConfigHelper::checkConfig('rt.detect_customer_location_address');
+
 $image_max_size = ConfigHelper::getConfig('phpui.uploaded_image_max_size');
 
 $rtparser_server = ConfigHelper::getConfig(
@@ -712,11 +714,18 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                 }
             }
 
+            if (empty($reqcustid) || !$detect_customer_location_address) {
+                $address_id = null;
+            } else {
+                $address_id = $LMS->CopyAddress($LMS->detectCustomerLocationAddress($reqcustid));
+            }
+
             $ticket_id = $LMS->TicketAdd(array(
                 'queue' => $queue,
                 'requestor' => empty($fromname) ? $mh_from : $fromname,
                 'requestor_mail' => empty($fromemail) ? null : $fromemail,
                 'customerid' => $reqcustid,
+                'address_id' => $address_id,
                 'subject' => $mh_subject,
                 'createtime' => $timestamp,
                 'source' => RT_SOURCE_EMAIL,
