@@ -56,6 +56,9 @@ if (isset($_GET['op']) && $_GET['op'] == 'updateusers') {
 }
 
 $numberplan = $LMS->getNumberPlan($_GET['id']);
+if (empty($numberplan)) {
+    access_denied();
+}
 
 $template = $numberplan['template'];
 

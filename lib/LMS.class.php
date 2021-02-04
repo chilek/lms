@@ -3413,6 +3413,12 @@ class LMS
         return $manager->GetPromotions();
     }
 
+    public function checkNumberPlanAccess($id)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->checkNumberPlanAccess($id);
+    }
+
     public function getNumberPlan($id)
     {
         $manager = $this->getFinanceManager();

@@ -27,7 +27,8 @@
 $id = intval($_GET['id']);
 
 if ($id) {
-    if (!$DB->GetOne('SELECT COUNT(*) FROM documents WHERE numberplanid=?', array($id))) {
+    if (!$DB->GetOne('SELECT COUNT(*) FROM documents WHERE numberplanid=?', array($id))
+        && $LMS->checkNumberPlanAccess($id)) {
         $LMS->deleteNumberPlan($id);
     }
 }

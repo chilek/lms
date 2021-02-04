@@ -4820,12 +4820,45 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         );
     }
 
+    public function checkNumberPlanAccess($id)
+    {
+        return $this->db->GetOne(
+            'SELECT 1 FROM numberplans n
+            WHERE id = ?'
+            . (ConfigHelper::checkPrivilege('superuser')
+                ? ''
+                : ' AND (NOT EXISTS (SELECT 1 FROM numberplanassignments WHERE planid = n.planid
+                    OR EXISTS (
+                        SELECT 1 FROM numberplanassignments a WHERE a.planid = n.planid
+                        JOIN userdivisions u ON u.divisionid = a.divisionid
+                        WHERE u.userid = ' . Auth::GetCurrentUser() . '
+                    )) AND (NOT EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.id
+                    OR EXISTS (
+                        SELECT 1 FROM numberplanusers u2
+                        WHERE u2.planid = n.planid AND u2.userid = ' . Auth::GetCurrentUser() . '
+                    ))'),
+            array($id)
+        ) > 0;
+    }
+
     public function getNumberPlan($id)
     {
         $numberplan = $this->db->GetRow(
             'SELECT id, period, template, doctype, isdefault
-            FROM numberplans
-            WHERE id = ?',
+            FROM numberplans n
+            WHERE id = ?'
+            . (ConfigHelper::checkPrivilege('superuser')
+                ? ''
+                : ' AND (NOT EXISTS (SELECT 1 FROM numberplanassignments WHERE planid = n.planid
+                    OR EXISTS (
+                        SELECT 1 FROM numberplanassignments a WHERE a.planid = n.planid
+                        JOIN userdivisions u ON u.divisionid = a.divisionid
+                        WHERE u.userid = ' . Auth::GetCurrentUser() . '
+                    )) AND (NOT EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.id
+                    OR EXISTS (
+                        SELECT 1 FROM numberplanusers u2
+                        WHERE u2.planid = n.planid AND u2.userid = ' . Auth::GetCurrentUser() . '
+                    ))'),
             array($id)
         );
 
@@ -4881,12 +4914,42 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $daystart = mktime(0, 0, 0);
 
         if (!empty($params['count'])) {
-            return intval($this->db->GetOne('SELECT COUNT(id) FROM numberplans'));
+            return intval(
+                $this->db->GetOne(
+                    'SELECT COUNT(n.id) FROM numberplans n
+                    WHERE' . (ConfigHelper::checkPrivilege('superuser')
+                            ? ' 1 = 1'
+                            : ' (NOT EXISTS (SELECT 1 FROM numberplanassignments WHERE planid = n.id)
+                        OR EXISTS (
+                            SELECT 1 FROM numberplanassignments a
+                            JOIN userdivisions ud ON ud.divisionid = a.divisionid
+                            WHERE a.planid = n.id
+                        )) AND (NOT EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.id)
+                        OR EXISTS (
+                            SELECT 1 FROM numberplanusers u WHERE planid = n.id AND u.userid = ' . Auth::GetCurrentUser() . '
+                        ))')
+                        . (empty($params['userid']) ? '' : ' AND EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.id AND userid = ' . intval($params['userid']) . ')')
+                        . (empty($params['divisionid']) ? '' : ' AND EXISTS (SELECT 1 FROM numberplanassignments WHERE planid = n.id AND divisionid = ' . intval($params['divisionid']) . ')')
+                )
+            );
         }
 
         if ($list = $this->db->GetAllByKey(
             'SELECT n.id, n.template, n.period, n.doctype, n.isdefault
             FROM numberplans n
+            WHERE' . (ConfigHelper::checkPrivilege('superuser')
+                ? ' 1 = 1'
+                : ' (NOT EXISTS (SELECT 1 FROM numberplanassignments WHERE planid = n.id)
+                    OR EXISTS (
+                        SELECT 1 FROM numberplanassignments a
+                        JOIN userdivisions ud ON ud.divisionid = a.divisionid
+                        WHERE a.planid = n.id
+                    )) AND (NOT EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.id)
+                    OR EXISTS (
+                        SELECT 1 FROM numberplanusers u WHERE planid = n.id AND u.userid = ' . Auth::GetCurrentUser() . '
+                    ))')
+            . (empty($params['userid']) ? '' : ' AND EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.id AND userid = ' . intval($params['userid']) . ')')
+            . (empty($params['divisionid']) ? '' : ' AND EXISTS (SELECT 1 FROM numberplanassignments WHERE planid = n.id AND divisionid = ' . intval($params['divisionid']) . ')') . '
             ORDER BY n.id'
             . (isset($params['limit']) ? ' LIMIT ' . intval($params['limit']) : '')
             . (isset($params['offset']) ? ' OFFSET ' . intval($params['offset']) : ''),
@@ -4900,7 +4963,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             );
 
             $max = $this->db->GetAllByKey(
-                'SELECT numberplanid AS id, MAX(number) AS max 
+                'SELECT numberplanid AS id, MAX(number) AS max
                 FROM documents
                 LEFT JOIN numberplans ON (numberplanid = numberplans.id)
                 WHERE cdate >= (CASE period

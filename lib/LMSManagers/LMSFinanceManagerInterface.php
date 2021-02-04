@@ -168,6 +168,8 @@ interface LMSFinanceManagerInterface
 
     public function getPromotion($id);
 
+    public function checkNumberPlanAccess($id);
+
     public function getNumberPlan($id);
 
     public function getNumberPlanList(array $params);
