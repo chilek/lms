@@ -82,7 +82,9 @@ if (isset($_POST['document'])) {
         $error['title'] = trans('Document title is required!');
     }
 
-    if ($documentedit['numberplanid'] && !$LMS->checkNumberPlanAccess($documentedit['numberplanid'])) {
+    if ($document['numberplanid'] && !$LMS->checkNumberPlanAccess($document['numberplanid'])) {
+        $documentedit['numberplanid'] = $document['numberplanid'];
+    } elseif ($documentedit['numberplanid'] && !$LMS->checkNumberPlanAccess($documentedit['numberplanid'])) {
         $error['numberplanid'] = trans('Persmission denied!');
     } else {
         // check if selected customer can use selected numberplan
