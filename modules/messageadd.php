@@ -246,16 +246,48 @@ function GetCustomers($customers)
 {
     $DB = LMSDB::getInstance();
 
+    $deadline = intval(ConfigHelper::getConfig('payments.deadline', ConfigHelper::getConfig('invoices.paytime', 0)));
+
     return $DB->GetAllByKey(
         'SELECT c.id, pin, '
-        . $DB->Concat('c.lastname', "' '", 'c.name') . ' AS customername,
-        divisions.account,
-		COALESCE((SELECT SUM(value) FROM cash WHERE customerid = c.id), 0) AS balance
-		FROM customerview c
-		LEFT JOIN divisions ON divisions.id = c.divisionid
-		WHERE c.id IN ?',
+            . $DB->Concat('c.lastname', "' '", 'c.name') . ' AS customername,
+            divisions.account,
+            COALESCE((SELECT SUM(value) FROM cash WHERE customerid = c.id), 0) AS totalbalance,
+            b2.balance AS balance
+        FROM customerview c
+        LEFT JOIN divisions ON divisions.id = c.divisionid
+        LEFT JOIN (
+            SELECT cash.customerid, SUM(value * cash.currencyvalue) AS balance FROM cash
+            LEFT JOIN customers ON customers.id = cash.customerid
+            LEFT JOIN divisions ON divisions.id = customers.divisionid
+            LEFT JOIN documents d ON d.id = cash.docid
+            LEFT JOIN (
+                SELECT SUM(value * cash.currencyvalue) AS totalvalue, docid FROM cash
+                JOIN documents ON documents.id = cash.docid
+                WHERE documents.type = ?
+                GROUP BY docid
+            ) tv ON tv.docid = cash.docid
+            WHERE (cash.docid IS NULL AND ((cash.type <> 0 AND cash.time < ?NOW?)
+                OR (cash.type = 0 AND cash.time + (CASE customers.paytime WHEN -1 THEN
+                    (CASE WHEN divisions.inv_paytime IS NULL THEN ' . $deadline . ' divisions.inv_paytime END) ELSE customers.paytime END) * 86400 < ?NOW?)))
+                OR (cash.docid IS NOT NULL AND ((d.type = ? AND cash.time < ?NOW?)
+                    OR (d.type = ? AND cash.time < ?NOW? AND tv.totalvalue >= 0)
+                    OR (((d.type = ? AND tv.totalvalue < 0)
+                        OR d.type IN (?, ?, ?)) AND d.cdate + d.paytime * 86400 < ?NOW?)))
+            GROUP BY cash.customerid
+        ) b2 ON b2.customerid = c.id
+        WHERE c.id IN ?',
         'id',
-        array($customers)
+        array(
+            DOC_CNOTE,
+            DOC_RECEIPT,
+            DOC_CNOTE,
+            DOC_CNOTE,
+            DOC_INVOICE,
+            DOC_INVOICE_PRO,
+            DOC_DNOTE,
+            $customers
+        )
     );
 }
 
@@ -270,10 +302,37 @@ function BodyVars(&$body, $data, $format)
     ));
     $data = $hook_data['data'];
 
-    $body = str_replace('%customer', $data['customername'], $body);
-    $body = str_replace('%balance', moneyf($data['balance']), $body);
-    $body = str_replace('%cid', $data['id'], $body);
-    $body = str_replace('%pin', $data['pin'], $body);
+    $amount = -$data['balance'];
+    $totalamount = -$data['totalbalance'];
+
+    $body = str_replace(
+        array(
+            '%balance',
+            '%b',
+            '%totalb',
+            '%totalB',
+            '%totalsaldo',
+            '%B',
+            '%saldo',
+            '%customer',
+            '%cid',
+            '%pin',
+        ),
+        array(
+            moneyf($data['totalbalance']),
+            sprintf('%01.2f', $amount),
+            sprintf('%01.2f', $totalamount),
+            sprintf('%01.2f', $data['totalbalance']),
+            moneyf($data['totalbalance']),
+            sprintf('%01.2f', $data['balance']),
+            moneyf($data['balance']),
+            $data['customername'],
+            $data['id'],
+            $data['pin'],
+        ),
+        $body
+    );
+
     if (strpos($body, '%bankaccount') !== false) {
         $body = str_replace('%bankaccount', format_bankaccount(bankaccount($data['id'], $data['account'])), $body);
     }
