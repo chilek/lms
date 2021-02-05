@@ -47,6 +47,7 @@ version 27-git (????-??-??):
   - enhancement: number plan user assignment support [chilan]
   - enhancement: 'rt.detect_customer_location_address' controls location address automatic detection
     of newly created helpdesk ticket ('false' by default) [chilan]
+  - enhancement: more customer balance substitution symbol support in add message form [chilan]
 
 version 26.0 (2020-12-15):
 
