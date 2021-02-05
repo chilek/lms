@@ -38,7 +38,7 @@
 		{/foreach}
 		{if $ticket.customerid}
 			<br>
-			<A href="?m=customerinfo&id={$ticket.customerid}">{$ticket.customername|truncate:"60":"&hellip;"|escape}</A>
+			<A href="?m=customerinfo&id={$ticket.customerid}">{$ticket.customername|trunescape:"60"}</A>
 		{/if}
 		{if $ticket.requestor_userid}
 		<br>
