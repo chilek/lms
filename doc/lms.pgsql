@@ -3544,7 +3544,7 @@ URL: %url
 ('invoices', 'cnote_template_file', 'invoice.html', '', 0),
 ('invoices', 'print_balance_history', 'false', '', 0),
 ('invoices', 'print_balance_history_limit', '10', '', 0),
-('invoices', 'default_printpage', 'original,copy', '', 0),
+('invoices', 'default_printpage', 'original', '', 0),
 ('invoices', 'type', 'html', '', 0),
 ('invoices', 'attachment_name', '', '', 0),
 ('invoices', 'paytime', '14', '', 0),
