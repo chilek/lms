@@ -500,7 +500,11 @@ switch ($action) {
         }
 
         $DB->BeginTrans();
-        $DB->LockTables(array('documents', 'numberplans', 'divisions', 'vdivisions', 'addresses'));
+        $tables = array('documents', 'numberplans', 'divisions', 'vdivisions', 'addresses');
+        if ($SYSLOG) {
+            $tables = array_merge($tables, array('logmessages', 'logmessagekeys', 'logmessagedata'));
+        }
+        $DB->LockTables($tables);
 
         if (!isset($cnote['number']) || !$cnote['number']) {
             $cnote['number'] = $LMS->GetNewDocumentNumber(array(
