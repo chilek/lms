@@ -26,5 +26,9 @@
 
 function smarty_modifier_trunescape($text, $length)
 {
-    return htmlspecialchars(mb_substr($text, 0, $length), ENT_QUOTES) . '&hellip;';
+    if (mb_strlen($text) > $length) {
+        return htmlspecialchars(mb_substr($text, 0, $length), ENT_QUOTES) . '&hellip;';
+    } else {
+        return htmlspecialchars($text, ENT_QUOTES);
+    }
 }
