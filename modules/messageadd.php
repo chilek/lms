@@ -269,7 +269,7 @@ function GetCustomers($customers)
             ) tv ON tv.docid = cash.docid
             WHERE (cash.docid IS NULL AND ((cash.type <> 0 AND cash.time < ?NOW?)
                 OR (cash.type = 0 AND cash.time + (CASE customers.paytime WHEN -1 THEN
-                    (CASE WHEN divisions.inv_paytime IS NULL THEN ' . $deadline . ' divisions.inv_paytime END) ELSE customers.paytime END) * 86400 < ?NOW?)))
+                    (CASE WHEN divisions.inv_paytime IS NULL THEN ' . $deadline . ' ELSE divisions.inv_paytime END) ELSE customers.paytime END) * 86400 < ?NOW?)))
                 OR (cash.docid IS NOT NULL AND ((d.type = ? AND cash.time < ?NOW?)
                     OR (d.type = ? AND cash.time < ?NOW? AND tv.totalvalue >= 0)
                     OR (((d.type = ? AND tv.totalvalue < 0)
