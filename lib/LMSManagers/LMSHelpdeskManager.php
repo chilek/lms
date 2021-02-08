@@ -473,7 +473,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         if ($result = $this->db->GetAll(
             'SELECT DISTINCT t.id, t.customerid, t.address_id, va.name AS vaname, va.city AS vacity, va.street, va.house, va.flat, c.address, c.city, vusers.name AS ownername,
 				t.subject, t.state, owner AS ownerid, t.requestor AS req, t.source, t.priority, rtqueues.name,'
-				. $this->db->Concat('c.lastname', "' '", 'c.name') . ' AS customername, 
+                                . $this->db->Concat('c.lastname', "' '", 'c.name') . ' AS customername,
 				t.requestor_phone, t.requestor_mail, t.deadline, t.requestor_userid, c.name, c.lastname, rq.name AS requestor_name,
 				t.createtime AS createtime, u.name AS creatorname, t.deleted, t.deltime, t.deluserid,
 				t.modtime AS lastmodified, vi.name AS verifiername, vi.id AS verifierid,
