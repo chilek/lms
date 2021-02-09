@@ -1,0 +1,61 @@
+<div id="changecolumnsvisibilitymodal" class="lms-ui-dialog">
+        <table>
+            <tbody>
+                <tr>
+                    <td>
+                        <input type="checkbox" class="columns" id="vlan-id" {if !isset($visiblecolumns) || (is_array($visiblecolumns) && in_array("vlan-id", $visiblecolumns))}checked="checked"{/if} name="vlan-id">
+                        {icon name="id" label="ID:" class="fa-fw"}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" class="columns" id="vlan-vid" {if !isset($visiblecolumns) || (is_array($visiblecolumns) && in_array("vlan-vid", $visiblecolumns))}checked="checked"{/if} name="vlan-vid">
+                        {icon name="vlan" label="VLAN ID:" class="fa-fw"}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="nobr">
+                        <input type="checkbox" class="columns" id="vlan-desc" {if !isset($visiblecolumns) || (is_array($visiblecolumns) && in_array("vlan-desc", $visiblecolumns))}checked="checked"{/if} name="vlan-desc">
+                        {icon name="description" label="VLAN Description" class="fa-fw"}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" class="columns" id="vlan-customerid" {if !isset($visiblecolumns) || (is_array($visiblecolumns) && in_array("vlan-customerid", $visiblecolumns))}checked="checked"{/if} name="vlan-customerid">
+                        {icon name="customer" label="Assigned Customer" class="fa-fw"}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" class="columns" id="vlan-netnodeid" {if !isset($visiblecolumns) || (is_array($visiblecolumns) && in_array("vlan-netnodeid", $visiblecolumns))}checked="checked"{/if} name="vlan-netnodeid">
+                        {icon name="netnode" label="Assigned Network node" class="fa-fw"}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-center">
+                        {button icon="save" label="Save" onclick="savecolumnstate(); dialogclose(changecolumnsvisibilitymodal)"}
+                        {button icon="close" label="Close" onclick="dialogclose(changecolumnsvisibilitymodal)"}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</div>
+
+<script>
+    $( "#changecolumnsvisibilitymodal" ).dialog( {
+        autoOpen: false,
+        title: "{trans("Column visibility")}",
+    });
+
+    $("input:checkbox:not(:checked)").each(function() {
+        var column = "table ." + $(this).attr("name");
+        $(column).hide();
+    });
+
+    $("input:checkbox").click(function(){
+        var column = "table ." + $(this).attr("name");
+        $(column).toggle();
+    });
+</script>
+
+<script type="text/javascript" src="js/vlanlist.js"></script>

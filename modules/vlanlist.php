@@ -58,6 +58,14 @@ switch ($action) {
     default:
         break;
 }
+
+if ($_POST['visiblecolumns']) {
+    $SESSION->save('vlcs', json_decode($_POST['visiblecolumns']));
+} else {
+    $SESSION->restore('vlcs', $visiblecolumns);
+}
+$SMARTY->assign('visiblecolumns', $visiblecolumns);
+
 $SMARTY->assign('action', $action);
 $SMARTY->assign('vlanlist', $vlanlist);
 $SMARTY->assign('netnodelist', $netnodelist);

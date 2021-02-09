@@ -62,7 +62,7 @@
                 <tr>
                     <td colspan="2" class="button-bar text-center">
                         {button type="submit" label="Submit" icon="submit"}
-                        {button label="Cancel" icon="cancel" id="close"}
+                        {button icon="cancel" label="Cancel" onclick="dialogclose('#addvlanmodal')"}
                     </td>
                 </tr>
             </tbody>
@@ -77,13 +77,5 @@
         minWidth: 390,
         modal: true,
         title: "{if $action == 'modify'}{trans("Modify VLAN")} {$vlaninfo.id}{else}{trans("Add VLAN")}{/if}"
-    });
-
-    $( "#addvlanbtn" ).click(function() {
-        $( "#addvlanmodal" ).dialog( "open" );
-    });
-
-    $( "#close" ).click(function() {
-        $( "#addvlanmodal" ).dialog( "close" );
     });
 </script>

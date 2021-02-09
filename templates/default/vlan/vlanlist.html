@@ -7,19 +7,19 @@
 <table class="lmsbox lms-ui-background-cycle">
     <thead>
         <tr class="bold">
-            <td>
+            <td class="vlan-id">
                 {icon name="id" label="ID"}
             </td>
-            <td>
+            <td class="vlan-vid">
                 {icon name="vlan" label="VLAN ID"}
             </td>
-            <td>
+            <td class="vlan-desc">
                 {icon name="description" label="Description"}
             </td>
-            <td>
+            <td class="vlan-customerid">
                 {icon name="customer" label="Assigned Customer"}
             </td>
-            <td>
+            <td class="vlan-netnodeid">
                 {icon name="netnode" label="Assigned Network node"}
             </td>
             <td class="text-right" class="lms-ui-box-buttons" data-popup-menu-title="{trans('Sort by')}">
@@ -31,27 +31,28 @@
                     {button type='link' icon="netnode" tip="Network Node ID" href="?m=vlanlist&orderby=netnodeid"}
                 {/buttons}
 
-                {button name="addvlan" id="addvlanbtn" icon="add" accesskey="v" label="Add"}
+                {button icon="columns" label="Column visibility"  accesskey="c" onclick="dialogopen('#changecolumnsvisibilitymodal')"}
+                {button icon="add" label="Add" accesskey="v" onclick="dialogopen('#addvlanmodal')"}
             </td>
         </tr>
     </thead>
     <tbody>
         {foreach $vlanlist as $v}
         <tr class="highlight">
-            <td>
+            <td class=" vlan-id">
                 {$v.id}
             </td>
-            <td>
+            <td class="vlan-vid">
                 {$v.vlanid}
             </td>
-            <td {tip text=$v.description}>
+            <td class="vlan-desc" {tip text=$v.description}>
                 {$v.description|trunescape:40}
             </td>
-            <td {tip text=$v.customername}>
-                <a href="?m=customerinfo&id={$v.customerid}">{$v.customername|truncate:20:"&hellip;":true}</a>
+            <td class="vlan-customerid" {tip text=$v.customername}>
+                <a href="?m=customerinfo&id={$v.customerid}">{$v.customername|truncate:20:"&hellip;"}</a>
             </td>
-            <td {tip text=$v.netnodename}>
-                <a href="?m=netnodeinfo&id={$v.netnodeid}">{$v.netnodename|truncate:20:"&hellip;":true}</a>
+            <td class="vlan-netnodeid" {tip text=$v.netnodename}>
+                <a href="?m=netnodeinfo&id={$v.netnodeid}">{$v.netnodename|truncate:20:"&hellip;"}</a>
             </td>
             <td class="buttons">
                 {button type="link" icon="edit" href="?m=vlanlist&action=modify&id={$v.id}" tip="Edit"}
@@ -63,6 +64,15 @@
 </table>
 
 {include file="vlan/vlanmodify-dialog.html"}
+{include file="vlan/vlanmodify-columnsvisibility.html"}
 
+<script>
+    function dialogopen(target) {
+        $( target ).dialog("open");
+    }
+
+    function dialogclose(target) {
+        $( target ).dialog("close");
+    }
+</script>
 {/block}
-
