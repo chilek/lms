@@ -29,12 +29,7 @@
 	.clone-container-section-input,
 	.clone-container-section-select,
 	.clone-container-user,
-	.clone-container-division,
-	.import-container,
-	.import-container-file,
-	.import-container-type,
-	.import-container-user,
-	.import-container-division {
+	.clone-container-division {
 		display: flex;
 		flex-wrap: wrap;
 		flex-direction: row;
@@ -42,7 +37,7 @@
 		align-items: center;
 	}
 
-	.clone-container, .import-container {
+	.clone-container{
 		margin-top: -0.5em;
 	}
 
@@ -54,8 +49,7 @@
 		align-items: center;
 	}
 
-	.clone-container-center,
-	.import-container-center {
+	.clone-container-center {
 		display: flex;
 		align-content: flex-start;
 		align-items: center;
@@ -68,12 +62,8 @@
 	.clone-container-center > label {
 		white-space: normal;
 	}
-	.import-container-center > label {
-		white-space: normal;
-	}
 
-	.clone-container-select,
-	.import-container-select {
+	.clone-container-select {
 		padding-top: 0.5em;
 		padding-right: 0.5em;
 		text-align: left;
@@ -89,7 +79,6 @@
 <H1>{$layout.pagetitle}</H1>
 
 <form name="configform" id="configform" method="POST" action="?m=config"></form>
-<form name="parser" id="parser" enctype="multipart/form-data" method="post" action="?m=configimport">
 
 <TABLE id="configlist-datatable" class="lmsbox lms-ui-multi-check lms-ui-datatable lms-ui-datatable-column-search"
 		data-state-duration='-1'
@@ -184,72 +173,6 @@
 	<TR>
 		<TD colspan="8" class="text-right bold">
 			<div class="row-container">
-				<fieldset id="import">
-					<legend>Import</legend>
-					<div class="import-container">
-						<div class="import-container-file">
-							<div class="import-container-center">
-								{fileupload id="files" fileupload=$fileupload form="parser"}
-							</div>
-						</div>
-
-						<div class="import-container-type">
-							<div class="import-container-center">
-								{trans('Target variables scope:')}
-							</div>
-							<div class="import-container-select">
-								<SELECT size="1" id="import-type" {tip text="Select variables type" trigger="type"}>
-									<OPTION value="" selected>{trans('Select')}</OPTION>
-									<OPTION value="global">{trans('global value')}</OPTION>
-									<OPTION value="division">{trans('division value')}</OPTION>
-									<OPTION value="divisionuser">{trans('user in division value')}</OPTION>
-									<OPTION value="user">{trans('user value')}</OPTION>
-								</SELECT>
-							</div>
-						</div>
-
-						<div class="import-container-user" style="display: none;">
-							<div class="import-container-center">
-								{trans('Target user:')}
-							</div>
-							<div class="import-container-select">
-								<SELECT size="1" id="import-user" {tip text="Select user" trigger="user"}>
-									{foreach $users as $user}
-										<OPTION value="{$user.id}">{$user.login} / {$user.rname|escape}</OPTION>
-									{/foreach}
-								</SELECT>
-							</div>
-						</div>
-
-						<div class="import-container-division" style="display: none;">
-							<div class="import-container-center">
-								{trans('Target division:')}
-							</div>
-							<div class="import-container-select">
-								<SELECT size="1" id="import-division" {tip text="Select division" trigger="division"}>
-									{foreach $divisions as $division}
-										<OPTION value="{$division.id}">{$division.label|escape}</OPTION>
-									{/foreach}
-								</SELECT>
-							</div>
-						</div>
-
-						<div class="import-container-center import-withparentbindings" style="display: none;">
-							<label for="import-withparentbindings">{trans('Create the missing parent bindings:')}</label>
-							<input type="checkbox" id="import-withparentbindings">
-						</div>
-
-						<div class="import-container-center import-override">
-							<label for="import-override">{trans('Override existing:')}</label>
-							<input type="checkbox" id="import-override">
-						</div>
-
-						<div>
-							{button icon="importsource" label="Import from file" id="import-configs"}
-						</div>
-					</div>
-				</fieldset>
-
 				<fieldset id="clone" style="display: none;">
 					<legend>{trans('Cloning')}</legend>
 					<div class="clone-container">
@@ -341,18 +264,13 @@
 </TABLE>
 
 <script>
-
 	$(function() {
 		var withchildbindings = $('#withchildbindings');
 		withchildbindings.prop('checked', true);
 		var withparentbindings = $('#withparentbindings');
 		withparentbindings.prop('checked', true);
-		var import_withparentbindings = $('#import-withparentbindings');
-		import_withparentbindings.prop('checked', true);
 		var override = $('#override');
 		override.prop('checked', true);
-		var import_override = $('#import-override');
-		import_override.prop('checked', true);
 
 		$('.configadd').click(function() {
 			var select = $('thead tr select', $(this).closest('table'));
@@ -445,66 +363,6 @@
 				document.configform.submit();
 				return;
 			}
-		});
-
-		$('#import-configs').click(function() {
-			var uploaded_files_count = $('.fileupload-files').find('div').length;
-			if (!uploaded_files_count) {
-				alertDialog($t("No files selected!"), this);
-				return;
-			}
-
-			if (!$('#import-type').val().length) {
-				alertDialog($t("Target variables type has not been selected!"), this);
-				return;
-			}
-
-			var importType = $('#import-type').val();
-
-			var importUser = $('#import-user');
-			var importUserVisible = importUser.is(':visible');
-
-			var importDivision = $('#import-division');
-			var importDivisionVisible = importDivision.is(':visible');
-
-			var importWithparentbindingsVisible = import_withparentbindings.is(':visible');
-			var importOverrideVisible = import_override.is(':visible');
-
-			var args = '';
-
-			if (importType.length > 0) {
-				args += '&target-type=' + importType + '';
-			}
-
-			if (importUserVisible) {
-				var user_id = importUser.val();
-				if (user_id) {
-					args += '&target-user=' + user_id + '';
-				}
-			}
-
-			if (importDivisionVisible) {
-				var division_id = importDivision.val();
-				if (division_id) {
-					args += '&target-division=' + division_id + '';
-				}
-			}
-
-			if (importWithparentbindingsVisible) {
-				if ($(import_withparentbindings).is(':checked')) {
-					args += '&withparentbindings=1';
-				}
-			}
-
-			if (importOverrideVisible) {
-				if ($(import_override).is(':checked')) {
-					args += '&override=1';
-				}
-			}
-
-			document.parser.action = '?m=configimport' + args + '';
-			document.parser.submit();
-			return;
 		});
 
 		$('#clone-configs').click(function() {
@@ -680,26 +538,7 @@
 			toggleActions();
 		})
 
-		$('#import-type').on('change', function () {
-			var import_type = $(this).val();
-			if (import_type.length === 0 || import_type === 'global') {
-				$('.import-withparentbindings, .import-container-division, .import-container-user').hide();
-			}
-			if (import_type === 'division') {
-				$('.import-container-user').hide();
-				$('.import-withparentbindings, .import-container-division').show();
-			}
-			if (import_type === 'divisionuser') {
-				$('.import-withparentbindings, .import-container-division, .import-container-user').show();
-			}
-			if (import_type === 'user') {
-				$('.import-container-division').hide();
-				$('.import-withparentbindings, .import-container-user').show();
-			}
-		});
-
 		toggleActions();
 	});
-
 </script>
 {/block}

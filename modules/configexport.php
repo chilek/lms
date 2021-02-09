@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -32,12 +32,12 @@ function write_ini_file($configs_arr)
         foreach ($elem as $key2 => $elem2) {
             if (is_array($elem2)) {
                 for ($i = 0; $i < count($elem2); $i++) {
-                    $content .= $key2 . "[] = \"" . $elem2[$i] . "\"\n";
+                    $content .= $key2 . "[] = \"" . str_replace('"', '\"', $elem2[$i]) . "\"\n";
                 }
             } else if ($elem2 == "") {
                 $content .= $key2 . " = \n";
             } else {
-                $content .= $key2 . " = \"" . $elem2 . "\"\n";
+                $content .= $key2 . " = \"" . str_replace('"', '\"', $elem2) . "\"\n";
             }
         }
     }
@@ -57,20 +57,23 @@ if (isset($_POST['marks'])) {
 
 if (!empty($configs)) {
     $cdate = date('YmdHi', time());
-    $filename = 'configexport_';
+    $filename = 'configexport';
     if (!isset($_GET['source-division']) && !isset($_GET['source-user'])) {
-        $filename .= trans('global value');
+        $filename .= '-' . trans('global value');
     }
     if (isset($_GET['source-division']) && !isset($_GET['source-user'])) {
-        $filename .= str_replace(' ', '', $_GET['source-division']);
+        $filename .= '-' . $_GET['source-division'];
     }
     if (isset($_GET['source-division']) && isset($_GET['source-user'])) {
-        $filename .= str_replace(' ', '', $_GET['source-division']) . '_' . str_replace(' ', '', $_GET['source-user']);
+        $filename .= '-' . $_GET['source-division'] . '-' . $_GET['source-user'];
     }
     if (!isset($_GET['source-division']) && isset($_GET['source-user'])) {
-        $filename .= str_replace(' ', '', $_GET['source-user']);
+        $filename .= '-' . $_GET['source-user'];
     }
-    $filename .= '_' .$cdate. '.cfg';
+    $filename .= '-' . $cdate;
+
+    $filename = clear_utf($filename);
+    $filename = str_replace(' ', '', $filename) . '.ini';
 
     // wysyłamy ...
     header('Content-Type: text/plain');
