@@ -549,6 +549,15 @@ switch ($action) {
         if ($SYSLOG) {
             $tables = array_merge($tables, array('logmessages', 'logmessagekeys', 'logmessagedata'));
         }
+
+        $hook_data = array(
+            'tables' => array(),
+        );
+        $hook_data = $LMS->ExecuteHook('invoicenew_save_lock_tables', $hook_data);
+        if (is_array($hook_data['tables']) && !empty($hook_data['tables'])) {
+            $tables = array_unique(array_merge($tables, $hook_data['tables']));
+        }
+
         $DB->LockTables($tables);
 
         if (!$invoice['number']) {
