@@ -504,15 +504,15 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             WHERE id = ?'
                 . (ConfigHelper::checkPrivilege('superuser')
                     ? ''
-                    : ' AND (NOT EXISTS (SELECT 1 FROM numberplanassignments WHERE planid = n.planid
+                    : ' AND (NOT EXISTS (SELECT 1 FROM numberplanassignments WHERE planid = n.id)
                 OR EXISTS (
-                    SELECT 1 FROM numberplanassignments a WHERE a.planid = n.planid
+                    SELECT 1 FROM numberplanassignments a
                     JOIN userdivisions u ON u.divisionid = a.divisionid
-                    WHERE u.userid = ' . Auth::GetCurrentUser() . '
-                )) AND (NOT EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.id
+                    WHERE a.planid = n.id AND u.userid = ' . Auth::GetCurrentUser() . '
+                )) AND (NOT EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.id)
                 OR EXISTS (
                     SELECT 1 FROM numberplanusers u2
-                    WHERE u2.planid = n.planid AND u2.userid = ' . Auth::GetCurrentUser() . '
+                    WHERE u2.planid = n.id AND u2.userid = ' . Auth::GetCurrentUser() . '
             ))'),
             array($id)
         ) > 0;
@@ -526,15 +526,15 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             WHERE id = ?'
             . (ConfigHelper::checkPrivilege('superuser')
                 ? ''
-                : ' AND (NOT EXISTS (SELECT 1 FROM numberplanassignments WHERE planid = n.planid
+                : ' AND (NOT EXISTS (SELECT 1 FROM numberplanassignments WHERE planid = n.id)
                     OR EXISTS (
-                        SELECT 1 FROM numberplanassignments a WHERE a.planid = n.planid
+                        SELECT 1 FROM numberplanassignments a
                         JOIN userdivisions u ON u.divisionid = a.divisionid
-                        WHERE u.userid = ' . Auth::GetCurrentUser() . '
-                    )) AND (NOT EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.id
+                        WHERE a.planid = n.id AND u.userid = ' . Auth::GetCurrentUser() . '
+                    )) AND (NOT EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.id)
                     OR EXISTS (
                         SELECT 1 FROM numberplanusers u2
-                        WHERE u2.planid = n.planid AND u2.userid = ' . Auth::GetCurrentUser() . '
+                        WHERE u2.planid = n.id AND u2.userid = ' . Auth::GetCurrentUser() . '
                     ))'),
             array($id)
         );
