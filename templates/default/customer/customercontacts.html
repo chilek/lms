@@ -235,10 +235,10 @@
 									<div class="contactbox-inner-row">
 										<INPUT type="text" value="{$itemProperty.name}"
 											   name="{$formelemprefix}[{$type}s][{$key}][properties][{$pkey}][name]"
-											   placeholder="{trans("Property name")}">&nbsp;&nbsp;
+												{tip text="Property name"}>&nbsp;&nbsp;
 										<INPUT type="text" value="{$itemProperty.value}"
 											   name="{$formelemprefix}[{$type}s][{$key}][properties][{$pkey}][value]"
-											   placeholder="{trans("Property value")}">
+												{tip text="Property value"}>
 									</div>
 								{/foreach}
 							</div>

@@ -176,7 +176,8 @@
 													<td class="customer-contact">
 														<div style="padding-left: 0.5em;">
 															{foreach $contact.properties as $property}
-																<strong>{$property.name}:</strong> {$property.value}<br>
+																<span {tip text="Property name"}><strong>{$property.name}:</strong></span>
+																<span {tip text="Property value"}>{$property.value}</span><br>
 															{/foreach}
 														</div>
 													</td>
