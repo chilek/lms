@@ -26,6 +26,7 @@
 
 function getUsersForGroup($groupid)
 {
+    global $LMS;
     $DB = LMSDB::getInstance();
 
     $JSResponse = new xajaxResponse();
@@ -35,12 +36,7 @@ function getUsersForGroup($groupid)
     } elseif (intval($groupid) == -1) {
         $users = array(Auth::GetCurrentUser());
     } else {
-        $users = $DB->GetCol(
-            'SELECT u.id FROM users u
-			JOIN userassignments ua ON ua.userid = u.id
-			WHERE u.deleted = 0 AND u.access = 1 AND ua.usergroupid = ?',
-            array($groupid)
-        );
+        $users = $LMS->UsergroupGetActiveUserid($groupid);
     }
 
     $JSResponse->call('update_user_selection', $users);

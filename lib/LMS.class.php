@@ -4221,6 +4221,12 @@ class LMS
         return $manager->UsergroupGetList();
     }
 
+    public function UsergroupGetActiveUserid($groupid)
+    {
+        $manager = $this->getUserGroupManager();
+        return $manager->UsergroupGetActiveUserid($groupid);
+    }
+
     public function UsergroupGet($id)
     {
         $manager = $this->getUserGroupManager();
