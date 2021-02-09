@@ -13,4 +13,4 @@ function savecolumnstate() {
         type: "POST",
         data: { visiblecolumns : jsonString },
     });
-};
+}
