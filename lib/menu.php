@@ -796,6 +796,12 @@ $menu = array(
                     'tip' => trans('Allows you to configure UI'),
                     'prio' => 10,
                 ),
+                'configimport' => array(
+                    'name' => trans('Import configuration'),
+                    'link' => '?m=configimport',
+                    'tip' => trans('Import configuration'),
+                    'prio' => 11,
+                ),
                 'configadd' => array(
                     'name' => trans('New setting'),
                     'link' => '?m=configadd',
