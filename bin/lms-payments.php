@@ -1097,6 +1097,8 @@ if (!empty($currencyvalues) && !$quiet) {
 }
 $currencyvalues[Localisation::getCurrentCurrency()] = 1.0;
 
+$DB->BeginTrans();
+
 foreach ($assigns as $assign) {
     $cid = $assign['customerid'];
     $divid = ($assign['divisionid'] ? $assign['divisionid'] : 0);
@@ -1825,5 +1827,7 @@ if ($delete_old_assignments_after_days) {
 
 // clear voip tariff rule states
 $DB->Execute("DELETE FROM voip_rule_states");
+
+$DB->CommitTrans();
 
 $DB->Destroy();
