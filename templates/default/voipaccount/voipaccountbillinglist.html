@@ -105,7 +105,7 @@
         </tr>
 		<tr VALIGN="MIDDLE">
 			<td colspan="{$number_of_table_columns}">
-				<FORM method="get" action="?m={$layout.module}" name="choosefilter" id="choosefilter">
+				<FORM method="post" action="?m={$layout.module}" name="choosefilter" id="choosefilter">
 					<INPUT type="hidden" NAME="m" VALUE="voipaccountbillinglist">
 					<span class="bold">{trans("Filter:")}</span>
 
@@ -118,9 +118,11 @@
 					</select>
 
 					{trans("Period")} {trans("from")}&nbsp;
+					{date_period_preset from="#frangefrom" to="#frangeto"}
 					<INPUT
 						TYPE="text"
 						NAME="frangefrom"
+						id="frangefrom"
 						SIZE="10"
 						MAXLENGTH="20"
 						VALUE="{if $listdata.frangefrom > 0}{$listdata.frangefrom|date_format:"%Y/%m/%d"}{/if}"
@@ -130,6 +132,7 @@
 					<INPUT
 						TYPE="text"
 						NAME="frangeto"
+						id="frangeto"
 						SIZE="10"
 						MAXLENGTH="20"
 						VALUE="{if $listdata.frangeto > 0}{$listdata.frangeto|date_format:"%Y/%m/%d"}{/if}"
@@ -150,8 +153,6 @@
 						<OPTION VALUE="{CALL_BUSY}" {if $listdata.fstatus == $smarty.const.CALL_BUSY} SELECTED{/if}>{trans("busy<!voip>")}</OPTION>
 						<OPTION VALUE="{CALL_SERVER_FAILED}" {if $listdata.fstatus == $smarty.const.CALL_SERVER_FAILED} SELECTED{/if}>{trans("server error")}</OPTION>
 					</SELECT>
-
-					<A HREF="#" onclick="document.forms['choosefilter'].submit();">&raquo;&raquo;&raquo;</A>
 				</FORM>
 			</td>
 		</tr>
@@ -315,4 +316,15 @@
         </tr>
     </tfoot>
 </table>
+
+<script>
+
+	$(function() {
+		$('#choosefilter').find('input,select').change(function() {
+			$('#choosefilter').submit();
+		});
+	});
+
+</script>
+
 {/block}
