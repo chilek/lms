@@ -52,6 +52,7 @@ version 27-git (????-??-??):
   - improvement: changed default value of 'payments.delete_old_assignments_after_days' from '30'
     to '0' [chilan]
   - improvement: date period selector added in voip billing record list [chilan]
+  - improvement: separate configuration import function to dedicated form in main menu [ravvar]
 
 version 26.0 (2020-12-15):
 

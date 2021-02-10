@@ -24,6 +24,9 @@
  *  $Id$
  */
 
+$_LANG['Import configuration'] = 'Import konfiguracji';
+$_LANG['Bad file structure!'] = 'Nieprawidłowa struktura pliku!';
+
 $_LANG['Properties:'] = 'Właściwości:';
 $_LANG['Add property'] = 'Dodaj właściwość';
 $_LANG['Property name'] = 'Nazwa własciwości';

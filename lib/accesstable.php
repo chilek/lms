@@ -174,7 +174,7 @@ $access_table = array(
         'label' => trans('configuration'),
         'allow_regexp' => '^(((host|config|numberplan|taxrate|state|division|cashsource)(list|edit|add|del|load|clone))|((promotion|promotionschema)(list|edit|add|del|set|info|clone)))$',
         'allow_menu_items' => array(
-            'config' => array('configlist', 'configadd', 'taxratelist', 'numberplanlist', 'statelist', 'divisionlist', 'hostlist', 'cashsourcelist', 'promotionlist'),
+            'config' => array('configlist', 'configimport', 'configadd', 'taxratelist', 'numberplanlist', 'statelist', 'divisionlist', 'hostlist', 'cashsourcelist', 'promotionlist'),
         ),
     ),
     'network_management' => array(
