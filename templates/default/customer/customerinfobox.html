@@ -167,7 +167,7 @@
 													<div>
 													{if isset($properties.formatter)}{call_user_func($properties['formatter'], $contact)}{else}{$contact.contact|escape}{/if}
 													{if $contact.typestr}[{$contact.typestr}]{/if}
-													{if $contact.name} ({$contact.name|truncate:"40":"&hellip;":true|escape}){/if}
+													{if $contact.name} ({$contact.name|trunescape:40}){/if}
 													</div>
 												</TD>
 											</TR>

@@ -28,7 +28,7 @@
                     {/if}
                     <br>
                     <a href="?m=userinfo&amp;id={$user.id}"
-                       style="font-weight: normal;" {if isset($user.noaccess)} class="lms-ui-crossed"{/if}>{$user.name|truncate:"25":"&hellip;":true|escape}</a>
+                       style="font-weight: normal;" {if isset($user.noaccess)} class="lms-ui-crossed"{/if}>{$user.name|trunescape:25}</a>
                 {/foreach}
             {else}
                 <br>
