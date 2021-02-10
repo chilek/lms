@@ -164,17 +164,17 @@
 		{/if}
     </thead>
     <tbody>
-        {section name=i loop=$billings start=(($page-1)*$pagelimit) max=$pagelimit}
+        {foreach $billings as $record}
 			<tr class="highlight">
 
 				<td nowrap>
-					{$billings[i].begintime|date_format:"%e %B %Y %H:%M:%S"}
+					{$record.begintime|date_format:"%e %B %Y %H:%M:%S"}
 				</td>
 
 				<td nowrap>
-					{if !empty($billings[i].callerownerid)}
-						<a href="?m=customerinfo&id={$billings[i].callerownerid}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$billings[i].callerownerid}">
-							{$billings[i].caller_lastname|lower|ucfirst} {$billings[i].caller_name|ucfirst}
+					{if !empty($record.callerownerid)}
+						<a href="?m=customerinfo&id={$record.callerownerid}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$record.callerownerid}">
+							{$record.caller_lastname|lower|ucfirst} {$record.caller_name|ucfirst}
 						</a>
 					{else}
 						{trans("Customer from outside")}
@@ -184,9 +184,9 @@
 				<td nowrap>
 					{trans("to")}
 
-					{if !empty($billings[i].calleeownerid)}
-						<a href="?m=customerinfo&id={$billings[i].calleeownerid}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$billings[i].calleeownerid}">
-							{$billings[i].callee_lastname|lower|ucfirst} {$billings[i].callee_name|ucfirst}
+					{if !empty($record.calleeownerid)}
+						<a href="?m=customerinfo&id={$record.calleeownerid}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$record.calleeownerid}">
+							{$record.callee_lastname|lower|ucfirst} {$record.callee_name|ucfirst}
 						</a>
 					{else}
 						{trans("customer from outside")}
@@ -194,82 +194,82 @@
 				</td>
 
 				<td>
-					{if !empty($billings[i].callerownerid)}
-						<a href="?m=voipaccountinfo&amp;id={$billings[i].callervoipaccountid}">{$billings[i].caller}</a>
+					{if !empty($record.callerownerid)}
+						<a href="?m=voipaccountinfo&amp;id={$record.callervoipaccountid}">{$record.caller}</a>
 					{else}
-						{$billings[i].caller}
+						{$record.caller}
 					{/if}
 				</td>
 
 				<td>
-					{if !empty($billings[i].calleeownerid)}
-						<a href="?m=voipaccountinfo&amp;id={$billings[i].calleevoipaccountid}">{$billings[i].callee}</a>
+					{if !empty($record.calleeownerid)}
+						<a href="?m=voipaccountinfo&amp;id={$record.calleevoipaccountid}">{$record.callee}</a>
 					{else}
-						{$billings[i].callee}
+						{$record.callee}
 					{/if}
 				</td>
 
 				<td>
-					{$min_tmp = intval($billings[i].callbegintime / 60)}
-					{$sec_tmp = $billings[i].callbegintime % 60}
+					{$min_tmp = intval($record.callbegintime / 60)}
+					{$sec_tmp = $record.callbegintime % 60}
 
 					{if $min_tmp}{$min_tmp}min{/if}
 					{if $sec_tmp}{$sec_tmp}s{/if}
 				</td>
 
 				<td>
-					{$min_tmp = intval($billings[i].callanswertime / 60)}
-					{$sec_tmp = $billings[i].callanswertime % 60}
+					{$min_tmp = intval($record.callanswertime / 60)}
+					{$sec_tmp = $record.callanswertime % 60}
 
 					{if $min_tmp}{$min_tmp}min{/if}
 					{if $sec_tmp}{$sec_tmp}s{/if}
 				</td>
 
 				<td>
-					{if $billings[i].type == $smarty.const.CALL_OUTGOING}
+					{if $record.type == $smarty.const.CALL_OUTGOING}
 						{trans("outgoing")}
-					{elseif $billings[i].type == $smarty.const.CALL_INCOMING}
+					{elseif $record.type == $smarty.const.CALL_INCOMING}
 						{trans("incoming")}
 					{/if}
 				</td>
 
 				<td nowrap>
-					{if $billings[i].status == $smarty.const.CALL_BUSY}
+					{if $record.status == $smarty.const.CALL_BUSY}
 						{trans("busy<!voip>")}
-					{elseif $billings[i].status == $smarty.const.CALL_ANSWERED}
+					{elseif $record.status == $smarty.const.CALL_ANSWERED}
 						{trans("answered")}
-					{elseif $billings[i].status == $smarty.const.CALL_NO_ANSWER}
+					{elseif $record.status == $smarty.const.CALL_NO_ANSWER}
 						{trans("no answer")}
-					{elseif $billings[i].status == $smarty.const.CALL_SERVER_FAILED}
+					{elseif $record.status == $smarty.const.CALL_SERVER_FAILED}
 						{trans("server error")}
 					{/if}
 				</td>
 
 				<td nowrap>
-					{$billings[i].price|money_format}
+					{$record.price|money_format}
 				</td>
 
 				<td align="right" class="nobr">
-					{if $billings[i].callanswertime && ($billings[i].caller_flags || $billings[i].callee_flags)}
-						<a href="?m=voipcallrecording&id={$billings[i].id}&download=1"><img src="img/save.gif"></a>
-						{documentview id="{$billings[i].id}"
+					{if $record.callanswertime && ($record.caller_flags || $record.callee_flags)}
+						<a href="?m=voipcallrecording&id={$record.id}&download=1"><img src="img/save.gif"></a>
+						{documentview id="{$record.id}"
 						              type="audio/mp3"
-						              name="{trans("ID:")} {$billings[i].id}, {trans("Date:")} {$billings[i].begintime|date_format:"%e %B %Y %H:%M:%S"}"
-	                                  url="?m=voipcallrecording&id={$billings[i].id}"
+						              name="{trans("ID:")} {$record.id}, {trans("Date:")} {$record.begintime|date_format:"%e %B %Y %H:%M:%S"}"
+	                                  url="?m=voipcallrecording&id={$record.id}"
 	                                  text="<span class=\"ui-icon ui-icon-volume-on\"></span>"}
 					{/if}
-					<a href="?m=voipaccountbillinginfo&amp;id={$billings[i].id}">
+					<a href="?m=voipaccountbillinginfo&amp;id={$record.id}">
 						<img src="img/info.gif" alt="{trans("Info")}" title="{trans("Details")}">
 					</a>
 				</td>
 			</tr>
-        {sectionelse}
+        {foreachelse}
 			<tr>
 				<td class="empty-table" colspan="{$number_of_table_columns}">
 					<p>{trans("No CDR records found in database.")}</p>
 				</td>
 			</tr>
-        {/section}
+        {/foreach}
     </tbody>
     <tfoot>
         {if $pagination->getTotal() != 0}
