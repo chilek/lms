@@ -49,6 +49,8 @@ version 27-git (????-??-??):
     of newly created helpdesk ticket ('false' by default) [chilan]
   - enhancement: more customer balance substitution symbol support in add message form [chilan]
   - improvement: 'invoices.default_printpage' default value changed to 'original' [chilan]
+  - improvement: changed default value of 'payments.delete_old_assignments_after_days' from '30'
+    to '0' [chilan]
 
 version 26.0 (2020-12-15):
 
