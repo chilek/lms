@@ -76,7 +76,7 @@
                                             {trans("Phone number:")}
                                         {/if}
                                     </td>
-                                    <td class="nobr">
+                                    <td>
                                         {foreach $voipaccountinfo['phones'] as $v}
                                             {if $v.number_index == 1 && $v@total > 1}<B>{$v.phone}</B>{else}{$v.phone}{/if}{if !$v@last}, {/if}
                                         {/foreach}
