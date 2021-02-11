@@ -169,10 +169,10 @@
 				</optgroup>
 				<optgroup label="{trans("Addresses")}">
 					<OPTION VALUE="67"{if $filter.state == 67} SELECTED{/if}>{trans("without building number")}</OPTION>
-					<OPTION VALUE="68"{if $filter.state == 68} SELECTED{/if}>{trans("without zip")}</OPTION>
 					<OPTION VALUE="69"{if $filter.state == 69} SELECTED{/if}>{trans("without city")}</OPTION>
 					<OPTION VALUE="70"{if $filter.state == 70} SELECTED{/if}>{trans("TERRIT not specified")}</OPTION>
-					<OPTION VALUE="74"{if $filter.state == 74} SELECTED{/if}>{trans("ZIP code not specified")}</OPTION>
+					<OPTION VALUE="68"{if $filter.state == 68} SELECTED{/if}>{trans("without zip (main address)")}</OPTION>
+					<OPTION VALUE="74"{if $filter.state == 74} SELECTED{/if}>{trans("without zip (other addresses)")}</OPTION>
 				</optgroup>
 			</SELECT>
 			</label>

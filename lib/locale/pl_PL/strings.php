@@ -4009,7 +4009,6 @@ $_LANG['<!enddate>- any -'] = '- dowolną -';
 $_LANG['expire in $a days'] = 'wygasną w ciągu $a dni';
 
 $_LANG['TERRIT not specified'] = 'bez TERYT';
-$_LANG['ZIP code not specified'] = 'bez kodu pocztowego';
 $_LANG['Net Device not specified'] = 'Bez urządzenia sieciowego';
 
 $_LANG['with e-invoice'] = 'z e-fakturą';
@@ -4165,7 +4164,8 @@ $_LANG['without gps coords'] = 'bez współrzędnych GPS';
 $_LANG['without invoice flag'] = 'bez flagi z fakturą';
 
 $_LANG['without building number'] = 'bez numeru budynku';
-$_LANG['without zip'] = 'bez kodu pocztowego';
+$_LANG['without zip (main address)'] = 'bez kodu pocztowego (główny adres)';
+$_LANG['without zip (other addresses)'] = 'bez kodu pocztowego (pozostałe adresy)';
 $_LANG['without city'] = 'bez miasta';
 
 $_LANG['Instant messengers'] = 'Komunikatory internetowe';

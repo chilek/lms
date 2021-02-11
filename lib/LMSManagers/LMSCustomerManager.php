@@ -918,7 +918,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     $state_conditions[] = 'EXISTS (SELECT 1
                         FROM customer_addresses ca
                         JOIN addresses a ON a.id = ca.address_id
-                        WHERE a.zip IS NULL AND ca.customer_id = c.id)';
+                        WHERE a.zip IS NULL AND ca.type <> ' . BILLING_ADDRESS . ' AND ca.customer_id = c.id)';
                     break;
                 case 75:
                     $state_conditions[] = 'EXISTS (SELECT 1 FROM assignments WHERE commited = 1 AND (vdiscount > 0 OR pdiscount > 0) AND customerid = c.id)';
