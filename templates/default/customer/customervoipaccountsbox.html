@@ -61,7 +61,7 @@
 							</div>
 							<div class="lms-ui-tab-table-column number">
 								{foreach $voipaccount.phones as $phone}
-									{$phone.phone}{if !$phone@last}<br>{/if}
+									{$phone.phone}{if !$phone@last}, {/if}
 								{/foreach}
 							</div>
 						</div>
