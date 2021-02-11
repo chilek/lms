@@ -717,7 +717,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             if (empty($reqcustid) || !$detect_customer_location_address) {
                 $address_id = null;
             } else {
-                $address_id = $LMS->CopyAddress($LMS->detectCustomerLocationAddress($reqcustid));
+                $address_id = $LMS->detectCustomerLocationAddress($reqcustid);
             }
 
             $ticket_id = $LMS->TicketAdd(array(
