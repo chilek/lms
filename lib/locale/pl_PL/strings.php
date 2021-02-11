@@ -44,6 +44,7 @@ $_LANG['customer has accepted document via sms'] = 'klient zaakceptował dokumen
 $_LANG['attached document scans with customer signature'] = 'dołączone skany dokumentów z podpisem klienta';
 
 $_LANG['Please define email address in division properties!'] = 'Proszę zdefiniować adres e-mail we właściwościach firmy!';
+$_LANG['Please select tax office in division properties!'] = 'Proszę wybrać Urząd Skarbowy we właściwościach firmy!';
 $_LANG['<!invoice>telecommunication service'] = 'usługa telekomunikacyjna';
 $_LANG['Select customer flags (optional)'] = 'Wybierz flagi klienta (opcjonalne)';
 $_LANG['related entity'] = 'podmiot powiązany';

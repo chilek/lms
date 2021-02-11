@@ -406,8 +406,13 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 				LEFT JOIN location_states ls ON ls.id = ld.stateid
 				WHERE d.id = ?", array($divisionid));
 
-        if ($jpk_type == 'vat' && $jpk_vat_version == 4 && empty($division['email'])) {
-            die(trans('Please define email address in division properties!'));
+        if ($jpk_type == 'vat' && $jpk_vat_version == 4) {
+            if (empty($division['email'])) {
+                die(trans('Please define email address in division properties!'));
+            }
+            if (empty($division['tax_office_code'])) {
+                die(trans('Please select tax office in division properties!'));
+            }
         }
 
         // JPK header
