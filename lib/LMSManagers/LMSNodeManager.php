@@ -465,6 +465,8 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         if ($count) {
             $sql .= 'SELECT COUNT(n.id) ';
         } else {
+            $daysecond = time() - strtotime('today');
+            $weekday = 1 << (date('N') - 1);
             $sql .= 'SELECT n.id AS id, n.ipaddr, inet_ntoa(n.ipaddr) AS ip, ipaddr_pub,
 				inet_ntoa(n.ipaddr_pub) AS ip_pub, n.mac, n.name, n.ownerid, n.access, n.warning,
 				n.netdev, n.lastonline, n.info, n.longitude, n.latitude, n.linktype, n.linktechnology, n.linkspeed,
@@ -481,7 +483,12 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 				(CASE WHEN lst.ident IS NULL
 					THEN (CASE WHEN c.street = \'\' THEN \'99999\' ELSE \'99998\' END)
 					ELSE lst.ident END) AS street_ident,
-				n.location_house, n.location_flat ';
+				n.location_house, n.location_flat,
+				(CASE WHEN EXISTS (
+                    SELECT 1 FROM nodelocks
+                    WHERE disabled = 0 AND (days & ' . $weekday . ') > 0 AND ' . $daysecond . ' >= fromsec
+                        AND ' . $daysecond . ' <= tosec AND nodeid = n.id
+                ) THEN 1 ELSE 0 END) AS locked ';
         }
         $sql .= 'FROM vnodes n 
 				JOIN customerview c ON (n.ownerid = c.id)

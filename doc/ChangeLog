@@ -59,6 +59,7 @@ version 27-git (????-??-??):
     by default (default value: 'false') [chilan]
   - improvement: changed default value of 'phpui.newticket_notify' from 'false' to 'true' [chilan]
   - enhancement: new node list filter - nodes with locks [chilan]
+  - improvement: show lock icon on node list when given node has active lock in schedule [chilan]
 
 version 26.0 (2020-12-15):
 
