@@ -245,7 +245,7 @@
 			{if $node.info}
 			    {icon name="info" tip=$node.info}
 			{/if}
-			{$node.name}</A>{if $node.locked}{icon name="lock" tip="<!node>locked" class="node-lock-icon"}{/if}</span>
+			{$node.name}</A>{if $node.locked}{icon name="lock" tip="<!node>lock is active" class="node-lock-icon"}{/if}</span>
 			<br>
 			<span class="nobr{if ! $node.access} blend{/if}">
 				{icon name="customer" class="fa-fw"}

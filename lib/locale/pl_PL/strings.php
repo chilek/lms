@@ -5097,3 +5097,5 @@ $_LANG['with active tariffless liabilities'] = 'z aktywnymi zobowiązaniami bezt
 $_LANG['with tariffless liabilities'] = 'z zobowiązaniami beztaryfowymi';
 
 $_LANG['with locks'] = 'z blokadami';
+
+$_LANG['<!node>lock is active'] = 'blokada jest aktywna';
