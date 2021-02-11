@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$_LANG['Week days'] = 'Dni tygodnia';
+
 $_LANG['Import configuration'] = 'Import konfiguracji';
 $_LANG['Bad file structure!'] = 'Nieprawidłowa struktura pliku!';
 
