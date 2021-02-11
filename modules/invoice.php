@@ -161,7 +161,7 @@ function try_generate_archive_invoices($ids)
 function escapeJpkText($text)
 {
     if (mb_strlen($text) != mb_strlen(htmlspecialchars($text))) {
-        return '<![CDATA[' . $text . ']]';
+        return '<![CDATA[' . $text . ']]>';
     } else {
         return $text;
     }
