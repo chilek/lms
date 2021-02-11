@@ -53,6 +53,10 @@ version 27-git (????-??-??):
     to '0' [chilan]
   - improvement: date period selector added in voip billing record list [chilan]
   - improvement: separate configuration import function to dedicated form in main menu [ravvar]
+  - improvement: 'phpui.default_show_approved_assignments' controls if only approved assignments are presented
+    by default (default value: 'true') [chilan]
+  - improvement: 'phpui.default_show_expired_assignments' controls if expired assignments are presented
+    by default (default value: 'false') [chilan]
 
 version 26.0 (2020-12-15):
 

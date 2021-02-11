@@ -350,8 +350,8 @@
 		if (documents.length <= 1) {
 			tab_elem.find('.document-filter').hide();
 		}
-		tab_elem.find('.expired').prop('checked', {if $expired}true{else}parseInt(expired_checked) == 1{/if});
-		tab_elem.find('.commited').prop('checked', {if $commited}true{else}commited_checked === null ? true : (parseInt(commited_checked) == 1){/if});
+		tab_elem.find('.expired').prop('checked', expired_checked === null ? {if $expired}true{else}false{/if} : parseInt(expired_checked) == 1);
+		tab_elem.find('.commited').prop('checked', commited_checked === null ? {if $commited}true{else}false{/if} : parseInt(commited_checked) == 1);
 
 		/*
             if (assignment_types.length <= 1 && documents.length <= 1) {

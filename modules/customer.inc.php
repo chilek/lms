@@ -58,7 +58,8 @@ if (!isset($resource_tabs['customernotes']) || $resource_tabs['customernotes']) 
 }
 
 if (!isset($resource_tabs['customerassignments']) || $resource_tabs['customerassignments']) {
-    $commited             = !empty($_GET['commited']) ? true : false;
+    $commited = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.default_show_approved_assignments', true));
+    $expired = ConfigHelper::checkConfig('phpui.default_show_expired_assignments');
     $assignments = $LMS->GetCustomerAssignments($customerid, true, false);
 }
 if (!isset($resource_tabs['customergroups']) || $resource_tabs['customergroups']) {
@@ -189,6 +190,7 @@ $SMARTY->assign(array(
     'objectid' => $customerinfo['id'],
     'aggregate_documents' => $aggregate_documents,
     'commited' => $commited,
+    'expired' => $expired,
     'allevents' => $allevents,
     'time' => $SESSION->get('addbt'),
     'taxid' => $SESSION->get('addbtax'),
