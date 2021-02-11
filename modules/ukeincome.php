@@ -92,7 +92,7 @@ $income = $DB->GetAll('
 	JOIN customers c ON c.id = cash.customerid
 	JOIN taxes t ON t.id = cash.taxid
 	WHERE cash.type = 0 AND time >= ? AND time <= ?'
-    . ($division ? ' AND ((cash.docid IS NOT NULL AND d.divisionid = ' . $division . ')
+    . ($division ? ' AND ((cash.docid IS NOT NULL AND c.divisionid = ' . $division . ')
             OR (cash.docid IS NULL AND c.divisionid = ' . $division . '))' : '')
     . ($type == 'linktechnologies' ?
         ' GROUP BY cash.linktechnology
@@ -169,7 +169,7 @@ if ($bandwidths) {
         WHERE ' . ($type == 'linktechnologies' ? 't.type = ' . SERVICE_INTERNET . ' AND cash.linktechnology IS NOT NULL' : '1=1') . '
             AND t.downceil > 0 AND t.upceil > 0
             AND cash.time >= ? AND cash.time <= ? '
-        . ($division ? ' AND ((cash.docid IS NOT NULL AND d.divisionid = ' . $division . ')
+        . ($division ? ' AND ((cash.docid IS NOT NULL AND c.divisionid = ' . $division . ')
             OR (cash.docid IS NULL AND c.divisionid = ' . $division . '))' : '') . '
         GROUP BY ' . ($type == 'linktechnologies' ? 'cash.linktechnology' : 't.type') . ', t.downceil
         ORDER BY ' . ($type == 'linktechnologies' ? 'cash.linktechnology' : 't.type'),
