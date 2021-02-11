@@ -5094,3 +5094,5 @@ $_LANG['system messages'] = 'wiadomości systemowe';
 
 $_LANG['with active tariffless liabilities'] = 'z aktywnymi zobowiązaniami beztaryfowymi';
 $_LANG['with tariffless liabilities'] = 'z zobowiązaniami beztaryfowymi';
+
+$_LANG['with locks'] = 'z blokadami';
