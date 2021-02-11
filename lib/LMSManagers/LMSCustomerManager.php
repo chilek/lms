@@ -1458,6 +1458,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     {
         $type = strtolower($type);
 
+        $daysecond = time() - strtotime('today');
+        $weekday = 1 << (date('N') - 1);
+
         $result = $this->db->GetAll("SELECT
                                         n.id, n.name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, n.netdev, nd.name as netdev_name,
                                         n.linktype, n.linktechnology, n.linkspeed,
@@ -1467,7 +1470,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                         (SELECT COUNT(*)
                                         FROM nodegroupassignments
                                         WHERE nodeid = n.id) AS gcount,
-                                        n.netid, net.name AS netname
+                                        n.netid, net.name AS netname,
+                                        (CASE WHEN EXISTS (
+                                            SELECT 1 FROM nodelocks
+                                            WHERE disabled = 0 AND (days & " . $weekday . ") > 0 AND " . $daysecond . " >= fromsec
+                                                AND " . $daysecond . " <= tosec AND nodeid = n.id
+                                        ) THEN 1 ELSE 0 END) AS locked
                                      FROM
                                         vnodes n
                                      LEFT JOIN addresses addr ON addr.id = n.address_id

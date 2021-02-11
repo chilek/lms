@@ -85,6 +85,7 @@
 								<i class="lms-ui-icon-nodeunk"></i>
 							{/if}
 							<strong>{$node.name}</strong>
+							{if $node.locked}{icon name="lock" tip="<!node>lock is active" class="node-lock-icon"}{/if}
 							{if isset($nodeassignments[$node.id])}
 								({foreach $nodeassignments[$node.id] as $assignment}<a href="?m=customerassignmentedit&id={$assignment.id}"><span
 										class="{if ($assignment.dateto < $today && $assignment.dateto) || ($assignment.liabilityid && $assignment.at < $today && $assignment.at > 365)} blend{elseif ($assignment.datefrom > $today && $assignment.datefrom && $assignment.period) && !($assignment.suspended)} alertblend{elseif ($assignment.suspended)}suspended{/if}
