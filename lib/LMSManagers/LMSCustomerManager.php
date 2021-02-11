@@ -887,7 +887,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     $state_conditions[] = 'NOT EXISTS (SELECT 1 FROM nodes WHERE ownerid = c.id)';
                     break;
                 case 66:
-                    $state_conditions[] = 'EXISTS (SELECT 1 FROM assignments WHERE invoice = 0 AND commited = 1 WHERE customerid = c.id)';
+                    $state_conditions[] = 'EXISTS (SELECT 1 FROM assignments WHERE invoice = 0 AND commited = 1 AND customerid = c.id)';
                     break;
                 case 67:
                     $state_conditions[] = 'c.building IS NULL';
