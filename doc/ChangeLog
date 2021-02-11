@@ -57,6 +57,7 @@ version 27-git (????-??-??):
     by default (default value: 'true') [chilan]
   - improvement: 'phpui.default_show_expired_assignments' controls if expired assignments are presented
     by default (default value: 'false') [chilan]
+  - improvement: changed default value of 'phpui.newticket_notify' from 'false' to 'true' [chilan]
 
 version 26.0 (2020-12-15):
 
