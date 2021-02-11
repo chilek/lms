@@ -58,7 +58,7 @@ if (!isset($resource_tabs['customernotes']) || $resource_tabs['customernotes']) 
 }
 
 if (!isset($resource_tabs['customerassignments']) || $resource_tabs['customerassignments']) {
-    $commited = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.default_show_approved_assignments', true));
+    $commited = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.default_show_approved_assignments_only', true));
     $expired = ConfigHelper::checkConfig('phpui.default_show_expired_assignments');
     $assignments = $LMS->GetCustomerAssignments($customerid, true, false);
 }
