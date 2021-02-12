@@ -1516,7 +1516,9 @@ CREATE INDEX nodes_authtype_idx ON nodes (authtype);
 /* --------------------------------------------------------
   Structure of table "routednetworks"
 -------------------------------------------------------- */
+DROP SEQUENCE IF EXISTS routednetworks_id_seq;
 CREATE SEQUENCE routednetworks_id_seq;
+DROP TABLE IF EXISTS routednetworks;
 CREATE TABLE routednetworks (
     id integer DEFAULT nextval('routednetworks_id_seq'::text) NOT NULL,
     nodeid integer NOT NULL
@@ -3346,7 +3348,7 @@ CREATE VIEW vallusers AS
 SELECT *, (firstname || ' ' || lastname) AS name, (lastname || ' ' || firstname) AS rname
 FROM users;
 
-CREATE FUNCTION customerbalances_update()
+CREATE OR REPLACE FUNCTION customerbalances_update()
     RETURNS trigger
     LANGUAGE plpgsql
 AS $$
