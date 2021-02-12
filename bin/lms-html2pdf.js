@@ -15,39 +15,41 @@ program
     .option("-w, --wait-until <load|domcontentloaded|networkidle0|networkidle2>", "wait for specified event in web browser", "load")
     .parse(process.argv);
 
+var options = program.opts();
+
 var url = null;
-if (program.inFile) {
-    if (program.inFile.match(/^file:/) || !program.inFile.match(/^https?:/)) {
-        var inFile = program.inFile.replace(/^file:/g, '');
+if (options.inFile) {
+    if (options.inFile.match(/^file:/) || !options.inFile.match(/^https?:/)) {
+        var inFile = options.inFile.replace(/^file:/g, '');
         if (!fs.existsSync(inFile)) {
             console.error(`File ${inFile} does not exist!`);
             process.exit(1);
         }
         url = "file:" + inFile;
     } else {
-        url = program.inFile;
+        url = options.inFile;
     }
 }
 
-var outFile = program.outFile ? program.outFile : null;
+var outFile = options.outFile ? options.outFile : null;
 
-if (["Letter", "Legal", "Tabloid", "Ledger", "A0", "A1", "A2", "A3", "A4", "A5", "A6"].lastIndexOf(program.format) == -1) {
+if (["Letter", "Legal", "Tabloid", "Ledger", "A0", "A1", "A2", "A3", "A4", "A5", "A6"].lastIndexOf(options.format) == -1) {
     console.error('Invalid format value!');
     process.exit(1);
 }
 
-if (["portrait", "landscape"].lastIndexOf(program.orientation) == -1) {
+if (["portrait", "landscape"].lastIndexOf(options.orientation) == -1) {
     console.error('Invalid orientation value!');
     process.exit(1);
 }
-var landscape = program.orientation === "landscape";
+var landscape = options.orientation === "landscape";
 
-if (["print", "screen", "null"].lastIndexOf(program.mediaType) == -1) {
+if (["print", "screen", "null"].lastIndexOf(options.mediaType) == -1) {
     console.error("Invalid media type!");
     process.exit(1);
 }
 
-if (["load", "domcontentloaded", "networkidle0", "networkidle2"].lastIndexOf(program.waitUntil) == -1) {
+if (["load", "domcontentloaded", "networkidle0", "networkidle2"].lastIndexOf(options.waitUntil) == -1) {
     console.error("Invalid wait until value!");
     process.exit(1);
 }
@@ -62,22 +64,22 @@ async function readStream(stream) {
     });
 }
 
-(async () => {
+(async (options) => {
     try {
         const browser = await puppeteer.connect({
             browserURL: "http://127.0.0.1:9222"
         });
 
         const page = await browser.newPage();
-        await page.emulateMediaType(program.mediaType);
+        await page.emulateMediaType(options.mediaType);
         if (url) {
-            await page.goto(url, {waitUntil: program.waitUntil});
+            await page.goto(url, {waitUntil: options.waitUntil});
         } else {
             const content = await readStream(process.stdin);
-            await page.setContent(content, {waitUntil: program.waitUntil});
+            await page.setContent(content, {waitUntil: options.waitUntil});
         }
         var options = {
-            format: program.format,
+            format: options.format,
             landscape: landscape,
             printBackground: true
         }
@@ -96,4 +98,4 @@ async function readStream(stream) {
         console.error(err);
         process.exit(1);
     }
-})();
+})(options);
