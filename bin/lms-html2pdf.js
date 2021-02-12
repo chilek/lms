@@ -78,15 +78,15 @@ async function readStream(stream) {
             const content = await readStream(process.stdin);
             await page.setContent(content, {waitUntil: options.waitUntil});
         }
-        var options = {
+        var opts = {
             format: options.format,
             landscape: landscape,
             printBackground: true
         }
         if (outFile) {
-            options.path = outFile;
+            opts.path = outFile;
         }
-        const pdf = await page.pdf(options);
+        const pdf = await page.pdf(opts);
         await page.close();
 
         await browser.disconnect();
