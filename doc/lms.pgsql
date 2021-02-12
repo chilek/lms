@@ -262,6 +262,7 @@ CREATE TABLE divisions (
 	bank        varchar(100)    DEFAULT NULL,
 	account		varchar(48) 	NOT NULL DEFAULT '',
     email varchar(255)          DEFAULT NULL,
+    phone varchar(255) DEFAULT NULL,
 	inv_header 	text		NOT NULL DEFAULT '',
 	inv_footer 	text		NOT NULL DEFAULT '',
 	inv_author	text		NOT NULL DEFAULT '',
@@ -3991,6 +3992,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021020301');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021021200');
 
 COMMIT;
