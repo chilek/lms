@@ -320,6 +320,7 @@ CREATE TABLE customers (
 );
 CREATE INDEX customers_lastname_idx ON customers (lastname, name);
 
+DROP TABLE IF EXISTS customerconsents;
 CREATE TABLE customerconsents (
     customerid integer NOT NULL
         CONSTRAINT customerconsents_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -350,7 +351,9 @@ CREATE TABLE customernotes (
 /* --------------------------------------------------------
   Structure of table "customerkarmalastchanges" (customerkarmalastchanges)
 -------------------------------------------------------- */
+DROP SEQUENCE IF EXISTS customerkarmalastchanges_id_seq;
 CREATE SEQUENCE customerkarmalastchanges_id_seq;
+DROP TABLE IF EXISTS customerkarmalastchanges;
 CREATE TABLE customerkarmalastchanges (
     id integer NOT NULL DEFAULT nextval('customerkarmalastchanges_id_seq'::text),
     timestamp integer NOT NULL,
@@ -1119,6 +1122,7 @@ CREATE INDEX cashimport_sourceid_idx ON cashimport (sourceid);
 /* ---------------------------------------------------
  Structure of table customerbalances
 ------------------------------------------------------*/
+DROP TABLE IF EXISTS customerbalances;
 CREATE TABLE customerbalances (
     customerid integer NOT NULL
         CONSTRAINT customerbalances_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
