@@ -1241,6 +1241,53 @@ CREATE TABLE hosts (
     UNIQUE (name)
 );
 
+/* ---------------------------------------------------
+ Structure of table "invprojects"
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS invprojects_id_seq;
+CREATE SEQUENCE invprojects_id_seq;
+DROP TABLE IF EXISTS invprojects CASCADE;
+CREATE TABLE invprojects (
+	id integer DEFAULT nextval('invprojects_id_seq'::text) NOT NULL,
+	name varchar(255) NOT NULL,
+	type smallint DEFAULT 0,
+	divisionid integer DEFAULT NULL
+		REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	PRIMARY KEY(id)
+);
+
+/* ---------------------------------------------------
+ Structure of table "netnodes"
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS netnodes_id_seq;
+CREATE SEQUENCE netnodes_id_seq;
+DROP TABLE IF EXISTS netnodes CASCADE;
+CREATE TABLE netnodes (
+	id integer DEFAULT nextval('netnodes_id_seq'::text) NOT NULL,
+	name varchar(255) NOT NULL,
+	type smallint DEFAULT 0,
+	invprojectid integer
+		REFERENCES invprojects (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	status smallint DEFAULT 0,
+	longitude numeric(10,6) DEFAULT NULL,
+	latitude numeric(10,6) DEFAULT NULL,
+	ownership smallint DEFAULT 0,
+	coowner varchar(255) DEFAULT '',
+	uip smallint DEFAULT 0,
+	miar smallint DEFAULT 0,
+	createtime integer,
+	lastinspectiontime integer DEFAULT NULL,
+	admcontact text DEFAULT NULL,
+	divisionid integer
+		REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	address_id integer
+		REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	info text DEFAULT NULL,
+	ownerid integer DEFAULT NULL
+		CONSTRAINT netnodes_ownerid_fkey REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	PRIMARY KEY(id)
+);
+
 /* --------------------------------------------------------
 Structure of table "vlans"
 -------------------------------------------------------- */
@@ -1294,53 +1341,6 @@ CREATE TABLE networks (
 	CONSTRAINT networks_address_key UNIQUE (address, hostid)
 );
 CREATE INDEX networks_hostid_idx ON networks (hostid);
-
-/* ---------------------------------------------------
- Structure of table "invprojects"
-------------------------------------------------------*/
-DROP SEQUENCE IF EXISTS invprojects_id_seq;
-CREATE SEQUENCE invprojects_id_seq;
-DROP TABLE IF EXISTS invprojects CASCADE;
-CREATE TABLE invprojects (
-	id integer DEFAULT nextval('invprojects_id_seq'::text) NOT NULL,
-	name varchar(255) NOT NULL,
-	type smallint DEFAULT 0,
-        divisionid integer DEFAULT NULL
-                REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	PRIMARY KEY(id)
-);
-
-/* ---------------------------------------------------
- Structure of table "netnodes"
-------------------------------------------------------*/
-DROP SEQUENCE IF EXISTS netnodes_id_seq;
-CREATE SEQUENCE netnodes_id_seq;
-DROP TABLE IF EXISTS netnodes CASCADE;
-CREATE TABLE netnodes (
-	id integer DEFAULT nextval('netnodes_id_seq'::text) NOT NULL,
-	name varchar(255) NOT NULL,
-	type smallint DEFAULT 0,
-	invprojectid integer
-		REFERENCES invprojects (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	status smallint DEFAULT 0,
-	longitude numeric(10,6) DEFAULT NULL,
-	latitude numeric(10,6) DEFAULT NULL,
-	ownership smallint DEFAULT 0,
-	coowner varchar(255) DEFAULT '',
-	uip smallint DEFAULT 0,
-	miar smallint DEFAULT 0,
-	createtime integer,
-	lastinspectiontime integer DEFAULT NULL,
-	admcontact text DEFAULT NULL,
-	divisionid integer
-		REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	address_id integer
-		REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	info text DEFAULT NULL,
-	ownerid integer DEFAULT NULL
-		CONSTRAINT netnodes_ownerid_fkey REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	PRIMARY KEY(id)
-);
 
 /* ---------------------------------------------------
  Structure of table "netdeviceproducers"
