@@ -23,17 +23,19 @@
 
 $this->BeginTrans();
 
-$this->Execute("DROP VIEW vdivisions");
+if (!$this->ResourceExists('divisions.phone', LMSDB::RESOURCE_TYPE_COLUMN)) {
+    $this->Execute("DROP VIEW vdivisions");
 
-$this->Execute("ALTER TABLE divisions ADD COLUMN phone varchar(255) DEFAULT NULL");
+    $this->Execute("ALTER TABLE divisions ADD COLUMN phone varchar(255) DEFAULT NULL");
 
-$this->Execute("
-    CREATE VIEW vdivisions AS
-        SELECT d.*,
-            a.country_id as countryid, a.ccode, a.zip as zip, a.city as city, a.address
-        FROM divisions d
-            JOIN vaddresses a ON a.id = d.address_id
-");
+    $this->Execute("
+        CREATE VIEW vdivisions AS
+            SELECT d.*,
+                a.country_id as countryid, a.ccode, a.zip as zip, a.city as city, a.address
+            FROM divisions d
+                JOIN vaddresses a ON a.id = d.address_id
+    ");
+}
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021021200', 'dbversion'));
 
