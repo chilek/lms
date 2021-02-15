@@ -5101,3 +5101,10 @@ $_LANG['with tariffless liabilities'] = 'z zobowiązaniami beztaryfowymi';
 $_LANG['with locks'] = 'z blokadami';
 
 $_LANG['<!node>lock is active'] = 'blokada jest aktywna';
+
+$_LANG['Assignments colors markings'] = 'Legenda oznaczeń';
+$_LANG['Active assignment'] = 'Zobowiązanie aktywne';
+$_LANG['Suspended assignment'] = 'Zobowiązanie zawieszone';
+$_LANG['Future assignment'] = 'Zobowiązanie przyszłe';
+$_LANG['Expired assignment'] = 'Zobowiązanie przeterminowane';
+$_LANG['Assignment from not approved document'] = 'Zobowiązanie z niezatwierdzonego dokumentu';
