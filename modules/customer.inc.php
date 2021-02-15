@@ -142,12 +142,12 @@ if (!isset($resource_tabs['customernetworksbox']) || $resource_tabs['customernet
 $userid = Auth::GetCurrentUser();
 $user_permission_checks = ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks');
 $customerstats = array(
-    'tickets' => $DB->GetRow('SELECT COUNT(*) AS "all", SUM(CASE WHEN state < ? THEN 1 ELSE 0 END) AS notresolved
+    'tickets' => $DB->GetRow('SELECT COUNT(*) AS "all", SUM(CASE WHEN state NOT IN ? THEN 1 ELSE 0 END) AS notresolved
 		FROM rttickets t
 		LEFT JOIN rtrights r ON r.queueid = t.queueid AND r.userid = ?
 		WHERE (r.queueid IS NOT NULL' . ($user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid : '') . ')'
         . (!ConfigHelper::checkConfig('privileges.superuser') ? ' AND t.deleted = 0': '')
-        . ' AND customerid = ' . intval($customerid), array(RT_RESOLVED, $userid)),
+        . ' AND customerid = ' . intval($customerid), array(array(RT_RESOLVED, RT_DEAD), $userid)),
     'domains' => $DB->GetOne('SELECT COUNT(*) FROM domains WHERE ownerid = ?', array($customerid)),
     'accounts' => $DB->GetOne('SELECT COUNT(*) FROM passwd WHERE ownerid = ?', array($customerid))
 );
