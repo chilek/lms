@@ -35,8 +35,8 @@ if (!$this->ResourceExists('divisions.phone', LMSDB::RESOURCE_TYPE_COLUMN)) {
             FROM divisions d
                 JOIN vaddresses a ON a.id = d.address_id;
     ");
-
-    $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021021200', 'dbversion'));
 }
+
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021021200', 'dbversion'));
 
 $this->CommitTrans();
