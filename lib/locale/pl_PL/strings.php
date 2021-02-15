@@ -5103,7 +5103,8 @@ $_LANG['with locks'] = 'z blokadami';
 $_LANG['<!node>lock is active'] = 'blokada jest aktywna';
 
 $_LANG['Assignments colors markings'] = 'Legenda oznaczeń';
-$_LANG['Active assignment'] = 'Zobowiązanie aktywne';
+$_LANG['Active tariff assignment'] = 'Zobowiązanie taryfowe aktywne';
+$_LANG['Active tariffless assignment'] = 'Zobowiązanie beztaryfowe aktywne';
 $_LANG['Suspended assignment'] = 'Zobowiązanie zawieszone';
 $_LANG['Future assignment'] = 'Zobowiązanie przyszłe';
 $_LANG['Expired assignment'] = 'Zobowiązanie przeterminowane';
