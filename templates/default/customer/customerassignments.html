@@ -44,7 +44,19 @@
 				<input type="checkbox" class="commited" value="1"{if $commited} checked{/if}>
 			</label>
 			<a class="clear-filter lms-ui-button" href="#"><i class="lms-ui-icon-delete"></i></a>
-			{button type="link" icon="tiphelp" tip="<strong>{trans("Assignments colors markings")}:</strong><br><br><span style='color:maroon'><strong>{trans("Active tariff assignment")}</strong></span><br><strong>{trans("Active tariffless assignment")}</strong><br><span class='suspended'><strong>{trans("Suspended assignment")}</strong></span><br><span class='alertblend'><strong>{trans("Future assignment")}</strong></span><br><span class='blend'><strong>{trans("Expired assignment")}</strong></span><br><span class='lms-ui-assignment-not-commited'><strong>{trans("Assignment from not approved document")}</strong></span>" href=""}
+			{button type="link" icon="tiphelp" tip="<strong>{trans("Assignments colors markings")}:</strong>
+			<br><br>
+			<span style='color:maroon'><strong>{trans("Active tariff assignment")}</strong></span>
+			<br>
+			<strong>{trans("Active tariffless assignment")}</strong>
+			<br>
+			<span class='suspended'><strong>{trans("Suspended assignment")}</strong></span>
+			<br>
+			<span class='alertblend'><strong>{trans("Future assignment")}</strong></span>
+			<br>
+			<span class='blend'><strong>{trans("Expired assignment")}</strong></span>
+			<br>
+			<span class='lms-ui-assignment-not-commited'><strong>{trans("Assignment from not approved document")}</strong></span>" href=""}
 		{/tab_header_cell}
 		{tab_header_cell}
 			{if !$customerinfo.deleted}
