@@ -33,10 +33,6 @@ include(MODULES_DIR . DIRECTORY_SEPARATOR . 'document.inc.php');
 if (isset($_POST['document'])) {
     $document = $_POST['document'];
 
-    $oldfromdate = $document['fromdate'];
-    $oldtodate = $document['todate'];
-    $oldconfirmdate = $document['confirmdate'];
-
     $document['customerid'] = isset($_POST['customerid']) ? intval($_POST['customerid']) : intval($_POST['customer']);
 
     if (!$LMS->CustomerExists(intval($document['customerid']))) {
@@ -53,74 +49,68 @@ if (isset($_POST['document'])) {
     }
 
     // check if selected customer can use selected numberplan
-    if ($document['numberplanid'] && $document['customerid']
-            && !$DB->GetOne('SELECT 1 FROM numberplanassignments
-	                WHERE planid = ? AND divisionid IN (SELECT divisionid
-				FROM customers WHERE id = ?)', array($document['numberplanid'], $document['customerid']))) {
-        $error['number'] = trans('Selected numbering plan doesn\'t match customer\'s division!');
-    } elseif ($document['number'] == '') {
-    // check number
-        $tmp = $LMS->GetNewDocumentNumber(array(
-            'doctype' => $document['type'],
-            'planid' => $document['numberplanid'],
-            'customerid' => $document['customerid'],
-        ));
-        $document['number'] = $tmp ? $tmp : 0;
-        $autonumber = true;
-    } elseif (!preg_match('/^[0-9]+$/', $document['number'])) {
-        $error['number'] = trans('Document number must be an integer!');
-    } elseif ($LMS->DocumentExists(array(
+    if ($document['numberplanid'] && $document['customerid']) {
+        if (!$DB->GetOne('SELECT 1 FROM numberplanassignments
+                WHERE planid = ? AND divisionid IN (SELECT divisionid
+            FROM customers WHERE id = ?)', array($document['numberplanid'], $document['customerid']))) {
+            $error['number'] = trans('Selected numbering plan doesn\'t match customer\'s division!');
+        } elseif (!$LMS->checkNumberPlanAccess($document['numberplanid'])) {
+            $error['numberplanid'] = trans('Permission denied!');
+        }
+    }
+
+    if (!$error) {
+        if ($document['number'] == '') {
+            // check number
+            $tmp = $LMS->GetNewDocumentNumber(array(
+                'doctype' => $document['type'],
+                'planid' => $document['numberplanid'],
+                'customerid' => $document['customerid'],
+            ));
+            $document['number'] = $tmp ? $tmp : 0;
+            $autonumber = true;
+        } elseif (!preg_match('/^[0-9]+$/', $document['number'])) {
+            $error['number'] = trans('Document number must be an integer!');
+        } elseif ($LMS->DocumentExists(array(
             'number' => $document['number'],
             'doctype' => $document['type'],
             'planid' => $document['numberplanid'],
             'customerid' => $document['customerid'],
         ))) {
-        $error['number'] = trans('Document with specified number exists!');
+            $error['number'] = trans('Document with specified number exists!');
+        }
     }
 
-    if ($document['fromdate']) {
-        $date = explode('/', $document['fromdate']);
-        if (checkdate($date[1], $date[2], $date[0])) {
-            $document['fromdate'] = mktime(0, 0, 0, $date[1], $date[2], $date[0]);
-        } else {
-            $error['fromdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
-        }
-    } else {
+    if (empty($document['fromdate'])) {
         $document['fromdate'] = 0;
+    } elseif (!preg_match('/^[0-9]+$/', $document['fromdate'])) {
+        $error['fromdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
     }
 
-    if ($document['todate']) {
-        $date = explode('/', $document['todate']);
-        if (checkdate($date[1], $date[2], $date[0])) {
-            $document['todate'] = mktime(23, 59, 59, $date[1], $date[2], $date[0]);
-        } else {
-            $error['todate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
-        }
-    } else {
+    if (empty($document['todate'])) {
         $document['todate'] = 0;
+    } elseif (!preg_match('/^[0-9]+$/', $document['todate'])) {
+        $error['todate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+    } else {
+        $document['todate'] += 86399;
     }
 
     if ($document['fromdate'] > $document['todate'] && $document['todate'] != 0) {
         $error['todate'] = trans('Start date can\'t be greater than end date!');
     }
 
-    if ($document['confirmdate'] && !isset($document['closed'])) {
-        $date = explode('/', $document['confirmdate']);
-        if (checkdate($date[1], $date[2], $date[0])) {
-            $document['confirmdate'] = mktime(0, 0, 0, $date[1], $date[2], $date[0]);
-        } else {
-            $error['confirmdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
-        }
-    } else {
+    if (empty($document['confirmdate'])) {
         $document['confirmdate'] = 0;
+    } elseif (!preg_match('/^[0-9]+$/', $document['confirmdate']) && !isset($document['closed'])) {
+        $error['confirmdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
     }
 
     // validate tariff selection list when promotions are active only
     if (isset($document['assignment']) && !empty($document['assignment']['schemaid'])) {
         // validate selected promotion schema properties
         $selected_assignment = $document['assignment'];
-        $selected_assignment['datefrom'] = $oldfromdate;
-        $selected_assignment['dateto'] = $oldtodate;
+        $selected_assignment['datefrom'] = $document['fromdate'];
+        $selected_assignment['dateto'] = $document['todate'];
 
         $result = $LMS->ValidateAssignment($selected_assignment);
         extract($result);
@@ -140,6 +130,13 @@ if (isset($_POST['document'])) {
 				WHERE id = ?', array($document['reference']));
         }
         $SMARTY->assignByRef('document', $document);
+
+        $fullnumber = docnumber(array(
+            'number' => $document['number'],
+            'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($document['numberplanid'])),
+            'cdate' => time(),
+            'customerid' => $document['customerid'],
+        ));
 
         if ($document['templ']) {
             foreach ($documents_dirs as $doc) {
@@ -176,6 +173,10 @@ if (isset($_POST['document'])) {
                 $engine,
                 isset($document['attachments']) ? $document['attachments'] : array()
             ));
+
+            $barcode = new \Com\Tecnick\Barcode\Barcode();
+            $bobj = $barcode->getBarcodeObj('C128', iconv('UTF-8', 'ASCII//TRANSLIT', $fullnumber), -1, -30, 'black');
+            $document['barcode'] = base64_encode($bobj->getPngData());
 
             // run template engine
             if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
@@ -255,13 +256,6 @@ if (isset($_POST['document'])) {
         $DB->BeginTrans();
 
         $division = $LMS->GetDivision($customer['divisionid']);
-
-        $fullnumber = docnumber(array(
-            'number' => $document['number'],
-            'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($document['numberplanid'])),
-            'cdate' => $time,
-            'customerid' => $document['customerid'],
-        ));
 
         // if document will not be closed now we should store commit flags in documents table
         // to allow restore commit flags later during document close process
@@ -360,10 +354,12 @@ if (isset($_POST['document'])) {
                 $selected_assignment['period'] = $period;
                 $selected_assignment['at'] = $at;
                 $selected_assignment['commited'] = isset($document['closed']) ? 1 : 0;
+                $selected_assignment['align-periods'] = isset($document['assignment']['align-periods']);
 
                 if (is_array($selected_assignment['sassignmentid'][$schemaid])) {
                     $modifiedvalues = $selected_assignment['values'][$schemaid];
                     $counts = $selected_assignment['counts'][$schemaid];
+                    $backwardperiods = $selected_assignment['backwardperiods'][$schemaid];
                     $copy_a = $selected_assignment;
                     $snodes = $selected_assignment['snodes'][$schemaid];
                     $sphones = $selected_assignment['sphones'][$schemaid];
@@ -376,6 +372,7 @@ if (isset($_POST['document'])) {
                         $copy_a['promotionassignmentid'] = $v;
                         $copy_a['modifiedvalues'] = isset($modifiedvalues[$label][$v]) ? $modifiedvalues[$label][$v] : array();
                         $copy_a['count'] = $counts[$label];
+                        $copy_a['backwardperiod'] = $backwardperiods[$label][$v];
                         $copy_a['nodes'] = $snodes[$label];
                         $copy_a['phones'] = $sphones[$label];
                         $tariffid = $LMS->AddAssignment($copy_a);
@@ -385,6 +382,11 @@ if (isset($_POST['document'])) {
         }
 
         $DB->CommitTrans();
+
+        if ($LMS->DocumentExists($docid) && !empty($document['confirmdate'])) {
+            $document['id'] = $docid;
+            $LMS->NewDocumentCustomerNotifications($document);
+        }
 
         if (!isset($document['reuse'])) {
             if (isset($_GET['print'])) {
@@ -400,9 +402,6 @@ if (isset($_POST['document'])) {
         unset($document['fromdate']);
         unset($document['todate']);
     } else {
-        $document['fromdate'] = $oldfromdate;
-        $document['todate'] = $oldtodate;
-        $document['confirmdate'] = $oldconfirmdate;
         if (isset($autonumber)) {
             $document['number'] = '';
         }
@@ -427,6 +426,8 @@ if (isset($_POST['document'])) {
             $document['assignment']['settlement'] = 1;
         }
     }
+    $document['assignment']['last-settlement'] = ConfigHelper::checkConfig('phpui.default_assignment_last_settlement');
+    $document['assignment']['align-periods'] = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.default_assignment_align_periods', true));
     $default_assignment_period = ConfigHelper::getConfig('phpui.default_assignment_period');
     if (!empty($default_assignment_period)) {
         $document['assignment']['period'] = $default_assignment_period;
@@ -438,6 +439,19 @@ if (isset($_POST['document'])) {
 
     $document['assignment']['check_all_terminals'] =
         ConfigHelper::checkConfig('phpui.promotion_schema_all_terminal_check');
+
+    $default_existing_assignment_operation = ConfigHelper::getConfig('phpui.default_existing_assignment_operation', 'keep');
+    $existing_assignment_operation_map = array(
+        'keep' => EXISTINGASSIGNMENT_KEEP,
+        'suspend' => EXISTINGASSIGNMENT_SUSPEND,
+        'cut' => EXISTINGASSIGNMENT_CUT,
+        'delete' => EXISTINGASSIGNMENT_DELETE,
+    );
+    if (isset($existing_assignment_operation_map[$default_existing_assignment_operation])) {
+        $document['assignment']['existing_assignments']['operation'] = $existing_assignment_operation_map[$default_existing_assignment_operation];
+    } else {
+        $document['assignment']['existing_assignments']['operation'] = EXISTINGASSIGNMENT_KEEP;
+    }
 }
 
 $SMARTY->setDefaultResourceType('extendsall');

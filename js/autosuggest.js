@@ -20,12 +20,15 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 		this.uri = form.uri;
 		this.formData = form.hasOwnProperty('formData') ? form.formData : {};
 		this.autosubmit = form.hasOwnProperty('autosubmit') && (form.autosubmit == 1 || form.autosubmit == 'true');
+		this.autoSubmitForm = !form.hasOwnProperty('autoSubmitForm') || form.autoSubmitForm == 1 || form.autoSubmitForm == 'true';
 		this.onSubmit = form.hasOwnProperty('onSubmit') ? form.onSubmit : null;
 		this.onLoad = form.hasOwnProperty('onLoad') ? form.onLoad : null;
 		this.onAjax = form.hasOwnProperty('onAjax') ? form.onAjax : '';
 		this.class = form.hasOwnProperty('class') ? form.class : '';
 		this.emptyValue = form.hasOwnProperty('emptyValue') && (form.emptyValue == 1 || form.emptyValue || form.emptyValue == 'true');
 		this.suggestionContainer = form.hasOwnProperty('suggestionContainer') ? form.suggestionContainer : '#autosuggest';
+		this.activeDescription = form.hasOwnProperty('activeDescription') ? form.activeDescription : false;
+		this.suggestMaxLength = form.hasOwnProperty('suggestMaxLength') ? parseInt(form.suggestMaxLength) : AUTOSUGGEST_MAX_LENGTH;
 	} else {
 		//A reference to the element we're binding the list to.
 		this.elem = elem;
@@ -34,10 +37,13 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 		this.uri = uri;
 		this.formData = {};
 		this.autosubmit = (typeof(autosubmit) !== 'undefined' && (autosubmit == 1 || autosubmit == 'true'));
+		this.autoSubmitForm = true;
 		this.onSubmit = onSubmit;
 		this.onLoad = onLoad;
 		this.class = '';
 		this.suggestionContainer = '#autosuggest';
+		this.activeDescription = false;
+		this.suggestMaxLength = AUTOSUGGEST_MAX_LENGTH;
 	}
 	this.class = 'lms-ui-suggestion-container ' + this.class;
 
@@ -123,6 +129,9 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 			case RET:
 				clearTimeout(me.timer);
 				me.useSuggestion();
+				if (!me.autoSubmitForm) {
+					ev.preventDefault();
+				}
 			break;
 
 			case TAB:
@@ -236,18 +245,22 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 			setTimeout(function() {
 				$(me.elem).focus();
 			},0);
-			//Same applies to Enter key.
-			this.form.onsubmit = function () { return false; };
-			setTimeout(function() {
-				me.form.onsubmit = function() {
-					return true;
-				}
-			}, 10);
+			if (typeof(this.onSubmit) != 'function') {
+				//Same applies to Enter key.
+				this.form.onsubmit = function () {
+					return false;
+				};
+				setTimeout(function () {
+					me.form.onsubmit = function () {
+						return true;
+					}
+				}, 10);
+			}
 			//Go to search results.
 			if (this.autosubmit) {
 				location.href = gotothisuri;
 			}
-			if (this.onSubmit) {
+			if (typeof(this.onSubmit) == 'function') {
 				(this.onSubmit)(submit_data);
 			}
 		}
@@ -314,25 +327,25 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 	this.createDiv = function() {
 		var ul = $('<ul class="lms-ui-suggestion-list" />').get(0);
 
-		function onClick() {
-			me.useSuggestion();
-		}
-
 		//Create an array of LI's for the words.
 		$.each(this.suggestions, function(i, elem) {
+			var icon = elem.hasOwnProperty('icon') ? elem.icon : null;
 			var name = elem.name;
+			var effectiveName = elem.hasOwnProperty('name_alternative') ? elem.name_alternative : escapeHtml(elem.name);
 			var name_class = elem.name_class;
 			var desc = elem.description ? elem.description : '';
 			var desc_class = elem.description_class;
 			var action = elem.action ? elem.action : '';
 			var tip = elem.hasOwnProperty('tip') ? elem.tip : null;
 
-			var name_elem = $('<div class="lms-ui-suggestion-name ' + name_class +'" />').get(0);
-			var desc_elem = $('<div class="lms-ui-suggestion-description ' + desc_class + '">' + desc + '</div>').get(0);
+			var name_elem = $('<div class="lms-ui-suggestion-name ' + name_class + '" />').get(0);
+			var desc_elem = $('<div class="lms-ui-suggestion-description ' + desc_class + '">' +
+				(me.activeDescription && action ? '<a href="' + action + '">' : '') + desc + (me.activeDescription && action ? '</a>' : '') + '</div>').get(0);
 			var li = $('<li class="lms-ui-suggestion-item" />').attr('title', tip).get(0);
 
-			name_elem.innerHTML = name.length > AUTOSUGGEST_MAX_LENGTH ?
-				name.substring(0, AUTOSUGGEST_MAX_LENGTH) + " ..." : name;
+			var unescapedEffectiveName = unescapeHtml(effectiveName);
+			name_elem.innerHTML = (icon ? '<i class="' + icon + '"></i>' : '') + (me.suggestMaxLength && unescapedEffectiveName.length > me.suggestMaxLength ?
+				escapeHtml(unescapedEffectiveName.substring(0, me.suggestMaxLength)) + " ..." : effectiveName);
 
 			if (action && !me.autosubmit && !me.onSubmit) {
 				var a = $('<a href="' + action + '"/>').get(0);
@@ -343,7 +356,6 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 				li.appendChild(name_elem);
 				li.appendChild(desc_elem);
 			}
-			li.onclick = onClick;
 
 			if (me.highlighted == i) {
 				$(li).addClass('selected');
@@ -352,7 +364,9 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 			ul.appendChild(li);
 		});
 
-		$(ul).appendTo($(this.div).empty());
+		$(ul).appendTo($(this.div).empty()).find('.lms-ui-suggestion-item').click(function() {
+			me.useSuggestion();
+		});
 
 		/********************************************************
 		mouseover handler for the dropdown ul

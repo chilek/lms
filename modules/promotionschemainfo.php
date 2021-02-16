@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -25,10 +25,16 @@
  */
 
 $schema = $DB->GetRow(
-    'SELECT s.*, p.id AS pid, p.name AS promotion
+    'SELECT
+        s.id, s.name, s.description, s.data, s.disabled, s.deleted, s.length,
+        p.id AS pid, p.name AS promotion,
+        COUNT(a.id) AS assignments
     FROM promotionschemas s
     JOIN promotions p ON (p.id = s.promotionid)
-    WHERE s.id = ?',
+    LEFT JOIN assignments a ON a.promotionschemaid = s.id
+    WHERE s.id = ?
+    GROUP BY s.id, s.name, s.description, s.data, s.disabled, s.deleted, s.length,
+        p.id, p.name',
     array(intval($_GET['id']))
 );
 
@@ -58,8 +64,8 @@ $schema['periods'][] = trans('Months $a-', $mon);
 
 $schema['data'] = implode(' &raquo; ', (array)$schema['data']);
 
-$schema['tariffs'] = $DB->GetAll('SELECT t.name, t.value,
-    a.tariffid, a.id, a.data, a.optional, a.label
+$schema['tariffs'] = $DB->GetAll('SELECT t.name, t.value, t.type,
+    a.tariffid, a.id, a.data, a.backwardperiod, a.optional, a.label
     FROM promotionassignments a
     JOIN tariffs t ON (a.tariffid = t.id)
     WHERE a.promotionschemaid = ?

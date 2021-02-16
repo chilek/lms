@@ -24,6 +24,27 @@
  *  $Id$
  */
 
+if (isset($_GET['oper']) && $_GET['oper'] == 'loadtransactionlist') {
+    header('Content-Type: text/html');
+
+    if ($SYSLOG && ConfigHelper::checkPrivilege('transaction_logs')) {
+        $trans = $SYSLOG->GetTransactions(
+            array(
+                'key' => SYSLOG::getResourceKey(SYSLOG::RES_NETDEV),
+                'value' => $id,
+                'limit' => 300,
+                'details' => true,
+            )
+        );
+        $SMARTY->assign('transactions', $trans);
+        $SMARTY->assign('resourcetype', SYSLOG::RES_NETDEV);
+        $SMARTY->assign('resourceid', $id);
+        die($SMARTY->fetch('transactionlist.html'));
+    }
+
+    die();
+}
+
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'managementurls.inc.php');
 
 function NodeStats($id, $dt)

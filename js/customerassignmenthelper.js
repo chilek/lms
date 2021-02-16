@@ -54,7 +54,9 @@ function CustomerAssignmentHelper(options) {
 
 	this.initEventHandlers = function() {
 		$('#submit-button').click(function () {
-			$('.schema-tariff-checkbox[data-mandatory]:checkbox').removeAttr('disabled');
+			if ($(this)[0].form.checkValidity()) {
+				$('.schema-tariff-checkbox[data-mandatory]:checkbox').removeAttr('disabled');
+			}
 		});
 
 		$('#promotion-select').change(this.promotionSelectionHandler);
@@ -122,6 +124,7 @@ function CustomerAssignmentHelper(options) {
 
 	this.promotionSelectionHandler = function() {
 		$('#a_location,#a_check_all_terminals,#a_options,#a_existingassignments,#a_properties').toggle(parseInt($(this).val()) != 0);
+		$('#backward-period').toggle(parseInt($(this).val()) == 0);
 
 		$('.promotion-table').hide();
 
@@ -439,12 +442,12 @@ function CustomerAssignmentHelper(options) {
 					$.each(data.addresses, function(key, value) {
 						options += '<option value="' + value.address_id + '"' +
 							(("recipient_address_id" in selected) && selected.recipient_address_id == value.address_id ? ' selected' : '') + '>' +
-							(value.location_name ? value.location_name + ', ' : '') + value.location + '</option>';
+							(value.location_name ? escapeHtml(value.location_name) + ', ' : '') + (value.location ? escapeHtml(value.location) : '') + '</option>';
 					});
 				}
 				$('#recipient-select').html(options);
 
-				$('#a_promotions').show();
+				$('#a_promotions,#a_align_periods').show();
 
                 init_multiselects('select.lms-ui-multiselect-deferred:visible');
 
@@ -511,17 +514,13 @@ function tariffSelectionHandler() {
 		$('#a_assignment_type_limit').hide();
 	}
 
-	if (val == -2) {
-		$('#a_promotions').show();
-	} else {
-		$('#a_promotions').hide();
-	}
+	$('#a_promotions,#a_align_periods').toggle(val == -2);
 
 	if (val == '') {
-		$('#a_tax,#a_value,#a_taxcategory,#a_productid,#a_name').show();
+		$('#a_tax,#a_type,#a_value,#a_taxcategory,#a_productid,#a_name').show();
 		$('#a_attribute').hide();
 	} else {
-		$('#a_tax,#a_value,#a_taxcategory,#a_productid,#a_name').hide();
+		$('#a_tax,#a_type,#a_value,#a_taxcategory,#a_productid,#a_name').hide();
 		if (val == -1) {
 			$('#a_attribute').hide();
 		} else {
@@ -534,6 +533,7 @@ function tariffSelectionHandler() {
 		$('#a_properties').show();
 	} else {
 		$('#a_numberplan,#a_paytype,#a_address,#a_day').show();
+		$('#backward-period').toggle(val != -2 || !promotion_select);
 		if ((val == -2 && promotion_select) || (val != -2)) {
 			$('#a_options,#a_properties,#a_existingassignments').show();
 		} else {

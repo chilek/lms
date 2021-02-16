@@ -11,18 +11,18 @@
 		<COL style="width: 1%;">
 		<COL style="width: 98%;">
 	</COLGROUP>
-    <THEAD>
+	<THEAD>
 	<TR>
 		<TD colspan="3" class="bold">
-			<IMG src="img/docum.gif" alt="">
+			{icon name="document" class="fa-fw"}
 			{trans("Name:")} {$documenttype.name}
 		</TD>
 	</TR>
-    </THEAD>
-    <TBODY>
+	</THEAD>
+	<TBODY>
 	<TR>
 		<TD>
-			<IMG src="img/users.gif" alt="">
+			{icon name="permissions" class="fa-fw"}
 		</TD>
 		<TD class="bold nobr">
 			{trans("Permissions:")}
@@ -47,7 +47,7 @@
 				{foreach $documenttype.rights as $userid => $userrights}
 				<TR class="highlight lms-ui-row-all-check">
 					<TD>
-						<A href="?m=userinfo&id={$userid}">{$userrights.rname} ({$userrights.login})</A>
+						<A href="?m=userinfo&id={$userid}">{$userrights.rname|escape} ({$userrights.login})</A>
 					</TD>
 					{foreach $_DOCRIGHTS as $right => $label}
 					<TD class="text-center nobr">
@@ -71,12 +71,16 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD colspan="3" class="buttons">
-			<A href="javascript:document.typeedit.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
-			<A href="?m=documenttypes">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
+		<TD colspan="3" class="lms-ui-box-buttons">
+			<div id="document-button-panel">
+				<div>
+					{button type="submit" icon="save" id="submit-button" label="Submit"}
+					{button icon="cancel" label="Cancel" onclick="location.href = '?m=documenttypes';"}
+				</div>
+			</div>
 		</TD>
 	</TR>
-    </TBODY>
+	</TBODY>
 </TABLE>
 <script>
 

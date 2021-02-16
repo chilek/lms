@@ -28,7 +28,11 @@ use PragmaRX\Google2FA\Google2FA;
 
 if (isset($_GET['fromuser'])) {
     header('Content-Type: application/json');
-    die(json_encode($LMS->GetUserRights($_GET['fromuser'])));
+    $fromuser['rights'] = $LMS->GetUserRights($_GET['fromuser']);
+    $fromuser['usergroups'] = array_keys($LMS->getUserAssignments($_GET['fromuser']));
+    $fromuser['customergroups'] = array_diff(array_keys($LMS->getAllCustomerGroups()), $LMS->getExcludedCustomerGroups($_GET['fromuser']));
+    $fromuser['divisions'] = array_keys($LMS->GetDivisions(array('userid' => $_GET['fromuser'])));
+    die(json_encode($fromuser));
 }
 
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'usercopypermissions.inc.php');
@@ -45,7 +49,7 @@ if (count($useradd)) {
         }
     }
 
-    if ($useradd['login'] == '' && $useradd['firstname'] == '' && $useradd['lastname'] == '' && $useradd['password'] == '' && $useradd['confirm'] == '') {
+    if ($useradd['login'] == '' && $useradd['firstname'] == '' && $useradd['lastname'] == '' && $useradd['password'] == '' && $useradd['confirm'] == '' && !isset($useradd['divisions'])) {
         $SESSION->redirect('?m=useradd');
     }
 
@@ -66,6 +70,10 @@ if (count($useradd)) {
     }
     if ($useradd['lastname'] == '') {
         $error['lastname'] = trans('You have to enter first and lastname!');
+    }
+
+    if (!isset($useradd['divisions'])) {
+        $error['division'] = trans('You have to choose division!');
     }
 
     if ($useradd['password'] == '') {
@@ -148,29 +156,11 @@ if (count($useradd)) {
             );
         }
 
-        if (isset($_POST['selected'])) {
-            foreach ($_POST['selected'] as $idx => $name) {
-                $DB->Execute('INSERT INTO excludedgroups (customergroupid, userid)
-					VALUES(?, ?)', array($idx, $id));
-                if ($SYSLOG) {
-                    $args = array(
-                        SYSLOG::RES_EXCLGROUP =>
-                            $DB->GetLastInsertID('excludedgroups'),
-                        SYSLOG::RES_CUSTGROUP => $idx,
-                        SYSLOG::RES_USER => $id
-                    );
-                    $SYSLOG->AddMessage(SYSLOG::RES_EXCLGROUP, SYSLOG::OPER_ADD, $args);
-                }
-            }
-        }
-
         $LMS->executeHook('useradd_after_submit', $id);
         $SESSION->redirect('?m=userinfo&id=' . $id);
-    } elseif (isset($_POST['selected'])) {
-        foreach ($_POST['selected'] as $idx => $name) {
-            $useradd['selected'][$idx]['id'] = $idx;
-            $useradd['selected'][$idx]['name'] = $name;
-        }
+    } else {
+        $SMARTY->assign('selectedusergroups', array_flip(isset($useradd['usergroups']) ? $useradd['usergroups'] : array()));
+        $SMARTY->assign('selectedgroups', array_flip(isset($useradd['customergroups']) ? $useradd['customergroups'] : array()));
     }
 } else {
     $useradd['ntype'] = MSG_MAIL | MSG_SMS;
@@ -188,8 +178,10 @@ $layout['pagetitle'] = trans('New User');
 
 $SMARTY->assign('useradd', $useradd);
 $SMARTY->assign('error', $error);
+$SMARTY->assign('usergroups', $LMS->getAllUserGroups());
+$SMARTY->assign('customergroups', $LMS->getAllCustomerGroups());
 $SMARTY->assign('accesslist', $accesslist);
 $SMARTY->assign('users', $LMS->GetUserNames());
 $SMARTY->assign('available', $DB->GetAllByKey('SELECT id, name FROM customergroups ORDER BY name', 'id'));
-
+$SMARTY->assign('divisions', $LMS->GetDivisions());
 $SMARTY->display('user/useradd.html');

@@ -201,7 +201,7 @@ function module_main()
                 'mailfrom' => $ticket['mailfrom'],
                 'source' => RT_SOURCE_USERPANEL), $files);
 
-            if (ConfigHelper::checkConfig('phpui.newticket_notify')) {
+            if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.newticket_notify', true))) {
                 $user = $LMS->GetUserInfo(ConfigHelper::getConfig('userpanel.default_userid'));
 
                 if ($mailfname = ConfigHelper::getConfig('phpui.helpdesk_sender_name')) {
@@ -582,7 +582,7 @@ function module_attachment()
 {
     global $DB, $SESSION;
     $attach = $DB->GetRow(
-        'SELECT ticketid, filename, contenttype FROM rtattachments a
+        'SELECT ticketid, filename, a.contenttype FROM rtattachments a
 		JOIN rtmessages m ON m.id = a.messageid
 		JOIN rttickets t ON t.id = m.ticketid
 		WHERE t.customerid = ? AND a.messageid = ? AND filename = ?',

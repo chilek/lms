@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -28,21 +28,40 @@
 ini_set('error_reporting', E_ALL & ~E_NOTICE);
 
 $parameters = array(
-    'C:' => 'config-file:',
-    'q' => 'quiet',
-    'h' => 'help',
-    'v' => 'version',
-    'f:' => 'from:',
-    't:' => 'to:',
+    'config-file:' => 'C:',
+    'quiet' => 'q',
+    'help' => 'h',
+    'version' => 'v',
+    'from:' => 'f:',
+    'to:' => 't:',
+    'customerid:' => null,
 );
 
-foreach ($parameters as $key => $val) {
-    $val = preg_replace('/:/', '', $val);
-    $newkey = preg_replace('/:/', '', $key);
-    $short_to_longs[$newkey] = $val;
+$long_to_shorts = array();
+foreach ($parameters as $long => $short) {
+    $long = str_replace(':', '', $long);
+    if (isset($short)) {
+        $short = str_replace(':', '', $short);
+    }
+    $long_to_shorts[$long] = $short;
 }
-$options = getopt(implode('', array_keys($parameters)), $parameters);
-foreach ($short_to_longs as $short => $long) {
+
+$options = getopt(
+    implode(
+        '',
+        array_filter(
+            array_values($parameters),
+            function ($value) {
+                return isset($value);
+            }
+        )
+    ),
+    array_keys($parameters)
+);
+
+foreach (array_flip(array_filter($long_to_shorts, function ($value) {
+    return isset($value);
+})) as $short => $long) {
     if (array_key_exists($short, $options)) {
         $options[$long] = $options[$short];
         unset($options[$short]);
@@ -52,7 +71,7 @@ foreach ($short_to_longs as $short => $long) {
 if (array_key_exists('version', $options)) {
     print <<<EOF
 lms-archive-documents.php
-(C) 2001-2019 LMS Developers
+(C) 2001-2020 LMS Developers
 
 EOF;
     exit(0);
@@ -61,7 +80,7 @@ EOF;
 if (array_key_exists('help', $options)) {
     print <<<EOF
 lms-archive-documents.php
-(C) 2001-2019 LMS Developers
+(C) 2001-2020 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
@@ -69,6 +88,7 @@ lms-archive-documents.php
 -q, --quiet                     suppress any output, except errors;
 -f, --from=<YYYY/MM/DD>         time period start;
 -t, --to=<YYYY/MM/DD>           time period end;
+    --customerid=<id>           narrow assigned to specifed customer
 
 EOF;
     exit(0);
@@ -78,7 +98,7 @@ $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
     print <<<EOF
 lms-archive-documents.php
-(C) 2001-2019 LMS Developers
+(C) 2001-2020 LMS Developers
 
 EOF;
 }
@@ -144,6 +164,8 @@ $SYSLOG = null;
 $AUTH = null;
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
 
+$customerid = isset($options['customerid']) && intval($options['customerid']) ? $options['customerid'] : null;
+
 if (isset($options['from'])) {
     list ($year, $month, $day) = explode('/', $options['from']);
     $from = mktime(0, 0, 0, $month, $day, $year);
@@ -161,7 +183,8 @@ if (isset($options['to'])) {
 $docids = $DB->GetCol(
     "SELECT id
     FROM documents
-    WHERE type < 0 AND cdate >= ? AND cdate < ?",
+    WHERE " . ($customerid ? 'customerid = ' . $customerid . ' AND ' : '') . "
+    type < 0 AND cdate >= ? AND cdate < ?",
     array($from, $to)
 );
 

@@ -34,7 +34,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
     {
         $args = array(
             'title' => $event['title'],
-            'description' => $event['description'],
+            'description' => Utils::removeInsecureHtml($event['description']),
             'date' => $event['date'],
             'begintime' => $event['begintime'],
             'enddate' => $event['enddate'],
@@ -44,7 +44,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             'closed' => isset($event['close']) ? 1 : 0,
             SYSLOG::RES_CUST => empty($event['custid']) ? null : $event['custid'],
             'type' => $event['type'],
-            SYSLOG::RES_ADDRESS => $event['address_id'],
+            SYSLOG::RES_ADDRESS => empty($event['address_id']) ? null : $event['address_id'],
             SYSLOG::RES_NODE => $event['nodeid'],
             SYSLOG::RES_TICKET => empty($event['ticketid']) ? null : $event['ticketid'],
         );
@@ -89,7 +89,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
     {
         $args = array(
             'title' => $event['title'],
-            'description' => $event['description'],
+            'description' => Utils::removeInsecureHtml($event['description']),
             'date' => $event['date'],
             'begintime' => $event['begintime'],
             'enddate' => $event['enddate'],
@@ -215,6 +215,12 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
         }
 
         $event['wholedays'] = $event['endtime'] == 86400;
+        $event['multiday'] = false;
+
+        if ($event['enddate'] && ($event['enddate'] - $event['date'])) {
+            $event['multiday'] = round(($event['enddate'] - $event['date']) / 86400) > 0;
+        }
+
         $event['helpdesk'] = !empty($event['ticketid']);
         $event['userlist'] = $this->db->GetCol('SELECT userid AS id
 			FROM vusers, eventassignments
@@ -361,7 +367,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
         $list = $this->db->GetAll(
             'SELECT events.id AS id, title, note, description, date, begintime, enddate, endtime, events.customerid AS customerid, closed, events.type, '
                 . $this->db->Concat('UPPER(c.lastname)', "' '", 'c.name').' AS customername, nn.id AS netnode_id, nn.name AS netnode_name, vd.address AS netnode_location,
-				userid, vusers.name AS username, ' . $this->db->Concat('c.city', "', '", 'c.address').' AS customerlocation,
+				userid, vusers.name AS username, ' . $this->db->Concat('c.city', "', '", 'c.address').' AS customerlocation, closeddate,
 				events.address_id, va.location, events.nodeid as nodeid, vn.location AS nodelocation, ticketid, cc.customerphone
 			FROM events
 			LEFT JOIN vaddresses va ON va.id = events.address_id
@@ -410,9 +416,10 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                 }
 
                 $row['userlist'] = $this->db->GetAll(
-                    'SELECT userid AS id, vusers.name
-					FROM eventassignments, vusers
-					WHERE userid = vusers.id AND eventid = ? ',
+                    'SELECT userid AS id, vusers.name,
+                    vusers.access, vusers.deleted, vusers.accessfrom, vusers.accessto
+                    FROM eventassignments, vusers
+                    WHERE userid = vusers.id AND eventid = ? ',
                     array($row['id'])
                 );
 
@@ -595,17 +602,18 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 
         extract($params);
         if (empty($enddate)) {
-            $enddate = $begindate;
+            $enddate = $date;
         }
         $users = Utils::filterIntegers($users);
 
         return $this->db->GetCol(
             'SELECT DISTINCT a.userid FROM events e
                         JOIN eventassignments a ON a.eventid = e.id
-                        WHERE a.userid IN (' . implode(',', $users) . ')
+                        WHERE ' . (isset($params['ignoredevent']) ? 'e.id <> ' . intval($params['ignoredevent']) . ' AND ' : '')
+                            . 'a.userid IN (' . implode(',', $users) . ')
                                 AND (date < ? OR (date = ? AND begintime < ?))
                                 AND (enddate > ? OR (enddate = ? AND endtime > ?))',
-            array($enddate, $enddate, $endtime, $begindate, $begindate, $begintime)
+            array($enddate, $enddate, $endtime, $date, $date, $begintime)
         );
     }
 

@@ -1,0 +1,152 @@
+{extends file="layout.html"}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+<h1>{$layout.pagetitle}</h1>
+
+<style>
+	#config.lms-ui-box-container .lms-ui-box-row-label {
+		width: 12em;
+	}
+</style>
+
+<form method="POST" name="configimport" id="configimport" enctype="multipart/form-data" action="?m=configimport">
+<input type="submit" class="hiddenbtn">
+
+{box_container id="config"}
+	{box_header}
+		{fileupload id="files" fileupload=$fileupload form="configimport"}
+	{/box_header}
+
+	{box_contents}
+	{box_panel}
+		{box_row icon="network" icon_class="fa-fw" label="Target variables scope:"}
+			<select name="config[target-type]" size="1" id="import-scope" {tip text="Select variables type" trigger="type"}>
+					<option value="global" {if !isset($config['target-type']) || $config['target-type'] == 'global'}selected{/if}>
+						{trans('global value')}
+					</option>
+					<option value="division" {if isset($config['target-type']) && $config['target-type'] == 'division'}selected{/if}>
+						{trans('division value')}
+					</option>
+					<option value="divisionuser" {if isset($config['target-type']) && $config['target-type'] == 'divisionuser'}selected{/if}>
+						{trans('user in division value')}
+					</option>
+					<option value="user" {if isset($config['target-type']) && $config['target-type'] == 'user'}selected{/if}>
+						{trans('user value')}
+					</option>
+			</select>
+		{/box_row}
+
+		{box_row class="import-container-user" icon="user" icon_class="fa-fw" label="Target user:" visible=""}
+			<select name="config[target-user]" id="import-user" {tip text="Select user" trigger="user"}>
+				{foreach $users as $user}
+					<option value="{$user.id}" {if isset($config['target-user']) && $config['target-user'] == $user.id}selected{/if}>
+						{$user.login} / {$user.rname|escape}
+					</option>
+				{/foreach}
+			</select>
+		{/box_row}
+
+		{box_row class="import-container-division" icon="division" icon_class="fa-fw" label="Target division:" visible=""}
+			<select name="config[target-division]" id="import-division" {tip text="Select division" trigger="division"}>
+				{foreach $divisions as $division}
+					<option value="{$division.id}" {if isset($config['target-division']) && $config['target-division'] == $division.id}selected{/if}>
+						{$division.label|escape}
+					</option>
+				{/foreach}
+			</select>
+		{/box_row}
+
+		{box_row icon="info" icon_class="fa-fw" label="Create the missing parent bindings:" class="import-withparentbindings" visible=""}
+			<input name="config[withparentbindings]" type="checkbox" id="import-withparentbindings" value="1" {if isset($config['withparentbindings'])}checked{/if}>
+		{/box_row}
+
+		{box_row icon="info" icon_class="fa-fw" label="Override existing:" class="import-override"}
+			<input name="config[override]" type="checkbox" id="import-override" value="1" {if isset($config['override'])}checked{/if}>
+		{/box_row}
+
+	{/box_panel}
+	{/box_contents}
+
+	{box_buttons}
+	{button type="submit" icon="importsource" accesskey="s" label="Import" id="import-configs"}
+	{/box_buttons}
+	{/box_container}
+</form>
+
+<script>
+	$(function() {
+		var import_user = $('#import-user');
+		var import_division = $('#import-division');
+		var import_withparentbindings = $('#import-withparentbindings');
+
+		$('#import-configs').click(function() {
+			var uploaded_files_count = $('.fileupload-files').find('div').length;
+			if (!uploaded_files_count) {
+				alertDialog($t("No files selected!"), this);
+				return false;
+			} else {
+				document.configimport.submit();
+			}
+		});
+
+		$('#import-scope').on('change', function () {
+			var import_scope = $(this).val();
+			if (import_scope === 'global') {
+				import_withparentbindings.prop('disabled', true);
+				import_division.prop('disabled', true);
+				import_user.prop('disabled', true);
+				$('.import-withparentbindings, .import-container-division, .import-container-user').hide();
+			}
+			if (import_scope === 'division') {
+				import_withparentbindings.prop('disabled', false);
+				import_division.prop('disabled', false);
+				import_user.prop('disabled', true);
+				$('.import-container-user').hide();
+				$('.import-withparentbindings, .import-container-division').show();
+			}
+			if (import_scope === 'divisionuser') {
+				import_withparentbindings.prop('disabled', false);
+				import_division.prop('disabled', false);
+				import_user.prop('disabled', false);
+				$('.import-withparentbindings, .import-container-division, .import-container-user').show();
+			}
+			if (import_scope === 'user') {
+				import_withparentbindings.prop('disabled', false);
+				import_division.prop('disabled', true);
+				import_user.prop('disabled', false);
+				$('.import-container-division').hide();
+				$('.import-withparentbindings, .import-container-user').show();
+			}
+		});
+
+		var import_scope_val = $('#import-scope').val();
+		if (import_scope_val === 'global') {
+			import_withparentbindings.prop('disabled', true);
+			import_division.prop('disabled', true);
+			import_user.prop('disabled', true);
+			$('.import-withparentbindings, .import-container-division, .import-container-user').hide();
+		}
+		if (import_scope_val === 'division') {
+			import_withparentbindings.prop('disabled', false);
+			import_division.prop('disabled', false);
+			import_user.prop('disabled', true);
+			$('.import-container-user').hide();
+			$('.import-withparentbindings, .import-container-division').show();
+		}
+		if (import_scope_val === 'divisionuser') {
+			import_withparentbindings.prop('disabled', false);
+			import_division.prop('disabled', false);
+			import_user.prop('disabled', false);
+			$('.import-withparentbindings, .import-container-division, .import-container-user').show();
+		}
+		if (import_scope_val === 'user') {
+			import_withparentbindings.prop('disabled', false);
+			import_division.prop('disabled', true);
+			import_user.prop('disabled', false);
+			$('.import-container-division').hide();
+			$('.import-withparentbindings, .import-container-user').show();
+		}
+	});
+</script>
+{/block}

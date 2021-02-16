@@ -28,9 +28,8 @@ require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
 
 function module_main()
 {
-    global $SESSION;
+    global $SESSION, $LMS;
 
-    $LMS = LMS::getInstance();
     $SMARTY = LMSSmarty::getInstance();
 
     if (!empty($_GET['consent'])) {

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -28,7 +28,9 @@ if (!empty($_POST['division'])) {
     $division = $_POST['division'];
 
     foreach ($division as $key => $value) {
-        $division[$key] = trim($value);
+        if (!is_array($value)) {
+            $division[$key] = trim($value);
+        }
     }
 
     if ($division['name']=='' && $division['description']=='' && $division['shortname']=='') {
@@ -49,11 +51,13 @@ if (!empty($_POST['division'])) {
         $error['division[location_city_name]'] = trans('City is required!');
     }
 
+    Localisation::setSystemLanguage($LMS->getCountryCodeById($division['location_country_id']));
     if ($division['location_zip'] == '') {
         $error['division[location_zip]'] = trans('Zip code is required!');
-    } else if (!Localisation::checkZip($division['location_zip'], $division['location_country_id'])) {
+    } else if (!check_zip($division['location_zip'])) {
         $error['division[location_zip]'] = trans('Incorrect ZIP code!');
     }
+    Localisation::resetSystemLanguage();
 
     if ($division['ten'] != '' && !check_ten($division['ten']) && !isset($division['tenwarning'])) {
         $error['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
@@ -72,6 +76,10 @@ if (!empty($_POST['division'])) {
         $error['email'] = trans('E-mail isn\'t correct!');
     }
 
+    if ($division['phone'] != '' && preg_match('/[^0-9\s\-]/', $division['phone'])) {
+        $error['phone'] = trans('Incorrect phone number!');
+    }
+
     if ($division['inv_paytime'] == '') {
         $division['inv_paytime'] = null;
     }
@@ -82,7 +90,7 @@ if (!empty($_POST['division'])) {
 
     if (!ConfigHelper::checkPrivilege('full_access') && ConfigHelper::checkConfig('phpui.teryt_required')
         && !empty($division['location_city_name']) && ($division['location_country_id'] == 2 || empty($division['location_country_id']))
-        && (!isset($division['teryt']) || empty($division['location_city']))) {
+        && (!isset($division['teryt']) || empty($division['location_city'])) && $LMS->isTerritState($division['location_state_name'])) {
         $error['division[teryt]'] = trans('TERRIT address is required!');
     }
 
@@ -113,9 +121,13 @@ if (Localisation::getCurrentSystemLanguage() == 'pl_PL') {
     require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'tax_office_codes.php');
 }
 
+$usersList = $LMS->GetUserList(array('superuser' => 1));
+unset($usersList['total']);
+
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->save('backto', $_SERVER['QUERY_STRING'], true);
 
 $SMARTY->assign('division', $division);
-$SMARTY->assign('countries', $LMS->GetCountries());
+$SMARTY->assign('userslist', $usersList);
 $SMARTY->assign('error', $error);
 $SMARTY->display('division/divisionadd.html');

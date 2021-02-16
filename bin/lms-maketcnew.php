@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -36,19 +36,38 @@ ini_set('error_reporting', E_ALL&~E_NOTICE);
 define('XVALUE', 100);
 
 $parameters = array(
-    'C:' => 'config-file:',
-    'q' => 'quiet',
-    'h' => 'help',
-    'v' => 'version',
+    'config-file:' => 'C:',
+    'quiet' => 'q',
+    'help' => 'h',
+    'version' => 'v',
+    'host:' => 'H:',
 );
 
-foreach ($parameters as $key => $val) {
-    $val = preg_replace('/:/', '', $val);
-    $newkey = preg_replace('/:/', '', $key);
-    $short_to_longs[$newkey] = $val;
+$long_to_shorts = array();
+foreach ($parameters as $long => $short) {
+    $long = str_replace(':', '', $long);
+    if (isset($short)) {
+        $short = str_replace(':', '', $short);
+    }
+    $long_to_shorts[$long] = $short;
 }
-$options = getopt(implode('', array_keys($parameters)), $parameters);
-foreach ($short_to_longs as $short => $long) {
+
+$options = getopt(
+    implode(
+        '',
+        array_filter(
+            array_values($parameters),
+            function ($value) {
+                return isset($value);
+            }
+        )
+    ),
+    array_keys($parameters)
+);
+
+foreach (array_flip(array_filter($long_to_shorts, function ($value) {
+    return isset($value);
+})) as $short => $long) {
     if (array_key_exists($short, $options)) {
         $options[$long] = $options[$short];
         unset($options[$short]);
@@ -58,7 +77,7 @@ foreach ($short_to_longs as $short => $long) {
 if (array_key_exists('version', $options)) {
     print <<<EOF
 lms-maketcnew.php
-(C) 2001-2017 LMS Developers
+(C) 2001-2020 LMS Developers
 
 EOF;
     exit(0);
@@ -67,12 +86,13 @@ EOF;
 if (array_key_exists('help', $options)) {
     print <<<EOF
 lms-maketcnew.php
-(C) 2001-2017 LMS Developers
+(C) 2001-2020 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
 -v, --version                   print version info and exit;
 -q, --quiet                     suppress any output, except errors;
+-H, --host=<host-name>          allows to limit networks to those assigned to specified host
 
 EOF;
     exit(0);
@@ -82,7 +102,7 @@ $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
     print <<<EOF
 lms-maketcnew.php
-(C) 2001-2017 LMS Developers
+(C) 2001-2020 LMS Developers
 
 EOF;
 }
@@ -165,7 +185,16 @@ $script_multi_mac = ConfigHelper::checkConfig('tcnew.multi_mac');
 $create_device_channels = ConfigHelper::checkConfig('tcnew.create_device_channels');
 $all_assignments = ConfigHelper::checkConfig('tcnew.all_assignments');
 
-$existing_networks = $DB->GetCol("SELECT name FROM networks");
+$host = isset($options['host']) ? mb_strtoupper($options['host']) : null;
+
+$existing_networks = $DB->GetCol(
+    "SELECT n.name FROM networks n"
+    . ($host ? " JOIN hosts h ON h.id = n.hostid WHERE UPPER(h.name) = '" . $host . "'" : '')
+);
+
+if ($host && empty($existing_networks)) {
+    die("No networks assigned to selected host '" . $host . "'!" . PHP_EOL);
+}
 
 // get selected networks from ini file
 $networks = ConfigHelper::getConfig('tcnew.networks', '', true);

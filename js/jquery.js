@@ -22,8 +22,24 @@
  *  $Id$
  */
 
+var elementsToInitiate = 0;
+
 function savePersistentSettings(data) {
 	return $.ajax('?m=persistentsetting', {
+		async: true,
+		method: 'POST',
+		data: data,
+		dataType: 'json',
+		error: function(jqXHR, textStatus, errorThrown) {
+			if (errorThrown != 'abort') {
+				alert($t('AJAX: Error during persistent setting save on server:') + ' ' + errorThrown);
+			}
+		}
+	});
+}
+
+function saveCurrentDivision(data) {
+	return $.ajax('?m=currentdivision', {
 		async: true,
 		method: 'POST',
 		data: data,
@@ -52,6 +68,21 @@ jQuery.cachedScript = function(url, options) {
 	});
 	return jQuery.ajax(options);
 }
+
+jQuery.fn.extend({
+	autoHeight: function () {
+		function autoHeight_(element) {
+			return jQuery(element)
+				.css({ 'height': 'auto', 'overflow-y': 'hidden' })
+				.height(element.scrollHeight);
+		}
+		return this.each(function() {
+			autoHeight_(this).on('input', function() {
+				autoHeight_(this);
+			});
+		});
+	}
+});
 
 function show_pagecontent() {
 	$('#lms-ui-spinner').hide();
@@ -120,6 +151,7 @@ function init_multiselects(selector) {
 				type: $(this).attr('data-type'),
 				icon: $(this).attr('data-icon'),
 				button: $(this).attr('data-button'),
+				clearButton: $(this).attr('data-clear-button'),
 				bottom: lmsSettings.multiSelectPopupOnBottom,
 				separator: $(this).attr('data-separator'),
 				maxVisible: lmsSettings.multiSelectMaxVisible,
@@ -215,7 +247,7 @@ function init_datepickers(selector) {
 
 	if (!lmsSettings.openCalendarOnInputClick) {
 		options.showOn = 'button';
-		options.buttonText = '<i class="fas fa-calendar-alt" title="' + $t('Click here to open calendar') + '"></i>';
+		options.buttonText = '<i class="lms-ui-icon-calendar" title="' + $t('Click here to open calendar') + '"></i>';
 	}
 
 	$(selector).each(function() {
@@ -227,7 +259,7 @@ function init_datepickers(selector) {
 				dt = new Date();
 				dt.setTime($(this).val() * 1000);
 			}
-			var tselem = $(this).clone(true).removeData().attr('type', 'hidden');
+			var tselem = $(this).clone(true).removeData().attr('type', 'hidden').removeAttr('id');
 			tselem.insertBefore($(this).removeAttr('name'));
 			if ($(this).val() == '0') {
 				$(this).val('');
@@ -298,7 +330,8 @@ function init_comboboxes(selector) {
 			$.grep($('select', scombobox).attr('class').split(' '), function(value) {
 				return value != 'lms-ui-combobox';
 			}));
-		if ($(this).attr('data-value')) {
+		if (typeof($(this).attr('data-value')) === 'string' &&
+			$(this).attr('data-value').length) {
 			scombobox.scombobox('val', $(this).attr('data-value'));
 			$(this).removeAttr('data-value');
 		} else if ($(this).attr('data-id-value')) {
@@ -327,6 +360,289 @@ function init_comboboxes(selector) {
 	}
 }
 
+function init_datatables(selector) {
+	$(selector).each(function() {
+		var elem = this;
+		var init = {};
+
+		init.displayStart = $(elem).attr('data-display-start');
+		if (init.displayStart === undefined) {
+			init.displayStart = 0;
+		}
+		init.searchColumns = $(elem).attr('data-search-columns');
+		if (init.searchColumns === undefined) {
+			init.searchColumns = [];
+		} else {
+			init.searchColumns = JSON.parse(init.searchColumns);
+		}
+		init.stateSave = $(elem).attr('data-state-save');
+		init.stateSaveProps = true;
+		if (init.stateSave === undefined) {
+			init.stateSave = false;
+		} else if (init.stateSave.match(/^\[(.+)\]$/)) {
+			init.stateSaveProps = JSON.parse(RegExp.$1);
+		} else {
+			init.stateSave = true;
+		}
+		init.ordering = $(elem).attr('data-ordering');
+		if (init.ordering === undefined) {
+			init.ordering = true;
+		}
+		init.orderCellsTop = $(elem).attr('data-searching');
+		if (init.orderCellsTop === undefined) {
+			init.orderCellsTop = true;
+		}
+		init.dom = '<"top"<"lms-ui-datatable-toolbar"<"lms-ui-datatable-clear-settings"><"lms-ui-datatable-column-toggle">l>pf>rt<"bottom"i><"clear">';
+		$(elem).data('init', init);
+
+		var trStyle = $(elem).closest('tr').attr('style');
+		if (trStyle !== undefined && trStyle.match(/display:\s*none/)) {
+			return;
+		}
+
+		var columnSearch = $(elem).hasClass('lms-ui-datatable-column-search');
+		var columnToggle = $(elem).hasClass('lms-ui-datatable-column-toggle');
+
+		if (columnSearch) {
+			var tr = $('thead tr', elem).clone().addClass('search-row');
+			tr.appendTo($('thead', elem)).find('th').each(function (key, th) {
+				var content = '';
+				if ((searchable = $(th).attr('data-searchable')) === undefined ||
+					searchable == 'true') {
+					if ((selectValue = $(th).attr('data-select-value')) !== undefined &&
+						selectValue == 'true') {
+						var selectValues = [];
+						tr.parent().siblings('tbody').children('tr').each(function (index, row) {
+							var value = $($('td', row)[key]).attr('data-search');
+							if (value === undefined) {
+								value = $($('td', row)[key]).html().trim();
+							}
+							if (!value.length || selectValues.indexOf(value) > -1)
+								return;
+							selectValues.push(value);
+						});
+						if (selectValues.length > 1) {
+							content = '<select' + ($(th).attr('data-filter-id') ? ' id="' + $(th).attr('data-filter-id') + '"' : '') +
+								'><option value="">' + $t('- any -') + '</option>';
+							selectValues.sort().forEach(function (value, index) {
+								content += '<option value="' + value + '">' + value + '</option>';
+							});
+							content += '</select>';
+						}
+					} else {
+						content = '<input type="search" placeholder="' + $t('Search') + '"' +
+							($(th).attr('data-filter-id') ? ' id="' + $(th).attr('data-filter-id') + '"' : '') + '>';
+					}
+				} else {
+					content = '';
+				}
+				$(th).html(content);
+			});
+			$('thead .search-row input', elem).on('keyup change search', function () {
+				$(elem).DataTable().column($(this).parent().index() + ':visible')
+					.search(this.value.length ? this.value : '', true).draw();
+			});
+			$('thead .search-row select', elem).on('change', function () {
+				var value = this.value;
+				$(elem).DataTable().column($(this).parent().index() + ':visible')
+					.search(value.length ? '^' + value + '$' : '', true).draw();
+			});
+		}
+
+		$(elem).on('init.dt', function (e, settings) {
+			var searchColumns = $(this).data('init').searchColumns;
+			var api = new $.fn.dataTable.Api(settings);
+			$(this).data('api', api);
+			var state = api.state.loaded();
+
+			if (state && columnSearch) {
+				var i = 0;
+				var searchFields = $('thead input[type="search"],thead select', elem);
+				api.columns().every(function (index) {
+					var columnState = state.columns[index];
+					var searchValue = '';
+					if (!columnState.visible) {
+						return;
+					}
+					if (typeof searchColumns[index].search === 'undefined') {
+						$(searchFields[i]).val(state.columns[index].search.search.replace(/[\^\$]/g, ''));
+					} else {
+						$(searchFields[i]).val(searchColumns[index].search.replace(/[\^\$]/g, ''));
+						if (searchColumns[index].search.length) {
+							if ($(searchFields[i]).is('thead select')) {
+								searchValue = '^' + searchColumns[index].search + '$';
+							} else {
+								searchValue = searchColumns[index].search;
+							}
+						}
+						//console.log(searchValue);
+						api.column(index).search(searchValue, true).draw();
+					}
+					i++;
+				});
+			}
+
+			if (columnToggle) {
+				var toggle = $(elem).siblings('div.top').find('div.lms-ui-datatable-column-toggle');
+				var content = '<form name="' + $(elem).attr('id') + '" class="column-toggle">' +
+					'<select class="column-toggle" class="lms-ui-multiselect" name="' +
+					$(elem).attr('id') + '-column-toggle[]" multiple' +
+					' title="' + $t('Column visibility') + '">';
+				api.columns().every(function (index) {
+					var text = $(this.header()).text().trim();
+					if (text.indexOf(':') > 0) {
+						content += '<option value="' + index + '"' +
+							(!state || state.columns[index].visible ? ' selected' : '') + '>' + text.replace(':', '') + '</option>';
+					}
+				});
+				content += '</select></form>';
+				toggle.html(content);
+				var multiselectId = toggle.find('select.column-toggle').uniqueId().attr('id');
+				new multiselect({
+					id: multiselectId,
+					defaultValue: null,
+					icon: 'lms-ui-icon-configuration',
+					type: 'tiny'
+				});
+				toggle.find('#' + multiselectId).on('lms:multiselect:itemclick', function (e, data) {
+					api.column(data.index).visible(data.checked);
+				});
+			}
+
+			var clearSettings = $(elem).siblings('div.top').find('div.lms-ui-datatable-clear-settings');
+			clearSettings.html('<i class="lms-ui-icon-clear" title="' + $t('Clear settings') + '"/>');
+			clearSettings.click(function () {
+				if (state) {
+					api.state.clear();
+				}
+				api.columns().every(function () {
+					this.visible(true);
+				});
+				$('thead tr:last-child th', elem).each(function (index, th) {
+					if ($('input[type="search"]', th).length) {
+						$('input[type="search"]', th).val('');
+						api.column(index).search('');
+					} else if ($('select', th).length) {
+						$('select', th).prop('selectedIndex', 0);
+						api.column(index).search('');
+					}
+				});
+				$(elem).parent().find('.column-toggle').each(function () {
+					$(this).find('option:not(:disabled)').attr('selected', 'selected');
+				}).trigger('lms:multiselect:updated');
+
+				var pageLen = $(elem).attr('data-page-length');
+				if (pageLen !== undefined) {
+					api.page.len(pageLen);
+				} else {
+					api.page.len(10);
+				}
+
+				var order = $(elem).attr('data-order');
+				if (order !== undefined) {
+					api.order(JSON.parse(order));
+				} else {
+					api.order([[0, 'asc']]);
+				}
+				api.search('');
+
+				api.draw('full-hold');
+
+				var displayStart = $(elem).attr('data-display-start');
+				api.page(displayStart !== undefined ?
+					Math.ceil(displayStart / pageLen) : 0).draw('page');
+			});
+
+			if (elementsToInitiate > 0) {
+				elementsToInitiate--;
+				if (!elementsToInitiate) {
+					show_pagecontent();
+				}
+			}
+		}).on('column-visibility.dt', function (e, settings, column, visible) {
+			if (!visible)
+				return;
+			var api = $(this).data('api');
+			var searchValue = api.columns(column).search()[0];
+			var state = api.state();
+			var columnStates = state ? state.columns : null;
+			var i = 0;
+			api.columns().every(function (index) {
+				if (index == column) {
+					$('thead tr:last-child th:nth-child(' + (i + 1) + ') :input', elem).val(searchValue.replace(/[\^\$]/g, ''));
+				}
+				if (columnStates && !columnStates[index].visible) {
+					return;
+				}
+				i++;
+			});
+		}).on('responsive-resize.dt', function (e, datatable, columns) {
+			// first fired events contains "-" characters instead of column visibility states
+			// so we should omit this event
+			if (typeof (columns[columns.length - 1]) == 'boolean') {
+				var search_fields = $(this).closest('table').find('.search-row th');
+				$.each(columns, function (index, visible) {
+					datatable.column(index).visible(true);
+					if (visible) {
+						search_fields.eq(index).show();
+					} else {
+						search_fields.eq(index).hide();
+					}
+				});
+			}
+		}).on('mouseenter', '.child', function () {
+			$(this).prev().addClass('highlight');
+		}).on('mouseleave', '.child', function () {
+			$(this).prev().removeClass('highlight');
+		});
+
+		$(elem).DataTable({
+//			language: {
+//				url: "js/jquery-datatables-i18n/" + lmsSettings.language + ".json"
+//			},
+			responsive: {
+				details: {
+					display: $.fn.dataTable.Responsive.display.childRowImmediate,
+					type: ''
+				}
+			},
+			language: $.extend(dataTablesLanguage, {
+				"emptyTable": $(elem).attr('data-empty-table-message')
+			}),
+			initComplete: function (settings, json) {
+				$(elem).show();
+			},
+			dom: init.dom,
+			stripeClasses: [],
+			//deferRender: true,
+			processing: true,
+			stateDuration: lmsSettings.settingsTimeout,
+			lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, $t('all')]],
+			displayStart: init.displayStart,
+			searchCols: init.searchColumns,
+			stateSave: init.stateSave,
+			stateSaveProps: init.stateSaveProps,
+			ordering: init.ordering,
+			orderCellsTop: init.orderCellsTop,
+			stateSaveParams: function (settings, data) {
+				var api = new $.fn.dataTable.Api(settings);
+				var stateSaveProps = api.init().stateSaveProps;
+				if (!Array.isArray(stateSaveProps)) {
+					return;
+				}
+				for (var property in data) {
+					if (data.hasOwnProperty(property)) {
+						if (property == "time" || stateSaveProps.indexOf(property) >= 0) {
+							continue;
+						}
+						delete data[property];
+					}
+				}
+			}
+		});
+	});
+}
+
 function init_titlebars(selector) {
 	$(selector).each(function() {
 		$(this).prop('onclick', null);
@@ -335,7 +651,7 @@ function init_titlebars(selector) {
 			showOrHide(elemid);
 			$('#' + elemid).find('.lms-ui-datatable').each(function () {
 				if (!$.fn.dataTable.isDataTable(this)) {
-					initDataTable(this);
+					init_datatables(this);
 				}
 			});
 		});
@@ -443,10 +759,16 @@ function init_attachment_lists(selector) {
 }
 
 function initAutoGrow(selector) {
-	$(selector + ':not(.lms-ui-autogrow-initiated)').inputAutogrow({
-		minWidth: 200,
-		maxWidth: 500
-	}).addClass('lms-ui-autogrow-initiated');
+	$(selector + ':not(.lms-ui-autogrow-initiated)').each(function() {
+		if ($(this).is('textarea')) {
+			$(this).autoHeight();
+		} else {
+			$(this).inputAutogrow({
+				minWidth: 150,
+				maxWidth: 500
+			}).addClass('lms-ui-autogrow-initiated');
+		}
+	});
 }
 
 function initListQuickSearch(options) {
@@ -478,6 +800,7 @@ function initListQuickSearch(options) {
 		elem: list_suggestion[0],
 		uri: options.ajax,
 		suggestionContainer: '#lms-ui-list-suggestion-container',
+		autoSubmitForm: false,
 		onSubmit: function (data) {
 			list_suggestion.val('');
 			var html = '<li data-item-id="' + data.id + '">' +
@@ -562,7 +885,6 @@ function disableFullScreenPopup() {
 
 $(function() {
 	var autocomplete = "off";
-	var elementsToInitiate = 0;
 	var scrollTimeout = null;
 
 	$('#lms-ui-module-view').scroll(function(e) {
@@ -587,44 +909,65 @@ $(function() {
 		var fromdate, todate;
 		var fromvalue = $(from).val();
 		var tovalue = $(from).val();
+		var time = $(this).is('.time');
 
-		if (fromvalue.match(/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/)) {
-			fromdate = new Date(fromvalue.replace(/\//g, '-'));
+		if (time) {
+			if (fromvalue.match(/^[0-9]{4}\/[0-9]{2}\/[0-9]{2} [0-9]{2}:[0-9]{2}$/)) {
+				fromdate = new Date(fromvalue.replace(/\//g, '-'));
+			} else {
+				fromdate = new Date();
+			}
 		} else {
-			fromdate = new Date();
-		}
-		if (tovalue.match(/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/)) {
-			todate = new Date(tovalue.replace(/\//g, '-'));
-		} else {
-			todate = new Date();
+			if (fromvalue.match(/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/)) {
+				fromdate = new Date(fromvalue.replace(/\//g, '-'));
+			} else {
+				fromdate = new Date();
+			}
 		}
 
-		if (period == 'previous-month' || typeof(period) === 'undefined') {
+		if (time) {
+			if (tovalue.match(/^[0-9]{4}\/[0-9]{2}\/[0-9]{2} [0-9]{2}:[0-9]{2}$/)) {
+				todate = new Date(tovalue.replace(/\//g, '-'));
+			} else {
+				todate = new Date();
+			}
+		} else {
+			if (tovalue.match(/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/)) {
+				todate = new Date(tovalue.replace(/\//g, '-'));
+			} else {
+				todate = new Date();
+			}
+		}
+
+		if (period === 'previous-month' || typeof(period) === 'undefined') {
 			fromdate.setDate(0);
 			fromdate.setDate(1);
 			todate.setDate(0);
-		} else if (period == 'current-month') {
+		} else if (period === 'current-month') {
 			fromdate = new Date();
 			todate = new Date();
 			fromdate.setDate(1);
-			todate.setMonth(todate.getMonth() + 1);
-			todate.setDate(0);
-		} else if (period == 'next-month') {
+			if (fromdate.getMonth() === 0) {
+				todate.setDate(0);
+				todate.setMonth(todate.getMonth() + 1);
+			} else {
+				todate.setMonth(todate.getMonth() + 1);
+				todate.setDate(0);
+			}
+		} else if (period === 'next-month') {
 			fromdate.setMonth(fromdate.getMonth() + 1);
 			fromdate.setDate(1);
 			todate.setMonth(fromdate.getMonth() + 1);
 			todate.setDate(0);
-		} else if (period == 'current-year') {
-			fromdate = new Date();
-			todate = new Date();
+		} else if (period === 'current-year') {
 			fromdate.setMonth(0);
 			fromdate.setDate(1);
 			todate.setMonth(11);
 			todate.setDate(31);
-		} else if (period == 'previous-year' || period == 'next-year') {
+		} else if (period === 'previous-year' || period === 'next-year') {
 			fromdate.setMonth(0);
 			fromdate.setDate(1);
-			if (period == 'previous-year') {
+			if (period === 'previous-year') {
 				fromdate.setFullYear(fromdate.getFullYear() - 1);
 			} else {
 				fromdate.setFullYear(fromdate.getFullYear() + 1);
@@ -634,8 +977,15 @@ $(function() {
 			todate.setFullYear(fromdate.getFullYear());
 		}
 
-		$(from).val(sprintf("%04d/%02d/%02d", fromdate.getFullYear(), fromdate.getMonth() + 1, fromdate.getDate()));
-		$(to).val(sprintf("%04d/%02d/%02d", todate.getFullYear(), todate.getMonth() + 1, todate.getDate()));
+		if (time) {
+			$(from).val(sprintf("%04d/%02d/%02d %02d:%02d", fromdate.getFullYear(), fromdate.getMonth() + 1, fromdate.getDate(), 0, 0));
+			$(to).val(sprintf("%04d/%02d/%02d %02d:%02d", todate.getFullYear(), todate.getMonth() + 1, todate.getDate(), 23, 59));
+		} else {
+			$(from).val(sprintf("%04d/%02d/%02d", fromdate.getFullYear(), fromdate.getMonth() + 1, fromdate.getDate()));
+			$(to).val(sprintf("%04d/%02d/%02d", todate.getFullYear(), todate.getMonth() + 1, todate.getDate()));
+		}
+
+		$(from).trigger('change');
 	});
 
 	$.datetimepicker.setLocale(lmsSettings.language);
@@ -678,6 +1028,7 @@ $(function() {
 		}
 		$(this).datetimepicker(options).attr("autocomplete", autocomplete);
 
+		var that = this;
 		// avoid datetimepicker ui control close after second click on trigger button
 		var xdsoft_datetimepicker = $(this).data('xdsoft_datetimepicker');
 		xdsoft_datetimepicker.on('open.xdsoft', function() {
@@ -690,10 +1041,11 @@ $(function() {
 				xdsoft_datetimepicker.trigger('close.xdsoft');
 				$([body, window]).off('mousedown.xdsoft', arguments_callee6);
 			})
-			var current_time = xdsoft_datetimepicker.find('.xdsoft_time.xdsoft_current');
-			if (current_time.length && current_time.prev().length) {
-				current_time.prev()[0].scrollIntoView();
+			if (!$(that).val().length) {
+				xdsoft_datetimepicker.find('.xdsoft_today_button').trigger('mousedown.xdsoft');
 			}
+
+			xdsoft_datetimepicker.trigger('afterOpen.xdsoft');
 		});
 
 		if (lmsSettings.openCalendarOnInputClick) {
@@ -701,7 +1053,8 @@ $(function() {
 				$(this).datetimepicker('toggle');
 			});
 		} else {
-			$('<i class="fas fa-calendar-alt ui-datepicker-trigger" title="' + $t('Click here to open calendar') + '"></i>')
+			$(this).wrap('<div class="lms-ui-datetime-container"/>');
+			$('<i class="lms-ui-icon-calendar ui-datepicker-trigger" title="' + $t('Click here to open calendar') + '"></i>')
 				.insertAfter(this).click(function () {
 				$(this).prev().datetimepicker('toggle');
 			});
@@ -710,10 +1063,19 @@ $(function() {
 
 	init_multiselects('select.lms-ui-multiselect');
 
-	$(document).on('mouseup', '[data-target-url]',
+	$(document).on('mousedown mouseup', '[data-target-url]',
 		function(e) {
 			var elem = $(this);
 			var target = $(e.target);
+			if (e.type == 'mousedown') {
+				elem.data('mousedown', Date.now());
+				return;
+			} else {
+				if (Date.now() - parseInt(elem.data('mousedown')) >= 500) {
+					e.preventDefault();
+					return;
+				}
+			}
 			var url = $(this).attr('data-target-url');
 			var link = target.closest('a');
 			var ifLink = (link.length && elem.find(link).length > 0);
@@ -727,7 +1089,12 @@ $(function() {
 			}
 
 			if (ifNewWindow) {
+				// new browser tab can be opened as hidden or tabid of new tab can be not initialised
+				// so we have to clear sessionStorage in newly opened browser window/tab
+				// this allows new created window/tab initialise its own tabid
+				window.sessionStorage.clear();
 				window.open(url);
+				sessionStorage.setItem('tabId', lmsTabId);
 			} else {
 				location.href = url;
 			}
@@ -737,38 +1104,40 @@ $(function() {
 	$('.lms-ui-button-clipboard').attr('title', $t('Click copies to clipboard'));
 	new ClipboardJS('.lms-ui-button-clipboard');
 
-	$(document).on('mouseenter', '[title]', function() {
-		if ($(this).is('[data-tooltip]')) {
-			return;
-		}
-		tooltipClass = '';
-		if ($(this).hasClass('lms-ui-error') || $(this).hasClass('alert')) {
-			tooltipClass += ' lms-ui-error';
-			if ($(this).hasClass('bold')) {
-				tooltipClass += ' bold';
+	if (tooltipsEnabled) {
+		$(document).on('mouseenter', '[title]', function () {
+			if ($(this).is('[data-tooltip]') || $(this).closest('.tox-tinymce,.tox-tinymce-aux').length) {
+				return;
 			}
-		} else if ($(this).hasClass('lms-ui-warning')) {
-			tooltipClass += 'lms-ui-warning';
-		} else if ($(this).hasClass('bold')) {
-			tooltipClass += 'bold';
-		}
+			tooltipClass = '';
+			if ($(this).hasClass('lms-ui-error') || $(this).hasClass('alert')) {
+				tooltipClass += ' lms-ui-error';
+				if ($(this).hasClass('bold')) {
+					tooltipClass += ' bold';
+				}
+			} else if ($(this).hasClass('lms-ui-warning')) {
+				tooltipClass += 'lms-ui-warning';
+			} else if ($(this).hasClass('bold')) {
+				tooltipClass += 'bold';
+			}
 
-		var title = $(this).attr('title');
-		$(this).attr('data-tooltip', title).removeAttr('title');
-		$(this).tooltip({
-			items: '[data-tooltip]',
-			content: title,
-			show: false,
-			hide: false,
-			track: true,
-			classes: {
-				'ui-tooltip': tooltipClass
-			},
-			create: function() {
-				$(this).tooltip('open');
-			}
+			var title = $(this).attr('title');
+			$(this).attr('data-tooltip', title).removeAttr('title');
+			$(this).tooltip({
+				items: '[data-tooltip]',
+				content: title,
+				show: false,
+				hide: false,
+				track: true,
+				classes: {
+					'ui-tooltip': tooltipClass
+				},
+				create: function () {
+					$(this).tooltip('open');
+				}
+			});
 		});
-	});
+	}
 
 	[
 		{ class: 'lms-ui-tooltip-voipaccountinfo', url: '?m=voipaccountinfoshort&id='},
@@ -914,7 +1283,7 @@ $(function() {
 		if (tbody.is('table')) {
 			tbody = tbody.find('tbody');
 		}
-		var checkboxes = tbody.parent().find(':checkbox');
+		var checkboxes = tbody.parent().find('[type="checkbox"]');
 		var allcheckboxes = checkboxes.filter('.lms-ui-multi-check');
 
 		var checkall = checkboxes.filter('.lms-ui-multi-check-all');
@@ -944,7 +1313,7 @@ $(function() {
 		function checkElements(checkbox) {
 			// reorder all checkboxes list when it is contained in lms-ui-datatable
 			if ($(checkbox).closest('.lms-ui-datatable').length) {
-				checkboxes = tbody.parent().find(':checkbox');
+				checkboxes = tbody.parent().find('[type="checkbox"]');
 				allcheckboxes = checkboxes.filter('.lms-ui-multi-check');
 			}
 
@@ -971,7 +1340,8 @@ $(function() {
 			var checkbox = $(elem)[0];
 			var row = $(checkbox).closest('tr,.lms-ui-tab-table-row');
 			row.click(function(e) {
-				if ($(e.target).closest('.lms-ui-button-clipboard').length) {
+				if ($(e.target).closest('.lms-ui-button-clipboard').length ||
+					$(e.target).closest('.lms-ui-multi-check-ignore').length) {
 					return;
 				}
 				if (e.shiftKey) {
@@ -983,7 +1353,7 @@ $(function() {
 					updateCheckAll();
 				}
 			});
-			row.find(':checkbox').click(function(e) {
+			row.find('[type="checkbox"]').click(function(e) {
 				if (e.shiftKey) {
 					checkElements(this);
 				} else {
@@ -1007,285 +1377,7 @@ $(function() {
 		}
 	});
 
-	function initDataTable(elem) {
-		var init = $(elem).data('init');
-
-		var columnSearch = $(elem).hasClass('lms-ui-datatable-column-search');
-		var columnToggle = $(elem).hasClass('lms-ui-datatable-column-toggle');
-
-		if (columnSearch) {
-			var tr = $('thead tr', elem).clone().addClass('search-row');
-			tr.appendTo($('thead', elem)).find('th').each(function(key, th) {
-				var content = '';
-				if ((searchable = $(th).attr('data-searchable')) === undefined ||
-					searchable == 'true') {
-					if ((selectValue = $(th).attr('data-select-value')) !== undefined &&
-						selectValue == 'true') {
-						var selectValues = [];
-						tr.parent().siblings('tbody').children('tr').each(function(index, row) {
-							value = $($('td', row)[key]).html().trim();
-							if (!value.length || selectValues.indexOf(value) > -1)
-								return;
-							selectValues.push(value);
-						});
-						if (selectValues.length > 1) {
-							content = '<select' + ($(th).attr('data-filter-id') ? ' id="' + $(th).attr('data-filter-id') + '"' : '') +
-								'><option value="">'  + $t('- any -') + '</option>';
-							selectValues.sort().forEach(function(value, index) {
-								content += '<option value="' + value + '">' + value + '</option>';
-							});
-							content += '</select>';
-						}
-					} else {
-						content = '<input type="search" placeholder="' + $t('Search') + '"' +
-							($(th).attr('data-filter-id') ? ' id="' + $(th).attr('data-filter-id') + '"' : '') + '>';
-					}
-				} else {
-					content = '';
-				}
-				$(th).html(content);
-			});
-			$('thead .search-row input', elem).on('keyup change search', function() {
-				$(elem).DataTable().column($(this).parent().index() + ':visible')
-					.search(this.value.length ? this.value : '', true).draw();
-			});
-			$('thead .search-row select', elem).on('change', function() {
-				var value = this.value;
-				$(elem).DataTable().column($(this).parent().index() + ':visible')
-					.search(value.length ? '^' + value + '$' : '', true).draw();
-			});
-		}
-
-		$(elem).on('init.dt', function(e, settings) {
-			var searchColumns = $(this).data('init').searchColumns;
-			var api = new $.fn.dataTable.Api(settings);
-			$(this).data('api', api);
-			var state = api.state.loaded();
-
-			if (state && columnSearch) {
-				var i = 0;
-				var searchFields = $('thead input[type="search"],thead select', elem);
-				api.columns().every(function(index) {
-					var columnState = state.columns[index];
-					var searchValue = '';
-					if (!columnState.visible) {
-						return;
-					}
-					if (typeof searchColumns[index].search === 'undefined') {
-						$(searchFields[i]).val(state.columns[index].search.search.replace(/[\^\$]/g, ''));
-					} else {
-						$(searchFields[i]).val(searchColumns[index].search.replace(/[\^\$]/g, ''));
-						if (searchColumns[index].search.length) {
-							if ($(searchFields[i]).is('thead select')) {
-								searchValue = '^' + searchColumns[index].search + '$';
-							} else {
-								searchValue = searchColumns[index].search;
-							}
-						}
-						//console.log(searchValue);
-						api.column(index).search(searchValue, true).draw();
-					}
-					i++;
-				});
-			}
-
-			if (columnToggle) {
-				var toggle = $(elem).siblings('div.top').find('div.lms-ui-datatable-column-toggle');
-				var content = '<form name="' + $(elem).attr('id') + '" class="column-toggle">' +
-					'<select class="column-toggle" class="lms-ui-multiselect" name="' +
-					$(elem).attr('id') + '-column-toggle[]" multiple' +
-					' title="' + $t('Column visibility') + '">';
-				api.columns().every(function(index) {
-					var text = $(this.header()).text().trim();
-					if (text.indexOf(':') > 0) {
-						content += '<option value="' + index + '"' +
-							(!state || state.columns[index].visible ? ' selected' : '') + '>' + text.replace(':', '') + '</option>';
-					}
-				});
-				content += '</select></form>';
-				toggle.html(content);
-				var multiselectId = toggle.find('select.column-toggle').uniqueId().attr('id');
-				new multiselect({
-					id: multiselectId,
-					defaultValue: null,
-					icon: 'lms-ui-icon-configuration',
-					type: 'tiny'
-				});
-				toggle.find('#' + multiselectId).on('lms:multiselect:itemclick', function(e, data) {
-					api.column(data.index).visible(data.checked);
-				});
-			}
-
-			var clearSettings = $(elem).siblings('div.top').find('div.lms-ui-datatable-clear-settings');
-			clearSettings.html('<i class="lms-ui-icon-clear" title="' + $t('Clear settings') + '"/>');
-			clearSettings.click(function() {
-				if (state) {
-					api.state.clear();
-				}
-				api.columns().every(function() {
-					this.visible(true);
-				});
-				$('thead tr:last-child th', elem).each(function(index, th) {
-					if ($('input[type="search"]', th).length) {
-						$('input[type="search"]', th).val('');
-						api.column(index).search('');
-					} else if ($('select', th).length) {
-						$('select', th).prop('selectedIndex', 0);
-						api.column(index).search('');
-					}
-				});
-				$(elem).parent().find('.column-toggle').each(function() {
-					$(this).find('option:not(:disabled)').attr('selected', 'selected');
-				}).trigger('lms:multiselect:updated');
-
-				var pageLen = $(elem).attr('data-page-length');
-				if (pageLen !== undefined) {
-					api.page.len(pageLen);
-				} else {
-					api.page.len(10);
-				}
-
-				var order = $(elem).attr('data-order');
-				if (order !== undefined) {
-					api.order(JSON.parse(order));
-				} else {
-					api.order([[0, 'asc']]);
-				}
-				api.search('');
-
-				api.draw('full-hold');
-
-				var displayStart = $(elem).attr('data-display-start');
-				api.page(displayStart !== undefined ?
-					Math.ceil(displayStart / pageLen) : 0).draw('page');
-			});
-
-			if (elementsToInitiate > 0) {
-				elementsToInitiate--;
-				if (!elementsToInitiate) {
-					show_pagecontent();
-				}
-			}
-		}).on('column-visibility.dt', function(e, settings, column, visible) {
-			if (!visible)
-				return;
-			var api = $(this).data('api');
-			var searchValue = api.columns(column).search()[0];
-			var state = api.state();
-			var columnStates = state ? state.columns : null;
-			var i = 0;
-			api.columns().every(function(index) {
-				if (index == column) {
-					$('thead tr:last-child th:nth-child(' + (i + 1) + ') :input', elem).val(searchValue.replace(/[\^\$]/g, ''));
-				}
-				if (columnStates && !columnStates[index].visible) {
-					return;
-				}
-				i++;
-			});
-		}).on('responsive-resize.dt', function (e, datatable, columns) {
-			// first fired events contains "-" characters instead of column visibility states
-			// so we should omit this event
-			if (typeof(columns[columns.length - 1]) == 'boolean') {
-				var search_fields = $(this).closest('table').find('.search-row th');
-				$.each(columns, function (index, visible) {
-					datatable.column(index).visible(true);
-					if (visible) {
-						search_fields.eq(index).show();
-					} else {
-						search_fields.eq(index).hide();
-					}
-				});
-			}
-		}).on('mouseenter', '.child', function() {
-			$(this).prev().addClass('highlight');
-		}).on('mouseleave', '.child', function() {
-			$(this).prev().removeClass('highlight');
-		});
-
-		$(elem).DataTable({
-//			language: {
-//				url: "js/jquery-datatables-i18n/" + lmsSettings.language + ".json"
-//			},
-			responsive: {
-				details: {
-					display: $.fn.dataTable.Responsive.display.childRowImmediate,
-					type: ''
-				}
-			},
-			language: dataTablesLanguage,
-			initComplete: function(settings, json) {
-				$(elem).show();
-			},
-			dom: init.dom,
-			stripeClasses: [],
-			//deferRender: true,
-			processing: true,
-			stateDuration: lmsSettings.settingsTimeout,
-			lengthMenu: [[ 10, 25, 50, 100, -1 ], [ 10, 25, 50, 100, $t('all') ]],
-			displayStart: init.displayStart,
-			searchCols: init.searchColumns,
-			stateSave: init.stateSave,
-			stateSaveProps: init.stateSaveProps,
-			ordering: init.ordering,
-			orderCellsTop: init.orderCellsTop,
-			stateSaveParams: function(settings, data) {
-				var api = new $.fn.dataTable.Api(settings);
-				var stateSaveProps = api.init().stateSaveProps;
-				if (!Array.isArray(stateSaveProps)) {
-					return;
-				}
-				for (var property in data) {
-					if (data.hasOwnProperty(property)) {
-						if (property == "time" || stateSaveProps.indexOf(property) >= 0) {
-							continue;
-						}
-						delete data[property];
-					}
-				}
-			}
-		});
-	}
-
-	dataTables.each(function() {
-		var init = {};
-		init.displayStart = $(this).attr('data-display-start');
-		if (init.displayStart === undefined) {
-			init.displayStart = 0;
-		}
-		init.searchColumns = $(this).attr('data-search-columns');
-		if (init.searchColumns === undefined) {
-			init.searchColumns = [];
-		} else {
-			init.searchColumns = JSON.parse(init.searchColumns);
-		}
-		init.stateSave = $(this).attr('data-state-save');
-		init.stateSaveProps = true;
-		if (init.stateSave === undefined) {
-			init.stateSave = false;
-		} else if (init.stateSave.match(/^\[(.+)\]$/)) {
-			init.stateSaveProps = JSON.parse(RegExp.$1);
-		} else {
-			init.stateSave = true;
-		}
-		init.ordering = $(this).attr('data-ordering');
-		if (init.ordering === undefined) {
-			init.ordering = true;
-		}
-		init.orderCellsTop = $(this).attr('data-searching');
-		if (init.orderCellsTop === undefined) {
-			init.orderCellsTop = true;
-		}
-		init.dom = '<"top"<"lms-ui-datatable-toolbar"<"lms-ui-datatable-clear-settings"><"lms-ui-datatable-column-toggle">l>pf>rt<"bottom"i><"clear">';
-		$(this).data('init', init);
-
-		var trStyle = $(this).closest('tr').attr('style');
-		if (trStyle !== undefined && trStyle.match(/display:\s*none/)) {
-			return;
-		}
-
-		initDataTable(this);
-	});
+	init_datatables(dataTables);
 
 	init_titlebars('.lmsbox-titlebar');
 
@@ -1442,9 +1534,9 @@ $(function() {
 			init_instance_callback: function (ed) {
 				var textarea = $(ed.settings.selector);
 				if (textarea.hasClass('lms-ui-error') || textarea.hasClass('alert')) {
-					textarea.siblings('.mce-tinymce').addClass('lms-ui-error');
+					textarea.siblings('.tox-tinymce').addClass('lms-ui-error');
 				} else if (textarea.hasClass('lms-ui-warning')) {
-					textarea.siblings('.mce-tinymce').addClass('lms-ui-warning');
+					textarea.siblings('.tox-tinymce').addClass('lms-ui-warning');
 				}
 				if (elementsToInitiate > 0) {
 					elementsToInitiate--;
@@ -1456,11 +1548,15 @@ $(function() {
 			language: lmsSettings.language,
 			language_url: lmsSettings.language == 'en' ? null : 'js/tinymce5/langs/' + lmsSettings.language + '.js',
 			// TinyMCE 4
-			skin_url: 'css/tinymce4',
-			theme: "modern",
-			plugins: "preview,autoresize,contextmenu,fullscreen,searchreplace,table,image,link,anchor,textcolor,autosave,paste",
+			//skin_url: 'css/tinymce4',
+			//content_css: 'css/tinymce4/lms/content.css',
+			//theme: "modern",
+			//plugins: "preview,autoresize,contextmenu,fullscreen,searchreplace,table,image,link,anchor,textcolor,autosave,paste",
 			// TinyMCE 5
-			//plugins: "preview,autoresize,fullscreen,searchreplace,table,image,link,anchor,autosave,paste",
+			skin_url: 'css/tinymce5',
+//			content_css: 'css/tinymce5/content.min.css',
+			plugins: "preview,autoresize,fullscreen,searchreplace,table,image,imagetools,link,anchor,autosave,paste",
+			//fullscreen_native: true,
 			// #########
 			toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor | link anchor image ' +
 				'| alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent ' +
@@ -1473,6 +1569,9 @@ $(function() {
 			paste_data_images: true,
 			relative_urls : false,
 			remove_script_host : false,
+			forced_root_block : false,
+			entity_encoding: 'raw',
+
 			file_picker_callback: function(callback, value, meta) {
 				if (meta.filetype == 'image') {
 					$('#tinymce-image-upload').trigger('click');
@@ -1487,6 +1586,19 @@ $(function() {
 						reader.readAsDataURL(file);
 					});
 				}
+			},
+			setup: function (ed) {
+				ed.on('BeforeSetContent', function(e) {
+					if (e.format == 'html') {
+						e.content = e.content.replace(/\r?\n/g, '<br class="lms-ui-line-break" />');
+					}
+				}).on('GetContent', function(e) {
+					if (e.format == 'html') {
+						e.content = e.content.replace(/<br class="lms-ui-line-break"[^>]*>/g, '\r\n');
+					}
+				}).on('FullscreenStateChanged', function(e) {
+					$('.lms-ui-main-document').css('overflow', e.state ? 'visible' : '');
+				});
 			}
 		});
 	}
@@ -1525,7 +1637,9 @@ $(function() {
 			var textareaid = $(this).uniqueId().attr('id');
 			var wysiwyg = $(this).attr('data-wysiwyg');
 			var inputname;
-			wysiwyg = (wysiwyg !== undefined && wysiwyg == 'true') || (wysiwyg === undefined && lmsSettings.wysiwygEditor);
+			var helpdesk = $(this).is('.lms-ui-helpdesk');
+			wysiwyg = (wysiwyg !== undefined && wysiwyg == 'true') || (wysiwyg === undefined &&
+				((helpdesk && lmsSettings.helpdeskWysiwygEditor) || (!helpdesk && lmsSettings.wysiwygEditor)));
 			$(this).data('wysiwyg', wysiwyg);
 			if ($(this).attr('name').match(/^([^\[]+)(\[[^\[]+\])$/i)) {
 				inputname = RegExp.$1 + '[wysiwyg]' + RegExp.$2;

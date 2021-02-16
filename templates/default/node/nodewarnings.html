@@ -80,7 +80,7 @@
 					<TD>
 						<SELECT size="30" name="setwarnings[mnodeid][]" id="nodeslist" multiple {tip text="Select nodes"}>
 							{section name=nodelist loop=$nodelist}
-							<OPTION value="{$nodelist[nodelist].id}" {if $nodelist[nodelist].warning}CLASS="red"{/if}>{$nodelist[nodelist].name|truncate:40:"...":true} / {$nodelist[nodelist].ip} ({$nodelist[nodelist].id|string_format:"%04d"})</OPTION>
+							<OPTION value="{$nodelist[nodelist].id}" {if $nodelist[nodelist].warning}CLASS="red"{/if}>{$nodelist[nodelist].name|truncate:40:"&hellip;":true} / {$nodelist[nodelist].ip} ({$nodelist[nodelist].id|string_format:"%04d"})</OPTION>
 							{/section}
 						</SELECT>
 					</TD>

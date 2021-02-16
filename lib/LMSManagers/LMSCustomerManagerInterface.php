@@ -34,7 +34,7 @@ interface LMSCustomerManagerInterface
 {
     public function getCustomerName($id);
 
-    public function getCustomerEmail($id);
+    public function getCustomerEmail($id, $requiredFlags = 0, $forbiddenFlags = 0);
 
     public function customerExists($id);
 
@@ -56,7 +56,7 @@ interface LMSCustomerManagerInterface
 
     public function GetCustomerShortBalanceList($customerid, $limit = 10, $order = 'DESC');
 
-    public function getLastNInTable($body, $customerid, $eol, $aggregate_documents = false);
+    public function getLastNInTable($body, $customerid, $format, $aggregate_documents = false);
 
     public function customerStats();
 
@@ -92,6 +92,8 @@ interface LMSCustomerManagerInterface
 
     public function getFullAddressForCustomerStuff($customer_id);
 
+    public function detectCustomerLocationAddress($customer_id);
+
     public function isTerritAddress($address_id);
 
     public function GetCustomerContacts($id, $mask = null);
@@ -99,6 +101,8 @@ interface LMSCustomerManagerInterface
     public function GetCustomerDivision($id);
 
     public function isSplitPaymentSuggested($customerid, $cdate, $value);
+
+    public function isTelecomServiceSuggested($customerid);
 
     public function getCustomerSMSOptions();
 
@@ -119,4 +123,18 @@ interface LMSCustomerManagerInterface
     public function addCustomerContactFlags($customerid, $type, $flags);
 
     public function removeCustomerContactFlags($customerid, $type, $flags);
+
+    public function getCustomerNotes($cid);
+
+    public function getCustomerNote($id);
+
+    public function addCustomerNote($params);
+
+    public function delCustomerNote($id);
+
+    public function raiseCustomerKarma($id);
+
+    public function lowerCustomerKarma($id);
+
+    public function getCustomerPin($id);
 }

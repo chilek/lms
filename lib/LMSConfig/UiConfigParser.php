@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2013 LMS Developers
+ *  Copyright (C) 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -32,7 +32,7 @@
 class UiConfigParser implements ConfigParserInterface
 {
     const NAME = 'UI_CONFIG_PARSER';
-    
+
     /**
      * Converts raw ui config into it's object representation
      *
@@ -43,28 +43,31 @@ class UiConfigParser implements ConfigParserInterface
     public function objectify(array $raw_config = array(), array $options = array())
     {
         $config = new ConfigContainer();
-        
         $sections = array();
-        
-        foreach ($raw_config as $section_variable) {
-            $section_name = $section_variable['section'];
-            $variable_name = $section_variable['var'];
-            $variable_value = $section_variable['value'];
-            $variable_comment = $section_variable['description'];
-            $variable = new ConfigVariable($variable_name, $variable_value, $variable_comment);
-            if (isset($sections[$section_name])) {
-                $sections[$section_name][] = $variable;
-            } else {
-                $sections[$section_name] = array($variable);
+
+        foreach ($raw_config as $sectionkey => $section) {
+            foreach ($section as $varkey => $section_variable) {
+                $section_name = $sectionkey;
+                $variable_name = $section_variable['var'];
+                $variable_value = $section_variable['value'];
+                $variable_comment = $section_variable['description'];
+                $variable = new ConfigVariable($variable_name, $variable_value, $variable_comment);
+                if (isset($sections[$section_name])) {
+                    $sections[$section_name][] = $variable;
+                } else {
+                    $sections[$section_name] = array($variable);
+                }
             }
+            unset($section_variable);
         }
-        
+        unset($section);
+
         foreach ($sections as $section_name => $section_variables) {
             $section = new ConfigSection($section_name);
             $section->addVariables($section_variables);
             $config->addSection($section);
         }
-        
+
         return $config;
     }
 }

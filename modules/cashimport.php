@@ -114,24 +114,26 @@ if (isset($_GET['action']) && $_GET['action'] == 'csv') {
 } elseif (isset($_GET['action']) && $_GET['action'] == 'save') {
     if (!empty($_POST['customer'])) {
         foreach ($_POST['customer'] as $idx => $id) {
-            if ($id) {
-                $DB->Execute(
-                    'UPDATE cashimport SET customerid = ? WHERE id = ?',
-                    array($id, $idx)
+            $DB->Execute(
+                'UPDATE cashimport SET customerid = ? WHERE id = ?',
+                array(empty($id) ? null : $id, $idx)
+            );
+            if ($SYSLOG) {
+                list ($sourceid, $sourcefileid) = array_values(
+                    $DB->GetRow('SELECT sourceid, sourcefileid
+                    FROM cashimport WHERE id = ?', array($idx))
                 );
-                if ($SYSLOG) {
-                    list ($sourceid, $sourcefileid) = array_values(
-                        $DB->GetRow('SELECT sourceid, sourcefileid
-						FROM cashimport WHERE id = ?', array($idx))
-                    );
-                    $args = array(
-                        SYSLOG::RES_CASHIMPORT => $idx,
-                        SYSLOG::RES_CUST => $id,
-                        SYSLOG::RES_CASHSOURCE => $sourceid,
-                        SYSLOG::RES_SOURCEFILE => $sourcefileid,
-                    );
-                    $SYSLOG->AddMessage(SYSLOG::RES_CASHIMPORT, SYSLOG::OPER_UPDATE, $args);
+
+                if (!empty($id)) {
+                    $args[SYSLOG::RES_CUST] = $id;
                 }
+
+                $args = array(
+                    SYSLOG::RES_CASHIMPORT => $idx,
+                    SYSLOG::RES_CASHSOURCE => $sourceid,
+                    SYSLOG::RES_SOURCEFILE => $sourcefileid,
+                );
+                $SYSLOG->AddMessage(SYSLOG::RES_CASHIMPORT, SYSLOG::OPER_UPDATE, $args);
             }
         }
     }

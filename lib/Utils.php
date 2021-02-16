@@ -53,15 +53,35 @@ class Utils
         return $result;
     }
 
-    public static function array_column(array $array, $key)
+    public static function array_column(array $array, $column_key, $index_key = null)
     {
-        if (!is_array($array) || empty($key)) {
+        if (!is_array($array) || empty($column_key)) {
             return $array;
         }
         $result = array();
         foreach ($array as $idx => $item) {
-            $result[$idx] = $item[$key];
+            if (isset($index_key)) {
+                $result[$item[$index_key]] = $item[$column_key];
+            } else {
+                $result[$idx] = $item[$column_key];
+            }
         }
+        return $result;
+    }
+
+    public static function array_keys_add_prefix(array $array)
+    {
+        if (!is_array($array)) {
+            return $array;
+        }
+        $result = array();
+
+        function addkeyprefix($k)
+        {
+            return 'old_'.$k;
+        }
+
+        $result = array_combine(array_map('addkeyprefix', array_keys($array)), $array);
         return $result;
     }
 
@@ -180,6 +200,9 @@ class Utils
             } else {
                 $chunk = substr($content, $startpos, $endpos - $startpos);
             }
+            if (($endpos = strpos($chunk, '***')) !== false) {
+                $chunk = substr($chunk, 0, $endpos);
+            }
             $lines = explode("\n", $chunk);
             array_shift($lines);
             foreach ($lines as &$line) {
@@ -297,5 +320,150 @@ class Utils
             $date = strtotime('+1 day', $date);
             list ($year, $weekday) = explode('/', date('Y/N', $date));
         }
+    }
+
+    public static function validateVat($trader_country, $trader_id, $requester_country, $requester_id)
+    {
+        static $vies = null;
+
+        $trader_id = strpos($trader_id, $trader_country) == 0
+            ? preg_replace('/^' . $trader_country . '/', '', $trader_id) : $trader_id;
+        $requester_id = strpos($requester_id, $requester_country) == 0
+            ? preg_replace('/^' . $requester_country . '/', '', $requester_id) : $requester_id;
+
+        if (!isset($vies)) {
+            $vies = new \DragonBe\Vies\Vies();
+            if (!$vies->getHeartBeat()->isAlive()) {
+                throw new Exception('VIES service is not available at the moment, please try again later.');
+            }
+        }
+
+        $vatResult = $vies->validateVat(
+            $trader_country,    // Trader country code
+            $trader_id,         // Trader VAT ID
+            $requester_country, // Requester country code
+            $requester_id       // Requester VAT ID
+        );
+
+        return $vatResult->isValid();
+    }
+
+    public static function validatePlVat($trader_country, $trader_id)
+    {
+        static $curl = null;
+
+        if (!isset($curl)) {
+            if (!function_exists('curl_init')) {
+                throw new Exception(trans('Curl extension not loaded!'));
+            }
+            $curl = curl_init();
+        }
+
+        $trader_id = strpos($trader_id, $trader_country) == 0
+            ? preg_replace('/^' . $trader_country . '/', '', $trader_id) : $trader_id;
+
+        curl_setopt($curl, CURLOPT_URL, 'https://wl-api.mf.gov.pl/api/search/nip/' . $trader_id . '?date=' . date('Y-m-d'));
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_TIMEOUT, 10);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array('Accept: application/json'));
+
+        $result = curl_exec($curl);
+        if (curl_error($curl)) {
+            throw new Exception('Communication error: ' . curl_error($curl));
+        }
+
+/*
+        $info = curl_getinfo($curl);
+        if ($info['http_code'] != '200') {
+            throw new Exception('Communication error. Http code: ' . $info['http_code']);
+        }
+*/
+
+        if (empty($result)) {
+            return false;
+        }
+
+        $result = json_decode($result, true);
+        if (empty($result) || !isset($result['result']['subject']['statusVat'])) {
+            return false;
+        }
+
+        return $result['result']['subject']['statusVat'] == 'Czynny';
+    }
+
+    public static function determineAllowedCustomerStatus($value, $default = null)
+    {
+        global $CSTATUSES;
+
+        if (!empty($value)) {
+            $value = preg_replace('/\s+/', ',', $value);
+            $value = preg_split('/\s*[,;]\s*/', $value, -1, PREG_SPLIT_NO_EMPTY);
+        }
+        if (empty($value)) {
+            if (empty($default) || !is_array($default)) {
+                if ($default === -1) {
+                    return null;
+                } else {
+                    return array(
+                        CSTATUS_CONNECTED,
+                        CSTATUS_DEBT_COLLECTION,
+                    );
+                }
+            } else {
+                return $default;
+            }
+        } else {
+            $all_statuses = self::array_column($CSTATUSES, 'alias');
+
+            $normal = array();
+            $negated = array();
+            foreach ($value as $status) {
+                if (strpos($status, '!') === 0) {
+                    $negated[] = substr($status, 1);
+                } else {
+                    $normal[] = $status;
+                }
+            }
+
+            if (empty($normal)) {
+                $statuses = array_diff($all_statuses, $negated);
+            } else {
+                $statuses = array_diff(array_intersect($all_statuses, $normal), $negated);
+            }
+            if (empty($statuses)) {
+                return array(
+                    CSTATUS_CONNECTED,
+                    CSTATUS_DEBT_COLLECTION,
+                );
+            }
+
+            return array_keys($statuses);
+        }
+    }
+
+    public static function removeInsecureHtml($html)
+    {
+        static $hm_purifier;
+        if (!isset($hm_purifier)) {
+            $hm_config = HTMLPurifier_Config::createDefault();
+            $hm_config->set('URI.AllowedSchemes', array(
+                'http' => true,
+                'https' => true,
+                'mailto' => true,
+                'ftp' => true,
+                'nntp' => true,
+                'news' => true,
+                'tel' => true,
+                'data' => true,
+            ));
+            $hm_config->set('CSS.MaxImgLength', null);
+            $hm_config->set('HTML.MaxImgLength', null);
+            if (defined('CACHE_DIR')) {
+                $hm_config->set('Cache.SerializerPath', CACHE_DIR . DIRECTORY_SEPARATOR . 'htmlpurifier');
+            }
+            $hm_purifier = new HTMLPurifier($hm_config);
+        }
+
+        return $hm_purifier->purify($html);
     }
 }

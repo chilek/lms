@@ -28,30 +28,53 @@
 ini_set('error_reporting', E_ALL & ~E_NOTICE);
 
 $parameters = array(
-    'C:' => 'config-file:',
-    'q' => 'quiet',
-    'h' => 'help',
-    'v' => 'version',
-    't' => 'test',
-    'f:' => 'fakedate:',
-    'p:' => 'part-number:',
-    'g:' => 'fakehour:',
-    'l:' => 'part-size:',
-    'i:' => 'interval:',
-    'e:' => 'extra-file:',
-    'b' => 'backup',
-    'a' => 'archive',
-    'o:' => 'output-directory:',
-    'n' => 'no-attachment',
+    'config-file:' => 'C:',
+    'quiet' => 'q',
+    'help' => 'h',
+    'version' => 'v',
+    'test' => 't',
+    'fakedate:' => 'f:',
+    'part-number:' => 'p:',
+    'fakehour:' => 'g:',
+    'part-size:' => 'l:',
+    'interval:' => 'i:',
+    'ignore-send-date' => null,
+    'extra-file:' => 'e:',
+    'backup' => 'b',
+    'archive' => 'a',
+    'output-directory:' => 'o:',
+    'no-attachments' => 'n',
+    'customerid:' => null,
+    'division:' => null,
+    'customergroups:' => null,
+    'customer-status:' => null,
 );
 
-foreach ($parameters as $key => $val) {
-    $val = preg_replace('/:/', '', $val);
-    $newkey = preg_replace('/:/', '', $key);
-    $short_to_longs[$newkey] = $val;
+$long_to_shorts = array();
+foreach ($parameters as $long => $short) {
+    $long = str_replace(':', '', $long);
+    if (isset($short)) {
+        $short = str_replace(':', '', $short);
+    }
+    $long_to_shorts[$long] = $short;
 }
-$options = getopt(implode('', array_keys($parameters)), $parameters);
-foreach ($short_to_longs as $short => $long) {
+
+$options = getopt(
+    implode(
+        '',
+        array_filter(
+            array_values($parameters),
+            function ($value) {
+                return isset($value);
+            }
+        )
+    ),
+    array_keys($parameters)
+);
+
+foreach (array_flip(array_filter($long_to_shorts, function ($value) {
+    return isset($value);
+})) as $short => $long) {
     if (array_key_exists($short, $options)) {
         $options[$long] = $options[$short];
         unset($options[$short]);
@@ -81,14 +104,24 @@ lms-sendinvoices.php
 -p, --part-number=NN            defines which part of invoices that should be sent;
 -g, --fakehour=HH               override system hour; if no fakehour is present - current hour will be used;
                                 (deprecated - use --part-number instead of);
--s, --part-size=NN              defines part size of invoices that should be sent
+-l, --part-size=NN              defines part size of invoices that should be sent
                                 (can be specified as percentage value);
 -i, --interval=ms               force delay interval between subsequent posts
+    --ignore-send-date          send documents which have already been sent earlier;
 -e, --extra-file=/tmp/file.pdf  send additional file as attachment
 -b, --backup                    make financial document file backup
 -a, --archive                   archive financial documents in documents directory
 -o, --output-directory=/path    output directory for document backup
 -n, --no-attachments            dont attach documents
+    --customerid=<id>           limit invoices to specifed customer
+    --division=<shortname>
+                                limit assignments to customers which belong to specified
+                                division
+    --customergroups=<group1,group2,...>
+                                allow to specify customer groups to which notified customers
+                                should be assigned
+    --customer-status=<status1,status2,...>
+                                send invoices of customers with specified status only
 
 EOF;
     exit(0);
@@ -208,6 +241,18 @@ include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 
 $SYSLOG = SYSLOG::getInstance();
 
+// Initialize Session, Auth and LMS classes
+$AUTH = null;
+$LMS = new LMS($DB, $AUTH, $SYSLOG);
+
+$plugin_manager = new LMSPluginManager();
+$LMS->setPluginManager($plugin_manager);
+
+$divisionid = isset($options['division']) ? $LMS->getDivisionIdByShortName($options['division']) : null;
+if (!empty($divisionid)) {
+    ConfigHelper::setFilter($divisionid);
+}
+
 if (!$no_attachments) {
     // Set some template and layout variables
 
@@ -246,6 +291,7 @@ if ($backup || $archive) {
         'ssl_allow_self_signed' => ConfigHelper::checkConfig('sendinvoices.smtp_ssl_allow_self_signed'),
     );
 
+    $customergroups = ConfigHelper::getConfig('sendinvoices.customergroups', '', true);
     $debug_email = ConfigHelper::getConfig('sendinvoices.debug_email', '', true);
     $sender_name = ConfigHelper::getConfig('sendinvoices.sender_name', '', true);
     $sender_email = ConfigHelper::getConfig('sendinvoices.sender_email', '', true);
@@ -261,6 +307,19 @@ if ($backup || $archive) {
     $mdn_email = ConfigHelper::getConfig('sendinvoices.mdn_email', '', true);
     $part_size = isset($options['part-size']) ? $options['part-size'] : ConfigHelper::getConfig('sendinvoices.limit', '0');
 
+    $allowed_customer_status = Utils::determineAllowedCustomerStatus(
+        isset($options['customer-status'])
+            ? $options['customer-status']
+            : ConfigHelper::getConfig('sendinvoices.allowed_customer_status', ''),
+        -1
+    );
+
+    if (empty($allowed_customer_status)) {
+        $customer_status_condition = '';
+    } else {
+        $customer_status_condition = ' AND c.status IN (' . implode(',', $allowed_customer_status) . ')';
+    }
+
     if (isset($options['interval'])) {
         $interval = $options['interval'];
     } else {
@@ -271,7 +330,6 @@ if ($backup || $archive) {
     } else {
         $interval = intval($interval);
     }
-
 
     if (empty($sender_email)) {
         die("Fatal error: sender_email unset! Can't continue, exiting." . PHP_EOL);
@@ -296,6 +354,7 @@ if ($backup || $archive) {
 }
 
 $fakedate = isset($options['fakedate']) ? $options['fakedate'] : null;
+$customerid = isset($options['customerid']) && intval($options['customerid']) ? $options['customerid'] : null;
 
 function localtime2($fakedate)
 {
@@ -315,22 +374,38 @@ $dayend = $daystart + 86399;
 if ($backup || $archive) {
     $groupnames = '';
 } else {
-    // prepare customergroups in sql query
-    $customergroups = " AND EXISTS (SELECT 1 FROM customergroups g, customerassignments ca 
-		WHERE c.id = ca.customerid 
-		AND g.id = ca.customergroupid 
-		AND (%groups)) ";
-    $groupnames = ConfigHelper::getConfig('sendinvoices.customergroups');
-    $groupsql = "";
-    $groups = preg_split("/[[:blank:]]+/", $groupnames, -1, PREG_SPLIT_NO_EMPTY);
-    foreach ($groups as $group) {
-        if (!empty($groupsql)) {
-            $groupsql .= " OR ";
-        }
-        $groupsql .= "UPPER(g.name) = UPPER('".$group."')";
+// prepare customergroups in sql query
+    if (isset($options['customergroups'])) {
+        $customergroups = $options['customergroups'];
     }
-    if (!empty($groupsql)) {
-        $customergroups = preg_replace("/\%groups/", $groupsql, $customergroups);
+    if (!empty($customergroups)) {
+        $ORs = preg_split("/([\s]+|[\s]*,[\s]*)/", mb_strtoupper($customergroups), -1, PREG_SPLIT_NO_EMPTY);
+        $customergroup_ORs = array();
+        foreach ($ORs as $OR) {
+            $ANDs = preg_split("/([\s]*\+[\s]*)/", $OR, -1, PREG_SPLIT_NO_EMPTY);
+            $customergroup_ANDs_regular = array();
+            $customergroup_ANDs_inversed = array();
+            foreach ($ANDs as $AND) {
+                if (strpos($AND, '!') === false) {
+                    $customergroup_ANDs_regular[] = $AND;
+                } else {
+                    $customergroup_ANDs_inversed[] = substr($AND, 1);
+                }
+            }
+            $customergroup_ORs[] = '('
+                . (empty($customergroup_ANDs_regular) ? '1 = 1' : "EXISTS (SELECT COUNT(*) FROM customergroups
+                JOIN customerassignments ON customerassignments.customergroupid = customergroups.id
+                WHERE customerassignments.customerid = c.id
+                AND UPPER(customergroups.name) IN ('" . implode("', '", $customergroup_ANDs_regular) . "')
+                HAVING COUNT(*) = " . count($customergroup_ANDs_regular) . ')')
+                . (empty($customergroup_ANDs_inversed) ? '' : " AND NOT EXISTS (SELECT COUNT(*) FROM customergroups
+                JOIN customerassignments ON customerassignments.customergroupid = customergroups.id
+                WHERE customerassignments.customerid = c.id
+                AND UPPER(customergroups.name) IN ('" . implode("', '", $customergroup_ANDs_inversed) . "')
+                HAVING COUNT(*) > 0)")
+                . ')';
+        }
+        $customergroups = ' AND (' . implode(' OR ', $customergroup_ORs) . ')';
     }
 
     $test = array_key_exists('test', $options);
@@ -342,15 +417,6 @@ if ($backup || $archive) {
         $part_offset = $part_number * $part_size;
     }
 }
-
-// Initialize Session, Auth and LMS classes
-
-$SYSLOG = null;
-$AUTH = null;
-$LMS = new LMS($DB, $AUTH, $SYSLOG);
-
-$plugin_manager = new LMSPluginManager();
-$LMS->setPluginManager($plugin_manager);
 
 if (!$no_attachments) {
     $plugin_manager->executeHook('smarty_initialized', $SMARTY);
@@ -375,23 +441,23 @@ if ($backup || $archive) {
 					WHERE (type & ?) = ?
 					GROUP BY customerid
 				) m ON m.customerid = c.id
-				WHERE c.deleted = 0 AND d.cancelled = 0 AND d.type IN (?, ?, ?, ?) AND c.invoicenotice = 1
+				WHERE " . ($customerid ? 'c.id = ' . $customerid . ' AND ' : '') . "c.deleted = 0 AND d.cancelled = 0 AND d.type IN (?, ?, ?, ?) AND c.invoicenotice = 1
 					AND d.cdate >= $daystart AND d.cdate <= $dayend"
-                . (!empty($groupnames) ? $customergroups : ""), $args));
+                . ($customergroups ?: ''), $args));
             if (empty($count)) {
                 die;
             }
 
             $part_size = floor(($percent * $count) / 100);
             $part_offset = $part_number * $part_size;
-            if ($part_offset >= $count) {
+            if ((!$part_offset && $part_number) || $part_offset >= $count) {
                 die;
             }
         }
     }
 }
 
-$ignore_send_date = ConfigHelper::checkConfig('sendinvoices.ignore_send_date');
+$ignore_send_date = isset($options['ignore-send-date']) || ConfigHelper::checkConfig('sendinvoices.ignore_send_date');
 
 $query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctype, d.archived, d.senddate, n.template" . ($backup || $archive ? '' : ', m.email') . "
 		FROM documents d
@@ -399,10 +465,13 @@ $query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctyp
         . ($backup || $archive ? '' : " JOIN (SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
 				FROM customercontacts WHERE (type & ?) = ? GROUP BY customerid) m ON m.customerid = c.id")
         . " LEFT JOIN numberplans n ON n.id = d.numberplanid 
-		WHERE c.deleted = 0 AND d.cancelled = 0 AND d.type IN (?, ?, ?, ?)" . ($backup || $archive ? '' : " AND c.invoicenotice = 1")
+		WHERE " . ($customerid ? 'c.id = ' . $customerid : '1 = 1')
+            . $customer_status_condition
+            . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
+            . " AND c.deleted = 0 AND d.cancelled = 0 AND d.type IN (?, ?, ?, ?)" . ($backup || $archive ? '' : " AND c.invoicenotice = 1")
             . ($archive ? " AND d.archived = 0" : '') . "
 			AND d.cdate >= $daystart AND d.cdate <= $dayend"
-            . (!empty($groupnames) ? $customergroups : "")
+            . ($customergroups ?: '')
         . " ORDER BY d.number" . (!empty($part_size) ? " LIMIT $part_size OFFSET $part_offset" : '');
 $docs = $DB->GetAll($query, $args);
 

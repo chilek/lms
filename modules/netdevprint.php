@@ -42,14 +42,12 @@ switch ($type) {
             $invprojects = array();
         }
         include(MODULES_DIR . DIRECTORY_SEPARATOR . 'ukesiis.php');
-        die;
-    break;
+        break;
 
     case 'uke-income':
         /***********************************************/
         include(MODULES_DIR . DIRECTORY_SEPARATOR . 'ukeincome.php');
-        die;
-    break;
+        break;
 
     default:
         $layout['pagetitle'] = trans('Reports');

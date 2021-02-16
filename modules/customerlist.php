@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -42,6 +42,14 @@ if ($api) {
     die;
 } else {
     $SESSION->save('backto', $_SERVER['QUERY_STRING']);
+
+    $divisionContext = $SESSION->get('division_context', true);
+    if (!isset($divisionContext)) {
+        $divisionContext = $SESSION->get_persistent_setting('division_context');
+        $SESSION->save('division_context', $divisionContext, true);
+    }
+    $SMARTY->assign('division_context', $divisionContext);
+    $layout['division'] = $divisionContext;
 
     $layout['pagetitle'] = trans('Customers List');
 
@@ -114,7 +122,6 @@ $SMARTY->assign('customerlist', $customerlist);
 $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
-$SMARTY->assign('divisions', $LMS->GetDivisions());
 $SMARTY->assign('pagination', $pagination);
 
 $SMARTY->display('customer/customerlist.html');

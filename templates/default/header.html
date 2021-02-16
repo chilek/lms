@@ -26,8 +26,18 @@
 	<div class="lms-ui-gallery"></div>
 </div>
 <button id="lms-ui-back-to-top" class="lms-ui-button no-print">
-	<i class="lms-ui-icon-back"></i> {trans("Back to top")}
+	<i class="lms-ui-icon-back"></i>
+	<span class="lms-ui-label">{trans("Back to top")}</span>
 </button>
+
+<script>
+
+	$(window).resize(function() {
+		var back_button = $("#lms-ui-back-to-top");
+		back_button.css('transform', 'translateX(' + back_button.outerWidth() + 'px)');
+	})
+
+</script>
 <script src="js/overlib.js"></script>
 
 {include file="modal-dialogs.html"}
@@ -46,6 +56,10 @@
 	{/block}
 	{block name=pagecontent}
 		{include file="spinner.html"}
+		{$__oldbackto = SESSION::getOldBackTo()}
+		{$__backto = SESSION::getBackTo()}
+		<input type="hidden" id="oldbackto" value="{$__oldbackto}">
+		<input type="hidden" id="backto" value="{$__backto}">
 		<script>
 
 			var AUTOSUGGEST_MAX_LENGTH = {ConfigHelper::getConfig('phpui.autosuggest_max_length', 40)};
@@ -60,16 +74,41 @@
 			if (!lmsTabId) {
 				sessionStorage.setItem('tabId', Date.now());
 				lmsTabId = sessionStorage.getItem('tabId');
+				// new browser tab can be opened as hidden or tabid of new tab can be not initialised
+				// so we have to be careful and handle 'backto' session variable in special way and
+				// correct this variable when new tab id has been determined before the moment
+				var oldLmsTabId = getCookie('tabId');
+				{if $__backto}
+					if (oldLmsTabId) {
+						$.ajax({
+							url: '?oldtabid=' + oldLmsTabId + '&tabid=' + lmsTabId,
+							method: "POST",
+							dataType: 'json',
+							data: {
+								oldbackto: $('#oldbackto').val(),
+								backto: $('#backto').val()
+							}
+						});
+					}
+				{/if}
 			}
-			setCookie('tabId', lmsTabId);
+			if (!document.hidden) {
+				setCookie('tabId', lmsTabId);
+			}
 
 			$(window).focus(function() {
 				setCookie('tabId', lmsTabId);
+
+				// check if login timeout condition is met - in newer web browser
+				// timers are not active when window is not visible
+				if (Date.now() > lms_login_timeout_ts) {
+					window.location.assign(window.location.href);
+				}
 			});
 
 		</script>
 		<section id="lms-ui-contents" style="display: none;">
-			<div id="lms-ui-tool-panels" class="lms-ui-popup">
+			<div id="lms-ui-tool-panels" class="lms-ui-popup no-print">
 				{include file="quicksearch-indicators-panel.html"}
 				{include file="toolbar-panel.html"}
 			</div>

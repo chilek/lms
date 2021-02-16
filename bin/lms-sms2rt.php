@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -31,34 +31,59 @@
 // *EXACTLY* WHAT ARE YOU DOING!!!
 // *******************************************************************
 
-ini_set('error_reporting', E_ALL&~E_NOTICE);
+ini_set('error_reporting', E_ALL & ~E_NOTICE);
 
-$parameters = array(
-    'C:' => 'config-file:',
-    'q' => 'quiet',
-    'h' => 'help',
-    'v' => 'version',
-    's:' => 'section:',
-    'm:' => 'message-file:',
-);
+$http_mode = isset($_SERVER['HTTP_HOST']);
 
-foreach ($parameters as $key => $val) {
-    $val = preg_replace('/:/', '', $val);
-    $newkey = preg_replace('/:/', '', $key);
-    $short_to_longs[$newkey] = $val;
-}
-$options = getopt(implode('', array_keys($parameters)), $parameters);
-foreach ($short_to_longs as $short => $long) {
-    if (array_key_exists($short, $options)) {
-        $options[$long] = $options[$short];
-        unset($options[$short]);
+if ($http_mode) {
+    ob_clean();
+    $options = array();
+} else {
+    $parameters = array(
+        'config-file:' => 'C:',
+        'quiet' => 'q',
+        'help' => 'h',
+        'version' => 'v',
+        'section:' => 's:',
+        'message-file:' => 'm:',
+    );
+
+    $long_to_shorts = array();
+    foreach ($parameters as $long => $short) {
+        $long = str_replace(':', '', $long);
+        if (isset($short)) {
+            $short = str_replace(':', '', $short);
+        }
+        $long_to_shorts[$long] = $short;
+    }
+
+    $options = getopt(
+        implode(
+            '',
+            array_filter(
+                array_values($parameters),
+                function ($value) {
+                    return isset($value);
+                }
+            )
+        ),
+        array_keys($parameters)
+    );
+
+    foreach (array_flip(array_filter($long_to_shorts, function ($value) {
+        return isset($value);
+    })) as $short => $long) {
+        if (array_key_exists($short, $options)) {
+            $options[$long] = $options[$short];
+            unset($options[$short]);
+        }
     }
 }
 
 if (array_key_exists('version', $options)) {
     print <<<EOF
 lms-sms2rt.php
-(C) 2001-2018 LMS Developers
+(C) 2001-2020 LMS Developers
 
 EOF;
     exit(0);
@@ -67,7 +92,7 @@ EOF;
 if (array_key_exists('help', $options)) {
     print <<<EOF
 lms-sms2rt.php
-(C) 2001-2018 LMS Developers
+(C) 2001-2020 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -m, --message-file=<message-file>       name of message file;
@@ -82,10 +107,10 @@ EOF;
 }
 
 $quiet = array_key_exists('quiet', $options);
-if (!$quiet) {
+if (!$quiet && !$http_mode) {
     print <<<EOF
 lms-sms2rt.php
-(C) 2001-2018 LMS Developers
+(C) 2001-2020 LMS Developers
 
 EOF;
 }
@@ -94,11 +119,15 @@ $config_section = isset($options['section']) && preg_match('/^[a-z0-9-_]+$/i', $
 
 if (array_key_exists('config-file', $options)) {
     $CONFIG_FILE = $options['config-file'];
+} elseif ($http_mode && is_readable('lms.ini')) {
+    $CONFIG_FILE = 'lms.ini';
+} elseif ($http_mode && is_readable(DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini')) {
+    $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini';
 } else {
     $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
 }
 
-if (!$quiet) {
+if (!$quiet && !$http_mode) {
     echo "Using file ".$CONFIG_FILE." as config." . PHP_EOL;
 }
 
@@ -140,7 +169,7 @@ try {
     $DB = LMSDB::getInstance();
 } catch (Exception $ex) {
     trigger_error($ex->getMessage(), E_USER_WARNING);
-    // can't working without database
+    // can't work without database
     die("Fatal error: cannot connect to database!" . PHP_EOL);
 }
 
@@ -167,14 +196,53 @@ if (!empty($service)) {
     LMSConfig::getConfig()->getSection('sms')->addVariable(new ConfigVariable('service', $service));
 }
 $prefix = ConfigHelper::getConfig($config_section . '.prefix', '', true);
-$newticket_notify = ConfigHelper::checkConfig('phpui.newticket_notify');
+$newticket_notify = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.newticket_notify', true));
 $helpdesk_customerinfo = ConfigHelper::checkConfig('phpui.helpdesk_customerinfo');
 $helpdesk_sendername = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
 
-if (isset($options['message-file'])) {
-    $message_file = $options['message-file'];
+$detect_customer_location_address = ConfigHelper::checkConfig($config_section . '.detect_customer_location_address');
+
+// Load plugin files and register hook callbacks
+$plugin_manager = new LMSPluginManager();
+$LMS->setPluginManager($plugin_manager);
+
+if ($http_mode) {
+    // call external incoming SMS handler(s)
+    $errors = array();
+    $content = null;
+
+    foreach (explode(',', $service) as $single_service) {
+        $data = $LMS->executeHook(
+            'parse_incoming_sms',
+            array(
+                'service' => $single_service
+            )
+        );
+        if (isset($data['error'])) {
+            $errors[$single_service] = $data['error'];
+            continue;
+        }
+        if ($data['content']) {
+            $content = $data['content'];
+            break;
+        }
+    }
+
+    if (!isset($content)) {
+        foreach ($errors as $single_service => $error) {
+            echo $single_service . ': ' . $error . '<br>';
+        }
+        die;
+    }
+
+    $message_file = tempnam('/tmp', 'LMS_INCOMING_MESSAGE');
+    file_put_contents($message_file, $content);
 } else {
-    die("Required message file parameter!" . PHP_EOL);
+    if (isset($options['message-file'])) {
+        $message_file = $options['message-file'];
+    } else {
+        die("Required message file parameter!" . PHP_EOL);
+    }
 }
 
 if (($queueid = $DB->GetOne(
@@ -183,10 +251,6 @@ if (($queueid = $DB->GetOne(
 )) == null) {
     die("Undefined queue!" . PHP_EOL);
 }
-
-// Load plugin files and register hook callbacks
-$plugin_manager = new LMSPluginManager();
-$LMS->setPluginManager($plugin_manager);
 
 $plugins = $plugin_manager->getAllPluginInfo(LMSPluginManager::OLD_STYLE);
 if (!empty($plugins)) {
@@ -257,12 +321,20 @@ if (($fh = fopen($message_file, "r")) != null) {
         }
     }
     $requestor = !empty($customer['name']) ? $customer['name'] : (empty($phone) ? '' : $formatted_phone);
+
+    if (empty($customer['cid']) || !$detect_customer_location_address) {
+        $address_id = null;
+    } else {
+        $address_id = $LMS->detectCustomerLocationAddress($customer['cid']);
+    }
+
     $tid = $LMS->TicketAdd(array(
         'queue' => $queueid,
         'requestor' => $requestor,
         'requestor_phone' => empty($phone) ? null : $phone,
         'subject' => trans('SMS from $a', (empty($phone) ? trans("unknown") : $formatted_phone)),
         'customerid' => !empty($customer['cid']) ? $customer['cid'] : 0,
+        'address_id' => $address_id,
         'body' => $message,
         'phonefrom' => empty($phone) ? '' : $phone,
         'categories' => $cats,
@@ -294,9 +366,16 @@ if (($fh = fopen($message_file, "r")) != null) {
             $emails = array_map(function ($contact) {
                     return $contact['fullname'];
             }, $LMS->GetCustomerContacts($customer['cid'], CONTACT_EMAIL));
+
+            $all_phones = $LMS->GetCustomerContacts($customer['cid'], CONTACT_LANDLINE | CONTACT_MOBILE);
+
             $phones = array_map(function ($contact) {
                     return $contact['fullname'];
-            }, $LMS->GetCustomerContacts($customer['cid'], CONTACT_LANDLINE | CONTACT_MOBILE));
+            }, $all_phones);
+
+            $mobile_phones = array_filter($all_phones, function ($contact) {
+                return $contact['type'] & (CONTACT_MOBILE | CONTACT_DISABLED) == CONTACT_MOBILE;
+            });
 
             if ($helpdesk_customerinfo) {
                 $params = array(
@@ -332,6 +411,18 @@ if (($fh = fopen($message_file, "r")) != null) {
                     $LMS->SendMail($email, $custmail_headers, $custmail_body, null, null, $LMS->GetRTSmtpOptions());
                 }
             }
+            if (!empty($queuedata['newticketsmsbody']) && !empty($mobile_phones)) {
+                $custsms_body = $queuedata['newticketsmsbody'];
+                $custsms_body = str_replace('%tid', $ticketid, $custsms_body);
+                $custsms_body = str_replace('%cid', $ticket['customerid'], $custsms_body);
+                $custsms_body = str_replace('%pin', $info['pin'], $custsms_body);
+                $custsms_body = str_replace('%customername', $info['customername'], $custsms_body);
+                $custsms_body = str_replace('%title', $mh_subject, $custsms_body);
+
+                foreach ($mobile_phones as $phone) {
+                    $LMS->SendSMS($phone['contact'], $custsms_body);
+                }
+            }
         } elseif ($helpdesk_customerinfo) {
             $mail_customerinfo = "\n\n-- \n" . trans('Customer:') . ' ' . $requestor;
             $sms_customerinfo = "\n" . trans('Customer:') . ' ' . $requestor;
@@ -365,6 +456,8 @@ if (($fh = fopen($message_file, "r")) != null) {
     die("Message file doesn't exist!" . PHP_EOL);
 }
 
-$DB->Destroy();
+if ($http_mode) {
+    @unlink($message_file);
+}
 
-?>
+$DB->Destroy();

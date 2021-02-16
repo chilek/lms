@@ -35,6 +35,10 @@ if (!$LMS->CheckTicketAccess($id)) {
 }
 
 $ticket = $LMS->GetTicketContents($id);
+if (empty($ticket)) {
+    $SMARTY->assign('message', trans('Ticket is unavailable!'));
+    access_denied();
+}
 $LMS->getTicketImageGalleries($ticket);
 
 if (isset($_GET['ajax']) && isset($_GET['op'])) {
@@ -50,19 +54,7 @@ if (isset($_GET['ajax']) && isset($_GET['op'])) {
 $ticket['childtickets'] = $LMS->GetChildTickets($id);
 
 if (!empty($ticket['childtickets'])) {
-    $childticketscontent = $LMS->GetQueueContents(array('parentids' => $id, 'count' => false, 'rights' => true));
-    unset($childticketscontent['total']);
-    unset($childticketscontent['state']);
-    unset($childticketscontent['order']);
-    unset($childticketscontent['direction']);
-    unset($childticketscontent['owner']);
-    unset($childticketscontent['removed']);
-    unset($childticketscontent['priority']);
-    unset($childticketscontent['deadline']);
-    unset($childticketscontent['service']);
-    unset($childticketscontent['type']);
-    unset($childticketscontent['unread']);
-    unset($childticketscontent['rights']);
+    $childticketscontent = $LMS->GetQueueContents(array('parentids' => $id, 'count' => false, 'rights' => true, 'short' => true));
 }
 
 if (!empty($ticket['relatedtickets'])) {
@@ -170,6 +162,9 @@ if (isset($_GET['highlight'])) {
         unset($message);
 }
 
+$aet = ConfigHelper::getConfig('rt.allow_modify_resolved_tickets_newer_than', 86400);
+
+$SMARTY->assign('aet', $aet);
 $SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('relatedticketscontent', $relatedticketscontent);
 $SMARTY->assign('childticketscontent', $childticketscontent);

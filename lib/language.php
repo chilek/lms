@@ -26,82 +26,72 @@
 
 Localisation::init();
 
-Localisation::detectUiLanguage();
-Localisation::detectSystemLanguage();
-Localisation::fixUiLanguage();
-
-Localisation::loadUiLanguage();
-Localisation::loadSystemLanguage();
-
-$locale = Localisation::getCurrentLocale();
-setlocale(LC_COLLATE, $locale);
-setlocale(LC_CTYPE, $locale);
-setlocale(LC_TIME, $locale);
-setlocale(LC_NUMERIC, $locale);
-
-mb_internal_encoding('UTF-8');
-
 function uptimef($ts)
 {
-    return Localisation::callUiLanguageFunction('uptimef', $ts);
+    return Localisation::callUiFunction('uptimef', $ts);
 }
 
 function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
 {
-    return Localisation::callUiLanguageFunction('to_words', $num, $power, $powsuffix, $short_version);
+    return Localisation::callUiFunction('to_words', $num, $power, $powsuffix, $short_version);
 }
 
 function check_zip($zip)
 {
-    return Localisation::CallSystemLanguageFunction('check_zip', $zip);
+    return Localisation::CallSystemFunction('check_zip', $zip);
 }
 
 function check_ten($ten)
 {
-    return Localisation::CallSystemLanguageFunction('check_ten', $ten);
+    return Localisation::CallSystemFunction('check_ten', $ten);
 }
 
 function check_ssn($ssn)
 {
-    return Localisation::CallSystemLanguageFunction('check_ssn', $ssn);
+    return Localisation::CallSystemFunction('check_ssn', $ssn);
 }
 
 function check_regon($regon)
 {
-    return Localisation::CallSystemLanguageFunction('check_regon', $regon);
+    return Localisation::CallSystemFunction('check_regon', $regon);
 }
 
 function check_icn($icn)
 {
-    return Localisation::CallSystemLanguageFunction('check_icn', $icn);
+    return Localisation::CallSystemFunction('check_icn', $icn);
 }
 
-function bankaccount($id, $account = null)
+function bankaccount($id, $account = null, $country_code = false)
 {
-    return Localisation::CallSystemLanguageFunction('bankaccount', $id, $account);
+    return Localisation::CallSystemFunction('bankaccount', $id, $account, $country_code);
 }
 
 function check_bankaccount($account)
 {
-    return Localisation::CallSystemLanguageFunction('check_bankaccount', $account);
+    return Localisation::CallSystemFunction('check_bankaccount', $account);
 }
 
-function format_bankaccount($account)
+function format_bankaccount($account, $country_code = false)
 {
-    return Localisation::CallSystemLanguageFunction('format_bankaccount', $account);
+    return Localisation::CallSystemFunction('format_bankaccount', $account, $country_code);
+}
+
+function format_ten($ten, $country_code = false)
+{
+    return Localisation::CallSystemFunction('format_ten', $ten, $country_code);
 }
 
 function getHolidays($year = null)
 {
-    return Localisation::CallSystemLanguageFunction('getHolidays', $year);
+    return Localisation::CallSystemFunction('getHolidays', $year);
 }
 
 function generateRandomPostcode()
 {
-    return Localisation::CallSystemLanguageFunction('generateRandomPostcode');
+    return Localisation::CallSystemFunction('generateRandomPostcode');
 }
 
 function get_currency_value($currency, $date = null)
 {
-    return Localisation::CallSystemLanguageFunction('get_currency_value', $currency, $date);
+    return Localisation::CallSystemFunction('get_currency_value', $currency, $date);
 }

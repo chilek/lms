@@ -271,15 +271,18 @@ switch ($type) {
             $customergroups = array();
         }
 
-        $customers = $DB->GetCol(
-            'SELECT DISTINCT c.id FROM customers c
+        $customers = $DB->GetAllByKey(
+            'SELECT DISTINCT c.id, c.lastname, c.name FROM customers c
                 ' . (empty($customergroups) ? '' : 'JOIN customerassignments ca ON ca.customerid = c.id') . '
-                WHERE c.deleted = 0 AND c.divisionid = ? AND c.type = ? AND c.status = ? AND c.name <> ?
-                    ' . (empty($customergroups) ? '' : ' AND ca.customergroupid IN (' . implode(',', $customergroups) . ') ORDER BY lastname, name ASC'),
+                WHERE c.deleted = 0 AND c.divisionid = ? AND c.type = ? AND c.status = ? AND c.name <> ?'
+                    . (empty($customergroups) ? '' : ' AND ca.customergroupid IN (' . implode(',', $customergroups) . ')')
+                    . ' ORDER BY c.lastname, c.name ASC',
+            'id',
             array($division, CTYPES_PRIVATE, CSTATUS_CONNECTED, '')
         );
 
         $division = $LMS->GetDivision($division);
+        $division_address = $LMS->GetAddress($division['address_id']);
 
         $content = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
         $content .= "<Operator>\n";
@@ -287,6 +290,19 @@ switch ($type) {
         $content .= "\t\t<dataStanNa>" . date('d-m-Y') . "</dataStanNa>\n";
         $content .= "\t\t<Nazwa>" . htmlspecialchars($division['name']) . "</Nazwa>\n";
         $content .= "\t\t<Regon>" . $division['regon'] . "</Regon>\n";
+        $content .= "\t\t<AdresOperatora>\n";
+        $content .= "\t\t\t<Miejscowosc>" . htmlspecialchars($division['city']) . "</Miejscowosc>\n";
+        if (!empty($division_address['street'])) {
+            $content .= "\t\t\t<Ulica>" . htmlspecialchars($division_address['street']) . "</Ulica>\n";
+        }
+        $content .= "\t\t\t<NrDom>" . htmlspecialchars($division_address['house']) . "</NrDom>\n";
+        if (!empty($division_address['flat'])) {
+            $content .= "\t\t\t<NrLokal>" . htmlspecialchars($division_address['flat']) . "</NrLokal>\n";
+        }
+        $content .= "\t\t\t<KodPoczta>" . $division_address['zip'] . "</KodPoczta>\n";
+        $content .= "\t\t\t<Poczta>" . htmlspecialchars(empty($division_address['postoffice']) ? $division['city'] : $division_address['postoffice']) . "</Poczta>\n";
+        $content .= "\t\t\t<Telefon>" . $division['phone'] . "</Telefon>\n";
+        $content .= "\t\t</AdresOperatora>\n";
         $content .= "\t\t<Abonenci>\n";
 
         $state_ident_by_ids = $DB->GetAllByKey('SELECT id, ident FROM location_states', 'id');
@@ -311,7 +327,7 @@ switch ($type) {
             'id'
         );
 
-        foreach ($customers as $customerid) {
+        foreach ($customers as $customerid => $customer) {
             $customer = $LMS->GetCustomer($customerid);
             $content .= "\t\t\t<Abonent>\n";
             $content .= "\t\t\t\t<Nazwisko>" . htmlspecialchars($customer['lastname']) . "</Nazwisko>\n";

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -79,13 +79,29 @@ if (isset($_GET['search'])) {
         }
     }
 
-    if ($SESSION->is_set('backto')) {
+    if ($SESSION->is_set('backto', true)) {
+        $SESSION->redirect('?' . $SESSION->get('backto', true));
+    } elseif ($SESSION->is_set('backto')) {
         $SESSION->redirect('?' . $SESSION->get('backto'));
     } else {
         $SESSION->redirect('?m=customerlist');
     }
 }
 
+if (isset($_GET['oper'])) {
+    switch ($_GET['oper']) {
+        case 'karma-raise':
+            header('Content-Type: application/json');
+            $result = $LMS->raiseCustomerKarma($_GET['id']);
+            die(json_encode($result));
+            break;
+        case 'karma-lower':
+            header('Content-Type: application/json');
+            $result = $LMS->lowerCustomerKarma($_GET['id']);
+            die(json_encode($result));
+            break;
+    }
+}
 if (!isset($_POST['xjxfun'])) {
     require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
 
@@ -97,7 +113,14 @@ if (!isset($_POST['xjxfun'])) {
     } elseif (!$exists) {
         $SESSION->redirect('?m=customerlist');
     } else {
-        $backurl = $SESSION->is_set('backto') ? '?' . $SESSION->get('backto') : '?m=customerlist';
+        if ($SESSION->is_set('backto', true)) {
+            $backto = $SESSION->get('backto', true);
+        } elseif ($SESSION->is_set('backto')) {
+            $backto = $SESSION->get('backto');
+        } else {
+            $backto = '';
+        }
+        $backurl = $backto ? '?' . $backto : '?m=customerlist';
 
         $pin_min_size = intval(ConfigHelper::getConfig('phpui.pin_min_size', 4));
         if (!$pin_min_size) {
@@ -141,17 +164,30 @@ if (!isset($_POST['xjxfun'])) {
                     $customerdata['addresses'][ $k ]['show'] = true;
                 }
 
+                $countryCode = null;
+                if (!empty($v['location_country_id'])) {
+                    $countryCode = $LMS->getCountryCodeById($v['location_country_id']);
+                    if ($v['location_address_type'] == BILLING_ADDRESS) {
+                        $billingCountryCode = $countryCode;
+                    }
+                }
+
                 if (!ConfigHelper::checkPrivilege('full_access') && ConfigHelper::checkConfig('phpui.teryt_required')
                     && !empty($v['location_city_name']) && ($v['location_country_id'] == 2 || empty($v['location_country_id']))
-                    && (!isset($v['teryt']) || empty($v['location_city']))) {
+                    && (!isset($v['teryt']) || empty($v['location_city'])) && $LMS->isTerritState($v['location_state_name'])) {
                     $error['customerdata[addresses][' . $k . '][teryt]'] = trans('TERRIT address is required!');
                     $customerdata['addresses'][ $k ]['show'] = true;
                 }
 
-                if ($v['location_zip'] && !Localisation::checkZip($v['location_zip'], $v['location_country_id'])) {
+                Localisation::setSystemLanguage($countryCode);
+                if ($v['location_zip'] && !check_zip($v['location_zip'])) {
                     $error['customerdata[addresses][' . $k . '][location_zip]'] = trans('Incorrect ZIP code!');
                     $customerdata['addresses'][ $k ]['show'] = true;
                 }
+            }
+
+            if (isset($billingCountryCode)) {
+                Localisation::setSystemLanguage($billingCountryCode);
             }
 
             if ($customerdata['ten'] !='') {
@@ -218,14 +254,17 @@ if (!isset($_POST['xjxfun'])) {
                 $error['regon'] = trans('Incorrect Business Registration Number!');
             }
 
-            if ($customerdata['icn'] != '' && !isset($customerdata['icnwarning']) && !check_icn($customerdata['icn'])) {
+            if ($customerdata['icn'] != '' && $customerdata['ict'] == 0 && !isset($customerdata['icnwarning']) && !check_icn($customerdata['icn'])) {
                 $warning['icn'] = trans('Incorrect Identity Card Number! If you are sure you want to accept, then click "Submit" again.');
                 $icnwarning = 1;
             }
 
+            Localisation::resetSystemLanguage();
+
             if ($customerdata['pin'] == '') {
                 $error['pin'] = trans('PIN code is required!');
-            } elseif (!validate_random_string($customerdata['pin'], $pin_min_size, $pin_max_size, $pin_allowed_characters)) {
+            } elseif ((!ConfigHelper::checkConfig('phpui.validate_changed_pin') || $customerdata['pin'] != $LMS->getCustomerPin($_GET['id']))
+                && !validate_random_string($customerdata['pin'], $pin_min_size, $pin_max_size, $pin_allowed_characters)) {
                 $error['pin'] = trans('Incorrect PIN code!');
             }
 
@@ -332,6 +371,7 @@ if (!isset($_POST['xjxfun'])) {
                     }
                 }
 
+                $DB->BeginTrans();
                 $DB->Execute('DELETE FROM customercontacts WHERE customerid = ?', array($customerdata['id']));
                 if (!empty($contacts)) {
                     foreach ($contacts as $contact) {
@@ -342,6 +382,22 @@ if (!isset($_POST['xjxfun'])) {
                             'INSERT INTO customercontacts (customerid, contact, name, type) VALUES (?, ?, ?, ?)',
                             array($customerdata['id'], $contact['contact'], $contact['name'], $contact['type'])
                         );
+
+                        if ($contact['type'] & CONTACT_EMAIL && !empty($contact['properties'])) {
+                            $contactid = $DB->GetLastInsertID('customercontacts');
+                            foreach ($contact['properties'] as $property) {
+                                $DB->Execute(
+                                    'INSERT INTO customercontactproperties (contactid, name, value)
+                                    VALUES (?, ?, ?)',
+                                    array(
+                                        $contactid,
+                                        $property['name'],
+                                        $property['value']
+                                    )
+                                );
+                            }
+                        }
+
                         if ($SYSLOG) {
                             $contactid = $DB->GetLastInsertID('customercontacts');
                             $args = array(
@@ -350,11 +406,13 @@ if (!isset($_POST['xjxfun'])) {
                                 'contact' => $contact['contact'],
                                 'name' => $contact['name'],
                                 'type' => $contact['type'],
+                                'properties' => serialize($contact['properties']),
                             );
                             $SYSLOG->AddMessage(SYSLOG::RES_CUSTCONTACT, SYSLOG::OPER_ADD, $args);
                         }
                     }
                 }
+                $DB->CommitTrans();
 
                 $SESSION->redirect($backurl);
             } else {
@@ -439,9 +497,7 @@ $customerinfo = $hook_data['customerinfo'];
 $SMARTY->assign('xajax', $LMS->RunXajax());
 $SMARTY->assign(compact('pin_min_size', 'pin_max_size', 'pin_allowed_characters'));
 $SMARTY->assign('customerinfo', $customerinfo);
-$SMARTY->assign('cstateslist', $LMS->GetCountryStates());
-$SMARTY->assign('countrieslist', $LMS->GetCountries());
-$SMARTY->assign('divisions', $LMS->GetDivisions());
+$SMARTY->assign('divisions', $LMS->GetDivisions(array('userid' => Auth::GetCurrentUser())));
 $SMARTY->assign('recover', ($action == 'recover' ? 1 : 0));
 $SMARTY->assign('customeredit_sortable_order', $SESSION->get_persistent_setting('customeredit-sortable-order'));
 $SMARTY->display('customer/customeredit.html');

@@ -63,4 +63,6 @@ interface LMSLocationManagerInterface
     public function GetCitiesWithSections();
 
     public function getCountryCodeById($countryid);
+
+    public function isTerritState($state);
 }

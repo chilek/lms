@@ -70,6 +70,7 @@ if (!isset($_POST['xjxfun'])) {
     //        $customerinfo['cutoffstopnum'] = floor(($customerinfo['cutoffstop'] - mktime(23,59,59))/86400);
 
     $SESSION->save('backto', $_SERVER['QUERY_STRING']);
+    $SESSION->save('backto', $_SERVER['QUERY_STRING'], true);
 
     $layout['pagetitle'] = trans('Customer Info: $a', $customerinfo['customername']);
 }

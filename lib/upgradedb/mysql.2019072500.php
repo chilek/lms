@@ -23,7 +23,9 @@
 
 $this->BeginTrans();
 
-$this->Execute("ALTER TABLE events DROP FOREIGN KEY events_address_id_fkey");
+if ($this->ResourceExists('events_address_id_fkey', LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
+    $this->Execute("ALTER TABLE events DROP FOREIGN KEY events_address_id_fkey");
+}
 $this->Execute("ALTER TABLE events ADD CONSTRAINT events_address_id_fkey
         FOREIGN KEY (address_id) REFERENCES addresses(id) ON UPDATE CASCADE ON DELETE SET NULL");
 

@@ -94,7 +94,7 @@
 						</div>
 						<div class="lms-ui-tab-table-wrapper title-description col-2">
 							<div class="lms-ui-tab-table-column title">
-								{$event.title}
+								{$event.title|escape}
 							</div>
 							<div class="lms-ui-tab-table-column description">
 								{$event.description|default:"-"}

@@ -49,5 +49,5 @@ $SMARTY->assign('usergroup', $usergroup);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('users', $users);
 $SMARTY->assign('userscount', count($users));
-$SMARTY->assign('usergroups', $LMS->UsergroupGetAll());
+$SMARTY->assign('usergroups', $LMS->getAllUserGroups());
 $SMARTY->display('user/usergroupedit.html');

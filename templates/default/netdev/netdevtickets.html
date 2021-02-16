@@ -1,10 +1,10 @@
 <!--// $Id$ //-->
-<TABLE class="lmsbox lms-ui-sortable" id="netdevtickets">
+<TABLE class="lmsbox lms-ui-tab-container lms-ui-sortable" id="netdevtickets">
     <THEAD>
 	<TR class="hand lmsbox-titlebar" data-lmsbox-content="netdevticketpanel">
 		<TD class="bold">
 			<IMG src="img/ticket.gif" alt="" class="lms-ui-sortable-handle">
-			{trans("Assigned tickets:")} ({count($queue)})
+			{trans("Assigned tickets:")} ({if !empty($queue)}{count($queue)}{else}0{/if})
 		</TD>
 		<TD class="text-right nobr">
 			<A href="?m=rtticketadd&netdevid={$queue_netdevid}{if isset($netdev.netnode.id)}&netnodeid={$netdev.netnode.id}{/if}"><IMG src="img/save.gif" alt="{trans("Add new")}"> {trans("Add new")}</A>

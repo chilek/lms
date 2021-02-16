@@ -23,7 +23,9 @@
 
 $this->BeginTrans();
 
-$this->Execute("ALTER TABLE documents ADD sdate integer DEFAULT 0 NOT NULL");
+if (!$this->ResourceExists('documents.sdate', LMSDB::RESOURCE_TYPE_COLUMN)) {
+    $this->Execute("ALTER TABLE documents ADD sdate integer DEFAULT 0 NOT NULL");
+}
 
 $this->Execute("UPDATE documents SET sdate = cdate WHERE type IN (1, 3)"); // DOC_INVOICE/DOC_CNOTE
 

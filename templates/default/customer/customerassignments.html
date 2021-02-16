@@ -43,7 +43,7 @@
 				{trans("<!assignment>Commited")}
 				<input type="checkbox" class="commited" value="1"{if $commited} checked{/if}>
 			</label>
-			<a class="clear-filter lms-ui-button" href="#"><i class="lms-ui-icon-delete"></i><a>
+			<a class="clear-filter lms-ui-button" href="#"><i class="lms-ui-icon-delete"></i></a>
 		{/tab_header_cell}
 		{tab_header_cell}
 			{if !$customerinfo.deleted}
@@ -136,11 +136,18 @@
 							{else}
 								{if $a.tariffid}
 									<strong>
-										<A href="?m=tariffinfo&id={$a.tariffid}">
+										<A href="?m=tariffinfo&id={$a.tariffid}" {if !$a.commited} class="lms-ui-assignment-not-commited"{/if}>
 											{$a.name} {if count($assignments)>1} ({$a.id}){/if}
 										</A>
-										{if $a.attribute} - {$a.attribute}{/if}
+										{if $a.attribute} - {$a.attribute|escape}{/if}
 									</strong>
+									{if $a.flags & $smarty.const.TARIFF_FLAG_REWARD_PENALTY}
+										{if $a.value < 0}
+											{icon name="reward" tip="reward"}
+										{else}
+											{icon name="penalty" tip="penalty"}
+										{/if}
+									{/if}
 								{else}
 									{$a.name}
 								{/if}
@@ -174,7 +181,7 @@
 						</div>
 						<div class="lms-ui-tab-table-column accounting">
 							{if $a.tariffid || $a.liabilityid}
-								{$a.payday}
+								{$a.payday}{if $a.backwardperiod} {icon name="lms-ui-icon-previous" tip="<!assignment>backward"}{/if}
 							{/if}
 						</div>
 					</div>
@@ -323,10 +330,10 @@
 		});
 		documents.sort();
 
-		var selected_type = getCookie('{$tab_id}_tariff_type_{$customerinfo.id}');
-		var selected_document = getCookie('{$tab_id}_document_{$customerinfo.id}');
-		var expired_checked = getCookie('{$tab_id}_expired_{$customerinfo.id}');
-		var commited_checked = getCookie('{$tab_id}_commited_{$customerinfo.id}');
+		var selected_type = getStorageItem('{$tab_id}_tariff_type_{$customerinfo.id}');
+		var selected_document = getStorageItem('{$tab_id}_document_{$customerinfo.id}');
+		var expired_checked = getStorageItem('{$tab_id}_expired_{$customerinfo.id}');
+		var commited_checked = getStorageItem('{$tab_id}_commited_{$customerinfo.id}');
 
 		$.each(assignment_types, function (key, value) {
 			tab_elem.find('.assignment-type').append('<option value="' + value + '"'
@@ -343,8 +350,8 @@
 		if (documents.length <= 1) {
 			tab_elem.find('.document-filter').hide();
 		}
-		tab_elem.find('.expired').prop('checked', {if $expired}true{else}parseInt(expired_checked) == 1{/if});
-		tab_elem.find('.commited').prop('checked', {if $commited}true{else}commited_checked === null ? true : (parseInt(commited_checked) == 1){/if});
+		tab_elem.find('.expired').prop('checked', expired_checked === null ? {if $expired}true{else}false{/if} : parseInt(expired_checked) == 1);
+		tab_elem.find('.commited').prop('checked', commited_checked === null ? {if $commited}true{else}false{/if} : parseInt(commited_checked) == 1);
 
 		/*
             if (assignment_types.length <= 1 && documents.length <= 1) {
@@ -425,10 +432,10 @@
 				tab_elem.find('.lms-ui-tab-table-row[data-tariff-type]').closest('.lms-ui-tab-contents').get(0).updateCheckAll();
 			}
 
-			setCookie('{$tab_id}_tariff_type_{$customerinfo.id}', selected_type);
-			setCookie('{$tab_id}_document_{$customerinfo.id}', selected_document);
-			setCookie('{$tab_id}_expired_{$customerinfo.id}', expired_checked ? 1 : 0);
-			setCookie('{$tab_id}_commited_{$customerinfo.id}', commited_checked ? 1 : 0);
+			setStorageItem('{$tab_id}_tariff_type_{$customerinfo.id}', selected_type);
+			setStorageItem('{$tab_id}_document_{$customerinfo.id}', selected_document);
+			setStorageItem('{$tab_id}_expired_{$customerinfo.id}', expired_checked ? 1 : 0);
+			setStorageItem('{$tab_id}_commited_{$customerinfo.id}', commited_checked ? 1 : 0);
 		}
 
 		// don't allow to trigger click event on title bar

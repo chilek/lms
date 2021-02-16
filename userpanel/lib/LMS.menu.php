@@ -41,7 +41,7 @@ $submenu[] =
     array(
         'name' => trans('Configuration'),
         'link' => '?m=userpanel',
-        'tip' => trans('Userpanel configuration'),
+        'tip' => trans('Userpanel Configuration'),
         'prio' => 10,
     );
 $submenu[] =

@@ -77,7 +77,12 @@ function DBLoad($filename = null)
                             'documentcontents',
                             'stats',
                             'eventassignments',
-                            'sessions'))) {
+                            'sessions',
+                            'logmessagekeys',
+                            'logmessagedata',
+                            'voip_emergency_numbers',
+                            'rtticketlastview',
+                            ))) {
                     $DB->Execute("SELECT setval('".$tablename."_id_seq',max(id)) FROM ".$tablename);
                 }
             }

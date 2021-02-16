@@ -38,12 +38,12 @@ if (isset($_GET['ownerid'])) {
     }
 }
 
-if (isset($_GET['preip'])) {
+if (isset($_GET['preip']) && check_ip($_GET['preip'])) {
     $nodedata['ipaddr'] = $_GET['preip'];
 }
 
 if (isset($_GET['prenetwork'])) {
-    $nodedata['netid'] = $_GET['prenetwork'];
+    $nodedata['netid'] = intval($_GET['prenetwork']);
 }
 
 if (isset($_GET['premac'])) {
@@ -52,14 +52,17 @@ if (isset($_GET['premac'])) {
     } else {
         $nodedata['macs'][] = $_GET['premac'];
     }
+    $nodedata['macs'] = array_filter($nodedata['macs'], function ($mac) {
+        return check_mac($mac);
+    });
 }
 
-if (isset($_GET['prename'])) {
+if (isset($_GET['prename']) && preg_match('/' . ConfigHelper::getConfig('phpui.node_name_regexp', '^[_a-z0-9-.]+$') . '/i', $_GET['prename'])) {
     $nodedata['name'] = $_GET['prename'];
 }
 
 if (isset($_GET['pre_address_id'])) {
-    $nodedata['address_id'] = $_GET['pre_address_id'];
+    $nodedata['address_id'] = intval($_GET['pre_address_id']);
 }
 
 if (isset($_POST['nodedata'])) {
@@ -166,8 +169,16 @@ if (isset($_POST['nodedata'])) {
     }
     $nodedata['macs'] = $macs;
 
+    $password_required = ConfigHelper::getConfig('phpui.nodepassword_required', 'none');
+
     if (strlen($nodedata['passwd']) > 32) {
         $error['passwd'] = trans('Password is too long (max.32 characters)!');
+    } elseif (!strlen($nodedata['passwd']) && $password_required != 'none') {
+        if ($password_required == 'error') {
+            $error['passwd'] = trans('Entered password is required!');
+        } elseif ($password_required == 'warning' && !isset($warnings['nodedata-passwd-'])) {
+            $warning['nodedata[passwd]'] = trans('Entered password is empty!');
+        }
     }
 
     if (!$nodedata['ownerid']) {
@@ -236,6 +247,11 @@ if (isset($_POST['nodedata'])) {
 
     if (!isset($nodedata['halfduplex'])) {
         $nodedata['halfduplex'] = 0;
+    }
+
+    if (!ConfigHelper::checkPrivilege('full_access') && ConfigHelper::checkConfig('phpui.node_to_network_device_connection_required')
+        && empty($nodedata['netdev'])) {
+        $error['netdev'] = trans('Network device selection is required!');
     }
 
     if (!ConfigHelper::checkPrivilege('full_access') && ConfigHelper::checkConfig('phpui.teryt_required')
@@ -329,6 +345,10 @@ if (isset($_POST['nodedata'])) {
     $nodedata['linktype'] = intval(ConfigHelper::getConfig('phpui.default_linktype', LINKTYPE_WIRE));
     $nodedata['linktechnology'] = intval(ConfigHelper::getConfig('phpui.default_linktechnology', 0));
     $nodedata['linkspeed'] = intval(ConfigHelper::getConfig('phpui.default_linkspeed', 100000));
+
+    if (ConfigHelper::checkConfig('phpui.default_node_check_mac')) {
+        $nodedata['chkmac'] = 1;
+    }
 
     // check if customer address is selected or if default location address exists
     // if both are not fullfilled we generate user interface warning

@@ -109,6 +109,7 @@ function GetTariffList($order = 'name,asc', $type = null, $access = 0, $customer
 			) a ON (a.tariffid = t.id)
 			LEFT JOIN taxes ON (t.taxid = taxes.id)
 			WHERE 1=1'
+            . ($customergroupid || $promotionid ? ' AND a.tariffid IS NOT NULL' : '')
             . (!empty($tags) ? ' AND t.id IN (SELECT DISTINCT tariffid FROM tariffassignments WHERE tarifftagid IN (' . implode(',', $tags) . '))' : '')
             .($type ? ' AND t.type = '.intval($type) : '')
             .($access ? ' AND t.authtype & ' . intval($access) . ' > 0' : '')
@@ -269,7 +270,7 @@ if (!isset($_POST['s'])) {
 }
 $SESSION->save('tls', $s);
 
-if (!isset($_POST['tg']) && !is_null($_POST['tg'])) {
+if (!isset($_POST['tg'])) {
     $SESSION->restore('tltg', $tg);
 } else {
     $tg = $_POST['tg'];

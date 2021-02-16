@@ -48,7 +48,7 @@
 //-->
 </SCRIPT>
 {$default_printpage = ConfigHelper::getConfig('receipts.default_printpage')}
-<FORM METHOD="POST" NAME="page">
+<FORM METHOD="POST" NAME="page" id="receiptlist">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox lms-ui-background-cycle">
     <THEAD>
@@ -89,12 +89,16 @@
 					<OPTION value="customerid"{if $listdata.cat == "customerid"} SELECTED{/if}>{trans("customer ID")}</OPTION>
 					<OPTION value="ten"{if $listdata.cat == "ten"} SELECTED{/if}>{trans("TEN")}</OPTION>
 					<OPTION value="address"{if $listdata.cat == "address"} SELECTED{/if}>{trans("address")}</OPTION>
+					<OPTION value="positions"{if $listdata.cat == "positions"} SELECTED{/if}>{trans("Positions")}</OPTION>
 				</SELECT>&nbsp;
 				<B>{trans("Period:")}</B>&nbsp;
+				{date_period_preset from="#receiptlist [name=\"from\"]" to="#receiptlist [name=\"to\"]"}
 				{trans("from")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
 				{trans("to")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
 				<input type="hidden" name="advances" value="0">
-				<INPUT type="checkbox" id="advances" name="advances" value="1"{if $listdata.advances} checked{/if}><label for="advances">{trans("not settled adv. only")}</label>&nbsp;
+				<label>
+					<INPUT type="checkbox" name="advances" value="1"{if $listdata.advances} checked{/if}>{trans("not settled adv. only")}
+				</label>&nbsp;
 				<A href="javascript: filter();">&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
@@ -113,7 +117,7 @@
 		<TD WIDTH="1%" NOWRAP><A id="{$receipt.id}"></A>
 			{if !$receipt.closed}<span class="lms-ui-alert">{/if}
 			{$receipt.cdate|date_format:"%Y/%m/%d %H:%M"}<BR>
-			{$receipt.user|truncate:"16":"...":true}
+			{$receipt.user|truncate:"16":"&hellip;":true}
 			{if !$receipt.closed}</span>{/if}
 		</TD>
 		<TD WIDTH="1%" NOWRAP align="right"{if !$receipt.closed} class="lms-ui-alert"{/if}>
@@ -127,12 +131,12 @@
 		</TD>
 		<TD WIDTH="45%"{if !$receipt.closed} class="lms-ui-alert"{/if}>
 			{if $receipt.customerid}<A HREF="?m=customerinfo&id={$receipt.customerid}">{/if}
-			{$receipt.customer|truncate:"60":"...":true}
+			{$receipt.customer|truncate:"60":"&hellip;":true}
 			{if $receipt.customerid}</A>{/if}
 		</TD>
 		<TD WIDTH="50%"{if !$receipt.closed} class="lms-ui-alert"{/if}>
 			{foreach $receipt.positions as $position}
-				{$position.description|truncate:"80":"...":true}
+				{$position.description|truncate:"80":"&hellip;":true}
 				({moneyf($position.value, $receipt.currency)})
 				{if !$position@last}<br>{/if}
 			{/foreach}

@@ -136,7 +136,7 @@ switch ($action) {
                 $event = reset($events);
                 $redirect = '?m=eventinfo&id=' . $event['id'];
             } else {
-                $redirect = '?m=eventlist&persistent-filter=-1&a[]=' . Auth::GetCurrentUser();
+                $redirect = '?m=eventlist&persistent-filter=-1&force_overdue_events=1&a[]=' . Auth::GetCurrentUser();
             }
         }
         break;

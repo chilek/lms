@@ -69,7 +69,7 @@
 							{/if}
 							<strong>{$netdevip.name}</strong>
 							{if $netdevip.location}<BR>
-								{$netdevip.info|truncate:50:"...":true}
+								{$netdevip.info|truncate:50:"&hellip;":true}
 							{/if}
 						</div>
 						<div class="lms-ui-tab-table-column id">
@@ -91,7 +91,7 @@
 						</div>
 						<div class="lms-ui-tab-table-column network">
 							<strong>
-								<a href="?m=netinfo&id={$netdevip.netid}">{$netdevip.netname|truncate:"20":"...":true}</a>
+								<a href="?m=netinfo&id={$netdevip.netid}">{$netdevip.netname|truncate:"20":"&hellip;":true}</a>
 							</strong>
 						</div>
 					</div>

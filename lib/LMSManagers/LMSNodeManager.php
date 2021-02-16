@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2017 LMS Developers
+ *  Copyright (C) 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -49,7 +49,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             'access'            => $nodedata['access'],
             'warning'           => $nodedata['warning'],
             SYSLOG::RES_CUST    => empty($nodedata['ownerid']) ? null : $nodedata['ownerid'],
-            'info'              => $nodedata['info'],
+            'info'              => Utils::removeInsecureHtml($nodedata['info']),
             'chkmac'            => $nodedata['chkmac'],
             'halfduplex'        => $nodedata['halfduplex'],
             'linktype'          => isset($nodedata['linktype']) ? intval($nodedata['linktype']) : 0,
@@ -294,6 +294,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
      *          7 = with warning,
      *          8 = without gps coords,
      *          9 = without radio sector (if wireless link)
+     *          10 = with locks
      *      network - network id (default: null = any), single integer value
      *      customergroup - customer group id (default: null = any), single integer value
      *      nodegroup - node group id (default: null = any), single integer value
@@ -464,6 +465,8 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         if ($count) {
             $sql .= 'SELECT COUNT(n.id) ';
         } else {
+            $daysecond = time() - strtotime('today');
+            $weekday = 1 << (date('N') - 1);
             $sql .= 'SELECT n.id AS id, n.ipaddr, inet_ntoa(n.ipaddr) AS ip, ipaddr_pub,
 				inet_ntoa(n.ipaddr_pub) AS ip_pub, n.mac, n.name, n.ownerid, n.access, n.warning,
 				n.netdev, n.lastonline, n.info, n.longitude, n.latitude, n.linktype, n.linktechnology, n.linkspeed,
@@ -480,7 +483,12 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 				(CASE WHEN lst.ident IS NULL
 					THEN (CASE WHEN c.street = \'\' THEN \'99999\' ELSE \'99998\' END)
 					ELSE lst.ident END) AS street_ident,
-				n.location_house, n.location_flat ';
+				n.location_house, n.location_flat,
+				(CASE WHEN EXISTS (
+                    SELECT 1 FROM nodelocks
+                    WHERE disabled = 0 AND (days & ' . $weekday . ') > 0 AND ' . $daysecond . ' >= fromsec
+                        AND ' . $daysecond . ' <= tosec AND nodeid = n.id
+                ) THEN 1 ELSE 0 END) AS locked ';
         }
         $sql .= 'FROM vnodes n 
 				JOIN customerview c ON (n.ownerid = c.id)
@@ -513,6 +521,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 . ($status == 7 ? ' AND n.warning = 1' : '')
                 . ($status == 8 ? ' AND (n.latitude IS NULL OR n.longitude IS NULL)' : '')
                 . ($status == 9 ? ' AND (n.linktype = ' . LINKTYPE_WIRELESS . ' AND n.linkradiosector IS NULL)' : '')
+                . ($status == 10 ? ' AND EXISTS (SELECT 1 FROM nodelocks WHERE disabled = 0 AND nodeid = n.id)' : '')
                 . ($customergroup ? ' AND customergroupid = ' . intval($customergroup) : '')
                 . ($nodegroup ? ' AND nodegroupid = ' . intval($nodegroup) : '')
                 . (!empty($searchargs) ? $searchargs : '')
@@ -526,6 +535,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             if (!empty($nodelist)) {
                 foreach ($nodelist as &$row) {
                     ($row['access']) ? $totalon++ : $totaloff++;
+                    $row['lastonlinedate'] = lastonline_date($row['lastonline']);
 
                     // if location is empty and owner is set then heirdom address from owner
                     if (!$row['location'] && $row['ownerid']) {
@@ -729,7 +739,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             SYSLOG::RES_USER    => Auth::GetCurrentUser(),
             'access'            => $nodedata['access'],
             'warning'           => $nodedata['warning'],
-            'info'              => $nodedata['info'],
+            'info'              => Utils::removeInsecureHtml($nodedata['info']),
             SYSLOG::RES_NETDEV  => empty($nodedata['netdev']) ? null : $nodedata['netdev'],
             'linktype'          => isset($nodedata['linktype']) ? intval($nodedata['linktype']) : 0,
             'linkradiosector'   => (isset($nodedata['linktype']) && intval($nodedata['linktype']) == 1 ?
@@ -833,6 +843,56 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         return $result;
     }
 
+    public function GetNodeLinkType($devid, $nodeid)
+    {
+        $link = $this->db->GetRow(
+            'SELECT linktype AS type, linktechnology AS technology,
+            linkspeed AS speed, linkradiosector AS radiosector, port FROM nodes
+            WHERE netdev = ? AND id = ?',
+            array($devid, $nodeid)
+        );
+        if (empty($link)) {
+            $link = array();
+        } else {
+            $link['radiosectors'] = $this->db->GetAll(
+                'SELECT id, name FROM netradiosectors WHERE netdev = ?'
+                . ($link['technology'] ? ' AND (technology = ' . $link['technology'] . ' OR technology = 0)' : '')
+                . ' ORDER BY name',
+                array($devid)
+            );
+        }
+
+        return $link;
+    }
+
+    public function ValidateNodeLink($node, $link)
+    {
+        $netdev = $this->db->GetOne('SELECT netdev FROM nodes WHERE id  = ?', array($node));
+        if (!$netdev) {
+            return trans('Unknown error!');
+        }
+
+        if ($this->db->GetOne(
+            'SELECT id
+            FROM netlinks
+            WHERE (src = ? AND srcport = ?) OR (dst = ? AND dstport = ?)',
+            array($netdev, $link['port'], $netdev, $link['port'])
+        ) || $this->db->GetOne(
+            'SELECT id
+            FROM nodes
+            WHERE port = ? AND id <> ?',
+            array($link['port'], $node)
+        )) {
+            return trans('Selected port number is taken by other device or node!');
+        }
+
+        if ($this->db->GetOne('SELECT ports FROM netdevices WHERE id = ?', array($netdev)) < intval($link['port'])) {
+            return trans('Incorrect port number!');
+        }
+
+        return true;
+    }
+
     public function SetNodeLinkType($node, $link = null)
     {
         if (empty($link)) {
@@ -850,10 +910,16 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             $speed = isset($link['speed']) ? intval($link['speed']) : 100000;
         }
 
-        $res = $this->db->Execute(
-            'UPDATE nodes SET linktype=?, linkradiosector = ?, linktechnology=?, linkspeed=? WHERE id=?',
-            array($type, $radiosector, $technology, $speed, $node)
-        );
+        $query = 'UPDATE nodes SET linktype = ?, linkradiosector = ?, linktechnology = ?, linkspeed = ?';
+        $args = array($type, $radiosector, $technology, $speed);
+        if (isset($link['port'])) {
+            $query .= ', port = ?';
+            $args[] = intval($link['port']);
+        }
+        $query .= ' WHERE id=?';
+        $args[] = $node;
+        $res = $this->db->Execute($query, $args);
+
         if ($this->syslog && $res) {
             $nodedata = $this->db->GetRow('SELECT ownerid, netdev FROM vnodes WHERE id=?', array($node));
             $args = array(
@@ -1003,11 +1069,126 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 if (empty($node['ownerid']) || $node['id'] != $nodeid) {
                     continue;
                 }
-                $node_assignments[] = $assignment;
+                $node_assignments[$nodeid][] = $assignment;
                 break;
             }
         }
 
         return $node_assignments;
+    }
+
+    public function getNodeRoutedNetworks($nodeid)
+    {
+        return $this->db->GetAllByKey(
+            'SELECT n.*, rn.comment
+            FROM vnetworks n
+            JOIN routednetworks rn ON rn.netid = n.id
+            WHERE rn.nodeid = ?',
+            'id',
+            array($nodeid)
+        );
+    }
+
+    public function getNodeNotRoutedNetworks($nodeid)
+    {
+        return $this->db->GetAllByKey(
+            'SELECT n.*
+            FROM vnetworks n
+            LEFT JOIN routednetworks rn ON rn.netid = n.id
+            LEFT JOIN nodes ON nodes.ownerid = n.ownerid OR nodes.ownerid IS NULL
+            LEFT JOIN netdevices nd ON nd.id = nodes.netdev AND nodes.ownerid IS NULL
+            WHERE rn.id IS NULL AND nodes.id = ? AND (nodes.ownerid = n.ownerid OR nd.ownerid = n.ownerid)',
+            'id',
+            array($nodeid)
+        );
+    }
+
+    public function addNodeRoutedNetworks(array $params)
+    {
+        $added = 0;
+
+        if (!empty($params['networks'])) {
+            $customerid = $this->GetNodeOwner($params['nodeid']);
+            if (empty($customerid)) {
+                $netdev_manager = new LMSNetDevManager($this->db, $this->auth, $this->cache, $this->syslog);
+                $customerid = $netdev_manager->getNetDevOwnerByNodeId($params['nodeid']);
+            }
+
+            foreach ($params['networks'] as $network) {
+                $args = array(
+                    SYSLOG::RES_NETWORK => $network,
+                    SYSLOG::RES_NODE => $params['nodeid'],
+                    'comment' => $params['comment'],
+                );
+                $result = $this->db->Execute(
+                    'INSERT INTO routednetworks (netid, nodeid, comment) VALUES (?, ?, ?)',
+                    array_values($args)
+                );
+                if ($result) {
+                    $added += $result;
+                    if ($this->syslog) {
+                        $args[SYSLOG::RES_ROUTEDNET] = $this->db->GetLastInsertID('routednetworks');
+                        $args[SYSLOG::RES_CUST] = $customerid;
+                        $this->syslog->AddMessage(
+                            SYSLOG::RES_ROUTEDNET,
+                            SYSLOG::OPER_ADD,
+                            $args
+                        );
+                    }
+                }
+            }
+        }
+
+        return $added;
+    }
+
+    public function deleteNodeRoutedNetworks(array $params)
+    {
+        $removed = 0;
+
+        if (!empty($params['networks'])) {
+            if (!isset($params['nodeid'])) {
+                $params['nodeid'] = $this->db->GetOne(
+                    'SELECT nodeid FROM routednetworks WHERE netid = ?',
+                    array(reset($params['networks']))
+                );
+            }
+
+            $customerid = $this->GetNodeOwner($params['nodeid']);
+
+            if (empty($customerid)) {
+                $netdev_manager = new LMSNetDevManager($this->db, $this->auth, $this->cache, $this->syslog);
+                $customerid = $netdev_manager->getNetDevOwnerByNodeId($params['nodeid']);
+            }
+
+            foreach ($params['networks'] as $network) {
+                if ($this->syslog) {
+                    $routednetid = $this->db->GetOne(
+                        'SELECT id FROM routednetworks WHERE nodeid = ? AND netid = ?',
+                        array($params['nodeid'], $network)
+                    );
+                }
+
+                $result = $this->db->Execute(
+                    'DELETE FROM routednetworks WHERE nodeid = ? AND netid = ?',
+                    array($params['nodeid'], $network)
+                );
+
+                if ($result) {
+                    $removed += $result;
+                    if ($this->syslog) {
+                        $args = array(
+                            SYSLOG::RES_ROUTEDNET => $routednetid,
+                            SYSLOG::RES_NETWORK => $network,
+                            SYSLOG::RES_NODE => $params['nodeid'],
+                            SYSLOG::RES_CUST => $customerid,
+                        );
+                        $this->syslog->AddMessage(SYSLOG::RES_ROUTEDNET, SYSLOG::OPER_DELETE, $args);
+                    }
+                }
+            }
+        }
+
+        return $removed;
     }
 }

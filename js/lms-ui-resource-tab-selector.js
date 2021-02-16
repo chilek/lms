@@ -24,8 +24,8 @@
 
 function resourceTabSelectorChanged() {
     var tabs = [];
-    $('[name="resource-tabs[]"]').each(function() {
-        tabs.push($(this).val() + ':' + ($(this).prop('checked') ? 1 : 0));
+    $('[name="resource-tabs[]"] option').each(function() {
+        tabs.push($(this).val() + ':' + ($(this).prop('selected') ? 1 : 0));
     });
     var params = {};
     params[$("#resource-tab-module").val() + "-resource-tabs"] = tabs.join(';');

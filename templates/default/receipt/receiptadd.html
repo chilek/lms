@@ -123,9 +123,13 @@
 				</TD>
 				<TD style="width: 99%;" class="nobr">
 					{if isset($customer.id)}
-					{customerlist form="setcustomer" customers=$customerlist selected=$customer.id selectname="customer" inputname="customerid" customOnChange="document.getElementById('radio_customer').checked=true;xajax_GetCashRegistriesXajax($('[name=customerid]').val(), $('[name=\'receipt[regid]\']').val())"}
+					{customerlist form="setcustomer" customers=$customerlist selected=$customer.id version=2
+						selectname="customer" inputname="customerid"
+						customOnChange="document.getElementById('radio_customer').checked=true;xajax_GetCashRegistriesXajax($('[name=customerid]').val(), $('[name=\'receipt[regid]\']').val())"}
 					{else}
-					{customerlist form="setcustomer" customers=$customerlist selected=$receipt.customerid selectname="customer" inputname="customerid" customOnChange="document.getElementById('radio_customer').checked=true;xajax_GetCashRegistriesXajax($('[name=customerid]').val(), $('[name=\'receipt[regid]\']').val())"}
+					{customerlist form="setcustomer" customers=$customerlist selected=$receipt.customerid version=2
+						selectname="customer" inputname="customerid"
+						customOnChange="document.getElementById('radio_customer').checked=true;xajax_GetCashRegistriesXajax($('[name=customerid]').val(), $('[name=\'receipt[regid]\']').val())"}
 					{/if}
 				</TD>
 			</TR>
@@ -303,7 +307,7 @@
 				<OPTION VALUE="0">{trans("- select registry -")}</OPTION>
 				{foreach from=$cashreglist item=c}
 				{if $c.id != $receipt.regid}
-				<OPTION VALUE="{$c.id}">{$c.name|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
+				<OPTION VALUE="{$c.id}">{$c.name|truncate:40:"&hellip;":true} ({$c.id|string_format:"%04d"})</OPTION>
 				{/if}
 				{/foreach}
 			</SELECT>

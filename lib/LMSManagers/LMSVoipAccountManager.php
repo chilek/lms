@@ -88,7 +88,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
         $voipaccountlist = $this->db->GetAll(
             'SELECT v.id, v.login, v.passwd, v.ownerid, '
                 . $this->db->Concat('c.lastname', "' '", 'c.name')
-                . ' AS owner, v.access,
+                . ' AS owner, v.access, v.description,
 				lb.name AS borough_name, ld.name AS district_name, lst.name AS state_name,
 				lc.name AS city_name,
 				(CASE WHEN ls.name2 IS NOT NULL THEN ' . $this->db->Concat('ls.name2', "' '", 'ls.name') . ' ELSE ls.name END) AS street_name,
@@ -268,7 +268,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                 $voipaccountdata['flags']      ? $voipaccountdata['flags']      : ConfigHelper::getConfig('voip.default_account_flags', 0),
                 $voipaccountdata['cost_limit'] ? $voipaccountdata['cost_limit'] : null,
                 $voipaccountdata['address_id'] ? $voipaccountdata['address_id'] : null,
-                isset($voipaccountdata['description']) ? $voipaccountdata['description'] : '',
+                isset($voipaccountdata['description']) ? Utils::removeInsecureHtml($voipaccountdata['description']) : '',
             )
         );
 
@@ -453,7 +453,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                 $data['balance']    ? $data['balance']    : 0,
                 $data['cost_limit'] ? $data['cost_limit'] : null,
                 $data['address_id'] ? $data['address_id'] : null,
-                isset($data['description']) ? $data['description'] : '',
+                isset($data['description']) ? Utils::removeInsecureHtml($data['description']) : '',
                 $data['id'],
              )
         );

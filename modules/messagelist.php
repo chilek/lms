@@ -85,10 +85,10 @@ if ($c == 'date') {
 $total = intval($LMS->GetMessageList($args));
 
 $limit = intval(ConfigHelper::getConfig('phpui.messagelist_pagelimit', $total));
-if ($SESSION->is_set('mlp') && !isset($_GET['page'])) {
+if ($SESSION->is_set('mlp') && !isset($_GET['page']) && !isset($_POST['page'])) {
     $SESSION->restore('mlp', $_GET['page']);
 }
-$page = !isset($_GET['page']) ? 1 : intval($_GET['page']);
+$page = intval(isset($_GET['page']) ? $_GET['page'] : (isset($_POST['page']) ? $_POST['page'] : 1));
 $offset = ($page - 1) * $limit;
 
 $args['count'] = false;

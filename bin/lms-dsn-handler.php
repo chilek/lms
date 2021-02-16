@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -28,19 +28,37 @@
 ini_set('error_reporting', E_ALL&~E_NOTICE);
 
 $parameters = array(
-    'C:' => 'config-file:',
-    'q' => 'quiet',
-    'h' => 'help',
-    'v' => 'version',
+    'config-file:' => 'C:',
+    'quiet' => 'q',
+    'help' => 'h',
+    'version' => 'v',
 );
 
-foreach ($parameters as $key => $val) {
-    $val = preg_replace('/:/', '', $val);
-    $newkey = preg_replace('/:/', '', $key);
-    $short_to_longs[$newkey] = $val;
+$long_to_shorts = array();
+foreach ($parameters as $long => $short) {
+    $long = str_replace(':', '', $long);
+    if (isset($short)) {
+        $short = str_replace(':', '', $short);
+    }
+    $long_to_shorts[$long] = $short;
 }
-$options = getopt(implode('', array_keys($parameters)), $parameters);
-foreach ($short_to_longs as $short => $long) {
+
+$options = getopt(
+    implode(
+        '',
+        array_filter(
+            array_values($parameters),
+            function ($value) {
+                return isset($value);
+            }
+        )
+    ),
+    array_keys($parameters)
+);
+
+foreach (array_flip(array_filter($long_to_shorts, function ($value) {
+    return isset($value);
+})) as $short => $long) {
     if (array_key_exists($short, $options)) {
         $options[$long] = $options[$short];
         unset($options[$short]);
@@ -50,7 +68,7 @@ foreach ($short_to_longs as $short => $long) {
 if (array_key_exists('version', $options)) {
     print <<<EOF
 lms-dsnhandler.php
-(C) 2001-2016 LMS Developers
+(C) 2001-2020 LMS Developers
 
 EOF;
     exit(0);
@@ -59,7 +77,7 @@ EOF;
 if (array_key_exists('help', $options)) {
     print <<<EOF
 lms-dsnhandler.php
-(C) 2001-2016 LMS Developers
+(C) 2001-2020 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
@@ -74,7 +92,7 @@ $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
     print <<<EOF
 lms-dsnhandler.php
-(C) 2001-2016 LMS Developers
+(C) 2001-2020 LMS Developers
 
 EOF;
 }
@@ -147,10 +165,11 @@ $posts = imap_search($ih, 'ALL');
 if (!empty($posts)) {
     foreach ($posts as $postid) {
         $post = imap_fetchstructure($ih, $postid);
+        $headers = imap_fetchheader($ih, $postid);
         if ($post->subtype != 'REPORT') {
             continue;
         }
-        if (count($post->parts) < 2 || count($post->parts) > 3) {
+        if ((count($post->parts) < 2 || count($post->parts) > 3) && preg_match('/In-Reply-To:[[:blank:]]+<messageitem-(?<msgitemid>[0-9]+)@.+>/', $headers) === 0) {
             continue;
         }
         $parts = $post->parts;
@@ -165,41 +184,56 @@ if (!empty($posts)) {
             switch ($part->subtype) {
                 case 'PLAIN':
                     $headers = imap_fetchheader($ih, $postid);
-                    if (preg_match('/Date:\s+(?<date>.+)\r\n?/', $headers, $m)) {
+                    if (preg_match('/Date:[[:blank:]]+(?<date>.+)\r\n?/', $headers, $m)) {
                         $lastdate = strtotime($m['date']);
                     }
                     break;
                 case 'DELIVERY-STATUS':
                     $body = imap_fetchbody($ih, $postid, $partid + 1);
-                    if (preg_match('/Status:\s+(?<status>[0-9]+\.[0-9]+\.[0-9]+)/', $body, $m)) {
+                    if (preg_match('/Status:[[:blank:]]+(?<status>[0-9]+\.[0-9]+\.[0-9]+)/', $body, $m)) {
                         $code = explode('.', $m['status']);
                         $status = intval($code[0]);
                     }
-                    if (preg_match('/Diagnostic-Code:\s+(?<code>.+\r\n?(?:\s+[^\s]+.+\r\n?)*)/m', $body, $m)) {
+                    if (preg_match('/Diagnostic-Code:[[:blank:]]+(?<code>.+\r\n?(?:\s+[^\s]+.+\r\n?)*)/m', $body, $m)) {
                         $diag_code = $m['code'];
                     }
                     break;
                 case 'DISPOSITION-NOTIFICATION':
                     $body = imap_fetchbody($ih, $postid, $partid + 1);
-                    if (preg_match('/Disposition:\s+(?<disposition>.+)\r\n?/', $body, $m)) {
+                    if (preg_match('/Disposition:[[:blank:]]+(?<disposition>.+)\r\n?/', $body, $m)) {
                         $disposition = $m['disposition'];
                     }
-                    if (preg_match('/.*Message-ID:\s+<messageitem-(?<msgitemid>[0-9]+)@.+>/', $body, $m)) {
+                    if (preg_match('/.*Message-ID:[[:blank:]]+<messageitem-(?<msgitemid>[0-9]+)@.+>/', $body, $m)) {
                         $msgitemid = intval($m['msgitemid']);
                     }
                     $headers = imap_fetchheader($ih, $postid);
-                    if (preg_match('/Date:\s+(?<date>.+)\r\n?/', $headers, $m)) {
+                    if (preg_match('/Date:[[:blank:]]+(?<date>.+)\r\n?/', $headers, $m)) {
                         $readdate = strtotime($m['date']);
                     }
                     break;
                 case 'RFC822-HEADERS':
                 case 'RFC822':
                     $body = imap_fetchbody($ih, $postid, $partid + 1);
-                    if (preg_match('/X-LMS-Message-Item-Id:\s+(?<msgitemid>[0-9]+)/', $body, $m)) {
+                    if (preg_match('/X-LMS-Message-Item-Id:[[:blank:]]+(?<msgitemid>[0-9]+)/', $body, $m)) {
                         $msgitemid = intval($m['msgitemid']);
                     }
-                    if (preg_match('/.*Message-ID:\s+<messageitem-(?<msgitemid>[0-9]+)@.+>/', $body, $m)) {
+                    if (preg_match('/.*Message-ID:[[:blank:]]+<messageitem-(?<msgitemid>[0-9]+)@.+>/', $body, $m)) {
                         $msgitemid = intval($m['msgitemid']);
+                    }
+                    break;
+                case 'HTML':
+                    $headers = imap_fetchheader($ih, $postid);
+                    if (preg_match('/Content-Type: .*report.+/', $headers) === 0) {
+                        break;
+                    }
+                    if (preg_match('/Date:[[:blank:]]+(?<date>.+)\r\n?/', $headers, $m)) {
+                        $readdate = strtotime($m['date']);
+                    }
+                    if (preg_match('/In-Reply-To:[[:blank:]]+<messageitem-(?<msgitemid>[0-9]+)@.+>/', $headers, $m)) {
+                        $msgitemid = intval($m['msgitemid']);
+                    }
+                    if (preg_match('/.*report-type=(?<disposition>disposition-notification).+/', $headers, $m)) {
+                        $disposition = $m['disposition'];
                     }
                     break;
             }
@@ -227,7 +261,7 @@ if (!empty($posts)) {
                 'UPDATE messageitems SET status = ?, error = ?, lastdate = ? WHERE id = ?',
                 array($status, $status == MSG_ERROR && !empty($diag_code) ? $diag_code : null,
                     $lastdate,
-                $msgitemid)
+                    $msgitemid)
             );
         } elseif (!empty($disposition) && !empty($readdate)) {
             $DB->Execute(
@@ -246,5 +280,3 @@ if (!empty($posts)) {
 }
 
 imap_close($ih, CL_EXPUNGE);
-
-?>

@@ -90,6 +90,7 @@ if (isset($_POST['assignment'])) {
         if (is_array($a['sassignmentid'][$schemaid])) {
             $modifiedvalues = $a['values'][$schemaid];
             $counts = $a['counts'][$schemaid];
+            $backwardperiods = $a['backwardperiods'][$schemaid];
             $copy_a = $a;
             $snodes = $a['snodes'][$schemaid];
             $sphones = $a['sphones'][$schemaid];
@@ -102,12 +103,12 @@ if (isset($_POST['assignment'])) {
                 $copy_a['promotionassignmentid'] = $v;
                 $copy_a['modifiedvalues'] = isset($modifiedvalues[$label][$v]) ? $modifiedvalues[$label][$v] : array();
                 $copy_a['count'] = $counts[$label];
+                $copy_a['backwardperiod'] = $backwardperiods[$label][$v];
                 $copy_a['nodes'] = $snodes[$label];
                 $copy_a['phones'] = $sphones[$label];
                 $tariffid = $LMS->AddAssignment($copy_a);
             }
         } else {
-            $LMS->UpdateExistingAssignments($a);
             $tariffid = $LMS->AddAssignment($a);
         }
 
@@ -148,6 +149,7 @@ if (isset($_POST['assignment'])) {
         }
     }
     $a['last-settlement'] = ConfigHelper::checkConfig('phpui.default_assignment_last_settlement');
+    $a['align-periods'] = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.default_assignment_align_periods', true));
     $default_assignment_period = ConfigHelper::getConfig('phpui.default_assignment_period');
     if (!empty($default_assignment_period)) {
         $a['period'] = $default_assignment_period;
@@ -157,8 +159,26 @@ if (isset($_POST['assignment'])) {
         $a['at'] = $default_assignment_at;
     }
 
+    $a['type'] = intval(ConfigHelper::getConfig('phpui.default_liability_type', '-1'));
+
     $a['check_all_terminals'] =
         ConfigHelper::checkConfig('phpui.promotion_schema_all_terminal_check');
+
+    $default_assignment_discount_type = ConfigHelper::getConfig('phpui.default_assignment_discount_type', 'percentage');
+    $a['discount_type'] = $default_assignment_discount_type == 'percentage' ? DISCOUNT_PERCENTAGE : DISCOUNT_AMOUNT;
+
+    $default_existing_assignment_operation = ConfigHelper::getConfig('phpui.default_existing_assignment_operation', 'keep');
+    $existing_assignment_operation_map = array(
+        'keep' => EXISTINGASSIGNMENT_KEEP,
+        'suspend' => EXISTINGASSIGNMENT_SUSPEND,
+        'cut' => EXISTINGASSIGNMENT_CUT,
+        'delete' => EXISTINGASSIGNMENT_DELETE,
+    );
+    if (isset($existing_assignment_operation_map[$default_existing_assignment_operation])) {
+        $a['existing_assignments']['operation'] = $existing_assignment_operation_map[$default_existing_assignment_operation];
+    } else {
+        $a['existing_assignments']['operation'] = EXISTINGASSIGNMENT_KEEP;
+    }
 
     $a['count'] = 1;
     $a['currency'] = Localisation::getDefaultCurrency();

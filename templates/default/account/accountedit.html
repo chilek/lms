@@ -62,7 +62,7 @@
 					<SELECT SIZE="1" NAME="account[ownerid]" {tip text="Select owner or 'SYSTEM ACCOUNT' if you don't want to assign it to any customer" trigger="ownerid"}>
     					    <OPTION VALUE="0"{if !$account.ownerid} SELECTED{/if}>{trans("SYSTEM ACCOUNT")}</OPTION>
 					    {foreach from=$customers item=customer}
-					    <OPTION VALUE="{$customer.id}"{if $account.ownerid == $customer.id} SELECTED{/if}>{$customer.customername|truncate:40:" ...":true} ({$customer.id|string_format:"%04d"})</OPTION>
+					    <OPTION VALUE="{$customer.id}"{if $account.ownerid == $customer.id} SELECTED{/if}>{$customer.customername|truncate:40:"&hellip;":true} ({$customer.id|string_format:"%04d"})</OPTION>
 					    {/foreach}
 					</SELECT>
 				    </TD>

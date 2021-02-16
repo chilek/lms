@@ -49,6 +49,7 @@ class Localisation
                 'money_format' => '%01.2f zł',
                 'money_format_in_words' => '%s %s %s/100',
                 'currency' => 'PLN',
+                'vies_code' => 'PL',
                 //'mobile' => '(88[0-9]|5[01][0-9]|6[069][0-9]|7[2789][0-9])[0-9]{6}',
             ),
             'pl' => 'pl_PL',
@@ -61,6 +62,7 @@ class Localisation
                 'money_format' => '%01.2f EUR',
                 'money_format_in_words' => '%s %s %s/100',
                 'currency' => 'EUR',
+                'vies_code' => 'LT',
                 //'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
             ),
             'lt' => 'lt_LT',
@@ -96,6 +98,7 @@ class Localisation
                 'money_format' => '%01.2f EUR',
                 'money_format_in_words' => '%s %s %s/100',
                 'currency' => 'EUR',
+                'vies_code' => 'SK',
                 //'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
             ),
             'sk' => 'sk_SK',
@@ -108,6 +111,7 @@ class Localisation
                 'money_format' => '%01.2f RON',
                 'money_format_in_words' => '%s %s %s/100',
                 'currency' => 'RON',
+                'vies_code' => 'RO',
                 //'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
             ),
             'ro' => 'ro_RO',
@@ -120,10 +124,20 @@ class Localisation
                 'money_format' => '%01.2f Kč',
                 'money_format_in_words' => '%s %s %s/100',
                 'currency' => 'CZK',
+                'vies_code' => 'CZ',
                 //'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
             ),
             'cs' => 'cs_CZ',
         );
+
+        self::detectUiLanguage();
+        self::detectSystemLanguage();
+        self::fixUiLanguage();
+
+        self::loadUiLanguage();
+        self::loadSystemLanguage();
+
+        mb_internal_encoding('UTF-8');
     }
 
     private static function checkLanguage($lang)
@@ -142,12 +156,11 @@ class Localisation
         return null;
     }
 
-    public static function detectUiLanguage()
+    private static function detectUiLanguage()
     {
+        $langs = ConfigHelper::getConfig('phpui.ui_lang', '');
         if (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-            $langs = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
-        } else {
-            $langs = '';
+            $langs = (empty($langs) ? '' : $langs . ',') . $_SERVER['HTTP_ACCEPT_LANGUAGE'];
         }
 
         $langs = explode(',', $langs);
@@ -155,12 +168,12 @@ class Localisation
         foreach ($langs as $val) {
             self::$defaultUiLanguage = self::$uiLanguage = self::checkLanguage($val);
             if (isset(self::$defaultUiLanguage)) {
-                break;
+                return;
             }
         }
     }
 
-    public static function detectSystemLanguage()
+    private static function detectSystemLanguage()
     {
         $lang = ConfigHelper::getConfig('phpui.lang');
         if (!empty($lang)) {
@@ -178,11 +191,13 @@ class Localisation
         } else {
             self::$defaultSystemLanguage = self::$systemLanguage = 'en_US'; // default language
         }
+
+        self::setLocales();
     }
 
     // Use system lang for UI if any of browser langs isn't supported
     // or browser langs aren't set
-    public static function fixUiLanguage()
+    private static function fixUiLanguage()
     {
         if (!isset(self::$uiLanguage)) {
             self::$defaultUiLanguage = self::$uiLanguage = self::$systemLanguage;
@@ -197,9 +212,13 @@ class Localisation
         }
     }
 
-    public static function getCurrentLocale()
+    private static function setLocales()
     {
-        return self::$langDefs[self::$systemLanguage]['locale'];
+        $locale = self::$langDefs[self::$systemLanguage]['locale'];
+        setlocale(LC_COLLATE, $locale);
+        setlocale(LC_CTYPE, $locale);
+        setlocale(LC_TIME, $locale);
+        setlocale(LC_NUMERIC, $locale);
     }
 
     public static function getCurrentCurrency()
@@ -222,6 +241,17 @@ class Localisation
         return self::$langDefs[self::$systemLanguage]['money_format_in_words'];
     }
 
+    public static function getCurrentViesCode()
+    {
+        return isset(self::$langDefs[self::$systemLanguage]['vies_code']) ? self::$langDefs[self::$systemLanguage]['vies_code'] : null;
+    }
+
+    public static function getViesCodeByCountryCode($countryCode)
+    {
+        $lang = self::checkLanguage($countryCode);
+        return isset(self::$langDefs[$lang]['vies_code']) ? self::$langDefs[$lang]['vies_code'] : null;
+    }
+
     public static function getCurrentHtmlCharset()
     {
         return self::$langDefs[self::$uiLanguage]['charset'];
@@ -232,7 +262,7 @@ class Localisation
         return self::$langDefs[self::$uiLanguage]['html'];
     }
 
-    public static function loadUiLanguage()
+    private static function loadUiLanguage()
     {
         if (isset(self::$uiStrings[self::$uiLanguage])) {
             return;
@@ -279,7 +309,7 @@ class Localisation
 
     public static function setUiLanguage($lang)
     {
-        if ($lang == self::$uiLanguage) {
+        if ($lang == self::$uiLanguage || empty($lang) || !isset(self::$langDefs[$lang])) {
             return;
         }
 
@@ -310,9 +340,10 @@ class Localisation
     public static function resetSystemLanguage()
     {
         self::$systemLanguage = self::$defaultSystemLanguage;
+        self::setLocales();
     }
 
-    public static function loadSystemLanguage()
+    private static function loadSystemLanguage()
     {
         if (isset(self::$langDefs[self::$systemLanguage][self::SYSTEM_FUNCTION])
             && !empty(self::$langDefs[self::$systemLanguage][self::SYSTEM_FUNCTION])) {
@@ -326,7 +357,7 @@ class Localisation
 
     public static function setSystemLanguage($lang)
     {
-        if ($lang == self::$systemLanguage) {
+        if ($lang == self::$systemLanguage || empty($lang) || !isset(self::$langDefs[$lang])) {
             return;
         }
 
@@ -337,6 +368,7 @@ class Localisation
                 self::$langDefs[self::$systemLanguage][self::SYSTEM_FUNCTION] = array();
                 self::loadSystemLanguage();
             }
+            self::setLocales();
         }
     }
 
@@ -363,7 +395,7 @@ class Localisation
         return $content;
     }
 
-    private static function callLanguageFunction()
+    private static function callFunction()
     {
         $args = func_get_args();
         $type = array_shift($args);
@@ -375,35 +407,38 @@ class Localisation
         return null;
     }
 
-    public static function callUiLanguageFunction()
+    public static function callUiFunction()
     {
         $args = func_get_args();
         array_unshift($args, self::UI_FUNCTION);
-        return call_user_func_array('Localisation::callLanguageFunction', $args);
+        return call_user_func_array('Localisation::callFunction', $args);
     }
 
-    public static function callSystemLanguageFunction()
+    public static function callSystemFunction()
     {
         $args = func_get_args();
         array_unshift($args, self::SYSTEM_FUNCTION);
-        return call_user_func_array('Localisation::callLanguageFunction', $args);
+        return call_user_func_array('Localisation::callFunction', $args);
     }
 
-    public static function checkZip($zip, $country = null)
+    public static function arraySort(array $array, $key = null)
     {
-        if (ConfigHelper::checkConfig('phpui.skip_zip_validation')) {
-            return true;
+        foreach ($array as &$item) {
+            if (isset($key)) {
+                $item[$key] = self::trans($item[$key]);
+            } else {
+                $item = self::trans($item);
+            }
         }
-        if (!isset($country) || empty($country)) {
-            $country = self::getCurrentSystemLanguage();
-        } else if (preg_match('/^[0-9]+$/', $country)) {
-            $LMS = LMS::getInstance();
-            $country = $LMS->getCountryCodeById($country);
-        }
-        self::setSystemLanguage($country);
-        $res = self::callSystemLanguageFunction('check_zip', $zip);
-        self::resetSystemLanguage();
+        unset($item);
+        uasort($array, function ($a, $b) use ($key) {
+            if (isset($key)) {
+                return strcoll($a[$key], $b[$key]);
+            } else {
+                return strcoll($a, $b);
+            }
+        });
 
-        return isset($res) ? !empty($res) : false;
+        return $array;
     }
 }

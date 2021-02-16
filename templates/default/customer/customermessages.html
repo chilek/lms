@@ -20,8 +20,9 @@
 	{tab_contents id="messagespanel"}
 
 		{tab_table}
-			<TABLE id="customermessages-datatable" class="lmsbox-inner{if !empty($messagelist)} lms-ui-datatable{/if}"
-					{if !empty($messagelist)}{if $limit} data-page-length="{$limit}"{/if}
+			<TABLE id="customermessages-datatable" class="lmsbox-inner lms-ui-datatable"
+					{if $limit} data-page-length="{$limit}"
+					data-empty-table-message="{trans("There are no messages in database.")}"
 					data-order='[[ 0, "desc" ]]' style="display: none;"{/if} width="100%">
 				<COLGROUP>
 					<COL style="width: 1%;">
@@ -71,10 +72,10 @@
 						{else}
 							<i class="lms-ui-icon-sms fa-fw"></i>
 						{/if}
-						{$item.subject}
+						{$item.subject|escape}
 					</TD>
 					<TD class="text-center nobr" onClick="return self.location.href='?m=messageinfo&id={$item.id}'">
-						<a href="?m=userinfo&id={$item.userid}">{$item.username}</a>
+						<a href="?m=userinfo&id={$item.userid}">{$item.username|escape}</a>
 					</TD>
 					<TD class="text-right nobr" onClick="return self.location.href='?m=messageinfo&id={$item.id}'">
 						{$item.destination}
@@ -84,7 +85,6 @@
 					</TD>
 					<TD class="text-right nobr">
 						{if $item.status == $smarty.const.MSG_DELIVERED
-							&& ($item.type == $smarty.const.MSG_USERPANEL || $item.type == $smarty.const.MSG_USERPANEL_URGENT)
 							&& $item.lastdate}{$item.lastdate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
 					</TD>
 					<TD class="text-right nobr">
@@ -93,7 +93,7 @@
 						{/if}
 						{button type="link" icon="delete" class="delete-message" href="?m=messagedel&id={$item.id}"
 							tip="Delete"}
-						{button type="link" icon="resend" href="?m=messageadd&messageid={$item.id}" tip="Resend"}
+						{button type="link" icon="resend" href="?m=messageadd&customerid={$customerinfo.id}&messageid={$item.id}" tip="Resend"}
 						<input type="checkbox" class="lms-ui-multi-check" name="marks[{$item.id}]" value="{$item.id}"
 							form="customermessages-form">
 						<div id="files-{$item.filecontainerid}" style="display: none;" class="files">
@@ -104,12 +104,6 @@
 								<br>
 							{/foreach}
 						</div>
-					</TD>
-				</TR>
-				{foreachelse}
-				<TR>
-					<TD class="empty-table" colspan="7">
-						<P>{trans("There are no messages in database.")}</P>
 					</TD>
 				</TR>
 				{/foreach}

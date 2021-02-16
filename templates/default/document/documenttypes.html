@@ -6,7 +6,7 @@
 <TABLE class="lmsbox lms-ui-background-cycle">
     <THEAD>
 	<TR>
-		<TD width="99%" NOWRAP><IMG src="img/docum.gif" alt=""> <B>{trans("Name:")}</B></TD>
+		<TD width="99%" NOWRAP>{icon name="document" class="fa-fw"} <B>{trans("Name:")}</B></TD>
 		<TD width="1%"></TD>
 	</TR>
 	{if $listdata.total != 0}
@@ -21,10 +21,10 @@
 	{foreach from=$typelist key=key item=item}
 	<TR class="highlight">
 		<TD NOWRAP onClick="return self.location.href='?m=documenttypeedit&amp;id={$key}';">
-			<IMG src="img/docum.gif" alt=""> <B>{$item}</B>
+			{icon name="document" class="fa-fw"} <B>{$item}</B>
 		</TD>
 		<TD align="right" NOWRAP>
-			<A href="?m=documenttypeedit&amp;id={$key}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
+			{button type="link" icon="edit" tip="{trans("Edit")}" href="?m=documenttypeedit&amp;id={$key}"}
 		</TD>
 	</TR>
 	{foreachelse}

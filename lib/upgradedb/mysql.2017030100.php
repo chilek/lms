@@ -23,10 +23,18 @@
 
 $this->BeginTrans();
 
-$this->Execute("ALTER TABLE assignments DROP FOREIGN KEY assignments_ibfk_3");
-$this->Execute("ALTER TABLE assignments DROP FOREIGN KEY recipient_address_id_fk2");
-$this->Execute("ALTER TABLE assignments DROP FOREIGN KEY address_id_fk;");
-$this->Execute("ALTER TABLE assignments DROP KEY recipient_address_id_fk2");
+if ($this->ResourceExists('assignments_ibfk_3', LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
+    $this->Execute("ALTER TABLE assignments DROP FOREIGN KEY assignments_ibfk_3");
+}
+if ($this->ResourceExists('recipient_address_id_fk2', LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
+    $this->Execute("ALTER TABLE assignments DROP FOREIGN KEY recipient_address_id_fk2");
+}
+if ($this->ResourceExists('address_id_fk', LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
+    $this->Execute("ALTER TABLE assignments DROP FOREIGN KEY address_id_fk;");
+}
+if ($this->ResourceExists('recipient_address_id_fk2', LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
+    $this->Execute("ALTER TABLE assignments DROP KEY recipient_address_id_fk2");
+}
 $this->Execute("ALTER TABLE assignments DROP COLUMN address_id");
 $this->Execute("ALTER TABLE assignments ADD COLUMN recipient_address_id int(11)");
 $this->Execute("ALTER TABLE assignments ADD CONSTRAINT recipient_address_id_fk2 FOREIGN KEY (recipient_address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE");

@@ -1,9 +1,9 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!DOCTYPE html>
 <!--// $Id$ //-->
 <html><head>
 <meta name="GENERATOR" content="LMS {$layout.lmsv}">
 {include file="language.html"}
-<title>::: LMS :{if $layout.pagetitle != ""} {$layout.pagetitle} :{/if}::</title>
+<title>LMS – {if $layout.pagetitle != ""}{$layout.pagetitle}{/if}</title>
 <link href="css/style.css" rel="stylesheet" type="text/css">
 <link href="css/map.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="js/common.js"></script>
@@ -54,6 +54,13 @@
 <body onload="init()" class="lms-ui-popup">
 <div id="map" class="smallmap"></div>
 </body>
+<script>
+
+	document.querySelector('#map').onmousewheel = function(e) {
+		e.preventDefault();
+	}
+
+</script>
 {/if}
 {if $part == "top"}
 <body class="lms-ui-popup">

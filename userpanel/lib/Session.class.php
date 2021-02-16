@@ -57,7 +57,7 @@ class Session
         if (isset($remindform)) {
             $sms_service = ConfigHelper::getConfig('sms.service', '', true);
             if (($remindform['type'] == 1 && !ConfigHelper::checkConfig('userpanel.mail_credential_reminders'))
-                || ($remindform['type'] == 2 && (!ConfigHelper::checkConfig('userpanel.sms_credential_reminders')) || empty($sms_service))) {
+                || ($remindform['type'] == 2 && (!ConfigHelper::checkConfig('userpanel.sms_credential_reminders') || empty($sms_service)))) {
                 return;
             }
 
@@ -77,16 +77,18 @@ class Session
                     $params = array_merge($params, array($remindform['email'],(CONTACT_EMAIL|CONTACT_INVOICES|CONTACT_NOTIFICATIONS)));
                     break;
                 case 2:
-                    if (!preg_match('/^[0-9]+$/', $remindform['phone'])) {
+                    $phone = preg_replace('/[\s\-]/', '', $remindform['phone']);
+                    if (!preg_match('/^[0-9]+$/', $phone)) {
                         return;
                     }
                     $join = 'JOIN customercontacts cc ON cc.customerid = c.id';
-                    $where = ' AND contact = ? AND cc.type & ? = ?';
+                    $where = ' AND REPLACE(REPLACE(contact, \'-\', \'\'), \' \', \'\') = ? AND cc.type & ? > 0';
                     $params = array_merge(
                         $params,
-                        array(preg_replace('/ -/', '', $remindform['phone']),
+                        array(
+                            $phone,
                             CONTACT_MOBILE,
-                        CONTACT_MOBILE)
+                        )
                     );
                     break;
                 default:
@@ -115,7 +117,7 @@ class Session
                     $body
                 );
             } else {
-                $LMS->SendSMS($remindform['phone'], $body);
+                $LMS->SendSMS($phone, $body);
             }
             $this->error = trans('Credential reminder has been sent!');
             return;
@@ -266,6 +268,10 @@ class Session
 
     private function validPIN()
     {
+        if (!ConfigHelper::checkConfig('userpanel.pin_validation')) {
+            return true;
+        }
+
         $string = $this->passwd;
         for ($i = 0; $i < strlen($this->pin_allowed_characters); $i++) {
             $string = str_replace($this->pin_allowed_characters[$i], '', $string);

@@ -13,20 +13,20 @@
     <THEAD>
 	<TR>
 		<TD>
-			<IMG src="img/calendar.gif" alt="">
+			{icon name="timetable"}
 		</TD>
 		<TD class="bold">
 			{trans("Title:")}
 		</TD>
 		<TD class="bold">
-			{$event.title}
+			{$event.title|escape}
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	<TR>
 		<TD>
-			<IMG src="img/time.gif" alt="">
+			{icon name="uptime"}
 		</TD>
 		<TD class="bold nobr">
 			{trans("Begin time:")}
@@ -39,7 +39,7 @@
 	{if $event.begintime != $event.endtime || $event.enddate > $event.date}
 	<TR>
 		<TD>
-			<IMG src="img/time.gif" alt="">
+			{icon name="uptime"}
 		</TD>
 		<TD class="bold nobr">
 			{trans("End time:")}
@@ -58,7 +58,7 @@
 {if $event.description}
 	<TR>
 		<TD>
-			<IMG src="img/info.gif" alt="">
+                    {icon name="description"}
 		</TD>
 		<TD class="bold nobr">
 			{trans("Description:")}
@@ -76,7 +76,7 @@
 {/if}
 	<TR>
 		<TD>
-			<IMG src="img/desc.gif" alt="">
+			{icon name="type"}
 		</TD>
 		<TD class="bold">
 			{trans("Type:")}
@@ -87,10 +87,10 @@
 	</TR>
 	<TR>
 		<TD>
-			<IMG src="img/access.gif" alt="">
+                    {icon name="status"}
 		</TD>
 		<TD class="bold">
-			{trans("Status:")}
+			{trans("Availability:")}
 		</TD>
 		<TD class="nobr">
 			{if $event.private}{trans("private")}{else}{trans("public")}{/if}
@@ -98,19 +98,19 @@
 	</TR>
 	<TR>
 		<TD>
-			<IMG src="img/users.gif" alt="">
+                    {icon name="user"}
 		</TD>
 		<TD class="bold nobr">
 			{trans("Created by:")}
 		</TD>
 		<TD class="nobr">
-			<A href="?m=userinfo&id={$event.userid}">{$event.username}</A>
+			<A href="?m=userinfo&id={$event.userid}">{$event.username|escape}</A>
 		</TD>
 	</TR>
 {if $event.creationdate != 0}
 	<TR>
 		<TD>
-			<IMG src="img/time.gif" alt="">
+                    {icon name="uptime"}
 		</TD>
 		<TD class="bold nobr">
 			{trans("Creation time:")}
@@ -123,20 +123,20 @@
 {if $event.moduserid != 0}
 	<TR>
 		<TD>
-			<IMG src="img/users.gif" alt="">
+                    {icon name="user"}
 		</TD>
 		<TD class="bold nobr">
 			<B>{trans("Last modified by:")}</B>
 		</TD>
 		<TD class="nobr">
-			<A href="?m=userinfo&id={$event.moduserid}">{$event.modusername}</A>
+			<A href="?m=userinfo&id={$event.moduserid}">{$event.modusername|escape}</A>
 		</TD>
 	</TR>
 {/if}
 {if $event.moddate != 0}
 	<TR>
 		<TD>
-			<IMG src="img/time.gif" alt="">
+                    {icon name="uptime"}
 		</TD>
 		<TD class="bold nobr">
 			{trans("Last modification time:")}
@@ -149,20 +149,20 @@
 {if $event.closeduserid != 0}
 	<TR>
 		<TD>
-			<IMG src="img/users.gif" alt="">
+                    {icon name="user"}
 		</TD>
 		<TD class="bold nobr">
 			<B>{trans("Closed by")}:</B>
 		</TD>
 		<TD class="nobr">
-			<A href="?m=userinfo&id={$event.closeduserid}">{$event.closedusername}</A>
+			<A href="?m=userinfo&id={$event.closeduserid}">{$event.closedusername|escape}</A>
 		</TD>
 	</TR>
 {/if}
 {if $event.closeddate != 0}
 	<TR>
 		<TD>
-			<IMG src="img/time.gif" alt="">
+                    {icon name="uptime"}
 		</TD>
 		<TD class="bold nobr">
 			{trans("Closed time")}:
@@ -174,7 +174,7 @@
 {/if}
 	<TR>
 		<TD>
-			<IMG src="img/customer.gif" alt="">
+                    {icon name="customer"}
 		</TD>
 		<TD class="bold">
 			{trans("Customer:")}
@@ -185,24 +185,25 @@
 	</TR>
 	<TR>
 		<TD>
-			<IMG src="img/home.gif" alt="">
+                    {icon name="location"}
 		</TD>
 		<TD class="bold">
 			{trans("Location:")}
 		</TD>
 		<TD class="nobr">
 		{if $event.netnode_name}
-		<i class="lms-ui-icon-netnode"></i> <a href="?m=netnodeinfo&id={$event.netnode_id}">{$event.netnode_name}</a>
-		    {if !empty($event.netnode_location)}<br><i class="lms-ui-icon-location"></i> {$event.netnode_location}{/if}
+		{icon name="netnode"} <a href="?m=netnodeinfo&id={$event.netnode_id}">{$event.netnode_name|escape}</a>
+		{if !empty($event.netnode_location)}
+		    <br>{icon name="location"} {$event.netnode_location|escape}{/if}
                 {else}
                     {if $event.customername}
-                    <i class="lms-ui-icon-customer"></i> <A href="?m=customerinfo&amp;id={$event.customerid}">{$event.customername|truncate:"30":"...":true}</A><br>
+                        {icon name="customer"} <A href="?m=customerinfo&amp;id={$event.customerid}">{$event.customername|truncate:"30":"&hellip;":true}</A><br>
                        {if !empty($event.address_id)}
-                       <i class="lms-ui-icon-location"></i> {$event.location}
+                            {icon name="location"} {$event.location|escape}
                        {elseif !empty($event.nodeid)}
-                       <a href="?m=nodeinfo&id={$event.nodeid}"> {$event.nodelocation}</a>
+                       <a href="?m=nodeinfo&id={$event.nodeid}"> {$event.nodelocation|escape}</a>
                        {else}
-                       <i class="lms-ui-icon-location"></i> {$event.customerlocation}
+                           {icon name="location"} {$event.customerlocation|escape}
                        {/if}
                     {/if}
                 {/if}
@@ -211,20 +212,20 @@
 	{if !empty($event.nodeid)}
 	<TR>
 		<TD>
-			<IMG src="img/node.gif" alt="">
+                    {icon name="node"}
 		</TD>
 		<TD class="bold">
 			{trans("Node:")}
 		</TD>
 		<TD class="nobr">
-			<a href="?m=nodeinfo&id={$event.nodeid}">{$event.node_name}: {$event.node_location}</a>
+			<a href="?m=nodeinfo&id={$event.nodeid}">{$event.node_name}: {$event.node_location|escape}</a>
 		</TD>
 	</TR>
 	{/if}
 {if $event.note}
 	<TR>
 		<TD>
-			<IMG src="img/note.gif" alt="">
+                    {icon name="note"}
 		</TD>
 		<TD class="bold nobr">
 			{trans("Note:")}
@@ -233,7 +234,7 @@
 			<TABLE WIDTH="95%" CELLPADDING="5">
 				<TR>
 					<TD class="fall superlight">
-						{$event.note|replace:"\n":"<BR>"}
+						{$event.note|escape|replace:"\n":"<BR>"}
 					</TD>
 				</TR>
 			</TABLE>
@@ -243,14 +244,14 @@
 {if $event.userlist}
 	<TR>
 		<TD>
-			<IMG src="img/users.gif" alt="">
+                    {icon name="user"}
 		</TD>
 		<TD class="bold">
 			{trans("Users:")}
 		</TD>
 		<TD class="nobr">
 			{foreach $event.userlist as $userid}
-				<A href="?m=userinfo&id={$userid}">{$userlist[$userid].rname}</A><BR>
+				<A href="?m=userinfo&id={$userid}">{$userlist[$userid].rname|escape}</A><BR>
 			{/foreach}
 		</TD>
 	</TR>
@@ -258,7 +259,7 @@
 {if isset($event.ticketid)}
 	<TR>
 		<TD>
-			<IMG src="img/helpdesk.png" alt="">
+                    {icon name="helpdesk"}
 		</TD>
 		<TD class="bold">
 			{trans("Helpdesk assignment:")}
@@ -270,13 +271,15 @@
 {/if}
 	<TR>
 		<TD class="text-right" colspan="3">
-			<a class="delete-event" href="?m=eventdel&id={$event.id}"><img src="img/delete.gif" alt=""> {trans("Delete")}</A>
-			<A href="?m=eventedit&id={$event.id}"><IMG src="img/edit.gif" alt=""> {trans("Edit")}</A>
 			{if !$event.closed}
-			<A href="?m=eventedit&id={$event.id}&action=close"><IMG src="img/dead.gif" alt=""> {trans("Close")}</A>
+			    {button type="link-button" href="?m=eventedit&id={$event.id}&action=close" icon="close" label="Close"}
 			{else}
-			<A href="?m=eventedit&id={$event.id}&action=open"><IMG src="img/open.gif" alt=""> {trans("Open")}</A>
+				{button type="link-button" href="?m=eventedit&id={$event.id}&action=open" icon="open" label="Open"}
 			{/if}
+                        {if !$event.closed || ($event.closed && ConfigHelper::getConfig('phpui.allow_modify_closed_events_newer_than', 604800) && ($smarty.now - $event.closeddate < ConfigHelper::getConfig('phpui.allow_modify_closed_events_newer_than', 604800)))|| ConfigHelper::checkPrivilege('superuser')}
+			    {button type="link-button" href="?m=eventedit&id={$event.id}" icon="edit" label="Edit"}
+			    {button type="link-button" href="?m=eventdel&id={$event.id}" icon="delete" label="Delete" class="delete-event"}
+                        {/if}
 		</TD>
 	</TR>
     </TBODY>

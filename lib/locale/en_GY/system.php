@@ -48,14 +48,17 @@ self::addLanguageFunctions(
         'check_icn' => function ($icn) {
             return true;
         },
-        'bankaccount' => function ($id, $account = null) {
+        'bankaccount' => function ($id, $account = null, $country_code = false) {
             return iban_account('US', 26, $id, $account);
         },
         'check_bankaccount' => function ($account) {
             return iban_check_account('US', 26, $account);
         },
-        'format_bankaccount' => function ($account) {
+        'format_bankaccount' => function ($account, $country_code = false) {
             return $account;
+        },
+        'format_ten' => function ($ten, $country_code = false) {
+            return $ten;
         },
         'getHolidays' => function ($year = null) {
             return array();

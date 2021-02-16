@@ -28,7 +28,7 @@ $.widget( "custom.iconselectmenu", $.ui.selectmenu, {
             '>');
 	    var wrapper = '<div>' + (item.element.attr("data-icon") ? '<i class="' +
             (item.element.attr("data-class") ? item.element.attr("data-class") : '') +
-            ' ' + item.element.attr("data-icon") + '"></i>' : '') + item.label + '</div>';
+            ' ' + item.element.attr("data-icon") + '"></i>' : '') + escapeHtml(item.label) + '</div>';
 
         return li.append(wrapper).appendTo(ul);
     },
@@ -157,6 +157,7 @@ LmsUiIconSelectMenu.prototype._appendAddressList = function( address_list, prese
         }
 
         html += '<option value="' + this.address_id  + '" data-icon="' + icon + '"' +
+            ' data-territ="' + this.teryt + '"' +
             (preselection && this.hasOwnProperty('default_address') ? ' selected' : '') + '>' +
             this.location + '</option>';
     });

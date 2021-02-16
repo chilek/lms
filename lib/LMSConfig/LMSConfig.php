@@ -176,10 +176,6 @@ class LMSConfig
             $ui_config = self::getUiConfig($options);
             $ini_config = self::$ini_config;
             $rights_config = self::$user_rights_config;
-        } elseif (isset($options['force_user_settings_only'])) {
-            $ui_config = self::getUiConfig($options);
-            $ini_config = self::$ini_config;
-            $rights_config = self::$user_rights_config;
         } elseif (isset($options['force_user_rights_only'])) {
             try {
                 $rights_config = self::getUserRightsConfig($options);

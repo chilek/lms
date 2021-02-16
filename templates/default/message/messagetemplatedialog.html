@@ -33,11 +33,11 @@
 			</LI>
 			<LI>
 				{trans("Name:")}<BR>
-				<INPUT TYPE="text" ID="{$operation}-template-name" NAME="template[name]" size="30" MAXLENGTH="30" CLASS="text ui-widget-content ui-corner lms-ui-dialog-input">
+				<INPUT TYPE="text" ID="{$operation}-template-name" NAME="template[name]" size="30" maxlength="45" CLASS="text ui-widget-content ui-corner lms-ui-dialog-input">
 			</LI>
 			<LI>
 				{trans("Subject:")}<BR>
-				<INPUT TYPE="text" ID="{$operation}-template-subject" NAME="template[subject]" size="30" MAXLENGTH="30" MIN="0" CLASS="text ui-widget-content ui-corner lms-ui-dialog-input">
+				<INPUT TYPE="text" ID="{$operation}-template-subject" NAME="template[subject]" size="30" maxlength="45" MIN="0" CLASS="text ui-widget-content ui-corner lms-ui-dialog-input">
 			</Li>
 			<li class="{$operation}-helpdesk-properties">
 				<table>
@@ -119,14 +119,14 @@
 	$( function() {
 		$('#{$operation}-template-type').change(function() {
 			var type = parseInt($(this).val());
-			if (type == {$smarty.const.TMPL_SMS} || type == {$smarty.const.TMPL_HELPDESK}) {
+			if (type == {$smarty.const.TMPL_SMS}) {
 				$('#{$operation}-html-message').hide();
 				$('#{$operation}-text-message').show();
-				$('.{$operation}-helpdesk-properties').toggle(type == {$smarty.const.TMPL_HELPDESK});
+				$('.{$operation}-helpdesk-properties').toggle();
 			} else {
 				$('#{$operation}-html-message').show();
 				$('#{$operation}-text-message').hide();
-				$('.{$operation}-helpdesk-properties').hide();
+				$('.{$operation}-helpdesk-properties').toggle(type == {$smarty.const.TMPL_HELPDESK});
 			}
 		}).change();
 

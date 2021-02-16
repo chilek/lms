@@ -81,7 +81,7 @@
 				<SELECT size="1" name="group">
 					<OPTION value="0"{if !$listdata.group} SELECTED{/if}>{trans("- all groups -")}</OPTION>
 					{section name="grouplist" loop=$grouplist}
-					<OPTION value="{$grouplist[grouplist].id}"{if $listdata.group == $grouplist[grouplist].id} SELECTED{/if}>{$grouplist[grouplist].name|truncate:30:"...":true}</OPTION>
+					<OPTION value="{$grouplist[grouplist].id}"{if $listdata.group == $grouplist[grouplist].id} SELECTED{/if}>{$grouplist[grouplist].name|truncate:30:"&hellip;":true}</OPTION>
 					{/section}
 				</SELECT>
 				<INPUT type="checkbox" name="groupexclude" id="groupexclude"{if $listdata.groupexclude} CHECKED{/if}><label for="groupexclude">{trans("exclude group")}</label>
@@ -149,9 +149,9 @@
 			{/if}
 
 			{if !$note.published || ConfigHelper::checkPrivilege('published_document_modification')}
-				{button type="link" icon="view" external=true href="?m=note&id={$note.id}&dontpublish=1"}
+				{button type="link" icon="view" tip="Preview" external=true href="?m=note&id={$note.id}&dontpublish=1"}
 			{/if}
-			{button type="link" icon="print" external=true href="?m=note&id={$note.id}"}
+			{button type="link" icon="print" tip="Print" external=true href="?m=note&id={$note.id}"}
 			<INPUT TYPE="checkbox" NAME="marks[{$note.id}]" VALUE="{$note.id}"{if $marks.$noteid}CHECKED{/if} class="lms-ui-multi-check">
 		</TD>
 	</TR>

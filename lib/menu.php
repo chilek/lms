@@ -305,6 +305,12 @@ $menu = array(
                     'tip' => trans('Lists and reports printing'),
                     'prio' => 80,
                 ),
+                'vlanlist' => array(
+                    'name' => trans('VLAN List'),
+                    'link' => '?m=vlanlist',
+                    'tip' => trans('VLAN List'),
+                    'prio' => 90,
+                ),
             ),
         ),
 
@@ -487,6 +493,12 @@ $menu = array(
                     'link' => '?m=documentadd',
                     'tip' => trans('Allows you to add new document'),
                     'prio' => 20,
+                ),
+                'documentscanadd' => array(
+                    'name' => trans('Add Scans'),
+                    'link' => '?m=documentscanadd',
+                    'tip' => trans('Allow you to attach scan to existing document'),
+                    'prio' => 25,
                 ),
 //              'documentsearch' => array(
 //                  'name' => trans('Search'),
@@ -784,6 +796,12 @@ $menu = array(
                     'tip' => trans('Allows you to configure UI'),
                     'prio' => 10,
                 ),
+                'configimport' => array(
+                    'name' => trans('Import configuration'),
+                    'link' => '?m=configimport',
+                    'tip' => trans('Import configuration'),
+                    'prio' => 11,
+                ),
                 'configadd' => array(
                     'name' => trans('New setting'),
                     'link' => '?m=configadd',
@@ -955,3 +973,5 @@ foreach ($menu as $idx => $item) {
 }
 
 uasort($menu, 'menu_cmp');
+
+$SMARTY->assign('context_divisions', ($AUTH->nousers == true ? array() : $LMS->GetDivisions(array('status' => 0, 'userid' => Auth::GetCurrentUser()))));

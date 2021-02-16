@@ -73,8 +73,11 @@
 
 		{tab_table}
 
-			{$datatables_max_records=intval(ConfigHelper::getConfig('phpui.datatables_max_records', 300))}
-			<TABLE id="customerbalancebox-datatable" class="lmsbox-inner{if !empty($balancelist.list) && (!$datatables_max_records || count($balancelist.list) < $datatables_max_records)} lms-ui-datatable{else} lms-ui-background-cycle{/if}"{if !empty($balancelist.list) && (!$datatables_max_records || count($balancelist.list) < $datatables_max_records)} data-page-length="{$n}" data-display-start="{$n = count($balancelist.list) + $limit}{if $n < 0}0{else}{$n}{/if}" style="display: none;"{/if} width="100%">
+			{$datatables_max_records=intval(ConfigHelper::getConfig('phpui.datatables_max_records', 0, true))}
+			<TABLE id="customerbalancebox-datatable" class="lmsbox-inner{if !$datatables_max_records || empty($balancelist.list) || count($balancelist.list) < $datatables_max_records} lms-ui-datatable{else} lms-ui-background-cycle{/if}"
+					{if !$datatables_max_records || empty($balancelist.list) || count($balancelist.list) < $datatables_max_records} data-page-length="{$n}"
+					data-empty-table-message="{trans("That customer hasn't got any transactions.")}"
+					data-display-start="{if empty($balancelist.list)}{$n = $limit}{else}{$n = count($balancelist.list) + $limit}{/if}{if $n < 0}0{else}{$n}{/if}" style="display: none;"{/if} width="100%">
 				<COLGROUP>
 					<COL style="width: 1%;">
 					<COL style="width: 1%;">
@@ -113,7 +116,7 @@
 					{if $item.closed && ($item.doctype == $smarty.const.DOC_INVOICE || $item.doctype == $smarty.const.DOC_CNOTE || $item.doctype == $smarty.const.DOC_DNOTE)} blend{/if}"
 					{/if}>
 					<TD class="nobr">{$item.date}</TD>
-					<TD class="nobr">{$item.username|truncate:16:"...":true}</TD>
+					<TD class="nobr">{$item.username|truncate:16:"&hellip;":true}</TD>
 					<TD class="text-right nobr">{if !$item.type}{moneyf($item.value*-1, $item.currency)}{else}-{/if}</TD>
 					<TD class="text-right nobr{if $item.type && $item.value > 0} green{/if}">{if $item.type && $item.value > 0}+{moneyf($item.value, $item.currency)}{else}-{/if}</TD>
 					<TD class="text-right nobr">{if $item.type && $item.value < 0}{moneyf($item.value*-1, $item.currency)}{else}-{/if}</TD>
@@ -312,12 +315,6 @@
 								value="{$item.id}" class="lms-ui-multi-check">
 					</TD>
 				</TR>
-				{foreachelse}
-				<TR>
-					<TD class="empty-table" colspan="9">
-						<p>{trans("That customer hasn't got any transactions.")}</p>
-					</TD>
-				</TR>
 				{/foreach}
 				</TBODY>
 			</TABLE>
@@ -381,7 +378,7 @@
 				<div class="addbalance-form-cell">
 					<INPUT type="hidden" form="addbalance-form" name="addbalance[customerid]" value="{$balancelist.customerid}">
 					<INPUT type="text" form="addbalance-form" name="addbalance[time]" size="15" maxlength="16" {tip class="lms-ui-datetime" text="Enter transaction time in 'yyyy/mm/dd hh:mm' format (empty field means current time). Click to select date from calendar."} {if $time}value="{$time|date_format:"%Y/%m/%d %H:%M"}"{/if}>
-					{$layout.logname|truncate:16:"...":true}
+					{$layout.logname|truncate:16:"&hellip;":true}
 					<INPUT type="text" size="8" form="addbalance-form" name="addbalance[value]" accesskey="s" {if $value}value="{$value}"{/if} {tip text="Enter transaction value"}>&nbsp;
 					{currency_selection selected=Localisation::getDefaultCurrency() elementname="addbalance[currency]" form="addbalance-form"}
 					<SELECT SIZE="1" form="addbalance-form" name="addbalance[taxid]" {tip text="Select Tax value"}>

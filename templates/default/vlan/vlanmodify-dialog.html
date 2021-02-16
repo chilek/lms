@@ -1,0 +1,89 @@
+<style>
+    #addvlanmodal {
+        overflow: visible;
+    }
+    input {
+        margin-top: 5px;
+    }
+    .button-bar {
+        padding-top: 20px;
+    }
+</style>
+
+<div id="addvlanmodal" class="lms-ui-modal-dialog">
+    <form method="POST" action="?m=vlanlist&action={if $action == 'modify'}modify&id={$vlaninfo.id}{else}add{/if}"
+              name="addvlan" id="addvlan-form">
+        <table>
+            <tbody>
+                <tr>
+                    {if $action == 'modify'}
+                    <td>
+                        <input type="text" name="addvlan[id]" value="{$vlaninfo.id}" hidden>
+                    </td>
+                    {/if}
+                </tr>
+                <tr>
+                    <td>
+                        {icon name="vlan" label="VLAN ID:" class="fa-fw"}
+                    </td>
+                    <td>
+                        <input type="text" name="addvlan[vlanid]" value="{$vlaninfo.vlanid}" required>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="nobr">
+                        {icon name="description" label="VLAN Description" class="fa-fw"}
+                    </td>
+                    <td>
+                        <input type="text" name="addvlan[description]" value="{$vlaninfo.description}">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {icon name="customer" label="Customer" class="fa-fw"}
+                    </td>
+                    <td>
+                        {customerlist form="addvlan" selected="{$vlaninfo.customerid}" inputname="addvlan[customerid]" version=2}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="nobr">
+                        {icon name="netnode" label="Network Node" class="fa-fw"}
+                    </td>
+                    <td>
+                        <select name="addvlan[netnodeid]" class="lms-ui-advanced-select">
+                            <option value="">{trans("- none -")}</option>
+                            {foreach $netnodelist as $nn}
+                                <option value="{$nn.id}" {if $nn.id == $vlaninfo.netnodeid} selected{/if}>{$nn.name|escape} ({$nn.id})</option>
+                            {/foreach}
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="button-bar text-center">
+                        {button type="submit" label="Submit" icon="submit"}
+                        {button label="Cancel" icon="cancel" id="close"}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        </form>
+</div>
+
+<script>
+    $( "#addvlanmodal" ).dialog( {
+        autoOpen: {if $action}true{else}false{/if},
+        resizable: false,
+        minWidth: 390,
+        modal: true,
+        title: "{if $action == 'modify'}{trans("Modify VLAN")} {$vlaninfo.id}{else}{trans("Add VLAN")}{/if}"
+    });
+
+    $( "#addvlanbtn" ).click(function() {
+        $( "#addvlanmodal" ).dialog( "open" );
+    });
+
+    $( "#close" ).click(function() {
+        $( "#addvlanmodal" ).dialog( "close" );
+    });
+</script>

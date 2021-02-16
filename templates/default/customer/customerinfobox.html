@@ -15,6 +15,15 @@
 
 	.customer-contact {
 		display: flex;
+		max-width: 98%;
+	}
+
+	.limit-width {
+		max-width: 35vw;
+	}
+
+	.customer-options td:last-child {
+		padding-left: 0;
 	}
 
 </style>
@@ -31,7 +40,9 @@
 				<div class="bold">
 					{icon name="customer" class="{if $customerpanel} lms-ui-sortable-handle{/if}"}
 					{if $customerpanel}{trans("Owner:")}{/if}
-					{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}{if $customerinfo.extid} / {$customerinfo.extid}{/if}){if $customerinfo.deleted} <span class="lms-ui-alert">({trans("deleted customer")})</span>{/if}
+					{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}{if $customerinfo.extid} / {$customerinfo.extid|escape}{/if})
+					{karma title="Karma" value=$customerinfo.karma handler="?m=customeredit&id={$customerinfo.id}&op=changekarma"}
+					{if $customerinfo.deleted} <span class="lms-ui-alert">({trans("deleted customer")})</span>{/if}
 				</div>
 				<div>
 					{if $customerpanel}<a href="?m=customerinfo&amp;id={$customerinfo.id}">{trans('Navigate to the customer')} &raquo;</a>{/if}&nbsp;
@@ -63,7 +74,7 @@
 									{icon name="division"}
 								</TD>
 								<TD WIDTH="99%">
-									{$customerinfo.division}
+									{if $customerinfo.division_label}{$customerinfo.division_label|escape}{else}{$customerinfo.division|escape}{/if}
 								</TD>
 							</TR>
 						{/if}
@@ -76,12 +87,24 @@
 								</TD>
 							</TR>
 
+						{if !empty($customerinfo.flags)}
+							<TR>
+								<TD WIDTH="1%">
+									{icon name="legal-personality"}
+								</TD>
+								<TD WIDTH="99%">
+									{$first = true}
+									{foreach $_CUSTOMERFLAGS as $cflag => $flag}{if isset($customerinfo.flags[$cflag])}{if !$first}, {/if}<span title="{$flag.tip}">{$flag.label}</span>{$first = false}{/if}{/foreach}
+								</TD>
+							</TR>
+						{/if}
+
 							{foreach $customerinfo.addresses as $v}
 								{if $v.location_address_type == $smarty.const.BILLING_ADDRESS}
 								<tr>
 									<td style="width: 1%;">{icon name="home" class="fa-fw" tip="billing address"}</td>
 									<td style="width: 99%;">
-										<span title="{trans('billing address')}">{if $v.teryt}{t a=$v.location}$a (TERRIT){/t}{else}{$v.location}{/if}
+										<span title="{trans('billing address')}">{if $v.teryt}{t a=htmlspecialchars($v.location)}$a (TERRIT){/t}{else}{$v.location|escape}{/if}
 											<a href="https://www.google.com/maps/place/{$v.location}" title="{trans("Google Maps")}">{icon name="location"}</a>
 										</span>
 									</td>
@@ -95,7 +118,7 @@
 								<tr>
 									<td style="width: 1%;">{icon name="mail" class="fa-fw" tip="postal address"}</td>
 									<td style="width: 99%;">
-										<span title="{trans('postal address')}">{if $v.location_name}{$v.location_name}, {/if}{if $v.teryt}{t a=$v.location}$a (TERRIT){/t}{else}{$v.location}{/if}
+										<span title="{trans('postal address')}">{if $v.location_name}{$v.location_name|escape}, {/if}{if $v.teryt}{t a=htmlspecialchars($v.location)}$a (TERRIT){/t}{else}{$v.location|escape}{/if}
 											<a href="https://www.google.com/maps/place/{$v.location}" title="{trans("Google Maps")}">{icon name="location"}</a>
 										</span>
 									</td>
@@ -119,7 +142,7 @@
 										{icon class=$icon tip=$title}
 									</td>
 									<td style="width: 99%;">
-										<span title="{$title}">{if $v.location_name}{$v.location_name}, {/if}{if $v.teryt}{t a=$v.location}$a (TERRIT){/t}{else}{$v.location}{/if}
+										<span title="{$title}">{if $v.location_name}{$v.location_name|escape}, {/if}{if $v.teryt}{t a=htmlspecialchars($v.location)}$a (TERRIT){/t}{else}{$v.location|escape}{/if}
 											<a href="https://www.google.com/maps/place/{$v.location}" title="{trans("Google Maps")}">{icon name="location"}</a>
 										</span>
 									</td>
@@ -142,12 +165,24 @@
 											<TR{if ($contact.type & $smarty.const.CONTACT_DISABLED) == $smarty.const.CONTACT_DISABLED} class="blend"{/if}>
 												<TD class="customer-contact">
 													<div>
-													{if isset($properties.formatter)}{call_user_func($properties['formatter'], $contact)}{else}{$contact.contact}{/if}
+													{if isset($properties.formatter)}{call_user_func($properties['formatter'], $contact)}{else}{$contact.contact|escape}{/if}
 													{if $contact.typestr}[{$contact.typestr}]{/if}
-													{if $contact.name} ({$contact.name|truncate:"40":"...":true}){/if}
+													{if $contact.name} ({$contact.name|trunescape:40}){/if}
 													</div>
 												</TD>
 											</TR>
+											{if $type == 'email' && !empty($contact.properties)}
+												<tr>
+													<td class="customer-contact">
+														<div style="padding-left: 0.5em;">
+															{foreach $contact.properties as $property}
+																<span {tip text="Property name"}><strong>{$property.name}:</strong></span>
+																<span {tip text="Property value"}>{$property.value}</span><br>
+															{/foreach}
+														</div>
+													</td>
+												</tr>
+											{/if}
 											{/foreach}
 										</TABLE>
 									</fieldset>
@@ -175,24 +210,32 @@
 									{icon name="user-id-number"}
 								</TD>
 								<TD WIDTH="99%">
-									{trans("ICN")}: {$customerinfo.icn}
+									{trans("Identity type:")} {trans($_IDENTITY_TYPES[$customerinfo.ict])}
+								</TD>
+							</TR>
+							<TR>
+								<TD WIDTH="1%">
+									{icon name="user-id-number" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.icn}
+								</TD>
+								<TD WIDTH="99%">
+									{trans("Identity number:")} {$customerinfo.icn|escape}
 								</TD>
 							</TR>
 						{/if}
 						{if $customerinfo.ssn != ""}
 							<TR>
 								<TD WIDTH="1%">
-									{icon name="user-id-number"}
+									{icon name="user-id-number" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.ssn}
 								</TD>
 								<TD WIDTH="99%">
-									{trans("SSN")}: {$customerinfo.ssn}
+									{trans("SSN")}: {$customerinfo.ssn|escape}
 								</TD>
 							</TR>
 						{/if}
 						{if $customerinfo.ten != ""}
 							<TR>
 								<TD WIDTH="1%">
-									{icon name="user-id-number"}
+									{icon name="user-id-number" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.ten}
 								</TD>
 								<TD WIDTH="99%">
 									{trans("TEN")}: {$customerinfo.ten}
@@ -202,7 +245,7 @@
 						{if $customerinfo.regon != ""}
 							<TR>
 								<TD WIDTH="1%">
-									{icon name="user-id-number"}
+									{icon name="user-id-number" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.regon}
 								</TD>
 								<TD WIDTH="99%">
 									{trans("REGON")}: {$customerinfo.regon}
@@ -212,14 +255,14 @@
 						{if $customerinfo.rbename != ""}
 							<TR>
 								<TD style="width: 1%;" class="valign-top">
-									{icon name="user-id-number"}
+									{icon name="user-id-number" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.rbename}
 								</TD>
 								<TD style="width: 99%;">
 									{trans("RBE Name:")}
 									<TABLE CELLPADDING="5">
 										<TR>
 											<TD CLASS="fall superlight">
-												{$customerinfo.rbename|replace:"\n":"<BR>"}
+												{$customerinfo.rbename|escape|replace:"\n":"<BR>"}
 											</TD>
 										</TR>
 									</TABLE>
@@ -229,24 +272,24 @@
 						{if $customerinfo.rbe != ""}
 							<TR>
 								<TD style="width: 1%;">
-									{icon name="user-id-number"}
+									{icon name="user-id-number" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.rbe}
 								</TD>
 								<TD style="width: 99%;">
-									{trans("RBE")}: {$customerinfo.rbe}
+									{trans("RBE")}: {$customerinfo.rbe|escape}
 								</TD>
 							</TR>
 						{/if}
 						{if $customerinfo.bankaccount}
 							<TR>
 								<TD WIDTH="1%">
-									{icon name="account-number"}
+									{icon name="account-number" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.bankaccount}
 								</TD>
 								<TD WIDTH="99%" NOWRAP>
 									{format_bankaccount($customerinfo.bankaccount)}
 								</TD>
 							</TR>
 						{/if}
-							<TR>
+							<TR class="customer-options">
 								<TD WIDTH="1%" style="vertical-align: top">
 									{icon name="paytype"}
 								</TD>
@@ -284,7 +327,7 @@
 									</TABLE>
 								</TD>
 							</TR>
-							<TR>
+							<TR class="customer-options">
 								<TD WIDTH="1%" style="vertical-align: top">
 									{icon name="consent"}
 								</TD>
@@ -335,7 +378,7 @@
 						<TD WIDTH="99%" COLSPAN="2">
 							<TABLE width="100%" CELLPADDING="5">
 								<TR>
-									<TD class="fall superlight lms-ui-autolinker">
+									<TD class="fall superlight lms-ui-autolinker limit-width">
 										{$customerinfo.info|replace:"\n":"<BR>"}
 									</TD>
 								</TR>
@@ -351,7 +394,7 @@
 						<TD WIDTH="99%" COLSPAN="2">
 							<TABLE width="100%" CELLPADDING="5">
 								<TR>
-									<TD class="fall superlight lms-ui-autolinker">
+									<TD class="fall superlight lms-ui-autolinker limit-width">
 										{$customerinfo.message|replace:"\n":"<BR>"}
 									</TD>
 								</TR>
@@ -367,7 +410,7 @@
 						<TD WIDTH="99%" COLSPAN="2">
 							<TABLE width="100%" CELLPADDING="5">
 								<TR>
-									<TD class="fall superlight lms-ui-autolinker">
+									<TD class="fall superlight lms-ui-autolinker limit-width">
 										{$customerinfo.notes|replace:"\n":"<BR>"}
 									</TD>
 								</TR>
@@ -383,7 +426,7 @@
 						<TD COLSPAN="2">
 							<TABLE width="100%" CELLPADDING="5">
 								<TR>
-									<TD class="fall superlight lms-ui-autolinker">
+									<TD class="fall superlight lms-ui-autolinker limit-width">
 										{$customerinfo.documentmemo|replace:"\n":"<BR>"}
 									</TD>
 								</TR>
@@ -452,8 +495,8 @@
 							{trans("Modified:")}</B>
 						</TD>
 						<TD WIDTH="98%">
-							{$customerinfo.createdby}, {$customerinfo.creationdateh}<BR>
-							{if $customerinfo.moddate}{$customerinfo.modifiedby}, {$customerinfo.moddateh}{else}-{/if}
+							{$customerinfo.createdby|escape}, {$customerinfo.creationdateh}<BR>
+							{if $customerinfo.moddate}{$customerinfo.modifiedby|escape}, {$customerinfo.moddateh}{else}-{/if}
 						</TD>
 					</TR>
 					{/block}
@@ -469,9 +512,9 @@
 			{block name="customerinfobox-buttons"}
 			{if $customerinfo.deleted}
 				{if ConfigHelper::checkPrivilege('permanent_customer_removal')}
-					{button id="remove-button" icon="remove" label="Remove permanently" href="?m=customerdel&id={$customerinfo.id}&type=permanent"}
+					{button id="remove-button" icon="remove" label="Remove permanently" data_href="?m=customerdel&id={$customerinfo.id}&type=permanent"}
 				{/if}
-				{button id="restore-button" icon="restore" label="Restore" onclick="location.href = '?m=customeredit&id={$customerinfo.id}&action=recover';"}
+				{button id="restore-button" icon="restore" label="Restore" href="?m=customeredit&id={$customerinfo.id}&action=recover"}
 			{else}
 				{button type="link-button" id="rtsearch-button" class="{if $customerstats['tickets']['notresolved']}bold{/if}" icon="timetable"
 					label="{trans("Tickets")}{if $customerstats['tickets']} ({$customerstats['tickets']['all']}{if $customerstats['tickets']['notresolved']} / {$customerstats['tickets']['notresolved']}{/if}){/if}"
@@ -484,7 +527,7 @@
 					href="?m=trafficprint&type=customertraffic&customer={$customerinfo.id}"}
 				{button type="link-button" id="edit-button" icon="edit" label="Edit" href="?m=customeredit&id={$customerinfo.id}"}
 				{if ConfigHelper::checkPrivilege('customer_removal')}
-					{button id="delete-button" icon="delete" label="Delete" href="?m=customerdel&id={$customerinfo.id}"}
+					{button id="delete-button" icon="delete" label="Delete" data_href="?m=customerdel&id={$customerinfo.id}"}
 				{/if}
 			{/if}
 			{if $info_link}
@@ -499,20 +542,20 @@
 
 	{if $customerpanel}
 		if (getCookie('customerpanel') == '1') {
-			('#customerpanel').show();
+			$('#customerpanel').show();
 		}
 	{/if}
 
 	$(function() {
 		$('#delete-button').click(function() {
 			confirmDialog($t("Are you sure, you want to remove customer '$a' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!", "{$customerinfo.customername|escape}"), this).done(function() {
-				location.href = $(this).attr('href');
+				location.href = $(this).attr('data-href');
 			});
 		});
 
 		$('#remove-button').click(function() {
 			confirmDialog($t("Do you want to permanently remove $a customer?", "{$customerinfo.customername|escape}"), this).done(function() {
-				location.href = $(this).attr('href');
+				location.href = $(this).attr('data-href');
 			});
 		});
 	});

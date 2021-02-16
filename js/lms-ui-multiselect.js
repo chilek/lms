@@ -22,8 +22,7 @@
  *  $Id$
  */
 
-// hide combobox after click out of the window
-$(document).click(function(e) {
+function closeAllMultiSelectPopups(e) {
 	var popup = $('.lms-ui-multiselect-popup:visible');
 	if (!popup.length) {
 		return;
@@ -41,6 +40,11 @@ $(document).click(function(e) {
 		container.removeClass('open');
 		old_element.trigger('lms:multiselect:change');
 	}
+}
+
+// hide combobox after click out of the window
+$(document).click(function(e) {
+	closeAllMultiSelectPopups(e);
 });
 
 $(document).keydown(function(e) {
@@ -136,6 +140,7 @@ function multiselect(options) {
 	var tiny = typeof options.type !== 'undefined' && options.type == 'tiny';
 	var bottom = typeof options.bottom !== 'undefined' && options.bottom;
 	var button = typeof options.button !== 'undefined' && options.button;
+	var clearButton = typeof options.clearButton === 'undefined' || options.clearButton == 'true' ? true : false;
 	var icon = typeof options.icon !== 'undefined' ? options.icon : 'img/settings.gif';
 	var label = typeof options.label !== 'undefined' ? options.label : '';
 	var separator = typeof options.separator !== 'undefined' ? options.separator : ', ';
@@ -155,7 +160,7 @@ function multiselect(options) {
 
 	var container = $('<div class="lms-ui-multiselect-container' + (tiny ? ' tiny' : '') +
 		(bottom ? ' bottom' : '') +
-		(old_class && old_class.length ? ' ' + old_class : '') + '"/>').data('multiselect-object', this);
+		(old_class && old_class.length ? ' ' + old_class : '') + '"' + (old_element.is('[required]') ? ' required' : '') + '/>');
 	var launcher = $('<div class="lms-ui-multiselect-launcher" title="' + old_element.attr('title') + '" tabindex="0"/>')
 		.attr('style', old_element.attr('style')).appendTo(container);
 
@@ -166,7 +171,9 @@ function multiselect(options) {
 			launcher.html(icon.match("img\/", icon) ? '<img src="' + icon + '">' + (label ? '&nbsp' + label : '') : '<i class="' + icon + '"/>');
 		}
 	} else {
-		$('<div class="lms-ui-multiselect-launcher-label"></div><span class="lms-ui-multiselect-launcher-toggle"></span>')
+		$('<i class="lms-ui-multiselect-launcher-toggle lms-ui-icon-customisation"></i>' +
+			(clearButton ? '<i class="lms-ui-multiselect-clear-button lms-ui-icon-hide"></i>' : '') +
+			'<div class="lms-ui-multiselect-launcher-label"></div>')
 			.appendTo(launcher);
 	}
 
@@ -271,6 +278,7 @@ function multiselect(options) {
 			var exclusive = $(this).attr('data-exclusive');
 			var selected = $(this).is(':selected');
 			var disabled = $(this).is(':disabled');
+			var crossed = $(this).attr('data-crossed');
 			var class_name = 'visible' + (exclusive === '' ? ' exclusive' : '');
 
 			var data = '';
@@ -289,14 +297,20 @@ function multiselect(options) {
 
 			var text = $(this).attr('data-html-content');
 			if (!text) {
-				text = $(this).text();
+				text = escapeHtml($(this).text().trim());
+			} else {
+				text = text.trim();
 			}
-			list += '<span>' + text + '</span>';
+			list += '<span '+ (crossed === '' ? ' class="lms-ui-crossed"' : '')+'>' + text + '</span>';
 
 			list += '</li>';
 		});
 
 		ul.html(list);
+
+		all_items = ul.find('li');
+		all_enabled_items = all_items.filter(':not(.disabled)');
+		all_enabled_checkboxes = all_enabled_items.find(':checkbox');
 	}
 
 	function popupListItemClickHandler(e) {
@@ -346,10 +360,6 @@ function multiselect(options) {
 	}
 
 	buildPopupList();
-
-	all_items = ul.find('li');
-	all_enabled_items = all_items.filter(':not(.disabled)');
-	all_enabled_checkboxes = all_enabled_items.find(':checkbox');
 
 	// add some mouse/key events handlers
 	ul.on('click', 'li:not(.disabled)', popupListItemClickHandler)
@@ -403,6 +413,25 @@ function multiselect(options) {
 		});
 	}
 
+	launcher.find('.lms-ui-multiselect-clear-button').click(function(e) {
+		closeAllMultiSelectPopups($.Event({
+			type: 'click',
+			target: document
+		}));
+
+		multiselect.updateSelection([]);
+
+		updateCheckAll();
+
+		if (new_selected != old_selected) {
+			old_element.trigger('change');
+		}
+		old_selected = new_selected;
+
+		e.preventDefault();
+		e.stopPropagation();
+	});
+
 	// add some mouse/key event handlers
 	launcher.on('click keydown', function(e) {
 		if (e.type == 'keydown') {
@@ -417,6 +446,13 @@ function multiselect(options) {
 			e.preventDefault();
 		}
 		if (!popup.is(':visible') && (e.type != 'keydown' || e.key != 'Escape')) {
+			if (e.type == 'click') {
+				closeAllMultiSelectPopups($.Event({
+					type: 'click',
+					target: document
+				}));
+			}
+
 			setTimeout(function() {
 				popup.show();
 				popup.addClass('fullscreen-popup');

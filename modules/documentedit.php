@@ -82,30 +82,38 @@ if (isset($_POST['document'])) {
         $error['title'] = trans('Document title is required!');
     }
 
-    // check if selected customer can use selected numberplan
-    if ($documentedit['numberplanid'] && !$DB->GetOne('SELECT 1 FROM numberplanassignments
-	        WHERE planid = ? AND divisionid = ?', array($documentedit['numberplanid'], $document['divisionid']))) {
-        $error['number'] = trans('Selected numbering plan doesn\'t match customer\'s division!');
-    } elseif (!$documentedit['number']) {
-        if ($document['numberplanid'] != $documentedit['numberplanid']) {
-            $tmp = $LMS->GetNewDocumentNumber(array(
+    if (($documentedit['numberplanid'] && !$LMS->checkNumberPlanAccess($documentedit['numberplanid']))
+        || ($document['numberplanid'] && !$LMS->checkNumberPlanAccess($document['numberplanid']))) {
+        $documentedit['numberplanid'] = $document['numberplanid'];
+        $error['numberplanid'] = trans('Persmission denied!');
+    }
+
+    if (!isset($error['numberplanid'])) {
+        // check if selected customer can use selected numberplan
+        if ($documentedit['numberplanid'] && !$DB->GetOne('SELECT 1 FROM numberplanassignments
+                WHERE planid = ? AND divisionid = ?', array($documentedit['numberplanid'], $document['divisionid']))) {
+            $error['number'] = trans('Selected numbering plan doesn\'t match customer\'s division!');
+        } elseif (!$documentedit['number']) {
+            if ($document['numberplanid'] != $documentedit['numberplanid']) {
+                $tmp = $LMS->GetNewDocumentNumber(array(
+                    'doctype' => $documentedit['type'],
+                    'planid' => $documentedit['numberplanid'],
+                    'customerid' => $document['customerid'],
+                ));
+                $documentedit['number'] = $tmp ? $tmp : 1;
+            } else {
+                $documentedit['number'] = $document['number'];
+            }
+        } elseif (!preg_match('/^[0-9]+$/', $documentedit['number'])) {
+            $error['number'] = trans('Document number must be an integer!');
+        } elseif ($document['number'] != $documentedit['number'] || $document['numberplanid'] != $documentedit['numberplanid']) {
+            if ($LMS->DocumentExists(array(
+                'number' => $documentedit['number'],
                 'doctype' => $documentedit['type'],
                 'planid' => $documentedit['numberplanid'],
-                'customerid' => $document['customerid'],
-            ));
-            $documentedit['number'] = $tmp ? $tmp : 1;
-        } else {
-            $documentedit['number'] = $document['number'];
-        }
-    } elseif (!preg_match('/^[0-9]+$/', $documentedit['number'])) {
-        $error['number'] = trans('Document number must be an integer!');
-    } elseif ($document['number'] != $documentedit['number'] || $document['numberplanid'] != $documentedit['numberplanid']) {
-        if ($LMS->DocumentExists(array(
-            'number' => $documentedit['number'],
-            'doctype' => $documentedit['type'],
-            'planid' => $documentedit['numberplanid'],
-        ))) {
-            $error['number'] = trans('Document with specified number exists!');
+            ))) {
+                $error['number'] = trans('Document with specified number exists!');
+            }
         }
     }
 
@@ -184,12 +192,24 @@ if (isset($_POST['document'])) {
             'customerid' => $document['customerid'],
         ));
 
+        if ($documentedit['closed']) {
+            if ($document['confirmdate'] == -1 && $document['closed'] < 2) {
+                $closed = 2;
+            } elseif ($document['closed'] == 3) {
+                $closed = 3;
+            } else {
+                $closed = 1;
+            }
+        } else {
+            $closed = 0;
+        }
+
         $DB->Execute(
             'UPDATE documents SET type=?, closed=?, sdate=?, cuserid=?, confirmdate = ?,
 			        archived = ?, adate = ?, auserid = ?, number=?, numberplanid=?, fullnumber=?
 				WHERE id=?',
             array(  $documentedit['type'],
-                    $documentedit['closed'] ? ($document['confirmdate'] == -1 && $document['closed'] != 2 ? 2 : 1) : 0,
+                    $closed == 1 && !$document['closed'] ? 0 : $closed,
                     $documentedit['closed'] ? ($document['closed'] ? $document['sdate'] : time()) : 0,
                     $documentedit['closed'] ? ($document['closed'] ? $document['cuserid'] : $userid) : null,
                     !$document['closed'] && $documentedit['closed'] && $document['confirmdate'] == -1 ? 0 : ($documentedit['closed'] || !$documentedit['confirmdate'] ? 0 : $documentedit['confirmdate'] + 86399),
@@ -229,6 +249,10 @@ if (isset($_POST['document'])) {
         $LMS->AddDocumentAttachments($documentedit['id'], $files);
 
         $DB->CommitTrans();
+
+        if ($closed == 1 && !$document['closed']) {
+            $LMS->CommitDocuments(array($documentedit['id']));
+        }
 
         $SESSION->redirect('?'.$SESSION->get('backto'));
     } else {

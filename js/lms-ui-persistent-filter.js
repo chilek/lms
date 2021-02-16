@@ -33,21 +33,40 @@ $(function() {
 
 		var module = location.href.replace(/^.+?m=([a-zA-Z0-9_-]+)(?:&.+|$)/, '$1');
 		var url = '?m=' + module + '&persistent-filter=' + selection + '&action=update&api=1';
+		var filterId = div.attr('data-filter-id');
+		var formData;
+		if (filterId) {
+			var form = div.closest('form');
+			formData = new FormData(form.get(0));
+			form.find('.no-persistent-filter-field').each(function() {
+				formData.delete($(this).attr('name'));
+			});
+			formData.append('filter-id', filterId);
+			url += '&savefilter=1';
+		} else {
+			formData = new FormData();
+		}
 
 		$('html,body').css('cursor', 'wait');
 		$('.lms-ui-filter-modify-button,.lms-ui-filter-delete-button').prop('disabled', true);
 
 		$.ajax(url, {
 			method: "POST",
-			success: function (data) {
-				data.unshift({
+			data: formData,
+			processData: false,
+			contentType: false,
+			success: function (result) {
+				if (filterId) {
+					result = result[filterId];
+				}
+				result.unshift({
 					text: $t('<!filter>- none -'),
 					value: -1
 				})
-				selectelem.scombobox('fill', data);
+				selectelem.scombobox('fill', result);
 				selectelem.scombobox('val', selection);
 			},
-			complete: function(data) {
+			complete: function() {
 				$('html,body').css('cursor', 'auto');
 				$('.lms-ui-filter-modify-button,.lms-ui-filter-delete-button').prop('disabled', false);
 			}
@@ -68,18 +87,27 @@ $(function() {
 		}
 
 		url = '?m=' + module + '&persistent-filter=' + selection + '&action=delete&api=1'
+		var formData = {};
+		var filterId = div.attr('data-filter-id');
+		if (filterId) {
+			formData["filter-id"] = filterId;
+		}
 
 		$('html,body').css('cursor', 'wait');
 		$('.lms-ui-filter-modify-button,.lms-ui-filter-delete-button').prop('disabled', true);
 
 		$.ajax(url, {
 			method: "POST",
-			success: function (data) {
-				data.unshift({
+			data: formData,
+			success: function (result) {
+				if (filterId) {
+					result = result[filterId];
+				}
+				result.unshift({
 					text: $t('<!filter>- none -'),
 					value: -1
 				})
-				selectelem.scombobox('fill', data);
+				selectelem.scombobox('fill', result);
 			},
 			complete: function() {
 				$('html,body').css('cursor', 'auto');
@@ -107,7 +135,8 @@ $(function() {
 			});
 			if (!newname) {
 				var module = location.href.replace(/^.+?m=([a-zA-Z0-9_-]+)(?:&.+|$)/, '$1');
-				var url = '?m=' + module + '&persistent-filter=' + selection;
+				var filterId = div.attr('data-filter-id');
+				var url = '?m=' + module + '&persistent-filter=' + selection + (filterId ? '&filter-id=' + filterId : '');
 				location.href = url;
 			}
 		}, 'lms-ui');

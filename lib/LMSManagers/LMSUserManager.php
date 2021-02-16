@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2019 LMS Developers
+ *  Copyright (C) 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -107,18 +107,26 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
     /**
      * Returns active users names
      *
+     * @param array $params Parameters
      * @return array Users names
      */
-    public function getUserNames()
+    public function getUserNames($params = array())
     {
-        return $this->db->GetAll('SELECT id, login, name, rname,
-				(CASE WHEN access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0) THEN 1 ELSE 0 END) AS access
-			FROM vusers WHERE deleted=0 ORDER BY rname ASC');
+        extract($params);
+
+        return $this->db->GetAll(
+            'SELECT id, login, name, rname, login,
+            (CASE WHEN access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0) THEN 1 ELSE 0 END) AS access
+            FROM vusers
+            WHERE deleted = 0'
+            . (isset($withDeleted) ? ' OR deleted = 1' : '' )
+            . ' ORDER BY rname ASC'
+        );
     }
 
     public function getUserNamesIndexedById()
     {
-        return $this->db->GetAllByKey('SELECT id, name, rname,
+        return $this->db->GetAllByKey('SELECT id, name, rname, login,
 				(CASE WHEN access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0) THEN 1 ELSE 0 END) AS access
 			FROM vusers WHERE deleted=0 ORDER BY rname ASC', 'id');
     }
@@ -128,15 +136,88 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
      *
      * @return array Users data
      */
-    public function getUserList()
+    public function getUsers($params = array())
     {
-        $userlist = $this->db->GetAll(
-            'SELECT id, login, name, phone, lastlogindate, lastloginip, passwdexpiration, passwdlastchange, access,
+        extract($params);
+
+        if (isset($order)) {
+            list ($column, $asc) = explode(',', $order);
+            $sqlord = $column . ' ' . ($asc == 'desc' ? 'DESC' : 'ASC');
+        } else {
+            $sqlord = 'login ASC';
+        }
+
+        if (isset($superuser)) {
+            $userlist = $this->db->GetAllByKey(
+                'SELECT id, login, name, phone, lastlogindate, lastloginip, passwdexpiration, passwdlastchange, access,
                 accessfrom, accessto, rname, twofactorauth
-            FROM vusers
-            WHERE deleted=0
-            ORDER BY login ASC'
-        );
+            FROM vallusers
+            WHERE deleted = 0'
+                . (isset($divisions) && !empty($divisions) ? ' AND id IN (SELECT userid
+                    FROM userdivisions
+                    WHERE divisionid IN (' . $divisions . ')
+                    )' : '')
+                . (isset($excludedUsers) && !empty($excludedUsers) ? ' AND id NOT IN (' . $excludedUsers . ')' : '') .
+                ' ORDER BY ' . $sqlord,
+                'id'
+            );
+        } else {
+            $userlist = $this->db->GetAllByKey(
+                'SELECT id, login, name, phone, lastlogindate, lastloginip, passwdexpiration, passwdlastchange, access,
+                    accessfrom, accessto, rname, twofactorauth
+                FROM vusers
+                WHERE deleted = 0'
+                . (isset($divisions) && !empty($divisions) ? ' AND id IN (SELECT userid
+                        FROM userdivisions
+                        WHERE divisionid IN (' . $divisions . ')
+                        )' : '')
+                . (isset($excludedUsers) && !empty($excludedUsers) ? ' AND id NOT IN (' . $excludedUsers . ')' : '') .
+                ' ORDER BY ' . $sqlord,
+                'id'
+            );
+        }
+
+        return $userlist;
+    }
+        /**
+     * Returns users
+     *
+     * @return array Users data
+     */
+    public function getUserList($params = array())
+    {
+        extract($params);
+
+        if (isset($superuser)) {
+            $userlist = $this->db->GetAllByKey(
+                'SELECT id, login, name, phone, lastlogindate, lastloginip, passwdexpiration, passwdlastchange, access,
+                accessfrom, accessto, rname, twofactorauth
+            FROM vallusers
+            WHERE deleted = 0'
+                . (isset($userAccess) ? ' AND access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0)' : '' )
+                . (isset($divisions) && !empty($divisions) ? ' AND id IN (SELECT userid
+                    FROM userdivisions
+                    WHERE divisionid IN (' . $divisions . ')
+                    )' : '') .
+                ' ORDER BY login ASC',
+                'id'
+            );
+        } else {
+            $userlist = $this->db->GetAllByKey(
+                'SELECT id, login, name, phone, lastlogindate, lastloginip, passwdexpiration, passwdlastchange, access,
+                    accessfrom, accessto, rname, twofactorauth
+                FROM vusers
+                WHERE deleted = 0'
+                . (isset($userAccess) ? ' AND access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0)' : '' )
+                . (isset($divisions) && !empty($divisions) ? ' AND id IN (SELECT userid
+                        FROM userdivisions
+                        WHERE divisionid IN (' . $divisions . ')
+                        )' : '') .
+                ' ORDER BY login ASC',
+                'id'
+            );
+        }
+
         if ($userlist) {
             foreach ($userlist as &$row) {
                 if ($row['id'] == Auth::GetCurrentUser()) {
@@ -181,8 +262,9 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             }
             unset($row);
         }
-
-        $userlist['total'] = empty($userlist) ? 0 : count($userlist);
+        if (empty($short)) {
+            $userlist['total'] = empty($userlist) ? 0 : count($userlist);
+        }
         return $userlist;
     }
 
@@ -207,8 +289,8 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
     {
         $args = array(
             'login' => $user['login'],
-            'firstname' => $user['firstname'],
-            'lastname' => $user['lastname'],
+            'firstname' => Utils::removeInsecureHtml($user['firstname']),
+            'lastname' => Utils::removeInsecureHtml($user['lastname']),
             'email' => $user['email'],
             'passwd' => crypt($user['password']),
             'rights' => $user['rights'],
@@ -231,13 +313,42 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             array_values($args)
         );
         if ($user_inserted) {
-            $id = $this->db->GetOne(
-                'SELECT id FROM users WHERE login=?',
-                array($user['login'])
-            );
+            $id = $this->db->GetLastInsertID('users');
+
+            if (!empty($user['usergroups'])) {
+                $usergroup_manager = new LMSUserGroupManager($this->db, $this->auth, $this->cache, $this->syslog);
+                foreach ($user['usergroups'] as $group) {
+                    $usergroup_manager->UserassignmentAdd(array(
+                        'userid' => $id,
+                        'usergroupid' => $group,
+                    ));
+                }
+            }
+
+            if (!empty($user['customergroups'])) {
+                foreach ($user['customergroups'] as $group) {
+                    if ($this->db->Execute(
+                        'INSERT INTO excludedgroups (userid, customergroupid) VALUES (?, ?)',
+                        array($id, $group)
+                    ) && $this->syslog) {
+                        $args = array(
+                            SYSLOG::RES_EXCLGROUP => $this->db->GetLastInsertID('excludedgroups'),
+                            SYSLOG::RES_CUSTGROUP => $group,
+                            SYSLOG::RES_USER => $id,
+                        );
+                        $this->syslog->AddMessage(SYSLOG::RES_EXCLGROUP, SYSLOG::OPER_ADD, $args);
+                    }
+                }
+            }
+
+            foreach ($user['divisions'] as $divisionid) {
+                $this->db->Execute('INSERT INTO userdivisions (userid, divisionid) VALUES(?, ?)', array($id, $divisionid));
+            }
+
             if ($this->syslog) {
                 unset($args['passwd']);
                 $args[SYSLOG::RES_USER] = $id;
+                $args['added_divisions'] = implode(',', $user['divisions']);
                 $this->syslog->AddMessage(SYSLOG::RES_USER, SYSLOG::OPER_ADD, $args);
             }
             return $id;
@@ -302,6 +413,26 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
     }
 
     /**
+     * Check user access
+     *
+     * @param int $id User id
+     * @return int
+     */
+    public function checkUserAccess($id)
+    {
+        return $this->db->Execute(
+            'SELECT 1
+            FROM users 
+            WHERE id = ?
+            AND deleted = 0
+            AND access = 1
+            AND accessfrom <= ?NOW?
+            AND (accessto >= ?NOW? OR accessto = 0)',
+            array($id)
+        );
+    }
+
+    /**
      * Returns user data
      *
      * @param int $id User id
@@ -321,6 +452,9 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             if (empty($userinfo['trusteddevices'])) {
                 $userinfo['trusteddevices'] = array();
             }
+
+            $usergroup_manager = new LMSUserGroupManager($this->db, $this->auth, $this->cache, $this->syslog);
+            $userinfo['usergroups'] = $usergroup_manager->getUserAssignments($id);
 
             $this->cache->setCache('users', $id, null, $userinfo);
 
@@ -386,8 +520,8 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
     {
         $args = array(
             'login' => $user['login'],
-            'firstname' => $user['firstname'],
-            'lastname' => $user['lastname'],
+            'firstname' => Utils::removeInsecureHtml($user['firstname']),
+            'lastname' => Utils::removeInsecureHtml($user['lastname']),
             'email' => $user['email'],
             'rights' => $user['rights'],
             'hosts' => $user['hosts'],
@@ -406,7 +540,107 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
         $res = $this->db->Execute('UPDATE users SET login=?, firstname=?, lastname=?, email=?, rights=?,
 				hosts=?, position=?, ntype=?, phone=?, passwdforcechange=?, passwdexpiration=?, access=?,
 				accessfrom=?, accessto=?, twofactorauth=?, twofactorauthsecretkey=? WHERE id=?', array_values($args));
+
+        if ($res) {
+            if (!empty($user['diff_division_del'])) {
+                foreach ($user['diff_division_del'] as $divisiondelid) {
+                    $this->db->Execute('DELETE FROM userdivisions WHERE userid = ? AND divisionid = ?', array($user['id'], $divisiondelid));
+                    $this->db->Execute('DELETE FROM uiconfig WHERE userid = ? AND divisionid = ?', array($user['id'], $divisiondelid));
+                }
+            }
+
+            if (!empty($user['diff_division_add'])) {
+                foreach ($user['diff_division_add'] as $divisionaddid) {
+                    $this->db->Execute('INSERT INTO userdivisions (userid, divisionid) VALUES(?, ?)', array($user['id'], $divisionaddid));
+                }
+            }
+
+            $usergroup_manager = new LMSUserGroupManager($this->db, $this->auth, $this->cache, $this->syslog);
+            $usergroups = $usergroup_manager->getUserAssignments($user['id']);
+            $usergroups = array_keys($usergroups);
+            if (empty($user['usergroups'])) {
+                $user['usergroups'] = array();
+            }
+            $usergroups_to_remove = array_diff($usergroups, $user['usergroups']);
+            $usergroups_to_add = array_diff($user['usergroups'], $usergroups);
+
+            if (!empty($usergroups_to_remove)) {
+                foreach ($usergroups_to_remove as $group) {
+                    $usergroup_manager->UserassignmentDelete(array(
+                        'userid' => $user['id'],
+                        'usergroupid' => $group,
+                    ));
+                }
+            }
+            if (!empty($usergroups_to_add)) {
+                foreach ($usergroups_to_add as $group) {
+                    $usergroup_manager->UserassignmentAdd(array(
+                        'userid' => $user['id'],
+                        'usergroupid' => $group,
+                    ));
+                }
+            }
+
+            $customergroup_manager = new LMSCustomerGroupManager($this->db, $this->auth, $this->cache, $this->syslog);
+            $customergroups = $customergroup_manager->getAllCustomerGroups();
+            if (empty($customergroups)) {
+                $customergroups = array();
+            }
+            $customergroups = array_keys($customergroups);
+
+            if (!isset($user['customergroups'])) {
+                $user['customergroups'] = array();
+            }
+            $excludedgroups = $this->db->GetAllByKey(
+                'SELECT id, customergroupid FROM excludedgroups WHERE userid = ?',
+                'customergroupid',
+                array($user['id'])
+            );
+            if (empty($excludedgroups)) {
+                $excludedgroups = array();
+            }
+
+            if (empty($user['customergroups'])) {
+                $user['customergroups'] = array();
+            }
+            $excludedgroups_to_remove = array_diff(array_keys($excludedgroups), array_diff($customergroups, $user['customergroups']));
+            $excludedgroups_to_add = array_diff($customergroups, $user['customergroups'], array_keys($excludedgroups));
+
+            if (!empty($excludedgroups_to_remove)) {
+                foreach ($excludedgroups_to_remove as $group) {
+                    if ($this->db->Execute(
+                        'DELETE FROM excludedgroups WHERE userid = ? AND customergroupid = ?',
+                        array($user['id'], $group)
+                    ) && $this->syslog) {
+                        $args = array(
+                            SYSLOG::RES_EXCLGROUP => $excludedgroups[$group]['id'],
+                            SYSLOG::RES_CUSTGROUP => $group,
+                            SYSLOG::RES_USER => $user['id'],
+                        );
+                        $this->syslog->AddMessage(SYSLOG::RES_EXCLGROUP, SYSLOG::OPER_DELETE, $args);
+                    }
+                }
+            }
+            if (!empty($excludedgroups_to_add)) {
+                foreach ($excludedgroups_to_add as $group) {
+                    if ($this->db->Execute(
+                        'INSERT INTO excludedgroups (userid, customergroupid) VALUES (?, ?)',
+                        array($user['id'], $group)
+                    ) && $this->syslog) {
+                        $args = array(
+                            SYSLOG::RES_EXCLGROUP => $this->db->GetLastInsertID('excludedgroups'),
+                            SYSLOG::RES_CUSTGROUP => $group,
+                            SYSLOG::RES_USER => $user['id'],
+                        );
+                        $this->syslog->AddMessage(SYSLOG::RES_EXCLGROUP, SYSLOG::OPER_ADD, $args);
+                    }
+                }
+            }
+        }
+
         if ($res && $this->syslog) {
+            $args['added_divisions'] = implode(',', $user['diff_division_add']);
+            $args['removed_divisions'] = implode(',', $user['diff_division_del']);
             $this->syslog->AddMessage(SYSLOG::RES_USER, SYSLOG::OPER_UPDATE, $args);
         }
         return $res;

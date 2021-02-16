@@ -183,8 +183,16 @@ if (isset($_POST['nodeedit'])) {
         $error['name'] = trans('Specified name is in use!');
     }
 
+    $password_required = ConfigHelper::getConfig('phpui.nodepassword_required', 'none');
+
     if (strlen($nodeedit['passwd']) > 32) {
         $error['passwd'] = trans('Password is too long (max.32 characters)!');
+    } elseif (!strlen($nodeedit['passwd']) && $password_required != 'none') {
+        if ($password_required == 'error') {
+            $error['passwd'] = trans('Entered password is required!');
+        } elseif ($password_required == 'warning' && !isset($warnings['nodeedit-passwd-'])) {
+            $warning['nodeedit[passwd]'] = trans('Entered password is empty!');
+        }
     }
 
     if (!isset($nodeedit['access'])) {
@@ -229,6 +237,11 @@ if (isset($_POST['nodeedit'])) {
         }
     }
 
+    if (!ConfigHelper::checkPrivilege('full_access') && ConfigHelper::checkConfig('phpui.node_to_network_device_connection_required')
+        && empty($nodeedit['netdev'])) {
+        $error['netdev'] = trans('Network device selection is required!');
+    }
+
     if (!$nodeedit['ownerid']) {
         $error['nodeedit[customerid]'] = trans('Customer not selected!');
         $error['nodeedit[ownerid]']    = trans('Customer not selected!');
@@ -270,7 +283,7 @@ if (isset($_POST['nodeedit'])) {
     $nodeedit = $hook_data['nodeedit'];
     $error = $hook_data['error'];
 
-    if (!$error) {
+    if (!$error && !$warning) {
         $nodeedit = $LMS->ExecHook('node_edit_before', $nodeedit);
 
         $ipi = $nodeedit['invprojectid'];
@@ -386,6 +399,13 @@ if (!isset($resource_tabs['nodegroups']) || $resource_tabs['nodegroups']) {
 if (!isset($resource_tabs['managementurls']) || $resource_tabs['managementurls']) {
     $SMARTY->assign('mgmurls', $LMS->GetManagementUrls(LMSNetDevManager::NODE_URL, $nodeid));
 }
+
+if (!isset($resource_tabs['routednetworks']) || $resource_tabs['routednetworks']) {
+    $SMARTY->assign('routednetworks', $LMS->getNodeRoutedNetworks($nodeid));
+    $SMARTY->assign('notroutednetworks', $LMS->getNodeNotRoutedNetworks($nodeid));
+    $SMARTY->assign('nodeid', $nodeid);
+}
+
 $SMARTY->assign('error', $error);
 $SMARTY->assign('nodeinfo', $nodeinfo);
 $SMARTY->assign('objectid', $nodeinfo['id']);

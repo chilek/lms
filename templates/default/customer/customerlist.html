@@ -62,7 +62,7 @@
 	</style>
 <H1>{$layout.pagetitle}</H1>
 
-<FORM method="get" action="?m={$layout.module}" name="choosefilter">
+<FORM method="get" action="?m={$layout.module}" name="choosefilter" id="choosefilter">
 <p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" NAME="m" VALUE="customerlist">
@@ -79,8 +79,23 @@
         {block name="customerlist-list-header"}
 	<TR {tip text="Click on column name to change sorting order"}>
 		<td scope="col" class="nobr">
-			<i class="lms-ui-icon-customer"></i> <a href="?m={$layout.module}&amp;s={$filter.state}&amp;o=customername{if $filter.direction == "asc" && $filter.order == "customername"},desc{/if}">{trans("First/last or Company name")}</A> {if $filter.order == "customername"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<i class="lms-ui-icon-home"></i> <a href="?m={$layout.module}&amp;s={$filter.state}&amp;o=address{if $filter.direction == "asc" && $filter.order == "address"},desc{/if}">{trans("Address:")}</A> {if $filter.order == "address"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			{icon name="customer" class="fa-fw"}
+			<a href="?m={$layout.module}&amp;s={$filter.state}&amp;o=customername{if $filter.direction == "asc" && $filter.order == "customername"},desc{/if}">
+				{trans("First/last or Company name")}
+			</A>
+			{if $filter.order == "customername"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			/
+			{icon name="karma" class="fa-fw"}
+			<a href="?m={$layout.module}&s={$filter.state}&o=karma{if $filter.direction == "asc" && $filter.order == "karma"},desc{/if}">
+				{trans("Karma")}
+			</A>
+			{if $filter.order == "karma"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<br>
+			{icon name="home" class="fa-fw"}
+			<a href="?m={$layout.module}&amp;s={$filter.state}&amp;o=address{if $filter.direction == "asc" && $filter.order == "address"},desc{/if}">
+				{trans("Address:")}
+			</A>
+			{if $filter.order == "address"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</td>
 		<td scope="col" class="text-right nobr">
 			<a href="?m={$layout.module}&amp;s={$filter.state}&amp;o=extid{if $filter.direction == "asc" && $filter.order == "extid"},desc{/if}"><span class="bold">{trans("External ID:")}</span></A> {if $filter.order == "extid"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
@@ -109,52 +124,67 @@
 			<label for="s">{trans("Customers:")}
 			<SELECT SIZE="1" NAME="s" ONCHANGE="document.choosefilter.submit();">
 				<OPTION VALUE="0"{if $filter.state == 0} SELECTED{/if}>{trans("- all customers -")}</OPTION>
-				{foreach $_CSTATUSES as $statusidx => $status}
-				<OPTION VALUE="{$statusidx}"{if $filter.state == $statusidx} selected{/if}>{$status.plurallabel}</OPTION>
-				{/foreach}
-				<OPTION VALUE="50"{if $filter.state == 50} SELECTED{/if}>{trans("deleted<!plural>")}</OPTION>
-				<OPTION VALUE="72"{if $filter.state == 72} SELECTED{/if}>{trans("existing<!plural>")}</OPTION>
-				<OPTION VALUE="51"{if $filter.state == 51} SELECTED{/if}>{trans("with disconnected nodes")}</OPTION>
-				{if !ConfigHelper::checkPrivilege('hide_finances')}
-					<OPTION VALUE="52"{if $filter.state == 52} SELECTED{/if}>{trans("in debt")}</OPTION>
-					<OPTION VALUE="57"{if $filter.state == 57} SELECTED{/if}>{trans("in debt above 100%")}</OPTION>
-					<OPTION VALUE="58"{if $filter.state == 58} SELECTED{/if}>{trans("in debt above 200%")}</OPTION>
-					<option value="71"{if $filter.state == 71} selected{/if}>{trans("overdue receivables")}</option>
-				{/if}
-				<OPTION value="59"{if $filter.state == 59} SELECTED{/if}>{trans("without contracts")}</OPTION>
-				<OPTION value="60"{if $filter.state == 60} SELECTED{/if}>{trans("with expired contracts")}</OPTION>
-				<OPTION value="61"{if $filter.state == 61} SELECTED{/if}>{trans("with expiring contracts")}</OPTION>
-				<OPTION value="73"{if $filter.state == 73} SELECTED{/if}>{trans("with unarchived documents")}</OPTION>
-				<OPTION VALUE="53"{if $filter.state == 53} SELECTED{/if}>{trans("online")}</OPTION>
-				<OPTION VALUE="54"{if $filter.state == 54} SELECTED{/if}>{trans("without group")}</OPTION>
-				<OPTION VALUE="55"{if $filter.state == 55} SELECTED{/if}>{trans("without tariff")}</OPTION>
-				<OPTION VALUE="56"{if $filter.state == 56} SELECTED{/if}>{trans("suspended<!plural>")}</OPTION>
-				<OPTION VALUE="62"{if $filter.state == 62} SELECTED{/if}>{trans("with e-invoice")}</OPTION>
-				<OPTION VALUE="63"{if $filter.state == 63} SELECTED{/if}>{trans("with connected nodes")}</OPTION>
-				<OPTION VALUE="64"{if $filter.state == 64} SELECTED{/if}>{trans("with nodes")}</OPTION>
-				<OPTION VALUE="65"{if $filter.state == 65} SELECTED{/if}>{trans("without nodes")}</OPTION>
-				<OPTION VALUE="66"{if $filter.state == 66} SELECTED{/if}>{trans("without invoice flag")}</OPTION>
-				<OPTION VALUE="67"{if $filter.state == 67} SELECTED{/if}>{trans("without building number")}</OPTION>
-				<OPTION VALUE="68"{if $filter.state == 68} SELECTED{/if}>{trans("without zip")}</OPTION>
-				<OPTION VALUE="69"{if $filter.state == 69} SELECTED{/if}>{trans("without city")}</OPTION>
-				<OPTION VALUE="70"{if $filter.state == 70} SELECTED{/if}>{trans("TERRIT not specified")}</OPTION>
-				<OPTION VALUE="74"{if $filter.state == 74} SELECTED{/if}>{trans("ZIP code not specified")}</OPTION>
+				<optgroup label="Status">
+					{foreach $_CSTATUSES as $statusidx => $status}
+						<OPTION VALUE="{$statusidx}"{if $filter.state == $statusidx} selected{/if}>{$status.plurallabel}</OPTION>
+					{/foreach}
+				</optgroup>
+				<optgroup label="{trans("Customers")}">
+					<OPTION VALUE="50"{if $filter.state == 50} SELECTED{/if}>{trans("deleted<!plural>")}</OPTION>
+					<OPTION VALUE="72"{if $filter.state == 72} SELECTED{/if}>{trans("existing<!plural>")}</OPTION>
+					<OPTION VALUE="53"{if $filter.state == 53} SELECTED{/if}>{trans("online")}</OPTION>
+					<OPTION VALUE="56"{if $filter.state == 56} SELECTED{/if}>{trans("suspended<!plural>")}</OPTION>
+					<OPTION VALUE="54"{if $filter.state == 54} SELECTED{/if}>{trans("without group")}</OPTION>
+				</optgroup>
+				<optgroup label="{trans("Documents")}">
+					<OPTION value="73"{if $filter.state == 73} SELECTED{/if}>{trans("with unarchived documents")}</OPTION>
+				</optgroup>
+				<optgroup label="{trans("Nodes")}">
+					<OPTION VALUE="63"{if $filter.state == 63} SELECTED{/if}>{trans("with connected nodes")}</OPTION>
+					<OPTION VALUE="51"{if $filter.state == 51} SELECTED{/if}>{trans("with disconnected nodes")}</OPTION>
+					<OPTION VALUE="64"{if $filter.state == 64} SELECTED{/if}>{trans("with nodes")}</OPTION>
+					<OPTION VALUE="65"{if $filter.state == 65} SELECTED{/if}>{trans("without nodes")}</OPTION>
+				</optgroup>
+				<optgroup label="{trans("Contracts")}">
+					<OPTION value="59"{if $filter.state == 59} SELECTED{/if}>{trans("without contracts")}</OPTION>
+					<OPTION value="76"{if $filter.state == 76} SELECTED{/if}>{trans("without active contracts")}</OPTION>
+					<OPTION value="60"{if $filter.state == 60} SELECTED{/if}>{trans("with expired contracts")}</OPTION>
+					<OPTION value="77"{if $filter.state == 77} SELECTED{/if}>{trans("with expired, active contracts")}</OPTION>
+					<OPTION value="61"{if $filter.state == 61} SELECTED{/if}>{trans("with expiring contracts")}</OPTION>
+					<OPTION value="78"{if $filter.state == 78} SELECTED{/if}>{trans("with expiring, active contracts")}</OPTION>
+				</optgroup>
+				<optgroup label="{trans("Finances")}">
+					{if !ConfigHelper::checkPrivilege('hide_finances')}
+						<OPTION VALUE="52"{if $filter.state == 52} SELECTED{/if}>{trans("in debt")}</OPTION>
+						<OPTION VALUE="57"{if $filter.state == 57} SELECTED{/if}>{trans("in debt above 100%")}</OPTION>
+						<OPTION VALUE="58"{if $filter.state == 58} SELECTED{/if}>{trans("in debt above 200%")}</OPTION>
+						<option value="71"{if $filter.state == 71} selected{/if}>{trans("overdue receivables")}</option>
+					{/if}
+					<OPTION VALUE="55"{if $filter.state == 55} SELECTED{/if}>{trans("without tariff")}</OPTION>
+					<OPTION VALUE="62"{if $filter.state == 62} SELECTED{/if}>{trans("with e-invoice")}</OPTION>
+					<OPTION VALUE="66"{if $filter.state == 66} SELECTED{/if}>{trans("without invoice flag")}</OPTION>
+					<OPTION VALUE="75"{if $filter.state == 75} SELECTED{/if}>{trans("with discount")}</OPTION>
+					<option value="79"{if $filter.state == 79} selected{/if}>{trans("with active tariffless liabilities")}</option>
+					<option value="80"{if $filter.state == 80} selected{/if}>{trans("with tariffless liabilities")}</option>
+				</optgroup>
+				<optgroup label="{trans("Addresses")}">
+					<OPTION VALUE="67"{if $filter.state == 67} SELECTED{/if}>{trans("without building number")}</OPTION>
+					<OPTION VALUE="69"{if $filter.state == 69} SELECTED{/if}>{trans("without city")}</OPTION>
+					<OPTION VALUE="70"{if $filter.state == 70} SELECTED{/if}>{trans("TERRIT not specified")}</OPTION>
+					<OPTION VALUE="68"{if $filter.state == 68} SELECTED{/if}>{trans("without zip (main address)")}</OPTION>
+					<OPTION VALUE="74"{if $filter.state == 74} SELECTED{/if}>{trans("without zip (other addresses)")}</OPTION>
+				</optgroup>
 			</SELECT>
 			</label>
-			<label for="d">{trans("Division")}:
-			<SELECT SIZE="1" NAME="d" ONCHANGE="document.choosefilter.submit();">
-				<OPTION VALUE=""{if !$filter.division} selected{/if}>- {trans("all")} -</OPTION>
-				{foreach $divisions as $division}
-				<OPTION VALUE="{$division.id}"{if $filter.division == $division.id} selected{/if}>{$division.shortname|truncate:30:"...":true}</OPTION>
-				{/foreach}
-			</SELECT>
-			</label>
+
+			{division_selection name="d" selected=$filter.division onchange="document.choosefilter.submit();" label="Division:"}
+
 			<label for="n" class="nobr">
 			{trans("Network:")}
 			<SELECT SIZE="1" NAME="n" ONCHANGE="document.choosefilter.submit();">
 				<OPTION value="0" {if !$filter.network} SELECTED {/if}>{trans("- all networks -")}</OPTION>
 				{section name=networks loop=$networks}
-				<OPTION value="{$networks[networks].id}" {if $filter.network == $networks[networks].id} SELECTED {/if}>{$networks[networks].name|truncate:30:"...":true}</OPTION>
+				<OPTION value="{$networks[networks].id}" {if $filter.network == $networks[networks].id} SELECTED {/if}>{$networks[networks].name|truncate:30:"&hellip;":true}</OPTION>
 				{/section}
 			</SELECT>
 			</label>
@@ -167,7 +197,7 @@
 					{foreach $customergroups as $customergroup}
 					<OPTION value="{$customergroup.id}"
 						{if (is_array($filter.customergroup) && in_array($customergroup.id, $filter.customergroup))
-							|| (!is_array($filter.customergroup) && $filter.customergroup == $customergroup.id)} selected{/if}>{$customergroup.name|truncate:30:"...":true}</OPTION>
+							|| (!is_array($filter.customergroup) && $filter.customergroup == $customergroup.id)} selected{/if}>{$customergroup.name|truncate:30:"&hellip;":true}</OPTION>
 					{/foreach}
 				</SELECT>
 				</label>
@@ -181,7 +211,7 @@
 				<SELECT SIZE="1" NAME="ng" ONCHANGE="document.choosefilter.submit();">
 					<OPTION value="" {if !$filter.nodegroup} SELECTED {/if}>{trans("- all groups -")}</OPTION>
 					{foreach from=$nodegroups item=nodegroup}
-					<OPTION value="{$nodegroup.id}" {if $filter.nodegroup == $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"...":true}</OPTION>
+					<OPTION value="{$nodegroup.id}" {if $filter.nodegroup == $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"&hellip;":true}</OPTION>
 					{/foreach}
 				</SELECT>
 				</label>
@@ -263,11 +293,15 @@
 			<i class="lms-ui-icon-customer-status-{$_CSTATUSES[$customer.status].alias}"></i>
 			{if $customer.info}&nbsp;<i class="lms-ui-icon-optional-info" title="{nl2br(htmlspecialchars($customer.info))}"></i>{/if}
 			<A name="{$customer.id}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$customer.id}">&nbsp;<span class="bold">{$customer.customername|escape}</span></A>
+			{if !empty($customer.karma)}
+				<i class="lms-ui-icon-star{if $customer.karma > 0} green{else} red{/if}" title="{trans('Karma')}"></i>
+				(<span class="lms-ui-counter">{$customer.karma}</span>)
+			{/if}
 			<BR>
 			<i class="lms-ui-icon-home"></i>&nbsp;{$customer.full_address}{if $customer.country != ""}, {t}{$customer.country}{/t}{/if}
 		</TD>
 		<TD class="text-right nobr">
-			({if $customer.extid}{$customer.extid} / {/if}{$customer.id|string_format:"%04d"})
+			({if $customer.extid}{$customer.extid|escape} / {/if}{$customer.id|string_format:"%04d"})
 			<BR>
 			{if $customer.account}
 				<i class="lms-ui-tooltip-nodelist lms-ui-icon-node{if !$customer.online}off{else}on{/if}" data-resourceid="{$customer.id}"></i>
@@ -348,6 +382,10 @@
 <script>
 
 	$(function() {
+		$('.division-context').on( 'lms:division_selection', function() {
+			document.choosefilter.submit();
+		});
+
 		$('.balanceok-customer').click(function () {
 			var name = $(this).closest('tr').attr('data-name');
 			confirmDialog($t("Are you sure, you want to account ALL debts of customer \'$a\'?", name), this).done(function () {

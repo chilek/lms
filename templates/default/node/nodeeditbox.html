@@ -187,7 +187,8 @@
 										{trans("Password:")}
 									</td>
 									<td>
-										<input type="text" name="nodeedit[passwd]" value="{$nodeinfo.passwd}" id="passwordcontainer" {tip text="Enter password (optional)" trigger="passwd"}>
+										<input type="text" name="nodeedit[passwd]" value="{$nodeinfo.passwd|escape}"
+											id="passwordcontainer" {tip text="Enter password (optional)" trigger="passwd"}>
 										<a href="#" id="genpasswd"  {tip text="Click to generate random password"}>&raquo;&raquo;&raquo;</a>
 									</td>
 								</tr>
@@ -203,7 +204,9 @@
 									<td class="cell-flex">
 										<div>
 				                        <a href="javascript: void(0);" onclick="return netDevChooseWin(document.editnode.elements['nodeedit[netdev]']);" {tip trigger="netdev" text="Search device"}>&raquo;&raquo;&raquo;</A>
-										<select size="1" name="nodeedit[netdev]" id="netdev" {tip text="Select net device from list" trigger="netdev"} onchange="change_netdevice(this.options[this.selectedIndex].value);">
+										<select size="1" name="nodeedit[netdev]" id="netdev" {tip text="Select net device from list" trigger="netdev"}
+												{if ConfigHelper::checkConfig('phpui.node_to_network_device_connection_required')} required{/if}
+												onchange="change_netdevice(this.options[this.selectedIndex].value);">
 											<option value="0" {if ! $nodeinfo.netdev}SELECTED{/if}>- {trans("no device")} -</option>
 											{section name="netdev" loop=$netdevices}
 											<option value="{$netdevices[netdev].id}" {if $nodeinfo.netdev == $netdevices[netdev].id} selected{/if}>{$netdevices[netdev].name} {if $netdevices[netdev].producer}/ {$netdevices[netdev].producer}{/if} {if $netdevices[netdev].location}({$netdevices[netdev].location }){/if}</option>
@@ -257,7 +260,7 @@
 											<option value="-1" {if ($nodeinfo.invprojectid == '-1' ) } selected="selected" {/if}>{trans("New project")}</option>
 											<option value="1" {if ($nodeinfo.invprojectid == '1' ) } selected="selected" {/if}>{trans("From root device")}</option>
 											{foreach $NNprojects as $project}
-											<option value="{$project.id}"{if ($nodeinfo.invprojectid == $project.id)} selected{/if}>{$project.name}</option>
+												<option value="{$project.id}"{if ($nodeinfo.invprojectid == $project.id)} selected{/if}>{$project.name|escape}</option>
 											{/foreach}
 										</select>
 										<input type="text" name="nodeedit[projectname]" value="{$nodeinfo.projectname}"
@@ -287,6 +290,7 @@
 											selecttip   = "Assign node to customer"
 											required    = true
 											customOnChange = "customer_change();"
+											version = 2
 										}
                                         </div>
 									</td>
@@ -440,8 +444,8 @@
 									</td>
 									<td class="cell-flex">
 										<div>
-										{$nodeinfo.createdby}, {$nodeinfo.creationdateh}<br>
-										{if $nodeinfo.moddate}{$nodeinfo.modifiedby}, {$nodeinfo.moddateh}{else}-{/if}
+										{$nodeinfo.createdby|escape}, {$nodeinfo.creationdateh}<br>
+										{if $nodeinfo.moddate}{$nodeinfo.modifiedby|escape}, {$nodeinfo.moddateh}{else}-{/if}
 										</div>
 									</td>
 								</tr>
@@ -514,14 +518,18 @@
 	//  GENERATE RANDOM PASSWORD
 	// ---------------------
 	$( '#genpasswd' ).click( function() {
+		var length = {ConfigHelper::getConfig('phpui.nodepassword_length', '16')};
+		if (length > 32) {
+			length = 32;
+		}
 		if ($('#passwordcontainer').val().length > 0) {
 			confirmDialog($t("Are you sure, you want to generate new password?"), this).done(function() {
-				var length = {ConfigHelper::getConfig('phpui.nodepassword_length', '16')};
-				if (length > 32)
-					length = 32;
-				$( '#passwordcontainer' ).val( generate_random_string(length) );
+				$( '#passwordcontainer' ).val(generate_random_string(length, "{ConfigHelper::getConfig('phpui.nodepassword_allowed_characters', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')|replace:'"':'\"'}"));
 				event.preventDefault();
 			});
+			return false;
+		} else {
+			$( '#passwordcontainer' ).val(generate_random_string(length, "{ConfigHelper::getConfig('phpui.nodepassword_allowed_characters', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')|replace:'"':'\"'}"));
 			return false;
 		}
 	});

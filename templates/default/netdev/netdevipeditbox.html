@@ -4,10 +4,10 @@
 
 <INPUT type="submit" class="hiddenbtn">
 <INPUT TYPE="hidden" NAME="ipadd[id]" VALUE="{$nodeipdata.id}">
-<INPUT TYPE="hidden" NAME="ipadd[createdby]" VALUE="{$nodeipdata.createdby}">
+<INPUT TYPE="hidden" NAME="ipadd[createdby]" VALUE="{$nodeipdata.createdby|escape}">
 <INPUT TYPE="hidden" NAME="ipadd[creationdateh]" VALUE="{$nodeipdata.creationdateh}">
 <INPUT TYPE="hidden" NAME="ipadd[moddate]" VALUE="{$nodeipdata.moddate}">
-<INPUT TYPE="hidden" NAME="ipadd[modifiedby]" VALUE="{$nodeipdata.modifiedby}">
+<INPUT TYPE="hidden" NAME="ipadd[modifiedby]" VALUE="{$nodeipdata.modifiedby|escape}">
 <INPUT TYPE="hidden" NAME="ipadd[moddateh]" VALUE="{$nodeipdata.moddateh}">
 
 <style>
@@ -239,8 +239,8 @@
 										{trans("Modified:")}
 									</td>
 									<td>
-										{$nodeipdata.createdby}, {$nodeipdata.creationdateh}<br>
-										{if $nodeipdata.moddate}{$nodeipdata.modifiedby}, {$nodeipdata.moddateh}{else}-{/if}
+										{$nodeipdata.createdby|escape}, {$nodeipdata.creationdateh}<br>
+										{if $nodeipdata.moddate}{$nodeipdata.modifiedby|escape}, {$nodeipdata.moddateh}{else}-{/if}
 									</td>
 								</tr>
 	                        </table>

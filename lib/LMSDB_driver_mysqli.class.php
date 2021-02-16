@@ -59,6 +59,7 @@ class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface
         $this->_version .= '';
         $this->Connect($dbhost, $dbuser, $dbpasswd, $dbname);
         $this->Execute('SET SESSION sql_mode = \'\'');
+        $this->Execute('SET @lms_current_user = ?', array('0'));
     }
 
     /**

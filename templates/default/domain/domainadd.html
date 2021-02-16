@@ -31,7 +31,7 @@
 			<SELECT SIZE="1" NAME="domainadd[ownerid]" {tip text="Select owner or 'SYSTEM DOMAIN' if you don't want to assign it to any customer" trigger="ownerid"}>
 				<OPTION VALUE="0"{if !$domainadd.ownerid} SELECTED{/if}>{trans("SYSTEM DOMAIN")}</OPTION>
 				{foreach from=$customers item=customer}
-				<OPTION VALUE="{$customer.id}"{if $domainadd.ownerid == $customer.id} SELECTED{/if}>{$customer.customername|truncate:40:" ...":true} ({$customer.id|string_format:"%04d"})</OPTION>
+				<OPTION VALUE="{$customer.id}"{if $domainadd.ownerid == $customer.id} SELECTED{/if}>{$customer.customername|truncate:40:"&hellip;":true} ({$customer.id|string_format:"%04d"})</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>

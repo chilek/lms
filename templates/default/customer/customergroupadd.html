@@ -30,7 +30,8 @@
 			{trans("Description:")}
 		</TD>
 		<TD style="width: 98%">
-			<TEXTAREA name="customergroupadd[description]" cols="50" rows="5" {tip text="Enter additional information (optional)"}>{$customergroupadd.description}</TEXTAREA>
+			<TEXTAREA name="customergroupadd[description]" cols="50" rows="5" {tip text="Enter additional information (optional)"}
+				>{$customergroupadd.description|escape}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR>

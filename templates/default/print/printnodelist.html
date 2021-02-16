@@ -31,45 +31,51 @@
 		<TD WIDTH="75" ALIGN="CENTER" CLASS="head">
 			{trans("MAC address")}
 		</TD>
-		<TD WIDTH="230" ALIGN="CENTER" CLASS="head">
+		<TD WIDTH="150" ALIGN="CENTER" CLASS="head">
 			{trans("Owner")}
+		</TD>
+		<TD WIDTH="80" ALIGN="CENTER" CLASS="head">
+			{trans("Location")}
 		</TD>
 		<TD WIDTH="100" ALIGN="CENTER" CLASS="head">
 			{trans("Description")}
 		</TD>
 	</TR>
 	{cycle values="white,grey" print=false}
-	{section name=nodelist loop=$nodelist}
+	{foreach $nodelist as $node}
 	<TR class="{cycle}">
 		<TD ALIGN="CENTER">
 			{counter}.
 		</TD>
 		<TD ALIGN="CENTER">
-			{$nodelist[nodelist].id|string_format:"%04d"}
+			{$node.id|string_format:"%04d"}
 		</TD>
 		<TD ALIGN="LEFT">
-			<B>{$nodelist[nodelist].name}</B>
+			<B>{$node.name}</B>
 		</TD>
 		<TD ALIGN="CENTER">
-			{$nodelist[nodelist].ip}
-			<br>({$nodelist[nodelist].netname})
+			{$node.ip}
+			<br>({$node.netname})
 		</TD>
 		<TD ALIGN="CENTER">
-			{$nodelist[nodelist].mac|replace:",":"<BR>"}
+			{$node.mac|replace:",":"<BR>"}
 		</TD>
 		<TD ALIGN="LEFT">
-			{$nodelist[nodelist].owner}
+			{$node.owner}
+		</TD>
+		<TD align="left">
+			{$node.location}
 		</TD>
 		<TD ALIGN="LEFT">
-			{$nodelist[nodelist].info}
+			{$node.info}
 		</TD>
 	</TR>
-	{sectionelse}
+	{foreachelse}
 	<TR>
-		<TD COLSPAN="7" class="empty-table">
+		<TD COLSPAN="8" class="empty-table">
 			<p>{trans("No such nodes in database.")}</p>
 		</TD>
 	</TR>
-	{/section}
+	{/foreach}
 </TABLE>
 {include file="clearfooter.html"}

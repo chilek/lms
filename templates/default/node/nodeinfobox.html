@@ -127,7 +127,7 @@
 									</td>
 									<td>
 										{if ConfigHelper::checkConfig('phpui.protect_passwords')}
-										<button class="lms-ui-button-clipboard lms-ui-button" data-clipboard-text="{$nodeinfo.passwd}">
+										<button class="lms-ui-button-clipboard lms-ui-button" data-clipboard-text="{$nodeinfo.passwd|escape}">
 											<i class="lms-ui-icon-clipboard"></i>
 											{trans("Copy")}
 										</button>
@@ -194,7 +194,7 @@
 															{assign var=netdevname value=$netdevices[netdev].name}
 															{if $netdevices[netdev].producer}{assign var=netdevname value=$netdevname|cat:" / "|cat:$netdevices[netdev].producer}{/if}
 															{if $netdevices[netdev].location}{assign var=netdevname value=$netdevname|cat:" ("|cat:$netdevices[netdev].location|cat:")"}{/if}
-															<OPTION value="{$netdevices[netdev].id}" {if $netdevices[netdev].id==$netdevice}SELECTED{/if}>{$netdevname|truncate:120:"...":true}</OPTION>
+															<OPTION value="{$netdevices[netdev].id}" {if $netdevices[netdev].id==$netdevice}SELECTED{/if}>{$netdevname|truncate:120:"&hellip;":true}</OPTION>
 														{/section}
 													</select>
 
@@ -245,7 +245,7 @@
 									     {trans("Investment project:")}
 									</td>
 									<td>
-										{$nodeinfo.projectname}
+										{$nodeinfo.projectname|escape}
 									</td>
 								</tr>
 
@@ -440,8 +440,8 @@
 									</td>
 									<td class="cell-flex">
 										<div>
-											{$nodeinfo.createdby}, {$nodeinfo.creationdateh}<br>
-											{if $nodeinfo.moddate}{$nodeinfo.modifiedby}, {$nodeinfo.moddateh}{else}-{/if}
+											{$nodeinfo.createdby|escape}, {$nodeinfo.creationdateh}<br>
+											{if $nodeinfo.moddate}{$nodeinfo.modifiedby|escape}, {$nodeinfo.moddateh}{else}-{/if}
 										</div>
 									</td>
 								</tr>

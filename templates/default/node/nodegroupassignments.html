@@ -36,7 +36,7 @@
 			    <SELECT SIZE="1" NAME="nodeassignments[membersnetid]" ONCHANGE="javascript:changeMembersNetwork();">
 			    	<OPTION value="0" {if !$membersnetid}SELECTED{/if}>{trans("- all networks -")}</OPTION>
 				{section name=networks loop=$networks}
-				<OPTION value="{$networks[networks].id}" {if $networks[networks].id == $membersnetid}SELECTED{/if}>{$networks[networks].name|truncate:30:"...":true}</OPTION>
+				<OPTION value="{$networks[networks].id}" {if $networks[networks].id == $membersnetid}SELECTED{/if}>{$networks[networks].name|truncate:30:"&hellip;":true}</OPTION>
 				{/section}
 			    </SELECT>&nbsp;
 		    </TD>
@@ -49,7 +49,7 @@
 			<SELECT SIZE="20" NAME="nodeassignments[gmnodeid][]" multiple>
 				{section name=node loop=$nodegroup.nodes}
 					<OPTION VALUE="{$nodegroup.nodes[node].id}">
-					{$nodegroup.nodes[node].nodename|truncate:40:"...":true} ({$nodegroup.nodes[node].id|string_format:"%04d"})
+					{$nodegroup.nodes[node].nodename|truncate:40:"&hellip;":true} ({$nodegroup.nodes[node].id|string_format:"%04d"})
 					</OPTION>
 				{/section}
 			</SELECT>
@@ -86,7 +86,7 @@
 			    <SELECT SIZE="1" NAME="nodeassignments[othersnetid]" ONCHANGE="javascript:changeOthersNetwork();">
 			    	<OPTION value="0" {if !$othersnetid}SELECTED{/if}>{trans("- all networks -")}</OPTION>
 				{section name=networks loop=$networks}
-				<OPTION value="{$networks[networks].id}" {if $networks[networks].id == $othersnetid}SELECTED{/if}>{$networks[networks].name|truncate:30:"...":true}</OPTION>
+				<OPTION value="{$networks[networks].id}" {if $networks[networks].id == $othersnetid}SELECTED{/if}>{$networks[networks].name|truncate:30:"&hellip;":true}</OPTION>
 				{/section}
 			    </SELECT>&nbsp;
 		    </TD>
