@@ -1113,7 +1113,7 @@ if (isset($options['update'])) {
                 } else {
                     // add new city
                     $DB->Execute(
-                        'INSERT INTO location_cities (boroughid, name, type = ?, cityid, ident) VALUES (?, ?, ?, ?, ?)',
+                        'INSERT INTO location_cities (boroughid, name, type, cityid, ident) VALUES (?, ?, ?, ?, ?)',
                         array($terc[$key]['id'], $elem['nazwa'], $wmrodz[$elem['rodz_mi']]['id'], $cities[$id], $rid)
                     );
 
