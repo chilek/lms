@@ -63,6 +63,8 @@ version 27-git (????-??-??):
   - improvement: add 'phpui.supported_currencies' setting that specifies the list of available currencies
     identified by ISO symbols [ravvar]
   - improvement: added source filter on queue content view [chilan]
+  - enhancement: source accounts are stored in cash import records; customers can be matched by earlier
+    cash import record source customers accounts during source file parsing process [chilan]
 
 version 26.0 (2020-12-15):
 

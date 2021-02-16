@@ -53,6 +53,8 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
     {
         global $LMS;
 
+        static $unique_source_accounts;
+
         $file = preg_split('/\r?\n/', $contents);
         $patterns_cnt = isset($patterns) ? count($patterns) : 0;
         $ln = 0;
@@ -166,6 +168,28 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                         array($srcaccount, CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
                         CONTACT_BANKACCOUNT)
                     );
+                    if (empty($id)) {
+                        // find customer by source accounts stored in cash import record;
+                        // if customer has unique source account assigned to all his cash import records
+                        // then we matched customer by source account
+                        if (!isset($unique_source_accounts)) {
+                            $unique_source_accounts = $this->db->GetAll(
+                                'SELECT customerid, MIN(srcaccount) AS srcaccount
+                                FROM cashimport
+                                WHERE customerid IS NOT NULL AND srcaccount IS NOT NULL
+                                GROUP BY customerid
+                                HAVING COUNT(DISTINCT srcaccount) = 1'
+                            );
+                            if (empty($unique_source_accounts)) {
+                                $unique_source_accounts = array();
+                            } else {
+                                $unique_source_accounts = Utils::array_column($unique_source_accounts, 'customerid', 'srcaccount');
+                            }
+                        }
+                        if (!empty($unique_source_accounts) && isset($unique_source_accounts[$srcaccount])) {
+                            $id = $unique_source_accounts[$srcaccount];
+                        }
+                    }
                 }
             }
 
@@ -297,10 +321,11 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                         'hash' => $hash,
                         SYSLOG::RES_CASHSOURCE => $sourceid,
                         SYSLOG::RES_SOURCEFILE => $sourcefileid,
+                        'srcaccount' => empty($srcaccount) ? null : $srcaccount,
                     );
                     $res = $this->db->Execute('INSERT INTO cashimport (date, value, customer,
-						customerid, description, hash, sourceid, sourcefileid)
-						VALUES (?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+						customerid, description, hash, sourceid, sourcefileid, srcaccount)
+						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
                     if ($res && $this->sylog) {
                         $args[SYSLOG::RES_CASHIMPORT] = $this->db->GetLastInsertID('cashimport');
                         $syslog_records[] = array(
