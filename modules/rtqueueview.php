@@ -277,6 +277,13 @@ if (isset($_GET['priority'])) {
     }
 }
 
+// source
+if (isset($_GET['source'])) {
+    $filter['source'] = intval($_GET['source']);
+} elseif (!isset($filter['source'])) {
+    $filter['source'] = 0;
+}
+
 // netnodeid's
 if (isset($_GET['nnids'])) {
     if (is_array($_GET['nnids'])) {
@@ -351,6 +358,7 @@ $filter['order'] = $queue['order'];
 unset($queue['total']);
 unset($queue['state']);
 unset($queue['priority']);
+unset($queue['source']);
 unset($queue['order']);
 unset($queue['direction']);
 unset($queue['owner']);

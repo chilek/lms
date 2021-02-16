@@ -62,6 +62,7 @@ version 27-git (????-??-??):
   - improvement: show lock icon on node list when given node has active lock in schedule [chilan]
   - improvement: add 'phpui.supported_currencies' setting that specifies the list of available currencies
     identified by ISO symbols [ravvar]
+  - improvement: added source filter on queue content view [chilan]
 
 version 26.0 (2020-12-15):
 

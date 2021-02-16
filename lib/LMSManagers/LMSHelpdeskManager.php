@@ -127,7 +127,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     public function GetQueueContents(array $params)
     {
         extract($params);
-        foreach (array('ids', 'state', 'priority', 'owner', 'catids', 'removed', 'netdevids', 'netnodeids', 'deadline',
+        foreach (array('ids', 'state', 'priority', 'source', 'owner', 'catids', 'removed', 'netdevids', 'netnodeids', 'deadline',
             'serviceids', 'typeids', 'unread', 'parentids', 'verifierids', 'rights', 'projectids', 'cid', 'subject', 'fromdate', 'todate', 'short') as $var) {
             if (!isset($$var)) {
                 $$var = null;
@@ -206,6 +206,12 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $priorityfilter = ' AND t.priority IN (' . implode(',', $priority) . ')';
         } else {
             $priorityfilter = ' AND t.priority = '.$priority;
+        }
+
+        if (empty($source) || intval($source) == -1) {
+            $sourcefilter = '';
+        } else {
+            $sourcefilter = ' AND t.source = ' . $source;
         }
 
         if (empty($netdevids)) {
@@ -455,6 +461,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 . $parentfilter
                 . $statefilter
                 . $priorityfilter
+                . $sourcefilter
                 . $ownerfilter
                 . $removedfilter
                 . $netdevidsfilter
@@ -559,6 +566,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             . $parentfilter
             . $statefilter
             . $priorityfilter
+            . $sourcefilter
             . $ownerfilter
             . $removedfilter
             . $netdevidsfilter
@@ -617,6 +625,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $result['owner'] = $owner;
             $result['removed'] = $removed;
             $result['priority'] = $priority;
+            $result['source'] = $source;
             $result['deadline'] = $deadline;
             $result['service'] = $serviceids;
             $result['type'] = $typeids;
