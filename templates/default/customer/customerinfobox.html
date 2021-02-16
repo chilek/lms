@@ -74,7 +74,7 @@
 									{icon name="division"}
 								</TD>
 								<TD WIDTH="99%">
-									{$customerinfo.division|escape}
+									{if $customerinfo.division_label}{$customerinfo.division_label|escape}{else}{$customerinfo.division|escape}{/if}
 								</TD>
 							</TR>
 						{/if}

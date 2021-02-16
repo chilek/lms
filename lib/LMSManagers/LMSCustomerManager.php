@@ -1608,7 +1608,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $capitalize_customer_names = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.capitalize_customer_names', true));
         if ($result = $this->db->GetRow('SELECT c.*, '
                 . $this->db->Concat($capitalize_customer_names ? 'UPPER(c.lastname)' : 'c.lastname', "' '", 'c.name') . ' AS customername,
-			d.shortname AS division, d.account
+			d.shortname AS division, d.label AS division_label, d.account
 			FROM customer' . (defined('LMS-UI') ? '' : 'address') . 'view c
 			LEFT JOIN divisions d ON (d.id = c.divisionid)
 			WHERE c.id = ?', array($id))) {
