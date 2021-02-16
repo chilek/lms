@@ -44,7 +44,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             'closed' => isset($event['close']) ? 1 : 0,
             SYSLOG::RES_CUST => empty($event['custid']) ? null : $event['custid'],
             'type' => $event['type'],
-            SYSLOG::RES_ADDRESS => $event['address_id'],
+            SYSLOG::RES_ADDRESS => empty($event['address_id']) ? null : $event['address_id'],
             SYSLOG::RES_NODE => $event['nodeid'],
             SYSLOG::RES_TICKET => empty($event['ticketid']) ? null : $event['ticketid'],
         );
