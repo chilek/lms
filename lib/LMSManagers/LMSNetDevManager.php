@@ -591,17 +591,18 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         return ($this->db->GetOne('SELECT * FROM netdevices WHERE id=?', array($id)) ? true : false);
     }
 
-    public function getNetDevByMac($mac, $exludeid = null)
+    public function getNetDevByMac($mac, $excludeid = null)
     {
+        $id = intval($excludeid);
         $netdev = $this->db->GetRow(
             'SELECT *
             FROM netdevices
             WHERE UPPER(mac) = UPPER(?)'
-            . (!empty($exludeid) ? ' AND id != '.$exludeid : ''),
+            . (!empty($id) ? ' AND id != '.$id : ''),
             array($mac)
         );
 
-        return ($netdev ? true : false);
+        return !empty($netdev);
     }
 
     public function GetNetDevIDByNode($id)

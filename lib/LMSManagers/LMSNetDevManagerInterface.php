@@ -74,7 +74,7 @@ interface LMSNetDevManagerInterface
 
     public function NetDevExists($id);
 
-    public function getNetDevByMac($mac, $exludeid = null);
+    public function getNetDevByMac($mac, $excludeid = null);
 
     public function GetProducers();
 

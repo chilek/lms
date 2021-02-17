@@ -25,7 +25,7 @@
  */
 
 $_LANG['Week days'] = 'Dni tygodnia';
-$_LANG['MAC address already exists!'] = 'Adres Mac już istnieje!';
+$_LANG['Mac address already exists!'] = 'Adres mac już istnieje!';
 
 $_LANG['Import configuration'] = 'Import konfiguracji';
 $_LANG['Bad file structure!'] = 'Nieprawidłowa struktura pliku!';

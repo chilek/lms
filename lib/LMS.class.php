@@ -1717,10 +1717,10 @@ class LMS
         return $manager->NetDevExists($id);
     }
 
-    public function getNetDevByMac($mac, $exludeid = null)
+    public function getNetDevByMac($mac, $excludeid = null)
     {
         $manager = $this->getNetDevManager();
-        return $manager->getNetDevByMac($mac, $exludeid);
+        return $manager->getNetDevByMac($mac, $excludeid);
     }
 
     public function GetNetDevIDByNode($id)
