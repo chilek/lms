@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -336,7 +336,8 @@ switch ($action) {
     case 'addip':
         $subtitle = trans('New IP address');
         $nodeipdata['access'] = 1;
-        $nodeipdata['macs'] = array(0 => '');
+        $mac = $LMS->getNetDevMac($id);
+        $nodeipdata['macs'] = array(0 => $mac);
         $SMARTY->assign('nodeipdata', $nodeipdata);
         $edit = 'addip';
         break;
@@ -695,6 +696,15 @@ if (isset($netdev)) {
     if (empty($netdev['ownerid']) && $netdev['location_zip'] && !check_zip($netdev['location_zip'])) {
         $error['location_zip'] = trans('Incorrect ZIP code!');
     }
+
+    if (!empty($netdev['mac'])) {
+        if (!check_mac($netdev['mac'])) {
+            $error['mac'] = trans('Incorrect MAC address!');
+        } elseif ($LMS->getNetDevByMac($netdev['mac'], $netdev['id'])) {
+            $error['mac'] = trans('MAC address already exists!');
+        }
+    }
+
     Localisation::resetSystemLanguage();
 
     $hook_data = $LMS->executeHook(

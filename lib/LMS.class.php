@@ -1717,6 +1717,12 @@ class LMS
         return $manager->NetDevExists($id);
     }
 
+    public function getNetDevByMac($mac, $exludeid = null)
+    {
+        $manager = $this->getNetDevManager();
+        return $manager->getNetDevByMac($mac, $exludeid);
+    }
+
     public function GetNetDevIDByNode($id)
     {
         $manager = $this->getNetDevManager();
@@ -1757,6 +1763,12 @@ class LMS
     {
         $manager = $this->getNetDevManager();
         return $manager->GetNetDevName($id);
+    }
+
+    public function getNetDevMac($id)
+    {
+        $manager = $this->getNetDevManager();
+        return $manager->getNetDevMac($id);
     }
 
     public function GetNotConnectedDevices($id)

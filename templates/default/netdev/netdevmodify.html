@@ -56,6 +56,11 @@
 							{tip text="Enter device serial number (optional)" }>
 				{/box_row}
 
+				{box_row icon="img/netdev.gif" label="MAC:"}
+					<input type="text" name="netdev[mac]" value="{$netdev.mac}"
+							{tip text="Enter device mac number (optional)" trigger="mac"}>
+				{/box_row}
+
 				{box_row icon="img/port.gif" label="Number of ports:"}
 					<input type="text" name="netdev[ports]" value="{if $netdev.ports}{$netdev.ports}{/if}"
 							{tip trigger="ports" text="Enter number of ports (optional)"}>

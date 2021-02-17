@@ -1407,6 +1407,7 @@ CREATE TABLE netdevices (
 	producer varchar(64) 	DEFAULT '' NOT NULL,
 	model varchar(32) 	DEFAULT '' NOT NULL,
 	serialnumber varchar(32) DEFAULT '' NOT NULL,
+	mac varchar(17) DEFAULT NULL,
 	ports integer 		DEFAULT 0 NOT NULL,
 	purchasetime integer	DEFAULT 0 NOT NULL,
 	guaranteeperiod smallint DEFAULT 0,
@@ -1431,7 +1432,8 @@ CREATE TABLE netdevices (
 		CONSTRAINT netdevices_ownerid_fkey REFERENCES customers (id) ON UPDATE CASCADE ON DELETE SET NULL,
 	address_id integer DEFAULT NULL
 		CONSTRAINT netdevices_address_id_fkey REFERENCES addresses (id) ON UPDATE CASCADE ON DELETE SET NULL,
-	PRIMARY KEY (id)
+	PRIMARY KEY (id),
+    CONSTRAINT netdevices_mac_ukey UNIQUE (mac)
 );
 CREATE INDEX netdevices_channelid_idx ON netdevices (channelid);
 
@@ -3993,6 +3995,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021021600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021021700');
 
 COMMIT;

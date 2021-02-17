@@ -25,6 +25,7 @@
  */
 
 $_LANG['Week days'] = 'Dni tygodnia';
+$_LANG['MAC address already exists!'] = 'Adres Mac już istnieje!';
 
 $_LANG['Import configuration'] = 'Import konfiguracji';
 $_LANG['Bad file structure!'] = 'Nieprawidłowa struktura pliku!';
@@ -793,6 +794,7 @@ $_LANG['Enter device name'] = 'Wprowadź nazwę urządzenia';
 $_LANG['Enter device producer (optional)'] = 'Wprowadź producenta urządzenia (opcjonalnie)';
 $_LANG['Enter device purchase date in \'yyyy/mm/dd\' format or click to choose date from calendar (optional)'] = 'Wprowadź datę zakupu urządzenia w formacie RRRR/MM/DD lub kliknij, by wybrać ją z kalendarza (opcjonalnie)';
 $_LANG['Enter device serial number (optional)'] = 'Wprowadź numer seryjny urządzenia (opcjonalnie)';
+$_LANG['Enter device mac number (optional)'] = 'Wprowadź numer mac urządzenia (opcjonalnie)';
 $_LANG['Enter discount percentage or amount'] = 'Wprowadź procent lub kwotę rabatu';
 $_LANG['Enter domain name'] = 'Wprowadź nazwę domeny';
 $_LANG['Enter e-mail address'] = 'Wprowadź adres e-mail';

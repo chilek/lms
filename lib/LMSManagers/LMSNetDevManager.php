@@ -409,6 +409,9 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         if (array_key_exists('ownerid', $data)) {
             $args['ownerid'] = empty($data['ownerid']) ? null : $data['ownerid'];
         }
+        if (array_key_exists('mac', $data)) {
+            $args['mac'] = empty($data['mac']) ? null : $data['mac'];
+        }
 
         if (empty($args)) {
             return null;
@@ -515,7 +518,8 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             'status'           => empty($data['status']) ? 0 : $data['status'],
             'netdevicemodelid' => null,
             'address_id'       => !empty($data['ownerid']) && $data['customer_address_id'] > 0 ? $data['customer_address_id'] : null,
-            'ownerid'          => !empty($data['ownerid'])  ? $data['ownerid']    : null
+            'ownerid'          => !empty($data['ownerid'])  ? $data['ownerid']    : null,
+            'mac'              => !empty($data['mac']) ? $data['mac'] : null
         );
 
         if (preg_match('/^[0-9]+$/', $data['producerid'])) {
@@ -540,8 +544,8 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 				description, producer, model, serialnumber,
 				ports, purchasetime, guaranteeperiod, shortname,
 				nastype, clients, login, secret, community, channelid,
-				longitude, latitude, invprojectid, netnodeid, status, netdevicemodelid, address_id, ownerid)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
+				longitude, latitude, invprojectid, netnodeid, status, netdevicemodelid, address_id, ownerid, mac)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
             $id = $this->db->GetLastInsertID('netdevices');
 
             if (empty($data['ownerid'])) {
@@ -585,6 +589,19 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
     public function NetDevExists($id)
     {
         return ($this->db->GetOne('SELECT * FROM netdevices WHERE id=?', array($id)) ? true : false);
+    }
+
+    public function getNetDevByMac($mac, $exludeid = null)
+    {
+        $netdev = $this->db->GetRow(
+            'SELECT *
+            FROM netdevices
+            WHERE UPPER(mac) = UPPER(?)'
+            . (!empty($exludeid) ? ' AND id != '.$exludeid : ''),
+            array($mac)
+        );
+
+        return ($netdev ? true : false);
     }
 
     public function GetNetDevIDByNode($id)
@@ -911,6 +928,11 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         return $this->db->GetOne('SELECT name FROM netdevices WHERE id = ?', array($id));
     }
 
+    public function getNetDevMac($id)
+    {
+        return $this->db->GetOne('SELECT mac FROM netdevices WHERE id = ?', array($id));
+    }
+
     public function GetNotConnectedDevices($id)
     {
         return $this->db->GetAll('SELECT d.id, d.name, d.description,
@@ -926,7 +948,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
     public function GetNetDev($id)
     {
-        $result = $this->db->GetRow('SELECT d.*, d.invprojectid AS projectid, t.name AS nastypename, c.name AS channel, d.ownerid,
+        $result = $this->db->GetRow('SELECT d.*, d.invprojectid AS projectid, t.name AS nastypename, c.name AS channel, d.ownerid, d.mac,
 				producer, ndm.netdeviceproducerid AS producerid, model, d.netdevicemodelid AS modelid,
 				(CASE WHEN lst.name2 IS NOT NULL THEN ' . $this->db->Concat('lst.name2', "' '", 'lst.name') . ' ELSE lst.name END) AS street_name,
 				lt.name AS street_type, lc.name AS city_name,
