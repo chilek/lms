@@ -70,6 +70,7 @@ version 27-git (????-??-??):
   - enhancement: allow to instantly switch user or login as different user ('admin#targetuser' in login form
     and button click on user list or user info) [chilan]
   - improvement: enabled visual editor for userpanel help topic bodies [chilan]
+  - improvement: customer templated notifications don't depend on user notifications [chilan]
 
 version 26.0 (2020-12-15):
 
