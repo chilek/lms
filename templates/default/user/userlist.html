@@ -95,6 +95,9 @@
 					{button type="link" icon="connected" tip="Disconnect" href="?m=useraccess&id={$user.id}&access=0"}
 			    {/if}
 				{button type="link" icon="consent" tip="Force password change" href="?m=useredit&id={$user.id}&forcepasswdchange=1"}
+				{if ConfigHelper::checkPrivilege('superuser')}
+					{button type="link" icon="login" tip="Switch to" href="?m=userswitch&id={$user.id}"}
+				{/if}
 			{/if}
 			{button type="link" icon="password" tip="Change password" href="?m=userpasswd&id={$user.id}"}
 			{if $user.id != $layout.logid}
