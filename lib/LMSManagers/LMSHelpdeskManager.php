@@ -677,7 +677,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         $userid = Auth::GetCurrentUser();
         if ($result = $this->db->GetAll('SELECT q.id, name, email, description, newticketsubject, newticketbody,
-				newmessagesubject, newmessagebody, resolveticketsubject, resolveticketbody, deleted, deltime, deluserid
+				newmessagesubject, newmessagebody, resolveticketsubject, resolveticketbody,
+				newticketsmsbody, newmessagesmsbody, resolveticketsmsbody,
+				deleted, deltime, deluserid
 				FROM rtqueues q
 				' . ((ConfigHelper::checkPrivilege('full_access') && $only_accessible)
                     || !ConfigHelper::checkPrivilege('full_access') ? ' JOIN rtrights r ON r.queueid = q.id' : '')
