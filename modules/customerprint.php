@@ -435,9 +435,11 @@ switch ($type) {
                     $content .= "\t\t\t\t</NumeryAbonenckie>\n";
 
                     $content .= "\t\t\t\t<TelefonyKontaktowe>\n";
-                    foreach ($customer['phones'] as $phone) {
-                        if (!($phone['type'] & CONTACT_DISABLED) && preg_match('/^[0-9]{9}$/', $phone['phone'])) {
-                            $content .= "\t\t\t\t\t<NumerKontaktowy>" . $phone['phone'] . "</NumerKontaktowy>\n";
+                    if ($phonecontacts) {
+                        foreach ($customer['phones'] as $phone) {
+                            if (!($phone['type'] & CONTACT_DISABLED) && preg_match('/^[0-9]{9}$/', $phone['phone'])) {
+                                $content .= "\t\t\t\t\t<NumerKontaktowy>" . $phone['phone'] . "</NumerKontaktowy>\n";
+                            }
                         }
                     }
                     $content .= "\t\t\t\t</TelefonyKontaktowe>\n";
@@ -546,9 +548,11 @@ switch ($type) {
                 $content .= "\t\t\t\t</NumeryAbonenckie>\n";
 
                 $content .= "\t\t\t\t<TelefonyKontaktowe>\n";
-                foreach ($customer['phones'] as $phone) {
-                    if (!($phone['type'] & CONTACT_DISABLED) && preg_match('/^[0-9]{9}$/', $phone['phone'])) {
-                        $content .= "\t\t\t\t\t<NumerKontaktowy>" . $phone['phone'] . "</NumerKontaktowy>\n";
+                if ($phonecontacts) {
+                    foreach ($customer['phones'] as $phone) {
+                        if (!($phone['type'] & CONTACT_DISABLED) && preg_match('/^[0-9]{9}$/', $phone['phone'])) {
+                            $content .= "\t\t\t\t\t<NumerKontaktowy>" . $phone['phone'] . "</NumerKontaktowy>\n";
+                        }
                     }
                 }
                 $content .= "\t\t\t\t</TelefonyKontaktowe>\n";
