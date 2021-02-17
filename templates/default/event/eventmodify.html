@@ -114,7 +114,7 @@
 					{/box_row}
 
 					{box_row icon="user" label="Users:" field_class="multiselect" icon_class="fa-fw"}
-						<SELECT name="event[userlist][]" class="lms-ui-multiselect" id="userlist" multiple data-default-value="{trans("- select user -")}"
+						<SELECT name="event[userlist][]" class="lms-ui-advanced-select" id="userlist" multiple data-default-value="{trans("- select user -")}"
 								data-shorten-to-default-value="false" {if !empty(ConfigHelper::checkConfig('phpui.event_user_required'))}required{/if}>
 							{foreach $userlist as $user}
 								{if $layout.module == 'eventadd'}
@@ -142,6 +142,10 @@
 						</label>
 						<label>
 							<input type="radio" name="event[usergroup]" id="usergroup_0" value="0" onChange="xajax_getUsersForGroup(0)"{if empty($event.usergroup)} checked{/if}>
+							{trans("None")}<br>
+						</label>
+						<label>
+							<input type="radio" name="event[usergroup]" id="usergroup_-2" value="-2" onChange="xajax_getUsersForGroup(-2)"{if empty($event.usergroup)} checked{/if}>
 							{trans("All users")}<br>
 						</label>
 						{foreach $usergroups as $group}
@@ -297,12 +301,15 @@
 		});
 
 		function update_user_selection(users) {
-			var userms = $('#userlist').data('multiselect-object');
-			{if ConfigHelper::getConfig('phpui.event_usergroup_selection_type', 'update') == 'update'}
-			userms.updateSelection(users);
+			var userms = $('#userlist').val();
+			{if ConfigHelper::getConfig('phpui.event_usergroup_selection_type') == 'filter'}
+				$("#userlist").val( users );
 			{else}
-			userms.filterSelection(users);
+				var users2 = jQuery.unique([].concat.apply(users, userms));
+				$("#userlist").val( users2 );
 			{/if}
+			updateAdvancedSelects(userlist);
+
 		}
 
 		{if intval($event.customerid)}

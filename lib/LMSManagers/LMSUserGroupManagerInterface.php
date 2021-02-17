@@ -35,6 +35,8 @@ interface LMSUserGroupManagerInterface
 
     public function UsergroupGet($id);
 
+    public function UsergroupGetActiveUserid($groupid);
+
     public function UsergroupExists($id);
 
     public function GetUserWithoutGroupNames($groupid);
