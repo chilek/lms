@@ -105,6 +105,7 @@ DROP TABLE IF EXISTS routednetworks;
 DROP TABLE IF EXISTS nodes;
 DROP TABLE IF EXISTS netradiosectors;
 DROP TABLE IF EXISTS netdevices;
+DROP TABLE IF EXISTS netdevicemacs;
 DROP TABLE IF EXISTS netdevicemodels;
 DROP TABLE IF EXISTS netdevicetypes;
 DROP TABLE IF EXISTS netdeviceproducers;
@@ -1528,7 +1529,6 @@ CREATE TABLE netdevices (
   producer 	varchar(64) 	NOT NULL DEFAULT '',
   model 	varchar(32) 	NOT NULL DEFAULT '',
   serialnumber 	varchar(32) 	NOT NULL DEFAULT '',
-  mac 	varchar(17) 	DEFAULT NULL,
   ports 	int(11) 	NOT NULL DEFAULT '0',
   purchasetime 	int(11) 	NOT NULL DEFAULT '0',
   guaranteeperiod tinyint unsigned DEFAULT '0',
@@ -1555,8 +1555,27 @@ CREATE TABLE netdevices (
   FOREIGN KEY (invprojectid) REFERENCES invprojects (id) ON DELETE SET NULL ON UPDATE CASCADE,
   FOREIGN KEY (netdevicemodelid) REFERENCES netdevicemodels (id) ON UPDATE CASCADE ON DELETE SET NULL,
   CONSTRAINT netdevices_ownerid_fkey
-    FOREIGN KEY (ownerid) REFERENCES customers (id) ON UPDATE CASCADE ON DELETE SET NULL,
-  UNIQUE KEY netdevices_mac_ukey (mac)
+    FOREIGN KEY (ownerid) REFERENCES customers (id) ON UPDATE CASCADE ON DELETE SET NULL
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table netdevicemacs
+#
+CREATE TABLE netdevicemacs (
+    CREATE TABLE netdevicemacs (
+        id int(11) NOT NULL auto_increment,
+        netdevid int(11) NOT NULL,
+        label varchar(30) NOT NULL,
+        mac varchar(17) NOT NULL,
+        main tinyint DEFAULT '0' NOT NULL,
+        PRIMARY KEY (id),
+        CONSTRAINT netdevicemacs_netdevid_fkey
+            FOREIGN KEY (netdevid) REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
+        UNIQUE KEY netdevicemacs_mac_ukey (mac),
+        UNIQUE KEY netdevicemacs_netdevid_label_ukey (netdevid, label),
+        INDEX netdevicemacs_netdevid_idx (netdevid),
+        INDEX netdevicemacs_label_idx (label)
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -3965,4 +3984,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021021700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021022500');

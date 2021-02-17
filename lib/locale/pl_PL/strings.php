@@ -25,7 +25,18 @@
  */
 
 $_LANG['Week days'] = 'Dni tygodnia';
+
+$_LANG['Main:'] = 'Główny:';
 $_LANG['Mac address already exists!'] = 'Adres mac już istnieje!';
+$_LANG['Mac address already exists!'] = 'Adres mac już istnieje!';
+$_LANG['Main mac address already exists!'] = 'Główny adres mac już istnieje!';
+$_LANG['Mac addresses ($a):'] = 'Adresy mac ($a):';
+$_LANG['Mac addresses'] = 'Adresy mac';
+$_LANG['No mac address!'] = 'Brak adresu mac!';
+$_LANG['Enter mac label'] = 'Podaj etykietę mac';
+$_LANG['Enter mac'] = 'Podaj mac';
+$_LANG['Set as main'] = 'Ustaw jako główny';
+$_LANG['Mac label already exists for the net device!'] = 'Etykieta mac już istnieje dla tego urządzenia!';
 
 $_LANG['Import configuration'] = 'Import konfiguracji';
 $_LANG['Bad file structure!'] = 'Nieprawidłowa struktura pliku!';

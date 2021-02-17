@@ -60,7 +60,21 @@ interface LMSNetDevManagerInterface
 
     public function GetNetDevName($id);
 
-    public function getNetDevMac($id);
+    public function addNetDevMac($params);
+
+    public function updateNetDevMac($params);
+
+    public function delNetDevMac($macid);
+
+    public function getNetDevMac($macid);
+
+    public function getNetDevMacs($netdevid, $main = null);
+
+    public function getNetDevByMac($mac);
+
+    public function getNetDevsMacLabels();
+
+    public function getNetDevMacLabels($netdevid);
 
     public function GetNetDevList($order = 'name,asc');
 
@@ -73,8 +87,6 @@ interface LMSNetDevManagerInterface
     public function GetNetDevIDByNode($id);
 
     public function NetDevExists($id);
-
-    public function getNetDevByMac($mac, $excludeid = null);
 
     public function GetProducers();
 

@@ -409,9 +409,6 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         if (array_key_exists('ownerid', $data)) {
             $args['ownerid'] = empty($data['ownerid']) ? null : $data['ownerid'];
         }
-        if (array_key_exists('mac', $data)) {
-            $args['mac'] = empty($data['mac']) ? null : $data['mac'];
-        }
 
         if (empty($args)) {
             return null;
@@ -518,8 +515,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             'status'           => empty($data['status']) ? 0 : $data['status'],
             'netdevicemodelid' => null,
             'address_id'       => !empty($data['ownerid']) && $data['customer_address_id'] > 0 ? $data['customer_address_id'] : null,
-            'ownerid'          => !empty($data['ownerid'])  ? $data['ownerid']    : null,
-            'mac'              => !empty($data['mac']) ? $data['mac'] : null
+            'ownerid'          => !empty($data['ownerid'])  ? $data['ownerid']    : null
         );
 
         if (preg_match('/^[0-9]+$/', $data['producerid'])) {
@@ -544,8 +540,8 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 				description, producer, model, serialnumber,
 				ports, purchasetime, guaranteeperiod, shortname,
 				nastype, clients, login, secret, community, channelid,
-				longitude, latitude, invprojectid, netnodeid, status, netdevicemodelid, address_id, ownerid, mac)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
+				longitude, latitude, invprojectid, netnodeid, status, netdevicemodelid, address_id, ownerid)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
             $id = $this->db->GetLastInsertID('netdevices');
 
             if (empty($data['ownerid'])) {
@@ -591,15 +587,13 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         return ($this->db->GetOne('SELECT * FROM netdevices WHERE id=?', array($id)) ? true : false);
     }
 
-    public function getNetDevByMac($mac, $excludeid = null)
+    public function getNetDevByMac($mac)
     {
-        $id = intval($excludeid);
+        $mac = $this->db->Escape($mac);
         $netdev = $this->db->GetRow(
             'SELECT *
-            FROM netdevices
-            WHERE UPPER(mac) = UPPER(?)'
-            . (!empty($id) ? ' AND id != '.$id : ''),
-            array($mac)
+            FROM netdevicemacs
+            WHERE UPPER(mac) = UPPER(' . $mac . ')'
         );
 
         return !empty($netdev);
@@ -929,9 +923,142 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         return $this->db->GetOne('SELECT name FROM netdevices WHERE id = ?', array($id));
     }
 
-    public function getNetDevMac($id)
+    public function addNetDevMac($params)
     {
-        return $this->db->GetOne('SELECT mac FROM netdevices WHERE id = ?', array($id));
+        $args = array(
+            SYSLOG::RES_NETDEV => $params['netdevid'],
+            'label' => $params['label'],
+            'mac' => $params['mac'],
+            'main' => $params['main'],
+        );
+
+        $res = $this->db->Execute(
+            'INSERT INTO netdevicemacs (netdevid, label, mac, main)
+            VALUES (?, ?, ?, ?)',
+            array_values($args)
+        );
+
+        if ($res) {
+            $id = $this->db->GetLastInsertID('netdevicemacs');
+            if ($this->syslog) {
+                $args = array(
+                    SYSLOG::RES_NETDEV => $params['netdevid'],
+                    'macid' => $id,
+                    'label' => $params['label'],
+                    SYSLOG::RES_MAC => $params['mac'],
+                    'main' => $params['main'],
+                );
+                $this->syslog->AddMessage(SYSLOG::RES_NETDEV, SYSLOG::OPER_ADD, $args);
+            }
+        } else {
+            $id = null;
+        }
+
+        return $id;
+    }
+
+    public function updateNetDevMac($params)
+    {
+        $mac = $this->getNetDevMac($params['macid']);
+        $id = $mac['id'];
+
+        if ($mac['main'] == 0 && $params['main'] == 1) {
+            // get old main mac for device
+            $oldMainMac = $this->getNetDevMacs($params['netdevid'], 1);
+            if ($oldMainMac) {
+                $res1 = $this->db->Execute('UPDATE netdevicemacs SET main = 0 WHERE id = ?', array($oldMainMac[0]['id']));
+
+                if ($res1) {
+                    if ($this->syslog) {
+                        $args = array(
+                            SYSLOG::RES_NETDEV => $mac['netdevid'],
+                            'macid' => $oldMainMac['id'],
+                            'label' => $oldMainMac['label'],
+                            SYSLOG::RES_MAC => $oldMainMac['mac'],
+                            'main' => 0,
+                        );
+                        $this->syslog->AddMessage(SYSLOG::RES_NETDEV, SYSLOG::OPER_UPDATE, $args);
+                    }
+                }
+            }
+        }
+
+        $args = array(
+            'label' => $params['label'],
+            'mac' => $params['mac'],
+            'main' => $params['main'],
+            'macid' => $params['macid'],
+        );
+
+        $res = $this->db->Execute(
+            'UPDATE netdevicemacs SET label = ?, mac = ?, main = ?
+            WHERE id = ?',
+            array_values($args)
+        );
+
+        if ($res) {
+            if ($this->syslog) {
+                $args = array(
+                    SYSLOG::RES_NETDEV => $params['netdevid'],
+                    'macid' => $id,
+                    'label' => $params['label'],
+                    SYSLOG::RES_MAC => $params['mac'],
+                    'main' => $params['main'],
+                );
+                $this->syslog->AddMessage(SYSLOG::RES_NETDEV, SYSLOG::OPER_UPDATE, $args);
+            }
+        } else {
+            $id = null;
+        }
+
+        return $id;
+    }
+
+    public function delNetDevMac($macid)
+    {
+        $id = intval($macid);
+        if ($this->syslog) {
+            $mac = $this->getNetDevMac($id);
+            $args = array(
+                SYSLOG::RES_NETDEV => $id,
+                SYSLOG::RES_MAC => $mac['mac'],
+            );
+            $this->syslog->AddMessage(SYSLOG::RES_NETDEV, SYSLOG::OPER_DELETE, $args);
+        }
+
+        $res = $this->db->Execute('DELETE FROM netdevicemacs WHERE id = ?', array($id));
+
+        return $res;
+    }
+
+    public function getNetDevMac($macid)
+    {
+        $id = intval($macid);
+        return $this->db->GetRow('SELECT * FROM netdevicemacs WHERE id = ?', array($id));
+    }
+
+    public function getNetDevMacs($netdevid, $main = null)
+    {
+        $mainMac = !empty($main) ? intval($main) : null;
+        $id = intval($netdevid);
+        return $this->db->GetAll(
+            'SELECT *
+            FROM netdevicemacs
+            WHERE netdevid = ?'
+            . (!empty($mainMac) ? ' AND main = 1' : '')
+            . ' ORDER BY label',
+            array($id)
+        );
+    }
+
+    public function getNetDevsMacLabels()
+    {
+        return $this->db->GetAll('SELECT DISTINCT(label) FROM netdevicemacs ORDER BY label');
+    }
+
+    public function getNetDevMacLabels($netdevid)
+    {
+        return $this->db->GetAllByKey('SELECT label FROM netdevicemacs WHERE netdevid = ?', 'label', array(intval($netdevid)));
     }
 
     public function GetNotConnectedDevices($id)
@@ -949,7 +1076,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
     public function GetNetDev($id)
     {
-        $result = $this->db->GetRow('SELECT d.*, d.invprojectid AS projectid, t.name AS nastypename, c.name AS channel, d.ownerid, d.mac,
+        $result = $this->db->GetRow('SELECT d.*, d.invprojectid AS projectid, t.name AS nastypename, c.name AS channel, d.ownerid,
 				producer, ndm.netdeviceproducerid AS producerid, model, d.netdevicemodelid AS modelid,
 				(CASE WHEN lst.name2 IS NOT NULL THEN ' . $this->db->Concat('lst.name2', "' '", 'lst.name') . ' ELSE lst.name END) AS street_name,
 				lt.name AS street_type, lc.name AS city_name,

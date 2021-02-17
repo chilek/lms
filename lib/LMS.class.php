@@ -1717,12 +1717,6 @@ class LMS
         return $manager->NetDevExists($id);
     }
 
-    public function getNetDevByMac($mac, $excludeid = null)
-    {
-        $manager = $this->getNetDevManager();
-        return $manager->getNetDevByMac($mac, $excludeid);
-    }
-
     public function GetNetDevIDByNode($id)
     {
         $manager = $this->getNetDevManager();
@@ -1765,10 +1759,52 @@ class LMS
         return $manager->GetNetDevName($id);
     }
 
-    public function getNetDevMac($id)
+    public function addNetDevMac($params)
     {
         $manager = $this->getNetDevManager();
-        return $manager->getNetDevMac($id);
+        return $manager->addNetDevMac($params);
+    }
+
+    public function updateNetDevMac($params)
+    {
+        $manager = $this->getNetDevManager();
+        return $manager->updateNetDevMac($params);
+    }
+
+    public function delNetDevMac($macid)
+    {
+        $manager = $this->getNetDevManager();
+        return $manager->delNetDevMac($macid);
+    }
+
+    public function getNetDevMac($macid)
+    {
+        $manager = $this->getNetDevManager();
+        return $manager->getNetDevMac($macid);
+    }
+
+    public function getNetDevMacs($netdevid, $main = null)
+    {
+        $manager = $this->getNetDevManager();
+        return $manager->getNetDevMacs($netdevid, $main);
+    }
+
+    public function getNetDevByMac($mac)
+    {
+        $manager = $this->getNetDevManager();
+        return $manager->getNetDevByMac($mac);
+    }
+
+    public function getNetDevsMacLabels()
+    {
+        $manager = $this->getNetDevManager();
+        return $manager->getNetDevsMacLabels();
+    }
+
+    public function getNetDevMacLabels($netdevid)
+    {
+        $manager = $this->getNetDevManager();
+        return $manager->getNetDevMacLabels($netdevid);
     }
 
     public function GetNotConnectedDevices($id)
