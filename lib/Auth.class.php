@@ -5,7 +5,7 @@ use PragmaRX\Google2FA\Google2FA;
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -31,6 +31,7 @@ class Auth
 
     private $id = null;
     public $login;
+    private $targetLogin = null;
     public $logname;
     public $passwd;
     public $islogged = false;
@@ -93,6 +94,7 @@ class Auth
         }
 
         $this->SESSION->restore('session_login', $this->login);
+        $this->SESSION->restore('session_target_login', $this->targetLogin);
         $this->SESSION->restore('session_authcoderequired', $this->authcoderequired);
 
         if (isset($loginform['backtologinform']) && !empty($loginform['backtologinform'])) {
@@ -108,7 +110,16 @@ class Auth
                 $this->trusteddevice = isset($loginform['trusteddevice']);
                 writesyslog('Login attempt (authentication code) by ' . $this->login, LOG_INFO);
             } else {
-                $this->login = $loginform['login'];
+                list ($login, $targetLogin) = explode('#', $loginform['login']);
+                $this->login = $login;
+                if (!empty($targetLogin)
+                    && $this->DB->GetOne(
+                        'SELECT 1 FROM users WHERE deleted = 0 AND access = 1 AND '
+                        . $this->DB->RegExp('rights', 'full_access')
+                    )
+                ) {
+                    $this->targetLogin = $targetLogin;
+                }
                 $this->passwd = $loginform['pwd'];
                 writesyslog('Login attempt by ' . $this->login, LOG_INFO);
             }
@@ -126,6 +137,8 @@ class Auth
                 $this->SESSION->restore('session_last', $this->last);
                 $this->SESSION->restore('session_lastip', $this->lastip);
             }
+
+            $this->switchUser();
 
             $this->logname = $this->logname ? $this->logname : $this->SESSION->get('session_logname');
             $this->id = $this->id ? $this->id : $this->SESSION->get('session_id');
@@ -145,6 +158,9 @@ class Auth
 
             $this->SESSION->save('session_id', $this->id);
             $this->SESSION->save('session_login', $this->login);
+            if (isset($this->targetLogin)) {
+                $this->SESSION->save('session_target_login', $this->targetLogin);
+            }
             $this->SESSION->restore_user_settings();
             $this->SESSION->save('session_logname', $this->logname);
             $this->SESSION->save('session_last', $this->last);
@@ -186,6 +202,8 @@ class Auth
 
             if (!$this->authcoderequired) {
                 $this->LogOut();
+            } elseif (isset($this->targetLogin)) {
+                $this->SESSION->save('session_target_login', $this->targetLogin);
             }
         }
     }
@@ -318,6 +336,37 @@ class Auth
             return true;
         } else {
             return false;
+        }
+    }
+
+    public function SwitchUser($userid = null)
+    {
+        if (((isset($this->targetLogin) && ($user = $this->DB->GetRow('SELECT id, name, passwd, hosts, lastlogindate, lastloginip,
+                passwdforcechange, passwdexpiration, passwdlastchange, access, accessfrom, accessto,
+                twofactorauth, twofactorauthsecretkey
+            FROM vusers WHERE login = ? AND deleted = 0', array($this->targetLogin))) !== null)
+                || (isset($userid) && ($user = $this->DB->GetRow('SELECT id, name, passwd, hosts, lastlogindate, lastloginip,
+                passwdforcechange, passwdexpiration, passwdlastchange, access, accessfrom, accessto,
+                twofactorauth, twofactorauthsecretkey
+            FROM vusers WHERE id = ? AND deleted = 0', array($userid))) !== null))
+            && $this->VerifyDivision($user['id'])) {
+            $this->logname = $user['name'];
+            $this->id = $user['id'];
+            $this->last = $user['lastlogindate'];
+            $this->lastip = $user['lastloginip'];
+            $this->passwdforcechange = $user['passwdforcechange'];
+            $this->passwdexpiration = $user['passwdexpiration'];
+            $this->passwdlastchange = $user['passwdlastchange'];
+            $this->twofactorauth = $user['twofactorauth'];
+            $this->twofactorauthsecretkey = $user['twofactorauthsecretkey'];
+            $this->targetLogin = null;
+
+            if (isset($userid)) {
+                $this->SESSION->save('session_id', $this->id);
+                $this->SESSION->save('session_login', $this->login);
+                $this->SESSION->restore_user_settings();
+                $this->SESSION->save('session_logname', $this->logname);
+            }
         }
     }
 

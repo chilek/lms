@@ -67,6 +67,8 @@ version 27-git (????-??-??):
     cash import record source customers accounts during source file parsing process [chilan]
   - enhancement: 'cashimport.source_account_match_threshold_days' (default '0' value) controls how many
     days in cash import history are taken into account to match customer [chilan]
+  - enhancement: allow to instantly switch user or login as different user ('admin#targetuser' in login form
+    and button click on user list or user info) [chilan]
 
 version 26.0 (2020-12-15):
 

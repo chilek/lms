@@ -300,6 +300,7 @@ class Session
     public function _saveSession()
     {
         static $session_variables = array('session_id' => true, 'session_login' => true,
+            'session_target_login' => true,
             'session_logname' => true, 'session_last' => true, 'session_lastip' => true,
             'session_smsauthenticated' => true, 'backto' => true, 'lastmodule' => true,
             'session_passwdrequiredchange' => true, 'session_authcoderequired' => true,
