@@ -3070,12 +3070,14 @@ CREATE VIEW vnodetariffs AS
         t.uprate, t.upceil,
         t.downrate_n, t.downceil_n,
         t.uprate_n, t.upceil_n,
+        net.mask, net.gateway, net.dns, net.dns2,
         m.mac,
         a.ccode,
         a.city_id as location_city, a.street_id as location_street,
         a.house as location_house, a.flat as location_flat,
         a.location
     FROM nodes n
+    JOIN networks net ON net.id = n.netid
     LEFT JOIN (SELECT nodeid, array_to_string(array_agg(mac), ',') AS mac FROM macs GROUP BY nodeid) m ON (n.id = m.nodeid)
     LEFT JOIN vaddresses a ON n.address_id = a.id
     JOIN (
@@ -3141,12 +3143,14 @@ CREATE VIEW vnodealltariffs AS
         COALESCE(t1.up_burst_time_n, t2.up_burst_time_n, 0) AS up_burst_time_n,
         COALESCE(t1.up_burst_threshold_n, t2.up_burst_threshold_n, 0) AS up_burst_threshold_n,
         COALESCE(t1.up_burst_limit_n, t2.up_burst_limit_n, 0) AS up_burst_limit_n,
+        net.mask, net.gateway, net.dns, net.dns2,
         m.mac,
         a.ccode,
         a.city_id as location_city, a.street_id as location_street,
         a.house as location_house, a.flat as location_flat,
         a.location
     FROM nodes n
+    JOIN networks net ON net.id = n.netid
     LEFT JOIN (
         SELECT nodeid, array_to_string(array_agg(mac), ',') AS mac
         FROM macs
@@ -3993,6 +3997,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021021600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021021800');
 
 COMMIT;
