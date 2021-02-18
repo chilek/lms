@@ -71,6 +71,8 @@ version 27-git (????-??-??):
     and button click on user list or user info) [chilan]
   - improvement: enabled visual editor for userpanel help topic bodies [chilan]
   - improvement: customer templated notifications don't depend on user notifications [chilan]
+  - improvement: 'invoices.force_telecom_service_flag' has also impact on default state of telecom
+    service checkbox in new invoice form [chilan]
 
 version 26.0 (2020-12-15):
 
