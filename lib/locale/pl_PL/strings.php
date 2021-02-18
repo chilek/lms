@@ -5104,3 +5104,5 @@ $_LANG['with locks'] = 'z blokadami';
 $_LANG['<!node>lock is active'] = 'blokada jest aktywna';
 
 $_LANG['Switch to'] = 'Przełącz na';
+
+$_LANG['ignore'] = 'ignoruj';
