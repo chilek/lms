@@ -73,6 +73,8 @@ version 27-git (????-??-??):
   - improvement: customer templated notifications don't depend on user notifications [chilan]
   - improvement: 'invoices.force_telecom_service_flag' has also impact on default state of telecom
     service checkbox in new invoice form [chilan]
+  - enhancement/devel: new 'transgus_data_prepare' hook allows plugins to prepare data used in transgus
+    report [chilan]
 
 version 26.0 (2020-12-15):
 
