@@ -368,6 +368,12 @@ switch ($type) {
             }
         }
 
+        $result = $plugin_manager->executeHook(
+            'transgus_data_prepare',
+            compact('customergroups', 'division', 'landline_customers', 'mobile_customers')
+        );
+        extract($result);
+
         $division = $LMS->GetDivision($division);
         $division_address = $LMS->GetAddress($division['address_id']);
 
