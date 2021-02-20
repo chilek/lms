@@ -268,24 +268,14 @@ foreach ($customers as $customer) {
     $customer_ccode = empty($customer['ccode']) ? $div_ccode : Localisation::getViesCodeByCountryCode($customer['ccode']);
     $customername = trim($customer['customername']);
 
-    if (empty($div_ccode) || empty($customer_ccode)) {
-        if (!$quiet) {
-            if (empty($div_ccode)) {
-                printf(
-                    "Division '%s (#%04d)' country code '%s' is not supported!" . PHP_EOL,
-                    $customer['div_name'],
-                    $customer['divisionid'],
-                    $customer['div_ccode']
-                );
-            }
-            if (empty($customer_ccode)) {
-                printf(
-                    "Customer '%s (#%04d)' country code '%s' is not supported!" . PHP_EOL,
-                    $customername,
-                    $customer['id'],
-                    $customer['ccode']
-                );
-            }
+    if ($customer_ccode != 'PL') {
+        if (!$quiet && !empty($customer_ccode)) {
+            printf(
+                "'(#04d) %s' country code '%s' is not supported!" . PHP_EOL,
+                $customer['id'],
+                $customername,
+                $customer['ccode']
+            );
         }
         continue;
     }
@@ -302,21 +292,27 @@ foreach ($customers as $customer) {
             break;
     }
 
-    printf('(ID: #%d) \'%s\': ', $customer['id'], $customername);
+    if (!$quiet) {
+        printf('\'(#%04d) %s\': ', $customer['id'], $customername);
+    }
 
     if (is_int($result)) {
         switch ($result) {
             case Utils::GUS_REGON_API_RESULT_BAD_KEY:
                 die('Bad REGON API user key!' . PHP_EOL);
             case Utils::GUS_REGON_API_RESULT_NO_DATA:
-                echo 'No data found in REGON database!' . PHP_EOL;
+                if (!$quiet) {
+                    echo 'No data found in REGON database!' . PHP_EOL;
+                }
                 break;
         }
         continue;
     } elseif (is_string($result)) {
         die($result . PHP_EOL);
     } else {
-        echo 'found in GUS Regon database!';
+        if (!$quiet) {
+            echo 'found in GUS Regon database!';
+        }
     }
 
     if ($dry_run) {
@@ -352,6 +348,8 @@ foreach ($customers as $customer) {
             );
         }
 
-        echo ' Updated in local database!' . PHP_EOL;
+        if (!$quiet) {
+            echo ' Updated in local database!' . PHP_EOL;
+        }
     }
 }
