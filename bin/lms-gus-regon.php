@@ -31,13 +31,6 @@
 // *EXACTLY* WHAT ARE YOU DOING!!!
 // *******************************************************************
 
-use GusApi\GusApi;
-use GusApi\RegonConstantsInterface;
-use GusApi\SearchType;
-use GusApi\Exception\InvalidUserKeyException;
-use GusApi\ReportTypes;
-use GusApi\ReportTypeMapper;
-
 ini_set('error_reporting', E_ALL&~E_NOTICE);
 
 $parameters = array(
@@ -282,13 +275,13 @@ foreach ($customers as $customer) {
 
     switch ($type) {
         case 'ten':
-            $result = Utils::getGusRegonData(SearchType::NIP, $customer['ten']);
+            $result = Utils::getGusRegonData(Utils::GUS_REGON_API_SEARCH_TYPE_TEN, $customer['ten']);
             break;
         case 'regon':
-            $result = Utils::getGusRegonData(SearchType::REGON, $customer['regon']);
+            $result = Utils::getGusRegonData(Utils::GUS_REGON_API_SEARCH_TYPE_REGON, $customer['regon']);
             break;
         case 'rbe':
-            $result = Utils::getGusRegonData(SearchType::KRS, $customer['rbe']);
+            $result = Utils::getGusRegonData(Utils::GUS_REGON_API_SEARCH_TYPE_RBE, $customer['rbe']);
             break;
     }
 

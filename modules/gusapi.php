@@ -24,13 +24,6 @@
  *  $Id$
  */
 
-use GusApi\GusApi;
-use GusApi\RegonConstantsInterface;
-use GusApi\SearchType;
-use GusApi\Exception\InvalidUserKeyException;
-use GusApi\ReportTypes;
-use GusApi\ReportTypeMapper;
-
 if (!isset($_GET['searchtype']) || !isset($_GET['searchdata']) || empty($_GET['searchdata'])) {
     return;
 }
@@ -38,9 +31,9 @@ if (!isset($_GET['searchtype']) || !isset($_GET['searchdata']) || empty($_GET['s
 if (!in_array(
     $_GET['searchtype'],
     array(
-        SearchType::NIP,
-        SearchType::REGON,
-        SearchType::KRS,
+        Utils::GUS_REGON_API_SEARCH_TYPE_TEN,
+        Utils::GUS_REGON_API_SEARCH_TYPE_REGON,
+        Utils::GUS_REGON_API_SEARCH_TYPE_RBE,
     )
 )) {
     return;

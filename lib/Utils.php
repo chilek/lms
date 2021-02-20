@@ -26,7 +26,6 @@
 
 use GusApi\GusApi;
 use GusApi\RegonConstantsInterface;
-use GusApi\SearchType;
 use GusApi\Exception\InvalidUserKeyException;
 use GusApi\ReportTypes;
 use GusApi\ReportTypeMapper;
@@ -35,6 +34,10 @@ class Utils
 {
     const GUS_REGON_API_RESULT_BAD_KEY = 1;
     const GUS_REGON_API_RESULT_NO_DATA = 2;
+
+    const GUS_REGON_API_SEARCH_TYPE_TEN = 1;
+    const GUS_REGON_API_SEARCH_TYPE_REGON = 2;
+    const GUS_REGON_API_SEARCH_TYPE_RBE = 3;
 
     public static function filterIntegers(array $params)
     {
@@ -511,13 +514,13 @@ class Utils
 
         try {
             switch ($type) {
-                case SearchType::NIP:
+                case self::GUS_REGON_API_SEARCH_TYPE_TEN:
                     $gusReports = $gus->getByNip(preg_replace('/[^a-z0-9]/i', '', $id));
                     break;
-                case SearchType::REGON:
+                case self::GUS_REGON_API_SEARCH_TYPE_REGON:
                     $gusReports = $gus->getByRegon($id);
                     break;
-                case SearchType::KRS:
+                case self::GUS_REGON_API_SEARCH_TYPE_RBE:
                     $gusReports = $gus->getByRegon($id);
                     break;
                 default:
