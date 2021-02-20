@@ -271,7 +271,7 @@ foreach ($customers as $customer) {
     if ($customer_ccode != 'PL') {
         if (!$quiet && !empty($customer_ccode)) {
             printf(
-                "'(#04d) %s' country code '%s' is not supported!" . PHP_EOL,
+                "(#04d) %s: country code '%s' is not supported!" . PHP_EOL,
                 $customer['id'],
                 $customername,
                 $customer['ccode']
@@ -293,7 +293,7 @@ foreach ($customers as $customer) {
     }
 
     if (!$quiet) {
-        printf('\'(#%04d) %s\': ', $customer['id'], $customername);
+        printf('(#%04d) %s: ', $customer['id'], $customername);
     }
 
     if (is_int($result)) {
