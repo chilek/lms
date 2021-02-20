@@ -75,6 +75,8 @@ version 27-git (????-??-??):
     service checkbox in new invoice form [chilan]
   - enhancement/devel: new 'transgus_data_prepare' hook allows plugins to prepare data used in transgus
     report [chilan]
+  - enhancement: lms-gus-regon.php backend scripts allows to bulkly update properties of customers
+    with legal entity status [chilan]
 
 version 26.0 (2020-12-15):
 
