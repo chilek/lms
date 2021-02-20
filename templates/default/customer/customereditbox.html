@@ -44,6 +44,10 @@
 		width: 11em;
 	}
 
+	.consent-label {
+		cursor: pointer;
+	}
+
 </style>
 
 <FORM name="customeredit" id="customeredit" method="post" action="?m=customeredit&id={$customerinfo.id}{if $recover}&action=recover{/if}">
@@ -432,7 +436,7 @@
 										{foreach $_CCONSENTS as $type => $consent}
 											<TR>
 												<TD>
-													<label for="chkconsent{$type}">{$consent.label}</label>
+													<span class="consent-label">{$consent.label}</span>
 												</TD>
 												<TD>
 													<INPUT type="checkbox" name="customerdata[consents][{$type}]" id="chkconsent{$type}"
