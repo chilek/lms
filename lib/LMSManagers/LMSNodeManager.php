@@ -43,6 +43,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 ? strtoupper($nodedata['name']) : $nodedata['name'],
             'ipaddr_pub'        => $nodedata['ipaddr_pub'],
             'ipaddr'            => $nodedata['ipaddr'],
+            'login'             => empty($nodedata['login']) ? null : $nodedata['login'],
             'passwd'            => $nodedata['passwd'],
             SYSLOG::RES_NETDEV  => empty($nodedata['netdev']) ? null : $nodedata['netdev'],
             SYSLOG::RES_USER    => Auth::GetCurrentUser(),
@@ -69,7 +70,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         );
 
         $this->db->Execute('UPDATE nodes SET name=?, ipaddr_pub=inet_aton(?),
-				ipaddr=inet_aton(?), passwd=?, netdev=?, moddate=?NOW?,
+				ipaddr=inet_aton(?), login=?, passwd=?, netdev=?, moddate=?NOW?,
 				modid=?, access=?, warning=?, ownerid=?, info=?,
 				chkmac=?, halfduplex=?, linktype=?, linkradiosector=?, linktechnology=?, linkspeed=?,
 				port=?, nas=?, longitude=?, latitude=?, netid=?, invprojectid=?, authtype=?, address_id=?
@@ -175,6 +176,11 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
     public function GetNodeIDByName($name)
     {
         return $this->db->GetOne('SELECT id FROM vnodes WHERE UPPER(name)=UPPER(?)', array($name));
+    }
+
+    public function GetNodeIDByLogin($login)
+    {
+        return $this->db->GetOne('SELECT id FROM vnodes WHERE UPPER(login) = UPPER(login)', array($login));
     }
 
     public function GetNodeIDByNetName($name)
@@ -734,6 +740,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 ? strtoupper($nodedata['name']) : $nodedata['name'],
             'ipaddr'            => $nodedata['ipaddr'],
             'ipaddr_pub'        => $nodedata['ipaddr_pub'],
+            'login'             => empty($nodedata['login']) ? null : $nodedata['login'],
             SYSLOG::RES_CUST    => empty($nodedata['ownerid']) ? null : $nodedata['ownerid'],
             'passwd'            => $nodedata['passwd'],
             SYSLOG::RES_USER    => Auth::GetCurrentUser(),

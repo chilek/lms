@@ -1470,6 +1470,7 @@ DROP TABLE IF EXISTS nodes CASCADE;
 CREATE TABLE nodes (
 	id integer DEFAULT nextval('nodes_id_seq'::text) NOT NULL,
 	name varchar(32) 	DEFAULT '' NOT NULL,
+	login varchar(128) DEFAULT NULL,
 	ipaddr bigint 		DEFAULT 0 NOT NULL,
 	ipaddr_pub bigint 	DEFAULT 0 NOT NULL,
 	passwd varchar(32)	DEFAULT '' NOT NULL,
@@ -3997,6 +3998,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021021800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021022100');
 
 COMMIT;

@@ -1589,6 +1589,7 @@ CREATE TABLE netradiosectors (
 CREATE TABLE nodes (
   id int(11) NOT NULL auto_increment,
   name varchar(32) NOT NULL DEFAULT '',
+  login varchar(128) DEFAULT NULL,
   ipaddr int(16) unsigned NOT NULL DEFAULT '0',
   ipaddr_pub int(16) unsigned NOT NULL DEFAULT '0',
   passwd varchar(32) NOT NULL DEFAULT '',
@@ -3011,7 +3012,6 @@ CREATE VIEW vnodetariffs_allsuspended AS
 		AND (dateto = 0 OR dateto > UNIX_TIMESTAMP())
 	GROUP BY customerid;
 
-
 CREATE VIEW vnodetariffs_tariffs AS
     SELECT n.id AS nodeid,
         ROUND(SUM(t.downrate * a.count)) AS downrate,
@@ -3967,4 +3967,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021021800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021022100');

@@ -73,6 +73,7 @@ function GetConfigList()
             'timetable_days_forward' => 'Number of days (including current day) on timetable. Default: 7.',
             'gd_translate_to' => 'Charset of data gd library expects (useful if gd library needs ISO-8859-2 instead of UTF-8 to feed imagetext() function).',
             'nodepassword_length' => 'Length of (auto-generated) node password. Max.32. Default: 16.',
+            'node_password_length' => 'Length of (auto-generated) node password. Max.32. Default: 16.',
             'custom_accesstable' => 'PHP file with user-defined access rules in "lib" directory. Default: empty.',
             'check_for_updates_period' => 'How often to check for LMS updates (in seconds). Default: 86400.',
             'map_type' => 'Network map type. Use "flash" if you have Ming library or "gd" if your PHP supports gdlib. By default LMS will try to generate flash map, with fallback to GD if it fails.',

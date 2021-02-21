@@ -469,7 +469,7 @@ switch ($action) {
         $nodeipdata['macs'] = $macs;
 
         if (strlen($nodeipdata['passwd']) > 32) {
-            $error['passwd'] = trans('Password is too long (max.32 characters)!');
+            $error['passwd'] = trans('Password is too long (max. 32 characters)!');
         }
 
         if (!isset($nodeipdata['chkmac'])) {
@@ -590,7 +590,7 @@ switch ($action) {
         $nodeipdata['macs'] = $macs;
 
         if (strlen($nodeipdata['passwd']) > 32) {
-            $error['passwd'] = trans('Password is too long (max.32 characters)!');
+            $error['passwd'] = trans('Password is too long (max. 32 characters)!');
         }
 
         if (!isset($nodeipdata['chkmac'])) {

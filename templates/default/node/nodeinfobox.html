@@ -117,20 +117,34 @@
 								{math equation="x+1" x=$counter assign="counter"}
 								{/foreach}
 
+								{if $nodeinfo.login}
+									<tr>
+										<td>
+											{icon name="login" class="fa-fw"}
+										</td>
+										<td>
+											{trans("<!node>Login")}
+										</td>
+										<td>
+											{$nodeinfo.login|escape}
+											{button type="link" icon="clipboard" class="lms-ui-button-clipboard"
+												data_clipboard_text="{$nodeinfo.login|escape}"}
+										</td>
+									</tr>
+								{/if}
+
 								{if $nodeinfo.passwd}
 								<tr>
 									<td>
-										<img src="img/passwd.gif" alt="">
+										{icon name="password" class="fa-fw"}
 									</td>
 									<td>
 										{trans("Password:")}
 									</td>
 									<td>
 										{if ConfigHelper::checkConfig('phpui.protect_passwords')}
-										<button class="lms-ui-button-clipboard lms-ui-button" data-clipboard-text="{$nodeinfo.passwd|escape}">
-											<i class="lms-ui-icon-clipboard"></i>
-											{trans("Copy")}
-										</button>
+											{button type="link" icon="clipboard" class="lms-ui-button-clipboard"
+												data_clipboard_text="{$nodeinfo.passwd|escape}"}
 										{else}
 											{$nodeinfo.passwd}
 										{/if}

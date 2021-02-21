@@ -1006,6 +1006,12 @@ class LMS
         return $manager->GetNodeIDByName($name);
     }
 
+    public function GetNodeIDByLogin($login)
+    {
+        $manager = $this->getNodeManager();
+        return $manager->GetNodeIDByLogin($login);
+    }
+
     public function GetNodeIDByNetName($name)
     {
         $manager = $this->getNodeManager();
