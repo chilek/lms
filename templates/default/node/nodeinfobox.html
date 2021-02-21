@@ -142,12 +142,11 @@
 										{trans("Password:")}
 									</td>
 									<td>
-										{if ConfigHelper::checkConfig('phpui.protect_passwords')}
-											{button type="link" icon="clipboard" class="lms-ui-button-clipboard"
-												data_clipboard_text="{$nodeinfo.passwd|escape}"}
-										{else}
+										{if !ConfigHelper::checkConfig('phpui.protect_passwords')}
 											{$nodeinfo.passwd}
 										{/if}
+										{button type="link" icon="clipboard" class="lms-ui-button-clipboard"
+											data_clipboard_text="{$nodeinfo.passwd|escape}"}
 									</td>
 								</tr>
 								{/if}
