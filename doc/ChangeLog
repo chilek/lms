@@ -77,6 +77,11 @@ version 27-git (????-??-??):
     report [chilan]
   - enhancement: lms-gus-regon.php backend scripts allows to bulkly update properties of customers
     with legal entity status [chilan]
+  - enhancement: login field added to nodes [chilan]
+  - enhancement: 'phpui.node_login_required' ('none' by default) enables non-empty login
+    requirement [chilan]
+  - enhancement: 'phpui.node_login_regexp' ('^[_a-z0-9-.]+$' by default) controls node login
+    format [chilan]
 
 version 26.0 (2020-12-15):
 
