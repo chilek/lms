@@ -412,13 +412,13 @@ switch ($mode) {
         // Build different query for each database engine,
             // MySQL is slow here when vnodes view is used
             if (ConfigHelper::getConfig('database.type') == 'postgres') {
-                $sql_query = 'SELECT n.id, n.name, INET_NTOA(ipaddr) as ip,
+                $sql_query = 'SELECT n.id, n.name, n.login, INET_NTOA(ipaddr) as ip,
 			        INET_NTOA(ipaddr_pub) AS ip_pub, mac, location, access, lastonline
 				    FROM vnodes n
 				    WHERE %where
     				ORDER BY n.name LIMIT ?';
             } else {
-                $sql_query = 'SELECT n.id, n.name, INET_NTOA(ipaddr) as ip,
+                $sql_query = 'SELECT n.id, n.name, n.login, INET_NTOA(ipaddr) as ip,
 			        INET_NTOA(ipaddr_pub) AS ip_pub, mac, va.location, access, lastonline
 				    FROM nodes n
 				    JOIN (
