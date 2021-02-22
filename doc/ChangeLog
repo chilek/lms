@@ -82,6 +82,7 @@ version 27-git (????-??-??):
     requirement [chilan]
   - enhancement: 'phpui.node_login_regexp' ('^[_a-z0-9-.]+$' by default) controls node login
     format [chilan]
+  - enhancement: added period filter in customer assignment tab/box [chilan]
 
 version 26.0 (2020-12-15):
 
