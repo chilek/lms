@@ -322,6 +322,7 @@
 	}
 
 	$(function() {
+		var default_period = {if $period}'{$period}'{else}null{/if};
 		var assignment_types = [];
 		var documents = [];
 		var periods = [];
@@ -347,6 +348,11 @@
 		var selected_period = getStorageItem('{$tab_id}_period_{$customerinfo.id}');
 		var expired_checked = getStorageItem('{$tab_id}_expired_{$customerinfo.id}');
 		var commited_checked = getStorageItem('{$tab_id}_commited_{$customerinfo.id}');
+
+		console.log(selected_period, default_period);
+		if (selected_period === null && default_period) {
+			selected_period = default_period;
+		}
 
 		$.each(assignment_types, function (key, value) {
 			tab_elem.find('.assignment-type').append('<option value="' + value + '"'
@@ -475,9 +481,17 @@
 		tab_elem.find('.commited').change(updateAssignments);
 		tab_elem.find('.clear-filter').click(function() {
 			tab_elem.find('.document').val('');
+			tab_elem.find('.period').val('');
 			tab_elem.find('.assignment-type').val('');
 			tab_elem.find('.expired').prop('checked', false);
 			tab_elem.find('.commited').prop('checked', true).trigger('change');
+
+			removeStorageItem('{$tab_id}_tariff_type_{$customerinfo.id}');
+			removeStorageItem('{$tab_id}_document_{$customerinfo.id}');
+			removeStorageItem('{$tab_id}_period_{$customerinfo.id}');
+			removeStorageItem('{$tab_id}_expired_{$customerinfo.id}');
+			removeStorageItem('{$tab_id}_commited_{$customerinfo.id}');
+
 			return false;
 		});
 
