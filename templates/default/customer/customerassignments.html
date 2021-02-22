@@ -113,7 +113,7 @@
 			{foreach $assignments as $a}
 			{block name=$tab_id|cat:"-list-row"}
 			<div class="lms-ui-tab-table-row
-				{if ($a.dateto < $today && $a.dateto) || ($a.liabilityid && $a.at < $today && $a.at > 365)} blend{elseif ($a.datefrom > $today && $a.datefrom && $a.period) && !($a.suspended)} alertblend{elseif ($a.suspended)}suspended{/if}
+				{if ($a.dateto < $today && $a.dateto) || ($a.at < $today && $a.at > 365)} blend{elseif (($a.datefrom > $today && $a.datefrom && $a.period != $smarty.const.DISPOSABLE) || ($a.period == $smarty.const.DISPOSABLE && $a.at > $today)) && !$a.suspended} alertblend{elseif ($a.suspended)}suspended{/if}
 				{if !$a.commited} lms-ui-assignment-not-commited{/if}"
 				data-tariff-type="{$a.tarifftype}"
 				data-expired="{$a.expired}"
