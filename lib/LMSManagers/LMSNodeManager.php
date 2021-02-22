@@ -55,7 +55,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             'halfduplex'        => $nodedata['halfduplex'],
             'linktype'          => isset($nodedata['linktype']) ? intval($nodedata['linktype']) : 0,
             'linkradiosector'   => (isset($nodedata['linktype']) && intval($nodedata['linktype']) == 1 ?
-        (isset($nodedata['radiosector']) && intval($nodedata['radiosector']) ? intval($nodedata['radiosector']) : null) : null),
+                (isset($nodedata['radiosector']) && intval($nodedata['radiosector']) ? intval($nodedata['radiosector']) : null) : null),
             'linktechnology'    => isset($nodedata['linktechnology']) ? intval($nodedata['linktechnology']) : 0,
             'linkspeed'         => isset($nodedata['linkspeed']) ? intval($nodedata['linkspeed']) : 100000,
             'port'              => isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
@@ -754,7 +754,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             SYSLOG::RES_NETDEV  => empty($nodedata['netdev']) ? null : $nodedata['netdev'],
             'linktype'          => isset($nodedata['linktype']) ? intval($nodedata['linktype']) : 0,
             'linkradiosector'   => (isset($nodedata['linktype']) && intval($nodedata['linktype']) == 1 ?
-        (isset($nodedata['radiosector']) && intval($nodedata['radiosector']) ? intval($nodedata['radiosector']) : null) : null),
+                (isset($nodedata['radiosector']) && intval($nodedata['radiosector']) ? intval($nodedata['radiosector']) : null) : null),
             'linktechnology'    => isset($nodedata['linktechnology']) ? intval($nodedata['linktechnology']) : 0,
             'linkspeed'         => isset($nodedata['linkspeed'])      ? intval($nodedata['linkspeed'])      : 100000,
             'port'              => isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
@@ -769,13 +769,13 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             'address_id'        => ($nodedata['address_id'] >= 0) ? $nodedata['address_id'] : null
         );
 
-        if ($this->db->Execute('INSERT INTO nodes (name, ipaddr, ipaddr_pub, ownerid,
+        if ($this->db->Execute('INSERT INTO nodes (name, ipaddr, ipaddr_pub, login, ownerid,
 			passwd, creatorid, creationdate, access, warning, info, netdev,
 			linktype, linkradiosector, linktechnology,
 			linkspeed, port, chkmac, halfduplex, nas,
 			longitude, latitude, netid, invprojectid, authtype, address_id)
 			VALUES (?, inet_aton(?), inet_aton(?), ?, ?, ?,
-			?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
+			?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
             $id = $this->db->GetLastInsertID('nodes');
 
             // EtherWerX support (devices have some limits)
