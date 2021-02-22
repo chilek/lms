@@ -307,6 +307,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
      *      search - additional attributes (default: null = none), associative array with some well-known
      *          properties:
      *              ipaddr - ip address or public ip address (default: null = any), text value,
+     *              login - node login (default: null = any), text value,
      *              state - state id (default: null = any), single integer value,
      *              district - district id (default: null = any), single integer value,
      *              borough - borough id (default: null = any), single integer value,
@@ -384,6 +385,9 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                             break;
                         case 'ip':
                             $searchargs[] = 'inet_ntoa(n.ipaddr) ?LIKE? ' . $this->db->Escape('%' . trim($value) . '%');
+                            break;
+                        case 'login':
+                            $searchargs[] = 'LOWER(n.login) ?LIKE? ' . $this->db->Escape('%' . trim($value) . '%');
                             break;
                         case 'public_ip':
                             $searchargs[] =  'inet_ntoa(n.ipaddr_pub) ?LIKE? ' . $this->db->Escape('%' . trim($value) . '%');

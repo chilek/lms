@@ -849,6 +849,7 @@ $_LANG['Enter MAC address or it\'s fragment'] = 'Wprowadź adres MAC lub jego fr
 $_LANG['Enter node name'] = 'Wprowadź nazwę komputera';
 $_LANG['Enter node name.'] = 'Wprowadź nazwę komputera.';
 $_LANG['Enter node name or it\'s fragment'] = 'Wprowadź nazwę komputera lub jej fragment';
+$_LANG['Enter node login or it\'s fragment'] = 'Podaj login komputera lub jego fragment';
 $_LANG['Enter note'] = 'Wprowadź notatkę';
 $_LANG['Enter note (optional)'] = 'Wprowadź notatkę (opcjonalnie)';
 $_LANG['Enter number of ports (optional)'] = 'Wprowadź liczbę portów (opcjonalnie)';
@@ -4508,6 +4509,7 @@ $_LANG['<!qs>notes'] = 'notatki';
 
 $_LANG['<!qs>node id'] = 'identyfikator komputera';
 $_LANG['<!qs>node name'] = 'nazwa komputera';
+$_LANG['<!qs>node login'] = 'login komputera';
 $_LANG['<!qs>ip address'] = 'adres IP';
 $_LANG['<!qs>public ip address'] = 'adres publiczny IP';
 $_LANG['<!qs>mac address'] = 'adres MAC';
