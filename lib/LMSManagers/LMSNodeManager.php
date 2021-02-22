@@ -774,8 +774,8 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 			linktype, linkradiosector, linktechnology,
 			linkspeed, port, chkmac, halfduplex, nas,
 			longitude, latitude, netid, invprojectid, authtype, address_id)
-			VALUES (?, inet_aton(?), inet_aton(?), ?, ?, ?,
-			?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
+			VALUES (?, inet_aton(?), inet_aton(?), ?, ?, ?, ?,
+			?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
             $id = $this->db->GetLastInsertID('nodes');
 
             // EtherWerX support (devices have some limits)
