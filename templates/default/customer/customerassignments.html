@@ -37,7 +37,7 @@
 			</label>
 			<label class="period-filter">
 				{trans("Period")}
-				<select class="period">
+				<select class="period-selection">
 					<option value="">{trans("- all -")}</option>
 				</select>
 			</label>
@@ -369,7 +369,7 @@
 			tab_elem.find('.document-filter').hide();
 		}
 		$.each(periods, function (key, value) {
-			tab_elem.find('.period').append('<option value="' + value + '"'
+			tab_elem.find('.period-selection').append('<option value="' + value + '"'
 					+ (selected_period && selected_period.length && selected_period == value ? ' selected' : '') + '>'
 					+ value + '</option>');
 		});
@@ -388,7 +388,7 @@
 		function updateAssignments() {
 			var selected_type = tab_elem.find('.assignment-type').val();
 			var selected_document = tab_elem.find('.document').val();
-			var selected_period = tab_elem.find('.period').val();
+			var selected_period = tab_elem.find('.period-selection').val();
 			var expired_checked = tab_elem.find('.expired').prop('checked');
 			var commited_checked = tab_elem.find('.commited').prop('checked');
 			var selector = '';
@@ -480,7 +480,7 @@
 		tab_elem.find('.commited').change(updateAssignments);
 		tab_elem.find('.clear-filter').click(function() {
 			tab_elem.find('.document').val('');
-			tab_elem.find('.period').val('');
+			tab_elem.find('.period-selection').val('');
 			tab_elem.find('.assignment-type').val('');
 			tab_elem.find('.expired').prop('checked', false);
 			tab_elem.find('.commited').prop('checked', true).trigger('change');
