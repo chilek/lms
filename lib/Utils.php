@@ -623,7 +623,7 @@ class Utils
                     . $report['fiz_adSiedzGmina_Symbol'];
                 $simc = $report['fiz_adSiedzMiejscowosc_Symbol'];
                 $ulic = $report['fiz_adSiedzUlica_Symbol'];
-                $location = $LMS->TerytToLocation($terc, $simc, $ulic);
+                $location = strlen($terc) ? $LMS->TerytToLocation($terc, $simc, $ulic) : null;
 
                 $addresses[] = array(
                     'location_state_name' => mb_strtolower($report['fiz_adSiedzWojewodztwo_Nazwa']),
