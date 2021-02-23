@@ -298,6 +298,11 @@ foreach ($customers as $customer) {
                     echo 'No data found in REGON database!' . PHP_EOL;
                 }
                 break;
+            case Utils::GUS_REGON_API_RESULT_AMBIGUOUS:
+                if (!$quiet) {
+                    echo 'Ambigous data in REGON database!' . PHP_EOL;
+                }
+                break;
         }
         continue;
     } elseif (is_string($result)) {

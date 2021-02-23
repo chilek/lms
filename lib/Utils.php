@@ -34,6 +34,7 @@ class Utils
 {
     const GUS_REGON_API_RESULT_BAD_KEY = 1;
     const GUS_REGON_API_RESULT_NO_DATA = 2;
+    const GUS_REGON_API_RESULT_AMBIGUOUS = 3;
 
     const GUS_REGON_API_SEARCH_TYPE_TEN = 1;
     const GUS_REGON_API_SEARCH_TYPE_REGON = 2;
@@ -528,7 +529,7 @@ class Utils
             }
 
             if (count($gusReports) > 1) {
-                die;
+                return self::GUS_REGON_API_RESULT_AMBIGUOUS;
             }
 
             $gusReport = $gusReports[0];
