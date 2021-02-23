@@ -328,7 +328,7 @@ foreach ($customers as $customer) {
             $args['regon'] = $result['regon'];
         }
         if (isset($properties['rbe'])) {
-            $args['rbename'] = $result['rbename'];
+            $args['rbename'] = empty($result['rbename']) ? '' : $result['rbename'];
             $args['rbe'] = empty($result['rbe']) ? '' : $result['rbe'];
         }
         $DB->Execute(
