@@ -233,8 +233,8 @@ if (isset($options['properties'])) {
 $properties = array_flip($properties);
 
 $customers = $DB->GetAll(
-    "SELECT c.id, " . $DB->Concat('c.lastname', "' '", 'c.name') . " AS customername,
-        c.ten, c.regon, c.rbe, c.countryid, c.ccode, c.divisionid, c.flags,
+    "SELECT c.id, c.lastname, c.name, " . $DB->Concat('c.lastname', "' '", 'c.name') . " AS customername,
+        c.ten, c.regon, c.rbe, c.rbename, c.countryid, c.ccode, c.divisionid,
         ca.address_id,
         d.ccode AS div_ccode
     FROM customeraddressview c
@@ -318,36 +318,60 @@ foreach ($customers as $customer) {
     } else {
         $args = array();
         if (isset($properties['name'])) {
-            $args['lastname'] = $result['lastname'];
-            $args['name'] = $result['name'];
+            if ($customer['lastname'] != $result['lastname']) {
+                $args['lastname'] = $result['lastname'];
+            }
+            if ($customer['name'] != $result['name']) {
+                $args['name'] = $result['name'];
+            }
+
         }
-        if (isset($properties['ten'])) {
+        if (isset($properties['ten']) && $customer['ten'] != $result['ten']) {
             $args['ten'] = $result['ten'];
         }
-        if (isset($properties['regon'])) {
+        if (isset($properties['regon']) && $customer['regon'] != $result['regon']) {
             $args['regon'] = $result['regon'];
         }
         if (isset($properties['rbe'])) {
-            $args['rbename'] = empty($result['rbename']) ? '' : $result['rbename'];
-            $args['rbe'] = empty($result['rbe']) ? '' : $result['rbe'];
+            if ($customer['rbename'] != $result['rbename']) {
+                $args['rbename'] = empty($result['rbename']) ? '' : $result['rbename'];
+            }
+            if ($customer['rbe'] != $result['rbe']) {
+                $args['rbe'] = empty($result['rbe']) ? '' : $result['rbe'];
+            }
         }
-        $DB->Execute(
-            'UPDATE customers SET ' . implode(' = ?, ', array_keys($args)) . ' = ? WHERE id = ?',
-            array_merge($args, array($customer['id']))
-        );
-
-        if (isset($properties['address'])) {
-            $address = reset($result['addresses']);
-            $address['teryt'] = !empty($address['location_city']);
-            $address['address_id'] = $customer['address_id'];
-            $LMS->UpdateAddress(
-                $customer['id'],
-                $address
+        if (!empty($args)) {
+            $DB->Execute(
+                'UPDATE customers SET ' . implode(' = ?, ', array_keys($args)) . ' = ? WHERE id = ?',
+                array_merge($args, array($customer['id']))
             );
         }
 
-        if (!$quiet) {
-            echo ' Updated in local database!' . PHP_EOL;
+        if (isset($properties['address'])) {
+            $current_address = $LMS->getAddress($customer['address_id']);
+            $address = reset($result['addresses']);
+            if ($address['location_state_name'] != $current_address['state_name']
+                || $address['location_city_name'] != $current_address['city_name']
+                || $address['location_street_name'] != $current_address['street']
+                || $address['location_house'] != $current_address['house']
+                || $address['location_flat'] != $current_address['flat']
+                || $address['location_zip'] != $current_address['zip']
+                || $address['location_postoffice'] != $current_address['postoffice']
+                || $address['location_state'] != $current_address['state_id']
+                || $address['location_city'] != $current_address['city_id']
+                || $address['location_street'] != $current_address['street_id']) {
+                $address['teryt'] = !empty($address['location_city']);
+                $address['address_id'] = $customer['address_id'];
+                $LMS->UpdateAddress(
+                    $customer['id'],
+                    $address
+                );
+                $args['addresses'] = $address;
+            }
+        }
+
+        if (!$quiet && !empty($args)) {
+            echo ' Updated properties: ' . implode(',', array_keys($args)) . PHP_EOL;
         }
     }
 }
