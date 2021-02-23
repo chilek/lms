@@ -370,8 +370,12 @@ foreach ($customers as $customer) {
             }
         }
 
-        if (!$quiet && !empty($args)) {
-            echo ' Updated properties: ' . implode(',', array_keys($args)) . PHP_EOL;
+        if (!$quiet) {
+            if (empty($args)) {
+                echo ' No updated properties!' . PHP_EOL;
+            } else {
+                echo ' Updated properties: ' . implode(',', array_keys($args)) . PHP_EOL;
+            }
         }
     }
 }
