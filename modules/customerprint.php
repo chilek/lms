@@ -279,13 +279,13 @@ switch ($type) {
         } else {
             $customergroups = array();
         }
-        $withoutrbe = isset($_POST['withoutrbe']);
+        $soletraders = isset($_POST['soletraders']);
 
         $customers = $DB->GetAllByKey(
             'SELECT c.id, c.lastname, c.name, c.ssn, c.ten, ' . $DB->GroupConcat('va.id') . ' AS voipaccounts FROM customers c
             JOIN voipaccounts va ON va.ownerid = c.id
             JOIN voip_numbers n ON n.voip_account_id = va.id
-            WHERE c.deleted = 0 AND c.divisionid = ? AND (c.type = ?' . ($withoutrbe ? ' OR rbe = \'\'' : '') . ') AND c.status = ?
+            WHERE c.deleted = 0 AND c.divisionid = ? AND (c.type = ?' . ($soletraders ? ' OR ' . $DB->RegExp('c.rbename', '^(CENTRALNA[\s]+)?EWIDENCJA([\s]+I[\s]+INFORMACJA[\s]+O)?[\s]+DZIAŁALNOŚCI[\s]+GOSPODARCZEJ$') : '') . ') AND c.status = ?
                 AND EXISTS (
                     SELECT 1 FROM assignments a
                     JOIN tariffs t ON t.id = a.tariffid
@@ -371,7 +371,7 @@ switch ($type) {
 
         $result = $plugin_manager->executeHook(
             'transgus_data_prepare',
-            compact('customergroups', 'division', 'withoutrbe', 'landline_customers', 'mobile_customers')
+            compact('customergroups', 'division', 'soletraders', 'landline_customers', 'mobile_customers')
         );
         extract($result);
 

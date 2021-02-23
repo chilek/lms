@@ -89,7 +89,7 @@ $_LANG['<!uke-income>Service type'] = 'Typ usługi';
 
 $_LANG['Generate XML report'] = 'Generuj raport XML';
 $_LANG['Phone contacts:'] = 'Telefony kontaktowe:';
-$_LANG['Companies without RBE number'] = 'Firmy bez numeru EDG/KRS';
+$_LANG['Sole traders'] = 'Jednoosobowe działalności gospodarcze';
 $_LANG['(undefined)'] = '(nieokreślone)';
 
 $_LANG['Networks don\'t have the same mask!'] = 'Sieci nie posiadają tej samej maski!';
