@@ -285,7 +285,7 @@ switch ($type) {
             'SELECT c.id, c.lastname, c.name, c.ssn, c.ten, ' . $DB->GroupConcat('va.id') . ' AS voipaccounts FROM customers c
             JOIN voipaccounts va ON va.ownerid = c.id
             JOIN voip_numbers n ON n.voip_account_id = va.id
-            WHERE c.deleted = 0 AND c.divisionid = ? AND (c.type = ?' . ($soletraders ? ' OR ' . $DB->RegExp('c.rbename', '^(CENTRALNA[\s]+)?EWIDENCJA([\s]+I[\s]+INFORMACJA[\s]+O)?[\s]+DZIAŁALNOŚCI[\s]+GOSPODARCZEJ$') : '') . ') AND c.status = ?
+            WHERE c.deleted = 0 AND c.divisionid = ? AND (c.type = ?' . ($soletraders ? ' OR ' . $DB->RegExp('c.rbename', '^(CENTRALNA[\s]+){0,1}EWIDENCJA([\s]+I[\s]+INFORMACJA[\s]+O){0,1}[\s]+DZIAŁALNOŚCI[\s]+GOSPODARCZEJ$') : '') . ') AND c.status = ?
                 AND EXISTS (
                     SELECT 1 FROM assignments a
                     JOIN tariffs t ON t.id = a.tariffid
