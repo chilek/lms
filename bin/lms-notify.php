@@ -207,17 +207,6 @@ $config_section = (array_key_exists('section', $options) && preg_match('/^[a-z0-
 
 $timeoffset = date('Z');
 
-function localtime2()
-{
-    global $fakedate, $timeoffset;
-    if (!empty($fakedate)) {
-        $date = explode("/", $fakedate);
-        return mktime(0, 0, 0, intval($date[1]), intval($date[2]), intval($date[0])) + $timeoffset;
-    } else {
-        return time();
-    }
-}
-
 if (array_key_exists('config-file', $options)) {
     $CONFIG_FILE = $options['config-file'];
 } else {
@@ -367,11 +356,14 @@ if (!empty($auth) && !preg_match('/^LOGIN|PLAIN|CRAM-MD5|NTLM$/i', $auth)) {
     die("Fatal error: smtp_auth setting not supported! Can't continue, exiting." . PHP_EOL);
 }
 
-//$currtime = localtime2() + $timeoffset;
-$currtime = localtime2();
-$daystart = intval($currtime / 86400) * 86400 - $timeoffset;
-//$daystart = intval($currtime / 86400) * 86400;
-$dayend = $daystart + 86399;
+if (empty($fakedate)) {
+    $currtime = time();
+} else {
+    $currtime = strtotime($fakedate);
+}
+list ($year, $month, $day) = explode('/', date('Y/n/j', $currtime));
+$daystart = mktime(0, 0, 0, $month, $day, $year);
+$dayend = mktime(23, 59, 59, $month, $day, $year);
 
 $deadline = ConfigHelper::getConfig('payments.deadline', ConfigHelper::getConfig('invoices.paytime', 0));
 

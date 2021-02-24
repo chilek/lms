@@ -356,20 +356,14 @@ if ($backup || $archive) {
 $fakedate = isset($options['fakedate']) ? $options['fakedate'] : null;
 $customerid = isset($options['customerid']) && intval($options['customerid']) ? $options['customerid'] : null;
 
-function localtime2($fakedate)
-{
-    if (!empty($fakedate)) {
-        $date = explode("/", $fakedate);
-        return mktime(0, 0, 0, intval($date[1]), intval($date[2]), intval($date[0]));
-    } else {
-        return time();
-    }
+if (empty($fakedate)) {
+    $currtime = time();
+} else {
+    $currtime = strtotime($fakedate);
 }
-
-$timeoffset = date('Z');
-$currtime = localtime2($fakedate) + $timeoffset;
-$daystart = (intval($currtime / 86400) * 86400) - $timeoffset;
-$dayend = $daystart + 86399;
+list ($year, $month, $day) = explode('/', date('Y/n/j', $currtime));
+$daystart = mktime(0, 0, 0, $month, $day, $year);
+$dayend = mktime(23, 59, 59, $month, $day, $year);
 
 if ($backup || $archive) {
     $groupnames = '';
