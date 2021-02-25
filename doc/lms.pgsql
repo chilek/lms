@@ -1490,6 +1490,7 @@ DROP TABLE IF EXISTS nodes CASCADE;
 CREATE TABLE nodes (
 	id integer DEFAULT nextval('nodes_id_seq'::text) NOT NULL,
 	name varchar(32) 	DEFAULT '' NOT NULL,
+	login varchar(128) DEFAULT NULL,
 	ipaddr bigint 		DEFAULT 0 NOT NULL,
 	ipaddr_pub bigint 	DEFAULT 0 NOT NULL,
 	passwd varchar(32)	DEFAULT '' NOT NULL,
@@ -3090,12 +3091,14 @@ CREATE VIEW vnodetariffs AS
         t.uprate, t.upceil,
         t.downrate_n, t.downceil_n,
         t.uprate_n, t.upceil_n,
+        net.mask, net.gateway, net.dns, net.dns2,
         m.mac,
         a.ccode,
         a.city_id as location_city, a.street_id as location_street,
         a.house as location_house, a.flat as location_flat,
         a.location
     FROM nodes n
+    JOIN networks net ON net.id = n.netid
     LEFT JOIN (SELECT nodeid, array_to_string(array_agg(mac), ',') AS mac FROM macs GROUP BY nodeid) m ON (n.id = m.nodeid)
     LEFT JOIN vaddresses a ON n.address_id = a.id
     JOIN (
@@ -3161,12 +3164,14 @@ CREATE VIEW vnodealltariffs AS
         COALESCE(t1.up_burst_time_n, t2.up_burst_time_n, 0) AS up_burst_time_n,
         COALESCE(t1.up_burst_threshold_n, t2.up_burst_threshold_n, 0) AS up_burst_threshold_n,
         COALESCE(t1.up_burst_limit_n, t2.up_burst_limit_n, 0) AS up_burst_limit_n,
+        net.mask, net.gateway, net.dns, net.dns2,
         m.mac,
         a.ccode,
         a.city_id as location_city, a.street_id as location_street,
         a.house as location_house, a.flat as location_flat,
         a.location
     FROM nodes n
+    JOIN networks net ON net.id = n.netid
     LEFT JOIN (
         SELECT nodeid, array_to_string(array_agg(mac), ',') AS mac
         FROM macs

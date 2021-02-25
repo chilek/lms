@@ -216,7 +216,7 @@
 	document.forms['editipaddr'].elements['ipadd[name]'].focus();
 
 	function GenPasswd() {
-		var length = {ConfigHelper::getConfig('phpui.nodepassword_length', '16')};
+		var length = {ConfigHelper::getConfig('phpui.node_password_length', ConfigHelper::getConfig('phpui.nodepassword_allowed_characters', '16'))};
 		if (length > 32) length = 32;
 
 		document.forms['editipaddr'].elements['ipadd[passwd]'].value =

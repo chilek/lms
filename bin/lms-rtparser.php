@@ -778,7 +778,9 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             $new_ticket = true;
         }
 
-        if ($notify) {
+        $ticket = $LMS->GetTicketContents($ticket_id);
+
+        if ($notify || $ticket['customerid'] && $reqcustid) {
             $helpdesk_sender_name = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
             if (!empty($helpdesk_sender_name)) {
                 $mailfname = '"' . $LMS->GetQueueName($queue) . '"';
@@ -793,8 +795,6 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             } else {
                 $mailfrom = $autoreply_from;
             }
-
-            $ticket = $LMS->GetTicketContents($ticket_id);
 
             $headers['From'] = $mailfname . ' <' . $mailfrom . '>';
             $headers['Reply-To'] = $headers['From'];
@@ -811,7 +811,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                     return $contact['fullname'];
                 }, $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_LANDLINE | CONTACT_MOBILE));
 
-                if ($customerinfo) {
+                if ($notify && $customerinfo) {
                     $params = array(
                         'id' => $ticket_id,
                         'customerid' => $ticket['customerid'],
@@ -821,35 +821,6 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                     );
                     $mail_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body'), $params);
                     $sms_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body'), $params);
-                }
-
-                if ($new_ticket) {
-                    $ticketsubject_variable = 'newticketsubject';
-                    $ticketbody_variable = 'newticketbody';
-                } else {
-                    $ticketsubject_variable = 'newmessagesubject';
-                    $ticketbody_variable = 'newmessagebody';
-                }
-                if (!empty($queuedata[$ticketsubject_variable]) && !empty($queuedata[$ticketbody_variable]) && !empty($emails)) {
-                    $ticketid = sprintf("%06d", $ticket_id);
-                    $custmail_subject = $queuedata[$ticketsubject_variable];
-                    $custmail_subject = str_replace('%tid', $ticketid, $custmail_subject);
-                    $custmail_subject = str_replace('%title', $mh_subject, $custmail_subject);
-                    $custmail_body = $queuedata[$ticketbody_variable];
-                    $custmail_body = str_replace('%tid', $ticketid, $custmail_body);
-                    $custmail_body = str_replace('%cid', $ticket['customerid'], $custmail_body);
-                    $custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
-                    $custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
-                    $custmail_body = str_replace('%title', $mh_subject, $custmail_body);
-                    $custmail_headers = array(
-                        'From' => $headers['From'],
-                        'Reply-To' => $headers['From'],
-                        'Subject' => $custmail_subject,
-                    );
-                    foreach ($emails as $email) {
-                        $custmail_headers['To'] = '<' . $email . '>';
-                        $LMS->SendMail($email, $custmail_headers, $custmail_body, null, null, $smtp_options);
-                    }
                 }
             } elseif ($customerinfo && !empty($fromname)) {
                 $mail_customerinfo = "\n\n-- \n" . trans('Customer:') . ' ' . $fromname;
@@ -891,6 +862,38 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                 'contenttype' => $contenttype,
                 'attachments' => &$attachments,
             ));
+        }
+
+        if ($ticket['customerid'] && $reqcustid && !empty($mails)) {
+            if ($new_ticket) {
+                $ticketsubject_variable = 'newticketsubject';
+                $ticketbody_variable = 'newticketbody';
+            } else {
+                $ticketsubject_variable = 'newmessagesubject';
+                $ticketbody_variable = 'newmessagebody';
+            }
+
+            if (!empty($queuedata[$ticketsubject_variable]) && !empty($queuedata[$ticketbody_variable]) && !empty($emails)) {
+                $ticketid = sprintf("%06d", $ticket_id);
+                $custmail_subject = $queuedata[$ticketsubject_variable];
+                $custmail_subject = str_replace('%tid', $ticketid, $custmail_subject);
+                $custmail_subject = str_replace('%title', $mh_subject, $custmail_subject);
+                $custmail_body = $queuedata[$ticketbody_variable];
+                $custmail_body = str_replace('%tid', $ticketid, $custmail_body);
+                $custmail_body = str_replace('%cid', $ticket['customerid'], $custmail_body);
+                $custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
+                $custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
+                $custmail_body = str_replace('%title', $mh_subject, $custmail_body);
+                $custmail_headers = array(
+                    'From' => $headers['From'],
+                    'Reply-To' => $headers['From'],
+                    'Subject' => $custmail_subject,
+                );
+                foreach ($emails as $email) {
+                    $custmail_headers['To'] = '<' . $email . '>';
+                    $LMS->SendMail($email, $custmail_headers, $custmail_body, null, null, $smtp_options);
+                }
+            }
         }
     }
 

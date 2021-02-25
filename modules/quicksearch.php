@@ -412,13 +412,13 @@ switch ($mode) {
         // Build different query for each database engine,
             // MySQL is slow here when vnodes view is used
             if (ConfigHelper::getConfig('database.type') == 'postgres') {
-                $sql_query = 'SELECT n.id, n.name, INET_NTOA(ipaddr) as ip,
+                $sql_query = 'SELECT n.id, n.name, n.login, INET_NTOA(ipaddr) as ip,
 			        INET_NTOA(ipaddr_pub) AS ip_pub, mac, location, access, lastonline
 				    FROM vnodes n
 				    WHERE %where
     				ORDER BY n.name LIMIT ?';
             } else {
-                $sql_query = 'SELECT n.id, n.name, INET_NTOA(ipaddr) as ip,
+                $sql_query = 'SELECT n.id, n.name, n.login, INET_NTOA(ipaddr) as ip,
 			        INET_NTOA(ipaddr_pub) AS ip_pub, mac, va.location, access, lastonline
 				    FROM nodes n
 				    JOIN (
@@ -434,6 +434,7 @@ switch ($mode) {
             $sql_where = '('
                 . (empty($properties) || isset($properties['id']) ? (preg_match('/^[0-9]+$/', $search) ? "n.id = " . $search : '1=0') : '1=0')
                 . (empty($properties) || isset($properties['name']) ? " OR LOWER(n.name) ?LIKE? LOWER($sql_search)" : '')
+                . (empty($properties) || isset($properties['login']) ? " OR LOWER(n.login) ?LIKE? LOWER($sql_search)" : '')
                 . (empty($properties) || isset($properties['ip']) ? " OR INET_NTOA(ipaddr) ?LIKE? $sql_search" : '')
                 . (empty($properties) || isset($properties['public_ip']) ? " OR INET_NTOA(ipaddr_pub) ?LIKE? $sql_search" : '')
                 . (empty($properties) || isset($properties['mac']) ? " OR LOWER(mac) ?LIKE? LOWER(".macformat($search, true) . ")" : '')
@@ -476,6 +477,8 @@ switch ($mode) {
                         $description = trans('Id') . ': ' . $row['id'];
                     } else if ((empty($properties) || isset($properties['name'])) && preg_match("~$search~i", $row['name'])) {
                         $description = trans('Name') . ': ' . $row['name'];
+                    } else if ((empty($properties) || isset($properties['login'])) && preg_match("~$search~i", $row['login'])) {
+                        $description = trans('<!node>Login') . ': ' . $row['login'];
                     } else if ((empty($properties) || isset($properties['ip'])) && preg_match("~$search~i", $row['ip'])) {
                         $description = trans('IP') . ': ' . $row['ip'];
                     } else if ((empty($properties) || isset($properties['public_ip'])) && preg_match("~$search~i", $row['ip_pub'])) {

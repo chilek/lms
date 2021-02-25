@@ -210,7 +210,9 @@
 						<option value="-100"{if $message.queueid == -100} selected{/if} data-newmessage-notify="1">{trans("- no changes -")}</option>
 					{/if}
 					{foreach $queuelist as $item}
-					<OPTION value="{$item.id}"{if $item.newmessagesubject && $item.newmessagebody} data-newmessage-notify="1"{/if}{if $item.id == $message.queueid} selected{/if}>{$item.name}</OPTION>
+					<OPTION value="{$item.id}"
+						{if $item.newmessagesubject && $item.newmessagebody || $item.newmessagesmsbody} data-newmessage-notify="1"{/if}
+						{if $item.id == $message.queueid} selected{/if}>{$item.name}</OPTION>
 					{/foreach}
 				</SELECT>
 			{/box_row}

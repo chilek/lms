@@ -304,7 +304,7 @@ if (isset($_POST['message'])) {
 
             $LMS->TicketChange($ticketid, $props);
 
-            // customer notification via e-mail
+            // customer notification via e-mail when we reply to ticket message created from customer post
             if (isset($message['mailnotify'])) {
                 if ($group_reply) {
                     if (!empty($requestor_mail)) {
@@ -347,7 +347,7 @@ if (isset($_POST['message'])) {
             }
 
             // Users notification
-            if (isset($message['notify'])) {
+            if (isset($message['notify']) || isset($message['customernotify'])) {
                 $mailfname = '';
 
                 $helpdesk_sender_name = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
@@ -387,7 +387,7 @@ if (isset($_POST['message'])) {
                         return $contact['type'] & (CONTACT_MOBILE | CONTACT_DISABLED) == CONTACT_MOBILE;
                     });
 
-                    if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
+                    if (isset($message['notify']) && ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
                         $params = array(
                             'id' => $ticketid,
                             'customerid' => $ticketdata['customerid'],
@@ -398,91 +398,94 @@ if (isset($_POST['message'])) {
                         $mail_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body'), $params);
                         $sms_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body'), $params);
                     }
-
-                    $queuedata = $LMS->GetQueueByTicketId($ticketid);
-                    if (isset($message['customernotify'])) {
-                        $ticket_id = sprintf("%06d", $ticketid);
-                        $title = $DB->GetOne('SELECT subject FROM rtmessages WHERE ticketid = ?
-							ORDER BY id LIMIT 1', array($ticketid));
-                        if (!empty($queuedata['newmessagesubject']) && !empty($queuedata['newmessagebody']) && !empty($emails)) {
-                            $custmail_subject = $queuedata['newmessagesubject'];
-                            $custmail_subject = str_replace('%tid', $ticket_id, $custmail_subject);
-                            $custmail_subject = str_replace('%title', $title, $custmail_subject);
-                            $custmail_body = $queuedata['newmessagebody'];
-                            $custmail_body = str_replace('%tid', $ticket_id, $custmail_body);
-                            $custmail_body = str_replace('%cid', $ticketdata['customerid'], $custmail_body);
-                            $custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
-                            $custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
-                            $custmail_body = str_replace('%title', $title, $custmail_body);
-                            $custmail_headers = array(
-                                'From' => $headers['From'],
-                                'Reply-To' => $headers['From'],
-                                'Subject' => $custmail_subject,
-                            );
-                            foreach ($emails as $email) {
-                                $custmail_headers['To'] = '<' . $email . '>';
-                                $LMS->SendMail($email, $custmail_headers, $custmail_body, null, null, $smtp_options);
-                            }
-                        }
-                        if (!empty($queuedata['newmessagesmsbody']) && !empty($mobile_phones)) {
-                            $custsms_body = $queuedata['newmessagesmsbody'];
-                            $custsms_body = str_replace('%tid', $ticket_id, $custsms_body);
-                            $custsms_body = str_replace('%cid', $ticketdata['customerid'], $custsms_body);
-                            $custsms_body = str_replace('%pin', $info['pin'], $custsms_body);
-                            $custsms_body = str_replace('%customername', $info['customername'], $custsms_body);
-                            $custsms_body = str_replace('%title', $title, $custsms_body);
-                            $custsms_body = str_replace('%service', $ticket['service'], $custsms_body);
-
-                            foreach ($mobile_phones as $phone) {
-                                $LMS->SendSMS($phone['contact'], $custsms_body);
-                            }
-                        }
-                    }
-                } elseif (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
+                } elseif (isset($message['notify']) && ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
                     $mail_customerinfo = "\n\n-- \n" . trans('Customer:') . ' ' . $ticketdata['requestor'];
                     $sms_customerinfo = "\n" . trans('Customer:') . ' ' . $ticketdata['requestor'];
                 }
 
-                $params = array(
-                    'id' => $ticketid,
-                    'queue' => $queue['name'],
-                    'messageid' => isset($msgid) ? $msgid : null,
-                    'customerid' => empty($message['customerid']) ? $ticketdata['customerid'] : $message['customerid'],
-                    'status' => $ticketdata['status'],
-                    'categories' => $ticketdata['categorynames'],
-                    'priority' => $RT_PRIORITIES[$ticketdata['priority']],
-                    'deadline' => $ticketdata['deadline'],
-                    'subject' => $message['subject'],
-                    'body' => $message['body'],
-                    'attachments' => &$attachments,
-                );
-                $headers['X-Priority'] = $RT_MAIL_PRIORITIES[$ticketdata['priority']];
-                $headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject'), $params);
+                if (isset($message['notify'])) {
+                    $params = array(
+                        'id' => $ticketid,
+                        'queue' => $queue['name'],
+                        'messageid' => isset($msgid) ? $msgid : null,
+                        'customerid' => empty($message['customerid']) ? $ticketdata['customerid'] : $message['customerid'],
+                        'status' => $ticketdata['status'],
+                        'categories' => $ticketdata['categorynames'],
+                        'priority' => $RT_PRIORITIES[$ticketdata['priority']],
+                        'deadline' => $ticketdata['deadline'],
+                        'subject' => $message['subject'],
+                        'body' => $message['body'],
+                        'attachments' => &$attachments,
+                    );
+                    $headers['X-Priority'] = $RT_MAIL_PRIORITIES[$ticketdata['priority']];
+                    $headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject'), $params);
 
-                $params['customerinfo'] = isset($mail_customerinfo)
-                    ? ($message['contenttype'] == 'text/html' ? str_replace("\n", '<br>', $mail_customerinfo) : $mail_customerinfo)
-                    : null;
-                $params['contenttype'] = $message['contenttype'];
-                $body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body'), $params);
+                    $params['customerinfo'] = isset($mail_customerinfo)
+                        ? ($message['contenttype'] == 'text/html' ? str_replace("\n", '<br>', $mail_customerinfo) : $mail_customerinfo)
+                        : null;
+                    $params['contenttype'] = $message['contenttype'];
+                    $body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body'), $params);
 
-                if ($message['contenttype'] == 'text/html') {
-                    $params['body'] = trans('(HTML content has been omitted)');
-                    $headers['X-LMS-Format'] = 'html';
+                    if ($message['contenttype'] == 'text/html') {
+                        $params['body'] = trans('(HTML content has been omitted)');
+                        $headers['X-LMS-Format'] = 'html';
+                    }
+
+                    $params['customerinfo'] = isset($sms_customerinfo) ? $sms_customerinfo : null;
+                    $params['contenttype'] = 'text/plain';
+                    $sms_body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body'), $params);
+
+                    $LMS->NotifyUsers(array(
+                        'queue' => $queue['id'],
+                        'verifierid' => empty($message['verifierid']) ? null : $message['verifierid'],
+                        'mail_headers' => $headers,
+                        'mail_body' => $body,
+                        'sms_body' => $sms_body,
+                        'contenttype' => $message['contenttype'],
+                        'attachments' => &$attachments,
+                    ));
                 }
+            }
 
-                $params['customerinfo'] = isset($sms_customerinfo) ? $sms_customerinfo : null;
-                $params['contenttype'] = 'text/plain';
-                $sms_body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body'), $params);
+            if (isset($message['customernotify']) && !empty($ticketdata['customerid']) && (!empty($emails) || !empty($mobile_phones))) {
+                $queuedata = $LMS->GetQueueByTicketId($ticketid);
 
-                $LMS->NotifyUsers(array(
-                    'queue' => $queue['id'],
-                    'verifierid' => empty($message['verifierid']) ? null : $message['verifierid'],
-                    'mail_headers' => $headers,
-                    'mail_body' => $body,
-                    'sms_body' => $sms_body,
-                    'contenttype' => $message['contenttype'],
-                    'attachments' => &$attachments,
-                ));
+                $ticket_id = sprintf("%06d", $ticketid);
+                $title = $DB->GetOne('SELECT subject FROM rtmessages WHERE ticketid = ?
+							ORDER BY id LIMIT 1', array($ticketid));
+                if (!empty($queuedata['newmessagesubject']) && !empty($queuedata['newmessagebody']) && !empty($emails)) {
+                    $custmail_subject = $queuedata['newmessagesubject'];
+                    $custmail_subject = str_replace('%tid', $ticket_id, $custmail_subject);
+                    $custmail_subject = str_replace('%title', $title, $custmail_subject);
+                    $custmail_body = $queuedata['newmessagebody'];
+                    $custmail_body = str_replace('%tid', $ticket_id, $custmail_body);
+                    $custmail_body = str_replace('%cid', $ticketdata['customerid'], $custmail_body);
+                    $custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
+                    $custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
+                    $custmail_body = str_replace('%title', $title, $custmail_body);
+                    $custmail_headers = array(
+                        'From' => $headers['From'],
+                        'Reply-To' => $headers['From'],
+                        'Subject' => $custmail_subject,
+                    );
+                    foreach ($emails as $email) {
+                        $custmail_headers['To'] = '<' . $email . '>';
+                        $LMS->SendMail($email, $custmail_headers, $custmail_body, null, null, $smtp_options);
+                    }
+                }
+                if (!empty($queuedata['newmessagesmsbody']) && !empty($mobile_phones)) {
+                    $custsms_body = $queuedata['newmessagesmsbody'];
+                    $custsms_body = str_replace('%tid', $ticket_id, $custsms_body);
+                    $custsms_body = str_replace('%cid', $ticketdata['customerid'], $custsms_body);
+                    $custsms_body = str_replace('%pin', $info['pin'], $custsms_body);
+                    $custsms_body = str_replace('%customername', $info['customername'], $custsms_body);
+                    $custsms_body = str_replace('%title', $title, $custsms_body);
+                    $custsms_body = str_replace('%service', $ticket['service'], $custsms_body);
+
+                    foreach ($mobile_phones as $phone) {
+                        $LMS->SendSMS($phone['contact'], $custsms_body);
+                    }
+                }
             }
         }
 

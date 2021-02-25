@@ -44,6 +44,8 @@ interface LMSNodeManagerInterface
 
     public function GetNodeIDByName($name);
 
+    public function GetNodeIDByLogin($login);
+
     public function GetNodeIDByNetName($name);
 
     public function GetNodeIPByID($id);

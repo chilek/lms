@@ -378,6 +378,17 @@ function setStorageItem(name, value, type)
 	storage.setItem(name, value);
 }
 
+function removeStorageItem(name, type)
+{
+	var storage;
+	if (typeof(type) === 'undefined' || type == 'session') {
+		storage = sessionStorage;
+	} else {
+		storage = localStorage;
+	}
+	storage.removeItem(name);
+}
+
 if (typeof String.prototype.trim == 'undefined')
 {
 	String.prototype.trim = function()

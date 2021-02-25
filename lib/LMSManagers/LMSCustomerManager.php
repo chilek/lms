@@ -1361,7 +1361,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     WHERE n.ownerid = c.id AND na.nodegroupid = ' . intval($nodegroup) . ')' : '')
                 . (!empty($consent_condition) ? ' AND ' . $consent_condition : '')
                 . (isset($sqlsarg) ? ' AND (' . $sqlsarg . ')' : '')
-                . ($sqlord != ''  && !$count ? $sqlord . ' ' . $direction : '')
+                . ($sqlord != ''  && !$count ? $sqlord . ' ' . $direction . ', c.id ASC' : '')
                 . ($limit !== null && !$count ? ' LIMIT ' . $limit : '')
                 . ($offset !== null && !$count ? ' OFFSET ' . $offset : '');
 

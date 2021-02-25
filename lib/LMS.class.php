@@ -1006,6 +1006,12 @@ class LMS
         return $manager->GetNodeIDByName($name);
     }
 
+    public function GetNodeIDByLogin($login)
+    {
+        $manager = $this->getNodeManager();
+        return $manager->GetNodeIDByLogin($login);
+    }
+
     public function GetNodeIDByNetName($name)
     {
         $manager = $this->getNodeManager();
@@ -4267,6 +4273,12 @@ class LMS
     {
         $manager = $this->getUserGroupManager();
         return $manager->UsergroupGetList();
+    }
+
+    public function UsergroupGetActiveUserid($groupid)
+    {
+        $manager = $this->getUserGroupManager();
+        return $manager->UsergroupGetActiveUserid($groupid);
     }
 
     public function UsergroupGet($id)

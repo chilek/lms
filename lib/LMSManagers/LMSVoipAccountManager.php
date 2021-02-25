@@ -346,8 +346,12 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                 (CASE WHEN ls.name2 IS NOT NULL THEN ' . $this->db->Concat('ls.name2', "' '", 'ls.name') . ' ELSE ls.name END) AS street_name,
                 lt.name AS street_type, v.address_id, v.flags, v.balance,
                 v.cost_limit, v.address_id, addr.name as location_name,
-                addr.city as location_city_name, addr.street as location_street_name,
-                addr.city_id as location_city, addr.street_id as location_street,
+                addr.state AS location_state_name,
+                addr.city as location_city_name,
+                addr.street as location_street_name,
+                addr.state_id AS location_state,
+                addr.city_id as location_city,
+                addr.street_id as location_street,
                 addr.house as location_house, addr.flat as location_flat, addr.location
             FROM voipaccounts v
                 LEFT JOIN vaddresses addr          ON addr.id = v.address_id

@@ -221,36 +221,21 @@ if (empty($allowed_customer_status)) {
     $customer_status_condition = ' AND c.status IN (' . implode(',', $allowed_customer_status) . ')';
 }
 
-function localtime2()
-{
-    global $fakedate;
-    if (!empty($fakedate)) {
-        $date = explode("/", $fakedate);
-        return mktime(0, 0, 0, $date[1], $date[2], $date[0]);
-    } else {
-        return time();
-    }
-}
-
 $fakedate = isset($options['fakedate']) ? $options['fakedate'] : null;
 $customerid = isset($options['customerid']) && intval($options['customerid']) ? $options['customerid'] : null;
 
-$currtime = strftime("%s", localtime2());
-$month = intval(strftime("%m", localtime2()));
-$dom = intval(strftime("%d", localtime2()));
-$year = strftime("%Y", localtime2());
-$weekday = strftime("%u", localtime2());
-$yearday = strftime("%j", localtime2());
+if (empty($fakedate)) {
+    $today = $currtime = time();
+} else {
+    $today = $currtime = strtotime($fakedate);
+}
+list ($year, $month, $day) = explode('/', date('Y/n/j', $currtime));
+$weekday = strftime('%u', $currtime);
+$yearday = strftime('%j', $currtime);
 $last_dom = date('j', mktime(0, 0, 0, $month + 1, 0, $year)) == date('j', $currtime);
 
 if (is_leap_year($year) && $yearday > 31 + 28) {
     $yearday -= 1;
-}
-
-if (!empty($fakedate)) {
-    $today = $currtime;
-} else {
-    $today = mktime(0, 0, 0, $month, $dom, $year);
 }
 
 if ($month == 1 || $month == 4 || $month == 7 || $month == 10) {
