@@ -24,6 +24,13 @@
  *  $Id$
  */
 
+$fileType = null;
+if (!isset($_GET['fileType']) || empty($_GET['fileType'])) {
+    die();
+} else {
+    $fileType = $_GET['fileType'];
+}
+
 function write_ini_file($configs_arr)
 {
     $content = "";
@@ -44,13 +51,40 @@ function write_ini_file($configs_arr)
     print $content;
 }
 
+function write_sql_file($configs_arr)
+{
+    $content = "";
+
+    foreach ($configs_arr as $key => $elem) {
+        unset($elem['id'], $elem['userid'], $elem['configid'], $elem['divisionid']);
+        $elem['disabled'] = intval($elem['disabled']);
+        $elem['type'] = intval($elem['type']);
+        $elem['value'] = str_replace("'", '"', $elem['value']);
+        $elem['description'] = str_replace("'", '"', $elem['description']);
+
+        $content .= "INSERT INTO uiconfig (section, var, value, description, disabled, type)";
+        $content .= " VALUES ("
+            . "'" . $elem['section'] . "',"
+            . "'" . $elem['var'] . "',"
+            . "'" . $elem['value'] . "',"
+            . "'" . $elem['description'] . "',"
+            . $elem['disabled'] . ","
+            . $elem['type'] . ");\n";
+    }
+    print $content;
+}
+
 if (isset($_POST['marks'])) {
     $options = Utils::filterIntegers($_POST['marks']);
     if (!empty($options)) {
         $configs = array();
         foreach ($options as $idx => $option) {
             $variable = $LMS->GetConfigVariable($idx);
-            $configs[$variable['section']][$variable['var']] = $variable['value'];
+            if ($fileType == 'ini') {
+                $configs[$variable['section']][$variable['var']] = $variable['value'];
+            } else {
+                $configs[] = $variable;
+            }
         }
     }
 }
@@ -73,12 +107,17 @@ if (!empty($configs)) {
     $filename .= '-' . $cdate;
 
     $filename = clear_utf($filename);
-    $filename = str_replace(' ', '', $filename) . '.ini';
+    $fileExtension = ($fileType == 'ini' ? '.ini' : '.sql');
+    $filename = str_replace(' ', '', $filename) . $fileExtension;
 
     // wysyłamy ...
     header('Content-Type: text/plain');
     header('Content-Disposition: attachment; filename='.$filename);
     header('Pragma: public');
 
-    write_ini_file($configs);
+    if ($fileType == 'ini') {
+        write_ini_file($configs);
+    } else {
+        write_sql_file($configs);
+    }
 }
