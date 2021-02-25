@@ -23,22 +23,24 @@
 
 $this->BeginTrans();
 
-$this->Execute("
-    CREATE SEQUENCE netdevicemacs_id_seq;
-    CREATE TABLE netdevicemacs (
-        id integer DEFAULT nextval('netdevicemacs_id_seq'::text) NOT NULL,
-        netdevid integer NOT NULL
-            CONSTRAINT netdevicemacs_netdevid_fkey REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
-        label varchar(30) NOT NULL,
-        mac varchar(17) NOT NULL,
-        main smallint DEFAULT 0 NOT NULL,
-        PRIMARY KEY (id),
-        CONSTRAINT netdevicemacs_mac_ukey UNIQUE (mac),
-        CONSTRAINT netdevicemacs_netdevid_label_ukey UNIQUE (netdevid, label)
-    );
-    CREATE INDEX netdevicemacs_netdevid_idx ON netdevicemacs (netdevid);
-    CREATE INDEX netdevicemacs_label_idx ON netdevicemacs (label)
-");
+if (!$this->ResourceExists('netdevicemacs', LMSDB::RESOURCE_TYPE_TABLE)) {
+    $this->Execute("
+        CREATE SEQUENCE netdevicemacs_id_seq;
+        CREATE TABLE netdevicemacs (
+            id integer DEFAULT nextval('netdevicemacs_id_seq'::text) NOT NULL,
+            netdevid integer NOT NULL
+                CONSTRAINT netdevicemacs_netdevid_fkey REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
+            label varchar(30) NOT NULL,
+            mac varchar(17) NOT NULL,
+            main smallint DEFAULT 0 NOT NULL,
+            PRIMARY KEY (id),
+            CONSTRAINT netdevicemacs_mac_ukey UNIQUE (mac),
+            CONSTRAINT netdevicemacs_netdevid_label_ukey UNIQUE (netdevid, label)
+        );
+        CREATE INDEX netdevicemacs_netdevid_idx ON netdevicemacs (netdevid);
+        CREATE INDEX netdevicemacs_label_idx ON netdevicemacs (label)
+    ");
+}
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021022500', 'dbversion'));
 
