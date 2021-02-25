@@ -271,7 +271,6 @@ if (isset($_POST['ticket'])) {
                         $params
                     );
                 }
-
             } elseif (!empty($requestor) && isset($ticket['notify']) && ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
                 $mail_customerinfo = "\n\n-- \n" . trans('Customer:') . ' ' . $requestor;
                 $sms_customerinfo = "\n" . trans('Customer:') . ' ' . $requestor;

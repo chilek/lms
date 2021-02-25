@@ -145,7 +145,8 @@ function GetRecipients($filter, $type = MSG_MAIL)
 
     $suspension_percentage = f_round(ConfigHelper::getConfig('finances.suspension_percentage'));
 
-    $recipients = $LMS->DB->GetAll('SELECT c.id, pin, '
+    $recipients = $LMS->DB->GetAll(
+        'SELECT c.id, pin, '
         . ($type == MSG_MAIL ? 'cc.email, ' : '')
         . ($type == MSG_SMS ? 'x.phone, ' : '')
         . $LMS->DB->Concat('c.lastname', "' '", 'c.name') . ' AS customername,

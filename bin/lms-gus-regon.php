@@ -324,7 +324,6 @@ foreach ($customers as $customer) {
             if ($customer['name'] != $result['name']) {
                 $args['name'] = $result['name'];
             }
-
         }
         if (isset($properties['ten']) && $customer['ten'] != $result['ten']) {
             $args['ten'] = $result['ten'];
