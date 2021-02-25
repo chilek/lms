@@ -26,11 +26,12 @@
 
 $_LANG['Week days'] = 'Dni tygodnia';
 
-$_LANG['Main:'] = 'Główny:';
+$_LANG['Main'] = 'Główny';
+$_LANG['Label'] = 'Etykieta';
 $_LANG['Mac address already exists!'] = 'Adres mac już istnieje!';
 $_LANG['Mac address already exists!'] = 'Adres mac już istnieje!';
 $_LANG['Main mac address already exists!'] = 'Główny adres mac już istnieje!';
-$_LANG['Mac addresses ($a):'] = 'Adresy mac ($a):';
+$_LANG['MAC addresses ($a)'] = 'Adresy MAC ($a)';
 $_LANG['Mac addresses'] = 'Adresy mac';
 $_LANG['No mac address!'] = 'Brak adresu mac!';
 $_LANG['Enter mac label'] = 'Podaj etykietę mac';
