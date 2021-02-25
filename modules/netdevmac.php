@@ -56,7 +56,7 @@ if (isset($_GET['oper'])) {
             if (!empty($label)) {
                 $netdevLabels = $lms->getNetDevMacLabels($netdevid);
                 if (isset($netdevLabels[$label])) {
-                    $error['label_error'] = trans('MAC label already exists for the net device!');
+                    $error['label_error'] = trans('MAC label already exists for the network device!');
                 }
             } else {
                 $error['label_error'] = trans('No label!');
@@ -95,7 +95,7 @@ if (isset($_GET['oper'])) {
             if (!empty($label)) {
                 $netdevLabels = $lms->getNetDevMacLabels($netdevid);
                 if (isset($netdevLabels[$label]) && $oldMacData['label'] != $label) {
-                    $error['label_error'] = trans('MAC label already exists for the net device!');
+                    $error['label_error'] = trans('MAC label already exists for the network device!');
                 }
             } else {
                 $error['label_error'] = trans('No label!');
