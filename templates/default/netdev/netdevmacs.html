@@ -6,7 +6,7 @@
 	<input type="hidden" id="mac-netdevid" name="netdevmac[netdevid]" value="{$netdev.id}">
 </FORM>
 
-{tab_container id="netdevmacs" label="Mac addresses"}
+{tab_container id="netdevmacs" label="MAC addresses"}
 
 	{tab_header content_id="netdevmacspanel"}
 		{tab_header_cell icon="lms-ui-icon-mac"}
@@ -30,13 +30,13 @@
 				<div id="add-mac-mac">
 				<strong>Mac</strong>
 				<input type="text" size="17" form="netdevmacadd" name="mac" id="mac-mac" class="mac-edit-field"
-						value="{if !$formdata.macid}{$formdata.mac}{/if}" {tip text="Enter mac"} required>
+						value="{if !$formdata.macid}{$formdata.mac}{/if}" {tip text="Enter MAC"} required>
 				</div>
 
 				<div id="add-mac-main">
-				<strong>{trans("Main")}</strong>
+				<strong>{trans("Primary")}</strong>
 				<input type="checkbox" form="netdevmacadd" name="main" id="mac-main" class="mac-edit-field"
-					   value="0" {tip text="Set as main"}>
+					   value="0" {tip text="Set as primary"}>
 				</div>
 
 				{button type="link" icon="save" id="mac_add_button"

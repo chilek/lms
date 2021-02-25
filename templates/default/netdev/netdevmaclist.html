@@ -8,7 +8,7 @@
 		</div>
 	</div>
 	<div class="lms-ui-tab-table-column main">
-		<strong>{trans("Main")}</strong>
+		<strong>{trans("Primary")}</strong>
 	</div>
 
 	<div class="lms-ui-tab-table-column buttons">
@@ -33,7 +33,7 @@
 			<input type="text" size="17" name="mac_edit_{$macid}" id="mac_edit_{$macid}"
 					value="{if $edit}{$formdata.mac}{else}{$mac.mac}{/if}"
 					class="mac-edit-field"
-					{tip text="Enter mac address" trigger="mac_edit_{$macid}"}
+					{tip text="Enter MAC" trigger="mac_edit_{$macid}"}
 					{if !$edit} style="display: none;"{/if} required>
 		</div>
 	</div>
@@ -43,7 +43,7 @@
 			</span>
 		<input type="checkbox" name="main_edit_{$macid}" id="main_edit_{$macid}"
 			   class="mac-edit-field"
-				{tip text="Set as main"} {if $mac.main}checked{/if}
+				{tip text="Set as primary"} {if $mac.main}checked{/if}
 				{if !$edit} style="display: none;"{/if}>
 	</div>
 	<div class="lms-ui-tab-table-column buttons">

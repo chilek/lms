@@ -25,7 +25,7 @@
  */
 
 $lms = LMS::getInstance();
-$error = [];
+$error = array();
 
 if (isset($_GET['oper'])) {
     switch ($_GET['oper']) {
@@ -33,7 +33,7 @@ if (isset($_GET['oper'])) {
             $params = $_POST;
             $netdevid = intval($params['netdevid']);
             $label = (!empty($params['label']) ? Utils::removeInsecureHtml($params['label']) : null);
-            $mac = (!empty($params['mac']) ? Utils::removeInsecureHtml($params['mac']) : null);
+            $mac = (!empty($params['mac']) ? $params['mac'] : null);
             $main = intval($params['main']);
 
             // validate mac
@@ -41,22 +41,22 @@ if (isset($_GET['oper'])) {
                 if (!check_mac($mac)) {
                     $error['mac_error'] = trans('Incorrect MAC address!');
                 } elseif ($lms->getNetDevByMac($mac)) {
-                    $error['mac_error'] = trans('Mac address already exists!');
+                    $error['mac_error'] = trans('MAC address already exists!');
                 }
             } else {
-                $error['mac_error'] = trans('No mac address!');
+                $error['mac_error'] = trans('No MAC address!');
             }
 
             // validate main mac
             if ($main && $lms->getNetDevMacs($netdevid, 1)) {
-                $error['main_error'] = trans('Main mac address already exists!');
+                $error['main_error'] = trans('Primary MAC already exists!');
             }
 
             // validate label
             if (!empty($label)) {
                 $netdevLabels = $lms->getNetDevMacLabels($netdevid);
                 if (isset($netdevLabels[$label])) {
-                    $error['label_error'] = trans('Mac label already exists for the net device!');
+                    $error['label_error'] = trans('MAC label already exists for the net device!');
                 }
             } else {
                 $error['label_error'] = trans('No label!');
@@ -85,17 +85,17 @@ if (isset($_GET['oper'])) {
                 if (!check_mac($mac)) {
                     $error['mac_error'] = trans('Incorrect MAC address!');
                 } elseif ($lms->getNetDevByMac($mac) && $oldMacData['mac'] != $mac) {
-                    $error['mac_error'] = trans('Mac address already exists!');
+                    $error['mac_error'] = trans('MAC address already exists!');
                 }
             } else {
-                $error['mac_error'] = trans('No mac address!');
+                $error['mac_error'] = trans('No MAC address!');
             }
 
             // validate label
             if (!empty($label)) {
                 $netdevLabels = $lms->getNetDevMacLabels($netdevid);
                 if (isset($netdevLabels[$label]) && $oldMacData['label'] != $label) {
-                    $error['label_error'] = trans('Mac label already exists for the net device!');
+                    $error['label_error'] = trans('MAC label already exists for the net device!');
                 }
             } else {
                 $error['label_error'] = trans('No label!');

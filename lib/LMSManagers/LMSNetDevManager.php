@@ -942,13 +942,13 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             $id = $this->db->GetLastInsertID('netdevicemacs');
             if ($this->syslog) {
                 $args = array(
+                    SYSLOG::RES_NETDEV_MAC => $id,
                     SYSLOG::RES_NETDEV => $params['netdevid'],
-                    'macid' => $id,
                     'label' => $params['label'],
                     SYSLOG::RES_MAC => $params['mac'],
                     'main' => $params['main'],
                 );
-                $this->syslog->AddMessage(SYSLOG::RES_NETDEV, SYSLOG::OPER_ADD, $args);
+                $this->syslog->AddMessage(SYSLOG::RES_NETDEV_MAC, SYSLOG::OPER_ADD, $args);
             }
         } else {
             $id = null;
@@ -971,13 +971,13 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                 if ($res1) {
                     if ($this->syslog) {
                         $args = array(
+                            SYSLOG::RES_NETDEV_MAC => $oldMainMac['id'],
                             SYSLOG::RES_NETDEV => $mac['netdevid'],
-                            'macid' => $oldMainMac['id'],
                             'label' => $oldMainMac['label'],
                             SYSLOG::RES_MAC => $oldMainMac['mac'],
                             'main' => 0,
                         );
-                        $this->syslog->AddMessage(SYSLOG::RES_NETDEV, SYSLOG::OPER_UPDATE, $args);
+                        $this->syslog->AddMessage(SYSLOG::RES_NETDEV_MAC, SYSLOG::OPER_UPDATE, $args);
                     }
                 }
             }
@@ -999,13 +999,13 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         if ($res) {
             if ($this->syslog) {
                 $args = array(
+                    SYSLOG::RES_NETDEV_MAC => $id,
                     SYSLOG::RES_NETDEV => $params['netdevid'],
-                    'macid' => $id,
                     'label' => $params['label'],
                     SYSLOG::RES_MAC => $params['mac'],
                     'main' => $params['main'],
                 );
-                $this->syslog->AddMessage(SYSLOG::RES_NETDEV, SYSLOG::OPER_UPDATE, $args);
+                $this->syslog->AddMessage(SYSLOG::RES_NETDEV_MAC, SYSLOG::OPER_UPDATE, $args);
             }
         } else {
             $id = null;
@@ -1020,10 +1020,10 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         if ($this->syslog) {
             $mac = $this->getNetDevMac($id);
             $args = array(
-                SYSLOG::RES_NETDEV => $id,
+                SYSLOG::RES_NETDEV_MAC => $id,
                 SYSLOG::RES_MAC => $mac['mac'],
             );
-            $this->syslog->AddMessage(SYSLOG::RES_NETDEV, SYSLOG::OPER_DELETE, $args);
+            $this->syslog->AddMessage(SYSLOG::RES_NETDEV_MAC, SYSLOG::OPER_DELETE, $args);
         }
 
         $res = $this->db->Execute('DELETE FROM netdevicemacs WHERE id = ?', array($id));
