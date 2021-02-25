@@ -957,6 +957,9 @@ $(function() {
 		} else if (period === 'next-month') {
 			fromdate.setMonth(fromdate.getMonth() + 1);
 			fromdate.setDate(1);
+			if (todate.getMonth() == 11) {
+				todate.setFullYear(todate.getFullYear() + 1);
+			}
 			todate.setMonth(fromdate.getMonth() + 1);
 			todate.setDate(0);
 		} else if (period === 'current-year') {

@@ -136,27 +136,6 @@ function GetRecipients($filter, $type = MSG_MAIL)
 
     $deadline = ConfigHelper::getConfig('payments.deadline', ConfigHelper::getConfig('invoices.paytime', 0));
 
-    if ($expired_indebted || $expired_indebted2 || $expired_indebted3 || $expired_notindebted) {
-        $expired_debt_table = "
-			LEFT JOIN (
-				SELECT SUM(value * cash.currencyvalue) AS value, cash.customerid
-				FROM cash
-				JOIN customers c ON c.id = cash.customerid
-				LEFT JOIN divisions ON divisions.id = c.divisionid
-				LEFT JOIN documents d ON d.id = cash.docid
-				WHERE (cash.docid IS NULL AND ((cash.type <> 0 AND cash.time < ?NOW?)
-						OR (cash.type = 0 AND cash.time + ((CASE c.paytime WHEN -1 THEN
-							(CASE WHEN divisions.inv_paytime IS NULL THEN $deadline"  . ($expired_indebted ? ' + ' . $expired_days : '')
-                            . " ELSE divisions.inv_paytime END) ELSE c.paytime END)) * 86400 < ?NOW?)))
-					OR (cash.docid IS NOT NULL AND ((d.type IN (" . DOC_RECEIPT . ',' . DOC_CNOTE . ") AND cash.time < ?NOW?
-						OR (d.type IN (" . DOC_INVOICE . ',' . DOC_DNOTE . ") AND d.cdate
-						+ (d.paytime" . ($expired_indebted ? ' + ' . $expired_days : '') . ") * 86400 < ?NOW?))))
-				GROUP BY cash.customerid
-			) b2 ON (b2.customerid = c.id)";
-    } else {
-        $expired_debt_table = '';
-    }
-
     if (!empty($netdevices)) {
         $netdevtable = ' JOIN (
 				SELECT DISTINCT n.ownerid FROM nodes n
@@ -171,14 +150,34 @@ function GetRecipients($filter, $type = MSG_MAIL)
         . ($type == MSG_SMS ? 'x.phone, ' : '')
         . $LMS->DB->Concat('c.lastname', "' '", 'c.name') . ' AS customername,
         divisions.account,
-		COALESCE(b.value, 0) AS balance
+        COALESCE(b.value, 0) AS totalbalance
+        b2.balance AS balance
 		FROM customerview c 
 		LEFT JOIN divisions ON divisions.id = c.divisionid
 		LEFT JOIN (
 			SELECT SUM(value * currencyvalue) AS value, customerid
 			FROM cash GROUP BY customerid
 		) b ON (b.customerid = c.id)
-		' . $expired_debt_table . '
+        LEFT JOIN (
+            SELECT cash.customerid, SUM(value * cash.currencyvalue) AS balance FROM cash
+            LEFT JOIN customers ON customers.id = cash.customerid
+            LEFT JOIN divisions ON divisions.id = customers.divisionid
+            LEFT JOIN documents d ON d.id = cash.docid
+            LEFT JOIN (
+                SELECT SUM(value * cash.currencyvalue) AS totalvalue, docid FROM cash
+                JOIN documents ON documents.id = cash.docid
+                WHERE documents.type = ?
+                GROUP BY docid
+            ) tv ON tv.docid = cash.docid
+            WHERE (cash.docid IS NULL AND ((cash.type <> 0 AND cash.time < ?NOW?)
+                OR (cash.type = 0 AND cash.time + (CASE customers.paytime WHEN -1 THEN
+                    (CASE WHEN divisions.inv_paytime IS NULL THEN ' . $deadline . ' ELSE divisions.inv_paytime END) ELSE customers.paytime END) * 86400 < ?NOW?)))
+                OR (cash.docid IS NOT NULL AND ((d.type = ? AND cash.time < ?NOW?)
+                    OR (d.type = ? AND cash.time < ?NOW? AND tv.totalvalue >= 0)
+                    OR (((d.type = ? AND tv.totalvalue < 0)
+                        OR d.type IN (?, ?, ?)) AND d.cdate + d.paytime * 86400 < ?NOW?)))
+            GROUP BY cash.customerid
+        ) b2 ON b2.customerid = c.id
 		LEFT JOIN (SELECT a.customerid,
 			SUM((CASE a.suspended
 				WHEN 0 THEN (((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount)
@@ -237,7 +236,17 @@ function GetRecipients($filter, $type = MSG_MAIL)
 			WHERE customerid = c.id AND tariffid IS NULL AND liabilityid IS NULL
 				AND (datefrom = 0 OR datefrom < ?NOW?)
 				AND (dateto = 0 OR dateto > ?NOW?))' : '')
-        .' ORDER BY customername');
+        .' ORDER BY customername',
+        array(
+            DOC_CNOTE,
+            DOC_RECEIPT,
+            DOC_CNOTE,
+            DOC_CNOTE,
+            DOC_INVOICE,
+            DOC_INVOICE_PRO,
+            DOC_DNOTE,
+        )
+    );
 
     return $recipients;
 }

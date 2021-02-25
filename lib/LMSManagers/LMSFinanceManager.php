@@ -142,7 +142,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                             p.name AS promotion_name, ps.name AS promotion_schema_name, ps.length AS promotion_schema_length,
                                             d.number AS docnumber, d.type AS doctype, d.cdate, np.template,
                                             d.fullnumber,
-                                            (CASE WHEN (a.dateto > ' . $now . ' OR a.dateto = 0) AND (a.at >= ' . $now . ' OR a.at < 531) THEN 0 ELSE 1 END) AS expired,
+                                            (CASE WHEN
+                                                    (a.period <> ' . DISPOSABLE . ' AND (a.dateto > ' . $now . ' OR a.dateto = 0) AND (a.at >= ' . $now . ' OR a.at < 531))
+                                                    OR (a.period = ' . DISPOSABLE . ' AND a.at > ' . $now . ')
+                                                THEN 0
+                                                ELSE 1
+                                            END) AS expired,
                                             commited
                                           FROM
                                             assignments a
@@ -153,7 +158,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                             LEFT JOIN documents d ON d.id = a.docid
                                             LEFT JOIN numberplans np ON np.id = d.numberplanid
                                           WHERE a.customerid=? ' . ($show_approved ? 'AND a.commited = 1 ' : '')
-                                            . (!$show_expired ? 'AND (a.dateto > ' . $now . ' OR a.dateto = 0) AND (a.at >= ' . $now . ' OR a.at < 531)' : '') . '
+                                            . (!$show_expired ? 'AND (a.period <> ' . DISPOSABLE . ' AND (a.dateto > ' . $now . ' OR a.dateto = 0) AND (a.at >= ' . $now . ' OR a.at < 531))
+                                                OR (a.period = ' . DISPOSABLE . ' AND a.at > ' . $now . ')' : '') . '
                                           ORDER BY
                                             a.datefrom, t.name, value', array($id));
 

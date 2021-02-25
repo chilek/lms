@@ -57,28 +57,28 @@ switch ($type) {
             array($customer, $from, $to)
         )) {
             for ($i=1; $i<=date('t', $from); $i++) {
-                $stats[$i]['date'] = mktime(0, 0, 0, $month, $i, $year);
-                $stats[$i]['download'] = 0;
-                $stats[$i]['upload'] = 0;
-                $stats[$i]['downmax'] = 0;
-                $stats[$i]['upmax'] = 0;
+                $stats[0][$i]['date'] = mktime(0, 0, 0, $month, $i, $year);
+                $stats[0][$i]['download'] = 0;
+                $stats[0][$i]['upload'] = 0;
+                $stats[0][$i]['downmax'] = 0;
+                $stats[0][$i]['upmax'] = 0;
             }
 
             foreach ($list as $row) {
                 $day = date('j', $row['dt']);
 
-                $stats[$day]['download'] += $row['download'];
-                $stats[$day]['upload'] += $row['upload'];
+                $stats[0][$day]['download'] += $row['download'];
+                $stats[0][$day]['upload'] += $row['upload'];
 
-                if ($row['download'] > $stats[$day]['downmax']) {
-                    $stats[$day]['downmax'] = $row['download'];
+                if ($row['download'] > $stats[0][$day]['downmax']) {
+                    $stats[0][$day]['downmax'] = $row['download'];
                 }
-                if ($row['upload'] > $stats[$day]['upmax']) {
-                    $stats[$day]['upmax'] = $row['upload'];
+                if ($row['upload'] > $stats[0][$day]['upmax']) {
+                    $stats[0][$day]['upmax'] = $row['upload'];
                 }
             }
 
-            $listdata = array(
+            $listdata[0] = array(
                 'upload' => 0,
                 'download' => 0,
                 'upavg' => 0,
@@ -88,32 +88,32 @@ switch ($type) {
             );
 
             for ($i = 1; $i <= date('t', $from); $i++) {
-                $stats[$i]['upavg'] = $stats[$i]['upload'] * 8 / $speed_unit_type / 86400; //kbit/s
-                $stats[$i]['downavg'] = $stats[$i]['download'] * 8 / $speed_unit_type / 86400; //kbit/s
+                $stats[0][$i]['upavg'] = $stats[0][$i]['upload'] * 8 / $speed_unit_type / 86400; //kbit/s
+                $stats[0][$i]['downavg'] = $stats[0][$i]['download'] * 8 / $speed_unit_type / 86400; //kbit/s
 
-                $stats[$i]['upmax'] = $stats[$i]['upmax'] * 8 / $speed_unit_type / $stat_freq; //kbit/s
-                $stats[$i]['downmax'] = $stats[$i]['downmax'] * 8 / $speed_unit_type / $stat_freq; //kbit/s
+                $stats[0][$i]['upmax'] = $stats[0][$i]['upmax'] * 8 / $speed_unit_type / $stat_freq; //kbit/s
+                $stats[0][$i]['downmax'] = $stats[0][$i]['downmax'] * 8 / $speed_unit_type / $stat_freq; //kbit/s
 
-                $listdata['upload'] += $stats[$i]['upload'];
-                $listdata['download'] += $stats[$i]['download'];
-                $listdata['upavg'] += $stats[$i]['upavg'];
-                $listdata['downavg'] += $stats[$i]['downavg'];
+                $listdata[0]['upload'] += $stats[0][$i]['upload'];
+                $listdata[0]['download'] += $stats[0][$i]['download'];
+                $listdata[0]['upavg'] += $stats[0][$i]['upavg'];
+                $listdata[0]['downavg'] += $stats[0][$i]['downavg'];
 
-                list($stats[$i]['upload'], $stats[$i]['uploadunit']) = setunits($stats[$i]['upload']);
-                list($stats[$i]['download'], $stats[$i]['downloadunit']) = setunits($stats[$i]['download']);
+                list($stats[0][$i]['upload'], $stats[0][$i]['uploadunit']) = setunits($stats[0][$i]['upload']);
+                list($stats[0][$i]['download'], $stats[0][$i]['downloadunit']) = setunits($stats[0][$i]['download']);
 
-                if ($stats[$i]['upmax'] > $listdata['upmax']) {
-                    $listdata['upmax'] = $stats[$i]['upmax'];
+                if ($stats[0][$i]['upmax'] > $listdata[0]['upmax']) {
+                    $listdata[0]['upmax'] = $stats[0][$i]['upmax'];
                 }
-                if ($stats[$i]['downmax'] > $listdata['downmax']) {
-                    $listdata['downmax'] = $stats[$i]['downmax'];
+                if ($stats[0][$i]['downmax'] > $listdata[0]['downmax']) {
+                    $listdata[0]['downmax'] = $stats[0][$i]['downmax'];
                 }
             }
 
-            $listdata['upavg'] = $listdata['upavg'] / date('t', $from);
-            $listdata['downavg'] = $listdata['downavg'] / date('t', $from);
-            list($listdata['upload'], $listdata['uploadunit']) = setunits($listdata['upload']);
-            list($listdata['download'], $listdata['downloadunit']) = setunits($listdata['download']);
+            $listdata[0]['upavg'] = $listdata[0]['upavg'] / date('t', $from);
+            $listdata[0]['downavg'] = $listdata[0]['downavg'] / date('t', $from);
+            list($listdata[0]['upload'], $listdata[0]['uploadunit']) = setunits($listdata[0]['upload']);
+            list($listdata[0]['download'], $listdata[0]['downloadunit']) = setunits($listdata[0]['download']);
 
             $SMARTY->assign('stats', $stats);
             $SMARTY->assign('listdata', $listdata);

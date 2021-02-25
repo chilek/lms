@@ -141,6 +141,10 @@ switch ($action) {
         $invoice['number'] = '';
         $invoice['numberplanid'] = null;
 
+        if (ConfigHelper::checkConfig('invoices.force_telecom_service_flag')) {
+            $invoice['flags'][DOC_FLAG_TELECOM_SERVICE] = 1;
+        }
+
         // get default invoice's numberplanid and next number
         $currtime = time();
         $invoice['cdate'] = $currtime;

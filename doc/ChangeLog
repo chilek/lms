@@ -67,6 +67,22 @@ version 27-git (????-??-??):
     cash import record source customers accounts during source file parsing process [chilan]
   - enhancement: 'cashimport.source_account_match_threshold_days' (default '0' value) controls how many
     days in cash import history are taken into account to match customer [chilan]
+  - enhancement: allow to instantly switch user or login as different user ('admin#targetuser' in login form
+    and button click on user list or user info) [chilan]
+  - improvement: enabled visual editor for userpanel help topic bodies [chilan]
+  - improvement: customer templated notifications don't depend on user notifications [chilan]
+  - improvement: 'invoices.force_telecom_service_flag' has also impact on default state of telecom
+    service checkbox in new invoice form [chilan]
+  - enhancement/devel: new 'transgus_data_prepare' hook allows plugins to prepare data used in transgus
+    report [chilan]
+  - enhancement: lms-gus-regon.php backend scripts allows to bulkly update properties of customers
+    with legal entity status [chilan]
+  - enhancement: login field added to nodes [chilan]
+  - enhancement: 'phpui.node_login_required' ('none' by default) enables non-empty login
+    requirement [chilan]
+  - enhancement: 'phpui.node_login_regexp' ('^[_a-z0-9-.]+$' by default) controls node login
+    format [chilan]
+  - enhancement: added period filter in customer assignment tab/box [chilan]
 
 version 26.0 (2020-12-15):
 

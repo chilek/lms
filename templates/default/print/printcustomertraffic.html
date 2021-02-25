@@ -9,6 +9,18 @@
 {if !empty($showmax)}
 	{$cols = $cols + 2}
 {/if}
+<style>
+
+	.node-stats {
+		margin-bottom: 1.5em;
+	}
+
+	.node-stats caption {
+		text-align: left;
+		font-weight: bold;
+	}
+
+</style>
 <TABLE WIDTH="100%" CELLPADDING="3" ALIGN="CENTER">
 	<TR>
 		<TD WIDTH="535" VALIGN="TOP">
@@ -22,7 +34,13 @@
 	</TR>
 </TABLE>
 <BR>
-<TABLE WIDTH="100%" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
+{foreach $stats as $nodeid => $nodestats}
+<TABLE WIDTH="100%" CELLPADDING="3" BORDER="1" ALIGN="CENTER" class="node-stats">
+	{if $nodeid}
+	<caption>
+		{$nodenames[$nodeid]}
+	</caption>
+	{/if}
 	<TR>
 		<TD WIDTH="100" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
 			{trans("Day")}
@@ -55,7 +73,7 @@
 		{/if}
 	</TR>
 	{cycle values="white,grey" print=false}
-	{foreach from=$stats item=stat}
+	{foreach $nodestats as $stat}
 	<TR class="{cycle}">
 		<TD ALIGN="LEFT" NOWRAP>
 			{$stat.date|date_format:"%d.%m.%Y (%A)"}
@@ -99,31 +117,32 @@
 			<B>{trans("Total:")}</B>
 		</TD>
 		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
-			<B>{$listdata.download|string_format:"%.2f"} {$listdata.downloadunit|default:"KB"}</B>
+			<B>{$listdata[$nodeid].download|string_format:"%.2f"} {$listdata[$nodeid].downloadunit|default:"KB"}</B>
 		</TD>
 		{if $showavg}
 		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
-			<B>{convert_to_units($listdata.downavg * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s</B>
+			<B>{convert_to_units($listdata[$nodeid].downavg * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s</B>
 		</TD>
 		{/if}
 		{if $showmax}
 		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
-			<B>{convert_to_units($listdata.downmax * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s</B>
+			<B>{convert_to_units($listdata[$nodeid].downmax * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s</B>
 		</TD>
 		{/if}
 		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
-			<B>{$listdata.upload|string_format:"%.2f"} {$listdata.uploadunit|default:"KB"}</B>
+			<B>{$listdata[$nodeid].upload|string_format:"%.2f"} {$listdata[$nodeid].uploadunit|default:"KB"}</B>
 		</TD>
 		{if $showavg}
 		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
-			<B>{convert_to_units($listdata.upavg * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s</B>
+			<B>{convert_to_units($listdata[$nodeid].upavg * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s</B>
 		</TD>
 		{/if}
 		{if $showmax}
 		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP>
-			<B>{convert_to_units($listdata.upmax * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s</B>
+			<B>{convert_to_units($listdata[$nodeid].upmax * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s</B>
 		</TD>
 		{/if}
 	</TR>
 </TABLE>
+{/foreach}
 {include file="clearfooter.html"}

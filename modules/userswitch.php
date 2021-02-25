@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,24 +24,11 @@
  *  $Id$
  */
 
-function getUsersForGroup($groupid)
-{
-    global $LMS;
-    $DB = LMSDB::getInstance();
-
-    $JSResponse = new xajaxResponse();
-
-    if (empty($groupid)) {
-        $users = null;
-    } elseif (intval($groupid) == -1) {
-        $users = array(Auth::GetCurrentUser());
-    } else {
-        $users = $LMS->UsergroupGetActiveUserid($groupid);
-    }
-
-    $JSResponse->call('update_user_selection', $users);
-
-    return $JSResponse;
+$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+if (!$LMS->UserExists($id)) {
+    $SESSION->redirect('?m=userlist');
 }
 
-$LMS->RegisterXajaxFunction(array('getUsersForGroup'));
+$AUTH->SwitchUser($_GET['id']);
+
+$SESSION->redirect('?m=userlist');

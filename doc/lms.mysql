@@ -1610,6 +1610,7 @@ CREATE TABLE netradiosectors (
 CREATE TABLE nodes (
   id int(11) NOT NULL auto_increment,
   name varchar(32) NOT NULL DEFAULT '',
+  login varchar(128) DEFAULT NULL,
   ipaddr int(16) unsigned NOT NULL DEFAULT '0',
   ipaddr_pub int(16) unsigned NOT NULL DEFAULT '0',
   passwd varchar(32) NOT NULL DEFAULT '',
@@ -3032,7 +3033,6 @@ CREATE VIEW vnodetariffs_allsuspended AS
 		AND (dateto = 0 OR dateto > UNIX_TIMESTAMP())
 	GROUP BY customerid;
 
-
 CREATE VIEW vnodetariffs_tariffs AS
     SELECT n.id AS nodeid,
         ROUND(SUM(t.downrate * a.count)) AS downrate,
@@ -3076,12 +3076,14 @@ CREATE VIEW vnodetariffs AS
 		t.down_burst_time_n, t.down_burst_threshold_n, t.down_burst_limit_n,
 		t.uprate_n, t.upceil_n,
 		t.up_burst_time_n, t.up_burst_threshold_n, t.up_burst_limit_n,
+		net.mask, net.gateway, net.dns, net.dns2,
 		m.mac,
         a.ccode,
 		a.city_id as location_city, a.street_id as location_street,
 		a.house as location_house, a.flat as location_flat,
 		a.location
 	FROM nodes n
+		JOIN networks net ON net.id = n.netid
 		JOIN vnodes_mac m ON m.nodeid = n.id
 		LEFT JOIN vaddresses a ON n.address_id = a.id
 		JOIN vnodetariffs_tariffs t ON t.nodeid = n.id
@@ -3151,12 +3153,14 @@ CREATE VIEW vnodealltariffs AS
 		COALESCE(t1.up_burst_time_n, t2.up_burst_time_n, 0) AS up_burst_time_n,
 		COALESCE(t1.up_burst_threshold_n, t2.up_burst_threshold_n, 0) AS up_burst_threshold_n,
 		COALESCE(t1.up_burst_limit_n, t2.up_burst_limit_n, 0) AS up_burst_limit_n,
+		net.mask, net.gateway, net.dns, net.dns2,
 		m.mac,
         a.ccode,
 		a.city_id as location_city, a.street_id as location_street,
 		a.house as location_house, a.flat as location_flat,
 		a.location
 	FROM nodes n
+	JOIN networks net ON net.id = n.netid
     JOIN vnodes_mac m ON m.nodeid = n.id
     LEFT JOIN vaddresses a ON a.id = n.address_id
     LEFT JOIN vnodetariffs_tariffs t1 ON t1.nodeid = n.id

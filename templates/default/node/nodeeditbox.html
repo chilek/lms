@@ -181,7 +181,20 @@
 
 								<tr>
 									<td>
-										<img src="img/passwd.gif" alt="">
+										{icon name="login" class="fa-fw"}
+									</td>
+									<td>
+										{trans("<!node>Login")}
+									</td>
+									<td>
+										<input type="text" name="nodeedit[login]" value="{$nodeinfo.login|escape}"
+											{tip text="Enter login (optional)" trigger="login"}>
+									</td>
+								</tr>
+
+								<tr>
+									<td>
+										{icon name="password" class="fa-fw"}
 									</td>
 									<td>
 										{trans("Password:")}
@@ -518,18 +531,18 @@
 	//  GENERATE RANDOM PASSWORD
 	// ---------------------
 	$( '#genpasswd' ).click( function() {
-		var length = {ConfigHelper::getConfig('phpui.nodepassword_length', '16')};
+		var length = {ConfigHelper::getConfig('phpui.node_password_length', ConfigHelper::getConfig('phpui.nodepassword_length', '16'))};
 		if (length > 32) {
 			length = 32;
 		}
 		if ($('#passwordcontainer').val().length > 0) {
 			confirmDialog($t("Are you sure, you want to generate new password?"), this).done(function() {
-				$( '#passwordcontainer' ).val(generate_random_string(length, "{ConfigHelper::getConfig('phpui.nodepassword_allowed_characters', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')|replace:'"':'\"'}"));
+				$( '#passwordcontainer' ).val(generate_random_string(length, "{ConfigHelper::getConfig('phpui.node_password_allowed_characters', ConfigHelper::getConfig('phpui.nodepassword_allowed_characters', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'))|replace:'"':'\"'}"));
 				event.preventDefault();
 			});
 			return false;
 		} else {
-			$( '#passwordcontainer' ).val(generate_random_string(length, "{ConfigHelper::getConfig('phpui.nodepassword_allowed_characters', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')|replace:'"':'\"'}"));
+			$( '#passwordcontainer' ).val(generate_random_string(length, "{ConfigHelper::getConfig('phpui.node_password_allowed_characters', ConfigHelper::getConfig('phpui.nodepassword_allowed_characters', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'))|replace:'"':'\"'}"));
 			return false;
 		}
 	});
