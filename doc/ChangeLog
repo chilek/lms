@@ -84,6 +84,7 @@ version 27-git (????-??-??):
     format [chilan]
   - enhancement: added period filter in customer assignment tab/box [chilan]
   - enhancement: added support to store mac addresses in network device [ravvar]
+  - enhancement: add support for configuration export to sql file [ravvar]
 
 version 26.0 (2020-12-15):
 
