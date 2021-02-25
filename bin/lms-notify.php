@@ -276,8 +276,8 @@ $smtp_options = array(
 
 $suspension_percentage = floatval(ConfigHelper::getConfig('finances.suspension_percentage', 0));
 $debug_email = ConfigHelper::getConfig($config_section . '.debug_email', '', true);
-$mail_from = ConfigHelper::getConfig($config_section . '.mailfrom', '', true);
-$mail_fname = ConfigHelper::getConfig($config_section . '.mailfname', '', true);
+$mail_from = ConfigHelper::getConfig($config_section . '.sender_email', ConfigHelper::getConfig($config_section . '.mailfrom', '', true));
+$mail_fname = ConfigHelper::getConfig($config_section . '.sender_name', ConfigHelper::getConfig($config_section . '.mailfname', '', true));
 $notify_email = ConfigHelper::getConfig($config_section . '.notify_email', '', true);
 $reply_email = ConfigHelper::getConfig($config_section . '.reply_email', '', true);
 $dsn_email = ConfigHelper::getConfig($config_section . '.dsn_email', '', true);
