@@ -116,7 +116,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $now = mktime(0, 0, 0, date('n'), date('d'), date('Y'));
 
         $assignments = $this->db->GetAll('SELECT
-                                            a.id AS id, a.tariffid, a.customerid, a.period, a.backwardperiod,
+                                            a.id AS id, a.tariffid, a.customerid, a.period AS periodvalue, a.backwardperiod,
                                             a.at, a.suspended, a.invoice, a.settlement,
                                             a.datefrom, a.dateto, a.pdiscount,
                                             a.vdiscount AS unitary_vdiscount,
@@ -165,7 +165,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         if ($assignments) {
             foreach ($assignments as $idx => $row) {
-                switch ($row['period']) {
+                switch ($row['periodvalue']) {
                     case DISPOSABLE:
                         $row['payday'] = date('Y/m/d', $row['at']);
                         $row['period'] = trans('disposable');
