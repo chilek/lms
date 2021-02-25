@@ -60,6 +60,22 @@ interface LMSNetDevManagerInterface
 
     public function GetNetDevName($id);
 
+    public function addNetDevMac($params);
+
+    public function updateNetDevMac($params);
+
+    public function delNetDevMac($macid);
+
+    public function getNetDevMac($macid);
+
+    public function getNetDevMacs($netdevid, $main = null);
+
+    public function getNetDevByMac($mac);
+
+    public function getNetDevsMacLabels();
+
+    public function getNetDevMacLabels($netdevid);
+
     public function GetNetDevList($order = 'name,asc');
 
     public function GetNetDevConnectedNames($id);

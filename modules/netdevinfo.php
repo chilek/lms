@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -124,6 +124,8 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
     $SMARTY->assign('nodelinktype', $SESSION->get('nodelinktype'));
     $SMARTY->assign('nodelinktechnology', $SESSION->get('nodelinktechnology'));
     $SMARTY->assign('nodelinkspeed', $SESSION->get('nodelinkspeed'));
+    $SMARTY->assign('macs', $LMS->GetNetdevMacs($netdev['id']));
+    $SMARTY->assign('maclabels', $LMS->GetNetdevsMacLabels());
 
     $SMARTY->assign(
         'targetnetdevs',

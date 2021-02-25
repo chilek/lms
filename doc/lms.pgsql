@@ -1436,6 +1436,26 @@ CREATE TABLE netdevices (
 CREATE INDEX netdevices_channelid_idx ON netdevices (channelid);
 
 /* ---------------------------------------------------
+ Structure of table "netdevicemacs"
+----------------------------------------------------*/
+DROP SEQUENCE IF EXISTS netdevicemacs_id_seq;
+CREATE SEQUENCE netdevicemacs_id_seq;
+DROP TABLE IF EXISTS netdevicemacs CASCADE;
+CREATE TABLE netdevicemacs (
+    id          integer     DEFAULT nextval('netdevicemacs_id_seq'::text) NOT NULL,
+    netdevid    integer     NOT NULL
+       CONSTRAINT netdevicemacs_netdevid_fkey REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    label       varchar(30) NOT NULL,
+    mac         varchar(17) NOT NULL,
+    main        smallint     DEFAULT 0 NOT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT netdevicemacs_mac_ukey UNIQUE (mac),
+    CONSTRAINT netdevicemacs_netdevid_label_ukey UNIQUE (netdevid, label)
+);
+CREATE INDEX netdevicemacs_netdevid_idx ON netdevicemacs (netdevid);
+CREATE INDEX netdevicemacs_label_idx ON netdevicemacs (label);
+
+/* ---------------------------------------------------
  Structure of table "netradiosectors"
 ------------------------------------------------------*/
 DROP SEQUENCE IF EXISTS netradiosectors_id_seq;
@@ -3998,6 +4018,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021022100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021022500');
 
 COMMIT;

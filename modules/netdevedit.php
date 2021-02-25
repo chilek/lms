@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -336,7 +336,9 @@ switch ($action) {
     case 'addip':
         $subtitle = trans('New IP address');
         $nodeipdata['access'] = 1;
-        $nodeipdata['macs'] = array(0 => '');
+        $mac = $LMS->getNetDevMacs($id, 1);
+        $macAddress = (!empty($mac) ? $mac[0]['mac'] : '');
+        $nodeipdata['macs'] = array(0 => $macAddress);
         $SMARTY->assign('nodeipdata', $nodeipdata);
         $edit = 'addip';
         break;
@@ -879,6 +881,8 @@ $SMARTY->assign('nodelinkradiosector', $SESSION->get('nodelinkradiosector'));
 $SMARTY->assign('nodelinktechnology', $SESSION->get('nodelinktechnology'));
 $SMARTY->assign('nodelinkspeed', $SESSION->get('nodelinkspeed'));
 $SMARTY->assign('nastypes', $LMS->GetNAStypes());
+$SMARTY->assign('macs', $LMS->GetNetdevMacs($netdev['id']));
+$SMARTY->assign('maclabels', $LMS->GetNetdevsMacLabels());
 
 if (!ConfigHelper::checkConfig('phpui.big_networks')) {
     $SMARTY->assign('customers', $LMS->GetCustomerNames());

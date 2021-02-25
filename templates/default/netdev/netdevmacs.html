@@ -1,0 +1,61 @@
+<!--// $Id$ //-->
+
+{css}
+
+<FORM id="netdevmacadd" name="netdevmacadd">
+	<input type="hidden" id="mac-netdevid" name="netdevmac[netdevid]" value="{$netdev.id}">
+</FORM>
+
+{tab_container id="netdevmacs" label="MAC addresses"}
+
+	{tab_header content_id="netdevmacspanel"}
+		{tab_header_cell icon="lms-ui-icon-mac"}
+			<strong>{if empty($macs)}{$macs=array()}{/if}{t a=$macs|@count}MAC addresses ($a){/t}</strong>
+		{/tab_header_cell}
+	{/tab_header}
+
+	{tab_contents id="netdevmacspanel"}
+
+		{tab_table id="netdevmactable"}
+			{include file="netdev/netdevmaclist.html"}
+		{/tab_table}
+
+{if ConfigHelper::checkPrivilege('network_management')}
+		{tab_button_panel id="add_management_mac"}
+			{tab_buttons}
+				<div id="add-mac-label">
+					<strong>{trans("Label")}</strong>
+				</div>
+
+				<div id="add-mac-mac">
+				<strong>Mac</strong>
+				<input type="text" size="17" form="netdevmacadd" name="mac" id="mac-mac" class="mac-edit-field"
+						value="{if !$formdata.macid}{$formdata.mac}{/if}" {tip text="Enter MAC"} required>
+				</div>
+
+				<div id="add-mac-main">
+				<strong>{trans("Primary")}</strong>
+				<input type="checkbox" form="netdevmacadd" name="main" id="mac-main" class="mac-edit-field"
+					   value="0" {tip text="Set as primary"}>
+				</div>
+
+				{button type="link" icon="save" id="mac_add_button"
+					onclick="javascript:addManagementMac();" tip="Add MAC address"}
+				{button type="link" icon="cancel"
+					onclick="javascript:hideAddManagementMac();" tip="Cancel"}
+			{/tab_buttons}
+		{/tab_button_panel}
+
+		{tab_button_panel id="management_mac_buttons"}
+			{tab_buttons}
+				{button id="netdevmacaddlink" onclick="javascript:showAddManagementMac();"
+					icon="add" tip="Add MAC address" label="Add"}
+			{/tab_buttons}
+		{/tab_button_panel}
+{/if}
+
+	{/tab_contents}
+
+{/tab_container}
+
+{js}
