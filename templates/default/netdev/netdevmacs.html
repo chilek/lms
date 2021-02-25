@@ -28,17 +28,17 @@
 				</div>
 
 				<div id="add-mac-mac">
-				<strong>Mac</strong>
-				<input type="text" size="17" form="netdevmacadd" name="mac" id="mac-mac" class="mac-edit-field"
-						value="{if !$formdata.macid}{$formdata.mac}{/if}" {tip text="Enter MAC"} required>
+					<strong>Mac</strong>
+					<input type="text" size="17" form="netdevmacadd" name="mac" id="mac-mac" class="mac-edit-field"
+						   value="{if !$formdata.macid}{$formdata.mac}{/if}" {tip text="Enter MAC"} required>
 				</div>
 
 				<div id="add-mac-main">
-				<strong>{trans("Primary")}</strong>
-				<input type="checkbox" form="netdevmacadd" name="main" id="mac-main" class="mac-edit-field"
-					   value="0" {tip text="Set as primary"}>
+					<label for="mac-main"><strong>{trans("Primary")}</strong>
+					<input type="checkbox" form="netdevmacadd" name="main" id="mac-main" class="mac-edit-field"
+						   value="0" {tip text="Set as primary"}>
+					</label>
 				</div>
-
 				{button type="link" icon="save" id="mac_add_button"
 					onclick="javascript:addManagementMac();" tip="Add MAC address"}
 				{button type="link" icon="cancel"
