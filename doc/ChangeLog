@@ -91,6 +91,7 @@ version 27-git (????-??-??):
     default sort order is by customername [chilan]
   - enhancement: 'phpui.timetable_allow_past_events' control if added events can have start and end
     date time in the past (default: 'true') [chilan]
+  - enhancement: customer types can be changed bulkly [chilan]
 
 version 26.0 (2020-12-15):
 
