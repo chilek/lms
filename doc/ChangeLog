@@ -86,6 +86,7 @@ version 27-git (????-??-??):
   - enhancement: added support to store mac addresses in network device [ravvar]
   - enhancement: add support for configuration export to sql file [ravvar]
   - enhancement: added 'without group' value in node list group filter [chilan]
+  - improvement: '--customerid' parameter support in lms-notify.php backend script [chilan]
 
 version 26.0 (2020-12-15):
 
