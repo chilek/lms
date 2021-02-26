@@ -152,6 +152,7 @@
 					<label for="ng"><SPAN class="nobr">{trans("Group:")}</SPAN>
 					<SELECT SIZE="1" NAME="ng" ONCHANGE="document.choosefilter.submit();">
 						<OPTION value="" {if !$filter.nodegroup} SELECTED {/if}>{trans("- all groups -")}</OPTION>
+						<option value="-1"{if $filter.nodegroup == -1} selected{/if}>- {trans("without group")} -</option>
 						{foreach from=$nodegroups item=nodegroup}
 						<OPTION value="{$nodegroup.id}" {if $filter.nodegroup == $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"&hellip;":true}</OPTION>
 						{/foreach}

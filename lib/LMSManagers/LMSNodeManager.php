@@ -303,7 +303,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
      *          10 = with locks
      *      network - network id (default: null = any), single integer value
      *      customergroup - customer group id (default: null = any), single integer value
-     *      nodegroup - node group id (default: null = any), single integer value
+     *      nodegroup - node group id (default: null = any), single integer value, -1 means nodes without any group
      *      search - additional attributes (default: null = none), associative array with some well-known
      *          properties:
      *              ipaddr - ip address or public ip address (default: null = any), text value,
@@ -514,7 +514,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 				LEFT JOIN location_districts ld ON ld.id = lb.districtid
 				LEFT JOIN location_states ls ON ls.id = ld.stateid '
                 . ($customergroup ? 'JOIN customerassignments ON (customerid = c.id) ' : '')
-                . ($nodegroup ? 'JOIN nodegroupassignments ON (nodeid = n.id) ' : '')
+                . ($nodegroup ? ($nodegroup > 0 ? '' : 'LEFT ') . 'JOIN nodegroupassignments ON (nodeid = n.id) ' : '')
                 . ' WHERE 1=1 '
                 . ($network ? ' AND (n.netid = ' . $network . ' OR (n.ipaddr_pub > ' . $net['address'] . ' AND n.ipaddr_pub < ' . $net['broadcast'] . '))' : '')
                 . ($status == 1 ? ' AND n.access = 1' : '') //connected
@@ -533,7 +533,8 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 . ($status == 9 ? ' AND (n.linktype = ' . LINKTYPE_WIRELESS . ' AND n.linkradiosector IS NULL)' : '')
                 . ($status == 10 ? ' AND EXISTS (SELECT 1 FROM nodelocks WHERE disabled = 0 AND nodeid = n.id)' : '')
                 . ($customergroup ? ' AND customergroupid = ' . intval($customergroup) : '')
-                . ($nodegroup ? ' AND nodegroupid = ' . intval($nodegroup) : '')
+                . ($nodegroup > 0 ? ' AND nodegroupid = ' . intval($nodegroup)
+                    : ($nodegroup == -1 ? ' AND NOT EXISTS (SELECT 1 FROM nodegroupassignments nga WHERE nga.nodeid = n.id)' : ''))
                 . (!empty($searchargs) ? $searchargs : '')
                 . ($sqlord != '' && !$count ? $sqlord . ' ' . $direction : '')
                 . ($limit !== null && !$count ? ' LIMIT ' . $limit : '')
