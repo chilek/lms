@@ -40,7 +40,8 @@
 					{block name="eventmodify_left_panel"}
 
 					{box_row icon="uptime" label="Time:"}
-						{event_time_selection field_prefix="event" begin=$event.begin end=$event.end wholedays=$event.wholedays}
+						{event_time_selection field_prefix="event" begin=$event.begin end=$event.end wholedays=$event.wholedays
+							allow_past_date=ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.timetable_allow_past_events', 'true'))}
 					{/box_row}
 
 					{box_row icon="description" label="Description:"}

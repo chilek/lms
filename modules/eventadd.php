@@ -75,6 +75,13 @@ if (isset($_POST['event'])) {
                 $begintime = datetime_to_timestamp($event['begin']) - $date;
             }
         }
+
+        if (!empty($date)) {
+            $allow_past_events = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.timetable_allow_past_events', 'true'));
+            if (!$allow_past_events && $date < time()) {
+                $error['begin'] = trans('Events which begin in the past are not allowed!');
+            }
+        }
     }
 
     $enddate = 0;

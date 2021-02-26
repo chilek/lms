@@ -5132,3 +5132,5 @@ $_LANG['<!node>lock is active'] = 'blokada jest aktywna';
 $_LANG['Switch to'] = 'Przełącz na';
 
 $_LANG['ignore'] = 'ignoruj';
+
+$_LANG['Events which begin in the past are not allowed!'] = 'Zdarzenia rozpoczynające się w przeszłości nie są dozwolone!';
