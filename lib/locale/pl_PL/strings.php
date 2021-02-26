@@ -38,7 +38,7 @@ $_LANG['Enter MAC'] = 'Podaj MAC';
 $_LANG['Set as primary'] = 'Ustaw jako podstawowy';
 $_LANG['MAC label already exists for the network device!'] = 'Etykieta MAC już istnieje dla tego urządzenia sieciowego!';
 
-$_LANG['Import settings'] = 'Import Ustawień';
+$_LANG['Import settings'] = 'Import ustawień';
 $_LANG['Allows you to import settings from file'] = 'Umożliwa import ustawień pliku';
 $_LANG['Bad file structure!'] = 'Nieprawidłowa struktura pliku!';
 
