@@ -315,6 +315,10 @@ function BodyVars(&$body, $data, $format)
     $amount = -$data['balance'];
     $totalamount = -$data['totalbalance'];
 
+    if (strpos($body, '%bankaccount') !== false) {
+        $body = str_replace('%bankaccount', format_bankaccount(bankaccount($data['id'], $data['account'])), $body);
+    }
+
     $body = str_replace(
         array(
             '%balance',
@@ -343,9 +347,6 @@ function BodyVars(&$body, $data, $format)
         $body
     );
 
-    if (strpos($body, '%bankaccount') !== false) {
-        $body = str_replace('%bankaccount', format_bankaccount(bankaccount($data['id'], $data['account'])), $body);
-    }
     if (isset($data['node'])) {
         $macs = array();
         if (!empty($data['node']['macs'])) {
