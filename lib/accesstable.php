@@ -140,7 +140,7 @@ $access_table = array(
     ),
     'messaging' => array(
         'label' => trans('messaging (email, sms)'),
-        'allow_regexp' => '^message(add|del|list|info|template(del|list))$',
+        'allow_regexp' => '^(message(add|del|list|info|template(del|list))|attachments)$',
         'allow_menu_items' => array(
             'messages' => Permission::MENU_ALL,
         ),
