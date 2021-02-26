@@ -1887,7 +1887,6 @@ $_LANG['User-defined stats'] = 'Statystyki zdefiniowane przez użytkownika';
 $_LANG['User Edit: $a'] = 'Edycja użytkownika: $a';
 $_LANG['User Info: $a'] = 'Informacje o użytkowniku: $a';
 $_LANG['Settings'] = 'Ustawienia';
-$_LANG['User Interface Configuration'] = 'Konfiguracja interfejsu użytkownika';
 $_LANG['System language code. If not set, language will be determined on browser settings. Default: en.'] = 'Kod językowy systemu. Jeżeli nie jest wybrany, to język będzie bazował na ustawieniach przeglądarki. Domyślnie: en.';
 $_LANG['User list'] = 'Lista użytkowników';
 $_LANG['Users'] = 'Użytkownicy';

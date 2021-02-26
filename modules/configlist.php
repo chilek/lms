@@ -231,7 +231,7 @@ function GetConfigList()
     return $config;
 }
 
-$layout['pagetitle'] = trans('User Interface Configuration');
+$layout['pagetitle'] = trans('Settings');
 
 $configlist = GetConfigList();
 
