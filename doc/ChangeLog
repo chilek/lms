@@ -87,6 +87,8 @@ version 27-git (????-??-??):
   - enhancement: add support for configuration export to sql file [ravvar]
   - enhancement: added 'without group' value in node list group filter [chilan]
   - improvement: '--customerid' parameter support in lms-notify.php backend script [chilan]
+  - improvement: 'phpui.customerlist_default_order' allows to set default sort order on customer list;
+    default sort order is by customername [chilan]
 
 version 26.0 (2020-12-15):
 
