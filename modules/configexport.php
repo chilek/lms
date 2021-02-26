@@ -31,6 +31,8 @@ if (!isset($_GET['fileType']) || empty($_GET['fileType'])) {
     $fileType = $_GET['fileType'];
 }
 
+$lms = LMS::getInstance();
+
 function write_ini_file($configs_arr)
 {
     $content = "";
@@ -53,21 +55,22 @@ function write_ini_file($configs_arr)
 
 function write_sql_file($configs_arr)
 {
+    $db = LMSDB::getInstance();
     $content = "";
 
     foreach ($configs_arr as $key => $elem) {
         unset($elem['id'], $elem['userid'], $elem['configid'], $elem['divisionid']);
         $elem['disabled'] = intval($elem['disabled']);
         $elem['type'] = intval($elem['type']);
-        $elem['value'] = str_replace("'", '"', $elem['value']);
-        $elem['description'] = str_replace("'", '"', $elem['description']);
+        $elem['value'] = $db->Escape($elem['value']);
+        $elem['description'] = $db->Escape($elem['description']);
 
         $content .= "INSERT INTO uiconfig (section, var, value, description, disabled, type)";
         $content .= " VALUES ("
             . "'" . $elem['section'] . "',"
             . "'" . $elem['var'] . "',"
-            . "'" . $elem['value'] . "',"
-            . "'" . $elem['description'] . "',"
+            . $elem['value'] . ","
+            . $elem['description'] . ","
             . $elem['disabled'] . ","
             . $elem['type'] . ");\n";
     }
@@ -79,7 +82,7 @@ if (isset($_POST['marks'])) {
     if (!empty($options)) {
         $configs = array();
         foreach ($options as $idx => $option) {
-            $variable = $LMS->GetConfigVariable($idx);
+            $variable = $lms->GetConfigVariable($idx);
             if ($fileType == 'ini') {
                 $configs[$variable['section']][$variable['var']] = $variable['value'];
             } else {
