@@ -26,6 +26,7 @@
 		text-align: left;
 	}
 	.clone-container,
+	.export-container,
 	.clone-container-section-input,
 	.clone-container-section-select,
 	.clone-container-user,
@@ -37,7 +38,8 @@
 		align-items: center;
 	}
 
-	.clone-container{
+	.clone-container,
+	.export-container {
 		margin-top: -0.5em;
 	}
 
@@ -49,12 +51,12 @@
 		align-items: center;
 	}
 
-	.clone-container-center {
+	.clone-container-center,
+	.export-container-center {
 		display: flex;
 		align-content: flex-start;
 		align-items: center;
 		max-width: 150px;
-		padding-top: 0.5em;
 		padding-right: 0.25em;
 		padding-left: 0.25em;
 	}
@@ -63,15 +65,19 @@
 		white-space: normal;
 	}
 
+	.clone-container-center{
+        padding-top: 0.5em;
+	}
+
+	.export-container-center > label {
+		white-space: normal;
+	}
+
 	.clone-container-select {
 		padding-top: 0.5em;
 		padding-right: 0.5em;
 		text-align: left;
 		font-weight: normal;
-	}
-
-	#export {
-		padding-right: 0.25em;
 	}
 
 </style>
@@ -236,8 +242,9 @@
 						</div>
 
 						<div class="clone-container-center override">
-							<label for="override">{trans('Override existing:')}</label>
+							<label>{trans('Override existing:')}
 								<input type="checkbox" id="override">
+							</label>
 						</div>
 
 						<div>
@@ -245,16 +252,31 @@
 						</div>
 					</div>
 				</fieldset>
-				<div class="row-container-buttons">
-					<div id="export" style="display: none;">
-						{button icon="importsource" label="Export selected" id="export-configs"}
+				<fieldset id="export" style="display: none;">
+					<legend>{trans("Export")}</legend>
+					<div class="export-container">
+						<div class="export-container-center">
+							<label>ini
+							    <input type="radio" name="export_filetype" id="export_ini" value="ini" checked>
+							</label>
+							<label>sql
+							    <input type="radio" name="export_filetype" id="export_sql" value="sql">
+							</label>
+						</div>
+
+						<div>
+							{button icon="importsource" label="Export selected" id="export-configs"}
+						</div>
 					</div>
+				</fieldset>
+				<div class="row-container-buttons">
 					<div>
 						{button icon="delete" label="Delete selected" id="delete-configs"}
 					</div>
 					<div class="clone-container-center">
-						<label for="checkall">{trans("Check All")}</label>
+						<label>{trans("Check All")}
 							<INPUT type="checkbox" id="checkall" class="lms-ui-multi-check-all">
+						</label>
 					</div>
 				</div>
 			</div>
@@ -309,6 +331,7 @@
 				var type_filer = $('#type-filter').val();
 				var user_filer = $('#user-filter').val();
 				var division_filer = $('#division-filter').val();
+				var fileType = $('input[name="export_filetype"]:checked').val();
 				var export_args = '';
 
 				if (typeof(type_filer) === 'undefined'
@@ -329,6 +352,7 @@
 					var export_type_filter = $t("global value");
 					export_args += '&source-type=' + export_type_filter + '';
 				}
+
 				if (type_filer === $t("division value")
 					&& division_filer != $t("<!filter>- none -")
 					&& division_filer.length > 0
@@ -359,6 +383,9 @@
 				) {
 					export_args += '&source-user=' + user_filer + '';
 				}
+
+				export_args += '&fileType=' + fileType + '';
+
 				document.configform.action = '?m=configexport' + export_args + '';
 				document.configform.submit();
 				return;
