@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$_LANG['Legal personality types'] = 'Typu osobowości prawnej';
+
 $_LANG['Week days'] = 'Dni tygodnia';
 
 $_LANG['Primary'] = 'Podstawowy';

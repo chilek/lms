@@ -837,6 +837,12 @@ class LMS
         return $manager->getCustomerPin($id);
     }
 
+    public function changeCustomerType($id, $type)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->changeCustomerType($id, $type);
+    }
+
     /*
      * Customer groups
      */

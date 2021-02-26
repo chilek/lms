@@ -2752,4 +2752,21 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     {
         return $this->db->GetOne('SELECT pin FROM customers WHERE id = ?', array($id));
     }
+
+    public function changeCustomerType($id, $type)
+    {
+        $this->db->Execute(
+            'UPDATE customers SET type = ? WHERE id = ?',
+            array($id, $type)
+        );
+        if ($this->syslog) {
+            $userid = Auth::GetCurrentUser();
+            $args = array(
+                SYSLOG::RES_USER => $userid,
+                SYSLOG::RES_CUST => $id,
+                'type' => $type,
+            );
+            $this->syslog->AddMessage(SYSLOG::RES_CUST, SYSLOG::OPER_UPDATE, $args);
+        }
+    }
 }

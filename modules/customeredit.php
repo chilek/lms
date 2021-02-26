@@ -59,6 +59,7 @@ if (isset($_GET['search'])) {
 
     require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
     if ($customerlist && ((isset($_POST['consents']) && !empty($_POST['consents']))
+        || ($_GET['oper'] == 'changetype' && ($_GET['type'] == CTYPES_PRIVATE || $_GET['type'] == CTYPES_COMPANY))
         || (isset($_GET['type']) && isset($_POST['contactflags'][$_GET['type']]) && !empty($_POST['contactflags'][$_GET['type']])
             && isset($CUSTOMERCONTACTTYPES[$_GET['type']])))) {
         foreach ($customerlist as $row) {
@@ -74,6 +75,9 @@ if (isset($_GET['search'])) {
                     break;
                 case 'removeflags':
                     $LMS->removeCustomerContactFlags($row['id'], $_GET['type'], $_POST['contactflags'][$_GET['type']]);
+                    break;
+                case 'changetype':
+                    $LMS->changeCustomerType($row['id'], $_GET['type']);
                     break;
             }
         }

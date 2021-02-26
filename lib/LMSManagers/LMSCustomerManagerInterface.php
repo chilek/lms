@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C); 2001-2017 LMS Developers
+ *  Copyright (C); 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,8 +27,6 @@
 /**
  * LMSCustomerManagerInterface
  *
- * @author Maciej Lew <maciej.lew.1987@gmail.com>
- * @author Tomasz Chiliński <tomasz.chilinski@chilan.com>
  */
 interface LMSCustomerManagerInterface
 {
@@ -137,4 +135,6 @@ interface LMSCustomerManagerInterface
     public function lowerCustomerKarma($id);
 
     public function getCustomerPin($id);
+
+    public function changeCustomerType($id, $tyoe);
 }
