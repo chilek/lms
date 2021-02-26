@@ -55,6 +55,8 @@ if ($api) {
 
     if (isset($_GET['o'])) {
         $filter['order'] = $_GET['o'];
+    } elseif (empty($filter['order']) && ConfigHelper::variableExists('phpui.customerlist_default_order')) {
+        $filter['order'] = ConfigHelper::getConfig('phpui.customerlist_default_order');
     }
 
     if (isset($_GET['s'])) {
