@@ -151,7 +151,7 @@ function GetRecipients($filter, $type = MSG_MAIL)
         . ($type == MSG_SMS ? 'x.phone, ' : '')
         . $LMS->DB->Concat('c.lastname', "' '", 'c.name') . ' AS customername,
         divisions.account,
-        COALESCE(b.value, 0) AS totalbalance
+        COALESCE(b.value, 0) AS totalbalance,
         b2.balance AS balance
 		FROM customerview c 
 		LEFT JOIN divisions ON divisions.id = c.divisionid
