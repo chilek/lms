@@ -127,7 +127,7 @@ switch ($type) {
         $removed  = isset($_GET['removed']) ? $_GET['removed'] : $_POST['removed'];
         $subject  = !empty($_GET['subject']) ? $_GET['subject'] : $_POST['subject'];
         $extended = !empty($_GET['extended']) ? true : (!empty($_POST['extended']) ? true : false);
-        $categories = !empty($_GET['categories']) ? $_GET['categories'] : $_POST['categories'];
+        $categories = !empty($_GET['categories']) ? $_GET['categories'] : $_POST['catids'];
         $datefrom  = !empty($_GET['datefrom']) ? $_GET['datefrom'] : $_POST['datefrom'];
         $dateto  = !empty($_GET['dateto']) ? $_GET['dateto'] : $_POST['dateto'];
         $address  = !empty($_GET['address']) ? $_GET['address'] : $_POST['address'];
@@ -146,11 +146,31 @@ switch ($type) {
         if ($subject) {
             $where[] = 't.subject ?LIKE? '.$DB->Escape("%$subject%");
         }
-        $catids = (is_array($categories) ? array_keys($categories) : null);
-        if (!empty($catids)) {
-            $where[] = 'tc.categoryid IN ('.implode(',', $catids).')';
-        } else {
-            $where[] = 'tc.categoryid IS NULL';
+
+        // category id's
+        if (!empty($categories)) {
+            if (!is_array($categories)) {
+                $categories = array($categories);
+            }
+
+            if (in_array('all', $categories)) {
+                $filter['catids'] = null;
+            } else {
+                $filter['catids'] = Utils::filterIntegers($categories);
+                if (in_array(-1, $filter['catids'])) {
+                    if (count($filter['catids']) > 1) {
+                        $catidsfilter = '(';
+                    }
+                    $catidsfilter .= 'tc.categoryid IS NULL';
+                    $filter['catids'] = array_diff($filter['catids'], ["-1"]);
+                    if (!empty($filter['catids'])) {
+                        $catidsfilter .= ' OR tc.categoryid IN (' . implode(',', $filter['catids']) . '))';
+                    }
+                    $where[] = $catidsfilter;
+                } else {
+                    $where[] = 'tc.categoryid IN (' . implode(',', $filter['catids']) . ')';
+                }
+            }
         }
 
         if ($status != '') {
