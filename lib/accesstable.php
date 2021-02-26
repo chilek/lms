@@ -51,7 +51,7 @@ $access_table = array(
             'helpdesk' => array('rtqueuelist', 'rtcategorylist', 'rtsearch'),
             'timetable' => array('eventlist', 'eventschedule', 'eventlist-overdue', 'eventsearch'),
             'auth' => array('chpasswd', 'twofactorauthinfo'),
-            'config' => array('configlist', 'taxratelist', 'numberplanlist', 'statelist', 'divisionlist', 'hostlist', 'daemoninstancelist', 'cashsourcelist', 'promotionlist', 'pluginlist', 'invprojectlist'),
+            'config' => array('settings', 'taxratelist', 'numberplanlist', 'statelist', 'divisionlist', 'hostlist', 'daemoninstancelist', 'cashsourcelist', 'promotionlist', 'pluginlist', 'invprojectlist'),
         ),
     ),
     'node_connections' => array(
@@ -174,7 +174,7 @@ $access_table = array(
         'label' => trans('configuration'),
         'allow_regexp' => '^(((host|config|numberplan|taxrate|state|division|cashsource)(list|edit|add|del|load|clone))|((promotion|promotionschema)(list|edit|add|del|set|info|clone)))$',
         'allow_menu_items' => array(
-            'config' => array('configlist', 'configimport', 'configadd', 'taxratelist', 'numberplanlist', 'statelist', 'divisionlist', 'hostlist', 'cashsourcelist', 'promotionlist'),
+            'config' => array('settings', 'configimport', 'configadd', 'taxratelist', 'numberplanlist', 'statelist', 'divisionlist', 'hostlist', 'cashsourcelist', 'promotionlist'),
         ),
     ),
     'network_management' => array(

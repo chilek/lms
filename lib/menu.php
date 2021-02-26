@@ -790,10 +790,10 @@ $menu = array(
             'accesskey' => 'o',
             'prio' => 60,
             'submenu' => array(
-                'configlist' => array(
-                    'name' => trans('User Interface'),
+                'settings' => array(
+                    'name' => trans('Settings'),
                     'link' => '?m=configlist',
-                    'tip' => trans('Allows you to configure UI'),
+                    'tip' => trans('Allows you to change settings'),
                     'prio' => 10,
                 ),
                 'configimport' => array(
