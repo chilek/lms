@@ -331,6 +331,7 @@ switch ($type) {
                 }
                 $location = $voipaccount['location'];
                 foreach ($voipaccount['phones'] as $phone) {
+                    $phone['phone'] = preg_replace('/^48([0-9]{9})$/', '$1', $phone['phone']);
                     if (!preg_match('/^[0-9]{9}$/', $phone['phone'])) {
                         continue;
                     }
