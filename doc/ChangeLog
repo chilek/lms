@@ -89,6 +89,8 @@ version 27-git (????-??-??):
   - improvement: '--customerid' parameter support in lms-notify.php backend script [chilan]
   - improvement: 'phpui.customerlist_default_order' allows to set default sort order on customer list;
     default sort order is by customername [chilan]
+  - enhancement: 'phpui.timetable_allow_past_events' control if added events can have start and end
+    date time in the past (default: 'true') [chilan]
 
 version 26.0 (2020-12-15):
 
