@@ -357,14 +357,12 @@ if (isset($_POST['event'])) {
         $event = $hook_data['event'];
         $ticket = $hook_data['ticket'];
 
-        if (!isset($event['reuse'])) {
-            $backto = $SESSION->get('backto');
-            if (isset($backto) && preg_match('/m=rtticketview/', $backto)) {
-                $SESSION->redirect('?' . $backto);
-            } else {
-                $SESSION->redirect('?m=eventlist'
-                    . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
-            }
+        $backto = $SESSION->get('backto');
+        if (isset($backto) && preg_match('/m=rtticketview/', $backto)) {
+            $SESSION->redirect('?' . $backto);
+        } else {
+            $SESSION->redirect('?m=eventlist'
+                . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
         }
 
         unset($event['title']);
