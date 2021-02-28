@@ -5,78 +5,145 @@
 		<COL style="width: 98%;">
 	</COLGROUP>
     <THEAD>
-	<TR>
-		<TD style="width: 1%;">
-			<IMG SRC="img/money.gif" alt="">
-		</TD>
-		<TD style="width: 99%; white-space: nowrap;" colspan="2">
-			<span class="bold">{trans("Liability's Options:")}</span>
-		</TD>
-	</TR>
+		<TR>
+			<TD>
+				{icon name="money" class="fa-fw"}
+			</TD>
+			<TD class="bold nobr" colspan="2">
+				{trans("Liability's Options:")}
+			</TD>
+		</TR>
     </THEAD>
     <TBODY>
-    {if $assignment.attribute}
-	<TR>
-		<TD><IMG src="img/id.gif" ALT=""></TD>
-		<TD class="bold nobr">{trans("Attribute:")}</TD>
-		<TD class="nobr">{if $assignment.attribute}{$assignment.attribute}{/if}</TD>
-    </TR>
-    {/if}
-	<TR>
-		<TD><IMG src="img/id.gif" ALT=""></TD>
-		<TD class="bold nobr">{trans("Numbering Plan:")}</TD>
-		<TD class="nobr">{if $assignment.numberplan}{$assignment.numberplan}{else}{trans("default")}{/if}</TD>
-	</TR>
-	<TR>
-		<TD><IMG src="img/print.gif" ALT=""></TD>
-		<TD class="bold nobr">{trans("Payment Type:")}</TD>
-		<TD class="nobr">{if $assignment.paytypename}{trans($assignment.paytypename)}{else}{trans("default")}{/if}</TD>
-	</TR>
-	<TR>
-		<TD><IMG src="img/options.gif" ALT=""></TD>
-		<TD class="nobr">{trans("document type:")}</TD>
-		<TD>
-			{if $assignment.invoice == $smarty.const.DOC_INVOICE}
-			{trans("invoice")}
-			{elseif $assignment.invoice == $smarty.const.DOC_INVOICE_PRO}
-			{trans("pro forma invoice")}
-			{elseif $assignment.invoice == $smarty.const.DOC_DNOTE}
-			{trans("debit note")}
-			{else}
-			{trans("no")}
-			{/if}
-		</TD>
-	</TR>
-	<TR>
-		<TD><IMG src="img/options.gif" ALT=""></TD>
-		<TD class="nobr">{trans("separate document")}:</TD>
-		<TD>{if $assignment.separatedocument}{trans("yes")}{else}{trans("no")}{/if}</TD>
-	</TR>
-	<TR>
-		<TD><IMG src="img/tax.gif" ALT=""></TD>
-		<TD class="nobr">{trans("split payment")}:</TD>
-		<TD>{if $assignment.splitpayment}{trans("yes")}{else}{trans("no")}{/if}</TD>
-	</TR>
-	<TR>
-		<TD><IMG src="img/tax.gif" ALT=""></TD>
-		<TD class="nobr">{trans("Tax category:")}</TD>
-		<TD>
-			{if $assignment.taxcategory}
-				<span {tip text=$_TAX_CATEGORIES[$assignment.taxcategory].description}>({sprintf('%02d', $assignment.taxcategory)}) {$_TAX_CATEGORIES[$assignment.taxcategory].label}</span>
-			{else}
-				{trans("- none -")}
-			{/if}
-		</TD>
-	</TR>
-	<TR>
-		<TD><IMG src="img/options.gif" ALT=""></TD>
-		<TD class="nobr">{trans("with settlement")}:</TD>
-		<TD>{if $assignment.settlement}{trans("yes")}{else}{trans("no")}{/if}</TD>
-	</TR>
-	<TR>
-		<TD><IMG src="img/docum.gif" ALT=""></TD>
-		<TD class="nobr">{trans("Reference document:")}</TD>
-		<TD>{if $assignment.document}{$assignment.document}{else}{trans("none")}{/if}</TD>
-	</TR>
+		{if $assignment.flags & $smarty.const.TARIFF_FLAG_REWARD_PENALTY}
+		<tr>
+			<td>
+				{if $assignment.value < 0}
+					{icon name="reward" class="fa-fw"}
+				{else}
+					{icon name="penalty" class="fa-fw"}
+				{/if}
+			</td>
+			<td class="bold nobr">
+				{if $assignment.value < 0}
+					{trans("Reward")}
+				{else}
+					{trans("Penalty")}
+				{/if}
+			</td>
+			<td>
+				{trans("yes")}
+			</td>
+		</tr>
+		{/if}
+		{if $assignment.attribute}
+		<TR>
+			<TD>
+				{icon name="user-id-number" class="fa-fw"}
+			</TD>
+			<TD class="bold nobr">
+				{trans("Attribute:")}
+			</TD>
+			<TD class="nobr">
+				{if $assignment.attribute}{$assignment.attribute}{/if}
+			</TD>
+		</TR>
+		{/if}
+		<TR>
+			<TD>
+				{icon name="user-id-number" class="fa-fw"}
+			</TD>
+			<TD class="bold nobr">{trans("Numbering Plan:")}</TD>
+			<TD class="nobr">{if $assignment.numberplan}{$assignment.numberplan}{else}{trans("default")}{/if}</TD>
+		</TR>
+		<TR>
+			<TD>
+				{icon name="print" class="fa-fw"}
+			</TD>
+			<TD class="bold nobr">
+				{trans("Payment Type:")}
+			</TD>
+			<TD class="nobr">
+				{if $assignment.paytypename}{trans($assignment.paytypename)}{else}{trans("default")}{/if}
+			</TD>
+		</TR>
+		<TR>
+			<TD>
+				{icon name="options" class="fa-fw"}
+			</TD>
+			<TD class="nobr">
+				{trans("document type:")}
+			</TD>
+			<TD>
+				{if $assignment.invoice == $smarty.const.DOC_INVOICE}
+				{trans("invoice")}
+				{elseif $assignment.invoice == $smarty.const.DOC_INVOICE_PRO}
+				{trans("pro forma invoice")}
+				{elseif $assignment.invoice == $smarty.const.DOC_DNOTE}
+				{trans("debit note")}
+				{else}
+				{trans("no")}
+				{/if}
+			</TD>
+		</TR>
+		<TR>
+			<TD>
+				{icon name="options" class="fa-fw"}
+			</TD>
+			<TD class="nobr">
+				{trans("separate document")}
+			</TD>
+			<TD>
+				{if $assignment.separatedocument}{trans("yes")}{else}{trans("no")}{/if}
+			</TD>
+		</TR>
+		<TR>
+			<TD>
+				{icon name="money" class="fa-fw"}
+			</TD>
+			<TD class="nobr">
+				{trans("split payment")}
+			</TD>
+			<TD>
+				{if $assignment.splitpayment}{trans("yes")}{else}{trans("no")}{/if}
+			</TD>
+		</TR>
+		<TR>
+			<TD>
+				{icon name="money" class="fa-fw"}
+			</TD>
+			<TD class="nobr">
+				{trans("Tax category:")}
+			</TD>
+			<TD>
+				{if $assignment.taxcategory}
+					<span {tip text=$_TAX_CATEGORIES[$assignment.taxcategory].description}>({sprintf('%02d', $assignment.taxcategory)}) {$_TAX_CATEGORIES[$assignment.taxcategory].label}</span>
+				{else}
+					{trans("- none -")}
+				{/if}
+			</TD>
+		</TR>
+		<TR>
+			<TD>
+				{icon name="options" class="fa-fw"}
+			</TD>
+			<TD class="nobr">
+				{trans("with settlement")}:
+			</TD>
+			<TD>
+				{if $assignment.settlement}{trans("yes")}{else}{trans("no")}{/if}
+			</TD>
+		</TR>
+		<TR>
+			<td>
+				{icon name="document" class="fa-fw"}
+			</td>
+			<TD class="nobr">
+				{trans("Reference document:")}
+			</TD>
+			<TD>
+				{if $assignment.document}{$assignment.document}{else}{trans("none")}{/if}
+			</TD>
+		</TR>
     </TBODY>
 </TABLE>

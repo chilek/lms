@@ -108,7 +108,7 @@ class LMSFileManager extends LMSManager implements LMSFileManagerInterface
             die('<B>Zip extension not loaded! In order to use this extension you must compile PHP with zip support by using the --enable-zip configure option. </B>');
         }
 
-        $filename = tempnam('/tmp', 'LMS_ZIPPED_CONTAINER_') . '.zip';
+        $filename = tempnam(sys_get_temp_dir(), 'LMS_ZIPPED_CONTAINER_') . '.zip';
         $zip = new ZipArchive();
         if ($zip->open($filename, ZIPARCHIVE::CREATE)) {
             foreach ($files as $file) {

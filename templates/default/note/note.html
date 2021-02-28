@@ -58,8 +58,8 @@
 			{$note.zip} {$note.city}
 			{if $note.ten}
 				<BR>{t a=$note.ten}TEN $a{/t}
-			{elseif $note.ssn}
-				<BR>{t a=$note.ssn}SSN $a{/t}
+			{elseif !ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.hide_ssn', true)) && $note.ssn}
+				<br>{t a=$note.ssn}SSN $a{/t}
 			{/if}
 			{if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_credentials', true)))}
 				{if $note.customerpin}

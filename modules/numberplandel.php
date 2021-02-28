@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,25 +27,10 @@
 $id = intval($_GET['id']);
 
 if ($id) {
-    if (!$DB->GetOne('SELECT COUNT(*) FROM documents WHERE numberplanid=?', array($id))) {
-        if ($SYSLOG) {
-            $args = array(SYSLOG::RES_NUMPLAN => $id);
-            $SYSLOG->AddMessage(SYSLOG::RES_NUMPLAN, SYSLOG::OPER_DELETE, $args);
-            $assigns = $DB->GetAll('SELECT * FROM numberplanassignments WHERE planid = ?', array($id));
-            if (!empty($assigns)) {
-                foreach ($assigns as $assign) {
-                    $args = array(
-                    SYSLOG::RES_NUMPLANASSIGN => $assign['id'],
-                    SYSLOG::RES_NUMPLAN => $assign['planid'],
-                    SYSLOG::RES_DIV => $assign['divisionid']
-                    );
-                    $SYSLOG->AddMessage(SYSLOG::RES_NUMPLANASSIGN, SYSLOG::OPER_DELETE, $args);
-                }
-            }
-        }
-        $DB->Execute('DELETE FROM numberplanassignments WHERE planid=?', array($id));
-        $DB->Execute('DELETE FROM numberplans WHERE id=?', array($id));
+    if (!$DB->GetOne('SELECT COUNT(*) FROM documents WHERE numberplanid=?', array($id))
+        && $LMS->checkNumberPlanAccess($id)) {
+        $LMS->deleteNumberPlan($id);
     }
 }
 
-$SESSION->redirect('?'.$SESSION->get('backto'));
+$SESSION->redirect('?m=numberplanlist');

@@ -384,7 +384,7 @@ define('RT_TYPE_OTHER', 9);
 define('RT_TYPE_CONF', 10);
 define('RT_TYPE_PAYMENT', 11);
 define('RT_TYPE_TRANSFER', 12);
-
+define('RT_TYPE_NO_SERVICE', 13);
 
 $RT_TYPES = array(
     RT_TYPE_OTHER => array(
@@ -423,17 +423,17 @@ $RT_TYPES = array(
         'name' => 'RT_TYPE_CONF'
     ),
     RT_TYPE_START => array(
-        'label' => 'Start service',
+        'label' => 'Service Start',
         'class' => 'lms-ui-rt-ticket-type-start',
         'name' => 'RT_TYPE_START'
     ),
     RT_TYPE_STOP => array(
-        'label' => 'Hold service',
+        'label' => 'Service Hold',
         'class' => 'lms-ui-rt-ticket-type-stop',
         'name' => 'RT_TYPE_STOP'
     ),
     RT_TYPE_TRANSFER => array(
-      'label' => 'Transfer service',
+      'label' => 'Service Transfer',
       'class' => 'lms-ui-rt-ticket-type-transfer',
       'name' => 'RT_TYPE_TRANSFER'
     ),
@@ -446,6 +446,11 @@ $RT_TYPES = array(
         'label' => 'Payment',
         'class' => 'lms-ui-rt-ticket-type-payment',
         'name' => 'RT_TYPE_PAYMENT'
+    ),
+    RT_TYPE_NO_SERVICE => array(
+        'label' => 'No Service',
+        'class' => 'lms-ui-rt-ticket-type-no-service',
+        'name' => 'RT_TYPE_NO_SERVICE'
     ),
 );
 
@@ -710,6 +715,9 @@ define('SERVICE_SERVICE', 3);
 define('SERVICE_PHONE', 4);
 define('SERVICE_TV', 5);
 define('SERVICE_TRANSMISSION', 6);
+
+// Tariff flags
+define('TARIFF_FLAG_REWARD_PENALTY', 1);
 
 // VoIP call types
 define('CALL_INCOMING', 1);
@@ -1019,6 +1027,7 @@ define('SESSIONTYPE_EAP', 4);
 define('SESSIONTYPE_WIFI', 8);
 define('SESSIONTYPE_VOIP', 16);
 define('SESSIONTYPE_STB', 32);
+define('SESSIONTYPE_DOCSIS', 64);
 
 $SESSIONTYPES = array(
     SESSIONTYPE_PPPOE => array(
@@ -1044,6 +1053,10 @@ $SESSIONTYPES = array(
     SESSIONTYPE_STB => array(
         'label' => trans('Set-top box'),
         'tip' => 'Enable/disable set-top box access'
+    ),
+    SESSIONTYPE_DOCSIS => array(
+        'label' => trans('DOCSIS access'),
+        'tip' => 'Enable/disable DOCSIS access'
     ),
 );
 
@@ -1156,6 +1169,15 @@ $TAX_CATEGORIES = array(
     ),
 );
 
+// Identity types
+$IDENTITY_TYPES = array(
+    0   => 'ID card',
+    1   => 'driving license',
+    2   => 'passport',
+    3   => 'residence card',
+    4   => 'permanent residence card',
+);
+
 if (isset($SMARTY)) {
     $SMARTY->assign('_NETWORK_INTERFACE_TYPES', $NETWORK_INTERFACE_TYPES);
     $SMARTY->assign('_CTYPES', $CTYPES);
@@ -1197,6 +1219,7 @@ if (isset($SMARTY)) {
     $SMARTY->assign('_EXISTINGASSIGNMENTS', $EXISTINGASSIGNMENTS);
     $SMARTY->assign('_CURRENCIES', $CURRENCIES);
     $SMARTY->assign('_TAX_CATEGORIES', $TAX_CATEGORIES);
+    $SMARTY->assign('_IDENTITY_TYPES', $IDENTITY_TYPES);
 }
 
 define('DEFAULT_NUMBER_TEMPLATE', '%N/LMS/%Y');

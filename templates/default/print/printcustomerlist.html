@@ -55,7 +55,7 @@
 			{$customerlist[customerlist].id|string_format:"%04d"}
 		</TD>
 		<TD ALIGN="CENTER">
-			{if $customerlist[customerlist].extid}{$customerlist[customerlist].extid}{/if}
+			{if $customerlist[customerlist].extid}{$customerlist[customerlist].extid|escape}{/if}
 		</TD>
 		<TD>
 			<B>{$customerlist[customerlist].customername}</B><BR>

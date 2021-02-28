@@ -42,7 +42,7 @@
 				{trans("First name:")}
 			</TD>
 			<TD class="bold">
-				{$userinfo.firstname}
+				{$userinfo.firstname|escape}
 			</TD>
 		</TR>
 		<TR>
@@ -53,7 +53,7 @@
 				{trans("Last name:")}
 			</TD>
 			<TD class="bold">
-				{$userinfo.lastname}
+				{$userinfo.lastname|escape}
 			</TD>
 		</TR>
 {if $userinfo.position}
@@ -258,7 +258,7 @@
 			<td>
 				{foreach $user_divisions as $item}
 					{if $item@first}<ul>{/if}
-					<li><a href="?m=divisionedit&id={$item.id}">{$item.shortname}</a></li>
+					<li><a href="?m=divisionedit&id={$item.id}">{$item.label|escape}</a></li>
 					{if $item@last}</ul>{/if}
 				{/foreach}
 			</td>
@@ -292,6 +292,9 @@
 				{button type="link-button" label="Edit" icon="edit" href="?m=useredit&id={$userinfo.id}"}
 				{button label="Delete" icon="delete" id="delete-user" data_href="?m=userdel&id={$userinfo.id}"}
 				{if $layout.logid ne $userinfo.id}
+					{if ConfigHelper::checkPrivilege('superuser')}
+						{button label="Switch to" icon="login" href="?m=userswitch&id={$userinfo.id}"}
+					{/if}
 					{button label="Force password change" icon="password" href="?m=useredit&id={$userinfo.id}&forcepasswdchange=1"}
 				{/if}
 				{button type="link-button" label="Change password" icon="password" href="?m=userpasswd&id={$userinfo.id}"}

@@ -311,7 +311,7 @@ if (isset($_POST['schema'])) {
 
         // re-check promotionassignments data, check the number of periods
         // and remove excessive data or add data for additional periods
-        $tariffs = $DB->GetAll('SELECT a.id, a.data, a.tariffid, t.value
+        $tariffs = $DB->GetAll('SELECT a.id, a.data, a.tariffid, t.value, t.type
 			FROM promotionassignments a
 			JOIN tariffs t ON (t.id = a.tariffid)
 			WHERE a.promotionschemaid = ?', array($schema['id']));

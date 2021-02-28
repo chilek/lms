@@ -33,12 +33,16 @@ function eventTimeSlider(options) {
 			valid = false;
 		}
 	});
+	if (options.hasOwnProperty('allow-past-date') && typeof(options['allow-past-date']) !== 'boolean') {
+		valid = false;
+	}
 	if (!valid) {
 		return null;
 	}
 
 	var start_input = $(options['start-selector']);
 	var end_input = $(options['end-selector']);
+	var allow_past_date = options['allow-past-date'];
 	var _slider = null;
 	var whole_days = false;
 
@@ -86,6 +90,24 @@ function eventTimeSlider(options) {
 		if (enddt === null) {
 			return;
 		}
+		if (!allow_past_date) {
+			var now = new Date(RoundUnixTimeStamp(new Date().getTime()));
+			if (now < Date.now()) {
+				now = new Date(now.getTime() + lmsSettings.eventTimeStep * 60 * 1000);
+			}
+			if (startdt < now) {
+				startdt = now;
+				start_input.datetimepicker('setOptions', {
+					value: new Date(startdt)
+				});
+			}
+			if (enddt < now) {
+				enddt = now;
+				end_input.datetimepicker('setOptions', {
+					value: new Date(startdt)
+				});
+			}
+		}
 		if (startdt > enddt) {
 			start_input.datetimepicker('setOptions', {
 				value: new Date(enddt)
@@ -105,6 +127,24 @@ function eventTimeSlider(options) {
 		var enddt = end_input.datetimepicker('getValue');
 		if (startdt === null) {
 			return;
+		}
+		if (!allow_past_date) {
+			var now = new Date(RoundUnixTimeStamp(new Date().getTime()));
+			if (now < Date.now()) {
+				now = new Date(now.getTime() + lmsSettings.eventTimeStep * 60 * 1000);
+			}
+			if (startdt < now) {
+				startdt = now;
+				start_input.datetimepicker('setOptions', {
+					value: new Date(startdt)
+				});
+			}
+			if (enddt < now) {
+				enddt = now;
+				end_input.datetimepicker('setOptions', {
+					value: new Date(startdt)
+				});
+			}
 		}
 		if (enddt < startdt) {
 			end_input.datetimepicker('setOptions', {

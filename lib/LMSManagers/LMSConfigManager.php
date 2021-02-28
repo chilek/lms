@@ -86,6 +86,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
         'phpui.timeout'                     => CONFIG_TYPE_POSITIVE_INTEGER,
         'phpui.timetable_days_forward'      => CONFIG_TYPE_POSITIVE_INTEGER,
         'phpui.nodepassword_length'         => CONFIG_TYPE_POSITIVE_INTEGER,
+        'phpui.node_password_length'        => CONFIG_TYPE_POSITIVE_INTEGER,
         'phpui.check_for_updates_period'    => CONFIG_TYPE_POSITIVE_INTEGER,
         'phpui.quicksearch_limit'           => CONFIG_TYPE_POSITIVE_INTEGER,
         'phpui.ping_type'                   => CONFIG_TYPE_POSITIVE_INTEGER,

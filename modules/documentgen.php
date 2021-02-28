@@ -216,6 +216,7 @@ if (isset($_POST['document'])) {
                 continue;
             }
 
+            $error = null;
             $document['customerid'] = $gencust['id'];
             $gencount++;
             $output = null; // delete output

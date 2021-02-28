@@ -3,9 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
- *
- *  Please, see the doc/AUTHORS for more information about authors!
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License Version 2 as
@@ -21,17 +19,24 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id$
  */
 
-$layout['pagetitle'] = trans('Select net device');
+$this->BeginTrans();
 
-$list = $DB->GetAll("SELECT n.name, n.id, n.producer, n.model, va.location
-	FROM netdevices n
-	LEFT JOIN vaddresses va ON va.id = n.address_id
-	WHERE n.id <> " . intval($_GET['id']) . " ORDER BY NAME");
-$list['total'] = count($list);
+if (!$this->ResourceExists('divisions.phone', LMSDB::RESOURCE_TYPE_COLUMN)) {
+    $this->Execute("DROP VIEW vdivisions");
 
-$SMARTY->assign('netdevlist', $list);
-$SMARTY->assign('objectid', $_GET['id']);
-$SMARTY->display('choose/choosenetdevreplace.html');
+    $this->Execute("ALTER TABLE divisions ADD COLUMN phone varchar(255) DEFAULT NULL");
+
+    $this->Execute("
+        CREATE VIEW vdivisions AS
+            SELECT d.*,
+                a.country_id as countryid, a.ccode, a.zip as zip, a.city as city, a.address
+            FROM divisions d
+                JOIN vaddresses a ON a.id = d.address_id
+    ");
+}
+
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021021200', 'dbversion'));
+
+$this->CommitTrans();

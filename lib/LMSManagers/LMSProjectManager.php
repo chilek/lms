@@ -102,7 +102,7 @@ class LMSProjectManager extends LMSManager implements LMSProjectManagerInterface
         $this->db->Execute(
             "INSERT INTO invprojects (name, divisionid, type) VALUES (?, ?, ?)",
             array(
-                $project['project'],
+                Utils::removeInsecureHtml($project['project']),
                 isset($project['divisionid']) && !empty($project['divisionid']) ? $project['divisionid'] : null,
                 INV_PROJECT_REGULAR
             )
@@ -117,6 +117,7 @@ class LMSProjectManager extends LMSManager implements LMSProjectManagerInterface
 
     public function UpdateProject($id, $project)
     {
+        $project['projectname'] = Utils::removeInsecureHtml($project['projectname']);
         $project['type'] = INV_PROJECT_REGULAR;
         $project['id'] = $id;
         return $this->db->Execute('UPDATE invprojects SET name=?, divisionid=?, type=?

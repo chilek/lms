@@ -305,6 +305,12 @@ $menu = array(
                     'tip' => trans('Lists and reports printing'),
                     'prio' => 80,
                 ),
+                'vlanlist' => array(
+                    'name' => trans('VLAN List'),
+                    'link' => '?m=vlanlist',
+                    'tip' => trans('VLAN List'),
+                    'prio' => 90,
+                ),
             ),
         ),
 
@@ -784,11 +790,17 @@ $menu = array(
             'accesskey' => 'o',
             'prio' => 60,
             'submenu' => array(
-                'configlist' => array(
-                    'name' => trans('User Interface'),
+                'settings' => array(
+                    'name' => trans('Settings'),
                     'link' => '?m=configlist',
-                    'tip' => trans('Allows you to configure UI'),
+                    'tip' => trans('Allows you to change settings'),
                     'prio' => 10,
+                ),
+                'configimport' => array(
+                    'name' => trans('Import settings'),
+                    'link' => '?m=configimport',
+                    'tip' => trans('Allows you to import settings from file'),
+                    'prio' => 11,
                 ),
                 'configadd' => array(
                     'name' => trans('New setting'),

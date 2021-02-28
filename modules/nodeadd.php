@@ -38,12 +38,12 @@ if (isset($_GET['ownerid'])) {
     }
 }
 
-if (isset($_GET['preip'])) {
+if (isset($_GET['preip']) && check_ip($_GET['preip'])) {
     $nodedata['ipaddr'] = $_GET['preip'];
 }
 
 if (isset($_GET['prenetwork'])) {
-    $nodedata['netid'] = $_GET['prenetwork'];
+    $nodedata['netid'] = intval($_GET['prenetwork']);
 }
 
 if (isset($_GET['premac'])) {
@@ -52,14 +52,17 @@ if (isset($_GET['premac'])) {
     } else {
         $nodedata['macs'][] = $_GET['premac'];
     }
+    $nodedata['macs'] = array_filter($nodedata['macs'], function ($mac) {
+        return check_mac($mac);
+    });
 }
 
-if (isset($_GET['prename'])) {
+if (isset($_GET['prename']) && preg_match('/' . ConfigHelper::getConfig('phpui.node_name_regexp', '^[_a-z0-9-.]+$') . '/i', $_GET['prename'])) {
     $nodedata['name'] = $_GET['prename'];
 }
 
 if (isset($_GET['pre_address_id'])) {
-    $nodedata['address_id'] = $_GET['pre_address_id'];
+    $nodedata['address_id'] = intval($_GET['pre_address_id']);
 }
 
 if (isset($_POST['nodedata'])) {
@@ -90,7 +93,7 @@ if (isset($_POST['nodedata'])) {
     if ($nodedata['name']=='') {
         $error['name'] = trans('Node name is required!');
     } else if (strlen($nodedata['name']) > 32) {
-        $error['name'] = trans('Node name is too long (max.32 characters)!');
+        $error['name'] = trans('Node name is too long (max. 32 characters)!');
     } else if (!preg_match('/' . ConfigHelper::getConfig('phpui.node_name_regexp', '^[_a-z0-9-.]+$') . '/i', $nodedata['name'])) {
         $error['name'] = trans('Specified name contains forbidden characters!');
     } else if ($LMS->GetNodeIDByName($nodedata['name']) || $LMS->GetNodeIDByNetName($nodedata['name'])) {
@@ -166,8 +169,34 @@ if (isset($_POST['nodedata'])) {
     }
     $nodedata['macs'] = $macs;
 
+    $login_required = ConfigHelper::getConfig('phpui.node_login_required', 'none');
+
+    if ($login_length = strlen($nodedata['login'])) {
+        if ($login_length > 32) {
+            $error['login'] = trans('Login is too long (max. 32 characters)!');
+        } elseif (!preg_match('/' . ConfigHelper::getConfig('phpui.node_login_regexp', '^[_a-z0-9-.]+$') . '/i', $nodedata['login'])) {
+            $error['login'] = trans('Specified login contains forbidden characters!');
+        } elseif ($LMS->GetNodeIDByLogin($nodedata['name'])) {
+            $error['login'] = trans('Specified login is in use!');
+        }
+    } elseif ($login_required != 'none') {
+        if ($login_required == 'error' || $login_required == 'true') {
+            $error['login'] = trans('Login is required!');
+        } elseif ($login_required == 'warning' && !isset($warnings['nodedata-login-'])) {
+            $warning['nodeedata[login]'] = trans('Login is empty!');
+        }
+    }
+
+    $password_required = ConfigHelper::getConfig('phpui.node_password_required', ConfigHelper::getConfig('nodepassword_required', 'none'));
+
     if (strlen($nodedata['passwd']) > 32) {
-        $error['passwd'] = trans('Password is too long (max.32 characters)!');
+        $error['passwd'] = trans('Password is too long (max. 32 characters)!');
+    } elseif (!strlen($nodedata['passwd']) && $password_required != 'none') {
+        if ($password_required == 'error' || $password_required == 'true') {
+            $error['passwd'] = trans('Password is required!');
+        } elseif ($password_required == 'warning' && !isset($warnings['nodedata-passwd-'])) {
+            $warning['nodedata[passwd]'] = trans('Password is empty!');
+        }
     }
 
     if (!$nodedata['ownerid']) {

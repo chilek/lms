@@ -34,7 +34,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
     {
         $args = array(
             'title' => $event['title'],
-            'description' => $event['description'],
+            'description' => Utils::removeInsecureHtml($event['description']),
             'date' => $event['date'],
             'begintime' => $event['begintime'],
             'enddate' => $event['enddate'],
@@ -44,7 +44,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             'closed' => isset($event['close']) ? 1 : 0,
             SYSLOG::RES_CUST => empty($event['custid']) ? null : $event['custid'],
             'type' => $event['type'],
-            SYSLOG::RES_ADDRESS => $event['address_id'],
+            SYSLOG::RES_ADDRESS => empty($event['address_id']) ? null : $event['address_id'],
             SYSLOG::RES_NODE => $event['nodeid'],
             SYSLOG::RES_TICKET => empty($event['ticketid']) ? null : $event['ticketid'],
         );
@@ -89,7 +89,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
     {
         $args = array(
             'title' => $event['title'],
-            'description' => $event['description'],
+            'description' => Utils::removeInsecureHtml($event['description']),
             'date' => $event['date'],
             'begintime' => $event['begintime'],
             'enddate' => $event['enddate'],
@@ -99,9 +99,9 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             'closed' => isset($event['close']) ? 1 : 0,
             SYSLOG::RES_CUST => empty($event['custid']) ? null : $event['custid'],
             'type' => $event['type'],
-            SYSLOG::RES_ADDRESS => $event['address_id'],
-            SYSLOG::RES_NODE => $event['nodeid'],
-            SYSLOG::RES_TICKET => $event['helpdesk'],
+            SYSLOG::RES_ADDRESS => empty($event['address_id']) ? null : $event['address_id'],
+            SYSLOG::RES_NODE => empty($event['nodeid']) ? null : $event['nodeid'],
+            SYSLOG::RES_TICKET => empty($event['helpdesk']) ? null : $event['helpdesk'],
             'moddate' => time(),
             'mod' . SYSLOG::getResourceKey(SYSLOG::RES_USER) => Auth::getCurrentUser(),
             SYSLOG::RES_EVENT => $event['id'],
@@ -416,9 +416,10 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                 }
 
                 $row['userlist'] = $this->db->GetAll(
-                    'SELECT userid AS id, vusers.name
-					FROM eventassignments, vusers
-					WHERE userid = vusers.id AND eventid = ? ',
+                    'SELECT userid AS id, vusers.name,
+                    vusers.access, vusers.deleted, vusers.accessfrom, vusers.accessto
+                    FROM eventassignments, vusers
+                    WHERE userid = vusers.id AND eventid = ? ',
                     array($row['id'])
                 );
 

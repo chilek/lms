@@ -43,7 +43,8 @@
 			{trans("Long name:")}
 		</TD>
 		<TD>
-			<TEXTAREA NAME="division[name]" COLS="45" ROWS="4" {tip text="Enter division long name" trigger="name"}>{$division.name}</TEXTAREA>
+			<TEXTAREA NAME="division[name]" COLS="45" ROWS="4" {tip text="Enter division long name" trigger="name"}
+				>{$division.name|escape}</TEXTAREA>
 		</TD>
 	</TR>
 	<tr>
@@ -190,6 +191,17 @@
 	</TR>
 	<TR>
 		<TD>
+			<i class="lms-ui-icon-phone"></i>
+		</TD>
+		<TD class="bold nobr">
+			{trans("Phone")}
+		</TD>
+		<TD>
+			<INPUT type="text" value="{$division.phone}" name="division[phone]" size="40" {tip text="Enter phone number (optional)" trigger="phone"}>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
 			<IMG src="img/info.gif" alt="">
 		</TD>
 		<TD class="bold nobr">
@@ -290,7 +302,7 @@
 				<select SIZE="4" NAME="division[users][]" multiple {tip text="Select users" class="lms-ui-multiselect"} data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
 					{foreach $userslist as $user}
 						<option value="{$user.id}" {if isset($division.users) && in_array($user.id, $division.users)} selected{/if}>
-							{$user.login|truncate:30:"...":true}
+							{$user.login|truncate:30:"&hellip;":true}
 						</option>
 					{/foreach}
 				</select>

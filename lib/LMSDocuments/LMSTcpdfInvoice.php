@@ -117,7 +117,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             }
         }
 
-        if (isset($this->data['invoice']['content'])) {
+        if (isset($this->data['invoice']['content']) && $this->data['doctype'] == DOC_CNOTE) {
             foreach ($this->data['invoice']['content'] as $item) {
                 $t_width['no'] = 7;
                 $t_width['name'] = $this->backend->getStringWidth($item['description']);
@@ -182,7 +182,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         $this->backend->SetFont(self::TCPDF_FONT, '', 7);
 
         /* invoice correction data */
-        if (isset($this->data['invoice'])) {
+        if (isset($this->data['invoice']) && $this->data['doctype'] == DOC_CNOTE) {
             $this->backend->Ln(3);
             $this->backend->writeHTMLCell(0, 0, '', '', '<b>' . trans('Was:') . '</b>', 0, 1, 0, true, 'L');
             $this->backend->Ln(3);
@@ -327,7 +327,7 @@ class LMSTcpdfInvoice extends LMSInvoice
 
         $this->backend->Ln(3);
         /* difference between the invoice and the invoice correction */
-        if (isset($this->data['invoice'])) {
+        if (isset($this->data['invoice']) && $this->data['doctype'] == DOC_CNOTE) {
             $total = $this->data['total'] - $this->data['invoice']['total'];
             $totalbase = $this->data['totalbase'] - $this->data['invoice']['totalbase'];
             $totaltax = $this->data['totaltax'] - $this->data['invoice']['totaltax'];
@@ -391,7 +391,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             'cdate' => $this->data['cdate'],
             'customerid' => $this->data['customerid'],
         ));
-        if (isset($this->data['invoice'])) {
+        if (isset($this->data['invoice']) && $this->data['doctype'] == DOC_CNOTE) {
             $title = trans('Credit Note No. $a', $docnumber);
         } elseif ($this->data['doctype'] == DOC_INVOICE) {
             $title = trans('Invoice No. $a', $docnumber);
@@ -400,7 +400,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         }
         $this->backend->Write(0, $title, '', 0, 'C', true, 0, false, false, 0);
 
-        if (isset($this->data['invoice'])) {
+        if (isset($this->data['invoice']) && $this->data['doctype'] == DOC_CNOTE) {
             $this->backend->SetFont(self::TCPDF_FONT, 'B', 12);
             $docnumber = docnumber(array(
                 'number' => $this->data['invoice']['number'],
@@ -515,8 +515,18 @@ class LMSTcpdfInvoice extends LMSInvoice
         }
 
         if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_credentials', true))) {
-            $pin = '<b>' . trans('Customer ID: $a', sprintf('%04d', $this->data['customerid'])) . '</b><br>';
-            $pin .= '<b>PIN: ' . (strlen($this->data['customerpin']) < 4 ? sprintf('%04d', $this->data['customerpin']) : $this->data['customerpin']) . '</b><br>';
+            $pin = str_replace(
+                array('%cid', '%pin'),
+                array(
+                    sprintf('%04d', $this->data['customerid']),
+                    strlen($this->data['customerpin']) < 4 ? sprintf('%04d', $this->data['customerpin']) : $this->data['customerpin']
+                ),
+                ConfigHelper::getConfig(
+                    'invoices.customer_credentials_format',
+                    '<b>' . trans('Customer ID: %cid') . '</b><br>'
+                    . '<b>' . trans('PIN: %pin') . '</b><br>'
+                )
+            );
 
             $this->backend->SetFont(self::TCPDF_FONT, 'B', 8);
             $this->backend->writeHTMLCell('', '', 125, $oldy + round(($y - $oldy) / 2), $pin, 0, 1, 0, true, 'L');
@@ -795,6 +805,10 @@ class LMSTcpdfInvoice extends LMSInvoice
             Localisation::setSystemLanguage($this->data['div_ccode']);
         }
 
+        if (ConfigHelper::checkConfig('invoices.jpk_flags')) {
+            $this->invoice_jpk_flags();
+        }
+
         $this->invoice_cancelled();
         $this->invoice_no_accountant();
         $this->invoice_header_image();
@@ -877,11 +891,27 @@ class LMSTcpdfInvoice extends LMSInvoice
             'customerid' => $this->data['customerid'],
         ));
 
+        $payment_title = ConfigHelper::getConfig('invoices.payment_title', null, true);
+        if (empty($payment_title)) {
+            if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false))) {
+                $payment_title = trans('Payment for liabilities');
+            } else {
+                $payment_title = trans('Payment for invoice No. $a', $payment_docnumber);
+            }
+        } else {
+            $customerid = $this->data['customerid'];
+            $payment_title = preg_replace_callback(
+                '/%(\\d*)cid/',
+                function ($m) use ($customerid) {
+                    return sprintf('%0' . $m[1] . 'd', $customerid);
+                },
+                $payment_title
+            );
+        }
+
         if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false))) {
-            $payment_title = trans('Payment for liabilities');
             $payment_value = ($this->data['customerbalance'] / $this->data['currencyvalue']) * -1;
         } else {
-            $payment_title = trans('Payment for invoice No. $a', $payment_docnumber);
             $payment_value = $this->data['value'];
             $payment_barcode = $payment_docnumber;
         }
@@ -889,7 +919,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         $tranferform_common_data = $transferform->GetCommonData(array('customerid' => $this->data['customerid'], 'export' => $this->data['export']));
         $tranferform_custom_data = array(
             'title' => $payment_title,
-            'value' => $payment_value,
+            'value' => $payment_value < 0 ? 0 : $payment_value,
             'export' => $this->data['export'],
             'currency' => $this->data['currency'],
             'paytype' => $this->data['paytype'],
@@ -937,13 +967,13 @@ class LMSTcpdfInvoice extends LMSInvoice
         $this->invoice_memo();
         if (($this->data['customerbalance'] < 0 || ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.always_show_form', true)))
             && !isset($this->data['rebate'])) {
-            if ($this->backend->GetY() > 180) {
-                $this->backend->AppendPage();
-            }
-
             /* FT-0100 form */
             $lms = LMS::getInstance();
             if ($lms->checkCustomerConsent($this->data['customerid'], CCONSENT_TRANSFERFORM)) {
+                if ($this->backend->GetY() > 180) {
+                    $this->backend->AppendPage();
+                }
+
                 $this->invoice_transferform(new LMSTcpdfTransferForm('Transfer form', $pagesize = 'A4', $orientation = 'portrait'));
             }
         }

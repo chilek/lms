@@ -331,7 +331,7 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 		$.each(this.suggestions, function(i, elem) {
 			var icon = elem.hasOwnProperty('icon') ? elem.icon : null;
 			var name = elem.name;
-			var effectiveName = elem.hasOwnProperty('name_alternative') ? elem.name_alternative : elem.name;
+			var effectiveName = elem.hasOwnProperty('name_alternative') ? elem.name_alternative : escapeHtml(elem.name);
 			var name_class = elem.name_class;
 			var desc = elem.description ? elem.description : '';
 			var desc_class = elem.description_class;
@@ -343,8 +343,9 @@ function AutoSuggest(form, elem, uri, autosubmit, onSubmit, onLoad) {
 				(me.activeDescription && action ? '<a href="' + action + '">' : '') + desc + (me.activeDescription && action ? '</a>' : '') + '</div>').get(0);
 			var li = $('<li class="lms-ui-suggestion-item" />').attr('title', tip).get(0);
 
-			name_elem.innerHTML = (icon ? '<i class="' + icon + '"></i>' : '') + (me.suggestMaxLength && effectiveName.length > me.suggestMaxLength ?
-				effectiveName.substring(0, me.suggestMaxLength) + " ..." : effectiveName);
+			var unescapedEffectiveName = unescapeHtml(effectiveName);
+			name_elem.innerHTML = (icon ? '<i class="' + icon + '"></i>' : '') + (me.suggestMaxLength && unescapedEffectiveName.length > me.suggestMaxLength ?
+				escapeHtml(unescapedEffectiveName.substring(0, me.suggestMaxLength)) + " ..." : effectiveName);
 
 			if (action && !me.autosubmit && !me.onSubmit) {
 				var a = $('<a href="' + action + '"/>').get(0);

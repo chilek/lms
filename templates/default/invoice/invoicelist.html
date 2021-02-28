@@ -106,14 +106,14 @@
 				<select size="1" name="divisionid" {tip text="Select division"}>
 					<OPTION value="0">- {trans("all")} -</OPTION>
 					{foreach $divisions as $division}
-						<option value="{$division.id}"{if $division.id == $listdata.divisionid} selected{/if}>{$division.shortname}</option>
+						<option value="{$division.id}"{if $division.id == $listdata.divisionid} selected{/if}>{$division.label|escape}</option>
 					{/foreach}
 				</select>
 				{trans("Group:")}
 				<input type="hidden" name="group" value="all">
 				<SELECT size="1" name="group[]" class="lms-ui-multiselect" multiple data-default-value="{trans("- all groups -")}">
 					{foreach $grouplist as $group}
-					<OPTION value="{$group.id}"{if !empty($listdata.group) && in_array($group.id, $listdata.group)} selected{/if}>{$group.name|truncate:30:"...":true}</OPTION>
+					<OPTION value="{$group.id}"{if !empty($listdata.group) && in_array($group.id, $listdata.group)} selected{/if}>{$group.name|truncate:30:"&hellip;":true}</OPTION>
 					{/foreach}
 				</SELECT>
 				<INPUT type="checkbox" name="groupexclude" id="groupexclude"{if $listdata.groupexclude} CHECKED{/if}><label for="groupexclude">{trans("exclude group")}</label>

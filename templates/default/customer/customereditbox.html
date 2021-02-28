@@ -44,6 +44,10 @@
 		width: 11em;
 	}
 
+	.consent-label {
+		cursor: pointer;
+	}
+
 </style>
 
 <FORM name="customeredit" id="customeredit" method="post" action="?m=customeredit&id={$customerinfo.id}{if $recover}&action=recover{/if}">
@@ -87,7 +91,8 @@
 					<tr>
 						<td>
 							<label for="customerdata[extid]"><strong>{trans("External system identifier:")}</strong>
-								<input type="text" maxlength="20" name="customerdata[extid]" value="{$customerinfo.extid}" {tip text="Enter customer identifier in external system (optional)" trigger="extid"}>
+								<input type="text" maxlength="20" name="customerdata[extid]" value="{$customerinfo.extid|escape}"
+									{tip text="Enter customer identifier in external system (optional)" trigger="extid"}>
 							</label>
 						</td>
 					</tr>
@@ -127,7 +132,7 @@
 							<SELECT size="1" name="customerdata[divisionid]" {tip text="Select division" trigger="divisionid"}>
 								{foreach $divisions as $item}
 									{if !$item.status || $item.id == $customerinfo.divisionid}
-										<option value="{$item.id}"{if $customerinfo.divisionid == $item.id} selected{/if}>{$item.label}</option>
+										<option value="{$item.id}"{if $customerinfo.divisionid == $item.id} selected{/if}>{$item.label|escape}</option>
 									{/if}
 								{/foreach}
 							</SELECT>
@@ -139,8 +144,18 @@
 							<i class="lms-ui-icon-legal-personality"></i>
 						</TD>
 						<TD>
-							<INPUT type="radio" name="customerdata[type]" value="{$smarty.const.CTYPES_PRIVATE}" id="private" {tip text="Select legal personality type" trigger="type"}{if $customerinfo.type == $smarty.const.CTYPES_PRIVATE} CHECKED{/if}><label for="private">{assign var='type' value=$smarty.const.CTYPES_PRIVATE}{$_CTYPES.$type}</label>
-							<INPUT type="radio" name="customerdata[type]" value="{$smarty.const.CTYPES_COMPANY}" id="company" {tip text="Select legal personality type" trigger="type"}{if $customerinfo.type == $smarty.const.CTYPES_COMPANY} CHECKED{/if}><label for="company">{assign var='type' value=$smarty.const.CTYPES_COMPANY}{$_CTYPES.$type}</label>
+							<label>
+								<input type="radio" name="customerdata[type]" value="{$smarty.const.CTYPES_PRIVATE}" id="private"
+									{tip text="Select legal personality type" trigger="type"}
+									{if $customerinfo.type == $smarty.const.CTYPES_PRIVATE} checked{/if}>
+								{$_CTYPES[$smarty.const.CTYPES_PRIVATE]}
+							</label>
+							<label>
+								<input type="radio" name="customerdata[type]" value="{$smarty.const.CTYPES_COMPANY}" id="company"
+									{tip text="Select legal personality type" trigger="type"}
+									{if $customerinfo.type == $smarty.const.CTYPES_COMPANY} checked{/if}>
+								{$_CTYPES[$smarty.const.CTYPES_COMPANY]}
+							</label>
 						</TD>
 					</TR>
 
@@ -284,12 +299,20 @@
 									<COL style="width: 99%;">
 								</COLGROUP>
 								<TR>
-									<TD>{trans("ICN")}:</TD>
+									<TD class="nobr">{trans("Identity type:")}</TD>
+									<TD>
+										{identitytypes elemname="customerdata[ict]" selected=$customerinfo.ict
+											tip="Select identity type" trigger="ict"}
+									</TD>
+								</TR>
+								<TR>
+									<TD class="nobr">{trans("Identity number:")}</TD>
 									<TD>
 										{if $customerinfo.icnwarning}
 										<INPUT type="hidden" name="customerdata[icnwarning]" value="1">
 										{/if}
-										<INPUT type="text" value="{$customerinfo.icn}" name="customerdata[icn]" size="30" {tip text="Enter Identity Card Number (optional)" trigger="icn"}>
+										<INPUT type="text" value="{$customerinfo.icn}" name="customerdata[icn]" size="30"
+											{tip text="Enter identity number (optional)" trigger="icn"}>
 									</TD>
 								</TR>
 								<TR>
@@ -314,14 +337,14 @@
 										{if $customerinfo.tenexistencewarning}
 										<INPUT type="hidden" name="customerdata[tenexistencewarning]" value="1">
 										{/if}
-										<a class="gusapi-button" data-type="{\GusApi\SearchType::NIP}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
+										<a class="gusapi-button" data-type="{Utils::GUS_REGON_API_SEARCH_TYPE_TEN}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
 									</TD>
 								</TR>
 								<TR>
 									<TD>{trans("REGON")}:</TD>
 									<TD>
 										<INPUT type="text" value="{$customerinfo.regon}" name="customerdata[regon]" size="30" {tip text="Enter Business Registration Number (optional)" trigger="regon"}>
-										<a class="gusapi-button" data-type="{\GusApi\SearchType::REGON}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
+										<a class="gusapi-button" data-type="{Utils::GUS_REGON_API_SEARCH_TYPE_REGON}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
 									</TD>
 								</TR>
 								<TR>
@@ -334,7 +357,7 @@
 									<TD>{trans("RBE")}:</TD>
 									<TD>
 										<INPUT type="text" value="{$customerinfo.rbe}" name="customerdata[rbe]" size="30" {tip text="Enter National Court Register / Register of Business Entities Number (optional)" trigger="rbe"}>
-										<a class="gusapi-button" data-type="{\GusApi\SearchType::KRS}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
+										<a class="gusapi-button" data-type="{Utils::GUS_REGON_API_SEARCH_TYPE_RBE}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
 									</TD>
 								</TR>
 							</TABLE>
@@ -400,27 +423,30 @@
 						</TD>
 						<TD>
 							<TABLE cellpadding="0" class="lms-ui-separated-rows">
-								<TR>
-									<TD class="bold">
-										{trans("Consents:")}
-									</TD>
-									<TD>
-									</TD>
-								</TR>
-								{block name="customereditbox-options"}
-									{foreach $_CCONSENTS as $type => $consent}
-										<TR>
-											<TD>
-												<label for="chkconsent{$type}">{$consent.label}</label>
-											</TD>
-											<TD>
-												<INPUT type="checkbox" name="customerdata[consents][{$type}]" id="chkconsent{$type}"
-													   value="{$smarty.now}"{if isset($customerinfo.consents[$type])} checked{/if}
-														{tip trigger="chkconsent"|cat:$type}>
-											</TD>
-										</TR>
-									{/foreach}
-								{/block}
+								<tbody class="lms-ui-multi-check">
+									<TR>
+										<TD class="bold">
+											{trans("Consents:")}
+										</TD>
+										<TD>
+											<INPUT type="checkbox" class="lms-ui-multi-check-all" value="1">
+										</TD>
+									</TR>
+									{block name="customereditbox-options"}
+										{foreach $_CCONSENTS as $type => $consent}
+											<TR>
+												<TD>
+													<span class="consent-label">{$consent.label}</span>
+												</TD>
+												<TD>
+													<INPUT type="checkbox" name="customerdata[consents][{$type}]" id="chkconsent{$type}"
+														value="{$smarty.now}"{if isset($customerinfo.consents[$type])} checked{/if}
+														{tip trigger="chkconsent"|cat:$type class="lms-ui-multi-check"}>
+												</TD>
+											</TR>
+										{/foreach}
+									{/block}
+								</tbody>
 							</TABLE>
 						</TD>
 					</TR>
@@ -482,8 +508,8 @@
 							<i class="lms-ui-icon-modified-date"></i>
 						</TD>
 						<TD>
-							<span class="bold">{trans("Created:")}</span> {$customerinfo.createdby}, {$customerinfo.creationdateh}<BR>
-							<span class="bold">{trans("Modified:")}</span> {if $customerinfo.moddate}{$customerinfo.modifiedby}, {$customerinfo.moddateh}{else}-{/if}
+							<span class="bold">{trans("Created:")}</span> {$customerinfo.createdby|escape}, {$customerinfo.creationdateh}<BR>
+							<span class="bold">{trans("Modified:")}</span> {if $customerinfo.moddate}{$customerinfo.modifiedby|escape}, {$customerinfo.moddateh}{else}-{/if}
 						</TD>
 					</TR>
 					{/block}
@@ -500,14 +526,10 @@
 	</TBODY>
 </TABLE>
 </FORM>
-<SCRIPT type="text/javascript">
-<!--
+<script>
+
 	$('[name="customerdata[type]"]').change(function() {
-		if ($(this).val() == {$smarty.const.CTYPES_PRIVATE}) {
-			$('.gusapi-button').hide();
-		} else {
-			$('.gusapi-button').show();
-		}
+		$('.gusapi-button').toggle(!$('#private').prop('checked'));
 	}).filter(':checked').change();
 
 	function init_email_validators() {
@@ -537,9 +559,13 @@
 		});
 
 		$('.gusapi-button').click(function() {
+			var identifier = $(this).siblings('input[type="text"]').val().replace(/-/g, '');
+			if (!identifier.length) {
+				return;
+			}
 			GusApiGetCompanyDetails(
 				$(this).attr('data-type'),
-				$(this).siblings('input[type="text"]').val().replace(/-/g, ''),
+				identifier,
 				function(data) {
 					GusApiFinished('customerdata', data);
                 });
@@ -550,5 +576,5 @@
 			$('[name="customerdata[name]"]').prop('required', $('#private').prop('checked'));
 		}).change();
 	});
-//-->
-</SCRIPT>
+
+</script>

@@ -61,6 +61,12 @@ $_LANG['Document approval customer notifications'] = 'Powiadomienia klienta o za
 $_LANG['Enter document approval customer notification mail subject'] = 'Wprowadź temat listu z powiadomieniem klienta o skanie podpisanego dokumentu';
 $_LANG['Enter document approval customer notification mail body'] = 'Wprowadź treść listu z powiadomieniem klienta o skanie podpisanego dokumentu';
 
+$_LANG['New document customer notifications'] = 'Powiadomienia klienta o nowym dokumencie';
+$_LANG['Enter new document customer notification mail subject'] = 'Wprowadź temat listu z powiadomieniem klienta o nowym dokumencie';
+$_LANG['Enter new document customer notification mail body'] = 'Wprowadź treść listu z powiadomieniem klienta o nowym dokumencie';
+$_LANG['Enter new document customer notification sms body'] = 'Wprowadź treść SMS-a z powiadomieniem klienta o nowym dokumencie';
+$_LANG['SMS body'] = 'Treść SMS-a';
+
 $_LANG['Sender name:'] = 'Nazwa nadawcy:';
 $_LANG['Sender mail address:'] = 'Adres e-mail nadawcy:';
 

@@ -81,6 +81,7 @@ function netnode_changed($netnodeid, $netdevid)
     $SMARTY->assign('form', 'ticket');
     $content = $SMARTY->fetch('rt' . DIRECTORY_SEPARATOR . 'rtnetdevs.html');
     $JSResponse->assign('rtnetdevs', 'innerHTML', $content);
+    $JSResponse->script('initAdvancedSelects("#netdevid");');
 
     return $JSResponse;
 }

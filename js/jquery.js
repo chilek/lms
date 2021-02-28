@@ -247,7 +247,7 @@ function init_datepickers(selector) {
 
 	if (!lmsSettings.openCalendarOnInputClick) {
 		options.showOn = 'button';
-		options.buttonText = '<i class="fas fa-calendar-alt" title="' + $t('Click here to open calendar') + '"></i>';
+		options.buttonText = '<i class="lms-ui-icon-calendar" title="' + $t('Click here to open calendar') + '"></i>';
 	}
 
 	$(selector).each(function() {
@@ -330,7 +330,8 @@ function init_comboboxes(selector) {
 			$.grep($('select', scombobox).attr('class').split(' '), function(value) {
 				return value != 'lms-ui-combobox';
 			}));
-		if (typeof($(this).attr('data-value')) !== 'undefined') {
+		if (typeof($(this).attr('data-value')) === 'string' &&
+			$(this).attr('data-value').length) {
 			scombobox.scombobox('val', $(this).attr('data-value'));
 			$(this).removeAttr('data-value');
 		} else if ($(this).attr('data-id-value')) {
@@ -938,32 +939,38 @@ $(function() {
 			}
 		}
 
-		if (period == 'previous-month' || typeof(period) === 'undefined') {
+		if (period === 'previous-month' || typeof(period) === 'undefined') {
 			fromdate.setDate(0);
 			fromdate.setDate(1);
 			todate.setDate(0);
-		} else if (period == 'current-month') {
+		} else if (period === 'current-month') {
 			fromdate = new Date();
 			todate = new Date();
 			fromdate.setDate(1);
-			todate.setMonth(todate.getMonth() + 1);
-			todate.setDate(0);
-		} else if (period == 'next-month') {
+			if (fromdate.getMonth() === 0) {
+				todate.setDate(0);
+				todate.setMonth(todate.getMonth() + 1);
+			} else {
+				todate.setMonth(todate.getMonth() + 1);
+				todate.setDate(0);
+			}
+		} else if (period === 'next-month') {
 			fromdate.setMonth(fromdate.getMonth() + 1);
 			fromdate.setDate(1);
+			if (todate.getMonth() == 11) {
+				todate.setFullYear(todate.getFullYear() + 1);
+			}
 			todate.setMonth(fromdate.getMonth() + 1);
 			todate.setDate(0);
-		} else if (period == 'current-year') {
-			fromdate = new Date();
-			todate = new Date();
+		} else if (period === 'current-year') {
 			fromdate.setMonth(0);
 			fromdate.setDate(1);
 			todate.setMonth(11);
 			todate.setDate(31);
-		} else if (period == 'previous-year' || period == 'next-year') {
+		} else if (period === 'previous-year' || period === 'next-year') {
 			fromdate.setMonth(0);
 			fromdate.setDate(1);
-			if (period == 'previous-year') {
+			if (period === 'previous-year') {
 				fromdate.setFullYear(fromdate.getFullYear() - 1);
 			} else {
 				fromdate.setFullYear(fromdate.getFullYear() + 1);
@@ -1049,7 +1056,8 @@ $(function() {
 				$(this).datetimepicker('toggle');
 			});
 		} else {
-			$('<i class="fas fa-calendar-alt ui-datepicker-trigger" title="' + $t('Click here to open calendar') + '"></i>')
+			$(this).wrap('<div class="lms-ui-datetime-container"/>');
+			$('<i class="lms-ui-icon-calendar ui-datepicker-trigger" title="' + $t('Click here to open calendar') + '"></i>')
 				.insertAfter(this).click(function () {
 				$(this).prev().datetimepicker('toggle');
 			});
@@ -1058,10 +1066,19 @@ $(function() {
 
 	init_multiselects('select.lms-ui-multiselect');
 
-	$(document).on('mouseup', '[data-target-url]',
+	$(document).on('mousedown mouseup', '[data-target-url]',
 		function(e) {
 			var elem = $(this);
 			var target = $(e.target);
+			if (e.type == 'mousedown') {
+				elem.data('mousedown', Date.now());
+				return;
+			} else {
+				if (Date.now() - parseInt(elem.data('mousedown')) >= 500) {
+					e.preventDefault();
+					return;
+				}
+			}
 			var url = $(this).attr('data-target-url');
 			var link = target.closest('a');
 			var ifLink = (link.length && elem.find(link).length > 0);
@@ -1540,8 +1557,8 @@ $(function() {
 			//plugins: "preview,autoresize,contextmenu,fullscreen,searchreplace,table,image,link,anchor,textcolor,autosave,paste",
 			// TinyMCE 5
 			skin_url: 'css/tinymce5',
-			//content_css: 'css/tinymce5/content.css',
-			plugins: "preview,autoresize,fullscreen,searchreplace,table,image,link,anchor,autosave,paste",
+//			content_css: 'css/tinymce5/content.min.css',
+			plugins: "preview,autoresize,fullscreen,searchreplace,table,image,imagetools,link,anchor,autosave,paste",
 			//fullscreen_native: true,
 			// #########
 			toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor | link anchor image ' +
@@ -1557,6 +1574,7 @@ $(function() {
 			remove_script_host : false,
 			forced_root_block : false,
 			entity_encoding: 'raw',
+
 			file_picker_callback: function(callback, value, meta) {
 				if (meta.filetype == 'image') {
 					$('#tinymce-image-upload').trigger('click');
@@ -1622,7 +1640,9 @@ $(function() {
 			var textareaid = $(this).uniqueId().attr('id');
 			var wysiwyg = $(this).attr('data-wysiwyg');
 			var inputname;
-			wysiwyg = (wysiwyg !== undefined && wysiwyg == 'true') || (wysiwyg === undefined && lmsSettings.wysiwygEditor);
+			var helpdesk = $(this).is('.lms-ui-helpdesk');
+			wysiwyg = (wysiwyg !== undefined && wysiwyg == 'true') || (wysiwyg === undefined &&
+				((helpdesk && lmsSettings.helpdeskWysiwygEditor) || (!helpdesk && lmsSettings.wysiwygEditor)));
 			$(this).data('wysiwyg', wysiwyg);
 			if ($(this).attr('name').match(/^([^\[]+)(\[[^\[]+\])$/i)) {
 				inputname = RegExp.$1 + '[wysiwyg]' + RegExp.$2;

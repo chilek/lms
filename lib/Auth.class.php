@@ -5,7 +5,7 @@ use PragmaRX\Google2FA\Google2FA;
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -31,6 +31,7 @@ class Auth
 
     private $id = null;
     public $login;
+    private $targetLogin = null;
     public $logname;
     public $passwd;
     public $islogged = false;
@@ -93,6 +94,7 @@ class Auth
         }
 
         $this->SESSION->restore('session_login', $this->login);
+        $this->SESSION->restore('session_target_login', $this->targetLogin);
         $this->SESSION->restore('session_authcoderequired', $this->authcoderequired);
 
         if (isset($loginform['backtologinform']) && !empty($loginform['backtologinform'])) {
@@ -108,7 +110,16 @@ class Auth
                 $this->trusteddevice = isset($loginform['trusteddevice']);
                 writesyslog('Login attempt (authentication code) by ' . $this->login, LOG_INFO);
             } else {
-                $this->login = $loginform['login'];
+                list ($login, $targetLogin) = explode('#', $loginform['login']);
+                $this->login = $login;
+                if (!empty($targetLogin)
+                    && $this->DB->GetOne(
+                        'SELECT 1 FROM users WHERE deleted = 0 AND access = 1 AND '
+                        . $this->DB->RegExp('rights', 'full_access')
+                    )
+                ) {
+                    $this->targetLogin = $targetLogin;
+                }
                 $this->passwd = $loginform['pwd'];
                 writesyslog('Login attempt by ' . $this->login, LOG_INFO);
             }
@@ -126,6 +137,8 @@ class Auth
                 $this->SESSION->restore('session_last', $this->last);
                 $this->SESSION->restore('session_lastip', $this->lastip);
             }
+
+            $this->switchUser();
 
             $this->logname = $this->logname ? $this->logname : $this->SESSION->get('session_logname');
             $this->id = $this->id ? $this->id : $this->SESSION->get('session_id');
@@ -145,6 +158,9 @@ class Auth
 
             $this->SESSION->save('session_id', $this->id);
             $this->SESSION->save('session_login', $this->login);
+            if (isset($this->targetLogin)) {
+                $this->SESSION->save('session_target_login', $this->targetLogin);
+            }
             $this->SESSION->restore_user_settings();
             $this->SESSION->save('session_logname', $this->logname);
             $this->SESSION->save('session_last', $this->last);
@@ -186,6 +202,8 @@ class Auth
 
             if (!$this->authcoderequired) {
                 $this->LogOut();
+            } elseif (isset($this->targetLogin)) {
+                $this->SESSION->save('session_target_login', $this->targetLogin);
             }
         }
     }
@@ -219,6 +237,10 @@ class Auth
     public function VerifyPassword($dbpasswd = '')
     {
         if (crypt($this->passwd, $dbpasswd) == $dbpasswd) {
+            return true;
+        }
+
+        if (md5($this->passwd) == $dbpasswd) {
             return true;
         }
 
@@ -307,6 +329,47 @@ class Auth
         return false;
     }
 
+    private function VerifyDivision($userid)
+    {
+        $userid = intval($userid);
+        if ($this->DB->GetOne('SELECT id FROM userdivisions WHERE userid = ?', array($userid))) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function SwitchUser($userid = null)
+    {
+        if (((isset($this->targetLogin) && ($user = $this->DB->GetRow('SELECT id, name, passwd, hosts, lastlogindate, lastloginip,
+                passwdforcechange, passwdexpiration, passwdlastchange, access, accessfrom, accessto,
+                twofactorauth, twofactorauthsecretkey
+            FROM vusers WHERE login = ? AND deleted = 0', array($this->targetLogin))) !== null)
+                || (isset($userid) && ($user = $this->DB->GetRow('SELECT id, name, passwd, hosts, lastlogindate, lastloginip,
+                passwdforcechange, passwdexpiration, passwdlastchange, access, accessfrom, accessto,
+                twofactorauth, twofactorauthsecretkey
+            FROM vusers WHERE id = ? AND deleted = 0', array($userid))) !== null))
+            && $this->VerifyDivision($user['id'])) {
+            $this->logname = $user['name'];
+            $this->id = $user['id'];
+            $this->last = $user['lastlogindate'];
+            $this->lastip = $user['lastloginip'];
+            $this->passwdforcechange = $user['passwdforcechange'];
+            $this->passwdexpiration = $user['passwdexpiration'];
+            $this->passwdlastchange = $user['passwdlastchange'];
+            $this->twofactorauth = $user['twofactorauth'];
+            $this->twofactorauthsecretkey = $user['twofactorauthsecretkey'];
+            $this->targetLogin = null;
+
+            if (isset($userid)) {
+                $this->SESSION->save('session_id', $this->id);
+                $this->SESSION->save('session_login', $this->login);
+                $this->SESSION->restore_user_settings();
+                $this->SESSION->save('session_logname', $this->logname);
+            }
+        }
+    }
+
     public function VerifyUser()
     {
         $this->islogged = false;
@@ -325,93 +388,105 @@ class Auth
             $this->twofactorauth = $user['twofactorauth'];
             $this->twofactorauthsecretkey = $user['twofactorauthsecretkey'];
 
-            if ($this->authcoderequired) {
-                $this->DB->Execute(
-                    'DELETE FROM twofactorauthcodehistory
-                        WHERE userid = ? AND success = ? AND uts < ?NOW? - 3 * 60 AND (INET_NTOA(ipaddr) = ? OR ipaddr IS NULL)',
-                    array($this->id, 0, $this->lastip)
-                );
+            $division = $this->VerifyDivision($user['id']);
+            if ($division) {
+                if ($this->authcoderequired) {
+                    $this->DB->Execute(
+                        'DELETE FROM twofactorauthcodehistory
+                            WHERE userid = ? AND success = ? AND uts < ?NOW? - 3 * 60 AND (INET_NTOA(ipaddr) = ? OR ipaddr IS NULL)',
+                        array($this->id, 0, $this->lastip)
+                    );
 
-                if ($this->DB->GetOne(
-                    'SELECT COUNT(*) FROM twofactorauthcodehistory
-                        WHERE userid = ? AND success = ? AND INET_NTOA(ipaddr) = ?',
-                    array(
-                        $this->id,
-                        0,
-                        $this->lastip
-                    )
-                ) < 10) {
-                    $this->SESSION->restore('session_passverified', $this->passverified);
-                    $google2fa = new Google2FA();
-                    if ($this->passverified && $google2fa->verifyKey($user['twofactorauthsecretkey'], $this->authcode)) {
-                        $this->DB->Execute(
-                            'DELETE FROM twofactorauthcodehistory WHERE userid = ? AND success = ? AND uts < ?NOW? - 3 * 60',
-                            array($this->id, 1)
-                        );
-
-                        if ($this->DB->GetOne(
-                            'SELECT id FROM twofactorauthcodehistory
-                                WHERE userid = ? AND success = ? AND authcode = ?',
-                            array(
+                    if ($this->DB->GetOne(
+                        'SELECT COUNT(*) FROM twofactorauthcodehistory
+                            WHERE userid = ? AND success = ? AND INET_NTOA(ipaddr) = ?',
+                        array(
                                 $this->id,
-                                1,
-                                $this->authcode
+                                0,
+                                $this->lastip
                             )
+                    ) < 10) {
+                        $this->SESSION->restore('session_passverified', $this->passverified);
+                        $google2fa = new Google2FA();
+                        if ($this->passverified && $google2fa->verifyKey(
+                            $user['twofactorauthsecretkey'],
+                            $this->authcode
                         )) {
-                            $this->error = trans("This code has already been used before the moment.");
-                        } else {
-                            $this->DB->Execute('INSERT INTO twofactorauthcodehistory (userid, authcode, uts, success, ipaddr)
-                                VALUES (?, ?, ?NOW?, ?, INET_ATON(?))', array($this->id, !empty($this->authcode) ?: '', 1, $this->lastip));
+                            $this->DB->Execute(
+                                'DELETE FROM twofactorauthcodehistory WHERE userid = ? AND success = ? AND uts < ?NOW? - 3 * 60',
+                                array($this->id, 1)
+                            );
 
-                            $this->authcoderequired = '';
-                            $this->islogged = true;
-                            if ($this->trusteddevice) {
-                                $this->addTrustedDevice();
+                            if ($this->DB->GetOne(
+                                'SELECT id FROM twofactorauthcodehistory
+                                    WHERE userid = ? AND success = ? AND authcode = ?',
+                                array(
+                                    $this->id,
+                                    1,
+                                    $this->authcode
+                                )
+                            )) {
+                                $this->error = trans("This code has already been used before the moment.");
+                            } else {
+                                $this->DB->Execute(
+                                    'INSERT INTO twofactorauthcodehistory (userid, authcode, uts, success, ipaddr)
+                                    VALUES (?, ?, ?NOW?, ?, INET_ATON(?))',
+                                    array($this->id, !empty($this->authcode) ?: '', 1, $this->lastip)
+                                );
+
+                                $this->authcoderequired = '';
+                                $this->islogged = true;
+                                if ($this->trusteddevice) {
+                                    $this->addTrustedDevice();
+                                }
                             }
+                        } else {
+                            $this->DB->Execute(
+                                'INSERT INTO twofactorauthcodehistory (userid, authcode, uts, ipaddr)
+                                VALUES (?, ?, ?NOW?, INET_ATON(?))',
+                                array($this->id, !empty($this->authcode) ?: '', $this->lastip)
+                            );
+
+                            $this->error = trans("Wrong authentication code.");
                         }
                     } else {
-                        $this->DB->Execute('INSERT INTO twofactorauthcodehistory (userid, authcode, uts, ipaddr)
-                            VALUES (?, ?, ?NOW?, INET_ATON(?))', array($this->id, !empty($this->authcode) ?: '', $this->lastip));
-
-                        $this->error = trans("Wrong authentication code.");
+                        $this->error = trans("Too many failed login attempts in short time period.<br>Try again in a few minutes.");
                     }
                 } else {
-                    $this->error = trans("Too many failed login attempts in short time period.<br>Try again in a few minutes.");
+                    $this->passverified = $this->VerifyPassword($user['passwd']);
+                    $this->hostverified = $this->VerifyHost($user['hosts']);
+                    $this->access = $this->VerifyAccess($user['access']);
+                    $this->accessfrom = $this->VerifyAccessFrom($user['accessfrom']);
+                    $this->accessto = $this->VerifyAccessTo($user['accessto']);
+                    if (empty($user['twofactorauth']) || empty($user['twofactorauthsecretkey'])) {
+                        $this->islogged = ($this->passverified && $this->hostverified && $this->access && $this->accessfrom && $this->accessto);
+                    } else {
+                        $this->islogged = ($this->hostverified && $this->access && $this->accessfrom && $this->accessto);
+                        $this->SESSION->save('session_passverified', $this->passverified);
+                    }
+
+                    if ($this->islogged && !empty($user['twofactorauth']) && !empty($user['twofactorauthsecretkey'])) {
+                        if ($this->isTrustedDevice() && $this->passverified) {
+                            $this->authcoderequired = '';
+                        } else {
+                            $this->authcoderequired = $this->login;
+                            $this->islogged = false;
+                        }
+                    }
+                }
+                $this->SESSION->save('session_authcoderequired', $this->authcoderequired);
+                if ($this->islogged) {
+                    if (($this->passwdexpiration
+                            && (time() - $this->passwdlastchange) / 86400 >= $user['passwdexpiration'])
+                        || $this->passwdforcechange) {
+                        $this->SESSION->save('session_passwdrequiredchange', true);
+                    }
+                    if (!$this->twofactorauth && ConfigHelper::checkConfig('phpui.two_factor_auth_required')) {
+                        $this->SESSION->save('session_twofactorauthrequiredchange', true);
+                    }
                 }
             } else {
-                $this->passverified = $this->VerifyPassword($user['passwd']);
-                $this->hostverified = $this->VerifyHost($user['hosts']);
-                $this->access = $this->VerifyAccess($user['access']);
-                $this->accessfrom = $this->VerifyAccessFrom($user['accessfrom']);
-                $this->accessto = $this->VerifyAccessTo($user['accessto']);
-                if (empty($user['twofactorauth']) || empty($user['twofactorauthsecretkey'])) {
-                    $this->islogged = ($this->passverified && $this->hostverified && $this->access && $this->accessfrom && $this->accessto);
-                } else {
-                    $this->islogged = ($this->hostverified && $this->access && $this->accessfrom && $this->accessto);
-                    $this->SESSION->save('session_passverified', $this->passverified);
-                }
-
-                if ($this->islogged && !empty($user['twofactorauth']) && !empty($user['twofactorauthsecretkey'])) {
-                    if ($this->isTrustedDevice() && $this->passverified) {
-                        $this->authcoderequired = '';
-                    } else {
-                        $this->authcoderequired = $this->login;
-                        $this->islogged = false;
-                    }
-                }
-            }
-
-            $this->SESSION->save('session_authcoderequired', $this->authcoderequired);
-
-            if ($this->islogged) {
-                if (($this->passwdexpiration
-                    && (time() - $this->passwdlastchange) / 86400 >= $user['passwdexpiration'])
-                    || $this->passwdforcechange) {
-                    $this->SESSION->save('session_passwdrequiredchange', true);
-                }
-                if (!$this->twofactorauth && ConfigHelper::checkConfig('phpui.two_factor_auth_required')) {
-                    $this->SESSION->save('session_twofactorauthrequiredchange', true);
-                }
+                $this->error = trans('The user has no assigned company.');
             }
         } else {
             $this->error = trans('Wrong password or login.');

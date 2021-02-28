@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -62,6 +62,14 @@ if (!isset($_POST['loginform']) && !empty($_POST)) {
     $filter['type'] = isset($_POST['type']) ? $_POST['type'] : null;
     $filter['privacy'] = isset($_POST['privacy']) ? intval($_POST['privacy']) : null;
     $filter['closed'] = isset($_POST['closed']) ? $_POST['closed'] : null;
+
+    if (isset($_POST['switchToSchedule'])) {
+        $SESSION->save('timetableFiler', $filter, true);
+        $SESSION->redirect('?m=eventschedule&switchToSchedule=1');
+        die();
+    }
+} elseif (isset($_GET['switchToTimetable'])) {
+    $SESSION->restore('schedulerFiler', $filter, true);
 } else {
     if ($SESSION->is_set('eld')) {
         $filter = array_merge($filter, $SESSION->get('eld'));
@@ -140,6 +148,25 @@ $layout['pagetitle'] = trans('Timetable');
 $filter['forward'] = ConfigHelper::getConfig('phpui.timetable_days_forward');
 $eventlist = $LMS->GetEventList($filter);
 
+if ($eventlist) {
+    foreach ($eventlist as $ekey => &$item) {
+        if ($item['userlist']) {
+            $usersWithoutAccess = 0;
+            $usersCount = count($item['userlist']);
+            foreach ($item['userlist'] as $uidx => $user) {
+                if (!$LMS->checkUserAccess($user['id'])) {
+                        $usersWithoutAccess++;
+                        $item['userlist'][$uidx]['noaccess'] = 1;
+                }
+            }
+            if (ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users') && $usersWithoutAccess == $usersCount) {
+                $item['hide'] = 1;
+            }
+        }
+    }
+    unset($item);
+}
+
 $overdue_events_only = isset($_GET['overdue_events_only']) ? 1 : 0;
 $force_overdue_events = isset($_GET['force_overdue_events']) ? 1 : 0;
 
@@ -208,7 +235,7 @@ $SMARTY->assign('days', $days);
 $SMARTY->assign('daylist', $daylist);
 $SMARTY->assign('date', $date);
 $SMARTY->assign('error', $error);
-$SMARTY->assign('userlist', $LMS->GetUserNames());
+$SMARTY->assign('userlist', $LMS->GetUserNames(array('withDeleted' => 1)));
 $SMARTY->assign('overdue_events_only', $overdue_events_only);
 if (!ConfigHelper::checkConfig('phpui.big_networks')) {
     $SMARTY->assign('customerlist', $LMS->GetCustomerNames());

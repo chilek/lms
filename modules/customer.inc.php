@@ -58,7 +58,11 @@ if (!isset($resource_tabs['customernotes']) || $resource_tabs['customernotes']) 
 }
 
 if (!isset($resource_tabs['customerassignments']) || $resource_tabs['customerassignments']) {
-    $commited             = !empty($_GET['commited']) ? true : false;
+    $commited = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.default_show_approved_assignments_only', true));
+    $expired = ConfigHelper::checkConfig('phpui.default_show_expired_assignments');
+    if (ConfigHelper::variableExists('phpui.default_show_period_assignments')) {
+        $period = $PERIODS[intval(ConfigHelper::getConfig('phpui.default_show_period_assignments'))];
+    }
     $assignments = $LMS->GetCustomerAssignments($customerid, true, false);
 }
 if (!isset($resource_tabs['customergroups']) || $resource_tabs['customergroups']) {
@@ -104,7 +108,9 @@ if (!isset($resource_tabs['customerevents']) || $resource_tabs['customerevents']
         $params['datefrom'] = date_to_timestamp($_GET['events-from-date']);
         $SMARTY->assign('events_from_date', $_GET['events-from-date']);
     }
-    $allevents = isset($_GET['allevents']) && !empty($_GET['allevents']);
+    $allevents = (isset($_GET['allevents']) && !empty($_GET['allevents']))
+        || ((!isset($_GET['allevents']) && ConfigHelper::checkConfig('phpui.default_show_closed_events')));
+
     if ($allevents) {
         $params['closed'] = '';
     }
@@ -139,12 +145,12 @@ if (!isset($resource_tabs['customernetworksbox']) || $resource_tabs['customernet
 $userid = Auth::GetCurrentUser();
 $user_permission_checks = ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks');
 $customerstats = array(
-    'tickets' => $DB->GetRow('SELECT COUNT(*) AS "all", SUM(CASE WHEN state < ? THEN 1 ELSE 0 END) AS notresolved
+    'tickets' => $DB->GetRow('SELECT COUNT(*) AS "all", SUM(CASE WHEN state NOT IN ? THEN 1 ELSE 0 END) AS notresolved
 		FROM rttickets t
 		LEFT JOIN rtrights r ON r.queueid = t.queueid AND r.userid = ?
 		WHERE (r.queueid IS NOT NULL' . ($user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid : '') . ')'
         . (!ConfigHelper::checkConfig('privileges.superuser') ? ' AND t.deleted = 0': '')
-        . ' AND customerid = ' . intval($customerid), array(RT_RESOLVED, $userid)),
+        . ' AND customerid = ' . intval($customerid), array(array(RT_RESOLVED, RT_DEAD), $userid)),
     'domains' => $DB->GetOne('SELECT COUNT(*) FROM domains WHERE ownerid = ?', array($customerid)),
     'accounts' => $DB->GetOne('SELECT COUNT(*) FROM passwd WHERE ownerid = ?', array($customerid))
 );
@@ -187,6 +193,8 @@ $SMARTY->assign(array(
     'objectid' => $customerinfo['id'],
     'aggregate_documents' => $aggregate_documents,
     'commited' => $commited,
+    'expired' => $expired,
+    'period' => $period,
     'allevents' => $allevents,
     'time' => $SESSION->get('addbt'),
     'taxid' => $SESSION->get('addbtax'),

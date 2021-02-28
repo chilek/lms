@@ -73,10 +73,27 @@
 		<TD colspan="3">
 			{if $unlockedit}
 			<INPUT TYPE="text" NAME="networkdata[interface]" VALUE="{$network.interface}" {tip text="Enter interface where network is connected to (optional)" trigger="interface"}>
-			<span class="bold">{trans("vlan:")}</span>
-			<INPUT TYPE="text" NAME="networkdata[vlanid]" VALUE="{if $network.vlanid}{$network.vlanid}{/if}" SIZE="5" MAXLENGTH="4" {tip text="Enter vlan ID (optional)" trigger="vlanid"}>
 			{else}
-			{if !empty($network.interface)}{$network.interface}{/if}{if !empty($network.vlanid)}, {trans("vlan:")} {$network.vlanid}{/if}
+				{$network.interface}
+			{/if}
+		</TD>
+	</TR>
+	<TR>
+		<TD class="bold">
+			{icon name="vlan" label="VLAN"}
+		</TD>
+		<TD colspan="3">
+			{if $unlockedit}
+			<select name="networkdata[vlanid]" class="lms-ui-advanced-select">
+				{foreach $vlanlist as $v}
+				<option value="{$v.id}" {if $network.vlanid == $v.vlanid} selected{/if}>
+					(#{$v.vlanid}){if $v.description}, {$v.description|truncate:'20':''}{/if}{if $v.customername}, {$v.customername}{/if}
+				</option>
+				{/foreach}
+				<option value="0" {if $network.vlanid == 0} selected{/if}>{trans("None")}</option>
+			</select>
+			{else}
+				{$network.vlanid}
 			{/if}
 		</TD>
 	</TR>

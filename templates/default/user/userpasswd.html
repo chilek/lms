@@ -2,7 +2,7 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
+<H1>{$layout.pagetitle|escape}</H1>
 <FORM method="POST" action="{if $target}{$target}{else}?m=userpasswd&id={$passwd.id}{/if}" name="password">
 <p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">

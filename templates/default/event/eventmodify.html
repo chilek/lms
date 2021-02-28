@@ -40,7 +40,8 @@
 					{block name="eventmodify_left_panel"}
 
 					{box_row icon="uptime" label="Time:"}
-						{event_time_selection field_prefix="event" begin=$event.begin end=$event.end wholedays=$event.wholedays}
+						{event_time_selection field_prefix="event" begin=$event.begin end=$event.end wholedays=$event.wholedays
+							allow_past_date=ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.timetable_allow_past_events', 'true'))}
 					{/box_row}
 
 					{box_row icon="description" label="Description:"}
@@ -114,12 +115,24 @@
 					{/box_row}
 
 					{box_row icon="user" label="Users:" field_class="multiselect" icon_class="fa-fw"}
-						<SELECT name="event[userlist][]" class="lms-ui-multiselect" id="userlist" multiple data-default-value="{trans("- select user -")}" data-shorten-to-default-value="false">
+						<SELECT name="event[userlist][]" class="lms-ui-advanced-select" id="userlist" multiple data-default-value="{trans("- select user -")}"
+								data-shorten-to-default-value="false" {if !empty(ConfigHelper::checkConfig('phpui.event_user_required'))}required{/if}>
 							{foreach $userlist as $user}
-								{if !ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users') || (ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users')
-									&& $user.access) || is_array($filter.owner) && in_array($user.id, $filter.owner)}
-								<OPTION {if !$user.access} disabled{/if} value="{$user.id}" {if is_array($event.userlist) && in_array($user.id, $event.userlist)}selected{/if}
-									>{$user.rname|truncate:40:"...":true} ({$user.login})</OPTION>
+								{if $layout.module == 'eventadd'}
+									{if $user.access}
+										<OPTION value="{$user.id}"
+											{if is_array($event.userlist) && in_array($user.id, $event.userlist)}selected{/if}>
+												{$user.rname|trunescape:40} ({$user.login})
+										</OPTION>
+									{/if}
+								{else}
+									{if $user.access || (is_array($event.userlist) && in_array($user.id, $event.userlist))}
+										<OPTION value="{$user.id}"
+											{if !$user.access} data-crossed{/if}
+											{if is_array($event.userlist) && in_array($user.id, $event.userlist)}selected{/if}>
+												{$user.rname|trunescape:40} ({$user.login})
+										</OPTION>
+									{/if}
 								{/if}
 							{/foreach}
 						</SELECT>
@@ -130,6 +143,10 @@
 						</label>
 						<label>
 							<input type="radio" name="event[usergroup]" id="usergroup_0" value="0" onChange="xajax_getUsersForGroup(0)"{if empty($event.usergroup)} checked{/if}>
+							{trans("None")}<br>
+						</label>
+						<label>
+							<input type="radio" name="event[usergroup]" id="usergroup_-2" value="-2" onChange="xajax_getUsersForGroup(-2)"{if empty($event.usergroup)} checked{/if}>
 							{trans("All users")}<br>
 						</label>
 						{foreach $usergroups as $group}
@@ -285,12 +302,15 @@
 		});
 
 		function update_user_selection(users) {
-			var userms = $('#userlist').data('multiselect-object');
-			{if ConfigHelper::getConfig('phpui.event_usergroup_selection_type', 'update') == 'update'}
-			userms.updateSelection(users);
+			var userms = $('#userlist').val();
+			{if ConfigHelper::getConfig('phpui.event_usergroup_selection_type') == 'filter'}
+				$("#userlist").val( users );
 			{else}
-			userms.filterSelection(users);
+				var users2 = jQuery.unique([].concat.apply(users, userms));
+				$("#userlist").val( users2 );
 			{/if}
+			updateAdvancedSelects(userlist);
+
 		}
 
 		{if intval($event.customerid)}

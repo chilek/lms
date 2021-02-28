@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -41,13 +41,12 @@ if (isset($_POST['event']['helpdesk']) && isset($_POST['ticket'])) {
 }
 
 $userlist = $LMS->GetUserNames();
-unset($userlist['total']);
 
 if (isset($_POST['event'])) {
     $event = $_POST['event'];
 
     if (!isset($event['usergroup'])) {
-        $event['usergroup'] = 0;
+        $event['usergroup'] = -2;
     }
 //  $SESSION->save('eventgid', $event['usergroup']);
 
@@ -74,6 +73,13 @@ if (isset($_POST['event'])) {
                 $error['begin'] = trans('Incorrect date format! Enter date in YYYY/MM/DD HH:MM format!');
             } else {
                 $begintime = datetime_to_timestamp($event['begin']) - $date;
+            }
+        }
+
+        if (!empty($date)) {
+            $allow_past_events = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.timetable_allow_past_events', 'true'));
+            if (!$allow_past_events && $date < time()) {
+                $error['begin'] = trans('Events which begin in the past are not allowed!');
             }
         }
     }

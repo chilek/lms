@@ -40,6 +40,7 @@ $parameters = array(
     'actions:' => 'a:',
     'customergroups:' => 'g:',
     'customer-status:' => null,
+    'customerid:' => null,
 );
 
 $long_to_shorts = array();
@@ -107,6 +108,7 @@ lms-notify.php
                                 should be assigned
     --customer-status=<status1,status2,...>
                                 notify only customers with specified status
+    --customerid=<id>           limit notifications to selected customer
 
 EOF;
     exit(0);
@@ -123,6 +125,7 @@ EOF;
 
 $debug = array_key_exists('debug', $options);
 $fakedate = (array_key_exists('fakedate', $options) ? $options['fakedate'] : null);
+$customerid = isset($options['customerid']) && intval($options['customerid']) ? $options['customerid'] : null;
 
 $types = array();
 if (array_key_exists('type', $options)) {
@@ -207,17 +210,6 @@ $config_section = (array_key_exists('section', $options) && preg_match('/^[a-z0-
 
 $timeoffset = date('Z');
 
-function localtime2()
-{
-    global $fakedate, $timeoffset;
-    if (!empty($fakedate)) {
-        $date = explode("/", $fakedate);
-        return mktime(0, 0, 0, intval($date[1]), intval($date[2]), intval($date[0])) + $timeoffset;
-    } else {
-        return time();
-    }
-}
-
 if (array_key_exists('config-file', $options)) {
     $CONFIG_FILE = $options['config-file'];
 } else {
@@ -287,8 +279,8 @@ $smtp_options = array(
 
 $suspension_percentage = floatval(ConfigHelper::getConfig('finances.suspension_percentage', 0));
 $debug_email = ConfigHelper::getConfig($config_section . '.debug_email', '', true);
-$mail_from = ConfigHelper::getConfig($config_section . '.mailfrom', '', true);
-$mail_fname = ConfigHelper::getConfig($config_section . '.mailfname', '', true);
+$mail_from = ConfigHelper::getConfig($config_section . '.sender_email', ConfigHelper::getConfig($config_section . '.mailfrom', '', true));
+$mail_fname = ConfigHelper::getConfig($config_section . '.sender_name', ConfigHelper::getConfig($config_section . '.mailfname', '', true));
 $notify_email = ConfigHelper::getConfig($config_section . '.notify_email', '', true);
 $reply_email = ConfigHelper::getConfig($config_section . '.reply_email', '', true);
 $dsn_email = ConfigHelper::getConfig($config_section . '.dsn_email', '', true);
@@ -367,11 +359,14 @@ if (!empty($auth) && !preg_match('/^LOGIN|PLAIN|CRAM-MD5|NTLM$/i', $auth)) {
     die("Fatal error: smtp_auth setting not supported! Can't continue, exiting." . PHP_EOL);
 }
 
-//$currtime = localtime2() + $timeoffset;
-$currtime = localtime2();
-$daystart = intval($currtime / 86400) * 86400 - $timeoffset;
-//$daystart = intval($currtime / 86400) * 86400;
-$dayend = $daystart + 86399;
+if (empty($fakedate)) {
+    $currtime = time();
+} else {
+    $currtime = strtotime($fakedate);
+}
+list ($year, $month, $day) = explode('/', date('Y/n/j', $currtime));
+$daystart = mktime(0, 0, 0, $month, $day, $year);
+$dayend = mktime(23, 59, 59, $month, $day, $year);
 
 $deadline = ConfigHelper::getConfig('payments.deadline', ConfigHelper::getConfig('invoices.paytime', 0));
 
@@ -562,7 +557,7 @@ function send_mail($msgid, $cid, $rmail, $rname, $subject, $body)
         $headers['Message-ID'] = '<messageitem-' . $msgitemid . '@rtsystem.' . gethostname() . '>';
     }
 
-    $result = $LMS->SendMail($rmail, $headers, $body, null, $smtp_options);
+    $result = $LMS->SendMail($rmail, $headers, $body, null, null, $smtp_options);
 
     $query = "UPDATE messageitems
         SET status = ?, lastdate = ?NOW?, error = ?
@@ -626,7 +621,7 @@ function send_mail_to_user($rmail, $rname, $subject, $body)
     if (!empty($notify_email)) {
         $headers['Cc'] = $notify_email;
     }
-    $result = $LMS->SendMail($rmail, $headers, $body, null, $smtp_options);
+    $result = $LMS->SendMail($rmail, $headers, $body, null, null, $smtp_options);
 }
 
 function send_sms_to_user($phone, $data)
@@ -785,7 +780,7 @@ if (empty($types) || in_array('timetable', $types)) {
                     send_mail_to_user($user['email'], $user['name'], $subject, $mail_contents);
                 }
             }
-            if (!empty($user['sms'])) {
+            if (!empty($user['phone'])) {
                 if (!$quiet) {
                     printf("[timetable/sms] %s (%04d): %s" . PHP_EOL, $user['name'], $user['id'], $user['phone']);
                 }
@@ -821,7 +816,9 @@ if (empty($types) || in_array('documents', $types)) {
             GROUP BY customerid
         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
         WHERE 1 = 1" . $customer_status_condition . " AND d.type IN (?, ?) AND dc.todate >= $daystart + ? * 86400
+            " . ($customerid ? ' AND c.id = ' . $customerid : '') . "
             AND dc.todate < $daystart + (? + 1) * 86400"
+            . ($customerid ? ' AND c.id = ' . $customerid : '')
             . ($notifications['documents']['deleted_customers'] ? '' : ' AND c.deleted = 0')
             . ($customergroups ?: ''),
         array(
@@ -974,7 +971,7 @@ if (empty($types) || in_array('contracts', $types)) {
                 HAVING MAX(a.dateto) >= $daystart + $days * 86400 AND MAX(a.dateto) < $daystart + ($days + 1) * 86400
             ) d ON d.customerid = c.id" :
             "JOIN (
-                SELECT DISTINCT customerid, 0 AS dateto FROM documents
+                SELECT DISTINCT customerid, dc.todate AS dateto FROM documents
                 JOIN documentcontents dc ON dc.docid = documents.id
                 WHERE dc.todate >= $daystart + $days * 86400 AND dc.todate < $daystart + ($days + 1) * 86400
                     AND documents.type IN (" . DOC_CONTRACT . ',' . DOC_ANNEX . ")
@@ -990,6 +987,7 @@ if (empty($types) || in_array('contracts', $types)) {
             GROUP BY customerid
         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
         WHERE 1 = 1" . $customer_status_condition . " AND d.dateto >= $daystart + ? * 86400 AND d.dateto < $daystart + (? + 1) * 86400"
+            . ($customerid ? ' AND c.id = ' . $customerid : '')
             . ($notifications['contracts']['deleted_customers'] ? '' : ' AND c.deleted = 0')
             . ($customergroups ?: '')
         . " GROUP BY c.id, c.pin, c.lastname, c.name, d.dateto, m.email, x.phone",
@@ -1007,14 +1005,14 @@ if (empty($types) || in_array('contracts', $types)) {
         $notifications['contracts']['customers'] = array();
         foreach ($customers as $row) {
             $notifications['contracts']['customers'][] = $row['id'];
-            $row['aggregate_documents'] = $notifications['contacts']['aggregate_documents'];
+            $row['aggregate_documents'] = $notifications['contracts']['aggregate_documents'];
 
             unset($message, $message_html, $message_text);
             if ($format == $mail_format) {
-                $message = parse_customer_data($notifications['contacts']['message'], $format, $row);
+                $message = parse_customer_data($notifications['contracts']['message'], $format, $row);
             } else {
-                $message_html = parse_customer_data($notifications['contacts']['message'], 'html', $row);
-                $message_text = parse_customer_data($notifications['contacts']['message'], 'text', $row);
+                $message_html = parse_customer_data($notifications['contracts']['message'], 'html', $row);
+                $message_text = parse_customer_data($notifications['contracts']['message'], 'text', $row);
             }
             $subject = parse_customer_data($notifications['contracts']['subject'], 'text', $row);
 
@@ -1167,6 +1165,7 @@ if (empty($types) || in_array('debtors', $types)) {
         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
         WHERE 1 = 1" . $customer_status_condition
             . " AND c.cutoffstop < $currtime AND b2.balance " . ($limit > 0 ? '>' : '<') . " ?"
+            . ($customerid ? ' AND c.id = ' . $customerid : '')
             . ($notifications['debtors']['deleted_customers'] ? '' : ' AND c.deleted = 0')
             . ($customergroups ?: ''),
         array(
@@ -1366,6 +1365,7 @@ if (empty($types) || in_array('reminder', $types)) {
         WHERE 1 = 1" . $customer_status_condition . " AND d.type IN (?, ?, ?) AND d.closed = 0 AND b2.balance < ?
             AND (d.cdate + (d.paytime - ? + 1) * 86400) >= $daystart
             AND (d.cdate + (d.paytime - ? + 1) * 86400) < $dayend"
+            . ($customerid ? ' AND c.id = ' . $customerid : '')
             . ($notifications['reminder']['deleted_customers'] ? '' : ' AND c.deleted = 0')
             . ($customergroups ?: ''),
         array(
@@ -1571,6 +1571,7 @@ if (empty($types) || in_array('income', $types)) {
         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
         WHERE 1 = 1" . $customer_status_condition
             . " AND cash.type = 1 AND cash.value > 0 AND cash.time >= $daystart + (? * 86400) AND cash.time < $daystart + (? + 1) * 86400"
+            . ($customerid ? ' AND c.id = ' . $customerid : '')
             . ($notifications['income']['deleted_customers'] ? '' : ' AND c.deleted = 0')
             . ($customergroups ?: ''),
         array(
@@ -1743,6 +1744,7 @@ if (empty($types) || in_array('invoices', $types)) {
         WHERE 1 = 1" . $customer_status_condition
             . " AND (c.invoicenotice IS NULL OR c.invoicenotice = 0) AND d.type IN (?, ?, ?)
             AND d.cdate >= ? AND d.cdate <= ?"
+            . ($customerid ? ' AND c.id = ' . $customerid : '')
             . ($notifications['invoices']['deleted_customers'] ? '' : ' AND c.deleted = 0')
             . ($customergroups ?: ''),
         array(
@@ -1917,6 +1919,7 @@ if (empty($types) || in_array('notes', $types)) {
         WHERE 1 = 1" . $customer_status_condition
             . " AND (c.invoicenotice IS NULL OR c.invoicenotice = 0) AND d.type = ?
             AND d.cdate >= ? AND d.cdate <= ?"
+            . ($customerid ? ' AND c.id = ' . $customerid : '')
             . ($notifications['notes']['deleted_customers'] ? '' : ' AND c.deleted = 0')
             . ($customergroups ?: ''),
         array(
@@ -2075,6 +2078,7 @@ if (empty($types) || in_array('birthday', $types)) {
         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
         WHERE 1 = 1" . $customer_status_condition
         . ' AND ' . $DB->RegExp('c.ssn', '[0-9]{2}(' . $cmonth . '|' . sprintf('%02d', $cmonth + 20) . ')' . date('d', $daystart) . '[0-9]{5}')
+        . ($customerid ? ' AND c.id = ' . $customerid : '')
         . ($notifications['birthday']['deleted_customers'] ? '' : ' AND c.deleted = 0')
         . ($customergroups ?: ''),
         array(
@@ -2232,6 +2236,7 @@ if (empty($types) || in_array('warnings', $types)) {
         ) ca ON (ca.customerid = c.id)
         WHERE 1 = 1" . $customer_status_condition
             . " AND c.id IN (SELECT DISTINCT ownerid FROM vnodes WHERE warning = 1)"
+            . ($customerid ? ' AND c.id = ' . $customerid : '')
             . ($notifications['warnings']['deleted_customers'] ? '' : ' AND c.deleted = 0')
             . ($customergroups ?: ''),
         array(
@@ -2365,7 +2370,8 @@ if (empty($types) || in_array('events', $types)) {
     $events = $DB->GetAll(
         "SELECT id, title, description, customerid, userid FROM events
         WHERE (customerid IS NOT NULL OR userid IS NOT NULL) AND closed = 0 AND date <= ? AND enddate >= ?
-            AND begintime <= ? AND (endtime = 0 OR endtime >= ?)",
+            AND begintime <= ? AND (endtime = 0 OR endtime >= ?)"
+        . ($customerid ? ' AND customerid = ' . $customerid : ''),
         array($daystart, $dayend, $time, $time)
     );
 
@@ -2538,13 +2544,20 @@ if (in_array('www', $channels) && (empty($types) || in_array('messages', $types)
         $fh = fopen($notifications['messages']['file'], 'w');
     }
 
-    $nodes = $DB->GetAll("SELECT INET_NTOA(ipaddr) AS ip
+    $nodes = $DB->GetAll(
+        "SELECT INET_NTOA(ipaddr) AS ip
             FROM vnodes n
         JOIN (SELECT DISTINCT customerid FROM messageitems
             JOIN messages m ON m.id = messageid
             WHERE type = ? AND status = ?
-        ) m ON m.customerid = n.ownerid
-        ORDER BY ipaddr", array(MSG_WWW, MSG_NEW));
+        ) m ON m.customerid = n.ownerid"
+        . ($customerid ? ' AND n.ownerid = ' . $customerid : '')
+        . " ORDER BY ipaddr",
+        array(
+            MSG_WWW,
+            MSG_NEW
+        )
+    );
 
     if (!$debug && $fh) {
         fwrite($fh, str_replace("\\n", PHP_EOL, $notifications['messages']['header']));

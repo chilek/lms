@@ -296,6 +296,7 @@ function sendvalue(targetfield, value)
 	targetfield.value = value;
 	// close popup
 	window.parent.parent.popclick();
+	targetfield.dispatchEvent(new Event('change'))
 	targetfield.focus();
 }
 
@@ -353,6 +354,39 @@ function setCookie(name, value, permanent)
 		cookie += '; expires=' + d.toUTCString();
 	}
 	document.cookie = cookie;
+}
+
+function getStorageItem(name, type)
+{
+	var storage;
+	if (typeof(type) === 'undefined' || type == 'session') {
+		storage = sessionStorage;
+	} else {
+		storage = localStorage;
+	}
+	return storage.getItem(name);
+}
+
+function setStorageItem(name, value, type)
+{
+	var storage;
+	if (typeof(type) === 'undefined' || type == 'session') {
+		storage = sessionStorage;
+	} else {
+		storage = localStorage;
+	}
+	storage.setItem(name, value);
+}
+
+function removeStorageItem(name, type)
+{
+	var storage;
+	if (typeof(type) === 'undefined' || type == 'session') {
+		storage = sessionStorage;
+	} else {
+		storage = localStorage;
+	}
+	storage.removeItem(name);
 }
 
 if (typeof String.prototype.trim == 'undefined')
@@ -909,4 +943,28 @@ function get_revdns(search) {
 			$(key).html(value);
 		});
 	});
+}
+
+function escapeHtml(text) {
+	var map = {
+		'&': '&amp;',
+		'<': '&lt;',
+		'>': '&gt;',
+		'"': '&quot;',
+		"'": '&#039;'
+	};
+
+	return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
+
+function unescapeHtml(text) {
+	var map = {
+		'&amp;': '&',
+		'&lt;': '<',
+		'&gt;': '>',
+		'&quot;': '"',
+		'&#039;': "'"
+	};
+
+	return text.replace(/&(amp|lt|gt|quot|#039);/g, function(m) { return map[m]; });
 }

@@ -40,7 +40,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         if ($list = $this->db->GetAll('SELECT c.docid, d.number, d.type, c.title, c.fromdate, c.todate,
 				c.description, n.template, d.closed, d.confirmdate,
 				d.archived, d.adate, u3.name AS ausername, d.senddate,
-				d.cdate, u.name AS username, d.sdate, u2.name AS cusername,
+				d.cdate, u.name AS username, d.sdate, d.cuserid, u2.name AS cusername,
 				d.type AS doctype, d.template AS doctemplate, reference
 			FROM documentcontents c
 			JOIN documents d ON (c.docid = d.id)
@@ -341,24 +341,42 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         }
 
         if (is_array($doctype)) {
-            $where[] = 'doctype IN (' . implode(',', $doctype) . ')';
+            $where[] = 'n.doctype IN (' . implode(',', $doctype) . ')';
         } else if ($doctype) {
-            $where[] = 'doctype = ' . intval($doctype);
+            $where[] = 'n.doctype = ' . intval($doctype);
         }
 
         if ($division) {
-            $where[] = 'id IN (SELECT planid FROM numberplanassignments
-                WHERE divisionid = ' . intval($division) . ')';
+            $where[] = 'EXISTS (SELECT 1 FROM numberplanassignments
+                WHERE planid = n.id AND divisionid = ' . intval($division) . ')';
+        }
+
+        if (!ConfigHelper::checkPrivilege('superuser')) {
+            $userid = Auth::GetCurrentUser();
+            $where[] = '(NOT EXISTS (
+                    SELECT 1 FROM numberplanassignments WHERE planid = n.id
+                )' . ($userid ? ' OR NOT EXISTS (
+                    SELECT 1 FROM numberplanusers WHERE planid = n.id
+                ) OR EXISTS (
+                    SELECT 1 FROM numberplanusers u1
+                    JOIN userdivisions u2 ON u2.userid = u1.userid
+                    WHERE u1.userid = ' . $userid . '
+                )' : '') . ')';
         }
 
         if (!empty($where)) {
-            $where = ' WHERE ' . implode(' AND ', $where);
+            $where = 'WHERE ' . implode(' AND ', $where);
         }
 
-        $list = $this->db->GetAllByKey('
-				SELECT id, template, isdefault, period, doctype
-				FROM numberplans' . $where . '
-				ORDER BY id', 'id');
+        $list = $this->db->GetAllByKey(
+            'SELECT
+                n.id, n.template, n.isdefault, n.period, n.doctype,
+                (CASE WHEN EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.id) THEN 1 ELSE 2 END) AS idx
+            FROM numberplans n
+            ' . $where . '
+            ORDER BY idx, n.id',
+            'id'
+        );
 
         if ($list && $next) {
             if ($cdate) {
@@ -442,6 +460,571 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         }
 
         return $list;
+    }
+
+    public function getDefaultNumberPlanID($doctype, $divisionid = null)
+    {
+        if (!empty($divisionid)) {
+            return $this->db->GetOne(
+                'SELECT n.id,
+                    (CASE WHEN a.planid IS NULL THEN (CASE WHEN u.planid IS NULL THEN 3 ELSE 1 END) ELSE (CASE WHEN u.planid IS NULL THEN 2 ELSE 0 END) END) AS idx
+                FROM numberplans n
+                LEFT JOIN numberplanassignments a ON a.planid = n.id AND a.divisionid = ?
+                LEFT JOIN numberplanusers u ON u.planid = n.id AND u.userid = ?
+                WHERE n.doctype = ? AND n.isdefault = 1
+                ORDER BY idx
+                LIMIT 1',
+                array(
+                    $divisionid,
+                    Auth::getCurrentUser(),
+                    $doctype,
+                )
+            );
+        } else {
+            return $this->db->GetOne(
+                'SELECT n.id,
+                    (CASE WHEN u.planid IS NULL THEN 1 ELSE 0 END) AS idx
+                FROM numberplans n
+                LEFT JOIN numberplanusers u ON u.planid = n.id AND u.userid = ?
+                WHERE n.doctype = ? AND n.isdefault = 1
+                ORDER BY idx
+                LIMIT 1',
+                array(
+                    Auth::getCurrentUser(),
+                    $doctype,
+                )
+            );
+        }
+    }
+
+    public function checkNumberPlanAccess($id)
+    {
+        return $this->db->GetOne(
+            'SELECT 1 FROM numberplans n
+            WHERE id = ?'
+                . (ConfigHelper::checkPrivilege('superuser')
+                    ? ''
+                    : ' AND (NOT EXISTS (SELECT 1 FROM numberplanassignments WHERE planid = n.id)
+                OR EXISTS (
+                    SELECT 1 FROM numberplanassignments a
+                    JOIN userdivisions u ON u.divisionid = a.divisionid
+                    WHERE a.planid = n.id AND u.userid = ' . Auth::GetCurrentUser() . '
+                )) AND (NOT EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.id)
+                OR EXISTS (
+                    SELECT 1 FROM numberplanusers u2
+                    WHERE u2.planid = n.id AND u2.userid = ' . Auth::GetCurrentUser() . '
+            ))'),
+            array($id)
+        ) > 0;
+    }
+
+    public function getNumberPlan($id)
+    {
+        $numberplan = $this->db->GetRow(
+            'SELECT id, period, template, doctype, isdefault
+            FROM numberplans n
+            WHERE id = ?'
+            . (ConfigHelper::checkPrivilege('superuser')
+                ? ''
+                : ' AND (NOT EXISTS (SELECT 1 FROM numberplanassignments WHERE planid = n.id)
+                    OR EXISTS (
+                        SELECT 1 FROM numberplanassignments a
+                        JOIN userdivisions u ON u.divisionid = a.divisionid
+                        WHERE a.planid = n.id AND u.userid = ' . Auth::GetCurrentUser() . '
+                    )) AND (NOT EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.id)
+                    OR EXISTS (
+                        SELECT 1 FROM numberplanusers u2
+                        WHERE u2.planid = n.id AND u2.userid = ' . Auth::GetCurrentUser() . '
+                    ))'),
+            array($id)
+        );
+
+        $divisions = $this->db->GetCol(
+            'SELECT divisionid
+            FROM numberplanassignments
+            WHERE planid = ?',
+            array($id)
+        );
+        $numberplan['divisions'] = $divisions ? array_flip($divisions) : array();
+
+        $users = $this->db->GetCol(
+            'SELECT userid
+            FROM numberplanusers
+            WHERE planid = ?',
+            array($id)
+        );
+        $numberplan['users'] = $users ? array_flip($users) : array();
+
+        return $numberplan;
+    }
+
+    public function getNumberPlanList(array $params)
+    {
+        $currmonth = date('n');
+        switch ($currmonth) {
+            case 1:
+            case 2:
+            case 3:
+                $startq = 1;
+                break;
+            case 4:
+            case 5:
+            case 6:
+                $startq = 4;
+                break;
+            case 7:
+            case 8:
+            case 9:
+                $startq = 7;
+                break;
+            case 10:
+            case 11:
+            case 12:
+                $startq = 10;
+                break;
+        }
+
+        $yearstart = mktime(0, 0, 0, 1, 1);
+        $quarterstart = mktime(0, 0, 0, $startq, 1);
+        $monthstart = mktime(0, 0, 0, $currmonth, 1);
+        $weekstart = mktime(0, 0, 0, $currmonth, date('j') - strftime('%u') + 1);
+        $daystart = mktime(0, 0, 0);
+
+        if (!empty($params['count'])) {
+            return intval(
+                $this->db->GetOne(
+                    'SELECT COUNT(n.id) FROM numberplans n
+                    WHERE' . (ConfigHelper::checkPrivilege('superuser')
+                        ? ' 1 = 1'
+                        : ' (NOT EXISTS (SELECT 1 FROM numberplanassignments WHERE planid = n.id)
+                        OR EXISTS (
+                            SELECT 1 FROM numberplanassignments a
+                            JOIN userdivisions ud ON ud.divisionid = a.divisionid
+                            WHERE a.planid = n.id
+                        )) AND (NOT EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.id)
+                        OR EXISTS (
+                            SELECT 1 FROM numberplanusers u WHERE planid = n.id AND u.userid = ' . Auth::GetCurrentUser() . '
+                        ))')
+                    . (empty($params['userid']) ? '' : ' AND EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.id AND userid = ' . intval($params['userid']) . ')')
+                    . (empty($params['divisionid']) ? '' : ' AND EXISTS (SELECT 1 FROM numberplanassignments WHERE planid = n.id AND divisionid = ' . intval($params['divisionid']) . ')')
+                    . (empty($params['type']) ? '' : ' AND n.doctype = ' . intval($params['type']))
+                )
+            );
+        }
+
+        if ($list = $this->db->GetAllByKey(
+            'SELECT n.id, n.template, n.period, n.doctype, n.isdefault
+            FROM numberplans n
+            WHERE' . (ConfigHelper::checkPrivilege('superuser')
+                ? ' 1 = 1'
+                : ' (NOT EXISTS (SELECT 1 FROM numberplanassignments WHERE planid = n.id)
+                    OR EXISTS (
+                        SELECT 1 FROM numberplanassignments a
+                        JOIN userdivisions ud ON ud.divisionid = a.divisionid
+                        WHERE a.planid = n.id
+                    )) AND (NOT EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.id)
+                    OR EXISTS (
+                        SELECT 1 FROM numberplanusers u WHERE planid = n.id AND u.userid = ' . Auth::GetCurrentUser() . '
+                    ))')
+            . (empty($params['userid']) ? '' : ' AND EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.id AND userid = ' . intval($params['userid']) . ')')
+            . (empty($params['divisionid']) ? '' : ' AND EXISTS (SELECT 1 FROM numberplanassignments WHERE planid = n.id AND divisionid = ' . intval($params['divisionid']) . ')')
+            . (empty($params['type']) ? '' : ' AND n.doctype = ' . intval($params['type'])) . '
+            ORDER BY n.id'
+            . (isset($params['limit']) ? ' LIMIT ' . intval($params['limit']) : '')
+            . (isset($params['offset']) ? ' OFFSET ' . intval($params['offset']) : ''),
+            'id'
+        )) {
+            $count = $this->db->GetAllByKey(
+                'SELECT numberplanid AS id, COUNT(numberplanid) AS count
+                FROM documents
+                GROUP BY numberplanid',
+                'id'
+            );
+
+            $max = $this->db->GetAllByKey(
+                'SELECT numberplanid AS id, MAX(number) AS max
+                FROM documents
+                LEFT JOIN numberplans ON (numberplanid = numberplans.id)
+                WHERE cdate >= (CASE period
+                    WHEN ' . YEARLY . ' THEN ' . $yearstart . '
+                    WHEN ' . QUARTERLY . ' THEN ' . $quarterstart . '
+                    WHEN ' . MONTHLY . ' THEN ' . $monthstart . '
+                    WHEN ' . WEEKLY . ' THEN ' . $weekstart . '
+                    WHEN ' . DAILY . ' THEN ' . $daystart . ' ELSE 0 END)
+                GROUP BY numberplanid',
+                'id'
+            );
+
+            foreach ($list as &$item) {
+                $item['next'] = isset($max[$item['id']]['max']) ? $max[$item['id']]['max']+1 : 1;
+                $item['issued'] = isset($count[$item['id']]['count']) ? $count[$item['id']]['count'] : 0;
+            }
+            unset($item);
+
+            $divisions = $this->db->GetAll(
+                'SELECT a.planid, d.id, (CASE WHEN d.label <> \'\' THEN d.label ELSE d.shortname END) AS shortname
+                FROM numberplanassignments a
+                JOIN divisions d ON d.id = a.divisionid
+                ORDER BY a.planid'
+            );
+
+            if (!empty($divisions)) {
+                foreach ($divisions as $division) {
+                    $planid = $division['planid'];
+                    if (isset($list[$planid])) {
+                        $list[$planid]['divisions'][$division['id']] = $division;
+                    }
+                }
+            }
+
+            $users = $this->db->GetAll(
+                'SELECT a.planid, u.id, u.rname, u.name, u.login
+                FROM numberplanusers a
+                JOIN vusers u ON u.id = a.userid
+                ORDER BY a.planid'
+            );
+
+            if (!empty($users)) {
+                foreach ($users as $user) {
+                    $planid = $user['planid'];
+                    if (isset($list[$planid])) {
+                        $list[$planid]['users'][$user['id']] = $user;
+                    }
+                }
+            }
+        }
+
+        return $list;
+    }
+
+    public function validateNumberPlan(array $numberplan)
+    {
+        $selecteddivisions = Utils::filterIntegers(empty($numberplan['divisions']) ? array() : $numberplan['divisions']);
+        $selectedusers = Utils::filterIntegers(empty($numberplan['users']) ? array() : $numberplan['users']);
+
+        if ($numberplan['doctype'] && $numberplan['isdefault']) {
+            if (empty($selecteddivisions)) {
+                if (empty($selectedusers)) {
+                    if ($this->db->GetOne(
+                        'SELECT 1 FROM numberplans n
+                        WHERE doctype = ? AND isdefault = 1' . (empty($numberplan['id']) ? '' : ' AND n.id <> ' . intval($numberplan['id']))
+                        . ' AND NOT EXISTS (SELECT 1 FROM numberplanassignments WHERE planid = n.id)
+                        AND NOT EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.id)',
+                        array($numberplan['doctype'])
+                    )) {
+                        return array(
+                            'doctype' => trans('Selected document type has already defined default plan!'),
+                        );
+                    }
+                } else {
+                    if ($this->db->GetOne(
+                        'SELECT 1 FROM numberplans n
+                        WHERE doctype = ? AND isdefault = 1' . (empty($numberplan['id']) ? '' : ' AND n.id <> ' . intval($numberplan['id']))
+                        . ' AND NOT EXISTS (SELECT 1 FROM numberplanassignments WHERE planid = n.id)
+                        AND NOT EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.in AND userid IN ?)',
+                        array($numberplan['doctype'], $selectedusers)
+                    )) {
+                        return array(
+                            'doctype' => trans('Selected document type for some of selected users has already defined default plan!'),
+                        );
+                    }
+                }
+            } else {
+                if (empty($selectedusers)) {
+                    if ($this->db->GetOne(
+                        'SELECT 1 FROM numberplans n
+                        WHERE doctype = ? AND isdefault = 1' . (empty($numberplan['id']) ? '' : ' AND n.id <> ' . intval($numberplan['id']))
+                        . ' AND EXISTS (
+                            SELECT 1 FROM numberplanassignments WHERE planid = n.id AND divisionid IN ?
+                        ) AND NOT EXISTS (
+                            SELECT 1 FROM numberplanusers WHERE planid = n.id
+                        )',
+                        array($numberplan['doctype'], $selecteddivisions)
+                    )) {
+                        return array(
+                            'doctype' => trans('Selected document type for some of selected divisions has already defined default plan!'),
+                        );
+                    }
+                } else {
+                    if ($this->db->GetOne(
+                        'SELECT 1 FROM numberplans n
+                        WHERE doctype = ? AND isdefault = 1' . (empty($numberplan['id']) ? '' : ' AND n.id <> ' . intval($numberplan['id']))
+                        . ' AND EXISTS (
+                            SELECT 1 FROM numberplanassignments WHERE planid = n.id AND divisionid IN ?
+                        ) AND EXISTS (
+                            SELECT 1 FROM numberplanusers WHERE planid = n.id AND userid IN ?
+                        )',
+                        array($numberplan['doctype'], $selecteddivisions, $selectedusers)
+                    )) {
+                        return array(
+                            'doctype' => trans('Selected document type for some of selected divisions and users has already defined default plan!'),
+                        );
+                    }
+                }
+            }
+        }
+
+        if (!empty($selecteddivisions)) {
+            $division_manager = new LMSDivisionManager($this->db, $this->auth, $this->cache, $this->syslog);
+            $divisions = $division_manager->GetDivisions();
+            if (empty($divisions)) {
+                $divisions = array();
+            }
+            if (count(array_intersect(array_keys($divisions), $selecteddivisions)) != count($selecteddivisions)) {
+                return array(
+                    'divisions' => trans('Permission denied!'),
+                );
+            }
+        }
+
+        if (!empty($selectedusers)) {
+            $user_manager = new LMSUserManager($this->db, $this->auth, $this->cache, $this->syslog);
+            $users = $user_manager->GetUsers(array(
+                'divisions' => empty($selecteddivisions) ? null : implode(',', $selecteddivisions),
+            ));
+            if (empty($users)) {
+                $users = array();
+            }
+            if (count(array_diff($selectedusers, array_keys($users)))) {
+                return array(
+                    'users' => trans('Permission denied!'),
+                );
+            }
+        }
+
+        return array();
+    }
+
+    public function addNumberPlan(array $numberplan)
+    {
+        $this->db->BeginTrans();
+
+        $args = array(
+            'template' => $numberplan['template'],
+            'doctype' => $numberplan['doctype'],
+            'period' => $numberplan['period'],
+            'isdefault' => isset($numberplan['isdefault']) ? 1 : 0
+        );
+        $this->db->Execute(
+            'INSERT INTO numberplans (template, doctype, period, isdefault)
+            VALUES (?, ?, ?, ?)',
+            array_values($args)
+        );
+
+        $id = $this->db->GetLastInsertID('numberplans');
+
+        if ($id && $this->syslog) {
+            $args[SYSLOG::RES_NUMPLAN] = $id;
+            $this->syslog->AddMessage(SYSLOG::RES_NUMPLAN, SYSLOG::OPER_ADD, $args);
+        }
+
+        if (!empty($numberplan['divisions'])) {
+            foreach ($numberplan['divisions'] as $divisionid) {
+                $res = $this->db->Execute(
+                    'INSERT INTO numberplanassignments (planid, divisionid)
+                    VALUES (?, ?)',
+                    array($id, $divisionid)
+                );
+                if ($res && $this->syslog) {
+                    $args = array(
+                        SYSLOG::RES_NUMPLANASSIGN => $this->db->GetLastInsertID('numberplanassignments'),
+                        SYSLOG::RES_NUMPLAN => $id,
+                        SYSLOG::RES_DIV => $divisionid
+                    );
+                    $this->syslog->AddMessage(SYSLOG::RES_NUMPLANASSIGN, SYSLOG::OPER_ADD, $args);
+                }
+            }
+        }
+
+        if (!empty($numberplan['users'])) {
+            foreach ($numberplan['users'] as $userid) {
+                $res = $this->db->Execute(
+                    'INSERT INTO numberplanusers (planid, userid)
+                    VALUES (?, ?)',
+                    array($id, $userid)
+                );
+                if ($res && $this->syslog) {
+                    $args = array(
+                        SYSLOG::RES_NUMPLAN => $id,
+                        SYSLOG::RES_USER => $userid
+                    );
+                    $this->syslog->AddMessage(SYSLOG::RES_NUMPLANUSER, SYSLOG::OPER_ADD, $args);
+                }
+            }
+        }
+
+        $this->db->CommitTrans();
+    }
+
+    public function updateNumberPlan(array $numberplan)
+    {
+        $this->db->BeginTrans();
+
+        $args = array(
+            'template' => $numberplan['template'],
+            'doctype' => $numberplan['doctype'],
+            'period' => $numberplan['period'],
+            'isdefault' => $numberplan['isdefault'],
+            SYSLOG::RES_NUMPLAN => $numberplan['id']
+        );
+        $res = $this->db->Execute(
+            'UPDATE numberplans SET template = ?, doctype = ?, period = ?, isdefault = ? WHERE id = ?',
+            array_values($args)
+        );
+        if ($res && $this->syslog) {
+            $this->syslog->AddMessage(SYSLOG::RES_NUMPLAN, SYSLOG::OPER_UPDATE, $args);
+        }
+
+        $old_divisions = $this->db->GetCol(
+            'SELECT d.id
+            FROM divisions d
+            JOIN numberplanassignments a ON a.divisionid = d.id
+            WHERE a.planid = ?',
+            array($numberplan['id'])
+        );
+        if (empty($old_divisions)) {
+            $old_divisions = array();
+        }
+
+        if (empty($numberplan['divisions'])) {
+            $numberplan['divisions'] = array();
+        }
+
+        $divisions_to_add = array_diff($numberplan['divisions'], $old_divisions);
+        $divisions_to_remove = array_diff($old_divisions, $numberplan['divisions']);
+
+        if (!empty($divisions_to_add)) {
+            foreach ($divisions_to_add as $divisionid) {
+                $res = $this->db->Execute(
+                    'INSERT INTO numberplanassignments (planid, divisionid) VALUES (?, ?)',
+                    array($numberplan['id'], $divisionid)
+                );
+
+                if ($res && $this->syslog) {
+                    $args = array(
+                        SYSLOG::RES_NUMPLANASSIGN => $this->db->GetLastInsertID('numberplanassignments'),
+                        SYSLOG::RES_NUMPLAN => $numberplan['id'],
+                        SYSLOG::RES_DIV => $divisionid,
+                    );
+                    $this->syslog->AddMessage(SYSLOG::RES_NUMPLANASSIGN, SYSLOG::OPER_ADD, $args);
+                }
+            }
+        }
+
+        if (!empty($divisions_to_remove)) {
+            foreach ($divisions_to_remove as $divisionid) {
+                if ($this->syslog) {
+                    $assignid = $this->db->GetOne(
+                        'SELECT id FROM numberplanassignments WHERE planid = ? AND divisionid = ?',
+                        array($numberplan['id'], $divisionid)
+                    );
+                }
+
+                $res = $this->db->Execute(
+                    'DELETE FROM numberplanassignments WHERE planid = ? AND divisionid = ?',
+                    array($numberplan['id'], $divisionid)
+                );
+
+                if ($res && $assignid && $this->syslog) {
+                    $args = array(
+                        SYSLOG::RES_NUMPLANASSIGN => $assignid,
+                        SYSLOG::RES_NUMPLAN => $numberplan['id'],
+                        SYSLOG::RES_DIV => $divisionid,
+                    );
+                    $this->syslog->AddMessage(SYSLOG::RES_NUMPLANASSIGN, SYSLOG::OPER_DELETE, $args);
+                }
+            }
+        }
+
+        $old_users = $this->db->GetCol(
+            'SELECT u.id
+            FROM users u
+            JOIN numberplanusers a ON a.userid = u.id
+            WHERE a.planid = ?',
+            array($numberplan['id'])
+        );
+        if (empty($old_users)) {
+            $old_users = array();
+        }
+
+        if (empty($numberplan['users'])) {
+            $numberplan['users'] = array();
+        }
+
+        $users_to_add = array_diff($numberplan['users'], $old_users);
+        $users_to_remove = array_diff($old_users, $numberplan['users']);
+
+        if (!empty($users_to_add)) {
+            foreach ($users_to_add as $userid) {
+                $res = $this->db->Execute(
+                    'INSERT INTO numberplanusers (planid, userid) VALUES (?, ?)',
+                    array($numberplan['id'], $userid)
+                );
+
+                if ($res && $this->syslog) {
+                    $args = array(
+                        SYSLOG::RES_NUMPLAN => $numberplan['id'],
+                        SYSLOG::RES_USER => $userid,
+                    );
+                    $this->syslog->AddMessage(SYSLOG::RES_NUMPLANUSER, SYSLOG::OPER_ADD, $args);
+                }
+            }
+        }
+
+        if (!empty($users_to_remove)) {
+            foreach ($users_to_remove as $userid) {
+                $res = $this->db->Execute(
+                    'DELETE FROM numberplanusers WHERE planid = ? AND userid = ?',
+                    array($numberplan['id'], $userid)
+                );
+
+                if ($res && $this->syslog) {
+                    $args = array(
+                        SYSLOG::RES_NUMPLAN => $numberplan['id'],
+                        SYSLOG::RES_USER => $userid,
+                    );
+                    $this->syslog->AddMessage(SYSLOG::RES_NUMPLANUSER, SYSLOG::OPER_DELETE, $args);
+                }
+            }
+        }
+
+        $this->db->CommitTrans();
+    }
+
+    public function deleteNumberPlan($id)
+    {
+        $this->db->BeginTrans();
+
+        if ($this->syslog) {
+            $args = array(SYSLOG::RES_NUMPLAN => $id);
+            $this->syslog->AddMessage(SYSLOG::RES_NUMPLAN, SYSLOG::OPER_DELETE, $args);
+
+            $assigns = $this->db->GetAll('SELECT * FROM numberplanassignments WHERE planid = ?', array($id));
+            if (!empty($assigns)) {
+                foreach ($assigns as $assign) {
+                    $args = array(
+                        SYSLOG::RES_NUMPLANASSIGN => $assign['id'],
+                        SYSLOG::RES_NUMPLAN => $id,
+                        SYSLOG::RES_DIV => $assign['divisionid'],
+                    );
+                    $this->syslog->AddMessage(SYSLOG::RES_NUMPLANASSIGN, SYSLOG::OPER_DELETE, $args);
+                }
+            }
+            $users = $this->db->GetAll('SELECT * FROM numberplanusers WHERE planid = ?', array($id));
+            if (!empty($users)) {
+                foreach ($users as $user) {
+                    $args = array(
+                        SYSLOG::RES_NUMPLAN => $id,
+                        SYSLOG::RES_USER => $user['userid'],
+                    );
+                    $this->syslog->AddMessage(SYSLOG::RES_NUMPLANUSER, SYSLOG::OPER_DELETE, $args);
+                }
+            }
+        }
+
+        $this->db->Execute('DELETE FROM numberplans WHERE id = ?', array($id));
+
+        $this->db->CommitTrans();
     }
 
     /*
@@ -735,18 +1318,23 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             return;
         }
 
+        $userpanel_enabled_modules = ConfigHelper::getConfig('userpanel.enabled_modules');
+        $userpanel = empty($userpanel_enabled_modules) || strpos($userpanel_enabled_modules, 'documents') !== false;
+
         $finance_manager = new LMSFinanceManager($this->db, $this->auth, $this->cache, $this->syslog);
 
         $this->db->BeginTrans();
 
-        $mail_dsn = ConfigHelper::getConfig('userpanel.document_notification_mail_dsn_address', '', true);
-        $mail_mdn = ConfigHelper::getConfig('userpanel.document_notification_mail_mdn_address', '', true);
-        $mail_sender_name = ConfigHelper::getConfig('userpanel.document_notification_mail_sender_name', '', true);
-        $mail_sender_address = ConfigHelper::getConfig('userpanel.document_notification_mail_sender_address', ConfigHelper::getConfig('mail.smtp_username'));
-        $mail_reply_address = ConfigHelper::getConfig('userpanel.document_notification_mail_reply_address', '', true);
-        $mail_format = ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_format', 'text');
-        $mail_subject = ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_subject');
-        $mail_body = ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_body');
+        if ($userpanel) {
+            $mail_dsn = ConfigHelper::getConfig('userpanel.document_notification_mail_dsn_address', '', true);
+            $mail_mdn = ConfigHelper::getConfig('userpanel.document_notification_mail_mdn_address', '', true);
+            $mail_sender_name = ConfigHelper::getConfig('userpanel.document_notification_mail_sender_name', '', true);
+            $mail_sender_address = ConfigHelper::getConfig('userpanel.document_notification_mail_sender_address', ConfigHelper::getConfig('mail.smtp_username'));
+            $mail_reply_address = ConfigHelper::getConfig('userpanel.document_notification_mail_reply_address', '', true);
+            $mail_format = ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_format', 'text');
+            $mail_subject = ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_subject');
+            $mail_body = ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_body');
+        }
 
         $customerinfos = array();
         $mail_contacts = array();
@@ -780,6 +1368,10 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 'UPDATE assignments SET commited = 1 WHERE docid = ? AND commited = 0',
                 array($docid)
             );
+
+            if (!$userpanel || empty($doc['customerawaits'])) {
+                continue;
+            }
 
             // customer awaits for signed document scan approval
             // so we should probably notify him about document confirmation
@@ -875,6 +1467,201 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         }
 
         $this->db->CommitTrans();
+    }
+
+    public function NewDocumentCustomerNotifications(array $document)
+    {
+        global $LMS;
+
+        function parse_notification($string, $data)
+        {
+            $customerinfo = $data['customerinfo'];
+            $string = str_replace(
+                array(
+                    '%cid%',
+                    '%pin%',
+                    '%customername%',
+                ),
+                array(
+                    $customerinfo['id'],
+                    $customerinfo['pin'],
+                    $customerinfo['customername'],
+                ),
+                $string
+            );
+
+            $document = $data['document'];
+            $string = str_replace(
+                array(
+                    '%docid%',
+                    '%date-y%',
+                    '%date-m%',
+                    '%date-d%',
+                ),
+                array(
+                    $document['id'],
+                    date('Y', $document['confirmdate']),
+                    date('m', $document['confirmdate']),
+                    date('d', $document['confirmdate']),
+                ),
+                $string
+            );
+
+            return $string;
+        }
+
+        if (!$LMS->checkCustomerConsent($document['customerid'], CCONSENT_USERPANEL_SCAN)
+            && !$LMS->checkCustomerConsent($document['customerid'], CCONSENT_USERPANEL_SMS)) {
+            return;
+        }
+
+        $mail_dsn = ConfigHelper::getConfig('userpanel.document_notification_mail_dsn_address', '', true);
+        $mail_mdn = ConfigHelper::getConfig('userpanel.document_notification_mail_mdn_address', '', true);
+        $mail_sender_name = ConfigHelper::getConfig('userpanel.document_notification_mail_sender_name', '', true);
+        $mail_sender_address = ConfigHelper::getConfig('userpanel.document_notification_mail_sender_address', ConfigHelper::getConfig('mail.smtp_username'));
+        $mail_reply_address = ConfigHelper::getConfig('userpanel.document_notification_mail_reply_address', '', true);
+
+        $new_document_mail_subject = ConfigHelper::getConfig('userpanel.new_document_customer_notification_mail_subject', '', true);
+        $new_document_mail_body = ConfigHelper::getConfig('userpanel.new_document_customer_notification_mail_body', '', true);
+        $new_document_mail_format = ConfigHelper::getConfig('userpanel.new_document_customer_notification_mail_format', '', true);
+
+        if (!empty($mail_sender_address) && !empty($new_document_mail_subject) && !empty($new_document_mail_body)) {
+            $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
+            $message_manager = new LMSMessageManager($this->db, $this->auth, $this->cache, $this->syslog);
+
+            $customerinfo = $customer_manager->GetCustomer($document['customerid']);
+            $mail_recipients = $customer_manager->GetCustomerContacts($document['customerid'], CONTACT_EMAIL);
+
+            if (!empty($mail_recipients)) {
+                $destinations = array();
+                foreach ($mail_recipients as $mail_recipient) {
+                    if (($mail_recipient['type'] & (CONTACT_NOTIFICATIONS | CONTACT_DISABLED)) == CONTACT_NOTIFICATIONS) {
+                        $destinations[] = $mail_recipient['contact'];
+                    }
+                }
+                if (!empty($destinations)) {
+                    $mail_subject = parse_notification(
+                        $new_document_mail_subject,
+                        array(
+                            'customerinfo' => $customerinfo,
+                            'document' => $document,
+                        )
+                    );
+                    $mail_body = parse_notification(
+                        $new_document_mail_body,
+                        array(
+                            'customerinfo' => $customerinfo,
+                            'document' => $document,
+                        )
+                    );
+
+                    $recipients = array(
+                        array(
+                            'id' => $document['customerid'],
+                            'email' => implode(',', $destinations),
+                        )
+                    );
+                    $message = $message_manager->addMessage(array(
+                        'type' => MSG_MAIL,
+                        'subject' => $mail_subject,
+                        'body' => $mail_body,
+                        'sender' => array(
+                            'name' => $mail_sender_name,
+                            'mail' => $mail_sender_address,
+                        ),
+                        'contenttype' => $new_document_mail_format == 'text' ? 'text/plain' : 'text/html',
+                        'recipients' => $recipients,
+                    ));
+
+                    $sender = ($mail_sender_name ? '"' . $mail_sender_name . '" ' : '') . '<' . $mail_sender_address . '>';
+                    $headers = array(
+                        'From' => $sender,
+                        'Recipient-Name' => $customerinfo['customername'],
+                        'Subject' => $mail_subject,
+                        'X-LMS-Format' => $new_document_mail_format,
+                    );
+                    if (!empty($mail_reply_address) && $mail_reply_address != $mail_sender_address) {
+                        $headers['Reply-To'] = $mail_reply_address;
+                    }
+                    if (!empty($mail_mdn)) {
+                        $headers['Return-Receipt-To'] = $mail_mdn;
+                        $headers['Disposition-Notification-To'] = $mail_mdn;
+                    }
+                    if (!empty($mail_dsn)) {
+                        $headers['Delivery-Status-Notification-To'] = true;
+                    }
+                    foreach ($destinations as $destination) {
+                        if (!empty($mail_dsn) || !empty($mail_mdn)) {
+                            $headers['X-LMS-Message-Item-Id'] = $message['items'][$document['customerid']][$destination];
+                            $headers['Message-ID'] = '<messageitem-' . $message['items'][$document['customerid']][$destination] . '@rtsystem.' . gethostname() . '>';
+                        }
+                        $LMS->SendMail($destination, $headers, $mail_body);
+                    }
+                }
+            }
+        }
+
+        $new_document_sms_body = ConfigHelper::getConfig('userpanel.new_document_customer_notification_sms_body', '', true);
+
+        if (!empty($new_document_sms_body)) {
+            $sms_options = $LMS->getCustomerSMSOptions();
+            $sms_active = !empty($sms_options) && isset($sms_options['service']) && !empty($sms_options['service']);
+            if (!$sms_active) {
+                $sms_service = ConfigHelper::getConfig('sms.service', '', true);
+                $sms_active = !empty($sms_service);
+            }
+
+            if ($sms_active) {
+                if (!isset($customer_manager)) {
+                    $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
+                    $message_manager = new LMSMessageManager($this->db, $this->auth, $this->cache, $this->syslog);
+
+                    $customerinfo = $customer_manager->GetCustomer($document['customerid']);
+                }
+
+                $phone_recipients = $customer_manager->GetCustomerContacts($document['customerid'], CONTACT_MOBILE);
+                if (!empty($phone_recipients)) {
+                    $destinations = array();
+                    foreach ($phone_recipients as $phone_recipient) {
+                        if (($phone_recipient['type'] & (CONTACT_NOTIFICATIONS | CONTACT_DISABLED)) == CONTACT_NOTIFICATIONS) {
+                            $destinations[] = $phone_recipient['contact'];
+                        }
+                    }
+                }
+
+                if (!empty($destinations)) {
+                    $sms_body = parse_notification(
+                        $new_document_sms_body,
+                        array(
+                            'customerinfo' => $customerinfo,
+                            'document' => $document,
+                        )
+                    );
+
+                    $recipients = array(
+                        array(
+                            'id' => $document['customerid'],
+                            'phone' => implode(',', $destinations),
+                        )
+                    );
+
+                    $message = $message_manager->addMessage(array(
+                        'type' => MSG_SMS,
+                        'subject' => trans('new document customer notification'),
+                        'body' => $sms_body,
+                        'recipients' => $recipients,
+                    ));
+
+                    $error = array();
+                    foreach ($destinations as $destination) {
+                        $res = $LMS->SendSMS($destination, $sms_body, $message['items'][$document['customerid']][$destination], $sms_options);
+                        if (is_string($res)) {
+                            $error[] = $res;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public function ArchiveDocuments(array $ids)

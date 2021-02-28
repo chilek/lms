@@ -169,7 +169,7 @@ try {
     $DB = LMSDB::getInstance();
 } catch (Exception $ex) {
     trigger_error($ex->getMessage(), E_USER_WARNING);
-    // can't working without database
+    // can't work without database
     die("Fatal error: cannot connect to database!" . PHP_EOL);
 }
 
@@ -196,9 +196,11 @@ if (!empty($service)) {
     LMSConfig::getConfig()->getSection('sms')->addVariable(new ConfigVariable('service', $service));
 }
 $prefix = ConfigHelper::getConfig($config_section . '.prefix', '', true);
-$newticket_notify = ConfigHelper::checkConfig('phpui.newticket_notify');
+$newticket_notify = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.newticket_notify', true));
 $helpdesk_customerinfo = ConfigHelper::checkConfig('phpui.helpdesk_customerinfo');
 $helpdesk_sendername = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
+
+$detect_customer_location_address = ConfigHelper::checkConfig($config_section . '.detect_customer_location_address');
 
 // Load plugin files and register hook callbacks
 $plugin_manager = new LMSPluginManager();
@@ -319,12 +321,20 @@ if (($fh = fopen($message_file, "r")) != null) {
         }
     }
     $requestor = !empty($customer['name']) ? $customer['name'] : (empty($phone) ? '' : $formatted_phone);
+
+    if (empty($customer['cid']) || !$detect_customer_location_address) {
+        $address_id = null;
+    } else {
+        $address_id = $LMS->detectCustomerLocationAddress($customer['cid']);
+    }
+
     $tid = $LMS->TicketAdd(array(
         'queue' => $queueid,
         'requestor' => $requestor,
         'requestor_phone' => empty($phone) ? null : $phone,
         'subject' => trans('SMS from $a', (empty($phone) ? trans("unknown") : $formatted_phone)),
         'customerid' => !empty($customer['cid']) ? $customer['cid'] : 0,
+        'address_id' => $address_id,
         'body' => $message,
         'phonefrom' => empty($phone) ? '' : $phone,
         'categories' => $cats,
@@ -365,7 +375,7 @@ if (($fh = fopen($message_file, "r")) != null) {
 
             $mobile_phones = array_filter($all_phones, function ($contact) {
                 return $contact['type'] & (CONTACT_MOBILE | CONTACT_DISABLED) == CONTACT_MOBILE;
-            }, $all_phones);
+            });
 
             if ($helpdesk_customerinfo) {
                 $params = array(

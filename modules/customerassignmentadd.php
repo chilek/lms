@@ -149,6 +149,7 @@ if (isset($_POST['assignment'])) {
         }
     }
     $a['last-settlement'] = ConfigHelper::checkConfig('phpui.default_assignment_last_settlement');
+    $a['align-periods'] = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.default_assignment_align_periods', true));
     $default_assignment_period = ConfigHelper::getConfig('phpui.default_assignment_period');
     if (!empty($default_assignment_period)) {
         $a['period'] = $default_assignment_period;

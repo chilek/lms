@@ -41,7 +41,7 @@
 						{trans("Select customers which has to concern new payment or covenant operation or leave it not selected if you want to add network income/expense operation.")}<BR><BR>
 						<SELECT size="20" id="customerselect" name="addbalance[mcustomerid][]" onChange="javascript:CountSelectedCustomers();" multiple>
 							{foreach from=$customers item=customer}
-							<OPTION value="{$customer.id}">{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
+							<OPTION value="{$customer.id}">{$customer.customername|truncate:40:"&hellip;":true} ({$customer.id|string_format:"%04d"})</OPTION>
 							{/foreach}
 						</SELECT><BR>
 						{trans("Selected:")} <INPUT TYPE="text" NAME="selectededit" VALUE="0" SIZE="5" class="light" style="border: 0" readonly>

@@ -28,7 +28,7 @@
                     {/if}
                     <br>
                     <a href="?m=userinfo&amp;id={$user.id}"
-                       style="font-weight: normal">{$user.name|truncate:"25":"...":true}</a>
+                       style="font-weight: normal;" {if isset($user.noaccess)} class="lms-ui-crossed"{/if}>{$user.name|trunescape:25}</a>
                 {/foreach}
             {else}
                 <br>
@@ -38,9 +38,9 @@
         {/if}
     </TD>
     <TD data-target-url="?m=eventinfo&id={$event.id}">
-        <a href="?m=eventinfo&id={$event.id}"><i class="lms-ui-icon-timetable lms-ui-tooltip-eventinfoshort" data-resourceid="{$event.id}"></i> <span class="bold" {if !$event.closed}style="color:black"{/if}>{$event.title}</span></a>
+        <a href="?m=eventinfo&id={$event.id}"><i class="lms-ui-icon-timetable lms-ui-tooltip-eventinfoshort" data-resourceid="{$event.id}"></i> <span class="bold" {if !$event.closed}style="color:black"{/if}>{$event.title|escape}</span></a>
         {if !ConfigHelper::checkConfig('phpui.timetable_hide_description')}{if $event.description != ''}<br>{icon name="description"} {$event.description}{/if}{/if}
-        {if $event.note != ''}<span{if !$event.closed} style="color: red;"{/if}><br>{icon name="note"} {$event.note}</span>{/if}
+        {if $event.note != ''}<span{if !$event.closed} style="color: red;"{/if}><br>{icon name="note"} {$event.note|escape}</span>{/if}
     </TD>
     <TD class="nobr" colspan="2" data-target-url="?m=eventinfo&id={$event.id}">
         {if $event.netnode_name}
@@ -48,13 +48,13 @@
             {if !empty($event.netnode_location)}<br>{icon name="location"} {$event.netnode_location}{/if}
         {else}
         {if $event.customername}
-            {icon name="customer"} <A href="?m=customerinfo&amp;id={$event.customerid}">{$event.customername|truncate:"30":"...":true}</A><br>
+            {icon name="customer"} <A href="?m=customerinfo&amp;id={$event.customerid}">{$event.customername|truncate:"30":"&hellip;":true}</A><br>
         {if !empty($event.address_id)}
-            {icon name="location"} {$event.location}
+            {icon name="location"} {$event.location|escape}
         {elseif !empty($event.nodeid)}
-            <a href="?m=nodeinfo&id={$event.nodeid}"> {$event.nodelocation}</a>
+            <a href="?m=nodeinfo&id={$event.nodeid}"> {$event.nodelocation|escape}</a>
         {else}
-            {icon name="location"} {$event.customerlocation}
+            {icon name="location"} {$event.customerlocation|escape}
         {/if}
         {/if}
         {/if}
@@ -75,6 +75,7 @@
                    {icon name="clipboard"}
                 </a>
                 {if ConfigHelper::checkPrivilege('timetable_management')}
+                    {button type="link" icon="clone" href="?m=eventadd&id={$event.id}" tip="Clone"}
                     {if ($event.closed)}
                         {$allow_modify = intval(ConfigHelper::getConfig('phpui.allow_modify_closed_events_newer_than', 604800))}
                         {if !$allow_modify || ($smarty.now - $event.closeddate < $allow_modify) || ConfigHelper::checkPrivilege('superuser')}
@@ -87,7 +88,6 @@
                             {button type="link" icon="owner" onclick="location.href = '?m=eventedit&id={$event.id}&action=assign&backid=' + $(this).closest('.event-day-table').attr('id');" tip="<!event>Assign"}
                         {/if}
                         {button type="link" icon="close" onclick="location.href = '?m=eventedit&id={$event.id}&action=close&backid=' + $(this).closest('.event-day-table').attr('id');" tip="Close"}
-                        {button type="link" icon="clone" href="?m=eventadd&id={$event.id}" tip="Clone"}
                         {button type="link" class="event-edit" icon="edit" href="?m=eventedit&id={$event.id}&backid=" tip="Edit"}
                         {button type="link" icon="note" onclick="location.href = '?m=eventnote&id={$event.id}&backid=' + $(this).closest('.event-day-table').attr('id');" tip="Add Note"}
                         {button type="link" icon="delete" class="delete-event" href="?m=eventdel&id={$event.id}" tip="Delete permanently"}

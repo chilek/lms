@@ -117,7 +117,7 @@
 		<TD WIDTH="1%" NOWRAP><A id="{$receipt.id}"></A>
 			{if !$receipt.closed}<span class="lms-ui-alert">{/if}
 			{$receipt.cdate|date_format:"%Y/%m/%d %H:%M"}<BR>
-			{$receipt.user|truncate:"16":"...":true}
+			{$receipt.user|truncate:"16":"&hellip;":true}
 			{if !$receipt.closed}</span>{/if}
 		</TD>
 		<TD WIDTH="1%" NOWRAP align="right"{if !$receipt.closed} class="lms-ui-alert"{/if}>
@@ -131,12 +131,12 @@
 		</TD>
 		<TD WIDTH="45%"{if !$receipt.closed} class="lms-ui-alert"{/if}>
 			{if $receipt.customerid}<A HREF="?m=customerinfo&id={$receipt.customerid}">{/if}
-			{$receipt.customer|truncate:"60":"...":true}
+			{$receipt.customer|truncate:"60":"&hellip;":true}
 			{if $receipt.customerid}</A>{/if}
 		</TD>
 		<TD WIDTH="50%"{if !$receipt.closed} class="lms-ui-alert"{/if}>
 			{foreach $receipt.positions as $position}
-				{$position.description|truncate:"80":"...":true}
+				{$position.description|truncate:"80":"&hellip;":true}
 				({moneyf($position.value, $receipt.currency)})
 				{if !$position@last}<br>{/if}
 			{/foreach}

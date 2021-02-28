@@ -136,7 +136,7 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
         $recipient .= $this->data['zip'] . ' ' . $this->data['city'] . '<br>';
         if ($this->data['ten']) {
             $recipient .= trans('TEN') . ': ' . $this->data['ten'];
-        } elseif ($this->data['ssn']) {
+        } elseif (!ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.hide_ssn', true)) && $this->data['ssn']) {
             $recipient .= trans('SSN') . ': ' . $this->data['ssn'];
         }
         $this->backend->SetFont(self::TCPDF_FONT, '', 8);

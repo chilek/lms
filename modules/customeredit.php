@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -59,6 +59,7 @@ if (isset($_GET['search'])) {
 
     require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
     if ($customerlist && ((isset($_POST['consents']) && !empty($_POST['consents']))
+        || ($_GET['oper'] == 'changetype' && ($_GET['type'] == CTYPES_PRIVATE || $_GET['type'] == CTYPES_COMPANY))
         || (isset($_GET['type']) && isset($_POST['contactflags'][$_GET['type']]) && !empty($_POST['contactflags'][$_GET['type']])
             && isset($CUSTOMERCONTACTTYPES[$_GET['type']])))) {
         foreach ($customerlist as $row) {
@@ -74,6 +75,9 @@ if (isset($_GET['search'])) {
                     break;
                 case 'removeflags':
                     $LMS->removeCustomerContactFlags($row['id'], $_GET['type'], $_POST['contactflags'][$_GET['type']]);
+                    break;
+                case 'changetype':
+                    $LMS->changeCustomerType($row['id'], $_GET['type']);
                     break;
             }
         }
@@ -254,7 +258,7 @@ if (!isset($_POST['xjxfun'])) {
                 $error['regon'] = trans('Incorrect Business Registration Number!');
             }
 
-            if ($customerdata['icn'] != '' && !isset($customerdata['icnwarning']) && !check_icn($customerdata['icn'])) {
+            if ($customerdata['icn'] != '' && $customerdata['ict'] == 0 && !isset($customerdata['icnwarning']) && !check_icn($customerdata['icn'])) {
                 $warning['icn'] = trans('Incorrect Identity Card Number! If you are sure you want to accept, then click "Submit" again.');
                 $icnwarning = 1;
             }
@@ -263,7 +267,8 @@ if (!isset($_POST['xjxfun'])) {
 
             if ($customerdata['pin'] == '') {
                 $error['pin'] = trans('PIN code is required!');
-            } elseif (!validate_random_string($customerdata['pin'], $pin_min_size, $pin_max_size, $pin_allowed_characters)) {
+            } elseif ((!ConfigHelper::checkConfig('phpui.validate_changed_pin') || $customerdata['pin'] != $LMS->getCustomerPin($_GET['id']))
+                && !validate_random_string($customerdata['pin'], $pin_min_size, $pin_max_size, $pin_allowed_characters)) {
                 $error['pin'] = trans('Incorrect PIN code!');
             }
 
@@ -370,6 +375,7 @@ if (!isset($_POST['xjxfun'])) {
                     }
                 }
 
+                $DB->BeginTrans();
                 $DB->Execute('DELETE FROM customercontacts WHERE customerid = ?', array($customerdata['id']));
                 if (!empty($contacts)) {
                     foreach ($contacts as $contact) {
@@ -380,6 +386,22 @@ if (!isset($_POST['xjxfun'])) {
                             'INSERT INTO customercontacts (customerid, contact, name, type) VALUES (?, ?, ?, ?)',
                             array($customerdata['id'], $contact['contact'], $contact['name'], $contact['type'])
                         );
+
+                        if ($contact['type'] & CONTACT_EMAIL && !empty($contact['properties'])) {
+                            $contactid = $DB->GetLastInsertID('customercontacts');
+                            foreach ($contact['properties'] as $property) {
+                                $DB->Execute(
+                                    'INSERT INTO customercontactproperties (contactid, name, value)
+                                    VALUES (?, ?, ?)',
+                                    array(
+                                        $contactid,
+                                        $property['name'],
+                                        $property['value']
+                                    )
+                                );
+                            }
+                        }
+
                         if ($SYSLOG) {
                             $contactid = $DB->GetLastInsertID('customercontacts');
                             $args = array(
@@ -388,11 +410,13 @@ if (!isset($_POST['xjxfun'])) {
                                 'contact' => $contact['contact'],
                                 'name' => $contact['name'],
                                 'type' => $contact['type'],
+                                'properties' => serialize($contact['properties']),
                             );
                             $SYSLOG->AddMessage(SYSLOG::RES_CUSTCONTACT, SYSLOG::OPER_ADD, $args);
                         }
                     }
                 }
+                $DB->CommitTrans();
 
                 $SESSION->redirect($backurl);
             } else {

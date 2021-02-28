@@ -141,6 +141,10 @@ switch ($action) {
         $invoice['number'] = '';
         $invoice['numberplanid'] = null;
 
+        if (ConfigHelper::checkConfig('invoices.force_telecom_service_flag')) {
+            $invoice['flags'][DOC_FLAG_TELECOM_SERVICE] = 1;
+        }
+
         // get default invoice's numberplanid and next number
         $currtime = time();
         $invoice['cdate'] = $currtime;
@@ -160,19 +164,10 @@ switch ($action) {
             $invoice['deadline'] = $currtime + $paytime * 86400;
         }
 
-        if (isset($customer)) {
-            $invoice['numberplanid'] = $DB->GetOne(
-                'SELECT n.id FROM numberplans n
-				JOIN numberplanassignments a ON (n.id = a.planid)
-				WHERE n.doctype = ? AND n.isdefault = 1 AND a.divisionid = ?',
-                array($invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE, $customer['divisionid'])
-            );
-        }
-
-        if (empty($invoice['numberplanid'])) {
-            $invoice['numberplanid'] = $DB->GetOne('SELECT id FROM numberplans
-				WHERE doctype = ? AND isdefault = 1', array($invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE));
-        }
+        $invoice['numberplanid'] = $LMS->getDefaultNumberPlanID(
+            $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE,
+            empty($customer) ? null : $customer['divisionid']
+        );
 
         $hook_data = array(
             'invoice' => $invoice,
@@ -247,27 +242,6 @@ switch ($action) {
                 trans('Tax category selection is required!');
         }
 
-        $hook_data = array(
-            'customer' => $customer,
-            'contents' => $contents,
-            'itemdata' => $itemdata,
-            'invoice' => $invoice,
-        );
-        $hook_data = $LMS->ExecuteHook('invoicenew_savepos_validation', $hook_data);
-        if (isset($hook_data['error']) && is_array($hook_data['error'])) {
-            $error = array_merge($error, $hook_data['error']);
-        }
-
-        if (!empty($error)) {
-            $SMARTY->assign('itemdata', $hook_data['itemdata']);
-            if (isset($posuid)) {
-                $error['posuid'] = $posuid;
-            }
-            break;
-        }
-
-        $itemdata = $hook_data['itemdata'];
-
         foreach (array('pdiscount', 'vdiscount', 'valuenetto', 'valuebrutto') as $key) {
             $itemdata[$key] = f_round($itemdata[$key]);
         }
@@ -294,7 +268,30 @@ switch ($action) {
             $itemdata['pdiscount'] = f_round($itemdata['pdiscount']);
             $itemdata['vdiscount'] = f_round($itemdata['vdiscount']);
             $itemdata['tax'] = isset($itemdata['taxid']) ? $taxeslist[$itemdata['taxid']]['label'] : '';
+        }
 
+        $hook_data = array(
+            'customer' => $customer,
+            'contents' => $contents,
+            'itemdata' => $itemdata,
+            'invoice' => $invoice,
+        );
+        $hook_data = $LMS->ExecuteHook('invoicenew_savepos_validation', $hook_data);
+        if (isset($hook_data['error']) && is_array($hook_data['error'])) {
+            $error = array_merge($error, $hook_data['error']);
+        }
+
+        if (!empty($error)) {
+            $SMARTY->assign('itemdata', $hook_data['itemdata']);
+            if (isset($posuid)) {
+                $error['posuid'] = $posuid;
+            }
+            break;
+        }
+
+        $itemdata = $hook_data['itemdata'];
+
+        if ($itemdata['count'] > 0 && $itemdata['name'] != '') {
             if ($action == 'savepos') {
                 $contents[$posuid] = $itemdata;
             } else {
@@ -525,6 +522,10 @@ switch ($action) {
             $error['currency'] = trans('Invalid currency selection!');
         }
 
+        if (!empty($invoice['numberplanid']) && !$LMS->checkNumberPlanAccess($invoice['numberplanid'])) {
+            $error['numberplanid'] = trans('Permission denied!');
+        }
+
         $hook_data = array(
             'customer' => $customer,
             'contents' => $contents,
@@ -539,13 +540,29 @@ switch ($action) {
             break;
         }
 
-        $invoice['currencyvalue'] = $LMS->getCurrencyValue($invoice['currency'], $invoice['sdate']);
+        $invoice['currencyvalue'] = $LMS->getCurrencyValue(
+            $invoice['currency'],
+            strtotime('yesterday', min($invoice['sdate'], $invoice['cdate'], time()))
+        );
         if (!isset($invoice['currencyvalue'])) {
             die('Fatal error: couldn\'t get quote for ' . $invoice['currency'] . ' currency!<br>');
         }
 
         $DB->BeginTrans();
-        $DB->LockTables(array('documents', 'cash', 'invoicecontents', 'numberplans', 'divisions', 'vdivisions'));
+        $tables = array('documents', 'cash', 'invoicecontents', 'numberplans', 'divisions', 'vdivisions', 'addresses');
+        if ($SYSLOG) {
+            $tables = array_merge($tables, array('logmessages', 'logmessagekeys', 'logmessagedata'));
+        }
+
+        $hook_data = array(
+            'tables' => array(),
+        );
+        $hook_data = $LMS->ExecuteHook('invoicenew_save_lock_tables', $hook_data);
+        if (is_array($hook_data['tables']) && !empty($hook_data['tables'])) {
+            $tables = array_unique(array_merge($tables, $hook_data['tables']));
+        }
+
+        $DB->LockTables($tables);
 
         if (!$invoice['number']) {
             $invoice['number'] = $LMS->GetNewDocumentNumber(array(

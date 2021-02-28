@@ -84,7 +84,19 @@ function GetRecipients($filter, $type = MSG_MAIL)
     $indebted3 = ($group == 58) ? 1 : 0;
     $opened_documents = ($group == 59) ? 1 : 0;
 
-    $expired_indebted = ($group == 61) ? 1 : 0;
+    $expired_indebted = ($group == 61 || $group == 64 || $group == 65) ? 1 : 0;
+    switch ($group) {
+        case 61:
+            $expired_days = 0;
+            break;
+        case 64:
+            $expired_days = 30;
+            break;
+        case 65:
+            $expired_days = 60;
+            break;
+    }
+
     $expired_notindebted = ($group == 60) ? 1 : 0;
     $expired_indebted2 = ($group == 62) ? 1 : 0;
     $expired_indebted3 = ($group == 63) ? 1 : 0;
@@ -124,25 +136,6 @@ function GetRecipients($filter, $type = MSG_MAIL)
 
     $deadline = ConfigHelper::getConfig('payments.deadline', ConfigHelper::getConfig('invoices.paytime', 0));
 
-    if ($expired_indebted || $expired_indebted2 || $expired_indebted3 || $expired_notindebted) {
-        $expired_debt_table = "
-			LEFT JOIN (
-				SELECT SUM(value * cash.currencyvalue) AS value, cash.customerid
-				FROM cash
-				JOIN customers c ON c.id = cash.customerid
-				LEFT JOIN divisions ON divisions.id = c.divisionid
-				LEFT JOIN documents d ON d.id = cash.docid
-				WHERE (cash.docid IS NULL AND ((cash.type <> 0 AND cash.time < ?NOW?)
-						OR (cash.type = 0 AND cash.time + ((CASE c.paytime WHEN -1 THEN
-							(CASE WHEN divisions.inv_paytime IS NULL THEN $deadline ELSE divisions.inv_paytime END) ELSE c.paytime END)) * 86400 < ?NOW?)))
-					OR (cash.docid IS NOT NULL AND ((d.type IN (" . DOC_RECEIPT . ',' . DOC_CNOTE . ") AND cash.time < ?NOW?
-						OR (d.type IN (" . DOC_INVOICE . ',' . DOC_DNOTE . ") AND d.cdate + d.paytime * 86400 < ?NOW?))))
-				GROUP BY cash.customerid
-			) b2 ON (b2.customerid = c.id)";
-    } else {
-        $expired_debt_table = '';
-    }
-
     if (!empty($netdevices)) {
         $netdevtable = ' JOIN (
 				SELECT DISTINCT n.ownerid FROM nodes n
@@ -152,19 +145,40 @@ function GetRecipients($filter, $type = MSG_MAIL)
 
     $suspension_percentage = f_round(ConfigHelper::getConfig('finances.suspension_percentage'));
 
-    $recipients = $LMS->DB->GetAll('SELECT c.id, pin, '
+    $recipients = $LMS->DB->GetAll(
+        'SELECT c.id, pin, '
         . ($type == MSG_MAIL ? 'cc.email, ' : '')
         . ($type == MSG_SMS ? 'x.phone, ' : '')
         . $LMS->DB->Concat('c.lastname', "' '", 'c.name') . ' AS customername,
         divisions.account,
-		COALESCE(b.value, 0) AS balance
+        COALESCE(b.value, 0) AS totalbalance,
+        b2.balance AS balance
 		FROM customerview c 
 		LEFT JOIN divisions ON divisions.id = c.divisionid
 		LEFT JOIN (
 			SELECT SUM(value * currencyvalue) AS value, customerid
 			FROM cash GROUP BY customerid
 		) b ON (b.customerid = c.id)
-		' . $expired_debt_table . '
+        LEFT JOIN (
+            SELECT cash.customerid, SUM(value * cash.currencyvalue) AS balance FROM cash
+            LEFT JOIN customers ON customers.id = cash.customerid
+            LEFT JOIN divisions ON divisions.id = customers.divisionid
+            LEFT JOIN documents d ON d.id = cash.docid
+            LEFT JOIN (
+                SELECT SUM(value * cash.currencyvalue) AS totalvalue, docid FROM cash
+                JOIN documents ON documents.id = cash.docid
+                WHERE documents.type = ?
+                GROUP BY docid
+            ) tv ON tv.docid = cash.docid
+            WHERE (cash.docid IS NULL AND ((cash.type <> 0 AND cash.time < ?NOW?)
+                OR (cash.type = 0 AND cash.time + (CASE customers.paytime WHEN -1 THEN
+                    (CASE WHEN divisions.inv_paytime IS NULL THEN ' . $deadline . ' ELSE divisions.inv_paytime END) ELSE customers.paytime END) * 86400 < ?NOW?)))
+                OR (cash.docid IS NOT NULL AND ((d.type = ? AND cash.time < ?NOW?)
+                    OR (d.type = ? AND cash.time < ?NOW? AND tv.totalvalue >= 0)
+                    OR (((d.type = ? AND tv.totalvalue < 0)
+                        OR d.type IN (?, ?, ?)) AND d.cdate + d.paytime * 86400 < ?NOW?)))
+            GROUP BY cash.customerid
+        ) b2 ON b2.customerid = c.id
 		LEFT JOIN (SELECT a.customerid,
 			SUM((CASE a.suspended
 				WHEN 0 THEN (((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount)
@@ -209,12 +223,12 @@ function GetRecipients($filter, $type = MSG_MAIL)
         .($disabled ? ' AND EXISTS (SELECT 1 FROM vnodes WHERE ownerid = c.id
 			GROUP BY ownerid HAVING (SUM(access) != COUNT(access)))' : '')
         . ($indebted ? ' AND COALESCE(b.value, 0) < 0' : '')
-        . ($indebted2 ? ' AND COALESCE(b.value, 0) < -t.value' : '')
-        . ($indebted3 ? ' AND COALESCE(b.value, 0) < -t.value * 2' : '')
+        . ($indebted2 ? ' AND t.value > 0 AND COALESCE(b.value, 0) < -t.value' : '')
+        . ($indebted3 ? ' AND t.value > 0 AND COALESCE(b.value, 0) < -t.value * 2' : '')
         . ($notindebted ? ' AND COALESCE(b.value, 0) >= 0' : '')
         . ($expired_indebted ? ' AND COALESCE(b2.value, 0) < 0' : '')
-        . ($expired_indebted2 ? ' AND COALESCE(b2.value, 0) < -t.value' : '')
-        . ($expired_indebted3 ? ' AND COALESCE(b2.value, 0) < -t.value * 2' : '')
+        . ($expired_indebted2 ? ' AND t.value > 0 AND COALESCE(b2.value, 0) < -t.value' : '')
+        . ($expired_indebted3 ? ' AND t.value > 0 AND COALESCE(b2.value, 0) < -t.value * 2' : '')
         . ($expired_notindebted ? ' AND COALESCE(b2.value, 0) >= 0' : '')
         . ($opened_documents ? ' AND c.id IN (SELECT DISTINCT customerid FROM documents
 			WHERE documents.closed = 0
@@ -223,7 +237,17 @@ function GetRecipients($filter, $type = MSG_MAIL)
 			WHERE customerid = c.id AND tariffid IS NULL AND liabilityid IS NULL
 				AND (datefrom = 0 OR datefrom < ?NOW?)
 				AND (dateto = 0 OR dateto > ?NOW?))' : '')
-        .' ORDER BY customername');
+        .' ORDER BY customername',
+        array(
+            DOC_CNOTE,
+            DOC_RECEIPT,
+            DOC_CNOTE,
+            DOC_CNOTE,
+            DOC_INVOICE,
+            DOC_INVOICE_PRO,
+            DOC_DNOTE,
+        )
+    );
 
     return $recipients;
 }
@@ -232,16 +256,48 @@ function GetCustomers($customers)
 {
     $DB = LMSDB::getInstance();
 
+    $deadline = intval(ConfigHelper::getConfig('payments.deadline', ConfigHelper::getConfig('invoices.paytime', 0)));
+
     return $DB->GetAllByKey(
         'SELECT c.id, pin, '
-        . $DB->Concat('c.lastname', "' '", 'c.name') . ' AS customername,
-        divisions.account,
-		COALESCE((SELECT SUM(value) FROM cash WHERE customerid = c.id), 0) AS balance
-		FROM customerview c
-		LEFT JOIN divisions ON divisions.id = c.divisionid
-		WHERE c.id IN ?',
+            . $DB->Concat('c.lastname', "' '", 'c.name') . ' AS customername,
+            divisions.account,
+            COALESCE((SELECT SUM(value) FROM cash WHERE customerid = c.id), 0) AS totalbalance,
+            b2.balance AS balance
+        FROM customerview c
+        LEFT JOIN divisions ON divisions.id = c.divisionid
+        LEFT JOIN (
+            SELECT cash.customerid, SUM(value * cash.currencyvalue) AS balance FROM cash
+            LEFT JOIN customers ON customers.id = cash.customerid
+            LEFT JOIN divisions ON divisions.id = customers.divisionid
+            LEFT JOIN documents d ON d.id = cash.docid
+            LEFT JOIN (
+                SELECT SUM(value * cash.currencyvalue) AS totalvalue, docid FROM cash
+                JOIN documents ON documents.id = cash.docid
+                WHERE documents.type = ?
+                GROUP BY docid
+            ) tv ON tv.docid = cash.docid
+            WHERE (cash.docid IS NULL AND ((cash.type <> 0 AND cash.time < ?NOW?)
+                OR (cash.type = 0 AND cash.time + (CASE customers.paytime WHEN -1 THEN
+                    (CASE WHEN divisions.inv_paytime IS NULL THEN ' . $deadline . ' ELSE divisions.inv_paytime END) ELSE customers.paytime END) * 86400 < ?NOW?)))
+                OR (cash.docid IS NOT NULL AND ((d.type = ? AND cash.time < ?NOW?)
+                    OR (d.type = ? AND cash.time < ?NOW? AND tv.totalvalue >= 0)
+                    OR (((d.type = ? AND tv.totalvalue < 0)
+                        OR d.type IN (?, ?, ?)) AND d.cdate + d.paytime * 86400 < ?NOW?)))
+            GROUP BY cash.customerid
+        ) b2 ON b2.customerid = c.id
+        WHERE c.id IN ?',
         'id',
-        array($customers)
+        array(
+            DOC_CNOTE,
+            DOC_RECEIPT,
+            DOC_CNOTE,
+            DOC_CNOTE,
+            DOC_INVOICE,
+            DOC_INVOICE_PRO,
+            DOC_DNOTE,
+            $customers
+        )
     );
 }
 
@@ -256,13 +312,41 @@ function BodyVars(&$body, $data, $format)
     ));
     $data = $hook_data['data'];
 
-    $body = str_replace('%customer', $data['customername'], $body);
-    $body = str_replace('%balance', moneyf($data['balance']), $body);
-    $body = str_replace('%cid', $data['id'], $body);
-    $body = str_replace('%pin', $data['pin'], $body);
+    $amount = -$data['balance'];
+    $totalamount = -$data['totalbalance'];
+
     if (strpos($body, '%bankaccount') !== false) {
         $body = str_replace('%bankaccount', format_bankaccount(bankaccount($data['id'], $data['account'])), $body);
     }
+
+    $body = str_replace(
+        array(
+            '%balance',
+            '%b',
+            '%totalb',
+            '%totalB',
+            '%totalsaldo',
+            '%B',
+            '%saldo',
+            '%customer',
+            '%cid',
+            '%pin',
+        ),
+        array(
+            moneyf($data['totalbalance']),
+            sprintf('%01.2f', $amount),
+            sprintf('%01.2f', $totalamount),
+            sprintf('%01.2f', $data['totalbalance']),
+            moneyf($data['totalbalance']),
+            sprintf('%01.2f', $data['balance']),
+            moneyf($data['balance']),
+            $data['customername'],
+            $data['id'],
+            $data['pin'],
+        ),
+        $body
+    );
+
     if (isset($data['node'])) {
         $macs = array();
         if (!empty($data['node']['macs'])) {
@@ -453,13 +537,15 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
         $message['type'] = MSG_USERPANEL_URGENT;
     }
 
-    if (empty($message['customerid']) && ($message['group'] < 0 || $message['group'] > 63
+    if (empty($message['customerid']) && ($message['group'] < 0 || $message['group'] > 65
         || ($message['group'] > CSTATUS_LAST && $message['group'] < 50))) {
         $error['group'] = trans('Incorrect customers group!');
     }
 
+    $html_format = isset($message['wysiwyg']) && isset($message['wysiwyg']['mailbody']) && ConfigHelper::checkValue($message['wysiwyg']['mailbody']);
+
     if ($message['type'] == MSG_MAIL) {
-        $message['body'] = $message['mailbody'];
+        $message['body'] = $html_format ? Utils::removeInsecureHtml($message['mailbody']) : $message['mailbody'];
         if ($message['sender'] == '') {
             $error['sender'] = trans('Sender e-mail is required!');
         } elseif (!check_email($message['sender'])) {
@@ -469,7 +555,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
             $error['from'] = trans('Sender name is required!');
         }
     } elseif ($message['type'] == MSG_WWW || $message['type'] == MSG_USERPANEL || $message['type'] == MSG_USERPANEL_URGENT) {
-        $message['body'] = $message['mailbody'];
+        $message['body'] = $html_format ? Utils::removeInsecureHtml($message['mailbody']) : $message['mailbody'];
     } else {
         $message['body'] = $message['smsbody'];
         $message['sender'] = '';
@@ -642,7 +728,6 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 
         $message['body'] = str_replace("\r", '', $message['body']);
 
-        $html_format = isset($message['wysiwyg']) && isset($message['wysiwyg']['mailbody']) && ConfigHelper::checkValue($message['wysiwyg']['mailbody']);
         $format = $html_format ? 'html' : 'text';
 
         if ($message['type'] == MSG_MAIL) {
@@ -778,6 +863,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                 if ($message['type'] == MSG_ANYSMS && isset($customer)) {
                     BodyVars($body, $customer, $format);
                 } else {
+                    $row['contenttype'] = $message['contenttype'];
                     BodyVars($body, $row, $format);
                 }
 
@@ -1002,6 +1088,16 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                 $message['customers'][$customerid]['emails'][$email['id']] = $email;
                 $message['emailcount']++;
             }
+        }
+    }
+
+    if (isset($_GET['messageid'])) {
+        $msg = $LMS->getSingleMessage($_GET['messageid']);
+        $message['type'] = $msg['type'];
+        $message['subject'] = !empty($msg['subject']) ? $msg['subject'] : '';
+        $message['body'] = !empty($msg['body']) ? $msg['body'] : '';
+        if ($msg['contenttype'] == 'text/html') {
+            $message['wysiwyg']['mailbody'] = 'true';
         }
     }
 

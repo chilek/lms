@@ -87,6 +87,20 @@ class LMSUserGroupManager extends LMSManager implements LMSUserGroupManagerInter
         return $result;
     }
 
+    public function UsergroupGetActiveUserid($groupid)
+    {
+        if ($groupid == -2) {
+            $result = $this->db->GetCol('SELECT id FROM users WHERE deleted = 0 AND access = 1');
+        } else {
+            $result = $this->db->GetCol('SELECT u.id
+                FROM users u
+                JOIN userassignments ua ON ua.userid = u.id
+                WHERE u.deleted = 0 AND u.access = 1 AND ua.usergroupid = ?', array($groupid));
+        }
+
+        return $result;
+    }
+
     public function UsergroupExists($id)
     {
         return ($this->db->GetOne('SELECT id FROM usergroups WHERE id=?', array($id)) ? true : false);

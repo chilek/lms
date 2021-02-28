@@ -138,7 +138,7 @@ if (defined('USERPANEL_SETUPMODE')) {
             $error['body'] = trans('This cannot be empty');
         }
         if (!$error) {
-            update_solution($_POST['id'], $_POST['title'], $_POST['body']);
+            update_solution($_POST['id'], $_POST['title'], Utils::removeInsecureHtml($_POST['body']));
             header('Location: ?m=userpanel&module=help');
         } else {
             $solution['id'] = $_POST['id'];
@@ -178,7 +178,7 @@ if (defined('USERPANEL_SETUPMODE')) {
             $error['body'] = trans('This cannot be empty');
         }
         if (!$error) {
-            add_solution($_POST['refid'], $_POST['title'], $_POST['body']);
+            add_solution($_POST['refid'], $_POST['title'], Utils::removeInsecureHtml($_POST['body']));
             header('Location: ?m=userpanel&module=help');
         } else {
             $solution['refid'] = $_POST['refid'];

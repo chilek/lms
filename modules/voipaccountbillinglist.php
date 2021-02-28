@@ -28,10 +28,12 @@ function sessionHandler($item, $name)
 {
     global $SESSION;
 
-    if (!isset($_GET[$item])) {
-        $SESSION->restore($name, $o);
-    } else {
+    if (isset($_GET[$item])) {
         $o = $_GET[$item];
+    } elseif (isset($_POST[$item])) {
+        $o = $_POST[$item];
+    } else {
+        $SESSION->restore($name, $o);
     }
 
     $SESSION->save($name, $o);

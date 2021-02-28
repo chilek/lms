@@ -37,25 +37,27 @@
     </THEAD>
     <TBODY>
 	{foreach $divisionlist as $division}
-	<TR class="{if $division.status} blend{/if}" data-name="{$division.shortname}">
+	<TR class="{if $division.status} blend{/if}" data-name="{$division.shortname|escape}">
 		<TD class="bold nobr" onclick="return self.location.href='?m=divisionedit&amp;id={$division.id}';">
-			<IMG src="img/division.gif" alt=""> {$division.shortname}
+			<IMG src="img/division.gif" alt=""> {$division.shortname|escape}
 		</TD>
 		<TD class="text-right nobr" onclick="return self.location.href='?m=divisionedit&amp;id={$division.id}';">
 			({$division.id|string_format:"%04d"})
 		</TD>
 		<td class="text-left">
-			{$division.label|default:"-"}
+			{$division.label|escape|default:"-"}
 		</td>
 		<TD class="text-left" onclick="return self.location.href='?m=divisionedit&amp;id={$division.id}';">
-			{$division.name}
+			{$division.name|escape}
 		</TD>
 		<TD class="text-right" onclick="return self.location.href='?m=divisionedit&amp;id={$division.id}';">
 			{$division.cnt|default:0}
 		</TD>
 		<TD class="lms-ui-buttons text-right nobr">
 			{button type="link" icon="lock" tip="{if $division.status}{trans("Unlock")}{else}{trans("Lock")}{/if}" href="?m=divisionedit&amp;id={$division.id}&amp;changestatus=1"}
-			{button type="link" icon="delete" tip="Delete" class="delete-division" href="?m=divisiondel&id={$division.id}"}
+			{if isset($division.unblock_delete)}
+				{button type="link" icon="delete" tip="Delete" class="delete-division" href="?m=divisiondel&id={$division.id}"}
+			{/if}
 			{button type="link" icon="clone" tip="Clone" class="clone-division" href="?m=divisionclone&id={$division.id}"}
 			{button type="link" icon="edit" tip="Edit" href="?m=divisionedit&id={$division.id}"}
 		</TD>

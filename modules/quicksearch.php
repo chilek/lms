@@ -145,7 +145,6 @@ switch ($mode) {
                     if ($row['deleted']) {
                         $name_classes[] = 'blend';
                     }
-                    //$name_classes[] = 'lms-ui-suggestion-customer-status-' . $CSTATUSES[$row['status']]['alias'];
                     $name_class = implode(' ', $name_classes);
 
                     $description = '';
@@ -153,11 +152,11 @@ switch ($mode) {
                     $action = '?m=customerinfo&id=' . $row['id'];
 
                     if ((empty($properties) || isset($properties['name'])) && $customer_count[$row['customername']]) {
-                        $description = $row['address'];
+                        $description = htmlspecialchars($row['address']);
                         if (!empty($row['post_address'])) {
-                            $description .= '<BR>' . $row['post_address'];
+                            $description .= '<BR>' . htmlspecialchars($row['post_address']);
                             if (!empty($row['post_name'])) {
-                                $description .= '<BR>' . $row['post_name'];
+                                $description .= '<BR>' . htmlspecialchars($row['post_name']);
                             }
                         }
                     } else if ((empty($properties) || isset($properties['id'])) && preg_match("~^$search\$~i", $row['id'])) {
@@ -165,15 +164,15 @@ switch ($mode) {
                     } else if ((empty($properties) || isset($properties['name'])) && preg_match("~$search~i", $row['customername'])) {
                         $description = '';
                     } else if ((empty($properties) || isset($properties['address'])) && preg_match("~$search~i", $row['address'])) {
-                        $description = trans('Address:') . ' ' . $row['address'];
+                        $description = trans('Address:') . ' ' . htmlspecialchars($row['address']);
                     } else if ((empty($properties) || isset($properties['post_name'])) && preg_match("~$search~i", $row['post_name'])) {
-                        $description = trans('Name:') . ' ' . $row['post_name'];
+                        $description = trans('Name:') . ' ' . htmlspecialchars($row['post_name']);
                     } else if ((empty($properties) || isset($properties['post_address'])) && preg_match("~$search~i", $row['post_address'])) {
-                        $description = trans('Address:') . ' ' . $row['post_address'];
+                        $description = trans('Address:') . ' ' . htmlspecialchars($row['post_address']);
                     } else if ((empty($properties) || isset($properties['location_name'])) && preg_match("~$search~i", $row['location_name'])) {
-                        $description = trans('Name:') . ' ' . $row['location_name'];
+                        $description = trans('Name:') . ' ' . htmlspecialchars($row['location_name']);
                     } else if ((empty($properties) || isset($properties['location_address'])) && preg_match("~$search~i", $row['location_address'])) {
-                        $description = trans('Address:') . ' ' . $row['location_address'];
+                        $description = trans('Address:') . ' ' . htmlspecialchars($row['location_address']);
                     } else if ((empty($properties) || isset($properties['email'])) && preg_match("~$search~i", $row['email'])) {
                         $description = trans('E-mail:') . ' ' . $row['email'];
                     } else if ((empty($properties) || isset($properties['ten']))
@@ -189,7 +188,7 @@ switch ($mode) {
                     }
 
                     $result[$row['id']] = array_merge(
-                        compact('name', 'name_class', 'description', 'description_class', 'action'),
+                        compact('name', 'icon', 'name_class', 'description', 'description_class', 'action'),
                         array('id' => $row['id'])
                     );
                 }
@@ -413,13 +412,13 @@ switch ($mode) {
         // Build different query for each database engine,
             // MySQL is slow here when vnodes view is used
             if (ConfigHelper::getConfig('database.type') == 'postgres') {
-                $sql_query = 'SELECT n.id, n.name, INET_NTOA(ipaddr) as ip,
+                $sql_query = 'SELECT n.id, n.name, n.login, INET_NTOA(ipaddr) as ip,
 			        INET_NTOA(ipaddr_pub) AS ip_pub, mac, location, access, lastonline
 				    FROM vnodes n
 				    WHERE %where
     				ORDER BY n.name LIMIT ?';
             } else {
-                $sql_query = 'SELECT n.id, n.name, INET_NTOA(ipaddr) as ip,
+                $sql_query = 'SELECT n.id, n.name, n.login, INET_NTOA(ipaddr) as ip,
 			        INET_NTOA(ipaddr_pub) AS ip_pub, mac, va.location, access, lastonline
 				    FROM nodes n
 				    JOIN (
@@ -435,6 +434,7 @@ switch ($mode) {
             $sql_where = '('
                 . (empty($properties) || isset($properties['id']) ? (preg_match('/^[0-9]+$/', $search) ? "n.id = " . $search : '1=0') : '1=0')
                 . (empty($properties) || isset($properties['name']) ? " OR LOWER(n.name) ?LIKE? LOWER($sql_search)" : '')
+                . (empty($properties) || isset($properties['login']) ? " OR LOWER(n.login) ?LIKE? LOWER($sql_search)" : '')
                 . (empty($properties) || isset($properties['ip']) ? " OR INET_NTOA(ipaddr) ?LIKE? $sql_search" : '')
                 . (empty($properties) || isset($properties['public_ip']) ? " OR INET_NTOA(ipaddr_pub) ?LIKE? $sql_search" : '')
                 . (empty($properties) || isset($properties['mac']) ? " OR LOWER(mac) ?LIKE? LOWER(".macformat($search, true) . ")" : '')
@@ -477,12 +477,14 @@ switch ($mode) {
                         $description = trans('Id') . ': ' . $row['id'];
                     } else if ((empty($properties) || isset($properties['name'])) && preg_match("~$search~i", $row['name'])) {
                         $description = trans('Name') . ': ' . $row['name'];
+                    } else if ((empty($properties) || isset($properties['login'])) && preg_match("~$search~i", $row['login'])) {
+                        $description = trans('<!node>Login') . ': ' . $row['login'];
                     } else if ((empty($properties) || isset($properties['ip'])) && preg_match("~$search~i", $row['ip'])) {
                         $description = trans('IP') . ': ' . $row['ip'];
                     } else if ((empty($properties) || isset($properties['public_ip'])) && preg_match("~$search~i", $row['ip_pub'])) {
                         $description = trans('IP') . ': ' . $row['ip_pub'];
                     } else if ((empty($properties) || isset($properties['location_address'])) && preg_match("~$search~i", $row['location'])) {
-                        $description = trans('Address') . ': ' . $row['location'];
+                        $description = trans('Address') . ': ' . htmlspecialchars($row['location']);
                     } else if ((empty($properties) || isset($properties['mac'])) && preg_match("~" . macformat($search) . "~i", $row['mac'])) {
                         $macs = explode(',', $row['mac']);
                         foreach ($macs as $mac) {
@@ -748,10 +750,10 @@ switch ($mode) {
                     if ((empty($properties) || isset($properties['id'])) && preg_match("~^$search\$~i", $row['id'])) {
                         $description = trans('Id') . ': ' . $row['id'];
                     } else if ((empty($properties) || isset($properties['subject'])) && preg_match("~$search~i", $row['subject'])) {
-                        $description = trans('Subject:') . ' ' . $row['subject'];
+                        $description = trans('Subject:') . ' ' . htmlspecialchars($row['subject']);
                     } else if ((empty($properties) || isset($properties['requestor'])) && preg_match("~$search~i", $row['requestor'])) {
                         $description = trans('First/last name') . ': '
-                        . preg_replace('/ <.*/', '', $row['requestor']);
+                        . htmlspecialchars(preg_replace('/ <.*/', '', $row['requestor']));
                     } else if ((empty($properties) || isset($properties['customername'])) && preg_match("~^$search~i", $row['name'])) {
                         $description = trans('First/last name') . ': ' . $row['name'];
                     } else if ((empty($properties) || isset($properties['customername'])) && preg_match("~^$search~i", $row['lastname'])) {

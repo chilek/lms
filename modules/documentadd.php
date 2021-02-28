@@ -49,29 +49,36 @@ if (isset($_POST['document'])) {
     }
 
     // check if selected customer can use selected numberplan
-    if ($document['numberplanid'] && $document['customerid']
-            && !$DB->GetOne('SELECT 1 FROM numberplanassignments
-	                WHERE planid = ? AND divisionid IN (SELECT divisionid
-				FROM customers WHERE id = ?)', array($document['numberplanid'], $document['customerid']))) {
-        $error['number'] = trans('Selected numbering plan doesn\'t match customer\'s division!');
-    } elseif ($document['number'] == '') {
-    // check number
-        $tmp = $LMS->GetNewDocumentNumber(array(
-            'doctype' => $document['type'],
-            'planid' => $document['numberplanid'],
-            'customerid' => $document['customerid'],
-        ));
-        $document['number'] = $tmp ? $tmp : 0;
-        $autonumber = true;
-    } elseif (!preg_match('/^[0-9]+$/', $document['number'])) {
-        $error['number'] = trans('Document number must be an integer!');
-    } elseif ($LMS->DocumentExists(array(
+    if ($document['numberplanid'] && $document['customerid']) {
+        if (!$DB->GetOne('SELECT 1 FROM numberplanassignments
+                WHERE planid = ? AND divisionid IN (SELECT divisionid
+            FROM customers WHERE id = ?)', array($document['numberplanid'], $document['customerid']))) {
+            $error['number'] = trans('Selected numbering plan doesn\'t match customer\'s division!');
+        } elseif (!$LMS->checkNumberPlanAccess($document['numberplanid'])) {
+            $error['numberplanid'] = trans('Permission denied!');
+        }
+    }
+
+    if (!$error) {
+        if ($document['number'] == '') {
+            // check number
+            $tmp = $LMS->GetNewDocumentNumber(array(
+                'doctype' => $document['type'],
+                'planid' => $document['numberplanid'],
+                'customerid' => $document['customerid'],
+            ));
+            $document['number'] = $tmp ? $tmp : 0;
+            $autonumber = true;
+        } elseif (!preg_match('/^[0-9]+$/', $document['number'])) {
+            $error['number'] = trans('Document number must be an integer!');
+        } elseif ($LMS->DocumentExists(array(
             'number' => $document['number'],
             'doctype' => $document['type'],
             'planid' => $document['numberplanid'],
             'customerid' => $document['customerid'],
         ))) {
-        $error['number'] = trans('Document with specified number exists!');
+            $error['number'] = trans('Document with specified number exists!');
+        }
     }
 
     if (empty($document['fromdate'])) {
@@ -84,6 +91,8 @@ if (isset($_POST['document'])) {
         $document['todate'] = 0;
     } elseif (!preg_match('/^[0-9]+$/', $document['todate'])) {
         $error['todate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+    } else {
+        $document['todate'] += 86399;
     }
 
     if ($document['fromdate'] > $document['todate'] && $document['todate'] != 0) {
@@ -345,6 +354,7 @@ if (isset($_POST['document'])) {
                 $selected_assignment['period'] = $period;
                 $selected_assignment['at'] = $at;
                 $selected_assignment['commited'] = isset($document['closed']) ? 1 : 0;
+                $selected_assignment['align-periods'] = isset($document['assignment']['align-periods']);
 
                 if (is_array($selected_assignment['sassignmentid'][$schemaid])) {
                     $modifiedvalues = $selected_assignment['values'][$schemaid];
@@ -372,6 +382,11 @@ if (isset($_POST['document'])) {
         }
 
         $DB->CommitTrans();
+
+        if ($LMS->DocumentExists($docid) && !empty($document['confirmdate'])) {
+            $document['id'] = $docid;
+            $LMS->NewDocumentCustomerNotifications($document);
+        }
 
         if (!isset($document['reuse'])) {
             if (isset($_GET['print'])) {
@@ -411,6 +426,8 @@ if (isset($_POST['document'])) {
             $document['assignment']['settlement'] = 1;
         }
     }
+    $document['assignment']['last-settlement'] = ConfigHelper::checkConfig('phpui.default_assignment_last_settlement');
+    $document['assignment']['align-periods'] = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.default_assignment_align_periods', true));
     $default_assignment_period = ConfigHelper::getConfig('phpui.default_assignment_period');
     if (!empty($default_assignment_period)) {
         $document['assignment']['period'] = $default_assignment_period;
@@ -422,6 +439,19 @@ if (isset($_POST['document'])) {
 
     $document['assignment']['check_all_terminals'] =
         ConfigHelper::checkConfig('phpui.promotion_schema_all_terminal_check');
+
+    $default_existing_assignment_operation = ConfigHelper::getConfig('phpui.default_existing_assignment_operation', 'keep');
+    $existing_assignment_operation_map = array(
+        'keep' => EXISTINGASSIGNMENT_KEEP,
+        'suspend' => EXISTINGASSIGNMENT_SUSPEND,
+        'cut' => EXISTINGASSIGNMENT_CUT,
+        'delete' => EXISTINGASSIGNMENT_DELETE,
+    );
+    if (isset($existing_assignment_operation_map[$default_existing_assignment_operation])) {
+        $document['assignment']['existing_assignments']['operation'] = $existing_assignment_operation_map[$default_existing_assignment_operation];
+    } else {
+        $document['assignment']['existing_assignments']['operation'] = EXISTINGASSIGNMENT_KEEP;
+    }
 }
 
 $SMARTY->setDefaultResourceType('extendsall');

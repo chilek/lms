@@ -285,7 +285,11 @@ function module_main()
             }
         }
     } else {
-        $documentid = 0;
+        if (isset($_GET['documentid'])) {
+            $documentid = intval($_GET['documentid']);
+        } else {
+            $documentid = 0;
+        }
     }
 
     $documents = $DB->GetAll('SELECT d.id, d.number, d.type, c.title, c.fromdate, c.todate, 
@@ -363,6 +367,14 @@ if (defined('USERPANEL_SETUPMODE')) {
                     ConfigHelper::getConfig('userpanel.document_notification_mail_sender_address', '', true),
                 'document_notification_mail_reply_address' =>
                     ConfigHelper::getConfig('userpanel.document_notification_mail_reply_address', '', true),
+                'new_document_customer_notification_mail_format' =>
+                    ConfigHelper::getConfig('userpanel.new_document_customer_notification_mail_format', 'text'),
+                'new_document_customer_notification_mail_subject' =>
+                    ConfigHelper::getConfig('userpanel.new_document_customer_notification_mail_subject', '', true),
+                'new_document_customer_notification_mail_body' =>
+                    ConfigHelper::getConfig('userpanel.new_document_customer_notification_mail_body', '', true),
+                'new_document_customer_notification_sms_body' =>
+                    ConfigHelper::getConfig('userpanel.new_document_customer_notification_sms_body', '', true),
                 'signed_document_scan_operator_notification_mail_recipient' =>
                     ConfigHelper::getConfig('userpanel.signed_document_scan_operator_notification_mail_recipient', '', true),
                 'signed_document_scan_operator_notification_mail_format' =>
@@ -408,6 +420,10 @@ if (defined('USERPANEL_SETUPMODE')) {
             'document_notification_mail_sender_name' => CONFIG_TYPE_RICHTEXT,
             'document_notification_mail_sender_address' => CONFIG_TYPE_RICHTEXT,
             'document_notification_mail_reply_address' => CONFIG_TYPE_RICHTEXT,
+            'new_document_customer_notification_mail_format' => CONFIG_TYPE_NONE,
+            'new_document_customer_notification_mail_subject' => CONFIG_TYPE_RICHTEXT,
+            'new_document_customer_notification_mail_body' => CONFIG_TYPE_RICHTEXT,
+            'new_document_customer_notification_sms_body' => CONFIG_TYPE_RICHTEXT,
             'signed_document_scan_operator_notification_mail_recipient' => CONFIG_TYPE_RICHTEXT,
             'signed_document_scan_operator_notification_mail_format' => CONFIG_TYPE_NONE,
             'signed_document_scan_operator_notification_mail_subject' => CONFIG_TYPE_RICHTEXT,

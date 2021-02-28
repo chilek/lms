@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -46,7 +46,7 @@ if (isset($_GET['id'])) {
 
 switch ($_GET['action']) {
     case 'open':
-        if (($event['closed'] == 1 && $aee && ((time() - $event['closeddate']) < $aee)) || ConfigHelper::checkPrivilege('superuser')) {
+        if (empty($event['closeddate']) || ($event['closed'] == 1 && $aee && (time() - $event['closeddate'] < $aee)) || ConfigHelper::checkPrivilege('superuser')) {
             $DB->Execute('UPDATE events SET closed = 0, closeduserid = NULL, closeddate = 0 WHERE id = ?', array($_GET['id']));
             $SESSION->redirect('?'.$SESSION->get('backto')
                 . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
@@ -84,14 +84,14 @@ switch ($_GET['action']) {
         break;
 }
 
-$userlist = $LMS->GetUserNames();
-unset($userlist['total']);
+$params['withDeleted'] = 1;
+$userlist = $LMS->GetUserNames($params);
 
 if (isset($_POST['event'])) {
     $event = $_POST['event'];
 
     if (!isset($event['usergroup'])) {
-        $event['usergroup'] = 0;
+        $event['usergroup'] = -2;
     }
     //$SESSION->save('eventgid', $event['usergroup']);
 

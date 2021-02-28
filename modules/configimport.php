@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,18 +24,21 @@
  *  $Id$
  */
 
+$db = LMSDB::getInstance();
+$lms = LMS::getInstance();
+$layout['pagetitle'] = trans('Import configuration');
+$error = null;
+$config = array();
+if (isset($_POST['config'])) {
+    $config = $_POST['config'];
+}
+
 check_file_uploads();
 
 if (isset($_POST['fileupload'])) {
     $result = handle_file_uploads('files', $error);
     extract($result);
     $SMARTY->assign('fileupload', $fileupload);
-
-    if (!isset($_GET['target-type']) || empty($_GET['target-type'])) {
-        $error['type'] = trans('Target variables type has not been selected!');
-        include(MODULES_DIR . DIRECTORY_SEPARATOR . 'configlist.php');
-        die;
-    }
 
     if (empty($files)) {
         $error['files'] = trans('No files selected!');
@@ -45,44 +48,41 @@ if (isset($_POST['fileupload'])) {
                 $error['files'] = trans('Non plain text file detected!');
             }
 
-            if (!(array) parse_ini_file($tmppath . DIRECTORY_SEPARATOR . $file['name'], true)) {
+            $parseResult = @parse_ini_file($tmppath . DIRECTORY_SEPARATOR . $file['name'], true);
+            if (!is_array($parseResult)) {
                 $error['files'] = trans('Bad file structure!');
             }
         }
-        if (isset($error['files'])) {
-            include(MODULES_DIR . DIRECTORY_SEPARATOR . 'configlist.php');
-            die;
+    }
+
+    if (!$error && isset($_POST['config'])) {
+        $db->BeginTrans();
+        foreach ($files as $file) {
+            $filename = $file['name'];
+            $filecontent = file_get_contents($tmppath . DIRECTORY_SEPARATOR . $filename);
+
+            $filePath = $tmppath . DIRECTORY_SEPARATOR . $filename;
+            $lms->importConfigs(
+                array(
+                    'file' => $filePath,
+                    'targetType' => $_POST['config']['target-type'],
+                    'withparentbindings' => (isset($_POST['config']['withparentbindings']) ? intval($_POST['config']['withparentbindings']) : null),
+                    'targetUser' => (isset($_POST['config']['target-user']) ? intval($_POST['config']['target-user']) : null),
+                    'targetDivision' => (isset($_POST['config']['target-division']) ? intval($_POST['config']['target-division']) : null),
+                    'override' => (isset($_POST['config']['override']) ? intval($_POST['config']['override']) : null)
+                )
+            );
         }
+        $db->CommitTrans();
+
+        // deletes uploaded files
+        if (!empty($tmppath)) {
+            rrmdir($tmppath);
+        }
+
+        $SMARTY->clearAssign('fileupload');
+        $SESSION->redirect('?m=configlist');
     }
-
-    $DB->BeginTrans();
-    foreach ($files as $file) {
-        $filename = $file['name'];
-        $filecontent = file_get_contents($tmppath . DIRECTORY_SEPARATOR . $filename);
-
-        $filePath = $tmppath . DIRECTORY_SEPARATOR . $filename;
-        $LMS->importConfigs(
-            array(
-                'file' => $filePath,
-                'targetType' => $_GET['target-type'],
-                'withparentbindings' => (isset($_GET['withparentbindings']) ? intval($_GET['withparentbindings']) : null),
-                'targetUser' => (isset($_GET['target-user']) ? intval($_GET['target-user']) : null),
-                'targetDivision' => (isset($_GET['target-division']) ? intval($_GET['target-division']) : null),
-                'override' => (isset($_GET['override']) ? intval($_GET['override']) : null)
-            )
-        );
-    }
-    $DB->CommitTrans();
-
-    // deletes uploaded files
-    if (!empty($tmppath)) {
-        rrmdir($tmppath);
-    }
-
-    $SMARTY->clearAssign('fileupload');
-
-    include(MODULES_DIR . DIRECTORY_SEPARATOR . 'configlist.php');
-    die;
 } elseif (isset($_FILES['file'])) { // upload errors
     switch ($_FILES['file']['error']) {
         case 1:
@@ -100,3 +100,10 @@ if (isset($_POST['fileupload'])) {
             break;
     }
 }
+
+$SMARTY->assign('users', $lms->getUsers(array('superuser' => 1)));
+$SMARTY->assign('sections', $lms->GetConfigSections());
+$SMARTY->assign('divisions', $lms->GetDivisions());
+$SMARTY->assign('error', $error);
+$SMARTY->assign('config', $config);
+$SMARTY->display('config/configimport.html');

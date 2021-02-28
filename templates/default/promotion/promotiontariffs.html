@@ -3,7 +3,7 @@
 	<THEAD>
 	<TR>
 		<TD style="width: 100%;" class="hand text-left bold nobr" onClick="showOrHide('promotiontariffs');">
-			<IMG src="img/money.gif" alt="">
+			{icon name="money" class="fa-fw"}
 			{if empty($promotion.tariffs)}{$count = 0}{else}{$count = count($promotion.tariffs)}{/if}
 			{t a=$count}Promotion's Tariffs ($a):{/t}
 		</TD>
@@ -13,24 +13,37 @@
 	<TR id="promotiontariffs" style="display:none;">
 		<TD style="width: 100%;">
 			<TABLE class="lmsbox-inner lms-ui-background-cycle">
+				<colgroup>
+					<col style="width: 94%;">
+					<col style="width: 1%;">
+					<col style="width: 1%;">
+					<col style="width: 1%;">
+					<col style="width: 1%;">
+					<col style="width: 1%;">
+					<col style="width: 1%;">
+				</colgroup>
 				<THEAD>
 				<TR class="fbottom">
-					<TD style="width: 95%;" class="bold nobr">{trans("Name:")}</TD>
-					<TD style="width: 1%;" class="text-right nobr">{trans("ID:")}</TD>
-					<TD style="width: 1%;" class="text-right bold nobr">{trans("Value")}:</TD>
-					<TD style="width: 1%;" class="text-right nobr">{trans("Downceil:")}</TD>
-					<TD style="width: 1%;" class="text-right nobr">{trans("Upceil:")}</TD>
-					<TD style="width: 1%;">&nbsp;</TD>
+					<TD class="bold nobr">{trans("Name:")}</TD>
+					<TD class="text-right nobr">{trans("ID:")}</TD>
+					<TD class="nobr">{trans("Type")}:</TD>
+					<TD class="text-right bold nobr">{trans("Value")}:</TD>
+					<TD class="text-right nobr">{trans("Downceil:")}</TD>
+					<TD class="text-right nobr">{trans("Upceil:")}</TD>
+					<TD>&nbsp;</TD>
 				</TR>
 				</THEAD>
 				<TBODY>
-				{foreach from=$promotion.tariffs item=tariff}
+				{foreach $promotion.tariffs as $tariff}
 				<TR class="highlight">
 					<TD class="bold nobr" onClick="return self.location.href='?m=tariffinfo&id={$tariff.id}';">
 						{$tariff.name}
 					</TD>
 					<TD class="text-right nobr" onClick="return self.location.href='?m=tariffinfo&id={$tariff.id}';">
 						({$tariff.id|string_format:"%04d"})
+					</TD>
+					<TD class="nobr">
+						{$_SERVICETYPES[$tariff.type]}
 					</TD>
 					<TD class="bold nobr" onClick="return self.location.href='?m=tariffinfo&id={$tariff.id}';">
 						{$tariff.value|string_format:"%.2f"}
@@ -48,7 +61,7 @@
 				</TR>
 				{foreachelse}
 				<TR>
-					<TD colspan="6" class="empty-table">
+					<TD colspan="7" class="empty-table">
 						<p>{trans("This promotion has no assigned tariffs.")}</p>
 					</TD>
 				</TR>
@@ -67,7 +80,7 @@
 
 	$('.delete-promotiontariff').click(function() {
 		confirmDialog($t("Are you sure, you want to delete this assignment?"), this).done(function() {
-			location.href = $(this).attr('data-href');
+			location.href = $(this).attr('href');
 		});
 		return false;
 	});

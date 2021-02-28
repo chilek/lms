@@ -104,19 +104,22 @@
 							<div class="lms-ui-tab-table-column id" data-target-url="?m=netdevinfo&id={$netdevice.id}">
 								({$netdevice.id|string_format:"%04d"})
 							</div>
-							<div class="lms-ui-tab-table-column port" data-target-url="?m=netdevinfo&id={$netdevice.id}">
+							<div class="lms-ui-tab-table-column port" data-target-url="?m=netdevinfo&id={$netdevice.id}" id="dev-link-srcport-{$netdevice.id}">
 								[{if $netdevice.srcport}{$netdevice.srcport}{else}-{/if}]
 							</div>
 						</div>
 						<div class="lms-ui-tab-table-wrapper taken-ports-used-ports col-2">
 							<div class="lms-ui-tab-table-column taken-ports">
-								<span id="dev-link-port-{$netdevice.id}" onClick="javascript:netlinkpropertieschoosewin('{$netdev.id}', '{$netdevice.id}', true);">
+								<span id="dev-link-port-{$netdevice.id}" class="dev-link-port"
+									onClick="javascript:netlinkpropertieschoosewin('{$netdev.id}', '{$netdevice.id}', true);">
 									<i class="{if $netdevice.linktype == $smarty.const.LINKTYPE_WIRELESS}lms-ui-icon-wireless{elseif $netdevice.linktype == $smarty.const.LINKTYPE_FIBER}lms-ui-icon-fiber{else}lms-ui-icon-wired{/if}"
 											{tip trigger="dev-link-port-{$netdevice.id}"
 												text="<span class=\"nobr\">{trans("Link type:")} {$_LINKTYPES[$netdevice.linktype]}<br>{if $netdevice.linktype == $smarty.const.LINKETYPE_WIRELESS}{if $netdevice.srcradiosector}{trans("Radio sector:")} {$netdevice.srcradiosector}<br>{/if}{if $netdevice.dstradiosector}{trans("Destination radio sector:")} {$netdevice.dstradiosector}<br>{/if}{/if}{if $netdevice.linktechnology}{trans("Link technology:")} {$_LINKTECHNOLOGIES[$netdevice.linktype][$netdevice.linktechnology]}<br>{/if}{trans("Link speed:")} {$_LINKSPEEDS[$netdevice.linkspeed]}</span>"}>
 									</i>
 								</span>
-								[{if $netdevice.dstport}{$netdevice.dstport}{else}-{/if}]
+								<span id="dev-link-dstport-{$netdevice.id}">
+									[{if $netdevice.dstport}{$netdevice.dstport}{else}-{/if}]
+								</span>
 							</div>
 							<div class="lms-ui-tab-table-column used-ports" data-target-url="?m=netdevinfo&id={$netdevice.id}">
 								<i class="lms-ui-icon-plug"></i> {$netdevice.ports} ({$netdevice.takenports})
@@ -157,7 +160,7 @@
 							{assign var=netdevname value=$dev.name}
 							{if $dev.producer}{assign var=netdevname value=$netdevname|cat:" / "|cat:$dev.producer}{/if}
 							{if $dev.location}{assign var=netdevname value=$netdevname|cat:" ("|cat:$dev.location|cat:")"}{/if}
-							<OPTION VALUE="{$dev.id}"{if $connect.id == $dev.id} selected{/if}>{$netdevname|truncate:120:"...":true}</OPTION>
+							<OPTION VALUE="{$dev.id}"{if $connect.id == $dev.id} selected{/if}>{$netdevname|truncate:120:"&hellip;":true}</OPTION>
 							{/foreach}
 						</SELECT>
 						<a href="javascript: void(0);" onclick="return netDevChooseWin(document.connect.elements['netdev'], {$netdev.id});" {tip trigger="netdev" text="Search device"}>&raquo;&raquo;&raquo;</A>

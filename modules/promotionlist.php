@@ -26,14 +26,19 @@
 
 $layout['pagetitle'] = trans('Promotions List');
 
-$promolist = $DB->GetAll('SELECT p.id, p.name, p.description, p.datefrom, p.dateto, disabled,
+$promolist = $DB->GetAll('SELECT p.id, p.name, p.description, p.datefrom, p.dateto, disabled, deleted,
 			(SELECT COUNT(*) FROM promotionschemas
 				WHERE p.id = promotionid) AS scs,
 			(SELECT COUNT(DISTINCT a.tariffid)
 			    FROM promotionassignments a
 				JOIN promotionschemas s ON (s.id = a.promotionschemaid)
 				WHERE p.id = s.promotionid
-		    ) AS tariffs
+            ) AS tariffs,
+            (SELECT COUNT(a.id)
+                FROM assignments a
+                JOIN promotionschemas s2 ON s2.id = a.promotionschemaid
+                WHERE s2.promotionid = p.id
+            ) AS assignments
 		FROM promotions p
 		ORDER BY p.name');
 

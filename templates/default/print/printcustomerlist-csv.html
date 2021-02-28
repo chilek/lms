@@ -1,7 +1,7 @@
-{trans("No.")};{trans("ID")};{trans("First/last name")} / {trans("Name")};{trans("Address")};{trans("Phone")};{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}{trans("Subscription")};{/if}{trans("E-mail")};{trans("TEN/SSN")};{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}{trans("Balance")}{/if}
+{trans("No.")};{trans("ID")};{trans("Name/Surname")};{trans("First name")};{trans("Address")};{trans("Phone")};{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}{trans("Subscription")};{/if}{trans("E-mail")};{trans("TEN/SSN")};{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}{trans("Balance")}{/if}
 
-{section name=customerlist loop=$customerlist}{if $customerlist[customerlist].id}
-{assign var=cid value=$customerlist[customerlist].id}
-{counter};{$customerlist[customerlist].id|string_format:"%04d"};{$customerlist[customerlist].customername};{$customerlist[customerlist].full_address};{if $contactlist.$cid.phone}{$contactlist.$cid.phone}{/if};{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}{$customerlist[customerlist].tariffvalue|money_format};{/if}{if $customerlist[customerlist].email}{$customerlist[customerlist].email}{/if};{if $customerlist[customerlist].ten}{$customerlist[customerlist].ten}{elseif $customerlist[customerlist].ssn}{$customerlist[customerlist].ssn}{/if};{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}{$customerlist[customerlist].balance|money_format}{/if}
+{foreach $customerlist as $customer}{if $customer.id}
+{assign var=cid value=$customer.id}
+{$customer@iteration};{$cid|string_format:"%04d"};{$customer.lastname};{$customer.name};{$customer.full_address};{if $contactlist.$cid.phone}{$contactlist.$cid.phone}{/if};{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}{$customer.tariffvalue|money_format};{/if}{if $customer.email}{$customer.email}{/if};{if $customer.ten}{$customer.ten}{elseif $customer.ssn}{$customer.ssn}{/if};{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}{moneyf($customer.balance)}{/if}
 
-{/if}{/section}
+{/if}{/foreach}

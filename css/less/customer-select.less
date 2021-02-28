@@ -77,7 +77,7 @@
   }
   .lms-ui-customer-select-name {
     white-space: normal;
-    padding-left: 0.5em;
+    padding-left: 0.8em;
     padding-right: 0.5em;
     flex-grow: 1;
   }
@@ -90,6 +90,15 @@
       }
       .lms-ui-customer-select-suggestion-input {
         min-width: 10em;
+      }
+      .lms-ui-customer-select-customerid[required]:invalid + .lms-ui-customer-select-suggestion-input {
+        border: @error-outline;
+        box-shadow: @error-box-shadow;
+        &:focus {
+          border: @error-outline-focus;
+          box-shadow: @error-box-shadow-focus;
+          outline: none;
+        }
       }
     }
   }

@@ -29,7 +29,7 @@ $this->Execute("DROP VIEW customerview");
 
 $this->Execute("
     CREATE TABLE customerkarmalastchanges (
-        id int(11) NOT NULL DEFAULT auto_increment,
+        id int(11) NOT NULL auto_increment,
         timestamp int(11) NOT NULL,
         customerid int(11) NOT NULL,
         userid int(11) NOT NULL,

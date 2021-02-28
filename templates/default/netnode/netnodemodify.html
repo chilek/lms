@@ -35,7 +35,7 @@
 			{box_row icon="img/division.gif" label="Division:"}
 				<SELECT NAME="netnode[divisionid]"   {tip text="Select division"} >
 					{foreach $divisions as $division}
-					<OPTION VALUE="{$division.id}"{if $netnode.divisionid == $division.id} selected{/if}>{$division.shortname}</OPTION>
+					<OPTION VALUE="{$division.id}"{if $netnode.divisionid == $division.id} selected{/if}>{$division.label|escape}</OPTION>
 					{/foreach}
 				</SELECT>
 			{/box_row}
@@ -63,7 +63,7 @@
 				<select id="project" data-value="{$netdev.project}" data-alt-field="#projectid-value" data-alt-invalid-field="#project-value" {tip class="lms-ui-combobox" text="Select project for this node"} trigger="project">
 					<option value="0" {if !$netdev.invprojectid} selected{/if}>- {trans("none")} -</option>
 					{foreach $NNprojects as $project}
-						<option value="{$project.id}" {if ($netnode.invprojectid == $project.id)} selected{/if}>{$project.name}</option>
+						<option value="{$project.id}" {if ($netnode.invprojectid == $project.id)} selected{/if}>{$project.name|escape}</option>
 					{/foreach}
 				</select>
 			{/box_row}
@@ -77,7 +77,7 @@
 			{/box_row}
 
 			{box_row id="ownername" icon="img/division.gif" label="Owner identifier:"}
-				<INPUT TYPE="TEXT" NAME="netnode[coowner]" size="30" VALUE="{$netnode.coowner}" {tip trigger="coowner" text="Enter co-owner name"}>
+				<INPUT TYPE="TEXT" NAME="netnode[coowner]" size="30" VALUE="{$netnode.coowner|escape}" {tip trigger="coowner" text="Enter co-owner name"}>
 			{/box_row}
 
 			{box_row id="customer" icon="img/customer.gif" label="Owner:"}

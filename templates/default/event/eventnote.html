@@ -103,7 +103,7 @@
 		</TD>
 		<TD width="98%" class="fright" nowrap>
 			{foreach item=user from=$event.userlist}	
-				<NOBR><A href="?m=userinfo&id={$user.id}">{$user.name}</A></NOBR><BR>
+				<NOBR><A href="?m=userinfo&id={$user.id}">{$user.name|escape}</A></NOBR><BR>
 			{/foreach}
 		</TD>
 	</TR>
