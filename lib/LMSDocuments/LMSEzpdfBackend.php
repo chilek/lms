@@ -24,9 +24,6 @@
  *  $Id$
  */
 
-// brzydkie hacki dla ezpdf
-@setlocale(LC_NUMERIC, 'C');
-
 class LMSEzpdfBackend extends Cezpdf
 {
     private $margin;
@@ -34,6 +31,9 @@ class LMSEzpdfBackend extends Cezpdf
     public function __construct($pagesize, $orientation, $title)
     {
         global $layout;
+
+        // brzydkie hacki dla ezpdf
+        @setlocale(LC_NUMERIC, 'C');
 
         $diff = array(
             177=>'aogonek',
