@@ -516,17 +516,21 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 		AND ((a.period = ? AND at = ?)
 			OR ((a.period = ?
 			OR (a.period = ? AND at = ?)
-			OR (a.period = ? AND at = ?)
+			OR (a.period = ? AND at IN ?)
 			OR (a.period = ? AND at = ?)
 			OR (a.period = ? AND at = ?)
 			OR (a.period = ? AND at = ?))
 			AND a.datefrom <= ? AND (a.dateto > ? OR a.dateto = 0)))"
         . ($customergroups ? str_replace('%customerid_alias%', 'c.id', $customergroups) : '')
     ." ORDER BY a.customerid, a.recipient_address_id, a.invoice,  a.paytype, a.numberplanid, a.separatedocument, currency, value DESC, a.id";
+$doms = array($dom);
+if ($last_dom) {
+    $doms[] = 0;
+}
 $services = $DB->GetAll(
     $query,
     array(
-        CTYPES_PRIVATE, DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $last_dom ? 0 : $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
+        CTYPES_PRIVATE, DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $doms, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
         $currtime, $currtime
     )
 );
@@ -601,7 +605,7 @@ $query = "SELECT
 		  ((a.period = ? AND at = ?) OR
 		  ((a.period = ? OR
 		  (a.period  = ? AND at = ?) OR
-		  (a.period  = ? AND at = ?) OR
+		  (a.period  = ? AND at IN ?) OR
 		  (a.period  = ? AND at = ?) OR
 		  (a.period  = ? AND at = ?) OR
 		  (a.period  = ? AND at = ?)) AND
@@ -614,7 +618,7 @@ $billings = $DB->GetAll(
     $query,
     array(
         CTYPES_PRIVATE, 1, SERVICE_PHONE,
-        DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $last_dom ? 0 : $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
+        DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $doms, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
         $currtime, $currtime
     )
 );
