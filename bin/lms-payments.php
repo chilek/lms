@@ -225,7 +225,8 @@ $fakedate = isset($options['fakedate']) ? $options['fakedate'] : null;
 $customerid = isset($options['customerid']) && intval($options['customerid']) ? $options['customerid'] : null;
 
 if (empty($fakedate)) {
-    $today = $currtime = time();
+    $currtime = time();
+    $today = strtotime('today');
 } else {
     $today = $currtime = strtotime($fakedate);
 }
