@@ -229,7 +229,7 @@ if (empty($fakedate)) {
 } else {
     $today = $currtime = strtotime($fakedate);
 }
-list ($year, $month, $day) = explode('/', date('Y/n/j', $currtime));
+list ($year, $month, $dom) = explode('/', date('Y/n/j', $currtime));
 $weekday = strftime('%u', $currtime);
 $yearday = strftime('%j', $currtime);
 $last_dom = date('j', mktime(0, 0, 0, $month + 1, 0, $year)) == date('j', $currtime);
