@@ -33,8 +33,7 @@
 						<SELECT size="1" name="a[]" OnChange="document.filter.submit();"
 								class="lms-ui-multiselect lms-ui-multiselect-filter" multiple
 								data-default-value="{trans("- all -")}">
-							<OPTION value="-1" {if is_array($filter.userid) && in_array('-1', $filter.userid)} selected{/if}
-									data-exclusive>- {trans("unassigned")} -
+							<OPTION value="-1" {if is_array($filter.userid) && in_array('-1', $filter.userid)} selected{/if}>- {trans("unassigned")} -
 							</OPTION>
 							{foreach $userlist as $user}
 								{if !ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users') || (ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users') && $user.access) || is_array($filter.owner) && in_array($user.id, $filter.owner)}
