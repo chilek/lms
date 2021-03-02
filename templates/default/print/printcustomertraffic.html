@@ -35,7 +35,7 @@
 </TABLE>
 <BR>
 {foreach $stats as $nodeid => $nodestats}
-<TABLE WIDTH="100%" CELLPADDING="3" BORDER="1" ALIGN="CENTER" class="node-stats">
+<TABLE WIDTH="100%" CELLPADDING="3" BORDER="1" ALIGN="CENTER" class="node-stats"{if !$nodestats@last} style="break-after: page;"{/if}>
 	{if $nodeid}
 	<caption>
 		{$nodenames[$nodeid]}
