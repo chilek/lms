@@ -461,7 +461,7 @@ $query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctyp
         . " LEFT JOIN numberplans n ON n.id = d.numberplanid 
 		WHERE " . ($customerid ? 'c.id = ' . $customerid : '1 = 1')
             . $customer_status_condition
-            . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
+            . ($divisionid ? ' AND d.divisionid = ' . $divisionid : '')
             . " AND c.deleted = 0 AND d.cancelled = 0 AND d.type IN (?, ?, ?, ?)" . ($backup || $archive ? '' : " AND c.invoicenotice = 1")
             . ($archive ? " AND d.archived = 0" : '') . "
 			AND d.cdate >= $daystart AND d.cdate <= $dayend"
