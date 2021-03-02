@@ -92,6 +92,7 @@ version 27-git (????-??-??):
   - enhancement: 'phpui.timetable_allow_past_events' control if added events can have start and end
     date time in the past (default: 'true') [chilan]
   - enhancement: customer types can be changed bulkly [chilan]
+  - enhancement: invoice/debit note send via mail multi division frontend support [chilan]
 
 version 26.0 (2020-12-15):
 
