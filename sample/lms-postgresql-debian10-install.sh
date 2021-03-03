@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #LMS Dependencies
-apt install -y php7.3 apache2 postgresql php-gd git bash-completion net-tools patch wget mtr php-pgsql php-bcmath php-soap php-snmp php-imap composer libdbi-perl libconfig-inifiles-perl libdbd-pg-perl php-pear makepasswd sudo bsd-mailx php-gmp
+apt install -y php7.3 apache2 postgresql php-gd git bash-completion net-tools patch wget mtr php-pgsql php-bcmath php-soap php-snmp php-imap composer libdbi-perl libconfig-inifiles-perl libdbd-pg-perl php-pear makepasswd sudo bsd-mailx php-gmp php-iconv
 
 dbname='lmsdb'
 dbuser='lmsdbuser'
@@ -27,9 +27,9 @@ sed -i 's|;date.timezone =|data.timezone = Europe/Warsaw|g' ${phpinifile}
 
 #LMS APP
 git clone https://github.com/lmsgit/lms ${lmsdir}
-mkdir -p $lmsdir/{backups,documents,templates_c,userpanel/templates_c,rtattachments,img/xajax_js/deferred}
-chmod o-rwx -R $lmsdir/{backups,documents,templates_c,userpanel/templates_c,rtattachments,img/xajax_js/deferred}
-chown $apacheuser:$apacheuser -R $lmsdir/{backups,documents,templates_c,userpanel/templates_c,rtattachments,img/xajax_js/deferred}
+mkdir -p $lmsdir/{backups,cache,documents,templates_c,userpanel/templates_c,rtattachments,img/xajax_js/deferred}
+chmod o-rwx -R $lmsdir/{backups,cache,documents,templates_c,userpanel/templates_c,rtattachments,img/xajax_js/deferred}
+chown $apacheuser:$apacheuser -R $lmsdir/{backups,cache,documents,templates_c,userpanel/templates_c,rtattachments,img/xajax_js/deferred}
 cd ${lmsdir}; composer update --no-dev
 
 #LMS DB APP
