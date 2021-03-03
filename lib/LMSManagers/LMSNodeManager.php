@@ -180,7 +180,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 
     public function GetNodeIDByLogin($login)
     {
-        return $this->db->GetOne('SELECT id FROM vnodes WHERE UPPER(login) = UPPER(login)', array($login));
+        return $this->db->GetOne('SELECT id FROM vnodes WHERE UPPER(login) = UPPER(?)', array($login));
     }
 
     public function GetNodeIDByNetName($name)

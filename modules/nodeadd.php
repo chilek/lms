@@ -176,7 +176,7 @@ if (isset($_POST['nodedata'])) {
             $error['login'] = trans('Login is too long (max. 32 characters)!');
         } elseif (!preg_match('/' . ConfigHelper::getConfig('phpui.node_login_regexp', '^[_a-z0-9-.]+$') . '/i', $nodedata['login'])) {
             $error['login'] = trans('Specified login contains forbidden characters!');
-        } elseif ($LMS->GetNodeIDByLogin($nodedata['name'])) {
+        } elseif ($LMS->GetNodeIDByLogin($nodedata['login'])) {
             $error['login'] = trans('Specified login is in use!');
         }
     } elseif ($login_required != 'none') {
