@@ -111,7 +111,7 @@
     <THEAD>
 	<TR>
 		<TH scope="col" class="valign-bottom nobr" data-searchable="true" data-select-value="true" data-filter-id="section-filter">
-			{trans("Section:")}
+			<span>{trans("Section:")}</span>
 			{icon name="url" class="lms-ui-button-section-link" tip="Copy link"
 				data_clipboard_text="{$url}?m=configlist&s=%section%"}
 		</TH>
@@ -576,6 +576,8 @@
 
 		toggleActions();
 
+		$('[data-filter-id="section-filter"]').off('click');
+
 		new ClipboardJS('.lms-ui-button-section-link', {
 			text: function(trigger) {
 				var section = $('#section-filter').val();
@@ -584,6 +586,8 @@
 				}
 			}
 		});
+
+		$('#configlist-datatable').DataTable().order.listener('span', 0);
 	});
 
 </script>
