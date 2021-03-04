@@ -177,5 +177,8 @@ td > button:last-child {
 }
 
 i.lms-ui-button-clipboard:hover {
-  .lms-ui-icon-copy;
+  cursor: pointer;
+  &:not(.lms-ui-static) {
+    .lms-ui-icon-copy;
+  }
 }

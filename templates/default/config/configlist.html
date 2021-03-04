@@ -80,6 +80,10 @@
 		font-weight: normal;
 	}
 
+	.lms-ui-button-clipboard {
+		margin-left: 0.3em;
+	}
+
 </style>
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
@@ -108,6 +112,8 @@
 	<TR>
 		<TH scope="col" class="valign-bottom nobr" data-searchable="true" data-select-value="true" data-filter-id="section-filter">
 			{trans("Section:")}
+			{icon name="url" class="lms-ui-button-clipboard lms-ui-static" tip="Copy link"
+				data_clipboard_text="{$url}?m=configedit&s={$config.section}&v={$config.var}"}
 		</TH>
 		<TH scope="col" class="valign-bottom bold nobr">
 			{trans("Name:")}
@@ -165,6 +171,8 @@
 			{else}
 				{button type="link" icon="connected" tip="Disable" href="?m=configedit&id={$config.id}&statuschange=1"}
 			{/if}
+			{icon name="url" class="lms-ui-button-clipboard lms-ui-static" tip="Copy link"
+				data_clipboard_text="{$url}?m=configedit&s={$config.section}&v={$config.var}"}
 			{if empty($config.configid)}
 				{button type="link" icon="clone" tip="Clone" href="?m=configadd&id={$config.id}"}
 			{/if}
