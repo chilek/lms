@@ -281,7 +281,7 @@ if (isset($_GET['priority'])) {
 if (isset($_GET['source'])) {
     $filter['source'] = intval($_GET['source']);
 } elseif (!isset($filter['source'])) {
-    $filter['source'] = 0;
+    $filter['source'] = -1;
 }
 
 // netnodeid's

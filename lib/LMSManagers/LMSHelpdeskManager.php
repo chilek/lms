@@ -63,6 +63,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
      *          array() of integer values or single integer value
      *      priority - ticket priorities (default: null = any),
      *          array() of integer values or single integer value
+     *      source - ticket source (default: 0 = all),
+     *          -1 = unknown/other
+     *           0 = all
      *      owner - ticket owner (default: null = any),
      *          array() or single integer value
      *          -1 = without owner,
