@@ -1104,9 +1104,7 @@ $(function() {
 		}
 	);
 
-	$('.lms-ui-button-clipboard').find(':not([title])').attr('title', $t('Click copies to clipboard')).end().click(function(e) {
-		e.stopPropagation();
-	});
+	$('.lms-ui-button-clipboard').find(':not([title])').attr('title', $t('Click copies to clipboard'));
 	new ClipboardJS('.lms-ui-button-clipboard');
 
 	if (tooltipsEnabled) {
