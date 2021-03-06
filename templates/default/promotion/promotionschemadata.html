@@ -163,7 +163,8 @@
 						</SPAN>
 						<span class="tariff-edit"{if !$error || $formdata.aid != $tariff.id} style="display: none;"{/if}>
 							<div style="display: inline-block; vertical-align: middle;">
-								<SELECT name="form[{$tariff.id}][users][{$key}][]" class="lms-ui-multiselect-deferred user-edit" data-type="tiny"
+								<SELECT name="form[{$tariff.id}][users][{$key}][]" class="lms-ui-multiselect-deferred lms-ui-multiselect-selection-group user-edit text-left"
+										data-type="tiny"
 										data-button='<i class="lms-ui-icon-user"></i>'
 										data-tooltip-message="Modifiable by selected users:<br><strong>$a</strong>" data-separator="<br>"
 										multiple>
