@@ -104,6 +104,8 @@ interface LMSCustomerManagerInterface
 
     public function getCustomerSMSOptions();
 
+    public function GetCustomerAddressesWithEndPoints($customerid);
+
     public function GetCustomerAddressesWithoutEndPoints($customerid);
 
     public function checkCustomerTenExistence($customerid, $ten, $divisionid = null);

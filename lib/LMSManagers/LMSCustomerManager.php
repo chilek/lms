@@ -2398,14 +2398,14 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         return $options;
     }
 
-    public function GetCustomerAddressesWithoutEndPoints($customerid)
+    private function getCustomerAddressessWithOrWithoutEndPoints($customerid, $with = true)
     {
         $customerid = intval($customerid);
 
         return $this->db->GetAllByKey(
-            'SELECT * FROM vaddresses a
+            'SELECT a.*, ca.type AS location_type FROM vaddresses a
                 JOIN customer_addresses ca ON ca.address_id = a.id
-                WHERE ca.customer_id = ? AND a.id NOT IN (
+                WHERE ca.customer_id = ? AND a.id ' . ($with ? '' : 'NOT') . ' IN (
                     (
                         SELECT DISTINCT (CASE WHEN nd.address_id IS NULL
                                 THEN (CASE WHEN ca.address_id IS NULL THEN ca2.address_id ELSE ca.address_id END)
@@ -2427,6 +2427,16 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'id',
             array($customerid, DEFAULT_LOCATION_ADDRESS, BILLING_ADDRESS, $customerid, DEFAULT_LOCATION_ADDRESS, BILLING_ADDRESS, $customerid)
         );
+    }
+
+    public function GetCustomerAddressesWithEndPoints($customerid)
+    {
+        return $this->getCustomerAddressessWithOrWithoutEndPoints($customerid, true);
+    }
+
+    public function GetCustomerAddressesWithoutEndPoints($customerid)
+    {
+        return $this->getCustomerAddressessWithOrWithoutEndPoints($customerid, false);
     }
 
     public function checkCustomerTenExistence($customerid, $ten, $divisionid = null)

@@ -93,6 +93,8 @@ version 27-git (????-??-??):
     date time in the past (default: 'true') [chilan]
   - enhancement: customer types can be changed bulkly [chilan]
   - enhancement: invoice/debit note send via mail multi division frontend support [chilan]
+  - enhancement: show address type (icon-based) in location selection of promotion schema based version of
+    assignment panel [chilan]
 
 version 26.0 (2020-12-15):
 
