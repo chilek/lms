@@ -4307,6 +4307,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 unset($label);
             }
 
+            $superuser = ConfigHelper::checkPrivilege('superuser');
+            $allow_modify_values_for_privileged_user = ConfigHelper::checkConfig('phpui.promotion_allow_modify_values_for_privileged_user');
+            $promotion_management = ConfigHelper::checkPrivilege('promotion_management');
+
             foreach ($promotion_schema_assignments as $assign) {
                 $pid = $assign['promotion_id'];
 
@@ -4345,11 +4349,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             $users = explode(',', $props[2]);
                             $period['modifiable'] = in_array($userid, $users);
                         } else {
-                            $period['modifiable'] = false;
+                            $period['modifiable'] = 0;
                         }
-                        if (ConfigHelper::checkConfig('phpui.promotion_allow_modify_values_for_privileged_user')
-                            && ConfigHelper::checkPrivilege('promotion_management')) {
-                            $period['modifiable'] = $props[0] != 'NULL';
+                        if ($allow_modify_values_for_privileged_user && ($superuser || $promotion_management)) {
+                            $period['modifiable'] = 1;
                         }
                         $periods[] = $period;
                     }
