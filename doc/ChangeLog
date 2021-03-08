@@ -96,6 +96,8 @@ version 27-git (????-??-??):
   - enhancement: show address type (icon-based) in location selection of promotion schema based version of
     assignment panel [chilan]
   - improvement: %date-y, %date-m, %date-d symbol support in message add form [chilan]
+  - improvement: automatically select customer in ticket add form when we move to this from from network
+    device which is owned by customer [chilan]
 
 version 26.0 (2020-12-15):
 
