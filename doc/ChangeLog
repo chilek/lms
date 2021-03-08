@@ -98,6 +98,7 @@ version 27-git (????-??-??):
   - improvement: %date-y, %date-m, %date-d symbol support in message add form [chilan]
   - improvement: automatically select customer in ticket add form when we move to this from from network
     device which is owned by customer [chilan]
+  - improvement: added supplier flag for customer - can be usefull for warehouse [chilan]
 
 version 26.0 (2020-12-15):
 
