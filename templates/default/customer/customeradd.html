@@ -70,7 +70,7 @@
 						</td>
 						<td>
 							<INPUT type="text" name="customeradd[lastname]" maxlength="128"
-									value="{$customeradd.lastname}" required
+									value="{$customeradd.lastname|escape}" required
 									{tip class="lms-ui-autogrow" text="Enter customer last name or company name" trigger="lastname" bold=1}>
 						</td>
 					</tr>
@@ -79,7 +79,7 @@
 							<label for="customeradd[name]" class="nobr"><strong>{trans("First name:")}</strong>
 						</td>
 						<td>
-							<INPUT type="text" name="customeradd[name]" maxlength="128" value="{$customeradd.name}"
+							<INPUT type="text" name="customeradd[name]" maxlength="128" value="{$customeradd.name|escape}"
 									{tip class="lms-ui-autogrow" text="Enter customer name" trigger="name" bold=1}></label>
 						</td>
 					</tr>
