@@ -239,7 +239,7 @@
 			<input type="hidden" name="flags[]" value="0">
 			<select name="flags[]" {tip text="Select customer flags (optional)" class="lms-ui-multiselect"}
 					multiple data-default-value="{trans("- all -")}">
-				{foreach $_CUSTOMERFLAGS as $cflag => $flag}
+				{foreach Localisation::arraySort($_CUSTOMERFLAGS, 'label') as $cflag => $flag}
 					<option value="{$cflag}" title="{$flag.tip}">{$flag.label}</option>
 				{/foreach}
 			</select>
