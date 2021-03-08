@@ -83,6 +83,10 @@ if ($api) {
         $filter['assignments'] = $_GET['assignments'];
     }
 
+    if (isset($_GET['flags'])) {
+        $filter['flags'] = $_GET['flags'];
+    }
+
     if (isset($_GET['page'])) {
         $filter['page'] = intval($_GET['page']);
     } elseif (!isset($filter['page']) || empty($filter['page'])) {
