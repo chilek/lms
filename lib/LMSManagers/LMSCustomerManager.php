@@ -770,7 +770,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $flagsqlskey = 'AND';
         }
 
-        if (!is_array($flags) && !empty($flags)) {
+        if (is_array($flags)) {
+            if (in_array(-1, $flags)) {
+                $flags = array();
+            }
+        } elseif (!empty($flags)) {
             $flags = array($flags);
         }
 
