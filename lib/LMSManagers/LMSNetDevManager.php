@@ -675,6 +675,11 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 			ORDER BY name', array($id, $id, $id, $id, $id, $id, $id));
     }
 
+    public function getNetDevOwner($id)
+    {
+        return $this->db->GetOne('SELECT ownerid FROM netdevices WHERE id = ?', array($id));
+    }
+
     public function GetNetDevList($order = 'name,asc', $search = array())
     {
         if (isset($search['count'])) {

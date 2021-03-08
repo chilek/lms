@@ -1759,6 +1759,12 @@ class LMS
         return $manager->GetNetDevConnectedNames($id);
     }
 
+    public function getNetDevOwner($id)
+    {
+        $manager = $this->getNetDevManager();
+        return $manager->getNetDevOwner($id);
+    }
+
     public function GetNetDevList($order = 'name,asc', $search = array())
     {
         $manager = $this->getNetDevManager();
