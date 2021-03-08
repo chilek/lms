@@ -166,7 +166,7 @@
 						<TD>
 							<select name="customerdata[flags][]" {tip text="Select customer flags (optional)" class="lms-ui-multiselect"}
 								multiple>
-								{foreach $_CUSTOMERFLAGS as $cflag => $flag}
+								{foreach Localisation::arraySort($_CUSTOMERFLAGS, 'label') as $cflag => $flag}
 									<option value="{$cflag}"
 											{if is_array($customerinfo.flags) && in_array($cflag, $customerinfo.flags)} selected{/if}
 											title="{$flag.tip}"

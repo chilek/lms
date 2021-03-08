@@ -85,6 +85,7 @@ $CSTATUSES = array(
 
 define('CUSTOMER_FLAG_RELATED_ENTITY', 1);
 define('CUSTOMER_FLAG_VAT_PAYER', 2);
+define('CUSTOMER_FLAG_SUPPLIER', 4);
 
 $CUSTOMERFLAGS = array(
     CUSTOMER_FLAG_RELATED_ENTITY => array(
@@ -94,6 +95,10 @@ $CUSTOMERFLAGS = array(
     CUSTOMER_FLAG_VAT_PAYER => array(
         'label' => trans('VAT payer'),
         'tip' => trans('if customer is not VAT payer, then his telecommunication services are reported with JPK EE flag'),
+    ),
+    CUSTOMER_FLAG_SUPPLIER => array(
+        'label' => trans('supplier'),
+        'tip' => trans('check it if customer is supplier for example for warehouse purpose'),
     ),
 );
 
