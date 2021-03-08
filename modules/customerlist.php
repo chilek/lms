@@ -85,6 +85,8 @@ if ($api) {
 
     if (isset($_GET['flags'])) {
         $filter['flags'] = $_GET['flags'];
+    } else {
+        $filter['flags'] = array();
     }
 
     if (isset($_GET['page'])) {
