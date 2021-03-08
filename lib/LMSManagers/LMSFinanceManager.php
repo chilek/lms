@@ -1972,16 +1972,14 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $sdate = $invoice['invoice']['sdate'] ? $invoice['invoice']['sdate'] : $currtime;
         $number = $invoice['invoice']['number'];
         $type = $invoice['invoice']['type'];
-        if ($invoice['invoice']['numberplanid']) {
-            $fullnumber = docnumber(array(
-                'number' => $number,
-                'template' => $this->db->GetOne('SELECT template FROM numberplans WHERE id = ?', array($invoice['invoice']['numberplanid'])),
-                'cdate' => $cdate,
-                'customerid' => $invoice['customer']['id'] ?: null,
-            ));
-        } else {
-            $fullnumber = null;
-        }
+        $fullnumber = docnumber(array(
+            'number' => $number,
+            'template' => $invoice['invoice']['numberplanid']
+                ? $this->db->GetOne('SELECT template FROM numberplans WHERE id = ?', array($invoice['invoice']['numberplanid']))
+                : null,
+            'cdate' => $cdate,
+            'customerid' => $invoice['customer']['id'] ?: null,
+        ));
 
         $division_manager = new LMSDivisionManager($this->db, $this->auth, $this->cache, $this->syslog);
         $division = $division_manager->GetDivision($invoice['customer']['divisionid']);

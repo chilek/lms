@@ -631,16 +631,14 @@ switch ($action) {
             'memo' => $use_current_customer_data ? (empty($customer['documentmemo']) ? null : $customer['documentmemo']) : $cnote['memo'],
         );
         $args['number'] = $cnote['number'];
-        if ($cnote['numberplanid']) {
-            $args['fullnumber'] = docnumber(array(
-                'number' => $cnote['number'],
-                'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($cnote['numberplanid'])),
-                'cdate' => $cnote['cdate'],
-                'customerid' => $cnote['customerid'],
-            ));
-        } else {
-            $args['fullnumber'] = null;
-        }
+        $args['fullnumber'] = docnumber(array(
+            'number' => $cnote['number'],
+            'template' => $cnote['numberplanid']
+                ? $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($cnote['numberplanid']))
+                : null,
+            'cdate' => $cnote['cdate'],
+            'customerid' => $cnote['customerid'],
+        ));
         $args[SYSLOG::RES_NUMPLAN] = !empty($cnote['numberplanid']) ? $cnote['numberplanid'] : null;
         $args[SYSLOG::RES_DOC] = $iid;
 

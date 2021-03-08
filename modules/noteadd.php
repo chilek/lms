@@ -239,16 +239,14 @@ switch ($action) {
 
             $division = $LMS->GetDivision($customer['divisionid']);
 
-            if ($note['numberplanid']) {
-                $fullnumber = docnumber(array(
-                    'number' => $note['number'],
-                    'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($note['numberplanid'])),
-                    'cdate' => $cdate,
-                    'customerid' => $customer['id'],
-                ));
-            } else {
-                $fullnumber = null;
-            }
+            $fullnumber = docnumber(array(
+                'number' => $note['number'],
+                'template' => $note['numberplanid']
+                    ? $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($note['numberplanid']))
+                    : null,
+                'cdate' => $cdate,
+                'customerid' => $customer['id'],
+            ));
 
             $args = array(
                 'number' => $note['number'],

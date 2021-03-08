@@ -538,16 +538,14 @@ switch ($action) {
 
         $division = $LMS->GetDivision(!empty($cnote['use_current_division']) ? $invoice['current_divisionid'] : $invoice['divisionid']);
 
-        if ($cnote['numberplanid']) {
-            $fullnumber = docnumber(array(
-                'number' => $cnote['number'],
-                'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($cnote['numberplanid'])),
-                'cdate' => $cnote['cdate'],
-                'customerid' => $invoice['customerid'],
-            ));
-        } else {
-            $fullnumber = null;
-        }
+        $fullnumber = docnumber(array(
+            'number' => $cnote['number'],
+            'template' => $cnote['numberplanid']
+                ? $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($cnote['numberplanid']))
+                : null,
+            'cdate' => $cnote['cdate'],
+            'customerid' => $invoice['customerid'],
+        ));
 
         if (!empty($cnote['recipient_address_id']) && $cnote['recipient_address_id'] != -1) {
             $cnote['recipient_address_id'] = $LMS->CopyAddress($cnote['recipient_address_id']);
