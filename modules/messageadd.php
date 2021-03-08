@@ -319,8 +319,13 @@ function BodyVars(&$body, $data, $format)
         $body = str_replace('%bankaccount', format_bankaccount(bankaccount($data['id'], $data['account'])), $body);
     }
 
+    list ($now_year, $now_month, $now_day) = explode('/', date('Y/m/d'));
+
     $body = str_replace(
         array(
+            '%date-y',
+            '%date-m',
+            '%date-d',
             '%balance',
             '%b',
             '%totalb',
@@ -333,6 +338,9 @@ function BodyVars(&$body, $data, $format)
             '%pin',
         ),
         array(
+            $now_year,
+            $now_month,
+            $now_day,
             moneyf($data['totalbalance']),
             sprintf('%01.2f', $amount),
             sprintf('%01.2f', $totalamount),
