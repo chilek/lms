@@ -163,7 +163,7 @@ function module_main()
 
     if ($user_acc_ids) {
         $tmp_phones = $LMS->DB->GetAll('SELECT phone FROM voip_numbers
-                                        WHERE voip_account_id IN ('.implode(',', $user_acc_ids).');');
+                                        WHERE voip_account_id IN ('.implode(',', $user_acc_ids).') ORDER BY phone');
 
         foreach ($tmp_phones as $v) {
             $phones[] = $v['phone'];
