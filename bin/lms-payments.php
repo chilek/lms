@@ -611,7 +611,12 @@ $query = "SELECT
 		  (a.period  = ? AND at = ?) OR
 		  (a.period  = ? AND at = ?)) AND
 		   a.datefrom <= ? AND
-		  (a.dateto > ? OR a.dateto = 0)))"
+		  (a.dateto = 0 OR a.dateto > (CASE a.period
+			WHEN " . YEARLY . ' THEN ' . mktime(0, 0, 0, $month, 1, $year - 1) . "
+			WHEN " . HALFYEARLY . ' THEN ' . mktime(0, 0, 0, $month - 6, 1, $year)   . "
+			WHEN " . QUARTERLY  . ' THEN ' . mktime(0, 0, 0, $month - 3, 1, $year)   . "
+			WHEN " . MONTHLY . ' THEN ' . mktime(0, 0, 0, $month - 1, 1, $year)
+			. " END))))"
         . ($customergroups ? str_replace('%customerid_alias%', 'c.id', $customergroups) : '')
     ." ORDER BY a.customerid, a.recipient_address_id, a.invoice, a.paytype, a.numberplanid, a.separatedocument, currency, voipcost.value DESC, a.id";
 
@@ -620,7 +625,7 @@ $billings = $DB->GetAll(
     array(
         CTYPES_PRIVATE, 1, SERVICE_PHONE,
         DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $doms, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
-        $currtime, $currtime
+        $currtime,
     )
 );
 
