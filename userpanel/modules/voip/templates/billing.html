@@ -178,9 +178,11 @@
                                     {/if}
                                 </TD>
                                 <TD>
+                                    {date_period_preset from="#datefrom" to="#dateto"}
                                     {trans("from")}
                                     <INPUT TYPE="text"
                                            SIZE="10"
+                                           id="datefrom"
                                            NAME="date_from"
                                            CLASS="lms-ui-date lms-input"
                                            VALUE="{if isset($params.frangefrom)}{$params.frangefrom}{/if}">
@@ -189,6 +191,7 @@
                                     <INPUT TYPE="text"
                                            SIZE="10"
                                            NAME="date_to"
+                                           id="dateto"
                                            CLASS="lms-ui-date lms-input"
                                            VALUE="{if isset($params.frangeto)}{$params.frangeto}{/if}">
                                 </TD>
