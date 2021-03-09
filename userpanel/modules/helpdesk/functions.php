@@ -228,9 +228,13 @@ function module_main()
                 $emails = array_map(function ($contact) {
                         return $contact['fullname'];
                 }, $LMS->GetCustomerContacts($SESSION->id, CONTACT_EMAIL));
+                $all_phones = $LMS->GetCustomerContacts($SESSION->id, CONTACT_LANDLINE | CONTACT_MOBILE);
                 $phones = array_map(function ($contact) {
                         return $contact['fullname'];
-                }, $LMS->GetCustomerContacts($SESSION->id, CONTACT_LANDLINE | CONTACT_MOBILE));
+                }, $all_phones);
+                $mobile_phones = array_filter($all_phones, function ($contact) {
+                    return ($contact['type'] & (CONTACT_MOBILE | CONTACT_DISABLED)) == CONTACT_MOBILE;
+                });
 
                 if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
                     $params = array(
@@ -245,9 +249,10 @@ function module_main()
                 }
 
                 $queuedata = $LMS->GetQueue($ticket['queue']);
+                $ticketid = sprintf("%06d", $id);
+
                 if (!empty($queuedata['newticketsubject']) && !empty($queuedata['newticketbody'])
                     && !empty($emails)) {
-                    $ticketid = sprintf("%06d", $id);
                     $custmail_subject = $queuedata['newticketsubject'];
                     $custmail_subject = str_replace('%tid', $ticketid, $custmail_subject);
                     $custmail_subject = str_replace('%title', $ticket['subject'], $custmail_subject);
@@ -264,6 +269,19 @@ function module_main()
                         'Subject' => $custmail_subject,
                     );
                     $LMS->SendMail(implode(',', $emails), $custmail_headers, $custmail_body, null, null, $LMS->GetRTSmtpOptions());
+                }
+
+                if (!empty($queuedata['newticketsmsbody']) && !empty($mobile_phones)) {
+                    $custsms_body = $queuedata['newticketsmsbody'];
+                    $custsms_body = str_replace('%tid', $ticketid, $custsms_body);
+                    $custsms_body = str_replace('%cid', $SESSION->id, $custsms_body);
+                    $custsms_body = str_replace('%pin', $info['pin'], $custsms_body);
+                    $custsms_body = str_replace('%customername', $info['customername'], $custsms_body);
+                    $custsms_body = str_replace('%title', $ticket['subject'], $custsms_body);
+
+                    foreach ($mobile_phones as $phone) {
+                        $LMS->SendSMS($phone['contact'], $custsms_body);
+                    }
                 }
 
                 $params = array(
