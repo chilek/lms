@@ -322,11 +322,12 @@ switch ($mode) {
 
         if (isset($_GET['ajax'])) { // support for AutoSuggest
             $where = array();
+            $phone_number = preg_replace('/[^0-9]/', '', $search);
             if (empty($properties) || isset($properties['contact'])) {
-                $where[] = "REPLACE(REPLACE(cc.contact, '-', ''), ' ', '') ?LIKE? $sql_search";
+                $where[] = "REPLACE(REPLACE(cc.contact, '-', ''), ' ', '') ?LIKE? '%$phone_number%'";
             }
             if (empty($properties) || isset($properties['account'])) {
-                $where[] = "vn.phone ?LIKE? $sql_search" ;
+                $where[] = "vn.phone ?LIKE? '%$phone_number%'" ;
             }
 
             $candidates = $DB->GetAll("SELECT c.id, "
