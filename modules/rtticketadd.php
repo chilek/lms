@@ -256,7 +256,7 @@ if (isset($_POST['ticket'])) {
                         return $contact['fullname'];
                 }, $all_phones);
                 $mobile_phones = array_filter($all_phones, function ($contact) {
-                    return $contact['type'] & (CONTACT_MOBILE | CONTACT_DISABLED) == CONTACT_MOBILE;
+                    return ($contact['type'] & (CONTACT_MOBILE | CONTACT_DISABLED)) == CONTACT_MOBILE;
                 });
 
                 if (isset($ticket['notify']) && ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
