@@ -4344,13 +4344,14 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         }
 
                         if (count($props) > 2 && !empty($props[2])) {
-                            $users = explode(',', $props[2]);
-                            $period['modifiable'] = in_array($userid, $users);
+                            if ($allow_modify_values_for_privileged_user && ($superuser || $promotion_management)) {
+                                $period['modifiable'] = true;
+                            } else {
+                                $users = explode(',', $props[2]);
+                                $period['modifiable'] = in_array($userid, $users);
+                            }
                         } else {
-                            $period['modifiable'] = 0;
-                        }
-                        if ($allow_modify_values_for_privileged_user && ($superuser || $promotion_management)) {
-                            $period['modifiable'] = 1;
+                            $period['modifiable'] = false;
                         }
                         $periods[] = $period;
                     }
