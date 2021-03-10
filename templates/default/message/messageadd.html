@@ -88,6 +88,7 @@
 			}
 		}
 		$('#msgtmplid').html(options).prop('disabled', false);
+		updateAdvancedSelects('#msgtmplid');
 	}
 
 	function countChars(elem)
@@ -520,7 +521,8 @@
 			{trans("Message template:")}
 		</TD>
 		<TD>
-			<SELECT name="message[tmplid]" id="msgtmplid" {tip trigger="msgtmplid" text="Select message template"} onChange="javascript:change_message_template(this.options[this.selectedIndex].value);">
+			<SELECT name="message[tmplid]" id="msgtmplid" {tip class="lms-ui-advanced-select" trigger="msgtmplid" text="Select message template"}
+					onChange="javascript:change_message_template(this.options[this.selectedIndex].value);">
 				<OPTION value="0">{trans("- none -")}</OPTION>
 				{foreach $messagetemplates as $msgtmpl}
 				<OPTION value="{$msgtmpl.id}"{if $message.tmplid == $msgtmpl.id} selected{/if}>{$msgtmpl.name}</OPTION>
