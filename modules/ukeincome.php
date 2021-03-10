@@ -156,12 +156,35 @@ if ($bandwidths) {
 
     $bandwidth_variation = array();
 
+    $months = round(($unixto - $unixfrom) / (30 * 86400));
+
     $customer_links = $DB->GetAll(
         'SELECT ' . ($type == 'linktechnologies' ? 'cash.linktechnology' : 't.type') . ' AS type,
             t.downceil,
-            SUM(CASE WHEN c.type = 0 THEN ROUND(ic.count) ELSE 0 END) AS private,
-            SUM(CASE WHEN c.type = 1 THEN ROUND(ic.count) ELSE 0 END) AS bussiness,
-            SUM(ROUND(ic.count)) AS total
+            ROUND(SUM((CASE WHEN c.type = 0 THEN ROUND(ic.count) ELSE 0 END)
+                * (CASE
+                    WHEN ic.period IS NULL OR ic.period = ' . MONTHLY . ' THEN ' . str_replace(',', '.', 1 / $months) . '
+                    WHEN ic.period = ' . QUARTERLY . ' THEN ' . str_replace(',', '.', 1 / $months / 3) . '
+                    WHEN ic.period = ' . HALFYEARLY . ' THEN ' . str_replace(',', '.', 1 / $months / 6) . '
+                    WHEN ic.period = ' . YEARLY . ' THEN ' . str_replace(',', '.', 1 / $months / 12) . '
+                    ELSE 0 END)
+            )) AS private,
+            ROUND(SUM((CASE WHEN c.type = 1 THEN ROUND(ic.count) ELSE 0 END)
+                * (CASE
+                    WHEN ic.period IS NULL OR ic.period = ' . MONTHLY . ' THEN ' . str_replace(',', '.', 1 / $months) . '
+                    WHEN ic.period = ' . QUARTERLY . ' THEN ' . str_replace(',', '.', 1 / $months / 3) . '
+                    WHEN ic.period = ' . HALFYEARLY . ' THEN ' . str_replace(',', '.', 1 / $months / 6) . '
+                    WHEN ic.period = ' . YEARLY . ' THEN ' . str_replace(',', '.', 1 / $months / 12) . '
+                    ELSE 0 END)
+            )) AS bussiness,
+            ROUND(SUM(ROUND(ic.count)
+                * (CASE
+                    WHEN ic.period IS NULL OR ic.period = ' . MONTHLY . ' THEN ' . str_replace(',', '.', 1 / $months) . '
+                    WHEN ic.period = ' . QUARTERLY . ' THEN ' . str_replace(',', '.', 1 / $months / 3) . '
+                    WHEN ic.period = ' . HALFYEARLY . ' THEN ' . str_replace(',', '.', 1 / $months / 6) . '
+                    WHEN ic.period = ' . YEARLY . ' THEN ' . str_replace(',', '.', 1 / $months / 12) . '
+                    ELSE 0 END)
+            )) AS total
         FROM cash
         JOIN customers c ON c.id = cash.customerid
         JOIN invoicecontents ic ON ic.docid = cash.docid AND ic.itemid = cash.itemid
