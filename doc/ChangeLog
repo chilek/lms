@@ -100,6 +100,8 @@ version 27-git (????-??-??):
     device which is owned by customer [chilan]
   - improvement: added supplier flag for customer - can be usefull for warehouse [chilan]
   - improvement: customer flag filter in customer list form [chilan]
+  - bugfix: approximate quite well customer link count in uke income report when selected period is
+    different than monthly [chilan]
 
 version 26.0 (2020-12-15):
 
