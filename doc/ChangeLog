@@ -102,6 +102,7 @@ version 27-git (????-??-??):
   - improvement: customer flag filter in customer list form [chilan]
   - bugfix: approximate quite well customer link count in uke income report when selected period is
     different than monthly [chilan]
+  - enhancement: action on event generates technical message in assigned ticket [interduo]
 
 version 26.0 (2020-12-15):
 
