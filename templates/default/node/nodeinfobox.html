@@ -196,7 +196,14 @@
 												</span>
 
 												{if $nodeinfo.port}[{$nodeinfo.port}]{/if}
-												<img src="img/{if $nodeinfo.linktype == 1}wireless.gif{elseif $nodeinfo.linktype == 2}netdev_takenports.gif{else}netdev_takenports.gif{/if}" alt="{$_LINKTYPES[$nodeinfo.linktype]}" {tip text="{if $nodeinfo.linktechnology}{$_LINKTECHNOLOGIES[$nodeinfo.linktype][$nodeinfo.linktechnology]} / {/if}{if $nodeinfo.linkradiosector}{$nodeinfo.linkradiosectorname} / {/if}{$_LINKSPEEDS[$nodeinfo.linkspeed]}"}>
+												{capture name="linkinfo"}{if $nodeinfo.linktechnology}{$_LINKTECHNOLOGIES[$nodeinfo.linktype][$nodeinfo.linktechnology]} / {/if}{if $nodeinfo.linkradiosector}{$nodeinfo.linkradiosectorname} / {/if}{$_LINKSPEEDS[$nodeinfo.linkspeed]}{/capture}
+												{if $nodeinfo.linktype == $smarty.const.LINKTYPE_WIRELESS}
+													{icon name="wireless" tip=$smarty.capture.linkinfo}
+												{elseif $nodeinfo.linktype == $smarty.const.LINKTYPE_FIBER}
+													{icon name="fiber" tip=$smarty.capture.linkinfo}
+												{else}
+													{icon name="wired" tip=$smarty.capture.linkinfo}
+												{/if}
 											{else}
 												{if $netdevices}
 													<a href="javascript: void(0);" onclick="return netDevChooseWin(document.nodelink.elements['devid']);" {tip trigger="netdev" text="Search device"}>&raquo;&raquo;&raquo;</A>
