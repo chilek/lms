@@ -172,7 +172,13 @@
                 </SELECT>
             </label>
             <label class="nobr">
-                <input type="text" name="cid" value="{if !empty($filter.cid)}{$filter.cid}{/if}" placeholder="{trans("Customer ID:")}" onChange="document.filter.submit();">
+                {customerlist
+		    version=2
+		    customOnChange="document.filter.submit();"
+		    selected=$filter.cid
+		    selectname="cid"
+		    inputname="cid"
+		}
             </label>
             <label class="nobr">
                 <input type="text" name="subject" value="{$filter.subject|escape}" placeholder="{trans("Subject:")}" onChange="document.filter.submit();">
