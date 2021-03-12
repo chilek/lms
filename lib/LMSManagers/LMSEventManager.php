@@ -80,6 +80,20 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             }
         }
 
+        if (!empty($event['ticketid'])) {
+            $helpdesk_manager = new LMSHelpdeskManager($this->db, $this->auth, $this->cache);
+            $ticketsqueue = $helpdesk_manager->GetQueueByTicketId($event['ticketid']);
+            $messageid = '<msg.' . $ticketsqueue . '.' . $event['ticketid'] . '.' . time() . '@rtsystem.' . gethostname() . '>';
+            $messagebody = trans('Assigned event ($a) was created.', $a = $id);
+
+            $helpdesk_manager->TicketMessageAdd(array(
+                'ticketid' => $event['ticketid'],
+                'messageid' => $messageid,
+                'body' => $messagebody,
+                'type' => RTMESSAGE_ASSIGNED_EVENT_ADD,
+            ));
+        };
+
         $this->db->CommitTrans();
 
         return $id;
@@ -151,6 +165,20 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             }
         }
 
+        if (!empty($event['helpdesk'])) {
+            $helpdesk_manager = new LMSHelpdeskManager($this->db, $this->auth, $this->cache);
+            $ticketsqueue = $helpdesk_manager->GetQueueByTicketId($event['ticketid']);
+            $messageid = '<msg.' . $ticketsqueue . '.' . $event['helpdesk'] . '.' . time() . '@rtsystem.' . gethostname() . '>';
+            $messagebody = trans('Assigned event ($a) was modified.', $a = $event['id']);
+
+            $helpdesk_manager->TicketMessageAdd(array(
+                'ticketid' => $event['helpdesk'],
+                'messageid' => $messageid,
+                'body' => $messagebody,
+                'type' => RTMESSAGE_ASSIGNED_EVENT_CHANGE,
+            ));
+        };
+
         $this->db->CommitTrans();
     }
 
@@ -180,6 +208,20 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             }
             $this->db->Execute('DELETE FROM events WHERE id = ?', array($id));
             $this->db->Execute('DELETE FROM eventassignments WHERE eventid = ?', array($id));
+
+            if (!empty($event['ticketid'])) {
+                $helpdesk_manager = new LMSHelpdeskManager($this->db, $this->auth, $this->cache);
+                $ticketsqueue = $helpdesk_manager->GetQueueByTicketId($event['ticketid']);
+                $messageid = '<msg.' . $ticketsqueue . '.' . $event['ticketid'] . '.' . time() . '@rtsystem.' . gethostname() . '>';
+                $messagebody = trans('Assigned event ($a) was deleted.', $a = $id);
+
+                $helpdesk_manager->TicketMessageAdd(array(
+                    'ticketid' => $event['ticketid'],
+                    'messageid' => $messageid,
+                    'body' => $messagebody,
+                    'type' => RTMESSAGE_ASSIGNED_EVENT_DELETE,
+                ));
+            };
         }
     }
 

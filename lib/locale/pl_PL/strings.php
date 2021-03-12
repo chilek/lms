@@ -4308,6 +4308,10 @@ $_LANG['(no subject)'] = '(brak tematu)';
 
 $_LANG['cloud'] = 'chmura';
 
+$_LANG['Assigned event ($a) was created.'] = 'Utworzono przypisane zdarzenie ($a).';
+$_LANG['Assigned event ($a) was modified.'] = 'Zmodyfikowano przypisane zdarzenie ($a).';
+$_LANG['Assigned event ($a) was deleted.'] = 'Usunięto przypisane zdarzenie ($a).';
+
 $_LANG['New ticket body should not be empty if you set new ticket subject!'] = 'Treść powiadomienia o nowym zgłoszeniu nie może być pusta w sytuacji, gdy ustawiono temat powiadomienia o nowym zgłoszeniu!';
 $_LANG['New ticket subject should not be empty if you set new ticket body!'] = 'Temat powiadomienia o nowym zgłoszeniu nie może być pusty w sytuacji, gdy ustawiono treść powiadomienia o nowym zgłoszeniu!';
 
