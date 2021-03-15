@@ -144,7 +144,7 @@
                 <TD>
                     <FORM METHOD="GET" ACTION="?m=voip">
                         <INPUT TYPE="HIDDEN" NAME="m" VALUE="voip">
-
+                        <input type="hidden" id="mode" name="mode" value="billing">
                         <TABLE CLASS="filters">
                             <TR>
                                 <TD>
@@ -157,9 +157,10 @@
                                 <TD>{trans("Date range:")}</TD>
                                 <TD>{trans("Connection type:")}</TD>
                                 <TD>{trans("Status:")}</TD>
-                                <TD ROWSPAN="2">
-                                    <INPUT TYPE="submit" CLASS="submit-btn" VALUE="{trans("Search")} &raquo;">
-                                </TD>
+                                <td rowspan="2">
+                                    <input type="button" id="billing" class="submit-btn" value="{trans("Search")} &raquo;">
+                                    <input type="button" id="minibilling" class="submit-btn" value="{trans("Minibilling")} &raquo;">
+                                </td>
                             </TR>
                             <TR>
                                 <TD>
@@ -466,6 +467,14 @@
                 console.log( 'Update success.' );
                 save_btn.attr( 'disabled', false );
             });
+        });
+
+        $('#billing,#minibilling').click(function() {
+            var btn = $(this);
+            $('#mode').val(btn.attr('id'));
+            btn.closest('form').attr('target', function() {
+                return btn.is('#minibilling') ? '_blank' : null;
+            }).submit();
         });
 
         /*

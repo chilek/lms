@@ -223,6 +223,11 @@ function module_main()
             $params['o'] = 'begintime,desc';
         }
 
+        if ($_GET['mode'] == 'minibilling') {
+            require_once('minibilling.php');
+            die;
+        }
+
         $billings = $LMS->getVoipBillings($params);
     }
 

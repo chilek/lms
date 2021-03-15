@@ -11,6 +11,7 @@
 	<div class="tab-pane active" id="tab-billings" role="tab-panel">
 		<FORM METHOD="GET" ACTION="?m=voip" class="form-inline">
 			<INPUT TYPE="HIDDEN" NAME="m" VALUE="voip">
+			<input type="hidden" id="mode" name="mode" value="billing">
 			<div class="form-group">
 				<label for="phonelabel" class="m-2">
 					{if count($customer_phone_list) > 1}
@@ -70,7 +71,8 @@
 					<OPTION VALUE="{CALL_SERVER_FAILED}" {if $params.fstatus == CALL_SERVER_FAILED} SELECTED{/if}>{trans("server error")}</OPTION>
 				</SELECT>
 			</div>
-			<INPUT TYPE="submit" CLASS="btn btn-danger m-2" VALUE="{trans("Search")} &raquo;">
+			<input type="button" id="billing" class="btn btn-danger m-2" value="{trans("Search")} &raquo;">
+			<input type="button" id="minibilling" class="btn btn-secondary m-2" value="{trans("Minibilling")} &raquo;">
 		</FORM>
 		<table class="table table-sm table-condensed">
 			<TR>
@@ -285,6 +287,14 @@
                 console.log( 'Update success.' );
                 save_btn.attr( 'disabled', false );
             });
+        });
+
+        $('#billing,#minibilling').click(function() {
+            var btn = $(this);
+            $('#mode').val(btn.attr('id'));
+            btn.closest('form').attr('target', function() {
+                return btn.is('#minibilling') ? '_blank' : null;
+            }).submit();
         });
 
         /*

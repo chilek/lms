@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="{Localisation::getCurrentUiLanguage()}">
+
+	<head>
+		<meta content="text/html; charset={Localisation::getCurrentHtmlCharset()}" http-equiv="content-type">
+		<style>
+
+			body {
+				font-family: Arial, Helvetica, Verdana;
+				font-size: 8pt;
+			}
+
+			table {
+				width: 100%;
+				border-spacing: 0;
+				margin-top: 0.5em;
+				margin-bottom: 1em;
+				break-inside: avoid;
+			}
+
+			table > caption {
+				font-weight: bold;
+				margin-bottom: 0.5em;
+			}
+
+			table > thead {
+				font-weight: bold;
+				background-color: lightgrey;
+			}
+
+			table > tbody {
+			}
+
+			table td {
+				padding: 0.3em;
+				border-left: 1px solid black;
+				text-align: center;
+			}
+
+			table td:last-child {
+				border-right: 1px solid black;
+			}
+
+			table thead td {
+				border-top: 1px solid black;
+				border-bottom: 1px solid black;
+			}
+
+			table tbody td {
+				border-bottom: 1px solid black;
+			}
+
+			table tr.summary td {
+				font-weight: bold;
+			}
+
+		</style>
+	</head>
+
+	{$show_netto_column = false}
+
+	<body>
+		{foreach $minibilling as $phone => $mb}
+			<table>
+				<caption>
+					{t a=$phone b=$datefrom c=$dateto}Minibilling for number $a (period{if $datefrom} from $b{/if}{if $dateto} to $c{/if}){/t}
+				</caption>
+				<thead>
+					<tr>
+						<td>
+							{trans("<!minibilling>Call type")}
+						</td>
+						<td>
+							{trans("<!minibilling>Call time")}
+						</td>
+						<td>
+							{trans("<!minibilling>Call count")}
+						</td>
+						{if $show_netto_column}
+							<td>
+								{trans("<!minibilling>Net value")}
+							</td>
+						{/if}
+						<td>
+							{trans("<!minibilling>Gross value")}
+						</td>
+					</tr>
+				</thead>
+				<tbody>
+					{$total.time = 0}
+					{$total.count = 0}
+					{$total.brutto = 0}
+					{foreach $mb as $group => $row}
+						<tr>
+							<td>
+								{$group}
+							</td>
+							<td>
+								{t a=$row.time}<!minibilling>$a seconds{/t}
+							</td>
+							<td>
+								{t a=$row.count}<!minibilling>$a pcs.{/t}
+							</td>
+							{if $show_netto_column}
+								<td>
+									{moneyf($row.brutto / 1.23)}
+								</td>
+							{/if}
+							<td>
+								{moneyf($row.brutto)}
+							</td>
+						</tr>
+						{$total.time = $total.time + $row.time}
+						{$total.count = $total.count + $row.count}
+						{$total.brutto = $total.brutto + $row.brutto}
+						{if !isset($totals[$group])}
+							{$totals[$group].time = 0}
+							{$totals[$group].count = 0}
+							{$totals[$group].brutto = 0}
+						{/if}
+						{$totals[$group].time = $totals[$group].time + $row.time}
+						{$totals[$group].count = $totals[$group].count + $row.count}
+						{$totals[$group].brutto = $totals[$group].brutto + $row.brutto}
+					{/foreach}
+					<tr class="summary">
+						<td>
+							{trans("<!minibilling>Total")}
+						</td>
+						<td>
+							{t a=$total.time}<!minibilling>$a seconds{/t}
+						</td>
+						<td>
+							{t a=$total.count}<!minibilling>$a pcs.{/t}
+						</td>
+						{if $show_netto_column}
+							<td>
+								{moneyf($total.brutto / 1.23)}
+							</td>
+						{/if}
+						<td>
+							{moneyf($total.brutto)}
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		{/foreach}
+
+		{if isset($totals)}
+			<table>
+				<caption>
+					{t a=$datefrom b=$dateto}Minibilling summary (period{if $datefrom} from $a{/if}{if $dateto} to $b{/if}){/t}
+				</caption>
+				<thead>
+					<tr>
+						<td>
+							{trans("<!minibilling>Call type")}
+						</td>
+						<td>
+							{trans("<!minibilling>Call time")}
+						</td>
+						<td>
+							{trans("<!minibilling>Call count")}
+						</td>
+						{if $show_netto_column}
+							<td>
+								{trans("<!minibilling>Net value")}
+							</td>
+						{/if}
+						<td>
+							{trans("<!minibilling>Gross value")}
+						</td>
+					</tr>
+				</thead>
+				<tbody>
+					{$total.time = 0}
+					{$total.count = 0}
+					{$total.brutto = 0}
+					{foreach $totals as $group => $row}
+						<tr>
+							<td>
+								{$group}
+							</td>
+							<td>
+								{t a=$row.time}<!minibilling>$a seconds{/t}
+							</td>
+							<td>
+								{t a=$row.count}<!minibilling>$a pcs.{/t}
+							</td>
+							<td>
+								{moneyf($row.brutto / 1.23)}
+							</td>
+							<td>
+								{moneyf($row.brutto)}
+							</td>
+						</tr>
+						{$total.time = $total.time + $row.time}
+						{$total.count = $total.count + $row.count}
+						{$total.brutto = $total.brutto + $row.brutto}
+					{/foreach}
+					<tr class="summary">
+						<td>
+							{trans("<!minibilling>Total")}
+						</td>
+						<td>
+							{t a=$total.time}<!minibilling>$a seconds{/t}
+						</td>
+						<td>
+							{t a=$total.count}<!minibilling>$a pcs.{/t}
+						</td>
+						{if $show_netto_column}
+							<td>
+								{moneyf($total.brutto / 1.23)}
+							</td>
+						{/if}
+						<td>
+							{moneyf($total.brutto)}
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		{/if}
+	</body>
+
+</html>
