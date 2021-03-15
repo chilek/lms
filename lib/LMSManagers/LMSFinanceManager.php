@@ -2284,6 +2284,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         }
 
         if ($result) {
+            $result['name'] = trim($result['name']);
+
             if ($detail_level == self::INVOICE_CONTENT_DETAIL_ALL && !empty($result['recipient_address_id'])) {
                 $result['recipient_address'] = array(
                     'address_id' => $result['recipient_address_id'],
