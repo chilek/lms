@@ -103,6 +103,7 @@ version 27-git (????-??-??):
   - bugfix: approximate quite well customer link count in uke income report when selected period is
     different than monthly [chilan]
   - enhancement: action on event generates technical message in assigned ticket [interduo]
+  - enhancement: added support for minibilling printing in userpanel voip module [chilan]
 
 version 26.0 (2020-12-15):
 
