@@ -186,9 +186,11 @@
 							<td>
 								{t a=$row.count}<!minibilling>$a pcs.{/t}
 							</td>
-							<td>
-								{moneyf($row.brutto / 1.23)}
-							</td>
+							{if $show_netto_column}
+								<td>
+									{moneyf($row.brutto / 1.23)}
+								</td>
+							{/if}
 							<td>
 								{moneyf($row.brutto)}
 							</td>
