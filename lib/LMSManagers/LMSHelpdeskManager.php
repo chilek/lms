@@ -160,7 +160,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 $sqlord = ' ORDER BY t.subject';
                 break;
             case 'requestor':
-                $sqlord = ' ORDER BY requestor';
+                $sqlord = ' ORDER BY t.requestor';
                 break;
             case 'owner':
                 $sqlord = ' ORDER BY ownername';
