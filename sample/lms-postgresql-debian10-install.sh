@@ -69,7 +69,7 @@ mail_dir = ${lmsdir}/rtattachements
 EOF
 
 #HTTPD CONFIG
-cp -f ${lmsdir}/sample/lms-main.apache24.conf ${a2site}
+cp -f ${lmsdir}/sample/lms.apache24.conf ${a2site}
 sed -i "s|DocumentRoot /var/www/html/lms|DocumentRoot ${lmsdir}|g" ${a2site}
 sed -i "s|ServerName lms.org.pl|ServerName ${fqdn}|g" ${a2site}
 sed -i "s|logs/lms.org.pl-error_log|/var/log/apache2/${fqdn}-error_log|g" ${a2site}
