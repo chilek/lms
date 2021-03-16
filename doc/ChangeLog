@@ -106,6 +106,8 @@ version 27-git (????-??-??):
   - enhancement: added support for minibilling printing in userpanel voip module [chilan]
   - improvement: don't show fiancial operation related ui elements in customer balance box if user has not
     assigned required permissions [chilan]
+  - enhancement: new 'finances_view' user permission allows to grant view financial documents view
+    for given user [chilan]
 
 version 26.0 (2020-12-15):
 

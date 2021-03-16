@@ -72,6 +72,13 @@ $access_table = array(
             'finances' => Permission::MENU_ALL,
         ),
     ),
+    'finances_view' => array(
+        'label' => trans('finances view'),
+        'allow_regexp' => '^((balance|customerbalance|invoice|note)list|cashreginfo|invoice(|info|send)|note|number)$',
+        'allow_menu_items' => array(
+            'finances' => array('balancelist', 'invoicelist', 'notelist'),
+        ),
+    ),
     'used_tariff_edit' => array(
         'label' => trans('used tariff edit'),
     ),

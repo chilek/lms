@@ -954,6 +954,7 @@ $_LANG['Filter:'] = 'Filtr:';
 $_LANG['Finances'] = 'Finanse';
 $_LANG['finances hiding'] = 'ukrywanie informacji finansowych';
 $_LANG['finances management'] = 'zarządzanie finansami';
+$_LANG['finances view'] = 'podgląd finansów';
 $_LANG['Find events matching the following search criteria:'] = 'Znajdź zdarzenia pasujące do następujących kryteriów:';
 $_LANG['Find nodes matching the following search criteria:'] = 'Znajdź komputery pasujące do następujących kryteriów:';
 $_LANG['Find IP networks matching the following search criteria:'] = 'Znajdź sieci IP pasujące do następujących kryteriów:';
