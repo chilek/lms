@@ -145,7 +145,7 @@
 			</table>
 		{/foreach}
 
-		{if isset($totals)}
+		{if isset($totals) && count($minibilling) > 1}
 			<table>
 				<caption>
 					{t a=$datefrom b=$dateto}Minibilling summary (period{if $datefrom} from $a{/if}{if $dateto} to $b{/if}){/t}
