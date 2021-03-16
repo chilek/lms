@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #LMS Dependencies
-apt install -y php7.3 apache2 postgresql php-gd git bash-completion net-tools patch wget mtr php-pgsql php-bcmath php-soap php-snmp php-imap composer libdbi-perl libconfig-inifiles-perl libdbd-pg-perl php-pear makepasswd sudo bsd-mailx php-gmp php-iconv php-mailparse
+apt install -y php7.3 apache2 postgresql php-gd git bash-completion net-tools patch wget mtr php-pgsql php-bcmath php-soap php-snmp php-imap composer libdbi-perl libconfig-inifiles-perl libdbd-pg-perl php-pear makepasswd sudo bsd-mailx php-gmp php-iconv php-mailparse php-zip
 
 dbname='lmsdb'
 dbuser='lmsdbuser'
@@ -69,12 +69,12 @@ mail_dir = ${lmsdir}/rtattachements
 EOF
 
 #HTTPD CONFIG
-cp -f ${lmsdir}/sample/lms-main.apache24.conf ${a2site}
-sed -i 's|DocumentRoot /var/www/html/lms|DocumentRoot ${lmsdir}|g' ${a2site}
-sed -i 's|ServerName lms.org.pl|ServerName ${fqdn}|g' ${a2site}
-sed -i 's|logs/lms.org.pl-error_log|/var/log/apache2/${fqdn}-error_log|g' ${a2site}
-sed -i 's|logs/lms.org.pl-access_log|/var/log/apache2/${fqdn}-access_log|g' ${a2site}
-sed -i 's|Directory "/var/www/html/lms"|Directory "${lmsdir}"|g' ${a2site}
+cp -f ${lmsdir}/sample/lms.apache24.conf ${a2site}
+sed -i "s|DocumentRoot /var/www/html/lms|DocumentRoot ${lmsdir}|g" ${a2site}
+sed -i "s|ServerName lms.org.pl|ServerName ${fqdn}|g" ${a2site}
+sed -i "s|logs/lms.org.pl-error_log|/var/log/apache2/${fqdn}-error_log|g" ${a2site}
+sed -i "s|logs/lms.org.pl-access_log|/var/log/apache2/${fqdn}-access_log|g" ${a2site}
+sed -i "s|Directory \"/var/www/html/lms\"|Directory \"${lmsdir}\"|g" ${a2site}
 
 a2ensite lms
 systemctl reload apache2
