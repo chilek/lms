@@ -105,21 +105,33 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
     }
 
     /**
-     * Returns active users names
+     * Returns users names with access
      *
      * @param array $params Parameters
      * @return array Users names
+     * withDeleted (0 non-deleted users (default), 1 deleted users, -1 show all users)
      */
     public function getUserNames($params = array())
     {
         extract($params);
 
+        switch ($deletedfilter) {
+        case 1:
+            $deletedfilter = ' WHERE deleted = 1';
+            break;
+        case -1:
+            $deletedfilter = '';
+            break;
+        default:
+            $deletedfilter = ' WHERE deleted = 0';
+            break;
+        }
+
         return $this->db->GetAll(
             'SELECT id, login, name, rname, login,
             (CASE WHEN access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0) THEN 1 ELSE 0 END) AS access
-            FROM vusers
-            WHERE deleted = 0'
-            . (isset($withDeleted) ? ' OR deleted = 1' : '' )
+            FROM vusers'
+            . $deletedfilter
             . ' ORDER BY rname ASC'
         );
     }
