@@ -104,6 +104,8 @@ version 27-git (????-??-??):
     different than monthly [chilan]
   - enhancement: action on event generates technical message in assigned ticket [interduo]
   - enhancement: added support for minibilling printing in userpanel voip module [chilan]
+  - improvement: don't show fiancial operation related ui elements in customer balance box if user has not
+    assigned required permissions [chilan]
 
 version 26.0 (2020-12-15):
 
