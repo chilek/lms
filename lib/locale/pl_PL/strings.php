@@ -2743,6 +2743,7 @@ $_LANG['Specified phone number contains forbidden characters!'] = 'Podany numer 
 $_LANG['Are you sure, you want to remove voip account \'$a\' from database?'] = 'Jesteś pewien, że chcesz usunąć konto VoIP \'$a\' z bazy danych?';
 $_LANG['Delete Voip Account $a'] = 'Usuń konto VoIP: $a';
 $_LANG['Voip account:'] = 'Konto VoIP:';
+$_LANG['Voip account'] = 'Konto VoIP';
 $_LANG['Voip Account Info: $a'] = 'Informacje o koncie: $a';
 $_LANG['Voip Account Edit: $a'] = 'Edycja konta VoIP: $a';
 $_LANG['Voip Accounts ($a):'] = 'Konta VoIP ($a):';
