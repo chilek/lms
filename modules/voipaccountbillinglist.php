@@ -40,6 +40,14 @@ function sessionHandler($item, $name)
     return $o;
 }
 
+if ($_POST['str']) {
+    $voipaccounts = $LMS->GetCustomerVoipAccounts($_POST['str']);
+    $SMARTY->assign('voipaccounts', $voipaccounts);
+    $content = $SMARTY->fetch('voipaccount/voipaccounts.html');
+    echo json_encode($content);
+    die();
+}
+
 $layout['pagetitle'] = trans('Billing list');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
@@ -51,6 +59,8 @@ $params['frangefrom'] = sessionHandler('frangefrom', 'vblfrangefrom');
 if (empty($params['frangefrom'])) {
     $params['frangefrom'] = date('Y/m/01');
 }
+$params['fvownerid'] = sessionHandler('fvownerid', 'vblfvownerid');
+$params['fvoipaccid'] = sessionHandler('fvoipaccid', 'vblfvoipaccid');
 $params['frangeto']   = sessionHandler('frangeto', 'vblfrangeto');
 $params['ftype']      = sessionHandler('ftype', 'vblftype');
 $params['fstatus']    = sessionHandler('fstatus', 'vblfstatus');
@@ -105,6 +115,8 @@ unset($voipaccountlist['total']);
 unset($voipaccountlist['order']);
 unset($voipaccountlist['direction']);
 
+$voipownerlist = Utils::array_column($voipaccountlist, "owner", "ownerid");
+
 $order = explode(',', $params['o']);
 if (empty($order[1]) || $order[1] != 'desc') {
     $order[1] = 'asc';
@@ -136,6 +148,7 @@ $billing_stats = $DB->GetRow('SELECT
                                  voip_cdr');
 
 $SMARTY->assign('voipaccounts', $voipaccountlist);
+$SMARTY->assign('voipownerlist', $voipownerlist);
 $SMARTY->assign('pagination', $pagination);
 $SMARTY->assign('billings', $bill_list);
 $SMARTY->assign('total', $total);

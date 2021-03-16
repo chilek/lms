@@ -1,0 +1,6 @@
+<select name="fvoipaccid"  id='customernumberselect'>
+    <option value="">{trans("- all -")}</option>
+    {foreach from=$voipaccounts item=vacc}
+        <option value="{$vacc.id}" {if $listdata.fvoipaccid == $vacc.id} selected{/if}>{$vacc.login}</option>
+    {/foreach}
+</select>

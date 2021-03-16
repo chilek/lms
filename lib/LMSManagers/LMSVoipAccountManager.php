@@ -610,6 +610,11 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             $where[] = "(cdr.caller like '" . $params['phone'] . "' OR cdr.callee like '" . $params['phone'] . "')";
         }
 
+        // OWNERID
+        if (!empty($params['fvownerid'])) {
+            $where[] = "vacc.ownerid = " . $params['fvownerid'];
+        }
+
         // CALL BILLING RANGE
         if (!empty($params['frangefrom'])) {
             list($year,$month,$day) = explode('/', $params['frangefrom']);
