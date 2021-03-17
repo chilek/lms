@@ -108,6 +108,8 @@ version 27-git (????-??-??):
     assigned required permissions [chilan]
   - enhancement: new 'finances_view' user permission allows to grant view financial documents view
     for given user [chilan]
+  - enhancement: more comprehensive filtering in billinglist (divide one voipaccount
+    filter into two filters: customer,voipaccount) [interduo]
 
 version 26.0 (2020-12-15):
 
