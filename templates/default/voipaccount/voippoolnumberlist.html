@@ -33,7 +33,9 @@
             <TH>{trans("Quantity of numbers")}</TH>
             <TH>{trans("Used")}</TH>
             <TH>{trans("Free")}</TH>
-            <TH data-orderable="false"></TH>
+            <TH data-orderable="false">
+                {button id="pool-add-dialog-show-btn" icon="add" label="Add"}
+            </TH>
         </TR>
     </THEAD>
     <TBODY>
@@ -58,10 +60,6 @@
         {/foreach}
     </TBODY>
 </TABLE>
-
-<DIV CLASS="text-right">
-      <button id="pool-add-dialog-show-btn">{trans("Add")}</button>
-</DIV>
 
 {include file='voipaccount/voippoolnumberadddialog.html'}
 {include file='voipaccount/voippoolnumberremovedialog.html'}
