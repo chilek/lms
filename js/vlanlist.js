@@ -6,11 +6,10 @@ function savecolumnstate() {
         colchecked.push(this.id)
     });
 
-    var jsonString = JSON.stringify(colchecked);
-
     $.ajax({
         url: '?m=vlanlist',
         type: "POST",
-        data: { visiblecolumns : jsonString },
+        data: { visiblecolumns : colchecked },
+        dataType: 'json',
     });
 }
