@@ -43,7 +43,9 @@
 	{include file="customer/customerassignments.html"}
 {/block}
 {block name="customerbalancebox"}
-	{include file="customer/customerbalancebox.html" limit=-10}
+	{if ConfigHelper::checkPrivilege('read_only') || ConfigHelper::checkPrivilege('finances_view') || ConfigHelper::checkPrivilege('financial_operations') || ConfigHelper::checkPrivilege('finances_management')}
+		{include file="customer/customerbalancebox.html" limit=-10}
+	{/if}
 {/block}
 </div>
 <script>

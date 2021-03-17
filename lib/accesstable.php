@@ -76,7 +76,7 @@ $access_table = array(
         'label' => trans('finances view'),
         'allow_regexp' => '^((balance|customerbalance|invoice|note)list|cashreginfo|invoice(|info|send)|note|number)$',
         'allow_menu_items' => array(
-            'finances' => array('balancelist', 'invoicelist', 'notelist'),
+            'finances' => array('balancelist', 'invoicelist', 'invoicelist-proforma', 'notelist'),
         ),
     ),
     'used_tariff_edit' => array(
