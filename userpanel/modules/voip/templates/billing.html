@@ -159,7 +159,9 @@
                                 <TD>{trans("Status:")}</TD>
                                 <td rowspan="2">
                                     <input type="button" id="billing" class="submit-btn" value="{trans("Search")} &raquo;">
-                                    <input type="button" id="minibilling" class="submit-btn" value="{trans("Minibilling")} &raquo;">
+                                    {if $billings}
+                                        <input type="button" id="minibilling" class="submit-btn" value="{trans("Minibilling")} &raquo;">
+                                    {/if}
                                 </td>
                             </TR>
                             <TR>
