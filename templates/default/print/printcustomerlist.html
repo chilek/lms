@@ -60,7 +60,7 @@
 		<TD>
 			<B>{$customerlist[customerlist].customername}</B><BR>
 			{$customerlist[customerlist].zip} {$customerlist[customerlist].city}{if $customerlist[customerlist].city != ""},{/if} {$customerlist[customerlist].address}<BR>
-			{if $contactlist.$cid.type}{trans("mobile")}{else}{trans("phone<!plural>")}{/if} {$contactlist.$cid.phone}
+			{if $contactlist.$cid.type}{trans("<!print>mobile")}{else}{trans("phone<!plural>")}{/if} {$contactlist.$cid.phone}
 		</TD>
 		{if $customernodes}
 			<td align="right">
