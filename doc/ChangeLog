@@ -111,6 +111,7 @@ version 27-git (????-??-??):
   - enhancement: more comprehensive filtering in billinglist (divide one voipaccount
     filter into two filters: customer,voipaccount) [interduo]
   - improvement: date period selector added in node session list filter [chilan]
+  - improvement: date period selector in traffic filter form [chilan]
 
 version 26.0 (2020-12-15):
 
