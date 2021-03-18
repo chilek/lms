@@ -108,6 +108,8 @@ if (!empty($cdr)) {
         $minibilling[$phone][$group]['time'] += $rec['billedtime'];
         $minibilling[$phone][$group]['brutto'] += $rec['price'];
     }
+} else {
+    die("No data avaiable for selected period");
 }
 
 $SMARTY->assign('datefrom', $params['frangefrom']);
