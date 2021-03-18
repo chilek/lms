@@ -1602,6 +1602,7 @@ $_LANG['Section:'] = 'Sekcja:';
 $_LANG['Section name contains forbidden characters!'] = 'Nazwa sekcji zawiera zabronione znaki!';
 $_LANG['Select'] = 'Wybierz';
 $_LANG['select'] = 'wybierz';
+$_LANG['- select -'] = '- wybierz -';
 $_LANG['Selected address was not assigned to customer.'] = 'Wybrany adres nie jest przypisany do klienta.';
 $_LANG['- select account -'] = '- wybierz konto -';
 $_LANG['Select account'] = 'Wybierz konto';
