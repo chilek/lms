@@ -1104,7 +1104,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                             $searchargs[] = 'type = ' . intval($value);
                             break;
                         case 'ict':
-                            $searchargs[] = 'ict = ' . intval($value);
+                            if (!empty($value)) {
+                                $searchargs[] = 'ict = ' . intval($value);
+                            }
                             break;
                         case 'linktype':
                             $searchargs[] = 'EXISTS (SELECT 1 FROM vnodes
