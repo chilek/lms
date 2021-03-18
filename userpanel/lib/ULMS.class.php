@@ -79,6 +79,8 @@ class ULMS extends LMS
                     'id',
                     array($id, CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED, CONTACT_BANKACCOUNT | CONTACT_INVOICES)
                 );
+                $result['consents'] = $this->getCustomerConsents($id);
+                $result['addresses'] = $this->getCustomerAddresses($id);
             }
 
             return $result;
