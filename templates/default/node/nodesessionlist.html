@@ -28,15 +28,23 @@
 </script>
 <FORM METHOD="POST" NAME="page">
 <INPUT type="submit" class="hiddenbtn">
-<table style="width: 100%" class="lmsbox">
+<table style="width: 100%" class="lmsbox lms-ui-background-cycle">
 	<thead>
 		<tr>
 			<td colspan="10">
 				<table style="width: 100%">
+					<colgroup>
+						<col style="width: 1%;">
+						<col style="width: 1%;">
+						<col style="width: 1%;">
+						<col style="width: 1%;">
+						<col style="width: 1%;">
+						<col style="width: 95%;">
+					</colgroup>
 					<tr>
-						<td style="width: 1%;" class="nobr">
+						<td class="nobr">
 							<label>
-								<span class="bold">{trans("Filter:")}</span>
+								<strong>{trans("Filter:")}</strong>
 								<SELECT name="filtertype">
 									<OPTION value="">{trans("- none -")}</OPTION>
 									<OPTION value="ip"{if $filtertype == 'ip'} selected{/if}>{trans("IP Address:")}</OPTION>
@@ -47,11 +55,11 @@
 								<input type="text" size="16" maxlength="32" name="filtervalue" value="{$filtervalue}">
 							</label>
 						</td>
-						<td style="width: 1%;" class="nobr">
+						<td class="nobr">
 							<label>
 							</label>
 						</td>
-						<td style="width: 1%;" class="nobr">
+						<td class="nobr">
 							<label>
 								{trans("Type:")}
 								<SELECT name="type">
@@ -62,13 +70,18 @@
 								</SELECT>
 							</label>
 						</td>
-						<td style="width: 1%;" class="nobr">
-							{trans("Started:")} <INPUT type="text" name="datefrom" size="20" maxlength="20" value="{$datefrom}" {tip class="lms-ui-datetime" text="Enter date in 'yyyy/mm/dd hh:mm' format (empty field means current date) or click to choose date from calendar"}>
+						<td class="nobr">
+							{date_period_preset from="#datefrom" to="#dateto" time=true}
+							{trans("Started:")}
+							<INPUT type="text" id="datefrom" name="datefrom" size="20" maxlength="20" value="{$datefrom}"
+								{tip class="lms-ui-datetime" text="Enter date in 'yyyy/mm/dd hh:mm' format (empty field means current date) or click to choose date from calendar"}>
 						</td>
-						<td style="width: 1%;" class="nobr">
-							{trans("Finished:")} <INPUT type="text" name="dateto" size="20" maxlength="20" value="{$dateto}" {tip class="lms-ui-datetime" text="Enter date in 'yyyy/mm/dd hh:mm' format (empty field means current date) or click to choose date from calendar"}>
+						<td class="nobr">
+							{trans("Finished:")}
+							<INPUT type="text" id="dateto" name="dateto" size="20" maxlength="20" value="{$dateto}"
+								{tip class="lms-ui-datetime" text="Enter date in 'yyyy/mm/dd hh:mm' format (empty field means current date) or click to choose date from calendar"}>
 						</td>
-						<td style="width: 95%;" class="nobr">
+						<td class="nobr">
 							<a href="javascript:filter();">&raquo;&raquo;&raquo;</a>
 						</td>
 					</tr>
@@ -105,10 +118,9 @@
 		{/if}
 	</tfoot>
 	<tbody>
-		{cycle values="light,lucid" print=false}
 		{section name=nodesession loop=$nodesessions start=$start max=$pagelimit}
 		{assign var=session value=$nodesessions[nodesession]}
-		<tr class="{cycle}">
+		<tr>
 			<td class="fleft bold nobr">
 				{if $session.nodeid}<a href="?m=nodeinfo&id={$session.nodeid}">{/if}
 				{long_ip($session.ipaddr)}
