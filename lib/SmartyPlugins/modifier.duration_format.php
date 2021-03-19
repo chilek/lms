@@ -1,7 +1,7 @@
 <?php
 
 /*
- * LMS version 26.x
+ * LMS version 27.x
  *
  *  (C) Copyright 2001-2021 LMS Developers
  *
