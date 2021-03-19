@@ -3438,6 +3438,7 @@ $_LANG['cash registry administration'] = 'administracja rejestrami kasowymi';
 
 $_LANG['Node Sessions:'] = 'Sesje komputera:';
 $_LANG['Node Sessions'] = 'Sesje komputera';
+$_LANG['<!menu>Node Sessions'] = 'Sesje komputerów';
 $_LANG['Network Device Sessions For Selected IP Address:'] = 'Sesje urządzenia sieciowego dla wybranego adresu IP:';
 $_LANG['Network Device Sessions'] = 'Sesje urządzenia sieciowego';
 $_LANG['(last $a sessions)'] = '(ostatnie $a sesji)';

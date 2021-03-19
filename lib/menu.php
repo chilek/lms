@@ -171,7 +171,7 @@ $menu = array(
                     'prio' => 50,
                 ),
                 'nodesessionlist' => array(
-                    'name' => trans('Node Sessions'),
+                    'name' => trans('<!menu>Node Sessions'),
                     'link' => '?m=nodesessionlist',
                     'tip' => trans('Allows you to view node sessions'),
                     'prio' => 60,
