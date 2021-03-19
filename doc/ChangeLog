@@ -112,6 +112,8 @@ version 27-git (????-??-??):
     filter into two filters: customer,voipaccount) [interduo]
   - improvement: date period selector added in node session list filter [chilan]
   - improvement: date period selector in traffic filter form [chilan]
+  - enhancement: 'ignore_contact_flags' allows to ignore customer contact notification flag
+    in lms-notify.php [chilan]
 
 version 26.0 (2020-12-15):
 
