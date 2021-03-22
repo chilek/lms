@@ -114,6 +114,8 @@ version 27-git (????-??-??):
   - improvement: date period selector in traffic filter form [chilan]
   - enhancement: 'ignore_contact_flags' allows to ignore customer contact notification flag
     in lms-notify.php [chilan]
+  - enhancement: added service type property to cash records - it will allow to make finanscial reported
+    categorized by service type more efficiently [chilan]
 
 version 26.0 (2020-12-15):
 
