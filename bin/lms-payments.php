@@ -454,7 +454,7 @@ $assigns = $DB->GetAll(
 if (!empty($assigns)) {
     foreach ($assigns as $assign) {
         $DB->Execute(
-            "INSERT INTO cash (time, type, value, customerid, comment) 
+            "INSERT INTO cash (time, type, value, customerid, comment)
 			VALUES (?, ?, ?, ?, ?)",
             array($currtime, 1, $assign['value'] * -1, null, $assign['name']."/".$assign['creditor'])
         );
@@ -1522,8 +1522,8 @@ foreach ($assigns as $assign) {
                     }
                     if ($assign['invoice'] == DOC_INVOICE || $assign['invoice'] == DOC_DNOTE || $proforma_generates_commitment) {
                         $DB->Execute(
-                            "INSERT INTO cash (time, value, currency, currencyvalue, taxid, customerid, comment, docid, itemid, linktechnology) 
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                            "INSERT INTO cash (time, value, currency, currencyvalue, taxid, customerid, comment, docid, itemid, linktechnology, servicetype)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                             array(
                                 $currtime,
                                 str_replace(',', '.', $val * -1),
@@ -1534,7 +1534,8 @@ foreach ($assigns as $assign) {
                                 $desc,
                                 $invoices[$cid],
                                 $itemid,
-                                $linktechnology
+                                $linktechnology,
+                                $assign['tarifftype'],
                             )
                         );
                     }
@@ -1543,8 +1544,8 @@ foreach ($assigns as $assign) {
         } else {
             if (!$prefer_settlement_only || !$assign['settlement'] || !$assign['datefrom']) {
                 $DB->Execute(
-                    "INSERT INTO cash (time, value, currency, currencyvalue, taxid, customerid, comment, linktechnology) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                    "INSERT INTO cash (time, value, currency, currencyvalue, taxid, customerid, comment, linktechnology, servicetype)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     array(
                         $currtime,
                         str_replace(',', '.', $val * -1),
@@ -1553,7 +1554,8 @@ foreach ($assigns as $assign) {
                         $assign['taxid'],
                         $cid,
                         $desc,
-                        $linktechnology
+                        $linktechnology,
+                        $assign['tarifftype'],
                     )
                 );
             }
@@ -1733,8 +1735,8 @@ foreach ($assigns as $assign) {
                         }
                         if ($assign['invoice'] == DOC_INVOICE || $assign['invoice'] == DOC_DNOTE || $proforma_generates_commitment) {
                             $DB->Execute(
-                                "INSERT INTO cash (time, value, currency, currencyvalue, taxid, customerid, comment, docid, itemid, linktechnology)
-								VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                                "INSERT INTO cash (time, value, currency, currencyvalue, taxid, customerid, comment, docid, itemid, linktechnology, servicetype)
+								VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                 array(
                                     $currtime,
                                     str_replace(',', '.', $value * -1),
@@ -1745,15 +1747,16 @@ foreach ($assigns as $assign) {
                                     $sdesc,
                                     $invoices[$cid],
                                     $itemid,
-                                    $linktechnology
+                                    $linktechnology,
+                                    $assign['tarifftype'],
                                 )
                             );
                         }
                     }
                 } else {
                     $DB->Execute(
-                        "INSERT INTO cash (time, value, currency, currencyvalue, taxid, customerid, comment, linktechnology)
-						VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                        "INSERT INTO cash (time, value, currency, currencyvalue, taxid, customerid, comment, linktechnology, servicetype)
+						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                         array(
                             $currtime,
                             str_replace(',', '.', $value * -1),
@@ -1762,7 +1765,8 @@ foreach ($assigns as $assign) {
                             $assign['taxid'],
                             $cid,
                             $sdesc,
-                            $linktechnology
+                            $linktechnology,
+                            $assign['tarifftype'],
                         )
                     );
                 }

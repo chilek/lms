@@ -1282,6 +1282,7 @@ CREATE TABLE cash (
   id int(11) NOT NULL auto_increment,
   time int(11) NOT NULL DEFAULT '0',
   type smallint NOT NULL DEFAULT '0',
+  servicetype smallint DEFAULT NULL,
   userid int(11) DEFAULT NULL,
   value decimal(9,2) NOT NULL DEFAULT '0',
   taxid int(11) DEFAULT NULL,
@@ -3988,4 +3989,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021031800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021032200');

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -44,9 +44,10 @@ if (isset($_GET['id']) && $action=='edit') {
     $i = 0;
     foreach ($note['content'] as $item) {
         $i++;
-        $nitem['description']   = $item['description'];
-        $nitem['value']     = $item['value'];
-        $nitem['posuid']    = $i;
+        $nitem['description'] = $item['description'];
+        $nitem['servicetype'] = $item['servicetype'];
+        $nitem['value'] = $item['value'];
+        $nitem['posuid'] = $i;
         $SESSION->restore('notecontents', $notecontents);
         $notecontents[] = $nitem;
         $SESSION->save('notecontents', $notecontents);
@@ -83,12 +84,13 @@ switch ($action) {
     case 'additem':
         $itemdata = r_trim($_POST);
 
-                $itemdata['value'] = f_round($itemdata['value']);
-                $itemdata['description'] = $itemdata['description'];
+        $itemdata['value'] = f_round($itemdata['value']);
+        $itemdata['description'] = $itemdata['description'];
+        $itemdata['servicetype'] = $itemdata['servicetype'];
 
         if ($itemdata['value'] > 0 && $itemdata['description'] != '') {
-                $itemdata['posuid'] = (string) getmicrotime();
-                $contents[] = $itemdata;
+            $itemdata['posuid'] = (string) getmicrotime();
+            $contents[] = $itemdata;
         }
         break;
 
@@ -351,7 +353,8 @@ switch ($action) {
                     'customerid' => $customer['id'],
                     'comment' => $item['description'],
                     'docid' => $note['id'],
-                    'itemid'=> $itemid
+                    'itemid'=> $itemid,
+                    'servicetype' => $item['servicetype'],
                 ));
             }
 

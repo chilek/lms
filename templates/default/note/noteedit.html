@@ -130,55 +130,72 @@
 {/if}
 <P>
 <TABLE class="lmsbox lms-ui-background-cycle">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 96%;">
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+	</colgroup>
     <THEAD>
 	<TR>
-		<TD WIDTH="1%">
-			<B>{trans("No.")}</B>
+		<TD class="bold">
+			{trans("No.")}
 		</TD>
-		<TD WIDTH="97%">
+		<TD>
 			{trans("Title:")}
 		</TD>
-		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
+		<TD class="text-right nobr">
+			{trans("Type")}
+		</TD>
+		<TD class="text-right nobr">
 			{trans("Value:")}
 		</TD>
-		<TD WIDTH="1%">
+		<TD>
 			&nbsp;
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	{*{counter print=false}*}
-	{foreach from=$contents item=item}
+	{foreach $contents as $item}
 	<TR class="highlight">
-		<TD WIDTH="1%">
-			<B>{counter}.</B>
+		<TD class="bold">
+			{counter}.
 		</TD>
-		<TD WIDTH="97%">
+		<TD>
 			{$item.description}
 		</TD>
-		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
+		<TD class="text-right">
+			{if isset($_SERVICETYPES[$item.servicetype])}
+				{$_SERVICETYPES[$item.servicetype]}
+			{else}
+				{trans("- none -")}
+			{/if}
+		</TD>
+		<TD class="text-right nobr">
 			{$item.value|string_format:"%01.2f"}
 		</TD>
-		<TD WIDTH="1%" NOWRAP>
+		<TD class="nobr">
 			<A HREF="?m=noteedit&action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Remove this item from list"}></A>
 		</TD>
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD COLSPAN="4" class="empty-table">
+		<TD colspan="5" class="empty-table">
 			<p>{trans("Debit note have no items. Use form below for items addition.")}</p>
 		</TD>
 	</TR>
 	{/foreach}
 	{if $contents}
 	<TR>
-		<TD COLSPAN="2" WIDTH="98%" ALIGN="RIGHT">
-			<B>{trans("Total:")}</B>
+		<TD colspan="3" class="text-right bold">
+			{trans("Total:")}
 		</TD>
-		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			<B>{sum array=$contents column=value string_format="%01.2f"}</B>
+		<TD class="text-right nobr bold">
+			{sum array=$contents column=value string_format="%01.2f"}
 		</TD>
-		<TD WIDTH="1%">
+		<TD>
 			&nbsp;
 		</TD>
 	</TR>
@@ -188,13 +205,21 @@
 	<FORM METHOD="POST" ACTION="?m=noteedit&action=additem" NAME="additem">
 	<INPUT type="submit" class="hiddenbtn">
 	<TR>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{counter}.</B>
+		<TD class="bold nobr">
+			{counter}.
 		</TD>
-		<TD WIDTH="92%" NOWRAP>
+		<TD class="nobr">
 			<INPUT TYPE="text" NAME="description" SIZE="80" {tip text="Enter description" trigger="description"}>
 		</TD>
-		<TD ALIGN="RIGHT" NOWRAP>
+		<TD class="text-right nobr">
+			<select name="servicetype" {tip text="Select type" trigger="type"}>
+				<option value="">{trans("- none -")}</option>
+				{foreach $_SERVICETYPES as $servicetype => $label}
+					<option value="{$servicetype}">{$label}</option>
+				{/foreach}
+			</select>
+		</TD>
+		<TD class="text-right nobr">
 			<INPUT TYPE="text" NAME="value" SIZE="8" {tip text="Enter value" trigger="value"}>
 		</TD>
 		<TD>
@@ -202,7 +227,7 @@
 		</TD>
 	</TR>
 	<TR class="lms-ui-button-panel">
-		<TD COLSPAN="4" ALIGN="RIGHT">
+		<TD colspan="5" class="text-right">
 			<A HREF="?m=notelist">{trans("Cancel")} <IMG src="img/cancel.gif"></A>
 			{if !$customer}
 				<A class="customer-alert" href="#">{trans("Save")} <IMG src="img/save.gif" alt=""></A>

@@ -50,6 +50,7 @@ if (isset($_GET['id']) && $action == 'init') {
 
     foreach ($invoice['content'] as $item) {
         $nitem['tariffid']  = $item['tariffid'];
+        $nitem['servicetype'] = $item['servicetype'];
         $nitem['name']      = $item['description'];
         $nitem['prodid']    = $item['prodid'];
         $nitem['count']     = str_replace(',', '.', $item['count']);
@@ -303,6 +304,7 @@ switch ($action) {
 
             $contents[$idx]['name'] = isset($newcontents['name'][$idx]) ? $newcontents['name'][$idx] : $item['name'];
             $contents[$idx]['tariffid'] = isset($newcontents['tariffid'][$idx]) ? $newcontents['tariffid'][$idx] : $item['tariffid'];
+            $contents[$idx]['servicetype'] = isset($newcontents['servicetype'][$idx]) ? $newcontents['servicetype'][$idx] : $item['servicetype'];
             $contents[$idx]['valuebrutto'] = $newcontents['valuebrutto'][$idx] != '' ? $newcontents['valuebrutto'][$idx] : $item['valuebrutto'];
             $contents[$idx]['valuenetto'] = $newcontents['valuenetto'][$idx] != '' ? $newcontents['valuenetto'][$idx] : $item['valuenetto'];
             $contents[$idx]['valuebrutto'] = f_round($contents[$idx]['valuebrutto']);
@@ -486,6 +488,7 @@ switch ($action) {
                 $idx = $item['itemid'];
                 $contents[$idx]['taxid'] = $newcontents['taxid'][$idx];
                 $contents[$idx]['taxcategory'] = $newcontents['taxcategory'][$idx];
+                $contents[$idx]['servicetype'] = $newcontents['servicetype'][$idx];
                 $contents[$idx]['prodid'] = $newcontents['prodid'][$idx];
                 $contents[$idx]['content'] = $newcontents['content'][$idx];
                 $contents[$idx]['count'] = $newcontents['count'][$idx];
@@ -682,9 +685,10 @@ switch ($action) {
                     'comment' => $item['name'],
                     SYSLOG::RES_DOC => $id,
                     'itemid' => $idx,
+                    'servicetype' => $item['servicetype'],
                 );
-                $DB->Execute('INSERT INTO cash (time, userid, value, currency, currencyvalue, taxid, customerid, comment, docid, itemid)
-					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+                $DB->Execute('INSERT INTO cash (time, userid, value, currency, currencyvalue, taxid, customerid, comment, docid, itemid, servicetype)
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
                 if ($SYSLOG) {
                     unset($args[SYSLOG::RES_USER]);
                     $args[SYSLOG::RES_CASH] = $DB->GetLastInsertID('cash');

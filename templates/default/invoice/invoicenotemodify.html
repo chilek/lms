@@ -3,6 +3,16 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
+
+<style>
+
+		.servicetype-taxcategory {
+			display: flex;
+			flex-direction: column;
+			align-items: flex-start;
+		}
+
+</style>
 <script src="js/lms-ui-deadline-selection.js"></script>
 <script>
 
@@ -270,6 +280,8 @@
 			{trans("Name of product, commodity or service:")}
 		</TD>
 		<TD>
+			{trans("Type")}
+			<br>
 			{trans("Tax category:")}
 		</TD>
 		<TD class="nobr">
@@ -313,19 +325,35 @@
 				{/if}
 			</TD>
 			<TD>
-				{if $item.deleted}
-					<INPUT TYPE="hidden" VALUE="{$item.taxcategory}" NAME="taxcategory[{$itemid}]">
-					{if $item.taxcategory}
-						<span {tip text=$_TAX_CATEGORIES[$item.taxcategory].description}>
-							({sprintf('%02d', $item.taxcategory)}) {$_TAX_CATEGORIES[$item.taxcategory].label}
-						</span>
+				<div class="servicetype-taxcategory">
+					{if $item.deleted}
+						<input type="hidden" value="{$item.servicetype}" name="servicetype[{$itemid}]">
+						{if isset($_SERVICETYPES[$item.servicetype])}
+							<span class="invoice-contents-field-value">
+								{$_SERVICETYPES[$item.servicetype]}
+							</span>
+						{else}
+							{trans("- none -")}
+						{/if}
+						<INPUT TYPE="hidden" VALUE="{$item.taxcategory}" NAME="taxcategory[{$itemid}]">
+						{if $item.taxcategory}
+							<span {tip text=$_TAX_CATEGORIES[$item.taxcategory].description}>
+								({sprintf('%02d', $item.taxcategory)}) {$_TAX_CATEGORIES[$item.taxcategory].label}
+							</span>
+						{else}
+							{trans("- none -")}
+						{/if}
 					{else}
-						{trans("- none -")}
+						<select name="servicetype[{$itemid}]">
+							<option value="">{trans("- none -")}</option>
+							{foreach $_SERVICETYPES as $servicetype => $label}
+								<option value="{$servicetype}"{if $item.servicetype == $servicetype} selected{/if}>{$label}</option>
+							{/foreach}
+						</select>
+						{tax_category_selection elementname="taxcategory["|cat:$itemid|cat:"]" selected=$item.taxcategory
+							tip="Select tax category"}
 					{/if}
-				{else}
-					{tax_category_selection elementname="taxcategory["|cat:$itemid|cat:"]" selected=$item.taxcategory
-						tip="Select tax category"}
-				{/if}
+				</div>
 			</TD>
 			<TD class="nobr">
 				{if $item.deleted}

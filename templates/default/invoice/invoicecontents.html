@@ -2,6 +2,13 @@
     .invoice-contents-sortable-handler {
         cursor: grab;
     }
+
+    .servicetype-taxcategory {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
 </style>
 
 {if $customer}
@@ -45,6 +52,8 @@
                 {trans("Name of product, commodity or service:")}
             </TD>
             <TD>
+                {trans("Type")}
+                <br>
                 {trans("Tax category:")}
             </TD>
             <TD class="nobr">
@@ -104,15 +113,31 @@
                 {/if}
             </TD>
             <TD class="nobr">
-                {tax_category_selection class="invoice-contents-field-edit" elementname="invoice-contents["|cat:$posuid|cat:"][taxcategory]"
-                    selected=$row.taxcategory visible=false tip="Select tax category" data_old_value=$item.taxcategory}
-                <span class="invoice-contents-field-value"{if $item.taxcategory} title="{$_TAX_CATEGORIES[$item.taxcategory].description}"{/if}>
-                    {if $item.taxcategory}
-                        ({sprintf('%02d', $item.taxcategory)}) {$_TAX_CATEGORIES[$item.taxcategory].label}
-                    {else}
-                        {trans("- none -")}
-                    {/if}
-                </span>
+                <div class="servicetype-taxcategory">
+                    <select name="invoice-contents[{$posuid}][servicetype]" class="invoice-contents-field-edit" style="display: none;"
+                        data-old-value="{$item.servicetype}">
+                        <option value="">{trans("- none -")}</option>
+                        {foreach $_SERVICETYPES as $servicetype => $label}
+                            <option value="{$servicetype}"{if $row.servicetype == $servicetype} selected{/if}>{$label}</option>
+                        {/foreach}
+                    </select>
+                    {tax_category_selection class="invoice-contents-field-edit" elementname="invoice-contents["|cat:$posuid|cat:"][taxcategory]"
+                        selected=$row.taxcategory visible=false tip="Select tax category" data_old_value=$item.taxcategory}
+                    <span class="invoice-contents-field-value">
+                        {if isset($_SERVICETYPES[$item.servicetype])}
+                            {$_SERVICETYPES[$item.servicetype]}
+                        {else}
+                            {trans("- none -")}
+                        {/if}
+                    </span>
+                    <span class="invoice-contents-field-value"{if $item.taxcategory} title="{$_TAX_CATEGORIES[$item.taxcategory].description}"{/if}>
+                        {if $item.taxcategory}
+                            ({sprintf('%02d', $item.taxcategory)}) {$_TAX_CATEGORIES[$item.taxcategory].label}
+                        {else}
+                            {trans("- none -")}
+                        {/if}
+                    </span>
+                </div>
             </TD>
             <TD class="nobr">
                 <INPUT TYPE="text" class="invoice-contents-field-edit" NAME="invoice-contents[{$posuid}][prodid]" SIZE="6"
@@ -260,13 +285,21 @@
                 {/block}
             </TD>
             <TD class="nobr">
-                {if isset($itemdata) && !isset($error.posuid)}
-                    {$taxcategory = $itemdata.taxcategory}
-                {else}
-                    {$taxcategory = 0}
-                {/if}
-                {tax_category_selection elementname="taxcategory" tip="Select tax category"
-                    selected=$taxcategory}
+                <div class="servicetype-taxcategory">
+                    <select name="servicetype">
+                        <option value="">{trans("- none -")}</option>
+                        {foreach $_SERVICETYPES as $servicetype => $label}
+                            <option value="{$servicetype}">{$label}</option>
+                        {/foreach}
+                    </select>
+                    {if isset($itemdata) && !isset($error.posuid)}
+                        {$taxcategory = $itemdata.taxcategory}
+                    {else}
+                        {$taxcategory = 0}
+                    {/if}
+                    {tax_category_selection elementname="taxcategory" tip="Select tax category"
+                        selected=$taxcategory}
+                </div>
             </TD>
             <TD class="text-right">
                 <INPUT TYPE="text" NAME="prodid" SIZE="6">
@@ -367,6 +400,7 @@
 			e.prodid.value = '{$tariff.prodid}';
 			e.tariffid.value = '{$tariff.id}';
 			$(e.taxcategory).val({$tariff.taxcategory});
+            $(e.servicetype).val({$tariff.tarifftype});
 			e.count.value = 1;
 			return;
 		}
@@ -376,6 +410,8 @@
             e.valuebrutto.value = '';
             e.prodid.value = '';
             e.tariffid.value = '';
+            $(e.taxcategory).val(0);
+            $(e.servicetype).val('');
             e.count.value = 1
         }
 	}
