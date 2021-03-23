@@ -116,6 +116,8 @@ version 27-git (????-??-??):
     in lms-notify.php [chilan]
   - enhancement: added service type property to cash records - it will allow to make finanscial reported
     categorized by service type more efficiently [chilan]
+  - enhancement: userpanel: introduced new 'finances' module option which controls visibility of all
+    assignments (even those which will start in future) [chilan]
 
 version 26.0 (2020-12-15):
 

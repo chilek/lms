@@ -1,6 +1,7 @@
 {box title="Your subscriptions"}
 {$show_speeds = ConfigHelper::checkConfig('userpanel.show_speeds')}
 {$show_period = ConfigHelper::checkConfig('userpanel.show_period')}
+{$show_all_assignments = ConfigHelper::checkConfig('userpanel.show_all_assignments')}
 {$speed_unit_type = ConfigHelper::getConfig('userpanel.speed_unit_type')}
 {$speed_unit_aggregation_threshold = ConfigHelper::getConfig('userpanel.speed_unit_aggregation_threshold')}
 {$count = 0}
@@ -24,7 +25,8 @@
 		{$total_real_value = array()}
 		{$total_real_disc_value = array()}
 		{foreach $assignments as $assignment}
-			{if ($assignment.tariffid || $assignment.liabilityid) && !($assignment.suspended || ($assignment.dateto < $smarty.now && $assignment.dateto) || ($assignment.datefrom > $smarty.now && $assignment.datefrom))}
+			{if ($assignment.tariffid || $assignment.liabilityid) && !$assignment.suspended
+				&& ($show_all_assignments || ($assignment.datefrom <= $smarty.now && (empty($assignment.dateto) || $assignment.dateto >= $smarty.now)))}
 				<tr>
 					<td>{if ConfigHelper::checkConfig('userpanel.show_tariffname')}{$assignment.name}{/if}</td>
 					<td class="text-right text-nowrap">

@@ -1,6 +1,7 @@
 <!--// $Id$ //-->
 {box title="Your subscriptions"}
 {$show_speeds = ConfigHelper::checkConfig('userpanel.show_speeds')}
+{$show_all_assignments = ConfigHelper::checkConfig('userpanel.show_all_assignments')}
 {$speed_unit_type = ConfigHelper::getConfig('userpanel.speed_unit_type')}
 {$speed_unit_aggregation_threshold = ConfigHelper::getConfig('userpanel.speed_unit_aggregation_threshold')}
 <table style="width: 100%;" cellpadding="3">
@@ -18,8 +19,9 @@
 	</tr>
 	{$total_real_value = array()}
 	{$total_real_disc_value = array()}
-	{foreach from=$assignments item=assignment}
-	{if ($assignment.tariffid || $assignment.liabilityid) && !($assignment.suspended || ($assignment.dateto < $smarty.now && $assignment.dateto) || ($assignment.datefrom > $smarty.now && $assignment.datefrom))}
+	{foreach $assignments as $assignment}
+	{if ($assignment.tariffid || $assignment.liabilityid) && !$assignment.suspended
+		&& ($show_all_assignments || ($assignment.datefrom <= $smarty.now && (empty($assignment.dateto) || $assignment.dateto >= $smarty.now)))}
 	<tr class="dark">
 		<td><strong>{if ConfigHelper::checkConfig('userpanel.show_tariffname')}{$assignment.name}{/if}</strong></td>
 		<td class="nobr" align="right">
@@ -57,8 +59,8 @@
 		{/if}
 		<td>{if $assignment.invoice}{trans("yes")}{else}&nbsp;{/if}</td>
 		<td>
-			{if $assignment.datefrom}<nobr>{trans("from")} {$assignment.datefrom|date_format:"%Y/%m/%d"}</nobr>{/if}
-			{if $assignment.dateto}<nobr>{trans("to")} {$assignment.dateto|date_format:"%Y/%m/%d"}</nobr>{/if}
+			{if $assignment.datefrom}<span class="nobr">{trans("from")} {$assignment.datefrom|date_format:"%Y/%m/%d"}</span>{/if}
+			{if $assignment.dateto}<span class="nobr">{trans("to")} {$assignment.dateto|date_format:"%Y/%m/%d"}</span>{/if}
 		</td>
 	</tr>
 	{/if}
