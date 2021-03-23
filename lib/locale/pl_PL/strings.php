@@ -1953,6 +1953,7 @@ $_LANG['Yes, I do.'] = 'Tak, chcę.';
 $_LANG['Yes, I know what I do.'] = 'Tak, wiem, co robię.';
 $_LANG['You can select customer to limit results'] = 'Możesz wybrać klienta, żeby ograniczyć liczbę wyników';
 $_LANG['You can select user to limit results'] = 'Możesz wybrać użytkownika, by ograniczyć liczbę wyników';
+$_LANG['You can\'t edit tariff which is assigned to customers through assignments!'] = 'Nie możesz edytować taryfy, która jest przypisana do klientów poprzez zobowiązania!';
 $_LANG['You can turn it off'] = 'Możesz to wyłączyć';
 $_LANG['You may use our automated Customer Care Web Panel, just remember your PIN (it\'s printed on the other side of this page)'] = 'Aby skorzystać z naszego zautomatyzowanego internetowego panelu klienta, należy pamiętać swój PIN (jest wydrukowany na drugiej stronie)';
 $_LANG['You don\'t have any IP network.'] = 'Nie posiadasz żadnej sieci IP.';
