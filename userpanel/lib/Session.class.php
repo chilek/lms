@@ -73,8 +73,15 @@ class Session
                         return;
                     }
                     $join = 'JOIN customercontacts cc ON cc.customerid = c.id';
-                    $where = ' AND contact = ? AND cc.type & ? > 0';
-                    $params = array_merge($params, array($remindform['email'],(CONTACT_EMAIL|CONTACT_INVOICES|CONTACT_NOTIFICATIONS)));
+                    $where = ' AND contact = ? AND cc.type & ? = ?';
+                    $params = array_merge(
+                        $params,
+                        array(
+                            $remindform['email'],
+                            CONTACT_EMAIL | CONTACT_DISABLED,
+                            CONTACT_EMAIL,
+                        )
+                    );
                     break;
                 case 2:
                     $phone = preg_replace('/[\s\-]/', '', $remindform['phone']);
@@ -82,11 +89,12 @@ class Session
                         return;
                     }
                     $join = 'JOIN customercontacts cc ON cc.customerid = c.id';
-                    $where = ' AND REPLACE(REPLACE(contact, \'-\', \'\'), \' \', \'\') = ? AND cc.type & ? > 0';
+                    $where = ' AND REPLACE(REPLACE(contact, \'-\', \'\'), \' \', \'\') = ? AND cc.type & ? = ?';
                     $params = array_merge(
                         $params,
                         array(
                             $phone,
+                            CONTACT_MOBILE | CONTACT_DISABLED,
                             CONTACT_MOBILE,
                         )
                     );
