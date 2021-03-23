@@ -65,7 +65,7 @@ class Session
                 return;
             }
 
-            $ten = preg_replace('/-/', '', $remindform['ten']);
+            $ten = preg_replace('/[^a-z0-9]/i', '', $remindform['ten']);
             $params = array($ten, $ten);
             switch ($remindform['type']) {
                 case 1:
@@ -102,8 +102,16 @@ class Session
                 default:
                     return;
             }
-            $customer = $this->db->GetRow("SELECT c.id, pin FROM customers c $join WHERE c.deleted = 0 AND ((ten <> '' AND REPLACE(ten, '-', '') = ?) OR (ssn <> '' AND ssn = ?))"
-                . $where, $params);
+            $customer = $this->db->GetRow(
+                'SELECT c.id, pin
+                FROM customers c
+                ' . $join . '
+                WHERE c.deleted = 0
+                    AND ((ten <> \'\' AND REPLACE(REPLACE(ten, \'-\', \'\'), \' \', \'\') = ?)
+                        OR (ssn <> \'\' AND ssn = ?))'
+                . $where,
+                $params
+            );
             if (!$customer) {
                 $this->error = trans('Credential reminder couldn\'t be sent!');
                 return;
