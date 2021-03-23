@@ -23,9 +23,11 @@
 
 $this->BeginTrans();
 
-$this->Execute("ALTER TABLE cash ADD COLUMN servicetype smallint DEFAULT NULL");
+if (!$this->ResourceExists('cash.servicetype', LMSDB::RESOURCE_TYPE_COLUMN)) {
+    $this->Execute("ALTER TABLE cash ADD COLUMN servicetype smallint DEFAULT NULL");
 
-$this->Execute("UPDATE cash SET servicetype = (SELECT t.type FROM invoicecontents ic JOIN tariffs t ON t.id = ic.tariffid WHERE ic.docid = cash.docid AND ic.itemid = cash.itemid)");
+    $this->Execute("UPDATE cash SET servicetype = (SELECT t.type FROM invoicecontents ic JOIN tariffs t ON t.id = ic.tariffid WHERE ic.docid = cash.docid AND ic.itemid = cash.itemid)");
+}
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021032200', 'dbversion'));
 
