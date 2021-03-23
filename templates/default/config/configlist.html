@@ -488,11 +488,15 @@
 
 		function switchDirection() {
 			if ($('#export').is(':visible')) {
-				$('.row-container-buttons').css('flex-direction', 'column');
-				$('.row-container-buttons').css('align-items', 'flex-end');
+				$('.row-container-buttons').css({
+					'flex-direction': 'column',
+					'align-items': 'flex-end'
+				});
 			} else {
-				$('.row-container-buttons').css('flex-direction', 'row');
-				$('.row-container-buttons').css('align-items', 'center');
+				$('.row-container-buttons').css({
+					'flex-direction': 'row',
+					'align-items': 'center'
+				});
 			}
 		}
 
