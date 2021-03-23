@@ -334,6 +334,8 @@ if ($AUTH->islogged) {
 
     Localisation::initDefaultCurrency();
 
+    $LMS->executeHook('division_set_after', $LMS);
+
     $module = isset($_GET['m']) ? preg_replace('/[^a-zA-Z0-9_-]/', '', $_GET['m']) : '';
     $deny = $allow = false;
 
