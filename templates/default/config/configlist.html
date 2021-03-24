@@ -268,6 +268,9 @@
 						{button icon="delete" label="Delete selected" id="delete-configs"}
 					</div>
 					<div>
+						{button icon="url" label="Copy as links" id="copy-links-configs" data_clipboard_text=""}
+					</div>
+					<div>
 						<label>{trans("Check All")}
 							<INPUT type="checkbox" id="checkall" class="lms-ui-multi-check-all">
 						</label>
@@ -593,6 +596,24 @@
 		});
 
 		$('#configlist-datatable').DataTable().order.listener('span', 0);
+		$('#copy-links-configs').click(function() {
+			if (!$(this).closest('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+				alertDialog($t("No option has been selected!"), this);
+				return;
+			}
+		});
+
+		new ClipboardJS('#copy-links-configs', {
+			text: function(trigger) {
+				var checkedRows = $(trigger).closest('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked');
+				var checkedClipboardText = '';
+				checkedRows.each(function() {
+					checkedClipboardText += $(this).closest('td').find('.lms-ui-button-clipboard').attr('data-clipboard-text') + '\n';
+				});
+				$(trigger).attr('data-clipboard-text', checkedClipboardText);
+				return $(trigger).attr('data-clipboard-text');
+			}
+		});
 	});
 
 </script>
