@@ -295,6 +295,16 @@ function initAdvancedSelects(selector) {
 				$(this).next().toggleClass('lms-ui-error', RegExp("^0?$").test($(this).val()));
 			}
 		});
+
+		$(this).on('chosen:showing_dropdown', function(e) {
+			var dropdown = $(this).next().find('.chosen-drop');
+			dropdown.position({
+				my: "left top",
+				at: "left bottom",
+				of: dropdown.prev()
+			});
+		});
+
 		$(this).chosen($.extend({
 			no_results_text: $t('No results match'),
 			placeholder_text_single: $t('Select an Option'),
