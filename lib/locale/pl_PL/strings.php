@@ -4721,7 +4721,7 @@ $_LANG['<!dialog>Alert'] = 'Ostrzeżenie';
 
 $_LANG['Google Maps'] = 'Mapy Google';
 $_LANG['Copy link'] = 'Kopiuj link';
-$_LANG['Copy selected as links'] = 'Kopiuj zaznaczone jako linki';
+$_LANG['Copy as links'] = 'Kopiuj jako linki';
 
 $_LANG['Are you sure that you want remove tariff rule \'$a\'?'] = 'Czy jesteś pewien, że chcesz usunąć regułę taryfikacyjną \'$a\'?';
 $_LANG['Are you sure that you want remove tariff \'$a\'?'] = 'Czy jesteś pewien, że chcesz usunąć cennik \'$a\'?';
