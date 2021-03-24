@@ -21,63 +21,45 @@
 		display: flex;
 		flex-wrap: wrap;
 		flex-direction: row;
-		justify-content: flex-end;
-		align-items: center;
+		justify-content: space-between;
+		align-items: flex-start;
 		text-align: left;
-	}
-	.clone-container,
-	.export-container,
-	.clone-container-section-input,
-	.clone-container-section-select,
-	.clone-container-user,
-	.clone-container-division {
-		display: flex;
-		flex-wrap: wrap;
-		flex-direction: row;
-		justify-content: flex-end;
-		align-items: center;
-	}
-
-	.clone-container,
-	.export-container {
-		margin-top: -0.5em;
 	}
 
 	.row-container-buttons {
 		display: flex;
 		flex-wrap: wrap;
 		flex-direction: row;
-		justify-content: flex-end;
+		justify-content: flex-start;
 		align-items: center;
 	}
 
-	.clone-container-center,
-	.export-container-center {
+	.row-container-buttons > div {
+		padding-left: 0.5em;
+	}
+
+	.row-container-actions {
 		display: flex;
-		align-content: flex-start;
-		align-items: center;
-		max-width: 150px;
-		padding-right: 0.25em;
-		padding-left: 0.25em;
+		flex-wrap: wrap;
+		flex-direction: row;
+		justify-content: flex-start;
+		align-items: flex-start;
 	}
 
-	.clone-container-center > label {
-		white-space: normal;
+	#clone-container, #export-container {
+		display: flex;
+		flex-wrap: wrap;
+		flex-direction: column;
+		justify-content: flex-start;
+		align-items: flex-start;
 	}
 
-	.clone-container-center{
-        padding-top: 0.5em;
+	#clone-container > div {
+		padding-bottom: 0.5em;
 	}
 
-	.export-container-center > label {
-		white-space: normal;
-	}
-
-	.clone-container-select {
-		padding-top: 0.5em;
-		padding-right: 0.5em;
-		text-align: left;
-		font-weight: normal;
+	#export-container > div {
+		padding-bottom: 0.5em;
 	}
 
 	.lms-ui-button-clipboard {
@@ -187,101 +169,105 @@
 	<TR>
 		<TD colspan="8" class="text-right bold">
 			<div class="row-container">
-				<fieldset id="clone" style="display: none;">
-					<legend>{trans('Cloning')}</legend>
-					<div class="clone-container">
-						<div class="clone-container-section-input" style="display: none;">
-							<div class="clone-container-center">
-								{trans('Target section')}
+				<div class="row-container-actions">
+					<fieldset id="clone" style="display: none;">
+						<legend>{trans('Cloning')}</legend>
+						<div id="clone-container">
+							<div class="clone-container-section-input" style="display: none;">
+								<div>
+									{trans('Target section')}
+								</div>
+								<div>
+									<input type="text" id="section-name-input" {tip text="Enter new section name"}>
+								</div>
 							</div>
-							<div class="clone-container-select">
-								<input type="text" id="section-name-input" {tip text="Enter new section name"}>
+
+							<div class="clone-container-section-select" style="display: none;">
+								<div>
+									{trans('Target section')}
+								</div>
+								<div>
+									<SELECT size="1" id="section-name-select" {tip class="lms-ui-combobox" text="Select section" trigger="section"}>
+										<OPTION value="samesection" selected>{trans('to_the_source_sections')}</OPTION>
+										{foreach $sections as $section}
+											<OPTION value="{$section}">{$section}</OPTION>
+										{/foreach}
+									</SELECT>
+								</div>
+							</div>
+
+							<div class="clone-container-user" style="display: none;">
+								<div>
+									{trans('Target user')}
+								</div>
+								<div>
+									<SELECT size="1" id="user-name" {tip text="Select user" trigger="user"}>
+										{foreach $users as $user}
+											<OPTION value="{$user.id}">{$user.login} / {$user.rname|escape}</OPTION>
+										{/foreach}
+									</SELECT>
+								</div>
+							</div>
+
+							<div class="clone-container-division" style="display: none;">
+								<div>
+									{trans('Target division')}
+								</div>
+								<div>
+									<SELECT size="1" id="division-name" {tip text="Select user" trigger="division"}>
+										{foreach $divisions as $division}
+											<OPTION value="{$division.id}">{$division.label|escape}</OPTION>
+										{/foreach}
+									</SELECT>
+								</div>
+							</div>
+
+							<div class="withchildbindings" style="display: none;">
+								<label>{trans('With child bindings')}
+									<input type="checkbox" id="withchildbindings">
+								</label>
+							</div>
+
+							<div class="withparentbindings" style="display: none;">
+								<label>{trans('Create the missing parent bindings')}
+									<input type="checkbox" id="withparentbindings">
+								</label>
+							</div>
+
+							<div class="override">
+								<label>{trans('Override existing')}
+									<input type="checkbox" id="override">
+								</label>
+							</div>
+
+							<div>
+								{button icon="clone" label="Clone selected" id="clone-configs"}
 							</div>
 						</div>
+					</fieldset>
+					<fieldset id="export" style="display: none;">
+						<legend>{trans("Export")}</legend>
+						<div id="export-container">
+							<div>
+								<label>ini
+									<input type="radio" name="export_filetype" id="export_ini" value="ini" checked>
+								</label>
+								<label>sql
+									<input type="radio" name="export_filetype" id="export_sql" value="sql">
+								</label>
+							</div>
 
-						<div class="clone-container-section-select" style="display: none;">
-							<div class="clone-container-center">
-								{trans('Target section')}
-							</div>
-							<div class="clone-container-select">
-								<SELECT size="1" id="section-name-select" {tip class="lms-ui-combobox" text="Select section" trigger="section"}>
-									<OPTION value="samesection" selected>{trans('to_the_source_sections')}</OPTION>
-									{foreach $sections as $section}
-										<OPTION value="{$section}">{$section}</OPTION>
-									{/foreach}
-								</SELECT>
-							</div>
-						</div>
-
-						<div class="clone-container-user" style="display: none;">
-							<div class="clone-container-center">
-								{trans('Target user')}
-							</div>
-							<div class="clone-container-select">
-								<SELECT size="1" id="user-name" {tip text="Select user" trigger="user"}>
-									{foreach $users as $user}
-										<OPTION value="{$user.id}">{$user.login} / {$user.rname|escape}</OPTION>
-									{/foreach}
-								</SELECT>
+							<div>
+								{button icon="importsource" label="Export selected" id="export-configs"}
 							</div>
 						</div>
-
-						<div class="clone-container-division" style="display: none;">
-							<div class="clone-container-center">
-								{trans('Target division')}
-							</div>
-							<div class="clone-container-select">
-								<SELECT size="1" id="division-name" {tip text="Select user" trigger="division"}>
-									{foreach $divisions as $division}
-										<OPTION value="{$division.id}">{$division.label|escape}</OPTION>
-									{/foreach}
-								</SELECT>
-							</div>
-						</div>
-
-						<div class="clone-container-center withchildbindings" style="display: none;">
-							<label for="withchildbindings">{trans('With child bindings')}</label>
-								<input type="checkbox" id="withchildbindings">
-						</div>
-
-						<div class="clone-container-center withparentbindings" style="display: none;">
-							<label for="withparentbindings">{trans('Create the missing parent bindings')}</label>
-								<input type="checkbox" id="withparentbindings">
-						</div>
-
-						<div class="clone-container-center override">
-							<label>{trans('Override existing')}
-								<input type="checkbox" id="override">
-							</label>
-						</div>
-
-						<div>
-							{button icon="clone" label="Clone selected" id="clone-configs"}
-						</div>
-					</div>
-				</fieldset>
-				<fieldset id="export" style="display: none;">
-					<legend>{trans("Export")}</legend>
-					<div class="export-container">
-						<div class="export-container-center">
-							<label>ini
-							    <input type="radio" name="export_filetype" id="export_ini" value="ini" checked>
-							</label>
-							<label>sql
-							    <input type="radio" name="export_filetype" id="export_sql" value="sql">
-							</label>
-						</div>
-
-						<div>
-							{button icon="importsource" label="Export selected" id="export-configs"}
-						</div>
-					</div>
-				</fieldset>
+					</fieldset>
+				</div>
 				<div class="row-container-buttons">
 					<div>
 						{button icon="delete" label="Delete selected" id="delete-configs"}
 					</div>
-					<div class="clone-container-center">
+					<div>
 						<label>{trans("Check All")}
 							<INPUT type="checkbox" id="checkall" class="lms-ui-multi-check-all">
 						</label>
@@ -499,6 +485,21 @@
 			});
 		});
 
+
+		function switchDirection() {
+			if ($('#export').is(':visible')) {
+				$('.row-container-buttons').css({
+					'flex-direction': 'column',
+					'align-items': 'flex-end'
+				});
+			} else {
+				$('.row-container-buttons').css({
+					'flex-direction': 'row',
+					'align-items': 'center'
+				});
+			}
+		}
+
 		function toggleActions() {
 			$('#export, #clone, .clone-container-section-input, .clone-container-section-select, .clone-container-user, .withchildbindings, .withparentbindings, .override').hide();
 			{if !empty($configlist)}
@@ -566,15 +567,19 @@
 
 		$('#type-filter').change(function() {
 			toggleActions();
+			switchDirection();
 		})
 		$('#user-filter').change(function() {
 			toggleActions();
+			switchDirection();
 		})
 		$('#division-filter').change(function() {
 			toggleActions();
+			switchDirection();
 		})
 
 		toggleActions();
+		switchDirection();
 
 		$('[data-filter-id="section-filter"]').off('click');
 
