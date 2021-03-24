@@ -71,7 +71,7 @@
 						<div class="lms-ui-tab-table-wrapper col-2">
 							<div class="lms-ui-tab-table-column number" onclick="window.open('?m=documentview&id={$doc.docid}');"
 									{if $doc.description} {tip text=$doc.description}{/if}>
-								<strong>{number number=$doc.number template=$doc.template time=$doc.cdate}</strong>
+								<strong>{number number=$doc.number template=$doc.template customerid=$customerinfo.id time=$doc.cdate}</strong>
 							</div>
 							<div class="lms-ui-tab-table-column creation-date" onclick="window.open('?m=documentview&id={$doc.docid}');">
 								{$doc.cdate|date_format:"%Y/%m/%d %H:%M"}{if $doc.sdate} / {$doc.sdate|date_format:"%Y/%m/%d %H:%M"}{/if}
