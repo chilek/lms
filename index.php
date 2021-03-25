@@ -330,11 +330,15 @@ if ($AUTH->islogged) {
         'user_id' => Auth::GetCurrentUser(),
     ));
 
-    ConfigHelper::setFilter(LMSDivisionManager::getCurrentDivision(), Auth::GetCurrentUser());
+    $divisionid = LMSDivisionManager::getCurrentDivision();
+    ConfigHelper::setFilter($divisionid, Auth::GetCurrentUser());
+
+    $LMS->executeHook('division_set_after', array(
+        'lms' => $LMS,
+        'divisionid' => $divisionid,
+    ));
 
     Localisation::initDefaultCurrency();
-
-    $LMS->executeHook('division_set_after', $LMS);
 
     $module = isset($_GET['m']) ? preg_replace('/[^a-zA-Z0-9_-]/', '', $_GET['m']) : '';
     $deny = $allow = false;
