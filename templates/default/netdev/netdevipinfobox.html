@@ -46,7 +46,7 @@
 								</tr>
 								<tr>
 									<td>
-										<img src="img/ip.gif" class="lms-ui-button-clipboard" data-clipboard-text="{$nodeipdata.ip}" alt="">
+										{icon name="routed" class="lms-ui-button-clipboard fa-fw" data_clipboard_text=$nodeipdata.ip}
 									</td>
 									<td>
 										{trans("IP address:")}
@@ -59,7 +59,7 @@
 								{if $nodeipdata.ip_pub != "0.0.0.0"}
 								<tr>
 									<td>
-										<img src="img/ip_pub.gif" class="lms-ui-button-clipboard" data-clipboard-text="{$nodeinfo.ip_pub}" alt="">
+										{icon name="routed" class="lms-ui-button-clipboard fa-fw" data_clipboard_text=$nodeipdata.ip_pub}
 									</td>
 									<td>
 										{trans("Pub. IP address:")}
