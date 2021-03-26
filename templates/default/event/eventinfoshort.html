@@ -183,7 +183,7 @@
         </TD>
         <TD class="nobr">
             <A href="?m=customerinfo&id={$event.customerid}">
-                (#{$event.customerid}) {$event.customername|escape}
+                {$event.customername|escape} (#{$event.customerid})
             </A>
             {if !empty($event.phones)}
                 <br>

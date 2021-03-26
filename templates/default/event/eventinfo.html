@@ -180,7 +180,7 @@
 			{trans("Customer:")}
 		</TD>
 		<TD class="nobr">
-			<A href="?m=customerinfo&id={$event.customerid}">(#{$event.customerid}) {$event.customername}</A>
+			<A href="?m=customerinfo&id={$event.customerid}">{$event.customername} (#{$event.customerid})</A>
 			{if !empty($event.phones)}
 				<br>
 				{foreach $event.phones as $phone}
