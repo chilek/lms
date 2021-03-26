@@ -175,14 +175,26 @@
     {/if}
     {if $event.customername}
     <TR>
-        <TD>
+        <TD class="valign-top">
 	        {icon name="customer" class="fa-fw"}
         </TD>
-        <TD class="bold">
+        <TD class="valign-top bold">
             {trans("Customer:")}
         </TD>
         <TD class="nobr">
-            <A href="?m=customerinfo&id={$event.customerid}">{$event.customername|escape}</A>
+            <A href="?m=customerinfo&id={$event.customerid}">
+                (#{$event.customerid}) {$event.customername|escape}
+            </A>
+            {if !empty($event.phones)}
+                <br>
+                {foreach $event.phones as $phone}
+                    {icon name="phone" class="fa-fw"}
+                    <a href="tel:{$phone.contact}">{$phone.fullname}</a>
+                    {if !$phone@last}
+                        <br>
+                    {/if}
+                {/foreach}
+            {/if}
         </TD>
     </TR>
     {/if}

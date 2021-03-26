@@ -246,9 +246,15 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 			LEFT JOIN vaddresses as vd ON (vd.id = nn.address_id)
 			WHERE e.id = ?', array($id));
 
-        if (!empty($event['customerid']) && empty($event['node_location'])) {
+        if (!empty($event['customerid'])) {
             $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache);
-            $event['node_location'] = $customer_manager->getAddressForCustomerStuff($event['customerid']);
+            if (empty($event['node_location'])) {
+                $event['node_location'] = $customer_manager->getAddressForCustomerStuff($event['customerid']);
+            }
+            $event['phones'] = $customer_manager->GetCustomerContacts($event['customerid'], CONTACT_MOBILE | CONTACT_LANDLINE);
+            $event['phones'] = array_filter($event['phones'], function ($contact) {
+                return !($contact['type'] & CONTACT_DISABLED);
+            });
         }
 
         if (!empty($event['ticketid'])) {
