@@ -90,7 +90,7 @@ $income = $DB->GetAll('
 	JOIN customers c ON c.id = cash.customerid
 	JOIN taxes t ON t.id = cash.taxid
 	WHERE cash.type = 0 AND time >= ? AND time <= ?'
-    . ($division ? ' AND ((cash.docid IS NOT NULL AND c.divisionid = ' . $division . ')
+    . ($division ? ' AND ((cash.docid IS NOT NULL AND d.divisionid = ' . $division . ')
             OR (cash.docid IS NULL AND c.divisionid = ' . $division . '))' : '')
     . ($type == 'linktechnologies' ?
         ' GROUP BY cash.linktechnology
