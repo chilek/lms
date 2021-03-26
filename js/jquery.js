@@ -1115,7 +1115,14 @@ $(function() {
 	);
 
 	$('.lms-ui-button-clipboard:not([title])').attr('title', $t('Click copies to clipboard'));
-	new ClipboardJS('.lms-ui-button-clipboard');
+	new ClipboardJS('.lms-ui-button-clipboard:not([data-clipboard-handler])');
+	new ClipboardJS('.lms-ui-button-clipboard[data-clipboard-handler]', {
+		text: function(trigger) {
+			var e = $.Event('lms:clipboard:click');
+			$(trigger).trigger(e);
+			return e.result;
+		}
+	});
 
 	if (tooltipsEnabled) {
 		$(document).on('mouseenter', '[title]', function () {

@@ -15,6 +15,14 @@
         flex-wrap: wrap;
 	}
 
+	.mac-address {
+		cursor: pointer;
+	}
+
+	.mac-address:hover {
+		box-shadow: 0px 0px 1px 1px black;
+	}
+
 	@media screen and (max-width: 400px) {
 		.tab-beautify tr td:nth-child(2) {
 			white-space: normal;
@@ -101,16 +109,20 @@
 
 								{assign var="counter" value=0}
 								{$macs=array()}
-								{foreach from=$nodeinfo.macs item=item}
+								{foreach $nodeinfo.macs as $item}
 								<tr>
 									<td>
-										<a href="javascript:changeMacFormat('mac{$counter}')" title="{trans("Change the format of presentation of the MAC address.")}"><img src="img/mac.gif" alt=""></a>
+										{icon name="mac" class="lms-ui-button-clipboard mac-address-copy-to-clipboard fa-fw" data_clipboard_handler="1"}
 									</td>
 									<td>
 										{trans("MAC address:")}
 									</td>
 									<td>
-										<span id="mac{$counter}">{$item.mac}</span> {if $item.producer}({$item.producer}){/if}<br>
+										<span id="mac{$counter}" class="mac-address lms-ui-no-user-select"
+											{tip text="Change the format of presentation of the MAC address."}>
+											{$item.mac}
+										</span>
+										{if $item.producer}({$item.producer}){/if}
 										{$macs[]=$item.mac}
 									</td>
 								</tr>
@@ -489,8 +501,8 @@
 <script>
     xajax_getNodeStats({$nodeinfo.id});
 
-    {if !$disable_active_links}
-    $( function() {
+	$(function() {
+	    {if !$disable_active_links}
         var link = '?m=nodeedit&id={$nodeinfo.id}';
         var nodeid = {$nodeinfo.id};
 
@@ -524,8 +536,16 @@
                 }
             });
         });
-    });
-    {/if}
+		{/if}
+
+		$('.mac-address').click(function() {
+			changeMacFormat($(this).attr('id'));
+		});
+
+		$('.mac-address-copy-to-clipboard').on('lms:clipboard:click', function() {
+			return $(this).closest('tr').find('.mac-address').text();
+		});
+	});
 
 	function change_netdevice(id) {
 		if (xjx.$('linktype').value == 1) {
