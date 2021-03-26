@@ -118,6 +118,7 @@ version 27-git (????-??-??):
     categorized by service type more efficiently [chilan]
   - enhancement: userpanel: introduced new 'finances' module option which controls visibility of all
     assignments (even those which will start in future) [chilan]
+  - improvement: show customer phone contacts in event info views [chilan]
 
 version 26.0 (2020-12-15):
 
