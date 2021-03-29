@@ -119,6 +119,7 @@ version 27-git (????-??-??):
   - enhancement: userpanel: introduced new 'finances' module option which controls visibility of all
     assignments (even those which will start in future) [chilan]
   - improvement: show customer phone contacts in event info views [chilan]
+  - enhancement: added service type selection in invoice report [chilan]
 
 version 26.0 (2020-12-15):
 
