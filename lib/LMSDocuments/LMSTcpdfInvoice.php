@@ -801,10 +801,9 @@ class LMSTcpdfInvoice extends LMSInvoice
             . '|'
             . str_pad($this->data['value'] * 100, 6, 0, STR_PAD_LEFT)
             . '|'
-            . $this->data['division_name']
+            . mb_substr($this->data['division_shortname'], 0, 20)
             . '|'
-            .
-            trans('QR Payment for Internet Invoice no.') . ' ' . $docnumber
+            . trans('QR Payment for Internet Invoice no.') . ' ' . $docnumber
             . '|||';
         $style['position'] = 'R';
         $this->backend->write2DBarcode($tmp, 'QRCODE,M', $x, $y, 30, 30, $style);
