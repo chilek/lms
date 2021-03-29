@@ -28,6 +28,10 @@
 		max-width: 60em;
 	}
 
+	.lms-ui-button-clipboard {
+		margin-left: 0.3em;
+	}
+
 </style>
 
 <FORM method="POST" id="configedit" action="?m=configedit&id={$config.id}" name="config">
@@ -129,7 +133,9 @@
 								{else}
 									<strong>{$config.var}</strong>
 									<INPUT type="hidden" name="config[var]" value="{$config.var}">
-								{/if}&nbsp;
+								{/if}
+								{icon name="url" class="lms-ui-button-clipboard lms-ui-static" tip="Copy link"
+									data_clipboard_text="{$url}?m=configedit&s={$config.section}&v={$config.var}"}
 							</TD>
 						</TR>
 					</tbody>

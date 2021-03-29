@@ -69,6 +69,56 @@ version 27-git (????-??-??):
     days in cash import history are taken into account to match customer [chilan]
   - enhancement: allow to instantly switch user or login as different user ('admin#targetuser' in login form
     and button click on user list or user info) [chilan]
+  - improvement: enabled visual editor for userpanel help topic bodies [chilan]
+  - improvement: customer templated notifications don't depend on user notifications [chilan]
+  - improvement: 'invoices.force_telecom_service_flag' has also impact on default state of telecom
+    service checkbox in new invoice form [chilan]
+  - enhancement/devel: new 'transgus_data_prepare' hook allows plugins to prepare data used in transgus
+    report [chilan]
+  - enhancement: lms-gus-regon.php backend scripts allows to bulkly update properties of customers
+    with legal entity status [chilan]
+  - enhancement: login field added to nodes [chilan]
+  - enhancement: 'phpui.node_login_required' ('none' by default) enables non-empty login
+    requirement [chilan]
+  - enhancement: 'phpui.node_login_regexp' ('^[_a-z0-9-.]+$' by default) controls node login
+    format [chilan]
+  - enhancement: added period filter in customer assignment tab/box [chilan]
+  - enhancement: added support to store mac addresses in network device [ravvar]
+  - enhancement: add support for configuration export to sql file [ravvar]
+  - enhancement: added 'without group' value in node list group filter [chilan]
+  - improvement: '--customerid' parameter support in lms-notify.php backend script [chilan]
+  - improvement: 'phpui.customerlist_default_order' allows to set default sort order on customer list;
+    default sort order is by customername [chilan]
+  - enhancement: 'phpui.timetable_allow_past_events' control if added events can have start and end
+    date time in the past (default: 'true') [chilan]
+  - enhancement: customer types can be changed bulkly [chilan]
+  - enhancement: invoice/debit note send via mail multi division frontend support [chilan]
+  - enhancement: show address type (icon-based) in location selection of promotion schema based version of
+    assignment panel [chilan]
+  - improvement: %date-y, %date-m, %date-d symbol support in message add form [chilan]
+  - improvement: automatically select customer in ticket add form when we move to this from from network
+    device which is owned by customer [chilan]
+  - improvement: added supplier flag for customer - can be usefull for warehouse [chilan]
+  - improvement: customer flag filter in customer list form [chilan]
+  - bugfix: approximate quite well customer link count in uke income report when selected period is
+    different than monthly [chilan]
+  - enhancement: action on event generates technical message in assigned ticket [interduo]
+  - enhancement: added support for minibilling printing in userpanel voip module [chilan]
+  - improvement: don't show fiancial operation related ui elements in customer balance box if user has not
+    assigned required permissions [chilan]
+  - enhancement: new 'finances_view' user permission allows to grant view financial documents view
+    for given user [chilan]
+  - enhancement: more comprehensive filtering in billinglist (divide one voipaccount
+    filter into two filters: customer,voipaccount) [interduo]
+  - improvement: date period selector added in node session list filter [chilan]
+  - improvement: date period selector in traffic filter form [chilan]
+  - enhancement: 'ignore_contact_flags' allows to ignore customer contact notification flag
+    in lms-notify.php [chilan]
+  - enhancement: added service type property to cash records - it will allow to make financial reported
+    categorized by service type more efficiently [chilan]
+  - enhancement: userpanel: introduced new 'finances' module option which controls visibility of all
+    assignments (even those which will start in future) [chilan]
+  - improvement: show customer phone contacts in event info views [chilan]
 
 version 26.0 (2020-12-15):
 

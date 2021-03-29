@@ -85,15 +85,20 @@ $CSTATUSES = array(
 
 define('CUSTOMER_FLAG_RELATED_ENTITY', 1);
 define('CUSTOMER_FLAG_VAT_PAYER', 2);
+define('CUSTOMER_FLAG_SUPPLIER', 4);
 
 $CUSTOMERFLAGS = array(
     CUSTOMER_FLAG_RELATED_ENTITY => array(
-        'label' => trans('related entity'),
+        'label' => 'related entity',
         'tip' => trans('translates into JPK TP flag'),
     ),
     CUSTOMER_FLAG_VAT_PAYER => array(
-        'label' => trans('VAT payer'),
+        'label' => 'VAT payer',
         'tip' => trans('if customer is not VAT payer, then his telecommunication services are reported with JPK EE flag'),
+    ),
+    CUSTOMER_FLAG_SUPPLIER => array(
+        'label' => 'supplier',
+        'tip' => trans('check it if customer is supplier for example for warehouse purpose'),
     ),
 );
 
@@ -354,6 +359,9 @@ define('RTMESSAGE_INVPROJECT_CHANGE', 131072);
 define('RTMESSAGE_VERIFIER_RTIME', 262144);
 define('RTMESSAGE_SOURCE_CHANGE', 524288);
 define('RTMESSAGE_PARENT_CHANGE', 1048576);
+define('RTMESSAGE_ASSIGNED_EVENT_ADD', 2097152);
+define('RTMESSAGE_ASSIGNED_EVENT_CHANGE', 4194304);
+define('RTMESSAGE_ASSIGNED_EVENT_DELETE', 8388608);
 
 define('NETWORK_INTERFACE_TYPE_UNI', 0);
 define('NETWORK_INTERFACE_TYPE_NNI', 1);
@@ -1171,11 +1179,11 @@ $TAX_CATEGORIES = array(
 
 // Identity types
 $IDENTITY_TYPES = array(
-    0   => 'ID card',
-    1   => 'driving license',
-    2   => 'passport',
-    3   => 'residence card',
-    4   => 'permanent residence card',
+    1   => 'ID card',
+    2   => 'driving license',
+    3   => 'passport',
+    4   => 'residence card',
+    5   => 'permanent residence card',
 );
 
 if (isset($SMARTY)) {

@@ -618,7 +618,9 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                         $base = ($invoice['taxest']['-1']['base'] - $invoice['invoice']['taxest']['-1']['base']) * $currencyvalue;
                         if ($ue || $foreign) {
                             $jpk_data .= "\t\t<K_11>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</K_11>\n";
-                            $jpk_data .= "\t\t<K_12>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</K_12>\n";
+                            if ($ue && (strpos($ten, 'GB') === false || $invoice['sdate'] < mktime(0, 0, 0, 1, 1, 2021))) {
+                                $jpk_data .= "\t\t<K_12>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</K_12>\n";
+                            }
                         } else {
                             $jpk_data .= "\t\t<K_10>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</K_10>\n";
                         }
@@ -722,7 +724,9 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                         $base = $invoice['taxest']['-1']['base'] * $currencyvalue;
                         if ($ue || $foreign) {
                             $jpk_data .= "\t\t<K_11>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</K_11>\n";
-                            $jpk_data .= "\t\t<K_12>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</K_12>\n";
+                            if ($ue && (strpos($ten, 'GB') === false || $invoice['sdate'] < mktime(0, 0, 0, 1, 1, 2021))) {
+                                $jpk_data .= "\t\t<K_12>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</K_12>\n";
+                            }
                         } else {
                             $jpk_data .= "\t\t<K_10>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</K_10>\n";
                         }

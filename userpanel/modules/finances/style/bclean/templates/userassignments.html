@@ -1,6 +1,7 @@
 {box title="Your subscriptions"}
 {$show_speeds = ConfigHelper::checkConfig('userpanel.show_speeds')}
 {$show_period = ConfigHelper::checkConfig('userpanel.show_period')}
+{$show_all_assignments = ConfigHelper::checkConfig('userpanel.show_all_assignments')}
 {$speed_unit_type = ConfigHelper::getConfig('userpanel.speed_unit_type')}
 {$speed_unit_aggregation_threshold = ConfigHelper::getConfig('userpanel.speed_unit_aggregation_threshold')}
 {$count = 0}
@@ -23,8 +24,13 @@
 		</thead>
 		{$total_real_value = array()}
 		{$total_real_disc_value = array()}
+		{$total_real_downrate = 0}
+		{$total_real_uprate = 0}
+		{$total_real_downceil = 0}
+		{$total_real_upceil = 0}
 		{foreach $assignments as $assignment}
-			{if ($assignment.tariffid || $assignment.liabilityid) && !($assignment.suspended || ($assignment.dateto < $smarty.now && $assignment.dateto) || ($assignment.datefrom > $smarty.now && $assignment.datefrom))}
+			{if ($assignment.tariffid || $assignment.liabilityid) && !$assignment.suspended
+				&& ($show_all_assignments || ($assignment.datefrom <= $smarty.now && (empty($assignment.dateto) || $assignment.dateto >= $smarty.now)))}
 				<tr>
 					<td>{if ConfigHelper::checkConfig('userpanel.show_tariffname')}{$assignment.name}{/if}</td>
 					<td class="text-right text-nowrap">
@@ -32,7 +38,9 @@
 						{if !isset($total_real_value[$assignment.currency])}
 							{$total_real_value[$assignment.currency] = 0}
 						{/if}
-						{$total_real_value[$assignment.currency] = $total_real_value[$assignment.currency] + $assignment.real_value}
+						{if $assignment.datefrom <= $smarty.now && (empty($assignment.dateto) || $assignment.dateto >= $smarty.now)}
+							{$total_real_value[$assignment.currency] = $total_real_value[$assignment.currency] + $assignment.real_value}
+						{/if}
 					</td>
 					<td class="text-right text-nowrap">
 						{if $assignment.pdiscount > 0}
@@ -47,17 +55,47 @@
 						{if !isset($total_real_disc_value[$assignment.currency])}
 							{$total_real_disc_value[$assignment.currency] = 0}
 						{/if}
-						{$total_real_disc_value[$assignment.currency] = $total_real_disc_value[$assignment.currency] + $assignment.real_disc_value}
+						{if $assignment.datefrom <= $smarty.now && (empty($assignment.dateto) || $assignment.dateto >= $smarty.now)}
+							{$total_real_disc_value[$assignment.currency] = $total_real_disc_value[$assignment.currency] + $assignment.real_disc_value}
+						{/if}
 					</td>
 					<td class="text-right">{$assignment.payday}</td>
 					{if $show_speeds}
 					<td>
-						{if empty($assignment.downrate)}-{else}{convert_to_units($assignment.downrate * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{/if}
-						({if empty($assignment.downceil)}-{else}{convert_to_units($assignment.downceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{/if})
+						{if empty($assignment.downrate)}
+							-
+						{else}
+							{convert_to_units($assignment.downrate * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s
+							{if $assignment.datefrom <= $smarty.now && (empty($assignment.dateto) || $assignment.dateto >= $smarty.now)}
+								{$total_real_downrate = $total_real_downrate + $assignment.downrate}
+							{/if}
+						{/if}
+						({if empty($assignment.downceil)}
+							-
+						{else}
+							{convert_to_units($assignment.downceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s
+							{if $assignment.datefrom <= $smarty.now && (empty($assignment.dateto) || $assignment.dateto >= $smarty.now)}
+								{$total_real_downceil = $total_real_downceil + $assignment.downceil}
+							{/if}
+						{/if})
 					</td>
 					<td>
-						{if empty($assignment.uprate)}-{else}{convert_to_units($assignment.uprate * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{/if}
-						({if empty($assignment.upceil)}-{else}{convert_to_units($assignment.upceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{/if})
+						{if empty($assignment.uprate)}
+							-
+						{else}
+							{convert_to_units($assignment.uprate * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s
+							{if $assignment.datefrom <= $smarty.now && (empty($assignment.dateto) || $assignment.dateto >= $smarty.now)}
+								{$total_real_uprate = $total_real_uprate + $assignment.uprate}
+							{/if}
+						{/if}
+						({if empty($assignment.upceil)}
+							-
+						{else}
+							{convert_to_units($assignment.upceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s
+							{if $assignment.datefrom <= $smarty.now && (empty($assignment.dateto) || $assignment.dateto >= $smarty.now)}
+								{$total_real_upceil = $total_real_upceil + $assignment.upceil}
+							{/if}
+						{/if})
 					</td>
 					{/if}
 					{if $show_period}
@@ -92,16 +130,28 @@
 				<td>&nbsp;</td>
 				{if $show_speeds}
 				<td>
-					{sum array=$assignments column="real_downrate" default="-" assign="real_downrate"}
-					{sum array=$assignments column="real_downceil" default="-" assign="real_downceil"}
-					{if $real_downrate}{convert_to_units($real_downrate * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{else}-{/if}
-					({if $real_downceil}{convert_to_units($real_downceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{else}-{/if})
+					{if $total_real_downrate}
+						{convert_to_units($total_real_downrate * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s
+					{else}
+						-
+					{/if}
+					({if $total_real_downceil}
+						{convert_to_units($total_real_downceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s
+					{else}
+						-
+					{/if})
 				</td>
 				<td>
-					{sum array=$assignments column="real_uprate" default="-" assign="real_uprate"}
-					{sum array=$assignments column="real_upceil" default="-" assign="real_upceil"}
-					{if $real_uprate}{convert_to_units($real_uprate * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{else}-{/if}
-					({if $real_upceil}{convert_to_units($real_upceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{else}-{/if})
+					{if $total_real_uprate}
+						{convert_to_units($total_real_uprate * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s
+					{else}
+						-
+					{/if}
+					({if $total_real_upceil}
+						{convert_to_units($total_real_upceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s
+					{else}
+						-
+					{/if})
 				</td>
 				{/if}
 				<td>&nbsp;</td>

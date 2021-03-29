@@ -184,6 +184,10 @@
 								>{trans("<!customersearch>Remove flags")}</option>
 						</optgroup>
 					{/foreach}
+					<optgroup label="{trans("Legal personality types")}">
+						<option value="12">{$_CTYPES[$smarty.const.CTYPES_PRIVATE]}</option>
+						<option value="13">{$_CTYPES[$smarty.const.CTYPES_COMPANY]}</option>
+					</optgroup>
 				</select>
 				{if isset($groups)}
 					<SELECT SIZE="1" class="lms-ui-multiselect-deferred" NAME="setwarnings[customergroup][]"
@@ -350,6 +354,13 @@
 			$('#customersearchresults').attr('action', action).submit();
 		}
 
+		function changeCustomerType(type)
+		{
+			var action = '?m=customeredit&search=1&type=' + type + '&oper=changetype';
+
+			$('#customersearchresults').attr('action', action).submit();
+		}
+
 		$('#customer-action').change(function() {
 			var action = parseInt($(this).val());
 
@@ -422,6 +433,12 @@
 					break;
 				case 11:
 					sendMessage('sms');
+					break;
+				case 12:
+					changeCustomerType({$smarty.const.CTYPES_PRIVATE});
+					break;
+				case 13:
+					changeCustomerType({$smarty.const.CTYPES_COMPANY});
 					break;
 				default:
 					var option = $('#customer-action option:selected');

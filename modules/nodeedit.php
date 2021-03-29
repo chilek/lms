@@ -178,20 +178,38 @@ if (isset($_POST['nodeedit'])) {
     } elseif (!preg_match('/' . ConfigHelper::getConfig('phpui.node_name_regexp', '^[_a-z0-9-.]+$') . '/i', $nodeedit['name'])) {
         $error['name'] = trans('Specified name contains forbidden characters!');
     } elseif (strlen($nodeedit['name']) > 32) {
-        $error['name'] = trans('Node name is too long (max.32 characters)!');
+        $error['name'] = trans('Node name is too long (max. 32 characters)!');
     } elseif (($tmp_nodeid = $LMS->GetNodeIDByName($nodeedit['name'])) && $tmp_nodeid != $nodeedit['id']) {
         $error['name'] = trans('Specified name is in use!');
     }
 
-    $password_required = ConfigHelper::getConfig('phpui.nodepassword_required', 'none');
+    $login_required = ConfigHelper::getConfig('phpui.node_login_required', 'none');
+
+    if ($login_length = strlen($nodeedit['login'])) {
+        if ($login_length > 32) {
+            $error['login'] = trans('Login is too long (max. 32 characters)!');
+        } elseif (!preg_match('/' . ConfigHelper::getConfig('phpui.node_login_regexp', '^[_a-z0-9-.]+$') . '/i', $nodeedit['login'])) {
+            $error['login'] = trans('Specified login contains forbidden characters!');
+        } elseif (($tmp_nodeid = $LMS->GetNodeIDByLogin($nodeedit['login'])) && $tmp_nodeid != $nodeedit['id']) {
+            $error['login'] = trans('Specified login is in use!');
+        }
+    } elseif ($login_required != 'none') {
+        if ($login_required == 'error' || $login_required == 'true') {
+            $error['login'] = trans('Login is required!');
+        } elseif ($login_required == 'warning' && !isset($warnings['nodeedit-login-'])) {
+            $warning['nodeedit[login]'] = trans('Login is empty!');
+        }
+    }
+
+    $password_required = ConfigHelper::getConfig('phpui.node_password_required', ConfigHelper::getConfig('nodepassword_required', 'none'));
 
     if (strlen($nodeedit['passwd']) > 32) {
-        $error['passwd'] = trans('Password is too long (max.32 characters)!');
+        $error['passwd'] = trans('Password is too long (max. 32 characters)!');
     } elseif (!strlen($nodeedit['passwd']) && $password_required != 'none') {
-        if ($password_required == 'error') {
-            $error['passwd'] = trans('Entered password is required!');
+        if ($password_required == 'error' || $password_required == 'true') {
+            $error['passwd'] = trans('Password is required!');
         } elseif ($password_required == 'warning' && !isset($warnings['nodeedit-passwd-'])) {
-            $warning['nodeedit[passwd]'] = trans('Entered password is empty!');
+            $warning['nodeedit[passwd]'] = trans('Password is empty!');
         }
     }
 

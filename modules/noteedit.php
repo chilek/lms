@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -44,9 +44,10 @@ if (isset($_GET['id']) && $action=='edit') {
     $i = 0;
     foreach ($note['content'] as $item) {
         $i++;
-        $nitem['description']   = $item['description'];
-        $nitem['value']     = $item['value'];
-        $nitem['posuid']    = $i;
+        $nitem['description'] = $item['description'];
+        $nitem['servicetype'] = $item['servicetype'];
+        $nitem['value'] = $item['value'];
+        $nitem['posuid'] = $i;
         $SESSION->restore('notecontents', $notecontents);
         $notecontents[] = $nitem;
         $SESSION->save('notecontents', $notecontents);
@@ -83,12 +84,13 @@ switch ($action) {
     case 'additem':
         $itemdata = r_trim($_POST);
 
-                $itemdata['value'] = f_round($itemdata['value']);
-                $itemdata['description'] = $itemdata['description'];
+        $itemdata['value'] = f_round($itemdata['value']);
+        $itemdata['description'] = $itemdata['description'];
+        $itemdata['servicetype'] = $itemdata['servicetype'];
 
         if ($itemdata['value'] > 0 && $itemdata['description'] != '') {
-                $itemdata['posuid'] = (string) getmicrotime();
-                $contents[] = $itemdata;
+            $itemdata['posuid'] = (string) getmicrotime();
+            $contents[] = $itemdata;
         }
         break;
 
@@ -242,16 +244,14 @@ switch ($action) {
 
             $division = $LMS->GetDivision($customer['divisionid']);
 
-            if ($note['numberplanid']) {
-                $fullnumber = docnumber(array(
-                    'number' => $note['number'],
-                    'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($note['numberplanid'])),
-                    'cdate' => $cdate,
-                    'customerid' => $customer['id'],
-                ));
-            } else {
-                $fullnumber = null;
-            }
+            $fullnumber = docnumber(array(
+                'number' => $note['number'],
+                'template' => $note['numberplanid']
+                    ? $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($note['numberplanid']))
+                    : null,
+                'cdate' => $cdate,
+                'customerid' => $customer['id'],
+            ));
 
             $args = array(
                 'number' => $note['number'],
@@ -353,7 +353,8 @@ switch ($action) {
                     'customerid' => $customer['id'],
                     'comment' => $item['description'],
                     'docid' => $note['id'],
-                    'itemid'=> $itemid
+                    'itemid'=> $itemid,
+                    'servicetype' => $item['servicetype'],
                 ));
             }
 

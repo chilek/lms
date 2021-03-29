@@ -330,7 +330,13 @@ if ($AUTH->islogged) {
         'user_id' => Auth::GetCurrentUser(),
     ));
 
-    ConfigHelper::setFilter(LMSDivisionManager::getCurrentDivision(), Auth::GetCurrentUser());
+    $divisionid = LMSDivisionManager::getCurrentDivision();
+    ConfigHelper::setFilter($divisionid, Auth::GetCurrentUser());
+
+    $LMS->executeHook('division_set_after', array(
+        'lms' => $LMS,
+        'divisionid' => $divisionid,
+    ));
 
     Localisation::initDefaultCurrency();
 

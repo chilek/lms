@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -112,3 +112,5 @@ $_LANG['Speed unit type'] = 'Typ jednostki szybkości';
 $_LANG['Speed unit aggregation threshold'] = 'Wyzwalacz agregacji jednostki szybkości';
 $_LANG['<!speed-unit>SI'] = 'SI';
 $_LANG['<!speed-unit>binary'] = 'binarny';
+
+$_LANG['Show all assignments'] = 'Pokaż wszystkie zobowiązania';

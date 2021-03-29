@@ -91,6 +91,7 @@ if (isset($_GET['id']) && $action == 'edit') {
         }
         $nitem['tax']       = isset($taxeslist[$item['taxid']]) ? $taxeslist[$item['taxid']]['label'] : '';
         $nitem['taxid']     = $item['taxid'];
+        $nitem['servicetype'] = $item['servicetype'];
         $nitem['taxcategory'] = $item['taxcategory'];
         $cnotecontents[$item['itemid']] = $nitem;
     }
@@ -316,6 +317,7 @@ switch ($action) {
 
             $contents[$idx]['taxid'] = isset($newcontents['taxid'][$idx]) ? $newcontents['taxid'][$idx] : $item['taxid'];
             $contents[$idx]['taxcategory'] = isset($newcontents['taxcategory'][$idx]) ? $newcontents['taxcategory'][$idx] : $item['taxcategory'];
+            $contents[$idx]['servicetype'] = isset($newcontents['servicetype'][$idx]) ? $newcontents['servicetype'][$idx] : $item['servicetype'];
             $contents[$idx]['prodid'] = isset($newcontents['prodid'][$idx]) ? $newcontents['prodid'][$idx] : $item['prodid'];
             $contents[$idx]['content'] = isset($newcontents['content'][$idx]) ? $newcontents['content'][$idx] : $item['content'];
             $contents[$idx]['count'] = isset($newcontents['count'][$idx]) ? $newcontents['count'][$idx] : $item['count'];
@@ -510,6 +512,7 @@ switch ($action) {
             foreach ($contents as $idx => $item) {
                 $contents[$idx]['taxid'] = $newcontents['taxid'][$idx];
                 $contents[$idx]['taxcategory'] = $newcontents['taxcategory'][$idx];
+                $contents[$idx]['servicetype'] = $newcontents['servicetype'][$idx];
                 $contents[$idx]['prodid'] = $newcontents['prodid'][$idx];
                 $contents[$idx]['content'] = $newcontents['content'][$idx];
                 $contents[$idx]['count'] = $newcontents['count'][$idx];
@@ -631,16 +634,14 @@ switch ($action) {
             'memo' => $use_current_customer_data ? (empty($customer['documentmemo']) ? null : $customer['documentmemo']) : $cnote['memo'],
         );
         $args['number'] = $cnote['number'];
-        if ($cnote['numberplanid']) {
-            $args['fullnumber'] = docnumber(array(
-                'number' => $cnote['number'],
-                'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($cnote['numberplanid'])),
-                'cdate' => $cnote['cdate'],
-                'customerid' => $cnote['customerid'],
-            ));
-        } else {
-            $args['fullnumber'] = null;
-        }
+        $args['fullnumber'] = docnumber(array(
+            'number' => $cnote['number'],
+            'template' => $cnote['numberplanid']
+                ? $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($cnote['numberplanid']))
+                : null,
+            'cdate' => $cnote['cdate'],
+            'customerid' => $cnote['customerid'],
+        ));
         $args[SYSLOG::RES_NUMPLAN] = !empty($cnote['numberplanid']) ? $cnote['numberplanid'] : null;
         $args[SYSLOG::RES_DOC] = $iid;
 
@@ -719,8 +720,9 @@ switch ($action) {
                     'customerid' => $cnote['customerid'],
                     'comment' => $item['name'],
                     'docid' => $iid,
-                    'itemid' => $itemid
-                    ));
+                    'itemid' => $itemid,
+                    'servicetype' => $item['servicetype'],
+                ));
             }
         } else {
             if ($SYSLOG) {

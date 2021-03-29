@@ -234,6 +234,17 @@
 			</select>
 			</label>
 
+			<label>
+				{trans("Flags:")}
+				<select name="flags[]" {tip text="Select customer flags (optional)" class="lms-ui-multiselect"}
+						multiple onchange="document.choosefilter.submit();">
+					{foreach Localisation::arraySort($_CUSTOMERFLAGS, 'label') as $cflag => $flag}
+						<option value="{$cflag}" title="{$flag.tip}"
+							{if is_array($filter.flags) && in_array($cflag, $filter.flags)} selected{/if}>{$flag.label}</option>
+					{/foreach}
+				</select>
+			</label>
+
 			</div>
 			{persistent_filter}
 			</div>

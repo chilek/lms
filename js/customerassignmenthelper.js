@@ -279,8 +279,11 @@ function CustomerAssignmentHelper(options) {
 		$('.schema-tariff-checkbox').trigger('change');
 
 		var location_select = $('#location-select');
-		location_select.toggleClass('lms-ui-error', !location_select.val().length && $('option:not([value=""])', location_select).length > 1)
-			.attr('title', location_select.attr('data-tooltip')).removeAttr('data-tooltip');
+		var validationError = !location_select.val().length && $('option:not([value=""])', location_select).length > 1;
+		var errorMessage = location_select.attr('title');
+		location_select.toggleClass('lms-ui-error', validationError)
+			.next().toggleClass('lms-ui-error', validationError)
+			.attr('title', validationError ? errorMessage : null).removeAttr('data-tooltip');
 	}
 
 	this.updateDevices = function() {
@@ -412,14 +415,22 @@ function CustomerAssignmentHelper(options) {
 					td.html(html).appendTo(this);
 				});
 
+				var location_type_icons = [
+					"lms-ui-icon-mail fa-fw",
+					"lms-ui-icon-home fa-fw",
+					"lms-ui-icon-customer-location fa-fw",
+					"lms-ui-icon-default-customer-location fa-fw"
+				];
+
 				var location_count = 0;
 				options = '<option value="">' + $t('- all -') + '</option>';
-				if (data.locations) {
+				if (data['with-end-points']) {
 					options += '<optgroup label="' + $t("with end-points") + '">';
-					$.each(data.locations, function(key, value) {
-						options += '<option value="' + value + '"' +
-							(("location" in selected) && selected.location == value ? ' selected' : '') + '>' +
-							value + '</option>';
+					$.each(data['with-end-points'], function(key, value) {
+						options += '<option value="' + value.location + '"' +
+							(("location" in selected) && selected.location == value.location ? ' selected' : '') +
+							' data-icon="' + location_type_icons[value.location_type] + '">' +
+							value.location + '</option>';
 						location_count++;
 					});
 					options += '</optgroup>';
@@ -428,7 +439,8 @@ function CustomerAssignmentHelper(options) {
 					options += '<optgroup label="' + $t("without end-points") + '">';
 					$.each(data['without-end-points'], function(key, value) {
 						options += '<option value="' + value.location + '"' +
-							(("location" in selected) && selected.location == value.location ? ' selected' : '') + '>' +
+							(("location" in selected) && selected.location == value.location ? ' selected' : '') +
+							' data-icon="' + location_type_icons[value.location_type] + '">' +
 							value.location + '</option>';
 						location_count++;
 					});
@@ -436,6 +448,9 @@ function CustomerAssignmentHelper(options) {
 				}
 
 				$('#location-select').toggleClass('lms-ui-error', location_count > 1).html(options);
+				new LmsUiIconSelectMenu('#location-select', {
+					change: helper.locationSelectionHandler
+				}).init();
 
 				options = '<option value="-1">' + $t('none') + '</option>';
 				if (data.addresses) {

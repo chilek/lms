@@ -262,7 +262,7 @@
 <script>
 
 	$( '#passGen' ).click( function() {
-		var length = {ConfigHelper::getConfig('phpui.nodepassword_length', '16')};
+		var length = {ConfigHelper::getConfig('phpui.node_password_length', ConfigHelper::getConfig('phpui.nodepassword_length', '16'))};
 
 		if (length > 32)
 			length = 32;

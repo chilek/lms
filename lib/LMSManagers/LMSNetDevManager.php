@@ -587,6 +587,18 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         return ($this->db->GetOne('SELECT * FROM netdevices WHERE id=?', array($id)) ? true : false);
     }
 
+    public function getNetDevByMac($mac)
+    {
+        $mac = $this->db->Escape($mac);
+        $netdev = $this->db->GetRow(
+            'SELECT *
+            FROM netdevicemacs
+            WHERE UPPER(mac) = UPPER(' . $mac . ')'
+        );
+
+        return !empty($netdev);
+    }
+
     public function GetNetDevIDByNode($id)
     {
         return $this->db->GetOne('SELECT netdev FROM vnodes WHERE id=?', array($id));
@@ -661,6 +673,11 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 			LEFT JOIN netradiosectors srcrs ON srcrs.id = l.srcradiosector
 			LEFT JOIN netradiosectors dstrs ON dstrs.id = l.dstradiosector
 			ORDER BY name', array($id, $id, $id, $id, $id, $id, $id));
+    }
+
+    public function getNetDevOwner($id)
+    {
+        return $this->db->GetOne('SELECT ownerid FROM netdevices WHERE id = ?', array($id));
     }
 
     public function GetNetDevList($order = 'name,asc', $search = array())
@@ -909,6 +926,144 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
     public function GetNetDevName($id)
     {
         return $this->db->GetOne('SELECT name FROM netdevices WHERE id = ?', array($id));
+    }
+
+    public function addNetDevMac($params)
+    {
+        $args = array(
+            SYSLOG::RES_NETDEV => $params['netdevid'],
+            'label' => $params['label'],
+            'mac' => $params['mac'],
+            'main' => $params['main'],
+        );
+
+        $res = $this->db->Execute(
+            'INSERT INTO netdevicemacs (netdevid, label, mac, main)
+            VALUES (?, ?, ?, ?)',
+            array_values($args)
+        );
+
+        if ($res) {
+            $id = $this->db->GetLastInsertID('netdevicemacs');
+            if ($this->syslog) {
+                $args = array(
+                    SYSLOG::RES_NETDEV_MAC => $id,
+                    SYSLOG::RES_NETDEV => $params['netdevid'],
+                    'label' => $params['label'],
+                    SYSLOG::RES_MAC => $params['mac'],
+                    'main' => $params['main'],
+                );
+                $this->syslog->AddMessage(SYSLOG::RES_NETDEV_MAC, SYSLOG::OPER_ADD, $args);
+            }
+        } else {
+            $id = null;
+        }
+
+        return $id;
+    }
+
+    public function updateNetDevMac($params)
+    {
+        $mac = $this->getNetDevMac($params['macid']);
+        $id = $mac['id'];
+
+        if ($mac['main'] == 0 && $params['main'] == 1) {
+            // get old main mac for device
+            $oldMainMac = $this->getNetDevMacs($params['netdevid'], 1);
+            if ($oldMainMac) {
+                $res1 = $this->db->Execute('UPDATE netdevicemacs SET main = 0 WHERE id = ?', array($oldMainMac[0]['id']));
+
+                if ($res1) {
+                    if ($this->syslog) {
+                        $args = array(
+                            SYSLOG::RES_NETDEV_MAC => $oldMainMac['id'],
+                            SYSLOG::RES_NETDEV => $mac['netdevid'],
+                            'label' => $oldMainMac['label'],
+                            SYSLOG::RES_MAC => $oldMainMac['mac'],
+                            'main' => 0,
+                        );
+                        $this->syslog->AddMessage(SYSLOG::RES_NETDEV_MAC, SYSLOG::OPER_UPDATE, $args);
+                    }
+                }
+            }
+        }
+
+        $args = array(
+            'label' => $params['label'],
+            'mac' => $params['mac'],
+            'main' => $params['main'],
+            'macid' => $params['macid'],
+        );
+
+        $res = $this->db->Execute(
+            'UPDATE netdevicemacs SET label = ?, mac = ?, main = ?
+            WHERE id = ?',
+            array_values($args)
+        );
+
+        if ($res) {
+            if ($this->syslog) {
+                $args = array(
+                    SYSLOG::RES_NETDEV_MAC => $id,
+                    SYSLOG::RES_NETDEV => $params['netdevid'],
+                    'label' => $params['label'],
+                    SYSLOG::RES_MAC => $params['mac'],
+                    'main' => $params['main'],
+                );
+                $this->syslog->AddMessage(SYSLOG::RES_NETDEV_MAC, SYSLOG::OPER_UPDATE, $args);
+            }
+        } else {
+            $id = null;
+        }
+
+        return $id;
+    }
+
+    public function delNetDevMac($macid)
+    {
+        $id = intval($macid);
+        if ($this->syslog) {
+            $mac = $this->getNetDevMac($id);
+            $args = array(
+                SYSLOG::RES_NETDEV_MAC => $id,
+                SYSLOG::RES_MAC => $mac['mac'],
+            );
+            $this->syslog->AddMessage(SYSLOG::RES_NETDEV_MAC, SYSLOG::OPER_DELETE, $args);
+        }
+
+        $res = $this->db->Execute('DELETE FROM netdevicemacs WHERE id = ?', array($id));
+
+        return $res;
+    }
+
+    public function getNetDevMac($macid)
+    {
+        $id = intval($macid);
+        return $this->db->GetRow('SELECT * FROM netdevicemacs WHERE id = ?', array($id));
+    }
+
+    public function getNetDevMacs($netdevid, $main = null)
+    {
+        $mainMac = !empty($main) ? intval($main) : null;
+        $id = intval($netdevid);
+        return $this->db->GetAll(
+            'SELECT *
+            FROM netdevicemacs
+            WHERE netdevid = ?'
+            . (!empty($mainMac) ? ' AND main = 1' : '')
+            . ' ORDER BY label',
+            array($id)
+        );
+    }
+
+    public function getNetDevsMacLabels()
+    {
+        return $this->db->GetAll('SELECT DISTINCT(label) FROM netdevicemacs ORDER BY label');
+    }
+
+    public function getNetDevMacLabels($netdevid)
+    {
+        return $this->db->GetAllByKey('SELECT label FROM netdevicemacs WHERE netdevid = ?', 'label', array(intval($netdevid)));
     }
 
     public function GetNotConnectedDevices($id)

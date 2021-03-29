@@ -108,9 +108,9 @@
 						<table>
 							<tr id="deviceconnect" class="operationparams" style="display: none;">
 								<td>
-									<select id="device">
-										{foreach from=$netdevlist item=item}
-										<option value="{$item.id}">{$item.name}</option>
+									<select id="device" class="lms-ui-advanced-select">
+										{foreach $netdevlist as $item}
+											<option value="{$item.id}">{$item.name}</option>
 										{/foreach}
 									</select>
 									<select id="linktype" onchange="change_linktype(this.options[this.selectedIndex].value)">

@@ -20,7 +20,7 @@
 
 	{box_contents}
 	{box_panel}
-		{box_row icon="network" icon_class="fa-fw" label="Target variables scope:"}
+		{box_row icon="network" icon_class="fa-fw" label="Target variables scope"}
 			<select name="config[target-type]" size="1" id="import-scope" {tip text="Select variables type" trigger="type"}>
 					<option value="global" {if !isset($config['target-type']) || $config['target-type'] == 'global'}selected{/if}>
 						{trans('global value')}
@@ -37,7 +37,7 @@
 			</select>
 		{/box_row}
 
-		{box_row class="import-container-user" icon="user" icon_class="fa-fw" label="Target user:" visible=""}
+		{box_row class="import-container-user" icon="user" icon_class="fa-fw" label="Target user" visible=""}
 			<select name="config[target-user]" id="import-user" {tip text="Select user" trigger="user"}>
 				{foreach $users as $user}
 					<option value="{$user.id}" {if isset($config['target-user']) && $config['target-user'] == $user.id}selected{/if}>
@@ -47,7 +47,7 @@
 			</select>
 		{/box_row}
 
-		{box_row class="import-container-division" icon="division" icon_class="fa-fw" label="Target division:" visible=""}
+		{box_row class="import-container-division" icon="division" icon_class="fa-fw" label="Target division" visible=""}
 			<select name="config[target-division]" id="import-division" {tip text="Select division" trigger="division"}>
 				{foreach $divisions as $division}
 					<option value="{$division.id}" {if isset($config['target-division']) && $config['target-division'] == $division.id}selected{/if}>
@@ -57,11 +57,11 @@
 			</select>
 		{/box_row}
 
-		{box_row icon="info" icon_class="fa-fw" label="Create the missing parent bindings:" class="import-withparentbindings" visible=""}
+		{box_row icon="info" icon_class="fa-fw" label="Create the missing parent bindings" class="import-withparentbindings" visible=""}
 			<input name="config[withparentbindings]" type="checkbox" id="import-withparentbindings" value="1" {if isset($config['withparentbindings'])}checked{/if}>
 		{/box_row}
 
-		{box_row icon="info" icon_class="fa-fw" label="Override existing:" class="import-override"}
+		{box_row icon="info" icon_class="fa-fw" label="Override existing" labelid="import-override" class="import-override"}
 			<input name="config[override]" type="checkbox" id="import-override" value="1" {if isset($config['override'])}checked{/if}>
 		{/box_row}
 

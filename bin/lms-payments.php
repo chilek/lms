@@ -221,36 +221,22 @@ if (empty($allowed_customer_status)) {
     $customer_status_condition = ' AND c.status IN (' . implode(',', $allowed_customer_status) . ')';
 }
 
-function localtime2()
-{
-    global $fakedate;
-    if (!empty($fakedate)) {
-        $date = explode("/", $fakedate);
-        return mktime(0, 0, 0, $date[1], $date[2], $date[0]);
-    } else {
-        return time();
-    }
-}
-
 $fakedate = isset($options['fakedate']) ? $options['fakedate'] : null;
 $customerid = isset($options['customerid']) && intval($options['customerid']) ? $options['customerid'] : null;
 
-$currtime = strftime("%s", localtime2());
-$month = intval(strftime("%m", localtime2()));
-$dom = intval(strftime("%d", localtime2()));
-$year = strftime("%Y", localtime2());
-$weekday = strftime("%u", localtime2());
-$yearday = strftime("%j", localtime2());
+if (empty($fakedate)) {
+    $currtime = time();
+    $today = strtotime('today');
+} else {
+    $today = $currtime = strtotime($fakedate);
+}
+list ($year, $month, $dom) = explode('/', date('Y/n/j', $currtime));
+$weekday = strftime('%u', $currtime);
+$yearday = strftime('%j', $currtime);
 $last_dom = date('j', mktime(0, 0, 0, $month + 1, 0, $year)) == date('j', $currtime);
 
 if (is_leap_year($year) && $yearday > 31 + 28) {
     $yearday -= 1;
-}
-
-if (!empty($fakedate)) {
-    $today = $currtime;
-} else {
-    $today = mktime(0, 0, 0, $month, $dom, $year);
 }
 
 if ($month == 1 || $month == 4 || $month == 7 || $month == 10) {
@@ -468,7 +454,7 @@ $assigns = $DB->GetAll(
 if (!empty($assigns)) {
     foreach ($assigns as $assign) {
         $DB->Execute(
-            "INSERT INTO cash (time, type, value, customerid, comment) 
+            "INSERT INTO cash (time, type, value, customerid, comment)
 			VALUES (?, ?, ?, ?, ?)",
             array($currtime, 1, $assign['value'] * -1, null, $assign['name']."/".$assign['creditor'])
         );
@@ -531,17 +517,21 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 		AND ((a.period = ? AND at = ?)
 			OR ((a.period = ?
 			OR (a.period = ? AND at = ?)
-			OR (a.period = ? AND at = ?)
+			OR (a.period = ? AND at IN ?)
 			OR (a.period = ? AND at = ?)
 			OR (a.period = ? AND at = ?)
 			OR (a.period = ? AND at = ?))
 			AND a.datefrom <= ? AND (a.dateto > ? OR a.dateto = 0)))"
         . ($customergroups ? str_replace('%customerid_alias%', 'c.id', $customergroups) : '')
     ." ORDER BY a.customerid, a.recipient_address_id, a.invoice,  a.paytype, a.numberplanid, a.separatedocument, currency, value DESC, a.id";
+$doms = array($dom);
+if ($last_dom) {
+    $doms[] = 0;
+}
 $services = $DB->GetAll(
     $query,
     array(
-        CTYPES_PRIVATE, DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $last_dom ? 0 : $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
+        CTYPES_PRIVATE, DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $doms, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
         $currtime, $currtime
     )
 );
@@ -616,12 +606,17 @@ $query = "SELECT
 		  ((a.period = ? AND at = ?) OR
 		  ((a.period = ? OR
 		  (a.period  = ? AND at = ?) OR
-		  (a.period  = ? AND at = ?) OR
+		  (a.period  = ? AND at IN ?) OR
 		  (a.period  = ? AND at = ?) OR
 		  (a.period  = ? AND at = ?) OR
 		  (a.period  = ? AND at = ?)) AND
 		   a.datefrom <= ? AND
-		  (a.dateto > ? OR a.dateto = 0)))"
+		  (a.dateto = 0 OR a.dateto > (CASE a.period
+			WHEN " . YEARLY . ' THEN ' . mktime(0, 0, 0, $month, 1, $year - 1) . "
+			WHEN " . HALFYEARLY . ' THEN ' . mktime(0, 0, 0, $month - 6, 1, $year)   . "
+			WHEN " . QUARTERLY  . ' THEN ' . mktime(0, 0, 0, $month - 3, 1, $year)   . "
+			WHEN " . MONTHLY . ' THEN ' . mktime(0, 0, 0, $month - 1, 1, $year)
+        . " END))))"
         . ($customergroups ? str_replace('%customerid_alias%', 'c.id', $customergroups) : '')
     ." ORDER BY a.customerid, a.recipient_address_id, a.invoice, a.paytype, a.numberplanid, a.separatedocument, currency, voipcost.value DESC, a.id";
 
@@ -629,8 +624,8 @@ $billings = $DB->GetAll(
     $query,
     array(
         CTYPES_PRIVATE, 1, SERVICE_PHONE,
-        DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $last_dom ? 0 : $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
-        $currtime, $currtime
+        DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $doms, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
+        $currtime,
     )
 );
 
@@ -1498,8 +1493,8 @@ foreach ($assigns as $assign) {
                     } else {
                         $DB->Execute(
                             "INSERT INTO invoicecontents (docid, value, taxid, taxcategory, prodid,
-                            content, count, description, tariffid, itemid, pdiscount, vdiscount)
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                            content, count, description, tariffid, itemid, pdiscount, vdiscount, period)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                             array(
                                 $invoices[$cid],
                                 str_replace(',', '.', $val / $assign['count']),
@@ -1512,7 +1507,8 @@ foreach ($assigns as $assign) {
                                 empty($assign['tariffid']) ? null : $assign['tariffid'],
                                 $itemid,
                                 $assign['pdiscount'],
-                                $assign['vdiscount']
+                                $assign['vdiscount'],
+                                $assign['period'],
                             )
                         );
 
@@ -1526,8 +1522,8 @@ foreach ($assigns as $assign) {
                     }
                     if ($assign['invoice'] == DOC_INVOICE || $assign['invoice'] == DOC_DNOTE || $proforma_generates_commitment) {
                         $DB->Execute(
-                            "INSERT INTO cash (time, value, currency, currencyvalue, taxid, customerid, comment, docid, itemid, linktechnology) 
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                            "INSERT INTO cash (time, value, currency, currencyvalue, taxid, customerid, comment, docid, itemid, linktechnology, servicetype)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                             array(
                                 $currtime,
                                 str_replace(',', '.', $val * -1),
@@ -1538,7 +1534,8 @@ foreach ($assigns as $assign) {
                                 $desc,
                                 $invoices[$cid],
                                 $itemid,
-                                $linktechnology
+                                $linktechnology,
+                                $assign['tarifftype'],
                             )
                         );
                     }
@@ -1547,8 +1544,8 @@ foreach ($assigns as $assign) {
         } else {
             if (!$prefer_settlement_only || !$assign['settlement'] || !$assign['datefrom']) {
                 $DB->Execute(
-                    "INSERT INTO cash (time, value, currency, currencyvalue, taxid, customerid, comment, linktechnology) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                    "INSERT INTO cash (time, value, currency, currencyvalue, taxid, customerid, comment, linktechnology, servicetype)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     array(
                         $currtime,
                         str_replace(',', '.', $val * -1),
@@ -1557,7 +1554,8 @@ foreach ($assigns as $assign) {
                         $assign['taxid'],
                         $cid,
                         $desc,
-                        $linktechnology
+                        $linktechnology,
+                        $assign['tarifftype'],
                     )
                 );
             }
@@ -1708,8 +1706,8 @@ foreach ($assigns as $assign) {
                         } else {
                             $DB->Execute(
                                 "INSERT INTO invoicecontents (docid, value, taxid, taxcategory, prodid,
-								content, count, description, tariffid, itemid, pdiscount, vdiscount)
-								VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+								content, count, description, tariffid, itemid, pdiscount, vdiscount, period)
+								VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                 array(
                                     $invoices[$cid],
                                     str_replace(',', '.', $value / $assign['count']),
@@ -1722,7 +1720,8 @@ foreach ($assigns as $assign) {
                                     empty($assign['tariffid']) ? null : $assign['tariffid'],
                                     $itemid,
                                     $assign['pdiscount'],
-                                    $assign['vdiscount']
+                                    $assign['vdiscount'],
+                                    $assign['period'],
                                 )
                             );
 
@@ -1736,8 +1735,8 @@ foreach ($assigns as $assign) {
                         }
                         if ($assign['invoice'] == DOC_INVOICE || $assign['invoice'] == DOC_DNOTE || $proforma_generates_commitment) {
                             $DB->Execute(
-                                "INSERT INTO cash (time, value, currency, currencyvalue, taxid, customerid, comment, docid, itemid, linktechnology)
-								VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                                "INSERT INTO cash (time, value, currency, currencyvalue, taxid, customerid, comment, docid, itemid, linktechnology, servicetype)
+								VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                 array(
                                     $currtime,
                                     str_replace(',', '.', $value * -1),
@@ -1748,15 +1747,16 @@ foreach ($assigns as $assign) {
                                     $sdesc,
                                     $invoices[$cid],
                                     $itemid,
-                                    $linktechnology
+                                    $linktechnology,
+                                    $assign['tarifftype'],
                                 )
                             );
                         }
                     }
                 } else {
                     $DB->Execute(
-                        "INSERT INTO cash (time, value, currency, currencyvalue, taxid, customerid, comment, linktechnology)
-						VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                        "INSERT INTO cash (time, value, currency, currencyvalue, taxid, customerid, comment, linktechnology, servicetype)
+						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                         array(
                             $currtime,
                             str_replace(',', '.', $value * -1),
@@ -1765,7 +1765,8 @@ foreach ($assigns as $assign) {
                             $assign['taxid'],
                             $cid,
                             $sdesc,
-                            $linktechnology
+                            $linktechnology,
+                            $assign['tarifftype'],
                         )
                     );
                 }

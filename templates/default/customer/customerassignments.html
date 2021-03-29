@@ -2,7 +2,7 @@
 
 {css}
 
-{assign var=today value=$smarty.now|date_format:"%x 00:00:00"}{assign var=today value=$today|date_format:"%s"}
+{$today = strtotime('today')}
 
 {$speed_unit_type = ConfigHelper::getConfig('phpui.speed_unit_type', 1000)}
 {$speed_unit_aggregation_threshold = ConfigHelper::getConfig('phpui.speed_unit_aggregation_threshold', 5)}
@@ -32,6 +32,12 @@
 			<label class="document-filter">
 				{trans("Document")}
 				<select class="document">
+					<option value="">{trans("- all -")}</option>
+				</select>
+			</label>
+			<label class="period-filter">
+				{trans("Period")}
+				<select class="period-selection">
 					<option value="">{trans("- all -")}</option>
 				</select>
 			</label>
@@ -113,10 +119,19 @@
 			{foreach $assignments as $a}
 			{block name=$tab_id|cat:"-list-row"}
 			<div class="lms-ui-tab-table-row
-				{if ($a.dateto < $today && $a.dateto) || ($a.liabilityid && $a.at < $today && $a.at > 365)} blend{elseif ($a.datefrom > $today && $a.datefrom && $a.period) && !($a.suspended)} alertblend{elseif ($a.suspended)}suspended{/if}
-				{if !$a.commited} lms-ui-assignment-not-commited{/if}"
+				{if ($a.dateto < $today && $a.dateto && $a.periodvalue != $smarty.const.DISPOSABLE) || ($a.at < $today && $a.at > 365 && $a.periodvalue == $smarty.const.DISPOSABLE)}
+					blend
+				{elseif $a.suspended}
+					suspended
+				{elseif ($a.datefrom > $today && $a.datefrom && $a.periodvalue != $smarty.const.DISPOSABLE) || ($a.periodvalue == $smarty.const.DISPOSABLE && $a.at > $today)}
+					alertblend
+				{/if}
+				{if !$a.commited}
+					lms-ui-assignment-not-commited
+				{/if}"
 				data-tariff-type="{$a.tarifftype}"
 				data-expired="{$a.expired}"
+				data-period="{$a.period}"
 				data-commited="{$a.commited}"
 				data-document="{if $a.doctype}{t a=$_DOCTYPES[$a.doctype] b=$a.fullnumber c=$a.cdate|date_format:"%Y/%m/%d"}$a no. $b issued on $c{/t}{/if}"
 				{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
@@ -315,25 +330,36 @@
 	}
 
 	$(function() {
+		var default_period = {if $period}'{$period}'{else}null{/if};
 		var assignment_types = [];
 		var documents = [];
+		var periods = [];
 		var tab_elem = $('#{$tab_id}.lms-ui-tab-container');
 		tab_elem.find('.lms-ui-tab-table-row[data-tariff-type]').each(function () {
 			var tariff_type = $(this).attr('data-tariff-type');
 			var document = $(this).attr('data-document');
+			var period = $(this).attr('data-period');
 			if (tariff_type.length && assignment_types.indexOf(tariff_type) == -1) {
 				assignment_types.push(tariff_type);
 			}
 			if (document.length && documents.indexOf(document) == -1) {
 				documents.push(document);
 			}
+			if (period.length && periods.indexOf(period) == -1) {
+				periods.push(period);
+			}
 		});
 		documents.sort();
 
 		var selected_type = getStorageItem('{$tab_id}_tariff_type_{$customerinfo.id}');
 		var selected_document = getStorageItem('{$tab_id}_document_{$customerinfo.id}');
+		var selected_period = getStorageItem('{$tab_id}_period_{$customerinfo.id}');
 		var expired_checked = getStorageItem('{$tab_id}_expired_{$customerinfo.id}');
 		var commited_checked = getStorageItem('{$tab_id}_commited_{$customerinfo.id}');
+
+		if (selected_period === null && default_period) {
+			selected_period = default_period;
+		}
 
 		$.each(assignment_types, function (key, value) {
 			tab_elem.find('.assignment-type').append('<option value="' + value + '"'
@@ -350,6 +376,14 @@
 		if (documents.length <= 1) {
 			tab_elem.find('.document-filter').hide();
 		}
+		$.each(periods, function (key, value) {
+			tab_elem.find('.period-selection').append('<option value="' + value + '"'
+					+ (selected_period && selected_period.length && selected_period == value ? ' selected' : '') + '>'
+					+ value + '</option>');
+		});
+		if (periods.length <= 1) {
+			tab_elem.find('.period-filter').hide();
+		}
 		tab_elem.find('.expired').prop('checked', expired_checked === null ? {if $expired}true{else}false{/if} : parseInt(expired_checked) == 1);
 		tab_elem.find('.commited').prop('checked', commited_checked === null ? {if $commited}true{else}false{/if} : parseInt(commited_checked) == 1);
 
@@ -362,6 +396,7 @@
 		function updateAssignments() {
 			var selected_type = tab_elem.find('.assignment-type').val();
 			var selected_document = tab_elem.find('.document').val();
+			var selected_period = tab_elem.find('.period-selection').val();
 			var expired_checked = tab_elem.find('.expired').prop('checked');
 			var commited_checked = tab_elem.find('.commited').prop('checked');
 			var selector = '';
@@ -370,6 +405,9 @@
 			}
 			if (selected_document.length) {
 				selector += '[data-document="' + selected_document + '"]';
+			}
+			if (selected_period.length) {
+				selector += '[data-period="' + selected_period + '"]';
 			}
 			if (!expired_checked) {
 				selector += '[data-expired="0"]';
@@ -434,6 +472,7 @@
 
 			setStorageItem('{$tab_id}_tariff_type_{$customerinfo.id}', selected_type);
 			setStorageItem('{$tab_id}_document_{$customerinfo.id}', selected_document);
+			setStorageItem('{$tab_id}_period_{$customerinfo.id}', selected_period);
 			setStorageItem('{$tab_id}_expired_{$customerinfo.id}', expired_checked ? 1 : 0);
 			setStorageItem('{$tab_id}_commited_{$customerinfo.id}', commited_checked ? 1 : 0);
 		}
@@ -444,13 +483,22 @@
 		});
 		tab_elem.find('.assignment-type').change(updateAssignments).trigger('change');
 		tab_elem.find('.document').change(updateAssignments);
+		tab_elem.find('.period').change(updateAssignments);
 		tab_elem.find('.expired').change(updateAssignments);
 		tab_elem.find('.commited').change(updateAssignments);
 		tab_elem.find('.clear-filter').click(function() {
 			tab_elem.find('.document').val('');
+			tab_elem.find('.period-selection').val('');
 			tab_elem.find('.assignment-type').val('');
 			tab_elem.find('.expired').prop('checked', false);
 			tab_elem.find('.commited').prop('checked', true).trigger('change');
+
+			removeStorageItem('{$tab_id}_tariff_type_{$customerinfo.id}');
+			removeStorageItem('{$tab_id}_document_{$customerinfo.id}');
+			removeStorageItem('{$tab_id}_period_{$customerinfo.id}');
+			removeStorageItem('{$tab_id}_expired_{$customerinfo.id}');
+			removeStorageItem('{$tab_id}_commited_{$customerinfo.id}');
+
 			return false;
 		});
 

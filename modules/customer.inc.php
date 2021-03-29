@@ -60,13 +60,17 @@ if (!isset($resource_tabs['customernotes']) || $resource_tabs['customernotes']) 
 if (!isset($resource_tabs['customerassignments']) || $resource_tabs['customerassignments']) {
     $commited = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.default_show_approved_assignments_only', true));
     $expired = ConfigHelper::checkConfig('phpui.default_show_expired_assignments');
+    if (ConfigHelper::variableExists('phpui.default_show_period_assignments')) {
+        $period = $PERIODS[intval(ConfigHelper::getConfig('phpui.default_show_period_assignments'))];
+    }
     $assignments = $LMS->GetCustomerAssignments($customerid, true, false);
 }
 if (!isset($resource_tabs['customergroups']) || $resource_tabs['customergroups']) {
     $customergroups = $LMS->CustomergroupGetForCustomer($customerid);
     $othercustomergroups = $LMS->GetGroupNamesWithoutCustomer($customerid);
 }
-if (!isset($resource_tabs['customerbalancebox']) || $resource_tabs['customerbalancebox']) {
+if ((ConfigHelper::checkPrivilege('read_only') || ConfigHelper::checkPrivilege('finances_view') || ConfigHelper::checkPrivilege('financial_operations') || ConfigHelper::checkPrivilege('finances_management'))
+    && (!isset($resource_tabs['customerbalancebox']) || $resource_tabs['customerbalancebox'])) {
     if (isset($_GET['aggregate_documents'])) {
         $aggregate_documents = !empty($_GET['aggregate_documents']);
     } else {
@@ -191,6 +195,7 @@ $SMARTY->assign(array(
     'aggregate_documents' => $aggregate_documents,
     'commited' => $commited,
     'expired' => $expired,
+    'period' => $period,
     'allevents' => $allevents,
     'time' => $SESSION->get('addbt'),
     'taxid' => $SESSION->get('addbtax'),

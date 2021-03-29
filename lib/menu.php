@@ -171,7 +171,7 @@ $menu = array(
                     'prio' => 50,
                 ),
                 'nodesessionlist' => array(
-                    'name' => trans('Node Sessions'),
+                    'name' => trans('<!menu>Node Sessions'),
                     'link' => '?m=nodesessionlist',
                     'tip' => trans('Allows you to view node sessions'),
                     'prio' => 60,
@@ -790,16 +790,16 @@ $menu = array(
             'accesskey' => 'o',
             'prio' => 60,
             'submenu' => array(
-                'configlist' => array(
-                    'name' => trans('User Interface'),
+                'settings' => array(
+                    'name' => trans('Settings'),
                     'link' => '?m=configlist',
-                    'tip' => trans('Allows you to configure UI'),
+                    'tip' => trans('Allows you to change settings'),
                     'prio' => 10,
                 ),
                 'configimport' => array(
-                    'name' => trans('Import configuration'),
+                    'name' => trans('Import settings'),
                     'link' => '?m=configimport',
-                    'tip' => trans('Import configuration'),
+                    'tip' => trans('Allows you to import settings from file'),
                     'prio' => 11,
                 ),
                 'configadd' => array(

@@ -105,6 +105,7 @@ DROP TABLE IF EXISTS routednetworks;
 DROP TABLE IF EXISTS nodes;
 DROP TABLE IF EXISTS netradiosectors;
 DROP TABLE IF EXISTS netdevices;
+DROP TABLE IF EXISTS netdevicemacs;
 DROP TABLE IF EXISTS netdevicemodels;
 DROP TABLE IF EXISTS netdevicetypes;
 DROP TABLE IF EXISTS netdeviceproducers;
@@ -1178,6 +1179,7 @@ CREATE TABLE invoicecontents (
 	description text NOT NULL DEFAULT '',
 	tariffid int(11) DEFAULT NULL,
 	taxcategory smallint DEFAULT 0 NOT NULL,
+	period smallint DEFAULT 3,
 	INDEX docid (docid),
 	CONSTRAINT invoicecontents_docid_fkey
 		FOREIGN KEY (docid) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1280,6 +1282,7 @@ CREATE TABLE cash (
   id int(11) NOT NULL auto_increment,
   time int(11) NOT NULL DEFAULT '0',
   type smallint NOT NULL DEFAULT '0',
+  servicetype smallint DEFAULT NULL,
   userid int(11) DEFAULT NULL,
   value decimal(9,2) NOT NULL DEFAULT '0',
   taxid int(11) DEFAULT NULL,
@@ -1559,6 +1562,25 @@ CREATE TABLE netdevices (
 
 # --------------------------------------------------------
 #
+# Structure of table netdevicemacs
+#
+CREATE TABLE netdevicemacs (
+	id int(11) NOT NULL auto_increment,
+	netdevid int(11) NOT NULL,
+	label varchar(30) NOT NULL,
+	mac varchar(17) NOT NULL,
+	main tinyint DEFAULT '0' NOT NULL,
+	PRIMARY KEY (id),
+	CONSTRAINT netdevicemacs_netdevid_fkey
+	    FOREIGN KEY (netdevid) REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	UNIQUE KEY netdevicemacs_mac_ukey (mac),
+	UNIQUE KEY netdevicemacs_netdevid_label_ukey (netdevid, label),
+	INDEX netdevicemacs_netdevid_idx (netdevid),
+	INDEX netdevicemacs_label_idx (label)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
 # Structure of table netradiosectors
 #
 CREATE TABLE netradiosectors (
@@ -1589,6 +1611,7 @@ CREATE TABLE netradiosectors (
 CREATE TABLE nodes (
   id int(11) NOT NULL auto_increment,
   name varchar(32) NOT NULL DEFAULT '',
+  login varchar(128) DEFAULT NULL,
   ipaddr int(16) unsigned NOT NULL DEFAULT '0',
   ipaddr_pub int(16) unsigned NOT NULL DEFAULT '0',
   passwd varchar(32) NOT NULL DEFAULT '',
@@ -3011,7 +3034,6 @@ CREATE VIEW vnodetariffs_allsuspended AS
 		AND (dateto = 0 OR dateto > UNIX_TIMESTAMP())
 	GROUP BY customerid;
 
-
 CREATE VIEW vnodetariffs_tariffs AS
     SELECT n.id AS nodeid,
         ROUND(SUM(t.downrate * a.count)) AS downrate,
@@ -3055,12 +3077,14 @@ CREATE VIEW vnodetariffs AS
 		t.down_burst_time_n, t.down_burst_threshold_n, t.down_burst_limit_n,
 		t.uprate_n, t.upceil_n,
 		t.up_burst_time_n, t.up_burst_threshold_n, t.up_burst_limit_n,
+		net.mask, net.gateway, net.dns, net.dns2,
 		m.mac,
         a.ccode,
 		a.city_id as location_city, a.street_id as location_street,
 		a.house as location_house, a.flat as location_flat,
 		a.location
 	FROM nodes n
+		JOIN networks net ON net.id = n.netid
 		JOIN vnodes_mac m ON m.nodeid = n.id
 		LEFT JOIN vaddresses a ON n.address_id = a.id
 		JOIN vnodetariffs_tariffs t ON t.nodeid = n.id
@@ -3130,12 +3154,14 @@ CREATE VIEW vnodealltariffs AS
 		COALESCE(t1.up_burst_time_n, t2.up_burst_time_n, 0) AS up_burst_time_n,
 		COALESCE(t1.up_burst_threshold_n, t2.up_burst_threshold_n, 0) AS up_burst_threshold_n,
 		COALESCE(t1.up_burst_limit_n, t2.up_burst_limit_n, 0) AS up_burst_limit_n,
+		net.mask, net.gateway, net.dns, net.dns2,
 		m.mac,
         a.ccode,
 		a.city_id as location_city, a.street_id as location_street,
 		a.house as location_house, a.flat as location_flat,
 		a.location
 	FROM nodes n
+	JOIN networks net ON net.id = n.netid
     JOIN vnodes_mac m ON m.nodeid = n.id
     LEFT JOIN vaddresses a ON a.id = n.address_id
     LEFT JOIN vnodetariffs_tariffs t1 ON t1.nodeid = n.id
@@ -3619,6 +3645,7 @@ URL: %url
 ('userpanel', 'mail_credential_reminders', 'true', '', 0),
 ('userpanel', 'startup_module', 'info', '', 0),
 ('userpanel', 'pin_validation', 'true', '', 0),
+('userpanel', 'show_all_assignments', 'false', '', 0),
 ('directories','userpanel_dir','userpanel','',0);
 
 INSERT INTO invprojects (name, type) VALUES ('inherited', 1);
@@ -3963,4 +3990,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021021600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021032300');

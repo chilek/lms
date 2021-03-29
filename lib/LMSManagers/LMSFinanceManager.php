@@ -116,7 +116,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $now = mktime(0, 0, 0, date('n'), date('d'), date('Y'));
 
         $assignments = $this->db->GetAll('SELECT
-                                            a.id AS id, a.tariffid, a.customerid, a.period, a.backwardperiod,
+                                            a.id AS id, a.tariffid, a.customerid, a.period AS periodvalue, a.backwardperiod,
                                             a.at, a.suspended, a.invoice, a.settlement,
                                             a.datefrom, a.dateto, a.pdiscount,
                                             a.vdiscount AS unitary_vdiscount,
@@ -142,7 +142,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                             p.name AS promotion_name, ps.name AS promotion_schema_name, ps.length AS promotion_schema_length,
                                             d.number AS docnumber, d.type AS doctype, d.cdate, np.template,
                                             d.fullnumber,
-                                            (CASE WHEN (a.dateto > ' . $now . ' OR a.dateto = 0) AND (a.at >= ' . $now . ' OR a.at < 531) THEN 0 ELSE 1 END) AS expired,
+                                            (CASE WHEN
+                                                    (a.period <> ' . DISPOSABLE . ' AND (a.dateto > ' . $now . ' OR a.dateto = 0) AND (a.at >= ' . $now . ' OR a.at < 531))
+                                                    OR (a.period = ' . DISPOSABLE . ' AND a.at > ' . $now . ')
+                                                THEN 0
+                                                ELSE 1
+                                            END) AS expired,
                                             commited
                                           FROM
                                             assignments a
@@ -153,13 +158,14 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                             LEFT JOIN documents d ON d.id = a.docid
                                             LEFT JOIN numberplans np ON np.id = d.numberplanid
                                           WHERE a.customerid=? ' . ($show_approved ? 'AND a.commited = 1 ' : '')
-                                            . (!$show_expired ? 'AND (a.dateto > ' . $now . ' OR a.dateto = 0) AND (a.at >= ' . $now . ' OR a.at < 531)' : '') . '
+                                            . (!$show_expired ? 'AND ((a.period <> ' . DISPOSABLE . ' AND (a.dateto > ' . $now . ' OR a.dateto = 0) AND (a.at >= ' . $now . ' OR a.at < 531))
+                                                OR (a.period = ' . DISPOSABLE . ' AND a.at > ' . $now . '))' : '') . '
                                           ORDER BY
                                             a.datefrom, t.name, value', array($id));
 
         if ($assignments) {
             foreach ($assignments as $idx => $row) {
-                switch ($row['period']) {
+                switch ($row['periodvalue']) {
                     case DISPOSABLE:
                         $row['payday'] = date('Y/m/d', $row['at']);
                         $row['period'] = trans('disposable');
@@ -649,7 +655,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         list ($year, $month, $dom) = explode('/', date('Y/m/d', $orig_datefrom));
                         $nextperiod = mktime(0, 0, 0, $month + 1, 1, $year);
                         $partial_dateto = !empty($data['dateto']) && $nextperiod > $data['dateto'] ? $data['dateto'] + 1 : $nextperiod;
-                        $diffdays = ($partial_dateto - $orig_datefrom) / 86400;
+                        $diffdays = round(($partial_dateto - $orig_datefrom) / 86400);
                         if ($diffdays > 0) {
                             list ($y, $m) = explode('/', date('Y/m', $partial_dateto - 1));
                             $month_days = strftime("%d", mktime(0, 0, 0, $m + 1, 0, $y));
@@ -1966,16 +1972,14 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $sdate = $invoice['invoice']['sdate'] ? $invoice['invoice']['sdate'] : $currtime;
         $number = $invoice['invoice']['number'];
         $type = $invoice['invoice']['type'];
-        if ($invoice['invoice']['numberplanid']) {
-            $fullnumber = docnumber(array(
-                'number' => $number,
-                'template' => $this->db->GetOne('SELECT template FROM numberplans WHERE id = ?', array($invoice['invoice']['numberplanid'])),
-                'cdate' => $cdate,
-                'customerid' => $invoice['customer']['id'] ?: null,
-            ));
-        } else {
-            $fullnumber = null;
-        }
+        $fullnumber = docnumber(array(
+            'number' => $number,
+            'template' => $invoice['invoice']['numberplanid']
+                ? $this->db->GetOne('SELECT template FROM numberplans WHERE id = ?', array($invoice['invoice']['numberplanid']))
+                : null,
+            'cdate' => $cdate,
+            'customerid' => $invoice['customer']['id'] ?: null,
+        ));
 
         $division_manager = new LMSDivisionManager($this->db, $this->auth, $this->cache, $this->syslog);
         $division = $division_manager->GetDivision($invoice['customer']['divisionid']);
@@ -2123,7 +2127,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     'customerid' => $invoice['customer']['id'],
                     'comment' => $item['name'],
                     'docid' => $iid,
-                    'itemid' => $itemid
+                    'itemid' => $itemid,
+                    'servicetype' => $item['servicetype'],
                 ));
             }
         }
@@ -2280,6 +2285,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         }
 
         if ($result) {
+            $result['name'] = trim($result['name']);
+
             if ($detail_level == self::INVOICE_CONTENT_DETAIL_ALL && !empty($result['recipient_address_id'])) {
                 $result['recipient_address'] = array(
                     'address_id' => $result['recipient_address_id'],
@@ -2358,16 +2365,18 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         . ($result['division_ten'] != '' ? "\n" . trans('TEN') . ' ' . '%ten%' : '');
             }
 
-            if ($result['content'] = $this->db->GetAllByKey('SELECT invoicecontents.value AS value,
-						itemid, taxid, (CASE WHEN taxes.reversecharge = 1 THEN -2 ELSE (
+            if ($result['content'] = $this->db->GetAllByKey('SELECT ic.value AS value,
+						ic.itemid, ic.taxid, (CASE WHEN taxes.reversecharge = 1 THEN -2 ELSE (
 								CASE WHEN taxes.taxed = 0 THEN -1 ELSE taxes.value END
 							) END) AS taxvalue, taxes.label AS taxlabel, taxcategory,
-						prodid, content, count, invoicecontents.description AS description,
-						tariffid, itemid, pdiscount, vdiscount
-						FROM invoicecontents
+						cash.servicetype,
+						prodid, content, ic.count, ic.description AS description,
+						tariffid, ic.itemid, pdiscount, vdiscount
+						FROM invoicecontents ic
 						LEFT JOIN taxes ON taxid = taxes.id
-						WHERE docid=?
-						ORDER BY itemid', 'itemid', array($invoiceid))
+                        JOIN cash ON cash.docid = ic.docid AND cash.itemid = ic.itemid
+						WHERE ic.docid = ?
+						ORDER BY ic.itemid', 'itemid', array($invoiceid))
             ) {
                 foreach ($result['content'] as $idx => $row) {
                     if (isset($result['invoice']) && $result['doctype'] == DOC_CNOTE) {
@@ -2677,10 +2686,11 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             }
 
             if ($result['content'] = $this->db->GetAll('SELECT
-				value, itemid, description
-				FROM debitnotecontents
-				WHERE docid=?
-				ORDER BY itemid', array($id))
+				dnc.value, dnc.itemid, dnc.description, cash.servicetype
+				FROM debitnotecontents dnc
+                JOIN cash ON cash.docid = dnc.docid AND cash.itemid = dnc.itemid
+				WHERE dnc.docid = ?
+				ORDER BY dnc.itemid', array($id))
             ) {
                 foreach ($result['content'] as $idx => $row) {
                     $result['content'][$idx]['value'] = $row['value'];
@@ -3349,12 +3359,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'comment' => $addbalance['comment'],
             SYSLOG::RES_DOC => isset($addbalance['docid']) && !empty($addbalance['docid']) ? $addbalance['docid'] : null,
             'itemid' => isset($addbalance['itemid']) ? $addbalance['itemid'] : 0,
+            'servicetype' => isset($addbalance['servicetype']) && !empty($addbalance['servicetype']) ? $addbalance['servicetype'] : null,
             SYSLOG::RES_CASHIMPORT => !empty($addbalance['importid']) ? $addbalance['importid'] : null,
             SYSLOG::RES_CASHSOURCE => !empty($addbalance['sourceid']) ? $addbalance['sourceid'] : null,
         );
         $res = $this->db->Execute('INSERT INTO cash (time, userid, value, currency, currencyvalue, type, taxid,
-			customerid, comment, docid, itemid, importid, sourceid)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			customerid, comment, docid, itemid, servicetype, importid, sourceid)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
         if ($res) {
             $cashid = $this->db->GetLastInsertID('cash');
@@ -4301,6 +4312,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 unset($label);
             }
 
+            $superuser = ConfigHelper::checkPrivilege('superuser');
+            $allow_modify_values_for_privileged_user = ConfigHelper::checkConfig('phpui.promotion_allow_modify_values_for_privileged_user');
+            $promotion_management = ConfigHelper::checkPrivilege('promotion_management');
+
             foreach ($promotion_schema_assignments as $assign) {
                 $pid = $assign['promotion_id'];
 
@@ -4336,14 +4351,14 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         }
 
                         if (count($props) > 2 && !empty($props[2])) {
-                            $users = explode(',', $props[2]);
-                            $period['modifiable'] = in_array($userid, $users);
+                            if ($allow_modify_values_for_privileged_user && ($superuser || $promotion_management)) {
+                                $period['modifiable'] = true;
+                            } else {
+                                $users = explode(',', $props[2]);
+                                $period['modifiable'] = in_array($userid, $users);
+                            }
                         } else {
                             $period['modifiable'] = false;
-                        }
-                        if (ConfigHelper::checkConfig('phpui.promotion_allow_modify_values_for_privileged_user')
-                            && ConfigHelper::checkPrivilege('promotion_management')) {
-                            $period['modifiable'] = $props[0] != 'NULL';
                         }
                         $periods[] = $period;
                     }

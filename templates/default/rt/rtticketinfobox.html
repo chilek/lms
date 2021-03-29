@@ -80,7 +80,7 @@
 									<i class="lms-ui-icon-content lms-ui-icon-customer"></i>{trans("Customer:")}
 								</TD>
 								<TD style="width: 99%;" class="nobr">
-									<A href="?m=customerinfo&amp;id={$ticket.customerid}">{$ticket.customername|escape} ({$ticket.customerid|string_format:"%04d"})</A>
+									<A href="?m=customerinfo&id={$ticket.customerid}">{$ticket.customername|escape} (#{$ticket.customerid})</A>
 								</TD>
 							</TR>
 							{/if}

@@ -271,7 +271,9 @@
     <TFOOT>
 	<TR>
 		<TD COLSPAN="8" class="nobr">
-			{button id="deletemarked" icon="delete" label="Delete"}
+			{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
+				{button id="deletemarked" icon="delete" label="Delete"}
+			{/if}
 			{trans("Print")}
 			{button icon="print" label="invoices" id="print-invoices"}
 			{button icon="cash" label="cash receipts" id="print-receipts"}

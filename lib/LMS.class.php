@@ -741,6 +741,12 @@ class LMS
         return $manager->getCustomerSMSOptions();
     }
 
+    public function GetCustomerAddressesWithEndPoints($customerid)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->GetCustomerAddressesWithEndPoints($customerid);
+    }
+
     public function GetCustomerAddressesWithoutEndPoints($customerid)
     {
         $manager = $this->getCustomerManager();
@@ -835,6 +841,12 @@ class LMS
     {
         $manager = $this->getCustomerManager();
         return $manager->getCustomerPin($id);
+    }
+
+    public function changeCustomerType($id, $type)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->changeCustomerType($id, $type);
     }
 
     /*
@@ -1004,6 +1016,12 @@ class LMS
     {
         $manager = $this->getNodeManager();
         return $manager->GetNodeIDByName($name);
+    }
+
+    public function GetNodeIDByLogin($login)
+    {
+        $manager = $this->getNodeManager();
+        return $manager->GetNodeIDByLogin($login);
     }
 
     public function GetNodeIDByNetName($name)
@@ -1741,6 +1759,12 @@ class LMS
         return $manager->GetNetDevConnectedNames($id);
     }
 
+    public function getNetDevOwner($id)
+    {
+        $manager = $this->getNetDevManager();
+        return $manager->getNetDevOwner($id);
+    }
+
     public function GetNetDevList($order = 'name,asc', $search = array())
     {
         $manager = $this->getNetDevManager();
@@ -1757,6 +1781,54 @@ class LMS
     {
         $manager = $this->getNetDevManager();
         return $manager->GetNetDevName($id);
+    }
+
+    public function addNetDevMac($params)
+    {
+        $manager = $this->getNetDevManager();
+        return $manager->addNetDevMac($params);
+    }
+
+    public function updateNetDevMac($params)
+    {
+        $manager = $this->getNetDevManager();
+        return $manager->updateNetDevMac($params);
+    }
+
+    public function delNetDevMac($macid)
+    {
+        $manager = $this->getNetDevManager();
+        return $manager->delNetDevMac($macid);
+    }
+
+    public function getNetDevMac($macid)
+    {
+        $manager = $this->getNetDevManager();
+        return $manager->getNetDevMac($macid);
+    }
+
+    public function getNetDevMacs($netdevid, $main = null)
+    {
+        $manager = $this->getNetDevManager();
+        return $manager->getNetDevMacs($netdevid, $main);
+    }
+
+    public function getNetDevByMac($mac)
+    {
+        $manager = $this->getNetDevManager();
+        return $manager->getNetDevByMac($mac);
+    }
+
+    public function getNetDevsMacLabels()
+    {
+        $manager = $this->getNetDevManager();
+        return $manager->getNetDevsMacLabels();
+    }
+
+    public function getNetDevMacLabels($netdevid)
+    {
+        $manager = $this->getNetDevManager();
+        return $manager->getNetDevMacLabels($netdevid);
     }
 
     public function GetNotConnectedDevices($id)
@@ -4219,6 +4291,12 @@ class LMS
     {
         $manager = $this->getUserGroupManager();
         return $manager->UsergroupGetList();
+    }
+
+    public function UsergroupGetActiveUserid($groupid)
+    {
+        $manager = $this->getUserGroupManager();
+        return $manager->UsergroupGetActiveUserid($groupid);
     }
 
     public function UsergroupGet($id)

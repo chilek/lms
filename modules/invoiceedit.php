@@ -70,6 +70,7 @@ if (isset($_GET['id']) && ($action == 'edit' || $action == 'init')) {
         $invoicecontents[$item['itemid']] = array(
             'itemid' => $item['itemid'],
             'tariffid' => $item['tariffid'],
+            'servicetype' => $item['servicetype'],
             'name' => $item['description'],
             'prodid' => $item['prodid'],
             'count' => str_replace(',', '.', $item['count']),
@@ -629,16 +630,14 @@ switch ($action) {
 
         $args['type'] = $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE;
         $args['number'] = $invoice['number'];
-        if ($invoice['numberplanid']) {
-            $args['fullnumber'] = docnumber(array(
-                'number' => $invoice['number'],
-                'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($invoice['numberplanid'])),
-                'cdate' => $invoice['cdate'],
-                'customerid' => $invoice['customerid'],
-            ));
-        } else {
-            $args['fullnumber'] = null;
-        }
+        $args['fullnumber'] = docnumber(array(
+            'number' => $invoice['number'],
+            'template' => $invoice['numberplanid']
+                ? $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($invoice['numberplanid']))
+                : null,
+            'cdate' => $invoice['cdate'],
+            'customerid' => $invoice['customerid'],
+        ));
         $args[SYSLOG::RES_NUMPLAN] = $invoice['numberplanid'] ?: null;
         //$args['recipient_address_id'] = $invoice
         $args[SYSLOG::RES_DOC] = $iid;
@@ -720,8 +719,9 @@ switch ($action) {
                         'customerid' => $invoice['customerid'],
                         'comment' => $item['name'],
                         'docid' => $iid,
-                        'itemid' => $itemid
-                        ));
+                        'itemid' => $itemid,
+                        'servicetype' => $item['servicetype'],
+                    ));
                 }
             }
         } elseif ($invoice['doctype'] == DOC_INVOICE || ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment')) {

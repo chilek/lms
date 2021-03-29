@@ -378,6 +378,17 @@ function setStorageItem(name, value, type)
 	storage.setItem(name, value);
 }
 
+function removeStorageItem(name, type)
+{
+	var storage;
+	if (typeof(type) === 'undefined' || type == 'session') {
+		storage = sessionStorage;
+	} else {
+		storage = localStorage;
+	}
+	storage.removeItem(name);
+}
+
 if (typeof String.prototype.trim == 'undefined')
 {
 	String.prototype.trim = function()
@@ -578,7 +589,7 @@ function changeMacFormat(id)
 	if (!id) return 0;
 	var elem = document.getElementById(id);
 	if (!elem) return 0;
-	var curmac = elem.innerHTML;
+	var curmac = elem.innerHTML.trim();
 	var macpatterns = [ /^([0-9a-f]{2}:){5}[0-9a-f]{2}$/gi, /^([0-9a-f]{2}-){5}[0-9a-f]{2}$/gi,
 		/^([0-9a-f]{4}\.){2}[0-9a-f]{4}$/gi, /^[0-9a-f]{12}$/gi ];
 	for (var i in macpatterns)

@@ -82,6 +82,11 @@
 <FORM NAME="traffic" METHOD="POST" ACTION="?m=traffic&amp;bar=user">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 98%;">
+	</colgroup>
     <THEAD>
 	<TR>
 		<TD COLSPAN="3">
@@ -91,37 +96,43 @@
     </THEAD>
     <TBODY>
 	<TR {tip text="Limit results to selected period"}>
-		<TD WIDTH="1%">
+		<TD>
 			<IMG src="img/calendar.gif">
 		</TD>
-		<TD WIDTH="1%" nowrap>
-			<B>{trans("From (day/month/year hh:mm):")}</B>
-		</TD>
-		<TD WIDTH="98%" nowrap>
-			{html_select_date field_array="from" prefix="" time=$starttime field_order="DMY" field_separator=" / " start_year=$startyear end_year=$endyear}
-			&nbsp;
-			{html_select_time field_array="from" prefix="" time=$starttime display_seconds=0}
+		<td class="bold nobr">
+			{trans("From")}
+		</td>
+		<TD class="nobr">
+			<input type="text" id="datefrom" name="from" size="20" maxlength="20" value="{$starttime|date_format:"%Y/%m/%d %H:%M"}"
+					{tip class="lms-ui-datetime" text="Enter date in 'yyyy/mm/dd hh:mm' format (empty field means current date) or click to choose date from calendar"}>
 		</TD>
 	</TR>
 	<TR {tip text="Limit results to selected period"}>
-		<TD WIDTH="1%">
+		<TD>
 			<IMG src="img/calendar.gif">
 		</TD>
-		<TD nowrap>
-			<B>{trans("To (day/month/year hh:mm):")}</B>
-		</TD>
-		<TD nowrap>
-			{html_select_date field_array="to" prefix="" time=$endtime field_order="DMY" field_separator=" / " start_year=$startyear end_year=$endyear}
-			&nbsp;
-			{html_select_time field_array="to" prefix="" time=$endtime display_seconds=0}
+		<td class="bold nobr">
+			{trans("To")}
+		</td>
+		<TD class="nobr">
+			<input type="text" id="dateto" name="to" size="20" maxlength="20" value="{$endtime|date_format:"%Y/%m/%d %H:%M"}"
+				{tip class="lms-ui-datetime" text="Enter date in 'yyyy/mm/dd hh:mm' format (empty field means current date) or click to choose date from calendar"}>
 		</TD>
 	</TR>
+	<TR>
+		<td colspan="2">
+		</td>
+		<td>
+			{date_period_preset from="#datefrom" to="#dateto" time=true
+				periods="previous-year,previous-month,current-year,current-month,next-month,next-year"}
+		</td>
+	</TR>
 	<TR {tip text="Limit results to selected network"}>
-		<TD WIDTH="1%">
+		<TD>
 			<IMG src="img/network.gif">
 		</TD>
-		<TD nowrap>
-			<B>{trans("Network:")}</B>
+		<TD class="bold nobr">
+			{trans("Network:")}
 		</TD>
 		<TD>
 			<SELECT SIZE="1" NAME="net">
@@ -133,8 +144,8 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;">
-			<IMG src="img/customer.gif" alt="">
+		<TD>
+			<IMG src="img/customer.gif">
 		</TD>
 		<TD class="bold nobr">
 			{trans("Customer:")}
@@ -145,10 +156,10 @@
 		</TD>
 	</TR>
 	<TR {tip text="Select results sorting order"}>
-		<TD WIDTH="1%">
+		<TD>
 			<IMG src="img/view.gif">
 		</TD>
-		<TD nowrap>
+		<TD class="bold nobr">
 			<B>{trans("Sorting:")}</B>
 		</TD>
 		<TD>
@@ -162,30 +173,30 @@
 		</TD>
 	</TR>
 	<TR {tip text="Limit results to n computers"}>
-		<TD WIDTH="1%">
+		<TD>
 			<IMG src="img/node.gif">
 		</TD>
-		<TD nowrap>
-			<B>{trans("Nodes limit:")}</B>
+		<TD class="bold nobr">
+			{trans("Nodes limit:")}
 		</TD>
 		<TD>
 			<INPUT TYPE="text" NAME="limit" SIZE="3">
 		</TD>
 	</TR>
 	<TR {tip text="Nodes depiction way on charts"}>
-		<TD WIDTH="1%">
+		<TD>
 			<IMG src="img/ip.gif">
 		</TD>
-		<TD nowrap>
-			<B>{trans("IP addresses instead of nodes names")}</B>
+		<TD class="bold">
+			{trans("IP addresses instead of nodes names")}
 		</TD>
 		<TD>
 			<INPUT TYPE="checkbox" NAME="showips" VALUE="1">
 		</TD>
 	</TR>
 	<TR>
-		<TD COLSPAN="3" ALIGN="right">
-			<A HREF="javascript:document.traffic.submit();" ACCESSKEY="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
+		<TD colspan="3" class="lms-ui-box-buttons">
+			{button icon="save" label="Submit" onclick="document.traffic.submit();"}
 		</TD>
 	</TR>
     </TBODY>

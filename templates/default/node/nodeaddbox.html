@@ -152,9 +152,20 @@
 									{mac_address_selection form="nodedata" macs=$nodedata.macs}
 								</td>
 							</TR>
+
+							<tr>
+								<td>
+									{icon name="login" class="fa-fw" tip="<!node>Login"}
+								</td>
+								<td>
+									<input type="text" name="nodedata[login]" value="{$nodedata.login|escape}"
+											{tip text="Enter login (optional)" trigger="login"}>
+								</td>
+							</tr>
+
 							<TR>
 								<TD>
-									<IMG SRC="img/passwd.gif" ALT="{trans("Password:")}">
+									{icon name="password" class="fa-fw" tip="Password:"}
 								</TD>
 								<TD>
 									<INPUT type="text" name="nodedata[passwd]" value="{$nodedata.passwd|escape}"
@@ -370,8 +381,8 @@
 	<TR>
 		<TD style="width: 100%;" COLSPAN="2" class="lms-ui-box-buttons">
 			{block name="nodeaddbox-options"}
-			{button id="scan-button" icon="search" label="Scan" onclick="location.href = '?m=nodescan{if $customerinfo.id}&ownerid={$customerinfo.id}{/if}';"}
 			{button type="submit" id="save-button" icon="save" label="Submit"}
+			{button id="scan-button" icon="search" label="Scan" onclick="location.href = '?m=nodescan{if $customerinfo.id}&ownerid={$customerinfo.id}{/if}';"}
 			{button id="cancel-button" icon="cancel" label="Cancel" onclick="location.href = '?m={if $customerinfo.id}customerinfo&id={$customerinfo.id}{else}nodelist{/if}';"}
 			<br>
 			<label>
@@ -401,11 +412,11 @@
 	});
 
 	function GenPasswd() {
-		var length = {ConfigHelper::getConfig('phpui.nodepassword_length', '16')};
+		var length = {ConfigHelper::getConfig('phpui.node_password_length', ConfigHelper::getConfig('phpui.nodepassword_length', '16'))};
 		if (length > 32) length = 32;
 
 		document.forms['nodeadd'].elements['nodedata[passwd]'].value =
-			generate_random_string(length, "{ConfigHelper::getConfig('phpui.nodepassword_allowed_characters', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')|replace:'"':'\"'}");
+			generate_random_string(length, "{ConfigHelper::getConfig('phpui.node_password_allowed_characters', ConfigHelper::getConfig('phpui.nodepassword_allowed_characters', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'))|replace:'"':'\"'}");
 	}
 
 	function change_wholenetwork() {

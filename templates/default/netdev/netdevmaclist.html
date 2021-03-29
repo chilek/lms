@@ -1,0 +1,71 @@
+<div class="lms-ui-tab-table-row header">
+	<div class="lms-ui-tab-table-wrapper col-2">
+		<div class="lms-ui-tab-table-column label">
+			<strong>{trans("Label")}</strong>
+		</div>
+		<div class="lms-ui-tab-table-column mac">
+			<strong>Mac</strong>
+		</div>
+	</div>
+	<div class="lms-ui-tab-table-column main">
+		<strong>{trans("Primary")}</strong>
+	</div>
+
+	<div class="lms-ui-tab-table-column buttons">
+		&nbsp;
+	</div>
+</div>
+
+{foreach $macs as $mac}
+{$macid = $mac.id}
+{if $formdata.macid && $formdata.macid == $macid}{$edit = true}{else}{$edit = false}{/if}
+<div class="lms-ui-tab-table-row" data-macid="{$macid}">
+	<div class="lms-ui-tab-table-wrapper col-2">
+		<div class="lms-ui-tab-table-column label">
+			<span id="label_{$macid}"{if $edit} style="display: none;"{/if} class="mac-info-field">
+				{$mac.label}
+			</span>
+		</div>
+		<div class="lms-ui-tab-table-column mac">
+			<span id="mac_{$macid}"{if $edit} style="display: none;"{/if} class="mac-info-field">
+				{$mac.mac}
+			</span>
+			<input type="text" size="17" name="mac_edit_{$macid}" id="mac_edit_{$macid}"
+					value="{if $edit}{$formdata.mac}{else}{$mac.mac}{/if}"
+					class="mac-edit-field"
+					{tip text="Enter MAC" trigger="mac_edit_{$macid}"}
+					{if !$edit} style="display: none;"{/if} required>
+		</div>
+	</div>
+	<div class="lms-ui-tab-table-column main">
+			<span id="main_{$macid}"{if $edit} style="display: none;"{/if} class="mac-info-field">
+				{if $mac.main}<i class="lms-ui-icon-checked"></i>{/if}
+			</span>
+		<input type="checkbox" name="main_edit_{$macid}" id="main_edit_{$macid}"
+			   class="mac-edit-field"
+				{tip text="Set as primary"} {if $mac.main}checked{/if}
+				{if !$edit} style="display: none;"{/if}>
+	</div>
+	<div class="lms-ui-tab-table-column buttons">
+		{if ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.network_management')}
+		{button type="link" icon="edit" id="mac_edit_button_{$macid}"
+			onclick="javascript:toggleEditManagementMac({$macid});"
+			tip="Edit" visible=!$edit}
+		{button type="link" icon="save" id="mac_save_button_{$macid}"
+			onclick="javascript:updateManagementMac({$macid});"
+			tip="Save" visible=$edit}
+		{button type="link" icon="cancel" id="mac_cancel_button_{$macid}"
+			onclick="javascript:toggleEditManagementMac({$macid});"
+			tip="Cancel" visible=$edit}
+		{button type="link" icon="delete" id="mac_delete_button_{$macid}"
+			onclick="javascript:delManagementMac({$macid});"
+			tip="Remove"}
+		{/if}
+	</div>
+</div>
+
+{foreachelse}
+<div class="lms-ui-tab-empty-table">
+	{trans("No data")}
+</div>
+{/foreach}

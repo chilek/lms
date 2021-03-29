@@ -295,6 +295,16 @@ function initAdvancedSelects(selector) {
 				$(this).next().toggleClass('lms-ui-error', RegExp("^0?$").test($(this).val()));
 			}
 		});
+
+		$(this).on('chosen:showing_dropdown', function(e) {
+			var dropdown = $(this).next().find('.chosen-drop');
+			dropdown.position({
+				my: "left top",
+				at: "left bottom",
+				of: dropdown.prev()
+			});
+		});
+
 		$(this).chosen($.extend({
 			no_results_text: $t('No results match'),
 			placeholder_text_single: $t('Select an Option'),
@@ -957,6 +967,9 @@ $(function() {
 		} else if (period === 'next-month') {
 			fromdate.setMonth(fromdate.getMonth() + 1);
 			fromdate.setDate(1);
+			if (todate.getMonth() == 11) {
+				todate.setFullYear(todate.getFullYear() + 1);
+			}
 			todate.setMonth(fromdate.getMonth() + 1);
 			todate.setDate(0);
 		} else if (period === 'current-year') {
@@ -1101,8 +1114,15 @@ $(function() {
 		}
 	);
 
-	$('.lms-ui-button-clipboard').attr('title', $t('Click copies to clipboard'));
-	new ClipboardJS('.lms-ui-button-clipboard');
+	$('.lms-ui-button-clipboard:not([title])').attr('title', $t('Click copies to clipboard'));
+	new ClipboardJS('.lms-ui-button-clipboard:not([data-clipboard-handler])');
+	new ClipboardJS('.lms-ui-button-clipboard[data-clipboard-handler]', {
+		text: function(trigger) {
+			var e = $.Event('lms:clipboard:click');
+			$(trigger).trigger(e);
+			return e.result;
+		}
+	});
 
 	if (tooltipsEnabled) {
 		$(document).on('mouseenter', '[title]', function () {

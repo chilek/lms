@@ -45,6 +45,10 @@
 		width: 11em;
 	}
 
+	.consent-label {
+		cursor: pointer;
+	}
+
 </style>
 <FORM name="customeradd" id="customeradd" method="POST" action="?m=customeradd">
 <p style="display: none;">
@@ -66,7 +70,7 @@
 						</td>
 						<td>
 							<INPUT type="text" name="customeradd[lastname]" maxlength="128"
-									value="{$customeradd.lastname}" required
+									value="{$customeradd.lastname|escape}" required
 									{tip class="lms-ui-autogrow" text="Enter customer last name or company name" trigger="lastname" bold=1}>
 						</td>
 					</tr>
@@ -75,7 +79,7 @@
 							<label for="customeradd[name]" class="nobr"><strong>{trans("First name:")}</strong>
 						</td>
 						<td>
-							<INPUT type="text" name="customeradd[name]" maxlength="128" value="{$customeradd.name}"
+							<INPUT type="text" name="customeradd[name]" maxlength="128" value="{$customeradd.name|escape}"
 									{tip class="lms-ui-autogrow" text="Enter customer name" trigger="name" bold=1}></label>
 						</td>
 					</tr>
@@ -175,7 +179,7 @@
 					<TD>
 						<select name="customeradd[flags][]" {tip text="Select customer flags (optional)" class="lms-ui-multiselect"}
 								multiple>
-							{foreach $_CUSTOMERFLAGS as $cflag => $flag}
+							{foreach Localisation::arraySort($_CUSTOMERFLAGS, 'label') as $cflag => $flag}
 								<option value="{$cflag}"
 										{if is_array($customeradd.flags) && in_array($cflag, $customeradd.flags)} selected{/if}
 										title="{$flag.tip}"
@@ -366,14 +370,14 @@
 									{if $customeradd.tenexistencewarning}
 									<INPUT type="hidden" name="customeradd[tenexistencewarning]" value="1">
 									{/if}
-									<a class="gusapi-button" data-type="{\GusApi\SearchType::NIP}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
+									<a class="gusapi-button" data-type="{Utils::GUS_REGON_API_SEARCH_TYPE_TEN}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
 								</TD>
 							</TR>
 							<TR>
 								<TD>{trans("REGON")}:</TD>
 								<TD>
 									<INPUT type="text" size="30" value="{$customeradd.regon}" name="customeradd[regon]" {tip text="Enter Business Registration Number (optional)" trigger="regon"}>
-									<a class="gusapi-button" data-type="{\GusApi\SearchType::REGON}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
+									<a class="gusapi-button" data-type="{Utils::GUS_REGON_API_SEARCH_TYPE_REGON}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
 								</TD>
 							</TR>
 							<TR>
@@ -386,7 +390,7 @@
 								<TD>{trans("RBE")}:</TD>
 								<TD>
 									<INPUT type="text" size="30" value="{$customeradd.rbe}" name="customeradd[rbe]" {tip text="Enter National Court Register / Register of Business Entities Number (optional)" trigger="rbe"}>
-									<a class="gusapi-button" data-type="{\GusApi\SearchType::KRS}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
+									<a class="gusapi-button" data-type="{Utils::GUS_REGON_API_SEARCH_TYPE_RBE}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
 								</TD>
 							</TR>
 						</TABLE>
@@ -465,7 +469,7 @@
 									{foreach $_CCONSENTS as $type => $consent}
 										<TR>
 											<TD>
-												<label for="chkconsent{$type}">{$consent.label}</label>
+												<span class="consent-label">{$consent.label}</span>
 											</TD>
 											<TD>
 												<INPUT type="checkbox" name="customeradd[consents][{$type}]" id="chkconsent{$type}"

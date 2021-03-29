@@ -51,7 +51,7 @@ $access_table = array(
             'helpdesk' => array('rtqueuelist', 'rtcategorylist', 'rtsearch'),
             'timetable' => array('eventlist', 'eventschedule', 'eventlist-overdue', 'eventsearch'),
             'auth' => array('chpasswd', 'twofactorauthinfo'),
-            'config' => array('configlist', 'taxratelist', 'numberplanlist', 'statelist', 'divisionlist', 'hostlist', 'daemoninstancelist', 'cashsourcelist', 'promotionlist', 'pluginlist', 'invprojectlist'),
+            'config' => array('settings', 'taxratelist', 'numberplanlist', 'statelist', 'divisionlist', 'hostlist', 'daemoninstancelist', 'cashsourcelist', 'promotionlist', 'pluginlist', 'invprojectlist'),
         ),
     ),
     'node_connections' => array(
@@ -70,6 +70,13 @@ $access_table = array(
         'allow_regexp' => '^((tariff|customerassignment)(add|info|list|move|edit|del)|(payment)(add|del|edit|info|list)|(balance|customerbalance)(new|add|ok|del|list|)|(cashreg(list|info))|(invoice|invoice(list|new|edit|del|note|report|paid|info|send))|(note|note(list|add|edit|del|paid))|number|export|print|cashimport|cashimportparser|cashpackagedel|customertransferform)$',
         'allow_menu_items' => array(
             'finances' => Permission::MENU_ALL,
+        ),
+    ),
+    'finances_view' => array(
+        'label' => trans('finances view'),
+        'allow_regexp' => '^((balance|customerbalance|invoice|note)list|cashreginfo|invoice(|info|send)|note|number)$',
+        'allow_menu_items' => array(
+            'finances' => array('balancelist', 'invoicelist', 'invoicelist-proforma', 'notelist'),
         ),
     ),
     'used_tariff_edit' => array(
@@ -110,7 +117,7 @@ $access_table = array(
     ),
     'customer_management' => array(
         'label' => trans('customers management'),
-        'allow_regexp' => '^((customer|document)(add|edit|info|infoshort|list|print|search|warn|cutoffstop|group)|documentdel|documentscanadd|customertransferform|customeraddresses|customernote|customerassignmenthelper|documentsend|documentgen|documentview|nodewarn|choosenode|gusapi|number|invoiceinfo)$',
+        'allow_regexp' => '^((customer|document)(add|edit|info|infoshort|list|print|search|warn|cutoffstop|group)|documentdel|documentscanadd|customertransferform|customeraddresses|customernote|customerassignmenthelper|documentsend|documentgen|documentview|nodewarn|choose(node|location)|gusapi|number|invoiceinfo)$',
         'allow_menu_items' => array(
             'customers' => Permission::MENU_ALL,
             'documents' => Permission::MENU_ALL,
@@ -140,7 +147,7 @@ $access_table = array(
     ),
     'messaging' => array(
         'label' => trans('messaging (email, sms)'),
-        'allow_regexp' => '^message(add|del|list|info|template(del|list))$',
+        'allow_regexp' => '^(message(add|del|list|info|template(del|list))|attachments)$',
         'allow_menu_items' => array(
             'messages' => Permission::MENU_ALL,
         ),
@@ -174,12 +181,12 @@ $access_table = array(
         'label' => trans('configuration'),
         'allow_regexp' => '^(((host|config|numberplan|taxrate|state|division|cashsource)(list|edit|add|del|load|clone))|((promotion|promotionschema)(list|edit|add|del|set|info|clone)))$',
         'allow_menu_items' => array(
-            'config' => array('configlist', 'configimport', 'configadd', 'taxratelist', 'numberplanlist', 'statelist', 'divisionlist', 'hostlist', 'cashsourcelist', 'promotionlist'),
+            'config' => array('settings', 'configimport', 'configadd', 'taxratelist', 'numberplanlist', 'statelist', 'divisionlist', 'hostlist', 'cashsourcelist', 'promotionlist'),
         ),
     ),
     'network_management' => array(
         'label' => trans('networks and devices management'),
-        'allow_regexp' => '^((net|netdev|ewxch)(info|list|edit|add|del|print|cmp|map(refresh|)|remap|search)|choose(mac|ip|gpscoords|netdevfrommap|netdevfornetnode|netdevmodel|netdevreplace)|ewxnodelist|ewxdevlist|chooselocation|ping'
+        'allow_regexp' => '^((net|netdev|ewxch)(info|list|edit|add|del|print|cmp|mac|map(refresh|)|remap|search)|choose(mac|ip|gpscoords|netdevfrommap|netdevfornetnode|netdevmodel|netdevreplace)|ewxnodelist|ewxdevlist|chooselocation|ping'
             . '|netnode(add|adddev|del|deldev|edit|info|list)|netdevmodels|netlinkproperties|netusage|attachments|routednetworks|vlanlist)$',
         'allow_menu_items' => array(
             'networks' => Permission::MENU_ALL,

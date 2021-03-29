@@ -61,45 +61,44 @@ class UiConfigProvider implements ConfigProviderInterface
                         $ui_config_cache[$result['divisionid']][$result['userid']][$result['section']][$result['var']] = $result;
                     }
                 }
-                $configs = $ui_config_cache['0']['0'];
             }
-        } else {
-            // Nie może być zmiennej konfiguracyjnej dla użytkownika lub dywizji jeśli
-            // nie ma zmiennej konfiguracyjnej globalnej.
-            // Zmienne konfiguracyjne globalne są bazą.
-            $arrays = array($ui_config_cache['0']['0']);
+        }
 
-            if (!empty($divisionid)) {
-                // overwrite global configs with division configs
-                if (isset($ui_config_cache[$divisionid]['0'])) {
-                    $arrays[] = $ui_config_cache[$divisionid]['0'];
-                }
+        // Nie może być zmiennej konfiguracyjnej dla użytkownika lub dywizji jeśli
+        // nie ma zmiennej konfiguracyjnej globalnej.
+        // Zmienne konfiguracyjne globalne są bazą.
+        $arrays = array($ui_config_cache['0']['0']);
 
-                // overwrite global configs with user in division configs
-                if (!empty($userid) && isset($ui_config_cache[$divisionid][$userid])) {
-                    $arrays[] = $ui_config_cache[$divisionid][$userid];
-                }
+        if (!empty($divisionid)) {
+            // overwrite global configs with division configs
+            if (isset($ui_config_cache[$divisionid]['0'])) {
+                $arrays[] = $ui_config_cache[$divisionid]['0'];
             }
 
-            if (!empty($userid) && isset($ui_config_cache['0'][$userid])) {
-                // overwrite global configs with user configs
-                $arrays[] = $ui_config_cache['0'][$userid];
+            // overwrite global configs with user in division configs
+            if (!empty($userid) && isset($ui_config_cache[$divisionid][$userid])) {
+                $arrays[] = $ui_config_cache[$divisionid][$userid];
             }
+        }
 
-            $configs = call_user_func_array('array_merge_recursive', $arrays);
+        if (!empty($userid) && isset($ui_config_cache['0'][$userid])) {
+            // overwrite global configs with user configs
+            $arrays[] = $ui_config_cache['0'][$userid];
+        }
 
-            foreach ($configs as $section => &$variables) {
-                foreach ($variables as $variable_name => &$variable) {
-                    foreach ($variable as $property_name => $property_value) {
-                        if (is_array($property_value)) {
-                            $variable[$property_name] = array_pop($property_value);
-                        }
+        $configs = call_user_func_array('array_merge_recursive', $arrays);
+
+        foreach ($configs as $section => &$variables) {
+            foreach ($variables as $variable_name => &$variable) {
+                foreach ($variable as $property_name => $property_value) {
+                    if (is_array($property_value)) {
+                        $variable[$property_name] = array_pop($property_value);
                     }
                 }
-                unset($variable);
             }
-            unset($variables);
+            unset($variable);
         }
+        unset($variables);
 
         return $configs;
     }

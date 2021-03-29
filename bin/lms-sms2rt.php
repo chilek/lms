@@ -374,7 +374,7 @@ if (($fh = fopen($message_file, "r")) != null) {
             }, $all_phones);
 
             $mobile_phones = array_filter($all_phones, function ($contact) {
-                return $contact['type'] & (CONTACT_MOBILE | CONTACT_DISABLED) == CONTACT_MOBILE;
+                return ($contact['type'] & (CONTACT_MOBILE | CONTACT_DISABLED)) == CONTACT_MOBILE;
             });
 
             if ($helpdesk_customerinfo) {

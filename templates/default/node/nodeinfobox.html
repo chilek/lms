@@ -15,6 +15,14 @@
         flex-wrap: wrap;
 	}
 
+	.mac-address {
+		cursor: pointer;
+	}
+
+	.mac-address:hover {
+		box-shadow: 0px 0px 1px 1px black;
+	}
+
 	@media screen and (max-width: 400px) {
 		.tab-beautify tr td:nth-child(2) {
 			white-space: normal;
@@ -75,7 +83,7 @@
 								</tr>
 								<tr>
 									<TD style="width: 1%;">
-				                       <img src="img/ip.gif" class="lms-ui-button-clipboard" data-clipboard-text="{$nodeinfo.ip}" alt="">
+										{icon name="routed" class="lms-ui-button-clipboard fa-fw" data_clipboard_text=$nodeinfo.ip}
 									</td>
 									<td>
 										{trans("IP address:")}
@@ -88,7 +96,7 @@
 								{if $nodeinfo.ip_pub != "0.0.0.0"}
 								<tr>
 									<td>
-										<img src="img/ip_pub.gif" class="lms-ui-button-clipboard" data-clipboard-text="{$nodeinfo.ip_pub}" alt="">
+										{icon name="routed" class="lms-ui-button-clipboard fa-fw" data_clipboard_text=$nodeinfo.ip_pub}
 									</td>
 									<td>
 										{trans("Pub. IP address:")}
@@ -101,39 +109,56 @@
 
 								{assign var="counter" value=0}
 								{$macs=array()}
-								{foreach from=$nodeinfo.macs item=item}
+								{foreach $nodeinfo.macs as $item}
 								<tr>
 									<td>
-										<a href="javascript:changeMacFormat('mac{$counter}')" title="{trans("Change the format of presentation of the MAC address.")}"><img src="img/mac.gif" alt=""></a>
+										{icon name="mac" class="lms-ui-button-clipboard mac-address-copy-to-clipboard fa-fw" data_clipboard_handler="1"}
 									</td>
 									<td>
 										{trans("MAC address:")}
 									</td>
 									<td>
-										<span id="mac{$counter}">{$item.mac}</span> {if $item.producer}({$item.producer}){/if}<br>
+										<span id="mac{$counter}" class="mac-address lms-ui-no-user-select"
+											{tip text="Change the format of presentation of the MAC address."}>
+											{$item.mac}
+										</span>
+										{if $item.producer}({$item.producer}){/if}
 										{$macs[]=$item.mac}
 									</td>
 								</tr>
 								{math equation="x+1" x=$counter assign="counter"}
 								{/foreach}
 
+								{if $nodeinfo.login}
+									<tr>
+										<td>
+											{icon name="login" class="fa-fw"}
+										</td>
+										<td>
+											{trans("<!node>Login")}
+										</td>
+										<td>
+											{$nodeinfo.login|escape}
+											{button type="link" icon="clipboard" class="lms-ui-button-clipboard"
+												data_clipboard_text="{$nodeinfo.login|escape}"}
+										</td>
+									</tr>
+								{/if}
+
 								{if $nodeinfo.passwd}
 								<tr>
 									<td>
-										<img src="img/passwd.gif" alt="">
+										{icon name="password" class="fa-fw"}
 									</td>
 									<td>
 										{trans("Password:")}
 									</td>
 									<td>
-										{if ConfigHelper::checkConfig('phpui.protect_passwords')}
-										<button class="lms-ui-button-clipboard lms-ui-button" data-clipboard-text="{$nodeinfo.passwd|escape}">
-											<i class="lms-ui-icon-clipboard"></i>
-											{trans("Copy")}
-										</button>
-										{else}
+										{if !ConfigHelper::checkConfig('phpui.protect_passwords')}
 											{$nodeinfo.passwd}
 										{/if}
+										{button type="link" icon="clipboard" class="lms-ui-button-clipboard"
+											data_clipboard_text="{$nodeinfo.passwd|escape}"}
 									</td>
 								</tr>
 								{/if}
@@ -183,7 +208,14 @@
 												</span>
 
 												{if $nodeinfo.port}[{$nodeinfo.port}]{/if}
-												<img src="img/{if $nodeinfo.linktype == 1}wireless.gif{elseif $nodeinfo.linktype == 2}netdev_takenports.gif{else}netdev_takenports.gif{/if}" alt="{$_LINKTYPES[$nodeinfo.linktype]}" {tip text="{if $nodeinfo.linktechnology}{$_LINKTECHNOLOGIES[$nodeinfo.linktype][$nodeinfo.linktechnology]} / {/if}{if $nodeinfo.linkradiosector}{$nodeinfo.linkradiosectorname} / {/if}{$_LINKSPEEDS[$nodeinfo.linkspeed]}"}>
+												{capture name="linkinfo"}{if $nodeinfo.linktechnology}{$_LINKTECHNOLOGIES[$nodeinfo.linktype][$nodeinfo.linktechnology]} / {/if}{if $nodeinfo.linkradiosector}{$nodeinfo.linkradiosectorname} / {/if}{$_LINKSPEEDS[$nodeinfo.linkspeed]}{/capture}
+												{if $nodeinfo.linktype == $smarty.const.LINKTYPE_WIRELESS}
+													{icon name="wireless" tip=$smarty.capture.linkinfo}
+												{elseif $nodeinfo.linktype == $smarty.const.LINKTYPE_FIBER}
+													{icon name="fiber" tip=$smarty.capture.linkinfo}
+												{else}
+													{icon name="wired" tip=$smarty.capture.linkinfo}
+												{/if}
 											{else}
 												{if $netdevices}
 													<a href="javascript: void(0);" onclick="return netDevChooseWin(document.nodelink.elements['devid']);" {tip trigger="netdev" text="Search device"}>&raquo;&raquo;&raquo;</A>
@@ -469,8 +501,8 @@
 <script>
     xajax_getNodeStats({$nodeinfo.id});
 
-    {if !$disable_active_links}
-    $( function() {
+	$(function() {
+	    {if !$disable_active_links}
         var link = '?m=nodeedit&id={$nodeinfo.id}';
         var nodeid = {$nodeinfo.id};
 
@@ -504,8 +536,16 @@
                 }
             });
         });
-    });
-    {/if}
+		{/if}
+
+		$('.mac-address').click(function() {
+			changeMacFormat($(this).attr('id'));
+		});
+
+		$('.mac-address-copy-to-clipboard').on('lms:clipboard:click', function() {
+			return $(this).closest('tr').find('.mac-address').text();
+		});
+	});
 
 	function change_netdevice(id) {
 		if (xjx.$('linktype').value == 1) {

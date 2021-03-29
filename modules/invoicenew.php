@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -140,6 +140,10 @@ switch ($action) {
         }
         $invoice['number'] = '';
         $invoice['numberplanid'] = null;
+
+        if (ConfigHelper::checkConfig('invoices.force_telecom_service_flag')) {
+            $invoice['flags'][DOC_FLAG_TELECOM_SERVICE] = 1;
+        }
 
         // get default invoice's numberplanid and next number
         $currtime = time();

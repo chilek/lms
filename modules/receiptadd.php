@@ -858,16 +858,12 @@ switch ($action) {
                 'cdate' => $receipt['cdate'],
             ));
 
-            if ($numberplan) {
-                $fullnumber = docnumber(array(
-                    'number' => $number,
-                    'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($numberplan)),
-                    'cdate' => $receipt['cdate'],
-                    'customerid' => $customer['id'],
-                ));
-            } else {
-                $fullnumber = null;
-            }
+            $fullnumber = docnumber(array(
+                'number' => $number,
+                'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($numberplan)),
+                'cdate' => $receipt['cdate'],
+                'customerid' => $customer['id'],
+            ));
 
             $args = array(
                 'type' => DOC_RECEIPT,

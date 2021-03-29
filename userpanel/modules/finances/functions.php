@@ -37,6 +37,7 @@ if (defined('USERPANEL_SETUPMODE')) {
         $SMARTY->assign('show_period', ConfigHelper::getConfig('userpanel.show_period'));
         $SMARTY->assign('show_last_years', ConfigHelper::getConfig('userpanel.show_last_years'));
         $SMARTY->assign('aggregate_documents', ConfigHelper::checkConfig('userpanel.aggregate_documents'));
+        $SMARTY->assign('show_all_assignments', ConfigHelper::checkConfig('userpanel.show_all_assignments'));
         $SMARTY->assign('speed_unit_type', ConfigHelper::getConfig('userpanel.speed_unit_type'));
         $SMARTY->assign('speed_unit_aggregation_threshold', ConfigHelper::getConfig('userpanel.speed_unit_aggregation_threshold'));
         $SMARTY->display('module:finances:setup.html');
@@ -86,6 +87,15 @@ if (defined('USERPANEL_SETUPMODE')) {
         } else {
             $DB->Execute('UPDATE uiconfig SET value = \'0\' WHERE section = \'userpanel\' AND var = \'aggregate_documents\'');
         }
+
+        $DB->Execute(
+            'UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
+            array(
+                isset($_POST['show_all_assignments']) ? 'true' : 'false',
+                'userpanel',
+                'show_all_assignments',
+            )
+        );
 
         if ($_POST['speed_unit_type']) {
             $speed_unit_type = intval($_POST['speed_unit_type']);

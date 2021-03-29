@@ -21,7 +21,7 @@
 //-->
 </SCRIPT>
 <H1>{$layout.pagetitle}</H1>
-<FORM method="post" action="?m=nodesearch&amp;search" name="nodesearch">
+<FORM method="post" action="?m=nodesearch&amp;search" id="nodesearch" name="nodesearch">
 <P style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT TYPE="hidden" NAME="m" VALUE="nodesearch">
@@ -45,6 +45,14 @@
 		</TD>
 		<TD>
 			<INPUT TYPE="text" NAME="search[name]" value="{$nodesearch.name}" {tip text="Enter node name or it's fragment"}>
+		</TD>
+	</TR>
+	<TR>
+		<TD class="bold nobr">
+			{icon name="login" class="fa-fw"} {trans("<!node>Login")}
+		</TD>
+		<TD>
+			<INPUT TYPE="text" NAME="search[login]" value="{$nodesearch.login}" {tip text="Enter node login or it's fragment"}>
 		</TD>
 	</TR>
 	<TR>

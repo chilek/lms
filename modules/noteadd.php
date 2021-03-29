@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -68,6 +68,7 @@ switch ($action) {
 
         $itemdata['value'] = f_round($itemdata['value']);
         $itemdata['description'] = $itemdata['description'];
+        $itemdata['servicetype'] = $itemdata['servicetype'];
 
         if ($itemdata['value'] > 0 && $itemdata['description'] != '') {
             $itemdata['posuid'] = (string) getmicrotime();
@@ -239,16 +240,14 @@ switch ($action) {
 
             $division = $LMS->GetDivision($customer['divisionid']);
 
-            if ($note['numberplanid']) {
-                $fullnumber = docnumber(array(
-                    'number' => $note['number'],
-                    'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($note['numberplanid'])),
-                    'cdate' => $cdate,
-                    'customerid' => $customer['id'],
-                ));
-            } else {
-                $fullnumber = null;
-            }
+            $fullnumber = docnumber(array(
+                'number' => $note['number'],
+                'template' => $note['numberplanid']
+                    ? $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($note['numberplanid']))
+                    : null,
+                'cdate' => $cdate,
+                'customerid' => $customer['id'],
+            ));
 
             $args = array(
                 'number' => $note['number'],
@@ -338,7 +337,8 @@ switch ($action) {
                     'customerid' => $customer['id'],
                     'comment' => $item['description'],
                     'docid' => $nid,
-                    'itemid'=> $itemid
+                    'itemid'=> $itemid,
+                    'servicetype' => $item['servicetype'],
                 ));
             }
 

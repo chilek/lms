@@ -63,6 +63,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
      *          array() of integer values or single integer value
      *      priority - ticket priorities (default: null = any),
      *          array() of integer values or single integer value
+     *      source - ticket source (default: 0 = all),
+     *          -1 = unknown/other
+     *           0 = all
      *      owner - ticket owner (default: null = any),
      *          array() or single integer value
      *          -1 = without owner,
@@ -157,7 +160,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 $sqlord = ' ORDER BY t.subject';
                 break;
             case 'requestor':
-                $sqlord = ' ORDER BY requestor';
+                $sqlord = ' ORDER BY t.requestor';
                 break;
             case 'owner':
                 $sqlord = ' ORDER BY ownername';
@@ -677,7 +680,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         $userid = Auth::GetCurrentUser();
         if ($result = $this->db->GetAll('SELECT q.id, name, email, description, newticketsubject, newticketbody,
-				newmessagesubject, newmessagebody, resolveticketsubject, resolveticketbody, deleted, deltime, deluserid
+				newmessagesubject, newmessagebody, resolveticketsubject, resolveticketbody,
+				newticketsmsbody, newmessagesmsbody, resolveticketsmsbody,
+				deleted, deltime, deluserid
 				FROM rtqueues q
 				' . ((ConfigHelper::checkPrivilege('full_access') && $only_accessible)
                     || !ConfigHelper::checkPrivilege('full_access') ? ' JOIN rtrights r ON r.queueid = q.id' : '')
