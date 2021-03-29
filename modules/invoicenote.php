@@ -685,7 +685,7 @@ switch ($action) {
                     'comment' => $item['name'],
                     SYSLOG::RES_DOC => $id,
                     'itemid' => $idx,
-                    'servicetype' => $item['servicetype'],
+                    'servicetype' => empty($item['servicetype']) ? null : $item['servicetype'],
                 );
                 $DB->Execute('INSERT INTO cash (time, userid, value, currency, currencyvalue, taxid, customerid, comment, docid, itemid, servicetype)
 					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
