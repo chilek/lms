@@ -1594,6 +1594,14 @@
 
 
 {if $printmenu=="netdev"}
+<style>
+
+	.range-value {
+		width: 10em;
+	}
+
+</style>
+
 <form method="post" name="uke-siis" id="uke-siis" action="?m=netdevprint&type=uke-siis">
 <input type="submit" class="hiddenbtn">
 <table class="lmsbox">
@@ -1665,7 +1673,9 @@
 						</label>
 					</td>
 					<td>
-						<input type="number" min="0" name="uke[linktypes][{$i}][range]" {if $def_vals[$l_id]}value="{$def_vals[$l_id]}"{/if} style="width: 50px;" disabled> {trans('meters')}
+						<input type="number" min="0" class="range-value" name="uke[linktypes][{$i}][range]"
+							{if $def_vals[$l_id]} value="{$def_vals[$l_id]}"{/if} disabled>
+						{trans('meters')}
 					</td>
 				</tr>
 				{$i = $i+1}
