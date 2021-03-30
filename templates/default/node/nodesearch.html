@@ -3,8 +3,8 @@
 {block name=module_content}
 <!--// $Id$ //-->
 {$xajax}
-<SCRIPT type="text/javascript">
-<!--
+<script>
+
 	function PrintList()
 	{
 		document.nodesearch.action = "?m=nodesearch&search=1&print=1";
@@ -18,8 +18,8 @@
 		document.nodesearch.target = "";
 		document.nodesearch.submit();
 	}
-//-->
-</SCRIPT>
+
+</script>
 <H1>{$layout.pagetitle}</H1>
 <FORM method="post" action="?m=nodesearch&amp;search" id="nodesearch" name="nodesearch">
 <P style="display: none;">
@@ -79,6 +79,27 @@
 			<INPUT TYPE="text" NAME="search[location]" value="{$nodesearch.location}" {tip text="Enter node location"}>
 		</TD>
 	</TR>
+	<tr>
+		<td class="bold nobr">
+			<img src="img/access.gif">
+			{trans("Status:")}
+		</td>
+		<td>
+			<select size="1" name="search[status]">
+				<option value="0"{if $nodesearch.status == 0} selected{/if}>{trans("- all -")}</option>
+				<option value="1"{if $nodesearch.status == 1} selected{/if}>{trans("connected<!plural:item>")}</option>
+				<option value="2"{if $nodesearch.status == 2} selected{/if}>{trans("disconnected<!plural:item>")}</option>
+				<option value="3"{if $nodesearch.status == 3} selected{/if}>{trans("online")}</option>
+				<option value="4"{if $nodesearch.status == 4} selected{/if}>{trans("without tariff")}</option>
+				<option value="5"{if $nodesearch.status == 5} selected{/if}>{trans("TERRIT not specified")}</option>
+				<option value="6"{if $nodesearch.status == 6} selected{/if}>{trans("Net Device not specified")}</option>
+				<option value="9"{if $nodesearch.status == 9} selected{/if}>{trans("without radio sector")}</option>
+				<option value="7"{if $nodesearch.status == 7} selected{/if}>{trans("with warning")}</option>
+				<option value="10"{if $nodesearch.status == 10} selected{/if}>{trans("with locks")}</option>
+				<option value="8"{if $nodesearch.status == 8} selected{/if}>{trans("without gps coords")}</option>
+			</select>
+		</td>
+	</tr>
 {if !empty($states)}
 	<tr id="state">
 		<td class="bold nobr">
@@ -174,55 +195,54 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD class="buttons" colspan="2">
-			<A href="javascript:Search()" accesskey="s">{trans("Search")} <IMG src="img/search.gif" alt=""></A>
-			<A href="javascript:PrintList()">{trans("Print")} <IMG src="img/print.gif" alt=""></A>
-		</TD>
+		<td class="lms-ui-box-buttons" colspan="2">
+			{button icon="search" label="Search" onclick="Search()"}
+			{button icon="print" label="Print" onclick="PrintList()"}
+		</td>
 	</TR>
 	</TBODY>
 </TABLE>
 </FORM>
-<SCRIPT type="text/javascript">
-<!--
-function change_selection(elem)
-{
-	var district = document.getElementById('district'),
-		borough = document.getElementById('borough');
+<script>
 
-	if (elem.name == 'search[state]') {
-		district.style.display = 'none';
-		borough.style.display = 'none';
-	}
-	else if (elem.name == 'search[district]')
-		borough.style.display = 'none';
+	function change_selection(elem)
+	{
+		var district = document.getElementById('district'),
+			borough = document.getElementById('borough');
 
-	if (elem.value != 0)
-		xajax_select_location(elem.name, elem.value);
-}
+		if (elem.name == 'search[state]') {
+			district.style.display = 'none';
+			borough.style.display = 'none';
+		}
+		else if (elem.name == 'search[district]')
+			borough.style.display = 'none';
 
-function update_selection(type, data, selected)
-{
-	var i, len, elem = document.getElementById(type),
-		select = document.getElementById(type+'_sel');
-
-	select.options.length = 0;
-	select.options[0] = new Option('', 0);
-	for (i=0, len=data.length; i<len; i++) {
-		select.options[select.options.length] = new Option(data[i].name, data[i].id);
+		if (elem.value != 0)
+			xajax_select_location(elem.name, elem.value);
 	}
 
-	if (i > 0)
-		elem.style.display = '';
-	select.value = selected ? selected : 0;
-	select.focus();
-}
+	function update_selection(type, data, selected)
+	{
+		var i, len, elem = document.getElementById(type),
+			select = document.getElementById(type+'_sel');
 
-$(function() {
-	$('form[name="nodesearch"] [name="search[name]"]').focus();
+		select.options.length = 0;
+		select.options[0] = new Option('', 0);
+		for (i=0, len=data.length; i<len; i++) {
+			select.options[select.options.length] = new Option(data[i].name, data[i].id);
+		}
 
-	new AutoSuggest(document.getElementById('nodesearch'),document.getElementById('netdev'),'?m=nodesearch&ajax=1&mode=netdev&what=',0);
-});
+		if (i > 0)
+			elem.style.display = '';
+		select.value = selected ? selected : 0;
+		select.focus();
+	}
 
-//-->
-</SCRIPT>
+	$(function() {
+		$('form[name="nodesearch"] [name="search[name]"]').focus();
+
+		new AutoSuggest(document.getElementById('nodesearch'),document.getElementById('netdev'),'?m=nodesearch&ajax=1&mode=netdev&what=',0);
+	});
+
+</script>
 {/block}

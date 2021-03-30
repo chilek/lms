@@ -305,7 +305,9 @@ if (isset($_GET['search'])) {
             $nodesearch['lastonlineafter'] = $lastonlineafter;
         }
 
-        $nodelist = $LMS->GetNodeList(array('order' => $o, 'search' => $nodesearch, 'sqlskey' => $k));
+        $status = $nodesearch['status'];
+        unset($nodesearch['status']);
+        $nodelist = $LMS->GetNodeList(array('order' => $o, 'search' => $nodesearch, 'status' => $status, 'sqlskey' => $k));
 
         $layout['pagetitle'] = trans('Nodes Search Results');
 
