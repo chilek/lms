@@ -94,40 +94,56 @@
 			{/if}
 		</TD>
 		<TD class="text-right nobr">
-			{if $customerlist[customerlist].balance < 0}
-				<A class="balanceok-customer" href="?m=customerbalanceok&id={$customerlist[customerlist].id}"><IMG src="img/pay.gif" alt="{trans("Account")}" title="{trans("Account")}"></A>
+			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+				{if $customerlist[customerlist].balance < 0}
+					{button type="link" class="balanceok-customer" href="?m=customerbalanceok&id={$customerlist[customerlist].id}" icon="settle" tip="Account"}
+				{/if}
 			{/if}
+
 			{if $customerlist[customerlist].account}
 				{if $customerlist[customerlist].status == $smarty.const.CSTATUS_CONNECTED}
 					{if $customerlist[customerlist].nodeac == 1}
-						<A href="?m=nodeset&ownerid={$customerlist[customerlist].id}"><IMG src="img/access.gif" alt="{trans("Disconnect All")}" title="{trans("Disconnect All")}"></A>
+						{button type="link" icon="connected" tip="Disconnect All" href="?m=nodeset&ownerid={$customerlist[customerlist].id}"}
 					{else}
 						{if $customerlist[customerlist].nodeac == 2}
-							<A href="?m=nodeset&ownerid={$customerlist[customerlist].id}"><IMG src="img/mixaccess.gif" alt="{trans("Disconnect All")}" title="{trans("Disconnect All")}"></A>
-						{else}<A href="?m=nodeset&ownerid={$customerlist[customerlist].id}&access=1"><IMG src="img/noaccess.gif" alt="{trans("Connect All")}" title="{trans("Connect All")}"></A>
+							{button type="link" icon="mixconnected" tip="Disconnect All" href="?m=nodeset&ownerid={$customerlist[customerlist].id}"}
+						{else}
+							{button type="link" icon="disconnected" tip="Connect All" href="?m=nodeset&ownerid={$customerlist[customerlist].id}&access=1"}
 						{/if}
 					{/if}
 				{/if}
 			{/if}
+
 			{if $customerlist[customerlist].warncount}
 				{if $customerlist[customerlist].status == $smarty.const.CSTATUS_CONNECTED}
 					{if $customerlist[customerlist].nodewarn == 1}
-						<A href="?m=nodewarn&ownerid={$customerlist[customerlist].id}" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningon.gif" alt="{trans("Disable notices for all")}" title="{trans("Disable notices for all")}"></A>
+						{if $customerlist[customerlist].message}{$tip=htmlspecialchars($customerlist[customerlist].message)}{else}{$tip="Disable notices for all"}{/if}
+						{button type="link" icon="warnon" tip=$tip href="?m=nodewarn&ownerid={$customerlist[customerlist].id}"}
 					{else}
 						{if $customerlist[customerlist].nodewarn == 2}
-							<A href="?m=nodewarn&ownerid={$customerlist[customerlist].id}" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningmix.gif" alt="{trans("Disable notices for all")}" title="{trans("Disable notices for all")}"></A>
-						{else}<A href="?m=nodewarn&ownerid={$customerlist[customerlist].id}&warning=1" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningoff.gif" alt="{trans("Enable notices for all")}" title="{trans("Enable notices for all")}"></A>
+							{if $customerlist[customerlist].message}{$tip=htmlspecialchars($customerlist[customerlist].message)}{else}{$tip="Disable notices for all"}{/if}
+							{button type="link" icon="warnmix" tip=$tip href="?m=nodewarn&ownerid={$customerlist[customerlist].id}"}
+						{else}
+							{if $customerlist[customerlist].message}{$tip=htmlspecialchars($customerlist[customerlist].message)}{else}{$tip="Enable notices for all"}{/if}
+							{button type="link" icon="warnoff" tip=$tip href="?m=nodewarn&ownerid={$customerlist[customerlist].id}&warning=1"}
 						{/if}
 					{/if}
 				{/if}
 			{/if}
-			{if $listdata.state == 50}
-			<A href="?m=customeredit&id={$customerlist[customerlist].id}&action=recover"><IMG src="img/recover.gif" alt="{trans("Recover")}" title="{trans("Recover")}"></A>
+
+			{if $customerlist[customerlist].deleted}
+				{if ConfigHelper::checkPrivilege('permanent_customer_removal')}
+					{button type="link" class="remove-button" icon="clear" tip="Remove permanently" href="?m=customerdel&id={$customerlist[customerlist].id}&type=permanent"}
+				{/if}
+				{button type="link" icon="restore" tip="Recover" href="?m=customeredit&id={$customerlist[customerlist].id}&action=recover"}
 			{else}
-			<A class="delete-customer" href="?m=customerdel&id={$customerlist[customerlist].id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
-			<A href="?m=customeredit&id={$customerlist[customerlist].id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
+				{if ConfigHelper::checkPrivilege('customer_removal')}
+					{button type="link" class="delete-customer" icon="delete" tip="Delete" href="?m=customerdel&id={$customerlist[customerlist].id}"}
+				{/if}
+				{button type="link" icon="edit" tip="Edit" href="?m=customeredit&id={$customerlist[customerlist].id}"}
 			{/if}
-			<A href="?m=customerinfo&id={$customerlist[customerlist].id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
+
+			{button type="link" icon="info" tip="Info" href="?m=customerinfo&id={$customerlist[customerlist].id}"}
 		</TD>
 	</TR>
 	{sectionelse}
@@ -464,6 +480,14 @@
 			var name = $(this).closest('tr').attr('data-name');
 			console.log('name=', name);
 			confirmDialog($t("Are you sure, you want to remove customer '$a' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!", name), this).done(function () {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+
+		$('.remove-button').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			confirmDialog($t("Do you want to permanently remove $a customer?", name), this).done(function() {
 				location.href = $(this).attr('href');
 			});
 			return false;
