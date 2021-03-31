@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -28,23 +28,19 @@ $reftype = isset($_GET['reftype']) && ($_GET['reftype'] === 'division' || $_GET[
 $refconfigid = isset($_GET['refconfigid']) ? intval($_GET['refconfigid']) : null;
 $divisionid = isset($_GET['divisionid']) ? intval($_GET['divisionid']) : null;
 
-if ($SESSION->is_set('backto', true)) {
-    $backto = $SESSION->get('backto', true);
+if ($SESSION->is_set('backtoStack', true)) {
+    $backtoStack = $SESSION->get('backtoStack', true);
+    $backto = end($backtoStack);
 } elseif ($SESSION->is_set('backto')) {
-    $backto = $SESSION->get('backto');
+    $backtoStack = $SESSION->get('backtoStack');
+    $backto = end($backtoStack);
 } else {
     $backto = '';
 }
 $backurl = $backto ? '?' . $backto : '?m=configlist';
-
-if ($SESSION->is_set('backtosave', true)) {
-    $backtosave = $SESSION->get('backtosave', true);
-} elseif ($SESSION->is_set('backtosave')) {
-    $backtosave = $SESSION->get('backtosave');
-} else {
-    $backtosave = '';
-}
-$backurlsave = $backtosave ? '?' . $backtosave : '?m=configlist';
+$SMARTY->assign('backurl', $backurl);
+$SESSION->save('backto', $backurl);
+$SESSION->save('backto', $backurl, true);
 
 $config = isset($_POST['config']) ? $_POST['config'] : array();
 
@@ -53,10 +49,6 @@ if (!empty($config)) {
         if ($key != 'wysiwyg') {
             $config[$key] = trim($val);
         }
-    }
-
-    if (!($config['var'] || $config['value'] || $config['description'])) {
-        $SESSION->redirect($backurl);
     }
 
     if ($config['var'] == '') {
@@ -167,14 +159,18 @@ if (!empty($config)) {
                         break;
                 }
             }
-            $SESSION->redirect($backurlsave);
+        } else {
+            $SESSION->redirect('?'.$_SERVER['QUERY_STRING']);
         }
-        $SESSION->redirect($backurlsave);
-
         unset($config['var']);
         unset($config['value']);
         unset($config['description']);
         unset($config['disabled']);
+        if ($SESSION->is_set('backto', true)) {
+            $SESSION->redirect($SESSION->get('backto', true));
+        } elseif ($SESSION->is_set('backto')) {
+            $SESSION->redirect($SESSION->get('backto'));
+        }
     }
 
     $config['documentation'] = Utils::MarkdownToHtml(Utils::LoadMarkdownDocumentation($option));
@@ -252,19 +248,6 @@ if (!empty($reftype)) {
     $SMARTY->assign('sections', $LMS->GetConfigSections());
 }
 
-if ($backurl == '?m=configlist') {
-    $SESSION->save('backto', $_SERVER['QUERY_STRING']);
-    $SESSION->save('backto', $_SERVER['QUERY_STRING'], true);
-    $SESSION->save('backtosave', 'm=configlist');
-    $SESSION->save('backtosave', 'm=configlist', true);
-} else {
-    $SESSION->save('backto', 'm=configlist');
-    $SESSION->save('backto', 'm=configlist', true);
-    $SESSION->save('backtosave', ltrim($backurl, '?'));
-    $SESSION->save('backtosave', ltrim($backurl, '?'), true);
-}
-
-$SMARTY->assign('backurl', $backurl);
 $SMARTY->assign('reftype', $reftype);
 $SMARTY->assign('refconfigid', $refconfigid);
 $SMARTY->assign('config', $config);

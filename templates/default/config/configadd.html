@@ -30,7 +30,7 @@
 
 </style>
 
-<FORM method="POST" id="configadd" action="?m=configadd" name="config">
+<FORM method="POST" id="configadd" action="?m=configadd&refconfigid={$refconfigid}&reftype={$reftype}&divisionid={$divisioninfo.id}" name="config">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" name="config[reftype]" value="{$reftype}">
 <INPUT type="hidden" name="config[refconfigid]" value="{$refconfigid}">
@@ -253,7 +253,7 @@
 		</TR>
     </TBODY>
 </TABLE>
-</P>
+</FORM>
 <script>
 
 	$(function() {

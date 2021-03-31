@@ -283,7 +283,7 @@
 
 		$('#delete-config').click(function() {
 			var name = '{$config.section}.{$config.var}';
-			confirmDialog($t("Are you sure, you want to delete option '$a' from database?\n\nThis action will remove this option for all users.", name), this).done(function() {
+			confirmDialog($t("Are you sure, you want to delete option '$a' from database?", name), this).done(function() {
 				location.href = $(this).attr('data-href');
 			});
 			return false;

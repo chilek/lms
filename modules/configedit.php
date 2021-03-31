@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,23 +24,41 @@
  *  $Id$
  */
 
-if ($SESSION->is_set('backto', true)) {
-    $backto = $SESSION->get('backto', true);
+if ($SESSION->is_set('backtoStack', true)) {
+    $backtoStack = $SESSION->get('backtoStack', true);
+    $queryString = $_SERVER['QUERY_STRING'];
+    $backto = end($backtoStack);
+    if (!in_array($queryString, $backtoStack) && $queryString != $backto) {
+        $backtoStack[] = $queryString;
+        $SESSION->save('backtoStack', $backtoStack, true);
+    } else {
+        $pos = array_search($queryString, $backtoStack);
+        $backtoStack = array_slice($backtoStack, 0, $pos);
+        $backto = end($backtoStack);
+        $backtoStack[] = $queryString;
+        $SESSION->save('backtoStack', $backtoStack, true);
+    }
 } elseif ($SESSION->is_set('backto')) {
-    $backto = $SESSION->get('backto');
+    $backtoStack = $SESSION->get('backtoStack');
+    $queryString = $_SERVER['QUERY_STRING'];
+    $backto = end($backtoStack);
+    if (!in_array($queryString, $backtoStack) && $queryString != $backto) {
+        $backtoStack[] = $queryString;
+        $SESSION->save('backtoStack', $backtoStack);
+    } else {
+        $pos = array_search($queryString, $backtoStack);
+        $backtoStack = array_slice($backtoStack, 0, $pos);
+        $backto = end($backtoStack);
+        $backtoStack[] = $queryString;
+        $SESSION->save('backtoStack', $backtoStack);
+    }
 } else {
     $backto = '';
 }
 $backurl = $backto ? '?' . $backto : '?m=configlist';
-
-if ($SESSION->is_set('backtosave', true)) {
-    $backtosave = $SESSION->get('backtosave', true);
-} elseif ($SESSION->is_set('backtosave')) {
-    $backtosave = $SESSION->get('backtosave');
-} else {
-    $backtosave = '';
-}
-$backurlsave = $backtosave ? '?' . $backtosave : '?m=configlist';
+$SMARTY->assign('backurl', $backurl);
+$SESSION->save('backto', $backurl);
+$SESSION->save('backto', $backurl, true);
 
 if (isset($_GET['s']) && isset($_GET['v'])) {
     $params = array(
@@ -201,10 +219,11 @@ if (isset($_POST['config'])) {
             $DB->BeginTrans();
             $configid = $LMS->editConfigOption($args);
             $DB->CommitTrans();
-
-            $SESSION->redirect($backurlsave);
-        } else {
-            $SESSION->redirect('?'.$_SERVER['QUERY_STRING']);
+        }
+        if ($SESSION->is_set('backto', true)) {
+            $SESSION->redirect($SESSION->get('backto', true));
+        } elseif ($SESSION->is_set('backto')) {
+            $SESSION->redirect($SESSION->get('backto'));
         }
     }
     $config = $cfg;
@@ -226,21 +245,8 @@ if (!empty($reftype)) {
     $layout['pagetitle'] = trans('Global option edit: $a', $option);
 }
 
-if ($backurl == '?m=configlist') {
-    $SESSION->save('backto', $_SERVER['QUERY_STRING']);
-    $SESSION->save('backto', $_SERVER['QUERY_STRING'], true);
-    $SESSION->save('backtosave', 'm=configlist');
-    $SESSION->save('backtosave', 'm=configlist', true);
-} else {
-    $SESSION->save('backto', 'm=configlist');
-    $SESSION->save('backto', 'm=configlist', true);
-    $SESSION->save('backtosave', ltrim($backurl, '?'));
-    $SESSION->save('backtosave', ltrim($backurl, '?'), true);
-}
-
 $config['documentation'] = Utils::MarkdownToHtml(Utils::LoadMarkdownDocumentation($option));
 
-$SMARTY->assign('backurl', $backurl);
 $SMARTY->assign('reftype', $reftype);
 $SMARTY->assign('refconfigid', $refconfigid);
 $SMARTY->assign('divisioninfo', $divisioninfo);
