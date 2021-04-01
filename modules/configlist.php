@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -237,8 +237,8 @@ $configlist = GetConfigList();
 
 $pagelimit = ConfigHelper::getConfig('phpui.configlist_pagelimit', count($configlist));
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
-$SESSION->save('backto', $_SERVER['QUERY_STRING'], true);
+$SESSION->save('backtoStack', array($_SERVER['QUERY_STRING']), true);
+$SESSION->save('backtoStack', array($_SERVER['QUERY_STRING']));
 
 $SMARTY->assign('users', $LMS->getUsers(array('superuser' => 1)));
 $SMARTY->assign('sections', $LMS->GetConfigSections());
