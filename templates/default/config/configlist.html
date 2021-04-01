@@ -19,7 +19,7 @@
 
 	.row-container {
 		display: flex;
-		flex-wrap: wrap;
+		flex-wrap: nowrap;
 		flex-direction: row;
 		justify-content: space-between;
 		align-items: flex-start;
@@ -28,9 +28,9 @@
 
 	.row-container-buttons {
 		display: flex;
-		flex-wrap: wrap;
+		flex-wrap: nowrap;
 		flex-direction: row;
-		justify-content: flex-start;
+		justify-content: flex-end;
 		align-items: center;
 	}
 
@@ -44,26 +44,34 @@
 		flex-direction: row;
 		justify-content: flex-start;
 		align-items: flex-start;
+		flex-grow: 0;
 	}
 
 	#clone-container, #export-container {
 		display: flex;
 		flex-wrap: wrap;
-		flex-direction: column;
+		flex-direction: row;
 		justify-content: flex-start;
-		align-items: flex-start;
+		align-items: center;
 	}
 
 	#clone-container > div {
-		padding-bottom: 0.5em;
+		padding-right: 0.5em;
 	}
 
 	#export-container > div {
-		padding-bottom: 0.5em;
+		padding-right: 0.5em;
 	}
 
 	.lms-ui-button-clipboard {
 		margin-left: 0.3em;
+	}
+
+	@media all and (max-width: 1200px) {
+		.row-container-buttons {
+			flex-direction: column;
+			align-items: flex-end;
+		}
 	}
 
 </style>
@@ -223,9 +231,8 @@
 							</div>
 
 							<div class="withchildbindings" style="display: none;">
-								<label>{trans('With child bindings')}
-									<input type="checkbox" id="withchildbindings">
-								</label>
+								<label for="withchildbindings">{trans('With child bindings')}</label>
+								<input type="checkbox" id="withchildbindings">
 							</div>
 
 							<div class="withparentbindings" style="display: none;">
@@ -488,21 +495,6 @@
 			});
 		});
 
-
-		function switchDirection() {
-			if ($('#export').is(':visible')) {
-				$('.row-container-buttons').css({
-					'flex-direction': 'column',
-					'align-items': 'flex-end'
-				});
-			} else {
-				$('.row-container-buttons').css({
-					'flex-direction': 'row',
-					'align-items': 'center'
-				});
-			}
-		}
-
 		function toggleActions() {
 			$('#export, #clone, .clone-container-section-input, .clone-container-section-select, .clone-container-user, .withchildbindings, .withparentbindings, .override').hide();
 			{if !empty($configlist)}
@@ -570,19 +562,15 @@
 
 		$('#type-filter').change(function() {
 			toggleActions();
-			switchDirection();
 		})
 		$('#user-filter').change(function() {
 			toggleActions();
-			switchDirection();
 		})
 		$('#division-filter').change(function() {
 			toggleActions();
-			switchDirection();
 		})
 
 		toggleActions();
-		switchDirection();
 
 		$('[data-filter-id="section-filter"]').off('click');
 
