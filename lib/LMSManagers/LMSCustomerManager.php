@@ -2808,7 +2808,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     {
         $this->db->Execute(
             'UPDATE customers SET type = ? WHERE id = ?',
-            array($id, $type)
+            array($type, $id)
         );
         if ($this->syslog) {
             $userid = Auth::GetCurrentUser();
