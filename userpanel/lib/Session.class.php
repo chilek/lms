@@ -65,7 +65,7 @@ class Session
                 return;
             }
 
-            $ten = preg_replace('/-/', '', $remindform['ten']);
+            $ten = preg_replace('/[^a-z0-9]/i', '', $remindform['ten']);
             $params = array($ten, $ten);
             switch ($remindform['type']) {
                 case 1:
@@ -73,8 +73,15 @@ class Session
                         return;
                     }
                     $join = 'JOIN customercontacts cc ON cc.customerid = c.id';
-                    $where = ' AND contact = ? AND cc.type & ? > 0';
-                    $params = array_merge($params, array($remindform['email'],(CONTACT_EMAIL|CONTACT_INVOICES|CONTACT_NOTIFICATIONS)));
+                    $where = ' AND contact = ? AND cc.type & ? = ?';
+                    $params = array_merge(
+                        $params,
+                        array(
+                            $remindform['email'],
+                            CONTACT_EMAIL | CONTACT_DISABLED,
+                            CONTACT_EMAIL,
+                        )
+                    );
                     break;
                 case 2:
                     $phone = preg_replace('/[\s\-]/', '', $remindform['phone']);
@@ -82,11 +89,12 @@ class Session
                         return;
                     }
                     $join = 'JOIN customercontacts cc ON cc.customerid = c.id';
-                    $where = ' AND REPLACE(REPLACE(contact, \'-\', \'\'), \' \', \'\') = ? AND cc.type & ? > 0';
+                    $where = ' AND REPLACE(REPLACE(contact, \'-\', \'\'), \' \', \'\') = ? AND cc.type & ? = ?';
                     $params = array_merge(
                         $params,
                         array(
                             $phone,
+                            CONTACT_MOBILE | CONTACT_DISABLED,
                             CONTACT_MOBILE,
                         )
                     );
@@ -94,8 +102,16 @@ class Session
                 default:
                     return;
             }
-            $customer = $this->db->GetRow("SELECT c.id, pin FROM customers c $join WHERE c.deleted = 0 AND ((ten <> '' AND REPLACE(ten, '-', '') = ?) OR (ssn <> '' AND ssn = ?))"
-                . $where, $params);
+            $customer = $this->db->GetRow(
+                'SELECT c.id, pin
+                FROM customers c
+                ' . $join . '
+                WHERE c.deleted = 0
+                    AND ((ten <> \'\' AND REPLACE(REPLACE(ten, \'-\', \'\'), \' \', \'\') = ?)
+                        OR (ssn <> \'\' AND ssn = ?))'
+                . $where,
+                $params
+            );
             if (!$customer) {
                 $this->error = trans('Credential reminder couldn\'t be sent!');
                 return;

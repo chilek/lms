@@ -5,8 +5,6 @@
  *
  *  (C) Copyright 2001-2021 LMS Developers
  *
- *  Please, see the doc/AUTHORS for more information about authors!
- *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License Version 2 as
  *  published by the Free Software Foundation.
@@ -21,26 +19,14 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id$
  */
 
-if (isset($_GET['id'])) {
-    $id = intval($_GET['id']);
-    if ($id) {
-        $DB->BeginTrans();
-        $LMS->DeleteConfigOption($id);
-        $DB->CommitTrans();
-    }
-} elseif (isset($_POST['marks'])) {
-    $options = Utils::filterIntegers($_POST['marks']);
-    if (!empty($options)) {
-        $DB->BeginTrans();
-        foreach ($options as $option) {
-            $LMS->DeleteConfigOption($option);
-        }
-        $DB->CommitTrans();
-    }
-}
+$this->BeginTrans();
 
-$backurl = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '?m=configlist';
-$SESSION->redirect($backurl);
+$this->Execute("
+    UPDATE customers SET ict = ict + 1 WHERE icn <> ''
+");
+
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021031800', 'dbversion'));
+
+$this->CommitTrans();

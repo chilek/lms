@@ -793,7 +793,18 @@ class LMSTcpdfInvoice extends LMSInvoice
 
         $this->backend->SetFont(self::TCPDF_FONT, '', 7);
         $this->backend->writeHTMLCell(150, 0, '', '', trans("&nbsp; <BR> Scan and Pay <BR> You can make a transfer simply and quickly using your phone. <BR> To make a transfer, please scan QRcode on you smartphone in your bank's application."), 0, 1, 0, true, 'R');
-        $tmp = '|PL|'.bankaccount($this->data['customerid'], $this->data['account']).'|'.str_pad($this->data['value'] * 100, 6, 0, STR_PAD_LEFT).'|'.$this->data['division_name'].'|' . trans('QR Payment for Internet Invoice no.').' '.$docnumber.'|||';
+        $tmp = preg_replace('/[^0-9]/', '', $this->data['division_ten'])
+            . '|'
+            . 'PL'
+            . '|'
+            . bankaccount($this->data['customerid'], $this->data['account'])
+            . '|'
+            . str_pad($this->data['value'] * 100, 6, 0, STR_PAD_LEFT)
+            . '|'
+            . mb_substr($this->data['division_shortname'], 0, 20)
+            . '|'
+            . trans('QR Payment for Internet Invoice no.') . ' ' . $docnumber
+            . '|||';
         $style['position'] = 'R';
         $this->backend->write2DBarcode($tmp, 'QRCODE,M', $x, $y, 30, 30, $style);
         unset($tmp);

@@ -26,7 +26,7 @@
 function Traffic($from = 0, $to = 0, $net = 0, $customerid = 0, $order = '', $limit = 0)
 {
     global $DB, $LMS;
-    
+
     // period
     $fromdate = intval($from);
     $todate = intval($to);
@@ -209,10 +209,14 @@ switch ($bar) {
         $customer = !empty($_POST['customerid']) ? $_POST['customerid'] : 0;
 
         if (is_array($from)) {
-                    $from = mktime($from['Hour'], $from['Minute'], 0, $from['Month'], $from['Day'], $from['Year']);
+            $from = mktime($from['Hour'], $from['Minute'], 0, $from['Month'], $from['Day'], $from['Year']);
+        } elseif (strpos($from, '/') !== false) {
+            $from = strtotime($from);
         }
         if (is_array($to)) {
-                $to = mktime($to['Hour'], $to['Minute'], 0, $to['Month'], $to['Day'], $to['Year']);
+            $to = mktime($to['Hour'], $to['Minute'], 0, $to['Month'], $to['Day'], $to['Year']);
+        } elseif (strpos($to, '/') !== false) {
+            $to = strtotime($to);
         }
 
         $SMARTY->assign('datefrom', $from);

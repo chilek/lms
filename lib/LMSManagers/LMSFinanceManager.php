@@ -1312,7 +1312,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             if (empty($a['dateto'])) {
                 $to = 0;
             } elseif (preg_match('/^[0-9]+$/', $a['dateto'])) {
-                $to = $a['dateto'] + 86399;
+                $to = strtotime('+ 1 day', $a['dateto']) - 1;
             } else {
                 $error['dateto'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
             }
@@ -2127,7 +2127,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     'customerid' => $invoice['customer']['id'],
                     'comment' => $item['name'],
                     'docid' => $iid,
-                    'itemid' => $itemid
+                    'itemid' => $itemid,
+                    'servicetype' => $item['servicetype'],
                 ));
             }
         }
@@ -2364,16 +2365,18 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         . ($result['division_ten'] != '' ? "\n" . trans('TEN') . ' ' . '%ten%' : '');
             }
 
-            if ($result['content'] = $this->db->GetAllByKey('SELECT invoicecontents.value AS value,
-						itemid, taxid, (CASE WHEN taxes.reversecharge = 1 THEN -2 ELSE (
+            if ($result['content'] = $this->db->GetAllByKey('SELECT ic.value AS value,
+						ic.itemid, ic.taxid, (CASE WHEN taxes.reversecharge = 1 THEN -2 ELSE (
 								CASE WHEN taxes.taxed = 0 THEN -1 ELSE taxes.value END
 							) END) AS taxvalue, taxes.label AS taxlabel, taxcategory,
-						prodid, content, count, invoicecontents.description AS description,
-						tariffid, itemid, pdiscount, vdiscount
-						FROM invoicecontents
+						cash.servicetype,
+						prodid, content, ic.count, ic.description AS description,
+						tariffid, ic.itemid, pdiscount, vdiscount
+						FROM invoicecontents ic
 						LEFT JOIN taxes ON taxid = taxes.id
-						WHERE docid=?
-						ORDER BY itemid', 'itemid', array($invoiceid))
+                        JOIN cash ON cash.docid = ic.docid AND cash.itemid = ic.itemid
+						WHERE ic.docid = ?
+						ORDER BY ic.itemid', 'itemid', array($invoiceid))
             ) {
                 foreach ($result['content'] as $idx => $row) {
                     if (isset($result['invoice']) && $result['doctype'] == DOC_CNOTE) {
@@ -2683,10 +2686,11 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             }
 
             if ($result['content'] = $this->db->GetAll('SELECT
-				value, itemid, description
-				FROM debitnotecontents
-				WHERE docid=?
-				ORDER BY itemid', array($id))
+				dnc.value, dnc.itemid, dnc.description, cash.servicetype
+				FROM debitnotecontents dnc
+                JOIN cash ON cash.docid = dnc.docid AND cash.itemid = dnc.itemid
+				WHERE dnc.docid = ?
+				ORDER BY dnc.itemid', array($id))
             ) {
                 foreach ($result['content'] as $idx => $row) {
                     $result['content'][$idx]['value'] = $row['value'];
@@ -3355,12 +3359,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'comment' => $addbalance['comment'],
             SYSLOG::RES_DOC => isset($addbalance['docid']) && !empty($addbalance['docid']) ? $addbalance['docid'] : null,
             'itemid' => isset($addbalance['itemid']) ? $addbalance['itemid'] : 0,
+            'servicetype' => isset($addbalance['servicetype']) && !empty($addbalance['servicetype']) ? $addbalance['servicetype'] : null,
             SYSLOG::RES_CASHIMPORT => !empty($addbalance['importid']) ? $addbalance['importid'] : null,
             SYSLOG::RES_CASHSOURCE => !empty($addbalance['sourceid']) ? $addbalance['sourceid'] : null,
         );
         $res = $this->db->Execute('INSERT INTO cash (time, userid, value, currency, currencyvalue, type, taxid,
-			customerid, comment, docid, itemid, importid, sourceid)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			customerid, comment, docid, itemid, servicetype, importid, sourceid)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
         if ($res) {
             $cashid = $this->db->GetLastInsertID('cash');

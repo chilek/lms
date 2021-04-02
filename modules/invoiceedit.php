@@ -70,6 +70,7 @@ if (isset($_GET['id']) && ($action == 'edit' || $action == 'init')) {
         $invoicecontents[$item['itemid']] = array(
             'itemid' => $item['itemid'],
             'tariffid' => $item['tariffid'],
+            'servicetype' => $item['servicetype'],
             'name' => $item['description'],
             'prodid' => $item['prodid'],
             'count' => str_replace(',', '.', $item['count']),
@@ -718,8 +719,9 @@ switch ($action) {
                         'customerid' => $invoice['customerid'],
                         'comment' => $item['name'],
                         'docid' => $iid,
-                        'itemid' => $itemid
-                        ));
+                        'itemid' => $itemid,
+                        'servicetype' => $item['servicetype'],
+                    ));
                 }
             }
         } elseif ($invoice['doctype'] == DOC_INVOICE || ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment')) {

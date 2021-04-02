@@ -91,6 +91,7 @@ if (isset($_GET['id']) && $action == 'edit') {
         }
         $nitem['tax']       = isset($taxeslist[$item['taxid']]) ? $taxeslist[$item['taxid']]['label'] : '';
         $nitem['taxid']     = $item['taxid'];
+        $nitem['servicetype'] = $item['servicetype'];
         $nitem['taxcategory'] = $item['taxcategory'];
         $cnotecontents[$item['itemid']] = $nitem;
     }
@@ -316,6 +317,7 @@ switch ($action) {
 
             $contents[$idx]['taxid'] = isset($newcontents['taxid'][$idx]) ? $newcontents['taxid'][$idx] : $item['taxid'];
             $contents[$idx]['taxcategory'] = isset($newcontents['taxcategory'][$idx]) ? $newcontents['taxcategory'][$idx] : $item['taxcategory'];
+            $contents[$idx]['servicetype'] = isset($newcontents['servicetype'][$idx]) ? $newcontents['servicetype'][$idx] : $item['servicetype'];
             $contents[$idx]['prodid'] = isset($newcontents['prodid'][$idx]) ? $newcontents['prodid'][$idx] : $item['prodid'];
             $contents[$idx]['content'] = isset($newcontents['content'][$idx]) ? $newcontents['content'][$idx] : $item['content'];
             $contents[$idx]['count'] = isset($newcontents['count'][$idx]) ? $newcontents['count'][$idx] : $item['count'];
@@ -510,6 +512,7 @@ switch ($action) {
             foreach ($contents as $idx => $item) {
                 $contents[$idx]['taxid'] = $newcontents['taxid'][$idx];
                 $contents[$idx]['taxcategory'] = $newcontents['taxcategory'][$idx];
+                $contents[$idx]['servicetype'] = $newcontents['servicetype'][$idx];
                 $contents[$idx]['prodid'] = $newcontents['prodid'][$idx];
                 $contents[$idx]['content'] = $newcontents['content'][$idx];
                 $contents[$idx]['count'] = $newcontents['count'][$idx];
@@ -717,8 +720,9 @@ switch ($action) {
                     'customerid' => $cnote['customerid'],
                     'comment' => $item['name'],
                     'docid' => $iid,
-                    'itemid' => $itemid
-                    ));
+                    'itemid' => $itemid,
+                    'servicetype' => $item['servicetype'],
+                ));
             }
         } else {
             if ($SYSLOG) {

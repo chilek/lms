@@ -1104,19 +1104,60 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                             $searchargs[] = 'type = ' . intval($value);
                             break;
                         case 'ict':
-                            $searchargs[] = 'ict = ' . intval($value);
+                            if (!empty($value)) {
+                                $searchargs[] = 'ict = ' . intval($value);
+                            }
                             break;
                         case 'linktype':
-                            $searchargs[] = 'EXISTS (SELECT 1 FROM vnodes
-								WHERE ownerid = c.id AND linktype = ' . intval($value) . ')';
+                            $searchargs[] = '(EXISTS (
+                                    SELECT 1 FROM vnodes
+                                    JOIN netdevices ON netdevices.id = vnodes.netdev
+                                    WHERE vnodes.ownerid = c.id
+                                        AND vnodes.linktype = ' . intval($value) . '
+                                        AND netdevices.ownerid IS NULL
+                                ) OR EXISTS (
+                                    SELECT 1 FROM netdevices nd1
+                                    JOIN netlinks ON netlinks.src = nd1.id OR netlinks.dst = nd1.id
+                                    JOIN netdevices nd2 ON nd2.id = netlinks.src OR nd2.id = netlinks.dst
+                                    WHERE nd1.ownerid = c.id
+                                        AND nd2.ownerid IS NULL
+                                        AND ((netlinks.src = nd1.id AND netlinks.dst = nd2.id) OR (netlinks.dst = nd1.id AND netlinks.src = nd2.id))
+                                        AND netlinks.type = ' . intval($value) . '
+                                ))';
                             break;
                         case 'linktechnology':
-                            $searchargs[] = 'EXISTS (SELECT 1 FROM vnodes
-								WHERE ownerid = c.id AND linktechnology = ' . intval($value) . ')';
+                            $searchargs[] = '(EXISTS (
+                                    SELECT 1 FROM vnodes
+                                    JOIN netdevices ON netdevices.id = vnodes.netdev
+                                    WHERE vnodes.ownerid = c.id
+                                        AND vnodes.linktechnology = ' . intval($value) . '
+                                        AND netdevices.ownerid IS NULL
+                                ) OR EXISTS (
+                                    SELECT 1 FROM netdevices nd1
+                                    JOIN netlinks ON netlinks.src = nd1.id OR netlinks.dst = nd1.id
+                                    JOIN netdevices nd2 ON nd2.id = netlinks.src OR nd2.id = netlinks.dst
+                                    WHERE nd1.ownerid = c.id
+                                        AND nd2.ownerid IS NULL
+                                        AND ((netlinks.src = nd1.id AND netlinks.dst = nd2.id) OR (netlinks.dst = nd1.id AND netlinks.src = nd2.id))
+                                        AND netlinks.technology = ' . intval($value) . '
+                                ))';
                             break;
                         case 'linkspeed':
-                            $searchargs[] = 'EXISTS (SELECT 1 FROM vnodes
-								WHERE ownerid = c.id AND linkspeed = ' . intval($value) . ')';
+                            $searchargs[] = '(EXISTS (
+                                    SELECT 1 FROM vnodes
+                                    JOIN netdevices ON netdevices.id = vnodes.netdev
+                                    WHERE vnodes.ownerid = c.id
+                                        AND vnodes.linkspeed = ' . intval($value) . '
+                                        AND netdevices.ownerid IS NULL
+                                ) OR EXISTS (
+                                    SELECT 1 FROM netdevices nd1
+                                    JOIN netlinks ON netlinks.src = nd1.id OR netlinks.dst = nd1.id
+                                    JOIN netdevices nd2 ON nd2.id = netlinks.src OR nd2.id = netlinks.dst
+                                    WHERE nd1.ownerid = c.id
+                                        AND nd2.ownerid IS NULL
+                                        AND ((netlinks.src = nd1.id AND netlinks.dst = nd2.id) OR (netlinks.dst = nd1.id AND netlinks.src = nd2.id))
+                                        AND netlinks.speed = ' . intval($value) . '
+                                ))';
                             break;
                         case 'doctype':
                             $val = explode(':', $value); // <doctype>:<fromdate>:<todate>
@@ -2767,7 +2808,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     {
         $this->db->Execute(
             'UPDATE customers SET type = ? WHERE id = ?',
-            array($id, $type)
+            array($type, $id)
         );
         if ($this->syslog) {
             $userid = Auth::GetCurrentUser();

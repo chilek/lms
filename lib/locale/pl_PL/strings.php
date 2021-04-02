@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$_LANG['Service types'] = 'Typy usług';
+
 $_LANG['Legal personality types'] = 'Typu osobowości prawnej';
 
 $_LANG['Week days'] = 'Dni tygodnia';
@@ -1602,6 +1604,7 @@ $_LANG['Section:'] = 'Sekcja:';
 $_LANG['Section name contains forbidden characters!'] = 'Nazwa sekcji zawiera zabronione znaki!';
 $_LANG['Select'] = 'Wybierz';
 $_LANG['select'] = 'wybierz';
+$_LANG['- select -'] = '- wybierz -';
 $_LANG['Selected address was not assigned to customer.'] = 'Wybrany adres nie jest przypisany do klienta.';
 $_LANG['- select account -'] = '- wybierz konto -';
 $_LANG['Select account'] = 'Wybierz konto';
@@ -1952,6 +1955,7 @@ $_LANG['Yes, I do.'] = 'Tak, chcę.';
 $_LANG['Yes, I know what I do.'] = 'Tak, wiem, co robię.';
 $_LANG['You can select customer to limit results'] = 'Możesz wybrać klienta, żeby ograniczyć liczbę wyników';
 $_LANG['You can select user to limit results'] = 'Możesz wybrać użytkownika, by ograniczyć liczbę wyników';
+$_LANG['You can\'t edit tariff which is assigned to customers through assignments!'] = 'Nie możesz edytować taryfy, która jest przypisana do klientów poprzez zobowiązania!';
 $_LANG['You can turn it off'] = 'Możesz to wyłączyć';
 $_LANG['You may use our automated Customer Care Web Panel, just remember your PIN (it\'s printed on the other side of this page)'] = 'Aby skorzystać z naszego zautomatyzowanego internetowego panelu klienta, należy pamiętać swój PIN (jest wydrukowany na drugiej stronie)';
 $_LANG['You don\'t have any IP network.'] = 'Nie posiadasz żadnej sieci IP.';
@@ -3437,6 +3441,7 @@ $_LANG['cash registry administration'] = 'administracja rejestrami kasowymi';
 
 $_LANG['Node Sessions:'] = 'Sesje komputera:';
 $_LANG['Node Sessions'] = 'Sesje komputera';
+$_LANG['<!menu>Node Sessions'] = 'Sesje komputerów';
 $_LANG['Network Device Sessions For Selected IP Address:'] = 'Sesje urządzenia sieciowego dla wybranego adresu IP:';
 $_LANG['Network Device Sessions'] = 'Sesje urządzenia sieciowego';
 $_LANG['(last $a sessions)'] = '(ostatnie $a sesji)';
@@ -4718,6 +4723,7 @@ $_LANG['<!dialog>Alert'] = 'Ostrzeżenie';
 
 $_LANG['Google Maps'] = 'Mapy Google';
 $_LANG['Copy link'] = 'Kopiuj link';
+$_LANG['Copy as links'] = 'Kopiuj jako linki';
 
 $_LANG['Are you sure that you want remove tariff rule \'$a\'?'] = 'Czy jesteś pewien, że chcesz usunąć regułę taryfikacyjną \'$a\'?';
 $_LANG['Are you sure that you want remove tariff \'$a\'?'] = 'Czy jesteś pewien, że chcesz usunąć cennik \'$a\'?';

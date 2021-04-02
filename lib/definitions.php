@@ -1179,11 +1179,11 @@ $TAX_CATEGORIES = array(
 
 // Identity types
 $IDENTITY_TYPES = array(
-    0   => 'ID card',
-    1   => 'driving license',
-    2   => 'passport',
-    3   => 'residence card',
-    4   => 'permanent residence card',
+    1   => 'ID card',
+    2   => 'driving license',
+    3   => 'passport',
+    4   => 'residence card',
+    5   => 'permanent residence card',
 );
 
 if (isset($SMARTY)) {

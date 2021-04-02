@@ -110,6 +110,17 @@ version 27-git (????-??-??):
     for given user [chilan]
   - enhancement: more comprehensive filtering in billinglist (divide one voipaccount
     filter into two filters: customer,voipaccount) [interduo]
+  - improvement: date period selector added in node session list filter [chilan]
+  - improvement: date period selector in traffic filter form [chilan]
+  - enhancement: 'ignore_contact_flags' allows to ignore customer contact notification flag
+    in lms-notify.php [chilan]
+  - enhancement: added service type property to cash records - it will allow to make financial reported
+    categorized by service type more efficiently [chilan]
+  - enhancement: userpanel: introduced new 'finances' module option which controls visibility of all
+    assignments (even those which will start in future) [chilan]
+  - improvement: show customer phone contacts in event info views [chilan]
+  - enhancement: added service type selection in invoice report [chilan]
+  - improvement: allow to search nodes using status criterion [chilan]
 
 version 26.0 (2020-12-15):
 

@@ -10,7 +10,7 @@
 			<IMG SRC="img/netdev.gif" ALT="">
 		</TD>
 		<TD class="bold">
-			{$netdev.name} ({$netdev.id|string_format:"%04d"})
+			{$netdev.name} (#{$netdev.id})
 		</TD>
 	</TR>
     </THEAD>
@@ -21,11 +21,11 @@
 				<TR>
 					<TD WIDTH="50%" style="vertical-align:top;">
 						<TABLE WIDTH="100%" CELLPADDING="3">
-							{if $netdev.ownerid != null}
+							{if !empty($netdev.ownerid)}
 							<tr>
 								<td><img src="img/customer.gif" alt=""></td>
 								<td class="bold">{trans("Owner:")}</td>
-								<td><a href="?m=customerinfo&id={$netdev.ownerid}">{$netdev.owner}</a></td>
+								<td><a href="?m=customerinfo&id={$netdev.ownerid}">{$netdev.owner} (#{$netdev.ownerid})</a></td>
 							</tr>
 							{/if}
 	<TR>

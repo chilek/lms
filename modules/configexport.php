@@ -95,6 +95,12 @@ if (isset($_POST['marks'])) {
 if (!empty($configs)) {
     $cdate = date('YmdHi', time());
     $filename = 'configexport';
+
+    if (count($configs) == 1) {
+        reset($configs);
+        $section = key($configs);
+        $filename .= '-' . $section;
+    }
     if (!isset($_GET['source-division']) && !isset($_GET['source-user'])) {
         $filename .= '-' . trans('global value');
     }

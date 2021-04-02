@@ -1086,14 +1086,14 @@ class LMSSmartyPlugins
         }
 
         $elemname = $params['elemname'];
-        $selected = isset($params['selected']) && !empty($params['selected']) ? $params['selected'] : 0;
+        $selected = isset($params['selected']) && !empty($params['selected']) ? intval($params['selected']) : null;
         $tip = isset($params['tip']) ? $params['tip'] : trans('Select identity type');
         $trigger = isset($params['trigger']) ? $params['trigger'] : 'ict';
 
-        $options = '';
+        $options = '<option value="0">' . trans('- select -') . '</option>';
         foreach ($identityTypes as $key => $item) {
             $item = trans($item);
-            $options .= '<option value="' . $key . '"' . ($selected == $key ? ' selected' : '') . '>' . $item . '</option>';
+            $options .= '<option value="' . $key . '"' . ($selected === $key ? ' selected' : '') . '>' . $item . '</option>';
         }
         return '<select name="' . $elemname . '" ' . self::tipFunction(array('text' => $tip, 'trigger' => $trigger), $template) . '>'
             . $options

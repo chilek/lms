@@ -78,7 +78,7 @@ if (isset($_POST['event'])) {
 
         if (!empty($date)) {
             $allow_past_events = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.timetable_allow_past_events', 'true'));
-            if (!$allow_past_events && $date < time()) {
+            if (!$allow_past_events && $date + $begintime < time()) {
                 $error['begin'] = trans('Events which begin in the past are not allowed!');
             }
         }
