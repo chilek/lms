@@ -329,7 +329,7 @@ class LMSSmartyPlugins
         }
 
         $form = isset($params['form']) ? $params['form'] : null;
-        $image_resize = isset($params['image_resize']) && empty($params['image_resize']) ? false : true;
+        $image_resize = !isset($params['image_resize']) || !empty($params['image_resize']);
 
         // special treatment of file upload errors marked in error associative array
         $tmpl = $template->getTemplateVars('error');
