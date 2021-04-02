@@ -1216,6 +1216,7 @@ foreach ($assigns as $assign) {
                 $desc = str_replace('%aligned_partial_period', $forward_aligned_periods[$p], $desc);
             }
         }
+        unset($datefrom, $dateto);
     }
 
     // for phone calls
