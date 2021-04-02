@@ -38,6 +38,8 @@ $parameters = array(
     'section:' => 's:',
     'channel:' => 'c:',
     'actions:' => 'a:',
+    'block-prechecks:' => null,
+    'unblock-prechecks:' => null,
     'customergroups:' => 'g:',
     'customer-status:' => null,
     'customerid:' => null,
@@ -103,6 +105,12 @@ lms-notify.php
 -a, --actions=<node-access,customer-status,assignment-invoice,all-assignment-suspension>
                                 action names which should be performed for
                                 virtual block/unblock channels
+    --block-prechecks=<node-access,customer-status,assignment-invoice,all-assignment-suspension>
+                                block pre-checks which should be performed for
+                                virtual block channels
+    --unblock-prechecks=<node-access,customer-status,assignment-invoice,all-assignment-suspension>
+                                block pre-checks which should be performed for
+                                virtual unblock channels
 -g, --customergroups=<group1,group2,...>
                                 allow to specify customer groups to which notified customers
                                 should be assigned
@@ -200,6 +208,58 @@ if (isset($options['actions'])) {
         'customer-status' => array(),
         'assignment-invoice' => array(),
     );
+}
+
+$block_prechecks = array();
+if (isset($options['block-prechecks'])) {
+    if ($options['block-prechecks'] != 'none') {
+        if (preg_match('/^[^,\(]+(\([^\)]+\))?(,[^,\(]+(\([^\)]+\))?)*$/', $options['block-prechecks'])
+            && preg_match_all('/([^,\(]+)(?:\(([^\)]+)\))?/', $options['block-prechecks'], $matches)) {
+            foreach ($matches[1] as $idx => $precheck) {
+                if (!isset($supported_actions[$precheck])
+                    || ($supported_actions[$precheck]['params'] == ACTION_PARAM_REQUIRED && empty($matches[2][$idx]))
+                    || ($supported_actions[$precheck]['params'] == ACTION_PARAM_NONE && !empty($matches[2][$idx]))) {
+                    die('Invalid format of block_prechecks parameter!' . PHP_EOL);
+                }
+                $block_prechecks[$precheck] = empty($matches[2][$idx]) ? array() : preg_split('/,/', $matches[2][$idx], PREG_SPLIT_NO_EMPTY);
+
+                if (!empty($block_prechecks[$precheck]) && (($supported_actions[$precheck]['params'] == ACTION_PARAM_REQUIRED || $supported_actions[$precheck]['params'] == ACTION_PARAM_OPTIONAL)
+                    && isset($supported_actions[$precheck]['param_validator']) && !($supported_actions[$precheck]['param_validator']($block_prechecks[$precheck])))) {
+                    die('Invalid format of block_prechecks parameter!' . PHP_EOL);
+                }
+            }
+        } else {
+            die('Invalid format of block_prechecks parameter!' . PHP_EOL);
+        }
+    }
+} else {
+    $block_prechecks = $actions;
+}
+
+$unblock_prechecks = array();
+if (isset($options['unblock-prechecks'])) {
+    if ($options['unblock-prechecks'] != 'none') {
+        if (preg_match('/^[^,\(]+(\([^\)]+\))?(,[^,\(]+(\([^\)]+\))?)*$/', $options['unblock-prechecks'])
+            && preg_match_all('/([^,\(]+)(?:\(([^\)]+)\))?/', $options['unblock-prechecks'], $matches)) {
+            foreach ($matches[1] as $idx => $precheck) {
+                if (!isset($supported_actions[$precheck])
+                    || ($supported_actions[$precheck]['params'] == ACTION_PARAM_REQUIRED && empty($matches[2][$idx]))
+                    || ($supported_actions[$precheck]['params'] == ACTION_PARAM_NONE && !empty($matches[2][$idx]))) {
+                    die('Invalid format of actions parameter!' . PHP_EOL);
+                }
+                $unblock_prechecks[$precheck] = empty($matches[2][$idx]) ? array() : preg_split('/,/', $matches[2][$idx], PREG_SPLIT_NO_EMPTY);
+
+                if (!empty($unblock_prechecks[$precheck]) && (($supported_actions[$precheck]['params'] == ACTION_PARAM_REQUIRED || $supported_actions[$precheck]['params'] == ACTION_PARAM_OPTIONAL)
+                    && isset($supported_actions[$precheck]['param_validator']) && !($supported_actions[$precheck]['param_validator']($unblock_prechecks[$precheck])))) {
+                    die('Invalid format of unblock_prechecks parameter!' . PHP_EOL);
+                }
+            }
+        } else {
+            die('Invalid format of unblock_prechecks parameter!' . PHP_EOL);
+        }
+    }
+} else {
+    $unblock_prechecks = $actions;
 }
 
 $current_month = intval(strftime('%m'));
@@ -2668,14 +2728,25 @@ if (!empty($intersect)) {
                     }
 
                     $where = array();
-                    foreach ($actions as $action => $action_params) {
-                        switch ($action) {
+                    foreach ($block_prechecks as $precheck => $precheck_params) {
+                        switch ($precheck) {
                             case 'node-access':
                                 $where[] = 'EXISTS (SELECT id FROM nodes WHERE nodes.ownerid = c.id AND access = 1)';
                                 break;
                             case 'assignment-invoice':
+                                switch (reset($precheck_params)) {
+                                    case 'proforma':
+                                        $target_doctype = DOC_INVOICE_PRO;
+                                        break;
+                                    case 'invoice':
+                                        $target_doctype = DOC_INVOICE;
+                                        break;
+                                    case 'note':
+                                        $target_doctype = DOC_DNOTE;
+                                        break;
+                                }
                                 $where[] = 'EXISTS (SELECT id FROM assignments
-                                    WHERE invoice = ' . DOC_INVOICE . ' AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL)
+                                    WHERE invoice = ' . $target_doctype . ' AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL)
                                         AND datefrom <= ?NOW? AND (dateto = 0 OR dateto >= ?NOW?)
                                         AND customerid = c.id)';
                                 break;
@@ -2691,7 +2762,7 @@ if (!empty($intersect)) {
                                 $where[] = 'NOT EXISTS (
                                     SELECT ca.id FROM customerassignments ca
                                     JOIN customergroups g ON g.id = ca.customergroupid
-                                    WHERE ca.customerid = c.id AND LOWER(g.name) = LOWER(\'' . reset($action_params) . '\'))';
+                                    WHERE ca.customerid = c.id AND LOWER(g.name) = LOWER(\'' . reset($precheck_params) . '\'))';
                                 break;
                         }
                     }
@@ -2699,7 +2770,7 @@ if (!empty($intersect)) {
                     $customers = $DB->GetCol(
                         'SELECT c.id FROM customers c
                         WHERE c.id IN (' . implode(',', $customers) . ')'
-                        . ' AND (' . implode(' AND ', $where) . ')'
+                        . (empty($where) ? '' : ' AND (' . implode(' AND ', $where) . ')')
                     );
                     if (empty($customers)) {
                         break;
@@ -2876,14 +2947,25 @@ if (!empty($intersect)) {
                     break;
                 case 'unblock':
                     $where = array();
-                    foreach ($actions as $action => $action_params) {
-                        switch ($action) {
+                    foreach ($unblock_prechecks as $precheck => $precheck_params) {
+                        switch ($precheck) {
                             case 'node-access':
                                 $where[] = 'EXISTS (SELECT id FROM nodes WHERE nodes.ownerid = c.id AND access = 0)';
                                 break;
                             case 'assignment-invoice':
+                                switch (reset($precheck_params)) {
+                                    case 'proforma':
+                                        $target_doctype = DOC_INVOICE_PRO;
+                                        break;
+                                    case 'invoice':
+                                        $target_doctype = DOC_INVOICE;
+                                        break;
+                                    case 'note':
+                                        $target_doctype = DOC_DNOTE;
+                                        break;
+                                }
                                 $where[] = 'EXISTS (SELECT id FROM assignments
-                                    WHERE invoice <> ' . DOC_INVOICE . ' AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL)
+                                    WHERE invoice <> ' . $target_doctype . ' AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL)
                                         AND datefrom <= ?NOW? AND (dateto = 0 OR dateto >= ?NOW?)
                                         AND customerid = c.id)';
                                 break;
@@ -2899,7 +2981,7 @@ if (!empty($intersect)) {
                                 $where[] = 'EXISTS (
                                     SELECT ca.id FROM customerassignments ca
                                     JOIN customergroups g ON g.id = ca.customergroupid
-                                    WHERE ca.customerid = c.id AND LOWER(g.name) = LOWER(\'' . reset($action_params) . '\'))';
+                                    WHERE ca.customerid = c.id AND LOWER(g.name) = LOWER(\'' . reset($precheck_params) . '\'))';
                                 break;
                         }
                     }
@@ -2908,7 +2990,7 @@ if (!empty($intersect)) {
                         'SELECT c.id FROM customers c
                         WHERE 1 = 1' . $customer_status_condition
                         . (empty($customers) ? '' : ' AND c.id NOT IN (' . implode(',', $customers) . ')')
-                        . ' AND (' . implode(' AND ', $where) . ')'
+                        . (empty($where) ? '' : ' AND (' . implode(' AND ', $where) . ')')
                         . ($customergroups ?: '')
                     );
                     if (empty($customers)) {
