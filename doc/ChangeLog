@@ -121,6 +121,8 @@ version 27-git (????-??-??):
   - improvement: show customer phone contacts in event info views [chilan]
   - enhancement: added service type selection in invoice report [chilan]
   - improvement: allow to search nodes using status criterion [chilan]
+  - enhancement: --block-prechecks and --unclock-prechecks lms-notify.php parameters allow to specify
+    which type of checks are applied before executing actions [chilan]
 
 version 26.0 (2020-12-15):
 
