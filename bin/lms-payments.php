@@ -38,6 +38,7 @@ $parameters = array(
     'quiet' => 'q',
     'help' => 'h',
     'version' => 'v',
+    'test' => 't',
     'fakedate:' => 'f:',
     'customerid:' => null,
     'division:' => null,
@@ -94,6 +95,7 @@ lms-payments.php
 -h, --help                      print this help and exit;
 -v, --version                   print version info and exit;
 -q, --quiet                     suppress any output, except errors;
+-t, --test                      no changes are made to database;
 -f, --fakedate=YYYY/MM/DD       override system date;
     --customerid=<id>           limit assignments to specifed customer
     --division=<shortname>
@@ -420,6 +422,13 @@ if (!empty($customergroups)) {
     }
     $customergroups = ' AND (' . implode(' OR ', $customergroup_ORs) . ')';
 }
+
+$test = array_key_exists('test', $options);
+if ($test) {
+    echo "WARNING! You are using test mode." . PHP_EOL;
+}
+
+$DB->BeginTrans();
 
 // invoice auto-closes
 if ($check_invoices) {
@@ -1091,8 +1100,6 @@ if (!empty($currencyvalues) && !$quiet) {
     }
 }
 $currencyvalues[Localisation::getCurrentCurrency()] = 1.0;
-
-$DB->BeginTrans();
 
 foreach ($assigns as $assign) {
     $cid = $assign['customerid'];
@@ -1830,6 +1837,10 @@ if ($delete_old_assignments_after_days) {
 // clear voip tariff rule states
 $DB->Execute("DELETE FROM voip_rule_states");
 
-$DB->CommitTrans();
+if ($test) {
+    $DB->RollbackTrans();
+} else {
+    $DB->CommitTrans();
+}
 
 $DB->Destroy();
