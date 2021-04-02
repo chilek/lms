@@ -96,7 +96,7 @@
 								{$group}
 							</td>
 							<td>
-								{t a=$row.time}<!minibilling>$a seconds{/t}
+								{$row.time|duration_format}
 							</td>
 							<td>
 								{t a=$row.count}<!minibilling>$a pcs.{/t}
@@ -127,7 +127,7 @@
 							{trans("<!minibilling>Total")}
 						</td>
 						<td>
-							{t a=$total.time}<!minibilling>$a seconds{/t}
+							{$total.time|duration_format}
 						</td>
 						<td>
 							{t a=$total.count}<!minibilling>$a pcs.{/t}
@@ -181,7 +181,7 @@
 								{$group}
 							</td>
 							<td>
-								{t a=$row.time}<!minibilling>$a seconds{/t}
+								{$row.time|duration_format}
 							</td>
 							<td>
 								{t a=$row.count}<!minibilling>$a pcs.{/t}
@@ -204,7 +204,7 @@
 							{trans("<!minibilling>Total")}
 						</td>
 						<td>
-							{t a=$total.time}<!minibilling>$a seconds{/t}
+							{$total.time|duration_format}
 						</td>
 						<td>
 							{t a=$total.count}<!minibilling>$a pcs.{/t}

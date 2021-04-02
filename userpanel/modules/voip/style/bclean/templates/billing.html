@@ -107,8 +107,8 @@
 						<TD>{$billings[i].begintime|date_format:"%e %B %Y %H:%M:%S"}</TD>
 						<TD>{$billings[i].caller}</TD>
 						<TD>{$billings[i].callee}</TD>
-						<TD>{if $billings[i].callbegintime>60}{floor($billings[i].callbegintime/60)}min{/if} {$billings[i].callbegintime%60}s</TD>
-						<TD>{if $billings[i].callanswertime>60}{floor($billings[i].callanswertime/60)}min{/if} {$billings[i].callanswertime%60}s</TD>
+						<TD>{$billings[i].callbegintime|duration_format}</TD>
+						<TD>{$billings[i].callanswertime|duration_format}</TD>
 						<TD>
 							{if $billings[i].type == CALL_OUTGOING}
 								{trans("outgoing")}
