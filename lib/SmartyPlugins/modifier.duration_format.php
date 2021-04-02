@@ -31,9 +31,7 @@ function smarty_modifier_duration_format($sec)
     $s = $sec % 60;
     if ($sec < 60) {
         return sprintf("%02ds", $s);
-    } elseif ($sec < 3600) {
-        return sprintf("%02dm %02ds", $m, $s);
     } else {
-        return sprintf("%dh %02dm %02ds", $H, $m, $s);
+        return sprintf("%02d:%02d:%02d", $H, $m, $s);
     }
 }
