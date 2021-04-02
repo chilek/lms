@@ -329,6 +329,7 @@ class LMSSmartyPlugins
         }
 
         $form = isset($params['form']) ? $params['form'] : null;
+        $image_resize = !isset($params['image_resize']) || !empty($params['image_resize']);
 
         // special treatment of file upload errors marked in error associative array
         $tmpl = $template->getTemplateVars('error');
@@ -353,7 +354,7 @@ class LMSSmartyPlugins
 				<button type="button" class="lms-ui-button-fileupload lms-ui-button' . (isset($error_tip_params) ? ' lms-ui-error' : '') . '" id="' . $id . '_button" '
             . (isset($error_tip_params) ? self::tipFunction($error_tip_params, $template) : '') . '><i class="lms-ui-icon-fileupload"></i><span class="lms-ui-label">' . trans("Select files") . '</span></button>
 				<INPUT name="' . $id . '[]" type="file" multiple class="fileupload-select-btn" style="display: none;" ' . ($form ? ' form="' . $form . '"' : '') . '>
-				' . (ConfigHelper::getConfig('phpui.uploaded_image_max_size', 0)
+				' . (ConfigHelper::getConfig('phpui.uploaded_image_max_size', 0) && $image_resize
                     ? '<label><input type="checkbox" class="dont-scale-images" value="1">' . trans("don't scale images") . '</label>'
                     : '') . '
 			</div>
