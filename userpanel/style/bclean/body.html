@@ -1,10 +1,11 @@
 <div class="row justify-content-end no-gutters">
 	<div class="text-right">
 		<small>
-			{trans("Logged as:")} {$customername|truncate:60:"... "},<br>{trans("Session expires after:")}
+			{trans("Logged as:")} {$customername|trunescape:60},<br>{trans("Session expires after:")}
 			<span id="lms-ui-session-expire" class="font-weight-bold text-danger">
 				{sprintf("%02d:%02d", floor($timeout / 60), $timeout % 60)}
 			</span>
+			{button type="link" icon="logout" href="?m=logout"}
 		</small>
 	</div>
 </div>
