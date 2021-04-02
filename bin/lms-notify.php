@@ -107,10 +107,10 @@ lms-notify.php
                                 virtual block/unblock channels
     --block-prechecks=<node-access,customer-status,assignment-invoice,all-assignment-suspension>
                                 block pre-checks which should be performed for
-                                virtual block channels
+                                virtual block channel
     --unblock-prechecks=<node-access,customer-status,assignment-invoice,all-assignment-suspension>
                                 block pre-checks which should be performed for
-                                virtual unblock channels
+                                virtual unblock channel
 -g, --customergroups=<group1,group2,...>
                                 allow to specify customer groups to which notified customers
                                 should be assigned
