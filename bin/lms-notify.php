@@ -105,10 +105,10 @@ lms-notify.php
 -a, --actions=<node-access,customer-status,assignment-invoice,all-assignment-suspension>
                                 action names which should be performed for
                                 virtual block/unblock channels
-    --block-prechecks=<node-access,customer-status,assignment-invoice,all-assignment-suspension>
+    --block-prechecks=none|<node-access,customer-status,assignment-invoice,all-assignment-suspension>
                                 block pre-checks which should be performed for
                                 virtual block channel
-    --unblock-prechecks=<node-access,customer-status,assignment-invoice,all-assignment-suspension>
+    --unblock-prechecks=none|<node-access,customer-status,assignment-invoice,all-assignment-suspension>
                                 block pre-checks which should be performed for
                                 virtual unblock channel
 -g, --customergroups=<group1,group2,...>
