@@ -494,7 +494,7 @@
 								<TD>
 									{icon name="type" class="fa-fw"}
 								</TD>
-								<TD>
+								<TD class="bold">
 									{trans("Type:")}
 								</TD>
 								<TD>
@@ -513,7 +513,7 @@
 									{trans("Tax:")}
 								</TD>
 								<TD>
-									<SELECT SIZE="1" name="{$variable_prefix}[taxid]" {tip text="Select Tax value"}>
+									<SELECT SIZE="1" name="{$variable_prefix}[taxid]" {tip text="Select Tax value" trigger="taxid"}>
 										{foreach item=tax from=$taxeslist}
 										<OPTION value="{$tax.id}"{if ($variables.taxid && $tax.id == $variables.taxid) || (!$variables.taxid && $tax.value == ConfigHelper::getConfig('phpui.default_taxrate'))} selected{/if}>{$tax.label}</OPTION>
 										{/foreach}
