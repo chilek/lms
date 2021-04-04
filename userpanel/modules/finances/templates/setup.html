@@ -87,6 +87,28 @@
 						</tr>
 						<tr>
 							<td class="nobr">
+								<label for="show_period">
+									{trans("Show discount column in assignment panel")}
+								</label>
+							</td>
+							<td>
+								<INPUT class="box light" type="checkbox" name="show_discount" id="show_discount" value="1"
+									{if $show_discount == 1} checked{/if}>
+							</td>
+						</tr>
+						<tr>
+							<td class="nobr">
+								<label for="show_invoiceflag">
+									{trans("Show invoice column in assignment panel")}
+								</label>
+							</td>
+							<td>
+								<INPUT class="box light" type="checkbox" name="show_invoiceflag" id="show_invoiceflag" value="1"
+									{if $show_invoiceflag == 1} checked{/if}>
+							</td>
+						</tr>
+						<tr>
+							<td class="nobr">
 								<label for="speed_unit_type">
 									{trans("Speed unit type")}
 								</label>

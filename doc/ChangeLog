@@ -123,6 +123,8 @@ version 27-git (????-??-??):
   - improvement: allow to search nodes using status criterion [chilan]
   - enhancement: --block-prechecks and --unclock-prechecks lms-notify.php parameters allow to specify
     which type of checks are applied before executing actions [chilan]
+  - enhancement: userpanel:finance module, allow to control
+    visibility of columns discount and invoice [interduo]
 
 version 26.0 (2020-12-15):
 

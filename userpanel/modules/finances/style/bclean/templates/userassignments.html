@@ -1,6 +1,8 @@
 {box title="Your subscriptions"}
 {$show_speeds = ConfigHelper::checkConfig('userpanel.show_speeds')}
 {$show_period = ConfigHelper::checkConfig('userpanel.show_period')}
+{$show_discount = ConfigHelper::checkConfig('userpanel.show_discount')}
+{$show_invoiceflag = ConfigHelper::checkConfig('userpanel.show_invoiceflag')}
 {$show_all_assignments = ConfigHelper::checkConfig('userpanel.show_all_assignments')}
 {$speed_unit_type = ConfigHelper::getConfig('userpanel.speed_unit_type')}
 {$speed_unit_aggregation_threshold = ConfigHelper::getConfig('userpanel.speed_unit_aggregation_threshold')}
@@ -11,13 +13,17 @@
 		<thead class="bg-secondary lms-userpanel-table-header">
 			<th>{trans("Tariff")}</th>
 			<th>{trans("Subscription")}</th>
+			{if $show_discount}
 			<th>{trans("Discount")}</th>
+			{/if}
 			<th>{trans("Accounting day")}</th>
 			{if $show_speeds}
 			<th>{trans("Downrate (ceil):")}</th>
 			<th>{trans("Uprate (ceil):")}</th>
 			{/if}
+			{if $show_invoiceflag}
 			<th>{trans("Invoice")}</th>
+			{/if}
 			{if $show_period}
 			<th>{trans("Period")}</th>
 			{/if}
@@ -42,6 +48,7 @@
 							{$total_real_value[$assignment.currency] = $total_real_value[$assignment.currency] + $assignment.real_value}
 						{/if}
 					</td>
+					{if $show_discount}
 					<td class="text-right text-nowrap">
 						{if $assignment.pdiscount > 0}
 							{$assignment.pdiscount}%
@@ -59,6 +66,7 @@
 							{$total_real_disc_value[$assignment.currency] = $total_real_disc_value[$assignment.currency] + $assignment.real_disc_value}
 						{/if}
 					</td>
+					{/if}
 					<td class="text-right">{$assignment.payday}</td>
 					{if $show_speeds}
 					<td>
@@ -98,7 +106,9 @@
 						{/if})
 					</td>
 					{/if}
+					{if $show_invoiceflag}
 					<td class="text-center">{if $assignment.invoice}{trans("yes")}{else}&nbsp;{/if}</td>
+					{/if}
 					{if $show_period}
 					<td>
 						{if $assignment.datefrom}{trans("from")} {$assignment.datefrom|date_format:"%Y/%m/%d"}{/if}
@@ -124,9 +134,11 @@
 						{moneyf($total_value, $currency)}
 					{/foreach}
 				</td>
+				{if $show_discount}
 				<td class="text-right">
 					({foreach $total_real_disc_value as $currency => $total_disc_value}{if !$total_disc_value@first}<br>{/if}{moneyf($total_disc_value, $currency)}{foreachelse}-{/foreach})
 				</td>
+				{/if}
 				<td>&nbsp;</td>
 				{if $show_speeds}
 				<td>
@@ -154,7 +166,9 @@
 					{/if})
 				</td>
 				{/if}
+				{if $show_invoiceflag}
 				<td>&nbsp;</td>
+				{/if}
 				<td>&nbsp;</td>
 			</tr>
 		{/if}

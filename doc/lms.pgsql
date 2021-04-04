@@ -3617,6 +3617,8 @@ URL: %url
 ('userpanel', 'show_tariffname', '1', '', 0),
 ('userpanel', 'show_speeds', '1', '', 0),
 ('userpanel', 'show_period', '1', '', 0),
+('userpanel', 'show_discount', '1', '', 0),
+('userpanel', 'show_invoiceflag', '1', '', 0),
 ('userpanel', 'queues', '1', '', 0),
 ('userpanel', 'tickets_from_selected_queues', '0', '', 0),
 ('userpanel', 'allow_message_add_to_closed_tickets', '1', '', 0),
@@ -4021,6 +4023,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021032300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021040400');
 
 COMMIT;
