@@ -96,10 +96,18 @@ if (!empty($configs)) {
     $cdate = date('YmdHi', time());
     $filename = 'configexport';
 
-    if (count($configs) == 1) {
-        reset($configs);
-        $section = key($configs);
-        $filename .= '-' . $section;
+    if ($fileType == 'ini') {
+        if (count($configs) == 1) {
+            reset($configs);
+            $section = key($configs);
+            $filename .= '-' . $section;
+        }
+    } else {
+        $section = array_unique(array_column($configs, 'section'));
+        $distinctSections = count($section);
+        if (count($section) == 1) {
+            $filename .= '-' . $section[0];
+        }
     }
     if (!isset($_GET['source-division']) && !isset($_GET['source-user'])) {
         $filename .= '-' . trans('global value');
