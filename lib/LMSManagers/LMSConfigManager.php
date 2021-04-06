@@ -936,9 +936,9 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                     'section' => $targetSection,
                     'var' => $targetVariable,
                     'value' => $targetValue,
-                    'description' => '',
-                    'disabled' => 0,
-                    'type' => $optionType,
+                    'description' => isset($targetDescription) ? $targetDescription : '',
+                    'disabled' => isset($targetDisabled) ? $targetDisabled : 0,
+                    'type' => isset($targetVariableType) ? $targetVariableType : $optionType,
                     'userid' => null,
                     'divisionid' => null,
                     'configid' => null
@@ -951,6 +951,17 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                         'value' => $targetValue,
                         'id' => $optionExist
                     );
+
+                    if (isset($targetDescription)) {
+                        $globalArgs['description'] = $targetDescription;
+                    }
+                    if (isset($targetDisabled)) {
+                        $globalArgs['disabled'] = $targetDisabled;
+                    }
+                    if (isset($targetVariableType)) {
+                        $globalArgs['type'] = $targetVariableType;
+                    }
+
                     $this->overrideConfigOption($globalArgs);
                 }
             }
@@ -976,8 +987,8 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                         'section' => $globalOption['section'],
                         'var' => $globalOption['var'],
                         'value' => $targetValue,
-                        'description' => $globalOption['description'],
-                        'disabled' => $globalOption['disabled'],
+                        'description' => isset($targetDescription) ? $targetDescription : $globalOption['description'],
+                        'disabled' => isset($targetDisabled) ? $targetDisabled : $globalOption['disabled'],
                         'type' => $globalOption['type'],
                         'userid' => null,
                         'divisionid' => $targetDivision,
@@ -993,9 +1004,9 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                             'section' => $targetSection,
                             'var' => $targetVariable,
                             'value' => $targetValue,
-                            'description' => '',
-                            'disabled' => 0,
-                            'type' => $optionType,
+                            'description' => isset($targetDescription) ? $targetDescription : '',
+                            'disabled' => isset($targetDisabled) ? $targetDisabled : 0,
+                            'type' => isset($targetVariableType) ? $targetVariableType : $optionType,
                             'userid' => null,
                             'divisionid' => null,
                             'configid' => null
@@ -1007,9 +1018,9 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                                 'section' => $targetSection,
                                 'var' => $targetVariable,
                                 'value' => $targetValue,
-                                'description' => '',
-                                'disabled' => 0,
-                                'type' => $optionType,
+                                'description' => isset($targetDescription) ? $targetDescription : '',
+                                'disabled' => isset($targetDisabled) ? $targetDisabled : 0,
+                                'type' => isset($targetVariableType) ? $targetVariableType : $optionType,
                                 'userid' => null,
                                 'divisionid' => $targetDivision,
                                 'configid' => $addedGlobalConfig
@@ -1024,6 +1035,17 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                         'value' => $targetValue,
                         'id' => $divisionOptionExist
                     );
+
+                    if (isset($targetDescription)) {
+                        $divisionTargetArgs['description'] = $targetDescription;
+                    }
+                    if (isset($targetDisabled)) {
+                        $divisionTargetArgs['disabled'] = $targetDisabled;
+                    }
+                    if (isset($targetVariableType)) {
+                        $divisionTargetArgs['type'] = $targetVariableType;
+                    }
+
                     $this->overrideConfigOption($divisionTargetArgs);
                 }
             }
@@ -1063,8 +1085,8 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                             'section' => $divisionOption['section'],
                             'var' => $divisionOption['var'],
                             'value' => $targetValue,
-                            'description' => $divisionOption['description'],
-                            'disabled' => $divisionOption['disabled'],
+                            'description' => isset($targetDescription) ? $targetDescription : $divisionOption['description'],
+                            'disabled' => isset($targetDisabled) ? $targetDisabled : $divisionOption['disabled'],
                             'type' => $divisionOption['type'],
                             'userid' => $targetUser,
                             'divisionid' => $targetDivision,
@@ -1084,8 +1106,8 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                                     'section' => $globalOption['section'],
                                     'var' => $globalOption['var'],
                                     'value' => $targetValue,
-                                    'description' => $globalOption['description'],
-                                    'disabled' => $globalOption['disabled'],
+                                    'description' => isset($targetDescription) ? $targetDescription : $globalOption['description'],
+                                    'disabled' => isset($targetDisabled) ? $targetDisabled : $globalOption['disabled'],
                                     'type' => $globalOption['type'],
                                     'userid' => null,
                                     'divisionid' => $targetDivision,
@@ -1098,8 +1120,8 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                                         'section' => $globalOption['section'],
                                         'var' => $globalOption['var'],
                                         'value' => $targetValue,
-                                        'description' => $globalOption['description'],
-                                        'disabled' => $globalOption['disabled'],
+                                        'description' => isset($targetDescription) ? $targetDescription : $globalOption['description'],
+                                        'disabled' => isset($targetDisabled) ? $targetDisabled : $globalOption['disabled'],
                                         'type' => $globalOption['type'],
                                         'userid' => $targetUser,
                                         'divisionid' => $targetDivision,
@@ -1115,9 +1137,9 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                                     'section' => $targetSection,
                                     'var' => $targetVariable,
                                     'value' => $targetValue,
-                                    'description' => '',
-                                    'disabled' => 0,
-                                    'type' => $optionType,
+                                    'description' => isset($targetDescription) ? $targetDescription : '',
+                                    'disabled' => isset($targetDisabled) ? $targetDisabled : 0,
+                                    'type' => isset($targetVariableType) ? $targetVariableType : $optionType,
                                     'userid' => null,
                                     'divisionid' => null,
                                     'configid' => null
@@ -1129,9 +1151,9 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                                         'section' => $targetSection,
                                         'var' => $targetVariable,
                                         'value' => $targetValue,
-                                        'description' => '',
-                                        'disabled' => 0,
-                                        'type' => $optionType,
+                                        'description' => isset($targetDescription) ? $targetDescription : '',
+                                        'disabled' => isset($targetDisabled) ? $targetDisabled : 0,
+                                        'type' => isset($targetVariableType) ? $targetVariableType : $optionType,
                                         'userid' => null,
                                         'divisionid' => $targetDivision,
                                         'configid' => $addedGlobalConfig
@@ -1144,9 +1166,9 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                                         'section' => $targetSection,
                                         'var' => $targetVariable,
                                         'value' => $targetValue,
-                                        'description' => '',
-                                        'disabled' => 0,
-                                        'type' => $optionType,
+                                        'description' => isset($targetDescription) ? $targetDescription : '',
+                                        'disabled' => isset($targetDisabled) ? $targetDisabled : 0,
+                                        'type' => isset($targetVariableType) ? $targetVariableType : $optionType,
                                         'userid' => $targetUser,
                                         'divisionid' => $targetDivision,
                                         'configid' => $addedDivisionConfig
@@ -1162,6 +1184,17 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                             'value' => $targetValue,
                             'id' => $divisionUserOptionExist
                         );
+
+                        if (isset($targetDescription)) {
+                            $divisionUserTargetArgs['description'] = $targetDescription;
+                        }
+                        if (isset($targetDisabled)) {
+                            $divisionUserTargetArgs['disabled'] = $targetDisabled;
+                        }
+                        if (isset($targetVariableType)) {
+                            $divisionUserTargetArgs['type'] = $targetVariableType;
+                        }
+
                         $this->overrideConfigOption($divisionUserTargetArgs);
                     }
                 }
@@ -1188,8 +1221,8 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                         'section' => $globalOption['section'],
                         'var' => $globalOption['var'],
                         'value' => $targetValue,
-                        'description' => $globalOption['description'],
-                        'disabled' => $globalOption['disabled'],
+                        'description' => isset($targetDescription) ? $targetDescription : $globalOption['description'],
+                        'disabled' => isset($targetDisabled) ? $targetDisabled : $globalOption['disabled'],
                         'type' => $globalOption['type'],
                         'userid' => $targetUser,
                         'divisionid' => null,
@@ -1205,9 +1238,9 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                             'section' => $targetSection,
                             'var' => $targetVariable,
                             'value' => $targetValue,
-                            'description' => '',
-                            'disabled' => 0,
-                            'type' => $optionType,
+                            'description' => isset($targetDescription) ? $targetDescription : '',
+                            'disabled' => isset($targetDisabled) ? $targetDisabled : 0,
+                            'type' => isset($targetVariableType) ? $targetVariableType : $optionType,
                             'userid' => null,
                             'divisionid' => null,
                             'configid' => null
@@ -1219,9 +1252,9 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                                 'section' => $targetSection,
                                 'var' => $targetVariable,
                                 'value' => $targetValue,
-                                'description' => '',
-                                'disabled' => 0,
-                                'type' => $optionType,
+                                'description' => isset($targetDescription) ? $targetDescription : '',
+                                'disabled' => isset($targetDisabled) ? $targetDisabled : 0,
+                                'type' => isset($targetVariableType) ? $targetVariableType : $optionType,
                                 'userid' => $targetUser,
                                 'divisionid' => null,
                                 'configid' => $addedGlobalConfig
@@ -1236,6 +1269,17 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                         'value' => $targetValue,
                         'id' => $userOptionExist
                     );
+
+                    if (isset($targetDescription)) {
+                        $userTargetArgs['description'] = $targetDescription;
+                    }
+                    if (isset($targetDisabled)) {
+                        $userTargetArgs['disabled'] = $targetDisabled;
+                    }
+                    if (isset($targetVariableType)) {
+                        $userTargetArgs['type'] = $targetVariableType;
+                    }
+
                     $this->overrideConfigOption($userTargetArgs);
                 }
             }
@@ -1265,20 +1309,93 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
         }
     }
 
+    private function parseSqlConfigImportFile($file)
+    {
+        $configs_combine = array();
+        $file = fopen($file, 'r');
+        while (!feof($file)) {
+            $line = fgets($file);
+            if ($line != "\n" && $line != "") {
+                while (strrpos($line, ");\n") === false) {
+                    $line .= fgets($file);
+                }
+                $fields = array();
+                $values = array();
+
+                $line = rtrim($line, ";");
+                preg_match('#INSERT[\s]+INTO[\s]+([\w\.]+(([\s]+)?[\w\.]+)?[\s]*)\(([\S\s]*)\)[\s]+VALUES[\s]\(([\S\s]*)\)#i', $line, $matches);
+                if (!empty($matches[4])) {
+                    $match = trim($matches[4]);
+                    $match = explode(', ', $match);
+                    foreach ($match as $field) {
+                        $field = str_replace("'", '', $field);
+                        $field = trim($field);
+                        $fields[] = $field;
+                    }
+                }
+
+                if (!empty($matches[5])) {
+                    $match = trim($matches[5]);
+                    $match = explode(',', $match);
+                    foreach ($match as $value) {
+                        $value = str_replace("'", '', $value);
+                        $value = trim($value);
+                        $values[] = $value;
+                    }
+                }
+
+                $configs_combine[] = array_combine($fields, $values);
+            }
+        }
+        fclose($file);
+
+        $configs = array();
+        if ($configs_combine) {
+            foreach ($configs_combine as $config) {
+                $section = $config['section'];
+                $var = $config['var'];
+                $configs[$section][$var]['value'] = $config['value'];
+                $configs[$section][$var]['description'] = $config['description'];
+                $configs[$section][$var]['disabled'] = $config['disabled'];
+                $configs[$section][$var]['type'] = $config['type'];
+            }
+        }
+
+        return $configs;
+    }
+
     public function importConfigs($params)
     {
         extract($params);
-        if (isset($file) && !empty($file) && isset($targetType) && !empty($targetType)) {
-            $configs = (array) parse_ini_file($file, true);
-        }
-
-        if (!empty($configs)) {
-            foreach ($configs as $section => $variables) {
-                foreach ($variables as $variable => $value) {
-                    $params['targetSection'] = $section;
-                    $params['targetVariable'] = $variable;
-                    $params['targetValue'] = $value;
-                    $this->importConfig($params);
+        if (isset($fileExtension) && !empty($fileExtension)
+            && isset($file) && !empty($file)
+            && isset($targetType) && !empty($targetType)) {
+            if ($fileExtension == 'ini') {
+                $configs = (array) parse_ini_file($file, true);
+                if (!empty($configs)) {
+                    foreach ($configs as $section => $variables) {
+                        foreach ($variables as $variable => $value) {
+                            $params['targetSection'] = $section;
+                            $params['targetVariable'] = $variable;
+                            $params['targetValue'] = $value;
+                            $this->importConfig($params);
+                        }
+                    }
+                }
+            } else {
+                $configs = (array) $this->parseSqlConfigImportFile($file);
+                if (!empty($configs)) {
+                    foreach ($configs as $section => $variables) {
+                        foreach ($variables as $variable => $feature) {
+                            $params['targetSection'] = $section;
+                            $params['targetVariable'] = $variable;
+                            $params['targetValue'] = $feature['value'];
+                            $params['targetDescription'] = $feature['description'];
+                            $params['targetDisabled'] = $feature['disabled'];
+                            $params['targetVariableType'] = $feature['type'];
+                            $this->importConfig($params);
+                        }
+                    }
                 }
             }
         }
@@ -1301,7 +1418,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
         if (isset($division) && !empty($division)) {
             // user override division conf
             return $this->db->GetAllByKey(
-                'SELECT userid 
+                'SELECT userid
                 FROM uiconfig
                 WHERE configid = ?
                   AND userid IS NOT NULL
@@ -1315,7 +1432,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
         } else {
             // user override global conf
             return $this->db->GetAllByKey(
-                'SELECT userid 
+                'SELECT userid
                 FROM uiconfig
                 WHERE configid = ?
                   AND userid IS NOT NULL
@@ -1475,17 +1592,36 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
 
     private function overrideConfigOption($option)
     {
-        $args = array(
-            'value' => $option['value'],
-            'id' => $option['id']
-        );
-
+        $args = array();
         $id = $option['id'];
 
-        $option_edited = $this->db->Execute(
-            'UPDATE uiconfig SET value = ? WHERE id = ?',
-            array_values($args)
-        );
+        if (isset($option['description'])) {
+            $args['description'] = $option['description'];
+        }
+        if (isset($option['disabled'])) {
+            $args['disabled'] = $option['disabled'];
+        }
+        if (isset($option['type'])) {
+            $args['type'] = $option['type'];
+        }
+
+        $args['value'] = $option['value'];
+        $args['id'] = $id;
+
+        if (isset($args['description']) && isset($args['disabled']) && isset($args['type'])) {
+            $option_edited = $this->db->Execute(
+                'UPDATE uiconfig SET description = ?, disabled = ?, type = ?, value = ?
+                WHERE id = ?',
+                array_values($args)
+            );
+        } else {
+            $option_edited = $this->db->Execute(
+                'UPDATE uiconfig SET value = ?
+                WHERE id = ?',
+                array_values($args)
+            );
+        }
+
         if ($this->syslog && $option_edited) {
             $args[SYSLOG::RES_UICONF] = $id;
             $this->syslog->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_UPDATE, $args);
@@ -1495,7 +1631,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
     public function getParentOption($id)
     {
         return $this->db->GetRow(
-            'SELECT * FROM uiconfig c1 
+            'SELECT * FROM uiconfig c1
             WHERE c1.id = (SELECT c2.configid FROM uiconfig c2 WHERE c2.id = ?)',
             array($id)
         );

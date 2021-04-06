@@ -26,7 +26,7 @@
 
 $db = LMSDB::getInstance();
 $lms = LMS::getInstance();
-$layout['pagetitle'] = trans('Import configuration');
+$layout['pagetitle'] = trans('Import settings');
 $error = null;
 $config = array();
 if (isset($_POST['config'])) {
@@ -48,28 +48,39 @@ if (isset($_POST['fileupload'])) {
                 $error['files'] = trans('Non plain text file detected!');
             }
 
-            $parseResult = @parse_ini_file($tmppath . DIRECTORY_SEPARATOR . $file['name'], true);
-            if (!is_array($parseResult)) {
-                $error['files'] = trans('Bad file structure!');
+            $filePath = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
+            $fileInfo = pathinfo($filePath);
+            $fileExtension = $fileInfo['extension'];
+
+            if (!$fileExtension) {
+                $error['files'] = trans('No file extension!');
+            } else {
+                if ($fileExtension == 'ini') {
+                    $parseResult = @parse_ini_file($tmppath . DIRECTORY_SEPARATOR . $file['name'], true);
+                    if (!is_array($parseResult)) {
+                        $error['files'] = trans('Bad file structure!');
+                    }
+                }
             }
         }
     }
 
-    if (!$error && isset($_POST['config'])) {
+    if (!$error && $config) {
         $db->BeginTrans();
         foreach ($files as $file) {
-            $filename = $file['name'];
-            $filecontent = file_get_contents($tmppath . DIRECTORY_SEPARATOR . $filename);
+            $filePath = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
+            $fileInfo = pathinfo($filePath);
+            $fileExtension = $fileInfo['extension'];
 
-            $filePath = $tmppath . DIRECTORY_SEPARATOR . $filename;
             $lms->importConfigs(
                 array(
                     'file' => $filePath,
-                    'targetType' => $_POST['config']['target-type'],
-                    'withparentbindings' => (isset($_POST['config']['withparentbindings']) ? intval($_POST['config']['withparentbindings']) : null),
-                    'targetUser' => (isset($_POST['config']['target-user']) ? intval($_POST['config']['target-user']) : null),
-                    'targetDivision' => (isset($_POST['config']['target-division']) ? intval($_POST['config']['target-division']) : null),
-                    'override' => (isset($_POST['config']['override']) ? intval($_POST['config']['override']) : null)
+                    'fileExtension' => $fileExtension,
+                    'targetType' => $config['target-type'],
+                    'withparentbindings' => (isset($config['withparentbindings']) ? intval($config['withparentbindings']) : null),
+                    'targetUser' => (isset($config['target-user']) ? intval($config['target-user']) : null),
+                    'targetDivision' => (isset($config['target-division']) ? intval($config['target-division']) : null),
+                    'override' => (isset($config['override']) ? intval($config['override']) : null)
                 )
             );
         }
@@ -81,7 +92,7 @@ if (isset($_POST['fileupload'])) {
         }
 
         $SMARTY->clearAssign('fileupload');
-        $SESSION->redirect('?m=configlist');
+        $SESSION->redirect('?m=configimport');
     }
 } elseif (isset($_FILES['file'])) { // upload errors
     switch ($_FILES['file']['error']) {
