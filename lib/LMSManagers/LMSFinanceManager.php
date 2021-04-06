@@ -2374,7 +2374,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 						tariffid, ic.itemid, pdiscount, vdiscount
 						FROM invoicecontents ic
 						LEFT JOIN taxes ON taxid = taxes.id
-                        JOIN cash ON cash.docid = ic.docid AND cash.itemid = ic.itemid
+                        LEFT JOIN cash ON cash.docid = ic.docid AND cash.itemid = ic.itemid
 						WHERE ic.docid = ?
 						ORDER BY ic.itemid', 'itemid', array($invoiceid))
             ) {
