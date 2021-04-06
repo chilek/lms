@@ -31,7 +31,7 @@ $USERPANEL->AddModule(
     40,         // Priority
     trans('This module is for showing notices for your customer'),   // Description
     null,
-    'lms-userpanel-notices'
+    'lms-ui-icon-message'
 );
 
 require_once('UserpanelNoticeHandler.php');
