@@ -197,7 +197,7 @@
 						</td>
 						<td>
 							<textarea name="addbalance[comment]" rows="5" cols="50" {tip text="Enter comment"}
-								form="addbalance">{$comment|replace:"\n":"<BR>"}</textarea>
+								form="addbalance">{$comment|escape|replace:"\n":"<BR>"}</textarea>
 						</td>
 					</tr>
 					<tr>
@@ -296,7 +296,7 @@
 							<table width="100%" cellpadding="5">
 								<tr>
 									<td class="fall superlight">
-										{$last.comment|replace:"\n":"<BR>"}
+										{$last.comment|escape|replace:"\n":"<BR>"}
 									</td>
 								</tr>
 							</table>
