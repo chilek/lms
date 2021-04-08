@@ -2,16 +2,13 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-<SCRIPT>
-	function CountSelectedCustomers()
-	{
-		var j = 0;
-		for (var i = 0; i < document.getElementById('customerselect').length; i++) {
-			if (document.getElementById('customerselect').options[i].selected)
-				j++;
-			}
-		document.forms['addbalance'].selectededit.value = j;
-	}
+<script>
+
+	$(function() {
+		$('#customerselect').change(function() {
+			$('#selectededit').text($(this).find('option:selected').length);
+		});
+	});
 
 	function del(id)
 	{
@@ -20,7 +17,18 @@
 		});
 		return false;
 	}
-</SCRIPT>
+
+</script>
+
+<style>
+
+	#selectededit {
+		background-color: transparent;
+		font-weight: bold;
+	}
+
+</style>
+
 <H1>{$layout.pagetitle}</H1>
 <FORM NAME="addbalance" METHOD="POST" ACTION="?m=balanceadd">
 <INPUT type="submit" class="hiddenbtn">
@@ -39,12 +47,14 @@
 				<TR>
 					<TD>
 						{trans("Select customers which has to concern new payment or covenant operation or leave it not selected if you want to add network income/expense operation.")}<BR><BR>
-						<SELECT size="20" id="customerselect" name="addbalance[mcustomerid][]" onChange="javascript:CountSelectedCustomers();" multiple>
-							{foreach from=$customers item=customer}
-							<OPTION value="{$customer.id}">{$customer.customername|truncate:40:"&hellip;":true} ({$customer.id|string_format:"%04d"})</OPTION>
+						<select size="20" id="customerselect" name="addbalance[mcustomerid][]" multiple>
+							{foreach $customers $customer}
+								<option value="{$customer.id}">{$customer.customername|truncate:40:"&hellip;":true} ({$customer.id|string_format:"%04d"})</option>
 							{/foreach}
-						</SELECT><BR>
-						{trans("Selected:")} <INPUT TYPE="text" NAME="selectededit" VALUE="0" SIZE="5" class="light" style="border: 0" readonly>
+						</select>
+						<br>
+						{trans("Selected:")}
+						<span id="selectededit">0</span>
 					</TD>
 				</TR>
                             </TBODY>
