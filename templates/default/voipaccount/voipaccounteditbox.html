@@ -312,21 +312,18 @@
         $i = {if !isset($phone_next_index)}0{else}{$phone_next_index}{/if};
 
         $('#add_number').on('click', function () {
-            ++$i;
-            var phone_number_input = '<input type="tel" name="voipaccountedit[phone]['+$i+']" {tip trigger="phone'+i+'"}>';
-            $('#phone_numbers_table').append('<tr class="row"><td>' + phone_number_input + '</td><td><div>' + pool_number_select + ' ' + remove_number + '</div></td></tr>');
-            if ($('#phone_numbers_table .remove-number').length < 2)
-            	$('#phone_numbers_table .remove-number').addClass('lms-ui-visibility-hidden');
-            else
-            	$('#phone_numbers_table .remove-number').removeClass('lms-ui-visibility-hidden');
+            var table = $('#phone_numbers_table');
+            var i = table.find('[type="tel"]').length + 1;
+            var phone_number_input = '<input type="tel" name="voipaccountedit[phone][' + i +']" {tip trigger="phone"}>';
+            table.append('<tr class="row"><td>' + phone_number_input + '</td><td><div>' + pool_number_select + ' ' + remove_number + '</div></td></tr>');
+            var numbers = table.find('.remove-number');
+            numbers.toggleClass('lms-ui-visibility-hidden', numbers.length < 2);
         });
 
         $( "body" ).on('click', '.remove-number', function() {
             $(this).closest('tr').remove();
-            if ($('#phone_numbers_table .remove-number').length < 2)
-            	$('#phone_numbers_table .remove-number').addClass('lms-ui-visibility-hidden');
-            else
-            	$('#phone_numbers_table .remove-number').removeClass('lms-ui-visibility-hidden');
+            var numbers = $('#phone_numbers_table .remove-number');
+            numbers.toggleClass('lms-ui-visibility-hidden', numbers.length < 2);
         });
 
         $( "#phone_numbers_table" ).sortable({
