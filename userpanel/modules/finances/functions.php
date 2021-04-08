@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -35,6 +35,8 @@ if (defined('USERPANEL_SETUPMODE')) {
         $SMARTY->assign('show_tariffname', ConfigHelper::getConfig('userpanel.show_tariffname'));
         $SMARTY->assign('show_speeds', ConfigHelper::getConfig('userpanel.show_speeds'));
         $SMARTY->assign('show_period', ConfigHelper::getConfig('userpanel.show_period'));
+        $SMARTY->assign('show_discount', ConfigHelper::getConfig('userpanel.show_discount'));
+        $SMARTY->assign('show_invoice_flag', ConfigHelper::getConfig('userpanel.show_invoice_flag'));
         $SMARTY->assign('show_last_years', ConfigHelper::getConfig('userpanel.show_last_years'));
         $SMARTY->assign('aggregate_documents', ConfigHelper::checkConfig('userpanel.aggregate_documents'));
         $SMARTY->assign('show_all_assignments', ConfigHelper::checkConfig('userpanel.show_all_assignments'));
@@ -75,6 +77,16 @@ if (defined('USERPANEL_SETUPMODE')) {
             $DB->Execute('UPDATE uiconfig SET value = \'1\' WHERE section = \'userpanel\' AND var = \'show_period\'');
         } else {
             $DB->Execute('UPDATE uiconfig SET value = \'0\' WHERE section = \'userpanel\' AND var = \'show_period\'');
+        }
+        if ($_POST['show_discount']) {
+            $DB->Execute('UPDATE uiconfig SET value = \'1\' WHERE section = \'userpanel\' AND var = \'show_discount\'');
+        } else {
+            $DB->Execute('UPDATE uiconfig SET value = \'0\' WHERE section = \'userpanel\' AND var = \'show_discount\'');
+        }
+        if ($_POST['show_invoice_flag']) {
+            $DB->Execute('UPDATE uiconfig SET value = \'1\' WHERE section = \'userpanel\' AND var = \'show_invoice_flag\'');
+        } else {
+            $DB->Execute('UPDATE uiconfig SET value = \'0\' WHERE section = \'userpanel\' AND var = \'show_invoice_flag\'');
         }
         $DB->Execute(
             'UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
