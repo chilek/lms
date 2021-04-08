@@ -48,7 +48,7 @@
 					<TD>
 						{trans("Select customers which has to concern new payment or covenant operation or leave it not selected if you want to add network income/expense operation.")}<BR><BR>
 						<select size="20" id="customerselect" name="addbalance[mcustomerid][]" multiple>
-							{foreach $customers $customer}
+							{foreach $customers as $customer}
 								<option value="{$customer.id}">{$customer.customername|truncate:40:"&hellip;":true} ({$customer.id|string_format:"%04d"})</option>
 							{/foreach}
 						</select>
