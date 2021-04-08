@@ -36,14 +36,14 @@
 	<TR>
 		<TD WIDTH="1%" style="vertical-align: top;">
 			<TABLE class="lmsbox">
-                            <THEAD>
+				<THEAD>
 				<TR>
 					<TD>
 						<IMG SRC="img/customer.gif" ALT="">&nbsp;<B>{trans("Customers:")}</B>
 					</TD>
 				</TR>
-                            </THEAD>
-                            <TBODY>
+				</THEAD>
+				<TBODY>
 				<TR>
 					<TD>
 						{trans("Select customers which has to concern new payment or covenant operation or leave it not selected if you want to add network income/expense operation.")}<BR><BR>
@@ -57,19 +57,19 @@
 						<span id="selectededit">0</span>
 					</TD>
 				</TR>
-                            </TBODY>
+				</TBODY>
 			</TABLE>
 		</TD>
 		<TD WIDTH="99%" VALIGN="TOP" style="vertical-align: top;">
 			<TABLE class="lmsbox">
-                            <THEAD>
+				<THEAD>
 				<TR>
 					<TD COLSPAN="3">
 						<IMG SRC="img/money.gif" ALT="">&nbsp;<B>{trans("Value and description:")}</B>
 					</TD>
 				</TR>
-                            </THEAD>
-                            <TBODY>
+				</THEAD>
+				<TBODY>
 				<TR>
 					<TD WIDTH="1%">
 						<IMG SRC="img/value.gif" ALT="">
@@ -154,18 +154,18 @@
 						<A HREF="javascript:document.addbalance.submit();" ACCESSKEY="s" >{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
 					</TD>
 				</TR>
-                            </TBODY>
-                        </TABLE>
+				</TBODY>
+			</TABLE>
 			{if $last}
-                        <TABLE class="lmsbox" style="margin-top: 1em;">
-                            <THEAD>
+			<TABLE class="lmsbox" style="margin-top: 1em;">
+				<THEAD>
 				<TR>
 					<TD COLSPAN="3">
 						<IMG SRC="img/money.gif" ALT="">&nbsp;<B>{trans("Last operation:")}</B>
 					</TD>
 				</TR>
-                            </THEAD>
-                            <TBODY>
+				</THEAD>
+				<TBODY>
 				<TR>
 					<TD WIDTH="1%">
 						<IMG SRC="img/value.gif" ALT="">
@@ -237,9 +237,9 @@
 					</TD>
 					<TD WIDTH="98%">
 						<TABLE WIDTH="100%" CELLPADDING="5">
-					                <TR>
-							        <TD CLASS="fall superlight">
-							    		{$last.comment|replace:"\n":"<BR>"}
+							<TR>
+								<TD CLASS="fall superlight">
+									{$last.comment|replace:"\n":"<BR>"}
 								</TD>
 							</TR>
 						</TABLE>
@@ -251,9 +251,9 @@
 						<A id="delete-lastoperation" HREF="javascript:del({$last.id});" ACCESSKEY="d" >{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>
 					</TD>
 				</TR>
-			{/if}
-                            </TBODY>
+				</TBODY>
 			</TABLE>
+			{/if}
 		</TD>
 	</TR>
 </TABLE>
