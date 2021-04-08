@@ -40,6 +40,7 @@ $parameters = array(
     'version' => 'v',
     'test' => 't',
     'fakedate:' => 'f:',
+    'issue-date:' => null,
     'customerid:' => null,
     'division:' => null,
     'customergroups:' => 'g:',
@@ -97,6 +98,7 @@ lms-payments.php
 -q, --quiet                     suppress any output, except errors;
 -t, --test                      no changes are made to database;
 -f, --fakedate=YYYY/MM/DD       override system date;
+    --issue-date=YYYY/MM/DD     override system date for generated cash record issue date;
     --customerid=<id>           limit assignments to specifed customer
     --division=<shortname>
                                 limit assignments to customers which belong to specified
@@ -224,6 +226,7 @@ if (empty($allowed_customer_status)) {
 }
 
 $fakedate = isset($options['fakedate']) ? $options['fakedate'] : null;
+$issuedate = isset($options['issue-date']) ? $options['issue-date'] : null;
 $customerid = isset($options['customerid']) && intval($options['customerid']) ? $options['customerid'] : null;
 
 if (empty($fakedate)) {
@@ -232,6 +235,7 @@ if (empty($fakedate)) {
 } else {
     $today = $currtime = strtotime($fakedate);
 }
+$issuetime = isset($issuedate) ? strtotime($issuedate) : $currtime;
 list ($year, $month, $dom) = explode('/', date('Y/n/j', $currtime));
 $weekday = strftime('%u', $currtime);
 $yearday = strftime('%j', $currtime);
@@ -309,7 +313,7 @@ $next_period = strftime("%m/%Y", mktime(12, 0, 0, $month + 1, 1, $year));
 $prev_period = strftime("%m/%Y", mktime(12, 0, 0, $month - 1, 1, $year));
 
 // sale date setting
-$saledate = $currtime;
+$saledate = $issuetime;
 if ($sdate_next) {
     $saledate = strftime("%s", mktime(12, 0, 0, $month + 1, 1, $year));
 }
@@ -465,7 +469,7 @@ if (!empty($assigns)) {
         $DB->Execute(
             "INSERT INTO cash (time, type, value, customerid, comment)
 			VALUES (?, ?, ?, ?, ?)",
-            array($currtime, 1, $assign['value'] * -1, null, $assign['name']."/".$assign['creditor'])
+            array($issuetime, 1, $assign['value'] * -1, null, $assign['name']."/".$assign['creditor'])
         );
         if (!$quiet) {
             print "CID:0\tVAL:".$assign['value']."\tDESC:".$assign['name']."/".$assign['creditor'] . PHP_EOL;
@@ -1358,7 +1362,7 @@ foreach ($assigns as $assign) {
                 $fullnumber = docnumber(array(
                     'number' => $newnumber,
                     'template' => $numbertemplates[$plan],
-                    'cdate' => $currtime,
+                    'cdate' => $issuetime,
                     'customerid' => $cid,
                 ));
 
@@ -1392,7 +1396,7 @@ foreach ($assigns as $assign) {
                             ? $customer['city'] . ', ' : '') . $customer['address'],
                         $customer['zip'] ? $customer['zip'] : null,
                         $customer['postoffice'] ? $customer['postoffice'] : ($customer['city'] ? $customer['city'] : null),
-                        $customer['ten'], $customer['ssn'], $currtime, $saledate, $paytime, $inv_paytype,
+                        $customer['ten'], $customer['ssn'], $issuetime, $saledate, $paytime, $inv_paytype,
                         ($division['name'] ? $division['name'] : ''),
                         ($division['shortname'] ? $division['shortname'] : ''),
                         ($division['address'] ? $division['address'] : ''),
@@ -1533,7 +1537,7 @@ foreach ($assigns as $assign) {
                             "INSERT INTO cash (time, value, currency, currencyvalue, taxid, customerid, comment, docid, itemid, linktechnology, servicetype)
                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                             array(
-                                $currtime,
+                                $issuetime,
                                 str_replace(',', '.', $val * -1),
                                 $currency,
                                 $currencyvalues[$currency],
@@ -1555,7 +1559,7 @@ foreach ($assigns as $assign) {
                     "INSERT INTO cash (time, value, currency, currencyvalue, taxid, customerid, comment, linktechnology, servicetype)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     array(
-                        $currtime,
+                        $issuetime,
                         str_replace(',', '.', $val * -1),
                         $currency,
                         $currencyvalues[$currency],
@@ -1746,7 +1750,7 @@ foreach ($assigns as $assign) {
                                 "INSERT INTO cash (time, value, currency, currencyvalue, taxid, customerid, comment, docid, itemid, linktechnology, servicetype)
 								VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                 array(
-                                    $currtime,
+                                    $issuetime,
                                     str_replace(',', '.', $value * -1),
                                     $currency,
                                     $currencyvalues[$currency],
@@ -1766,7 +1770,7 @@ foreach ($assigns as $assign) {
                         "INSERT INTO cash (time, value, currency, currencyvalue, taxid, customerid, comment, linktechnology, servicetype)
 						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                         array(
-                            $currtime,
+                            $issuetime,
                             str_replace(',', '.', $value * -1),
                             $currency,
                             $currencyvalues[$currency],
