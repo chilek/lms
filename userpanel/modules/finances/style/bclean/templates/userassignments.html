@@ -2,7 +2,7 @@
 {$show_speeds = ConfigHelper::checkConfig('userpanel.show_speeds')}
 {$show_period = ConfigHelper::checkConfig('userpanel.show_period')}
 {$show_discount = ConfigHelper::checkConfig('userpanel.show_discount')}
-{$show_invoiceflag = ConfigHelper::checkConfig('userpanel.show_invoiceflag')}
+{$show_invoice_flag = ConfigHelper::checkConfig('userpanel.show_invoice_flag')}
 {$show_all_assignments = ConfigHelper::checkConfig('userpanel.show_all_assignments')}
 {$speed_unit_type = ConfigHelper::getConfig('userpanel.speed_unit_type')}
 {$speed_unit_aggregation_threshold = ConfigHelper::getConfig('userpanel.speed_unit_aggregation_threshold')}
@@ -21,7 +21,7 @@
 			<th>{trans("Downrate (ceil):")}</th>
 			<th>{trans("Uprate (ceil):")}</th>
 			{/if}
-			{if $show_invoiceflag}
+			{if $show_invoice_flag}
 			<th>{trans("Invoice")}</th>
 			{/if}
 			{if $show_period}
@@ -106,7 +106,7 @@
 						{/if})
 					</td>
 					{/if}
-					{if $show_invoiceflag}
+					{if $show_invoice_flag}
 					<td class="text-center">{if $assignment.invoice}{trans("yes")}{else}&nbsp;{/if}</td>
 					{/if}
 					{if $show_period}
@@ -166,7 +166,7 @@
 					{/if})
 				</td>
 				{/if}
-				{if $show_invoiceflag}
+				{if $show_invoice_flag}
 				<td>&nbsp;</td>
 				{/if}
 				{if $show_period}

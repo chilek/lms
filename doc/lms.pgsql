@@ -3618,7 +3618,7 @@ URL: %url
 ('userpanel', 'show_speeds', '1', '', 0),
 ('userpanel', 'show_period', '1', '', 0),
 ('userpanel', 'show_discount', '1', '', 0),
-('userpanel', 'show_invoiceflag', '1', '', 0),
+('userpanel', 'show_invoice_flag', '1', '', 0),
 ('userpanel', 'queues', '1', '', 0),
 ('userpanel', 'tickets_from_selected_queues', '0', '', 0),
 ('userpanel', 'allow_message_add_to_closed_tickets', '1', '', 0),

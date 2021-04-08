@@ -36,7 +36,7 @@ if (defined('USERPANEL_SETUPMODE')) {
         $SMARTY->assign('show_speeds', ConfigHelper::getConfig('userpanel.show_speeds'));
         $SMARTY->assign('show_period', ConfigHelper::getConfig('userpanel.show_period'));
         $SMARTY->assign('show_discount', ConfigHelper::getConfig('userpanel.show_discount'));
-        $SMARTY->assign('show_invoiceflag', ConfigHelper::getConfig('userpanel.show_invoiceflag'));
+        $SMARTY->assign('show_invoice_flag', ConfigHelper::getConfig('userpanel.show_invoice_flag'));
         $SMARTY->assign('show_last_years', ConfigHelper::getConfig('userpanel.show_last_years'));
         $SMARTY->assign('aggregate_documents', ConfigHelper::checkConfig('userpanel.aggregate_documents'));
         $SMARTY->assign('show_all_assignments', ConfigHelper::checkConfig('userpanel.show_all_assignments'));
@@ -83,10 +83,10 @@ if (defined('USERPANEL_SETUPMODE')) {
         } else {
             $DB->Execute('UPDATE uiconfig SET value = \'0\' WHERE section = \'userpanel\' AND var = \'show_discount\'');
         }
-        if ($_POST['show_invoiceflag']) {
-            $DB->Execute('UPDATE uiconfig SET value = \'1\' WHERE section = \'userpanel\' AND var = \'show_invoiceflag\'');
+        if ($_POST['show_invoice_flag']) {
+            $DB->Execute('UPDATE uiconfig SET value = \'1\' WHERE section = \'userpanel\' AND var = \'show_invoice_flag\'');
         } else {
-            $DB->Execute('UPDATE uiconfig SET value = \'0\' WHERE section = \'userpanel\' AND var = \'show_invoiceflag\'');
+            $DB->Execute('UPDATE uiconfig SET value = \'0\' WHERE section = \'userpanel\' AND var = \'show_invoice_flag\'');
         }
         $DB->Execute(
             'UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
