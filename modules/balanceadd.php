@@ -58,19 +58,19 @@ if ($currenttime) {
 $SESSION->save('addbtax', isset($addbalance['taxid']) ? $addbalance['taxid'] : 0);
 
 if (!isset($addbalance['type'])) {
-        $addbalance['type'] = 1;
+    $addbalance['type'] = 1;
 }
 
 if (!$addbalance['type']) {
     $addbalance['sourceid'] = null;
-}
-$SESSION->save('addsource', $addbalance['sourceid']);
-
-if ($addbalance['type'] == 0) {
     $addbalance['value'] *= -1;
 } else {
+    $addbalance['servicetype'] = null;
     $addbalance['taxid'] = 0;
 }
+
+$SESSION->save('addsource', $addbalance['sourceid']);
+$SESSION->save('addbst', $addbalance['servicetype']);
 
 if (isset($addbalance['mcustomerid'])) {
     $addbalance['currencyvalue'] = $LMS->getCurrencyValue($addbalance['currency'], $addbalance['time']);

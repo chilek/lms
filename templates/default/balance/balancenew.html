@@ -8,6 +8,13 @@
 		$('#customerselect').change(function() {
 			$('#selectededit').text($(this).find('option:selected').length);
 		});
+
+		$('[name="addbalance[type]"]').change(function() {
+			var that = this;
+			$('#servicetype').prop('disabled', function() {
+				return $(that).val() == '1';
+			});
+		}).change();
 	});
 
 	function del(id)
@@ -49,7 +56,7 @@
 						{trans("Select customers which has to concern new payment or covenant operation or leave it not selected if you want to add network income/expense operation.")}<BR><BR>
 						<select size="20" id="customerselect" name="addbalance[mcustomerid][]" multiple>
 							{foreach $customers as $customer}
-								<option value="{$customer.id}">{$customer.customername|truncate:40:"&hellip;":true} ({$customer.id|string_format:"%04d"})</option>
+								<option value="{$customer.id}">{$customer.customername|trunescape:40} ({$customer.id|string_format:"%04d"})</option>
 							{/foreach}
 						</select>
 						<br>
@@ -105,10 +112,32 @@
 						<B>{trans("Type:")}</B>
 					</TD>
 					<TD WIDTH="98%">
-						<INPUT TYPE="radio" NAME="addbalance[type]" ID="type0" VALUE="0" {tip text="Select type of operation"}><label for="type0">{trans("liability")}</label>
-						<INPUT TYPE="radio" NAME="addbalance[type]" ID="type1" VALUE="1" {tip text="Select type of operation"} checked><label for="type1">{trans("income/expense")}</label>
+						<label>
+							<input type="radio" name="addbalance[type]" value="0" {tip text="Select type of operation"}>
+							{trans("liability")}
+						</label>
+						<label>
+							<input type="radio" name="addbalance[type]" value="1" {tip text="Select type of operation"} checked>
+							{trans("income/expense")}
+						</label>
 					</TD>
 				</TR>
+				<tr>
+					<td>
+						<img src="img/money.gif">
+					</td>
+					<td class="bold nobr">
+						{trans("Service type")}
+					</td>
+					<td>
+						<select id="servicetype" name="addbalance[servicetype]">
+							<option value="">{trans("- none -")}</option>
+							{foreach Localisation::arraySort($_SERVICETYPES) as $type => $label}
+								<option value="{$type}"{if $servicetype == $type} selected{/if}>{$label}</option>
+							{/foreach}
+						</select>
+					</td>
+				</tr>
 				<TR>
 					<TD WIDTH="1%">
 						<IMG SRC="img/calendar.gif" ALT="">
