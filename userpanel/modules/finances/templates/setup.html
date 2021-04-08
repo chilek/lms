@@ -87,6 +87,19 @@
 						</tr>
 						<tr>
 							<td class="nobr">
+								<label for="show_discounted_value">
+									{trans("Value type in assignment panel")}
+								</label>
+							</td>
+							<td>
+								<select name="show_discounted_value" id="show_discounted_value">
+									<option value="0"{if $show_discounted_value == 0} selected{/if}>{trans("Full value without discount")}</option>
+									<option value="1"{if $show_discounted_value == 1} selected{/if}>{trans("Pay value with discount included")}</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td class="nobr">
 								<label for="show_period">
 									{trans("Show discount column in assignment panel")}
 								</label>

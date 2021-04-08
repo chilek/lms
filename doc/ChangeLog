@@ -125,6 +125,8 @@ version 27-git (????-??-??):
     which type of checks are applied before executing actions [chilan]
   - enhancement: userpanel:finance module, allow to control
     visibility of columns discount and invoice [interduo]
+  - enhancement: userpanel:finance module, allow to control type of value shown
+    to the customer - with discount included or without (default) [interduo]
 
 version 26.0 (2020-12-15):
 
