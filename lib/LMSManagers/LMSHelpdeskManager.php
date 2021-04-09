@@ -1097,7 +1097,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             isset($ticket['cause']) ? $ticket['cause'] : 0,
             isset($ticket['userid']) ? $ticket['userid'] : Auth::GetCurrentUser(),
             isset($ticket['source']) ? $ticket['source'] : 0,
-            isset($ticket['priority']) ? $ticket['priority'] : 0,
+            isset($ticket['priority']) ? $ticket['priority'] : null,
             isset($ticket['address_id']) && !empty($ticket['address_id']) ? $ticket['address_id'] : null,
             isset($ticket['nodeid']) && !empty($ticket['nodeid']) ? $ticket['nodeid'] : null,
             isset($ticket['netnodeid']) && !empty($ticket['netnodeid']) ? $ticket['netnodeid'] : null,
@@ -1491,11 +1491,13 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $props['source'] = $ticket['source'];
         }
 
-        if ($ticket['priority'] != $props['priority'] && isset($props['priority'])) {
+        if ($ticket['priority'] != $props['priority']) {
+            $RT_PRIORITIES[$ticket['priority']] = empty($RT_PRIORITIES[$ticket['priority']]) ? trans('unknown') : $RT_PRIORITIES[$ticket['priority']];
+            $RT_PRIORITIES[$props['priority']] = empty($RT_PRIORITIES[$props['priority']]) ? trans('unknown') : $RT_PRIORITIES[$props['priority']];
             $notes[] = trans('Ticket\'s priority has been changed from $a to $b.', $RT_PRIORITIES[$ticket['priority']], $RT_PRIORITIES[$props['priority']]);
             $type = $type | RTMESSAGE_PRIORITY_CHANGE;
         } else {
-            $props['priority'] = $ticket['priority'];
+            unset($props['priority']);
         }
 
         if ($ticket['state'] != $props['state'] && isset($props['state'])) {
@@ -1803,6 +1805,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             }
         } else {
             $props['requestor_mail'] = $ticket['requestor_mail'];
+        }
+
+        if (!isset($props['priority'])) {
+            $props['priority'] = null;
         }
 
         if ($type) {

@@ -190,6 +190,10 @@ if (isset($_POST['ticket'])) {
             $ticket['service'] = null;
         }
 
+        if ($ticket['priority'] == '') {
+            unset($ticket['priority']);
+        }
+
         $attachments = null;
 
         if (!empty($files)) {
