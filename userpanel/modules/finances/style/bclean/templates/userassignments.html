@@ -2,6 +2,7 @@
 {$show_speeds = ConfigHelper::checkConfig('userpanel.show_speeds')}
 {$show_period = ConfigHelper::checkConfig('userpanel.show_period')}
 {$show_discount = ConfigHelper::checkConfig('userpanel.show_discount')}
+{$show_discounted_value = ConfigHelper::checkConfig('userpanel.show_discounted_value')}
 {$show_invoice_flag = ConfigHelper::checkConfig('userpanel.show_invoice_flag')}
 {$show_all_assignments = ConfigHelper::checkConfig('userpanel.show_all_assignments')}
 {$speed_unit_type = ConfigHelper::getConfig('userpanel.speed_unit_type')}
@@ -39,15 +40,27 @@
 				&& ($show_all_assignments || ($assignment.datefrom <= $smarty.now && (empty($assignment.dateto) || $assignment.dateto >= $smarty.now)))}
 				<tr>
 					<td>{if ConfigHelper::checkConfig('userpanel.show_tariffname')}{$assignment.name}{/if}</td>
-					<td class="text-right text-nowrap">
-						{moneyf($assignment.real_value, $assignment.currency)}
-						{if !isset($total_real_value[$assignment.currency])}
-							{$total_real_value[$assignment.currency] = 0}
-						{/if}
-						{if $assignment.datefrom <= $smarty.now && (empty($assignment.dateto) || $assignment.dateto >= $smarty.now)}
-							{$total_real_value[$assignment.currency] = $total_real_value[$assignment.currency] + $assignment.real_value}
-						{/if}
-					</td>
+					{if $show_discounted_value}
+						<td class="text-right text-nowrap">
+							{moneyf($assignment.discounted_value, $assignment.currency)}
+							{if !isset($total_real_value[$assignment.currency])}
+								{$total_real_value[$assignment.currency] = 0}
+							{/if}
+							{if $assignment.datefrom <= $smarty.now && (empty($assignment.dateto) || $assignment.dateto >= $smarty.now)}
+								{$total_real_value[$assignment.currency] = $total_real_value[$assignment.currency] + $assignment.discounted_value}
+							{/if}
+						</td>
+					{else}
+						<td class="text-right text-nowrap">
+							{moneyf($assignment.real_value, $assignment.currency)}
+							{if !isset($total_real_value[$assignment.currency])}
+								{$total_real_value[$assignment.currency] = 0}
+							{/if}
+							{if $assignment.datefrom <= $smarty.now && (empty($assignment.dateto) || $assignment.dateto >= $smarty.now)}
+								{$total_real_value[$assignment.currency] = $total_real_value[$assignment.currency] + $assignment.real_value}
+							{/if}
+						</td>
+					{/if}
 					{if $show_discount}
 					<td class="text-right text-nowrap">
 						{if $assignment.pdiscount > 0}

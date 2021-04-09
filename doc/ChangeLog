@@ -127,6 +127,8 @@ version 27-git (????-??-??):
     and invoice [interduo]
   - enhancement: lms-payments.php support new optional --issue-date parameter which gives possibility
     to change issue date stored in generated cash and documents records [chilan]
+  - enhancement: userpanel:finance module, allow to control type of value shown
+    to the customer - with discount included or without (default) [interduo]
 
 version 26.0 (2020-12-15):
 

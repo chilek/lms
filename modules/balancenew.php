@@ -43,6 +43,7 @@ $last = $DB->GetRow('SELECT cash.id AS id, cash.value AS value, cash.currency, c
 $SMARTY->assign('last', $last);
 $SMARTY->assign('currency', Localisation::getDefaultCurrency());
 $SMARTY->assign('operation', $SESSION->get('addtype'));
+$SMARTY->assign('servicetype', $SESSION->get('addbst'));
 $SMARTY->assign('sourceid', $SESSION->get('addsource'));
 $SMARTY->assign('comment', $SESSION->get('addbc'));
 $SMARTY->assign('taxid', $SESSION->get('addbtax'));

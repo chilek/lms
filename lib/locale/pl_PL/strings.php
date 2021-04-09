@@ -24,6 +24,7 @@
  *  $Id$
  */
 
+$_LANG['Service type'] = 'Typ usługi';
 $_LANG['Service types'] = 'Typy usług';
 
 $_LANG['Legal personality types'] = 'Typu osobowości prawnej';
