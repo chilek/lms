@@ -24,6 +24,9 @@
  *  $Id$
  */
 
+$_LANG['Value type in assignment panel'] = 'Rodzaj wartości w panelu zobowiązań';
+$_LANG['Full value without discount'] = 'Pełna kwota bez rabatu';
+$_LANG['Pay value with discount included'] = 'Kwota do zapłaty z uwzględnionym rabatem';
 $_LANG['Hide customer nodes box'] = 'Ukryj okno komputerów klienta';
 $_LANG['Access denied!'] = 'Brak dostępu!';
 $_LANG['and'] = 'i';
