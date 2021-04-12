@@ -87,6 +87,7 @@ jQuery.fn.extend({
 function show_pagecontent() {
 	$('#lms-ui-spinner').hide();
 	$('#lms-ui-contents').show();
+	$(window).resize();
 	if (location.hash.length && $(location.hash).length) {
 		$(location.hash)[0].scrollIntoView();
 
