@@ -543,7 +543,7 @@
 		});
 
 		$('.mac-address-copy-to-clipboard').on('lms:clipboard:click', function() {
-			return $(this).closest('tr').find('.mac-address').text();
+			return $(this).closest('tr').find('.mac-address').text().trim();
 		});
 	});
 
