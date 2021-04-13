@@ -62,7 +62,7 @@
                 {foreach $_RT_PRIORITIES as $idx => $priority}
                     <OPTION value="{$idx}" {if is_array($filter.priority) && in_array($idx, $filter.priority)} SELECTED{/if}>{$priority}</OPTION>
                 {/foreach}
-                <OPTION value="" {if is_array($filter.priority) && in_array(null, $filter.priority)} selected{/if}>{trans("unknown")}</OPTION>
+                <OPTION value="" {if is_array($filter.priority) && in_array(null, $filter.priority)} selected{/if}>{trans("unset")}</OPTION>
             </SELECT>
             </label>
             <label class="nobr">
