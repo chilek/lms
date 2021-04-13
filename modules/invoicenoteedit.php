@@ -552,6 +552,8 @@ switch ($action) {
 
         $use_current_customer_data = isset($cnote['use_current_customer_data']);
         if ($use_current_customer_data) {
+            $LMS->UpdateDocumentPostAddress($iid, $cnote['customerid']);
+
             $customer = $LMS->GetCustomer($cnote['customerid'], true);
         }
 

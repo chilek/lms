@@ -505,8 +505,12 @@ switch ($action) {
             }
         }
 
+        $use_current_customer_data = isset($invoice['use_current_customer_data']) || $invoice['customerid'] != $customerid;
+
         // updates customer post address stored in document
-        $LMS->UpdateDocumentPostAddress($invoice['id'], $invoice['customerid']);
+        if ($use_current_customer_data) {
+            $LMS->UpdateDocumentPostAddress($invoice['id'], $invoice['customerid']);
+        }
 
         $currtime = time();
         $cdate = $invoice['cdate'] ? $invoice['cdate'] : $currtime;
@@ -535,7 +539,6 @@ switch ($action) {
         }
         $DB->LockTables($tables);
 
-        $use_current_customer_data = isset($invoice['use_current_customer_data']) || $invoice['customerid'] != $customerid;
         if ($use_current_customer_data) {
             $customer = $LMS->GetCustomer($invoice['customerid'], true);
         }
