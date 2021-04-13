@@ -242,7 +242,7 @@
 								</TD>
 							</TR>
 							{/if}
-							{if $ticket.priority}
+							{if !is_null($ticket.priority)}
 							<TR>
 								<TD class="bold nobr">
 									<i class="lms-ui-icon-content lms-ui-icon-priority"></i>{trans("Priority:")}

@@ -24,6 +24,7 @@
  *  $Id$
  */
 
+$_LANG['unset'] = 'nieokreślony';
 $_LANG['Service type'] = 'Typ usługi';
 $_LANG['Service types'] = 'Typy usług';
 

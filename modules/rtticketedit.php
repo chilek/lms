@@ -90,7 +90,7 @@ if ($id && !isset($_POST['ticket'])) {
                     'customerid' => $ticket['customerid'],
                     'status' => $ticket['status'],
                     'categories' => $ticket['categorynames'],
-                    'priority' => $RT_PRIORITIES[$ticket['priority']],
+                    'priority' => $ticket['priority'] ? $RT_PRIORITIES[$ticket['priority']] : trans("unset"),
                     'deadline' => $ticket['deadline'],
                     'service' => $ticket['service'],
                     'type' => $ticket['type'],
@@ -142,7 +142,7 @@ if ($id && !isset($_POST['ticket'])) {
                 break;
             case 'resetpriority':
                 $ticket = $LMS->GetTicketContents($id);
-                if ($ticket['priority'] != RT_PRIORITY_NORMAL) {
+                if (!is_null($ticket['priority']) && $ticket['priority'] != RT_PRIORITY_NORMAL) {
                     $LMS->TicketChange($id, array('priority' => RT_PRIORITY_NORMAL));
                 }
                 $SESSION->redirect('?m=rtqueueview'
@@ -267,7 +267,7 @@ if ($id && !isset($_POST['ticket'])) {
                         'customerid' => $ticket['customerid'],
                         'status' => $ticket['status'],
                         'categories' => $ticket['categorynames'],
-                        'priority' => $RT_PRIORITIES[$ticket['priority']],
+                        'priority' => $ticket['priority'] ? $RT_PRIORITIES[$ticket['priority']] : trans("unset"),
                         'deadline' => $ticket['deadline'],
                         'service' => $ticket['service'],
                         'type' => $ticket['type'],
@@ -426,7 +426,7 @@ if (isset($_POST['ticket'])) {
             'customerid' => $ticketedit['customerid'],
             'categories' => isset($ticketedit['categories']) ? array_keys($ticketedit['categories']) : array(),
             'source' => $ticketedit['source'],
-            'priority' => $ticketedit['priority'],
+            'priority' => isset($ticketedit['priority']) ? $ticketedit['priority'] : null,
             'address_id' => $ticketedit['address_id'] == -1 ? null : $ticketedit['address_id'],
             'nodeid' => empty($ticketedit['nodeid']) ? null : $ticketedit['nodeid'],
             'netnodeid' => empty($ticketedit['netnodeid']) ? null : $ticketedit['netnodeid'],
@@ -446,10 +446,7 @@ if (isset($_POST['ticket'])) {
                 || empty($ticketedit['requestor_phone']) ? null : $ticketedit['requestor_phone'],
             'parentid' => empty($ticketedit['parentid']) ? null : $ticketedit['parentid'],
             'relatedtickets' => $ticketedit['relatedtickets'],
-        );
-        if ($ticketedit['priority'] == '') {
-            unset($props['priority']);
-        };
+    );
         $LMS->TicketChange($ticketedit['ticketid'], $props);
 
         $hook_data = $LMS->executeHook(

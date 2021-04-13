@@ -1492,12 +1492,12 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         }
 
         if ($ticket['priority'] != $props['priority']) {
-            $ticket['priority'] = empty($ticket['priority']) ? trans('unset') : $RT_PRIORITIES[$ticket['priority']];
-            $props['priority'] = empty($props['priority']) ? trans('unset') : $RT_PRIORITIES[$props['priority']];
-            $notes[] = trans('Ticket\'s priority has been changed from $a to $b.', $RT_PRIORITIES[$ticket['priority']], $RT_PRIORITIES[$props['priority']]);
+            $a = (is_null($ticket['priority']) || !isset($ticket['priority'])) ? trans("unset") : $RT_PRIORITIES[$ticket['priority']];
+            $b = is_null($props['priority']) ? $RT_PRIORITIES[$props['priority']] : trans("unset");
+            $notes[] = trans('Ticket\'s priority has been changed from $a to $b.', $a, $b);
             $type = $type | RTMESSAGE_PRIORITY_CHANGE;
         } else {
-            unset($props['priority']);
+            $props['priority'] = $ticket['priority'];
         }
 
         if ($ticket['state'] != $props['state'] && isset($props['state'])) {
@@ -1807,7 +1807,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $props['requestor_mail'] = $ticket['requestor_mail'];
         }
 
-        if (!isset($props['priority'])) {
+        if ($props['priority'] == '') {
             $props['priority'] = null;
         }
 

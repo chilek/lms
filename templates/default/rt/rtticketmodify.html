@@ -223,7 +223,7 @@
 			{box_row icon="priority" label="Priority:" icon_class="fa-fw"}
 				<SELECT size="1" name="ticket[priority]" {tip text="Set ticket priority" trigger="priority"}>
 					{foreach $_RT_PRIORITIES as $priorityidx => $priority}
-					<OPTION value="{$priorityidx}"{if $ticket.priority == $priorityidx}selected {/if}>{$priority}</OPTION>
+					<OPTION value="{$priorityidx}"{if $ticket.priority == $priorityidx} selected{/if}>{$priority}</OPTION>
 					{/foreach}
 					<OPTION value="" {if (is_array($ticket.priority) && in_array(null, $ticket.priority)) || is_null($ticket.priority)} selected{/if}>{trans("unset")}</OPTION>
 				</SELECT>
