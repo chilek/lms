@@ -1492,8 +1492,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         }
 
         if ($ticket['priority'] != $props['priority']) {
-            $RT_PRIORITIES[$ticket['priority']] = empty($RT_PRIORITIES[$ticket['priority']]) ? trans('unknown') : $RT_PRIORITIES[$ticket['priority']];
-            $RT_PRIORITIES[$props['priority']] = empty($RT_PRIORITIES[$props['priority']]) ? trans('unknown') : $RT_PRIORITIES[$props['priority']];
+            $ticket['priority'] = empty($ticket['priority']) ? trans('unset') : $RT_PRIORITIES[$ticket['priority']];
+            $props['priority'] = empty($props['priority']) ? trans('unset') : $RT_PRIORITIES[$props['priority']];
             $notes[] = trans('Ticket\'s priority has been changed from $a to $b.', $RT_PRIORITIES[$ticket['priority']], $RT_PRIORITIES[$props['priority']]);
             $type = $type | RTMESSAGE_PRIORITY_CHANGE;
         } else {
