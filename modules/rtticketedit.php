@@ -446,7 +446,7 @@ if (isset($_POST['ticket'])) {
                 || empty($ticketedit['requestor_phone']) ? null : $ticketedit['requestor_phone'],
             'parentid' => empty($ticketedit['parentid']) ? null : $ticketedit['parentid'],
             'relatedtickets' => $ticketedit['relatedtickets'],
-    );
+        );
         $LMS->TicketChange($ticketedit['ticketid'], $props);
 
         $hook_data = $LMS->executeHook(
