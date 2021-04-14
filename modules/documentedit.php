@@ -111,6 +111,7 @@ if (isset($_POST['document'])) {
                 'number' => $documentedit['number'],
                 'doctype' => $documentedit['type'],
                 'planid' => $documentedit['numberplanid'],
+                'customerid' => $documentedit['customerid'],
             ))) {
                 $error['number'] = trans('Document with specified number exists!');
             }
