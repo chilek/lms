@@ -26,8 +26,8 @@
 
 $this->BeginTrans();
 
-$this->Execute("ALTER TABLE rttickets ALTER COLUMN priority SET DEFAULT NULL");
 $this->Execute("ALTER TABLE rttickets ALTER COLUMN priority DROP NOT NULL");
+$this->Execute("ALTER TABLE rttickets ALTER COLUMN priority SET DEFAULT NULL");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021040900', 'dbversion'));
 
