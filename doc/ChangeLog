@@ -129,6 +129,7 @@ version 27-git (????-??-??):
     to change issue date stored in generated cash and documents records [chilan]
   - enhancement: userpanel:finance module, allow to control type of value shown
     to the customer - with discount included or without (default) [interduo]
+  - enhancement: network properties can be selected in quick search field [chilan]
 
 version 26.0 (2020-12-15):
 
