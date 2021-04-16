@@ -212,16 +212,32 @@ if (isset($_POST['message'])) {
                         $display = empty($message['contacts']['maildisplays'][$address]) ? '' : qp_encode($contact['display']) . ' ';
                         $message_source = $message['contacts']['mailsources'][$address];
                         if ($message_source == 'requestor_mail' || $message_source == 'mailfrom') {
-                            $toemails[] = $display . '<' . $contact . '>';
+                            $toemails[] = array(
+                                'name' => $display,
+                                'email' => $contact,
+                            );
                         } else {
-                            $ccemails[] = $display . '<' . $contact . '>';
+                            $ccemails[] = array(
+                                'name' => $display,
+                                'email' => $contact,
+                            );
                         }
                     }
                     if (!empty($toemails)) {
-                        $headers['To'] = implode(',', $toemails);
+                        $headers['To'] = implode(
+                            ',',
+                            array_map(function ($toemail) {
+                                return $toemail['name'] . ' <' . $toemail['email']  . '>';
+                            }, $toemails)
+                        );
                     }
                     if (!empty($ccemails)) {
-                        $headers['Cc'] = implode(',', $ccemails);
+                        $headers['Cc'] = implode(
+                            ',',
+                            array_map(function ($ccemail) {
+                                return $ccemail['name'] . ' <' . $ccemail['email']  . '>';
+                            }, $ccemails)
+                        );
                     }
                 }
             } else {
@@ -314,7 +330,7 @@ if (isset($_POST['message'])) {
                         $recipients = '';
                     }
                 } else {
-                    $recipients = $headers['To'];
+                    $recipients = empty($toemails) ? '' : implode(',', Utils::array_column($toemails, 'email'));
                 }
                 if ($recipients) {
                     $LMS->SendMail($recipients, $headers, $message['body'], $attachments, null, $smtp_options);
