@@ -59,7 +59,13 @@
 {if ConfigHelper::checkPrivilege('network_management') || ConfigHelper::checkPrivilege('read_only')}
 <div id="qs-network" class="lms-ui-quick-search-field" data-mode="network" data-label="{trans("<!qs>network")}" data-keyboard-shortcut="{$qs_keyboard_shortcut_modifier}+4">
 	<i class="lms-ui-quick-search-icon lms-ui-icon-ipnetwork" {tip text="Enter network ID, name or IP address and press Enter"}></i>
-    <input type="text" name="qs[network]" value="" size="15" {tip text="Enter network ID, name or IP address and press Enter" class="blend lms-ui-quick-search-input"}>
+    <input type="text" name="qs[network]" value="" size="15" {tip text="Enter some property value and press Enter. Icon on left allows to choose which properties are considered." class="blend lms-ui-quick-search-input"}>
+	<i class="fa-fw lms-ui-icon-customisation"></i>
+	<select id="qs-network-properties" class="lms-ui-quicksearch-property-selection lms-ui-multiselect-selection-group" multiple title="{trans("Click here to select which node properties should be used during search")}">
+		<option value="id"{if !isset($qs_properties.network) || isset($qs_properties.network.id)} selected{/if}>{trans("<!qs>network id")}</option>
+		<option value="name"{if !isset($qs_properties.network) || isset($qs_properties.network.name)} selected{/if}>{trans("<!qs>network name")}</option>
+		<option value="address"{if !isset($qs_properties.network) || isset($qs_properties.network.address)} selected{/if}>{trans("<!qs>network address")}</option>
+	</select>
 </div>
 {/if}
 

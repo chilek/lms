@@ -860,11 +860,13 @@ switch ($mode) {
         }
 
         if (isset($_GET['ajax'])) { // support for AutoSuggest
-            $candidates = $DB->GetAll("SELECT id, name, address FROM networks
-                                WHERE " . (preg_match('/^[0-9]+$/', $search) ? 'id = ' . intval($search) . ' OR ' : '') . "
-				LOWER(name) ?LIKE? LOWER($sql_search)
-                                ORDER by name
-                                LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
+            $candidates = $DB->GetAll("SELECT id, name, INET_NTOA(address) AS address FROM networks
+                WHERE "
+                . (empty($properties) || isset($properties['id']) ? (preg_match('/^[0-9]+$/', $search) ? 'id = ' . intval($search) : '1 = 0') : '1 = 0')
+                . (empty($properties) || isset($properties['name']) ? " OR LOWER(name) ?LIKE? LOWER($sql_search)" : '')
+                . (empty($properties) || isset($properties['address']) ? " OR INET_NTOA(address) ?LIKE? $sql_search" : '')
+                . " ORDER by name
+                LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 
             $result = array();
             if ($candidates) {
@@ -878,6 +880,13 @@ switch ($mode) {
 
                     if (preg_match("~^$search\$~i", $row['id'])) {
                         $description = trans('Id:') . ' ' . $row['id'];
+                    }
+                    if ((empty($properties) || isset($properties['id'])) && preg_match("~^$search\$~i", $row['id'])) {
+                        $description = trans('Id:') . ' ' . $row['id'];
+                    } else if ((empty($properties) || isset($properties['name'])) && preg_match("~$search~i", $row['name'])) {
+                        $description = trans('Network name:') . ' ' . $row['name'];
+                    } else if ((empty($properties) || isset($properties['address'])) && preg_match("~$search~i", $row['address'])) {
+                        $description = trans('Network address:') . ' ' . $row['address'];
                     }
 
                     $result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');

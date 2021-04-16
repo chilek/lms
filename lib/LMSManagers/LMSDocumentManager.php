@@ -1705,17 +1705,15 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
 
         $post_addr = $location_manager->GetCustomerAddress($customerid, POSTAL_ADDRESS);
+
         if (empty($post_addr)) {
-            $this->db->Execute(
-                "UPDATE documents SET post_address_id = NULL WHERE id = ?",
-                array($docid)
-            );
-        } else {
-            $this->db->Execute(
-                'UPDATE documents SET post_address_id = ? WHERE id = ?',
-                array($location_manager->CopyAddress($post_addr), $docid)
-            );
+            $post_addr = $location_manager->GetCustomerAddress($customerid, BILLING_ADDRESS);
         }
+
+        $this->db->Execute(
+            'UPDATE documents SET post_address_id = ? WHERE id = ?',
+            array($location_manager->CopyAddress($post_addr), $docid)
+        );
     }
 
     public function DeleteDocumentAddresses($docid)

@@ -895,8 +895,9 @@
 							<td>
 								<select name="customer_type">
 									<option value="-1">{trans("- all customers -")}</option>
-									<option value="{$smarty.const.CTYPES_PRIVATE}">{trans("private person")}</option>
-									<option value="{$smarty.const.CTYPES_COMPANY}">{trans("legal entity")}</option>
+									{foreach from=$_CTYPES key=key item=item}
+									<option value="{$key}">{$item}</option>
+									{/foreach}
 								</select>
 							</td>
 						</tr>

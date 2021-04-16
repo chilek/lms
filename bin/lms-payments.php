@@ -479,6 +479,7 @@ if (!empty($assigns)) {
 
 // let's go, fetch *ALL* assignments in given day
 $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_address_id,
+        (CASE WHEN ca2.address_id IS NULL THEN ca1.address_id ELSE ca2.address_id END) AS post_address_id,
 		a.period, a.backwardperiod, a.at, a.suspended, a.settlement, a.datefrom, a.dateto, a.pdiscount, a.vdiscount,
 		a.invoice, a.separatedocument, c.type AS customertype,
 		(CASE WHEN c.type = ? THEN 0 ELSE (CASE WHEN a.liabilityid IS NULL THEN t.splitpayment ELSE l.splitpayment END) END) AS splitpayment,
@@ -512,6 +513,8 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 			AND (dateto > $currtime OR dateto = 0)) AS allsuspended
 	FROM assignments a
 	JOIN customers c ON (a.customerid = c.id)
+	LEFT JOIN customer_addresses ca1 ON ca1.customer_id = c.id AND ca1.type = " . BILLING_ADDRESS . "
+	LEFT JOIN customer_addresses ca2 ON ca2.customer_id = c.id AND ca2.type = " . POSTAL_ADDRESS . "
 	LEFT JOIN promotionschemas ps ON ps.id = a.promotionschemaid
 	LEFT JOIN promotions p ON p.id = ps.promotionid
 	LEFT JOIN tariffs t ON (a.tariffid = t.id)
@@ -552,7 +555,9 @@ $services = $DB->GetAll(
 $billing_invoice_description = ConfigHelper::getConfig('payments.billing_invoice_description', 'Phone calls between %backward_periods (for %phones)');
 
 $query = "SELECT
-			a.id, a.tariffid, a.customerid, a.period, a.backwardperiod, a.at, a.suspended, a.settlement, a.datefrom,
+			a.id, a.tariffid, a.customerid,
+			(CASE WHEN ca2.address_id IS NULL THEN ca1.address_id ELSE ca2.address_id END) AS post_address_id,
+			a.period, a.backwardperiod, a.at, a.suspended, a.settlement, a.datefrom,
 			0 AS pdiscount, 0 AS vdiscount, a.invoice, a.separatedocument, c.type AS customertype,
 			(CASE WHEN a.liabilityid IS NULL THEN t.type ELSE l.type END) AS tarifftype,
 			(CASE WHEN c.type = ? THEN 0 ELSE t.splitpayment END) AS splitpayment,
@@ -577,6 +582,8 @@ $query = "SELECT
             LEFT JOIN promotionschemas ps ON ps.id = a.promotionschemaid
             LEFT JOIN promotions p ON p.id = ps.promotionid
 			JOIN customers c ON (a.customerid = c.id)
+            LEFT JOIN customer_addresses ca1 ON ca1.customer_id = c.id AND ca1.type = " . BILLING_ADDRESS . "
+            LEFT JOIN customer_addresses ca2 ON ca2.customer_id = c.id AND ca2.type = " . POSTAL_ADDRESS . "
 			JOIN (
 				SELECT ROUND(sum(price), 2) AS value, va.ownerid AS customerid,
 					a2.id AS assignmentid
@@ -1383,8 +1390,8 @@ foreach ($assigns as $assign) {
 					customerid, name, address, zip, city, ten, ssn, cdate, sdate, paytime, paytype,
 					div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 					div_bank, div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
-					recipient_address_id, currency, currencyvalue, memo, flags)
-					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+					recipient_address_id, post_address_id, currency, currencyvalue, memo, flags)
+					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     array(
                         $newnumber,
                         $plan ? $plan : null,
@@ -1413,6 +1420,7 @@ foreach ($assigns as $assign) {
                         ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
                         $fullnumber,
                         $recipient_address_id,
+                        $LMS->CopyAddress($assign['post_address_id']),
                         $currency,
                         $currencyvalues[$currency],
                         empty($customer['documentmemo']) ? null : $customer['documentmemo'],

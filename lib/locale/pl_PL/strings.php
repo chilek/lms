@@ -25,6 +25,12 @@
  */
 
 $_LANG['unset'] = 'nieokreślony';
+$_LANG['<!qs>network id'] = 'identyfikator sieci';
+$_LANG['<!qs>network name'] = 'nazwa sieci';
+$_LANG['<!qs>network address'] = 'adres sieci';
+$_LANG['Network name:'] = 'Nazwa sieci:';
+$_LANG['Network address:'] = 'Adres sieci:';
+
 $_LANG['Service type'] = 'Typ usługi';
 $_LANG['Service types'] = 'Typy usług';
 
@@ -75,6 +81,7 @@ $_LANG['translates into JPK FP flag'] = 'przekłada się na flagę JPK FP';
 $_LANG['VAT payer'] = 'płatnik VAT';
 $_LANG['if customer is not VAT payer, then his telecommunication services are reported with JPK EE flag'] = 'jeśli klient nie jest płatnikiem VAT, to świadczone mu usługi telekomunikacyjne są raportowane z flagą JPK EE';
 $_LANG['supplier'] = 'dostawca';
+$_LANG['contractor'] = 'kontrahent';
 $_LANG['check it if customer is supplier for example for warehouse purpose'] = 'zaznacz jeśli klient jest dostawcą np. na potrzeby magazynu';
 
 $_LANG['Document flags:'] = 'Flagi dokumentu:';
