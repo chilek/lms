@@ -24,6 +24,12 @@
  *  $Id$
  */
 
+$_LANG['<!qs>network id'] = 'identyfikator sieci';
+$_LANG['<!qs>network name'] = 'nazwa sieci';
+$_LANG['<!qs>network address'] = 'adres sieci';
+$_LANG['Network name:'] = 'Nazwa sieci:';
+$_LANG['Network address:'] = 'Adres sieci:';
+
 $_LANG['Service type'] = 'Typ usługi';
 $_LANG['Service types'] = 'Typy usług';
 
