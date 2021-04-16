@@ -316,7 +316,7 @@ if (isset($_POST['message'])) {
                 } else {
                     $recipients = $headers['To'];
                 }
-                if (!$recipients) {
+                if ($recipients) {
                     $LMS->SendMail($recipients, $headers, $message['body'], $attachments, null, $smtp_options);
                 }
             }
