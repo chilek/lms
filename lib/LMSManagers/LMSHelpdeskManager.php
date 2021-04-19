@@ -1097,7 +1097,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             isset($ticket['cause']) ? $ticket['cause'] : 0,
             isset($ticket['userid']) ? $ticket['userid'] : Auth::GetCurrentUser(),
             isset($ticket['source']) ? $ticket['source'] : 0,
-            isset($ticket['priority']) ? $ticket['priority'] : 0,
+            isset($ticket['priority']) ? $ticket['priority'] : null,
             isset($ticket['address_id']) && !empty($ticket['address_id']) ? $ticket['address_id'] : null,
             isset($ticket['nodeid']) && !empty($ticket['nodeid']) ? $ticket['nodeid'] : null,
             isset($ticket['netnodeid']) && !empty($ticket['netnodeid']) ? $ticket['netnodeid'] : null,
@@ -1491,8 +1491,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $props['source'] = $ticket['source'];
         }
 
-        if ($ticket['priority'] != $props['priority'] && isset($props['priority'])) {
-            $notes[] = trans('Ticket\'s priority has been changed from $a to $b.', $RT_PRIORITIES[$ticket['priority']], $RT_PRIORITIES[$props['priority']]);
+        if ($ticket['priority'] != $props['priority']) {
+            $a = isset($ticket['priority']) ? $RT_PRIORITIES[$ticket['priority']] : trans("undefined");
+            $b = ($props['priority'] == '') ? trans("undefined") : $RT_PRIORITIES[$props['priority']];
+            $notes[] = trans('Ticket\'s priority has been changed from $a to $b.', $a, $b);
             $type = $type | RTMESSAGE_PRIORITY_CHANGE;
         } else {
             $props['priority'] = $ticket['priority'];
@@ -1803,6 +1805,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             }
         } else {
             $props['requestor_mail'] = $ticket['requestor_mail'];
+        }
+
+        if ($props['priority'] == '') {
+            $props['priority'] = null;
         }
 
         if ($type) {
