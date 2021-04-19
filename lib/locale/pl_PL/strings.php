@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$_LANG['unset'] = 'nieokreślony';
 $_LANG['<!qs>network id'] = 'identyfikator sieci';
 $_LANG['<!qs>network name'] = 'nazwa sieci';
 $_LANG['<!qs>network address'] = 'adres sieci';
