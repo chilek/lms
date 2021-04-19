@@ -391,19 +391,22 @@
 			<IMG src="img/money.gif" alt=""> {trans("Assignments:")}
 		</TD>
 		<TD>
-			<select size="1" name="search[assignments]">
+			<select size="1" id="assignment-selector" name="search[assignments]">
 				<option value="0">{trans('- all -')}</option>
 				<option value="7">{trans('expire in $a days', 7)}</option>
 				<option value="14">{trans('expire in $a days', 14)}</option>
 				<option value="30">{trans('expire in $a days', 30)}</option>
 				<option value="60">{trans('expire in $a days', 60)}</option>
 				<option value="90">{trans('expire in $a days', 90)}</option>
+				<option value="-100">{trans('expire in indicated number of days')}</option>
 				<option value="-1">{trans('without end date')}</option>
 				<option value="-2">{trans('active')}</option>
 				<option value="-3">{trans('active, with invoice')}</option>
 				<option value="-5">{trans('active, with pro forma')}</option>
 				<option value="-4">{trans('suspended')}</option>
 			</select>
+			<input type="text" id="assignment-days" name="search[assignments]" value="" disabled required
+				size="5" placeholder="{trans("days")}" style="display: none;" pattern="[0-9]+">
 		</TD>
 	</TR>
 	<TR>
@@ -559,9 +562,9 @@
 	</TR>
 	<TR>
 		<TD class="lms-ui-box-buttons" colspan="2">
-			{button icon="search" label="Search" onclick="Search();"}
-			{button icon="csv" label="Download (CSV)" onclick="ExportCSV();"}
-			{button icon="print" label="Print" onclick="PrintList();"}
+			{button id="submit-btn" class="form-btn" icon="search" label="Search"}
+			{button id="download-btn" class="form-btn" icon="csv" label="Download (CSV)"}
+			{button id="print-btn" class="form-btn" icon="print" label="Print"}
 		</TD>
 	</TR>
 	</TBODY>
@@ -579,6 +582,29 @@
 
 		$('#reset-consents').click(function() {
 			$('.cconsent[value="-1"]').prop('checked', true);
+		});
+
+		$('#assignment-selector').change(function() {
+			var value = parseInt($(this).val());
+			$('#assignment-days').toggle(value == -100).prop('disabled', function() {
+				return value != -100;
+			});
+		});
+
+		$('.form-btn').click(function() {
+			if ($('#customersearch').get(0).checkValidity()) {
+				switch ($(this).attr('id')) {
+					case 'submit-btn':
+						Search();
+						break;
+					case 'download-btn':
+						ExportCSV();
+						break;
+					case 'print-btn':
+						PrintList();
+						break;
+				}
+			}
 		});
 	});
 
