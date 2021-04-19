@@ -1923,7 +1923,14 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $text = str_replace("\n", "<br>\n", $text);
         }
 
-        $text = str_replace('%tid', sprintf("%06d", $params['id']), $text);
+        $text = preg_replace_callback(
+            '/%(\\d*)tid/',
+            function ($m) use ($params) {
+                return sprintf('%0' . $m[1] . 'd', $params['id']);
+            },
+            $text
+        );
+
         $text = str_replace('%queue', $params['queue'], $text);
         $text = str_replace('%cid', isset($params['customerid']) ? sprintf("%04d", $params['customerid']) : '', $text);
         $text = str_replace('%status', $params['status']['label'], $text);
