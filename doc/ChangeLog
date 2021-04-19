@@ -134,6 +134,8 @@ version 27-git (????-??-??):
     filters [chilan]
   - improvement: %tid in ticket notifications is replaced by number without leading zeroes; if you want
     to restore previous behavior you have to use digit prefix - ex. %6tid [chilan]
+  - improvement: 'rt.ticket_subject_remove_reply_prefix' controls if "Re:" or "Odp:" prefixes are removed
+    from ticket/message subject [chilan]
 
 version 26.0 (2020-12-15):
 
