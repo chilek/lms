@@ -132,6 +132,8 @@ version 27-git (????-??-??):
   - enhancement: network properties can be selected in quick search field [chilan]
   - improvement: added expire in 60, 90 and indicated number of days values in customer assignment
     filters [chilan]
+  - improvement: %tid in ticket notifications is replaced by number without leading zeroes; if you want
+    to restore previous behavior you have to use digit prefix - ex. %6tid [chilan]
 
 version 26.0 (2020-12-15):
 
