@@ -17,7 +17,13 @@
 	<div class="card-block">
 		<div class="card-block">
 			<blockquote class="blockquote">
-				<p class="mb-0 p-2">{$message.body|escape|replace:"\n":"<br/>"}</p>
+				<p class="mb-0 p-2">
+					{if $message.contenttype == 'text/plain'}
+						{$message.body|trim|escape|regex_replace:"/\r?\n/":'<br>'}
+					{else}
+						{$message.body}
+					{/if}
+				</p>
 			</blockquote>
 			<small class="p-2 text-muted">{trans("From")}:
 				{if $message.customerid}
