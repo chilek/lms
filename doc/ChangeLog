@@ -136,6 +136,9 @@ version 27-git (????-??-??):
     to restore previous behavior you have to use digit prefix - ex. %6tid [chilan]
   - improvement: 'rt.ticket_subject_remove_reply_prefix' controls if "Re:" or "Odp:" prefixes are removed
     from ticket/message subject [chilan]
+  - enhancement: change the way liabilities data are displayed [ravvar]
+  - enhancement: introduce 'phpui.default_assignment_dataset' configuration variable to set default dataset
+    in liabilities list ('gross' by default) [ravvar]
 
 version 26.0 (2020-12-15):
 

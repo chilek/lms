@@ -117,7 +117,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         $assignments = $this->db->GetAll('SELECT
                                             a.id AS id, a.tariffid, a.customerid, a.period AS periodvalue, a.backwardperiod,
-                                            a.at, a.suspended, a.invoice, a.settlement,
+                                            a.at, a.suspended, a.invoice, a.settlement, a.recipient_address_id,
                                             a.datefrom, a.dateto, a.pdiscount,
                                             a.vdiscount AS unitary_vdiscount,
                                             (a.vdiscount * a.count) AS vdiscount,                                                                                        
@@ -133,6 +133,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                             ROUND(t.downrate * a.count) AS downrate,
                                             downrate AS unitary_downrate,
                                             t.flags,
+                                            tax.value AS tax_value, tax.label AS tax_label,
+                                            taxl.value AS taxl_value, taxl.label AS taxl_label,
                                             (CASE WHEN t.type IS NULL THEN l.type ELSE t.type END) AS tarifftype,
                                             (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END) AS unitary_value,
                                             a.count,
@@ -153,6 +155,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                             assignments a
                                             LEFT JOIN tariffs t     ON (a.tariffid = t.id)
                                             LEFT JOIN liabilities l ON (a.liabilityid = l.id)
+                                            LEFT JOIN taxes tax     ON (tax.id = t.taxid)
+                                            LEFT JOIN taxes taxl    ON (taxl.id = l.taxid)
                                             LEFT JOIN promotionschemas ps ON ps.id = a.promotionschemaid
                                             LEFT JOIN promotions p ON p.id = ps.promotionid
                                             LEFT JOIN documents d ON d.id = a.docid
@@ -201,6 +205,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 }
 
                 $row['name'] = $this->getAssignmentPresentation($row);
+                $lms = LMS::getInstance();
+                $recipient_address = !empty($row['recipient_address_id']) ? $lms->GetAddress($row['recipient_address_id']) : null;
+                $row['recipient_location'] = $recipient_address ? $recipient_address['location'] : null;
 
                 $row['docnumber'] = docnumber(array(
                     'number' => $row['docnumber'],

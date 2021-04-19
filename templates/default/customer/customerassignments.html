@@ -3,7 +3,7 @@
 {css}
 
 {$today = strtotime('today')}
-
+{$defaultDataset = ConfigHelper::getConfig('phpui.default_assignment_dataset', 'gross')}
 {$speed_unit_type = ConfigHelper::getConfig('phpui.speed_unit_type', 1000)}
 {$speed_unit_aggregation_threshold = ConfigHelper::getConfig('phpui.speed_unit_aggregation_threshold', 5)}
 
@@ -49,7 +49,17 @@
 				{trans("<!assignment>Commited")}
 				<input type="checkbox" class="commited" value="1"{if $commited} checked{/if}>
 			</label>
-			<a class="clear-filter lms-ui-button" href="#"><i class="lms-ui-icon-delete"></i></a>
+			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+			<label>
+				{trans("Dataset")}
+				<select class="dataset-filter">
+					<option value="gross">{trans("Gross values")}</option>
+					<option value="net">{trans("Net values")}</option>
+					<option value="gross,net">{trans("Gross and net values")}</option>
+				</select>
+			</label>
+			{/if}
+			{button type="link" class="clear-filter" icon="delete" href="#" tip="Clear filter"}
 		{/tab_header_cell}
 		{tab_header_cell}
 			{if !$customerinfo.deleted}
@@ -69,41 +79,60 @@
 			<div class="lms-ui-tab-table-row header">
 				<div class="lms-ui-tab-table-wrapper col-8">
 					<div class="lms-ui-tab-table-wrapper col-4">
-						<div class="lms-ui-tab-table-column liability">
-							{trans("Liability:")}
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column liability">
+								{trans("Liability")}<br>
+								{trans("Recipient")}
+							</div>
+							{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+							<div class="lms-ui-tab-table-column base_value">
+								<span class="net">{trans("Base net price")}</span>
+								<span class="net-gross"><br></span>
+								<span class="gross">{trans("Base gross price")}</span>
+							</div>
+							{/if}
 						</div>
 						<div class="lms-ui-tab-table-wrapper col-2">
-							<div class="lms-ui-tab-table-column value">
+							<div class="lms-ui-tab-table-column ptu_quantity">
 								{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-									{trans("Value:")}
+									{trans("PTU")}
+								<br>
 								{/if}
+									{trans("Quantity")}
 							</div>
+							{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 							<div class="lms-ui-tab-table-column discount">
-								{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-									{trans("Discount:")}
-								{/if}
+								<span class="net">{trans("Net discount")}</span>
+								<span class="net-gross"><br></span>
+								<span class="gross">{trans("Gross discount")}</span>
 							</div>
-						</div>
-						<div class="lms-ui-tab-table-column accounting">
-							{trans("Accounting:")}
+							{/if}
 						</div>
 					</div>
 
 					<div class="lms-ui-tab-table-wrapper col-4">
+						{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 						<div class="lms-ui-tab-table-wrapper col-2">
-							<div class="lms-ui-tab-table-column downceil">
-								{trans("Downceil:")}
+							<div class="lms-ui-tab-table-column price">
+								<span class="net">{trans("Net price")}</span>
+								<span class="net-gross"><br></span>
+								<span class="gross">{trans("Gross price")}</span>
 							</div>
-							<div class="lms-ui-tab-table-column upceil">
-								{trans("Upceil:")}
+							<div class="lms-ui-tab-table-column total">
+								<span class="net">{trans("Net value")}</span>
+								<span class="net-gross"><br></span>
+								<span class="gross">{trans("Gross value")}</span>
 							</div>
 						</div>
+						{/if}
 						<div class="lms-ui-tab-table-wrapper col-2">
-							<div class="lms-ui-tab-table-column options">
-								{trans("Options:")}
+							<div class="lms-ui-tab-table-column downceil_upceil">
+								{trans("Downceil")}<br>
+								{trans("Upceil")}
 							</div>
-							<div class="lms-ui-tab-table-column period">
-								{trans("Period:")}
+							<div class="lms-ui-tab-table-column accounting-period">
+								{trans("Accounting")}<br>
+								{trans("Period")}
 							</div>
 						</div>
 					</div>
@@ -135,98 +164,250 @@
 				data-commited="{$a.commited}"
 				data-document="{if $a.doctype}{t a=$_DOCTYPES[$a.doctype] b=$a.fullnumber c=$a.cdate|date_format:"%Y/%m/%d"}$a no. $b issued on $c{/t}{/if}"
 				{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-					data-value="{$a.real_value|default:"0"|replace:",":"."}" data-currency="{$a.currency}"
-				{/if}
-				{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-					data-disc-value="{$a.real_disc_value|default:"0"|replace:",":"."}"
+					data-net-value="
+						{if $a.tax_value}
+							{($a.real_value / ($a.tax_value / 100 + 1))|replace:",":"."}
+						{elseif $a.taxl_value}
+							{($a.real_value / ($a.taxl_value / 100 + 1))|replace:",":"."}
+						{else}
+							0
+						{/if}
+					"
+					data-gross-value="{$a.real_value|default:"0"|replace:",":"."}"
+					data-currency="{$a.currency}"
+					data-gross-disc-value="{$a.real_disc_value|default:"0"|replace:",":"."}"
+					data-net-disc-value="
+						{if $a.tax_value}
+							{($a.real_disc_value / ($a.tax_value / 100 + 1))|replace:",":"."}
+						{elseif $a.taxl_value}
+							{($a.real_disc_value / ($a.taxl_value / 100 + 1))|replace:",":"."}
+						{else}
+							0
+						{/if}
+					"
 				{/if}
 				data-downceil="{$a.real_downceil|default:"0"}"
 				data-upceil="{$a.real_upceil|default:"0"}"
 				{if $a.tariffid || $a.liabilityid}data-target-url="?m=customerassignmentedit&id={$a.id}"{/if}>
 				<div class="lms-ui-tab-table-wrapper col-8">
 					<div class="lms-ui-tab-table-wrapper col-4">
-						<div class="lms-ui-tab-table-column liability">
-							{if !$a.tariffid && !$a.liabilityid}
-								<strong>{trans("Suspending of all liabilities")}</strong>
-							{else}
-								{if $a.tariffid}
-									<strong>
-										<A href="?m=tariffinfo&id={$a.tariffid}" {if !$a.commited} class="lms-ui-assignment-not-commited"{/if}>
-											{$a.name} {if count($assignments)>1} ({$a.id}){/if}
-										</A>
-										{if $a.attribute} - {$a.attribute|escape}{/if}
-									</strong>
-									{if $a.flags & $smarty.const.TARIFF_FLAG_REWARD_PENALTY}
-										{if $a.value < 0}
-											{icon name="reward" tip="reward"}
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column liability">
+								{if !$a.tariffid && !$a.liabilityid}
+									<strong>{trans("Suspending of all liabilities")}</strong>
+								{else}
+									{if $a.tariffid}
+										<strong>
+											<A href="?m=tariffinfo&id={$a.tariffid}" {if !$a.commited} class="lms-ui-assignment-not-commited"{/if}>
+												{$a.name} {if count($assignments)>1} ({$a.id}){/if}
+											</A>
+											{if $a.attribute} - {$a.attribute|escape}{/if}
+										</strong>
+										{if $a.flags & $smarty.const.TARIFF_FLAG_REWARD_PENALTY}
+											{if $a.value < 0}
+												{icon name="reward" tip="reward"}
+											{else}
+												{icon name="penalty" tip="penalty"}
+											{/if}
+										{/if}
+									{else}
+										{$a.name}
+									{/if}
+
+									{if $a.nodes}
+										({foreach $a.nodes as $v}{$v.name}{if !empty($v.netdev_name) && $v.netdev_ownerid == $customerinfo.id} / {$v.netdev_name}{/if}{if !$v@last}, {/if}{/foreach})
+									{/if}
+
+									{if $a.phones}
+										({foreach $a.phones as $v}{trans("phone:")} {$v.phone}{if !$v@last}, {/if}{/foreach})
+									{/if}
+								{/if}
+								<br>
+								{$a.recipient_location|default:"-"}
+							</div>
+							{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+							<div class="lms-ui-tab-table-column base_value">
+								<span class="net">
+									{if $a.tariffid || $a.liabilityid}
+										{if $a.tax_value}
+										{moneyf($a.unitary_value / ($a.tax_value / 100 + 1), $a.currency)}
+										{elseif $a.taxl_value}
+											{moneyf($a.unitary_value / ($a.taxl_value / 100 + 1), $a.currency)}
 										{else}
-											{icon name="penalty" tip="penalty"}
+											-
 										{/if}
 									{/if}
-								{else}
-									{$a.name}
-								{/if}
-
-								{if $a.nodes}
-									({foreach $a.nodes as $v}{$v.name}{if !empty($v.netdev_name) && $v.netdev_ownerid == $customerinfo.id} / {$v.netdev_name}{/if}{if !$v@last}, {/if}{/foreach})
-								{/if}
-
-								{if $a.phones}
-									({foreach $a.phones as $v}{trans("phone:")} {$v.phone}{if !$v@last}, {/if}{/foreach})
-								{/if}
+								</span>
+								<span class="net-gross"><br></span>
+								<span class="gross">
+									{if $a.tariffid || $a.liabilityid}
+										{moneyf($a.unitary_value, $a.currency)}
+									{/if}
+								</span>
+							</div>
 							{/if}
 						</div>
 						<div class="lms-ui-tab-table-wrapper col-2">
-							<div class="lms-ui-tab-table-column value">
-								{if $a.tariffid || $a.liabilityid}
-									{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-										{moneyf($a.value, $a.currency)}
-										{if $a.count != 1}({$a.unitary_value} x {$a.count}){/if}
+							<div class="lms-ui-tab-table-column ptu_quantity">
+								{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+									{if $a.tariffid || $a.liabilityid}
+										{$a.tax_label}{$a.taxl_label}
 									{/if}
+								<br>
 								{/if}
+								{$a.count|rtrim:'0'|rtrim:'.'}
 							</div>
+							{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 							<div class="lms-ui-tab-table-column discount">
-								{if $a.tariffid || $a.liabilityid}
-									{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-										{if $a.pdiscount != 0}{$a.pdiscount}%{elseif $a.vdiscount != 0}{moneyf($a.vdiscount, $a.currency)}
-											{if $a.count != 1}({$a.unitary_vdiscount} x {$a.count}){/if}{else}-{/if}
+								<span class="net">
+									{if $a.tariffid || $a.liabilityid}
+										{if $a.pdiscount != 0}
+											{$a.pdiscount}%
+										{elseif $a.vdiscount != 0}
+											{if $a.tax_value}
+												{moneyf($a.unitary_vdiscount / ($a.tax_value / 100 + 1), $a.currency)}
+												{if $a.count != 1}
+													<span title="{trans("Total net discount")}">
+														({moneyf(($a.unitary_vdiscount / ($a.tax_value / 100 + 1)) * $a.count, $a.currency)})
+													</span>
+												{/if}
+											{elseif $a.taxl_value}
+												{moneyf($a.unitary_vdiscount / ($a.taxl_value / 100 + 1), $a.currency)}
+												{if $a.count != 1}
+													<span title="{trans("Total net discount")}">
+														({moneyf(($a.unitary_vdiscount / ($a.tax_value / 100 + 1)) * $a.count, $a.currency)})
+													</span>
+												{/if}
+											{else}
+												-
+											{/if}
+										{else}
+											-
+										{/if}
 									{/if}
-								{/if}
+								</span>
+								<span class="net-gross"><br></span>
+								<span class="gross">
+									{if $a.tariffid || $a.liabilityid}
+										{if $a.pdiscount != 0}
+											{$a.pdiscount}%
+										{elseif $a.vdiscount != 0}
+											{moneyf($a.unitary_vdiscount, $a.currency)}
+											{if $a.count != 1}
+												<span title="{trans("Total gross discount")}">({moneyf($a.vdiscount, $a.currency)})</span>
+											{/if}
+										{else}
+											-
+										{/if}
+									{/if}
+								</span>
 							</div>
-						</div>
-						<div class="lms-ui-tab-table-column accounting">
-							{if $a.tariffid || $a.liabilityid}
-								{$a.payday}{if $a.backwardperiod} {icon name="lms-ui-icon-previous" tip="<!assignment>backward"}{/if}
 							{/if}
 						</div>
 					</div>
 
 					<div class="lms-ui-tab-table-wrapper col-4">
+						{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 						<div class="lms-ui-tab-table-wrapper col-2">
-							<div class="lms-ui-tab-table-column downceil">
-								{if $a.tariffid || $a.liabilityid}
-									{if $a.downceil}
-										{convert_to_units($a.downceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s
-										{if $a.count != 1}({convert_to_units($a.unitary_downceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)} x {$a.count}){/if}
-									{else}-{/if}
-								{/if}
+							<div class="lms-ui-tab-table-column price">
+								<span class="net">
+									{if isset($a.real_disc_value)}
+										{if $a.tax_value}
+											{moneyf(($a.real_disc_value / $a.count) / ($a.tax_value / 100 + 1), $a.currency)}
+										{elseif $a.taxl_value}
+											{moneyf(($a.real_disc_value / $a.count) / ($a.taxl_value / 100 + 1), $a.currency)}
+										{else}
+											-
+										{/if}
+									{else}
+										{if $a.tax_value}
+											{moneyf(($a.discounted_value / $a.count) / ($a.tax_value / 100 + 1), $a.currency)}
+										{elseif $a.taxl_value}
+											{moneyf(($a.discounted_value / $a.count) / ($a.taxl_value / 100 + 1), $a.currency)}
+										{else}
+											-
+										{/if}
+									{/if}
+								</span>
+								<span class="net-gross"><br></span>
+								<span class="gross">
+									{if isset($a.real_disc_value)}
+										{moneyf(($a.real_disc_value / $a.count), $a.currency)}
+									{else}
+										{moneyf(($a.discounted_value / $a.count), $a.currency)}
+									{/if}
+								</span>
 							</div>
-							<div class="lms-ui-tab-table-column upceil">
-								{if $a.tariffid || $a.liabilityid}
-									{if $a.upceil}
-										{convert_to_units($a.upceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s
-										{if $a.count != 1}({convert_to_units($a.unitary_upceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)} x {$a.count}){/if}
-									{else}-{/if}
-								{/if}
+							<div class="lms-ui-tab-table-column total">
+								<span class="net">
+									{if isset($a.real_disc_value)}
+										{if $a.tax_value}
+											{moneyf($a.real_disc_value / ($a.tax_value / 100 + 1), $a.currency)}
+										{elseif $a.taxl_value}
+											{moneyf($a.real_disc_value / ($a.taxl_value / 100 + 1), $a.currency)}
+										{else}
+											-
+										{/if}
+									{else}
+										{if $a.tax_value}
+											{moneyf($a.discounted_value / ($a.tax_value / 100 + 1), $a.currency)}
+										{elseif $a.taxl_value}
+											{moneyf($a.discounted_value / ($a.taxl_value / 100 + 1), $a.currency)}
+										{else}
+											-
+										{/if}
+									{/if}
+								</span>
+								<span class="net-gross"><br></span>
+								<span class="gross">
+									{if isset($a.real_disc_value)}
+										{moneyf($a.real_disc_value, $a.currency)}
+									{else}
+										{moneyf($a.discounted_value, $a.currency)}
+									{/if}
+								</span>
 							</div>
 						</div>
+						{/if}
 						<div class="lms-ui-tab-table-wrapper col-2">
-							<div class="lms-ui-tab-table-column options">
+							<div class="lms-ui-tab-table-column downceil_upceil">
 								{if $a.tariffid || $a.liabilityid}
-									<i class="lms-ui-icon-options lms-ui-tooltip-customerassignmentinfo" data-resourceid="{$a.id}"></i>
+									{if $a.downceil}
+										{convert_to_units($a.unitary_downceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s
+										{if $a.count != 1}
+											<span title="{trans("Total downceil")}">
+												({convert_to_units($a.downceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s)
+											</span>
+										{/if}
+									{else}
+										-
+									{/if}
+								{/if}
+								<br>
+								{if $a.tariffid || $a.liabilityid}
+									{if $a.upceil}
+										{convert_to_units($a.unitary_upceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s
+										{if $a.count != 1}
+											<span title="{trans("Total upceil")}">
+												({convert_to_units($a.upceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s)
+											</span>
+										{/if}
+									{else}
+										-
+									{/if}
 								{/if}
 							</div>
-							<div class="lms-ui-tab-table-column period">
+							<div class="lms-ui-tab-table-column accounting-period">
+								{if $a.tariffid || $a.liabilityid}
+									{$a.payday}
+									{if $a.backwardperiod}
+										&nbsp;{icon name="lms-ui-icon-previous" tip="<!assignment>backward"}
+									{/if}
+									{if $a.settlement}
+										&nbsp;{icon name="lms-ui-icon-next" tip="with settlement"}
+									 {/if}
+								{/if}
+								<br>
 								{if $a.datefrom}{trans("from")} {$a.datefrom|date_format:"%Y/%m/%d"}{/if}
 								{if $a.dateto}{trans("to")} {$a.dateto|date_format:"%Y/%m/%d"}{/if}
 								{if !$a.datefrom && !$a.dateto}-{/if}
@@ -236,6 +417,10 @@
 				</div>
 
 				<div class="lms-ui-tab-table-column buttons">
+					{if $a.tariffid || $a.liabilityid}
+						<i class="lms-ui-icon-options lms-ui-tooltip-customerassignmentinfo" data-resourceid="{$a.id}"></i>
+					{/if}
+
 					{if ($a.tariffid || $a.liabilityid) && (($a.dateto > $today || !$a.dateto) || ($a.liabilityid && $a.at > $today))}
 						{button type="link" icon="wait" href="?m=customerassignmentedit&action=suspend&id={$a.id}&suspend={if $a.suspended}0{else}1{/if}"
 							tip="{if $a.suspended}Enable{else}Disable{/if} accounting of selected liability"}
@@ -261,38 +446,56 @@
 				<div class="lms-ui-tab-table-row footer">
 					<div class="lms-ui-tab-table-wrapper col-8">
 						<div class="lms-ui-tab-table-wrapper col-4">
-							<div class="lms-ui-tab-table-column liability">
-								<strong>{trans("Total:")}</strong>
+							<div class="lms-ui-tab-table-wrapper col-2">
+								<div class="lms-ui-tab-table-column liability">
+									<strong>{trans("Current liabilities total")}</strong>
+								</div>
+								{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+								<div class="lms-ui-tab-table-column base_value">
+									<span class="total_net_value net"></span>
+									<span class="net-gross"><br></span>
+									<span class="total_gross_value gross"></span>
+								</div>
+								{/if}
 							</div>
 							<div class="lms-ui-tab-table-wrapper col-2">
-								<div class="lms-ui-tab-table-column value total-value">
+								<div class="lms-ui-tab-table-column ptu_quantity">
+									&nbsp;
 								</div>
-								<div class="lms-ui-tab-table-column discount total-disc-value">
+								{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+								<div class="lms-ui-tab-table-column discount">
+									<span class="total_net_discount net"></span>
+									<span class="net-gross"><br></span>
+									<span class="total_gross_discount gross"></span>
 								</div>
-							</div>
-							<div class="lms-ui-tab-table-column accounting">
-								-
+								{/if}
 							</div>
 						</div>
 
 						<div class="lms-ui-tab-table-wrapper col-4">
+							{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 							<div class="lms-ui-tab-table-wrapper col-2">
-								<div class="lms-ui-tab-table-column downceil total-downceil">
+								<div class="lms-ui-tab-table-column price">
+									&nbsp;
 								</div>
-								<div class="lms-ui-tab-table-column upceil total-upceil">
+								<div class="lms-ui-tab-table-column total">
+									<span class="total_net_disc_value net"></span>
+									<span class="net-gross"><br></span>
+									<span class="total_gross_disc_value gross"></span>
 								</div>
 							</div>
+							{/if}
 							<div class="lms-ui-tab-table-wrapper col-2">
-								<div class="lms-ui-tab-table-column options">
-									-
+								<div class="lms-ui-tab-table-column downceil_upceil">
+									<span class="total-downceil"></span>
+									<br>
+									<span class="total-upceil"></span>
 								</div>
-								<div class="lms-ui-tab-table-column period">
-									-
+								<div class="lms-ui-tab-table-column accounting-period">
 								</div>
 							</div>
 						</div>
 					</div>
-
 					<div class="lms-ui-tab-table-column buttons">
 					</div>
 				</div>
@@ -331,6 +534,7 @@
 
 	$(function() {
 		var default_period = {if $period}'{$period}'{else}null{/if};
+		var defaultDataset = '{$defaultDataset}';
 		var assignment_types = [];
 		var documents = [];
 		var periods = [];
@@ -427,21 +631,33 @@
 
 			var total_downceil = 0;
 			var total_upceil = 0;
-			var total_value = {};
-			var total_disc_value = {};
+			var total_gross_value = {};
+			var total_net_value = {};
+			var total_gross_disc_value = {};
+			var total_net_disc_value = {};
+			var total_net_discount = {};
+			var total_gross_discount = {};
 			tab_elem.find('.lms-ui-tab-table-row' + selector).each(function () {
 				total_downceil += parseInt($(this).attr('data-downceil'));
 				total_upceil += parseInt($(this).attr('data-upceil'));
 				{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 				var currency = $(this).attr('data-currency');
-				if (!total_value.hasOwnProperty(currency)) {
-					total_value[currency] = 0;
+				if (!total_gross_value.hasOwnProperty(currency)) {
+					total_gross_value[currency] = 0;
+					total_net_value[currency] = 0;
+					total_net_discount[currency] = 0;
+					total_gross_discount[currency] = 0;
 				}
-				total_value[currency] += parseFloat($(this).attr('data-value'));
-				if (!total_disc_value.hasOwnProperty(currency)) {
-					total_disc_value[currency] = 0;
+				total_gross_value[currency] += parseFloat($(this).attr('data-gross-value'));
+				total_net_value[currency] += parseFloat($(this).attr('data-net-value'));
+				if (!total_gross_disc_value.hasOwnProperty(currency)) {
+					total_gross_disc_value[currency] = 0;
+					total_net_disc_value[currency] = 0;
 				}
-				total_disc_value[currency] += parseFloat($(this).attr('data-disc-value'));
+				total_gross_disc_value[currency] += parseFloat($(this).attr('data-gross-disc-value'));
+				total_net_disc_value[currency] += parseFloat($(this).attr('data-net-disc-value'));
+				total_net_discount[currency] += (parseFloat($(this).attr('data-net-value')) - parseFloat($(this).attr('data-net-disc-value')));
+				total_gross_discount[currency] += (parseFloat($(this).attr('data-gross-value')) - parseFloat($(this).attr('data-gross-disc-value')));
 				{/if}
 			});
 
@@ -449,21 +665,58 @@
 			tab_elem.find('.total-upceil').html(total_upceil ? convert_to_units(total_upceil * {$speed_unit_type}, {$speed_unit_aggregation_threshold}, {$speed_unit_type}) + '/s' : '-');
 			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 			var html = '';
-			$.each(total_value, function (currency, value) {
+			$.each(total_gross_value, function (currency, value) {
 				if (html.length) {
 					html += '<br>';
 				}
 				html += sprintf(money_format, value, currency);
 			});
-			$('.total-value').html(html);
+			tab_elem.find('.total_gross_value').html('(' + (html.length ? html : '-') + ')');
+
 			var html = '';
-			$.each(total_disc_value, function (currency, value) {
+			$.each(total_net_value, function (currency, value) {
 				if (html.length) {
 					html += '<br>';
 				}
 				html += sprintf(money_format, value, currency);
 			});
-			tab_elem.find('.total-disc-value').html('(' + (html.length ? html : '-') + ')');
+			tab_elem.find('.total_net_value').html('(' + (html.length ? html : '-') + ')');
+
+			var html = '';
+			$.each(total_gross_disc_value, function (currency, value) {
+				if (html.length) {
+					html += '<br>';
+				}
+				html += sprintf(money_format, value, currency);
+			});
+			tab_elem.find('.total_gross_disc_value').html('(' + (html.length ? html : '-') + ')');
+
+			var html = '';
+			$.each(total_net_disc_value, function (currency, value) {
+				if (html.length) {
+					html += '<br>';
+				}
+				html += sprintf(money_format, value, currency);
+			});
+			tab_elem.find('.total_net_disc_value').html('(' + (html.length ? html : '-') + ')');
+
+			var html = '';
+			$.each(total_gross_discount, function (currency, value) {
+				if (html.length) {
+					html += '<br>';
+				}
+				html += sprintf(money_format, value, currency);
+			});
+			tab_elem.find('.total_gross_discount').html('(' + (html.length ? html : '-') + ')');
+
+			var html = '';
+			$.each(total_net_discount, function (currency, value) {
+				if (html.length) {
+					html += '<br>';
+				}
+				html += sprintf(money_format, value, currency);
+			});
+			tab_elem.find('.total_net_discount').html('(' + (html.length ? html : '-') + ')');
 			{/if}
 
 			if (tab_elem.find('.lms-ui-tab-table-row[data-tariff-type]').length) {
@@ -498,6 +751,8 @@
 			removeStorageItem('{$tab_id}_period_{$customerinfo.id}');
 			removeStorageItem('{$tab_id}_expired_{$customerinfo.id}');
 			removeStorageItem('{$tab_id}_commited_{$customerinfo.id}');
+			removeStorageItem('{$tab_id}_dataset_{$customerinfo.id}');
+			updateDataset(defaultDataset);
 
 			return false;
 		});
@@ -523,6 +778,40 @@
 						location.href = '?m=customerassignmentdel&cid=' + $(this).prev().val();
 					});
 			return false;
+		});
+
+		function updateDataset (datasetFilter) {
+			tab_elem.find('.dataset-filter').find('option[value="' + datasetFilter + '"]').prop('selected', true);
+
+			switch(datasetFilter) {
+				case "gross":
+					tab_elem.find('.net').hide();
+					tab_elem.find('.gross').show().removeClass('bold');
+					tab_elem.find('.net-gross').hide();
+					break;
+				case "net":
+					tab_elem.find('.net').show();
+					tab_elem.find('.gross').hide();
+					tab_elem.find('.net-gross').hide();
+					break;
+				default:
+					tab_elem.find('.net').show();
+					tab_elem.find('.gross').show().addClass('bold');
+					tab_elem.find('.net-gross').show();
+			}
+		}
+
+		var selected_dataset = getStorageItem('{$tab_id}_dataset_{$customerinfo.id}');
+
+		if (!selected_dataset) {
+			selected_dataset = defaultDataset;
+		}
+		updateDataset(selected_dataset);
+
+		tab_elem.find('.dataset-filter').change(function() {
+			var datasetFilter = $(this).val();
+			setStorageItem('{$tab_id}_dataset_{$customerinfo.id}', datasetFilter);
+			updateDataset(datasetFilter);
 		});
 	});
 
