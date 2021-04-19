@@ -962,19 +962,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         }
 
         switch ($as) {
-            case 7:
-            case 14:
-            case 30:
-                    $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE '
-                    .'a.suspended = 0 AND a.commited = 1 AND a.dateto > '.time(). ' AND a.dateto <= '. (time() + ($as*86400))
-                    .' AND NOT EXISTS (SELECT 1 FROM assignments aa WHERE aa.customerid = a.customerid AND aa.datefrom > a.dateto LIMIT 1)';
-                break;
             case -1:
                 $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended = 0 AND a.commited = 1 AND a.dateto = 0';
                 break;
             case -2:
                 $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended = 0 AND a.commited = 1 '
-                .'AND (a.dateto = 0 OR a.dateto > ?NOW?) AND ((a.at + 86400) > ?NOW? or a.period != 0)';
+                    . 'AND (a.dateto = 0 OR a.dateto > ?NOW?) AND ((a.at + 86400) > ?NOW? or a.period != 0)';
                 break;
             case -3:
                 $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.invoice = ' . DOC_INVOICE
@@ -990,7 +983,13 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     AND (a.dateto = 0 OR a.dateto > ?NOW?) AND ((a.at + 86400) > ?NOW? or a.period != 0)';
                 break;
             default:
-                $assignment = null;
+                if ($as > 0) {
+                    $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE
+                        a.suspended = 0 AND a.commited = 1 AND a.dateto > ' . time() . ' AND a.dateto <= ' . (time() + ($as * 86400))
+                        . ' AND NOT EXISTS (SELECT 1 FROM assignments aa WHERE aa.customerid = a.customerid AND aa.datefrom > a.dateto LIMIT 1)';
+                } else {
+                    $assignment = null;
+                }
                 break;
         }
 
