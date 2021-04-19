@@ -153,7 +153,7 @@ class ULMS extends LMS
 
         $ticket['messages'] = $this->DB->GetAll('SELECT rtmessages.id AS id, mailfrom, subject, body, createtime, '
                     .$this->DB->Concat('UPPER(customers.lastname)', "' '", 'customers.name').' AS customername,
-				    userid, vusers.name AS username, customerid
+				    userid, vusers.name AS username, customerid, contenttype
 				FROM rtmessages
 				LEFT JOIN customers ON (customers.id = customerid)
 				LEFT JOIN vusers ON (vusers.id = userid)
@@ -161,10 +161,29 @@ class ULMS extends LMS
 				ORDER BY createtime DESC', array($id, RTMESSAGE_REGULAR));
 
         foreach ($ticket['messages'] as &$message) {
-            $message['attachments'] = $this->DB->GetAll(
-                'SELECT filename, contenttype FROM rtattachments WHERE messageid = ?',
+            $message['attachments'] = array();
+            $attachments = $this->DB->GetAll(
+                'SELECT filename, contenttype, cid FROM rtattachments WHERE messageid = ?',
                 array($message['id'])
             );
+            if ($attachments) {
+                if ($message['contenttype'] == 'text/html') {
+                    $url_prefix = 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://'
+                        . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1);
+                }
+
+                foreach ($attachments as $attachment) {
+                    if (empty($attachment['cid'])) {
+                        $message['attachments'][] = $attachment;
+                    } elseif ($message['contenttype'] == 'text/html') {
+                        $message['body'] = str_ireplace(
+                            '"CID:' . $attachment['cid'] . '"',
+                            '"' . $url_prefix . '/?m=helpdesk&f=attachment&cid=' . $attachment['cid'] . '&tid=' . $id . '&msgid=' . $message['id'] . '"',
+                            $message['body']
+                        );
+                    }
+                }
+            }
         }
 
         $ticket['status'] = $RT_STATES[$ticket['state']];

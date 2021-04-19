@@ -615,24 +615,49 @@ function module_main()
 function module_attachment()
 {
     global $DB, $SESSION;
-    $attach = $DB->GetRow(
-        'SELECT ticketid, filename, a.contenttype FROM rtattachments a
-		JOIN rtmessages m ON m.id = a.messageid
-		JOIN rttickets t ON t.id = m.ticketid
-		WHERE t.customerid = ? AND a.messageid = ? AND filename = ?',
-        array($SESSION->id, $_GET['msgid'], $_GET['file'])
-    );
+
+    if (isset($_GET['file'])) {
+        $filename = urldecode($_GET['file']);
+        $attach = $DB->GetRow(
+            'SELECT ticketid, filename, a.contenttype FROM rtattachments a
+            JOIN rtmessages m ON m.id = a.messageid
+            JOIN rttickets t ON t.id = m.ticketid
+            WHERE t.customerid = ? AND a.messageid = ? AND filename = ?',
+            array(
+                $SESSION->id,
+                intval($_GET['msgid']),
+                $filename
+            )
+        );
+    } else {
+        $cid = urldecode($_GET['cid']);
+        $attach = $DB->GetRow(
+            'SELECT m.ticketid, a.* FROM rtattachments a
+            JOIN rtmessages m ON m.id = a.messageid
+            JOIN rttickets t ON t.id = m.ticketid
+            WHERE t.customerid = ? AND a.messageid = ? AND a.cid = ?',
+            array(
+                $SESSION->id,
+                intval($_GET['msgid']),
+                $cid
+            )
+        );
+    }
+
     if (empty($attach)) {
         die;
     }
-    $file = ConfigHelper::getConfig('rt.mail_dir') . sprintf("/%06d/%06d/%s", $attach['ticketid'], $_GET['msgid'], $_GET['file']);
+    $file = ConfigHelper::getConfig('rt.mail_dir') . sprintf(
+        "/%06d/%06d/%s",
+        $attach['ticketid'],
+        $_GET['msgid'],
+        $attach['filename']
+    );
     if (file_exists($file)) {
-        $size = @filesize($file);
-        header('Content-Length: ' . $size . ' bytes');
         header('Content-Type: '. $attach['contenttype']);
         header('Cache-Control: private');
-        header('Content-Disposition: attachment; filename=' . $attach['filename']);
-        @readfile($file);
+        header('Content-Disposition: ' . ($attach['contenttype'] == 'application/pdf' ? 'inline' : 'attachment') . '; filename=' . $attach['filename']);
+        echo @file_get_contents($file);
     }
     die;
 }
