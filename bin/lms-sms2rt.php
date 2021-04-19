@@ -391,16 +391,35 @@ if (($fh = fopen($message_file, "r")) != null) {
             }
 
             if (!empty($queuedata['newticketsubject']) && !empty($queuedata['newticketbody']) && !empty($emails)) {
-                $ticketid = sprintf("%06d", $ticket_id);
                 $custmail_subject = $queuedata['newticketsubject'];
-                $custmail_subject = str_replace('%tid', $ticketid, $custmail_subject);
-                $custmail_subject = str_replace('%title', $mh_subject, $custmail_subject);
+                $custmail_subject = preg_replace_callback(
+                    '/%(\\d*)tid/',
+                    function ($m) use ($tid) {
+                        return sprintf('%0' . $m[1] . 'd', $tid);
+                    },
+                    $custmail_subject
+                );
+                $custmail_subject = str_replace(
+                    '%title',
+                    trans('SMS from $a', (empty($phone) ? trans("unknown") : $formatted_phone)),
+                    $custmail_subject
+                );
                 $custmail_body = $queuedata['newticketbody'];
-                $custmail_body = str_replace('%tid', $ticketid, $custmail_body);
-                $custmail_body = str_replace('%cid', $ticket['customerid'], $custmail_body);
+                $custmail_body = preg_replace_callback(
+                    '/%(\\d*)tid/',
+                    function ($m) use ($tid) {
+                        return sprintf('%0' . $m[1] . 'd', $tid);
+                    },
+                    $custmail_body
+                );
+                $custmail_body = str_replace('%cid', $customer['cid'], $custmail_body);
                 $custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
                 $custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
-                $custmail_body = str_replace('%title', $mh_subject, $custmail_body);
+                $custmail_body = str_replace(
+                    '%title',
+                    trans('SMS from $a', (empty($phone) ? trans("unknown") : $formatted_phone)),
+                    $custmail_body
+                );
                 $custmail_headers = array(
                     'From' => $headers['From'],
                     'Reply-To' => $headers['From'],
@@ -413,11 +432,21 @@ if (($fh = fopen($message_file, "r")) != null) {
             }
             if (!empty($queuedata['newticketsmsbody']) && !empty($mobile_phones)) {
                 $custsms_body = $queuedata['newticketsmsbody'];
-                $custsms_body = str_replace('%tid', $ticketid, $custsms_body);
-                $custsms_body = str_replace('%cid', $ticket['customerid'], $custsms_body);
+                $custsms_body = preg_replace_callback(
+                    '/%(\\d*)tid/',
+                    function ($m) use ($tid) {
+                        return sprintf('%0' . $m[1] . 'd', $tid);
+                    },
+                    $custsms_body
+                );
+                $custsms_body = str_replace('%cid', $customer['cid'], $custsms_body);
                 $custsms_body = str_replace('%pin', $info['pin'], $custsms_body);
                 $custsms_body = str_replace('%customername', $info['customername'], $custsms_body);
-                $custsms_body = str_replace('%title', $mh_subject, $custsms_body);
+                $custsms_body = str_replace(
+                    '%title',
+                    trans('SMS from $a', (empty($phone) ? trans("unknown") : $formatted_phone)),
+                    $custsms_body
+                );
 
                 foreach ($mobile_phones as $phone) {
                     $LMS->SendSMS($phone['contact'], $custsms_body);

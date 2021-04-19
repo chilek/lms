@@ -2376,6 +2376,12 @@ class LMS
         $manager->getTicketImageGalleries($ticket);
     }
 
+    public function cleanupTicketSubject($subject)
+    {
+        $manager = $this->getHelpdeskManager();
+        return $manager->cleanupTicketSubject($subject);
+    }
+
     /*
      *  LMS-UI configuration
      */

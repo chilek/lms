@@ -223,7 +223,7 @@ if (isset($_GET['ticketid'])) {
             $headers['X-Priority'] = $RT_MAIL_PRIORITIES[$ticket['priority']];
 
             if (ConfigHelper::checkConfig('rt.note_send_re_in_subject')) {
-                $params['subject'] = 'Re: '.$ticket['subject'];
+                $params['subject'] = 'Re: ' . $LMS->cleanupTicketSubject($ticket['subject']);
             }
 
             $headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject'), $params);

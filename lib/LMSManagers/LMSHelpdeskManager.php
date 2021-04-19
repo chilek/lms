@@ -2541,4 +2541,21 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         }
         unset($message);
     }
+
+    public function cleanupTicketSubject($subject)
+    {
+        static $ticket_subject_remove_reply_prefix = null;
+        static $subject_ticket_regexp_match = null;
+
+        if (!isset($ticket_subject_remove_reply_prefix)) {
+            $ticket_subject_remove_reply_prefix = ConfigHelper::checkConfig('rt.ticket_subject_remove_reply_prefix');
+            $subject_ticket_regexp_match = ConfigHelper::getConfig('rt.subject_ticket_regexp_match', '\[RT#(?<ticketid>[0-9]{6,})\]');
+        }
+        if ($ticket_subject_remove_reply_prefix) {
+            $subject = preg_replace('/(Re|Odp):\s*/', '', $subject);
+        }
+        $subject = preg_replace('/' . $subject_ticket_regexp_match . '/', '', $subject);
+
+        return $subject;
+    }
 }

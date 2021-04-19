@@ -194,10 +194,12 @@ if (isset($_POST['message'])) {
                 $message['mailfrom'] = $mailfrom;
                 $headers['Date'] = date('r');
                 $headers['From'] = $mailfname . ' <' . $message['mailfrom'] . '>';
-                $headers['Subject'] = str_replace(
-                    array('%tid', '%subject'),
-                    array($ticketid, $message['subject']),
-                    $customer_notification_mail_subject
+                $headers['Subject'] = preg_replace_callback(
+                    '/%(\\d*)tid/',
+                    function ($m) use ($ticketid) {
+                        return sprintf('%0' . $m[1] . 'd', $ticketid);
+                    },
+                    str_replace('%subject', $message['subject'], $customer_notification_mail_subject)
                 );
                 $headers['Reply-To'] = $headers['From'];
 
@@ -466,15 +468,26 @@ if (isset($_POST['message'])) {
             if (isset($message['customernotify']) && !empty($ticketdata['customerid']) && (!empty($emails) || !empty($mobile_phones))) {
                 $queuedata = $LMS->GetQueueByTicketId($ticketid);
 
-                $ticket_id = sprintf("%06d", $ticketid);
                 $title = $DB->GetOne('SELECT subject FROM rtmessages WHERE ticketid = ?
 							ORDER BY id LIMIT 1', array($ticketid));
                 if (!empty($queuedata['newmessagesubject']) && !empty($queuedata['newmessagebody']) && !empty($emails)) {
                     $custmail_subject = $queuedata['newmessagesubject'];
-                    $custmail_subject = str_replace('%tid', $ticket_id, $custmail_subject);
+                    $custmail_subject = preg_replace_callback(
+                        '/%(\\d*)tid/',
+                        function ($m) use ($ticketid) {
+                            return sprintf('%0' . $m[1] . 'd', $ticketid);
+                        },
+                        $custmail_subject
+                    );
                     $custmail_subject = str_replace('%title', $title, $custmail_subject);
                     $custmail_body = $queuedata['newmessagebody'];
-                    $custmail_body = str_replace('%tid', $ticket_id, $custmail_body);
+                    $custmail_body = preg_replace_callback(
+                        '/%(\\d*)tid/',
+                        function ($m) use ($ticketid) {
+                            return sprintf('%0' . $m[1] . 'd', $ticketid);
+                        },
+                        $custmail_body
+                    );
                     $custmail_body = str_replace('%cid', $ticketdata['customerid'], $custmail_body);
                     $custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
                     $custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
@@ -491,7 +504,13 @@ if (isset($_POST['message'])) {
                 }
                 if (!empty($queuedata['newmessagesmsbody']) && !empty($mobile_phones)) {
                     $custsms_body = $queuedata['newmessagesmsbody'];
-                    $custsms_body = str_replace('%tid', $ticket_id, $custsms_body);
+                    $custsms_body = preg_replace_callback(
+                        '/%(\\d*)tid/',
+                        function ($m) use ($ticketid) {
+                            return sprintf('%0' . $m[1] . 'd', $ticketid);
+                        },
+                        $custsms_body
+                    );
                     $custsms_body = str_replace('%cid', $ticketdata['customerid'], $custsms_body);
                     $custsms_body = str_replace('%pin', $info['pin'], $custsms_body);
                     $custsms_body = str_replace('%customername', $info['customername'], $custsms_body);
@@ -626,7 +645,7 @@ if (isset($_POST['message'])) {
                 }
             }
 
-            $message['subject'] = 'Re: ' . $reply['subject'];
+            $message['subject'] = 'Re: ' . $LMS->cleanupTicketSubject($reply['subject']);
             $message['inreplyto'] = $reply['id'];
             $message['references'] = implode(' ', $reply['references']);
             $message['cc'] = $reply['cc'];

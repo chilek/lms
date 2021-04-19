@@ -199,13 +199,24 @@ if ($id && !isset($_POST['ticket'])) {
                 $from = $mailfname . ' <' . $mailfrom . '>';
 
                 if (!empty($ticket['customerid'])) {
-                    $ticketid = sprintf("%06d", $id);
                     if (!empty($queue['resolveticketsubject']) && !empty($queue['resolveticketbody']) && !empty($emails)) {
                         $custmail_subject = $queue['resolveticketsubject'];
-                        $custmail_subject = str_replace('%tid', $ticketid, $custmail_subject);
+                        $custmail_subject = preg_replace_callback(
+                            '/%(\\d*)tid/',
+                            function ($m) use ($id) {
+                                return sprintf('%0' . $m[1] . 'd', $id);
+                            },
+                            $custmail_subject
+                        );
                         $custmail_subject = str_replace('%title', $ticket['subject'], $custmail_subject);
                         $custmail_body = $queue['resolveticketbody'];
-                        $custmail_body = str_replace('%tid', $ticketid, $custmail_body);
+                        $custmail_body = preg_replace_callback(
+                            '/%(\\d*)tid/',
+                            function ($m) use ($id) {
+                                return sprintf('%0' . $m[1] . 'd', $id);
+                            },
+                            $custmail_body
+                        );
                         $custmail_body = str_replace('%cid', $info['id'], $custmail_body);
                         $custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
                         $custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
@@ -223,7 +234,13 @@ if ($id && !isset($_POST['ticket'])) {
                     }
                     if (!empty($queue['resolveicketsmsbody']) && !empty($mobile_phones)) {
                         $custsms_body = $queue['resolveticketsmsbody'];
-                        $custsms_body = str_replace('%tid', $ticketid, $custsms_body);
+                        $custsms_body = preg_replace_callback(
+                            '/%(\\d*)tid/',
+                            function ($m) use ($id) {
+                                return sprintf('%0' . $m[1] . 'd', $id);
+                            },
+                            $custsms_body
+                        );
                         $custsms_body = str_replace('%cid', $info['id'], $custsms_body);
                         $custsms_body = str_replace('%pin', $info['pin'], $custsms_body);
                         $custsms_body = str_replace('%customername', $info['customername'], $custsms_body);

@@ -205,7 +205,7 @@ $autoreply_name = ConfigHelper::getConfig('rt.mail_from_name', '', true);
 $autoreply_subject = ConfigHelper::getConfig('rt.autoreply_subject', "[RT#%tid] Receipt of request '%subject'");
 $autoreply_body = ConfigHelper::getConfig('rt.autoreply_body', '', true);
 $autoreply = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.autoreply', '1'));
-$subject_ticket_regexp_match = ConfigHelper::getConfig('rt.subject_ticket_regexp_match', 'RT#(?<ticketid>[0-9]{6,})');
+$subject_ticket_regexp_match = ConfigHelper::getConfig('rt.subject_ticket_regexp_match', '\[RT#(?<ticketid>[0-9]{6,})\]');
 $modify_ticket_timeframe = ConfigHelper::getConfig('rt.allow_modify_resolved_tickets_newer_than', 604800);
 
 $detect_customer_location_address = ConfigHelper::checkConfig('rt.detect_customer_location_address');
@@ -740,10 +740,21 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             $message_id = $LMS->GetLastMessageID();
 
             if ($autoreply) {
-                $ticketid = sprintf("%06d", $ticket_id);
-                $autoreply_subject = str_replace('%tid', $ticketid, $autoreply_subject);
+                $autoreply_subject = preg_replace_callback(
+                    '/%(\\d*)tid/',
+                    function ($m) use ($ticket_id) {
+                        return sprintf('%0' . $m[1] . 'd', $ticket_id);
+                    },
+                    $autoreply_subject
+                );
                 $autoreply_subject = str_replace('%subject', $mail_mh_subject, $autoreply_subject);
-                $autoreply_body = str_replace('%tid', $ticketid, $autoreply_body);
+                $autoreply_body = preg_replace_callback(
+                    '/%(\\d*)tid/',
+                    function ($m) use ($ticket_id) {
+                        return sprintf('%0' . $m[1] . 'd', $ticket_id);
+                    },
+                    $autoreply_body
+                );
                 $autoreply_body = str_replace('%subject', $mail_mh_subject, $autoreply_body);
 
                 if ($replytoemail) {
@@ -874,12 +885,23 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             }
 
             if (!empty($queuedata[$ticketsubject_variable]) && !empty($queuedata[$ticketbody_variable]) && !empty($emails)) {
-                $ticketid = sprintf("%06d", $ticket_id);
                 $custmail_subject = $queuedata[$ticketsubject_variable];
-                $custmail_subject = str_replace('%tid', $ticketid, $custmail_subject);
+                $custmail_subject = preg_replace_callback(
+                    '/%(\\d*)tid/',
+                    function ($m) use ($ticket_id) {
+                        return sprintf('%0' . $m[1] . 'd', $ticket_id);
+                    },
+                    $custmail_subject
+                );
                 $custmail_subject = str_replace('%title', $mh_subject, $custmail_subject);
                 $custmail_body = $queuedata[$ticketbody_variable];
-                $custmail_body = str_replace('%tid', $ticketid, $custmail_body);
+                $custmail_body = preg_replace_callback(
+                    '/%(\\d*)tid/',
+                    function ($m) use ($ticket_id) {
+                        return sprintf('%0' . $m[1] . 'd', $ticket_id);
+                    },
+                    $custmail_body
+                );
                 $custmail_body = str_replace('%cid', $ticket['customerid'], $custmail_body);
                 $custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
                 $custmail_body = str_replace('%customername', $info['customername'], $custmail_body);

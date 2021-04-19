@@ -285,10 +285,22 @@ if (isset($_POST['event'])) {
                         if (isset($event['customernotify']) && !empty($queuedata['newticketsubject']) && !empty($queuedata['newticketbody'])
                             && !empty($emails)) {
                             $custmail_subject = $queuedata['newticketsubject'];
-                            $custmail_subject = str_replace('%tid', $id, $custmail_subject);
+                            $custmail_subject = preg_replace_callback(
+                                '/%(\\d*)tid/',
+                                function ($m) use ($id) {
+                                    return sprintf('%0' . $m[1] . 'd', $id);
+                                },
+                                $custmail_subject
+                            );
                             $custmail_subject = str_replace('%title', $ticket['subject'], $custmail_subject);
                             $custmail_body = $queuedata['newticketbody'];
-                            $custmail_body = str_replace('%tid', $id, $custmail_body);
+                            $custmail_body = preg_replace_callback(
+                                '/%(\\d*)tid/',
+                                function ($m) use ($id) {
+                                    return sprintf('%0' . $m[1] . 'd', $id);
+                                },
+                                $custmail_body
+                            );
                             $custmail_body = str_replace('%cid', $ticket['customerid'], $custmail_body);
                             $custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
                             $custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
