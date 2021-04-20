@@ -1292,7 +1292,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             if ($a['count'] == '') {
                 $count = 1;
             } elseif (preg_match('/^[0-9]+(\.[0-9]+)?$/', $a['count'])) {
-                $count = floatval($a['count']);
+                $count = str_replace(',', '.', floatval($a['count']));
             } else {
                 $error['count'] = trans('Incorrect count format! Numeric value required!');
             }
