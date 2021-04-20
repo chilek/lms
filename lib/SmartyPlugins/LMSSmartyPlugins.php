@@ -813,7 +813,7 @@ class LMSSmartyPlugins
             $tip = isset($params['tip']) ? trans($params['tip']) : null;
             $label = isset($params['label']) ? $params['label'] : null;
             $labelid = isset($params['labelid']) ? $params['labelid'] : null;
-            $visible = (isset($params['visible']) && $params['visible']) || !isset($params['visible']);
+            $visible = !isset($params['visible']) || !empty($params['visible']);
             $class = isset($params['class']) ? $params['class'] : null;
             $icon_class = isset($params['icon_class']) ? $params['icon_class'] : null;
             $label_class = isset($params['label_class']) ? $params['label_class'] : null;
