@@ -15,7 +15,7 @@
 		<table class="table table-bordered table-condensed table-striped">
 			<tr class="bg-primary text-white">
 				<th>{trans("Date")}</th>
-				<th>{trans("Status")}</th>
+				<th>{trans("Type")}</th>
 				<th>{trans("Subject")}</th>
 				<th>{trans("Read")}</th>
 			</tr>
@@ -26,10 +26,10 @@
 					<td>{$items.subject}</td>
 					<td>
 						{if $items.type == $smarty.const.MSG_USERPANEL_URGENT || $items.type == $smarty.const.MSG_USERPANEL}
-							{if $items.status == $smarty.const.MSG_SENT && !$items.lastreaddate}
-								{trans("Unread")}
-							{elseif $items.status == $smarty.const.MSG_SENT || $items.status == $smarty.const.MSG_DELIVERED}
+							{if $items.status == $smarty.const.MSG_SENT || $items.status == $smarty.const.MSG_DELIVERED}
 								{$items.lastreaddate|date_format:"%Y/%m/%d %H:%M"}
+							{else}
+								{trans("Unread")}
 							{/if}
 						{/if}
 					</td>
@@ -56,7 +56,7 @@
 						{/if}
 						<br><br>
 						{if $items.status != $smarty.const.MSG_DELIVERED}
-							<a class="btn btn-primary" href="?m=notices&confirm={$items.id}">{trans("I confirm reading")}</a>
+							{button class="btn btn-primary" href="?m=notices&confirm={$items.id}" icon="confirm" label="I confirm reading"}
 						{/if}
 					</td>
 				</tr>

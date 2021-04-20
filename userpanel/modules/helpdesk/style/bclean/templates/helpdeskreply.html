@@ -9,7 +9,7 @@
 
 </style>
 
-<h3><a class="btn btn-secondary" href="?m=helpdesk">{trans("Back")}</a> {trans($title)}</h3>
+<h3>{button class="btn btn-secondary" href="?m=helpdesk" icon="cancel" label="Back"} {trans($title)}</h3>
 <form method="post" id="newmessage" action="?m=helpdesk&id={$ticket.id}" name="helpdesk" enctype="multipart/form-data">
     {box title="Message"}
     <input type="hidden" name="helpdesk[inreplyto]" value="{$helpdesk.inreplyto}" />
@@ -55,7 +55,7 @@
 			</tr>
 			<tr>
 				<td colspan="2">
-					<button type="button" class="btn btn-danger submit-button" accesskey="S">{trans("<!helpdesk>Submit")}</button>
+					{button type="submit" class="btn btn-danger submit-button" accesskey="S" icon="message" label="<!helpdesk>Submit"}
 				</td>
 			</tr>
 		</table>
