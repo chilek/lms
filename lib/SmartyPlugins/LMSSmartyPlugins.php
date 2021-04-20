@@ -49,7 +49,7 @@ class LMSSmartyPlugins
         // optional - data-resourceid attribute value
         $resourceid = isset($params['resourceid']) ? $params['resourceid'] : null;
         // optional - if element should be initially visible
-        $visible = isset($params['visible']) && !empty($params['visible']);
+        $visible = !isset($params['visible']) || !empty($params['visible']);
         // optional - if element should be initially disabled
         $disabled = isset($params['disabled']) && !empty($params['disabled']);
         // optional - keyboard shortcut
