@@ -338,6 +338,7 @@ if (isset($_POST['message'])) {
                     $LMS->SendMail($recipients, $headers, $message['body'], $attachments, null, $smtp_options);
                 }
             }
+            unset($headers['Cc']);
 
             $service = ConfigHelper::getConfig('sms.service');
 
