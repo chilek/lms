@@ -49,7 +49,9 @@ class LMSSmartyPlugins
         // optional - data-resourceid attribute value
         $resourceid = isset($params['resourceid']) ? $params['resourceid'] : null;
         // optional - if element should be initially visible
-        $visible = isset($params['visible']) ? $params['visible'] : true;
+        $visible = isset($params['visible']) && !empty($params['visible']);
+        // optional - if element should be initially disabled
+        $disabled = isset($params['disabled']) && !empty($params['disabled']);
         // optional - keyboard shortcut
         $accesskey = isset($params['accesskey']) ? $params['accesskey'] : null;
         // optional - contents copied to clipboard
@@ -78,6 +80,7 @@ class LMSSmartyPlugins
             . ($clipboard ? ' data-clipboard-text="' . $clipboard . '"' : '')
             . $data_attributes
             . ($visible ? '' : ' style="display: none;"')
+            . ($disabled ? ' disabled' : '')
             . ($accesskey ? ' accesskey="' . $accesskey . '"' : '') . '>'
             . ($icon ? '<i class="' . (strpos($icon, 'lms-ui-icon-') === 0 || strpos($icon, 'fa') === 0 ? $icon : 'lms-ui-icon-' . $icon) . '"></i>' : '')
             . ($label ? '<span class="lms-ui-label">' . $label . '</span>' : '') . '
