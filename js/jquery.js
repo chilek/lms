@@ -911,6 +911,12 @@ $(function() {
 		$(this).unbind('click');
 	});
 
+	$('a.lms-ui-button').click(function(e) {
+		if ($(this).is('[disabled]')) {
+			e.stopImmediatePropagation();
+		}
+	});
+
 	init_datepickers('div.calendar input,div.lms-ui-date,input.calendar,input.lms-ui-date');
 
 	$('.lms-ui-button-date-period').click(function() {
