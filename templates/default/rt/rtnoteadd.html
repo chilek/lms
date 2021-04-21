@@ -128,6 +128,7 @@
 				{foreach $_RT_PRIORITIES as $priorityidx => $priority}
 				<OPTION value="{$priorityidx}"{if $note.priority == $priorityidx} selected{/if}>{$priority}</OPTION>
 				{/foreach}
+				<OPTION value="" {if !isset($message.priority)} selected{/if}>{trans("undefined")}</OPTION>
 			</SELECT>
 		</TD>
 	</TR>
