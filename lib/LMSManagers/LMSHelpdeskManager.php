@@ -1807,7 +1807,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $props['requestor_mail'] = $ticket['requestor_mail'];
         }
 
-        if ($props['priority'] == '') {
+        if ($props['priority'] == '' || !isset($props['priority'])) {
             $props['priority'] = null;
         }
 
