@@ -130,7 +130,8 @@ if (isset($_POST['message'])) {
 
         $message['categories'] = is_array($message['categories']) ? array_flip($message['categories']) : array();
 
-        $user = $LMS->GetUserInfo(Auth::GetCurrentUser());
+        $userid = Auth::GetCurrentUser();
+        $user = $LMS->GetUserInfo($userid);
 
         $attachments = null;
 
@@ -150,6 +151,8 @@ if (isset($_POST['message'])) {
 
         $customer_notification_mail_subject = ConfigHelper::getConfig('phpui.helpdesk_customer_notification_mail_subject', '[RT#%tid] %subject');
 
+        $message['userid'] = $userid;
+
         foreach ($tickets as $ticketid) {
             $queue = $LMS->GetQueueByTicketId($ticketid);
             if ($message['queueid'] != -100 && $message['queueid'] != $queue['id']) {
@@ -163,7 +166,6 @@ if (isset($_POST['message'])) {
             $message['messageid'] = '<msg.' . $queue['id'] . '.' . $ticketid . '.' . time()
                 . '@rtsystem.' . gethostname() . '>';
 
-            $message['userid'] = Auth::GetCurrentUser();
             $message['customerid'] = null;
 
             $mailfname = '';
@@ -172,8 +174,7 @@ if (isset($_POST['message'])) {
             if (!empty($helpdesk_sender_name) && ($mailfname = $helpdesk_sender_name)) {
                 if ($mailfname == 'queue') {
                     $mailfname = $queue['name'];
-                }
-                if ($mailfname == 'user') {
+                } elseif ($mailfname == 'user') {
                     $mailfname = $user['name'];
                 }
                 $mailfname = '"' . $mailfname . '"';
@@ -188,7 +189,7 @@ if (isset($_POST['message'])) {
             }
             $headers['Message-ID'] = $message['messageid'];
 
-            if ($message['userid'] && ($user['email'] || $queue['email'])) {
+            if ($message['userid'] && ($user['email'] || $queue['email'] || $requestor_mail)) {
                 $mailfrom = $LMS->DetermineSenderEmail($user['email'], $queue['email'], $requestor_mail);
 
                 $message['mailfrom'] = $mailfrom;
@@ -365,7 +366,7 @@ if (isset($_POST['message'])) {
                 }
             }
 
-            // Users notification
+            // User notifications
             if (isset($message['notify']) || isset($message['customernotify'])) {
                 $mailfname = '';
 
