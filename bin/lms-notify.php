@@ -539,7 +539,7 @@ function parse_customer_data($data, $format, $row)
 
     $data = $LMS->getLastNInTable($data, $row['id'], $format, $row['aggregate_documents']);
 
-    // invoices, debit notes
+    // invoices, debit notes, documents
     $data = preg_replace("/\%invoice/", $row['doc_number'], $data);
     $data = preg_replace("/\%number/", $row['doc_number'], $data);
     $data = preg_replace("/\%value/", moneyf($row['value'], $row['currency']), $data);
@@ -834,11 +834,6 @@ if (empty($types) || in_array('timetable', $types)) {
             }
 
             if (!empty($user['email'])) {
-                $recipient_name = $row['lastname'] . ' ' . $row['name'];
-                $recipient_mails = ($debug_email
-                    ? explode(',', $debug_email) : (
-                    !empty($user['email']) ? explode(',', trim($user['email'])) : null)
-                );
                 if (!$quiet) {
                     printf("[timetable/mail] %s (%04d): %s" . PHP_EOL, $user['name'], $user['id'], $user['email']);
                 }
