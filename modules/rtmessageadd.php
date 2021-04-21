@@ -212,7 +212,7 @@ if (isset($_POST['message'])) {
                     $toemails = array();
                     $ccemails = array();
                     foreach ($message['contacts']['mails'] as $address => $contact) {
-                        $display = empty($message['contacts']['maildisplays'][$address]) ? '' : qp_encode($contact['display']) . ' ';
+                        $display = empty($message['contacts']['maildisplays'][$address]) ? '' : qp_encode($message['contacts']['maildisplays'][$address]) . ' ';
                         $message_source = $message['contacts']['mailsources'][$address];
                         if ($message_source == 'requestor_mail' || $message_source == 'mailfrom') {
                             $toemails[] = array(
