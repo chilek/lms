@@ -69,11 +69,14 @@
 					<input type="hidden" name="t[]" value="0">
 					<label>
 						{trans("Type:")}
-						<SELECT size="1" name="t[]" onChange="javascript:applyFilter();" multiple class="lms-ui-multiselect" data-default-value="{trans("- all -")}">
-							{foreach $_DOCTYPES as $key => $item}{if $key < 0}
-							<OPTION VALUE="{$key}"{if is_array($filter.type) && in_array($key, $filter.type)} selected{/if}>{$item}</OPTION>
-							{/if}{/foreach}
-						</SELECT>
+						<select size="1" name="t[]" onChange="javascript:applyFilter();" multiple class="lms-ui-multiselect"
+							data-default-value="{trans("- all -")}">
+							{foreach Localisation::arraySort($_DOCTYPES) as $key => $item}
+								{if $key < 0}
+									<option value="{$key}"{if is_array($filter.type) && in_array($key, $filter.type)} selected{/if}>{$item}</option>
+								{/if}
+							{/foreach}
+						</select>
 					</label>
 
 					<input type="hidden" name="service[]" value="0">
