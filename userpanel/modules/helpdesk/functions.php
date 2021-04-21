@@ -194,7 +194,6 @@ function module_main()
                 'queue' => $ticket['queue'],
                 'subject' => $ticket['subject'],
                 'customerid' => $SESSION->id,
-                'requestor' => $LMS->GetCustomerName($SESSION->id),
                 'createtime' => time(),
                 'body' => $ticket['body'],
                 'categories' => array_flip(explode(',', $ticket['categories'])),
