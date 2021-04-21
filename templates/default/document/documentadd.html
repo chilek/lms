@@ -150,12 +150,15 @@
 			{trans("Type:")}
 		</TD>
 		<TD>
-			<SELECT SIZE="1" NAME="document[type]" onchange="DocTypeChanged();" {tip class="lms-ui-advanced-select" text="Select document type" trigger="type"} required>
-				<OPTION VALUE="0">{trans("select type")}</OPTION>
-				{foreach from=$_DOCTYPES key=key item=item}{if $key < 0 && in_array($key, $docrights)}
-				<OPTION VALUE="{$key}"{if $document.type==$key} SELECTED{/if}>{$item}</OPTION>
-				{/if}{/foreach}
-			</SELECT>
+			<select size="1" name="document[type]" onchange="DocTypeChanged();"
+				{tip class="lms-ui-advanced-select" text="Select document type" trigger="type"} required>
+				<option value="0">{trans("select type")}</option>
+				{foreach Localisation::arraySort($_DOCTYPES) as $key => $item}
+					{if $key < 0 && in_array($key, $docrights)}
+						<option value="{$key}"{if $document.type==$key} selected{/if}>{$item}</option>
+					{/if}
+				{/foreach}
+			</select>
 		</TD>
 	</TR>
 	<TR id="templates" style="display:{if $document.type<0}table-row{else}none{/if}">

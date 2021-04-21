@@ -44,11 +44,14 @@
 			{trans("Type:")}
 		</TD>
 		<TD>
-			<SELECT SIZE="1" NAME="document[type]" onchange="setnumberplans();" {tip text="Select document type" trigger="type"}>
-				{foreach from=$_DOCTYPES key=key item=item}{if $key < 0 && in_array($key, $docrights)}
-				<OPTION VALUE="{$key}"{if $document.type==$key} SELECTED{/if}>{$item}</OPTION>
-				{/if}{/foreach}
-			</SELECT>
+			<select size="1" name="document[type]" onchange="setnumberplans();"
+				{tip class="lms-ui-advanced-select" text="Select document type" trigger="type"}>
+				{foreach Localisation::arraySort($_DOCTYPES) as $key => $item}
+					{if $key < 0 && in_array($key, $docrights)}
+						<option value="{$key}"{if $document.type==$key} selected{/if}>{$item}</option>
+					{/if}
+				{/foreach}
+			</select>
 		</TD>
 	</TR>
 	<TR>
