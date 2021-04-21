@@ -858,13 +858,14 @@ if (empty($types) || in_array('documents', $types)) {
     $days = $notifications['documents']['days'];
     $customers = $DB->GetAll(
         "SELECT DISTINCT c.id, c.pin, c.lastname, c.name,
-            b.balance, m.email, x.phone
+            b.balance, m.email, x.phone, d.number, n.template, d.cdate, d.confirmdate
         FROM customeraddressview c
         LEFT JOIN (
             SELECT customerid, SUM(value * currencyvalue) AS balance FROM cash
             GROUP BY customerid
         ) b ON b.customerid = c.id
         JOIN documents d ON d.customerid = c.id
+        LEFT JOIN numberplans n ON (d.numberplanid = n.id)
         JOIN documentcontents dc ON dc.docid = d.id
         LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
             FROM customercontacts
@@ -876,9 +877,9 @@ if (empty($types) || in_array('documents', $types)) {
             WHERE (type & ?) = ?
             GROUP BY customerid
         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
-        WHERE 1 = 1" . $customer_status_condition . " AND d.type IN (?, ?) AND dc.todate >= $daystart + ? * 86400
-            " . ($customerid ? ' AND c.id = ' . $customerid : '') . "
-            AND dc.todate < $daystart + (? + 1) * 86400"
+        WHERE 1 = 1" . $customer_status_condition . " AND d.type IN (?, ?) AND d.closed = 0
+            AND d.confirmdate >= $daystart + ? * 86400
+            AND d.confirmdate < $daystart + (? + 1) * 86400"
             . ($customerid ? ' AND c.id = ' . $customerid : '')
             . ($notifications['documents']['deleted_customers'] ? '' : ' AND c.deleted = 0')
             . ($customergroups ?: ''),
@@ -899,6 +900,15 @@ if (empty($types) || in_array('documents', $types)) {
         foreach ($customers as $row) {
             $notifications['documents']['customers'][] = $row['id'];
             $row['aggregate_documents'] = $notifications['documents']['aggregate_documents'];
+
+            $row['paytime'] = $days;
+
+            $row['doc_number'] = docnumber(array(
+                'number' => $row['number'],
+                'template' => $row['template'] ?: '%N/LMS/%Y',
+                'cdate' => $row['cdate'],
+                'customerid' => $row['id'],
+            ));
 
             unset($message, $message_html, $message_text);
             if ($format == $mail_format) {
