@@ -132,7 +132,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             (CASE WHEN access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0) THEN 1 ELSE 0 END) AS access
             FROM vusers'
             . $deletedfilter
-            . ' ORDER BY rname ASC'
+            . ' ORDER BY lastname ASC'
         );
     }
 
