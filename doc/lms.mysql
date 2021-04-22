@@ -1992,7 +1992,7 @@ CREATE TABLE rtqueues (
 CREATE TABLE rttickets (
   id int(11) NOT NULL auto_increment,
   queueid int(11) NOT NULL,
-  requestor varchar(255) NOT NULL DEFAULT '',
+  requestor varchar(255) DEFAULT NULL,
   requestor_mail varchar(255) DEFAULT NULL,
   requestor_phone varchar(32) DEFAULT NULL,
   requestor_userid int(11) DEFAULT NULL,
@@ -3993,4 +3993,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021040900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021042200');

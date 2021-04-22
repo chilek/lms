@@ -1086,9 +1086,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			netnodeid, netdevid, verifierid, deadline, service, type, invprojectid, parentid)
 				VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($ticket['queue'],
             empty($ticket['customerid']) ? null : $ticket['customerid'],
-            $ticket['requestor'],
-            $ticket['requestor_mail'],
-            $ticket['requestor_phone'],
+            isset($ticket['requestor']) ? $ticket['requestor'] : null,
+            isset($ticket['requestor_mail']) ? $ticket['requestor_mail'] : null,
+            isset($ticket['requestor_phone']) ? $ticket['requestor_phone'] : null,
             isset($ticket['requestor_userid']) ? $ticket['requestor_userid'] : null,
             $ticket['subject'],
             isset($ticket['owner']) && !empty($ticket['owner']) ? $ticket['owner'] : null,
