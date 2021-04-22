@@ -63,7 +63,7 @@
 				{trans("Division")}
 			</TD>
 			<TD>
-				<select name="numberplanedit[divisions][]" id="divisions" multiple
+				<select name="numberplanedit[divisions][]" id="divisions" multiple required
 					{tip text="Select division" class="lms-ui-multiselect" trigger="divisions"}>
 					{foreach $divisions as $division}
 						<option value="{$division.id}"{if isset($numberplanedit.divisions[$division.id])} selected{/if}
