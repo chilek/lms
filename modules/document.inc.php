@@ -168,8 +168,9 @@ function GetTemplates($doctype, $doctemplate, $JSResponse)
     $DB = LMSDB::getInstance();
     $rights = $DB->GetCol('SELECT doctype FROM docrights WHERE userid = ? AND (rights & 2) = 2', array(Auth::GetCurrentUser()));
     $docengines = GetDocumentTemplates($rights, $doctype);
+    $document['templ'] = $doctemplate;
     $SMARTY->assign('docengines', $docengines);
-    $SMARTY->assign('doctemplate', $doctemplate);
+    $SMARTY->assign('document', $document);
     $contents = $SMARTY->fetch('document/documenttemplateoptions.html');
 
     $JSResponse->assign('templ', 'innerHTML', $contents);
@@ -287,6 +288,8 @@ function GetReferenceDocuments($doctemplate, $customerid, $JSResponse)
         . ' if (parseInt($(this).val())) { $("#a_reference_document_limit").show(); }'
         . ' else { $("#a_reference_document_limit").hide(); }'
         . '}).trigger("change")');
+
+    $JSResponse->script('$(\'[name="document[reference]"]\').prop("required", $(\'[name="document[templ]"] option:selected\').is("[data-refdoc-required]"));');
 }
 
 function CustomerChanged($doctype, $doctemplate, $numberplanid, $customerid)

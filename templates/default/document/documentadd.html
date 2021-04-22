@@ -169,12 +169,11 @@
 			{trans("Template:")}
 		</TD>
 		<TD>
-			<SELECT SIZE="1" NAME="document[templ]" {tip text="Select template to generate new document if you haven't got prepared file" trigger="templ"} id="templ" onchange="DocTemplateChanged();">
-				<OPTION VALUE="">... {trans("select template")} ...</OPTION>
-				{foreach $docengines as $docengine}
-				<OPTION VALUE="{$docengine.name}"{if $document.templ==$docengine.name} SELECTED{/if}>{$docengine.title}</OPTION>
-				{/foreach}
-			</SELECT>
+			<select size="1" name="document[templ]"
+				{tip text="Select template to generate new document if you haven't got prepared file" trigger="templ"}
+				id="templ" onchange="DocTemplateChanged();">
+				{include file="document/documenttemplateoptions.html"}
+			</select>
 		</TD>
 	</TR>
 	<tr id="referencedocument">
