@@ -102,7 +102,14 @@
 				{foreach $schema.tariffs as $tariff}
 				<TR class="highlight schematariff" data-assignment="{$tariff.id}">
 					<TD class="valign-top">
-						{icon name="money" class="drag-icon fa-fw"}&nbsp;<A href="?m=tariffinfo&id={$tariff.tariffid}" class="bold">{$tariff.name}</A>
+						<A href="?m=tariffinfo&id={$tariff.tariffid}" class="bold">{$tariff.name}</A>
+						{if $tariff.flags & $smarty.const.TARIFF_FLAG_REWARD_PENALTY}
+							{if $tariff.value < 0}
+								{icon name="reward" tip="reward"}
+							{else}
+								{icon name="penalty" tip="penalty"}
+							{/if}
+						{/if}
 					</TD>
 					<TD class="nobr valign-top">
 						{$_SERVICETYPES[$tariff.type]}
