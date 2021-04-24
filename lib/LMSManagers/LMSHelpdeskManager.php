@@ -206,7 +206,11 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         if (empty($priority)) {
             $priorityfilter = '';
         } elseif (is_array($priority)) {
-            $priorityfilter = ' AND t.priority IN (' . implode(',', $priority) . ')';
+            if (in_array('-101', $priority)) {
+                $priorityfilter = ' AND (t.priority IN (' . implode(',', $priority) . ') OR t.priority IS NULL)';
+            } else {
+                $priorityfilter = ' AND t.priority IN (' . implode(',', $priority) . ')';
+            }
         } else {
             $priorityfilter = ' AND t.priority = '.$priority;
         }

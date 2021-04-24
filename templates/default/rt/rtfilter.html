@@ -62,7 +62,7 @@
                 {foreach $_RT_PRIORITIES as $idx => $priority}
                     <OPTION value="{$idx}" {if is_array($filter.priority) && in_array($idx, $filter.priority)} SELECTED{/if}>{$priority}</OPTION>
                 {/foreach}
-                <OPTION value="" {if is_array($filter.priority) && in_array(null, $filter.priority)} selected{/if}>{trans("undefined")}</OPTION>
+                <option value="-101" {if is_array($filter.priority) && in_array('-101', $filter.priority)} selected{/if}>{trans("undefined")}</option>
             </SELECT>
             </label>
             <label class="nobr">
