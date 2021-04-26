@@ -20,7 +20,8 @@
 {$speed_unit_type = ConfigHelper::getConfig('phpui.speed_unit_type', 1000)}
 {$speed_unit_aggregation_threshold = ConfigHelper::getConfig('phpui.speed_unit_aggregation_threshold', 5)}
 
-<STYLE>
+<style>
+
     .tariff_tab tr td {
         white-space: nowrap;
         padding: 2px;
@@ -30,7 +31,15 @@
     .bold-second tr td:nth-child(2) {
         font-weight: bold;
     }
-</STYLE>
+
+
+    .reward-flags {
+        margin-block-start: 0.5em;
+        margin-block-end: 0.5em;
+        padding-inline-start: 1.5em;
+    }
+
+</style>
 
 {function bitrate_restrictions}
     {if $day}{convert_to_units($day * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{else}{trans("no limits")}{/if}
@@ -108,32 +117,33 @@
                                 </td>
                             </tr>
 
+                            {if !empty($tariff.flags)}
                             <tr>
                                 <td>
-                                    {if $tariff.flags}
-                                        {if $tariff.value < 0}
-                                            {icon name="reward" tip="reward"}
-                                        {else}
-                                            {icon name="penalty" tip="penalty"}
-                                        {/if}
+                                    {if $tariff.value < 0}
+                                        {icon name="reward" tip="reward"}
+                                    {else}
+                                        {icon name="penalty" tip="penalty"}
                                     {/if}
                                 </td>
                                 <td>
-                                    {if $tariff.flags}
-                                        {if $tariff.value < 0}
-                                            {trans("Rewards")}
-                                        {else}
-                                            {trans("Penalties")}
-                                        {/if}
+                                    {if $tariff.value < 0}
+                                        {trans("Reward for")}
+                                    {else}
+                                        {trans("Penalty for")}
                                     {/if}
                                 </td>
                                 <td>
-                                    {foreach $_TARIFF_FLAGS as $flag => $label}
-                                        {$label}
-                                        {if !$label@last}<br>{/if}
-                                    {/foreach}
+                                    <ul class="reward-flags">
+                                        {foreach $_TARIFF_FLAGS as $flag => $label}
+                                            {if isset($tariff.flags[$flag])}
+                                                <li><strong>{$label}</strong></li>
+                                            {/if}
+                                        {/foreach}
+                                    </ul>
                                 </td>
                             </tr>
+                            {/if}
 
                             <TR>
                                 <TD><IMG SRC="img/tax.gif" ALT=""></TD>
