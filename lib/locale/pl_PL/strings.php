@@ -5164,3 +5164,6 @@ $_LANG['Switch to'] = 'Przełącz na';
 $_LANG['ignore'] = 'ignoruj';
 
 $_LANG['Events which begin in the past are not allowed!'] = 'Zdarzenia rozpoczynające się w przeszłości nie są dozwolone!';
+
+$_LANG['e-mail marketing'] = 'marketing pocztą elektroniczną';
+$_LANG['sms marketing'] = 'marketing SMS-em';
