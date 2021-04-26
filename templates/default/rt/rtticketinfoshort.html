@@ -59,6 +59,7 @@
 			{else}{trans("unknown/other")}{/if}
 		</TD>
 	</TR>
+	{if isset($ticket.priority)}
 	<TR>
 		<TD class="bold nobr">
 			{icon name="priority" label="Priority:" class="fa-fw"}
@@ -67,6 +68,7 @@
 			{$_RT_PRIORITIES[$ticket.priority]}
 		</TD>
 	</TR>
+	{/if}
 	{if $ticket.parentid}
 	<TR>
 		<TD class="bold nobr">
