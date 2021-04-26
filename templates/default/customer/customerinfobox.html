@@ -346,7 +346,7 @@
 													<TD>
 														{$consent.label}
 													</TD>
-													<TD>
+													<TD class="text-right">
 														{if isset($customerinfo.consents[$type])}
 															{if $consent.type == 'date'}
 																{$customerinfo.consents[$type]['cdate']|date_format:"Y/m/d"}
