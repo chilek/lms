@@ -5167,6 +5167,7 @@ $_LANG['ignore'] = 'ignoruj';
 
 $_LANG['Events which begin in the past are not allowed!'] = 'Zdarzenia rozpoczynające się w przeszłości nie są dozwolone!';
 
+$_LANG['on time payments'] = 'terminowe płatności';
+$_LANG['electronic invoice'] = 'faktura elektroniczna';
 $_LANG['e-mail marketing'] = 'marketing pocztą elektroniczną';
 $_LANG['sms marketing'] = 'marketing SMS-em';
-$_LANG['on time payments'] = 'terminowe płatności';

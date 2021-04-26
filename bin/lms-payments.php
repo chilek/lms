@@ -490,6 +490,9 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 		p.name AS promotion_name, ps.name AS promotion_schema_name, ps.length AS promotion_schema_length,
 		d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
 		t.flags,
+		(CASE WHEN cc1.type IS NULL THEN 0 ELSE 1 END) AS einvoice,
+		(CASE WHEN cc2.type IS NULL THEN 0 ELSE 1 END) AS mail_marketing,
+		(CASE WHEN cc3.type IS NULL THEN 0 ELSE 1 END) AS sms_marketing,
 		(CASE WHEN a.tariffid IS NULL THEN l.type ELSE t.type END) AS tarifftype,
 		(CASE WHEN a.liabilityid IS NULL THEN t.name ELSE l.name END) AS name,
 		(CASE WHEN a.liabilityid IS NULL THEN t.taxid ELSE l.taxid END) AS taxid,
@@ -513,6 +516,9 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 			AND (dateto > $currtime OR dateto = 0)) AS allsuspended
 	FROM assignments a
 	JOIN customers c ON (a.customerid = c.id)
+	LEFT JOIN customerconsents cc1 ON cc1.customerid = c.id AND cc1.type = " . CCONSENT_EINVOICE . "
+	LEFT JOIN customerconsents cc2 ON cc2.customerid = c.id AND cc2.type = " . CCONSENT_MAIL_MARKETING . "
+	LEFT JOIN customerconsents cc3 ON cc3.customerid = c.id AND cc3.type = " . CCONSENT_SMS_MARKETING . "
 	LEFT JOIN customer_addresses ca1 ON ca1.customer_id = c.id AND ca1.type = " . BILLING_ADDRESS . "
 	LEFT JOIN customer_addresses ca2 ON ca2.customer_id = c.id AND ca2.type = " . POSTAL_ADDRESS . "
 	LEFT JOIN promotionschemas ps ON ps.id = a.promotionschemaid
@@ -1124,6 +1130,24 @@ foreach ($assigns as $assign) {
     if (($assign['flags'] & TARIFF_FLAG_REWARD_PENALTY_ON_TIME_PAYMENTS)
         && ($assign['value'] < 0 && !$rewards[$cid]
             || $assign['value'] > 0 && $rewards[$cid])) {
+        continue;
+    }
+
+    if (($assign['flags'] && TARIFF_FLAG_REWARD_PENALTY_EINVOICE)
+        && ($assign['value'] < 0 && empty($assign['einvoice'])
+            || $assign['value'] > 0 && !empty($assign['einvoice']))) {
+        continue;
+    }
+
+    if (($assign['flags'] && TARIFF_FLAG_REWARD_PENALTY_MAIL_MARKETING)
+        && ($assign['value'] < 0 && empty($assign['mail_marketing'])
+            || $assign['value'] > 0 && !empty($assign['mail_marketing']))) {
+        continue;
+    }
+
+    if (($assign['flags'] && TARIFF_FLAG_REWARD_PENALTY_SMS_MARKETING)
+        && ($assign['value'] < 0 && empty($assign['sms_marketing'])
+            || $assign['value'] > 0 && !empty($assign['sms_marketing']))) {
         continue;
     }
 
