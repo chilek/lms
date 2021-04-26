@@ -43,7 +43,7 @@
 			<td>
 				<ul class="reward-flags">
 					{foreach $_TARIFF_FLAGS as $flag => $label}
-						{if $assignment.flags & flag}
+						{if intval($assignment.flags) & intval($flag)}
 							<li>
 								<strong>{$label}</strong>
 							</li>

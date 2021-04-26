@@ -212,7 +212,7 @@
 												{/if}
 												<ul class='reward-flags'>
 													{foreach $_TARIFF_FLAGS as $flag => $label}
-														{if $a.flags & flag}
+														{if intval($a.flags) & intval($flag)}
 															<li>
 																<strong>{$label}</strong>
 															</li>
