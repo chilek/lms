@@ -5138,7 +5138,7 @@ $_LANG['Message #$a'] = 'Wiadomość #$a';
 
 $_LANG['non-empty'] = 'niepusty';
 
-$_LANG['Rewards/penalties'] = 'Nagrody/kary';
+$_LANG['Reward/penalty for'] = 'Nagroda/kara za';
 $_LANG['Rewards'] = 'Nagrody';
 $_LANG['Penalties'] = 'Kary';
 $_LANG['If tariff value is negative then this is effectively penalty flag, otherwise it is reward flag'] = 'Jeśli wartość taryfy jest ujemna oznacza efektywnie karę, a w przeciwnym wypadku nagrodę';
