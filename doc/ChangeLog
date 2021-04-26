@@ -141,6 +141,7 @@ version 27-git (????-??-??):
     in liabilities list ('gross' by default) [ravvar]
   - enhancement: lms-notify.php backend script allows to notify customers (and operator) about expiring document
     pending action date [chilan]
+  - enhancement: added new customer consents - e-mail marketing and sms marketing [chilan]
 
 version 26.0 (2020-12-15):
 
