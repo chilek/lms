@@ -203,11 +203,27 @@
 											</A>
 											{if $a.attribute} - {$a.attribute|escape}{/if}
 										</strong>
-										{if $a.flags & $smarty.const.TARIFF_FLAG_REWARD_PENALTY}
+										{if !empty($a.flags)}
+											{capture assign="reward_flags"}
+												{if $a.value < 0}
+													{trans("reward for")}
+												{else}
+													{trans("penalty for")}
+												{/if}
+												<ul class='reward-flags'>
+													{foreach $_TARIFF_FLAGS as $flag => $label}
+														{if $a.flags & flag}
+															<li>
+																<strong>{$label}</strong>
+															</li>
+														{/if}
+													{/foreach}
+												</ul>
+											{/capture}
 											{if $a.value < 0}
-												{icon name="reward" tip="reward"}
+												{icon name="reward" tip=$reward_flags}
 											{else}
-												{icon name="penalty" tip="penalty"}
+												{icon name="penalty" tip=$reward_flags}
 											{/if}
 										{/if}
 									{else}

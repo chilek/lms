@@ -87,10 +87,14 @@
                 <TR>
                     <TD WIDTH="50%" CLASS="valign-top">
                         <TABLE CLASS="tariff_tab bold-second">
-                            <TR>
-                                <TD><IMG SRC="img/value.gif" ALT=""></TD>
-                                <TD>{trans("Value:")}</TD>
-                                <TD>
+                            <tr>
+                                <td>
+                                    {icon name="value" class="fa-fw"}
+                                </td>
+                                <td>
+                                    {trans("Value:")}
+                                </td>
+                                <td>
                                     {if $tariff.currency}
                                         {moneyf($tariff.value, $tariff.currency)}
                                     {else}
@@ -101,6 +105,11 @@
                                     {else}
                                         <span class="blend">({trans("period undefined")})</span>
                                     {/if}
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
                                     {if $tariff.flags}
                                         {if $tariff.value < 0}
                                             {icon name="reward" tip="reward"}
@@ -108,8 +117,24 @@
                                             {icon name="penalty" tip="penalty"}
                                         {/if}
                                     {/if}
-                                </TD>
-                            </TR>
+                                </td>
+                                <td>
+                                    {if $tariff.flags}
+                                        {if $tariff.value < 0}
+                                            {trans("Rewards")}
+                                        {else}
+                                            {trans("Penalties")}
+                                        {/if}
+                                    {/if}
+                                </td>
+                                <td>
+                                    {foreach $_TARIFF_FLAGS as $flag => $label}
+                                        {$label}
+                                        {if !$label@last}<br>{/if}
+                                    {/foreach}
+                                </td>
+                            </tr>
+
                             <TR>
                                 <TD><IMG SRC="img/tax.gif" ALT=""></TD>
                                 <TD>{trans("Split payment:")}</TD>

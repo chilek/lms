@@ -2784,7 +2784,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'domain_limit' => $tariff['domain_limit'],
             'alias_limit' => $tariff['alias_limit'],
             'authtype' => $tariff['authtype'],
-            'flags' => isset($tariff['flags'][TARIFF_FLAG_REWARD_PENALTY]) ? TARIFF_FLAG_REWARD_PENALTY : 0,
+            'flags' => isset($tariff['flags'][TARIFF_FLAG_REWARD_PENALTY_ON_TIME_PAYMENTS]) ? TARIFF_FLAG_REWARD_PENALTY_ON_TIME_PAYMENTS : 0
+                + (isset($tariff['flags'][TARIFF_FLAG_REWARD_PENALTY_MAIL_MARKETING]) ? TARIFF_FLAG_REWARD_PENALTY_MAIL_MARKETING : 0)
+                + (isset($tariff['flags'][TARIFF_FLAG_REWARD_PENALTY_SMS_MARKETING]) ? TARIFF_FLAG_REWARD_PENALTY_SMS_MARKETING : 0),
         );
         $args2 = array();
         foreach ($ACCOUNTTYPES as $typeidx => $type) {
@@ -2869,7 +2871,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'voip_tariff_id' => (!empty($tariff['voip_pricelist'])) ? $tariff['voip_pricelist'] : null,
             'voip_tariff_rule_id' => (!empty($tariff['voip_tariffrule'])) ? $tariff['voip_tariffrule'] : null,
             'authtype' => $tariff['authtype'],
-            'flags' => isset($tariff['flags'][TARIFF_FLAG_REWARD_PENALTY]) ? TARIFF_FLAG_REWARD_PENALTY : 0,
+            'flags' => (isset($tariff['flags'][TARIFF_FLAG_REWARD_PENALTY_ON_TIME_PAYMENTS]) ? TARIFF_FLAG_REWARD_PENALTY_ON_TIME_PAYMENTS : 0)
+                + (isset($tariff['flags'][TARIFF_FLAG_REWARD_PENALTY_MAIL_MARKETING]) ? TARIFF_FLAG_REWARD_PENALTY_MAIL_MARKETING : 0)
+                + (isset($tariff['flags'][TARIFF_FLAG_REWARD_PENALTY_SMS_MARKETING]) ? TARIFF_FLAG_REWARD_PENALTY_SMS_MARKETING : 0),
         );
         $args2 = array();
         foreach ($ACCOUNTTYPES as $typeidx => $type) {
@@ -2962,8 +2966,14 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         $flags = array();
         if (!empty($result['flags'])) {
-            if ($result['flags'] & TARIFF_FLAG_REWARD_PENALTY) {
-                $flags[TARIFF_FLAG_REWARD_PENALTY] = TARIFF_FLAG_REWARD_PENALTY;
+            if ($result['flags'] & TARIFF_FLAG_REWARD_PENALTY_ON_TIME_PAYMENTS) {
+                $flags[TARIFF_FLAG_REWARD_PENALTY_ON_TIME_PAYMENTS] = TARIFF_FLAG_REWARD_PENALTY_ON_TIME_PAYMENTS;
+            }
+            if ($result['flags'] & TARIFF_FLAG_REWARD_PENALTY_MAIL_MARKETING) {
+                $flags[TARIFF_FLAG_REWARD_PENALTY_MAIL_MARKETING] = TARIFF_FLAG_REWARD_PENALTY_MAIL_MARKETING;
+            }
+            if ($result['flags'] & TARIFF_FLAG_REWARD_PENALTY_SMS_MARKETING) {
+                $flags[TARIFF_FLAG_REWARD_PENALTY_SMS_MARKETING] = TARIFF_FLAG_REWARD_PENALTY_SMS_MARKETING;
             }
         }
         $result['flags'] = $flags;

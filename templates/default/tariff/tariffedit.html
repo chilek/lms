@@ -75,32 +75,47 @@
                 <TR>
                     <TD WIDTH="50%">
                         <TABLE CLASS="tariff_tab bold-second">
-                            <TR>
-                                <TD><IMG SRC="img/value.gif" ALT=""></TD>
-                                <TD>{trans("Value:")}</TD>
-                                <TD>
-                                    <INPUT TYPE="TEXT" VALUE="{$tariff.value}" SIZE="8" NAME="tariff[value]" {tip text="Enter value" trigger="value"}>
+                            <tr>
+                                <td>
+                                    {icon name="value" class="fa-fw"}
+                                </td>
+                                <td>
+                                    {trans("Value:")}
+                                </td>
+                                <td>
+                                    <input type="text" value="{$tariff.value}" size="8" name="tariff[value]"
+                                        {tip text="Enter value" trigger="value"}>
 
                                     {currency_selection selected=$tariff.currency elementname="tariff[currency]"}
 
-                                    <SELECT size="1" name="tariff[period]" {tip text="Select time period of tariff accounting"}>
-                                        <OPTION value=""{if $tariff.period == $key} SELECTED{/if}>{trans("undefined")}</OPTION>
+                                    <select size="1" name="tariff[period]" {tip text="Select time period of tariff accounting"}>
+                                        <option value=""{if $tariff.period == $key} selected{/if}>{trans("undefined")}</option>
                                         {foreach from=$_PERIODS key=key item=item}
                                             {if $key != $smarty.const.DISPOSABLE}
-                                                <OPTION value="{$key}"{if $tariff.period == $key} SELECTED{/if}>{$item}</OPTION>
+                                                <option value="{$key}"{if $tariff.period == $key} selected{/if}>{$item}</option>
                                             {/if}
                                         {/foreach}
-                                    </SELECT>
-
-                                    <label>
-                                        <input type="checkbox" name="tariff[flags][{$smarty.const.TARIFF_FLAG_REWARD_PENALTY}]"
-                                            value="{$smarty.const.TARIFF_FLAG_REWARD_PENALTY}"
-                                            {if isset($tariff.flags[$smarty.const.TARIFF_FLAG_REWARD_PENALTY])}checked{/if}
-                                            {tip text="If tariff value is negative then this is effectively penalty flag, otherwise it is reward flag"}>
-                                        {trans("reward/penalty")}
-                                    </label>
-                                </TD>
-                            </TR>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    {icon name="document" class="fa-fw"}
+                                </td>
+                                <td>
+                                    {trans("Rewards/penalties")}
+                                </td>
+                                <td>
+                                    {foreach $_TARIFF_FLAGS as $flag => $label}
+                                        <label {tip text="If tariff value is negative then this is effectively penalty flag, otherwise it is reward flag"}>
+                                            <input type="checkbox" name="tariff[flags][{$flag}]" value="{$flag}"
+                                                {if isset($tariff.flags[$flag])} checked{/if}>
+                                            {$label}
+                                        </label>
+                                        {if !$label@last}<br>{/if}
+                                    {/foreach}
+                                </td>
+                            </tr>
                             <tr>
                                 <TD>
                                     <IMG SRC="img/tax.gif" ALT="">

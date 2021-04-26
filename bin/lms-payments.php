@@ -1000,7 +1000,7 @@ $reward_to_check = array();
 $reward_period_to_check = array();
 foreach ($assigns as $assign) {
     $cid = $assign['customerid'];
-    if (isset($reward_to_check[$cid]) || ($assign['flags'] & TARIFF_FLAG_REWARD_PENALTY)) {
+    if (isset($reward_to_check[$cid]) || ($assign['flags'] & TARIFF_FLAG_REWARD_PENALTY_ON_TIME_PAYMENTS)) {
         $reward_to_check[$cid] = $cid;
     }
     if ($reward_to_check[$cid]) {
@@ -1121,7 +1121,7 @@ foreach ($assigns as $assign) {
         continue;
     }
 
-    if (($assign['flags'] & TARIFF_FLAG_REWARD_PENALTY)
+    if (($assign['flags'] & TARIFF_FLAG_REWARD_PENALTY_ON_TIME_PAYMENTS)
         && ($assign['value'] < 0 && !$rewards[$cid]
             || $assign['value'] > 0 && $rewards[$cid])) {
         continue;

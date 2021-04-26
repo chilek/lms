@@ -42,6 +42,11 @@
 		width: auto;
 	}
 
+	.reward-flags {
+		margin-block-start: 0.5em;
+		margin-block-end: 0.5em;
+		padding-inline-start: 1.5em;
+	}
 
 </style>
 
@@ -103,11 +108,27 @@
 				<TR class="highlight schematariff" data-assignment="{$tariff.id}">
 					<TD class="valign-top">
 						<A href="?m=tariffinfo&id={$tariff.tariffid}" class="bold">{$tariff.name}</A>
-						{if $tariff.flags & $smarty.const.TARIFF_FLAG_REWARD_PENALTY}
+						{if !empty($tariff.flags)}
+							{capture assign="reward_flags"}
+								{if $tariff.value < 0}
+									{trans("reward for")}
+								{else}
+									{trans("penalty for")}
+								{/if}
+								<ul class='reward-flags'>
+									{foreach $_TARIFF_FLAGS as $flag => $label}
+										{if $tariff.flags & flag}
+											<li>
+												<strong>{$label}</strong>
+											</li>
+										{/if}
+									{/foreach}
+								</ul>
+							{/capture}
 							{if $tariff.value < 0}
-								{icon name="reward" tip="reward"}
+								{icon name="reward" tip=$reward_flags}
 							{else}
-								{icon name="penalty" tip="penalty"}
+								{icon name="penalty" tip=$reward_flags}
 							{/if}
 						{/if}
 					</TD>

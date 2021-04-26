@@ -5138,12 +5138,14 @@ $_LANG['Message #$a'] = 'Wiadomość #$a';
 
 $_LANG['non-empty'] = 'niepusty';
 
-$_LANG['reward/penalty'] = 'nagroda/kara';
+$_LANG['Rewards/penalties'] = 'Nagrody/kary';
+$_LANG['Rewards'] = 'Nagrody';
+$_LANG['Penalties'] = 'Kary';
 $_LANG['If tariff value is negative then this is effectively penalty flag, otherwise it is reward flag'] = 'Jeśli wartość taryfy jest ujemna oznacza efektywnie karę, a w przeciwnym wypadku nagrodę';
-$_LANG['reward'] = 'nagroda';
-$_LANG['penalty'] = 'kara';
-$_LANG['Reward'] = 'Nagroda';
-$_LANG['Penalty'] = 'Kara';
+$_LANG['reward for'] = 'nagroda za';
+$_LANG['penalty for'] = 'kara za';
+$_LANG['Reward for'] = 'Nagroda za';
+$_LANG['Penalty for'] = 'Kara za';
 
 $_LANG['Select network device type'] = 'Wybierz typ urządzenia sieciowego';
 $_LANG['<!netdevtype>- undefined -'] = '- nieokreślony -';
@@ -5167,3 +5169,4 @@ $_LANG['Events which begin in the past are not allowed!'] = 'Zdarzenia rozpoczyn
 
 $_LANG['e-mail marketing'] = 'marketing pocztą elektroniczną';
 $_LANG['sms marketing'] = 'marketing SMS-em';
+$_LANG['on time payments'] = 'terminowe płatności';
