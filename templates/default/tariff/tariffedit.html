@@ -107,7 +107,7 @@
                                 </td>
                                 <td>
                                     {foreach $_TARIFF_FLAGS as $flag => $label}
-                                        <label {tip text="If tariff value is negative then this is effectively penalty flag, otherwise it is reward flag"}>
+                                        <label {tip text="If tariff value is negative then this is effectively reward flag, otherwise it is penalty flag"}>
                                             <input type="checkbox" name="tariff[flags][{$flag}]" value="{$flag}"
                                                 {if isset($tariff.flags[$flag])} checked{/if}>
                                             {$label}
