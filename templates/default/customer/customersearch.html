@@ -92,7 +92,12 @@
 			<IMG src="img/customer.gif" alt=""> {trans("First/last or Company name:")}
 		</TD>
 		<TD>
-			<INPUT type="text" name="search[customername]" VALUE="{$search.customername}">
+			<input type="text" name="search[customername]" value="{$search.customername}">
+			<label>
+				<input type="checkbox" name="search[customernamestartingwith]" value="1"
+					{if !empty($search.customernamestartingwith)} checked{/if}>
+				{trans("starting with")}
+			</label>
 		</TD>
 	</TR>
 	<TR>

@@ -1066,8 +1066,15 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                     AND UPPER(va.location) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . "))";
                             break;
                         case 'customername':
-                            // UPPER here is a workaround for postgresql ILIKE bug
-                            $searchargs[] = $this->db->Concat('UPPER(c.lastname)', "' '", 'UPPER(c.name)') . ' ?LIKE? UPPER(' . $this->db->Escape("%$value%") . ')';
+                            if (!isset($search['customernamestartingwith'])) {
+                                // UPPER here is a workaround for postgresql ILIKE bug
+                                $searchargs[] = $this->db->Concat('UPPER(c.lastname)', "' '", 'UPPER(c.name)') . ' ?LIKE? UPPER(' . $this->db->Escape("%$value%") . ')';
+                            }
+                            break;
+                        case 'customernamestartingwith':
+                            if ($search['customername'] != '') {
+                                $searchargs[] = $this->db->Concat('UPPER(c.lastname)', "' '", 'UPPER(c.name)') . ' ?LIKE? UPPER(' . $this->db->Escape($search['customername'] . '%') . ')';
+                            }
                             break;
                         case 'createdfrom':
                             if ($search['createdto']) {
