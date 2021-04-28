@@ -82,7 +82,7 @@ class LMSSmartyPlugins
                     $$name = !empty($value);
                     break;
                 default:
-                    $other_attributes = ' ' . str_replace('_', '-', $name) . '="' . $value . '"';
+                    $other_attributes .= ' ' . str_replace('_', '-', $name) . '="' . $value . '"';
                     break;
             }
         }
