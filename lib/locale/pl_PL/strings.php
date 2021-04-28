@@ -5173,3 +5173,6 @@ $_LANG['on time payments'] = 'terminowe płatności';
 $_LANG['electronic invoice'] = 'faktura elektroniczna';
 $_LANG['e-mail marketing'] = 'marketing pocztą elektroniczną';
 $_LANG['sms marketing'] = 'marketing SMS-em';
+
+$_LANG['Issuer'] = 'Wystawca';
+$_LANG['Enter issuer name visible on documents'] = 'Podaj nazwę wystawcy widoczną na dokumentach';

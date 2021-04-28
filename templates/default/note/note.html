@@ -5,7 +5,16 @@
 <BR>
 {trans("Deadline:")} {$note.pdate|date_format:"%Y/%m/%d"}
 <BR>
-{trans("Expositor:")} {if $note.user}{$note.user|escape}{else}{$note.division_author|escape}{/if}
+{trans("Expositor:")}
+{if $note.issuer}
+	{$note.issuer|escape}
+{elseif $note.user}
+	{$note.user|escape}
+{elseif $note.division_author}
+	{$note.division_author|escape}
+{else}
+	{trans("system")}
+{/if}
 </DIV>
 
 <H2 align="center" class="hdf">

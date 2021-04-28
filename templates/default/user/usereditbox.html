@@ -67,6 +67,18 @@
 			<INPUT type="text" name="userinfo[lastname]" value="{$userinfo.lastname|escape}" required size="40" {tip text="Enter user last name" trigger="lastname"}>
 		</TD>
 	</TR>
+	<tr>
+		<td>
+			{icon name="document" class="fa-fw"}
+		</td>
+		<td class="bold nobr">
+			{trans("Issuer")}
+		</td>
+		<td>
+			<input type="text" name="userinfo[issuer]" value="{$userinfo.issuer|escape}" size="40"
+				{tip text="Enter issuer name visible on documents" trigger="issuer"}>
+		</td>
+	</tr>
 	<TR>
 		<TD>
 			<IMG src="img/info.gif" alt="">

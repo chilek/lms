@@ -144,6 +144,7 @@ version 27-git (????-??-??):
   - enhancement: added new customer consents - e-mail marketing and sms marketing [chilan]
   - enhancement: new reward/penalty tariff flags: electronic invoice, e-mail marketing and sms marketing [chilan]
   - improvement: allow to search customers by starting with phrase in customer name [chilan]
+  - enhancement: user issuer property allow to mask issuer name on documents [chilan]
 
 version 26.0 (2020-12-15):
 

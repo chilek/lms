@@ -64,6 +64,16 @@
 			<INPUT type="text" name="useradd[lastname]" value="{$useradd.lastname|escape}" size="40" required {tip text="Enter user last name" trigger="lastname"}>
 		</TD>
 	</TR>
+	<tr>
+		<td>
+			{icon name="document" class="fa-fw"}
+			<strong>{trans("Issuer")}</strong>
+		</td>
+		<td>
+			<input type="text" name="useradd[issuer]" value="{$useradd.issuer|escape}" size="40"
+				{tip text="Enter issuer name visible on documents" trigger="issuer"}>
+		</td>
+	</tr>
 	<TR>
 		<TD class="bold">
 			<IMG src="img/info.gif" alt=""> {trans("Position:")}

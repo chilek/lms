@@ -56,6 +56,19 @@
 				{$userinfo.lastname|escape}
 			</TD>
 		</TR>
+{if $userinfo.issuer}
+		<tr>
+			<td>
+				{icon name="document" class="fa-fw"}
+			</td>
+			<td class="bold nobr">
+				{trans("Issuer")}
+			</td>
+			<td>
+				{$userinfo.issuer|escape}
+			</td>
+		</tr>
+{/if}
 {if $userinfo.position}
 		<TR>
 			<TD class="nobr">
