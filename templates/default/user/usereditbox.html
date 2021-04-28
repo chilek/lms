@@ -53,7 +53,7 @@
 			{trans("First name:")}
 		</TD>
 		<TD>
-			<INPUT type="text" name="userinfo[firstname]" value="{$userinfo.firstname}" required size="40" {tip text="Enter user first name" trigger="firstname"}>
+			<INPUT type="text" name="userinfo[firstname]" value="{$userinfo.firstname|escape}" required size="40" {tip text="Enter user first name" trigger="firstname"}>
 		</TD>
 	</TR>
 	<TR>
@@ -64,7 +64,7 @@
 			{trans("Last name:")}
 		</TD>
 		<TD>
-			<INPUT type="text" name="userinfo[lastname]" value="{$userinfo.lastname}" required size="40" {tip text="Enter user last name" trigger="lastname"}>
+			<INPUT type="text" name="userinfo[lastname]" value="{$userinfo.lastname|escape}" required size="40" {tip text="Enter user last name" trigger="lastname"}>
 		</TD>
 	</TR>
 	<TR>
