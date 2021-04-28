@@ -28,41 +28,62 @@ class LMSSmartyPlugins
 {
     public static function buttonFunction(array $params, $template)
     {
-        // optional - we want buttons without icon
-        $icon = isset($params['icon']) ? $params['icon'] : null;
-        // optional - button by default,
-        $type = isset($params['type']) ? $params['type'] : 'button';
-        // optional - text tip,
-        $tip = isset($params['tip']) ? trans($params['tip']) : null;
-        // optional - button with icon only don't use label
-        $label = isset($params['label']) ? trans($params['label']) : null;
-        // optional - href attribute of link type button
-        $href = isset($params['href']) ? trans($params['href']) : null;
-        // optional - allow to easily attach event handler in jquery,
-        $id = isset($params['id']) ? $params['id'] : null;
-        // optional - additional css classes which are appended to class attribute
-        $class = isset($params['class']) ? $params['class'] : null;
-        // optional - allow to specify javascript code lauched after click,
-        $onclick = isset($params['onclick']) && !empty($params['onclick']) ? $params['onclick'] : null;
-        // optional - if open in new window after click
-        $external = isset($params['external']) && $params['external'];
-        // optional - data-resourceid attribute value
-        $resourceid = isset($params['resourceid']) ? $params['resourceid'] : null;
-        // optional - if element should be initially visible
-        $visible = !isset($params['visible']) || !empty($params['visible']);
-        // optional - if element should be initially disabled
-        $disabled = isset($params['disabled']) && !empty($params['disabled']);
-        // optional - keyboard shortcut
-        $accesskey = isset($params['accesskey']) ? $params['accesskey'] : null;
-        // optional - contents copied to clipboard
-        $clipboard = isset($params['clipboard']) ? $params['clipboard'] : null;
-        // optional - form id
-        $form = isset($params['form']) ? $params['form'] : null;
+        static $defaults = array(
+            'icon' => null,
+            'type' => 'button',
+            'tip' => null,
+            'label' => null,
+            'href' => null,
+            'class' => null,
+            'onclick' => null,
+            'external' => false,
+            'resourceid' => null,
+            'visible' => true,
+            'disabled' => false,
+            'clipboard' => null,
+        );
 
-        $data_attributes = '';
+        extract($defaults);
+
+        $other_attributes = '';
+
         foreach ($params as $name => $value) {
-            if (strpos($name, 'data_') === 0) {
-                $data_attributes .= ' ' . str_replace('_', '-', $name) . '=\'' . $value . '\'';
+            switch ($name) {
+                // optional - we want buttons without icon
+                case 'icon':
+                // optional - button by default,
+                case 'type':
+                // optional - href attribute of link type button
+                case 'href':
+                // optional - additional css classes which are appended to class attribute
+                case 'class':
+                // optional - data-resourceid attribute value
+                case 'resourceid':
+                // optional - contents copied to clipboard
+                case 'clipboard':
+                    $$name = $value;
+                    break;
+                // optional - text tip,
+                case 'tip':
+                // optional - button with icon only don't use label
+                case 'label':
+                    $$name = trans($value);
+                    break;
+                // optional - allow to specify javascript code lauched after click,
+                case 'onclick':
+                    $onclick = !empty($value) ? $value : null;
+                    break;
+                // optional - if open in new window after click
+                case 'external':
+                // optional - if element should be initially visible
+                case 'visible':
+                // optional - if element should be initially disabled
+                case 'disabled':
+                    $$name = !empty($value);
+                    break;
+                default:
+                    $other_attributes = ' ' . str_replace('_', '-', $name) . '="' . $value . '"';
+                    break;
             }
         }
 
@@ -72,16 +93,14 @@ class LMSSmartyPlugins
                 : ($onclick || !$href ? '' : ' onclick="location.href = \'' . $href . '\';"'))
             . ' class="lms-ui-button' . ($type == 'link-button' ? ' lms-ui-link-button ' : '')
             . ($class ? ' ' . $class : '') . '"'
-            . ($id ? ' id="' . $id . '"' : '') . ((($type == 'button' && empty($href)) || $type != 'button') && $onclick ? ' onclick="' . $onclick . '"' : '')
-            . ($form ? ' form="' . $form . '"' : '')
+            . ((($type == 'button' && empty($href)) || $type != 'button') && $onclick ? ' onclick="' . $onclick . '"' : '')
             . ($tip ? ' title="' . $tip . '" data-title="' . $tip . '"' : '')
             . ($external ? ' rel="external"' : '')
             . ($resourceid ? ' data-resourceid="' . $resourceid . '"' : '')
             . ($clipboard ? ' data-clipboard-text="' . $clipboard . '"' : '')
-            . $data_attributes
+            . $other_attributes
             . ($visible ? '' : ' style="display: none;"')
-            . ($disabled ? ' disabled' : '')
-            . ($accesskey ? ' accesskey="' . $accesskey . '"' : '') . '>'
+            . ($disabled ? ' disabled' : '') . '>'
             . ($icon ? '<i class="' . (strpos($icon, 'lms-ui-icon-') === 0 || strpos($icon, 'fa') === 0 ? $icon : 'lms-ui-icon-' . $icon) . '"></i>' : '')
             . ($label ? '<span class="lms-ui-label">' . $label . '</span>' : '') . '
 		</' . ($type == 'link' || $type == 'link-button' ? 'a' : 'button') . '>';
