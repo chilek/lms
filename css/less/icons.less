@@ -426,7 +426,15 @@
   }
 }
 
-.lms-ui-icon-mail,
+.lms-ui-icon-mail {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-at;
+  }
+}
+
 .lms-ui-icon-send {
   .fa-icon;
   .fas;
