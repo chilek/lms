@@ -50,6 +50,9 @@
 	}
 
 </style>
+
+{include file="customer/customercompanyselectiondialog.html"}
+
 <FORM name="customeradd" id="customeradd" method="POST" action="?m=customeradd">
 <p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
@@ -370,14 +373,18 @@
 									{if $customeradd.tenexistencewarning}
 									<INPUT type="hidden" name="customeradd[tenexistencewarning]" value="1">
 									{/if}
-									<a class="gusapi-button" data-type="{Utils::GUS_REGON_API_SEARCH_TYPE_TEN}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
+									{button type="link" icon="division" class="gusapi-button"
+										data_type=Utils::GUS_REGON_API_SEARCH_TYPE_TEN
+										tip="Click here to autocomplete company data from GUS REGON database"}
 								</TD>
 							</TR>
 							<TR>
 								<TD>{trans("REGON")}:</TD>
 								<TD>
 									<INPUT type="text" size="30" value="{$customeradd.regon}" name="customeradd[regon]" {tip text="Enter Business Registration Number (optional)" trigger="regon"}>
-									<a class="gusapi-button" data-type="{Utils::GUS_REGON_API_SEARCH_TYPE_REGON}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
+									{button type="link" icon="division" class="gusapi-button"
+										data_type=Utils::GUS_REGON_API_SEARCH_TYPE_REGON
+										tip="Click here to autocomplete company data from GUS REGON database"}
 								</TD>
 							</TR>
 							<TR>
@@ -390,7 +397,9 @@
 								<TD>{trans("RBE")}:</TD>
 								<TD>
 									<INPUT type="text" size="30" value="{$customeradd.rbe}" name="customeradd[rbe]" {tip text="Enter National Court Register / Register of Business Entities Number (optional)" trigger="rbe"}>
-									<a class="gusapi-button" data-type="{Utils::GUS_REGON_API_SEARCH_TYPE_RBE}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
+									{button type="link" icon="division" class="gusapi-button"
+										data_type=Utils::GUS_REGON_API_SEARCH_TYPE_RBE
+										tip="Click here to autocomplete company data from GUS REGON database"}
 								</TD>
 							</TR>
 						</TABLE>
@@ -577,11 +586,18 @@
 			if (!identifier.length) {
 				return;
 			}
+			var that = this;
 			GusApiGetCompanyDetails(
 				$(this).attr('data-type'),
 				identifier,
 				function(data) {
-					GusApiFinished('customeradd', data);
+					if (data.length > 1) {
+						customerCompanySelectionDialog(data, that).done(function(company) {
+							GusApiFinished('customeradd', company);
+						});
+					} else {
+						GusApiFinished('customeradd', data[0]);
+					}
 				});
 			return;
 		});
