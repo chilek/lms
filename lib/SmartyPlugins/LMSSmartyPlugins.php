@@ -976,6 +976,8 @@ class LMSSmartyPlugins
         $tip = isset($params['tip']) ? trans($params['tip']) : null;
         // optional - text label
         $label = isset($params['label']) ? trans($params['label']) : null;
+        // optional - if icon should have fixed width
+        $fw = isset($params['fw']) && !empty($params['fw']);
 
         $data_attributes = '';
         foreach ($params as $key => $value) {
@@ -990,6 +992,7 @@ class LMSSmartyPlugins
             . (isset($name) ? (strpos($name, 'lms-ui-icon-') === 0 || strpos($name, 'fa') === 0
                 ? $name : 'lms-ui-icon-' . $name) : '')
             . (isset($class) ? ' ' . $class : '')
+            . ($fw ? ' fa-fw' : '')
             . '"'
             . (isset($tip) ? ' title="' . $tip . '"' : '')
             . $data_attributes
