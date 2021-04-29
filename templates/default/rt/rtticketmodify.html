@@ -59,7 +59,11 @@
 						<option value="">{trans("<!person>- none -")}</option>
 						<option value="0"{if $ticket.requestor_userid == '0'} selected{/if}>{trans("- indicated person -")}</option>
 						{foreach $userlist as $user}
-							<option value="{$user.id}"{if $ticket.requestor_userid == $user.id} selected{/if}>{$user.rname|escape} ({$user.login})</option>
+							{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
+								|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
+								|| $user.id == $ticket.requestor_userid}
+								<option value="{$user.id}"{if !$user.access} class="blend"{/if}{if $ticket.requestor_userid == $user.id} selected{/if}>{$user.rname|escape} ({$user.login})</option>
+							{/if}
 						{/foreach}
 					</SELECT>
 				</div>
