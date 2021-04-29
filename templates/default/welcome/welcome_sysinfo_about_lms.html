@@ -14,7 +14,7 @@
     <tbody id="welcome_sysinfo_about_lms-{$layout.module}" style="display:none;">
         <tr>
             <td class="text-right bold">
-                <a href="http://www.lms.org.pl" rel="external">{t a=LMS::SOFTWARE_NAME}$a version:{/t}</a>
+                <a href="{LMS::SOFTWARE_URL}" rel="external">{t a=LMS::SOFTWARE_NAME}$a version:{/t}</a>
             </td>
             <td>
                 {$layout.lmsv}{if $layout.lmsvr} ({$layout.lmsvr}){/if}
@@ -22,7 +22,7 @@
         </tr>
         <tr>
             <td class="text-right bold">
-                <a href="http://www.lms.org.pl" rel="external">{trans("LMSDB version:")}</a>
+                <a href="{LMS::SOFTWARE_URL}" rel="external">{trans("LMSDB version:")}</a>
             </td>
             <td>
                 {$layout.lmsdbv}
