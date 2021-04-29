@@ -102,7 +102,7 @@
 							{foreach $customerinfo.addresses as $v}
 								{if $v.location_address_type == $smarty.const.BILLING_ADDRESS}
 								<tr>
-									<td style="width: 1%;">{icon name="home" class="fa-fw" tip="billing address"}</td>
+									<td style="width: 1%;">{icon name="home" fw=true tip="billing address"}</td>
 									<td style="width: 99%;">
 										<span title="{trans('billing address')}">{if $v.teryt}{t a=htmlspecialchars($v.location)}$a (TERRIT){/t}{else}{$v.location|escape}{/if}
 											<a href="https://www.google.com/maps/place/{$v.location}" title="{trans("Google Maps")}">{icon name="location"}</a>
@@ -116,7 +116,7 @@
 							{foreach $customerinfo.addresses as $v}
 								{if $v.location_address_type == $smarty.const.POSTAL_ADDRESS}
 								<tr>
-									<td style="width: 1%;">{icon name="mail" class="fa-fw" tip="postal address"}</td>
+									<td style="width: 1%;">{icon name="mail" fw=true tip="postal address"}</td>
 									<td style="width: 99%;">
 										<span title="{trans('postal address')}">{if $v.location_name}{$v.location_name|escape}, {/if}{if $v.teryt}{t a=htmlspecialchars($v.location)}$a (TERRIT){/t}{else}{$v.location|escape}{/if}
 											<a href="https://www.google.com/maps/place/{$v.location}" title="{trans("Google Maps")}">{icon name="location"}</a>

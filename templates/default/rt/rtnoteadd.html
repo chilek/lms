@@ -17,7 +17,7 @@
     <THEAD>
 	<TR>
 		<TD colspan="2" class="bold nobr">
-			{icon name="helpdesk" class="fa-fw"}
+			{icon name="helpdesk" fw=true}
 			{t a=$note.ticketid|string_format:"%06d"}Ticket No. $a{/t}
 		</TD>
 	</TR>
@@ -25,7 +25,7 @@
     <TBODY>
 	<TR id="note-template-row"{if empty($notetemplates)} style="display: none;"{/if}>
 		<TD class="bold nobr">
-			{icon name="document" class="fa-fw"}
+			{icon name="document" fw=true}
 			{trans("Note template:")}
 		</TD>
 		<td id="note-templates">
@@ -34,7 +34,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			{icon name="note" class="fa-fw"}
+			{icon name="note" fw=true}
 			{trans("Note content:")}
 		</TD>
 		<TD>
@@ -43,7 +43,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr valign-top">
-			{icon name="upload" class="fa-fw"}
+			{icon name="upload" fw=true}
 			{trans("Attachments:")}
 		</TD>
 		<TD>
@@ -67,7 +67,7 @@
     <TBODY>
 	<TR>
 		<TD class="bold nobr">
-			{icon name="mail" class="fa-fw"}
+			{icon name="mail" fw=true}
 			<label for="notify"> {trans("Notify users:")}</label>
 		</TD>
 		<TD>
@@ -76,7 +76,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			{icon name="status" class="fa-fw"}
+			{icon name="status" fw=true}
 			{trans("Status:")}
 		</TD>
 		<TD>
@@ -94,7 +94,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			{icon name="cause" class="fa-fw"}
+			{icon name="cause" fw=true}
 			{trans("Cause:")}
 		</TD>
 		<TD>
@@ -107,7 +107,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			{icon name="source" class="fa-fw"}
+			{icon name="source" fw=true}
 			{trans("Ticket source:")}
 		</TD>
 		<TD>
@@ -120,7 +120,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			{icon name="priority" class="fa-fw"}
+			{icon name="priority" fw=true}
 			{trans("Priority:")}
 		</TD>
 		<TD>
@@ -134,7 +134,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			{icon name="queue" class="fa-fw"}
+			{icon name="queue" fw=true}
 			{trans("Queue:")}
 		</TD>
 		<TD>
@@ -147,7 +147,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			{icon name="owner" class="fa-fw"}
+			{icon name="owner" fw=true}
 			{trans("Owner:")}
 		</TD>
 		<TD>
@@ -170,7 +170,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			{icon name="verifier" class="fa-fw"}
+			{icon name="verifier" fw=true}
 			{trans("Verifier:")}
 		</TD>
 		<TD>
@@ -193,7 +193,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			{icon name="deadline" class="fa-fw"}
+			{icon name="deadline" fw=true}
 			{trans("<!rt>Deadline:")}
 		</TD>
 		<TD>
@@ -209,7 +209,7 @@
 
 	<TR>
 		<td class="bold nobr">
-			{icon name="queue" class="fa-fw"}
+			{icon name="queue" fw=true}
 			{trans("Category changes:")}
 		</td>
 		<td>
@@ -224,7 +224,7 @@
 
 	<TR id="categories">
 		<td class="bold nobr">
-			{icon name="categories" class="fa-fw"}
+			{icon name="categories" fw=true}
 			{trans("Categories:")}
 		</td>
 		<td>

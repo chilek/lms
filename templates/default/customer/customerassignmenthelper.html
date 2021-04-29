@@ -135,7 +135,7 @@
 						<table id="a_promotions" style="display: none;">
 							<TR>
 								<TD>
-									{icon name="money" class="fa-fw"}
+									{icon name="money" fw=true}
 								</TD>
 								<TD class="bold">
 									{trans("Schema")}:
@@ -165,7 +165,7 @@
 							</TR>
 							<tr id="a_location" style="display: none;">
 								<td>
-									{icon name="location" class="fa-fw"}
+									{icon name="location" fw=true}
 								</td>
 								<td class="bold">
 									{trans("Location:")}
@@ -361,7 +361,7 @@
 
 							<TR id="a_count" style="display: none;">
 								<TD>
-									{icon name="quantity" class="fa-fw"}
+									{icon name="quantity" fw=true}
 								</TD>
 								<TD class="bold nobr">
 									{trans("Count:")}
@@ -373,7 +373,7 @@
 
 							<TR id="a_name" style="display: none;">
 								<TD>
-									{icon name="description" class="fa-fw"}
+									{icon name="description" fw=true}
 								</TD>
 								<TD class="bold nobr">
 									{trans("Name:")}
@@ -386,7 +386,7 @@
 
 							<TR id="a_attribute" style="display: none;">
 								<TD>
-									{icon name="tags" class="fa-fw"}
+									{icon name="tags" fw=true}
 								</TD>
 								<TD class="bold nobr">
 									{trans("Attribute:")}
@@ -398,7 +398,7 @@
 
 							<TR id="a_day" style="display: none;">
 								<TD>
-									{icon name="accounting" class="fa-fw"}
+									{icon name="accounting" fw=true}
 								</TD>
 								<TD class="bold nobr">
 									{trans("Accounting:")}
@@ -433,7 +433,7 @@
 
 							<TR id="a_period">
 								<TD>
-									{icon name="period" class="fa-fw"}
+									{icon name="period" fw=true}
 								</TD>
 								<TD class="bold nobr">
 									{trans("Period:")}
@@ -456,7 +456,7 @@
 
 							<TR id="a_value" style="display: none;">
 								<TD>
-									{icon name="money" class="fa-fw"}
+									{icon name="money" fw=true}
 								</TD>
 								<TD class="bold">
 									{trans("Value:")}
@@ -475,7 +475,7 @@
 
 							<TR id="a_discount" style="display: none;">
 								<TD style="{if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
-									{icon name="discount" class="fa-fw"}
+									{icon name="discount" fw=true}
 								</TD>
 								<TD class="bold" style="{if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
 									<span class="bold">{trans("Discount:")}</span>
@@ -492,7 +492,7 @@
 
 							<TR id="a_type" style="display: none;">
 								<TD>
-									{icon name="type" class="fa-fw"}
+									{icon name="type" fw=true}
 								</TD>
 								<TD class="bold">
 									{trans("Type:")}
@@ -507,7 +507,7 @@
 
 							<TR id="a_tax" style="display: none;">
 								<TD>
-									{icon name="money" class="fa-fw"}
+									{icon name="money" fw=true}
 								</TD>
 								<TD class="bold">
 									{trans("Tax:")}
@@ -523,7 +523,7 @@
 
 							<TR id="a_taxcategory" style="display: none;">
 								<TD>
-									{icon name="money" class="fa-fw"}
+									{icon name="money" fw=true}
 								</TD>
 								<TD class="bold">
 									<label for="taxcategory">
@@ -538,7 +538,7 @@
 
 							<TR id="a_productid" style="display: none;">
 								<TD>
-									{icon name="optional-info" class="fa-fw"}
+									{icon name="optional-info" fw=true}
 								</TD>
 								<TD class="bold">
 									{trans("Product ID:")}
@@ -551,7 +551,7 @@
 
 							<TR id="a_numberplan" style="display: none;">
 								<TD>
-									{icon name="id" class="fa-fw"}
+									{icon name="id" fw=true}
 								</TD>
 								<TD class="bold nobr">
 									{trans("Numbering Plan:")}
@@ -570,7 +570,7 @@
 
 							<TR id="a_paytype" style="display: none;">
 								<TD>
-									{icon name="paytype" class="fa-fw"}
+									{icon name="paytype" fw=true}
 								</TD>
 								<TD class="bold nobr">
 									{trans("Payment Type:")}
@@ -582,7 +582,7 @@
 
 							<tr id="a_address" style="display: none;">
 								<td>
-									{icon name="recipient" class="fa-fw"}
+									{icon name="recipient" fw=true}
 								</td>
 								<td class="bold">
 									<span class="bold">{trans("Recipient:")}</span>
@@ -615,7 +615,7 @@
 				<TBODY>
 				<TR id="a_options" style="display: none;">
 					<TD>
-						{icon name="options" class="fa-fw"}
+						{icon name="options" fw=true}
 					</TD>
 					<TD class="bold">
 						{trans("Options:")}
@@ -668,7 +668,7 @@
 
 				<TR id="a_existingassignments" style="display: none;">
 					<TD>
-						{icon name="assignment" class="fa-fw"}
+						{icon name="assignment" fw=true}
 					</TD>
 					<TD class="bold">
 						{trans("Existing assignments:")}
@@ -696,7 +696,7 @@
 				{if $customernodes}
 				<tr id="a_nodes" style="display: none;">
 					<td>
-						{icon name="node" class="fa-fw"}
+						{icon name="node" fw=true}
 					</td>
 					<td class="bold">
 						{trans("Nodes:")}
@@ -721,7 +721,7 @@
 				{if $customernetdevnodes}
 				<tr id="a_netdevnodes" style="display: none;">
 					<td>
-						{icon name="netdev" class="fa-fw"}
+						{icon name="netdev" fw=true}
 					</td>
 					<td class="bold">
 						{trans("Network Devices:")}
@@ -746,7 +746,7 @@
 				{if $voipaccounts}
 				<tr id="a_phones" style="display: none;">
 					<td>
-						{icon name="phone" class="fa-fw"}
+						{icon name="phone" fw=true}
 					</td>
 					<td class="bold">
 						{trans("Phones:")}

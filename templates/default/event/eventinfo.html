@@ -185,7 +185,7 @@
 			{if !empty($event.phones)}
 				<br>
 				{foreach $event.phones as $phone}
-					{icon name="phone" class="fa-fw"}
+					{icon name="phone" fw=true}
 					<a href="tel:{$phone.contact}">{$phone.fullname}</a>
 					{if !$phone@last}
 						<br>

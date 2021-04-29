@@ -28,7 +28,7 @@
 			{else}
 				{$icon = "mail"}
 			{/if}
-			{icon name=$icon class="fa-fw"}
+			{icon name=$icon fw=true}
 		</TD>
 		<TD class="bold nobr">
 			{trans("Subject:")}
@@ -41,7 +41,7 @@
     <TBODY>
 	<TR>
 		<TD>
-			{icon name="user" class="fa-fw"}
+			{icon name="user" fw=true}
 		</TD>
 		<TD class="bold">
 			{trans("User:")}
@@ -54,7 +54,7 @@
 	</TR>
 	<TR>
 		<TD>
-			{icon name="calendar" class="fa-fw"}
+			{icon name="calendar" fw=true}
 		</TD>
 		<TD class="bold">
 			{trans("Creation date:")}
@@ -66,7 +66,7 @@
 {if $message.sender}
 	<TR>
 		<TD>
-			{icon name="mail" class="fa-fw"}
+			{icon name="mail" fw=true}
 		</TD>
 		<TD class="bold">
 			{trans("Sender:")}
@@ -78,7 +78,7 @@
 {/if}
 	<TR>
 		<TD>
-			{icon name="edit" class="fa-fw"}
+			{icon name="edit" fw=true}
 		</TD>
 		<TD class="bold nobr">
 			{trans("Message body:")}
@@ -102,7 +102,7 @@
 	{if $filecontainers}
 		<TR>
 			<TD class="valign-top">
-				{icon name="upload" class="fa-fw"}
+				{icon name="upload" fw=true}
 			</TD>
 			<TD class="bold valign-top">
 				{trans("Attachments:")}

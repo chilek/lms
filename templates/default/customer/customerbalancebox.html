@@ -423,7 +423,7 @@
 							{trans("income/expense")}
 						</label>
 						<div class="servicetype">
-							{icon name="money" class="fa-fw"}
+							{icon name="money" fw=true}
 							<select id="servicetype" name="addbalance[servicetype]" form="addbalance-form" {tip text="Service type"}>
 								<option value="">{trans("- none -")}</option>
 								{foreach Localisation::arraySort($_SERVICETYPES) as $type => $label}
