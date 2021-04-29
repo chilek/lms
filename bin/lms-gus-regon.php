@@ -308,6 +308,15 @@ foreach ($customers as $customer) {
     } elseif (is_string($result)) {
         die($result . PHP_EOL);
     } else {
+        if (count($result) > 1) {
+            if (!$quiet) {
+                echo 'Ambigous data in REGON database!' . PHP_EOL;
+            }
+            continue;
+        }
+
+        $result = reset($result);
+
         if (!$quiet) {
             echo 'found in GUS Regon database!';
         }
