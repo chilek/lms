@@ -238,7 +238,7 @@
 			{section name=covenantlist loop=$covenantlist}
 				<TR class="highlight {cycle}">
 					<TD class="nobr">{$covenantlist[covenantlist].time|date_format:"%Y/%m/%d"}</TD>
-					<TD>{$covenantlist[covenantlist].comment}</TD>
+					<TD>{$covenantlist[covenantlist].comment|escape}</TD>
 					<td>
 						{tax_category_selection elementname="l_taxcategory[{$covenantlist[covenantlist].cashid}]"
 							tip="Select tax category"}

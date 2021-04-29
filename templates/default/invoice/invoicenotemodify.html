@@ -316,7 +316,7 @@
 			</TD>
 			<TD>
 				{if $item.deleted}
-					<INPUT TYPE="hidden" VALUE="{$item.name|escape}" NAME="name[{$itemid}]">{$item.name}
+					<INPUT TYPE="hidden" VALUE="{$item.name|escape}" NAME="name[{$itemid}]">{$item.name|escape}
 				{else}
 					<INPUT TYPE="text" VALUE="{$item.name|escape}" NAME="name[{$itemid}]" SIZE="48">
 				{/if}
