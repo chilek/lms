@@ -793,6 +793,7 @@ $PAYTYPES = array(
     8   => 'paid',
     9   => 'cash on delivery',
     10  => 'instalments',
+    11  => 'bank loan',
 );
 
 // Contact types

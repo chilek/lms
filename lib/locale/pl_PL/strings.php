@@ -24,6 +24,7 @@
  *  $Id$
  */
 
+$_LANG['bank loan'] = 'pożyczka bankowa';
 $_LANG['starting with'] = 'rozpoczynające się od';
 
 $_LANG['<!qs>network id'] = 'identyfikator sieci';
