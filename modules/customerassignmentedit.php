@@ -506,6 +506,11 @@ if (isset($_POST['assignment'])) {
     if (empty($a['currency'])) {
         $a['currency'] = $_default_currency;
     }
+
+    if (empty($a['pdiscount']) && empty($a['vdiscount'])) {
+        $default_assignment_discount_type = ConfigHelper::getConfig('phpui.default_assignment_discount_type', 'percentage');
+        $a['discount_type'] = $default_assignment_discount_type == 'percentage' ? DISCOUNT_PERCENTAGE : DISCOUNT_AMOUNT;
+    }
 }
 
 $layout['pagetitle'] = trans('Liability Edit: $a', '<A href="?m=customerinfo&id='.$customer['id'].'">'.$customer['name'].'</A>');
