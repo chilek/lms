@@ -432,51 +432,6 @@ if ($test) {
     echo "WARNING! You are using test mode." . PHP_EOL;
 }
 
-$DB->BeginTrans();
-
-// invoice auto-closes
-if ($check_invoices) {
-    $DB->Execute(
-        "UPDATE documents SET closed = 1
-		WHERE " . ($customerid ? 'customerid = ' . $customerid : '1 = 1') . " AND customerid IN (
-			SELECT cash.customerid
-			FROM cash
-			JOIN customers c ON c.id = cash.customerid
-			WHERE cash.time <= ?NOW?"
-                . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
-                . ($customergroups ? str_replace('%customerid_alias%', 'cash.customerid', $customergroups) : '') . "
-			GROUP BY cash.customerid
-			HAVING SUM(cash.value * cash.currencyvalue) >= 0
-		) AND type IN (?, ?, ?)
-			AND cdate <= ?NOW?
-			AND closed = 0",
-        array(DOC_INVOICE, DOC_CNOTE, DOC_DNOTE)
-    );
-}
-
-// solid payments
-$assigns = $DB->GetAll(
-    "SELECT * FROM payments WHERE value <> 0
-			AND (period = ? OR (period = ? AND at = ?)
-				OR (period = ? AND at = ?)
-				OR (period = ? AND at = ?)
-				OR (period = ? AND at = ?)
-				OR (period = ? AND at = ?))",
-    array(DAILY, WEEKLY, $weekday, MONTHLY, $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday)
-);
-if (!empty($assigns)) {
-    foreach ($assigns as $assign) {
-        $DB->Execute(
-            "INSERT INTO cash (time, type, value, customerid, comment)
-			VALUES (?, ?, ?, ?, ?)",
-            array($issuetime, 1, $assign['value'] * -1, null, $assign['name']."/".$assign['creditor'])
-        );
-        if (!$quiet) {
-            print "CID:0\tVAL:".$assign['value']."\tDESC:".$assign['name']."/".$assign['creditor'] . PHP_EOL;
-        }
-    }
-}
-
 // let's go, fetch *ALL* assignments in given day
 $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_address_id,
         (CASE WHEN ca2.address_id IS NULL THEN ca1.address_id ELSE ca2.address_id END) AS post_address_id,
@@ -697,7 +652,322 @@ if ($billings) {
 }
 unset($services);
 
+if (!empty($assigns)) {
+    // get dominating link technology per customer assignments when customer
+    // node are directly connected to operator network device
+    $assignment_linktechnologies = $DB->GetAllByKey("SELECT a.id, b.technology, MAX(b.technologycount) AS technologycount
+		FROM assignments a
+		JOIN (
+			SELECT a.id, n.linktechnology AS technology, COUNT(n.linktechnology) AS technologycount
+			FROM nodeassignments na
+				JOIN assignments a ON a.id = na.assignmentid
+				JOIN tariffs t ON t.id = a.tariffid
+				JOIN nodes n ON n.id = na.nodeid
+			WHERE n.linktechnology > 0 AND n.ownerid IS NOT NULL
+			GROUP BY a.id, n.linktechnology
+		) b ON b.id = a.id
+		GROUP BY a.id, b.technology
+		ORDER BY a.id", 'id');
+    if (empty($assignment_linktechnologies)) {
+        $assignment_linktechnologies = array();
+    }
+
+    // get dominating link technology per customer assignments when customer
+    // node or customer network devices nodes are connected to operator through customer subnetwork
+    // ************
+    // get assignments which match to nodes or network device nodes in customer subnetworks
+    $node_assignments = $DB->GetAllByKey("SELECT " . $DB->GroupConcat('na.assignmentid', ',', true) . " AS assignments,
+			na.nodeid
+		FROM nodeassignments na
+		JOIN nodes n ON n.id = na.nodeid
+		JOIN assignments a ON a.id = na.assignmentid
+		LEFT JOIN netdevices nd ON nd.id = n.netdev
+		WHERE nd.ownerid IS NOT NULL AND ((n.ownerid IS NULL AND n.netdev IS NOT NULL)
+			OR n.ownerid IS NOT NULL)
+			AND a.suspended = 0
+			AND a.period IN (" . implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)) . ")
+			AND a.datefrom < ?NOW? AND (a.dateto = 0 OR a.dateto > ?NOW?)
+			AND NOT EXISTS (
+				SELECT id FROM assignments aa
+				WHERE aa.customerid = (CASE WHEN n.ownerid IS NULL THEN nd.ownerid ELSE n.ownerid END)
+					AND aa.tariffid IS NULL AND aa.liabilityid IS NULL
+					AND aa.datefrom < ?NOW?
+					AND (aa.dateto > ?NOW? OR aa.dateto = 0)
+			)
+		GROUP BY na.nodeid", 'nodeid');
+    if (empty($node_assignments)) {
+        $node_assignments = array();
+    } else {
+        foreach ($node_assignments as $nodeid => $assignments) {
+            $node_assignments[$nodeid] = explode(',', $assignments['assignments']);
+        }
+    }
+
+    if (!empty($node_assignments)) {
+        // search for links between operator network devices and customer network devices
+        $uni_links = $DB->GetAllByKey(
+            "SELECT nl.id AS netlinkid, nl.technology AS technology,
+					c.id AS customerid,
+					(CASE WHEN ndsrc.ownerid IS NULL THEN nl.src ELSE nl.dst END) AS operator_netdevid,
+					(CASE WHEN ndsrc.ownerid IS NULL THEN nl.dst ELSE nl.dst END) AS netdevid
+				FROM netlinks nl
+				JOIN netdevices ndsrc ON ndsrc.id = nl.src
+				JOIN netdevices nddst ON nddst.id = nl.dst
+				JOIN customers c ON (ndsrc.ownerid IS NULL AND c.id = nddst.ownerid)
+					OR (nddst.ownerid IS NULL AND c.id = ndsrc.ownerid)
+				WHERE nl.technology > 0 AND ((ndsrc.ownerid IS NULL AND nddst.ownerid IS NOT NULL)
+					OR (nddst.ownerid IS NULL AND ndsrc.ownerid IS NOT NULL))
+				ORDER BY nl.id",
+            'netlinkid'
+        );
+        if (!empty($uni_links)) {
+            function find_nodes_for_netdev($customerid, $netdevid, &$customer_nodes, &$customer_netlinks)
+            {
+                if (isset($customer_nodes[$customerid . '_' . $netdevid])) {
+                    $nodeids = explode(',', $customer_nodes[$customerid . '_' . $netdevid]['nodeids']);
+                } else {
+                    $nodeids = array();
+                }
+
+                if (!empty($customer_netlinks)) {
+                    foreach ($customer_netlinks as &$customer_netlink) {
+                        if ($customer_netlink['src'] == $netdevid) {
+                            $next_netdevid = $customer_netlink['dst'];
+                        } else if ($customer_netlink['dst'] == $netdevid) {
+                            $next_netdevid = $customer_netlink['src'];
+                        } else {
+                            continue;
+                        }
+                        $nodeids = array_merge($nodeids, find_nodes_for_netdev(
+                            $customerid,
+                            $next_netdevid,
+                            $customer_nodes,
+                            $customer_netlinks
+                        ));
+                    }
+                    unset($customer_netlink);
+                }
+
+                return $nodeids;
+            }
+
+            $customer_netlinks = $DB->GetAllByKey(
+                "SELECT " . $DB->Concat('nl.src', "'_'", 'nl.dst') . " AS netlink
+					FROM netlinks nl
+					JOIN netdevices ndsrc ON ndsrc.id = nl.src
+					JOIN netdevices nddst ON nddst.id = nl.dst
+					WHERE ndsrc.ownerid IS NOT NULL AND nddst.ownerid IS NOT NULL
+						AND ndsrc.ownerid = nddst.ownerid",
+                'netlink'
+            );
+
+            $customer_nodes = $DB->GetAllByKey(
+                "SELECT " . $DB->GroupConcat('n.id') . " AS nodeids,
+						" . $DB->Concat('CASE WHEN n.ownerid IS NULL THEN nd.ownerid ELSE n.ownerid END', "'_'", 'n.netdev') . " AS customerid_netdev
+					FROM nodes n
+					LEFT JOIN netdevices nd ON nd.id = n.netdev AND n.ownerid IS NULL AND nd.ownerid IS NOT NULL
+					WHERE n.ownerid IS NOT NULL OR nd.ownerid IS NOT NULL
+						AND EXISTS (
+							SELECT na.id FROM nodeassignments na
+							JOIN assignments a ON a.id = na.assignmentid
+							WHERE na.nodeid = n.id AND a.suspended = 0
+								AND a.period IN (" . implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)) . ")
+								AND a.datefrom < ?NOW? AND (a.dateto = 0 OR a.dateto > ?NOW?)
+						)
+						AND NOT EXISTS (
+							SELECT id FROM assignments aa
+							WHERE aa.customerid = (CASE WHEN n.ownerid IS NULL THEN nd.ownerid ELSE n.ownerid END)
+								AND aa.tariffid IS NULL AND aa.liabilityid IS NULL
+								AND aa.datefrom < ?NOW?
+								AND (aa.dateto > ?NOW? OR aa.dateto = 0)
+						)
+					GROUP BY customerid_netdev",
+                'customerid_netdev'
+            );
+
+            // collect customer node/node-netdev identifiers connected to customer subnetwork
+            // and then fill assignment linktechnologies relations
+            foreach ($uni_links as $netlinkid => &$netlink) {
+                $nodes = find_nodes_for_netdev(
+                    $netlink['customerid'],
+                    $netlink['netdevid'],
+                    $customer_nodes,
+                    $customer_netlinks
+                );
+                if (!empty($nodes)) {
+                    foreach ($nodes as $nodeid) {
+                        if (isset($node_assignments[$nodeid])) {
+                            foreach ($node_assignments[$nodeid] as $assignmentid) {
+                                $assignment_linktechnologies[$assignmentid] = array(
+                                    'id' => $assignmentid,
+                                    'technology' => $netlink['technology'],
+                                    'technologycount' => 1,
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+            unset($netlink);
+            unset($uni_links);
+
+            unset($customer_netlinks);
+            unset($customer_nodes);
+        }
+    }
+}
+
+$suspended = 0;
+$numbers = array();
+$customernumbers = array();
+$numbertemplates = array();
+$invoices = array();
+$telecom_services = array();
+$currencies = array();
+$doctypes = array();
+$paytypes = array();
+$addresses = array();
+$numberplans = array();
+$divisions = array();
+
+$result = $LMS->ExecuteHook(
+    'payments_before_assignment_loop',
+    array(
+        'assignments' => $assigns,
+        'date' => sprintf('%04d/%02d/%02d', $year, $month, $dom),
+    )
+);
+if ($result['assignments']) {
+    $assigns = $result['assignments'];
+}
+
+if ($prefer_netto) {
+    $taxeslist = $LMS->GetTaxes();
+}
+
+// find assignments with tariff reward/penalty flag
+// and check if customer applies to this
+$reward_to_check = array();
+$reward_period_to_check = array();
+if (!empty($assigns)) {
+    foreach ($assigns as $assign) {
+        $cid = $assign['customerid'];
+        if (isset($reward_to_check[$cid]) || ($assign['flags'] & TARIFF_FLAG_REWARD_PENALTY_ON_TIME_PAYMENTS)) {
+            $reward_to_check[$cid] = $cid;
+        }
+        if ($reward_to_check[$cid]) {
+            if (!isset($reward_period_to_check[$cid])) {
+                $reward_period_to_check[$cid] = DAILY;
+            }
+            if ($assign['period'] >= WEEKLY && $assign['period'] <= YEARLY) {
+                $reward_period_to_check[$cid] = max($reward_period_to_check[$cid], $assign['period']);
+            } elseif ($assign['period'] == HALFYEARLY && $reward_period_to_check[$cid] < YEARLY) {
+                $reward_period_to_check[$cid] = HALFYEARLY;
+            }
+        }
+    }
+
+    $period_end = mktime(0, 0, 0, date('m', $currtime), date('d', $currtime), date('Y', $currtime));
+    $period_starts = array(
+        DAILY => strtotime('yesterday', $period_end),
+        WEEKLY => strtotime('1 week ago', $period_end),
+        MONTHLY => strtotime('1 month ago', $period_end),
+        QUARTERLY => strtotime('3 months ago', $period_end),
+        HALFYEARLY => strtotime('6 months ago', $period_end),
+        YEARLY => strtotime('1 year ago', $period_end),
+    );
+
+    $rewards = array();
+    foreach ($reward_to_check as $cid) {
+        $period_start = $period_starts[$reward_period_to_check[$cid]];
+        $balance = $LMS->GetCustomerBalance($cid, $period_start);
+        if ($balance < 0) {
+            $rewards[$cid] = false;
+            continue;
+        }
+        $history = $DB->GetAll(
+            'SELECT (CASE WHEN d.id IS NULL THEN c.time ELSE c.time + d.paytime * 86400 END) AS time,
+                d.id AS docid,
+                (c.value * c.currencyvalue) AS value
+            FROM cash c
+            LEFT JOIN documents d ON d.id = c.docid AND d.type IN ?
+            WHERE c.customerid = ?
+                AND c.time > ? AND c.time < ?
+            ORDER BY time',
+            array(
+                array(DOC_INVOICE, DOC_CNOTE, DOC_DNOTE, DOC_INVOICE_PRO),
+                $cid,
+                $period_start,
+                $period_end,
+            )
+        );
+        $rewards[$cid] = true;
+        if (!empty($history)) {
+            foreach ($history as &$record) {
+                if (!empty($record['docid'])) {
+                    $record['time'] = mktime(
+                        23,
+                        59,
+                        59,
+                        date('m', $record['time']),
+                        date('d', $record['time']),
+                        date('Y', $record['time'])
+                    ) + 1;
+                }
+            }
+            unset($record);
+            usort($history, function ($a, $b) {
+                return $a['time'] - $b['time'];
+            });
+            foreach ($history as $record) {
+                $balance += $record['value'];
+                if (empty($record['docid'])) {
+                    continue;
+                }
+                if ($balance < 0) {
+                    $rewards[$cid] = false;
+                }
+            }
+        }
+    }
+}
+
 $currencyvalues = array();
+
+if (!empty($assigns)) {
+    // determine currency values for assignments with foreign currency
+    // if payments.prefer_netto = true, use value netto+tax
+    foreach ($assigns as &$assign) {
+        if ($prefer_netto) {
+            if (isset($assign['netvalue']) && !empty($assign['netvalue']) != 0) {
+                $assign['value'] = $assign['netvalue'] * (100 + $taxeslist[$assign['taxid']]['value']) / 100;
+            }
+        }
+
+        $currency = $assign['currency'];
+        if (empty($currency)) {
+            $assign['currency'] = Localisation::getCurrentCurrency();
+            continue;
+        }
+        if ($currency != Localisation::getCurrentCurrency()) {
+            if (!isset($currencyvalues[$currency])) {
+                $currencyvalues[$currency] = $LMS->getCurrencyValue($currency, $currencycurrtime);
+                if (!isset($currencyvalues[$currency])) {
+                    die('Fatal error: couldn\'t get quote for ' . $currency . ' currency!' . PHP_EOL);
+                }
+            }
+        }
+    }
+    unset($assign);
+}
+
+if (!empty($currencyvalues) && !$quiet) {
+    print "Currency quotes:" . PHP_EOL;
+    foreach ($currencyvalues as $currency => $value) {
+        print '1 ' . $currency . ' = ' . $value . ' ' . Localisation::getCurrentCurrency(). PHP_EOL;
+    }
+}
+$currencyvalues[Localisation::getCurrentCurrency()] = 1.0;
 
 // correct currency values for foreign currency documents with today's cdate or sdate
 // which have estimated currency value earlier (in the moment of document issue)
@@ -730,6 +1000,33 @@ $documents = $DB->GetAll(
         Localisation::getCurrentCurrency(),
     )
 );
+
+$cashes = $DB->GetAll(
+    'SELECT cash.id, cash.currency FROM cash
+    LEFT JOIN customers c ON c.id = cash.customerid
+    WHERE ' . ($customerid ? 'cash.customerid = ' . $customerid : '1 = 1')
+    . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
+    . ' AND cash.docid IS NULL AND cash.currency <> ? AND cash.time >= ? AND cash.time <= ?',
+    array(
+        Localisation::getCurrentCurrency(),
+        $currencydaystart,
+        $currencydayend,
+    )
+);
+
+// solid payments
+$payments = $DB->GetAll(
+    "SELECT * FROM payments WHERE value <> 0
+			AND (period = ? OR (period = ? AND at = ?)
+				OR (period = ? AND at = ?)
+				OR (period = ? AND at = ?)
+				OR (period = ? AND at = ?)
+				OR (period = ? AND at = ?))",
+    array(DAILY, WEEKLY, $weekday, MONTHLY, $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday)
+);
+
+$DB->BeginTrans();
+
 if (!empty($documents)) {
     foreach ($documents as &$document) {
         $currency = $document['currency'];
@@ -766,18 +1063,6 @@ if (!empty($documents)) {
     unset($document);
 }
 
-$cashes = $DB->GetAll(
-    'SELECT cash.id, cash.currency FROM cash
-    LEFT JOIN customers c ON c.id = cash.customerid
-    WHERE ' . ($customerid ? 'cash.customerid = ' . $customerid : '1 = 1')
-    . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
-    . ' AND cash.docid IS NULL AND cash.currency <> ? AND cash.time >= ? AND cash.time <= ?',
-    array(
-        Localisation::getCurrentCurrency(),
-        $currencydaystart,
-        $currencydayend,
-    )
-);
 if (!empty($cashes)) {
     foreach ($cashes as &$cash) {
         $currency = $cash['currency'];
@@ -805,318 +1090,42 @@ if (!empty($cashes)) {
     unset($cash);
 }
 
+if (!empty($payments)) {
+    foreach ($payments as $payment) {
+        $DB->Execute(
+            "INSERT INTO cash (time, type, value, customerid, comment)
+			VALUES (?, ?, ?, ?, ?)",
+            array($issuetime, 1, $payment['value'] * -1, null, $payment['name'] . '/' . $payment['creditor'])
+        );
+        if (!$quiet) {
+            print "CID:0\tVAL:" . $payment['value'] . "\tDESC:" . $payment['name'] . "/" . $payment['creditor'] . PHP_EOL;
+        }
+    }
+}
+
+// invoice auto-closes
+if ($check_invoices) {
+    $DB->Execute(
+        "UPDATE documents SET closed = 1
+		WHERE " . ($customerid ? 'customerid = ' . $customerid : '1 = 1') . " AND customerid IN (
+			SELECT cash.customerid
+			FROM cash
+			JOIN customers c ON c.id = cash.customerid
+			WHERE cash.time <= ?NOW?"
+                . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
+                . ($customergroups ? str_replace('%customerid_alias%', 'cash.customerid', $customergroups) : '') . "
+			GROUP BY cash.customerid
+			HAVING SUM(cash.value * cash.currencyvalue) >= 0
+		) AND type IN (?, ?, ?)
+			AND cdate <= ?NOW?
+			AND closed = 0",
+        array(DOC_INVOICE, DOC_CNOTE, DOC_DNOTE)
+    );
+}
+
 if (empty($assigns)) {
     die;
 }
-
-// get dominating link technology per customer assignments when customer
-// node are directly connected to operator network device
-$assignment_linktechnologies = $DB->GetAllByKey("SELECT a.id, b.technology, MAX(b.technologycount) AS technologycount
-	FROM assignments a
-	JOIN (
-		SELECT a.id, n.linktechnology AS technology, COUNT(n.linktechnology) AS technologycount
-		FROM nodeassignments na
-			JOIN assignments a ON a.id = na.assignmentid
-			JOIN tariffs t ON t.id = a.tariffid
-			JOIN nodes n ON n.id = na.nodeid
-		WHERE n.linktechnology > 0 AND n.ownerid IS NOT NULL
-		GROUP BY a.id, n.linktechnology
-	) b ON b.id = a.id
-	GROUP BY a.id, b.technology
-	ORDER BY a.id", 'id');
-if (empty($assignment_linktechnologies)) {
-    $assignment_linktechnologies = array();
-}
-
-// get dominating link technology per customer assignments when customer
-// node or customer network devices nodes are connected to operator through customer subnetwork
-// ************
-// get assignments which match to nodes or network device nodes in customer subnetworks
-$node_assignments = $DB->GetAllByKey("SELECT " . $DB->GroupConcat('na.assignmentid', ',', true) . " AS assignments,
-		na.nodeid
-	FROM nodeassignments na
-	JOIN nodes n ON n.id = na.nodeid
-	JOIN assignments a ON a.id = na.assignmentid
-	LEFT JOIN netdevices nd ON nd.id = n.netdev
-	WHERE nd.ownerid IS NOT NULL AND ((n.ownerid IS NULL AND n.netdev IS NOT NULL)
-		OR n.ownerid IS NOT NULL)
-		AND a.suspended = 0
-		AND a.period IN (" . implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)) . ")
-		AND a.datefrom < ?NOW? AND (a.dateto = 0 OR a.dateto > ?NOW?)
-		AND NOT EXISTS (
-			SELECT id FROM assignments aa
-			WHERE aa.customerid = (CASE WHEN n.ownerid IS NULL THEN nd.ownerid ELSE n.ownerid END)
-				AND aa.tariffid IS NULL AND aa.liabilityid IS NULL
-				AND aa.datefrom < ?NOW?
-				AND (aa.dateto > ?NOW? OR aa.dateto = 0)
-		)
-	GROUP BY na.nodeid", 'nodeid');
-if (empty($node_assignments)) {
-    $node_assignments = array();
-} else {
-    foreach ($node_assignments as $nodeid => $assignments) {
-        $node_assignments[$nodeid] = explode(',', $assignments['assignments']);
-    }
-}
-
-if (!empty($node_assignments)) {
-    // search for links between operator network devices and customer network devices
-    $uni_links = $DB->GetAllByKey(
-        "SELECT nl.id AS netlinkid, nl.technology AS technology,
-				c.id AS customerid,
-				(CASE WHEN ndsrc.ownerid IS NULL THEN nl.src ELSE nl.dst END) AS operator_netdevid,
-				(CASE WHEN ndsrc.ownerid IS NULL THEN nl.dst ELSE nl.dst END) AS netdevid
-			FROM netlinks nl
-			JOIN netdevices ndsrc ON ndsrc.id = nl.src
-			JOIN netdevices nddst ON nddst.id = nl.dst
-			JOIN customers c ON (ndsrc.ownerid IS NULL AND c.id = nddst.ownerid)
-				OR (nddst.ownerid IS NULL AND c.id = ndsrc.ownerid)
-			WHERE nl.technology > 0 AND ((ndsrc.ownerid IS NULL AND nddst.ownerid IS NOT NULL)
-				OR (nddst.ownerid IS NULL AND ndsrc.ownerid IS NOT NULL))
-			ORDER BY nl.id",
-        'netlinkid'
-    );
-    if (!empty($uni_links)) {
-        function find_nodes_for_netdev($customerid, $netdevid, &$customer_nodes, &$customer_netlinks)
-        {
-            if (isset($customer_nodes[$customerid . '_' . $netdevid])) {
-                $nodeids = explode(',', $customer_nodes[$customerid . '_' . $netdevid]['nodeids']);
-            } else {
-                $nodeids = array();
-            }
-
-            if (!empty($customer_netlinks)) {
-                foreach ($customer_netlinks as &$customer_netlink) {
-                    if ($customer_netlink['src'] == $netdevid) {
-                        $next_netdevid = $customer_netlink['dst'];
-                    } else if ($customer_netlink['dst'] == $netdevid) {
-                        $next_netdevid = $customer_netlink['src'];
-                    } else {
-                        continue;
-                    }
-                    $nodeids = array_merge($nodeids, find_nodes_for_netdev(
-                        $customerid,
-                        $next_netdevid,
-                        $customer_nodes,
-                        $customer_netlinks
-                    ));
-                }
-                unset($customer_netlink);
-            }
-
-            return $nodeids;
-        }
-
-        $customer_netlinks = $DB->GetAllByKey(
-            "SELECT " . $DB->Concat('nl.src', "'_'", 'nl.dst') . " AS netlink
-				FROM netlinks nl
-				JOIN netdevices ndsrc ON ndsrc.id = nl.src
-				JOIN netdevices nddst ON nddst.id = nl.dst
-				WHERE ndsrc.ownerid IS NOT NULL AND nddst.ownerid IS NOT NULL
-					AND ndsrc.ownerid = nddst.ownerid",
-            'netlink'
-        );
-
-        $customer_nodes = $DB->GetAllByKey(
-            "SELECT " . $DB->GroupConcat('n.id') . " AS nodeids,
-					" . $DB->Concat('CASE WHEN n.ownerid IS NULL THEN nd.ownerid ELSE n.ownerid END', "'_'", 'n.netdev') . " AS customerid_netdev
-				FROM nodes n
-				LEFT JOIN netdevices nd ON nd.id = n.netdev AND n.ownerid IS NULL AND nd.ownerid IS NOT NULL
-				WHERE n.ownerid IS NOT NULL OR nd.ownerid IS NOT NULL
-					AND EXISTS (
-						SELECT na.id FROM nodeassignments na
-						JOIN assignments a ON a.id = na.assignmentid
-						WHERE na.nodeid = n.id AND a.suspended = 0
-							AND a.period IN (" . implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)) . ")
-							AND a.datefrom < ?NOW? AND (a.dateto = 0 OR a.dateto > ?NOW?)
-					)
-					AND NOT EXISTS (
-						SELECT id FROM assignments aa
-						WHERE aa.customerid = (CASE WHEN n.ownerid IS NULL THEN nd.ownerid ELSE n.ownerid END)
-							AND aa.tariffid IS NULL AND aa.liabilityid IS NULL
-							AND aa.datefrom < ?NOW?
-							AND (aa.dateto > ?NOW? OR aa.dateto = 0)
-					)
-				GROUP BY customerid_netdev",
-            'customerid_netdev'
-        );
-
-        // collect customer node/node-netdev identifiers connected to customer subnetwork
-        // and then fill assignment linktechnologies relations
-        foreach ($uni_links as $netlinkid => &$netlink) {
-            $nodes = find_nodes_for_netdev(
-                $netlink['customerid'],
-                $netlink['netdevid'],
-                $customer_nodes,
-                $customer_netlinks
-            );
-            if (!empty($nodes)) {
-                foreach ($nodes as $nodeid) {
-                    if (isset($node_assignments[$nodeid])) {
-                        foreach ($node_assignments[$nodeid] as $assignmentid) {
-                            $assignment_linktechnologies[$assignmentid] = array(
-                                'id' => $assignmentid,
-                                'technology' => $netlink['technology'],
-                                'technologycount' => 1,
-                            );
-                        }
-                    }
-                }
-            }
-        }
-        unset($netlink);
-        unset($uni_links);
-
-        unset($customer_netlinks);
-        unset($customer_nodes);
-    }
-}
-
-$suspended = 0;
-$numbers = array();
-$customernumbers = array();
-$numbertemplates = array();
-$invoices = array();
-$telecom_services = array();
-$currencies = array();
-$doctypes = array();
-$paytypes = array();
-$addresses = array();
-$numberplans = array();
-$divisions = array();
-
-$result = $LMS->ExecuteHook(
-    'payments_before_assignment_loop',
-    array(
-        'assignments' => $assigns,
-        'date' => sprintf('%04d/%02d/%02d', $year, $month, $dom),
-    )
-);
-if ($result['assignments']) {
-    $assigns = $result['assignments'];
-}
-
-if ($prefer_netto) {
-    $taxeslist = $LMS->GetTaxes();
-}
-
-// find assignments with tariff reward/penalty flag
-// and check if customer applies to this
-$reward_to_check = array();
-$reward_period_to_check = array();
-foreach ($assigns as $assign) {
-    $cid = $assign['customerid'];
-    if (isset($reward_to_check[$cid]) || ($assign['flags'] & TARIFF_FLAG_REWARD_PENALTY_ON_TIME_PAYMENTS)) {
-        $reward_to_check[$cid] = $cid;
-    }
-    if ($reward_to_check[$cid]) {
-        if (!isset($reward_period_to_check[$cid])) {
-            $reward_period_to_check[$cid] = DAILY;
-        }
-        if ($assign['period'] >= WEEKLY && $assign['period'] <= YEARLY) {
-            $reward_period_to_check[$cid] = max($reward_period_to_check[$cid], $assign['period']);
-        } elseif ($assign['period'] == HALFYEARLY && $reward_period_to_check[$cid] < YEARLY) {
-            $reward_period_to_check[$cid] = HALFYEARLY;
-        }
-    }
-}
-
-$period_end = mktime(0, 0, 0, date('m', $currtime), date('d', $currtime), date('Y', $currtime));
-$period_starts = array(
-    DAILY => strtotime('yesterday', $period_end),
-    WEEKLY => strtotime('1 week ago', $period_end),
-    MONTHLY => strtotime('1 month ago', $period_end),
-    QUARTERLY => strtotime('3 months ago', $period_end),
-    HALFYEARLY => strtotime('6 months ago', $period_end),
-    YEARLY => strtotime('1 year ago', $period_end),
-);
-
-$rewards = array();
-foreach ($reward_to_check as $cid) {
-    $period_start = $period_starts[$reward_period_to_check[$cid]];
-    $balance = $LMS->GetCustomerBalance($cid, $period_start);
-    if ($balance < 0) {
-        $rewards[$cid] = false;
-        continue;
-    }
-    $history = $DB->GetAll(
-        'SELECT (CASE WHEN d.id IS NULL THEN c.time ELSE c.time + d.paytime * 86400 END) AS time,
-            d.id AS docid,
-            (c.value * c.currencyvalue) AS value
-        FROM cash c
-        LEFT JOIN documents d ON d.id = c.docid AND d.type IN ?
-        WHERE c.customerid = ?
-            AND c.time > ? AND c.time < ?
-        ORDER BY time',
-        array(
-            array(DOC_INVOICE, DOC_CNOTE, DOC_DNOTE, DOC_INVOICE_PRO),
-            $cid,
-            $period_start,
-            $period_end,
-        )
-    );
-    $rewards[$cid] = true;
-    if (!empty($history)) {
-        foreach ($history as &$record) {
-            if (!empty($record['docid'])) {
-                $record['time'] = mktime(
-                    23,
-                    59,
-                    59,
-                    date('m', $record['time']),
-                    date('d', $record['time']),
-                    date('Y', $record['time'])
-                ) + 1;
-            }
-        }
-        unset($record);
-        usort($history, function ($a, $b) {
-            return $a['time'] - $b['time'];
-        });
-        foreach ($history as $record) {
-            $balance += $record['value'];
-            if (empty($record['docid'])) {
-                continue;
-            }
-            if ($balance < 0) {
-                $rewards[$cid] = false;
-            }
-        }
-    }
-}
-
-// determine currency values for assignments with foreign currency
-// if payments.prefer_netto = true, use value netto+tax
-foreach ($assigns as &$assign) {
-    if ($prefer_netto) {
-        if (isset($assign['netvalue']) && !empty($assign['netvalue']) != 0) {
-            $assign['value'] = $assign['netvalue'] * (100 + $taxeslist[$assign['taxid']]['value']) / 100;
-        }
-    }
-
-    $currency = $assign['currency'];
-    if (empty($currency)) {
-        $assign['currency'] = Localisation::getCurrentCurrency();
-        continue;
-    }
-    if ($currency != Localisation::getCurrentCurrency()) {
-        if (!isset($currencyvalues[$currency])) {
-            $currencyvalues[$currency] = $LMS->getCurrencyValue($currency, $currencycurrtime);
-            if (!isset($currencyvalues[$currency])) {
-                die('Fatal error: couldn\'t get quote for ' . $currency . ' currency!' . PHP_EOL);
-            }
-        }
-    }
-}
-unset($assign);
-
-if (!empty($currencyvalues) && !$quiet) {
-    print "Currency quotes:" . PHP_EOL;
-    foreach ($currencyvalues as $currency => $value) {
-        print '1 ' . $currency . ' = ' . $value . ' ' . Localisation::getCurrentCurrency(). PHP_EOL;
-    }
-}
-$currencyvalues[Localisation::getCurrentCurrency()] = 1.0;
 
 foreach ($assigns as $assign) {
     $cid = $assign['customerid'];
