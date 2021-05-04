@@ -1142,19 +1142,19 @@ foreach ($assigns as $assign) {
         continue;
     }
 
-    if (($assign['flags'] && TARIFF_FLAG_REWARD_PENALTY_EINVOICE)
+    if (($assign['flags'] & TARIFF_FLAG_REWARD_PENALTY_EINVOICE)
         && ($assign['value'] < 0 && empty($assign['einvoice'])
             || $assign['value'] > 0 && !empty($assign['einvoice']))) {
         continue;
     }
 
-    if (($assign['flags'] && TARIFF_FLAG_REWARD_PENALTY_MAIL_MARKETING)
+    if (($assign['flags'] & TARIFF_FLAG_REWARD_PENALTY_MAIL_MARKETING)
         && ($assign['value'] < 0 && empty($assign['mail_marketing'])
             || $assign['value'] > 0 && !empty($assign['mail_marketing']))) {
         continue;
     }
 
-    if (($assign['flags'] && TARIFF_FLAG_REWARD_PENALTY_SMS_MARKETING)
+    if (($assign['flags'] & TARIFF_FLAG_REWARD_PENALTY_SMS_MARKETING)
         && ($assign['value'] < 0 && empty($assign['sms_marketing'])
             || $assign['value'] > 0 && !empty($assign['sms_marketing']))) {
         continue;
