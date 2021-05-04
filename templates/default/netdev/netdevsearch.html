@@ -26,7 +26,7 @@
 		<TD class="bold">
 			{trans("Name:")}
 		<TD>
-			<INPUT TYPE="TEXT" NAME="search[name]" VALUE="" {tip text="Enter device name or it's fragment"}> 
+			<INPUT TYPE="TEXT" NAME="search[name]" VALUE="" {tip text="Enter device name or it's fragment"}>
 		</TD>
 	</TR>
 	<TR>
@@ -127,18 +127,18 @@
 			<INPUT class="radio light" type="radio" id="operator1" value="OR" name="k"{if $k=='OR'} CHECKED{/if}><label for="operator1">{trans("or")}</label>
 		</TD>
 	</TR>
-	<TR>
-		<TD COLSPAN="3" class="buttons">
-			<A HREF="javascript:document.search.submit();" ACCESSKEY="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
-			<A HREF="?m=netdevlist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
-		</TD>
-	</TR>
+	<tr>
+		<td colspan="3" class="lms-ui-box-buttons">
+			{button icon="save" label="Submit" onclick="document.search.submit();"}
+			{button icon="cancel" label="Cancel" href="?m=netdevlist"}
+		</td>
+	</tr>
     </TBODY>
 </TABLE>
 </FORM>
-<SCRIPT type="text/javascript">
-<!--
-document.forms['search'].elements['search[name]'].focus();
-//-->
-</SCRIPT>
+<script>
+
+	document.forms['search'].elements['search[name]'].focus();
+
+</script>
 {/block}
