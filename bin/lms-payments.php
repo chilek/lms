@@ -453,12 +453,14 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 		(CASE WHEN a.liabilityid IS NULL THEN t.taxid ELSE l.taxid END) AS taxid,
 		(CASE WHEN a.liabilityid IS NULL THEN t.prodid ELSE l.prodid END) AS prodid,
 		voipphones.phones,
-		ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN t.value ELSE l.value END)) / 100) - a.vdiscount) *
+		ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN t.value ELSE l.value END)) / 100)
+				- a.vdiscount * (CASE WHEN (a.tariffid IS NULL AND l.value < 0) OR (a.liabilityid IS NULL AND t.value < 0) THEN -1 ELSE 1 END)) *
 			(CASE a.suspended WHEN 0
 				THEN 1.0
 				ELSE $suspension_percentage / 100
 			END), 2) AS unitary_value,
-		ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN t.value ELSE l.value END)) / 100) - a.vdiscount) *
+		ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN t.value ELSE l.value END)) / 100)
+				- a.vdiscount * (CASE WHEN (a.tariffid IS NULL AND l.value < 0) OR (a.liabilityid IS NULL AND t.value < 0) THEN -1 ELSE 1 END)) *
 			(CASE a.suspended WHEN 0
 				THEN 1.0
 				ELSE $suspension_percentage / 100
