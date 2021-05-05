@@ -260,6 +260,32 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
         }
     }
 
+    public function SetAddress($args)
+    {
+        return $this->db->Execute(
+            'UPDATE addresses SET name = ?, state = ?,
+                               state_id = ?, city = ?, city_id = ?,
+                               street = ?, street_id = ?, house = ?,
+                               flat = ?, zip = ?, postoffice = ?, country_id = ?
+                            WHERE id = ?',
+            array(
+                $args['name'],
+                $args['state'],
+                $args['state_id'],
+                $args['city'],
+                $args['city_id'],
+                $args['street'],
+                $args['street_id'],
+                $args['house'],
+                $args['flat'],
+                $args['zip'],
+                $args['postoffice'],
+                $args['country_id'],
+                $args['address_id'],
+            )
+        );
+    }
+
     /*!
      * \brief Method update customer address into table.
      *

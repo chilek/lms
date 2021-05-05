@@ -3421,6 +3421,12 @@ class LMS
         return $manager->UpdateAddress($args);
     }
 
+    public function SetAddress($args)
+    {
+        $manager = $this->getLocationManager();
+        return $manager->SetAddress($args);
+    }
+
     public function UpdateCustomerAddress($customer_id, $args)
     {
         $manager = $this->getLocationManager();
