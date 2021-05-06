@@ -237,6 +237,7 @@ if (empty($fakedate)) {
 }
 $issuetime = isset($issuedate) ? strtotime($issuedate) : $currtime;
 list ($year, $month, $dom) = explode('/', date('Y/n/j', $currtime));
+list ($backward_year, $backward_month) = explode('/', date('Y/m', strtotime($year . '/' . $month. '/' . $dom . ' - 1 month')));
 $weekday = strftime('%u', $currtime);
 $yearday = strftime('%j', $currtime);
 $last_dom = date('j', mktime(0, 0, 0, $month + 1, 0, $year)) == date('j', $currtime);
@@ -1238,33 +1239,65 @@ foreach ($assigns as $assign) {
             $dateto = explode('/', date('Y/m/d', $assign['dateto']));
             $dateto_nextday = explode('/', date('Y/m/d', $assign['dateto'] + 1));
         }
-        if (isset($datefrom) && intval($datefrom[2]) != 1 && intval($datefrom[1]) == intval($month) && intval($datefrom[0]) == intval($year)) {
-            $first_aligned_partial_period = array(
-                DAILY => $forward_periods[DAILY],
-                WEEKLY => $forward_periods[WEEKLY],
-                MONTHLY => strftime($date_format, mktime(12, 0, 0, $month, $datefrom[2], $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month + 1, 0, $year)),
-                QUARTERLY => strftime($date_format, mktime(12, 0, 0, $month, $datefrom[2], $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month + 3, 0, $year)),
-                HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month, $datefrom[2], $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month + 6, 0, $year)),
-                YEARLY => strftime($date_format, mktime(12, 0, 0, $month, $datefrom[2], $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month, 0, $year + 1)),
-                DISPOSABLE => $forward_periods[DISPOSABLE],
-            );
-            $desc = str_replace('%aligned_partial_period', $first_aligned_partial_period[$p], $desc);
-            unset($first_aligned_partial_period);
-        } else {
-            if (isset($dateto) && isset($dateto_nextday) && intval($dateto_nextday[2]) != 1 && intval($dateto[1]) == intval($month) && intval($dateto[0]) == intval($year)) {
-                $last_aligned_partial_period = array(
+        if (empty($assign['backwardperiod'])) {
+            if (isset($datefrom) && intval($datefrom[2]) != 1 && intval($datefrom[1]) == intval($month) && intval($datefrom[0]) == intval($year)) {
+                $first_aligned_partial_period = array(
                     DAILY => $forward_periods[DAILY],
                     WEEKLY => $forward_periods[WEEKLY],
-                    MONTHLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month, intval($dateto[2]), $year)),
-                    QUARTERLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month + 2, intval($dateto[2]), $year)),
-                    HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month + 5, intval($dateto[2]), $year)),
-                    YEARLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month, intval($dateto[2]), $year + 1)),
+                    MONTHLY => strftime($date_format, mktime(12, 0, 0, $month, $datefrom[2], $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month + 1, 0, $year)),
+                    QUARTERLY => strftime($date_format, mktime(12, 0, 0, $month, $datefrom[2], $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month + 3, 0, $year)),
+                    HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month, $datefrom[2], $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month + 6, 0, $year)),
+                    YEARLY => strftime($date_format, mktime(12, 0, 0, $month, $datefrom[2], $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month, 0, $year + 1)),
                     DISPOSABLE => $forward_periods[DISPOSABLE],
                 );
-                $desc = str_replace('%aligned_partial_period', $last_aligned_partial_period[$p], $desc);
-                unset($last_aligned_partial_period);
+                $desc = str_replace('%aligned_partial_period', $first_aligned_partial_period[$p], $desc);
+                unset($first_aligned_partial_period);
             } else {
-                $desc = str_replace('%aligned_partial_period', $forward_aligned_periods[$p], $desc);
+                if (isset($dateto) && isset($dateto_nextday) && intval($dateto_nextday[2]) != 1 && intval($dateto[1]) == intval($month) && intval($dateto[0]) == intval($year)) {
+                    $last_aligned_partial_period = array(
+                        DAILY => $forward_periods[DAILY],
+                        WEEKLY => $forward_periods[WEEKLY],
+                        MONTHLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month, intval($dateto[2]), $year)),
+                        QUARTERLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month + 2, intval($dateto[2]), $year)),
+                        HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month + 5, intval($dateto[2]), $year)),
+                        YEARLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month, intval($dateto[2]), $year + 1)),
+                        DISPOSABLE => $forward_periods[DISPOSABLE],
+                    );
+                    $desc = str_replace('%aligned_partial_period', $last_aligned_partial_period[$p], $desc);
+                    unset($last_aligned_partial_period);
+                } else {
+                    $desc = str_replace('%aligned_partial_period', $forward_aligned_periods[$p], $desc);
+                }
+            }
+        } else {
+            if (isset($datefrom) && intval($datefrom[2]) != 1 && intval($datefrom[1]) == intval($backward_month) && intval($datefrom[0]) == intval($backward_year)) {
+                $first_aligned_partial_period = array(
+                    DAILY => $forward_periods[DAILY],
+                    WEEKLY => $forward_periods[WEEKLY],
+                    MONTHLY => strftime($date_format, mktime(12, 0, 0, $backward_month, $datefrom[2], $backward_year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $backward_month + 1, 0, $backward_year)),
+                    QUARTERLY => strftime($date_format, mktime(12, 0, 0, $backward_month, $datefrom[2], $backward_year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $backward_month + 3, 0, $backward_year)),
+                    HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $backward_month, $datefrom[2], $backward_year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $backward_month + 6, 0, $backward_year)),
+                    YEARLY => strftime($date_format, mktime(12, 0, 0, $backward_month, $datefrom[2], $backward_year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $backward_month, 0, $backward_year + 1)),
+                    DISPOSABLE => $forward_periods[DISPOSABLE],
+                );
+                $desc = str_replace('%aligned_partial_period', $first_aligned_partial_period[$p], $desc);
+                unset($first_aligned_partial_period);
+            } else {
+                if (isset($dateto) && isset($dateto_nextday) && intval($dateto_nextday[2]) != 1 && intval($dateto[1]) == intval($backward_month) && intval($dateto[0]) == intval($backward_year)) {
+                    $last_aligned_partial_period = array(
+                        DAILY => $forward_periods[DAILY],
+                        WEEKLY => $forward_periods[WEEKLY],
+                        MONTHLY => strftime($date_format, mktime(12, 0, 0, $backward_month, 1, $backward_year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $backward_month, intval($dateto[2]), $backward_year)),
+                        QUARTERLY => strftime($date_format, mktime(12, 0, 0, $backward_month, 1, $backward_year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $backward_month + 2, intval($dateto[2]), $backward_year)),
+                        HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $backward_month, 1, $backward_year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $backward_month + 5, intval($dateto[2]), $backward_year)),
+                        YEARLY => strftime($date_format, mktime(12, 0, 0, $backward_month, 1, $backward_year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $backward_month, intval($dateto[2]), $backward_year + 1)),
+                        DISPOSABLE => $forward_periods[DISPOSABLE],
+                    );
+                    $desc = str_replace('%aligned_partial_period', $last_aligned_partial_period[$p], $desc);
+                    unset($last_aligned_partial_period);
+                } else {
+                    $desc = str_replace('%aligned_partial_period', $backward_aligned_periods[$p], $desc);
+                }
             }
         }
         unset($datefrom, $dateto);
