@@ -147,6 +147,7 @@ version 27-git (????-??-??):
   - enhancement: user issuer property allow to mask issuer name on documents [chilan]
   - improvement: if GUS-REGON api returns many matched entities for single company identifier then allow
     to select it from modal dialog [chilan]
+  - enhancement: waiting assignments filter in customer search form [chilan]
 
 version 26.0 (2020-12-15):
 
