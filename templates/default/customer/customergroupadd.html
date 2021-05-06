@@ -3,51 +3,56 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<FORM method="post" name="customergroupadd" action="?m=customergroupadd">
-<p style="display: none;">
-<INPUT type="submit" class="hiddenbtn">
-</p>
-<TABLE class="lmsbox">
-	<THEAD>
-	<TR>
-		<TD style="width: 1%">
-			<IMG src="img/group.gif" alt="">
-		</TD>
-		<TD style="width: 1%" class="bold">
-			{trans("Name:")}
-		</TD>
-		<TD style="width: 98%">
-			<INPUT type="text" name="customergroupadd[name]" value="{$customergroupadd.name}" size="50" required {tip trigger="name" bold=1}>
-		</TD>
-	</TR>
-	</THEAD>
-	<TBODY>
-	<TR>
-		<TD style="width: 1%">
-			<IMG src="img/info1.gif" alt="">
-		</TD>
-		<TD style="width: 1%" class="bold">
-			{trans("Description:")}
-		</TD>
-		<TD style="width: 98%">
-			<TEXTAREA name="customergroupadd[description]" cols="50" rows="5" {tip text="Enter additional information (optional)"}
-				>{$customergroupadd.description|escape}</TEXTAREA>
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 100%" class="text-right" colspan="3">
-			<A href="javascript:document.customergroupadd.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
-			<A href="?m=customergrouplist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
-		</TD>
-	</TR>
-	</TBODY>
-</TABLE>
-</FORM>
-<SCRIPT type="text/javascript">
-<!--
-$(function() {
-	$('form[name="customergroupadd"] [name="customergroupadd[name]"]').focus();
-});
-//-->
-</SCRIPT>
+<form method="post" name="customergroupadd" id="customergroupadd" action="?m=customergroupadd"></form>
+
+<input type="submit" class="hiddenbtn" form="customergroupadd">
+
+<table class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 98%;">
+	</colgroup>
+	<thead>
+		<tr>
+			<td>
+				{icon name="customergroup" fw=true}
+			</td>
+			<td>
+				<strong>{trans("Name:")}</strong>
+			</td>
+			<td>
+				<input type="text" name="customergroupadd[name]" value="{$customergroupadd.name}" size="50" required
+					form="customergroupadd" {tip trigger="name" bold=1}>
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>
+				{icon name="info" fw=true}
+			</td>
+			<td>
+				<strong>{trans("Description:")}</strong>
+			</td>
+			<td>
+				<textarea name="customergroupadd[description]" cols="50" rows="5" {tip text="Enter additional information (optional)"}
+					form="customergroupadd">{$customergroupadd.description|escape}</textarea>
+			</td>
+		</tr>
+		<tr>
+			<td class="lms-ui-box-buttons" colspan="3">
+				{button icon="save" label="Submit" onclick="document.customergroupadd.submit();"}
+				{button icon="cancel" label="Cancel" href="?m=customergrouplist"}
+			</td>
+		</tr>
+	</tbody>
+</table>
+<script>
+
+	$(function() {
+		$('form[name="customergroupadd"] [name="customergroupadd[name]"]').focus();
+	});
+
+</script>
 {/block}
