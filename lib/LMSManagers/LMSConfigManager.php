@@ -1326,20 +1326,19 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                 preg_match('#INSERT[\s]+INTO[\s]+([\w\.]+(([\s]+)?[\w\.]+)?[\s]*)\(([\S\s]*)\)[\s]+VALUES[\s]\(([\S\s]*)\)#i', $line, $matches);
                 if (!empty($matches[4])) {
                     $match = trim($matches[4]);
-                    $match = explode(', ', $match);
+                    $match = str_getcsv($match, ',', '\'');
                     foreach ($match as $field) {
-                        $field = str_replace("'", '', $field);
                         $field = trim($field);
                         $fields[] = $field;
                     }
                 }
 
+                unset($match);
+
                 if (!empty($matches[5])) {
                     $match = trim($matches[5]);
-                    $match = explode(',', $match);
+                    $match = str_getcsv($match, ',', '\'');
                     foreach ($match as $value) {
-                        $value = str_replace("'", '', $value);
-                        $value = trim($value);
                         $values[] = $value;
                     }
                 }
