@@ -24,6 +24,13 @@
  *  $Id$
  */
 
+$_LANG['current customer group assignments'] = 'bieżące przynależności grupowe klientów';
+$_LANG['customer group assignment full time intersection with selected period'] = 'pełne przecięcie czasowe przynależności grupowych klientów i wybranego okresu';
+$_LANG['customer group assignment partial time intersection with selected period'] = 'częściowe przecięcie czasowe przynależności grupowych klientów i wybranego okresu';
+$_LANG['<!uke>current'] = 'bieżące';
+$_LANG['<!uke>fully'] = 'całościowo';
+$_LANG['<!uke>partially'] = 'częściowo';
+
 $_LANG['bank loan'] = 'pożyczka bankowa';
 $_LANG['starting with'] = 'rozpoczynające się od';
 

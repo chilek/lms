@@ -1715,6 +1715,15 @@
 {/if}
 
 {if $printmenu == "netdev" || $printmenu == "finances"}
+<style>
+
+	#uke-income-customergroup-selection {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-start;
+	}
+
+</style>
 <form method="post" name="uke-income" id="uke-income" action="?m=netdevprint&type=uke-income&module-filter=print" target="_blank">
 	<input type="submit" class="hiddenbtn">
 	<table class="lmsbox">
@@ -1764,6 +1773,42 @@
 							>{$division.label|escape}</option>
 					{/foreach}
 				</select>
+			</td>
+		</tr>
+		<tr>
+			<td class="valign-top">
+				{icon name="customergroup" class="fa-fw"}
+			</td>
+			<td class="nobr valign-top">
+				<strong>{trans("Customer groups")}</strong>
+			</td>
+			<td>
+				<div id="uke-income-customergroup-selection">
+					<select name="customergroup">
+						<option value="">{trans("- any -")}</option>
+						{foreach $customergroups as $group}
+							<option value="{$group.id}"{if isset($filter['uke-income']['customergroup']) && $filter['uke-income']['customergroup'] == $group.id} selected{/if}
+								>{$group.name|escape}</option>
+						{/foreach}
+					</select>
+					<span>
+						<label {tip text="current customer group assignments"}>
+							<input type="radio" name="customergroup-intersection" value="current"
+								{if !isset($filter['uke-income']['customergroup-intersection']) || $filter['uke-income']['customergroup-intersection'] == 'current'} checked{/if}>
+							{trans("<!uke>current")}
+						</label>
+						<label {tip text="customer group assignment full time intersection with selected period"}>
+							<input type="radio" name="customergroup-intersection" value="fully"
+								{if isset($filter['uke-income']['customergroup-intersection']) && $filter['uke-income']['customergroup-intersection'] == 'fully'} checked{/if}>
+							{trans("<!uke>fully")}
+						</label>
+						<label {tip text="customer group assignment partial time intersection with selected period"}>
+							<input type="radio" name="customergroup-intersection-type" value="partially"
+								{if isset($filter['uke-income']['customergroup-intersection']) && $filter['uke-income']['customergroup-intersection'] == 'partially'} checked{/if}>
+							{trans("<!uke>partially")}
+						</label>
+					</span>
+				</div>
 			</td>
 		</tr>
 		<tr>
