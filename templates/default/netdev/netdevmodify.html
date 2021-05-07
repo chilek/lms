@@ -34,7 +34,10 @@
 				{box_row icon="img/producer.gif" label="Manufacturer:"}
 					<input type="hidden" id="producer-value" name="netdev[producer]">
 					<input type="hidden" id="producerid-value" name="netdev[producerid]">
-					<select id="producer" data-value="{$netdev.producer}" data-id-value="{$netdev.producerid}" data-alt-field="#producerid-value"
+					<select id="producer" maxlength="100"
+							data-value="{$netdev.producer}"
+							data-id-value="{$netdev.producerid}"
+							data-alt-field="#producerid-value"
 							data-alt-invalid-field="#producer-value"
 							{tip class="lms-ui-combobox" text="Enter producer name (optional)" trigger="producer"}>
 						{foreach $producers as $producer}
@@ -46,7 +49,10 @@
 				{box_row icon="img/netdev_model.gif" label="Model:"}
 					<input type="hidden" id="model-value" name="netdev[model]">
 					<input type="hidden" id="modelid-value" name="netdev[modelid]">
-					<select id="model" data-value="{$netdev.model}" data-id-value="{$netdev.modelid}" data-alt-field="#modelid-value"
+					<select id="model" maxlength="100"
+							data-value="{$netdev.model}"
+							data-id-value="{$netdev.modelid}"
+							data-alt-field="#modelid-value"
 							data-alt-invalid-field="#model-value"
 							{tip class="lms-ui-combobox" text="Enter device model (optional)" trigger="model"}> </select>
 				{/box_row}

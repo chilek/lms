@@ -1407,8 +1407,8 @@ CREATE TABLE netdevices (
 	id integer default nextval('netdevices_id_seq'::text) NOT NULL,
 	name varchar(32) 	DEFAULT '' NOT NULL,
 	description text 	DEFAULT '' NOT NULL,
-	producer varchar(64) 	DEFAULT '' NOT NULL,
-	model varchar(32) 	DEFAULT '' NOT NULL,
+	producer varchar(256) 	DEFAULT '' NOT NULL,
+	model varchar(256) 	DEFAULT '' NOT NULL,
 	serialnumber varchar(32) DEFAULT '' NOT NULL,
 	ports integer 		DEFAULT 0 NOT NULL,
 	purchasetime integer	DEFAULT 0 NOT NULL,
@@ -4025,6 +4025,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021042800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021050700');
 
 COMMIT;
