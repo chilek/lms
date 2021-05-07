@@ -209,6 +209,8 @@ $prefer_settlement_only = ConfigHelper::checkConfig('payments.prefer_settlement_
 $prefer_netto = ConfigHelper::checkConfig('payments.prefer_netto');
 $customergroups = ConfigHelper::getConfig('payments.customergroups', '', true);
 
+$reward_penalty_deadline_grace_days = intval(ConfigHelper::getConfig('payments.reward_penalty_deadline_grace_days'));
+
 $force_telecom_service_flag = ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.force_telecom_service_flag', 'true'));
 $check_customer_vat_payer_flag_for_telecom_service = ConfigHelper::checkConfig('invoices.check_customer_vat_payer_flag_for_telecom_service');
 
@@ -887,7 +889,7 @@ if (!empty($assigns)) {
             continue;
         }
         $history = $DB->GetAll(
-            'SELECT (CASE WHEN d.id IS NULL THEN c.time ELSE c.time + d.paytime * 86400 END) AS time,
+            'SELECT (CASE WHEN d.id IS NULL THEN c.time ELSE c.time + (d.paytime + ?) * 86400 END) AS time,
                 d.id AS docid,
                 (c.value * c.currencyvalue) AS value
             FROM cash c
@@ -896,6 +898,7 @@ if (!empty($assigns)) {
                 AND c.time > ? AND c.time < ?
             ORDER BY time',
             array(
+                $reward_penalty_deadline_grace_days,
                 array(DOC_INVOICE, DOC_CNOTE, DOC_DNOTE, DOC_INVOICE_PRO),
                 $cid,
                 $period_start,
