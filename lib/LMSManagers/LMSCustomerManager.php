@@ -1283,7 +1283,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 GROUP BY cash.customerid
             ) b2 ON b2.customerid = c.id ' : '')
             . (!empty($customergroup) ? 'LEFT JOIN (SELECT vcustomerassignments.customerid, COUNT(*) AS gcount
-            	FROM customerassignments '
+            	FROM vcustomerassignments '
                     . (is_array($customergroup) || $customergroup > 0 ? ' WHERE customergroupid IN ('
                         . (is_array($customergroup) ? implode(',', Utils::filterIntegers($customergroup)) : intval($customergroup)) . ')' : '') . '
             		GROUP BY vcustomerassignments.customerid) ca ON ca.customerid = c.id ' : '')
