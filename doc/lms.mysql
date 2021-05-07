@@ -31,6 +31,7 @@ DROP VIEW IF EXISTS vnodealltariffs_nodes;
 DROP VIEW IF EXISTS vnodealltariffs_tariffs;
 DROP VIEW IF EXISTS vnodealltariffs;
 DROP VIEW IF EXISTS customerconsentview;
+DROP VIEW IF EXISTS vcustomerassignments;
 
 DROP TABLE IF EXISTS up_info_changes;
 DROP TABLE IF EXISTS up_help;
@@ -1869,9 +1870,13 @@ CREATE TABLE customerassignments (
   id int(11) NOT NULL auto_increment,
   customergroupid int(11) NOT NULL,
   customerid int(11) NOT NULL,
+  startdate int(11) DEFAULT UNIX_TIMESTAMP(),
+  enddate int(11) DEFAULT 0 NOT NULL,
   PRIMARY KEY (id),
-  UNIQUE KEY customerassignment (customergroupid, customerid),
+  UNIQUE KEY customerassignments_customergroupid_ukey (customergroupid, customerid, enddate),
   INDEX customerid (customerid),
+  INDEX customerassignments_startdate_idx (startdate),
+  INDEX customerassignments_enddate_idx (enddate),
   CONSTRAINT customerassignments_customergroupid_fkey
   	FOREIGN KEY (customergroupid) REFERENCES customergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT customerassignments_customerid_fkey
@@ -2978,6 +2983,11 @@ CREATE TABLE up_info_changes (
 #
 # Functions and Views
 #
+CREATE VIEW vcustomerassignments AS
+	SELECT ca.*
+	FROM customerassignments ca
+	WHERE (startdate IS NULL OR startdate <= UNIX_TIMESTAMP()) AND (enddate = 0 OR enddate > UNIX_TIMESTAMP());
+
 CREATE VIEW nas AS
 	SELECT n.id, inet_ntoa(n.ipaddr) AS nasname, d.shortname, d.nastype AS type,
 				 d.clients AS ports, d.secret, d.community, d.description
@@ -3219,7 +3229,7 @@ CREATE VIEW customerview AS
         LEFT JOIN vaddresses a2 ON ca2.address_id = a2.id
         LEFT JOIN customerconsentview cc ON cc.customerid = c.id
     WHERE NOT EXISTS (
-        SELECT 1 FROM customerassignments a
+        SELECT 1 FROM vcustomerassignments a
         JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
         WHERE e.userid = lms_current_user() AND a.customerid = c.id)
         AND (lms_current_user() = 0 OR c.divisionid IN (
@@ -3994,4 +4004,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021050700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021050701');

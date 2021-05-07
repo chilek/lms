@@ -310,7 +310,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             FROM voipaccounts v
             WHERE v.id = ? AND NOT EXISTS (
                 SELECT 1
-                FROM customerassignments a
+                FROM vcustomerassignments a
                 JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
                 WHERE e.userid = lms_current_user() AND a.customerid = v.ownerid
             )',

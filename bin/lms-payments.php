@@ -414,13 +414,13 @@ if (!empty($customergroups)) {
         }
         $customergroup_ORs[] = '('
             . (empty($customergroup_ANDs_regular) ? '1 = 1' : "EXISTS (SELECT COUNT(*) FROM customergroups
-                JOIN customerassignments ON customerassignments.customergroupid = customergroups.id
-                WHERE customerassignments.customerid = %customerid_alias%
+                JOIN vcustomerassignments ON vcustomerassignments.customergroupid = customergroups.id
+                WHERE vcustomerassignments.customerid = %customerid_alias%
                 AND UPPER(customergroups.name) IN ('" . implode("', '", $customergroup_ANDs_regular) . "')
                 HAVING COUNT(*) = " . count($customergroup_ANDs_regular) . ')')
             . (empty($customergroup_ANDs_inversed) ? '' : " AND NOT EXISTS (SELECT COUNT(*) FROM customergroups
-                JOIN customerassignments ON customerassignments.customergroupid = customergroups.id
-                WHERE customerassignments.customerid = %customerid_alias%
+                JOIN vcustomerassignments ON vcustomerassignments.customergroupid = customergroups.id
+                WHERE vcustomerassignments.customerid = %customerid_alias%
                 AND UPPER(customergroups.name) IN ('" . implode("', '", $customergroup_ANDs_inversed) . "')
                 HAVING COUNT(*) > 0)")
             . ')';

@@ -413,7 +413,7 @@ if (isset($group)) {
         exit(0);
     }
     echo "Wysyłanie powiadomień do grupy '$group' [".$groups[0]['id']."]\n";
-    $customers=$DB->GetALL("SELECT * FROM customerassignments WHERE customergroupid=".$groups[0]['id']);
+    $customers=$DB->GetALL("SELECT * FROM vcustomerassignments WHERE customergroupid=".$groups[0]['id']);
     foreach ($customers as $customer) {
         $name=$LMS->GetCustomerName($customer['customerid']);
         printf("%4d: %s\n", $customer['customerid'], $name);

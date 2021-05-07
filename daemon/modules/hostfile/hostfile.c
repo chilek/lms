@@ -117,7 +117,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 	char *enetname = strdup(enetnames);
 	char *enetsql = strdup("");
 
-	char *groups = strdup("AND EXISTS (SELECT 1 FROM customergroups g, customerassignments a "
+	char *groups = strdup("AND EXISTS (SELECT 1 FROM customergroups g, vcustomerassignments a "
 				"WHERE a.customerid = n.ownerid "
 				"AND g.id = a.customergroupid "
 				"AND (%groups)) ");
@@ -126,7 +126,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 	char *groupname = strdup(groupnames);
 	char *groupsql = strdup("");
 
-	char *egroups = strdup("AND NOT EXISTS (SELECT 1 FROM customergroups g, customerassignments a "
+	char *egroups = strdup("AND NOT EXISTS (SELECT 1 FROM customergroups g, vcustomerassignments a "
 				"WHERE a.customerid = n.ownerid "
 				"AND g.id = a.customergroupid "
 				"AND (%groups)) ");

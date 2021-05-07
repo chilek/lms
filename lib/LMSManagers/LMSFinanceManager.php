@@ -1893,7 +1893,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     LEFT JOIN cash ON cash.docid = d.id AND cash.itemid = a.itemid'
                     : '') . '
                 LEFT JOIN (
-                    SELECT DISTINCT a.customerid FROM customerassignments a
+                    SELECT DISTINCT a.customerid FROM vcustomerassignments a
                     JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
                     WHERE e.userid = lms_current_user()
                 ) e ON (e.customerid = d.customerid)
@@ -1903,7 +1903,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 .$where
                 .(!empty($group) ?
                     ' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
-				SELECT 1 FROM customerassignments WHERE customergroupid IN (' . implode(',', $group) . ')
+				SELECT 1 FROM vcustomerassignments WHERE customergroupid IN (' . implode(',', $group) . ')
 					AND customerid = d.customerid)' : '')
                 . (!empty($splitpayment) ? ' AND d.splitpayment = 1' : '')
                 . (!empty($withreceipt) ? ' AND d.flags & ' . DOC_FLAG_RECEIPT . ' > 0' : '')
@@ -1940,7 +1940,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				WHERE invoicenotice = 1 AND cc.type & ' . (CONTACT_INVOICES | CONTACT_DISABLED) . ' = ' . CONTACT_INVOICES . '
 			) i ON i.customerid = d.customerid
 			LEFT JOIN (
-			SELECT DISTINCT a.customerid FROM customerassignments a
+			SELECT DISTINCT a.customerid FROM vcustomerassignments a
 				JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 				WHERE e.userid = lms_current_user()
 				) e ON (e.customerid = d.customerid)
@@ -1950,7 +1950,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             .$where
             .(!empty($group) ?
                 ' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
-			SELECT 1 FROM customerassignments WHERE customergroupid IN (' . implode(',', $group) . ')
+			SELECT 1 FROM vcustomerassignments WHERE customergroupid IN (' . implode(',', $group) . ')
 						AND customerid = d.customerid)' : '')
             . (!empty($splitpayment) ? ' AND d.splitpayment = 1' : '')
             . (!empty($withreceipt) ? ' AND d.flags & ' . DOC_FLAG_RECEIPT . ' > 0' : '')
@@ -2578,7 +2578,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			LEFT JOIN countries c ON (c.id = d.countryid)
 			LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
 			LEFT JOIN (
-				SELECT DISTINCT a.customerid FROM customerassignments a
+				SELECT DISTINCT a.customerid FROM vcustomerassignments a
 				JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 				WHERE e.userid = lms_current_user()
 				) e ON (e.customerid = d.customerid)
@@ -2586,7 +2586,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 .$where
                 .(!empty($group) ?
                     ' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
-						SELECT 1 FROM customerassignments WHERE customergroupid = '.intval($group).'
+						SELECT 1 FROM vcustomerassignments WHERE customergroupid = '.intval($group).'
 						AND customerid = d.customerid)' : '')
                 .' GROUP BY d.id, number, cdate, cancelled, d.customerid,
 			d.name, address, zip, city, d.template, closed, published, c.name '
@@ -2603,7 +2603,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			LEFT JOIN countries c ON (c.id = d.countryid)
 			LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
 			LEFT JOIN (
-				SELECT DISTINCT a.customerid FROM customerassignments a
+				SELECT DISTINCT a.customerid FROM vcustomerassignments a
 				JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 				WHERE e.userid = lms_current_user()
 				) e ON (e.customerid = d.customerid)
@@ -2611,7 +2611,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             .$where
             .(!empty($group) ?
                 ' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
-			            SELECT 1 FROM customerassignments WHERE customergroupid = '.intval($group).'
+			            SELECT 1 FROM vcustomerassignments WHERE customergroupid = '.intval($group).'
 			            AND customerid = d.customerid)' : '')
             .' GROUP BY d.id, number, cdate, archived, cancelled, d.customerid,
 			d.name, address, zip, city, numberplans.template, closed, published, c.name, d.currency, d.currencyvalue '
@@ -3312,7 +3312,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 .$where
                 .(!empty($group) ?
                     ' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
-					SELECT 1 FROM customerassignments WHERE customergroupid = '.intval($group).'
+					SELECT 1 FROM vcustomerassignments WHERE customergroupid = '.intval($group).'
 					AND customerid = cash.customerid)' : ''));
             if (empty($summary)) {
                 return array('total' => 0, 'liability' => 0, 'income' => 0, 'expense' => 0, 'after' => 0);
@@ -3334,7 +3334,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             .$where
             .(!empty($group) ?
                 ' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
-					SELECT 1 FROM customerassignments WHERE customergroupid = '.intval($group).'
+					SELECT 1 FROM vcustomerassignments WHERE customergroupid = '.intval($group).'
 					AND customerid = cash.customerid)' : '')
             .' ORDER BY time, cash.id'
             . (isset($limit) ? ' LIMIT ' . $limit : '')
@@ -3350,7 +3350,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 .$where
                 .(!empty($group) ?
                     ' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
-					SELECT 1 FROM customerassignments WHERE customergroupid = '.intval($group).'
+					SELECT 1 FROM vcustomerassignments WHERE customergroupid = '.intval($group).'
 					AND customerid = cash.customerid)' : '')
                 .' ORDER BY time, cash.id '
                 . (isset($offset) ? ' LIMIT ' . $offset : '')

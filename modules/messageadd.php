@@ -213,7 +213,7 @@ function GetRecipients($filter, $type = MSG_MAIL)
         .($network ? ' AND c.id IN (SELECT ownerid FROM vnodes WHERE 
 			(netid = ' . $net['id'] . ' AND ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ')
 			OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
-        .($customergroup ? ' AND c.id IN (SELECT customerid FROM customerassignments
+        .($customergroup ? ' AND c.id IN (SELECT customerid FROM vcustomerassignments
 			WHERE customergroupid IN (' . $customergroup . '))' : '')
         .($nodegroup ? ' AND c.id IN (SELECT ownerid FROM vnodes
 			JOIN nodegroupassignments ON (nodeid = vnodes.id)

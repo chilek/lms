@@ -223,11 +223,11 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
         . (!empty($_GET['numberplanid']) ? ' AND d.numberplanid = '.intval($_GET['numberplanid']) : '')
         . (!empty($_GET['groupid']) ?
         ' AND '.(!empty($_GET['groupexclude']) ? 'NOT' : '').'
-			EXISTS (SELECT 1 FROM customerassignments a
+			EXISTS (SELECT 1 FROM vcustomerassignments a
 				WHERE a.customergroupid = ' . intval($_GET['groupid']) . '
 					AND a.customerid = d.customerid)' : '')
         . ' AND NOT EXISTS (
-			SELECT 1 FROM customerassignments a
+			SELECT 1 FROM vcustomerassignments a
 			JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 			WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)'
         . ' ORDER BY CEIL(d.cdate/86400), d.id',

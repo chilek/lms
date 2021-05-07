@@ -513,7 +513,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 				LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
 				LEFT JOIN location_districts ld ON ld.id = lb.districtid
 				LEFT JOIN location_states ls ON ls.id = ld.stateid '
-                . ($customergroup ? 'JOIN customerassignments ON (customerid = c.id) ' : '')
+                . ($customergroup ? 'JOIN vcustomerassignments ON (customerid = c.id) ' : '')
                 . ($nodegroup ? ($nodegroup > 0 ? '' : 'LEFT ') . 'JOIN nodegroupassignments ON (nodeid = n.id) ' : '')
                 . ' WHERE 1=1 '
                 . ($network ? ' AND (n.netid = ' . $network . ' OR (n.ipaddr_pub > ' . $net['address'] . ' AND n.ipaddr_pub < ' . $net['broadcast'] . '))' : '')
@@ -832,7 +832,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         return ($this->db->GetOne(
             'SELECT n.id FROM vnodes n
 			WHERE n.id = ? AND n.ownerid IS NOT NULL AND NOT EXISTS (
-		        	SELECT 1 FROM customerassignments a
+		        	SELECT 1 FROM vcustomerassignments a
 			        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 				WHERE e.userid = lms_current_user() AND a.customerid = n.ownerid)',
             array($id)

@@ -53,7 +53,7 @@ function GetEmails($group, $network = null, $customergroup = null)
 		LEFT JOIN customercontacts cc ON cc.customerid = c.id AND ((cc.type & '.CONTACT_EMAIL | CONTACT_DISABLED.') = ' .CONTACT_EMAIL. ' ) 
 		LEFT JOIN cash ON (customers.id=cash.customerid) '
         .($network ? 'LEFT JOIN vnodes ON (customers.id=ownerid) ' : '')
-        .($customergroup ? 'LEFT JOIN customerassignments ON (customers.id=customerassignments.customerid) ' : '')
+        .($customergroup ? 'LEFT JOIN vcustomerassignments ON (customers.id = vcustomerassignments.customerid) ' : '')
         .' WHERE deleted = '.$deleted
         .' AND email IS NOT NULL'
         .($group!=0 ? ' AND status = '.$group : '')

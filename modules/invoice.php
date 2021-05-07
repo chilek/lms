@@ -333,13 +333,13 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
         .(!empty($_GET['manualissued']) ? ' AND d.userid IS NOT NULL' : '')
         .(!empty($_GET['groupid']) ?
         ' AND ' . (!empty($_GET['groupexclude']) ? 'NOT' : '') . '
-            EXISTS (SELECT 1 FROM customerassignments a
+            EXISTS (SELECT 1 FROM vcustomerassignments a
             WHERE a.customerid = d.customerid AND a.customergroupid' . (is_array($_GET['groupid'])
                 ? ' IN (' . implode(',', Utils::filterIntegers($_GET['groupid'])) . ')'
                 : ' = ' . intval($_GET['groupid'])) . ')'
             : '')
         .' AND NOT EXISTS (
-            SELECT 1 FROM customerassignments a
+            SELECT 1 FROM vcustomerassignments a
             JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
             WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)'
         .' ORDER BY CEIL(cdate/86400), id',

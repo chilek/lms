@@ -78,7 +78,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
 		WHERE d.type = ?'
         .$where.'
 			AND NOT EXISTS (
-		    		SELECT 1 FROM customerassignments a
+		    		SELECT 1 FROM vcustomerassignments a
 				JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 				WHERE e.userid = lms_current_user() AND a.customerid = d.customerid) 
 		ORDER BY docid, itemid',
@@ -218,7 +218,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
 		WHERE (type = ? OR type = ?) AND (cdate BETWEEN ? AND ?)
 			' . ($divisionid ? ' AND d.divisionid = ' . $divisionid : '') . '
 			AND NOT EXISTS (
-		    		SELECT 1 FROM customerassignments a
+		    		SELECT 1 FROM vcustomerassignments a
 				JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 				WHERE e.userid = lms_current_user() AND a.customerid = d.customerid) 
 		ORDER BY cdate, docid', array(DOC_INVOICE, DOC_CNOTE, $unixfrom, $unixto));

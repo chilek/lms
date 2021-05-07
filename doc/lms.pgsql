@@ -1768,11 +1768,15 @@ CREATE TABLE customerassignments (
 	    REFERENCES customergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	customerid integer NOT NULL
 	    CONSTRAINT customerassignments_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    startdate integer DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer,
+    enddate integer DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id),
-	CONSTRAINT customerassignments_customergroupid_key UNIQUE (customergroupid, customerid)
+	CONSTRAINT customerassignments_customergroupid_ukey UNIQUE (customergroupid, customerid, enddate)
 );
 
 CREATE INDEX customerassignments_customerid_idx ON customerassignments (customerid);
+CREATE INDEX customerassignments_startdate_idx ON customerassignments (startdate);
+CREATE INDEX customerassignments_enddate_idx ON customerassignments (enddate);
 
 /* --------------------------------------------------------
   Structure of table "nodesessions"
@@ -2917,6 +2921,11 @@ CASE
 END
 ' LANGUAGE SQL;
 
+CREATE VIEW vcustomerassignments AS
+    SELECT ca.*
+    FROM customerassignments ca
+    WHERE (startdate IS NULL OR startdate <= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer) AND (enddate = 0 OR enddate > EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer);
+
 CREATE VIEW vaddresses AS
     SELECT a.*, c.ccode AS ccode, country_id AS countryid, city_id AS location_city, street_id AS location_street,
         house AS location_house, flat AS location_flat,
@@ -2996,7 +3005,7 @@ CREATE VIEW customerview AS
         LEFT JOIN vaddresses a2 ON ca2.address_id = a2.id
         LEFT JOIN customerconsentview cc ON cc.customerid = c.id
     WHERE NOT EXISTS (
-        SELECT 1 FROM customerassignments a
+        SELECT 1 FROM vcustomerassignments a
         JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
         WHERE e.userid = lms_current_user() AND a.customerid = c.id)
         AND (lms_current_user() = 0 OR c.divisionid IN (
@@ -4025,6 +4034,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021050700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021050701');
 
 COMMIT;

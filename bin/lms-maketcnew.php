@@ -222,7 +222,7 @@ $customergroups = preg_split('/(\s+|\s*,\s*)/', $customergroups, -1, PREG_SPLIT_
 if (empty($customergroups)) {
     $customerids = array();
 } else {
-    $customerids = $DB->GetRow("SELECT DISTINCT a.customerid FROM customerassignments a
+    $customerids = $DB->GetRow("SELECT DISTINCT a.customerid FROM vcustomerassignments a
 		JOIN customergroups g ON g.id = a.customergroupid
 		WHERE UPPER(g.name) IN ('" . implode("','", array_map('mb_strtoupper', $customergroups)) . "')");
 }

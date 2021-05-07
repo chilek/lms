@@ -98,7 +98,7 @@ function GetTariffList($order = 'name,asc', $type = null, $access = 0, $customer
 					) AS value
 				FROM assignments a
 				JOIN tariffs tt ON (tt.id = tariffid)'
-                . ($customergroupid ? ' JOIN customerassignments cc ON (cc.customerid = a.customerid)
+                . ($customergroupid ? ' JOIN vcustomerassignments cc ON (cc.customerid = a.customerid)
                     AND cc.customergroupid = ' . intval($customergroupid) : '')
                 . ' WHERE a.commited = 1'
                 . ($promotionid ? ' AND tt.id IN (SELECT pa.tariffid
@@ -139,7 +139,7 @@ function GetTariffList($order = 'name,asc', $type = null, $access = 0, $customer
                 SELECT a.tariffid, a.count, t.period, a.period AS aperiod, a.pdiscount, a.vdiscount, t.value
                 FROM assignments a
                 JOIN tariffs t ON (t.id = a.tariffid)'
-                . ($customergroupid ? ' JOIN customerassignments cc ON (cc.customerid = a.customerid)' : '')
+                . ($customergroupid ? ' JOIN vcustomerassignments cc ON (cc.customerid = a.customerid)' : '')
                 . ' WHERE a.commited = 1 AND (
 					a.suspended = 1
 					OR a.datefrom > ?NOW?

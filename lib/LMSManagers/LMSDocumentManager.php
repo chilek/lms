@@ -231,7 +231,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 						WHERE t.type IN (' . implode(',', $service) . ')
 					) s ON s.docid = d.id' : '') . '
 				LEFT JOIN (
-					SELECT DISTINCT a.customerid FROM customerassignments a
+					SELECT DISTINCT a.customerid FROM vcustomerassignments a
 					JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 					WHERE e.userid = lms_current_user()
 				) e ON (e.customerid = d.customerid)
@@ -273,7 +273,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 					WHERE t.type IN (' . implode(',', $service) . ')
 				) s ON s.docid = d.id' : '') . '
 			LEFT JOIN (
-				SELECT DISTINCT a.customerid FROM customerassignments a
+				SELECT DISTINCT a.customerid FROM vcustomerassignments a
 				JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 				WHERE e.userid = lms_current_user()
 			) e ON (e.customerid = d.customerid)

@@ -82,7 +82,7 @@ function GetItemList($id, $order = 'id,desc', $search = null, $cat = null, $stat
 		FROM messageitems i
 		LEFT JOIN customers c ON (c.id = i.customerid)
 		LEFT JOIN (
-			SELECT DISTINCT a.customerid FROM customerassignments a
+			SELECT DISTINCT a.customerid FROM vcustomerassignments a
 				JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 			WHERE e.userid = lms_current_user()
 		) e ON (e.customerid = c.id) 

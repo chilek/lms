@@ -81,7 +81,7 @@ switch ($type) {
 				    LEFT JOIN vusers ON (vusers.id = c.userid)
 				    WHERE c.customerid = ?
 					    AND NOT EXISTS (
-				                    SELECT 1 FROM customerassignments a
+				                    SELECT 1 FROM vcustomerassignments a
 					            JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 					            WHERE e.userid = lms_current_user() AND a.customerid = ?)
 				    ORDER BY time', array($id, $id))
@@ -210,7 +210,7 @@ switch ($type) {
             $lastafter = $DB->GetOne(
                 'SELECT SUM(CASE WHEN c.customerid IS NOT NULL AND type=0 THEN 0 ELSE value * c.currencyvalue END)
 					FROM cash c '
-                    .($group ? 'LEFT JOIN customerassignments a ON (c.customerid = a.customerid) ' : '')
+                    .($group ? 'LEFT JOIN vcustomerassignments a ON (c.customerid = a.customerid) ' : '')
                     .'WHERE time<?'
                     .($docs ? ($docs == 'documented' ? ' AND c.docid IS NOT NULL' : ' AND c.docid IS NULL') : '')
                     .($source ? ' AND c.sourceid = '.intval($source) : '')
@@ -219,7 +219,7 @@ switch ($type) {
                     .($division ? ' AND EXISTS (SELECT 1 FROM customers WHERE id = c.customerid AND divisionid = '.$division.')' : '')
                     .($types ? $typewhere : '')
                     .' AND NOT EXISTS (
-			        		SELECT 1 FROM customerassignments a
+			        		SELECT 1 FROM vcustomerassignments a
 						JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 						WHERE e.userid = lms_current_user() AND a.customerid = c.customerid)',
                 array($date['from'])
@@ -233,7 +233,7 @@ switch ($type) {
 					taxes.label AS taxlabel, c.customerid, comment, c.type AS type
 					FROM cash c
 					LEFT JOIN taxes ON (taxid = taxes.id) '
-                    .($group ? 'LEFT JOIN customerassignments a ON (c.customerid = a.customerid)  ' : '')
+                    .($group ? 'LEFT JOIN vcustomerassignments a ON (c.customerid = a.customerid)  ' : '')
                     .'WHERE time <= ? '
                     .($docs ? ($docs == 'documented' ? ' AND c.docid IS NOT NULL' : ' AND c.docid IS NULL') : '')
                     .($source ? ($source == -1 ? ' AND c.sourceid IS NULL' : ' AND c.sourceid = '.intval($source)) : '')
@@ -243,7 +243,7 @@ switch ($type) {
                     .($division ? ' AND EXISTS (SELECT 1 FROM customers WHERE id = c.customerid AND divisionid = '.$division.')' : '')
                     .($types ? $typewhere : '')
                     .' AND NOT EXISTS (
-			        		SELECT 1 FROM customerassignments a
+			        		SELECT 1 FROM vcustomerassignments a
 						JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 						WHERE e.userid = lms_current_user() AND a.customerid = c.customerid)'
                     .' ORDER BY time ASC', array($date['to']))) {
@@ -352,7 +352,7 @@ switch ($type) {
 			FROM cash c
 			WHERE value>0 AND time>=? AND time<=? AND docid IS NULL
 				AND NOT EXISTS (
-			        	SELECT 1 FROM customerassignments a
+			        	SELECT 1 FROM vcustomerassignments a
 					JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 					WHERE e.userid = lms_current_user() AND a.customerid = c.customerid)
 			GROUP BY date ORDER BY date ASC',
@@ -782,7 +782,7 @@ switch ($type) {
         }
         if ($group) {
                 $groupwhere = ' AND '.(isset($_POST['groupexclude']) ? 'NOT' : '').'
-			            EXISTS (SELECT 1 FROM customerassignments a
+			            EXISTS (SELECT 1 FROM vcustomerassignments a
 				            WHERE a.customergroupid = '.$group.'
 					    AND a.customerid = d.customerid)';
             $where .= $groupwhere;
@@ -797,7 +797,7 @@ switch ($type) {
                         .($user ? ' AND userid='.$user : '')
                         .($group ? $groupwhere : '')
                         .' AND NOT EXISTS (
-						        SELECT 1 FROM customerassignments a
+						        SELECT 1 FROM vcustomerassignments a
 							JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 							WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)',
                 array(DOC_RECEIPT, $from)
@@ -818,7 +818,7 @@ switch ($type) {
 			WHERE d.type = ?'
             .$where.'
 				AND NOT EXISTS (
-					SELECT 1 FROM customerassignments a
+					SELECT 1 FROM vcustomerassignments a
 					JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 					WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)
 			GROUP BY d.id, number, cdate, customerid, d.name, address, zip, city, numberplans.template, extnumber, closed

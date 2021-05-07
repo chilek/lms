@@ -442,7 +442,7 @@ switch ($mode) {
                 . (empty($properties) || isset($properties['location_address']) ? " OR LOWER(location) ?LIKE? LOWER($sql_search)" : '') . "
 				)
 			    AND NOT EXISTS (
-                    SELECT 1 FROM customerassignments a
+                    SELECT 1 FROM vcustomerassignments a
                     JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 			        WHERE e.userid = lms_current_user() AND a.customerid = n.ownerid)";
 

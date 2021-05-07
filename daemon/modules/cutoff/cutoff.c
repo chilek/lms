@@ -88,7 +88,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 	char *enetname = strdup(enetnames);
 	char *enetsql = strdup("");
 			
-	char *groups = strdup(" AND EXISTS (SELECT 1 FROM customergroups g, customerassignments a "
+	char *groups = strdup(" AND EXISTS (SELECT 1 FROM customergroups g, vcustomerassignments a "
 				"WHERE a.customerid = %ownerid "
 				"AND g.id = a.customergroupid "
 				"AND (%groups))"
@@ -98,7 +98,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 	char *groupname = strdup(groupnames);
 	char *groupsql = strdup("");
 
-	char *egroups = strdup(" AND NOT EXISTS (SELECT 1 FROM customergroups g, customerassignments a "
+	char *egroups = strdup(" AND NOT EXISTS (SELECT 1 FROM customergroups g, vcustomerassignments a "
 				"WHERE a.customerid = %ownerid "
 				"AND g.id = a.customergroupid "
 				"AND (%egroups))"

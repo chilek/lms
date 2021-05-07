@@ -169,7 +169,7 @@ $plugin_manager = new LMSPluginManager();
 $LMS->setPluginManager($plugin_manager);
 
 // prepare customergroups in sql query
-$customergroups = " AND EXISTS (SELECT 1 FROM customergroups g, customerassignments ca
+$customergroups = " AND EXISTS (SELECT 1 FROM customergroups g, vcustomerassignments ca
 	WHERE c.id = ca.customerid
 	AND g.id = ca.customergroupid
 	AND (%groups)) ";
