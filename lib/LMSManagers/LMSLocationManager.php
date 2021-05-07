@@ -362,7 +362,18 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
      */
     public function CopyAddress($address_id)
     {
-        $addr = $this->db->GetRow('SELECT * FROM addresses WHERE id = ?', array($address_id));
+        $addr = $this->db->GetRow(
+            'SELECT a.*,
+                (CASE WHEN ca.address_id IS NULL THEN a.name ELSE ' . $this->db->Concat('c.lastname', "' '", 'c.name') . ' END) AS name
+            FROM addresses a
+            LEFT JOIN customer_addresses ca ON ca.address_id = a.id AND ca.type = ?
+            LEFT JOIN customers c ON c.id = ca.customer_id
+            WHERE a.id = ?',
+            array(
+                BILLING_ADDRESS,
+                $address_id,
+            )
+        );
 
         if ($addr) {
             unset($addr['id']);
