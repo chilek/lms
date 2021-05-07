@@ -24,7 +24,6 @@
 $this->BeginTrans();
 
 $this->Execute("ALTER TABLE customerassignments ADD COLUMN startdate int(11) DEFAULT UNIX_TIMESTAMP()");
-$this->Exeucte("UPDATE customerassignments SET startdate = NULL");
 $this->Execute("ALTER TABLE customerassignments ADD COLUMN enddate int(11) DEFAULT 0 NOT NULL");
 $this->Execute("CREATE INDEX customerassignments_startdate_idx ON customerassignments (startdate)");
 $this->Execute("CREATE INDEX customerassignments_enddate_idx ON customerassignments (enddate)");
@@ -71,6 +70,7 @@ $this->Execute("
                 WHERE ud.userid = lms_current_user()))
             AND c.type < 2
 ");
+$this->Exeucte("UPDATE customerassignments SET startdate = NULL");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021050701', 'dbversion'));
 

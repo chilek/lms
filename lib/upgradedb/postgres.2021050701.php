@@ -25,7 +25,6 @@ $this->BeginTrans();
 
 $this->Execute("
     ALTER TABLE customerassignments ADD COLUMN startdate integer DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer;
-    UPDATE customerassignments SET startdate = NULL;
     ALTER TABLE customerassignments ADD COLUMN enddate integer DEFAULT 0 NOT NULL;
     CREATE INDEX customerassignments_startdate_idx ON customerassignments (startdate);
     CREATE INDEX customerassignments_enddate_idx ON customerassignments (enddate);
@@ -68,7 +67,8 @@ $this->Execute("
                 SELECT ud.divisionid
                 FROM userdivisions ud
                 WHERE ud.userid = lms_current_user()))
-            AND c.type < 2
+            AND c.type < 2;
+    UPDATE customerassignments SET startdate = NULL
 ");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021050701', 'dbversion'));
