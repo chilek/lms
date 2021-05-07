@@ -67,11 +67,11 @@ if (isset($_GET['oper'])) {
             $hook_data = $lms->executeHook(
                 'netdevmacadd_validation_before_update',
                 array(
-                    'netdevMacData' => $netdevMacData,
+                    'netdev_mac_data' => $netdevMacData,
                     'error' => $error
                 )
             );
-            $netdevMacData = $hook_data['netdevMacData'];
+            $netdevMacData = $hook_data['netdev_mac_data'];
             $error = $hook_data['error'];
 
             if ($error) {
@@ -86,7 +86,7 @@ if (isset($_GET['oper'])) {
                 $hook_data = $lms->executeHook(
                     'netdevmacadd_after_update',
                     array(
-                        'netdevMacData' => $netdevMacData,
+                        'netdev_mac_data' => $netdevMacData,
                     )
                 );
 
@@ -128,11 +128,11 @@ if (isset($_GET['oper'])) {
             $hook_data = $lms->executeHook(
                 'netdevmacedit_validation_before_update',
                 array(
-                    'netdevMacData' => $netdevMacData,
+                    'netdev_mac_data' => $netdevMacData,
                     'error' => $error
                 )
             );
-            $netdevMacData = $hook_data['netdevMacData'];
+            $netdevMacData = $hook_data['netdev_mac_data'];
             $error = $hook_data['error'];
 
             if ($error) {
@@ -147,7 +147,7 @@ if (isset($_GET['oper'])) {
                 $hook_data = $lms->executeHook(
                     'netdevmacedit_after_update',
                     array(
-                        'netdevMacData' => $netdevMacData,
+                        'netdev_mac_data' => $netdevMacData,
                     )
                 );
 
