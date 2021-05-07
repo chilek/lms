@@ -148,6 +148,8 @@ version 27-git (????-??-??):
   - improvement: if GUS-REGON api returns many matched entities for single company identifier then allow
     to select it from modal dialog [chilan]
   - enhancement: waiting assignments filter in customer search form [chilan]
+  - improvement: 'payments.reward_penalty_deadline_grace_days' allows to be more polite for customers while
+    checking if they apply to reward/penalty for on-time payments (default: 0) [chilan]
 
 version 26.0 (2020-12-15):
 
