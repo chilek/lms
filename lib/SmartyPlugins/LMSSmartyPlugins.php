@@ -722,7 +722,7 @@ class LMSSmartyPlugins
             $params['data']['buttons'] .= self::buttonFunction(array('icon' => 'home', 'tip' => 'Copy from billing address', 'class' => 'copy-address', 'data_type' => BILLING_ADDRESS), $template);
         }
         if (isset($params['data']['post_address_button'])) {
-            $params['data']['buttons'] .= self::buttonFunction(array('icon' => 'mail', 'tip' => 'Copy from post address', 'class' => 'copy-address', 'data_type' => POSTAL_ADDRESS), $template);
+            $params['data']['buttons'] .= self::buttonFunction(array('icon' => 'message', 'tip' => 'Copy from post address', 'class' => 'copy-address', 'data_type' => POSTAL_ADDRESS), $template);
         }
 
         self::locationBoxFunction($params['data'], $template);
