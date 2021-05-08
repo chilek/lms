@@ -968,8 +968,13 @@ class LMSSmartyPlugins
     {
         // optional - allow to easily attach event handler in jquery,
         $id = isset($params['id']) ? $params['id'] : null;
-        // optional - additional css classes which are appended to class attribute
+        // optional - additional css classes which are appended to class attribute for icon and label
         $class = isset($params['class']) && !empty($params['class']) ? $params['class'] : null;
+        // optional - css class for label only
+        $label_class = isset($params['label_class']) ? trans($params['label_class']) : null;
+        // optional - css class for icon only
+        $icon_class = isset($params['icon_class']) ? trans($params['icon_class']) : null;
+
         // optional - icon selection transformed to css class
         $name = isset($params['name']) ? $params['name'] : null;
         // optional - text tip,
@@ -986,18 +991,22 @@ class LMSSmartyPlugins
             }
         }
 
-        return '<i'
+        return (isset($class) ? '<span class="' . $class . '">' : ' ')
+            . '<i'
             . (isset($id) ? ' id="' . $id . '"' : '')
             . ' class="'
             . (isset($name) ? (strpos($name, 'lms-ui-icon-') === 0 || strpos($name, 'fa') === 0
                 ? $name : 'lms-ui-icon-' . $name) : '')
-            . (isset($class) ? ' ' . $class : '')
             . ($fw ? ' fa-fw' : '')
+            . (isset($icon_class) ? ' ' . $icon_class : '')
             . '"'
             . (isset($tip) ? ' title="' . $tip . '"' : '')
             . $data_attributes
         . '></i>'
-            . (isset($label) ? ' ' . $label : '');
+            . (isset($label_class) ? ' <span class="' . $label_class . '"> ' : '')
+            . (isset($label) ? ' ' . $label : '')
+            . (isset($label_class) ? ' </span>' : '')
+            . (isset($class) ? '</span>' : '');
     }
 
     public static function paytypesFunction(array $params, $template)
