@@ -21,20 +21,20 @@
 //-->
 </SCRIPT>
 <style>
-    @media screen and (max-width: 470px) {
-        .lms-ui-address-box tr {
-            display: flex;
-            flex-wrap: wrap;
-        }
+	@media screen and (max-width: 470px) {
+		.lms-ui-address-box tr {
+			display: flex;
+			flex-wrap: wrap;
+		}
 
-        .cell-flex  > div textarea{
-            max-width: 190px;
-        }
+		.cell-flex  > div textarea{
+			max-width: 190px;
+		}
 
-        .lms-ui-wysiwyg-editor textarea{
-            max-width: 230px;
-        }
-    }
+		.lms-ui-wysiwyg-editor textarea{
+			max-width: 230px;
+		}
+	}
 
 	@media screen and (min-width: 470px) {
 		.lms-ui-address-box {
@@ -328,82 +328,82 @@
 						{icon name="user-id-number" fw=true}
 					</TD>
 					<TD class="cell-flex">
-                        <div>
-						<TABLE width="100%">
-                            <COLGROUP>
-                                <COL style="width: 1%;">
-                                <COL style="width: 99%;">
-                            </COLGROUP>
-							<TR>
-								<TD class="nobr">{trans("Identity type:")}</TD>
-								<TD>
-									{identitytypes elemname="customeradd[ict]" selected=$customerinfo.ict
-									tip="Select identity type" trigger="ict"}
-								</TD>
-							</TR>
-							<TR>
-								<TD class="nobr">{trans("Identity number:")}</TD>
-								<TD>
-									{if $customerinfo.icnwarning}
-										<INPUT type="hidden" name="customeradd[icnwarning]" value="1">
-									{/if}
-									<INPUT type="text" value="{$customeradd.icn}" name="customeradd[icn]" size="30"
-											{tip text="Enter identity number (optional)" trigger="icn"}>
-								</TD>
-							</TR>
-							<TR>
-								<TD>{trans("SSN")}:</TD>
-								<TD>
-									<INPUT type="text" size="30" value="{$customeradd.ssn}" name="customeradd[ssn]" {tip text="Enter customer Social Security Number (optional)" trigger="ssn"}>
-									{if $customeradd.ssnwarning}
-									<INPUT type="hidden" name="customeradd[ssnwarning]" value="1">
-									{/if}
-									{if $customeradd.ssnexistencewarning}
-									<INPUT type="hidden" name="customeradd[ssnexistencewarning]" value="1">
-									{/if}
-								</TD>
-							</TR>
-							<TR>
-								<TD>{trans("TEN")}:</TD>
-								<TD>
-									<INPUT type="text" size="30" value="{$customeradd.ten}" name="customeradd[ten]" {tip text="Enter customer Tax Exempt Number (optional)" trigger="ten"}>
-									{if $customeradd.tenwarning}
-									<INPUT type="hidden" name="customeradd[tenwarning]" value="1">
-									{/if}
-									{if $customeradd.tenexistencewarning}
-									<INPUT type="hidden" name="customeradd[tenexistencewarning]" value="1">
-									{/if}
-									{button type="link" icon="division" class="gusapi-button"
-										data_type=Utils::GUS_REGON_API_SEARCH_TYPE_TEN
-										tip="Click here to autocomplete company data from GUS REGON database"}
-								</TD>
-							</TR>
-							<TR>
-								<TD>{trans("REGON")}:</TD>
-								<TD>
-									<INPUT type="text" size="30" value="{$customeradd.regon}" name="customeradd[regon]" {tip text="Enter Business Registration Number (optional)" trigger="regon"}>
-									{button type="link" icon="division" class="gusapi-button"
-										data_type=Utils::GUS_REGON_API_SEARCH_TYPE_REGON
-										tip="Click here to autocomplete company data from GUS REGON database"}
-								</TD>
-							</TR>
-							<TR>
-								<TD>{trans("RBE Name:")}</TD>
-								<TD>
-									<TEXTAREA name="customeradd[rbename]" cols="45" rows="4" {tip text="Enter National Court Register / Register of Business Entities Name (optional)" trigger="rbename"}>{$customeradd.rbename|escape}</TEXTAREA>
-								</TD>
-							</TR>
-							<TR>
-								<TD>{trans("RBE")}:</TD>
-								<TD>
-									<INPUT type="text" size="30" value="{$customeradd.rbe}" name="customeradd[rbe]" {tip text="Enter National Court Register / Register of Business Entities Number (optional)" trigger="rbe"}>
-									{button type="link" icon="division" class="gusapi-button"
-										data_type=Utils::GUS_REGON_API_SEARCH_TYPE_RBE
-										tip="Click here to autocomplete company data from GUS REGON database"}
-								</TD>
-							</TR>
-						</TABLE>
-                        </div>
+						<div>
+							<TABLE width="100%">
+								<COLGROUP>
+									<COL style="width: 1%;">
+									<COL style="width: 99%;">
+								</COLGROUP>
+								<TR>
+									<TD class="nobr">{trans("Identity type:")}</TD>
+									<TD>
+										{identitytypes elemname="customeradd[ict]" selected=$customerinfo.ict
+										tip="Select identity type" trigger="ict"}
+									</TD>
+								</TR>
+								<TR>
+									<TD class="nobr">{trans("Identity number:")}</TD>
+									<TD>
+										{if $customerinfo.icnwarning}
+											<INPUT type="hidden" name="customeradd[icnwarning]" value="1">
+										{/if}
+										<INPUT type="text" value="{$customeradd.icn}" name="customeradd[icn]" size="30"
+												{tip text="Enter identity number (optional)" trigger="icn"}>
+									</TD>
+								</TR>
+								<TR>
+									<TD>{trans("SSN")}:</TD>
+									<TD>
+										<INPUT type="text" size="30" value="{$customeradd.ssn}" name="customeradd[ssn]" {tip text="Enter customer Social Security Number (optional)" trigger="ssn"}>
+										{if $customeradd.ssnwarning}
+										<INPUT type="hidden" name="customeradd[ssnwarning]" value="1">
+										{/if}
+										{if $customeradd.ssnexistencewarning}
+										<INPUT type="hidden" name="customeradd[ssnexistencewarning]" value="1">
+										{/if}
+									</TD>
+								</TR>
+								<TR>
+									<TD>{trans("TEN")}:</TD>
+									<TD>
+										<INPUT type="text" size="30" value="{$customeradd.ten}" name="customeradd[ten]" {tip text="Enter customer Tax Exempt Number (optional)" trigger="ten"}>
+										{if $customeradd.tenwarning}
+										<INPUT type="hidden" name="customeradd[tenwarning]" value="1">
+										{/if}
+										{if $customeradd.tenexistencewarning}
+										<INPUT type="hidden" name="customeradd[tenexistencewarning]" value="1">
+										{/if}
+										{button type="link" icon="division" class="gusapi-button"
+											data_type=Utils::GUS_REGON_API_SEARCH_TYPE_TEN
+											tip="Click here to autocomplete company data from GUS REGON database"}
+									</TD>
+								</TR>
+								<TR>
+									<TD>{trans("REGON")}:</TD>
+									<TD>
+										<INPUT type="text" size="30" value="{$customeradd.regon}" name="customeradd[regon]" {tip text="Enter Business Registration Number (optional)" trigger="regon"}>
+										{button type="link" icon="division" class="gusapi-button"
+											data_type=Utils::GUS_REGON_API_SEARCH_TYPE_REGON
+											tip="Click here to autocomplete company data from GUS REGON database"}
+									</TD>
+								</TR>
+								<TR>
+									<TD>{trans("RBE Name:")}</TD>
+									<TD>
+										<TEXTAREA name="customeradd[rbename]" cols="45" rows="4" {tip text="Enter National Court Register / Register of Business Entities Name (optional)" trigger="rbename"}>{$customeradd.rbename|escape}</TEXTAREA>
+									</TD>
+								</TR>
+								<TR>
+									<TD>{trans("RBE")}:</TD>
+									<TD>
+										<INPUT type="text" size="30" value="{$customeradd.rbe}" name="customeradd[rbe]" {tip text="Enter National Court Register / Register of Business Entities Number (optional)" trigger="rbe"}>
+										{button type="link" icon="division" class="gusapi-button"
+											data_type=Utils::GUS_REGON_API_SEARCH_TYPE_RBE
+											tip="Click here to autocomplete company data from GUS REGON database"}
+									</TD>
+								</TR>
+							</TABLE>
+						</div>
 					</TD>
 				</TR>
 				<TR>
