@@ -1870,7 +1870,7 @@ CREATE TABLE customerassignments (
   id int(11) NOT NULL auto_increment,
   customergroupid int(11) NOT NULL,
   customerid int(11) NOT NULL,
-  startdate int(11) DEFAULT UNIX_TIMESTAMP(),
+  startdate int(11) NOT NULL DEFAULT UNIX_TIMESTAMP(),
   enddate int(11) DEFAULT 0 NOT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY customerassignments_customergroupid_ukey (customergroupid, customerid, enddate),
@@ -2986,7 +2986,7 @@ CREATE TABLE up_info_changes (
 CREATE VIEW vcustomerassignments AS
 	SELECT ca.*
 	FROM customerassignments ca
-	WHERE (startdate IS NULL OR startdate <= UNIX_TIMESTAMP()) AND (enddate = 0 OR enddate > UNIX_TIMESTAMP());
+	WHERE startdate <= UNIX_TIMESTAMP() AND enddate = 0;
 
 CREATE VIEW nas AS
 	SELECT n.id, inet_ntoa(n.ipaddr) AS nasname, d.shortname, d.nastype AS type,
@@ -4004,4 +4004,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021050701');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021051000');

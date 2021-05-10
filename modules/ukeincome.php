@@ -95,13 +95,13 @@ $SESSION->saveFilter($filter['uke-income'], 'print', null, false, 'uke-income');
 
 switch ($customergroup_intersection) {
     case 'current':
-        $customergroup_intersection_condition = ' AND (startdate IS NULL OR startdate >= ?NOW?) AND (enddate = 0 OR enddate > ?NOW?)';
+        $customergroup_intersection_condition = ' AND startdate >= ?NOW? AND enddate = 0';
         break;
     case 'fully':
-        $customergroup_intersection_condition = ' AND (startdate IS NULL OR startdate <= ' . $unixfrom . ') AND (enddate = 0 OR enddate >= ' . $unixto . ')';
+        $customergroup_intersection_condition = ' AND startdate <= ' . $unixfrom . ' AND (enddate = 0 OR enddate >= ' . $unixto . ')';
         break;
     case 'partially':
-        $customergroup_intersection_condition = ' AND (startdate IS NULL OR startdate < ' . $unixto . ') AND (enddate = 0 OR enddate > ' . $unixfrom . ')';
+        $customergroup_intersection_condition = ' AND startdate < ' . $unixto . ' AND (enddate = 0 OR enddate > ' . $unixfrom . ')';
         break;
 }
 

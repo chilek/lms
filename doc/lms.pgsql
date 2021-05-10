@@ -1768,7 +1768,7 @@ CREATE TABLE customerassignments (
 	    REFERENCES customergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	customerid integer NOT NULL
 	    CONSTRAINT customerassignments_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    startdate integer DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer,
+    startdate integer DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer NOT NULL,
     enddate integer DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id),
 	CONSTRAINT customerassignments_customergroupid_ukey UNIQUE (customergroupid, customerid, enddate)
@@ -2924,7 +2924,7 @@ END
 CREATE VIEW vcustomerassignments AS
     SELECT ca.*
     FROM customerassignments ca
-    WHERE (startdate IS NULL OR startdate <= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer) AND (enddate = 0 OR enddate > EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer);
+    WHERE startdate <= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer AND enddate = 0;
 
 CREATE VIEW vaddresses AS
     SELECT a.*, c.ccode AS ccode, country_id AS countryid, city_id AS location_city, street_id AS location_street,
@@ -4034,6 +4034,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021050701');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021051000');
 
 COMMIT;
