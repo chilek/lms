@@ -27,270 +27,326 @@
 	}
 
 </script>
-<FORM NAME="cashimport" ACTION="?m=cashimport" METHOD="post">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE class="lmsbox lms-ui-background-cycle">
-	<COLGROUP>
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
-		<COL style="width: 25%;">
-		<COL style="width: 42%;">
-		<COL style="width: 32%;">
-		<COL style="width: 1%;">
-	</COLGROUP>
-    <THEAD>
-	<TR>
-		<TD>
-			{trans("ID:")}
-		</TD>
-		<TD>
-			{trans("Date:")}
-		</TD>
-		<TD class="bold">
-			{trans("Value:")}
-		</TD>
-		<TD>
-			{trans("Customer:")}
-		</TD>
-		<TD>
-			{trans("Description:")}
-		</TD>
-		<TD class="nobr">
-			{trans("Link to:")}
-		</TD>
-		<TD class="text-right bold nobr">
-			{trans("Total:")} {$listdata.total}&nbsp;
-		</TD>
-	</TR>
-    </THEAD>
-    <TBODY class="lms-ui-multi-check">
-	{foreach $divisions as $division}{if $division.list}
-		<TR>
-			<TD colspan="4" class="dark bold">
-				{icon name="division" fw=true}
-				{$division.name|escape}
-			</TD>
-			<TD colspan="3" class="dark text-right">
-				{button icon="csv" label="Download (CSV)" href="?m=cashimport&action=csv&division={$division.id}"}
-			</TD>
-		</TR>
-		{foreach $division.list as $item}
-		<TR>
-			<TD>
-				{$item.id|string_format:"%04d"}
-			</TD>
-			<TD class="nobr">
-				{$item.date|date_format:"%Y/%m/%d"}
-			</TD>
-			<TD class="text-right bold nobr">
-				{$item.value|money_format}
-			</TD>
-			<TD class="text-left">
-				{if $item.customer}{$item.customer}
-				{elseif $item.customerid}
-				{assign var=cust value=$item.customerid}
-				{$customerlist.$cust.customername}
-				{/if}
-			 </TD>
-			<TD class="text-left">
-				{$item.description}
-			</TD>
-			<TD class="text-left lms-ui-multi-check-ignore">
-				{customerlist form="cashimport" customers=$customerlist selected=$item.customerid selectname="custid[{$item.id}]" inputname="customer[{$item.id}]" version=2}
-			</TD>
-			<TD class="text-right">
-				<INPUT type="checkbox" name="marks[{$item.id}]" value="{$item.id}" class="lms-ui-multi-check">
-			</TD>
-		</TR>
-		{/foreach}
-	{/if}{/foreach}
-	{if !$listdata.total}
-	<TR>
-		<TD class="empty-table" colspan="7">
-			<p>{trans("No cash operations to import.")}</p>
-		</TD>
-	</TR>
-	{/if}
-    </TBODY>
-    <TFOOT>
-	<TR class="lms-ui-button-panel">
-		<TD class="nobr" colspan="3">
-			<label>
-				<INPUT type="checkbox" name="allbox" class="lms-ui-multi-check-all" value="1">
-				{trans("Check All")}
-			</label>
-		</TD>
-		<TD class="text-center nobr" colspan="2">
-			{button icon="save" label="Download all (TXT)" href="?m=cashimport&action=txt"}
-		</TD>
-		<TD class="text-right nobr" colspan="2">
-			{button icon="delete" label="Delete" onclick="Delete();"}
-			{button icon="save" label="Save" onclick="Save();"}
-			{button id="import-button" icon="import" label="<!do>Import"}
-		</TD>
-	</TR>
-    </TFOOT>
-</TABLE>
-</FORM>
-{if !empty($error)}
-<TABLE class="lmsbox">
-    <THEAD>
-	<TR>
-		<TD width="100%">
-			<B>{trans("Errors and Duplicated Entries")}:</B>
-		</TD>
-	</TR>
-    </THEAD>
-    <TBODY>
-	<TR>
-		<TD width="100%">
-			<TABLE class="lmsbox-inner lms-ui-background-cycle">
-				<colgroup>
-					<col style="width: 1%;">
-					<col style="width: 99%;">
-				</colgroup>
-				<THEAD>
-					<TR>
-						<TD class="bold">{trans("Line:")}</TD>
-						<TD class="bold">{trans("Content:")}</TD>
-					</TR>
-				</THEAD>
-				<TBODY>
-					{foreach $error as $filename => $file}
-						{if (empty($file.lines))}
-							{continue}
+
+<form name="cashimport" id="cashimport" action="?m=cashimport" method="post"></form>
+<input type="submit" class="hiddenbtn" form="cashimport">
+<table class="lmsbox lms-ui-background-cycle">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 25%;">
+		<col style="width: 42%;">
+		<col style="width: 32%;">
+		<col style="width: 1%;">
+	</colgroup>
+	<thead>
+		<tr>
+			<td>
+				{trans("ID:")}
+			</td>
+			<td>
+				{trans("Date:")}
+			</td>
+			<td>
+				<strong>{trans("Value:")}</strong>
+			</td>
+			<td>
+				{trans("Customer:")}
+			</td>
+			<td>
+				{trans("Description:")}
+			</td>
+			<td>
+				<strong>{trans("Link to:")}</strong>
+			</td>
+			<td class="text-right nobr">
+				<strong>{trans("Total:")} {$listdata.total}</strong>
+			</td>
+		</tr>
+	</thead>
+    <tbody class="lms-ui-multi-check">
+		{foreach $divisions as $division}
+			{if $division.list}
+				<tr>
+					<td colspan="4" class="dark">
+						{icon name="division" fw=true}
+						<strong>{$division.name|escape}</strong>
+					</td>
+					<td colspan="3" class="dark text-right">
+						{button icon="csv" label="Download (CSV)" href="?m=cashimport&action=csv&division={$division.id}"}
+					</td>
+				</tr>
+				{foreach $division.list as $item}
+				<tr>
+					<td>
+						{$item.id|string_format:"%04d"}
+					</td>
+					<td class="nobr">
+						{$item.date|date_format:"%Y/%m/%d"}
+					</td>
+					<td class="text-right nobr">
+						<strong>{$item.value|money_format}</strong>
+					</td>
+					<td class="text-left">
+						{if $item.customer}
+							{$item.customer}
+						{elseif $item.customerid}
+							{$cust = $item.customerid}
+							{$customerlist.$cust.customername}
 						{/if}
-						{$lines = $file.lines}
-						<tr class="lms-ui-distinguished-row" >
-							<td colspan="2">
-								{t a=$filename}File $a:{/t}
+					 </td>
+					<td class="text-left">
+						{$item.description}
+					</td>
+					<td class="text-left lms-ui-multi-check-ignore">
+						{customerlist form="cashimport" customers=$customerlist selected=$item.customerid
+							selectname="custid[{$item.id}]" inputname="customer[{$item.id}]" form="cashimport" version=2}
+					</td>
+					<td class="text-right">
+						<input type="checkbox" name="marks[{$item.id}]" value="{$item.id}"
+							class="lms-ui-multi-check" form="cashimport">
+					</td>
+				</tr>
+				{/foreach}
+			{/if}
+		{/foreach}
+		{if !$listdata.total}
+			<tr>
+				<td class="empty-table" colspan="7">
+					<strong>{trans("No cash operations to import.")}</strong>
+				</td>
+			</tr>
+		{/if}
+	</tbody>
+	<tfoot>
+		<tr class="lms-ui-button-panel">
+			<td class="nobr" colspan="3">
+				<label>
+					<input type="checkbox" name="allbox" class="lms-ui-multi-check-all" value="1" form="cashimport">
+					{trans("Check All")}
+				</label>
+			</td>
+			<td class="text-center nobr" colspan="2">
+				{button icon="save" label="Download all (TXT)" href="?m=cashimport&action=txt"}
+			</td>
+			<td class="text-right nobr" colspan="2">
+				{button icon="delete" label="Delete" onclick="Delete();"}
+				{button icon="save" label="Save" onclick="Save();"}
+				{button id="import-button" icon="import" label="<!do>Import"}
+			</td>
+		</tr>
+	</tfoot>
+</table>
+
+{if !empty($error)}
+<table class="lmsbox">
+	<colgroup>
+		<col style="width: 100%;">
+	</colgroup>
+	<thead>
+		<tr>
+			<td>
+				<strong>{trans("Errors and Duplicated Entries")}:</strong>
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>
+				<table class="lmsbox-inner lms-ui-background-cycle">
+					<colgroup>
+						<col style="width: 1%;">
+						<col style="width: 99%;">
+					</colgroup>
+					<thead>
+						<tr>
+							<td>
+								<strong>{trans("Line:")}</strong>
+							</td>
+							<td>
+								<strong>{trans("Content:")}</strong>
 							</td>
 						</tr>
-						{foreach $lines as $key => $item}
-						<TR>
-							<TD class="nobr">{$key}. <img src="img/{if is_array($item)}clone{else}warningon{/if}.gif"></TD>
-							<TD>
-								{if is_array($item)}
-									<TABLE width="100%" class="red">
-										{if $item.date}<TR><TD width="1%">{trans("Date:")}</TD><TD width="99%">{$item.date|date_format:"%Y/%m/%d"}</TD></TR>{/if}
-										{if $item.customer}<TR><TD width="1%">{trans("Customer:")}</TD><TD width="99%">
-											{$item.customer}{if $item.customerid} ({$item.customerid|string_format:"%04d"}){/if}</TD></TR>{/if}
-										{if $item.value}<TR><TD width="1%">{trans("Value:")}</TD><TD width="99%">{$item.value|money_format}</TD></TR>{/if}
-										{if $item.comment}<TR><TD width="1%">{trans("Description:")}</TD><TD width="99%">{$item.comment}</TD></TR>{/if}
-									</TABLE>
-								{else}
-									{$item}
-								{/if}
-							</TD>
-						</TR>
+					</thead>
+					<tbody>
+						{foreach $error as $filename => $file}
+							{if (empty($file.lines))}
+								{continue}
+							{/if}
+							{$lines = $file.lines}
+							<tr class="lms-ui-distinguished-row" >
+								<td colspan="2">
+									{t a=$filename}File $a:{/t}
+								</td>
+							</tr>
+							{foreach $lines as $key => $item}
+								<tr>
+									<td class="nobr">
+										{$key}. <img src="img/{if is_array($item)}clone{else}warningon{/if}.gif">
+									</td>
+									<td>
+										{if is_array($item)}
+											<table width="100%" class="red">
+												<colgroup>
+													<col style="width: 1%;">
+													<col style="width: 99%;">
+												</colgroup>
+												{if $item.date}
+													<tr>
+														<td>
+															{trans("Date:")}
+														</td>
+														<td>
+															{$item.date|date_format:"%Y/%m/%d"}
+														</td>
+													</tr>
+												{/if}
+												{if $item.customer}
+													<tr>
+														<td>
+															{trans("Customer:")}
+														</td>
+														<td>
+															{$item.customer}{if $item.customerid} ({$item.customerid|string_format:"%04d"}){/if}
+														</td>
+													</tr>
+												{/if}
+												{if $item.value}
+													<tr>
+														<td>
+															{trans("Value:")}
+														</td>
+														<td>
+															{$item.value|money_format}
+														</td>
+													</tr>
+												{/if}
+												{if $item.comment}
+													<tr>
+														<td>
+															{trans("Description:")}
+														</td>
+														<td>
+															{$item.comment}
+														</td>
+													</tr>
+												{/if}
+											</table>
+										{else}
+											{$item}
+										{/if}
+									</td>
+								</tr>
+							{/foreach}
 						{/foreach}
-					{/foreach}
-				</TBODY>
-			</TABLE>
-		</TD>
-	</TR>
-</TABLE>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+	</tbody>
+</table>
 {/if}
-<FORM name="parser" id="parser" enctype="multipart/form-data" method="post" action="?m=cashimportparser">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE class="lmsbox">
-	<COLGROUP>
-		<COL style="width: 1%;">
-		<COL style="width: 99%;">
-	</COLGROUP>
-    <THEAD>
-	<TR>
-		<TD colspan="2" class="bold">
-			{trans("Import from files:")}
-		</TD>
-	</TR>
-    </THEAD>
-    <TBODY>
-	<TR>
-		<TD class="bold nobr valign-top" id="file-label">
-			<IMG src="img/attach.gif" alt="">
-			{trans("Import files:")}
-		</TD>
-		<TD class="nobr">
-			{fileupload id="files" fileupload=$fileupload form="parser"}
-		</TD>
-	</TR>
-	<TR>
-		<TD class="bold nobr">
-			<IMG src="img/isource.gif" alt="">
-			{trans("Source:")}
-		</TD>
-		<TD class="nobr">
-			<SELECT name="source" {tip text="Select import source (optional)" trigger="source"}>
-				<OPTION value="0">{trans("- auto -")}</OPTION>
-				{foreach $sourcelist as $item}
-				<OPTION value="{$item.id}">{$item.name}</OPTION>
-				{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR>
-		<TD colspan="2" class="buttons">
-			{button icon="save" label="Submit" onclick="document.parser.submit();"}
-		</TD>
-	</TR>
-    </TBODY>
-</TABLE>
-</FORM>
-<TABLE class="lmsbox">
-	<COLGROUP>
-		<COL style="width: 100%;">
-	</COLGROUP>
-    <THEAD>
-	<TR>
-		<TD class="bold">
-			<IMG src="img/attach.gif" alt="">
-			{trans("Packages:")}
-		</TD>
-	</TR>
-    </THEAD>
-    <TBODY>
-	<TR class="lms-ui-button-panel">
-		<TD>
-			<TABLE id="cashimport-packages-datatable" class="lms-ui-datatable lms-ui-datatable-column-search lms-ui-datatable-column-toggle"
-				   data-order='[[ 0, "desc" ]]' data-page-length="25" data-state-save="true" style="display: none;"
-				   data-empty-table-message="{trans("There are no packages in database.")}"
-				   width="100%">
-				<COLGROUP>
-					<COL style="width: 1%;">
-					<COL style="width: 96%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-				</COLGROUP>
-				<THEAD>
-				<TR>
-					<TH class="bold nobr">{trans("Date:")}</TH>
-					<TH class="text-left nobr">{trans("Filename:")}</TH>
-					<TH class="text-center nobr" data-searchable="true" data-select-value="true">{trans("User:")}</TH>
-					<TH class="text-center nobr" data-searchable="false">{trans("Records:")}</TH>
-					<TH data-orderable="false" data-searchable="false">&nbsp;</TH>
-				</TR>
-				</THEAD>
-				<TBODY>
-				{foreach $sourcefiles as $item}
-				<TR>
-					<TD class="bold nobr">{$item.idate|date_format:"%Y/%m/%d %H:%M"}</TD>
-					<TD><a href="?m=balancelist&sourcefileid={$item.id}">{$item.name}</a></TD>
-					<TD class="text-center nobr">{$item.username}</TD>
-					<TD class="text-center">{$item.count|default:0}</TD>
-					<TD class="text-right">
-						{button type="link" class="delete-cashpackage" tip="Delete" icon="delete" href="?m=cashpackagedel&id={$item.id}"}
-					</TD>
-				</TR>
-				{/foreach}
-				</TBODY>
-			</TABLE>
-		</TD>
-	</TR>
-    </TBODY>
-</TABLE>
+
+<form name="parser" id="parser" enctype="multipart/form-data" method="post" action="?m=cashimportparser"></form>
+<input type="submit" class="hiddenbtn" form="parser">
+<table class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 99%;">
+	</colgroup>
+    <thead>
+		<tr>
+			<td colspan="2">
+				<strong>{trans("Import from files:")}</strong>
+			</td>
+		</tr>
+    </thead>
+    <tbody>
+		<tr>
+			<td class="nobr valign-top" id="file-label">
+				{icon name="fileupload" fw=true}
+				<strong>{trans("Import files:")}</strong>
+			</td>
+			<td class="nobr">
+				{fileupload id="files" fileupload=$fileupload form="parser"}
+			</td>
+		</tr>
+		<tr>
+			<td class="nobr">
+				{icon name="cashsource" fw=true}
+				<strong>{trans("Source:")}</strong>
+			</td>
+			<td class="nobr">
+				<select name="source" {tip text="Select import source (optional)" trigger="source"} form="parser">
+					<option value="0">{trans("- auto -")}</option>
+					{foreach $sourcelist as $item}
+						<option value="{$item.id}">{$item.name}</option>
+					{/foreach}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" class="lms-ui-box-buttons">
+				{button icon="save" label="Submit" onclick="document.parser.submit();"}
+			</td>
+		</tr>
+    </tbody>
+</table>
+
+<table class="lmsbox">
+	<colgroup>
+		<col style="width: 100%;">
+	</colgroup>
+    <thead>
+		<tr>
+			<td>
+				{icon name="fileupload" fw=true}
+				<strong>{trans("Packages:")}</strong>
+			</td>
+		</tr>
+    </thead>
+    <tbody>
+		<tr class="lms-ui-button-panel">
+			<td>
+				<table id="cashimport-packages-datatable" class="lms-ui-datatable lms-ui-datatable-column-search lms-ui-datatable-column-toggle"
+					   data-order='[[ 0, "desc" ]]' data-page-length="25" data-state-save="true" style="display: none;"
+					   data-empty-table-message="{trans("There are no packages in database.")}"
+					   width="100%">
+					<colgroup>
+						<col style="width: 1%;">
+						<col style="width: 96%;">
+						<col style="width: 1%;">
+						<col style="width: 1%;">
+						<col style="width: 1%;">
+					</colgroup>
+					<thead>
+						<tr>
+							<th class="bold nobr">{trans("Date:")}</th>
+							<th class="text-left nobr">{trans("Filename:")}</th>
+							<th class="text-center nobr" data-searchable="true" data-select-value="true">{trans("User:")}</th>
+							<th class="text-center nobr" data-searchable="false">{trans("Records:")}</th>
+							<th data-orderable="false" data-searchable="false">&nbsp;</th>
+						</tr>
+					</thead>
+					<tbody>
+						{foreach $sourcefiles as $item}
+						<tr>
+							<td class="bold nobr">{$item.idate|date_format:"%Y/%m/%d %H:%M"}</td>
+							<td><a href="?m=balancelist&sourcefileid={$item.id}">{$item.name}</a></td>
+							<td class="text-center nobr">{$item.username}</td>
+							<td class="text-center">{$item.count|default:0}</td>
+							<td class="text-right">
+								{button type="link" class="delete-cashpackage" tip="Delete" icon="delete" href="?m=cashpackagedel&id={$item.id}"}
+							</td>
+						</tr>
+						{/foreach}
+					</tbody>
+				</table>
+			</td>
+		</tr>
+    </tbody>
+</table>
 <script>
 
 	$(function() {

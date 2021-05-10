@@ -217,6 +217,8 @@ class LMSSmartyPlugins
 
         $customername = !isset($params['customername']) || $params['customername'];
 
+        $form = isset($params['form']) ? $params['form'] : null;
+
         if (isset($params['selected']) && !preg_match('/^[0-9]+$/', $params['selected'])) {
             $params['selected'] = '';
         }
@@ -225,16 +227,20 @@ class LMSSmartyPlugins
             . ($version == 2 ? ' data-show-id="1"' : '') . '>' . PHP_EOL;
 
         if (!empty($params['customers'])) {
-            $result .= sprintf('<select name="%s" value="%s" ', $params['selectname'], $params['selected']);
+            $result .= sprintf('<select name="%s" value="%s"', $params['selectname'], $params['selected']);
+
+            if (isset($form)) {
+                $result .= ' form="' . $form . '"';
+            }
 
             if (!empty($params['select_id'])) {
-                $result .= 'id="' . $params['select_id'] . '" ';
+                $result .= ' id="' . $params['select_id'] . '"';
             }
 
             if (!empty($params['selecttip'])) {
-                $result .= self::tipFunction(array('text' => $params['selecttip']), $template);
+                $result .= ' ' . self::tipFunction(array('text' => $params['selecttip']), $template);
             } else {
-                $result .= self::tipFunction(array('text' => 'Select customer (optional)'), $template);
+                $result .= ' ' . self::tipFunction(array('text' => 'Select customer (optional)'), $template);
             }
 
             if (!empty($params['customOnChange'])) {
@@ -282,6 +288,10 @@ class LMSSmartyPlugins
         $result .= '<input type="text" name="' . $params['inputname'] . '"' . (empty($params['selected']) ? '' : ' value="'
             . $params['selected'] . '"') . ' class="lms-ui-customer-select-customerid" data-prev-value="' . $params['selected'] . '" size="5"';
 
+        if (isset($form)) {
+            $result .= ' form="' . $form . '"';
+        }
+
         if (!empty($params['input_id'])) {
             $result .= ' id="' . $params['input_id'] . '"';
         }
@@ -308,8 +318,9 @@ class LMSSmartyPlugins
 
         if ($version == 2) {
             $result .= '<input type="text"'
-                . ' placeholder="' . trans('Search for customer')
-                . '" ' . self::tipFunction(
+                . ' placeholder="' . trans('Search for customer') . '"'
+                . (isset($form) ? ' form="' . $form . '"' : '')
+                . ' ' . self::tipFunction(
                     array(
                         'text' => 'Search for customer',
                         'trigger' => 'customerid',
