@@ -23,7 +23,7 @@
 
 $this->BeginTrans();
 
-$this->Execute("ALTER TABLE customerassignments ADD COLUMN startdate int(11) DEFAULT UNIX_TIMESTAMP()");
+$this->Execute("ALTER TABLE customerassignments ADD COLUMN startdate int(11) DEFAULT 0");
 $this->Execute("ALTER TABLE customerassignments ADD COLUMN enddate int(11) DEFAULT 0 NOT NULL");
 $this->Execute("CREATE INDEX customerassignments_startdate_idx ON customerassignments (startdate)");
 $this->Execute("CREATE INDEX customerassignments_enddate_idx ON customerassignments (enddate)");
@@ -71,6 +71,16 @@ $this->Execute("
             AND c.type < 2
 ");
 $this->Exeucte("UPDATE customerassignments SET startdate = NULL");
+
+$this->Execute("
+    CREATE TRIGGER customerassignments_insert_trigger BEFORE INSERT ON customerassignments
+        FOR EACH ROW
+            BEGIN
+        IF NEW.startdate = 0 THEN
+            SET NEW.startdate = UNIX_TIMESTAMP();
+        END IF;
+    END
+");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021050701', 'dbversion'));
 

@@ -7,6 +7,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TRIGGER IF EXISTS cash_customerbalances_delete_trigger;
 DROP TRIGGER IF EXISTS cash_customerbalances_update_trigger;
 DROP TRIGGER IF EXISTS cash_customerbalances_insert_trigger;
+DROP TRIGGER IF EXISTS customerassignments_insert_trigger;
 
 DROP VIEW IF EXISTS vnetworks;
 DROP VIEW IF EXISTS customermailsview;
@@ -3366,6 +3367,16 @@ RETURN address + (pow(2, (32-mask2prefix(mask)))-1);
 DROP FUNCTION IF EXISTS int2txt;
 CREATE FUNCTION int2txt(num bigint) RETURNS char(20) DETERMINISTIC
 RETURN CAST(num AS char(20));
+
+DELIMITER $$
+CREATE TRIGGER customerassignments_insert_trigger BEFORE INSERT ON customerassignments
+    FOR EACH ROW
+BEGIN
+    IF NEW.startdate = 0 THEN
+        SET NEW.startdate = UNIX_TIMESTAMP();
+    END IF;
+END $$
+DELIMITER ;
 
 DELIMITER $$
 CREATE TRIGGER cash_customerbalances_insert_trigger AFTER INSERT ON cash

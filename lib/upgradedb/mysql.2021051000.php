@@ -24,7 +24,18 @@
 $this->BeginTrans();
 
 $this->Execute("UPDATE customerassignments SET startdate = 0 WHERE startdate IS NULL");
-$this->Execute("ALTER TABLE customerassignments MODIFY COLUMN startdate int(11) NOT NULL DEFAULT UNIX_TIMESTAMP()");
+$this->Execute("ALTER TABLE customerassignments MODIFY COLUMN startdate int(11) NOT NULL DEFAULT 0");
+
+$this->Execute("DROP TRIGGER IF EXISTS customerassignments_insert_trigger");
+$this->Execute("
+    CREATE TRIGGER customerassignments_insert_trigger BEFORE INSERT ON customerassignments
+        FOR EACH ROW
+    BEGIN
+        IF NEW.startdate = 0 THEN
+            SET NEW.startdate = UNIX_TIMESTAMP();
+        END IF;
+    END
+");
 
 $this->Execute("DROP VIEW customerview");
 $this->Execute("DROP VIEW vcustomerassignments");
