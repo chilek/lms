@@ -89,7 +89,7 @@
 	<TBODY>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/customer.gif" alt=""> {trans("First/last or Company name:")}
+			{icon name="customer" fw=true} {trans("First/last or Company name:")}
 		</TD>
 		<TD>
 			<input type="text" name="search[customername]" value="{$search.customername}">
@@ -102,7 +102,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			{icon name="karma" class="fw-fw"} {trans("Karma:")}
+			{icon name="karma" fw=true} {trans("Karma:")}
 		</TD>
 		<TD>
 			<INPUT type="text" name="search[karma]" VALUE="{$search.karma}"
@@ -111,7 +111,7 @@
 	</TR>
 	<TR>
 		<TD style="width: 1%;" class="bold nobr">
-			<IMG src="img/home.gif" alt=""> {trans("Address:")}
+			{icon name="home" fw=true} {trans("Address:")}
 		</TD>
 		<TD style="width: 99%;" class="nobr">
 			<INPUT type="text" name="search[address]" VALUE="{$search.address}">
@@ -128,7 +128,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/phone.gif" alt=""> {trans("Phone:")}
+			{icon name="phone]" fw=true} {trans("Phone:")}
 		</TD>
 		<TD class="nobr">
 			<INPUT type="tel" name="search[phone]" VALUE="{$search.phone}">
@@ -136,7 +136,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/mail.gif" alt=""> {trans("E-mail:")}
+			{icon name="mail" fw=true} {trans("E-mail:")}
 		</TD>
 		<TD>
 			<INPUT type="email" name="search[email]" VALUE="{$search.email}">
@@ -155,7 +155,7 @@
 
 	<TR>
 		<TD class="nobr bold">
-			{icon name="user-id-number"} {trans("Identity type:")}
+			{icon name="user-id-number" fw=true} {trans("Identity type:")}
 		</TD>
 		<TD>
 			{identitytypes elemname="search[ict]" selected=$search.ict}
@@ -163,7 +163,7 @@
 	</TR>
 	<TR>
 		<TD class="nobr bold">
-			{icon name="user-id-number"} {trans("Identity number:")}
+			{icon name="user-id-number" fw=true} {trans("Identity number:")}
 		</TD>
 		<TD>
 			<INPUT type="text" name="search[icn]" VALUE="{$search.icn}">
@@ -171,7 +171,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/empty.gif" width="16" alt=""> {trans("SSN:")}
+			{icon name="user-id-number" fw=true} {trans("SSN:")}
 		</TD>
 		<TD>
 			<INPUT type="text" name="search[ssn]" VALUE="{$search.ssn}">
@@ -179,7 +179,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/empty.gif" width="16" alt=""> {trans("TEN:")}
+			{icon name="user-id-number" fw=true} {trans("TEN:")}
 		</TD>
 		<TD>
 			<input type="text" name="search[ten]" id="search-ten"
@@ -194,7 +194,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/empty.gif" width="16" alt=""> {trans("REGON:")}
+			{icon name="user-id-number" fw=true} {trans("REGON:")}
 		</TD>
 		<TD>
 			<INPUT type="text" name="search[regon]" VALUE="{$search.regon}">
@@ -202,7 +202,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/report.gif" alt=""> {trans("RBE:")}
+			{icon name="user-id-number" fw=true} {trans("RBE:")}
 		</TD>
 		<TD>
 			<INPUT type="text" name="search[rbe]" VALUE="{$search.rbe}">
@@ -210,7 +210,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/note.gif" alt=""> {trans("Notes:")}
+			{icon name="notes" fw=true} {trans("Notes:")}
 		</TD>
 		<TD>
 			<INPUT type="text" name="search[notes]" VALUE="{$search.notes}">
@@ -218,7 +218,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/info1.gif" alt=""> {trans("Additional information:")}
+			{icon name="optional-info" fw=true} {trans("Additional information:")}
 		</TD>
 		<TD>
 			<INPUT type="text" name="search[info]" VALUE="{$search.info}">
@@ -226,7 +226,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/folder.gif" alt=""> {trans("Legal personality:")}
+			{icon name="legal-personality" fw=true} {trans("Legal personality:")}
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="search[type]">
@@ -238,7 +238,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<i class="lms-ui-icon-legal-personality fa-fw"></i> {trans("Flags:")}
+			{icon name="legal-personality" fw=true} {trans("Flags:")}
 		</TD>
 		<TD>
 			<input type="hidden" name="flags[]" value="0">
@@ -308,7 +308,7 @@
 
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/state.gif" alt=""> {trans("Country state:")}
+			{icon name="location" fw=true} {trans("Country state:")}
 		</TD>
 		<TD>
 			<SELECT name="search[stateid]" {tip text="Select country state"}>
@@ -321,7 +321,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/netdev.gif" alt=""> {trans("Link type:")}
+			{icon name="netdev" fw=true} {trans("Link type:")}
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="search[linktype]" onchange="change_linktype(this.options[this.selectedIndex].value)">
@@ -334,7 +334,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/netdev.gif" alt=""> {trans("Link technology:")}
+			{icon name="netdev" fw=true} {trans("Link technology:")}
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="search[linktechnology]" id="linktechnology">
@@ -349,7 +349,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/netdev.gif" alt=""> {trans("Link speed:")}
+			{icon name="netdev" fw=true} {trans("Link speed:")}
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="search[linkspeed]">
@@ -362,7 +362,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/money.gif" alt=""> {trans("Tariffs:")}
+			{icon name="money" fw=true} {trans("Tariffs:")}
 		</TD>
 		<TD class="multiselect">
 			<SELECT SIZE="1" name="search[tariffs][]" class="lms-ui-multiselect" multiple data-default-value="{trans("- all -")}">
@@ -380,7 +380,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/money.gif" alt=""> {trans("Tariff type:")}
+			{icon name="money" fw=true} {trans("Tariff type:")}
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="search[tarifftype]">
@@ -393,7 +393,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/money.gif" alt=""> {trans("Assignments:")}
+			{icon name="money" fw=true} {trans("Assignments:")}
 		</TD>
 		<TD>
 			<select size="1" id="assignment-selector" name="search[assignments]">
@@ -417,7 +417,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/empty.gif" width="16" alt=""> {trans("Created:")}
+			{icon name="modified-date" fw=true} {trans("Created:")}
 		</TD>
 		<TD>
 			{date_period_preset from="#customersearch [name=\"search[createdfrom]\"]" to="#customersearch [name=\"search[createdto]\"]"}
@@ -427,7 +427,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/empty.gif" width="16" alt=""> {trans("Deleted:")}
+			{icon name="modified-date" fw=true} {trans("Deleted:")}
 		</TD>
 		<TD>
 			{date_period_preset from="#customersearch [name=\"search[deletedfrom]\"]" to="#customersearch [name=\"search[deletedto]\"]"}
@@ -449,7 +449,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/division.gif" width="16" alt=""> {trans("Division")}:
+			{icon name="division" fw=true} {trans("Division")}:
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="d">
@@ -463,7 +463,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/access.gif" width="16" alt=""> {trans("Status:")}
+			{icon name="filter" fw=true} {trans("Status:")}
 		</TD>
 		<TD>
 			<input type="hidden" name="s[]" value="0">
@@ -510,7 +510,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<img src="img/money.gif" alt=""> {trans("Balance:")}
+			{icon name="money" fw=true} {trans("Balance:")}
 		</TD>
 		<TD>
 			<label>
@@ -528,7 +528,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/network.gif" alt=""> {trans("Network:")}
+			{icon name="ipnetwork" fw=true} {trans("Network:")}
 		</TD>
 		<TD>
 			<input type="hidden" name="n" value="all">
@@ -541,7 +541,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/group.gif" alt=""> {trans("Group:")}
+			{icon name=customergroup"" fw=true} {trans("Group:")}
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="g[]" multiple class="lms-ui-multiselect">
@@ -555,7 +555,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/nodegroup.gif" alt=""> {trans("Nodes Group:")}
+			{icon name="nodegroup" fw=true} {trans("Nodes Group:")}
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="ng">
