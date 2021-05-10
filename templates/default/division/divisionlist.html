@@ -57,6 +57,8 @@
 			{button type="link" icon="lock" tip="{if $division.status}{trans("Unlock")}{else}{trans("Lock")}{/if}" href="?m=divisionedit&amp;id={$division.id}&amp;changestatus=1"}
 			{if isset($division.unblock_delete)}
 				{button type="link" icon="delete" tip="Delete" class="delete-division" href="?m=divisiondel&id={$division.id}"}
+			{else}
+				{button type="link" icon="delete" tip="Some users are assigned to this division!" disabled=true}
 			{/if}
 			{button type="link" icon="clone" tip="Clone" class="clone-division" href="?m=divisionclone&id={$division.id}"}
 			{button type="link" icon="edit" tip="Edit" href="?m=divisionedit&id={$division.id}"}

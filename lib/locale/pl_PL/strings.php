@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$_LANG['Some users are assigned to this division!'] = 'Istnieją użytkownicy przypisani do tej firmy!';
+
 $_LANG['current customer group assignments'] = 'bieżące przynależności grupowe klientów';
 $_LANG['customer group assignment full time intersection with selected period'] = 'pełne przecięcie czasowe przynależności grupowych klientów i wybranego okresu';
 $_LANG['customer group assignment partial time intersection with selected period'] = 'częściowe przecięcie czasowe przynależności grupowych klientów i wybranego okresu';
