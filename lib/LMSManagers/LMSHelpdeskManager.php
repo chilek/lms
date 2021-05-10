@@ -539,13 +539,14 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     . ' AND lv2.vdate < t2.modtime
 				GROUP BY m4.ticketid
 			) m3 ON m3.ticketid = t.id
-			LEFT JOIN (
-			    SELECT ticketid, COUNT(*) AS imagecount
-			    FROM rtattachments a
-			    JOIN rtmessages ON rtmessages.id = a.messageid
-			    WHERE a.contenttype ?LIKE? ?
-			    GROUP BY ticketid
-			) ti ON ti.ticketid = t.id
+            LEFT JOIN (
+                SELECT ticketid, COUNT(*) AS imagecount
+                FROM rtattachments a
+                JOIN rtmessages ON rtmessages.id = a.messageid
+                WHERE a.contenttype ?LIKE? ?
+                    AND a.cid IS NULL
+                GROUP BY ticketid
+            ) ti ON ti.ticketid = t.id
 			WHERE 1=1 '
             . ($rights ? ' AND (t.queueid IN (
 					SELECT q.id FROM rtqueues q
