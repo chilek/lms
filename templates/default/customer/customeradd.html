@@ -116,7 +116,7 @@
 				{block name="customeradd-leftcolumn"}
 				<TR>
 					<TD>
-						<img src="img/{if $customeradd.status}{$_CSTATUSES[$customeradd.status].img}{else}{$_CSTATUSES[$smarty.const.CSTATUS_CONNECTED].img}{/if}" alt="">
+						{if $customeradd.status}{icon name="customer-status-{$_CSTATUSES[$customerinfo.status].alias}" fw=true}{else}{icon name="customer-status-connected" fw=true}{/if}
 					</TD>
 					<TD>
 						<SELECT size="1" name="customeradd[status]" {tip text="Select customer state" trigger="status"}>
