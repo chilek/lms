@@ -51,13 +51,17 @@ if (!empty($_POST['division'])) {
         $error['division[location_city_name]'] = trans('City is required!');
     }
 
-    Localisation::setSystemLanguage($LMS->getCountryCodeById($division['location_country_id']));
+    if (!empty($division['location_country_id'])) {
+        Localisation::setSystemLanguage($LMS->getCountryCodeById($division['location_country_id']));
+    }
     if ($division['location_zip'] == '') {
         $error['division[location_zip]'] = trans('Zip code is required!');
     } else if (!check_zip($division['location_zip'])) {
         $error['division[location_zip]'] = trans('Incorrect ZIP code!');
     }
-    Localisation::resetSystemLanguage();
+    if (!empty($division['location_country_id'])) {
+        Localisation::resetSystemLanguage();
+    }
 
     if ($division['ten'] != '' && !check_ten($division['ten']) && !isset($division['tenwarning'])) {
         $error['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
