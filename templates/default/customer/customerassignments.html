@@ -42,12 +42,12 @@
 				</select>
 			</label>
 			<label class="expired-filter">
-				{trans("<!assignment>Expired")}
 				<input type="checkbox" class="expired" value="1"{if $expired} checked{/if}>
+				{trans("<!assignment>Expired")}
 			</label>
 			<label class="commited-filter">
-				{trans("<!assignment>Commited")}
 				<input type="checkbox" class="commited" value="1"{if $commited} checked{/if}>
+				{trans("<!assignment>Commited")}
 			</label>
 			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 			<label>
