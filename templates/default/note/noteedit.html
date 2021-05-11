@@ -25,7 +25,7 @@
 	});
 
 </script>
-<FORM NAME="setcustomer" METHOD="POST" ACTION="?m=noteedit&action=setcustomer">
+<form name="setcustomer" id="setcustomer" method="POST" action="?m=noteedit&action=setcustomer">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="HIDDEN" name="note[number]" value="{$note.number}">
 <INPUT type="HIDDEN" name="note[numberplanid]" value="{$note.numberplanid}">
@@ -109,7 +109,7 @@
 	</TR>
     </TBODY>
 </TABLE>
-</FORM>
+</form>
 {if $customer}
 <P>
 <TABLE class="lmsbox">
@@ -244,19 +244,20 @@
 	</FORM>
     </TFOOT>
 </TABLE>
-<SCRIPT>
-$(function() {
-	$('form[name="setcustomer"] [name="note[number]"]').focus();
-});
+<script>
 
-$('.customer-alert').click(function() {
-	alertDialog($t("Customer not selected!"), this);
-	return;
-});
-$('.document-alert').click(function() {
-	alertDialog($t("Document has no items!"), this);
-	return;
-});
+	$(function() {
+		$('[name="note[number]"]').focus();
+	});
 
-</SCRIPT>
+	$('.customer-alert').click(function() {
+		alertDialog($t("Customer not selected!"), this);
+		return;
+	});
+	$('.document-alert').click(function() {
+		alertDialog($t("Document has no items!"), this);
+		return;
+	});
+
+</script>
 {/block}

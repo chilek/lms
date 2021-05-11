@@ -40,7 +40,7 @@
 
 {include file="google-maps.html"}
 
-<FORM NAME="nodeadd" ID="nodeadd" METHOD="POST" ACTION="?m=nodeadd{if $customerinfo.id}&ownerid={$customerinfo.id}{/if}">
+<form name="nodeadd" id="nodeadd" method="POST" action="?m=nodeadd{if $customerinfo.id}&ownerid={$customerinfo.id}{/if}">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
     <THEAD>
@@ -394,12 +394,12 @@
 	</TR>
     </TBODY>
 </TABLE>
-</FORM>
+</>
 
 <script>
 
 	$(function() {
-		$('form[name="nodeadd"] [name="nodedata[name]"]').focus();
+		$('[name="nodedata[name]"]').focus();
 
 		$('#project').change(function() {
 			if ($(this).val() == -1) {

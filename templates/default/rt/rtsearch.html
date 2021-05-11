@@ -4,7 +4,7 @@
 <!-- $Id$ -->
 {$xajax}
 <H1>{$layout.pagetitle}</H1>
-<FORM method="POST" name="search" action="?m=rtsearch">
+<form method="POST" name="search" id="search" action="?m=rtsearch">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
 	<COLGROUP>
@@ -240,12 +240,13 @@
 	</TR>
     </TBODY>
 </TABLE>
-</FORM>
-<SCRIPT type="text/javascript">
-<!--
+</form>
+
+<script>
+
 	$(function() {
-		$('form[name="search"] [name="search[subject]"]').focus();
+		$('[name="search[subject]"]').focus();
 	});
-//-->
-</SCRIPT>
+
+</script>
 {/block}

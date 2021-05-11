@@ -3,7 +3,7 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<FORM method="post" action="?m=netadd" name="netadd">
+<FORM method="post" action="?m=netadd" name="netadd" id="netadd">
 <p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
 </p>
@@ -165,11 +165,11 @@
 	</TBODY>
 </TABLE>
 </FORM>
-<SCRIPT type="text/javascript">
-<!--
-$(function() {
-	$('form[name="netadd"] [name="netadd[name]"]').focus();
-});
-//-->
-</SCRIPT>
+<script>
+
+	$(function() {
+		$('[name="netadd[name]"]').focus();
+	});
+
+</script>
 {/block}

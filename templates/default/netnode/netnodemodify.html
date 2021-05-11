@@ -19,7 +19,7 @@
 
 <script type="text/javascript" src="js/location_box.js"></script>
 
-<FORM NAME="netnode" METHOD="POST" ACTION="?m={$layout.module}">
+<form name="netnode" id="netnode-form" method="POST" action="?m={$layout.module}">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" name="id" value="{$netnode.id}">
 
@@ -82,11 +82,11 @@
 
 			{box_row id="customer" icon="img/customer.gif" label="Owner:"}
 				{if isset($nodenode.id)}
-					{customerlist form="netnode" customers=$customers selected=$customer.id version=2
+					{customerlist form="netnode-form" customers=$customers selected=$customer.id version=2
 						selectname="customer" inputname="netnode[ownerid]" select_id="ownerid_select"
 						input_id="ownerid_input" customOnChange="customerChanged()"}
 				{else}
-					{customerlist form="netnode" customers=$customers selected=$netnode.ownerid version=2
+					{customerlist form="netnode-form" customers=$customers selected=$netnode.ownerid version=2
 						selectname="customer" inputname="netnode[ownerid]" select_id="ownerid_select"
 						input_id="ownerid_input" customOnChange="customerChanged()"}
 				{/if}

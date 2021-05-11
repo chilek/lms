@@ -20,7 +20,7 @@
 		<COL style="width: 2%;">
 		<COL style="width: 48%;">
 	</COLGROUP>
-	{if $unlockedit}<FORM method="post" action="?m=netedit&amp;id={$network.id}" name="netedit"><INPUT type="submit" class="hiddenbtn">{/if}
+	{if $unlockedit}<FORM method="post" action="?m=netedit&id={$network.id}" name="netedit" id="netedit"><INPUT type="submit" class="hiddenbtn">{/if}
 	<THEAD>
 	<TR>
 		{if !$unlockedit}

@@ -37,7 +37,8 @@
 	}
 </SCRIPT>
 {$default_printpage = ConfigHelper::getConfig('receipts.default_printpage')}
-<FORM NAME="setcustomer" METHOD="POST" ACTION="?m=receiptadd{if $receipt.type}&type={$receipt.type}{/if}&amp;action={if $receipt.regid && !$error.regid}setcustomer{else}setreg{/if}">
+<form name="setcustomer" id="setcustomer" method="POST"
+	action="?m=receiptadd{if $receipt.type}&type={$receipt.type}{/if}&action={if $receipt.regid && !$error.regid}setcustomer{else}setreg{/if}">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" name="receipt[type]" value="{$receipt.type}">
 <INPUT type="hidden" name="receipt[numberplanid]" value="{$receipt.numberplanid}">
@@ -187,7 +188,7 @@
 	</TR>
     </TBODY>
 </TABLE>
-</FORM>
+</form>
 {if $error.nocash}<h2 align="center"><span class="lms-ui-error">{$error.nocash}</span></h2>{/if}
 {if $receipt.selected && $customer}
 <P>

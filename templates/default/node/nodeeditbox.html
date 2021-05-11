@@ -51,7 +51,7 @@
 </style>
 
 {include file="google-maps.html"}
-<FORM name="editnode" ID="editnode" METHOD="POST" ACTION="?m=nodeedit&amp;id={$nodeinfo.id}">
+<form name="editnode" id="editnode" method="POST" action="?m=nodeedit&id={$nodeinfo.id}">
 <input type="submit" class="hiddenbtn">
 <input type="hidden" name="nodeedit[id]" value="{$nodeinfo.id}">
 
@@ -482,7 +482,7 @@
 <script>
 
 	$(function() {
-		$('form[name="editnode"] [name="nodeedit[name]"]').focus();
+		$('[name="nodeedit[name]"]').focus();
 
 		$('#project').change(function() {
 			if ($(this).val() == -1) {

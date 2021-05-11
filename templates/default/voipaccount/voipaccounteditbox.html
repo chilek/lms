@@ -38,7 +38,7 @@
     }
 </style>
 
-<form name="editvoipaccount" method="post" action="?m=voipaccountedit&id={$voipaccountinfo.id}">
+<form name="editvoipaccount" id="editvoipaccount" method="post" action="?m=voipaccountedit&id={$voipaccountinfo.id}">
     <input type="submit" class="hiddenbtn">
     <input type="hidden" name="voipaccountedit[id]" value="{$voipaccountinfo.id}">
     <table class="lmsbox">
@@ -306,8 +306,8 @@
         {/if}
     }
 
-    $( function() {
-        $('form[name="editvoipaccount"] [name="voipaccountedit[login]"]').focus();
+    $(function() {
+        $('[name="voipaccountedit[login]"]').focus();
 
         $i = {if !isset($phone_next_index)}0{else}{$phone_next_index}{/if};
 

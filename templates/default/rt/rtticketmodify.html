@@ -46,7 +46,7 @@
 			{box_row icon="customer" label="Customer:" icon_class="fa-fw"}
 				{$customer_selector='[name=&quot;ticket[custid]&quot;]'}
 				{$address_selector='[name=&quot;ticket[address_id]&quot;]'}
-				{customerlist form="ticket" customers=$customerlist selected=$customerid version=2
+				{customerlist form="ticket-form" customers=$customerlist selected=$customerid version=2
 					selectname="ticket[customerid]" inputname="ticket[custid]"
 					selecttip="Select customer from list or enter his data if is not a customer"
 					customOnChange="change_customer('{$customer_selector}', '{$address_selector}');"}
@@ -280,7 +280,7 @@
 			{/box_row}
 
 			{box_row icon="netdev" label="Device:" field_id="rtnetdevs" icon_class="fa-fw"}
-				{include file="rt/rtnetdevs.html" form="ticket"}
+				{include file="rt/rtnetdevs.html" form="ticket-form"}
 			{/box_row}
 
 			{box_row id="customernotify-row" icon="img/mail.gif" label="Notify customer:" labelid="customernotify"}
