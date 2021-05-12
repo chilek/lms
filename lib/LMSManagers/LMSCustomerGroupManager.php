@@ -249,7 +249,7 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
     public function CustomergroupGetForCustomer($id)
     {
         return $this->db->GetAll(
-            'SELECT customergroups.id AS id, name, description
+            'SELECT customergroups.id AS id, name, description, startdate, enddate
             FROM customergroups, vcustomerassignments
             WHERE customergroups.id=customergroupid AND customerid=?
             ORDER BY name ASC',
