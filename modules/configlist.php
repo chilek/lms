@@ -246,4 +246,8 @@ $SMARTY->assign('divisions', $LMS->GetDivisions());
 $SMARTY->assign('pagelimit', $pagelimit);
 $SMARTY->assign('configlist', $configlist);
 $SMARTY->assign('section', isset($_GET['s']) ? $_GET['s'] : '');
+$SMARTY->assign('division', isset($_GET['d']) ? $_GET['d'] : '');
+$SMARTY->assign('user', isset($_GET['u']) ? $_GET['u'] : '');
+$SMARTY->assign('scope', isset($_GET['sc']) ? $_GET['sc'] : '');
+$SMARTY->assign('name', isset($_GET['v']) ? $_GET['v'] : '');
 $SMARTY->display('config/configlist.html');
