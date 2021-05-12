@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$_LANG['complaint'] = 'reklamacja';
+
 $_LANG['Some users are assigned to this division!'] = 'Istnieją użytkownicy przypisani do tej firmy!';
 
 $_LANG['current customer group assignments'] = 'bieżące przynależności grupowe klientów';

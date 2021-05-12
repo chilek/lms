@@ -617,6 +617,7 @@ define('DOC_WARRANTY', -13);
 define('DOC_REGULATIONS', -14);
 define('DOC_CONF_FILE', -15);
 define('DOC_OFFER', -16);
+define('DOC_COMPLAINT', -17);
 define('DOC_OTHER', -128);
 
 
@@ -644,7 +645,8 @@ $DOCTYPES = array(
     DOC_WARRANTY       =>  trans('warranty'), // gwarancja
     DOC_REGULATIONS       =>  trans('regulations'), // regulamin
     DOC_CONF_FILE   =>  trans('configuration file'),
-    DOC_OTHER       =>  trans('other')
+    DOC_COMPLAINT   =>  trans('complaint'),
+    DOC_OTHER       =>  trans('other'),
 );
 
 define('DOC_FLAG_RECEIPT', 1);
