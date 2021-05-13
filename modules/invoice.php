@@ -394,11 +394,13 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
         }
 
         $divisionid = intval($_GET['divisionid']);
-        $division = $DB->GetRow("SELECT d.name, shortname, d.email, va.address, va.city,
+        $division = $DB->GetRow("SELECT d.name, shortname, d.email, d.naturalperson,
+                va.address, va.city,
 				va.zip, va.countryid, ten, regon,
 				account, inv_header, inv_footer, inv_author, inv_cplace, va.location_city,
 				va.location_street, tax_office_code,
-				lb.name AS borough, ld.name AS district, ls.name AS state FROM divisions d
+				lb.name AS borough, ld.name AS district, ls.name AS state
+                FROM vdivisions d
 				JOIN vaddresses va ON va.id = d.address_id
 				LEFT JOIN location_cities lc ON lc.id = va.location_city
 				LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
@@ -502,11 +504,25 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 $jpk_data .= "\t</Podmiot1>\n";
             } else {
                 $jpk_data .= "\t<Podmiot1 rola=\"Podatnik\">\n";
-                $jpk_data .= "\t\t<OsobaNiefizyczna>\n";
+                if (empty($division['naturalperson'])) {
+                    $jpk_data .= "\t\t<OsobaNiefizyczna>\n";
+                } else {
+                    $jpk_data .= "\t\t<OsobaFizyczna>\n";
+                }
                 $jpk_data .= "\t\t\t<NIP>" . preg_replace('/[\s\-]/', '', $division['ten']) . "</NIP>\n";
-                $jpk_data .= "\t\t\t<PelnaNazwa>" . htmlspecialchars($division['name']) . "</PelnaNazwa>\n";
+                if (empty($division['naturalperson'])) {
+                    $jpk_data .= "\t\t\t<PelnaNazwa>" . htmlspecialchars($division['name']) . "</PelnaNazwa>\n";
+                } else {
+                    $jpk_data .= "\t\t\t<ImiePierwsze>" . htmlspecialchars($division['firstname']) . "</ImiePierwsze>\n";
+                    $jpk_data .= "\t\t\t<Nazwisko>" . htmlspecialchars($division['lastname']) . "</Nazwisko>\n";
+
+                }
                 $jpk_data .= "\t\t\t<Email>" . $division['email'] . "</Email>\n";
-                $jpk_data .= "\t\t</OsobaNiefizyczna>\n";
+                if (empty($division['naturalperson'])) {
+                    $jpk_data .= "\t\t</OsobaNiefizyczna>\n";
+                } else {
+                    $jpk_data .= "\t\t</OsobaFizyczna>\n";
+                }
                 $jpk_data .= "\t</Podmiot1>\n";
                 $jpk_data .= "\t<Ewidencja>\n";
             }
