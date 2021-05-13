@@ -162,7 +162,7 @@
 				{button type="link" icon="connected" tip="Disable" href="?m=configedit&id={$config.id}&statuschange=1"}
 			{/if}
 			{icon name="url" class="lms-ui-button-clipboard lms-ui-static" tip="Copy link"
-				data_clipboard_text="{$url}?m=configedit&s={$config.section}&v={$config.var}&u={$config.userid}&d={$config.divisionid}"}
+				data_clipboard_text="{$url}?m=configedit&s={$config.section}&v={$config.var}{if $config.userid}&u={$config.userid}{/if}{if $config.divisionid}&d={$config.divisionid}{/if}"}
 			{if empty($config.configid)}
 				{button type="link" icon="clone" tip="Clone" href="?m=configadd&id={$config.id}"}
 			{/if}

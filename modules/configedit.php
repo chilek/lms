@@ -60,13 +60,19 @@ $SMARTY->assign('backurl', $backurl);
 $SESSION->save('backto', $backurl);
 $SESSION->save('backto', $backurl, true);
 
-if (isset($_GET['s']) && isset($_GET['v']) && isset($_GET['u']) && isset($_GET['d'])) {
+if (isset($_GET['s']) && isset($_GET['v'])) {
     $params = array(
         'section' => $_GET['s'],
         'variable' => $_GET['v'],
         'userid' => $_GET['u'],
         'divisionid' => $_GET['d'],
     );
+    if (isset($_GET['u'])) {
+        $params['userid'] = $_GET['u'];
+    }
+    if (isset($_GET['d'])) {
+        $params['divisionid'] = $_GET['d'];
+    }
 } else {
     $params['id'] = $_GET['id'];
 }
