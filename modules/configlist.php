@@ -188,7 +188,7 @@ function GetConfigList()
 
     $config = $DB->GetAll(
         'SELECT c.id, c.section, c.var, c.value, c.description as usercomment, c.disabled, c.userid, c.divisionid, c.configid,
-        u.login, u.rname, d.shortname
+        u.login, u.name AS username, u.rname AS rusername, d.shortname
         FROM uiconfig c
         LEFT JOIN vallusers u on c.userid = u.id
         LEFT JOIN divisions d on c.divisionid = d.id
