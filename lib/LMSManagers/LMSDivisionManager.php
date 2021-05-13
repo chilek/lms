@@ -45,8 +45,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
     public function GetDivision($id)
     {
         return $this->db->GetRow(
-            'SELECT *,
-                (CASE WHEN firstname IS NOT NULL AND lastname IS NOT NULL THEN 1 ELSE 0 END) AS naturalperson
+            'SELECT *
             FROM vdivisions
             WHERE id = ?',
             array($id)
@@ -117,8 +116,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
         return $this->db->GetAll(
             'SELECT d.id, d.name, d.shortname, (CASE WHEN d.label IS NULL THEN d.shortname ELSE d.label END) AS label,
                 d.status, (SELECT COUNT(*) FROM customers WHERE divisionid = d.id) AS cnt,
-                d.firstname, d.lastname,
-                (CASE WHEN firstname IS NOT NULL AND lastname IS NOT NULL THEN 1 ELSE 0 END) AS naturalperson
+                d.firstname, d.lastname, d.naturalperson
             FROM divisions d
             WHERE 1 = 1'
             . ((isset($superuser) && empty($superuser)) || !isset($superuser) ? ' AND id IN (' . $user_divisions . ')' : '')

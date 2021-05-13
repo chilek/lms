@@ -42,7 +42,6 @@ if (!empty($_GET['changestatus'])) {
 }
 
 $olddiv = $DB->GetRow('SELECT d.*,
-        (CASE WHEN firstname IS NOT NULL AND lastname IS NOT NULL THEN 1 ELSE 0 END) AS naturalperson,
 		addr.name as location_name,
 		addr.city as location_city_name, addr.street as location_street_name,
 		addr.city_id as location_city, addr.street_id as location_street,
@@ -50,7 +49,7 @@ $olddiv = $DB->GetRow('SELECT d.*,
 		addr.zip as location_zip, addr.state as location_state_name,
 		addr.state_id as location_state, addr.country_id as location_country_id,
 		addr.postoffice AS location_postoffice
-	FROM divisions d
+	FROM vdivisions d
 		LEFT JOIN addresses addr           ON addr.id = d.address_id
 		LEFT JOIN location_cities lc       ON lc.id = addr.city_id
 		LEFT JOIN location_streets ls      ON ls.id = addr.street_id

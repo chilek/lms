@@ -29,7 +29,8 @@ $this->Execute("
     ALTER TABLE divisions ADD COLUMN lastname varchar(128) DEFAULT NULL;
     CREATE VIEW vdivisions AS
         SELECT d.*,
-            a.country_id as countryid, a.ccode, a.zip as zip, a.city as city, a.address
+            a.country_id as countryid, a.ccode, a.zip as zip, a.city as city, a.address,
+            (CASE WHEN d.firstname IS NOT NULL AND d.lastname IS NOT NULL THEN 1 ELSE 0 END) AS naturalperson
         FROM divisions d
             JOIN vaddresses a ON a.id = d.address_id
 ");
