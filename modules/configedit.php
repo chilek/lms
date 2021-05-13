@@ -60,10 +60,12 @@ $SMARTY->assign('backurl', $backurl);
 $SESSION->save('backto', $backurl);
 $SESSION->save('backto', $backurl, true);
 
-if (isset($_GET['s']) && isset($_GET['v'])) {
+if (isset($_GET['s']) && isset($_GET['v']) && isset($_GET['u']) && isset($_GET['d'])) {
     $params = array(
         'section' => $_GET['s'],
         'variable' => $_GET['v'],
+        'userid' => $_GET['u'],
+        'divisionid' => $_GET['d'],
     );
 } else {
     $params['id'] = $_GET['id'];
@@ -85,6 +87,7 @@ $config['type'] = ($config['type'] == CONFIG_TYPE_AUTO) ? $LMS->GetConfigDefault
 $reftype = null;
 $refconfigid = null;
 $divisioninfo = null;
+$userinfo = null;
 if (!empty($config['configid'])) {
     if (!empty($config['divisionid']) && empty($config['userid'])) {
         $reftype = 'division';
@@ -96,9 +99,11 @@ if (!empty($config['configid'])) {
         $parentOption = $LMS->getParentOption($config['id']);
         $divisionid = $parentOption['divisionid'];
         $divisioninfo = $LMS->GetDivision($divisionid);
+        $userinfo = $LMS->GetUserInfo($config['userid']);
     } elseif (empty($config['divisionid']) && !empty($config['userid'])) {
         $reftype = 'user';
         $refconfigid = $config['configid'];
+        $userinfo = $LMS->GetUserInfo($config['userid']);
     }
 }
 
@@ -250,6 +255,7 @@ $config['documentation'] = Utils::MarkdownToHtml(Utils::LoadMarkdownDocumentatio
 $SMARTY->assign('reftype', $reftype);
 $SMARTY->assign('refconfigid', $refconfigid);
 $SMARTY->assign('divisioninfo', $divisioninfo);
+$SMARTY->assign('userinfo', $userinfo);
 $SMARTY->assign('sections', $LMS->GetConfigSections());
 $SMARTY->assign('error', $error);
 $SMARTY->assign('config', $config);
