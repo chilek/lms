@@ -990,6 +990,23 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     GROUP BY a.customerid, d.id
                     HAVING MIN(a.datefrom) > ?NOW?';
                 break;
+            case -7:
+                $assignment = 'SELECT DISTINCT(a.customerid)
+                    FROM assignments a
+                    WHERE a.suspended = 0 AND a.commited = 1
+                        AND (a.dateto = 0 OR a.dateto > ?NOW?) AND ((a.at + 86400) > ?NOW? OR a.period <> 0)
+                        AND NOT EXISTS (SELECT 1 FROM nodeassignments WHERE assignmentid = a.id)';
+                break;
+            case -8:
+                $assignment = 'SELECT DISTINCT(a.customerid)
+                    FROM assignments a
+                    LEFT JOIN documents d ON d.id = a.docid
+                    WHERE a.suspended = 0 AND a.commited = 1
+                        AND (a.dateto = 0 OR a.dateto > ?NOW?) AND a.period <> 0
+                        AND NOT EXISTS (SELECT 1 FROM nodeassignments WHERE assignmentid = a.id)
+                    GROUP BY a.customerid, d.id
+                    HAVING MIN(a.datefrom) > ?NOW?';
+                break;
             default:
                 if ($as > 0) {
                     $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE

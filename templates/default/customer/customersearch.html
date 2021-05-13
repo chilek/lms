@@ -406,10 +406,12 @@
 				<option value="-100">{trans('expire in indicated number of days')}</option>
 				<option value="-1">{trans('without end date')}</option>
 				<option value="-2">{trans('active')}</option>
+				<option value="-7">{trans('active, without nodes')}</option>
 				<option value="-3">{trans('active, with invoice')}</option>
 				<option value="-5">{trans('active, with pro forma')}</option>
 				<option value="-4">{trans('suspended')}</option>
 				<option value="-6">{trans('waiting')}</option>
+				<option value="-8">{trans('waiting, without nodes')}</option>
 			</select>
 			<input type="text" id="assignment-days" name="search[assignments]" value="" disabled required
 				size="5" placeholder="{trans("days")}" style="display: none;" pattern="[0-9]+">
