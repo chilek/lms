@@ -394,7 +394,8 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
         }
 
         $divisionid = intval($_GET['divisionid']);
-        $division = $DB->GetRow("SELECT d.name, shortname, d.email, d.naturalperson,
+        $division = $DB->GetRow("SELECT d.name, shortname, d.email,
+                d.firstname, d.lastname, d.naturalperson,
                 va.address, va.city,
 				va.zip, va.countryid, ten, regon,
 				account, inv_header, inv_footer, inv_author, inv_cplace, va.location_city,
