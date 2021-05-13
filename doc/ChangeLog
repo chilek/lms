@@ -151,6 +151,8 @@ version 27-git (????-??-??):
   - improvement: 'payments.reward_penalty_deadline_grace_days' allows to be more polite for customers while
     checking if they apply to reward/penalty for on-time payments (default: 0) [chilan]
   - enhancement: uke income report can take customer group assignment history into account [chilan]
+  - enhancement: 'phpui.promotion_activation_at_same_day' allows to force the same day of activation
+    payment ('false' by default) [chilan]
 
 version 26.0 (2020-12-15):
 
