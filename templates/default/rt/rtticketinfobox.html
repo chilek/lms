@@ -87,7 +87,7 @@
 							{if $ticket.requestor_userid || $ticket.requestor_name || $ticket.requestor_mail || $ticket.requestor_phone}
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
-									<i class="lms-ui-icon-content lms-ui-icon-requestor"></i>{trans("Requestor:")}
+									{icon name="requestor" label="Requestor:"}
 								</TD>
 								<TD style="width: 99%;" class="nobr">
 									{if $ticket.requestor_userid}

@@ -91,7 +91,7 @@
 						</TD>
 						{foreach $_RT_RIGHTS as $rightvalue => $label}
 						<TD class="text-center">
-							{if ($right.rights & $rightvalue) == $rightvalue}<IMG src="img/pass.gif" alt="">{/if}
+							{if ($right.rights & $rightvalue) == $rightvalue}{icon name="permissions"}{/if}
 						</TD>
 						{/foreach}
 					</TR>
@@ -130,7 +130,7 @@
 	{if $queue.newticketbody}
 	<TR>
 		<TD>
-			<IMG src="img/edit.gif" ALT="">
+			{icon name="edit"}
 		</TD>
 		<TD class="bold nobr">{trans("New ticket customer notification body")}</TD>
 		<TD>
@@ -158,7 +158,7 @@
 	{if $queue.newmessagebody}
 	<TR>
 		<TD>
-			<IMG src="img/edit.gif" ALT="">
+			{icon name="edit"}
 		</TD>
 		<TD class="bold nobr">{trans("New message customer notification body")}</TD>
 		<TD>
@@ -186,7 +186,7 @@
 	{if $queue.resolveticketbody}
 	<TR>
 		<TD>
-			<IMG src="img/edit.gif" ALT="">
+			{icon name="edit"}
 		</TD>
 		<TD class="bold nobr">{trans("Resolve ticket customer notification body:")}</TD>
 		<TD>
@@ -203,7 +203,7 @@
 	{if $queue.verifierticketsubject}
 	<TR>
 		<TD>
-			<IMG src="img/edit.gif" ALT="">
+			{icon name="edit"}
 		</TD>
 		<TD class="bold nobr">{trans("Ticket verifier notification subject:")}</TD>
 		<TD>
@@ -220,7 +220,7 @@
 	{if $queue.verifierticketbody}
 	<TR>
 		<TD>
-			<IMG src="img/edit.gif" ALT="">
+			{icon name="edit"}
 		</TD>
 		<TD class="bold nobr">{trans("Ticket verifier notification body:")}</TD>
 		<TD>
@@ -236,13 +236,13 @@
 	{/if}
 	<TR>
 	    <TD COLSPAN="3" class="text-right">
-	        <A HREF="?m=rtqueueview&id={$queue.id}"><IMG src="img/view.gif" alt=""> {trans("Browse")}</A>
-	    	<A HREF="?m=rtqueueedit&id={$queue.id}"><IMG src="img/save.gif" alt=""> {trans("Edit")}</A>
+		{button icon="view" href="?m=rtqueueview&id={$queue.id}" label="Browse"}
+		{button icon="save" href="?m=rtqueueedit&id={$queue.id}" label="Edit"}
 		{if $queue.deleted == 1 && $queue.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
-			<A id="restore-rtqueue" HREF="?m=rtrestore&id={$queue.id}&qaction=restore" data-name="{$queue.name}"><IMG src="img/reload.gif" alt="{trans("Restore<!RT>")}" title="{trans("Restore<!RT>")}"> {trans("Restore<!RT>")}</A>
-			<A id="remove-rtqueue" HREF="?m=rtremove&id={$queue.id}&qaction=delperm" data-name="{$queue.name}"><IMG src="img/delete.gif" alt="{trans("Delete permanently")}" title="{trans("Delete permanently")}"> {trans("Delete permanently")}</A>
+			{button id="restore-rtqueue" href="?m=rtrestore&id={$queue.id}&qaction=restore" data_name="{$queue.name}" icon="restore" label="Restore<!RT>"}
+			{button id="remove-rtqueue" href="?m=rtremove&id={$queue.id}&qaction=delperm" data_name="{$queue.name}" icon="delete" label="Delete permanently"}
 		{else}
-			<A id="delete-rtqueue" HREF="?m=rtqueuedel&id={$queue.id}&qaction=delete" data-name="{$queue.name}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"> {trans("Delete")}</A>
+			{button id="delete-rtqueue" href="?m=rtqueuedel&id={$queue.id}&qaction=delete" data_name="{$queue.name}" icon="delete" label="Delete"}
 		{/if}
 	    </TD>
 	</TR>

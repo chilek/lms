@@ -9,7 +9,7 @@
     <THEAD>
 	<TR>
 		<TD width="1%">
-			<IMG src="img/ticket.gif" alt="">
+			{icon name="helpdesk"}
 		</TD>
 		<TD width="99%">
 			<B>{trans("List of Requests")}</B>
@@ -20,9 +20,9 @@
 	<TR>
 		<TD width="100%" colspan="2">
 			<TABLE width="100%">
-                                <TR>
-                                        <TD style="width: 1%;">
-						<IMG src="img/calendar.gif" alt="">
+				<TR>
+					<TD style="width: 1%;">
+						{icon name="timetable"}
 					</TD>
 					<TD width="1%" nowrap>
 						<span class="bold">{trans("Period:")} </span>
@@ -40,7 +40,7 @@
 				</TR>
 				<TR>
 					<TD class="bold nobr">
-						<IMG src="img/home.gif" alt="">
+						{icon name="home"}
 					</TD>
 					<TD class="bold nobr">
 						{trans("Address:")}
@@ -53,7 +53,7 @@
 				</TR>
 				<TR>
 					<TD width="1%">
-						<IMG src="img/queue.gif" alt="">
+						{icon name="queue"}
 					</TD>
 					<TD width="1%" nowrap>
 						<B>{trans("Queue:")}</B>
@@ -67,7 +67,7 @@
 						</SELECT>
 					</TD>
 					<TD style="width: 1%;">
-						<IMG src="img/customer.gif" alt="">
+						{icon name="customer"}
 					</TD>
 					<TD style="width: 1%;" class="bold nobr">
 						{trans("Customer:")}
@@ -79,7 +79,7 @@
 							inputtip="Enter customer ID or leave empty for all customers"}
 					</TD>
 					<TD width="1%" nowrap>
-						<IMG src="img/ticket.gif" alt="">
+						{icon name="subject"}
 					</TD>
 					<TD width="1%" nowrap>
 						<B>{trans("Subject:")}</B>
@@ -90,7 +90,7 @@
 				</TR>
 				<TR>
 					<TD width="1%">
-						<IMG src="img/dead.gif" alt="">
+						{icon name="status"}
 					</TD>
 					<TD width="1%">
 						<B>{trans("Status:")}</B>
@@ -105,7 +105,7 @@
 						</SELECT>
 					</TD>
 					<TD width="1%">
-						<IMG src="img/time.gif" alt="">
+						{icon name="uptime"}
 					</TD>
 					<TD width="1%">
 						<B>{trans("Uptime:")}</B>
@@ -119,7 +119,7 @@
 				{if ConfigHelper::checkPrivilege('helpdesk_advanced_operations')}
 				<TR>
 					<TD style="width: 1%;">
-						<IMG src="img/dead.gif" alt="">
+						{icon name="delete"}
 					</TD>
 					<TD style="width: 1%;">
 						<B>{trans("Removed:")}</B>
@@ -158,7 +158,7 @@
 			<INPUT TYPE="checkbox" NAME="extended" VALUE="1" id="extended"><label for="extended">{trans("extended format")}</label>&nbsp;
 			<INPUT TYPE="checkbox" NAME="contacts" VALUE="1" id="contacts" CHECKED><label for="contacts">{trans("include contact info")}</label>
 			&nbsp; &nbsp; &nbsp;
-			<A href="javascript:document.ticketslist.submit();"><IMG src="img/print.gif" alt="" hspace="2"> {trans("Print")}</A>
+			{button href="javascript:document.ticketslist.submit();" icon="print" label="Print"}
 		</TD>
 	</TR>
     </TBODY>
@@ -170,7 +170,7 @@
     <THEAD>
 	<TR>
 		<TD width="1%">
-			<IMG src="img/ticket.gif" alt="">
+			{icon name="helpdesk"}
 		</TD>
 		<TD width="99%">
 			<B>{trans("Requests Stats")}</B>
@@ -181,9 +181,9 @@
 	<TR>
 		<TD width="100%" colspan="2">
 			<TABLE width="100%">
-                                <TR>
-                                        <TD style="width: 1%;">
-						<IMG src="img/calendar.gif" alt="">
+				<TR>
+					<TD style="width: 1%;">
+						{icon name="timetable"}
 					</TD>
 					<TD width="1%" nowrap>
 						<span class="bold">{trans("Period:")} </span>
@@ -201,7 +201,7 @@
 				</TR>
 				<TR>
 					<TD width="1%">
-						<IMG src="img/queue.gif" alt="">
+						{icon name="queue"}
 					</TD>
 					<TD width="1%" nowrap>
 						<B>{trans("Queue:")}</B>
@@ -215,7 +215,7 @@
 						</SELECT>
 					</TD>
 					<TD width="1%">
-						<IMG src="img/customer.gif" alt="">
+						{icon name="customer"}
 					</TD>
 					<TD width="96%" nowrap>
 						<B>{t a="<INPUT TYPE=\"text\" NAME=\"times\" SIZE=\"3\">" b="<INPUT TYPE=\"text\" NAME=\"days\" SIZE=\"3\">"}Customers requesting more than $a times in last $b days{/t}</B>
@@ -224,7 +224,7 @@
 				{if ConfigHelper::checkPrivilege('helpdesk_advanced_operations')}
 				<TR>
 					<TD style="width: 1%;">
-						<IMG src="img/dead.gif" alt="">
+						{icon name="delete"}
 					</TD>
 					<TD style="width: 1%;">
 						<B>{trans("Removed:")}</B>
@@ -257,7 +257,7 @@
 	</TR>
 	<TR>
 		<TD width="100%" colspan="2" align="right">
-			<A href="javascript:document.stats.submit();"><IMG src="img/print.gif" alt="" hspace="2"> {trans("Print")}</A>
+			{button href="javascript:document.stats.submit();" icon="print" label="Print"}
 		</TD>
 	</TR>
     </TBODY>
