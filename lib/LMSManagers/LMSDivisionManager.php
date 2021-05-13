@@ -117,7 +117,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
             'SELECT d.id, d.name, d.shortname, (CASE WHEN d.label IS NULL THEN d.shortname ELSE d.label END) AS label,
                 d.status, (SELECT COUNT(*) FROM customers WHERE divisionid = d.id) AS cnt,
                 d.firstname, d.lastname, d.naturalperson
-            FROM divisions d
+            FROM vdivisions d
             WHERE 1 = 1'
             . ((isset($superuser) && empty($superuser)) || !isset($superuser) ? ' AND id IN (' . $user_divisions . ')' : '')
             . (isset($exludedDivisions) && !empty($exludedDivisions) ? ' AND id NOT IN (' . $exludedDivisions . ')' : '') .
