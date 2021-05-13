@@ -153,6 +153,8 @@ version 27-git (????-??-??):
   - enhancement: uke income report can take customer group assignment history into account [chilan]
   - enhancement: 'phpui.promotion_activation_at_same_day' allows to force the same day of activation
     payment ('false' by default) [chilan]
+  - improvement: new 'active, without nodes' and 'waiting, without nodes' assignment filter selection
+    in customer search form [chilan]
 
 version 26.0 (2020-12-15):
 
