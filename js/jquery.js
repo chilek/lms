@@ -454,7 +454,7 @@ function init_datatables(selector) {
 					.search(this.value.length ? this.value : '', true).draw();
 			});
 			$('thead .search-row select', elem).on('change', function () {
-				var value = this.value;
+				var value = this.value.replace(/([()])/g, '\\$1');
 				$(elem).DataTable().column($(this).parent().index() + ':visible')
 					.search(value.length ? '^' + value + '$' : '', true).draw();
 			});
@@ -476,9 +476,9 @@ function init_datatables(selector) {
 						return;
 					}
 					if (typeof searchColumns[index].search === 'undefined') {
-						$(searchFields[i]).val(state.columns[index].search.search.replace(/[\^\$]/g, ''));
+						$(searchFields[i]).val(state.columns[index].search.search.replace(/[\^\$\\]/g, ''));
 					} else {
-						$(searchFields[i]).val(searchColumns[index].search.replace(/[\^\$]/g, ''));
+						$(searchFields[i]).val(searchColumns[index].search.replace(/[\^\$\\]/g, ''));
 						if (searchColumns[index].search.length) {
 							if ($(searchFields[i]).is('thead select')) {
 								searchValue = '^' + searchColumns[index].search + '$';
@@ -486,7 +486,6 @@ function init_datatables(selector) {
 								searchValue = searchColumns[index].search;
 							}
 						}
-						//console.log(searchValue);
 						api.column(index).search(searchValue, true).draw();
 					}
 					i++;
@@ -580,7 +579,7 @@ function init_datatables(selector) {
 			var i = 0;
 			api.columns().every(function (index) {
 				if (index == column) {
-					$('thead tr:last-child th:nth-child(' + (i + 1) + ') :input', elem).val(searchValue.replace(/[\^\$]/g, ''));
+					$('thead tr:last-child th:nth-child(' + (i + 1) + ') :input', elem).val(searchValue.replace(/[\^\$\\]/g, ''));
 				}
 				if (columnStates && !columnStates[index].visible) {
 					return;
