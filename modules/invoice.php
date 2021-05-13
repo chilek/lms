@@ -510,12 +510,13 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 } else {
                     $jpk_data .= "\t\t<OsobaFizyczna>\n";
                 }
-                $jpk_data .= "\t\t\t<NIP>" . preg_replace('/[\s\-]/', '', $division['ten']) . "</NIP>\n";
                 if (empty($division['naturalperson'])) {
+                    $jpk_data .= "\t\t\t<NIP>" . preg_replace('/[\s\-]/', '', $division['ten']) . "</NIP>\n";
                     $jpk_data .= "\t\t\t<PelnaNazwa>" . htmlspecialchars($division['name']) . "</PelnaNazwa>\n";
                 } else {
-                    $jpk_data .= "\t\t\t<ImiePierwsze>" . htmlspecialchars($division['firstname']) . "</ImiePierwsze>\n";
-                    $jpk_data .= "\t\t\t<Nazwisko>" . htmlspecialchars($division['lastname']) . "</Nazwisko>\n";
+                    $jpk_data .= "\t\t\t<etd:NIP>" . preg_replace('/[\s\-]/', '', $division['ten']) . "</etd:NIP>\n";
+                    $jpk_data .= "\t\t\t<etd:ImiePierwsze>" . htmlspecialchars($division['firstname']) . "</etd:ImiePierwsze>\n";
+                    $jpk_data .= "\t\t\t<etd:Nazwisko>" . htmlspecialchars($division['lastname']) . "</etd:Nazwisko>\n";
 
                 }
                 $jpk_data .= "\t\t\t<Email>" . $division['email'] . "</Email>\n";
