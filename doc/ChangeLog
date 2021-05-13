@@ -155,6 +155,7 @@ version 27-git (????-??-??):
     payment ('false' by default) [chilan]
   - improvement: new 'active, without nodes' and 'waiting, without nodes' assignment filter selection
     in customer search form [chilan]
+  - enhancement: allow to mark division as natural person (usefull for JPK reports) [chilan]
 
 version 26.0 (2020-12-15):
 
