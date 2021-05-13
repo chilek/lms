@@ -150,7 +150,7 @@
 			{trans($config.reftypedescription)}
 		</TD>
 		<TD>
-			{if $config.userid}{$config.login} / {$config.firstname} {$config.lastname}{else}{trans('<!filter>- none -')}{/if}
+			{if $config.userid}{$config.lastname} {$config.firstname} ({$config.login}){else}{trans('<!filter>- none -')}{/if}
 		</TD>
 		<TD>
 			{if $config.divisionid}{$config.shortname|escape}{else}{trans('<!filter>- none -')}{/if}
