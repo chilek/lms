@@ -400,11 +400,15 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         $start_month = date('n', $orig_datefrom);
                         $start_year  = date('Y', $orig_datefrom);
 
+                        // sometimes we want to have activation issued in the last day
+                        // of given month instead first day of next month
+                        // to fullfill strange tax rules
+                        $activation_at_same_day = ConfigHelper::checkConfig('phpui.promotion_activation_at_same_day');
                         // payday is before the start of the period
                         // set activation payday to next month's payday
                         $activation_at_next_day = ConfigHelper::getConfig('phpui.promotion_activation_at_next_day', '', true);
                         if (ConfigHelper::checkValue($activation_at_next_day) || preg_match('/^(absolute|business)$/', $activation_at_next_day)) {
-                            if ($datefrom < $now) {
+                            if ($datefrom < $now && !$activation_at_same_day) {
                                 $datefrom = strtotime('tomorrow');
                             }
                             if ($activation_at_next_day == 'business') {
