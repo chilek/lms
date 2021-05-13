@@ -22,6 +22,9 @@
 		<TD class="text-left nobr">
 			{trans("Long name:")}
 		</TD>
+		<td class="text-right nobr">
+			{trans("Natural person")}
+		</td>
 		<TD class="text-right nobr">{trans("Customers:")}</TD>
 		<TD class="text-right nobr">
 			{button type="link-button" icon="add" label="Add division" href="?m=divisionadd"}
@@ -29,7 +32,7 @@
 	</TR>
 	{if $pagination->getTotal() != 0}
 		<TR>
-			<TD class="lms-ui-pagination" COLSPAN="6">
+			<TD class="lms-ui-pagination" COLSPAN="7">
 				{include file="pagination.html"}
 			</TD>
 		</TR>
@@ -50,6 +53,12 @@
 		<TD class="text-left" onclick="return self.location.href='?m=divisionedit&amp;id={$division.id}';">
 			{$division.name|escape}
 		</TD>
+		<td class="text-center nobr">
+			{if $division.naturalperson}
+				{capture assign="fullname"}{$division.firstname} {$division.lastname}{/capture}
+				{icon name="checked" tip=$fullname}
+			{/if}
+		</td>
 		<TD class="text-right" onclick="return self.location.href='?m=divisionedit&amp;id={$division.id}';">
 			{$division.cnt|default:0}
 		</TD>
@@ -66,7 +75,7 @@
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD colspan="6" class="empty-table">
+		<TD colspan="7" class="empty-table">
 			<p>{trans("No such divisions in database.")}</p>
 		</TD>
 	</TR>
@@ -75,7 +84,7 @@
     <TFOOT>
 	{if $pagination->getTotal() != 0}
 		<TR>
-			<TD class="lms-ui-pagination division-context" COLSPAN="6">
+			<TD class="lms-ui-pagination division-context" COLSPAN="7">
 				{include file="pagination.html"}
 			</TD>
 		</TR>

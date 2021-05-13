@@ -44,7 +44,13 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
 
     public function GetDivision($id)
     {
-        return $this->db->GetRow('SELECT * FROM vdivisions WHERE id = ?', array($id));
+        return $this->db->GetRow(
+            'SELECT *,
+                (CASE WHEN firstname IS NOT NULL AND lastname IS NOT NULL THEN 1 ELSE 0 END) AS naturalperson
+            FROM vdivisions
+            WHERE id = ?',
+            array($id)
+        );
     }
 
     public function GetDivisionByName($name)
@@ -110,7 +116,9 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
 
         return $this->db->GetAll(
             'SELECT d.id, d.name, d.shortname, (CASE WHEN d.label IS NULL THEN d.shortname ELSE d.label END) AS label,
-                d.status, (SELECT COUNT(*) FROM customers WHERE divisionid = d.id) AS cnt
+                d.status, (SELECT COUNT(*) FROM customers WHERE divisionid = d.id) AS cnt,
+                d.firstname, d.lastname,
+                (CASE WHEN firstname IS NOT NULL AND lastname IS NOT NULL THEN 1 ELSE 0 END) AS naturalperson
             FROM divisions d
             WHERE 1 = 1'
             . ((isset($superuser) && empty($superuser)) || !isset($superuser) ? ' AND id IN (' . $user_divisions . ')' : '')
@@ -130,6 +138,8 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
             'name'            => $division['name'],
             'shortname'       => $division['shortname'],
             'label'           => empty($division['label']) ? null : $division['label'],
+            'firstname'       => empty($division['firstname']) || empty($division['lastname']) ? null : $division['firstname'],
+            'lastname'        => empty($division['firstname']) || empty($division['lastname']) ? null : $division['lastname'],
             'ten'             => $division['ten'],
             'regon'           => $division['regon'],
             'rbe'             => $division['rbe'],
@@ -150,10 +160,10 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
             'address_id'      => ($address_id >= 0 ? $address_id : null)
         );
 
-        $this->db->Execute('INSERT INTO divisions (name, shortname, label,
+        $this->db->Execute('INSERT INTO divisions (name, shortname, label, firstname, lastname,
 			ten, regon, rbe, rbename, telecomnumber, bank, account, inv_header, inv_footer, inv_author,
 			inv_cplace, inv_paytime, inv_paytype, email, phone, description, tax_office_code, address_id)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
         $divisionid = $this->db->GetLastInsertID('divisions');
 
@@ -208,6 +218,8 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
             'name'        => $division['name'],
             'shortname'   => $division['shortname'],
             'label'       => empty($division['label']) ? null : $division['label'],
+            'firstname'   => empty($division['firstname']) || empty($division['lastname']) ? null : $division['firstname'],
+            'lastname'    => empty($division['firstname']) || empty($division['lastname']) ? null : $division['lastname'],
             'ten'         => $division['ten'],
             'regon'       => $division['regon'],
             'rbe'         => $division['rbe'] ? $division['rbe'] : '',
@@ -229,7 +241,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
             SYSLOG::RES_DIV   => $division['id']
         );
 
-        $this->db->Execute('UPDATE divisions SET name=?, shortname=?, label = ?,
+        $this->db->Execute('UPDATE divisions SET name=?, shortname=?, label = ?, firstname = ?, lastname = ?,
 			ten=?, regon=?, rbe=?, rbename=?, telecomnumber=?, bank=?, account=?, inv_header=?,
 			inv_footer=?, inv_author=?, inv_cplace=?, inv_paytime=?,
 			inv_paytype=?, email=?, phone = ?, description=?, status=?, tax_office_code = ?

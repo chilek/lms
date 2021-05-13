@@ -42,6 +42,7 @@ if (!empty($_GET['changestatus'])) {
 }
 
 $olddiv = $DB->GetRow('SELECT d.*,
+        (CASE WHEN firstname IS NOT NULL AND lastname IS NOT NULL THEN 1 ELSE 0 END) AS naturalperson,
 		addr.name as location_name,
 		addr.city as location_city_name, addr.street as location_street_name,
 		addr.city_id as location_city, addr.street_id as location_street,
@@ -86,6 +87,17 @@ if (!empty($_POST['division'])) {
     } else if ($olddiv['shortname'] != $division['shortname']
         && $DB->GetOne('SELECT 1 FROM divisions WHERE shortname = ?', array($division['shortname']))) {
         $error['shortname'] = trans('Division with specified name already exists!');
+    }
+
+    if (!empty($division['naturalperson'])) {
+        if (empty($division['firstname'])) {
+            $error['firstname'] = trans('First name cannot be empty for natural person!');
+        }
+        if (empty($division['lastname'])) {
+            $error['lastname'] = trans('Last name cannot be empty for natural person!');
+        }
+    } else {
+        $division['firstname'] = $division['lastname'] = null;
     }
 
     if ($division['location_city_name'] == '') {

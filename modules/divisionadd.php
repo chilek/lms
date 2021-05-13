@@ -47,6 +47,17 @@ if (!empty($_POST['division'])) {
         $error['shortname'] = trans('Division with specified name already exists!');
     }
 
+    if (!empty($division['naturalperson'])) {
+        if (empty($division['firstname'])) {
+            $error['firstname'] = trans('First name cannot be empty for natural person!');
+        }
+        if (empty($division['lastname'])) {
+            $error['lastname'] = trans('Last name cannot be empty for natural person!');
+        }
+    } else {
+        $division['firstname'] = $division['lastname'] = null;
+    }
+
     if ($division['location_city_name'] == '') {
         $error['division[location_city_name]'] = trans('City is required!');
     }

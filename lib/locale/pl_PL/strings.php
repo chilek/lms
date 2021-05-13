@@ -24,6 +24,12 @@
  *  $Id$
  */
 
+$_LANG['First name cannot be empty for natural person!'] = 'Imię nie może być puste w przypadku osoby fizycznej!';
+$_LANG['Last name cannot be empty for natural person!'] = 'Nazwisko nie może być puste w przypadku osoby fizycznej!';
+$_LANG['first name'] = 'imię';
+$_LANG['last name'] = 'nazwisko';
+$_LANG['Natural person'] = 'Osoba fizyczna';
+
 $_LANG['complaint'] = 'reklamacja';
 
 $_LANG['Some users are assigned to this division!'] = 'Istnieją użytkownicy przypisani do tej firmy!';

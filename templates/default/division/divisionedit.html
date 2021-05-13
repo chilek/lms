@@ -61,6 +61,32 @@
 		</td>
 	</tr>
 	<tr>
+		<td class="valign-top">
+			{icon name="user"}
+		</td>
+		<td class="valign-top nobr">
+			<label for="natural-person">
+				<strong>{trans("Natural person")}</strong>
+			</label>
+		</td>
+		<td>
+			<input type="checkbox" id="natural-person" name="division[naturalperson]" value="1"
+				{if !empty($division['naturalperson'])} checked{/if}>
+			<input type="text" name="division[firstname]"
+				value="{$division.firstname|escape}"
+				maxlength="100"
+				placeholder="{trans("first name")}"
+				{tip text="first name" trigger="firstname" class="natural-person-property"}
+				{if !$division.firstname && !$division.lastname} disabled{/if}>
+			<input type="text" name="division[lastname]"
+				value="{$division.lastname|escape}"
+				maxlength="100"
+				placeholder="{trans("last name")}"
+				{tip text="last name" trigger="lastname" class="natural-person-property"}
+				{if !$division.firstname && !$division.lastname} disabled{/if}>
+		</td>
+	</tr>
+	<tr>
 		<td>
 			<IMG src="img/home.gif" alt="">
 		</td>
@@ -326,14 +352,18 @@
 	</TR>
     </TBODY>
 </TABLE>
-<SCRIPT type="text/javascript">
-<!--
-$(function() {
-	$('form[name="division"] [name="division[shortname]"]').focus();
+<script>
 
-	//check_teryt(['location', 'location_city'], true);
-});
-//-->
-</SCRIPT>
+	$(function() {
+		$('form[name="division"] [name="division[shortname]"]').focus();
+
+		$('#natural-person').change(function() {
+			$('.natural-person-property').prop('disabled', !$(this).prop('checked'));
+		}).change();
+
+		//check_teryt(['location', 'location_city'], true);
+	});
+
+</script>
 {/block}
 
