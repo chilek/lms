@@ -131,7 +131,7 @@
 				<strong>{trans("Account active:")}</strong>
 			</td>
 			<td>
-				{if !$userinfo.access}{trans("no")}{else}{trans("yes")}{/if}
+				{if $userinfo.access}{icon name="checked" tip="yes"}{else}-{/if}
 			</td>
 		</tr>
 {if $userinfo.accessfrom || $userinfo.accessto}

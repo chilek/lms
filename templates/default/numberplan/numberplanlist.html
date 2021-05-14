@@ -123,7 +123,7 @@
 				{$_NUM_PERIODS.$period}
 			</TD>
 			<TD class="text-right nobr" data-target-url="?m=numberplanedit&id={$plan.id}">
-				{if $plan.isdefault}{trans("yes")}{/if}
+				{if $plan.isdefault}{icon name="checked" tip="yes"}{/if}
 			</TD>
 			<TD class="text-right nobr">
 				{button type="link" icon="delete" tip="Delete" class="delete-numberplan" href="?m=numberplandel&id={$plan.id}"}

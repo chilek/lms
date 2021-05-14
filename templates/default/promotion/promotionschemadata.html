@@ -142,7 +142,7 @@
 					<td class="text-right valign-top nobr">
 						<span class="tariff-view"{if $error && $formdata.aid == $tariff.id} style="display: none;"{/if}
 								data-backwardperiod="{$tariff.backwardperiod}">
-							{if $tariff.backwardperiod}{trans("yes")}{else}{trans("no")}{/if}
+							{if $tariff.backwardperiod}{icon name="checked" tip="yes"}{/if}
 						</span>
 						<input class="tariff-edit" type="checkbox" name="form[{$tariff.id}][backwardperiod]" value="1"
 							   {tip text="Check if tariff should be accounted backward"}
@@ -152,7 +152,7 @@
 					<TD class="text-right valign-top nobr">
 						<SPAN class="tariff-view" {if $error && $formdata.aid == $tariff.id} style="display:none"{/if}
 								data-optional="{$tariff.optional}">
-							{if $tariff.optional}{trans("yes")}{else}{trans("no")}{/if}
+							{if $tariff.optional}{icon name="checked" tip="yes"}{/if}
 						</SPAN>
 						<INPUT type="checkbox" class="tariff-edit optional-edit" name="form[{$tariff.id}][optional]" value="1"
 								{tip text="Check if tariff should be optional"}
