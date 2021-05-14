@@ -9,7 +9,7 @@
     <THEAD>
 	<TR>
 		<TD width="1%">
-			{icon name="helpdesk"}
+			{icon name="helpdesk" fw=true}
 		</TD>
 		<TD width="99%">
 			<B>{trans("List of Requests")}</B>
@@ -22,7 +22,7 @@
 			<TABLE width="100%">
 				<TR>
 					<TD style="width: 1%;">
-						{icon name="timetable"}
+						{icon name="timetable" fw=true}
 					</TD>
 					<TD width="1%" nowrap>
 						<span class="bold">{trans("Period:")} </span>
@@ -40,7 +40,7 @@
 				</TR>
 				<TR>
 					<TD class="bold nobr">
-						{icon name="home"}
+						{icon name="home" fw=true}
 					</TD>
 					<TD class="bold nobr">
 						{trans("Address:")}
@@ -53,7 +53,7 @@
 				</TR>
 				<TR>
 					<TD width="1%">
-						{icon name="queue"}
+						{icon name="queue" fw=true}
 					</TD>
 					<TD width="1%" nowrap>
 						<B>{trans("Queue:")}</B>
@@ -67,7 +67,7 @@
 						</SELECT>
 					</TD>
 					<TD style="width: 1%;">
-						{icon name="customer"}
+						{icon name="customer" fw=true}
 					</TD>
 					<TD style="width: 1%;" class="bold nobr">
 						{trans("Customer:")}
@@ -79,7 +79,7 @@
 							inputtip="Enter customer ID or leave empty for all customers"}
 					</TD>
 					<TD width="1%" nowrap>
-						{icon name="subject"}
+						{icon name="subject" fw=true}
 					</TD>
 					<TD width="1%" nowrap>
 						<B>{trans("Subject:")}</B>
@@ -90,7 +90,7 @@
 				</TR>
 				<TR>
 					<TD width="1%">
-						{icon name="status"}
+						{icon name="status" fw=true}
 					</TD>
 					<TD width="1%">
 						<B>{trans("Status:")}</B>
@@ -105,7 +105,7 @@
 						</SELECT>
 					</TD>
 					<TD width="1%">
-						{icon name="uptime"}
+						{icon name="uptime" fw=true}
 					</TD>
 					<TD width="1%">
 						<B>{trans("Uptime:")}</B>
@@ -119,7 +119,7 @@
 				{if ConfigHelper::checkPrivilege('helpdesk_advanced_operations')}
 				<TR>
 					<TD style="width: 1%;">
-						{icon name="delete"}
+						{icon name="delete" fw=true}
 					</TD>
 					<TD style="width: 1%;">
 						<B>{trans("Removed:")}</B>
@@ -135,7 +135,7 @@
 				{/if}
 				<tr>
 					<td>
-						{icon name="helpdesk"}
+						{icon name="helpdesk" fw=true}
 					</td>
 					<td class="bold nobr">
 					    {trans("Categories")}
@@ -170,7 +170,7 @@
     <THEAD>
 	<TR>
 		<TD width="1%">
-			{icon name="helpdesk"}
+			{icon name="helpdesk" fw=true}
 		</TD>
 		<TD width="99%">
 			<B>{trans("Requests Stats")}</B>
@@ -183,7 +183,7 @@
 			<TABLE width="100%">
 				<TR>
 					<TD style="width: 1%;">
-						{icon name="timetable"}
+						{icon name="timetable" fw=true}
 					</TD>
 					<TD width="1%" nowrap>
 						<span class="bold">{trans("Period:")} </span>
@@ -201,7 +201,7 @@
 				</TR>
 				<TR>
 					<TD width="1%">
-						{icon name="queue"}
+						{icon name="queue" fw=true}
 					</TD>
 					<TD width="1%" nowrap>
 						<B>{trans("Queue:")}</B>
@@ -215,7 +215,7 @@
 						</SELECT>
 					</TD>
 					<TD width="1%">
-						{icon name="customer"}
+						{icon name="customer" fw=true}
 					</TD>
 					<TD width="96%" nowrap>
 						<B>{t a="<INPUT TYPE=\"text\" NAME=\"times\" SIZE=\"3\">" b="<INPUT TYPE=\"text\" NAME=\"days\" SIZE=\"3\">"}Customers requesting more than $a times in last $b days{/t}</B>
@@ -224,7 +224,7 @@
 				{if ConfigHelper::checkPrivilege('helpdesk_advanced_operations')}
 				<TR>
 					<TD style="width: 1%;">
-						{icon name="delete"}
+						{icon name="delete" fw=true}
 					</TD>
 					<TD style="width: 1%;">
 						<B>{trans("Removed:")}</B>
@@ -240,7 +240,7 @@
 				</TR>
 				{/if}
 				<tr>
-					<td>{icon name="helpdesk"}</td>
+					<td>{icon name="helpdesk" fw=true}</td>
 					<td class="bold">{trans("Categories")}</td>
 					<td>
 						<input type="hidden" name="catids" value="all">
