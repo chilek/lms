@@ -87,7 +87,7 @@
 							{if $ticket.requestor_userid || $ticket.requestor_name || $ticket.requestor_mail || $ticket.requestor_phone}
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
-									{icon name="requestor" label="Requestor:"}
+									{icon name="requestor" label="Requestor:" fw=true}
 								</TD>
 								<TD style="width: 99%;" class="nobr">
 									{if $ticket.requestor_userid}
@@ -297,7 +297,7 @@
 							{if $ticket.invprojectid}
 							<TR>
 								<TD class="bold nobr">
-									{icon name="invproject" label="Investment project:"}
+									{icon name="invproject" label="Investment project:" fw=true}
 								</TD>
 								<TD>
 									{$ticket.invproject_name|escape}</A>
@@ -307,7 +307,7 @@
 							{if $ticket.parentid}
 							<TR>
 								<TD class="bold">
-									{icon name="parentticket" label="Parent ticket:"}
+									{icon name="parentticket" label="Parent ticket:" fw=true}
 								</TD>
 								<TD>
 									#{$ticket.parent.id|string_format:"%06d"} <a href="?m=rtticketview&id={$ticket.parent.id}">{$ticket.parent.name|escape}</a><br>
@@ -317,7 +317,7 @@
 							{if $ticket.childtickets}
 								<TR>
 									<TD class="bold">
-										{icon name="childticket" label="Child tickets:"}
+										{icon name="childticket" label="Child tickets:" fw=true}
 									</TD>
 									<TD>
 										{foreach $ticket.childtickets as $t}
@@ -331,7 +331,7 @@
 							{if $ticket.relatedtickets}
 							<TR>
 								<TD class="bold nobr">
-									{icon name="relatedticket" label="Related tickets:"}
+									{icon name="relatedticket" label="Related tickets:" fw=true}
 								</TD>
 								<TD>
 									{foreach $ticket.relatedtickets as $i}
@@ -374,7 +374,7 @@
 						{button icon="verifier" label="Transfer to verifier" tip="Transfer to verifier" onclick="location.href='?m=rtticketedit&id={$ticket.ticketid}&action=verify';"}
 					{else}
 						{if !empty($ticket['verifier_rtime']) && $ticket['verifierid'] != Auth::GetCurrentUser()}
-							<i class="lms-ui-icon-verifier"></i><span style="color: {$_RT_STATES[$smarty.const.RT_VERIFIED].color}"> {trans("Ticket has been transferred to verifier")}</span>
+							{icon name="verifier" fw=true}<span style="color: {$_RT_STATES[$smarty.const.RT_VERIFIED].color}"> {trans("Ticket has been transferred to verifier")}</span>
 						{else}
 							{button icon="status-resolved" label="Resolve" tip="Resolve" onclick="location.href='?m=rtticketedit&id={$ticket.ticketid}&action=resolve';"}
 						{/if}

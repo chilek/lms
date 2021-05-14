@@ -91,7 +91,7 @@
 						</TD>
 						{foreach $_RT_RIGHTS as $rightvalue => $label}
 						<TD class="text-center">
-							{if ($right.rights & $rightvalue) == $rightvalue}{icon name="permissions"}{/if}
+							{if ($right.rights & $rightvalue) == $rightvalue}{icon name="permissions" fw=true}{/if}
 						</TD>
 						{/foreach}
 					</TR>
@@ -130,7 +130,7 @@
 	{if $queue.newticketbody}
 	<TR>
 		<TD>
-			{icon name="edit"}
+			{icon name="edit" fw=true}
 		</TD>
 		<TD class="bold nobr">{trans("New ticket customer notification body")}</TD>
 		<TD>
@@ -158,7 +158,7 @@
 	{if $queue.newmessagebody}
 	<TR>
 		<TD>
-			{icon name="edit"}
+			{icon name="edit" fw=true}
 		</TD>
 		<TD class="bold nobr">{trans("New message customer notification body")}</TD>
 		<TD>
@@ -186,7 +186,7 @@
 	{if $queue.resolveticketbody}
 	<TR>
 		<TD>
-			{icon name="edit"}
+			{icon name="edit" fw=true}
 		</TD>
 		<TD class="bold nobr">{trans("Resolve ticket customer notification body:")}</TD>
 		<TD>
@@ -203,7 +203,7 @@
 	{if $queue.verifierticketsubject}
 	<TR>
 		<TD>
-			{icon name="edit"}
+			{icon name="edit" fw=true}
 		</TD>
 		<TD class="bold nobr">{trans("Ticket verifier notification subject:")}</TD>
 		<TD>
@@ -220,7 +220,7 @@
 	{if $queue.verifierticketbody}
 	<TR>
 		<TD>
-			{icon name="edit"}
+			{icon name="edit" fw=true}
 		</TD>
 		<TD class="bold nobr">{trans("Ticket verifier notification body:")}</TD>
 		<TD>

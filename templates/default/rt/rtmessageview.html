@@ -21,7 +21,7 @@
     <THEAD>
         <TR>
 		<TD>
-		        {icon name="helpdesk"}
+		        {icon name="helpdesk" fw=true}
 		</TD>
 		<TD class="bold">
 			{trans("Subject:")}
@@ -34,7 +34,7 @@
     <TBODY>
 	<TR>
 		<TD>
-			{icon name="uptime"}
+			{icon name="uptime" fw=true}
 		</TD>
 		<TD class="bold">
 			{trans("Date:")}
@@ -46,7 +46,7 @@
 	<TR>
 		<TD class="nobr">
 		    {if $message.userid}
-				{icon name="user"}
+				{icon name="user" fw=true}
 			{else}
 				{icon name="requestor" fw=true}
 			{/if}
@@ -57,19 +57,19 @@
 		<TD>
 			{if $message.customerid}
 				{if $message.mailfrom}
-					{icon name="mail"}
+					{icon name="mail" fw=true}
 				{elseif $message.phonefrom}
-					{icon name="sms"}
+					{icon name="sms" fw=true}
 				{/if}
 				<A href="?m=customerinfo&id={$message.customerid}">{$message.customername} ({$message.customerid|escape|string_format:"%04d"})</A>
 			{elseif $message.userid}
-				{icon name="user"}
+				{icon name="user" fw=true}
 				<A href="?m=userinfo&id={$message.userid}">{$message.username|escape}</A>
 			{elseif $message.mailfrom}
-				{icon name="mail"}
+				{icon name="mail" fw=true}
 				<A href="mailto:{$message.mailfrom|escape}">{$message.mailfrom|escape}</A>
 			{elseif $message.phonefrom}
-				{icon name="phone"}
+				{icon name="phone" fw=true}
 				<A class="phone_number" href="tel:{$message.phonefrom}">{$message.phonefrom}</A>
 			{else}
 				{$message.requestor|escape}
@@ -79,7 +79,7 @@
 	{if $message.headers}
 	<TR>
 		<TD>
-			{icon name="message"}
+			{icon name="message" fw=true}
 		</TD>
 		<TD class="bold">
 			{trans("Headers:")}
@@ -92,7 +92,7 @@
 	{if $message.messageid}
 	<TR>
 		<TD>
-			{icon name="message"}
+			{icon name="message" fw=true}
 		</TD>
 		<TD class="nobr bold">
 			Message-Id:
@@ -105,7 +105,7 @@
 	{if $message.replyto}
 	<TR>
 		<TD>
-			{icon name="message"}
+			{icon name="message" fw=true}
 		</TD>
 		<TD class="nobr bold">
 			Reply-To:
@@ -118,7 +118,7 @@
 	{if $message.inreplyto}
 	<TR>
 		<TD>
-			{icon name="message"}
+			{icon name="message" fw=true}
 		</TD>
 		<TD class="nobr">
 			In-Reply-To:
@@ -130,7 +130,7 @@
 	{/if}
 	<TR>
 		<TD>
-			{icon name="edit"}
+			{icon name="edit" fw=true}
 		</TD>
 		<TD class="bold">
 			{trans("Message:")}
@@ -146,7 +146,7 @@
 	{if $message.attachments}
 	<TR>
 		<TD>
-			{icon name="fileupload"}
+			{icon name="fileupload" fw=true}
 		</TD>
 		<TD class="bold">
 			{trans("Attachments:")}

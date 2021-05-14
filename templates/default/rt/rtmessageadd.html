@@ -54,7 +54,7 @@
 {/if}
 <INPUT type="hidden" name="message[customerid]" value ="{$message.customerid}">
 {box_container id="message"}
-	{box_header icon="subject" label="Subject:"}
+	{box_header icon="subject" icon_class="fa-fw" label="Subject:"}
 		<INPUT type="text" size="75" name="message[subject]" maxlength="255" value="{$message.subject|escape}" {tip text="Enter message subject" trigger="subject"}>
 	{/box_header}
 
@@ -64,12 +64,12 @@
 {*
 {if !$group_action}
 
-			{box_row icon="img/users.gif" label="Requestor:"}
+			{box_row icon="user" icon_class="fa-fw" label="Requestor:"}
 				<INPUT class="radio light" type="radio" name="message[sender]" id="sender0" value="user" CHECKED><label for="sender0">{trans("user")}</label>
 				<INPUT class="radio light" type="radio" name="message[sender]" id="sender1" value="customer" {if $message.sender == 'customer'}CHECKED{/if}><label for="sender1">{trans("customer")}</label>
 			{/box_row}
 
-			{box_row icon="mail" label="Recipient's e-mail:"}
+			{box_row icon="mail" icon_class="fa-fw" label="Recipient's e-mail:"}
 				<INPUT type="text" size="25" name="message[destination]"
 					value="{$message.destination|escape}" class="lms-ui-autogrow"
 					{tip text="Enter recipient's e-mail - if sender is an user and message should be sent (optional)" trigger="destination"}
@@ -78,20 +78,20 @@
 {/if}
 *}
 
-			{box_row icon="message" label="Message template:" id="message-template-row" field_id="message-templates"
+			{box_row icon="message" icon_class="fa-fw" label="Message template:" id="message-template-row" field_id="message-templates"
 				visible=!empty($messagetemplates)}
 				{include file="rt/rtmessagetemplates.html" templates=$messagetemplates}
 			{/box_row}
 
 			{block name="rtmessageadd-content"}
-			{box_row icon="edit" label="Content:"}
+			{box_row icon="edit" icon_class="fa-fw" label="Content:"}
 				<TEXTAREA name="message[body]" cols="75" rows="10"
 					{tip class="lms-ui-wysiwyg-editor lms-ui-helpdesk" text="Enter message content" trigger="body"}
 					{if isset($message.wysiwyg.body)} data-wysiwyg="{$message.wysiwyg.body}"{/if}
 					>{$message.body}</TEXTAREA>
 			{/box_row}
 			{/block}
-			{box_row icon="upload" label="Attachments:"}
+			{box_row icon="upload" icon_class="fa-fw" label="Attachments:"}
 				{fileupload id="files" fileupload=$fileupload form="message-form"}
 			{/box_row}
 
