@@ -158,7 +158,7 @@
 			<INPUT TYPE="checkbox" NAME="extended" VALUE="1" id="extended"><label for="extended">{trans("extended format")}</label>&nbsp;
 			<INPUT TYPE="checkbox" NAME="contacts" VALUE="1" id="contacts" CHECKED><label for="contacts">{trans("include contact info")}</label>
 			&nbsp; &nbsp; &nbsp;
-			{button href="javascript:document.ticketslist.submit();" icon="print" label="Print"}
+			{button onclick="document.ticketslist.submit()" icon="print" label="Print"}
 		</TD>
 	</TR>
     </TBODY>
@@ -257,7 +257,7 @@
 	</TR>
 	<TR>
 		<TD width="100%" colspan="2" align="right">
-			{button href="javascript:document.stats.submit();" icon="print" label="Print"}
+			{button onclick="document.stats.submit()" icon="print" label="Print"}
 		</TD>
 	</TR>
     </TBODY>
