@@ -192,11 +192,11 @@ window.open('?m=note&id={$newnoteid}');
 		</TD>
 	</TR>
 	{foreachelse}
-	<TR>
-		<TD COLSPAN="5" class="empty-table">
-			<p>{trans("Debit note have no items. Use form below for items addition.")}</p>
-		</TD>
-	</TR>
+	<tr>
+		<td colspan="5" class="empty-table">
+			{trans("Debit note have no items. Use form below for items addition.")}
+		</td>
+	</tr>
 	{/foreach}
 	{if $contents}
 	<TR>

@@ -232,11 +232,11 @@
             </TD>
         </TR>
         {foreachelse}
-        <TR>
-            <TD COLSPAN="10" class="empty-table">
-                <p>{trans("Invoice have no items. Use form below for items addition.")}</p>
-            </TD>
-        </TR>
+        <tr>
+            <td colspan="10" class="empty-table">
+                {trans("Invoice have no items. Use form below for items addition.")}
+            </td>
+        </tr>
         {/foreach}
         {if $contents}
         <TR>

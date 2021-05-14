@@ -285,11 +285,11 @@
 	</TR>
 	{if $nodelist[nodelist.index_next].ownerid == $node.ownerid && $filter.order == "owner"}{cycle print=false}{/if}
 	{foreachelse}
-	<TR>
-		<TD colspan="5" class="empty-table">
-			<p>{trans("No such nodes in database.")}</p>
-		</TD>
-	</TR>
+	<tr>
+		<td colspan="5" class="empty-table">
+			{trans("No such nodes in database.")}
+		</td>
+	</tr>
 	{/foreach}
 	{/block}
 	</TBODY>

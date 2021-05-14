@@ -41,11 +41,11 @@
 						{$id = $ticket.ticketid}
 						{include file="rt/rtqueueviewboxrow.html"}
 					{foreachelse}
-					<TR>
-						<TD COLSPAN="11" class="empty-table">
-							<p>{trans("There is no child tickets")}</p>
-						</TD>
-					</TR>
+					<tr>
+						<td colspan="11" class="empty-table">
+							{trans("There is no child tickets")}
+						</td>
+					</tr>
 					{/foreach}
 					</TBODY>
 				</table>

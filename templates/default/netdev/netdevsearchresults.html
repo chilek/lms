@@ -114,11 +114,11 @@
 	</TR>
 	{if $netdevlist[netdevlist.index_next].ownerid == $netdev.ownerid && $listdata.order == "owner"}{cycle print=false}{/if}
 	{sectionelse}
-	<TR>
-		<TD colspan="6" class="empty-table">
-			<p>{trans("No such devices matching search criteria.")}</p>
-		</TD>
-	</TR>
+	<tr>
+		<td colspan="6" class="empty-table">
+			{trans("No such devices matching search criteria.")}
+		</td>
+	</tr>
 	{/section}
     </TBODY>
     <TFOOT>

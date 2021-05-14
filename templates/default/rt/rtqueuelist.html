@@ -128,11 +128,11 @@
 		</TD>
 	</TR>
 	{foreachelse}
-	<TR>
-		<TD colspan="10" class="empty-table">
-			<p>{trans("There are no queues.")} {trans('Click $a to create.', '<a href="?m=rtqueueadd">'|cat: trans('here')|cat: '</a>')} </p>
-		</TD>
-	</TR>
+	<tr>
+		<td colspan="10" class="empty-table">
+			{trans("There are no queues.")} {trans('Click $a to create.', '<a href="?m=rtqueueadd">'|cat: trans('here')|cat: '</a>')}
+		</td>
+	</tr>
 	{/foreach}
         </TBODY>
         <TFOOT>

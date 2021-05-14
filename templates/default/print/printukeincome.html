@@ -121,11 +121,11 @@
 	</TR>
 	{/if}
 	{foreachelse}
-	<TR>
-		<TD COLSPAN="8" class="empty-table">
-			<p>{trans("<!uke-income>No data.")}</p>
-		</TD>
-	</TR>
+	<tr>
+		<td colspan="8" class="empty-table">
+			{trans("<!uke-income>No data.")}
+		</td>
+	</tr>
 	{/foreach}
 	{if ConfigHelper::checkConfig('privileges.superuser') || (!ConfigHelper::checkConfig('privileges.hide_finances') && !ConfigHelper::checkConfig('privileges.hide_summaries'))}
 	<TR>

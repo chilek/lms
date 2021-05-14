@@ -369,11 +369,11 @@
 								</TD>
 							</TR>
 							{foreachelse}
-							<TR>
-								<TD colspan="4" class="empty-table">
-									<p>{trans("That customer hasn't got not accounted invoices.")}</p>
-								</TD>
-							</TR>
+							<tr>
+								<td colspan="4" class="empty-table">
+									{trans("That customer hasn't got not accounted invoices.")}
+								</td>
+							</tr>
 							{/foreach}
 							<TR>
 								<TD colspan="2" nowrap>
@@ -425,11 +425,11 @@
 		</TD>
 	</TR>
 	{foreachelse}
-	<TR>
-		<TD COLSPAN="4" class="empty-table">
-			<p>{trans("Receipt have no items. Use form below for items addition.")}</p>
-		</TD>
-	</TR>
+	<tr>
+		<td colspan="4" class="empty-table">
+			{trans("Receipt have no items. Use form below for items addition.")}
+		</td>
+	</tr>
 	{/foreach}
 	{if $contents}
 	<TR>

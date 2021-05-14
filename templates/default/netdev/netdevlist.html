@@ -184,11 +184,11 @@
 	</TR>
 	{if $netdevlist[netdevlist.index_next].ownerid == $netdev.ownerid && $listdata.order == "owner"}{cycle print=false}{/if}
 	{foreachelse}
-	<TR>
-		<TD colspan="6" class="empty-table">
-			<p>{trans("There are no devices in your database.")}</p>
-		</TD>
-	</TR>
+	<tr>
+		<td colspan="6" class="empty-table">
+			{trans("There are no devices in your database.")}
+		</td>
+	</tr>
 	{/foreach}
     </TBODY>
 	<TFOOT>

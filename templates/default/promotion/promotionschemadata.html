@@ -239,11 +239,11 @@
 					</TD>
 				</TR>
 				{foreachelse}
-				<TR>
-					<TD colspan="{$periodcnt+7}" class="empty-table">
-						<p>{trans("This schema has no assigned tariffs.")}</p>
-					</TD>
-				</TR>
+				<tr>
+					<td colspan="{$periodcnt+7}" class="empty-table">
+						{trans("This schema has no assigned tariffs.")}
+					</td>
+				</tr>
 				{/foreach}
 				</TBODY>
 				{if $tariffs}

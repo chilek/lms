@@ -43,11 +43,11 @@
 					{$day=$event.date}
 					{include file="event/eventlistboxrow.html" overdue=1}
 				{foreachelse}
-					<TR>
-						<TD class="empty-table" colspan="6">
-							<p>{trans("There are no events in timetable.")}</p>
-						</TD>
-					</TR>
+					<tr>
+						<td class="empty-table" colspan="6">
+							{trans("There are no events in timetable.")}
+						</td>
+					</tr>
 				{/foreach}
 				</TBODY>
 			</table>

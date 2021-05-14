@@ -145,10 +145,10 @@
 		</TD>
 	</TR>
 	{foreachelse}
-	<TR>
-		<TD colspan="6" class="empty-table">
-			<p>{trans("There are no device nodes in your database.")}</p>
-		</TD>
+	<tr>
+		<td colspan="6" class="empty-table">
+			{trans("There are no device nodes in your database.")}
+		</td>
 	{/foreach}
 	</TBODY>
 	{if $pagination->getTotal() != 0}

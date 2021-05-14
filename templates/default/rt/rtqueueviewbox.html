@@ -2,11 +2,11 @@
 {foreach $queue as $ticket}
 	{include file="rt/rtqueueviewboxrow.html"}
 {foreachelse}
-<TR>
-	<TD COLSPAN="11" class="empty-table">
-		<p>{trans("This queue is empty.")}</p>
-	</TD>
-</TR>
+<tr>
+	<td colspan="11" class="empty-table">
+		{trans("This queue is empty.")}
+	</td>
+</tr>
 {/foreach}
 	<script>
 
