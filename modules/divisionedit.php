@@ -95,8 +95,11 @@ if (!empty($_POST['division'])) {
         if (empty($division['lastname'])) {
             $error['lastname'] = trans('Last name cannot be empty for natural person!');
         }
+        if (empty($division['birthdate'])) {
+            $error['birthdate'] = trans('Birth date cannot be empty for natural person!');
+        }
     } else {
-        $division['firstname'] = $division['lastname'] = null;
+        $division['firstname'] = $division['lastname'] = $division['birthdate'] = null;
     }
 
     if ($division['location_city_name'] == '') {

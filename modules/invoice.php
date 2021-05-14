@@ -395,7 +395,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 
         $divisionid = intval($_GET['divisionid']);
         $division = $DB->GetRow("SELECT d.name, shortname, d.email,
-                d.firstname, d.lastname, d.naturalperson,
+                d.firstname, d.lastname, d.birthdate, d.naturalperson,
                 va.address, va.city,
 				va.zip, va.countryid, ten, regon,
 				account, inv_header, inv_footer, inv_author, inv_cplace, va.location_city,
@@ -517,7 +517,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                     $jpk_data .= "\t\t\t<etd:NIP>" . preg_replace('/[\s\-]/', '', $division['ten']) . "</etd:NIP>\n";
                     $jpk_data .= "\t\t\t<etd:ImiePierwsze>" . htmlspecialchars($division['firstname']) . "</etd:ImiePierwsze>\n";
                     $jpk_data .= "\t\t\t<etd:Nazwisko>" . htmlspecialchars($division['lastname']) . "</etd:Nazwisko>\n";
-
+                    $jpk_data .= "\t\t\t<etd:DataUrodzenia>" . strftime('%Y-%m-%d', $division['birthdate']) . "</etd:DataUrodzenia>\n";
                 }
                 $jpk_data .= "\t\t\t<Email>" . $division['email'] . "</Email>\n";
                 if (empty($division['naturalperson'])) {

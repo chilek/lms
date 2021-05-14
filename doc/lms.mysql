@@ -418,6 +418,7 @@ CREATE TABLE divisions (
 	label varchar(100) DEFAULT NULL,
 	firstname varchar(128) DEFAULT NULL,
 	lastname varchar(128) DEFAULT NULL,
+	birthdate int(11) DEFAULT NULL,
 	ten		varchar(50)	NOT NULL DEFAULT '',
 	regon		varchar(255)	NOT NULL DEFAULT '',
 	rbe			varchar(255)	NOT NULL DEFAULT '',
@@ -3029,7 +3030,7 @@ CREATE VIEW vaddresses AS
 CREATE VIEW vdivisions AS
     SELECT d.*,
         a.country_id as countryid, a.ccode, a.zip as zip, a.city as city, a.address,
-        (CASE WHEN d.firstname IS NOT NULL AND d.lastname IS NOT NULL THEN 1 ELSE 0 END) AS naturalperson
+        (CASE WHEN d.firstname IS NOT NULL AND d.lastname IS NOT NULL AND d.birthdate IS NOT NULL THEN 1 ELSE 0 END) AS naturalperson
     FROM divisions d
         JOIN vaddresses a ON a.id = d.address_id;
 
@@ -4018,4 +4019,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021051300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021051400');

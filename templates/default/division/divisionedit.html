@@ -77,13 +77,19 @@
 				maxlength="100"
 				placeholder="{trans("first name")}"
 				{tip text="first name" trigger="firstname" class="natural-person-property"}
-				{if !$division.firstname && !$division.lastname} disabled{/if}>
+				{if !$division.firstname || !$division.lastname || !$division.birthdate} disabled{/if}>
 			<input type="text" name="division[lastname]"
 				value="{$division.lastname|escape}"
 				maxlength="100"
 				placeholder="{trans("last name")}"
 				{tip text="last name" trigger="lastname" class="natural-person-property"}
-				{if !$division.firstname && !$division.lastname} disabled{/if}>
+				{if !$division.firstname || !$division.lastname || !$division.birthdate} disabled{/if}>
+			<input type="text" name="division[birthdate]" id="birthdate"
+				value="{$division.birthdate}"
+				placeholder="{trans("birth date")}"
+				{tip text="birth date" trigger="birthdate" class="natural-person-property lms-ui-date lms-ui-date-unix"}
+				data-year-range="c-100:c"
+				{if !$division.firstname || !$division.lastname || !$division.birthdate} disabled{/if}>
 		</td>
 	</tr>
 	<tr>
@@ -359,6 +365,8 @@
 
 		$('#natural-person').change(function() {
 			$('.natural-person-property').prop('disabled', !$(this).prop('checked'));
+			$('#birthdate').datepicker('option', 'disabled', !$(this).prop('checked'))
+				.next().prop('disabled', !$(this).prop('checked'));
 		}).change();
 
 		//check_teryt(['location', 'location_city'], true);

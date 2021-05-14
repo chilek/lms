@@ -55,7 +55,11 @@
 		</TD>
 		<td class="text-center nobr">
 			{if $division.naturalperson}
-				{capture assign="fullname"}{$division.firstname} {$division.lastname}{/capture}
+				{capture assign="fullname"}
+					{$division.firstname} {$division.lastname}
+					<br>
+					{t a=$division.birthdate|date_format:"%Y/%m/%d"}Birth date: $a{/t}
+				{/capture}
 				{icon name="checked" tip=$fullname}
 			{/if}
 		</td>
