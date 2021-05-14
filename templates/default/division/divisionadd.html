@@ -85,6 +85,7 @@
 				{if !$division.firstname || !$division.lastname || !$division.birthdate} disabled{/if}>
 			<input type="text" name="division[birthdate]" id="birthdate"
 				value="{$division.birthdate}"
+				size="15"
 				placeholder="{trans("birth date")}"
 				{tip text="birth date" trigger="birthdate" class="natural-person-property lms-ui-date lms-ui-date-unix"}
 				data-year-range="c-100:c"
