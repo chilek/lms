@@ -23,16 +23,18 @@
 
 $this->BeginTrans();
 
-$this->Execute("
-    DROP VIEW vdivisions;
-    ALTER TABLE divisions ADD COLUMN birthdate integer DEFAULT NULL;
-    CREATE VIEW vdivisions AS
-        SELECT d.*,
-            a.country_id as countryid, a.ccode, a.zip as zip, a.city as city, a.address,
-            (CASE WHEN d.firstname IS NOT NULL AND d.lastname IS NOT NULL AND d.birthdate IS NOT NULL THEN 1 ELSE 0 END) AS naturalperson
-        FROM divisions d
-            JOIN vaddresses a ON a.id = d.address_id
-");
+if (!$this->ResourceExists('divisions.birthdate', LMSDB::RESOURCE_TYPE_COLUMN)) {
+    $this->Execute("
+        DROP VIEW vdivisions;
+        ALTER TABLE divisions ADD COLUMN birthdate integer DEFAULT NULL;
+        CREATE VIEW vdivisions AS
+            SELECT d.*,
+                a.country_id as countryid, a.ccode, a.zip as zip, a.city as city, a.address,
+                (CASE WHEN d.firstname IS NOT NULL AND d.lastname IS NOT NULL AND d.birthdate IS NOT NULL THEN 1 ELSE 0 END) AS naturalperson
+            FROM divisions d
+                JOIN vaddresses a ON a.id = d.address_id
+    ");
+}
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021051400', 'dbversion'));
 
