@@ -66,6 +66,11 @@
 							{/if}
 						{/foreach}
 					</SELECT>
+					<label>
+						<input type="checkbox" class="assign-to-me" data-userid="{$layout.logid}"
+							data-target='[name="ticket[requestor_userid]"]'>
+						{trans("assign to me")}
+					</label>
 				</div>
 				<div class="lms-ui-box-row indicated-person">
 					<div class="lms-ui-box-row-label">
@@ -151,7 +156,8 @@
 				</SELECT>
 				&nbsp;
 				<label>
-					<input type="checkbox" id="assign-to-me" data-userid="{$layout.logid}">
+					<input type="checkbox" class="assign-to-me" data-userid="{$layout.logid}"
+						data-target='[name="ticket[owner]"]'>
 					{trans("assign to me")}
 				</label>
 			{/box_row}
