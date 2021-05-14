@@ -3,7 +3,7 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<TABLE class="lmsbox lms-ui-background-cycle">
+<table class="lmsbox lms-ui-background-cycle">
 	<colgroup>
 		<col style="width: 1%;">
 		<col style="width: 1%;">
@@ -12,89 +12,97 @@
 		<col style="width: 1%;">
 		<col style="width: 1%;">
 	</colgroup>
-    <THEAD>
-	<TR>
-		<TD class="bold nobr"><IMG src="img/division.gif" alt=""> {trans("Name:")}</TD>
-		<TD class="bold text-right">{trans("ID:")}</TD>
-		<TD class="text-left nobr">
-			{trans("Text label:")}
-		</TD>
-		<TD class="text-left nobr">
-			{trans("Long name:")}
-		</TD>
-		<td class="text-right nobr">
-			{trans("Natural person")}
-		</td>
-		<TD class="text-right nobr">{trans("Customers:")}</TD>
-		<TD class="text-right nobr">
-			{button type="link-button" icon="add" label="Add division" href="?m=divisionadd"}
-		</TD>
-	</TR>
-	{if $pagination->getTotal() != 0}
-		<TR>
-			<TD class="lms-ui-pagination" COLSPAN="7">
-				{include file="pagination.html"}
-			</TD>
-		</TR>
-	{/if}
-    </THEAD>
-    <TBODY>
-	{foreach $divisionlist as $division}
-	<TR class="{if $division.status} blend{/if}" data-name="{$division.shortname|escape}">
-		<TD class="bold nobr" onclick="return self.location.href='?m=divisionedit&amp;id={$division.id}';">
-			<IMG src="img/division.gif" alt=""> {$division.shortname|escape}
-		</TD>
-		<TD class="text-right nobr" onclick="return self.location.href='?m=divisionedit&amp;id={$division.id}';">
-			({$division.id|string_format:"%04d"})
-		</TD>
-		<td class="text-left">
-			{$division.label|escape|default:"-"}
-		</td>
-		<TD class="text-left" onclick="return self.location.href='?m=divisionedit&amp;id={$division.id}';">
-			{$division.name|escape}
-		</TD>
-		<td class="text-center nobr">
-			{if $division.naturalperson}
-				{capture assign="fullname"}
-					{$division.firstname} {$division.lastname}
-					<br>
-					{t a=$division.birthdate|date_format:"%Y/%m/%d"}Birth date: $a{/t}
-				{/capture}
-				{icon name="checked" tip=$fullname}
-			{/if}
-		</td>
-		<TD class="text-right" onclick="return self.location.href='?m=divisionedit&amp;id={$division.id}';">
-			{$division.cnt|default:0}
-		</TD>
-		<TD class="lms-ui-buttons text-right nobr">
-			{button type="link" icon="lock" tip="{if $division.status}{trans("Unlock")}{else}{trans("Lock")}{/if}" href="?m=divisionedit&amp;id={$division.id}&amp;changestatus=1"}
-			{if isset($division.unblock_delete)}
-				{button type="link" icon="delete" tip="Delete" class="delete-division" href="?m=divisiondel&id={$division.id}"}
-			{else}
-				{button type="link" icon="delete" tip="Some users are assigned to this division!" disabled=true}
-			{/if}
-			{button type="link" icon="clone" tip="Clone" class="clone-division" href="?m=divisionclone&id={$division.id}"}
-			{button type="link" icon="edit" tip="Edit" href="?m=divisionedit&id={$division.id}"}
-		</TD>
-	</TR>
-	{foreachelse}
-	<TR>
-		<TD colspan="7" class="empty-table">
-			<p>{trans("No such divisions in database.")}</p>
-		</TD>
-	</TR>
-	{/foreach}
-    </TBODY>
-    <TFOOT>
-	{if $pagination->getTotal() != 0}
-		<TR>
-			<TD class="lms-ui-pagination division-context" COLSPAN="7">
-				{include file="pagination.html"}
-			</TD>
-		</TR>
-	{/if}
-    </TFOOT>
-</TABLE>
+	<thead>
+		<tr>
+			<td class="nobr">
+				{icon name="division" fw=true}
+				<strong>{trans("Name:")}</strong>
+			</td>
+			<td class="text-right">
+				<strong>{trans("ID:")}</strong>
+			</td>
+			<td class="text-left nobr">
+				{trans("Text label:")}
+			</td>
+			<td class="text-left nobr">
+				{trans("Long name:")}
+			</td>
+			<td class="text-right nobr">
+				{trans("Natural person")}
+			</td>
+			<td class="text-right nobr">
+				{trans("Customers:")}
+			</td>
+			<td class="text-right nobr">
+				{button type="link-button" icon="add" label="Add division" href="?m=divisionadd"}
+			</td>
+		</tr>
+		{if $pagination->getTotal() != 0}
+			<tr>
+				<td class="lms-ui-pagination" colspan="7">
+					{include file="pagination.html"}
+				</td>
+			</tr>
+		{/if}
+	</thead>
+	<tbody>
+		{foreach $divisionlist as $division}
+			<tr class="{if $division.status} blend{/if}" data-name="{$division.shortname|escape}">
+				<td class="nobr" data-target-url="?m=divisionedit&id={$division.id}">
+					{icon name="division" fw=true}
+					<strong>{$division.shortname|escape}</strong>
+				</td>
+				<td class="text-right nobr" data-target-url="?m=divisionedit&id={$division.id}">
+					({$division.id|string_format:"%04d"})
+				</td>
+				<td class="text-left">
+					{$division.label|escape|default:"-"}
+				</td>
+				<td class="text-left" data-target-url="?m=divisionedit&id={$division.id}">
+					{$division.name|escape}
+				</td>
+				<td class="text-center nobr">
+					{if $division.naturalperson}
+						{capture assign="fullname"}
+							{$division.firstname} {$division.lastname}
+							<br>
+							{t a=$division.birthdate|date_format:"%Y/%m/%d"}Birth date: $a{/t}
+						{/capture}
+						{icon name="checked" tip=$fullname}
+					{/if}
+				</td>
+				<td class="text-right" data-target-url="?m=divisionedit&id={$division.id}">
+					{$division.cnt|default:0}
+				</td>
+				<td class="lms-ui-buttons text-right nobr">
+					{button type="link" icon="lock" tip="{if $division.status}{trans("Unlock")}{else}{trans("Lock")}{/if}" href="?m=divisionedit&amp;id={$division.id}&amp;changestatus=1"}
+					{if isset($division.unblock_delete)}
+						{button type="link" icon="delete" tip="Delete" class="delete-division" href="?m=divisiondel&id={$division.id}"}
+					{else}
+						{button type="link" icon="delete" tip="Some users are assigned to this division!" disabled=true}
+					{/if}
+					{button type="link" icon="clone" tip="Clone" class="clone-division" href="?m=divisionclone&id={$division.id}"}
+					{button type="link" icon="edit" tip="Edit" href="?m=divisionedit&id={$division.id}"}
+				</td>
+			</tr>
+		{foreachelse}
+			<tr>
+				<td colspan="7" class="empty-table">
+					<p>{trans("No such divisions in database.")}</p>
+				</td>
+			</tr>
+		{/foreach}
+	</tbody>
+	<tfoot>
+		{if $pagination->getTotal() != 0}
+			<tr>
+				<td class="lms-ui-pagination division-context" colspan="7">
+					{include file="pagination.html"}
+				</td>
+			</tr>
+		{/if}
+	</tfoot>
+</table>
 
 <script>
 
