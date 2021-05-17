@@ -16,16 +16,16 @@
 	<THEAD>
 	<TR>
 		<TD COLSPAN="2" class="nobr">
-			{icon name="queue"}
+			{icon name="queue" fw=true}
 			<B>{trans("Category")}:</B><BR>
-			{icon name="optional-info"}
+			{icon name="optional-info" fw=true}
 			{trans("Description")}:
 		</TD>
 		<TD class="bold text-center">
 			{trans("<!rt-category>Look:")}
 		</TD>
 		<TD class="nobr">
-			{icon name="owner"}
+			{icon name="owner" fw=true}
 			<B>{trans("Owners")}:</B>
 		</TD>
 		<TD class="text-center">
@@ -46,10 +46,10 @@
 	{foreach $categories as $category}
 	<TR class="highlight" data-target-url="?m=rtqueueview&catid={$category.id}" data-name="{$category.name}">
 		<TD COLSPAN="2">
-			{icon name="queue"}
+			{icon name="queue" fw=true}
 			<B>{$category.name}</B><BR>
 			{if $category.description}
-				{icon name="optional-info"} {$category.description}
+				{icon name="optional-info" fw=true} {$category.description}
 			{/if}
 		</TD>
 		<TD class="bold text-center">
@@ -89,7 +89,7 @@
         <TFOOT>
 	<TR>
 		<TD COLSPAN="4" class="text-right bold">
-			{icon name="info"}
+			{icon name="info" fw=true}
 			{trans("Total:")}
 		</TD>
 		<TD class="bold text-center">

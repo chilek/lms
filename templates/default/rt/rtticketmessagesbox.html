@@ -174,20 +174,20 @@
 										{if $message.type == $smarty.const.RTMESSAGE_REGULAR}
 											{if $message.customerid}
 												{if $message.mailfrom}
-													{icon name="mail"}
+													{icon name="mail" fw=true}
 												{elseif $message.phonefrom}
-													{icon name="sms"}
+													{icon name="sms" fw=true}
 												{/if}
 												<A href="?m=customerinfo&id={$message.customerid}">
 													{$message.customername} (#{$message.customerid})
 												</A>
 											{elseif $message.userid}
-												{icon name="user"}
+												{icon name="user" fw=true}
 												<A href="?m=userinfo&id={$message.userid}">
 													{$message.username|escape}
 												</A>
 											{elseif $message.mailfrom}
-												{icon name="mail"}
+												{icon name="mail" fw=true}
 												<A href="mailto:{$message.mailfrom|escape}">{$message.mailfrom|escape}</A>
 											{else}
 												{$ticket.requestor|escape}
@@ -196,7 +196,7 @@
 												{/if}
 											{/if}
 											{if $message.phonefrom}
-												{icon name="phone"}
+												{icon name="phone" fw=true}
 												<A class="phone_number" href="tel:{$message.phonefrom}">
 													{$message.phonefrom}
 												</A>
