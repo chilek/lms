@@ -157,6 +157,7 @@ version 27-git (????-??-??):
     in customer search form [chilan]
   - enhancement: allow to mark division as natural person (usefull for JPK reports) [chilan]
   - enhancement: support for /31 networks [chilan]
+  - enhancement: implemented helpdesk category cloning [chilan]
 
 version 26.0 (2020-12-15):
 
