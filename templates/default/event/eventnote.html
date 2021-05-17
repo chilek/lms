@@ -9,7 +9,7 @@
     {block name="event_note_table"}
 	<TR class="dark">
 		<TD width="1%" class="fleftu">
-			<IMG src="img/calendar.gif" alt="">
+			{icon name="calendar" fw=true}
 		</TD>
 		<TD width="1%" class="fbt">
 			<B>{trans("Title:")}</B>
@@ -20,7 +20,7 @@
 	</TR>
 	<TR class="light">
 		<TD width="1%" class="fleft">
-			<IMG src="img/time.gif" alt="">
+			{icon name="callendar" fw=true}
 		</TD>
 		<TD width="1%">
 			<B>{trans("Time:")}</B>
@@ -41,7 +41,7 @@
         {if $event.description}
 	<TR class="light">
 		<TD width="1%" class="fleft">
-			<IMG src="img/info.gif" alt="">
+			{icon name="description" fw=true}
 		</TD>
 		<TD width="1%">
 			<B>{trans("Description:")}</B>
@@ -59,7 +59,7 @@
         {/if}
 	<TR class="light">
 		<TD width="1%" class="fleft">
-			<IMG src="img/access.gif" alt="">
+			{icon name="permissions" fw=true}
 		</TD>
 		<TD width="1%">
 			<B>{trans("Status:")}</B>
@@ -70,7 +70,7 @@
 	</TR>
 	<TR class="light">
 		<TD width="1%" class="fleft">
-			<IMG src="img/customer.gif" alt="">
+			{icon name="customer" fw=true}
 		</TD>
 		<TD width="1%">
 			<B>{trans("Customer:")}</B>
@@ -85,7 +85,7 @@
 	</TR>
 	<TR class="light">
 		<TD width="1%" class="fleft">
-			<IMG src="img/note.gif" alt="">
+			{icon name="note" fw=true}
 		</TD>
 		<TD width="1%">
 			<B>{trans("Note:")}</B>
@@ -96,7 +96,7 @@
 	</TR>
 	<TR class="light">
 		<TD width="1%" class="fleft">
-			<IMG src="img/users.gif" alt="">
+			{icon name="user" fw=true}
 		</TD>
 		<TD width="1%">
 			<B>{trans("Users:")}</B>
@@ -109,8 +109,8 @@
 	</TR>
 	<TR class="light">
 		<TD class="fbottomu" align="right" colspan="3">
-			<A href="javascript:document.event.submit();" accesskey="s"><IMG src="img/save.gif" alt=""> {trans("Submit")}</A>
-			<A href="?m=eventlist"><IMG src="img/cancel.gif" alt=""> {trans("Cancel")}</A>
+			{button onclick="document.event.submit()" accesskey="s" icon="save" label="Submit"}
+			{button href="?m=eventlist" icon="cancel" label="Cancel"}
 		</TD>
 	</TR>
         {/block}

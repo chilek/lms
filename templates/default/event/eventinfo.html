@@ -13,7 +13,7 @@
     <THEAD>
 	<TR>
 		<TD>
-			{icon name="timetable"}
+			{icon name="timetable" fw=true}
 		</TD>
 		<TD class="bold">
 			{trans("Title:")}
@@ -26,7 +26,7 @@
     <TBODY>
 	<TR>
 		<TD>
-			{icon name="uptime"}
+			{icon name="uptime" fw=true}
 		</TD>
 		<TD class="bold nobr">
 			{trans("Begin time:")}
@@ -39,7 +39,7 @@
 	{if $event.begintime != $event.endtime || $event.enddate > $event.date}
 	<TR>
 		<TD>
-			{icon name="uptime"}
+			{icon name="uptime" fw=true}
 		</TD>
 		<TD class="bold nobr">
 			{trans("End time:")}
@@ -58,7 +58,7 @@
 {if $event.description}
 	<TR>
 		<TD>
-                    {icon name="description"}
+			{icon name="description" fw=true}
 		</TD>
 		<TD class="bold nobr">
 			{trans("Description:")}
@@ -76,7 +76,7 @@
 {/if}
 	<TR>
 		<TD>
-			{icon name="type"}
+			{icon name="type" fw=true}
 		</TD>
 		<TD class="bold">
 			{trans("Type:")}
@@ -87,7 +87,7 @@
 	</TR>
 	<TR>
 		<TD>
-                    {icon name="status"}
+			{icon name="status" fw=true}
 		</TD>
 		<TD class="bold">
 			{trans("Availability:")}
@@ -98,7 +98,7 @@
 	</TR>
 	<TR>
 		<TD>
-                    {icon name="user"}
+                    {icon name="user" fw=true}
 		</TD>
 		<TD class="bold nobr">
 			{trans("Created by:")}
@@ -110,7 +110,7 @@
 {if $event.creationdate != 0}
 	<TR>
 		<TD>
-                    {icon name="uptime"}
+                    {icon name="uptime" fw=true}
 		</TD>
 		<TD class="bold nobr">
 			{trans("Creation time:")}
@@ -123,7 +123,7 @@
 {if $event.moduserid != 0}
 	<TR>
 		<TD>
-                    {icon name="user"}
+                    {icon name="user" fw=true}
 		</TD>
 		<TD class="bold nobr">
 			<B>{trans("Last modified by:")}</B>
@@ -136,7 +136,7 @@
 {if $event.moddate != 0}
 	<TR>
 		<TD>
-                    {icon name="uptime"}
+                    {icon name="uptime" fw=true}
 		</TD>
 		<TD class="bold nobr">
 			{trans("Last modification time:")}
@@ -149,7 +149,7 @@
 {if $event.closeduserid != 0}
 	<TR>
 		<TD>
-                    {icon name="user"}
+                    {icon name="user" fw=true}
 		</TD>
 		<TD class="bold nobr">
 			<B>{trans("Closed by")}:</B>
@@ -162,7 +162,7 @@
 {if $event.closeddate != 0}
 	<TR>
 		<TD>
-                    {icon name="uptime"}
+                    {icon name="uptime" fw=true}
 		</TD>
 		<TD class="bold nobr">
 			{trans("Closed time")}:
@@ -175,7 +175,7 @@
 {if $event.customerid}
 	<TR>
 		<TD class="valign-top">
-			{icon name="customer"}
+			{icon name="customer" fw=true}
 		</TD>
 		<TD class="valign-top bold">
 			{trans("Customer:")}
@@ -197,25 +197,25 @@
 {/if}
 	<TR>
 		<TD>
-                    {icon name="location"}
+                    {icon name="location" fw=true}
 		</TD>
 		<TD class="bold">
 			{trans("Location:")}
 		</TD>
 		<TD class="nobr">
 		{if $event.netnode_name}
-		{icon name="netnode"} <a href="?m=netnodeinfo&id={$event.netnode_id}">{$event.netnode_name|escape}</a>
+		{icon name="netnode" fw=true} <a href="?m=netnodeinfo&id={$event.netnode_id}">{$event.netnode_name|escape}</a>
 		{if !empty($event.netnode_location)}
-		    <br>{icon name="location"} {$event.netnode_location|escape}{/if}
+		    <br>{icon name="location" fw=true} {$event.netnode_location|escape}{/if}
                 {else}
                     {if $event.customername}
-                        {icon name="customer"} <A href="?m=customerinfo&amp;id={$event.customerid}">{$event.customername|truncate:"30":"&hellip;":true}</A><br>
+                        {icon name="customer" fw=true} <A href="?m=customerinfo&amp;id={$event.customerid}">{$event.customername|truncate:"30":"&hellip;":true}</A><br>
                        {if !empty($event.address_id)}
-                            {icon name="location"} {$event.location|escape}
+                            {icon name="location" fw=true} {$event.location|escape}
                        {elseif !empty($event.nodeid)}
                        <a href="?m=nodeinfo&id={$event.nodeid}"> {$event.nodelocation|escape}</a>
                        {else}
-                           {icon name="location"} {$event.customerlocation|escape}
+                           {icon name="location" fw=true} {$event.customerlocation|escape}
                        {/if}
                     {/if}
                 {/if}
@@ -224,7 +224,7 @@
 	{if !empty($event.nodeid)}
 	<TR>
 		<TD>
-                    {icon name="node"}
+                    {icon name="node" fw=true}
 		</TD>
 		<TD class="bold">
 			{trans("Node:")}
@@ -237,7 +237,7 @@
 {if $event.note}
 	<TR>
 		<TD>
-                    {icon name="note"}
+                    {icon name="note" fw=true}
 		</TD>
 		<TD class="bold nobr">
 			{trans("Note:")}
@@ -256,7 +256,7 @@
 {if $event.userlist}
 	<TR>
 		<TD>
-                    {icon name="user"}
+                    {icon name="user" fw=true}
 		</TD>
 		<TD class="bold">
 			{trans("Users:")}
@@ -271,7 +271,7 @@
 {if isset($event.ticketid)}
 	<TR>
 		<TD>
-                    {icon name="helpdesk"}
+                    {icon name="helpdesk" fw=true}
 		</TD>
 		<TD class="bold">
 			{trans("Helpdesk assignment:")}

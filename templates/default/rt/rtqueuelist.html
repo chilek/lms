@@ -19,13 +19,13 @@
     <THEAD>
 	<TR>
 		<TD class="bold nobr">
-			{icon name="queue"}
+			{icon name="queue" fw=true}
 		</TD>
 		<TD class="bold nobr">
 			{trans("Queue")}:
 		</TD>
 		<TD>
-			{icon name="description"}
+			{icon name="description" fw=true}
 			{trans("Description")}:
 		</TD>
 		<TD class="text-right nobr bold">
@@ -76,12 +76,12 @@
 		data-popup-menu-title="{t a=$queue.name}Queue $a{/t}">
 		<TD class="nobr bold">
 		{if $queue.critical != 0}
-			{icon name="critical"}
+			{icon name="critical" fw=true}
 		{else}
 			{if $queue.unread}
-				{icon name="unread"}
+				{icon name="unread" fw=true}
 			{else}
-				{icon name="queue"}
+				{icon name="queue" fw=true}
 			{/if}
 		{/if}
 		</TD>
@@ -90,7 +90,7 @@
 		</TD>
 		<TD>
 			{if $queue.description}
-				{icon name="description" label=$queue.description}
+				{icon name="description" fw=true label=$queue.description}
 			{/if}
 		<TD>
 			<A HREF="mailto:{$queue.email}">{$queue.email}</A>
@@ -138,7 +138,7 @@
         <TFOOT>
 	<TR class="lms-ui-button-panel">
 		<TD COLSPAN="4" class="text-right bold">
-			{icon name="count" label="Total:"}
+			{icon name="count" fw=true label="Total:"}
 		</TD>
 		<TD class="text-center bold">
 			{sum array=$queues column=new}

@@ -126,7 +126,7 @@
 	<THEAD>
 	<TR>
 		<TD style="width: 1%;" class="bold nobr">
-			{icon name="message" label="Ticket History"}
+			{icon name="message" label="Ticket History" fw=true}
 		</TD>
 		<TD style="width: 99%;" class="text-right nobr" colspan="2">
 			<label>
@@ -249,14 +249,14 @@
 								<div class="message-attachments">
 									{if !empty($message.images) && count($message.images)}
 										<a href="#" class="attachment-gallery lms-ui-button" data-gallery='{json_encode($message.images)}'>
-											<i class="lms-ui-icon-gallery"></i>
+											{icon name="gallery" fw=true}
 										</a>
 									{/if}
 									{if $message.attachments}
 										{foreach $message.attachments as $attachment}
 											{documentview id="{$message.id}-{$attachment@index}" type=$attachment.contenttype name=$attachment.filename
 												url="?m=rtmessageview&tid={$ticket.ticketid}&mid={$message.id}&file={urlencode($attachment.filename)}&api=1"
-												text="<i class='lms-ui-icon-upload'></i> {$attachment.filename}"}
+												text="{icon name="upload" fw=true label="{$attachment.filename}"}"}
 										{/foreach}
 									{/if}
 								</div>

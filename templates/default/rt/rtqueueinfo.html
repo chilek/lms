@@ -12,7 +12,7 @@
     <THEAD>
 	<TR>
 	    <TD>
-		{icon name="queue"}
+		{icon name="queue" fw=true}
 	    </TD>
 	    <TD class="bold" colspan="2">{$queue.name} ({$queue.id|string_format:"%04d"})</TD>
 	</TR>
@@ -21,7 +21,7 @@
 	{if $queue.email}
 	<TR>
 	    <TD>
-		{icon name="mail"}
+		{icon name="mail" fw=true}
 	    </TD>
 	    <TD class="bold">{trans("E-mail:")}</TD>
 	    <TD>{$queue.email}</TD>
@@ -30,7 +30,7 @@
 	{if $queue.description}
 	<TR>
 	    <TD>
-		{icon name="description"}
+		{icon name="description" fw=true}
 	    </TD>
 	    <TD class="bold">
 			{trans("Description:")}
@@ -48,7 +48,7 @@
 	{/if}
 	<TR>
 		<TD>
-			{icon name="verifier"}
+			{icon name="verifier" fw=true}
 		</TD>
 		<TD class="bold">{trans("<!rt>Verifier:")}</TD>
 		<TD>
@@ -61,7 +61,7 @@
 	</TR>
 	<TR>
 	    <TD>
-		{icon name="user"}
+		{icon name="user" fw=true}
 	    </TD>
 	    <TD class="bold">{trans("Privileges:")}</TD>
 	    <TD>
@@ -104,7 +104,7 @@
 	{if !empty($queue.categories)}
 	<TR>
 		<TD>
-			{icon name="queue"}
+			{icon name="queue" fw=true}
 		</TD>
 		<TD class="bold nobr">
 			{trans("Default categories:")}
@@ -119,7 +119,7 @@
 	{if $queue.newticketsubject}
 	<TR>
 		<TD>
-			{icon name="mail"}
+			{icon name="mail" fw=true}
 		</TD>
 		<TD class="bold nobr">{trans("New ticket customer notification subject")}</TD>
 		<TD>
@@ -147,7 +147,7 @@
 	{if $queue.newmessagesubject}
 	<TR>
 		<TD>
-			{icon name="mail"}
+			{icon name="mail" fw=true}
 		</TD>
 		<TD class="bold nobr">{trans("New message customer notification subject")}</TD>
 		<TD>
@@ -175,7 +175,7 @@
 	{if $queue.resolveticketsubject}
 	<TR>
 		<TD style="width: 1%;">
-			{icon name="mail"}
+			{icon name="mail" fw=true}
 		</TD>
 		<TD class="bold nobr">{trans("Resolve ticket customer notification subject:")}</TD>
 		<TD>
