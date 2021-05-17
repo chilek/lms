@@ -466,24 +466,27 @@ foreach ($channels as $channel) {
     $upceil_n = (!$channel['upceil_n'] ? $uprate_n : $channel['upceil_n']);
     $downrate_n = $channel['downrate_n'];
     $downceil_n = (!$channel['downceil_n'] ? $downrate_n : $channel['downceil_n']);
-    $from = array("/\\\\n/", "/\%cid/", "/\%cname/", "/\%h/", "/\%class/",
-        "/\%uprate/", "/\%upceil/", "/\%downrate/", "/\%downceil/");
+
+    $from = array("\\\\n", '%cid', '%cname', '%h', '%class',
+        '%uprate', '%upceil', '%downrate', '%downceil');
 
     $to = array("\n", $channel['cid'], $channel['customer'], sprintf("%x", $x), sprintf("%d", $x),
         $uprate, $upceil, $downrate, $downceil);
-    $c_up = preg_replace($from, $to, $c_up);
-    $c_up_day = preg_replace($from, $to, $c_up_day);
+    $c_up = str_replace($from, $to, $c_up);
+    $c_up_day = str_replace($from, $to, $c_up_day);
+
     $to = array("\n", $channel['cid'], $channel['customer'], sprintf("%x", $x), sprintf("%d", $x),
         $uprate_n, $upceil_n, $downrate_n, $downceil_n);
-    $c_up_night = preg_replace($from, $to, $c_up_night);
+    $c_up_night = str_replace($from, $to, $c_up_night);
 
     $to = array("\n", $channel['cid'], $channel['customer'], sprintf("%x", $x), sprintf("%d", $x),
         $uprate, $upceil, $downrate, $downceil);
-    $c_down = preg_replace($from, $to, $c_down);
-    $c_down_day = preg_replace($from, $to, $c_down_day);
+    $c_down = str_replace($from, $to, $c_down);
+    $c_down_day = str_replace($from, $to, $c_down_day);
+
     $to = array("\n", $channel['cid'], $channel['customer'], sprintf("%x", $x), sprintf("%d", $x),
         $uprate_n, $upceil_n, $downrate_n, $downceil_n);
-    $c_down_night = preg_replace($from, $to, $c_down_night);
+    $c_down_night = str_replace($from, $to, $c_down_night);
 
     // ... and write to file
     fwrite($fh, $c_down);
@@ -521,23 +524,25 @@ foreach ($channels as $channel) {
             $mac = array_shift($mac);
         }
 
-        $from = array("/\\\\n/", "/\%n/", "/\%if/", "/\%i16/", "/\%i/", "/\%ms/",
-            "/\%m/", "/\%x/", "/\%o1/", "/\%o2/", "/\%o3/", "/\%o4/",
-            "/\%h1/", "/\%h2/", "/\%h3/", "/\%h4/", "/\%h/", "/\%class/");
+        $from = array("\\\\n", '%n', '%if', '%i16', '%i', '%ms',
+            '%m', '%x', '%o1', '%o2', '%o3', '%o4',
+            '%h1', '%h2', '%h3', '%h4', '%h', '%class', '%nodeid');
 
         $to = array("\n", $host['name'], $networks[$host['network']]['interface'], $h,
             $host['ip'], $host['mac'], $mac, sprintf("%x", $mark), $o1, $o2, $o3, $o4,
-            $h1, $h2, $h3, $h4, sprintf("%x", $x), sprintf("%d", $x));
-        $h_up = preg_replace($from, $to, $h_up);
-        $h_up_day = preg_replace($from, $to, $h_up_day);
-        $h_up_night = preg_replace($from, $to, $h_up_night);
+            $h1, $h2, $h3, $h4, sprintf("%x", $x), sprintf("%d", $x), $host['id']);
+
+        $h_up = str_replace($from, $to, $h_up);
+        $h_up_day = str_replace($from, $to, $h_up_day);
+        $h_up_night = str_replace($from, $to, $h_up_night);
 
         $to = array("\n", $host['name'], $networks[$host['network']]['interface'], $h,
             $host['ip'], $host['mac'], $mac, sprintf("%x", $mark), $o1, $o2, $o3, $o4,
-            $h1, $h2, $h3, $h4, sprintf("%x", $x), sprintf("%d", $x));
-        $h_down = preg_replace($from, $to, $h_down);
-        $h_down_day = preg_replace($from, $to, $h_down_day);
-        $h_down_night = preg_replace($from, $to, $h_down_night);
+            $h1, $h2, $h3, $h4, sprintf("%x", $x), sprintf("%d", $x), $host['id']);
+
+        $h_down = str_replace($from, $to, $h_down);
+        $h_down_day = str_replace($from, $to, $h_down_day);
+        $h_down_night = str_replace($from, $to, $h_down_night);
 
         // ...write to file
         fwrite($fh, $h_down);
@@ -550,13 +555,13 @@ foreach ($channels as $channel) {
         if ($channel['climit']) {
             $cl = $script_climit;
 
-            $from = array("/\\\\n/", "/\%climit/", "/\%n/", "/\%if/", "/\%i16/", "/\%i/",
-                "/\%ms/", "/\%m/", "/\%o1/", "/\%o2/", "/\%o3/", "/\%o4/",
-                "/\%h1/", "/\%h2/", "/\%h3/", "/\%h4/");
+            $from = array("\\\\n", '%climit', '%n', '%if', '%i16', '%i',
+                '%ms', '%m', '%o1', '%o2', '%o3', '%o4',
+                '%h1', '%h2', '%h3', '%h4', '%nodeid');
             $to = array("\n", $channel['climit'], $host['name'],
                 $networks[$host['network']]['interface'], $h, $host['ip'], $host['mac'],
-                $mac, $o1, $o2, $o3, $o4, $h1, $h2, $h3, $h4);
-            $cl = preg_replace($from, $to, $cl);
+                $mac, $o1, $o2, $o3, $o4, $h1, $h2, $h3, $h4, $host['id']);
+            $cl = str_replace($from, $to, $cl);
 
             fwrite($fh, $cl);
         }
@@ -564,13 +569,13 @@ foreach ($channels as $channel) {
         if ($channel['plimit']) {
             $pl = $script_plimit;
 
-            $from = array("/\\\\n/", "/\%plimit/", "/\%n/", "/\%if/", "/\%i16/", "/\%i/",
-                "/\%ms/", "/\%m/", "/\%o1/", "/\%o2/", "/\%o3/", "/\%o4/",
-                "/\%h1/", "/\%h2/", "/\%h3/", "/\%h4/");
+            $from = array("\\\\n", '%plimit', '%n', '%if', '%i16', '%i',
+                '%ms', '%m', '%o1', '%o2', '%o3', '%o4',
+                '%h1', '%h2', '%h3', '%h4', '%nodeid');
             $to = array("\n", $channel['plimit'], $host['name'],
                 $networks[$host['network']]['interface'], $h, $host['ip'], $host['mac'],
-                $mac, $o1, $o2, $o3, $o4, $h1, $h2, $h3, $h4);
-            $pl = preg_replace($from, $to, $pl);
+                $mac, $o1, $o2, $o3, $o4, $h1, $h2, $h3, $h4, $host['id']);
+            $pl = str_replace($from, $to, $pl);
 
             fwrite($fh, $pl);
         }
