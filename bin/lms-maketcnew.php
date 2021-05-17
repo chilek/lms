@@ -467,7 +467,7 @@ foreach ($channels as $channel) {
     $downrate_n = $channel['downrate_n'];
     $downceil_n = (!$channel['downceil_n'] ? $downrate_n : $channel['downceil_n']);
 
-    $from = array("\\\\n", '%cid', '%cname', '%h', '%class',
+    $from = array('\\n', '%cid', '%cname', '%h', '%class',
         '%uprate', '%upceil', '%downrate', '%downceil');
 
     $to = array("\n", $channel['cid'], $channel['customer'], sprintf("%x", $x), sprintf("%d", $x),
@@ -524,7 +524,7 @@ foreach ($channels as $channel) {
             $mac = array_shift($mac);
         }
 
-        $from = array("\\\\n", '%n', '%if', '%i16', '%i', '%ms',
+        $from = array('\\n', '%n', '%if', '%i16', '%i', '%ms',
             '%m', '%x', '%o1', '%o2', '%o3', '%o4',
             '%h1', '%h2', '%h3', '%h4', '%h', '%class', '%nodeid');
 
@@ -555,7 +555,7 @@ foreach ($channels as $channel) {
         if ($channel['climit']) {
             $cl = $script_climit;
 
-            $from = array("\\\\n", '%climit', '%n', '%if', '%i16', '%i',
+            $from = array('\\n', '%climit', '%n', '%if', '%i16', '%i',
                 '%ms', '%m', '%o1', '%o2', '%o3', '%o4',
                 '%h1', '%h2', '%h3', '%h4', '%nodeid');
             $to = array("\n", $channel['climit'], $host['name'],
@@ -569,7 +569,7 @@ foreach ($channels as $channel) {
         if ($channel['plimit']) {
             $pl = $script_plimit;
 
-            $from = array("\\\\n", '%plimit', '%n', '%if', '%i16', '%i',
+            $from = array('\\n', '%plimit', '%n', '%if', '%i16', '%i',
                 '%ms', '%m', '%o1', '%o2', '%o3', '%o4',
                 '%h1', '%h2', '%h3', '%h4', '%nodeid');
             $to = array("\n", $channel['plimit'], $host['name'],
