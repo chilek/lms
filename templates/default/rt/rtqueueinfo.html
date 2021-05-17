@@ -239,36 +239,39 @@
 		{button icon="view" href="?m=rtqueueview&id={$queue.id}" label="Browse"}
 		{button icon="save" href="?m=rtqueueedit&id={$queue.id}" label="Edit"}
 		{if $queue.deleted == 1 && $queue.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
-			<A id="restore-rtqueue" HREF="?m=rtrestore&id={$queue.id}&qaction=restore" data-name="{$queue.name}"><IMG src="img/reload.gif" alt="{trans("Restore<!RT>")}" title="{trans("Restore<!RT>")}"> {trans("Restore<!RT>")}</A>
-			<A id="remove-rtqueue" HREF="?m=rtremove&id={$queue.id}&qaction=delperm" data-name="{$queue.name}"><IMG src="img/delete.gif" alt="{trans("Delete permanently")}" title="{trans("Delete permanently")}"> {trans("Delete permanently")}</A>
+			{button icon="restore" label="Restore<!RT>" id="restore-rtqueue" data_name=$queue.name data_resource_id=$queue.id}
+			{button icon="delete" label="Delete permanently" id="remove-rtqueue" data_name=$queue.name data_resource_id=$queue.id}
 		{else}
-			<A id="delete-rtqueue" HREF="?m=rtqueuedel&id={$queue.id}&qaction=delete" data-name="{$queue.name}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"> {trans("Delete")}</A>
+			{button icon="delete" label="Delete" id="delete-rtqueue" data_name=$queue.name data_resource_id=$queue.id}
 		{/if}
 	    </TD>
 	</TR>
     </TBODY>
 </TABLE></P>
-	<script>
-		$('#delete-rtqueue').click(function() {
+<script>
+
+	$(function() {
+		$('#delete-rtqueue').click(function () {
 			var name = $(this).attr('data-name');
-			confirmDialog($t("Are you sure, you want to remove queue '$a' and all assigned tickets and messages?", name), this).done(function() {
-				location.href = $(this).attr('href');
+			confirmDialog($t("Are you sure, you want to remove queue '$a' and all assigned tickets and messages?", name), this).done(function () {
+				location.href = '?m=rtqueuedel&qaction=delete&id=' + $(this).attr('data-resource-id');
 			});
-			return false;
 		});
-		$('#restore-rtqueue').click(function() {
+
+		$('#restore-rtqueue').click(function () {
 			var name = $(this).attr('data-name');
-			confirmDialog($t("Are you sure, you want to restore queue '$a' and all assigned tickets and messages?", name), this).done(function() {
-				location.href = $(this).attr('href');
+			confirmDialog($t("Are you sure, you want to restore queue '$a' and all assigned tickets and messages?", name), this).done(function () {
+				location.href = '?m=rtrestore&qaction=restore&id=' + $(this).attr('data-resource-id');
 			});
-			return false;
 		});
-		$('#remove-rtqueue').click(function() {
+
+		$('#remove-rtqueue').click(function () {
 			var name = $(this).attr('data-name');
-			confirmDialog($t("Are you sure, you want to permanently remove queue '$a' and all assigned tickets and messages?", name), this).done(function() {
-				location.href = $(this).attr('href');
+			confirmDialog($t("Are you sure, you want to permanently remove queue '$a' and all assigned tickets and messages?", name), this).done(function () {
+				location.href = '?m=rtremove&qaction=delperm&id=' + $(this).attr('data-resource-id');
 			});
-			return false;
 		});
-	</script>
+	});
+
+</script>
 {/block}
