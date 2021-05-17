@@ -8,6 +8,11 @@
         white-space: nowrap;
     }
 
+	#network-connection > * {
+		margin-top: 0.2em;
+		margin-bottom: 0.2em;
+	}
+
 	.cell-flex {
 		display: flex;
 		flex-wrap: wrap;
@@ -180,7 +185,7 @@
 									<IMG SRC="img/netdev.gif" ALT="{trans("Net device:")}">
 								</TD>
 								<TD class="cell-flex">
-									<div>
+									<div id="network-connection">
 												<a href="javascript: void(0);" onclick="return netDevChooseWin(document.nodeadd.elements['nodedata[netdev]']);" {tip trigger="netdev" text="Search device"}>&raquo;&raquo;&raquo;</A>
 									<SELECT SIZE="1" NAME="nodedata[netdev]" {tip class="lms-ui-advanced-select" text="Select network device (optional)" trigger="netdev"}
 											{if ConfigHelper::checkConfig('phpui.node_to_network_device_connection_required')} required{/if}
