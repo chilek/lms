@@ -40,7 +40,7 @@ if ($SESSION->is_set('ntlp.'.$_GET['id']) && ! isset($_GET['page'])) {
 }
 
 $SESSION->save('ntlp.'.$_GET['id'], $page);
-    
+
 $network = $LMS->GetNetworkRecord($_GET['id'], $page, ConfigHelper::getConfig('phpui.networkhosts_pagelimit'));
 
 if (isset($_POST['networkdata'])) {
@@ -78,7 +78,8 @@ if (isset($_POST['networkdata'])) {
             if ($LMS->NetworkOverlaps($networkdata['address'], prefix2mask($networkdata['prefix']), $networkdata['hostid'], $networkdata['id'])) {
                 $error['address'] = trans('Specified IP address overlaps with other network!');
             } else {
-                if ($network['assigned'] > ($networkdata['size']-2)) {
+                if (($networkdata['perfix'] < 31 && $network['assigned'] > $networkdata['size'] - 2)
+                    || ($networkdata['perfix'] == 31 && $network['assigned'] > $networkdata['size'])) {
                     $error['address'] = trans('New network is too small!');
                 } else {
                     $node = $DB->GetRow(
@@ -86,20 +87,20 @@ if (isset($_POST['networkdata'])) {
 							    FROM nodes WHERE (ipaddr>? AND ipaddr<?)',
                         array($network['addresslong'],ip_long($network['broadcast']))
                     );
-                                
+
                     $node_pub = $DB->GetRow(
                         'SELECT MAX(ipaddr_pub) AS last, MIN(ipaddr_pub) AS first
 							    FROM nodes WHERE (ipaddr_pub>? AND ipaddr_pub<?)',
                         array($network['addresslong'],ip_long($network['broadcast']))
                     );
-                
+
                     if ($node_pub['first']) {
                         $node['first'] = min($node['first'], $node_pub['first']);
                     }
                     if ($node_pub['last']) {
                         $node['last'] = min($node['last'], $node_pub['last']);
                     }
-                    
+
                     if (($node['first'] && $node['first'] < $networkdata['addresslong']) ||
                         ($node['last'] && $node['last'] >= ip_long(getbraddr($networkdata['address'], prefix2mask($networkdata['prefix']))))) {
                         $shift = $networkdata['addresslong'] - $network['addresslong'];

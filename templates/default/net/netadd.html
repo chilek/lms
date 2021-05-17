@@ -26,17 +26,35 @@
 	</TR>
 	</THEAD>
 	<TBODY>
-	<TR>
-		<TD class="bold nobr"><IMG src="img/ip.gif" alt=""> {trans("Address/prefix:")}</TD>
-		<TD class="bold"><INPUT type="text" size="23" name="netadd[address]" value="{$netadd.address}" required {tip text="Enter IP address and select mask" trigger="address"}> / <SELECT size="1" title="Prefixlen" name="netadd[prefix]">{section name=prefixlist loop=$prefixlist.id}<OPTION value="{$prefixlist.id[prefixlist]}"{if $prefixlist.id[prefixlist] == $netadd.prefix} SELECTED{/if}>{$prefixlist.value[prefixlist]}</OPTION>{/section}</SELECT>
-		<TD class="bold nobr" rowspan="2">
-			<IMG src="img/dhcp.gif" alt=""> {trans("DHCP range:")}
-		</TD>
-		<TD rowspan="2">
-			<INPUT type="text" size="23" name="netadd[dhcpstart]" value="{$netadd.dhcpstart}" {tip text="Enter beginning of DHCP range (optional)" trigger="dhcpstart"}><BR>
-			<INPUT type="text" size="23" name="netadd[dhcpend]" value="{$netadd.dhcpend}" {tip text="Enter end of DHCP range (optional)" trigger="dhcpend"}>
-		</TD>
-	</TR>
+	<tr>
+		<td class="nobr">
+			<img src="img/ip.gif" alt="">
+			<strong>{trans("Address/prefix:")}</strong>
+		</td>
+		<td>
+			<input type="text" size="23" name="netadd[address]" value="{$netadd.address}" required
+				{tip text="Enter IP address and select mask" trigger="address"}>
+			/
+			<select size="1" name="netadd[prefix]">
+				{section name=prefixlist loop=$prefixlist.id}
+					<option value="{$prefixlist.id[prefixlist]}"
+						{if $prefixlist.id[prefixlist] == $netadd.prefix} selected{/if}
+						>{$prefixlist.value[prefixlist]}</option>
+				{/section}
+			</select>
+		</td>
+		<td class="nobr" rowspan="2">
+			<img src="img/dhcp.gif" alt="">
+			<strong>{trans("DHCP range:")}</strong>
+		</td>
+		<td rowspan="2">
+			<input type="text" size="23" name="netadd[dhcpstart]" value="{$netadd.dhcpstart}"
+				{tip text="Enter beginning of DHCP range (optional)" trigger="dhcpstart"}>
+			<br>
+			<input type="text" size="23" name="netadd[dhcpend]" value="{$netadd.dhcpend}"
+				{tip text="Enter end of DHCP range (optional)" trigger="dhcpend"}>
+		</td>
+	</tr>
 	<TR>
 		<TD class="bold nobr"><IMG src="img/mac.gif" alt=""> {trans("Interface:")}</TD>
 		<TD colspan="3">
