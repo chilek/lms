@@ -37,7 +37,13 @@
 }
 
 .lms-ui-icon-spacer {
-  color: transparent;
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-circle;
+    color: transparent;
+  }
 }
 
 .lms-ui-icon-map-pin {
