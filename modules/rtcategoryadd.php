@@ -70,6 +70,7 @@ if (isset($_POST['category'])) {
     }
 } elseif (isset($_GET['id'])) {
     $category = $LMS->GetCategory($_GET['id']);
+    $category['name'] = trans('$a (clone)', $category['name']);
     $category['users'] = array_filter(
         Utils::array_column($category['owners'], null, 'id'),
         function ($user) {
