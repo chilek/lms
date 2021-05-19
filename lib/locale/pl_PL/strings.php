@@ -24,6 +24,14 @@
  *  $Id$
  */
 
+$_LANG['Billing according to the net price'] = 'Naliczanie według ceny netto';
+$_LANG['Billing according to the gross price'] = 'Naliczanie według ceny brutto';
+$_LANG['according to the net price'] = 'według ceny netto';
+$_LANG['according to the gross price'] = 'według ceny brutto';
+$_LANG['Gross'] = 'Brutto';
+$_LANG['Net'] = 'Netto';
+$_LANG['Currency'] = 'Waluta';
+
 $_LANG['Birth date cannot be empty for natural person!'] = 'Data urodzenia nie może być pusta w przypadku osoby fizycznej!';
 $_LANG['First name cannot be empty for natural person!'] = 'Imię nie może być puste w przypadku osoby fizycznej!';
 $_LANG['Last name cannot be empty for natural person!'] = 'Nazwisko nie może być puste w przypadku osoby fizycznej!';
