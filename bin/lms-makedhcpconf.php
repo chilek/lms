@@ -328,11 +328,13 @@ foreach ($networks as $networkid => $net) {
         $range = str_replace(
             array(
                 '\\n',
+                '\\t',
                 '%start%',
                 '%end%',
             ),
             array(
                 "\n",
+                "\t",
                 $net['dhcpstart'],
                 $net['dhcpend'],
             ),
