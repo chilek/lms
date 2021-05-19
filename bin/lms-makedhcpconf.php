@@ -308,6 +308,9 @@ foreach ($networks as $networkid => $net) {
     $range_format = $global_range_format;
 
     if (!empty($CONFIG['dhcp-' . $net['name']])) {
+        if (!empty($CONFIG['dhcp-' . $net['name']]['begin'])) {
+            $begin = $CONFIG['dhcp-' . $net['name']]['begin'];
+        }
         if (!empty($CONFIG['dhcp-' . $net['name']]['default_lease_time'])) {
             $default_lease = $CONFIG['dhcp-' . $net['name']]['default_lease_time'];
         }
@@ -320,10 +323,32 @@ foreach ($networks as $networkid => $net) {
         if (!empty($CONFIG['dhcp-' . $net['name']]['range_format'])) {
             $range_format = $CONFIG['dhcp-' . $net['name']]['range_format'];
         }
+    } else {
+        $begin = '';
     }
 
     $net_prefix .= $line_prefix . "subnet " . long_ip($net['address']) . " netmask " . long_ip($net['mask'])
         . " { # Network " . $net['name'] . " (ID: " . $net['id'] . ")\n";
+
+    if (!empty($begin)) {
+        $begin = str_replace(
+            array(
+                '\\n',
+                '\\t',
+            ),
+            array(
+                "\n",
+                "\t",
+            ),
+            $begin
+        );
+        foreach (explode("\n", $begin) as $line) {
+            if (!empty($line)) {
+                $net_prefix .= $line_prefix . "\t" . $line . "\n";
+            }
+        }
+    }
+
     if (!empty($net['dhcpstart'])) {
         $range = str_replace(
             array(
