@@ -136,7 +136,7 @@
 				{include file="rt/rtcategoryselection.html" categories=$categories name_prefix="ticket[categories]"}
 			{/box_row}
 
-			{box_row icon="message" label="Notify users:" labelid="notify"}
+			{box_row icon="message" label="Notify users:" labelid="notify" icon_class="fa-fw"}
 				<INPUT type="checkbox" name="ticket[notify]" id="notify" value="1"{if $ticket.notify} CHECKED{/if}>
 			{/box_row}
 			{/block}
