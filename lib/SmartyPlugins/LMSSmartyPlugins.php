@@ -988,7 +988,7 @@ class LMSSmartyPlugins
         // optional - text label
         $label = isset($params['label']) ? trans($params['label']) : null;
         // optional - if icon should have fixed width
-        $fw = isset($params['fw']) && !empty($params['fw']);
+        $fw = !isset($params['fw']) || !empty($params['fw']);
 
         $data_attributes = '';
         foreach ($params as $key => $value) {

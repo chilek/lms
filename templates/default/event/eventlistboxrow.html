@@ -39,22 +39,22 @@
     </TD>
     <TD data-target-url="?m=eventinfo&id={$event.id}">
         <a href="?m=eventinfo&id={$event.id}"><i class="lms-ui-icon-timetable lms-ui-tooltip-eventinfoshort" data-resourceid="{$event.id}"></i> <span class="bold" {if !$event.closed}style="color:black"{/if}>{$event.title|escape}</span></a>
-        {if !ConfigHelper::checkConfig('phpui.timetable_hide_description')}{if $event.description != ''}<br>{icon name="description" fw=true} {$event.description}{/if}{/if}
-        {if $event.note != ''}<span{if !$event.closed} style="color: red;"{/if}><br>{icon name="note" fw=true} {$event.note|escape}</span>{/if}
+        {if !ConfigHelper::checkConfig('phpui.timetable_hide_description')}{if $event.description != ''}<br>{icon name="description"} {$event.description}{/if}{/if}
+        {if $event.note != ''}<span{if !$event.closed} style="color: red;"{/if}><br>{icon name="note"} {$event.note|escape}</span>{/if}
     </TD>
     <TD class="nobr" colspan="2" data-target-url="?m=eventinfo&id={$event.id}">
         {if $event.netnode_name}
-        {icon name="netnode" fw=true} <a href="?m=netnodeinfo&id={$event.netnode_id}">{$event.netnode_name}</a>
-            {if !empty($event.netnode_location)}<br>{icon name="location" fw=true} {$event.netnode_location}{/if}
+        {icon name="netnode"} <a href="?m=netnodeinfo&id={$event.netnode_id}">{$event.netnode_name}</a>
+            {if !empty($event.netnode_location)}<br>{icon name="location"} {$event.netnode_location}{/if}
         {else}
         {if $event.customername}
-            {icon name="customer" fw=true} <A href="?m=customerinfo&amp;id={$event.customerid}">{$event.customername|truncate:"30":"&hellip;":true}</A><br>
+            {icon name="customer"} <A href="?m=customerinfo&amp;id={$event.customerid}">{$event.customername|truncate:"30":"&hellip;":true}</A><br>
         {if !empty($event.address_id)}
-            {icon name="location" fw=true} {$event.location|escape}
+            {icon name="location"} {$event.location|escape}
         {elseif !empty($event.nodeid)}
             <a href="?m=nodeinfo&id={$event.nodeid}"> {$event.nodelocation|escape}</a>
         {else}
-            {icon name="location" fw=true} {$event.customerlocation|escape}
+            {icon name="location"} {$event.customerlocation|escape}
         {/if}
         {/if}
         {/if}
@@ -66,13 +66,13 @@
                     <a href="#" class="lms-ui-button" title="{trans("Show in timetable")}"
                        data-title="{trans("Show in timetable")}"
                        onclick="location.href = '?m=eventlist&year={strftime('%Y', $event.date)}&month={strftime('%m', $event.date)}&day={strftime('%d', $event.date)}';">
-                        {icon name="timetable" fw=true}
+                        {icon name="timetable"}
                     </a>
                 {/if}
                 <a href="#" class="lms-ui-button lms-ui-button-clipboard"
                    data-clipboard-text="{$url}?m=eventinfo&id={$event.id}"
                    data-title="{trans("Click copies to clipboard")}">
-                   {icon name="clipboard" fw=true}
+                   {icon name="clipboard"}
                 </a>
                 {if ConfigHelper::checkPrivilege('timetable_management')}
                     {button type="link" icon="clone" href="?m=eventadd&id={$event.id}" tip="Clone"}

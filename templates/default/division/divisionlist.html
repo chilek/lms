@@ -15,7 +15,7 @@
 	<thead>
 		<tr>
 			<td class="nobr">
-				{icon name="division" fw=true}
+				{icon name="division"}
 				<strong>{trans("Name:")}</strong>
 			</td>
 			<td class="text-right">
@@ -49,7 +49,7 @@
 		{foreach $divisionlist as $division}
 			<tr class="{if $division.status} blend{/if}" data-name="{$division.shortname|escape}">
 				<td class="nobr" data-target-url="?m=divisionedit&id={$division.id}">
-					{icon name="division" fw=true}
+					{icon name="division"}
 					<strong>{$division.shortname|escape}</strong>
 				</td>
 				<td class="text-right nobr" data-target-url="?m=divisionedit&id={$division.id}">

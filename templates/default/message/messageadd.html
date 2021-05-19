@@ -143,7 +143,7 @@
     <thead>
 		<tr>
 			<td>
-				{icon name="filter" fw=true}
+				{icon name="filter"}
 			</td>
 			<td class="nobr">
 				<strong>{trans("Type:")}</strong>
@@ -196,7 +196,7 @@
 				{$customer = reset($message.customers)}
 				<tr id="customer-filter">
 					<td class="valign-top">
-						{icon name="customer" fw=true}
+						{icon name="customer"}
 					</td>
 					<td class="valign-top bold nobr">
 						<span id="customer-recipient"{if $message.type == $smarty.const.MSG_ANYSMS} style="display: none;"{/if}>{trans("Recipient:")}</span>
@@ -222,7 +222,7 @@
 		{else}
 			<tr id="customer-filter"{if $message.type == $smarty.const.MSG_ANYSMS} style="display: none;"{/if}>
 				<td>
-					{icon name="customergroup" fw=true}
+					{icon name="customergroup"}
 				</td>
 				<td class="nobr">
 					<strong>{trans("Recipients:")}</strong>
@@ -349,7 +349,7 @@
 		{if $message.emailcount}
 			<tr id="customermails"{if $message.type != $smarty.const.MSG_MAIL} style="display: none;"{/if}>
 				<td class="valign-top">
-					{icon name="mail" fw=true}
+					{icon name="mail"}
 				</td>
 				<td class="nobr valign-top">
 					<strong>{trans("E-mail:")}</strong>
@@ -401,7 +401,7 @@
 		{if $message.phonecount}
 			<tr id="customerphones"{if $message.type != $smarty.const.MSG_SMS} style="display: none;"{/if}>
 				<td class="valign-top">
-					{icon name="sms" fw=true}
+					{icon name="sms"}
 				</td>
 				<td class="nobr valign-top">
 					<strong>{trans("Phone:")}</strong>
@@ -452,7 +452,7 @@
 		{/if}
 		<tr id="mailsender"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
 			<td>
-				{icon name="mail" fw=true}
+				{icon name="mail"}
 			</td>
 			<td class="nobr">
 				<strong>{trans("Sender E-mail:")}</strong>
@@ -467,7 +467,7 @@
 		</tr>
 		<tr id="mailfrom"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
 			<td>
-				{icon name="user" fw=true}
+				{icon name="user"}
 			</td>
 			<td>
 				<strong>{trans("Sender:")}</strong>
@@ -480,7 +480,7 @@
 		{if $users}
 		<tr id="users"{if $message.type != $smarty.const.MSG_ANYSMS} style="display: none;"{/if}>
 			<td>
-				{icon name="user" fw=true}
+				{icon name="user"}
 			</td>
 			<td>
 				<strong>{trans("Users:")}</strong>
@@ -505,7 +505,7 @@
 		{/if}
 		<tr id="phonenumber"{if $message.type != $smarty.const.MSG_ANYSMS} style="display: none;"{/if}>
 			<td>
-				{icon name="sms" fw=true}
+				{icon name="sms"}
 			</td>
 			<td>
 				<strong>{trans("Phone number:")}</strong>
@@ -517,7 +517,7 @@
 		</tr>
 		<tr>
 			<td>
-				{icon name="message" fw=true}
+				{icon name="message"}
 			</td>
 			<td>
 				<strong>{trans("Subject:")}</strong>
@@ -529,7 +529,7 @@
 		</tr>
 		<tr>
 			<td>
-				{icon name="document" fw=true}
+				{icon name="document"}
 			</td>
 			<td class="nobr">
 				<strong>{trans("Message template:")}</strong>
@@ -546,7 +546,7 @@
 		</tr>
 		<tr id="mailbody"{if $message.type > $smarty.const.MSG_MAIL && $message.type < $smarty.const.MSG_WWW} style="display: none"{/if}>
 			<td>
-				{icon name="edit" fw=true}
+				{icon name="edit"}
 			</td>
 			<td class="nobr">
 				<strong>{trans("Message body:")}</strong>
@@ -559,7 +559,7 @@
 		</tr>
 		<tr id="smsbody"{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} style="display: none"{/if}>
 			<td>
-				{icon name="edit" fw=true}
+				{icon name="edit"}
 			</td>
 			<td class="nobr">
 				<strong>{trans("Message body:")}</strong>
@@ -605,7 +605,7 @@
 		</tr>
 		<tr id="attachment"{if $message.type > $smarty.const.MSG_MAIL} style="display: none"{/if}>
 			<td>
-				{icon name="fileupload" fw=true}
+				{icon name="fileupload"}
 			</td>
 			<td class="nobr">
 				<strong>{trans("Attachments:")}</strong>

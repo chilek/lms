@@ -28,7 +28,7 @@
 	<thead>
 		<tr>
 			<td class="nobr" colspan="3">
-				{icon name="login" fw=true}
+				{icon name="login"}
 				<strong>{$userinfo.login} ({$userinfo.id|string_format:"%04d"})</strong>
 			</td>
 		</tr>
@@ -36,7 +36,7 @@
 	<tbody>
 		<tr>
 			<td>
-				{icon name="user" fw=true}
+				{icon name="user"}
 			</td>
 			<td class="nobr">
 				<strong>{trans("First name:")}</strong>
@@ -47,7 +47,7 @@
 		</tr>
 		<tr>
 			<td>
-				{icon name="user" fw=true}
+				{icon name="user"}
 			</td>
 			<td class="nobr">
 				<strong>{trans("Last name:")}</strong>
@@ -59,7 +59,7 @@
 {if $userinfo.issuer}
 		<tr>
 			<td>
-				{icon name="document" fw=true}
+				{icon name="document"}
 			</td>
 			<td class="nobr">
 				<strong>{trans("Issuer")}</strong>
@@ -72,7 +72,7 @@
 {if $userinfo.position}
 		<tr>
 			<td class="nobr">
-				{icon name="info" fw=true}
+				{icon name="info"}
 			</td>
 			<td>
 				<strong>{trans("Position:")}</strong>
@@ -85,7 +85,7 @@
 {if $userinfo.email}
 		<tr>
 			<td>
-				{icon name="mail" fw=true}
+				{icon name="mail"}
 			</td>
 			<td>
 				<strong>{trans("E-mail:")}</strong>
@@ -98,7 +98,7 @@
 {if $userinfo.phone}
 		<tr>
 			<td>
-				{icon name="sms" fw=true}
+				{icon name="sms"}
 			</td>
 			<td>
 				<strong>{trans("Phone:")}</strong>
@@ -110,7 +110,7 @@
 {/if}
 		<tr>
 			<td>
-				{icon name="options" fw=true}
+				{icon name="options"}
 			</td>
 			<td>
 				<strong>{trans("Notification:")}</strong>
@@ -122,9 +122,9 @@
 		<tr>
 			<td>
 				{if $userinfo.access}
-					{icon name="connected" fw=true}
+					{icon name="connected"}
 				{else}
-					{icon name="disconnected" fw=true}
+					{icon name="disconnected"}
 				{/if}
 			</td>
 			<td>
@@ -137,7 +137,7 @@
 {if $userinfo.accessfrom || $userinfo.accessto}
 		<tr>
 			<td>
-				{icon name="calendar" fw=true}
+				{icon name="calendar"}
 			</td>
 			<td>
 				<strong>{trans("Account active:")}</strong>
@@ -151,7 +151,7 @@
 {if $userinfo.passwdforcechange}
 		<tr>
 			<td>
-				{icon name="password" fw=true}
+				{icon name="password"}
 			</td>
 			<td class="nobr">
 				<strong>{trans("Force password change:")}</strong>
@@ -163,7 +163,7 @@
 {/if}
 		<tr>
 			<td>
-				{icon name="password" fw=true}
+				{icon name="password"}
 			</td>
 			<td class="nobr">
 				<strong>{trans("Two factor authentication:")}</strong>
@@ -193,7 +193,7 @@
 {/if}
 		<tr>
 			<td>
-				{icon name="ipnetwork" fw=true}
+				{icon name="ipnetwork"}
 			</td>
 			<td class="nobr">
 				<strong>{trans("Allowed hosts:")}</strong>
@@ -204,7 +204,7 @@
 		</tr>
 		<tr>
 			<td>
-				{icon name="password" fw=true}
+				{icon name="password"}
 			</td>
 			<td class="nobr">
 				<strong>{trans("Password expiration:")}</strong>
@@ -215,7 +215,7 @@
 		</tr>
 		<tr>
 			<td>
-				{icon name="password" fw=true}
+				{icon name="password"}
 			</td>
 			<td class="nobr">
 				<strong>{trans("Last password change:")}</strong>
@@ -226,7 +226,7 @@
 		</tr>
 		<tr>
 			<td>
-				{icon name="permissions" fw=true}
+				{icon name="permissions"}
 			</td>
 			<td class="nobr">
 				<strong>{trans("Access rights:")}</strong>
@@ -244,7 +244,7 @@
 
 		<tr>
 			<td>
-				{icon name="usergroup" fw=true}
+				{icon name="usergroup"}
 			</td>
 			<td class="nobr">
 				<strong>{trans("User groups:")}</strong>
@@ -260,7 +260,7 @@
 
 		<tr>
 			<td>
-				{icon name="customergroup" fw=true}
+				{icon name="customergroup"}
 			</td>
 			<td class="nobr">
 				<strong>{trans("Excluded groups:")}</strong>
@@ -283,7 +283,7 @@
 
 		<tr>
 			<td>
-				{icon name="division" fw=true}
+				{icon name="division"}
 			</td>
 			<td class="nobr">
 				<strong>{trans("Divisions:")}</strong>

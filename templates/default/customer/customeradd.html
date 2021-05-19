@@ -116,7 +116,7 @@
 				{block name="customeradd-leftcolumn"}
 				<TR>
 					<TD>
-						{if $customeradd.status}{icon name="customer-status-{$_CSTATUSES[$customerinfo.status].alias}" fw=true}{else}{icon name="customer-status-connected" fw=true}{/if}
+						{if $customeradd.status}{icon name="customer-status-{$_CSTATUSES[$customerinfo.status].alias}"}{else}{icon name="customer-status-connected"}{/if}
 					</TD>
 					<TD>
 						<SELECT size="1" name="customeradd[status]" {tip text="Select customer state" trigger="status"}>
@@ -129,7 +129,7 @@
 				{if $divisions}
 				<TR>
 					<TD>
-						{icon name="division" fw=true}
+						{icon name="division"}
 					</TD>
 					<TD>
 						<SELECT size="1" name="customeradd[divisionid]" {tip text="Select division" trigger="divisionid"}>
@@ -143,7 +143,7 @@
 				{if $groups}
 				<TR>
 					<TD>
-						{icon name="cg" fw=true}
+						{icon name="cg"}
 					</TD>
 					<TD>
 						<SELECT SIZE="1" NAME="customeradd[group]" {tip text="Select group to assign to customer" trigger="group"}>
@@ -157,7 +157,7 @@
 				{/if}
 				<TR>
 					<TD>
-						{icon name="legal-personality" fw=true}
+						{icon name="legal-personality"}
 					</TD>
 					<TD>
 						<label>
@@ -176,7 +176,7 @@
 				</TR>
 				<TR>
 					<TD>
-						{icon name="legal-personality" fw=true}
+						{icon name="legal-personality"}
 					</TD>
 					<TD>
 						<select name="customeradd[flags][]" {tip text="Select customer flags (optional)" class="lms-ui-multiselect"}
@@ -192,7 +192,7 @@
 				</TR>
 				{$addr_counter = 0}
 				<tr>
-					<td class="valign-top">{icon name="home" fw=true tip="billing address"}</td>
+					<td class="valign-top">{icon name="home" tip="billing address"}</td>
 					<td>
 						{$addr_found = 0}
 						{foreach $customeradd.addresses as $v}
@@ -236,7 +236,7 @@
 				</tr>
 
 				<tr>
-					<td class="valign-top">{icon name="message" fw=true tip="postal address"}</td>
+					<td class="valign-top">{icon name="message" tip="postal address"}</td>
 					<td>
 						{$addr_found = 0}
 						{foreach $customeradd.addresses as $v}
@@ -273,9 +273,9 @@
 				<tr>
 					<td class="valign-top">
 						{if $v.location_address_type == $smarty.const.DEFAULT_LOCATION_ADDRESS}
-							{icon name="default-customer-location" class="location-box-image" fw=true tip="default location address"}
+							{icon name="default-customer-location" class="location-box-image" tip="default location address"}
 						{else}
-							{icon name="customer-location" class="location-box-image" fw=true tip="location/recipient address"}
+							{icon name="customer-location" class="location-box-image" tip="location/recipient address"}
 						{/if}
 					</td>
 					<td>
@@ -312,7 +312,7 @@
 				{include file="customer/customercontacts.html" customerinfo=$customeradd formelemprefix="customeradd"}
 				<TR>
 					<TD>
-						{icon name="customer-pin-code" fw=true}
+						{icon name="customer-pin-code"}
 					</TD>
 					<TD>
 						<INPUT type="text" required size="{$pin_max_size}" value="{if $customeradd.pin}{$customeradd.pin}{/if}" name="customeradd[pin]" {tip text=$pin_tip trigger="pin"}>&nbsp;
@@ -321,7 +321,7 @@
 				</TR>
 				<TR>
 					<TD class="valign-top">
-						{icon name="user-id-number" fw=true}
+						{icon name="user-id-number"}
 					</TD>
 					<TD class="cell-flex">
 						<div>
@@ -404,7 +404,7 @@
 				</TR>
 				<TR>
 					<TD class="valign-top">
-						{icon name="paytype" fw=true}
+						{icon name="paytype"}
 					</TD>
 					<TD>
 						<TABLE>
@@ -457,7 +457,7 @@
 				</TR>
 				<TR>
 					<TD class="valign-top">
-						{icon name="consent" fw=true}
+						{icon name="consent"}
 					</TD>
 					<TD>
 						<TABLE cellpadding="0" class="lms-ui-separated-rows">
@@ -499,25 +499,25 @@
 				</COLGROUP>
 				{block name="customeradd-rightcolumn"}
 				<TR>
-					<TD>{icon name="optional-info" fw=true}</TD>
+					<TD>{icon name="optional-info"}</TD>
 					<TD>
 						<TEXTAREA rows="10" cols="60" name="customeradd[info]" class="lms-ui-wysiwyg-editor" {tip text="Enter additional information (optional)"}{if isset($customeradd.wysiwyg.info)} data-wysiwyg="{$customeradd.wysiwyg.info}"{/if}>{$customeradd.info|escape}</TEXTAREA>
 					</TD>
 				</TR>
 				<TR>
-					<TD>{icon name="warning" fw=true}</TD>
+					<TD>{icon name="warning"}</TD>
 					<TD>
 						<TEXTAREA rows="10" cols="60" name="customeradd[message]" class="lms-ui-wysiwyg-editor" {tip text="Enter notice contents (optional)"}{if isset($customeradd.wysiwyg.message)} data-wysiwyg="{$customeradd.wysiwyg.message}"{/if}>{$customeradd.message|escape}</TEXTAREA>
 					</TD>
 				</TR>
 				<TR>
-					<TD>{icon name="notes" fw=true}</TD>
+					<TD>{icon name="notes"}</TD>
 					<TD>
 						<TEXTAREA rows="10" cols="60" name="customeradd[notes]" class="lms-ui-wysiwyg-editor" {tip text="Enter notes (optional)"}{if isset($customeradd.wysiwyg.notes)} data-wysiwyg="{$customeradd.wysiwyg.notes}"{/if}>{$customeradd.notes|escape}</TEXTAREA>
 					</TD>
 				</TR>
 				<TR>
-					<TD>{icon name="memo" fw=true}</TD>
+					<TD>{icon name="memo"}</TD>
 					<TD>
 						<TEXTAREA name="customeradd[documentmemo]" class="lms-ui-wysiwyg-editor"
 								  COLS="60" ROWS="10" {tip text="Enter document memo (optional)"}

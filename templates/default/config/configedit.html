@@ -72,7 +72,7 @@
 							{if $reftype == 'division' || $reftype == 'divisionuser'}
 							<tr>
 								<td>
-									{icon name="division" fw=true}
+									{icon name="division"}
 								</td>
 								<td class="nobr bold">
 									{trans("Division")}
@@ -86,7 +86,7 @@
 							{if $reftype == 'divisionuser' || $reftype == 'user'}
 								<tr>
 									<td>
-										{icon name="user" fw=true}
+										{icon name="user"}
 									</td>
 									<td class="nobr bold">
 										{trans("User")}
@@ -100,7 +100,7 @@
 						{/if}
 						<TR>
 							<TD>
-								{icon name="configuration" fw=true}
+								{icon name="configuration"}
 							</TD>
 							<TD class="bold"width="1%">
 								{trans("Section:")}
@@ -121,7 +121,7 @@
 						</TR>
 						<TR>
 							<TD>
-								{icon name="service" fw=true}
+								{icon name="service"}
 							</TD>
 							<TD class="bold"width="1%">
 								{trans("Name:")}
@@ -156,7 +156,7 @@
 						<tbody>
 							<TR>
 								<TD>
-									{icon name="service" fw=true}
+									{icon name="service"}
 								</TD>
 								<TD class="bold">
 									{trans("Value:")}
@@ -169,7 +169,7 @@
 							</TR>
 							<TR>
 								<TD>
-									{icon name="comment" fw=true}
+									{icon name="comment"}
 								</TD>
 								<TD class="bold">
 									{trans("Comment:")}
@@ -180,7 +180,7 @@
 							</TR>
 							<TR>
 								<TD>
-									{icon name="wait" fw=true}
+									{icon name="wait"}
 								</TD>
 								<TD class="bold">
 									{trans("Status:")}
@@ -192,7 +192,7 @@
 							{if ConfigHelper::checkPrivilege('superuser') && empty($reftype)}
 								<TR>
 									<TD>
-										{icon name="type" fw=true}
+										{icon name="type"}
 									</TD>
 									<TD class="bold">
 										{trans("Type:")}

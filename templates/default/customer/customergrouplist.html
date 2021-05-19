@@ -13,9 +13,9 @@
 	<THEAD>
 	<TR>
 		<TD scope="col" class="nobr">
-			{icon name="customergroup" fw=true}&nbsp;{trans("Name:")}
+			{icon name="customergroup"}&nbsp;{trans("Name:")}
 			<br>
-			<span class="lighter">{icon name="optional-info" fw=true}&nbsp;{trans("Description:")}</span>
+			<span class="lighter">{icon name="optional-info"}&nbsp;{trans("Description:")}</span>
 		</TD>
 		<TD scope="col" class="text-right lighter">
 			{trans("ID:")}
@@ -33,7 +33,7 @@
 	<TFOOT>
 	<TR>
 		<TD colspan="4" class="text-right bold nobr">
-			{icon name="info" fw=true}&nbsp;{trans("Total:")}
+			{icon name="info"}&nbsp;{trans("Total:")}
 			{$listdata.totalcount|default:"0"}
 		</TD>
 	</TR>
@@ -42,8 +42,8 @@
 	{foreach $customergrouplist as $customergroup}
 	<TR class="highlight" data-target-url="?m=customergroupinfo&id={$customergroup.id}" data-name="{$customergroup.name}">
 		<TD>
-			{icon name="customergroup" fw=true}&nbsp;<span class="bold">{$customergroup.name}</span><BR>
-			{if $customergroup.description}{icon name="optional-info" fw=true}&nbsp;{$customergroup.description|escape|replace:"\n":"<BR>"}{/if}
+			{icon name="customergroup"}&nbsp;<span class="bold">{$customergroup.name}</span><BR>
+			{if $customergroup.description}{icon name="optional-info"}&nbsp;{$customergroup.description|escape|replace:"\n":"<BR>"}{/if}
 		</TD>
 		<TD class="text-right">
 			({$customergroup.id|string_format:"%04d"})

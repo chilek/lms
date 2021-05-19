@@ -14,7 +14,7 @@
 	<thead>
 		<tr>
 			<td class="nobr">
-				{icon name="cashsource" fw=true}
+				{icon name="cashsource"}
 				{trans("Name:")}
 			</td>
 			<td class="nobr">
@@ -35,7 +35,7 @@
 		{foreach $sourcelist as $source}
 			<tr class="highlight{if $source.deleted == 1} blend{/if}" data-name="{$source.name}">
 				<td data-target-url="?m=cashsourceedit&id={$source.id}" class="nobr">
-					{icon name="cashsource" fw=true}
+					{icon name="cashsource"}
 					<strong>{$source.name}</strong>
 				</td>
 				<td data-target-url="?m=cashsourceedit&id={$source.id}">

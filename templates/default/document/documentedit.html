@@ -25,7 +25,7 @@
 	<thead>
 		<tr>
 			<td>
-				{icon name="document" fw=true}
+				{icon name="document"}
 			</td>
 			<td class="bold nobr">
 				<strong>{trans("Title:")}</strong>
@@ -39,7 +39,7 @@
 	<tbody>
 		<tr>
 			<td>
-				{icon name="type" fw=true}
+				{icon name="type"}
 			</td>
 			<td>
 				<strong>{trans("Type:")}</strong>
@@ -57,7 +57,7 @@
 		</tr>
 		<tr>
 			<td>
-				{icon name="id" fw=true}
+				{icon name="id"}
 			</td>
 			<td>
 				<strong>{trans("Number:")}</strong>
@@ -73,7 +73,7 @@
 		</tr>
 		<tr>
 			<td>
-				{icon name="period" fw=true}
+				{icon name="period"}
 			</td>
 			<td>
 				<strong>{trans("Period:")}</strong>
@@ -92,7 +92,7 @@
 		{if !$document.closed}
 		<tr>
 			<td>
-				{icon name="period" fw=true}
+				{icon name="period"}
 			</td>
 			<td>
 				<strong>{trans("Wait for customer action till:")}</strong>
@@ -117,7 +117,7 @@
 		{/if}
 		<tr>
 			<td>
-				{icon name="description" fw=true}
+				{icon name="description"}
 			</td>
 			<td>
 				<strong>{trans("Description:")}</strong>
@@ -129,7 +129,7 @@
 		</tr>
 		<tr>
 			<td>
-				{icon name="import" fw=true}
+				{icon name="import"}
 			</td>
 			<td class="nobr">
 				<strong>{trans("New files:")}</strong>
@@ -141,7 +141,7 @@
 		{if !empty($document.attachments)}
 		<tr>
 			<td>
-				{icon name="import" fw=true}
+				{icon name="import"}
 			</td>
 			<td class="nobr">
 				<strong>{trans("Attached files:")}</strong>
@@ -170,7 +170,7 @@
 {*
 		<tr>
 			<td>
-				{icon name="template" fw=true}
+				{icon name="template"}
 			</td>
 			<td>
 				<strong>{trans("Template:")}</strong>
@@ -188,7 +188,7 @@
 		{if (!$document.closed && ($document.docrights & $smarty.const.DOCRIGHT_CONFIRM)) || ConfigHelper::checkPrivilege('full_access')}
 		<tr>
 			<td>
-				{icon name="confirm" fw=true}
+				{icon name="confirm"}
 			</td>
 			<td class="nobr">
 				<label for="closed">
@@ -203,7 +203,7 @@
 		{if !empty($document.closed) && ($document.docrights && $smarty.const.DOCRIGHT_ARCHIVE)}
 		<tr>
 			<td>
-				{icon name="archive" fw=true}
+				{icon name="archive"}
 			</td>
 			<td class="nobr">
 				<label for="archived">

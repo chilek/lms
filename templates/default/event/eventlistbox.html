@@ -17,7 +17,7 @@
     <THEAD>
         <TR{if $day == $today} class="superdark"{/if}>
             <TD class="bold nobr">
-                {icon name="timetable" fw=true label="{$day|date_format:"%A"} ({$day|date_format:"%x"})"}
+                {icon name="timetable" label="{$day|date_format:"%A"} ({$day|date_format:"%x"})"}
             </TD>
             <TD colspan="3">
                 {if $getHolidays[$day]}

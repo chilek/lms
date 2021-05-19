@@ -17,7 +17,7 @@
 	<thead>
 		<tr>
 			<td class="nobr">
-				{icon name="tax" fw=true}
+				{icon name="tax"}
 				<a href="?m=taxratelist&o=label{if $listdata.direction == "asc" && $listdata.order == "label"},desc{/if}">
 					<strong>{trans("Label:")}</strong>
 				</a>
@@ -63,7 +63,7 @@
 		{section name=taxratelist loop=$taxratelist start=$start max=$pagelimit}
 			<tr class="highlight{if ($taxratelist[taxratelist].validfrom !=0 && $taxratelist[taxratelist].validfrom > $smarty.now) || ($taxratelist[taxratelist].validto !=0 && $taxratelist[taxratelist].validto < $smarty.now)} blend{/if}" data-name="{$taxratelist[taxratelist].label}">
 				<td class="nobr" data-target-url="?m=taxrateedit&id={$taxratelist[taxratelist].id}">
-					{icon name="tax" fw=true}
+					{icon name="tax"}
 					<strong>{$taxratelist[taxratelist].label}</strong>
 				</td>
 				<td class="text-center nobr" data-target-url="?m=taxrateedit&id={$taxratelist[taxratelist].id}">
@@ -74,12 +74,12 @@
 				</TD>
 				<TD class="text-center nobr" data-target-url="?m=taxrateedit&id={$taxratelist[taxratelist].id}">
 					{if $taxratelist[taxratelist].reversecharge}
-						{icon name="checked" fw=true}
+						{icon name="checked"}
 					{/if}
 				</TD>
 				<TD class="text-center nobr" data-target-url="?m=taxrateedit&id={$taxratelist[taxratelist].id}">
 					{if $taxratelist[taxratelist].taxed}
-						{icon name="checked" fw=true}
+						{icon name="checked"}
 					{/if}
 				</TD>
 				<TD class="text-center nobr" data-target-url="?m=taxrateedit&id={$taxratelist[taxratelist].id}">

@@ -62,7 +62,7 @@
 	{/if}
 	<TR>
 		<TD style="width: 100%;" class="hand text-left bold nobr" onClick="showOrHide('promotionschemadata');">
-			{icon name="money" fw=true}
+			{icon name="money"}
 			{t a=$tariffcnt}Schema's Tariffs ($a):{/t}
 		</TD>
 	</TR>
@@ -107,7 +107,7 @@
 				{foreach $schema.tariffs as $tariff}
 				<TR class="highlight schematariff" data-assignment="{$tariff.id}">
 					<TD class="valign-top">
-						{icon name="money" class="drag-icon" fw=true}
+						{icon name="money" class="drag-icon"}
 						<A href="?m=tariffinfo&id={$tariff.tariffid}" class="bold">{$tariff.name}</A>
 						{if !empty($tariff.flags)}
 							{capture assign="reward_flags"}

@@ -24,7 +24,7 @@
                 </tr>
                 <tr>
                     <td>
-                        {icon name="vlan" label="VLAN ID:" fw=true}
+                        {icon name="vlan" label="VLAN ID:"}
                     </td>
                     <td>
                         <input type="text" name="addvlan[vlanid]" value="{$vlaninfo.vlanid}" required>
@@ -32,7 +32,7 @@
                 </tr>
                 <tr>
                     <td class="nobr">
-                        {icon name="description" label="VLAN Description" fw=true}
+                        {icon name="description" label="VLAN Description"}
                     </td>
                     <td>
                         <input type="text" name="addvlan[description]" value="{$vlaninfo.description}">
@@ -40,7 +40,7 @@
                 </tr>
                 <tr>
                     <td>
-                        {icon name="customer" label="Customer" fw=true}
+                        {icon name="customer" label="Customer"}
                     </td>
                     <td>
                         {customerlist form="addvlan" selected="{$vlaninfo.customerid}" inputname="addvlan[customerid]" version=2}
@@ -48,7 +48,7 @@
                 </tr>
                 <tr>
                     <td class="nobr">
-                        {icon name="netnode" label="Network Node" fw=true}
+                        {icon name="netnode" label="Network Node"}
                     </td>
                     <td>
                         <select name="addvlan[netnodeid]" class="lms-ui-advanced-select">

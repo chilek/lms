@@ -39,7 +39,7 @@
 	<thead>
 		<tr>
 			<td class="nobr">
-				{icon name="password" fw=true}
+				{icon name="password"}
 			</td>
 			<td class="nobr">
 				<strong>{trans("Login:")}</strong>
@@ -53,7 +53,7 @@
 	<tbody>
 		<tr>
 			<td>
-				{icon name="user" fw=true}
+				{icon name="user"}
 			</td>
 			<td class="nobr">
 				<strong>{trans("First name:")}</strong>
@@ -65,7 +65,7 @@
 		</tr>
 		<tr>
 			<td>
-				{icon name="user" fw=true}
+				{icon name="user"}
 			</td>
 			<td class="nobr">
 				<strong>{trans("Last name:")}</strong>
@@ -77,7 +77,7 @@
 		</tr>
 		<tr>
 			<td>
-				{icon name="document" fw=true}
+				{icon name="document"}
 			</td>
 			<td class="bold nobr">
 				{trans("Issuer")}
@@ -89,7 +89,7 @@
 		</tr>
 		<tr>
 			<td>
-				{icon name="info" fw=true}
+				{icon name="info"}
 			</td>
 			<td>
 				<strong>{trans("Position:")}</strong>
@@ -101,7 +101,7 @@
 		</tr>
 		<tr>
 			<td>
-				{icon name="mail" fw=true}
+				{icon name="mail"}
 			</td>
 			<td>
 				<strong>{trans("E-mail:")}</strong>
@@ -113,7 +113,7 @@
 		</tr>
 		<tr>
 			<td>
-				{icon name="sms" fw=true}
+				{icon name="sms"}
 			</td>
 			<td>
 				<strong>{trans("Phone:")}</strong>
@@ -125,7 +125,7 @@
 		</tr>
 		<tr>
 			<td>
-				{icon name="options" fw=true}
+				{icon name="options"}
 			</td>
 			<td>
 				<strong>{trans("Notification:")}</strong>
@@ -146,7 +146,7 @@
 		{if $layout.logid ne $userinfo.id}
 		<tr>
 			<td>
-				{icon name="disconnected" fw=true}
+				{icon name="disconnected"}
 			</td>
 			<td>
 				<strong>{trans("Account active:")}</strong>
@@ -164,7 +164,7 @@
 		</tr>
 		<tr>
 			<td>
-				{icon name="calendar" fw=true}
+				{icon name="calendar"}
 			</td>
 			<td>
 				<strong>{trans("Account active:")}</strong>
@@ -182,7 +182,7 @@
 		</tr>
 		<tr>
 			<td>
-				{icon name="password" fw=true}
+				{icon name="password"}
 			</td>
 			<td>
 				<label for="passwdforcechange">
@@ -205,7 +205,7 @@
 		{/if}
 		<tr>
 			<td>
-				{icon name="password" fw=true}
+				{icon name="password"}
 			</td>
 			<td>
 				<strong>
@@ -229,7 +229,7 @@
 		</tr>
 		<tr id="twofactorauthsecretkey"{if $userinfo.twofactorauth != 1} style="display: none;"{/if}>
 			<td>
-				{icon name="password" fw=true}
+				{icon name="password"}
 			</td>
 			<td>
 				<strong>{trans("Secret key:")}</strong>
@@ -241,7 +241,7 @@
 		</tr>
 		<tr>
 			<td>
-				{icon name="ipnetwork" fw=true}
+				{icon name="ipnetwork"}
 			</td>
 			<td class="nobr">
 				<strong>{trans("Allowed hosts:")}</strong>
@@ -253,7 +253,7 @@
 		</tr>
 		<tr>
 			<td>
-				{icon name="password" fw=true}
+				{icon name="password"}
 			</td>
 			<td class="nobr">
 				<strong>{trans("Password expiration:")}</strong>
@@ -268,7 +268,7 @@
 		</tr>
 		<tr>
 			<td>
-				{icon name="permissions" fw=true}
+				{icon name="permissions"}
 			</td>
 			<td class="nobr">
 				<strong>{trans("Access rights:")}</strong>
@@ -328,7 +328,7 @@
 		{if is_array($usergroups) && count($usergroups)}
 		<tr>
 			<td>
-				{icon name="usergroup" fw=true}
+				{icon name="usergroup"}
 			</td>
 			<td class="nobr">
 				<strong>{trans("User groups:")}</strong>
@@ -348,7 +348,7 @@
 		{if is_array($customergroups) && count($customergroups)}
 		<tr>
 			<td>
-				{icon name="customergroup" fw=true}
+				{icon name="customergroup"}
 			</td>
 			<td class="nobr">
 				<strong>{trans("Customer groups:")}</strong>
@@ -368,7 +368,7 @@
 		{if is_array($divisions) && count($divisions)}
 			<tr>
 				<td>
-					{icon name="division" fw=true}
+					{icon name="division"}
 				</td>
 				<td class="nobr">
 					<strong>{trans("Divisions:")}</strong>

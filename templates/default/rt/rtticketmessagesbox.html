@@ -126,7 +126,7 @@
 	<THEAD>
 	<TR>
 		<TD style="width: 1%;" class="bold nobr">
-			{icon name="message" label="Ticket History" fw=true}
+			{icon name="message" label="Ticket History"}
 		</TD>
 		<TD style="width: 99%;" class="text-right nobr" colspan="2">
 			<label>
@@ -174,20 +174,20 @@
 										{if $message.type == $smarty.const.RTMESSAGE_REGULAR}
 											{if $message.customerid}
 												{if $message.mailfrom}
-													{icon name="mail" fw=true}
+													{icon name="mail"}
 												{elseif $message.phonefrom}
-													{icon name="sms" fw=true}
+													{icon name="sms"}
 												{/if}
 												<A href="?m=customerinfo&id={$message.customerid}">
 													{$message.customername} (#{$message.customerid})
 												</A>
 											{elseif $message.userid}
-												{icon name="user" fw=true}
+												{icon name="user"}
 												<A href="?m=userinfo&id={$message.userid}">
 													{$message.username|escape}
 												</A>
 											{elseif $message.mailfrom}
-												{icon name="mail" fw=true}
+												{icon name="mail"}
 												<A href="mailto:{$message.mailfrom|escape}">{$message.mailfrom|escape}</A>
 											{else}
 												{$ticket.requestor|escape}
@@ -196,7 +196,7 @@
 												{/if}
 											{/if}
 											{if $message.phonefrom}
-												{icon name="phone" fw=true}
+												{icon name="phone"}
 												<A class="phone_number" href="tel:{$message.phonefrom}">
 													{$message.phonefrom}
 												</A>
@@ -249,14 +249,14 @@
 								<div class="message-attachments">
 									{if !empty($message.images) && count($message.images)}
 										<a href="#" class="attachment-gallery lms-ui-button" data-gallery='{json_encode($message.images)}'>
-											{icon name="gallery" fw=true}
+											{icon name="gallery"}
 										</a>
 									{/if}
 									{if $message.attachments}
 										{foreach $message.attachments as $attachment}
 											{documentview id="{$message.id}-{$attachment@index}" type=$attachment.contenttype name=$attachment.filename
 												url="?m=rtmessageview&tid={$ticket.ticketid}&mid={$message.id}&file={urlencode($attachment.filename)}&api=1"
-												text="{icon name="upload" fw=true label="{$attachment.filename}"}"}
+												text="{icon name="upload" label="{$attachment.filename}"}"}
 										{/foreach}
 									{/if}
 								</div>

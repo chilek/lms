@@ -16,16 +16,16 @@
 	<thead>
 		<TR>
 			<TD COLSPAN="2" class="nobr">
-				{icon name="queue" fw=true}
+				{icon name="queue"}
 				<B>{trans("Category")}:</B><BR>
-				{icon name="optional-info" fw=true}
+				{icon name="optional-info"}
 				{trans("Description")}:
 			</TD>
 			<TD class="bold text-center">
 				{trans("<!rt-category>Look:")}
 			</TD>
 			<TD class="nobr">
-				{icon name="owner" fw=true}
+				{icon name="owner"}
 				<B>{trans("Owners")}:</B>
 			</TD>
 			<TD class="text-center">
@@ -46,11 +46,11 @@
 		{foreach $categories as $category}
 			<tr class="highlight" data-target-url="?m=rtqueueview&catid={$category.id}" data-name="{$category.name}">
 				<td colspan="2">
-					{icon name="queue" fw=true}
+					{icon name="queue"}
 					<strong>{$category.name}</strong>
 					<br>
 					{if $category.description}
-						{icon name="optional-info" fw=true} {$category.description}
+						{icon name="optional-info"} {$category.description}
 					{/if}
 				</td>
 				<td class="bold text-center">
@@ -91,7 +91,7 @@
 	<tfoot>
 		<tr>
 			<td colspan="4" class="text-right">
-				{icon name="info" fw=true}
+				{icon name="info"}
 				<strong>{trans("Total:")}</strong>
 			</td>
 			<td class="text-center">
