@@ -170,6 +170,7 @@ $config_begin = ConfigHelper::getConfig(
     'dhcp.begin',
     "ddns-update-style none;\nlog-facility local6;\ndefault-lease-time $default_lease_time;\nmax-lease-time $max_lease_time;\n"
 );
+$global_range_format = ConfigHelper::getConfig('dhcp.range_format', 'range %start% %end%;');
 
 // we're looking for dhcp-mac config sections
 $config_macs = array();
@@ -304,6 +305,8 @@ foreach ($networks as $networkid => $net) {
         $options['netbios-name-servers'] = $net['wins'];
     }
 
+    $range_format = $global_range_format;
+
     if (!empty($CONFIG['dhcp-' . $net['name']])) {
         if (!empty($CONFIG['dhcp-' . $net['name']]['default_lease_time'])) {
             $default_lease = $CONFIG['dhcp-' . $net['name']]['default_lease_time'];
@@ -314,11 +317,30 @@ foreach ($networks as $networkid => $net) {
         if (!empty($CONFIG['dhcp-' . $net['name']]['options'])) {
             $options = array_merge($options, $CONFIG['dhcp-' . $net['name']]['options']);
         }
+        if (!empty($CONFIG['dhcp-' . $net['name']]['range_format'])) {
+            $range_format = $CONFIG['dhcp-' . $net['name']]['range_format'];
+        }
     }
 
     $net_prefix .= $line_prefix . "subnet " . long_ip($net['address']) . " netmask " . long_ip($net['mask'])
-        . " { # Network " . $net['name'] . " (ID: " . $net['id'] . ")\n"
-        . (!empty($net['dhcpstart']) ? $line_prefix . "\trange " . $net['dhcpstart'] . " " . $net['dhcpend'] . ";\n" : "");
+        . " { # Network " . $net['name'] . " (ID: " . $net['id'] . ")\n";
+    if (!empty($net['dhcpstart'])) {
+        $net_prefix .= $line_prefix . "\t"
+            . str_replace(
+                array(
+                    '\\n',
+                    '%start%',
+                    '%end%',
+                ),
+                array(
+                    "\n",
+                    $net['dhcpstart'],
+                    $net['dhcpend'],
+                ),
+                $range_format
+            ) . "\n";
+    }
+
     if ($default_lease != $default_lease_time) {
         $net_prefix .= $line_prefix . "\tdefault-lease-time " . $default_lease . ";\n";
     }
