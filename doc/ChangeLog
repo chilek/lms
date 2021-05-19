@@ -160,6 +160,7 @@ version 27-git (????-??-??):
   - enhancement: implemented helpdesk category cloning [chilan]
   - enhancement: 'dhcp.range_format' with default 'range %start% %end%;' allows to define expected
     subnetwork range format [chilan]
+  - enhancement: implemented transaction log support for voip account management [chilan]
 
 version 26.0 (2020-12-15):
 
