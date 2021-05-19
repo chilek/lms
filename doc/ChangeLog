@@ -158,6 +158,8 @@ version 27-git (????-??-??):
   - enhancement: allow to mark division as natural person (usefull for JPK reports) [chilan]
   - enhancement: support for /31 networks [chilan]
   - enhancement: implemented helpdesk category cloning [chilan]
+  - enhancement: 'dhcp.range_format' with default 'range %start% %end%;' allows to define expected
+    subnetwork range format [chilan]
 
 version 26.0 (2020-12-15):
 
