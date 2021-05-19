@@ -325,20 +325,24 @@ foreach ($networks as $networkid => $net) {
     $net_prefix .= $line_prefix . "subnet " . long_ip($net['address']) . " netmask " . long_ip($net['mask'])
         . " { # Network " . $net['name'] . " (ID: " . $net['id'] . ")\n";
     if (!empty($net['dhcpstart'])) {
-        $net_prefix .= $line_prefix . "\t"
-            . str_replace(
-                array(
-                    '\\n',
-                    '%start%',
-                    '%end%',
-                ),
-                array(
-                    "\n",
-                    $net['dhcpstart'],
-                    $net['dhcpend'],
-                ),
-                $range_format
-            ) . "\n";
+        $range = str_replace(
+            array(
+                '\\n',
+                '%start%',
+                '%end%',
+            ),
+            array(
+                "\n",
+                $net['dhcpstart'],
+                $net['dhcpend'],
+            ),
+            $range_format
+        );
+        foreach (explode("\n", $range) as $line) {
+            if (!empty($line)) {
+                $net_prefix .= $line_prefix . "\t" . $line . "\n";
+            }
+        }
     }
 
     if ($default_lease != $default_lease_time) {
