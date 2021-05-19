@@ -238,7 +238,7 @@ class SYSLOG
         self::RES_NUMPLANUSER => 'numberplanuserid',
         self::RES_NETDEV_MAC => 'networkdevicemacid',
         self::RES_VOIP_ACCOUNT => 'voipaccountid',
-        self::RES_VOIP_NUMBER => 'voipnumberid',
+        self::RES_VOIP_ACCOUNT_NUMBER => 'voipnumberid',
     );
     private static $operations = array(
         self::OPER_ADD => 'addition<!syslog>',
