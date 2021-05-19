@@ -677,7 +677,11 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
             }
             $customers = array_unique($customers);
 
-            $recipients = GetCustomers($customers);
+            if (empty($customers)) {
+                $recipients = array();
+            } else {
+                $recipients = GetCustomers($customers);
+            }
 
             if (isset($recipients) && count($recipients) == 1 && !empty($message['nodeid'])) {
                 $recipient = array_shift($recipients);
