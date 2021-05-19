@@ -74,7 +74,7 @@
     $( "#addvlanmodal" ).dialog( {
         autoOpen: {if $action}true{else}false{/if},
         resizable: false,
-        minWidth: 390,
+        width: 'auto',
         modal: true,
         title: "{if $action == 'modify'}{trans("Modify VLAN")} {$vlaninfo.id}{else}{trans("Add VLAN")}{/if}"
     });
