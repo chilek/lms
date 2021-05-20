@@ -163,6 +163,8 @@ version 27-git (????-??-??):
   - enhancement: implemented transaction log support for voip account management [chilan]
   - enhancement: 'dhcp.network_begin' allows to define default subnetwork configuration fragment
     (empty by default) [chilan]
+  - enhancement: implemented JPK-V7M declaration section generation as it is required by some external
+    financial software [chilan]
 
 version 26.0 (2020-12-15):
 
