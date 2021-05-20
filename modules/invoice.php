@@ -1278,6 +1278,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 $declaration .= "\t\t</Naglowek>\n";
                 $declaration .= "\t\t<PozycjeSzczegolowe>\n";
                 $p_38 = 0;
+                ksort($totals);
                 foreach ($totals as $code => $value) {
                     $declaration .= "\t\t\t<P_" . $code . ">" . round($value) . "</P_" . $code . ">\n";
                     if ($code == 16 || $code == 18 || $code == 20) {
