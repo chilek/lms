@@ -161,6 +161,8 @@ version 27-git (????-??-??):
   - enhancement: 'dhcp.range_format' with default 'range %start% %end%;' allows to define expected
     subnetwork range format [chilan]
   - enhancement: implemented transaction log support for voip account management [chilan]
+  - enhancement: 'dhcp.network_begin' allows to define default subnetwork configuration fragment
+    (empty by default) [chilan]
 
 version 26.0 (2020-12-15):
 
