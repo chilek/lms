@@ -55,7 +55,7 @@
             </td>
             <td class="buttons">
                 {button type="link" icon="edit" href="?m=vlanlist&action=modify&id={$v.id}" tip="Edit"}
-                {button type="link" icon="delete" href="?m=vlanlist&action=delete&id={$v.id}" tip="Delete" id="delete-vlan"}
+                {button type="link" icon="delete" href="?m=vlanlist&action=delete&id={$v.id}" tip="Delete" class="delete-vlan"}
             </td>
         </tr>
         {/foreach}
@@ -65,7 +65,7 @@
 {include file="vlan/vlanmodify-dialog.html"}
 
 <script>
-    $('#delete-vlan').click(function() {
+    $( '.delete-vlan' ).click(function() {
         confirmDialog( $t("Are you sure, you want to delete that VLAN?") , this).done(function() {
             location.href = $(this).attr('href');
         });
