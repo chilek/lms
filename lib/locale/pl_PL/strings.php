@@ -24,10 +24,12 @@
  *  $Id$
  */
 
+$_LANG['according in net'] = 'naliczanie w netto';
+$_LANG['according in gross'] = 'naliczanie w brutto';
+$_LANG['in net'] = 'w netto';
+$_LANG['in gross'] = 'w brutto';
 $_LANG['Billing according to the net price'] = 'Naliczanie według ceny netto';
 $_LANG['Billing according to the gross price'] = 'Naliczanie według ceny brutto';
-$_LANG['according to the net price'] = 'według ceny netto';
-$_LANG['according to the gross price'] = 'według ceny brutto';
 $_LANG['Gross'] = 'Brutto';
 $_LANG['Net'] = 'Netto';
 $_LANG['Currency'] = 'Waluta';
