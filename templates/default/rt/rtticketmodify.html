@@ -22,20 +22,24 @@
 				   value="{$ticket.subject|escape}" {tip text="Enter subject" trigger="subject"} {if $layout.module !="eventadd"} required{/if}>
 		{/box_header}
 		{box_header icon="service" label="Service type:" icon_class="fa-fw"}
-                        <SELECT name="ticket[service]" id="ticket-service" {tip class="lms-ui-advanced-select" text="Choose service type" trigger="service"} {if ConfigHelper::checkConfig('rt.ticket_service_required')}required{/if}>
-					<OPTION value="" selected hidden>{trans("select")}</OPTION>
+			<select name="ticket[service]" id="ticket-service"
+				{tip class="lms-ui-advanced-select" text="Choose service type" trigger="service"}
+				{if ConfigHelper::checkConfig('rt.ticket_service_required')} required{/if}>
+				<option value="" selected hidden>{trans("select")}</option>
 				{foreach $_SERVICETYPES as $key => $service}
-					<OPTION value="{$key}"{if $key == $ticket.service} selected{/if}>{$service}</OPTION>
+					<option value="{$key}"{if $key == $ticket.service} selected{/if}>{$service}</option>
 				{/foreach}
-			</SELECT>
+			</select>
 		{/box_header}
 		{box_header icon="type" label="Ticket type:" icon_class="fa-fw"}
-                        <SELECT name="ticket[type]" id="ticket-type" {tip class="lms-ui-advanced-select" text="Choose ticket type" trigger="type"}{if ConfigHelper::checkConfig('rt.ticket_type_required')}required{/if}>
-					<OPTION value="" selected hidden>{trans("select")}</OPTION>
+			<select name="ticket[type]" id="ticket-type"
+				{tip class="lms-ui-advanced-select" text="Choose ticket type" trigger="type"}
+				{if ConfigHelper::checkConfig('rt.ticket_type_required')} required{/if}>
+				<option value="" selected hidden>{trans("select")}</option>
 				{foreach Localisation::arraySort($_RT_TYPES, 'label') as $key => $type}
-					<OPTION value="{$key}"{if $key == $ticket.type} selected{/if}>{$type.label}</OPTION>
+					<option value="{$key}"{if $key == $ticket.type} selected{/if}>{$type.label}</option>
 				{/foreach}
-			</SELECT>
+			</select>
 		{/box_header}
 	{/box_header}
 
