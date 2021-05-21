@@ -620,15 +620,15 @@ H2		{ font-size: 12pt; font-family: @fonts; }
 H3		{ font-size: 10pt; font-family: @fonts; }
 HR      { border: 0; height: 1px; color: black; background-color: black; }
 
-INPUT[type="text"],
-INPUT[type="email"],
-INPUT[type="search"],
-INPUT[type="number"],
-INPUT[type="tel"],
-INPUT[type="password"],
-INPUT[type="submit"],
-INPUT[type="button"] {
-	border: solid 1px black;
+input[type="text"],
+input[type="email"],
+input[type="search"],
+input[type="number"],
+input[type="tel"],
+input[type="password"],
+input[type="submit"],
+input[type="button"] {
+	border: @form-element-border;
 	background-color: @lucid;
 	min-height: 1.4em;
 	padding: 0.1em;
@@ -729,8 +729,7 @@ textarea {
 		font-size: @font-size-mobile;
 	}
 	font-family: @fonts;
-	border-style: solid;
-	border-width: 1pt;
+	border: @form-element-border;
 	background-color: @lucid;
 	vertical-align: middle;
 
@@ -782,7 +781,7 @@ select {
 	padding-right: 16px;
 	padding-left: 3px;
 
-	border: @select-border;
+	border: @form-element-border;
 
 	&.alert,
 	&.lms-ui-error,
@@ -1936,7 +1935,7 @@ table.dataTable {
 	padding-left: 4px;
 	padding-right: 4px;
 
-	border: @select-border !important;
+	border: @form-element-border !important;
 	background-color: @lucid !important;
 	box-shadow: none !important;
 	border-radius: 0 !important;
