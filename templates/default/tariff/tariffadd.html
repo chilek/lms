@@ -53,6 +53,14 @@
 											<input type="text" size="8" id="netprice" name="tariff[netvalue]" value="{$tariff.netvalue}" {if !$tariff.netflag} disabled{/if}>
 										</label>
 									</td>
+									<td rowspan="2">
+										<label>
+											<input type="checkbox" id="netflag" name="tariff[netflag]" value="1" {if isset($tariff.netflag) && !empty($tariff.netflag)} checked{/if}
+													{tip text="Billing according to the net price"}>
+											{trans('according in net')}
+										</label>
+
+									</td>
 								</tr>
 								<tr>
 									<td align="right">
@@ -93,10 +101,6 @@
 									{/if}
 								{/foreach}
 							</select>
-							<label>{trans('according to the net price')}
-								<input type="checkbox" id="netflag" name="tariff[netflag]" value="1" {if isset($tariff.netflag) && !empty($tariff.netflag)} checked{/if}
-									{tip text="Billing according to the net price"}>
-							</label>
 						</td>
 					</tr>
 

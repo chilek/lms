@@ -74,7 +74,7 @@
             <TABLE WIDTH="100%" CELLPADDING="0">
                 <TR>
                     <TD WIDTH="50%">
-                        <TABLE CLASS="tariff_tab bold-second">
+                        <TABLE CLASS="tariff_tab">
                             <tr>
                                 <td>
                                     {icon name="money"}
@@ -88,6 +88,13 @@
                                             <td align="right">
                                                 <label>{trans('Net')}
                                                     <input type="text" size="8" id="netprice" name="tariff[netvalue]" value="{$tariff.netvalue}" {if !$tariff.netflag} disabled{/if}>
+                                                </label>
+                                            </td>
+                                            <td rowspan="2">
+                                                <label>
+                                                    <input type="checkbox" id="netflag" name="tariff[netflag]" value="1" {if $tariff.netflag} checked{/if}
+                                                            {tip text="Billing according to the net price"}>
+                                                    {trans('according in net')}
                                                 </label>
                                             </td>
                                         </tr>
@@ -130,10 +137,6 @@
                                             {/if}
                                         {/foreach}
                                     </select>
-                                    <label>{trans('according to the net price')}
-                                        <input type="checkbox" id="netflag" name="tariff[netflag]" value="1" {if $tariff.netflag} checked{/if}
-                                                {tip text="Billing according to the net price"}>
-                                    </label>
                                 </td>
                             </tr>
                             <tr>

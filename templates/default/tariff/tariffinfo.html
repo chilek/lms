@@ -114,6 +114,13 @@
                                                     {$tariff.netvalue|string_format:"%.2f "} <span class="alert">{trans('No currency assigned!')}</span>
                                                 {/if}
                                             </td>
+                                            <td rowspan="2">
+                                                {if $tariff.netflag}
+                                                    ({trans("according in net")})
+                                                {else}
+                                                    ({trans("according in gross")})
+                                                {/if}
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td align="right">
@@ -143,11 +150,6 @@
                                         {assign var=tperiod value=$tariff.period}{$_PERIODS.$tperiod}
                                     {else}
                                         <span class="blend">({trans("period undefined")})</span>
-                                    {/if}
-                                    {if $tariff.netflag}
-                                        ({trans("according to the net price")})
-                                    {else}
-                                        ({trans("according to the gross price")})
                                     {/if}
                                 </td>
                             </tr>
