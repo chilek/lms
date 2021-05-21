@@ -21,7 +21,7 @@
  *
  *  $Id$
  */
-
+@import "../../../css/less/lms-variables";
 @import "../../../css/less/userpanel-variables";
 @import "less/userpanel-variables";
 @import "../../../css/less/fontawesome";
@@ -110,4 +110,11 @@ nav.navbar {
     &:before {
         content: @fa-var-exclamation;
     }
+}
+
+.lms-ui-label {
+    vertical-align: middle;
+}
+i + .lms-ui-label {
+    padding-left: 0.5em;
 }
