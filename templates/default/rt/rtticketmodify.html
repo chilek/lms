@@ -128,7 +128,7 @@
 				<TEXTAREA name="ticket[note]" cols="50" rows="5" {tip text="Enter ticket content" trigger="body"}>{$ticket.note}</TEXTAREA>
 			{/box_row}
 
-			{box_row icon="fileupload" label="Attachments:" icon_class="fa-fw"}
+			{box_row icon="attachment" label="Attachments:" icon_class="fa-fw"}
 				{fileupload id="files" fileupload=$fileupload form="ticket-form"}
 			{/box_row}
 {/if}
