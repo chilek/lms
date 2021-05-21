@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,10 +24,8 @@
  *  $Id$
  */
 
-function GetTariffList($order = 'name,asc', $type = null, $access = 0, $customergroupid = null, $promotionid = null, $state = null, $tags = null)
+function GetTariffList($order = 'name,asc', $type = null, $access = 0, $customergroupid = null, $promotionid = null, $state = null, $tags = null, $tax = null, $netflag = null)
 {
-    global $LMS;
-
     $DB = LMSDB::getInstance();
 
     if ($order == '') {
@@ -47,6 +45,9 @@ function GetTariffList($order = 'name,asc', $type = null, $access = 0, $customer
             break;
         case 'value':
             $sqlord = " ORDER BY t.value $direction, t.name";
+            break;
+        case 'netvalue':
+            $sqlord = " ORDER BY t.netvalue $direction, t.name";
             break;
         case 'downrate':
             $sqlord = " ORDER BY t.downrate $direction, t.name";
@@ -77,7 +78,8 @@ function GetTariffList($order = 'name,asc', $type = null, $access = 0, $customer
 			taxes.label AS tax, taxes.value AS taxvalue, t.datefrom, t.dateto, prodid, t.disabled,
 			t.uprate, t.downrate, t.upceil, t.downceil, t.climit, t.plimit,
 			t.uprate_n, t.downrate_n, t.upceil_n, t.downceil_n, t.climit_n, t.plimit_n,
-			t.description, t.period, a.customerscount, a.count, a.value AS sumval
+			t.description, t.period, a.customerscount, a.count, a.value AS sumval,
+            t.netvalue, t.netflag
 			FROM tariffs t
 			LEFT JOIN (
 			    SELECT a.tariffid, COUNT(*) AS count,
@@ -112,6 +114,9 @@ function GetTariffList($order = 'name,asc', $type = null, $access = 0, $customer
             . ($customergroupid || $promotionid ? ' AND a.tariffid IS NOT NULL' : '')
             . (!empty($tags) ? ' AND t.id IN (SELECT DISTINCT tariffid FROM tariffassignments WHERE tarifftagid IN (' . implode(',', $tags) . '))' : '')
             .($type ? ' AND t.type = '.intval($type) : '')
+            . ($netflag == 1 ? ' AND t.netflag = 1' : '')
+            . ($netflag == 2 ? ' AND t.netflag = 0' : '')
+            . ($tax ? ' AND taxes.id = '.intval($tax) : '')
             .($access ? ' AND t.authtype & ' . intval($access) . ' > 0' : '')
             .($promotionid ? ' AND t.id IN (SELECT pa.tariffid
 				FROM promotionassignments pa
@@ -140,6 +145,7 @@ function GetTariffList($order = 'name,asc', $type = null, $access = 0, $customer
                 FROM assignments a
                 JOIN tariffs t ON (t.id = a.tariffid)'
                 . ($customergroupid ? ' JOIN vcustomerassignments cc ON (cc.customerid = a.customerid)' : '')
+                . ($tax ? ' JOIN taxes ON (t.taxid = taxes.id)' : '')
                 . ' WHERE a.commited = 1 AND (
 					a.suspended = 1
 					OR a.datefrom > ?NOW?
@@ -152,6 +158,9 @@ function GetTariffList($order = 'name,asc', $type = null, $access = 0, $customer
 					)
 				)'
                 . ($type ? ' AND t.type = '.intval($type) : '')
+                . ($netflag == 1 ? ' AND t.netflag = 1' : '')
+                . ($netflag == 2 ? ' AND t.netflag = 0' : '')
+                . ($tax ? ' AND taxes.id = '.intval($tax) : '')
                 . ($customergroupid ? ' AND cc.customergroupid = '.intval($customergroupid) : '')
                 . ($promotionid ? ' AND t.id IN (SELECT pa.tariffid
 					FROM promotionassignments pa
@@ -222,6 +231,9 @@ function GetTariffList($order = 'name,asc', $type = null, $access = 0, $customer
     return $tarifflist;
 }
 
+$LMS = LMS::getInstance();
+$DB = LMSDB::getInstance();
+
 if (!isset($_POST['o']) && !isset($_GET['o'])) {
     $SESSION->restore('tlo', $o);
 } elseif (isset($_GET['o'])) {
@@ -286,7 +298,25 @@ if (isset($_GET['tag'])) {
 }
 $SESSION->save('tltg', $tg);
 
-$tarifflist = GetTariffList($o, $t, $a, $g, $p, $s, $tg);
+if (!isset($_POST['tax']) && !isset($_GET['tax'])) {
+    $SESSION->restore('tltax', $tax);
+} elseif (isset($_GET['tax'])) {
+    $tax = $_GET['tax'];
+} else {
+    $tax = $_POST['tax'];
+}
+$SESSION->save('tltax', $tax);
+
+if (!isset($_POST['netflag']) && !isset($_GET['netflag'])) {
+    $SESSION->restore('tlnetflag', $netflag);
+} elseif (isset($_GET['netflag'])) {
+    $netflag = $_GET['netflag'];
+} else {
+    $netflag = $_POST['netflag'];
+}
+$SESSION->save('tlnetflag', $netflag);
+
+$tarifflist = GetTariffList($o, $t, $a, $g, $p, $s, $tg, $tax, $netflag);
 
 $customergroups = $LMS->CustomergroupGetAll();
 $promotions = $DB->GetAll('SELECT id, name FROM promotions ORDER BY name');
@@ -302,6 +332,8 @@ $listdata['customergroupid'] = $g;
 $listdata['promotionid'] = $p;
 $listdata['state'] = $s;
 $listdata['tags'] = $tg;
+$listdata['tax'] = $tax;
+$listdata['netflag'] = $netflag;
 $listdata['order'] = $tarifflist['order'];
 $listdata['direction'] = $tarifflist['direction'];
 
@@ -318,6 +350,7 @@ $layout['pagetitle'] = trans('Subscription List');
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('tarifflist', $tarifflist);
+$SMARTY->assign('taxeslist', $LMS->GetTaxes());
 $SMARTY->assign('tags', $LMS->TarifftagGetAll());
 $SMARTY->assign('customergroups', $customergroups);
 $SMARTY->assign('promotions', $promotions);

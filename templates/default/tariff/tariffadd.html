@@ -12,7 +12,7 @@
 </script>
 {$default_taxrate = ConfigHelper::getConfig('phpui.default_taxrate')}
 <H1>{$layout.pagetitle}</H1>
-<FORM METHOD="POST" NAME="tariff" ACTION="?m=tariffadd">
+<FORM METHOD="POST" id="tariff" NAME="tariff" ACTION="?m=tariffadd">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
     <THEAD>
@@ -38,20 +38,53 @@
 						<col style="width: 1%;">
 						<col style="width: 98%;">
 					</colgroup>
+					<tr>
+						<td>
+							{icon name="money"}
+						</td>
+						<td class="bold nobr">
+							{trans("Price")}
+						</td>
+						<td class="nobr">
+							<table>
+								<tr>
+									<td align="right">
+										<label>{trans('Net')}
+											<input type="text" size="8" id="netprice" name="tariff[netvalue]" value="{$tariff.netvalue}" {if !$tariff.netflag} disabled{/if}>
+										</label>
+									</td>
+								</tr>
+								<tr>
+									<td align="right">
+										<label>{trans('Gross')}
+											<input type="text" size="8" id="grossprice" name="tariff[value]" value="{$tariff.value}" {if $tariff.netflag} disabled{/if} {tip trigger="value"}>
+										</label>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
 
 					<tr>
 						<td>
-							{icon name="value"}
+							{icon name="money"}
 						</td>
 						<td class="bold nobr">
-							{trans("Value:")}
+							{trans("Currency")}
 						</td>
 						<td class="nobr">
-							<input type="text" size="8" name="tariff[value]" value="{$tariff.value}"
-								{tip text="Enter value" trigger="value"}>
-
 							{currency_selection selected=$tariff.currency elementname="tariff[currency]"}
+						</td>
+					</tr>
 
+					<tr>
+						<td>
+							{icon name="money"}
+						</td>
+						<td class="bold nobr">
+							{trans("Accounting")}
+						</td>
+						<td class="nobr">
 							<select size="1" name="tariff[period]" {tip text="Select time period of tariff accounting"}>
 								<option value=""{if $tariff.period == $key} selected{/if}>{trans("undefined")}</option>
 								{foreach from=$_PERIODS key=key item=item}
@@ -60,6 +93,10 @@
 									{/if}
 								{/foreach}
 							</select>
+							<label>{trans('according to the net price')}
+								<input type="checkbox" id="netflag" name="tariff[netflag]" value="1" {if isset($tariff.netflag) && !empty($tariff.netflag)} checked{/if}
+									{tip text="Billing according to the net price"}>
+							</label>
 						</td>
 					</tr>
 
@@ -84,7 +121,7 @@
 
 					<tr>
 						<TD>
-							<IMG SRC="img/tax.gif" ALT="">
+							{icon name="value"}
 						</TD>
 						<TD class="bold nobr">
 							<label for="splitpayment">
@@ -117,13 +154,16 @@
 						</TD>
 						<TD WIDTH="1%" NOWRAP><B>{trans("Tax:")}</B></TD>
 						<TD WIDTH="98%">
-							<SELECT SIZE="1" NAME="tariff[taxid]" {tip text="Select Tax rate" trigger="taxid"}{if empty($taxeslist)} required{/if}>
+							<SELECT SIZE="1" id="tax" NAME="tariff[taxid]" {tip text="Select Tax rate" trigger="taxid"}{if empty($taxeslist)} required{/if}>
 								{foreach $taxeslist as $tax}
 									<OPTION VALUE="{$tax.id}"{if $tax.value == $default_taxrate || $tax.id == $tariff.taxid} selected{/if}>{$tax.label}</OPTION>
 								{foreachelse}
 									<option value="">{trans("- no tax rates defined -")}</option>
 								{/foreach}
 							</SELECT>
+							{foreach $taxeslist as $tax}
+								<input type="hidden" id="tax{$tax.id}" name="tax{$tax.id}" value="{$tax.value}" disabled>
+							{/foreach}
 						</TD>
 					</TR>
 					<TR>
@@ -478,48 +518,130 @@
     </TR>
 	<TR>
 	    <TD colspan="3" class="lms-ui-box-buttons">
-			{button type="submit" label="Submit" icon="save"}
+			{button label="Submit" icon="save" onCLick="submitForm();" accesskey="E"}
 			{button label="Cancel" icon="cancel" onclick="location.href='?m=tarifflist';"}
 	    </TD>
 	</TR>
     </TBODY>
 </TABLE>
 </FORM>
-<SCRIPT type="text/javascript">
-<!--
-    $( function() {
-		$('form[name="tariff"] [name="tariff[name]"]').focus();
+	<script>
+		function submitForm() {
+			$("#grossprice").prop('disabled', false);
+			$("#netprice").prop('disabled', false);
+			document.tariff.submit();
+		}
 
-        updateui();
+		$( function() {
+			$('form[name="tariff"] [name="tariff[name]"]').focus();
 
-        $( "#tariff-type" ).change( function() {
-            updateui();
-        });
+			updateui();
 
-        function updateui() {
-            var selected_item = $( "#tariff-type" ).val();
+			$( "#tariff-type" ).change( function() {
+				updateui();
+			});
 
-            switch (selected_item) {
-                case "{$smarty.const.SERVICE_PHONE}":
-                    $( '#tariff-account-settings' ).hide();
-                    $( '#tariff-capacity-settings' ).hide();
-                    $( '#tariff-phone-settings' ).show();
-                break;
+			function updateui() {
+				let selected_item = $( "#tariff-type" ).val();
 
-                case "{$smarty.const.SERVICE_INTERNET}":
-                case "{$smarty.const.SERVICE_TV}":
-                    $( '#tariff-account-settings' ).hide();
-                    $( '#tariff-capacity-settings' ).show();
-                    $( '#tariff-phone-settings' ).hide();
-                break;
+				switch (selected_item) {
+					case "{$smarty.const.SERVICE_PHONE}":
+						$( '#tariff-account-settings' ).hide();
+						$( '#tariff-capacity-settings' ).hide();
+						$( '#tariff-phone-settings' ).show();
+					break;
 
-                default:
-                    $( '#tariff-account-settings' ).show();
-                    $( '#tariff-capacity-settings' ).show();
-                    $( '#tariff-phone-settings' ).hide();
-            }
-        }
-    })
-//-->
-</SCRIPT>
+					case "{$smarty.const.SERVICE_INTERNET}":
+					case "{$smarty.const.SERVICE_TV}":
+						$( '#tariff-account-settings' ).hide();
+						$( '#tariff-capacity-settings' ).show();
+						$( '#tariff-phone-settings' ).hide();
+					break;
+
+					default:
+						$( '#tariff-account-settings' ).show();
+						$( '#tariff-capacity-settings' ).show();
+						$( '#tariff-phone-settings' ).hide();
+				}
+			}
+
+			const netFlagElem = $("#netflag");
+			const netPriceElem = $("#netprice");
+			const grossPriceElem = $("#grossprice");
+
+			function claculatePriceFromGross() {
+				let grossPriceElemVal = grossPriceElem.val();
+				if (grossPriceElem.val().length) {
+					let selectedTaxId = $("#tax").find('option:selected').val();
+					let tax = $('#tax' + selectedTaxId).val();
+
+					let grossPrice = parseFloat(grossPriceElemVal.replace(/[\,]+/, '.'));
+					grossPrice = Math.round((grossPrice + Number.EPSILON) * 100) / 100;
+
+					let netPriceVal = Math.round(((grossPrice / (tax / 100 + 1)) + Number.EPSILON) * 100) / 100;
+					netPriceVal = netPriceVal.toFixed(2).toString().replace(/[\.]+/, ',');
+					netPriceElem.val(netPriceVal);
+
+					grossPrice = grossPrice.toFixed(2).toString().replace(/[\.]+/, ',');
+					grossPriceElem.val(grossPrice);
+				} else {
+					netPriceElem.val('');
+				}
+			}
+
+			function claculatePriceFromNet() {
+				let netPriceElemVal = netPriceElem.val();
+				if (netPriceElem.val().length) {
+					let selectedTaxId = $("#tax").find('option:selected').val();
+					let tax = $('#tax' + selectedTaxId).val();
+
+					let netPrice = parseFloat(netPriceElemVal.replace(/[\,]+/, '.'));
+					netPrice = Math.round((netPrice + Number.EPSILON) * 100) / 100;
+
+					let grossPriceVal = Math.round(((netPrice * (tax / 100 + 1)) + Number.EPSILON) * 100) / 100;
+					grossPriceVal = grossPriceVal.toFixed(2).toString().replace(/[\.]+/, ',');
+					grossPriceElem.val(grossPriceVal);
+
+					netPrice = netPrice.toFixed(2).toString().replace(/[\.]+/, ',');
+					netPriceElem.val(netPrice);
+				} else {
+					grossPriceElem.val('');
+				}
+			}
+
+			$('#netflag').on('change', function () {
+				let netFlagChecked = netFlagElem.is(':checked');
+				if (netFlagChecked) {
+					grossPriceElem.prop('disabled', true);
+					netPriceElem.prop('disabled', false);
+					claculatePriceFromNet();
+				} else {
+					grossPriceElem.prop('disabled', false);
+					netPriceElem.prop('disabled', true);
+					claculatePriceFromGross();
+				}
+			});
+
+			$("#tax").on('change', function () {
+				let netFlagChecked = netFlagElem.is(':checked');
+				if (netFlagChecked) {
+					claculatePriceFromNet();
+				} else {
+					claculatePriceFromGross();
+				}
+			});
+
+			$("#grossprice").on('change', function () {
+				claculatePriceFromGross();
+			});
+
+			$("#netprice").on('change', function () {
+				claculatePriceFromNet();
+			});
+
+			$('#tariff').submit(function (evt) {
+				evt.preventDefault();
+			});
+		})
+	</script>
 {/block}

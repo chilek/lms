@@ -2800,6 +2800,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'alias_limit' => $tariff['alias_limit'],
             'authtype' => $tariff['authtype'],
             'flags' => $flags,
+            'netflag' => isset($tariff['netflag']) ? 1 : 0,
+            'netvalue' => $tariff['netvalue'],
         );
         $args2 = array();
         foreach ($ACCOUNTTYPES as $typeidx => $type) {
@@ -2814,9 +2816,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				climit, plimit, uprate_n, downrate_n,
 				upceil_n, up_burst_time_n, up_burst_threshold_n, up_burst_limit_n,
 				downceil_n, down_burst_time_n, down_burst_threshold_n, down_burst_limit_n,
-				climit_n, plimit_n, dlimit, type, domain_limit, alias_limit, authtype, flags, '
+				climit_n, plimit_n, dlimit, type, domain_limit, alias_limit, authtype, flags, netflag, netvalue, '
                 . implode(', ', array_keys($args2)) . ')
-				VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
+				VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
 					?,?,?,?,?,?,?,?,?,?,?,?, ?,' . implode(',', array_fill(0, count($args2), '?')) . ')',
             array_values(array_merge($args, $args2))
         );
@@ -2894,6 +2896,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'voip_tariff_rule_id' => (!empty($tariff['voip_tariffrule'])) ? $tariff['voip_tariffrule'] : null,
             'authtype' => $tariff['authtype'],
             'flags' => $flags,
+            'netflag' => isset($tariff['netflag']) ? 1 : 0,
+            'netvalue' => $tariff['netvalue'],
         );
         $args2 = array();
         foreach ($ACCOUNTTYPES as $typeidx => $type) {
@@ -2915,7 +2919,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             downceil_n = ?, down_burst_time_n = ?, down_burst_threshold_n = ?, down_burst_limit_n = ?,
             climit_n = ?, plimit_n = ?,
             dlimit = ?, domain_limit = ?, alias_limit = ?, type = ?, voip_tariff_id = ?, voip_tariff_rule_id = ?, 
-            authtype = ?, flags = ?, '
+            authtype = ?, flags = ?, netflag = ?, netvalue = ?, '
             . implode(' = ?, ', $fields) . ' = ? WHERE id=?', array_values($args));
         if ($res && $this->syslog) {
             $this->syslog->AddMessage(SYSLOG::RES_TARIFF, SYSLOG::OPER_UPDATE, $args);

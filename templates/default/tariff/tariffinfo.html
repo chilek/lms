@@ -3,8 +3,7 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<script type="text/javascript">
-<!--
+<script>
     function getText(index) {
         {section name=lt loop=$tariffs}
         if (index == {$tariffs[lt].id}) return '{$tariffs[lt].name|escape} ({moneyf($tariffs[lt].value, $tariffs[lt].currency)})';
@@ -14,7 +13,6 @@
     function changeNetwork() {
         document.tinfo.submit();
     }
-//-->
 </script>
 
 {$speed_unit_type = ConfigHelper::getConfig('phpui.speed_unit_type', 1000)}
@@ -95,24 +93,61 @@
             <TABLE WIDTH="100%" CELLPADDING="0">
                 <TR>
                     <TD WIDTH="50%" CLASS="valign-top">
-                        <TABLE CLASS="tariff_tab bold-second">
+                        <TABLE CLASS="tariff_tab">
                             <tr>
                                 <td>
-                                    {icon name="value"}
+                                    {icon name="money"}
                                 </td>
                                 <td>
-                                    {trans("Value:")}
+                                    {trans("Price")}
                                 </td>
                                 <td>
-                                    {if $tariff.currency}
-                                        {moneyf($tariff.value, $tariff.currency)}
-                                    {else}
-                                        {$tariff.value|string_format:"%.2f "} <span class="alert">{trans('No currency assigned!')}</span>
-                                    {/if}
+                                    <table>
+                                        <tr>
+                                            <td align="right">
+                                                {trans("Net")}
+                                            </td>
+                                            <td align="right">
+                                                {if $tariff.currency}
+                                                    {moneyf($tariff.netvalue, $tariff.currency)}
+                                                {else}
+                                                    {$tariff.netvalue|string_format:"%.2f "} <span class="alert">{trans('No currency assigned!')}</span>
+                                                {/if}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right">
+                                                {trans("Gross")}
+                                            </td>
+                                            <td align="right">
+                                                {if $tariff.currency}
+                                                    {moneyf($tariff.value, $tariff.currency)}
+                                                {else}
+                                                    {$tariff.value|string_format:"%.2f "} <span class="alert">{trans('No currency assigned!')}</span>
+                                                {/if}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    {icon name="money"}
+                                </td>
+                                <td>
+                                    {trans("Accounting")}
+                                </td>
+                                <td>
                                     {if $tariff.period}
-                                        {assign var=tperiod value=$tariff.period}({$_PERIODS.$tperiod})
+                                        {assign var=tperiod value=$tariff.period}{$_PERIODS.$tperiod}
                                     {else}
                                         <span class="blend">({trans("period undefined")})</span>
+                                    {/if}
+                                    {if $tariff.netflag}
+                                        ({trans("according to the net price")})
+                                    {else}
+                                        ({trans("according to the gross price")})
                                     {/if}
                                 </td>
                             </tr>
@@ -146,7 +181,9 @@
                             {/if}
 
                             <TR>
-                                <TD><IMG SRC="img/tax.gif" ALT=""></TD>
+                                <TD>
+                                    {icon name="value"}
+                                </TD>
                                 <TD>{trans("Split payment:")}</TD>
                                 <TD>
                                     {if $tariff.splitpayment}{icon name="checked" tip="yes"}{else}-{/if}
