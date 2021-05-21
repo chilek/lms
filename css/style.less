@@ -637,7 +637,8 @@ input[type="button"] {
 }
 
 input[type="text"][disabled] {
-	border: 1px dashed grey;
+	border: @form-disabled-element-borrder;
+	background-color: transparent;
 }
 
 INPUT[type="radio"] {
@@ -731,6 +732,10 @@ textarea {
 	font-family: @fonts;
 	border: @form-element-border;
 	background-color: @lucid;
+	&[disabled] {
+		border: @form-disabled-element-borrder;
+		background-color: transparent;
+	}
 	vertical-align: middle;
 
 	&.alert,
