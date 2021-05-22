@@ -33,7 +33,6 @@ $layout['pagetitle'] = trans('VLAN List');
 $params['orderby'] = $_GET['orderby'];
 
 $vlanlist = $LMS->GetVlanList($params);
-$vlaninfo = $LMS->GetVlanInfo($id);
 $netnodelist = $LMS->GetNetNodes();
 
 switch ($action) {
@@ -44,6 +43,8 @@ switch ($action) {
         }
         break;
     case 'modify':
+        $vlaninfo = $LMS->GetVlanInfo($id);
+        $SMARTY->assign('vlaninfo', $vlaninfo);
         if (!empty($id) && isset($addvlan)) {
             $LMS->UpdateVlan($addvlan);
             $SESSION->redirect('?m=vlanlist');
@@ -61,8 +62,5 @@ switch ($action) {
 $SMARTY->assign('action', $action);
 $SMARTY->assign('vlanlist', $vlanlist);
 $SMARTY->assign('netnodelist', $netnodelist);
-if ($action == 'modify') {
-    $SMARTY->assign('vlaninfo', $vlaninfo);
-}
 $SMARTY->assign('pagetitle', $layout['pagetitle']);
 $SMARTY->display('vlan/vlanlist.html');
