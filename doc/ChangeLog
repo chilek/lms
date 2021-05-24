@@ -165,6 +165,8 @@ version 27-git (????-??-??):
     (empty by default) [chilan]
   - enhancement: implemented JPK-V7M declaration section generation as it is required by some external
     financial software [chilan]
+  - enhancement: implemented --interval, --part-number, part-size parameter support with corresponding configuration
+    variables in lms-notify.php backend script [chilan]
 
 version 26.0 (2020-12-15):
 
