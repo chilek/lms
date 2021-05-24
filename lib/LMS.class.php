@@ -3111,10 +3111,10 @@ class LMS
         return $manager->GetDocumentList($params);
     }
 
-    public function GetTaxes($from = null, $to = null)
+    public function GetTaxes($from = null, $to = null, $default = null)
     {
         $manager = $this->getFinanceManager();
-        return $manager->GetTaxes($from, $to);
+        return $manager->GetTaxes($from, $to, $default);
     }
 
     public function EventAdd($event)

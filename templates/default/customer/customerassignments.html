@@ -261,13 +261,7 @@
 							<div class="lms-ui-tab-table-column base_value">
 								<span class="net">
 									{if $a.tariffid || $a.liabilityid}
-										{if $a.tax_value}
-										{moneyf($a.unitary_value / ($a.tax_value / 100 + 1), $a.currency)}
-										{elseif $a.taxl_value}
-											{moneyf($a.unitary_value / ($a.taxl_value / 100 + 1), $a.currency)}
-										{else}
-											-
-										{/if}
+										{moneyf($a.unitary_netvalue, $a.currency)}
 									{/if}
 								</span>
 								<span class="net-gross"><br></span>
@@ -282,10 +276,12 @@
 						<div class="lms-ui-tab-table-wrapper col-2">
 							<div class="lms-ui-tab-table-column ptu_quantity">
 								{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-									{if $a.tariffid}
-										{$a.tax_label}
-									{elseif $a.liabilityid}
-										{$a.taxl_label}
+									{if $a.tariffid || $a.liabilityid}
+										{if $a.tax_label}
+											{$a.tax_label}
+										{elseif $a.taxl_label}
+											{$a.taxl_label}
+										{/if}
 									{/if}
 									<br>
 								{/if}
@@ -434,6 +430,11 @@
 							<div class="lms-ui-tab-table-column accounting-period">
 								{if $a.tariffid || $a.liabilityid}
 									{$a.payday}
+									{if $a.netflag}
+										&nbsp;({trans('in net')})
+									{else}
+										&nbsp;({trans('in gross')})
+									{/if}
 									{if $a.backwardperiod}
 										&nbsp;{icon name="lms-ui-icon-previous" tip="<!assignment>backward"}
 									{/if}
