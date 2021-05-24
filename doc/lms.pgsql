@@ -13,6 +13,7 @@ CREATE TABLE users (
 	login varchar(32) 	DEFAULT '' NOT NULL,
 	firstname varchar(64)   DEFAULT '' NOT NULL,
 	lastname varchar(64) DEFAULT '' NOT NULL,
+	issuer varchar(100) DEFAULT NULL,
 	email varchar(255) 	DEFAULT '' NOT NULL,
 	phone varchar(32)   DEFAULT NULL,
 	position varchar(255) 	DEFAULT '' NOT NULL,
@@ -254,6 +255,9 @@ CREATE TABLE divisions (
 	shortname 	varchar(255) 	NOT NULL DEFAULT '',
 	name 		text 		NOT NULL DEFAULT '',
 	label varchar(100) DEFAULT NULL,
+	firstname varchar(128) DEFAULT NULL,
+	lastname varchar(128) DEFAULT NULL,
+	birthdate integer DEFAULT NULL,
 	ten		varchar(50)	NOT NULL DEFAULT '',
 	regon		varchar(255)	NOT NULL DEFAULT '',
 	rbe			varchar(255)	NOT NULL DEFAULT '',
@@ -826,6 +830,8 @@ CREATE TABLE tariffs (
 	authtype smallint 	DEFAULT 0 NOT NULL,
     currency varchar(3),
     flags smallint DEFAULT 0 NOT NULL,
+    netflag smallint DEFAULT 0 NOT NULL,
+    netvalue numeric(9,2) DEFAULT NULL,
 	PRIMARY KEY (id),
 	CONSTRAINT tariffs_name_key UNIQUE (name, value, currency, period)
 );
@@ -1406,8 +1412,8 @@ CREATE TABLE netdevices (
 	id integer default nextval('netdevices_id_seq'::text) NOT NULL,
 	name varchar(32) 	DEFAULT '' NOT NULL,
 	description text 	DEFAULT '' NOT NULL,
-	producer varchar(64) 	DEFAULT '' NOT NULL,
-	model varchar(32) 	DEFAULT '' NOT NULL,
+	producer varchar(256) 	DEFAULT '' NOT NULL,
+	model varchar(256) 	DEFAULT '' NOT NULL,
 	serialnumber varchar(32) DEFAULT '' NOT NULL,
 	ports integer 		DEFAULT 0 NOT NULL,
 	purchasetime integer	DEFAULT 0 NOT NULL,
@@ -1767,11 +1773,15 @@ CREATE TABLE customerassignments (
 	    REFERENCES customergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	customerid integer NOT NULL
 	    CONSTRAINT customerassignments_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    startdate integer DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer NOT NULL,
+    enddate integer DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id),
-	CONSTRAINT customerassignments_customergroupid_key UNIQUE (customergroupid, customerid)
+	CONSTRAINT customerassignments_customergroupid_ukey UNIQUE (customergroupid, customerid, enddate)
 );
 
 CREATE INDEX customerassignments_customerid_idx ON customerassignments (customerid);
+CREATE INDEX customerassignments_startdate_idx ON customerassignments (startdate);
+CREATE INDEX customerassignments_enddate_idx ON customerassignments (enddate);
 
 /* --------------------------------------------------------
   Structure of table "nodesessions"
@@ -1919,7 +1929,7 @@ CREATE TABLE rttickets (
   id integer default nextval('rttickets_id_seq'::text) NOT NULL,
   queueid integer 	NOT NULL
     REFERENCES rtqueues (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  requestor varchar(255) DEFAULT '' NOT NULL,
+  requestor varchar(255) DEFAULT NULL,
   requestor_mail varchar(255) DEFAULT NULL,
   requestor_phone varchar(32) DEFAULT NULL,
   requestor_userid integer DEFAULT NULL
@@ -2916,6 +2926,11 @@ CASE
 END
 ' LANGUAGE SQL;
 
+CREATE VIEW vcustomerassignments AS
+    SELECT ca.*
+    FROM customerassignments ca
+    WHERE startdate <= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer AND enddate = 0;
+
 CREATE VIEW vaddresses AS
     SELECT a.*, c.ccode AS ccode, country_id AS countryid, city_id AS location_city, street_id AS location_street,
         house AS location_house, flat AS location_flat,
@@ -2944,7 +2959,8 @@ CREATE VIEW vaddresses AS
 ------------------------------------------------------*/
 CREATE VIEW vdivisions AS
     SELECT d.*,
-        a.country_id as countryid, a.ccode, a.zip as zip, a.city as city, a.address
+        a.country_id as countryid, a.ccode, a.zip as zip, a.city as city, a.address,
+        (CASE WHEN d.firstname IS NOT NULL AND d.lastname IS NOT NULL AND d.birthdate IS NOT NULL THEN 1 ELSE 0 END) AS naturalperson
     FROM divisions d
         JOIN vaddresses a ON a.id = d.address_id;
 
@@ -2995,7 +3011,7 @@ CREATE VIEW customerview AS
         LEFT JOIN vaddresses a2 ON ca2.address_id = a2.id
         LEFT JOIN customerconsentview cc ON cc.customerid = c.id
     WHERE NOT EXISTS (
-        SELECT 1 FROM customerassignments a
+        SELECT 1 FROM vcustomerassignments a
         JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
         WHERE e.userid = lms_current_user() AND a.customerid = c.id)
         AND (lms_current_user() = 0 OR c.divisionid IN (
@@ -4024,6 +4040,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021040900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021051900');
 
 COMMIT;

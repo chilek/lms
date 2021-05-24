@@ -96,11 +96,11 @@
 		{/if}
 	</TR>
 	{foreachelse}
-	<TR>
-		<TD COLSPAN="{math equation="5+x" x=$taxescount}" class="empty-table">
-			<p>{trans("No such invoices in selected time period.")}</p>
-		</TD>
-	</TR>
+	<tr>
+		<td colspan="{math equation="5+x" x=$taxescount}" class="empty-table">
+			{trans("No such invoices in selected time period.")}
+		</td>
+	</tr>
 	{/foreach}
 	{/if}
 	<TR>

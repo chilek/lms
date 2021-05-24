@@ -21,20 +21,20 @@
 //-->
 </SCRIPT>
 <style>
-    @media screen and (max-width: 470px) {
-        .lms-ui-address-box tr {
-            display: flex;
-            flex-wrap: wrap;
-        }
+	@media screen and (max-width: 470px) {
+		.lms-ui-address-box tr {
+			display: flex;
+			flex-wrap: wrap;
+		}
 
-        .cell-flex  > div textarea{
-            max-width: 190px;
-        }
+		.cell-flex  > div textarea{
+			max-width: 190px;
+		}
 
-        .lms-ui-wysiwyg-editor textarea{
-            max-width: 230px;
-        }
-    }
+		.lms-ui-wysiwyg-editor textarea{
+			max-width: 230px;
+		}
+	}
 
 	@media screen and (min-width: 470px) {
 		.lms-ui-address-box {
@@ -50,13 +50,16 @@
 	}
 
 </style>
+
+{include file="customer/customercompanyselectiondialog.html"}
+
 <FORM name="customeradd" id="customeradd" method="POST" action="?m=customeradd">
 <p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
 </p>
 <TABLE class="lmsbox">
 	<THEAD>
-    <TR>
+	<TR>
 		<TD class="lmsbox-panels">
 			<div class="lmsbox-panel">
 				<table>
@@ -99,7 +102,7 @@
 				</table>
 			</div>
 		</TD>
-    </TR>
+	</TR>
 	</THEAD>
 	<TBODY>
 	<TR>
@@ -113,7 +116,7 @@
 				{block name="customeradd-leftcolumn"}
 				<TR>
 					<TD>
-						<img src="img/{if $customeradd.status}{$_CSTATUSES[$customeradd.status].img}{else}{$_CSTATUSES[$smarty.const.CSTATUS_CONNECTED].img}{/if}" alt="">
+						{if $customeradd.status}{icon name="customer-status-{$_CSTATUSES[$customerinfo.status].alias}"}{else}{icon name="customer-status-connected"}{/if}
 					</TD>
 					<TD>
 						<SELECT size="1" name="customeradd[status]" {tip text="Select customer state" trigger="status"}>
@@ -126,7 +129,7 @@
 				{if $divisions}
 				<TR>
 					<TD>
-						<img src="img/division.gif" alt="">
+						{icon name="division"}
 					</TD>
 					<TD>
 						<SELECT size="1" name="customeradd[divisionid]" {tip text="Select division" trigger="divisionid"}>
@@ -140,7 +143,7 @@
 				{if $groups}
 				<TR>
 					<TD>
-						<IMG SRC="img/group.gif" alt="">
+						{icon name="cg"}
 					</TD>
 					<TD>
 						<SELECT SIZE="1" NAME="customeradd[group]" {tip text="Select group to assign to customer" trigger="group"}>
@@ -154,7 +157,7 @@
 				{/if}
 				<TR>
 					<TD>
-						<IMG SRC="img/folder.gif" alt="">
+						{icon name="legal-personality"}
 					</TD>
 					<TD>
 						<label>
@@ -171,10 +174,9 @@
 						</label>
 					</TD>
 				</TR>
-
 				<TR>
 					<TD>
-						<i class="lms-ui-icon-legal-personality"></i>
+						{icon name="legal-personality"}
 					</TD>
 					<TD>
 						<select name="customeradd[flags][]" {tip text="Select customer flags (optional)" class="lms-ui-multiselect"}
@@ -188,12 +190,9 @@
 						</select>
 					</TD>
 				</TR>
-
-
 				{$addr_counter = 0}
-
 				<tr>
-					<td class="valign-top"><i class="lms-ui-icon-home fa-fw" title="{trans('billing address')}"></i></td>
+					<td class="valign-top">{icon name="home" tip="billing address"}</td>
 					<td>
 						{$addr_found = 0}
 						{foreach $customeradd.addresses as $v}
@@ -237,7 +236,7 @@
 				</tr>
 
 				<tr>
-					<td class="valign-top"><i class="lms-ui-icon-mail fa-fw" title="{trans('postal address')}"></i></td>
+					<td class="valign-top">{icon name="message" tip="postal address"}</td>
 					<td>
 						{$addr_found = 0}
 						{foreach $customeradd.addresses as $v}
@@ -274,9 +273,9 @@
 				<tr>
 					<td class="valign-top">
 						{if $v.location_address_type == $smarty.const.DEFAULT_LOCATION_ADDRESS}
-							<i class="lms-ui-icon-default-customer-location fa-fw location-box-image" title="{trans('default location address')}"></i>
+							{icon name="default-customer-location" class="location-box-image" tip="default location address"}
 						{else}
-							<i class="lms-ui-icon-customer-location fa-fw location-box-image" title="{trans('location/recipient address')}"></i>
+							{icon name="customer-location" class="location-box-image" tip="location/recipient address"}
 						{/if}
 					</td>
 					<td>
@@ -313,7 +312,7 @@
 				{include file="customer/customercontacts.html" customerinfo=$customeradd formelemprefix="customeradd"}
 				<TR>
 					<TD>
-						<IMG src="img/pin.gif" alt="">
+						{icon name="customer-pin-code"}
 					</TD>
 					<TD>
 						<INPUT type="text" required size="{$pin_max_size}" value="{if $customeradd.pin}{$customeradd.pin}{/if}" name="customeradd[pin]" {tip text=$pin_tip trigger="pin"}>&nbsp;
@@ -322,84 +321,90 @@
 				</TR>
 				<TR>
 					<TD class="valign-top">
-						<IMG src="img/serialnumber.gif" alt="">
+						{icon name="user-id-number"}
 					</TD>
 					<TD class="cell-flex">
-                        <div>
-						<TABLE width="100%">
-                            <COLGROUP>
-                                <COL style="width: 1%;">
-                                <COL style="width: 99%;">
-                            </COLGROUP>
-							<TR>
-								<TD class="nobr">{trans("Identity type:")}</TD>
-								<TD>
-									{identitytypes elemname="customeradd[ict]" selected=$customerinfo.ict
-									tip="Select identity type" trigger="ict"}
-								</TD>
-							</TR>
-							<TR>
-								<TD class="nobr">{trans("Identity number:")}</TD>
-								<TD>
-									{if $customerinfo.icnwarning}
-										<INPUT type="hidden" name="customeradd[icnwarning]" value="1">
-									{/if}
-									<INPUT type="text" value="{$customeradd.icn}" name="customeradd[icn]" size="30"
-											{tip text="Enter identity number (optional)" trigger="icn"}>
-								</TD>
-							</TR>
-							<TR>
-								<TD>{trans("SSN")}:</TD>
-								<TD>
-									<INPUT type="text" size="30" value="{$customeradd.ssn}" name="customeradd[ssn]" {tip text="Enter customer Social Security Number (optional)" trigger="ssn"}>
-									{if $customeradd.ssnwarning}
-									<INPUT type="hidden" name="customeradd[ssnwarning]" value="1">
-									{/if}
-									{if $customeradd.ssnexistencewarning}
-									<INPUT type="hidden" name="customeradd[ssnexistencewarning]" value="1">
-									{/if}
-								</TD>
-							</TR>
-							<TR>
-								<TD>{trans("TEN")}:</TD>
-								<TD>
-									<INPUT type="text" size="30" value="{$customeradd.ten}" name="customeradd[ten]" {tip text="Enter customer Tax Exempt Number (optional)" trigger="ten"}>
-									{if $customeradd.tenwarning}
-									<INPUT type="hidden" name="customeradd[tenwarning]" value="1">
-									{/if}
-									{if $customeradd.tenexistencewarning}
-									<INPUT type="hidden" name="customeradd[tenexistencewarning]" value="1">
-									{/if}
-									<a class="gusapi-button" data-type="{Utils::GUS_REGON_API_SEARCH_TYPE_TEN}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
-								</TD>
-							</TR>
-							<TR>
-								<TD>{trans("REGON")}:</TD>
-								<TD>
-									<INPUT type="text" size="30" value="{$customeradd.regon}" name="customeradd[regon]" {tip text="Enter Business Registration Number (optional)" trigger="regon"}>
-									<a class="gusapi-button" data-type="{Utils::GUS_REGON_API_SEARCH_TYPE_REGON}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
-								</TD>
-							</TR>
-							<TR>
-								<TD>{trans("RBE Name:")}</TD>
-								<TD>
-									<TEXTAREA name="customeradd[rbename]" cols="45" rows="4" {tip text="Enter National Court Register / Register of Business Entities Name (optional)" trigger="rbename"}>{$customeradd.rbename|escape}</TEXTAREA>
-								</TD>
-							</TR>
-							<TR>
-								<TD>{trans("RBE")}:</TD>
-								<TD>
-									<INPUT type="text" size="30" value="{$customeradd.rbe}" name="customeradd[rbe]" {tip text="Enter National Court Register / Register of Business Entities Number (optional)" trigger="rbe"}>
-									<a class="gusapi-button" data-type="{Utils::GUS_REGON_API_SEARCH_TYPE_RBE}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
-								</TD>
-							</TR>
-						</TABLE>
-                        </div>
+						<div>
+							<TABLE width="100%">
+								<COLGROUP>
+									<COL style="width: 1%;">
+									<COL style="width: 99%;">
+								</COLGROUP>
+								<TR>
+									<TD class="nobr">{trans("Identity type:")}</TD>
+									<TD>
+										{identitytypes elemname="customeradd[ict]" selected=$customerinfo.ict
+										tip="Select identity type" trigger="ict"}
+									</TD>
+								</TR>
+								<TR>
+									<TD class="nobr">{trans("Identity number:")}</TD>
+									<TD>
+										{if $customerinfo.icnwarning}
+											<INPUT type="hidden" name="customeradd[icnwarning]" value="1">
+										{/if}
+										<INPUT type="text" value="{$customeradd.icn}" name="customeradd[icn]" size="30"
+												{tip text="Enter identity number (optional)" trigger="icn"}>
+									</TD>
+								</TR>
+								<TR>
+									<TD>{trans("SSN")}:</TD>
+									<TD>
+										<INPUT type="text" size="30" value="{$customeradd.ssn}" name="customeradd[ssn]" {tip text="Enter customer Social Security Number (optional)" trigger="ssn"}>
+										{if $customeradd.ssnwarning}
+										<INPUT type="hidden" name="customeradd[ssnwarning]" value="1">
+										{/if}
+										{if $customeradd.ssnexistencewarning}
+										<INPUT type="hidden" name="customeradd[ssnexistencewarning]" value="1">
+										{/if}
+									</TD>
+								</TR>
+								<TR>
+									<TD>{trans("TEN")}:</TD>
+									<TD>
+										<INPUT type="text" size="30" value="{$customeradd.ten}" name="customeradd[ten]" {tip text="Enter customer Tax Exempt Number (optional)" trigger="ten"}>
+										{if $customeradd.tenwarning}
+										<INPUT type="hidden" name="customeradd[tenwarning]" value="1">
+										{/if}
+										{if $customeradd.tenexistencewarning}
+										<INPUT type="hidden" name="customeradd[tenexistencewarning]" value="1">
+										{/if}
+										{button type="link" icon="division" class="gusapi-button"
+											data_type=Utils::GUS_REGON_API_SEARCH_TYPE_TEN
+											tip="Click here to autocomplete company data from GUS REGON database"}
+									</TD>
+								</TR>
+								<TR>
+									<TD>{trans("REGON")}:</TD>
+									<TD>
+										<INPUT type="text" size="30" value="{$customeradd.regon}" name="customeradd[regon]" {tip text="Enter Business Registration Number (optional)" trigger="regon"}>
+										{button type="link" icon="division" class="gusapi-button"
+											data_type=Utils::GUS_REGON_API_SEARCH_TYPE_REGON
+											tip="Click here to autocomplete company data from GUS REGON database"}
+									</TD>
+								</TR>
+								<TR>
+									<TD>{trans("RBE Name:")}</TD>
+									<TD>
+										<TEXTAREA name="customeradd[rbename]" cols="45" rows="4" {tip text="Enter National Court Register / Register of Business Entities Name (optional)" trigger="rbename"}>{$customeradd.rbename|escape}</TEXTAREA>
+									</TD>
+								</TR>
+								<TR>
+									<TD>{trans("RBE")}:</TD>
+									<TD>
+										<INPUT type="text" size="30" value="{$customeradd.rbe}" name="customeradd[rbe]" {tip text="Enter National Court Register / Register of Business Entities Number (optional)" trigger="rbe"}>
+										{button type="link" icon="division" class="gusapi-button"
+											data_type=Utils::GUS_REGON_API_SEARCH_TYPE_RBE
+											tip="Click here to autocomplete company data from GUS REGON database"}
+									</TD>
+								</TR>
+							</TABLE>
+						</div>
 					</TD>
 				</TR>
 				<TR>
 					<TD class="valign-top">
-						<IMG src="img/options.gif" alt="">
+						{icon name="paytype"}
 					</TD>
 					<TD>
 						<TABLE>
@@ -452,7 +457,7 @@
 				</TR>
 				<TR>
 					<TD class="valign-top">
-						<i class="lms-ui-icon-consent"></i>
+						{icon name="consent"}
 					</TD>
 					<TD>
 						<TABLE cellpadding="0" class="lms-ui-separated-rows">
@@ -494,27 +499,25 @@
 				</COLGROUP>
 				{block name="customeradd-rightcolumn"}
 				<TR>
-					<TD><IMG src="img/info1.gif" alt=""></TD>
+					<TD>{icon name="optional-info"}</TD>
 					<TD>
 						<TEXTAREA rows="10" cols="60" name="customeradd[info]" class="lms-ui-wysiwyg-editor" {tip text="Enter additional information (optional)"}{if isset($customeradd.wysiwyg.info)} data-wysiwyg="{$customeradd.wysiwyg.info}"{/if}>{$customeradd.info|escape}</TEXTAREA>
 					</TD>
 				</TR>
 				<TR>
-					<TD><IMG src="img/warningon.gif" alt=""></TD>
+					<TD>{icon name="warning"}</TD>
 					<TD>
 						<TEXTAREA rows="10" cols="60" name="customeradd[message]" class="lms-ui-wysiwyg-editor" {tip text="Enter notice contents (optional)"}{if isset($customeradd.wysiwyg.message)} data-wysiwyg="{$customeradd.wysiwyg.message}"{/if}>{$customeradd.message|escape}</TEXTAREA>
 					</TD>
 				</TR>
 				<TR>
-					<TD><IMG src="img/note.gif" alt=""></TD>
+					<TD>{icon name="notes"}</TD>
 					<TD>
 						<TEXTAREA rows="10" cols="60" name="customeradd[notes]" class="lms-ui-wysiwyg-editor" {tip text="Enter notes (optional)"}{if isset($customeradd.wysiwyg.notes)} data-wysiwyg="{$customeradd.wysiwyg.notes}"{/if}>{$customeradd.notes|escape}</TEXTAREA>
 					</TD>
 				</TR>
 				<TR>
-					<TD>
-						<i class="lms-ui-icon-memo"></i>
-					</TD>
+					<TD>{icon name="memo"}</TD>
 					<TD>
 						<TEXTAREA name="customeradd[documentmemo]" class="lms-ui-wysiwyg-editor"
 								  COLS="60" ROWS="10" {tip text="Enter document memo (optional)"}
@@ -577,11 +580,18 @@
 			if (!identifier.length) {
 				return;
 			}
+			var that = this;
 			GusApiGetCompanyDetails(
 				$(this).attr('data-type'),
 				identifier,
 				function(data) {
-					GusApiFinished('customeradd', data);
+					if (data.length > 1) {
+						customerCompanySelectionDialog(data, that).done(function(company) {
+							GusApiFinished('customeradd', company);
+						});
+					} else {
+						GusApiFinished('customeradd', data[0]);
+					}
 				});
 			return;
 		});

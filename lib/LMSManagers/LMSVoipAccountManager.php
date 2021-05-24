@@ -159,6 +159,10 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
      */
     public function voipAccountSet($id, $access = -1)
     {
+        if ($this->syslog) {
+            $ownerid = $this->db->GetOne('SELECT ownerid FROM voipaccounts WHERE id = ?', array($id));
+        }
+
         if ($access != -1) {
             if ($access) {
                 $voip_account_updated = $this->db->Execute(
@@ -166,30 +170,61 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                     WHERE id = ? AND EXISTS (
                         SELECT 1
                         FROM customers
-                        WHERE id = ownerid AND status = 3)',
-                    array($id)
+                        WHERE id = ownerid AND status = ?)',
+                    array(
+                        $id,
+                        CSTATUS_CONNECTED,
+                    )
                 );
+
+                if ($voip_account_updated && $this->syslog) {
+                    $args = array(
+                        SYSLOG::RES_VOIP_ACCOUNT => $id,
+                        SYSLOG::RES_CUST => $ownerid,
+                        'access' => 1,
+                    );
+                    $this->syslog->AddMessage(SYSLOG::RES_VOIP_ACCOUNT, SYSLOG::OPER_UPDATE, $args);
+                }
+
                 return $voip_account_updated;
             } else {
                 $voip_account_updated = $this->db->Execute(
-                    'UPDATE voipaccounts SET access = 0
-                    WHERE id = ?',
+                    'UPDATE voipaccounts SET access = 0 WHERE id = ?',
                     array($id)
                 );
+
+                if ($voip_account_updated && $this->syslog) {
+                    $args = array(
+                        SYSLOG::RES_VOIP_ACCOUNT => $id,
+                        SYSLOG::RES_CUST => $ownerid,
+                        'access' => 0,
+                    );
+                    $this->syslog->AddMessage(SYSLOG::RES_VOIP_ACCOUNT, SYSLOG::OPER_UPDATE, $args);
+                }
+
                 return $voip_account_updated;
             }
         } else {
             $access = $this->db->GetOne(
-                'SELECT access
-                FROM voipaccounts
-                WHERE id = ?',
+                'SELECT access FROM voipaccounts WHERE id = ?',
                 array($id)
             );
+
             if ($access == 1) {
                 $voip_account_updated = $this->db->Execute(
-                    'UPDATE voipaccounts SET access=0 WHERE id = ?',
+                    'UPDATE voipaccounts SET access = 0 WHERE id = ?',
                     array($id)
                 );
+
+                if ($voip_account_updated && $this->syslog) {
+                    $args = array(
+                        SYSLOG::RES_VOIP_ACCOUNT => $id,
+                        SYSLOG::RES_CUST => $ownerid,
+                        'access' => 0,
+                    );
+                    $this->syslog->AddMessage(SYSLOG::RES_VOIP_ACCOUNT, SYSLOG::OPER_UPDATE, $args);
+                }
+
                 return $voip_account_updated;
             } else {
                 $voip_account_updated = $this->db->Execute(
@@ -197,10 +232,23 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                     WHERE id = ? AND EXISTS (
                         SELECT 1
                         FROM customers
-                        WHERE id = ownerid AND status = 3
+                        WHERE id = ownerid AND status = ?
                     )',
-                    array($id)
+                    array(
+                        $id,
+                        CSTATUS_CONNECTED,
+                    )
                 );
+
+                if ($voip_account_updated && $this->syslog) {
+                    $args = array(
+                        SYSLOG::RES_VOIP_ACCOUNT => $id,
+                        SYSLOG::RES_CUST => $ownerid,
+                        'access' => 1,
+                    );
+                    $this->syslog->AddMessage(SYSLOG::RES_VOIP_ACCOUNT, SYSLOG::OPER_UPDATE, $args);
+                }
+
                 return $voip_account_updated;
             }
         }
@@ -215,25 +263,48 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
      */
     public function voipAccountSetU($id, $access = false)
     {
+        if ($this->syslog) {
+            $ownerid = $this->db->GetOne('SELECT ownerid FROM voipaccounts WHERE id = ?', array($id));
+        }
+
         if ($access) {
             $status = $this->db->GetOne(
-                'SELECT status
-                FROM customers
-                WHERE id = ?',
+                'SELECT status FROM customers WHERE id = ?',
                 array($id)
             );
-            if ($status == 3) {
+
+            if ($status == CSTATUS_CONNECTED) {
                 $voip_account_updated = $this->db->Execute(
-                    'UPDATE voipaccounts SET access=1 WHERE ownerid=?',
+                    'UPDATE voipaccounts SET access = 1 WHERE ownerid = ?',
                     array($id)
                 );
+
+                if ($voip_account_updated && $this->syslog) {
+                    $args = array(
+                        SYSLOG::RES_VOIP_ACCOUNT => $id,
+                        SYSLOG::RES_CUST => $ownerid,
+                        'access' => 1,
+                    );
+                    $this->syslog->AddMessage(SYSLOG::RES_VOIP_ACCOUNT, SYSLOG::OPER_UPDATE, $args);
+                }
+
                 return $voip_account_updated;
             }
         } else {
             $voip_account_updated = $this->db->Execute(
-                'UPDATE voipaccounts SET access=0 WHERE ownerid=?',
+                'UPDATE voipaccounts SET access = 0 WHERE ownerid = ?',
                 array($id)
             );
+
+            if ($voip_account_updated && $this->syslog) {
+                $args = array(
+                    SYSLOG::RES_VOIP_ACCOUNT => $id,
+                    SYSLOG::RES_CUST => $ownerid,
+                    'access' => 0,
+                );
+                $this->syslog->AddMessage(SYSLOG::RES_VOIP_ACCOUNT, SYSLOG::OPER_UPDATE, $args);
+            }
+
             return $voip_account_updated;
         }
     }
@@ -247,6 +318,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
     public function voipAccountAdd($voipaccountdata)
     {
         $DB = $this->db;
+
         $DB->BeginTrans();
 
         // -1 is equal to no selected, then set null
@@ -254,45 +326,67 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             $voipaccountdata['address_id'] = null;
         }
 
+        $args = array(
+            SYSLOG::RES_CUST => $voipaccountdata['ownerid'],
+            'login' => $voipaccountdata['login'],
+            'passwd' => $voipaccountdata['passwd'],
+            SYSLOG::RES_USER => Auth::GetCurrentUser(),
+            'access' => $voipaccountdata['access'],
+            'balance' => $voipaccountdata['balance']    ? $voipaccountdata['balance']    : ConfigHelper::getConfig('voip.default_cost_limit', 200),
+            'flags' => $voipaccountdata['flags']      ? $voipaccountdata['flags']      : ConfigHelper::getConfig('voip.default_account_flags', 0),
+            'cost_limit' => $voipaccountdata['cost_limit'] ? $voipaccountdata['cost_limit'] : null,
+            SYSLOG::RES_ADDRESS => $voipaccountdata['address_id'] ? $voipaccountdata['address_id'] : null,
+            'description' => isset($voipaccountdata['description']) ? Utils::removeInsecureHtml($voipaccountdata['description']) : '',
+        );
+
         $voip_account_inserted = $DB->Execute(
             'INSERT INTO voipaccounts (ownerid, login, passwd, creatorid, creationdate, access,
             balance, flags, cost_limit, address_id, description)
             VALUES (?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?, ?)',
-            array(
-                $voipaccountdata['ownerid'],
-                $voipaccountdata['login'],
-                $voipaccountdata['passwd'],
-                Auth::GetCurrentUser(),
-                $voipaccountdata['access'],
-                $voipaccountdata['balance']    ? $voipaccountdata['balance']    : ConfigHelper::getConfig('voip.default_cost_limit', 200),
-                $voipaccountdata['flags']      ? $voipaccountdata['flags']      : ConfigHelper::getConfig('voip.default_account_flags', 0),
-                $voipaccountdata['cost_limit'] ? $voipaccountdata['cost_limit'] : null,
-                $voipaccountdata['address_id'] ? $voipaccountdata['address_id'] : null,
-                isset($voipaccountdata['description']) ? Utils::removeInsecureHtml($voipaccountdata['description']) : '',
-            )
+            array_values($args)
         );
 
         if ($voip_account_inserted) {
             $id = $DB->GetLastInsertID('voipaccounts');
+
+            if ($this->syslog) {
+                unset($args[SYSLOG::RES_USER]);
+                $args[SYSLOG::RES_VOIP_ACCOUNT] = $id;
+                $this->syslog->AddMessage(SYSLOG::RES_VOIP_ACCOUNT, SYSLOG::OPER_ADD, $args);
+            }
 
             $phone_index = 0;
             $phones = array();
 
             foreach ($voipaccountdata['phone'] as $phone) {
                 $phones[] = "($id, '$phone', " . (++$phone_index) . ')';
+
+                if ($this->syslog) {
+                    $args = array(
+                        SYSLOG::RES_VOIP_ACCOUNT => $id,
+                        SYSLOG::RES_CUST => $voipaccountdata['ownerid'],
+                        'phone' => $phone,
+                        'number_index' => $phone_index,
+                    );
+                    $this->syslog->AddMessage(SYSLOG::RES_VOIP_ACCOUNT_NUMBER, SYSLOG::OPER_ADD, $args);
+                }
             }
 
             if ($phones) {
                 $DB->Execute('INSERT INTO voip_numbers (voip_account_id, phone, number_index) VALUES ' . implode(',', $phones));
+
                 $DB->CommitTrans();
+
                 return $id;
             } else {
                 $DB->RollbackTrans();
+
                 return false;
             }
         }
 
         $DB->RollbackTrans();
+
         return false;
     }
 
@@ -310,7 +404,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             FROM voipaccounts v
             WHERE v.id = ? AND NOT EXISTS (
                 SELECT 1
-                FROM customerassignments a
+                FROM vcustomerassignments a
                 JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
                 WHERE e.userid = lms_current_user() AND a.customerid = v.ownerid
             )',
@@ -421,8 +515,34 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
     public function deleteVoipAccount($id)
     {
         $this->db->BeginTrans();
-        $this->db->Execute('DELETE FROM voipaccounts WHERE id = ?', array($id));
+
+        if ($this->syslog) {
+            $account = $this->db->GetRow('SELECT * FROM voipaccounts WHERE id = ?', array($id));
+            if ($account) {
+                $args = array(
+                    SYSLOG::RES_VOIP_ACCOUNT => $id,
+                    SYSLOG::RES_CUST => $account['ownerid'],
+                );
+                $this->syslog->AddMessage(SYSLOG::RES_VOIP_ACCOUNT, SYSLOG::OPER_DELETE, $args);
+
+                $numbers = $this->db->GetCol('SELECT id FROM voip_numbers WHERE voip_account_id = ?', array($id));
+                if ($numbers) {
+                    foreach ($numbers as $numberid) {
+                        $args = array(
+                            SYSLOG::RES_VOIP_ACCOUNT => $id,
+                            SYSLOG::RES_VOIP_ACCOUNT_NUMBER => $numberid,
+                            SYSLOG::RES_CUST => $account['ownerid'],
+                        );
+                        $this->syslog->AddMessage(SYSLOG::RES_VOIP_ACCOUNT_NUMBER, SYSLOG::OPER_DELETE, $args);
+                    }
+                }
+            }
+        }
+
         $this->db->Execute('DELETE FROM voip_numbers WHERE voip_account_id = ?', array($id));
+        $this->db->Execute('DELETE FROM voipaccounts WHERE id = ?', array($id));
+
+
         $this->db->CommitTrans();
     }
 
@@ -441,63 +561,115 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             $data['address_id'] = null;
         }
 
+        $args = array(
+            'login' => $data['login'],
+            'passwd' => $data['passwd'],
+            'access' => $data['access'],
+            SYSLOG::RES_USER => Auth::GetCurrentUser(),
+            SYSLOG::RES_CUST => $data['ownerid'],
+            'flags' => $data['flags']      ? $data['flags']      : ConfigHelper::getConfig('voip.default_account_flags', 0),
+            'balance' => $data['balance']    ? $data['balance']    : 0,
+            'cost_limit' => $data['cost_limit'] ? $data['cost_limit'] : null,
+            SYSLOG::RES_ADDRESS => $data['address_id'] ? $data['address_id'] : null,
+            'description' => isset($data['description']) ? Utils::removeInsecureHtml($data['description']) : '',
+            SYSLOG::RES_VOIP_ACCOUNT => $data['id'],
+        );
+
         $result = $this->db->Execute(
             'UPDATE voipaccounts
              SET login=?, passwd=?, moddate=?NOW?, access=?, modid=?,
                  ownerid=?, flags=?, balance=?, cost_limit=?, address_id=?,
                  description = ?
-             WHERE id=?',
-            array(
-                $data['login'],
-                $data['passwd'],
-                $data['access'],
-                Auth::GetCurrentUser(),
-                $data['ownerid'],
-                $data['flags']      ? $data['flags']      : ConfigHelper::getConfig('voip.default_account_flags', 0),
-                $data['balance']    ? $data['balance']    : 0,
-                $data['cost_limit'] ? $data['cost_limit'] : null,
-                $data['address_id'] ? $data['address_id'] : null,
-                isset($data['description']) ? Utils::removeInsecureHtml($data['description']) : '',
-                $data['id'],
-             )
+             WHERE id = ?',
+            array_values($args)
         );
 
         if ($result) {
+            if ($this->syslog) {
+                unset($args[SYSLOG::RES_USER]);
+                $this->syslog->AddMessage(SYSLOG::RES_VOIP_ACCOUNT, SYSLOG::OPER_UPDATE, $args);
+            }
+
             $this->db->Execute('UPDATE voip_numbers SET number_index = null WHERE voip_account_id = ?', array($data['id']));
+
             $current_phones = $this->db->GetAllByKey('SELECT phone FROM voip_numbers WHERE voip_account_id = ?', 'phone', array($data['id']));
             $phone_index = 0;
 
-            $phone_to_delete = array();
-            $phone_to_insert = array();
-
             foreach ($data['phone'] as $v) {
                 if (!isset($current_phones[$v])) {
-                    $phone_to_insert[] = '('.$data['id'].",'$v','" . (++$phone_index) . "')";
+                    $args = array(
+                        SYSLOG::RES_VOIP_ACCOUNT => $data['id'],
+                        'phone' => $v,
+                        'number_index' => ++$phone_index,
+                    );
+                    $result = $this->db->Execute(
+                        'INSERT INTO voip_numbers (voip_account_id, phone, number_index) VALUES (?, ?, ?)',
+                        array_values($args)
+                    );
+                    if ($result && $this->syslog) {
+                        $args[SYSLOG::RES_CUST] = $data['ownerid'];
+                        $args[SYSLOG::RES_VOIP_ACCOUNT_NUMBER] = $this->db->GetLastInsertID('voip_numbers');
+                        $this->syslog->AddMessage(SYSLOG::RES_VOIP_ACCOUNT_NUMBER, SYSLOG::OPER_ADD, $args);
+                    }
                 } else {
-                    $this->db->Execute('UPDATE voip_numbers SET number_index = ? WHERE phone ?LIKE? ?', array(++$phone_index, $v));
+                    $args = array(
+                        'number_index' => ++$phone_index,
+                        'phone' => $v,
+                        SYSLOG::RES_VOIP_ACCOUNT => $data['id'],
+                    );
+                    $result = $this->db->Execute(
+                        'UPDATE voip_numbers SET number_index = ? WHERE phone = ? AND voip_account_id = ?',
+                        array_values($args)
+                    );
+                    if ($result && $this->syslog) {
+                        $voip_number_id = $this->db->GetOne(
+                            'SELECT id FROM voip_numbers WHERE phone = ? AND voip_account_id = ?',
+                            array_values($args)
+                        );
+
+                        if ($voip_number_id) {
+                            $args[SYSLOG::RES_CUST] = $data['ownerid'];
+                            $args[SYSLOG::RES_VOIP_ACCOUNT_NUMBER] = $voip_number_id;
+                            $this->syslog->AddMessage(SYSLOG::RES_VOIP_ACCOUNT_NUMBER, SYSLOG::OPER_UPDATE, $args);
+                        }
+                    }
                 }
             }
 
             $data['phone'] = array_flip($data['phone']);
+
             foreach ($current_phones as $v) {
                 if (!isset($data['phone'][$v['phone']])) {
-                    $phone_to_delete[] = " phone = '".$v['phone'] . "' ";
+                    $voip_number_id = $this->db->GetOne(
+                        'SELECT id FROM voip_numbers
+                        WHERE voip_account_id = ? AND phone = ?',
+                        array(
+                            $data['id'],
+                            $v['phone'],
+                        )
+                    );
+                    if ($voip_number_id) {
+                        if ($this->syslog) {
+                            $args = array(
+                                SYSLOG::RES_VOIP_ACCOUNT_NUMBER => $voip_number_id,
+                                SYSLOG::RES_VOIP_ACCOUNT => $data['id'],
+                                SYSLOG::RES_CUST => $data['ownerid'],
+                            );
+                            $this->syslog->AddMessage(SYSLOG::RES_VOIP_ACCOUNT_NUMBER, SYSLOG::OPER_DELETE, $args);
+                        }
+
+                        $this->db->Execute('DELETE FROM voip_numbers WHERE id = ?', array($voip_number_id));
+                    }
                 }
             }
 
-            if ($phone_to_delete) {
-                $this->db->Execute('DELETE FROM voip_numbers WHERE ' . implode('OR', $phone_to_delete));
-            }
-
-            if ($phone_to_insert) {
-                $this->db->Execute('INSERT INTO voip_numbers (voip_account_id, phone, number_index) VALUES ' . implode(',', $phone_to_insert));
-            }
-
             $this->db->CommitTrans();
+
             return true;
         }
 
         $this->db->RollbackTrans();
+
         return false;
     }
 

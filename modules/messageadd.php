@@ -213,7 +213,7 @@ function GetRecipients($filter, $type = MSG_MAIL)
         .($network ? ' AND c.id IN (SELECT ownerid FROM vnodes WHERE 
 			(netid = ' . $net['id'] . ' AND ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ')
 			OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
-        .($customergroup ? ' AND c.id IN (SELECT customerid FROM customerassignments
+        .($customergroup ? ' AND c.id IN (SELECT customerid FROM vcustomerassignments
 			WHERE customergroupid IN (' . $customergroup . '))' : '')
         .($nodegroup ? ' AND c.id IN (SELECT ownerid FROM vnodes
 			JOIN nodegroupassignments ON (nodeid = vnodes.id)
@@ -677,7 +677,11 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
             }
             $customers = array_unique($customers);
 
-            $recipients = GetCustomers($customers);
+            if (empty($customers)) {
+                $recipients = array();
+            } else {
+                $recipients = GetCustomers($customers);
+            }
 
             if (isset($recipients) && count($recipients) == 1 && !empty($message['nodeid'])) {
                 $recipient = array_shift($recipients);

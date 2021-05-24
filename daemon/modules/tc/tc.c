@@ -149,7 +149,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 				// test customer's membership in customergroups
 				if(gc)
 				{
-					res = g->db->pquery(g->db->conn, "SELECT customergroupid FROM customerassignments WHERE customerid=?", g->db->get_data(ures,i,"id"));
+					res = g->db->pquery(g->db->conn, "SELECT customergroupid FROM vcustomerassignments WHERE customerid=?", g->db->get_data(ures,i,"id"));
 					for(k=0; k<g->db->nrows(res); k++) 
 					{
 						int groupid = atoi(g->db->get_data(res, k, "customergroupid"));

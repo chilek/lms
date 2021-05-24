@@ -43,7 +43,7 @@
 			{$plugin.author}
 		</TD>
 		<TD class="text-center"{if ConfigHelper::checkPrivilege('full_access')} onClick="javascript:togglePlugin('{$name}', {if $plugin.enabled}false{else}true{/if});"{/if}>
-			{if $plugin.new_style}{trans("yes")}{else}{trans("no")}{/if}
+			{if $plugin.new_style}{icon name="checked" tip="yes"}{/if}
 		</TD>
 		<TD class="text-center"{if ConfigHelper::checkPrivilege('full_access')} onClick="javascript:togglePlugin('{$name}', {if $plugin.enabled}false{else}true{/if});"{/if}>
 			{if $plugin.dbcurrschversion}{$plugin.dbcurrschversion}{else}{if $plugin.new_style}-{/if}{/if}<br>

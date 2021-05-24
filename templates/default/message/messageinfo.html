@@ -28,7 +28,7 @@
 			{else}
 				{$icon = "mail"}
 			{/if}
-			{icon name=$icon class="fa-fw"}
+			{icon name=$icon}
 		</TD>
 		<TD class="bold nobr">
 			{trans("Subject:")}
@@ -41,7 +41,7 @@
     <TBODY>
 	<TR>
 		<TD>
-			{icon name="user" class="fa-fw"}
+			{icon name="user"}
 		</TD>
 		<TD class="bold">
 			{trans("User:")}
@@ -54,7 +54,7 @@
 	</TR>
 	<TR>
 		<TD>
-			{icon name="calendar" class="fa-fw"}
+			{icon name="calendar"}
 		</TD>
 		<TD class="bold">
 			{trans("Creation date:")}
@@ -66,7 +66,7 @@
 {if $message.sender}
 	<TR>
 		<TD>
-			{icon name="mail" class="fa-fw"}
+			{icon name="mail"}
 		</TD>
 		<TD class="bold">
 			{trans("Sender:")}
@@ -78,7 +78,7 @@
 {/if}
 	<TR>
 		<TD>
-			{icon name="edit" class="fa-fw"}
+			{icon name="edit"}
 		</TD>
 		<TD class="bold nobr">
 			{trans("Message body:")}
@@ -102,7 +102,7 @@
 	{if $filecontainers}
 		<TR>
 			<TD class="valign-top">
-				{icon name="upload" class="fa-fw"}
+				{icon name="attachment"}
 			</TD>
 			<TD class="bold valign-top">
 				{trans("Attachments:")}
@@ -115,7 +115,7 @@
 								text="{$file.filename} <i class=\"lms-ui-icon-view{if preg_match('/pdf/',$file.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$file.contenttype)} xls{/if}\"></i>"}
 							<br>
 						{/foreach}
-					{button id="downloadzippedcontainer" onclick="location.href = '?m=attachments&attachmentaction=downloadzippedcontainer&type=messageid&id={$container.id}';" label="Download as zip archive" icon="fileupload"}
+					{button id="downloadzippedcontainer" onclick="location.href = '?m=attachments&attachmentaction=downloadzippedcontainer&type=messageid&id={$container.id}';" label="Download as zip archive" icon="download"}
 				{/foreach}
 			</TD>
 		</TR>
@@ -243,11 +243,11 @@
 		</TD>
 	</TR>
 	{sectionelse}
-	<TR>
-		<TD COLSPAN="6" class="empty-table">
-			<p>{trans("No such recipients in database.")}</p>
-		</TD>
-	</TR>
+	<tr>
+		<td colspan="6" class="empty-table">
+			{trans("No such recipients in database.")}
+		</td>
+	</tr>
 	{/section}
     </TBODY>
     <TFOOT>

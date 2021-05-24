@@ -86,11 +86,11 @@
 		</TD>
 	</TR>
 	{foreachelse}
-	<TR>
-		<TD COLSPAN="{math equation="4+x*2" x=$taxescount}" class="empty-table">
-			<p>{trans("No such liabilities in selected date.")}</p>
-		</TD>
-	</TR>
+	<tr>
+		<td colspan="{math equation="4+x*2" x=$taxescount}" class="empty-table">
+			{trans("No such liabilities in selected date.")}
+		</td>
+	</tr>
 	{/foreach}
 	<TR>
 		<TD CLASS="HEADGREY" COLSPAN="2" ALIGN="RIGHT">

@@ -68,6 +68,15 @@ if (isset($_POST['category'])) {
 
         $SESSION->redirect('?m=rtcategoryinfo&id='.$id);
     }
+} elseif (isset($_GET['id'])) {
+    $category = $LMS->GetCategory($_GET['id']);
+    $category['name'] = trans('$a (clone)', $category['name']);
+    $category['users'] = array_filter(
+        Utils::array_column($category['owners'], null, 'id'),
+        function ($user) {
+            return $user['owner'] > 0;
+        }
+    );
 }
 
 $users = $LMS->GetUserNames();

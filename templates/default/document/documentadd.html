@@ -59,194 +59,203 @@
 	}
 
 </script>
-<FORM name="documentadd" method="POST" id="documentadd-form" action="?m=documentadd">
-<INPUT type="submit" class="hiddenbtn">
+
+<form name="documentadd" method="POST" id="documentadd-form" action="?m=documentadd">
+<input type="submit" class="hiddenbtn">
 {if $customer.id}{$cid=$customer.id}{elseif $document.customerid}{$cid=$document.customerid}{else}{$cid=""}{/if}
-<TABLE class="lmsbox">
-	<COLGROUP>
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
-		<COL style="width: 98%;">
-	</COLGROUP>
-    <THEAD>
-	<TR>
-		<TD>
-			{icon name="document" class="fa-fw"}
-		</TD>
-		<TD class="bold nobr">
-			{trans("Title:")}
-		</TD>
-		<TD class="nobr">
-			<INPUT type="text" id="title" name="document[title]" value="{$document.title}" required {tip text="Enter document title" trigger="title"} size="40">
-		</TD>
-	</TR>
-    </THEAD>
-    <TBODY>
-	<TR id="customerselection">
-		<TD>
-			{icon name="customer" class="fa-fw"}
-		</TD>
-		<TD class="bold nobr">
-			{trans("Customer:")}
-		</TD>
-		<TD>
-			{customerlist form="documentadd" customers=$customers selected=$cid version=2
-				selectname="customer" inputname="customerid" required=true customOnChange="CustomerChanged();"}
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			{icon name="period" class="fa-fw"}
-		</TD>
-		<TD class="bold">
-			{trans("Period:")}
-		</TD>
-		<TD>
-			{trans("from:")}
-			<input type="text" name="document[fromdate]" id="fromdate"
-				value="{if $document.fromdate}{$document.fromdate}{/if}"
-				placeholder="{trans("yyyy/mm/dd")}"
-				{tip class="lms-ui-date lms-ui-date-unix" text="Enter start date in YYYY/MM/DD format (optional)" trigger="fromdate"}
-				size="10">&nbsp;
-			{trans("to:")}
-			<input type="text" name="document[todate]" id="todate"
-				value="{if $document.todate}{$document.todate}{/if}"
-				placeholder="{trans("yyyy/mm/dd")}"
-				{tip class="lms-ui-date lms-ui-date-unix" text="Enter end date in YYYY/MM/DD format (optional)" trigger="todate"}
-				size="10">
-		</TD>
-	</TR>
-	<TR{if $document.closed} style="display: none;"{/if}>
-		<TD>
-			{icon name="period" class="fa-fw"}
-		</TD>
-		<TD class="bold">
-			{trans("Wait for customer action till:")}
-		</TD>
-		<TD>
-			<input type="text" name="document[confirmdate]" id="confirmdate"
-				value="{if $document.confirmdate}{$document.confirmdate}{/if}"
-				placeholder="{trans("yyyy/mm/dd")}"
-				{tip class="lms-ui-date lms-ui-date-unix" text="Enter date in YYYY/MM/DD format we wait for customer action till (optional)" trigger="confirmdate"}
-				size="10">
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			{icon name="description" class="fa-fw"}
-		</TD>
-		<TD class="bold">
-			{trans("Description:")}
-		</TD>
-		<TD>
-			<TEXTAREA name="document[description]" rows="5" cols="50" {tip text="Enter additional information (optional)"}>{$document.description}</TEXTAREA>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			{icon name="type" class="fa-fw"}
-		</TD>
-		<TD class="bold">
-			{trans("Type:")}
-		</TD>
-		<TD>
-			<SELECT SIZE="1" NAME="document[type]" onchange="DocTypeChanged();" {tip class="lms-ui-advanced-select" text="Select document type" trigger="type"} required>
-				<OPTION VALUE="0">{trans("select type")}</OPTION>
-				{foreach from=$_DOCTYPES key=key item=item}{if $key < 0 && in_array($key, $docrights)}
-				<OPTION VALUE="{$key}"{if $document.type==$key} SELECTED{/if}>{$item}</OPTION>
-				{/if}{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR id="templates" style="display:{if $document.type<0}table-row{else}none{/if}">
-		<TD>
-			{icon name="template" class="fa-fw"}
-		</TD>
-		<TD class="bold">
-			{trans("Template:")}
-		</TD>
-		<TD>
-			<SELECT SIZE="1" NAME="document[templ]" {tip text="Select template to generate new document if you haven't got prepared file" trigger="templ"} id="templ" onchange="DocTemplateChanged();">
-				<OPTION VALUE="">... {trans("select template")} ...</OPTION>
-				{foreach $docengines as $docengine}
-				<OPTION VALUE="{$docengine.name}"{if $document.templ==$docengine.name} SELECTED{/if}>{$docengine.title}</OPTION>
-				{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-	<tr id="referencedocument">
-		{include file="document/documentreference.html"}
-	</tr>
-	<TR id="document-file-row"{if !$document.type} style="display: none;"{/if}>
-		<TD>
-			{icon name="import" class="fa-fw"}
-		</TD>
-		<TD class="bold">
-			{trans("Files:")}
-		</TD>
-		<TD>
-			{fileupload id="attachments" fileupload=$fileupload form="documentadd-form"}
-		</TD>
-	</TR>
-	<TR id="attachment-row"{if !$attachment_result} style="display: none;"{/if}>
-		<TD>
-			{icon name="import" class="fa-fw"}
-		</TD>
-		<TD class="bold nobr">
-			{trans("Document attachments:")}
-		</TD>
-		<TD id="attachment-cell">
-			{$attachment_result}
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			{icon name="id" class="fa-fw"}
-		</TD>
-		<TD class="bold">
-			{trans("Number:")}
-		</TD>
-		<TD>
-			<INPUT type="text" name="document[number]" value="{if $document.number}{$document.number}{/if}" size="15" {tip text="Enter document number (leave this field empty to obtain next number)" trigger="number"}>&nbsp;
-			<DIV id="numberplans" style="display: {if empty($numberplans)}none{else}inline{/if};">
-			{include file="document/documentnumberplans.html" numberplanid=$document.numberplanid cdate=$document.cdate customerid=$cid}
-			</DIV>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			{icon name="confirm" class="fa-fw"}
-		</TD>
-		<TD class="bold nobr">
-			<label for="closed">{trans("Confirmed:")}</label>
-		</TD>
-		<TD>
-			<INPUT type="checkbox" name="document[closed]" id="closed" value="1" {if $document.closed} checked{/if}>
-		</TD>
-	</TR>
-	<TR>
-		<TD colspan="3" class="lms-ui-box-buttons">
-			<div id="document-button-panel">
-				<div>
-					{button type="submit" icon="save" id="submit-button" label="Submit"}
-					{button type="submit" icon="print" label="Print" onclick="print_document()"}
-					{button icon="cancel" label="Cancel" onclick="location.href = '?m=documentlist';"}
+<table class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 98%;">
+	</colgroup>
+    <thead>
+		<tr>
+			<td>
+				{icon name="document"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Title:")}</strong>
+			</td>
+			<td class="nobr">
+				<input type="text" id="title" name="document[title]" value="{$document.title}" required
+					{tip text="Enter document title" trigger="title"} size="40">
+			</td>
+		</tr>
+    </thead>
+    <tbody>
+		<tr id="customerselection">
+			<td>
+				{icon name="customer"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Customer:")}</strong>
+			</td>
+			<td>
+				{customerlist customers=$customers selected=$cid version=2
+					selectname="customer" inputname="customerid" required=true customOnChange="CustomerChanged();"}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="period"}
+			</td>
+			<td>
+				<strong>{trans("Period:")}</strong>
+			</td>
+			<td>
+				{trans("from:")}
+				<input type="text" name="document[fromdate]" id="fromdate"
+					value="{if $document.fromdate}{$document.fromdate}{/if}"
+					placeholder="{trans("yyyy/mm/dd")}"
+					{tip class="lms-ui-date lms-ui-date-unix" text="Enter start date in YYYY/MM/DD format (optional)" trigger="fromdate"}
+					size="10">&nbsp;
+				{trans("to:")}
+				<input type="text" name="document[todate]" id="todate"
+					value="{if $document.todate}{$document.todate}{/if}"
+					placeholder="{trans("yyyy/mm/dd")}"
+					{tip class="lms-ui-date lms-ui-date-unix" text="Enter end date in YYYY/MM/DD format (optional)" trigger="todate"}
+					size="10">
+			</td>
+		</tr>
+		<tr{if $document.closed} style="display: none;"{/if}>
+			<td>
+				{icon name="period"}
+			</td>
+			<td>
+				<strong>{trans("Wait for customer action till:")}</strong>
+			</td>
+			<td>
+				<input type="text" name="document[confirmdate]" id="confirmdate"
+					value="{if $document.confirmdate}{$document.confirmdate}{/if}"
+					placeholder="{trans("yyyy/mm/dd")}"
+					{tip class="lms-ui-date lms-ui-date-unix" text="Enter date in YYYY/MM/DD format we wait for customer action till (optional)" trigger="confirmdate"}
+					size="10">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="description"}
+			</td>
+			<td>
+				<strong>{trans("Description:")}</strong>
+			</td>
+			<td>
+				<textarea name="document[description]" rows="5" cols="50"
+					{tip text="Enter additional information (optional)"}>{$document.description}</textarea>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="type"}
+			</td>
+			<td>
+				<strong>{trans("Type:")}</strong>
+			</td>
+			<td>
+				<select size="1" name="document[type]" onchange="DocTypeChanged();"
+					{tip class="lms-ui-advanced-select" text="Select document type" trigger="type"} required>
+					<option value="0">{trans("select type")}</option>
+					{foreach Localisation::arraySort($_DOCTYPES) as $key => $item}
+						{if $key < 0 && in_array($key, $docrights)}
+							<option value="{$key}"{if $document.type==$key} selected{/if}>{$item}</option>
+						{/if}
+					{/foreach}
+				</select>
+			</td>
+		</tr>
+		<tr id="templates" style="display:{if $document.type<0}table-row{else}none{/if}">
+			<td>
+				{icon name="template"}
+			</td>
+			<td>
+				<strong>{trans("Template:")}</strong>
+			</td>
+			<TD>
+				<select size="1" name="document[templ]"
+					{tip text="Select template to generate new document if you haven't got prepared file" trigger="templ"}
+					id="templ" onchange="DocTemplateChanged();">
+					{include file="document/documenttemplateoptions.html"}
+				</select>
+			</TD>
+		</tr>
+		<tr id="referencedocument">
+			{include file="document/documentreference.html"}
+		</tr>
+		<tr id="document-file-row"{if !$document.type} style="display: none;"{/if}>
+			<td>
+				{icon name="import"}
+			</td>
+			<td>
+				<strong>{trans("Files:")}</strong>
+			</td>
+			<td>
+				{fileupload id="attachments" fileupload=$fileupload form="documentadd-form"}
+			</td>
+		</tr>
+		<tr id="attachment-row"{if !$attachment_result} style="display: none;"{/if}>
+			<td>
+				{icon name="import"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Document attachments:")}</strong>
+			</td>
+			<td id="attachment-cell">
+				{$attachment_result}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="id"}
+			</td>
+			<td>
+				<strong>{trans("Number:")}</strong>
+			</td>
+			<td>
+				<input type="text" name="document[number]" value="{if $document.number}{$document.number}{/if}"
+					size="15" {tip text="Enter document number (leave this field empty to obtain next number)" trigger="number"}>
+				<div id="numberplans" style="display: {if empty($numberplans)}none{else}inline{/if};">
+					{include file="document/documentnumberplans.html" numberplanid=$document.numberplanid
+						cdate=$document.cdate customerid=$cid}
 				</div>
-				<div>
-					<label>
-						<input type="checkbox" id="new-window-toggle">
-						{trans("new window")}
-					</label>
-					<label>
-						<input type="checkbox" name="document[reuse]" value="on" {if $document.reuse}checked{/if}>
-						{trans("Display this form again, when that document is saved")}
-					</label>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="confirm"}
+			</td>
+			<td class="nobr">
+				<label for="closed">
+					<strong>{trans("Confirmed:")}</strong>
+				</label>
+			</td>
+			<td>
+				<input type="checkbox" name="document[closed]" id="closed" value="1" {if $document.closed} checked{/if}>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3" class="lms-ui-box-buttons">
+				<div id="document-button-panel">
+					<div>
+						{button type="submit" icon="save" id="submit-button" label="Submit"}
+						{button type="submit" icon="print" label="Print" onclick="print_document()"}
+						{button icon="cancel" label="Cancel" onclick="location.href = '?m=documentlist';"}
+					</div>
+					<div>
+						<label>
+							<input type="checkbox" id="new-window-toggle">
+							{trans("new window")}
+						</label>
+						<label>
+							<input type="checkbox" name="document[reuse]" value="on" {if $document.reuse}checked{/if}>
+							{trans("Display this form again, when that document is saved")}
+						</label>
+					</div>
 				</div>
-			</div>
-		</TD>
-	</TR>
-    </TBODY>
-</TABLE>
+			</td>
+		</tr>
+    </tbody>
+</table>
 
 {if !empty($promotions)}
 {block name="documentpromotions"}
@@ -254,9 +263,9 @@
 {/block}
 {/if}
 
-<DIV id="plugin" name="plugin">{$plugin_result}</DIV>
+<div id="plugin" name="plugin">{$plugin_result}</div>
 {$script_result}
-</FORM>
+</form>
 
 <script>
 

@@ -8,6 +8,11 @@
         white-space: nowrap;
     }
 
+	#network-connection > * {
+		margin-top: 0.2em;
+		margin-bottom: 0.2em;
+	}
+
 	.cell-flex {
 		display: flex;
 		flex-wrap: wrap;
@@ -40,7 +45,7 @@
 
 {include file="google-maps.html"}
 
-<FORM NAME="nodeadd" ID="nodeadd" METHOD="POST" ACTION="?m=nodeadd{if $customerinfo.id}&ownerid={$customerinfo.id}{/if}">
+<form name="nodeadd" id="nodeadd" method="POST" action="?m=nodeadd{if $customerinfo.id}&ownerid={$customerinfo.id}{/if}">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
     <THEAD>
@@ -155,7 +160,7 @@
 
 							<tr>
 								<td>
-									{icon name="login" class="fa-fw" tip="<!node>Login"}
+									{icon name="login" tip="<!node>Login"}
 								</td>
 								<td>
 									<input type="text" name="nodedata[login]" value="{$nodedata.login|escape}"
@@ -165,7 +170,7 @@
 
 							<TR>
 								<TD>
-									{icon name="password" class="fa-fw" tip="Password:"}
+									{icon name="password" tip="Password:"}
 								</TD>
 								<TD>
 									<INPUT type="text" name="nodedata[passwd]" value="{$nodedata.passwd|escape}"
@@ -180,7 +185,7 @@
 									<IMG SRC="img/netdev.gif" ALT="{trans("Net device:")}">
 								</TD>
 								<TD class="cell-flex">
-									<div>
+									<div id="network-connection">
 												<a href="javascript: void(0);" onclick="return netDevChooseWin(document.nodeadd.elements['nodedata[netdev]']);" {tip trigger="netdev" text="Search device"}>&raquo;&raquo;&raquo;</A>
 									<SELECT SIZE="1" NAME="nodedata[netdev]" {tip class="lms-ui-advanced-select" text="Select network device (optional)" trigger="netdev"}
 											{if ConfigHelper::checkConfig('phpui.node_to_network_device_connection_required')} required{/if}
@@ -394,12 +399,12 @@
 	</TR>
     </TBODY>
 </TABLE>
-</FORM>
+</>
 
 <script>
 
 	$(function() {
-		$('form[name="nodeadd"] [name="nodedata[name]"]').focus();
+		$('[name="nodedata[name]"]').focus();
 
 		$('#project').change(function() {
 			if ($(this).val() == -1) {

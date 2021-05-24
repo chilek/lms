@@ -130,7 +130,8 @@ if (isset($_POST['message'])) {
 
         $message['categories'] = is_array($message['categories']) ? array_flip($message['categories']) : array();
 
-        $user = $LMS->GetUserInfo(Auth::GetCurrentUser());
+        $userid = Auth::GetCurrentUser();
+        $user = $LMS->GetUserInfo($userid);
 
         $attachments = null;
 
@@ -150,6 +151,8 @@ if (isset($_POST['message'])) {
 
         $customer_notification_mail_subject = ConfigHelper::getConfig('phpui.helpdesk_customer_notification_mail_subject', '[RT#%tid] %subject');
 
+        $message['userid'] = $userid;
+
         foreach ($tickets as $ticketid) {
             $queue = $LMS->GetQueueByTicketId($ticketid);
             if ($message['queueid'] != -100 && $message['queueid'] != $queue['id']) {
@@ -163,7 +166,6 @@ if (isset($_POST['message'])) {
             $message['messageid'] = '<msg.' . $queue['id'] . '.' . $ticketid . '.' . time()
                 . '@rtsystem.' . gethostname() . '>';
 
-            $message['userid'] = Auth::GetCurrentUser();
             $message['customerid'] = null;
 
             $mailfname = '';
@@ -172,8 +174,7 @@ if (isset($_POST['message'])) {
             if (!empty($helpdesk_sender_name) && ($mailfname = $helpdesk_sender_name)) {
                 if ($mailfname == 'queue') {
                     $mailfname = $queue['name'];
-                }
-                if ($mailfname == 'user') {
+                } elseif ($mailfname == 'user') {
                     $mailfname = $user['name'];
                 }
                 $mailfname = '"' . $mailfname . '"';
@@ -188,7 +189,7 @@ if (isset($_POST['message'])) {
             }
             $headers['Message-ID'] = $message['messageid'];
 
-            if ($message['userid'] && ($user['email'] || $queue['email'])) {
+            if ($message['userid'] && ($user['email'] || $queue['email'] || $requestor_mail)) {
                 $mailfrom = $LMS->DetermineSenderEmail($user['email'], $queue['email'], $requestor_mail);
 
                 $message['mailfrom'] = $mailfrom;
@@ -211,9 +212,9 @@ if (isset($_POST['message'])) {
                     $toemails = array();
                     $ccemails = array();
                     foreach ($message['contacts']['mails'] as $address => $contact) {
-                        $display = empty($message['contacts']['maildisplays'][$address]) ? '' : qp_encode($contact['display']) . ' ';
+                        $display = empty($message['contacts']['maildisplays'][$address]) ? '' : qp_encode($message['contacts']['maildisplays'][$address]) . ' ';
                         $message_source = $message['contacts']['mailsources'][$address];
-                        if ($message_source == 'requestor_mail' || $message_source == 'mailfrom') {
+                        if ($message_source == 'requestor_mail' || $message_source == 'mailfrom' || $message_source == 'customer') {
                             $toemails[] = array(
                                 'name' => $display,
                                 'email' => $contact,
@@ -338,6 +339,7 @@ if (isset($_POST['message'])) {
                     $LMS->SendMail($recipients, $headers, $message['body'], $attachments, null, $smtp_options);
                 }
             }
+            unset($headers['Cc']);
 
             $service = ConfigHelper::getConfig('sms.service');
 
@@ -364,7 +366,7 @@ if (isset($_POST['message'])) {
                 }
             }
 
-            // Users notification
+            // User notifications
             if (isset($message['notify']) || isset($message['customernotify'])) {
                 $mailfname = '';
 

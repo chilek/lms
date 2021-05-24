@@ -136,6 +136,37 @@ version 27-git (????-??-??):
     to restore previous behavior you have to use digit prefix - ex. %6tid [chilan]
   - improvement: 'rt.ticket_subject_remove_reply_prefix' controls if "Re:" or "Odp:" prefixes are removed
     from ticket/message subject [chilan]
+  - enhancement: change the way liabilities data are displayed [ravvar]
+  - enhancement: introduce 'phpui.default_assignment_list_dataset' configuration variable to set default dataset
+    in liabilities list ('gross' by default) [ravvar]
+  - enhancement: lms-notify.php backend script allows to notify customers (and operator) about expiring document
+    pending action date [chilan]
+  - enhancement: added new customer consents - e-mail marketing and sms marketing [chilan]
+  - enhancement: new reward/penalty tariff flags: electronic invoice, e-mail marketing and sms marketing [chilan]
+  - improvement: allow to search customers by starting with phrase in customer name [chilan]
+  - enhancement: user issuer property allow to mask issuer name on documents [chilan]
+  - improvement: if GUS-REGON api returns many matched entities for single company identifier then allow
+    to select it from modal dialog [chilan]
+  - enhancement: waiting assignments filter in customer search form [chilan]
+  - improvement: 'payments.reward_penalty_deadline_grace_days' allows to be more polite for customers while
+    checking if they apply to reward/penalty for on-time payments (default: 0) [chilan]
+  - enhancement: uke income report can take customer group assignment history into account [chilan]
+  - enhancement: 'phpui.promotion_activation_at_same_day' allows to force the same day of activation
+    payment ('false' by default) [chilan]
+  - improvement: new 'active, without nodes' and 'waiting, without nodes' assignment filter selection
+    in customer search form [chilan]
+  - enhancement: allow to mark division as natural person (usefull for JPK reports) [chilan]
+  - enhancement: support for /31 networks [chilan]
+  - enhancement: implemented helpdesk category cloning [chilan]
+  - enhancement: 'dhcp.range_format' with default 'range %start% %end%;' allows to define expected
+    subnetwork range format [chilan]
+  - enhancement: implemented transaction log support for voip account management [chilan]
+  - enhancement: 'dhcp.network_begin' allows to define default subnetwork configuration fragment
+    (empty by default) [chilan]
+  - enhancement: implemented JPK-V7M declaration section generation as it is required by some external
+    financial software [chilan]
+  - enhancement: implemented --interval, --part-number, part-size parameter support with corresponding configuration
+    variables in lms-notify.php backend script [chilan]
 
 version 26.0 (2020-12-15):
 

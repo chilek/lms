@@ -94,6 +94,7 @@
         "ext-zip": "*",
         "ext-iconv": "*",
         "ext-gd": "*",
+        "ext-gmp": "*",
         "phine/observer": "2.0",
         "phine/exception": "1.0",
         "phpmailer/phpmailer": "^6",

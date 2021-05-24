@@ -62,13 +62,35 @@ if (isset($_GET['oper'])) {
                 $error['label_error'] = trans('No label!');
             }
 
+            $netdevMacData = compact("netdevid", "label", "mac", "main");
+
+            $hook_data = $lms->executeHook(
+                'netdevmacadd_validation_before_update',
+                array(
+                    'netdev_mac_data' => $netdevMacData,
+                    'error' => $error
+                )
+            );
+            $netdevMacData = $hook_data['netdev_mac_data'];
+            $error = $hook_data['error'];
+
             if ($error) {
                 die(json_encode($error));
             }
 
-            $params = compact("netdevid", "label", "mac", "main");
-            if ($macid = $lms->addNetDevMac($params)) {
-                die(json_encode($lms->getNetDevMac($macid)));
+            $macid = $lms->addNetDevMac($netdevMacData);
+
+            if ($macid) {
+                $netdevMacData = $lms->getNetDevMac($macid);
+
+                $hook_data = $lms->executeHook(
+                    'netdevmacadd_after_update',
+                    array(
+                        'netdev_mac_data' => $netdevMacData,
+                    )
+                );
+
+                die(json_encode($netdevMacData));
             }
             break;
         case 'edit':
@@ -101,13 +123,35 @@ if (isset($_GET['oper'])) {
                 $error['label_error'] = trans('No label!');
             }
 
+            $netdevMacData = compact("macid", "netdevid", "label", "mac", "main");
+
+            $hook_data = $lms->executeHook(
+                'netdevmacedit_validation_before_update',
+                array(
+                    'netdev_mac_data' => $netdevMacData,
+                    'error' => $error
+                )
+            );
+            $netdevMacData = $hook_data['netdev_mac_data'];
+            $error = $hook_data['error'];
+
             if ($error) {
                 die(json_encode($error));
             }
 
-            $params = compact("netdevid", "macid", "label", "mac", "main");
-            if ($macid = $lms->updateNetDevMac($params)) {
-                die(json_encode($lms->getNetDevMac($macid)));
+            $macid = $lms->updateNetDevMac($netdevMacData);
+
+            if ($macid) {
+                $netdevMacData = $lms->getNetDevMac($macid);
+
+                $hook_data = $lms->executeHook(
+                    'netdevmacedit_after_update',
+                    array(
+                        'netdev_mac_data' => $netdevMacData,
+                    )
+                );
+
+                die(json_encode($netdevMacData));
             }
             break;
         case 'del':

@@ -119,6 +119,35 @@ a.lms-ui-link-button {
   }
 }
 
+a.lms-ui-button:not(.lms-ui-link-button) {
+  > i:before {
+    color: black;
+  }
+  > i {
+    width: 1.2em;
+    text-align: center;
+  }
+  border: 1px solid transparent;
+  display: inline-block;
+  &:hover {
+    cursor: pointer;
+    border: 1px solid @darkbrown;
+    border-radius: 3px;
+    display: inline-block;
+    text-decoration: none;
+  }
+  &[disabled] {
+    color: @blend !important;
+    cursor: no-drop;
+    &:before {
+      color: @blend !important;
+    }
+    > i:before {
+      color: @blend !important;
+    }
+  }
+}
+
 a.lms-ui-link-button + button.lms-ui-button {
   margin-left: 0.33em;
 }

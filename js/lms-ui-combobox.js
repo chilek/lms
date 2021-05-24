@@ -121,6 +121,7 @@
 				this.find(cp + cdisplay).prop('required', 'required');
 				this.addClass(pname + crequired);
 			}
+			this.find(cp + cdisplay).attr('maxlength', $select.attr('maxlength') || opts.maxlength || null);
 			if ($div.length == 0) {
 				this.append($div = $('<div class="' + pname + clist + '"></div>'));
 			}

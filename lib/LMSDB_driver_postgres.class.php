@@ -249,7 +249,7 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
         } elseif (gettype($input) == 'string') {
             if (strpos($input, '?') !== false) {
                 $input = @pg_escape_literal($this->_dblink, $input);
-                return (strpos($input, 'E\'') !== false ? '' : 'E') . str_replace('?','\u003f', $input);
+                return (strpos($input, 'E\'') !== false ? '' : 'E') . str_replace('?', '\u003f', $input);
             } else {
                 return '\'' . @pg_escape_string($this->_dblink, $input) . '\'';
             }

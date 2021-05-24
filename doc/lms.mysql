@@ -7,6 +7,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TRIGGER IF EXISTS cash_customerbalances_delete_trigger;
 DROP TRIGGER IF EXISTS cash_customerbalances_update_trigger;
 DROP TRIGGER IF EXISTS cash_customerbalances_insert_trigger;
+DROP TRIGGER IF EXISTS customerassignments_insert_trigger;
 
 DROP VIEW IF EXISTS vnetworks;
 DROP VIEW IF EXISTS customermailsview;
@@ -31,6 +32,7 @@ DROP VIEW IF EXISTS vnodealltariffs_nodes;
 DROP VIEW IF EXISTS vnodealltariffs_tariffs;
 DROP VIEW IF EXISTS vnodealltariffs;
 DROP VIEW IF EXISTS customerconsentview;
+DROP VIEW IF EXISTS vcustomerassignments;
 
 DROP TABLE IF EXISTS up_info_changes;
 DROP TABLE IF EXISTS up_help;
@@ -188,6 +190,7 @@ CREATE TABLE users (
   login varchar(32)     NOT NULL DEFAULT '',
   firstname varchar(64) NOT NULL DEFAULT '',
   lastname varchar(64) NOT NULL DEFAULT '',
+  issuer varchar(100) DEFAULT NULL,
   email varchar(255)    NOT NULL DEFAULT '',
   phone varchar(32)     DEFAULT NULL,
   position varchar(255) NOT NULL DEFAULT '',
@@ -413,6 +416,9 @@ CREATE TABLE divisions (
 	shortname       varchar(255) 	NOT NULL DEFAULT '',
 	name        	text    	NOT NULL DEFAULT '',
 	label varchar(100) DEFAULT NULL,
+	firstname varchar(128) DEFAULT NULL,
+	lastname varchar(128) DEFAULT NULL,
+	birthdate int(11) DEFAULT NULL,
 	ten		varchar(50)	NOT NULL DEFAULT '',
 	regon		varchar(255)	NOT NULL DEFAULT '',
 	rbe			varchar(255)	NOT NULL DEFAULT '',
@@ -971,6 +977,8 @@ CREATE TABLE tariffs (
 	authtype tinyint(1) NOT NULL DEFAULT '0',
     currency varchar(3),
     flags tinyint(1) DEFAULT 0 NOT NULL,
+    netflag tinyint(1) DEFAULT 0 NOT NULL,
+	netvalue decimal(9,2) DEFAULT NULL,
     PRIMARY KEY  (id),
 	UNIQUE KEY tariffs_name_key (name, value, currency, period),
 	INDEX type (type),
@@ -1528,8 +1536,8 @@ CREATE TABLE netdevices (
   id 		int(11) 	NOT NULL auto_increment,
   name 		varchar(32) 	NOT NULL DEFAULT '',
   description 	text 		NOT NULL DEFAULT '',
-  producer 	varchar(64) 	NOT NULL DEFAULT '',
-  model 	varchar(32) 	NOT NULL DEFAULT '',
+  producer 	varchar(256) 	NOT NULL DEFAULT '',
+  model 	varchar(256) 	NOT NULL DEFAULT '',
   serialnumber 	varchar(32) 	NOT NULL DEFAULT '',
   ports 	int(11) 	NOT NULL DEFAULT '0',
   purchasetime 	int(11) 	NOT NULL DEFAULT '0',
@@ -1868,9 +1876,13 @@ CREATE TABLE customerassignments (
   id int(11) NOT NULL auto_increment,
   customergroupid int(11) NOT NULL,
   customerid int(11) NOT NULL,
+  startdate int(11) NOT NULL DEFAULT UNIX_TIMESTAMP(),
+  enddate int(11) DEFAULT 0 NOT NULL,
   PRIMARY KEY (id),
-  UNIQUE KEY customerassignment (customergroupid, customerid),
+  UNIQUE KEY customerassignments_customergroupid_ukey (customergroupid, customerid, enddate),
   INDEX customerid (customerid),
+  INDEX customerassignments_startdate_idx (startdate),
+  INDEX customerassignments_enddate_idx (enddate),
   CONSTRAINT customerassignments_customergroupid_fkey
   	FOREIGN KEY (customergroupid) REFERENCES customergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT customerassignments_customerid_fkey
@@ -1992,7 +2004,7 @@ CREATE TABLE rtqueues (
 CREATE TABLE rttickets (
   id int(11) NOT NULL auto_increment,
   queueid int(11) NOT NULL,
-  requestor varchar(255) NOT NULL DEFAULT '',
+  requestor varchar(255) DEFAULT NULL,
   requestor_mail varchar(255) DEFAULT NULL,
   requestor_phone varchar(32) DEFAULT NULL,
   requestor_userid int(11) DEFAULT NULL,
@@ -2977,6 +2989,11 @@ CREATE TABLE up_info_changes (
 #
 # Functions and Views
 #
+CREATE VIEW vcustomerassignments AS
+	SELECT ca.*
+	FROM customerassignments ca
+	WHERE startdate <= UNIX_TIMESTAMP() AND enddate = 0;
+
 CREATE VIEW nas AS
 	SELECT n.id, inet_ntoa(n.ipaddr) AS nasname, d.shortname, d.nastype AS type,
 				 d.clients AS ports, d.secret, d.community, d.description
@@ -3014,7 +3031,8 @@ CREATE VIEW vaddresses AS
 
 CREATE VIEW vdivisions AS
     SELECT d.*,
-        a.country_id as countryid, a.ccode, a.zip as zip, a.city as city, a.address
+        a.country_id as countryid, a.ccode, a.zip as zip, a.city as city, a.address,
+        (CASE WHEN d.firstname IS NOT NULL AND d.lastname IS NOT NULL AND d.birthdate IS NOT NULL THEN 1 ELSE 0 END) AS naturalperson
     FROM divisions d
         JOIN vaddresses a ON a.id = d.address_id;
 
@@ -3218,7 +3236,7 @@ CREATE VIEW customerview AS
         LEFT JOIN vaddresses a2 ON ca2.address_id = a2.id
         LEFT JOIN customerconsentview cc ON cc.customerid = c.id
     WHERE NOT EXISTS (
-        SELECT 1 FROM customerassignments a
+        SELECT 1 FROM vcustomerassignments a
         JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
         WHERE e.userid = lms_current_user() AND a.customerid = c.id)
         AND (lms_current_user() = 0 OR c.divisionid IN (
@@ -3355,6 +3373,16 @@ RETURN address + (pow(2, (32-mask2prefix(mask)))-1);
 DROP FUNCTION IF EXISTS int2txt;
 CREATE FUNCTION int2txt(num bigint) RETURNS char(20) DETERMINISTIC
 RETURN CAST(num AS char(20));
+
+DELIMITER $$
+CREATE TRIGGER customerassignments_insert_trigger BEFORE INSERT ON customerassignments
+    FOR EACH ROW
+BEGIN
+    IF NEW.startdate = 0 THEN
+        SET NEW.startdate = UNIX_TIMESTAMP();
+    END IF;
+END $$
+DELIMITER ;
 
 DELIMITER $$
 CREATE TRIGGER cash_customerbalances_insert_trigger AFTER INSERT ON cash
@@ -3993,4 +4021,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021040900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021051900');

@@ -107,7 +107,7 @@
                 <INPUT TYPE="text" class="invoice-contents-field-edit" NAME="invoice-contents[{$posuid}][name]" SIZE="40" style="width: 300px; display: none;"
                        value="{$row.name|escape}" data-old-value="{$item.name|escape}"
                        {tip text="Enter description"}>
-                <span class="invoice-contents-field-value">{$item.name}</span>
+                <span class="invoice-contents-field-value">{$item.name|escape}</span>
                 {if isset($item.name_custom_contents)}
                     {$item.name_custom_contents}
                 {/if}
@@ -232,11 +232,11 @@
             </TD>
         </TR>
         {foreachelse}
-        <TR>
-            <TD COLSPAN="10" class="empty-table">
-                <p>{trans("Invoice have no items. Use form below for items addition.")}</p>
-            </TD>
-        </TR>
+        <tr>
+            <td colspan="10" class="empty-table">
+                {trans("Invoice have no items. Use form below for items addition.")}
+            </td>
+        </tr>
         {/foreach}
         {if $contents}
         <TR>

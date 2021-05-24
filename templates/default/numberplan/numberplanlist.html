@@ -29,7 +29,7 @@
     <THEAD>
 		<TR>
 			<TD class="bold nobr">
-				{icon name="id" class="fa-fw"}
+				{icon name="id"}
 				{trans("Template:")}
 			</TD>
 			<TD class="text-right nobr">{trans("ID:")}</TD>
@@ -94,15 +94,15 @@
 		{foreach $numberplanlist as $plan}
 		<TR class="highlight {if ($plan.validfrom !=0 && $plan.validfrom > $smarty.now) || ($plan.validto !=0 && $plan.validto < $smarty.now)} blend{/if}" data-name="{$plan.template}">
 			<TD class="bold nobr" data-target-url="?m=numberplanedit&id={$plan.id}">
-				{icon name="id" class="fa-fw"}
+				{icon name="id"}
 				{$plan.template}
 				{if !empty($plan.divisions)}
 					{capture assign="tip"}{foreach $plan.divisions as $division}{if !$division@first}<br>{/if}{$division.shortname|escape|escape}{/foreach}{/capture}
-					{icon name="division" class="fa-fw" tip=$tip}
+					{icon name="division" tip=$tip}
 				{/if}
 				{if !empty($plan.users)}
 					{capture assign="tip"}{foreach $plan.users as $user}{if !$user@first}<br>{/if}{$user.rname|escape|escape} ({$user.login|escape|escape}){/foreach}{/capture}
-					{icon name="user" class="fa-fw" tip=$tip}
+					{icon name="user" tip=$tip}
 				{/if}
 			</TD>
 			<TD class="text-right nobr" data-target-url="?m=numberplanedit&id={$plan.id}">
@@ -123,7 +123,7 @@
 				{$_NUM_PERIODS.$period}
 			</TD>
 			<TD class="text-right nobr" data-target-url="?m=numberplanedit&id={$plan.id}">
-				{if $plan.isdefault}{trans("yes")}{/if}
+				{if $plan.isdefault}{icon name="checked" tip="yes"}{/if}
 			</TD>
 			<TD class="text-right nobr">
 				{button type="link" icon="delete" tip="Delete" class="delete-numberplan" href="?m=numberplandel&id={$plan.id}"}
@@ -131,11 +131,11 @@
 			</TD>
 		</TR>
 		{foreachelse}
-		<TR>
-			<TD colspan="8" class="empty-table">
-				<p>{trans("No such numbering plans in database.")}</p>
-			</TD>
-		</TR>
+		<tr>
+			<td colspan="8" class="empty-table">
+				{trans("No such numbering plans in database.")}
+			</td>
+		</tr>
 		{/foreach}
     </TBODY>
     <TFOOT>

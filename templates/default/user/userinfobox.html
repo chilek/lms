@@ -19,127 +19,156 @@
 	}
 
 </style>
-<TABLE class="lmsbox" style="width: 100%;" cellpadding="3">
+<table class="lmsbox" style="width: 100%;" cellpadding="3">
 	<colgroup>
 		<col style="width: 1%;">
 		<col style="width: 1%;">
 		<col style="width: 98%;">
 	</colgroup>
-	<THEAD>
-		<TR>
-			<TD class="bold nobr" colspan="3">
-				<IMG src="img/pass.gif" alt="">
-				{$userinfo.login} ({$userinfo.id|string_format:"%04d"})
-			</TD>
-		</TR>
-	</THEAD>
-	<TBODY>
-		<TR>
-			<TD>
-				<IMG src="img/users.gif" alt="">
-			</TD>
-			<TD class="bold nobr">
-				{trans("First name:")}
-			</TD>
-			<TD class="bold">
-				{$userinfo.firstname|escape}
-			</TD>
-		</TR>
-		<TR>
-			<TD>
-				<IMG src="img/users.gif" alt="">
-			</TD>
-			<TD class="bold nobr">
-				{trans("Last name:")}
-			</TD>
-			<TD class="bold">
-				{$userinfo.lastname|escape}
-			</TD>
-		</TR>
+	<thead>
+		<tr>
+			<td class="nobr" colspan="3">
+				{icon name="login"}
+				<strong>{$userinfo.login} ({$userinfo.id|string_format:"%04d"})</strong>
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>
+				{icon name="user"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("First name:")}</strong>
+			</td>
+			<td>
+				<strong>{$userinfo.firstname|escape}</strong>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="user"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Last name:")}</strong>
+			</td>
+			<td>
+				<strong>{$userinfo.lastname|escape}</strong>
+			</td>
+		</tr>
+{if $userinfo.issuer}
+		<tr>
+			<td>
+				{icon name="document"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Issuer")}</strong>
+			</td>
+			<td>
+				{$userinfo.issuer|escape}
+			</td>
+		</tr>
+{/if}
 {if $userinfo.position}
-		<TR>
-			<TD class="nobr">
-				<IMG src="img/info.gif" alt="">
-			</TD>
-			<TD class="bold">{trans("Position:")}</TD>
-			<TD>
-				{$userinfo.position}
-			</TD>
-		</TR>
-{/if}
-{if $userinfo.email}
-		<TR>
-			<TD class="nobr">
-				<IMG src="img/mail.gif" alt="">
-			</TD>
-			<TD class="bold">{trans("E-mail:")}</TD>
-			<TD>
-				<A href="mailto:{$userinfo.email}">{$userinfo.email}</A>
-			</TD>
-		</TR>
-{/if}
-{if $userinfo.phone}
-		<TR>
-			<TD class="nobr">
-				<IMG src="img/sms.gif" alt="">
-			</TD>
-			<TD class="bold">{trans("Phone:")}</TD>
-			<TD>
-				{$userinfo.phone}
-			</TD>
-		</TR>
-{/if}
-		<TR>
-			<TD class="nobr">
-				<IMG src="img/options.gif" alt="">
-			</TD>
-			<TD class="bold">{trans("Notification:")}</TD>
-			<TD>
-				{if !$userinfo.ntype}{trans("none")}{else}{$userinfo.ntype}{/if}
-			</TD>
-		</TR>
 		<tr>
 			<td class="nobr">
-				<img src="img/{if !$userinfo.access}no{/if}access.gif" alt="">
+				{icon name="info"}
 			</td>
-			<td class="bold">{trans("Account active:")}</td>
 			<td>
-				{if !$userinfo.access}{trans("no")}{else}{trans("yes")}{/if}
+				<strong>{trans("Position:")}</strong>
+			</td>
+			<td>
+				{$userinfo.position}
+			</td>
+		</tr>
+{/if}
+{if $userinfo.email}
+		<tr>
+			<td>
+				{icon name="mail"}
+			</td>
+			<td>
+				<strong>{trans("E-mail:")}</strong>
+			</td>
+			<td>
+				<a href="mailto:{$userinfo.email}">{$userinfo.email}</a>
+			</td>
+		</tr>
+{/if}
+{if $userinfo.phone}
+		<tr>
+			<td>
+				{icon name="sms"}
+			</td>
+			<td>
+				<strong>{trans("Phone:")}</strong>
+			</td>
+			<td>
+				{$userinfo.phone}
+			</td>
+		</tr>
+{/if}
+		<tr>
+			<td>
+				{icon name="options"}
+			</td>
+			<td>
+				<strong>{trans("Notification:")}</strong>
+			</td>
+			<td>
+				{if !$userinfo.ntype}{trans("none")}{else}{$userinfo.ntype}{/if}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{if $userinfo.access}
+					{icon name="connected"}
+				{else}
+					{icon name="disconnected"}
+				{/if}
+			</td>
+			<td>
+				<strong>{trans("Account active:")}</strong>
+			</td>
+			<td>
+				{if $userinfo.access}{icon name="checked" tip="yes"}{else}-{/if}
 			</td>
 		</tr>
 {if $userinfo.accessfrom || $userinfo.accessto}
 		<tr>
-			<td class="nobr">
-				<img src="img/calendar.gif" alt="">
-			</td>
-			<td class="bold">{trans("Account active:")}</td>
 			<td>
-				{if $userinfo.accessfrom}<span class="bold">{trans("from")}:</span> {$userinfo.accessfrom}{/if}
-				{if $userinfo.accessto}<span class="bold"> {trans("to")}:</span> {$userinfo.accessto}{/if}
+				{icon name="calendar"}
+			</td>
+			<td>
+				<strong>{trans("Account active:")}</strong>
+			</td>
+			<td>
+				{if $userinfo.accessfrom}<strong>{trans("from")}:</strong> {$userinfo.accessfrom}{/if}
+				{if $userinfo.accessto}<strong>{trans("to")}:</strong> {$userinfo.accessto}{/if}
 			</td>
 		</tr>
 {/if}
 {if $userinfo.passwdforcechange}
-	<TR>
-		<TD class="nobr">
-			<IMG src="img/pass.gif" alt="">
-		</TD>
-		<TD class="bold nobr">
-			{trans("Force password change:")}
-		</TD>
-		<TD class="nobr">
-			{trans("yes")}
-		</TD>
-	</TR>
+		<tr>
+			<td>
+				{icon name="password"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Force password change:")}</strong>
+			</td>
+			<td class="nobr">
+				{trans("yes")}
+			</td>
+		</tr>
 {/if}
-		<TR>
-			<TD class="nobr">
-				<IMG src="img/pass.gif" alt="">
-			</TD>
-			<TD class="bold nobr">
-				{trans("Two factor authentication:")}
-			</TD>
-			<TD class="nobr">
+		<tr>
+			<td>
+				{icon name="password"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Two factor authentication:")}</strong>
+			</td>
+			<td class="nobr">
 				{if $userinfo.twofactorauth}
 					{trans("yes")}
 					{if ConfigHelper::checkPrivilege('user_management')}
@@ -150,8 +179,8 @@
 				{else}
 					{trans("no")}
 				{/if}
-			</TD>
-		</TR>
+			</td>
+		</tr>
 {if ConfigHelper::checkPrivilege('user_management') && $userinfo.twofactorauth}
 		<tr id="secretkey" style="display: none;">
 			<td colspan="2"></td>
@@ -162,77 +191,81 @@
 			</td>
 		</tr>
 {/if}
-		<TR>
-			<TD class="nobr">
-				<IMG src="img/ip.gif" alt="">
-			</TD>
-			<TD class="nobr">
-				<span class="bold">{trans("Allowed hosts:")}</span>
-			</TD>
-			<TD class="nobr">
+		<tr>
+			<td>
+				{icon name="ipnetwork"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Allowed hosts:")}</strong>
+			</td>
+			<td class="nobr">
 				{if $userinfo.hosts}{$userinfo.hosts}{else}{trans("all")}{/if}
-			</TD>
-		</TR>
-		<TR>
-			<TD class="nobr">
-				<IMG src="img/passwd.gif" alt="">
-			</TD>
-			<TD class="bold nobr">
-				{trans("Password expiration:")}
-			</TD>
-			<TD class="nobr">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="password"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Password expiration:")}</strong>
+			</td>
+			<td class="nobr">
 				{$_PASSWDEXPIRATIONS[$userinfo.passwdexpiration]}
-			</TD>
-		</TR>
-		<TR>
-			<TD class="nobr">
-				<IMG src="img/passwd.gif" alt="">
-			</TD>
-			<TD class="bold nobr">
-				{trans("Last password change:")}
-			</TD>
-			<TD class="nobr">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="password"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Last password change:")}</strong>
+			</td>
+			<td class="nobr">
 				{$userinfo.passwdlastchange}
-			</TD>
-		</TR>
-		<TR>
-			<TD>
-				<IMG src="img/pass.gif" alt="">
-			</TD>
-			<TD class="bold nobr">{trans("Access rights:")}</TD>
-			<TD>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="permissions"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Access rights:")}</strong>
+			</td>
+			<td>
 				<ul>
-				{foreach $accesslist as $access}
-				{if $access.enabled}
-				<li class="acl">{$access.name}</li>
-				{/if}
-				{/foreach}
+					{foreach $accesslist as $access}
+						{if $access.enabled}
+							<li class="acl">{$access.name}</li>
+						{/if}
+					{/foreach}
 				</ul>
-			</TD>
-		</TR>
+			</td>
+		</tr>
 
 		<tr>
-			<td class="bold nobr">
-				{icon name="usergroup" class="fa-fw"}
+			<td>
+				{icon name="usergroup"}
 			</td>
-			<td class="bold nobr">
-				{trans("User groups:")}
+			<td class="nobr">
+				<strong>{trans("User groups:")}</strong>
 			</td>
 			<td>
 				{foreach $userinfo.usergroups as $item}
 					{if $item@first}<ul>{/if}
-					<li><a href="?m=usergroupinfo&id={$item.id}">{$item.name}</a></li>
+						<li><a href="?m=usergroupinfo&id={$item.id}">{$item.name}</a></li>
 					{if $item@last}</ul>{/if}
 				{/foreach}
 			</td>
 		</tr>
 
-		<TR>
-			<TD>
-				{icon name="customergroup" class="fa-fw"}
-			</TD>
-			<TD class="bold nobr">{trans("Excluded groups:")}</TD>
-			<TD>
+		<tr>
+			<td>
+				{icon name="customergroup"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Excluded groups:")}</strong>
+			</td>
+			<td>
 				{foreach $excludedgroups as $item}
 					{if $item@first}<ul class="excludedgroups">{/if}
 					<li class="acl excludedgroup"{if $item@iteration > 10} style="display: none;"{/if}><a href="?m=customergroupinfo&id={$item.id}">{$item.name}</a></li>
@@ -245,15 +278,15 @@
 				{foreachelse}
 				-
 				{/foreach}
-			</TD>
-		</TR>
+			</td>
+		</tr>
 
 		<tr>
-			<td class="bold nobr">
-				{icon name="division" class="fa-fw"}
+			<td>
+				{icon name="division"}
 			</td>
-			<td class="bold nobr">
-				{trans("Divisions:")}
+			<td class="nobr">
+				<strong>{trans("Divisions:")}</strong>
 			</td>
 			<td>
 				{foreach $user_divisions as $item}
@@ -264,24 +297,28 @@
 			</td>
 		</tr>
 
-		<TR>
-			<TD></TD>
-			<TD class="bold nobr">{trans("Last login:")}</TD>
-			<TD>
+		<tr>
+			<td></td>
+			<td class="nobr">
+				<strong>{trans("Last login:")}</strong>
+			</td>
+			<td>
 				{$userinfo.lastlogin}, {$userinfo.lastloginip} {if $userinfo.lastloginip != $userinfo.lastloginhost}({$userinfo.lastloginhost}){/if}
-			</TD>
-		</TR>
-		<TR>
-			<TD></TD>
-			<TD class="bold nobr">{trans("Last failed login:")}</TD>
-			<TD>
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td class="nobr">
+				<strong>{trans("Last failed login:")}</strong>
+			</td>
+			<td>
 				{$userinfo.faillogin}, {$userinfo.failedloginip} {if $userinfo.failedloginip != $userinfo.failedloginhost}({$userinfo.failedloginhost}){/if}
-			</TD>
-		</TR>
+			</td>
+		</tr>
 		{block name="other-information"}
 		{/block}
-		<TR>
-			<TD COLSPAN="3" class="lms-ui-box-buttons">
+		<tr>
+			<td colspan="3" class="lms-ui-box-buttons">
 				{if $layout.logid ne $userinfo.id}
 					{if !$userinfo.access}
 						{button label="Connect" icon="disconnected" href="?m=useraccess&id={$userinfo.id}&access=1"}
@@ -299,10 +336,10 @@
 				{/if}
 				{button type="link-button" label="Change password" icon="password" href="?m=userpasswd&id={$userinfo.id}"}
 				{button type="link-button" label="User list" icon="list" href="?m=userlist"}
-			</TD>
-		</TR>
-	</TBODY>
-</TABLE>
+			</td>
+		</tr>
+	</tbody>
+</table>
 <script>
 
 	$('#delete-user').click(function() {

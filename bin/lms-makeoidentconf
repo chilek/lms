@@ -229,7 +229,7 @@ foreach my $key (@networks)
                                 my $customergroupscount = 0;
                                 foreach my $key2 (@customergroups)
                                 {
-                                        my $sdbq = $dbase->prepare("SELECT count(customerid) AS total FROM customerassignments WHERE customerid=".$ownerlist{$ipaddr}." AND customergroupid=".$customergrouplist{$key2});
+                                        my $sdbq = $dbase->prepare("SELECT count(customerid) AS total FROM vcustomerassignments WHERE customerid=".$ownerlist{$ipaddr}." AND customergroupid=".$customergrouplist{$key2});
                                         $sdbq->execute();
                                         my $srow = $sdbq->fetchrow_hashref();
                                         if ($srow->{'total'} eq 1)

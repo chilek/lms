@@ -1212,7 +1212,7 @@ class LMSEzpdfInvoice extends LMSInvoice
 
     protected function invoice_expositor($x, $y)
     {
-        $expositor = isset($this->data['user']) ? $this->data['user'] : $this->data['division_author'];
+        $expositor = empty($this->data['issuer']) ? (empty($this->data['user']) ? $this->data['division_author'] : $this->data['user']) : $this->data['issuer'];
         if (!ConfigHelper::checkConfig('invoices.hide_expositor')) {
             $y = $y - $this->backend->text_align_right($x, $y, 10, trans('Expositor:') . ' ' . (empty($expositor) ? trans('system') : $expositor));
         }

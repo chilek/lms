@@ -18,8 +18,12 @@
 	<THEAD>
 	<TR {tip text="Click on column name to change sorting order"}>
 		<TD>
-			<IMG src="img/netdev.gif" ALT="">&nbsp;<A href="?m=netdevsearch&search&o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order == "name"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<IMG src="img/producer.gif" ALT="">&nbsp;<A href="?m=netdevsearch&search&o=producer{if $listdata.direction == "asc" && $listdata.order == "producer"},desc{/if}">{trans("Manufacturer:")}</A> {if $listdata.order == "producer"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} /
+			<IMG src="img/netdev.gif" ALT="">
+			<A href="?m=netdevsearch&search&o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order == "name"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<br>
+			<IMG src="img/producer.gif" ALT="">
+			<a href="?m=netdevsearch&search&o=type{if $listdata.direction == "asc" && $listdata.order == "type"},desc{/if}">{trans("Type")}</a> {if $listdata.order == "type"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=netdevsearch&search&o=producer{if $listdata.direction == "asc" && $listdata.order == "producer"},desc{/if}">{trans("Manufacturer:")}</A> {if $listdata.order == "producer"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} /
 			<A href="?m=netdevsearch&search&o=model{if $listdata.direction == "asc" && $listdata.order == "model"},desc{/if}">{trans("Model:")}</A> {if $listdata.order == "model"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="valign-top nobr">
@@ -66,7 +70,11 @@
 					title="{$netdev.description|replace:"\n":"<br>"|default:trans("- no description -")}{if $netdev.filecontainers}<br><br><i class='lms-ui-icon-fileupload'></i>&nbsp;{implode('<br><i class=\'lms-ui-icon-fileupload\'></i>&nbsp;', $netdev.filecontainers)}{/if}"
 					><B>{$netdev.name}</B></A>
 			<BR>
-			<IMG src="img/producer.gif" ALT=""> {$netdev.producer} {if $netdev.model}/ {$netdev.model}{/if}
+			<IMG src="img/producer.gif" ALT="">
+			{if $netdev.devtypename}
+				{trans($netdev.devtypename)}
+			{/if}
+			{$netdev.producer} {if $netdev.model}/ {$netdev.model}{/if}
 		</TD>
 		<TD class="valign-top nobr">
 			{if $netdev.location}
@@ -106,11 +114,11 @@
 	</TR>
 	{if $netdevlist[netdevlist.index_next].ownerid == $netdev.ownerid && $listdata.order == "owner"}{cycle print=false}{/if}
 	{sectionelse}
-	<TR>
-		<TD colspan="6" class="empty-table">
-			<p>{trans("No such devices matching search criteria.")}</p>
-		</TD>
-	</TR>
+	<tr>
+		<td colspan="6" class="empty-table">
+			{trans("No such devices matching search criteria.")}
+		</td>
+	</tr>
 	{/section}
     </TBODY>
     <TFOOT>

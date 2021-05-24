@@ -260,6 +260,32 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
         }
     }
 
+    public function SetAddress($args)
+    {
+        return $this->db->Execute(
+            'UPDATE addresses SET name = ?, state = ?,
+                               state_id = ?, city = ?, city_id = ?,
+                               street = ?, street_id = ?, house = ?,
+                               flat = ?, zip = ?, postoffice = ?, country_id = ?
+                            WHERE id = ?',
+            array(
+                $args['name'],
+                $args['state'],
+                $args['state_id'],
+                $args['city'],
+                $args['city_id'],
+                $args['street'],
+                $args['street_id'],
+                $args['house'],
+                $args['flat'],
+                $args['zip'],
+                $args['postoffice'],
+                $args['country_id'],
+                $args['address_id'],
+            )
+        );
+    }
+
     /*!
      * \brief Method update customer address into table.
      *
@@ -336,7 +362,18 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
      */
     public function CopyAddress($address_id)
     {
-        $addr = $this->db->GetRow('SELECT * FROM addresses WHERE id = ?', array($address_id));
+        $addr = $this->db->GetRow(
+            'SELECT a.*,
+                (CASE WHEN ca.address_id IS NULL THEN a.name ELSE ' . $this->db->Concat('c.lastname', "' '", 'c.name') . ' END) AS name
+            FROM addresses a
+            LEFT JOIN customer_addresses ca ON ca.address_id = a.id AND ca.type = ?
+            LEFT JOIN customers c ON c.id = ca.customer_id
+            WHERE a.id = ?',
+            array(
+                BILLING_ADDRESS,
+                $address_id,
+            )
+        );
 
         if ($addr) {
             unset($addr['id']);

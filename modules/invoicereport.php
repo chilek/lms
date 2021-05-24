@@ -69,7 +69,7 @@ if (!empty($_POST['group'])) {
     }
 
     $groupwhere = ' AND '.(isset($_POST['groupexclude']) ? 'NOT' : '').'
-		EXISTS (SELECT 1 FROM customerassignments a
+		EXISTS (SELECT 1 FROM vcustomerassignments a
 			WHERE a.customergroupid IN ('.$groups.')
 			AND a.customerid = d.customerid)';
 
@@ -222,7 +222,7 @@ $documents = $DB->GetAll('SELECT d.id, d.type,
         .(isset($groupwhere) ? $groupwhere : '')
         .( $ctype != -1 ? ' AND cu.type = ' . $ctype : '')
         .' AND NOT EXISTS (
-                	    SELECT 1 FROM customerassignments a
+                	    SELECT 1 FROM vcustomerassignments a
 			    JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 			    WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)
 	    ORDER BY ' . $sortcol . ', d.id', $args);

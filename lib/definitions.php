@@ -111,6 +111,8 @@ define('CCONSENT_USERPANEL_SMS', 5);
 define('CCONSENT_USERPANEL_SCAN', 6);
 define('CCONSENT_TRANSFERFORM', 7);
 define('CCONSENT_SMSNOTICE', 8);
+define('CCONSENT_SMS_MARKETING', 9);
+define('CCONSENT_MAIL_MARKETING', 10);
 
 $CCONSENTS = array(
     CCONSENT_DATE => array(
@@ -136,6 +138,16 @@ $CCONSENTS = array(
     CCONSENT_SMSNOTICE => array(
         'label' => trans('message delivery via sms'),
         'name' => 'sms_notice',
+        'type' => 'boolean',
+    ),
+    CCONSENT_MAIL_MARKETING => array(
+        'label' => trans('e-mail marketing'),
+        'name' => 'mail_marketing',
+        'type' => 'boolean',
+    ),
+    CCONSENT_SMS_MARKETING => array(
+        'label' => trans('sms marketing'),
+        'name' => 'sms_marketing',
         'type' => 'boolean',
     ),
     CCONSENT_USERPANEL_SMS => array(
@@ -396,67 +408,67 @@ define('RT_TYPE_NO_SERVICE', 13);
 
 $RT_TYPES = array(
     RT_TYPE_OTHER => array(
-        'label' => 'Other',
+        'label' => 'other',
         'class' => 'lms-ui-rt-ticket-type-other',
         'name' => 'RT_TYPE_OTHER'
     ),
     RT_TYPE_OFFER => array(
-        'label' => 'Offer',
+        'label' => 'offer',
         'class' => 'lms-ui-rt-ticket-type-offer',
         'name' => 'RT_TYPE_OFFER'
     ),
     RT_TYPE_DOCS => array(
-        'label' => 'Documents',
+        'label' => 'documents',
         'class' => 'lms-ui-rt-ticket-type-docs',
         'name' => 'RT_TYPE_DOCS'
     ),
     RT_TYPE_FAULT => array(
-        'label' => 'Fault',
+        'label' => 'fault',
         'class' => 'lms-ui-rt-ticket-type-fault',
         'name' => 'RT_TYPE_FAULT'
     ),
     RT_TYPE_INST => array(
-        'label' => 'Instalation',
+        'label' => 'installation',
         'class' => 'lms-ui-rt-ticket-type-inst',
         'name' => 'RT_TYPE_INST'
     ),
     RT_TYPE_MOD => array(
-        'label' => 'Modification',
+        'label' => 'modification',
         'class' => 'lms-ui-rt-ticket-type-mod',
         'name' => 'RT_TYPE_MOD'
     ),
     RT_TYPE_CONF => array(
-        'label' => 'Configuration',
+        'label' => '<!rt-type>configuration',
         'class' => 'lms-ui-rt-ticket-type-conf',
         'name' => 'RT_TYPE_CONF'
     ),
     RT_TYPE_START => array(
-        'label' => 'Service Start',
+        'label' => 'service start',
         'class' => 'lms-ui-rt-ticket-type-start',
         'name' => 'RT_TYPE_START'
     ),
     RT_TYPE_STOP => array(
-        'label' => 'Service Hold',
+        'label' => 'service hold',
         'class' => 'lms-ui-rt-ticket-type-stop',
         'name' => 'RT_TYPE_STOP'
     ),
     RT_TYPE_TRANSFER => array(
-      'label' => 'Service Transfer',
+      'label' => 'service transfer',
       'class' => 'lms-ui-rt-ticket-type-transfer',
       'name' => 'RT_TYPE_TRANSFER'
     ),
     RT_TYPE_REMOVE => array(
-        'label' => 'Deinstalation',
+        'label' => 'deinstallation',
         'class' => 'lms-ui-rt-ticket-type-remove',
         'name' => 'RT_TYPE_REMOVE'
     ),
     RT_TYPE_PAYMENT => array(
-        'label' => 'Payment',
+        'label' => 'payment',
         'class' => 'lms-ui-rt-ticket-type-payment',
         'name' => 'RT_TYPE_PAYMENT'
     ),
     RT_TYPE_NO_SERVICE => array(
-        'label' => 'No Service',
+        'label' => 'no service',
         'class' => 'lms-ui-rt-ticket-type-no-service',
         'name' => 'RT_TYPE_NO_SERVICE'
     ),
@@ -605,6 +617,7 @@ define('DOC_WARRANTY', -13);
 define('DOC_REGULATIONS', -14);
 define('DOC_CONF_FILE', -15);
 define('DOC_OFFER', -16);
+define('DOC_COMPLAINT', -17);
 define('DOC_OTHER', -128);
 
 
@@ -632,7 +645,8 @@ $DOCTYPES = array(
     DOC_WARRANTY       =>  trans('warranty'), // gwarancja
     DOC_REGULATIONS       =>  trans('regulations'), // regulamin
     DOC_CONF_FILE   =>  trans('configuration file'),
-    DOC_OTHER       =>  trans('other')
+    DOC_COMPLAINT   =>  trans('complaint'),
+    DOC_OTHER       =>  trans('other'),
 );
 
 define('DOC_FLAG_RECEIPT', 1);
@@ -725,7 +739,17 @@ define('SERVICE_TV', 5);
 define('SERVICE_TRANSMISSION', 6);
 
 // Tariff flags
-define('TARIFF_FLAG_REWARD_PENALTY', 1);
+define('TARIFF_FLAG_REWARD_PENALTY_ON_TIME_PAYMENTS', 1);
+define('TARIFF_FLAG_REWARD_PENALTY_EINVOICE', 2);
+define('TARIFF_FLAG_REWARD_PENALTY_MAIL_MARKETING', 4);
+define('TARIFF_FLAG_REWARD_PENALTY_SMS_MARKETING', 8);
+
+$TARIFF_FLAGS = array(
+    TARIFF_FLAG_REWARD_PENALTY_ON_TIME_PAYMENTS => trans('on time payments'),
+    TARIFF_FLAG_REWARD_PENALTY_EINVOICE => trans('electronic invoice'),
+    TARIFF_FLAG_REWARD_PENALTY_MAIL_MARKETING => trans('e-mail marketing'),
+    TARIFF_FLAG_REWARD_PENALTY_SMS_MARKETING => trans('sms marketing'),
+);
 
 // VoIP call types
 define('CALL_INCOMING', 1);
@@ -771,6 +795,7 @@ $PAYTYPES = array(
     8   => 'paid',
     9   => 'cash on delivery',
     10  => 'instalments',
+    11  => 'bank loan',
 );
 
 // Contact types
@@ -1207,6 +1232,7 @@ if (isset($SMARTY)) {
     $SMARTY->assign('_RT_PRIORITY_STYLES', $RT_PRIORITY_STYLES);
     $SMARTY->assign('_RT_TYPES', $RT_TYPES);
     $SMARTY->assign('_CONFIG_TYPES', $CONFIG_TYPES);
+    $SMARTY->assign('_TARIFF_FLAGS', $TARIFF_FLAGS);
     $SMARTY->assign('_SERVICETYPES', $SERVICETYPES);
     $SMARTY->assign('_PAYTYPES', $PAYTYPES);
     $SMARTY->assign('_CONTACTTYPES', $CONTACTTYPES);

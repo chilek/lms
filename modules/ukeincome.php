@@ -75,7 +75,35 @@ if ($division) {
     unset($filter['uke-income']['division']);
 }
 
+$customergroup = intval($_POST['customergroup']);
+if ($customergroup) {
+    $filter['uke-income']['customergroup'] = $customergroup;
+} else {
+    unset($filter['uke-income']['customergroup']);
+}
+
+if (isset($_POST['customergroup-intersection'])) {
+    $customergroup_intersection = $_POST['customergroup-intersection'];
+    $filter['uke-income']['customergroup-intersection'] = $customergroup_intersection;
+} else {
+    $customergroup_intersection = 'fully';
+
+    unset($filter['uke-income']['customergroup-intersection']);
+}
+
 $SESSION->saveFilter($filter['uke-income'], 'print', null, false, 'uke-income');
+
+switch ($customergroup_intersection) {
+    case 'current':
+        $customergroup_intersection_condition = ' AND startdate >= ?NOW? AND enddate = 0';
+        break;
+    case 'fully':
+        $customergroup_intersection_condition = ' AND startdate <= ' . $unixfrom . ' AND (enddate = 0 OR enddate >= ' . $unixto . ')';
+        break;
+    case 'partially':
+        $customergroup_intersection_condition = ' AND startdate < ' . $unixto . ' AND (enddate = 0 OR enddate > ' . $unixfrom . ')';
+        break;
+}
 
 $income = $DB->GetAll('
 	SELECT ' . ($type == 'linktechnologies' ? 'cash.linktechnology' : 'cash.servicetype') . ' AS type,
@@ -92,6 +120,10 @@ $income = $DB->GetAll('
 	WHERE cash.type = 0 AND time >= ? AND time <= ?'
     . ($division ? ' AND ((cash.docid IS NOT NULL AND d.divisionid = ' . $division . ')
             OR (cash.docid IS NULL AND c.divisionid = ' . $division . '))' : '')
+    . ($customergroup ? ' AND EXISTS (SELECT 1 FROM customerassignments
+        WHERE customergroupid = ' . $customergroup . ' AND customerid = c.id'
+        . $customergroup_intersection_condition . ')'
+        : '')
     . ($type == 'linktechnologies' ?
         ' GROUP BY cash.linktechnology
 	    ORDER BY cash.linktechnology' :

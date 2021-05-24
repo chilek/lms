@@ -64,12 +64,16 @@ $schema['periods'][] = trans('Months $a-', $mon);
 
 $schema['data'] = implode(' &raquo; ', (array)$schema['data']);
 
-$schema['tariffs'] = $DB->GetAll('SELECT t.name, t.value, t.type,
-    a.tariffid, a.id, a.data, a.backwardperiod, a.optional, a.label
+$schema['tariffs'] = $DB->GetAll(
+    'SELECT t.name, t.value, t.type,
+        a.tariffid, a.id, a.data, a.backwardperiod, a.optional, a.label,
+        t.flags
     FROM promotionassignments a
     JOIN tariffs t ON (a.tariffid = t.id)
     WHERE a.promotionschemaid = ?
-    ORDER BY a.orderid', array($schema['id']));
+    ORDER BY a.orderid',
+    array($schema['id'])
+);
 
 $users = $LMS->GetUserNamesIndexedById();
 

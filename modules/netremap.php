@@ -44,7 +44,7 @@ if (!$error) {
             if (is_array($result)) {
                 $layout['pagetitle'] = trans('Network remap errors');
                 $SMARTY->assign('result', $result);
-                $SMARTY->display('netremap.html');
+                $SMARTY->display('net/netremap.html');
                 die;
             }
         }

@@ -231,7 +231,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 						WHERE t.type IN (' . implode(',', $service) . ')
 					) s ON s.docid = d.id' : '') . '
 				LEFT JOIN (
-					SELECT DISTINCT a.customerid FROM customerassignments a
+					SELECT DISTINCT a.customerid FROM vcustomerassignments a
 					JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 					WHERE e.userid = lms_current_user()
 				) e ON (e.customerid = d.customerid)
@@ -273,7 +273,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 					WHERE t.type IN (' . implode(',', $service) . ')
 				) s ON s.docid = d.id' : '') . '
 			LEFT JOIN (
-				SELECT DISTINCT a.customerid FROM customerassignments a
+				SELECT DISTINCT a.customerid FROM vcustomerassignments a
 				JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 				WHERE e.userid = lms_current_user()
 			) e ON (e.customerid = d.customerid)
@@ -1697,11 +1697,6 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
     public function UpdateDocumentPostAddress($docid, $customerid)
     {
-        $post_addr = $this->db->GetOne('SELECT post_address_id FROM documents WHERE id = ?', array($docid));
-        if ($post_addr) {
-            $this->db->Execute('DELETE FROM addresses WHERE id = ?', array($post_addr));
-        }
-
         $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
 
         $post_addr = $location_manager->GetCustomerAddress($customerid, POSTAL_ADDRESS);
@@ -1710,10 +1705,17 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             $post_addr = $location_manager->GetCustomerAddress($customerid, BILLING_ADDRESS);
         }
 
-        $this->db->Execute(
-            'UPDATE documents SET post_address_id = ? WHERE id = ?',
-            array($location_manager->CopyAddress($post_addr), $docid)
-        );
+        $old_post_addr = $this->db->GetOne('SELECT post_address_id FROM documents WHERE id = ?', array($docid));
+        if ($old_post_addr) {
+            $address = $location_manager->GetAddress($post_addr);
+            $address['address_id'] = $old_post_addr;
+            $location_manager->SetAddress($address);
+        } else {
+            $this->db->Execute(
+                'UPDATE documents SET post_address_id = ? WHERE id = ?',
+                array($location_manager->CopyAddress($post_addr), $docid)
+            );
+        }
     }
 
     public function DeleteDocumentAddresses($docid)

@@ -7,7 +7,7 @@
 	<THEAD>
 		<TR class="hand lmsbox-titlebar nobr" data-lmsbox-content="childpanel-{$layout.module}">
 			<TD class="bold">
-				<i class="lms-ui-icon-helpdesk"></i> {trans("Child tickets:")}
+				{icon class="helpdesk" label="Child tickets:"}
 			</TD>
 			<TD>
 				{if $ticket.state != $smarty.const.RT_RESOLVED}
@@ -41,11 +41,11 @@
 						{$id = $ticket.ticketid}
 						{include file="rt/rtqueueviewboxrow.html"}
 					{foreachelse}
-					<TR>
-						<TD COLSPAN="11" class="empty-table">
-							<p>{trans("There is no child tickets")}</p>
-						</TD>
-					</TR>
+					<tr>
+						<td colspan="11" class="empty-table">
+							{trans("There is no child tickets")}
+						</td>
+					</tr>
 					{/foreach}
 					</TBODY>
 				</table>

@@ -24,7 +24,7 @@
                 </tr>
                 <tr>
                     <td>
-                        {icon name="vlan" label="VLAN ID:" class="fa-fw"}
+                        {icon name="vlan" label="VLAN ID:"}
                     </td>
                     <td>
                         <input type="text" name="addvlan[vlanid]" value="{$vlaninfo.vlanid}" required>
@@ -32,7 +32,7 @@
                 </tr>
                 <tr>
                     <td class="nobr">
-                        {icon name="description" label="VLAN Description" class="fa-fw"}
+                        {icon name="description" label="VLAN Description"}
                     </td>
                     <td>
                         <input type="text" name="addvlan[description]" value="{$vlaninfo.description}">
@@ -40,7 +40,7 @@
                 </tr>
                 <tr>
                     <td>
-                        {icon name="customer" label="Customer" class="fa-fw"}
+                        {icon name="customer" label="Customer"}
                     </td>
                     <td>
                         {customerlist form="addvlan" selected="{$vlaninfo.customerid}" inputname="addvlan[customerid]" version=2}
@@ -48,7 +48,7 @@
                 </tr>
                 <tr>
                     <td class="nobr">
-                        {icon name="netnode" label="Network Node" class="fa-fw"}
+                        {icon name="netnode" label="Network Node"}
                     </td>
                     <td>
                         <select name="addvlan[netnodeid]" class="lms-ui-advanced-select">
@@ -74,7 +74,7 @@
     $( "#addvlanmodal" ).dialog( {
         autoOpen: {if $action}true{else}false{/if},
         resizable: false,
-        minWidth: 390,
+        width: 'auto',
         modal: true,
         title: "{if $action == 'modify'}{trans("Modify VLAN")} {$vlaninfo.id}{else}{trans("Add VLAN")}{/if}"
     });

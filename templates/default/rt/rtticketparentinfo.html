@@ -7,7 +7,7 @@
 	<THEAD>
 		<TR class="hand lmsbox-titlebar" data-lmsbox-content="parentpanel-{$layout.module}">
 			<TD class="bold">
-				<i class="lms-ui-icon-helpdesk"></i> {trans("Parent ticket:")}
+				{icon name="helpdesk" label="Parent ticket:"}
 			</TD>
 			<TD></TD>
 		</TR>
@@ -36,11 +36,11 @@
 						{$ticket.id = $ticket.ticketid}
 						{include file="rt/rtqueueviewboxrow.html"}
 					{foreachelse}
-					<TR>
-						<TD COLSPAN="11" class="empty-table">
-							<p>{trans("There is no assigned parent ticket.")}</p>
-						</TD>
-					</TR>
+					<tr>
+						<td colspan="11" class="empty-table">
+							{trans("There is no assigned parent ticket.")}
+						</td>
+					</tr>
 					{/foreach}
 					</TBODY>
 				</table>

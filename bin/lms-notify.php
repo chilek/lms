@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -34,6 +34,9 @@ $parameters = array(
     'version' => 'v',
     'debug' => 'd',
     'fakedate:' => 'f:',
+    'part-number:' => 'p:',
+    'part-size:' => 'l:',
+    'interval:' => 'i:',
     'type:' => 't:',
     'section:' => 's:',
     'channel:' => 'c:',
@@ -79,7 +82,7 @@ foreach (array_flip(array_filter($long_to_shorts, function ($value) {
 if (array_key_exists('version', $options)) {
     print <<<EOF
 lms-notify.php
-(C) 2001-2020 LMS Developers
+(C) 2001-2021 LMS Developers
 
 EOF;
     exit(0);
@@ -88,7 +91,7 @@ EOF;
 if (array_key_exists('help', $options)) {
     print <<<EOF
 lms-notify.php
-(C) 2001-2020 LMS Developers
+(C) 2001-2021 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
@@ -96,6 +99,10 @@ lms-notify.php
 -q, --quiet                     suppress any output, except errors
 -d, --debug                     do debugging, dont send anything.
 -f, --fakedate=YYYY/MM/DD       override system date;
+-p, --part-number=NN            defines which part of notifications should be sent;
+-l, --part-size=NN              defines part size of notifications which should be sent
+                                (can be specified as percentage value);
+-i, --interval=ms               force delay interval between subsequent posts
 -t, --type=<notification-types> take only selected notification types into account
                                 (separated by colons)
 -c, --channel=<channel-types>  use selected channels for notifications
@@ -126,7 +133,7 @@ $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
     print <<<EOF
 lms-notify.php
-(C) 2001-2020 LMS Developers
+(C) 2001-2021 LMS Developers
 
 EOF;
 }
@@ -304,7 +311,7 @@ $composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_S
 if (file_exists($composer_autoload_path)) {
     require_once $composer_autoload_path;
 } else {
-    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/" . PHP_EOL);
+    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More information at https://getcomposer.org/" . PHP_EOL);
 }
 
 // Init database
@@ -365,6 +372,30 @@ Utils::determineAllowedCustomerStatus(
         : ConfigHelper::getConfig($config_section . '.allowed_customer_status', ''),
     -1
 );
+
+if (isset($options['interval'])) {
+    $interval = $options['interval'];
+} else {
+    $interval = ConfigHelper::getConfig($config_section . '.interval', 0);
+}
+if ($interval == 'random') {
+    $interval = -1;
+} else {
+    $interval = intval($interval);
+}
+
+$part_size = isset($options['part-size']) ? $options['part-size'] : ConfigHelper::getConfig($config_section . '.limit', '0');
+
+$part_number = isset($options['part-number']) ? $options['part-number'] : null;
+if (isset($part_number)) {
+    $part_number = intval($part_number);
+} else {
+    $part_number = intval(date('H', time()));
+}
+
+if (!empty($part_size) && preg_match('/^[0-9]+$/', $part_size)) {
+    $part_offset = $part_number * $part_size;
+}
 
 $content_types = array(
     MSG_MAIL => $mail_content_type,
@@ -539,7 +570,7 @@ function parse_customer_data($data, $format, $row)
 
     $data = $LMS->getLastNInTable($data, $row['id'], $format, $row['aggregate_documents']);
 
-    // invoices, debit notes
+    // invoices, debit notes, documents
     $data = preg_replace("/\%invoice/", $row['doc_number'], $data);
     $data = preg_replace("/\%number/", $row['doc_number'], $data);
     $data = preg_replace("/\%value/", moneyf($row['value'], $row['currency']), $data);
@@ -583,7 +614,7 @@ function create_message($type, $subject, $template)
 function send_mail($msgid, $cid, $rmail, $rname, $subject, $body)
 {
     global $LMS, $mail_from, $notify_email, $reply_email, $dsn_email, $mdn_email, $content_types;
-    global $smtp_options;
+    global $smtp_options, $interval;
 
     $DB = LMSDB::getInstance();
 
@@ -633,6 +664,15 @@ function send_mail($msgid, $cid, $rmail, $rname, $subject, $body)
         $DB->Execute($query, array(3, $result, $msgid, $cid, $msgitemid));
     } else { // MSG_SENT
         $DB->Execute($query, array($result, null, $msgid, $cid, $msgitemid));
+    }
+
+    if (isset($interval) && !empty($interval)) {
+        if ($interval == -1) {
+            $delay = mt_rand(500, 5000);
+        } else {
+            $delay = intval($interval);
+        }
+        usleep($delay * 1000);
     }
 }
 
@@ -717,13 +757,13 @@ if (!empty($customergroups)) {
         }
         $customergroup_ORs[] = '('
             . (empty($customergroup_ANDs_regular) ? '1 = 1' : "EXISTS (SELECT COUNT(*) FROM customergroups
-                JOIN customerassignments ON customerassignments.customergroupid = customergroups.id
-                WHERE customerassignments.customerid = c.id
+                JOIN vcustomerassignments ON vcustomerassignments.customergroupid = customergroups.id
+                WHERE vcustomerassignments.customerid = c.id
                 AND UPPER(customergroups.name) IN ('" . implode("', '", $customergroup_ANDs_regular) . "')
                 HAVING COUNT(*) = " . count($customergroup_ANDs_regular) . ')')
             . (empty($customergroup_ANDs_inversed) ? '' : " AND NOT EXISTS (SELECT COUNT(*) FROM customergroups
-                JOIN customerassignments ON customerassignments.customergroupid = customergroups.id
-                WHERE customerassignments.customerid = c.id
+                JOIN vcustomerassignments ON vcustomerassignments.customergroupid = customergroups.id
+                WHERE vcustomerassignments.customerid = c.id
                 AND UPPER(customergroups.name) IN ('" . implode("', '", $customergroup_ANDs_inversed) . "')
                 HAVING COUNT(*) > 0)")
             . ')';
@@ -834,11 +874,6 @@ if (empty($types) || in_array('timetable', $types)) {
             }
 
             if (!empty($user['email'])) {
-                $recipient_name = $row['lastname'] . ' ' . $row['name'];
-                $recipient_mails = ($debug_email
-                    ? explode(',', $debug_email) : (
-                    !empty($user['email']) ? explode(',', trim($user['email'])) : null)
-                );
                 if (!$quiet) {
                     printf("[timetable/mail] %s (%04d): %s" . PHP_EOL, $user['name'], $user['id'], $user['email']);
                 }
@@ -863,13 +898,14 @@ if (empty($types) || in_array('documents', $types)) {
     $days = $notifications['documents']['days'];
     $customers = $DB->GetAll(
         "SELECT DISTINCT c.id, c.pin, c.lastname, c.name,
-            b.balance, m.email, x.phone
+            b.balance, m.email, x.phone, d.number, n.template, d.cdate, d.confirmdate
         FROM customeraddressview c
         LEFT JOIN (
             SELECT customerid, SUM(value * currencyvalue) AS balance FROM cash
             GROUP BY customerid
         ) b ON b.customerid = c.id
         JOIN documents d ON d.customerid = c.id
+        LEFT JOIN numberplans n ON (d.numberplanid = n.id)
         JOIN documentcontents dc ON dc.docid = d.id
         LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
             FROM customercontacts
@@ -881,9 +917,9 @@ if (empty($types) || in_array('documents', $types)) {
             WHERE (type & ?) = ?
             GROUP BY customerid
         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
-        WHERE 1 = 1" . $customer_status_condition . " AND d.type IN (?, ?) AND dc.todate >= $daystart + ? * 86400
-            " . ($customerid ? ' AND c.id = ' . $customerid : '') . "
-            AND dc.todate < $daystart + (? + 1) * 86400"
+        WHERE 1 = 1" . $customer_status_condition . " AND d.type IN (?, ?) AND d.closed = 0
+            AND d.confirmdate >= $daystart + ? * 86400
+            AND d.confirmdate < $daystart + (? + 1) * 86400"
             . ($customerid ? ' AND c.id = ' . $customerid : '')
             . ($notifications['documents']['deleted_customers'] ? '' : ' AND c.deleted = 0')
             . ($customergroups ?: ''),
@@ -904,6 +940,15 @@ if (empty($types) || in_array('documents', $types)) {
         foreach ($customers as $row) {
             $notifications['documents']['customers'][] = $row['id'];
             $row['aggregate_documents'] = $notifications['documents']['aggregate_documents'];
+
+            $row['paytime'] = $days;
+
+            $row['doc_number'] = docnumber(array(
+                'number' => $row['number'],
+                'template' => $row['template'] ?: '%N/LMS/%Y',
+                'cdate' => $row['cdate'],
+                'customerid' => $row['id'],
+            ));
 
             unset($message, $message_html, $message_text);
             if ($format == $mail_format) {
@@ -1233,7 +1278,8 @@ if (empty($types) || in_array('debtors', $types)) {
             . " AND c.cutoffstop < $currtime AND b2.balance " . ($limit > 0 ? '>' : '<') . " ?"
             . ($customerid ? ' AND c.id = ' . $customerid : '')
             . ($notifications['debtors']['deleted_customers'] ? '' : ' AND c.deleted = 0')
-            . ($customergroups ?: ''),
+            . ($customergroups ?: '')
+        . ' ORDER BY c.id',
         array(
             DOC_CNOTE,
             $days,
@@ -1253,7 +1299,26 @@ if (empty($types) || in_array('debtors', $types)) {
     );
 
     if (!empty($customers)) {
+        if (!empty($part_size) && preg_match('/^(?<percent>[0-9]+)%$/', $part_size, $m)) {
+            $percent = intval($m['percent']);
+            if ($percent < 1 || $percent > 99) {
+                $part_size = 0;
+            } else {
+                $count = count($customers);
+                $part_size = floor(($percent * $count) / 100);
+                $part_offset = $part_number * $part_size;
+                if ((!$part_offset && $part_number) || $part_offset >= $count) {
+                    $srtart_idx = $part_offset;
+                    $end_idx = $part_offset - 1;
+                } else {
+                    $start_idx = $part_offset;
+                    $end_idx = $part_offset + $part_size - 1;
+                }
+            }
+        }
+
         $notifications['debtors']['customers'] = array();
+        $idx = 0;
         foreach ($customers as $row) {
             $notifications['debtors']['customers'][] = $row['id'];
             $row['aggregate_documents'] = $notifications['debtors']['aggregate_documents'];
@@ -1282,13 +1347,15 @@ if (empty($types) || in_array('debtors', $types)) {
 
             if (!$quiet) {
                 if (in_array('mail', $channels) && !empty($recipient_mails)) {
-                    foreach ($recipient_mails as $recipient_mail) {
-                        printf(
-                            "[mail/debtors] %s (%04d): %s" . PHP_EOL,
-                            $recipient_name,
-                            $row['id'],
-                            $recipient_mail
-                        );
+                    if (empty($part_size) || $idx >= $start_idx && $idx <= $end_idx) {
+                        foreach ($recipient_mails as $recipient_mail) {
+                            printf(
+                                "[mail/debtors] %s (%04d): %s" . PHP_EOL,
+                                $recipient_name,
+                                $row['id'],
+                                $recipient_mail
+                            );
+                        }
                     }
                 }
                 if (in_array('sms', $channels) && !empty($recipient_phones)) {
@@ -1326,20 +1393,22 @@ if (empty($types) || in_array('debtors', $types)) {
 
             if (!$debug) {
                 if (in_array('mail', $channels) && !empty($recipient_mails)) {
-                    $msgid = create_message(
-                        MSG_MAIL,
-                        $subject,
-                        isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
-                    );
-                    foreach ($recipient_mails as $recipient_mail) {
-                        send_mail(
-                            $msgid,
-                            $row['id'],
-                            $recipient_mail,
-                            $recipient_name,
+                    if (empty($part_size) || $idx >= $start_idx && $idx <= $end_idx) {
+                        $msgid = create_message(
+                            MSG_MAIL,
                             $subject,
                             isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
                         );
+                        foreach ($recipient_mails as $recipient_mail) {
+                            send_mail(
+                                $msgid,
+                                $row['id'],
+                                $recipient_mail,
+                                $recipient_name,
+                                $subject,
+                                isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
+                            );
+                        }
                     }
                 }
                 if (in_array('sms', $channels) && !empty($recipient_phones)) {
@@ -1374,6 +1443,8 @@ if (empty($types) || in_array('debtors', $types)) {
                     send_to_userpanel($msgid, $row['id'], trans('userpanel urgent'));
                 }
             }
+
+            $idx++;
         }
     }
 }
@@ -1433,7 +1504,8 @@ if (empty($types) || in_array('reminder', $types)) {
             AND (d.cdate + (d.paytime - ? + 1) * 86400) < $dayend"
             . ($customerid ? ' AND c.id = ' . $customerid : '')
             . ($notifications['reminder']['deleted_customers'] ? '' : ' AND c.deleted = 0')
-            . ($customergroups ?: ''),
+            . ($customergroups ?: '')
+            . ' ORDER BY d.id',
         array(
             DOC_CNOTE,
             DOC_RECEIPT,
@@ -1456,7 +1528,26 @@ if (empty($types) || in_array('reminder', $types)) {
         )
     );
     if (!empty($documents)) {
+        if (!empty($part_size) && preg_match('/^(?<percent>[0-9]+)%$/', $part_size, $m)) {
+            $percent = intval($m['percent']);
+            if ($percent < 1 || $percent > 99) {
+                $part_size = 0;
+            } else {
+                $count = count($documents);
+                $part_size = floor(($percent * $count) / 100);
+                $part_offset = $part_number * $part_size;
+                if ((!$part_offset && $part_number) || $part_offset >= $count) {
+                    $srtart_idx = $part_offset;
+                    $end_idx = $part_offset - 1;
+                } else {
+                    $start_idx = $part_offset;
+                    $end_idx = $part_offset + $part_size - 1;
+                }
+            }
+        }
+
         $notifications['reminder']['customers'] = array();
+        $idx = 0;
         foreach ($documents as $row) {
             $notifications['reminder']['customers'][] = $row['id'];
             $row['doc_number'] = docnumber(array(
@@ -1490,14 +1581,16 @@ if (empty($types) || in_array('reminder', $types)) {
 
             if (!$quiet) {
                 if (in_array('mail', $channels) && !empty($recipient_mails)) {
-                    foreach ($recipient_mails as $recipient_mail) {
-                        printf(
-                            "[mail/reminder] %s (%04d) %s: %s" . PHP_EOL,
-                            $row['name'],
-                            $row['id'],
-                            $row['doc_number'],
-                            $recipient_mail
-                        );
+                    if (empty($part_size) || $idx >= $start_idx && $idx <= $end_idx) {
+                        foreach ($recipient_mails as $recipient_mail) {
+                            printf(
+                                "[mail/reminder] %s (%04d) %s: %s" . PHP_EOL,
+                                $row['name'],
+                                $row['id'],
+                                $row['doc_number'],
+                                $recipient_mail
+                            );
+                        }
                     }
                 }
                 if (in_array('sms', $channels) && !empty($recipient_phones)) {
@@ -1539,20 +1632,22 @@ if (empty($types) || in_array('reminder', $types)) {
 
             if (!$debug) {
                 if (in_array('mail', $channels) && !empty($recipient_mails)) {
-                    $msgid = create_message(
-                        MSG_MAIL,
-                        $subject,
-                        isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
-                    );
-                    foreach ($recipient_mails as $recipient_mail) {
-                        send_mail(
-                            $msgid,
-                            $row['id'],
-                            $recipient_mail,
-                            $row['name'],
+                    if (empty($part_size) || $idx >= $start_idx && $idx <= $end_idx) {
+                        $msgid = create_message(
+                            MSG_MAIL,
                             $subject,
                             isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
                         );
+                        foreach ($recipient_mails as $recipient_mail) {
+                            send_mail(
+                                $msgid,
+                                $row['id'],
+                                $recipient_mail,
+                                $row['name'],
+                                $subject,
+                                isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
+                            );
+                        }
                     }
                 }
                 if (in_array('sms', $channels) && !empty($recipient_phones)) {
@@ -1587,6 +1682,8 @@ if (empty($types) || in_array('reminder', $types)) {
                     send_to_userpanel($msgid, $row['id'], trans('userpanel urgent'));
                 }
             }
+
+            $idx++;
         }
     }
 }
@@ -1812,7 +1909,8 @@ if (empty($types) || in_array('invoices', $types)) {
             AND d.cdate >= ? AND d.cdate <= ?"
             . ($customerid ? ' AND c.id = ' . $customerid : '')
             . ($notifications['invoices']['deleted_customers'] ? '' : ' AND c.deleted = 0')
-            . ($customergroups ?: ''),
+            . ($customergroups ?: '')
+        . ' ORDER BY d.id',
         array(
             CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
             CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS,
@@ -1827,7 +1925,26 @@ if (empty($types) || in_array('invoices', $types)) {
     );
 
     if (!empty($documents)) {
+        if (!empty($part_size) && preg_match('/^(?<percent>[0-9]+)%$/', $part_size, $m)) {
+            $percent = intval($m['percent']);
+            if ($percent < 1 || $percent > 99) {
+                $part_size = 0;
+            } else {
+                $count = count($documents);
+                $part_size = floor(($percent * $count) / 100);
+                $part_offset = $part_number * $part_size;
+                if ((!$part_offset && $part_number) || $part_offset >= $count) {
+                    $srtart_idx = $part_offset;
+                    $end_idx = $part_offset - 1;
+                } else {
+                    $start_idx = $part_offset;
+                    $end_idx = $part_offset + $part_size - 1;
+                }
+            }
+        }
+
         $notifications['invoices']['customers'] = array();
+        $idx = 0;
         foreach ($documents as $row) {
             $notifications['invoices']['customers'][] = $row['id'];
             $row['doc_number'] = docnumber(array(
@@ -1861,14 +1978,16 @@ if (empty($types) || in_array('invoices', $types)) {
 
             if (!$quiet) {
                 if (in_array('mail', $channels) && !empty($recipient_mails)) {
-                    foreach ($recipient_mails as $recipient_mail) {
-                        printf(
-                            "[mail/invoices] %s (%04d) %s: %s" . PHP_EOL,
-                            $row['name'],
-                            $row['id'],
-                            $row['doc_number'],
-                            $recipient_mail
-                        );
+                    if (empty($part_size) || $idx >= $start_idx && $idx <= $end_idx) {
+                        foreach ($recipient_mails as $recipient_mail) {
+                            printf(
+                                "[mail/invoices] %s (%04d) %s: %s" . PHP_EOL,
+                                $row['name'],
+                                $row['id'],
+                                $row['doc_number'],
+                                $recipient_mail
+                            );
+                        }
                     }
                 }
                 if (in_array('sms', $channels) && !empty($recipient_phones)) {
@@ -1902,20 +2021,22 @@ if (empty($types) || in_array('invoices', $types)) {
 
             if (!$debug) {
                 if (in_array('mail', $channels) && !empty($recipient_mails)) {
-                    $msgid = create_message(
-                        MSG_MAIL,
-                        $subject,
-                        isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
-                    );
-                    foreach ($recipient_mails as $recipient_mail) {
-                        send_mail(
-                            $msgid,
-                            $row['id'],
-                            $recipient_mail,
-                            $row['name'],
+                    if (empty($part_size) || $idx >= $start_idx && $idx <= $end_idx) {
+                        $msgid = create_message(
+                            MSG_MAIL,
                             $subject,
                             isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
                         );
+                        foreach ($recipient_mails as $recipient_mail) {
+                            send_mail(
+                                $msgid,
+                                $row['id'],
+                                $recipient_mail,
+                                $row['name'],
+                                $subject,
+                                isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
+                            );
+                        }
                     }
                 }
                 if (in_array('sms', $channels) && !empty($recipient_phones)) {
@@ -1950,6 +2071,8 @@ if (empty($types) || in_array('invoices', $types)) {
                     send_to_userpanel($msgid, $row['id'], trans('userpanel urgent'));
                 }
             }
+
+            $idx++;
         }
     }
 }
@@ -1987,7 +2110,8 @@ if (empty($types) || in_array('notes', $types)) {
             AND d.cdate >= ? AND d.cdate <= ?"
             . ($customerid ? ' AND c.id = ' . $customerid : '')
             . ($notifications['notes']['deleted_customers'] ? '' : ' AND c.deleted = 0')
-            . ($customergroups ?: ''),
+            . ($customergroups ?: '')
+        . ' ORDER BY d.id',
         array(
             $checked_mail_contact_flags,
             $required_mail_contact_flags,
@@ -1999,6 +2123,24 @@ if (empty($types) || in_array('notes', $types)) {
         )
     );
     if (!empty($documents)) {
+        if (!empty($part_size) && preg_match('/^(?<percent>[0-9]+)%$/', $part_size, $m)) {
+            $percent = intval($m['percent']);
+            if ($percent < 1 || $percent > 99) {
+                $part_size = 0;
+            } else {
+                $count = count($documents);
+                $part_size = floor(($percent * $count) / 100);
+                $part_offset = $part_number * $part_size;
+                if ((!$part_offset && $part_number) || $part_offset >= $count) {
+                    $srtart_idx = $part_offset;
+                    $end_idx = $part_offset - 1;
+                } else {
+                    $start_idx = $part_offset;
+                    $end_idx = $part_offset + $part_size - 1;
+                }
+            }
+        }
+
         $notifications['notes']['customers'] = array();
         foreach ($documents as $row) {
             $notifications['notes']['customers'][] = $row['id'];
@@ -2033,14 +2175,16 @@ if (empty($types) || in_array('notes', $types)) {
 
             if (!$quiet) {
                 if (in_array('mail', $channels) && !empty($recipient_mails)) {
-                    foreach ($recipient_mails as $recipient_mail) {
-                        printf(
-                            "[mail/notes] %s (%04d) %s: %s" . PHP_EOL,
-                            $row['name'],
-                            $row['id'],
-                            $row['doc_number'],
-                            $recipient_mail
-                        );
+                    if (empty($part_size) || $idx >= $start_idx && $idx <= $end_idx) {
+                        foreach ($recipient_mails as $recipient_mail) {
+                            printf(
+                                "[mail/notes] %s (%04d) %s: %s" . PHP_EOL,
+                                $row['name'],
+                                $row['id'],
+                                $row['doc_number'],
+                                $recipient_mail
+                            );
+                        }
                     }
                 }
                 if (in_array('sms', $channels) && !empty($recipient_phones)) {
@@ -2074,20 +2218,22 @@ if (empty($types) || in_array('notes', $types)) {
 
             if (!$debug) {
                 if (in_array('mail', $channels) && !empty($recipient_mails)) {
-                    $msgid = create_message(
-                        MSG_MAIL,
-                        $subject,
-                        isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
-                    );
-                    foreach ($recipient_mails as $recipient_mail) {
-                        send_mail(
-                            $msgid,
-                            $row['id'],
-                            $recipient_mail,
-                            $row['name'],
+                    if (empty($part_size) || $idx >= $start_idx && $idx <= $end_idx) {
+                        $msgid = create_message(
+                            MSG_MAIL,
                             $subject,
                             isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
                         );
+                        foreach ($recipient_mails as $recipient_mail) {
+                            send_mail(
+                                $msgid,
+                                $row['id'],
+                                $recipient_mail,
+                                $row['name'],
+                                $subject,
+                                isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
+                            );
+                        }
                     }
                 }
                 if (in_array('sms', $channels) && !empty($recipient_phones)) {
@@ -2122,6 +2268,8 @@ if (empty($types) || in_array('notes', $types)) {
                     send_to_userpanel($msgid, $row['id'], trans('userpanel urgent'));
                 }
             }
+
+            $idx++;
         }
     }
 }
@@ -2146,7 +2294,8 @@ if (empty($types) || in_array('birthday', $types)) {
         . ' AND ' . $DB->RegExp('c.ssn', '[0-9]{2}(' . $cmonth . '|' . sprintf('%02d', $cmonth + 20) . ')' . date('d', $daystart) . '[0-9]{5}')
         . ($customerid ? ' AND c.id = ' . $customerid : '')
         . ($notifications['birthday']['deleted_customers'] ? '' : ' AND c.deleted = 0')
-        . ($customergroups ?: ''),
+        . ($customergroups ?: '')
+        . ' ORDER BY c.id',
         array(
             $checked_mail_contact_flags,
             $required_mail_contact_flags,
@@ -2155,7 +2304,26 @@ if (empty($types) || in_array('birthday', $types)) {
         )
     );
     if (!empty($customers)) {
+        if (!empty($part_size) && preg_match('/^(?<percent>[0-9]+)%$/', $part_size, $m)) {
+            $percent = intval($m['percent']);
+            if ($percent < 1 || $percent > 99) {
+                $part_size = 0;
+            } else {
+                $count = count($customers);
+                $part_size = floor(($percent * $count) / 100);
+                $part_offset = $part_number * $part_size;
+                if ((!$part_offset && $part_number) || $part_offset >= $count) {
+                    $srtart_idx = $part_offset;
+                    $end_idx = $part_offset - 1;
+                } else {
+                    $start_idx = $part_offset;
+                    $end_idx = $part_offset + $part_size - 1;
+                }
+            }
+        }
+
         $notifications['birthday']['customers'] = array();
+        $idx = 0;
         foreach ($customers as $row) {
             $notifications['birthday']['customers'][] = $row['id'];
 
@@ -2186,14 +2354,16 @@ if (empty($types) || in_array('birthday', $types)) {
 
             if (!$quiet) {
                 if (in_array('mail', $channels) && !empty($recipient_mails)) {
-                    foreach ($recipient_mails as $recipient_mail) {
-                        printf(
-                            "[mail/birthday] %s (%04d) age %s: %s" . PHP_EOL,
-                            $row['name'],
-                            $row['id'],
-                            $row['age'],
-                            $recipient_mail
-                        );
+                    if (empty($part_size) || $idx >= $start_idx && $idx <= $end_idx) {
+                        foreach ($recipient_mails as $recipient_mail) {
+                            printf(
+                                "[mail/birthday] %s (%04d) age %s: %s" . PHP_EOL,
+                                $row['name'],
+                                $row['id'],
+                                $row['age'],
+                                $recipient_mail
+                            );
+                        }
                     }
                 }
                 if (in_array('sms', $channels) && !empty($recipient_phones)) {
@@ -2227,20 +2397,22 @@ if (empty($types) || in_array('birthday', $types)) {
 
             if (!$debug) {
                 if (in_array('mail', $channels) && !empty($recipient_mails)) {
-                    $msgid = create_message(
-                        MSG_MAIL,
-                        $subject,
-                        isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
-                    );
-                    foreach ($recipient_mails as $recipient_mail) {
-                        send_mail(
-                            $msgid,
-                            $row['id'],
-                            $recipient_mail,
-                            $row['name'],
+                    if (empty($part_size) || $idx >= $start_idx && $idx <= $end_idx) {
+                        $msgid = create_message(
+                            MSG_MAIL,
                             $subject,
                             isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
                         );
+                        foreach ($recipient_mails as $recipient_mail) {
+                            send_mail(
+                                $msgid,
+                                $row['id'],
+                                $recipient_mail,
+                                $row['name'],
+                                $subject,
+                                isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
+                            );
+                        }
                     }
                 }
                 if (in_array('sms', $channels) && !empty($recipient_phones)) {
@@ -2275,6 +2447,8 @@ if (empty($types) || in_array('birthday', $types)) {
                     send_to_userpanel($msgid, $row['id'], trans('userpanel urgent'));
                 }
             }
+
+            $idx++;
         }
     }
 }
@@ -2304,7 +2478,8 @@ if (empty($types) || in_array('warnings', $types)) {
             . " AND c.id IN (SELECT DISTINCT ownerid FROM vnodes WHERE warning = 1)"
             . ($customerid ? ' AND c.id = ' . $customerid : '')
             . ($notifications['warnings']['deleted_customers'] ? '' : ' AND c.deleted = 0')
-            . ($customergroups ?: ''),
+            . ($customergroups ?: '')
+        . ' ORDER BY c.id',
         array(
             $checked_mail_contact_flags,
             $required_mail_contact_flags,
@@ -2314,7 +2489,26 @@ if (empty($types) || in_array('warnings', $types)) {
     );
 
     if (!empty($customers)) {
+        if (!empty($part_size) && preg_match('/^(?<percent>[0-9]+)%$/', $part_size, $m)) {
+            $percent = intval($m['percent']);
+            if ($percent < 1 || $percent > 99) {
+                $part_size = 0;
+            } else {
+                $count = count($customers);
+                $part_size = floor(($percent * $count) / 100);
+                $part_offset = $part_number * $part_size;
+                if ((!$part_offset && $part_number) || $part_offset >= $count) {
+                    $srtart_idx = $part_offset;
+                    $end_idx = $part_offset - 1;
+                } else {
+                    $start_idx = $part_offset;
+                    $end_idx = $part_offset + $part_size - 1;
+                }
+            }
+        }
+
         $notifications['warnings']['customers'] = array();
+        $idx = 0;
         foreach ($customers as $row) {
             $notifications['warnings']['customers'][] = $row['id'];
             $row['aggregate_documents'] = $notifications['warnings']['aggregate_documents'];
@@ -2341,13 +2535,15 @@ if (empty($types) || in_array('warnings', $types)) {
 
             if (!$quiet) {
                 if (in_array('mail', $channels) && !empty($recipient_mails)) {
-                    foreach ($recipient_mails as $recipient_mail) {
-                        printf(
-                            "[mail/warnings] %s (%04d): %s" . PHP_EOL,
-                            $row['name'],
-                            $row['id'],
-                            $recipient_mail
-                        );
+                    if (empty($part_size) || $idx >= $start_idx && $idx <= $end_idx) {
+                        foreach ($recipient_mails as $recipient_mail) {
+                            printf(
+                                "[mail/warnings] %s (%04d): %s" . PHP_EOL,
+                                $row['name'],
+                                $row['id'],
+                                $recipient_mail
+                            );
+                        }
                     }
                 }
                 if (in_array('sms', $channels) && !empty($recipient_phones)) {
@@ -2378,20 +2574,22 @@ if (empty($types) || in_array('warnings', $types)) {
 
             if (!$debug) {
                 if (in_array('mail', $channels) && !empty($recipient_mails)) {
-                    $msgid = create_message(
-                        MSG_MAIL,
-                        $subject,
-                        isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
-                    );
-                    foreach ($recipient_mails as $recipient_mail) {
-                        send_mail(
-                            $msgid,
-                            $row['id'],
-                            $recipient_mail,
-                            $row['name'],
+                    if (empty($part_size) || $idx >= $start_idx && $idx <= $end_idx) {
+                        $msgid = create_message(
+                            MSG_MAIL,
                             $subject,
                             isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
                         );
+                        foreach ($recipient_mails as $recipient_mail) {
+                            send_mail(
+                                $msgid,
+                                $row['id'],
+                                $recipient_mail,
+                                $row['name'],
+                                $subject,
+                                isset($message) ? $message : ($mail_format == 'html' ? $message_html : $message_text)
+                            );
+                        }
                     }
                 }
                 if (in_array('sms', $channels) && !empty($recipient_phones)) {
@@ -2426,6 +2624,8 @@ if (empty($types) || in_array('warnings', $types)) {
                     send_to_userpanel($msgid, $row['id'], trans('userpanel urgent'));
                 }
             }
+
+            $idx++;
         }
     }
 }
@@ -2760,7 +2960,7 @@ if (!empty($intersect)) {
                                 break;
                             case 'customer-group':
                                 $where[] = 'NOT EXISTS (
-                                    SELECT ca.id FROM customerassignments ca
+                                    SELECT ca.id FROM vcustomerassignments ca
                                     JOIN customergroups g ON g.id = ca.customergroupid
                                     WHERE ca.customerid = c.id AND LOWER(g.name) = LOWER(\'' . reset($precheck_params) . '\'))';
                                 break;
@@ -2979,7 +3179,7 @@ if (!empty($intersect)) {
                                 break;
                             case 'customer-group':
                                 $where[] = 'EXISTS (
-                                    SELECT ca.id FROM customerassignments ca
+                                    SELECT ca.id FROM vcustomerassignments ca
                                     JOIN customergroups g ON g.id = ca.customergroupid
                                     WHERE ca.customerid = c.id AND LOWER(g.name) = LOWER(\'' . reset($precheck_params) . '\'))';
                                 break;

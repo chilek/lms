@@ -124,7 +124,7 @@ void reload(GLOBAL *g, struct shaper_module *shaper)
 				m = 0;
 				if(gc)
 				{
-					res = g->db_pquery(g->conn, "SELECT customergroupid FROM customerassignments WHERE customerid=?", g->db_get_data(ures,i,"id"));
+					res = g->db_pquery(g->conn, "SELECT customergroupid FROM vcustomerassignments WHERE customerid=?", g->db_get_data(ures,i,"id"));
 					for(k=0; k<g->db_nrows(res); k++) 
 					{
 						int groupid = atoi(g->db_get_data(res, k, "customergroupid"));

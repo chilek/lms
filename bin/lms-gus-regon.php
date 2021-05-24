@@ -146,7 +146,7 @@ $composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_S
 if (file_exists($composer_autoload_path)) {
     require_once $composer_autoload_path;
 } else {
-    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/" . PHP_EOL);
+    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More information at https://getcomposer.org/" . PHP_EOL);
 }
 
 // Init database
@@ -198,13 +198,13 @@ if (!empty($customergroups)) {
         }
         $customergroup_ORs[] = '('
             . (empty($customergroup_ANDs_regular) ? '1 = 1' : "EXISTS (SELECT COUNT(*) FROM customergroups
-                JOIN customerassignments ON customerassignments.customergroupid = customergroups.id
-                WHERE customerassignments.customerid = c.id
+                JOIN vcustomerassignments ON vcustomerassignments.customergroupid = customergroups.id
+                WHERE vcustomerassignments.customerid = c.id
                 AND UPPER(customergroups.name) IN ('" . implode("', '", $customergroup_ANDs_regular) . "')
                 HAVING COUNT(*) = " . count($customergroup_ANDs_regular) . ')')
             . (empty($customergroup_ANDs_inversed) ? '' : " AND NOT EXISTS (SELECT COUNT(*) FROM customergroups
-                JOIN customerassignments ON customerassignments.customergroupid = customergroups.id
-                WHERE customerassignments.customerid = c.id
+                JOIN vcustomerassignments ON vcustomerassignments.customergroupid = customergroups.id
+                WHERE vcustomerassignments.customerid = c.id
                 AND UPPER(customergroups.name) IN ('" . implode("', '", $customergroup_ANDs_inversed) . "')
                 HAVING COUNT(*) > 0)")
             . ')';
@@ -308,6 +308,15 @@ foreach ($customers as $customer) {
     } elseif (is_string($result)) {
         die($result . PHP_EOL);
     } else {
+        if (count($result) > 1) {
+            if (!$quiet) {
+                echo 'Ambigous data in REGON database!' . PHP_EOL;
+            }
+            continue;
+        }
+
+        $result = reset($result);
+
         if (!$quiet) {
             echo 'found in GUS Regon database!';
         }

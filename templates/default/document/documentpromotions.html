@@ -1,33 +1,35 @@
 <!--// $Id$ //-->
-<TABLE class="lmsbox" id="documentpromotions" style="display: none;">
-	<COLGROUP>
-		<COL style="width: 100%;">
-	</COLGROUP>
-	<THEAD>
-	<TR class="hand lmsbox-titlebar" data-lmsbox-content="documentpromotionpanel">
-		<TD>
-			{icon name="money" class="fa-fw"}
-			<span class="bold">{trans("Promotion Schema:")}</span>
-		</TD>
-	</TR>
-	</THEAD>
-	<TBODY>
-	<TR id="documentpromotionpanel"  style="display: none;">
-		<TD>
-			<TABLE class="lmsbox-inner">
-				<TBODY>
-				<TR>
-					<TD>
-						{include file="customer/customerassignmenthelper.html" variable_prefix="document[assignment]" variables=$document.assignment promotion_only=1}
-					</TD>
-				</TR>
-				</TBODY>
-			</TABLE>
-		</TD>
-	</TR>
-	</TBODY>
-</TABLE>
-<SCRIPT>
+<table class="lmsbox" id="documentpromotions" style="display: none;">
+	<colgroup>
+		<col style="width: 100%;">
+	</colgroup>
+	<thead>
+		<tr class="hand lmsbox-titlebar" data-lmsbox-content="documentpromotionpanel">
+			<td>
+				{icon name="money"}
+				<strong>{trans("Promotion Schema:")}</strong>
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr id="documentpromotionpanel"  style="display: none;">
+			<td>
+				<table class="lmsbox-inner">
+					<tbody>
+						<tr>
+							<td>
+								{include file="customer/customerassignmenthelper.html" variable_prefix="document[assignment]" variables=$document.assignment promotion_only=1}
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<script>
+
 	var tariffTypes = [];
 	{foreach $tariffs as $tariff}
 	tariffTypes[{$tariff.id}] = {$tariff.tarifftype};
@@ -72,4 +74,5 @@
 
 	if (getCookie('documentpromotionpanel') == '1')
 		$('#documentpromotionpanel').show();
-</SCRIPT>
+
+</script>

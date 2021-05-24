@@ -206,7 +206,11 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         if (empty($priority)) {
             $priorityfilter = '';
         } elseif (is_array($priority)) {
-            $priorityfilter = ' AND t.priority IN (' . implode(',', $priority) . ')';
+            if (in_array('-101', $priority)) {
+                $priorityfilter = ' AND (t.priority IN (' . implode(',', $priority) . ') OR t.priority IS NULL)';
+            } else {
+                $priorityfilter = ' AND t.priority IN (' . implode(',', $priority) . ')';
+            }
         } else {
             $priorityfilter = ' AND t.priority = '.$priority;
         }
@@ -535,13 +539,14 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     . ' AND lv2.vdate < t2.modtime
 				GROUP BY m4.ticketid
 			) m3 ON m3.ticketid = t.id
-			LEFT JOIN (
-			    SELECT ticketid, COUNT(*) AS imagecount
-			    FROM rtattachments a
-			    JOIN rtmessages ON rtmessages.id = a.messageid
-			    WHERE a.contenttype ?LIKE? ?
-			    GROUP BY ticketid
-			) ti ON ti.ticketid = t.id
+            LEFT JOIN (
+                SELECT ticketid, COUNT(*) AS imagecount
+                FROM rtattachments a
+                JOIN rtmessages ON rtmessages.id = a.messageid
+                WHERE a.contenttype ?LIKE? ?
+                    AND a.cid IS NULL
+                GROUP BY ticketid
+            ) ti ON ti.ticketid = t.id
 			WHERE 1=1 '
             . ($rights ? ' AND (t.queueid IN (
 					SELECT q.id FROM rtqueues q
@@ -1086,9 +1091,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			netnodeid, netdevid, verifierid, deadline, service, type, invprojectid, parentid)
 				VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($ticket['queue'],
             empty($ticket['customerid']) ? null : $ticket['customerid'],
-            $ticket['requestor'],
-            $ticket['requestor_mail'],
-            $ticket['requestor_phone'],
+            isset($ticket['requestor']) ? $ticket['requestor'] : null,
+            isset($ticket['requestor_mail']) ? $ticket['requestor_mail'] : null,
+            isset($ticket['requestor_phone']) ? $ticket['requestor_phone'] : null,
             isset($ticket['requestor_userid']) ? $ticket['requestor_userid'] : null,
             $ticket['subject'],
             isset($ticket['owner']) && !empty($ticket['owner']) ? $ticket['owner'] : null,
@@ -1097,7 +1102,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             isset($ticket['cause']) ? $ticket['cause'] : 0,
             isset($ticket['userid']) ? $ticket['userid'] : Auth::GetCurrentUser(),
             isset($ticket['source']) ? $ticket['source'] : 0,
-            isset($ticket['priority']) ? $ticket['priority'] : null,
+            isset($ticket['priority']) && strlen($ticket['priority']) ? $ticket['priority'] : null,
             isset($ticket['address_id']) && !empty($ticket['address_id']) ? $ticket['address_id'] : null,
             isset($ticket['nodeid']) && !empty($ticket['nodeid']) ? $ticket['nodeid'] : null,
             isset($ticket['netnodeid']) && !empty($ticket['netnodeid']) ? $ticket['netnodeid'] : null,
@@ -1807,7 +1812,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $props['requestor_mail'] = $ticket['requestor_mail'];
         }
 
-        if ($props['priority'] == '') {
+        if ($props['priority'] == '' || !isset($props['priority'])) {
             $props['priority'] = null;
         }
 

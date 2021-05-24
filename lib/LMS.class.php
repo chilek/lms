@@ -31,6 +31,7 @@ class LMS
 {
     const SOFTWARE_NAME = 'LMS';
     const SOFTWARE_VERSION = '27-git';
+    const SOFTWARE_URL = 'https://lms.org.pl';
     const SOFTWARE_REVISION = '$Format:%cI$'; // %H for last commit checksum
 
     public $DB;   // database object
@@ -3418,6 +3419,12 @@ class LMS
     {
         $manager = $this->getLocationManager();
         return $manager->UpdateAddress($args);
+    }
+
+    public function SetAddress($args)
+    {
+        $manager = $this->getLocationManager();
+        return $manager->SetAddress($args);
     }
 
     public function UpdateCustomerAddress($customer_id, $args)

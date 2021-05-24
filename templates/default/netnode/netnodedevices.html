@@ -7,7 +7,7 @@
 	<THEAD>
 	<TR class="hand lmsbox-titlebar" data-lmsbox-content="devicenodepanel">
 		<TD class="bold nobr">
-			<IMG SRC="img/node.gif" ALT="">
+			{icon name="node" class="lms-ui-sortable-handle"}
 			{if empty($netdevlist)}{$count = 0}{else}{$count = count($netdevlist)}{/if}
 			{t a=$count}Assigned net devices ($a):{/t}
 		</td>
@@ -83,11 +83,11 @@
 					</td>
 				</tr>
 				{foreachelse}
-				<TR>
-					<TD colspan="4" class="empty-table">
-						<p>{trans("No assigned devices.")}</p>
-					</TD>
-				</TR>
+				<tr>
+					<td colspan="4" class="empty-table">
+						{trans("No assigned devices.")}
+					</td>
+				</tr>
 				{/foreach}
 				</TBODY>
 			</TABLE>

@@ -93,7 +93,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 
     public function GetPrefixList()
     {
-        for ($i = 30; $i > 15; $i--) {
+        for ($i = 31; $i > 15; $i--) {
             $prefixlist['id'][] = $i;
             $prefixlist['value'][] = trans('$a ($b addresses)', $i, pow(2, 32 - $i));
         }
@@ -421,9 +421,23 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
     public function IsIPValid($ip, $checkbroadcast = false, $ignoreid = 0)
     {
         $ip = ip_long($ip);
-        return $this->db->GetOne('SELECT 1 FROM networks
-			WHERE id != ? AND address < ?
-			AND broadcast(address, inet_aton(mask)) >' . ($checkbroadcast ? '=' : '') . ' ?', array(intval($ignoreid), $ip, $ip));
+        return $this->db->GetOne(
+            'SELECT 1 FROM networks
+			WHERE id <> ? AND ((mask = ? AND address <= ?) OR (mask <> ? AND address < ?))
+			AND ((mask <> ? AND broadcast(address, inet_aton(mask)) >' . ($checkbroadcast ? '=' : '') . ' ?)
+			    OR (mask = ? AND broadcast(address, inet_aton(mask)) >= ?))',
+            array(
+                intval($ignoreid),
+                '255.255.255.254',
+                $ip,
+                '255.255.255.254',
+                $ip,
+                '255.255.255.254',
+                $ip,
+                '255.255.255.254',
+                $ip,
+            )
+        );
     }
 
     public function NetworkOverlaps($network, $mask, $hostid, $ignorenet = 0)
@@ -738,13 +752,38 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             $network['pubnet']['prefix'] = mask2prefix($network['pubnet']['mask']);
         }
 
-        $nodes = $this->db->GetAllByKey('
-				SELECT id, name, ipaddr, ownerid, netdev 
-				FROM vnodes WHERE netid = ? AND ipaddr > ? AND ipaddr < ?
-				UNION ALL
-				SELECT id, name, ipaddr_pub AS ipaddr, ownerid, netdev
-				FROM vnodes WHERE ipaddr_pub > ? AND ipaddr_pub < ?', 'ipaddr', array($id, $network['addresslong'], ip_long($network['broadcast']),
-            $network['addresslong'], ip_long($network['broadcast'])));
+        $nodes = $this->db->GetAllByKey(
+            '(
+                SELECT vnodes.id, vnodes.name, ipaddr, ownerid, netdev
+                FROM vnodes
+                JOIN networks net ON net.id = vnodes.netid
+                WHERE netid = ?
+                    AND ((net.mask <> ? AND ipaddr > ? AND ipaddr < ?) OR (net.mask = ? AND ipaddr >= ? AND ipaddr <= ?))
+            )
+            UNION ALL
+            (
+                SELECT vnodes.id, vnodes.name, ipaddr_pub AS ipaddr, ownerid, netdev
+                FROM vnodes
+                JOIN networks net ON ipaddr_pub & INET_ATON(net.mask) = net.address
+                WHERE ((net.mask <> ? AND ipaddr_pub > ? AND ipaddr_pub < ?) OR (net.mask = ? AND ipaddr_pub >= ? AND ipaddr_pub <= ?))
+            )',
+            'ipaddr',
+            array(
+                $id,
+                '255.255.255.254',
+                $network['addresslong'],
+                ip_long($network['broadcast']),
+                '255.255.255.254',
+                $network['addresslong'],
+                ip_long($network['broadcast']),
+                '255.255.255.254',
+                $network['addresslong'],
+                ip_long($network['broadcast']),
+                '255.255.255.254',
+                $network['addresslong'],
+                ip_long($network['broadcast']),
+            )
+        );
 
         $hook_data = $LMS->executeHook(
             'networkrecord_after_get',
@@ -752,12 +791,17 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
         );
         extract($hook_data);
 
+        $prefix_31 = ($network['mask'] == '255.255.255.254');
+
         if ($network['hostid']) {
             $network['hostname'] = $this->db->GetOne('SELECT name FROM hosts WHERE id=?', array($network['hostid']));
         }
         $network['size'] = pow(2, 32 - $network['prefix']);
         $network['assigned'] = empty($nodes) ? 0 : count($nodes);
-        $network['free'] = $network['size'] - $network['assigned'] - 2;
+        $network['free'] = $network['size'] - $network['assigned'];
+        if (!$prefix_31) {
+            $network['free'] -= 2;
+        }
         if ($network['dhcpstart']) {
             $network['free'] = $network['free'] - (ip_long($network['dhcpend']) - ip_long($network['dhcpstart']) + 1);
         }
@@ -796,9 +840,9 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
                 } else {
                     $network['nodes']['id'][$i] = 0;
 
-                    if ($longip == $network['addresslong']) {
+                    if (!$prefix_31 && $longip == $network['addresslong']) {
                         $network['nodes']['name'][$i] = '<b>NETWORK</b>';
-                    } elseif ($network['nodes']['address'][$i] == $network['broadcast']) {
+                    } elseif (!$prefix_31 && $network['nodes']['address'][$i] == $network['broadcast']) {
                         $network['nodes']['name'][$i] = '<b>BROADCAST</b>';
                     } elseif ($network['nodes']['address'][$i] == $network['gateway']) {
                         $network['nodes']['name'][$i] = '<b>GATEWAY</b>';

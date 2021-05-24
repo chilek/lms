@@ -36,9 +36,9 @@
         {/if}
         <table id="modeltable" width="100%" cellpadding="3">
             {if empty($producers)}
-            <tr>
+            <tr colspan="2">
                 <td class="empty-table">
-                    <p>{trans("Network device models database is empty.")}</p>
+                    {trans("Network device models database is empty.")}
                 </td>
             </tr>
             {else}

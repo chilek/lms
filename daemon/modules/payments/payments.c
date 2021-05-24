@@ -346,7 +346,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 	char *enetname = strdup(enetnames);
 	char *enetsql = strdup("");
 
-	char *groups = strdup(" AND EXISTS (SELECT 1 FROM customergroups g, customerassignments ca "
+	char *groups = strdup(" AND EXISTS (SELECT 1 FROM customergroups g, vcustomerassignments ca "
 				"WHERE ca.customerid = a.customerid "
 				    "AND g.id = ca.customergroupid "
 				    "AND (%groups)) ");
@@ -355,7 +355,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 	char *groupname = strdup(groupnames);
 	char *groupsql = strdup("");
 
-	char *egroups = strdup(" AND NOT EXISTS (SELECT 1 FROM customergroups g, customerassignments ca "
+	char *egroups = strdup(" AND NOT EXISTS (SELECT 1 FROM customergroups g, vcustomerassignments ca "
 				"WHERE ca.customerid = a.customerid "
 				    "AND g.id = ca.customergroupid "
 				    "AND (%egroups)) ");

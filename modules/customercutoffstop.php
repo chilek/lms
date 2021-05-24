@@ -43,7 +43,7 @@ if (isset($_GET['cutoffstop'])) {
     }
     // excluded groups check
     if (!$DB->GetOne(
-        'SELECT 1 FROM customerassignments a
+        'SELECT 1 FROM vcustomerassignments a
 			JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 			WHERE e.userid = lms_current_user() AND a.customerid = ?',
         array($customerid)

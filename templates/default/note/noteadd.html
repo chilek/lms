@@ -36,7 +36,7 @@ window.open('?m=note&id={$newnoteid}');
 	}
 //-->
 </script>
-<FORM NAME="setcustomer" METHOD="POST" ACTION="?m=noteadd&amp;action=setcustomer">
+<form name="setcustomer" id="setcustomer" method="POST" action="?m=noteadd&action=setcustomer">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
     <THEAD>
@@ -123,7 +123,7 @@ window.open('?m=note&id={$newnoteid}');
 	</TR>
     </TBODY>
 </TABLE>
-</FORM>
+</form>
 {if $customer}
 <TABLE class="lmsbox">
     <THEAD>
@@ -192,11 +192,11 @@ window.open('?m=note&id={$newnoteid}');
 		</TD>
 	</TR>
 	{foreachelse}
-	<TR>
-		<TD COLSPAN="5" class="empty-table">
-			<p>{trans("Debit note have no items. Use form below for items addition.")}</p>
-		</TD>
-	</TR>
+	<tr>
+		<td colspan="5" class="empty-table">
+			{trans("Debit note have no items. Use form below for items addition.")}
+		</td>
+	</tr>
 	{/foreach}
 	{if $contents}
 	<TR>
@@ -257,19 +257,20 @@ window.open('?m=note&id={$newnoteid}');
 	</TFOOT>
 </TABLE>
 </FORM>
-<SCRIPT>
-$(function() {
-	$('form[name="setcustomer"] [name="note[number]"]').focus();
-});
+<script>
 
-$('.customer-alert').click(function() {
-	alertDialog($t("Customer not selected!"), this);
-	return;
-});
-$('.document-alert').click(function() {
-	alertDialog($t("Document has no items!"), this);
-	return;
-});
+	$(function() {
+		$('[name="note[number]"]').focus();
+	});
 
-</SCRIPT>
+	$('.customer-alert').click(function() {
+		alertDialog($t("Customer not selected!"), this);
+		return;
+	});
+	$('.document-alert').click(function() {
+		alertDialog($t("Document has no items!"), this);
+		return;
+	});
+
+</script>
 {/block}

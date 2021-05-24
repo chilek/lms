@@ -8,7 +8,7 @@
 	<THEAD>
 	<TR>
 		<TD>
-			{icon name="money" class="fa-fw"}
+			{icon name="money"}
 		</TD>
 		<TD class="bold" colspan="2">
 			{$schema.name} ({$schema.id|string_format:"%04d"})
@@ -19,7 +19,7 @@
 	<TBODY>
 	<TR>
 		<TD>
-			{icon name="calendar" class="fa-fw"}
+			{icon name="calendar"}
 		</TD>
 		<TD class="nobr" colspan="2">
 			{if $schema.data}{$schema.data}{else}{trans("unlimited")}{/if}
@@ -29,9 +29,9 @@
 		<TD>
 			<A href="?m=promotionschemaset&id={$schema.id}&access={$schema.disabled}">
 				{if $schema.disabled}
-					{icon name="disconnected" class="fa-fw"}
+					{icon name="disconnected"}
 				{else}
-					{icon name="connected" class="fa-fw"}
+					{icon name="connected"}
 				{/if}
 			</A>
 		</TD>
@@ -41,7 +41,7 @@
 	</TR>
 	<TR>
 		<TD>
-			{icon name="money" class="fa-fw"}
+			{icon name="money"}
 		</TD>
 		<TD class="nobr" colspan="2">
 			<A href="?m=promotioninfo&amp;id={$schema.pid}">{$schema.promotion}</A>
@@ -50,7 +50,7 @@
 	{if $schema.description}
 	<TR>
 		<TD>
-			{icon name="info" class="fa-fw"}
+			{icon name="info"}
 		</TD>
 		<TD colspan="2">
 			<TABLE width="100%" cellpadding="5">

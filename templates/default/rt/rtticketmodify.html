@@ -22,20 +22,24 @@
 				   value="{$ticket.subject|escape}" {tip text="Enter subject" trigger="subject"} {if $layout.module !="eventadd"} required{/if}>
 		{/box_header}
 		{box_header icon="service" label="Service type:" icon_class="fa-fw"}
-                        <SELECT name="ticket[service]" id="ticket-service" {tip class="lms-ui-advanced-select" text="Choose service type" trigger="service"} {if ConfigHelper::checkConfig('rt.ticket_service_required')}required{/if}>
-					<OPTION value="" selected hidden>{trans("select")}</OPTION>
+			<select name="ticket[service]" id="ticket-service"
+				{tip class="lms-ui-advanced-select" text="Choose service type" trigger="service"}
+				{if ConfigHelper::checkConfig('rt.ticket_service_required')} required{/if}>
+				<option value="" selected hidden>{trans("select")}</option>
 				{foreach $_SERVICETYPES as $key => $service}
-					<OPTION value="{$key}"{if $key == $ticket.service} selected{/if}>{$service}</OPTION>
+					<option value="{$key}"{if $key == $ticket.service} selected{/if}>{$service}</option>
 				{/foreach}
-			</SELECT>
+			</select>
 		{/box_header}
 		{box_header icon="type" label="Ticket type:" icon_class="fa-fw"}
-                        <SELECT name="ticket[type]" id="ticket-type" {tip class="lms-ui-advanced-select" text="Choose ticket type" trigger="type"}{if ConfigHelper::checkConfig('rt.ticket_type_required')}required{/if}>
-					<OPTION value="" selected hidden>{trans("select")}</OPTION>
+			<select name="ticket[type]" id="ticket-type"
+				{tip class="lms-ui-advanced-select" text="Choose ticket type" trigger="type"}
+				{if ConfigHelper::checkConfig('rt.ticket_type_required')} required{/if}>
+				<option value="" selected hidden>{trans("select")}</option>
 				{foreach Localisation::arraySort($_RT_TYPES, 'label') as $key => $type}
-					<OPTION value="{$key}"{if $key == $ticket.type} selected{/if}>{$type.label}</OPTION>
+					<option value="{$key}"{if $key == $ticket.type} selected{/if}>{$type.label}</option>
 				{/foreach}
-			</SELECT>
+			</select>
 		{/box_header}
 	{/box_header}
 
@@ -46,7 +50,7 @@
 			{box_row icon="customer" label="Customer:" icon_class="fa-fw"}
 				{$customer_selector='[name=&quot;ticket[custid]&quot;]'}
 				{$address_selector='[name=&quot;ticket[address_id]&quot;]'}
-				{customerlist form="ticket" customers=$customerlist selected=$customerid version=2
+				{customerlist form="ticket-form" customers=$customerlist selected=$customerid version=2
 					selectname="ticket[customerid]" inputname="ticket[custid]"
 					selecttip="Select customer from list or enter his data if is not a customer"
 					customOnChange="change_customer('{$customer_selector}', '{$address_selector}');"}
@@ -59,9 +63,18 @@
 						<option value="">{trans("<!person>- none -")}</option>
 						<option value="0"{if $ticket.requestor_userid == '0'} selected{/if}>{trans("- indicated person -")}</option>
 						{foreach $userlist as $user}
-							<option value="{$user.id}"{if $ticket.requestor_userid == $user.id} selected{/if}>{$user.rname|escape} ({$user.login})</option>
+							{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
+								|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
+								|| $user.id == $ticket.requestor_userid}
+								<option value="{$user.id}"{if !$user.access} class="blend"{/if}{if $ticket.requestor_userid == $user.id} selected{/if}>{$user.rname|escape} ({$user.login})</option>
+							{/if}
 						{/foreach}
 					</SELECT>
+					<label>
+						<input type="checkbox" class="assign-to-me" data-userid="{$layout.logid}"
+							data-target='[name="ticket[requestor_userid]"]'>
+						{trans("assign to me")}
+					</label>
 				</div>
 				<div class="lms-ui-box-row indicated-person">
 					<div class="lms-ui-box-row-label">
@@ -115,7 +128,7 @@
 				<TEXTAREA name="ticket[note]" cols="50" rows="5" {tip text="Enter ticket content" trigger="body"}>{$ticket.note}</TEXTAREA>
 			{/box_row}
 
-			{box_row icon="fileupload" label="Attachments:" icon_class="fa-fw"}
+			{box_row icon="attachment" label="Attachments:" icon_class="fa-fw"}
 				{fileupload id="files" fileupload=$fileupload form="ticket-form"}
 			{/box_row}
 {/if}
@@ -127,7 +140,7 @@
 				{include file="rt/rtcategoryselection.html" categories=$categories name_prefix="ticket[categories]"}
 			{/box_row}
 
-			{box_row icon="message" label="Notify users:" labelid="notify"}
+			{box_row icon="message" label="Notify users:" labelid="notify" icon_class="fa-fw"}
 				<INPUT type="checkbox" name="ticket[notify]" id="notify" value="1"{if $ticket.notify} CHECKED{/if}>
 			{/box_row}
 			{/block}
@@ -147,7 +160,8 @@
 				</SELECT>
 				&nbsp;
 				<label>
-					<input type="checkbox" id="assign-to-me" data-userid="{$layout.logid}">
+					<input type="checkbox" class="assign-to-me" data-userid="{$layout.logid}"
+						data-target='[name="ticket[owner]"]'>
 					{trans("assign to me")}
 				</label>
 			{/box_row}
@@ -254,7 +268,7 @@
 {/if}
 
 			{$visibility=(!empty($nodes) && $layout.module != 'eventadd')}
-			{box_row class="node-row" icon="img/node.gif" label="Node:" visible=$visibility}
+			{box_row class="node-row" icon="node" label="Node:" visible=$visibility}
 				<select class="node-list" name="ticket[nodeid]" {tip text="Select node" trigger="nodeid"}>
 					<option value="">{trans("- none -")}</option>
 					{if !empty($nodes)}
@@ -276,10 +290,10 @@
 			{/box_row}
 
 			{box_row icon="netdev" label="Device:" field_id="rtnetdevs" icon_class="fa-fw"}
-				{include file="rt/rtnetdevs.html" form="ticket"}
+				{include file="rt/rtnetdevs.html" form="ticket-form"}
 			{/box_row}
 
-			{box_row id="customernotify-row" icon="img/mail.gif" label="Notify customer:" labelid="customernotify"}
+			{box_row id="customernotify-row" icon="message" label="Notify customer:" labelid="customernotify"}
 				<input type="checkbox" id="customernotify" name="ticket[customernotify]" value="1"{if isset($ticket.customernotify)} checked{/if}>
 			{/box_row}
 

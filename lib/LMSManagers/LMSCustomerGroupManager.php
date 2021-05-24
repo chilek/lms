@@ -41,7 +41,7 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
     {
         return $this->db->GetOne(
             'SELECT COUNT(*) 
-            FROM customerassignments
+            FROM vcustomerassignments
             WHERE customergroupid = ?',
             array($id)
         );
@@ -192,7 +192,7 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
 
         $result['customers'] = $this->db->GetAll('SELECT c.id AS id,'
                 . $this->db->Concat('c.lastname', "' '", 'c.name') . ' AS customername 
-            FROM customerassignments, customers c '
+            FROM vcustomerassignments, customers c '
                 . ($network ? 'LEFT JOIN nodes n ON c.id = n.ownerid
                     LEFT JOIN netdevices nd ON nd.ownerid = c.id
                     LEFT JOIN nodes n2 ON n2.ownerid IS NULL AND n2.netdev = nd.id ' : '')
@@ -218,7 +218,7 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
     {
         if ($customergrouplist = $this->db->GetAll('SELECT id, name, description,
 				(SELECT COUNT(*)
-					FROM customerassignments 
+					FROM vcustomerassignments
 					WHERE customergroupid = g.id
 				) AS customerscount
 				FROM customergroups g
@@ -249,9 +249,9 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
     public function CustomergroupGetForCustomer($id)
     {
         return $this->db->GetAll(
-            'SELECT customergroups.id AS id, name, description 
-            FROM customergroups, customerassignments 
-            WHERE customergroups.id=customergroupid AND customerid=? 
+            'SELECT customergroups.id AS id, name, description, startdate, enddate
+            FROM customergroups, vcustomerassignments
+            WHERE customergroups.id=customergroupid AND customerid=?
             ORDER BY name ASC',
             array($id)
         );
@@ -268,7 +268,7 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
         return $this->db->GetAll(
             'SELECT customergroups.id AS id, name, customerid
             FROM customergroups 
-            LEFT JOIN customerassignments ON (customergroups.id=customergroupid AND customerid = ?)
+            LEFT JOIN vcustomerassignments ON (customergroups.id=customergroupid AND customerid = ?)
             GROUP BY customergroups.id, name, customerid 
             HAVING customerid IS NULL ORDER BY name',
             array($customerid)
@@ -284,9 +284,9 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
     public function CustomerassignmentGetForCustomer($id)
     {
         return $this->db->GetAll(
-            'SELECT customerassignments.id AS id, customergroupid, customerid 
-            FROM customerassignments, customergroups 
-            WHERE customerid=? AND customergroups.id = customergroupid 
+            'SELECT customerassignments.id AS id, customergroupid, customerid
+            FROM vcustomerassignments, customergroups
+            WHERE customerid=? AND customergroups.id = customergroupid
             ORDER BY customergroupid ASC',
             array($id)
         );
@@ -302,11 +302,11 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
     {
         if ($this->syslog) {
             if (isset($customerassignmentdata['customergroupid'])) {
-                $assigns = $this->db->GetAll('SELECT id, customerid, customergroupid FROM customerassignments
+                $assigns = $this->db->GetAll('SELECT id, customerid, customergroupid FROM vcustomerassignments
 					WHERE customergroupid = ? AND customerid = ?', array($customerassignmentdata['customergroupid'],
                     $customerassignmentdata['customerid']));
             } else {
-                $assigns = $this->db->GetAll('SELECT id, customerid, customergroupid FROM customerassignments
+                $assigns = $this->db->GetAll('SELECT id, customerid, customergroupid FROM vcustomerassignments
 					WHERE customerid = ?', array($customerassignmentdata['customerid']));
             }
             if (!empty($assigns)) {
@@ -316,18 +316,20 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
                     SYSLOG::RES_CUST => $assign['customerid'],
                     SYSLOG::RES_CUSTGROUP => $assign['customergroupid']
                     );
-                    $this->syslog->AddMessage(SYSLOG::RES_CUSTASSIGN, SYSLOG::OPER_DELETE, $args);
+                    $this->syslog->AddMessage(SYSLOG::RES_CUSTASSIGN, SYSLOG::OPER_UPDATE, $args);
                 }
             }
         }
 
         if (isset($customerassignmentdata['customergroupid'])) {
-            return $this->db->Execute('DELETE FROM customerassignments 
-				WHERE customergroupid=? AND customerid=?', array($customerassignmentdata['customergroupid'],
+            return $this->db->Execute('UPDATE customerassignments
+                SET enddate = ?NOW?
+				WHERE customergroupid = ? AND customerid = ? AND enddate = 0', array($customerassignmentdata['customergroupid'],
                     $customerassignmentdata['customerid']));
         } else {
-            return $this->db->Execute('DELETE FROM customerassignments 
-				WHERE customerid=?', array($customerassignmentdata['customerid']));
+            return $this->db->Execute('UPDATE customerassignments
+                SET enddate = ?NOW?
+				WHERE customerid = ? AND enddate = 0', array($customerassignmentdata['customerid']));
         }
     }
 
@@ -362,7 +364,7 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
      */
     public function CustomerassignmentExist($groupid, $customerid)
     {
-        return $this->db->GetOne('SELECT 1 FROM customerassignments WHERE customergroupid=? AND customerid=?', array($groupid, $customerid));
+        return $this->db->GetOne('SELECT 1 FROM vcustomerassignments WHERE customergroupid=? AND customerid=?', array($groupid, $customerid));
     }
 
     /**
@@ -385,7 +387,7 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
                         LEFT JOIN netdevices nd ON nd.ownerid = c.id
                         LEFT JOIN nodes n2 ON n2.ownerid IS NULL AND n2.netdev = nd.id ' : '')
                         . 'WHERE c.deleted = 0 AND c.id NOT IN (
-                SELECT customerid FROM customerassignments WHERE customergroupid = ?) '
+                SELECT customerid FROM vcustomerassignments WHERE customergroupid = ?) '
                         . ($network ? 'AND ((n.ipaddr > ' . $net['address'] . ' AND n.ipaddr < ' . $net['broadcast'] . ') OR
                         (n.ipaddr_pub > ' . $net['address'] . ' AND n.ipaddr_pub < ' . $net['broadcast'] . ') OR
                         (n2.ipaddr > ' . $net['address'] . ' AND n2.ipaddr < ' . $net['broadcast'] . ') OR

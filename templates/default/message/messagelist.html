@@ -116,7 +116,7 @@
 		</TD>
 		<TD class="lms-ui-buttons text-right nobr">
 			{if $message.files}
-				{button class="toggle-file-list" type="link" icon="fileupload" tip="Show file list" resourceid={$message.filecontainerid}}
+				{button class="toggle-file-list" type="link" icon="attachment" tip="Show file list" resourceid={$message.filecontainerid}}
 			{/if}
 			{buttons}
 				{button type="link" icon="delete" class="delete-message" tip="Delete" href="?m=messagedel&id={$message.id}"}
@@ -135,11 +135,11 @@
 		</TD>
 	</TR>
 	{foreachelse}
-	<TR>
-		<TD colspan="5" class="empty-table">
-			<p>{trans("No such messages in database.")}</p>
-		</TD>
-	</TR>
+	<tr>
+		<td colspan="5" class="empty-table">
+			{trans("No such messages in database.")}
+		</td>
+	</tr>
 	{/foreach}
 	</form>
     </TBODY>

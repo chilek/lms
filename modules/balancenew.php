@@ -35,7 +35,7 @@ $last = $DB->GetRow('SELECT cash.id AS id, cash.value AS value, cash.currency, c
 		LEFT JOIN taxes ON (taxid = taxes.id)
 		LEFT JOIN cashsources s ON (cash.sourceid = s.id)
 		WHERE NOT EXISTS (
-			SELECT 1 FROM customerassignments a
+			SELECT 1 FROM vcustomerassignments a
 			JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 			WHERE e.userid = lms_current_user() AND a.customerid = cash.customerid)
 		ORDER BY cash.id DESC LIMIT 1');

@@ -658,7 +658,7 @@ class LMSTcpdfInvoice extends LMSInvoice
 
     protected function invoice_expositor()
     {
-        $expositor = isset($this->data['user']) ? $this->data['user'] : $this->data['division_author'];
+        $expositor = empty($this->data['issuer']) ? (empty($this->data['user']) ? $this->data['division_author'] : $this->data['user']) : $this->data['issuer'];
         $this->backend->SetFont(self::TCPDF_FONT, '', 8);
         if (!ConfigHelper::checkConfig('invoices.hide_expositor')) {
             $this->backend->writeHTMLCell(0, 0, '', '', trans('Expositor:') . ' <b>' . (empty($expositor) ? trans('system') : $expositor) . '</b>', 0, 1, 0, true, 'R');

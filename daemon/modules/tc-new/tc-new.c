@@ -61,7 +61,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 	char *netnames = strdup(tc->networks);	
 	char *netname = strdup(netnames);
 
-	char *groups = strdup(" AND EXISTS (SELECT 1 FROM customergroups g, customerassignments ca "
+	char *groups = strdup(" AND EXISTS (SELECT 1 FROM customergroups g, vcustomerassignments ca "
 				"WHERE a.customerid = ca.customerid "
 				"AND g.id = ca.customergroupid "
 				"AND (%groups)) "

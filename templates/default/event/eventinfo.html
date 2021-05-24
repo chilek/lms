@@ -58,7 +58,7 @@
 {if $event.description}
 	<TR>
 		<TD>
-                    {icon name="description"}
+			{icon name="description"}
 		</TD>
 		<TD class="bold nobr">
 			{trans("Description:")}
@@ -87,7 +87,7 @@
 	</TR>
 	<TR>
 		<TD>
-                    {icon name="status"}
+			{icon name="status"}
 		</TD>
 		<TD class="bold">
 			{trans("Availability:")}
@@ -185,7 +185,7 @@
 			{if !empty($event.phones)}
 				<br>
 				{foreach $event.phones as $phone}
-					{icon name="phone" class="fa-fw"}
+					{icon name="phone"}
 					<a href="tel:{$phone.contact}">{$phone.fullname}</a>
 					{if !$phone@last}
 						<br>

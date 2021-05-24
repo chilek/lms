@@ -52,7 +52,7 @@
 						{if !empty($reftype) && $reftype == 'division'}
 							<tr>
 								<td>
-									{icon name="division" class="fa-fw"}
+									{icon name="division"}
 								</td>
 								<td class="nobr bold">
 									{trans("Division")}
@@ -70,7 +70,7 @@
 							{if $reftype == 'divisionuser'}
 								<tr>
 									<td>
-										{icon name="division" class="fa-fw"}
+										{icon name="division"}
 									</td>
 									<td class="nobr bold">
 										{trans("Division")}
@@ -84,7 +84,7 @@
 							{if $reftype == 'divisionuser' || $reftype == 'user'}
 								<tr>
 									<td>
-										{icon name="user" class="fa-fw"}
+										{icon name="user"}
 									</td>
 									<td class="nobr bold">
 										{trans("User")}
@@ -101,7 +101,7 @@
 						{/if}
 						<tr>
 							<td>
-								{icon name="configuration" class="fa-fw"}
+								{icon name="configuration"}
 							</TD>
 							<td class="bold">
 								{trans("Section:")}
@@ -126,7 +126,7 @@
 						</tr>
 						<TR>
 							<TD>
-								{icon name="service" class="fa-fw"}
+								{icon name="service"}
 							</TD>
 							<TD class="bold">
 								{trans("Name:")}
@@ -159,7 +159,7 @@
 						<tbody>
 							<tr>
 								<td>
-									{icon name="service" class="fa-fw"}
+									{icon name="service"}
 								</td>
 								<TD class="bold">
 									{trans("Value:")}
@@ -172,7 +172,7 @@
 							</TR>
 							<TR>
 								<TD>
-									{icon name="comment" class="fa-fw"}
+									{icon name="comment"}
 								</TD>
 								<TD class="bold">
 									{trans("Comment:")}
@@ -183,7 +183,7 @@
 							</TR>
 							<TR>
 								<TD>
-									{icon name="wait" class="fa-fw"}
+									{icon name="wait"}
 								</TD>
 								<TD class="bold">
 									{trans("Status:")}
@@ -195,7 +195,7 @@
 							{if ConfigHelper::checkPrivilege('superuser') && empty($reftype)}
 								<TR>
 									<TD>
-										<img src="img/desc.gif" alt="">
+										{icon name="type"}
 									</TD>
 									<TD class="bold">
 										{trans("Type:")}

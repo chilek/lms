@@ -1,5 +1,5 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS :{$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
@@ -44,7 +44,7 @@
 					{foreachelse}
 						<tr>
 							<td class="empty-table" colspan="5">
-								<p>{trans("There are any changes to accept.")}</p>
+								{trans("There are any changes to accept.")}
 							</td>
 						</tr>
 					{/foreach}

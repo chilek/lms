@@ -106,11 +106,11 @@
 		{/if}
 	</TR>
 	{foreachelse}
-	<TR>
-		<TD COLSPAN="{$cols}" class="empty-table">
-			<p>{trans("No such stats for selected period.")}</p>
-		</TD>
-	</TR>
+	<tr>
+		<td colspan="{$cols}" class="empty-table">
+			{trans("No such stats for selected period.")}
+		</td>
+	</tr>
 	{/foreach}
 	<TR>
 		<TD CLASS="HEADGREY" ALIGN="RIGHT">

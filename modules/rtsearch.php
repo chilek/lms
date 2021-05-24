@@ -97,7 +97,11 @@ function RTSearch($search, $order = 'createtime,desc')
         }
     }
     if (!empty($search['priority'])) {
-        $where[] = 'priority = '.intval($search['priority']);
+        if ($search['priority'] == '-101') {
+            $where[] = 't.priority IS NULL';
+        } else {
+            $where[] = 'priority = ' . intval($search['priority']);
+        }
     }
     if (!empty($search['email'])) {
         $where[] = 'requestor ?LIKE? '.$DB->Escape('%'.$search['email'].'%');

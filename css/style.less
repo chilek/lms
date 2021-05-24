@@ -620,15 +620,15 @@ H2		{ font-size: 12pt; font-family: @fonts; }
 H3		{ font-size: 10pt; font-family: @fonts; }
 HR      { border: 0; height: 1px; color: black; background-color: black; }
 
-INPUT[type="text"],
-INPUT[type="email"],
-INPUT[type="search"],
-INPUT[type="number"],
-INPUT[type="tel"],
-INPUT[type="password"],
-INPUT[type="submit"],
-INPUT[type="button"] {
-	border: solid 1px black;
+input[type="text"],
+input[type="email"],
+input[type="search"],
+input[type="number"],
+input[type="tel"],
+input[type="password"],
+input[type="submit"],
+input[type="button"] {
+	border: @form-element-border;
 	background-color: @lucid;
 	min-height: 1.4em;
 	padding: 0.1em;
@@ -637,7 +637,8 @@ INPUT[type="button"] {
 }
 
 input[type="text"][disabled] {
-	border: 1px dashed grey;
+	border: @form-disabled-element-borrder;
+	background-color: transparent;
 }
 
 INPUT[type="radio"] {
@@ -729,9 +730,12 @@ textarea {
 		font-size: @font-size-mobile;
 	}
 	font-family: @fonts;
-	border-style: solid;
-	border-width: 1pt;
+	border: @form-element-border;
 	background-color: @lucid;
+	&[disabled] {
+		border: @form-disabled-element-borrder;
+		background-color: transparent;
+	}
 	vertical-align: middle;
 
 	&.alert,
@@ -782,7 +786,7 @@ select {
 	padding-right: 16px;
 	padding-left: 3px;
 
-	border: @select-border;
+	border: @form-element-border;
 
 	&.alert,
 	&.lms-ui-error,
@@ -1317,25 +1321,6 @@ IMG		{ vertical-align: middle; border: 0; }
 	}
 }
 
-a.lms-ui-button:not(.lms-ui-link-button) {
-	> i:before {
-		color: black;
-	}
-	> i {
-		width: 1.2em;
-		text-align: center;
-	}
-	border: 1px solid transparent;
-	display: inline-block;
-	&:hover {
-		cursor: pointer;
-		border: 1px solid @darkbrown;
-		border-radius: 3px;
-		display: inline-block;
-		text-decoration: none;
-	}
-}
-
 .lms-ui-rtmessage-current,
 .lms-ui-rtsystemmessage-current {
 	box-shadow: @rtmessage-current;
@@ -1370,6 +1355,11 @@ table.lmsbox {
 						margin-left: 0.3em;
 					}
 				}
+			}
+			&.empty-table {
+				text-align: center;
+				font-weight: bold;
+				padding: 2.5em;
 			}
 		}
 		& > thead {
@@ -1681,11 +1671,9 @@ tr.space_row > td {
 
 td.empty-table {
 	background-color: @lucid;
-	p {
-		text-align: center;
-		font-weight: bold;
-		padding: 2em;
-	}
+	text-align: center;
+	font-weight: bold;
+	padding: 2.5em;
 }
 
 td.multiselect {
@@ -1952,7 +1940,7 @@ table.dataTable {
 	padding-left: 4px;
 	padding-right: 4px;
 
-	border: @select-border !important;
+	border: @form-element-border !important;
 	background-color: @lucid !important;
 	box-shadow: none !important;
 	border-radius: 0 !important;
