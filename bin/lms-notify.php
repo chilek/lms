@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -34,6 +34,7 @@ $parameters = array(
     'version' => 'v',
     'debug' => 'd',
     'fakedate:' => 'f:',
+    'interval:' => 'i:',
     'type:' => 't:',
     'section:' => 's:',
     'channel:' => 'c:',
@@ -79,7 +80,7 @@ foreach (array_flip(array_filter($long_to_shorts, function ($value) {
 if (array_key_exists('version', $options)) {
     print <<<EOF
 lms-notify.php
-(C) 2001-2020 LMS Developers
+(C) 2001-2021 LMS Developers
 
 EOF;
     exit(0);
@@ -88,7 +89,7 @@ EOF;
 if (array_key_exists('help', $options)) {
     print <<<EOF
 lms-notify.php
-(C) 2001-2020 LMS Developers
+(C) 2001-2021 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
@@ -96,6 +97,7 @@ lms-notify.php
 -q, --quiet                     suppress any output, except errors
 -d, --debug                     do debugging, dont send anything.
 -f, --fakedate=YYYY/MM/DD       override system date;
+-i, --interval=ms               force delay interval between subsequent posts
 -t, --type=<notification-types> take only selected notification types into account
                                 (separated by colons)
 -c, --channel=<channel-types>  use selected channels for notifications
@@ -126,7 +128,7 @@ $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
     print <<<EOF
 lms-notify.php
-(C) 2001-2020 LMS Developers
+(C) 2001-2021 LMS Developers
 
 EOF;
 }
@@ -366,6 +368,17 @@ Utils::determineAllowedCustomerStatus(
     -1
 );
 
+if (isset($options['interval'])) {
+    $interval = $options['interval'];
+} else {
+    $interval = ConfigHelper::getConfig($config_section . '.interval', 0);
+}
+if ($interval == 'random') {
+    $interval = -1;
+} else {
+    $interval = intval($interval);
+}
+
 $content_types = array(
     MSG_MAIL => $mail_content_type,
     MSG_SMS => 'text/plain',
@@ -583,7 +596,7 @@ function create_message($type, $subject, $template)
 function send_mail($msgid, $cid, $rmail, $rname, $subject, $body)
 {
     global $LMS, $mail_from, $notify_email, $reply_email, $dsn_email, $mdn_email, $content_types;
-    global $smtp_options;
+    global $smtp_options, $interval;
 
     $DB = LMSDB::getInstance();
 
@@ -633,6 +646,15 @@ function send_mail($msgid, $cid, $rmail, $rname, $subject, $body)
         $DB->Execute($query, array(3, $result, $msgid, $cid, $msgitemid));
     } else { // MSG_SENT
         $DB->Execute($query, array($result, null, $msgid, $cid, $msgitemid));
+    }
+
+    if (isset($interval) && !empty($interval)) {
+        if ($interval == -1) {
+            $delay = mt_rand(500, 5000);
+        } else {
+            $delay = intval($interval);
+        }
+        usleep($delay * 1000);
     }
 }
 
