@@ -42,7 +42,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				{button type="submit" class="btn btn-danger submit-button" accesskey="S" icon="submit" label="<!helpdesk>Submit" data-attributes="formnovalidate"}
+				{button type="submit" class="btn btn-danger submit-button" accesskey="S" icon="submit" label="<!helpdesk>Submit" formnovalidate=true}
 				{button class="btn btn-secondary" data_dismiss="modal" icon="close" label="Close"}
 			</div>
 		</div>
@@ -81,7 +81,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				{button type="submit" class="btn btn-danger" data-attributes="formnovalidate" accesskey="S" icon="submit" label="<!helpdesk>Submit"}
+				{button type="submit" class="btn btn-danger" formnovalidate=true accesskey="S" icon="submit" label="<!helpdesk>Submit"}
 				{button class="btn btn-secondary" data_dismiss="modal" icon="close" label="Close"}
 			</div>
 		</div>
@@ -127,9 +127,9 @@
 								<div class="row document-attachment">
 									<div class="col-md-auto">
 											{if $docattach.type == 1}
-												{button class="btn btn-primary" href="?m=documents&f=docview&id={$doc.id}&attachmentid={$docattach.id}" external="_blank" icon="view" label="View"}
+												{button class="btn btn-primary" href="?m=documents&f=docview&id={$doc.id}&attachmentid={$docattach.id}" external=true icon="view" label="View"}
 											{else}
-												{button class="btn btn-primary" href="?m=documents&f=docview&id={$doc.id}&attachmentid={$docattach.id}" external="_blank" icon="document" label="{$docattach.filename}"}
+												{button class="btn btn-primary" href="?m=documents&f=docview&id={$doc.id}&attachmentid={$docattach.id}" external=true icon="document" label="{$docattach.filename}"}
 											{/if}
 										{if !$doc.closed && $docattach.type == 1 && $doc.confirmdate != -1}
 											{if $scan_active}
