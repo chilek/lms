@@ -56,7 +56,7 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h4 class="modal-title">{trans("Document submission")}</h4>
-				{button class="close" data_dismiss="modal" label="&times;"}
+				{button class="close" data_dismiss="modal" icon="cancel"}
 			</div>
 			<div class="modal-body">
 				<div class="form-group">
@@ -133,10 +133,10 @@
 											{/if}
 										{if !$doc.closed && $docattach.type == 1 && $doc.confirmdate != -1}
 											{if $scan_active}
-												{button class="btn btn-primary" href="#" data_toggle="modal" data_target="#newscan-dialog" data_document_id="{$doc.id}" icon="upload" label="Submit scan"}
+												{button class="btn btn-primary" data_toggle="modal" data_target="#newscan-dialog" data_document_id="{$doc.id}" icon="upload" label="Submit scan"}
 											{/if}
 											{if $sms_active}
-												{button class="btn btn-primary" href="#" data_toggle="modal" data_target="#authcode-dialog" data_document_id="{$doc.id}" icon="confirm" label="Confirm"}
+												{button class="btn btn-primary" data_toggle="modal" data_target="#authcode-dialog" data_document_id="{$doc.id}" icon="confirm" label="<userpanel!>Confirm"}
 											{/if}
 										{/if}
 									</div>

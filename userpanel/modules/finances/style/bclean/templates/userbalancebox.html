@@ -124,9 +124,9 @@
 						<tr>
 							<td colspan="5">
 								{if $aggregate_documents}
-									{button type="submit" class="btn btn-primary" formaction="?m=finances&aggregate_documents=0#userbalancebox" external="_self" icon="document" label="Don't aggregate documents"}
+									{button type="submit" class="btn btn-primary" formaction="?m=finances&aggregate_documents=0#userbalancebox" icon="document" label="Don't aggregate documents"}
 								{else}
-									{button type="submit" class="btn btn-primary" formaction="?m=finances&aggregate_documents=1#userbalancebox" external="_self" icon="document" label="Aggregate documents"}
+									{button type="submit" class="btn btn-primary" formaction="?m=finances&aggregate_documents=1#userbalancebox" icon="document" label="Aggregate documents"}
 								{/if}
 							</td>
 							<td colspan="2" class="text-center">
@@ -134,7 +134,7 @@
 									<input class="custom-control-input" type="checkbox" name="allbox" id="allbox" onchange="CheckAll('invoices', this)" value="1" />
 									<label class="custom-control-label" for="allbox">{trans("Check all")}</label>
 								</div>
-								{button class="btn btn-primary btn-sm" id="print-all" href="javascript:document.invoices.submit()" icon="print" label="Print selected"}
+								{button class="btn btn-primary btn-sm" id="print-all" onclick="document.invoices.submit()" icon="print" label="Print selected"}
 							</td>
 						</tr>
 					</tfoot>

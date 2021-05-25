@@ -128,3 +128,5 @@ $_LANG['Logged as:'] = 'Zalogowany jako:';
 
 $_LANG['PIN validation'] = 'Walidacja PIN';
 $_LANG['Userpanel PIN validation'] = 'Walidacja PIN przy logowaniu do Panelu klienta';
+$_LANG['Update'] = 'Uaktualnij';
+$_LANG['<userpanel!>Confirm'] = 'Zapoznałem się';

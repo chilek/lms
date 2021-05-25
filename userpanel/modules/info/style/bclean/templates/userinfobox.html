@@ -156,7 +156,7 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h4 class="modal-title">{trans("Information about the subscriber")}</h4>
-				{button class="close" data_dismiss="modal" label="&times;"}
+				{button class="close" data_dismiss="modal" icon="cancel"}
 			</div>
 			<div class="modal-body">
 				{if $error.ssn}
@@ -286,7 +286,7 @@
 			</div>
 			<div class="modal-footer">
 				{if $rights.info.edit_addr || $rights.info.edit_addr_ack || $rights.info.edit_contact || $rights.info.edit_contact_ack}
-					{button class="btn btn-danger" id="updateuserbtn" href="#" accesskey="A" icon="save" label="Save"}
+					{button class="btn btn-danger" id="updateuserbtn" accesskey="A" icon="save" label="Save"}
 				{/if}
 					{button class="btn btn-secondary" data_dismiss="modal" icon="close" label="Close"}
 			</div>
