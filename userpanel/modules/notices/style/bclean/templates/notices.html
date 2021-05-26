@@ -4,7 +4,7 @@
 	{box title="Warning to you"}
 	<div class="alert alert-warning" role="alert">
 		{$warning}
-		<a class="alert-link" href="?m=notices&amp;confirm_old=1">{trans("<userpanel!>Confirm")}</a>
+		<a class="alert-link" href="?m=notices&amp;confirm_old=1">{trans("<!userpanel>Confirm")}</a>
 	</div>
 	{/box}
 {/if}
@@ -56,7 +56,7 @@
 						{/if}
 						<br><br>
 						{if $items.status != $smarty.const.MSG_DELIVERED}
-							{button class="btn btn-primary" href="?m=notices&confirm={$items.id}" icon="confirm" label="<userpanel!>Confirm"}
+							{button class="btn btn-primary" href="?m=notices&confirm={$items.id}" icon="confirm" label="<!userpanel>Confirm"}
 						{/if}
 					</td>
 				</tr>
