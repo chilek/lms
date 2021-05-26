@@ -110,28 +110,36 @@ $SESSION->save('ilg', $g);
 $SESSION->save('ilge', $ge);
 
 if (isset($_POST['search'])) {
-    $sp = isset($_POST['splitpayment']) ? true : false;
+    $ns = isset($_POST['notsent']);
+} else {
+    $SESSION->restore('ilns', $ns);
+}
+$SESSION->save('ilns', $ns);
+
+
+if (isset($_POST['search'])) {
+    $sp = isset($_POST['splitpayment']);
 } else {
     $SESSION->restore('ilsp', $sp);
 }
 $SESSION->save('ilsp', $sp);
 
 if (isset($_POST['search'])) {
-    $wr = isset($_POST['withreceipt']) ? true : false;
+    $wr = isset($_POST['withreceipt']);
 } else {
     $SESSION->restore('ilwr', $wr);
 }
 $SESSION->save('ilwr', $wr);
 
 if (isset($_POST['search'])) {
-    $ts = isset($_POST['telecomservice']) ? true : false;
+    $ts = isset($_POST['telecomservice']);
 } else {
     $SESSION->restore('ilts', $ts);
 }
 $SESSION->save('ilts', $ts);
 
 if (isset($_POST['search'])) {
-    $re = isset($_POST['relatedentity']) ? true : false;
+    $re = isset($_POST['relatedentity']);
 } else {
     $SESSION->restore('ilre', $re);
 }
@@ -160,7 +168,7 @@ $offset = ($page - 1) * $limit;
 $invoicelist = $LMS->GetInvoiceList(array('search' => $s, 'cat' => $c, 'group' => $g, 'exclude'=> $ge,
     'numberplan' => $np, 'division' => $div, 'hideclosed' => $h, 'order' => $o, 'limit' => $limit, 'offset' => $offset,
     'proforma' => $proforma, 'splitpayment' => $sp, 'withreceipt' => $wr, 'telecomservice' => $ts, 'relatedentity' => $re,
-    'count' => false));
+    'notsent' => $ns, 'count' => false));
 
 $pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
 
@@ -168,6 +176,7 @@ $SESSION->restore('ilc', $listdata['cat']);
 $SESSION->restore('ils', $listdata['search']);
 $SESSION->restore('ilg', $listdata['group']);
 $SESSION->restore('ilge', $listdata['groupexclude']);
+$SESSION->restore('ilns', $listdata['notsent']);
 $SESSION->restore('ilnp', $listdata['numberplanid']);
 $SESSION->restore('ildiv', $listdata['divisionid']);
 $SESSION->restore('ilh', $listdata['hideclosed']);
