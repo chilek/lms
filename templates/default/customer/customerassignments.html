@@ -266,10 +266,12 @@
 						<div class="lms-ui-tab-table-wrapper col-2">
 							<div class="lms-ui-tab-table-column ptu_quantity">
 								{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-									{if $a.tariffid || $a.liabilityid}
+									{if $a.tariffid}
 										{$a.tax_label}
+									{elseif $a.liabilityid}
+										{$a.taxl_label}
 									{/if}
-								<br>
+									<br>
 								{/if}
 								{$a.count|rtrim:'0'|rtrim:'.'}
 							</div>
