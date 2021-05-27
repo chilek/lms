@@ -968,7 +968,7 @@ function initPersistentTooltips(selectors) {
 		$.each(classToUrls, function(cssClass, url) {
 			selectors.push('.' + cssClass);
 		});
-	} else if (typeof(selectors) != 'array') {
+	} else if (!Array.isArray(selectors)) {
 		selectors = [ selectors ];
 	}
 
@@ -1016,6 +1016,48 @@ function initPersistentTooltips(selectors) {
 				content: classToUrls.hasOwnProperty(cssClass) ? function(callback) {
 					dynamicContent(callback);
 				} : elem.attr('title')
+			});
+		});
+	});
+}
+
+function initToggleTooltips(selectors) {
+	if (!Array.isArray(selectors)) {
+		selectors = [ selectors ];
+	}
+
+	$.each(selectors, function(idx, selector) {
+		$(selector).each(function() {
+			var elem = $(this);
+
+			elem.mouseenter(function(e) {
+				e.stopImmediatePropagation();
+			}).mouseleave(function(e) {
+				e.stopImmediatePropagation();
+			}).click(function() {
+				$(this).tooltip('open');
+			}).tooltip({
+				items: elem,
+				show: false,
+				hide: false,
+				track: false,
+				position: { my: "left top", at: "left bottom", collision: "flipfit" },
+				open: function(e, ui) {
+					if (typeof(e.originalEvent) === 'undefined') {
+						return false;
+					}
+					var id = $(ui.tooltip).attr('id');
+					$('div.ui-tooltip').not('#' + id).remove();
+				},
+				close: function(e, ui) {
+					$(ui.tooltip).mouseenter(function() {
+						$(this).stop(true);
+					}).mouseleave(function() {
+						$(this).remove();
+					});
+				},
+				tooltipClass: typeof(selector) == 'string' && selector.match(/^\./)
+					? selector.replace(/^\./, '') : 'lms-ui-tooltip-toggle'
 			});
 		});
 	});
@@ -1302,7 +1344,7 @@ $(function() {
 	});
 
 	if (tooltipsEnabled) {
-		$(document).on('mouseenter', '[title]:not(.lms-ui-tooltip-persistent)', function () {
+		$(document).on('mouseenter', '[title]:not(.lms-ui-tooltip-persistent,.lms-ui-tooltip-toggle)', function () {
 			if ($(this).is('[data-tooltip]') || $(this).closest('.tox-tinymce,.tox-tinymce-aux').length) {
 				return;
 			}
@@ -1337,6 +1379,20 @@ $(function() {
 	}
 
 	initPersistentTooltips();
+
+	$('[title].lms-ui-tooltip-toggle').mouseenter(function() {
+		initToggleTooltips(this);
+	});
+
+	$(document).mouseup(function(e) {
+		var container = $('.ui-tooltip.lms-ui-tooltip-toggle');
+		if (!container.is(e.target) &&
+			container.has(e.target).length === 0)
+		{
+			console.log('tooltip close');
+			$('.lms-ui-tooltip-toggle:not(.ui-tooltip)').tooltip('close');
+		}
+	});
 
 	initAdvancedSelects('select.lms-ui-advanced-select');
 

@@ -170,6 +170,7 @@ version 27-git (????-??-??):
   - enhancement: added 'not sent to email' filter on invoice list [chilan]
   - enhancement: lms-ui-tooltip-persistent allows to easily define element with toolips which are closed after
     click out of them or mouse enter to them and then mouse leave [chilan]
+  - enhancement: lms-ui-tooltip-toggle elements toggle tooltip after click [chilan]
 
 version 26.0 (2020-12-15):
 
