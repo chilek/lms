@@ -28,14 +28,6 @@
             $('[name="customerid"]').val());
 	}
 
-	function print_document()
-	{
-		if ($('#documentadd-form')[0].checkValidity()) {
-			document.forms['documentadd'].action += '&print=1';
-			$('#submit-button').trigger('click');
-		}
-	}
-
 	function DocTypeChanged() {
 		reset_login_timeout();
 		xajax_DocTypeChanged($('[name="document[type]"]').val(),
@@ -237,8 +229,8 @@
 			<td colspan="3" class="lms-ui-box-buttons">
 				<div id="document-button-panel">
 					<div>
-						{button type="submit" icon="save" id="submit-button" label="Submit"}
-						{button type="submit" icon="print" label="Print" onclick="print_document()"}
+						{button icon="save" class="operation-button" id="submit-button" label="Submit"}
+						{button icon="print" class="operation-button" id="print-button" label="Print"}
 						{button icon="cancel" label="Cancel" onclick="location.href = '?m=documentlist';"}
 					</div>
 					<div>
@@ -274,11 +266,21 @@
 
 		{if empty($promotions)}
 			$('#submit-button').click(function() {
-				if ($('#documentadd-form')[0].checkValidity()) {
-					document.documentadd.submit();
+				var form = $('#documentadd-form');
+				if (form.get(0).checkValidity()) {
+					$(this).prop('disabled', !$('#new-window-toggle').prop('checked'));
+					form.attr('action', form.attr('action').remove('&print=1')).submit();
 				}
 			});
 		{/if}
+
+		$('#print-button').click(function() {
+			var form = $('#documentadd-form');
+			if (form.get(0).checkValidity()) {
+				$(this).prop('disabled', !$('#new-window-toggle').prop('checked'));
+				form.attr('action', form.attr('action') + '&print=1').submit();
+			}
+		});
 
 		$('#new-window-toggle').click(function() {
 			if (this.checked) {
