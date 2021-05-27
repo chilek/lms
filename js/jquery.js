@@ -1015,7 +1015,7 @@ function initPersistentTooltips(selectors) {
 				tooltipClass: cssClass,
 				content: classToUrls.hasOwnProperty(cssClass) ? function(callback) {
 					dynamicContent(callback);
-				} : elem.attr('data-content')
+				} : elem.attr('title')
 			});
 		});
 	});
@@ -1302,7 +1302,7 @@ $(function() {
 	});
 
 	if (tooltipsEnabled) {
-		$(document).on('mouseenter', '[title]', function () {
+		$(document).on('mouseenter', '[title]:not(.lms-ui-tooltip-persistent)', function () {
 			if ($(this).is('[data-tooltip]') || $(this).closest('.tox-tinymce,.tox-tinymce-aux').length) {
 				return;
 			}
