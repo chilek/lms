@@ -946,7 +946,79 @@ function initMultiChecks(selector) {
 			});
 		});
 	});
+}
 
+function initPersistentTooltips(selectors) {
+	var classToUrls = {
+		'lms-ui-tooltip-voipaccountinfo': '?m=voipaccountinfoshort&id=',
+		'lms-ui-tooltip-invoiceinfo': '?m=invoiceinfo&id=',
+		'lms-ui-tooltip-docnumber': '?m=number&id=',
+		'lms-ui-tooltip-customerinfo': '?m=customerinfoshort&id=',
+		'lms-ui-tooltip-nodelist': '?m=nodelistshort&id=',
+		'lms-ui-tooltip-ewxnodelist': '?m=ewxnodelist&id=',
+		'lms-ui-tooltip-rtticketinfo': '?m=rtticketinfo&id=',
+		'lms-ui-tooltip-customerassignmentinfo': '?m=customerassignmentinfo&id=',
+		'lms-ui-tooltip-nodegroupinfo': '?m=nodeinfo&nodegroups=1&id=',
+		'lms-ui-tooltip-netdevlist': '?m=ewxdevlist&id=',
+		'lms-ui-tooltip-eventinfoshort': '?m=eventinfoshort&id='
+	};
+
+	if (!selectors) {
+		selectors = [];
+		$.each(classToUrls, function(cssClass, url) {
+			selectors.push('.' + cssClass);
+		});
+	} else if (typeof(selectors) != 'array') {
+		selectors = [ selectors ];
+	}
+
+	$.each(selectors, function(idx, selector) {
+		var cssClass = '';
+		if (selector.match(/^\./)) {
+			cssClass = selector.replace(/^\./, '');
+		}
+
+		$(selector).each(function() {
+			var elem = $(this);
+			var dynamicContent = function(callback) {
+				var resourceid = elem.attr('data-resourceid');
+				$.ajax(classToUrls[cssClass] + resourceid, {
+					async: true,
+					success: function(data) {
+						callback(data);
+						// elem.tooltip('disable');
+						// elem.tooltip('enable');
+					}
+				});
+			}
+
+			elem.tooltip({
+				items: elem,
+				show: false,
+				//hide: false,
+				track: false,
+				position: { my: "left top", at: "left bottom", collision: "flipfit" },
+				open: function(e, ui) {
+					if (typeof(e.originalEvent) === 'undefined') {
+						return false;
+					}
+					var id = $(ui.tooltip).attr('id');
+					$('div.ui-tooltip').not('#' + id).remove();
+				},
+				close: function(e, ui) {
+					$(ui.tooltip).mouseenter(function() {
+						$(this).stop(true);
+					}).mouseleave(function() {
+						$(this).remove();
+					});
+				},
+				tooltipClass: cssClass,
+				content: classToUrls.hasOwnProperty(cssClass) ? function(callback) {
+					dynamicContent(callback);
+				} : elem.attr('data-content')
+			});
+		});
+	});
 }
 
 function showGallery(data) {
@@ -1264,54 +1336,7 @@ $(function() {
 		});
 	}
 
-	[
-		{ class: 'lms-ui-tooltip-voipaccountinfo', url: '?m=voipaccountinfoshort&id='},
-		{ class: 'lms-ui-tooltip-invoiceinfo', url: '?m=invoiceinfo&id='},
-		{ class: 'lms-ui-tooltip-docnumber', url: '?m=number&id='},
-		{ class: 'lms-ui-tooltip-customerinfo', url: '?m=customerinfoshort&id='},
-		{ class: 'lms-ui-tooltip-nodelist', url: '?m=nodelistshort&id='},
-		{ class: 'lms-ui-tooltip-ewxnodelist', url: '?m=ewxnodelist&id='},
-		{ class: 'lms-ui-tooltip-rtticketinfo', url: '?m=rtticketinfo&id='},
-		{ class: 'lms-ui-tooltip-customerassignmentinfo', url: '?m=customerassignmentinfo&id='},
-		{ class: 'lms-ui-tooltip-nodegroupinfo', url: '?m=nodeinfo&nodegroups=1&id='},
-		{ class: 'lms-ui-tooltip-netdevlist', url: '?m=ewxdevlist&id='},
-		{ class: 'lms-ui-tooltip-eventinfoshort', url: '?m=eventinfoshort&id='}
-	].forEach(function(popup) {
-		$('.' + popup.class).tooltip({
-			items: '.' + popup.class,
-			show: false,
-			//hide: false,
-			track: false,
-			position: { my: "left top", at: "left bottom", collision: "flipfit" },
-			open: function(e, ui) {
-				if (typeof(e.originalEvent) === 'undefined') {
-					return false;
-				}
-				var id = $(ui.tooltip).attr('id');
-				$('div.ui-tooltip').not('#' + id).remove();
-			},
-			close: function(e, ui) {
-				$(ui.tooltip).mouseenter(function() {
-					$(this).stop(true);
-				}).mouseleave(function() {
-					$(this).remove();
-				});
-			},
-			tooltipClass: popup.class,
-			content: function(callback) {
-				var elem = $(this);
-				var resourceid = elem.attr('data-resourceid');
-				$.ajax(popup.url + resourceid, {
-					async: true,
-					success: function(data) {
-						callback(data);
-						// elem.tooltip('disable');
-						// elem.tooltip('enable');
-					}
-				});
-			}
-		});
-	});
+	initPersistentTooltips();
 
 	initAdvancedSelects('select.lms-ui-advanced-select');
 
