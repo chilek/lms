@@ -948,7 +948,7 @@ function initMultiChecks(selector) {
 	});
 }
 
-function initPersistentTooltips(selectors) {
+function initRolloverTooltips(selectors) {
 	var classToUrls = {
 		'lms-ui-tooltip-voipaccountinfo': '?m=voipaccountinfoshort&id=',
 		'lms-ui-tooltip-invoiceinfo': '?m=invoiceinfo&id=',
@@ -1344,7 +1344,7 @@ $(function() {
 	});
 
 	if (tooltipsEnabled) {
-		$(document).on('mouseenter', '[title]:not(.lms-ui-tooltip-persistent,.lms-ui-tooltip-toggle)', function () {
+		$(document).on('mouseenter', '[title]:not(.lms-ui-tooltip-rollover,.lms-ui-tooltip-toggle)', function () {
 			if ($(this).is('[data-tooltip]') || $(this).closest('.tox-tinymce,.tox-tinymce-aux').length) {
 				return;
 			}
@@ -1378,7 +1378,7 @@ $(function() {
 		});
 	}
 
-	initPersistentTooltips();
+	initRolloverTooltips();
 
 	$('[title].lms-ui-tooltip-toggle').mouseenter(function() {
 		initToggleTooltips(this);

@@ -168,7 +168,7 @@ version 27-git (????-??-??):
   - enhancement: implemented --interval, --part-number, part-size parameter support with corresponding configuration
     variables in lms-notify.php backend script [chilan]
   - enhancement: added 'not sent to email' filter on invoice list [chilan]
-  - enhancement: lms-ui-tooltip-persistent allows to easily define element with toolips which are closed after
+  - enhancement: lms-ui-tooltip-rollover allows to easily define element with toolips which are closed after
     click out of them or mouse enter to them and then mouse leave [chilan]
   - enhancement: lms-ui-tooltip-toggle elements toggle tooltip after click [chilan]
 
