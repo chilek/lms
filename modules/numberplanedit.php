@@ -52,7 +52,10 @@ function getUsers($alldivisions, $selecteddivisions)
 
 if (isset($_GET['op']) && $_GET['op'] == 'updateusers') {
     header('Content-Type: application/json');
-    die(json_encode(getUsers($LMS->GetDivisions(), array_flip($_POST['divisions']))));
+    die(json_encode(getUsers(
+        $LMS->GetDivisions(),
+        empty($_POST['divisions']) ? array() : array_flip($_POST['divisions'])
+    )));
 }
 
 $numberplan = $LMS->getNumberPlan($_GET['id']);
