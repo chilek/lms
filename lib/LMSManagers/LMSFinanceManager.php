@@ -1300,7 +1300,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         }
 
         if (isset($a['count'])) {
-            if ($a['count'] == '') {
+            if (empty($a['count'])) {
                 $count = 1;
             } elseif (preg_match('/^[0-9]+(\.[0-9]+)?$/', $a['count'])) {
                 $count = str_replace(',', '.', floatval($a['count']));
