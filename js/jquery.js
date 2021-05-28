@@ -1039,9 +1039,7 @@ function initToggleTooltips(selectors) {
 			if (!elem.is('[data-hint]')) {
 				elem.attr('data-hint', elem.attr('title')).removeAttr('title');
 
-				elem.mouseenter(function(e) {
-					e.stopImmediatePropagation();
-				}).mouseleave(function(e) {
+				elem.on('mouseenter mouseover mouseleave', function(e) {
 					e.stopImmediatePropagation();
 				}).click(function() {
 					if (!elem.is('[data-tooltip]')) {
