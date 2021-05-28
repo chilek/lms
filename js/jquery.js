@@ -1030,14 +1030,16 @@ function initToggleTooltips(selectors) {
 		$(selector).each(function() {
 			var elem = $(this);
 
+			elem.attr('data-title', elem.attr('title')).removeAttr('title');
+
 			elem.mouseenter(function(e) {
 				e.stopImmediatePropagation();
 			}).mouseleave(function(e) {
 				e.stopImmediatePropagation();
 			}).click(function() {
 				if (!elem.is('[data-tooltip]')) {
-					var content = elem.attr('title');
-					elem.attr('data-tooltip', content).removeAttr('title');
+					var content = elem.attr('data-title');
+					elem.attr('data-tooltip', content).removeAttr('data-title');
 					elem.tooltip({
 						items: elem,
 						show: false,
