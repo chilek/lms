@@ -1028,7 +1028,7 @@ function initToggleTooltips(selectors) {
 			if (e.key != 'Escape') {
 				return;
 			}
-			$(':ui-tooltip').tooltip('close');
+			$(':ui-tooltip').tooltip('close').toggleClass('open');
 			disableFullScreenPopup();
 		});
 	}
@@ -1036,57 +1036,63 @@ function initToggleTooltips(selectors) {
 	$.each(selectors, function(idx, selector) {
 		$(selector).each(function() {
 			var elem = $(this);
+			if (!elem.is('[data-hint]')) {
+				elem.attr('data-hint', elem.attr('title')).removeAttr('title');
 
-			elem.attr('data-title', elem.attr('title')).removeAttr('title');
-
-			elem.mouseenter(function(e) {
-				e.stopImmediatePropagation();
-			}).mouseleave(function(e) {
-				e.stopImmediatePropagation();
-			}).click(function() {
-				if (!elem.is('[data-tooltip]')) {
-					var content = elem.attr('data-title');
-					content = '<div class="lms-ui-tooltip-titlebar">' +
-						'<div class="lms-ui-tooltip-title"></div>' +
-						'<i class="lms-ui-icon-hide close-button"></i>' +
-						'</div>' +
-						'<div class="lms-ui-tooltip-content">' +
+				elem.mouseenter(function(e) {
+					e.stopImmediatePropagation();
+				}).mouseleave(function(e) {
+					e.stopImmediatePropagation();
+				}).click(function() {
+					if (!elem.is('[data-tooltip]')) {
+						var content = elem.attr('data-hint');
+						content = '<div class="lms-ui-tooltip-titlebar">' +
+							'<div class="lms-ui-tooltip-title"></div>' +
+							'<i class="lms-ui-icon-hide close-button"></i>' +
+							'</div>' +
+							'<div class="lms-ui-tooltip-content">' +
 							content +
-						'</div>';
+							'</div>';
 
-					elem.attr('data-tooltip', content).removeAttr('data-title');
-					elem.tooltip({
-						items: elem,
-						show: false,
-						hide: false,
-						track: false,
-						position: {my: "left top", at: "left bottom", collision: "flipfit"},
-						open: function (e, ui) {
-							$(ui.tooltip).find('.close-button').click(function() {
-								elem.tooltip('close');
-								disableFullScreenPopup();
-							});
-							if (typeof (e.originalEvent) === 'undefined') {
-								return false;
-							}
-							var id = $(ui.tooltip).attr('id');
-							$('div.ui-tooltip').not('#' + id).remove();
-						},
-						close: function (e, ui) {
-							$(ui.tooltip).mouseenter(function () {
-								$(this).stop(true);
-							}).mouseleave(function () {
-								$(this).remove();
-							});
-						},
-						tooltipClass: typeof (selector) == 'string' && selector.match(/^\./) ?
-							selector.replace(/^\./, '') : 'lms-ui-tooltip-toggle',
-						content: content
-					});
-				}
-				enableFullScreenPopup();
-				elem.tooltip('open');
-			});
+						elem.attr('data-tooltip', content);
+						elem.tooltip({
+							items: elem,
+							show: false,
+							hide: false,
+							track: false,
+							position: {my: "left top", at: "left bottom", collision: "flipfit"},
+							open: function (e, ui) {
+								$(ui.tooltip).find('.close-button').click(function () {
+									elem.tooltip('close').toggleClass('open');
+									disableFullScreenPopup();
+								});
+								if (typeof (e.originalEvent) === 'undefined') {
+									return false;
+								}
+								var id = $(ui.tooltip).attr('id');
+								$('div.ui-tooltip').not('#' + id).remove();
+							},
+							close: function (e, ui) {
+								$(ui.tooltip).mouseenter(function () {
+									$(this).stop(true);
+								}).mouseleave(function () {
+									$(this).remove();
+								});
+							},
+							tooltipClass: typeof (selector) == 'string' && selector.match(/^\./) ?
+								selector.replace(/^\./, '') : 'lms-ui-tooltip-toggle',
+							content: content
+						});
+					}
+					if (elem.is('.open')) {
+						disableFullScreenPopup();
+						elem.tooltip('close').toggleClass('open');
+					} else {
+						enableFullScreenPopup();
+						elem.tooltip('open').toggleClass('open');
+					}
+				});
+			}
 		});
 	});
 }
@@ -1414,10 +1420,14 @@ $(function() {
 
 	$(document).mouseup(function(e) {
 		var container = $('.ui-tooltip.lms-ui-tooltip-toggle');
-		if (container.length && !container.is(e.target) &&
+		var elem = $('.lms-ui-tooltip-toggle:not(.ui-toolip)');
+		if (elem.length &&
+			!elem.has(e.target) &&
+			container.length &&
+			!container.is(e.target) &&
 			container.has(e.target).length === 0)
 		{
-			$('.lms-ui-tooltip-toggle[data-tooltip]').tooltip('close');
+			$('.lms-ui-tooltip-toggle[data-tooltip]').tooltip('close').toggleClass('open');
 			disableFullScreenPopup();
 		}
 	});
