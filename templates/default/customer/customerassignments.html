@@ -60,6 +60,22 @@
 			</label>
 			{/if}
 			{button type="link" class="clear-filter" icon="delete" href="#" tip="Clear filter"}
+			{capture assign="assignment_hint"}
+				<strong>{trans("Assignments color markings:")}</strong>
+				<br><br>
+				<span style='color:maroon'><strong>{trans("Active tariff assignment")}</strong></span>
+				<br>
+				<strong>{trans("Active tariffless assignment")}</strong>
+				<br>
+				<span class='suspended'><strong>{trans("Suspended assignment")}</strong></span>
+				<br>
+				<span class='alertblend'><strong>{trans("Future assignment")}</strong></span>
+				<br>
+				<span class='blend'><strong>{trans("Expired assignment")}</strong></span>
+				<br>
+				<span class='lms-ui-assignment-not-commited'><strong>{trans("Assignment from not approved document")}</strong></span>"
+			{/capture}
+			{button type="link" icon="hint" class="lms-ui-tooltip-toggle" tip=$assignment_hint href=""}
 		{/tab_header_cell}
 		{tab_header_cell}
 			{if !$customerinfo.deleted}
