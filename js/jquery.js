@@ -1420,9 +1420,7 @@ $(function() {
 
 	$(document).mouseup(function(e) {
 		var container = $('.ui-tooltip.lms-ui-tooltip-toggle');
-		var elem = $('.lms-ui-tooltip-toggle:not(.ui-toolip)');
-		if (elem.length &&
-			!elem.has(e.target) &&
+		if (!$(e.target).closest('.lms-ui-tooltip-toggle:not(.ui-tooltip)').length &&
 			container.length &&
 			!container.is(e.target) &&
 			container.has(e.target).length === 0)
