@@ -36,6 +36,10 @@
 		<TD class="nobr">
 			{if $ticket.customerid}
 			{$ticket.customername|escape} ({$ticket.customerid|string_format:"%04d"})
+			{if $ticket.location}
+				<br>
+				{$ticket.location}
+			{/if}
 			{if $ticket.requestor}<BR>{$ticket.requestor}{/if}
 			{if $ticket.requestor_phone}<BR>{$ticket.requestor_phone}{/if}
 			{if $ticket.requestor_mail}<BR>{$ticket.requestor_mail}{/if}
