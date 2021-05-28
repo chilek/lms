@@ -261,26 +261,26 @@
 
 <script>
 
-	$(function() {
-		$('form[name="documentadd"] [name="document[title]"]').focus();
-
-		{if empty($promotions)}
-			$('#submit-button').click(function() {
-				var form = $('#documentadd-form');
-				if (form.get(0).checkValidity()) {
-					$(this).prop('disabled', !$('#new-window-toggle').prop('checked'));
-					form.attr('action', form.attr('action').replace('&print=1', '')).submit();
-				}
-			});
-		{/if}
-
-		$('#print-button').click(function() {
+	{if empty($promotions)}
+		$('#submit-button').click(function() {
 			var form = $('#documentadd-form');
 			if (form.get(0).checkValidity()) {
 				$(this).prop('disabled', !$('#new-window-toggle').prop('checked'));
-				form.attr('action', form.attr('action') + '&print=1').submit();
+				form.attr('action', form.attr('action').replace('&print=1', ''));
 			}
 		});
+	{/if}
+
+	$('#print-button').click(function() {
+		var form = $('#documentadd-form');
+		if (form.get(0).checkValidity()) {
+			$(this).prop('disabled', !$('#new-window-toggle').prop('checked'));
+			form.attr('action', form.attr('action') + '&print=1');
+		}
+	});
+
+	$(function() {
+		$('form[name="documentadd"] [name="document[title]"]').focus();
 
 		$('#new-window-toggle').click(function() {
 			if (this.checked) {
