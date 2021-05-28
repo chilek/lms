@@ -973,50 +973,75 @@ function initRolloverTooltips(selectors) {
 	}
 
 	$.each(selectors, function(idx, selector) {
-		var cssClass = '';
-		if (selector.match(/^\./)) {
+		var cssClass = 'lms-ui-tooltip-rollover';
+		if (typeof(selector) == 'string' && selector.match(/^\./)) {
 			cssClass = selector.replace(/^\./, '');
 		}
 
 		$(selector).each(function() {
 			var elem = $(this);
-			var dynamicContent = function(callback) {
-				var resourceid = elem.attr('data-resourceid');
-				$.ajax(classToUrls[cssClass] + resourceid, {
-					async: true,
-					success: function(data) {
-						callback(data);
-						// elem.tooltip('disable');
-						// elem.tooltip('enable');
+			if (!elem.is('[data-init]')) {
+				var content = elem.attr('data-hint');
+				elem.attr('data-init', '1').removeAttr('data-hint');
+
+				var dynamicContent = function (callback) {
+					var resourceid = elem.attr('data-resourceid');
+					$.ajax(classToUrls[cssClass] + resourceid, {
+						async: true,
+						success: function (data) {
+							callback(data);
+							// elem.tooltip('disable');
+							// elem.tooltip('enable');
+						}
+					});
+				}
+				if (classToUrls.hasOwnProperty(cssClass)) {
+					content = function (callback) {
+						dynamicContent(callback);
 					}
+				} else {
+					content = '<div class="lms-ui-tooltip-titlebar">' +
+						'<div class="lms-ui-tooltip-title"></div>' +
+						'<i class="lms-ui-icon-hide close-button"></i>' +
+						'</div>' +
+						'<div class="lms-ui-tooltip-content">' +
+						content +
+						'</div>';
+				}
+
+				elem.tooltip({
+					items: elem,
+					show: false,
+					//hide: false,
+					track: false,
+					position: {my: "left top", at: "left bottom", collision: "flipfit"},
+					open: function (e, ui) {
+						$(ui.tooltip).find('.close-button').click(function () {
+							elem.tooltip('close').removeClass('open');
+							disableFullScreenPopup();
+							$(ui.tooltip).remove();
+						});
+						elem.addClass('open');
+						enableFullScreenPopup();
+						if (typeof (e.originalEvent) === 'undefined') {
+							return false;
+						}
+						var id = $(ui.tooltip).attr('id');
+						$('div.ui-tooltip').not('#' + id).remove();
+					},
+					close: function (e, ui) {
+						$(ui.tooltip).mouseenter(function () {
+							$(this).stop(true);
+						}).mouseleave(function () {
+							elem.tooltip('close').toggleClass('open');
+							disableFullScreenPopup();
+							$(this).remove();
+						});
+					},
+					tooltipClass: cssClass,
+					content: content
 				});
 			}
-
-			elem.tooltip({
-				items: elem,
-				show: false,
-				//hide: false,
-				track: false,
-				position: { my: "left top", at: "left bottom", collision: "flipfit" },
-				open: function(e, ui) {
-					if (typeof(e.originalEvent) === 'undefined') {
-						return false;
-					}
-					var id = $(ui.tooltip).attr('id');
-					$('div.ui-tooltip').not('#' + id).remove();
-				},
-				close: function(e, ui) {
-					$(ui.tooltip).mouseenter(function() {
-						$(this).stop(true);
-					}).mouseleave(function() {
-						$(this).remove();
-					});
-				},
-				tooltipClass: cssClass,
-				content: classToUrls.hasOwnProperty(cssClass) ? function(callback) {
-					dynamicContent(callback);
-				} : elem.attr('title')
-			});
 		});
 	});
 }
@@ -1024,26 +1049,20 @@ function initRolloverTooltips(selectors) {
 function initToggleTooltips(selectors) {
 	if (!Array.isArray(selectors)) {
 		selectors = [ selectors ];
-		$(document).keydown(function(e) {
-			if (e.key != 'Escape') {
-				return;
-			}
-			$(':ui-tooltip').tooltip('close').toggleClass('open');
-			disableFullScreenPopup();
-		});
 	}
 
 	$.each(selectors, function(idx, selector) {
 		$(selector).each(function() {
 			var elem = $(this);
-			if (!elem.is('[data-hint]')) {
-				elem.attr('data-hint', elem.attr('title')).removeAttr('title');
+			if (!elem.is('[data-init]')) {
+				var content = elem.attr('data-hint');
+				elem.attr('data-init', '1').removeAttr('data-hint');
 
 				elem.on('mouseenter mouseover mouseleave', function(e) {
 					e.stopImmediatePropagation();
 				}).click(function() {
-					if (!elem.is('[data-tooltip]')) {
-						var content = elem.attr('data-hint');
+					if (!elem.is('[data-init="2"]')) {
+						elem.attr('data-init', '2');
 						content = '<div class="lms-ui-tooltip-titlebar">' +
 							'<div class="lms-ui-tooltip-title"></div>' +
 							'<i class="lms-ui-icon-hide close-button"></i>' +
@@ -1052,7 +1071,6 @@ function initToggleTooltips(selectors) {
 							content +
 							'</div>';
 
-						elem.attr('data-tooltip', content);
 						elem.tooltip({
 							items: elem,
 							show: false,
@@ -1410,10 +1428,28 @@ $(function() {
 		});
 	}
 
+	$(document).keydown(function(e) {
+		if (e.key != 'Escape') {
+			return;
+		}
+		$(':ui-tooltip').tooltip('close').toggleClass('open');
+		disableFullScreenPopup();
+		var tooltip = $('.lms-ui-tooltip-rollover[data-init="1"]').data('uiTooltip');
+		if (tooltip && typeof(tooltip.tooltips) == 'object') {
+			$.each(tooltip.tooltips, function(index) {
+				$('#' + index).remove();
+			});
+		}
+	});
+
 	initRolloverTooltips();
 
-	$('[title].lms-ui-tooltip-toggle').mouseenter(function() {
-		initToggleTooltips(this);
+	$('[data-hint]').mouseenter(function() {
+		if ($(this).is('.lms-ui-tooltip-rollover')) {
+			initRolloverTooltips(this);
+		} else {
+			initToggleTooltips(this);
+		}
 	});
 
 	$(document).mouseup(function(e) {
@@ -1423,7 +1459,7 @@ $(function() {
 			!container.is(e.target) &&
 			container.has(e.target).length === 0)
 		{
-			$('.lms-ui-tooltip-toggle[data-tooltip]').tooltip('close').toggleClass('open');
+			$('.lms-ui-tooltip-toggle[data-init="2"]').tooltip('close').toggleClass('open');
 			disableFullScreenPopup();
 		}
 	});

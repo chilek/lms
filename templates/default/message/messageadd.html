@@ -566,7 +566,7 @@
 					<textarea name="message[mailbody]" cols="80" rows="20"
 						{tip class="lms-ui-wysiwyg-editor" trigger="mailbody"}
 						{if isset($message.wysiwyg.mailbody)} data-wysiwyg="{$message.wysiwyg.mailbody}"{/if}>{$message.body}</textarea>
-					<i class="lms-ui-icon-hint lms-ui-tooltip-toggle" title="{$body_hint}"></i>
+					{hint content=$body_hint}
 				</div>
 			</td>
 		</tr>
@@ -582,7 +582,7 @@
 					<textarea name="message[smsbody]" id="smstext" cols="60" rows="5" onkeydown="countChars(this)"
 						onkeyup="countChars(this)" {tip trigger="smsbody"}
 						>{$message.body}</textarea>
-					<i class="lms-ui-icon-hint lms-ui-tooltip-toggle" title="{$body_hint}"></i>
+					{hint content=$body_hint}
 				</div>
 			</td>
 		</tr>
