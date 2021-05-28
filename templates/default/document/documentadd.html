@@ -269,7 +269,7 @@
 				var form = $('#documentadd-form');
 				if (form.get(0).checkValidity()) {
 					$(this).prop('disabled', !$('#new-window-toggle').prop('checked'));
-					form.attr('action', form.attr('action').remove('&print=1')).submit();
+					form.attr('action', form.attr('action').replace('&print=1', '')).submit();
 				}
 			});
 		{/if}
