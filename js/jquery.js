@@ -1444,7 +1444,7 @@ $(function() {
 
 	initRolloverTooltips();
 
-	$('[data-hint]').mouseenter(function() {
+	$(document).on('mouseenter', '[data-hint]', function() {
 		if ($(this).is('.lms-ui-tooltip-rollover')) {
 			initRolloverTooltips(this);
 		} else {
