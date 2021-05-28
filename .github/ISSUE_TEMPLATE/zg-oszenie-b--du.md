@@ -37,5 +37,13 @@ Jeśli dotyczy prosimy o dodanie zrzutów ekranu, które pomogą wyjaśnić Twó
  - system operacyjny, np. Android 10,
  - przeglądarka www, np. przeglądarka zainstalowana fabrycznie, Google Chrome (wraz z wersją przeglądarki),
 
+**Informacje diagnostyczne**
+- [ ] brak błędów w logu silnika bazy danych postgresa (jeśli był błąd wklej),
+- [ ] brak błędów w pliku error_log serwera httpd np. apache2,
+- [ ] zrobiłem: rm templates_c/* 
+- [ ] zrobiłem: composer update --no-dev
+- [ ] mam wyczyszczony lub wyłączony cache w przeglądarce,
+- [ ] konsola developerska w przeglądarce nie sypie błędami,
+
 **Dodatkowe informacje**
 Dodaj jakiekolwiek dodatkowe informacje, które mogą być pomocne w obserwacji problemu.
