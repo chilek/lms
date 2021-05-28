@@ -1035,29 +1035,35 @@ function initToggleTooltips(selectors) {
 			}).mouseleave(function(e) {
 				e.stopImmediatePropagation();
 			}).click(function() {
-				$(this).tooltip('open');
-			}).tooltip({
-				items: elem,
-				show: false,
-				hide: false,
-				track: false,
-				position: { my: "left top", at: "left bottom", collision: "flipfit" },
-				open: function(e, ui) {
-					if (typeof(e.originalEvent) === 'undefined') {
-						return false;
-					}
-					var id = $(ui.tooltip).attr('id');
-					$('div.ui-tooltip').not('#' + id).remove();
-				},
-				close: function(e, ui) {
-					$(ui.tooltip).mouseenter(function() {
-						$(this).stop(true);
-					}).mouseleave(function() {
-						$(this).remove();
+				if (!elem.is('[data-tooltip]')) {
+					var content = elem.attr('title');
+					elem.attr('data-tooltip', content).removeAttr('title');
+					elem.tooltip({
+						items: elem,
+						show: false,
+						hide: false,
+						track: false,
+						position: {my: "left top", at: "left bottom", collision: "flipfit"},
+						open: function (e, ui) {
+							if (typeof (e.originalEvent) === 'undefined') {
+								return false;
+							}
+							var id = $(ui.tooltip).attr('id');
+							$('div.ui-tooltip').not('#' + id).remove();
+						},
+						close: function (e, ui) {
+							$(ui.tooltip).mouseenter(function () {
+								$(this).stop(true);
+							}).mouseleave(function () {
+								$(this).remove();
+							});
+						},
+						tooltipClass: typeof (selector) == 'string' && selector.match(/^\./) ?
+							selector.replace(/^\./, '') : 'lms-ui-tooltip-toggle',
+						content: content
 					});
-				},
-				tooltipClass: typeof(selector) == 'string' && selector.match(/^\./)
-					? selector.replace(/^\./, '') : 'lms-ui-tooltip-toggle'
+				}
+				elem.tooltip('open');
 			});
 		});
 	});
@@ -1386,11 +1392,10 @@ $(function() {
 
 	$(document).mouseup(function(e) {
 		var container = $('.ui-tooltip.lms-ui-tooltip-toggle');
-		if (!container.is(e.target) &&
+		if (container.length && !container.is(e.target) &&
 			container.has(e.target).length === 0)
 		{
-			console.log('tooltip close');
-			$('.lms-ui-tooltip-toggle:not(.ui-tooltip)').tooltip('close');
+			$('.lms-ui-tooltip-toggle[data-tooltip]:not(.ui-tooltip)').tooltip('close');
 		}
 	});
 
@@ -1762,12 +1767,12 @@ $(function() {
 			} else {
 				inputname = $(this).closest('form').attr('name') + '[wysiwyg]';
 			}
-			parent.append($('<div class="lms-ui-wysiwyg-editor"><label>' +
-				'<input type="hidden" name="' + inputname + '" value="false">' +
-				'<input type="checkbox" name="' + inputname +
-				'" value="true"' + (wysiwyg ? ' checked' : '') + '>' + $t('visual editor') +
-				'</label></div')).find('div.lms-ui-wysiwyg-editor').append(this);
-
+			$(this).wrap('<div class="lms-ui-wysiwyg-editor"/>')
+				.parent().prepend('<label>' +
+					'<input type="hidden" name="' + inputname + '" value="false">' +
+					'<input type="checkbox" name="' + inputname +
+					'" value="true"' + (wysiwyg ? ' checked' : '') + '>' + $t('visual editor') +
+					'</label>');
 			// it is required as textarea changed value is not propagated automatically to editor instance content
 			$(this).change(function(e) {
 				var editor = tinymce.get(textareaid);
