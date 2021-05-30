@@ -82,6 +82,7 @@ if (isset($_GET['id']) && $action == 'init') {
         DOC_CNOTE,
         empty($invoice['divisionid']) ? null : $invoice['divisionid']
     );
+    $cnote['numberplanid'] = $invoice['numberplanid'];
 
     $currtime = time();
     $cnote['cdate'] = $currtime;
