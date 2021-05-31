@@ -246,10 +246,6 @@ class LMSSmartyPlugins
                 $result .= ' ' . self::tipFunction(array('text' => 'Select customer (optional)'), $template);
             }
 
-            if (!empty($params['customOnChange'])) {
-                $result .= ' onChange="' . $params['customOnChange'] . '"';
-            }
-
             $result .= '">' . PHP_EOL;
 
             if (isset($params['firstoption'])) {

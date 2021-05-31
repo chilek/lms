@@ -109,16 +109,19 @@ $(function() {
         var customerNameLink = container.find('.lms-ui-customer-select-name')
         var button = container.find('.lms-ui-customer-function-button');
         var selectChange = false;
+        var inputChange = false;
 
         if (select.length) {
             input.on('change focus', function () {
-                if (selectChange) {
-                    return;
-                }
                 var elem = $(this);
                 if (elem.val() != elem.attr('data-prev-value')) {
                     if (input.val()) {
-                        select.val(input.val()).trigger('change');
+                        inputChange = true;
+                        select.val(input.val());
+                        if (!selectChange) {
+                            select.trigger('change');
+                        }
+                        inputChange = false;
                     }
 
                     elem.attr('data-prev-value', elem.val());
@@ -127,7 +130,10 @@ $(function() {
             select.on('change', function() {
                 if (select.val()) {
                     selectChange = true;
-                    input.val(select.val()).change();
+                    input.val(select.val());
+                    if (!inputChange) {
+                        input.change();
+                    }
                     selectChange = false;
                 }
             });
