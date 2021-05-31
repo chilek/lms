@@ -469,15 +469,17 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 'SELECT n.id,
                     (CASE WHEN a.planid IS NULL THEN (CASE WHEN u.planid IS NULL THEN 3 ELSE 1 END) ELSE (CASE WHEN u.planid IS NULL THEN 2 ELSE 0 END) END) AS idx
                 FROM numberplans n
-                LEFT JOIN numberplanassignments a ON a.planid = n.id AND a.divisionid = ?
-                LEFT JOIN numberplanusers u ON u.planid = n.id AND u.userid = ?
+                LEFT JOIN numberplanassignments a ON a.planid = n.id
+                LEFT JOIN numberplanusers u ON u.planid = n.id
                 WHERE n.doctype = ? AND n.isdefault = 1
+                    AND (u.planid IS NULL OR u.userid = ?)
+                    AND (a.planid IS NULL OR a.divisionid = ?)
                 ORDER BY idx
                 LIMIT 1',
                 array(
-                    $divisionid,
-                    Auth::getCurrentUser(),
                     $doctype,
+                    Auth::getCurrentUser(),
+                    $divisionid,
                 )
             );
         } else {
@@ -485,13 +487,14 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 'SELECT n.id,
                     (CASE WHEN u.planid IS NULL THEN 1 ELSE 0 END) AS idx
                 FROM numberplans n
-                LEFT JOIN numberplanusers u ON u.planid = n.id AND u.userid = ?
+                LEFT JOIN numberplanusers u ON u.planid = n.id
                 WHERE n.doctype = ? AND n.isdefault = 1
+                    AND (u.userid = IS NULL OR u.userid = ?)
                 ORDER BY idx
                 LIMIT 1',
                 array(
-                    Auth::getCurrentUser(),
                     $doctype,
+                    Auth::getCurrentUser(),
                 )
             );
         }
