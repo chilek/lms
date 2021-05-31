@@ -34,8 +34,13 @@ if (isset($_GET['id']) && $action == 'init') {
     if ($invoice['doctype'] == DOC_CNOTE) {
         $invoice['number'] = $invoice['invoice']['number'];
         $invoice['template'] = $invoice['invoice']['template'];
-        $invoice['numberplanid'] = $invoice['invoice']['numberplanid'];
+        $cnote['numberplanid'] = $invoice['numberplanid'] = $invoice['invoice']['numberplanid'];
         $invoice['cdate'] = $invoice['invoice']['cdate'];
+    } else {
+        $cnote['numberplanid'] = $invoice['numberplanid'] = $LMS->getDefaultNumberPlanID(
+            DOC_CNOTE,
+            empty($invoice['divisionid']) ? null : $invoice['divisionid']
+        );
     }
 
     if (!empty($invoice['cancelled'])) {
@@ -77,11 +82,6 @@ if (isset($_GET['id']) && $action == 'init') {
         $invoicecontents[$nitem['itemid']] = $nitem;
     }
     $invoice['content'] = $invoicecontents;
-
-    $invoice['numberplanid'] = $LMS->getDefaultNumberPlanID(
-        DOC_CNOTE,
-        empty($invoice['divisionid']) ? null : $invoice['divisionid']
-    );
 
     $currtime = time();
     $cnote['cdate'] = $currtime;
