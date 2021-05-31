@@ -948,7 +948,7 @@ function initMultiChecks(selector) {
 	});
 }
 
-function initRolloverTooltips(selectors) {
+function initRolloverHints(selectors) {
 	var classToUrls = {
 		'lms-ui-tooltip-voipaccountinfo': '?m=voipaccountinfoshort&id=',
 		'lms-ui-tooltip-invoiceinfo': '?m=invoiceinfo&id=',
@@ -973,7 +973,7 @@ function initRolloverTooltips(selectors) {
 	}
 
 	$.each(selectors, function(idx, selector) {
-		var cssClass = 'lms-ui-tooltip-rollover';
+		var cssClass = 'lms-ui-hint-rollover';
 		if (typeof(selector) == 'string' && selector.match(/^\./)) {
 			cssClass = selector.replace(/^\./, '');
 		}
@@ -1000,11 +1000,11 @@ function initRolloverTooltips(selectors) {
 						dynamicContent(callback);
 					}
 				} else {
-					content = '<div class="lms-ui-tooltip-titlebar">' +
-						'<div class="lms-ui-tooltip-title"></div>' +
+					content = '<div class="lms-ui-hint-titlebar">' +
+						'<div class="lms-ui-hint-title"></div>' +
 						'<i class="lms-ui-icon-hide close-button"></i>' +
 						'</div>' +
-						'<div class="lms-ui-tooltip-content">' +
+						'<div class="lms-ui-hint-content">' +
 						content +
 						'</div>';
 				}
@@ -1046,7 +1046,7 @@ function initRolloverTooltips(selectors) {
 	});
 }
 
-function initToggleTooltips(selectors) {
+function initToggleHints(selectors) {
 	if (!Array.isArray(selectors)) {
 		selectors = [ selectors ];
 	}
@@ -1063,11 +1063,11 @@ function initToggleTooltips(selectors) {
 				}).click(function() {
 					if (!elem.is('[data-init="2"]')) {
 						elem.attr('data-init', '2');
-						content = '<div class="lms-ui-tooltip-titlebar">' +
-							'<div class="lms-ui-tooltip-title"></div>' +
+						content = '<div class="lms-ui-hint-titlebar">' +
+							'<div class="lms-ui-hint-title"></div>' +
 							'<i class="lms-ui-icon-hide close-button"></i>' +
 							'</div>' +
-							'<div class="lms-ui-tooltip-content">' +
+							'<div class="lms-ui-hint-content">' +
 							content +
 							'</div>';
 
@@ -1096,7 +1096,7 @@ function initToggleTooltips(selectors) {
 								});
 							},
 							tooltipClass: typeof (selector) == 'string' && selector.match(/^\./) ?
-								selector.replace(/^\./, '') : 'lms-ui-tooltip-toggle',
+								selector.replace(/^\./, '') : 'lms-ui-hint-toggle',
 							content: content
 						});
 					}
@@ -1394,7 +1394,7 @@ $(function() {
 	});
 
 	if (tooltipsEnabled) {
-		$(document).on('mouseenter', '[title]:not(.lms-ui-tooltip-rollover,.lms-ui-tooltip-toggle)', function () {
+		$(document).on('mouseenter', '[title]:not(.lms-ui-hint-rollover,.lms-ui-hint-toggle)', function () {
 			if ($(this).is('[data-tooltip]') || $(this).closest('.tox-tinymce,.tox-tinymce-aux').length) {
 				return;
 			}
@@ -1434,7 +1434,7 @@ $(function() {
 		}
 		$(':ui-tooltip').tooltip('close').toggleClass('open');
 		disableFullScreenPopup();
-		var tooltip = $('.lms-ui-tooltip-rollover[data-init="1"]').data('uiTooltip');
+		var tooltip = $('.lms-ui-hint-rollover[data-init="1"]').data('uiTooltip');
 		if (tooltip && typeof(tooltip.tooltips) == 'object') {
 			$.each(tooltip.tooltips, function(index) {
 				$('#' + index).remove();
@@ -1442,24 +1442,24 @@ $(function() {
 		}
 	});
 
-	initRolloverTooltips();
+	initRolloverHints();
 
 	$(document).on('mouseenter', '[data-hint]', function() {
-		if ($(this).is('.lms-ui-tooltip-rollover')) {
-			initRolloverTooltips(this);
+		if ($(this).is('.lms-ui-hint-rollover')) {
+			initRolloverHints(this);
 		} else {
-			initToggleTooltips(this);
+			initToggleHints(this);
 		}
 	});
 
 	$(document).mouseup(function(e) {
-		var container = $('.ui-tooltip.lms-ui-tooltip-toggle');
-		if (!$(e.target).closest('.lms-ui-tooltip-toggle:not(.ui-tooltip)').length &&
+		var container = $('.ui-tooltip.lms-ui-hint-toggle');
+		if (!$(e.target).closest('.lms-ui-hint-toggle:not(.ui-tooltip)').length &&
 			container.length &&
 			!container.is(e.target) &&
 			container.has(e.target).length === 0)
 		{
-			$('.lms-ui-tooltip-toggle[data-init="2"]').tooltip('close').toggleClass('open');
+			$('.lms-ui-hint-toggle[data-init="2"]').tooltip('close').toggleClass('open');
 			disableFullScreenPopup();
 		}
 	});

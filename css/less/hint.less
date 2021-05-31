@@ -22,13 +22,13 @@
  *  $Id$
  */
 
-.lms-ui-tooltip-rollover,
-.lms-ui-tooltip-toggle {
+.lms-ui-hint-rollover,
+.lms-ui-hint-toggle {
   &:not(.ui-tooltip) {
     cursor: pointer;
   }
 
-  .lms-ui-tooltip-titlebar {
+  .lms-ui-hint-titlebar {
     display: none;
     justify-content: flex-end;
     .close-button {
@@ -36,10 +36,25 @@
     }
   }
 
+  &.ui-tooltip {
+    max-width: fit-content;
+    .lms-ui-hint-titlebar {
+      padding-bottom: 0.5em;
+    }
+    .lms-ui-hint-content {
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+  }
+
   @media screen and (max-width: @mobile-max-width) {
     &.ui-tooltip {
       padding: 0;
       font-size: 200%;
+    }
+
+    &.ui-tooltip {
+      max-width: fit-content;
     }
 
     .ui-tooltip-content {
@@ -60,7 +75,7 @@
       }
     }
 
-    & .lms-ui-tooltip-titlebar {
+    & .lms-ui-hint-titlebar {
       display: flex;
     }
   }
