@@ -1146,7 +1146,7 @@ class LMSSmartyPlugins
         $mode = isset($params['mode']) && $params['mode'] == self::HINT_TYPE_ROLLOVER
             ? self::HINT_TYPE_ROLLOVER : self::HINT_TYPE_TOGGLE;
 
-        return '<a class="lms-ui-button lms-ui-tooltip-' . $mode . '" data-hint="'
+        return '<a class="lms-ui-button lms-ui-hint-' . $mode . '" data-hint="'
             . $content . '"><i class="lms-ui-icon-hint fa-fw"></i></a>';
     }
 }
