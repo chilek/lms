@@ -165,6 +165,14 @@ version 27-git (????-??-??):
     (empty by default) [chilan]
   - enhancement: implemented JPK-V7M declaration section generation as it is required by some external
     financial software [chilan]
+  - enhancement: implemented --interval, --part-number, part-size parameter support with corresponding configuration
+    variables in lms-notify.php backend script [chilan]
+  - enhancement: added 'not sent to email' filter on invoice list [chilan]
+  - enhancement: lms-ui-tooltip-rollover allows to easily define element with toolips which are closed after
+    click out of them or mouse enter to them and then mouse leave [chilan]
+  - enhancement: lms-ui-tooltip-toggle elements toggle tooltip after click [chilan]
+  - enhancement: new smarty function 'hint' allows to conveniently embed hint buttons (supported modes
+    are 'toggle' and 'rollover') [chilan]
 
 version 26.0 (2020-12-15):
 

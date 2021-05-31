@@ -53,9 +53,9 @@ function CustomerAssignmentHelper(options) {
 	}
 
 	this.initEventHandlers = function() {
-		$('#submit-button').click(function () {
+		$('#submit-button,#print-button').click(function () {
 			if ($(this)[0].form.checkValidity()) {
-				$('.schema-tariff-checkbox[data-mandatory]:checkbox').removeAttr('disabled');
+				$('.schema-tariff-checkbox[data-mandatory]:checkbox').prop('disabled', false);
 			}
 		});
 

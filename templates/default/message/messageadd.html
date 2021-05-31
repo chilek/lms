@@ -57,6 +57,15 @@
 		display: block;
 	}
 
+	.body-container {
+		display: flex;
+		align-items: center;
+	}
+
+	.lms-ui-tooltip-toggle:not(.ui-tooltip) {
+		margin-left: 0.5em;
+	}
+
 </style>
 
 {$xajax}
@@ -544,6 +553,7 @@
 				</select>
 			</td>
 		</tr>
+		{capture assign="body_hint"}{trans("Enter message body.<br><br>Supported substitutions/variables:<br><strong>%customer</strong> - customer first name and last name or name,<br><strong>%balance</strong>, <strong>%totalsaldo</strong>, <strong>%totalB</strong> - customer total balance,<br><strong>%b</strong> - customer expired liability balance amount to pay,<br><strong>%totalb</strong> - customer total balance amount to pay,<br><strong>%B</strong>, <strong>%saldo</strong> - customer expired liability balance,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer pin,<br><strong>%bankaccount</strong> - bank account for payments,<br><strong>%services</strong> - customer service summary,<br><strong>%last_N_in_a_table</strong> - last N operation in customer financial history (N means number),<br><strong>%date-y</strong> - current year<br><strong>%date-m</strong> - current month,<br><strong>%date-d</strong> - current day.<br><br>Substitution/variables supported while customer node is selected:<br><strong>%node_name</strong> - customer node name,<br><strong>%node_password</strong> - customer node password,<br><strong>%node_ip</strong> - customer node ip address,<br><strong>%node_ip_pub</strong> - customer node public ip address,<br><strong>%node_mac</strong> - customer node mac addresses.<br>")}{/capture}
 		<tr id="mailbody"{if $message.type > $smarty.const.MSG_MAIL && $message.type < $smarty.const.MSG_WWW} style="display: none"{/if}>
 			<td>
 				{icon name="edit"}
@@ -552,9 +562,12 @@
 				<strong>{trans("Message body:")}</strong>
 			</td>
 			<td>
-				<textarea name="message[mailbody]" cols="80" rows="20"
-					{tip class="lms-ui-wysiwyg-editor" text="Enter message body.<br><br>Supported substitutions/variables:<br><strong>%customer</strong> - customer first name and last name or name,<br><strong>%balance</strong>, <strong>%totalsaldo</strong>, <strong>%totalB</strong> - customer total balance,<br><strong>%b</strong> - customer expired liability balance amount to pay,<br><strong>%totalb</strong> - customer total balance amount to pay,<br><strong>%B</strong>, <strong>%saldo</strong> - customer expired liability balance,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer pin,<br><strong>%bankaccount</strong> - bank account for payments,<br><strong>%services</strong> - customer service summary,<br><strong>%last_N_in_a_table</strong> - last N operation in customer financial history (N means number),<br><strong>%date-y</strong> - current year<br><strong>%date-m</strong> - current month,<br><strong>%date-d</strong> - current day.<br><br>Substitution/variables supported while customer node is selected:<br><strong>%node_name</strong> - customer node name,<br><strong>%node_password</strong> - customer node password,<br><strong>%node_ip</strong> - customer node ip address,<br><strong>%node_ip_pub</strong> - customer node public ip address,<br><strong>%node_mac</strong> - customer node mac addresses.<br>" trigger="mailbody"}
-					{if isset($message.wysiwyg.mailbody)} data-wysiwyg="{$message.wysiwyg.mailbody}"{/if}>{$message.body}</textarea>
+				<div class="body-container">
+					<textarea name="message[mailbody]" cols="80" rows="20"
+						{tip class="lms-ui-wysiwyg-editor" trigger="mailbody"}
+						{if isset($message.wysiwyg.mailbody)} data-wysiwyg="{$message.wysiwyg.mailbody}"{/if}>{$message.body}</textarea>
+					{hint content=$body_hint}
+				</div>
 			</td>
 		</tr>
 		<tr id="smsbody"{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} style="display: none"{/if}>
@@ -565,9 +578,12 @@
 				<strong>{trans("Message body:")}</strong>
 			</td>
 			<td>
-				<textarea name="message[smsbody]" id="smstext" cols="60" rows="5" onkeydown="countChars(this)"
-					onkeyup="countChars(this)" {tip text="Enter message body.<br><br>Supported substitutions/variables:<br><strong>%customer</strong> - customer first name and last name or name,<br><strong>%balance</strong>, <strong>%totalsaldo</strong>, <strong>%totalB</strong> - customer total balance,<br><strong>%b</strong> - customer expired liability balance amount to pay,<br><strong>%totalb</strong> - customer total balance amount to pay,<br><strong>%B</strong>, <strong>%saldo</strong> - customer expired liability balance,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer pin,<br><strong>%bankaccount</strong> - bank account for payments,<br><strong>%services</strong> - customer service summary,<br><strong>%last_N_in_a_table</strong> - last N operation in customer financial history (N means number),<br><strong>%date-y</strong> - current year<br><strong>%date-m</strong> - current month,<br><strong>%date-d</strong> - current day.<br><br>Substitution/variables supported while customer node is selected:<br><strong>%node_name</strong> - customer node name,<br><strong>%node_password</strong> - customer node password,<br><strong>%node_ip</strong> - customer node ip address,<br><strong>%node_ip_pub</strong> - customer node public ip address,<br><strong>%node_mac</strong> - customer node mac addresses.<br>" trigger="smsbody"}
-					>{$message.body}</textarea>
+				<div class="body-container">
+					<textarea name="message[smsbody]" id="smstext" cols="60" rows="5" onkeydown="countChars(this)"
+						onkeyup="countChars(this)" {tip trigger="smsbody"}
+						>{$message.body}</textarea>
+					{hint content=$body_hint}
+				</div>
 			</td>
 		</tr>
 		<tr>

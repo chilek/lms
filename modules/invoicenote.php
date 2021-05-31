@@ -136,6 +136,7 @@ $SESSION->restore('cnoteerror', $error, true);
 $numberplanlist = $LMS->GetNumberPlans(array(
     'doctype' => DOC_CNOTE,
     'customerid' => $invoice['customerid'],
+    'division' => $invoice['divisionid'],
 ));
 
 $taxeslist = $LMS->GetTaxes($invoice['cdate'], $invoice['cdate']);

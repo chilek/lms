@@ -946,7 +946,171 @@ function initMultiChecks(selector) {
 			});
 		});
 	});
+}
 
+function initRolloverTooltips(selectors) {
+	var classToUrls = {
+		'lms-ui-tooltip-voipaccountinfo': '?m=voipaccountinfoshort&id=',
+		'lms-ui-tooltip-invoiceinfo': '?m=invoiceinfo&id=',
+		'lms-ui-tooltip-docnumber': '?m=number&id=',
+		'lms-ui-tooltip-customerinfo': '?m=customerinfoshort&id=',
+		'lms-ui-tooltip-nodelist': '?m=nodelistshort&id=',
+		'lms-ui-tooltip-ewxnodelist': '?m=ewxnodelist&id=',
+		'lms-ui-tooltip-rtticketinfo': '?m=rtticketinfo&id=',
+		'lms-ui-tooltip-customerassignmentinfo': '?m=customerassignmentinfo&id=',
+		'lms-ui-tooltip-nodegroupinfo': '?m=nodeinfo&nodegroups=1&id=',
+		'lms-ui-tooltip-netdevlist': '?m=ewxdevlist&id=',
+		'lms-ui-tooltip-eventinfoshort': '?m=eventinfoshort&id='
+	};
+
+	if (!selectors) {
+		selectors = [];
+		$.each(classToUrls, function(cssClass, url) {
+			selectors.push('.' + cssClass);
+		});
+	} else if (!Array.isArray(selectors)) {
+		selectors = [ selectors ];
+	}
+
+	$.each(selectors, function(idx, selector) {
+		var cssClass = 'lms-ui-tooltip-rollover';
+		if (typeof(selector) == 'string' && selector.match(/^\./)) {
+			cssClass = selector.replace(/^\./, '');
+		}
+
+		$(selector).each(function() {
+			var elem = $(this);
+			if (!elem.is('[data-init]')) {
+				var content = elem.attr('data-hint');
+				elem.attr('data-init', '1').removeAttr('data-hint');
+
+				var dynamicContent = function (callback) {
+					var resourceid = elem.attr('data-resourceid');
+					$.ajax(classToUrls[cssClass] + resourceid, {
+						async: true,
+						success: function (data) {
+							callback(data);
+							// elem.tooltip('disable');
+							// elem.tooltip('enable');
+						}
+					});
+				}
+				if (classToUrls.hasOwnProperty(cssClass)) {
+					content = function (callback) {
+						dynamicContent(callback);
+					}
+				} else {
+					content = '<div class="lms-ui-tooltip-titlebar">' +
+						'<div class="lms-ui-tooltip-title"></div>' +
+						'<i class="lms-ui-icon-hide close-button"></i>' +
+						'</div>' +
+						'<div class="lms-ui-tooltip-content">' +
+						content +
+						'</div>';
+				}
+
+				elem.tooltip({
+					items: elem,
+					show: false,
+					//hide: false,
+					track: false,
+					position: {my: "left top", at: "left bottom", collision: "flipfit"},
+					open: function (e, ui) {
+						$(ui.tooltip).find('.close-button').click(function () {
+							elem.tooltip('close').removeClass('open');
+							disableFullScreenPopup();
+							$(ui.tooltip).remove();
+						});
+						elem.addClass('open');
+						enableFullScreenPopup();
+						if (typeof (e.originalEvent) === 'undefined') {
+							return false;
+						}
+						var id = $(ui.tooltip).attr('id');
+						$('div.ui-tooltip').not('#' + id).remove();
+					},
+					close: function (e, ui) {
+						$(ui.tooltip).mouseenter(function () {
+							$(this).stop(true);
+						}).mouseleave(function () {
+							elem.tooltip('close').toggleClass('open');
+							disableFullScreenPopup();
+							$(this).remove();
+						});
+					},
+					tooltipClass: cssClass,
+					content: content
+				});
+			}
+		});
+	});
+}
+
+function initToggleTooltips(selectors) {
+	if (!Array.isArray(selectors)) {
+		selectors = [ selectors ];
+	}
+
+	$.each(selectors, function(idx, selector) {
+		$(selector).each(function() {
+			var elem = $(this);
+			if (!elem.is('[data-init]')) {
+				var content = elem.attr('data-hint');
+				elem.attr('data-init', '1').removeAttr('data-hint');
+
+				elem.on('mouseenter mouseover mouseleave', function(e) {
+					e.stopImmediatePropagation();
+				}).click(function() {
+					if (!elem.is('[data-init="2"]')) {
+						elem.attr('data-init', '2');
+						content = '<div class="lms-ui-tooltip-titlebar">' +
+							'<div class="lms-ui-tooltip-title"></div>' +
+							'<i class="lms-ui-icon-hide close-button"></i>' +
+							'</div>' +
+							'<div class="lms-ui-tooltip-content">' +
+							content +
+							'</div>';
+
+						elem.tooltip({
+							items: elem,
+							show: false,
+							hide: false,
+							track: false,
+							position: {my: "left top", at: "left bottom", collision: "flipfit"},
+							open: function (e, ui) {
+								$(ui.tooltip).find('.close-button').click(function () {
+									elem.tooltip('close').toggleClass('open');
+									disableFullScreenPopup();
+								});
+								if (typeof (e.originalEvent) === 'undefined') {
+									return false;
+								}
+								var id = $(ui.tooltip).attr('id');
+								$('div.ui-tooltip').not('#' + id).remove();
+							},
+							close: function (e, ui) {
+								$(ui.tooltip).mouseenter(function () {
+									$(this).stop(true);
+								}).mouseleave(function () {
+									$(this).remove();
+								});
+							},
+							tooltipClass: typeof (selector) == 'string' && selector.match(/^\./) ?
+								selector.replace(/^\./, '') : 'lms-ui-tooltip-toggle',
+							content: content
+						});
+					}
+					if (elem.is('.open')) {
+						disableFullScreenPopup();
+						elem.tooltip('close').toggleClass('open');
+					} else {
+						enableFullScreenPopup();
+						elem.tooltip('open').toggleClass('open');
+					}
+				});
+			}
+		});
+	});
 }
 
 function showGallery(data) {
@@ -1230,7 +1394,7 @@ $(function() {
 	});
 
 	if (tooltipsEnabled) {
-		$(document).on('mouseenter', '[title]', function () {
+		$(document).on('mouseenter', '[title]:not(.lms-ui-tooltip-rollover,.lms-ui-tooltip-toggle)', function () {
 			if ($(this).is('[data-tooltip]') || $(this).closest('.tox-tinymce,.tox-tinymce-aux').length) {
 				return;
 			}
@@ -1264,53 +1428,40 @@ $(function() {
 		});
 	}
 
-	[
-		{ class: 'lms-ui-tooltip-voipaccountinfo', url: '?m=voipaccountinfoshort&id='},
-		{ class: 'lms-ui-tooltip-invoiceinfo', url: '?m=invoiceinfo&id='},
-		{ class: 'lms-ui-tooltip-docnumber', url: '?m=number&id='},
-		{ class: 'lms-ui-tooltip-customerinfo', url: '?m=customerinfoshort&id='},
-		{ class: 'lms-ui-tooltip-nodelist', url: '?m=nodelistshort&id='},
-		{ class: 'lms-ui-tooltip-ewxnodelist', url: '?m=ewxnodelist&id='},
-		{ class: 'lms-ui-tooltip-rtticketinfo', url: '?m=rtticketinfo&id='},
-		{ class: 'lms-ui-tooltip-customerassignmentinfo', url: '?m=customerassignmentinfo&id='},
-		{ class: 'lms-ui-tooltip-nodegroupinfo', url: '?m=nodeinfo&nodegroups=1&id='},
-		{ class: 'lms-ui-tooltip-netdevlist', url: '?m=ewxdevlist&id='},
-		{ class: 'lms-ui-tooltip-eventinfoshort', url: '?m=eventinfoshort&id='}
-	].forEach(function(popup) {
-		$('.' + popup.class).tooltip({
-			items: '.' + popup.class,
-			show: false,
-			//hide: false,
-			track: false,
-			position: { my: "left top", at: "left bottom", collision: "flipfit" },
-			open: function(e, ui) {
-				if (typeof(e.originalEvent) === 'undefined') {
-					return false;
-				}
-				var id = $(ui.tooltip).attr('id');
-				$('div.ui-tooltip').not('#' + id).remove();
-			},
-			close: function(e, ui) {
-				$(ui.tooltip).mouseenter(function() {
-					$(this).stop(true);
-				}).mouseleave(function() {
-					$(this).remove();
-				});
-			},
-			tooltipClass: popup.class,
-			content: function(callback) {
-				var elem = $(this);
-				var resourceid = elem.attr('data-resourceid');
-				$.ajax(popup.url + resourceid, {
-					async: true,
-					success: function(data) {
-						callback(data);
-						// elem.tooltip('disable');
-						// elem.tooltip('enable');
-					}
-				});
-			}
-		});
+	$(document).keydown(function(e) {
+		if (e.key != 'Escape') {
+			return;
+		}
+		$(':ui-tooltip').tooltip('close').toggleClass('open');
+		disableFullScreenPopup();
+		var tooltip = $('.lms-ui-tooltip-rollover[data-init="1"]').data('uiTooltip');
+		if (tooltip && typeof(tooltip.tooltips) == 'object') {
+			$.each(tooltip.tooltips, function(index) {
+				$('#' + index).remove();
+			});
+		}
+	});
+
+	initRolloverTooltips();
+
+	$(document).on('mouseenter', '[data-hint]', function() {
+		if ($(this).is('.lms-ui-tooltip-rollover')) {
+			initRolloverTooltips(this);
+		} else {
+			initToggleTooltips(this);
+		}
+	});
+
+	$(document).mouseup(function(e) {
+		var container = $('.ui-tooltip.lms-ui-tooltip-toggle');
+		if (!$(e.target).closest('.lms-ui-tooltip-toggle:not(.ui-tooltip)').length &&
+			container.length &&
+			!container.is(e.target) &&
+			container.has(e.target).length === 0)
+		{
+			$('.lms-ui-tooltip-toggle[data-init="2"]').tooltip('close').toggleClass('open');
+			disableFullScreenPopup();
+		}
 	});
 
 	initAdvancedSelects('select.lms-ui-advanced-select');
@@ -1681,12 +1832,12 @@ $(function() {
 			} else {
 				inputname = $(this).closest('form').attr('name') + '[wysiwyg]';
 			}
-			parent.append($('<div class="lms-ui-wysiwyg-editor"><label>' +
-				'<input type="hidden" name="' + inputname + '" value="false">' +
-				'<input type="checkbox" name="' + inputname +
-				'" value="true"' + (wysiwyg ? ' checked' : '') + '>' + $t('visual editor') +
-				'</label></div')).find('div.lms-ui-wysiwyg-editor').append(this);
-
+			$(this).wrap('<div class="lms-ui-wysiwyg-editor"/>')
+				.parent().prepend('<label>' +
+					'<input type="hidden" name="' + inputname + '" value="false">' +
+					'<input type="checkbox" name="' + inputname +
+					'" value="true"' + (wysiwyg ? ' checked' : '') + '>' + $t('visual editor') +
+					'</label>');
 			// it is required as textarea changed value is not propagated automatically to editor instance content
 			$(this).change(function(e) {
 				var editor = tinymce.get(textareaid);

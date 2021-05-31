@@ -39,6 +39,7 @@
 @import "less/advanced-select";
 @import "less/combobox";
 @import "less/customer-select";
+@import "less/tooltip";
 
 html {
 	height: 100%;
@@ -1395,7 +1396,7 @@ table.lmsbox {
 	&-innerbox > tfoot {
 		background-color: @dark;
 	}
-	& > thead > tr,
+	& > thead > tr:not(:first-child),
 	& > tfoot > tr {
 		border-top: 1px solid black;
 	}
@@ -2047,7 +2048,7 @@ div.lms-ui-persistent-filter {
 }
 
 div.lms-ui-wysiwyg-editor {
-	display: flex;
+	display: inline-flex;
 	flex-direction: column;
 	justify-content: flex-start;
 	align-items: flex-start;

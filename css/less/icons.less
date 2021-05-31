@@ -46,6 +46,15 @@
   }
 }
 
+.lms-ui-icon-tariff-limit {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-hourglass-half;
+  }
+}
+
 .lms-ui-icon-map-pin {
   .fa-icon;
   .fas;
@@ -546,7 +555,6 @@
   }
 }
 
-.lms-ui-icon-help,
 .lms-ui-icon-info,
 .lms-ui-icon-details {
   .fa-icon;
@@ -554,6 +562,16 @@
   .lms-ui-icon;
   &:before {
     content: @fa-var-info;
+  }
+}
+
+.lms-ui-icon-help,
+.lms-ui-icon-hint {
+  .fa-icon;
+  .far;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-question-circle;
   }
 }
 
@@ -1834,5 +1852,16 @@
   .lms-ui-icon;
   &:before {
     content: @fa-var-suitcase;
+  }
+}
+
+.lms-ui-icon-run,
+.lms-ui-icon-launch,
+.lms-ui-icon-execute {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-terminal;
   }
 }

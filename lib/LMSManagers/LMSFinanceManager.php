@@ -1300,7 +1300,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         }
 
         if (isset($a['count'])) {
-            if ($a['count'] == '') {
+            if (empty($a['count'])) {
                 $count = 1;
             } elseif (preg_match('/^[0-9]+(\.[0-9]+)?$/', $a['count'])) {
                 $count = str_replace(',', '.', floatval($a['count']));
@@ -1799,7 +1799,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     public function GetInvoiceList(array $params)
     {
         extract($params);
-        foreach (array('search', 'cat', 'group', 'numberplan', 'division', 'exclude', 'hideclosed', 'page') as $var) {
+        foreach (array('search', 'cat', 'group', 'numberplan', 'division', 'exclude', 'hideclosed', 'notsent', 'page') as $var) {
             if (!isset($$var)) {
                 $$var = null;
             }
@@ -1956,6 +1956,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 ' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
 			SELECT 1 FROM vcustomerassignments WHERE customergroupid IN (' . implode(',', $group) . ')
 						AND customerid = d.customerid)' : '')
+            . (empty($notsent) ? '' : ' AND d.senddate = 0')
             . (!empty($splitpayment) ? ' AND d.splitpayment = 1' : '')
             . (!empty($withreceipt) ? ' AND d.flags & ' . DOC_FLAG_RECEIPT . ' > 0' : '')
             . (!empty($telecomservice) ? ' AND d.flags & ' . DOC_FLAG_TELECOM_SERVICE . ' > 0' : '')
