@@ -1226,13 +1226,7 @@ $(function() {
 			fromdate = new Date();
 			todate = new Date();
 			fromdate.setDate(1);
-			if (fromdate.getMonth() === 0) {
-				todate.setDate(0);
-				todate.setMonth(todate.getMonth() + 1);
-			} else {
-				todate.setMonth(todate.getMonth() + 1);
-				todate.setDate(0);
-			}
+			todate = new Date(todate.getFullYear(), todate.getMonth() + 1, 0);
 		} else if (period === 'next-month') {
 			fromdate.setMonth(fromdate.getMonth() + 1);
 			fromdate.setDate(1);
