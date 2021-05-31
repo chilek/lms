@@ -92,7 +92,10 @@
 							</div>
 							<div class="lms-ui-tab-table-column owner" data-target-url="?m=nodeinfo&id={$node.id}">
 								<i class="lms-ui-icon-customer"></i>
-								<A href="?m=customerinfo&id={$node.ownerid}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$node.ownerid}">{$node.owner}</A>
+								<A href="?m=customerinfo&id={$node.ownerid}"
+									class="lms-ui-hint-rollover"
+									data-url="?m=customerinfoshort&id={$node.ownerid}"
+									>{$node.owner}</A>
 							</div>
 						</div>
 						<div class="lms-ui-tab-table-wrapper nodeid-ownerid col-2">

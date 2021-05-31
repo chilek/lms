@@ -177,7 +177,9 @@
 
 				<td nowrap>
 					{if !empty($record.callerownerid)}
-						<a href="?m=customerinfo&id={$record.callerownerid}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$record.callerownerid}">
+						<a href="?m=customerinfo&id={$record.callerownerid}"
+							class="lms-ui-hint-rollover"
+							data-url="?m=customerinfoshort&id={$record.callerownerid}">
 							{$record.caller_lastname|lower|ucfirst} {$record.caller_name|ucfirst}
 						</a>
 					{else}
@@ -189,7 +191,9 @@
 					{trans("to")}
 
 					{if !empty($record.calleeownerid)}
-						<a href="?m=customerinfo&id={$record.calleeownerid}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$record.calleeownerid}">
+						<a href="?m=customerinfo&id={$record.calleeownerid}"
+							class="lms-ui-hint-rollover"
+							data-url="?m=customerinfoshort&id={$record.calleeownerid}">
 							{$record.callee_lastname|lower|ucfirst} {$record.callee_name|ucfirst}
 						</a>
 					{else}

@@ -1,27 +1,42 @@
 {block name=rtboxrow}
 <TR class="single-ticket {if $ticket.state == $smarty.const.RT_RESOLVED}blend{/if} highlight lms-ui-resource{if $ticket.deleted == 1 && $ticket.deltime != 0}-deleted{elseif $ticket.delcount && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}-partly-deleted{/if}"
 		id="ticket-{$ticket.id}"
-		data-target-url="?m=rtticketview&id={$ticket.id}"
+		{*data-target-url="?m=rtticketview&id={$ticket.id}"*}
 		data-name="{$ticket.id|string_format:"%06d"}"
 		data-popup-menu-title="{t a=$ticket.id|string_format:"#%06d"}Ticket $a{/t}"
 		data-ticket-id="{$ticket.id}">
 	<TD class="text-center">
 		{if $ticket.unread}
-		<a href="?m=rtticketview&id={$ticket.id}{if $ticket.firstunread}#rtmessage-{$ticket.firstunread}{/if}" class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$ticket.id}"><i class="lms-ui-icon-{if $ticket.priority == $smarty.const.RT_PRIORITY_CRITICAL && $ticket.state != $smarty.const.RT_RESOLVED}critical{else}unread{/if}"></i></a>
+			<a href="?m=rtticketview&id={$ticket.id}{if $ticket.firstunread}#rtmessage-{$ticket.firstunread}{/if}"
+				class="lms-ui-hint-rollover" data-url="?m=rtticketinfo&id={$ticket.id}">
+				<i class="lms-ui-icon-{if $ticket.priority == $smarty.const.RT_PRIORITY_CRITICAL && $ticket.state != $smarty.const.RT_RESOLVED}critical{else}unread{/if}"></i>
+			</a>
 		{elseif $ticket.messageid}
-		<a href="?m=rtticketview&id={$ticket.id}&highlight[pattern]={$filter.body.pattern}{if isset($filter.body.regexp)}&highlight[regexp]={$filter.body.regexp}{/if}#rtmessage-{$ticket.messageid}" class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$ticket.id}"><i class="lms-ui-icon-{if $ticket.priority == $smarty.const.RT_PRIORITY_CRITICAL && $ticket.state != $smarty.const.RT_RESOLVED}priority{else}search{/if}"></i></a>
+			<a href="?m=rtticketview&id={$ticket.id}&highlight[pattern]={$filter.body.pattern}{if isset($filter.body.regexp)}&highlight[regexp]={$filter.body.regexp}{/if}#rtmessage-{$ticket.messageid}"
+				class="lms-ui-hint-rollover" data-url="?m=rtticketinfo&id={$ticket.id}">
+				<i class="lms-ui-icon-{if $ticket.priority == $smarty.const.RT_PRIORITY_CRITICAL && $ticket.state != $smarty.const.RT_RESOLVED}priority{else}search{/if}"></i>
+			</a>
 		{/if}
 	</TD>
 	<TD class="text-center" style="background:transparent; color:{$_RT_STATES[$ticket.state].color};">
-		<span class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$ticket.id}">
-			{$_RT_STATES[$ticket.state].label}<br>{if $ticket.priority != 0}<span {if $ticket.state != $smarty.const.RT_RESOLVED}style="color:black"{/if}>{$_RT_PRIORITIES[$ticket.priority]}</span>{/if}{if !empty($ticket.verifiername) && !empty($ticket.state) && $ticket.state == $smarty.const.RT_VERIFIED}({$ticket.verifiername}){/if}
+		<span class="lms-ui-hint-toggle" data-url="?m=rtticketinfo&id={$ticket.id}">
+			{$_RT_STATES[$ticket.state].label}<br>
+			{if $ticket.priority != 0}
+				<span {if $ticket.state != $smarty.const.RT_RESOLVED}style="color:black"{/if}>{$_RT_PRIORITIES[$ticket.priority]}</span>
+			{/if}
+			{if !empty($ticket.verifiername) && !empty($ticket.state) && $ticket.state == $smarty.const.RT_VERIFIED}
+				({$ticket.verifiername})
+			{/if}
 		</span>
 	</TD>
 	<TD class="nobr">
-		<span class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$ticket.id}">
+		<span class="lms-ui-hint-rollover" data-url="?m=rtticketinfo&id={$ticket.id}">
 			<span class="bold" style="{$_RT_PRIORITY_STYLES[$ticket.priority]}">&nbsp;{$ticket.id|string_format:"%06d"}&nbsp;</span>
-		<span>{if (is_array($filter.ids) && count($filter.ids) != 1) || !isset($filter.ids)}{$ticket.name}{/if}</span>
-		{if !ConfigHelper::checkConfig('rt.hide_ticket_row_create_time')}<br>{$ticket.createtime|date_format:"%Y/%m/%d %H:%M:%S"}{/if}
+			<span>{if (is_array($filter.ids) && count($filter.ids) != 1) || !isset($filter.ids)}{$ticket.name}{/if}</span>
+			{if !ConfigHelper::checkConfig('rt.hide_ticket_row_create_time')}
+				<br>{$ticket.createtime|date_format:"%Y/%m/%d %H:%M:%S"}
+			{/if}
+		</span>
 	</TD>
 	<TD class="text-center">
 		<span>{$_SERVICETYPES[$ticket.service]}</span>

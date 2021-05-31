@@ -134,7 +134,9 @@
 						<div class="lms-ui-tab-table-wrapper col-2">
 							<div class="lms-ui-tab-table-column groups">
 								{if $node.gcount}
-									<img src="img/nodegroup.gif" alt="" class="lms-ui-tooltip-nodegroupinfo" data-resourceid="{$node.id}">
+									<img src="img/nodegroup.gif" alt=""
+										class="lms-ui-hint-rollover"
+										data-url="?m=nodeinfo&nodegroups=1&id={$node.id}">
 								{else}
 									-
 								{/if}

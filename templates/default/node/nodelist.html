@@ -250,7 +250,11 @@
 			<br>
 			<span class="nobr{if ! $node.access} blend{/if}">
 				{icon name="customer"}
-				<a href="?m=customerinfo&id={$node.ownerid}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$node.ownerid}">{$node.owner|truncate:40:"&hellip;":true|replace:" ":"&nbsp;"}</a>
+				<a href="?m=customerinfo&id={$node.ownerid}"
+					class="lms-ui-hint-rollover"
+					data-url="?m=customerinfoshort&id={$node.ownerid}">
+					{$node.owner|truncate:40:"&hellip;":true|replace:" ":"&nbsp;"}
+				</a>
 			</span>
 		</TD>
 		<TD class="nobr">

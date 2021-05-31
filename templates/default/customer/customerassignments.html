@@ -452,7 +452,7 @@
 
 				<div class="lms-ui-tab-table-column buttons">
 					{if $a.tariffid || $a.liabilityid}
-						<i class="lms-ui-icon-options lms-ui-tooltip-customerassignmentinfo" data-resourceid="{$a.id}"></i>
+						<i class="lms-ui-icon-options lms-ui-hint-rollover" data-url="?m=customerassignmentinfo&id={$a.id}"></i>
 					{/if}
 
 					{if ($a.tariffid || $a.liabilityid) && (($a.dateto > $today || !$a.dateto) || ($a.liabilityid && $a.at > $today))}

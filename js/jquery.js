@@ -949,55 +949,34 @@ function initMultiChecks(selector) {
 }
 
 function initRolloverHints(selectors) {
-	var classToUrls = {
-		'lms-ui-tooltip-voipaccountinfo': '?m=voipaccountinfoshort&id=',
-		'lms-ui-tooltip-invoiceinfo': '?m=invoiceinfo&id=',
-		'lms-ui-tooltip-docnumber': '?m=number&id=',
-		'lms-ui-tooltip-customerinfo': '?m=customerinfoshort&id=',
-		'lms-ui-tooltip-nodelist': '?m=nodelistshort&id=',
-		'lms-ui-tooltip-ewxnodelist': '?m=ewxnodelist&id=',
-		'lms-ui-tooltip-rtticketinfo': '?m=rtticketinfo&id=',
-		'lms-ui-tooltip-customerassignmentinfo': '?m=customerassignmentinfo&id=',
-		'lms-ui-tooltip-nodegroupinfo': '?m=nodeinfo&nodegroups=1&id=',
-		'lms-ui-tooltip-netdevlist': '?m=ewxdevlist&id=',
-		'lms-ui-tooltip-eventinfoshort': '?m=eventinfoshort&id='
-	};
-
-	if (!selectors) {
-		selectors = [];
-		$.each(classToUrls, function(cssClass, url) {
-			selectors.push('.' + cssClass);
-		});
-	} else if (!Array.isArray(selectors)) {
+	if (!Array.isArray(selectors)) {
 		selectors = [ selectors ];
 	}
 
 	$.each(selectors, function(idx, selector) {
-		var cssClass = 'lms-ui-hint-rollover';
-		if (typeof(selector) == 'string' && selector.match(/^\./)) {
-			cssClass = selector.replace(/^\./, '');
-		}
-
 		$(selector).each(function() {
 			var elem = $(this);
 			if (!elem.is('[data-init]')) {
 				var content = elem.attr('data-hint');
+				var url = elem.attr('data-url');
+
 				elem.attr('data-init', '1').removeAttr('data-hint');
 
-				var dynamicContent = function (callback) {
-					var resourceid = elem.attr('data-resourceid');
-					$.ajax(classToUrls[cssClass] + resourceid, {
-						async: true,
-						success: function (data) {
-							callback(data);
-							// elem.tooltip('disable');
-							// elem.tooltip('enable');
-						}
-					});
-				}
-				if (classToUrls.hasOwnProperty(cssClass)) {
+				if (url) {
 					content = function (callback) {
-						dynamicContent(callback);
+						$.ajax(url, {
+							async: true,
+							success: function(data) {
+								callback('<div class="lms-ui-hint-titlebar">' +
+									'<div class="lms-ui-hint-title"></div>' +
+									'<i class="lms-ui-icon-hide close-button"></i>' +
+									'</div>' +
+									'<div class="lms-ui-hint-content">' +
+									data +
+									'</div>'
+								);
+							}
+						});
 					}
 				} else {
 					content = '<div class="lms-ui-hint-titlebar">' +
@@ -1038,7 +1017,7 @@ function initRolloverHints(selectors) {
 							$(this).remove();
 						});
 					},
-					tooltipClass: cssClass,
+					tooltipClass: 'lms-ui-hint-rollover',
 					content: content
 				});
 			}
@@ -1056,6 +1035,8 @@ function initToggleHints(selectors) {
 			var elem = $(this);
 			if (!elem.is('[data-init]')) {
 				var content = elem.attr('data-hint');
+				var url = elem.attr('data-url');
+
 				elem.attr('data-init', '1').removeAttr('data-hint');
 
 				elem.on('mouseenter mouseover mouseleave', function(e) {
@@ -1063,13 +1044,33 @@ function initToggleHints(selectors) {
 				}).click(function() {
 					if (!elem.is('[data-init="2"]')) {
 						elem.attr('data-init', '2');
-						content = '<div class="lms-ui-hint-titlebar">' +
-							'<div class="lms-ui-hint-title"></div>' +
-							'<i class="lms-ui-icon-hide close-button"></i>' +
-							'</div>' +
-							'<div class="lms-ui-hint-content">' +
-							content +
-							'</div>';
+
+						if (url) {
+							content = function (callback) {
+								$.ajax(url, {
+									async: true,
+									success: function(data) {
+										callback('<div class="lms-ui-hint-titlebar">' +
+											'<div class="lms-ui-hint-title"></div>' +
+											'<i class="lms-ui-icon-hide close-button"></i>' +
+											'</div>' +
+											'<div class="lms-ui-hint-content">' +
+											data +
+											'</div>'
+										);
+										elem.tooltip('open');
+									}
+								});
+							}
+						} else {
+							content = '<div class="lms-ui-hint-titlebar">' +
+								'<div class="lms-ui-hint-title"></div>' +
+								'<i class="lms-ui-icon-hide close-button"></i>' +
+								'</div>' +
+								'<div class="lms-ui-hint-content">' +
+								content +
+								'</div>';
+						}
 
 						elem.tooltip({
 							items: elem,
@@ -1095,8 +1096,7 @@ function initToggleHints(selectors) {
 									$(this).remove();
 								});
 							},
-							tooltipClass: typeof (selector) == 'string' && selector.match(/^\./) ?
-								selector.replace(/^\./, '') : 'lms-ui-hint-toggle',
+							tooltipClass: 'lms-ui-hint-toggle',
 							content: content
 						});
 					}
@@ -1436,9 +1436,7 @@ $(function() {
 		}
 	});
 
-	initRolloverHints();
-
-	$(document).on('mouseenter', '[data-hint]', function() {
+	$('.lms-ui-hint-rollover,.lms-ui-hint-toggle').each(function() {
 		if ($(this).is('.lms-ui-hint-rollover')) {
 			initRolloverHints(this);
 		} else {

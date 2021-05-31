@@ -305,7 +305,10 @@
 		<TD>
 			<i class="lms-ui-icon-customer-status-{$_CSTATUSES[$customer.status].alias}"></i>
 			{if $customer.info}&nbsp;<i class="lms-ui-icon-optional-info" title="{nl2br(htmlspecialchars($customer.info))}"></i>{/if}
-			<A name="{$customer.id}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$customer.id}">&nbsp;<span class="bold">{$customer.customername|escape}</span></A>
+			<a name="{$customer.id}" class="lms-ui-hint-rollover"
+				data-url="?m=customerinfoshort&id={$customer.id}">
+				<span class="bold">{$customer.customername|escape}</span>
+			</a>
 			{if !empty($customer.karma)}
 				<i class="lms-ui-icon-star{if $customer.karma > 0} green{else} red{/if}" title="{trans('Karma')}"></i>
 				(<span class="lms-ui-counter">{$customer.karma}</span>)
@@ -317,7 +320,8 @@
 			({if $customer.extid}{$customer.extid|escape} / {/if}{$customer.id|string_format:"%04d"})
 			<BR>
 			{if $customer.account}
-				<i class="lms-ui-tooltip-nodelist lms-ui-icon-node{if !$customer.online}off{else}on{/if}" data-resourceid="{$customer.id}"></i>
+				<i class="lms-ui-hint-rollover lms-ui-icon-node{if !$customer.online}off{else}on{/if}"
+					data-url="?m=nodelistshort&id={$customer.id}"></i>
 			{else}
 				---
 			{/if}

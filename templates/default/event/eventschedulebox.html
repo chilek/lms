@@ -72,7 +72,9 @@
                                                 <td>
                                                     <table style="{if $tevents[tevent].position == 1} margin-top: -12px; margin-bottom: -7px;{else} margin-top: -3px; margin-bottom: -7px;{/if}">
                                                         <tr>
-                                                            <td style="min-width: 90px; {if isset($_EVENTSTYLES[$tevents[tevent].type])} {$_EVENTSTYLES[$tevents[tevent].type]}{/if}" class="text-center bold lms-ui-tooltip-eventinfoshort" data-target-url="?m=eventinfo&id={$tevents[tevent].id}" data-resourceid="{$tevents[tevent].id}">
+                                                            <td style="min-width: 90px; {if isset($_EVENTSTYLES[$tevents[tevent].type])} {$_EVENTSTYLES[$tevents[tevent].type]}{/if}" class="text-center bold lms-ui-hint-rollover"
+                                                                data-target-url="?m=eventinfo&id={$tevents[tevent].id}"
+                                                                data-url="?m=eventinfoshort&id={$tevents[tevent].id}">
                                                                 {if $tevents[tevent].position == 0}
                                                                     {if $_EVENTTYPES[$tevents[tevent].type]}{$_EVENTTYPES[$tevents[tevent].type]}<br>{else}<br>{/if}
                                                                     {if $tevents[tevent].ticketid}<a href="?m=rtticketview&id={$tevents[tevent].ticketid}" style="color: black">{$tevents[tevent].ticketid|string_format:"%06d"}</a><br>{else}<br>{/if}

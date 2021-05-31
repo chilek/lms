@@ -226,35 +226,49 @@
 			{if $balance.docid}
 				{if $balance.doctype==$smarty.const.DOC_INVOICE}
 					{if !$balance.published || ConfigHelper::checkPrivilege('published_document_modification')}
-						{button type="link" icon="view" class="print-invoice lms-ui-tooltip-invoiceinfo"
+						{button type="link" icon="view" class="print-invoice lms-ui-hint-rollover"
 							href="?m=invoice&id={$balance.docid}&dontpublish=1"
-							resourceid="{$balance.docid}" external=true icon_tip="View"}
+							data_url="?m=invoiceinfo&id={$balance.docid}"
+							external=true
+							icon_tip="View"}
 					{/if}
-					{button type="link" icon="print" class="print-invoice lms-ui-tooltip-invoiceinfo"
+					{button type="link" icon="print" class="print-invoice lms-ui-hint-rollover"
 						href="?m=invoice&id={$balance.docid}"
-						resourceid="{$balance.docid}" external=true icon_tip="Invoice"}
+						data_url="?m=invoiceinfo&id={$balance.docid}"
+						external=true
+						icon_tip="Invoice"}
 				{elseif $balance.doctype==$smarty.const.DOC_CNOTE}
 					{if !$balance.published || ConfigHelper::checkPrivilege('published_document_modification')}
-						{button type="link" icon="view" class="print-invoice lms-ui-tooltip-docnumber"
+						{button type="link" icon="view" class="print-invoice lms-ui-hint-rollover"
 							href="?m=invoice&id={$balance.docid}&dontpublish=1"
-							resourceid="{$balance.docid}" external=true icon_tip="View"}
+							data_url="?m=number&id={$balance.docid}"
+							external=true
+							icon_tip="View"}
 					{/if}
-					{button type="link" icon="print" class="print-invoice lms-ui-tooltip-docnumber"
+					{button type="link" icon="print" class="print-invoice lms-ui-hint-rollover"
 						href="?m=invoice&id={$balance.docid}"
-						resourceid="{$balance.docid}" external=true icon_tip="Credit note"}
+						data_url="?m=number&id={$balance.docid}"
+						external=true
+						icon_tip="Credit note"}
 				{elseif $balance.doctype==$smarty.const.DOC_RECEIPT}
-					{button type="link" icon="print" class="lms-ui-tooltip-docnumber"
+					{button type="link" icon="print" class="lms-ui-hint-rollover"
 						href="?m=receipt&id={$balance.docid}"
-						resourceid="{$balance.docid}" external=true icon_tip="Cash receipt"}
+						data_url="?m=number&id={$balance.docid}"
+						external=true
+						icon_tip="Cash receipt"}
 				{elseif $balance.doctype==$smarty.const.DOC_DNOTE}
 					{if !$balance.published || ConfigHelper::checkPrivilege('published_document_modification')}
-						{button type="link" icon="view" class="lms-ui-tooltip-docnumber"
+						{button type="link" icon="view" class="lms-ui-hint-rollover"
 							href="?m=note&id={$balance.docid}&dontpublish=1"
-							resourceid="{$balance.docid}" external=true icon_tip="View"}
+							data_url="?mumber&id={$balance.docid}"
+							external=true
+							icon_tip="View"}
 					{/if}
-					{button type="link" icon="print" class="lms-ui-tooltip-docnumber"
+					{button type="link" icon="print" class="lms-ui-hint-rollover"
 						href="?m=note&id={$balance.docid}"
-						resourceid="{$balance.docid}" external=true icon_tip="Debit note"}
+						data_url="?m=number&id={$balance.docid}"
+						external=true
+						icon_tip="Debit note"}
 				{/if}
 			{/if}
 			<INPUT TYPE="checkbox" class="lms-ui-multi-check" NAME="marks[{$balance.id}]" VALUE="{$balance.id}">
