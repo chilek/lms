@@ -1778,6 +1778,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     $ticket['nodeid']
                 );
             }
+        } else {
+            $props['nodeid'] = $ticket['nodeid'];
         }
 
         if (array_key_exists('requestor', $props)) {
