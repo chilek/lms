@@ -137,6 +137,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                             taxl.value AS taxl_value, taxl.label AS taxl_label,
                                             (CASE WHEN t.type IS NULL THEN l.type ELSE t.type END) AS tarifftype,
                                             (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END) AS unitary_value,
+                                            (CASE WHEN t.netvalue IS NULL THEN l.netvalue ELSE t.netvalue END) AS unitary_netvalue,
+                                            (CASE WHEN t.netflag IS NULL THEN l.netflag ELSE t.netflag END) AS netflag,
                                             a.count,
                                             (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END) * a.count AS value,
                                             (CASE WHEN t.currency IS NULL THEN l.currency ELSE t.currency END) AS currency,
@@ -369,13 +371,17 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
             $align_periods = isset($data['align-periods']) && !empty($data['align-periods']);
 
-            $tariff = $this->db->GetRow('SELECT a.data, s.data AS sdata, t.name, t.type, t.value, t.currency, t.period,
-                                            t.id, t.prodid, t.taxid, t.splitpayment, t.taxcategory
-					                     FROM
-					                     	promotionassignments a
-						                    JOIN promotionschemas s ON (s.id = a.promotionschemaid)
-						                    JOIN tariffs t ON (t.id = a.tariffid)
-					                     WHERE a.id = ?', array($data['promotionassignmentid']));
+            $tariff = $this->db->GetRow(
+                'SELECT a.data, s.data AS sdata, t.name, t.type, t.value, t.currency, t.period,
+                t.id, t.prodid, t.taxid, t.splitpayment, t.taxcategory, t.netflag, t.netvalue,
+                t2.value AS taxvalue
+                FROM promotionassignments a
+                JOIN promotionschemas s ON (s.id = a.promotionschemaid)
+                JOIN tariffs t ON (t.id = a.tariffid)
+                JOIN taxes t2 on t.taxid = t2.id
+                WHERE a.id = ?',
+                array($data['promotionassignmentid'])
+            );
             $data['tariffid'] = $tariff['id'];
 
             $data_schema = explode(';', $tariff['sdata']);
@@ -446,12 +452,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             } else {
                                 $tariffid = $this->db->GetOne(
                                     'SELECT id FROM tariffs
-                                                               WHERE
-                                                                    name   = ? AND
-                                                                    value  = ? AND
-                                                                    currency = ?
-                                                               LIMIT 1',
-                                    array($tariff['name'],
+                                    WHERE name   = ?
+                                    AND value  = ?
+                                    AND currency = ?
+                                    LIMIT 1',
+                                    array(
+                                        $tariff['name'],
                                         empty($value) || $value == 'NULL' ? 0 : str_replace(',', '.', $value),
                                         $tariff['currency']
                                     )
@@ -459,44 +465,51 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
                                 // ... if not found clone tariff
                                 if (!$tariffid) {
-                                    $args = $this->db->GetRow('SELECT
-                                                              name, value, splitpayment, taxcategory, currency, period, taxid, type,
-                                                              upceil, downceil, uprate, downrate,
-                                                              up_burst_time, up_burst_threshold, up_burst_limit,
-                                                              down_burst_time, down_burst_threshold, down_burst_limit,
-                                                              prodid, plimit, climit, dlimit,
-                                                              upceil_n, downceil_n, uprate_n, downrate_n,
-                                                              up_burst_time_n, up_burst_threshold_n, up_burst_limit_n,
-                                                              down_burst_time_n, down_burst_threshold_n, down_burst_limit_n,
-                                                              domain_limit, alias_limit, sh_limit,
-                                                              www_limit, ftp_limit, mail_limit, sql_limit, quota_sh_limit, quota_www_limit,
-                                                              quota_ftp_limit, quota_mail_limit, quota_sql_limit, authtype, flags
-                                                           FROM
-                                                              tariffs WHERE id = ?', array($tariff['id']));
+                                    $args = $this->db->GetRow(
+                                        'SELECT name, value, splitpayment, taxcategory, currency, period, taxid, type,
+                                        upceil, downceil, uprate, downrate,
+                                        up_burst_time, up_burst_threshold, up_burst_limit,
+                                        down_burst_time, down_burst_threshold, down_burst_limit,
+                                        prodid, plimit, climit, dlimit,
+                                        upceil_n, downceil_n, uprate_n, downrate_n,
+                                        up_burst_time_n, up_burst_threshold_n, up_burst_limit_n,
+                                        down_burst_time_n, down_burst_threshold_n, down_burst_limit_n,
+                                        domain_limit, alias_limit, sh_limit,
+                                        www_limit, ftp_limit, mail_limit, sql_limit, quota_sh_limit, quota_www_limit,
+                                        quota_ftp_limit, quota_mail_limit, quota_sql_limit, authtype, flags, netvalue, netflag
+                                        FROM tariffs
+                                        WHERE id = ?',
+                                        array($tariff['id'])
+                                    );
+
+                                    $netValue = f_round(($value / ($tariff['taxvalue'] / 100 + 1)));
 
                                     $args = array_merge($args, array(
                                         'name' => $tariff['name'],
                                         'value' => str_replace(',', '.', $value),
-                                        'period' => $tariff['period']));
+                                        'period' => $tariff['period'],
+                                        'netvalue' => str_replace(',', '.', $netValue)));
 
                                     $args[SYSLOG::RES_TAX] = $args['taxid'];
                                     unset($args['taxid']);
 
-                                    $this->db->Execute('INSERT INTO tariffs
-                                                       (name, value, splitpayment, taxcategory, currency, period, type,
-                                                       upceil, downceil, uprate, downrate,
-                                                       up_burst_time, up_burst_threshold, up_burst_limit,
-                                                       down_burst_time, down_burst_threshold, down_burst_limit,
-                                                       prodid, plimit, climit, dlimit,
-                                                       upceil_n, downceil_n, uprate_n, downrate_n,
-                                                       up_burst_time_n, up_burst_threshold_n, up_burst_limit_n,
-                                                       down_burst_time_n, down_burst_threshold_n, down_burst_limit_n,
-                                                       domain_limit, alias_limit, sh_limit, www_limit, ftp_limit, mail_limit, sql_limit,
-                                                       quota_sh_limit, quota_www_limit, quota_ftp_limit, quota_mail_limit, quota_sql_limit,
-                                                       authtype, flags, taxid)
-                                                    VALUES
-                                                       (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                                                       ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+                                    $this->db->Execute(
+                                        'INSERT INTO tariffs
+                                        (name, value, splitpayment, taxcategory, currency, period, type,
+                                        upceil, downceil, uprate, downrate,
+                                        up_burst_time, up_burst_threshold, up_burst_limit,
+                                        down_burst_time, down_burst_threshold, down_burst_limit,
+                                        prodid, plimit, climit, dlimit,
+                                        upceil_n, downceil_n, uprate_n, downrate_n,
+                                        up_burst_time_n, up_burst_threshold_n, up_burst_limit_n,
+                                        down_burst_time_n, down_burst_threshold_n, down_burst_limit_n,
+                                        domain_limit, alias_limit, sh_limit, www_limit, ftp_limit, mail_limit, sql_limit,
+                                        quota_sh_limit, quota_www_limit, quota_ftp_limit, quota_mail_limit, quota_sql_limit,
+                                        authtype, flags, netvalue, netflag, taxid)
+                                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                                        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                                        array_values($args)
+                                    );
 
                                     $tariffid = $this->db->GetLastInsertId('tariffs');
 
@@ -507,6 +520,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                 }
                             }
                         } else {
+                            $netValue = f_round(($value / ($tariff['taxvalue'] / 100 + 1)));
                             $args = array(
                                 'name' => trans('Activation payment'),
                                 'value' => str_replace(',', '.', $value),
@@ -516,9 +530,15 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                 SYSLOG::RES_TAX => intval($tariff['taxid']),
                                 'prodid' => $tariff['prodid'],
                                 'type' => $tariff['type'],
+                                'netvalue' => str_replace(',', '.', $netValue),
+                                'netflag' => intval($tariff['netflag']),
                             );
-                            $this->db->Execute('INSERT INTO liabilities (name, value, splitpayment, taxcategory, currency, taxid, prodid, type)
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+                            $this->db->Execute(
+                                'INSERT INTO liabilities (name, value, splitpayment, taxcategory, currency,
+                                taxid, prodid, type, netvalue, netflag)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                                array_values($args)
+                            );
 
                             $lid = $this->db->GetLastInsertID('liabilities');
 
@@ -561,23 +581,27 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         } else {
                             if ($tariff['period'] !== null) {
                                 $tariffid = $this->db->GetOne(
-                                    'SELECT id FROM tariffs
-                                                               WHERE
-                                                                    name   = ? AND
-                                                                    value  = ? AND
-                                                                    currency = ? AND
-                                                                    period = ?
-                                                               LIMIT 1',
-                                    array($tariff['name'],
+                                    'SELECT id 
+                                    FROM tariffs
+                                    WHERE name = ?
+                                    AND value = ?
+                                    AND currency = ?
+                                    AND period = ?
+                                    LIMIT 1',
+                                    array(
+                                        $tariff['name'],
                                         empty($value) || $value == 'NULL' ? 0 : str_replace(',', '.', $value),
                                         $tariff['currency'],
-                                        $tariff['period'])
+                                        $tariff['period']
+                                    )
                                 );
                             } else {
                                 $tariffid = $this->db->GetOne(
-                                    '
-                                    SELECT id FROM tariffs
-                                    WHERE name = ? AND value = ? AND currency = ? AND period IS NULL
+                                    'SELECT id FROM tariffs
+                                    WHERE name = ?
+                                    AND value = ?
+                                    AND currency = ?
+                                    AND period IS NULL
                                     LIMIT 1',
                                     array(
                                         $tariff['name'],
@@ -590,44 +614,50 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
                         // ... if not found clone tariff
                         if (!$tariffid) {
-                            $args = $this->db->GetRow('SELECT
-														  name, value, splitpayment, taxcategory, currency, period, taxid, type,
-														  upceil, downceil, uprate, downrate,
-														  up_burst_time, up_burst_threshold, up_burst_limit, 
-														  down_burst_time, down_burst_threshold, down_burst_limit, 
-														  prodid, plimit, climit, dlimit,
-														  upceil_n, downceil_n, uprate_n, downrate_n,
-														  up_burst_time_n, up_burst_threshold_n, up_burst_limit_n, 
-														  down_burst_time_n, down_burst_threshold_n, down_burst_limit_n, 
-														  domain_limit, alias_limit, sh_limit,
-														  www_limit, ftp_limit, mail_limit, sql_limit, quota_sh_limit, quota_www_limit,
-														  quota_ftp_limit, quota_mail_limit, quota_sql_limit, authtype, flags
-													   FROM
-														  tariffs WHERE id = ?', array($tariff['id']));
+                            $args = $this->db->GetRow(
+                                'SELECT name, value, splitpayment, taxcategory, currency, period, taxid, type,
+                                upceil, downceil, uprate, downrate,
+                                up_burst_time, up_burst_threshold, up_burst_limit, 
+                                down_burst_time, down_burst_threshold, down_burst_limit, 
+                                prodid, plimit, climit, dlimit,
+                                upceil_n, downceil_n, uprate_n, downrate_n,
+                                up_burst_time_n, up_burst_threshold_n, up_burst_limit_n, 
+                                down_burst_time_n, down_burst_threshold_n, down_burst_limit_n, 
+                                domain_limit, alias_limit, sh_limit,
+                                www_limit, ftp_limit, mail_limit, sql_limit, quota_sh_limit, quota_www_limit,
+                                quota_ftp_limit, quota_mail_limit, quota_sql_limit, authtype, flags, netvalue, netflag
+                                FROM tariffs 
+                                WHERE id = ?',
+                                array($tariff['id'])
+                            );
+
+                            $netValue = f_round(($value / ($tariff['taxvalue'] / 100 + 1)));
 
                             $args = array_merge($args, array(
                                 'name' => $tariff['name'],
                                 'value' => str_replace(',', '.', $value),
-                                'period' => $tariff['period']));
+                                'period' => $tariff['period'],
+                                'netvalue' => str_replace(',', '.', $netValue)));
 
                             $args[SYSLOG::RES_TAX] = $args['taxid'];
                             unset($args['taxid']);
 
-                            $this->db->Execute('INSERT INTO tariffs
-												   (name, value, splitpayment, taxcategory, currency, period, type,
-												   upceil, downceil, uprate, downrate,
-												   up_burst_time, up_burst_threshold, up_burst_limit, 
-												   down_burst_time, down_burst_threshold, down_burst_limit, 
-												   prodid, plimit, climit, dlimit,
-												   upceil_n, downceil_n, uprate_n, downrate_n,
-												   up_burst_time_n, up_burst_threshold_n, up_burst_limit_n, 
-												   down_burst_time_n, down_burst_threshold_n, down_burst_limit_n, 
-												   domain_limit, alias_limit, sh_limit, www_limit, ftp_limit, mail_limit, sql_limit,
-												   quota_sh_limit, quota_www_limit, quota_ftp_limit, quota_mail_limit, quota_sql_limit,
-												   authtype, flags, taxid)
-												VALUES
-												   (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-												   ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+                            $this->db->Execute(
+                                'INSERT INTO tariffs (name, value, splitpayment, taxcategory, currency, period, type,
+                                upceil, downceil, uprate, downrate,
+                                up_burst_time, up_burst_threshold, up_burst_limit, 
+                                down_burst_time, down_burst_threshold, down_burst_limit, 
+                                prodid, plimit, climit, dlimit,
+                                upceil_n, downceil_n, uprate_n, downrate_n,
+                                up_burst_time_n, up_burst_threshold_n, up_burst_limit_n, 
+                                down_burst_time_n, down_burst_threshold_n, down_burst_limit_n, 
+                                domain_limit, alias_limit, sh_limit, www_limit, ftp_limit, mail_limit, sql_limit,
+                                quota_sh_limit, quota_www_limit, quota_ftp_limit, quota_mail_limit, quota_sql_limit,
+                                authtype, flags, netvalue, netflag, taxid)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                                array_values($args)
+                            );
 
                             $tariffid = $this->db->GetLastInsertId('tariffs');
 
@@ -925,9 +955,15 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             SYSLOG::RES_TAX => intval($data['taxid']),
                             'prodid' => $data['prodid'],
                             'type' => $data['type'],
+                            'netflag' => isset($data['netflag']) ? 1 : 0,
+                            'netvalue' => str_replace(',', '.', $data['netvalue']),
                         );
-                        $this->db->Execute('INSERT INTO liabilities (name, value, splitpayment, taxcategory, currency, taxid, prodid, type)
-					    VALUES (?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+                        $this->db->Execute(
+                            'INSERT INTO liabilities (name, value, splitpayment, taxcategory, currency, taxid,
+                            prodid, type, netflag, netvalue)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                            array_values($args)
+                        );
                         $lid = $this->db->GetLastInsertID('liabilities');
                         if ($this->syslog) {
                             $args[SYSLOG::RES_LIAB] = $lid;
@@ -994,10 +1030,18 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             SYSLOG::RES_TAX => intval($data['taxid']),
                             'prodid' => $data['prodid'],
                             'type' => $data['type'],
+                            'netvalue' => str_replace(',', '.', $data['netvalue']),
+                            'netflag' => isset($data['netflag']) ? 1 : 0,
                         );
-                        $this->db->Execute('INSERT INTO liabilities (name, value, splitpayment, currency, taxid, prodid, type)
-					    VALUES (?, ?, ?, ?, ?, ?, ?)', array_values($args));
+                        $this->db->Execute(
+                            'INSERT INTO liabilities (name, value, splitpayment, currency,
+                            taxid, prodid, type, netvalue, netflag)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                            array_values($args)
+                        );
+
                         $lid = $this->db->GetLastInsertID('liabilities');
+
                         if ($this->syslog) {
                             $args[SYSLOG::RES_LIAB] = $lid;
                             $args[SYSLOG::RES_CUST] = $data['customerid'];
@@ -1050,9 +1094,15 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         SYSLOG::RES_TAX => intval($data['taxid']),
                         'prodid' => $data['prodid'],
                         'type' => $data['type'],
+                        'netvalue' => str_replace(',', '.', $data['netvalue']),
+                        'netflag' => isset($data['netflag']) ? 1 : 0,
                     );
-                    $this->db->Execute('INSERT INTO liabilities (name, value, splitpayment, taxcategory, currency, taxid, prodid, type)
-							VALUES (?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+                    $this->db->Execute(
+                        'INSERT INTO liabilities (name, value, splitpayment, taxcategory, currency,
+                        taxid, prodid, type, netvalue, netflag)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                        array_values($args)
+                    );
                     $lid = $this->db->GetLastInsertID('liabilities');
                     if ($this->syslog) {
                         $args[SYSLOG::RES_LIAB] = $lid;
@@ -3085,17 +3135,20 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function GetTariffs($forced_id = null)
     {
-        return $this->db->GetAllByKey('SELECT t.id, t.name, t.value, t.splitpayment, t.taxcategory, t.currency, uprate, taxid, t.authtype,
-				datefrom, dateto, (CASE WHEN datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?) THEN 1 ELSE 0 END) AS valid,
-				prodid, downrate, upceil, downceil, climit, plimit, taxes.value AS taxvalue,
-				taxes.label AS tax, t.period, t.type AS tarifftype, ' . $this->db->GroupConcat('ta.tarifftagid') . ' AS tags
-				FROM tariffs t
-				LEFT JOIN tariffassignments ta ON ta.tariffid = t.id
-				LEFT JOIN taxes ON t.taxid = taxes.id
-				WHERE t.disabled = 0' . (empty($forced_id) ? '' : ' OR t.id = ' . intval($forced_id)) . '
-				GROUP BY t.id, t.name, t.value, t.splitpayment, t.taxcategory, t.currency, uprate, taxid, t.authtype, datefrom, dateto, prodid, downrate, upceil, downceil, climit, plimit,
-					taxes.value, taxes.label, t.period, t.type
-				ORDER BY t.name, t.value DESC', 'id');
+        return $this->db->GetAllByKey(
+            'SELECT t.id, t.name, t.value, t.splitpayment, t.taxcategory, t.currency, uprate, taxid, t.authtype,
+            datefrom, dateto, (CASE WHEN datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?) THEN 1 ELSE 0 END) AS valid,
+            prodid, downrate, upceil, downceil, climit, plimit, t.netvalue, t.netflag, taxes.value AS taxvalue,
+            taxes.label AS tax, t.period, t.type AS tarifftype, ' . $this->db->GroupConcat('ta.tarifftagid') . ' AS tags
+            FROM tariffs t
+            LEFT JOIN tariffassignments ta ON ta.tariffid = t.id
+            LEFT JOIN taxes ON t.taxid = taxes.id
+            WHERE t.disabled = 0' . (empty($forced_id) ? '' : ' OR t.id = ' . intval($forced_id)) . '
+            GROUP BY t.id, t.name, t.value, t.splitpayment, t.taxcategory, t.currency, uprate, taxid, t.authtype, datefrom, dateto, prodid, downrate, upceil, downceil, climit, plimit,
+                t.netvalue, t.netflag, taxes.value, taxes.label, t.period, t.type
+            ORDER BY t.name, t.value DESC',
+            'id'
+        );
     }
 
     public function TariffSet($id)
@@ -3736,15 +3789,20 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         return $result;
     }
 
-    public function GetTaxes($from = null, $to = null)
+    public function GetTaxes($from = null, $to = null, $default = null)
     {
         $from = $from ? $from : mktime(0, 0, 0);
         $to = $to ? $to : mktime(23, 59, 59);
 
-        return $this->db->GetAllByKey('SELECT id, value, label, taxed FROM taxes
-			WHERE (validfrom = 0 OR validfrom <= ?)
-			    AND (validto = 0 OR validto >= ?)
-			ORDER BY value', 'id', array($from, $to));
+        return $this->db->GetAllByKey(
+            'SELECT id, value, label, taxed FROM taxes
+            WHERE (validfrom = 0 OR validfrom <= ?)
+            AND (validto = 0 OR validto >= ?)'
+            . ($default ? ' AND value = ' . ConfigHelper::getConfig('phpui.default_taxrate') : '' )
+            . ' ORDER BY value',
+            'id',
+            array($from, $to)
+        );
     }
 
     public function CalcAt($period, $date)

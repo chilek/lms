@@ -454,24 +454,51 @@
 								</TD>
 							</TR>
 
-							<TR id="a_value" style="display: none;">
-								<TD>
+							<tr id="a_price" style="display: none;">
+								<td>
 									{icon name="money"}
-								</TD>
-								<TD class="bold">
-									{trans("Value:")}
-								</TD>
-								<TD>
-									<INPUT type="text" name="{$variable_prefix}[value]" value="{if $variables.value}{$variables.value}{/if}" size="10" {tip text="Enter liability value (tariffless liabilities only)" trigger="value"}>
-
+								</td>
+								<td class="bold">
+									{trans("Price")}
+								</td>
+								<td>
+									<table>
+										<tr>
+											<td align="right">
+												<label>{trans('Net')}
+													<input type="text" size="11" id="netprice" name="{$variable_prefix}[netvalue]" value="">
+												</label>
+											</td>
+											<td rowspan="2">
+												<label>
+													<input type="checkbox" id="netflag" name="{$variable_prefix}[netflag]" value="1"
+															{tip text="Billing according to the net price"}>
+													{trans('according in net')}
+												</label>
+											</td>
+										</tr>
+										<tr>
+											<td align="right">
+												<label>{trans('Gross')}
+													<INPUT type="text" size="11" id="grossprice" name="{$variable_prefix}[value]" value=""
+															{tip text="Enter liability value (tariffless liabilities only)" trigger="value"}>
+												</label>
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+							<tr id="a_currency" style="display: none;">
+								<td>
+									{icon name="money"}
+								</td>
+								<td class="bold">
+									{trans("Currency")}
+								</td>
+								<td class="nobr">
 									{currency_selection selected=$variables.currency elementname=$variable_prefix|cat:"[currency]"}
-
-									<label>
-										<input type="checkbox" name="{$variable_prefix}[splitpayment]" value="1"{if $variables.splitpayment} checked{/if}>
-										{trans("split payment")}
-									</label>
-								</TD>
-							</TR>
+								</td>
+							</tr>
 
 							<TR id="a_discount" style="display: none;">
 								<TD style="{if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
@@ -505,25 +532,42 @@
 									</SELECT>
 								</TD>
 
+							<tr id="a_splitpayment" style="display: none;">
+								<td>
+									{icon name="value"}
+								</td>
+								<td class="bold">
+									<label for="splitpayment">
+										{trans("Split payment:")}
+									</label>
+								</td>
+								<td>
+									<input type="checkbox" id="splitpayment" name="{$variable_prefix}[splitpayment]" value="1"{if $variables.splitpayment} checked{/if}>
+								</td>
+							</tr>
+
 							<TR id="a_tax" style="display: none;">
 								<TD>
-									{icon name="money"}
+									{icon name="tax"}
 								</TD>
 								<TD class="bold">
 									{trans("Tax:")}
 								</TD>
 								<TD>
-									<SELECT SIZE="1" name="{$variable_prefix}[taxid]" {tip text="Select Tax value" trigger="taxid"}>
+									<SELECT SIZE="1" id="tax" name="{$variable_prefix}[taxid]" {tip text="Select Tax value" trigger="taxid"}>
 										{foreach item=tax from=$taxeslist}
 										<OPTION value="{$tax.id}"{if ($variables.taxid && $tax.id == $variables.taxid) || (!$variables.taxid && $tax.value == ConfigHelper::getConfig('phpui.default_taxrate'))} selected{/if}>{$tax.label}</OPTION>
 										{/foreach}
 									</SELECT>
+									{foreach $taxeslist as $tax}
+										<input type="hidden" id="tax{$tax.id}" name="tax{$tax.id}" value="{$tax.value}" disabled>
+									{/foreach}
 								</TD>
 							</TR>
 
 							<TR id="a_taxcategory" style="display: none;">
 								<TD>
-									{icon name="money"}
+									{icon name="tax"}
 								</TD>
 								<TD class="bold">
 									<label for="taxcategory">

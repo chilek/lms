@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -112,6 +112,7 @@ if (isset($_POST['assignment'])) {
                 $tariffid = $LMS->AddAssignment($copy_a);
             }
         } else {
+            $a['taxvalue'] = $DB->GetOne('SELECT value FROM taxes WHERE id = ?', array($a['taxid']));
             $tariffid = $LMS->AddAssignment($a);
         }
 
@@ -217,6 +218,9 @@ $SMARTY->assign('assignment', $a);
 
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
 $SMARTY->assign('taxeslist', $LMS->GetTaxes());
+$defaultTaxId = array_values($LMS->GetTaxes(null, null, true));
+$defaultTaxId = $defaultTaxId[0]['id'];
+$SMARTY->assign('defaultTaxId', $defaultTaxId);
 $SMARTY->assign('assignments', $LMS->GetCustomerAssignments($customer['id'], true, false));
 $SMARTY->assign('customerinfo', $customer);
 

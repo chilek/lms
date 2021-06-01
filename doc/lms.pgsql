@@ -904,7 +904,9 @@ CREATE TABLE liabilities (
 		CONSTRAINT liabilities_taxid_fkey REFERENCES taxes (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	prodid varchar(255) 	DEFAULT '' NOT NULL,
 	type smallint DEFAULT -1 NOT NULL,
-	PRIMARY KEY (id)
+    netflag smallint DEFAULT 0 NOT NULL,
+    netvalue numeric(9,2) DEFAULT NULL,
+    PRIMARY KEY (id)
 );
 
 /* --------------------------------------------------------
@@ -4040,6 +4042,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021051900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021052400');
 
 COMMIT;

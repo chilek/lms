@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -316,9 +316,16 @@ if (isset($_POST['assignment'])) {
                     SYSLOG::RES_TAX => intval($a['taxid']),
                     'prodid' => $a['prodid'],
                     'type' => $a['type'],
+                    'netvalue' => str_replace(',', '.', $a['netvalue']),
+                    'netflag' => isset($a['netflag']) ? 1 : 0,
                     SYSLOG::RES_LIAB => $a['liabilityid']
                 );
-                $DB->Execute('UPDATE liabilities SET value=?, splitpayment=?, taxcategory=?, currency=?, name=?, taxid=?, prodid=?, type = ? WHERE id=?', array_values($args));
+                $DB->Execute(
+                    'UPDATE liabilities SET value = ?, splitpayment = ?, taxcategory = ?, currency = ?, name = ?,
+                    taxid = ?, prodid = ?, type = ?, netvalue = ?, netflag = ?
+                    WHERE id = ?',
+                    array_values($args)
+                );
                 if ($SYSLOG) {
                     $args[SYSLOG::RES_CUST] = $customer['id'];
                     $SYSLOG->AddMessage(SYSLOG::RES_LIAB, SYSLOG::OPER_UPDATE, $args);
@@ -334,9 +341,14 @@ if (isset($_POST['assignment'])) {
                 SYSLOG::RES_TAX => intval($a['taxid']),
                 'prodid' => $a['prodid'],
                 'type' => $a['type'],
+                'netvalue' => str_replace(',', '.', $a['netvalue']),
+                'netflag' => isset($a['netflag']) ? 1 : 0,
             );
-            $DB->Execute('INSERT INTO liabilities (name, value, splitpayment, taxcategory, currency, taxid, prodid, type)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+            $DB->Execute(
+                'INSERT INTO liabilities (name, value, splitpayment, taxcategory, currency, taxid, prodid, type, netvalue, netflag)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                array_values($args)
+            );
 
             $a['liabilityid'] = $DB->GetLastInsertID('liabilities');
 
@@ -447,21 +459,25 @@ if (isset($_POST['assignment'])) {
 
     $SMARTY->assign('error', $error);
 } else {
-    $a = $DB->GetRow('SELECT a.id AS id, a.customerid, a.tariffid, a.period, a.backwardperiod,
-				a.at, a.count, a.datefrom, a.dateto, a.numberplanid, a.paytype,
-				a.invoice, a.separatedocument,
-				liabilities.type,
-				(CASE WHEN liabilityid IS NULL THEN tariffs.splitpayment ELSE liabilities.splitpayment END) AS splitpayment,
-				(CASE WHEN liabilityid IS NULL THEN tariffs.taxcategory ELSE liabilities.taxcategory END) AS taxcategory,
-				a.settlement, a.pdiscount, a.vdiscount, a.attribute, a.liabilityid,
-				(CASE WHEN liabilityid IS NULL THEN tariffs.name ELSE liabilities.name END) AS name,
-				liabilities.value AS value, liabilities.currency AS currency,
-				liabilities.prodid AS prodid, liabilities.taxid AS taxid,
-				recipient_address_id
-				FROM assignments a
-				LEFT JOIN tariffs ON (tariffs.id = a.tariffid)
-				LEFT JOIN liabilities ON (liabilities.id = a.liabilityid)
-				WHERE a.id = ?', array($_GET['id']));
+    $a = $DB->GetRow(
+        'SELECT a.id AS id, a.customerid, a.tariffid, a.period, a.backwardperiod,
+        a.at, a.count, a.datefrom, a.dateto, a.numberplanid, a.paytype,
+        a.invoice, a.separatedocument,
+        liabilities.type,
+        (CASE WHEN liabilityid IS NULL THEN tariffs.splitpayment ELSE liabilities.splitpayment END) AS splitpayment,
+        (CASE WHEN liabilityid IS NULL THEN tariffs.taxcategory ELSE liabilities.taxcategory END) AS taxcategory,
+        a.settlement, a.pdiscount, a.vdiscount, a.attribute, a.liabilityid,
+        (CASE WHEN liabilityid IS NULL THEN tariffs.name ELSE liabilities.name END) AS name,
+        liabilities.value AS value, liabilities.currency AS currency,
+        liabilities.netvalue AS netvalue, liabilities.netflag AS netflag,
+        liabilities.prodid AS prodid, liabilities.taxid AS taxid,
+        recipient_address_id
+        FROM assignments a
+        LEFT JOIN tariffs ON (tariffs.id = a.tariffid)
+        LEFT JOIN liabilities ON (liabilities.id = a.liabilityid)
+        WHERE a.id = ?',
+        array($_GET['id'])
+    );
 
     $a['pdiscount'] = floatval($a['pdiscount']);
     $a['vdiscount'] = floatval($a['vdiscount']);
@@ -542,6 +558,9 @@ $SMARTY->assign('tags', $LMS->TarifftagGetAll());
 
 $SMARTY->assign('tariffs', $LMS->GetTariffs($a['tariffid']));
 $SMARTY->assign('taxeslist', $LMS->GetTaxes());
+$defaultTaxId = array_values($LMS->GetTaxes(null, null, true));
+$defaultTaxId = $defaultTaxId[0]['id'];
+$SMARTY->assign('defaultTaxId', $defaultTaxId);
 if (is_array($a['nodes'])) {
     $a['nodes'] = array_flip($a['nodes']);
 }
