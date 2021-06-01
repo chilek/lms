@@ -426,6 +426,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         } elseif ($data['at'] === 0) {
                             $datefrom = mktime(0, 0, 0, $start_month + 1, 0, $start_year);
                             $at = $datefrom;
+                        } else {
+                            $at = mktime(0, 0, 0, $start_month + ($start_day >= $data['at'] ? 1 : 0), $data['at'], $start_year);
                         }
                         $_datefrom = $orig_datefrom;
 
@@ -529,7 +531,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             $tariffid = 0;
                         }
 
-                        $period   = DISPOSABLE;
+                        $period = DISPOSABLE;
                     } else {
                         continue;
                     }
