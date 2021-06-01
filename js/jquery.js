@@ -1017,6 +1017,9 @@ function initRolloverHints(selectors) {
 							$(this).remove();
 						});
 					},
+					create: function() {
+						elem.tooltip('open');
+					},
 					tooltipClass: 'lms-ui-hint-rollover',
 					content: content
 				});
@@ -1436,7 +1439,7 @@ $(function() {
 		}
 	});
 
-	$('.lms-ui-hint-rollover,.lms-ui-hint-toggle').each(function() {
+	$(document).on('mouseenter', '.lms-ui-hint-rollover,.lms-ui-hint-toggle', function() {
 		if ($(this).is('.lms-ui-hint-rollover')) {
 			initRolloverHints(this);
 		} else {
