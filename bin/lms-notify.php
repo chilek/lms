@@ -109,7 +109,7 @@ lms-notify.php
                                 (separated by colons)
 -s, --section=<section-name>    section name from lms configuration where settings
                                 are stored
--a, --actions=<node-access,customer-status,assignment-invoice,all-assignment-suspension>
+-a, --actions=<node-access,node-warning,customer-status,assignment-invoice,all-assignment-suspension>
                                 action names which should be performed for
                                 virtual block/unblock channels
     --block-prechecks=none|<node-access,customer-status,assignment-invoice,all-assignment-suspension>
@@ -164,6 +164,9 @@ $supported_actions = array(
         'params' => ACTION_PARAM_NONE,
     ),
     'node-access' => array(
+        'params' => ACTION_PARAM_NONE,
+    ),
+    'node-warning' => array(
         'params' => ACTION_PARAM_NONE,
     ),
     'assignment-invoice' => array(
@@ -2933,6 +2936,9 @@ if (!empty($intersect)) {
                             case 'node-access':
                                 $where[] = 'EXISTS (SELECT id FROM nodes WHERE nodes.ownerid = c.id AND access = 1)';
                                 break;
+                            case 'node-warning':
+                                $where[] = 'EXISTS (SELECT id FROM nodes WHERE nodes.ownerid = c.id AND warning = 0)';
+                                break;
                             case 'assignment-invoice':
                                 switch (reset($precheck_params)) {
                                     case 'proforma':
@@ -3002,6 +3008,37 @@ if (!empty($intersect)) {
                                                         SYSLOG::RES_NODE => $node['id'],
                                                         SYSLOG::RES_CUST => $node['ownerid'],
                                                         'access' => 0
+                                                    )
+                                                );
+                                            }
+                                        }
+                                    }
+                                }
+                                break;
+                            case 'node-warning':
+                                $nodes = $DB->GetAll(
+                                    "SELECT id, ownerid FROM nodes WHERE warning = ?
+                                    AND ownerid IN (" . implode(',', $customers) . ")",
+                                    array(0)
+                                );
+                                if (!empty($nodes)) {
+                                    foreach ($nodes as $node) {
+                                        if (!$quiet) {
+                                            printf("[block/node-warning] CustomerID: %04d, NodeID: %04d" . PHP_EOL, $node['ownerid'], $node['id']);
+                                        }
+
+                                        if (!$debug) {
+                                            $DB->Execute("UPDATE nodes SET warning = ?
+                                                WHERE id = ?", array(1, $node['id']));
+                                            if ($SYSLOG) {
+                                                $SYSLOG->NewTransaction('lms-notify.php');
+                                                $SYSLOG->AddMessage(
+                                                    SYSLOG::RES_NODE,
+                                                    SYSLOG::OPER_UPDATE,
+                                                    array(
+                                                        SYSLOG::RES_NODE => $node['id'],
+                                                        SYSLOG::RES_CUST => $node['ownerid'],
+                                                        'warning' => 1,
                                                     )
                                                 );
                                             }
@@ -3152,6 +3189,9 @@ if (!empty($intersect)) {
                             case 'node-access':
                                 $where[] = 'EXISTS (SELECT id FROM nodes WHERE nodes.ownerid = c.id AND access = 0)';
                                 break;
+                            case 'node-warning':
+                                $where[] = 'EXISTS (SELECT id FROM nodes WHERE nodes.ownerid = c.id AND warning = 1)';
+                                break;
                             case 'assignment-invoice':
                                 switch (reset($precheck_params)) {
                                     case 'proforma':
@@ -3223,6 +3263,37 @@ if (!empty($intersect)) {
                                                         SYSLOG::RES_NODE => $node['id'],
                                                         SYSLOG::RES_CUST => $node['ownerid'],
                                                         'access' => 1
+                                                    )
+                                                );
+                                            }
+                                        }
+                                    }
+                                }
+                                break;
+                            case 'node-warning':
+                                $nodes = $DB->GetAll(
+                                    "SELECT id, ownerid FROM nodes WHERE warning = ?
+                                    AND ownerid IN (" . implode(',', $customers) . ")",
+                                    array(1)
+                                );
+                                if (!empty($nodes)) {
+                                    foreach ($nodes as $node) {
+                                        if (!$quiet) {
+                                            printf("[unblock/node-warning] CustomerID: %04d, NodeID: %04d" . PHP_EOL, $node['ownerid'], $node['id']);
+                                        }
+
+                                        if (!$debug) {
+                                            $DB->Execute("UPDATE nodes SET warning = ?
+                                                WHERE id = ?", array(0, $node['id']));
+                                            if ($SYSLOG) {
+                                                $SYSLOG->NewTransaction('lms-notify.php');
+                                                $SYSLOG->AddMessage(
+                                                    SYSLOG::RES_NODE,
+                                                    SYSLOG::OPER_UPDATE,
+                                                    array(
+                                                        SYSLOG::RES_NODE => $node['id'],
+                                                        SYSLOG::RES_CUST => $node['ownerid'],
+                                                        'warning' => 0
                                                     )
                                                 );
                                             }
