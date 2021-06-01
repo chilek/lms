@@ -1439,7 +1439,10 @@ $(function() {
 		}
 	});
 
-	$(document).on('mouseenter', '.lms-ui-hint-rollover:not(.ui-tooltip),.lms-ui-hint-toggle:not(.ui-tooltip)', function() {
+	$(document).on('mouseenter', '.lms-ui-hint-rollover,.lms-ui-hint-toggle', function() {
+		if ($(this).is('.ui-tooltip') || $(this).is('[data-init]')) {
+			return;
+		}
 		if ($(this).is('.lms-ui-hint-rollover')) {
 			initRolloverHints(this);
 		} else {
