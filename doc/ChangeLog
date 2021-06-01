@@ -173,6 +173,7 @@ version 27-git (????-??-??):
   - enhancement: lms-ui-tooltip-toggle elements toggle tooltip after click [chilan]
   - enhancement: new smarty function 'hint' allows to conveniently embed hint buttons (supported modes
     are 'toggle' and 'rollover') [chilan]
+  - enhancement: lms-notify.php support new action 'node-warning' which uses node warning flag [chilan]
 
 version 26.0 (2020-12-15):
 
