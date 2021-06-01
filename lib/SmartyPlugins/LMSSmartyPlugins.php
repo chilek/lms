@@ -1138,11 +1138,14 @@ class LMSSmartyPlugins
 
     public static function hintFunction(array $params, $template)
     {
-        $content = isset($params['content']) ? $params['content'] : trans('(empty content)');
+        $content = isset($params['content']) ? $params['content'] : null;
+        $url = isset($params['url']) ? $params['url'] : null;
         $mode = isset($params['mode']) && $params['mode'] == self::HINT_TYPE_ROLLOVER
             ? self::HINT_TYPE_ROLLOVER : self::HINT_TYPE_TOGGLE;
 
-        return '<a class="lms-ui-button lms-ui-hint-' . $mode . '" data-hint="'
-            . $content . '"><i class="lms-ui-icon-hint fa-fw"></i></a>';
+        return '<a class="lms-ui-button lms-ui-hint-' . $mode . '"'
+            . ($content ? ' data-hint="' . $content . '"' : '')
+            . ($url ? ' data-url="' . $url . '"' : '')
+            . '><i class="lms-ui-icon-hint fa-fw"></i></a>';
     }
 }
