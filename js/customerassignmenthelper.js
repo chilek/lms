@@ -106,7 +106,7 @@ function CustomerAssignmentHelper(options) {
 		});
 		if (cancelled) {
 			e.stopImmediatePropagation();
-			$('.schema-tariff-checkbox[data-mandatory]:checkbox').attr('disabled', true);
+			$('.schema-tariff-checkbox[data-mandatory]:checkbox').prop('disabled', true);
 			return false;
 		}
         return true;

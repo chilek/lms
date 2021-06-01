@@ -62,6 +62,7 @@
 	$(function() {
 		$('#submit-button,#print-button').click(function (e) {
 			if (!$(this)[0].form.checkValidity() || (parseInt($('#promotion-select').val()) && !customer_assignment_helper.validate(e))) {
+				$('#submit-button,#print-button').prop('disabled', false);
 				return;
 			}
 			document.documentadd.submit();
