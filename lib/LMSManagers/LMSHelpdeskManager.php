@@ -1961,7 +1961,21 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         $text = str_replace('%service', $params['service'], $text);
         $text = str_replace('%type', $params['type'], $text);
         $text = str_replace('%invproject', $params['invprojectid'], $text);
+        $text = str_replace('%requestor', $params['requestor'], $text);
+        $text = str_replace('%requestor_mail', $params['requestor_mail'], $text);
+        $text = str_replace('%requestor_phone', $params['requestor_phone'], $text);
+        $text = str_replace('%requestor_userid', $params['requestor_userid'], $text);
         $text = str_replace('%parentid', $params['parentid'], $text);
+        $text = str_replace('%node', $params['node'], $text);
+        $text = str_replace('%nodeid', $params['nodeid'], $text);
+        $text = str_replace('%netnode', $params['netnode'], $text);
+        $text = str_replace('%netnodeid', $params['netnodeid'], $text);
+        $text = str_replace('%netdev', $params['netdev'], $text);
+        $text = str_replace('%netdevid', $params['netdevid'], $text);
+        $text = str_replace('%owner', $params['owner'], $text);
+        $text = str_replace('%ownerid', $params['ownerid'], $text);
+        $text = str_replace('%verifier', $params['verifier'], $text);
+        $text = str_replace('%verifierid', $params['verifierid'], $text);
         $url_prefix = (isset($params['url']) && !empty($params['url']) ? $params['url']
             : 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://'
             . $_SERVER['HTTP_HOST']
