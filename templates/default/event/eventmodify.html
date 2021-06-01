@@ -97,7 +97,7 @@
 
 					{$visibility=!empty($nodes)}
 					{box_row class="node-row" icon="node" label="Node:" icon_class="fa-fw" visible=$visibility}
-						{if !isset($event.ticketid)}
+						{if !empty($event.ticketid)}
 							<select class="node-list" name="event[nodeid]" {tip text="Select node"}>
 								<option value="">{trans("- none -")}</option>
 								{foreach $nodes as $node}

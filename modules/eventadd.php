@@ -507,7 +507,7 @@ if (isset($eventticketid)) {
     $event['ticket'] = $LMS->getTickets($eventticketid);
     $event['customerid'] = $event['ticket']['customerid'];
     $event['customername'] = $event['ticket']['customername'];
-    if (ConfigHelper::checkConfig('phpui.copy_ticket_summary_to_assigned_event', 'false')) {
+    if (ConfigHelper::checkConfig('phpui.copy_ticket_summary_to_assigned_event')) {
         $event['title'] = $event['ticket']['name'];
         $message = $LMS->GetFirstMessage($event['ticketid']);
         $event['description'] = $message['body'];

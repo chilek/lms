@@ -2415,13 +2415,13 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     {
         if (is_array($ticketids)) {
             return $this->db->GetAllByKey(
-                'SELECT id, state, subject AS name FROM rttickets WHERE id IN ? ORDER BY id',
+                'SELECT id, state, subject AS name, customerid FROM rttickets WHERE id IN ? ORDER BY id',
                 'id',
                 array($ticketids)
             );
         } else {
             return $this->db->GetRow(
-                'SELECT id, state, subject AS name FROM rttickets WHERE id = ?',
+                'SELECT id, state, subject AS name, customerid FROM rttickets WHERE id = ?',
                 array($ticketids)
             );
         }
