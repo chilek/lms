@@ -244,16 +244,16 @@
 				{icon name="nodeunk"}
 			{/if}
 			{if $node.info}
-			    {icon name="info" tip=$node.info}
+			    {icon name="info" tip=$node.info|escape}
 			{/if}
-			{$node.name}</A>{if $node.locked}{icon name="lock" tip="<!node>lock is active" class="node-lock-icon"}{/if}</span>
+			{$node.name|escape}</A>{if $node.locked}{icon name="lock" tip="<!node>lock is active" class="node-lock-icon"}{/if}</span>
 			<br>
 			<span class="nobr{if ! $node.access} blend{/if}">
 				{icon name="customer"}
 				<a href="?m=customerinfo&id={$node.ownerid}"
 					class="lms-ui-hint-rollover"
 					data-url="?m=customerinfoshort&id={$node.ownerid}">
-					{$node.owner|truncate:40:"&hellip;":true|replace:" ":"&nbsp;"}
+					{$node.owner|trunescape:40}
 				</a>
 			</span>
 		</TD>
