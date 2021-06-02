@@ -2121,8 +2121,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
             'fullnumber' => $fullnumber,
             'comment' => $comment,
-            'recipient_address_id' => $invoice['invoice']['recipient_address_id'],
-            'post_address_id' => $invoice['invoice']['post_address_id'],
+            'recipient_address_id' => empty($invoice['invoice']['recipient_address_id']) ? null : $invoice['invoice']['recipient_address_id'],
+            'post_address_id' => empty($invoice['invoice']['post_address_id']) ? null : $invoice['invoice']['post_address_id'],
             'currency' => isset($invoice['invoice']['currency']) ? $invoice['invoice']['currency'] : Localisation::getCurrentCurrency(),
             'currencyvalue' => isset($invoice['invoice']['currencyvalue']) ? $invoice['invoice']['currencyvalue'] : 1.0,
             'memo' => isset($invoice['customer']['documentmemo']) && !empty($invoice['customer']['documentmemo'])
