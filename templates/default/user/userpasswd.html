@@ -22,7 +22,7 @@
 			{trans("Current password:")}
 		</TD>
 		<TD class="nobr">
-			<input type="password" name="password[currentpasswd]" {tip text="Enter current password" trigger="currentpasswd"} autocomplete="new-password">
+			<input type="password" name="password[currentpasswd]" {tip text="Enter current password" trigger="currentpasswd"} {if $passwd.id == $layout.logid}autocomplete="current-password"{else}autocomplete="new-password"{/if}>
 		</TD>
 	</TR>
 	{/if}
