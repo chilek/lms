@@ -65,11 +65,13 @@
 {include file="vlan/vlanmodify-dialog.html"}
 
 <script>
-    $( '.delete-vlan' ).click(function() {
-        confirmDialog( $t("Are you sure, you want to delete that VLAN?") , this).done(function() {
-            location.href = $(this).attr('href');
+    $(function() {
+        $( '.delete-vlan' ).click(function() {
+            confirmDialog( $t("Are you sure, you want to delete that VLAN?") , this).done(function() {
+                location.href = $(this).attr('href');
+            });
+            return false;
         });
-        return false;
     });
 </script>
 
