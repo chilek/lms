@@ -26,6 +26,9 @@
 
 class LMSSmartyPlugins
 {
+    const HINT_TYPE_ROLLOVER = 'rollover';
+    const HINT_TYPE_TOGGLE = 'toggle';
+
     public static function buttonFunction(array $params, $template)
     {
         static $defaults = array(
@@ -1135,5 +1138,15 @@ class LMSSmartyPlugins
         return '<select name="' . $elemname . '" ' . self::tipFunction(array('text' => $tip, 'trigger' => $trigger), $template) . '>'
             . $options
             . '</select>';
+    }
+
+    public static function hintFunction(array $params, $template)
+    {
+        $content = isset($params['content']) ? $params['content'] : trans('(empty content)');
+        $mode = isset($params['mode']) && $params['mode'] == self::HINT_TYPE_ROLLOVER
+            ? self::HINT_TYPE_ROLLOVER : self::HINT_TYPE_TOGGLE;
+
+        return '<a class="lms-ui-button lms-ui-tooltip-' . $mode . '" data-hint="'
+            . $content . '"><i class="lms-ui-icon-hint fa-fw"></i></a>';
     }
 }

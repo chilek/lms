@@ -1313,6 +1313,7 @@ $_LANG['Notices:'] = 'Powiadomienia:';
 $_LANG['notice disabled'] = 'powiadomienie wyłączone';
 $_LANG['notice enabled'] = 'powiadomienie włączone';
 $_LANG['Not exists'] = 'Nie znaleziono';
+$_LANG['not sent to email'] = 'niewysłane e-mailem';
 $_LANG['Messages'] = 'Wiadomości';
 $_LANG['Message subject is required!'] = 'Temat wiadomości jest wymagany!';
 $_LANG['Message subject not specified!'] ='Brak tytułu wiadomości!';
@@ -5217,3 +5218,12 @@ $_LANG['sms marketing'] = 'marketing SMS-em';
 
 $_LANG['Issuer'] = 'Wystawca';
 $_LANG['Enter issuer name visible on documents'] = 'Podaj nazwę wystawcy widoczną na dokumentach';
+$_LANG['Are you sure, you want to delete that VLAN?'] = 'Czy jesteś pewien, że chcesz usunąć ten VLAN?';
+
+$_LANG['Assignments color markings:'] = 'Legenda oznaczeń:';
+$_LANG['Active tariff assignment'] = 'Zobowiązanie taryfowe aktywne';
+$_LANG['Active tariffless assignment'] = 'Zobowiązanie beztaryfowe aktywne';
+$_LANG['Suspended assignment'] = 'Zobowiązanie zawieszone';
+$_LANG['Future assignment'] = 'Zobowiązanie przyszłe';
+$_LANG['Expired assignment'] = 'Zobowiązanie przeterminowane';
+$_LANG['Assignment from not approved document'] = 'Zobowiązanie z niezatwierdzonego dokumentu';

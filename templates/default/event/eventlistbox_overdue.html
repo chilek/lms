@@ -1,16 +1,24 @@
 {block name="eventlistbox_overdue"}
-<TABLE class="lmsbox lms-ui-background-cycle"{if !empty($overdue_events)} style="border: 2px red solid"}{/if}>
-    <COLGROUP>
-        <COL style="width: 1%;">
-        <COL style="width: 1%; min-width:90px;">
-        <COL style="width: 95%;">
-        <COL style="width: 1%;">
-        <COL style="width: 1%;">
-        <COL style="width: 1%;" class="no-print">
-    </COLGROUP>
-    <THEAD>
-        <TR class="superdark">
-            <TD class="bold nobr" colspan="6">
+<style>
+
+    .overdue-events {
+        box-shadow: 0 0 3px 1px red;
+    }
+
+</style>
+
+<table class="lmsbox lms-ui-tab-container lms-ui-background-cycle{if !empty($overdue_events)} overdue-events{/if}">
+    <colgroup>
+        <col style="width: 1%;">
+        <col style="width: 1%; min-width:90px;">
+        <col style="width: 95%;">
+        <col style="width: 1%;">
+        <col style="width: 1%;">
+        <col style="width: 1%;" class="no-print">
+    </colgroup>
+    <thead>
+        <tr class="hand lmsbox-titlebar" data-lmsbox-content="overdue-events-panel">
+            <td class="bold nobr" colspan="6">
                 {icon name="timetable"}
                 {if !empty($overdue_events_only)}
                     {trans("Overdue events")}
@@ -20,13 +28,21 @@
                 {if isset($overdue_limited)}
                     {trans("(limited to first 100)")}
                 {/if}
-            </TD>
-        </TR>
-    </THEAD>
-    <TBODY>
-    {foreach $overdue_events as $event}
-        {include file="event/eventlistboxrow.html" overdue=1}
-    {/foreach}
-    </TBODY>
-</TABLE>
+            </td>
+        </tr>
+    </thead>
+    <tbody id="overdue-events-panel" style="display: none;">
+        {foreach $overdue_events as $event}
+            {include file="event/eventlistboxrow.html" overdue=1}
+        {/foreach}
+    </tbody>
+</table>
+
+<script>
+
+    if (getCookie('overdue-events-panel') == 1) {
+        $('#overdue-events-panel').show();
+    }
+
+</script>
 {/block}

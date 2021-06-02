@@ -200,7 +200,7 @@
 			</td>
 		</tr>
 		{/if}
-		{if !empty($document.closed) && ($document.docrights && $smarty.const.DOCRIGHT_ARCHIVE)}
+		{if !empty($document.closed) && ($document.docrights & $smarty.const.DOCRIGHT_ARCHIVE)}
 		<tr>
 			<td>
 				{icon name="archive"}

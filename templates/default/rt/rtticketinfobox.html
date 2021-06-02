@@ -1,18 +1,4 @@
 <!-- $Id$ -->
-<script type="text/javascript">
-<!--
-	$(function() {
-		$('#print-anchor').click(function() {
-			window.open('?m=rtticketprint&id={$ticket.ticketid}'
-				+ ($('#messages-chkbox:checked').length ? '&messages=1' : '')
-				+ ($('#notes-chkbox:checked').length ? '&notes=1' : '')
-				+ ($('#history-chkbox:checked').length ? '&history=1' : ''),
-				'_blank');
-			return false;
-		});
-	});
-//-->
-</script>
 <TABLE class="lmsbox">
 	<THEAD>
 	<TR>
@@ -359,7 +345,7 @@
 				<input type="checkbox" id="history-chkbox">
 				{trans("History<!rt>")}
 			</label>
-			{button id="print-anchor" icon="print" label="Print" href="?m=rtticketprint&id={$ticket.ticketid}"}
+			{button id="print-anchor" icon="print" label="Print"}
 
 			<br>
 			{if $ticket.state != $smarty.const.RT_RESOLVED || ($ticket.state == $smarty.const.RT_RESOLVED && $aet && ($smarty.now - $ticket.resolvetime) < $aet) || (ConfigHelper::checkPrivilege('superuser'))}
@@ -469,6 +455,14 @@
 <script>
 
 	$(function() {
+		$('#print-anchor').click(function() {
+			window.open('?m=rtticketprint&id={$ticket.ticketid}'
+				+ ($('#messages-chkbox:checked').length ? '&messages=1' : '')
+				+ ($('#notes-chkbox:checked').length ? '&notes=1' : '')
+				+ ($('#history-chkbox:checked').length ? '&history=1' : ''),
+				'_blank');
+		});
+
 		$('#delete-rtticket').click(function () {
 			confirmDialog($t("Are you sure, you want to remove ticket '$a'?", sprintf("%06d", {$ticket.ticketid})), this).done(function () {
 				location.href = $(this).attr('data-href');

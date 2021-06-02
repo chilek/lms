@@ -37,5 +37,13 @@ Jeśli dotyczy prosimy o dodanie zrzutów ekranu, które pomogą wyjaśnić Twó
  - system operacyjny, np. Android 10,
  - przeglądarka www, np. przeglądarka zainstalowana fabrycznie, Google Chrome (wraz z wersją przeglądarki),
 
+**Informacje diagnostyczne**
+- [ ] Brak błędów w dzienniku zdarzeń bazy danych (dotyczy PostgreSQL). W przypadku błędów prosimy o ich przesłanie.
+- [ ] Brak błędów w dzienniku zdarzeń serwera www lub daemona php FastCGI (zwykle plik error_log lub ssl_error_log w przypadku Apache/httpd).
+- [ ] Wykonałem polecenie: `rm -f templates_c/* userpanel/templates_c/*`.
+- [ ] Wykonałem polecenie: `composer update --no-dev`.
+- [ ] Wyczyściłem pamięć podręczną przeglądarki www lub przeładowałem zawartość www z pominięciem pamięci podręcznej (w Google Chrome skrót klawiszowy SHIFT+F5).
+- [ ] W konsoli deweloperskiej przeglądarki www nie ma błędów. W przypadku wystąpienia prosimy o ich przesłanie.
+
 **Dodatkowe informacje**
 Dodaj jakiekolwiek dodatkowe informacje, które mogą być pomocne w obserwacji problemu.
