@@ -224,7 +224,8 @@ function multiselect(options) {
 			selected.push($(this).next().html());
 			old_element.find('option[value="' + $(this).val() + '"]').attr('selected', 'selected').prop('selected', true);
 		});
-		if (selected.length) {
+		var selectedCount = selected.length;
+		if (selectedCount) {
 			if (def && shorten_to_def && def.length && selected.length == $('input', ul).length) {
 				selected = [ def ];
 			}
@@ -264,6 +265,9 @@ function multiselect(options) {
 				}, 1);
 			}
 		}
+
+		container.toggleClass('lms-ui-error', !selectedCount && container.is('[required]'));
+
 		return selected_string;
 	}
 
