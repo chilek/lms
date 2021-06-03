@@ -162,12 +162,9 @@
 	</tr>
 	{if $pagination->getTotal() != 0}
 	<TR>
-		<TD class="lms-ui-pagination" COLSPAN="6">
+		<TD class="lms-ui-pagination" COLSPAN="7">
 			{include file="pagination.html"}
 		</TD>
-		<td class="lms-ui-pagination text-right">
-			{button icon="add" label="New invoice" onclick="location.href = '?m=invoicenew{if $listdata.cat == 'customerid'}&customerid={$listdata.search}{/if}&action=init';"}
-		</td>
 	</TR>
 	{/if}
     </THEAD>
@@ -324,12 +321,9 @@
     <TFOOT>
 	{if $pagination->getTotal() != 0}
 	<TR>
-		<TD class="lms-ui-pagination" COLSPAN="6">
+		<TD class="lms-ui-pagination" COLSPAN="7">
 			{include file="pagination.html"}
 		</TD>
-		<td class="lms-ui-pagination text-right">
-			{button icon="add" label="New invoice" onclick="location.href = '?m=invoicenew{if $listdata.cat == 'customerid'}&customerid={$listdata.search}{/if}&action=init';"}
-		</td>
 	</TR>
 	{/if}
 	<TR>
@@ -339,6 +333,9 @@
 					<TD class="text-left" id="button-panel">
 						{if !$proforma}
 							{button icon="cash" label="Check/Uncheck as accounted" id="account-invoices"}
+							{button icon="add" label="New invoice" href="?m=invoicenew{if $listdata.cat == 'customerid'}&customerid={$listdata.search}{/if}&action=init"}
+						{else}
+							{button icon="add" label="New Pro Forma" href="?m=invoicenew{if $listdata.cat == 'customerid'}&customerid={$listdata.search}{/if}&action=init&proforma=1"}
 						{/if}
 						{button icon="mail" id="send-invoices" label="Send invoices"}
 						{button icon="delete" id="delete-invoices" label="Delete"}

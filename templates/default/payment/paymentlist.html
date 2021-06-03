@@ -32,7 +32,7 @@
 			{trans("Payment day:")}
 		</TD>
 		<TD class="bold text-right nobr">
-			{t a=$listdata.total}Total: $a{/t}
+			{button icon="add" label="New Payment" href="?m=paymentadd"}
 		</TD>
 	</TR>
     </THEAD>
@@ -79,7 +79,7 @@
     </TBODY>
     <TFOOT>
 	<TR>
-		<TD COLSPAN="4">
+		<TD COLSPAN="3">
 			&nbsp;
 		</TD>
 		<TD class="bold text-right">
@@ -88,6 +88,9 @@
 		<TD class="bold text-left">
 			{$listdata.total}
 		</TD>
+		<td class="bold text-right">
+			{t a=$listdata.total}Total: $a{/t}
+		</td>
 	</TR>
     </TFOOT>
 </TABLE>

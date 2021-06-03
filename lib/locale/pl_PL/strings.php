@@ -4285,6 +4285,7 @@ $_LANG['Evio status'] = 'Status Evio';
 $_LANG['Checks vitalilty of all Evio services'] = 'Sprawdza żywotność wszystkich usług Evio';
 
 $_LANG['New Pro Forma Invoice'] = 'Nowa faktura pro forma';
+$_LANG['New Pro Forma'] = 'Nowa pro forma';
 $_LANG['pro forma invoice'] = 'faktura pro forma';
 $_LANG['pro forma invoices'] = 'faktury pro forma';
 $_LANG['Pro Forma Invoice List'] = 'Lista faktur pro forma';
