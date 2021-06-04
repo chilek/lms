@@ -183,6 +183,7 @@ $(function() {
             } else {
                 customerNameLink.find('a').attr('href', '').html('');
                 suggestionInput.val('');
+                select.val(0);
                 input.val('').trigger('change');
             }
         });
