@@ -20,14 +20,14 @@
 		</td>
 		<td scope="col" class="text-right lighter">{trans("ID:")}</td>
 		<td scope="col" class="text-right lighter">{trans("Members:")}</td>
-		<td scope="col" class="text-right nobr">{t a=$listdata.total|default:"0"}Total: $a{/t}</td>
+		<td scope="col" class="text-right nobr">{button icon="add" label="New Group" href="?m=usergroupadd"}</td>
 	    </tr>
 	</thead>
 	<tfoot>
 	    <tr>
 		<td colspan="2" class="text-right bold nobr">{icon name="total" label="Total"}</td>
 		<td class="text-right bold">{$listdata.totalcount|default:"0"}</td>
-		<td>&nbsp;</td>
+		<td class="text-right bold">{t a=$listdata.total|default:"0"}Total: $a{/t}</td>
 	    </tr>
 	</tfoot>
 	<tbody>

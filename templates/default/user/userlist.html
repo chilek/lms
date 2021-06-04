@@ -27,8 +27,11 @@
     </COLGROUP>
     <THEAD>
 	<tr>
-		<td colspan="7">
+		<td colspan="6">
 			{division_selection name="division" selected=$selectedDivision onchange="document.choosefilter.submit();" label="Division:" superuser="{if !empty($superuser)}1{/if}"}
+		</td>
+		<td>
+			{button icon="add" label="New User" href="?m=useradd"}
 		</td>
 	</tr>
 	<TR>

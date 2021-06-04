@@ -47,7 +47,9 @@
 			{trans("Last:")}
 		</TD>
 		<TD>
-			&nbsp;
+			{if ConfigHelper::checkPrivilege('helpdesk_administration')}
+				{button label="New Queue" icon="add" href="?m=rtqueueadd"}
+			{/if}
 		</TD>
 	</TR>
 	<TR>

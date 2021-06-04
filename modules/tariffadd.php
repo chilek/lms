@@ -282,8 +282,11 @@ if (isset($_POST['tariff'])) {
         $tariff[$type['alias'] . '_limit'] = 0;
         $tariff['quota_' . $type['alias'] . '_limit'] = 0;
     }
-
-    $tariff['type'] = intval(ConfigHelper::getConfig('phpui.default_tariff_type', '-1'));
+    if ($_GET['t']) {
+        $tariff['type'] = intval($_GET['t']);
+    } else {
+        $tariff['type'] = intval(ConfigHelper::getConfig('phpui.default_tariff_type', '-1'));
+    }
 
     $default_assignment_period = ConfigHelper::getConfig('phpui.default_assignment_period');
     if (!empty($default_assignment_period)) {

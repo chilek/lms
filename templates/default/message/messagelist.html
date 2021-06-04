@@ -25,7 +25,7 @@
 			<A href="?m=messagelist&amp;o=cnt{if $listdata.direction == "asc" && $listdata.order == "cnt"},desc{/if}">{trans("Recipients:")}</A> {if $listdata.order == "cnt"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="bold nobr">
-			{t a=$listdata.total}Total: $a{/t}&nbsp;
+			{button icon="add" label="New Message" href="?m=messageadd"}
 		</TD>
 	</TR>
 	<TR>
@@ -154,7 +154,7 @@
 	<TR>
 		<TD colspan="2" class="nobr">
 		</TD>
-		<TD class="bold">
+		<TD class="bold text-right">
 			{t a=$listdata.total}Total: $a{/t}
 		</TD>
 		<TD colspan="2" class="text-right nobr">
