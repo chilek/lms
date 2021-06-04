@@ -3596,7 +3596,7 @@ URL: %url
 ('mail','debug_email','','',0),
 ('mail','smtp_host','127.0.0.1','',0),
 ('mail','smtp_port','25','',0),
-('mail', 'backend', 'pear', '', 0),
+('mail', 'backend', 'phpmailer', '', 0),
 ('mail', 'smtp_secure', 'tls', '', 0),
 ('zones','hostmaster_mail','hostmaster.localhost','',0),
 ('zones','master_dns','localhost','',0),
