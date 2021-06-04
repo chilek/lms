@@ -9,7 +9,7 @@
         {/if}
         {if $event.ticketid}
             {hint mode="rollover" url="?m=rtticketinfo&id={$event.ticketid}" icon="info" class="event-info-short-button fa-xs"}
-            <a href="?m=rtticketview&id={$event.ticketid}" style="color: black;">
+            <a href="?m=rtticketview&id={$event.ticketid}" style="{if isset($_EVENTSTYLES[$event.type])} {$_EVENTSTYLES[$event.type]}{/if}">
                 #{$event.ticketid|string_format:"%06d"}
             </a>
         {/if}
