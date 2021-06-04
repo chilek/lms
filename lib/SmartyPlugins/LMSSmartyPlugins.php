@@ -1145,6 +1145,7 @@ class LMSSmartyPlugins
             . (isset($params['class']) ? ' ' . $params['class'] : '') . '"'
             . (isset($params['content']) ? ' data-hint="' . $params['content'] . '"' : '')
             . (isset($params['url']) ? ' data-url="' . $params['url'] . '"' : '')
+            . (isset($params['style']) ? ' style="' . $params['style'] . '"' : '')
             . '><i class="lms-ui-icon-' . (isset($params['icon']) ? $params['icon'] : 'hint') . ' fa-fw"></i></a>';
     }
 }
