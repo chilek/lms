@@ -4793,6 +4793,7 @@ class LMS
                 $headers = array(
                     'From' => empty($dsn_email) ? $from : $dsn_email,
                     'To' => $mailto_qp_encoded,
+                    'Recipient-Name' => $doc['name'],
                     'Subject' => $subject,
                     'Reply-To' => empty($reply_email) ? $sender_email : $reply_email,
                 );

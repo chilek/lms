@@ -632,6 +632,7 @@ function send_mail($msgid, $cid, $rmail, $rname, $subject, $body)
     $headers = array(
         'From' => empty($dsn_email) ? $mail_from : $dsn_email,
         'To' => qp_encode($rname) . " <$rmail>",
+        'Recipient-Name' => $rname,
         'Subject' => $subject,
         'Reply-To' => empty($reply_email) ? $mail_from : $reply_email,
     );
