@@ -2065,6 +2065,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 $headers = array(
                     'From' => empty($dsn_email) ? $from : $dsn_email,
                     'To' => $mailto_qp_encoded,
+                    'Recipient-Name' => $document['name'],
                     'Subject' => $subject,
                     'Reply-To' => empty($reply_email) ? $sender_email : $reply_email,
                 );
