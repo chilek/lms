@@ -50,8 +50,8 @@
     </TD>
     <TD data-target-url="?m=eventinfo&id={$event.id}">
         <a href="?m=eventinfo&id={$event.id}">
-            <i class="lms-ui-icon-timetable lms-ui-hint-rollover"
-                data-url="?m=eventinfoshort&id={$event.id}"></i>
+            {hint mode="toggle" icon="timetable" class="lms-ui-ignore-target-url"
+                url="?m=eventinfoshort&id={$event.id}"}
             <span class="bold" {if !$event.closed}style="color:black"{/if}>
                 {$event.title|escape}
             </span>
@@ -65,7 +65,8 @@
             {if !empty($event.netnode_location)}<br>{icon name="location"} {$event.netnode_location}{/if}
         {else}
         {if $event.customername}
-            {hint mode="toggle" icon="customer" url="?m=customerinfoshort&id={$event.customerid}"}
+            {hint mode="toggle" icon="customer" class="lms-ui-ignore-target-url"
+                url="?m=customerinfoshort&id={$event.customerid}"}
             <a href="?m=customerinfo&id={$event.customerid}">{$event.customername|truncate:"30":"&hellip;":true}</a>
             <br>
         {if !empty($event.address_id)}

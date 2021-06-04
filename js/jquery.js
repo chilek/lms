@@ -1369,6 +1369,9 @@ $(function() {
 			}
 			var url = $(this).attr('data-target-url');
 			var link = target.closest('a');
+			if (link.is('.lms-ui-ignore-target-url')) {
+				return;
+			}
 			var ifLink = (link.length && elem.find(link).length > 0);
 			var ifButton = elem.find(target.closest('button')).length > 0;
 			var ifNewWindow = (e.which == 2 || e.ctrlKey);
