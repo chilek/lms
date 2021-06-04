@@ -2651,10 +2651,9 @@ class LMS
     public function SendMail($recipients, $headers, $body, $files = null, $persist = null, $smtp_options = null)
     {
         $persist = is_null($persist) ? ConfigHelper::getConfig('mail.smtp_persist', true) : $persist;
-        $debug_level = intval(ConfigHelper::getConfig('mail.debug_level', 2));
-        if (!$debug_level) {
-            $debug_level = 2;
-        }
+
+        $debug_email = ConfigHelper::getConfig('mail.debug_email');
+        $debug_level = intval(ConfigHelper::getConfig('mail.debug_level', empty($debug_email) ? 0 : 2));
 
         if (ConfigHelper::getConfig('mail.backend') == 'pear') {
             if (!is_object($this->mail_object) || !$persist) {
@@ -2830,10 +2829,10 @@ class LMS
             $this->mail_object->CharSet = 'UTF-8';
             $this->mail_object->Subject = $headers['Subject'];
 
-            $debug_email = ConfigHelper::getConfig('mail.debug_email');
+            $this->mail_object->SMTPDebug = $debug_level;
+
             if (!empty($debug_email)) {
-                $this->mail_object->SMTPDebug = $debug_level;
-                $recipients = ConfigHelper::getConfig('mail.debug_email');
+                $recipients = $debug_email;
             } else {
                 if (isset($headers['Cc'])) {
                     foreach (explode(',', $headers['Cc']) as $cc) {
