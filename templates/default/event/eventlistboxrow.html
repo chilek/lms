@@ -8,12 +8,10 @@
             <br>
         {/if}
         {if $event.ticketid}
-            <span class="lms-ui-hint-rollover"
-                data-url="?m=rtticketinfo&id={$event.ticketid}">
-                <a href="?m=rtticketview&id={$event.ticketid}" style="color: black">
-                    {$event.ticketid|string_format:"%06d"}
-                </a>
-            </span>
+            {hint mode="rollover" url="?m=rtticketinfo&id={$event.ticketid}" icon="info" class="fa-xs"}
+            <a href="?m=rtticketview&id={$event.ticketid}" style="color: black;">
+                {$event.ticketid|string_format:"%06d"}
+            </a>
         {/if}
     </td>
     <TD class="text-left nobr bold" style="min-width:100px" data-target-url="?m=eventinfo&id={$event.id}">
