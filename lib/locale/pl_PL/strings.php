@@ -5228,3 +5228,5 @@ $_LANG['Suspended assignment'] = 'Zobowiązanie zawieszone';
 $_LANG['Future assignment'] = 'Zobowiązanie przyszłe';
 $_LANG['Expired assignment'] = 'Zobowiązanie przeterminowane';
 $_LANG['Assignment from not approved document'] = 'Zobowiązanie z niezatwierdzonego dokumentu';
+
+$_LANG['without location address'] = 'bez adresu lokalizacyjnego';

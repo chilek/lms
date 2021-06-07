@@ -929,6 +929,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 case 80:
                     $state_conditions[] = 'EXISTS (SELECT 1 FROM assignments WHERE commited = 1 AND tariffid IS NULL AND customerid = c.id)';
                     break;
+                case 81:
+                    $state_conditions[] = 'NOT EXISTS (SELECT 1 FROM customer_addresses WHERE customer_addresses.customer_id = c.id
+                        AND customer_addresses.type IN (' . LOCATION_ADDRESS . ',' . DEFAULT_LOCATION_ADDRESS . '))';
+                    break;
                 default:
                     if ($state_item > 0 && $state_item < 50 && intval($state_item)) {
                         $customer_statuses[] = intval($state_item);
