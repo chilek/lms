@@ -566,7 +566,7 @@ class LMSSmartyPlugins
           </tr>';
 
         echo '<tr>
-              <td class="nobr">' . trans('Postcode:') . '</td>
+              <td class="nobr">' . trans('Postcode') . '</td>
               <td>
                 <input type="text"   value="' . (!empty($params['location_zip']) ? $params['location_zip'] : '' ) . '" name="' . $input_name_zip . '" data-address="zip" size="7" maxlength="10">
                 <a class="zip-code-button" href="#" title="' . trans('Click here to autocomplete zip code') . '">&raquo;&raquo;&raquo;</a>
@@ -574,7 +574,7 @@ class LMSSmartyPlugins
           </tr>';
 
         echo '<tr>
-              <td class="nobr">' . trans('Post office:') . '</td>
+              <td class="nobr">' . trans('Post office') . '</td>
               <td><input type="text"   value="' . (!empty($params['location_postoffice']) ? htmlspecialchars($params['location_postoffice']) : '' ) . '" size="' . INPUT_SIZE . '" name="' . $input_name_postoffice . '" data-address="postoffice" maxlength="32"></td>
           </tr>';
 
@@ -588,7 +588,7 @@ class LMSSmartyPlugins
         }
 
         if ($countries) {
-            echo '<tr><td>' . trans('Country:') . '</td><td>
+            echo '<tr><td>' . trans('Country') . '</td><td>
                 <select name="' . $input_name_country_id . '" data-address="country">
                 <option value="">---</option>';
 
@@ -1143,7 +1143,8 @@ class LMSSmartyPlugins
 
         return '<a class="lms-ui-button lms-ui-hint-' . $mode
             . (isset($params['class']) ? ' ' . $params['class'] : '') . '"'
-            . (isset($params['content']) ? ' data-hint="' . $params['content'] . '"' : '')
+            . (isset($params['content']) ? ' data-hint="' . trans($params['content']) . '"' : '')
+            . (isset($params['text']) ? ' data-hint="' . $params['content'] . '"' : '')
             . (isset($params['url']) ? ' data-url="' . $params['url'] . '"' : '')
             . (isset($params['style']) ? ' style="' . $params['style'] . '"' : '')
             . '><i class="lms-ui-icon-' . (isset($params['icon']) ? $params['icon'] : 'hint') . ' fa-fw"></i></a>';
