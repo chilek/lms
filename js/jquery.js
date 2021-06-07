@@ -1466,13 +1466,18 @@ $(function() {
 	});
 
 	$(document).mouseup(function(e) {
-		var container = $('.ui-tooltip.lms-ui-hint-toggle');
-		if (!$(e.target).closest('.lms-ui-hint-toggle:not(.ui-tooltip)').length &&
-			container.length &&
-			!container.is(e.target) &&
-			container.has(e.target).length === 0)
+		var hintPopups = $('.lms-ui-hint-toggle.ui-tooltip');
+		var hintTrigger = $(e.target).closest('.lms-ui-hint-toggle:not(.ui-tooltip)');
+		var hintTriggers = $('.lms-ui-hint-toggle:not(.ui-tooltip).open');
+		if ((!hintTrigger.length ||
+				!hintTriggers.is(hintTrigger)) &&
+			hintPopups.length &&
+			!hintPopups.is(e.target) &&
+			!hintPopups.has(e.target).length)
 		{
-			$('.lms-ui-hint-toggle[data-init="2"]').tooltip('close').toggleClass('open');
+			$('.lms-ui-hint-toggle[data-init="2"].open').filter(function() {
+				return hintTrigger.length && !$(this).is(hintTrigger) || !hintTrigger.length;
+			}).tooltip('close').toggleClass('open');
 			disableFullScreenPopup();
 		}
 	});
