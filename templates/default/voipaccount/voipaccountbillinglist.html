@@ -119,26 +119,28 @@
 					{trans("Voip account")}
 					{include file="voipaccount/voipaccounts.html"}
 
-					{trans("Period")} {trans("from")}&nbsp;
-					{date_period_preset from="#frangefrom" to="#frangeto"}
-					<INPUT
-						TYPE="text"
-						NAME="frangefrom"
-						id="frangefrom"
-						SIZE="10"
-						MAXLENGTH="20"
-						VALUE="{if $listdata.frangefrom > 0}{$listdata.frangefrom|date_format:"%Y/%m/%d"}{/if}"
-						{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
-
-					{trans("to")}&nbsp;
-					<INPUT
-						TYPE="text"
-						NAME="frangeto"
-						id="frangeto"
-						SIZE="10"
-						MAXLENGTH="20"
-						VALUE="{if $listdata.frangeto > 0}{$listdata.frangeto|date_format:"%Y/%m/%d"}{/if}"
-						{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
+					<span class="lms-ui-date-period-container">
+						<span>{trans("Period")}</span>
+						<span>{trans("from")}</span>
+						{date_period_preset from="#frangefrom" to="#frangeto"}
+						<input
+							type="text"
+							name="frangefrom"
+							id="frangefrom"
+							size="10"
+							maxlength="20"
+							value="{if $listdata.frangefrom > 0}{$listdata.frangefrom|date_format:"%Y/%m/%d"}{/if}"
+							{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+						<span>{trans("to")}</span>
+						<input
+							type="text"
+							name="frangeto"
+							id="frangeto"
+							size="10"
+							maxlength="20"
+							value="{if $listdata.frangeto > 0}{$listdata.frangeto|date_format:"%Y/%m/%d"}{/if}"
+							{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
+					</span>
 
 					{trans("Connection type:")}
 					<SELECT SIZE="1" NAME="ftype">

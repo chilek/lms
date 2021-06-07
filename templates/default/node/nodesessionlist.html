@@ -70,16 +70,22 @@
 								</SELECT>
 							</label>
 						</td>
-						<td class="nobr">
-							{date_period_preset from="#datefrom" to="#dateto" time=true}
-							{trans("Started:")}
-							<INPUT type="text" id="datefrom" name="datefrom" size="20" maxlength="20" value="{$datefrom}"
-								{tip class="lms-ui-datetime" text="Enter date in 'yyyy/mm/dd hh:mm' format (empty field means current date) or click to choose date from calendar"}>
+						<td>
+							<span class="lms-ui-date-period-container">
+								{date_period_preset from="#datefrom" to="#dateto" time=true}
+								<span>{trans("Started:")}</span>
+								<input type="text" id="datefrom" name="datefrom" size="20" maxlength="20"
+									value="{$datefrom}"
+									{tip class="lms-ui-datetime" text="Enter date in 'yyyy/mm/dd hh:mm' format (empty field means current date) or click to choose date from calendar"}>
+							</span>
 						</td>
-						<td class="nobr">
-							{trans("Finished:")}
-							<INPUT type="text" id="dateto" name="dateto" size="20" maxlength="20" value="{$dateto}"
-								{tip class="lms-ui-datetime" text="Enter date in 'yyyy/mm/dd hh:mm' format (empty field means current date) or click to choose date from calendar"}>
+						<td>
+							<span class="lms-ui-date-period-container">
+								<span>{trans("Finished:")}</span>
+								<input type="text" id="dateto" name="dateto" size="20" maxlength="20"
+									value="{$dateto}"
+									{tip class="lms-ui-datetime" text="Enter date in 'yyyy/mm/dd hh:mm' format (empty field means current date) or click to choose date from calendar"}>
+							</span>
 						</td>
 						<td class="nobr">
 							<a href="javascript:filter();">&raquo;&raquo;&raquo;</a>

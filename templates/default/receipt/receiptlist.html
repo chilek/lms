@@ -91,10 +91,20 @@
 					<OPTION value="address"{if $listdata.cat == "address"} SELECTED{/if}>{trans("address")}</OPTION>
 					<OPTION value="positions"{if $listdata.cat == "positions"} SELECTED{/if}>{trans("Positions")}</OPTION>
 				</SELECT>&nbsp;
-				<B>{trans("Period:")}</B>&nbsp;
-				{date_period_preset from="#receiptlist [name=\"from\"]" to="#receiptlist [name=\"to\"]"}
-				{trans("from")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
-				{trans("to")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
+				<span class="lms-ui-date-period-container">
+					<strong>{trans("Period:")}</strong>&nbsp;
+					{date_period_preset from="#receiptlist [name=\"from\"]" to="#receiptlist [name=\"to\"]"}
+					<span>{trans("from")}</span>
+					<input type="text" name="from" size="10" maxlength="10"
+						value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}"
+						placeholder="{trans("yyyy/mm/dd")}"
+						{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+					<span>{trans("to")}</span>
+					<input type="text" name="to" size="10" maxlength="10"
+						value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}"
+						placeholder="{trans("yyyy/mm/dd")}"
+						{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
+				</span>
 				<input type="hidden" name="advances" value="0">
 				<label>
 					<INPUT type="checkbox" name="advances" value="1"{if $listdata.advances} checked{/if}>{trans("not settled adv. only")}

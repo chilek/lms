@@ -422,9 +422,15 @@
 			{icon name="modified-date"} {trans("Created:")}
 		</TD>
 		<TD>
-			{date_period_preset from="#customersearch [name=\"search[createdfrom]\"]" to="#customersearch [name=\"search[createdto]\"]"}
-			{trans("from")} <INPUT type="text" class="lms-ui-date" value="" name="search[createdfrom]" size="10" placeholder="{trans("yyyy/mm/dd")}">
-			{trans("to")} <INPUT type="text" class="lms-ui-date" value="" name="search[createdto]" size="10" placeholder="{trans("yyyy/mm/dd")}">
+			<span class="lms-ui-date-period-container">
+				{date_period_preset from="#customersearch [name=\"search[createdfrom]\"]" to="#customersearch [name=\"search[createdto]\"]"}
+				<span>{trans("from")}</span>
+				<input type="text" class="lms-ui-date" value="" name="search[createdfrom]" size="10"
+					placeholder="{trans("yyyy/mm/dd")}">
+				<span>{trans("to")}</span>
+				<input type="text" class="lms-ui-date" value="" name="search[createdto]" size="10"
+					placeholder="{trans("yyyy/mm/dd")}">
+			</span>
 		</TD>
 	</TR>
 	<TR>
@@ -432,9 +438,15 @@
 			{icon name="modified-date"} {trans("Deleted:")}
 		</TD>
 		<TD>
-			{date_period_preset from="#customersearch [name=\"search[deletedfrom]\"]" to="#customersearch [name=\"search[deletedto]\"]"}
-			{trans("from")} <INPUT type="text" class="lms-ui-date" value="" name="search[deletedfrom]" size="10" placeholder="{trans("yyyy/mm/dd")}">
-			{trans("to")} <INPUT type="text" class="lms-ui-date" value="" name="search[deletedto]" size="10" placeholder="{trans("yyyy/mm/dd")}">
+			<span class="lms-ui-date-period-container">
+				{date_period_preset from="#customersearch [name=\"search[deletedfrom]\"]" to="#customersearch [name=\"search[deletedto]\"]"}
+				<span>{trans("from")}</span>
+				<input type="text" class="lms-ui-date" value="" name="search[deletedfrom]" size="10"
+					placeholder="{trans("yyyy/mm/dd")}">
+				<span>{trans("to")}</span>
+				<input type="text" class="lms-ui-date" value="" name="search[deletedto]" size="10"
+					placeholder="{trans("yyyy/mm/dd")}">
+			</span>
 		</TD>
 	</TR>
 	<TR>
