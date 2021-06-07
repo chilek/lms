@@ -139,7 +139,7 @@
 				{if $rights.info.edit_addr || $rights.info.edit_addr_ack || $rights.info.edit_contact || $rights.info.edit_contact_ack}
 					<tr>
 						<td colspan="2">
-							<a class="btn btn-primary" href="javascript:document.useredit.submit()" accesskey="A">{trans("Save")}</a>
+							{button type="submit" class="btn btn-primary" href="javascript:document.useredit.submit()" accesskey="A" icon="save" label="Save"}
 						</td>
 					</tr>
 				{/if}
