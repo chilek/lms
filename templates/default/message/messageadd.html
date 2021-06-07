@@ -57,11 +57,6 @@
 		display: block;
 	}
 
-	.body-container {
-		display: flex;
-		align-items: center;
-	}
-
 	.lms-ui-tooltip-toggle:not(.ui-tooltip) {
 		margin-left: 0.5em;
 	}
@@ -562,7 +557,7 @@
 				<strong>{trans("Message body:")}</strong>
 			</td>
 			<td>
-				<div class="body-container">
+				<div class="valign-middle">
 					<textarea name="message[mailbody]" cols="80" rows="20"
 						{tip class="lms-ui-wysiwyg-editor" trigger="mailbody"}
 						{if isset($message.wysiwyg.mailbody)} data-wysiwyg="{$message.wysiwyg.mailbody}"{/if}>{$message.body}</textarea>
@@ -578,7 +573,7 @@
 				<strong>{trans("Message body:")}</strong>
 			</td>
 			<td>
-				<div class="body-container">
+				<div class="valign-middle">
 					<textarea name="message[smsbody]" id="smstext" cols="60" rows="5" onkeydown="countChars(this)"
 						onkeyup="countChars(this)" {tip trigger="smsbody"}
 						>{$message.body}</textarea>

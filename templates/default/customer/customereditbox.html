@@ -8,18 +8,6 @@
 	{/if}
 {/if}
 <script type="text/javascript" src="js/location_box_expandable.js"></script>
-<script>
-
-	function randomize() {
-		if (document.customeredit.elements['customerdata[pin]'].value != '') {
-			confirmDialog($t("Are you sure, you want to generate new PIN?"), $('#randomize')).done(function () {
-				document.customeredit.elements['customerdata[pin]'].value =
-						generate_random_string({$pin_min_size} +Math.floor(Math.random() * {($pin_max_size-$pin_min_size)+1}), '{str_replace("'", "\'", $pin_allowed_characters)}');
-			});
-		}
-	}
-
-</script>
 <style>
 
 	.cell-flex {
@@ -50,11 +38,6 @@
 		cursor: pointer;
 	}
 
-	.textarea-container {
-		display: inline-flex;
-		align-items: center;
-	}
-
 </style>
 
 <FORM name="customeredit" id="customeredit" method="post" action="?m=customeredit&id={$customerinfo.id}{if $recover}&action=recover{/if}">
@@ -78,10 +61,12 @@
 							</label>
 						</td>
 						<td>
-							<input type="text" name="customerdata[lastname]" maxlength="128"
-								value="{$customerinfo.lastname|escape}" required
-								{tip class="lms-ui-autogrow" trigger="lastname" bold=1}>
-							{hint content="Enter first/lastname of customer"}
+							<div class="valign-middle">
+								<input type="text" name="customerdata[lastname]" maxlength="128"
+									value="{$customerinfo.lastname|escape}" required
+									{tip class="lms-ui-autogrow" trigger="lastname" bold=1}>
+								{hint content="Enter first/lastname of customer"}
+							</div>
 						</td>
 					</tr>
 					<tr>
@@ -91,10 +76,12 @@
 							</label>
 						</td>
 						<td>
-							<input type="text" name="customerdata[name]" value="{$customerinfo.name|escape}"
-								maxlength="128"
-								{tip class="lms-ui-autogrow" trigger="name" bold=1}>
-							{hint content="Enter first name of customer (optional)"}
+							<div class="valign-middle">
+								<input type="text" name="customerdata[name]" value="{$customerinfo.name|escape}"
+									maxlength="128"
+									{tip class="lms-ui-autogrow" trigger="name" bold=1}>
+								{hint content="Enter first name of customer (optional)"}
+							</div>
 						</td>
 					</tr>
 				</table>
@@ -103,12 +90,14 @@
 				<table>
 					<tr>
 						<td>
-							<label for="customerdata[extid]">
-								<strong>{trans("External system identifier")}</strong>
-								<input type="text" maxlength="20" name="customerdata[extid]" value="{$customerinfo.extid|escape}"
-									{tip trigger="extid"}>
-							</label>
-							{hint content="Enter customer identifier in external system (optional)"}
+							<div class="valign-middle">
+								<label for="customerdata[extid]">
+									<strong>{trans("External system identifier")}</strong>
+									<input type="text" maxlength="20" name="customerdata[extid]" value="{$customerinfo.extid|escape}"
+										{tip trigger="extid"}>
+								</label>
+								{hint content="Enter customer identifier in external system (optional)"}
+							</div>
 						</td>
 					</tr>
 				</table>
@@ -159,19 +148,21 @@
 							<i class="lms-ui-icon-legal-personality"></i>
 						</TD>
 						<TD>
-							<label>
-								<input type="radio" name="customerdata[type]" value="{$smarty.const.CTYPES_PRIVATE}" id="private"
-									{tip trigger="type"}
-									{if $customerinfo.type == $smarty.const.CTYPES_PRIVATE} checked{/if}>
-								{$_CTYPES[$smarty.const.CTYPES_PRIVATE]}
-							</label>
-							<label>
-								<input type="radio" name="customerdata[type]" value="{$smarty.const.CTYPES_COMPANY}" id="company"
-									{tip trigger="type"}
-									{if $customerinfo.type == $smarty.const.CTYPES_COMPANY} checked{/if}>
-								{$_CTYPES[$smarty.const.CTYPES_COMPANY]}
-							</label>
-							{hint content="Select legal personality type"}
+							<div class="valign-middle">
+								<label>
+									<input type="radio" name="customerdata[type]" value="{$smarty.const.CTYPES_PRIVATE}" id="private"
+										{tip trigger="type"}
+										{if $customerinfo.type == $smarty.const.CTYPES_PRIVATE} checked{/if}>
+									{$_CTYPES[$smarty.const.CTYPES_PRIVATE]}
+								</label>
+								<label>
+									<input type="radio" name="customerdata[type]" value="{$smarty.const.CTYPES_COMPANY}" id="company"
+										{tip trigger="type"}
+										{if $customerinfo.type == $smarty.const.CTYPES_COMPANY} checked{/if}>
+									{$_CTYPES[$smarty.const.CTYPES_COMPANY]}
+								</label>
+								{hint content="Select legal personality type"}
+							</div>
 						</TD>
 					</TR>
 
@@ -299,9 +290,12 @@
 							<i class="lms-ui-icon-customer-pin-code"></i>
 						</TD>
 						<TD>
-							<input type="text" required name="customerdata[pin]" size="{$pin_max_size}"
-								value="{if $customerinfo.pin}{$customerinfo.pin}{/if}" {tip text=$pin_tip trigger="pin"}>&nbsp;
-							<a id="randomize" href="javascript:randomize()" {tip text="Generate PIN"}>&raquo;&raquo;&raquo;</a>
+							<div class="valign-middle">
+								<input type="text" required name="customerdata[pin]" size="{$pin_max_size}"
+									value="{if $customerinfo.pin}{$customerinfo.pin}{/if}" {tip trigger="pin"}>
+								{button type="link" icon="next" id="randomize" tip="Generate PIN"}
+								{hint text=$pin_tip}
+							</div>
 						</TD>
 					</TR>
 					<TR>
@@ -374,21 +368,25 @@
 								<TR>
 									<TD>{trans("RBE Name")}</TD>
 									<TD>
-										<textarea name="customerdata[rbename]" cols="45" rows="4"
-											{tip trigger="rbename"}
-											>{$customerinfo.rbename|escape}</textarea>
-										{hint content="Enter National Court Register / Register of Business Entities Name (optional)"}
+										<div class="valign-middle">
+											<textarea name="customerdata[rbename]" cols="45" rows="4"
+												{tip trigger="rbename"}
+												>{$customerinfo.rbename|escape}</textarea>
+											{hint content="Enter National Court Register / Register of Business Entities Name (optional)"}
+										</div>
 									</TD>
 								</TR>
 								<TR>
 									<TD>{trans("RBE")}</TD>
 									<TD>
-										<input type="text" value="{$customerinfo.rbe}" name="customerdata[rbe]" size="30"
-											{tip trigger="rbe"}>
-										{button type="link" icon="division" class="gusapi-button"
-											data_type=Utils::GUS_REGON_API_SEARCH_TYPE_RBE
-											tip="Click here to autocomplete company data from GUS REGON database"}
-										{hint content="Enter National Court Register / Register of Business Entities Number (optional)"}
+										<div class="valign-middle">
+											<input type="text" value="{$customerinfo.rbe}" name="customerdata[rbe]" size="30"
+												{tip trigger="rbe"}>
+											{button type="link" icon="division" class="gusapi-button"
+												data_type=Utils::GUS_REGON_API_SEARCH_TYPE_RBE
+												tip="Click here to autocomplete company data from GUS REGON database"}
+											{hint content="Enter National Court Register / Register of Business Entities Number (optional)"}
+										</div>
 									</TD>
 								</TR>
 							</TABLE>
@@ -406,19 +404,21 @@
 										{trans("Deadline")}
 									</TD>
 									<TD id="paytime-cell">
-										<SELECT name="customerdata[paytime]" data-value="{$customerinfo.paytime}"
+										<div class="valign-middle">
+											<select name="customerdata[paytime]" data-value="{$customerinfo.paytime}"
 												{tip class="lms-ui-combobox" trigger="paytime"}>
-											<OPTION value="-1"{if $customerinfo.paytime==-1} selected{/if}>- {trans("default")} -</OPTION>
-											<OPTION value="0"{if $customerinfo.paytime==0} selected{/if}>0</OPTION>
-											<OPTION value="7"{if $customerinfo.paytime==7} selected{/if}>7</OPTION>
-											<OPTION value="10"{if $customerinfo.paytime==10} selected{/if}>10</OPTION>
-											<OPTION value="14"{if $customerinfo.paytime==14} selected{/if}>14</OPTION>
-											<OPTION value="21"{if $customerinfo.paytime==21} selected{/if}>21</OPTION>
-											<OPTION value="30"{if $customerinfo.paytime==30} selected{/if}>30</OPTION>
-											<OPTION value="60"{if $customerinfo.paytime==60} selected{/if}>60</OPTION>
-											<OPTION value="90"{if $customerinfo.paytime==90} selected{/if}>90</OPTION>
-										</SELECT>
-										{hint content="Select default deadline in days"}
+												<option value="-1"{if $customerinfo.paytime == -1} selected{/if}>- {trans("default")} -</option>
+												<option value="0"{if $customerinfo.paytime == 0} selected{/if}>0</option>
+												<option value="7"{if $customerinfo.paytime == 7} selected{/if}>7</option>
+												<option value="10"{if $customerinfo.paytime == 10} selected{/if}>10</option>
+												<option value="14"{if $customerinfo.paytime == 14} selected{/if}>14</option>
+												<option value="21"{if $customerinfo.paytime == 21} selected{/if}>21</option>
+												<option value="30"{if $customerinfo.paytime == 30} selected{/if}>30</option>
+												<option value="60"{if $customerinfo.paytime == 60} selected{/if}>60</option>
+												<option value="90"{if $customerinfo.paytime == 90} selected{/if}>90</option>
+											</select>
+											{hint content="Select default deadline in days"}
+										</div>
 									</TD>
 								</TR>
 								<TR>
@@ -426,9 +426,11 @@
 										{trans("Payment type")}
 									</TD>
 									<TD>
-										{paytypes elemname="customerdata[paytype]" selected=$customerinfo.paytype
-											trigger="paytype"}
-										{hint content="Select default invoices payment type"}
+										<div class="valign-middle">
+											{paytypes elemname="customerdata[paytype]" selected=$customerinfo.paytype
+												trigger="paytype"}
+											{hint content="Select default invoices payment type"}
+										</div>
 									</TD>
 								</TR>
 								<TR>
@@ -436,16 +438,19 @@
 										{trans("Cutoff suspending")}
 									</TD>
 									<TD>
-										<label>
-											<input type="checkbox" name="customerdata[cutoffstopindefinitely]" value="1"
-												onchange="$('#cutoffstop').parent().toggle(!this.checked);"
-												{if $customerinfo.cutoffstopindefinitely} checked{/if}>
-											{trans("indefinitely")}
-										</label>&nbsp;
-										<input type="text" name="customerdata[cutoffstop]" id="cutoffstop"
-											{if $customerinfo.cutoffstopindefinitely}style="display: none;"{elseif $customerinfo.cutoffstop}value="{$customerinfo.cutoffstop}"{/if}
-											size="10" {tip class="lms-ui-date" trigger="cutoffstop"}>
-										{hint content="Select date of cutoff suspending (optional)"}
+										<div class="valign-middle">
+
+											<label>
+												<input type="checkbox" name="customerdata[cutoffstopindefinitely]" value="1"
+													onchange="$('#cutoffstop').parent().toggle(!this.checked);"
+													{if $customerinfo.cutoffstopindefinitely} checked{/if}>
+												{trans("indefinitely")}
+											</label>&nbsp;
+											<input type="text" name="customerdata[cutoffstop]" id="cutoffstop"
+												{if $customerinfo.cutoffstopindefinitely}style="display: none;"{elseif $customerinfo.cutoffstop}value="{$customerinfo.cutoffstop}"{/if}
+												size="10" {tip class="lms-ui-date" trigger="cutoffstop"}>
+											{hint content="Select date of cutoff suspending (optional)"}
+										</div>
 									</TD>
 								</TR>
 							</TABLE>
@@ -499,7 +504,7 @@
 							<i class="lms-ui-icon-optional-info"></i>
 						</TD>
 						<TD>
-							<div class="textarea-container">
+							<div class="valign-middle">
 								<textarea name="customerdata[info]" class="lms-ui-wysiwyg-editor" cols="60" rows="10"
 									{if isset($customerinfo.wysiwyg.info)} data-wysiwyg="{$customerinfo.wysiwyg.info}"{/if}
 									>{$customerinfo.info|escape}</textarea>
@@ -512,7 +517,7 @@
 							<i class="lms-ui-icon-warning"></i>
 						</TD>
 						<TD>
-							<div class="textarea-container">
+							<div class="valign-middle">
 								<textarea name="customerdata[message]" class="lms-ui-wysiwyg-editor" cols="60" rows="10"
 									{if isset($customerinfo.wysiwyg.message)} data-wysiwyg="{$customerinfo.wysiwyg.message}"{/if}>{$customerinfo.message|escape}</textarea>
 								{hint content="Enter notice contents (optional)"}
@@ -524,7 +529,7 @@
 							<i class="lms-ui-icon-notes"></i>
 						</TD>
 						<TD>
-							<div class="textarea-container">
+							<div class="valign-middle">
 								<textarea name="customerdata[notes]" class="lms-ui-wysiwyg-editor" cols="60" rows="10"
 									{if isset($customerinfo.wysiwyg.notes)} data-wysiwyg="{$customerinfo.wysiwyg.notes}"{/if}
 									>{$customerinfo.notes|escape}</textarea>
@@ -537,7 +542,7 @@
 							<i class="lms-ui-icon-memo"></i>
 						</TD>
 						<TD>
-							<div class="textarea-container">
+							<div class="valign-middle">
 								<textarea name="customerdata[documentmemo]" class="lms-ui-wysiwyg-editor"
 									cols="60" rows="10"
 									{if isset($customerinfo.wysiwyg.documentmemo)} data-wysiwyg="{$customerinfo.wysiwyg.documentmemo}"{/if}
@@ -641,6 +646,16 @@
 		$('[name="customerdata[type]"]').change(function() {
 			$('[name="customerdata[name]"]').prop('required', $('#private').prop('checked'));
 		}).change();
+
+		$('#randomize').click(function() {
+			if ($('[name="customerdata[pin]"]').val().length) {
+				confirmDialog($t("Are you sure, you want to generate new PIN?"), this).done(function () {
+					$('[name="customerdata[pin]"]').val(
+						generate_random_string({$pin_min_size} +Math.floor(Math.random() * {($pin_max_size-$pin_min_size)+1}), '{str_replace("'", "\'", $pin_allowed_characters)}')
+					);
+				});
+			}
+		});
 	});
 
 </script>

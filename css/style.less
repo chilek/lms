@@ -1739,8 +1739,32 @@ td.multiselect {
 	vertical-align: top;
 }
 
+div.valign-top {
+	display: inline-flex;
+	align-items: flex-start;
+	> :not(:last-child) {
+		margin-right: 0.5em;
+	}
+}
+
+div.valign-middle {
+	display: inline-flex;
+	align-items: center;
+	> :not(:last-child) {
+		margin-right: 0.5em;
+	}
+}
+
 .valign-bottom {
 	vertical-align: bottom;
+}
+
+div.valign-bottom {
+	display: inline-flex;
+	align-items: flex-end;
+	> :not(:last-child) {
+		margin-right: 0.5em;
+	}
 }
 
 /**

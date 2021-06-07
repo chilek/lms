@@ -65,7 +65,7 @@
   overflow: hidden;
   position: relative;
   visibility: inherit !important;
-  padding-right: 2em;
+  padding-right: 0.7em;
 }
 .tox-tinymce-inline {
   border: none;
