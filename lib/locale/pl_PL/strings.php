@@ -2370,6 +2370,7 @@ $_LANG['residence card'] = 'karta pobytu';
 $_LANG['permanent residence card'] = 'karta stałego pobytu';
 $_LANG['RBE:'] = 'EDG/KRS:';
 $_LANG['RBE Name:'] = 'Nazwa EDG/KRS:';
+$_LANG['RBE Name'] = 'Nazwa EDG/KRS';
 $_LANG['Allows you to add new document'] = 'Dodanie nowego dokumentu';
 $_LANG['Allows you to add the new prefixes'] = 'Dodanie nowych prefiksów';
 $_LANG['Allows you to search documents'] = 'Wyszukiwanie dokumentów';
