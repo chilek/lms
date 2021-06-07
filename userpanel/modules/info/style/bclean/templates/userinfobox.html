@@ -17,9 +17,7 @@
 		{/if}
 		{if $rights.info.edit_addr || $rights.info.edit_addr_ack || $rights.info.edit_contact || $rights.info.edit_contact_ack}
 			{if $rights.info.edit_addr || $rights.info.edit_addr_ack || $rights.info.edit_contact || $rights.info.edit_contact_ack}
-				<button id="updatedatabtn" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#updateuserinfobox" accesskey="A">
-					{trans("Actualize")}
-				</button>
+				{button id="updatedatabtn" class="btn btn-primary btn-sm" data_toggle="modal" data_target="#updateuserinfobox" accesskey="A" icon="reload" label="Update"}
 			{/if}
 		{/if}
 	</div>
@@ -158,9 +156,7 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h4 class="modal-title">{trans("Information about the subscriber")}</h4>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
+				{button class="close" data_dismiss="modal" icon="cancel"}
 			</div>
 			<div class="modal-body">
 				{if $error.ssn}
@@ -290,9 +286,9 @@
 			</div>
 			<div class="modal-footer">
 				{if $rights.info.edit_addr || $rights.info.edit_addr_ack || $rights.info.edit_contact || $rights.info.edit_contact_ack}
-					<a class="btn btn-danger" id="updateuserbtn" href="#" accesskey="A">{trans("Save")}</a>
+					{button class="btn btn-danger" id="updateuserbtn" accesskey="A" icon="save" label="Save"}
 				{/if}
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">{trans("Close")}</button>
+					{button class="btn btn-secondary" data_dismiss="modal" icon="close" label="Close"}
 			</div>
 		</div>
 	</div>

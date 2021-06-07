@@ -95,9 +95,7 @@
 									{if isset($link.extra)}{$link.extra}{/if}
 								{/foreach}
 								{if $item.doctype == $smarty.const.DOC_INVOICE || $item.doctype == $smarty.const.DOC_CNOTE}
-									<a class="btn btn-primary btn-sm" onclick="reset_login_timeout();" href="?m=finances&f=invoice&id={$item.docid}" role="button" target="_blank">
-										{trans("Print")}
-									</a>
+									{button class="btn btn-primary btn-sm" onclick="reset_login_timeout(); location.href='?m=finances&f=invoice&id={$item.docid}'" external=true icon="print" label="Print"}
 								{else}
 									&nbsp;
 								{/if}
@@ -125,17 +123,18 @@
 					<tfoot>
 						<tr>
 							<td colspan="5">
-								<button type="submit" class="btn btn-primary" formaction="?m=finances&aggregate_documents={if $aggregate_documents}0{else}1{/if}#userbalancebox"
-									formtarget="_self">
-									{if $aggregate_documents}{trans("Don't aggregate documents")}{else}{trans("Aggregate documents")}{/if}
-								</button>
+								{if $aggregate_documents}
+									{button type="submit" class="btn btn-primary" formaction="?m=finances&aggregate_documents=0#userbalancebox" icon="document" label="Don't aggregate documents"}
+								{else}
+									{button type="submit" class="btn btn-primary" formaction="?m=finances&aggregate_documents=1#userbalancebox" icon="document" label="Aggregate documents"}
+								{/if}
 							</td>
 							<td colspan="2" class="text-center">
 								<div class="custom-control custom-checkbox" id="checkall-checkbox">
 									<input class="custom-control-input" type="checkbox" name="allbox" id="allbox" onchange="CheckAll('invoices', this)" value="1" />
 									<label class="custom-control-label" for="allbox">{trans("Check all")}</label>
 								</div>
-								<a class="btn btn-primary btn-sm" id="print-all" href="javascript:document.invoices.submit()">{trans("Print selected")}</a>
+								{button class="btn btn-primary btn-sm" id="print-all" onclick="document.invoices.submit()" icon="print" label="Print selected"}
 							</td>
 						</tr>
 					</tfoot>

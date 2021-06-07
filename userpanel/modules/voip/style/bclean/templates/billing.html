@@ -71,8 +71,8 @@
 					<OPTION VALUE="{CALL_SERVER_FAILED}" {if $params.fstatus == CALL_SERVER_FAILED} SELECTED{/if}>{trans("server error")}</OPTION>
 				</SELECT>
 			</div>
-			<input type="button" id="billing" class="btn btn-danger m-2" value="{trans("Search")} &raquo;">
-			<input type="button" id="minibilling" class="btn btn-secondary m-2" value="{trans("Minibilling")} &raquo;">
+			{button type="submit" id="billing" class="btn btn-danger m-2" icon="search" label="Search"}
+			{button type="submit" id="minibilling" class="btn btn-secondary m-2" icon="phone" label="Minibilling"}
 		</FORM>
 		<table class="table table-sm table-condensed">
 			<TR>
@@ -198,7 +198,7 @@
 				<ol id="phones-sortable" class="userpanel-phones-sortable"></ol>
 			</ul>
 		{/if}
-		<button type="button" id="save-settings" class="btn btn-danger">{trans("Save")}</button>
+		{button id="save-settings" class="btn btn-danger" icon="save" label="Save"}
 	</div>
 </div>
 {if $user_accounts}
