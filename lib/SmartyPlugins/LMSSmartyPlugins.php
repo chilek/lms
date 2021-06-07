@@ -164,6 +164,7 @@ class LMSSmartyPlugins
         $selected = isset($params['selected']) ? $params['selected'] : null;
         $superuser = isset($params['superuser']) && !empty($params['superuser']) ? $params['superuser'] : null;
         $onchange = isset($params['onchange']) && !empty($params['onchange']) ? $params['onchange'] : null;
+        $tip = trans(isset($params['tip']) ? $params['tip'] : 'Select division');
 
         if (isset($user_divisions) && empty($user_divisions)) {
             if ($force_global_division_context) {
@@ -187,7 +188,8 @@ class LMSSmartyPlugins
         } else {
             if (!empty($user_divisions) && count($user_divisions) > 1) {
                 $result .= ($label ? '<label for="' . $name . '">' : '') . ($label ? trans($label) : '') . ($label ? '&nbsp;' : '');
-                $result .= '<select class="division-context" id="' . $id . '" name="' . $name . '" ' . self::tipFunction(array('text' => 'Select division'), $template)
+                $result .= '<select class="division-context" id="' . $id . '" name="' . $name . '" '
+                    . (empty($tip) ? '' : ' title="' . $tip . '"')
                     . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '')
                     . ($onchange ? ' onchange="' . $onchange . '"' : '')
                     . '>';
