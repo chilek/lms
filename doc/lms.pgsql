@@ -3544,8 +3544,8 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('phpui', 'smarty_debug', 'false', '', 0),
 ('phpui', 'force_ssl', 'false', '', 0),
 ('phpui', 'allow_mac_sharing', 'false', '', 0),
-('phpui', 'big_networks', 'false', '', 0),
-('phpui', 'short_pagescroller', 'false', '', 0),
+('phpui', 'big_networks', 'true', '', 0),
+('phpui', 'short_pagescroller', 'true', '', 0),
 ('phpui', 'helpdesk_stats', 'true', '', 0),
 ('phpui', 'helpdesk_customerinfo', 'true', '', 0),
 ('phpui', 'helpdesk_customerinfo_mail_body', '--
