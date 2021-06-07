@@ -177,6 +177,7 @@ version 27-git (????-??-??):
   - improvement: more notification symbols to use for ticket mail notification [interduo]
   - improvement: 'mail.debug_level' can be applied when 'mail.debug_email' is not specified [chilan]
   - improvement: changed default value of 'mail.backend' from 'pear' to 'phpmailer' [chilan]
+  - enhancement: added 'without location address' status filter in customerlist and customersearch forms [chilan]
 
 version 26.0 (2020-12-15):
 
