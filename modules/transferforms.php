@@ -28,7 +28,7 @@ if ($kind == 2) {
     $list = $DB->GetAll(
         'SELECT c.id, c.address, c.zip, c.city, d.account,
 		d.name AS d_name, d.shortname AS d_shortname, d.address AS d_address, d.zip AS d_zip, d.city AS d_city, '
-        . $DB->Concat('UPPER(lastname)', "' '", 'c.name') . ' AS customername,
+        . $DB->Concat('UPPER(c.lastname)', "' '", 'c.name') . ' AS customername,
 		COALESCE(SUM(cash.value), 0.00) AS balance
 		FROM customerview c 
 		LEFT JOIN cash ON (c.id = cash.customerid)
