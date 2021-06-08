@@ -196,14 +196,14 @@
 	var customer_assignment_helper = new CustomerAssignmentHelper(assignment_settings);
 	$(function() {
 		$('#submit-button').click(function(e) {
-			$("#grossprice").prop('disabled', false);
-			$("#netprice").prop('disabled', false);
+			var tariffid = parseInt($('form[name="assignment"] select[name="assignment[tariffid]"]').val());
+
+			$("#grossprice").prop('disabled', !isNaN(tariffid));
+			$("#netprice").prop('disabled', !isNaN(tariffid));
 			$("#netflag").prop('disabled', false);
 			$("#tax").prop('disabled', false);
 
 			{if ConfigHelper::checkConfig('phpui.node_assignment_warning')}
-			var tariffid = parseInt($('form[name="assignment"] select[name="assignment[tariffid]"]').val());
-
 			if (isNaN(tariffid)) {
 				document.assignment.submit();
 				return;
