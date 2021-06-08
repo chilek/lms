@@ -172,10 +172,10 @@
 				</span>
             </TD>
             <TD class="text-right">
-				<INPUT TYPE="text" class="invoice-contents-field-edit" NAME="invoice-contents[{$posuid}][valuenetto]"
-					value="{$row.valuenetto}" data-old-value="{$valuenetto}" SIZE="6"
+                <input type="text" class="invoice-contents-field-edit" name="invoice-contents[{$posuid}][valuenetto]"
+                    value="{$valuenetto}" data-old-value="{$valuenetto}" size="6"
                     {tip text="Enter unitary value without discount"} style="display: none;">
-				<span class="invoice-contents-field-value nobr">
+                <span class="invoice-contents-field-value nobr">
 				    {$item.valuenetto|string_format:"%01.2f"}
 				</span>
 				{if isset($item.valuenetto_custom_contents)}
@@ -201,8 +201,8 @@
                 </span>
             </TD>
             <TD class="text-right">
-				<INPUT TYPE="text" class="invoice-contents-field-edit" NAME="invoice-contents[{$posuid}][valuebrutto]" SIZE="6"
-					value="{$row.valuebrutto}" data-old-value="{$valuebrutto}"
+				<input type="text" class="invoice-contents-field-edit" name="invoice-contents[{$posuid}][valuebrutto]"
+					value="{$valuebrutto}" data-old-value="{$valuebrutto}" size="6"
                     {tip text="Enter unitary value without discount"} style="display: none;">
 				<span class="invoice-contents-field-value nobr">
 				{$item.valuebrutto|string_format:"%01.2f"}
