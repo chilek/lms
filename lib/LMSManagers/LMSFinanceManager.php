@@ -242,21 +242,31 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                                                          assignment_id = ?', 'phone', array($row['id']));
 
                 if ($assignments[$idx]['netflag']) {
-                    $assignments[$idx]['discounted_netvalue'] = (((100 - $row['pdiscount']) * $row['netvalue']) / 100) - $row['vdiscount'];
+                    $assignments[$idx]['discounted_netprice'] = f_round(($row['unitary_netvalue'] - $row['unitary_netvalue'] * $row['pdiscount'] / 100) - ($row['unitary_vdiscount']));
+                    $assignments[$idx]['discounted_netvalue'] = f_round($assignments[$idx]['discounted_netprice'] * $row['count']);
+                    $assignments[$idx]['unitary_netdiscount'] = f_round($row['unitary_netvalue'] - $assignments[$idx]['discounted_netprice']);
 
                     if ($assignments[$idx]['tax_value']) {
                         $assignments[$idx]['discounted_value'] = ($assignments[$idx]['discounted_netvalue'] * ($assignments[$idx]['tax_value'] / 100 + 1));
+                        $assignments[$idx]['discounted_price'] = f_round($assignments[$idx]['discounted_netprice'] * ($assignments[$idx]['tax_value'] / 100 + 1));
                     } elseif ($assignments[$idx]['taxl_value']) {
                         $assignments[$idx]['discounted_value'] = ($assignments[$idx]['discounted_netvalue'] * ($assignments[$idx]['taxl_value'] / 100 + 1));
+                        $assignments[$idx]['discounted_price'] = f_round($assignments[$idx]['discounted_netprice'] * ($assignments[$idx]['taxl_value'] / 100 + 1));
                     }
+                    $assignments[$idx]['unitary_discount'] = f_round($row['unitary_value'] - $assignments[$idx]['discounted_price']);
                 } else {
-                    $assignments[$idx]['discounted_value'] = (((100 - $row['pdiscount']) * $row['value']) / 100) - $row['vdiscount'];
+                    $assignments[$idx]['discounted_price'] = f_round(($row['unitary_value'] - $row['unitary_value'] * $row['pdiscount'] / 100) - ($row['unitary_vdiscount']));
+                    $assignments[$idx]['discounted_value'] = f_round($assignments[$idx]['discounted_price'] * $row['count']);
+                    $assignments[$idx]['unitary_discount'] = f_round($row['unitary_value'] - $assignments[$idx]['discounted_price']);
 
                     if ($assignments[$idx]['tax_value']) {
                         $assignments[$idx]['discounted_netvalue'] = ($assignments[$idx]['discounted_value'] / ($assignments[$idx]['tax_value'] / 100 + 1));
+                        $assignments[$idx]['discounted_netprice'] = f_round($assignments[$idx]['discounted_price'] / ($assignments[$idx]['tax_value'] / 100 + 1));
                     } elseif ($assignments[$idx]['taxl_value']) {
                         $assignments[$idx]['discounted_netvalue'] = ($assignments[$idx]['discounted_value'] / ($assignments[$idx]['taxl_value'] / 100 + 1));
+                        $assignments[$idx]['discounted_netprice'] = f_round($assignments[$idx]['discounted_price'] / ($assignments[$idx]['taxl_value'] / 100 + 1));
                     }
+                    $assignments[$idx]['unitary_netdiscount'] = f_round($row['unitary_netvalue'] - $assignments[$idx]['discounted_netprice']);
                 }
 
                 if ($row['suspended'] == 1) {
@@ -277,14 +287,15 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         (($row['datefrom'] == 0 || $row['datefrom'] < $now) &&
                         ($row['dateto'] == 0 || $row['dateto'] > $now))) {
                     // for proper summary
-                    $assignments[$idx]['real_unitary_value'] = $row['unitary_value'];
+                    $assignments[$idx]['real_unitary_price'] = $assignments[$idx]['discounted_price'];
+                    $assignments[$idx]['real_unitary_netprice'] = $assignments[$idx]['discounted_netprice'];
                     $assignments[$idx]['real_count'] = $row['count'];
                     $assignments[$idx]['real_value'] = $row['value'];
                     $assignments[$idx]['real_netvalue'] = $row['netvalue'];
-                    $assignments[$idx]['real_unitary_discount'] = round(($row['unitary_value'] - ($assignments[$idx]['discounted_value'] / $row['count'])), 2);
-                    $assignments[$idx]['real_unitary_netdiscount'] = round(($row['unitary_netvalue'] - ($assignments[$idx]['discounted_netvalue'] / $row['count'])), 2);
-                    $assignments[$idx]['real_discount'] = round(($row['unitary_value'] - ($assignments[$idx]['discounted_value'] / $row['count'])) * $row['count'], 2);
-                    $assignments[$idx]['real_netdiscount'] = round(($row['unitary_netvalue'] - ($assignments[$idx]['discounted_netvalue'] / $row['count'])) * $row['count'], 2);
+                    $assignments[$idx]['real_unitary_discount'] = $assignments[$idx]['unitary_discount'];
+                    $assignments[$idx]['real_unitary_netdiscount'] = $assignments[$idx]['unitary_netdiscount'];
+                    $assignments[$idx]['real_discount'] = round($assignments[$idx]['real_unitary_discount'] * $row['count'], 2);
+                    $assignments[$idx]['real_netdiscount'] = round($assignments[$idx]['real_unitary_netdiscount'] * $row['count'], 2);
                     $assignments[$idx]['real_disc_value'] = $assignments[$idx]['discounted_value'];
                     $assignments[$idx]['real_disc_netvalue'] = $assignments[$idx]['discounted_netvalue'];
                     $assignments[$idx]['real_unitary_downrate'] = $row['unitary_downrate'];
