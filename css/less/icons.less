@@ -731,6 +731,7 @@
     content: @fa-var-toggle-on;
   }
 }
+
 .lms-ui-icon-plug {
   .fa-icon;
   .fas;
@@ -782,7 +783,10 @@
   }
 }
 
-.lms-ui-icon-id {
+.lms-ui-icon-id,
+.lms-ui-icon-sn,
+.lms-ui-icon-serialnumber,
+.lms-ui-icon-serial {
   .fa-icon;
   .fas;
   .lms-ui-icon;
@@ -1290,7 +1294,8 @@
   }
 }
 
-.lms-ui-icon-wired {
+.lms-ui-icon-wired,
+.lms-ui-icon-port {
   .fa-icon;
   .fas;
   .lms-ui-icon;
@@ -1299,7 +1304,20 @@
   }
 }
 
-.lms-ui-icon-hosting {
+.lms-ui-icon-port-connected,
+.lms-ui-icon-port-taken {
+  .lms-ui-icon-port;
+  &:before {
+    color: gold !important;
+    text-stroke-width: 1px;
+    text-stroke-color: black;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: black;
+  }
+}
+
+.lms-ui-icon-hosting,
+.lms-ui-icon-radius {
   .fa-icon;
   .fas;
   .lms-ui-icon;
@@ -1435,7 +1453,8 @@
 }
 
 .lms-ui-icon-trust,
-.lms-ui-icon-handshake {
+.lms-ui-icon-handshake,
+.lms-ui-icon-warranty {
   .fa-icon;
   .fas;
   .lms-ui-icon;
