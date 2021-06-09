@@ -218,7 +218,7 @@
 					{trans("close event")}
 				</label>
 				{button type="submit" icon="save" accesskey="s" label="Submit"}
-				{button icon="cancel" onclick="location.href='?m=eventlist{if isset($backid)}#{$backid}{/if}';" label="Cancel"}
+				{button icon="cancel" href="{$backurl}" label="Cancel"}
 			{/box_buttons}
 		{/box_container}
         <div id="row"{if $layout.module == 'eventedit' || $event.helpdesk == 'none' || $event.helpdesk == 'assign'} style="display:none;"{/if}>

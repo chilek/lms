@@ -42,6 +42,18 @@ if (isset($_POST['event']['helpdesk']) && isset($_POST['ticket'])) {
 
 $userlist = $LMS->GetUserNames();
 
+if ($SESSION->is_set('backto', true)) {
+    $backto = '?' . $SESSION->get('backto', true);
+} elseif ($SESSION->is_set('backto')) {
+    $backto = '?' . $SESSION->get('backto');
+} else {
+    $backto = '?m=eventlist';
+}
+if (!preg_match('/m=rtticketview/', $backto)) {
+    $backid = $SESSION->get('backid');
+    $backurl = $backto . (empty($backid) ? '' : '#' . $backid);
+}
+
 if (isset($_POST['event'])) {
     $event = $_POST['event'];
 
@@ -370,13 +382,7 @@ if (isset($_POST['event'])) {
         $ticket = $hook_data['ticket'];
 
         if (!isset($event['reuse'])) {
-            $backto = $SESSION->get('backto');
-            if (isset($backto) && preg_match('/m=rtticketview/', $backto)) {
-                $SESSION->redirect('?' . $backto);
-            } else {
-                $SESSION->redirect('?m=eventlist'
-                    . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
-            }
+            $SESSION->redirect($backurl);
         }
 
         unset($event['title']);
@@ -420,6 +426,8 @@ if (isset($_POST['event'])) {
     if (!isset($eventticketid)) {
         $event['helpdesk'] = ConfigHelper::checkConfig('phpui.default_event_ticket_assignment') ? 'new' : 'none';
     }
+
+    $SMARTY->assign('backurl', $backurl);
 }
 
 $netnodelist = $LMS->GetNetNodeList(array(), 'name');
