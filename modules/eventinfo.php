@@ -35,6 +35,7 @@ $userlist = $DB->GetAllByKey('SELECT id, rname FROM vusers
 $layout['pagetitle'] = trans('Event Info');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->save('backto', $_SERVER['QUERY_STRING'], true);
 
 $SMARTY->assign('event', $event);
 $SMARTY->assign('userlist', $userlist);

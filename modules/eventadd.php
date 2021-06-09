@@ -43,15 +43,15 @@ if (isset($_POST['event']['helpdesk']) && isset($_POST['ticket'])) {
 $userlist = $LMS->GetUserNames();
 
 if ($SESSION->is_set('backto', true)) {
-    $backto = '?' . $SESSION->get('backto', true);
+    $backto = $SESSION->get('backto', true);
 } elseif ($SESSION->is_set('backto')) {
-    $backto = '?' . $SESSION->get('backto');
+    $backto = $SESSION->get('backto');
 } else {
-    $backto = '?m=eventlist';
+    $backto = 'm=eventlist';
 }
 if (!preg_match('/m=rtticketview/', $backto)) {
     $backid = $SESSION->get('backid');
-    $backurl = $backto . (empty($backid) ? '' : '#' . $backid);
+    $backurl = '?' . $backto . (empty($backid) ? '' : '#' . $backid);
 }
 
 if (isset($_POST['event'])) {

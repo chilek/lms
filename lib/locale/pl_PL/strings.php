@@ -630,6 +630,7 @@ $_LANG['Create new'] = 'Utwórz nową';
 $_LANG['Create time:'] = 'Data utworzenia:';
 $_LANG['Generating subscriptions...'] = 'Generuję taryfy…';
 $_LANG['Creation time:'] = 'Czas utworzenia:';
+$_LANG['Creation time'] = 'Czas utworzenia';
 $_LANG['Creditor:'] = 'Wierzyciel:';
 $_LANG['Creditor name is required!'] = 'Nazwa wierzyciela jest wymagana!';
 $_LANG['Crontab:'] = 'Crontab:';
@@ -2562,6 +2563,7 @@ $_LANG['Errors and Duplicated Entries'] = 'Błędy i duplikaty';
 $_LANG['24 months'] = '24 mies.';
 $_LANG['Enter description or select tariff from the list'] = 'Wprowadź opis lub wybierz taryfę z listy';
 $_LANG['Created by:'] = 'Utworzył:';
+$_LANG['Created by'] = 'Utworzył';
 $_LANG['Body:'] = 'Treść:';
 $_LANG['Coma-separated list of default invoice printout pages. You can use "original", "copy", "duplicate". Default: "original,copy".'] = 'Lista oddzielonych przecinkiem nazw stron wydruku faktur. Można użyć ciągu "original", "copy" i "duplicate". Domyślnie: "original,copy".';
 $_LANG['internet'] = 'internet';
@@ -2611,6 +2613,7 @@ $_LANG['Enter port number in device to which device will be connected (optional)
 $_LANG['Incorrect port number!'] = 'Nieprawidłowy numer portu!';
 $_LANG['New address'] = 'Nowy adres';
 $_LANG['Node:'] = 'Komputer:';
+$_LANG['Node'] = 'Komputer';
 $_LANG['Port'] = 'Port';
 $_LANG['Replace with:'] = 'Wymień na:';
 $_LANG['Selected port number is taken by other device or node!'] = 'Port o wybranym numerze jest zajęty przez inne urządzenie lub komputer!';
@@ -3514,7 +3517,9 @@ $_LANG['Account is not active'] = 'Konto nie jest aktywne';
 $_LANG['Enter access start date in YYYY/MM/DD format. If you don\'t want to define \'From\' date leave this field empty'] = 'Wprowadź datę, od której ważność konta powinna obowiązywać lub zostaw to pole puste. Data powinna być w formacie RRRR/MM/DD';
 $_LANG['Enter access end date in YYYY/MM/DD format. If you don\'t want to define \'To\' date leave this field empty'] = 'Wprowadź datę, do której ważność konta powinna obowiązywać lub zostaw to pole puste. Data powinna być w formacie RRRR/MM/DD';
 $_LANG['Last modification time:'] = 'Czas ostatniej modyfikacji:';
+$_LANG['Last modification'] = 'Ostatnia modyfikacja';
 $_LANG['Last modified by:'] = 'Ostatnio zmodyfikował:';
+$_LANG['Last modified by'] = 'Ostatnio zmodyfikował';
 $_LANG['Closed by'] = 'Zamknięte przez';
 $_LANG['Closed time'] = 'Czas zamknięcia';
 
@@ -3801,6 +3806,7 @@ $_LANG['busy'] = 'zajęte';
 $_LANG['on-line'] = 'włączone';
 
 $_LANG['End time:'] = 'Czas zakończenia:';
+$_LANG['End time'] = 'Czas zakończenia';
 $_LANG['hide VoIP passwords'] = 'ukrywanie haseł VoIP';
 
 $_LANG['Nodes list'] = 'Lista węzłów';
@@ -4190,6 +4196,7 @@ $_LANG['Total events:'] = 'Razem zdarzeń:';
 $_LANG['Today'] = 'Dziś';
 
 $_LANG['Begin time:'] = 'Czas rozpoczęcia:';
+$_LANG['Begin time'] = 'Czas rozpoczęcia';
 $_LANG['Begin time:<!voip>'] = 'Czas rozpoczęcia:';
 
 $_LANG['Debit Note No.'] = 'Numer noty obciążeniowej';
@@ -4387,6 +4394,7 @@ $_LANG['Set ticket priority'] = 'Wybierz priorytet zgłoszenia';
 $_LANG['Reset ticket priority'] = 'Usuń priorytet zgłoszenia';
 
 $_LANG['Availability:'] = 'Dostępność:';
+$_LANG['Availability'] = 'Dostępność';
 
 $_LANG['Create ticket'] = 'Utwórz zgłoszenie';
 $_LANG['Request Number'] = 'Nr zgłoszenia';

@@ -45,14 +45,14 @@ if (isset($_GET['id'])) {
 }
 
 if ($SESSION->is_set('backto', true)) {
-    $backto = '?' . $SESSION->get('backto', true);
+    $backto = $SESSION->get('backto', true);
 } elseif ($SESSION->is_set('backto')) {
-    $backto = '?' . $SESSION->get('backto');
+    $backto = $SESSION->get('backto');
 } else {
-    $backto = '?m=eventlist';
+    $backto = 'm=eventlist';
 }
 $backid = $SESSION->get('backid');
-$backurl = $backto . (empty($backid) ? '' : '#' . $backid);
+$backurl = '?' . $backto . (empty($backid) ? '' : '#' . $backid);
 
 switch ($_GET['action']) {
     case 'open':

@@ -9,14 +9,14 @@ $eventuserlist = $DB->GetAll('SELECT userid AS id, vusers.name
 	WHERE vusers.id = userid AND eventid = ?', array($event['id']));
 
 if ($SESSION->is_set('backto', true)) {
-    $backto = '?' . $SESSION->get('backto', true);
+    $backto = $SESSION->get('backto', true);
 } elseif ($SESSION->is_set('backto')) {
-    $backto = '?' . $SESSION->get('backto');
+    $backto = $SESSION->get('backto');
 } else {
-    $backto = '?m=eventlist';
+    $backto = 'm=eventlist';
 }
 $backid = $SESSION->get('backid');
-$backurl = $backto . (empty($backid) ? '' : '#' . $backid);
+$backurl = '?' . $backto . (empty($backid) ? '' : '#' . $backid);
 
 if (isset($_POST['event'])) {
     $event = $_POST['event'];
