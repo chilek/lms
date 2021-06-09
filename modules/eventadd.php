@@ -49,10 +49,12 @@ if ($SESSION->is_set('backto', true)) {
 } else {
     $backto = 'm=eventlist';
 }
-if (!preg_match('/m=rtticketview/', $backto)) {
+if (preg_match('/m=rtticketview/', $backto)) {
+    $backid = '';
+} else {
     $backid = $SESSION->get('backid');
-    $backurl = '?' . $backto . (empty($backid) ? '' : '#' . $backid);
 }
+$backurl = '?' . $backto . (empty($backid) ? '' : '#' . $backid);
 
 if (isset($_POST['event'])) {
     $event = $_POST['event'];
