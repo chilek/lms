@@ -128,9 +128,9 @@
 			{/if}
 			{if $event.moduserid != 0}
 				<tr>
-					<d>
+					<td>
 						{icon name="user"}
-					</d>
+					</td>
 					<td class="nobr">
 						<strong>{trans("Last modified by")}</strong>
 					</td>
@@ -290,7 +290,7 @@
 					{icon name="helpdesk"}
 				</td>
 				<td>
-					<strong>{trans("Helpdesk assignment:")}</strong>
+					<strong>{trans("Helpdesk assignment")}</strong>
 				</td>
 				<td>
 					#{$event.ticketid|string_format:"%06d"}
