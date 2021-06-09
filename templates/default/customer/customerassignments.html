@@ -278,11 +278,20 @@
 										{if $a.pdiscount != 0}
 											{$a.pdiscount}%
 										{elseif $a.vdiscount != 0}
-											{moneyf($a.real_unitary_netdiscount, $a.currency)}
-											{if $a.count != 1}
-												<span title="{trans("Total net discount")}">
+											{if isset($a.real_unitary_netdiscount)}
+												{moneyf($a.real_unitary_netdiscount, $a.currency)}
+												{if $a.count != 1}
+													<span title="{trans("Total net discount")}">
 													({moneyf($a.real_netdiscount, $a.currency)})
 												</span>
+												{/if}
+											{else}
+												{moneyf($a.unitary_netdiscount, $a.currency)}
+												{if $a.count != 1}
+													<span title="{trans("Total net discount")}">
+															({moneyf($a.unitary_netdiscount *$a.count, $a.currency)})
+													</span>
+												{/if}
 											{/if}
 										{else}
 											-
@@ -295,11 +304,20 @@
 										{if $a.pdiscount != 0}
 											{$a.pdiscount}%
 										{elseif $a.vdiscount != 0}
-											{moneyf($a.real_unitary_discount, $a.currency)}
-											{if $a.count != 1}
-												<span title="{trans("Total gross discount")}">
-													({moneyf($a.real_discount, $a.currency)})
+											{if isset($a.real_unitary_discount)}
+												{moneyf($a.real_unitary_discount, $a.currency)}
+												{if $a.count != 1}
+													<span title="{trans("Total gross discount")}">
+														({moneyf($a.real_discount, $a.currency)})
+													</span>
+												{/if}
+											{else}
+												{moneyf($a.unitary_discount, $a.currency)}
+												{if $a.count != 1}
+												<span title="{trans("Total net discount")}">
+														({moneyf($a.unitary_discount *$a.count, $a.currency)})
 												</span>
+												{/if}
 											{/if}
 										{else}
 											-
@@ -316,19 +334,20 @@
 						<div class="lms-ui-tab-table-wrapper col-2">
 							<div class="lms-ui-tab-table-column price">
 								<span class="net">
-									{if isset($a.real_disc_netvalue)}
-										{moneyf($a.real_disc_netvalue / $a.count, $a.currency)}
+									{if isset($a.real_unitary_netprice)}
+										{moneyf($a.real_unitary_netprice, $a.currency)}
 									{else}
-										{moneyf($a.discounted_netvalue / $a.count, $a.currency)}
+										{moneyf($a.discounted_netprice, $a.currency)}
 									{/if}
 								</span>
 								<span class="net-gross"><br></span>
 								<span class="gross">
-									{if isset($a.real_disc_value)}
-										{moneyf(($a.real_disc_value / $a.count), $a.currency)}
+									{if isset($a.real_unitary_price)}
+										{moneyf($a.real_unitary_price, $a.currency)}
 									{else}
-										{moneyf(($a.discounted_value / $a.count), $a.currency)}
+										{moneyf(($a.discounted_price), $a.currency)}
 									{/if}
+
 								</span>
 							</div>
 							<div class="lms-ui-tab-table-column total">
