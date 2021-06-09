@@ -1,136 +1,166 @@
 <!--// $Id$ //-->
-<TABLE class="lmsbox lms-ui-sortable lms-ui-tab-container" id="netnodedevices">
-    <COLGROUP>
-		<COL style="width: 99%;">
-		<COL style="width: 1%;">
-	</COLGROUP>
-	<THEAD>
-	<TR class="hand lmsbox-titlebar" data-lmsbox-content="devicenodepanel">
-		<TD class="bold nobr">
-			{icon name="node" class="lms-ui-sortable-handle"}
-			{if empty($netdevlist)}{$count = 0}{else}{$count = count($netdevlist)}{/if}
-			{t a=$count}Assigned net devices ($a):{/t}
-		</td>
-		<td class="text-right nobr">
-			<a href="#" onclick="javascript:netDevForNetNodeChooseWin('{$objectid}')">
-				{trans("Add devices to node")}
-				{icon name="next"}
-			</a>
-		</td>
-	</TR>
-    </THEAD>
-    <TBODY>
-	<TR id="devicenodepanel" style="display:none;">
-		<TD colspan="2">
-			<TABLE class="lmsbox-inner lms-ui-background-cycle">
-				<COLGROUP>
-					<COL style="width: 97%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-				</COLGROUP>
-				<THEAD>
-				<TR class="lms-ui-header-panel">
-					<TD class="nobr">
-						<img src="img/node.gif" ALT=""> <span class="bold">{trans("Name:")}</span><BR>
-						<img src="img/producer.gif" ALT=""> {trans("Manufacturer:")}/{trans("Model:")}<br>
-						<img src="img/home.gif" alt=""> {trans("Location:")}
-					</TD>
-					<TD class="text-right nobr">
-						{trans("ID:")}
-					</TD>
-					<TD class="nobr">
-						<img src="img/serialnumber.gif"> {trans("Serial number:")}
-					</TD>
-					<TD>&nbsp;</TD>
-				</TR>
-				</THEAD>
-				<TBODY>
-				{foreach $netdevlist as $netdev}
-				<tr class="highlight"  id="ndsp{$netdev.id}" onclick="window.location='?m=netdevinfo&id={$netdev.id}'" data-name="{$netdev.name}">
-					<td class="valign-top">
-						<span class="bold nobr">
-							<img src="img/netdev.gif" alt=""> {$netdev.name}
-						</span>
-						<br>
-						<span class="nobr">
-							<img src="img/producer.gif" alt="">
-							{$netdev.producer} / {$netdev.model}
-						</span>
-						<br>
-						<span class="nobr">
-							<img src="img/home.gif" alt="">
-							{if $netdev.location}
-								{$netdev.location|truncate:60:"&hellip;":true}
-								{if $netdev.borough_name}
-								</span>
-								<span class="blend nobr">
-									({$netdev.state_name} / {$netdev.district_name} / {$_BOROUGHTYPES[$netdev.borough_type]} {$netdev.borough_name})
-							{/if}
-							{else}
-								-
-							{/if}
-						</span>
-					</td>
-					<td>
-						{$netdev.id|string_format:"%04d"}
-					</td>
-					<td>
-						{$netdev.serialnumber}
-					</td>
-					<td class="nobr">
-						<A class="delete-netnodedev" href="?m=netnodedeldev&id={$objectid}&did={$netdev.id}"><img src="img/delete.gif"  alt="{trans("Delete")}" title="{trans("Delete")}"></A>
-						<a href="?m=netdevinfo&id={$netdev.id}"><img src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
-					</td>
-				</tr>
-				{foreachelse}
-				<tr>
-					<td colspan="4" class="empty-table">
-						{trans("No assigned devices.")}
-					</td>
-				</tr>
-				{/foreach}
-				</TBODY>
-			</TABLE>
-		</TD>
-	</TR>
-    </TBODY>
-</TABLE>
-<SCRIPT>
-function change_nodelinktype(linktype) {
-	linktype = parseInt(linktype);
-	var options = document.getElementById('devnodeslinktechnology').options;
-	while (options.length)
-		options.remove(0);
-	options.add(new Option('{trans("- unknown -")}', 0));
-	switch (linktype) {
-		case 0:
-			{foreach $_LINKTECHNOLOGIES[0] as $linktechnologyidx => $linktechnology}
-			options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
-			{/foreach}
-			break;
-		case 1:
-			{foreach $_LINKTECHNOLOGIES[1] as $linktechnologyidx => $linktechnology}
-			options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
-			{/foreach}
-			break;
-		case 2:
-			{foreach $_LINKTECHNOLOGIES[2] as $linktechnologyidx => $linktechnology}
-			options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
-			{/foreach}
-			break;
+<style>
+
+	#new-net-dev {
+		display: flex;
+		align-items: center;
 	}
-}
 
-if (getCookie('devicenodepanel') == '1') {
-	$('#devicenodepanel').show();
-}
+</style>
 
-$('.delete-netnodedev').click(function() {
-	var name = $(this).closest('tr').attr('data-name');
-	confirmDialog($t("Are you sure, you want to remove net device '$a' from node?", name), this).done(function() {
-		location.href = $(this).attr('href');
+<table class="lmsbox lms-ui-sortable lms-ui-tab-container" id="netnodedevices">
+    <colgroup>
+		<col style="width: 99%;">
+		<col style="width: 1%;">
+	</colgroup>
+	<thead>
+		<TR class="hand lmsbox-titlebar" data-lmsbox-content="devicenodepanel">
+			<TD class="bold nobr">
+				{icon name="node" class="lms-ui-sortable-handle"}
+				{if empty($netdevlist)}{$count = 0}{else}{$count = count($netdevlist)}{/if}
+				{t a=$count}Assigned network devices ($a){/t}
+			</td>
+			<td class="text-right nobr">
+				<a href="#" id="new-net-dev" onclick="javascript:netDevForNetNodeChooseWin('{$objectid}')">
+					{trans("Add devices to node")}
+					{icon name="next"}
+				</a>
+			</td>
+		</TR>
+	</thead>
+	<tbody>
+		<tr id="devicenodepanel" style="display:none;">
+			<td colspan="2">
+				<table class="lmsbox-inner lms-ui-background-cycle">
+					<colgroup>
+						<col style="width: 97%;">
+						<col style="width: 1%;">
+						<col style="width: 1%;">
+						<col style="width: 1%;">
+					</colgroup>
+					<thead>
+						<tr class="lms-ui-header-panel">
+							<td class="nobr">
+								{icon name="node"}
+								<strong>{trans("Name")}</strong>
+								<br>
+								{icon name="hardware"}
+								{trans("Manufacturer")}/{trans("Model")}
+								<br>
+								{icon name="home"}
+								{trans("Location")}
+							</td>
+							<td class="text-right nobr">
+								{trans("ID")}
+							</td>
+							<td class="nobr">
+								{icon name="id"}
+								{trans("Serial number")}
+							</td>
+							<TD>&nbsp;</TD>
+						</tr>
+					</thead>
+					<tbody>
+						{foreach $netdevlist as $netdev}
+							<tr class="highlight"  id="ndsp{$netdev.id}" data-target-url="?m=netdevinfo&id={$netdev.id}"
+								data-name="{$netdev.name}">
+								<td class="valign-top">
+									<span class="nobr">
+										{icon name="netdev"}
+										<strong>{$netdev.name}</strong>
+									</span>
+									<br>
+									<span class="nobr">
+										{icon name="hardware"}
+										{$netdev.producer}
+										/
+										{if $netdev.model}{$netdev.model}{else}-{/if}
+									</span>
+									<br>
+									<span class="nobr">
+										{icon name="home"}
+										{if $netdev.location}
+											{$netdev.location|trunescape:60}
+											{if $netdev.borough_name}
+												</span>
+												<span class="blend nobr">
+													({$netdev.state_name}
+													/
+													{$netdev.district_name}
+													/
+													{$_BOROUGHTYPES[$netdev.borough_type]}
+													{$netdev.borough_name})
+											{/if}
+										{else}
+											-
+										{/if}
+									</span>
+								</td>
+								<td>
+									#{$netdev.id}
+								</td>
+								<td>
+									{$netdev.serialnumber}
+								</td>
+								<td class="nobr">
+									{button type="link" icon="delete" tip="Delete" class="delete-netnodedev"
+										href="?m=netnodedeldev&id={$objectid}&did={$netdev.id}"}
+									{button type="link" icon="info" tip="Info" href="?m=netdevinfo&id={$netdev.id}"}
+								</td>
+							</tr>
+						{foreachelse}
+							<tr>
+								<td colspan="4" class="empty-table">
+									{trans("No assigned devices.")}
+								</td>
+							</tr>
+						{/foreach}
+					</tbody>
+				</table>
+			</td>
+		</tr>
+    </tbody>
+</table>
+
+<script>
+
+	function change_nodelinktype(linktype) {
+		linktype = parseInt(linktype);
+		var options = document.getElementById('devnodeslinktechnology').options;
+		while (options.length)
+			options.remove(0);
+		options.add(new Option('{trans("- unknown -")}', 0));
+		switch (linktype) {
+			case 0:
+				{foreach $_LINKTECHNOLOGIES[0] as $linktechnologyidx => $linktechnology}
+				options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+				{/foreach}
+				break;
+			case 1:
+				{foreach $_LINKTECHNOLOGIES[1] as $linktechnologyidx => $linktechnology}
+				options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+				{/foreach}
+				break;
+			case 2:
+				{foreach $_LINKTECHNOLOGIES[2] as $linktechnologyidx => $linktechnology}
+				options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+				{/foreach}
+				break;
+		}
+	}
+
+	if (getCookie('devicenodepanel') == '1') {
+		$('#devicenodepanel').show();
+	}
+
+	$(function() {
+		$('.delete-netnodedev').click(function () {
+			var name = $(this).closest('tr').attr('data-name');
+			confirmDialog($t("Are you sure, you want to remove net device '$a' from node?", name), this).done(function () {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
 	});
-	return false;
-});
-</SCRIPT>
+
+</script>
