@@ -180,27 +180,11 @@
 				data-commited="{$a.commited}"
 				data-document="{if $a.doctype}{t a=$_DOCTYPES[$a.doctype] b=$a.fullnumber c=$a.cdate|date_format:"%Y/%m/%d"}$a no. $b issued on $c{/t}{/if}"
 				{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-					data-net-value="
-						{if $a.tax_value}
-							{($a.real_value / ($a.tax_value / 100 + 1))|replace:",":"."}
-						{elseif $a.taxl_value}
-							{($a.real_value / ($a.taxl_value / 100 + 1))|replace:",":"."}
-						{else}
-							0
-						{/if}
-					"
+					data-net-value="{$a.real_netvalue|default:"0"|replace:",":"."}"
 					data-gross-value="{$a.real_value|default:"0"|replace:",":"."}"
 					data-currency="{$a.currency}"
 					data-gross-disc-value="{$a.real_disc_value|default:"0"|replace:",":"."}"
-					data-net-disc-value="
-						{if $a.tax_value}
-							{($a.real_disc_value / ($a.tax_value / 100 + 1))|replace:",":"."}
-						{elseif $a.taxl_value}
-							{($a.real_disc_value / ($a.taxl_value / 100 + 1))|replace:",":"."}
-						{else}
-							0
-						{/if}
-					"
+					data-net-disc-value="{$a.real_disc_netvalue|default:"0"|replace:",":"."}"
 				{/if}
 				data-downceil="{$a.real_downceil|default:"0"}"
 				data-upceil="{$a.real_upceil|default:"0"}"
@@ -294,22 +278,11 @@
 										{if $a.pdiscount != 0}
 											{$a.pdiscount}%
 										{elseif $a.vdiscount != 0}
-											{if $a.tax_value}
-												{moneyf($a.unitary_vdiscount / ($a.tax_value / 100 + 1), $a.currency)}
-												{if $a.count != 1}
-													<span title="{trans("Total net discount")}">
-														({moneyf(($a.unitary_vdiscount / ($a.tax_value / 100 + 1)) * $a.count, $a.currency)})
-													</span>
-												{/if}
-											{elseif $a.taxl_value}
-												{moneyf($a.unitary_vdiscount / ($a.taxl_value / 100 + 1), $a.currency)}
-												{if $a.count != 1}
-													<span title="{trans("Total net discount")}">
-														({moneyf(($a.unitary_vdiscount / ($a.tax_value / 100 + 1)) * $a.count, $a.currency)})
-													</span>
-												{/if}
-											{else}
-												-
+											{moneyf($a.real_unitary_netdiscount, $a.currency)}
+											{if $a.count != 1}
+												<span title="{trans("Total net discount")}">
+													({moneyf($a.real_netdiscount, $a.currency)})
+												</span>
 											{/if}
 										{else}
 											-
@@ -322,9 +295,11 @@
 										{if $a.pdiscount != 0}
 											{$a.pdiscount}%
 										{elseif $a.vdiscount != 0}
-											{moneyf($a.unitary_vdiscount, $a.currency)}
+											{moneyf($a.real_unitary_discount, $a.currency)}
 											{if $a.count != 1}
-												<span title="{trans("Total gross discount")}">({moneyf($a.vdiscount, $a.currency)})</span>
+												<span title="{trans("Total gross discount")}">
+													({moneyf($a.real_discount, $a.currency)})
+												</span>
 											{/if}
 										{else}
 											-
@@ -341,22 +316,10 @@
 						<div class="lms-ui-tab-table-wrapper col-2">
 							<div class="lms-ui-tab-table-column price">
 								<span class="net">
-									{if isset($a.real_disc_value)}
-										{if $a.tax_value}
-											{moneyf(($a.real_disc_value / $a.count) / ($a.tax_value / 100 + 1), $a.currency)}
-										{elseif $a.taxl_value}
-											{moneyf(($a.real_disc_value / $a.count) / ($a.taxl_value / 100 + 1), $a.currency)}
-										{else}
-											-
-										{/if}
+									{if isset($a.real_disc_netvalue)}
+										{moneyf($a.real_disc_netvalue / $a.count, $a.currency)}
 									{else}
-										{if $a.tax_value}
-											{moneyf(($a.discounted_value / $a.count) / ($a.tax_value / 100 + 1), $a.currency)}
-										{elseif $a.taxl_value}
-											{moneyf(($a.discounted_value / $a.count) / ($a.taxl_value / 100 + 1), $a.currency)}
-										{else}
-											-
-										{/if}
+										{moneyf($a.discounted_netvalue / $a.count, $a.currency)}
 									{/if}
 								</span>
 								<span class="net-gross"><br></span>
@@ -370,22 +333,10 @@
 							</div>
 							<div class="lms-ui-tab-table-column total">
 								<span class="net">
-									{if isset($a.real_disc_value)}
-										{if $a.tax_value}
-											{moneyf($a.real_disc_value / ($a.tax_value / 100 + 1), $a.currency)}
-										{elseif $a.taxl_value}
-											{moneyf($a.real_disc_value / ($a.taxl_value / 100 + 1), $a.currency)}
-										{else}
-											-
-										{/if}
+									{if isset($a.real_disc_netvalue)}
+										{moneyf($a.real_disc_netvalue, $a.currency)}
 									{else}
-										{if $a.tax_value}
-											{moneyf($a.discounted_value / ($a.tax_value / 100 + 1), $a.currency)}
-										{elseif $a.taxl_value}
-											{moneyf($a.discounted_value / ($a.taxl_value / 100 + 1), $a.currency)}
-										{else}
-											-
-										{/if}
+										{moneyf($a.discounted_netvalue, $a.currency)}
 									{/if}
 								</span>
 								<span class="net-gross"><br></span>

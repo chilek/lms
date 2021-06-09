@@ -115,59 +115,62 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     {
         $now = mktime(0, 0, 0, date('n'), date('d'), date('Y'));
 
-        $assignments = $this->db->GetAll('SELECT
-                                            a.id AS id, a.tariffid, a.customerid, a.period AS periodvalue, a.backwardperiod,
-                                            a.at, a.suspended, a.invoice, a.settlement, a.recipient_address_id,
-                                            a.datefrom, a.dateto, a.pdiscount,
-                                            a.vdiscount AS unitary_vdiscount,
-                                            (a.vdiscount * a.count) AS vdiscount,                                                                                        
-                                            a.attribute, a.liabilityid, a.separatedocument,
-                                            (CASE WHEN t.splitpayment IS NULL THEN l.splitpayment ELSE t.splitpayment END) AS splitpayment,
-                                            (CASE WHEN t.taxcategory IS NULL THEN l.taxcategory ELSE t.taxcategory END) AS taxcategory,
-                                            ROUND(t.uprate * a.count) AS uprate,
-                                            uprate AS unitary_uprate,
-                                            ROUND(t.upceil * a.count) AS upceil,
-                                            upceil AS unitary_upceil,
-                                            ROUND(t.downceil * a.count) AS downceil,
-                                            downceil AS unitary_downceil,
-                                            ROUND(t.downrate * a.count) AS downrate,
-                                            downrate AS unitary_downrate,
-                                            t.flags,
-                                            tax.value AS tax_value, tax.label AS tax_label,
-                                            taxl.value AS taxl_value, taxl.label AS taxl_label,
-                                            (CASE WHEN t.type IS NULL THEN l.type ELSE t.type END) AS tarifftype,
-                                            (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END) AS unitary_value,
-                                            (CASE WHEN t.netvalue IS NULL THEN l.netvalue ELSE t.netvalue END) AS unitary_netvalue,
-                                            (CASE WHEN t.netflag IS NULL THEN l.netflag ELSE t.netflag END) AS netflag,
-                                            a.count,
-                                            (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END) * a.count AS value,
-                                            (CASE WHEN t.currency IS NULL THEN l.currency ELSE t.currency END) AS currency,
-                                            (CASE WHEN t.name IS NULL THEN l.name ELSE t.name END) AS name,
-                                            p.name AS promotion_name, ps.name AS promotion_schema_name, ps.length AS promotion_schema_length,
-                                            d.number AS docnumber, d.type AS doctype, d.cdate, np.template,
-                                            d.fullnumber,
-                                            (CASE WHEN
-                                                    (a.period <> ' . DISPOSABLE . ' AND (a.dateto > ' . $now . ' OR a.dateto = 0) AND (a.at >= ' . $now . ' OR a.at < 531))
-                                                    OR (a.period = ' . DISPOSABLE . ' AND a.at > ' . $now . ')
-                                                THEN 0
-                                                ELSE 1
-                                            END) AS expired,
-                                            commited
-                                          FROM
-                                            assignments a
-                                            LEFT JOIN tariffs t     ON (a.tariffid = t.id)
-                                            LEFT JOIN liabilities l ON (a.liabilityid = l.id)
-                                            LEFT JOIN taxes tax     ON (tax.id = t.taxid)
-                                            LEFT JOIN taxes taxl    ON (taxl.id = l.taxid)
-                                            LEFT JOIN promotionschemas ps ON ps.id = a.promotionschemaid
-                                            LEFT JOIN promotions p ON p.id = ps.promotionid
-                                            LEFT JOIN documents d ON d.id = a.docid
-                                            LEFT JOIN numberplans np ON np.id = d.numberplanid
-                                          WHERE a.customerid=? ' . ($show_approved ? 'AND a.commited = 1 ' : '')
-                                            . (!$show_expired ? 'AND ((a.period <> ' . DISPOSABLE . ' AND (a.dateto > ' . $now . ' OR a.dateto = 0) AND (a.at >= ' . $now . ' OR a.at < 531))
-                                                OR (a.period = ' . DISPOSABLE . ' AND a.at > ' . $now . '))' : '') . '
-                                          ORDER BY
-                                            a.datefrom, t.name, value', array($id));
+        $assignments = $this->db->GetAll(
+            'SELECT a.id AS id, a.tariffid, a.customerid, a.period AS periodvalue, a.backwardperiod,
+            a.at, a.suspended, a.invoice, a.settlement, a.recipient_address_id,
+            a.datefrom, a.dateto, a.pdiscount,
+            a.vdiscount AS unitary_vdiscount,
+            (a.vdiscount * a.count) AS vdiscount,                                                                                        
+            a.attribute, a.liabilityid, a.separatedocument,
+            (CASE WHEN t.splitpayment IS NULL THEN l.splitpayment ELSE t.splitpayment END) AS splitpayment,
+            (CASE WHEN t.taxcategory IS NULL THEN l.taxcategory ELSE t.taxcategory END) AS taxcategory,
+            ROUND(t.uprate * a.count) AS uprate,
+            uprate AS unitary_uprate,
+            ROUND(t.upceil * a.count) AS upceil,
+            upceil AS unitary_upceil,
+            ROUND(t.downceil * a.count) AS downceil,
+            downceil AS unitary_downceil,
+            ROUND(t.downrate * a.count) AS downrate,
+            downrate AS unitary_downrate,
+            t.flags,
+            tax.value AS tax_value, tax.label AS tax_label,
+            taxl.value AS taxl_value, taxl.label AS taxl_label,
+            (CASE WHEN t.type IS NULL THEN l.type ELSE t.type END) AS tarifftype,
+            (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END) AS unitary_value,
+            (CASE WHEN t.netvalue IS NULL THEN l.netvalue ELSE t.netvalue END) AS unitary_netvalue,
+            (CASE WHEN t.netflag IS NULL THEN l.netflag ELSE t.netflag END) AS netflag,
+            a.count,
+            (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END) * a.count AS value,
+            (CASE WHEN t.netvalue IS NULL THEN l.netvalue ELSE t.netvalue END) * a.count AS netvalue,
+            (CASE WHEN t.currency IS NULL THEN l.currency ELSE t.currency END) AS currency,
+            (CASE WHEN t.name IS NULL THEN l.name ELSE t.name END) AS name,
+            p.name AS promotion_name, ps.name AS promotion_schema_name, ps.length AS promotion_schema_length,
+            d.number AS docnumber, d.type AS doctype, d.cdate, np.template,
+            d.fullnumber,
+            (CASE WHEN
+                    (a.period <> ' . DISPOSABLE . ' AND (a.dateto > ' . $now . ' OR a.dateto = 0) AND (a.at >= ' . $now . ' OR a.at < 531))
+                    OR (a.period = ' . DISPOSABLE . ' AND a.at > ' . $now . ')
+                THEN 0
+                ELSE 1
+            END) AS expired,
+            commited
+            FROM
+            assignments a
+            LEFT JOIN tariffs t     ON (a.tariffid = t.id)
+            LEFT JOIN liabilities l ON (a.liabilityid = l.id)
+            LEFT JOIN taxes tax     ON (tax.id = t.taxid)
+            LEFT JOIN taxes taxl    ON (taxl.id = l.taxid)
+            LEFT JOIN promotionschemas ps ON ps.id = a.promotionschemaid
+            LEFT JOIN promotions p ON p.id = ps.promotionid
+            LEFT JOIN documents d ON d.id = a.docid
+            LEFT JOIN numberplans np ON np.id = d.numberplanid
+            WHERE a.customerid=? ' . ($show_approved ? 'AND a.commited = 1 ' : '')
+            . (!$show_expired ? 'AND ((a.period <> ' . DISPOSABLE . ' AND (a.dateto > ' . $now . ' OR a.dateto = 0) AND (a.at >= ' . $now . ' OR a.at < 531))
+                OR (a.period = ' . DISPOSABLE . ' AND a.at > ' . $now . '))' : '') . '
+            ORDER BY
+            a.datefrom, t.name, value',
+            array($id)
+        );
 
         if ($assignments) {
             foreach ($assignments as $idx => $row) {
@@ -238,7 +241,29 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                                                        WHERE
                                                                          assignment_id = ?', 'phone', array($row['id']));
 
-                $assignments[$idx]['discounted_value'] = (((100 - $row['pdiscount']) * $row['value']) / 100) - $row['vdiscount'];
+                if ($assignments[$idx]['netflag']) {
+                    $assignments[$idx]['discounted_netvalue'] = (((100 - $row['pdiscount']) * $row['netvalue']) / 100) - $row['vdiscount'];
+
+                    if ($assignments[$idx]['tax_value']) {
+                        $assignments[$idx]['discounted_value'] = ($assignments[$idx]['discounted_netvalue'] * ($assignments[$idx]['tax_value'] / 100 + 1));
+                    } elseif ($assignments[$idx]['taxl_value']) {
+                        $assignments[$idx]['discounted_value'] = ($assignments[$idx]['discounted_netvalue'] * ($assignments[$idx]['taxl_value'] / 100 + 1));
+                    }
+                } else {
+                    $assignments[$idx]['discounted_value'] = (((100 - $row['pdiscount']) * $row['value']) / 100) - $row['vdiscount'];
+
+                    if ($assignments[$idx]['tax_value']) {
+                        $assignments[$idx]['discounted_netvalue'] = ($assignments[$idx]['discounted_value'] / ($assignments[$idx]['tax_value'] / 100 + 1));
+                    } elseif ($assignments[$idx]['taxl_value']) {
+                        $assignments[$idx]['discounted_netvalue'] = ($assignments[$idx]['discounted_value'] / ($assignments[$idx]['taxl_value'] / 100 + 1));
+                    }
+                }
+
+                if ($row['suspended'] == 1) {
+                    $assignments[$idx]['discounted_netvalue'] = $assignments[$idx]['discounted_netvalue'] * ConfigHelper::getConfig('finances.suspension_percentage') / 100;
+                }
+
+                $assignments[$idx]['discounted_netvalue'] = round($assignments[$idx]['discounted_netvalue'], 2);
 
                 if ($row['suspended'] == 1) {
                     $assignments[$idx]['discounted_value'] = $assignments[$idx]['discounted_value'] * ConfigHelper::getConfig('finances.suspension_percentage') / 100;
@@ -255,7 +280,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $assignments[$idx]['real_unitary_value'] = $row['unitary_value'];
                     $assignments[$idx]['real_count'] = $row['count'];
                     $assignments[$idx]['real_value'] = $row['value'];
+                    $assignments[$idx]['real_netvalue'] = $row['netvalue'];
+                    $assignments[$idx]['real_unitary_discount'] = round(($row['unitary_value'] - ($assignments[$idx]['discounted_value'] / $row['count'])), 2);
+                    $assignments[$idx]['real_unitary_netdiscount'] = round(($row['unitary_netvalue'] - ($assignments[$idx]['discounted_netvalue'] / $row['count'])), 2);
+                    $assignments[$idx]['real_discount'] = round(($row['unitary_value'] - ($assignments[$idx]['discounted_value'] / $row['count'])) * $row['count'], 2);
+                    $assignments[$idx]['real_netdiscount'] = round(($row['unitary_netvalue'] - ($assignments[$idx]['discounted_netvalue'] / $row['count'])) * $row['count'], 2);
                     $assignments[$idx]['real_disc_value'] = $assignments[$idx]['discounted_value'];
+                    $assignments[$idx]['real_disc_netvalue'] = $assignments[$idx]['discounted_netvalue'];
                     $assignments[$idx]['real_unitary_downrate'] = $row['unitary_downrate'];
                     $assignments[$idx]['real_downrate'] = $row['downrate'];
                     $assignments[$idx]['real_unitary_downceil'] = $row['unitary_downceil'];
