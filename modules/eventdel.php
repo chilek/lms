@@ -43,8 +43,12 @@ if ($SESSION->is_set('backto', true)) {
     $backto = '?' . $SESSION->get('backto');
 }
 
-if (!empty($backto) && preg_match('/m=rtticketview/', $backto)) {
-    $SESSION->redirect($backto);
+if (!empty($backto)) {
+    if (strpos($backto, 'm=rtticketview') !== false) {
+        $SESSION->redirect($backto);
+    } elseif (strpos($backto, 'm=eventinfo') !== false) {
+        $SESSION->redirect('?m=eventlist');
+    }
 }
 
 $backid = $SESSION->get('backid');
