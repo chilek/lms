@@ -17,70 +17,81 @@
 
 </style>
 
-<script type="text/javascript" src="js/location_box.js"></script>
+<script src="js/location_box.js"></script>
 
 <form name="netnode" id="netnode-form" method="POST" action="?m={$layout.module}">
-<INPUT type="submit" class="hiddenbtn">
-<INPUT type="hidden" name="id" value="{$netnode.id}">
+	<input type="submit" class="hiddenbtn">
+	<input type="hidden" name="id" value="{$netnode.id}">
 
 {box_container id="netnode"}
-	{box_header icon="img/netnode.png" label="Name:"}
-		<INPUT TYPE="TEXT" NAME="netnode[name]" VALUE="{$netnode.name}" MAXLENGTH="32" required {tip trigger="name" text="<!netnode>Enter node name" bold=1}>
+	{box_header icon="netnode" label="Name"}
+		<input type="text" name="netnode[name]" value="{$netnode.name}" maxlength="32" required
+			{tip trigger="name" text="<!netnode>Enter node name" bold=1}>
 	{/box_header}
 
 	{box_contents}
 		{box_panel}
 
 {if $divisions}
-			{box_row icon="img/division.gif" label="Division:"}
-				<SELECT NAME="netnode[divisionid]"   {tip text="Select division"} >
+			{box_row icon="division" icon_class="fa-fw" label="Division"}
+				<select name="netnode[divisionid]" {tip text="Select division"}>
 					{foreach $divisions as $division}
-					<OPTION VALUE="{$division.id}"{if $netnode.divisionid == $division.id} selected{/if}>{$division.label|escape}</OPTION>
+						<option value="{$division.id}"
+							{if $netnode.divisionid == $division.id} selected{/if}>{$division.label|escape}</option>
 					{/foreach}
-				</SELECT>
+				</select>
 			{/box_row}
 {/if}
 
-			{box_row icon="img/producer.gif" label="Type:"}
-				<SELECT NAME="netnode[type]"   {tip text="Enter node type"} >
+			{box_row icon="type" icon_class="fa-fw" label="Type"}
+				<select name="netnode[type]" {tip text="Enter node type"}>
 					{foreach $_NETELEMENTTYPES as $idx => $type}
-					<OPTION VALUE="{$idx}"{if $netnode.type == $idx} selected{/if}>{$type}</OPTION>
-					{/foreach}
-				</SELECT>
-			{/box_row}
-
-			{box_row icon="img/producer.gif" label="Status:"}
-				<SELECT NAME="netnode[status]"  {tip text="Enter node status"} >
-					{foreach $_NETELEMENTSTATUSES as $idx => $status}
-					<OPTION VALUE="{$idx}"{if $netnode.status == $idx} selected{/if}>{$status}</OPTION>
-					{/foreach}
-				</SELECT>
-			{/box_row}
-
-			{box_row icon="img/producer.gif" label="Project:"}
-				<input type="hidden" name="netnode[project]" id="project-value">
-				<input type="hidden" name="netnode[projectid]" id="projectid-value">
-				<select id="project" data-value="{$netdev.project}" data-alt-field="#projectid-value" data-alt-invalid-field="#project-value" {tip class="lms-ui-combobox" text="Select project for this node"} trigger="project">
-					<option value="0" {if !$netdev.invprojectid} selected{/if}>- {trans("none")} -</option>
-					{foreach $NNprojects as $project}
-						<option value="{$project.id}" {if ($netnode.invprojectid == $project.id)} selected{/if}>{$project.name|escape}</option>
+						<option value="{$idx}"
+							{if $netnode.type == $idx} selected{/if}>{$type}</option>
 					{/foreach}
 				</select>
 			{/box_row}
 
-			{box_row icon="img/producer.gif" label="Ownership:"}
-				<SELECT NAME="netnode[ownership]" id="ownership" VALUE="{$netnode.ownership}" {tip text="Select ownership for this node"}>
-					{foreach $_NETELEMENTOWNERSHIPS as $idx => $ownership}
-					<OPTION VALUE="{$idx}"{if $netnode.ownership == $idx} selected{/if}>{$ownership}</OPTION>
+			{box_row icon="status" icon_class="fa-fw" label="Status"}
+				<select name="netnode[status]" {tip text="Enter node status"}>
+					{foreach $_NETELEMENTSTATUSES as $idx => $status}
+						<option value="{$idx}"
+							{if $netnode.status == $idx} selected{/if}>{$status}</option>
 					{/foreach}
-				</SELECT>
+				</select>
 			{/box_row}
 
-			{box_row id="ownername" icon="img/division.gif" label="Owner identifier:"}
-				<INPUT TYPE="TEXT" NAME="netnode[coowner]" size="30" VALUE="{$netnode.coowner|escape}" {tip trigger="coowner" text="Enter co-owner name"}>
+			{box_row icon="invproject" icon_class="fa-fw" label="Project"}
+				<input type="hidden" name="netnode[project]" id="project-value">
+				<input type="hidden" name="netnode[projectid]" id="projectid-value">
+				<select id="project" data-value="{$netdev.project}"
+					data-alt-field="#projectid-value"
+					data-alt-invalid-field="#project-value"
+					{tip class="lms-ui-combobox" text="Select project for this node" trigger="project"}>
+					<option value="0"{if !$netdev.invprojectid} selected{/if}>- {trans("none")} -</option>
+					{foreach $NNprojects as $project}
+						<option value="{$project.id}"
+							{if ($netnode.invprojectid == $project.id)} selected{/if}>{$project.name|escape}</option>
+					{/foreach}
+				</select>
 			{/box_row}
 
-			{box_row id="customer" icon="img/customer.gif" label="Owner:"}
+			{box_row icon="user" icon_class="fa-fw" label="Ownership"}
+				<select name="netnode[ownership]" id="ownership" value="{$netnode.ownership}"
+					{tip text="Select ownership for this node"}>
+					{foreach $_NETELEMENTOWNERSHIPS as $idx => $ownership}
+						<option value="{$idx}"
+							{if $netnode.ownership == $idx} selected{/if}>{$ownership}</option>
+					{/foreach}
+				</select>
+			{/box_row}
+
+			{box_row id="ownername" icon="division" icon_class="fa-fw" label="Owner identifier"}
+				<input type="text" name="netnode[coowner]" size="30" value="{$netnode.coowner|escape}"
+					{tip trigger="coowner" text="Enter co-owner name"}>
+			{/box_row}
+
+			{box_row id="customer" icon="customer" icon_class="fa-fw" label="Owner"}
 				{if isset($nodenode.id)}
 					{customerlist form="netnode-form" customers=$customers selected=$customer.id version=2
 						selectname="customer" inputname="netnode[ownerid]" select_id="ownerid_select"
@@ -92,7 +103,7 @@
 				{/if}
 			{/box_row}
 
-			{box_row id="location_select" icon="img/home.gif" label="Location:"}
+			{box_row id="location_select" icon="home" icon_class="fa-fw" label="Location"}
 				{if $netnode.ownerid && $netnode.address_id > 0}
 					{$selected_address_id = $netnode.address_id}
 				{else}
@@ -102,7 +113,7 @@
 					trigger="address_id" selected_address_id=$selected_address_id}
 			{/box_row}
 
-			{box_row id="location_box" icon="img/home.gif" label="Location:"}
+			{box_row id="location_box" icon="home" icon_class="fa-fw" label="Location"}
 				{location_box
 					prefix               = "netnode"
 					address_id           = "{$netnode.address_id}"
@@ -126,60 +137,66 @@
 		{box_panel}
 
 			{box_row}
-				<img src="img/network.gif" alt="">
-				<span class="lms-ui-button" id="set_gps">{trans("Determine GPS coordinates automatically")}</span>
+				{icon name="network"}
+				<span class="lms-ui-button" id="set_gps">
+					{trans("Determine GPS coordinates automatically")}
+				</span>
 			{/box_row}
 
-			{box_row icon="img/home.gif" label="GPS longitude:"}
-				<INPUT id="longitude" TYPE="text" NAME="netnode[longitude]" VALUE="{$netnode.longitude}"
-						{tip text="Enter node longitude (optional)" trigger="longitude"}>
-				<a href="javascript: void(0);" onClick="return gpscoordschoosewin(document.netnode.elements['netnode[longitude]'], document.netnode.elements['netnode[latitude]']);"
-						{tip text="Click to select gps coordinates from map"}>&raquo;&raquo;&raquo;</A>
+			{box_row icon="location" icon_class="fa-fw" label="GPS longitude"}
+				<input id="longitude" type="text" name="netnode[longitude]" value="{$netnode.longitude}"
+					{tip text="Enter node longitude (optional)" trigger="longitude"}>
+				{button type="link" icon="next" tip="Click to select gps coordinates from map"
+					onclick="return gpscoordschoosewin(document.netnode.elements['netnode[longitude]'], document.netnode.elements['netnode[latitude]']);"}
 			{/box_row}
 
-			{box_row icon="img/home.gif" label="GPS latitude:"}
-				<INPUT id="latitude" TYPE="text" NAME="netnode[latitude]" VALUE="{$netnode.latitude}"
-						{tip text="Enter node latitude (optional)" trigger="latitude"}>
-				<a href="javascript: void(0);" onClick="return gpscoordschoosewin(document.netnode.elements['netnode[longitude]'], document.netnode.elements['netnode[latitude]']);"
-						{tip text="Click to select gps coordinates from map"}>&raquo;&raquo;&raquo;</A>
+			{box_row icon="location" icon_class="fa-fw" label="GPS latitude"}
+				<input id="latitude" type="text" name="netnode[latitude]" value="{$netnode.latitude}"
+					{tip text="Enter node latitude (optional)" trigger="latitude"}>
+				{button type="link" icon="next" tip="Click to select gps coordinates from map"
+					onclick="return gpscoordschoosewin(document.netnode.elements['netnode[longitude]'], document.netnode.elements['netnode[latitude]']);"}
 			{/box_row}
 
-			{box_row icon="img/producer.gif" label="Sharing surface"}
+			{box_row icon="share" icon_class="fa-fw" label="Sharing surface"}
 				<label>
-					<INPUT TYPE="radio" NAME="netnode[uip]" VALUE="1"
+					<input type="radio" name="netnode[uip]" value="1"
 						{tip text="Możliwość udostępniania innym podmiotom powierzchni w obiekcie, w którym znajduje się węzeł"}
-						{if ($netnode['uip']==1)} checked{/if}>
-					{trans("Yes")}
+						{if !empty($netnode['uip'])} checked{/if}>
+					{trans("yes")}
 				</label>
 				<label>
-					<INPUT TYPE="radio" NAME="netnode[uip]" VALUE="0"{if ($netnode['uip']==0)} checked{/if}>
-					{trans("No")}
+					<input type="radio" name="netnode[uip]" value="0"{if empty($netnode['uip'])} checked{/if}>
+					{trans("no")}
 				</label>
 			{/box_row}
 
-			{box_row icon="img/producer.gif" label="Antennas installation"}
+			{box_row icon="antenna" icon_class="fa-fw" label="Antennas installation"}
 				<label>
-					<INPUT TYPE="radio" NAME="netnode[miar]" VALUE="1"
-							{tip text="Możliwość instalacji anten dla radiowej sieci dostępowej lub anten dla radiolinii w obiekcie, w którym znajduje się węzeł"}
-							{if ($netnode['miar']==1)} checked{/if}>
-					{trans("Yes")}
+					<input type="radio" name="netnode[miar]" value="1"
+						{tip text="Możliwość instalacji anten dla radiowej sieci dostępowej lub anten dla radiolinii w obiekcie, w którym znajduje się węzeł"}
+						{if !empty($netnode['miar'])} checked{/if}>
+					{trans("yes")}
 				</label>
 				<label>
-					<INPUT TYPE="radio" NAME="netnode[miar]" VALUE="0" {if ($netnode['miar']==0)} checked{/if}>
-					{trans("No")}
+					<input type="radio" name="netnode[miar]" value="0"
+						{if empty($netnode['miar'])} checked{/if}>
+					{trans("no")}
 				</label>
 			{/box_row}
 
-			{box_row icon="img/note.gif" label="Note"}
-				<TEXTAREA id="info" TYPE="TEXT" NAME="netnode[info]" VALUE="{$netnode.info}" {tip text="Enter notes (optional)"} cols="50" rows="5">{$netnode.info}</TEXTAREA>
+			{box_row icon="note" icon_class="fa-fw" label="Note"}
+				<textarea id="info" name="netnode[info]"
+					{tip text="Enter notes (optional)"} cols="50" rows="5">{$netnode.info|escape}</textarea>
 			{/box_row}
 
-			{box_row icon="img/calendar.gif" label="Last inspection:"}
-				<INPUT type="text" name="netnode[lastinspectiontime]" maxlength="10" VALUE="{$netnode.lastinspectiontime}" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date lms-ui-date-unix" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar" trigger="lastinspectiontime"}>
+			{box_row icon="calendar" icon_class="fa-fw" label="Last inspection"}
+				<input type="text" name="netnode[lastinspectiontime]" maxlength="10" value="{$netnode.lastinspectiontime}"
+					placeholder="{trans("yyyy/mm/dd")}"
+					{tip class="lms-ui-date lms-ui-date-unix" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar" trigger="lastinspectiontime"}>
 			{/box_row}
 
-			{box_row icon="img/phone.gif" label="Administrative contact:"}
-				<INPUT type="text" name="netnode[admcontact]" maxlenght="10" VALUE="{$netnode.admcontact}">
+			{box_row icon="phone" icon_class="fa-fw" label="Administrative contact"}
+				<input type="text" name="netnode[admcontact]" maxlength="10" value="{$netnode.admcontact}">
 			{/box_row}
 
 		{/box_panel}
@@ -195,28 +212,61 @@
 
 	var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
 
-	$('[name="netnode[name]"]').focus();
+	$(function() {
+		$('[name="netnode[name]"]').focus();
 
-	$('#ownership').change(function() {
-		var show_selectors = [];
-		var hide_selectors = [];
-		var customerid = $('#ownerid_input').val();
-		if ([ '1', '2' ].indexOf($(this).val()) != -1) {
-			show_selectors = [ '#ownername', '#customer' ];
-			if (customerid == 'undefined' || customerid == 0) {
-				show_selectors.push('#location_box');
-				hide_selectors.push('#location_select');
+		$('#ownership').change(function() {
+			var show_selectors = [];
+			var hide_selectors = [];
+			var customerid = $('#ownerid_input').val();
+			if ([ '1', '2' ].indexOf($(this).val()) != -1) {
+				show_selectors = [ '#ownername', '#customer' ];
+				if (customerid == 'undefined' || customerid == 0) {
+					show_selectors.push('#location_box');
+					hide_selectors.push('#location_select');
+				} else {
+					hide_selectors.push('#location_box');
+					show_selectors.push('#location_select');
+				}
 			} else {
-				hide_selectors.push('#location_box');
-				show_selectors.push('#location_select');
+				hide_selectors = [ '#ownername', '#customer', '#location_select' ];
+				show_selectors = [ '#location_box' ];
 			}
-		} else {
-			hide_selectors = [ '#ownername', '#customer', '#location_select' ];
-			show_selectors = [ '#location_box' ];
-		}
-		$(show_selectors.join(',')).show();
-		$(hide_selectors.join(',')).hide();
-	}).change();
+			$(show_selectors.join(',')).show();
+			$(hide_selectors.join(',')).hide();
+		}).change();
+
+		/*
+         * \brief Update address location update. Require google API key.
+         */
+		$( '#set_gps' ).click( function() {
+			var location = null;
+
+			if ($('[name="netnode[address_id]"]').val() > 0) {
+				location = {
+					address_id: $('[name="netnode[address_id]"]').val()
+				}
+			} else if ($('[data-address="city"]').val().length) {
+				location = {
+					street: $('[data-address="street"]').val(),
+					house: $('[data-address="house"]').val(),
+					flat: $('[data-address="flat"]').val()
+				}
+				if ($('[data-address="teryt-checkbox"]').prop('checked') && $('[data-address="city-hidden"]').val() > 0) {
+					location.city_id = $('[data-address="city-hidden"]').val();
+					location.street_id = $('[data-address="street-hidden"]').val();
+				} else {
+					location.state = $('[data-address="state"]').val();
+					location.zip = $('[data-address="zip"]').val();
+					location.city = $('[data-address="city"]').val();
+				}
+			}
+
+			if (location) {
+				xajax_get_gps_coordinates(location, '#latitude', '#longitude');
+			}
+		});
+	});
 
 	function customerChanged() {
 		$('#ownership').change();
@@ -227,39 +277,6 @@
 	};
 
 	customer_addresses.init();
-
-	/*
-	 * \brief Update address location update. Require google API key.
-	 */
-	$( '#set_gps' ).click( function() {
-
-		var location = null;
-
-		if ($('[name="netnode[address_id]"]').val() > 0) {
-			location = {
-				address_id: $('[name="netnode[address_id]"]').val()
-			}
-		} else if ($('[data-address="city"]').val().length) {
-			location = {
-				street: $('[data-address="street"]').val(),
-				house: $('[data-address="house"]').val(),
-				flat: $('[data-address="flat"]').val()
-			}
-			if ($('[data-address="teryt-checkbox"]').prop('checked') && $('[data-address="city-hidden"]').val() > 0) {
-				location.city_id = $('[data-address="city-hidden"]').val();
-				location.street_id = $('[data-address="street-hidden"]').val();
-			} else {
-				location.state = $('[data-address="state"]').val();
-				location.zip = $('[data-address="zip"]').val();
-				location.city = $('[data-address="city"]').val();
-			}
-		}
-
-		if (location) {
-			xajax_get_gps_coordinates(location, '#latitude', '#longitude');
-		}
-
-	});
 
 </script>
 {/block}

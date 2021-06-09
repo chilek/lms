@@ -4679,6 +4679,7 @@ $_LANG['$a days'] = '$a dni';
 
 $_LANG['Click here to open calendar'] = 'Kliknij tutaj, aby otworzyć kalendarz';
 $_LANG['Owner identifier:'] = 'Identyfikator właściciela:';
+$_LANG['Owner identifier'] = 'Identyfikator właściciela';
 
 $_LANG['Network Nodes ($a):'] = 'Węzły sieciowe ($a):';
 $_LANG['Network Nodes'] = 'Węzły sieciowe';
@@ -5254,6 +5255,3 @@ $_LANG['Expired assignment'] = 'Zobowiązanie przeterminowane';
 $_LANG['Assignment from not approved document'] = 'Zobowiązanie z niezatwierdzonego dokumentu';
 
 $_LANG['without location address'] = 'bez adresu lokalizacyjnego';
-
-$_LANG['Area sharing'] = 'Udostępnianie powierzchni';
-$_LANG['Antenna installation'] = 'Instalacja anten';
