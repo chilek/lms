@@ -28,13 +28,26 @@ $LMS->InitXajax();
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'rtticketxajax.inc.php');
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
-$id = intval($_GET['id']);
+if (isset($_GET['id'])) {
+    if (is_array($_GET['id'])) {
+        $id = $_GET['id'];
+    } else {
+        $id = array($_GET['id']);
+    }
+    $id = Utils::filterIntegers($id);
+    if (empty($id)) {
+        die;
+    }
+}
+
 if (!empty($_GET['action'])) {
     $action = $_GET['action'];
 }
 
-if (!($LMS->CheckTicketAccess($id) & RT_RIGHT_WRITE)) {
-    access_denied();
+foreach ($id as $ticketid) {
+    if (!($LMS->CheckTicketAccess($ticketid) & RT_RIGHT_WRITE)) {
+        access_denied();
+    }
 }
 
 if ($id && !isset($_POST['ticket'])) {
@@ -131,7 +144,9 @@ if ($id && !isset($_POST['ticket'])) {
                 $SESSION->redirect('?m=rtticketview&id=' . $id);
                 break;
             case 'read':
-                $LMS->MarkTicketAsRead($id);
+                foreach ($id as $ticketid) {
+                    $LMS->MarkTicketAsRead($ticketid);
+                }
                 $SESSION->redirect('?m=rtqueueview'
                     . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
                 break;

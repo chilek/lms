@@ -153,7 +153,8 @@
 			{/if}
 		{/buttons}
 		<input type="checkbox" class="lms-ui-multi-check" name="ticketid[]" value="{$ticket.id}"
-			data-deleted="{if $ticket.deleted == 1 && $ticket.deltime != 0}1{else}0{/if}">
+			data-deleted="{if $ticket.deleted == 1 && $ticket.deltime != 0}1{else}0{/if}"
+			data-unread="{if $ticket.unread}1{else}0{/if}">
 	</TD>
 </TR>
 
