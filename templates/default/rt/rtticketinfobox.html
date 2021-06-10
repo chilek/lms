@@ -421,7 +421,12 @@
 		<TD style="width: 1%;" class="dark nobr">
 			<span class="bold"><A href="?m=customerinfo&amp;id={$ticket.customerid}">{$customerinfo.customername}</A></span>
 			{icon name="home"} {$customerinfo.address} &nbsp;{$customerinfo.zip} {$customerinfo.city}
-			{if $customerinfo.phone}{icon name="phone" label="{$customerinfo.phone}"}{/if}
+			{if $customerinfo.phone}
+				<a class="phone_number" href="tel:{$customerinfo.phone|escape}">
+					{icon name="phone"}
+					{$customerinfo.phone|escape}
+				</a>
+			{/if}
 			{icon name="money"} {if $customerinfo.balance < 0}<span class="red">{/if}{$customerinfo.balance|money_format}{if $customerinfo.balance < 0}</span>{/if}
 		</TD>
 		<TD style="width: 98%;" class="dark text-right red bold">
