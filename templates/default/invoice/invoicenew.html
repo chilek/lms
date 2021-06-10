@@ -216,22 +216,26 @@
 			</colgroup>
 			<thead>
 				<tr>
-					<th colspan="10">
-						<IMG src="img/money.gif" alt="">
+					<td colspan="10">
+						{icon name="money"}
 						{trans("Invoiceless liabilities:")}
-					</th>
+					</td>
 				</tr>
 				<TR>
-					<th scope="col">{trans("Date:")}</th>
-					<th scope="col">{trans("Name of product, commodity or service:")}</th>
-					<th scope="col" class="nobr">{trans("Tax Category:")}</th>
-					<th scope="col" class="text-right nobr">{trans("Product ID:")}</th>
-					<th scope="col" class="text-right">{trans("Amount:")}</th>
-					<th scope="col" class="text-right">{trans("Unit:")}</th>
-					<th scope="col" class="text-right nobr">{trans("Net Value:")}</th>
-					<th scope="col" class="text-right nobr">{trans("Tax:")}</th>
-					<th scope="col" class="text-right nobr">{trans("Gross Value:")}</th>
-					<th scope="col">&nbsp;</th>
+					<td scope="col">{trans("Date:")}</td>
+					<td scope="col">{trans("Name of product, commodity or service:")}</td>
+					<td scope="col" class="nobr">
+						{trans("Type")}
+						<br>
+						{trans("Tax Category:")}
+					</td>
+					<td scope="col" class="text-right nobr">{trans("Product ID:")}</td>
+					<td scope="col" class="text-right">{trans("Amount:")}</td>
+					<td scope="col" class="text-right">{trans("Unit:")}</td>
+					<td scope="col" class="text-right nobr">{trans("Net Value:")}</td>
+					<td scope="col" class="text-right nobr">{trans("Tax:")}</td>
+					<td scope="col" class="text-right nobr">{trans("Gross Value:")}</td>
+					<td scope="col">&nbsp;</td>
 				</TR>
 			</thead>
 			{cycle values="light,lucid" print=false}
@@ -240,6 +244,13 @@
 					<TD class="nobr">{$covenantlist[covenantlist].time|date_format:"%Y/%m/%d"}</TD>
 					<TD>{$covenantlist[covenantlist].comment|escape}</TD>
 					<td>
+						<select name="l_servicetype[{$covenantlist[covenantlist].cashid}]">
+							<option value="">{trans("- none -")}</option>
+							{foreach $_SERVICETYPES as $servicetype => $label}
+								<option value="{$servicetype}"
+									{if $servicetype == $covenantlist[covenantlist].servicetype} selected{/if}>{$label}</option>
+							{/foreach}
+						</select>
 						{tax_category_selection elementname="l_taxcategory[{$covenantlist[covenantlist].cashid}]"
 							tip="Select tax category"}
 					</td>
@@ -259,7 +270,7 @@
 					<INPUT type="checkbox" name="allbox" id="allbox" onchange="CheckAll('additemlist', this)" value="1"><label for="allbox">{trans("Check All")}</label>
 				</TD>
 				<TD class="text-right nobr" colspan="8">
-					<A href="javascript:document.additemlist.submit();">{trans("Add items")} <IMG src="img/save.gif" alt=""></A>
+					{button icon="save" label="Add items" onclick="document.additemlist.submit();"}
 				</TD>
 			</TR>
 		</TABLE>

@@ -38,7 +38,8 @@ function GetCustomerCovenants($customerid, $currency)
 
     return $DB->GetAll('SELECT c.time, c.value*-1 AS value, c.currency, c.comment, c.taxid, 
 			taxes.label AS tax, c.id AS cashid,
-			ROUND(c.value / (taxes.value/100+1), 2)*-1 AS net
+			ROUND(c.value / (taxes.value/100+1), 2)*-1 AS net,
+            c.servicetype
 			FROM cash c
 			LEFT JOIN taxes ON (c.taxid = taxes.id)
 			WHERE c.customerid = ? AND c.docid IS NULL AND c.currency = ? AND c.value < 0
@@ -309,6 +310,7 @@ switch ($action) {
                 $itemdata['cashid'] = $id;
                 $itemdata['name'] = $cash['comment'];
                 $itemdata['taxid'] = $cash['taxid'];
+                $itemdata['servicetype'] = empty($_POST['l_servicetype'][$id]) ? null : $_POST['l_servicetype'][$id];
                 $itemdata['taxcategory'] = $_POST['l_taxcategory'][$id];
                 $itemdata['tax'] = isset($taxeslist[$itemdata['taxid']]) ? $taxeslist[$itemdata['taxid']]['label'] : '';
                 $itemdata['discount'] = 0;
