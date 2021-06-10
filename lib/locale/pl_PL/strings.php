@@ -31,7 +31,9 @@ $_LANG['in gross'] = 'w brutto';
 $_LANG['Billing according to the net price'] = 'Naliczanie według ceny netto';
 $_LANG['Billing according to the gross price'] = 'Naliczanie według ceny brutto';
 $_LANG['Gross'] = 'Brutto';
+$_LANG['gross'] = 'brutto';
 $_LANG['Net'] = 'Netto';
+$_LANG['net'] = 'netto';
 $_LANG['Currency'] = 'Waluta';
 
 $_LANG['Birth date cannot be empty for natural person!'] = 'Data urodzenia nie może być pusta w przypadku osoby fizycznej!';

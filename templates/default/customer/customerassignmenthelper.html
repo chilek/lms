@@ -114,6 +114,10 @@
 		margin-top: 0.3em;
 	}
 
+	#a_price > td:last-child {
+		padding-left: 0;
+	}
+
 </style>
 
 {if isset($promotion_only)}
@@ -464,25 +468,31 @@
 								<td>
 									<table>
 										<tr>
-											<td align="right">
-												<label>{trans('Net')}
-													<input type="text" size="11" id="netprice" name="{$variable_prefix}[netvalue]" value="">
+											<td>
+												<label for="netprice">
+													{trans('net')}
 												</label>
+											</td>
+											<td>
+												<input type="text" size="11" id="netprice" name="{$variable_prefix}[netvalue]" value="">
 											</td>
 											<td rowspan="2">
 												<label>
 													<input type="checkbox" id="netflag" name="{$variable_prefix}[netflag]" value="1"
-															{tip text="Billing according to the net price"}>
+														{tip text="Billing according to the net price"}>
 													{trans('according in net')}
 												</label>
 											</td>
 										</tr>
 										<tr>
-											<td align="right">
-												<label>{trans('Gross')}
-													<INPUT type="text" size="11" id="grossprice" name="{$variable_prefix}[value]" value=""
-															{tip text="Enter liability value (tariffless liabilities only)" trigger="value"}>
+											<td>
+												<label for="grossprice">
+													{trans('gross')}
 												</label>
+											</td>
+											<td>
+												<input type="text" size="11" id="grossprice" name="{$variable_prefix}[value]" value=""
+													{tip text="Enter liability value (tariffless liabilities only)" trigger="value"}>
 											</td>
 										</tr>
 									</table>
