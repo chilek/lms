@@ -987,7 +987,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         $partial_at = $dom + 1;
                     }
 
-                    if (!empty($data['value'])) {
+                    if (empty($data['tariffid'])) {
                         $args = array(
                             'name' => $data['name'],
                             'value' => str_replace(',', '.', $data['value']),
@@ -1063,7 +1063,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         $partial_at = $dom - 1;
                     }
 
-                    if (!empty($data['value'])) {
+                    if (empty($data['tariffid'])) {
                         $args = array(
                             'name' => $data['name'],
                             'value' => str_replace(',', '.', $data['value']),
@@ -1126,7 +1126,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
             if ($data['datefrom'] < $data['dateto'] || !$data['datefrom'] || !$data['dateto']) {
                 // creates one assignment record
-                if (!empty($data['value'])) {
+                if (empty($data['tariffid'])) {
                     $args = array(
                         'name' => $data['name'],
                         'value' => str_replace(',', '.', $data['value']),
