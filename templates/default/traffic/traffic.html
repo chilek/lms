@@ -2,6 +2,14 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
+<style>
+
+	[for="showips"] {
+		white-space: normal;
+	}
+
+</style>
+
 <H1>{$layout.pagetitle}</H1>
 {if $bars}
 {if ($download || $upload) && function_exists('imagecreate')}
