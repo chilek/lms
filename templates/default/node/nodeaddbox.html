@@ -117,18 +117,19 @@
 										<td>
 											{icon name="routed"}
 										</td>
-										<td>
-											<input type="text" name="nodedata[ipaddr]" value="{$nodedata.ipaddr}" required
-												placeholder="{trans("IP address")}"
-												{tip trigger="ipaddr"}>
-											{button type="link" onClick="return ipchoosewin({
-													ipelem: document.nodeadd['nodedata[ipaddr]'],
-													ip: document.nodeadd['nodedata[ipaddr]'].value,
-													netelem: document.nodeadd['nodedata[netid]'],
-													netid: document.nodeadd['nodedata[netid]'].value
-													});" tip="Click to select IP from the list"
-												icon="next"}
-											<br>
+										<td class="cell-flex">
+											<div>
+												<input type="text" name="nodedata[ipaddr]" value="{$nodedata.ipaddr}" required
+													placeholder="{trans("IP address")}"
+													{tip trigger="ipaddr"}>
+												{button type="link" onClick="return ipchoosewin({
+														ipelem: document.nodeadd['nodedata[ipaddr]'],
+														ip: document.nodeadd['nodedata[ipaddr]'].value,
+														netelem: document.nodeadd['nodedata[netid]'],
+														netid: document.nodeadd['nodedata[netid]'].value
+														});" tip="Click to select IP from the list"
+													icon="next"}
+											</div>
 											{button type="link" id="selectfirstfreeaddress" icon="download"
 												label="Select first free address"}
 										</td>
