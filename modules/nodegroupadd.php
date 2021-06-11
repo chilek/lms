@@ -26,7 +26,7 @@
 
 if (isset($_POST['nodegroupadd'])) {
     $nodegroupadd = $_POST['nodegroupadd'];
-    
+
     foreach ($nodegroupadd as $key => $value) {
         $nodegroupadd[$key] = trim($value);
     }
@@ -34,12 +34,12 @@ if (isset($_POST['nodegroupadd'])) {
     if ($nodegroupadd['name']=='' && $nodegroupadd['description']=='') {
         $SESSION->redirect('?m=nodegrouplist');
     }
-    
+
     if ($nodegroupadd['name'] == '') {
         $error['name'] = trans('Group name required!');
     } elseif (strlen($nodegroupadd['name']) > 255) {
         $error['name'] = trans('Group name is too long!');
-    } elseif (!preg_match('/^[._a-z0-9-]+$/i', $nodegroupadd['name'])) {
+    } elseif (!preg_match('/^[\._\-\pL]+$/u', $nodegroupadd['name'])) {
         $error['name'] = trans('Invalid chars in group name!');
     } elseif ($DB->GetOne('SELECT 1 FROM nodegroups WHERE name = ?', array($nodegroupadd['name']))) {
         $error['name'] = trans('Group with name $a already exists!', $nodegroupadd['name']);
@@ -69,7 +69,7 @@ if (isset($_POST['nodegroupadd'])) {
 
         $SESSION->redirect('?m=nodegrouplist&id='.$id);
     }
-    
+
     $SMARTY->assign('error', $error);
     $SMARTY->assign('nodegroupadd', $nodegroupadd);
 }
