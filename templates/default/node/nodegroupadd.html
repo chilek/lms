@@ -2,49 +2,62 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
-<FORM METHOD="POST" NAME="nodegroupadd" ACTION="?m=nodegroupadd">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE class="lmsbox">
-    <THEAD>
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/nodegroup.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%">
-			<B>{trans("Name:")}</B>
-		</TD>
-		<TD WIDTH="98%">
-			<INPUT TYPE="TEXT" NAME="nodegroupadd[name]" VALUE="{$nodegroupadd.name}" required {tip trigger="name" bold=1}>
-		</TD>
-	</TR>
-    </THEAD>
-    <TBODY>
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/info1.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%">
-			<B>{trans("Description:")}</B>
-		</TD>
-		<TD WIDTH="98%">
-			<TEXTAREA NAME="nodegroupadd[description]" COLS="50" ROWS="5" {tip text="Enter additional information (optional)"}>{$nodegroupadd.description}</TEXTAREA>
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%" COLSPAN="3" ALIGN="RIGHT"> 
-			<A HREF="javascript:document.nodegroupadd.submit();" accesskey="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
-			<A HREF="?m=nodegrouplist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="nodegroupadd[reuse]" id="reuse" value="ON" {if $nodegroupadd.reuse}checked{/if}><label for="reuse">{trans("Display this form again, when this group is saved")}</label>
-		</TD>
-	</TR>
-    </TBODY>
-</TABLE></FORM>
-<SCRIPT type="text/javascript">
-<!--
-$(function() {
-	$('form[name="nodegroupadd"] [name="nodegroupadd[name]"]').focus();
-});
-//-->
-</SCRIPT>
+<h1>{$layout.pagetitle}</h1>
+<form method="POST" name="nodegroupadd" action="?m=nodegroupadd">
+	<input type="submit" class="hiddenbtn">
+<table class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 98%;">
+	</colgroup>
+	<thead>
+		<tr>
+			<td>
+				{icon name="nodegroup"}
+			</td>
+			<td>
+				<strong>{trans("Name")}</strong>
+			</td>
+			<td>
+				<input type="text" name="nodegroupadd[name]"
+					value="{$nodegroupadd.name|escape}" required {tip trigger="name" bold=1}>
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>
+				{icon name="info"}
+			</td>
+			<td>
+				<strong>{trans("Description:")}</strong>
+			</td>
+			<td>
+				<textarea name="nodegroupadd[description]" cols="50" rows="5"
+					{tip text="Enter additional information (optional)"}>{$nodegroupadd.description|escape}</textarea>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3" class="lms-ui-box-buttons">
+				{button type="submit" icon="save" label="Submit"}
+				{button icon="cancel" label="Cancel" href="?m=nodegrouplist"}
+				<label>
+					<input type="checkbox" name="nodegroupadd[reuse]" value="ON"
+						{if $nodegroupadd.reuse} checked{/if}>
+					{trans("Display this form again, when this group is saved")}
+				</label>
+			</td>
+		</tr>
+	</tbody>
+</table>
+</form>
+
+<script>
+
+	$(function() {
+		$('[name="nodegroupadd[name]"]').focus();
+	});
+
+</script>
 {/block}
