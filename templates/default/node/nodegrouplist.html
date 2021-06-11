@@ -49,7 +49,7 @@
 			<tr class="highlight" data-nodegroup-id="{$nodegroup.id}" data-name="{$nodegroup.name}">
 				<td data-target-url="?m=nodegroupinfo&id={$nodegroup.id}">
 					{icon name="nodegroup"}
-					<strong>{$nodegroup.name}</strong>
+					<strong>{$nodegroup.name|escape}</strong>
 					<br>
 					{if $nodegroup.description}
 						{icon name="info"}
