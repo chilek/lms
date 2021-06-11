@@ -183,17 +183,19 @@
 			<INPUT TYPE="text" NAME="limit" SIZE="3">
 		</TD>
 	</TR>
-	<TR {tip text="Nodes depiction way on charts"}>
-		<TD>
-			<IMG src="img/ip.gif">
+	<tr {tip text="Nodes depiction way on charts"}>
+		<td>
+			<img src="img/ip.gif">
 		</TD>
-		<TD class="bold">
-			{trans("IP addresses instead of nodes names")}
-		</TD>
-		<TD>
-			<INPUT TYPE="checkbox" NAME="showips" VALUE="1">
-		</TD>
-	</TR>
+		<td>
+			<label for="showips">
+				{trans("IP addresses instead of nodes names")}
+			</label>
+		</td>
+		<td>
+			<input type="checkbox" name="showips" id="showips" value="1">
+		</td>
+	</tr>
 	<TR>
 		<TD colspan="3" class="lms-ui-box-buttons">
 			{button icon="save" label="Submit" onclick="document.traffic.submit();"}
