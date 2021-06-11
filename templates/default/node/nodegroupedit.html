@@ -2,10 +2,29 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ -->
+
+<style>
+
+	.cell-flex {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+	}
+
+</style>
+
 <h1>{$layout.pagetitle}</h1>
+
 <form method="POST" name="tedit" id="tedit" action="?m=nodegroupedit&id={$nodegroup.id}">
 	<input type="submit" class="hiddenbtn">
 </form>
+
+<form name="tmove" id="tmove" method="get" action="">
+	<input type="hidden" name="is_sure" value="1">
+	<input type="hidden" name="m" value="nodegroupmove">
+	<input type="hidden" name="from" value="{$nodegroup.id}">
+</form>
+
 <table class="lmsbox">
 	<colgroup>
 		<col style="width: 1%;">
@@ -42,24 +61,22 @@
 		</tr>
 		<tr>
 			<td colspan="3" class="lms-ui-box-buttons">
-				{if count($nodegroups) > 1 && $nodegroup.count}
-					<form name="tmove" id="tmove" method="get" action="">
-						<input type="hidden" name="is_sure" value="1">
-						<input type="hidden" name="m" value="nodegroupmove">
-						<input type="hidden" name="from" value="{$nodegroup.id}">
-						{button label="Move members to group" id="move-members" icon="move"}
-						<select size="1" name="to" {tip text="Select group to which you want to move members"}>
+				<div class="cell-flex">
+					{button type="submit" icon="save" label="Submit" form="tedit"}
+					{button icon="cancel" label="Cancel"
+						href="?m=nodegroupinfo&id={$nodegroup.id}{if $membersnetid}&membersnetid={$membersnetid}{/if}{if $othersnetid}&othersnetid={$othersnetid}{/if}"}
+					{if count($nodegroups) > 1 && $nodegroup.count}
+						{button label="Move members to group" id="move-members" icon="move" form="tmove"}
+						<select size="1" name="to" form="tmove" required
+							{tip text="Select group to which you want to move members"}>
 							{foreach $nodegroups as $item}
 								{if $item.id != $nodegroup.id}
 									<option value="{$item.id}">{$item.name|escape}</option>
 								{/if}
 							{/foreach}
 						</select>
-					</form>
-				{/if}
-				{button type="submit" icon="save" label="Submit" form="tedit"}
-				{button icon="cancel" label="Cancel"
-					href="?m=nodegroupinfo&id={$nodegroup.id}{if $membersnetid}&membersnetid={$membersnetid}{/if}{if $othersnetid}&othersnetid={$othersnetid}{/if}"}
+					{/if}
+				</div>
 			</td>
 		</tr>
 	</tbody>
