@@ -1235,6 +1235,7 @@ $_LANG['Last login'] = 'Ostatnie logowanie';
 $_LANG['Last modified:'] = 'Ostatnia modyfikacja:';
 $_LANG['Last month stats for all networks'] = 'Statystyki z ostatniego miesiąca dla wszystkich sieci';
 $_LANG['last online:'] = 'ostatnio włączony:';
+$_LANG['last online'] = 'ostatnio włączony';
 $_LANG['Last online:'] = 'Ostatnio włączony:';
 $_LANG['Last online: $a'] = 'Ostatnio włączony: $a';
 $_LANG['Last inspection:'] = 'Czas ostatniego przeglądu:';
@@ -1611,6 +1612,7 @@ $_LANG['Producer:'] = 'Producent:';
 $_LANG['Product ID:'] = 'PKWiU:';
 $_LANG['Proof of Payment'] = 'Dowód wpłaty';
 $_LANG['Pub. IP address:'] = 'Publ. adres IP:';
+$_LANG['Pub. IP address'] = 'Publ. adres IP';
 $_LANG['public'] = 'publiczny';
 $_LANG['Purchase date:'] = 'Data zakupu:';
 $_LANG['Purchase date'] = 'Data zakupu';
@@ -2331,6 +2333,7 @@ $_LANG['Enter additional document number'] = 'Wprowadź dodatkowy numer dokument
 $_LANG['income/expense'] = 'przychód/rozchód';
 $_LANG['Liability'] = 'Zobowiązanie';
 $_LANG['Options:'] = 'Opcje:';
+$_LANG['Options'] = 'Opcje';
 $_LANG['with settlement of first deficient period'] = 'z wyrównaniem początkowego okresu niepełnego';
 $_LANG['with settlement of last deficient period'] = 'z wyrównaniem końcowego okresu niepełnego';
 $_LANG['document number'] = 'numer dokumentu';
@@ -4629,7 +4632,8 @@ $_LANG['Select Some Options'] = 'Wybierz kilka opcji';
 
 $_LANG['resolve ticket'] = 'rozwiąż zgłoszenie';
 
-$_LANG['Network device:'] = 'Urządzenie sieciowe';
+$_LANG['Network device:'] = 'Urządzenie sieciowe:';
+$_LANG['Network device'] = 'Urządzenie sieciowe';
 $_LANG['whole subtree'] = 'całe poddrzewo';
 
 $_LANG['<!mac>- none -'] = '- brak -';
