@@ -44,8 +44,8 @@
 				<strong>{trans("Name")}</strong>
 			</TD>
 			<td>
-				<input type="text" value="{$nodegroup.name|escape}" name="nodegroup[name]" required form="tedit"
-					{tip trigger="name" bold=1}>
+				<input type="text" value="{$nodegroup.name|escape}" name="nodegroup[name]"
+					maxlength="255" required form="tedit" {tip trigger="name" bold=1}>
 				<strong>(#{$nodegroup.id})</strong>
 			</td>
 		</tr>

@@ -37,9 +37,9 @@ if (isset($_POST['customergroupadd'])) {
 
     if ($customergroupadd['name'] == '') {
         $error['name'] = trans('Group name required!');
-    } elseif (strlen($customergroupadd['name']) > 255) {
+    } elseif (mb_strlen($customergroupadd['name']) > 255) {
         $error['name'] = trans('Group name is too long!');
-    } elseif (!preg_match('/^[\._\-\pL]+$/u', $customergroupadd['name'])) {
+    } elseif (!preg_match('/^[\._\-0-9\pL]+$/u', $customergroupadd['name'])) {
         $error['name'] = trans('Invalid chars in group name!');
     } elseif ($LMS->CustomergroupGetId($customergroupadd['name'])) {
         $error['name'] = trans('Group with name $a already exists!', $customergroupadd['name']);

@@ -47,9 +47,9 @@ if (isset($_POST['nodegroup'])) {
 
     if ($nodegroupedit['name'] == '') {
         $error['name'] = trans('Group name required!');
-    } elseif (strlen($nodegroupedit['name']) > 255) {
+    } elseif (mb_strlen($nodegroupedit['name']) > 255) {
         $error['name'] = trans('Group name is too long!');
-    } elseif (!preg_match('/^[\._\-\pL]+$/u', $nodegroupedit['name'])) {
+    } elseif (!preg_match('/^[\._\-0-9\pL]+$/u', $nodegroupedit['name'])) {
         $error['name'] = trans('Invalid chars in group name!');
     } elseif ($id != $nodegroupedit['id']) {
         $error['name'] = trans('Group with name $a already exists!', $nodegroupedit['name']);

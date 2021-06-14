@@ -37,9 +37,9 @@ if (isset($_POST['nodegroupadd'])) {
 
     if ($nodegroupadd['name'] == '') {
         $error['name'] = trans('Group name required!');
-    } elseif (strlen($nodegroupadd['name']) > 255) {
+    } elseif (mb_strlen($nodegroupadd['name']) > 255) {
         $error['name'] = trans('Group name is too long!');
-    } elseif (!preg_match('/^[\._\-\pL]+$/u', $nodegroupadd['name'])) {
+    } elseif (!preg_match('/^[\._\-0-9\pL]+$/u', $nodegroupadd['name'])) {
         $error['name'] = trans('Invalid chars in group name!');
     } elseif ($DB->GetOne('SELECT 1 FROM nodegroups WHERE name = ?', array($nodegroupadd['name']))) {
         $error['name'] = trans('Group with name $a already exists!', $nodegroupadd['name']);
