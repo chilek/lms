@@ -191,6 +191,7 @@ function module_main()
             $ticket['mailfrom'] = $ticket['email'] ? $ticket['email'] : '';
 
             $id = $LMS->TicketAdd(array(
+                'state' => RT_NEW,
                 'queue' => $ticket['queue'],
                 'subject' => $ticket['subject'],
                 'customerid' => $SESSION->id,
