@@ -25,9 +25,12 @@
 				<strong>{trans("Name:")}</strong>
 			</td>
 			<td>
-				<input type="text" value="{$customergroup.name}" name="customergroup[name]" size="40" required
-					maxlength="255" form="tedit" {tip trigger="name" bold=1}>
-				<strong>({$customergroup.id|string_format:"%04d"})</strong>
+				<div class="lms-ui-cell-flex">
+					<input type="text" value="{$customergroup.name}" name="customergroup[name]" size="40" required
+						maxlength="255" form="tedit" {tip trigger="name" bold=1}>
+					{hint mode="toggle" content="Group name can contain letters (with national characters), digits, dots, underscores and dashes."}
+					<strong>({$customergroup.id|string_format:"%04d"})</strong>
+				</div>
 			</td>
 		</tr>
     </thead>

@@ -5288,3 +5288,5 @@ $_LANG['Expired assignment'] = 'Zobowiązanie przeterminowane';
 $_LANG['Assignment from not approved document'] = 'Zobowiązanie z niezatwierdzonego dokumentu';
 
 $_LANG['without location address'] = 'bez adresu lokalizacyjnego';
+
+$_LANG['Group name can contain letters (with national characters), digits, dots, underscores and dashes.'] = 'Nazwa grupy może składać się z liter (wraz ze znakami narodowymi), cyfr, kropek, podkreśleń i myślników.';

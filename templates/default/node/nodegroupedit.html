@@ -44,9 +44,12 @@
 				<strong>{trans("Name")}</strong>
 			</TD>
 			<td>
-				<input type="text" value="{$nodegroup.name|escape}" name="nodegroup[name]"
-					maxlength="255" required form="tedit" {tip trigger="name" bold=1}>
-				<strong>(#{$nodegroup.id})</strong>
+				<div class="lms-ui-cell-flex">
+					<input type="text" value="{$nodegroup.name|escape}" name="nodegroup[name]"
+						maxlength="255" required form="tedit" {tip trigger="name" bold=1}>
+					{hint mode="toggle" content="Group name can contain letters (with national characters), digits, dots, underscores and dashes."}
+					<strong>(#{$nodegroup.id})</strong>
+				</div>
 			</td>
 		</tr>
 	</thead>
