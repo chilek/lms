@@ -24,7 +24,7 @@
 			<td>
 				<div class="lms-ui-cell-flex">
 					<input type="text" name="customergroupadd[name]" value="{$customergroupadd.name}" size="50" required
-						maxlength="255" pattern="[\.\-_a-zA-Z0-9\pL]+" form="customergroupadd" {tip trigger="name" bold=1}>
+						maxlength="255" pattern="[\.\-_a-zA-Z0-9\p{L}]+" form="customergroupadd" {tip trigger="name" bold=1}>
 					{hint mode="toggle" content="Group name can contain letters (with national characters), digits, dots, underscores and dashes."}
 				</div>
 			</td>
