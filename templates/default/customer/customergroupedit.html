@@ -49,7 +49,7 @@
 		</tr>
 		<tr>
 			<td class="lms-ui-box-buttons" colspan="3">
-				{button icon="save" label="Submit" onclick="document.tedit.submit();"}
+				{button type="submit" icon="save" label="Submit" form="tedit"}
 				{button icon="cancel" label="Cancel" href="?m=customergroupinfo&id={$customergroup.id}{if $membersnetid}&membersnetid={$membersnetid}{/if}{if $othersnetid}&othersnetid={$othersnetid}{/if}"}
 				{if count($customergroups) > 1 && $customergroup.count}
 					{button id="move-members" icon="reload" label="Move members to group:"}
