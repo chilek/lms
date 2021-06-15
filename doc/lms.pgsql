@@ -990,7 +990,7 @@ CREATE TABLE assignments (
 	invoice smallint 	DEFAULT 0 NOT NULL,
 	suspended smallint	DEFAULT 0 NOT NULL,
 	settlement smallint	DEFAULT 0 NOT NULL,
-	pdiscount numeric(4,2)	DEFAULT 0 NOT NULL,
+	pdiscount numeric(5,2)	DEFAULT 0 NOT NULL,
 	vdiscount numeric(9,2) DEFAULT 0 NOT NULL,
 	paytype smallint    DEFAULT NULL,
 	numberplanid integer DEFAULT NULL
@@ -4042,6 +4042,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021052400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021061500');
 
 COMMIT;
