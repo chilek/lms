@@ -118,9 +118,9 @@
 
 	$(function() {
 		function disableLink() {
-			$('.group-action-run,.group-action-delete').prop('disabled', $('.lms-ui-multi-check:checked').length < 2);
-			$('.group-action-delete-permanently').prop('disabled', $('.lms-ui-multi-check:checked[data-deleted="1"]').length < 2);
-			$('.group-action-mark-as-read').prop('disabled', $('.lms-ui-multi-check:checked[data-unread="1"]').length < 2);
+			$('.group-action-run,.group-action-delete').prop('disabled', !$('.lms-ui-multi-check:checked').length);
+			$('.group-action-delete-permanently').prop('disabled', !$('.lms-ui-multi-check:checked[data-deleted="1"]').length);
+			$('.group-action-mark-as-read').prop('disabled', !$('.lms-ui-multi-check:checked[data-unread="1"]').length);
 		};
 		disableLink();
 
