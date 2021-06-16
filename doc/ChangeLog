@@ -179,6 +179,7 @@ version 27-git (????-??-??):
   - improvement: changed default value of 'mail.backend' from 'pear' to 'phpmailer' [chilan]
   - enhancement: added 'without location address' status filter in customerlist and customersearch forms [chilan]
   - enhancement: implemented new group action on ticket list 'mark as read' [chilan]
+  - enhancement: allow to limit visible document types in userpanel documents tab [chilan]
 
 version 26.0 (2020-12-15):
 

@@ -292,6 +292,11 @@ function module_main()
         }
     }
 
+    $allowed_document_types = ConfigHelper::getConfig('userpanel.allowed_document_types');
+    if (!empty($allowed_document_types)) {
+        $allowed_document_types = Utils::filterIntegers(explode(',', $allowed_document_types));
+    }
+
     $documents = $DB->GetAll('SELECT d.id, d.number, d.type, c.title, c.fromdate, c.todate, 
 		    c.description, n.template, d.closed, d.cdate, d.confirmdate
 		FROM documentcontents c
@@ -301,6 +306,7 @@ function module_main()
             . (ConfigHelper::checkConfig('userpanel.show_confirmed_documents_only')
                 ? ' AND (d.closed > 0 OR d.confirmdate >= ?NOW? OR d.confirmdate = -1)': '')
             . (ConfigHelper::checkConfig('userpanel.hide_archived_documents') ? ' AND d.archived = 0': '')
+            . ($allowed_document_types ? ' AND d.type IN (' . implode(',', $allowed_document_types) . ')' : '')
             . ' ORDER BY cdate', array($SESSION->id));
 
     if (!empty($documents)) {
@@ -351,11 +357,19 @@ if (defined('USERPANEL_SETUPMODE')) {
     {
         $SMARTY = LMSSmarty::getInstance();
 
+        $allowed_document_types = ConfigHelper::getConfig('userpanel.allowed_document_types');
+        if (empty($allowed_document_types)) {
+            $allowed_document_types = array();
+        } else {
+            $allowed_document_types = explode(',', $allowed_document_types);
+            $allowed_document_types = array_combine($allowed_document_types, $allowed_document_types);
+        }
         $SMARTY->assign(
             'moduleconfig',
             array(
                 'hide_documentbox' => ConfigHelper::getConfig('userpanel.hide_documentbox'),
                 'show_confirmed_documents_only' => ConfigHelper::checkConfig('userpanel.show_confirmed_documents_only'),
+                'allowed_document_types' => $allowed_document_types,
                 'hide_archived_documents' => ConfigHelper::checkConfig('userpanel.hide_archived_documents'),
                 'document_notification_mail_dsn_address' =>
                     ConfigHelper::getConfig('userpanel.document_notification_mail_dsn_address', '', true),
@@ -414,6 +428,7 @@ if (defined('USERPANEL_SETUPMODE')) {
         $variables = array(
             'hide_documentbox' => CONFIG_TYPE_BOOLEAN,
             'show_confirmed_documents_only' => CONFIG_TYPE_BOOLEAN,
+            'allowed_document_types' => CONFIG_TYPE_AUTO,
             'hide_archived_documents' => CONFIG_TYPE_BOOLEAN,
             'document_notification_mail_dsn_address' => CONFIG_TYPE_RICHTEXT,
             'document_notification_mail_mdn_address' => CONFIG_TYPE_RICHTEXT,
@@ -446,6 +461,13 @@ if (defined('USERPANEL_SETUPMODE')) {
                     break;
                 case CONFIG_TYPE_RICHTEXT:
                     $value = $moduleconfig[$variable];
+                    break;
+                case CONFIG_TYPE_AUTO:
+                    if (empty($moduleconfig['allowed_document_types'])) {
+                        $value = '';
+                    } else {
+                        $value = implode(',', $moduleconfig['allowed_document_types']);
+                    }
                     break;
                 case CONFIG_TYPE_NONE:
                     $mail_format = str_replace('_mail_format', '_mail_body', $variable);

@@ -37,6 +37,7 @@ $_LANG['not approved'] = 'niezatwierdzony';
 $_LANG['indefinitely'] = 'bezterminowo';
 $_LANG['Show confirmed documents only:'] = 'Pokaż wyłącznie dokumenty zatwierdzone:';
 $_LANG['Show only documents which are confirmed'] = 'Pokaż wyłącznie dokumenty, które zostały zatwierdzone';
+$_LANG['Visible document types'] = 'Widoczne typy dokumentów';
 $_LANG['Hide archived documents:'] = 'Ukryj dokumenty zarchiwizowane:';
 $_LANG['Hide archived documents'] = 'Ukryj dokumenty zarchiwizowane';
 

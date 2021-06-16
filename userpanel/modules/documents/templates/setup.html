@@ -43,6 +43,22 @@
 						</tr>
 						<tr>
 							<td class="nobr">
+								<label for="allowed_document_types">
+									{trans("Visible document types")}
+								</label>
+							</td>
+							<td class="nobr">
+								<select name="moduleconfig[allowed_document_types][]" id="allowed_document_types"
+									class="lms-ui-multiselect" multiple data-default-value="{trans("- all -")}">
+									{foreach Localisation::arraySort($_DOCTYPES) as $doctype => $label}
+										<option value="{$doctype}"
+											{if isset($moduleconfig.allowed_document_types[$doctype])} selected{/if}>{$label}</option>
+									{/foreach}
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td class="nobr">
 								<label for="hide_archived_documents">
 									{trans("Hide archived documents:")}
 								</label>
