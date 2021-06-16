@@ -504,7 +504,11 @@ switch ($action) {
         }
 
         $DB->BeginTrans();
-        $tables = array('documents', 'numberplans', 'divisions', 'vdivisions', 'addresses');
+        if ($DB->GetDbType() == 'postgres') {
+            $tables = array('documents', 'numberplans', 'divisions', 'vdivisions', 'addresses');
+        } else {
+            $tables = array('documents', 'numberplans', 'divisions', 'vdivisions', 'addresses', 'customer_addresses ca', 'customers c');
+        }
         if ($SYSLOG) {
             $tables = array_merge($tables, array('logmessages', 'logmessagekeys', 'logmessagedata'));
         }
