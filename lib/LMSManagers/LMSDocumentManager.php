@@ -489,7 +489,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 FROM numberplans n
                 LEFT JOIN numberplanusers u ON u.planid = n.id
                 WHERE n.doctype = ? AND n.isdefault = 1
-                    AND (u.userid = IS NULL OR u.userid = ?)
+                    AND (u.userid IS NULL OR u.userid = ?)
                 ORDER BY idx
                 LIMIT 1',
                 array(
