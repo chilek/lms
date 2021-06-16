@@ -94,3 +94,40 @@ $_LANG['Enter document approval customer one-time password sms body'] = 'Wprowad
 $_LANG['One-time password SMS body:'] = 'Treść SMS-a z hasłem jednorazowym:';
 
 $_LANG['awaits for your approval'] = 'oczekuje na zatwierdzenie przez Ciebie';
+
+$_LANG[
+    'Supported substitutions:<br><br>'
+    . '<strong>%cid%</strong> - customer identifier,<br>'
+    . '<strong>%pin%</strong> - customer pin code,<br>'
+    . '<strong>%customername%</strong> - full customer name,<br>'
+    . '<strong>%docid%</strong> - document identifier,<br>'
+    . '<strong>%date-y%</strong> - date to which we wait for customer action (year),<br>'
+    . '<strong>%date-m%</strong> - date to which we wait for customer action (month),<br>'
+    . '<strong>%date-d%</strong> - date to which we wait for customer action (day).'
+] =
+    'Obsługiwane symbole specjalne:<br><br>'
+    . '<strong>%cid%</strong> - identyfikator klienta,<br>'
+    . '<strong>%pin%</strong> - kod PIN klienta,<br>'
+    . '<strong>%customername%</strong> - pełna nazwa klienta,<br>'
+    . '<strong>%docid%</strong> - identyfikator dokumentu,<br>'
+    . '<strong>%date-y%</strong> - data do której oczekujemy na decyzję klienta (rok),<br>'
+    . '<strong>%date-m%</strong> - data do której oczekujemy na decyzję klienta (miesiąc),<br>'
+    . '<strong>%date-d%</strong> - data do której oczekujemy na decyzję klienta (dzień).';
+
+$_LANG[
+    'Supported substitutions:<br><br>'
+    . '<strong>%cid%</strong> - customer identifier,<br>'
+    . '<strong>%customername%</strong> - full customer name,<br>'
+    . '<strong>%docid%</strong> - document identifier.'
+] =
+    'Obsługiwane symbole specjalne:<br><br>'
+    . '<strong>%cid%</strong> - identyfikator klienta,<br>'
+    . '<strong>%customername%</strong> - pełna nazwa klienta,<br>'
+    . '<strong>%docid%</strong> - identyfikator dokumentu.';
+
+$_LANG[
+    'Supported substitutions:<br><br>'
+    . '<strong>%password%</strong> - replaced by one-time password sent to customer via SMS.'
+] =
+    'Obsługiwane symbole specjalne:<br><br>'
+    . '<strong>%password%</strong> - zastępowany jest hasłem jednorazowym SMS-em wysyłanym do klienta.';
