@@ -139,7 +139,7 @@
 									</td>
 									<td>
 										{if !ConfigHelper::checkConfig('phpui.protect_passwords')}
-											{$nodeipdata.passwd}
+											{$nodeipdata.passwd|escape}
 										{/if}
 										{button type="link" icon="clipboard" class="lms-ui-button-clipboard"
 											data_clipboard_text="{$nodeipdata.passwd|escape}"}
