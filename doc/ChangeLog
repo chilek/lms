@@ -180,6 +180,7 @@ version 27-git (????-??-??):
   - enhancement: added 'without location address' status filter in customerlist and customersearch forms [chilan]
   - enhancement: implemented new group action on ticket list 'mark as read' [chilan]
   - enhancement: allow to limit visible document types in userpanel documents tab [chilan]
+  - enhancement: implemented document approval operator notifications [chilan]
 
 version 26.0 (2020-12-15):
 
