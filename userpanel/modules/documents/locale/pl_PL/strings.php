@@ -59,8 +59,16 @@ $_LANG['Signed document scan customer notifications'] = 'Powiadomienia klienta o
 $_LANG['Enter signed document scan customer notification mail subject'] = 'Wprowadź temat listu z powiadomieniem klienta o skanie podpisanego dokumentu';
 $_LANG['Enter signed document scan customer notification mail body'] = 'Wprowadź treść listu z powiadomieniem klienta o skanie podpisanego dokumentu';
 $_LANG['Document approval customer notifications'] = 'Powiadomienia klienta o zatwierdzeniu dokumentu';
-$_LANG['Enter document approval customer notification mail subject'] = 'Wprowadź temat listu z powiadomieniem klienta o skanie podpisanego dokumentu';
-$_LANG['Enter document approval customer notification mail body'] = 'Wprowadź treść listu z powiadomieniem klienta o skanie podpisanego dokumentu';
+$_LANG['Enter document approval customer notification mail subject'] = 'Wprowadź temat listu z powiadomieniem klienta o zatwierdzeniu dokumentu';
+$_LANG['Enter document approval customer notification mail body'] = 'Wprowadź treść listu z powiadomieniem klienta o zatwierdzeniu dokumentu';
+$_LANG['Document approval operator notifications'] = 'Powiadomienia operatora o zatwierdzeniu dokumentu';
+$_LANG['Enter document approval operator notification mail recipient address'] = 'Wprowadź adres e-mail odbiorcy listu z powiadomieniem operatora o zatwierdzeniu dokumentu';
+$_LANG['Enter document approval operator notification mail subject'] = 'Wprowadź temat listu z powiadomieniem operatora o zatwierdzeniu dokumentu';
+$_LANG['Enter document approval operator notification mail body'] = 'Wprowadź treść listu z powiadomieniem operatora o zatwierdzeniu dokumentu';
+
+$_LANG['Recipient e-mail address'] = 'Adres e-mail odbiorcy';
+$_LANG['Mail subject'] = 'Temat listu';
+$_LANG['Mail body'] = 'Treść listu';
 
 $_LANG['New document customer notifications'] = 'Powiadomienia klienta o nowym dokumencie';
 $_LANG['Enter new document customer notification mail subject'] = 'Wprowadź temat listu z powiadomieniem klienta o nowym dokumencie';

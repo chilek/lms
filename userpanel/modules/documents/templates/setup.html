@@ -345,6 +345,67 @@
 							<td class="nobr" colspan="2">
 								<fieldset>
 									<legend class="bold">
+										{trans("Document approval operator notifications")}
+									</legend>
+									<table>
+										<tr>
+											<td class="nobr">
+												<label for="document_approval_operator_notification_mail_recipient">
+													{trans("Recipient e-mail address")}
+												</label>
+											</td>
+											<td>
+												<input type="text" size="50"
+													name="moduleconfig[document_approval_operator_notification_mail_recipient]"
+													id="document_approval_operator_notification_mail_recipient"
+													value="{$moduleconfig.document_approval_operator_notification_mail_recipient}"
+													{tip text="Enter document approval operator notification mail recipient address"}>
+											</td>
+										</tr>
+										<tr>
+											<td class="nobr">
+												<label for="document_approval_operator_notification_mail_subject">
+													{trans("Mail subject")}
+												</label>
+											</td>
+											<td>
+												<div class="lms-ui-cell-flex">
+													<input type="text" size="50"
+														name="moduleconfig[document_approval_operator_notification_mail_subject]"
+														id="document_approval_operator_notification_mail_subject"
+														value="{$moduleconfig.document_approval_operator_notification_mail_subject}"
+														{tip text="Enter document approval operator notification mail subject"}>
+													{hint mode="toggle" content=$hint}
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="nobr">
+												<label for="document_approval_operator_notification_mail_body">
+													{trans("Mail body")}
+												</label>
+											</td>
+											<td>
+												<div class="lms-ui-cell-flex">
+													<textarea name="moduleconfig[document_approval_operator_notification_mail_body]"
+														id="document_approval_operator_notification_mail_body"
+														class="lms-ui-wysiwyg-editor"
+														data-wysiwyg="{if $moduleconfig.document_approval_operator_notification_mail_format == 'html'}true{else}false{/if}"
+														cols="60" rows="7" {tip text="Enter document approval operator notification mail body"}
+													>{$moduleconfig.document_approval_operator_notification_mail_body}</textarea>
+													{hint mode="toggle" content=$hint}
+												</div>
+											</td>
+										</tr>
+									</table>
+								</fieldset>
+							</td>
+						</tr>
+
+						<tr>
+							<td class="nobr" colspan="2">
+								<fieldset>
+									<legend class="bold">
 										{trans("Document approval customer notifications")}
 									</legend>
 									<table>

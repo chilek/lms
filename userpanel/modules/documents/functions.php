@@ -403,6 +403,14 @@ if (defined('USERPANEL_SETUPMODE')) {
                     ConfigHelper::getConfig('userpanel.signed_document_scan_customer_notification_mail_subject', '', true),
                 'signed_document_scan_customer_notification_mail_body' =>
                     ConfigHelper::getConfig('userpanel.signed_document_scan_customer_notification_mail_body', '', true),
+                'document_approval_operator_notification_mail_recipient' =>
+                    ConfigHelper::getConfig('userpanel.document_approval_operator_notification_mail_recipient', '', true),
+                'document_approval_operator_notification_mail_format' =>
+                    ConfigHelper::getConfig('userpanel.document_approval_operator_notification_mail_format', 'text'),
+                'document_approval_operator_notification_mail_subject' =>
+                    ConfigHelper::getConfig('userpanel.document_approval_operator_notification_mail_subject', '', true),
+                'document_approval_operator_notification_mail_body' =>
+                    ConfigHelper::getConfig('userpanel.document_approval_operator_notification_mail_body', '', true),
                 'document_approval_customer_notification_mail_format' =>
                     ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_format', 'text'),
                 'document_approval_customer_notification_mail_subject' =>
@@ -446,6 +454,10 @@ if (defined('USERPANEL_SETUPMODE')) {
             'signed_document_scan_customer_notification_mail_format' => CONFIG_TYPE_NONE,
             'signed_document_scan_customer_notification_mail_subject' => CONFIG_TYPE_RICHTEXT,
             'signed_document_scan_customer_notification_mail_body' => CONFIG_TYPE_RICHTEXT,
+            'document_approval_operator_notification_mail_recipient' => CONFIG_TYPE_EMAIL,
+            'document_approval_operator_notification_mail_format' => CONFIG_TYPE_NONE,
+            'document_approval_operator_notification_mail_subject' => CONFIG_TYPE_RICHTEXT,
+            'document_approval_operator_notification_mail_body' => CONFIG_TYPE_RICHTEXT,
             'document_approval_customer_notification_mail_format' => CONFIG_TYPE_NONE,
             'document_approval_customer_notification_mail_subject' => CONFIG_TYPE_RICHTEXT,
             'document_approval_customer_notification_mail_body' => CONFIG_TYPE_RICHTEXT,
@@ -468,6 +480,9 @@ if (defined('USERPANEL_SETUPMODE')) {
                     } else {
                         $value = implode(',', $moduleconfig['allowed_document_types']);
                     }
+                    break;
+                case CONFIG_TYPE_EMAIL:
+                    $value = check_email($moduleconfig[$variable]) ? $moduleconfig[$variable] : '';
                     break;
                 case CONFIG_TYPE_NONE:
                     $mail_format = str_replace('_mail_format', '_mail_body', $variable);
