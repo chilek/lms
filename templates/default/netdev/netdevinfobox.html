@@ -1,5 +1,6 @@
 <!--// $Id$ //-->
-<table class="lmsbox{if $devicepanel} lms-ui-sortable{/if}" id="netdevinfobox">
+<table class="lmsbox{if $devicepanel} lms-ui-tab-container lms-ui-sortable{/if}" id="netdevinfobox"
+	{if $devicepanel} data-label="{trans("Network Device")}"{/if}>
     <colgroup>
 		<col style="width: 1%;">
 		<col style="width: 99%;">

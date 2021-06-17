@@ -1392,6 +1392,7 @@ $_LANG['Network address:'] = 'Adres sieci:';
 $_LANG['Network Balance Sheet'] = 'Historia operacji finansowych';
 $_LANG['Network Devices'] = 'Urządzenia sieciowe';
 $_LANG['Network Devices:'] = 'Urządzenia sieciowe:';
+$_LANG['Network Device'] = 'Urządzenie sieciowe';
 $_LANG['Assigned Network Device:'] = 'Przypisane urządzenie sieciowe:';
 $_LANG['Network Devices ($a):'] = 'Urządzenia sieciowe ($a):';
 $_LANG['Network devices list'] = 'Lista urządzeń sieciowych';

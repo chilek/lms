@@ -400,7 +400,7 @@
 												<label>
 													<input type="checkbox" name="nodeedit[authtype][{$idx}]" value="{$idx}"
 														id="authtype{$idx}" {tip text="`$sessiontype.tip`" trigger="authtype`$idx`"}
-														{if $nodeinfo.authtype & $idx} checked{/if}>
+														{if ($nodeinfo.authtype & $idx) == $idx} checked{/if}>
 													{$sessiontype.label}
 												</label><br>
 											{/foreach}
@@ -542,9 +542,9 @@
 			</td>
 		</tr>
 		<tr>
-			<td style="width: 100%;" class="lms-ui-box-buttons" colspan="3">
-				{button type="submit" id="save-button" icon="save" label="Submit"}
-				{button id="cancel-button" icon="cancel" label="Cancel" href="?m=nodeinfo&id={$nodeinfo.id}"}
+			<td class="lms-ui-box-buttons" colspan="3">
+				{button type="submit" icon="save" label="Submit"}
+				{button icon="cancel" label="Cancel" href="?m=nodeinfo&id={$nodeinfo.id}"}
 			</td>
 		</tr>
     </tbody>
@@ -578,7 +578,7 @@
 			$('#statusico').toggleClass('lms-ui-icon-connected', status).toggleClass('lms-ui-icon-disconnected', !status);
 		});
 
-		$('#genpasswd').click(function(event) {
+		$('#genpasswd').click(function() {
 			var length = {ConfigHelper::getConfig('phpui.node_password_length', ConfigHelper::getConfig('phpui.nodepassword_length', '16'))};
 			if (length > 32) {
 				length = 32;
@@ -586,13 +586,11 @@
 			if ($('#passwordcontainer').val().length > 0) {
 				confirmDialog($t("Are you sure, you want to generate new password?"), this).done(function() {
 					$( '#passwordcontainer' ).val(generate_random_string(length, "{ConfigHelper::getConfig('phpui.node_password_allowed_characters', ConfigHelper::getConfig('phpui.nodepassword_allowed_characters', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'))|replace:'"':'\"'}"));
-					event.preventDefault();
 				});
-				return false;
 			} else {
 				$( '#passwordcontainer' ).val(generate_random_string(length, "{ConfigHelper::getConfig('phpui.node_password_allowed_characters', ConfigHelper::getConfig('phpui.nodepassword_allowed_characters', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'))|replace:'"':'\"'}"));
-				return false;
 			}
+			return false;
 		});
 
 		$('#set_gps').click( function() {
