@@ -2144,14 +2144,14 @@ $_LANG[
     . '<strong>%m</strong> - month number (always two digits),<br>'
     . '<strong>%Y</strong> - year number (always four digits),<br>'
     . '<strong>%C</strong> - customer id; if this symbol is present then customer dedicated numbering applies.<br><br>'
-    . 'Other symbols can be used which are described in PHP <strong>strftime<strong> function documentation.'
+    . 'Other symbols can be used which are described in PHP <a href="https://php.net/strftime"><strong>strftime</strong></a> function documentation.'
 ] = 'Wprowadź szablon numeru<br><br>'
     . 'Obsługiwane symbole podstawień:<br>'
     . '<strong>%N</strong> - numer dokumentu,<br>'
     . '<strong>%m</strong> - numer miesiąca (zawsze dwie cyfry),<br>'
     . '<strong>%Y</strong> - numer roku (zawsze cztery cyfry),<br>'
     . '<strong>%C</strong> - identyfikator klienta; w przypadku użycia tego symbolu zastosowanie ma indywidualna numeracja dla każdego klienta oddzielnie.<br><br>'
-    . 'Można użyć innych symboli opisanych w dokumentacji funkcji PHP <strong>strftime</strong>.';
+    . 'Można użyć innych symboli opisanych w dokumentacji funkcji PHP <a href="https://php.net/strftime"><strong>strftime</strong></a>.';
 $_LANG['invoice'] = 'faktura';
 $_LANG['Main Information:'] = 'Informacje Podstawowe:';
 $_LANG['New Numbering Plan'] = 'Nowy plan numeracyjny';
