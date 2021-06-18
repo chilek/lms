@@ -37,7 +37,7 @@
     </thead>
     <tbody id="overdue-events-panel" style="display: none;">
         {foreach $overdue_events as $event}
-            {include file="event/eventlistboxrow.html" overdue=1}
+            {include file="event/eventlistboxrow.html" overdue=1 backid="event-all"}
         {/foreach}
     </tbody>
 </table>
