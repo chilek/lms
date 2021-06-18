@@ -587,6 +587,8 @@ function tariffSelectionHandler() {
 
 			$('#a_tax,#a_type,#a_price,#a_currency,#a_splitpayment,#a_taxcategory,#a_productid,#a_name').hide();
 			$('#a_attribute').show();
+		} else {
+			$('#a_attribute').show();
 		}
 	}
 
