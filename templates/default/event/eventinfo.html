@@ -293,7 +293,8 @@
 					<strong>{trans("Helpdesk assignment")}</strong>
 				</td>
 				<td>
-					#{$event.ticketid|string_format:"%06d"}
+					{hint icon="info" mode="toggle" url="?m=rtticketinfo&id={$event.ticketid}"}
+					#{$event.ticketid}
 					<a href="?m=rtticketview&id={$event.ticketid}">
 						{$event.ticket.name}
 					</a>

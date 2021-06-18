@@ -320,7 +320,14 @@
 								</TD>
 								<TD>
 									{foreach $ticket.relatedtickets as $i}
-										#{$i.id|string_format:"%06d"} <a href="?m=rtticketview&id={$i.id}">{$i.name|escape}</a><br>
+										{hint icon="info" mode="toggle" url="?m=rtticketinfo&id={$i.id}"}
+										#{$i.id}
+										<a href="?m=rtticketview&id={$i.id}">
+											{$i.name|escape}
+										</a>
+										{if !$i@last}
+											<br>
+										{/if}
 									{/foreach}
 								</TD>
 							</TR>

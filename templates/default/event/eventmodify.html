@@ -159,7 +159,8 @@
 
 					{function event_ticket_item_content}
 						{capture name="item_content_result" assign="item_content_result"}
-							{sprintf("#%06d", $item.id)}
+							{hint icon="info" mode="toggle" url="?m=rtticketinfo&id={$item.id}"}
+							#{$item.id}
 							<a href="?m=rtticketview&id={$item.id}">{$item.name}</a>
 						{/capture}
 					{/function}
