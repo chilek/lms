@@ -1304,7 +1304,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $docs = $this->db->GetAllByKey(
             'SELECT d.id, d.customerid, dc.fromdate AS datefrom,
 					d.reference, d.commitflags, d.confirmdate, d.closed,
-					(CASE WHEN d.confirmdate = -1 AND a.customerdocuments IS NOT NULL THEN 1 ELSE 0 END) AS customerawaits
+					(CASE WHEN d.confirmdate = -1 AND a.customerdocuments IS NOT NULL THEN 1 ELSE 0 END) AS customerawaits,
+                    (CASE WHEN d.confirmdate > 0 AND d.confirmdate > ?NOW? THEN 1 ELSE 0 END) AS operatorawaits
 				FROM documents d
                 JOIN documentcontents dc ON dc.docid = d.id
 				LEFT JOIN docrights r ON r.doctype = d.type
@@ -1376,7 +1377,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 array($docid)
             );
 
-            if (!$userpanel || empty($doc['customerawaits'])) {
+            if (!$userpanel || (empty($doc['customerawaits']) && empty($doc['operatorawaits']))) {
                 continue;
             }
 
