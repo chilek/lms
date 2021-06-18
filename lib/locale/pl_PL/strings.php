@@ -86,7 +86,7 @@ $_LANG['MAC label already exists for the network device!'] = 'Etykieta MAC już 
 
 $_LANG['Import settings'] = 'Import ustawień';
 $_LANG['Content type'] = 'Typ zawartości';
-$_LANG['Allows you to import settings from file'] = 'Umożliwa import ustawień pliku';
+$_LANG['Import settings from file'] = 'Import ustawień z pliku';
 $_LANG['Bad file structure!'] = 'Nieprawidłowa struktura pliku!';
 
 $_LANG['Properties:'] = 'Właściwości:';
