@@ -41,7 +41,7 @@
 				<TBODY>
 				{foreach $assignedevents as $event}
 					{$day=$event.date}
-					{include file="event/eventlistboxrow.html" overdue=1}
+					{include file="event/eventlistboxrow.html" overdue=1 backid=null}
 				{foreachelse}
 					<tr>
 						<td class="empty-table" colspan="6">
