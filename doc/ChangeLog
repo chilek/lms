@@ -181,6 +181,7 @@ version 27-git (????-??-??):
   - enhancement: implemented new group action on ticket list 'mark as read' [chilan]
   - enhancement: allow to limit visible document types in userpanel documents tab [chilan]
   - enhancement: implemented document approval operator notifications [chilan]
+  - enhancement: added '--division' parameter support in lms-notify.php backend script [chilan]
 
 version 26.0 (2020-12-15):
 
