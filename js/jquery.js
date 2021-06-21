@@ -1191,6 +1191,7 @@ $(function() {
 	$('a.lms-ui-button').click(function(e) {
 		if ($(this).is('[disabled]')) {
 			e.stopImmediatePropagation();
+			e.preventDefault();
 		}
 	});
 
