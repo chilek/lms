@@ -3620,6 +3620,7 @@ $_LANG['number plan<!syslog>'] = 'plan numeracyjny';
 $_LANG['Number plan:'] = 'Plan numeracyjny:';
 $_LANG['number plan assignment<!syslog>'] = 'powiązanie planu numeracyjnego z firmą';
 $_LANG['number plan user<!syslog>'] = 'użytkownik planu numeracyjnego';
+$_LANG['Number plan is used by existing documents!'] = 'Plan numeracyjny używany w istniejących dokumentach!';
 $_LANG['VoIP account<!syslog>'] = 'konto VoIP';
 $_LANG['VoIP account number<!syslog>'] = 'number przypisany do konta VoIP';
 $_LANG['division<!syslog>'] = 'firma';

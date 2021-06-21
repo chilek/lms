@@ -126,7 +126,8 @@
 				{if $plan.isdefault}{icon name="checked" tip="yes"}{/if}
 			</TD>
 			<TD class="text-right nobr">
-				{button type="link" icon="delete" tip="Delete" class="delete-numberplan" href="?m=numberplandel&id={$plan.id}"}
+				{button type="link" icon="delete" tip="Number plan is used by existing documents!"
+					class="delete-numberplan" href="?m=numberplandel&id={$plan.id}" disabled=!empty($plan.issued)}
 				{button type="link" icon="edit" tip="Edit" href="?m=numberplanedit&id={$plan.id}"}
 			</TD>
 		</TR>
