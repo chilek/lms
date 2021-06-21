@@ -423,6 +423,18 @@ switch ($action) {
             $error['numberplanid'] = trans('Persmission denied!');
         }
 
+        $args = array(
+            'doctype' => $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
+            'customerid' => $invoice['customerid'],
+            'division' => $invoice['divisionid'],
+            'next' => false,
+        );
+        $numberplans = $LMS->GetNumberPlans($args);
+
+        if (count($numberplans) && empty($invoice['numberplanid'])) {
+            $error['numberplanid'] = trans('Select numbering plan');
+        }
+
         if ($invoice['number']) {
             if (!preg_match('/^[0-9]+$/', $invoice['number'])) {
                 $error['number'] = trans('Invoice number must be integer!');
@@ -470,6 +482,25 @@ switch ($action) {
             $error['currency'] = trans('Invalid currency selection!');
         }
 
+        $use_current_customer_data = isset($invoice['use_current_customer_data']) || $invoice['customerid'] != $customerid;
+
+        if ($use_current_customer_data) {
+            $customer = $LMS->GetCustomer($invoice['customerid'], true);
+        }
+
+        $args = array(
+            'doctype' => $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
+            'customerid' => $invoice['customerid'],
+            'division' => $use_current_customer_data ? (empty($customer['divisionid']) ? null : $customer['divisionid'])
+                : (empty($invoice['divisionid']) ? null : $invoice['divisionid']),
+            'next' => false,
+        );
+        $numberplans = $LMS->GetNumberPlans($args);
+
+        if (count($numberplans) && empty($invoice['numberplanid'])) {
+            $error['numberplanid'] = trans('Select numbering plan');
+        }
+
         $hook_data = array(
             'contents' => $contents,
             'invoice' => $invoice,
@@ -498,14 +529,12 @@ switch ($action) {
                 $DB->Execute(
                     'UPDATE documents SET recipient_address_id = ? WHERE id = ?',
                     array(
-                                $LMS->CopyAddress($invoice['recipient_address_id']),
-                                $invoice['id']
-                            )
+                        $LMS->CopyAddress($invoice['recipient_address_id']),
+                        $invoice['id']
+                    )
                 );
             }
         }
-
-        $use_current_customer_data = isset($invoice['use_current_customer_data']) || $invoice['customerid'] != $customerid;
 
         // updates customer post address stored in document
         if ($use_current_customer_data) {
@@ -538,10 +567,6 @@ switch ($action) {
             $tables = array_merge($tables, array('customers cv', 'customer_addresses ca'));
         }
         $DB->LockTables($tables);
-
-        if ($use_current_customer_data) {
-            $customer = $LMS->GetCustomer($invoice['customerid'], true);
-        }
 
         $division = $LMS->GetDivision($use_current_customer_data ? $customer['divisionid'] : $invoice['divisionid']);
 

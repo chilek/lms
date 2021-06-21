@@ -250,9 +250,21 @@ switch ($action) {
         // finally check if selected customer can use selected numberplan
         $divisionid = !empty($cnote['use_current_division']) ? $invoice['current_divisionid'] : $invoice['divisionid'];
 
-        if ($cnote['numberplanid'] && !$DB->GetOne('SELECT 1 FROM numberplanassignments
-			WHERE planid = ? AND divisionid = ?', array($cnote['numberplanid'], $divisionid))) {
-                $error['number'] = trans('Selected numbering plan doesn\'t match customer\'s division!');
+        $args = array(
+            'doctype' => DOC_CNOTE,
+            'customerid' => $invoice['customerid'],
+            'division' => $divisionid,
+            'next' => false,
+        );
+        $numberplans = $LMS->GetNumberPlans($args);
+
+        if ($cnote['numberplanid'] && !isset($numberplans[$cnote['numberplanid']])) {
+            $error['number'] = trans('Selected numbering plan doesn\'t match customer\'s division!');
+            unset($customer);
+        }
+
+        if (count($numberplans) && empty($cnote['numberplanid'])) {
+            $error['numberplanid'] = trans('Select numbering plan');
         }
 
         break;
@@ -475,6 +487,21 @@ switch ($action) {
             $error['numberplanid'] = trans('Permission denied!');
         }
 
+        $use_current_customer_data = isset($cnote['use_current_customer_data']);
+
+        $args = array(
+            'doctype' => DOC_CNOTE,
+            'customerid' => $invoice['customerid'],
+            'division' => !empty($cnote['use_current_division']) ? $invoice['current_divisionid']
+                : (!empty($invoice['divisionid']) ? $invoice['divisionid'] : null),
+            'next' => false,
+        );
+        $numberplans = $LMS->GetNumberPlans($args);
+
+        if (count($numberplans) && empty($cnote['numberplanid'])) {
+            $error['numberplanid'] = trans('Select numbering plan');
+        }
+
         $hook_data = array(
             'invoice' => $invoice,
             'contents' => $contents,
@@ -566,7 +593,6 @@ switch ($action) {
         }
         $invoice['post_address_id'] = $LMS->CopyAddress($invoice['post_address_id']);
 
-        $use_current_customer_data = isset($cnote['use_current_customer_data']);
         if ($use_current_customer_data) {
             $customer = $LMS->GetCustomer($invoice['customerid'], true);
         }
