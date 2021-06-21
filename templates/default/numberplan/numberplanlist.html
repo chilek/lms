@@ -162,7 +162,7 @@
 <script>
 
 	$(function() {
-		$('.delete-numberplan:not(.disabled)').click(function () {
+		$('.delete-numberplan:not([disabled])').click(function () {
 			var name = $(this).closest('tr').attr('data-name');
 			confirmDialog($t("Are you sure, you want to delete numberplan '$a'?", name), this).done(function () {
 				location.href = $(this).attr('href');
