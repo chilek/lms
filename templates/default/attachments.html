@@ -71,7 +71,7 @@
                 <div class="lms-ui-tab-table-column buttons">
                     {if count($container.images)}
                         {button type="link" icon="gallery" class="container-gallery" tip="Attachment gallery"
-                            data_gallery="{json_encode($container.images)}"}
+                            data_gallery="{base64_encode(json_encode($container.images))}"}
                     {/if}
                     {button type="link" href="#" class="container-edit" icon="edit" tip="Edit"}
                     {button type="link" href="#" class="container-save" icon="save" tip="Save"}
@@ -114,7 +114,7 @@
                 {if count($images)}
                     {tab_buttons}
                         {button icon="gallery" class="container-gallery" label="Attachment gallery"
-                            data_gallery="{json_encode($images)}"}
+                            data_gallery="{base64_encode(json_encode($images))}"}
                     {/tab_buttons}
                 {/if}
             {/tab_button_panel}
