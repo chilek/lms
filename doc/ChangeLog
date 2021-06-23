@@ -182,6 +182,7 @@ version 27-git (????-??-??):
   - enhancement: allow to limit visible document types in userpanel documents tab [chilan]
   - enhancement: implemented document approval operator notifications [chilan]
   - enhancement: added '--division' parameter support in lms-notify.php backend script [chilan]
+  - enhancement: new tickets panel in customerinfo form [interduo]
 
 version 26.0 (2020-12-15):
 
