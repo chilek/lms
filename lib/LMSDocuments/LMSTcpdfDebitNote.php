@@ -257,7 +257,7 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
         if ($this->use_alert_color) {
             $this->backend->SetTextColorArray(array(255, 0, 0));
         }
-        $this->backend->writeHTMLCell(0, 0, '', '', trans('To pay:') . ' ' . moneyf($this->data['value'], $this->data['currency']), 0, 1, 0, true, 'R');
+        $this->backend->writeHTMLCell(0, 0, '', '', trans('To pay: $a', moneyf($this->data['value'], $this->data['currency'])), 0, 1, 0, true, 'R');
         if ($this->use_alert_color) {
             $this->backend->SetTextColor();
         }

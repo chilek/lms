@@ -438,13 +438,11 @@
 		<TD WIDTH="50%" ALIGN="LEFT" class="hdf">
 			{if $invoice.rebate}
 				{if $use_alert_color}<span style="color: red; font-weight: bold;">{/if}
-				{trans("To repay:")}
-				{moneyf($invoice.value, $invoice.currency)}
+				{t a=moneyf($invoice.value, $invoice.currency)}To repay: $a{/t}
 				{if $use_alert_color}</span>{/if}
 			{else}
 				{if $use_alert_color}<span style="color: red; font-weight: bold;">{/if}
-				{trans("To pay:")}
-				{moneyf($invoice.value, $invoice.currency)}
+				{t a=moneyf($invoice.value, $invoice.currency)}To pay: $a{/t}
 				{if $use_alert_color}</span>{/if}
 			{/if}
 		</TD>

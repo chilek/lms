@@ -1152,15 +1152,28 @@ class LMSEzpdfInvoice extends LMSInvoice
 
     protected function invoice_to_pay($x, $y)
     {
+        $show_balance_summary = ConfigHelper::checkConfig('invoices.show_balance_summary');
+
         if (isset($this->data['rebate'])) {
-            $y = $y - $this->backend->text_align_left($x, $y, 14, trans('To repay:') . ' ' . moneyf($this->data['value'], $this->data['currency']));
+            $y = $y - $this->backend->text_align_left(
+                $x,
+                $y,
+                $show_balance_summary ? 10 : 14,
+                trans(
+                    $show_balance_summary ? 'Invoice value: $a' : 'To repay: $a',
+                    moneyf($this->data['value'], $this->data['currency'])
+                )
+            );
         } else {
             $y = $y - $this->backend->text_align_left(
                 $x,
                 $y,
-                14,
+                $show_balance_summary ? 10 : 14,
                 ($this->use_alert_color ? '<c:color:255,0,0>' : '')
-                . trans('To pay:') . ' ' . moneyf($this->data['value'], $this->data['currency'])
+                . trans(
+                    $show_balance_summary ? 'Invoice value: $a' : 'To pay: $a',
+                    moneyf($this->data['value'], $this->data['currency'])
+                )
                 . ($this->use_alert_color ? '</c:color>' : '')
             );
         }
@@ -1172,33 +1185,66 @@ class LMSEzpdfInvoice extends LMSInvoice
 
     protected function invoice_balance($x, $y, $expired = false)
     {
-        if ($expired) {
+        $show_balance_summary = ConfigHelper::checkConfig('invoices.show_balance_summary');
+
+        if ($expired || $show_balance_summary) {
             $lms = LMS::getInstance();
-            $balance = $lms->getCustomerBalance($this->data['customerid'], $this->data['cdate'] + 1, true);
-        } else {
-            $balance = $this->data['customerbalance'];
+            $expired_balance = $balance = $lms->getCustomerBalance($this->data['customerid'], $this->data['cdate'] + 1, true);
+        }
+
+        if (!$expired || $show_balance_summary) {
+            $total_balance = $balance = $this->data['customerbalance'];
         }
 
         if ($balance > 0) {
             $comment = trans('(excess payment)');
-        } elseif ($balance < 0) {
+        } elseif ($expired_balance < 0) {
             $comment = trans('(underpayment)');
         } else {
             $comment = '';
         }
-        $y = $y - $this->backend->text_align_left(
-            $x,
-            $y,
-            9,
-            ($this->use_alert_color ? '<c:color:255,0,0>' : '') . '<b>'
+
+        if ($show_balance_summary) {
+            $y = $y - $this->backend->text_align_left(
+                $x,
+                $y,
+                9,
+                ($this->use_alert_color ? '<c:color:255,0,0>' : '') . '<b>'
+                . trans(
+                    'Previous balance: $a $b',
+                    moneyf(-$expired_balance / $this->data['currencyvalue'], $this->data['currency']),
+                    $comment
+                )
+                . ($this->use_alert_color ? '</c:color>' : '') . '</b>'
+            );
+        } else {
+            $y = $y - $this->backend->text_align_left(
+                $x,
+                $y,
+                9,
+                ($this->use_alert_color ? '<c:color:255,0,0>' : '') . '<b>'
                 . trans(
                     $expired ? 'Your balance without unexpired invoices: $a $b' : 'Your balance on date of invoice issue: $a $b',
                     moneyf($balance / $this->data['currencyvalue'], $this->data['currency']),
                     $comment
                 )
                 . ($this->use_alert_color ? '</c:color>' : '') . '</b>'
-        );
-        if (!$expired) {
+            );
+        }
+
+        if ($show_balance_summary) {
+            $y = $y - $this->backend->text_align_left(
+                $x,
+                $y,
+                14,
+                ($this->use_alert_color ? '<c:color:255,0,0>' : '') . '<b>'
+                . trans(
+                    'Total to pay: $a',
+                    moneyf($total_balance >= 0 ? 0 : (-$total_balance / $this->data['currencyvalue']), $this->data['currency'])
+                )
+                . ($this->use_alert_color ? '</c:color>' : '') . '</b>'
+            );
+        } elseif (!$expired) {
             $y = $y - $this->backend->text_align_left(
                 $x,
                 $y,
