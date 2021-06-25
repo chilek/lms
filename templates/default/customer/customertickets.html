@@ -81,7 +81,7 @@
 									{/if}
 								</div>
 								<div class="lms-ui-tab-table-column owner">
-									{if $ticket.ownername}{$ticket.ownername}{else}-{/if}
+									{if $ticket.ownername}{$ticket.ownername|escape}{else}-{/if}
 								</div>
 							</div>
 						</div>
