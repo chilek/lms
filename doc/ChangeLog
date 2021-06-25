@@ -184,6 +184,7 @@ version 27-git (????-??-??):
   - enhancement: added '--division' parameter support in lms-notify.php backend script [chilan]
   - improvement: 'invoices.show_balance_summary' enables friendlier customer balance presentation
     on invoices [chilan]
+  - enhancement: new tickets panel in customerinfo form [interduo]
 
 version 26.0 (2020-12-15):
 

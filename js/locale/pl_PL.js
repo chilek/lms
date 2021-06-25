@@ -176,6 +176,7 @@ $_LANG['show only parent tickets'] = 'pokaż tylko zgłoszenia nadrzędne';
 $_LANG['Enter ID of parent ticket'] = 'Wprowadź ID zgłoszenia nadrzędnego';
 $_LANG['There is no related tickets'] = 'Brak powiązanych zgłoszeń';
 $_LANG['There is no child tickets'] = 'Brak zgłoszeń podrzędnych';
+$_LANG['No tickets.'] = 'Brak zgłoszeń.';
 $_LANG['Related tickets:'] = 'Powiązane zgłoszenia:';
 $_LANG['Child tickets:'] = 'Podrzędne zgłoszenia:';
 $_LANG['Create child ticket'] = 'Utwórz podrzędne zgłoszenie';
@@ -282,6 +283,7 @@ $_LANG['Check if would like to print cutomerlist as sending register'] = 'Zaznac
 
 $_LANG['Are you sure you want to send messages to $a customer(s)?'] = 'Jesteś pewien, że chcesz wysłać wiadomości do $a klient(a/ów)?';
 $_LANG['Are you sure, you want to make instant payment for customer \'$a\'?'] = 'Czy jesteś pewien, że chcesz wykonać szybką płatność dla klienta \'$a\'?';
+$_LANG['Are You sure, you want to delete this ticket?'] = 'Czy jesteś pewien, że chcesz usunąć to zgłoszenie?';
 
 $_LANG['Export to JPK-FA format'] = 'Eksport do formatu JPK-FA';
 $_LANG['Export to JPK-VAT format'] = 'Eksport do formatu JPK-VAT';
@@ -1312,6 +1314,7 @@ $_LANG['Notices:'] = 'Powiadomienia:';
 $_LANG['notice disabled'] = 'powiadomienie wyłączone';
 $_LANG['notice enabled'] = 'powiadomienie włączone';
 $_LANG['Not exists'] = 'Nie znaleziono';
+$_LANG['not sent to email'] = 'niewysłane e-mailem';
 $_LANG['Messages'] = 'Wiadomości';
 $_LANG['Message subject is required!'] = 'Temat wiadomości jest wymagany!';
 $_LANG['Message subject not specified!'] ='Brak tytułu wiadomości!';
@@ -4548,6 +4551,7 @@ $_LANG['<!event>Unassign'] = 'Cofnij przypisanie';
 
 $_LANG['Today\'s events assigned to You'] = 'Dzisiejsze zdarzenia przypisane do Ciebie';
 $_LANG['Critical tickets'] = 'Zgłoszenia krytyczne';
+$_LANG['Customer tickets'] = 'Zgłoszenia klienta';
 $_LANG['Urgent tickets'] = 'Zgłoszenia pilne';
 $_LANG['Unread tickets'] = 'Nieprzeczytane zgłoszenia';
 
@@ -5217,3 +5221,11 @@ $_LANG['sms marketing'] = 'marketing SMS-em';
 $_LANG['Issuer'] = 'Wystawca';
 $_LANG['Enter issuer name visible on documents'] = 'Podaj nazwę wystawcy widoczną na dokumentach';
 $_LANG['Are you sure, you want to delete that VLAN?'] = 'Czy jesteś pewien, że chcesz usunąć ten VLAN?';
+
+$_LANG['Assignments color markings:'] = 'Legenda oznaczeń:';
+$_LANG['Active tariff assignment'] = 'Zobowiązanie taryfowe aktywne';
+$_LANG['Active tariffless assignment'] = 'Zobowiązanie beztaryfowe aktywne';
+$_LANG['Suspended assignment'] = 'Zobowiązanie zawieszone';
+$_LANG['Future assignment'] = 'Zobowiązanie przyszłe';
+$_LANG['Expired assignment'] = 'Zobowiązanie przeterminowane';
+$_LANG['Assignment from not approved document'] = 'Zobowiązanie z niezatwierdzonego dokumentu';

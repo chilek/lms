@@ -183,6 +183,7 @@ $_LANG['show only parent tickets'] = 'pokaż tylko zgłoszenia nadrzędne';
 $_LANG['Enter ID of parent ticket'] = 'Wprowadź ID zgłoszenia nadrzędnego';
 $_LANG['There is no related tickets'] = 'Brak powiązanych zgłoszeń';
 $_LANG['There is no child tickets'] = 'Brak zgłoszeń podrzędnych';
+$_LANG['No tickets.'] = 'Brak zgłoszeń.';
 $_LANG['Related tickets:'] = 'Powiązane zgłoszenia:';
 $_LANG['Child tickets:'] = 'Podrzędne zgłoszenia:';
 $_LANG['Create child ticket'] = 'Utwórz podrzędne zgłoszenie';
@@ -290,6 +291,7 @@ $_LANG['Check if would like to print cutomerlist as sending register'] = 'Zaznac
 
 $_LANG['Are you sure you want to send messages to $a customer(s)?'] = 'Jesteś pewien, że chcesz wysłać wiadomości do $a klient(a/ów)?';
 $_LANG['Are you sure, you want to make instant payment for customer \'$a\'?'] = 'Czy jesteś pewien, że chcesz wykonać szybką płatność dla klienta \'$a\'?';
+$_LANG['Are You sure, you want to delete this ticket?'] = 'Czy jesteś pewien, że chcesz usunąć to zgłoszenie?';
 
 $_LANG['Export to JPK-FA format'] = 'Eksport do formatu JPK-FA';
 $_LANG['Export to JPK-VAT format'] = 'Eksport do formatu JPK-VAT';
@@ -4613,6 +4615,7 @@ $_LANG['<!event>Unassign'] = 'Cofnij przypisanie';
 
 $_LANG['Today\'s events assigned to You'] = 'Dzisiejsze zdarzenia przypisane do Ciebie';
 $_LANG['Critical tickets'] = 'Zgłoszenia krytyczne';
+$_LANG['Customer tickets'] = 'Zgłoszenia klienta';
 $_LANG['Urgent tickets'] = 'Zgłoszenia pilne';
 $_LANG['Unread tickets'] = 'Nieprzeczytane zgłoszenia';
 
@@ -5292,6 +5295,7 @@ $_LANG['Suspended assignment'] = 'Zobowiązanie zawieszone';
 $_LANG['Future assignment'] = 'Zobowiązanie przyszłe';
 $_LANG['Expired assignment'] = 'Zobowiązanie przeterminowane';
 $_LANG['Assignment from not approved document'] = 'Zobowiązanie z niezatwierdzonego dokumentu';
+$_LANG['Show all customer tickets'] = 'Pokaż wszystkie zgłoszenia klienta';
 
 $_LANG['without location address'] = 'bez adresu lokalizacyjnego';
 
